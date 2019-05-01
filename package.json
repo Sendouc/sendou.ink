@@ -1,0 +1,16 @@
+{
+  "name": "sendou-ink",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sendou",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^7.0.0",
+    "mongoose": "^5.5.5",
+    "mongoose-unique-validator": "^2.0.3"
+  }
+}
