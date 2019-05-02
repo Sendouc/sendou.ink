@@ -1,7 +1,8 @@
 const mongoose = require('mongoose')
 
 const playerSchema = new mongoose.Schema({
-  name: {type: String, required: true, unique: true },
+  name: {type: String, required: true },
+  unique_id: { type: Number, unique: true },
   alias: String,
   twitter: String,
   weapons: [String],
