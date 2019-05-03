@@ -57,7 +57,7 @@ script_dir = os.path.dirname(__file__)
 rel_path = "xrank_data/*.json"
 abs_file_path = os.path.join(script_dir, rel_path)
 
-year = 2018 # needs to be updated manually when we process data from different years
+year = 2019 # needs to be updated manually when we process data from different years
 
 def resolve_top_array(key_name, player, result, x_power):
   if key_name not in player:
