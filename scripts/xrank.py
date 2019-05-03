@@ -50,8 +50,8 @@ dualies = ["Dapple Dualies", "Dapple Dualies Nouveau", "Clear Dapple Dualies",
 brellas = ["Splat Brella", "Sorella Brella", "Tenta Brella", "Tenta Sorella Brella",
 "Tenta Camo Brella", "Undercover Brella", "Undercover Sorella Brella", "Kensa Undercover Brella"]
 
-client = pymongo.MongoClient("mongodb+srv://sendou:vcXO4h599w09wo97@main-1s8xj.mongodb.net/test?retryWrites=true")
-db = client.test
+client = pymongo.MongoClient(uri)
+db = client.production
 
 script_dir = os.path.dirname(__file__)
 rel_path = "xrank_data/*.json"
@@ -59,11 +59,38 @@ abs_file_path = os.path.join(script_dir, rel_path)
 
 year = 2018 # needs to be updated manually when we process data from different years
 
+def resolve_top_array(key_name, player, result, x_power):
+  if key_name not in player:
+    player[key_name] = [result.inserted_id]
+  else:
+    if len(player[key_name]) <= 3:
+      player[key_name].append(result.inserted_id)
+    else:
+      lowest_power = 10000
+      lowest_power_index = -1
+      sum_of_powers = x_power
+      for index, placement_id in enumerate(player[key_name]):
+        high_placement = db.placements.find_one({ "_id": placement_id })
+        if high_placement is None:
+          raise ValueError(f'Placement id {placement_id} not found in the database.')
+        sum_of_powers += high_placement["x_power"]
+        if high_placement["x_power"] < x_power:
+          if high_placement["x_power"] < lowest_power:
+            lowest_power = high_placement["x_power"]
+            lowest_power_index = index
+      
+      if lowest_power_index != -1:
+        player[key_name][lowest_power_index] = result.inserted_id
+        sum_of_powers -= lowest_power
+        power_score = round((sum_of_powers / 4), 1)
+        player[f"{key_name}Score"] = power_score
+  return player
+
 for filepath in glob.iglob(abs_file_path): # iterate through .json files in the xrank_data folder
   if filepath.endswith(".json"):
     path_without_folder = filepath.replace("xrank_data\\", "")
     file_parts = path_without_folder.split("_")
-    print(file_parts)
+    print(path_without_folder)
     month = list(calendar.month_name).index(file_parts[0].capitalize())
 
     if "splat" in file_parts[1]:
@@ -136,42 +163,24 @@ for filepath in glob.iglob(abs_file_path): # iterate through .json files in the 
           playerWeapons.append(weapon)
           player["weapons"] = list(dict.fromkeys(playerWeapons))
         
-        if "topTotal" not in player:
-          player["topTotal"] = [result.inserted_id]
-        else:
-          if len(player["topTotal"]) <= 3:
-            player["topTotal"].append(result.inserted_id)
-          else:
-            lowest_power = 10000
-            lowest_power_index = -1
-            for index, placement_id in enumerate(player["topTotal"]):
-              high_placement = db.placements.find_one({ "_id": placement_id })
-              if high_placement is None:
-                raise ValueError(f'Placement id {placement_id} not found in the database.')
-              if high_placement["x_power"] < x_power:
-                if high_placement["x_power"] < lowest_power:
-                  lowest_power = high_placement["x_power"]
-                  lowest_power_index = index
-            
-            if lowest_power_index != -1:
-              player["topTotal"][lowest_power_index] = result.inserted_id
+        player = resolve_top_array("topTotal", player, result, x_power)
         
         if weapon in shooters:
-          pass
+          player = resolve_top_array("topShooter", player, result, x_power)
         elif weapon in blasters:
-          pass
+          player = resolve_top_array("topBlaster", player, result, x_power)
         elif weapon in rollers:
-          pass
+          player = resolve_top_array("topRoller", player, result, x_power)
         elif weapon in chargers:
-          pass
+          player = resolve_top_array("topCharger", player, result, x_power)
         elif weapon in sloshers:
-          pass
+          player = resolve_top_array("topSlosher", player, result, x_power)
         elif weapon in splatlings:
-          pass
+          player = resolve_top_array("topSplatling", player, result, x_power)
         elif weapon in dualies:
-          pass
+          player = resolve_top_array("topDualies", player, result, x_power)
         elif weapon in brellas:
-          pass
+          player = resolve_top_array("topBrella", player, result, x_power)
         else:
           raise ValueError(f'Weapon "{weapon}"doesn\'t belong in any category')
 
