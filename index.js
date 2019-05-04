@@ -11,7 +11,7 @@ mongoose.set('useCreateIndex', true)
 
 console.log('connecting to MongoDB')
 
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true })
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, dbName: "production" })
   .then(() => {
     console.log('connected to MongoDB')
   })
@@ -25,6 +25,7 @@ const typeDefs = gql`
     username: String!
     passwordHash: String!
   }
+
   type Player {
     id: ID!
     name: String!
@@ -33,41 +34,54 @@ const typeDefs = gql`
     twitter: String
     weapons: [String!]!
     topTotal: [Placement!]!
-    topTotalScore: Int
+    topTotalScore: Float
     topShooter: [Placement]
-    topShooterScore: Int
+    topShooterScore: Float
     topBlaster: [Placement]
-    topBlasterScore: Int
+    topBlasterScore: Float
     topRoller: [Placement]
-    topRollerScore: Int
+    topRollerScore: Float
     topCharger: [Placement]
-    topChargerScore: Int
+    topChargerScore: Float
     topSlosher: [Placement]
-    topSlosherScore: Int
+    topSlosherScore: Float
     topSplatling: [Placement]
-    topSplatlingScore: Int
+    topSplatlingScore: Float
     topDualies: [Placement]
-    topDualiesScore: Int
+    topDualiesScore: Float
     topBrella: [Placement]
-    topBrellaScore: Int
+    topBrellaScore: Float
   }
+
   type Placement {
     id: ID!
     name: String!
     weapon: String!
     rank: Int!
     mode: Int!
-    x_power: Int!
+    x_power: Float!
     unique_id: Int!
     month: Int!
     year: Int!
   }
+
   type Token {
     value: String!
   }
+
   type Query {
     playerCount: Int!
+    topTotalPlayers (amount: Int): [Player!]!
+    topShooterPlayers (amount: Int): [Player!]!
+    topBlasterPlayers (amount: Int): [Player!]!
+    topRollerPlayers (amount: Int): [Player!]!
+    topChargerPlayers (amount: Int): [Player!]!
+    topSlosherPlayers (amount: Int): [Player!]!
+    topSplatlingPlayers (amount: Int): [Player!]!
+    topDualiesPlayers (amount: Int): [Player!]!
+    topBrellaPlayers (amount: Int): [Player!]!
   }
+
   type Mutation {
     createUser(
       username: String!
@@ -82,7 +96,165 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    playerCount: () => Placement.collection.countDocuments()
+    playerCount: () => Player.collection.countDocuments(),
+    topTotalPlayers: (root, args) => {
+      if (!args.amount) {
+        args.amount = 50
+      }
+
+      if (args.amount < 1 || args.amount > 50) {
+        throw new UserInputError('amount requested has to be between 1 and 50', {
+          invalidArgs: args,
+        })
+      }
+      
+      return Player
+        .find({ topTotalScore: { $ne: null} })
+        .sort({ "topTotalScore": "desc" })
+        .limit(args.amount)
+        .populate("topTotal", {"unique_id": 0})
+        .catch(e => {
+          throw new UserInputError(e.message, {
+            invalidArgs: args,
+          })
+        })
+    },
+    topShooterPlayers: (root, args) => {
+      if (!args.amount) {
+        args.amount = 50
+      }
+
+      if (args.amount < 1 || args.amount > 50) {
+        throw new UserInputError('amount requested has to be between 1 and 50', {
+          invalidArgs: args,
+        })
+      }
+
+      return Player
+        .find({ topShooterScore: { $ne: null} })
+        .sort({ "topShooterScore": "desc" })
+        .limit(args.amount)
+        .populate("topShooter", {"unique_id": 0})
+    },
+    topBlasterPlayers: (root, args) => {
+      if (!args.amount) {
+        args.amount = 50
+      }
+
+      if (args.amount < 1 || args.amount > 50) {
+        throw new UserInputError('amount requested has to be between 1 and 50', {
+          invalidArgs: args,
+        })
+      }
+
+      return Player
+        .find({ topBlasterScore: { $ne: null} })
+        .sort({ "topBlasterScore": "desc" })
+        .limit(args.amount)
+        .populate("topBlaster", {"unique_id": 0})
+    },
+    topRollerPlayers: (root, args) => {
+      if (!args.amount) {
+        args.amount = 50
+      }
+
+      if (args.amount < 1 || args.amount > 50) {
+        throw new UserInputError('amount requested has to be between 1 and 50', {
+          invalidArgs: args,
+        })
+      }
+
+      return Player
+        .find({ topRollerScore: { $ne: null} })
+        .sort({ "topRollerScore": "desc" })
+        .limit(args.amount)
+        .populate("topRoller", {"unique_id": 0})
+    },
+    topChargerPlayers: (root, args) => {
+      if (!args.amount) {
+        args.amount = 50
+      }
+
+      if (args.amount < 1 || args.amount > 50) {
+        throw new UserInputError('amount requested has to be between 1 and 50', {
+          invalidArgs: args,
+        })
+      }
+
+      return Player
+        .find({ topChargerScore: { $ne: null} })
+        .sort({ "topChargerScore": "desc" })
+        .limit(args.amount)
+        .populate("topCharger", {"unique_id": 0})
+    },
+    topSlosherPlayers: (root, args) => {
+      if (!args.amount) {
+        args.amount = 50
+      }
+
+      if (args.amount < 1 || args.amount > 50) {
+        throw new UserInputError('amount requested has to be between 1 and 50', {
+          invalidArgs: args,
+        })
+      }
+
+      return Player
+        .find({ topSlosherScore: { $ne: null} })
+        .sort({ "topSlosherScore": "desc" })
+        .limit(args.amount)
+        .populate("topSlosher", {"unique_id": 0})
+    },
+    topSplatlingPlayers: (root, args) => {
+      if (!args.amount) {
+        args.amount = 50
+      }
+
+      if (args.amount < 1 || args.amount > 50) {
+        throw new UserInputError('amount requested has to be between 1 and 50', {
+          invalidArgs: args,
+        })
+      }
+
+      return Player
+        .find({ topSplatlingScore: { $ne: null} })
+        .sort({ "topSplatlingScore": "desc" })
+        .limit(args.amount)
+        .populate("topSplatling", {"unique_id": 0})
+    },
+    topDualiesPlayers: (root, args) => {
+      if (!args.amount) {
+        args.amount = 50
+      }
+
+      if (args.amount < 1 || args.amount > 50) {
+        throw new UserInputError('amount requested has to be between 1 and 50', {
+          invalidArgs: args,
+        })
+      }
+
+      return Player
+        .find({ topDualiesScore: { $ne: null} })
+        .sort({ "topDualiesScore": "desc" })
+        .limit(args.amount)
+        .populate("topDualies", {"unique_id": 0})
+    },
+    topBrellaPlayers: (root, args) => {
+      if (!args.amount) {
+        args.amount = 50
+      }
+
+      if (args.amount < 1 || args.amount > 50) {
+        throw new UserInputError('amount requested has to be between 1 and 50', {
+          invalidArgs: args,
+        })
+      }
+
+      return Player
+        .find({ topBrellaScore: { $ne: null} })
+        .sort({ "topBrellaScore": "desc" })
+        .limit(args.amount)
+        .populate("topBrella", {"unique_id": 0})
+    }
   }
 }
 
