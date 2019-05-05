@@ -1,21 +1,28 @@
 import React, { useState } from 'react'
 import { Menu } from 'semantic-ui-react'
+import { Route, withRouter } from 'react-router-dom'
 import WeaponLeaderboard from './WeaponLeaderboard'
 import { topTotalPlayers } from '../graphql/queries/topPlayers'
+import { topShooterPlayers } from '../graphql/queries/topShooters'
+import { topBlasterPlayers } from '../graphql/queries/topBlasters'
+import { topBrellaPlayers } from '../graphql/queries/topBrellas'
+import { topChargerPlayers } from '../graphql/queries/topChargers'
+import { topDualiesPlayers } from '../graphql/queries/topDualies'
+import { topRollerPlayers } from '../graphql/queries/topRollers'
+import { topSlosherPlayers } from '../graphql/queries/topSloshers'
+import { topSplatlingPlayers } from '../graphql/queries/topSplatlings'
 import allIcon from './wpnIcons/all.png'
 import blasterIcon from './wpnIcons/blasters.png'
 import brellaIcon from './wpnIcons/brellas.png'
 import chargerIcon from './wpnIcons/chargers.png'
 import dualieIcon from './wpnIcons/dualies.png'
-import flexIcon from './wpnIcons/flex.png'
 import rollerIcon from './wpnIcons/rollers.png'
 import shooterIcon from './wpnIcons/shooters.png'
 import slosherIcon from './wpnIcons/sloshers.png'
 import splatlingIcon from './wpnIcons/splatlings.png'
 
-const WeaponLeaderboardSelector = () => {
-
-  const [activeItem, setActiveItem] = useState('all')
+const WeaponLeaderboardSelector = withRouter(({ history }) => {
+  const [activeItem, setActiveItem] = useState('')
 
   const wpnIcon = {
     paddingBottom: "5px"
@@ -28,26 +35,17 @@ const WeaponLeaderboardSelector = () => {
           <Menu compact icon='labeled'>
             <Menu.Item 
               name='all' 
-              active={activeItem === 'all'} 
-              onClick={() => setActiveItem('all')}
+              active={activeItem === 'topTotal'} 
+              onClick={() => { history.push('/xleaderboard')}}
             >
               <img style={wpnIcon} src={allIcon} alt="All Icon"/>
               All
             </Menu.Item>
 
-            <Menu.Item 
-              name='flex' 
-              active={activeItem === 'flex'} 
-              onClick={() => setActiveItem('flex')}
-            >
-              <img style={wpnIcon} src={flexIcon} alt="Flex Icon"/>
-              Flex
-            </Menu.Item>
-
             <Menu.Item
               name='shooters'
-              active={activeItem === 'shooters'}
-              onClick={() => setActiveItem('shooters')}
+              active={activeItem === 'topShooter'}
+              onClick={() => { history.push('/xleaderboard/shooters')}}
             >
               <img style={wpnIcon} src={shooterIcon} alt="Shooter Icon"/>
               Shooters
@@ -55,8 +53,8 @@ const WeaponLeaderboardSelector = () => {
 
             <Menu.Item
               name='blasters'
-              active={activeItem === 'blasters'}
-              onClick={() => setActiveItem('blasters')}
+              active={activeItem === 'topBlaster'}
+              onClick={() => { history.push('/xleaderboard/blasters')}}
             >
               <img style={wpnIcon} src={blasterIcon} alt="Blaster Icon"/>
               Blasters
@@ -64,8 +62,8 @@ const WeaponLeaderboardSelector = () => {
 
             <Menu.Item
               name='rollers'
-              active={activeItem === 'rollers'}
-              onClick={() => setActiveItem('rollers')}
+              active={activeItem === 'topRoller'}
+              onClick={() => { history.push('/xleaderboard/rollers')}}
             >
               <img style={wpnIcon} src={rollerIcon} alt="Roller Icon"/>
               Rollers
@@ -73,8 +71,8 @@ const WeaponLeaderboardSelector = () => {
 
             <Menu.Item
               name='chargers'
-              active={activeItem === 'chargers'}
-              onClick={() => setActiveItem('chargers')}
+              active={activeItem === 'topCharger'}
+              onClick={() => { history.push('/xleaderboard/chargers')}}
             >
               <img style={wpnIcon} src={chargerIcon} alt="Charger Icon"/>
               Chargers
@@ -82,8 +80,8 @@ const WeaponLeaderboardSelector = () => {
 
             <Menu.Item
               name='splatlings'
-              active={activeItem === 'splatlings'}
-              onClick={() => setActiveItem('splatlings')}
+              active={activeItem === 'topSplatling'}
+              onClick={() => { history.push('/xleaderboard/splatlings')}}
             >
               <img style={wpnIcon} src={splatlingIcon} alt="Splatling Icon"/>
               Splatlings
@@ -91,8 +89,8 @@ const WeaponLeaderboardSelector = () => {
 
             <Menu.Item
               name='sloshers'
-              active={activeItem === 'sloshers'}
-              onClick={() => setActiveItem('sloshers')}
+              active={activeItem === 'topSlosher'}
+              onClick={() => { history.push('/xleaderboard/sloshers')}}
             >
               <img style={wpnIcon} src={slosherIcon} alt="Slosher Icon"/>
               Sloshers
@@ -100,8 +98,8 @@ const WeaponLeaderboardSelector = () => {
 
             <Menu.Item
               name='dualies'
-              active={activeItem === 'dualies'}
-              onClick={() => setActiveItem('dualies')}
+              active={activeItem === 'topDualies'}
+              onClick={() => { history.push('/xleaderboard/dualies')}}
             >
               <img style={wpnIcon} src={dualieIcon} alt="Dualie Icon"/>
               Dualies
@@ -109,8 +107,8 @@ const WeaponLeaderboardSelector = () => {
 
             <Menu.Item
               name='brella'
-              active={activeItem === 'brella'}
-              onClick={() => setActiveItem('brella')}
+              active={activeItem === 'topBrella'}
+              onClick={() => { history.push('/xleaderboard/brellas')}}
             >
               <img style={wpnIcon} src={brellaIcon} alt="Brella Icon"/>
               Brellas
@@ -118,13 +116,98 @@ const WeaponLeaderboardSelector = () => {
           </Menu>
         </div>
       </div>
-      <WeaponLeaderboard 
-        query={topTotalPlayers}
-        queryName="topTotalPlayers"
-        scoreField="topTotalScore"
+      <Route exact path="/xleaderboard" render={() =>
+        <WeaponLeaderboard 
+          query={topTotalPlayers}
+          queryName="topTotalPlayers"
+          scoreField="topTotalScore"
+          weaponsField="topTotal"
+          setActiveItem={setActiveItem}
+        />
+        } 
+      />
+      <Route exact path="/xleaderboard/shooters" render={() =>
+        <WeaponLeaderboard 
+          query={topShooterPlayers}
+          queryName="topShooterPlayers"
+          scoreField="topShooterScore"
+          weaponsField="topShooter"
+          setActiveItem={setActiveItem}
+        />
+        } 
+      />
+      <Route exact path="/xleaderboard/blasters" render={() =>
+        <WeaponLeaderboard 
+          query={topBlasterPlayers}
+          queryName="topBlasterPlayers"
+          scoreField="topBlasterScore"
+          weaponsField="topBlaster"
+          setActiveItem={setActiveItem}
+        />
+        } 
+      />
+      <Route exact path="/xleaderboard/rollers" render={() =>
+        <WeaponLeaderboard 
+          query={topRollerPlayers}
+          queryName="topRollerPlayers"
+          scoreField="topRollerScore"
+          weaponsField="topRoller"
+          setActiveItem={setActiveItem}
+        />
+        } 
+      />
+      <Route exact path="/xleaderboard/chargers" render={() =>
+        <WeaponLeaderboard 
+          query={topChargerPlayers}
+          queryName="topChargerPlayers"
+          scoreField="topChargerScore"
+          weaponsField="topCharger"
+          setActiveItem={setActiveItem}
+        />
+        } 
+      />
+      <Route exact path="/xleaderboard/splatlings" render={() =>
+        <WeaponLeaderboard 
+          query={topSplatlingPlayers}
+          queryName="topSplatlingPlayers"
+          scoreField="topSplatlingScore"
+          weaponsField="topSplatling"
+          setActiveItem={setActiveItem}
+        />
+        } 
+      />
+      <Route exact path="/xleaderboard/sloshers" render={() =>
+        <WeaponLeaderboard 
+          query={topSlosherPlayers}
+          queryName="topSlosherPlayers"
+          scoreField="topSlosherScore"
+          weaponsField="topSlosher"
+          setActiveItem={setActiveItem}
+        />
+        } 
+      />
+      <Route exact path="/xleaderboard/dualies" render={() =>
+        <WeaponLeaderboard 
+          query={topDualiesPlayers}
+          queryName="topDualiesPlayers"
+          scoreField="topDualiesScore"
+          weaponsField="topDualies"
+          setActiveItem={setActiveItem}
+        />
+        } 
+      />
+      <Route exact path="/xleaderboard/brellas" render={() =>
+        <WeaponLeaderboard 
+          query={topBrellaPlayers}
+          queryName="topBrellaPlayers"
+          scoreField="topBrellaScore"
+          weaponsField="topBrella"
+          setActiveItem={setActiveItem}
+        />
+        } 
       />
     </div>
   )
-}
+})
 
 export default WeaponLeaderboardSelector

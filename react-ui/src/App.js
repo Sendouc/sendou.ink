@@ -1,15 +1,22 @@
 import React from 'react'
 import { Container } from 'semantic-ui-react'
+import Footer from './components/Footer'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
 
 import WeaponLeaderboardSelector from './components/WeaponLeaderboardSelector'
 
 const App = () => {
   return (
-    <Container>
-      <div>
-        <WeaponLeaderboardSelector />
-      </div>
-    </Container>
+    <div>
+    <Router>
+      <Container>
+        <div>
+          <Route path="/xleaderboard" render={() => <WeaponLeaderboardSelector />} />
+        </div>
+        <Footer />
+      </Container>
+    </Router>
+    </div>
   )
 }
 
