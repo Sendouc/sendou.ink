@@ -1,10 +1,13 @@
 require('dotenv').config()
-const { ApolloServer, UserInputError, AuthenticationError, gql } = require('apollo-server')
+const { ApolloServer, UserInputError, AuthenticationError, gql } = require('apollo-server-express')
 const mongoose = require('mongoose')
+const express = require('express')
+const cors = require('cors')
 const Placement = require('./models/placement')
 const Player = require('./models/player')
 //const User = require('./models/user')
 const jwt = require('jsonwebtoken')
+const path = require('path')
 
 mongoose.set('useFindAndModify', false)
 mongoose.set('useCreateIndex', true)
@@ -273,7 +276,17 @@ const server = new ApolloServer({
   }
 })
 
+const app = express()
+app.use(cors())
+server.applyMiddleware({ app })
+
+app.use(express.static('public'))
+
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
+})
+
 const PORT = process.env.PORT || 3001
-server.listen(PORT).then(({ url }) => {
-  console.log(`Server ready at ${url}`)
+app.listen({ port: PORT }, () => {
+  console.log(`Server running on http://localhost:${PORT}${server.graphqlPath}`)
 })
