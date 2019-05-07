@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const playerSchema = new mongoose.Schema({
   name: {type: String, required: true },
-  unique_id: { type: Number, unique: true, required: true },
+  unique_id: { type: String, unique: true, required: true },
   alias: String,
   twitter: String,
   weapons: [String],

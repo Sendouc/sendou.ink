@@ -90,6 +90,7 @@ const typeDefs = gql`
     topBrellaPlayers (amount: Int): [Player!]!
     topPlayers (weapon: String!): topPlayer!
     weaponPlacementStats(weapon: String!): [Int!]!
+    playerInfo(uid: String!): [Placement]
   }
 
   type Mutation {
@@ -291,6 +292,17 @@ const resolvers = {
       }, {sz: 0, tc: 0, rm: 0, cb: 0})
 
       return {placements: placements.slice(0, 101), modeCount: [m.sz+m.tc+m.rm+m.cb, m.sz, m.tc, m.rm, m.cb]}
+    },
+    playerInfo: (root, args) => {  //tee tästä uus tyyppi joka palauttaa kaikki placementit sekä Player objektin
+      console.log('args', args)
+      return Placement
+        .find({ unique_id: args.uid })
+        .sort({ "month": "asc", "year": "asc"})
+        .catch(e => {
+          throw new UserInputError(e.message, {
+            invalidArgs: args,
+          })
+        })
     }
   }
 }

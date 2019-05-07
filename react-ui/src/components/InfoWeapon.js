@@ -3,6 +3,7 @@ import { useQuery } from 'react-apollo-hooks'
 import { topPlayersOfWeapon } from '../graphql/queries/topPlayersOfWeapon'
 import weaponDictReversed from '../utils/internal_english.json'
 import { Loader, Header, Table, Checkbox } from 'semantic-ui-react'
+import { withRouter } from 'react-router-dom'
 
 import szIcon from './modeIcons/sz.png'
 import tcIcon from './modeIcons/tc.png'
@@ -12,7 +13,7 @@ import { months, modes } from '../utils/lists'
 
 const modeIcons = ["", szIcon, tcIcon, rmIcon, cbIcon]
 
-const InfoWeapon = ({ wpn }) => { //todo - handle error (404?) //new weapons not shown?
+const InfoWeapon = withRouter(({ history, wpn }) => { //todo - handle error (404?) //new weapons not shown?
   const { data, error, loading } = useQuery(topPlayersOfWeapon, {variables: {weapon: weaponDictReversed[wpn] }})
   const [uniqueId, setUniqueId] = useState('')
   const [allPlayers, setAllPlayers] = useState(true)
@@ -38,6 +39,10 @@ const InfoWeapon = ({ wpn }) => { //todo - handle error (404?) //new weapons not
       setModeCount(data['topPlayers']['modeCount'])
     }
   }, [data, loading, wpn])
+
+  if (!(wpn in weaponDictReversed)) {
+    history.push('/404')
+  }
 
   if (loading) {
     return <div style={{"paddingTop": "25px", "paddingBottom": "20000px"}} ><Loader active inline='centered' /></div>
@@ -121,6 +126,6 @@ const InfoWeapon = ({ wpn }) => { //todo - handle error (404?) //new weapons not
       </div>
     </div>
   )
-}
+})
 
 export default InfoWeapon
