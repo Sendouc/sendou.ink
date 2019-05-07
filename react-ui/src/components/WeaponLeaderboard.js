@@ -16,7 +16,7 @@ const WeaponLeaderboard = ({ query, queryName, scoreField, weaponsField, setActi
   const leaderboard = result.data[queryName]
 
   return (
-    <Table basic='very'>
+    <Table style={{"paddingTop": "5px", "paddingBottom": "5px"}} basic='very'>
       <Table.Header>
         <Table.Row>
           <Table.HeaderCell></Table.HeaderCell>
@@ -39,7 +39,7 @@ const WeaponLeaderboard = ({ query, queryName, scoreField, weaponsField, setActi
             <Table.Cell>{index + 1}</Table.Cell>
             <Table.Cell>{player.alias ? player.alias : player.name} 
               {player.twitter ? 
-                <a href={`https://twitter.com/${player.twitter}`}><Icon name="twitter"/></a>
+                <a href={`https://twitter.com/${player.twitter}`}><Icon style={{"paddingLeft": "5px"}} name="twitter"/></a>
                 : null}
             </Table.Cell>
             <Table.Cell>{player[scoreField]}</Table.Cell>

@@ -32,7 +32,7 @@ const typeDefs = gql`
   type Player {
     id: ID!
     name: String!
-    unique_id: Int!
+    unique_id: String!
     alias: String
     twitter: String
     weapons: [String!]!
@@ -63,7 +63,7 @@ const typeDefs = gql`
     rank: Int!
     mode: Int!
     x_power: Float!
-    unique_id: Int!
+    unique_id: String!
     month: Int!
     year: Int!
   }
@@ -83,6 +83,7 @@ const typeDefs = gql`
     topSplatlingPlayers (amount: Int): [Player!]!
     topDualiesPlayers (amount: Int): [Player!]!
     topBrellaPlayers (amount: Int): [Player!]!
+    topPlayers (weapon: String): [Placement]
   }
 
   type Mutation {
@@ -257,6 +258,31 @@ const resolvers = {
         .sort({ "topBrellaScore": "desc" })
         .limit(args.amount)
         .populate("topBrella", {"unique_id": 0})
+    },
+    topPlayers: (root, args) => {
+      if (args.weapon) {
+        return Placement
+          .find({ weapon: args.weapon })
+          .sort({ "x_power": "desc" })
+          .limit(100)
+          .select({ _id: 0, weapon: 0})
+          .catch(e => {
+            throw new UserInputError(e.message, {
+              invalidArgs: args,
+            })
+          })
+      }
+
+      return Placement
+          .find({})
+          .sort({ "x_power": "desc" })
+          .limit(100)
+          .select({ _id: 0 })
+          .catch(e => {
+            throw new UserInputError(e.message, {
+              invalidArgs: args,
+            })
+          })
     }
   }
 }

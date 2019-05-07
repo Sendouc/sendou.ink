@@ -21,12 +21,13 @@ import shooterIcon from './wpnIcons/shooters.png'
 import slosherIcon from './wpnIcons/sloshers.png'
 import splatlingIcon from './wpnIcons/splatlings.png'
 
-const WeaponLeaderboardSelector = withRouter(({ history }) => {
+const WeaponLeaderboardSelector = withRouter(({ history, setMenuSelection }) => {
   const [activeItem, setActiveItem] = useState('')
-
   const wpnIcon = {
     paddingBottom: "5px"
   }
+
+  setMenuSelection('leaderboards')
 
   return (
     <div>
