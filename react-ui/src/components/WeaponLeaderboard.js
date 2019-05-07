@@ -12,6 +12,9 @@ const WeaponLeaderboard = ({ query, queryName, scoreField, weaponsField, setActi
   if (result.loading) {
     return <div style={{"paddingTop": "25px", "paddingBottom": "20000px"}} ><Loader active inline='centered' /></div>
   }
+  if (result.error) {
+    return <div style={{"color": "red"}}>{result.error.message}</div>
+  }
   document.title = `${weaponsField.substring(3)} Leaderboard - sendou.ink`
   const leaderboard = result.data[queryName]
 

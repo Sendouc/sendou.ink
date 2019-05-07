@@ -6,8 +6,6 @@ node_modules
 # testing
 coverage
 
-build
-
 # misc
 xrank_data
 .DS_Store

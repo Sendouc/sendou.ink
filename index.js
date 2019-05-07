@@ -68,6 +68,11 @@ const typeDefs = gql`
     year: Int!
   }
 
+  type topPlayer {
+    placements: [Placement!]!
+    modeCount: [Int!]!
+  }
+
   type Token {
     value: String!
   }
@@ -83,7 +88,8 @@ const typeDefs = gql`
     topSplatlingPlayers (amount: Int): [Player!]!
     topDualiesPlayers (amount: Int): [Player!]!
     topBrellaPlayers (amount: Int): [Player!]!
-    topPlayers (weapon: String): [Placement]
+    topPlayers (weapon: String!): topPlayer!
+    weaponPlacementStats(weapon: String!): [Int!]!
   }
 
   type Mutation {
@@ -259,30 +265,32 @@ const resolvers = {
         .limit(args.amount)
         .populate("topBrella", {"unique_id": 0})
     },
-    topPlayers: (root, args) => {
-      if (args.weapon) {
-        return Placement
-          .find({ weapon: args.weapon })
-          .sort({ "x_power": "desc" })
-          .limit(100)
-          .select({ _id: 0, weapon: 0})
-          .catch(e => {
-            throw new UserInputError(e.message, {
-              invalidArgs: args,
-            })
+    topPlayers: async (root, args) => {
+      const placements =  await Placement
+        .find({ weapon: args.weapon })
+        .sort({ "x_power": "desc" })
+        .select({ weapon: 0})
+        .catch(e => {
+          throw new UserInputError(e.message, {
+            invalidArgs: args,
           })
-      }
+        })
+      
+      const m = placements.reduce((acc, cur) => {
+        if (cur.mode === 1) {
+          acc.sz++
+        } else if (cur.mode === 2) {
+          acc.tc++
+        } else if (cur.mode === 3) {
+          acc.rm++
+        } else {
+          acc.cb++
+        }
 
-      return Placement
-          .find({})
-          .sort({ "x_power": "desc" })
-          .limit(100)
-          .select({ _id: 0 })
-          .catch(e => {
-            throw new UserInputError(e.message, {
-              invalidArgs: args,
-            })
-          })
+        return acc
+      }, {sz: 0, tc: 0, rm: 0, cb: 0})
+
+      return {placements: placements.slice(0, 101), modeCount: [m.sz+m.tc+m.rm+m.cb, m.sz, m.tc, m.rm, m.cb]}
     }
   }
 }
@@ -306,7 +314,7 @@ const app = express()
 app.use(cors())
 server.applyMiddleware({ app })
 
-app.use(express.static('public'))
+app.use(express.static('build'))
 
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
