@@ -4,6 +4,7 @@ export const topTotalPlayers = gql`
 {
   topTotalPlayers {
     id
+    unique_id
     name
     alias
     twitter

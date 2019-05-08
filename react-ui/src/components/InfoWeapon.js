@@ -3,17 +3,17 @@ import { useQuery } from 'react-apollo-hooks'
 import { topPlayersOfWeapon } from '../graphql/queries/topPlayersOfWeapon'
 import weaponDictReversed from '../utils/internal_english.json'
 import { Loader, Header, Table, Checkbox } from 'semantic-ui-react'
-import { withRouter } from 'react-router-dom'
+import { withRouter, Link } from 'react-router-dom'
 
-import szIcon from './modeIcons/sz.png'
-import tcIcon from './modeIcons/tc.png'
-import rmIcon from './modeIcons/rm.png'
-import cbIcon from './modeIcons/cb.png'
+import szIcon from './img/modeIcons/sz.png'
+import tcIcon from './img/modeIcons/tc.png'
+import rmIcon from './img/modeIcons/rm.png'
+import cbIcon from './img/modeIcons/cb.png'
 import { months, modes } from '../utils/lists'
 
 const modeIcons = ["", szIcon, tcIcon, rmIcon, cbIcon]
 
-const InfoWeapon = withRouter(({ history, wpn }) => { //todo - handle error (404?) //new weapons not shown?
+const InfoWeapon = withRouter(({ history, wpn }) => {
   const { data, error, loading } = useQuery(topPlayersOfWeapon, {variables: {weapon: weaponDictReversed[wpn] }})
   const [uniqueId, setUniqueId] = useState('')
   const [allPlayers, setAllPlayers] = useState(true)
@@ -107,7 +107,7 @@ const InfoWeapon = withRouter(({ history, wpn }) => { //todo - handle error (404
           {leaderboard.map((p, i) => 
             <Table.Row key={p.id} active={p.unique_id === uniqueId} onClick={() => setUniqueId(p.unique_id)}>
               <Table.Cell>{i + 1}</Table.Cell>
-              <Table.Cell>{p.name}</Table.Cell>
+              <Table.Cell><Link to={`/xsearch/p/${p.unique_id}`} style={{"color": "black"}}><u>{p.alias ? p.alias : p.name}</u></Link></Table.Cell>
               <Table.Cell>{p.x_power}</Table.Cell>
               <Table.Cell>{months[p.month]}</Table.Cell>
               <Table.Cell>{p.year}</Table.Cell>

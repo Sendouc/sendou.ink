@@ -7,7 +7,7 @@ const MainMenu = withRouter(({ history, menuSelection, setMenuSelection }) => {
   const [memCakePic, setMemCakePic] = useState(memCakes[Math.floor(Math.random()*memCakes.length)])
   return (
     <Segment inverted>
-      <Menu inverted secondary>
+      <Menu inverted secondary stackable>
         <Menu.Item>
           <img src={process.env.PUBLIC_URL + `/memCakes/${memCakePic}`} alt="mem cake logo" onClick={() => setMemCakePic(memCakes[Math.floor(Math.random()*memCakes.length)])}/>
         </Menu.Item>

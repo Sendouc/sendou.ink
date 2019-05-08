@@ -4,6 +4,7 @@ export const topShooterPlayers = gql`
 {
   topShooterPlayers {
     id
+    unique_id
     name
     alias
     twitter

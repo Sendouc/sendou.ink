@@ -4,6 +4,7 @@ export const topDualiesPlayers = gql`
 {
   topDualiesPlayers {
     id
+    unique_id
     name
     alias
     twitter

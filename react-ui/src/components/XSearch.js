@@ -3,6 +3,7 @@ import { Form, Message, Button } from 'semantic-ui-react'
 import { Route, withRouter } from 'react-router-dom'
 import WeaponForm from '../components/WeaponForm'
 import InfoWeapon from '../components/InfoWeapon'
+import InfoPlayer from '../components/InfoPlayer'
 import weaponDict from '../utils/english_internal.json'
 
 const XSearch = withRouter(({ history, setMenuSelection }) => {
@@ -31,6 +32,9 @@ const XSearch = withRouter(({ history, setMenuSelection }) => {
       </div>
       <Route exact path="/xsearch/w/:wpn" render={({ match }) =>
         <InfoWeapon wpn={match.params.wpn.replace(/-/g, '_')} setWeaponForm={setWeaponForm} />
+      } />
+      <Route exact path="/xsearch/p/:uid" render={({ match }) =>
+        <InfoPlayer uid={match.params.uid} />
       } />
     </div>
   )

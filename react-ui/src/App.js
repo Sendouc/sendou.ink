@@ -3,10 +3,11 @@ import { Container } from 'semantic-ui-react'
 import Footer from './components/Footer'
 import MainMenu from './components/MainMenu'
 import NotFound from './components/NotFound'
-import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 
 import WeaponLeaderboardSelector from './components/WeaponLeaderboardSelector'
 import XSearch from './components/XSearch'
+import ScrollToTop from './utils/ScrollToTop'
 
 const App = () => {
   const [menuSelection, setMenuSelection] = useState('home')
@@ -16,6 +17,7 @@ const App = () => {
       <Container>
           <MainMenu menuSelection={menuSelection} setMenuSelection={setMenuSelection} />
           <div>
+            <ScrollToTop />
             <Switch>
               <Route exact path="/" render={() => <div>This is home.</div>} />
               <Route path="/xleaderboard" render={() => <WeaponLeaderboardSelector setMenuSelection={setMenuSelection} />} />

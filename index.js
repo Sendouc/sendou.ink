@@ -73,6 +73,11 @@ const typeDefs = gql`
     modeCount: [Int!]!
   }
 
+  type PlayerWithPlacements {
+    player: Player!
+    placements: [Placement!]!
+  }
+
   type Token {
     value: String!
   }
@@ -90,7 +95,7 @@ const typeDefs = gql`
     topBrellaPlayers (amount: Int): [Player!]!
     topPlayers (weapon: String!): topPlayer!
     weaponPlacementStats(weapon: String!): [Int!]!
-    playerInfo(uid: String!): [Placement]
+    playerInfo(uid: String!): PlayerWithPlacements!
   }
 
   type Mutation {
@@ -293,16 +298,30 @@ const resolvers = {
 
       return {placements: placements.slice(0, 101), modeCount: [m.sz+m.tc+m.rm+m.cb, m.sz, m.tc, m.rm, m.cb]}
     },
-    playerInfo: (root, args) => {  //tee tästä uus tyyppi joka palauttaa kaikki placementit sekä Player objektin
-      console.log('args', args)
-      return Placement
-        .find({ unique_id: args.uid })
-        .sort({ "month": "asc", "year": "asc"})
+    playerInfo: async (root, args) => {
+      const player = await Player
+        .findOne({ unique_id: args.uid })
         .catch(e => {
           throw new UserInputError(e.message, {
             invalidArgs: args,
           })
         })
+
+      if (!player) {
+        throw new UserInputError('player not found with the id given', {
+          invalidArgs: args,
+        })
+      }
+      const placements = await Placement
+        .find({ unique_id: args.uid })
+        .sort({ "year": "asc", "month": "asc" })
+        .catch(e => {
+          throw new UserInputError(e.message, {
+            invalidArgs: args,
+          })
+        })
+
+      return { player, placements }
     }
   }
 }

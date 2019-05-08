@@ -6,7 +6,7 @@ const placementSchema = new mongoose.Schema({
   rank: {type: Number, min: 1, max: 500, required: true},
   mode: {type: Number, min: 1, max: 4, required: true},
   x_power: {type: Number, required: true},
-  unique_id: {type: Number, required: true},
+  unique_id: {type: String, required: true},
   month: {type: Number, min: 1, max: 12, required: true},
   year: {type: Number, min: 2017, required: true}
 })

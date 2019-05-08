@@ -2,6 +2,7 @@ import React from 'react'
 import { Table, Icon, Popup } from 'semantic-ui-react'
 import { useQuery } from 'react-apollo-hooks'
 import { Loader } from 'semantic-ui-react'
+import { Link } from 'react-router-dom'
 
 import FourWeapons from '../components/FourWeapons'
 
@@ -40,7 +41,7 @@ const WeaponLeaderboard = ({ query, queryName, scoreField, weaponsField, setActi
         {leaderboard.map((player, index) => 
           <Table.Row key={player.id}>
             <Table.Cell>{index + 1}</Table.Cell>
-            <Table.Cell>{player.alias ? player.alias : player.name} 
+            <Table.Cell><Link to={`/xsearch/p/${player.unique_id}`} style={{"color": "black"}}><u>{player.alias ? player.alias : player.name}</u></Link>
               {player.twitter ? 
                 <a href={`https://twitter.com/${player.twitter}`}><Icon style={{"paddingLeft": "5px"}} name="twitter"/></a>
                 : null}
