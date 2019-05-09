@@ -33,4 +33,4 @@ Frontend will run on [http://localhost:3000/](http://localhost:3000/)
 You are welcome to create an issue or do a pull request.
 
 ## License
-[MIT](https://choosealicense.com/licenses/mit/)
+GNU General Public License v3.0
