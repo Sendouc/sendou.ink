@@ -60,6 +60,15 @@ const InfoPlayer = ({ uid }) => {
         {playerData.twitter ? <Image circular src={`https://avatars.io/twitter/${playerData.twitter}`} /> : null} {playerData.alias ? playerData.alias : playerData.name} 
         {playerData.twitter ? <a href={`https://twitter.com/${playerData.twitter}`}><Icon style={{"paddingLeft": "5px"}} size='small' name="twitter"/></a> : null}
       </Header>
+      {playerData.topTotalScore ? <><i>Total Power: {playerData.topTotalScore}</i><br /></> : null}
+      {playerData.topShooterScore ? <><i>Shooter Power: {playerData.topShooterScore}</i><br /></> : null}
+      {playerData.topBlasterScore ? <><i>Blaster Power: {playerData.topBlasterScore}</i><br /></> : null}
+      {playerData.topRollerScore ? <><i>Roller Power: {playerData.topRollerScore}</i><br /></> : null}
+      {playerData.topChargerScore ? <><i>Charger Power: {playerData.topChargerScore}</i><br /></> : null}
+      {playerData.topSlosherScore ? <><i>Slosher Power: {playerData.topSlosherScore}</i><br /></> : null}
+      {playerData.topSplatlingScore ? <><i>Splatling Power: {playerData.topSplatlingScore}</i><br /></> : null}
+      {playerData.topDualiesScore ? <><i>Dualies Power: {playerData.topDualiesScore}</i><br /></> : null}
+      {playerData.topBrellaScore ? <><i>Brella Power: {playerData.topBrellaScore}</i><br /></> : null}
       <TopPlacementTable top={top} />
       <Header dividing style={{"paddingTop": "5px"}}>All Top 500 placements</Header>
       <MonthsTable placements={data.playerInfo.placements} />

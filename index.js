@@ -96,6 +96,7 @@ const typeDefs = gql`
     topPlayers (weapon: String!): topPlayer!
     weaponPlacementStats(weapon: String!): [Int!]!
     playerInfo(uid: String!): PlayerWithPlacements!
+    searchForPlayers(name: String! exact: Boolean): [Placement]!
   }
 
   type Mutation {
@@ -322,6 +323,46 @@ const resolvers = {
         })
 
       return { player, placements }
+    },
+    searchForPlayers: async (root, args) => {
+      let placements = []
+      if (args.exact) {
+        placements = await Placement
+          .find({ name: args.name })
+          .sort({ "x_power": "desc" })
+          .limit(100)
+          .select({ name: 1, weapon: 1, x_power: 1, unique_id: 1})
+          .catch(e => {
+            throw new UserInputError(e.message, {
+              invalidArgs: args,
+            })
+          })
+      } else {
+        placements = await Placement
+          .find({ name: { "$regex": args.name, "$options": "i" }})
+          .sort({ "x_power": "desc" })
+          .limit(100)
+          .select({ name: 1, weapon: 1, x_power: 1, unique_id: 1})
+          .catch(e => {
+            throw new UserInputError(e.message, {
+              invalidArgs: args,
+            })
+          })
+        }
+
+      let uids = []
+
+      return placements.filter(p => {
+        if (uids.length === 21) {
+          return false
+        }
+        const bool = uids.includes(p.unique_id)
+        if (bool) {
+          return false
+        }
+        uids.push(p.unique_id)
+        return true
+      })
     }
   }
 }

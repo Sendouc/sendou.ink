@@ -50,7 +50,7 @@ const NotFound = () => {
         <Header size='small'>404 - Page not found</Header>
       </div>
       <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
-        <i>...not unlike {mapObject.name} can't be found in Splatoon 2</i>
+        <i>...not unlike how {mapObject.name} can't be found in Splatoon 2</i>
       </div>
     </>
   )
