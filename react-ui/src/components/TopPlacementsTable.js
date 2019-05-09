@@ -9,7 +9,6 @@ import cbIcon from './img/modeIcons/cb.png'
 import { months } from '../utils/lists'
 
 const TopPlacementTable = ({ top }) => {
-  console.log(top)
   return (
     <Table basic='very' celled collapsing>
     <Table.Header>

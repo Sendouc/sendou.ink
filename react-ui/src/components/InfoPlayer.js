@@ -7,7 +7,7 @@ import TopPlacementTable from '../components/TopPlacementsTable'
 import WpnPlayedTable from '../components/WpnPlayedTable'
 import MonthsTable from '../components/MonthsTable'
 
-const InfoPlayer = ({ uid }) => {
+const InfoPlayer = ({ uid, setMenuSelection }) => {
   const { data, error, loading } = useQuery(playerInfo, {variables: { uid: uid }})
   const [top, setTop] = useState([])
 
@@ -15,6 +15,7 @@ const InfoPlayer = ({ uid }) => {
     if (loading) {
       return
     }
+    setMenuSelection('search')
     document.title = `${data.playerInfo.player.alias ? data.playerInfo.player.alias : data.playerInfo.player.name} Top 500 X Rank - sendou.ink`
     const placements = data.playerInfo.placements
 
@@ -44,7 +45,7 @@ const InfoPlayer = ({ uid }) => {
       cbX: null, cbTop: null
     }))
 
-  }, [data, loading])
+  }, [data, loading, setMenuSelection])
 
   if (loading || top.length === 0) {
     return <div style={{"paddingTop": "25px", "paddingBottom": "20000px"}} ><Loader active inline='centered' /></div>
