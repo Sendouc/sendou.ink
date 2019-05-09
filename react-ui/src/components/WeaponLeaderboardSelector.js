@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Menu } from 'semantic-ui-react'
+import { Menu, Responsive } from 'semantic-ui-react'
 import { Route, withRouter } from 'react-router-dom'
 import WeaponLeaderboard from './WeaponLeaderboard'
 import { topTotalPlayers } from '../graphql/queries/topPlayers'
@@ -33,88 +33,178 @@ const WeaponLeaderboardSelector = withRouter(({ history, setMenuSelection }) => 
     <div>
       <div className="ui centered grid">
         <div className="center aligned column">
-          <Menu compact icon='labeled'>
-            <Menu.Item 
-              name='all' 
-              active={activeItem === 'topTotal'} 
-              onClick={() => { history.push('/xleaderboard')}}
-            >
-              <img style={wpnIcon} src={allIcon} alt="All Icon"/>
-              All
-            </Menu.Item>
+          <Responsive minWidth={800}>
+            <Menu compact icon='labeled'>
+              <Menu.Item 
+                name='all' 
+                active={activeItem === 'topTotal'} 
+                onClick={() => { history.push('/xleaderboard')}}
+              >
+                <img style={wpnIcon} src={allIcon} alt="All Icon"/>
+                All
+              </Menu.Item>
 
-            <Menu.Item
-              name='shooters'
-              active={activeItem === 'topShooter'}
-              onClick={() => { history.push('/xleaderboard/shooters')}}
-            >
-              <img style={wpnIcon} src={shooterIcon} alt="Shooter Icon"/>
-              Shooters
-            </Menu.Item>
+              <Menu.Item
+                name='shooters'
+                active={activeItem === 'topShooter'}
+                onClick={() => { history.push('/xleaderboard/shooters')}}
+              >
+                <img style={wpnIcon} src={shooterIcon} alt="Shooter Icon"/>
+                Shooters
+              </Menu.Item>
 
-            <Menu.Item
-              name='blasters'
-              active={activeItem === 'topBlaster'}
-              onClick={() => { history.push('/xleaderboard/blasters')}}
-            >
-              <img style={wpnIcon} src={blasterIcon} alt="Blaster Icon"/>
-              Blasters
-            </Menu.Item>
+              <Menu.Item
+                name='blasters'
+                active={activeItem === 'topBlaster'}
+                onClick={() => { history.push('/xleaderboard/blasters')}}
+              >
+                <img style={wpnIcon} src={blasterIcon} alt="Blaster Icon"/>
+                Blasters
+              </Menu.Item>
 
-            <Menu.Item
-              name='rollers'
-              active={activeItem === 'topRoller'}
-              onClick={() => { history.push('/xleaderboard/rollers')}}
-            >
-              <img style={wpnIcon} src={rollerIcon} alt="Roller Icon"/>
-              Rollers
-            </Menu.Item>
+              <Menu.Item
+                name='rollers'
+                active={activeItem === 'topRoller'}
+                onClick={() => { history.push('/xleaderboard/rollers')}}
+              >
+                <img style={wpnIcon} src={rollerIcon} alt="Roller Icon"/>
+                Rollers
+              </Menu.Item>
 
-            <Menu.Item
-              name='chargers'
-              active={activeItem === 'topCharger'}
-              onClick={() => { history.push('/xleaderboard/chargers')}}
-            >
-              <img style={wpnIcon} src={chargerIcon} alt="Charger Icon"/>
-              Chargers
-            </Menu.Item>
+              <Menu.Item
+                name='chargers'
+                active={activeItem === 'topCharger'}
+                onClick={() => { history.push('/xleaderboard/chargers')}}
+              >
+                <img style={wpnIcon} src={chargerIcon} alt="Charger Icon"/>
+                Chargers
+              </Menu.Item>
 
-            <Menu.Item
-              name='splatlings'
-              active={activeItem === 'topSplatling'}
-              onClick={() => { history.push('/xleaderboard/splatlings')}}
-            >
-              <img style={wpnIcon} src={splatlingIcon} alt="Splatling Icon"/>
-              Splatlings
-            </Menu.Item>
+              <Menu.Item
+                name='splatlings'
+                active={activeItem === 'topSplatling'}
+                onClick={() => { history.push('/xleaderboard/splatlings')}}
+              >
+                <img style={wpnIcon} src={splatlingIcon} alt="Splatling Icon"/>
+                Splatlings
+              </Menu.Item>
 
-            <Menu.Item
-              name='sloshers'
-              active={activeItem === 'topSlosher'}
-              onClick={() => { history.push('/xleaderboard/sloshers')}}
-            >
-              <img style={wpnIcon} src={slosherIcon} alt="Slosher Icon"/>
-              Sloshers
-            </Menu.Item>
+              <Menu.Item
+                name='sloshers'
+                active={activeItem === 'topSlosher'}
+                onClick={() => { history.push('/xleaderboard/sloshers')}}
+              >
+                <img style={wpnIcon} src={slosherIcon} alt="Slosher Icon"/>
+                Sloshers
+              </Menu.Item>
 
-            <Menu.Item
-              name='dualies'
-              active={activeItem === 'topDualies'}
-              onClick={() => { history.push('/xleaderboard/dualies')}}
-            >
-              <img style={wpnIcon} src={dualieIcon} alt="Dualie Icon"/>
-              Dualies
-            </Menu.Item>
+              <Menu.Item
+                name='dualies'
+                active={activeItem === 'topDualies'}
+                onClick={() => { history.push('/xleaderboard/dualies')}}
+              >
+                <img style={wpnIcon} src={dualieIcon} alt="Dualie Icon"/>
+                Dualies
+              </Menu.Item>
 
-            <Menu.Item
-              name='brella'
-              active={activeItem === 'topBrella'}
-              onClick={() => { history.push('/xleaderboard/brellas')}}
-            >
-              <img style={wpnIcon} src={brellaIcon} alt="Brella Icon"/>
-              Brellas
-            </Menu.Item>
-          </Menu>
+              <Menu.Item
+                name='brella'
+                active={activeItem === 'topBrella'}
+                onClick={() => { history.push('/xleaderboard/brellas')}}
+              >
+                <img style={wpnIcon} src={brellaIcon} alt="Brella Icon"/>
+                Brellas
+              </Menu.Item>
+            </Menu>
+          </Responsive>
+          <Responsive maxWidth={799}>
+            <Menu compact icon='labeled'>
+              <Menu.Item 
+                name='all' 
+                active={activeItem === 'topTotal'} 
+                onClick={() => { history.push('/xleaderboard')}}
+              >
+                <img style={wpnIcon} src={allIcon} alt="All Icon"/>
+                All
+              </Menu.Item>
+            </Menu>
+            <Menu compact icon='labeled'>
+              <Menu.Item
+                name='shooters'
+                active={activeItem === 'topShooter'}
+                onClick={() => { history.push('/xleaderboard/shooters')}}
+              >
+                <img style={wpnIcon} src={shooterIcon} alt="Shooter Icon"/>
+                Shooters
+              </Menu.Item>
+
+              <Menu.Item
+                name='blasters'
+                active={activeItem === 'topBlaster'}
+                onClick={() => { history.push('/xleaderboard/blasters')}}
+              >
+                <img style={wpnIcon} src={blasterIcon} alt="Blaster Icon"/>
+                Blasters
+              </Menu.Item>
+
+              <Menu.Item
+                name='rollers'
+                active={activeItem === 'topRoller'}
+                onClick={() => { history.push('/xleaderboard/rollers')}}
+              >
+                <img style={wpnIcon} src={rollerIcon} alt="Roller Icon"/>
+                Rollers
+              </Menu.Item>
+
+              <Menu.Item
+                name='chargers'
+                active={activeItem === 'topCharger'}
+                onClick={() => { history.push('/xleaderboard/chargers')}}
+              >
+                <img style={wpnIcon} src={chargerIcon} alt="Charger Icon"/>
+                Chargers
+              </Menu.Item>
+            
+            </Menu>
+            <Menu compact icon='labeled'>
+
+              <Menu.Item
+                name='splatlings'
+                active={activeItem === 'topSplatling'}
+                onClick={() => { history.push('/xleaderboard/splatlings')}}
+              >
+                <img style={wpnIcon} src={splatlingIcon} alt="Splatling Icon"/>
+                Splatlings
+              </Menu.Item>
+
+              <Menu.Item
+                name='sloshers'
+                active={activeItem === 'topSlosher'}
+                onClick={() => { history.push('/xleaderboard/sloshers')}}
+              >
+                <img style={wpnIcon} src={slosherIcon} alt="Slosher Icon"/>
+                Sloshers
+              </Menu.Item>
+
+              <Menu.Item
+                name='dualies'
+                active={activeItem === 'topDualies'}
+                onClick={() => { history.push('/xleaderboard/dualies')}}
+              >
+                <img style={wpnIcon} src={dualieIcon} alt="Dualie Icon"/>
+                Dualies
+              </Menu.Item>
+
+              <Menu.Item
+                name='brella'
+                active={activeItem === 'topBrella'}
+                onClick={() => { history.push('/xleaderboard/brellas')}}
+              >
+                <img style={wpnIcon} src={brellaIcon} alt="Brella Icon"/>
+                Brellas
+              </Menu.Item>
+            </Menu>
+          </Responsive>
         </div>
       </div>
       <Route exact path="/xleaderboard" render={() =>
