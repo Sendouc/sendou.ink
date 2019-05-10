@@ -2,7 +2,7 @@ import React from 'react'
 import { withRouter } from 'react-router-dom'
 import { useQuery } from 'react-apollo-hooks'
 import { Loader, Message, Grid, Button, Header } from 'semantic-ui-react'
-import { searchForPlayers } from '../graphql/queries/searchForPlayers'
+import { searchForPlayers } from '../../graphql/queries/searchForPlayers'
 
 const XSearchResults = withRouter(({ history, name, exact }) => {
   const result = useQuery(searchForPlayers, {variables: { name, exact }})

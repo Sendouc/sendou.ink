@@ -1,15 +1,16 @@
 import React, { useState } from 'react'
 import { Container } from 'semantic-ui-react'
-import Footer from './components/Footer'
-import MainMenu from './components/MainMenu'
-import NotFound from './components/NotFound'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import Footer from './components/Misc/Footer'
+import MainMenu from './components/Misc/MainMenu'
+import NotFound from './components/Misc/NotFound'
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 
-import WeaponLeaderboardSelector from './components/WeaponLeaderboardSelector'
-import XSearch from './components/XSearch'
-import InfoPlayer from './components/InfoPlayer'
-import InfoWeapon from './components/InfoWeapon'
+import WeaponLeaderboardSelector from './components/XLeaderboard/WeaponLeaderboardSelector'
+import XSearch from './components/XSearch/XSearch'
+import InfoPlayer from './components/XSearch/InfoPlayer'
+import InfoWeapon from './components/XSearch/InfoWeapon'
 import ScrollToTop from './utils/ScrollToTop'
+import MapListGenerator from './components/Tools/MapListGenerator'
 
 const App = () => {
   const [menuSelection, setMenuSelection] = useState('home')
@@ -21,7 +22,7 @@ const App = () => {
           <div>
             <ScrollToTop />
             <Switch>
-              <Route exact path="/" render={() => <div>This is home.</div>} />
+              <Route exact path="/" render={() => <Redirect to="/xleaderboard"/>} />
               <Route path="/xleaderboard" render={() => <WeaponLeaderboardSelector setMenuSelection={setMenuSelection} />} />
               <Route exact path="/xsearch" render={() => <XSearch setMenuSelection={setMenuSelection} />} />
               <Route exact path="/xsearch/w/:wpn" render={({ match }) =>
@@ -29,6 +30,9 @@ const App = () => {
               } />
               <Route exact path="/xsearch/p/:uid" render={({ match }) =>
                 <InfoPlayer uid={match.params.uid} setMenuSelection={setMenuSelection} />
+              } />
+              <Route exact path="/maps" render={() => 
+                <MapListGenerator setMenuSelection={setMenuSelection} />
               } />
               <Route path="/404" render={() => <NotFound />} />
               <Route path="*" render={() => <NotFound />} />

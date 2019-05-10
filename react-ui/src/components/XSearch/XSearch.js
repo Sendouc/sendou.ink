@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
-import { WeaponFormWithButton } from '../components/WeaponForm'
-import PlayerSearchForm from '../components/PlayerSearchForm'
+import { WeaponFormWithButton } from './WeaponForm'
+import PlayerSearchForm from './PlayerSearchForm'
 
 const XSearch = ({ setMenuSelection }) => {
   useEffect(() => {

@@ -1,12 +1,12 @@
 import React from 'react'
 import { Header, Image, Table } from 'semantic-ui-react'
 
-import weaponDict from '../utils/english_internal.json'
-import szIcon from './img/modeIcons/sz.png'
-import tcIcon from './img/modeIcons/tc.png'
-import rmIcon from './img/modeIcons/rm.png'
-import cbIcon from './img/modeIcons/cb.png'
-import { months } from '../utils/lists'
+import weaponDict from '../../utils/english_internal.json'
+import szIcon from '../img/modeIcons/sz.png'
+import tcIcon from '../img/modeIcons/tc.png'
+import rmIcon from '../img/modeIcons/rm.png'
+import cbIcon from '../img/modeIcons/cb.png'
+import { months } from '../../utils/lists'
 
 const TopPlacementTable = ({ top }) => {
   const returnRow = (x, placement, mode) => {

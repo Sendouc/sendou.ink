@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { Dropdown, Button } from 'semantic-ui-react'
 import { withRouter } from 'react-router-dom'
-import { weapons } from '../utils/lists'
-import weaponDict from '../utils/english_internal.json'
+import { weapons } from '../../utils/lists'
+import weaponDict from '../../utils/english_internal.json'
 
 const WeaponForm = (props) => {
   return (

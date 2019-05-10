@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import { useQuery } from 'react-apollo-hooks'
-import { topPlayersOfWeapon } from '../graphql/queries/topPlayersOfWeapon'
-import weaponDictReversed from '../utils/internal_english.json'
+import { topPlayersOfWeapon } from '../../graphql/queries/topPlayersOfWeapon'
+import weaponDictReversed from '../../utils/internal_english.json'
 import { Loader, Header, Table, Checkbox } from 'semantic-ui-react'
 import { withRouter, Link } from 'react-router-dom'
 
-import szIcon from './img/modeIcons/sz.png'
-import tcIcon from './img/modeIcons/tc.png'
-import rmIcon from './img/modeIcons/rm.png'
-import cbIcon from './img/modeIcons/cb.png'
-import { months, modes } from '../utils/lists'
+import szIcon from '../img/modeIcons/sz.png'
+import tcIcon from '../img/modeIcons/tc.png'
+import rmIcon from '../img/modeIcons/rm.png'
+import cbIcon from '../img/modeIcons/cb.png'
+import { months, modes } from '../../utils/lists'
 
 const modeIcons = ["", szIcon, tcIcon, rmIcon, cbIcon]
 

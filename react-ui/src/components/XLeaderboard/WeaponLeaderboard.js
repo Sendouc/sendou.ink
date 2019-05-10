@@ -4,7 +4,7 @@ import { useQuery } from 'react-apollo-hooks'
 import { Loader } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 
-import FourWeapons from '../components/FourWeapons'
+import FourWeapons from './FourWeapons'
 
 const WeaponLeaderboard = ({ query, queryName, scoreField, weaponsField, setActiveItem }) => {
   const result = useQuery(query)

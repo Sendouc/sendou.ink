@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Button, Form, Checkbox } from 'semantic-ui-react'
-import XSearchResults from '../components/XSearchResults'
+import XSearchResults from './XSearchResults'
 
 const PlayerSearchForm = (props) => {
   const [playerForm, setPlayerForm] = useState('')

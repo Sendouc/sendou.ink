@@ -1,13 +1,13 @@
 import React from 'react'
 import { Header } from 'semantic-ui-react'
 
-import bridge from './img/s1Maps/bridge.png'
-import depot from './img/s1Maps/depot.png'
-import heights from './img/s1Maps/heights.png'
-import mahi from './img/s1Maps/mahi.png'
-import museum from './img/s1Maps/museum.png'
-import rig from './img/s1Maps/rig.png'
-import underpass from './img/s1Maps/underpass.png'
+import bridge from '../img/s1Maps/bridge.png'
+import depot from '../img/s1Maps/depot.png'
+import heights from '../img/s1Maps/heights.png'
+import mahi from '../img/s1Maps/mahi.png'
+import museum from '../img/s1Maps/museum.png'
+import rig from '../img/s1Maps/rig.png'
+import underpass from '../img/s1Maps/underpass.png'
 
 const NotFound = () => {
   const maps = [

@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { useQuery } from 'react-apollo-hooks'
 import { Loader, Header, Image, Icon } from 'semantic-ui-react'
 
-import { playerInfo } from '../graphql/queries/playerInfo'
-import TopPlacementTable from '../components/TopPlacementsTable'
-import WpnPlayedTable from '../components/WpnPlayedTable'
-import MonthsTable from '../components/MonthsTable'
+import { playerInfo } from '../../graphql/queries/playerInfo'
+import TopPlacementTable from './TopPlacementsTable'
+import WpnPlayedTable from './WpnPlayedTable'
+import MonthsTable from './MonthsTable'
 
 const InfoPlayer = ({ uid, setMenuSelection }) => {
   const { data, error, loading } = useQuery(playerInfo, {variables: { uid: uid }})

@@ -1,12 +1,12 @@
 import React from 'react'
 import { Table, Header, Image } from 'semantic-ui-react'
 
-import szIcon from './img/modeIcons/sz.png'
-import tcIcon from './img/modeIcons/tc.png'
-import rmIcon from './img/modeIcons/rm.png'
-import cbIcon from './img/modeIcons/cb.png'
-import { months } from '../utils/lists'
-import weaponDict from '../utils/english_internal.json'
+import szIcon from '../img/modeIcons/sz.png'
+import tcIcon from '../img/modeIcons/tc.png'
+import rmIcon from '../img/modeIcons/rm.png'
+import cbIcon from '../img/modeIcons/cb.png'
+import { months } from '../../utils/lists'
+import weaponDict from '../../utils/english_internal.json'
 
 const MonthsTable = ({ placements }) => { //data received is ordered chronologically and sz->tc->rm->cb
   const modeIcons = [null, szIcon, tcIcon, rmIcon, cbIcon]

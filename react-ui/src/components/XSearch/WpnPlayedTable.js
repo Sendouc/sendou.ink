@@ -1,7 +1,7 @@
 import React from 'react'
-import { weaponsByCategory } from '../utils/lists'
-import { categoryKeys } from '../utils/lists'
-import weaponDict from '../utils/english_internal.json'
+import { weaponsByCategory } from '../../utils/lists'
+import { categoryKeys } from '../../utils/lists'
+import weaponDict from '../../utils/english_internal.json'
 import { Table, Header, Popup } from 'semantic-ui-react'
 
 const WpnPlayedTable = ({ weapons }) => {

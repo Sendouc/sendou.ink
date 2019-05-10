@@ -5,6 +5,7 @@ const express = require('express')
 const cors = require('cors')
 const Placement = require('./models/placement')
 const Player = require('./models/player')
+const Maplist = require('./models/maplist')
 //const User = require('./models/user')
 const jwt = require('jsonwebtoken')
 const path = require('path')
@@ -78,6 +79,15 @@ const typeDefs = gql`
     placements: [Placement!]!
   }
 
+  type Maplist {
+    name: String!
+    sz: [String!]!
+    tc: [String!]!
+    rm: [String!]!
+    cb: [String!]!
+
+  }
+
   type Token {
     value: String!
   }
@@ -97,6 +107,7 @@ const typeDefs = gql`
     weaponPlacementStats(weapon: String!): [Int!]!
     playerInfo(uid: String!): PlayerWithPlacements!
     searchForPlayers(name: String! exact: Boolean): [Placement]!
+    maplists: [Maplist!]!
   }
 
   type Mutation {
@@ -362,6 +373,16 @@ const resolvers = {
         }
         uids.push(p.unique_id)
         return true
+      })
+    },
+    maplists: (root, args) => {
+      return Maplist
+      .find({})
+      .sort({ order: "asc" })
+      .catch(e => {
+        throw new UserInputError(e.message, {
+          invalidArgs: args,
+        })
       })
     }
   }

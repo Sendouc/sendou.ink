@@ -1,7 +1,7 @@
 import React from 'react'
 import { Popup } from 'semantic-ui-react'
-import weaponDict from '../utils/english_internal.json'
-import { modes, months, getNumberWithOrdinal } from '../utils/lists'
+import weaponDict from '../../utils/english_internal.json'
+import { modes, months, getNumberWithOrdinal } from '../../utils/lists'
 
 const FourWeapons = ({ weapons }) => {
   return (

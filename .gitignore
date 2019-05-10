@@ -8,6 +8,7 @@ coverage
 
 # misc
 xrank_data
+maps
 .DS_Store
 .env
 .env.local
