@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { TextArea, Loader, Checkbox, Form, Header, List, Image, Divider, Icon, Grid, Input, Button, Label } from 'semantic-ui-react'
 import { useQuery } from 'react-apollo-hooks'
 import { maplists } from '../../graphql/queries/maplists'
@@ -14,6 +14,9 @@ const MapListGenerator = ({ setMenuSelection }) => {
   const [ mapValues, setMapValues ] = useState([])
   const [ amountToGenerate, setAmountToGenerate ] = useState(12)
   const [ generatedMaps, setGeneratedMaps ] = useState([])
+  const [ generationType, setGenerationType] = useState('rotate')
+  const [copySuccess, setCopySuccess] = useState('');
+  const textAreaRef = useRef(null);
 
   useEffect(() => {
     if (loading) {
@@ -43,6 +46,13 @@ const MapListGenerator = ({ setMenuSelection }) => {
     return <div style={{"color": "red"}}>{error.message}</div>
   }
 
+  function copyToClipboard(e) {
+    textAreaRef.current.select()
+    document.execCommand('copy')
+    e.target.focus()
+    setCopySuccess('Copied maps to clipboard!')
+  }
+
   function shuffle(a) {
     for (let i = a.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -51,28 +61,126 @@ const MapListGenerator = ({ setMenuSelection }) => {
     return a
   }
 
-  const generateMapPool = () => {
+  const generateRandomMapPool = () => {
     const szMaps = maps[boxValue].sz.filter((m, i) => mapValues[boxValue].sz[i])
     const tcMaps = maps[boxValue].tc.filter((m, i) => mapValues[boxValue].tc[i])
     const rmMaps = maps[boxValue].rm.filter((m, i) => mapValues[boxValue].rm[i])
     const cbMaps = maps[boxValue].cb.filter((m, i) => mapValues[boxValue].cb[i])
+    if (szMaps.length+tcMaps.length+rmMaps.length+cbMaps.length === 0) {
+      return
+    }
+
     let mapsWithModes = [...szMaps.map(m => `Splat Zones on ${m}`),
     ...tcMaps.map(m => `Tower Control on ${m}`), ...rmMaps.map(m => `Rainmaker on ${m}`),
     ...cbMaps.map(m => `Clam Blitz on ${m}`)]
     const toSetAsState = []
     let usedMaps = []
     shuffle(mapsWithModes)
-    console.log(mapsWithModes)
 
     for (let i = amountToGenerate; i > 0; i--) {
-      if (mapsWithModes.length > 0) {
-        const modeMap = mapsWithModes.pop()
-        toSetAsState.push(`${toSetAsState.length+1}) ${modeMap}`)
-        usedMaps.push(modeMap)
-      } else {
+      if (mapsWithModes.length === 0) {
         shuffle(usedMaps)
         mapsWithModes = [...usedMaps]
         usedMaps = []
+      }
+      const modeMap = mapsWithModes.pop()
+      toSetAsState.push(`${toSetAsState.length+1}) ${modeMap}`)
+      usedMaps.push(modeMap)
+    }
+
+    setGeneratedMaps(toSetAsState)
+  }
+
+  const generateEvenMapPool = (szEveryOther = false) => {
+    const szMaps = maps[boxValue].sz.filter((m, i) => mapValues[boxValue].sz[i])
+    const tcMaps = maps[boxValue].tc.filter((m, i) => mapValues[boxValue].tc[i])
+    const rmMaps = maps[boxValue].rm.filter((m, i) => mapValues[boxValue].rm[i])
+    const cbMaps = maps[boxValue].cb.filter((m, i) => mapValues[boxValue].cb[i])
+    if (szMaps.length+tcMaps.length+rmMaps.length+cbMaps.length === 0) {
+      return
+    }
+
+    let szMapMode = [...szMaps.map(m => `Splat Zones on ${m}`)]
+    let usedSz = []
+    let tcMapMode = [...tcMaps.map(m => `Tower Control on ${m}`)]
+    let usedTc = []
+    let rmMapMode = [...rmMaps.map(m => `Rainmaker on ${m}`)]
+    let usedRm = []
+    let cbMapMode = [...cbMaps.map(m => `Clam Blitz on ${m}`)]
+    let usedCb = []
+    const toSetAsState = []
+
+    let modes = []
+    if (szMapMode.length !== 0) {
+      shuffle(szMapMode)
+    }
+    if (tcMapMode.length !== 0) {
+      modes.push("TOWER CONTROL")
+      shuffle(tcMapMode)
+    }
+    if (cbMapMode.length !== 0) {
+      modes.push("CLAM BLITZ")
+      shuffle(cbMapMode)
+    }
+    if (rmMapMode.length !== 0) {
+      modes.push("RAINMAKER")
+      shuffle(rmMapMode)
+    }
+
+    let szRemainder = modes.length + 1
+    if (szEveryOther) {
+      szRemainder = 2
+      shuffle(modes)  //not shuffled if sz->tc->cb->rm for host convenience
+    }
+
+    for (let i = amountToGenerate; i > 0; i--) {
+      // replenishing map mode lists when half are used
+      if (usedSz.length >= szMapMode.length && usedSz.length !== 0) {
+        shuffle(usedSz)
+        szMapMode = szMapMode.concat(usedSz)
+        usedSz = []
+      } else if (usedTc.length >= tcMapMode.length && usedTc.length !== 0) {
+        shuffle(usedTc)
+        tcMapMode = tcMapMode.concat(usedTc)
+        usedTc = []
+      } else if (usedRm.length >= rmMapMode.length && usedRm.length !== 0) {
+        shuffle(usedRm)
+        rmMapMode = rmMapMode.concat(usedRm)
+        usedRm = []
+      } else if (usedCb.length >= cbMapMode.length && usedCb.length !== 0) {
+        shuffle(usedCb)
+        cbMapMode = cbMapMode.concat(usedCb)
+        usedCb = []
+      }
+
+      if (i % szRemainder === 0 && szMapMode !== 0) { //latter check is for if user selected 0 sz maps
+        const modeMap = szMapMode.shift()
+        toSetAsState.push(`${toSetAsState.length+1}) ${modeMap}`)
+        usedSz.push(modeMap)
+        continue
+      }
+
+      if (modes[0] === "TOWER CONTROL" && tcMapMode !== 0) {
+        const modeMap = tcMapMode.shift()
+        toSetAsState.push(`${toSetAsState.length+1}) ${modeMap}`)
+        usedTc.push(modeMap)
+        modes.push(modes.splice(0, 1)[0]) // move the mode to last
+        continue
+      }
+
+      if (modes[0] === "RAINMAKER" && rmMapMode !== 0) {
+        const modeMap = rmMapMode.shift()
+        toSetAsState.push(`${toSetAsState.length+1}) ${modeMap}`)
+        usedRm.push(modeMap)
+        modes.push(modes.splice(0, 1)[0])
+        continue
+      }
+
+      if (modes[0] === "CLAM BLITZ" && cbMapMode !== 0) {
+        const modeMap = cbMapMode.shift()
+        toSetAsState.push(`${toSetAsState.length+1}) ${modeMap}`)
+        usedCb.push(modeMap)
+        modes.push(modes.splice(0, 1)[0])
       }
     }
 
@@ -196,7 +304,7 @@ const MapListGenerator = ({ setMenuSelection }) => {
         <Divider horizontal>
           <Header as='h4'>
             <Icon name='clipboard list' />
-            Choose the amount & generate!
+            Set the final preferences & generate!
           </Header>
         </Divider>
         <Input 
@@ -211,16 +319,55 @@ const MapListGenerator = ({ setMenuSelection }) => {
           Amount of maps to generate has to be between 1 and 100
         </Label> : null}
       </div>
-      <div style={{"paddingTop": "10px"}}>
-        <Button disabled={amountToGenerate < 1 || amountToGenerate > 100} onClick={generateMapPool}>Go!</Button>
+      <div style={{"paddingTop": "5px"}}>
+        <Form.Field>
+          <Checkbox
+            radio
+            label="Rotate mode SZ->TC->CB->RM"
+            name='rotateMode'
+            checked={generationType === 'rotate'}
+            onChange={() => setGenerationType('rotate')}
+          /><br/>
+          <Checkbox
+            radio
+            label="SZ every other map"
+            name='szEveryOther'
+            checked={generationType === 'everyOther'}
+            onChange={() => setGenerationType('everyOther')}
+          /><br/>
+          <Checkbox
+            radio
+            label="Total randomness"
+            name='random'
+            checked={generationType === 'random'}
+            onChange={() => setGenerationType('random')}
+          />
+        </Form.Field>
       </div>
-      <div>
+      <div style={{"paddingTop": "10px"}}>
+        <Button 
+          disabled={amountToGenerate < 1 || amountToGenerate > 100} 
+          onClick={() => {generationType === 'random' ? generateRandomMapPool() :  generateEvenMapPool(generationType === 'everyOther')}}>Go!
+        </Button>
+      </div>
+      <div style={{"paddingTop": "5px"}}>
         {generatedMaps.length !== 0 ? 
-          <TextArea 
-            rows={generatedMaps.length + 5} 
-            style={{"resize": "none", "width": "275px"}} 
-            readOnly 
-            value={generatedMaps.join("\n")} /> : 
+          <div>
+            <textarea 
+              rows={generatedMaps.length + 2}
+              style={{"resize": "none", "width": "300px"}} 
+              readOnly 
+              value={generatedMaps.join("\n")}
+              ref={textAreaRef} 
+            /><br/>
+            {
+              document.queryCommandSupported('copy') &&
+                <div>
+                  <Button onClick={copyToClipboard}>Copy maps to clipboard</Button> 
+                  {copySuccess}
+                </div>
+            }
+          </div> : 
           null
         }
       </div>
