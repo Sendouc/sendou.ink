@@ -101,10 +101,6 @@ const MapListGenerator = ({ setMenuSelection }) => {
       return
     }
 
-    if (szEveryOther && szMaps.length === 0) {
-      return
-    }
-
     let szMapMode = [...szMaps.map(m => `Splat Zones on ${m}`)]
     let usedSz = []
     let tcMapMode = [...tcMaps.map(m => `Tower Control on ${m}`)]
@@ -158,14 +154,14 @@ const MapListGenerator = ({ setMenuSelection }) => {
         usedCb = []
       }
 
-      if (i % szRemainder === 0 && szMapMode !== 0) { //latter check is for if user selected 0 sz maps
+      if (i % szRemainder === 0 && szMapMode.length !== 0) { //latter check is for if user selected 0 sz maps
         const modeMap = szMapMode.shift()
         toSetAsState.push(`${toSetAsState.length+1}) ${modeMap}`)
         usedSz.push(modeMap)
         continue
       }
 
-      if (modes[0] === "TOWER CONTROL" && tcMapMode !== 0) {
+      if (modes[0] === "TOWER CONTROL" && tcMapMode.length !== 0) {
         const modeMap = tcMapMode.shift()
         toSetAsState.push(`${toSetAsState.length+1}) ${modeMap}`)
         usedTc.push(modeMap)
@@ -173,7 +169,7 @@ const MapListGenerator = ({ setMenuSelection }) => {
         continue
       }
 
-      if (modes[0] === "RAINMAKER" && rmMapMode !== 0) {
+      if (modes[0] === "RAINMAKER" && rmMapMode.length !== 0) {
         const modeMap = rmMapMode.shift()
         toSetAsState.push(`${toSetAsState.length+1}) ${modeMap}`)
         usedRm.push(modeMap)
@@ -181,7 +177,7 @@ const MapListGenerator = ({ setMenuSelection }) => {
         continue
       }
 
-      if (modes[0] === "CLAM BLITZ" && cbMapMode !== 0) {
+      if (modes[0] === "CLAM BLITZ" && cbMapMode.length !== 0) {
         const modeMap = cbMapMode.shift()
         toSetAsState.push(`${toSetAsState.length+1}) ${modeMap}`)
         usedCb.push(modeMap)
