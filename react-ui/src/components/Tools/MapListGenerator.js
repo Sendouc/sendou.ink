@@ -50,7 +50,7 @@ const MapListGenerator = ({ setMenuSelection }) => {
     textAreaRef.current.select()
     document.execCommand('copy')
     e.target.focus()
-    setCopySuccess('Copied maps to clipboard!')
+    setCopySuccess('Copied!')
   }
 
   function shuffle(a) {
@@ -96,7 +96,12 @@ const MapListGenerator = ({ setMenuSelection }) => {
     const tcMaps = maps[boxValue].tc.filter((m, i) => mapValues[boxValue].tc[i])
     const rmMaps = maps[boxValue].rm.filter((m, i) => mapValues[boxValue].rm[i])
     const cbMaps = maps[boxValue].cb.filter((m, i) => mapValues[boxValue].cb[i])
-    if (szMaps.length+tcMaps.length+rmMaps.length+cbMaps.length === 0) {
+
+    if (szMaps.length + tcMaps.length + rmMaps.length + cbMaps.length === 0) {
+      return
+    }
+
+    if (szEveryOther && szMaps.length === 0) {
       return
     }
 
@@ -217,7 +222,7 @@ const MapListGenerator = ({ setMenuSelection }) => {
             Choose the maps to include
           </Header>
         </Divider>
-        <Grid relaxed='very' columns={4}>
+        <Grid relaxed='very' columns={4} stackable>
           <Grid.Column>
             <Image src={szIcon} size="tiny" /><br />
             <List>
