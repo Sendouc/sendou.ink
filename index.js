@@ -37,6 +37,7 @@ const typeDefs = gql`
     alias: String
     twitter: String
     weapons: [String!]!
+    weaponsCount: Int!
     topTotal: [Placement!]!
     topTotalScore: Float
     topShooter: [Placement]
@@ -104,6 +105,7 @@ const typeDefs = gql`
     topDualiesPlayers (amount: Int): [Player!]!
     topBrellaPlayers (amount: Int): [Player!]!
     topPlayers (weapon: String!): topPlayer!
+    topFlex: [Player!]!
     weaponPlacementStats(weapon: String!): [Int!]!
     playerInfo(uid: String!): PlayerWithPlacements!
     searchForPlayers(name: String! exact: Boolean): [Placement]!
@@ -309,6 +311,12 @@ const resolvers = {
       }, {sz: 0, tc: 0, rm: 0, cb: 0})
 
       return {placements: placements.slice(0, 101), modeCount: [m.sz+m.tc+m.rm+m.cb, m.sz, m.tc, m.rm, m.cb]}
+    },
+    topFlex: async (root, args) => {
+      return Player
+        .find({})
+        .sort({ "weaponsCount": "desc", "topTotalScore": "desc" })
+        .limit(50)
     },
     playerInfo: async (root, args) => {
       const player = await Player

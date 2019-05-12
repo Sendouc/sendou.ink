@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Menu, Responsive } from 'semantic-ui-react'
 import { Route, withRouter } from 'react-router-dom'
 import WeaponLeaderboard from './WeaponLeaderboard'
+import FlexLeaderboard from './FlexLeaderboard'
 import { topTotalPlayers } from '../../graphql/queries/topPlayers'
 import { topShooterPlayers } from '../../graphql/queries/topShooters'
 import { topBlasterPlayers } from '../../graphql/queries/topBlasters'
@@ -20,6 +21,7 @@ import rollerIcon from '../img/wpnIcons/rollers.png'
 import shooterIcon from '../img/wpnIcons/shooters.png'
 import slosherIcon from '../img/wpnIcons/sloshers.png'
 import splatlingIcon from '../img/wpnIcons/splatlings.png'
+import flexIcon from '../img/wpnIcons/flex.png'
 
 const WeaponLeaderboardSelector = withRouter(({ history, setMenuSelection }) => {
   const [activeItem, setActiveItem] = useState('')
@@ -42,6 +44,15 @@ const WeaponLeaderboardSelector = withRouter(({ history, setMenuSelection }) => 
               >
                 <img style={wpnIcon} src={allIcon} alt="All Icon"/>
                 All
+              </Menu.Item>
+
+              <Menu.Item 
+                name='flex' 
+                active={activeItem === 'topFlex'} 
+                onClick={() => { history.push('/xleaderboard/flex')}}
+              >
+                <img style={wpnIcon} src={flexIcon} alt="Flex Icon"/>
+                Flex
               </Menu.Item>
 
               <Menu.Item
@@ -126,6 +137,14 @@ const WeaponLeaderboardSelector = withRouter(({ history, setMenuSelection }) => 
               >
                 <img style={wpnIcon} src={allIcon} alt="All Icon"/>
                 All
+              </Menu.Item>
+              <Menu.Item 
+                name='flex' 
+                active={activeItem === 'topFlex'} 
+                onClick={() => { history.push('/xleaderboard/flex')}}
+              >
+                <img style={wpnIcon} src={flexIcon} alt="Flex Icon"/>
+                Flex
               </Menu.Item>
             </Menu>
             <Menu compact icon='labeled'>
@@ -213,6 +232,12 @@ const WeaponLeaderboardSelector = withRouter(({ history, setMenuSelection }) => 
           queryName="topTotalPlayers"
           scoreField="topTotalScore"
           weaponsField="topTotal"
+          setActiveItem={setActiveItem}
+        />
+        } 
+      />
+      <Route exact path="/xleaderboard/flex" render={() =>
+        <FlexLeaderboard 
           setActiveItem={setActiveItem}
         />
         } 

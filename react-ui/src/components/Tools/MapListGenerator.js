@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { TextArea, Loader, Checkbox, Form, Header, List, Image, Divider, Icon, Grid, Input, Button, Label } from 'semantic-ui-react'
+import { Loader, Checkbox, Form, Header, List, Image, Divider, Icon, Grid, Input, Button, Label } from 'semantic-ui-react'
 import { useQuery } from 'react-apollo-hooks'
 import { maplists } from '../../graphql/queries/maplists'
 import szIcon from '../img/modeIcons/sz.png'

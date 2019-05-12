@@ -22,7 +22,7 @@ const App = () => {
           <div>
             <ScrollToTop />
             <Switch>
-              <Route exact path="/" render={() => <Redirect to="/xleaderboard"/>} />
+              <Route exact path="/" render={() => <Redirect to="/xsearch"/>} />
               <Route path="/xleaderboard" render={() => <WeaponLeaderboardSelector setMenuSelection={setMenuSelection} />} />
               <Route exact path="/xsearch" render={() => <XSearch setMenuSelection={setMenuSelection} />} />
               <Route exact path="/xsearch/w/:wpn" render={({ match }) =>
