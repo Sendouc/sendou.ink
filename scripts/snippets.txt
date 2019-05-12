@@ -1,0 +1,15 @@
+-- Add size of the array to MongoDB collection --
+
+addFlex: async () => {
+      await Player.aggregate( [
+        {
+          $addFields: {
+            weaponsCount: { $size: "$weapons" } ,
+          },
+        },
+        {
+          $out: "players"
+        }
+      ] )
+
+      return "ok"
