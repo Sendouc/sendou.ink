@@ -2,6 +2,7 @@ require('dotenv').config()
 const { ApolloServer, UserInputError, AuthenticationError, gql } = require('apollo-server-express')
 const mongoose = require('mongoose')
 const express = require('express')
+const axios = require('axios')
 const cors = require('cors')
 const Placement = require('./models/placement')
 const Player = require('./models/player')
@@ -12,6 +13,8 @@ const path = require('path')
 
 mongoose.set('useFindAndModify', false)
 mongoose.set('useCreateIndex', true)
+
+let rotationData = {timestamp: 0}
 
 console.log('connecting to MongoDB')
 
@@ -110,6 +113,7 @@ const typeDefs = gql`
     playerInfo(uid: String!): PlayerWithPlacements!
     searchForPlayers(name: String! exact: Boolean): [Placement]!
     maplists: [Maplist!]!
+    rotationData: String
   }
 
   type Mutation {
@@ -392,6 +396,16 @@ const resolvers = {
           invalidArgs: args,
         })
       })
+    },
+    rotationData: async (root, args) => {
+      if (Math.floor(Date.now() / 1000) - rotationData.timestamp > 7200) {  //only refetching data if two hours have passed
+        const result = await axios.get('https://splatoon2.ink/data/schedules.json', { headers: { 'User-Agent': 'sendou.ink - owner: @Sendouc on Twitter'}})
+        rotationData = result.data
+        rotationData.timestamp = Math.floor(Date.now() / 1000)
+        return JSON.stringify(rotationData)
+      } else {
+        return JSON.stringify(rotationData)
+      }
     }
   }
 }

@@ -13,3 +13,14 @@ addFlex: async () => {
       ] )
 
       return "ok"
+
+-- React timer --
+
+useEffect(() => {
+    const timeout = setTimeout(() => {
+      setCurrentTime(new Date(Math.floor(Date.now() / 1000)))
+    }, 1000)
+    return () => {
+      clearTimeout(timeout)
+    }
+  }, [currentTime])

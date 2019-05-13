@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
     "watch": "nodemon index.js"
   },
   "author": "Sendou",
@@ -12,6 +12,7 @@
   "dependencies": {
     "apollo-server": "^2.4.8",
     "apollo-server-express": "^2.4.8",
+    "axios": "^0.18.0",
     "cors": "^2.8.5",
     "dotenv": "^7.0.0",
     "graphql": "^14.2.1",

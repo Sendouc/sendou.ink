@@ -19,6 +19,14 @@ const MainMenu = withRouter(({ history, menuSelection, setMenuSelection }) => {
             setMenuSelection('maplists')
           }} 
         />
+        <Menu.Item 
+          name='rotations' 
+          active={menuSelection === 'rotations'} 
+          onClick={() => { 
+            history.push('/rotation')
+            setMenuSelection('rotations')
+          }} 
+        />
         <Menu.Item
           name='leaderboards'
           active={menuSelection === 'leaderboards'}
