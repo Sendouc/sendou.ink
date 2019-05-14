@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useQuery } from 'react-apollo-hooks'
 import { rotationData } from '../../graphql/queries/rotationData'
-import { Loader, Segment, Header, Grid, Image, Popup } from 'semantic-ui-react'
+import { maplists } from '../../graphql/queries/maplists'
+import { Loader, Segment, Header, Grid, Image, Popup, Button, Checkbox } from 'semantic-ui-react'
 
 import arowana_mall from '../img/mapIcons/arowana_mall.png'
 import anchov_games from '../img/mapIcons/ancho-v_games.png'
@@ -68,25 +69,32 @@ const modeIcons = {
 }
 
 const modeShort = {
-  "Splat Zones": "SZ",
-  "Tower Control": "TC",
-  "Rainmaker": "RM",
-  "Clam Blitz": "CB"
+  "Splat Zones": "sz",
+  "Tower Control": "tc",
+  "Rainmaker": "rm",
+  "Clam Blitz": "cb"
 }
 
 const Rotations = ({ setMenuSelection }) => {
   const { data, error, loading } = useQuery(rotationData)
+  const monthly = useQuery(maplists)
   const [ rotation, setRotation ] = useState([])
+  const [ preferences, setPreferences ] = useState({sz: {}, tc: {}, rm: {}, cb: {}})
+  const [ show, setShow ] = useState(false)
   const [ currentTime, setCurrentTime ] = useState(new Date(Math.floor(Date.now() / 1000)))
+
   useEffect(() => {
-    if (loading) {
+    if (loading || monthly.loading) {
       return
     }
-    setMenuSelection('rotations')
-    document.title = 'Maplist Generator - sendou.ink'
-    setRotation(JSON.parse(data.rotationData))
+    
+    const rotationPreferencesFromDb = window.localStorage.getItem('rotationPreferences')
+    if (rotationPreferencesFromDb) {
+      setPreferences(JSON.parse(rotationPreferencesFromDb))
+    }
 
-  }, [data, loading, setMenuSelection])
+    setRotation(JSON.parse(data.rotationData))
+  }, [data, loading, monthly.loading])
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -97,126 +105,222 @@ const Rotations = ({ setMenuSelection }) => {
     }
   }, [currentTime])
 
-  if (loading || rotation.length === 0) {
+  useEffect(() => {
+    setMenuSelection('rotations')
+    document.title = 'Maplist Generator - sendou.ink'
+  }, [setMenuSelection])
+
+  if (loading || monthly.loading || rotation.length === 0) {
     return <div style={{"paddingTop": "25px", "paddingBottom": "20000px"}} ><Loader active inline='centered' /></div>
   }
-  if (error) {
-    return <div style={{"color": "red"}}>{error.message}</div>
+  if (error || monthly.error) {
+    return <div style={{"color": "red"}}>{error ? error.message : null} {monthly.error? monthly.error.message : null}</div>
   }
-  console.log(rotation)
-  console.log(currentTime)
+
+  const monthlyMaps = monthly.data.maplists[0]
+  console.log('prefs', preferences)
 
   return (
     <div>
-      {rotation.gachi.map((r, i) => { //league maps references like so: rotation.league[i] - turf: rotation.normal[i]
-        if (r.end_time < currentTime) {
-          return null
-        }
-        const timeUntil = r.start_time - currentTime
-        const hours = Math.floor(timeUntil / 3600)
-        const minutes = Math.floor((timeUntil % 3600) / 60)
-        const seconds = timeUntil % 3600 % 60
-        let header = 'Current'
-        if (hours >= 2) {
-          header = `In ${hours} hours ${minutes} minutes (${new Date(r.start_time * 1000).toLocaleString('en-GB')})`
-        } else if (hours > 0) {
-          header = `In ${hours} hours ${minutes} minutes ${seconds} seconds`
-        } else if (minutes > 0) {
-          header = `In ${minutes} minutes ${seconds} seconds`
-        }
-        return (
-          <div key={r.start_time} style={{"paddingTop": "25px"}}>
-            <Header size='small' disabled={r.rule.name === 'Clam Blitz'}>{header}</Header>
-            <Segment inverted disabled={r.rule.name === 'Clam Blitz'}>
-            <Grid columns={3} stackable>
-              <Grid.Row>
-                <Grid.Column>
-                  <Header textAlign='center' inverted>
-                    <Image src={leagueIcon} style={{"paddingBottom": "10px"}}/> LEAGUE
-                    <Header.Subheader style={{"paddingTop": "10px"}}><Image size="mini" src={modeIcons[rotation.league[i].rule.name]} avatar/>{rotation.league[i].rule.name}</Header.Subheader>
-                  </Header>
-                </Grid.Column>
-                <Grid.Column>
-                  <Header textAlign='center' inverted>
-                    <Image src={rankedIcon} style={{"paddingBottom": "10px"}}/> RANKED
-                    <Header.Subheader style={{"paddingTop": "10px"}}><Image size="mini" src={modeIcons[r.rule.name]} avatar/>{r.rule.name}</Header.Subheader>
-                  </Header> 
-                </Grid.Column>
-                <Grid.Column>
-                  <Header textAlign='center' inverted>
-                    <Image src={regularIcon} style={{"paddingBottom": "10px"}}/>REGULAR
-                    <Header.Subheader style={{"paddingTop": "10px"}}></Header.Subheader> {/*this is needed for formatting reasons.*/}
-                  </Header>
-                </Grid.Column>
-              </Grid.Row>
-              <Grid.Row>
-                <Grid.Column>
-                  <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
-                    <Popup
+      <div>
+        <Button icon='cog' onClick={() => setShow(!show)}/>
+        {show ? 
+        <div>
+          Uncheck a map in the ranked rotation to mark it as a disliked map.
+          <Grid relaxed columns={4}>
+            <Grid.Column>
+              <b>Splat Zones</b>
+              {monthlyMaps.sz.map(m => {
+                return (
+                  <div key={m}>
+                    <Checkbox 
+                      label={m}
+                      checked={!preferences.sz[m]}
+                      onChange={() => {
+                        preferences.sz[m] = !preferences.sz[m]
+                        window.localStorage.setItem(
+                          'rotationPreferences', JSON.stringify(preferences)
+                        ) 
+                      }}
+                    /><br/>
+                  </div>
+                )
+              })}
+            </Grid.Column>
+            <Grid.Column>
+              <b>Tower Control</b>
+              {monthlyMaps.tc.map(m => {
+                return (
+                  <div key={m}>
+                    <Checkbox 
+                      label={m}
+                      checked={!preferences.tc[m]}
+                      onChange={() => {
+                        preferences.tc[m] = !preferences.tc[m]
+                        window.localStorage.setItem(
+                          'rotationPreferences', JSON.stringify(preferences)
+                        )
+                      }}
+                    /><br/>
+                  </div>
+                )
+              })}
+            </Grid.Column>
+            <Grid.Column>
+              <b>Rainmaker</b>
+              {monthlyMaps.rm.map(m => {
+                return (
+                  <div key={m}>
+                    <Checkbox 
+                      label={m}
+                      checked={!preferences.rm[m]}
+                      onChange={() => {
+                        preferences.rm[m] = !preferences.rm[m]
+                        window.localStorage.setItem(
+                          'rotationPreferences', JSON.stringify(preferences)
+                        )
+                      }}
+                    /><br/>
+                  </div>
+                )
+              })}
+            </Grid.Column>
+            <Grid.Column>
+              <b>Clam Blitz</b>
+              {monthlyMaps.cb.map(m => {
+                return (
+                  <div key={m}>
+                    <Checkbox 
+                      label={m}
+                      checked={!preferences.cb[m]}
+                      onChange={() => {
+                        preferences.cb[m] = !preferences.cb[m]
+                        window.localStorage.setItem(
+                          'rotationPreferences', JSON.stringify(preferences)
+                        )
+                      }}
+                    /><br/>
+                  </div>
+                )
+              })}
+            </Grid.Column>
+          </Grid>
+        </div>
+        : null}
+      </div>
+      <div>
+        {rotation.gachi.map((r, i) => { //league maps references like so: rotation.league[i] - turf: rotation.normal[i]
+          if (r.end_time < currentTime) {
+            return null
+          }
+          const timeUntil = r.start_time - currentTime
+          const hours = Math.floor(timeUntil / 3600)
+          const minutes = Math.floor((timeUntil % 3600) / 60)
+          const seconds = timeUntil % 3600 % 60
+          let header = 'Current'
+          if (hours >= 2) {
+            header = `In ${hours} hours ${minutes} minutes (${new Date(r.start_time * 1000).toLocaleString('en-GB')})`
+          } else if (hours > 0) {
+            header = `In ${hours} hours ${minutes} minutes ${seconds} seconds`
+          } else if (minutes > 0) {
+            header = `In ${minutes} minutes ${seconds} seconds`
+          }
+          return (
+            <div key={r.start_time} style={{"paddingTop": "25px"}}>
+              <Header size='small' disabled={preferences[modeShort[r.rule.name]][r.stage_a.name] && preferences[modeShort[r.rule.name]][r.stage_b.name]}>{header}</Header>
+              <Segment inverted disabled={preferences[modeShort[r.rule.name]][r.stage_a.name] && preferences[modeShort[r.rule.name]][r.stage_b.name]}>
+              <Grid columns={3} stackable>
+                <Grid.Row>
+                  <Grid.Column>
+                    <Header textAlign='center' inverted>
+                      <Image src={leagueIcon} style={{"paddingBottom": "10px"}}/> LEAGUE
+                      <Header.Subheader style={{"paddingTop": "10px"}}><Image size="mini" src={modeIcons[rotation.league[i].rule.name]} avatar/>{rotation.league[i].rule.name}</Header.Subheader>
+                    </Header>
+                  </Grid.Column>
+                  <Grid.Column>
+                    <Header textAlign='center' inverted>
+                      <Image src={rankedIcon} style={{"paddingBottom": "10px"}}/> RANKED
+                      <Header.Subheader style={{"paddingTop": "10px"}}><Image size="mini" src={modeIcons[r.rule.name]} avatar/>{r.rule.name}</Header.Subheader>
+                    </Header> 
+                  </Grid.Column>
+                  <Grid.Column>
+                    <Header textAlign='center' inverted>
+                      <Image src={regularIcon} style={{"paddingBottom": "10px"}}/>REGULAR
+                      <Header.Subheader style={{"paddingTop": "10px"}}></Header.Subheader> {/*this is needed for formatting reasons.*/}
+                    </Header>
+                  </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                  <Grid.Column>
+                    <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
+                      <Popup
+                        trigger={<Image 
+                          src={mapIcons[rotation.league[i].stage_a.name]} 
+                          rounded 
+                        />}
+                        content={rotation.league[i].stage_a.name}
+                        basic
+                      />
+                      <Popup
+                        trigger={<Image 
+                          src={mapIcons[rotation.league[i].stage_b.name]} 
+                          rounded 
+                        />}
+                        content={rotation.league[i].stage_b.name}
+                        basic
+                      />
+                    </div>
+                  </Grid.Column>
+                  <Grid.Column>
+                    <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
+                      <Popup
+                        trigger={<Image 
+                          src={mapIcons[r.stage_a.name]}
+                          rounded
+                          disabled={preferences[modeShort[r.rule.name]][r.stage_a.name]}
+                        />}
+                        content={r.stage_a.name}
+                        basic
+                      /> 
+                      <Popup
+                        trigger={<Image 
+                          src={mapIcons[r.stage_b.name]}
+                          rounded
+                          disabled={preferences[modeShort[r.rule.name]][r.stage_b.name]} 
+                        />}
+                        content={r.stage_b.name}
+                        basic
+                      /> 
+                    </div>
+                  </Grid.Column>
+                  <Grid.Column>
+                    <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
+                      <Popup
+                        trigger={<Image 
+                          src={mapIcons[rotation.regular[i].stage_a.name]} 
+                          rounded 
+                        />}
+                        content={rotation.regular[i].stage_a.name}
+                        basic
+                      /> 
+                      <Popup
                       trigger={<Image 
-                        src={mapIcons[rotation.league[i].stage_a.name]} 
+                        src={mapIcons[rotation.regular[i].stage_b.name]} 
                         rounded 
                       />}
-                      content={rotation.league[i].stage_a.name}
+                      content={rotation.regular[i].stage_b.name}
                       basic
                     />
-                    <Popup
-                      trigger={<Image 
-                        src={mapIcons[rotation.league[i].stage_b.name]} 
-                        rounded 
-                      />}
-                      content={rotation.league[i].stage_b.name}
-                      basic
-                    />
-                  </div>
-                </Grid.Column>
-                <Grid.Column>
-                  <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
-                    <Popup
-                      trigger={<Image 
-                        src={mapIcons[r.stage_a.name]}
-                        rounded 
-                      />}
-                      content={r.stage_a.name}
-                      basic
-                    /> 
-                    <Popup
-                      trigger={<Image 
-                        src={mapIcons[r.stage_b.name]}
-                        rounded 
-                      />}
-                      content={r.stage_b.name}
-                      basic
-                    /> 
-                  </div>
-                </Grid.Column>
-                <Grid.Column>
-                  <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
-                    <Popup
-                      trigger={<Image 
-                        src={mapIcons[rotation.regular[i].stage_a.name]} 
-                        rounded 
-                      />}
-                      content={rotation.regular[i].stage_a.name}
-                      basic
-                    /> 
-                    <Popup
-                    trigger={<Image 
-                      src={mapIcons[rotation.regular[i].stage_b.name]} 
-                      rounded 
-                    />}
-                    content={rotation.regular[i].stage_b.name}
-                    basic
-                  />
-                  </div>
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
-            </Segment>
-            
-          </div>
-        )
-      })}
+                    </div>
+                  </Grid.Column>
+                </Grid.Row>
+              </Grid>
+              </Segment>
+              
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }
