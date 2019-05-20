@@ -7,6 +7,7 @@ const cors = require('cors')
 const Placement = require('./models/placement')
 const Player = require('./models/player')
 const Maplist = require('./models/maplist')
+const Link = require('./models/link')
 //const User = require('./models/user')
 const jwt = require('jsonwebtoken')
 const path = require('path')
@@ -89,7 +90,19 @@ const typeDefs = gql`
     tc: [String!]!
     rm: [String!]!
     cb: [String!]!
+  }
 
+  enum LinkType {
+    DISCORD
+    GUIDE
+    MISC
+  }
+
+  type Link {
+    title: String!
+    url: String!
+    description: String!
+    type: LinkType!
   }
 
   type Token {
@@ -114,6 +127,7 @@ const typeDefs = gql`
     searchForPlayers(name: String! exact: Boolean): [Placement]!
     maplists: [Maplist!]!
     rotationData: String
+    links: [Link!]!
   }
 
   type Mutation {
@@ -406,6 +420,15 @@ const resolvers = {
       } else {
         return JSON.stringify(rotationData)
       }
+    },
+    links: (root, args) => {
+      return Link
+        .find({})
+        .catch(e => {
+          throw new UserInputError(e.message, {
+            invalidArgs: args,
+          })
+        })
     }
   }
 }

@@ -37,6 +37,11 @@ const MainMenu = withRouter(({ history, menuSelection, setMenuSelection }) => {
           active={menuSelection === 'search'}
           onClick={() => { history.push('/xsearch') }}
         />
+        <Menu.Item
+          name='links'
+          active={menuSelection === 'links'}
+          onClick={() => { history.push('links') }}
+        />
       </Menu>
     </Segment>
   )

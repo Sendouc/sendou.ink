@@ -12,6 +12,7 @@ import InfoWeapon from './components/XSearch/InfoWeapon'
 import ScrollToTop from './utils/ScrollToTop'
 import MapListGenerator from './components/Tools/MapListGenerator'
 import Rotations from './components/Tools/Rotations'
+import Links from './components/Misc/Links'
 
 const App = () => {
   const [menuSelection, setMenuSelection] = useState('home')
@@ -37,6 +38,9 @@ const App = () => {
               } />
               <Route exact path="/rotation" render={() => 
                 <Rotations setMenuSelection={setMenuSelection} />
+              } />
+              <Route exact path="/links" render={() => 
+                <Links setMenuSelection={setMenuSelection} />
               } />
               <Route path="/404" render={() => <NotFound />} />
               <Route path="*" render={() => <NotFound />} />

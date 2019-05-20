@@ -107,7 +107,7 @@ const Rotations = ({ setMenuSelection }) => {
 
   useEffect(() => {
     setMenuSelection('rotations')
-    document.title = 'Maplist Generator - sendou.ink'
+    document.title = 'Rotations - sendou.ink'
   }, [setMenuSelection])
 
   if (loading || monthly.loading || rotation.length === 0) {
@@ -118,7 +118,6 @@ const Rotations = ({ setMenuSelection }) => {
   }
 
   const monthlyMaps = monthly.data.maplists[0]
-  console.log('prefs', preferences)
 
   return (
     <div>
