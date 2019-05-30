@@ -218,11 +218,23 @@ const Rotations = ({ setMenuSelection }) => {
           const seconds = timeUntil % 3600 % 60
           let header = 'Current'
           if (hours >= 2) {
-            header = `In ${hours} hours ${minutes} minutes (${new Date(r.start_time * 1000).toLocaleString('en-GB')})`
+            if (minutes === 1) {
+              header = `In ${hours} hours ${minutes} minute (${new Date(r.start_time * 1000).toLocaleString('en-GB')})`
+            } else {
+              header = `In ${hours} hours ${minutes} minutes (${new Date(r.start_time * 1000).toLocaleString('en-GB')})`
+            }
           } else if (hours > 0) {
-            header = `In ${hours} hours ${minutes} minutes ${seconds} seconds`
+            if (minutes === 1) {
+              header = `In ${hours} hour ${minutes} minute ${seconds} seconds`
+            } else {
+              header = `In ${hours} hour ${minutes} minutes ${seconds} seconds`
+            }
           } else if (minutes > 0) {
-            header = `In ${minutes} minutes ${seconds} seconds`
+            if (minutes === 1) {
+              header = `In ${hours} hour ${minutes} minute ${seconds} seconds`
+            } else {
+              header = `In ${minutes} minutes ${seconds} seconds`
+            }
           }
           return (
             <div key={r.start_time} style={{"paddingTop": "25px"}}>

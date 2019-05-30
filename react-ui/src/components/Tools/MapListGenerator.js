@@ -15,8 +15,8 @@ const MapListGenerator = ({ setMenuSelection }) => {
   const [ amountToGenerate, setAmountToGenerate ] = useState(12)
   const [ generatedMaps, setGeneratedMaps ] = useState([])
   const [ generationType, setGenerationType] = useState('rotate')
-  const [copySuccess, setCopySuccess] = useState('');
-  const textAreaRef = useRef(null);
+  const [copySuccess, setCopySuccess] = useState('')
+  const textAreaRef = useRef(null)
 
   useEffect(() => {
     if (loading) {

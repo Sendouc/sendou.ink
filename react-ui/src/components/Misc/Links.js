@@ -30,7 +30,7 @@ const Links = ({ setMenuSelection }) => {
               return null
             }
             return (
-              <List.Item key={l.title}>
+              <List.Item key={l.title} style={{'padding': '6px'}}>
                 <List.Header size='small' as='a' href={l.url}>{l.title}</List.Header>
                 <List.Description>
                   {l.description}
@@ -40,7 +40,7 @@ const Links = ({ setMenuSelection }) => {
           })}
         </List>
     </div>
-    <div style={{'paddingTop': '25px'}}>
+    <div style={{'paddingTop': '20px'}}>
         <Header as='h1'>
           <Icon name='book' />
           <Header.Content>Guides</Header.Content>
@@ -51,7 +51,7 @@ const Links = ({ setMenuSelection }) => {
               return null
             }
             return (
-              <List.Item key={l.title}>
+              <List.Item key={l.title} style={{'padding': '6px'}}>
                 <List.Header size='small' as='a' href={l.url}>{l.title}</List.Header>
                 <List.Description>
                   {l.description}
@@ -61,7 +61,7 @@ const Links = ({ setMenuSelection }) => {
           })}
         </List>
     </div>
-    <div style={{'paddingTop': '25px'}}>
+    <div style={{'paddingTop': '20px'}}>
       <Header as='h1'>
         <Icon name='folder open' />
         <Header.Content>Misc</Header.Content>
@@ -72,7 +72,7 @@ const Links = ({ setMenuSelection }) => {
               return null
             }
             return (
-              <List.Item key={l.title}>
+              <List.Item key={l.title} style={{'padding': '6px'}}>
                 <List.Header size='small' as='a' href={l.url}>{l.title}</List.Header>
                 <List.Description>
                   {l.description}

@@ -2,18 +2,63 @@ require('dotenv').config()
 const { ApolloServer, UserInputError, AuthenticationError, gql } = require('apollo-server-express')
 const mongoose = require('mongoose')
 const express = require('express')
+const session = require('express-session')
+const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
+const uuid = require('node-uuid')
 const axios = require('axios')
 const cors = require('cors')
+const passport = require('passport')
+const DiscordStrategy = require('passport-discord').Strategy
 const Placement = require('./models/placement')
 const Player = require('./models/player')
 const Maplist = require('./models/maplist')
 const Link = require('./models/link')
-//const User = require('./models/user')
+const User = require('./models/user')
 const jwt = require('jsonwebtoken')
 const path = require('path')
 
 mongoose.set('useFindAndModify', false)
 mongoose.set('useCreateIndex', true)
+
+passport.use(new DiscordStrategy({
+  clientID: process.env.CLIENT_ID,
+  clientSecret: process.env.CLIENT_SECRET,
+  callbackURL: 'http://localhost:3001/auth/discord/callback',
+  scope: ['identify', 'connections']
+},
+function(accessToken, refreshToken, profile, cb) {
+  const userToSave = {
+    username: profile.username,
+    discriminator: profile.discriminator,
+    avatar: profile.avatar,
+    discord_id: profile.id
+  }
+  for (var i = 0; i < profile.connections.length; i++) {
+    const connection = profile.connections[i]
+    if (connection.visibility === 1 && connection.verified) {
+      if (connection.type === 'twitch') {
+        userToSave.twitch_name = connection.name
+      } else if (connection.type === 'twitter') {
+        userToSave.twitter_name = connection.name
+      }
+    }
+  }
+
+  User.updateOne({discord_id: userToSave.discord_id}, userToSave, {upsert: true}, function(err, user) {
+      return cb(err, userToSave)
+  })
+}))
+
+passport.serializeUser(function(user, done) {
+  done(null, user.discord_id)
+})
+
+passport.deserializeUser(function(discord_id, done) {
+  User.findOne({discord_id}, function(err, user) {
+    done(err, user)
+  })
+})
 
 let rotationData = {timestamp: 0}
 
@@ -28,12 +73,6 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, dbName: "prod
 })
 
 const typeDefs = gql`
-  type User {
-    id: ID!
-    username: String!
-    passwordHash: String!
-  }
-
   type Player {
     id: ID!
     name: String!
@@ -105,6 +144,15 @@ const typeDefs = gql`
     type: LinkType!
   }
 
+  type User {
+    username: String!
+    discriminator: String!
+    avatar: String
+    discord_id: String!
+    twitch_name: String!
+    twitter_name: String!
+  }
+
   type Token {
     value: String!
   }
@@ -128,6 +176,7 @@ const typeDefs = gql`
     maplists: [Maplist!]!
     rotationData: String
     links: [Link!]!
+    user: User
   }
 
   type Mutation {
@@ -424,11 +473,15 @@ const resolvers = {
     links: (root, args) => {
       return Link
         .find({})
+        .sort({ "title": "asc" })
         .catch(e => {
           throw new UserInputError(e.message, {
             invalidArgs: args,
           })
         })
+    },
+    user: (root, args, ctx) => {
+      return ctx.user
     }
   }
 }
@@ -436,27 +489,45 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: async ({ req }) => {
-    const auth = req ? req.headers.authorization : null
-    if (auth && auth.toLowerCase().startsWith('bearer ')) {
-      const decodedToken = jwt.verify(
-        auth.substring(7), process.env.JWT_SECRET
-      )
-      const currentUser = await User.findById(decodedToken.id)
-      return { currentUser }
-    }
+  context: ({ req }) => {
+    return { user: req.user }
   }
 })
 
 const app = express()
-app.use(cors())
-server.applyMiddleware({ app })
 
+app.use(cors())
 app.use(express.static('build'))
+//app.use(cookieParser(process.env.SESSION_SECRET)) probably not needed but will remove later
+//app.use(bodyParser.urlencoded({ extended: false }))
+
+app.use(session({ 
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false
+ }))
+
+app.use(passport.initialize())
+app.use(passport.session())
+
+app.get('/auth/discord', passport.authenticate('discord'))
+
+app.get('/auth/discord/callback', passport.authenticate('discord', {
+    failureRedirect: '/404'
+}), function(req, res) {
+    res.redirect('/u/' + req.user.discord_id) // Successful auth
+})
+
+app.get('/logout', function(req, res){
+  req.logout()
+  res.redirect('/')
+})
 
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, 'build', 'index.html'))
 })
+
+server.applyMiddleware({ app })
 
 const PORT = process.env.PORT || 3001
 app.listen({ port: PORT }, () => {
