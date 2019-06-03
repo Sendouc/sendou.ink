@@ -1,8 +1,8 @@
 import { gql } from 'apollo-boost'
 
 export const playerInfo = gql`
-query playerInfo($uid: String!) {
-  playerInfo(uid: $uid) {
+query playerInfo($uid: String, $twitter: String) {
+  playerInfo(uid: $uid, twitter: $twitter) {
     player {
       name
       weapons

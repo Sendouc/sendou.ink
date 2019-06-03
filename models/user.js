@@ -6,7 +6,8 @@ const userSchema = new mongoose.Schema({
   avatar: {type: String},
   discord_id: {type: String, required: true},
   twitch_name: {type: String},
-  twitter_name: {type: String}
+  twitter_name: {type: String},
+  custom_url: {type: String}
 })
 
 module.exports = mongoose.model('User', userSchema)

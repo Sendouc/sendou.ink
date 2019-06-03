@@ -7,16 +7,22 @@ import TopPlacementTable from './TopPlacementsTable'
 import WpnPlayedTable from './WpnPlayedTable'
 import MonthsTable from './MonthsTable'
 
-const InfoPlayer = ({ uid, setMenuSelection }) => {
-  const { data, error, loading } = useQuery(playerInfo, {variables: { uid: uid }})
+const InfoPlayer = ({ uid, setMenuSelection, twitter }) => {
+  let searchVariables = {}
+  if (uid) searchVariables = { uid }
+  if (twitter) searchVariables = { twitter }
+  const { data, error, loading } = useQuery(playerInfo, {variables: searchVariables})
   const [top, setTop] = useState([])
 
   useEffect(() => {
     if (loading) {
       return
     }
-    setMenuSelection('search')
-    document.title = `${data.playerInfo.player.alias ? data.playerInfo.player.alias : data.playerInfo.player.name} Top 500 X Rank - sendou.ink`
+
+    if (setMenuSelection) { //if we're on /xsearch
+      setMenuSelection('search')
+      document.title = `${data.playerInfo.player.alias ? data.playerInfo.player.alias : data.playerInfo.player.name} Top 500 X Rank - sendou.ink`
+    }
     const placements = data.playerInfo.placements
 
     //reducing placements to top sz, tc etc. rank and x power
@@ -57,10 +63,12 @@ const InfoPlayer = ({ uid, setMenuSelection }) => {
 
   return (
     <div style={{"paddingTop": "20px"}}>
-      <Header as='h2'>
-        {playerData.twitter ? <Image circular src={`https://avatars.io/twitter/${playerData.twitter}`} /> : null} {playerData.alias ? playerData.alias : playerData.name} 
-        {playerData.twitter ? <a href={`https://twitter.com/${playerData.twitter}`}><Icon style={{"paddingLeft": "5px"}} size='small' name="twitter"/></a> : null}
-      </Header>
+      {setMenuSelection ?
+        <Header as='h2'>
+          {playerData.twitter ? <Image circular src={`https://avatars.io/twitter/${playerData.twitter}`} /> : null} {playerData.alias ? playerData.alias : playerData.name} 
+          {playerData.twitter ? <a href={`https://twitter.com/${playerData.twitter}`}><Icon style={{"paddingLeft": "5px"}} size='small' name="twitter"/></a> : null}
+        </Header>
+      : null}
       {playerData.topTotalScore ? <><i>Total Power: {playerData.topTotalScore}</i><br /></> : null}
       {playerData.topShooterScore ? <><i>Shooter Power: {playerData.topShooterScore}</i><br /></> : null}
       {playerData.topBlasterScore ? <><i>Blaster Power: {playerData.topBlasterScore}</i><br /></> : null}
