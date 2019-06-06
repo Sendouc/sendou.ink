@@ -185,13 +185,14 @@ const typeDefs = gql`
   }
 
   type Build {
+    id: ID!
     discord_id: String!
     weapon: String!
     title: String
     headgear: [Ability!]!
     clothing: [Ability!]!
     shoes: [Ability!]!
-    createdAt: String!
+    createdAt: String
   }
 
   type Query {
@@ -214,7 +215,8 @@ const typeDefs = gql`
     rotationData: String
     links: [Link!]!
     user: User
-    searchForUser (discord_id: String!): User
+    searchForUser(discord_id: String!): User
+    searchForBuilds(discord_id: String!): [Build]!
   }
 
   type Mutation {
@@ -543,6 +545,7 @@ const resolvers = {
     searchForBuilds: (root, args) => {
       return Build
         .find( {discord_id: args.discord_id })
+        .sort({'weapon': "asc"})
         .catch(e => {
           throw new UserInputError(e.message, {
             invalidArgs, args,
@@ -553,7 +556,7 @@ const resolvers = {
   Mutation: {
     addBuild: async (root, args, ctx) => {
       if (!ctx.user) throw new AuthenticationError('User not logged in.')
-      if (ctx.title.length > 100) throw new UserInputError('Title too long.', {
+      if (args.title) if (args.title.length > 100) throw new UserInputError('Title too long.', {
         invalidArgs: args,
       })
       if (!weapons.includes(args.weapon)) throw new UserInputError('Invalid weapon.', {
@@ -570,13 +573,14 @@ const resolvers = {
       if (existingBuilds.length >= 20) throw new UserInputError('Can\'t have more than 20 builds per user.', {
         invalidArgs: args,
       })
+
       const build = new Build({ ...args, discord_id: ctx.user.discord_id })
-      return await Build
-        .create(build)
+      console.log('build', build)
+      return build.save()
         .catch(e => {
-          throw new UserInputError(e.message, {
+          throw new UserInputError, {
             invalidArgs: args,
-          })
+          }
         })
     }
   }

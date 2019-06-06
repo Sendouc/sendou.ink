@@ -4,10 +4,11 @@ import WeaponForm from '../XSearch/WeaponForm'
 import Build from './Build'
 import AbilityButtons from './AbilityButtons'
 
-const BuildForm = () => {
+const BuildForm = ({ addBuild, setShowForm, setSuccessMsg }) => {
   const [weaponForm, setWeaponForm] = useState('')
   const [title, setTitle] = useState('')
   const [abilities, setAbilities] = useState([["", "", "", ""], ["", "", "", ""], ["", "", "", ""]])
+
   const build = {
     weapon: weaponForm,
     title,
@@ -15,6 +16,25 @@ const BuildForm = () => {
     clothing: abilities[1],
     shoes: abilities[2]
   }
+
+  const submit = async (e) => {
+    e.preventDefault()
+
+    let buildToAdd = {...build}
+    if (buildToAdd.title === '') delete buildToAdd.title
+
+    await addBuild({
+      variables: { ...buildToAdd }
+    })
+
+    setWeaponForm('')
+    setTitle('')
+    setAbilities([["", "", "", ""], ["", "", "", ""], ["", "", "", ""]])
+    setSuccessMsg(true)
+    setTimeout(() => { setSuccessMsg(false) }, 5000)
+    setShowForm(false)
+  }
+
   function isBuildComplete() {
     if (title.length > 100) return false
     if (weaponForm === '') return false
@@ -28,6 +48,7 @@ const BuildForm = () => {
     }
     return true
   }
+
   return (
     <div>
       <div>
@@ -52,7 +73,7 @@ const BuildForm = () => {
         <AbilityButtons abilities={abilities} setAbilities={setAbilities} />
       </div>
       <div style={{"paddingTop": "10px"}}>
-        <Button disabled={!isBuildComplete()}>Add build</Button> {/*OnClick gotta remember that weapon or title can be empty */}
+        <Button disabled={!isBuildComplete()} onClick={submit}>Add build</Button> 
       </div>
     </div>
    )

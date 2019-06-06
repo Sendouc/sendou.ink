@@ -9,6 +9,7 @@ mutation addBuild ($weapon: String!, $title: String, $headgear: [Ability!]!, $cl
      clothing: $clothing,
      shoes: $shoes
    ) {
+     id
      weapon
      title
      headgear

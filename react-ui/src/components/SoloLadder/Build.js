@@ -30,58 +30,58 @@ import TI from '../img/abilityIcons/TI.png'
 import OS from '../img/abilityIcons/OS.png'
 import EMPTY from '../img/abilityIcons/EMPTY.png'
 
-const abilities = {
-  "BDU": {image: BDU, fullName: "Bomb Defense Up DX"},
-  "BRU": {image: BRU, fullName: "Sub Power Up"},
-  "CB": {image: CB, fullName: "Comeback", mainOnly: true},
-  "DR": {image: DR, fullName: "Drop Roller", mainOnly: true},
-  "H": {image: H, fullName: "Haunt", mainOnly: true},
-  "ISM": {image: ISM, fullName: "Ink Saver (Main)"},
-  "ISS": {image: ISS, fullName: "Ink Saver (Sub)"},
-  "LDE": {image: LDE, fullName: "Last-Ditch Effort", mainOnly: true},
-  "MPU": {image: MPU, fullName: "Main Power Up"},
-  "NS": {image: NS, fullName: "Ninja Squid", mainOnly: true},
-  "OG": {image: OG, fullName: "Opening Gambit", mainOnly: true},
-  "QR": {image: QR, fullName: "Quick Respawn"},
-  "QSJ": {image: QSJ, fullName: "Quick Super Jump"},
-  "REC": {image: REC, fullName: "Ink Recovery Up"},
-  "RES": {image: RES, fullName: "Ink Resistance Up"},
-  "RP": {image: RP, fullName: "Respawn Punisher", mainOnly: true},
-  "RSU": {image: RSU, fullName: "Run Speed Up"},
-  "SCU": {image: SCU, fullName: "Special Charge Up"},
-  "SJ": {image: SJ, fullName: "Stealth Jump", mainOnly: true},
-  "SPU": {image: SPU, fullName: "Special Power Up"},
-  "SS": {image: SS, fullName: "Special Saver"},
-  "SSU": {image: SSU, fullName: "Swim Speed Up"},
-  "T": {image: T, fullName: "Tenacity", mainOnly: true},
-  "TI": {image: TI, fullName: "Thermal Ink", mainOnly: true},
-  "OS": {image: OS, fullName: "Object Shredder", mainOnly: true},
-  "": {ap: 0, mainOnly: true}
-}
-
-let apsCalculated = false //i'm sure there is a better way to do this but...
-
-const lineStyle = {
-  "display": "inline-block",
-  "width": "2px",
-  "backgroundColor": "white",
-  "margin": "0 10px",
-  "height": "4em"
-}
-const arrayOfSortedAbilityPoints = () => {
-  var sortable = []
-  for (var abilityObj in abilities) {
-    if (abilities[abilityObj].hasOwnProperty("ap") && !abilities[abilityObj].mainOnly) {
-      sortable.push(abilities[abilityObj])
-    }
-  }
-  sortable.sort((a, b) => {
-    return b.ap - a.ap
-  })
-  return sortable
-}
-
 const Build = ({ build, existingAbilities, setAbilities }) => {
+
+  const lineStyle = {
+    "display": "inline-block",
+    "width": "2px",
+    "backgroundColor": "white",
+    "margin": "0 10px",
+    "height": "4em"
+  }
+
+  const abilities = {
+    "BDU": {image: BDU, fullName: "Bomb Defense Up DX"},
+    "BRU": {image: BRU, fullName: "Sub Power Up"},
+    "CB": {image: CB, fullName: "Comeback", mainOnly: true},
+    "DR": {image: DR, fullName: "Drop Roller", mainOnly: true},
+    "H": {image: H, fullName: "Haunt", mainOnly: true},
+    "ISM": {image: ISM, fullName: "Ink Saver (Main)"},
+    "ISS": {image: ISS, fullName: "Ink Saver (Sub)"},
+    "LDE": {image: LDE, fullName: "Last-Ditch Effort", mainOnly: true},
+    "MPU": {image: MPU, fullName: "Main Power Up"},
+    "NS": {image: NS, fullName: "Ninja Squid", mainOnly: true},
+    "OG": {image: OG, fullName: "Opening Gambit", mainOnly: true},
+    "QR": {image: QR, fullName: "Quick Respawn"},
+    "QSJ": {image: QSJ, fullName: "Quick Super Jump"},
+    "REC": {image: REC, fullName: "Ink Recovery Up"},
+    "RES": {image: RES, fullName: "Ink Resistance Up"},
+    "RP": {image: RP, fullName: "Respawn Punisher", mainOnly: true},
+    "RSU": {image: RSU, fullName: "Run Speed Up"},
+    "SCU": {image: SCU, fullName: "Special Charge Up"},
+    "SJ": {image: SJ, fullName: "Stealth Jump", mainOnly: true},
+    "SPU": {image: SPU, fullName: "Special Power Up"},
+    "SS": {image: SS, fullName: "Special Saver"},
+    "SSU": {image: SSU, fullName: "Swim Speed Up"},
+    "T": {image: T, fullName: "Tenacity", mainOnly: true},
+    "TI": {image: TI, fullName: "Thermal Ink", mainOnly: true},
+    "OS": {image: OS, fullName: "Object Shredder", mainOnly: true},
+    "": {mainOnly: true}
+  }
+
+  const arrayOfSortedAbilityPoints = () => {
+    var sortable = []
+    for (var abilityObj in abilities) {
+      if (abilities[abilityObj].hasOwnProperty("ap") && !abilities[abilityObj].mainOnly) {
+        sortable.push(abilities[abilityObj])
+      }
+    }
+    sortable.sort((a, b) => {
+      return b.ap - a.ap
+    })
+    return sortable
+  }
+
   const imageSource = build.weapon === '' ? EMPTY : `https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/weapons/Wst_${weaponDict[build.weapon]}.png`
   
   function removeAbility(gearIndex, slotIndex) {
@@ -94,7 +94,7 @@ const Build = ({ build, existingAbilities, setAbilities }) => {
     const ap = abilities[a].ap ? abilities[a].ap : 0
     const imageSrc = a === "" ? EMPTY : abilities[a].image
     if (i === 0) {
-      if (!apsCalculated && a !== "") abilities[a].ap = ap + 10
+      if (a !== "") abilities[a].ap = ap + 10
       return (
         <span key={i}>
           <img src={imageSrc} alt={a} onClick={() => !setAbilities ? null : removeAbility(this.gearIndex, i)}/> {/* If setAbilities exists it means clicking ability should remove it. */}
@@ -102,7 +102,7 @@ const Build = ({ build, existingAbilities, setAbilities }) => {
         </span>
       )
     }
-    if (!apsCalculated && a !== "") abilities[a].ap = ap + 3
+    if (a !== "") abilities[a].ap = ap + 3
     return (
       <span key={i} style={{"padding": "1px"}}>
         <img 
@@ -136,7 +136,6 @@ const Build = ({ build, existingAbilities, setAbilities }) => {
             </div>
             <div>
               {build.shoes.map(abilityMap, {gearIndex: 2})}
-              {apsCalculated = true} {/*This implementation makes it so that AP's aren't shown when new build is made but it might be sick if they did.*/}
             </div>
           </Grid.Column>
           <Grid.Column>
@@ -145,7 +144,9 @@ const Build = ({ build, existingAbilities, setAbilities }) => {
             </List>
           </Grid.Column>
           <Grid.Column></Grid.Column>
-          <Grid.Column></Grid.Column>
+          <Grid.Column verticalAlign='bottom'>
+            <i>Added {new Date(parseInt(build.createdAt)).toLocaleString('en-GB')}</i>
+          </Grid.Column>
         </Grid>
       </div>
       </Segment>

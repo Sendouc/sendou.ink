@@ -2,26 +2,19 @@ import React from 'react'
 import { Tab, Image, Loader, List, Grid } from 'semantic-ui-react'
 import { useQuery } from 'react-apollo-hooks'
 import { searchForUser } from '../../graphql/queries/searchForUser'
+import { userLean } from '../../graphql/queries/userLean'
 import InfoPlayer from '../../components/XSearch/InfoPlayer'
-import Build from './Build'
-import BuildForm from './BuildForm'
+import BuildTab from './BuildTab'
 
 const UserPage = ({ userIdOrName }) => {
   const { data, error, loading } = useQuery(searchForUser, {variables: { discord_id: userIdOrName }})
-  const dummyBuild = {
-    discord_id: "79237403620945920",
-    weapon: "Tenta Camo Brella",
-    title: "Standard Camo Tenta build for aggressive playstyle",
-    headgear: ["", "SSU", "RSU", "RSU"],
-    clothing: ["QR", "RSU", "", "SS"],
-    shoes: ["QR", "SS", "RES", ""]
-  }
+  const userLeanQuery = useQuery(userLean)
 
-  if (loading) {
+  if (loading || userLeanQuery.loading) {
     return <div style={{"paddingTop": "25px", "paddingBottom": "20000px"}} ><Loader active inline='centered' /></div>
   }
 
-  if (error) {
+  if (error || userLeanQuery.loading) {
     return <div style={{"color": "red"}}>{error.message}</div>
   }
 
@@ -59,8 +52,8 @@ const UserPage = ({ userIdOrName }) => {
     }
   }
 
-  const panes = [ //Solo Ladder to be added
-    { menuItem: 'Builds', render: () => <Tab.Pane><BuildForm /></Tab.Pane> },
+  const panes = [ //Solo Ladder to be added // X Rank can't render if the user has no X rank
+    { menuItem: 'Builds', render: () => <Tab.Pane><BuildTab user={userLeanQuery.data.user} userViewed={userData} /></Tab.Pane> },
     { menuItem: 'X Rank', render: () => <Tab.Pane><InfoPlayer twitter={userData.twitter_name} /></Tab.Pane> },
   ]
 
