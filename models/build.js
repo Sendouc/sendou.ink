@@ -9,4 +9,4 @@ const buildSchema = new mongoose.Schema({
   shoes: {type: [String], required: true}
 }, { timestamps: true })
 
-module.exports = mongoose.model('Build', maplistSchema)
+module.exports = mongoose.model('Build', buildSchema)

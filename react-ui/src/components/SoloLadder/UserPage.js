@@ -3,9 +3,19 @@ import { Tab, Image, Loader, List, Grid } from 'semantic-ui-react'
 import { useQuery } from 'react-apollo-hooks'
 import { searchForUser } from '../../graphql/queries/searchForUser'
 import InfoPlayer from '../../components/XSearch/InfoPlayer'
+import Build from './Build'
+import BuildForm from './BuildForm'
 
 const UserPage = ({ userIdOrName }) => {
   const { data, error, loading } = useQuery(searchForUser, {variables: { discord_id: userIdOrName }})
+  const dummyBuild = {
+    discord_id: "79237403620945920",
+    weapon: "Tenta Camo Brella",
+    title: "Standard Camo Tenta build for aggressive playstyle",
+    headgear: ["", "SSU", "RSU", "RSU"],
+    clothing: ["QR", "RSU", "", "SS"],
+    shoes: ["QR", "SS", "RES", ""]
+  }
 
   if (loading) {
     return <div style={{"paddingTop": "25px", "paddingBottom": "20000px"}} ><Loader active inline='centered' /></div>
@@ -50,7 +60,7 @@ const UserPage = ({ userIdOrName }) => {
   }
 
   const panes = [ //Solo Ladder to be added
-    { menuItem: 'Builds', render: () => <Tab.Pane>No builds to show.</Tab.Pane> },
+    { menuItem: 'Builds', render: () => <Tab.Pane><BuildForm /></Tab.Pane> },
     { menuItem: 'X Rank', render: () => <Tab.Pane><InfoPlayer twitter={userData.twitter_name} /></Tab.Pane> },
   ]
 

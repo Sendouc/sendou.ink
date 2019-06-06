@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import { weapons } from '../../utils/lists'
 import weaponDict from '../../utils/english_internal.json'
 
-const WeaponForm = (props) => {
+const WeaponForm = ({ weaponForm, setWeaponForm, showImages=true }) => {
   return (
     <div>
       <Dropdown 
@@ -17,11 +17,13 @@ const WeaponForm = (props) => {
             {key: w, 
             text: w, 
             value: w, 
-            image: {src: process.env.PUBLIC_URL + `/wpnSmall/Wst_${weaponDict[w]}.png`}})
+            image: showImages ? {src: process.env.PUBLIC_URL + `/wpnSmall/Wst_${weaponDict[w]}.png`} : null
+            }
           )
+        )
         }
-        onChange={(event, { value }) => props.setWeaponForm(value)}
-        value={props.weaponForm}
+        onChange={(event, { value }) => setWeaponForm(value)}
+        value={weaponForm}
       />
     </div>
   )
