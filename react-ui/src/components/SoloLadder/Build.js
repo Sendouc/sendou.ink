@@ -116,6 +116,9 @@ const Build = ({ build, existingAbilities, setAbilities, removeBuildFunction }) 
   }
 
   const buildTitle = !build.title || build.title === "" ? `${build.weapon} Build` : build.title
+
+  console.log('removeBuildFunction', removeBuildFunction)
+  console.log('!removeBuildFunction', !removeBuildFunction)
   
   return (
     <div>

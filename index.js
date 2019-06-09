@@ -19,10 +19,14 @@ const weapons = require('./utils/weapons')
 mongoose.set('useFindAndModify', false)
 mongoose.set('useCreateIndex', true)
 
+const callbackURL = process.env.NODE_ENV === 'development' ? 
+  'http://localhost:3001/auth/discord/callback' :
+  'https://www.sendou.ink/auth/discord/callback'
+
 passport.use(new DiscordStrategy({
   clientID: process.env.CLIENT_ID,
   clientSecret: process.env.CLIENT_SECRET,
-  callbackURL: 'https://www.sendou.ink/auth/discord/callback',
+  callbackURL,
   scope: ['identify', 'connections']
 },
 function(accessToken, refreshToken, profile, cb) {

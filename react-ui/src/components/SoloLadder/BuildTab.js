@@ -52,6 +52,8 @@ const BuildTab = ({ user, userViewed }) => {
     return <div style={{"color": "red"}}>{error.message}</div>
   }
 
+  const removeBuildFunction = user && user.discord_id === userViewed.discord_id ? deleteBuildById : null
+
   return (
     <div>
       {successMsg ?
@@ -72,7 +74,7 @@ const BuildTab = ({ user, userViewed }) => {
       <div style={{"paddingTop": "10px"}}>
         {data.searchForBuilds.map(b => 
           <div key={b.id} style={{"paddingTop": "10px"}}>
-            <Build build={b} removeBuildFunction={deleteBuildById} />
+            <Build build={b} removeBuildFunction={removeBuildFunction} />
           </div>)}
         {data.searchForBuilds.length === 0 ? 'So far this user has no builds!' : null}
       </div>
