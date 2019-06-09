@@ -147,8 +147,8 @@ const typeDefs = gql`
     discriminator: String!
     avatar: String
     discord_id: String!
-    twitch_name: String!
-    twitter_name: String!
+    twitch_name: String
+    twitter_name: String
     custom_url: String
   }
 
@@ -217,6 +217,7 @@ const typeDefs = gql`
     user: User
     searchForUser(discord_id: String!): User
     searchForBuilds(discord_id: String!): [Build]!
+    deleteBuild(id: ID!): Boolean
   }
 
   type Mutation {
@@ -235,6 +236,9 @@ const typeDefs = gql`
       clothing: [Ability!]!
       shoes: [Ability!]!
     ): Build
+    deleteBuild(
+      id: ID!
+    ): Boolean
   }    
 `
 
@@ -435,7 +439,10 @@ const resolvers = {
     playerInfo: async (root, args) => {
       let searchCriteria = {}
       if (args.uid) searchCriteria = { "unique_id": args.uid }
-      if (args.twitter) searchCriteria = { "twitter": args.twitter.toLowerCase()}
+      else if (args.twitter) searchCriteria = { "twitter": args.twitter.toLowerCase()}
+      else throw new UserInputError('no id or twitter provided', {
+        invalidArgs: args,
+      })
       const player = await Player
         .findOne(searchCriteria)
         .catch(e => {
@@ -575,13 +582,29 @@ const resolvers = {
       })
 
       const build = new Build({ ...args, discord_id: ctx.user.discord_id })
-      console.log('build', build)
       return build.save()
         .catch(e => {
           throw new UserInputError, {
             invalidArgs: args,
           }
         })
+    },
+    deleteBuild: async (root, args, ctx) => {
+      if (!ctx.user) throw new AuthenticationError('not authenticated')
+
+      const build = await Build.findOne({ _id: args.id})
+
+      if (ctx.user.discord_id !== build.discord_id) throw new AuthenticationError('no privileges')
+
+      try {
+        await Build.findByIdAndDelete({ _id: args.id })
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        })
+      }
+
+      return true
     }
   }
 }
@@ -598,6 +621,18 @@ const app = express()
 
 app.use(cors())
 app.use(express.static('build'))
+
+//https://stackoverflow.com/questions/8605720/how-to-force-ssl-https-in-express-js/31144924#31144924
+
+function requireHTTPS(req, res, next) {
+  // The 'x-forwarded-proto' check is for Heroku
+  if (!req.secure && req.get('x-forwarded-proto') !== 'https' && process.env.NODE_ENV !== "development") {
+    return res.redirect('https://' + req.get('host') + req.url)
+  }
+  next()
+}
+
+app.use(requireHTTPS)
 
 app.use(session({ 
   secret: process.env.SESSION_SECRET,

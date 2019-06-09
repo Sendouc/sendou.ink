@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/alt-text */
 import React from 'react'
-import { Header, Segment, List, Grid } from 'semantic-ui-react'
+import { Header, Segment, List, Grid, Button, Popup } from 'semantic-ui-react'
 import weaponDict from '../../utils/english_internal.json'
 
 import BDU from '../img/abilityIcons/BDU.png'
@@ -30,7 +30,7 @@ import TI from '../img/abilityIcons/TI.png'
 import OS from '../img/abilityIcons/OS.png'
 import EMPTY from '../img/abilityIcons/EMPTY.png'
 
-const Build = ({ build, existingAbilities, setAbilities }) => {
+const Build = ({ build, existingAbilities, setAbilities, removeBuildFunction }) => {
 
   const lineStyle = {
     "display": "inline-block",
@@ -114,6 +114,8 @@ const Build = ({ build, existingAbilities, setAbilities }) => {
       </span>
     )
   }
+
+  const buildTitle = !build.title || build.title === "" ? `${build.weapon} Build` : build.title
   
   return (
     <div>
@@ -122,30 +124,39 @@ const Build = ({ build, existingAbilities, setAbilities }) => {
         <Header size='huge' inverted>
           <img 
             src={imageSource}
-          /> {!build.title || build.title === "" ? `${build.weapon} Build` : build.title}
+          /> {buildTitle}
         </Header>
       </div>
       <div style={{"paddingLeft": "13px"}}>
         <Grid stackable columns={4}>
           <Grid.Column>
-            <div>
+            <div style={{'float': 'none', 'whiteSpace': 'nowrap'}}>
               {build.headgear.map(abilityMap, {gearIndex: 0})}
             </div>
-            <div>
+            <div style={{'float': 'none', 'whiteSpace': 'nowrap'}}>
               {build.clothing.map(abilityMap, {gearIndex: 1})}
             </div>
-            <div>
+            <div style={{'float': 'none', 'whiteSpace': 'nowrap'}}>
               {build.shoes.map(abilityMap, {gearIndex: 2})}
             </div>
           </Grid.Column>
+          <Grid.Column></Grid.Column>
           <Grid.Column>
             <List>
               {arrayOfSortedAbilityPoints().map(a => <List.Item key={a.fullName}>{a.ap} {a.fullName}</List.Item>)}
             </List>
           </Grid.Column>
-          <Grid.Column></Grid.Column>
           <Grid.Column verticalAlign='bottom'>
-            <i>Added {new Date(parseInt(build.createdAt)).toLocaleString('en-GB')}</i>
+            {setAbilities ? null : <i>Added {new Date(parseInt(build.createdAt)).toLocaleString('en-GB')}</i>} 
+            {removeBuildFunction ?
+              <span style={{'paddingLeft': '10px'}}>
+                <Popup 
+                    trigger={<Button circular size='mini' icon='trash' />}
+                    hoverable
+                    position='bottom right'
+                  ><Button negative onClick={ () => removeBuildFunction(build) }>{'Delete'}</Button></Popup>
+              </span>
+            : null}
           </Grid.Column>
         </Grid>
       </div>

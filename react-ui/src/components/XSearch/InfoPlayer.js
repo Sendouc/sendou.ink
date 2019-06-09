@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useQuery } from 'react-apollo-hooks'
-import { Loader, Header, Image, Icon } from 'semantic-ui-react'
+import { Loader, Header, Image, Icon, List } from 'semantic-ui-react'
 
 import { playerInfo } from '../../graphql/queries/playerInfo'
 import TopPlacementTable from './TopPlacementsTable'
@@ -21,42 +21,62 @@ const InfoPlayer = ({ uid, setMenuSelection, twitter }) => {
 
     if (setMenuSelection) { //if we're on /xsearch
       setMenuSelection('search')
-      document.title = `${data.playerInfo.player.alias ? data.playerInfo.player.alias : data.playerInfo.player.name} Top 500 X Rank - sendou.ink`
     }
-    const placements = data.playerInfo.placements
+    if (data.playerInfo) {
+      const placements = data.playerInfo.placements
 
-    //reducing placements to top sz, tc etc. rank and x power
-    const tops = ["", "szTop", "tcTop", "rmTop", "cbTop"]
-    const exs = ["", "szX", "tcX", "rmX", "cbX"]
-    setTop(placements.reduce((acc, cur) => {
-      const topKey = tops[cur.mode]
-      const xKey = exs[cur.mode]
-      if (!acc[xKey]) {
-        acc[xKey] = cur
-        acc[topKey] = cur
+      //reducing placements to top sz, tc etc. rank and x power
+      const tops = ["", "szTop", "tcTop", "rmTop", "cbTop"]
+      const exs = ["", "szX", "tcX", "rmX", "cbX"]
+      setTop(placements.reduce((acc, cur) => {
+        const topKey = tops[cur.mode]
+        const xKey = exs[cur.mode]
+        if (!acc[xKey]) {
+          acc[xKey] = cur
+          acc[topKey] = cur
+          return acc
+        } 
+        if (acc[xKey].x_power < cur.x_power) {
+          acc[xKey] = cur
+        }
+        if (acc[topKey].rank > cur.rank) {
+          acc[topKey] = cur
+        }
+
         return acc
-      } 
-      if (acc[xKey].x_power < cur.x_power) {
-        acc[xKey] = cur
-      }
-      if (acc[topKey].rank > cur.rank) {
-        acc[topKey] = cur
-      }
-
-      return acc
-    }, {
-      szX: null, szTop: null, 
-      tcX: null, tcTop: null, 
-      rmX: null, rmTop: null, 
-      cbX: null, cbTop: null
-    }))
+      }, {
+        szX: null, szTop: null, 
+        tcX: null, tcTop: null, 
+        rmX: null, rmTop: null, 
+        cbX: null, cbTop: null
+      }))
+    }
 
   }, [data, loading, setMenuSelection])
 
-  if (loading || top.length === 0) {
+  const addXRankHelp = (
+    <div>
+        This user has no X Rank profile set up. If you are the owner of this user page here is how you can set it up:
+        <div style={{'paddingTop': "5px"}}>
+          <List ordered>
+            <List.Item>Finish an X rank season in the Top 500 in at least one mode.</List.Item>
+            <List.Item>Send your Twitter handle to Sendou via DM.</List.Item>
+            <List.Item>Add your Twitter account to your profile on Discord, verify it and make sure it's set to appear publicly.</List.Item>
+            <List.Item>Log in to sendou.ink</List.Item>
+          </List>
+        </div>
+      </div>
+  )
+
+  if (!uid && !twitter) return addXRankHelp
+
+  if (loading) {
     return <div style={{"paddingTop": "25px", "paddingBottom": "20000px"}} ><Loader active inline='centered' /></div>
   }
   if (error) {
+    if (error.message === 'GraphQL error: player not found') {
+      return addXRankHelp
+    }
     return <div style={{"color": "red"}}>{error.message}</div>
   }
   const playerData = data.playerInfo.player

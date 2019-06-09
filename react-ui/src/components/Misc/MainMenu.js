@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Menu, Segment, Button, Icon, Image, Popup } from 'semantic-ui-react'
+import { Menu, Segment, Button, Image, Dropdown } from 'semantic-ui-react'
 import { useQuery } from 'react-apollo-hooks'
 import { userLean } from '../../graphql/queries/userLean'
 import { withRouter } from 'react-router-dom'
@@ -31,23 +31,25 @@ const MainMenu = withRouter(({ history, menuSelection, setMenuSelection }) => {
 
     const user = data.user
 
+    const userMenuOptions = [
+      { key: 'user', text: 'User Page', icon: 'user', onClick: () => history.push(`/u/${user.discord_id}`) },
+      //{ key: 'settings', text: 'Settings', icon: 'settings', onClick: () => history.push('/u/settings') },
+      { key: 'sign-out', text: 'Sign Out', icon: 'sign out', onClick: () => window.location.assign('/logout') },
+    ]
+
+    const userMenuTrigger = (
+      <span>
+        <span style={{"paddingRight": "5px"}}>{user.username}</span>
+          <Image src={user.avatar ? 
+          `https://cdn.discordapp.com/avatars/${user.discord_id}/${user.avatar}.png` : 
+          'https://cdn.discordapp.com/avatars/455039198672453645/088ae3838cc3b08b73f79aab0fefec2f.png'} avatar /> {/* If User has no avatar defaults to N-Zap user's avatar*/}
+      </span>
+    )
+    
     return (
       <div>
         <Menu.Item>
-          <span style={{"paddingRight": "3px"}}>{user.username}</span>
-          <Image src={`https://cdn.discordapp.com/avatars/${user.discord_id}/${user.avatar}.png`} avatar />
-          <span style={{"paddingLeft": "10px"}}>
-            <Popup 
-              position='bottom center'
-              flowing
-              hoverable
-              trigger={<Icon name='log out' circular />}
-            >
-              <a href='/logout'>
-                <Button secondary>Log Out</Button>
-              </a>
-            </Popup>
-          </span>
+          <Dropdown item icon={null} options={userMenuOptions} trigger={userMenuTrigger}/>
         </Menu.Item>
       </div>
     )

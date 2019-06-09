@@ -30,8 +30,8 @@ const BuildForm = ({ addBuild, setShowForm, setSuccessMsg }) => {
     setWeaponForm('')
     setTitle('')
     setAbilities([["", "", "", ""], ["", "", "", ""], ["", "", "", ""]])
-    setSuccessMsg(true)
-    setTimeout(() => { setSuccessMsg(false) }, 5000)
+    setSuccessMsg('New build succesfully added!')
+    setTimeout(() => { setSuccessMsg(null) }, 10000)
     setShowForm(false)
   }
 

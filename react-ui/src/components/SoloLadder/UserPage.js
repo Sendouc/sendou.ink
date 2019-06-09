@@ -63,7 +63,7 @@ const UserPage = ({ userIdOrName }) => {
         <Grid stackable>
           <Grid.Column width={3}>
             <Image 
-              src={`https://cdn.discordapp.com/avatars/${userData.discord_id}/${userData.avatar}.png`} 
+              src={userData.avatar ? `https://cdn.discordapp.com/avatars/${userData.discord_id}/${userData.avatar}.png` : 'https://cdn.discordapp.com/avatars/455039198672453645/088ae3838cc3b08b73f79aab0fefec2f.png'} 
               rounded
             />
           </Grid.Column>
@@ -75,7 +75,6 @@ const UserPage = ({ userIdOrName }) => {
               </List.Item>
               {twitchDiscord()}
               {/* "Member of Team Olive // Captain of Team Olive" */}
-              {/* Weapons?" */}
             </List>
           </Grid.Column>
         </Grid>
