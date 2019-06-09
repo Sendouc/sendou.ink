@@ -22,7 +22,7 @@ mongoose.set('useCreateIndex', true)
 passport.use(new DiscordStrategy({
   clientID: process.env.CLIENT_ID,
   clientSecret: process.env.CLIENT_SECRET,
-  callbackURL: 'http://localhost:3001/auth/discord/callback',
+  callbackURL: 'http://www.sendou.ink/auth/discord/callback',
   scope: ['identify', 'connections']
 },
 function(accessToken, refreshToken, profile, cb) {
