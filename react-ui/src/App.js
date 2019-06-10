@@ -14,6 +14,7 @@ import MapListGenerator from './components/Tools/MapListGenerator'
 import Rotations from './components/Tools/Rotations'
 import Links from './components/Misc/Links'
 import UserPage from './components/SoloLadder/UserPage'
+import HomePage from './components/Misc/HomePage'
 
 const App = () => {
   const [menuSelection, setMenuSelection] = useState('home')
@@ -25,7 +26,7 @@ const App = () => {
           <div>
             <ScrollToTop />
             <Switch>
-              <Route exact path="/" render={() => <Redirect to="/xsearch"/>} />
+              <Route exact path="/" render={() => <HomePage />} />
               <Route path="/xleaderboard" render={() => <WeaponLeaderboardSelector setMenuSelection={setMenuSelection} />} />
               <Route exact path="/xsearch" render={() => <XSearch setMenuSelection={setMenuSelection} />} />
               <Route exact path="/xsearch/w/:wpn" render={({ match }) =>

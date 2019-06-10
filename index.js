@@ -40,9 +40,9 @@ function(accessToken, refreshToken, profile, cb) {
     const connection = profile.connections[i]
     if (connection.visibility === 1 && connection.verified) {
       if (connection.type === 'twitch') {
-        userToSave.twitch_name = connection.name
+        userToSave.twitch_name = connection.name.toLowerCase()
       } else if (connection.type === 'twitter') {
-        userToSave.twitter_name = connection.name
+        userToSave.twitter_name = connection.name.toLowerCase()
       }
     }
   }
@@ -219,7 +219,7 @@ const typeDefs = gql`
     rotationData: String
     links: [Link!]!
     user: User
-    searchForUser(discord_id: String!): User
+    searchForUser(discord_id: String twitter: String): User
     searchForBuilds(discord_id: String!): [Build]!
     deleteBuild(id: ID!): Boolean
   }
@@ -545,8 +545,14 @@ const resolvers = {
       return ctx.user
     },
     searchForUser: (root, args) => {
+      let searchCriteria = {}
+      if (args.twitter) searchCriteria = {twitter_name: args.twitter}
+      else if (args.discord_id) searchCriteria = {discord_id: args.discord_id}
+      else throw new UserInputError('no twitter or discord id provided', {
+        invalidArgs: args,
+      })
       return User
-        .findOne({discord_id: args.discord_id})
+        .findOne(searchCriteria)
         .catch(e => {
           throw new UserInputError(e.message, {
             invalidArgs: args,
@@ -638,11 +644,21 @@ function requireHTTPS(req, res, next) {
 
 app.use(requireHTTPS)
 
-app.use(session({ 
+//https://www.npmjs.com/package/express-session
+
+let sess = {
   secret: process.env.SESSION_SECRET,
   resave: false,
-  saveUninitialized: false
- }))
+  saveUninitialized: false,
+  cookie: {}
+}
+
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1) 
+  sess.cookie.secure = true 
+}
+ 
+app.use(session(sess))
 
 app.use(passport.initialize())
 app.use(passport.session())
