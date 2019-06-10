@@ -630,6 +630,19 @@ const server = new ApolloServer({
 const app = express()
 
 app.use(cors())
+
+//https://stackoverflow.com/questions/8605720/how-to-force-ssl-https-in-express-js/31144924#31144924
+
+function requireHTTPS(req, res, next) {
+  // The 'x-forwarded-proto' check is for Heroku
+  if (!req.secure && req.get('x-forwarded-proto') !== 'https' && process.env.NODE_ENV !== "development") {
+    return res.redirect('https://' + req.get('host') + req.url)
+  }
+  next()
+}
+
+app.use(requireHTTPS)
+
 app.use(express.static('build'))
 
 //https://www.npmjs.com/package/express-session
@@ -669,18 +682,6 @@ app.get('/logout', function(req, res){
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, 'build', 'index.html'))
 })
-
-//https://stackoverflow.com/questions/8605720/how-to-force-ssl-https-in-express-js/31144924#31144924
-
-function requireHTTPS(req, res, next) {
-  // The 'x-forwarded-proto' check is for Heroku
-  if (!req.secure && req.get('x-forwarded-proto') !== 'https' && process.env.NODE_ENV !== "development") {
-    return res.redirect('https://' + req.get('host') + req.url)
-  }
-  next()
-}
-
-app.use(requireHTTPS)
 
 const PORT = process.env.PORT || 3001
 app.listen({ port: PORT }, () => {

@@ -3,7 +3,7 @@ import { Container } from 'semantic-ui-react'
 import Footer from './components/Misc/Footer'
 import MainMenu from './components/Misc/MainMenu'
 import NotFound from './components/Misc/NotFound'
-import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 
 import WeaponLeaderboardSelector from './components/XLeaderboard/WeaponLeaderboardSelector'
 import XSearch from './components/XSearch/XSearch'
