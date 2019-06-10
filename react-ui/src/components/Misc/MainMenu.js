@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Menu, Segment, Button, Image, Dropdown } from 'semantic-ui-react'
 import { useQuery } from 'react-apollo-hooks'
 import { userLean } from '../../graphql/queries/userLean'
-import { withRouter } from 'react-router-dom'
+import { withRouter, Link } from 'react-router-dom'
 import { memCakes } from '../../utils/lists'
 
 const MainMenu = withRouter(({ history, menuSelection, setMenuSelection }) => {
@@ -59,7 +59,9 @@ const MainMenu = withRouter(({ history, menuSelection, setMenuSelection }) => {
     <Segment inverted>
       <Menu inverted secondary stackable>
         <Menu.Item>
-          <img src={process.env.PUBLIC_URL + `/memCakes/${memCakePic}`} alt="mem cake logo" onClick={() => setMemCakePic(memCakes[Math.floor(Math.random()*memCakes.length)])}/>
+          <Link to='/'>
+            <Image src={process.env.PUBLIC_URL + `/memCakes/${memCakePic}`} alt="mem cake logo" style={{'maxWidth': '25%', 'height': 'auto'}}/>
+          </Link>
         </Menu.Item>
         <Menu.Item 
           name='maplists' 
@@ -67,7 +69,7 @@ const MainMenu = withRouter(({ history, menuSelection, setMenuSelection }) => {
           onClick={() => { history.push('/maps') }} 
         />
         <Menu.Item 
-          name='rotations' 
+          name='rotation' 
           active={menuSelection === 'rotations'} 
           onClick={() => { 
             history.push('/rotation')

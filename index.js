@@ -102,7 +102,6 @@ const typeDefs = gql`
     topBrella: [Placement]
     topBrellaScore: Float
   }
-
   type Placement {
     id: ID!
     name: String!
@@ -114,17 +113,14 @@ const typeDefs = gql`
     month: Int!
     year: Int!
   }
-
   type topPlayer {
     placements: [Placement!]!
     modeCount: [Int!]!
   }
-
   type PlayerWithPlacements {
     player: Player!
     placements: [Placement!]!
   }
-
   type Maplist {
     name: String!
     sz: [String!]!
@@ -132,20 +128,17 @@ const typeDefs = gql`
     rm: [String!]!
     cb: [String!]!
   }
-
   enum LinkType {
     DISCORD
     GUIDE
     MISC
   }
-
   type Link {
     title: String!
     url: String!
     description: String!
     type: LinkType!
   }
-
   type User {
     username: String!
     discriminator: String!
@@ -155,11 +148,9 @@ const typeDefs = gql`
     twitter_name: String
     custom_url: String
   }
-
   type Token {
     value: String!
   }
-
   enum Ability {
     CB
     LDE
@@ -187,7 +178,6 @@ const typeDefs = gql`
     SS
     BRU
   }
-
   type Build {
     id: ID!
     discord_id: String!
@@ -198,7 +188,6 @@ const typeDefs = gql`
     shoes: [Ability!]!
     createdAt: String
   }
-
   type Query {
     playerCount: Int!
     topTotalPlayers (amount: Int): [Player!]!
@@ -223,7 +212,6 @@ const typeDefs = gql`
     searchForBuilds(discord_id: String!): [Build]!
     deleteBuild(id: ID!): Boolean
   }
-
   type Mutation {
     createUser(
       username: String!

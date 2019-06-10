@@ -1,15 +1,15 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "35b5aaa9722c8b2fcd00aa3be2a13845",
+    "revision": "71842041eea18563ab917159b1dbf3b8",
     "url": "/index.html"
   },
   {
-    "revision": "c9a46f4ed5a7a59a324b",
-    "url": "/static/js/2.e89314dc.chunk.js"
+    "revision": "834d30fd9e3e84494043",
+    "url": "/static/js/2.8f79602a.chunk.js"
   },
   {
-    "revision": "bb74ec896158185f0dc5",
-    "url": "/static/js/main.b0f41a39.chunk.js"
+    "revision": "3198713366d488e35a2e",
+    "url": "/static/js/main.11805f7e.chunk.js"
   },
   {
     "revision": "42ac5946195a7306e2a5",
@@ -58,6 +58,10 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "6610593ec2d587f95a48f82f3f31ab2c",
     "url": "/static/media/kelp_dome.6610593e.png"
+  },
+  {
+    "revision": "34fca5d92b48e8f6b4c1a2501cea5ce1",
+    "url": "/static/media/koshienBanner.34fca5d9.png"
   },
   {
     "revision": "7aa42d817869c09c604225434d0c09c1",
@@ -110,10 +114,6 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "87b5e71c29a70bc15a501002b4192517",
     "url": "/static/media/rig.87b5e71c.png"
-  },
-  {
-    "revision": "60e0f75c3cf5b2d1eb076b080b4f7f16",
-    "url": "/static/media/rigBanner.60e0f75c.png"
   },
   {
     "revision": "ee623ae225822d4a257120c58516eb86",
