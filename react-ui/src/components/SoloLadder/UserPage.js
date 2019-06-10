@@ -1,5 +1,6 @@
 import React from 'react'
 import { Tab, Image, Loader, List, Grid } from 'semantic-ui-react'
+import { Redirect } from 'react-router-dom'
 import { useQuery } from 'react-apollo-hooks'
 import { searchForUser } from '../../graphql/queries/searchForUser'
 import { userLean } from '../../graphql/queries/userLean'
@@ -19,6 +20,8 @@ const UserPage = ({ userIdOrName }) => {
   }
 
   const userData = data.searchForUser
+  if (!userData) return <Redirect to='/404' />
+
   document.title = `${userData.username} - sendou.ink`
 
   const twitchDiscord = () => {

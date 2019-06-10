@@ -643,8 +643,6 @@ function requireHTTPS(req, res, next) {
 
 app.use(requireHTTPS)
 
-app.use(express.static('build'))
-
 //https://www.npmjs.com/package/express-session
 
 let sess = {
@@ -660,6 +658,8 @@ if (process.env.NODE_ENV === 'production') {
 }
  
 app.use(session(sess))
+
+app.use(express.static('build'))
 
 app.use(passport.initialize())
 app.use(passport.session())
