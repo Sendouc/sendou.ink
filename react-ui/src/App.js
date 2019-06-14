@@ -16,6 +16,7 @@ import Links from './components/Misc/Links'
 import UserPage from './components/SoloLadder/UserPage'
 import HomePage from './components/Misc/HomePage'
 import BuildSearch from './components/SoloLadder/BuildSearch'
+import Admin from './components/Misc/Admin'
 
 const App = () => {
   const [menuSelection, setMenuSelection] = useState('home')
@@ -58,6 +59,7 @@ const App = () => {
                 />
               } />
               <Route path="/404" render={() => <NotFound />} />
+              <Route path="/admin" render={() => <Admin />} />
               <Route path="*" render={() => <NotFound />} />
             </Switch>
           </div>

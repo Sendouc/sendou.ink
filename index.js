@@ -603,11 +603,12 @@ const resolvers = {
   },
   Mutation: {
     updateTwitter: async (root, args, ctx) => {
-      if (!ctx.user.id !== PROCESS.ENV.ADMIN_ID) throw new AuthenticationError('not admin')
+      if (!ctx.user.discord_id !== PROCESS.ENV.ADMIN_ID) throw new AuthenticationError('not admin')
 
       const player = await Player.findOne({ unique_id: args.unique_id })
+      if (!player) throw new UserInputError
 
-      player.twitter = args.twitter.toLowerCase()
+      player.twitter_name = args.twitter.toLowerCase()
 
       try {
         await player.save()
@@ -675,6 +676,8 @@ const resolvers = {
             invalidArgs: args,
           }
         })
+
+      if (!user) return null
       
       return user.discord_id
     }
