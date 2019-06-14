@@ -229,6 +229,10 @@ const typeDefs = gql`
       username: String!
       password: String!
     ): Token
+    updateTwitter(
+      unique_id: String!
+      twitter: String!
+    ): Boolean
     addBuild(
       weapon: String!
       title: String
@@ -238,6 +242,9 @@ const typeDefs = gql`
     ): Build
     deleteBuild(
       id: ID!
+    ): Boolean
+    updateBuild(
+      build: Build!
     ): Boolean
   }    
 `
@@ -598,6 +605,23 @@ const resolvers = {
     }
   },
   Mutation: {
+    editTwitter: async (root, args, ctx) => {
+      if (!ctx.user.id !== PROCESS.ENV.ADMIN_ID) throw new AuthenticationError('not admin')
+
+      const player = await Player.findOne({ unique_id: args.unique_id })
+
+      player.twitter = args.twitter.toLowerCase()
+
+      try {
+        await player.save()
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        })
+      }
+
+      return true
+    },
     addBuild: async (root, args, ctx) => {
       if (!ctx.user) throw new AuthenticationError('User not logged in.')
       if (args.title) if (args.title.length > 100) throw new UserInputError('Title too long.', {
@@ -646,6 +670,7 @@ const resolvers = {
   },
   Player: {
     discord_id: async (root) => {
+      if (!root.twitter) return null
       const user = await User
         .findOne({ twitter_name: root.twitter })
         .catch(e => {

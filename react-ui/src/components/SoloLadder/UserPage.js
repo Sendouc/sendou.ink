@@ -15,8 +15,12 @@ const UserPage = ({ userIdOrName }) => {
     return <div style={{"paddingTop": "25px", "paddingBottom": "20000px"}} ><Loader active inline='centered' /></div>
   }
 
-  if (error || userLeanQuery.loading) {
+  if (error) {
     return <div style={{"color": "red"}}>{error.message}</div>
+  }
+
+  if (userLeanQuery.error) {
+    return <div style={{"color": "red"}}>{userLeanQuery.error.message}</div>
   }
 
   const userData = data.searchForUser
