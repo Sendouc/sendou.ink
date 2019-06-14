@@ -243,9 +243,6 @@ const typeDefs = gql`
     deleteBuild(
       id: ID!
     ): Boolean
-    updateBuild(
-      build: Build!
-    ): Boolean
   }    
 `
 
@@ -605,7 +602,7 @@ const resolvers = {
     }
   },
   Mutation: {
-    editTwitter: async (root, args, ctx) => {
+    updateTwitter: async (root, args, ctx) => {
       if (!ctx.user.id !== PROCESS.ENV.ADMIN_ID) throw new AuthenticationError('not admin')
 
       const player = await Player.findOne({ unique_id: args.unique_id })
