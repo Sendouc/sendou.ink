@@ -52,7 +52,7 @@ const BuildForm = ({ addBuild, setShowForm, setSuccessMsg }) => {
   return (
     <div>
       <div>
-        <Build build={build} existingAbilities={abilities} setAbilities={setAbilities}/>
+        <Build build={build} existingAbilities={abilities} setAbilities={setAbilities} />
       </div>
       <div style={{"paddingTop": "15px"}}>
         <WeaponForm weaponForm={weaponForm} setWeaponForm={setWeaponForm} showImages={false} />

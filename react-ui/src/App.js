@@ -15,6 +15,7 @@ import Rotations from './components/Tools/Rotations'
 import Links from './components/Misc/Links'
 import UserPage from './components/SoloLadder/UserPage'
 import HomePage from './components/Misc/HomePage'
+import BuildSearch from './components/SoloLadder/BuildSearch'
 
 const App = () => {
   const [menuSelection, setMenuSelection] = useState('home')
@@ -46,6 +47,15 @@ const App = () => {
               } />
               <Route exact path="/u/:user" render={({ match }) => 
                 <UserPage userIdOrName={match.params.user}/>
+              } />
+              <Route exact path="/builds" render={() => 
+                <BuildSearch setMenuSelection={setMenuSelection} />
+              } />
+              <Route exact path="/builds/:weapon" render={({ match }) => 
+                <BuildSearch 
+                  setMenuSelection={setMenuSelection} 
+                  weaponFromUrl={match.params.weapon.replace(/_/g, ' ')} 
+                />
               } />
               <Route path="/404" render={() => <NotFound />} />
               <Route path="*" render={() => <NotFound />} />

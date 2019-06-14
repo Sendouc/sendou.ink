@@ -81,6 +81,7 @@ const typeDefs = gql`
     unique_id: String!
     alias: String
     twitter: String
+    discord_id: String
     weapons: [String!]!
     weaponsCount: Int!
     topTotal: [Placement!]!
@@ -187,6 +188,12 @@ const typeDefs = gql`
     clothing: [Ability!]!
     shoes: [Ability!]!
     createdAt: String
+    top: Boolean!
+    discord_user: User!
+  }
+  type BuildCollection {
+    builds: [Build]!
+    pageCount: Int!
   }
   type Query {
     playerCount: Int!
@@ -210,6 +217,7 @@ const typeDefs = gql`
     user: User
     searchForUser(discord_id: String twitter: String): User
     searchForBuilds(discord_id: String!): [Build]!
+    searchForBuildsByWeapon(weapon: String! page: Int): BuildCollection!
     deleteBuild(id: ID!): Boolean
   }
   type Mutation {
@@ -549,13 +557,44 @@ const resolvers = {
     },
     searchForBuilds: (root, args) => {
       return Build
-        .find( {discord_id: args.discord_id })
+        .find({ discord_id: args.discord_id })
         .sort({'weapon': "asc"})
         .catch(e => {
           throw new UserInputError(e.message, {
-            invalidArgs, args,
+            invalidArgs: args,
           })
         })
+    },
+    searchForBuildsByWeapon: async (root, args) => {
+      const buildsPerPage = 20
+      const currentPage = args.page ? args.page - 1 : 0
+      const searchCriteria = { weapon: args.weapon }
+      const buildCount = await Build
+        .countDocuments(searchCriteria)
+        .catch(e => {
+          throw new UserInputError(e.message, {
+            invalidArgs: args,
+          })
+        })
+
+      const pageCount = Math.ceil(buildCount / buildsPerPage)
+      if (currentPage > pageCount) throw new UserInputError('too big page number given', {
+        invalidArgs: args,
+      })
+
+      const builds = await Build
+        .find(searchCriteria)
+        .skip(buildsPerPage * currentPage)
+        .limit(buildsPerPage)
+        .sort({'top': 'desc', 'updatedAt': 'desc'})
+        .populate('discord_user')
+        .catch(e => {
+          throw new UserInputError(e.message, {
+            invalidArgs: args,
+          })
+        })
+
+      return { builds, pageCount }
     }
   },
   Mutation: {
@@ -603,6 +642,59 @@ const resolvers = {
       }
 
       return true
+    }
+  },
+  Player: {
+    discord_id: async (root) => {
+      const user = await User
+        .findOne({ twitter_name: root.twitter })
+        .catch(e => {
+          throw new UserInputError, {
+            invalidArgs: args,
+          }
+        })
+      
+      return user.discord_id
+    }
+  },
+  Build: {
+    top: async (root) => {
+      if (typeof root.top === 'boolean') return root.top
+      const user = await User
+        .findOne({ discord_id: root.discord_id })
+        .catch(e => {
+          throw new UserInputError, {
+            invalidArgs: args,
+          }
+        })
+
+      if (!user) throw new UserInputError
+
+      if (!user.twitter_name) {
+        await Build.findByIdAndUpdate(root._id, { top: false })
+        return false
+      }
+
+      const player = await Player
+        .findOne({ twitter: user.twitter_name })
+        .catch(e => {
+          throw new UserInputError, {
+            invalidArgs: args,
+          }
+        })
+
+      if (!player) { //twitter not set or played not in top 500
+        await Build.findByIdAndUpdate(root._id, { top: false })
+        return false
+      }
+
+      if (player.weapons.indexOf(root.weapon) >= 0) { //if player has reached top 500 with the weapon
+        await Build.findByIdAndUpdate(root._id, { top: true })
+        return true
+      }
+
+      await Build.findByIdAndUpdate(root._id, { top: false })
+      return false
     }
   }
 }

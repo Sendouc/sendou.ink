@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import { weapons } from '../../utils/lists'
 import weaponDict from '../../utils/english_internal.json'
 
-const WeaponForm = ({ weaponForm, setWeaponForm, showImages=true }) => {
+const WeaponForm = withRouter(({ history, weaponForm, setWeaponForm, showImages=true, push=false }) => {
   return (
     <div>
       <Dropdown 
@@ -22,12 +22,15 @@ const WeaponForm = ({ weaponForm, setWeaponForm, showImages=true }) => {
           )
         )
         }
-        onChange={(event, { value }) => setWeaponForm(value)}
+        onChange={(event, { value }) => {
+          setWeaponForm(value)
+          if (push) history.push(`/builds/${value.replace(/ /g, '_')}`)
+        }}
         value={weaponForm}
       />
     </div>
   )
-}
+})
 
 export const WeaponFormWithButton = withRouter(({ history }) => {
   const [weaponForm, setWeaponForm] = useState('')

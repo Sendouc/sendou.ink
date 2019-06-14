@@ -31,7 +31,7 @@ import OS from '../img/abilityIcons/OS.png'
 import EMPTY from '../img/abilityIcons/EMPTY.png'
 
 const Build = ({ build, existingAbilities, setAbilities, removeBuildFunction }) => {
-
+  
   const lineStyle = {
     "display": "inline-block",
     "width": "2px",
@@ -116,9 +116,6 @@ const Build = ({ build, existingAbilities, setAbilities, removeBuildFunction }) 
   }
 
   const buildTitle = !build.title || build.title === "" ? `${build.weapon} Build` : build.title
-
-  console.log('removeBuildFunction', removeBuildFunction)
-  console.log('!removeBuildFunction', !removeBuildFunction)
   
   return (
     <div>

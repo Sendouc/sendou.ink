@@ -10,6 +10,7 @@ query searchForBuilds($discord_id: String!) {
     clothing
     shoes
     createdAt
+    top
   }
 }
 `

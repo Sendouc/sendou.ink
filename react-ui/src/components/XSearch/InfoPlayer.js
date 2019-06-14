@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useQuery } from 'react-apollo-hooks'
 import { Loader, Header, Image, Icon, List } from 'semantic-ui-react'
+import { Link } from 'react-router-dom'
 
 import { playerInfo } from '../../graphql/queries/playerInfo'
 import TopPlacementTable from './TopPlacementsTable'
@@ -89,6 +90,7 @@ const InfoPlayer = ({ uid, setMenuSelection, twitter }) => {
           {playerData.twitter ? <a href={`https://twitter.com/${playerData.twitter}`}><Icon style={{"paddingLeft": "5px"}} size='small' name="twitter"/></a> : null}
         </Header>
       : null}
+      {(setMenuSelection && playerData.discord_id) ? <><Link to={`/u/${playerData.discord_id}`}>User page</Link><br/></> : null}
       {playerData.topTotalScore ? <><i>Total Power: {playerData.topTotalScore}</i><br /></> : null}
       {playerData.topShooterScore ? <><i>Shooter Power: {playerData.topShooterScore}</i><br /></> : null}
       {playerData.topBlasterScore ? <><i>Blaster Power: {playerData.topBlasterScore}</i><br /></> : null}

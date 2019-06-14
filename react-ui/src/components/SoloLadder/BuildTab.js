@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useQuery, useMutation } from 'react-apollo-hooks'
-import { Button, Loader, Message, Popup } from 'semantic-ui-react'
+import { Button, Loader, Message } from 'semantic-ui-react'
 
 import { addBuild } from '../../graphql/mutations/addBuild'
 import { searchForBuilds } from '../../graphql/queries/searchForBuilds'
@@ -13,7 +13,6 @@ const BuildTab = ({ user, userViewed }) => {
   const [ errorMsg, setErrorMsg ] = useState(null)
   const [ successMsg, setSuccessMsg ] = useState(null)
   const [ showForm, setShowForm ] = useState(false)
-  const [ deleteConfirm, setDeleteConfirm ] = useState(false)
 
   const handleError = (error) => {
     errorMsg(error.graphQLErrors[0].message)
@@ -39,7 +38,6 @@ const BuildTab = ({ user, userViewed }) => {
 
     const buildTitle = title ? title : `${weapon} build`
     
-    setDeleteConfirm(false)
     setSuccessMsg(`Succesfully deleted ${buildTitle}`)
     setTimeout(() => { setSuccessMsg(null) }, 10000)
   }
@@ -74,7 +72,7 @@ const BuildTab = ({ user, userViewed }) => {
       <div style={{"paddingTop": "10px"}}>
         {data.searchForBuilds.map(b => 
           <div key={b.id} style={{"paddingTop": "10px"}}>
-            <Build build={b} removeBuildFunction={removeBuildFunction} />
+            <Build build={b} removeBuildFunction={removeBuildFunction} setSuccessMsg={setSuccessMsg} />
           </div>)}
         {data.searchForBuilds.length === 0 ? 'So far this user has no builds!' : null}
       </div>

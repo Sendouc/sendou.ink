@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Menu, Segment, Button, Image, Dropdown } from 'semantic-ui-react'
 import { useQuery } from 'react-apollo-hooks'
 import { userLean } from '../../graphql/queries/userLean'
@@ -6,7 +6,6 @@ import { withRouter, Link } from 'react-router-dom'
 import { memCakes } from '../../utils/lists'
 
 const MainMenu = withRouter(({ history, menuSelection, setMenuSelection }) => {
-  const [memCakePic, setMemCakePic] = useState(memCakes[Math.floor(Math.random()*memCakes.length)])
   const { data, error, loading } = useQuery(userLean)
 
   const logIn = () => {
@@ -55,6 +54,8 @@ const MainMenu = withRouter(({ history, menuSelection, setMenuSelection }) => {
     )
   }
 
+  const memCakePic = memCakes[Math.floor(Math.random()*memCakes.length)]
+
   return (
     <Segment inverted>
       <Menu inverted secondary stackable>
@@ -74,6 +75,14 @@ const MainMenu = withRouter(({ history, menuSelection, setMenuSelection }) => {
           onClick={() => { 
             history.push('/rotation')
             setMenuSelection('rotations')
+          }} 
+        />
+        <Menu.Item 
+          name='builds' 
+          active={menuSelection === 'builds'} 
+          onClick={() => { 
+            history.push('/builds')
+            setMenuSelection('builds')
           }} 
         />
         <Menu.Item

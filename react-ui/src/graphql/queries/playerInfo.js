@@ -8,6 +8,7 @@ query playerInfo($uid: String, $twitter: String) {
       weapons
       alias
       twitter
+      discord_id
       topTotalScore
       topShooterScore
       topBlasterScore

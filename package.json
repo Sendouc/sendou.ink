@@ -10,21 +10,21 @@
   "author": "Sendou",
   "license": "ISC",
   "dependencies": {
-    "apollo-server": "^2.4.8",
-    "apollo-server-express": "^2.5.0",
-    "axios": "^0.18.0",
+    "apollo-server": "^2.6.3",
+    "apollo-server-express": "^2.6.3",
+    "axios": "^0.18.1",
     "btoa": "^1.2.1",
     "cors": "^2.8.5",
     "dotenv": "^7.0.0",
-    "express-session": "^1.16.1",
-    "graphql": "^14.2.1",
-    "mongoose": "^5.5.5",
+    "express-session": "^1.16.2",
+    "graphql": "^14.3.1",
+    "mongoose": "^5.5.14",
     "mongoose-unique-validator": "^2.0.3",
     "node-fetch": "^2.6.0",
     "passport": "^0.4.0",
     "passport-discord": "^0.1.3"
   },
   "devDependencies": {
-    "nodemon": "^1.19.0"
+    "nodemon": "^1.19.1"
   }
 }
