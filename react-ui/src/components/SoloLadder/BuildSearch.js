@@ -4,6 +4,7 @@ import BuildCollection from './BuildCollection'
 
 const BuildSearch = ({ setMenuSelection, weaponFromUrl }) => {
   const [weapon, setWeapon] = useState(weaponFromUrl ? weaponFromUrl : '')
+  const [page, setPage] = useState(1)
 
   useEffect(() => {
     setMenuSelection('builds')
@@ -13,10 +14,10 @@ const BuildSearch = ({ setMenuSelection, weaponFromUrl }) => {
   return (
     <div>
       <div>
-        <WeaponForm weaponForm={weapon} setWeaponForm={setWeapon} push />
+        <WeaponForm weaponForm={weapon} setWeaponForm={setWeapon} push setPage={setPage} />
       </div>
       <div>
-        {weapon === '' ? null : <BuildCollection weapon={weapon}/>}
+        {weapon === '' ? null : <BuildCollection weapon={weapon} page={page} setPage={setPage} />}
       </div>
     </div>
   )

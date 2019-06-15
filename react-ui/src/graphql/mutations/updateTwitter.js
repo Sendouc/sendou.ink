@@ -1,6 +1,6 @@
-import { gql } from './node_modules/apollo-boost'
+import { gql } from 'apollo-boost'
 
-export const addBuild = gql`
+export const updateTwitter = gql`
 mutation updateTwitter ($unique_id: String!, $twitter: String!) {
    updateTwitter(
      unique_id: $unique_id,

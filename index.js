@@ -218,7 +218,6 @@ const typeDefs = gql`
     searchForUser(discord_id: String twitter: String): User
     searchForBuilds(discord_id: String!): [Build]!
     searchForBuildsByWeapon(weapon: String! page: Int): BuildCollection!
-    deleteBuild(id: ID!): Boolean
   }
   type Mutation {
     createUser(
@@ -603,12 +602,17 @@ const resolvers = {
   },
   Mutation: {
     updateTwitter: async (root, args, ctx) => {
-      if (!ctx.user.discord_id !== PROCESS.ENV.ADMIN_ID) throw new AuthenticationError('not admin')
+      if (ctx.user.discord_id !== process.env.ADMIN_ID) throw new AuthenticationError('not admin')
 
-      const player = await Player.findOne({ unique_id: args.unique_id })
+      const player = await Player.findOne({ unique_id: args.unique_id }).catch(e => {
+        throw new UserInputError(e.message, {
+          invalidArgs: args,
+        })
+      })
+
       if (!player) throw new UserInputError
 
-      player.twitter_name = args.twitter.toLowerCase()
+      player.twitter = args.twitter.toLowerCase()
 
       try {
         await player.save()
@@ -617,7 +621,7 @@ const resolvers = {
           invalidArgs: args,
         })
       }
-
+      
       return true
     },
     addBuild: async (root, args, ctx) => {

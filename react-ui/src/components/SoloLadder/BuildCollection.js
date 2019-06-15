@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useQuery } from 'react-apollo-hooks'
 import { Table, Loader, Image, Pagination, Header, Popup, Icon } from 'semantic-ui-react'
 import { Link, Redirect } from 'react-router-dom'
@@ -61,8 +61,7 @@ const abilities = {
   "OS": {image: OS, fullName: "Object Shredder", mainOnly: true}
 }
 
-const BuildCollection = ({ weapon }) => {
-  const [page, setPage] = useState(1)
+const BuildCollection = ({ weapon, page, setPage }) => {
   const { data, error, loading } = useQuery(searchForBuildsByWeapon, { variables: { weapon, page }})
   
   if (loading) {
