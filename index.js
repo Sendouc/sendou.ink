@@ -83,7 +83,6 @@ const typeDefs = gql`
     twitter: String
     discord_id: String
     weapons: [String!]!
-    weaponsCount: Int!
     topTotal: [Placement!]!
     topTotalScore: Float
     topShooter: [Placement]
@@ -207,7 +206,6 @@ const typeDefs = gql`
     topDualiesPlayers (amount: Int): [Player!]!
     topBrellaPlayers (amount: Int): [Player!]!
     topPlayers (weapon: String!): topPlayer!
-    topFlex: [Player!]!
     weaponPlacementStats(weapon: String!): [Int!]!
     playerInfo(uid: String twitter: String): PlayerWithPlacements!
     searchForPlayers(name: String! exact: Boolean): [Placement]!
@@ -433,12 +431,6 @@ const resolvers = {
 
       return {placements: placements.slice(0, 101), modeCount: [m.sz+m.tc+m.rm+m.cb, m.sz, m.tc, m.rm, m.cb]}
     },
-    topFlex: async (root, args) => {
-      return Player
-        .find({})
-        .sort({ "weaponsCount": "desc", "topTotalScore": "desc" })
-        .limit(50)
-    },
     playerInfo: async (root, args) => {
       let searchCriteria = {}
       if (args.uid) searchCriteria = { "unique_id": args.uid }
@@ -604,7 +596,7 @@ const resolvers = {
     updateTwitter: async (root, args, ctx) => {
       if (ctx.user.discord_id !== process.env.ADMIN_ID) throw new AuthenticationError('not admin')
 
-      const player = await Player.findOne({ unique_id: args.unique_id }).catch(e => {
+      const player = await Player.findOne({ unique_id: args.unique_id.trim() }).catch(e => {
         throw new UserInputError(e.message, {
           invalidArgs: args,
         })
@@ -612,7 +604,7 @@ const resolvers = {
 
       if (!player) throw new UserInputError
 
-      player.twitter = args.twitter.toLowerCase()
+      player.twitter = args.twitter.trim().toLowerCase()
 
       try {
         await player.save()

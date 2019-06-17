@@ -6,7 +6,6 @@ const playerSchema = new mongoose.Schema({
   alias: String,
   twitter: String,
   weapons: [String],
-  weaponsCount: { type: Number, required: true },
   topTotal: {
     type: [{
         type: mongoose.Schema.Types.ObjectId,
