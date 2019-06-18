@@ -5,6 +5,7 @@ import { Button, Loader, Message } from 'semantic-ui-react'
 import { addBuild } from '../../graphql/mutations/addBuild'
 import { searchForBuilds } from '../../graphql/queries/searchForBuilds'
 import { deleteBuild } from '../../graphql/mutations/deleteBuild'
+import { updateBuild } from '../../graphql/mutations/updateBuild'
 import BuildForm from './BuildForm'
 import Build from './Build'
 
@@ -31,6 +32,11 @@ const BuildTab = ({ user, userViewed }) => {
     refetchQueries: [{ query: searchForBuilds, variables: { discord_id: userViewed.discord_id }} ]
   })
 
+  const editBuildMutation = useMutation(updateBuild, {
+    onError: handleError,
+    refetchQueries: [{ query: searchForBuilds, variables: { discord_id: userViewed.discord_id }} ]
+  })
+
   const deleteBuildById = async ({ id, title, weapon }) => {
     await deleteBuildMutation({
       variables: { id }
@@ -38,7 +44,16 @@ const BuildTab = ({ user, userViewed }) => {
 
     const buildTitle = title ? title : `${weapon} build`
     
-    setSuccessMsg(`Succesfully deleted ${buildTitle}`)
+    setSuccessMsg(`Successfully deleted ${buildTitle}`)
+    setTimeout(() => { setSuccessMsg(null) }, 10000)
+  }
+
+  const editBuildById = async (build) => {
+    await editBuildMutation({
+      variables: { ...build }
+    })
+    
+    setSuccessMsg('Build successfully edited')
     setTimeout(() => { setSuccessMsg(null) }, 10000)
   }
 
@@ -51,6 +66,7 @@ const BuildTab = ({ user, userViewed }) => {
   }
 
   const removeBuildFunction = user && user.discord_id === userViewed.discord_id ? deleteBuildById : null
+  const editBuildFunction = user && user.discord_id === userViewed.discord_id ? editBuildById : null
 
   return (
     <div>
@@ -72,7 +88,12 @@ const BuildTab = ({ user, userViewed }) => {
       <div style={{"paddingTop": "10px"}}>
         {data.searchForBuilds.map(b => 
           <div key={b.id} style={{"paddingTop": "10px"}}>
-            <Build build={b} removeBuildFunction={removeBuildFunction} setSuccessMsg={setSuccessMsg} />
+            <Build 
+              build={b} 
+              removeBuildFunction={removeBuildFunction} 
+              editBuildFunction={editBuildFunction}
+              setSuccessMsg={setSuccessMsg} 
+            />
           </div>)}
         {data.searchForBuilds.length === 0 ? 'So far this user has no builds!' : null}
       </div>

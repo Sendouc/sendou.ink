@@ -1,7 +1,8 @@
 /* eslint-disable jsx-a11y/alt-text */
-import React from 'react'
+import React, { useState } from 'react'
 import { Header, Segment, List, Grid, Button, Popup } from 'semantic-ui-react'
 import weaponDict from '../../utils/english_internal.json'
+import BuildForm from './BuildForm'
 
 import BDU from '../img/abilityIcons/BDU.png'
 import BRU from '../img/abilityIcons/BRU.png'
@@ -30,7 +31,10 @@ import TI from '../img/abilityIcons/TI.png'
 import OS from '../img/abilityIcons/OS.png'
 import EMPTY from '../img/abilityIcons/EMPTY.png'
 
-const Build = ({ build, existingAbilities, setAbilities, removeBuildFunction }) => {
+const Build = ({ build, existingAbilities, setAbilities, removeBuildFunction, editBuildFunction }) => {
+  const [showEdit, setShowEdit] = useState(false)
+
+  if (showEdit) return <BuildForm existingBuild={build} setShowEdit={setShowEdit} editBuildFunction={editBuildFunction} />
   
   const lineStyle = {
     "display": "inline-block",
@@ -148,10 +152,15 @@ const Build = ({ build, existingAbilities, setAbilities, removeBuildFunction }) 
           </Grid.Column>
           <Grid.Column verticalAlign='bottom'>
             {setAbilities ? null : <i>Added {new Date(parseInt(build.createdAt)).toLocaleString('en-GB')}</i>} 
-            {removeBuildFunction ?
-              <span style={{'paddingLeft': '10px'}}>
+            {removeBuildFunction ? //if they can remove they can edit
+              <span style={{'paddingLeft': '10px', 'float': 'none', 'whiteSpace': 'nowrap'}}>
                 <Popup 
-                    trigger={<Button circular size='mini' icon='trash' />}
+                    trigger={<Button circular size='mini' icon='edit' />}
+                    hoverable
+                    position='bottom right'
+                  ><Button onClick={ () => setShowEdit(true) }>{'Edit'}</Button></Popup>
+                <Popup 
+                    trigger={<Button circular size='mini' negative icon='trash' />}
                     hoverable
                     position='bottom right'
                   ><Button negative onClick={ () => removeBuildFunction(build) }>{'Delete'}</Button></Popup>

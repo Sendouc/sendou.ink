@@ -4,12 +4,13 @@ import WeaponForm from '../XSearch/WeaponForm'
 import Build from './Build'
 import AbilityButtons from './AbilityButtons'
 
-const BuildForm = ({ addBuild, setShowForm, setSuccessMsg }) => {
-  const [weaponForm, setWeaponForm] = useState('')
-  const [title, setTitle] = useState('')
-  const [abilities, setAbilities] = useState([["", "", "", ""], ["", "", "", ""], ["", "", "", ""]])
+const BuildForm = ({ addBuild, setShowForm, setSuccessMsg, existingBuild, setShowEdit, editBuildFunction }) => {
+  const [weaponForm, setWeaponForm] = useState(existingBuild ? existingBuild.weapon : '')
+  const [title, setTitle] = useState(existingBuild ? existingBuild.title : '')
+  const [abilities, setAbilities] = useState(existingBuild ? [[...existingBuild.headgear], [...existingBuild.clothing], [...existingBuild.shoes]] : [["", "", "", ""], ["", "", "", ""], ["", "", "", ""]])
 
   const build = {
+    id: existingBuild ? existingBuild.id : null,
     weapon: weaponForm,
     title,
     headgear: abilities[0],
@@ -34,7 +35,7 @@ const BuildForm = ({ addBuild, setShowForm, setSuccessMsg }) => {
     setTimeout(() => { setSuccessMsg(null) }, 10000)
     setShowForm(false)
   }
-
+  
   function isBuildComplete() {
     if (title.length > 100) return false
     if (weaponForm === '') return false
@@ -73,7 +74,15 @@ const BuildForm = ({ addBuild, setShowForm, setSuccessMsg }) => {
         <AbilityButtons abilities={abilities} setAbilities={setAbilities} />
       </div>
       <div style={{"paddingTop": "10px"}}>
+        {editBuildFunction ?
+        <><Button disabled={!isBuildComplete()} onClick={() => {
+          editBuildFunction(build)
+          setShowEdit(false)
+          window.scrollTo(0, 0)
+        }}>Edit build</Button> 
+        <Button negative onClick={() => setShowEdit(false)}>Cancel</Button></> :
         <Button disabled={!isBuildComplete()} onClick={submit}>Add build</Button> 
+        }
       </div>
     </div>
    )

@@ -240,6 +240,14 @@ const typeDefs = gql`
     deleteBuild(
       id: ID!
     ): Boolean
+    updateBuild(
+      id: ID!
+      weapon: String!
+      title: String
+      headgear: [Ability!]!
+      clothing: [Ability!]!
+      shoes: [Ability!]!
+    ): Boolean
   }    
 `
 
@@ -649,6 +657,9 @@ const resolvers = {
 
       const build = await Build.findOne({ _id: args.id})
 
+      if (!build) throw new UserInputError('no build found with the id', {
+        invalidArgs: args,
+      })
       if (ctx.user.discord_id !== build.discord_id) throw new AuthenticationError('no privileges')
 
       try {
@@ -658,6 +669,25 @@ const resolvers = {
           invalidArgs: args,
         })
       }
+
+      return true
+    },
+    updateBuild: async (root, args, ctx) => {
+      if (!ctx.user) throw new AuthenticationError('not authenticated')
+
+      const build = await Build.findOne({ _id: args.id})
+      if (!build) throw new UserInputError('no build found with the id', {
+        invalidArgs: args,
+      })
+
+      if (ctx.user.discord_id !== build.discord_id) throw new AuthenticationError('no privileges to edit the build')
+
+      await Build.findByIdAndUpdate(build._id, { ...args })
+        .catch(e => {
+          throw new UserInputError(error.message, {
+            invalidArgs: args,
+          })
+        })
 
       return true
     }
