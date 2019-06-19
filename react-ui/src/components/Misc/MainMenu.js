@@ -1,9 +1,9 @@
 import React from 'react'
-import { Menu, Segment, Button, Image, Dropdown } from 'semantic-ui-react'
+import { Menu, Button, Image, Dropdown } from 'semantic-ui-react'
 import { useQuery } from 'react-apollo-hooks'
 import { userLean } from '../../graphql/queries/userLean'
-import { withRouter, Link } from 'react-router-dom'
-import { memCakes } from '../../utils/lists'
+import { withRouter } from 'react-router-dom'
+import memcake from '../img/misc/memcake.png'
 
 const MainMenu = withRouter(({ history, menuSelection, setMenuSelection }) => {
   const { data, error, loading } = useQuery(userLean)
@@ -54,57 +54,56 @@ const MainMenu = withRouter(({ history, menuSelection, setMenuSelection }) => {
     )
   }
 
-  const memCakePic = memCakes[Math.floor(Math.random()*memCakes.length)]
-
   return (
-    <Segment inverted>
-      <Menu inverted secondary stackable>
-        <Menu.Item>
-          <Link to='/'>
-            <Image src={process.env.PUBLIC_URL + `/memCakes/${memCakePic}`} alt="mem cake logo" style={{'maxWidth': '25%', 'height': 'auto'}}/>
-          </Link>
-        </Menu.Item>
-        <Menu.Item 
-          name='maplists' 
-          active={menuSelection === 'maplists'} 
-          onClick={() => { history.push('/maps') }} 
-        />
-        <Menu.Item 
-          name='rotation' 
-          active={menuSelection === 'rotations'} 
-          onClick={() => { 
-            history.push('/rotation')
-            setMenuSelection('rotations')
-          }} 
-        />
-        <Menu.Item 
-          name='builds' 
-          active={menuSelection === 'builds'} 
-          onClick={() => { 
-            history.push('/builds')
-            setMenuSelection('builds')
-          }} 
-        />
-        <Menu.Item
-          name='leaderboards'
-          active={menuSelection === 'leaderboards'}
-          onClick={() => { history.push('/xleaderboard') }}
-        />
-        <Menu.Item
-          name='top 500 search'
-          active={menuSelection === 'search'}
-          onClick={() => { history.push('/xsearch') }}
-        />
-        <Menu.Item
-          name='links'
-          active={menuSelection === 'links'}
-          onClick={() => { history.push('/links') }}
-        />
-        <Menu.Menu position='right'>
-          {logIn()}
-        </Menu.Menu>
-      </Menu>
-    </Segment>
+    <Menu stackable borderless>
+      <Menu.Item>
+        <img src={memcake} alt='memcake logo' />
+      </Menu.Item>
+      <Menu.Item 
+        name='home' 
+        active={menuSelection === 'home'} 
+        onClick={() => { history.push('/') }} 
+      />
+      <Menu.Item 
+        name='maplists' 
+        active={menuSelection === 'maplists'} 
+        onClick={() => { history.push('/maps') }} 
+      />
+      <Menu.Item 
+        name='rotation' 
+        active={menuSelection === 'rotations'} 
+        onClick={() => { 
+          history.push('/rotation')
+          setMenuSelection('rotations')
+        }} 
+      />
+      <Menu.Item 
+        name='builds' 
+        active={menuSelection === 'builds'} 
+        onClick={() => { 
+          history.push('/builds')
+          setMenuSelection('builds')
+        }} 
+      />
+      <Menu.Item
+        name='leaderboards'
+        active={menuSelection === 'leaderboards'}
+        onClick={() => { history.push('/xleaderboard') }}
+      />
+      <Menu.Item
+        name='top 500 search'
+        active={menuSelection === 'search'}
+        onClick={() => { history.push('/xsearch') }}
+      />
+      <Menu.Item
+        name='links'
+        active={menuSelection === 'links'}
+        onClick={() => { history.push('/links') }}
+      />
+      <Menu.Menu position='right'>
+        {logIn()}
+      </Menu.Menu>
+    </Menu>
   )
 })
 

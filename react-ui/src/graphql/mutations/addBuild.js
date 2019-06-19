@@ -15,7 +15,7 @@ mutation addBuild ($weapon: String!, $title: String, $headgear: [Ability!]!, $cl
      headgear
      clothing
      shoes
-     createdAt
+     updatedAt
    }
 }
 `

@@ -151,7 +151,7 @@ const Build = ({ build, existingAbilities, setAbilities, removeBuildFunction, ed
             </List>
           </Grid.Column>
           <Grid.Column verticalAlign='bottom'>
-            {setAbilities ? null : <i>Added {new Date(parseInt(build.createdAt)).toLocaleString('en-GB')}</i>} 
+            {setAbilities ? null : <i>Last updated {new Date(parseInt(build.updatedAt)).toLocaleString('en-GB')}</i>} 
             {removeBuildFunction ? //if they can remove they can edit
               <span style={{'paddingLeft': '10px', 'float': 'none', 'whiteSpace': 'nowrap'}}>
                 <Popup 

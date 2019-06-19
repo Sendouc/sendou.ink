@@ -3,7 +3,8 @@ import { Header, Image } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import koshienBanner from '../img/misc/koshienBanner.png'
 
-const HomePage = () => {
+const HomePage = ({ setMenuSelection }) => {
+  setMenuSelection('home')
   return (
     <div>
       <div style={{'textAlign': 'center'}}>

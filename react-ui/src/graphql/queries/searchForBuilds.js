@@ -9,7 +9,7 @@ query searchForBuilds($discord_id: String!) {
     headgear
     clothing
     shoes
-    createdAt
+    updatedAt
     top
   }
 }

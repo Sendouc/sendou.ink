@@ -239,23 +239,23 @@ const Rotations = ({ setMenuSelection }) => {
           return (
             <div key={r.start_time} style={{"paddingTop": "25px"}}>
               <Header size='small' disabled={preferences[modeShort[r.rule.name]][r.stage_a.name] && preferences[modeShort[r.rule.name]][r.stage_b.name]}>{header}</Header>
-              <Segment inverted disabled={preferences[modeShort[r.rule.name]][r.stage_a.name] && preferences[modeShort[r.rule.name]][r.stage_b.name]}>
+              <Segment disabled={preferences[modeShort[r.rule.name]][r.stage_a.name] && preferences[modeShort[r.rule.name]][r.stage_b.name]}>
               <Grid columns={3} stackable>
                 <Grid.Row>
                   <Grid.Column>
-                    <Header textAlign='center' inverted>
+                    <Header textAlign='center'>
                       <Image src={leagueIcon} style={{"paddingBottom": "10px"}}/> LEAGUE
-                      <Header.Subheader style={{"paddingTop": "10px"}}><Image size="mini" src={modeIcons[rotation.league[i].rule.name]} avatar/>{rotation.league[i].rule.name}</Header.Subheader>
+                      <Header.Subheader style={{"paddingTop": "10px"}}><Image size="mini" src={modeIcons[rotation.league[i].rule.name]} avatar/><b>{rotation.league[i].rule.name}</b></Header.Subheader>
                     </Header>
                   </Grid.Column>
                   <Grid.Column>
-                    <Header textAlign='center' inverted>
+                    <Header textAlign='center'>
                       <Image src={rankedIcon} style={{"paddingBottom": "10px"}}/> RANKED
-                      <Header.Subheader style={{"paddingTop": "10px"}}><Image size="mini" src={modeIcons[r.rule.name]} avatar/>{r.rule.name}</Header.Subheader>
+                      <Header.Subheader style={{"paddingTop": "10px"}}><Image size="mini" src={modeIcons[r.rule.name]} avatar/><b>{r.rule.name}</b></Header.Subheader>
                     </Header> 
                   </Grid.Column>
                   <Grid.Column>
-                    <Header textAlign='center' inverted>
+                    <Header textAlign='center'>
                       <Image src={regularIcon} style={{"paddingBottom": "10px"}}/>REGULAR
                       <Header.Subheader style={{"paddingTop": "10px"}}></Header.Subheader> {/*this is needed for formatting reasons.*/}
                     </Header>

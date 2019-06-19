@@ -186,7 +186,7 @@ const typeDefs = gql`
     headgear: [Ability!]!
     clothing: [Ability!]!
     shoes: [Ability!]!
-    createdAt: String
+    updatedAt: String!
     top: Boolean!
     discord_user: User!
   }
@@ -682,7 +682,7 @@ const resolvers = {
 
       if (ctx.user.discord_id !== build.discord_id) throw new AuthenticationError('no privileges to edit the build')
 
-      await Build.findByIdAndUpdate(build._id, { ...args })
+      await Build.findByIdAndUpdate(build._id, { ...args, top: null })
         .catch(e => {
           throw new UserInputError(error.message, {
             invalidArgs: args,
