@@ -1,6 +1,7 @@
 const { UserInputError, AuthenticationError, gql } = require('apollo-server-express')
 const Build = require('../models/build')
 const User = require('../models/user')
+const Player = require('../models/player')
 const weapons = require('../utils/weapons')
 
 const typeDef = gql`
