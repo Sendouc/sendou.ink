@@ -78,8 +78,8 @@ const BuildTab = ({ user, userViewed }) => {
           />
         </div> : null}
       <div>
-        {data.searchForBuilds.length >= 20 && user && user.discord_id === userViewed.discord_id ? 'Looks like you have 20 buids. Insane flex. Delete a build before adding a new one.' : null}
-        {!user || user.discord_id !== userViewed.discord_id || data.searchForBuilds.length >= 20 ? 
+        {data.searchForBuilds.length >= 100 && user && user.discord_id === userViewed.discord_id ? 'Looks like you have 100 buids. Insane flex. Delete a build before adding a new one.' : null}
+        {!user || user.discord_id !== userViewed.discord_id || data.searchForBuilds.length >= 100 ? 
             null : 
             <Button circular size='tiny' icon={showForm ? 'minus' : 'plus'} onClick={ () => setShowForm(!showForm) } />
         }

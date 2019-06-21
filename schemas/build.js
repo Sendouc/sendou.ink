@@ -134,7 +134,7 @@ const resolvers = {
             invalidArgs: args,
           })
         })
-      if (existingBuilds.length >= 20) throw new UserInputError('Can\'t have more than 20 builds per user.', {
+      if (existingBuilds.length >= 100) throw new UserInputError('Can\'t have more than 100 builds per user.', {
         invalidArgs: args,
       })
 
