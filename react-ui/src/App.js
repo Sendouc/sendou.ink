@@ -12,6 +12,7 @@ import InfoWeapon from './components/XSearch/InfoWeapon'
 import ScrollToTop from './utils/ScrollToTop'
 import MapListGenerator from './components/Tools/MapListGenerator'
 import Rotations from './components/Tools/Rotations'
+import Comps from './components/Tools/Comps'
 import Links from './components/Misc/Links'
 import UserPage from './components/SoloLadder/UserPage'
 import HomePage from './components/Misc/HomePage'
@@ -57,6 +58,9 @@ const App = () => {
                   setMenuSelection={setMenuSelection} 
                   weaponFromUrl={match.params.weapon.replace(/_/g, ' ')} 
                 />
+              } />
+              <Route exact path="/comps" render={() => 
+                <Comps />
               } />
               <Route path="/404" render={() => <NotFound />} />
               <Route path="/admin" render={() => <Admin />} />

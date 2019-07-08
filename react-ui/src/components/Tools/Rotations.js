@@ -239,7 +239,7 @@ const Rotations = ({ setMenuSelection }) => {
           return (
             <div key={r.start_time} style={{"paddingTop": "25px"}}>
               <Header size='small' disabled={preferences[modeShort[r.rule.name]][r.stage_a.name] && preferences[modeShort[r.rule.name]][r.stage_b.name]}>{header}</Header>
-              <Segment disabled={preferences[modeShort[r.rule.name]][r.stage_a.name] && preferences[modeShort[r.rule.name]][r.stage_b.name]}>
+              <Segment disabled={preferences[modeShort[r.rule.name]][r.stage_a.name] && preferences[modeShort[r.rule.name]][r.stage_b.name]} raised>
               <Grid columns={3} stackable>
                 <Grid.Row>
                   <Grid.Column>
