@@ -13,6 +13,7 @@ import ScrollToTop from './utils/ScrollToTop'
 import MapListGenerator from './components/Tools/MapListGenerator'
 import Rotations from './components/Tools/Rotations'
 import Comps from './components/Tools/Comps'
+import MapPlanner from './components/Tools/MapPlanner'
 import Links from './components/Misc/Links'
 import UserPage from './components/SoloLadder/UserPage'
 import HomePage from './components/Misc/HomePage'
@@ -61,6 +62,9 @@ const App = () => {
               } />
               <Route exact path="/comps" render={() => 
                 <Comps />
+              } />
+              <Route exact path="/plans" render={() => 
+                <MapPlanner />
               } />
               <Route path="/404" render={() => <NotFound />} />
               <Route path="/admin" render={() => <Admin />} />
