@@ -64,37 +64,53 @@ const MainMenu = withRouter(({ history, menuSelection, setMenuSelection }) => {
         active={menuSelection === 'home'} 
         onClick={() => { history.push('/') }} 
       />
-      <Menu.Item 
+      <Dropdown item text='Tools'>
+        <Dropdown.Menu>
+        <Menu.Item 
         name='maplists' 
         active={menuSelection === 'maplists'} 
         onClick={() => { history.push('/maps') }} 
-      />
-      <Menu.Item 
-        name='rotation' 
-        active={menuSelection === 'rotations'} 
-        onClick={() => { 
-          history.push('/rotation')
-          setMenuSelection('rotations')
-        }} 
-      />
-      <Menu.Item 
-        name='builds' 
-        active={menuSelection === 'builds'} 
-        onClick={() => { 
-          history.push('/builds')
-          setMenuSelection('builds')
-        }} 
-      />
-      <Menu.Item
-        name='leaderboards'
-        active={menuSelection === 'leaderboards'}
-        onClick={() => { history.push('/xleaderboard') }}
-      />
-      <Menu.Item
-        name='top 500 search'
-        active={menuSelection === 'search'}
-        onClick={() => { history.push('/xsearch') }}
-      />
+        />
+        <Menu.Item 
+          name='rotation' 
+          active={menuSelection === 'rotations'} 
+          onClick={() => { 
+            history.push('/rotation')
+            setMenuSelection('rotations')
+          }} 
+        />
+        <Menu.Item 
+          name='builds' 
+          active={menuSelection === 'builds'} 
+          onClick={() => { 
+            history.push('/builds')
+            setMenuSelection('builds')
+          }} 
+        />
+        <Menu.Item 
+          name='plan' 
+          active={menuSelection === 'plans'} 
+          onClick={() => { 
+            history.push('/plans')
+            setMenuSelection('plans')
+          }} 
+        />
+        </Dropdown.Menu>
+      </Dropdown>
+      <Dropdown item text='X Rank'>
+          <Dropdown.Menu>
+          <Menu.Item
+            name='leaderboards'
+            active={menuSelection === 'leaderboards'}
+            onClick={() => { history.push('/xleaderboard') }}
+          />
+          <Menu.Item
+            name='top 500 search'
+            active={menuSelection === 'search'}
+            onClick={() => { history.push('/xsearch') }}
+          />
+          </Dropdown.Menu>
+      </Dropdown>
       <Menu.Item
         name='links'
         active={menuSelection === 'links'}

@@ -64,7 +64,9 @@ const App = () => {
                 <Comps />
               } />
               <Route exact path="/plans" render={() => 
-                <MapPlanner />
+                <MapPlanner 
+                  setMenuSelection={setMenuSelection} 
+                />
               } />
               <Route path="/404" render={() => <NotFound />} />
               <Route path="/admin" render={() => <Admin />} />
