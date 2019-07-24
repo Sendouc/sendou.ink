@@ -1,25 +1,78 @@
 import React, { useState, useEffect } from 'react'
 import { SketchField, Tools } from 'react-sketch'
 import { CirclePicker } from 'react-color'
-import { Dropdown, Button, Icon, Input, Grid } from 'semantic-ui-react'
+import { Dropdown, Button, Icon, Input, Grid, Label, Message } from 'semantic-ui-react'
 
 import WeaponForm from '../XSearch/WeaponForm'
 import weaponDict from '../../utils/english_internal.json'
 
+import academy from '../img/plannerMaps/academy-sz-map.png'
+import arena from '../img/plannerMaps/arena-sz-map.png'
+import camp from '../img/plannerMaps/camp-sz-map.png'
+import canal from '../img/plannerMaps/canal-sz-map.png'
+import dome from '../img/plannerMaps/dome-sz-OLD.png'
+import fitness from '../img/plannerMaps/fitness-sz-map.png'
+import games from '../img/plannerMaps/games-sz-map.png'
+import hotel from '../img/plannerMaps/hotel-sz-map.png'
+import institute from '../img/plannerMaps/institute-sz-map.png'
+import mainstage from '../img/plannerMaps/mainstage-rm-new.png'
+import mall from '../img/plannerMaps/mall-sz-map.png'
+import manta from '../img/plannerMaps/manta-sz-map.png'
+import mart from '../img/plannerMaps/mart-sz-map.png'
+import pavilion from '../img/plannerMaps/pavilion-sz-map.png'
+import pit from '../img/plannerMaps/pit-sz-map.png'
+import port from '../img/plannerMaps/port-sz-map.png'
+import pumptrack from '../img/plannerMaps/pumptrack-sz-map.png'
+import reef from '../img/plannerMaps/reef-sz-new.png'
+import shipyard from '../img/plannerMaps/shipyard-sz-map.png'
+import skatepark from '../img/plannerMaps/skatepark-sz-new.png'
+import towers from '../img/plannerMaps/towers-sz-new-map.png'
+import warehouse from '../img/plannerMaps/warehouse-sz-map.png'
+import world from '../img/plannerMaps/world-sz-map.png'
+
 const MapPlanner = ({ setMenuSelection }) => {
   let sketch = null
+  const isMobile = window.innerWidth <= 1000
   const [tool, setTool] = useState(Tools.Pencil)
   const [color, setColor] = useState('#f44336')
   const [weapon, setWeapon] = useState('')
   const [canUndo, setCanUndo] = useState(false)
   const [canRedo, setCanRedo] = useState(false)
   const [text, setText] = useState('')
+  const [bg, setBg] = useState(reef)
+
   const tools = [
     { key: 1, text: 'Pencil', value: Tools.Pencil, icon: 'pencil' },
     { key: 2, text: 'Line', value: Tools.Line, icon: 'window minimize outline' },
     { key: 3, text: 'Rectangle', value: Tools.Rectangle, icon: 'square outline' },
     { key: 4, text: 'Circle', value: Tools.Circle, icon: 'circle outline' },
     { key: 5, text: 'Select', value: Tools.Select, icon: 'object group outline' }
+  ]
+
+  const maps = [
+    { key: 'The Reef', text: 'The Reef', value: reef },
+    { key: 'Musselforge Fitness', text: 'Musselforge Fitness', value: fitness },
+    { key: 'Starfish Mainstage', text: 'Starfish Mainstage', value: mainstage },
+    { key: 'Humpback Pumptrack', text: 'Humpback Pumptrack', value: pumptrack },
+    { key: 'Inkblot Art Academy', text: 'Inkblot Art Academy', value: academy },
+    { key: 'Sturgeon Shipyard', text: 'Sturgeon Shipyard', value: shipyard },
+    { key: 'Moray Towers', text: 'Moray Towers', value: towers },
+    { key: 'Port Mackerel', text: 'Port Mackerel', value: port },
+    { key: 'Manta Maria', text: 'Manta Maria', value: manta },
+    { key: 'Kelp Dome', text: 'Kelp Dome', value: dome },
+    { key: 'Snapper Canal', text: 'Snapper Canal', value: canal },
+    { key: 'Blackbelly Skatepark', text: 'Blackbelly Skatepark', value: skatepark },
+    { key: 'MakoMart', text: 'MakoMart', value: mart },
+    { key: 'Walleye Warehouse', text: 'Walleye Warehouse', value: warehouse },
+    { key: 'Shellendorf Institute', text: 'Shellendorf Institute', value: institute },
+    { key: 'Arowana Mall', text: 'Arowana Mall', value: mall },
+    { key: 'Goby Arena', text: 'Goby Arena', value: arena },
+    { key: 'Piranha Pit', text: 'Piranha Pit', value: pit },
+    { key: 'Camp Triggerfish', text: 'Camp Triggerfish', value: camp },
+    { key: 'Wahoo World', text: 'Wahoo World', value: world },
+    { key: 'New Albacore Hotel', text: 'New Albacore Hotel', value: hotel },
+    { key: 'Ancho-V Games', text: 'Ancho-V Games', value: games },
+    { key: 'Skipper Pavilion', text: 'Skipper Pavilion', value: pavilion },
   ]
 
   const addImageToSketch = () => {
@@ -62,16 +115,24 @@ const MapPlanner = ({ setMenuSelection }) => {
     }
   }
 
+  const onBgChange = (value) => {
+    setBg(value)
+    sketch.clear()
+    setCanUndo(false)
+    sketch.setBackgroundFromDataUrl(value)
+  }
+
   useEffect(() => {
     if (!sketch) return
     setMenuSelection('plans')
-    sketch.setBackgroundFromDataUrl('https://cdn.gamer-network.net/2017/usgamer/splatoon-2-humpback-pump-track.jpg')
-  }, [sketch])
+    document.title = 'Planner - sendou.ink'
+    sketch.setBackgroundFromDataUrl(academy)
+  }, [sketch, setMenuSelection])
 
   return (
     <div>
       <h1>Make your plans!</h1>
-      (in the final version you can choose any map as the background)
+      {isMobile && <Message negative>Unfortunately this tool isn't designed for narrow screens but you can still give it a go.</Message>}
       <div>
       <SketchField
         name="sketch"
@@ -132,6 +193,16 @@ const MapPlanner = ({ setMenuSelection }) => {
           </Grid.Column>
         </Grid>
       </div>
+      <h3>Choose the map</h3>
+      <Dropdown
+        onChange={(e, { value }) => onBgChange(value)}
+        options={maps}
+        selection
+        value={bg}
+      />
+      <Label basic color='red' pointing='left'>
+        Please note that changing the map also clears all the drawings
+      </Label>
       <h3>Choose a weapon to add</h3>
       <WeaponForm weaponForm={weapon} setWeaponForm={setWeapon} />
       <div style={{'paddingTop': '7px'}}>
