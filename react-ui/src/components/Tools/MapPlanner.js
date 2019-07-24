@@ -115,6 +115,17 @@ const MapPlanner = ({ setMenuSelection }) => {
     }
   }
 
+  const download = () => {
+    const dataUrl = sketch.toDataURL()
+    let a = document.createElement("a")
+    document.body.appendChild(a)
+    a.style = "display: none"
+    a.href = dataUrl
+    a.download = `${bg.replace('/static/media/', '').split('-')[0]} plans.png`
+    a.click()
+    window.URL.revokeObjectURL(dataUrl)
+  }
+
   const onBgChange = (value) => {
     setBg(value)
     sketch.clear()
@@ -126,7 +137,7 @@ const MapPlanner = ({ setMenuSelection }) => {
     if (!sketch) return
     setMenuSelection('plans')
     document.title = 'Planner - sendou.ink'
-    sketch.setBackgroundFromDataUrl(academy)
+    sketch.setBackgroundFromDataUrl(reef)
   }, [sketch, setMenuSelection])
 
   return (
@@ -159,6 +170,7 @@ const MapPlanner = ({ setMenuSelection }) => {
         <Button icon disabled={!canUndo} onClick={() => undo()}><Icon name='undo' />Undo</Button>
         <Button icon disabled={!canRedo} onClick={() => redo()}><Icon name='redo' />Redo</Button>
         <Button icon disabled={tool !== Tools.Select} onClick={() => removeSelected()}><Icon name='trash' />Delete selected</Button>
+        <Button icon onClick={() => download()}><Icon name='download' />Download</Button>
       </div>
       <div style={{"paddingTop": "10px"}}>
         <Grid columns={3}>

@@ -11,6 +11,9 @@ const HomePage = ({ setMenuSelection }) => {
         <Header as='h2'>Welcome to sendou.ink!<Header sub>Competitive Splatoon Hub</Header></Header>
       </div>
       <div style={{'paddingTop': '20px'}}>
+        <b><Link to='/plans'>Map planner</Link></b> - Draw on Splatoon 2 maps to show your teammates or anyone else what your plan is. Supports free drawing, shapes and inserting any weapon from the game on the canvas.
+      </div>
+      <div style={{'paddingTop': '20px'}}>
         <b><Link to='/maps'>Maplists</Link></b> - Generate a maplist to use when scrimming. 
         You can choose the map pool to be used including monthly ranked maps or an upcoming event.
         Any maps you don't feel like you need to practice can be excluded from the pool.

@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.js": "/static/js/main.8fcc73fa.chunk.js",
-    "main.js.map": "/static/js/main.8fcc73fa.chunk.js.map",
+    "main.js": "/static/js/main.192b03b6.chunk.js",
+    "main.js.map": "/static/js/main.192b03b6.chunk.js.map",
     "runtime~main.js": "/static/js/runtime~main.a8a9905a.js",
     "runtime~main.js.map": "/static/js/runtime~main.a8a9905a.js.map",
-    "static/js/2.59a46b82.chunk.js": "/static/js/2.59a46b82.chunk.js",
-    "static/js/2.59a46b82.chunk.js.map": "/static/js/2.59a46b82.chunk.js.map",
+    "static/js/2.7a85428d.chunk.js": "/static/js/2.7a85428d.chunk.js",
+    "static/js/2.7a85428d.chunk.js.map": "/static/js/2.7a85428d.chunk.js.map",
     "index.html": "/index.html",
-    "precache-manifest.99763fb56063bd37d0326b32ac23144e.js": "/precache-manifest.99763fb56063bd37d0326b32ac23144e.js",
+    "precache-manifest.7efce9120a84347a6129e5f10f1151eb.js": "/precache-manifest.7efce9120a84347a6129e5f10f1151eb.js",
     "service-worker.js": "/service-worker.js",
     "static/media/academy-sz-map.png": "/static/media/academy-sz-map.750d725a.png",
     "static/media/ancho-v_games.png": "/static/media/ancho-v_games.07d5d0f6.png",
