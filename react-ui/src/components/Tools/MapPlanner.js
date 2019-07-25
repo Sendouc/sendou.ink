@@ -34,6 +34,31 @@ import world from '../img/plannerMaps/world-sz.png'
 const MapPlanner = ({ setMenuSelection }) => {
   let sketch = null
   const isMobile = window.innerWidth <= 1000
+  const defaultValue = {
+    shadowWidth: 0,
+    shadowOffset: 0,
+    enableRemoveSelected: false,
+    fillWithColor: false,
+    fillWithBackgroundColor: false,
+    drawings: [],
+    canUndo: false,
+    canRedo: false,
+    controlledSize: false,
+    sketchWidth: 600,
+    sketchHeight: 600,
+    stretched: true,
+    stretchedX: false,
+    stretchedY: false,
+    originX: 'left',
+    originY: 'top',
+    expandTools: false,
+    expandControls: false,
+    expandColors: false,
+    expandBack: false,
+    expandImages: false,
+    expandControlled: false,
+    enableCopyPaste: false,
+  }
   const fileInput = useRef(null)
   const [tool, setTool] = useState(Tools.Pencil)
   const [color, setColor] = useState('#f44336')
@@ -43,6 +68,7 @@ const MapPlanner = ({ setMenuSelection }) => {
   const [text, setText] = useState('')
   const [bg, setBg] = useState(reef)
   const [uploadError, setUploadError] = useState(null)
+  const [controlledValue, setControlledValue] = useState(defaultValue)
 
   const tools = [
     { key: 1, text: 'Pencil', value: Tools.Pencil, icon: 'pencil' },
@@ -119,29 +145,42 @@ const MapPlanner = ({ setMenuSelection }) => {
     }
   }
 
+  const getDateFormatted = () => {
+    const today = new Date()
+    const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()
+    const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds()
+    return date+' '+time
+  }
+
   const download = (dataUrl, extension) => {
-    console.log('dataUrl', dataUrl)
     let a = document.createElement("a")
     document.body.appendChild(a)
     a.style = "display: none"
     a.href = dataUrl
-    a.download = `${bg.replace('/static/media/', '').split('-')[0]} plans.${extension}`
+    a.download = `${bg.replace('/static/media/', '').split('-')[0]} plans ${getDateFormatted()}.${extension}`
     a.click()
     window.URL.revokeObjectURL(dataUrl)
   }
 
   const handleUpload = () => {
-    console.log('fp', fileInput)
     if (fileInput.current.files.length === 0) {
-      console.log('if')
-      setUploadError('Please upload a file')
+      setUploadError('Upload file')
       setTimeout(() => setUploadError(null), 5000)
-    } 
+      return
+    }
+    const fileObj = fileInput.current.files[0]
+    const reader = new FileReader()
+    reader.onload = function(event) {
+      const jsonObj = JSON.parse(event.target.result)
+      setControlledValue(jsonObj)
+    }
+  
+    reader.readAsText(fileObj)
   }
 
   const onBgChange = (value) => {
-    setBg(value)
     sketch.clear()
+    setBg(value)
     setCanUndo(false)
     sketch.setBackgroundFromDataUrl(value)
   }
@@ -152,7 +191,7 @@ const MapPlanner = ({ setMenuSelection }) => {
     document.title = 'Planner - sendou.ink'
     sketch.setBackgroundFromDataUrl(reef)
   }, [sketch, setMenuSelection])
-  console.log(uploadError)
+
   return (
     <div>
       <h1>Make your plans!</h1>
@@ -173,7 +212,7 @@ const MapPlanner = ({ setMenuSelection }) => {
           this.state.controlledSize ? this.state.sketchHeight : null
         }*/
         /*defaultValue={dataJson}*/
-        /*value={controlledValue}*/
+        value={controlledValue}
         /*forceValue*/
         onChange={onSketchChange}
         tool={tool}
@@ -187,7 +226,7 @@ const MapPlanner = ({ setMenuSelection }) => {
         <Button secondary icon onClick={() => download("data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(sketch.toJSON())), 'json')}><Icon name='cloud download' /> Download as .json</Button>
         <Button secondary icon onClick={() => handleUpload()}><Icon name='cloud upload' /> Load from .json</Button>
         <input type="file" accept=".json" ref={fileInput}/>
-        {uploadError && <Label pointing="left" color='red'>{uploadError}</Label>}
+        {uploadError && <span style={{'color': 'red'}}>{uploadError}</span>}
       </div>
       <div style={{"paddingTop": "10px"}}>
         <Grid columns={3}>
