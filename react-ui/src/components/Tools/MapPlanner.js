@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { SketchField, Tools } from 'react-sketch'
 import { CirclePicker } from 'react-color'
 import { Dropdown, Button, Icon, Input, Grid, Label, Message } from 'semantic-ui-react'
@@ -6,33 +6,35 @@ import { Dropdown, Button, Icon, Input, Grid, Label, Message } from 'semantic-ui
 import WeaponForm from '../XSearch/WeaponForm'
 import weaponDict from '../../utils/english_internal.json'
 
-import academy from '../img/plannerMaps/academy-sz-map.png'
-import arena from '../img/plannerMaps/arena-sz-map.png'
-import camp from '../img/plannerMaps/camp-sz-map.png'
-import canal from '../img/plannerMaps/canal-sz-map.png'
-import dome from '../img/plannerMaps/dome-sz-OLD.png'
-import fitness from '../img/plannerMaps/fitness-sz-map.png'
-import games from '../img/plannerMaps/games-sz-map.png'
-import hotel from '../img/plannerMaps/hotel-sz-map.png'
-import institute from '../img/plannerMaps/institute-sz-map.png'
-import mainstage from '../img/plannerMaps/mainstage-rm-new.png'
-import mall from '../img/plannerMaps/mall-sz-map.png'
-import manta from '../img/plannerMaps/manta-sz-map.png'
-import mart from '../img/plannerMaps/mart-sz-map.png'
-import pavilion from '../img/plannerMaps/pavilion-sz-map.png'
-import pit from '../img/plannerMaps/pit-sz-map.png'
-import port from '../img/plannerMaps/port-sz-map.png'
-import pumptrack from '../img/plannerMaps/pumptrack-sz-map.png'
-import reef from '../img/plannerMaps/reef-sz-new.png'
-import shipyard from '../img/plannerMaps/shipyard-sz-map.png'
-import skatepark from '../img/plannerMaps/skatepark-sz-new.png'
-import towers from '../img/plannerMaps/towers-sz-new-map.png'
-import warehouse from '../img/plannerMaps/warehouse-sz-map.png'
-import world from '../img/plannerMaps/world-sz-map.png'
+import academy from '../img/plannerMaps/academy-sz.png'
+import arena from '../img/plannerMaps/arena-sz.png'
+import camp from '../img/plannerMaps/camp-sz.png'
+import canal from '../img/plannerMaps/canal-sz.png'
+import dome from '../img/plannerMaps/dome-sz.png'
+import fitness from '../img/plannerMaps/fitness-sz.png'
+import games from '../img/plannerMaps/games-sz.png'
+import hotel from '../img/plannerMaps/hotel-sz.png'
+import institute from '../img/plannerMaps/institute-sz.png'
+import mainstage from '../img/plannerMaps/mainstage-sz.png'
+import mall from '../img/plannerMaps/mall-sz.png'
+import manta from '../img/plannerMaps/manta-sz.png'
+import mart from '../img/plannerMaps/mart-sz.png'
+import pavilion from '../img/plannerMaps/pavilion-sz.png'
+import pit from '../img/plannerMaps/pit-sz.png'
+import pitrm from '../img/plannerMaps/pit-rm.png'
+import port from '../img/plannerMaps/port-sz.png'
+import pumptrack from '../img/plannerMaps/pumptrack-sz.png'
+import reef from '../img/plannerMaps/reef-sz.png'
+import shipyard from '../img/plannerMaps/shipyard-sz.png'
+import skatepark from '../img/plannerMaps/skatepark-sz.png'
+import towers from '../img/plannerMaps/towers-sz.png'
+import warehouse from '../img/plannerMaps/warehouse-sz.png'
+import world from '../img/plannerMaps/world-sz.png'
 
 const MapPlanner = ({ setMenuSelection }) => {
   let sketch = null
   const isMobile = window.innerWidth <= 1000
+  const fileInput = useRef(null)
   const [tool, setTool] = useState(Tools.Pencil)
   const [color, setColor] = useState('#f44336')
   const [weapon, setWeapon] = useState('')
@@ -40,6 +42,7 @@ const MapPlanner = ({ setMenuSelection }) => {
   const [canRedo, setCanRedo] = useState(false)
   const [text, setText] = useState('')
   const [bg, setBg] = useState(reef)
+  const [uploadError, setUploadError] = useState(null)
 
   const tools = [
     { key: 1, text: 'Pencil', value: Tools.Pencil, icon: 'pencil' },
@@ -68,6 +71,7 @@ const MapPlanner = ({ setMenuSelection }) => {
     { key: 'Arowana Mall', text: 'Arowana Mall', value: mall },
     { key: 'Goby Arena', text: 'Goby Arena', value: arena },
     { key: 'Piranha Pit', text: 'Piranha Pit', value: pit },
+    { key: 'Piranha Pit (RM)', text: 'Piranha Pit (RM)', value: pitrm },
     { key: 'Camp Triggerfish', text: 'Camp Triggerfish', value: camp },
     { key: 'Wahoo World', text: 'Wahoo World', value: world },
     { key: 'New Albacore Hotel', text: 'New Albacore Hotel', value: hotel },
@@ -115,15 +119,24 @@ const MapPlanner = ({ setMenuSelection }) => {
     }
   }
 
-  const download = () => {
-    const dataUrl = sketch.toDataURL()
+  const download = (dataUrl, extension) => {
+    console.log('dataUrl', dataUrl)
     let a = document.createElement("a")
     document.body.appendChild(a)
     a.style = "display: none"
     a.href = dataUrl
-    a.download = `${bg.replace('/static/media/', '').split('-')[0]} plans.png`
+    a.download = `${bg.replace('/static/media/', '').split('-')[0]} plans.${extension}`
     a.click()
     window.URL.revokeObjectURL(dataUrl)
+  }
+
+  const handleUpload = () => {
+    console.log('fp', fileInput)
+    if (fileInput.current.files.length === 0) {
+      console.log('if')
+      setUploadError('Please upload a file')
+      setTimeout(() => setUploadError(null), 5000)
+    } 
   }
 
   const onBgChange = (value) => {
@@ -139,7 +152,7 @@ const MapPlanner = ({ setMenuSelection }) => {
     document.title = 'Planner - sendou.ink'
     sketch.setBackgroundFromDataUrl(reef)
   }, [sketch, setMenuSelection])
-
+  console.log(uploadError)
   return (
     <div>
       <h1>Make your plans!</h1>
@@ -167,10 +180,14 @@ const MapPlanner = ({ setMenuSelection }) => {
       />
       </div>
       <div style={{"paddingTop": "10px"}}>
-        <Button icon disabled={!canUndo} onClick={() => undo()}><Icon name='undo' />Undo</Button>
-        <Button icon disabled={!canRedo} onClick={() => redo()}><Icon name='redo' />Redo</Button>
-        <Button icon disabled={tool !== Tools.Select} onClick={() => removeSelected()}><Icon name='trash' />Delete selected</Button>
-        <Button icon onClick={() => download()}><Icon name='download' />Download</Button>
+        <Button primary icon disabled={!canUndo} onClick={() => undo()}><Icon name='undo' /> Undo</Button>
+        <Button primary icon disabled={!canRedo} onClick={() => redo()}><Icon name='redo' /> Redo</Button>
+        <Button primary icon disabled={tool !== Tools.Select} onClick={() => removeSelected()}><Icon name='trash' /> Delete selected</Button>
+        <Button secondary icon onClick={() => download(sketch.toDataURL(), 'png')}><Icon name='download' /> Download as .png</Button>
+        <Button secondary icon onClick={() => download("data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(sketch.toJSON())), 'json')}><Icon name='cloud download' /> Download as .json</Button>
+        <Button secondary icon onClick={() => handleUpload()}><Icon name='cloud upload' /> Load from .json</Button>
+        <input type="file" accept=".json" ref={fileInput}/>
+        {uploadError && <Label pointing="left" color='red'>{uploadError}</Label>}
       </div>
       <div style={{"paddingTop": "10px"}}>
         <Grid columns={3}>
