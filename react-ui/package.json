@@ -7,6 +7,7 @@
     "apollo-link": "^1.2.12",
     "apollo-link-context": "^1.0.18",
     "graphql": "^14.4.2",
+    "jstz": "^2.1.1",
     "react": "^16.8.6",
     "react-apollo": "^2.5.8",
     "react-apollo-hooks": "^0.4.5",

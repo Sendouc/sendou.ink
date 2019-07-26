@@ -19,6 +19,7 @@ import UserPage from './components/SoloLadder/UserPage'
 import HomePage from './components/Misc/HomePage'
 import BuildSearch from './components/SoloLadder/BuildSearch'
 import Admin from './components/Misc/Admin'
+import Calendar from './components/Tools/Calendar'
 
 const App = () => {
   const [menuSelection, setMenuSelection] = useState('home')
@@ -65,6 +66,11 @@ const App = () => {
               } />
               <Route exact path="/plans" render={() => 
                 <MapPlanner 
+                  setMenuSelection={setMenuSelection} 
+                />
+              } />
+              <Route exact path="/calendar" render={() => 
+                <Calendar 
                   setMenuSelection={setMenuSelection} 
                 />
               } />

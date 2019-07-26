@@ -70,6 +70,13 @@ const MapPlanner = ({ setMenuSelection }) => {
   const [uploadError, setUploadError] = useState(null)
   const [controlledValue, setControlledValue] = useState(defaultValue)
 
+  useEffect(() => {
+    if (!sketch) return
+    sketch.setBackgroundFromDataUrl(bg)
+    setMenuSelection('plans')
+    document.title = 'Planner - sendou.ink'
+  }, [sketch, setMenuSelection, bg])
+
   const tools = [
     { key: 1, text: 'Pencil', value: Tools.Pencil, icon: 'pencil' },
     { key: 2, text: 'Line', value: Tools.Line, icon: 'window minimize outline' },
@@ -184,13 +191,6 @@ const MapPlanner = ({ setMenuSelection }) => {
     setCanUndo(false)
     sketch.setBackgroundFromDataUrl(value)
   }
-
-  useEffect(() => {
-    if (!sketch) return
-    setMenuSelection('plans')
-    document.title = 'Planner - sendou.ink'
-    sketch.setBackgroundFromDataUrl(reef)
-  }, [sketch, setMenuSelection])
 
   return (
     <div>

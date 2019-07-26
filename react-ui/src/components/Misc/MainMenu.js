@@ -112,6 +112,11 @@ const MainMenu = withRouter(({ history, menuSelection, setMenuSelection }) => {
           </Dropdown.Menu>
       </Dropdown>
       <Menu.Item
+        name='calendar'
+        active={menuSelection === 'calendar'}
+        onClick={() => { history.push('/calendar') }}
+      />
+      <Menu.Item
         name='links'
         active={menuSelection === 'links'}
         onClick={() => { history.push('/links') }}
