@@ -17,6 +17,7 @@
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.0",
     "react-sketch": "^0.5.1",
+    "react-sound": "^1.2.0",
     "semantic-ui-react": "^0.86.0"
   },
   "scripts": {

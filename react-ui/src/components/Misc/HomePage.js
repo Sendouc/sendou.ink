@@ -33,6 +33,9 @@ const HomePage = ({ setMenuSelection }) => {
         Another way is to search for a player name if you are curious how a specific player has performed in the past.
       </div>
       <div style={{'paddingTop': '15px'}}>
+        <b><Link to='/calendar'>Calendar</Link></b> - Discover all the upcoming events in competitive Splatoon.
+      </div>
+      <div style={{'paddingTop': '15px'}}>
         <b><Link to='/links'>Links</Link></b> - Discover useful resources related to competitive Splatoon.
       </div>
       <div style={{'paddingTop': '15px'}}>
