@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Grid } from 'semantic-ui-react'
 import { clothingGear, shoesGear, headGear, choose } from '../../utils/lists'
 import Sound from 'react-sound'
+import useWindowDimensions from '../hooks/useWindowDimensions'
 
 import BDU from '../img/abilityIcons/BDU.png'
 import BRU from '../img/abilityIcons/BRU.png'
@@ -48,6 +49,7 @@ const RollSim = () => {
   const [shoesMain] = useState(choose(shoeAbilities))
   const [shoesSubs, setShoesSubs] = useState([choose(subAbilities), choose(subAbilities), choose(subAbilities)])
   const [rolling, setRolling] = useState(false)
+  const { containerWidth } = useWindowDimensions()
   const [audio, setAudio] = useState(Sound.status.STOPPED)
   const [nice, setNice] = useState(Sound.status.STOPPED)
 
@@ -106,7 +108,7 @@ const RollSim = () => {
       <Sound url={reroll} playStatus={audio} loop={true} volume={10} />
       <Sound url={booyah} playStatus={nice} volume={10} onFinishedPlaying={() => setNice(Sound.status.STOPPED)} />
       <Grid columns='equal' stackable>
-        <Grid.Column textAlign="left">
+        <Grid.Column textAlign={containerWidth < 768 ? null : "left"}>
           <div style={{'float': 'none', 'whiteSpace': 'nowrap'}}>
             <img src={`https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/gear/${headLink}.png`} style={gearStyle} alt="" />
             <img src={headMain} style={mainAbilityStyle} alt=""/>
@@ -115,7 +117,7 @@ const RollSim = () => {
             <img src={headSubs[2]} style={subAbilityStyle} onClick={() => roll(setHeadSubs)} alt="" />
           </div>
         </Grid.Column>
-        <Grid.Column textAlign="center">
+        <Grid.Column textAlign={containerWidth < 768 ? null : "center"}>
           <div style={{'float': 'none', 'whiteSpace': 'nowrap'}}>
             <img src={`https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/gear/${clothingLink}.png`} style={gearStyle} alt="" />
             <img src={clothingMain} style={mainAbilityStyle} alt="" />
@@ -124,7 +126,7 @@ const RollSim = () => {
             <img src={clothingSubs[2]} style={subAbilityStyle} alt="" onClick={() => roll(setClothingSubs)} />
           </div>
         </Grid.Column>
-        <Grid.Column textAlign="right">
+        <Grid.Column textAlign={containerWidth < 768 ? null : "right"}>
           <div style={{'float': 'none', 'whiteSpace': 'nowrap'}}>
             <img src={`https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/gear/${shoesLink}.png`} style={gearStyle} alt="" />
             <img src={shoesMain} style={mainAbilityStyle} alt=""/>
