@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Grid } from 'semantic-ui-react'
+import { Grid, Comment } from 'semantic-ui-react'
 import { clothingGear, shoesGear, headGear, choose } from '../../utils/lists'
 import Sound from 'react-sound'
 import useWindowDimensions from '../hooks/useWindowDimensions'
@@ -29,78 +29,162 @@ import SSU from '../img/abilityIcons/SSU.png'
 import T from '../img/abilityIcons/T.png'
 import TI from '../img/abilityIcons/TI.png'
 import OS from '../img/abilityIcons/OS.png'
+import murchpfp from '../img/misc/murchpfp.png'
 import reroll from '../sounds/reroll.mp3'
 import booyah from '../sounds/nice.mp3'
+import head from '../../utils/head.json'
+import clothes from '../../utils/clothes.json'
+import shoes from '../../utils/shoes.json'
+
+const mainAbilityStyle = {  //https://github.com/loadout-ink/splat2-calc
+  "zIndex": "2", 
+  "borderRadius": "50%",
+  "width": "40px",
+  "height": "40px",
+  "background": "#000",
+  "border": "2px solid #888",
+  "borderRight": "0px",
+  "borderBottom": "0px",
+  "backgroundSize": "100%",
+  "boxShadow": "0 0 0 1px #000"
+}
+const subAbilityStyle = {  //https://github.com/loadout-ink/splat2-calc
+  "zIndex": "2", 
+  "borderRadius": "50%",
+  "width": "30px",
+  "height": "30px",
+  "background": "#000",
+  "border": "2px solid #888",
+  "borderRight": "0px",
+  "borderBottom": "0px",
+  "backgroundSize": "100%",
+  "boxShadow": "0 0 0 1px #000"
+}
+const speechBubble = {
+	"content": '',
+	"position": "absolute",
+	"left": "0",
+	"top": "50%",
+	"width": "0",
+	"height": "0",
+	"border": "26px solid transparent",
+	"borderRightColor": "#000000",
+	"borderLeft": "0",
+	"marginTop": "-26px",
+	"marginLeft": "-26px",
+}
+const gearStyle = { "maxWidth": "50px", "height": "auto" }
+
+const subAbilities = [ISM,ISS,REC,RSU,SSU,QSJ,RES,BDU,MPU,QR,SCU,SS,SPU,BRU,ISM,ISS,REC,RSU,SSU,QSJ,RES,BDU,MPU,QR,SCU,SS,SPU,BRU]
+const headAbilities = [ISM,ISS,REC,RSU,SSU,QSJ,RES,BDU,MPU,QR,SCU,SS,SPU,BRU,OG,LDE,CB,T]
+const clothingAbilities = [ISM,ISS,REC,RSU,SSU,QSJ,RES,BDU,MPU,QR,SCU,SS,SPU,BRU,H,NS,TI,RP]
+const shoeAbilities = [ISM,ISS,REC,RSU,SSU,QSJ,RES,BDU,MPU,QR,SCU,SS,SPU,BRU,DR,SJ,OS]
+
+const internalToAbility = {
+  "MainInk_Save": ISM,
+  "SubInk_Save": ISS,
+  "InkRecovery_Up": REC,
+  "HumanMove_Up": RSU,
+  "SquidMove_Up": SSU,
+  "JumpTime_Save": QSJ,
+  "RespawnTime_Save": QR,
+  "OpInkEffect_Reduction": RES,
+  "BombDamage_Reduction": BDU,
+  "MarkingTime_Reduction": MPU,
+  "RespawnSpecialGauge_Save": SS,
+  "SpecialIncrease_Up": SCU,
+  "SpecialTime_Up": SPU,
+  "BombDistance_Up": BRU
+}
 
 const RollSim = () => {
-
-  const subAbilities = [ISM,ISS,REC,RSU,SSU,QSJ,RES,BDU,MPU,QR,SCU,SS,SPU,BRU]
-  const headAbilities = [ISM,ISS,REC,RSU,SSU,QSJ,RES,BDU,MPU,QR,SCU,SS,SPU,BRU,OG,LDE,CB,T]
-  const clothingAbilities = [ISM,ISS,REC,RSU,SSU,QSJ,RES,BDU,MPU,QR,SCU,SS,SPU,BRU,H,NS,TI,RP]
-  const shoeAbilities = [ISM,ISS,REC,RSU,SSU,QSJ,RES,BDU,MPU,QR,SCU,SS,SPU,BRU,DR,SJ,OS]
-
   const [headLink] = useState(choose(headGear))
+  const [clothingLink] = useState(choose(clothingGear))
+  const [shoesLink] = useState(choose(shoesGear))
+  const [audio, setAudio] = useState(Sound.status.STOPPED)
+  const [nice, setNice] = useState(Sound.status.STOPPED)
   const [headMain] = useState(choose(headAbilities))
   const [headSubs, setHeadSubs] = useState([choose(subAbilities), choose(subAbilities), choose(subAbilities)])
-  const [clothingLink] = useState(choose(clothingGear))
   const [clothingMain] = useState(choose(clothingAbilities))
   const [clothingSubs, setClothingSubs] = useState([choose(subAbilities), choose(subAbilities), choose(subAbilities)])
-  const [shoesLink] = useState(choose(shoesGear))
   const [shoesMain] = useState(choose(shoeAbilities))
   const [shoesSubs, setShoesSubs] = useState([choose(subAbilities), choose(subAbilities), choose(subAbilities)])
   const [rolling, setRolling] = useState(false)
+  const [rollCount, setRollCount] = useState(0)
   const { containerWidth } = useWindowDimensions()
-  const [audio, setAudio] = useState(Sound.status.STOPPED)
-  const [nice, setNice] = useState(Sound.status.STOPPED)
 
-  const gearStyle = { "maxWidth": "50px", "height": "auto" }
-  const mainAbilityStyle = {  //https://github.com/loadout-ink/splat2-calc
-    "zIndex": "2", 
-    "borderRadius": "50%",
-    "width": "40px",
-    "height": "40px",
-    "background": "#000",
-    "border": "2px solid #888",
-    "borderRight": "0px",
-    "borderBottom": "0px",
-    "backgroundSize": "100%",
-    "boxShadow": "0 0 0 1px #000"
-  }
-  const subAbilityStyle = {  //https://github.com/loadout-ink/splat2-calc
-    "zIndex": "2", 
-    "borderRadius": "50%",
-    "width": "30px",
-    "height": "30px",
-    "background": "#000",
-    "border": "2px solid #888",
-    "borderRight": "0px",
-    "borderBottom": "0px",
-    "backgroundSize": "100%",
-    "boxShadow": "0 0 0 1px #000"
+  const setSubs = (json, gear) => {
+    let gearName = gear.split("_")[1]
+    if (!json.hasOwnProperty(gearName)) return [choose(subAbilities), choose(subAbilities), choose(subAbilities)]
+    const prefArray = json[gearName]
+    if (prefArray[0] === prefArray[1]) { //neutral brand
+      return [choose(subAbilities), choose(subAbilities), choose(subAbilities)]
+    }
+
+    const adjustedAbilities = [...subAbilities]
+    const preferredAbility = internalToAbility[prefArray[0]]
+    const unpreferredAbility = internalToAbility[prefArray[1]]
+
+    for (let index = 0; index < adjustedAbilities.length; index++) {
+      const element = adjustedAbilities[index]
+      if (element === unpreferredAbility) {
+        adjustedAbilities.splice(index, 1)
+        break
+      }
+    }
+
+    for (let index = 0; index < 8; index++) {
+      adjustedAbilities.push(preferredAbility)
+    }
+
+    const ability1 = choose(adjustedAbilities)
+    const ability2 = choose(adjustedAbilities)
+    const ability3 = choose(adjustedAbilities)
+    if (ability1 === ability2 && ability1 === ability3) setNice(Sound.status.PLAYING)
+
+    return [ability1, ability2, ability3]
   }
 
   const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
   }
   
-
-  const roll = async (setSubs) => {
+  const roll = async (mode) => {
     if (rolling) return
+
+    let setSubsState = null
+    let json = null
+    let gear = null
+    if (mode === "HEAD") {
+      setSubsState = setHeadSubs
+      json = head
+      gear = headLink
+    } else if (mode === "CLOTHING") {
+      setSubsState = setClothingSubs
+      json = clothes
+      gear = clothingLink
+    } else {
+      setSubsState = setShoesSubs
+      json = shoes
+      gear = shoesLink
+    }
+
     setRolling(true)
     setAudio(Sound.status.PLAYING)
     let ability1 = null
     let ability2 = null
     let ability3 = null
-    for (let index = 0; index < 16; index++) {
+    for (let index = 0; index < 19; index++) {
       ability1 = choose(subAbilities)
       ability2 = choose(subAbilities)
       ability3 = choose(subAbilities)
-      setSubs([ability1, ability2, ability3])
+      setSubsState([ability1, ability2, ability3])
       await sleep(75)
     }
+    setSubsState(setSubs(json, gear)) //only using this method in the last roll that matters for optimization purposes
     setAudio(Sound.status.STOPPED)
-    if (ability1 === ability2 && ability2 === ability3) setNice(Sound.status.PLAYING)
     setRolling(false)
+    setRollCount(rollCount+1)
   }
 
   return (
@@ -108,34 +192,48 @@ const RollSim = () => {
       <Sound url={reroll} playStatus={audio} loop={true} volume={10} />
       <Sound url={booyah} playStatus={nice} volume={10} onFinishedPlaying={() => setNice(Sound.status.STOPPED)} />
       <Grid columns='equal' stackable>
-        <Grid.Column textAlign={containerWidth < 768 ? null : "left"}>
-          <div style={{'float': 'none', 'whiteSpace': 'nowrap'}}>
-            <img src={`https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/gear/${headLink}.png`} style={gearStyle} alt="" />
-            <img src={headMain} style={mainAbilityStyle} alt=""/>
-            <img src={headSubs[0]} style={subAbilityStyle} onClick={() => roll(setHeadSubs)} alt="" />
-            <img src={headSubs[1]} style={subAbilityStyle} onClick={() => roll(setHeadSubs)} alt="" />
-            <img src={headSubs[2]} style={subAbilityStyle} onClick={() => roll(setHeadSubs)} alt="" />
-          </div>
-        </Grid.Column>
-        <Grid.Column textAlign={containerWidth < 768 ? null : "center"}>
-          <div style={{'float': 'none', 'whiteSpace': 'nowrap'}}>
-            <img src={`https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/gear/${clothingLink}.png`} style={gearStyle} alt="" />
-            <img src={clothingMain} style={mainAbilityStyle} alt="" />
-            <img src={clothingSubs[0]} style={subAbilityStyle} alt="" onClick={() => roll(setClothingSubs)} />
-            <img src={clothingSubs[1]} style={subAbilityStyle} alt="" onClick={() => roll(setClothingSubs)} />
-            <img src={clothingSubs[2]} style={subAbilityStyle} alt="" onClick={() => roll(setClothingSubs)} />
-          </div>
-        </Grid.Column>
-        <Grid.Column textAlign={containerWidth < 768 ? null : "right"}>
-          <div style={{'float': 'none', 'whiteSpace': 'nowrap'}}>
-            <img src={`https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/gear/${shoesLink}.png`} style={gearStyle} alt="" />
-            <img src={shoesMain} style={mainAbilityStyle} alt=""/>
-            <img src={shoesSubs[0]} style={subAbilityStyle} alt="" onClick={() => roll(setShoesSubs)} />
-            <img src={shoesSubs[1]} style={subAbilityStyle} alt="" onClick={() => roll(setShoesSubs)} />
-            <img src={shoesSubs[2]} style={subAbilityStyle} alt="" onClick={() => roll(setShoesSubs)} />
-          </div>
-        </Grid.Column>
+        <Grid.Row>
+          <Grid.Column textAlign={containerWidth < 768 ? null : "left"}>
+            <div style={{'float': 'none', 'whiteSpace': 'nowrap'}}>
+              <img src={`https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/gear/${headLink}.png`} style={gearStyle} alt="" />
+              <img src={headMain} style={mainAbilityStyle} alt=""/>
+              <img src={headSubs[0]} style={subAbilityStyle} onClick={() => roll("HEAD")} alt="" />
+              <img src={headSubs[1]} style={subAbilityStyle} onClick={() => roll("HEAD")} alt="" />
+              <img src={headSubs[2]} style={subAbilityStyle} onClick={() => roll("HEAD")} alt="" />
+            </div>
+          </Grid.Column>
+          <Grid.Column textAlign={containerWidth < 768 ? null : "center"}>
+            <div style={{'float': 'none', 'whiteSpace': 'nowrap'}}>
+              <img src={`https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/gear/${clothingLink}.png`} style={gearStyle} alt="" />
+              <img src={clothingMain} style={mainAbilityStyle} alt="" />
+              <img src={clothingSubs[0]} style={subAbilityStyle} alt="" onClick={() => roll("CLOTHING")} />
+              <img src={clothingSubs[1]} style={subAbilityStyle} alt="" onClick={() => roll("CLOTHING")} />
+              <img src={clothingSubs[2]} style={subAbilityStyle} alt="" onClick={() => roll("CLOTHING")} />
+            </div>
+          </Grid.Column>
+          <Grid.Column textAlign={containerWidth < 768 ? null : "right"}>
+            <div style={{'float': 'none', 'whiteSpace': 'nowrap'}}>
+              <img src={`https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/gear/${shoesLink}.png`} style={gearStyle} alt="" />
+              <img src={shoesMain} style={mainAbilityStyle} alt=""/>
+              <img src={shoesSubs[0]} style={subAbilityStyle} alt="" onClick={() => roll("SHOES")} />
+              <img src={shoesSubs[1]} style={subAbilityStyle} alt="" onClick={() => roll("SHOES")} />
+              <img src={shoesSubs[2]} style={subAbilityStyle} alt="" onClick={() => roll("SHOES")} />
+            </div>
+          </Grid.Column>
+        </Grid.Row>
       </Grid>
+      {rollCount > 0 &&
+      <Comment.Group>
+      <Comment>
+        <Comment.Avatar as='a' src={murchpfp} />
+        <Comment.Content>
+          <Comment.Author>Murch</Comment.Author>
+          <Comment.Text>
+            You have rolled {rollCount} {rollCount === 1 ? "time" : "times"}, chum.
+          </Comment.Text>
+        </Comment.Content>
+      </Comment>
+      </Comment.Group>}
     </div>
   )
 }

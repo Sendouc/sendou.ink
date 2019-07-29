@@ -1,0 +1,662 @@
+{
+  "FST000": [
+    "SquidMove_Up",
+    "BombDamage_Reduction"
+  ],
+  "SLO000": [
+    "RespawnSpecialGauge_Save",
+    "SpecialIncrease_Up"
+  ],
+  "SLO001": [
+    "SquidMove_Up",
+    "BombDamage_Reduction"
+  ],
+  "SLO002": [
+    "RespawnSpecialGauge_Save",
+    "SpecialIncrease_Up"
+  ],
+  "SLO003": [
+    "JumpTime_Save",
+    "RespawnTime_Save"
+  ],
+  "SLO004": [
+    "RespawnSpecialGauge_Save",
+    "SpecialIncrease_Up"
+  ],
+  "SLO005": [
+    "JumpTime_Save",
+    "RespawnTime_Save"
+  ],
+  "SLO006": [
+    "SquidMove_Up",
+    "BombDamage_Reduction"
+  ],
+  "SLO007": [
+    "JumpTime_Save",
+    "RespawnTime_Save"
+  ],
+  "SLO008": [
+    "MainInk_Save",
+    "HumanMove_Up"
+  ],
+  "SLO009": [
+    "MainInk_Save",
+    "HumanMove_Up"
+  ],
+  "SLO010": [
+    "SpecialIncrease_Up",
+    "SpecialTime_Up"
+  ],
+  "SLO011": [
+    "SpecialIncrease_Up",
+    "SpecialTime_Up"
+  ],
+  "SLO012": [
+    "BombDamage_Reduction",
+    "MarkingTime_Reduction"
+  ],
+  "SLO013": [
+    "BombDamage_Reduction",
+    "MarkingTime_Reduction"
+  ],
+  "SLO014": [
+    "MainInk_Save",
+    "HumanMove_Up"
+  ],
+  "SLO015": [
+    "JumpTime_Save",
+    "RespawnTime_Save"
+  ],
+  "SLO016": [
+    "JumpTime_Save",
+    "RespawnTime_Save"
+  ],
+  "SLO017": [
+    "RespawnSpecialGauge_Save",
+    "SpecialIncrease_Up"
+  ],
+  "SLO018": [
+    "RespawnSpecialGauge_Save",
+    "SpecialIncrease_Up"
+  ],
+  "SLO019": [
+    "RespawnSpecialGauge_Save",
+    "SpecialIncrease_Up"
+  ],
+  "SLO020": [
+    "MarkingTime_Reduction",
+    "BombDistance_Up"
+  ],
+  "SHI000": [
+    "JumpTime_Save",
+    "RespawnTime_Save"
+  ],
+  "SHI001": [
+    "JumpTime_Save",
+    "RespawnTime_Save"
+  ],
+  "SHI002": [
+    "SquidMove_Up",
+    "BombDamage_Reduction"
+  ],
+  "SHI003": [
+    "JumpTime_Save",
+    "RespawnTime_Save"
+  ],
+  "SHI004": [
+    "SquidMove_Up",
+    "BombDamage_Reduction"
+  ],
+  "SHI005": [
+    "SquidMove_Up",
+    "BombDamage_Reduction"
+  ],
+  "SHI006": [
+    "JumpTime_Save",
+    "RespawnTime_Save"
+  ],
+  "SHI008": [
+    "MainInk_Save",
+    "HumanMove_Up"
+  ],
+  "SHI009": [
+    "MainInk_Save",
+    "HumanMove_Up"
+  ],
+  "SHI010": [
+    "JumpTime_Save",
+    "RespawnTime_Save"
+  ],
+  "SHI011": [
+    "JumpTime_Save",
+    "RespawnTime_Save"
+  ],
+  "SHI012": [
+    "JumpTime_Save",
+    "RespawnTime_Save"
+  ],
+  "SHI013": [
+    "MainInk_Save",
+    "HumanMove_Up"
+  ],
+  "SHI014": [
+    "InkRecovery_Up",
+    "JumpTime_Save"
+  ],
+  "SHI015": [
+    "InkRecovery_Up",
+    "JumpTime_Save"
+  ],
+  "SHI016": [
+    "SpecialIncrease_Up",
+    "SpecialTime_Up"
+  ],
+  "SHI017": [
+    "BombDistance_Up",
+    "OpInkEffect_Reduction"
+  ],
+  "SHI018": [
+    "BombDistance_Up",
+    "OpInkEffect_Reduction"
+  ],
+  "SHI019": [
+    "InkRecovery_Up",
+    "JumpTime_Save"
+  ],
+  "SHI020": [
+    "SpecialIncrease_Up",
+    "SpecialTime_Up"
+  ],
+  "SHI021": [
+    "BombDistance_Up",
+    "OpInkEffect_Reduction"
+  ],
+  "SHI022": [
+    "BombDistance_Up",
+    "OpInkEffect_Reduction"
+  ],
+  "SHI023": [
+    "InkRecovery_Up",
+    "JumpTime_Save"
+  ],
+  "SHI024": [
+    "InkRecovery_Up",
+    "JumpTime_Save"
+  ],
+  "SHI025": [
+    "BombDistance_Up",
+    "OpInkEffect_Reduction"
+  ],
+  "SHI026": [
+    "BombDistance_Up",
+    "OpInkEffect_Reduction"
+  ],
+  "SHI027": [
+    "BombDistance_Up",
+    "OpInkEffect_Reduction"
+  ],
+  "SHI028": [
+    "SpecialIncrease_Up",
+    "SpecialTime_Up"
+  ],
+  "SHI029": [
+    "InkRecovery_Up",
+    "JumpTime_Save"
+  ],
+  "SHI030": [
+    "InkRecovery_Up",
+    "JumpTime_Save"
+  ],
+  "SHI031": [
+    "InkRecovery_Up",
+    "JumpTime_Save"
+  ],
+  "SHI032": [
+    "InkRecovery_Up",
+    "JumpTime_Save"
+  ],
+  "SHI033": [
+    "InkRecovery_Up",
+    "JumpTime_Save"
+  ],
+  "SHI034": [
+    "SpecialIncrease_Up",
+    "SpecialTime_Up"
+  ],
+  "SHI035": [
+    "SpecialIncrease_Up",
+    "SpecialTime_Up"
+  ],
+  "SHI036": [
+    "MarkingTime_Reduction",
+    "BombDistance_Up"
+  ],
+  "SHI037": [
+    "InkRecovery_Up",
+    "JumpTime_Save"
+  ],
+  "SHI038": [
+    "BombDistance_Up",
+    "OpInkEffect_Reduction"
+  ],
+  "SHI039": [
+    "SpecialIncrease_Up",
+    "SpecialTime_Up"
+  ],
+  "SHI040": [
+    "SquidMove_Up",
+    "BombDamage_Reduction"
+  ],
+  "SHI041": [
+    "BombDistance_Up",
+    "OpInkEffect_Reduction"
+  ],
+  "SHT000": [
+    "InkRecovery_Up",
+    "JumpTime_Save"
+  ],
+  "SHT001": [
+    "SpecialIncrease_Up",
+    "SpecialTime_Up"
+  ],
+  "SHT002": [
+    "InkRecovery_Up",
+    "JumpTime_Save"
+  ],
+  "SHT003": [
+    "SpecialIncrease_Up",
+    "SpecialTime_Up"
+  ],
+  "SHT004": [
+    "InkRecovery_Up",
+    "JumpTime_Save"
+  ],
+  "SHT005": [
+    "InkRecovery_Up",
+    "JumpTime_Save"
+  ],
+  "SHT006": [
+    "InkRecovery_Up",
+    "JumpTime_Save"
+  ],
+  "SHT007": [
+    "InkRecovery_Up",
+    "JumpTime_Save"
+  ],
+  "SHT008": [
+    "SpecialIncrease_Up",
+    "SpecialTime_Up"
+  ],
+  "SHT009": [
+    "InkRecovery_Up",
+    "JumpTime_Save"
+  ],
+  "SHT010": [
+    "InkRecovery_Up",
+    "JumpTime_Save"
+  ],
+  "SHT011": [
+    "InkRecovery_Up",
+    "JumpTime_Save"
+  ],
+  "SHT012": [
+    "InkRecovery_Up",
+    "JumpTime_Save"
+  ],
+  "SHT013": [
+    "MarkingTime_Reduction",
+    "BombDistance_Up"
+  ],
+  "SHT014": [
+    "InkRecovery_Up",
+    "JumpTime_Save"
+  ],
+  "SHT015": [
+    "BombDistance_Up",
+    "OpInkEffect_Reduction"
+  ],
+  "SHT016": [
+    "BombDistance_Up",
+    "OpInkEffect_Reduction"
+  ],
+  "SHT017": [
+    "BombDistance_Up",
+    "OpInkEffect_Reduction"
+  ],
+  "SHT018": [
+    "InkRecovery_Up",
+    "JumpTime_Save"
+  ],
+  "SHT019": [
+    "SpecialIncrease_Up",
+    "SpecialTime_Up"
+  ],
+  "SDL000": [
+    "SquidMove_Up",
+    "BombDamage_Reduction"
+  ],
+  "SDL001": [
+    "SquidMove_Up",
+    "BombDamage_Reduction"
+  ],
+  "CFS000": [
+    "SquidMove_Up",
+    "BombDamage_Reduction"
+  ],
+  "CFS001": [
+    "SquidMove_Up",
+    "BombDamage_Reduction"
+  ],
+  "SDL003": [
+    "BombDamage_Reduction",
+    "MarkingTime_Reduction"
+  ],
+  "SDL004": [
+    "RespawnSpecialGauge_Save",
+    "SpecialIncrease_Up"
+  ],
+  "SDL005": [
+    "BombDamage_Reduction",
+    "MarkingTime_Reduction"
+  ],
+  "SDL006": [
+    "BombDamage_Reduction",
+    "MarkingTime_Reduction"
+  ],
+  "SDL007": [
+    "SubInk_Save",
+    "InkRecovery_Up"
+  ],
+  "SDL008": [
+    "SubInk_Save",
+    "InkRecovery_Up"
+  ],
+  "SDL009": [
+    "BombDamage_Reduction",
+    "MarkingTime_Reduction"
+  ],
+  "TRS000": [
+    "BombDamage_Reduction",
+    "MarkingTime_Reduction"
+  ],
+  "TRS001": [
+    "BombDamage_Reduction",
+    "MarkingTime_Reduction"
+  ],
+  "TRS002": [
+    "BombDamage_Reduction",
+    "MarkingTime_Reduction"
+  ],
+  "BOT000": [
+    "HumanMove_Up",
+    "SquidMove_Up"
+  ],
+  "BOT001": [
+    "HumanMove_Up",
+    "SquidMove_Up"
+  ],
+  "BOT002": [
+    "HumanMove_Up",
+    "SquidMove_Up"
+  ],
+  "BOT003": [
+    "HumanMove_Up",
+    "SquidMove_Up"
+  ],
+  "BOT004": [
+    "BombDamage_Reduction",
+    "MarkingTime_Reduction"
+  ],
+  "BOT005": [
+    "BombDamage_Reduction",
+    "MarkingTime_Reduction"
+  ],
+  "BOT006": [
+    "HumanMove_Up",
+    "SquidMove_Up"
+  ],
+  "BOT007": [
+    "HumanMove_Up",
+    "SquidMove_Up"
+  ],
+  "BOT008": [
+    "HumanMove_Up",
+    "SquidMove_Up"
+  ],
+  "BOT009": [
+    "BombDamage_Reduction",
+    "MarkingTime_Reduction"
+  ],
+  "BOT010": [
+    "InkRecovery_Up",
+    "JumpTime_Save"
+  ],
+  "BOT011": [
+    "InkRecovery_Up",
+    "JumpTime_Save"
+  ],
+  "BOT012": [
+    "MainInk_Save",
+    "HumanMove_Up"
+  ],
+  "BOT013": [
+    "HumanMove_Up",
+    "SquidMove_Up"
+  ],
+  "BOT014": [
+    "HumanMove_Up",
+    "SquidMove_Up"
+  ],
+  "BOT015": [
+    "SpecialTime_Up",
+    "SubInk_Save"
+  ],
+  "BOT016": [
+    "MarkingTime_Reduction",
+    "RespawnSpecialGauge_Save"
+  ],
+  "BOT017": [
+    "HumanMove_Up",
+    "SquidMove_Up"
+  ],
+  "BOT018": [
+    "MainInk_Save",
+    "HumanMove_Up"
+  ],
+  "SLP000": [
+    "SquidMove_Up",
+    "BombDamage_Reduction"
+  ],
+  "SLP001": [
+    "SquidMove_Up",
+    "BombDamage_Reduction"
+  ],
+  "SLP002": [
+    "SquidMove_Up",
+    "BombDamage_Reduction"
+  ],
+  "SLP003": [
+    "SquidMove_Up",
+    "BombDamage_Reduction"
+  ],
+  "LTS000": [
+    "HumanMove_Up",
+    "SquidMove_Up"
+  ],
+  "LTS001": [
+    "HumanMove_Up",
+    "SquidMove_Up"
+  ],
+  "LTS002": [
+    "HumanMove_Up",
+    "SquidMove_Up"
+  ],
+  "LTS003": [
+    "HumanMove_Up",
+    "SquidMove_Up"
+  ],
+  "LTS004": [
+    "HumanMove_Up",
+    "SquidMove_Up"
+  ],
+  "LTS005": [
+    "HumanMove_Up",
+    "SquidMove_Up"
+  ],
+  "LTS006": [
+    "HumanMove_Up",
+    "SquidMove_Up"
+  ],
+  "LTS007": [
+    "HumanMove_Up",
+    "SquidMove_Up"
+  ],
+  "LTS008": [
+    "HumanMove_Up",
+    "SquidMove_Up"
+  ],
+  "LTS010": [
+    "MarkingTime_Reduction",
+    "RespawnSpecialGauge_Save"
+  ],
+  "LTS011": [
+    "MarkingTime_Reduction",
+    "RespawnSpecialGauge_Save"
+  ],
+  "LTS009": [
+    "HumanMove_Up",
+    "SquidMove_Up"
+  ],
+  "LTS012": [
+    "HumanMove_Up",
+    "SquidMove_Up"
+  ],
+  "COP101": [
+    "BombDamage_Reduction",
+    "BombDamage_Reduction"
+  ],
+  "COP102": [
+    "BombDamage_Reduction",
+    "BombDamage_Reduction"
+  ],
+  "COP103": [
+    "BombDamage_Reduction",
+    "BombDamage_Reduction"
+  ],
+  "COP104": [
+    "BombDamage_Reduction",
+    "BombDamage_Reduction"
+  ],
+  "COP105": [
+    "BombDamage_Reduction",
+    "BombDamage_Reduction"
+  ],
+  "COP106": [
+    "BombDamage_Reduction",
+    "BombDamage_Reduction"
+  ],
+  "CRC000": [
+    "OpInkEffect_Reduction",
+    "MainInk_Save"
+  ],
+  "HAP000": [
+    "RespawnSpecialGauge_Save",
+    "SpecialIncrease_Up"
+  ],
+  "HAP001": [
+    "BombDistance_Up",
+    "OpInkEffect_Reduction"
+  ],
+  "HAP002": [
+    "HumanMove_Up",
+    "SquidMove_Up"
+  ],
+  "HAP003": [
+    "SpecialIncrease_Up",
+    "SpecialTime_Up"
+  ],
+  "HAP004": [
+    "RespawnSpecialGauge_Save",
+    "SpecialIncrease_Up"
+  ],
+  "HAP005": [
+    "BombDistance_Up",
+    "OpInkEffect_Reduction"
+  ],
+  "HAP006": [
+    "SpecialIncrease_Up",
+    "SpecialTime_Up"
+  ],
+  "HAP007": [
+    "SquidMove_Up",
+    "BombDamage_Reduction"
+  ],
+  "AMB000": [
+    "BombDamage_Reduction",
+    "BombDamage_Reduction"
+  ],
+  "AMB001": [
+    "BombDamage_Reduction",
+    "BombDamage_Reduction"
+  ],
+  "AMB002": [
+    "BombDamage_Reduction",
+    "BombDamage_Reduction"
+  ],
+  "AMB003": [
+    "BombDamage_Reduction",
+    "BombDamage_Reduction"
+  ],
+  "AMB004": [
+    "BombDamage_Reduction",
+    "BombDamage_Reduction"
+  ],
+  "AMB005": [
+    "BombDamage_Reduction",
+    "BombDamage_Reduction"
+  ],
+  "AMB006": [
+    "BombDamage_Reduction",
+    "BombDamage_Reduction"
+  ],
+  "AMB007": [
+    "BombDamage_Reduction",
+    "BombDamage_Reduction"
+  ],
+  "AMB008": [
+    "BombDamage_Reduction",
+    "BombDamage_Reduction"
+  ],
+  "AMB009": [
+    "BombDamage_Reduction",
+    "BombDamage_Reduction"
+  ],
+  "AMB010": [
+    "BombDamage_Reduction",
+    "BombDamage_Reduction"
+  ],
+  "MSN000": [
+    "BombDamage_Reduction",
+    "BombDamage_Reduction"
+  ],
+  "MSN004": [
+    "BombDamage_Reduction",
+    "BombDamage_Reduction"
+  ],
+  "MSN101": [
+    "BombDamage_Reduction",
+    "BombDamage_Reduction"
+  ],
+  "MSN104": [
+    "BombDamage_Reduction",
+    "BombDamage_Reduction"
+  ],
+  "MSN105": [
+    "BombDamage_Reduction",
+    "BombDamage_Reduction"
+  ],
+  "MSN106": [
+    "BombDamage_Reduction",
+    "BombDamage_Reduction"
+  ]
+}
