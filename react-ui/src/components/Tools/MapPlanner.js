@@ -66,13 +66,12 @@ const MapPlanner = ({ setMenuSelection }) => {
   const [canUndo, setCanUndo] = useState(false)
   const [canRedo, setCanRedo] = useState(false)
   const [text, setText] = useState('')
-  const [bg, setBg] = useState(reef)
+  const [bg, setBg] = useState(null)
   const [uploadError, setUploadError] = useState(null)
   const [controlledValue, setControlledValue] = useState(defaultValue)
 
   useEffect(() => {
     if (!sketch) return
-    sketch.setBackgroundFromDataUrl(bg)
     setMenuSelection('plans')
     document.title = 'Planner - sendou.ink'
   }, [sketch, setMenuSelection, bg])

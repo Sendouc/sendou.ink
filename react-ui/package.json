@@ -18,6 +18,7 @@
     "react-scripts": "3.0.0",
     "react-sketch": "^0.5.1",
     "react-sound": "^1.2.0",
+    "recharts": "^1.6.2",
     "semantic-ui-react": "^0.86.0"
   },
   "scripts": {

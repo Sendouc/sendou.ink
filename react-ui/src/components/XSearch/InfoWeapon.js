@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useQuery } from 'react-apollo-hooks'
 import { topPlayersOfWeapon } from '../../graphql/queries/topPlayersOfWeapon'
 import weaponDictReversed from '../../utils/internal_english.json'
-import { Loader, Header, Table, Checkbox } from 'semantic-ui-react'
+import { Loader, Header, Table, Checkbox, Segment } from 'semantic-ui-react'
 import { withRouter, Link } from 'react-router-dom'
 
 import szIcon from '../img/modeIcons/sz.png'
@@ -58,22 +58,24 @@ const InfoWeapon = withRouter(({ history, wpn }) => {
 
   return (
     <div>
-      <div style={{"paddingTop": "20px", "paddingBottom": "20px"}}>
-        <Header size='large'>
-        <img 
-          src={`https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/weapons/Wst_${wpn}.png`} 
-          alt={weaponDictReversed[wpn]} 
-        /> {weaponDictReversed[wpn]} Leaderboard
-        </Header>
-        <Header size='tiny'>
-        <b>Times in Top 500:</b>
-        <img src={modeIcons[1]} style={{"paddingLeft": "10px"}} alt="Splat Zones logo" /> {modeCount[1]}
-        <img src={modeIcons[2]} style={{"paddingLeft": "10px"}} alt="Tower Control logo" /> {modeCount[2]}
-        <img src={modeIcons[3]} style={{"paddingLeft": "10px"}} alt="Rainmaker logo" /> {modeCount[3]}
-        <img src={modeIcons[4]} style={{"paddingLeft": "10px"}} alt="Clam Blitz logo" /> {modeCount[4]}<br/>
-        Total {modeCount[0]}
-        </Header>
-      </div>
+      <Segment compact>
+        <div style={{"padding": "5px"}}>
+          <Header size='large'>
+          <img 
+            src={`https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/weapons/Wst_${wpn}.png`} 
+            alt={weaponDictReversed[wpn]} 
+          /> {weaponDictReversed[wpn]} Leaderboard
+          </Header>
+          <Header size='tiny'>
+          <b>Times in Top 500:</b>
+          <img src={modeIcons[1]} style={{"paddingLeft": "10px"}} alt="Splat Zones logo" /> {modeCount[1]}
+          <img src={modeIcons[2]} style={{"paddingLeft": "10px"}} alt="Tower Control logo" /> {modeCount[2]}
+          <img src={modeIcons[3]} style={{"paddingLeft": "10px"}} alt="Rainmaker logo" /> {modeCount[3]}
+          <img src={modeIcons[4]} style={{"paddingLeft": "10px"}} alt="Clam Blitz logo" /> {modeCount[4]}<br/>
+          Total {modeCount[0]}
+          </Header>
+        </div>
+      </Segment>
       <div>
         <Checkbox
           radio

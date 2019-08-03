@@ -9,6 +9,7 @@ const { Player, playerResolvers } = require('./schemas/player')
 const { Rotation, rotationResolvers } = require('./schemas/rotation')
 const { User, userResolvers } = require('./schemas/user')
 const { Link, linkResolvers } = require('./schemas/link')
+const { Trend, trendResolvers } = require('./schemas/trend')
 
 const Query = gql`
   type Query {
@@ -34,7 +35,8 @@ const schema = makeExecutableSchema({
     Player,
     Rotation,
     User,
-    Link ],
+    Link,
+    Trend ],
   resolvers: merge(
     resolvers,
     buildResolvers,
@@ -43,7 +45,8 @@ const schema = makeExecutableSchema({
     playerResolvers,
     rotationResolvers,
     userResolvers,
-    linkResolvers
+    linkResolvers,
+    trendResolvers
   )
 })
 

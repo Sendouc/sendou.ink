@@ -12,7 +12,6 @@ import InfoWeapon from './components/XSearch/InfoWeapon'
 import ScrollToTop from './utils/ScrollToTop'
 import MapListGenerator from './components/Tools/MapListGenerator'
 import Rotations from './components/Tools/Rotations'
-import Comps from './components/Tools/Comps'
 import MapPlanner from './components/Tools/MapPlanner'
 import Links from './components/Misc/Links'
 import UserPage from './components/SoloLadder/UserPage'
@@ -20,6 +19,7 @@ import HomePage from './components/Misc/HomePage'
 import BuildSearch from './components/SoloLadder/BuildSearch'
 import Admin from './components/Misc/Admin'
 import Calendar from './components/Tools/Calendar'
+import XTrends from './components/XSearch/XTrends'
 
 const App = () => {
   const [menuSelection, setMenuSelection] = useState('home')
@@ -61,9 +61,6 @@ const App = () => {
                   weaponFromUrl={match.params.weapon.replace(/_/g, ' ')} 
                 />
               } />
-              <Route exact path="/comps" render={() => 
-                <Comps />
-              } />
               <Route exact path="/plans" render={() => 
                 <MapPlanner 
                   setMenuSelection={setMenuSelection} 
@@ -71,6 +68,11 @@ const App = () => {
               } />
               <Route exact path="/calendar" render={() => 
                 <Calendar 
+                  setMenuSelection={setMenuSelection} 
+                />
+              } />
+              <Route exact path="/trends" render={() => 
+                <XTrends 
                   setMenuSelection={setMenuSelection} 
                 />
               } />

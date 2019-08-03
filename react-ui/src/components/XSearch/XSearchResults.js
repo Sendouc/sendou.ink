@@ -19,7 +19,7 @@ const XSearchResults = withRouter(({ history, name, exact }) => {
           error
           header='Found 0 players who reached Top 500 with your search'
           list={[
-            'You can\'t search for a player that has never finished in the Top 500',
+            'You can\'t search for a player who has never finished in the Top 500',
             'Be careful about special characters: ρ is not the same as p for example',
             'Some characters can\'t be used in the search such as )'
           ]}
