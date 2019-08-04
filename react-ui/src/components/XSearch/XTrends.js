@@ -7,7 +7,9 @@ import {
   List,
   Image,
   Grid,
-  Dropdown
+  Dropdown,
+  Message,
+  Header
 } from "semantic-ui-react"
 import WeaponForm from "./WeaponForm"
 import useTrends from "../hooks/useTrends"
@@ -23,14 +25,6 @@ import {
   Legend,
   Brush
 } from "recharts"
-
-const circleStyle = {
-  width: "25px",
-  height: "25px",
-  WebkitBorderRadius: "12.5px",
-  MozBorderRadius: "12.5px",
-  borderRadius: "12.5px"
-}
 
 const customToolTipStyle = {
   width: "200px",
@@ -91,8 +85,9 @@ const XTrends = ({ setMenuSelection }) => {
     document.title = "X Rank Trends - sendou.ink"
   }, [setMenuSelection])
 
-  const CustomTooltip = ({ active, payload, label }) => {
+  const CustomTooltip = ({ active, payload }) => {
     if (active) {
+      if (payload.length === 0) return null
       const monthNumber = payload[0].payload.name
       const yearNumber = payload[0].payload.year
       let patchDescription = null
@@ -121,10 +116,17 @@ const XTrends = ({ setMenuSelection }) => {
     return null
   }
 
+  if (error) {
+    return <div style={{ color: "red" }}>{error.message}</div>
+  }
+
   return (
     <div>
       <Segment>
         <div style={{ padding: "5px" }}>
+          <Header as="h2">
+            Compare weapons based on their X Rank Top 500 appearances
+          </Header>
           <WeaponForm
             showSubSpecials
             weaponForm={weaponForm}
@@ -351,6 +353,20 @@ const XTrends = ({ setMenuSelection }) => {
             </div>
           )}
         </div>
+        <Message>
+          <Message.List>
+            <Message.Item>
+              You can check out all the patch notes{" "}
+              <a href="https://splatoonwiki.org/wiki/List_of_updates_in_Splatoon_2">
+                here
+              </a>
+            </Message.Item>
+            <Message.Item>
+              For alternative take on X Rank trends check out{" "}
+              <a href="https://www.splatmeta.ink">Splat Meta</a>
+            </Message.Item>
+          </Message.List>
+        </Message>
       </Segment>
     </div>
   )

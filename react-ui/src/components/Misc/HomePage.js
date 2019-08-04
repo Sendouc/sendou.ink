@@ -8,10 +8,11 @@ const HomePage = ({ setMenuSelection }) => {
   return (
     <div>
       <Segment>
-        <div style={{"padding": "5px"}}>
-          <div style={{ textAlign: "center"}}>
+        <div style={{ padding: "5px" }}>
+          <div style={{ textAlign: "center" }}>
             <Header as="h2">
-              Welcome to sendou.ink!<Header sub>Competitive Splatoon Hub</Header>
+              Welcome to sendou.ink!
+              <Header sub>Competitive Splatoon Hub</Header>
             </Header>
           </div>
           <div style={{ paddingTop: "20px" }}>
@@ -28,8 +29,8 @@ const HomePage = ({ setMenuSelection }) => {
             </b>{" "}
             - Generate a maplist to use when scrimming. You can choose the map
             pool to be used including monthly ranked maps or an upcoming event.
-            Any maps you don't feel like you need to practice can be excluded from
-            the pool.
+            Any maps you don't feel like you need to practice can be excluded
+            from the pool.
           </div>
           <div style={{ paddingTop: "15px" }}>
             <b>
@@ -45,17 +46,24 @@ const HomePage = ({ setMenuSelection }) => {
               <Link to="/xleaderboard">Leaderboards</Link>
             </b>{" "}
             - Browse through X Rank Top 500 Leaderboards. There is a leaderboard
-            for each weapon class where players are ranked by the average of their
-            top four powers.
+            for each weapon class where players are ranked by the average of
+            their top four powers.
           </div>
           <div style={{ paddingTop: "15px" }}>
             <b>
               <Link to="/xsearch">Top 500 Search</Link>
             </b>{" "}
-            - Search through X Rank Top 500 results. You can choose any weapon to
-            find out the top performing players with it. Another way is to search
-            for a player name if you are curious how a specific player has
-            performed in the past.
+            - Search through X Rank Top 500 results. You can choose any weapon
+            to find out the top performing players with it. Another way is to
+            search for a player name if you are curious how a specific player
+            has performed in the past.
+          </div>
+          <div style={{ paddingTop: "15px" }}>
+            <b>
+              <Link to="/trends">X Rank Trends</Link>
+            </b>{" "}
+            - Compare weapons on a chart based on how many times they finished
+            in the Top 500 of X Rank. You can also combine weapon data freely.
           </div>
           <div style={{ paddingTop: "15px" }}>
             <b>
