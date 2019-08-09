@@ -22,17 +22,17 @@ const BuildTab = ({ user, userViewed }) => {
     }, 10000)
   }
 
-  const addBuildMutation = useMutation(addBuild, {
+  const [addBuildMutation] = useMutation(addBuild, {
     onError: handleError,
     refetchQueries: [{ query: searchForBuilds, variables: { discord_id: userViewed.discord_id }} ]
   })
 
-  const deleteBuildMutation = useMutation(deleteBuild, {
+  const [deleteBuildMutation] = useMutation(deleteBuild, {
     onError: handleError,
     refetchQueries: [{ query: searchForBuilds, variables: { discord_id: userViewed.discord_id }} ]
   })
 
-  const editBuildMutation = useMutation(updateBuild, {
+  const [editBuildMutation] = useMutation(updateBuild, {
     onError: handleError,
     refetchQueries: [{ query: searchForBuilds, variables: { discord_id: userViewed.discord_id }} ]
   })
