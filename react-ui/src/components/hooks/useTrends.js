@@ -1,5 +1,5 @@
 import { useReducer, useEffect } from "react"
-import { useQuery } from "react-apollo-hooks"
+import { useQuery } from "@apollo/react-hooks"
 import { searchForTrend } from "../../graphql/queries/seachForTrend"
 
 const month = []

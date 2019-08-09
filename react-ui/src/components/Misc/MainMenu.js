@@ -1,6 +1,6 @@
 import React from 'react'
 import { Menu, Button, Image, Dropdown } from 'semantic-ui-react'
-import { useQuery } from 'react-apollo-hooks'
+import { useQuery } from '@apollo/react-hooks'
 import { userLean } from '../../graphql/queries/userLean'
 import { withRouter } from 'react-router-dom'
 import memcake from '../img/misc/memcake.png'

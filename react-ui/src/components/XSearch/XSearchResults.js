@@ -1,6 +1,6 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom'
-import { useQuery } from 'react-apollo-hooks'
+import { useQuery } from '@apollo/react-hooks'
 import { Loader, Message, Grid, Button, Header } from 'semantic-ui-react'
 import { searchForPlayers } from '../../graphql/queries/searchForPlayers'
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { useQuery } from "react-apollo-hooks"
+import { useQuery } from "@apollo/react-hooks"
 import { Loader, Header, Image, Icon, List, Segment } from "semantic-ui-react"
 import { Link } from "react-router-dom"
 

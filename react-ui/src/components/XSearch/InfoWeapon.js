@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useQuery } from 'react-apollo-hooks'
+import { useQuery } from '@apollo/react-hooks'
 import { topPlayersOfWeapon } from '../../graphql/queries/topPlayersOfWeapon'
 import weaponDictReversed from '../../utils/internal_english.json'
 import { Loader, Header, Table, Checkbox, Segment } from 'semantic-ui-react'

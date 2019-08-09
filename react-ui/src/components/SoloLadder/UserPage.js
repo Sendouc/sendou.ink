@@ -1,7 +1,7 @@
 import React from 'react'
 import { Tab, Image, Loader, List, Grid } from 'semantic-ui-react'
 import { Redirect } from 'react-router-dom'
-import { useQuery } from 'react-apollo-hooks'
+import { useQuery } from '@apollo/react-hooks'
 import { searchForUser } from '../../graphql/queries/searchForUser'
 import { userLean } from '../../graphql/queries/userLean'
 import InfoPlayer from '../../components/XSearch/InfoPlayer'

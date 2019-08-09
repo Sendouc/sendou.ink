@@ -14,7 +14,7 @@ import {
   Label,
   Segment
 } from "semantic-ui-react"
-import { useQuery } from "react-apollo-hooks"
+import { useQuery } from "@apollo/react-hooks"
 import { maplists } from "../../graphql/queries/maplists"
 import szIcon from "../img/modeIcons/sz.png"
 import tcIcon from "../img/modeIcons/tc.png"

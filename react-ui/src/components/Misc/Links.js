@@ -1,6 +1,6 @@
 import React from "react"
 import { Icon, Header, Loader, List, Segment } from "semantic-ui-react"
-import { useQuery } from "react-apollo-hooks"
+import { useQuery } from "@apollo/react-hooks"
 import { links } from "../../graphql/queries/links"
 
 const Links = ({ setMenuSelection }) => {

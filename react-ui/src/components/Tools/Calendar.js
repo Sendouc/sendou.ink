@@ -27,11 +27,11 @@ const Calendar = ({ setMenuSelection }) => {
         && 
         <Segment raised compact>
           <h4>
-            💰 - Has prizes<br/>
-            🎭 - Unconventional ruleset<br/>
-            🔒 - Limited registration<br/>
-            🎲 - Solo registration available<br />
-            👀 - No open registration
+            <span role="img" aria-label="money bag emoji">💰</span> - Has prizes<br/>
+            <span role="img" aria-label="masks emoji">🎭</span> - Unconventional ruleset<br/>
+            <span role="img" aria-label="lock emoji">🔒</span> - Limited registration<br/>
+            <span role="img" aria-label="dice emoji">🎲</span> - Solo registration available<br />
+            <span role="img" aria-label="eyes emoji">👀</span> - No open registration
           </h4>
         </Segment>}
       </div>

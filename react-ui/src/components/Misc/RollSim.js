@@ -1,7 +1,6 @@
 import React, { useState } from "react"
 import { Grid, Comment } from "semantic-ui-react"
 import { clothingGear, shoesGear, headGear, choose } from "../../utils/lists"
-import Sound from "react-sound"
 import useWindowDimensions from "../hooks/useWindowDimensions"
 
 import BDU from "../img/abilityIcons/BDU.png"
@@ -30,8 +29,6 @@ import T from "../img/abilityIcons/T.png"
 import TI from "../img/abilityIcons/TI.png"
 import OS from "../img/abilityIcons/OS.png"
 import murchpfp from "../img/misc/murchpfp.png"
-import reroll from "../sounds/reroll.mp3"
-import booyah from "../sounds/nice.mp3"
 import head from "../../utils/head.json"
 import clothes from "../../utils/clothes.json"
 import shoes from "../../utils/shoes.json"
@@ -175,8 +172,6 @@ const RollSim = () => {
   const [headLink] = useState(choose(headGear))
   const [clothingLink] = useState(choose(clothingGear))
   const [shoesLink] = useState(choose(shoesGear))
-  const [audio, setAudio] = useState(Sound.status.STOPPED)
-  const [nice, setNice] = useState(Sound.status.STOPPED)
   const [headMain] = useState(choose(headAbilities))
   const [headSubs, setHeadSubs] = useState([
     choose(subAbilities),
@@ -228,8 +223,6 @@ const RollSim = () => {
     const ability1 = choose(adjustedAbilities)
     const ability2 = choose(adjustedAbilities)
     const ability3 = choose(adjustedAbilities)
-    if (ability1 === ability2 && ability1 === ability3)
-      setNice(Sound.status.PLAYING)
 
     return [ability1, ability2, ability3]
   }
@@ -259,7 +252,6 @@ const RollSim = () => {
     }
 
     setRolling(true)
-    setAudio(Sound.status.PLAYING)
     let ability1 = null
     let ability2 = null
     let ability3 = null
@@ -271,20 +263,12 @@ const RollSim = () => {
       await sleep(75)
     }
     setSubsState(setSubs(json, gear)) //only using this method in the last roll that matters for optimization purposes
-    setAudio(Sound.status.STOPPED)
     setRolling(false)
     setRollCount(rollCount + 1)
   }
 
   return (
     <div>
-      <Sound url={reroll} playStatus={audio} loop={true} volume={10} />
-      <Sound
-        url={booyah}
-        playStatus={nice}
-        volume={10}
-        onFinishedPlaying={() => setNice(Sound.status.STOPPED)}
-      />
       <Grid columns="equal" stackable>
         <Grid.Row>
           <Grid.Column textAlign={containerWidth < 768 ? null : "left"}>

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Table, Icon, Popup, Segment } from 'semantic-ui-react'
-import { useQuery } from 'react-apollo-hooks'
+import { useQuery } from '@apollo/react-hooks'
 import { Loader } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 

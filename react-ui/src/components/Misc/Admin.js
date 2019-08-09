@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Input, Header, Loader, Button } from 'semantic-ui-react'
-import { useQuery, useMutation } from 'react-apollo-hooks'
+import { useQuery, useMutation } from '@apollo/react-hooks'
 import { Redirect } from 'react-router-dom'
 
 import { userLean } from '../../graphql/queries/userLean'

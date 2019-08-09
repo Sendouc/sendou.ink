@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useQuery, useMutation } from 'react-apollo-hooks'
+import { useQuery, useMutation } from '@apollo/react-hooks'
 import { Button, Loader, Message } from 'semantic-ui-react'
 
 import { addBuild } from '../../graphql/mutations/addBuild'

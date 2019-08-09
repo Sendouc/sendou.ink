@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { useQuery } from "react-apollo-hooks"
+import { useQuery } from "@apollo/react-hooks"
 import { rotationData } from "../../graphql/queries/rotationData"
 import { maplists } from "../../graphql/queries/maplists"
 import {
