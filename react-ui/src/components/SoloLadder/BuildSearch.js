@@ -3,7 +3,7 @@ import WeaponForm from '../XSearch/WeaponForm'
 import BuildCollection from './BuildCollection'
 
 const BuildSearch = ({ setMenuSelection, weaponFromUrl }) => {
-  const [weapon, setWeapon] = useState(weaponFromUrl ? weaponFromUrl : '')
+  const [weapon, setWeapon] = useState(weaponFromUrl)
   const [page, setPage] = useState(1)
 
   useEffect(() => {
@@ -17,7 +17,7 @@ const BuildSearch = ({ setMenuSelection, weaponFromUrl }) => {
         <WeaponForm weaponForm={weapon} setWeaponForm={setWeapon} push setPage={setPage} />
       </div>
       <div>
-        {weapon === '' ? null : <BuildCollection weapon={weapon} page={page} setPage={setPage} />}
+        {!weapon ? null : <BuildCollection weapon={weapon} page={page} setPage={setPage} />}
       </div>
     </div>
   )

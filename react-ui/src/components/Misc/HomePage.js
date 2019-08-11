@@ -1,6 +1,8 @@
-import React from "react"
+import React, { useState } from "react"
 import { Header, Image, Segment } from "semantic-ui-react"
 import { Link } from "react-router-dom"
+import { useSelector } from 'react-redux'
+import { Button } from 'antd'
 import koshienBanner from "../img/misc/koshienBanner.png"
 
 const HomePage = ({ setMenuSelection }) => {
@@ -11,7 +13,6 @@ const HomePage = ({ setMenuSelection }) => {
         <div style={{ padding: "5px" }}>
           <div style={{ textAlign: "center" }}>
             <Header as="h2">
-              Welcome to sendou.ink!
               <Header sub>Competitive Splatoon Hub</Header>
             </Header>
           </div>
@@ -30,7 +31,7 @@ const HomePage = ({ setMenuSelection }) => {
             - Generate a maplist to use when scrimming. You can choose the map
             pool to be used including monthly ranked maps or an upcoming event.
             Any maps you don't feel like you need to practice can be excluded
-            from the pool.
+            from the pool. <Button type='primary'>Buttoni</Button>
           </div>
           <div style={{ paddingTop: "15px" }}>
             <b>

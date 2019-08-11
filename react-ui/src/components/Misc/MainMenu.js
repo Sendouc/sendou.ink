@@ -3,7 +3,7 @@ import { Menu, Button, Image, Dropdown } from 'semantic-ui-react'
 import { useQuery } from '@apollo/react-hooks'
 import { userLean } from '../../graphql/queries/userLean'
 import { withRouter } from 'react-router-dom'
-import memcake from '../img/misc/memcake.png'
+import memcake from '../img/misc/sink_logo.png'
 
 const MainMenu = withRouter(({ history, menuSelection, setMenuSelection }) => {
   const { data, error, loading } = useQuery(userLean)
