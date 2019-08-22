@@ -11,4 +11,11 @@ const placementSchema = new mongoose.Schema({
   year: {type: Number, min: 2017, required: true}
 })
 
+placementSchema.virtual('player', {
+  ref: 'Player',
+  localField: 'unique_id',
+  foreignField: 'unique_id',
+  justOne: true
+})
+
 module.exports = mongoose.model('Placement', placementSchema)

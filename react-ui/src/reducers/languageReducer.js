@@ -13,22 +13,15 @@ const initialState = () => {
 const languageReducer = (state = initialState(), action) => {
   switch (action.type) {
     case 'SET_LANGUAGE':
-      const newStringsObj = action.state
+      const newStringsObj = state
       newStringsObj.setLanguage(action.languageCode)
       window.localStorage.setItem(
         "languagePreference",
         action.languageCode
       )
-      return action.filter
+      return newStringsObj
     default:
       return state
-  }
-}
-
-export const languageChange = (languageCode) => {
-  return {
-    type: 'SET_LANGUAGE',
-    languageCode,
   }
 }
 

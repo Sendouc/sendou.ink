@@ -1,13 +1,14 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { Select } from 'antd';
+import { Select } from 'antd'
+import language_dict from '../../utils/english_internal.json'
 
 const { Option, OptGroup } = Select;
 
 const mainWeapons = [
   {
     categoryName: "Shooters",
-    weapons: ["Sploosh-o-matic", "Neo Sploosh-o-matic", "Sploosh-o-matic 7",
+    values: ["Sploosh-o-matic", "Neo Sploosh-o-matic", "Sploosh-o-matic 7",
     "Splattershot Jr.", "Custom Splattershot Jr.", "Kensa Splattershot Jr.",
     "Splash-o-matic", "Neo Splash-o-matic", "Aerospray MG", "Aerospray RG",
     "Aerospray PG", "Splattershot", "Tentatek Splattershot", "Kensa Splattershot",
@@ -19,25 +20,25 @@ const mainWeapons = [
   },
   {
     categoryName: "Blasters",
-    weapons: ["Luna Blaster", "Luna Blaster Neo", "Kensa Luna Blaster",
+    values: ["Luna Blaster", "Luna Blaster Neo", "Kensa Luna Blaster",
     "Blaster", "Custom Blaster", "Range Blaster", "Custom Range Blaster",
     "Grim Range Blaster", "Rapid Blaster", "Rapid Blaster Deco", "Kensa Rapid Blaster",
     "Rapid Blaster Pro", "Rapid Blaster Pro Deco", "Clash Blaster", "Clash Blaster Neo"]
   },
   {
     categoryName: "Rollers",
-    weapons: ["Carbon Roller", "Carbon Roller Deco", "Splat Roller", "Krak-On Splat Roller",
+    values: ["Carbon Roller", "Carbon Roller Deco", "Splat Roller", "Krak-On Splat Roller",
     "Kensa Splat Roller", "Dynamo Roller", "Gold Dynamo Roller", "Kensa Dynamo Roller",
     "Flingza Roller", "Foil Flingza Roller"]
   },
   {
     categoryName: "Brushes",
-    weapons: ["Inkbrush", "Inkbrush Nouveau",
+    values: ["Inkbrush", "Inkbrush Nouveau",
     "Permanent Inkbrush", "Octobrush", "Octobrush Nouveau", "Kensa Octobrush"]
   },
   {
     categoryName: "Chargers",
-    weapons: ["Classic Squiffer", "New Squiffer", "Fresh Squiffer", "Splat Charger",
+    values: ["Classic Squiffer", "New Squiffer", "Fresh Squiffer", "Splat Charger",
     "Firefin Splat Charger", "Kensa Charger", "Splatterscope", "Firefin Splatterscope",
     "Kensa Splatterscope", "E-liter 4K", "Custom E-liter 4K", "E-liter 4K Scope",
     "Custom E-liter 4K Scope", "Bamboozler 14 Mk I", "Bamboozler 14 Mk II",
@@ -45,28 +46,28 @@ const mainWeapons = [
   },
   {
     categoryName: "Splatlings",
-    weapons: ["Mini Splatling", "Zink Mini Splatling", "Kensa Mini Splatling",
+    values: ["Mini Splatling", "Zink Mini Splatling", "Kensa Mini Splatling",
     "Heavy Splatling", "Heavy Splatling Deco", "Heavy Splatling Remix",
     "Hydra Splatling", "Custom Hydra Splatling", "Ballpoint Splatling",
     "Ballpoint Splatling Nouveau", "Nautilus 47", "Nautilus 79"]
   },
   {
     categoryName: "Sloshers",
-    weapons: ["Slosher", "Slosher Deco", "Soda Slosher", "Tri-Slosher",
+    values: ["Slosher", "Slosher Deco", "Soda Slosher", "Tri-Slosher",
     "Tri-Slosher Nouveau", "Sloshing Machine", "Sloshing Machine Neo",
     "Kensa Sloshing Machine", "Bloblobber", "Bloblobber Deco", "Explosher",
     "Custom Explosher"]
   },
   {
     categoryName: "Dualies",
-    weapons: ["Dapple Dualies", "Dapple Dualies Nouveau", "Clear Dapple Dualies",
+    values: ["Dapple Dualies", "Dapple Dualies Nouveau", "Clear Dapple Dualies",
     "Splat Dualies", "Enperry Splat Dualies", "Kensa Splat Dualies", "Glooga Dualies",
     "Glooga Dualies Deco", "Kensa Glooga Dualies", "Dualie Squelchers",
     "Custom Dualie Squelchers", "Dark Tetra Dualies", "Light Tetra Dualies"]
   },
   {
     categoryName: "Brellas",
-    weapons: ["Splat Brella", "Sorella Brella", "Tenta Brella", "Tenta Sorella Brella",
+    values: ["Splat Brella", "Sorella Brella", "Tenta Brella", "Tenta Sorella Brella",
     "Tenta Camo Brella", "Undercover Brella", "Undercover Sorella Brella", "Kensa Undercover Brella"]
   }
 ]
@@ -74,7 +75,7 @@ const mainWeapons = [
 const allWeapons = [
   {
     categoryName: "Shooters",
-    weapons: ["Sploosh-o-matic", "Neo Sploosh-o-matic", "Sploosh-o-matic 7",
+    values: ["Sploosh-o-matic", "Neo Sploosh-o-matic", "Sploosh-o-matic 7",
     "Splattershot Jr.", "Custom Splattershot Jr.", "Kensa Splattershot Jr.",
     "Splash-o-matic", "Neo Splash-o-matic", "Aerospray MG", "Aerospray RG",
     "Aerospray PG", "Splattershot", "Tentatek Splattershot", "Kensa Splattershot",
@@ -86,25 +87,25 @@ const allWeapons = [
   },
   {
     categoryName: "Blasters",
-    weapons: ["Luna Blaster", "Luna Blaster Neo", "Kensa Luna Blaster",
+    values: ["Luna Blaster", "Luna Blaster Neo", "Kensa Luna Blaster",
     "Blaster", "Custom Blaster", "Range Blaster", "Custom Range Blaster",
     "Grim Range Blaster", "Rapid Blaster", "Rapid Blaster Deco", "Kensa Rapid Blaster",
     "Rapid Blaster Pro", "Rapid Blaster Pro Deco", "Clash Blaster", "Clash Blaster Neo"]
   },
   {
     categoryName: "Rollers",
-    weapons: ["Carbon Roller", "Carbon Roller Deco", "Splat Roller", "Krak-On Splat Roller",
+    values: ["Carbon Roller", "Carbon Roller Deco", "Splat Roller", "Krak-On Splat Roller",
     "Kensa Splat Roller", "Dynamo Roller", "Gold Dynamo Roller", "Kensa Dynamo Roller",
     "Flingza Roller", "Foil Flingza Roller"]
   },
   {
     categoryName: "Brushes",
-    weapons: ["Inkbrush", "Inkbrush Nouveau",
+    values: ["Inkbrush", "Inkbrush Nouveau",
     "Permanent Inkbrush", "Octobrush", "Octobrush Nouveau", "Kensa Octobrush"]
   },
   {
     categoryName: "Chargers",
-    weapons: ["Classic Squiffer", "New Squiffer", "Fresh Squiffer", "Splat Charger",
+    values: ["Classic Squiffer", "New Squiffer", "Fresh Squiffer", "Splat Charger",
     "Firefin Splat Charger", "Kensa Charger", "Splatterscope", "Firefin Splatterscope",
     "Kensa Splatterscope", "E-liter 4K", "Custom E-liter 4K", "E-liter 4K Scope",
     "Custom E-liter 4K Scope", "Bamboozler 14 Mk I", "Bamboozler 14 Mk II",
@@ -112,59 +113,62 @@ const allWeapons = [
   },
   {
     categoryName: "Splatlings",
-    weapons: ["Mini Splatling", "Zink Mini Splatling", "Kensa Mini Splatling",
+    values: ["Mini Splatling", "Zink Mini Splatling", "Kensa Mini Splatling",
     "Heavy Splatling", "Heavy Splatling Deco", "Heavy Splatling Remix",
     "Hydra Splatling", "Custom Hydra Splatling", "Ballpoint Splatling",
     "Ballpoint Splatling Nouveau", "Nautilus 47", "Nautilus 79"]
   },
   {
     categoryName: "Sloshers",
-    weapons: ["Slosher", "Slosher Deco", "Soda Slosher", "Tri-Slosher",
+    values: ["Slosher", "Slosher Deco", "Soda Slosher", "Tri-Slosher",
     "Tri-Slosher Nouveau", "Sloshing Machine", "Sloshing Machine Neo",
     "Kensa Sloshing Machine", "Bloblobber", "Bloblobber Deco", "Explosher",
     "Custom Explosher"]
   },
   {
     categoryName: "Dualies",
-    weapons: ["Dapple Dualies", "Dapple Dualies Nouveau", "Clear Dapple Dualies",
+    values: ["Dapple Dualies", "Dapple Dualies Nouveau", "Clear Dapple Dualies",
     "Splat Dualies", "Enperry Splat Dualies", "Kensa Splat Dualies", "Glooga Dualies",
     "Glooga Dualies Deco", "Kensa Glooga Dualies", "Dualie Squelchers",
     "Custom Dualie Squelchers", "Dark Tetra Dualies", "Light Tetra Dualies"]
   },
   {
     categoryName: "Brellas",
-    weapons: ["Splat Brella", "Sorella Brella", "Tenta Brella", "Tenta Sorella Brella",
+    values: ["Splat Brella", "Sorella Brella", "Tenta Brella", "Tenta Sorella Brella",
     "Tenta Camo Brella", "Undercover Brella", "Undercover Sorella Brella", "Kensa Undercover Brella"]
   },
   {
     categoryName: "Sub weapons",
-    weapons: ["Splat Bomb", "Suction Bomb", "Burst Bomb", "Curling Bomb", "Autobomb", "Ink Mine", "Toxic Mist", "Point Sensor", "Splash Wall", "Sprinkler", "Squid Beakon", "Fizzy Bomb", "Torpedo"]
+    values: ["Splat Bomb", "Suction Bomb", "Burst Bomb", "Curling Bomb", "Autobomb", "Ink Mine", "Toxic Mist", "Point Sensor", "Splash Wall", "Sprinkler", "Squid Beakon", "Fizzy Bomb", "Torpedo"]
   },
   {
     categoryName: "Special weapons",
-    weapons: ["Tenta Missiles", "Sting Ray", "Inkjet", "Splashdown", "Ink Armor", "Ink Storm", "Baller", "Bubble Blower", "Booyah Bomb", "Ultra Stamp", "Splat-Bomb Launcher", "Suction-Bomb Launcher", "Curling-Bomb Launcher", "Burst-Bomb Launcher", "Autobomb Launcher"]
+    values: ["Tenta Missiles", "Sting Ray", "Inkjet", "Splashdown", "Ink Armor", "Ink Storm", "Baller", "Bubble Blower", "Booyah Bomb", "Ultra Stamp", "Splat-Bomb Launcher", "Suction-Bomb Launcher", "Curling-Bomb Launcher", "Burst-Bomb Launcher", "Autobomb Launcher"]
   },
 ]
 
-const SelectElement = ({ onChange, content }) => {
+const SelectElement = ({ value, onChange, content }) => {
   const localization = useSelector(state => state.localization)
   let contentArr = null
   if (content === "MAINWEAPONS") contentArr = mainWeapons
   else if (content === "ALLWEAPONS") contentArr = allWeapons
   return (
-    <Select style={{ width: 200 }} onChange={onChange} showSearch>
-      {contentArr.map(c => {
-        return (
-          <OptGroup key={c.categoryName} label={localization[c.categoryName]}>
-            {c.weapons.map(w => {
-              return (
-                <Option key={w} value={w}>{localization[w]}</Option>
-              )
-            })}
-          </OptGroup>
-        )
-      })}
-    </Select>
+    <>
+      <Select style={{ width: 200 }} value={value} onChange={onChange} showSearch placeholder={localization["Select a weapon"]}>
+        {contentArr.map(c => {
+          return (
+            <OptGroup key={c.categoryName} label={localization[c.categoryName]}>
+              {c.values.map(w => {
+                return (
+                  <Option key={w} value={w}>{localization[w]}</Option>
+                )
+              })}
+            </OptGroup>
+          )
+        })}
+      </Select>
+      {' '}{value && <img src={process.env.PUBLIC_URL + `/wpnSmall/Wst_${language_dict[value]}.png`} alt={value} />}
+    </>
   )
 }
 

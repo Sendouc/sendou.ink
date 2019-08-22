@@ -1,59 +1,36 @@
-import React from 'react'
-import { Popup } from 'semantic-ui-react'
-import weaponDict from '../../utils/english_internal.json'
-import { modes, months, getNumberWithOrdinal } from '../../utils/lists'
+import React from "react"
+import { Popup } from "semantic-ui-react"
+import { useSelector } from "react-redux"
+import weaponDict from "../../utils/english_internal.json"
+import { modes, months } from "../../utils/lists"
 
 const FourWeapons = ({ weapons }) => {
+  const localization = useSelector(state => state.localization)
   return (
-  <>
-    <Popup
-      trigger={
-        <img 
-          style={{"height": "60px", "width": "60px"}} 
-          src={`https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/weapons/Wst_${weaponDict[weapons[0]["weapon"]]}.png`} 
-          alt={weapons[0].name}
-        />
-      }
-      header={weapons[0].name}
-      content={`${weapons[0].x_power} (${getNumberWithOrdinal(weapons[0].rank)} ${modes[weapons[0].mode]} - ${months[weapons[0].month]} ${weapons[0].year})`}
-      />
-
-    <Popup
-      trigger={
-        <img 
-          style={{"height": "60px", "width": "60px"}} 
-          src={`https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/weapons/Wst_${weaponDict[weapons[1]["weapon"]]}.png`} 
-          alt={weapons[1].name}
-        />
-      }
-      header={weapons[1].name}
-      content={`${weapons[1].x_power} (${getNumberWithOrdinal(weapons[1].rank)} ${modes[weapons[1].mode]} - ${months[weapons[1].month]} ${weapons[1].year})`}
-    />
-
-    <Popup
-      trigger={
-        <img 
-          style={{"height": "60px", "width": "60px"}} 
-          src={`https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/weapons/Wst_${weaponDict[weapons[2]["weapon"]]}.png`} 
-          alt={weapons[2].name}
-        />
-      }
-      header={weapons[2].name}
-      content={`${weapons[2].x_power} (${getNumberWithOrdinal(weapons[2].rank)} ${modes[weapons[2].mode]} - ${months[weapons[2].month]} ${weapons[2].year})`}
-    />
-
-    <Popup
-      trigger={
-        <img 
-          style={{"height": "60px", "width": "60px"}} 
-          src={`https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/weapons/Wst_${weaponDict[weapons[3]["weapon"]]}.png`} 
-          alt={weapons[3].name}
-        />
-      }
-      header={weapons[3].name}
-      content={`${weapons[3].x_power} (${getNumberWithOrdinal(weapons[3].rank)} ${modes[weapons[3].mode]} - ${months[weapons[3].month]} ${weapons[3].year})`}
-    />
-  </>
+    <>
+      {weapons.map(w => {
+        const mode = modes[w.mode]
+        const month = months[w.month]
+        return (
+          <Popup
+            key={`${mode}${month}${w.year}`}
+            trigger={
+              <img
+                style={{ height: "60px", width: "60px" }}
+                src={`https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/weapons/Wst_${
+                  weaponDict[w["weapon"]]
+                }.png`}
+                alt={w.name}
+              />
+            }
+            header={w.name}
+            content={`${w.x_power} (${w.rank} ${
+              localization[mode]
+            } - ${localization[month]} ${w.year})`}
+          />
+        )
+      })}
+    </>
   )
 }
 

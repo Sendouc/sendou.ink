@@ -1,6 +1,7 @@
 import React from 'react'
 import { Table, Icon, Popup, Segment } from 'semantic-ui-react'
 import { useQuery } from '@apollo/react-hooks'
+import { useSelector } from "react-redux"
 import { Loader } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 
@@ -8,6 +9,7 @@ import { topFlex } from '../../graphql/queries/topFlex'
 
 const FlexLeaderboard = ({ setActiveItem }) => {
   const result = useQuery(topFlex)
+  const localization = useSelector(state => state.localization)
   setActiveItem('topFlex')
 
   if (result.loading) {
@@ -26,9 +28,9 @@ const FlexLeaderboard = ({ setActiveItem }) => {
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell></Table.HeaderCell>
-              <Table.HeaderCell>Name</Table.HeaderCell>
+              <Table.HeaderCell>{localization['Name']}</Table.HeaderCell>
               <Table.HeaderCell>
-                Flex Power 
+                {localization['Power']}
                   <Popup 
                     trigger={<Icon name='question circle'/>}
                     content="Flex Power is the amount of unique weapons the player has reached top 500 with. Different kits count as unique weapons but reskins (e.g. Tentatek & Octoshot) don't."

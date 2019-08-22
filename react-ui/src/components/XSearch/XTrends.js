@@ -122,7 +122,6 @@ const XTrends = ({ setMenuSelection }) => {
 
   return (
     <div>
-      <Segment>
         <div style={{ padding: "5px" }}>
           <Header as="h2">
             Compare weapons based on their X Rank Top 500 appearances
@@ -367,7 +366,6 @@ const XTrends = ({ setMenuSelection }) => {
             </Message.Item>
           </Message.List>
         </Message>
-      </Segment>
     </div>
   )
 }

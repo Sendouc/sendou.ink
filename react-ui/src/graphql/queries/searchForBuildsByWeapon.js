@@ -10,6 +10,8 @@ query searchForBuildsByWeapon($weapon: String!, $page: Int) {
       headgear
       clothing
       shoes
+      title
+      updatedAt
       discord_user {
         username
         discriminator

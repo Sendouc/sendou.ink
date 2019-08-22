@@ -7,6 +7,7 @@ const typeDef = gql`
     topPlayers (weapon: String!): topPlayer!
     playerInfo(uid: String twitter: String): PlayerWithPlacements!
     searchForPlayers(name: String! exact: Boolean): [Placement]!
+    searchForPlacements(name: String, weapon: String, mode: Int, unique_id: String, month: Int, year: Int, page: Int): PlacementCollection!
   }
   type Placement {
     id: ID!
@@ -18,6 +19,7 @@ const typeDef = gql`
     unique_id: String!
     month: Int!
     year: Int!
+    player: Player!
   }
   type topPlayer {
     placements: [Placement!]!
@@ -26,6 +28,10 @@ const typeDef = gql`
   type PlayerWithPlacements {
     player: Player!
     placements: [Placement!]!
+  }
+  type PlacementCollection {
+    placements: [Placement]!
+    pageCount: Int!
   }
 `
 const resolvers = {
@@ -127,6 +133,47 @@ const resolvers = {
         uids.push(p.unique_id)
         return true
       })
+    },
+    searchForPlacements: async (root, args) => {
+      const perPage = 25
+      const currentPage = args.page ? args.page - 1 : 0
+      const searchCriteria = {}
+      // TODO: If this turns out slow maybe denormalize the database to have case insensitive name field
+      if (args.name) searchCriteria.name = { $regex : new RegExp(args.name, "i") }
+      if (args.weapon) searchCriteria.weapon = args.weapon
+      if (args.mode) searchCriteria.mode = args.mode
+      if (args.unique_id) searchCriteria.unique_id = args.unique_id
+      if (args.month && args.year) {
+        searchCriteria.month = args.month
+        searchCriteria.year = args.year
+      }
+      const placementCount = await Placement
+        .countDocuments(searchCriteria)
+        .catch(e => {
+          throw new UserInputError(e.message, {
+            invalidArgs: args,
+          })
+        })
+      
+      // This is currently broken
+      const pageCount = Math.ceil(placementCount / perPage)
+      if (args.page > pageCount) throw new UserInputError('too big page number given', {
+        invalidArgs: args,
+      })
+
+      const placements = await Placement
+        .find(searchCriteria)
+        .skip(perPage * currentPage)
+        .limit(perPage)
+        .sort({ "x_power": "desc" })
+        .populate('player')
+        .catch(e => {
+          throw new UserInputError(e.message, {
+            invalidArgs: args,
+          })
+        })
+      
+      return { pageCount, placements}
     }
   }
 }

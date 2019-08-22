@@ -4,6 +4,7 @@ import WeaponForm from '../XSearch/WeaponForm'
 import Build from './Build'
 import AbilityButtons from './AbilityButtons'
 
+// TODO: Bug with editing build.
 const BuildForm = ({ addBuild, setShowForm, setSuccessMsg, existingBuild, setShowEdit, editBuildFunction }) => {
   const [weaponForm, setWeaponForm] = useState(existingBuild ? existingBuild.weapon : '')
   const [title, setTitle] = useState(existingBuild ? existingBuild.title : '')

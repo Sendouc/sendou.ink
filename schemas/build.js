@@ -98,7 +98,7 @@ const resolvers = {
         })
 
       const pageCount = Math.ceil(buildCount / buildsPerPage)
-      if (currentPage > pageCount) throw new UserInputError('too big page number given', {
+      if (args.page > pageCount) throw new UserInputError('too big page number given', {
         invalidArgs: args,
       })
 

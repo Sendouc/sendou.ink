@@ -5,18 +5,17 @@ import MainMenu from './components/Misc/MainMenu'
 import NotFound from './components/Misc/NotFound'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 
-import WeaponLeaderboardSelector from './components/XLeaderboard/WeaponLeaderboardSelector'
+import PageXLeaderboard from './components/XLeaderboard/PageXLeaderboard'
 import XSearch from './components/XSearch/XSearch'
 import InfoPlayer from './components/XSearch/InfoPlayer'
-import InfoWeapon from './components/XSearch/InfoWeapon'
 import ScrollToTop from './utils/ScrollToTop'
-import MapListGenerator from './components/Tools/MapListGenerator'
-import Rotations from './components/Tools/Rotations'
-import MapPlanner from './components/Tools/MapPlanner'
+import PageMapListGenerator from './components/Tools/PageMapListGenerator'
+import PageRotations from './components/Tools/PageRotations'
+import PageMapPlanner from './components/Tools/PageMapPlanner'
 import Links from './components/Misc/Links'
 import UserPage from './components/SoloLadder/UserPage'
-import HomePage from './components/Misc/HomePage'
-import BuildSearch from './components/SoloLadder/BuildSearch'
+import PageHome from './components/Misc/PageHome'
+import PageBuilds from './components/Tools/PageBuilds'
 import Admin from './components/Misc/Admin'
 import Calendar from './components/Tools/Calendar'
 import XTrends from './components/XSearch/XTrends'
@@ -28,23 +27,19 @@ const App = () => {
     <Router>
       <Container>
           <MainMenu menuSelection={menuSelection} setMenuSelection={setMenuSelection} />
-          <div>
             <ScrollToTop />
             <Switch>
-              <Route exact path="/" render={() => <HomePage setMenuSelection={setMenuSelection} />} />
-              <Route path="/xleaderboard" render={() => <WeaponLeaderboardSelector setMenuSelection={setMenuSelection} />} />
+              <Route exact path="/" render={() => <PageHome setMenuSelection={setMenuSelection} />} />
+              <Route path="/xleaderboard" render={() => <PageXLeaderboard setMenuSelection={setMenuSelection} />} />
               <Route exact path="/xsearch" render={() => <XSearch setMenuSelection={setMenuSelection} />} />
-              <Route exact path="/xsearch/w/:wpn" render={({ match }) =>
-                <InfoWeapon wpn={match.params.wpn.replace(/-/g, '_')} />
-              } />
               <Route exact path="/xsearch/p/:uid" render={({ match }) =>
                 <InfoPlayer uid={match.params.uid} setMenuSelection={setMenuSelection} />
               } />
               <Route exact path="/maps" render={() => 
-                <MapListGenerator setMenuSelection={setMenuSelection} />
+                <PageMapListGenerator setMenuSelection={setMenuSelection} />
               } />
               <Route exact path="/rotation" render={() => 
-                <Rotations setMenuSelection={setMenuSelection} />
+                <PageRotations setMenuSelection={setMenuSelection} />
               } />
               <Route exact path="/links" render={() => 
                 <Links setMenuSelection={setMenuSelection} />
@@ -53,16 +48,16 @@ const App = () => {
                 <UserPage userIdOrName={match.params.user}/>
               } />
               <Route exact path="/builds" render={() => 
-                <BuildSearch setMenuSelection={setMenuSelection} />
+                <PageBuilds setMenuSelection={setMenuSelection} />
               } />
               <Route exact path="/builds/:weapon" render={({ match }) => 
-                <BuildSearch 
+                <PageBuilds
                   setMenuSelection={setMenuSelection} 
                   weaponFromUrl={match.params.weapon.replace(/_/g, ' ')} 
                 />
               } />
               <Route exact path="/plans" render={() => 
-                <MapPlanner 
+                <PageMapPlanner 
                   setMenuSelection={setMenuSelection} 
                 />
               } />
@@ -80,7 +75,6 @@ const App = () => {
               <Route path="/admin" render={() => <Admin />} />
               <Route path="*" render={() => <NotFound />} />
             </Switch>
-          </div>
           <Footer />
         </Container>
     </Router>
