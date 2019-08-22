@@ -6,7 +6,7 @@ import NotFound from './components/Misc/NotFound'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 
 import PageXLeaderboard from './components/XLeaderboard/PageXLeaderboard'
-import XSearch from './components/XSearch/XSearch'
+import PageXBrowser from './components/XRank/PageXBrowser'
 import InfoPlayer from './components/XSearch/InfoPlayer'
 import ScrollToTop from './utils/ScrollToTop'
 import PageMapListGenerator from './components/Tools/PageMapListGenerator'
@@ -31,7 +31,7 @@ const App = () => {
             <Switch>
               <Route exact path="/" render={() => <PageHome setMenuSelection={setMenuSelection} />} />
               <Route path="/xleaderboard" render={() => <PageXLeaderboard setMenuSelection={setMenuSelection} />} />
-              <Route exact path="/xsearch" render={() => <XSearch setMenuSelection={setMenuSelection} />} />
+              <Route exact path="/xsearch" render={() => <PageXBrowser setMenuSelection={setMenuSelection} />} />
               <Route exact path="/xsearch/p/:uid" render={({ match }) =>
                 <InfoPlayer uid={match.params.uid} setMenuSelection={setMenuSelection} />
               } />

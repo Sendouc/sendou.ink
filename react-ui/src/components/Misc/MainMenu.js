@@ -141,7 +141,7 @@ const MainMenu = withRouter(({ history, menuSelection, setMenuSelection }) => {
             }}
           />
           <Menu.Item
-            name="top 500 search"
+            name="Top 500 Browser"
             active={menuSelection === "search"}
             onClick={() => {
               history.push("/xsearch")

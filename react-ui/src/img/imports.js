@@ -25,6 +25,11 @@ import T from './abilityIcons/T.png'
 import TI from './abilityIcons/TI.png'
 import OS from './abilityIcons/OS.png'
 
+import SplatZ from './modeIcons/sz.png'
+import TowerC from './modeIcons/tc.png'
+import RainM from './modeIcons/rm.png'
+import ClamB from './modeIcons/cb.png'
+
 export const abilities = {
   "BDU": {image: BDU, fullName: "Bomb Defense Up DX"},
   "BRU": {image: BRU, fullName: "Sub Power Up"},
@@ -52,5 +57,7 @@ export const abilities = {
   "TI": {image: TI, fullName: "Thermal Ink", mainOnly: true},
   "OS": {image: OS, fullName: "Object Shredder", mainOnly: true}
 }
+
+export const modesArr = [null, SplatZ, TowerC, RainM, ClamB]
 
 export const top500crown = top500

@@ -28,6 +28,7 @@ query searchForPlacements(
       unique_id
       month
       year
+      mode
       player {
         twitter
       }
