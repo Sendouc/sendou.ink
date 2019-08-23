@@ -24,7 +24,7 @@ const PageBuilds = withRouter(({ history, weaponFromUrl, setMenuSelection }) => 
   return (
     <Segment>
       <div>
-        <PageHeader title={localization["Build Search"]} subTitle={localization["Learn how others spend those valuable Ability Points"]} />
+        <PageHeader title={localization["Build Search"]}/>
       </div>
       <div style={{margin: "0 1.5em"}}>
         <Select content="MAINWEAPONS" value={weapon} onChange={handleFormChange} />

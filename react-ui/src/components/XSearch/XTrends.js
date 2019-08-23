@@ -11,10 +11,10 @@ import {
   Message,
   Header
 } from "semantic-ui-react"
-import WeaponForm from "./WeaponForm"
 import useTrends from "../hooks/useTrends"
 import useWindowDimensions from "../hooks/useWindowDimensions"
 import english_internal from "../../utils/english_internal.json"
+import Select from '../elements/Select'
 import {
   LineChart,
   Line,
@@ -121,15 +121,15 @@ const XTrends = ({ setMenuSelection }) => {
   }
 
   return (
-    <div>
+    <Segment>
         <div style={{ padding: "5px" }}>
           <Header as="h2">
             Compare weapons based on their X Rank Top 500 appearances
           </Header>
-          <WeaponForm
-            showSubSpecials
-            weaponForm={weaponForm}
-            setWeaponForm={setWeaponForm}
+          <Select
+            content="ALLWEAPONS"
+            value={weaponForm}
+            onChange={setWeaponForm}
           />
           <div style={{ paddingTop: "10px" }}>
             <Form>
@@ -366,7 +366,7 @@ const XTrends = ({ setMenuSelection }) => {
             </Message.Item>
           </Message.List>
         </Message>
-    </div>
+    </Segment>
   )
 }
 

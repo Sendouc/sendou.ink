@@ -98,9 +98,12 @@ const resolvers = {
         })
 
       const pageCount = Math.ceil(buildCount / buildsPerPage)
-      if (args.page > pageCount) throw new UserInputError('too big page number given', {
-        invalidArgs: args,
-      })
+      // if 0 documents we don't care if the page is wrong
+      if (buildCount !== 0) {
+        if (args.page > pageCount) throw new UserInputError('too big page number given', {
+          invalidArgs: args,
+        })
+      }
 
       const builds = await Build
         .find(searchCriteria)

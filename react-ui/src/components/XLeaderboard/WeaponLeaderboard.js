@@ -1,5 +1,5 @@
 import React from "react"
-import { Table, Icon, Popup, Segment } from "semantic-ui-react"
+import { Table, Icon, Popup } from "semantic-ui-react"
 import { useQuery } from "@apollo/react-hooks"
 import { useSelector } from "react-redux"
 import { Loader } from "semantic-ui-react"

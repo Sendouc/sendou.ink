@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Form, Message, Button } from 'semantic-ui-react'
-import WeaponForm from '../XSearch/WeaponForm'
+import Select from '../elements/Select'
 import Build from './Build'
 import AbilityButtons from './AbilityButtons'
 
@@ -57,7 +57,7 @@ const BuildForm = ({ addBuild, setShowForm, setSuccessMsg, existingBuild, setSho
         <Build build={build} existingAbilities={abilities} setAbilities={setAbilities} />
       </div>
       <div style={{"paddingTop": "15px"}}>
-        <WeaponForm weaponForm={weaponForm} setWeaponForm={setWeaponForm} showImages={false} />
+        <Select content="MAINWEAPONS" value={weaponForm} onChange={setWeaponForm} />
       </div>
       <div style={{"paddingTop": "15px"}}>
         <Form error={title.length > 100}>

@@ -155,11 +155,13 @@ const resolvers = {
           })
         })
       
-      // This is currently broken
       const pageCount = Math.ceil(placementCount / perPage)
-      if (args.page > pageCount) throw new UserInputError('too big page number given', {
-        invalidArgs: args,
-      })
+      // if 0 documents we don't care if the page is wrong
+      if (placementCount !== 0) {
+        if (args.page > pageCount) throw new UserInputError('too big page number given', {
+          invalidArgs: args,
+        })
+      }
 
       const placements = await Placement
         .find(searchCriteria)
