@@ -2,8 +2,9 @@ import React from 'react'
 import { Icon } from 'antd'
 import RollSim from './RollSim'
 import { discordLogoSvg } from '../../img/imports'
+import { withRouter } from 'react-router-dom'
 
-const Footer = () => {
+const Footer = withRouter(({ history }) => {
   return (
     <div>
       <div style={{ "paddingTop": "25px" }}>
@@ -15,10 +16,10 @@ const Footer = () => {
       <Icon type="github" onClick={() => window.location.assign('https://github.com/Sendouc/sendou-ink')} />{" "}
       <Icon component={discordLogoSvg} onClick={() => window.location.assign('https://discord.gg/J6NqUvt')} />{" "}
       <Icon type="twitter" onClick={() => window.location.assign('https://twitter.com/sendouc')} />{" "}
-      {/*<Icon type="info-circle" />*/}
+      <Icon type="info-circle" onClick={() => history.push("/about")} />
       </div>
     </div>
   )
-}
+})
 
 export default Footer

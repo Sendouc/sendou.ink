@@ -19,6 +19,7 @@ import PageBuilds from './components/Tools/PageBuilds'
 import Admin from './components/Misc/Admin'
 import Calendar from './components/Tools/PageCalendar'
 import XTrends from './components/XSearch/XTrends'
+import About from './components/Misc/PageAbout'
 
 const App = () => {
   const [menuSelection, setMenuSelection] = useState('home')
@@ -71,8 +72,9 @@ const App = () => {
                   setMenuSelection={setMenuSelection} 
                 />
               } />
-              <Route path="/404" render={() => <NotFound />} />
+              <Route path="/about" render={() => <About />} />
               <Route path="/admin" render={() => <Admin />} />
+              <Route path="/404" render={() => <NotFound />} />
               <Route path="*" render={() => <NotFound />} />
             </Switch>
           <Footer />
