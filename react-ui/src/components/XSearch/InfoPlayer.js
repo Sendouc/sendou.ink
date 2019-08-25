@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import { useQuery } from "@apollo/react-hooks"
 import { Loader, Header, Image, Icon, List, Segment } from "semantic-ui-react"
 import { Link } from "react-router-dom"
+import { useSelector } from 'react-redux'
 
 import { playerInfo } from "../../graphql/queries/playerInfo"
 import TopPlacementTable from "./TopPlacementsTable"
@@ -9,6 +10,7 @@ import WpnPlayedTable from "./WpnPlayedTable"
 import MonthsTable from "./MonthsTable"
 
 const InfoPlayer = ({ uid, setMenuSelection, twitter }) => {
+  const localization = useSelector(state => state.localization)
   let searchVariables = {}
   if (uid) searchVariables = { uid }
   if (twitter) searchVariables = { twitter }
@@ -26,7 +28,7 @@ const InfoPlayer = ({ uid, setMenuSelection, twitter }) => {
       //if we're on /xsearch
       setMenuSelection("search")
     }
-    if (data.playerInfo) {
+    if (data && data.playerInfo) {
       const placements = data.playerInfo.placements
 
       //reducing placements to top sz, tc etc. rank and x power
@@ -131,60 +133,6 @@ const InfoPlayer = ({ uid, setMenuSelection, twitter }) => {
           <br />
         </>
       ) : null}
-      {playerData.topTotalScore ? (
-        <>
-          <i>Total Power: {playerData.topTotalScore}</i>
-          <br />
-        </>
-      ) : null}
-      {playerData.topShooterScore ? (
-        <>
-          <i>Shooter Power: {playerData.topShooterScore}</i>
-          <br />
-        </>
-      ) : null}
-      {playerData.topBlasterScore ? (
-        <>
-          <i>Blaster Power: {playerData.topBlasterScore}</i>
-          <br />
-        </>
-      ) : null}
-      {playerData.topRollerScore ? (
-        <>
-          <i>Roller Power: {playerData.topRollerScore}</i>
-          <br />
-        </>
-      ) : null}
-      {playerData.topChargerScore ? (
-        <>
-          <i>Charger Power: {playerData.topChargerScore}</i>
-          <br />
-        </>
-      ) : null}
-      {playerData.topSlosherScore ? (
-        <>
-          <i>Slosher Power: {playerData.topSlosherScore}</i>
-          <br />
-        </>
-      ) : null}
-      {playerData.topSplatlingScore ? (
-        <>
-          <i>Splatling Power: {playerData.topSplatlingScore}</i>
-          <br />
-        </>
-      ) : null}
-      {playerData.topDualiesScore ? (
-        <>
-          <i>Dualies Power: {playerData.topDualiesScore}</i>
-          <br />
-        </>
-      ) : null}
-      {playerData.topBrellaScore ? (
-        <>
-          <i>Brella Power: {playerData.topBrellaScore}</i>
-          <br />
-        </>
-      ) : null}
       <Segment compact>
         <div style={{"padding": "5px"}}>
           <TopPlacementTable top={top}/>
@@ -192,13 +140,13 @@ const InfoPlayer = ({ uid, setMenuSelection, twitter }) => {
       </Segment>
       <Segment compact>
         <div style={{"padding": "5px"}}>
-          <Header dividing>All Top 500 placements</Header>
+          <Header dividing>{localization["All Top 500 placements"]}</Header>
           <MonthsTable placements={data.playerInfo.placements} />
         </div>
       </Segment>
       <Segment compact>
         <div style={{"padding": "5px"}}>
-          <Header dividing>Weapons reached Top 500 with</Header>
+          <Header dividing>{localization["Weapons reached Top 500 with"]}</Header>
           <WpnPlayedTable weapons={playerData.weapons} />
         </div>
       </Segment>

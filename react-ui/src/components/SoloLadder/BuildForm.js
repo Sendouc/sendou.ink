@@ -3,11 +3,12 @@ import { Form, Message, Button } from 'semantic-ui-react'
 import Select from '../elements/Select'
 import Build from './Build'
 import AbilityButtons from './AbilityButtons'
+import { useSelector } from 'react-redux'
 
-// TODO: Bug with editing build.
 const BuildForm = ({ addBuild, setShowForm, setSuccessMsg, existingBuild, setShowEdit, editBuildFunction }) => {
+  const localization = useSelector(state => state.localization)
   const [weaponForm, setWeaponForm] = useState(existingBuild ? existingBuild.weapon : '')
-  const [title, setTitle] = useState(existingBuild ? existingBuild.title : '')
+  const [title, setTitle] = useState(existingBuild.title ? existingBuild.title : '')
   const [abilities, setAbilities] = useState(existingBuild ? [[...existingBuild.headgear], [...existingBuild.clothing], [...existingBuild.shoes]] : [["", "", "", ""], ["", "", "", ""], ["", "", "", ""]])
 
   const build = {
@@ -32,7 +33,7 @@ const BuildForm = ({ addBuild, setShowForm, setSuccessMsg, existingBuild, setSho
     setWeaponForm('')
     setTitle('')
     setAbilities([["", "", "", ""], ["", "", "", ""], ["", "", "", ""]])
-    setSuccessMsg('New build succesfully added!')
+    setSuccessMsg(localization['New build succesfully added!'])
     setTimeout(() => { setSuccessMsg(null) }, 10000)
     setShowForm(false)
   }
@@ -62,11 +63,11 @@ const BuildForm = ({ addBuild, setShowForm, setSuccessMsg, existingBuild, setSho
       <div style={{"paddingTop": "15px"}}>
         <Form error={title.length > 100}>
           <Form.Field>
-            <label>Choose title (optional)</label>
-            <input placeholder='Choose title (optional)' value={title} onChange={(e) => setTitle(e.target.value) }/>
+            <label>{localization["Choose title (optional)"]}</label>
+            <input value={title} onChange={(e) => setTitle(e.target.value) }/>
             <Message
               error
-              content="Title can't be longer than 100 characters."
+              content={localization["Title can't be longer than 100 characters."]}
             />
           </Form.Field>
         </Form>

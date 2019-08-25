@@ -1,5 +1,6 @@
 import React from 'react'
 import { Table, Header, Image } from 'semantic-ui-react'
+import { useSelector } from 'react-redux'
 
 import szIcon from '../../img/modeIcons/sz.png'
 import tcIcon from '../../img/modeIcons/tc.png'
@@ -9,6 +10,7 @@ import { months } from '../../utils/lists'
 import weaponDict from '../../utils/english_internal.json'
 
 const MonthsTable = ({ placements }) => { //data received is ordered chronologically and sz->tc->rm->cb
+  const localization = useSelector(state => state.localization)
   const modeIcons = [null, szIcon, tcIcon, rmIcon, cbIcon]
   let lastMonth = placements[0].month
   let toggle = false
@@ -18,10 +20,10 @@ const MonthsTable = ({ placements }) => { //data received is ordered chronologic
     <Table.Header>
       <Table.Row>
         <Table.HeaderCell></Table.HeaderCell>
-        <Table.HeaderCell>Name</Table.HeaderCell>
-        <Table.HeaderCell>X Power</Table.HeaderCell>
-        <Table.HeaderCell>Placement</Table.HeaderCell>
-        <Table.HeaderCell>Weapon</Table.HeaderCell>
+        <Table.HeaderCell>{localization["Name"]}</Table.HeaderCell>
+        <Table.HeaderCell>{localization["X Power"]}</Table.HeaderCell>
+        <Table.HeaderCell>{localization["Placement"]}</Table.HeaderCell>
+        <Table.HeaderCell>{localization["Weapon"]}</Table.HeaderCell>
       </Table.Row>
     </Table.Header>
 
@@ -37,7 +39,7 @@ const MonthsTable = ({ placements }) => { //data received is ordered chronologic
             <Header as='h4' image>
               <Image src={modeIcons[p.mode]} rounded size='mini' />
               <Header.Content>
-                {months[p.month]}
+                {localization[months[p.month]]}
                 <Header.Subheader>{p.year}</Header.Subheader>
               </Header.Content>
             </Header>

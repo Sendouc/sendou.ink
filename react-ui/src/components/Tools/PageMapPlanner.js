@@ -41,7 +41,6 @@ import towers from "../../img/plannerMaps/towers-sz.png"
 import warehouse from "../../img/plannerMaps/warehouse-sz.png"
 import world from "../../img/plannerMaps/world-sz.png"
 
-// TODO: When going to another page and coming back the map flickers.
 const PageMapPlanner = ({ setMenuSelection }) => {
   let sketch = null
   const { containerWidth } = useWindowDimensions()
@@ -87,11 +86,12 @@ const PageMapPlanner = ({ setMenuSelection }) => {
     document.title = "Planner - sendou.ink"
   }, [setMenuSelection])
 
+  // doesn't work properly when coming back from another page - not sure why
   useEffect(() => {
-    if (!sketch) return
-    sketch.clear()
+    if (!sketch) {
+      return
+    }
     setBg(reef)
-    setCanUndo(false)
     sketch.setBackgroundFromDataUrl(reef)
   }, [sketch])
 

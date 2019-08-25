@@ -147,14 +147,14 @@ const allWeapons = [
   },
 ]
 
-const SelectElement = ({ value, onChange, content }) => {
+const SelectElement = ({ value, onChange, content, allowClear=false }) => {
   const localization = useSelector(state => state.localization)
   let contentArr = null
   if (content === "MAINWEAPONS") contentArr = mainWeapons
   else if (content === "ALLWEAPONS") contentArr = allWeapons
   return (
     <>
-      <Select style={{ width: 200 }} value={value} onChange={onChange} showSearch placeholder={localization["Select a weapon"]} allowClear>
+      <Select style={{ width: 200 }} value={value} onChange={onChange} showSearch placeholder={localization["Select a weapon"]} allowClear={allowClear}>
         {contentArr.map(c => {
           return (
             <OptGroup key={c.categoryName} label={localization[c.categoryName]}>

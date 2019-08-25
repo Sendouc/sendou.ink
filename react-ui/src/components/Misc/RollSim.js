@@ -362,8 +362,8 @@ const RollSim = () => {
           <Comment>
             <Comment.Avatar as="a" src={murchpfp} />
             <Comment.Content>
-              <Comment.Author>Murch</Comment.Author>
-              <Comment.Text>
+              <Comment.Author style={{color: "white"}}>Murch</Comment.Author>
+              <Comment.Text style={{color: "white"}}>
                 You have rolled {rollCount} {rollCount === 1 ? "time" : "times"}
                 , chum.
               </Comment.Text>

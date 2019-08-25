@@ -3,7 +3,7 @@ import { Menu, Button, Image, Dropdown } from "semantic-ui-react"
 import { useQuery } from "@apollo/react-hooks"
 import { userLean } from "../../graphql/queries/userLean"
 import { withRouter } from "react-router-dom"
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from "react-redux"
 import memcake from "../../img/misc/sink_logo.png"
 
 const MainMenu = withRouter(({ history, menuSelection, setMenuSelection }) => {
@@ -52,9 +52,7 @@ const MainMenu = withRouter(({ history, menuSelection, setMenuSelection }) => {
         <Image
           src={
             user.avatar
-              ? `https://cdn.discordapp.com/avatars/${user.discord_id}/${
-                  user.avatar
-                }.png`
+              ? `https://cdn.discordapp.com/avatars/${user.discord_id}/${user.avatar}.png`
               : "https://cdn.discordapp.com/avatars/455039198672453645/088ae3838cc3b08b73f79aab0fefec2f.png"
           }
           avatar
@@ -80,22 +78,22 @@ const MainMenu = withRouter(({ history, menuSelection, setMenuSelection }) => {
   const language = localization.getLanguage()
 
   const handleLanguageChange = (e, { value }) => {
-    dispatch({ type: 'SET_LANGUAGE', languageCode: value})
+    dispatch({ type: "SET_LANGUAGE", languageCode: value })
     window.location.reload()
   }
 
   return (
     <Menu stackable borderless>
       <Menu.Item>
-        <img src={memcake} alt="memcake logo" />
+        <img
+          style={{cursor: "pointer"}}
+          src={memcake}
+          alt="memcake logo"
+          onClick={() => {
+            history.push("/")
+          }}
+        />
       </Menu.Item>
-      <Menu.Item
-        name="home"
-        active={menuSelection === "home"}
-        onClick={() => {
-          history.push("/")
-        }}
-      />
       <Dropdown item text="Tools">
         <Dropdown.Menu>
           <Menu.Item
@@ -173,15 +171,69 @@ const MainMenu = withRouter(({ history, menuSelection, setMenuSelection }) => {
       <Menu.Menu position="right">
         <Dropdown item icon="globe" simple>
           <Dropdown.Menu>
-            <Dropdown.Item value="en-us" active={language === 'en-us'} onClick={handleLanguageChange}>English</Dropdown.Item>
-            <Dropdown.Item value="ja-jp" active={language === 'ja-jp'} onClick={handleLanguageChange}>日本語</Dropdown.Item>
-            <Dropdown.Item value="fr-eu" active={language === 'fr-eu'} onClick={handleLanguageChange}>Français</Dropdown.Item>
-            <Dropdown.Item value="de-eu" active={language === 'de-eu'} onClick={handleLanguageChange}>Deutsch</Dropdown.Item>
-            <Dropdown.Item value="es-eu" active={language === 'es-eu'} onClick={handleLanguageChange}>Español</Dropdown.Item>
-            <Dropdown.Item value="it-eu" active={language === 'it-eu'} onClick={handleLanguageChange}>Italiano</Dropdown.Item>
-            <Dropdown.Item value="ch" active={language === 'ch'} onClick={handleLanguageChange}>简体中文</Dropdown.Item>
-            <Dropdown.Item value="ru-eu" active={language === 'ru-eu'} onClick={handleLanguageChange}>Русский</Dropdown.Item>
-            <Dropdown.Item value="nl-eu" active={language === 'nl-eu'} onClick={handleLanguageChange}>Nederlands</Dropdown.Item>
+            <Dropdown.Item
+              value="en-us"
+              active={language === "en-us"}
+              onClick={handleLanguageChange}
+            >
+              English
+            </Dropdown.Item>
+            <Dropdown.Item
+              value="ja-jp"
+              active={language === "ja-jp"}
+              onClick={handleLanguageChange}
+            >
+              日本語
+            </Dropdown.Item>
+            <Dropdown.Item
+              value="fr-eu"
+              active={language === "fr-eu"}
+              onClick={handleLanguageChange}
+            >
+              Français
+            </Dropdown.Item>
+            <Dropdown.Item
+              value="de-eu"
+              active={language === "de-eu"}
+              onClick={handleLanguageChange}
+            >
+              Deutsch
+            </Dropdown.Item>
+            <Dropdown.Item
+              value="es-eu"
+              active={language === "es-eu"}
+              onClick={handleLanguageChange}
+            >
+              Español
+            </Dropdown.Item>
+            <Dropdown.Item
+              value="it-eu"
+              active={language === "it-eu"}
+              onClick={handleLanguageChange}
+            >
+              Italiano
+            </Dropdown.Item>
+            <Dropdown.Item
+              value="ch"
+              active={language === "ch"}
+              onClick={handleLanguageChange}
+            >
+              简体中文
+            </Dropdown.Item>
+            <Dropdown.Item
+              value="ru-eu"
+              active={language === "ru-eu"}
+              onClick={handleLanguageChange}
+            >
+              Русский
+            </Dropdown.Item>
+            <Dropdown.Item
+              value="nl-eu"
+              active={language === "nl-eu"}
+              onClick={handleLanguageChange}
+            >
+              Nederlands
+            </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
         {logIn()}

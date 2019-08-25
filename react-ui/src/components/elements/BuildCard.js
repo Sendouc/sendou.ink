@@ -47,9 +47,9 @@ const BuildCard = ({ build }) => {
   const shoesAbilities = build.shoes
   const userName = `${build.discord_user.username}#${build.discord_user.discriminator}` //TODO: Truncuate long nicknames to avoid the rows breaking
   const playerProfileLink = `/u/${build.discord_id}`
-  const lastUpdated = new Date(parseInt(build.updatedAt)).toLocaleString("en-GB")
+  const lastUpdated = new Date(parseInt(build.updatedAt)).toLocaleString()
   const card = 
-    <Card style={{ width: 200, background: "WhiteSmoke" }}>
+    <Card style={{ width: 200, height: 300, background: "WhiteSmoke" }}>
       <p>{headAbilities.map(parseIntoAbilityIcons)}</p>
       <p>{clothingAbilities.map(parseIntoAbilityIcons)}</p>
       <p>{shoesAbilities.map(parseIntoAbilityIcons)}</p>

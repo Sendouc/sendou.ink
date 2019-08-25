@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { Header, Segment, List, Grid, Button, Popup } from 'semantic-ui-react'
 import weaponDict from '../../utils/english_internal.json'
 import BuildForm from './BuildForm'
+import { useSelector } from 'react-redux'
 
 import BDU from '../../img/abilityIcons/BDU.png'
 import BRU from '../../img/abilityIcons/BRU.png'
@@ -32,6 +33,7 @@ import OS from '../../img/abilityIcons/OS.png'
 import EMPTY from '../../img/abilityIcons/EMPTY.png'
 
 const Build = ({ build, existingAbilities, setAbilities, removeBuildFunction, editBuildFunction }) => {
+  const localization = useSelector(state => state.localization)
   const [showEdit, setShowEdit] = useState(false)
 
   if (showEdit) return <BuildForm existingBuild={build} setShowEdit={setShowEdit} editBuildFunction={editBuildFunction} />
@@ -147,11 +149,11 @@ const Build = ({ build, existingAbilities, setAbilities, removeBuildFunction, ed
           <Grid.Column></Grid.Column>
           <Grid.Column>
             <List>
-              {arrayOfSortedAbilityPoints().map(a => <List.Item key={a.fullName}>{a.ap} {a.fullName}</List.Item>)}
+              {arrayOfSortedAbilityPoints().map(a => <List.Item key={a.fullName}>{a.ap} {localization[a.fullName]}</List.Item>)}
             </List>
           </Grid.Column>
           <Grid.Column verticalAlign='bottom'>
-            {setAbilities ? null : <i>Last updated {new Date(parseInt(build.updatedAt)).toLocaleString('en-GB')}</i>} 
+            {setAbilities ? null : <i>{new Date(parseInt(build.updatedAt)).toLocaleString()}</i>} 
             {removeBuildFunction ? //if they can remove they can edit
               <span style={{'paddingLeft': '10px', 'float': 'none', 'whiteSpace': 'nowrap'}}>
                 <Popup 

@@ -11,7 +11,7 @@ const Admin = () => {
   const [uid, setUid] = useState('')
   const [twitter, setTwitter] = useState('')
 
-  const updateTwitterMutation = useMutation(updateTwitter)
+  const [updateTwitterMutation] = useMutation(updateTwitter)
 
   const handleUidTwitter = async (e) => {
     e.preventDefault()

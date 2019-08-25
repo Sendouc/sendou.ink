@@ -3,8 +3,10 @@ import { weaponsByCategory } from '../../utils/lists'
 import { categoryKeys } from '../../utils/lists'
 import weaponDict from '../../utils/english_internal.json'
 import { Table, Header, Popup } from 'semantic-ui-react'
+import { useSelector } from 'react-redux'
 
 const WpnPlayedTable = ({ weapons }) => {
+  const localization = useSelector(state => state.localization)
   const weaponStyle = (wpnName) => {
     const activeStyle = {}
     const inactiveStyle = {"filter": "grayscale(1)", "opacity": "0.3"}
@@ -21,7 +23,7 @@ const WpnPlayedTable = ({ weapons }) => {
         <Table.Cell>
           <Header as='h4'>
             <Header.Content>
-              {c}
+              {localization[c]}
             </Header.Content>
           </Header>
         </Table.Cell>
@@ -43,7 +45,7 @@ const WpnPlayedTable = ({ weapons }) => {
         <Table.Cell>
           <Header as='h4'>
             <Header.Content>
-              Total
+              {localization["Total"]}
             </Header.Content>
           </Header>
         </Table.Cell>

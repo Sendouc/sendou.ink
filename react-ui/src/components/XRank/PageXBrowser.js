@@ -212,6 +212,7 @@ const PageXBrowser = ({ setMenuSelection }) => {
               value={weaponForm}
               onChange={value => setWeaponForm(value)}
               content="MAINWEAPONS"
+              allowClear
             />
           </div>
           <div style={{ margin: "0.5em 0" }}>

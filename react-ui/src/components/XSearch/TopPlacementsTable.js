@@ -1,5 +1,6 @@
 import React from 'react'
 import { Header, Image, Table } from 'semantic-ui-react'
+import { useSelector } from 'react-redux'
 
 import weaponDict from '../../utils/english_internal.json'
 import szIcon from '../../img/modeIcons/sz.png'
@@ -9,6 +10,7 @@ import cbIcon from '../../img/modeIcons/cb.png'
 import { months } from '../../utils/lists'
 
 const TopPlacementTable = ({ top }) => {
+  const localization = useSelector(state => state.localization)
   const returnRow = (x, placement, mode) => {
     if (!x) {
       return null
@@ -25,8 +27,8 @@ const TopPlacementTable = ({ top }) => {
             <Header as='h4' image>
               <Image src={modeIcon} size='mini' />
               <Header.Content>
-                {modeName}
-                <Header.Subheader>Highest X Power & Placement</Header.Subheader>
+                {localization[modeName]}
+                <Header.Subheader>{localization["Highest X Power & Placement"]}</Header.Subheader>
               </Header.Content>
             </Header>
           </Table.Cell>
@@ -38,7 +40,7 @@ const TopPlacementTable = ({ top }) => {
               alt={x.weapon}
             />
           </Table.Cell>
-          <Table.Cell>{months[x.month]}</Table.Cell>
+          <Table.Cell>{localization[months[x.month]]}</Table.Cell>
           <Table.Cell>{x.year}</Table.Cell>
         </Table.Row>
       </Table.Body>
@@ -52,8 +54,8 @@ const TopPlacementTable = ({ top }) => {
             <Header as='h4' image>
               <Image src={modeIcon} size='mini' />
               <Header.Content>
-                {modeName}
-                <Header.Subheader>Highest X Power</Header.Subheader>
+                {localization[modeName]}
+                <Header.Subheader>{localization["Highest X Power"]}</Header.Subheader>
               </Header.Content>
             </Header>
           </Table.Cell>
@@ -65,7 +67,7 @@ const TopPlacementTable = ({ top }) => {
               alt={x.weapon}
             />
           </Table.Cell>
-          <Table.Cell>{months[x.month]}</Table.Cell>
+          <Table.Cell>{localization[months[x.month]]}</Table.Cell>
           <Table.Cell>{x.year}</Table.Cell>
         </Table.Row>
         <Table.Row>
@@ -73,8 +75,8 @@ const TopPlacementTable = ({ top }) => {
             <Header as='h4' image>
               <Image src={modeIcon} size='mini' />
               <Header.Content>
-                {modeName}
-                <Header.Subheader>Highest Placement</Header.Subheader>
+                {localization[modeName]}
+                <Header.Subheader>{localization["Highest Placement"]}</Header.Subheader>
               </Header.Content>
             </Header>
           </Table.Cell>
@@ -86,7 +88,7 @@ const TopPlacementTable = ({ top }) => {
               alt={placement.weapon}
             />
           </Table.Cell>
-          <Table.Cell>{months[placement.month]}</Table.Cell>
+          <Table.Cell>{localization[months[placement.month]]}</Table.Cell>
           <Table.Cell>{placement.year}</Table.Cell>
         </Table.Row>
       </Table.Body>
@@ -97,11 +99,11 @@ const TopPlacementTable = ({ top }) => {
     <Table.Header>
       <Table.Row>
         <Table.HeaderCell></Table.HeaderCell>
-        <Table.HeaderCell>X Power</Table.HeaderCell>
-        <Table.HeaderCell>Placement</Table.HeaderCell>
-        <Table.HeaderCell>Weapon</Table.HeaderCell>
-        <Table.HeaderCell>Month</Table.HeaderCell>
-        <Table.HeaderCell>Year</Table.HeaderCell>
+        <Table.HeaderCell>{localization["X Power"]}</Table.HeaderCell>
+        <Table.HeaderCell>{localization["Placement"]}</Table.HeaderCell>
+        <Table.HeaderCell>{localization["Weapon"]}</Table.HeaderCell>
+        <Table.HeaderCell>{localization["Month"]}</Table.HeaderCell>
+        <Table.HeaderCell>{localization["Year"]}</Table.HeaderCell>
       </Table.Row>
     </Table.Header>
     {returnRow(top.szX, top.szTop, 1)}

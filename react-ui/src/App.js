@@ -17,7 +17,7 @@ import UserPage from './components/SoloLadder/UserPage'
 import PageHome from './components/Misc/PageHome'
 import PageBuilds from './components/Tools/PageBuilds'
 import Admin from './components/Misc/Admin'
-import Calendar from './components/Tools/Calendar'
+import Calendar from './components/Tools/PageCalendar'
 import XTrends from './components/XSearch/XTrends'
 
 const App = () => {

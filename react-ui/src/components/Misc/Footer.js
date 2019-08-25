@@ -1,6 +1,7 @@
 import React from 'react'
-import { Icon } from 'semantic-ui-react'
+import { Icon } from 'antd'
 import RollSim from './RollSim'
+import { discordLogoSvg } from '../../img/imports'
 
 const Footer = () => {
   return (
@@ -8,11 +9,13 @@ const Footer = () => {
       <div style={{ "paddingTop": "25px" }}>
         <RollSim />
       </div>
-      <div style={{ "fontSize": "small" }}>
+      <div style={{ fontSize: 30, color: "white", textAlign: "center" }}>
       <hr />
-      Website by <a href="https://twitter.com/sendouc">Sendou</a>. Data for the X Rank Leaderboards provided by <a href="https://twitter.com/LeanYoshi">Lean</a>. 
-      Data for the rotations provided by <a href="https://splatoon2.ink/">splatoon2.ink</a>. Map pictures for the planner provided by <a href="https://twitter.com/zorg_z0rg_z0r8">zorg</a>.<br />
-      <Icon name='github' /> Source code for this site is available on <a href="https://github.com/Sendouc/sendou-ink">GitHub</a>
+      {/* This looks weird but it's necessary for styling reasons */}
+      <Icon type="github" onClick={() => window.location.assign('https://github.com/Sendouc/sendou-ink')} />{" "}
+      <Icon component={discordLogoSvg} onClick={() => window.location.assign('https://discord.gg/J6NqUvt')} />{" "}
+      <Icon type="twitter" onClick={() => window.location.assign('https://twitter.com/sendouc')} />{" "}
+      {/*<Icon type="info-circle" />*/}
       </div>
     </div>
   )
