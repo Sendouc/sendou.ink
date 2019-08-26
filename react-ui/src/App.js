@@ -1,6 +1,6 @@
 import React, { useState, Suspense, lazy } from "react"
 import { Container } from "semantic-ui-react"
-import { Spin } from 'antd'
+import { Spin } from "antd"
 import Footer from "./components/Misc/Footer"
 import MainMenu from "./components/Misc/MainMenu"
 import NotFound from "./components/Misc/NotFound"
@@ -25,6 +25,11 @@ const PageMapPlanner = lazy(() => import("./components/Tools/PageMapPlanner"))
 
 const App = () => {
   const [menuSelection, setMenuSelection] = useState("home")
+  const suspenseFallback = () => (
+    <div style={{ textAlign: "center" }}>
+      <Spin />
+    </div>
+  )
   return (
     <Router>
       <Container>
@@ -104,24 +109,28 @@ const App = () => {
             path="/calendar"
             render={() => <Calendar setMenuSelection={setMenuSelection} />}
           />
+          <Route
+            exact
+            path="/plans"
+            render={() => (
+              <Suspense fallback={suspenseFallback}>
+                <PageMapPlanner setMenuSelection={setMenuSelection} />
+              </Suspense>
+            )}
+          />
+          <Route
+            exact
+            path="/trends"
+            render={() => (
+              <Suspense fallback={suspenseFallback}>
+                <XTrends setMenuSelection={setMenuSelection} />
+              </Suspense>
+            )}
+          />
           <Route path="/about" render={() => <About />} />
           <Route path="/admin" render={() => <Admin />} />
           <Route path="/404" render={() => <NotFound />} />
           <Route path="*" render={() => <NotFound />} />
-          <Suspense fallback={<div style={{textAlign: "center"}}><Spin /></div>}>
-            <Route
-              exact
-              path="/plans"
-              render={() => (
-                <PageMapPlanner setMenuSelection={setMenuSelection} />
-              )}
-            />
-            <Route
-              exact
-              path="/trends"
-              render={() => <XTrends setMenuSelection={setMenuSelection} />}
-            />
-          </Suspense>
         </Switch>
         <Footer />
       </Container>
