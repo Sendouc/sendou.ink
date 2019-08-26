@@ -24,7 +24,9 @@ const PageAbout = () => {
             <li><a href="https://twitter.com/yan87780671">Yani</a> (Chinese translation)</li>
             <li><a href="https://twitter.com/Kassy_tw">Kassy</a> (Spanish translation)</li>
             <li><a href="https://twitter.com/yuza_i">Yuza</a> (German translation)</li>
-            <li><a href="https://twitter.com/adevaleev">Adel</a> (Russian translation)</li>
+            <li><a href="https://vk.com/erff_splatoon">Erfes</a> (Russian translation)</li>
+            <li><a href="https://twitter.com/VoltoMatte">Volto</a> (Italian translation)</li>
+            <li><a href="https://twitter.com/DatPretto">Pretto</a> (Italian translation)</li>
           </ul>
         </p>
       </div>

@@ -1,5 +1,6 @@
 import React from 'react'
 import { Header } from 'semantic-ui-react'
+import RollSim from './RollSim'
 
 import bridge from '../../img/s1Maps/bridge.png'
 import depot from '../../img/s1Maps/depot.png'
@@ -51,6 +52,9 @@ const NotFound = () => {
       </div>
       <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
         <i>...not unlike how {mapObject.name} can't be found in Splatoon 2</i>
+      </div>
+      <div style={{padding: "10px"}}>
+        <RollSim />
       </div>
     </>
   )
