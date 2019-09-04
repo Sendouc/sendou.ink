@@ -1,4 +1,4 @@
-![alt text](https://raw.githubusercontent.com/Sendouc/sendou-ink/master/react-ui/src/img/misc/sink_logo.png)
+![s.ink logo](https://raw.githubusercontent.com/Sendouc/sendou-ink/master/react-ui/src/img/misc/sink_logo.png)
 
 Goal of sendou.ink is to provide useful tools and resources for the competitive Splatoon community.
 
