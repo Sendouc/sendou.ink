@@ -1,14 +1,12 @@
-# sendou.ink
+![alt text](https://raw.githubusercontent.com/Sendouc/sendou-ink/master/react-ui/src/img/misc/sink_logo.png)
 
-Competitive Splatoon Hub
+Goal of sendou.ink is to provide useful tools and resources for the competitive Splatoon community.
 
 Live version: [https://sendou.ink/](https://sendou.ink/)
 
 ## What's happening
 
-I'm making this site as a school project of full stack web development. It is my first time working on a web site project of my own so it's very much a learning experience in that sense.
-
-First working feature is searching for past results of Top 500 of X Rank in Splatoon 2. Going forward the plan is to work on different features as well as guides.
+This site was originally a full stack web development school project. It is my first time working on a web site project of my own so it has been very much a learning experience in that sense.
 
 ## Technologies used
 
@@ -17,6 +15,37 @@ First working feature is searching for past results of Top 500 of X Rank in Spla
 * GraphQL (Apollo)
 * MongoDB (Mongoose)
 * Python (couple different scripts to parse data)
+
+## Current features
+
+🦑 [Maplist Generator](https://sendou.ink/maps)
+Fully configure and randomly generate map lists to play on.
+
+🦑 [Rotation Viewer](https://sendou.ink/rotation)
+View the upcoming rotations in the matchmaking and mark maps as unfavored. Unfavored maps are saved without having to register.
+
+🦑 [Build Viewer](https://sendou.ink/builds)
+Search for builds by weapon submitted by other users.
+
+🦑 [Map Planner](https://sendou.ink/plans)
+Make plans by drawing on maps using variety of tools. You can also save and load from file.
+
+🦑 [X Rank Leaderboards](https://sendou.ink/xleaderboard)
+X Rank (solo queue) leaderboards by weapon class. Ordered by the average of the top four historical scores.
+
+🦑 [Top 500 Browser](https://sendou.ink/xsearch)
+Filter and browse through thousands of X Rank placements dating back to May 2018.
+
+🦑 [X Rank Trends](https://sendou.ink/trends)
+Draw charts based on the appearance of different of different weapons in X Rank. Easily see the impact different patches had and how weapons compare to each other.
+
+🦑 [Competitive Calendar](https://sendou.ink/calendar)
+See all the upcoming events in the competitive Splatoon community on one page.
+
+🦑 [Links](https://sendou.ink/links)
+Links to all sorts of useful resources about competitive Splatoon.
+
+You can also log in to save up to 100 builds of your own.
 
 ## Installation
 
