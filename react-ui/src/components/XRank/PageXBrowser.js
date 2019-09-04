@@ -194,6 +194,7 @@ const PageXBrowser = ({ setMenuSelection }) => {
               onChange={e => setNameForm(e.target.value)}
               style={{ width: 200 }}
               maxLength={10}
+              onPressEnter={() => handleFilterChange()}
             />
           </div>
           <div style={{ margin: "0.5em 0" }}>
@@ -203,6 +204,7 @@ const PageXBrowser = ({ setMenuSelection }) => {
               value={idForm}
               onChange={e => setIdForm(e.target.value)}
               style={{ width: 200 }}
+              onPressEnter={() => handleFilterChange()}
             />
           </div>
           <div style={{ margin: "0.5em 0" }}>

@@ -19,12 +19,6 @@ const typeDef = gql`
     discord_id: String!
     twitch_name: String
     twitter_name: String
-    "Default = [25.0, 25.0 / 3.0] used for TrueSkill ranking https://www.microsoft.com/en-us/research/project/trueskill-ranking-system/"
-    solo_power: Float!
-    solo_wins: Int!
-    solo_losses: Int!
-    "Array with max length of 5 containing Discord ID's on opponents previously faced."
-    previous_opponents: [String!]
   }
 `
 const resolvers = {

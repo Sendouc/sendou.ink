@@ -16,6 +16,7 @@ import Links from "./components/Misc/Links"
 import UserPage from "./components/SoloLadder/UserPage"
 import PageHome from "./components/Misc/PageHome"
 import PageBuilds from "./components/Tools/PageBuilds"
+import PageVideos from './components/Collections/PageVideos'
 import Admin from "./components/Misc/Admin"
 import Calendar from "./components/Tools/PageCalendar"
 import About from "./components/Misc/PageAbout"
@@ -23,13 +24,22 @@ import About from "./components/Misc/PageAbout"
 const XTrends = lazy(() => import("./components/XSearch/XTrends"))
 const PageMapPlanner = lazy(() => import("./components/Tools/PageMapPlanner"))
 
+const SuspensefulComponent = ({ component }) => {
+  return (
+    <Suspense
+      fallback={
+        <div style={{ textAlign: "center" }}>
+          <Spin />
+        </div>
+      }
+    >
+      {component}
+    </Suspense>
+  )
+}
+
 const App = () => {
   const [menuSelection, setMenuSelection] = useState("home")
-  const suspenseFallback = () => (
-    <div style={{ textAlign: "center" }}>
-      <Spin />
-    </div>
-  )
   return (
     <Router>
       <Container>
@@ -96,6 +106,11 @@ const App = () => {
           />
           <Route
             exact
+            path="/v"
+            render={() => <PageVideos setMenuSelection={setMenuSelection} />}
+          />
+          <Route
+            exact
             path="/builds/:weapon"
             render={({ match }) => (
               <PageBuilds
@@ -113,18 +128,20 @@ const App = () => {
             exact
             path="/plans"
             render={() => (
-              <Suspense fallback={suspenseFallback}>
-                <PageMapPlanner setMenuSelection={setMenuSelection} />
-              </Suspense>
+              <SuspensefulComponent
+                component={
+                  <PageMapPlanner setMenuSelection={setMenuSelection} />
+                }
+              />
             )}
           />
           <Route
             exact
             path="/trends"
             render={() => (
-              <Suspense fallback={suspenseFallback}>
-                <XTrends setMenuSelection={setMenuSelection} />
-              </Suspense>
+              <SuspensefulComponent
+                component={<XTrends setMenuSelection={setMenuSelection} />}
+              />
             )}
           />
           <Route path="/about" render={() => <About />} />

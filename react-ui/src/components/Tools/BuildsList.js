@@ -21,7 +21,7 @@ const BuildsList = ({ weapon }) => {
   }, [weapon, localization])
 
   if (error) return <div style={{ color: "red" }}>{error.message}</div>
-  if (loading) return <Spin />
+  if (loading) return <div style={{textAlign: "center"}}><Spin /></div>
 
   const builds = data.searchForBuildsByWeapon.builds
   if (builds.length === 0) return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={localization["No builds for this weapon yet. You can submit the first one!"]} />
