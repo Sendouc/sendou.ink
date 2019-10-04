@@ -86,7 +86,7 @@ const MainMenu = withRouter(({ history, menuSelection, setMenuSelection }) => {
     <Menu stackable borderless>
       <Menu.Item>
         <img
-          style={{cursor: "pointer"}}
+          style={{ cursor: "pointer" }}
           src={memcake}
           alt="memcake logo"
           onClick={() => {
@@ -205,6 +205,13 @@ const MainMenu = withRouter(({ history, menuSelection, setMenuSelection }) => {
               onClick={handleLanguageChange}
             >
               Español
+            </Dropdown.Item>
+            <Dropdown.Item
+              value="pt-br"
+              active={language === "pt-br"}
+              onClick={handleLanguageChange}
+            >
+              Português
             </Dropdown.Item>
             <Dropdown.Item
               value="it-eu"

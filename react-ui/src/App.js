@@ -16,7 +16,6 @@ import Links from "./components/Misc/Links"
 import UserPage from "./components/SoloLadder/UserPage"
 import PageHome from "./components/Misc/PageHome"
 import PageBuilds from "./components/Tools/PageBuilds"
-import PageVideos from './components/Collections/PageVideos'
 import Admin from "./components/Misc/Admin"
 import Calendar from "./components/Tools/PageCalendar"
 import About from "./components/Misc/PageAbout"
@@ -103,11 +102,6 @@ const App = () => {
             exact
             path="/builds"
             render={() => <PageBuilds setMenuSelection={setMenuSelection} />}
-          />
-          <Route
-            exact
-            path="/v"
-            render={() => <PageVideos setMenuSelection={setMenuSelection} />}
           />
           <Route
             exact

@@ -8,16 +8,12 @@ const videoSchema = new mongoose.Schema({
   map: {type: String, required: true},
   mode: {type: String, required: true},
   weapon: {type: String, required: false},
-  spec_weapons: {type: [String], required: false},
-  spec_unique_ids: {type: [String], required: false},
   unique_id: {type: String, required: false},
   status: {type: String, required: true},
   submitter_id: {type: String, required: true},
   match_type: {type: String, required: true},
   top500: {type: Boolean, required: false},
-  alpha_team_name: {type: String, required: false},
-  bravo_team_name: {type: String, required: false},
-  tournament_name: {type: String, required: false},
+  spec_pov: {type: Boolean, default: false, required: false}
 })
 
 module.exports = mongoose.model('Video', videoSchema)

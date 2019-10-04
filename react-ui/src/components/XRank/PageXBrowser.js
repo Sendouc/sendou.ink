@@ -67,7 +67,7 @@ const PageXBrowser = ({ setMenuSelection }) => {
   }, [localization, setMenuSelection])
 
   if (error) return <div style={{ color: "red" }}>{error.message}</div>
-  if (loading && !data.searchForPlacements) return <Spin />
+  if (loading && !data) return <Spin />
 
   const columns = [
     {
@@ -96,7 +96,7 @@ const PageXBrowser = ({ setMenuSelection }) => {
       dataIndex: "weapon",
       render: weapon => (
         <img
-          style={{cursor: "pointer"}}
+          style={{ cursor: "pointer" }}
           src={
             process.env.PUBLIC_URL +
             `/wpnSmall/Wst_${language_dict[weapon]}.png`
@@ -133,7 +133,7 @@ const PageXBrowser = ({ setMenuSelection }) => {
       dataIndex: "month",
       render: month => (
         <span
-          style={{cursor: "pointer"}}
+          style={{ cursor: "pointer" }}
           onClick={() => {
             setMonthForm(month)
             setShowForms(true)
@@ -148,7 +148,7 @@ const PageXBrowser = ({ setMenuSelection }) => {
       dataIndex: "year",
       render: year => (
         <span
-          style={{cursor: "pointer"}}
+          style={{ cursor: "pointer" }}
           onClick={() => {
             setYearForm(year)
             setShowForms(true)
@@ -163,7 +163,7 @@ const PageXBrowser = ({ setMenuSelection }) => {
       dataIndex: "unique_id",
       render: unique_id => (
         <span
-          style={{cursor: "pointer"}}
+          style={{ cursor: "pointer" }}
           onClick={() => {
             setIdForm(unique_id)
             setShowForms(true)

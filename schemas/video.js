@@ -31,8 +31,6 @@ const typeDef = gql`
     map: String!
     mode: String!
     weapon: String
-    "Every unique weapon in the match if match type is SPEC."
-    spec_weapons: [String!]
     "Only if the player in the video has reached Top 500."
     unique_id: String
     status: Status!
@@ -41,12 +39,7 @@ const typeDef = gql`
     match_type: MatchType!
     "True if the player in the match has reached Top 500 with the weapon in the match."
     top500: Boolean
-    "Only if match_type is TOURNAMENT or SPEC"
-    alpha_team_name: String
-    "Only if match_type is TOURNAMENT or SPEC"
-    bravo_team_name: String
-    "Only if match_type is TOURNAMENT or SPEC"
-    tournament_name: String
+    spec_pov: Boolean!
   }
   type YouTubeInfo {
 

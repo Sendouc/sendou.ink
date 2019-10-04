@@ -11,9 +11,9 @@ const YouTubeVideo = ({ start=0, id }) => {
       width={width}
       height={height}
       src={`https://www.youtube-nocookie.com/embed/${id}?start=${start}`}
-      frameborder="0"
+      frameBorder="0"
       allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen="allowfullscreen"
+      allowFullScreen="allowfullscreen"
       mozallowfullscreen="mozallowfullscreen" 
       msallowfullscreen="msallowfullscreen" 
       oallowfullscreen="oallowfullscreen" 
