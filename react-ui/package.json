@@ -1,37 +1,22 @@
 {
-  "name": "react-ui",
+  "name": "sendou-ink-new",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@apollo/react-hooks": "^3.1.2",
-    "antd": "^3.23.5",
+    "@apollo/react-hooks": "^3.1.1",
     "apollo-boost": "^0.4.4",
-    "apollo-link": "^1.2.13",
-    "apollo-link-context": "^1.0.19",
-    "babel-plugin-import": "^1.12.2",
-    "customize-cra": "^0.5.0",
     "graphql": "^14.5.8",
-    "jstz": "^2.1.1",
-    "less": "^3.10.3",
-    "less-loader": "^5.0.0",
-    "react": "^16.10.2",
-    "react-app-rewired": "^2.1.3",
-    "react-color": "^2.17.3",
-    "react-dom": "^16.10.2",
-    "react-localization": "^1.0.15",
-    "react-redux": "^7.1.1",
-    "react-router": "^5.1.2",
+    "react": "^16.10.1",
+    "react-dom": "^16.10.1",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "3.0.0",
-    "react-sketch": "^0.5.1",
-    "recharts": "^1.7.1",
-    "redux": "^4.0.4",
-    "semantic-ui-react": "^0.86.0"
+    "react-scripts": "3.1.2",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^0.88.1"
   },
   "scripts": {
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build && move build ../build",
-    "test": "react-app-rewired test",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -48,6 +33,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "proxy": "http://localhost:3001"
+  }
 }

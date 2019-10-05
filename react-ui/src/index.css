@@ -5,8 +5,8 @@ html {
 body {
   height: 100%;
   margin: 0;
-  background: rgb(96,221,142);
-  background: linear-gradient(180deg, rgba(96,221,142,1) 0%, rgba(27,141,141,1) 25%, rgba(20,17,99,1) 100%);
+  background: #79f1a4;
+  background-image: linear-gradient(135deg, #79f1a4 10%, #0e5cad 100%);
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
