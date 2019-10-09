@@ -4,6 +4,7 @@ import Loading from "../common/Loading"
 
 const MapListGenerator = lazy(() => import("../maps/MapListGenerator"))
 const Rotations = lazy(() => import("../rotation/Rotations"))
+const MapPlanner = lazy(() => import("../plans/MapPlanner"))
 
 const Routes = () => {
   return (
@@ -14,6 +15,9 @@ const Routes = () => {
         </Route>
         <Route path="/rotation">
           <Rotations />
+        </Route>
+        <Route path="/plans">
+          <MapPlanner />
         </Route>
       </Switch>
     </Suspense>

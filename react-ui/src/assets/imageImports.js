@@ -53,6 +53,18 @@ import the_reef_thumbnail from "./mapThumbnails/the_reef.png"
 import wahoo_world_thumbnail from "./mapThumbnails/wahoo_world.png"
 import walleye_warehouse_thumbnail from "./mapThumbnails/walleye_warehouse.png"
 
+//https://stackoverflow.com/questions/42118296/dynamically-import-images-from-a-directory-using-webpack
+export const wpnSmall = importAll(require.context("./wpnSmall", false))
+export const wpnMedium = importAll(require.context("./wpnMedium", false))
+
+function importAll(r, substringStart = 6, substringEnd = 4) {
+  let images = {}
+  r.keys().forEach(item => {
+    images[item.substring(substringStart, item.length - substringEnd)] = r(item)
+  })
+  return images
+}
+
 export const abilityIcons = {
   BDU: BDU,
   BRU: BRU,
