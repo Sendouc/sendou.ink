@@ -324,3 +324,92 @@ for document in players:
             print(f"New player: {document['name']} with {amount_of_weapons} weapons!")
 
 print("All done with updating the weaponsCount attributes.")
+
+# Update X Rank trends
+placements = db.placements.find({})
+wpn_dict = json.loads(open("weapon_info.json").read())
+
+trends = {}
+modes = {1: "SZ", 2: "TC", 3: "RM", 4: "CB"}
+for p in placements:
+    year = p["year"]
+    weapon = p["weapon"]
+    mode = modes[p["mode"]]
+    month = p["month"]
+    weapon_obj = trends.get(weapon, {})
+    year_obj = weapon_obj.get(
+        year,
+        {
+            "SZ": [None, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "TC": [None, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "RM": [None, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "CB": [None, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        },
+    )
+    year_obj[mode][month] = year_obj[mode][month] + 1
+    weapon_obj[year] = year_obj
+    trends[weapon] = weapon_obj
+
+    sub = wpn_dict[weapon]["Sub"]
+    special = wpn_dict[weapon]["Special"]
+
+    weapon_obj = trends.get(sub, {})
+    year_obj = weapon_obj.get(
+        year,
+        {
+            "SZ": [None, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "TC": [None, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "RM": [None, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "CB": [None, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        },
+    )
+    year_obj[mode][month] = year_obj[mode][month] + 1
+    weapon_obj[year] = year_obj
+    trends[sub] = weapon_obj
+
+    weapon_obj = trends.get(special, {})
+    year_obj = weapon_obj.get(
+        year,
+        {
+            "SZ": [None, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "TC": [None, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "RM": [None, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "CB": [None, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        },
+    )
+    year_obj[mode][month] = year_obj[mode][month] + 1
+    weapon_obj[year] = year_obj
+    trends[special] = weapon_obj
+
+to_bulk_add = []
+
+for key in trends:
+    trend_obj = {"weapon": key, "counts": []}
+    for i in range(2018, 2024):
+        if i in trends[key]:
+            modes_obj = trends[key][i]
+            modes_obj["year"] = i
+            trend_obj["counts"].append(modes_obj)
+    to_bulk_add.append(trend_obj)
+db.trends.delete_many({})
+db.trends.insert_many(to_bulk_add)
+
+print("All done with updating X Trends!")
+
+# Update Top 500 status of builds
+builds = db.builds.find({"top": False})
+
+for document in builds:
+    weapon = document["weapon"]
+    user_doc = db.users.find_one({"discord_id": document["discord_id"]})
+    if "twitter_name" not in user_doc:
+        continue
+    player_doc = db.players.find_one({"twitter": user_doc["twitter_name"].lower()})
+    if player_doc is None:
+        continue
+
+    if weapon in player_doc["weapons"]:
+        db.builds.update_one({"_id": document["_id"]}, {"$set": {"top": True}})
+        print(f"{weapon} build by {player_doc['name']} updated!")
+
+print("All done with updatin Top 500 status of builds.")
