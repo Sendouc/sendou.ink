@@ -19,36 +19,36 @@ const MainMenu = () => {
 
         <Dropdown item text="Tools">
           <Dropdown.Menu style={dropdownStyle}>
-            <Dropdown.Item as={NavLink} exact to="/maps">
+            <Dropdown.Item as={NavLink} to="/maps">
               Maplist Generator
             </Dropdown.Item>
-            <Dropdown.Item as={NavLink} exact to="/rotation">
+            <Dropdown.Item as={NavLink} to="/rotation">
               Rotation
             </Dropdown.Item>
-            <Dropdown.Item as={NavLink} exact to="/plans">
+            <Dropdown.Item as={NavLink} to="/plans">
               Map Planner
             </Dropdown.Item>
-            <Dropdown.Item as={NavLink} exact to="/calendar">
+            <Dropdown.Item as={NavLink} to="/calendar">
               Calendar
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
         <Dropdown item text="Collections">
           <Dropdown.Menu style={dropdownStyle}>
-            <Dropdown.Item as={NavLink} exact to="/builds">
+            <Dropdown.Item as={NavLink} to="/builds">
               Builds
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
         <Dropdown item text="X Rank">
           <Dropdown.Menu style={dropdownStyle}>
-            <Dropdown.Item as={NavLink} exact to="/xleaderboard">
+            <Dropdown.Item as={NavLink} to="/xleaderboard">
               Leaderboards
             </Dropdown.Item>
-            <Dropdown.Item as={NavLink} exact to="/xsearch">
+            <Dropdown.Item as={NavLink} to="/xsearch">
               Top 500 Browser
             </Dropdown.Item>
-            <Dropdown.Item as={NavLink} exact to="/trends">
+            <Dropdown.Item as={NavLink} to="/trends">
               Trends
             </Dropdown.Item>
           </Dropdown.Menu>
