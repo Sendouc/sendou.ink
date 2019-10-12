@@ -1,10 +1,8 @@
 import React, { useState } from "react"
-import { Comment } from "semantic-ui-react"
 import { clothingGear, shoesGear, headGear } from "../../utils/lists"
 import { choose } from "../../utils/helperFunctions"
 
 import { abilityIcons } from "../../assets/imageImports"
-import murchpfp from "../../assets/murchpfp.png"
 import head from "../../utils/head.json"
 import clothes from "../../utils/clothes.json"
 import shoes from "../../utils/shoes.json"
@@ -36,6 +34,8 @@ const subAbilityStyle = {
   boxShadow: "0 0 0 1px #000"
 }
 const gearStyle = { maxWidth: "50px", height: "auto" }
+
+const paddingStyle = { paddingLeft: "0.7em" }
 
 const subAbilities = [
   abilityIcons.ISM,
@@ -167,7 +167,6 @@ const RollSim = () => {
     choose(subAbilities)
   ])
   const [rolling, setRolling] = useState(false)
-  const [rollCount, setRollCount] = useState(0)
 
   const setSubs = (json, gear) => {
     let gearName = gear.split("_")[1]
@@ -239,7 +238,6 @@ const RollSim = () => {
     }
     setSubsState(setSubs(json, gear)) //only using this method in the last roll that matters for optimization purposes
     setRolling(false)
-    setRollCount(rollCount + 1)
   }
 
   return (
@@ -250,7 +248,9 @@ const RollSim = () => {
           style={gearStyle}
           alt=""
         />
-        <img src={headMain} style={mainAbilityStyle} alt="" />
+        <span style={paddingStyle}>
+          <img src={headMain} style={mainAbilityStyle} alt="" />
+        </span>
         <img
           src={headSubs[0]}
           style={subAbilityStyle}
@@ -276,7 +276,9 @@ const RollSim = () => {
           style={gearStyle}
           alt=""
         />
-        <img src={clothingMain} style={mainAbilityStyle} alt="" />
+        <span style={paddingStyle}>
+          <img src={clothingMain} style={mainAbilityStyle} alt="" />
+        </span>
         <img
           src={clothingSubs[0]}
           style={subAbilityStyle}
@@ -302,7 +304,9 @@ const RollSim = () => {
           style={gearStyle}
           alt=""
         />
-        <img src={shoesMain} style={mainAbilityStyle} alt="" />
+        <span style={paddingStyle}>
+          <img src={shoesMain} style={mainAbilityStyle} alt="" />
+        </span>
         <img
           src={shoesSubs[0]}
           style={subAbilityStyle}
@@ -322,20 +326,6 @@ const RollSim = () => {
           onClick={() => roll("SHOES")}
         />
       </div>
-      {rollCount > 0 && (
-        <Comment.Group>
-          <Comment>
-            <Comment.Avatar as="a" src={murchpfp} />
-            <Comment.Content>
-              <Comment.Author style={{ color: "white" }}>Murch</Comment.Author>
-              <Comment.Text style={{ color: "white" }}>
-                You have rolled {rollCount} {rollCount === 1 ? "time" : "times"}
-                , chum.
-              </Comment.Text>
-            </Comment.Content>
-          </Comment>
-        </Comment.Group>
-      )}
     </div>
   )
 }

@@ -26,17 +26,29 @@ const Footer = () => {
           <Grid.Column width={3}>
             <Header inverted as="h4" content="Follow Sendou" />
             <List link inverted>
-              <List.Item as="a">Twitter</List.Item>
-              <List.Item as="a">Twitch</List.Item>
-              <List.Item as="a">YouTube</List.Item>
-              <List.Item as="a">Discord</List.Item>
+              <List.Item as="a" href="https://twitter.com/sendouc">
+                Twitter
+              </List.Item>
+              <List.Item as="a" href="https://www.twitch.tv/sendou">
+                Twitch
+              </List.Item>
+              <List.Item as="a" href="https://www.youtube.com/sendou">
+                YouTube
+              </List.Item>
+              <List.Item as="a" href="https://discordapp.com/invite/J6NqUvt">
+                Discord
+              </List.Item>
             </List>
           </Grid.Column>
           <Grid.Column width={3}>
             <Header inverted as="h4" content="Splatoon elsewhere" />
             <List link inverted>
-              <List.Item as="a">Splatoonwiki</List.Item>
-              <List.Item as="a">Some random</List.Item>
+              <List.Item as="a" href="https://splatoonwiki.org/">
+                Inkipedia
+              </List.Item>
+              <List.Item as="a" href="https://stat.ink/">
+                stat.ink
+              </List.Item>
               <List.Item as="a">Links</List.Item>
               <List.Item as="a">More</List.Item>
             </List>

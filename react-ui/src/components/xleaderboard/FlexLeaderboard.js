@@ -1,5 +1,5 @@
 import React, { useEffect } from "react"
-import { Table, Icon, Popup, Segment } from "semantic-ui-react"
+import { Table, Icon, Popup } from "semantic-ui-react"
 import { useQuery } from "@apollo/react-hooks"
 import { Link } from "react-router-dom"
 
@@ -21,7 +21,7 @@ const FlexLeaderboard = () => {
     )
   }
   if (result.error) {
-    return <Error />
+    return <Error errorMessage={result.error.message} />
   }
   const leaderboard = result.data["topFlex"]
 

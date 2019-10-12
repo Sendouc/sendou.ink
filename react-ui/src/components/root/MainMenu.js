@@ -1,6 +1,6 @@
 import React from "react"
-import { Menu, Container, Image, Dropdown, Button } from "semantic-ui-react"
-import { NavLink } from "react-router-dom"
+import { Menu, Container, Image, Dropdown, Icon } from "semantic-ui-react"
+import { Link, NavLink } from "react-router-dom"
 import sink_logo from "../../assets/sink_logo.png"
 
 const dropdownStyle = {
@@ -11,7 +11,7 @@ const dropdownStyle = {
 
 const MainMenu = () => {
   return (
-    <Menu inverted attached="top" stackable>
+    <Menu inverted secondary attached="top" stackable>
       <Container>
         <Menu.Item as="a" header>
           <Image src={sink_logo} style={{ height: "40px", width: "auto" }} />
@@ -53,8 +53,10 @@ const MainMenu = () => {
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
-        <Menu.Item position="right">
-          <Button style={{ background: "#7289DA" }}>Log in via Discord</Button>
+
+        <Menu.Item as={Link} to="/" position="right">
+          <Icon name="discord" size="large" style={{ paddingRight: "0.2em" }} />
+          Log in via Discord
         </Menu.Item>
       </Container>
     </Menu>

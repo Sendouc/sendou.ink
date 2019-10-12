@@ -22,7 +22,7 @@ const WeaponLeaderboard = ({ query, queryName, scoreField, weaponsField }) => {
     )
   }
   if (result.error) {
-    return <Error />
+    return <Error errorMessage={result.error.message} />
   }
 
   const leaderboard = result.data[queryName]

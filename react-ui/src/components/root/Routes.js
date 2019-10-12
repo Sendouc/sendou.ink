@@ -7,6 +7,8 @@ const Rotations = lazy(() => import("../rotation/Rotations"))
 const MapPlanner = lazy(() => import("../plans/MapPlanner"))
 const Calendar = lazy(() => import("../calendar/Calendar"))
 const XLeaderboard = lazy(() => import("../xleaderboard/XLeaderboard"))
+const PlayerXRankStats = lazy(() => import("../xsearch/PlayerXRankStats"))
+const XTrends = lazy(() => import("../xtrends/XTrends"))
 
 const Routes = () => {
   return (
@@ -26,6 +28,12 @@ const Routes = () => {
         </Route>
         <Route path="/xleaderboard">
           <XLeaderboard />
+        </Route>
+        <Route path="/xsearch/p/:uid">
+          <PlayerXRankStats />
+        </Route>
+        <Route path="/trends">
+          <XTrends />
         </Route>
       </Switch>
     </Suspense>

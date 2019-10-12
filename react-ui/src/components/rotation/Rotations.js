@@ -39,7 +39,7 @@ const Rotations = ({ setMenuSelection }) => {
   }, [data, loading, monthly.loading])
 
   if (loading || monthly.loading || rotation.length === 0) return <Loading />
-  if (error || monthly.error) return <Error />
+  if (error || monthly.error) return <Error errorMessage={error.message} />
 
   const monthlyMaps = monthly.data.maplists[0]
 
