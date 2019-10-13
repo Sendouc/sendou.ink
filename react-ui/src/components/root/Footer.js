@@ -1,17 +1,9 @@
 import React from "react"
-import {
-  Segment,
-  Container,
-  Grid,
-  Header,
-  List,
-  Divider
-} from "semantic-ui-react"
-import RollSim from "./RollSim"
+import { Segment, Container, List } from "semantic-ui-react"
 
 const Footer = () => {
   return (
-    <Segment vertical style={{ padding: "1em 0em" }}>
+    <Segment vertical style={{ padding: "1em 0 2em" }}>
       <Container textAlign="center">
         <List horizontal inverted divided link size="small">
           <List.Item as="a" href="#">
