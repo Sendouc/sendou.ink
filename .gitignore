@@ -26,5 +26,6 @@ yarn-error.log*
 
 config.py
 test.py
+google_sheet_secret.json
 
 __pycache__
