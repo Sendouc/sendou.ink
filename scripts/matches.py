@@ -2,6 +2,8 @@ import os
 import gspread
 import datetime
 from oauth2client.service_account import ServiceAccountCredentials
+import pymongo
+from config import uri
 
 weapons = [
     "Sploosh-o-matic",
@@ -139,6 +141,9 @@ weapon_to_replace = {
     "N-ZAP 85": "N-ZAP '85",
     "N-ZAP 89": "N-ZAP '89",
     "N-ZAP 83": "N-ZAP '83",
+    "Bamboozler 14 MK I": "Bamboozler 14 Mk I",
+    "Bamboozler 14 MK II": "Bamboozler 14 Mk II",
+    "Bamboozler 14 MK III": "Bamboozler 14 Mk III",
 }
 
 maps = [
@@ -170,6 +175,7 @@ maps = [
 abilities = {
     "": None,
     "Last-Ditch Effort": "LDE",
+    "Last Ditch Effort": "LDE",
     "Ink Saver (Sub)": "ISS",
     "Ink Saver Sub": "ISS",
     "Thermal Ink": "TI",
@@ -211,12 +217,16 @@ sheets = gspread.authorize(
 url = "https://docs.google.com/spreadsheets/d/1_-E1G6CJzrrvQOMBRLr2BgOR5pQNHWTqnHlokWIgkW4"
 sheet = sheets.open_by_url(url)
 
+client = pymongo.MongoClient(uri)
+db = client.production
+
 tournament = {
     "name": sheet.title.split("]")[2].split("[")[0].strip(),
     "jpn": "[JP]" in sheet.title,
     "google_sheet_url": url,
     "date": datetime.datetime.strptime(sheet.title.split("]")[0][1:], "%Y-%m-%d"),
 }
+tournament_id = db.tournaments.insert_one(tournament).inserted_id
 worksheet = sheet.worksheet("Summary")
 rows = worksheet.get_all_values()
 del rows[:2]
@@ -233,6 +243,22 @@ current_winning_team = None
 current_losing_team = None
 
 winner_team = None
+
+game_to_enter = {
+    "tournament_id": tournament_id,
+    "stage": None,
+    "mode": None,
+    "game_number": None,
+    "winning_team_name": None,
+    "winning_team_players": [],
+    "winning_team_weapons": [],
+    "winning_team_main_abilities": [],
+    "losing_team_name": None,
+    "losing_team_players": [],
+    "losing_team_weapons": [],
+    "losing_team_main_abilities": [],
+}
+games_to_insertmany = []
 for count, row in enumerate(rows):
     round_name = row[0]
     if "-" in round_name:
@@ -241,7 +267,7 @@ for count, row in enumerate(rows):
         round_name = current_round
     else:
         current_round = round_name
-        # TODO: Make round name have (2) etc. (use round_count)
+        round_count[round_name] = round_count.get(round_name, 0) + 1
     assert round_name in ["Quarter-Finals", "Semi-Finals", "Finals", "R1"]
     game = row[1]
     if "Game" in game:
@@ -270,7 +296,9 @@ for count, row in enumerate(rows):
     winning_team_player_weapon = row[8]
     if winning_team_player_weapon in weapon_to_replace:
         winning_team_player_weapon = weapon_to_replace[winning_team_player_weapon]
-    assert winning_team_player_weapon in weapons
+    assert (
+        winning_team_player_weapon in weapons
+    ), f"'{winning_team_player_weapon}' not a valid weapon."
     weapon_count[winning_team_player_weapon] = (
         weapon_count.get(winning_team_player_weapon, 0) + 1
     )
@@ -291,7 +319,9 @@ for count, row in enumerate(rows):
     losing_team_player_weapon = row[20]
     if losing_team_player_weapon in weapon_to_replace:
         losing_team_player_weapon = weapon_to_replace[losing_team_player_weapon]
-    assert losing_team_player_weapon in weapons
+    assert (
+        losing_team_player_weapon in weapons
+    ), f"'{losing_team_player_weapon}' not a valid weapon."
     weapon_count[losing_team_player_weapon] = (
         weapon_count.get(losing_team_player_weapon, 0) + 1
     )
@@ -310,14 +340,45 @@ for count, row in enumerate(rows):
         current_game = game
     assert game > 0 and game < 10
 
-    print(
-        f"round_name={round_name}\ngame={game}\nmode={mode}\nstage={stage}\nwinning_team_name={winning_team_name}\nwinning_team_player={winning_team_player}"
+    round_bracket = (
+        f" ({round_count[round_name]})"
+        if round_name in round_count and round_count[round_name] > 1
+        else ""
     )
-    print(
-        f"winning_team_player_weapon={winning_team_player_weapon}\nwinning_main_abilities={winning_team_player_main_abilities}"
-    )
-    print(
-        f"losing_team_name={losing_team_name}\nlosing_team_player={losing_team_player}\nlosing_team_player_weapon={losing_team_player_weapon}"
-    )
-    print(f"losing_main_abilities={losing_team_player_main_abitilies}")
+    round_name = f"{round_name}{round_bracket}"
 
+    if (
+        game_to_enter["game_number"] is not None
+        and game != game_to_enter["game_number"]
+    ):  # We have entered a new game so we insert the previous document
+        games_to_insertmany.append(
+            game_to_enter.copy()
+        )  # https://stackoverflow.com/questions/17529216/mongodb-insert-raises-duplicate-key-error
+        game_to_enter["winning_team_players"] = []
+        game_to_enter["winning_team_weapons"] = []
+        game_to_enter["winning_team_main_abilities"] = []
+        game_to_enter["losing_team_players"] = []
+        game_to_enter["losing_team_weapons"] = []
+        game_to_enter["losing_team_main_abilities"] = []
+
+    game_to_enter["stage"] = stage
+    game_to_enter["mode"] = mode
+    game_to_enter["game_number"] = game
+    game_to_enter["winning_team_name"] = winning_team_name
+    game_to_enter["winning_team_players"].append(winning_team_player)
+    game_to_enter["winning_team_weapons"].append(winning_team_player_weapon)
+    game_to_enter["winning_team_main_abilities"].append(
+        winning_team_player_main_abilities
+    )
+    game_to_enter["losing_team_name"] = losing_team_name
+    game_to_enter["losing_team_players"].append(losing_team_player)
+    game_to_enter["losing_team_weapons"].append(losing_team_player_weapon)
+    game_to_enter["losing_team_main_abilities"].append(
+        losing_team_player_main_abitilies
+    )
+
+games_to_insertmany.append(game_to_enter)
+db.rounds.insert_many(games_to_insertmany)
+
+# TODO: Update tournaments w/ most_popular_weapons & add winner_team_name & winner_team_players & winner_team_unique_ids
+# TODO: Maybe also already add unique_ids to round documents?
