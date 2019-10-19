@@ -241,14 +241,18 @@ current_mode = None
 current_map = None
 current_winning_team = None
 current_losing_team = None
+round_number = 0
 
 winner_team = None
+winner_team_players = None
 
 game_to_enter = {
     "tournament_id": tournament_id,
     "stage": None,
     "mode": None,
     "game_number": None,
+    "round_name": None,
+    "round_number": None,
     "winning_team_name": None,
     "winning_team_players": [],
     "winning_team_weapons": [],
@@ -266,6 +270,7 @@ for count, row in enumerate(rows):
     if round_name == "":
         round_name = current_round
     else:
+        round_number += 1
         current_round = round_name
         round_count[round_name] = round_count.get(round_name, 0) + 1
     assert round_name in ["Quarter-Finals", "Semi-Finals", "Finals", "R1"]
@@ -364,8 +369,12 @@ for count, row in enumerate(rows):
     game_to_enter["stage"] = stage
     game_to_enter["mode"] = mode
     game_to_enter["game_number"] = game
+    game_to_enter["round_number"] = round_number
+    game_to_enter["round_name"] = round_name
     game_to_enter["winning_team_name"] = winning_team_name
+    winner_team = game_to_enter["winning_team_name"]
     game_to_enter["winning_team_players"].append(winning_team_player)
+    winner_team_players = game_to_enter["winning_team_players"]
     game_to_enter["winning_team_weapons"].append(winning_team_player_weapon)
     game_to_enter["winning_team_main_abilities"].append(
         winning_team_player_main_abilities
@@ -380,5 +389,17 @@ for count, row in enumerate(rows):
 games_to_insertmany.append(game_to_enter)
 db.rounds.insert_many(games_to_insertmany)
 
-# TODO: Update tournaments w/ most_popular_weapons & add winner_team_name & winner_team_players & winner_team_unique_ids
-# TODO: Maybe also already add unique_ids to round documents?
+tournament_updated_fields = {}
+weapon_count = sorted(weapon_count.items(), key=lambda kv: kv[1], reverse=True)
+popular_wpn = []
+
+for x in range(5):
+    popular_wpn.append(weapon_count[x][0])
+
+tournament_updated_fields["popular_weapons"] = popular_wpn
+tournament_updated_fields["winning_team_name"] = winner_team
+tournament_updated_fields["winning_team_players"] = winner_team_players
+# TODO: Add winning_team_unique_ids here
+
+db.tournaments.update_one({"_id": tournament_id}, {"$set": tournament_updated_fields})
+
