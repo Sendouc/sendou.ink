@@ -123,5 +123,9 @@ export const modeIcons = {
   "Splat Zones": szIcon,
   "Tower Control": tcIcon,
   Rainmaker: rmIcon,
-  "Clam Blitz": cbIcon
+  "Clam Blitz": cbIcon,
+  SZ: szIcon,
+  TC: tcIcon,
+  RM: rmIcon,
+  CB: cbIcon
 }

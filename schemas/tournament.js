@@ -8,6 +8,7 @@ const typeDef = gql`
   }
   type Tournament {
     name: String!
+    bracket_url: String
     "True if the tournament was a Japanese one"
     jpn: Boolean!
     "Link to the Google Sheet containing ganbawoomy's data"

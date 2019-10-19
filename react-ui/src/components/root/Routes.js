@@ -10,6 +10,9 @@ const XLeaderboard = lazy(() => import("../xleaderboard/XLeaderboard"))
 const PlayerXRankStats = lazy(() => import("../xsearch/PlayerXRankStats"))
 const XTrends = lazy(() => import("../xtrends/XTrends"))
 const Links = lazy(() => import("../links/Links"))
+const TournamentDetailsPage = lazy(() =>
+  import("../tournament/TournamentDetailsPage")
+)
 
 const Routes = () => {
   return (
@@ -38,6 +41,9 @@ const Routes = () => {
         </Route>
         <Route path="/trends">
           <XTrends />
+        </Route>
+        <Route path="/tournaments/:id">
+          <TournamentDetailsPage />
         </Route>
       </Switch>
     </Suspense>
