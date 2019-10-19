@@ -1,15 +1,16 @@
 //https://blog.apollographql.com/modularizing-your-graphql-schema-code-d7f71d5ed5f2
 
-const { merge } = require('lodash')
-const { makeExecutableSchema, gql } = require('apollo-server-express')
-const { Build, buildResolvers } = require('./schemas/build')
-const { Maplist, maplistResolvers } = require('./schemas/maplist')
-const { Placement, placementResolvers } = require('./schemas/placement')
-const { Player, playerResolvers } = require('./schemas/player')
-const { Rotation, rotationResolvers } = require('./schemas/rotation')
-const { User, userResolvers } = require('./schemas/user')
-const { Link, linkResolvers } = require('./schemas/link')
-const { Trend, trendResolvers } = require('./schemas/trend')
+const { merge } = require("lodash")
+const { makeExecutableSchema, gql } = require("apollo-server-express")
+const { Build, buildResolvers } = require("./schemas/build")
+const { Maplist, maplistResolvers } = require("./schemas/maplist")
+const { Placement, placementResolvers } = require("./schemas/placement")
+const { Player, playerResolvers } = require("./schemas/player")
+const { Rotation, rotationResolvers } = require("./schemas/rotation")
+const { User, userResolvers } = require("./schemas/user")
+const { Link, linkResolvers } = require("./schemas/link")
+const { Trend, trendResolvers } = require("./schemas/trend")
+const { Tournament, tournamentResolvers } = require("./schemas/tournament")
 
 const Query = gql`
   type Query {
@@ -26,17 +27,19 @@ const Mutation = gql`
 const resolvers = {}
 
 const schema = makeExecutableSchema({
-  typeDefs: [ 
-    Query, 
-    Mutation, 
-    Build, 
+  typeDefs: [
+    Query,
+    Mutation,
+    Build,
     Maplist,
     Placement,
     Player,
     Rotation,
     User,
     Link,
-    Trend ],
+    Trend,
+    Tournament
+  ],
   resolvers: merge(
     resolvers,
     buildResolvers,
@@ -46,7 +49,8 @@ const schema = makeExecutableSchema({
     rotationResolvers,
     userResolvers,
     linkResolvers,
-    trendResolvers
+    trendResolvers,
+    tournamentResolvers
   )
 })
 
