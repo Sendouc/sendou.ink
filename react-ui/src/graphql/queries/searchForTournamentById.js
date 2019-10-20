@@ -22,13 +22,11 @@ export const searchForTournamentById = gql`
         winning_team_unique_ids
         winning_team_weapons
         winning_team_main_abilities
-        winning_team_sub_abilities
         losing_team_name
         losing_team_players
         losing_team_unique_ids
         losing_team_weapons
         losing_team_main_abilities
-        losing_team_sub_abilities
       }
     }
   }

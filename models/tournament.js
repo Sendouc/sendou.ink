@@ -18,7 +18,8 @@ const tournamentSchema = new mongoose.Schema({
   winning_team_unique_ids: {
     type: [String],
     required: false,
-    validate: [player_limit, "{PATH} must be 4"]
+    validate: [player_limit, "{PATH} must be 4"],
+    default: [null, null, null, null]
   }
 })
 

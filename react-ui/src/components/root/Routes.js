@@ -42,7 +42,7 @@ const Routes = () => {
         <Route path="/trends">
           <XTrends />
         </Route>
-        <Route path="/tournaments/:id">
+        <Route path="/tournaments/:id/:weapons?">
           <TournamentDetailsPage />
         </Route>
       </Switch>

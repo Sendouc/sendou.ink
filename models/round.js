@@ -25,7 +25,8 @@ const roundSchema = new mongoose.Schema({
   winning_team_unique_ids: {
     type: [String],
     required: false,
-    validate: [player_limit, "{PATH} must be 4"]
+    validate: [player_limit, "{PATH} must be 4"],
+    default: [null, null, null, null]
   },
   winning_team_main_abilities: {
     type: [[String]],
@@ -51,7 +52,8 @@ const roundSchema = new mongoose.Schema({
   losing_team_unique_ids: {
     type: [String],
     required: false,
-    validate: [player_limit, "{PATH} must be 4"]
+    validate: [player_limit, "{PATH} must be 4"],
+    default: [null, null, null, null]
   },
   losing_team_main_abilities: {
     type: [[String]],

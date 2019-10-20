@@ -33,13 +33,13 @@ const typeDef = gql`
     game_number: Int!
     winning_team_name: String!
     winning_team_players: [String!]!
-    winning_team_unique_ids: [String!]
+    winning_team_unique_ids: [String]!
     winning_team_weapons: [String!]!
     winning_team_main_abilities: [[Ability!]]
     winning_team_sub_abilities: [[Ability!]]
     losing_team_name: String!
     losing_team_players: [String!]!
-    losing_team_unique_ids: [String!]
+    losing_team_unique_ids: [String]!
     losing_team_weapons: [String!]!
     losing_team_main_abilities: [[Ability!]]
     losing_team_sub_abilities: [[Ability!]]
@@ -56,6 +56,7 @@ const typeDef = gql`
 const resolvers = {
   Query: {
     searchForTournamentById: async (root, args) => {
+      if (!args.id.match(/^[0-9a-fA-F]{24}$/)) return null
       const rounds = await Round.find({ tournament_id: args.id })
         .sort({ round_number: "asc", game_number: "asc" })
         .catch(e => {
