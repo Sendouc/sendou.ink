@@ -29,6 +29,7 @@ const subAbilityStyle = {
 }
 
 const AbilityIcon = ({ ability, size = "MAIN", style = {} }) => {
+  if (!ability) return null
   return (
     <span style={style}>
       <img

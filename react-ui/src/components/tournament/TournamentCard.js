@@ -6,7 +6,9 @@ import { months } from "../../utils/lists"
 
 const TournamentCard = ({ tournament, centered = false }) => {
   const a = new Date(parseInt(tournament["date"]))
-  const dateStr = `${a.getDate()} ${months[a.getMonth()]} ${a.getFullYear()}`
+  const dateStr = `${a.getDate()} ${
+    months[a.getMonth() + 1]
+  } ${a.getFullYear()}`
   return (
     <Card raised centered={centered}>
       <Card.Content>
@@ -17,7 +19,7 @@ const TournamentCard = ({ tournament, centered = false }) => {
         <Card.Meta>{dateStr}</Card.Meta>
         {tournament.hasOwnProperty("bracket") && (
           <Card.Description>
-            <a href={tournament["bracket"]}>Bracket</a>
+            {tournament.bracket && <a href={tournament.bracket}>Bracket</a>}
           </Card.Description>
         )}
         <Card.Description>

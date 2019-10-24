@@ -26,16 +26,20 @@ const abilityIcons = (round, index, winning = true) => {
 
   return (
     <span style={{ paddingLeft: "0.5em" }}>
-      <AbilityIcon ability={arr_to_use[index][0]} size="SUB" />
+      <AbilityIcon
+        ability={arr_to_use[index][0]}
+        size="SUB"
+        style={{ margin: "0.2em" }}
+      />
       <AbilityIcon
         ability={arr_to_use[index][1]}
         size="SUB"
-        style={{ paddingLeft: "0.2em" }}
+        style={{ margin: "0.2em" }}
       />
       <AbilityIcon
         ability={arr_to_use[index][2]}
         size="SUB"
-        style={{ paddingLeft: "0.2em" }}
+        style={{ margin: "0.2em" }}
       />
     </span>
   )
@@ -48,7 +52,7 @@ const TournamentDetailsPage = () => {
   })
 
   useEffect(() => {
-    if (loading || !data.searchForTournamentById) return
+    if (loading || !data || !data.searchForTournamentById) return
     document.title = `${data.searchForTournamentById.name} - sendou.ink`
   }, [loading, data])
 

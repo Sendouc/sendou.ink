@@ -4,6 +4,7 @@ const tournamentSchema = new mongoose.Schema({
   name: { type: String, required: true },
   jpn: { type: Boolean, default: false },
   google_sheet_url: { type: String },
+  bracket: { type: String },
   date: { type: Date, required: true },
   popular_weapons: {
     type: [String],

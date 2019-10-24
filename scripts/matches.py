@@ -144,6 +144,9 @@ weapon_to_replace = {
     "Bamboozler 14 MK I": "Bamboozler 14 Mk I",
     "Bamboozler 14 MK II": "Bamboozler 14 Mk II",
     "Bamboozler 14 MK III": "Bamboozler 14 Mk III",
+    "Kensa Splattershot PRo": "Kensa Splattershot Pro",
+    "Rapid Blaster PRo Deco": "Rapid Blaster Pro Deco",
+    "Tenta Camo brella": "Tenta Camo Brella",
 }
 
 maps = [
@@ -187,6 +190,7 @@ abilities = {
     "Special Charge Up": "SCU",
     "Special Saver": "SS",
     "Run Speed Up": "RSU",
+    "Run Speed up": "RSU",
     "Quick Super Jump": "QSJ",
     "Ink Resistance Up": "RES",
     "Sub Power Up": "BRU",
@@ -202,6 +206,8 @@ abilities = {
     "Tenacity": "T",
     "Quick Respawn": "QR",
     "Swim Speed Up": "SSU",
+    "Swim Speed up": "SSU",
+    "Ability Doubler": "AD",
 }
 
 scope = [
@@ -214,7 +220,7 @@ abs_file_path = os.path.join(script_dir, rel_path)
 sheets = gspread.authorize(
     ServiceAccountCredentials.from_json_keyfile_name(abs_file_path, scope)
 )
-url = "https://docs.google.com/spreadsheets/d/1_-E1G6CJzrrvQOMBRLr2BgOR5pQNHWTqnHlokWIgkW4"
+url = input("Google Sheet URL?")
 sheet = sheets.open_by_url(url)
 
 client = pymongo.MongoClient(uri)
@@ -232,6 +238,7 @@ rows = worksheet.get_all_values()
 del rows[:2]
 weapon_count = {}
 round_count = {}
+teams = {}
 
 # Necessary because there are columns where one cell takes over multiple cells
 # which is represented as emptry strings when gspread parses
@@ -264,16 +271,16 @@ game_to_enter = {
 }
 games_to_insertmany = []
 for count, row in enumerate(rows):
-    round_name = row[0]
+    round_name = row[0].replace("\n", " ").replace(" A", "").replace(" B", "")
     if "-" in round_name:
-        round_name = round_name.replace(" ", "")
+        round_name = round_name.replace("- ", "-")
     if round_name == "":
         round_name = current_round
     else:
         round_number += 1
         current_round = round_name
         round_count[round_name] = round_count.get(round_name, 0) + 1
-    assert round_name in ["Quarter-Finals", "Semi-Finals", "Finals", "R1"]
+    assert round_name != "", f"'{round_name}' is not a valid round name."
     game = row[1]
     if "Game" in game:
         game = int(game.split(" ")[1])
@@ -282,22 +289,30 @@ for count, row in enumerate(rows):
         mode = current_mode
     else:
         current_mode = mode
-    assert mode in ["SZ", "TC", "RM", "CB", "TW"]
+    print("mode" + mode)
+    print(type(mode))
+    assert mode in ["SZ", "TC", "RM", "CB", "TW"], f"{mode} is not a valid mode name."
     stage = row[4]
     if stage == "":
         stage = current_map
     else:
         current_map = stage
     assert stage in maps
+    winning_team_player = row[7]
+    assert winning_team_player != ""
     winning_team_name = row[6]
     if game != "" and winning_team_name == "":
-        winning_team_name = input(f"Winning team name for row {count+1}=?")
+        if winning_team_player in teams:
+            winning_team_name = teams[winning_team_player]
+        else:
+            winning_team_name = input(
+                f"Winning team name for row {count+1}=? ({winning_team_player})"
+            )
+            teams[winning_team_player] = winning_team_name
     if winning_team_name == "":
         winning_team_name = current_winning_team
     else:
         current_winning_team = winning_team_name
-    winning_team_player = row[7]
-    assert winning_team_player != ""
     winning_team_player_weapon = row[8]
     if winning_team_player_weapon in weapon_to_replace:
         winning_team_player_weapon = weapon_to_replace[winning_team_player_weapon]
@@ -312,15 +327,21 @@ for count, row in enumerate(rows):
         abilities[row[13]],
         abilities[row[14]],
     ]
+    losing_team_player = row[19]
+    assert losing_team_player != ""
     losing_team_name = row[18]
     if game != "" and losing_team_name == "":
-        losing_team_name = input(f"Losing team name for row {count+1}=?")
+        if losing_team_player in teams:
+            losing_team_name = teams[losing_team_player]
+        else:
+            losing_team_name = input(
+                f"Losing team name for row {count+1}=? ({losing_team_player})"
+            )
+            teams[losing_team_player] = losing_team_name
     if losing_team_name == "":
         losing_team_name = current_losing_team
     else:
         current_losing_team = losing_team_name
-    losing_team_player = row[19]
-    assert losing_team_player != ""
     losing_team_player_weapon = row[20]
     if losing_team_player_weapon in weapon_to_replace:
         losing_team_player_weapon = weapon_to_replace[losing_team_player_weapon]
@@ -403,3 +424,4 @@ tournament_updated_fields["winning_team_players"] = winner_team_players
 
 db.tournaments.update_one({"_id": tournament_id}, {"$set": tournament_updated_fields})
 
+print(f"Done! http://localhost:3000/tournaments/{tournament_id}")

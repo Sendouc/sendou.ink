@@ -8,7 +8,7 @@ const typeDef = gql`
   }
   type Tournament {
     name: String!
-    bracket_url: String
+    bracket: String
     "True if the tournament was a Japanese one"
     jpn: Boolean!
     "Link to the Google Sheet containing ganbawoomy's data"
@@ -35,14 +35,14 @@ const typeDef = gql`
     winning_team_players: [String!]!
     winning_team_unique_ids: [String]!
     winning_team_weapons: [String!]!
-    winning_team_main_abilities: [[Ability!]]
-    winning_team_sub_abilities: [[Ability!]]
+    winning_team_main_abilities: [[Ability]!]!
+    winning_team_sub_abilities: [[Ability]!]!
     losing_team_name: String!
     losing_team_players: [String!]!
     losing_team_unique_ids: [String]!
     losing_team_weapons: [String!]!
-    losing_team_main_abilities: [[Ability!]]
-    losing_team_sub_abilities: [[Ability!]]
+    losing_team_main_abilities: [[Ability]!]!
+    losing_team_sub_abilities: [[Ability]!]!
   }
   enum Mode {
     SZ
@@ -71,6 +71,7 @@ const resolvers = {
         })
       })
 
+      if (!tournament) return null
       tournament.rounds = rounds
       return tournament
     }

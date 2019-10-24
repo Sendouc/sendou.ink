@@ -23,11 +23,13 @@ import SSU from "./abilityIcons/SSU.png"
 import T from "./abilityIcons/T.png"
 import TI from "./abilityIcons/TI.png"
 import OS from "./abilityIcons/OS.png"
+import AD from "./abilityIcons/AD.png"
 
 import szIcon from "./sz.png"
 import tcIcon from "./tc.png"
 import rmIcon from "./rm.png"
 import cbIcon from "./cb.png"
+import twIcon from "./tw.png"
 
 import arowana_mall_thumbnail from "./mapThumbnails/arowana_mall.png"
 import anchov_games_thumbnail from "./mapThumbnails/ancho-v_games.png"
@@ -90,7 +92,8 @@ export const abilityIcons = {
   SSU: SSU,
   T: T,
   TI: TI,
-  OS: OS
+  OS: OS,
+  AD: AD
 }
 
 export const mapIcons = {
@@ -127,5 +130,6 @@ export const modeIcons = {
   SZ: szIcon,
   TC: tcIcon,
   RM: rmIcon,
-  CB: cbIcon
+  CB: cbIcon,
+  TW: twIcon
 }

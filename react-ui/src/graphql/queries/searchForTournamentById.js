@@ -6,6 +6,7 @@ export const searchForTournamentById = gql`
       name
       jpn
       google_sheet_url
+      bracket
       date
       popular_weapons
       winning_team_name
