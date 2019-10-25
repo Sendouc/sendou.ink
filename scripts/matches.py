@@ -289,8 +289,6 @@ for count, row in enumerate(rows):
         mode = current_mode
     else:
         current_mode = mode
-    print("mode" + mode)
-    print(type(mode))
     assert mode in ["SZ", "TC", "RM", "CB", "TW"], f"{mode} is not a valid mode name."
     stage = row[4]
     if stage == "":

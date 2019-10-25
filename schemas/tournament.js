@@ -1,10 +1,20 @@
 const { UserInputError, gql } = require("apollo-server-express")
 const Tournament = require("../models/tournament")
 const Round = require("../models/round")
+const mongoose = require("mongoose")
 
 const typeDef = gql`
   extend type Query {
     searchForTournamentById(id: String!): Tournament
+    searchForTournaments(
+      tournament_name: String
+      jpn: Boolean
+      player_name: String
+      unique_id: String
+      team_name: String
+      comp: [String]
+      page: Int
+    ): TournamentCollection!
   }
   type Tournament {
     name: String!
@@ -21,7 +31,12 @@ const typeDef = gql`
     winning_team_unique_ids: [String]
     rounds: [Round!]!
   }
+  type TournamentCollection {
+    tournaments: [Tournament]!
+    pageCount: Int!
+  }
   type Round {
+    tournament_id: Tournament!
     stage: String!
     "SZ/TC/RM/CB/TW"
     mode: Mode!
@@ -74,6 +89,123 @@ const resolvers = {
       if (!tournament) return null
       tournament.rounds = rounds
       return tournament
+    },
+    searchForTournaments: async (root, args) => {
+      const tournamentsPerPage = 20
+      const currentPage = args.page ? args.page - 1 : 0
+
+      const roundSearchCriteria = {
+        $or: []
+      }
+
+      if (args.team_name) {
+        roundSearchCriteria.$or.push({
+          winning_team_name: {
+            $regex: args.team_name,
+            $options: "i"
+          }
+        })
+        roundSearchCriteria.$or.push({
+          losing_team_name: {
+            $regex: args.team_name,
+            $options: "i"
+          }
+        })
+      }
+
+      if (args.player_name) {
+        roundSearchCriteria.$or.push({
+          winning_team_players: {
+            $regex: args.player_name,
+            $options: "i"
+          }
+        })
+        roundSearchCriteria.$or.push({
+          losing_team_players: {
+            $regex: args.player_name,
+            $options: "i"
+          }
+        })
+      }
+
+      if (args.unique_id) {
+        roundSearchCriteria.$or.push({
+          winning_team_unique_ids: {
+            $regex: args.unique_id,
+            $options: "i"
+          }
+        })
+        roundSearchCriteria.$or.push({
+          losing_team_unique_ids: {
+            $regex: args.unique_id,
+            $options: "i"
+          }
+        })
+      }
+
+      if (args.comp) {
+        roundSearchCriteria.$or.push({
+          winning_team_weapons: {
+            $all: args.comp
+          }
+        })
+
+        roundSearchCriteria.$or.push({
+          losing_team_weapons: {
+            $all: args.comp
+          }
+        })
+      }
+
+      // if criteria were presented that we have to search
+      // from the Round collection
+      let tournament_ids = null
+      const tournamentSearchCriteria = {}
+      if (roundSearchCriteria.$or.length !== 0) {
+        tournament_ids = await Round.find(roundSearchCriteria).distinct(
+          "tournament_id"
+        )
+
+        tournamentSearchCriteria._id = {
+          $in: tournament_ids
+        }
+      }
+
+      if (args.tournament_name)
+        tournamentSearchCriteria.name = {
+          $regex: args.tournament_name,
+          $options: "i"
+        }
+      if (args.hasOwnProperty("jpn")) tournamentSearchCriteria.jpn = args.jpn
+
+      const tournamentCount = await Tournament.countDocuments(
+        tournamentSearchCriteria
+      ).catch(e => {
+        throw new UserInputError(e.message, {
+          invalidArgs: args
+        })
+      })
+
+      const pageCount = Math.ceil(tournamentCount / tournamentsPerPage)
+      // if 0 documents we don't care if the page is wrong
+      if (tournamentCount !== 0) {
+        if (args.page > pageCount)
+          throw new UserInputError("too big page number given", {
+            invalidArgs: args
+          })
+      }
+
+      const tournaments = await Tournament.find(tournamentSearchCriteria)
+        .skip(tournamentsPerPage * currentPage)
+        .limit(tournamentsPerPage)
+        .sort({ date: "desc" })
+        .catch(e => {
+          throw new UserInputError(e.message, {
+            invalidArgs: args
+          })
+        })
+
+      return { tournaments, pageCount }
     }
   }
 }
