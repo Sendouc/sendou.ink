@@ -11,7 +11,6 @@ export const searchForTournamentById = gql`
       popular_weapons
       winning_team_name
       winning_team_players
-      winning_team_unique_ids
       rounds {
         stage
         mode
@@ -20,12 +19,10 @@ export const searchForTournamentById = gql`
         game_number
         winning_team_name
         winning_team_players
-        winning_team_unique_ids
         winning_team_weapons
         winning_team_main_abilities
         losing_team_name
         losing_team_players
-        losing_team_unique_ids
         losing_team_weapons
         losing_team_main_abilities
       }

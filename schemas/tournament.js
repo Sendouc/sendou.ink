@@ -17,6 +17,7 @@ const typeDef = gql`
     ): TournamentCollection!
   }
   type Tournament {
+    id: ID!
     name: String!
     bracket: String
     "True if the tournament was a Japanese one"
@@ -91,7 +92,12 @@ const resolvers = {
       return tournament
     },
     searchForTournaments: async (root, args) => {
-      const tournamentsPerPage = 20
+      Object.keys(args).forEach(
+        key => (args[key] == null || args[key].length === 0) && delete args[key]
+      )
+      console.log("args", args)
+
+      const tournamentsPerPage = 18
       const currentPage = args.page ? args.page - 1 : 0
 
       const roundSearchCriteria = {

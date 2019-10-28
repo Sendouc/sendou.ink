@@ -13,6 +13,9 @@ const Links = lazy(() => import("../links/Links"))
 const TournamentDetailsPage = lazy(() =>
   import("../tournament/TournamentDetailsPage")
 )
+const TournamentSearchPage = lazy(() =>
+  import("../tournament/TournamentSearchPage")
+)
 
 const Routes = () => {
   return (
@@ -41,6 +44,9 @@ const Routes = () => {
         </Route>
         <Route path="/trends">
           <XTrends />
+        </Route>
+        <Route exact path="/tournaments">
+          <TournamentSearchPage />
         </Route>
         <Route path="/tournaments/:id/:weapons?">
           <TournamentDetailsPage />

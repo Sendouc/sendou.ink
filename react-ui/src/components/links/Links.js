@@ -1,5 +1,5 @@
 import React from "react"
-import { Icon, Header, Loader, List } from "semantic-ui-react"
+import { Icon, Header, List } from "semantic-ui-react"
 import { useQuery } from "@apollo/react-hooks"
 import { links } from "../../graphql/queries/links"
 import Loading from "../common/Loading"
