@@ -12,7 +12,7 @@ import {
 } from "semantic-ui-react"
 import WeaponDropdown from "../common/WeaponDropdown"
 import weaponDict from "../../utils/english_internal.json"
-import useWindowDimensions from "../../utils/useWindowDimensions"
+import useWindowDimensions from "../../hooks/useWindowDimensions"
 
 import academy from "../../assets/plannerMaps/academy-sz.png"
 import arena from "../../assets/plannerMaps/arena-sz.png"

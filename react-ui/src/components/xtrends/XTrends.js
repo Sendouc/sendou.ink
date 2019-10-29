@@ -11,7 +11,7 @@ import {
 } from "semantic-ui-react"
 import { wpnSmall } from "../../assets/imageImports"
 import useTrends from "../../utils/useTrends"
-import useWindowDimensions from "../../utils/useWindowDimensions"
+import useWindowDimensions from "../../hooks/useWindowDimensions"
 import english_internal from "../../utils/english_internal.json"
 import { months } from "../../utils/lists"
 import WeaponDropdown from "../common/WeaponDropdown"

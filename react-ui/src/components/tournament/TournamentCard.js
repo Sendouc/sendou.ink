@@ -19,7 +19,11 @@ const TournamentCard = ({
       <Card.Content>
         <Card.Header>
           {tournament["name"]}
-          {tournament["jpn"] && <Flag name="jp" />}
+          {tournament["jpn"] && (
+            <span style={{ paddingLeft: "5px" }}>
+              <Flag name="jp" />
+            </span>
+          )}
         </Card.Header>
         <Card.Meta>{dateStr}</Card.Meta>
         {tournament.hasOwnProperty("bracket") && (

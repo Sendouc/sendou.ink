@@ -4,7 +4,7 @@ export const searchForTournaments = gql`
   query searchForTournaments(
     $page: Int
     $tournament_name: String
-    $jpn: Boolean
+    $region: Region
     $team_name: String
     $player_name: String
     $comp: [String]
@@ -12,7 +12,7 @@ export const searchForTournaments = gql`
     searchForTournaments(
       page: $page
       tournament_name: $tournament_name
-      jpn: $jpn
+      region: $region
       team_name: $team_name
       player_name: $player_name
       comp: $comp

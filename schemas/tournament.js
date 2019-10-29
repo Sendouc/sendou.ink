@@ -8,7 +8,7 @@ const typeDef = gql`
     searchForTournamentById(id: String!): Tournament
     searchForTournaments(
       tournament_name: String
-      jpn: Boolean
+      region: Region
       player_name: String
       unique_id: String
       team_name: String
@@ -67,6 +67,11 @@ const typeDef = gql`
     CB
     TW
   }
+  enum Region {
+    all
+    western
+    jpn
+  }
 `
 
 const resolvers = {
@@ -95,7 +100,6 @@ const resolvers = {
       Object.keys(args).forEach(
         key => (args[key] == null || args[key].length === 0) && delete args[key]
       )
-      console.log("args", args)
 
       const tournamentsPerPage = 18
       const currentPage = args.page ? args.page - 1 : 0
@@ -167,6 +171,12 @@ const resolvers = {
       // from the Round collection
       let tournament_ids = null
       const tournamentSearchCriteria = {}
+
+      if (args.region && args.region === "western")
+        tournamentSearchCriteria.jpn = false
+      if (args.region && args.region === "jpn")
+        tournamentSearchCriteria.jpn = true
+
       if (roundSearchCriteria.$or.length !== 0) {
         tournament_ids = await Round.find(roundSearchCriteria).distinct(
           "tournament_id"
@@ -182,7 +192,6 @@ const resolvers = {
           $regex: args.tournament_name,
           $options: "i"
         }
-      if (args.hasOwnProperty("jpn")) tournamentSearchCriteria.jpn = args.jpn
 
       const tournamentCount = await Tournament.countDocuments(
         tournamentSearchCriteria

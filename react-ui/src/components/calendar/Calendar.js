@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react"
 import { Button, Segment } from "semantic-ui-react"
 import jstz from "jstz"
 
-import useWindowDimensions from "../../utils/useWindowDimensions"
+import useWindowDimensions from "../../hooks/useWindowDimensions"
 
 const PageCalendar = () => {
   const [showCode, setShowCode] = useState(false)
