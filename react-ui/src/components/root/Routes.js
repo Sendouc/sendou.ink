@@ -48,7 +48,7 @@ const Routes = () => {
         <Route exact path="/tournaments">
           <TournamentSearchPage />
         </Route>
-        <Route path="/tournaments/:id/:weapons?">
+        <Route path="/tournaments/:id">
           <TournamentDetailsPage />
         </Route>
       </Switch>

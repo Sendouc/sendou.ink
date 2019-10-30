@@ -2,7 +2,7 @@ import React, { useEffect } from "react"
 import Loading from "../common/Loading"
 import Error from "../common/Error"
 import { useQuery } from "@apollo/react-hooks"
-import { useParams } from "react-router-dom"
+import { useParams, useLocation } from "react-router-dom"
 import { searchForTournamentById } from "../../graphql/queries/searchForTournamentById"
 import TournamentCard from "./TournamentCard"
 import { Divider, Header, Card, Image } from "semantic-ui-react"
@@ -46,7 +46,8 @@ const abilityIcons = (round, index, winning = true) => {
 }
 
 const TournamentDetailsPage = () => {
-  const { id, weapons } = useParams()
+  const location = useLocation()
+  const { id } = useParams()
   const { data, error, loading } = useQuery(searchForTournamentById, {
     variables: { id }
   })
@@ -59,18 +60,21 @@ const TournamentDetailsPage = () => {
   if (loading) return <Loading />
   if (error) return <Error errorMessage={error.message} />
   if (!data.searchForTournamentById) return <NotFound />
+
   let weaponsToHighlight = []
-  if (weapons) {
-    weapons
-      .split("&")
-      .forEach(weapon => weaponsToHighlight.push(weapon.replace("_", " ")))
+  const searchParams = new URLSearchParams(location.search)
+  if (searchParams.has("comp")) {
+    searchParams
+      .get("comp")
+      .split(",")
+      .forEach(weapon => weaponsToHighlight.push(weapon))
   }
 
   const resolveBackground = (rowIndex, weapons) => {
     const weaponsMatch = weaponsToHighlight.every(weapon => {
       return weapons.indexOf(weapon) !== -1
     })
-    if (weaponsMatch && weaponsToHighlight.length > 0) return "#ffffb1"
+    if (weaponsMatch && weaponsToHighlight.length > 0) return "#ffffd9"
     return rowIndex % 2 === 0 ? rowColor : "white"
   }
 

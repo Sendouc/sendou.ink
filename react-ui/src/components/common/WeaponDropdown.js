@@ -20,7 +20,7 @@ const WeaponDropdown = ({
       multiple={multiple}
       onChange={onChange}
       value={value}
-      style={{ width: multiple ? "365px" : "250px" }}
+      style={{ width: "270px" }}
       options={weapons.map(w => ({
         key: w,
         text: w,

@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 import { Button, Form, Input } from "semantic-ui-react"
 import WeaponDropdown from "../common/WeaponDropdown"
 

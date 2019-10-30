@@ -17,7 +17,7 @@ function useSearchForms(query, initialFilter = {}) {
     for (let [key, value] of searchParams) {
       // this could be a bad solution but for now good enough
       if (value.indexOf(",") !== -1) value = value.split(",")
-      if (key === "comp") value = [value]
+      else if (key === "comp") value = [value]
 
       if (!isNaN(value)) {
         filterFromParams[key] = parseInt(value)
