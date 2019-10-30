@@ -60,7 +60,7 @@ const MainMenu = () => {
           </Dropdown.Menu>
         </Dropdown>
 
-        <Menu.Item as={Link} to="/" position="right">
+        <Menu.Item as={Link} to="/auth/discord" position="right">
           <Icon name="discord" size="large" style={{ paddingRight: "0.2em" }} />
           Log in via Discord
         </Menu.Item>

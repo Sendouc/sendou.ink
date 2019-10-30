@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from "react"
 import { Route, Switch } from "react-router-dom"
 import Loading from "../common/Loading"
+import NotFound from "../common/NotFound"
 
 const MapListGenerator = lazy(() => import("../maps/MapListGenerator"))
 const Rotations = lazy(() => import("../rotation/Rotations"))
@@ -51,6 +52,8 @@ const Routes = () => {
         <Route path="/tournaments/:id">
           <TournamentDetailsPage />
         </Route>
+        <Route path="/404" render={() => <NotFound />} />
+        <Route path="*" render={() => <NotFound />} />
       </Switch>
     </Suspense>
   )
