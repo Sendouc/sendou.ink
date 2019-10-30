@@ -3,10 +3,6 @@ import { Button, Form, Input } from "semantic-ui-react"
 import WeaponDropdown from "../common/WeaponDropdown"
 
 const TournamentFilter = ({ filter, setFilter, fireQuery }) => {
-  const [expanded, setExpanded] = useState(true)
-  if (!expanded)
-    return <Button onClick={() => setExpanded(true)}>Show filters</Button>
-
   const handleChange = (e, { name, value }) => {
     setFilter({ ...filter, [name]: value })
   }
@@ -18,12 +14,7 @@ const TournamentFilter = ({ filter, setFilter, fireQuery }) => {
   }
 
   return (
-    <Form onSubmit={() => fireQuery()}>
-      <div style={{ paddingBottom: "1em" }}>
-        <Button onClick={() => setExpanded(false)} type="button">
-          Collapse forms
-        </Button>
-      </div>
+    <Form>
       <Form.Group widths="equal">
         <Form.Field
           control={Input}
@@ -78,7 +69,7 @@ const TournamentFilter = ({ filter, setFilter, fireQuery }) => {
           onChange={handleChange}
         />
       </Form.Group>
-      <Button secondary type="submit">
+      <Button secondary onClick={() => fireQuery()}>
         Apply filters
       </Button>
       <span style={{ paddingLeft: "0.5em" }}>

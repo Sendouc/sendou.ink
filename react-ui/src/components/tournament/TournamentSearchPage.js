@@ -37,45 +37,54 @@ const TournamentSearchPage = () => {
     }
     return <Error errorMessage={error.message} />
   }
-  if (loading || !data) return <Loading />
 
-  const pages = data.searchForTournaments.pageCount
   return (
     <>
-      <div style={{ marginBottom: "1em" }}>
+      <div style={{ marginBottom: "1.5em" }}>
         <TournamentFilter
           filter={filter}
           setFilter={setFilter}
           fireQuery={fireQuery}
         />
       </div>
-      {pages > 1 && (
-        <div style={{ margin: "1em 0 1em 0" }}>
-          <Pagination
-            activePage={filter.page}
-            onPageChange={(e, { activePage }) =>
-              fireQuery({ page: activePage })
-            }
-            totalPages={pages}
-          />
-        </div>
-      )}
-
-      <Card.Group>
-        {data.searchForTournaments.tournaments.map(tournament => (
-          <TournamentCard
-            key={tournament.name}
-            tournament={tournament}
-            centered
-            showBracket={false}
-            onClick={() => history.push(`/tournaments/${tournament.id}`)}
-          />
-        ))}
-      </Card.Group>
-      {pages > 999 && (
-        <div style={{ margin: "1em 0 1em 0" }}>
-          <Pagination totalPages={pages} />
-        </div>
+      {loading || !data ? (
+        <Loading />
+      ) : (
+        <>
+          {data.searchForTournaments.pageCount > 1 && (
+            <div style={{ margin: "1em 0 1em 0" }}>
+              <Pagination
+                activePage={filter.page}
+                onPageChange={(e, { activePage }) =>
+                  fireQuery({ page: activePage })
+                }
+                totalPages={data.searchForTournaments.pageCount}
+              />
+            </div>
+          )}
+          <Card.Group>
+            {data.searchForTournaments.tournaments.map(tournament => (
+              <TournamentCard
+                key={tournament.name}
+                tournament={tournament}
+                centered
+                showBracket={false}
+                onClick={() => history.push(`/tournaments/${tournament.id}`)}
+              />
+            ))}
+          </Card.Group>
+          {data.searchForTournaments.pageCount > 1 && (
+            <div style={{ margin: "1em 0 1em 0" }}>
+              <Pagination
+                activePage={filter.page}
+                onPageChange={(e, { activePage }) =>
+                  fireQuery({ page: activePage })
+                }
+                totalPages={data.searchForTournaments.pageCount}
+              />
+            </div>
+          )}
+        </>
       )}
     </>
   )
