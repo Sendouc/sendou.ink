@@ -117,7 +117,7 @@ const PlayerXRankStats = ({ twitter, tabMode = false }) => {
           ) : null}
         </Header>
       ) : null}
-      {tabMode && playerData.discord_id ? (
+      {!tabMode && playerData.discord_id ? (
         <>
           <Link to={`/u/${playerData.discord_id}`}>User page</Link>
           <br />

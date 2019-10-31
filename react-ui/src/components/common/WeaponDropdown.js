@@ -31,9 +31,7 @@ const WeaponDropdown = ({
             }
           : null
       }))}
-    >
-      {}
-    </Dropdown>
+    />
   )
 }
 
