@@ -17,7 +17,8 @@ const BuildTab = ({ user, userViewed }) => {
   })
   const [errorMsg, setErrorMsg] = useState(null)
   const [successMsg, setSuccessMsg] = useState(null)
-  const [showForm, setShowForm] = useState(false)
+  //TODO: back to false
+  const [showForm, setShowForm] = useState(true)
 
   const handleError = error => {
     errorMsg(error.graphQLErrors[0].message)

@@ -96,6 +96,35 @@ export const abilityIcons = {
   AD: AD
 }
 
+export const abilitiesGameOrder = [
+  "ISM",
+  "ISS",
+  "REC",
+  "RSU",
+  "SSU",
+  "SCU",
+  "SS",
+  "SPU",
+  "QR",
+  "QSJ",
+  "BRU",
+  "RES",
+  "BDU",
+  "MPU",
+  "OG",
+  "LDE",
+  "T",
+  "CB",
+  "NS",
+  "H",
+  "TI",
+  "RP",
+  "AD",
+  "SJ",
+  "OS",
+  "DR"
+]
+
 export const mapIcons = {
   "Arowana Mall": arowana_mall_thumbnail,
   "Ancho-V Games": anchov_games_thumbnail,

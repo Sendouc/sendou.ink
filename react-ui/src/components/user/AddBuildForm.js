@@ -3,7 +3,7 @@ import { Form, Message, Button } from "semantic-ui-react"
 import BuildCard from "../common/BuildCard"
 import AbilityButtons from "./AbilityButtons"
 import WeaponDropdown from "../common/WeaponDropdown"
-import GearDropdown from "./GearDropdown"
+import GearSearch from "./GearSearch"
 
 const AddBuildForm = ({
   addBuild,
@@ -29,6 +29,8 @@ const AddBuildForm = ({
       : [["", "", "", ""], ["", "", "", ""], ["", "", "", ""]]
   )
   const [head, setHead] = useState("")
+  const [clothes, setClothes] = useState("")
+  const [shoes, setShoes] = useState("")
 
   const build = {
     id: existingBuild ? existingBuild.id : null,
@@ -88,6 +90,9 @@ const AddBuildForm = ({
           onChange={(e, { value }) => setWeapon(value)}
         />
       </div>
+      <div style={{ paddingTop: "10px" }}>
+        <AbilityButtons abilities={abilities} setAbilities={setAbilities} />
+      </div>
       <div style={{ paddingTop: "15px" }}>
         <Form error={title.length > 100}>
           <Form.Field>
@@ -99,16 +104,20 @@ const AddBuildForm = ({
             />
           </Form.Field>
           <Form.Group widths="equal">
-            <GearDropdown
-              slot="head"
-              value={head}
-              onChange={(e, { value }) => console.log(value)}
-            />
+            <Form.Field>
+              <label>Head gear</label>
+              <GearSearch slot="head" setGear={setHead} />
+            </Form.Field>
+            <Form.Field>
+              <label>Clothes gear</label>
+              <GearSearch slot="clothes" setGear={setClothes} />
+            </Form.Field>
+            <Form.Field>
+              <label>Shoes gear</label>
+              <GearSearch slot="shoes" setGear={setShoes} />
+            </Form.Field>
           </Form.Group>
         </Form>
-      </div>
-      <div style={{ paddingTop: "10px" }}>
-        <AbilityButtons abilities={abilities} setAbilities={setAbilities} />
       </div>
       <div style={{ paddingTop: "10px" }}>
         {editBuildFunction ? (

@@ -28,10 +28,15 @@ const subAbilityStyle = {
   boxShadow: "0 0 0 1px #000"
 }
 
-const AbilityIcon = ({ ability, size = "MAIN", style = {} }) => {
+const AbilityIcon = ({
+  ability,
+  size = "MAIN",
+  style = {},
+  onClick = null
+}) => {
   if (!ability) return null
   return (
-    <span style={style}>
+    <span style={style} onClick={onClick}>
       <img
         src={abilityIcons[ability]}
         style={size === "MAIN" ? mainAbilityStyle : subAbilityStyle}
