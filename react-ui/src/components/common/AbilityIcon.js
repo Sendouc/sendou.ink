@@ -34,7 +34,7 @@ const AbilityIcon = ({
   style = {},
   onClick = null
 }) => {
-  if (!ability) return null
+  if (ability == null) return null
   return (
     <span style={style} onClick={onClick}>
       <img

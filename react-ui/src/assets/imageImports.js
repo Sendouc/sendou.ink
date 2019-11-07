@@ -24,6 +24,7 @@ import T from "./abilityIcons/T.png"
 import TI from "./abilityIcons/TI.png"
 import OS from "./abilityIcons/OS.png"
 import AD from "./abilityIcons/AD.png"
+import UNKNOWN from "./abilityIcons/UNKNOWN.png"
 
 import szIcon from "./sz.png"
 import tcIcon from "./tc.png"
@@ -93,7 +94,9 @@ export const abilityIcons = {
   T: T,
   TI: TI,
   OS: OS,
-  AD: AD
+  AD: AD,
+  UNKNOWN: UNKNOWN,
+  "": UNKNOWN
 }
 
 export const abilitiesGameOrder = [

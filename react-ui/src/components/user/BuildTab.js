@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { useQuery, useMutation } from "@apollo/react-hooks"
-import { Button, Message } from "semantic-ui-react"
+import { Button, Message, Card } from "semantic-ui-react"
 
 import { addBuild } from "../../graphql/mutations/addBuild"
 import { searchForBuilds } from "../../graphql/queries/searchForBuilds"
@@ -123,21 +123,20 @@ const BuildTab = ({ user, userViewed }) => {
           </div>
         ) : null}
       </div>
-      <div style={{ paddingTop: "10px" }}>
+      <Card.Group style={{ marginTop: "0.8em" }}>
         {data.searchForBuilds.map(b => (
-          <div key={b.id} style={{ paddingTop: "10px" }}>
-            <BuildCard
-              build={b}
-              removeBuildFunction={removeBuildFunction}
-              editBuildFunction={editBuildFunction}
-              setSuccessMsg={setSuccessMsg}
-            />
-          </div>
+          <BuildCard
+            key={b.id}
+            build={b}
+            removeBuildFunction={removeBuildFunction}
+            editBuildFunction={editBuildFunction}
+            setSuccessMsg={setSuccessMsg}
+          />
         ))}
         {data.searchForBuilds.length === 0
           ? "So far this user has no builds!"
           : null}
-      </div>
+      </Card.Group>
     </div>
   )
 }

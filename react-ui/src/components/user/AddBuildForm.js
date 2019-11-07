@@ -28,9 +28,9 @@ const AddBuildForm = ({
         ]
       : [["", "", "", ""], ["", "", "", ""], ["", "", "", ""]]
   )
-  const [head, setHead] = useState("")
-  const [clothes, setClothes] = useState("")
-  const [shoes, setShoes] = useState("")
+  const [headgearItem, setHeadgear] = useState("")
+  const [clothingItem, setClothing] = useState("")
+  const [shoesItem, setShoes] = useState("")
 
   const build = {
     id: existingBuild ? existingBuild.id : null,
@@ -38,7 +38,10 @@ const AddBuildForm = ({
     title,
     headgear: abilities[0],
     clothing: abilities[1],
-    shoes: abilities[2]
+    shoes: abilities[2],
+    headgearItem,
+    clothingItem,
+    shoesItem
   }
 
   const submit = async e => {
@@ -106,11 +109,11 @@ const AddBuildForm = ({
           <Form.Group widths="equal">
             <Form.Field>
               <label>Head gear</label>
-              <GearSearch slot="head" setGear={setHead} />
+              <GearSearch slot="head" setGear={setHeadgear} />
             </Form.Field>
             <Form.Field>
               <label>Clothes gear</label>
-              <GearSearch slot="clothes" setGear={setClothes} />
+              <GearSearch slot="clothes" setGear={setClothing} />
             </Form.Field>
             <Form.Field>
               <label>Shoes gear</label>
