@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Card, Grid, Image } from "semantic-ui-react"
+import { Card, Grid, Image, Icon } from "semantic-ui-react"
 import english_internal from "../../utils/english_internal.json"
 import AbilityIcon from "./AbilityIcon"
 
@@ -10,44 +10,94 @@ const BuildCard = ({
   existingAbilities,
   setAbilities,
   removeBuildFunction,
-  editBuildFunction
+  editBuildFunction,
+  showWeapon = true
 }) => {
   console.log("build", build)
   return (
     <Card raised>
-      <Card.Content textAlign="center">
-        <Image
-          style={{ marginRight: "0.2em" }}
-          src={wpnMedium[english_internal[build.weapon]]}
-          size="tiny"
-          centered
-        />
-      </Card.Content>
+      {showWeapon && (
+        <Card.Content textAlign="center">
+          <Image
+            style={{ marginRight: "0.2em" }}
+            src={wpnMedium[english_internal[build.weapon]]}
+            size="tiny"
+            centered
+          />
+        </Card.Content>
+      )}
       <Card.Content>
         <Card.Header>{build.title}</Card.Header>
-        <Grid columns={4} style={{ marginTop: "1em" }}>
-          <Grid.Row>
-            <Grid.Column width={5}>
-              {build.headgearItem && (
-                <Image
-                  src={`https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/gear/${
-                    english_internal[build.headgearItem]
-                  }.png`}
-                />
-              )}
-            </Grid.Column>
-            {build.headgear.map((ability, index) => (
-              <Grid.Column width={index === 0 ? 3 : 2}>
-                <AbilityIcon
-                  key={index}
-                  ability={ability}
-                  size={index === 0 ? "MAIN" : "SUB"}
-                />
-              </Grid.Column>
-            ))}
-          </Grid.Row>
-        </Grid>
+        {build.discord_user && (
+          <Card.Meta>
+            {build.discord_user.username}#{build.discord_user.discriminator}
+          </Card.Meta>
+        )}
+        <div style={{ marginTop: build.headgearItem ? "0" : "0.5em" }}>
+          {build.headgearItem && (
+            <Image
+              style={{ width: "25%", height: "auto", marginRight: "1em" }}
+              src={`https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/gear/${
+                english_internal[build.headgearItem]
+              }.png`}
+            />
+          )}
+          {build.headgear.map((ability, index) => (
+            <AbilityIcon
+              key={index}
+              ability={ability}
+              size={index === 0 ? "MAIN" : "SUB"}
+              style={{ margin: "0 0.3em 0 0" }}
+            />
+          ))}
+        </div>
+        <div
+          style={{ margin: build.clothingItem ? "0 0 0 0" : "0.5em 0 0.5em 0" }}
+        >
+          {build.clothingItem && (
+            <Image
+              style={{ width: "25%", height: "auto", marginRight: "1em" }}
+              src={`https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/gear/${
+                english_internal[build.clothingItem]
+              }.png`}
+            />
+          )}
+          {build.clothing.map((ability, index) => (
+            <AbilityIcon
+              key={index}
+              ability={ability}
+              size={index === 0 ? "MAIN" : "SUB"}
+              style={{ margin: "0 0.3em 0 0" }}
+            />
+          ))}
+        </div>
+        <div>
+          {build.shoesItem && (
+            <Image
+              style={{ width: "25%", height: "auto", marginRight: "1em" }}
+              src={`https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/gear/${
+                english_internal[build.shoesItem]
+              }.png`}
+            />
+          )}
+          {build.shoes.map((ability, index) => (
+            <AbilityIcon
+              key={index}
+              ability={ability}
+              size={index === 0 ? "MAIN" : "SUB"}
+              style={{ margin: "0 0.3em 0 0" }}
+            />
+          ))}
+        </div>
       </Card.Content>
+      {!build.description && (
+        <Card.Content extra>
+          <a>
+            <Icon name="mouse pointer" />
+            Click here to expand description
+          </a>
+        </Card.Content>
+      )}
     </Card>
   )
 }
