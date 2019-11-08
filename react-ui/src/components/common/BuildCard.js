@@ -14,7 +14,8 @@ const BuildCard = ({
   setAbilities,
   removeBuildFunction,
   editBuildFunction,
-  showWeapon = true
+  showWeapon = true,
+  showDescription = true
 }) => {
   const [expanded, setExpanded] = useState(false)
   const [showEdit, setShowEdit] = useState(false)
@@ -67,7 +68,12 @@ const BuildCard = ({
               {build.discord_user.username}#{build.discord_user.discriminator}
             </Card.Meta>
           )}
-          <div style={{ marginTop: build.headgearItem ? "0" : "1em" }}>
+          {build.updatedAt && (
+            <Card.Meta>
+              {new Date(parseInt(build.updatedAt)).toLocaleString()}
+            </Card.Meta>
+          )}
+          <div style={{ marginTop: "1em" }}>
             {build.headgearItem && (
               <Image
                 style={{ width: "25%", height: "auto", marginRight: "1em" }}
@@ -132,7 +138,7 @@ const BuildCard = ({
         {removeBuildFunction && (
           <Card.Content extra>
             <div className="ui two buttons">
-              <Button basic color="black">
+              <Button basic color="black" onClick={() => setShowEdit(true)}>
                 Edit build
               </Button>
               <BuildDeleteModal
@@ -147,7 +153,7 @@ const BuildCard = ({
             </div>
           </Card.Content>
         )}
-        {build.description && (
+        {build.description && showDescription && (
           <Card.Content extra>
             <span
               style={{ cursor: "pointer", userSelect: "none" }}

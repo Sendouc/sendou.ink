@@ -107,6 +107,7 @@ const AddBuildForm = ({
           build={build}
           existingAbilities={abilities}
           setAbilities={setAbilities}
+          showDescription={false}
         />
       </div>
       <div style={{ paddingTop: "15px" }}>

@@ -19,7 +19,6 @@ const UserPage = () => {
 
   useEffect(() => {
     if (loading) return
-    console.log("data", data)
     document.title = `${data.searchForUser.username} - sendou.ink`
   }, [loading, data])
 
