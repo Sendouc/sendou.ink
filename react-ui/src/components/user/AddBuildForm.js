@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Form, Message, Button } from "semantic-ui-react"
+import { Form, Message, Button, TextArea } from "semantic-ui-react"
 import BuildCard from "../common/BuildCard"
 import AbilityButtons from "./AbilityButtons"
 import WeaponDropdown from "../common/WeaponDropdown"
@@ -19,6 +19,9 @@ const AddBuildForm = ({
   const [title, setTitle] = useState(
     existingBuild && existingBuild.title ? existingBuild.title : ""
   )
+  const [description, setDescription] = useState(
+    existingBuild && existingBuild.description ? existingBuild.description : ""
+  )
   const [abilities, setAbilities] = useState(
     existingBuild
       ? [
@@ -28,14 +31,25 @@ const AddBuildForm = ({
         ]
       : [["", "", "", ""], ["", "", "", ""], ["", "", "", ""]]
   )
-  const [headgearItem, setHeadgear] = useState("")
-  const [clothingItem, setClothing] = useState("")
-  const [shoesItem, setShoes] = useState("")
+  const [headgearItem, setHeadgear] = useState(
+    existingBuild && existingBuild.headgearItem
+      ? existingBuild.headgearItem
+      : ""
+  )
+  const [clothingItem, setClothing] = useState(
+    existingBuild && existingBuild.clothingItem
+      ? existingBuild.clothingItem
+      : ""
+  )
+  const [shoesItem, setShoes] = useState(
+    existingBuild && existingBuild.shoesItem ? existingBuild.shoesItem : ""
+  )
 
   const build = {
     id: existingBuild ? existingBuild.id : null,
     weapon: weapon,
     title,
+    description,
     headgear: abilities[0],
     clothing: abilities[1],
     shoes: abilities[2],
@@ -99,12 +113,23 @@ const AddBuildForm = ({
       <div style={{ paddingTop: "15px" }}>
         <Form error={title.length > 100}>
           <Form.Field>
-            <label>{"Choose title (optional)"}</label>
+            <label>Title (optional)</label>
             <input value={title} onChange={e => setTitle(e.target.value)} />
             <Message
               error
               content={"Title can't be longer than 100 characters."}
             />
+          </Form.Field>
+          <Form.Field>
+            <label>Description</label>
+            <TextArea
+              value={description}
+              onChange={e =>
+                e.target.value.length < 1000 && setDescription(e.target.value)
+              }
+              rows={5}
+            />
+            {`${description.length}/1000`}
           </Form.Field>
           <Form.Group widths="equal">
             <Form.Field>

@@ -12,7 +12,8 @@ const mainAbilityStyle = {
   borderRight: "0px",
   borderBottom: "0px",
   backgroundSize: "100%",
-  boxShadow: "0 0 0 1px #000"
+  boxShadow: "0 0 0 1px #000",
+  userSelect: "none"
 }
 const subAbilityStyle = {
   //https://github.com/loadout-ink/splat2-calc
@@ -25,7 +26,8 @@ const subAbilityStyle = {
   borderRight: "0px",
   borderBottom: "0px",
   backgroundSize: "100%",
-  boxShadow: "0 0 0 1px #000"
+  boxShadow: "0 0 0 1px #000",
+  userSelect: "none"
 }
 
 const AbilityIcon = ({

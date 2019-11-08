@@ -17,11 +17,10 @@ const BuildTab = ({ user, userViewed }) => {
   })
   const [errorMsg, setErrorMsg] = useState(null)
   const [successMsg, setSuccessMsg] = useState(null)
-  //TODO: back to false
-  const [showForm, setShowForm] = useState(true)
+  const [showForm, setShowForm] = useState(false)
 
   const handleError = error => {
-    errorMsg(error.graphQLErrors[0].message)
+    setErrorMsg(error.graphQLErrors[0].message)
     setTimeout(() => {
       setErrorMsg(null)
     }, 10000)
@@ -65,6 +64,7 @@ const BuildTab = ({ user, userViewed }) => {
     const buildTitle = title ? title : `${weapon} build`
 
     setSuccessMsg(`Successfully deleted ${buildTitle}`)
+    window.scrollTo(0, 0)
     setTimeout(() => {
       setSuccessMsg(null)
     }, 10000)
@@ -76,6 +76,7 @@ const BuildTab = ({ user, userViewed }) => {
     })
 
     setSuccessMsg("Build successfully edited")
+    window.scrollTo(0, 0)
     setTimeout(() => {
       setSuccessMsg(null)
     }, 10000)
@@ -91,28 +92,32 @@ const BuildTab = ({ user, userViewed }) => {
 
   return (
     <div>
-      {successMsg ? (
+      {successMsg && !errorMsg && (
         <div style={{ paddingBottom: "10px" }}>
           <Message success content={successMsg} />
         </div>
-      ) : null}
+      )}
+      {errorMsg && (
+        <div style={{ paddingBottom: "10px" }}>
+          <Message negative content={errorMsg} />
+        </div>
+      )}
       <div>
         {data.searchForBuilds.length >= 100 &&
         user &&
         user.discord_id === userViewed.discord_id
           ? "Looks like you have 100 buids. Insane flex. Delete a build before adding a new one."
           : null}
-        {/*TODO: put this back the right way */}
         {!user ||
         user.discord_id !== userViewed.discord_id ||
-        data.searchForBuilds.length >= 100 ? (
+        data.searchForBuilds.length >= 100 ? null : (
           <Button
             circular
             size="tiny"
             icon={showForm ? "minus" : "plus"}
             onClick={() => setShowForm(!showForm)}
           />
-        ) : null}
+        )}
         {showForm ? (
           <div style={{ paddingTop: "10px" }}>
             <AddBuildForm

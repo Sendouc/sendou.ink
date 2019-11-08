@@ -40,7 +40,7 @@ const GearSearch = ({ setGear, slot = "head" }) => {
       onSearchChange={handleSearchChange}
       results={results}
       value={value}
-      minCharacters={1}
+      minCharacters={2}
     />
   )
 }

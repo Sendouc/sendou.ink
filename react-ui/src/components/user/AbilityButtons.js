@@ -5,7 +5,7 @@ import AbilityIcon from "../common/AbilityIcon"
 import { Divider } from "semantic-ui-react"
 
 const headOnly = ["CB", "LDE", "OG", "T"]
-const clothingOnly = ["H", "NS", "TI", "RP"]
+const clothingOnly = ["H", "NS", "TI", "RP", "AD"]
 const shoesOnly = ["DR", "SJ", "OS"]
 
 const AbilityButton = ({ abilities, setAbilities }) => {
