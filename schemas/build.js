@@ -152,7 +152,7 @@ const resolvers = {
           invalidArgs: args
         })
 
-      const items = gear.map(brand => {
+      const items = gear.flatMap(brand => {
         const headItems = brand.head ? brand.head : []
         const clothesItems = brand.clothes ? brand.clothes : []
         const shoesItems = brand.shoes ? brand.shoes : []
@@ -237,7 +237,7 @@ const resolvers = {
           invalidArgs: args
         })
 
-      const items = gear.map(brand => {
+      const items = gear.flatMap(brand => {
         const headItems = brand.head ? brand.head : []
         const clothesItems = brand.clothes ? brand.clothes : []
         const shoesItems = brand.shoes ? brand.shoes : []

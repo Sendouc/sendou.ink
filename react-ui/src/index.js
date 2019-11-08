@@ -8,11 +8,12 @@ import { BrowserRouter as Router } from "react-router-dom"
 import "semantic-ui-css/semantic.min.css"
 import "./index.css"
 
+//TODO: figure out how to do this well
 const client = new ApolloClient({
   uri:
-    process.env.REACT_APP_APOLLO_URI === "local"
-      ? "http://localhost:3001/graphql"
-      : "https://www.sendou.ink/graphql"
+    process.env.NODE_ENV === "production"
+      ? "/graphql"
+      : "http://localhost:3001/graphql"
 })
 
 ReactDOM.render(

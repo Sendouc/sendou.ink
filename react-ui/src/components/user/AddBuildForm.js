@@ -58,11 +58,15 @@ const AddBuildForm = ({
     shoesItem
   }
 
-  const submit = async e => {
+  const submit = async (e, func) => {
     e.preventDefault()
 
     let buildToAdd = { ...build }
     if (buildToAdd.title === "") delete buildToAdd.title
+    if (buildToAdd.description === "") delete buildToAdd.description
+    if (buildToAdd.headgearItem === "") delete buildToAdd.headgearItem
+    if (buildToAdd.clothingItem === "") delete buildToAdd.clothingItem
+    if (buildToAdd.shoesItem === "") delete buildToAdd.shoesItem
 
     await addBuild({
       variables: { ...buildToAdd }
@@ -70,7 +74,11 @@ const AddBuildForm = ({
 
     setWeapon("")
     setTitle("")
+    setDescription("")
     setAbilities([["", "", "", ""], ["", "", "", ""], ["", "", "", ""]])
+    setHeadgear("")
+    setClothing("")
+    setShoes("")
     setSuccessMsg("New build succesfully added!")
     setTimeout(() => {
       setSuccessMsg(null)
@@ -155,7 +163,6 @@ const AddBuildForm = ({
               onClick={() => {
                 editBuildFunction(build)
                 setShowEdit(false)
-                window.scrollTo(0, 0)
               }}
             >
               Edit build

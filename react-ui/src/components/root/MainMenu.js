@@ -1,6 +1,8 @@
 import React from "react"
 import { Menu, Container, Image, Dropdown, Icon } from "semantic-ui-react"
-import { Link, NavLink } from "react-router-dom"
+import { Link, NavLink, useHistory } from "react-router-dom"
+import { userLean } from "../../graphql/queries/userLean"
+import { useQuery } from "@apollo/react-hooks"
 import sink_logo from "../../assets/sink_logo.png"
 
 const dropdownStyle = {
@@ -10,6 +12,61 @@ const dropdownStyle = {
 }
 
 const MainMenu = () => {
+  const { data, error, loading } = useQuery(userLean)
+  const history = useHistory()
+
+  const logInOrAva = () => {
+    if (loading) {
+      return null
+    }
+
+    if (!data || !data.user || error) {
+      return (
+        <Menu.Item href="/auth/discord" position="right">
+          <Icon name="discord" size="large" style={{ paddingRight: "0.2em" }} />
+          Log in via Discord
+        </Menu.Item>
+      )
+    }
+
+    const user = data.user
+
+    const userMenuOptions = [
+      {
+        key: "user",
+        text: "User Page",
+        icon: "user",
+        onClick: () => history.push(`/u/${user.discord_id}`)
+      },
+      {
+        key: "sign-out",
+        text: "Sign Out",
+        icon: "sign out",
+        onClick: () => window.location.assign("/logout")
+      }
+    ]
+
+    const userMenuTrigger = (
+      <span>
+        <span style={{ paddingRight: "5px" }}>{user.username}</span>
+        <Image
+          src={`https://cdn.discordapp.com/avatars/${user.discord_id}/${user.avatar}.png`}
+          avatar
+        />{" "}
+      </span>
+    )
+
+    return (
+      <Menu.Item position="right">
+        <Dropdown
+          item
+          icon={null}
+          options={userMenuOptions}
+          trigger={userMenuTrigger}
+        />
+      </Menu.Item>
+    )
+  }
   return (
     <Menu inverted secondary attached="top" stackable>
       <Container>
@@ -60,10 +117,7 @@ const MainMenu = () => {
           </Dropdown.Menu>
         </Dropdown>
 
-        <Menu.Item as={Link} to="/auth/discord" position="right">
-          <Icon name="discord" size="large" style={{ paddingRight: "0.2em" }} />
-          Log in via Discord
-        </Menu.Item>
+        {logInOrAva()}
       </Container>
     </Menu>
   )

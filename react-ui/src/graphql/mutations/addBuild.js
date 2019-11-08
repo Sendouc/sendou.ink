@@ -1,21 +1,39 @@
-import { gql } from 'apollo-boost'
+import { gql } from "apollo-boost"
 
 export const addBuild = gql`
-mutation addBuild ($weapon: String!, $title: String, $headgear: [Ability!]!, $clothing: [Ability!]!, $shoes: [Ability!]!) {
-   addBuild(
-     weapon: $weapon,
-     title: $title,
-     headgear: $headgear,
-     clothing: $clothing,
-     shoes: $shoes
-   ) {
-     id
-     weapon
-     title
-     headgear
-     clothing
-     shoes
-     updatedAt
-   }
-}
+  mutation addBuild(
+    $weapon: String!
+    $title: String
+    $description: String
+    $headgear: [Ability!]!
+    $headgearItem: String
+    $clothing: [Ability!]!
+    $clothingItem: String
+    $shoes: [Ability!]!
+    $shoesItem: String
+  ) {
+    addBuild(
+      weapon: $weapon
+      title: $title
+      description: $description
+      headgear: $headgear
+      headgearItem: $headgearItem
+      clothing: $clothing
+      clothingItem: $clothingItem
+      shoes: $shoes
+      shoesItem: $shoesItem
+    ) {
+      id
+      weapon
+      title
+      description
+      headgear
+      headgearItem
+      clothing
+      clothingItem
+      shoes
+      shoesItem
+      updatedAt
+    }
+  }
 `
