@@ -7,6 +7,7 @@ const Build = require("../models/build")
 const User = require("../models/user")
 const Player = require("../models/player")
 const weapons = require("../utils/weapons")
+const gear = require("../utils/gear")
 
 const typeDef = gql`
   extend type Query {
@@ -17,18 +18,26 @@ const typeDef = gql`
     addBuild(
       weapon: String!
       title: String
+      description: String
       headgear: [Ability!]!
+      headgearItem: String
       clothing: [Ability!]!
+      clothingItem: String
       shoes: [Ability!]!
+      shoesItem: String
     ): Build
     deleteBuild(id: ID!): Boolean
     updateBuild(
       id: ID!
       weapon: String!
       title: String
+      description: String
       headgear: [Ability!]!
+      headgearItem: String
       clothing: [Ability!]!
+      clothingItem: String
       shoes: [Ability!]!
+      shoesItem: String
     ): Boolean
   }
   type Build {
@@ -36,9 +45,13 @@ const typeDef = gql`
     discord_id: String!
     weapon: String!
     title: String
+    description: String
     headgear: [Ability!]!
+    headgearItem: String
     clothing: [Ability!]!
+    clothingItem: String
     shoes: [Ability!]!
+    shoesItem: String
     updatedAt: String!
     top: Boolean!
     discord_user: User!
@@ -122,16 +135,47 @@ const resolvers = {
   },
   Mutation: {
     addBuild: async (root, args, ctx) => {
-      if (!ctx.user) throw new AuthenticationError("User not logged in.")
+      if (!ctx.user) throw new AuthenticationError("Not logged in.")
       if (args.title)
         if (args.title.length > 100)
           throw new UserInputError("Title too long.", {
             invalidArgs: args
           })
+      if (args.description) {
+        if (args.description.length > 1000)
+          throw new UserInputError("Description too long.", {
+            invalidArgs: args
+          })
+      }
       if (!weapons.includes(args.weapon))
         throw new UserInputError("Invalid weapon.", {
           invalidArgs: args
         })
+
+      const items = gear.map(brand => {
+        const headItems = brand.head ? brand.head : []
+        const clothesItems = brand.clothes ? brand.clothes : []
+        const shoesItems = brand.shoes ? brand.shoes : []
+        return headItems.concat(clothesItems).concat(shoesItems)
+      })
+      if (args.headgearItem) {
+        if (!items.includes(args.headgearItem))
+          throw new UserInputError("Invalid headgear item.", {
+            invalidArgs: args
+          })
+      }
+      if (args.clothingItem) {
+        if (!items.includes(args.clothingItem))
+          throw new UserInputError("Invalid clothing item.", {
+            invalidArgs: args
+          })
+      }
+      if (args.shoesItem) {
+        if (!items.includes(args.shoesItem))
+          throw new UserInputError("Invalid shoes item.", {
+            invalidArgs: args
+          })
+      }
 
       const existingBuilds = await Build.find({
         discord_id: ctx.user.discord_id
@@ -154,7 +198,7 @@ const resolvers = {
       })
     },
     deleteBuild: async (root, args, ctx) => {
-      if (!ctx.user) throw new AuthenticationError("not authenticated")
+      if (!ctx.user) throw new AuthenticationError("Not logged in.")
 
       const build = await Build.findOne({ _id: args.id })
 
@@ -177,6 +221,46 @@ const resolvers = {
     },
     updateBuild: async (root, args, ctx) => {
       if (!ctx.user) throw new AuthenticationError("not authenticated")
+      if (args.title)
+        if (args.title.length > 100)
+          throw new UserInputError("Title too long.", {
+            invalidArgs: args
+          })
+      if (args.description) {
+        if (args.description.length > 1000)
+          throw new UserInputError("Description too long.", {
+            invalidArgs: args
+          })
+      }
+      if (!weapons.includes(args.weapon))
+        throw new UserInputError("Invalid weapon.", {
+          invalidArgs: args
+        })
+
+      const items = gear.map(brand => {
+        const headItems = brand.head ? brand.head : []
+        const clothesItems = brand.clothes ? brand.clothes : []
+        const shoesItems = brand.shoes ? brand.shoes : []
+        return headItems.concat(clothesItems).concat(shoesItems)
+      })
+      if (args.headgearItem) {
+        if (!items.includes(args.headgearItem))
+          throw new UserInputError("Invalid headgear item.", {
+            invalidArgs: args
+          })
+      }
+      if (args.clothingItem) {
+        if (!items.includes(args.clothingItem))
+          throw new UserInputError("Invalid clothing item.", {
+            invalidArgs: args
+          })
+      }
+      if (args.shoesItem) {
+        if (!items.includes(args.shoesItem))
+          throw new UserInputError("Invalid shoes item.", {
+            invalidArgs: args
+          })
+      }
 
       const build = await Build.findOne({ _id: args.id })
       if (!build)
@@ -187,13 +271,11 @@ const resolvers = {
       if (ctx.user.discord_id !== build.discord_id)
         throw new AuthenticationError("no privileges to edit the build")
 
-      await Build.findByIdAndUpdate(build._id, { ...args, top: null }).catch(
-        e => {
-          throw new UserInputError(error.message, {
-            invalidArgs: args
-          })
-        }
-      )
+      await Build.findByIdAndUpdate(build._id, { ...args }).catch(e => {
+        throw new UserInputError(error.message, {
+          invalidArgs: args
+        })
+      })
 
       return true
     }
