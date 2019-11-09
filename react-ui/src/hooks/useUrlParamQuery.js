@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { useHistory, useLocation } from "react-router-dom"
 import { useLazyQuery } from "@apollo/react-hooks"
 
-function useSearchForms(query, initialFilter = {}) {
+function useUrlParamQuery(query, initialFilter = {}) {
   const [filter, setFilter] = useState(initialFilter)
   const [filterForSearch, setFilterForSearch] = useState({})
   const location = useLocation()
@@ -57,4 +57,4 @@ function useSearchForms(query, initialFilter = {}) {
   return { data, error, loading, filter, setFilter, fireQuery }
 }
 
-export default useSearchForms
+export default useUrlParamQuery

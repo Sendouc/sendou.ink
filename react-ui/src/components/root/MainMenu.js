@@ -1,6 +1,6 @@
 import React from "react"
 import { Menu, Container, Image, Dropdown, Icon } from "semantic-ui-react"
-import { Link, NavLink, useHistory } from "react-router-dom"
+import { NavLink, useHistory } from "react-router-dom"
 import { userLean } from "../../graphql/queries/userLean"
 import { useQuery } from "@apollo/react-hooks"
 import sink_logo from "../../assets/sink_logo.png"

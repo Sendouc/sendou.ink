@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { Card, Image, Icon, Popup, Button } from "semantic-ui-react"
+import { Link } from "react-router-dom"
 import english_internal from "../../utils/english_internal.json"
 import AbilityIcon from "./AbilityIcon"
 
@@ -67,7 +68,9 @@ const BuildCard = ({
           </Card.Header>
           {build.discord_user && (
             <Card.Meta>
-              {build.discord_user.username}#{build.discord_user.discriminator}
+              <Link to={`/u/${build.discord_id}`} style={{ color: "#4183C4" }}>
+                {build.discord_user.username}#{build.discord_user.discriminator}
+              </Link>
             </Card.Meta>
           )}
           {build.updatedAt && (
