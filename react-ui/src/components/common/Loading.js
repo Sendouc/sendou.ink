@@ -3,7 +3,7 @@ import { Loader } from "semantic-ui-react"
 
 const Loading = () => {
   return (
-    <div style={{ minHeight: "200px" }}>
+    <div style={{ minHeight: "500px" }}>
       <Loader active inline="centered">
         Loading
       </Loader>

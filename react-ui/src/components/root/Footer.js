@@ -1,22 +1,20 @@
 import React from "react"
-import { Segment, Container, List } from "semantic-ui-react"
+import { Segment, Container, List, Icon } from "semantic-ui-react"
+import { Link } from "react-router-dom"
 
 const Footer = () => {
   return (
-    <Segment vertical style={{ padding: "1em 0 2em" }}>
+    <Segment vertical>
       <Container textAlign="center">
-        <List horizontal inverted divided link size="small">
-          <List.Item as="a" href="#">
-            About
+        <List horizontal inverted link size="small">
+          <List.Item as="a" href="https://github.com/sendouc/sendou-ink">
+            <Icon name="github" size="big" />
           </List.Item>
-          <List.Item as="a" href="#">
-            View Source on Github
+          <List.Item as="a" href="https://discord.gg/J6NqUvt">
+            <Icon name="discord" size="big" />
           </List.Item>
-          <List.Item as="a" href="#">
-            Join the community on Discord
-          </List.Item>
-          <List.Item as="a" href="#">
-            Thanks to
+          <List.Item as={Link} to="/info">
+            <Icon name="info circle" size="big" />
           </List.Item>
         </List>
       </Container>

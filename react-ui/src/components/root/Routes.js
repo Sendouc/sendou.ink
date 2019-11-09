@@ -19,6 +19,7 @@ const TournamentSearchPage = lazy(() =>
 )
 const BuildsBrowser = lazy(() => import("../builds/BuildsBrowser"))
 const UserPage = lazy(() => import("../user/UserPage"))
+const InfoPage = lazy(() => import("./InfoPage"))
 
 const Routes = () => {
   return (
@@ -59,6 +60,9 @@ const Routes = () => {
         </Route>
         <Route path="/u/:id">
           <UserPage />
+        </Route>
+        <Route path="/info">
+          <InfoPage />
         </Route>
         <Route path="/404" render={() => <NotFound />} />
         <Route path="*" render={() => <NotFound />} />
