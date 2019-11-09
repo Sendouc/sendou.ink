@@ -1,44 +1,27 @@
-import React, { useState, useEffect } from "react"
-import { useLocation } from "react-router-dom"
-import useUrlParamQuery from "../../hooks/useUrlParamQuery"
+import React from "react"
+import { useQuery } from "@apollo/react-hooks"
+import { useQueryParams, StringParam, NumberParam } from "use-query-params"
 import WeaponDropdown from "../common/WeaponDropdown"
 import { searchForBuildsByWeapon } from "../../graphql/queries/searchForBuildsByWeapon"
 import Loading from "../common/Loading"
 import Error from "../common/Error"
-import { Card, Header } from "semantic-ui-react"
+import { Card, Header, Pagination, Icon } from "semantic-ui-react"
 import BuildCard from "../common/BuildCard"
 import WpnImage from "../common/WpnImage"
 
 const BuildsBrowser = () => {
-  const location = useLocation()
-  const weaponFromUrl = () => {
-    const searchParams = new URLSearchParams(location.search)
-    if (searchParams.has("weapon")) return searchParams.get("weapon")
-    return ""
-  }
-  const [weapon, setWeapon] = useState(weaponFromUrl())
-  console.log("weapon", weapon)
-  const { data, error, loading, filter, fireQuery } = useUrlParamQuery(
-    searchForBuildsByWeapon,
-    {
-      weapon
-    }
-  )
-
-  const handleFormChange = (e, { value }) => {
-    setWeapon(value)
-    fireQuery({ ...filter, weapon: value })
-  }
-
-  useEffect(() => {
-    if (!weapon) document.title = "Builds - sendou.ink"
-    document.title = `${weapon} Builds - sendou.ink`
-  }, [weapon])
+  const [query, setQuery] = useQueryParams({
+    weapon: StringParam,
+    page: NumberParam
+  })
+  const { page = 1, weapon } = query
+  const { data, error, loading } = useQuery(searchForBuildsByWeapon, {
+    variables: query
+  })
 
   const weaponsList = () => {
-    if (loading || !data) return <Loading />
+    if (loading) return <Loading />
     if (error) return <Error errorMessage={error.message} />
-    console.log("data", data)
     return (
       <>
         <Header as="h2">
@@ -50,18 +33,40 @@ const BuildsBrowser = () => {
             <>Latest Builds</>
           )}
         </Header>
+        <Pagination
+          activePage={page}
+          onPageChange={(e, { activePage }) => setQuery({ page: activePage })}
+          totalPages={data.searchForBuildsByWeapon.pageCount}
+          firstItem={null}
+          lastItem={null}
+          prevItem={{ content: <Icon name="angle left" />, icon: true }}
+          nextItem={{ content: <Icon name="angle right" />, icon: true }}
+        />
         <Card.Group style={{ marginTop: "1em" }}>
           {data.searchForBuildsByWeapon.builds.map(build => {
             return <BuildCard key={build.id} build={build} showWeapon={false} />
           })}
         </Card.Group>
+        <Pagination
+          style={{ marginTop: "1.5em" }}
+          activePage={page}
+          onPageChange={(e, { activePage }) => setQuery({ page: activePage })}
+          totalPages={data.searchForBuildsByWeapon.pageCount}
+          firstItem={null}
+          lastItem={null}
+          prevItem={{ content: <Icon name="angle left" />, icon: true }}
+          nextItem={{ content: <Icon name="angle right" />, icon: true }}
+        />
       </>
     )
   }
 
   return (
     <>
-      <WeaponDropdown value={filter.weapon} onChange={handleFormChange} />
+      <WeaponDropdown
+        value={weapon}
+        onChange={(e, { value }) => setQuery({ weapon: value, page: 1 })}
+      />
       <div style={{ marginTop: "1em" }}>{weaponsList()}</div>
     </>
   )

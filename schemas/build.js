@@ -12,7 +12,8 @@ const gear = require("../utils/gear")
 const typeDef = gql`
   extend type Query {
     searchForBuilds(discord_id: String!): [Build]!
-    searchForBuildsByWeapon(weapon: String!, page: Int): BuildCollection!
+    "Returns builds by given weapon. If weapon is omitted returns latest builds instead."
+    searchForBuildsByWeapon(weapon: String, page: Int): BuildCollection!
   }
   extend type Mutation {
     addBuild(
@@ -101,15 +102,14 @@ const resolvers = {
         })
     },
     searchForBuildsByWeapon: async (root, args) => {
-      const buildsPerPage = 20
+      const buildsPerPage = 18
       const currentPage = args.page ? args.page - 1 : 0
-      const searchCriteria = { weapon: args.weapon }
+      const searchCriteria = !args.weapon ? {} : { weapon: args.weapon }
       const buildCount = await Build.countDocuments(searchCriteria).catch(e => {
         throw new UserInputError(e.message, {
           invalidArgs: args
         })
       })
-
       const pageCount = Math.ceil(buildCount / buildsPerPage)
       // if 0 documents we don't care if the page is wrong
       if (buildCount !== 0) {
@@ -122,7 +122,7 @@ const resolvers = {
       const builds = await Build.find(searchCriteria)
         .skip(buildsPerPage * currentPage)
         .limit(buildsPerPage)
-        .sort({ top: "desc", updatedAt: "desc" })
+        .sort({ top: !args.weapon ? null : "desc", updatedAt: "desc" })
         .populate("discord_user")
         .catch(e => {
           throw new UserInputError(e.message, {

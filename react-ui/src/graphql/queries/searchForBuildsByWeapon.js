@@ -1,7 +1,7 @@
 import { gql } from "apollo-boost"
 
 export const searchForBuildsByWeapon = gql`
-  query searchForBuildsByWeapon($weapon: String!, $page: Int) {
+  query searchForBuildsByWeapon($weapon: String, $page: Int) {
     searchForBuildsByWeapon(weapon: $weapon, page: $page) {
       builds {
         id
