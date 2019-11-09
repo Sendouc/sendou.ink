@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import { Form, Message, Button, TextArea } from "semantic-ui-react"
 import BuildCard from "../common/BuildCard"
 import AbilityButtons from "./AbilityButtons"
@@ -13,6 +13,7 @@ const AddBuildForm = ({
   setShowEdit,
   editBuildFunction
 }) => {
+  const scrollRef = useRef(null)
   const [weapon, setWeapon] = useState(
     existingBuild ? existingBuild.weapon : ""
   )
@@ -58,7 +59,7 @@ const AddBuildForm = ({
     shoesItem
   }
 
-  const submit = async (e, func) => {
+  const submit = async e => {
     e.preventDefault()
 
     let buildToAdd = { ...build }
@@ -100,8 +101,13 @@ const AddBuildForm = ({
     return true
   }
 
+  useEffect(() => {
+    if (!scrollRef) return
+    window.scrollTo(0, scrollRef.current.offsetTop)
+  }, [scrollRef])
+
   return (
-    <div>
+    <div ref={scrollRef} style={{ margin: "1em" }}>
       <div>
         <BuildCard
           build={build}

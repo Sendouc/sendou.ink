@@ -3,6 +3,7 @@ import { gql } from "apollo-boost"
 export const updateBuild = gql`
   mutation updateBuild(
     $id: ID!
+    $weapon: String!
     $title: String
     $description: String
     $headgear: [Ability!]!

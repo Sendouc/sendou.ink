@@ -32,11 +32,13 @@ const BuildCard = ({
 
   if (showEdit)
     return (
-      <AddBuildForm
-        existingBuild={build}
-        setShowEdit={setShowEdit}
-        editBuildFunction={editBuildFunction}
-      />
+      <div style={{ minWidth: "100%" }}>
+        <AddBuildForm
+          existingBuild={build}
+          setShowEdit={setShowEdit}
+          editBuildFunction={editBuildFunction}
+        />
+      </div>
     )
 
   const BCard = () => {

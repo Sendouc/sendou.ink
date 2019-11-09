@@ -20,6 +20,7 @@ const BuildTab = ({ user, userViewed }) => {
   const [showForm, setShowForm] = useState(false)
 
   const handleError = error => {
+    console.log("error", error)
     setErrorMsg(error.graphQLErrors[0].message)
     setTimeout(() => {
       setErrorMsg(null)
