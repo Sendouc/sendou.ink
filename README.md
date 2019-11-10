@@ -1,6 +1,6 @@
-![s.ink logo](https://raw.githubusercontent.com/Sendouc/sendou-ink/master/react-ui/src/img/misc/sink_logo.png)
-==
-[![Discord Server]( https://discordapp.com/api/guilds/407936403356516365/embed.png)](https://discord.gg/J6NqUvt)
+# ![s.ink logo](https://raw.githubusercontent.com/Sendouc/sendou-ink/master/utils/sink_banner.png)
+
+[![Discord Server](https://discordapp.com/api/guilds/407936403356516365/embed.png)](https://discord.gg/J6NqUvt)
 
 Goal of sendou.ink is to provide useful tools and resources for the competitive Splatoon community.
 
@@ -12,11 +12,11 @@ This site was originally a full stack web development school project. It is my f
 
 ## Technologies used
 
-* React
-* Node.js
-* GraphQL (Apollo)
-* MongoDB (Mongoose)
-* Python (couple different scripts to parse data)
+- React
+- Node.js
+- GraphQL (Apollo Server)
+- MongoDB (+Mongoose)
+- Python (couple different scripts to parse data)
 
 ## Current features
 
@@ -28,6 +28,9 @@ View the upcoming rotations in the matchmaking and mark maps as unfavored. Unfav
 
 🦑 [Build Viewer](https://sendou.ink/builds)
 Search for builds by weapon submitted by other users.
+
+🦑 [Tournament Viewer](https://sendou.ink/tournaments)
+Browser past tournaments of the competitive scene. Included is filtering feature that allows you to find tournaments featuring certain team composition for example.
 
 🦑 [Map Planner](https://sendou.ink/plans)
 Make plans by drawing on maps using variety of tools. You can also save and load from file.
@@ -47,21 +50,23 @@ See all the upcoming events in the competitive Splatoon community on one page.
 🦑 [Links](https://sendou.ink/links)
 Links to all sorts of useful resources about competitive Splatoon.
 
-You can also log in to save up to 100 builds of your own.
+You can also log in to save up to 100 builds of your own that can include your abilities, gear as well as description of it.
 
 ## Installation
 
-1) Install [Node](https://nodejs.org/en/)
-2) Use `npm install` in the root folder
-3) Use `npm install` in the **/react-ui** folder
-4) Use `npm run watch` in the root folder
-5) Use `npm start` in the **/react-ui** folder
+1. Install [Node](https://nodejs.org/en/)
+2. Use `npm install` in the root folder
+3. Use `npm install` in the **/react-ui** folder
+4. Use `npm run watch` in the root folder
+5. Use `npm start` in the **/react-ui** folder
 
 Server will run on [http://localhost:3001/](http://localhost:3001/)  
-Frontend will run on [http://localhost:3000/](http://localhost:3000/)
+Front-end will run on [http://localhost:3000/](http://localhost:3000/)
 
 ## Contributing
+
 You are welcome to create an issue or do a pull request.
 
 ## License
+
 GNU General Public License v3.0
