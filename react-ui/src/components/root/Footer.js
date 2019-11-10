@@ -13,7 +13,7 @@ const Footer = () => {
           <List.Item as="a" href="https://discord.gg/J6NqUvt">
             <Icon name="discord" size="big" />
           </List.Item>
-          <List.Item as={Link} to="/info">
+          <List.Item as={Link} to="/about">
             <Icon name="info circle" size="big" />
           </List.Item>
         </List>

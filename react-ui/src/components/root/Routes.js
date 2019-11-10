@@ -69,7 +69,7 @@ const Routes = () => {
         <Route path="/u/:id">
           <UserPage />
         </Route>
-        <Route path="/info">
+        <Route path="/about">
           <InfoPage />
         </Route>
         <Route path="/404" render={() => <NotFound />} />
