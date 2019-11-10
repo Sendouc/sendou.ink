@@ -1,13 +1,21 @@
-const { UserInputError, gql } = require('apollo-server-express')
-const Placement = require('../models/placement')
-const Player = require('../models/player')
+const { UserInputError, gql } = require("apollo-server-express")
+const Placement = require("../models/placement")
+const Player = require("../models/player")
 
 const typeDef = gql`
   extend type Query {
-    topPlayers (weapon: String!): topPlayer!
-    playerInfo(uid: String twitter: String): PlayerWithPlacements!
-    searchForPlayers(name: String! exact: Boolean): [Placement]!
-    searchForPlacements(name: String, weapon: String, mode: Int, unique_id: String, month: Int, year: Int, page: Int): PlacementCollection!
+    topPlayers(weapon: String!): topPlayer!
+    playerInfo(uid: String, twitter: String): PlayerWithPlacements!
+    searchForPlayers(name: String!, exact: Boolean): [Placement]!
+    searchForPlacements(
+      name: String
+      weapon: String
+      mode: Int
+      unique_id: String
+      month: Int
+      year: Int
+      page: Int
+    ): PlacementCollection!
   }
   type Placement {
     id: ID!
@@ -37,58 +45,62 @@ const typeDef = gql`
 const resolvers = {
   Query: {
     topPlayers: async (root, args) => {
-      const placements =  await Placement
-        .find({ weapon: args.weapon })
-        .sort({ "x_power": "desc" })
-        .select({ weapon: 0})
+      const placements = await Placement.find({ weapon: args.weapon })
+        .sort({ x_power: "desc" })
+        .select({ weapon: 0 })
         .catch(e => {
           throw new UserInputError(e.message, {
-            invalidArgs: args,
+            invalidArgs: args
           })
         })
-      
-      const m = placements.reduce((acc, cur) => {
-        if (cur.mode === 1) {
-          acc.sz++
-        } else if (cur.mode === 2) {
-          acc.tc++
-        } else if (cur.mode === 3) {
-          acc.rm++
-        } else {
-          acc.cb++
-        }
 
-        return acc
-      }, {sz: 0, tc: 0, rm: 0, cb: 0})
+      const m = placements.reduce(
+        (acc, cur) => {
+          if (cur.mode === 1) {
+            acc.sz++
+          } else if (cur.mode === 2) {
+            acc.tc++
+          } else if (cur.mode === 3) {
+            acc.rm++
+          } else {
+            acc.cb++
+          }
 
-      return {placements: placements.slice(0, 101), modeCount: [m.sz+m.tc+m.rm+m.cb, m.sz, m.tc, m.rm, m.cb]}
+          return acc
+        },
+        { sz: 0, tc: 0, rm: 0, cb: 0 }
+      )
+
+      return {
+        placements: placements.slice(0, 101),
+        modeCount: [m.sz + m.tc + m.rm + m.cb, m.sz, m.tc, m.rm, m.cb]
+      }
     },
     playerInfo: async (root, args) => {
       let searchCriteria = {}
-      if (args.uid) searchCriteria = { "unique_id": args.uid }
-      else if (args.twitter) searchCriteria = { "twitter": args.twitter.toLowerCase()}
-      else throw new UserInputError('no id or twitter provided', {
-        invalidArgs: args,
-      })
-      const player = await Player
-        .findOne(searchCriteria)
-        .catch(e => {
-          throw new UserInputError(e.message, {
-            invalidArgs: args,
-          })
+      if (args.uid) searchCriteria = { unique_id: args.uid }
+      else if (args.twitter)
+        searchCriteria = { twitter: args.twitter.toLowerCase() }
+      else
+        throw new UserInputError("no id or twitter provided", {
+          invalidArgs: args
         })
+      const player = await Player.findOne(searchCriteria).catch(e => {
+        throw new UserInputError(e.message, {
+          invalidArgs: args
+        })
+      })
 
       if (!player) {
-        throw new UserInputError('player not found', {
-          invalidArgs: args,
+        throw new UserInputError("player not found", {
+          invalidArgs: args
         })
       }
-      const placements = await Placement
-        .find({ unique_id: player.unique_id })
-        .sort({ "year": "asc", "month": "asc" })
+      const placements = await Placement.find({ unique_id: player.unique_id })
+        .sort({ year: "asc", month: "asc" })
         .catch(e => {
           throw new UserInputError(e.message, {
-            invalidArgs: args,
+            invalidArgs: args
           })
         })
 
@@ -97,28 +109,28 @@ const resolvers = {
     searchForPlayers: async (root, args) => {
       let placements = []
       if (args.exact) {
-        placements = await Placement
-          .find({ name: args.name })
-          .sort({ "x_power": "desc" })
+        placements = await Placement.find({ name: args.name })
+          .sort({ x_power: "desc" })
           .limit(100)
-          .select({ name: 1, weapon: 1, x_power: 1, unique_id: 1})
+          .select({ name: 1, weapon: 1, x_power: 1, unique_id: 1 })
           .catch(e => {
             throw new UserInputError(e.message, {
-              invalidArgs: args,
+              invalidArgs: args
             })
           })
       } else {
-        placements = await Placement
-          .find({ name: { "$regex": args.name, "$options": "i" }})
-          .sort({ "x_power": "desc" })
+        placements = await Placement.find({
+          name: { $regex: args.name, $options: "i" }
+        })
+          .sort({ x_power: "desc" })
           .limit(100)
-          .select({ name: 1, weapon: 1, x_power: 1, unique_id: 1})
+          .select({ name: 1, weapon: 1, x_power: 1, unique_id: 1 })
           .catch(e => {
             throw new UserInputError(e.message, {
-              invalidArgs: args,
+              invalidArgs: args
             })
           })
-        }
+      }
 
       let uids = []
 
@@ -139,43 +151,43 @@ const resolvers = {
       const currentPage = args.page ? args.page - 1 : 0
       const searchCriteria = {}
       // TODO: If this turns out slow maybe denormalize the database to have case insensitive name field
-      if (args.name) searchCriteria.name = { $regex : new RegExp(args.name, "i") }
+      if (args.name)
+        searchCriteria.name = { $regex: new RegExp(args.name, "i") }
       if (args.weapon) searchCriteria.weapon = args.weapon
       if (args.mode) searchCriteria.mode = args.mode
       if (args.unique_id) searchCriteria.unique_id = args.unique_id
-      if (args.month && args.year) {
-        searchCriteria.month = args.month
-        searchCriteria.year = args.year
-      }
-      const placementCount = await Placement
-        .countDocuments(searchCriteria)
-        .catch(e => {
-          throw new UserInputError(e.message, {
-            invalidArgs: args,
-          })
+      if (args.month) searchCriteria.month = args.month
+      if (args.year) searchCriteria.year = args.year
+
+      const placementCount = await Placement.countDocuments(
+        searchCriteria
+      ).catch(e => {
+        throw new UserInputError(e.message, {
+          invalidArgs: args
         })
-      
+      })
+
       const pageCount = Math.ceil(placementCount / perPage)
       // if 0 documents we don't care if the page is wrong
       if (placementCount !== 0) {
-        if (args.page > pageCount) throw new UserInputError('too big page number given', {
-          invalidArgs: args,
-        })
+        if (args.page > pageCount)
+          throw new UserInputError("too big page number given", {
+            invalidArgs: args
+          })
       }
 
-      const placements = await Placement
-        .find(searchCriteria)
+      const placements = await Placement.find(searchCriteria)
         .skip(perPage * currentPage)
         .limit(perPage)
-        .sort({ "x_power": "desc" })
-        .populate('player')
+        .sort({ x_power: "desc" })
+        .populate("player")
         .catch(e => {
           throw new UserInputError(e.message, {
-            invalidArgs: args,
+            invalidArgs: args
           })
         })
-      
-      return { pageCount, placements}
+
+      return { pageCount, placements }
     }
   }
 }

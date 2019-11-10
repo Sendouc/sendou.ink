@@ -34,7 +34,7 @@ db = client.production
 
 script_dir = os.path.dirname(__file__)
 file_name = input('Enter the file name without extension: ')
-rel_path = f"maps/{file_name}.txt"
+rel_path = f"tourney_maps/{file_name}.txt"
 abs_file_path = os.path.join(script_dir, rel_path)
 
 with open(abs_file_path) as f:

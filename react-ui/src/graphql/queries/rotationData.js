@@ -1,7 +1,7 @@
-import { gql } from 'apollo-boost'
+import { gql } from "apollo-boost"
 
 export const rotationData = gql`
-{
-  rotationData
-}
+  {
+    rotationData
+  }
 `

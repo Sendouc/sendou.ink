@@ -1,78 +1,106 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose")
 
 const playerSchema = new mongoose.Schema({
-  name: {type: String, required: true },
+  name: { type: String, required: true },
   unique_id: { type: String, unique: true, required: true },
   alias: String,
   twitter: String,
   weapons: [String],
   topTotal: {
-    type: [{
+    type: [
+      {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Placement'
-    }
-  ], validate: [arrayLimit, '{PATH} exceeds the limit of 4']},
+        ref: "Placement"
+      }
+    ],
+    validate: [arrayLimit, "{PATH} exceeds the limit of 4"]
+  },
   topTotalScore: Number,
   topShooter: {
-    type: [{
+    type: [
+      {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Placement'
-    }
-  ], validate: [arrayLimit, '{PATH} exceeds the limit of 4']},
+        ref: "Placement"
+      }
+    ],
+    validate: [arrayLimit, "{PATH} exceeds the limit of 4"]
+  },
   topShooterScore: Number,
   topBlaster: {
-    type: [{
+    type: [
+      {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Placement'
-    }
-  ], validate: [arrayLimit, '{PATH} exceeds the limit of 4']},
+        ref: "Placement"
+      }
+    ],
+    validate: [arrayLimit, "{PATH} exceeds the limit of 4"]
+  },
   topBlasterScore: Number,
   topRoller: {
-    type: [{
+    type: [
+      {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Placement'
-    }
-  ], validate: [arrayLimit, '{PATH} exceeds the limit of 4']},
+        ref: "Placement"
+      }
+    ],
+    validate: [arrayLimit, "{PATH} exceeds the limit of 4"]
+  },
   topRollerScore: Number,
   topCharger: {
-    type: [{
+    type: [
+      {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Placement'
-    }
-  ], validate: [arrayLimit, '{PATH} exceeds the limit of 4']},
+        ref: "Placement"
+      }
+    ],
+    validate: [arrayLimit, "{PATH} exceeds the limit of 4"]
+  },
   topChargerScore: Number,
   topSlosher: {
-    type: [{
+    type: [
+      {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Placement'
-    }
-  ], validate: [arrayLimit, '{PATH} exceeds the limit of 4']},
+        ref: "Placement"
+      }
+    ],
+    validate: [arrayLimit, "{PATH} exceeds the limit of 4"]
+  },
   topSlosherScore: Number,
   topSplatling: {
-    type: [{
+    type: [
+      {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Placement'
-    }
-  ], validate: [arrayLimit, '{PATH} exceeds the limit of 4']},
+        ref: "Placement"
+      }
+    ],
+    validate: [arrayLimit, "{PATH} exceeds the limit of 4"]
+  },
   topSplatlingScore: Number,
   topDualies: {
-    type: [{
+    type: [
+      {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Placement'
-    }
-  ], validate: [arrayLimit, '{PATH} exceeds the limit of 4']},
+        ref: "Placement"
+      }
+    ],
+    validate: [arrayLimit, "{PATH} exceeds the limit of 4"]
+  },
   topDualiesScore: Number,
   topBrella: {
-    type: [{
+    type: [
+      {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Placement'
-    }
-  ], validate: [arrayLimit, '{PATH} exceeds the limit of 4']},
-  topBrellaScore: Number
+        ref: "Placement"
+      }
+    ],
+    validate: [arrayLimit, "{PATH} exceeds the limit of 4"]
+  },
+  topBrellaScore: Number,
+  weaponsCount: Number
 })
 
 function arrayLimit(val) {
   return val.length <= 4
 }
 
-module.exports = mongoose.model('Player', playerSchema)
+module.exports = mongoose.model("Player", playerSchema)

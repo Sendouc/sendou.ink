@@ -1,40 +1,31 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import App from './App'
-import { Provider } from 'react-redux'
-import { ApolloProvider } from '@apollo/react-hooks'
-import { ApolloClient } from 'apollo-client'
-import { createHttpLink } from 'apollo-link-http'
-import { InMemoryCache } from 'apollo-cache-inmemory'
-import { setContext } from 'apollo-link-context'
-import store from './store'
-import './index.css'
+import React from "react"
+import ReactDOM from "react-dom"
+import App from "./components/root/App"
+import * as serviceWorker from "./serviceWorker"
+import { ApolloProvider } from "@apollo/react-hooks"
+import { QueryParamProvider } from "use-query-params"
+import ApolloClient from "apollo-boost"
+import { BrowserRouter as Router, Route } from "react-router-dom"
+import "semantic-ui-css/semantic.min.css"
+import "./index.css"
 
-const httpLink = createHttpLink({
-  uri: '/graphql',
-})
-
-const authLink = setContext((_, { headers }) => {
-
-  const token = localStorage.getItem('user-token')
-  return {
-    headers: {
-      ...headers,
-      authorization: token ? `bearer ${token}` : null,
-    }
-  }
-})
-
+//TODO: figure out how to do this well
 const client = new ApolloClient({
-  link: authLink.concat(httpLink),
-  cache: new InMemoryCache()
+  uri:
+    process.env.NODE_ENV === "production"
+      ? "/graphql"
+      : "http://localhost:3001/graphql"
 })
 
 ReactDOM.render(
-  <Provider store={store}>
-    <ApolloProvider client={client}>
-      <App />
-    </ApolloProvider>
-  </Provider>,
-  document.getElementById('root')
+  <Router>
+    <QueryParamProvider ReactRouterRoute={Route}>
+      <ApolloProvider client={client}>
+        <App />
+      </ApolloProvider>
+    </QueryParamProvider>
+  </Router>,
+  document.getElementById("root")
 )
+
+serviceWorker.unregister()
