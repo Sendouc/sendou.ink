@@ -504,7 +504,11 @@ const gear = [
       "Painter's Mask",
       "Squid Facemask",
       "Twisty Headband",
-      "White Headband"
+      "White Headband",
+      "Jetflame Crest",
+      "Fierce Fishskull",
+      "Hivemind Antenna",
+      "Eye of Justice"
     ],
     shoes: ["Mecha Legs - LBS"]
   },

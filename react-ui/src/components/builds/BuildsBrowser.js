@@ -18,7 +18,7 @@ const BuildsBrowser = () => {
   const { data, error, loading } = useQuery(searchForBuildsByWeapon, {
     variables: query
   })
-
+  console.log("weapon", weapon)
   const weaponsList = () => {
     if (loading) return <Loading />
     if (error) return <Error errorMessage={error.message} />
@@ -45,11 +45,7 @@ const BuildsBrowser = () => {
         <Card.Group style={{ marginTop: "1em" }}>
           {data.searchForBuildsByWeapon.builds.map(build => {
             return (
-              <BuildCard
-                key={build.id}
-                build={build}
-                showWeapon={weapon === ""}
-              />
+              <BuildCard key={build.id} build={build} showWeapon={!weapon} />
             )
           })}
         </Card.Group>
