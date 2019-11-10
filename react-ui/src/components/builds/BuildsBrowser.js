@@ -44,7 +44,13 @@ const BuildsBrowser = () => {
         />
         <Card.Group style={{ marginTop: "1em" }}>
           {data.searchForBuildsByWeapon.builds.map(build => {
-            return <BuildCard key={build.id} build={build} showWeapon={false} />
+            return (
+              <BuildCard
+                key={build.id}
+                build={build}
+                showWeapon={weapon === ""}
+              />
+            )
           })}
         </Card.Group>
         <Pagination
