@@ -1,6 +1,6 @@
 {
-  "name": "sendou-ink-new",
-  "version": "0.1.0",
+  "name": "sendou-ink-react-ui",
+  "version": "2.0.0",
   "private": true,
   "dependencies": {
     "@apollo/react-hooks": "^3.1.3",
