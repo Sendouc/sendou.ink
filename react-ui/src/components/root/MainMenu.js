@@ -16,11 +16,7 @@ const MainMenu = () => {
   const history = useHistory()
 
   const logInOrAva = () => {
-    if (loading) {
-      return null
-    }
-
-    if (!data || !data.user || error) {
+    if (loading || !data || !data.user || error) {
       return (
         <Menu.Item href="/auth/discord" position="right">
           <Icon name="discord" size="large" style={{ paddingRight: "0.2em" }} />

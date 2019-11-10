@@ -220,7 +220,6 @@ const resolvers = {
       return true
     },
     updateBuild: async (root, args, ctx) => {
-      console.log("updating!")
       if (!ctx.user) throw new AuthenticationError("not authenticated")
       if (args.title)
         if (args.title.length > 100)
