@@ -1,6 +1,6 @@
 import React from "react"
 import { Menu, Container, Image, Dropdown, Icon } from "semantic-ui-react"
-import { NavLink, useHistory } from "react-router-dom"
+import { Link, NavLink, useHistory } from "react-router-dom"
 import { userLean } from "../../graphql/queries/userLean"
 import { useQuery } from "@apollo/react-hooks"
 import sink_logo from "../../assets/sink_logo.png"
@@ -66,7 +66,7 @@ const MainMenu = () => {
   return (
     <Menu inverted secondary attached="top" stackable>
       <Container>
-        <Menu.Item as="a" header>
+        <Menu.Item as={Link} to="/" header>
           <Image src={sink_logo} style={{ height: "40px", width: "auto" }} />
         </Menu.Item>
 
