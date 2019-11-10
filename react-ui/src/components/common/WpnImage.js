@@ -1,11 +1,12 @@
 import React from "react"
 
 import english_internal from "../../utils/english_internal.json"
-import { wpnMedium } from "../../assets/imageImports"
+import { wpnSmall, wpnMedium } from "../../assets/imageImports"
 import { Image } from "semantic-ui-react"
 
-const WpnImage = ({ weapon }) => {
-  return <Image src={wpnMedium[english_internal[weapon]]} />
+const WpnImage = ({ weapon, size = "MEDIUM" }) => {
+  const dictToUse = size === "MEDIUM" ? wpnMedium : wpnSmall
+  return <Image src={dictToUse[english_internal[weapon]]} />
 }
 
 export default WpnImage

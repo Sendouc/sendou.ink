@@ -3,6 +3,7 @@ import { Route, Switch } from "react-router-dom"
 import Loading from "../common/Loading"
 import NotFound from "../common/NotFound"
 
+const HomePage = lazy(() => import("../root/HomePage"))
 const MapListGenerator = lazy(() => import("../maps/MapListGenerator"))
 const Rotations = lazy(() => import("../rotation/Rotations"))
 const MapPlanner = lazy(() => import("../plans/MapPlanner"))
@@ -10,6 +11,7 @@ const Calendar = lazy(() => import("../calendar/Calendar"))
 const XLeaderboard = lazy(() => import("../xleaderboard/XLeaderboard"))
 const PlayerXRankStats = lazy(() => import("../xsearch/PlayerXRankStats"))
 const XTrends = lazy(() => import("../xtrends/XTrends"))
+const Top500Browser = lazy(() => import("../xsearch/Top500Browser"))
 const Links = lazy(() => import("../links/Links"))
 const TournamentDetailsPage = lazy(() =>
   import("../tournament/TournamentDetailsPage")
@@ -25,6 +27,9 @@ const Routes = () => {
   return (
     <Suspense fallback={<Loading />}>
       <Switch>
+        <Route exact path="/">
+          <HomePage />
+        </Route>
         <Route path="/maps">
           <MapListGenerator />
         </Route>
@@ -42,6 +47,9 @@ const Routes = () => {
         </Route>
         <Route path="/xleaderboard">
           <XLeaderboard />
+        </Route>
+        <Route exact path="/xsearch">
+          <Top500Browser />
         </Route>
         <Route path="/xsearch/p/:uid">
           <PlayerXRankStats />

@@ -28,7 +28,7 @@ const XLeaderBoardMenu = () => {
             </Menu.Item>
 
             <Menu.Item name="flex" as={NavLink} exact to="/xleaderboard/flex">
-              <img style={wpnIcon} src={flexIcon} alt="Flex icon" />
+              <img style={wpnIcon} src={flexIcon} alt="Flex Icon" />
               Flex
             </Menu.Item>
 
@@ -119,11 +119,11 @@ const XLeaderBoardMenu = () => {
               <img style={wpnIcon} src={allIcon} alt="All Icon" />
               All
             </Menu.Item>
+            <Menu.Item name="flex" as={NavLink} exact to="/xleaderboard/flex">
+              <img style={wpnIcon} src={flexIcon} alt="Flex Icon" />
+              Flex
+            </Menu.Item>
           </Menu>
-          <Menu.Item name="flex" as={NavLink} exact to="/xleaderboard/flex">
-            <img style={wpnIcon} src={flexIcon} alt="Flex icon" />
-            Flex
-          </Menu.Item>
           <Menu compact icon="labeled">
             <Menu.Item
               name="shooters"

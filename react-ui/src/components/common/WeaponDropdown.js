@@ -9,11 +9,12 @@ const WeaponDropdown = ({
   value,
   onChange,
   multiple = false,
-  showImages = true
+  showImages = true,
+  nonMultiplePlaceholder = "Choose a weapon"
 }) => {
   return (
     <Dropdown
-      placeholder={multiple ? "Choose a comp " : "Choose a weapon"}
+      placeholder={multiple ? "Choose a comp" : nonMultiplePlaceholder}
       search
       selection
       closeOnEscape

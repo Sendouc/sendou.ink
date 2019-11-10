@@ -163,5 +163,9 @@ export const modeIcons = {
   TC: tcIcon,
   RM: rmIcon,
   CB: cbIcon,
-  TW: twIcon
+  TW: twIcon,
+  1: szIcon,
+  2: tcIcon,
+  3: rmIcon,
+  4: cbIcon
 }

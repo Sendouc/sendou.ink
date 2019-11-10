@@ -128,7 +128,7 @@ const AddBuildForm = ({
       <div style={{ paddingTop: "15px" }}>
         <Form error={title.length > 100}>
           <Form.Field>
-            <label>Title (optional)</label>
+            <label>Title</label>
             <input value={title} onChange={e => setTitle(e.target.value)} />
             <Message
               error
