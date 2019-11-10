@@ -6,14 +6,7 @@ import rankedIcon from "../../assets/ranked.png"
 import leagueIcon from "../../assets/league.png"
 import regularIcon from "../../assets/regular.png"
 
-const modeShort = {
-  "Splat Zones": "sz",
-  "Tower Control": "tc",
-  Rainmaker: "rm",
-  "Clam Blitz": "cb"
-}
-
-const RotationSegments = ({ rotation, preferences }) => {
+const RotationSegments = ({ rotation }) => {
   const [currentTime, setCurrentTime] = useState(
     new Date(Math.floor(Date.now() / 1000))
   )
@@ -46,13 +39,7 @@ const RotationSegments = ({ rotation, preferences }) => {
         <Divider horizontal>
           <Header as="h4">{header}</Header>
         </Divider>
-        <Segment
-          disabled={
-            preferences[modeShort[r.rule.name]][r.stage_a.name] &&
-            preferences[modeShort[r.rule.name]][r.stage_b.name]
-          }
-          raised
-        >
+        <Segment raised>
           <Grid columns={3} stackable>
             <Grid.Row>
               <Grid.Column>
@@ -128,28 +115,12 @@ const RotationSegments = ({ rotation, preferences }) => {
                   }}
                 >
                   <Popup
-                    trigger={
-                      <Image
-                        src={mapIcons[r.stage_a.name]}
-                        rounded
-                        disabled={
-                          preferences[modeShort[r.rule.name]][r.stage_a.name]
-                        }
-                      />
-                    }
+                    trigger={<Image src={mapIcons[r.stage_a.name]} rounded />}
                     content={r.stage_a.name}
                     basic
                   />
                   <Popup
-                    trigger={
-                      <Image
-                        src={mapIcons[r.stage_b.name]}
-                        rounded
-                        disabled={
-                          preferences[modeShort[r.rule.name]][r.stage_b.name]
-                        }
-                      />
-                    }
+                    trigger={<Image src={mapIcons[r.stage_b.name]} rounded />}
                     content={r.stage_b.name}
                     basic
                   />

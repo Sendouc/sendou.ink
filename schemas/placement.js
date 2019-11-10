@@ -147,7 +147,6 @@ const resolvers = {
       })
     },
     searchForPlacements: async (root, args) => {
-      console.log("args", args)
       const perPage = 25
       const currentPage = args.page ? args.page - 1 : 0
       const searchCriteria = {}
