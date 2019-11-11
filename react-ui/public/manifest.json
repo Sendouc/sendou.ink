@@ -1,6 +1,7 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "sendou.ink",
+  "name": "sendou.ink - Competitive Splatoon Hub",
+  "description": "Useful tools and resources for competitive Splatoon players.",
   "icons": [
     {
       "src": "favicon.ico",
@@ -18,8 +19,9 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
+  "start_url": "https://sendou.ink",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#2B5262",
+  "background_color": "#13272E",
+  "categories": ["games"]
 }
