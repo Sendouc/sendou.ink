@@ -1,9 +1,10 @@
 {
   "name": "sendou-ink-react-ui",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "private": true,
   "dependencies": {
     "@apollo/react-hooks": "^3.1.3",
+    "@sendou/react-sketch": "^0.5.2",
     "apollo-boost": "^0.4.4",
     "graphql": "^14.5.8",
     "jstz": "^2.1.1",
@@ -12,7 +13,6 @@
     "react-dom": "^16.11.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.2.0",
-    "react-sketch": "^0.5.1",
     "recharts": "^1.8.5",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.88.1",
@@ -38,5 +38,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "devDependencies": {}
 }
