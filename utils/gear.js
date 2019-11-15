@@ -240,11 +240,13 @@ const gear = [
       "Octoleet Goggles",
       "Sailor Cap",
       "Welding Mask",
+      "Worker's Cap",
       "Worker's Head Towel"
     ],
     shoes: [
       "Angry Rain Boots",
       "Flipper Floppers",
+      "Friendship Bracelet",
       "Non-slip Senseis",
       "Octoleet Boots",
       "Wooden Sandals"
@@ -714,6 +716,6 @@ const gear = [
       "Zombie Hi-Horses"
     ]
   }
-]
+];
 
-module.exports = gear
+module.exports = gear;

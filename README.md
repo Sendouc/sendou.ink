@@ -8,7 +8,7 @@ Live version: [https://sendou.ink/](https://sendou.ink/)
 
 ## What's happening
 
-This site was originally a full stack web development school project. It is my first time working on a web site project of my own so it has been very much a learning experience in that sense.
+This site was originally a full stack web development school project. It is my first time working on a web site project of my own so it has been very much a learning experience in that sense. Although make no mistake it has been through several iterations already and I still have plans to keep improving as well as adding more functionality!
 
 ## Technologies used
 
@@ -66,7 +66,3 @@ Front-end will run on [http://localhost:3000/](http://localhost:3000/)
 ## Contributing
 
 You are welcome to create an issue or do a pull request.
-
-## License
-
-GNU General Public License v3.0

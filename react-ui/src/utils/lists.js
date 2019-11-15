@@ -4,7 +4,7 @@ export const modes = [
   "Tower Control",
   "Rainmaker",
   "Clam Blitz"
-]
+];
 
 export const months = [
   "",
@@ -20,7 +20,7 @@ export const months = [
   "October",
   "November",
   "December"
-]
+];
 
 export const weapons = [
   "Sploosh-o-matic",
@@ -152,7 +152,7 @@ export const weapons = [
   "Undercover Brella",
   "Undercover Sorella Brella",
   "Kensa Undercover Brella"
-]
+];
 
 export const shooters = [
   "Sploosh-o-matic",
@@ -182,7 +182,7 @@ export const shooters = [
   ".96 Gal Deco",
   "Jet Squelcher",
   "Custom Jet Squelcher"
-]
+];
 
 export const semiauto = [
   "L-3 Nozzlenose",
@@ -193,7 +193,7 @@ export const semiauto = [
   "Cherry H-3 Nozzlenose",
   "Squeezer",
   "Foil Squeezer"
-]
+];
 
 export const blasters = [
   "Luna Blaster",
@@ -211,7 +211,7 @@ export const blasters = [
   "Rapid Blaster Pro Deco",
   "Clash Blaster",
   "Clash Blaster Neo"
-]
+];
 
 export const rollers = [
   "Carbon Roller",
@@ -224,7 +224,7 @@ export const rollers = [
   "Kensa Dynamo Roller",
   "Flingza Roller",
   "Foil Flingza Roller"
-]
+];
 
 export const brushes = [
   "Inkbrush",
@@ -233,7 +233,7 @@ export const brushes = [
   "Octobrush",
   "Octobrush Nouveau",
   "Kensa Octobrush"
-]
+];
 
 export const chargers = [
   "Classic Squiffer",
@@ -254,7 +254,7 @@ export const chargers = [
   "Bamboozler 14 Mk III",
   "Goo Tuber",
   "Custom Goo Tuber"
-]
+];
 
 export const sloshers = [
   "Slosher",
@@ -269,7 +269,7 @@ export const sloshers = [
   "Bloblobber Deco",
   "Explosher",
   "Custom Explosher"
-]
+];
 
 export const splatlings = [
   "Mini Splatling",
@@ -284,7 +284,7 @@ export const splatlings = [
   "Ballpoint Splatling Nouveau",
   "Nautilus 47",
   "Nautilus 79"
-]
+];
 
 export const dualies = [
   "Dapple Dualies",
@@ -300,7 +300,7 @@ export const dualies = [
   "Custom Dualie Squelchers",
   "Dark Tetra Dualies",
   "Light Tetra Dualies"
-]
+];
 
 export const brellas = [
   "Splat Brella",
@@ -311,7 +311,7 @@ export const brellas = [
   "Undercover Brella",
   "Undercover Sorella Brella",
   "Kensa Undercover Brella"
-]
+];
 
 export const weaponsByCategory = {
   Shooters: shooters,
@@ -324,7 +324,7 @@ export const weaponsByCategory = {
   Splatlings: splatlings,
   Dualies: dualies,
   Brellas: brellas
-}
+};
 
 export const categoryKeys = [
   "Shooters",
@@ -337,7 +337,7 @@ export const categoryKeys = [
   "Splatlings",
   "Dualies",
   "Brellas"
-]
+];
 
 export const gearEnglish = [
   {
@@ -581,11 +581,13 @@ export const gearEnglish = [
       "Octoleet Goggles",
       "Sailor Cap",
       "Welding Mask",
+      "Worker's Cap",
       "Worker's Head Towel"
     ],
     shoes: [
       "Angry Rain Boots",
       "Flipper Floppers",
+      "Friendship Bracelet",
       "Non-slip Senseis",
       "Octoleet Boots",
       "Wooden Sandals"
@@ -1055,7 +1057,7 @@ export const gearEnglish = [
       "Zombie Hi-Horses"
     ]
   }
-]
+];
 
 export const clothingGear = [
   "Clt_AMB000",
@@ -1316,7 +1318,7 @@ export const clothingGear = [
   "Clt_VST007",
   "Clt_VST008",
   "Clt_VST009"
-]
+];
 
 export const headGear = [
   "Hed_ACC001",
@@ -1482,7 +1484,7 @@ export const headGear = [
   "Hed_VIS002",
   "Hed_VIS003",
   "Hed_VIS004"
-]
+];
 
 export const shoesGear = [
   "Shs_AMB000",
@@ -1650,4 +1652,4 @@ export const shoesGear = [
   "Shs_TRS000",
   "Shs_TRS001",
   "Shs_TRS002"
-]
+];
