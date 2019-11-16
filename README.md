@@ -1,7 +1,5 @@
 # ![s.ink logo](https://raw.githubusercontent.com/Sendouc/sendou-ink/master/utils/sink_banner.png)
 
-![Screenshot](./screenshot.png)
-
 [![Discord Server](https://discordapp.com/api/guilds/407936403356516365/embed.png)](https://discord.gg/J6NqUvt)
 
 Goal of sendou.ink is to provide useful tools and resources for the competitive Splatoon community.
@@ -19,6 +17,10 @@ This site was originally a full stack web development school project. It is my f
 - GraphQL (Apollo Server)
 - MongoDB (+Mongoose)
 - Python (couple different scripts to parse data)
+
+## Screenshot
+
+![Screenshot](./screenshot.png)
 
 ## Current features
 
