@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import { Card, Image, Icon, Popup, Button } from "semantic-ui-react";
-import { Link } from "react-router-dom";
-import english_internal from "../../utils/english_internal.json";
-import AbilityIcon from "./AbilityIcon";
+import React, { useState } from "react"
+import { Card, Image, Icon, Popup, Button } from "semantic-ui-react"
+import { Link } from "react-router-dom"
+import english_internal from "../../utils/english_internal.json"
+import AbilityIcon from "./AbilityIcon"
 
-import { wpnMedium } from "../../assets/imageImports";
-import top500 from "../../assets/xleaderboardIcons/all.png";
-import BuildDeleteModal from "../user/BuildDeleteModal.js";
-import AddBuildForm from "../user/AddBuildForm.js";
+import { wpnMedium } from "../../assets/imageImports"
+import top500 from "../../assets/xleaderboardIcons/all.png"
+import BuildDeleteModal from "../user/BuildDeleteModal.js"
+import AddBuildForm from "../user/AddBuildForm.js"
 
 const BuildCard = ({
   build,
@@ -16,19 +16,19 @@ const BuildCard = ({
   removeBuildFunction,
   editBuildFunction,
   showWeapon = true,
-  showDescription = true
+  showDescription = true,
 }) => {
-  const [showEdit, setShowEdit] = useState(false);
+  const [showEdit, setShowEdit] = useState(false)
 
   function removeAbility(gearIndex, slotIndex) {
-    let copyOfArray = [...existingAbilities];
-    copyOfArray[gearIndex][slotIndex] = "";
-    setAbilities(copyOfArray);
+    let copyOfArray = [...existingAbilities]
+    copyOfArray[gearIndex][slotIndex] = ""
+    setAbilities(copyOfArray)
   }
 
   const buildTitle =
-    !build.title || build.title === "" ? `${build.weapon} Build` : build.title;
-  const buildDescription = !build.description ? "" : build.description;
+    !build.title || build.title === "" ? `${build.weapon} Build` : build.title
+  const buildDescription = !build.description ? "" : build.description
 
   if (showEdit)
     return (
@@ -39,7 +39,7 @@ const BuildCard = ({
           editBuildFunction={editBuildFunction}
         />
       </div>
-    );
+    )
 
   const BCard = () => {
     return (
@@ -111,7 +111,7 @@ const BuildCard = ({
           </div>
           <div
             style={{
-              margin: build.clothingItem ? "0 0 0 0" : "0.5em 0 0.5em 0"
+              margin: build.clothingItem ? "0 0 0 0" : "0.5em 0 0.5em 0",
             }}
           >
             {build.clothingItem && (
@@ -171,10 +171,10 @@ const BuildCard = ({
           </Card.Content>
         )}
       </Card>
-    );
-  };
+    )
+  }
 
-  return <BCard />;
-};
+  return <BCard />
+}
 
-export default BuildCard;
+export default BuildCard

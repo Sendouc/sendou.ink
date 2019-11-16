@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { useQuery } from "@apollo/react-hooks"
 import { useQueryParams, StringParam, NumberParam } from "use-query-params"
 import WeaponDropdown from "../common/WeaponDropdown"
@@ -12,13 +12,19 @@ import WpnImage from "../common/WpnImage"
 const BuildsBrowser = () => {
   const [query, setQuery] = useQueryParams({
     weapon: StringParam,
-    page: NumberParam
+    page: NumberParam,
   })
   const { page = 1, weapon } = query
   const { data, error, loading } = useQuery(searchForBuildsByWeapon, {
-    variables: query
+    variables: query,
   })
-  console.log("weapon", weapon)
+
+  useEffect(() => {
+    document.title = weapon
+      ? `${weapon} Builds - sendou.ink`
+      : "Builds Browser - sendou.ink"
+  }, [weapon])
+
   const weaponsList = () => {
     if (loading) return <Loading />
     if (error) return <Error errorMessage={error.message} />
