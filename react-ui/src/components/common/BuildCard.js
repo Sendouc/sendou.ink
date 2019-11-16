@@ -1,13 +1,13 @@
-import React, { useState } from "react"
-import { Card, Image, Icon, Popup, Button } from "semantic-ui-react"
-import { Link } from "react-router-dom"
-import english_internal from "../../utils/english_internal.json"
-import AbilityIcon from "./AbilityIcon"
+import React, { useState } from "react";
+import { Card, Image, Icon, Popup, Button } from "semantic-ui-react";
+import { Link } from "react-router-dom";
+import english_internal from "../../utils/english_internal.json";
+import AbilityIcon from "./AbilityIcon";
 
-import { wpnMedium } from "../../assets/imageImports"
-import top500 from "../../assets/xleaderboardIcons/all.png"
-import BuildDeleteModal from "../user/BuildDeleteModal.js"
-import AddBuildForm from "../user/AddBuildForm.js"
+import { wpnMedium } from "../../assets/imageImports";
+import top500 from "../../assets/xleaderboardIcons/all.png";
+import BuildDeleteModal from "../user/BuildDeleteModal.js";
+import AddBuildForm from "../user/AddBuildForm.js";
 
 const BuildCard = ({
   build,
@@ -18,18 +18,17 @@ const BuildCard = ({
   showWeapon = true,
   showDescription = true
 }) => {
-  const [expanded, setExpanded] = useState(false)
-  const [showEdit, setShowEdit] = useState(false)
+  const [showEdit, setShowEdit] = useState(false);
 
   function removeAbility(gearIndex, slotIndex) {
-    let copyOfArray = [...existingAbilities]
-    copyOfArray[gearIndex][slotIndex] = ""
-    setAbilities(copyOfArray)
+    let copyOfArray = [...existingAbilities];
+    copyOfArray[gearIndex][slotIndex] = "";
+    setAbilities(copyOfArray);
   }
 
   const buildTitle =
-    !build.title || build.title === "" ? `${build.weapon} Build` : build.title
-  const buildDescription = !build.description ? "" : build.description
+    !build.title || build.title === "" ? `${build.weapon} Build` : build.title;
+  const buildDescription = !build.description ? "" : build.description;
 
   if (showEdit)
     return (
@@ -40,7 +39,7 @@ const BuildCard = ({
           editBuildFunction={editBuildFunction}
         />
       </div>
-    )
+    );
 
   const BCard = () => {
     return (
@@ -65,6 +64,19 @@ const BuildCard = ({
               />
             )}{" "}
             {buildTitle}
+            {build.description && showDescription && (
+              <Popup
+                content={buildDescription}
+                trigger={
+                  <Icon
+                    style={{ marginLeft: "0.25em" }}
+                    name="info circle"
+                    color="teal"
+                    size="large"
+                  />
+                }
+              />
+            )}
           </Card.Header>
           {build.discord_user && (
             <Card.Meta>
@@ -158,32 +170,11 @@ const BuildCard = ({
             </div>
           </Card.Content>
         )}
-        {build.description && showDescription && (
-          <Card.Content extra>
-            <span
-              style={{ cursor: "pointer", userSelect: "none" }}
-              onClick={() => setExpanded(!expanded)}
-            >
-              <Icon name="mouse pointer" />
-              Click here to see the description
-            </span>
-          </Card.Content>
-        )}
       </Card>
-    )
-  }
+    );
+  };
 
-  if (build.description)
-    return (
-      <Popup
-        content={buildDescription}
-        position="bottom center"
-        open={expanded}
-        trigger={<BCard />}
-      />
-    )
+  return <BCard />;
+};
 
-  return <BCard />
-}
-
-export default BuildCard
+export default BuildCard;
