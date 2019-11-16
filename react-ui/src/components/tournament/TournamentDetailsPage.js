@@ -11,6 +11,7 @@ import { modeIcons, mapIcons, wpnSmall } from "../../assets/imageImports"
 import weaponDict from "../../utils/english_internal.json"
 import AbilityIcon from "../common/AbilityIcon"
 import NotFound from "../common/NotFound"
+import useWindowDimensions from "../../hooks/useWindowDimensions"
 
 const rowColor = "#F4F4F4"
 
@@ -49,8 +50,9 @@ const TournamentDetailsPage = () => {
   const location = useLocation()
   const { id } = useParams()
   const { data, error, loading } = useQuery(searchForTournamentById, {
-    variables: { id }
+    variables: { id },
   })
+  const { containerWidth } = useWindowDimensions()
 
   useEffect(() => {
     if (loading || !data || !data.searchForTournamentById) return
@@ -95,7 +97,7 @@ const TournamentDetailsPage = () => {
                   background: resolveBackground(
                     rowIndex,
                     round.winning_team_weapons
-                  )
+                  ),
                 }}
               >
                 <Card.Content>
@@ -125,7 +127,9 @@ const TournamentDetailsPage = () => {
               <Card
                 style={{
                   width: "175px",
-                  background: rowIndex % 2 === 0 ? rowColor : "white"
+                  background: rowIndex % 2 === 0 ? rowColor : "white",
+                  marginRight: containerWidth <= 933 ? "20em" : null,
+                  marginLeft: containerWidth <= 933 ? "20em" : null,
                 }}
               >
                 <Image src={mapIcons[round.stage]} />
@@ -145,7 +149,7 @@ const TournamentDetailsPage = () => {
                   background: resolveBackground(
                     rowIndex,
                     round.losing_team_weapons
-                  )
+                  ),
                 }}
               >
                 <Card.Content>
