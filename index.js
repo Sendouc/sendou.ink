@@ -116,11 +116,14 @@ let sess = {
   resave: false,
   saveUninitialized: false,
   cookie: { maxAge: 14 * 24 * 60 * 60 },
-  store: new MongoStore({ mongooseConnection: mongoose.connection }),
+  store: new MongoStore({
+    mongooseConnection: mongoose.connection,
+    touchAfter: 24 * 3600,
+  }),
 }
 
 if (process.env.NODE_ENV === "production") {
-  sess.cookie.secure = true
+  //sess.cookie.secure = true
   app.set("trust proxy", 1)
 }
 
