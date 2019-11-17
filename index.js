@@ -115,12 +115,11 @@ let sess = {
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 15768000000 },
+  cookie: { maxAge: 14 * 24 * 60 * 60 },
   store: new MongoStore({ mongooseConnection: mongoose.connection }),
 }
 
 if (process.env.NODE_ENV === "production") {
-  app.set("trust proxy", 1)
   sess.cookie.secure = true
 }
 
