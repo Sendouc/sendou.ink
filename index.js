@@ -3,6 +3,7 @@ const { ApolloServer } = require("apollo-server-express")
 const mongoose = require("mongoose")
 const express = require("express")
 const session = require("express-session")
+const MongoStore = require("connect-mongo")(session)
 const cors = require("cors")
 const passport = require("passport")
 const DiscordStrategy = require("passport-discord").Strategy
@@ -24,14 +25,14 @@ passport.use(
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
       callbackURL,
-      scope: ["identify", "connections"]
+      scope: ["identify", "connections"],
     },
     function(accessToken, refreshToken, profile, cb) {
       const userToSave = {
         username: profile.username,
         discriminator: profile.discriminator,
         avatar: profile.avatar,
-        discord_id: profile.id
+        discord_id: profile.id,
       }
       for (var i = 0; i < profile.connections.length; i++) {
         const connection = profile.connections[i]
@@ -72,7 +73,7 @@ mongoose
   .connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     dbName: "production",
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   })
   .then(() => {
     console.log("connected to MongoDB")
@@ -85,7 +86,7 @@ const server = new ApolloServer({
   schema,
   context: ({ req }) => {
     return { user: req.user }
-  }
+  },
 })
 
 const app = express()
@@ -114,7 +115,8 @@ let sess = {
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  cookie: {}
+  cookie: { maxAge: 15768000000 },
+  store: new MongoStore({ mongooseConnection: mongoose.connection }),
 }
 
 if (process.env.NODE_ENV === "production") {
@@ -136,7 +138,7 @@ app.get("/auth/discord", passport.authenticate("discord"))
 app.get(
   "/auth/discord/callback",
   passport.authenticate("discord", {
-    failureRedirect: "/404"
+    failureRedirect: "/404",
   }),
   function(req, res) {
     res.redirect("/u/" + req.user.discord_id) // Successful auth
