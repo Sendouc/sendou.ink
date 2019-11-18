@@ -115,7 +115,7 @@ let sess = {
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 14 * 24 * 60 * 60 },
+  cookie: { maxAge: 1209600000 }, // 2 weeks
   store: new MongoStore({
     mongooseConnection: mongoose.connection,
     touchAfter: 24 * 3600,

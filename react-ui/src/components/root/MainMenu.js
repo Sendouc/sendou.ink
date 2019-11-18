@@ -8,7 +8,7 @@ import sink_logo from "../../assets/sink_logo.png"
 const dropdownStyle = {
   backgroundColor: "#fff",
   border: "1px solid #ddd",
-  boxShadow: "3px 3px 5px rgba(0, 0, 0, 0.2)"
+  boxShadow: "3px 3px 5px rgba(0, 0, 0, 0.2)",
 }
 
 const MainMenu = () => {
@@ -16,7 +16,9 @@ const MainMenu = () => {
   const history = useHistory()
 
   const logInOrAva = () => {
-    if (loading || !data || !data.user || error) {
+    if (loading) return null
+
+    if (!data || !data.user || error) {
       return (
         <Menu.Item href="/auth/discord" position="right">
           <Icon name="discord" size="large" style={{ paddingRight: "0.2em" }} />
@@ -32,14 +34,14 @@ const MainMenu = () => {
         key: "user",
         text: "User Page",
         icon: "user",
-        onClick: () => history.push(`/u/${user.discord_id}`)
+        onClick: () => history.push(`/u/${user.discord_id}`),
       },
       {
         key: "sign-out",
         text: "Sign Out",
         icon: "sign out",
-        onClick: () => window.location.assign("/logout")
-      }
+        onClick: () => window.location.assign("/logout"),
+      },
     ]
 
     const userMenuTrigger = (
