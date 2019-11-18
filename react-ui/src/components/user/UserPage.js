@@ -18,7 +18,7 @@ const UserPage = () => {
   const userLeanQuery = useQuery(userLean)
 
   useEffect(() => {
-    if (loading && data) return
+    if (loading || !data.searchForUser) return
     document.title = `${data.searchForUser.username} - sendou.ink`
   }, [loading, data])
 
