@@ -13,12 +13,12 @@ import Error from "../common/Error"
 const UserPage = () => {
   const { id } = useParams()
   const { data, error, loading } = useQuery(searchForUser, {
-    variables: { discord_id: id }
+    variables: { discord_id: id },
   })
   const userLeanQuery = useQuery(userLean)
 
   useEffect(() => {
-    if (loading) return
+    if (loading && data) return
     document.title = `${data.searchForUser.username} - sendou.ink`
   }, [loading, data])
 
@@ -86,7 +86,7 @@ const UserPage = () => {
         <Tab.Pane>
           <BuildTab user={userLeanQuery.data.user} userViewed={userData} />
         </Tab.Pane>
-      )
+      ),
     },
     {
       menuItem: "X Rank",
@@ -94,8 +94,8 @@ const UserPage = () => {
         <Tab.Pane>
           <PlayerXRankStats twitter={userData.twitter_name} tabMode />
         </Tab.Pane>
-      )
-    }
+      ),
+    },
   ]
 
   return (
