@@ -17,7 +17,7 @@ mongoose.set("useCreateIndex", true)
 const callbackURL =
   process.env.NODE_ENV === "development"
     ? "http://localhost:3001/auth/discord/callback"
-    : "https://www.sendou.ink/auth/discord/callback"
+    : "https://sendou.ink/auth/discord/callback"
 
 passport.use(
   new DiscordStrategy(
@@ -123,7 +123,7 @@ let sess = {
 }
 
 if (process.env.NODE_ENV === "production") {
-  //sess.cookie.secure = true
+  sess.cookie.secure = true
   app.set("trust proxy", 1)
 }
 
