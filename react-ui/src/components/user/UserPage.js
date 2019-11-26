@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import { Tab, Image, List, Grid } from "semantic-ui-react"
 import { Redirect } from "react-router-dom"
 import { useQuery } from "@apollo/react-hooks"
@@ -9,16 +9,20 @@ import PlayerXRankStats from "../xsearch/PlayerXRankStats"
 import BuildTab from "./BuildTab"
 import Loading from "../common/Loading"
 import Error from "../common/Error"
+import { useQueryParam, NumberParam } from "use-query-params"
 
 const UserPage = () => {
   const { id } = useParams()
+  const [tab, setTab] = useQueryParam("tab", NumberParam)
   const { data, error, loading } = useQuery(searchForUser, {
     variables: { discord_id: id },
   })
   const userLeanQuery = useQuery(userLean)
 
+  const [activeIndex, setActiveIndex] = useState(tab ? tab : 0)
+
   useEffect(() => {
-    if (loading || !data.searchForUser) return
+    if (loading || !data || !data.searchForUser) return
     document.title = `${data.searchForUser.username} - sendou.ink`
   }, [loading, data])
 
@@ -32,7 +36,7 @@ const UserPage = () => {
   const userData = data.searchForUser
   if (!userData) return <Redirect to="/404" />
 
-  const twitchDiscord = () => {
+  const twitterDiscord = () => {
     if (userData.twitch_name && userData.twitter_name) {
       return (
         <>
@@ -98,19 +102,27 @@ const UserPage = () => {
     },
   ]
 
+  const handleTabChange = (e, { activeIndex }) => {
+    setActiveIndex(activeIndex)
+    setTab(activeIndex)
+  }
+
   return (
     <>
       <>
         <Grid stackable>
           <Grid.Column width={3}>
-            <Image
-              src={
-                userData.avatar
-                  ? `https://cdn.discordapp.com/avatars/${userData.discord_id}/${userData.avatar}.png`
-                  : "https://cdn.discordapp.com/avatars/455039198672453645/088ae3838cc3b08b73f79aab0fefec2f.png"
-              }
-              rounded
-            />
+            {userData.twitter_name && (
+              <Image
+                src={`https://avatars.io/twitter/${userData.twitter_name}`}
+                rounded
+                onError={error =>
+                  console.error(
+                    `Couldn't fetch avatar image of ${userData.twitter_name}.`
+                  )
+                }
+              />
+            )}
           </Grid.Column>
           <Grid.Column>
             <List>
@@ -118,13 +130,17 @@ const UserPage = () => {
                 <List.Icon name="discord" size="large" />
                 <List.Content>{`${userData.username}#${userData.discriminator}`}</List.Content>
               </List.Item>
-              {twitchDiscord()}
+              {twitterDiscord()}
             </List>
           </Grid.Column>
         </Grid>
       </>
       <div style={{ paddingTop: "1.5em" }}>
-        <Tab panes={panes} />
+        <Tab
+          panes={panes}
+          activeIndex={activeIndex}
+          onTabChange={handleTabChange}
+        />
       </div>
     </>
   )

@@ -48,8 +48,13 @@ const MainMenu = () => {
       <span>
         <span style={{ paddingRight: "5px" }}>{user.username}</span>
         <Image
-          src={`https://cdn.discordapp.com/avatars/${user.discord_id}/${user.avatar}.png`}
+          src={`https://avatars.io/twitter/${user.twitter_name}`}
           avatar
+          onError={error =>
+            console.error(
+              `Couldn't fetch avatar image of ${user.twitter_name}.`
+            )
+          }
         />{" "}
       </span>
     )

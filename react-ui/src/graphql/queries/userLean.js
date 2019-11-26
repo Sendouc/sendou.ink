@@ -1,11 +1,12 @@
-import { gql } from 'apollo-boost'
+import { gql } from "apollo-boost"
 
 export const userLean = gql`
-{
-  user {
-    username
-    avatar
-    discord_id
+  {
+    user {
+      id
+      username
+      twitter_name
+      discord_id
+    }
   }
-}
 `

@@ -31,7 +31,6 @@ passport.use(
       const userToSave = {
         username: profile.username,
         discriminator: profile.discriminator,
-        avatar: profile.avatar,
         discord_id: profile.id,
       }
       for (var i = 0; i < profile.connections.length; i++) {
@@ -62,6 +61,7 @@ passport.serializeUser(function(user, done) {
 })
 
 passport.deserializeUser(function(discord_id, done) {
+  console.log("de")
   User.findOne({ discord_id }, function(err, user) {
     done(err, user)
   })
@@ -85,6 +85,20 @@ mongoose
 const server = new ApolloServer({
   schema,
   context: ({ req }) => {
+    if (process.env.NODE_ENV === "development") {
+      return {
+        user: {
+          _id: "5cee8f73d1120d4315c55011",
+          discord_id: "79237403620945920",
+          __v: 0,
+          avatar: "2e292c1b5d1366c24a9e4b6c1cffc700",
+          discriminator: "0043",
+          twitch_name: "sendou",
+          twitter_name: "sendouc",
+          username: "Sendou",
+        },
+      }
+    }
     return { user: req.user }
   },
 })
