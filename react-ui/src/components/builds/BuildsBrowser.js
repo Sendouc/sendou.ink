@@ -48,7 +48,7 @@ const BuildsBrowser = () => {
           prevItem={{ content: <Icon name="angle left" />, icon: true }}
           nextItem={{ content: <Icon name="angle right" />, icon: true }}
         />
-        <Card.Group style={{ marginTop: "1em" }}>
+        <Card.Group style={{ marginTop: "1em" }} centered>
           {data.searchForBuildsByWeapon.builds.map(build => {
             return (
               <BuildCard key={build.id} build={build} showWeapon={!weapon} />

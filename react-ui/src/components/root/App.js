@@ -8,18 +8,18 @@ const App = () => {
   return (
     <div style={{ paddingTop: "0.3em" }}>
       <MainMenu />
-      <div
-        style={{
-          background: "white",
-          padding: "1.5em",
-          margin: "0.5em 2em 0.5em 2em",
-          borderRadius: "7px"
-        }}
-      >
-        <Container>
+      <Container>
+        <div
+          style={{
+            background: "white",
+            padding: "2% 5%",
+            margin: "0 -2em 0 -2em",
+            borderRadius: "7px",
+          }}
+        >
           <Routes />
-        </Container>
-      </div>
+        </div>
+      </Container>
       <Footer />
     </div>
   )

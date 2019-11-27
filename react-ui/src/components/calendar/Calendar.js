@@ -11,7 +11,8 @@ const PageCalendar = () => {
 
   const iFrameHTML = `<iframe title="calendar" src="https://calendar.google.com/calendar/embed?height=600&amp;wkst=2&amp;bgcolor=%23ffffff&amp;src=NDNnYnJlamkxbnQyZTY1dWJuZzdvYWkxZGtAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&amp;color=%23E67C73&amp;showTitle=0&amp;showNav=1&amp;showDate=1&amp;showPrint=0&amp;showCalendars=0&amp;ctz=${jstz
     .determine()
-    .name()}" style=border-width: 0 width=${containerWidth} height="1000" frameBorder="0" scrolling="no"></iframe>`
+    .name()}" style=border-width: 0 width=${containerWidth *
+    0.95} height="1000" frameBorder="0" scrolling="no"></iframe>`
 
   //This is a weird solution but I couldn't get it working just setting the iframe src from a variable
   useEffect(() => {
@@ -59,7 +60,7 @@ const PageCalendar = () => {
           </Segment>
         )}
       </div>
-      <div style={{ paddingTop: "15px" }} ref={calenderDiv}></div>
+      <div style={{ paddingTop: "10px" }} ref={calenderDiv}></div>
       If an event is missing you can contact{" "}
       <a href="https://twitter.com/Kbot_273">Kbot</a> about it.
       <br />

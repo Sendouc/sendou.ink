@@ -13,7 +13,7 @@ import Error from "../common/Error"
 
 const BuildTab = ({ user, userViewed }) => {
   const { data, error, loading } = useQuery(searchForBuilds, {
-    variables: { discord_id: userViewed.discord_id }
+    variables: { discord_id: userViewed.discord_id },
   })
   const [errorMsg, setErrorMsg] = useState(null)
   const [successMsg, setSuccessMsg] = useState(null)
@@ -32,9 +32,9 @@ const BuildTab = ({ user, userViewed }) => {
     refetchQueries: [
       {
         query: searchForBuilds,
-        variables: { discord_id: userViewed.discord_id }
-      }
-    ]
+        variables: { discord_id: userViewed.discord_id },
+      },
+    ],
   })
 
   const [deleteBuildMutation] = useMutation(deleteBuild, {
@@ -42,9 +42,9 @@ const BuildTab = ({ user, userViewed }) => {
     refetchQueries: [
       {
         query: searchForBuilds,
-        variables: { discord_id: userViewed.discord_id }
-      }
-    ]
+        variables: { discord_id: userViewed.discord_id },
+      },
+    ],
   })
 
   const [editBuildMutation] = useMutation(updateBuild, {
@@ -52,14 +52,14 @@ const BuildTab = ({ user, userViewed }) => {
     refetchQueries: [
       {
         query: searchForBuilds,
-        variables: { discord_id: userViewed.discord_id }
-      }
-    ]
+        variables: { discord_id: userViewed.discord_id },
+      },
+    ],
   })
 
   const deleteBuildById = async ({ id, title, weapon }) => {
     await deleteBuildMutation({
-      variables: { id }
+      variables: { id },
     })
 
     const buildTitle = title ? title : `${weapon} build`
@@ -73,7 +73,7 @@ const BuildTab = ({ user, userViewed }) => {
 
   const editBuildById = async build => {
     await editBuildMutation({
-      variables: { ...build }
+      variables: { ...build },
     })
 
     setSuccessMsg("Build successfully edited")

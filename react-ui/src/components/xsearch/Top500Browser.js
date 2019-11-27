@@ -13,7 +13,7 @@ import {
   Image,
   Header,
   Pagination,
-  Icon
+  Icon,
 } from "semantic-ui-react"
 import WpnImage from "../common/WpnImage"
 import { modeIcons } from "../../assets/imageImports"
@@ -28,7 +28,7 @@ const Top500Browser = ({ setMenuSelection }) => {
     mode: NumberParam,
     unique_id: StringParam,
     month: NumberParam,
-    year: NumberParam
+    year: NumberParam,
   })
   const [forms, setForms] = useState({
     page: 1,
@@ -37,11 +37,11 @@ const Top500Browser = ({ setMenuSelection }) => {
     mode: 0,
     unique_id: "",
     month: "",
-    year: ""
+    year: "",
   })
 
   const { data, error, loading } = useQuery(searchForPlacements, {
-    variables: query
+    variables: query,
   })
 
   const handleClear = () => {
@@ -52,7 +52,7 @@ const Top500Browser = ({ setMenuSelection }) => {
       mode: 0,
       unique_id: "",
       month: "",
-      year: ""
+      year: "",
     })
   }
 
