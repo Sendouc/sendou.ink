@@ -80,7 +80,6 @@ const UserPage = () => {
     setTab(activeIndex)
   }
 
-  console.log("userLeanQuery", userLeanQuery)
   return (
     <>
       <>

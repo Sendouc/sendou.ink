@@ -64,19 +64,6 @@ const BuildCard = ({
               />
             )}{" "}
             {buildTitle}
-            {build.description && showDescription && (
-              <Popup
-                content={buildDescription}
-                trigger={
-                  <Icon
-                    style={{ marginLeft: "0.25em" }}
-                    name="info circle"
-                    color="teal"
-                    size="large"
-                  />
-                }
-              />
-            )}
           </Card.Header>
           {build.discord_user && (
             <Card.Meta>
@@ -88,6 +75,19 @@ const BuildCard = ({
           {build.updatedAt && (
             <Card.Meta>
               {new Date(parseInt(build.updatedAt)).toLocaleString()}
+              {build.description && showDescription && (
+                <Popup
+                  content={buildDescription}
+                  trigger={
+                    <Icon
+                      style={{ marginLeft: "0.25em" }}
+                      name="info circle"
+                      color="teal"
+                      size="large"
+                    />
+                  }
+                />
+              )}
             </Card.Meta>
           )}
           <div style={{ marginTop: "1em" }}>
