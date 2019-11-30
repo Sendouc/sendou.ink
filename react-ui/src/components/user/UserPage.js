@@ -27,7 +27,6 @@ const UserPage = () => {
   const [errorMsg, setErrorMsg] = useState(null)
 
   const handleError = error => {
-    console.error(error)
     setErrorMsg(error.message)
     setTimeout(() => {
       setErrorMsg(null)
@@ -81,6 +80,7 @@ const UserPage = () => {
     setTab(activeIndex)
   }
 
+  console.log("userLeanQuery", userLeanQuery)
   return (
     <>
       <>
@@ -100,11 +100,13 @@ const UserPage = () => {
           </Grid.Column>
           <ProfileLists user={userData} />
           <Grid.Column>
-            {!showSettings && userData.id === userLeanQuery.data.user.id && (
-              <Button onClick={() => setShowSettings(!showSettings)}>
-                Profile settings
-              </Button>
-            )}
+            {!showSettings &&
+              userLeanQuery.data.user &&
+              userData.id === userLeanQuery.data.user.id && (
+                <Button onClick={() => setShowSettings(!showSettings)}>
+                  Profile settings
+                </Button>
+              )}
           </Grid.Column>
         </Grid>
         {successMsg && <Message positive>{successMsg}</Message>}

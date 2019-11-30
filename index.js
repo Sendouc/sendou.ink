@@ -61,7 +61,6 @@ passport.serializeUser(function(user, done) {
 })
 
 passport.deserializeUser(function(discord_id, done) {
-  console.log("de")
   User.findOne({ discord_id }, function(err, user) {
     done(err, user)
   })
