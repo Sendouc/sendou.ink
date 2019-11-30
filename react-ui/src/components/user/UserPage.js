@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { Tab, Image, List, Grid } from "semantic-ui-react"
+import { Tab, Image, Grid, Button, Message } from "semantic-ui-react"
 import { Redirect } from "react-router-dom"
 import { useQuery } from "@apollo/react-hooks"
 import { useParams } from "react-router-dom"
@@ -10,6 +10,8 @@ import BuildTab from "./BuildTab"
 import Loading from "../common/Loading"
 import Error from "../common/Error"
 import { useQueryParam, NumberParam } from "use-query-params"
+import Settings from "./Settings"
+import ProfileLists from "./ProfileLists"
 
 const UserPage = () => {
   const { id } = useParams()
@@ -20,6 +22,25 @@ const UserPage = () => {
   const userLeanQuery = useQuery(userLean)
 
   const [activeIndex, setActiveIndex] = useState(tab ? tab : 0)
+  const [showSettings, setShowSettings] = useState(false)
+  const [successMsg, setSuccessMsg] = useState(null)
+  const [errorMsg, setErrorMsg] = useState(null)
+
+  const handleError = error => {
+    console.error(error)
+    setErrorMsg(error.message)
+    setTimeout(() => {
+      setErrorMsg(null)
+    }, 10000)
+  }
+
+  const handleSuccess = () => {
+    setShowSettings(false)
+    setSuccessMsg("Profile successfully updated!")
+    setTimeout(() => {
+      setSuccessMsg(null)
+    }, 10000)
+  }
 
   useEffect(() => {
     if (loading || !data || !data.searchForUser) return
@@ -35,53 +56,6 @@ const UserPage = () => {
 
   const userData = data.searchForUser
   if (!userData) return <Redirect to="/404" />
-
-  const twitterDiscord = () => {
-    if (userData.twitch_name && userData.twitter_name) {
-      return (
-        <>
-          <List.Item>
-            <List.Icon name="twitter" size="large" />
-            <List.Content>
-              <a href={`https://twitter.com/${userData.twitter_name}`}>
-                {userData.twitter_name}
-              </a>
-            </List.Content>
-          </List.Item>
-          <List.Item>
-            <List.Icon name="twitch" size="large" />
-            <List.Content>
-              <a href={`https://www.twitch.tv/${userData.twitch_name}`}>
-                {userData.twitch_name}
-              </a>
-            </List.Content>
-          </List.Item>
-        </>
-      )
-    } else if (userData.twitch_name) {
-      return (
-        <List.Item>
-          <List.Icon name="twitch" size="large" />
-          <List.Content>
-            <a href={`https://www.twitch.tv/${userData.twitch_name}`}>
-              {userData.twitch_name}
-            </a>
-          </List.Content>
-        </List.Item>
-      )
-    } else if (userData.twitter_name) {
-      return (
-        <List.Item>
-          <List.Icon name="twitter" size="large" />
-          <List.Content>
-            <a href={`https://twitter.com/${userData.twitter_name}`}>
-              {userData.twitter_name}
-            </a>
-          </List.Content>
-        </List.Item>
-      )
-    }
-  }
 
   const panes = [
     {
@@ -110,7 +84,7 @@ const UserPage = () => {
   return (
     <>
       <>
-        <Grid stackable>
+        <Grid stackable columns={4}>
           <Grid.Column width={3}>
             {userData.twitter_name && (
               <Image
@@ -124,23 +98,43 @@ const UserPage = () => {
               />
             )}
           </Grid.Column>
+          <ProfileLists user={userData} />
           <Grid.Column>
-            <List>
-              <List.Item>
-                <List.Icon name="discord" size="large" />
-                <List.Content>{`${userData.username}#${userData.discriminator}`}</List.Content>
-              </List.Item>
-              {twitterDiscord()}
-            </List>
+            {!showSettings && userData.id === userLeanQuery.data.user.id && (
+              <Button onClick={() => setShowSettings(!showSettings)}>
+                Profile settings
+              </Button>
+            )}
           </Grid.Column>
         </Grid>
+        {successMsg && <Message positive>{successMsg}</Message>}
+        {errorMsg && <Message negative>{errorMsg}</Message>}
       </>
       <div style={{ paddingTop: "1.5em" }}>
-        <Tab
-          panes={panes}
-          activeIndex={activeIndex}
-          onTabChange={handleTabChange}
-        />
+        {showSettings ? (
+          <Settings
+            user={{
+              country: "",
+              motion_sens:
+                userData.sens && userData.sens.motion
+                  ? userData.sens.motion
+                  : "",
+              stick_sens:
+                userData.sens && userData.sens.stick ? userData.sens.stick : "",
+              weapons: [],
+              ...userData,
+            }}
+            closeSettings={() => setShowSettings(false)}
+            handleSuccess={() => handleSuccess()}
+            handleError={() => handleError()}
+          />
+        ) : (
+          <Tab
+            panes={panes}
+            activeIndex={activeIndex}
+            onTabChange={handleTabChange}
+          />
+        )}
       </div>
     </>
   )

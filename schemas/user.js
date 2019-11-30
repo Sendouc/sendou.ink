@@ -14,8 +14,8 @@ const typeDef = gql`
   extend type Mutation {
     updateUser(
       country: String
-      stick_sens: Float
       motion_sens: Float
+      stick_sens: Float
       weapons: [String]
     ): Boolean
   }
@@ -78,22 +78,13 @@ const resolvers = {
       if (args.country)
         if (
           countries
-            .map(countryObj => countryObj.Code)
-            .indexOf(args.country.toUpperCase() === -1)
+            .map(countryObj => countryObj.code)
+            .includes(args.country === -1)
         ) {
           throw new UserInputError("Invalid country ID", {
             invalidArgs: args,
           })
         }
-
-      if (args.motion_sens) {
-        const number = Math.floor(args.motion_sens * 10)
-        if (number < -50 || number > 50 || number % 5 != 0) {
-          throw new UserInputError("Invalid motion sensitivity", {
-            invalidArgs: args,
-          })
-        }
-      }
 
       if (args.stick_sens) {
         const number = Math.floor(args.stick_sens * 10)
@@ -102,6 +93,28 @@ const resolvers = {
             invalidArgs: args,
           })
         }
+
+        args.sens = {}
+        args.sens.stick = args.stick_sens
+        delete args.stick_sens
+      }
+
+      if (args.motion_sens) {
+        const number = Math.floor(args.motion_sens * 10)
+        if (number < -50 || number > 50 || number % 5 != 0) {
+          throw new UserInputError("Invalid motion sensitivity", {
+            invalidArgs: args,
+          })
+        }
+
+        if (!args.sens) {
+          throw new UserInputError("Motion sens input without stick sens", {
+            invalidArgs: args,
+          })
+        }
+
+        args.sens.motion = args.motion_sens
+        delete args.motion_sens
       }
 
       if (args.weapons) {
@@ -110,18 +123,21 @@ const resolvers = {
             invalidArgs: args,
           })
         }
+
+        if (args.weapons.length > 5) {
+          throw new UserInputError("Weapon pool too big", {
+            invalidArgs: args,
+          })
+        }
       }
 
-      const user = await User.findById(args.id)
+      const user = await User.findById(ctx.user._id)
       if (!user)
         throw new UserInputError("No user found with the id", {
           invalidArgs: args,
         })
 
-      if (ctx.user.discord_id !== user.discord_id)
-        throw new AuthenticationError("No privileges to edit the user")
-
-      await User.findByIdAndUpdate(build._id, { ...user, ...args }).catch(e => {
+      await User.findByIdAndUpdate(ctx.user._id, { ...args }).catch(e => {
         throw new UserInputError(error.message, {
           invalidArgs: args,
         })

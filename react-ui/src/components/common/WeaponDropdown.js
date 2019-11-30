@@ -10,7 +10,8 @@ const WeaponDropdown = ({
   onChange,
   multiple = false,
   showImages = true,
-  nonMultiplePlaceholder = "Choose a weapon"
+  nonMultiplePlaceholder = "Choose a weapon",
+  style = {},
 }) => {
   return (
     <Dropdown
@@ -21,16 +22,16 @@ const WeaponDropdown = ({
       multiple={multiple}
       onChange={onChange}
       value={value}
-      style={{ width: "270px" }}
+      style={{ width: "270px", ...style }}
       options={weapons.map(w => ({
         key: w,
         text: w,
         value: w,
         image: showImages
           ? {
-              src: wpnSmall[weaponDict[w]]
+              src: wpnSmall[weaponDict[w]],
             }
-          : null
+          : null,
       }))}
     />
   )

@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
   twitter_name: String,
   country: String,
   sens: {
-    sticks: { type: Number, min: -5, max: 5 },
+    stick: { type: Number, min: -5, max: 5 },
     motion: { type: Number, min: -5, max: 5 },
   },
   weapons: [String],

@@ -76,7 +76,7 @@ const BuildTab = ({ user, userViewed }) => {
       variables: { ...build },
     })
 
-    setSuccessMsg("Build successfully edited")
+    setSuccessMsg("Build successfully updated!")
     window.scrollTo(0, 0)
     setTimeout(() => {
       setSuccessMsg(null)

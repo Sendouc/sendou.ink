@@ -11,7 +11,7 @@ const AddBuildForm = ({
   setSuccessMsg,
   existingBuild,
   setShowEdit,
-  editBuildFunction
+  editBuildFunction,
 }) => {
   const scrollRef = useRef(null)
   const [weapon, setWeapon] = useState(
@@ -28,9 +28,13 @@ const AddBuildForm = ({
       ? [
           [...existingBuild.headgear],
           [...existingBuild.clothing],
-          [...existingBuild.shoes]
+          [...existingBuild.shoes],
         ]
-      : [["", "", "", ""], ["", "", "", ""], ["", "", "", ""]]
+      : [
+          ["", "", "", ""],
+          ["", "", "", ""],
+          ["", "", "", ""],
+        ]
   )
   const [headgearItem, setHeadgear] = useState(
     existingBuild && existingBuild.headgearItem
@@ -56,7 +60,7 @@ const AddBuildForm = ({
     shoes: abilities[2],
     headgearItem,
     clothingItem,
-    shoesItem
+    shoesItem,
   }
 
   const submit = async e => {
@@ -70,17 +74,21 @@ const AddBuildForm = ({
     if (buildToAdd.shoesItem === "") delete buildToAdd.shoesItem
 
     await addBuild({
-      variables: { ...buildToAdd }
+      variables: { ...buildToAdd },
     })
 
     setWeapon("")
     setTitle("")
     setDescription("")
-    setAbilities([["", "", "", ""], ["", "", "", ""], ["", "", "", ""]])
+    setAbilities([
+      ["", "", "", ""],
+      ["", "", "", ""],
+      ["", "", "", ""],
+    ])
     setHeadgear("")
     setClothing("")
     setShoes("")
-    setSuccessMsg("New build succesfully added!")
+    setSuccessMsg("New build successfully added!")
     setTimeout(() => {
       setSuccessMsg(null)
     }, 10000)

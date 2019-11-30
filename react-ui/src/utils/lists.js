@@ -1,10 +1,252 @@
+export const countries = [
+  { code: "af", name: "Afghanistan" },
+  { code: "ax", name: "Åland Islands" },
+  { code: "al", name: "Albania" },
+  { code: "dz", name: "Algeria" },
+  { code: "as", name: "American Samoa" },
+  { code: "ad", name: "Andorra" },
+  { code: "ao", name: "Angola" },
+  { code: "ai", name: "Anguilla" },
+  { code: "ag", name: "Antigua and Barbuda" },
+  { code: "ar", name: "Argentina" },
+  { code: "am", name: "Armenia" },
+  { code: "aw", name: "Aruba" },
+  { code: "au", name: "Australia" },
+  { code: "at", name: "Austria" },
+  { code: "az", name: "Azerbaijan" },
+  { code: "bs", name: "Bahamas" },
+  { code: "bh", name: "Bahrain" },
+  { code: "bd", name: "Bangladesh" },
+  { code: "bb", name: "Barbados" },
+  { code: "by", name: "Belarus" },
+  { code: "be", name: "Belgium" },
+  { code: "bz", name: "Belize" },
+  { code: "bj", name: "Benin" },
+  { code: "bm", name: "Bermuda" },
+  { code: "bt", name: "Bhutan" },
+  { code: "bo", name: "Bolivia, Plurinational State of" },
+  { code: "ba", name: "Bosnia and Herzegovina" },
+  { code: "bw", name: "Botswana" },
+  { code: "bv", name: "Bouvet Island" },
+  { code: "br", name: "Brazil" },
+  { code: "io", name: "BritishIndian Ocean Territory" },
+  { code: "bn", name: "Brunei Darussalam" },
+  { code: "bg", name: "Bulgaria" },
+  { code: "bf", name: "Burkina Faso" },
+  { code: "bi", name: "Burundi" },
+  { code: "kh", name: "Cambodia" },
+  { code: "cm", name: "Cameroon" },
+  { code: "ca", name: "Canada" },
+  { code: "cv", name: "Cape Verde" },
+  { code: "ky", name: "Cayman Islands" },
+  { code: "cf", name: "Central African Republic" },
+  { code: "td", name: "Chad" },
+  { code: "cl", name: "Chile" },
+  { code: "cn", name: "China" },
+  { code: "cx", name: "Christmas Island" },
+  { code: "cc", name: "Cocos (Keeling) Islands" },
+  { code: "co", name: "Colombia" },
+  { code: "km", name: "Comoros" },
+  { code: "cg", name: "Congo" },
+  { code: "cd", name: "Congo, the Democratic Republic of the" },
+  { code: "ck", name: "Cook Islands" },
+  { code: "cr", name: "Costa Rica" },
+  { code: "ci", name: "Côte d'Ivoire" },
+  { code: "hr", name: "Croatia" },
+  { code: "cu", name: "Cuba" },
+  { code: "cy", name: "Cyprus" },
+  { code: "cz", name: "Czech Republic" },
+  { code: "dk", name: "Denmark" },
+  { code: "dj", name: "Djibouti" },
+  { code: "dm", name: "Dominica" },
+  { code: "do", name: "Dominican Republic" },
+  { code: "ec", name: "Ecuador" },
+  { code: "eg", name: "Egypt" },
+  { code: "sv", name: "El Salvador" },
+  { code: "gq", name: "Equatorial Guinea" },
+  { code: "er", name: "Eritrea" },
+  { code: "ee", name: "Estonia" },
+  { code: "et", name: "Ethiopia" },
+  { code: "fk", name: "Falkland Islands (Malvinas)" },
+  { code: "fo", name: "FaroeIslands" },
+  { code: "fj", name: "Fiji" },
+  { code: "fi", name: "Finland" },
+  { code: "fr", name: "France" },
+  { code: "gf", name: "French Guiana" },
+  { code: "pf", name: "French Polynesia" },
+  { code: "tf", name: "French Southern Territories" },
+  { code: "ga", name: "Gabon" },
+  { code: "gm", name: "Gambia" },
+  { code: "ge", name: "Georgia" },
+  { code: "de", name: "Germany" },
+  { code: "gh", name: "Ghana" },
+  { code: "gi", name: "Gibraltar" },
+  { code: "gr", name: "Greece" },
+  { code: "gl", name: "Greenland" },
+  { code: "gd", name: "Grenada" },
+  { code: "gp", name: "Guadeloupe" },
+  { code: "gu", name: "Guam" },
+  { code: "gt", name: "Guatemala" },
+  { code: "gn", name: "Guinea" },
+  { code: "gw", name: "Guinea-Bissau" },
+  { code: "gy", name: "Guyana" },
+  { code: "ht", name: "Haiti" },
+  { code: "hm", name: "Heard Island and McDonald Islands" },
+  { code: "va", name: "Holy See (Vatican City State)" },
+  { code: "hn", name: "Honduras" },
+  { code: "hk", name: "Hong Kong" },
+  { code: "hu", name: "Hungary" },
+  { code: "is", name: "Iceland" },
+  { code: "in", name: "India" },
+  { code: "id", name: "Indonesia" },
+  { code: "ir", name: "Iran, Islamic Republic of" },
+  { code: "iq", name: "Iraq" },
+  { code: "ie", name: "Ireland" },
+  { code: "il", name: "Israel" },
+  { code: "it", name: "Italy" },
+  { code: "jm", name: "Jamaica" },
+  { code: "jp", name: "Japan" },
+  { code: "jo", name: "Jordan" },
+  { code: "kz", name: "Kazakhstan" },
+  { code: "ke", name: "Kenya" },
+  { code: "ki", name: "Kiribati" },
+  { code: "kp", name: "Korea, Democratic People'sRepublic of" },
+  { code: "kr", name: "Korea, Republic of" },
+  { code: "kw", name: "Kuwait" },
+  { code: "kg", name: "Kyrgyzstan" },
+  { code: "la", name: "Lao People's Democratic Republic" },
+  { code: "lv", name: "Latvia" },
+  { code: "lb", name: "Lebanon" },
+  { code: "ls", name: "Lesotho" },
+  { code: "lr", name: "Liberia" },
+  { code: "ly", name: "Libya" },
+  { code: "li", name: "Liechtenstein" },
+  { code: "lt", name: "Lithuania" },
+  { code: "lu", name: "Luxembourg" },
+  { code: "mo", name: "Macao" },
+  { code: "mk", name: "Macedonia, the Former Yugoslav Republic of" },
+  { code: "mg", name: "Madagascar" },
+  { code: "mw", name: "Malawi" },
+  { code: "my", name: "Malaysia" },
+  { code: "mv", name: "Maldives" },
+  { code: "ml", name: "Mali" },
+  { code: "mt", name: "Malta" },
+  { code: "mh", name: "Marshall Islands" },
+  { code: "mq", name: "Martinique" },
+  { code: "mr", name: "Mauritania" },
+  { code: "mu", name: "Mauritius" },
+  { code: "yt", name: "Mayotte" },
+  { code: "mx", name: "Mexico" },
+  { code: "fm", name: "Micronesia, Federated States of" },
+  { code: "md", name: "Moldova, Republic of" },
+  { code: "mc", name: "Monaco" },
+  { code: "mn", name: "Mongolia" },
+  { code: "me", name: "Montenegro" },
+  { code: "ms", name: "Montserrat" },
+  { code: "ma", name: "Morocco" },
+  { code: "mz", name: "Mozambique" },
+  { code: "mm", name: "Myanmar" },
+  { code: "na", name: "Namibia" },
+  { code: "nr", name: "Nauru" },
+  { code: "np", name: "Nepal" },
+  { code: "nl", name: "Netherlands" },
+  { code: "nc", name: "New Caledonia" },
+  { code: "nz", name: "New Zealand" },
+  { code: "ni", name: "Nicaragua" },
+  { code: "ne", name: "Niger" },
+  { code: "ng", name: "Nigeria" },
+  { code: "nu", name: "Niue" },
+  { code: "nf", name: "Norfolk Island" },
+  { code: "mp", name: "Northern Mariana Islands" },
+  { code: "no", name: "Norway" },
+  { code: "om", name: "Oman" },
+  { code: "pk", name: "Pakistan" },
+  { code: "pw", name: "Palau" },
+  { code: "ps", name: "Palestine, State of" },
+  { code: "pa", name: "Panama" },
+  { code: "pg", name: "Papua New Guinea" },
+  { code: "py", name: "Paraguay" },
+  { code: "pe", name: "Peru" },
+  { code: "ph", name: "Philippines" },
+  { code: "pn", name: "Pitcairn" },
+  { code: "pl", name: "Poland" },
+  { code: "pt", name: "Portugal" },
+  { code: "pr", name: "Puerto Rico" },
+  { code: "qa", name: "Qatar" },
+  { code: "re", name: "Réunion" },
+  { code: "ro", name: "Romania" },
+  { code: "ru", name: "Russian Federation" },
+  { code: "rw", name: "Rwanda" },
+  { code: "sh", name: "Saint Helena, Ascension and Tristan da Cunha" },
+  { code: "kn", name: "Saint Kitts and Nevis" },
+  { code: "lc", name: "Saint Lucia" },
+  { code: "pm", name: "Saint Pierre and Miquelon" },
+  { code: "vc", name: "Saint Vincent and the Grenadines" },
+  { code: "ws", name: "Samoa" },
+  { code: "sm", name: "San Marino" },
+  { code: "st", name: "Sao Tome and Principe" },
+  { code: "sa", name: "Saudi Arabia" },
+  { code: "sn", name: "Senegal" },
+  { code: "rs", name: "Serbia" },
+  { code: "sc", name: "Seychelles" },
+  { code: "sl", name: "Sierra Leone" },
+  { code: "sg", name: "Singapore" },
+  { code: "sk", name: "Slovakia" },
+  { code: "si", name: "Slovenia" },
+  { code: "sb", name: "Solomon Islands" },
+  { code: "so", name: "Somalia" },
+  { code: "za", name: "South Africa" },
+  { code: "gs", name: "South Georgia and the South Sandwich Islands" },
+  { code: "es", name: "Spain" },
+  { code: "lk", name: "Sri Lanka" },
+  { code: "sd", name: "Sudan" },
+  { code: "sr", name: "Suriname" },
+  { code: "sj", name: "Svalbard and Jan Mayen" },
+  { code: "sz", name: "Swaziland" },
+  { code: "se", name: "Sweden" },
+  { code: "ch", name: "Switzerland" },
+  { code: "sy", name: "Syrian Arab Republic" },
+  { code: "tw", name: "Taiwan, Province of China" },
+  { code: "tj", name: "Tajikistan" },
+  { code: "tz", name: "Tanzania, United Republic of" },
+  { code: "th", name: "Thailand" },
+  { code: "tl", name: "Timor-Leste" },
+  { code: "tg", name: "Togo" },
+  { code: "tk", name: "Tokelau" },
+  { code: "to", name: "Tonga" },
+  { code: "tt", name: "Trinidad and Tobago" },
+  { code: "tn", name: "Tunisia" },
+  { code: "tr", name: "Turkey" },
+  { code: "tm", name: "Turkmenistan" },
+  { code: "tc", name: "Turks and Caicos Islands" },
+  { code: "tv", name: "Tuvalu" },
+  { code: "ug", name: "Uganda" },
+  { code: "ua", name: "Ukraine" },
+  { code: "ae", name: "United Arab Emirates" },
+  { code: "gb", name: "United Kingdom" },
+  { code: "us", name: "United States" },
+  { code: "um", name: "United States Minor Outlying Islands" },
+  { code: "uy", name: "Uruguay" },
+  { code: "uz", name: "Uzbekistan" },
+  { code: "vu", name: "Vanuatu" },
+  { code: "ve", name: "Venezuela, Bolivarian Republic of" },
+  { code: "vn", name: "Viet Nam" },
+  { code: "vg", name: "Virgin Islands, British" },
+  { code: "vi", name: "Virgin Islands, U.S." },
+  { code: "wf", name: "Wallis and Futuna" },
+  { code: "eh", name: "Western Sahara" },
+  { code: "ye", name: "Yemen" },
+  { code: "zm", name: "Zambia" },
+  { code: "zw", name: "Zimbabwe" },
+]
+
 export const modes = [
   "",
   "Splat Zones",
   "Tower Control",
   "Rainmaker",
-  "Clam Blitz"
-];
+  "Clam Blitz",
+]
 
 export const months = [
   "",
@@ -19,8 +261,8 @@ export const months = [
   "September",
   "October",
   "November",
-  "December"
-];
+  "December",
+]
 
 export const weapons = [
   "Sploosh-o-matic",
@@ -151,8 +393,8 @@ export const weapons = [
   "Tenta Camo Brella",
   "Undercover Brella",
   "Undercover Sorella Brella",
-  "Kensa Undercover Brella"
-];
+  "Kensa Undercover Brella",
+]
 
 export const shooters = [
   "Sploosh-o-matic",
@@ -181,8 +423,8 @@ export const shooters = [
   ".96 Gal",
   ".96 Gal Deco",
   "Jet Squelcher",
-  "Custom Jet Squelcher"
-];
+  "Custom Jet Squelcher",
+]
 
 export const semiauto = [
   "L-3 Nozzlenose",
@@ -192,8 +434,8 @@ export const semiauto = [
   "H-3 Nozzlenose D",
   "Cherry H-3 Nozzlenose",
   "Squeezer",
-  "Foil Squeezer"
-];
+  "Foil Squeezer",
+]
 
 export const blasters = [
   "Luna Blaster",
@@ -210,8 +452,8 @@ export const blasters = [
   "Rapid Blaster Pro",
   "Rapid Blaster Pro Deco",
   "Clash Blaster",
-  "Clash Blaster Neo"
-];
+  "Clash Blaster Neo",
+]
 
 export const rollers = [
   "Carbon Roller",
@@ -223,8 +465,8 @@ export const rollers = [
   "Gold Dynamo Roller",
   "Kensa Dynamo Roller",
   "Flingza Roller",
-  "Foil Flingza Roller"
-];
+  "Foil Flingza Roller",
+]
 
 export const brushes = [
   "Inkbrush",
@@ -232,8 +474,8 @@ export const brushes = [
   "Permanent Inkbrush",
   "Octobrush",
   "Octobrush Nouveau",
-  "Kensa Octobrush"
-];
+  "Kensa Octobrush",
+]
 
 export const chargers = [
   "Classic Squiffer",
@@ -253,8 +495,8 @@ export const chargers = [
   "Bamboozler 14 Mk II",
   "Bamboozler 14 Mk III",
   "Goo Tuber",
-  "Custom Goo Tuber"
-];
+  "Custom Goo Tuber",
+]
 
 export const sloshers = [
   "Slosher",
@@ -268,8 +510,8 @@ export const sloshers = [
   "Bloblobber",
   "Bloblobber Deco",
   "Explosher",
-  "Custom Explosher"
-];
+  "Custom Explosher",
+]
 
 export const splatlings = [
   "Mini Splatling",
@@ -283,8 +525,8 @@ export const splatlings = [
   "Ballpoint Splatling",
   "Ballpoint Splatling Nouveau",
   "Nautilus 47",
-  "Nautilus 79"
-];
+  "Nautilus 79",
+]
 
 export const dualies = [
   "Dapple Dualies",
@@ -299,8 +541,8 @@ export const dualies = [
   "Dualie Squelchers",
   "Custom Dualie Squelchers",
   "Dark Tetra Dualies",
-  "Light Tetra Dualies"
-];
+  "Light Tetra Dualies",
+]
 
 export const brellas = [
   "Splat Brella",
@@ -310,8 +552,8 @@ export const brellas = [
   "Tenta Camo Brella",
   "Undercover Brella",
   "Undercover Sorella Brella",
-  "Kensa Undercover Brella"
-];
+  "Kensa Undercover Brella",
+]
 
 export const weaponsByCategory = {
   Shooters: shooters,
@@ -323,8 +565,8 @@ export const weaponsByCategory = {
   Sloshers: sloshers,
   Splatlings: splatlings,
   Dualies: dualies,
-  Brellas: brellas
-};
+  Brellas: brellas,
+}
 
 export const categoryKeys = [
   "Shooters",
@@ -336,8 +578,8 @@ export const categoryKeys = [
   "Sloshers",
   "Splatlings",
   "Dualies",
-  "Brellas"
-];
+  "Brellas",
+]
 
 export const gearEnglish = [
   {
@@ -353,7 +595,7 @@ export const gearEnglish = [
       "School Cardigan",
       "School Uniform",
       "Squinja Suit",
-      "Steel Platemail"
+      "Steel Platemail",
     ],
     head: [
       "Enchanted Hat",
@@ -366,7 +608,7 @@ export const gearEnglish = [
       "Squid Clip-Ons",
       "Squid Hairclip",
       "Squinja Mask",
-      "Steel Helm"
+      "Steel Helm",
     ],
     shoes: [
       "Enchanted Boots",
@@ -379,8 +621,8 @@ export const gearEnglish = [
       "Samurai Shoes",
       "School Shoes",
       "Squinja Boots",
-      "Steel Greaves"
-    ]
+      "Steel Greaves",
+    ],
   },
   {
     brand: "Annaki",
@@ -396,10 +638,10 @@ export const gearEnglish = [
       "Hula Punk Shirt",
       "Prune Parashooter",
       "Red Hula Punk with Tie",
-      "Rockin' Leather Jacket"
+      "Rockin' Leather Jacket",
     ],
     head: ["Annaki Beret", "Annaki Beret & Glasses", "Annaki Mask"],
-    shoes: ["Annaki Arachno Boots", "Annaki Habaneros", "Annaki Tigers"]
+    shoes: ["Annaki Arachno Boots", "Annaki Habaneros", "Annaki Tigers"],
   },
   {
     brand: "Cuttlegear",
@@ -416,7 +658,7 @@ export const gearEnglish = [
       "Octo Tee",
       "Old-Timey Clothes",
       "Red Cuttlegear LS",
-      "Sennyu Suit"
+      "Sennyu Suit",
     ],
     head: [
       "Armor Helmet Replica",
@@ -427,7 +669,7 @@ export const gearEnglish = [
       "Null Visor Replica",
       "Octoling Shades",
       "Old-Timey Hat",
-      "Studio Octophones"
+      "Studio Octophones",
     ],
     shoes: [
       "Armor Boot Replicas",
@@ -435,8 +677,8 @@ export const gearEnglish = [
       "Hero Snowboots Replicas",
       "Neo Octoling Boots",
       "Null Boots Replica",
-      "Old-Timey Shoes"
-    ]
+      "Old-Timey Shoes",
+    ],
   },
   {
     brand: "Enperry",
@@ -451,13 +693,13 @@ export const gearEnglish = [
       "Navy King Tank",
       "Octoking HK Jersey",
       "Slash King Tank",
-      "White King Tank"
+      "White King Tank",
     ],
     head: [
       "Eminence Cuff",
       "King Facemask",
       "King Flip Mesh",
-      "Octoking Facemask"
+      "Octoking Facemask",
     ],
     shoes: [
       "Black & Blue Squidkid V",
@@ -473,8 +715,8 @@ export const gearEnglish = [
       "Red & Black Squidkid IV",
       "Red & White Squidkid V",
       "Rina Squidkid IV",
-      "Sun & Shade Squidkid IV"
-    ]
+      "Sun & Shade Squidkid IV",
+    ],
   },
   {
     brand: "Firefin",
@@ -493,7 +735,7 @@ export const gearEnglish = [
       "Khaki 16-Bit FishFry",
       "White 8-Bit FishFry",
       "Yellow Urban Vest",
-      "ω-3 Tee"
+      "ω-3 Tee",
     ],
     head: [
       "Black FishFry Bandana",
@@ -507,9 +749,9 @@ export const gearEnglish = [
       "Jet Cap",
       "Jungle Hat",
       "Knitted Hat",
-      "Octoglasses"
+      "Octoglasses",
     ],
-    shoes: ["Red FishFry Sandals", "Yellow FishFry Sandals"]
+    shoes: ["Red FishFry Sandals", "Yellow FishFry Sandals"],
   },
   {
     brand: "Forge",
@@ -526,7 +768,7 @@ export const gearEnglish = [
       "Green Tee",
       "Moist Ghillie Suit",
       "White Leather F-3",
-      "White Sailor Suit"
+      "White Sailor Suit",
     ],
     head: [
       "Deca Tackle Visor Helmet",
@@ -552,9 +794,9 @@ export const gearEnglish = [
       "Squidlife Headphones",
       "Stealth Goggles",
       "Studio Headphones",
-      "Treasure Hunter"
+      "Treasure Hunter",
     ],
-    shoes: ["Moist Ghillie Boots"]
+    shoes: ["Moist Ghillie Boots"],
   },
   {
     brand: "Grizzco",
@@ -570,7 +812,7 @@ export const gearEnglish = [
       "Online Jersey",
       "Record Shop Look EP",
       "Squiddor Polo",
-      "SRL Coat"
+      "SRL Coat",
     ],
     head: [
       "Beekeeper Hat",
@@ -582,7 +824,7 @@ export const gearEnglish = [
       "Sailor Cap",
       "Welding Mask",
       "Worker's Cap",
-      "Worker's Head Towel"
+      "Worker's Head Towel",
     ],
     shoes: [
       "Angry Rain Boots",
@@ -590,8 +832,8 @@ export const gearEnglish = [
       "Friendship Bracelet",
       "Non-slip Senseis",
       "Octoleet Boots",
-      "Wooden Sandals"
-    ]
+      "Wooden Sandals",
+    ],
   },
   {
     brand: "Inkline",
@@ -608,7 +850,7 @@ export const gearEnglish = [
       "Matcha Down Jacket",
       "Mountain Vest",
       "Olive Ski Jacket",
-      "Striped Peaks LS"
+      "Striped Peaks LS",
     ],
     head: [
       "Bamboo Hat",
@@ -618,7 +860,7 @@ export const gearEnglish = [
       "Seashell Bamboo Hat",
       "Short Beanie",
       "Tulip Parasol",
-      "Yamagiri Beanie"
+      "Yamagiri Beanie",
     ],
     shoes: [
       "Acerola Rain Boots",
@@ -632,8 +874,8 @@ export const gearEnglish = [
       "Pro Trail Boots",
       "Snow Delta Straps",
       "Sunny Climbing Shoes",
-      "Trail Boots"
-    ]
+      "Trail Boots",
+    ],
   },
   {
     brand: "Krak-On",
@@ -647,7 +889,7 @@ export const gearEnglish = [
       "Rodeo Shirt",
       "Squid-Pattern Waistcoat",
       "Squidstar Waistcoat",
-      "Sunny-Day Tee"
+      "Sunny-Day Tee",
     ],
     head: [
       "Full Moon Glasses",
@@ -655,7 +897,7 @@ export const gearEnglish = [
       "Long-Billed Cap",
       "Paisley Bandana",
       "Two-Stripe Mesh",
-      "Woolly Urchins Classic"
+      "Woolly Urchins Classic",
     ],
     shoes: [
       "Banana Basics",
@@ -673,8 +915,8 @@ export const gearEnglish = [
       "Red Hi-Tops",
       "Red Slip-Ons",
       "Squid-Stitch Slip-Ons",
-      "Truffle Canvas Hi-Tops"
-    ]
+      "Truffle Canvas Hi-Tops",
+    ],
   },
   {
     brand: "Rockenberg",
@@ -693,7 +935,7 @@ export const gearEnglish = [
       "Wet Floor Band Tee",
       "White Baseball LS",
       "White Inky Rider",
-      "White Urchin Rock Tee"
+      "White Urchin Rock Tee",
     ],
     head: ["18K Aviators", "SV925 Circle Shades"],
     shoes: [
@@ -718,8 +960,8 @@ export const gearEnglish = [
       "Squink Wingtips",
       "Tan Work Boots",
       "Turquoise Kicks",
-      "White Kicks"
-    ]
+      "White Kicks",
+    ],
   },
   {
     brand: "Skalop",
@@ -734,7 +976,7 @@ export const gearEnglish = [
       "Mint Tee",
       "Pearl Tee",
       "Reggae Tee",
-      "Squid-Stitch Tee"
+      "Squid-Stitch Tee",
     ],
     head: [
       "Bike Helmet",
@@ -752,9 +994,9 @@ export const gearEnglish = [
       "Straw Boater",
       "Streetstyle Cap",
       "Urchins Cap",
-      "Visor Skate Helmet"
+      "Visor Skate Helmet",
     ],
-    shoes: []
+    shoes: [],
   },
   {
     brand: "Splash Mob",
@@ -780,7 +1022,7 @@ export const gearEnglish = [
       "Varsity Baseball LS",
       "Whale-Knit Sweater",
       "White Shirt",
-      "White Striped LS"
+      "White Striped LS",
     ],
     head: [
       "Bobble Hat",
@@ -790,7 +1032,7 @@ export const gearEnglish = [
       "Retro Specs",
       "Sennyu Bon Bon Beanie",
       "Sennyu Specs",
-      "Striped Beanie"
+      "Striped Beanie",
     ],
     shoes: [
       "Green Laceups",
@@ -800,8 +1042,8 @@ export const gearEnglish = [
       "Shark Moccasins",
       "Strapping Reds",
       "Strapping Whites",
-      "Tea-Green Hunting Boots"
-    ]
+      "Tea-Green Hunting Boots",
+    ],
   },
   {
     brand: "SquidForce",
@@ -831,7 +1073,7 @@ export const gearEnglish = [
       "White LS",
       "White Tee",
       "White V-Neck Tee",
-      "Yellow Layered LS"
+      "Yellow Layered LS",
     ],
     head: [
       "Anglerfish Mask",
@@ -851,9 +1093,9 @@ export const gearEnglish = [
       "Jetflame Crest",
       "Fierce Fishskull",
       "Hivemind Antenna",
-      "Eye of Justice"
+      "Eye of Justice",
     ],
-    shoes: ["Mecha Legs - LBS"]
+    shoes: ["Mecha Legs - LBS"],
   },
   {
     brand: "Takoroka",
@@ -872,7 +1114,7 @@ export const gearEnglish = [
       "Takoroka Nylon Vintage",
       "Takoroka Rainbow Tie Dye",
       "Takoroka Windcrusher",
-      "Tricolor Rugby"
+      "Tricolor Rugby",
     ],
     head: ["Takoroka Mesh", "Takoroka Visor"],
     shoes: [
@@ -889,8 +1131,8 @@ export const gearEnglish = [
       "Soccer Shoes",
       "Sunset Orca Hi-Tops",
       "Trooper Power Stripes",
-      "White Arrows"
-    ]
+      "White Arrows",
+    ],
   },
   {
     brand: "Tentatek",
@@ -903,7 +1145,7 @@ export const gearEnglish = [
       "Red Tentatek Tee",
       "Silver Tentatek Vest",
       "Sky-Blue Squideye",
-      "Tentatek Slogan Tee"
+      "Tentatek Slogan Tee",
     ],
     head: [
       "Cycle King Cap",
@@ -914,7 +1156,7 @@ export const gearEnglish = [
       "Purple Novelty Visor",
       "Soccer Headband",
       "Sun Visor",
-      "Tennis Headband"
+      "Tennis Headband",
     ],
     shoes: [
       "Amber Sea Slug Hi-Tops",
@@ -941,8 +1183,8 @@ export const gearEnglish = [
       "Violet Trainers",
       "White Norimaki 750s",
       "Yellow Iromaki 750s",
-      "Yellow-Mesh Sneakers"
-    ]
+      "Yellow-Mesh Sneakers",
+    ],
   },
   {
     brand: "Toni Kensa",
@@ -960,14 +1202,14 @@ export const gearEnglish = [
       "Positive Longcuff Sweater",
       "Pullover Coat",
       "Short Knit Layers",
-      "Toni K. Baseball Jersey"
+      "Toni K. Baseball Jersey",
     ],
     head: ["Face Visor", "Ink-Guard Goggles", "Toni Kensa Goggles"],
     shoes: [
       "Arrow Pull-Ons",
       "Toni Kensa Black Hi-Tops",
-      "Toni Kensa Soccer Shoes"
-    ]
+      "Toni Kensa Soccer Shoes",
+    ],
   },
   {
     brand: "Zekko",
@@ -991,7 +1233,7 @@ export const gearEnglish = [
       "Zekko Jade Coat",
       "Zekko Long Carrot Tee",
       "Zekko Long Radish Tee",
-      "Zekko Redleaf Coat"
+      "Zekko Redleaf Coat",
     ],
     head: [
       "Backwards Cap",
@@ -1004,7 +1246,7 @@ export const gearEnglish = [
       "Tinted Shades",
       "White Arrowbands",
       "Zekko Cap",
-      "Zekko Mesh"
+      "Zekko Mesh",
     ],
     shoes: [
       "Black Flip-Flops",
@@ -1015,8 +1257,8 @@ export const gearEnglish = [
       "Pearl-Scout Lace-Ups",
       "Suede Gray Lace-Ups",
       "Suede Marine Lace-Ups",
-      "Suede Nation Lace-Ups"
-    ]
+      "Suede Nation Lace-Ups",
+    ],
   },
   {
     brand: "Zink",
@@ -1033,14 +1275,14 @@ export const gearEnglish = [
       "Urchins Jersey",
       "White Deca Logo Tee",
       "Zink Layered LS",
-      "Zink LS"
+      "Zink LS",
     ],
     head: [
       "B-ball Headband",
       "Cycling Cap",
       "Golf Visor",
       "Squash Headband",
-      "Swim Goggles"
+      "Swim Goggles",
     ],
     shoes: [
       "Black Dakroniks",
@@ -1054,10 +1296,10 @@ export const gearEnglish = [
       "White Laceless Dakroniks",
       "White Seahorses",
       "Yellow Seahorses",
-      "Zombie Hi-Horses"
-    ]
-  }
-];
+      "Zombie Hi-Horses",
+    ],
+  },
+]
 
 export const clothingGear = [
   "Clt_AMB000",
@@ -1317,8 +1559,8 @@ export const clothingGear = [
   "Clt_VST005",
   "Clt_VST007",
   "Clt_VST008",
-  "Clt_VST009"
-];
+  "Clt_VST009",
+]
 
 export const headGear = [
   "Hed_ACC001",
@@ -1483,8 +1725,8 @@ export const headGear = [
   "Hed_VIS001",
   "Hed_VIS002",
   "Hed_VIS003",
-  "Hed_VIS004"
-];
+  "Hed_VIS004",
+]
 
 export const shoesGear = [
   "Shs_AMB000",
@@ -1651,5 +1893,5 @@ export const shoesGear = [
   "Shs_SLP003",
   "Shs_TRS000",
   "Shs_TRS001",
-  "Shs_TRS002"
-];
+  "Shs_TRS002",
+]

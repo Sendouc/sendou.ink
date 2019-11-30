@@ -9,6 +9,12 @@ export const searchForUser = gql`
       discord_id
       twitch_name
       twitter_name
+      country
+      weapons
+      sens {
+        stick
+        motion
+      }
     }
   }
 `

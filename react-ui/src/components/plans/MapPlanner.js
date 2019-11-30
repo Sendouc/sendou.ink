@@ -303,7 +303,7 @@ const MapPlanner = () => {
         value={controlledValue}
         onChange={onSketchChange}
         tool={tool}
-        style={{ position: "relative", left: "-20px" }}
+        style={{ position: "relative", left: "-27px" }}
       />
       <div style={{ marginTop: "1em" }}>
         <Button primary icon disabled={!canUndo} onClick={() => undo()}>
