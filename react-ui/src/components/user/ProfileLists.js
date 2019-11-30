@@ -1,6 +1,7 @@
 import React from "react"
 import { List, Flag, Grid } from "semantic-ui-react"
 import WpnImage from "../common/WpnImage"
+import { countries } from "../../utils/lists"
 
 const SensListItem = ({ sens }) => {
   const stickSensString = sens.stick
@@ -56,7 +57,10 @@ const ProfileLists = ({ user }) => {
             <List.Item>
               <List.Content>
                 <Flag name={user.country} />
-                Finland
+                {countries.reduce(
+                  (acc, cur) => (cur.code === user.country ? cur.name : acc),
+                  ""
+                )}
               </List.Content>
             </List.Item>
           )}
