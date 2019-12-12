@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema({
     motion: { type: Number, min: -5, max: 5 },
   },
   weapons: [String],
+  top500: Boolean,
 })
 
 module.exports = mongoose.model("User", userSchema)

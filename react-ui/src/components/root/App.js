@@ -12,7 +12,7 @@ const App = () => {
         <div
           style={{
             background: "white",
-            padding: "2% 5%",
+            padding: "2em 3em",
             margin: "0 -2em 0 -2em",
             borderRadius: "7px",
           }}

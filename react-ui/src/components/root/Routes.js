@@ -20,6 +20,7 @@ const TournamentSearchPage = lazy(() =>
   import("../tournament/TournamentSearchPage")
 )
 const BuildsBrowser = lazy(() => import("../builds/BuildsBrowser"))
+const FreeAgentBrowser = lazy(() => import("../freeagents/FreeAgentBrowser"))
 const UserPage = lazy(() => import("../user/UserPage"))
 const InfoPage = lazy(() => import("./InfoPage"))
 
@@ -65,6 +66,9 @@ const Routes = () => {
         </Route>
         <Route path="/builds">
           <BuildsBrowser />
+        </Route>
+        <Route path="/freeagents">
+          <FreeAgentBrowser />
         </Route>
         <Route path="/u/:id">
           <UserPage />

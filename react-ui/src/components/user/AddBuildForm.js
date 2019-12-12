@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react"
-import { Form, Message, Button, TextArea } from "semantic-ui-react"
+import { Form, Message, Button } from "semantic-ui-react"
 import BuildCard from "../common/BuildCard"
 import AbilityButtons from "./AbilityButtons"
 import WeaponDropdown from "../common/WeaponDropdown"
 import GearSearch from "./GearSearch"
+import TextAreaWithLimit from "../common/TextAreaWithLimit"
 
 const AddBuildForm = ({
   addBuild,
@@ -145,14 +146,11 @@ const AddBuildForm = ({
           </Form.Field>
           <Form.Field>
             <label>Description</label>
-            <TextArea
+            <TextAreaWithLimit
               value={description}
-              onChange={e =>
-                e.target.value.length < 1000 && setDescription(e.target.value)
-              }
-              rows={5}
+              setValue={setDescription}
+              limit={1000}
             />
-            {`${description.length}/1000`}
           </Form.Field>
           <Form.Group widths="equal">
             <Form.Field>

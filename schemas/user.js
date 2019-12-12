@@ -1,5 +1,6 @@
 const { UserInputError, gql } = require("apollo-server-express")
 const User = require("../models/user")
+const Player = require("../models/player")
 const countries = require("../utils/countries")
 const weapons = require("../utils/weapons")
 require("dotenv").config()
@@ -38,9 +39,32 @@ const typeDef = gql`
     country: String
     sens: Sens
     weapons: [String]!
+    top500: Boolean!
   }
 `
 const resolvers = {
+  User: {
+    top500: async root => {
+      if (typeof root.top500 === "boolean") return root.top500
+
+      const player = await Player.findOne({ twitter: root.twitter_name }).catch(
+        e => {
+          throw (new UserInputError(),
+          {
+            invalidArgs: args,
+          })
+        }
+      )
+
+      if (!player) {
+        await User.findByIdAndUpdate(root._id, { top500: false })
+        return false
+      }
+
+      await User.findByIdAndUpdate(root._id, { top500: true })
+      return true
+    },
+  },
   Query: {
     user: (root, args, ctx) => {
       if (process.env.NODE_ENV === "development") {
