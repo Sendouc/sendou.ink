@@ -18,6 +18,15 @@ const typeDef = gql`
       past_experience: String
       description: String
     ): Boolean!
+    hideFreeAgentPost: Boolean!
+    updateFreeAgentPost(
+      can_vc: CanVC!
+      playstyles: [Playstyle!]
+      activity: String
+      looking_for: String
+      past_experience: String
+      description: String
+    ): Boolean!
   }
 
   enum CanVC {
@@ -52,6 +61,38 @@ const typeDef = gql`
     createdAt: String!
   }
 `
+
+const validateFAPost = args => {
+  if (canVCValues.indexOf(args.can_vc) === -1) {
+    throw new UserInputError("Invalid 'can vc' value provided.")
+  }
+
+  const playstyles = args.playstyles ? [...new Set(args.playstyles)] : []
+  if (playstyles.some(playstyle => playstyleValues.indexOf(playstyle) === -1)) {
+    throw new UserInputError("Invalid 'playstyles' value provided.")
+  }
+
+  if (args.activity && args.activity.length > 100) {
+    throw new UserInputError("'activity' value too long.")
+  }
+
+  if (args.looking_for && args.looking_for.length > 100) {
+    throw new UserInputError("'looking_for' value too long.")
+  }
+
+  if (args.past_experience && args.past_experience.length > 100) {
+    throw new UserInputError("'past_experience' value too long.")
+  }
+
+  if (args.past_experience && args.past_experience.length > 100) {
+    throw new UserInputError("'past_experience' value too long.")
+  }
+
+  if (args.description && args.description.length > 1000) {
+    throw new UserInputError("'description' value too long.")
+  }
+}
+
 const resolvers = {
   Query: {
     freeAgentPosts: (root, args) => {
@@ -69,39 +110,78 @@ const resolvers = {
     addFreeAgentPost: async (root, args, ctx) => {
       if (!ctx.user) throw new AuthenticationError("Not logged in.")
 
-      if (canVCValues.indexOf(args.can_vc) === -1) {
-        throw new UserInputError("Invalid 'can vc' value provided.")
-      }
+      validateFAPost(args)
 
-      const playstyles = args.playstyles ? [...new Set(args.playstyles)] : []
-      if (
-        playstyles.some(playstyle => playstyleValues.indexOf(playstyle) === -1)
-      ) {
-        throw new UserInputError("Invalid 'playstyles' value provided.")
-      }
+      const existingFAPost = await FAPost.findOne({
+        discord_user: ctx.user.discord_id,
+      }).catch(e => {
+        throw new UserInputError(e.message, {
+          invalidArgs: args,
+        })
+      })
 
-      if (args.activity && args.activity.length > 100) {
-        throw new UserInputError("'activity' value too long.")
-      }
+      if (existingFAPost) {
+        if (!existingFAPost.hidden)
+          throw new UserInputError("Post already exists.")
 
-      if (args.looking_for && args.looking_for.length > 100) {
-        throw new UserInputError("'looking_for' value too long.")
-      }
-
-      if (args.past_experience && args.past_experience.length > 100) {
-        throw new UserInputError("'past_experience' value too long.")
-      }
-
-      if (args.past_experience && args.past_experience.length > 100) {
-        throw new UserInputError("'past_experience' value too long.")
-      }
-
-      if (args.description && args.description.length > 1000) {
-        throw new UserInputError("'description' value too long.")
+        const weekFromCreatingFAPost =
+          parseInt(existingFAPost.createdAt) + 604800000
+        if (existingFAPost.hidden) {
+          if (weekFromCreatingFAPost > Date.now()) {
+            throw new UserInputError(
+              "Week hasn't passed from the last free agent post."
+            )
+          } else {
+            await FAPost.findByIdAndRemove(existingFAPost._id).catch(e => {
+              throw new UserInputError(e.message, {
+                invalidArgs: args,
+              })
+            })
+          }
+        }
       }
 
       const faPost = new FAPost({ ...args, discord_id: ctx.user.discord_id })
       await faPost.save().catch(e => {
+        throw (new UserInputError(),
+        {
+          invalidArgs: args,
+        })
+      })
+
+      return true
+    },
+    updateFreeAgentPost: async (root, args, ctx) => {
+      if (!ctx.user) throw new AuthenticationError("Not logged in.")
+
+      validateFAPost(args)
+
+      await FAPost.findOneAndUpdate(
+        { discord_id: ctx.user.discord_id },
+        { ...args }
+      ).catch(e => {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        })
+      })
+
+      return true
+    },
+    hideFreeAgentPost: async (root, args, ctx) => {
+      if (!ctx.user) throw new AuthenticationError("Not logged in.")
+
+      const post = await FAPost.findOne({
+        discord_id: ctx.user.discord_id,
+      }).catch(e => {
+        throw new UserInputError(e.message, {
+          invalidArgs: args,
+        })
+      })
+
+      if (!post) throw new UserInputError("User has no posts.")
+      if (post.hidden) throw new UserInputError("Post already hidden.")
+
+      await FAPost.findByIdAndUpdate(post._id, { hidden: true }).catch(e => {
         throw (new UserInputError(),
         {
           invalidArgs: args,

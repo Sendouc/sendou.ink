@@ -20,7 +20,7 @@ const FATableRows = ({ freeAgent }) => {
   return (
     <>
       <Table.Row>
-        <Table.Cell rowSpan={2}>
+        <Table.Cell rowSpan={2} width={1}>
           <Icon
             name={expanded ? "angle down" : "angle right"}
             size="big"
@@ -28,7 +28,7 @@ const FATableRows = ({ freeAgent }) => {
             style={{ cursor: "pointer" }}
           />
         </Table.Cell>
-        <Table.Cell>
+        <Table.Cell width={4}>
           {twitter ? (
             <>
               <Image src={`https://avatars.io/twitter/${twitter}`} avatar />
@@ -90,7 +90,7 @@ const FATableRows = ({ freeAgent }) => {
             <Link to={`/u/${freeAgent.discord_user.discord_id}?tab=1`}>
               <img
                 src={top500}
-                style={{ width: "30%", height: "auto" }}
+                style={{ width: "40px", height: "auto" }}
                 alt="top 500"
               />
             </Link>

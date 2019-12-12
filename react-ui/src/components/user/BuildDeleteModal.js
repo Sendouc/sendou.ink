@@ -1,7 +1,7 @@
 import React from "react"
-import { Modal, Header, Button, Image } from "semantic-ui-react"
+import { Modal, Header, Button } from "semantic-ui-react"
 
-const BuildDeleteModal = ({ trigger, buildTitle, onConfirm, wpnImage }) => {
+const BuildDeleteModal = ({ trigger, buildTitle, onConfirm }) => {
   const onYesClick = () => {
     onConfirm()
   }
@@ -9,7 +9,6 @@ const BuildDeleteModal = ({ trigger, buildTitle, onConfirm, wpnImage }) => {
     <Modal trigger={trigger} basic size="small" closeIcon>
       <Header icon="trash alternate" content={`Delete ${buildTitle}`} />
       <Modal.Content>
-        <Image src={wpnImage} />
         <p>
           Are you sure you want to delete "{buildTitle}
           "?

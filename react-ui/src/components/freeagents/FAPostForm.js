@@ -12,28 +12,43 @@ import { useMutation } from "@apollo/react-hooks"
 import TextAreaWithLimit from "../common/TextAreaWithLimit"
 import { addFreeAgentPost } from "../../graphql/mutations/addFreeAgentPost"
 import { freeAgentPosts } from "../../graphql/queries/freeAgentPosts"
+import { updateFreeAgentPost } from "../../graphql/mutations/updateFreeAgentPost"
 
-const NewFAPostForm = ({ handleSuccess, hideForm }) => {
-  const [form, setForm] = useState({
-    can_vc: "",
-    playstyles: [],
-    activity: "",
-    past_experience: "",
-    looking_for: "",
-    description: "",
-  })
-  const [errorMsg, setErrorMsg] = useState(null)
-
-  const handleError = error => {
-    setErrorMsg(error.message)
-    setTimeout(() => {
-      setErrorMsg(null)
-    }, 10000)
-  }
+const FAPostForm = ({
+  handleSuccess,
+  hideForm,
+  existingFAPost,
+  handleError,
+}) => {
+  const [form, setForm] = useState(
+    existingFAPost
+      ? existingFAPost
+      : {
+          can_vc: "",
+          playstyles: [],
+          activity: "",
+          past_experience: "",
+          looking_for: "",
+          description: "",
+        }
+  )
 
   const [addFAPostMutation] = useMutation(addFreeAgentPost, {
     onError: handleError,
-    onCompleted: handleSuccess,
+    onCompleted: () =>
+      handleSuccess(
+        "New free agent post successfully created! Good luck finding a team 😎"
+      ),
+    refetchQueries: [
+      {
+        query: freeAgentPosts,
+      },
+    ],
+  })
+
+  const [updateFAPostMutation] = useMutation(updateFreeAgentPost, {
+    onError: handleError,
+    onCompleted: () => handleSuccess("Free agent post successfully updated!"),
     refetchQueries: [
       {
         query: freeAgentPosts,
@@ -59,18 +74,21 @@ const NewFAPostForm = ({ handleSuccess, hideForm }) => {
     Object.keys(postToAdd).forEach(
       key => !postToAdd[key] && delete postToAdd[key]
     )
-
-    await addFAPostMutation({ variables: postToAdd })
+    if (existingFAPost) updateFAPostMutation({ variables: postToAdd })
+    else await addFAPostMutation({ variables: postToAdd })
   }
 
   return (
     <>
-      <Header>Make a new free agent post</Header>
+      <Header>
+        {existingFAPost
+          ? "Edit your free agent post"
+          : "Make a new free agent post"}
+      </Header>
       <Message>
         Discord name, Twitter user, weapon pool and Top 500 history are
         automatically synced up with your profile.
       </Message>
-      {errorMsg && <Message error>{errorMsg}</Message>}
       <Form onSubmit={handleSubmit}>
         <Form.Field required>
           <label>Playstyles</label>
@@ -182,4 +200,4 @@ const NewFAPostForm = ({ handleSuccess, hideForm }) => {
   )
 }
 
-export default NewFAPostForm
+export default FAPostForm
