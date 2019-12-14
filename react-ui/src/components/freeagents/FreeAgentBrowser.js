@@ -1,19 +1,37 @@
 import React, { useState } from "react"
 import { useQuery, useMutation } from "@apollo/react-hooks"
-import { Message, Button, Modal, Header, Dropdown } from "semantic-ui-react"
+import {
+  Message,
+  Button,
+  Modal,
+  Header,
+  Dropdown,
+  Form,
+  Grid,
+} from "semantic-ui-react"
 import Loading from "../common/Loading"
 import Error from "../common/Error"
 import FreeAgentTable from "./FreeAgentTable"
 import FAPostForm from "./FAPostForm"
 
+import WeaponDropdown from "../common/WeaponDropdown"
+import { continents } from "../../utils/lists"
 import { freeAgentPosts } from "../../graphql/queries/freeAgentPosts"
 import { userLean } from "../../graphql/queries/userLean"
 import { hideFreeAgentPost } from "../../graphql/mutations/hideFreeAgentPost"
+import useWindowDimensions from "../../hooks/useWindowDimensions"
 
 const FreeAgentBrowser = () => {
   const [successMsg, setSuccessMsg] = useState(null)
   const [errorMsg, setErrorMsg] = useState(null)
   const [showForm, setShowForm] = useState(false)
+  const [filter, setFilter] = useState({
+    weapon: "",
+    playstyle: "",
+    region: "",
+  })
+
+  const { containerWidth } = useWindowDimensions()
 
   const {
     data: postsData,
@@ -62,12 +80,7 @@ const FreeAgentBrowser = () => {
   const millisecondsToHours = milliseconds =>
     Math.ceil(milliseconds / (1000 * 60 * 60))
 
-  const freeAgentPostArray = postsData.freeAgentPosts.filter(
-    post => !post.hidden
-  )
-
   const ButtonHeader = () => {
-    if (showForm) return null
     if (!userData.user)
       return <Message>Please log in to submit your own free agent post</Message>
 
@@ -93,91 +106,188 @@ const FreeAgentBrowser = () => {
       : "New free agent post"
 
     return (
-      <div style={{ float: "right" }}>
+      <Button.Group widths="1">
         <Button onClick={() => setShowForm(true)}>{buttonText}</Button>
         {ownFAPost && (
-          <span style={{ marginLeft: "0.3em" }}>
-            <Modal
-              basic
-              size="small"
-              closeIcon
-              trigger={<Button negative>Delete your post</Button>}
-            >
-              <Header
-                icon="trash alternate"
-                content="Delete your free agent post?"
-              />
-              <Modal.Content>
-                <p>
-                  Please note you can't submit a new one before a week has
-                  passed.
-                </p>
-              </Modal.Content>
-              <Modal.Actions>
-                <Button
-                  inverted
-                  color="red"
-                  onClick={() => hideFreeAgentPostMutation()}
-                >
-                  Yes
-                </Button>
-              </Modal.Actions>
-            </Modal>
-          </span>
+          <Modal
+            basic
+            size="small"
+            closeIcon
+            trigger={<Button negative>Delete your post</Button>}
+          >
+            <Header
+              icon="trash alternate"
+              content="Delete your free agent post?"
+            />
+            <Modal.Content>
+              <p>
+                Please note you can't submit a new one before a week has passed.
+              </p>
+            </Modal.Content>
+            <Modal.Actions>
+              <Button
+                inverted
+                color="red"
+                onClick={() => hideFreeAgentPostMutation()}
+              >
+                Yes
+              </Button>
+            </Modal.Actions>
+          </Modal>
         )}
-      </div>
+      </Button.Group>
     )
   }
 
   const FilterDropdowns = () => {
     const playstyleOptions = [
-      { key: "ALL", text: "all", value: "ALL" },
       { key: "FRONTLINE", text: "Frontline/Slayer", value: "FRONTLINE" },
       { key: "MIDLINE", text: "Midline/Support", value: "MIDLINE" },
       { key: "BACKLINE", text: "Backline/Anchor", value: "BACKLINE" },
     ]
+    const regionOptions = [
+      { key: "EUROPE", text: "Europe", value: "EUROPE" },
+      { key: "AMERICAS", text: "The Americas", value: "AMERICAS" },
+      { key: "AU/NZ", text: "Oceania", value: "AU/NZ" },
+      { key: "OTHER", text: "Other", value: "OTHER" },
+    ]
+
     return (
       <>
-        Show posts by{" "}
-        <Dropdown
-          upward
-          floating
-          inline
-          options={playstyleOptions}
-          defaultValue="ALL"
-        />{" "}
-        roles.
+        <Header>Filter free agents</Header>
+        <Form>
+          <Form.Field>
+            <label>Weapon</label>
+            <WeaponDropdown
+              clearable
+              value={filter.weapon}
+              onChange={(e, { value }) =>
+                setFilter({ ...filter, weapon: value })
+              }
+            />
+          </Form.Field>
+          <Form.Field>
+            <label>Playstyle</label>
+            <Dropdown
+              options={playstyleOptions}
+              placeholder="Choose playstyle"
+              selection
+              closeOnEscape
+              clearable
+              value={filter.playstyle}
+              onChange={(e, { value }) =>
+                setFilter({ ...filter, playstyle: value })
+              }
+              style={{ width: "270px" }}
+            />
+          </Form.Field>
+          <Form.Field>
+            <label>Region</label>
+            <Dropdown
+              options={regionOptions}
+              placeholder="Choose region"
+              selection
+              closeOnEscape
+              clearable
+              value={filter.region}
+              onChange={(e, { value }) =>
+                setFilter({ ...filter, region: value })
+              }
+              style={{ width: "270px" }}
+            />
+          </Form.Field>
+        </Form>
       </>
     )
   }
+
+  const NoPostsText = () => {
+    if (showForm) return null
+
+    if (
+      filter.weapon === "" &&
+      filter.playstyle === "" &&
+      filter.region === ""
+    ) {
+      return <>No free agents at the moment. Be the first one!</>
+    }
+
+    return <>No free agents found matching the criteria.</>
+  }
+
+  const freeAgentPostArray = postsData.freeAgentPosts.filter(post => {
+    if (post.hidden) return false
+
+    if (filter.weapon) {
+      if (post.discord_user.weapons.indexOf(filter.weapon) === -1) return false
+    }
+
+    if (filter.playstyle) {
+      if (post.playstyles.indexOf(filter.playstyle) === -1) return false
+    }
+
+    if (filter.region) {
+      if (!post.discord_user.country) {
+        if (filter.region === "OTHER") return true
+
+        return false
+      }
+
+      const continentCode = continents[post.discord_user.country]
+
+      if (filter.region === "EUROPE" && continentCode !== "EU") return false
+      else if (
+        filter.region === "AMERICAS" &&
+        continentCode !== "NA" &&
+        continentCode !== "SA"
+      )
+        return false
+      else if (filter.region === "AU/NZ" && continentCode !== "OC") return false
+      else if (
+        filter.region === "OTHER" &&
+        continentCode !== "AF" &&
+        continentCode !== "AN" &&
+        continentCode !== "AS" &&
+        continentCode !== "OC"
+      )
+        return false
+    }
+
+    return true
+  })
 
   return (
     <>
       {successMsg && <Message success>{successMsg}</Message>}
       {errorMsg && <Message error>{errorMsg}</Message>}
-      <ButtonHeader />
-      {showForm && (
+      {showForm ? (
         <FAPostForm
           handleSuccess={handleSuccess}
           handleError={handleError}
           hideForm={() => setShowForm(false)}
           existingFAPost={ownFAPost}
         />
+      ) : (
+        <Grid stackable>
+          <Grid.Column floated={"left"} width={8}>
+            {!showForm && <FilterDropdowns />}
+          </Grid.Column>
+          <Grid.Column
+            floated={containerWidth < 723 ? null : "right"}
+            width={8}
+          >
+            <ButtonHeader />
+          </Grid.Column>
+        </Grid>
       )}
       <>
-        {freeAgentPostArray.length > 0 ? (
-          <>
-            <FilterDropdowns />
-            {/*<FreeAgentTable FAArray={freeAgentPostArray} />*/}
-            <div style={{ marginTop: "1em" }}>
-              <FreeAgentTable
-                FAArray={Array(100).fill(freeAgentPostArray[0])}
-              />
-            </div>
-          </>
-        ) : (
-          <>No free agents at the moment. Be the first one!</>
-        )}
+        <div style={{ marginTop: "2em" }}>
+          {freeAgentPostArray.length > 0 ? (
+            <FreeAgentTable FAArray={freeAgentPostArray} />
+          ) : (
+            <NoPostsText />
+          )}
+        </div>
       </>
     </>
   )

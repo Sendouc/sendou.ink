@@ -188,7 +188,12 @@ const FAPostForm = ({
           />
         </Form.Field>
         <Form.Field>
-          <Button type="submit">Submit</Button>
+          <Button
+            type="submit"
+            disabled={!form.can_vc || form.playstyles.length === 0}
+          >
+            Submit
+          </Button>
           <span style={{ marginLeft: "0.3em" }}>
             <Button type="button" negative onClick={hideForm}>
               Cancel

@@ -177,6 +177,7 @@ maps = [
 
 abilities = {
     "": None,
+    "-": None,
     "Last-Ditch Effort": "LDE",
     "Last Ditch Effort": "LDE",
     "Ink Saver (Sub)": "ISS",

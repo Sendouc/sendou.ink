@@ -1,5 +1,6 @@
 const { UserInputError, gql } = require("apollo-server-express")
 const FAPost = require("../models/fapost")
+const sendFAPostToDiscord = require("../utils/webhook")
 
 const canVCValues = ["YES", "USUALLY", "SOMETIMES", "NO"]
 const playstyleValues = ["FRONTLINE", "MIDLINE", "BACKLINE"]
@@ -148,6 +149,13 @@ const resolvers = {
           invalidArgs: args,
         })
       })
+
+      args.user = ctx.user
+      try {
+        await sendFAPostToDiscord(args)
+      } catch (error) {
+        throw new UserInputError(error.error)
+      }
 
       return true
     },

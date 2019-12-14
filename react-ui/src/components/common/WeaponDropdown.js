@@ -9,16 +9,18 @@ const WeaponDropdown = ({
   value,
   onChange,
   multiple = false,
+  clearable = false,
   showImages = true,
-  nonMultiplePlaceholder = "Choose a weapon",
+  nonMultiplePlaceholder = "Choose weapon",
   style = {},
 }) => {
   return (
     <Dropdown
-      placeholder={multiple ? "Choose a comp" : nonMultiplePlaceholder}
+      placeholder={multiple ? "Choose comp" : nonMultiplePlaceholder}
       search
       selection
       closeOnEscape
+      clearable={clearable}
       multiple={multiple}
       onChange={onChange}
       value={value}

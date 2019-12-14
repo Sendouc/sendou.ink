@@ -95,6 +95,14 @@ const server = new ApolloServer({
           twitch_name: "sendou",
           twitter_name: "sendouc",
           username: "Sendou",
+          weapons: [
+            "Tenta Brella",
+            "Range Blaster",
+            "Kensa Sloshing Machine",
+            "Custom Blaster",
+          ],
+          country: "fi",
+          top500: true,
         },
       }
     }
