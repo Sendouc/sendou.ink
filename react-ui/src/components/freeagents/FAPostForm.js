@@ -86,8 +86,11 @@ const FAPostForm = ({
           : "Make a new free agent post"}
       </Header>
       <Message>
-        Discord name, Twitter user, weapon pool and Top 500 history are
-        automatically synced up with your profile.
+        Profile picture, Discord name, Twitter user, weapon pool and Top 500
+        history are automatically synced up with your profile. Also please note
+        that the post automatically sent to Discord{" "}
+        <b>can't be edited afterwards </b> so you might want to set these
+        beforehand.
       </Message>
       <Form onSubmit={handleSubmit}>
         <Form.Field required>
