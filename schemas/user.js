@@ -47,6 +47,11 @@ const resolvers = {
     top500: async root => {
       if (typeof root.top500 === "boolean") return root.top500
 
+      if (!root.twitter_name) {
+        await User.findByIdAndUpdate(root._id, { top500: false })
+        return false
+      }
+
       const player = await Player.findOne({ twitter: root.twitter_name }).catch(
         e => {
           throw (new UserInputError(),
