@@ -47,7 +47,7 @@ const FATableRows = ({ freeAgent }) => {
                 <Image
                   src={`https://avatars.io/twitter/${twitter}`}
                   avatar
-                  onError={error => setImageError(true)}
+                  onError={() => setImageError(true)}
                 />
               )}
               <span>

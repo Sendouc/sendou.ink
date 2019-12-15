@@ -20,6 +20,7 @@ import { freeAgentPosts } from "../../graphql/queries/freeAgentPosts"
 import { userLean } from "../../graphql/queries/userLean"
 import { hideFreeAgentPost } from "../../graphql/mutations/hideFreeAgentPost"
 import useWindowDimensions from "../../hooks/useWindowDimensions"
+import FreeAgentCards from "./FreeAgentCards"
 
 const FreeAgentBrowser = () => {
   const [successMsg, setSuccessMsg] = useState(null)
@@ -31,7 +32,7 @@ const FreeAgentBrowser = () => {
     region: "",
   })
 
-  const { containerWidth } = useWindowDimensions()
+  const { isMobile } = useWindowDimensions()
 
   useEffect(() => {
     document.title = "Free Agents - sendou.ink"
@@ -262,7 +263,7 @@ const FreeAgentBrowser = () => {
   })
 
   return (
-    <>
+    <div style={{ textAlign: isMobile ? "center" : null }}>
       {successMsg && <Message success>{successMsg}</Message>}
       {errorMsg && <Message error>{errorMsg}</Message>}
       {showForm ? (
@@ -277,10 +278,7 @@ const FreeAgentBrowser = () => {
           <Grid.Column floated={"left"} width={8}>
             {!showForm && <FilterDropdowns />}
           </Grid.Column>
-          <Grid.Column
-            floated={containerWidth < 723 ? null : "right"}
-            width={8}
-          >
+          <Grid.Column floated={isMobile ? null : "right"} width={8}>
             <ButtonHeader />
           </Grid.Column>
         </Grid>
@@ -288,13 +286,17 @@ const FreeAgentBrowser = () => {
       <>
         <div style={{ marginTop: "2em" }}>
           {freeAgentPostArray.length > 0 ? (
-            <FreeAgentTable FAArray={freeAgentPostArray} />
+            isMobile ? (
+              <FreeAgentCards FAArray={freeAgentPostArray} />
+            ) : (
+              <FreeAgentTable FAArray={freeAgentPostArray} />
+            )
           ) : (
             <NoPostsText />
           )}
         </div>
       </>
-    </>
+    </div>
   )
 }
 

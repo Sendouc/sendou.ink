@@ -17,10 +17,12 @@ const getContainerWidth = width => {
 function getWindowDimensions() {
   const { innerWidth: width, innerHeight: height } = window
   const containerWidth = getContainerWidth(width)
+  const isMobile = containerWidth < 723
   return {
     width,
     height,
-    containerWidth
+    containerWidth,
+    isMobile,
   }
 }
 
