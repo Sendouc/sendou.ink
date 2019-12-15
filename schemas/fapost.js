@@ -144,12 +144,14 @@ const resolvers = {
 
       const faPost = new FAPost({ ...args, discord_id: ctx.user.discord_id })
       args.user = ctx.user
-      await Promise.all([faPost.save(), sendFAPostToDiscord(args)]).catch(e => {
-        throw (new UserInputError(),
-        {
-          invalidArgs: args,
-        })
-      })
+      await Promise.race([faPost.save(), sendFAPostToDiscord(args)]).catch(
+        e => {
+          throw (new UserInputError(),
+          {
+            invalidArgs: args,
+          })
+        }
+      )
 
       return true
     },

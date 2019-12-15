@@ -78,6 +78,7 @@ const BuildCard = ({
               {build.description && showDescription && (
                 <Popup
                   content={buildDescription}
+                  style={{ whiteSpace: "pre-wrap" }}
                   trigger={
                     <Icon
                       style={{ marginLeft: "0.25em" }}
