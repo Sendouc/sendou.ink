@@ -151,12 +151,7 @@ const resolvers = {
       })
 
       args.user = ctx.user
-      await sendFAPostToDiscord(args).catch(error => {
-        throw new UserInputError(
-          "problem with Discord webhook. This means the post was added to the database but didn't get posted on Discord because: " +
-            error.error
-        )
-      })
+      sendFAPostToDiscord(args)
 
       return true
     },

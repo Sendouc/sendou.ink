@@ -17,7 +17,9 @@ const TextRows = ({ freeAgent }) => {
           </Table.Row>
           <Table.Row>
             <Table.Cell></Table.Cell>
-            <Table.Cell colSpan={4}>{activity}</Table.Cell>
+            <Table.Cell colSpan={4} style={{ whiteSpace: "pre-wrap" }}>
+              {activity}
+            </Table.Cell>
           </Table.Row>
         </>
       )}
@@ -31,7 +33,9 @@ const TextRows = ({ freeAgent }) => {
           </Table.Row>
           <Table.Row style={{ border: "0" }}>
             <Table.Cell></Table.Cell>
-            <Table.Cell colSpan={4}>{past_experience}</Table.Cell>
+            <Table.Cell colSpan={4} style={{ whiteSpace: "pre-wrap" }}>
+              {past_experience}
+            </Table.Cell>
           </Table.Row>
         </>
       )}
@@ -45,7 +49,9 @@ const TextRows = ({ freeAgent }) => {
           </Table.Row>
           <Table.Row>
             <Table.Cell></Table.Cell>
-            <Table.Cell colSpan={4}>{looking_for}</Table.Cell>
+            <Table.Cell colSpan={4} style={{ whiteSpace: "pre-wrap" }}>
+              {looking_for}
+            </Table.Cell>
           </Table.Row>
         </>
       )}
