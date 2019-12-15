@@ -45,10 +45,8 @@ function sendFAPostToDiscord(args) {
   }
 
   if (args.user.country) {
-    msg.setText(
-      `:flag_${args.user.country}:${args.user.top500 &&
-        " <:top500:594551830764191763>"}`
-    )
+    const top500string = args.user.top500 ? " <:top500:594551830764191763>" : ""
+    msg.setText(`:flag_${args.user.country}:${top500string}`)
   }
 
   return Hook.send(msg)
