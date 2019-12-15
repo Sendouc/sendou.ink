@@ -52,7 +52,7 @@ const Settings = ({ user, closeSettings, handleSuccess, handleError }) => {
     ],
   })
 
-  const handleProfileUpdate = async e => {
+  const handleSubmit = async () => {
     const newProfile = { ...forms }
     if (newProfile.country === "") newProfile.country = null
     if (newProfile.stick_sens === "") newProfile.stick_sens = null
@@ -79,7 +79,7 @@ const Settings = ({ user, closeSettings, handleSuccess, handleError }) => {
       <Header size="small">Profile picture</Header>
       To add a profile picture you need to verify your Twitter on Discord and
       log back in to sendou.ink
-      <Form style={{ marginTop: "2em" }}>
+      <Form style={{ marginTop: "2em" }} onSubmit={handleSubmit}>
         <Form.Field>
           <label>Country</label>
           <CountryDropdown
@@ -127,17 +127,17 @@ const Settings = ({ user, closeSettings, handleSuccess, handleError }) => {
             multiple
           />
         </Form.Field>
-      </Form>
-      <div style={{ marginTop: "1.5em" }}>
-        <Button onClick={() => handleProfileUpdate()} disabled={submitDisabled}>
-          Save
-        </Button>
-        <span style={{ marginLeft: "0.3em" }}>
-          <Button negative onClick={closeSettings}>
-            Cancel
+        <Form.Field>
+          <Button type="submit" disabled={submitDisabled}>
+            Save
           </Button>
-        </span>
-      </div>
+          <span style={{ marginLeft: "0.3em" }}>
+            <Button negative onClick={closeSettings}>
+              Cancel
+            </Button>
+          </span>
+        </Form.Field>
+      </Form>
     </>
   )
 }

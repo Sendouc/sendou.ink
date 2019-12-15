@@ -88,7 +88,6 @@ const UserPage = () => {
     setTab(activeIndex)
   }
 
-  console.log("imageError", imageError)
   return (
     <>
       <>

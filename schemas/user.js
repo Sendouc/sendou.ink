@@ -110,7 +110,7 @@ const resolvers = {
           })
         }
 
-      if (args.stick_sens) {
+      if (args.stick_sens !== null) {
         const number = Math.floor(args.stick_sens * 10)
         if (number < -50 || number > 50 || number % 5 != 0) {
           throw new UserInputError("Invalid motion sensitivity", {
@@ -123,7 +123,7 @@ const resolvers = {
         delete args.stick_sens
       }
 
-      if (args.motion_sens) {
+      if (args.motion_sens !== null) {
         const number = Math.floor(args.motion_sens * 10)
         if (number < -50 || number > 50 || number % 5 != 0) {
           throw new UserInputError("Invalid motion sensitivity", {
