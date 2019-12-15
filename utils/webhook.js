@@ -51,7 +51,7 @@ function sendFAPostToDiscord(args) {
     )
   }
 
-  return Hook.send(msg)
+  return () => Hook.send(msg)
 }
 
 module.exports = sendFAPostToDiscord
