@@ -11,6 +11,7 @@ export const searchForUser = gql`
       twitter_name
       country
       weapons
+      top500
       sens {
         stick
         motion

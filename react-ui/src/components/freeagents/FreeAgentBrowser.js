@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useQuery, useMutation } from "@apollo/react-hooks"
 import {
   Message,
@@ -33,6 +33,10 @@ const FreeAgentBrowser = () => {
 
   const { containerWidth } = useWindowDimensions()
 
+  useEffect(() => {
+    document.title = "Free Agents - sendou.ink"
+  }, [])
+
   const {
     data: postsData,
     error: faQueryError,
@@ -54,6 +58,7 @@ const FreeAgentBrowser = () => {
 
   const handleError = error => {
     setErrorMsg(error.message)
+    setShowForm(false)
     setTimeout(() => {
       setErrorMsg(null)
     }, 10000)

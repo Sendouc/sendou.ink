@@ -31,13 +31,13 @@ const Top500Browser = ({ setMenuSelection }) => {
     year: NumberParam,
   })
   const [forms, setForms] = useState({
-    page: 1,
-    name: "",
-    weapon: "",
-    mode: 0,
-    unique_id: "",
-    month: "",
-    year: "",
+    page: query.page ?? 1,
+    name: query.name ?? "",
+    weapon: query.weapon ?? "",
+    mode: query.mode ?? 0,
+    unique_id: query.unique_id ?? "",
+    month: query.month ?? "",
+    year: query.year ?? "",
   })
 
   const { data, error, loading } = useQuery(searchForPlacements, {

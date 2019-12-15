@@ -98,6 +98,9 @@ const MainMenu = () => {
             <Dropdown.Item as={NavLink} to="/builds">
               Builds
             </Dropdown.Item>
+            <Dropdown.Item as={NavLink} to="/freeagents">
+              Free Agents
+            </Dropdown.Item>
             <Dropdown.Item as={NavLink} to="/tournaments">
               Tournaments
             </Dropdown.Item>

@@ -23,6 +23,7 @@ const BuildsBrowser = lazy(() => import("../builds/BuildsBrowser"))
 const FreeAgentBrowser = lazy(() => import("../freeagents/FreeAgentBrowser"))
 const UserPage = lazy(() => import("../user/UserPage"))
 const InfoPage = lazy(() => import("./InfoPage"))
+const AdminPanel = lazy(() => import("../admin/AdminPanel"))
 
 const Routes = () => {
   return (
@@ -75,6 +76,9 @@ const Routes = () => {
         </Route>
         <Route path="/about">
           <InfoPage />
+        </Route>
+        <Route path="/admin">
+          <AdminPanel />
         </Route>
         <Route path="/404" render={() => <NotFound />} />
         <Route path="*" render={() => <NotFound />} />

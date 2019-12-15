@@ -65,15 +65,20 @@ const UserPage = () => {
         </Tab.Pane>
       ),
     },
-    {
+  ]
+
+  if (
+    userData.top500 ||
+    (userLeanQuery.data.user && userData.id === userLeanQuery.data.user.id)
+  )
+    panes.push({
       menuItem: "X Rank",
       render: () => (
         <Tab.Pane>
           <PlayerXRankStats twitter={userData.twitter_name} tabMode />
         </Tab.Pane>
       ),
-    },
-  ]
+    })
 
   const handleTabChange = (e, { activeIndex }) => {
     setActiveIndex(activeIndex)

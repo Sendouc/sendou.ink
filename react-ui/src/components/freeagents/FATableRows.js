@@ -17,16 +17,27 @@ const FATableRows = ({ freeAgent }) => {
     return acc
   }, {})
 
+  const hasExtraInfo = () => {
+    const { activity, description, looking_for, past_experience } = freeAgent
+    if (!activity && !description && !looking_for && !past_experience) {
+      return false
+    }
+
+    return true
+  }
+
   return (
     <>
       <Table.Row>
         <Table.Cell rowSpan={2} width={1}>
-          <Icon
-            name={expanded ? "angle down" : "angle right"}
-            size="big"
-            onClick={() => setExpanded(!expanded)}
-            style={{ cursor: "pointer" }}
-          />
+          {hasExtraInfo() && (
+            <Icon
+              name={expanded ? "angle down" : "angle right"}
+              size="big"
+              onClick={() => setExpanded(!expanded)}
+              style={{ cursor: "pointer" }}
+            />
+          )}
         </Table.Cell>
         <Table.Cell width={4}>
           {twitter ? (

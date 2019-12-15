@@ -12,19 +12,21 @@ import Error from "../common/Error"
 
 const addXRankHelp = (
   <div>
-    This user has no X Rank profile set up. If you are the owner of this user
-    page here is how you can set it up:
+    Here is how you can set your X Rank results to show on your profile:
     <div style={{ paddingTop: "5px" }}>
       <List ordered>
         <List.Item>
           Finish an X rank season in the Top 500 in at least one mode.
         </List.Item>
-        <List.Item>Send your Twitter handle to Sendou via DM.</List.Item>
         <List.Item>
           Add your Twitter account to your profile on Discord, verify it and
           make sure it's set to appear publicly.
         </List.Item>
-        <List.Item>Log in to sendou.ink</List.Item>
+        <List.Item>Log out and back in to sendou.ink</List.Item>
+        <List.Item>
+          Send your Twitter handle to Sendou via DM after you have verified your
+          Twitter shows on your profile.
+        </List.Item>
       </List>
     </div>
   </div>
@@ -36,7 +38,7 @@ const PlayerXRankStats = ({ twitter, tabMode = false }) => {
   if (uid) searchVariables = { uid }
   if (twitter) searchVariables = { twitter }
   const { data, error, loading } = useQuery(playerInfo, {
-    variables: searchVariables
+    variables: searchVariables,
   })
   const [top, setTop] = useState([])
 
@@ -78,7 +80,7 @@ const PlayerXRankStats = ({ twitter, tabMode = false }) => {
             rmX: null,
             rmTop: null,
             cbX: null,
-            cbTop: null
+            cbTop: null,
           }
         )
       )

@@ -1,7 +1,7 @@
 const {
   UserInputError,
   AuthenticationError,
-  gql
+  gql,
 } = require("apollo-server-express")
 const Player = require("../models/player")
 const User = require("../models/user")
@@ -69,7 +69,7 @@ const resolvers = {
         throw new UserInputError(
           "amount requested has to be between 1 and 50",
           {
-            invalidArgs: args
+            invalidArgs: args,
           }
         )
       }
@@ -80,7 +80,7 @@ const resolvers = {
         .populate("topTotal", { unique_id: 0 })
         .catch(e => {
           throw new UserInputError(e.message, {
-            invalidArgs: args
+            invalidArgs: args,
           })
         })
     },
@@ -93,7 +93,7 @@ const resolvers = {
         throw new UserInputError(
           "amount requested has to be between 1 and 50",
           {
-            invalidArgs: args
+            invalidArgs: args,
           }
         )
       }
@@ -112,7 +112,7 @@ const resolvers = {
         throw new UserInputError(
           "amount requested has to be between 1 and 50",
           {
-            invalidArgs: args
+            invalidArgs: args,
           }
         )
       }
@@ -131,7 +131,7 @@ const resolvers = {
         throw new UserInputError(
           "amount requested has to be between 1 and 50",
           {
-            invalidArgs: args
+            invalidArgs: args,
           }
         )
       }
@@ -150,7 +150,7 @@ const resolvers = {
         throw new UserInputError(
           "amount requested has to be between 1 and 50",
           {
-            invalidArgs: args
+            invalidArgs: args,
           }
         )
       }
@@ -169,7 +169,7 @@ const resolvers = {
         throw new UserInputError(
           "amount requested has to be between 1 and 50",
           {
-            invalidArgs: args
+            invalidArgs: args,
           }
         )
       }
@@ -188,7 +188,7 @@ const resolvers = {
         throw new UserInputError(
           "amount requested has to be between 1 and 50",
           {
-            invalidArgs: args
+            invalidArgs: args,
           }
         )
       }
@@ -207,7 +207,7 @@ const resolvers = {
         throw new UserInputError(
           "amount requested has to be between 1 and 50",
           {
-            invalidArgs: args
+            invalidArgs: args,
           }
         )
       }
@@ -226,7 +226,7 @@ const resolvers = {
         throw new UserInputError(
           "amount requested has to be between 1 and 50",
           {
-            invalidArgs: args
+            invalidArgs: args,
           }
         )
       }
@@ -235,7 +235,7 @@ const resolvers = {
         .sort({ topBrellaScore: "desc" })
         .limit(args.amount)
         .populate("topBrella", { unique_id: 0 })
-    }
+    },
   },
   Mutation: {
     updateTwitter: async (root, args, ctx) => {
@@ -243,27 +243,46 @@ const resolvers = {
         throw new AuthenticationError("not admin")
 
       const player = await Player.findOne({
-        unique_id: args.unique_id.trim()
+        unique_id: args.unique_id.trim(),
       }).catch(e => {
         throw new UserInputError(e.message, {
-          invalidArgs: args
+          invalidArgs: args,
         })
       })
 
-      if (!player) throw new UserInputError()
+      if (!player) throw new UserInputError("no player found with the id given")
 
-      player.twitter = args.twitter.trim().toLowerCase()
+      const twitter_name = args.twitter.trim().toLowerCase()
+      player.twitter = twitter_name
 
       try {
         await player.save()
       } catch (error) {
         throw new UserInputError(error.message, {
-          invalidArgs: args
+          invalidArgs: args,
+        })
+      }
+
+      const user = await User.findOne({
+        twitter_name,
+      }).catch(e => {
+        throw new UserInputError(e.message, {
+          invalidArgs: args,
+        })
+      })
+
+      user.top500 = null
+
+      try {
+        await user.save()
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
         })
       }
 
       return true
-    }
+    },
   },
   Player: {
     discord_id: async root => {
@@ -272,7 +291,7 @@ const resolvers = {
         e => {
           throw (new UserInputError(),
           {
-            invalidArgs: args
+            invalidArgs: args,
           })
         }
       )
@@ -280,11 +299,11 @@ const resolvers = {
       if (!user) return null
 
       return user.discord_id
-    }
-  }
+    },
+  },
 }
 
 module.exports = {
   Player: typeDef,
-  playerResolvers: resolvers
+  playerResolvers: resolvers,
 }

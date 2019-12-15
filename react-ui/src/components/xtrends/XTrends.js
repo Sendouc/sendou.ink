@@ -7,7 +7,7 @@ import {
   Image,
   Grid,
   Dropdown,
-  Message
+  Message,
 } from "semantic-ui-react"
 import { wpnSmall } from "../../assets/imageImports"
 import useTrends from "../../utils/useTrends"
@@ -23,7 +23,7 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  Brush
+  Brush,
 } from "recharts"
 
 const customToolTipStyle = {
@@ -32,23 +32,23 @@ const customToolTipStyle = {
   lineHeight: "24px",
   border: "1px solid #f5f5f5",
   backgroundColor: "hsla(0,0%,100%,.8)",
-  padding: "10px"
+  padding: "10px",
 }
 
 const labelStyle = {
   margin: "0",
   color: "#666",
-  fontWeight: "700"
+  fontWeight: "700",
 }
 
 const introStyle = {
   borderTop: "1px solid #f5f5f5",
-  margin: "0"
+  margin: "0",
 }
 
 const descStyle = {
   margin: 0,
-  color: "#999"
+  color: "#999",
 }
 
 const XTrends = () => {
@@ -188,7 +188,7 @@ const XTrends = () => {
                 dispatch({
                   type: "combine",
                   left: combineFormLeft,
-                  right: combineFormRight
+                  right: combineFormRight,
                 })
               }}
             >
@@ -235,7 +235,7 @@ const XTrends = () => {
               top: 5,
               right: 50,
               left: 0,
-              bottom: 5
+              bottom: 5,
             }}
           >
             <CartesianGrid strokeDasharray="3 3" />
@@ -254,7 +254,7 @@ const XTrends = () => {
                 value: "X rank top 500 placements",
                 angle: -90,
                 position: "insideLeft",
-                textAnchor: "middle"
+                textAnchor: "middle",
               }}
             />
             <Tooltip content={<CustomTooltip />} />
@@ -311,7 +311,7 @@ const XTrends = () => {
                             WebkitUserSelect: "none",
                             MozUserSelect: "none",
                             MsUserSelect: "none",
-                            userSelect: "none"
+                            userSelect: "none",
                           }}
                           onClick={() =>
                             dispatch({ type: "randomizeColor", weapon: w })

@@ -1,9 +1,13 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { Header, Image } from "semantic-ui-react"
 import { Link } from "react-router-dom"
 import koshienBanner from "../../assets/koshienBanner.png"
 
 const PageHome = () => {
+  useEffect(() => {
+    document.title = "sendou.ink - Competitive Splatoon Hub"
+  }, [])
+
   return (
     <>
       <div style={{ padding: "5px" }}>
@@ -61,6 +65,12 @@ const PageHome = () => {
           </b>{" "}
           - Find out what best players of each weapon are running in terms of
           both abilities and style.
+        </div>
+        <div style={{ paddingTop: "15px" }}>
+          <b>
+            <Link to="/freeagents">Free Agents</Link>
+          </b>{" "}
+          - Browser through players looking for a team or make your own posting
         </div>
         <div style={{ paddingTop: "15px" }}>
           <b>
