@@ -79,7 +79,7 @@ const FreeAgentBrowser = () => {
   if (userQueryError) return <Error errorMessage={userQueryError.message} />
 
   const ownFAPost = postsData.freeAgentPosts.find(
-    post => post.discord_user.discord_id === userData.user.discord_id
+    post => post.discord_user.discord_id === userData.user?.discord_id
   )
 
   const millisecondsToHours = milliseconds =>
