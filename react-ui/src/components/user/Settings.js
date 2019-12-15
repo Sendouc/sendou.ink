@@ -36,7 +36,8 @@ const Settings = ({ user, closeSettings, handleSuccess, handleError }) => {
 
   useEffect(() => {
     if (JSON.stringify(user) === JSON.stringify(forms)) setSubmitDisabled(true)
-    else if (forms.motion_sens && !forms.stick_sens) setSubmitDisabled(true)
+    else if (forms.motion_sens !== "" && forms.stick_sens === "")
+      setSubmitDisabled(true)
     else setSubmitDisabled(false)
   }, [forms, user])
 

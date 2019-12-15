@@ -4,12 +4,12 @@ import WpnImage from "../common/WpnImage"
 import { countries } from "../../utils/lists"
 
 const SensListItem = ({ sens }) => {
-  const stickSensString = sens.stick
-    ? `${sens.stick > 0 ? "+" : ""}${sens.stick} Stick`
-    : ""
-  const motionSensString = sens.motion
-    ? ` ${sens.motion > 0 ? "+" : ""}${sens.motion} Motion`
-    : ""
+  const stickSensString =
+    sens.stick !== null ? `${sens.stick > 0 ? "+" : ""}${sens.stick} Stick` : ""
+  const motionSensString =
+    sens.motion !== null
+      ? ` ${sens.motion > 0 ? "+" : ""}${sens.motion} Motion`
+      : ""
   return (
     <List.Item>
       <List.Content>

@@ -122,11 +122,13 @@ const UserPage = () => {
             user={{
               country: "",
               motion_sens:
-                userData.sens && userData.sens.motion
+                userData.sens && userData.sens.motion !== null
                   ? userData.sens.motion
                   : "",
               stick_sens:
-                userData.sens && userData.sens.stick ? userData.sens.stick : "",
+                userData.sens && userData.sens.stick !== null
+                  ? userData.sens.stick
+                  : "",
               weapons: [],
               ...userData,
             }}
