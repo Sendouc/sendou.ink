@@ -20,7 +20,7 @@ const SensListItem = ({ sens }) => {
   )
 }
 
-const ProfileLists = ({ user }) => {
+const ProfileLists = ({ user, imageError }) => {
   return (
     <>
       <Grid.Column>
@@ -29,7 +29,7 @@ const ProfileLists = ({ user }) => {
             <List.Icon name="discord" size="large" />
             <List.Content>{`${user.username}#${user.discriminator}`}</List.Content>
           </List.Item>
-          {user.twitter_name && (
+          {user.twitter_name && !imageError && (
             <List.Item>
               <List.Icon name="twitter" size="large" />
               <List.Content>

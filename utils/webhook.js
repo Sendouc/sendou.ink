@@ -7,6 +7,10 @@ function sendFAPostToDiscord(args) {
     .setName(args.user.username)
     .setColor("#2c5364")
     .addField("", `<@${args.user.discord_id}>`)
+    .addField(
+      "",
+      `[User page on sendou.ink](https://sendou.ink/u/${args.user.discord_id})`
+    )
 
   if (args.can_vc) {
     const can_vc = args.can_vc.toLowerCase()
@@ -20,7 +24,7 @@ function sendFAPostToDiscord(args) {
     )
   }
 
-  if (args.user.weapons) {
+  if (args.user.weapons.length > 0) {
     msg.addField("Weapons", args.user.weapons.join(", "))
   }
 

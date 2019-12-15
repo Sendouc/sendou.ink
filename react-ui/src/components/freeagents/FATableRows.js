@@ -10,6 +10,7 @@ import TextRows from "./TextRows"
 
 const FATableRows = ({ freeAgent }) => {
   const [expanded, setExpanded] = useState(false)
+  const [imageError, setImageError] = useState(false)
 
   const twitter = freeAgent.discord_user.twitter_name
   const playstyles = freeAgent.playstyles.reduce((acc, cur) => {
@@ -42,7 +43,13 @@ const FATableRows = ({ freeAgent }) => {
         <Table.Cell width={4}>
           {twitter ? (
             <>
-              <Image src={`https://avatars.io/twitter/${twitter}`} avatar />
+              {!imageError && (
+                <Image
+                  src={`https://avatars.io/twitter/${twitter}`}
+                  avatar
+                  onError={error => setImageError(true)}
+                />
+              )}
               <span>
                 <Link to={`/u/${freeAgent.discord_user.discord_id}`}>
                   {freeAgent.discord_user.username}#
@@ -70,8 +77,12 @@ const FATableRows = ({ freeAgent }) => {
           )}
         </Table.Cell>
         <Table.Cell>
-          <Icon name="twitter" size="large" style={{ color: "#1da1f2" }} />
-          <a href={`https://twitter.com/${twitter}`}>{twitter}</a>
+          {twitter && !imageError && (
+            <>
+              <Icon name="twitter" size="large" style={{ color: "#1da1f2" }} />
+              <a href={`https://twitter.com/${twitter}`}>{twitter}</a>
+            </>
+          )}
         </Table.Cell>
         <Table.Cell>
           <span style={{ color: "#999999" }}>

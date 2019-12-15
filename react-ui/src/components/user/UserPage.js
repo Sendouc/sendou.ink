@@ -25,6 +25,7 @@ const UserPage = () => {
   const [showSettings, setShowSettings] = useState(false)
   const [successMsg, setSuccessMsg] = useState(null)
   const [errorMsg, setErrorMsg] = useState(null)
+  const [imageError, setImageError] = useState(false)
 
   const handleError = error => {
     setErrorMsg(error.message)
@@ -44,6 +45,8 @@ const UserPage = () => {
   useEffect(() => {
     if (loading || !data || !data.searchForUser) return
     document.title = `${data.searchForUser.username} - sendou.ink`
+
+    return () => setImageError(false)
   }, [loading, data])
 
   if (loading || userLeanQuery.loading) return <Loading />
@@ -85,24 +88,21 @@ const UserPage = () => {
     setTab(activeIndex)
   }
 
+  console.log("imageError", imageError)
   return (
     <>
       <>
         <Grid stackable columns={4}>
           <Grid.Column width={3}>
-            {userData.twitter_name && (
+            {userData.twitter_name && !imageError && (
               <Image
                 src={`https://avatars.io/twitter/${userData.twitter_name}`}
                 rounded
-                onError={error =>
-                  console.error(
-                    `Couldn't fetch avatar image of ${userData.twitter_name}.`
-                  )
-                }
+                onError={error => setImageError(true)}
               />
             )}
           </Grid.Column>
-          <ProfileLists user={userData} />
+          <ProfileLists user={userData} imageError={imageError} />
           <Grid.Column>
             {!showSettings &&
               userLeanQuery.data.user &&
