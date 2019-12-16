@@ -1,13 +1,12 @@
 import React, { useState } from "react"
-import { Table, Card, Image, Icon, Flag, Button } from "semantic-ui-react"
-import { countries } from "../../utils/lists"
+import { Card, Image, Icon, Flag, Button } from "semantic-ui-react"
 import InfiniteScroll from "react-infinite-scroller"
 import { Link } from "react-router-dom"
 
-import FATableRows from "./FATableRows"
 import WpnImage from "../common/WpnImage"
 import RoleIcons from "./RoleIcons"
 import VCIcon from "./VCIcon"
+import { countries } from "../../utils/lists"
 
 const FreeAgentCard = ({ freeAgent }) => {
   const [expanded, setExpanded] = useState(false)
@@ -100,30 +99,62 @@ const FreeAgentCard = ({ freeAgent }) => {
       )}
       {expanded && (
         <>
-          <Card.Content header="Activity" />
-          <Card.Description
-            style={{ marginTop: "1em", whiteSpace: "pre-wrap", padding: "1em" }}
-          >
-            {activity}
-          </Card.Description>
-          <Card.Content header="Past experience" />
-          <Card.Description
-            style={{ marginTop: "1em", whiteSpace: "pre-wrap", padding: "1em" }}
-          >
-            {past_experience}
-          </Card.Description>
-          <Card.Content header="Looking for" />
-          <Card.Description
-            style={{ marginTop: "1em", whiteSpace: "pre-wrap", padding: "1em" }}
-          >
-            {looking_for}
-          </Card.Description>
-          <Card.Content header="Description" />
-          <Card.Description
-            style={{ marginTop: "1em", whiteSpace: "pre-wrap", padding: "1em" }}
-          >
-            {description}
-          </Card.Description>
+          {activity && (
+            <>
+              <Card.Content header="Activity" />
+              <Card.Description
+                style={{
+                  marginTop: "1em",
+                  whiteSpace: "pre-wrap",
+                  padding: "1em",
+                }}
+              >
+                {activity}
+              </Card.Description>
+            </>
+          )}
+          {past_experience && (
+            <>
+              <Card.Content header="Past experience" />
+              <Card.Description
+                style={{
+                  marginTop: "1em",
+                  whiteSpace: "pre-wrap",
+                  padding: "1em",
+                }}
+              >
+                {past_experience}
+              </Card.Description>
+            </>
+          )}
+          {looking_for && (
+            <>
+              <Card.Content header="Looking for" />
+              <Card.Description
+                style={{
+                  marginTop: "1em",
+                  whiteSpace: "pre-wrap",
+                  padding: "1em",
+                }}
+              >
+                {looking_for}
+              </Card.Description>
+            </>
+          )}
+          {description && (
+            <>
+              <Card.Content header="Description" />
+              <Card.Description
+                style={{
+                  marginTop: "1em",
+                  whiteSpace: "pre-wrap",
+                  padding: "1em",
+                }}
+              >
+                {description}
+              </Card.Description>
+            </>
+          )}
           <Card.Content extra>
             <Button basic onClick={() => setExpanded(false)}>
               Collapse
