@@ -80,7 +80,12 @@ const FreeAgentCard = ({ freeAgent }) => {
         </Card.Description>
         <Card.Description style={{ marginTop: "1em" }}>
           {weapons.map(weapon => (
-            <WpnImage key={weapon} weapon={weapon} size="small" />
+            <WpnImage
+              key={weapon}
+              weapon={weapon}
+              size="MEDIUM"
+              style={{ width: "32px", height: "32px" }}
+            />
           ))}
         </Card.Description>
         <Card.Description style={{ marginTop: "1em" }}>
