@@ -21,8 +21,8 @@ const GearSearch = ({ setGear, slot = "head" }) => {
           name: cur.brand,
           results: results.map(gear => ({
             title: gear,
-            image: `https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/gear/${english_internal[gear]}.png`
-          }))
+            image: `https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/gear/${english_internal[gear]}.png`,
+          })),
         }
       return acc
     }, {})
