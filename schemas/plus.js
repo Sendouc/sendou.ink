@@ -1,16 +1,46 @@
 const { UserInputError, gql } = require("apollo-server-express")
+const User = require("../models/user")
 const Ballot = require("../models/ballot")
 const Suggested = require("../models/suggested")
 const Summary = require("../models/summary")
 const VotedPerson = require("../models/votedperson")
 
 const typeDef = gql`
+  extend type Query {
+    hasAccess(discord_id: String!, server: String!): Boolean!
+  }
+
+  "+1 or +2 LFG server on Discord"
+  enum PlusServer {
+    ONE
+    TWO
+  }
+
+  "Region used for voting"
+  enum PlusRegion {
+    EU
+    NA
+  }
+
   type Suggested {
     discord_id: String!
     suggester_discord_id: String!
     plus_region: PlusRegion!
     plus_server: PlusServer!
     description: String!
+  }
+
+  "Status with +1 and +2 related things"
+  type PlusStatus {
+    membership_status: PlusServer
+    vouch_status: PlusServer
+    plus_region: PlusRegion
+    can_vouch: Boolean
+    last_vouched: String
+  }
+
+  extend type User {
+    plus: PlusStatus
   }
 
   type VotedPerson {
@@ -43,7 +73,35 @@ const typeDef = gql`
   }
 `
 
-const resolvers = {}
+const resolvers = {
+  Query: {
+    hasAccess: async (root, args) => {
+      const user = await User.findOne({ discord_id: args.discord_id }).catch(
+        e => {
+          throw (new Error(),
+          {
+            invalidArgs: args,
+          })
+        }
+      )
+
+      if (!user || !user.plus) return false
+
+      const { membership_status, vouch_status } = user.plus
+      let membership_code =
+        membership_status === "TWO" || vouch_status === "TWO" ? "TWO" : null
+      membership_code =
+        membership_status === "ONE" || vouch_status === "ONE"
+          ? "ONE"
+          : membership_code
+
+      if (membership_code === "ONE") return true
+      if (membership_code === "TWO" && args.server === "TWO") return true
+
+      return false
+    },
+  },
+}
 
 module.exports = {
   Plus: typeDef,
