@@ -13,6 +13,13 @@ const userSchema = new mongoose.Schema({
   },
   weapons: [String],
   top500: Boolean,
+  plus: {
+    membership_status: String,
+    vouch_status: String,
+    plus_region: String,
+    can_vouch: Boolean,
+    last_vouched: Date,
+  },
 })
 
 module.exports = mongoose.model("User", userSchema)

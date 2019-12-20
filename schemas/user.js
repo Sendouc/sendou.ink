@@ -20,11 +20,34 @@ const typeDef = gql`
       weapons: [String]
     ): Boolean
   }
+
   "The control sensitivity used in Splatoon 2"
   type Sens {
     stick: Float
     motion: Float
   }
+
+  "+1 or +2 LFG server on Discord"
+  enum PlusServer {
+    ONE
+    TWO
+  }
+
+  "Region used for voting"
+  enum PlusRegion {
+    EU
+    NA
+  }
+
+  "Status with +1 and +2 related things"
+  type PlusStatus {
+    membership_status: PlusServer
+    vouch_status: PlusServer
+    plus_region: PlusRegion
+    can_vouch: Boolean
+    last_vouched: String
+  }
+
   "Represents user account. Also includes info regarding solo ladder."
   type User {
     id: ID!
@@ -40,6 +63,7 @@ const typeDef = gql`
     sens: Sens
     weapons: [String]!
     top500: Boolean!
+    plus: PlusStatus
   }
 `
 const resolvers = {

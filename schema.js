@@ -12,6 +12,7 @@ const { Link, linkResolvers } = require("./schemas/link")
 const { Trend, trendResolvers } = require("./schemas/trend")
 const { Tournament, tournamentResolvers } = require("./schemas/tournament")
 const { FAPost, faPostResolvers } = require("./schemas/fapost")
+const { Plus, plusResolvers } = require("./schemas/plus")
 
 const Query = gql`
   type Query {
@@ -41,6 +42,7 @@ const schema = makeExecutableSchema({
     Trend,
     Tournament,
     FAPost,
+    Plus,
   ],
   resolvers: merge(
     resolvers,
@@ -53,7 +55,8 @@ const schema = makeExecutableSchema({
     linkResolvers,
     trendResolvers,
     tournamentResolvers,
-    faPostResolvers
+    faPostResolvers,
+    plusResolvers
   ),
 })
 
