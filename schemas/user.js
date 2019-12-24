@@ -11,6 +11,8 @@ const typeDef = gql`
     user: User
     "Returns user. Either discord_id or twitter has to provided or error is thrown."
     searchForUser(discord_id: String, twitter: String): User
+    "Returns all users"
+    users: [User!]!
   }
   extend type Mutation {
     updateUser(
@@ -101,6 +103,13 @@ const resolvers = {
           invalidArgs: args,
         })
       })
+    },
+    users: (root, args) => {
+      return User.find({})
+        .sort({ username: "asc" })
+        .catch(e => {
+          throw new Error(e.message)
+        })
     },
   },
   Mutation: {

@@ -21,6 +21,7 @@ const TournamentSearchPage = lazy(() =>
 )
 const BuildsBrowser = lazy(() => import("../builds/BuildsBrowser"))
 const FreeAgentBrowser = lazy(() => import("../freeagents/FreeAgentBrowser"))
+const PlusPage = lazy(() => import("../plus/PlusPage"))
 const UserPage = lazy(() => import("../user/UserPage"))
 const InfoPage = lazy(() => import("./InfoPage"))
 const AdminPanel = lazy(() => import("../admin/AdminPanel"))
@@ -73,6 +74,9 @@ const Routes = () => {
         </Route>
         <Route path="/u/:id">
           <UserPage />
+        </Route>
+        <Route path="/plus">
+          <PlusPage />
         </Route>
         <Route path="/about">
           <InfoPage />

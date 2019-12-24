@@ -1,12 +1,12 @@
-import { gql } from 'apollo-boost'
+import { gql } from "apollo-boost"
 
 export const links = gql`
-{
-  links {
-    title
-    url
-    description
-    type
+  {
+    links {
+      title
+      url
+      description
+      type
+    }
   }
-}
 `
