@@ -2,17 +2,20 @@
 
 const { merge } = require("lodash")
 const { makeExecutableSchema, gql } = require("apollo-server-express")
-const { Build, buildResolvers } = require("./schemas/build")
-const { Maplist, maplistResolvers } = require("./schemas/maplist")
-const { Placement, placementResolvers } = require("./schemas/placement")
-const { Player, playerResolvers } = require("./schemas/player")
-const { Rotation, rotationResolvers } = require("./schemas/rotation")
-const { User, userResolvers } = require("./schemas/user")
-const { Link, linkResolvers } = require("./schemas/link")
-const { Trend, trendResolvers } = require("./schemas/trend")
-const { Tournament, tournamentResolvers } = require("./schemas/tournament")
-const { FAPost, faPostResolvers } = require("./schemas/fapost")
-const { Plus, plusResolvers } = require("./schemas/plus")
+const { Build, buildResolvers } = require("./graphql-schemas/build")
+const { Maplist, maplistResolvers } = require("./graphql-schemas/maplist")
+const { Placement, placementResolvers } = require("./graphql-schemas/placement")
+const { Player, playerResolvers } = require("./graphql-schemas/player")
+const { Rotation, rotationResolvers } = require("./graphql-schemas/rotation")
+const { User, userResolvers } = require("./graphql-schemas/user")
+const { Link, linkResolvers } = require("./graphql-schemas/link")
+const { Trend, trendResolvers } = require("./graphql-schemas/trend")
+const {
+  Tournament,
+  tournamentResolvers,
+} = require("./graphql-schemas/tournament")
+const { FAPost, faPostResolvers } = require("./graphql-schemas/fapost")
+const { Plus, plusResolvers } = require("./graphql-schemas/plus")
 
 const Query = gql`
   type Query {

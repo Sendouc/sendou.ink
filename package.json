@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "watch": "nodemon index.js",
-    "build": "cd react-ui && npm install && npm run build && mv build ../build",
-    "testbuild": "rmdir /s /q build && cd react-ui && npm run build && move build ../build"
+    "build": "cd frontend-react && npm install && npm run build && mv build ../build",
+    "testbuild": "rmdir /s /q build && cd frontend-react && npm run build && move build ../build"
   },
   "author": "Sendou",
   "license": "ISC",

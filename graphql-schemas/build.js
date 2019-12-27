@@ -1,11 +1,11 @@
 const {
   UserInputError,
   AuthenticationError,
-  gql
+  gql,
 } = require("apollo-server-express")
-const Build = require("../models/build")
-const User = require("../models/user")
-const Player = require("../models/player")
+const Build = require("../mongoose-models/build")
+const User = require("../mongoose-models/user")
+const Player = require("../mongoose-models/player")
 const weapons = require("../utils/weapons")
 const gear = require("../utils/gear")
 
@@ -97,7 +97,7 @@ const resolvers = {
         .sort({ weapon: "asc" })
         .catch(e => {
           throw new UserInputError(e.message, {
-            invalidArgs: args
+            invalidArgs: args,
           })
         })
     },
@@ -107,7 +107,7 @@ const resolvers = {
       const searchCriteria = !args.weapon ? {} : { weapon: args.weapon }
       const buildCount = await Build.countDocuments(searchCriteria).catch(e => {
         throw new UserInputError(e.message, {
-          invalidArgs: args
+          invalidArgs: args,
         })
       })
       const pageCount = Math.ceil(buildCount / buildsPerPage)
@@ -115,7 +115,7 @@ const resolvers = {
       if (buildCount !== 0) {
         if (args.page > pageCount)
           throw new UserInputError("too big page number given", {
-            invalidArgs: args
+            invalidArgs: args,
           })
       }
 
@@ -126,12 +126,12 @@ const resolvers = {
         .populate("discord_user")
         .catch(e => {
           throw new UserInputError(e.message, {
-            invalidArgs: args
+            invalidArgs: args,
           })
         })
 
       return { builds, pageCount }
-    }
+    },
   },
   Mutation: {
     addBuild: async (root, args, ctx) => {
@@ -139,17 +139,17 @@ const resolvers = {
       if (args.title)
         if (args.title.length > 100)
           throw new UserInputError("Title too long.", {
-            invalidArgs: args
+            invalidArgs: args,
           })
       if (args.description) {
         if (args.description.length > 1000)
           throw new UserInputError("Description too long.", {
-            invalidArgs: args
+            invalidArgs: args,
           })
       }
       if (!weapons.includes(args.weapon))
         throw new UserInputError("Invalid weapon.", {
-          invalidArgs: args
+          invalidArgs: args,
         })
 
       const items = gear.flatMap(brand => {
@@ -161,39 +161,39 @@ const resolvers = {
       if (args.headgearItem) {
         if (!items.includes(args.headgearItem))
           throw new UserInputError("Invalid headgear item.", {
-            invalidArgs: args
+            invalidArgs: args,
           })
       }
       if (args.clothingItem) {
         if (!items.includes(args.clothingItem))
           throw new UserInputError("Invalid clothing item.", {
-            invalidArgs: args
+            invalidArgs: args,
           })
       }
       if (args.shoesItem) {
         if (!items.includes(args.shoesItem))
           throw new UserInputError("Invalid shoes item.", {
-            invalidArgs: args
+            invalidArgs: args,
           })
       }
 
       const existingBuilds = await Build.find({
-        discord_id: ctx.user.discord_id
+        discord_id: ctx.user.discord_id,
       }).catch(e => {
         throw new UserInputError(e.message, {
-          invalidArgs: args
+          invalidArgs: args,
         })
       })
       if (existingBuilds.length >= 100)
         throw new UserInputError("Can't have more than 100 builds per user.", {
-          invalidArgs: args
+          invalidArgs: args,
         })
 
       const build = new Build({ ...args, discord_id: ctx.user.discord_id })
       return build.save().catch(e => {
         throw (new UserInputError(),
         {
-          invalidArgs: args
+          invalidArgs: args,
         })
       })
     },
@@ -204,7 +204,7 @@ const resolvers = {
 
       if (!build)
         throw new UserInputError("no build found with the id", {
-          invalidArgs: args
+          invalidArgs: args,
         })
       if (ctx.user.discord_id !== build.discord_id)
         throw new AuthenticationError("no privileges")
@@ -213,7 +213,7 @@ const resolvers = {
         await Build.findByIdAndDelete({ _id: args.id })
       } catch (error) {
         throw new UserInputError(error.message, {
-          invalidArgs: args
+          invalidArgs: args,
         })
       }
 
@@ -224,17 +224,17 @@ const resolvers = {
       if (args.title)
         if (args.title.length > 100)
           throw new UserInputError("Title too long.", {
-            invalidArgs: args
+            invalidArgs: args,
           })
       if (args.description) {
         if (args.description.length > 1000)
           throw new UserInputError("Description too long.", {
-            invalidArgs: args
+            invalidArgs: args,
           })
       }
       if (!weapons.includes(args.weapon))
         throw new UserInputError("Invalid weapon.", {
-          invalidArgs: args
+          invalidArgs: args,
         })
 
       const items = gear.flatMap(brand => {
@@ -246,26 +246,26 @@ const resolvers = {
       if (args.headgearItem) {
         if (!items.includes(args.headgearItem))
           throw new UserInputError("Invalid headgear item.", {
-            invalidArgs: args
+            invalidArgs: args,
           })
       }
       if (args.clothingItem) {
         if (!items.includes(args.clothingItem))
           throw new UserInputError("Invalid clothing item.", {
-            invalidArgs: args
+            invalidArgs: args,
           })
       }
       if (args.shoesItem) {
         if (!items.includes(args.shoesItem))
           throw new UserInputError("Invalid shoes item.", {
-            invalidArgs: args
+            invalidArgs: args,
           })
       }
 
       const build = await Build.findOne({ _id: args.id })
       if (!build)
         throw new UserInputError("no build found with the id", {
-          invalidArgs: args
+          invalidArgs: args,
         })
 
       if (ctx.user.discord_id !== build.discord_id)
@@ -273,12 +273,12 @@ const resolvers = {
 
       await Build.findByIdAndUpdate(build._id, { ...args }).catch(e => {
         throw new UserInputError(error.message, {
-          invalidArgs: args
+          invalidArgs: args,
         })
       })
 
       return true
-    }
+    },
   },
   Build: {
     top: async root => {
@@ -287,7 +287,7 @@ const resolvers = {
         e => {
           throw (new UserInputError(),
           {
-            invalidArgs: args
+            invalidArgs: args,
           })
         }
       )
@@ -303,7 +303,7 @@ const resolvers = {
         e => {
           throw (new UserInputError(),
           {
-            invalidArgs: args
+            invalidArgs: args,
           })
         }
       )
@@ -322,11 +322,11 @@ const resolvers = {
 
       await Build.findByIdAndUpdate(root._id, { top: false })
       return false
-    }
-  }
+    },
+  },
 }
 
 module.exports = {
   Build: typeDef,
-  buildResolvers: resolvers
+  buildResolvers: resolvers,
 }

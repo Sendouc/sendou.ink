@@ -1,6 +1,6 @@
 const { UserInputError, gql } = require("apollo-server-express")
-const Tournament = require("../models/tournament")
-const Round = require("../models/round")
+const Tournament = require("../mongoose-models/tournament")
+const Round = require("../mongoose-models/round")
 const mongoose = require("mongoose")
 
 const typeDef = gql`
@@ -82,13 +82,13 @@ const resolvers = {
         .sort({ round_number: "asc", game_number: "asc" })
         .catch(e => {
           throw new UserInputError(e.message, {
-            invalidArgs: args
+            invalidArgs: args,
           })
         })
 
       const tournament = await Tournament.findById(args.id).catch(e => {
         throw new UserInputError(e.message, {
-          invalidArgs: args
+          invalidArgs: args,
         })
       })
 
@@ -105,21 +105,21 @@ const resolvers = {
       const currentPage = args.page ? args.page - 1 : 0
 
       const roundSearchCriteria = {
-        $or: []
+        $or: [],
       }
 
       if (args.team_name) {
         roundSearchCriteria.$or.push({
           winning_team_name: {
             $regex: args.team_name,
-            $options: "i"
-          }
+            $options: "i",
+          },
         })
         roundSearchCriteria.$or.push({
           losing_team_name: {
             $regex: args.team_name,
-            $options: "i"
-          }
+            $options: "i",
+          },
         })
       }
 
@@ -127,14 +127,14 @@ const resolvers = {
         roundSearchCriteria.$or.push({
           winning_team_players: {
             $regex: args.player_name,
-            $options: "i"
-          }
+            $options: "i",
+          },
         })
         roundSearchCriteria.$or.push({
           losing_team_players: {
             $regex: args.player_name,
-            $options: "i"
-          }
+            $options: "i",
+          },
         })
       }
 
@@ -142,28 +142,28 @@ const resolvers = {
         roundSearchCriteria.$or.push({
           winning_team_unique_ids: {
             $regex: args.unique_id,
-            $options: "i"
-          }
+            $options: "i",
+          },
         })
         roundSearchCriteria.$or.push({
           losing_team_unique_ids: {
             $regex: args.unique_id,
-            $options: "i"
-          }
+            $options: "i",
+          },
         })
       }
 
       if (args.comp) {
         roundSearchCriteria.$or.push({
           winning_team_weapons: {
-            $all: args.comp
-          }
+            $all: args.comp,
+          },
         })
 
         roundSearchCriteria.$or.push({
           losing_team_weapons: {
-            $all: args.comp
-          }
+            $all: args.comp,
+          },
         })
       }
 
@@ -183,21 +183,21 @@ const resolvers = {
         )
 
         tournamentSearchCriteria._id = {
-          $in: tournament_ids
+          $in: tournament_ids,
         }
       }
 
       if (args.tournament_name)
         tournamentSearchCriteria.name = {
           $regex: args.tournament_name,
-          $options: "i"
+          $options: "i",
         }
 
       const tournamentCount = await Tournament.countDocuments(
         tournamentSearchCriteria
       ).catch(e => {
         throw new UserInputError(e.message, {
-          invalidArgs: args
+          invalidArgs: args,
         })
       })
 
@@ -206,7 +206,7 @@ const resolvers = {
       if (tournamentCount !== 0) {
         if (args.page > pageCount)
           throw new UserInputError("too big page number given", {
-            invalidArgs: args
+            invalidArgs: args,
           })
       }
 
@@ -216,16 +216,16 @@ const resolvers = {
         .sort({ date: "desc" })
         .catch(e => {
           throw new UserInputError(e.message, {
-            invalidArgs: args
+            invalidArgs: args,
           })
         })
 
       return { tournaments, pageCount }
-    }
-  }
+    },
+  },
 }
 
 module.exports = {
   Tournament: typeDef,
-  tournamentResolvers: resolvers
+  tournamentResolvers: resolvers,
 }

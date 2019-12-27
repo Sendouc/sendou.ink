@@ -1,6 +1,6 @@
 const { UserInputError, gql } = require("apollo-server-express")
-const User = require("../models/user")
-const Player = require("../models/player")
+const User = require("../mongoose-models/user")
+const Player = require("../mongoose-models/player")
 const countries = require("../utils/countries")
 const weapons = require("../utils/weapons")
 require("dotenv").config()

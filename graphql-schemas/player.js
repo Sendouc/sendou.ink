@@ -3,8 +3,8 @@ const {
   AuthenticationError,
   gql,
 } = require("apollo-server-express")
-const Player = require("../models/player")
-const User = require("../models/user")
+const Player = require("../mongoose-models/player")
+const User = require("../mongoose-models/user")
 
 const typeDef = gql`
   extend type Query {

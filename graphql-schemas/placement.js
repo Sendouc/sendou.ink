@@ -1,6 +1,6 @@
 const { UserInputError, gql } = require("apollo-server-express")
-const Placement = require("../models/placement")
-const Player = require("../models/player")
+const Placement = require("../mongoose-models/placement")
+const Player = require("../mongoose-models/player")
 
 const typeDef = gql`
   extend type Query {
@@ -50,7 +50,7 @@ const resolvers = {
         .select({ weapon: 0 })
         .catch(e => {
           throw new UserInputError(e.message, {
-            invalidArgs: args
+            invalidArgs: args,
           })
         })
 
@@ -73,7 +73,7 @@ const resolvers = {
 
       return {
         placements: placements.slice(0, 101),
-        modeCount: [m.sz + m.tc + m.rm + m.cb, m.sz, m.tc, m.rm, m.cb]
+        modeCount: [m.sz + m.tc + m.rm + m.cb, m.sz, m.tc, m.rm, m.cb],
       }
     },
     playerInfo: async (root, args) => {
@@ -83,24 +83,24 @@ const resolvers = {
         searchCriteria = { twitter: args.twitter.toLowerCase() }
       else
         throw new UserInputError("no id or twitter provided", {
-          invalidArgs: args
+          invalidArgs: args,
         })
       const player = await Player.findOne(searchCriteria).catch(e => {
         throw new UserInputError(e.message, {
-          invalidArgs: args
+          invalidArgs: args,
         })
       })
 
       if (!player) {
         throw new UserInputError("player not found", {
-          invalidArgs: args
+          invalidArgs: args,
         })
       }
       const placements = await Placement.find({ unique_id: player.unique_id })
         .sort({ year: "asc", month: "asc" })
         .catch(e => {
           throw new UserInputError(e.message, {
-            invalidArgs: args
+            invalidArgs: args,
           })
         })
 
@@ -115,19 +115,19 @@ const resolvers = {
           .select({ name: 1, weapon: 1, x_power: 1, unique_id: 1 })
           .catch(e => {
             throw new UserInputError(e.message, {
-              invalidArgs: args
+              invalidArgs: args,
             })
           })
       } else {
         placements = await Placement.find({
-          name: { $regex: args.name, $options: "i" }
+          name: { $regex: args.name, $options: "i" },
         })
           .sort({ x_power: "desc" })
           .limit(100)
           .select({ name: 1, weapon: 1, x_power: 1, unique_id: 1 })
           .catch(e => {
             throw new UserInputError(e.message, {
-              invalidArgs: args
+              invalidArgs: args,
             })
           })
       }
@@ -163,7 +163,7 @@ const resolvers = {
         searchCriteria
       ).catch(e => {
         throw new UserInputError(e.message, {
-          invalidArgs: args
+          invalidArgs: args,
         })
       })
 
@@ -172,7 +172,7 @@ const resolvers = {
       if (placementCount !== 0) {
         if (args.page > pageCount)
           throw new UserInputError("too big page number given", {
-            invalidArgs: args
+            invalidArgs: args,
           })
       }
 
@@ -183,16 +183,16 @@ const resolvers = {
         .populate("player")
         .catch(e => {
           throw new UserInputError(e.message, {
-            invalidArgs: args
+            invalidArgs: args,
           })
         })
 
       return { pageCount, placements }
-    }
-  }
+    },
+  },
 }
 
 module.exports = {
   Placement: typeDef,
-  placementResolvers: resolvers
+  placementResolvers: resolvers,
 }

@@ -1,9 +1,9 @@
 const { UserInputError, gql } = require("apollo-server-express")
-const User = require("../models/user")
-const Ballot = require("../models/ballot")
-const Suggested = require("../models/suggested")
-const Summary = require("../models/summary")
-const VotedPerson = require("../models/votedperson")
+const User = require("../mongoose-models/user")
+const Ballot = require("../mongoose-models/ballot")
+const Suggested = require("../mongoose-models/suggested")
+const Summary = require("../mongoose-models/summary")
+const VotedPerson = require("../mongoose-models/votedperson")
 
 const typeDef = gql`
   extend type Query {
@@ -20,6 +20,14 @@ const typeDef = gql`
   enum PlusRegion {
     EU
     NA
+  }
+
+  type PlusGeneralInfo {
+    plus_one_invite_link: String
+    plus_two_invite_link: String
+    voting_ends: String
+    plus_one_members: [User!]!
+    plus_two_members: [User!]!
   }
 
   type Suggested {

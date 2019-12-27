@@ -1,5 +1,5 @@
-const { UserInputError, gql } = require('apollo-server-express')
-const Trend = require('../models/trend')
+const { UserInputError, gql } = require("apollo-server-express")
+const Trend = require("../mongoose-models/trend")
 
 const typeDef = gql`
   extend type Query {
@@ -25,18 +25,16 @@ const typeDef = gql`
 const resolvers = {
   Query: {
     searchForTrend: (root, args) => {
-      return Trend
-      .findOne({ weapon: args.weapon })
-      .catch(e => {
+      return Trend.findOne({ weapon: args.weapon }).catch(e => {
         throw new UserInputError(e.message, {
           invalidArgs: args,
         })
       })
-    }
-  }
+    },
+  },
 }
 
 module.exports = {
   Trend: typeDef,
-  trendResolvers: resolvers
+  trendResolvers: resolvers,
 }

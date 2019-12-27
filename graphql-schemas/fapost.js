@@ -1,5 +1,5 @@
 const { UserInputError, gql } = require("apollo-server-express")
-const FAPost = require("../models/fapost")
+const FAPost = require("../mongoose-models/fapost")
 const sendFAPostToDiscord = require("../utils/webhook")
 
 const canVCValues = ["YES", "USUALLY", "SOMETIMES", "NO"]

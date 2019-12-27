@@ -7,7 +7,7 @@ const MongoStore = require("connect-mongo")(session)
 const cors = require("cors")
 const passport = require("passport")
 const DiscordStrategy = require("passport-discord").Strategy
-const User = require("./models/user")
+const User = require("./mongoose-models/user")
 const path = require("path")
 const schema = require("./schema")
 
