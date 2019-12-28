@@ -8,12 +8,10 @@ import Loading from "../common/Loading"
 import Error from "../common/Error"
 import { userLean } from "../../graphql/queries/userLean"
 
-const SuggestionList = ({ data, loading, error }) => {
-  if (loading) return <Loading />
-  if (error) return <Error errorMessage={error.message} />
-  if (data.suggestions.length === 0) return null
+const SuggestionList = ({ suggestionsArray }) => {
+  if (suggestionsArray.length === 0) return null
 
-  const suggestionLists = data.suggestions.reduce(
+  const suggestionLists = suggestionsArray.reduce(
     (acc, cur) => {
       const Item = (
         <React.Fragment key={cur.suggester_discord_user.discord_id}>
@@ -90,16 +88,20 @@ const Suggestions = ({
     loading: userQueryLoading,
   } = useQuery(userLean)
 
-  const ownSuggestion =
-    loading || error || !data || userQueryLoading || userQueryError || !userData
-      ? null
-      : data.suggestions.find(
-          suggestion =>
-            suggestion.suggester_discord_user.discord_id ===
-            userData.user.discord_id
-        )
+  {
+    /*just return on userLean error/loading */
+  }
 
-  const handleSuccess = message => {
+  if (loading || userQueryLoading) return <Loading />
+  if (error) return <Error errorMessage={error.message} />
+  if (userQueryError) return <Error errorMessage={userQueryError.message} />
+
+  const ownSuggestion = data.suggestions.find(
+    suggestion =>
+      suggestion.suggester_discord_user.discord_id === userData.user.discord_id
+  )
+
+  const handleSuccess = () => {
     setSuccessMsg("Suggestion successfully added.")
     setShowSuggestionForm(false)
     setTimeout(() => {
@@ -117,18 +119,13 @@ const Suggestions = ({
 
   return (
     <>
-      {!showSuggestionForm &&
-        !loading &&
-        !error &&
-        !userQueryLoading &&
-        !userQueryError &&
-        !ownSuggestion && (
-          <div style={{ marginTop: "2em" }}>
-            <Button onClick={() => setShowSuggestionForm(true)}>
-              Suggest a player
-            </Button>
-          </div>
-        )}
+      {!showSuggestionForm && !ownSuggestion && (
+        <div style={{ marginTop: "2em" }}>
+          <Button onClick={() => setShowSuggestionForm(true)}>
+            Suggest a player
+          </Button>
+        </div>
+      )}
       {successMsg && <Message success>{successMsg}</Message>}
       {errorMsg && <Message error>{errorMsg}</Message>}
       {showSuggestionForm && (
@@ -139,7 +136,7 @@ const Suggestions = ({
           handleError={handleError}
         />
       )}
-      <SuggestionList data={data} loading={loading} error={error} />
+      <SuggestionList suggestionsArray={data.suggestions} />
     </>
   )
 }
