@@ -1,44 +1,43 @@
 import React, { useState } from "react"
 import { Message, Image, Icon, Radio, Form, Button } from "semantic-ui-react"
 import { Link } from "react-router-dom"
+import { useMutation } from "@apollo/react-hooks"
 
 import UserSearch from "../common/UserSearch"
 import TextAreaWithLimit from "../common/TextAreaWithLimit"
+import { addSuggestion } from "../../graphql/mutations/addSuggestion"
+import { suggestions } from "../../graphql/queries/suggestions"
 
-const SuggestionForm = ({ plusServer }) => {
+const SuggestionForm = ({
+  plusServer,
+  hideForm,
+  handleSuccess,
+  handleError,
+}) => {
   const [selectedUser, setSelectedUser] = useState(null)
-  /*const [selectedUser, setSelectedUser] = useState({
-    title: "Sendou#0043",
-    description: "@sendouc",
-    image: "https://avatars.io/twitter/sendouc",
-    id: "79237403620945920",
-  })*/
   const [form, setForm] = useState({})
 
-  console.log("selectedUser", selectedUser)
+  const [addSuggestionMutation] = useMutation(addSuggestion, {
+    onError: handleError,
+    onCompleted: handleSuccess,
+    refetchQueries: [
+      {
+        query: suggestions,
+      },
+    ],
+  })
+
+  const handleSubmit = async event => {
+    event.preventDefault()
+    await addSuggestionMutation({
+      variables: { ...form, discord_id: selectedUser.id },
+    })
+  }
+
   return (
     <>
-      {!selectedUser && (
-        <>
-          <Message>
-            Note that you can only search for people who have logged in to
-            sendou.ink at least once
-          </Message>
-          <div>
-            <label>
-              <b>
-                Search for a player to suggest using Discord name, Twitter name
-                or Discord ID
-              </b>
-            </label>
-          </div>
-          <div style={{ marginTop: "1em" }}>
-            <UserSearch setSelection={setSelectedUser} />
-          </div>
-        </>
-      )}
-      {selectedUser && (
-        <Form>
+      {selectedUser ? (
+        <Form onSubmit={handleSubmit}>
           <Form.Field>
             <h3>Suggesting</h3>
           </Form.Field>
@@ -77,16 +76,16 @@ const SuggestionForm = ({ plusServer }) => {
                 label="+1"
                 disabled={plusServer !== "ONE"}
                 value="ONE"
-                checked={form.plus_server === "ONE"}
-                onChange={() => setForm({ ...form, plus_server: "ONE" })}
+                checked={form.server === "ONE"}
+                onChange={() => setForm({ ...form, server: "ONE" })}
               />
             </Form.Field>
             <Form.Field>
               <Radio
                 label="+2"
                 value="TWO"
-                checked={form.plus_server === "TWO"}
-                onChange={() => setForm({ ...form, plus_server: "TWO" })}
+                checked={form.server === "TWO"}
+                onChange={() => setForm({ ...form, server: "TWO" })}
               />
             </Form.Field>
           </Form.Field>
@@ -96,16 +95,16 @@ const SuggestionForm = ({ plusServer }) => {
               <Radio
                 label="Europe"
                 value="EU"
-                checked={form.plus_region === "EU"}
-                onChange={() => setForm({ ...form, plus_region: "EU" })}
+                checked={form.region === "EU"}
+                onChange={() => setForm({ ...form, region: "EU" })}
               />
             </Form.Field>
             <Form.Field>
               <Radio
                 label="The Americas"
                 value="NA"
-                checked={form.plus_region === "NA"}
-                onChange={() => setForm({ ...form, plus_region: "NA" })}
+                checked={form.region === "NA"}
+                onChange={() => setForm({ ...form, region: "NA" })}
               />
             </Form.Field>
             <Form.Field>
@@ -125,28 +124,47 @@ const SuggestionForm = ({ plusServer }) => {
             </Form.Field>
           </Form.Field>
           <Form.Field>
+            <b>
+              You can't edit or delete a suggestion after you have submitted it
+            </b>
+          </Form.Field>
+          <Form.Field>
             <Button
               type="submit"
-              disabled={
-                !form.plus_server || !form.plus_region || !form.description
-              }
+              disabled={!form.server || !form.region || !form.description}
             >
               Submit
             </Button>
             <span style={{ marginLeft: "0.3em" }}>
-              <Button
-                type="button"
-                negative
-                onClick={() => {
-                  setForm({})
-                  setSelectedUser(null)
-                }}
-              >
+              <Button type="button" negative onClick={() => hideForm()}>
                 Cancel
               </Button>
             </span>
           </Form.Field>
         </Form>
+      ) : (
+        <>
+          <Message>
+            Note that you can only search for people who have logged in to
+            sendou.ink at least once
+          </Message>
+          <div>
+            <label>
+              <b>
+                Search for a player to suggest using Discord name, Twitter name
+                or Discord ID
+              </b>
+            </label>
+          </div>
+          <div style={{ marginTop: "1em" }}>
+            <UserSearch setSelection={setSelectedUser} />
+          </div>
+          <div style={{ marginTop: "1em" }}>
+            <Button type="button" negative onClick={() => hideForm()}>
+              Cancel
+            </Button>
+          </div>
+        </>
       )}
     </>
   )

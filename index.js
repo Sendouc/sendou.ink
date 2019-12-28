@@ -103,6 +103,10 @@ const server = new ApolloServer({
           ],
           country: "fi",
           top500: true,
+          plus: {
+            membership_status: "ONE",
+            vouch_status: null,
+          },
         },
       }
     }

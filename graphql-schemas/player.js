@@ -270,15 +270,16 @@ const resolvers = {
           invalidArgs: args,
         })
       })
+      if (user) {
+        user.top500 = null
 
-      user.top500 = null
-
-      try {
-        await user.save()
-      } catch (error) {
-        throw new UserInputError(error.message, {
-          invalidArgs: args,
-        })
+        try {
+          await user.save()
+        } catch (error) {
+          throw new UserInputError(error.message, {
+            invalidArgs: args,
+          })
+        }
       }
 
       return true

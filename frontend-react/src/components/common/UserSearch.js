@@ -3,7 +3,6 @@ import { useQuery } from "@apollo/react-hooks"
 import { Search } from "semantic-ui-react"
 
 import { users } from "../../graphql/queries/users"
-import Loading from "./Loading"
 import Error from "./Error"
 
 const RESULTS_TO_SHOW = 10
@@ -12,7 +11,7 @@ const UserSearch = ({ setSelection }) => {
   const { data, error, loading } = useQuery(users)
   const [value, setValue] = useState("")
 
-  if (loading) return <Loading />
+  if (loading) return <Search loading />
   if (error) return <Error errorMessage={error.message} />
 
   let filteredArray = data.users.filter(user => {
