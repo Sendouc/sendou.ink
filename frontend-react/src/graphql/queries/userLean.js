@@ -7,6 +7,9 @@ export const userLean = gql`
       username
       twitter_name
       discord_id
+      plus {
+        membership_status
+      }
     }
   }
 `

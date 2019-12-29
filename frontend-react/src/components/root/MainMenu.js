@@ -70,6 +70,7 @@ const MainMenu = () => {
       </Menu.Item>
     )
   }
+
   return (
     <Menu inverted secondary attached="top" stackable>
       <Container>
@@ -122,7 +123,14 @@ const MainMenu = () => {
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
-
+        {data &&
+          data.user &&
+          data.user.plus &&
+          data.user.plus.membership_status && (
+            <Menu.Item as={NavLink} to="/plus">
+              {data.user.plus.membership_status === "ONE" ? "+1" : "+2"}
+            </Menu.Item>
+          )}
         {logInOrAva()}
       </Container>
     </Menu>

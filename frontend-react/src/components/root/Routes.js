@@ -25,6 +25,7 @@ const PlusPage = lazy(() => import("../plus/PlusPage"))
 const UserPage = lazy(() => import("../user/UserPage"))
 const InfoPage = lazy(() => import("./InfoPage"))
 const AdminPanel = lazy(() => import("../admin/AdminPanel"))
+const PleaseLogIn = lazy(() => import("../common/PleaseLogIn"))
 
 const Routes = () => {
   return (
@@ -83,6 +84,9 @@ const Routes = () => {
         </Route>
         <Route path="/admin">
           <AdminPanel />
+        </Route>
+        <Route path="/access">
+          <PleaseLogIn />
         </Route>
         <Route path="/404" render={() => <NotFound />} />
         <Route path="*" render={() => <NotFound />} />

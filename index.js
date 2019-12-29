@@ -84,7 +84,7 @@ mongoose
 const server = new ApolloServer({
   schema,
   context: ({ req }) => {
-    if (process.env.NODE_ENV === "development") {
+    if (process.env.LOGGED_IN) {
       return {
         user: {
           _id: "5cee8f73d1120d4315c55011",

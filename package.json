@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "cross-env LOGGED_IN=TRUE node index.js",
+    "loggedout": "node index.js",
     "watch": "nodemon index.js",
     "build": "cd frontend-react && npm install && npm run build && mv build ../build",
     "testbuild": "rmdir /s /q build && cd frontend-react && npm run build && move build ../build"
@@ -30,6 +31,7 @@
     "webhook-discord": "^3.5.1"
   },
   "devDependencies": {
+    "cross-env": "^6.0.3",
     "nodemon": "^2.0.2"
   }
 }

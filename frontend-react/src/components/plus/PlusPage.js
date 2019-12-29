@@ -7,6 +7,7 @@ import Error from "../common/Error"
 import { plusInfo } from "../../graphql/queries/plusInfo"
 import { Input } from "semantic-ui-react"
 import { Redirect } from "react-router-dom"
+import { userLean } from "../../graphql/queries/userLean"
 
 const copyToClipboard = (e, refToUse, setCopySuccess) => {
   refToUse.current.select()
@@ -43,9 +44,16 @@ const PlusPage = () => {
   const [plusTwoCopySuccess, setPlusTwoCopySuccess] = useState(false)
 
   const { data, error, loading } = useQuery(plusInfo)
+  const {
+    data: userData,
+    error: userQueryError,
+    loading: userQueryLoading,
+  } = useQuery(userLean)
 
-  if (loading) return <Loading />
+  if (loading || userQueryLoading) return <Loading />
   if (error) return <Error errorMessage={error.message} />
+  if (userQueryError) return <Error errorMessage={userQueryError.message} />
+  if (!userData.user) return <Redirect to="/access" />
   if (!data.plusInfo) return <Redirect to="/404" />
 
   return (
@@ -86,6 +94,7 @@ const PlusPage = () => {
       )}
       {!data.plusInfo.voting_ends && (
         <Suggestions
+          user={userData.user}
           plusServer={data.plusInfo.users_membership}
           showSuggestionForm={showSuggestionForm}
           setShowSuggestionForm={setShowSuggestionForm}

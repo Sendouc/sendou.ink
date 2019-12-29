@@ -76,7 +76,7 @@ const resolvers = {
   },
   Query: {
     user: (root, args, ctx) => {
-      if (process.env.NODE_ENV === "development") {
+      if (process.env.LOGGED_IN) {
         return {
           id: "5cee8f73d1120d4315c55011",
           discord_id: "79237403620945920",
@@ -86,6 +86,11 @@ const resolvers = {
           twitch_name: "sendou",
           twitter_name: "sendouc",
           username: "Sendou",
+          top500: true,
+          plus: {
+            membership_status: "ONE",
+            vouch_status: null,
+          },
         }
       }
       return ctx.user

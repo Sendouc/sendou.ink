@@ -74,6 +74,7 @@ const SuggestionList = ({ suggestionsArray }) => {
 }
 
 const Suggestions = ({
+  user,
   showSuggestionForm,
   setShowSuggestionForm,
   plusServer,
@@ -82,23 +83,13 @@ const Suggestions = ({
   const [errorMsg, setErrorMsg] = useState(null)
 
   const { data, error, loading } = useQuery(suggestions)
-  const {
-    data: userData,
-    error: userQueryError,
-    loading: userQueryLoading,
-  } = useQuery(userLean)
 
-  {
-    /*just return on userLean error/loading */
-  }
-
-  if (loading || userQueryLoading) return <Loading />
+  if (loading) return <Loading minHeight="250px" />
   if (error) return <Error errorMessage={error.message} />
-  if (userQueryError) return <Error errorMessage={userQueryError.message} />
 
   const ownSuggestion = data.suggestions.find(
     suggestion =>
-      suggestion.suggester_discord_user.discord_id === userData.user.discord_id
+      suggestion.suggester_discord_user.discord_id === user.discord_id
   )
 
   const handleSuccess = () => {

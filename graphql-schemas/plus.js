@@ -93,7 +93,7 @@ const typeDef = gql`
     plus_server: PlusServer!
     month: Int!
     year: Int!
-    "Average of all scores of the voters for the month -100% to 100%"
+    "Average of all scores of the voters for the month 0% to 100%"
     score: Float!
   }
 `
