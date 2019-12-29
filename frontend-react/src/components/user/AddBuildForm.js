@@ -141,27 +141,15 @@ const AddBuildForm = ({
           onChange={(e, { value }) => setWeapon(value)}
         />
       </div>
+      <Message>
+        <b>Tip!</b> You can automatically fill in the abilities by first
+        choosing a gear you used in the past with another build
+      </Message>
       <div style={{ paddingTop: "10px" }}>
         <AbilityButtons abilities={abilities} setAbilities={setAbilities} />
       </div>
       <div style={{ paddingTop: "15px" }}>
         <Form error={title.length > 100}>
-          <Form.Field>
-            <label>Title</label>
-            <input value={title} onChange={e => setTitle(e.target.value)} />
-            <Message
-              error
-              content={"Title can't be longer than 100 characters."}
-            />
-          </Form.Field>
-          <Form.Field>
-            <label>Description</label>
-            <TextAreaWithLimit
-              value={description}
-              setValue={setDescription}
-              limit={1000}
-            />
-          </Form.Field>
           <Form.Group widths="equal">
             <Form.Field>
               <label>Head gear</label>
@@ -216,12 +204,27 @@ const AddBuildForm = ({
                     !abilities[2][2]
                       ? [...existingGear[gear]]
                       : [...abilities[2]],
-                    ,
                   ])
                 }}
               />
             </Form.Field>
           </Form.Group>
+          <Form.Field>
+            <label>Title</label>
+            <input value={title} onChange={e => setTitle(e.target.value)} />
+            <Message
+              error
+              content={"Title can't be longer than 100 characters."}
+            />
+          </Form.Field>
+          <Form.Field>
+            <label>Description</label>
+            <TextAreaWithLimit
+              value={description}
+              setValue={setDescription}
+              limit={1000}
+            />
+          </Form.Field>
         </Form>
       </div>
       <div style={{ paddingTop: "10px" }}>
