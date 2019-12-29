@@ -99,6 +99,8 @@ const resolvers = {
       let searchCriteria = {}
       if (args.twitter) searchCriteria = { twitter_name: args.twitter }
       else if (args.discord_id) searchCriteria = { discord_id: args.discord_id }
+      else if (args.short_url)
+        searchCriteria = { short_url: args.short_url.toLowerCase() }
       else
         throw new UserInputError("no twitter or discord id provided", {
           invalidArgs: args,

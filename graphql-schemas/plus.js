@@ -4,7 +4,6 @@ const {
   gql,
 } = require("apollo-server-express")
 const User = require("../mongoose-models/user")
-const Ballot = require("../mongoose-models/ballot")
 const Suggested = require("../mongoose-models/suggested")
 const Summary = require("../mongoose-models/summary")
 const VotedPerson = require("../mongoose-models/votedperson")
@@ -75,14 +74,6 @@ const typeDef = gql`
     year: Int!
     "Voting result -2 to +2 (-1 to +1 cross-region)"
     score: Float!
-  }
-
-  type Ballot {
-    discord_id: String!
-    plus_server: PlusServer!
-    month: Int!
-    year: Int!
-    votes: [VotedPerson!]!
   }
 
   "Voting result of a player"
@@ -194,6 +185,22 @@ const resolvers = {
       })
 
       if (suggestion) throw new UserInputError("Already suggested this month.")
+
+      const duplicateSuggestion = await Suggested.findOne({
+        discord_id: args.discord_id,
+        plus_server: args.server,
+      }).catch(e => {
+        throw (new Error(),
+        {
+          invalidArgs: args,
+          error: e,
+        })
+      })
+
+      if (duplicateSuggestion)
+        throw new UserInputError(
+          "This user has already been suggested this month."
+        )
 
       if (!user)
         throw new UserInputError("Suggested user not sendou.ink member.")

@@ -17,7 +17,7 @@ const UserPage = () => {
   const { id } = useParams()
   const [tab, setTab] = useQueryParam("tab", NumberParam)
   const { data, error, loading } = useQuery(searchForUser, {
-    variables: { discord_id: id },
+    variables: isNaN(id) ? { short_url: id } : { discord_id: id },
   })
   const userLeanQuery = useQuery(userLean)
 
