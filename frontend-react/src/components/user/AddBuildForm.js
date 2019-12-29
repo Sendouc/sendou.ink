@@ -13,6 +13,7 @@ const AddBuildForm = ({
   existingBuild,
   setShowEdit,
   editBuildFunction,
+  buildsArray,
 }) => {
   const scrollRef = useRef(null)
   const [weapon, setWeapon] = useState(
@@ -63,6 +64,15 @@ const AddBuildForm = ({
     clothingItem,
     shoesItem,
   }
+
+  const existingGear = buildsArray
+    ? buildsArray.reduce((acc, cur) => {
+        acc[cur.headgearItem] = [...cur.headgear]
+        acc[cur.clothingItem] = [...cur.clothing]
+        acc[cur.shoesItem] = [...cur.shoes]
+        return acc
+      }, {})
+    : {}
 
   const submit = async e => {
     e.preventDefault()
@@ -155,15 +165,61 @@ const AddBuildForm = ({
           <Form.Group widths="equal">
             <Form.Field>
               <label>Head gear</label>
-              <GearSearch slot="head" setGear={setHeadgear} />
+              <GearSearch
+                slot="head"
+                setGear={gear => {
+                  setHeadgear(gear)
+                  setAbilities([
+                    existingGear[gear] &&
+                    !abilities[0][0] &&
+                    !abilities[0][1] &&
+                    !abilities[0][2]
+                      ? [...existingGear[gear]]
+                      : [...abilities[0]],
+                    [...abilities[1]],
+                    [...abilities[2]],
+                  ])
+                }}
+              />
             </Form.Field>
             <Form.Field>
               <label>Clothes gear</label>
-              <GearSearch slot="clothes" setGear={setClothing} />
+              <GearSearch
+                slot="clothes"
+                setGear={gear => {
+                  setClothing(gear)
+                  setAbilities([
+                    [...abilities[0]],
+                    existingGear[gear] &&
+                    !abilities[1][0] &&
+                    !abilities[1][1] &&
+                    !abilities[1][2]
+                      ? [...existingGear[gear]]
+                      : [...abilities[1]],
+                    [...abilities[2]],
+                  ])
+                }}
+              />
             </Form.Field>
             <Form.Field>
               <label>Shoes gear</label>
-              <GearSearch slot="shoes" setGear={setShoes} />
+              <GearSearch
+                slot="shoes"
+                setGear={gear => {
+                  setShoes(gear)
+                  setAbilities([
+                    [...abilities[0]],
+                    [...abilities[1]],
+                    existingGear[gear] &&
+                    !abilities[2][0] &&
+                    !abilities[2][1] &&
+                    !abilities[2][2]
+                      ? [...existingGear[gear]]
+                      : [...abilities[2]],
+                    ,
+                  ])
+                }}
+              />
             </Form.Field>
           </Form.Group>
         </Form>

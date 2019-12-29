@@ -121,6 +121,7 @@ const BuildTab = ({ user, userViewed }) => {
         {showForm ? (
           <div style={{ paddingTop: "10px" }}>
             <AddBuildForm
+              buildsArray={data.searchForBuilds}
               addBuild={addBuildMutation}
               setShowForm={setShowForm}
               setSuccessMsg={setSuccessMsg}
