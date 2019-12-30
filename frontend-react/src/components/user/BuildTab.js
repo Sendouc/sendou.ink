@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { useQuery, useMutation } from "@apollo/react-hooks"
 import { Button, Message, Card } from "semantic-ui-react"
 
+import { weapons } from "../../utils/lists"
 import { addBuild } from "../../graphql/mutations/addBuild"
 import { searchForBuilds } from "../../graphql/queries/searchForBuilds"
 import { deleteBuild } from "../../graphql/mutations/deleteBuild"
@@ -130,15 +131,17 @@ const BuildTab = ({ user, userViewed }) => {
         ) : null}
       </div>
       <Card.Group style={{ marginTop: "0.8em" }}>
-        {data.searchForBuilds.map(b => (
-          <BuildCard
-            key={b.id}
-            build={b}
-            removeBuildFunction={removeBuildFunction}
-            editBuildFunction={editBuildFunction}
-            setSuccessMsg={setSuccessMsg}
-          />
-        ))}
+        {data.searchForBuilds
+          .sort((a, b) => weapons.indexOf(a.weapon) - weapons.indexOf(b.weapon))
+          .map(b => (
+            <BuildCard
+              key={b.id}
+              build={b}
+              removeBuildFunction={removeBuildFunction}
+              editBuildFunction={editBuildFunction}
+              setSuccessMsg={setSuccessMsg}
+            />
+          ))}
         {data.searchForBuilds.length === 0
           ? "So far this user has no builds!"
           : null}
