@@ -10,7 +10,7 @@ const typeDef = gql`
     "Returns the current logged in user or null if not logged in."
     user: User
     "Returns user. Either discord_id or twitter has to provided or error is thrown."
-    searchForUser(discord_id: String, twitter: String): User
+    searchForUser(discord_id: String, twitter: String, custom_url: String): User
     "Returns all users"
     users: [User!]!
   }
@@ -20,6 +20,7 @@ const typeDef = gql`
       motion_sens: Float
       stick_sens: Float
       weapons: [String]
+      custom_url: String
     ): Boolean
   }
 
@@ -29,7 +30,7 @@ const typeDef = gql`
     motion: Float
   }
 
-  "Represents user account. Also includes info regarding solo ladder."
+  "Represents user account."
   type User {
     id: ID!
     "User's username. This is the same as their name on Discord. Updated on every log-in."
@@ -43,6 +44,7 @@ const typeDef = gql`
     country: String
     sens: Sens
     weapons: [String]!
+    custom_url: String
     top500: Boolean!
   }
 `
@@ -87,6 +89,7 @@ const resolvers = {
           twitter_name: "sendouc",
           username: "Sendou",
           top500: true,
+          //custom_url: "sendou",
           plus: {
             membership_status: "ONE",
             vouch_status: null,
@@ -99,12 +102,13 @@ const resolvers = {
       let searchCriteria = {}
       if (args.twitter) searchCriteria = { twitter_name: args.twitter }
       else if (args.discord_id) searchCriteria = { discord_id: args.discord_id }
-      else if (args.short_url)
-        searchCriteria = { short_url: args.short_url.toLowerCase() }
+      else if (args.custom_url)
+        searchCriteria = { custom_url: args.custom_url.toLowerCase() }
       else
-        throw new UserInputError("no twitter or discord id provided", {
+        throw new UserInputError("no search criteria provided", {
           invalidArgs: args,
         })
+
       return User.findOne(searchCriteria).catch(e => {
         throw new UserInputError(e.message, {
           invalidArgs: args,
@@ -178,11 +182,36 @@ const resolvers = {
         }
       }
 
-      const user = await User.findById(ctx.user._id)
-      if (!user)
-        throw new UserInputError("No user found with the id", {
-          invalidArgs: args,
-        })
+      const user = ctx.user
+
+      if (args.custom_url) {
+        const url = args.custom_url.toLowerCase()
+        if (user.custom_url && user.custom_url !== url)
+          throw new UserInputError("Custom URL already set")
+        if (
+          url.length < 2 ||
+          url.length > 32 ||
+          !isNaN(url) ||
+          !/^[a-z0-9]+$/i.test(url)
+        ) {
+          throw new UserInputError("Invalid custom URL provided", {
+            invalidArgs: args,
+          })
+        }
+
+        const userWithCustomUrl = await User.findOne({ custom_url: url }).catch(
+          e => {
+            throw new Error(error.message)
+          }
+        )
+
+        if (userWithCustomUrl && userWithCustomUrl._id !== user._id)
+          throw new UserInputError(
+            "Some other user already claimed this custom URL"
+          )
+
+        args.custom_url = url
+      }
 
       await User.findByIdAndUpdate(ctx.user._id, { ...args }).catch(e => {
         throw new UserInputError(error.message, {

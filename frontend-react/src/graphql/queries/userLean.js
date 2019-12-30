@@ -7,6 +7,7 @@ export const userLean = gql`
       username
       twitter_name
       discord_id
+      custom_url
       plus {
         membership_status
       }

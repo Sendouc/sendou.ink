@@ -95,7 +95,7 @@ const PlusPage = () => {
       {!data.plusInfo.voting_ends && (
         <Suggestions
           user={userData.user}
-          plusServer={data.plusInfo.users_membership}
+          plusServer={userData.user?.plus?.membership_status}
           showSuggestionForm={showSuggestionForm}
           setShowSuggestionForm={setShowSuggestionForm}
         />

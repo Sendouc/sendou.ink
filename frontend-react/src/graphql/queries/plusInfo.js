@@ -6,7 +6,6 @@ export const plusInfo = gql`
       plus_one_invite_link
       plus_two_invite_link
       voting_ends
-      users_membership
     }
   }
 `

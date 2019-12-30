@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react"
-import { Header, Form, Select, Button } from "semantic-ui-react"
+import { Header, Form, Select, Button, Message, Label } from "semantic-ui-react"
 import CountryDropdown from "./CountryDropdown"
 import WeaponDropdown from "../common/WeaponDropdown"
 import { updateUser } from "../../graphql/mutations/updateUser"
 import { searchForUser } from "../../graphql/queries/searchForUser"
 import { useMutation } from "@apollo/react-hooks"
+import URLSelector from "./URLSelector"
 
 const sensOptions = [
   -5,
@@ -33,6 +34,7 @@ const sensOptions = [
 const Settings = ({ user, closeSettings, handleSuccess, handleError }) => {
   const [forms, setForms] = useState(user)
   const [submitDisabled, setSubmitDisabled] = useState(true)
+  const [customURLError, setCustomURLError] = useState(null)
 
   useEffect(() => {
     if (JSON.stringify(user) === JSON.stringify(forms)) setSubmitDisabled(true)
@@ -52,11 +54,25 @@ const Settings = ({ user, closeSettings, handleSuccess, handleError }) => {
     ],
   })
 
+  useEffect(() => {
+    const url = forms.custom_url ?? ""
+    if (url.length < 2)
+      setCustomURLError("Custom URL has to be over 2 characters long")
+    else if (url.length > 32)
+      setCustomURLError("Custom URL has to be under 32 characters long")
+    else if (!isNaN(url))
+      setCustomURLError("Custom URL has to contain at least one letter")
+    else if (!/^[a-z0-9]+$/i.test(url))
+      setCustomURLError("Custom URL can only contain letters and numbers")
+    else setCustomURLError("")
+  }, [forms.custom_url])
+
   const handleSubmit = async () => {
     const newProfile = { ...forms }
     if (newProfile.country === "") newProfile.country = null
     if (newProfile.stick_sens === "") newProfile.stick_sens = null
     if (newProfile.motion_sens === "") newProfile.motion_sens = null
+    if (newProfile.custom_url === "") newProfile.custom_url = null
 
     await editUserMutation({
       variables: { ...newProfile },
@@ -79,7 +95,26 @@ const Settings = ({ user, closeSettings, handleSuccess, handleError }) => {
       <Header size="small">Profile picture</Header>
       To add a profile picture you need to verify your Twitter on Discord and
       log back in to sendou.ink
-      <Form style={{ marginTop: "2em" }} onSubmit={handleSubmit}>
+      <Form
+        style={{ marginTop: "2em" }}
+        onSubmit={handleSubmit}
+        error={Boolean(customURLError)}
+      >
+        <Form.Field>
+          <label>Custom URL</label>
+          <Message error>{customURLError}</Message>
+          {user.custom_url ? (
+            <Label>https://sendou.ink/u/{user.custom_url}</Label>
+          ) : (
+            <URLSelector
+              value={forms.custom_url ?? ""}
+              onChange={(e, { value }) =>
+                setForms({ ...forms, custom_url: value })
+              }
+              error={Boolean(customURLError)}
+            />
+          )}
+        </Form.Field>
         <Form.Field>
           <label>Country</label>
           <CountryDropdown

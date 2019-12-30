@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { Tab, Image, Grid, Button, Message } from "semantic-ui-react"
-import { Redirect } from "react-router-dom"
+import { Redirect, useHistory } from "react-router-dom"
 import { useQuery } from "@apollo/react-hooks"
 import { useParams } from "react-router-dom"
 import { searchForUser } from "../../graphql/queries/searchForUser"
@@ -15,9 +15,10 @@ import ProfileLists from "./ProfileLists"
 
 const UserPage = () => {
   const { id } = useParams()
+  const history = useHistory()
   const [tab, setTab] = useQueryParam("tab", NumberParam)
   const { data, error, loading } = useQuery(searchForUser, {
-    variables: isNaN(id) ? { short_url: id } : { discord_id: id },
+    variables: isNaN(id) ? { custom_url: id } : { discord_id: id },
   })
   const userLeanQuery = useQuery(userLean)
 
@@ -45,9 +46,11 @@ const UserPage = () => {
   useEffect(() => {
     if (loading || !data || !data.searchForUser) return
     document.title = `${data.searchForUser.username} - sendou.ink`
+    if (data.searchForUser.custom_url)
+      history.replace(`/u/${data.searchForUser.custom_url}`)
 
     return () => setImageError(false)
-  }, [loading, data])
+  }, [loading, data, history])
 
   if (loading || userLeanQuery.loading) return <Loading />
 
@@ -134,7 +137,7 @@ const UserPage = () => {
             }}
             closeSettings={() => setShowSettings(false)}
             handleSuccess={() => handleSuccess()}
-            handleError={() => handleError()}
+            handleError={error => handleError(error)}
           />
         ) : (
           <Tab

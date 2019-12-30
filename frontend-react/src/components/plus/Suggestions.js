@@ -6,7 +6,6 @@ import SuggestionForm from "./SuggestionForm"
 import { suggestions } from "../../graphql/queries/suggestions"
 import Loading from "../common/Loading"
 import Error from "../common/Error"
-import { userLean } from "../../graphql/queries/userLean"
 
 const SuggestionList = ({ suggestionsArray }) => {
   if (suggestionsArray.length === 0) return null

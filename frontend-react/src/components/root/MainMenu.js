@@ -34,7 +34,10 @@ const MainMenu = () => {
         key: "user",
         text: "User Page",
         icon: "user",
-        onClick: () => history.push(`/u/${user.discord_id}`),
+        onClick: () =>
+          history.push(
+            user.custom_url ? `/u/${user.custom_url}` : `/u/${user.discord_id}`
+          ),
       },
       {
         key: "sign-out",

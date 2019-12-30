@@ -37,7 +37,6 @@ const typeDef = gql`
   }
 
   type PlusGeneralInfo {
-    users_membership: String!
     plus_one_invite_link: String
     plus_two_invite_link: String!
     voting_ends: String
@@ -136,7 +135,6 @@ const resolvers = {
           plus_server === "ONE" ? process.env.PLUS_ONE_LINK : null,
         plus_two_invite_link: process.env.PLUS_TWO_LINK,
         voting_ends: null,
-        users_membership: plus_server,
       }
     },
     suggestions: (root, args, ctx) => {

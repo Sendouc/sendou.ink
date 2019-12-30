@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema({
   },
   weapons: [String],
   top500: Boolean,
+  custom_url: String,
   plus: {
     membership_status: String,
     vouch_status: String,
