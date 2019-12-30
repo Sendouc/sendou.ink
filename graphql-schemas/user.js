@@ -205,7 +205,10 @@ const resolvers = {
           }
         )
 
-        if (userWithCustomUrl && userWithCustomUrl._id !== user._id)
+        if (
+          userWithCustomUrl &&
+          userWithCustomUrl.discord_id !== user.discord_id
+        )
           throw new UserInputError(
             "Some other user already claimed this custom URL"
           )
