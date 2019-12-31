@@ -13,6 +13,7 @@ const typeDef = gql`
     plusInfo: PlusGeneralInfo
     hasAccess(discord_id: String!, server: String!): Boolean!
     suggestions: [Suggested!]!
+    usersForVoting: UsersForVoting!
   }
 
   extend type Mutation {
@@ -86,6 +87,11 @@ const typeDef = gql`
     "Average of all scores of the voters for the month 0% to 100%"
     score: Float!
   }
+
+  type UsersForVoting {
+    users: [User!]!
+    suggested: [Suggested!]!
+  }
 `
 
 const resolvers = {
@@ -136,6 +142,36 @@ const resolvers = {
         plus_two_invite_link: process.env.PLUS_TWO_LINK,
         voting_ends: null,
       }
+    },
+    usersForVoting: async (root, args, ctx) => {
+      if (!ctx.user) throw new UserInputError("Not logged in")
+      if (!ctx.user.plus || !ctx.user.plus.membership_status)
+        throw new UserInputError("Not plus server member")
+      const plus_server = ctx.user.plus.membership_status
+
+      const users = await User.find({
+        $or: [
+          {
+            "plus.membership_status": plus_server,
+          },
+
+          { "plus.vouch_status": plus_server },
+        ],
+      }).catch(e => {
+        throw (new Error(),
+        {
+          error: e,
+        })
+      })
+
+      const suggested = await Suggested.find({ plus_server }).catch(e => {
+        throw (new Error(),
+        {
+          error: e,
+        })
+      })
+
+      return { users, suggested }
     },
     suggestions: (root, args, ctx) => {
       if (!ctx.user || !ctx.user.plus) return null
