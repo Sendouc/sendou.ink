@@ -140,6 +140,7 @@ const BuildTab = ({ user, userViewed }) => {
               removeBuildFunction={removeBuildFunction}
               editBuildFunction={editBuildFunction}
               setSuccessMsg={setSuccessMsg}
+              buildsArray={data.searchForBuilds}
             />
           ))}
         {data.searchForBuilds.length === 0

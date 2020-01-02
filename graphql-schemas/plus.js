@@ -27,6 +27,7 @@ const typeDef = gql`
     ): Boolean!
     addVotes(votes: [VoteInput!]!): Boolean!
     startVoting(ends: String!): Boolean!
+    endVoting: Boolean!
   }
 
   "+1 or +2 LFG server on Discord"
@@ -62,6 +63,7 @@ const typeDef = gql`
   type PlusStatus {
     membership_status: PlusServer
     vouch_status: PlusServer
+    voucher_discord_id: String
     plus_region: PlusRegion
     can_vouch: Boolean
     last_vouched: String
@@ -405,6 +407,11 @@ const resolvers = {
       await State.findOneAndUpdate({}, { voting_ends: args.ends })
 
       return true
+    },
+    endVoting: async (root, args, ctx) => {
+      if (!ctx.user) throw new AuthenticationError("Not logged in.")
+      if (ctx.user.discord_id !== process.env.ADMIN_ID)
+        throw new AuthenticationError("Not admin.")
     },
   },
 }

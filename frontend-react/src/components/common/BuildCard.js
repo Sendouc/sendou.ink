@@ -15,6 +15,7 @@ const BuildCard = ({
   setAbilities,
   removeBuildFunction,
   editBuildFunction,
+  buildsArray,
   showWeapon = true,
   showDescription = true,
 }) => {
@@ -27,6 +28,7 @@ const BuildCard = ({
           existingBuild={build}
           setShowEdit={setShowEdit}
           editBuildFunction={editBuildFunction}
+          buildsArray={buildsArray}
         />
       </div>
     )

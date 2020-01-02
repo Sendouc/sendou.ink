@@ -161,7 +161,8 @@ const AddBuildForm = ({
                     existingGear[gear] &&
                     !abilities[0][0] &&
                     !abilities[0][1] &&
-                    !abilities[0][2]
+                    !abilities[0][2] &&
+                    !abilities[0][3]
                       ? [...existingGear[gear]]
                       : [...abilities[0]],
                     [...abilities[1]],
@@ -181,7 +182,8 @@ const AddBuildForm = ({
                     existingGear[gear] &&
                     !abilities[1][0] &&
                     !abilities[1][1] &&
-                    !abilities[1][2]
+                    !abilities[1][2] &&
+                    !abilities[1][3]
                       ? [...existingGear[gear]]
                       : [...abilities[1]],
                     [...abilities[2]],
@@ -201,7 +203,8 @@ const AddBuildForm = ({
                     existingGear[gear] &&
                     !abilities[2][0] &&
                     !abilities[2][1] &&
-                    !abilities[2][2]
+                    !abilities[2][2] &&
+                    !abilities[2][3]
                       ? [...existingGear[gear]]
                       : [...abilities[2]],
                   ])
