@@ -78,6 +78,9 @@ const PlusPage = () => {
 
   return (
     <>
+      <div style={{ float: "right" }}>
+        <b>{userData.user.plus.plus_region}</b>
+      </div>
       {!showSuggestionForm && (
         <>
           {data.plusInfo.plus_one_invite_link && (
@@ -95,9 +98,6 @@ const PlusPage = () => {
               />
             </>
           )}
-          <div style={{ float: "right" }}>
-            <b>{userData.user.plus.plus_region}</b>
-          </div>
           {data.plusInfo.plus_two_invite_link && (
             <>
               <div style={{ marginTop: "1em" }}>

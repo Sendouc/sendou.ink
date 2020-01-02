@@ -96,6 +96,7 @@ const typeDef = gql`
     year: Int!
     "Average of all scores of the voters for the month 0% to 100%"
     score: Float!
+    new: Boolean!
   }
 
   type UsersForVoting {
@@ -232,7 +233,7 @@ const resolvers = {
     suggestions: (root, args, ctx) => {
       if (!ctx.user || !ctx.user.plus) return null
       const searchCriteria =
-        ctx.user.plus.membership_status === "ONE" ? {} : { plus_region: "TWO" }
+        ctx.user.plus.membership_status === "ONE" ? {} : { plus_server: "TWO" }
       return Suggested.find(searchCriteria)
         .populate("discord_user")
         .populate("suggester_discord_user")

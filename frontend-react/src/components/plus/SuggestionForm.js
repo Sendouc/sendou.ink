@@ -125,7 +125,8 @@ const SuggestionForm = ({
           </Form.Field>
           <Form.Field>
             <b>
-              You can't edit or delete a suggestion after you have submitted it
+              You can't edit or delete a suggestion after you have submitted it.
+              One suggestion per month.
             </b>
           </Form.Field>
           <Form.Field>
