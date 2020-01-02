@@ -5,9 +5,10 @@ import Suggestions from "./Suggestions"
 import Loading from "../common/Loading"
 import Error from "../common/Error"
 import { plusInfo } from "../../graphql/queries/plusInfo"
-import { Input } from "semantic-ui-react"
+import { Input, Message } from "semantic-ui-react"
 import { Redirect } from "react-router-dom"
 import { userLean } from "../../graphql/queries/userLean"
+import Voting from "./Voting"
 
 const copyToClipboard = (e, refToUse, setCopySuccess) => {
   refToUse.current.select()
@@ -42,6 +43,8 @@ const PlusPage = () => {
   const [plusOneCopySuccess, setPlusOneCopySuccess] = useState(false)
   const plusTwoRef = useRef(null)
   const [plusTwoCopySuccess, setPlusTwoCopySuccess] = useState(false)
+  const [successMsg, setSuccessMsg] = useState(null)
+  const [errorMsg, setErrorMsg] = useState(null)
 
   const { data, error, loading } = useQuery(plusInfo)
   const {
@@ -55,6 +58,22 @@ const PlusPage = () => {
   if (userQueryError) return <Error errorMessage={userQueryError.message} />
   if (!userData.user) return <Redirect to="/access" />
   if (!data.plusInfo) return <Redirect to="/404" />
+
+  const handleSuccess = () => {
+    setSuccessMsg("Suggestion successfully added.")
+    setShowSuggestionForm(false)
+    setTimeout(() => {
+      setSuccessMsg(null)
+    }, 10000)
+  }
+
+  const handleError = error => {
+    setErrorMsg(error.message)
+    setShowSuggestionForm(false)
+    setTimeout(() => {
+      setErrorMsg(null)
+    }, 10000)
+  }
 
   return (
     <>
@@ -92,12 +111,22 @@ const PlusPage = () => {
           )}
         </>
       )}
-      {!data.plusInfo.voting_ends && (
+      {successMsg && <Message success>{successMsg}</Message>}
+      {errorMsg && <Message error>{errorMsg}</Message>}
+      {!data.plusInfo.voting_ends ? (
+        <Voting
+          user={userData.user}
+          handleSuccess={handleSuccess}
+          handleError={handleError}
+        />
+      ) : (
         <Suggestions
           user={userData.user}
           plusServer={userData.user?.plus?.membership_status}
           showSuggestionForm={showSuggestionForm}
           setShowSuggestionForm={setShowSuggestionForm}
+          handleSuccess={handleSuccess}
+          handleError={handleError}
         />
       )}
     </>

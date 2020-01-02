@@ -89,10 +89,11 @@ const resolvers = {
           twitter_name: "sendouc",
           username: "Sendou",
           top500: true,
-          //custom_url: "sendou",
+          custom_url: "sendou",
           plus: {
             membership_status: "ONE",
             vouch_status: null,
+            plus_region: "EU",
           },
         }
       }

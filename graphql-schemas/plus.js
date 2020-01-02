@@ -3,10 +3,12 @@ const {
   AuthenticationError,
   gql,
 } = require("apollo-server-express")
+const shuffle = require("../utils/shuffleArray")
 const User = require("../mongoose-models/user")
 const Suggested = require("../mongoose-models/suggested")
 const Summary = require("../mongoose-models/summary")
 const VotedPerson = require("../mongoose-models/votedperson")
+const State = require("../mongoose-models/state")
 
 const typeDef = gql`
   extend type Query {
@@ -23,6 +25,7 @@ const typeDef = gql`
       region: String!
       description: String!
     ): Boolean!
+    addVotes(votes: [VoteInput!]!): Boolean!
   }
 
   "+1 or +2 LFG server on Discord"
@@ -67,13 +70,18 @@ const typeDef = gql`
     plus: PlusStatus
   }
 
+  input VoteInput {
+    discord_id: String!
+    score: Int!
+  }
+
   type VotedPerson {
     discord_id: String!
     voter_discord_id: String!
     month: Int!
     year: Int!
     "Voting result -2 to +2 (-1 to +1 cross-region)"
-    score: Float!
+    score: Int!
   }
 
   "Voting result of a player"
@@ -93,6 +101,33 @@ const typeDef = gql`
     suggested: [Suggested!]!
   }
 `
+
+const validateVotes = (votes, users, suggested, user) => {
+  const region = user.plus.plus_region
+
+  votes.forEach(vote => {
+    const { discord_id, score } = vote
+
+    let user = users.find(user => user.discord_id === discord_id)
+
+    if (!user) {
+      user = suggested.find(
+        suggested => suggested.discord_user.discord_id === discord_id
+      )
+      if (!user)
+        throw new UserInputError(
+          `Invalid user voted on with the id ${discord_id}`
+        )
+      user = user.discord_user
+    }
+
+    if (score !== -2 && score !== -1 && score !== 1 && score !== 2)
+      throw new Error(`Invalid score provided: ${score}`)
+
+    if ((score === -2 || score === 2) && region !== user.plus.plus_region)
+      throw new Error("Score of -2 or 2 given cross region")
+  })
+}
 
 const resolvers = {
   Query: {
@@ -136,18 +171,21 @@ const resolvers = {
           ? "ONE"
           : "TWO"
 
+      const state = await State.findOne({})
+
       return {
         plus_one_invite_link:
           plus_server === "ONE" ? process.env.PLUS_ONE_LINK : null,
         plus_two_invite_link: process.env.PLUS_TWO_LINK,
-        voting_ends: null,
+        voting_ends: state.voting_ends,
       }
     },
     usersForVoting: async (root, args, ctx) => {
       if (!ctx.user) throw new UserInputError("Not logged in")
       if (!ctx.user.plus || !ctx.user.plus.membership_status)
         throw new UserInputError("Not plus server member")
-      const plus_server = ctx.user.plus.membership_status
+      //const plus_server = ctx.user.plus.membership_status
+      const plus_server = "TWO"
 
       const users = await User.find({
         $or: [
@@ -164,12 +202,18 @@ const resolvers = {
         })
       })
 
-      const suggested = await Suggested.find({ plus_server }).catch(e => {
-        throw (new Error(),
-        {
-          error: e,
+      const suggested = await Suggested.find({ plus_server })
+        .populate("discord_user")
+        .populate("suggester_discord_user")
+        .catch(e => {
+          throw (new Error(),
+          {
+            error: e,
+          })
         })
-      })
+
+      shuffle(users)
+      shuffle(suggested)
 
       return { users, suggested }
     },
@@ -270,6 +314,69 @@ const resolvers = {
           invalidArgs: args,
         })
       })
+
+      return true
+    },
+    addVotes: async (root, args, ctx) => {
+      if (!ctx.user) throw new AuthenticationError("Not logged in.")
+      if (
+        !ctx.user.plus ||
+        (!ctx.user.plus.membership_status && !ctx.user.plus.vouch_status)
+      ) {
+        throw new AuthenticationError("Not plus member.")
+      }
+
+      const state = await State.findOne({})
+
+      const date = new Date()
+      if (!state.voting_ends || state.voting_ends < date.getTime())
+        throw new Error("Voting now open right now")
+
+      const votedUsers = {}
+
+      args.votes.forEach(vote => {
+        if (votedUsers[vote.discord_id])
+          throw new UserInputVote(
+            `Duplicate vote with the id ${vote.discord_id}`
+          )
+        votedUsers[vote.discord_id] = true
+      })
+
+      const users = await User.find({
+        $or: [
+          {
+            "plus.membership_status": plus_server,
+          },
+
+          { "plus.vouch_status": plus_server },
+        ],
+      })
+
+      const suggested = await Suggested.find({ plus_server })
+        .populate("discord_user")
+        .populate("suggester_discord_user")
+
+      if (users.length + suggested.length !== args.votes.length)
+        throw new UserInputError("Invalid number of votes provided")
+
+      validateVotes(args.votes, users, suggested, ctx.user)
+
+      const year = date.getFullYear()
+      const month = date.getMonth()
+      await VotedPerson.deleteMany({
+        voter_discord_id: ctx.user.discord_id,
+        month,
+        year,
+      })
+
+      const toInsert = args.votes.map(vote => ({
+        discord_id: vote.discord_id,
+        voter_discord_id: ctx.user.discord_id,
+        month,
+        year,
+        score: vote.score,
+      }))
+      await VotedPerson.insertMany(toInsert)
 
       return true
     },

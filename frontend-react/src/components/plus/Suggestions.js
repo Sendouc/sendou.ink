@@ -77,10 +77,9 @@ const Suggestions = ({
   showSuggestionForm,
   setShowSuggestionForm,
   plusServer,
+  handleSuccess,
+  handleError,
 }) => {
-  const [successMsg, setSuccessMsg] = useState(null)
-  const [errorMsg, setErrorMsg] = useState(null)
-
   const { data, error, loading } = useQuery(suggestions)
 
   if (loading) return <Loading minHeight="250px" />
@@ -91,22 +90,6 @@ const Suggestions = ({
       suggestion.suggester_discord_user.discord_id === user.discord_id
   )
 
-  const handleSuccess = () => {
-    setSuccessMsg("Suggestion successfully added.")
-    setShowSuggestionForm(false)
-    setTimeout(() => {
-      setSuccessMsg(null)
-    }, 10000)
-  }
-
-  const handleError = error => {
-    setErrorMsg(error.message)
-    setShowSuggestionForm(false)
-    setTimeout(() => {
-      setErrorMsg(null)
-    }, 10000)
-  }
-
   return (
     <>
       {!showSuggestionForm && !ownSuggestion && (
@@ -116,8 +99,6 @@ const Suggestions = ({
           </Button>
         </div>
       )}
-      {successMsg && <Message success>{successMsg}</Message>}
-      {errorMsg && <Message error>{errorMsg}</Message>}
       {showSuggestionForm && (
         <SuggestionForm
           plusServer={plusServer}

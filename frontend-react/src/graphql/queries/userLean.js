@@ -10,6 +10,7 @@ export const userLean = gql`
       custom_url
       plus {
         membership_status
+        plus_region
       }
     }
   }

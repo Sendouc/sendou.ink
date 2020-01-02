@@ -74,7 +74,7 @@ const FAPostForm = ({
     Object.keys(postToAdd).forEach(
       key => !postToAdd[key] && delete postToAdd[key]
     )
-    if (existingFAPost) updateFAPostMutation({ variables: postToAdd })
+    if (existingFAPost) await updateFAPostMutation({ variables: postToAdd })
     else await addFAPostMutation({ variables: postToAdd })
   }
 
