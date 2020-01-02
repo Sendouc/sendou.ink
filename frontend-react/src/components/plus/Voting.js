@@ -2,15 +2,14 @@ import React, { useState, useEffect } from "react"
 import { usersForVoting } from "../../graphql/queries/usersForVoting"
 import { useQuery, useMutation } from "@apollo/react-hooks"
 import { Grid, Message, Button } from "semantic-ui-react"
+import { Prompt } from "react-router-dom"
 
 import Loading from "../common/Loading"
 import Error from "../common/Error"
 import VotingGridRow from "./VotingGridRow"
 import { addVotes } from "../../graphql/mutations/addVotes"
 
-const Voting = ({ user, handleSuccess, handleError }) => {
-  const date = new Date()
-  const votingEnds = date.valueOf() + 172800000
+const Voting = ({ user, handleSuccess, handleError, votingEnds }) => {
   const { data, loading, error } = useQuery(usersForVoting)
   const [votes, setVotes] = useState({})
   const [voteCount, setVoteCount] = useState(0)
@@ -37,7 +36,7 @@ const Voting = ({ user, handleSuccess, handleError }) => {
     })
   }
 
-  const randomizeVotes = () => {
+  /*const randomizeVotes = () => {
     const obj = {}
 
     data.usersForVoting.suggested.forEach(
@@ -46,7 +45,7 @@ const Voting = ({ user, handleSuccess, handleError }) => {
     data.usersForVoting.users.forEach(suggest => (obj[suggest.discord_id] = 1))
 
     setVotes(obj)
-  }
+  }*/
 
   useEffect(() => {
     if (loading || error) return
@@ -66,18 +65,51 @@ const Voting = ({ user, handleSuccess, handleError }) => {
       sameRegion: sameRegionSuggested,
       otherRegion: otherRegionSuggested,
     })
+
+    if (data.usersForVoting.votes) {
+      const voteObj = {}
+      data.usersForVoting.votes.forEach(
+        vote => (voteObj[vote.discord_id] = vote.score)
+      )
+      setVotes(voteObj)
+      setVoteCount(data.usersForVoting.votes.length)
+    }
   }, [loading, error, data, user])
 
   if (error) return <Error errorMessage={error.message} />
   if (loading || !suggestedArrays) return <Loading />
+  const date = new Date()
+  if (votingEnds < date.getTime())
+    return (
+      <Message>
+        <Message.Header>Voting for the month is over</Message.Header>
+        Results will be posted later
+      </Message>
+    )
 
-  console.log("votes", votes)
+  const hoursLeft = Math.ceil((votingEnds - date.getTime()) / (1000 * 60 * 60))
 
+  const alreadyVoted = data.usersForVoting.votes.length > 0
   return (
     <>
-      <Message>
-        Voting ends <b>{new Date(votingEnds).toLocaleString()}</b>
-      </Message>
+      <Prompt
+        when={
+          voteCount > 0 &&
+          voteCount <
+            data.usersForVoting.users.length +
+              data.usersForVoting.suggested.length
+        }
+        message="Are you sure you want to leave? Vote form won't be saved."
+      />
+      <Message
+        success={alreadyVoted}
+        icon={alreadyVoted ? "check" : null}
+        header={alreadyVoted ? "You have voted (editing possible)" : null}
+        content={`Voting ends ${new Date(
+          votingEnds
+        ).toLocaleString()} (${hoursLeft}~
+          hours left)`}
+      />
       <h2 style={{ marginTop: "1em" }}>
         {user.plus.plus_region === "EU" ? "European" : "American"} players
       </h2>
@@ -91,11 +123,12 @@ const Voting = ({ user, handleSuccess, handleError }) => {
               user={userForVoting}
               votes={votes}
               setVotes={setVotes}
+              increaseCount={() => setVoteCount(voteCount + 1)}
             />
           )
         })}
       </Grid>
-      {suggestedArrays.sameRegion && (
+      {suggestedArrays.sameRegion.length > 0 && (
         <>
           <h2 style={{ marginTop: "2em" }}>
             {user.plus.plus_region === "EU" ? "European" : "American"} players
@@ -111,6 +144,7 @@ const Voting = ({ user, handleSuccess, handleError }) => {
                   votes={votes}
                   setVotes={setVotes}
                   description={suggestion.description}
+                  increaseCount={() => setVoteCount(voteCount + 1)}
                 />
               )
             })}
@@ -131,11 +165,12 @@ const Voting = ({ user, handleSuccess, handleError }) => {
               votes={votes}
               setVotes={setVotes}
               sameRegion={false}
+              increaseCount={() => setVoteCount(voteCount + 1)}
             />
           )
         })}
       </Grid>
-      {suggestedArrays.otherRegion && (
+      {suggestedArrays.otherRegion.length > 0 && (
         <>
           <h2 style={{ marginTop: "2em" }}>
             {user.plus.plus_region === "NA" ? "European" : "American"} players
@@ -150,6 +185,7 @@ const Voting = ({ user, handleSuccess, handleError }) => {
                   votes={votes}
                   setVotes={setVotes}
                   sameRegion={false}
+                  increaseCount={() => setVoteCount(voteCount + 1)}
                 />
               )
             })}
@@ -158,7 +194,7 @@ const Voting = ({ user, handleSuccess, handleError }) => {
       )}
       <Button
         disabled={
-          Object.keys(votes).length !==
+          voteCount <
           data.usersForVoting.users.length +
             data.usersForVoting.suggested.length
         }
@@ -168,9 +204,9 @@ const Voting = ({ user, handleSuccess, handleError }) => {
       >
         Submit
       </Button>
-      <span style={{ marginLeft: "2em" }} onClick={() => randomizeVotes()}>
+      {/*<span style={{ marginLeft: "2em" }} onClick={() => randomizeVotes()}>
         Randomize
-      </span>
+      </span>*/}
     </>
   )
 }

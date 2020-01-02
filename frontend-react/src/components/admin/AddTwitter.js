@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Input, Header, Button, Form } from "semantic-ui-react"
+import { Input, Button, Form } from "semantic-ui-react"
 
 import { updateTwitter } from "../../graphql/mutations/updateTwitter"
 import { useMutation } from "@apollo/react-hooks"
@@ -26,7 +26,7 @@ const AddTwitter = ({ handleSuccess, handleError }) => {
   }
   return (
     <>
-      <Header>Add Twitter for a player</Header>
+      <h2>Add Twitter for a player</h2>
       <Form onSubmit={handleSubmit}>
         <label>Enter unique id:</label>
         <Form.Field>

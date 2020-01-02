@@ -47,6 +47,14 @@ const MainMenu = () => {
       },
     ]
 
+    if (user.discord_id === "79237403620945920")
+      userMenuOptions.unshift({
+        key: "admin",
+        text: "Admin",
+        icon: "key",
+        onClick: () => history.push("/admin"),
+      })
+
     const userMenuTrigger = (
       <span>
         <span style={{ paddingRight: "5px" }}>{user.username}</span>
@@ -126,14 +134,11 @@ const MainMenu = () => {
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
-        {data &&
-          data.user &&
-          data.user.plus &&
-          data.user.plus.membership_status && (
-            <Menu.Item as={NavLink} to="/plus">
-              {data.user.plus.membership_status === "ONE" ? "+1" : "+2"}
-            </Menu.Item>
-          )}
+        {data?.user?.plus?.membership_status && (
+          <Menu.Item as={NavLink} to="/plus">
+            {data.user.plus.membership_status === "ONE" ? "+1" : "+2"}
+          </Menu.Item>
+        )}
         {logInOrAva()}
       </Container>
     </Menu>

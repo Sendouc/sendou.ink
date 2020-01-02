@@ -1,5 +1,5 @@
-import React, { useState } from "react"
-import { Button, Message, List, Image, Divider } from "semantic-ui-react"
+import React from "react"
+import { Button, List, Image, Divider } from "semantic-ui-react"
 import { useQuery } from "@apollo/react-hooks"
 
 import SuggestionForm from "./SuggestionForm"

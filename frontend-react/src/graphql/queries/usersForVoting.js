@@ -28,6 +28,10 @@ export const usersForVoting = gql`
         plus_region
         description
       }
+      votes {
+        discord_id
+        score
+      }
     }
   }
 `

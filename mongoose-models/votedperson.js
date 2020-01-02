@@ -6,6 +6,7 @@ const votedPersonSchema = new mongoose.Schema({
   score: { type: Number, required: true },
   month: { type: Number, required: true },
   year: { type: Number, required: true },
+  plus_server: { type: String, required: true },
 })
 
 module.exports = mongoose.model("VotedPerson", votedPersonSchema)

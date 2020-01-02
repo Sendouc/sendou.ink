@@ -239,6 +239,7 @@ const resolvers = {
   },
   Mutation: {
     updateTwitter: async (root, args, ctx) => {
+      if (!ctx.user) throw new AuthenticationError("Not logged in.")
       if (ctx.user.discord_id !== process.env.ADMIN_ID)
         throw new AuthenticationError("not admin")
 

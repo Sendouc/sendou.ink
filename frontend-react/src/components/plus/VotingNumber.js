@@ -15,7 +15,7 @@ const VotingNumber = ({ number, selected, onClick }) => {
     else if (number === 1) return { background: "#90EE90" }
   }
   return (
-    <Button color={color()} style={style()} circular onClick={onClick}>
+    <Button color={color()} style={style()} circular onClick={onClick} compact>
       {number > 0 && "+"}
       {number}
     </Button>

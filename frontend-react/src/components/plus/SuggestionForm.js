@@ -19,7 +19,7 @@ const SuggestionForm = ({
 
   const [addSuggestionMutation] = useMutation(addSuggestion, {
     onError: handleError,
-    onCompleted: handleSuccess,
+    onCompleted: () => handleSuccess("Suggestion successfully added."),
     refetchQueries: [
       {
         query: suggestions,

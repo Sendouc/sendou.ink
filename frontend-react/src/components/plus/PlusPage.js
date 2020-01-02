@@ -59,8 +59,9 @@ const PlusPage = () => {
   if (!userData.user) return <Redirect to="/access" />
   if (!data.plusInfo) return <Redirect to="/404" />
 
-  const handleSuccess = () => {
-    setSuccessMsg("Suggestion successfully added.")
+  const handleSuccess = message => {
+    setSuccessMsg(message)
+    window.scrollTo(0, 0)
     setShowSuggestionForm(false)
     setTimeout(() => {
       setSuccessMsg(null)
@@ -94,6 +95,9 @@ const PlusPage = () => {
               />
             </>
           )}
+          <div style={{ float: "right" }}>
+            <b>{userData.user.plus.plus_region}</b>
+          </div>
           {data.plusInfo.plus_two_invite_link && (
             <>
               <div style={{ marginTop: "1em" }}>
@@ -113,11 +117,16 @@ const PlusPage = () => {
       )}
       {successMsg && <Message success>{successMsg}</Message>}
       {errorMsg && <Message error>{errorMsg}</Message>}
-      {!data.plusInfo.voting_ends ? (
+      {data.plusInfo.voting_ends ? (
         <Voting
           user={userData.user}
           handleSuccess={handleSuccess}
           handleError={handleError}
+          votingEnds={
+            data.plusInfo.voting_ends
+              ? parseInt(data.plusInfo.voting_ends)
+              : null
+          }
         />
       ) : (
         <Suggestions

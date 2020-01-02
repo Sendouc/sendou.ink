@@ -26,6 +26,7 @@ const typeDef = gql`
       description: String!
     ): Boolean!
     addVotes(votes: [VoteInput!]!): Boolean!
+    startVoting(ends: String!): Boolean!
   }
 
   "+1 or +2 LFG server on Discord"
@@ -78,6 +79,7 @@ const typeDef = gql`
   type VotedPerson {
     discord_id: String!
     voter_discord_id: String!
+    plus_server: String!
     month: Int!
     year: Int!
     "Voting result -2 to +2 (-1 to +1 cross-region)"
@@ -99,6 +101,7 @@ const typeDef = gql`
   type UsersForVoting {
     users: [User!]!
     suggested: [Suggested!]!
+    votes: [VotedPerson!]!
   }
 `
 
@@ -184,8 +187,7 @@ const resolvers = {
       if (!ctx.user) throw new UserInputError("Not logged in")
       if (!ctx.user.plus || !ctx.user.plus.membership_status)
         throw new UserInputError("Not plus server member")
-      //const plus_server = ctx.user.plus.membership_status
-      const plus_server = "TWO"
+      const plus_server = ctx.user.plus.membership_status
 
       const users = await User.find({
         $or: [
@@ -212,10 +214,20 @@ const resolvers = {
           })
         })
 
+      const date = new Date()
+      const year = date.getFullYear()
+      const month = date.getMonth() + 1
+      const votes = await VotedPerson.find({
+        plus_server,
+        month,
+        year,
+        voter_discord_id: ctx.user.discord_id,
+      })
+
       shuffle(users)
       shuffle(suggested)
 
-      return { users, suggested }
+      return { users, suggested, votes }
     },
     suggestions: (root, args, ctx) => {
       if (!ctx.user || !ctx.user.plus) return null
@@ -342,6 +354,8 @@ const resolvers = {
         votedUsers[vote.discord_id] = true
       })
 
+      const plus_server = ctx.user.plus.membership_status
+
       const users = await User.find({
         $or: [
           {
@@ -362,11 +376,12 @@ const resolvers = {
       validateVotes(args.votes, users, suggested, ctx.user)
 
       const year = date.getFullYear()
-      const month = date.getMonth()
+      const month = date.getMonth() + 1
       await VotedPerson.deleteMany({
         voter_discord_id: ctx.user.discord_id,
         month,
         year,
+        plus_server,
       })
 
       const toInsert = args.votes.map(vote => ({
@@ -374,9 +389,19 @@ const resolvers = {
         voter_discord_id: ctx.user.discord_id,
         month,
         year,
+        plus_server,
         score: vote.score,
       }))
       await VotedPerson.insertMany(toInsert)
+
+      return true
+    },
+    startVoting: async (root, args, ctx) => {
+      if (!ctx.user) throw new AuthenticationError("Not logged in.")
+      if (ctx.user.discord_id !== process.env.ADMIN_ID)
+        throw new AuthenticationError("Not admin.")
+
+      await State.findOneAndUpdate({}, { voting_ends: args.ends })
 
       return true
     },

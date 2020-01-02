@@ -4,6 +4,7 @@ import { Redirect, Link } from "react-router-dom"
 
 import { userLean } from "../../graphql/queries/userLean"
 import AddTwitter from "./AddTwitter"
+import VotingManager from "./VotingManager"
 import Error from "../common/Error"
 import Loading from "../common/Loading"
 import { Message } from "semantic-ui-react"
@@ -49,6 +50,10 @@ const AdminPanel = () => {
           handleSuccess(message)
           setLink(link)
         }}
+        handleError={handleError}
+      />
+      <VotingManager
+        handleSuccess={message => handleSuccess(message)}
         handleError={handleError}
       />
     </>
