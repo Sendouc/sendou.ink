@@ -70,6 +70,7 @@ const PlusPage = () => {
 
   const handleError = error => {
     setErrorMsg(error.message)
+    window.scrollTo(0, 0)
     setShowSuggestionForm(false)
     setTimeout(() => {
       setErrorMsg(null)

@@ -17,6 +17,11 @@ const VotingManager = ({ handleSuccess, handleError }) => {
   const [startVotingMutation] = useMutation(startVoting, {
     onError: handleError,
     onCompleted: () => handleSuccess("Voting started!"),
+    refetchQueries: [
+      {
+        query: plusInfo,
+      },
+    ],
   })
 
   if (loading) return <Loading />

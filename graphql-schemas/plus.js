@@ -114,23 +114,29 @@ const validateVotes = (votes, users, suggested, user) => {
   votes.forEach(vote => {
     const { discord_id, score } = vote
 
-    let user = users.find(user => user.discord_id === discord_id)
+    let votedUser = users.find(
+      userInServer => userInServer.discord_id === discord_id
+    )
 
-    if (!user) {
-      user = suggested.find(
+    if (!votedUser) {
+      votedUser = suggested.find(
         suggested => suggested.discord_user.discord_id === discord_id
       )
-      if (!user)
+      if (!votedUser)
         throw new UserInputError(
           `Invalid user voted on with the id ${discord_id}`
         )
-      user = user.discord_user
+
+      const plus_region_of_suggested = votedUser.plus_region
+      votedUser = votedUser.discord_user
+      votedUser.plus = {}
+      votedUser.plus.plus_region = plus_region_of_suggested
     }
 
     if (score !== -2 && score !== -1 && score !== 1 && score !== 2)
       throw new Error(`Invalid score provided: ${score}`)
 
-    if ((score === -2 || score === 2) && region !== user.plus.plus_region)
+    if ((score === -2 || score === 2) && region !== votedUser.plus.plus_region)
       throw new Error("Score of -2 or 2 given cross region")
   })
 }
@@ -384,7 +390,6 @@ const resolvers = {
         voter_discord_id: ctx.user.discord_id,
         month,
         year,
-        plus_server,
       })
 
       const toInsert = args.votes.map(vote => ({

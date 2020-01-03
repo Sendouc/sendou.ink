@@ -36,17 +36,6 @@ const Voting = ({ user, handleSuccess, handleError, votingEnds }) => {
     })
   }
 
-  /*const randomizeVotes = () => {
-    const obj = {}
-
-    data.usersForVoting.suggested.forEach(
-      suggest => (obj[suggest.discord_user.discord_id] = 1)
-    )
-    data.usersForVoting.users.forEach(suggest => (obj[suggest.discord_id] = 1))
-
-    setVotes(obj)
-  }*/
-
   useEffect(() => {
     if (loading || error) return
 
@@ -204,9 +193,6 @@ const Voting = ({ user, handleSuccess, handleError, votingEnds }) => {
       >
         Submit
       </Button>
-      {/*<span style={{ marginLeft: "2em" }} onClick={() => randomizeVotes()}>
-        Randomize
-      </span>*/}
     </>
   )
 }
