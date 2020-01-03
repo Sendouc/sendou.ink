@@ -13,7 +13,7 @@ const mainAbilityStyle = {
   borderBottom: "0px",
   backgroundSize: "100%",
   boxShadow: "0 0 0 1px #000",
-  userSelect: "none"
+  userSelect: "none",
 }
 const subAbilityStyle = {
   //https://github.com/loadout-ink/splat2-calc
@@ -27,14 +27,14 @@ const subAbilityStyle = {
   borderBottom: "0px",
   backgroundSize: "100%",
   boxShadow: "0 0 0 1px #000",
-  userSelect: "none"
+  userSelect: "none",
 }
 
 const AbilityIcon = ({
   ability,
   size = "MAIN",
   style = {},
-  onClick = null
+  onClick = null,
 }) => {
   if (ability == null) return null
   return (

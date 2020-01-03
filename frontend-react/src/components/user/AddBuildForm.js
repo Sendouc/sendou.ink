@@ -133,6 +133,10 @@ const AddBuildForm = ({
           existingAbilities={abilities}
           setAbilities={setAbilities}
           showDescription={false}
+          setWeapon={setWeapon}
+          setHeadgear={setHeadgear}
+          setClothing={setClothing}
+          setShoes={setShoes}
         />
       </div>
       <div style={{ paddingTop: "15px" }}>
@@ -142,8 +146,9 @@ const AddBuildForm = ({
         />
       </div>
       <Message>
-        <b>Tip!</b> You can automatically fill in the abilities by first
-        choosing a gear you used in the past with another build
+        <Message.Header>Tip!</Message.Header>You can automatically fill in the
+        abilities by first choosing a gear you used in the past with another
+        build
       </Message>
       <div style={{ paddingTop: "10px" }}>
         <AbilityButtons abilities={abilities} setAbilities={setAbilities} />

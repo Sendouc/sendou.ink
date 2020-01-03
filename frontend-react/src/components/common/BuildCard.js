@@ -1,13 +1,14 @@
 import React, { useState } from "react"
 import { Card, Image, Icon, Popup, Button } from "semantic-ui-react"
-import { Link } from "react-router-dom"
+import { useHistory } from "react-router-dom"
 import english_internal from "../../utils/english_internal.json"
-import AbilityIcon from "./AbilityIcon"
 
 import { wpnMedium } from "../../assets/imageImports"
 import top500 from "../../assets/xleaderboardIcons/all.png"
 import BuildDeleteModal from "../user/BuildDeleteModal.js"
 import AddBuildForm from "../user/AddBuildForm.js"
+import BuildAbilityView from "./BuildAbilityView.js"
+import BuildApView from "./BuildApView.js"
 
 const BuildCard = ({
   build,
@@ -16,10 +17,16 @@ const BuildCard = ({
   removeBuildFunction,
   editBuildFunction,
   buildsArray,
+  setWeapon,
+  setHeadgear,
+  setClothing,
+  setShoes,
   showWeapon = true,
   showDescription = true,
 }) => {
   const [showEdit, setShowEdit] = useState(false)
+  const [apView, setApView] = useState(false)
+  const history = useHistory()
 
   if (showEdit) {
     return (
@@ -34,26 +41,27 @@ const BuildCard = ({
     )
   }
 
-  function removeAbility(gearIndex, slotIndex) {
-    let copyOfArray = [...existingAbilities]
-    copyOfArray[gearIndex][slotIndex] = ""
-    setAbilities(copyOfArray)
-  }
-
   const buildTitle =
     !build.title || build.title === "" ? `${build.weapon} Build` : build.title
   const buildDescription = !build.description ? "" : build.description
-  const noItems = !build.headgearItem && !build.clothingItem && !build.shoesItem
 
   return (
-    <Card raised style={{ overflowWrap: "break-word" }}>
+    <Card
+      raised
+      style={{ overflowWrap: "break-word", userSelect: "none" }}
+      onClick={setAbilities ? null : () => setApView(!apView)}
+    >
       {showWeapon && (
         <Card.Content textAlign="center">
           <Image
-            style={{ marginRight: "0.2em" }}
+            style={{
+              marginRight: "0.2em",
+              cursor: setWeapon ? "pointer" : null,
+            }}
             src={wpnMedium[english_internal[build.weapon]]}
             size="tiny"
             centered
+            onClick={() => (setWeapon ? setWeapon("") : null)}
           />
         </Card.Content>
       )}
@@ -69,10 +77,11 @@ const BuildCard = ({
           {buildTitle}
         </Card.Header>
         {build.discord_user && (
-          <Card.Meta>
-            <Link to={`/u/${build.discord_id}`} style={{ color: "#4183C4" }}>
-              {build.discord_user.username}#{build.discord_user.discriminator}
-            </Link>
+          <Card.Meta
+            onClick={() => history.push(`/u/${build.discord_id}`)}
+            style={{ color: "#4183C4" }}
+          >
+            {build.discord_user.username}#{build.discord_user.discriminator}
           </Card.Meta>
         )}
         {build.updatedAt && (
@@ -94,77 +103,18 @@ const BuildCard = ({
             )}
           </Card.Meta>
         )}
-        <div style={{ marginTop: "1em" }}>
-          {build.headgearItem && (
-            <Image
-              style={{ width: "25%", height: "auto", marginRight: "1em" }}
-              src={`https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/gear/${
-                english_internal[build.headgearItem]
-              }.png`}
-            />
-          )}
-          <span
-            style={{ marginLeft: !build.headgearItem && !noItems && "80px" }}
-          >
-            {build.headgear.map((ability, index) => (
-              <AbilityIcon
-                key={index}
-                ability={ability}
-                size={index === 0 ? "MAIN" : "SUB"}
-                style={{ margin: "0 0.3em 0 0" }}
-                onClick={setAbilities ? () => removeAbility(0, index) : null}
-              />
-            ))}
-          </span>
-        </div>
-        <div
-          style={{
-            margin: build.clothingItem ? "0 0 0 0" : "0.5em 0 0.5em 0",
-          }}
-        >
-          {build.clothingItem && (
-            <Image
-              style={{ width: "25%", height: "auto", marginRight: "1em" }}
-              src={`https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/gear/${
-                english_internal[build.clothingItem]
-              }.png`}
-            />
-          )}
-          <span
-            style={{ marginLeft: !build.clothingItem && !noItems && "80px" }}
-          >
-            {build.clothing.map((ability, index) => (
-              <AbilityIcon
-                key={index}
-                ability={ability}
-                size={index === 0 ? "MAIN" : "SUB"}
-                style={{ margin: "0 0.3em 0 0" }}
-                onClick={setAbilities ? () => removeAbility(1, index) : null}
-              />
-            ))}
-          </span>
-        </div>
-        <>
-          {build.shoesItem && (
-            <Image
-              style={{ width: "25%", height: "auto", marginRight: "1em" }}
-              src={`https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/gear/${
-                english_internal[build.shoesItem]
-              }.png`}
-            />
-          )}
-          <span style={{ marginLeft: !build.shoesItem && !noItems && "80px" }}>
-            {build.shoes.map((ability, index) => (
-              <AbilityIcon
-                key={index}
-                ability={ability}
-                size={index === 0 ? "MAIN" : "SUB"}
-                style={{ margin: "0 0.3em 0 0" }}
-                onClick={setAbilities ? () => removeAbility(2, index) : null}
-              />
-            ))}
-          </span>
-        </>
+        {apView ? (
+          <BuildApView build={build} />
+        ) : (
+          <BuildAbilityView
+            build={build}
+            setHeadgear={setHeadgear}
+            setClothing={setClothing}
+            setShoes={setShoes}
+            setAbilities={setAbilities}
+            existingAbilities={existingAbilities}
+          />
+        )}
       </Card.Content>
       {removeBuildFunction && (
         <Card.Content extra>
