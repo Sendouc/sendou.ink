@@ -11,6 +11,7 @@ import AddBuildForm from "./AddBuildForm"
 import BuildCard from "../common/BuildCard"
 import Loading from "../common/Loading"
 import Error from "../common/Error"
+import useLocalStorage from "../../hooks/useLocalStorage"
 
 const BuildTab = ({ user, userViewed }) => {
   const { data, error, loading } = useQuery(searchForBuilds, {
@@ -19,6 +20,7 @@ const BuildTab = ({ user, userViewed }) => {
   const [errorMsg, setErrorMsg] = useState(null)
   const [successMsg, setSuccessMsg] = useState(null)
   const [showForm, setShowForm] = useState(false)
+  const [prefersAPView] = useLocalStorage("prefersAPView", false)
 
   const handleError = error => {
     setErrorMsg(error.message)
@@ -141,6 +143,7 @@ const BuildTab = ({ user, userViewed }) => {
               editBuildFunction={editBuildFunction}
               setSuccessMsg={setSuccessMsg}
               buildsArray={data.searchForBuilds}
+              prefersAPView={prefersAPView}
             />
           ))}
         {data.searchForBuilds.length === 0

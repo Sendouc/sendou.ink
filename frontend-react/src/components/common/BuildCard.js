@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { Card, Image, Icon, Popup, Button } from "semantic-ui-react"
 import { useHistory } from "react-router-dom"
 import english_internal from "../../utils/english_internal.json"
@@ -21,12 +21,17 @@ const BuildCard = ({
   setHeadgear,
   setClothing,
   setShoes,
+  prefersAPView,
   showWeapon = true,
   showDescription = true,
 }) => {
   const [showEdit, setShowEdit] = useState(false)
-  const [apView, setApView] = useState(false)
+  const [apView, setApView] = useState(prefersAPView ? prefersAPView : false)
   const history = useHistory()
+
+  useEffect(() => {
+    setApView(prefersAPView)
+  }, [prefersAPView])
 
   if (showEdit) {
     return (
