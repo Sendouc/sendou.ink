@@ -123,6 +123,8 @@ const PlusPage = () => {
           user={userData.user}
           handleSuccess={handleSuccess}
           handleError={handleError}
+          votedSoFar={data.plusInfo.voter_count}
+          eligibleVoters={data.plusInfo.eligible_voters}
           votingEnds={
             data.plusInfo.voting_ends
               ? parseInt(data.plusInfo.voting_ends)

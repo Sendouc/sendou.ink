@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { usersForVoting } from "../../graphql/queries/usersForVoting"
 import { useQuery, useMutation } from "@apollo/react-hooks"
-import { Grid, Message, Button } from "semantic-ui-react"
+import { Grid, Message, Button, Progress } from "semantic-ui-react"
 import { Prompt } from "react-router-dom"
 
 import Loading from "../common/Loading"
@@ -9,7 +9,14 @@ import Error from "../common/Error"
 import VotingGridRow from "./VotingGridRow"
 import { addVotes } from "../../graphql/mutations/addVotes"
 
-const Voting = ({ user, handleSuccess, handleError, votingEnds }) => {
+const Voting = ({
+  user,
+  handleSuccess,
+  handleError,
+  votingEnds,
+  votedSoFar,
+  eligibleVoters,
+}) => {
   const { data, loading, error } = useQuery(usersForVoting)
   const [votes, setVotes] = useState({})
   const [voteCount, setVoteCount] = useState(0)
@@ -77,8 +84,8 @@ const Voting = ({ user, handleSuccess, handleError, votingEnds }) => {
     )
 
   const hoursLeft = Math.ceil((votingEnds - date.getTime()) / (1000 * 60 * 60))
-
   const alreadyVoted = data.usersForVoting.votes.length > 0
+
   return (
     <>
       <Prompt
@@ -99,6 +106,14 @@ const Voting = ({ user, handleSuccess, handleError, votingEnds }) => {
         ).toLocaleString()} (${hoursLeft}~
           hours left)`}
       />
+      <Progress
+        value={votedSoFar}
+        total={eligibleVoters}
+        progress="ratio"
+        color="blue"
+      >
+        Voted so far
+      </Progress>
       <h2 style={{ marginTop: "1em" }}>
         {user.plus.plus_region === "EU" ? "European" : "American"} players
       </h2>

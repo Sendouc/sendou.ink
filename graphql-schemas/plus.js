@@ -46,6 +46,8 @@ const typeDef = gql`
     plus_one_invite_link: String
     plus_two_invite_link: String!
     voting_ends: String
+    voter_count: Int!
+    eligible_voters: Int!
   }
 
   type Suggested {
@@ -185,11 +187,32 @@ const resolvers = {
 
       const state = await State.findOne({})
 
+      const date = new Date()
+      const year = date.getFullYear()
+      const month = date.getMonth() + 1
+      const votedPeople = await VotedPerson.find({
+        month,
+        year,
+        plus_server: ctx.user.plus.membership_status,
+      })
+
+      const votedIds = new Set()
+
+      votedPeople.forEach(vote => {
+        votedIds.add(vote.voter_discord_id)
+      })
+
+      const users = await User.find({
+        "plus.membership_status": ctx.user.plus.membership_status,
+      })
+
       return {
         plus_one_invite_link:
           plus_server === "ONE" ? process.env.PLUS_ONE_LINK : null,
         plus_two_invite_link: process.env.PLUS_TWO_LINK,
         voting_ends: state.voting_ends,
+        voter_count: votedIds.size,
+        eligible_voters: users.length,
       }
     },
     usersForVoting: async (root, args, ctx) => {
