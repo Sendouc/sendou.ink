@@ -9,16 +9,7 @@ const App = () => {
     <div style={{ paddingTop: "0.3em" }}>
       <MainMenu />
       <Container>
-        <div
-          style={{
-            background: "white",
-            padding: "2em 3em",
-            margin: "0 -2em 0 -2em",
-            borderRadius: "7px",
-          }}
-        >
-          <Routes />
-        </div>
+        <Routes />
       </Container>
       <Footer />
     </div>

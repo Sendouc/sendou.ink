@@ -202,7 +202,7 @@ const resolvers = {
         votedIds.add(vote.voter_discord_id)
       })
 
-      const users = await User.find({
+      const eligible_voters = await User.countDocuments({
         "plus.membership_status": ctx.user.plus.membership_status,
       })
 
@@ -212,7 +212,7 @@ const resolvers = {
         plus_two_invite_link: process.env.PLUS_TWO_LINK,
         voting_ends: state.voting_ends,
         voter_count: votedIds.size,
-        eligible_voters: users.length,
+        eligible_voters,
       }
     },
     usersForVoting: async (root, args, ctx) => {
@@ -440,6 +440,14 @@ const resolvers = {
       if (!ctx.user) throw new AuthenticationError("Not logged in.")
       if (ctx.user.discord_id !== process.env.ADMIN_ID)
         throw new AuthenticationError("Not admin.")
+
+      const date = new Date()
+      const year = date.getFullYear()
+      const month = date.getMonth() + 1
+      const votes = await VotedPerson.find({
+        month,
+        year,
+      })
     },
   },
 }

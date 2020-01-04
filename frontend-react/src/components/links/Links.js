@@ -15,8 +15,8 @@ const Links = () => {
 
   return (
     <>
-      <div style={{ padding: "5px" }}>
-        <div style={{ paddingTop: "10px" }}>
+      <div>
+        <div>
           <Header as="h1">
             <Icon name="discord" />
             <Header.Content>Discord</Header.Content>

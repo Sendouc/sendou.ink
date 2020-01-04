@@ -35,7 +35,7 @@ const BuildsBrowser = () => {
     if (error) return <Error errorMessage={error.message} />
     return (
       <>
-        <Header as="h2">
+        <Header as="h3">
           {weapon ? (
             <>
               <WpnImage weapon={weapon} /> {weapon} Builds

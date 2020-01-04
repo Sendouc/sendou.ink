@@ -135,9 +135,22 @@ const MainMenu = () => {
           </Dropdown.Menu>
         </Dropdown>
         {data?.user?.plus?.membership_status && (
-          <Menu.Item as={NavLink} to="/plus">
-            {data.user.plus.membership_status === "ONE" ? "+1" : "+2"}
-          </Menu.Item>
+          <Dropdown
+            item
+            text={data.user.plus.membership_status === "ONE" ? "+1" : "+2"}
+          >
+            <Dropdown.Menu style={dropdownStyle}>
+              <Dropdown.Item as={NavLink} exact to="/plus">
+                Home
+              </Dropdown.Item>
+              <Dropdown.Item as={NavLink} to="/plus/faq">
+                FAQ
+              </Dropdown.Item>
+              {/*<Dropdown.Item as={NavLink} to="/plus/history">
+                Voting History
+        </Dropdown.Item>*/}
+            </Dropdown.Menu>
+          </Dropdown>
         )}
         {logInOrAva()}
       </Container>
