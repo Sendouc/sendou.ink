@@ -97,7 +97,7 @@ const resolvers = {
         })
       }
       const placements = await Placement.find({ unique_id: player.unique_id })
-        .sort({ year: "asc", month: "asc" })
+        .sort({ year: "desc", month: "desc" })
         .catch(e => {
           throw new UserInputError(e.message, {
             invalidArgs: args,

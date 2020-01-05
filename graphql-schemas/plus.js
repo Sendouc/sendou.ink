@@ -16,6 +16,7 @@ const typeDef = gql`
     hasAccess(discord_id: String!, server: String!): Boolean!
     suggestions: [Suggested!]!
     usersForVoting: UsersForVoting!
+    summaries: [Summary!]
   }
 
   extend type Mutation {
@@ -99,9 +100,12 @@ const typeDef = gql`
   "Voting result of a player"
   type Summary {
     discord_id: String!
+    discord_user: User!
     plus_server: PlusServer!
     month: Int!
     year: Int!
+    suggested: Boolean
+    vouched: Boolean
     "Average of all scores of the voters for the month 0% to 100%"
     score: Score!
     new: Boolean!
@@ -278,6 +282,15 @@ const resolvers = {
             invalidArgs: args,
           })
         })
+    },
+    summaries: (root, args, ctx) => {
+      if (!ctx.user || !ctx.user.plus) return null
+      const searchCriteria =
+        ctx.user.plus.membership_status === "ONE" ? {} : { plus_server: "TWO" }
+
+      return Summary.find(searchCriteria)
+        .populate("discord_user")
+        .sort({ "score.total": "desc" })
     },
   },
   Mutation: {
@@ -623,22 +636,35 @@ const resolvers = {
               )
           }
 
-          if (total_score < 50 && voucher_discord_id) {
-            const now = new Date()
-            const can_vouch_again_after = new Date(
-              now.getFullYear(),
-              now.getMonth() + 5,
-              1
-            )
-            preventVouchingUpdates.push(() =>
+          if (voucher_discord_id) {
+            summary.vouched = true
+            if (total_score < 50) {
+              const now = new Date()
+              const can_vouch_again_after = new Date(
+                now.getFullYear(),
+                now.getMonth() + 5,
+                1
+              )
+              preventVouchingUpdates.push(() =>
+                User.updateOne(
+                  { discord_id: voucher_discord_id },
+                  {
+                    $set: {
+                      "plus.can_vouch_again_after": can_vouch_again_after,
+                      "plus.can_vouch": null,
+                    },
+                  }
+                )
+              )
+            }
+          }
+
+          if (!voucher_discord_id && membership_status !== arrays_plus_server) {
+            summary.suggested = true
+            userUpdates.push(() =>
               User.updateOne(
-                { discord_id: voucher_discord_id },
-                {
-                  $set: {
-                    "plus.can_vouch_again_after": can_vouch_again_after,
-                    "plus.can_vouch": null,
-                  },
-                }
+                { discord_id },
+                { $set: { "plus.plus_region": plus_region } }
               )
             )
           }
