@@ -33,7 +33,9 @@ const VotingManager = ({ handleSuccess, handleError }) => {
       {data.plusInfo.voting_ends ? (
         <Message>
           Voting ends{" "}
-          <b>{new Date(data.plusInfo.voting_ends).toLocaleString()}</b>
+          <b>
+            {new Date(parseInt(data.plusInfo.voting_ends)).toLocaleString()}
+          </b>
         </Message>
       ) : (
         <>

@@ -17,9 +17,10 @@ const userSchema = new mongoose.Schema({
   plus: {
     membership_status: String,
     vouch_status: String,
+    voucher_discord_id: String,
     plus_region: String,
-    can_vouch: Boolean,
-    last_vouched: Date,
+    can_vouch: String,
+    can_vouch_again_after: Date,
   },
 })
 

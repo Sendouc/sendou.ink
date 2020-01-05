@@ -9,4 +9,18 @@ const votedPersonSchema = new mongoose.Schema({
   plus_server: { type: String, required: true },
 })
 
+votedPersonSchema.virtual("discord_user", {
+  ref: "User",
+  localField: "discord_id",
+  foreignField: "discord_id",
+  justOne: true,
+})
+
+votedPersonSchema.virtual("voter_discord_user", {
+  ref: "User",
+  localField: "voter_discord_id",
+  foreignField: "discord_id",
+  justOne: true,
+})
+
 module.exports = mongoose.model("VotedPerson", votedPersonSchema)

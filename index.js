@@ -67,15 +67,17 @@ passport.deserializeUser(function(discord_id, done) {
 })
 
 console.log("connecting to MongoDB")
+const dbName =
+  process.env.NODE_ENV === "development" ? "development" : "production"
 
 mongoose
   .connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
-    dbName: "production",
+    dbName,
     useUnifiedTopology: true,
   })
   .then(() => {
-    console.log("connected to MongoDB")
+    console.log(`connected to MongoDB (${dbName})`)
   })
   .catch(error => {
     console.log("error connection to MongoDB:", error.message)
