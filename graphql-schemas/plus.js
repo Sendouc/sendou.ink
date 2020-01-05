@@ -284,7 +284,8 @@ const resolvers = {
         })
     },
     summaries: (root, args, ctx) => {
-      if (!ctx.user || !ctx.user.plus) return null
+      if (!ctx.user || !ctx.user.plus || ctx.user.plus.membership_status)
+        return null
       const searchCriteria =
         ctx.user.plus.membership_status === "ONE" ? {} : { plus_server: "TWO" }
 
@@ -296,10 +297,7 @@ const resolvers = {
   Mutation: {
     addSuggestion: async (root, args, ctx) => {
       if (!ctx.user) throw new AuthenticationError("Not logged in.")
-      if (
-        !ctx.user.plus ||
-        (!ctx.user.plus.membership_status && !ctx.user.plus.vouch_status)
-      ) {
+      if (!ctx.user.plus || !ctx.user.plus.membership_status) {
         throw new AuthenticationError("Not plus member.")
       }
 
@@ -380,10 +378,7 @@ const resolvers = {
     },
     addVotes: async (root, args, ctx) => {
       if (!ctx.user) throw new AuthenticationError("Not logged in.")
-      if (
-        !ctx.user.plus ||
-        (!ctx.user.plus.membership_status && !ctx.user.plus.vouch_status)
-      ) {
+      if (!ctx.user.plus || !ctx.user.plus.membership_status) {
         throw new AuthenticationError("Not plus member.")
       }
 
