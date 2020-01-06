@@ -5,7 +5,6 @@ import { List, Icon, Popup } from "semantic-ui-react"
 const getColor = score => (score < 50 ? { color: "red" } : { color: "green" })
 
 const summaryMap = summary => {
-  console.log("summary", summary)
   const { discord_user, score } = summary
   return (
     <List.Item
