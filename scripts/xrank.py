@@ -165,8 +165,6 @@ script_dir = os.path.dirname(__file__)
 rel_path = "xrank_data/*.json"
 abs_file_path = os.path.join(script_dir, rel_path)
 
-year = 2019  # needs to be updated manually when we process data from different years
-
 
 def resolve_top_array(key_name, player, result, x_power):
     if key_name not in player:
@@ -215,6 +213,7 @@ for filepath in glob.iglob(
             mode = 3
         else:
             mode = 4
+        year = int(file_parts[-1].replace(".json", ""))
         with open(filepath) as f:
             data = json.load(f)
             for placement in data:
@@ -413,3 +412,10 @@ for document in builds:
         print(f"{weapon} build by {player_doc['name']} updated!")
 
 print("All done with updatin Top 500 status of builds.")
+
+# Update top 500 status of users
+users = db.users.update_many({"top500": False}, {"$set": {"top500": None}})
+
+print("Set all top500 attributes of users to null where they previously were false.")
+
+print("All done with everything!")
