@@ -8,6 +8,7 @@ import { useQuery, useMutation } from "@apollo/react-hooks"
 import { plusInfo } from "../../graphql/queries/plusInfo"
 import { startVoting } from "../../graphql/mutations/startVoting"
 import { Message, Button } from "semantic-ui-react"
+import { endVoting } from "../../graphql/mutations/endVoting"
 
 const VotingManager = ({ handleSuccess, handleError }) => {
   const [endDate, setEndDate] = useState(new Date())
@@ -17,6 +18,16 @@ const VotingManager = ({ handleSuccess, handleError }) => {
   const [startVotingMutation] = useMutation(startVoting, {
     onError: handleError,
     onCompleted: () => handleSuccess("Voting started!"),
+    refetchQueries: [
+      {
+        query: plusInfo,
+      },
+    ],
+  })
+
+  const [endVotingMutation] = useMutation(endVoting, {
+    onError: handleError,
+    onCompleted: () => handleSuccess("Voting has concluded!", "/plus/history"),
     refetchQueries: [
       {
         query: plusInfo,
@@ -36,6 +47,15 @@ const VotingManager = ({ handleSuccess, handleError }) => {
           <b>
             {new Date(parseInt(data.plusInfo.voting_ends)).toLocaleString()}
           </b>
+          <div style={{ marginTop: "1em" }}>
+            {!confirmed ? (
+              <Button onClick={() => setConfirmed(true)}>End voting</Button>
+            ) : (
+              <Button onClick={async () => await endVotingMutation()}>
+                End voting for real?
+              </Button>
+            )}
+          </div>
         </Message>
       ) : (
         <>

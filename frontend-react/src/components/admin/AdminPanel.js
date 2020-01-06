@@ -53,7 +53,10 @@ const AdminPanel = () => {
         handleError={handleError}
       />
       <VotingManager
-        handleSuccess={message => handleSuccess(message)}
+        handleSuccess={(message, link) => {
+          handleSuccess(message)
+          if (link) setLink(link)
+        }}
         handleError={handleError}
       />
     </>
