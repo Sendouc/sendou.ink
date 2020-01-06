@@ -561,6 +561,7 @@ const resolvers = {
             membership_status,
             can_not_vouch,
             voucher_discord_id,
+            dont_update,
           } = votingArray[discord_id]
 
           const same_total = same_region.reduce((acc, cur) => acc + cur)
@@ -613,22 +614,19 @@ const resolvers = {
               )
           } else if (
             total_score >= 50 &&
-            membership_status !== arrays_plus_server
+            membership_status !== arrays_plus_server &&
+            !dont_update
           ) {
-            if (membership_status === "TWO")
-              userUpdates.push(() =>
-                User.updateOne(
-                  { discord_id },
-                  { $set: { "plus.membership_status": "TWO" } }
-                )
+            userUpdates.push(() =>
+              User.updateOne(
+                { discord_id },
+                { $set: { "plus.membership_status": arrays_plus_server } }
               )
-            else
-              userUpdates.push(() =>
-                User.updateOne(
-                  { discord_id },
-                  { $set: { "plus.membership_status": "ONE" } }
-                )
-              )
+            )
+
+            if (arrays_plus_server === "ONE" && plus_two_voted[discord_id]) {
+              plus_two_voted[discord_id].dont_update = true
+            }
           }
 
           if (voucher_discord_id) {
