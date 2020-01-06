@@ -27,7 +27,6 @@ const summaryMap = summary => {
           <span style={getColor(score.na)}>{score.na}</span>%)
           {summary.vouched && (
             <Popup
-              position="right"
               content="User was vouched to the server last month"
               trigger={<Icon name="bolt" color="teal" size="large" />}
             />
