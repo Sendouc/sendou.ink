@@ -284,14 +284,14 @@ const resolvers = {
         })
     },
     summaries: (root, args, ctx) => {
-      if (!ctx.user || !ctx.user.plus || ctx.user.plus.membership_status)
+      if (!ctx.user || !ctx.user.plus || !ctx.user.plus.membership_status)
         return null
       const searchCriteria =
         ctx.user.plus.membership_status === "ONE" ? {} : { plus_server: "TWO" }
 
       return Summary.find(searchCriteria)
         .populate("discord_user")
-        .sort({ "score.total": "desc" })
+        .sort({ "score.total": "desc", year: "desc", month: "desc" })
     },
   },
   Mutation: {
@@ -677,7 +677,7 @@ const resolvers = {
             )
           } else if (
             arrays_plus_server === "TWO" &&
-            total_score >= 85 &&
+            total_score >= 80 &&
             !can_not_vouch
           ) {
             userUpdates.push(() =>

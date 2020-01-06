@@ -4,7 +4,9 @@ export const summaries = gql`
   {
     summaries {
       discord_user {
+        discord_id
         username
+        discriminator
         twitter_name
       }
       score {
@@ -15,6 +17,8 @@ export const summaries = gql`
       plus_server
       suggested
       vouched
+      year
+      month
     }
   }
 `

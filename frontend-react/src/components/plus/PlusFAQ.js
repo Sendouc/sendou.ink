@@ -101,7 +101,7 @@ const PlusFAQ = () => {
         <Accordion.Content active={active === 5}>
           <div style={{ marginLeft: "1.5em" }}>
             If you got a high score in the latest voting you can vouch someone
-            to join a server. For +1 members this ratio is 90% and for +2 85%.
+            to join a server. For +1 members this ratio is 90% and for +2 80%.
             +1 members can choose to vouch someone to either +1 or +2. If the
             person you vouched gets kicked in their first voting you can't vouch
             anyone for 6 months.

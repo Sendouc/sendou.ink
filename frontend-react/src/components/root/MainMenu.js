@@ -134,7 +134,8 @@ const MainMenu = () => {
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
-        {data?.user?.plus?.membership_status && (
+        {(data?.user?.plus?.membership_status ||
+          data?.user?.plus?.vouch_status) && (
           <Dropdown
             item
             text={data.user.plus.membership_status === "ONE" ? "+1" : "+2"}
@@ -146,9 +147,9 @@ const MainMenu = () => {
               <Dropdown.Item as={NavLink} to="/plus/faq">
                 FAQ
               </Dropdown.Item>
-              {/*<Dropdown.Item as={NavLink} to="/plus/history">
+              <Dropdown.Item as={NavLink} to="/plus/history">
                 Voting History
-        </Dropdown.Item>*/}
+              </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
         )}

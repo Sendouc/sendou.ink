@@ -11,6 +11,7 @@ export const userLean = gql`
       plus {
         membership_status
         plus_region
+        vouch_status
       }
     }
   }

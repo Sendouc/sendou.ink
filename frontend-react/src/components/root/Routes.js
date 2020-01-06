@@ -24,6 +24,7 @@ const BuildsBrowser = lazy(() => import("../builds/BuildsBrowser"))
 const FreeAgentBrowser = lazy(() => import("../freeagents/FreeAgentBrowser"))
 const PlusPage = lazy(() => import("../plus/PlusPage"))
 const PlusFAQ = lazy(() => import("../plus/PlusFAQ"))
+const VotingHistory = lazy(() => import("../plus/VotingHistory"))
 const UserPage = lazy(() => import("../user/UserPage"))
 const InfoPage = lazy(() => import("./InfoPage"))
 const AdminPanel = lazy(() => import("../admin/AdminPanel"))
@@ -31,7 +32,7 @@ const PleaseLogIn = lazy(() => import("../common/PleaseLogIn"))
 
 const Routes = () => {
   return (
-    <Suspense fallback={<Loading />}>
+    <Suspense fallback={<Loading inverted />}>
       <Switch>
         <Route exact path="/">
           <Page>
@@ -168,6 +169,15 @@ const Routes = () => {
             icon="question circle"
           >
             <PlusFAQ />
+          </Page>
+        </Route>
+        <Route exact path="/plus/history">
+          <Page
+            title="Voting history"
+            subtitle="Results of the concluded votings."
+            icon="history"
+          >
+            <VotingHistory />
           </Page>
         </Route>
         <Route path="/about">

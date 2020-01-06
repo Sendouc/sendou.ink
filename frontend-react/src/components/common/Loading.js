@@ -1,10 +1,10 @@
 import React from "react"
 import { Loader } from "semantic-ui-react"
 
-const Loading = ({ minHeight = "500px" }) => {
+const Loading = ({ inverted = false, minHeight = "500px" }) => {
   return (
     <div style={{ minHeight: minHeight }}>
-      <Loader inverted active inline="centered">
+      <Loader active inverted={inverted} inline="centered">
         Loading
       </Loader>
     </div>
