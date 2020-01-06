@@ -93,8 +93,10 @@ const typeDef = gql`
 
   type Score {
     total: Float!
-    eu_count: [Int]!
-    na_count: [Int]!
+    eu: Float
+    na: Float
+    eu_count: [Int]
+    na_count: [Int]
   }
 
   "Voting result of a player"
