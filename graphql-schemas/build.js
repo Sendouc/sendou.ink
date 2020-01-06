@@ -271,7 +271,10 @@ const resolvers = {
       if (ctx.user.discord_id !== build.discord_id)
         throw new AuthenticationError("no privileges to edit the build")
 
-      await Build.findByIdAndUpdate(build._id, { ...args }).catch(e => {
+      await Build.findByIdAndUpdate(build._id, {
+        ...args,
+        top: build.top ? build.top : null,
+      }).catch(e => {
         throw new UserInputError(error.message, {
           invalidArgs: args,
         })
