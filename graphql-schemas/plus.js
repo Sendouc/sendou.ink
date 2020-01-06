@@ -93,8 +93,8 @@ const typeDef = gql`
 
   type Score {
     total: Float!
-    eu: Float!
-    na: Float!
+    eu_count: [Int]!
+    na_count: [Int]!
   }
 
   "Voting result of a player"
@@ -585,6 +585,16 @@ const resolvers = {
             100
           ).toFixed(2)
 
+          const countReducer = (acc, cur) => {
+            const scoreMap = { "-2": 0, "-1": 1, "1": 2, "2": 3 }
+            const scoreIndex = scoreMap[cur]
+            if (!acc[scoreIndex]) acc[scoreIndex] = 1
+            else acc[scoreIndex] = acc[scoreIndex] + 1
+          }
+
+          const same_count = same_region.reduce(countReducer, [])
+          const other_count = other_region.reduce(countReducer, [])
+
           const summary = {
             discord_id,
             plus_server: arrays_plus_server,
@@ -592,8 +602,8 @@ const resolvers = {
             year,
             score: {
               total: total_score,
-              eu: plus_region === "EU" ? same_score : other_score,
-              na: plus_region === "EU" ? other_score : same_score,
+              eu_count: plus_region === "EU" ? same_count : other_count,
+              na_count: plus_region === "EU" ? other_count : same_count,
             },
           }
 
