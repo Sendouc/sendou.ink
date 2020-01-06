@@ -20,7 +20,14 @@ const VotingHistory = () => {
   } = useQuery(userLean)
 
   useEffect(() => {
-    if (loading || error || userQueryLoading || userQueryError) return
+    if (
+      loading ||
+      error ||
+      userQueryLoading ||
+      userQueryError ||
+      !data.summaries
+    )
+      return
 
     const monthsYears = data.summaries.reduce(
       (acc, cur) => {
@@ -48,12 +55,12 @@ const VotingHistory = () => {
     setMonthChoices(monthsYears)
   }, [data, loading, error, userQueryLoading, userQueryError, userData])
 
+  if (!loading && !data.summaries) return <Redirect to="/access" />
   if (loading || userQueryLoading || monthChoices.length === 0)
     return <Loading />
   if (error) return <Error errorMessage={error.message} />
   if (userQueryError) return <Error errorMessage={userQueryError.message} />
   if (!userData.user) return <Redirect to="/access" />
-  if (!data.summaries) return <Redirect to="/404" />
 
   const parts = forms.monthYear.split(" ")
   const month = months.indexOf(parts[0])

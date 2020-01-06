@@ -37,7 +37,6 @@ const summaryMap = summary => {
 }
 
 const SummaryLists = ({ summaries }) => {
-  console.log("summaries", summaries)
   const members = []
   const suggested = []
 
