@@ -26,6 +26,7 @@ const typeDef = gql`
       region: String!
       description: String!
     ): Boolean!
+    addVouch(discord_id: String!, server: String!, region: String!): Boolean!
     addVotes(votes: [VoteInput!]!): Boolean!
     startVoting(ends: String!): Boolean!
     endVoting: Boolean!
@@ -375,6 +376,56 @@ const resolvers = {
           invalidArgs: args,
         })
       })
+
+      return true
+    },
+    addVouch: async (root, args, ctx) => {
+      /*addVouch(
+      discord_id: String!
+      server: String!
+      region: String!
+    ): Boolean! */
+      if (!ctx.user) throw new AuthenticationError("Not logged in.")
+      if (!ctx.user.plus || !ctx.user.plus.membership_status) {
+        throw new AuthenticationError("Not plus member.")
+      }
+
+      if (args.server !== "ONE" && args.server !== "TWO")
+        throw new UserInputError("Invalid plus server given.")
+      if (args.region !== "EU" && args.region !== "NA")
+        throw new UserInputError("Invalid region given.")
+
+      const can_vouch = !ctx.user.plus.can_vouch
+      if (!can_vouch || (can_vouch !== "ONE" && args.server === "ONE"))
+        throw new UserInputError("No privileges to vouch.")
+
+      if (ctx.user.plus.can_vouch_again_after)
+        throw new UserInputError(
+          "No privileges to vouch right now due to previous vouch getting kicked."
+        )
+
+      const user = await User.findOne({ discord_id: args.discord_id })
+
+      if (!user)
+        throw new UserInputError("User vouched is not a sendou.ink member.")
+
+      if (
+        user.plus &&
+        (user.plus.membership_status === args.server ||
+          user.plus.vouch_status === args.server ||
+          user.plus.membership_status === "ONE" ||
+          user.plus.vouch_status === "ONE")
+      )
+        throw new UserInputError("User already has access.")
+
+      if (!user.plus) user.plus = {}
+      user.plus.vouch_status = args.server
+      user.plus.voucher_discord_id = ctx.user.discord_id
+      if (!user.plus.plus_region) user.plus.plus_region = args.region
+      ctx.user.plus.can_vouch = null
+
+      await user.save()
+      await ctx.user.save() //works or nah?
 
       return true
     },
