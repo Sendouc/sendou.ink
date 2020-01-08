@@ -433,7 +433,8 @@ const resolvers = {
       const vouchingUser = await User.findOne({
         discord_id: ctx.user.discord_id,
       })
-      vouchingUser.can_vouch = null
+
+      vouchingUser.plus.can_vouch = undefined
 
       await user.save()
       await vouchingUser.save()

@@ -9,6 +9,7 @@ import { addSuggestion } from "../../graphql/mutations/addSuggestion"
 import { suggestions } from "../../graphql/queries/suggestions"
 import { vouches } from "../../graphql/queries/vouches"
 import { addVouch } from "../../graphql/mutations/addVouch"
+import { userLean } from "../../graphql/queries/userLean"
 
 const SuggestionForm = ({
   plusServer,
@@ -42,6 +43,9 @@ const SuggestionForm = ({
       {
         query: vouches,
       },
+      {
+        query: userLean,
+      },
     ],
   })
 
@@ -57,8 +61,6 @@ const SuggestionForm = ({
       })
     }
   }
-
-  console.log("CanVouchFor", canVouchFor)
 
   return (
     <>
