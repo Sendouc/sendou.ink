@@ -94,6 +94,7 @@ const resolvers = {
             membership_status: "ONE",
             vouch_status: null,
             plus_region: "EU",
+            can_vouch: "ONE",
           },
         }
       }
