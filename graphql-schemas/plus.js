@@ -438,6 +438,10 @@ const resolvers = {
 
       await user.save()
       await vouchingUser.save()
+      await Suggested.deleteOne({
+        discord_id: args.discord_id,
+        plus_server: args.server,
+      })
 
       return true
     },

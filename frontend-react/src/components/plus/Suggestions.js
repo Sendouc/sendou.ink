@@ -148,9 +148,10 @@ const Suggestions = ({
                       {vouch.username}#{vouch.discriminator}{" "}
                     </List.Header>
                     <List.Description>
-                      Vouched by {vouch.plus.voucher_user.username}#
-                      {vouch.plus.voucher_user.discriminator} to{" "}
-                      {vouch.plus.vouch_status === "ONE" ? "+1" : "+2"}
+                      Vouched to{" "}
+                      {vouch.plus.vouch_status === "ONE" ? "+1" : "+2"} by{" "}
+                      {vouch.plus.voucher_user.username}#
+                      {vouch.plus.voucher_user.discriminator}
                     </List.Description>
                   </List.Content>
                 </List.Item>

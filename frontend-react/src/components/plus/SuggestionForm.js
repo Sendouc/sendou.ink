@@ -46,6 +46,9 @@ const SuggestionForm = ({
       {
         query: userLean,
       },
+      {
+        query: suggestions,
+      },
     ],
   })
 
