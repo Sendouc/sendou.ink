@@ -24,4 +24,11 @@ const userSchema = new mongoose.Schema({
   },
 })
 
+userSchema.virtual("plus.voucher_user", {
+  ref: "User",
+  localField: "plus.voucher_discord_id",
+  foreignField: "discord_id",
+  justOne: true,
+})
+
 module.exports = mongoose.model("User", userSchema)

@@ -38,7 +38,7 @@ const getAction = (success, onClick) => {
 }
 
 const PlusPage = () => {
-  const [showSuggestionForm, setShowSuggestionForm] = useState(false)
+  const [showSuggestionForm, setShowSuggestionForm] = useState(true)
   const plusOneRef = useRef(null)
   const [plusOneCopySuccess, setPlusOneCopySuccess] = useState(false)
   const plusTwoRef = useRef(null)

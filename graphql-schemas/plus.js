@@ -15,6 +15,7 @@ const typeDef = gql`
     plusInfo: PlusGeneralInfo
     hasAccess(discord_id: String!, server: String!): Boolean!
     suggestions: [Suggested!]!
+    vouches: [User!]
     usersForVoting: UsersForVoting!
     summaries: [Summary!]
   }
@@ -70,6 +71,7 @@ const typeDef = gql`
     plus_region: PlusRegion
     can_vouch: PlusServer
     voucher_discord_id: String
+    voucher_user: User
     can_vouch_again_after: String
   }
 
@@ -285,6 +287,16 @@ const resolvers = {
             invalidArgs: args,
           })
         })
+    },
+    vouches: (root, args, { user }) => {
+      if (!user || !user.plus) return null
+      const searchCriteria =
+        user.plus.membership_status === "ONE"
+          ? { "plus.vouch_status": { $ne: null } }
+          : { "plus.vouch_status": "TWO" }
+      return User.find(searchCriteria)
+        .sort({ "plus.vouch_status": "asc" })
+        .populate("plus.voucher_user")
     },
     summaries: (root, args, ctx) => {
       if (!ctx.user || !ctx.user.plus || !ctx.user.plus.membership_status)

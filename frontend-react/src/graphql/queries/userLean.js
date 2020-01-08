@@ -12,6 +12,8 @@ export const userLean = gql`
         membership_status
         plus_region
         vouch_status
+        can_vouch
+        can_vouch_again_after
       }
     }
   }

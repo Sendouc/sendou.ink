@@ -6,6 +6,8 @@ import SuggestionForm from "./SuggestionForm"
 import { suggestions } from "../../graphql/queries/suggestions"
 import Loading from "../common/Loading"
 import Error from "../common/Error"
+import { vouches } from "../../graphql/queries/vouches"
+import UserAvatar from "../common/UserAvatar"
 
 const SuggestionList = ({ suggestionsArray }) => {
   if (suggestionsArray.length === 0) return null
@@ -81,21 +83,39 @@ const Suggestions = ({
   handleError,
 }) => {
   const { data, error, loading } = useQuery(suggestions)
+  const {
+    data: vouchesData,
+    error: vouchesError,
+    loading: vouchesLoading,
+  } = useQuery(vouches)
 
-  if (loading) return <Loading minHeight="250px" />
+  if (loading || vouchesLoading) return <Loading minHeight="250px" />
   if (error) return <Error errorMessage={error.message} />
+  if (vouchesError) return <Error errorMessage={vouchesError.message} />
 
   const ownSuggestion = data.suggestions.find(
     suggestion =>
       suggestion.suggester_discord_user.discord_id === user.discord_id
   )
 
+  const canSuggest = !ownSuggestion
+
+  const canVouch = Boolean(
+    user.plus.can_vouch && !user.plus.can_vouch_again_after
+  )
+
+  const getButtonText = () => {
+    if (canSuggest && canVouch) return "Suggest or vouch a player"
+    else if (canSuggest) return "Suggest a player"
+    else if (canVouch) return "Vouch a player"
+  }
+
   return (
     <>
-      {!showSuggestionForm && !ownSuggestion && (
+      {!showSuggestionForm && (canSuggest || canVouch) && (
         <div style={{ marginTop: "2em" }}>
           <Button onClick={() => setShowSuggestionForm(true)}>
-            Suggest a player
+            {getButtonText()}
           </Button>
         </div>
       )}
@@ -105,7 +125,39 @@ const Suggestions = ({
           hideForm={() => setShowSuggestionForm(false)}
           handleSuccess={handleSuccess}
           handleError={handleError}
+          canSuggest={canSuggest}
+          canVouch={canVouch}
+          canVouchFor={user.plus.can_vouch}
         />
+      )}
+      {vouchesData.vouches.length > 0 && (
+        <>
+          <h2>Vouched</h2>
+          <List>
+            {vouchesData.vouches.map(vouch => {
+              return (
+                <List.Item
+                  key={vouch.username}
+                  style={{
+                    marginTop: "0.5em",
+                  }}
+                >
+                  <UserAvatar twitterName={vouch.twitter_name} paddingIfNull />
+                  <List.Content>
+                    <List.Header as="a" href={`/u/${vouch.discord_id}`}>
+                      {vouch.username}#{vouch.discriminator}{" "}
+                    </List.Header>
+                    <List.Description>
+                      Vouched by {vouch.plus.voucher_user.username}#
+                      {vouch.plus.voucher_user.discriminator} to{" "}
+                      {vouch.plus.vouch_status === "ONE" ? "+1" : "+2"}
+                    </List.Description>
+                  </List.Content>
+                </List.Item>
+              )
+            })}
+          </List>
+        </>
       )}
       <SuggestionList suggestionsArray={data.suggestions} />
     </>
