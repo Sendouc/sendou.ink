@@ -39,7 +39,10 @@ const BuildCard = ({
         <AddBuildForm
           existingBuild={build}
           setShowEdit={setShowEdit}
-          editBuildFunction={editBuildFunction}
+          editBuildFunction={build => {
+            setApView(false)
+            editBuildFunction(build)
+          }}
           buildsArray={buildsArray}
         />
       </div>
