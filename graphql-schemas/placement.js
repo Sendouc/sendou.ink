@@ -97,7 +97,7 @@ const resolvers = {
         })
       }
       const placements = await Placement.find({ unique_id: player.unique_id })
-        .sort({ year: "desc", month: "desc" })
+        .sort({ year: "desc", month: "desc", mode: "asc" })
         .catch(e => {
           throw new UserInputError(e.message, {
             invalidArgs: args,
@@ -150,7 +150,7 @@ const resolvers = {
       const perPage = 25
       const currentPage = args.page ? args.page - 1 : 0
       const searchCriteria = {}
-      // TODO: If this turns out slow maybe denormalize the database to have case insensitive name field
+
       if (args.name)
         searchCriteria.name = { $regex: new RegExp(args.name, "i") }
       if (args.weapon) searchCriteria.weapon = args.weapon

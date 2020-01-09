@@ -281,7 +281,7 @@ const resolvers = {
       return Suggested.find(searchCriteria)
         .populate("discord_user")
         .populate("suggester_discord_user")
-        .sort({ createdAt: "desc" })
+        .sort({ plus_server: "asc", createdAt: "desc" })
         .catch(e => {
           throw new UserInputError(e.message, {
             invalidArgs: args,
