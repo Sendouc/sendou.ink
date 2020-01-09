@@ -39,6 +39,7 @@ import towers from "../../assets/plannerMaps/towers-sz.png"
 import warehouse from "../../assets/plannerMaps/warehouse-sz.png"
 import world from "../../assets/plannerMaps/world-sz.png"
 import { wpnMedium } from "../../assets/imageImports"
+import ToolsSelector from "./ToolsSelector"
 
 const MapPlanner = () => {
   let sketch = null
@@ -285,7 +286,8 @@ const MapPlanner = () => {
   }
 
   return (
-    <div>
+    <>
+      <ToolsSelector tool={tool} setTool={setTool} />
       {containerWidth < 1127 && (
         <Message negative>
           Unfortunately this tool isn't designed for narrow screens but you can
@@ -346,20 +348,11 @@ const MapPlanner = () => {
         <input type="file" accept=".json" ref={fileInput} />
         {uploadError && <span style={{ color: "red" }}>{uploadError}</span>}
         <div style={{ paddingTop: "10px" }}>
-          <Grid columns={3}>
+          <Grid columns={2}>
             <Grid.Column>
               <CirclePicker
                 color={color}
                 onChangeComplete={newColor => setColor(newColor.hex)}
-              />
-            </Grid.Column>
-            <Grid.Column>
-              <h3>Tools</h3>
-              <Dropdown
-                onChange={(e, { value }) => setTool(value)}
-                options={tools}
-                selection
-                value={tool}
               />
             </Grid.Column>
             <Grid.Column>
@@ -402,7 +395,7 @@ const MapPlanner = () => {
           <Grid.Column></Grid.Column>
         </Grid>
       </div>
-    </div>
+    </>
   )
 }
 export default MapPlanner
