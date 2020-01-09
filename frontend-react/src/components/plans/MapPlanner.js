@@ -40,6 +40,7 @@ import warehouse from "../../assets/plannerMaps/warehouse-sz.png"
 import world from "../../assets/plannerMaps/world-sz.png"
 import { wpnMedium } from "../../assets/imageImports"
 import ToolsSelector from "./ToolsSelector"
+import WeaponSelector from "./WeaponSelector"
 
 const MapPlanner = () => {
   let sketch = null
@@ -72,7 +73,6 @@ const MapPlanner = () => {
   const fileInput = useRef(null)
   const [tool, setTool] = useState(Tools.Pencil)
   const [color, setColor] = useState("#f44336")
-  const [weapon, setWeapon] = useState("")
   const [canUndo, setCanUndo] = useState(false)
   const [canRedo, setCanRedo] = useState(false)
   const [text, setText] = useState("")
@@ -92,39 +92,6 @@ const MapPlanner = () => {
     setBg(reef)
     sketch.setBackgroundFromDataUrl(reef)
   }, [sketch])
-
-  const tools = [
-    {
-      key: 1,
-      text: "Pencil",
-      value: Tools.Pencil,
-      icon: "pencil",
-    },
-    {
-      key: 2,
-      text: "Line",
-      value: Tools.Line,
-      icon: "window minimize outline",
-    },
-    {
-      key: 3,
-      text: "Rectangle",
-      value: Tools.Rectangle,
-      icon: "square outline",
-    },
-    {
-      key: 4,
-      text: "Circle",
-      value: Tools.Circle,
-      icon: "circle outline",
-    },
-    {
-      key: 5,
-      text: "Select",
-      value: Tools.Select,
-      icon: "object group outline",
-    },
-  ]
 
   const maps = [
     { key: "The Reef", text: "The Reef", value: reef },
@@ -201,7 +168,7 @@ const MapPlanner = () => {
     },
   ]
 
-  const addImageToSketch = () => {
+  const addImageToSketch = weapon => {
     sketch.addImg(wpnMedium[weaponDict[weapon]])
     setTool(Tools.Select)
   }
@@ -288,6 +255,7 @@ const MapPlanner = () => {
   return (
     <>
       <ToolsSelector tool={tool} setTool={setTool} />
+      <WeaponSelector addWeaponImage={weapon => addImageToSketch(weapon)} />
       {containerWidth < 1127 && (
         <Message negative>
           Unfortunately this tool isn't designed for narrow screens but you can
@@ -381,16 +349,6 @@ const MapPlanner = () => {
             <Label basic color="red" pointing="above">
               Please note that changing the map also clears all the drawings
             </Label>
-          </Grid.Column>
-          <Grid.Column>
-            <h3>Choose a weapon to add</h3>
-            <WeaponDropdown
-              value={weapon}
-              onChange={(e, { value }) => setWeapon(value)}
-            />
-            <div style={{ paddingTop: "7px" }}>
-              <Button icon="plus" circular onClick={() => addImageToSketch()} />
-            </div>
           </Grid.Column>
           <Grid.Column></Grid.Column>
         </Grid>
