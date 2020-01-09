@@ -78,6 +78,7 @@ const Suggestions = ({
   if (loading || vouchesLoading) return <Loading minHeight="250px" />
   if (error) return <Error errorMessage={error.message} />
   if (vouchesError) return <Error errorMessage={vouchesError.message} />
+  if (!data.suggestions) return null
 
   const ownSuggestion = data.suggestions.find(
     suggestion =>

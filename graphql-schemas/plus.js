@@ -14,7 +14,7 @@ const typeDef = gql`
   extend type Query {
     plusInfo: PlusGeneralInfo
     hasAccess(discord_id: String!, server: String!): Boolean!
-    suggestions: [Suggested!]!
+    suggestions: [Suggested!]
     vouches: [User!]
     usersForVoting: UsersForVoting!
     summaries: [Summary!]
@@ -275,7 +275,8 @@ const resolvers = {
       return { users, suggested, votes }
     },
     suggestions: (root, args, ctx) => {
-      if (!ctx.user || !ctx.user.plus) return null
+      if (!ctx.user || !ctx.user.plus || !ctx.user.plus.membership_status)
+        return null
       const searchCriteria =
         ctx.user.plus.membership_status === "ONE" ? {} : { plus_server: "TWO" }
       return Suggested.find(searchCriteria)
@@ -289,7 +290,7 @@ const resolvers = {
         })
     },
     vouches: (root, args, { user }) => {
-      if (!user || !user.plus) return null
+      if (!user || !user.plus || !user.plus.membership_status) return null
       const searchCriteria =
         user.plus.membership_status === "ONE"
           ? { "plus.vouch_status": { $ne: null } }
