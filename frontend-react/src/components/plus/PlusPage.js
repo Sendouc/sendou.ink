@@ -118,7 +118,7 @@ const PlusPage = () => {
       )}
       {successMsg && <Message success>{successMsg}</Message>}
       {errorMsg && <Message error>{errorMsg}</Message>}
-      {data.plusInfo.voting_ends ? (
+      {data.plusInfo.voting_ends && userData.user.plus?.membership_status ? (
         <Voting
           user={userData.user}
           handleSuccess={handleSuccess}
