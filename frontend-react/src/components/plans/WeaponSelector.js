@@ -39,7 +39,7 @@ const WeaponSelector = ({ addWeaponImage }) => {
             Weapons
           </div>
         </strong>
-        <div style={{ overflowY: "scroll", height: "290px" }}>
+        <div style={{ overflowY: "scroll", height: "50vh" }}>
           {weapons.map(wpn => (
             <WpnImage
               key={wpn}

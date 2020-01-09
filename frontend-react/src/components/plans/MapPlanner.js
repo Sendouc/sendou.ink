@@ -10,7 +10,6 @@ import {
   Message,
   Dropdown,
 } from "semantic-ui-react"
-import WeaponDropdown from "../common/WeaponDropdown"
 import weaponDict from "../../utils/english_internal.json"
 import useWindowDimensions from "../../hooks/useWindowDimensions"
 
@@ -255,7 +254,9 @@ const MapPlanner = () => {
   return (
     <>
       <ToolsSelector tool={tool} setTool={setTool} />
-      <WeaponSelector addWeaponImage={weapon => addImageToSketch(weapon)} />
+      <div style={{ paddingLeft: "950px" }}>
+        <WeaponSelector addWeaponImage={weapon => addImageToSketch(weapon)} />
+      </div>
       {containerWidth < 1127 && (
         <Message negative>
           Unfortunately this tool isn't designed for narrow screens but you can
@@ -316,13 +317,7 @@ const MapPlanner = () => {
         <input type="file" accept=".json" ref={fileInput} />
         {uploadError && <span style={{ color: "red" }}>{uploadError}</span>}
         <div style={{ paddingTop: "10px" }}>
-          <Grid columns={2}>
-            <Grid.Column>
-              <CirclePicker
-                color={color}
-                onChangeComplete={newColor => setColor(newColor.hex)}
-              />
-            </Grid.Column>
+          <Grid columns={3}>
             <Grid.Column>
               <h3>Add text</h3>
               <Input value={text} onChange={e => setText(e.target.value)} />
@@ -334,24 +329,45 @@ const MapPlanner = () => {
                 />
               </div>
             </Grid.Column>
+            <Grid.Column>
+              <h3>Choose the map</h3>
+              <Dropdown
+                onChange={(e, { value }) => onBgChange(value)}
+                options={maps}
+                selection
+                value={bg}
+                style={{ width: "250px" }}
+              />
+              <Label basic color="red" pointing="above">
+                Please note that changing the map also clears all the drawings
+              </Label>
+            </Grid.Column>
+            <Grid.Column>
+              <CirclePicker
+                color={color}
+                width="220px"
+                onChangeComplete={newColor => setColor(newColor.hex)}
+                colors={[
+                  "#f44336",
+                  "#e91e63",
+                  "#9c27b0",
+                  "#673ab7",
+                  "#3f51b5",
+                  "#2196f3",
+                  "#03a9f4",
+                  "#00bcd4",
+                  "#009688",
+                  "#4caf50",
+                  "#8bc34a",
+                  "#cddc39",
+                  "#ffeb3b",
+                  "#ffc107",
+                  "#ff9800",
+                ]}
+              />
+            </Grid.Column>
           </Grid>
         </div>
-        <Grid columns={3}>
-          <Grid.Column>
-            <h3>Choose the map</h3>
-            <Dropdown
-              onChange={(e, { value }) => onBgChange(value)}
-              options={maps}
-              selection
-              value={bg}
-              style={{ width: "250px" }}
-            />
-            <Label basic color="red" pointing="above">
-              Please note that changing the map also clears all the drawings
-            </Label>
-          </Grid.Column>
-          <Grid.Column></Grid.Column>
-        </Grid>
       </div>
     </>
   )
