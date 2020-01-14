@@ -37,7 +37,7 @@ const WeaponLeaderboard = ({ query, queryName, scoreField, weaponsField }) => {
               Power
               <Popup
                 trigger={<Icon name="question circle" />}
-                content="Leaderboard explanation"
+                content="Power is the average of the top 4 best X powers. Hover over the weapon to receive information about that placement."
                 position="bottom center"
               />
             </Table.HeaderCell>
