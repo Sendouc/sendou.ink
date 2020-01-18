@@ -4,6 +4,10 @@ const userSchema = new mongoose.Schema({
   username: { type: String, required: true },
   discriminator: { type: String, required: true },
   discord_id: { type: String, required: true },
+  team: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Team",
+  },
   twitch_name: String,
   twitter_name: String,
   country: String,
