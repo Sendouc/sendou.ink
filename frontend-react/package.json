@@ -1,26 +1,29 @@
 {
-  "name": "sendou-ink-react-ui",
-  "version": "2.0.1",
+  "name": "sendou-ink-new",
+  "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@apollo/react-hooks": "^3.1.3",
-    "@sendou/react-sketch": "^0.5.2",
+    "@chakra-ui/core": "^0.5.2",
+    "@emotion/core": "^10.0.27",
+    "@emotion/styled": "^10.0.27",
+    "@reach/router": "^1.2.1",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.4.0",
+    "@testing-library/user-event": "^7.2.1",
+    "@types/jest": "^24.9.0",
+    "@types/node": "^12.12.24",
+    "@types/reach__router": "^1.2.6",
+    "@types/react": "^16.9.17",
+    "@types/react-dom": "^16.9.4",
     "apollo-boost": "^0.4.7",
+    "emotion-theming": "^10.0.27",
     "graphql": "^14.5.8",
-    "jstz": "^2.1.1",
     "react": "^16.12.0",
-    "react-color": "^2.17.3",
-    "react-datepicker": "^2.10.1",
     "react-dom": "^16.12.0",
-    "react-draggable": "^4.2.0",
-    "react-hotkeys-hook": "^1.5.4",
-    "react-infinite-scroller": "^1.2.4",
-    "react-router-dom": "^5.1.2",
-    "react-scripts": "^3.3.0",
-    "recharts": "^1.8.5",
-    "semantic-ui-css": "^2.4.1",
-    "semantic-ui-react": "^0.88.2",
-    "use-query-params": "^0.4.6"
+    "react-icons": "^3.8.0",
+    "react-scripts": "3.3.0",
+    "typescript": "^3.7.4"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -43,5 +46,7 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/webpack-env": "^1.15.0"
+  }
 }

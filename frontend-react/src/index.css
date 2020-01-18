@@ -5,8 +5,4 @@ html {
 body {
   height: 100%;
   margin: 0;
-  background: #79f1a4;
-  background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-  background-repeat: no-repeat;
-  background-attachment: fixed;
 }
