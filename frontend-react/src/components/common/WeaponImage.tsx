@@ -1,8 +1,7 @@
-import React, { ElementType } from "react"
+import React from "react"
 
 import english_internal from "../../utils/english_internal.json"
 import { wpnSmall, wpnMedium } from "../../assets/imageImports"
-import { weapons } from "../../utils/lists.js"
 import { Weapon } from "../../types.js"
 
 interface WeaponImageProps {
@@ -12,7 +11,9 @@ interface WeaponImageProps {
 
 const WeaponImage: React.FC<WeaponImageProps> = ({ englishName, size }) => {
   const dictToUse: any = size === "MEDIUM" ? wpnMedium : wpnSmall
-  return <img src={dictToUse[english_internal[englishName]]} />
+  return (
+    <img src={dictToUse[english_internal[englishName]]} alt={englishName} />
+  )
 }
 
 export default WeaponImage
