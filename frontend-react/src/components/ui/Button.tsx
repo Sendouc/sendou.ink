@@ -1,5 +1,6 @@
 import React from "react"
 import { Button as ChakraButton, useColorMode } from "@chakra-ui/core"
+import useTheme from "../../hooks/useTheme"
 
 interface ButtonProps {
   children: string | string[]
@@ -7,10 +8,9 @@ interface ButtonProps {
 }
 
 export const Button: React.FC<ButtonProps> = ({ children, onClick }) => {
-  const { colorMode } = useColorMode()
-  const color = { light: "orange", dark: "pink" }
+  const { themeColor } = useTheme()
   return (
-    <ChakraButton variantColor={color[colorMode]} onClick={onClick}>
+    <ChakraButton variantColor={themeColor} onClick={onClick}>
       {children}
     </ChakraButton>
   )

@@ -17,6 +17,7 @@ import { USER } from "../../graphql/queries/user"
 import UserAvatar from "../common/UserAvatar"
 import DividingBox from "../ui/DividingBox"
 import { UserData } from "../../types"
+import ColorPicker from "./ColorPicker"
 
 const UserItem: React.FC | null = () => {
   const { data, error, loading } = useQuery<UserData>(USER)
@@ -86,7 +87,12 @@ export const SideNavContent: React.FC<SideNavProps> = ({ showLogo = true }) => {
       </Flex>
       <Flex align="flex-end" direction="column" alignItems="center">
         <DividingBox location="bottom" margin="0.7em">
-          <Flex alignSelf="center">
+          <Flex
+            alignSelf="center"
+            alignItems="center"
+            justifyContent="center"
+            flexBasis="100%"
+          >
             <IconButton
               aria-label={`Switch to ${
                 colorMode === "light" ? "dark" : "light"
@@ -97,6 +103,7 @@ export const SideNavContent: React.FC<SideNavProps> = ({ showLogo = true }) => {
               onClick={toggleColorMode}
               icon={colorMode === "light" ? "moon" : "sun"}
             />
+            <ColorPicker />
           </Flex>
         </DividingBox>
         <UserItem />

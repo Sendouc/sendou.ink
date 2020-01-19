@@ -1,19 +1,21 @@
 import React from "react"
 import { Weapon } from "../../types"
-import { Box, Flex, useColorMode } from "@chakra-ui/core"
+import { Box, Flex, useColorMode, useTheme } from "@chakra-ui/core"
 import WeaponImage from "../common/WeaponImage"
 
 interface WeaponPoolProps {
   weapons: Weapon[]
 }
 
+const styles = {
+  light: "1px solid rgba(0, 0, 0, .2)",
+  dark: "1px solid rgba(255, 255, 255, .2)",
+} as const
+
 const WeaponPool: React.FC<WeaponPoolProps> = ({ weapons }) => {
   const { colorMode } = useColorMode()
-  const styles = {
-    light: "1px solid rgba(0, 0, 0, .2)",
-    dark: "1px solid rgba(255, 255, 255, .2)",
-  }
   const borderStyle: string = styles[colorMode]
+
   return (
     <Box
       as="fieldset"
@@ -37,7 +39,7 @@ const WeaponPool: React.FC<WeaponPoolProps> = ({ weapons }) => {
       </Box>
       <Flex>
         {weapons.map(wpn => (
-          <Box mx="0.3em">
+          <Box mx="0.3em" key={wpn}>
             <WeaponImage englishName={wpn} size="SMALL" />
           </Box>
         ))}

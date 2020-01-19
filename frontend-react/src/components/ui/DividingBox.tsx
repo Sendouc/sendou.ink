@@ -1,5 +1,6 @@
 import React from "react"
 import { Box, useColorMode } from "@chakra-ui/core"
+import useTheme from "../../hooks/useTheme"
 
 interface DividingBoxProps {
   children: JSX.Element | JSX.Element[]
@@ -12,12 +13,7 @@ const DividingBox: React.FC<DividingBoxProps> = ({
   location,
   margin = "0.4em",
 }) => {
-  const { colorMode } = useColorMode()
-  const styles = {
-    light: "1px solid rgba(0, 0, 0, .2)",
-    dark: "1px solid rgba(255, 255, 255, .2)",
-  }
-  const borderStyle: string = styles[colorMode]
+  const { borderStyle } = useTheme()
   return (
     <Box
       borderLeft={location === "left" ? borderStyle : undefined}

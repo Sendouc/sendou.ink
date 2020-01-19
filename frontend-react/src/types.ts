@@ -1,4 +1,4 @@
-import { weapons, countryCodes } from "./utils/lists"
+import { weapons, countryCodes, themeColors } from "./utils/lists"
 
 // https://github.com/microsoft/TypeScript/issues/28046#issuecomment-480516434
 type ElementType<T extends ReadonlyArray<unknown>> = T extends ReadonlyArray<
@@ -9,6 +9,7 @@ type ElementType<T extends ReadonlyArray<unknown>> = T extends ReadonlyArray<
 
 export type Weapon = ElementType<typeof weapons>
 export type CountryCode = ElementType<typeof countryCodes>
+export type ThemeColor = ElementType<typeof themeColors>
 
 export interface UserLean {
   id: string

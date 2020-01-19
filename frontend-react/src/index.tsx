@@ -19,15 +19,10 @@ const client = new ApolloClient({
       : "http://localhost:3001/graphql",
 })
 
-const customTheme = {
-  ...theme,
-  colors: { ...theme.colors, textColor: { light: "#0d0d0d", dark: "#fffffe" } },
-}
-
 ReactDOM.render(
   <StrictMode>
     <ApolloProvider client={client}>
-      <ThemeProvider theme={customTheme}>
+      <ThemeProvider>
         <ColorModeProvider>
           <CSSReset />
           <App />

@@ -2,6 +2,7 @@ import React from "react"
 import { PseudoBox, useColorMode, ListIcon, ListItem } from "@chakra-ui/core"
 import { Link } from "@reach/router"
 import { IconType } from "react-icons/lib/cjs"
+import useTheme from "../../hooks/useTheme"
 
 /*const hoverColor = { light: "gray.900", dark: "whiteAlpha.900" }
 const activeColor = { light: "orange.800", dark: "pink.100" }
@@ -15,7 +16,7 @@ interface NavItemProps {
 }
 
 const NavItem: React.FC<NavItemProps> = ({ to, Icon, title }) => {
-  const { colorMode } = useColorMode()
+  const { themeColorWithShade } = useTheme()
 
   return (
     <ListItem>
@@ -31,7 +32,7 @@ const NavItem: React.FC<NavItemProps> = ({ to, Icon, title }) => {
           outline="none"
           _focus={{ shadow: "outline" }}
         >
-          <ListIcon icon={Icon} color={iconColor[colorMode]} size="1.5em" />{" "}
+          <ListIcon icon={Icon} color={themeColorWithShade} size="1.5em" />{" "}
           {title}
         </PseudoBox>
       </Link>

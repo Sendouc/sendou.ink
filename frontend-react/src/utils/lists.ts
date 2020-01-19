@@ -1,3 +1,16 @@
+export const themeColors = [
+  "gray",
+  "red",
+  "orange",
+  "yellow",
+  "green",
+  "teal",
+  "blue",
+  "cyan",
+  "purple",
+  "pink",
+] as const
+
 export const countries = [
   { code: "af", name: "Afghanistan" },
   { code: "ax", name: "Åland Islands" },
