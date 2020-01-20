@@ -1,6 +1,6 @@
 import React from "react"
 import { Weapon } from "../../types"
-import { Box, Flex, useColorMode, useTheme } from "@chakra-ui/core"
+import { Box, Flex, useColorMode } from "@chakra-ui/core"
 import WeaponImage from "../common/WeaponImage"
 
 interface WeaponPoolProps {

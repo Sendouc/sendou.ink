@@ -1,5 +1,5 @@
 import React from "react"
-import { Box, useColorMode } from "@chakra-ui/core"
+import { Box } from "@chakra-ui/core"
 import useTheme from "../../hooks/useTheme"
 
 interface DividingBoxProps {

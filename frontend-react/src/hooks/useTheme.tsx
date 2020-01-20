@@ -1,11 +1,10 @@
-import React from "react"
 import { useColorMode, useTheme as useChakraTheme } from "@chakra-ui/core"
 import { useLocalStorage } from "@rehooks/local-storage"
 import { ThemeColor } from "../types"
 
 interface Theme {
   bgColor: "#eff0f3" | "#232946"
-  textColor: "#0d0d0d" | "#232946"
+  textColor: "#0d0d0d" | "#fffffe"
   borderStyle:
     | "1px solid rgba(0, 0, 0, .2)"
     | "1px solid rgba(255, 255, 255, .2)"
@@ -19,7 +18,7 @@ function useTheme(): Theme {
   const chakraTheme = useChakraTheme()
   const light = colorMode === "light"
   const bgColor = light ? "#eff0f3" : "#232946"
-  const textColor = light ? "#0d0d0d" : "#232946"
+  const textColor = light ? "#0d0d0d" : "#fffffe"
   const borderStyle = light
     ? "1px solid rgba(0, 0, 0, .2)"
     : "1px solid rgba(255, 255, 255, .2)"
@@ -35,7 +34,6 @@ function useTheme(): Theme {
 
   const themeColorHex = chakraTheme.colors[themeColor]["500"]
 
-  console.log(themeColor)
   return {
     bgColor,
     textColor,

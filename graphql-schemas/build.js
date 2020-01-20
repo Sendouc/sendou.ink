@@ -11,7 +11,7 @@ const gear = require("../utils/gear")
 
 const typeDef = gql`
   extend type Query {
-    searchForBuilds(discord_id: String!): [Build]!
+    searchForBuilds(discord_id: String!): [Build!]!
     "Returns builds by given weapon. If weapon is omitted returns latest builds instead."
     searchForBuildsByWeapon(weapon: String, page: Int): BuildCollection!
   }
@@ -58,7 +58,7 @@ const typeDef = gql`
     discord_user: User!
   }
   type BuildCollection {
-    builds: [Build]!
+    builds: [Build!]!
     pageCount: Int!
   }
   enum Ability {

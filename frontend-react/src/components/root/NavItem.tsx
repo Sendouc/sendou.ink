@@ -1,5 +1,5 @@
 import React from "react"
-import { PseudoBox, useColorMode, ListIcon, ListItem } from "@chakra-ui/core"
+import { PseudoBox, ListIcon, ListItem } from "@chakra-ui/core"
 import { Link } from "@reach/router"
 import { IconType } from "react-icons/lib/cjs"
 import useTheme from "../../hooks/useTheme"
@@ -7,7 +7,6 @@ import useTheme from "../../hooks/useTheme"
 /*const hoverColor = { light: "gray.900", dark: "whiteAlpha.900" }
 const activeColor = { light: "orange.800", dark: "pink.100" }
 const activeBg = { light: "orange.50", dark: "#308c7a4d" }*/
-const iconColor = { light: "orange.500", dark: "pink.200" }
 
 interface NavItemProps {
   to: string

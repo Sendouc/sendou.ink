@@ -1,4 +1,15 @@
-import { weapons, countryCodes, themeColors } from "./utils/lists"
+import {
+  weapons,
+  countryCodes,
+  themeColors,
+  headOnlyAbilities,
+  clothingOnlyAbilities,
+  shoesOnlyAbilities,
+  stackableAbilities,
+  headGearEnglish,
+  clothingGearEnglish,
+  shoesGearEnglish,
+} from "./utils/lists"
 
 // https://github.com/microsoft/TypeScript/issues/28046#issuecomment-480516434
 type ElementType<T extends ReadonlyArray<unknown>> = T extends ReadonlyArray<
@@ -10,6 +21,13 @@ type ElementType<T extends ReadonlyArray<unknown>> = T extends ReadonlyArray<
 export type Weapon = ElementType<typeof weapons>
 export type CountryCode = ElementType<typeof countryCodes>
 export type ThemeColor = ElementType<typeof themeColors>
+export type HeadOnlyAbility = ElementType<typeof headOnlyAbilities>
+export type ClothingOnlyAbility = ElementType<typeof clothingOnlyAbilities>
+export type ShoesOnlyAbility = ElementType<typeof shoesOnlyAbilities>
+export type StackableAbility = ElementType<typeof stackableAbilities>
+export type HeadGear = ElementType<typeof headGearEnglish>
+export type ClothingGear = ElementType<typeof clothingGearEnglish>
+export type ShoesGear = ElementType<typeof shoesGearEnglish>
 
 export interface UserLean {
   id: string
@@ -24,10 +42,6 @@ export interface UserLean {
     can_vouch?: "ONE" | "TWO"
     can_vouch_again_after?: string
   }
-}
-
-export interface UserData {
-  user?: UserLean
 }
 
 export interface User {
@@ -47,6 +61,44 @@ export interface User {
   }
 }
 
+export interface Build {
+  id: string
+  weapon: Weapon
+  title?: string
+  description?: string
+  headgear: [
+    HeadOnlyAbility | StackableAbility,
+    StackableAbility,
+    StackableAbility,
+    StackableAbility
+  ]
+  clothing: [
+    ClothingOnlyAbility | StackableAbility,
+    StackableAbility,
+    StackableAbility,
+    StackableAbility
+  ]
+  shoes: [
+    ShoesOnlyAbility | StackableAbility,
+    StackableAbility,
+    StackableAbility,
+    StackableAbility
+  ]
+  headgearItem?: HeadGear
+  clothingItem?: ClothingGear
+  shoesItem?: ShoesGear
+  updatedAt: string
+  top: boolean
+}
+
+//==============================================================================
+// Apollo
+//==============================================================================
+
+export interface UserData {
+  user?: UserLean
+}
+
 export interface SearchForUserData {
   searchForUser?: User
 }
@@ -54,4 +106,12 @@ export interface SearchForUserData {
 export interface SearchForUserVars {
   discord_id?: string
   custom_url?: string
+}
+
+export interface SearchForBuildsData {
+  searchForBuilds: Build[]
+}
+
+export interface SearchForBuildsVars {
+  discord_id: string
 }

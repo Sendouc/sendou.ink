@@ -56,7 +56,6 @@ const ColorPicker: React.FC = () => {
             width="220px"
             colors={hexCodes}
             onChangeComplete={handleColorChoice}
-            onSwatchHover={() => console.log("aa")}
           />
         </PopoverBody>
       </PopoverContent>
