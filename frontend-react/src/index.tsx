@@ -5,7 +5,6 @@ import { ThemeProvider, ColorModeProvider, CSSReset } from "@chakra-ui/core"
 import { ApolloProvider } from "@apollo/react-hooks"
 import { HelmetProvider } from "react-helmet-async"
 import ApolloClient from "apollo-boost"
-import "./index.css"
 import * as serviceWorker from "./serviceWorker"
 
 const client = new ApolloClient({

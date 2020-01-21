@@ -67,8 +67,9 @@ passport.deserializeUser(function(discord_id, done) {
 })
 
 console.log("connecting to MongoDB")
-const dbName =
+let dbName =
   process.env.NODE_ENV === "development" ? "development" : "production"
+if (process.env.USE_PRODUCTION_DB) dbName = "production"
 
 mongoose
   .connect(process.env.MONGODB_URI, {

@@ -4,7 +4,6 @@ import { FaUserAlt, FaTwitter, FaTwitch, FaGamepad } from "react-icons/fa"
 
 import UserAvatar from "../common/UserAvatar"
 import { User } from "../../types"
-import DividingBox from "../ui/DividingBox"
 import Flag from "../common/Flag"
 import { countries } from "../../utils/lists"
 
@@ -22,48 +21,57 @@ interface AvatarWithInfoProps {
 
 const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user }) => {
   return (
-    <Flex justifyContent="center" flexWrap="wrap" alignItems="center">
+    <Flex
+      justifyContent="center"
+      flexWrap="wrap"
+      alignItems="center"
+      flexDirection="column"
+    >
       <UserAvatar
         name={user.username}
         twitterName={user.twitter_name}
         size="2xl"
       />
-      <DividingBox location="left">
-        <List spacing={2} mx="0.5em" fontWeight="light">
+      <List
+        spacing={2}
+        mt="1em"
+        mx="0.5em"
+        fontWeight="light"
+        textAlign="center"
+      >
+        <ListItem>
+          <ListIcon icon={FaUserAlt} />
+          {user.username}#{user.discriminator}
+        </ListItem>
+        {user.country && (
           <ListItem>
-            <ListIcon icon={FaUserAlt} />
-            {user.username}#{user.discriminator}
+            <Flag code={user.country} />
+            {countries.find(obj => obj.code === user.country)?.name}
           </ListItem>
-          {user.country && (
-            <ListItem>
-              <Flag code={user.country} />
-              {countries.find(obj => obj.code === user.country)?.name}
-            </ListItem>
-          )}
-          {user.twitter_name && (
-            <ListItem>
-              <ListIcon icon={FaTwitter} />
-              <a href={`https://twitter.com/${user.twitter_name}`}>
-                {user.twitter_name}
-              </a>
-            </ListItem>
-          )}
-          {user.twitch_name && (
-            <ListItem>
-              <ListIcon icon={FaTwitch} />
-              <a href={`https://www.twitch.tv/${user.twitch_name}`}>
-                {user.twitch_name}
-              </a>
-            </ListItem>
-          )}
-          {user.sens?.stick && (
-            <ListItem>
-              <ListIcon icon={FaGamepad} />
-              {getSensString(user.sens.motion, user.sens.stick)}
-            </ListItem>
-          )}
-        </List>
-      </DividingBox>
+        )}
+        {user.twitter_name && (
+          <ListItem>
+            <ListIcon icon={FaTwitter} />
+            <a href={`https://twitter.com/${user.twitter_name}`}>
+              {user.twitter_name}
+            </a>
+          </ListItem>
+        )}
+        {user.twitch_name && (
+          <ListItem>
+            <ListIcon icon={FaTwitch} />
+            <a href={`https://www.twitch.tv/${user.twitch_name}`}>
+              {user.twitch_name}
+            </a>
+          </ListItem>
+        )}
+        {user.sens?.stick && (
+          <ListItem>
+            <ListIcon icon={FaGamepad} />
+            {getSensString(user.sens.motion, user.sens.stick)}
+          </ListItem>
+        )}
+      </List>
     </Flex>
   )
 }

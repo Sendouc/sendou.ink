@@ -1,15 +1,15 @@
 import React from "react"
-import { Spinner, useColorMode, Box } from "@chakra-ui/core"
+import { Spinner, Box } from "@chakra-ui/core"
+import useTheme from "../../hooks/useTheme"
 
 interface LoadingProps {}
 
 const Loading: React.FC<LoadingProps> = () => {
-  const { colorMode } = useColorMode()
-  const color = { light: "orange.500", dark: "pink.200" }
+  const { themeColorWithShade } = useTheme()
   return (
     <Box textAlign="center">
       <Spinner
-        color={color[colorMode]}
+        color={themeColorWithShade}
         size="xl"
         thickness="4px"
         speed="0.65s"

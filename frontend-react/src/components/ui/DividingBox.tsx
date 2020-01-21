@@ -3,14 +3,16 @@ import { Box } from "@chakra-ui/core"
 import useTheme from "../../hooks/useTheme"
 
 interface DividingBoxProps {
-  children: JSX.Element | JSX.Element[]
-  location: "top" | "left" | "bottom"
+  children: JSX.Element | JSX.Element[] | string
+  location: "top" | "left" | "bottom" | "right"
   margin?: string
+  width?: string
 }
 
 const DividingBox: React.FC<DividingBoxProps> = ({
   children,
   location,
+  width = undefined,
   margin = "0.4em",
 }) => {
   const { borderStyle } = useTheme()
@@ -22,6 +24,9 @@ const DividingBox: React.FC<DividingBoxProps> = ({
       mt={location === "top" ? margin : undefined}
       borderBottom={location === "bottom" ? borderStyle : undefined}
       mb={location === "bottom" ? margin : undefined}
+      borderRight={location === "right" ? borderStyle : undefined}
+      mr={location === "right" ? margin : undefined}
+      width={width}
     >
       {children}
     </Box>

@@ -5,7 +5,6 @@ import {
   Popover,
   PopoverBody,
   PopoverContent,
-  useColorMode,
   useTheme as useChakraTheme,
 } from "@chakra-ui/core"
 import { CirclePicker, ColorResult } from "react-color"
@@ -13,12 +12,10 @@ import { writeStorage } from "@rehooks/local-storage"
 import { themeColors as choices } from "../../utils/lists"
 import useTheme from "../../hooks/useTheme"
 
-const bgColor = { light: "#eff0f3", dark: "#232946" } as const
 const size = "20px" as const
 
 const ColorPicker: React.FC = () => {
-  const { colorMode } = useColorMode()
-  const { themeColorHex } = useTheme()
+  const { themeColorHex, bgColor } = useTheme()
   const theme = useChakraTheme()
 
   const hexCodes = choices.map(color =>
@@ -46,11 +43,7 @@ const ColorPicker: React.FC = () => {
           ml="10px"
         />
       </PopoverTrigger>
-      <PopoverContent
-        zIndex={4}
-        width="220px"
-        backgroundColor={bgColor[colorMode]}
-      >
+      <PopoverContent zIndex={4} width="220px" backgroundColor={bgColor}>
         <PopoverBody textAlign="center">
           <CirclePicker
             width="220px"

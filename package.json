@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "cross-env LOGGED_IN=TRUE node index.js",
+    "withprod": "cross-env LOGGED_IN=TRUE USE_PRODUCTION_DB=TRUE node index.js",
     "loggedout": "node index.js",
     "watch": "cross-env LOGGED_IN=TRUE nodemon index.js",
     "build": "cd frontend-react && npm install && npm run build && mv build ../build",

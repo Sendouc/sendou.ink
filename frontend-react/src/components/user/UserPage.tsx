@@ -21,6 +21,7 @@ import { Box, Tabs, TabList, Tab, TabPanels, TabPanel } from "@chakra-ui/core"
 import useTheme from "../../hooks/useTheme"
 import { Helmet } from "react-helmet-async"
 import { SEARCH_FOR_BUILDS } from "../../graphql/queries/searchForBuilds"
+import BuildTab from "./BuildTab"
 
 interface Tab {
   id: number
@@ -67,14 +68,17 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
 
   const tabs = [] as Tab[]
 
-  if (builds.length > 0) {
+  if (builds.length > 0 || userLean?.discord_id === user.discord_id) {
     tabs.push({
       id: 1,
       icon: FaTshirt,
       title: "Builds",
       content: (
         <TabPanel key={1}>
-          <p>hi</p>
+          <BuildTab
+            builds={builds}
+            canModifyBuilds={userLean?.discord_id === user.discord_id}
+          />
         </TabPanel>
       ),
     })
@@ -100,7 +104,7 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
       </Helmet>
       <AvatarWithInfo user={user} />
       {user.weapons && user.weapons.length > 0 && (
-        <Box textAlign="center" mt="2em">
+        <Box textAlign="center" mt="1em">
           <WeaponPool weapons={user.weapons} />
         </Box>
       )}

@@ -1,7 +1,8 @@
 import React from "react"
 import { Weapon } from "../../types"
-import { Box, Flex, useColorMode } from "@chakra-ui/core"
+import { Box, Flex } from "@chakra-ui/core"
 import WeaponImage from "../common/WeaponImage"
+import useTheme from "../../hooks/useTheme"
 
 interface WeaponPoolProps {
   weapons: Weapon[]
@@ -13,7 +14,7 @@ const styles = {
 } as const
 
 const WeaponPool: React.FC<WeaponPoolProps> = ({ weapons }) => {
-  const { colorMode } = useColorMode()
+  const { colorMode, grayWithShade } = useTheme()
   const borderStyle: string = styles[colorMode]
 
   return (
@@ -28,12 +29,11 @@ const WeaponPool: React.FC<WeaponPoolProps> = ({ weapons }) => {
     >
       <Box
         as="legend"
-        color="gray.500"
+        color={grayWithShade}
         fontWeight="semibold"
         letterSpacing="wide"
         fontSize="xs"
         textTransform="uppercase"
-        textAlign="left"
       >
         Weapon pool
       </Box>

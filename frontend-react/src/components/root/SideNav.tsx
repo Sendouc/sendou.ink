@@ -1,17 +1,18 @@
-import { Box, useColorMode } from "@chakra-ui/core"
+import { Box } from "@chakra-ui/core"
 import React from "react"
 import { SideNavContent } from "./SideNavContent"
+import useTheme from "../../hooks/useTheme"
+
+const shadow = {
+  light: "0px 1px 10px 8px rgba(0,0,0,0.15)",
+  dark: "0px 1px 10px 8px rgba(255,255,255,0.04)",
+} as const
 
 const SideNav = () => {
-  const { colorMode } = useColorMode()
-  const bgColor = { light: "#D6D7DA", dark: "#0A102D" }
-  const shadow = {
-    light: "0px 1px 10px 8px rgba(0,0,0,0.15)",
-    dark: "0px 1px 10px 8px rgba(255,255,255,0.04)",
-  }
+  const { darkerBgColor, colorMode } = useTheme()
   return (
     <Box
-      bg={bgColor[colorMode]}
+      bg={darkerBgColor}
       boxShadow={shadow[colorMode]}
       height="100%"
       width="250px"

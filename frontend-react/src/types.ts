@@ -21,10 +21,17 @@ type ElementType<T extends ReadonlyArray<unknown>> = T extends ReadonlyArray<
 export type Weapon = ElementType<typeof weapons>
 export type CountryCode = ElementType<typeof countryCodes>
 export type ThemeColor = ElementType<typeof themeColors>
+
 export type HeadOnlyAbility = ElementType<typeof headOnlyAbilities>
 export type ClothingOnlyAbility = ElementType<typeof clothingOnlyAbilities>
 export type ShoesOnlyAbility = ElementType<typeof shoesOnlyAbilities>
 export type StackableAbility = ElementType<typeof stackableAbilities>
+export type Ability =
+  | HeadOnlyAbility
+  | ClothingOnlyAbility
+  | ShoesOnlyAbility
+  | StackableAbility
+
 export type HeadGear = ElementType<typeof headGearEnglish>
 export type ClothingGear = ElementType<typeof clothingGearEnglish>
 export type ShoesGear = ElementType<typeof shoesGearEnglish>

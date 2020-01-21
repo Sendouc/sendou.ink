@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React from "react"
 import { Box } from "@chakra-ui/core"
 
 import { MenuBar } from "./MenuBar"
@@ -9,15 +9,13 @@ import useTheme from "../../hooks/useTheme"
 const App: React.FC = () => {
   const { bgColor, textColor } = useTheme()
 
-  useEffect(() => {
-    document.body.style.backgroundColor = bgColor
-  }, [bgColor])
-
   return (
     <Box
       marginLeft={[null, null, "250px"]}
       mt={["4em", null, "0"]}
       color={textColor}
+      bg={bgColor}
+      minH="100vh"
     >
       <SideNav />
       <MenuBar />
