@@ -12,6 +12,8 @@ import {
   UserData,
   SearchForBuildsData,
   SearchForBuildsVars,
+  PlayerInfoData,
+  PlayerInfoVars,
 } from "../../types"
 import { FaTshirt, FaTrophy } from "react-icons/fa"
 import { IconType } from "react-icons/lib/cjs"
@@ -22,6 +24,8 @@ import { Helmet } from "react-helmet-async"
 import { SEARCH_FOR_BUILDS } from "../../graphql/queries/searchForBuilds"
 import BuildTab from "./BuildTab"
 import MyThemeContext from "../../themeContext"
+import { PLAYER_INFO } from "../../graphql/queries/playerInfo"
+import XRankTab from "./XRankTab"
 
 interface Tab {
   id: number
@@ -41,9 +45,11 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
   >(SEARCH_FOR_USER, {
     variables: isNaN(id as any) ? { custom_url: id } : { discord_id: id },
   })
+
   const { data: userData, error: userError, loading: userLoading } = useQuery<
     UserData
   >(USER)
+
   const {
     data: buildsData,
     error: buildsError,
@@ -53,14 +59,25 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
     skip: !data || !data.searchForUser,
   })
 
+  const {
+    data: playerData,
+    error: playerError,
+    loading: playerLoading,
+  } = useQuery<PlayerInfoData, PlayerInfoVars>(PLAYER_INFO, {
+    variables: { twitter: data?.searchForUser?.twitter_name as any },
+    skip: !data || !data.searchForUser || !data.searchForUser.twitter_name,
+  })
+
   const { textColor, themeColor, themeColorWithShade } = useContext(
     MyThemeContext
   )
 
-  if (loading || userLoading || buildsLoading) return <Loading />
+  if (loading || userLoading || buildsLoading || playerLoading)
+    return <Loading />
   if (error) return <Error errorMessage={error.message} />
   if (userError) return <Error errorMessage={userError.message} />
   if (buildsError) return <Error errorMessage={buildsError.message} />
+  if (playerError) return <Error errorMessage={playerError.message} />
   if (!data || !data.searchForUser || !userData || !buildsData)
     return <Redirect to="/404" />
 
@@ -70,7 +87,8 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
 
   const tabs = [] as Tab[]
 
-  if (builds.length > 0 || userLean?.discord_id === user.discord_id) {
+  //if (builds.length > 0 || userLean?.discord_id === user.discord_id) {
+  if (false) {
     tabs.push({
       id: 1,
       icon: FaTshirt,
@@ -86,14 +104,25 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
     })
   }
 
-  if (true) {
+  if (playerData?.playerInfo?.placements) {
     tabs.push({
       id: 2,
       icon: FaTrophy,
       title: "X Rank Top 500",
       content: (
         <TabPanel key={2}>
-          <p>hi</p>
+          <XRankTab placements={playerData.playerInfo.placements} />
+        </TabPanel>
+      ),
+    })
+  } else if (userLean?.discord_id === user.discord_id) {
+    tabs.push({
+      id: 2,
+      icon: FaTrophy,
+      title: "X Rank Top 500",
+      content: (
+        <TabPanel key={2}>
+          <p>you are noob :)</p>
         </TabPanel>
       ),
     })

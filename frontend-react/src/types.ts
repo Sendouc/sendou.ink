@@ -112,6 +112,18 @@ export interface Build {
   top: boolean
 }
 
+export interface Placement {
+  id: string
+  name: string
+  weapon: Weapon
+  rank: number
+  mode: 1 | 2 | 3 | 4
+  x_power: number
+  unique_id: string
+  month: number
+  year: number
+}
+
 //==============================================================================
 // Apollo
 //==============================================================================
@@ -135,4 +147,14 @@ export interface SearchForBuildsData {
 
 export interface SearchForBuildsVars {
   discord_id: string
+}
+
+export interface PlayerInfoData {
+  playerInfo?: {
+    placements: Placement[]
+  }
+}
+
+export interface PlayerInfoVars {
+  twitter: string
 }

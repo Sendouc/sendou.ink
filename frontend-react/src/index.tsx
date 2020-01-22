@@ -1,11 +1,17 @@
 import React, { StrictMode } from "react"
 import ReactDOM from "react-dom"
 import App from "./components/root/App"
-import { ThemeProvider, ColorModeProvider, CSSReset } from "@chakra-ui/core"
+import {
+  ThemeProvider,
+  ColorModeProvider,
+  CSSReset,
+  theme,
+} from "@chakra-ui/core"
 import { ApolloProvider } from "@apollo/react-hooks"
 import { HelmetProvider } from "react-helmet-async"
 import ApolloClient from "apollo-boost"
 import * as serviceWorker from "./serviceWorker"
+import customIcons from "./assets/icons"
 
 const client = new ApolloClient({
   uri:
@@ -14,11 +20,13 @@ const client = new ApolloClient({
       : "http://localhost:3001/graphql",
 })
 
+const customTheme = { ...theme, icons: { ...theme.icons, ...customIcons } }
+
 ReactDOM.render(
   <StrictMode>
     <HelmetProvider>
       <ApolloProvider client={client}>
-        <ThemeProvider>
+        <ThemeProvider theme={customTheme}>
           <ColorModeProvider>
             <CSSReset />
             <App />

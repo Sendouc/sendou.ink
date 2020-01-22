@@ -47,7 +47,7 @@ const BuildCard: React.FC<BuildCardProps> = ({ build, defaultToAPView }) => {
           <Image
             src={top500}
             alt="x rank top 500 logo"
-            height="50px"
+            height="40px"
             width="auto"
             title="Maker of the build has reached top 500 with this weapon"
           />

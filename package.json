@@ -18,7 +18,7 @@
     "@types/react-color": "^3.0.1",
     "apollo-server": "^2.9.16",
     "apollo-server-express": "^2.9.16",
-    "axios": "^0.19.1",
+    "axios": "^0.19.2",
     "btoa": "^1.2.1",
     "connect-mongo": "^3.2.0",
     "cors": "^2.8.5",

@@ -5,7 +5,7 @@ const Player = require("../mongoose-models/player")
 const typeDef = gql`
   extend type Query {
     topPlayers(weapon: String!): topPlayer!
-    playerInfo(uid: String, twitter: String): PlayerWithPlacements!
+    playerInfo(uid: String, twitter: String): PlayerWithPlacements
     searchForPlayers(name: String!, exact: Boolean): [Placement]!
     searchForPlacements(
       name: String
@@ -92,12 +92,11 @@ const resolvers = {
       })
 
       if (!player) {
-        throw new UserInputError("player not found", {
-          invalidArgs: args,
-        })
+        return null
       }
+
       const placements = await Placement.find({ unique_id: player.unique_id })
-        .sort({ year: "desc", month: "desc", mode: "asc" })
+        .sort({ year: "desc", month: "desc" })
         .catch(e => {
           throw new UserInputError(e.message, {
             invalidArgs: args,

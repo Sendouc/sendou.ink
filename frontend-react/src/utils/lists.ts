@@ -766,6 +766,8 @@ export const modes = [
   "Clam Blitz",
 ] as const
 
+export const modesShort = ["", "sz", "tc", "rm", "cb"] as const
+
 export const months = [
   "",
   "January",
