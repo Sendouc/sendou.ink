@@ -1,8 +1,8 @@
-import React from "react"
+import React, { useContext } from "react"
 import { Weapon } from "../../types"
 import { Box, Flex } from "@chakra-ui/core"
 import WeaponImage from "../common/WeaponImage"
-import useTheme from "../../hooks/useTheme"
+import MyThemeContext from "../../themeContext"
 
 interface WeaponPoolProps {
   weapons: Weapon[]
@@ -14,7 +14,7 @@ const styles = {
 } as const
 
 const WeaponPool: React.FC<WeaponPoolProps> = ({ weapons }) => {
-  const { colorMode, grayWithShade } = useTheme()
+  const { colorMode, grayWithShade } = useContext(MyThemeContext)
   const borderStyle: string = styles[colorMode]
 
   return (

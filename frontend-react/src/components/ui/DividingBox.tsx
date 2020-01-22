@@ -1,6 +1,6 @@
-import React from "react"
+import React, { useContext } from "react"
 import { Box } from "@chakra-ui/core"
-import useTheme from "../../hooks/useTheme"
+import MyThemeContext from "../../themeContext"
 
 interface DividingBoxProps {
   children: JSX.Element | JSX.Element[] | string
@@ -15,7 +15,7 @@ const DividingBox: React.FC<DividingBoxProps> = ({
   width = undefined,
   margin = "0.4em",
 }) => {
-  const { borderStyle } = useTheme()
+  const { borderStyle } = useContext(MyThemeContext)
   return (
     <Box
       borderLeft={location === "left" ? borderStyle : undefined}

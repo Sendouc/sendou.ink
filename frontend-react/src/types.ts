@@ -36,6 +36,20 @@ export type HeadGear = ElementType<typeof headGearEnglish>
 export type ClothingGear = ElementType<typeof clothingGearEnglish>
 export type ShoesGear = ElementType<typeof shoesGearEnglish>
 
+export interface Theme {
+  colorMode: "dark" | "light"
+  bgColor: "#eff0f3" | "#232946"
+  darkerBgColor: "#0A102D" | "#D6D7DA"
+  textColor: "#fffffe" | "#0d0d0d"
+  borderStyle:
+    | "1px solid rgba(0, 0, 0, .2)"
+    | "1px solid rgba(255, 255, 255, .2)"
+  grayWithShade: "gray.300" | "gray.600"
+  themeColorWithShade: string
+  themeColorHex: string
+  themeColor: ThemeColor
+}
+
 export interface UserLean {
   id: string
   username: string

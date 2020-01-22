@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext } from "react"
 import { RouteComponentProps, Redirect } from "@reach/router"
 import { useQuery } from "@apollo/react-hooks"
 
@@ -18,10 +18,10 @@ import { IconType } from "react-icons/lib/cjs"
 import AvatarWithInfo from "./AvatarWithInfo"
 import WeaponPool from "./WeaponPool"
 import { Box, Tabs, TabList, Tab, TabPanels, TabPanel } from "@chakra-ui/core"
-import useTheme from "../../hooks/useTheme"
 import { Helmet } from "react-helmet-async"
 import { SEARCH_FOR_BUILDS } from "../../graphql/queries/searchForBuilds"
 import BuildTab from "./BuildTab"
+import MyThemeContext from "../../themeContext"
 
 interface Tab {
   id: number
@@ -53,7 +53,9 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
     skip: !data || !data.searchForUser,
   })
 
-  const { textColor, themeColor, themeColorWithShade } = useTheme()
+  const { textColor, themeColor, themeColorWithShade } = useContext(
+    MyThemeContext
+  )
 
   if (loading || userLoading || buildsLoading) return <Loading />
   if (error) return <Error errorMessage={error.message} />

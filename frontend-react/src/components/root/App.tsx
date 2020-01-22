@@ -1,28 +1,66 @@
 import React from "react"
-import { Box } from "@chakra-ui/core"
+import { Box, useColorMode, useTheme as useChakraTheme } from "@chakra-ui/core"
 
 import { MenuBar } from "./MenuBar"
 import SideNav from "./SideNav"
 import Routes from "./Routes"
-import useTheme from "../../hooks/useTheme"
+import useLocalStorage from "@rehooks/local-storage"
+import { ThemeColor } from "../../types"
+import { MyThemeProvider } from "../../themeContext"
+import { Theme } from "../../types"
 
 const App: React.FC = () => {
-  const { bgColor, textColor } = useTheme()
+  const chakraTheme = useChakraTheme()
+  const { colorMode } = useColorMode()
+  const [themeColorFromStorage] = useLocalStorage<ThemeColor>("colorPreference")
+
+  const themeColor = themeColorFromStorage
+    ? themeColorFromStorage
+    : colorMode === "light"
+    ? "pink"
+    : "orange"
+
+  const theme = {
+    light: {
+      colorMode: "light",
+      bgColor: "#eff0f3",
+      darkerBgColor: "#D6D7DA",
+      textColor: "#0d0d0d",
+      borderStyle: "1px solid rgba(0, 0, 0, .2)",
+      themeColorWithShade: `${themeColor}.500`,
+      grayWithShade: "gray.600",
+      themeColorHex: chakraTheme.colors[themeColor]["500"],
+      themeColor,
+    } as Theme,
+    dark: {
+      colorMode: "dark",
+      bgColor: "#232946",
+      darkerBgColor: "#0A102D",
+      textColor: "#fffffe",
+      borderStyle: "1px solid rgba(255, 255, 255, .2)",
+      themeColorWithShade: `${themeColor}.200`,
+      grayWithShade: "gray.300",
+      themeColorHex: chakraTheme.colors[themeColor]["500"],
+      themeColor,
+    } as Theme,
+  }
 
   return (
-    <Box
-      marginLeft={[null, null, "250px"]}
-      mt={["4em", null, "0"]}
-      color={textColor}
-      bg={bgColor}
-      minH="100vh"
-    >
-      <SideNav />
-      <MenuBar />
-      <Box maxWidth="46em" pt={8} px={8} ml="auto" mr="auto">
-        <Routes />
+    <MyThemeProvider value={theme[colorMode]}>
+      <Box
+        marginLeft={[null, null, "250px"]}
+        mt={["4em", null, "0"]}
+        color={theme[colorMode].textColor}
+        bg={theme[colorMode].bgColor}
+        minH="100vh"
+      >
+        <SideNav />
+        <MenuBar />
+        <Box maxWidth="46em" pt={8} px={8} ml="auto" mr="auto">
+          <Routes />
+        </Box>
       </Box>
-    </Box>
+    </MyThemeProvider>
   )
 }
 

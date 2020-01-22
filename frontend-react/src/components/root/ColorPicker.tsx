@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext } from "react"
 import {
   Box,
   PopoverTrigger,
@@ -10,12 +10,12 @@ import {
 import { CirclePicker, ColorResult } from "react-color"
 import { writeStorage } from "@rehooks/local-storage"
 import { themeColors as choices } from "../../utils/lists"
-import useTheme from "../../hooks/useTheme"
+import MyThemeContext from "../../themeContext"
 
 const size = "20px" as const
 
 const ColorPicker: React.FC = () => {
-  const { themeColorHex, bgColor } = useTheme()
+  const { themeColorHex, bgColor } = useContext(MyThemeContext)
   const theme = useChakraTheme()
 
   const hexCodes = choices.map(color =>

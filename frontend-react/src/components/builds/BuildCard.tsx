@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useContext } from "react"
 import { Build } from "../../types"
 import {
   Box,
@@ -10,12 +10,12 @@ import {
   PopoverContent,
   PopoverBody,
 } from "@chakra-ui/core"
-import useTheme from "../../hooks/useTheme"
 import WeaponImage from "../common/WeaponImage"
 import { top500 } from "../../assets/imageImports"
 import { FaInfo, FaPlus, FaMinus } from "react-icons/fa"
 import ViewGear from "./ViewGear"
 import ViewAP from "./ViewAP"
+import MyThemeContext from "../../themeContext"
 
 interface BuildCardProps {
   build: Build
@@ -24,7 +24,9 @@ interface BuildCardProps {
 
 const BuildCard: React.FC<BuildCardProps> = ({ build, defaultToAPView }) => {
   const [apView, setApView] = useState(defaultToAPView)
-  const { borderStyle, themeColor, darkerBgColor, grayWithShade } = useTheme()
+  const { borderStyle, themeColor, darkerBgColor, grayWithShade } = useContext(
+    MyThemeContext
+  )
 
   return (
     <Box

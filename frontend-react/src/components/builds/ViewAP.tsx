@@ -1,11 +1,11 @@
 // This while is bit of a mess from TS PoV - might be worth while to do it better later
 
-import React from "react"
+import React, { useContext } from "react"
 import { Build, Ability } from "../../types"
 import { Box, Flex } from "@chakra-ui/core"
 import DividingBox from "../ui/DividingBox"
 import AbilityIcon from "./AbilityIcon"
-import useTheme from "../../hooks/useTheme"
+import MyThemeContext from "../../themeContext"
 
 const mainOnlyAbilities = [
   "CB",
@@ -27,7 +27,7 @@ interface ViewAPProps {
 }
 
 const ViewAP: React.FC<ViewAPProps> = ({ build }) => {
-  const { grayWithShade } = useTheme()
+  const { grayWithShade } = useContext(MyThemeContext)
   const abilityArrays: Ability[][] = [
     build.headgear,
     build.clothing,

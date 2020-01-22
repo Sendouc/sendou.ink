@@ -1,8 +1,8 @@
-import React from "react"
+import React, { useContext } from "react"
 import { PseudoBox, ListIcon, ListItem } from "@chakra-ui/core"
 import { Link } from "@reach/router"
 import { IconType } from "react-icons/lib/cjs"
-import useTheme from "../../hooks/useTheme"
+import MyThemeContext from "../../themeContext"
 
 /*const hoverColor = { light: "gray.900", dark: "whiteAlpha.900" }
 const activeColor = { light: "orange.800", dark: "pink.100" }
@@ -15,7 +15,7 @@ interface NavItemProps {
 }
 
 const NavItem: React.FC<NavItemProps> = ({ to, Icon, title }) => {
-  const { themeColorWithShade } = useTheme()
+  const { themeColorWithShade } = useContext(MyThemeContext)
 
   return (
     <ListItem>
