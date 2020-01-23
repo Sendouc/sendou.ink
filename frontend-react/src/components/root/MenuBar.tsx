@@ -32,12 +32,7 @@ export const MenuBar: React.FC = () => {
         <Flex alignItems="center">
           <Logo />
         </Flex>
-        <Flex
-          //flex={{ sm: "1", md: "none" }}
-          alignItems="center"
-          color="gray.500"
-          justify="flex-end"
-        >
+        <Flex alignItems="center" color="gray.500" justify="flex-end">
           <IconButton
             aria-label="Open menu"
             ref={btnRef}

@@ -21,7 +21,7 @@ const MobileNav: React.FC<MobileNavProps> = ({ btnRef, isOpen, onClose }) => {
   return (
     <Drawer
       isOpen={isOpen}
-      placement="left"
+      placement="right"
       onClose={onClose}
       finalFocusRef={btnRef}
     >
