@@ -87,8 +87,7 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
 
   const tabs = [] as Tab[]
 
-  //if (builds.length > 0 || userLean?.discord_id === user.discord_id) {
-  if (false) {
+  if (builds.length > 0 || userLean?.discord_id === user.discord_id) {
     tabs.push({
       id: 1,
       icon: FaTshirt,

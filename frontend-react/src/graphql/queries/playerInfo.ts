@@ -5,7 +5,6 @@ export const PLAYER_INFO: DocumentNode = gql`
     playerInfo(twitter: $twitter) {
       placements {
         id
-        name
         weapon
         rank
         mode

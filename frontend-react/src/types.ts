@@ -114,7 +114,6 @@ export interface Build {
 
 export interface Placement {
   id: string
-  name: string
   weapon: Weapon
   rank: number
   mode: 1 | 2 | 3 | 4
