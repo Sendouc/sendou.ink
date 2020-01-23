@@ -194,7 +194,7 @@ const ModesAccordion: React.FC<ModesAccordionProps> = ({ placements }) => {
                 >
                   {allModesTabsData[key]?.placements.map(placement => {
                     return (
-                      <>
+                      <React.Fragment key={placement.id}>
                         <Box
                           textTransform="uppercase"
                           fontWeight="semibold"
@@ -209,7 +209,7 @@ const ModesAccordion: React.FC<ModesAccordionProps> = ({ placements }) => {
                         />
                         <Box>{placement.rank}</Box>
                         <Box>{placement.x_power}</Box>
-                      </>
+                      </React.Fragment>
                     )
                   })}
                 </Grid>
