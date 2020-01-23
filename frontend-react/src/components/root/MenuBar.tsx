@@ -1,30 +1,22 @@
-// https://github.com/chakra-ui/chakra-ui/blob/master/packages/chakra-ui-docs/components/DocsHeader.js
-
-import React, { useRef } from "react"
-import {
-  Box,
-  Flex,
-  IconButton,
-  useColorMode,
-  useDisclosure,
-} from "@chakra-ui/core"
+import React, { useRef, useContext } from "react"
+import { Box, Flex, IconButton, useDisclosure } from "@chakra-ui/core"
 import Logo from "./Logo"
 import { MdDehaze } from "react-icons/md"
 import MobileNav from "./MobileNav"
+import MyThemeContext from "../../themeContext"
 
 export const MenuBar: React.FC = () => {
   const btnRef = useRef<HTMLElement | null>(null)
 
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const { colorMode } = useColorMode()
-  const bgColor = { light: "#D6D7DA", dark: "#0A102D" }
+  const { colorMode, darkerBgColor, textColor } = useContext(MyThemeContext)
   const shadow = {
     light: "0px 1px 10px 8px rgba(0,0,0,0.15)",
     dark: "0px 1px 10px 8px rgba(255,255,255,0.04)",
   }
   return (
     <Box
-      bg={bgColor[colorMode]}
+      bg={darkerBgColor}
       boxShadow={shadow[colorMode]}
       as="header"
       position="fixed"
@@ -50,7 +42,7 @@ export const MenuBar: React.FC = () => {
             aria-label="Open menu"
             ref={btnRef}
             variant="ghost"
-            color={`textColor.${colorMode}`}
+            color={textColor}
             ml="2"
             fontSize="35px"
             onClick={onOpen}
