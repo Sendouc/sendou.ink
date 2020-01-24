@@ -8,11 +8,6 @@ interface WeaponPoolProps {
   weapons: Weapon[]
 }
 
-const styles = {
-  light: "1px solid rgba(0, 0, 0, .2)",
-  dark: "1px solid rgba(255, 255, 255, .2)",
-} as const
-
 const WeaponPool: React.FC<WeaponPoolProps> = ({ weapons }) => {
   return (
     <FieldsetWithLegend title="WEAPON POOL" titleFontSize="xs">

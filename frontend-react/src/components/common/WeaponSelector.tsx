@@ -6,6 +6,7 @@ import { weapons } from "../../utils/lists"
 import WeaponImage from "./WeaponImage"
 import { useContext } from "react"
 import MyThemeContext from "../../themeContext"
+import FieldsetWithLegend from "./FieldsetWithLegend"
 
 interface WeaponSelectorProps {
   weapon: Weapon | null
@@ -18,9 +19,7 @@ const WeaponSelector: React.FC<WeaponSelectorProps> = ({
   setWeapon,
   dropdownMode = false,
 }) => {
-  const { darkerBgColor, borderStyle, grayWithShade } = useContext(
-    MyThemeContext
-  )
+  const { darkerBgColor } = useContext(MyThemeContext)
   const [input, setInput] = useState("")
 
   const filterWeaponArray = (weapon: Weapon) =>
@@ -69,31 +68,18 @@ const WeaponSelector: React.FC<WeaponSelectorProps> = ({
           autoFocus
         />
       </Box>
-      <Box
-        as="fieldset"
-        border={borderStyle}
-        borderWidth="1px"
-        overflow="hidden"
-        borderX="none"
-        borderBottom="none"
+      <FieldsetWithLegend
+        title="Click a weapon to select it"
+        titleFontSize="md"
+        dividerMode
+        centerTitle
+        fullWidth
       >
-        <Box
-          as="legend"
-          color={grayWithShade}
-          fontWeight="semibold"
-          letterSpacing="wide"
-          fontSize="md"
-          textAlign="center"
-          px="5px"
-        >
-          Click a weapon to select it
-        </Box>
-        <Flex flexWrap="wrap" justifyContent="center" p="0.5em">
+        <Flex flexWrap="wrap" justifyContent="center">
           {weapons.filter(filterWeaponArray).map(weapon => (
             <PseudoBox
               key={weapon}
-              px="3px"
-              py="2px"
+              px="2px"
               cursor="pointer"
               onClick={() => setWeapon(weapon)}
               userSelect="none"
@@ -107,7 +93,7 @@ const WeaponSelector: React.FC<WeaponSelectorProps> = ({
             </PseudoBox>
           ))}
         </Flex>
-      </Box>
+      </FieldsetWithLegend>
     </>
   )
 }

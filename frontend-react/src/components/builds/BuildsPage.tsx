@@ -12,7 +12,16 @@ import {
 } from "../../types"
 import useBreakPoints from "../../hooks/useBreakPoints"
 import { abilitiesGameOrder } from "../../utils/lists"
-import { Box, Flex, Heading, FormLabel, Switch, Button } from "@chakra-ui/core"
+import {
+  Box,
+  Flex,
+  Heading,
+  FormLabel,
+  Switch,
+  Button,
+  Alert,
+  AlertIcon,
+} from "@chakra-ui/core"
 import AbilityIcon from "./AbilityIcon"
 import { useContext } from "react"
 import MyThemeContext from "../../themeContext"
@@ -23,6 +32,8 @@ import Loading from "../common/Loading"
 import Error from "../common/Error"
 import BuildCard from "./BuildCard"
 import InfiniteScroll from "react-infinite-scroller"
+import FieldsetWithLegend from "../common/FieldsetWithLegend"
+import PageHeader from "../common/PageHeader"
 
 const BuildsPage: React.FC<RouteComponentProps> = () => {
   const { themeColor } = useContext(MyThemeContext)
@@ -60,6 +71,7 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
       <Helmet>
         <title>{weapon ? `${weapon} ` : ""}Builds | sendou.ink</title>
       </Helmet>
+      <PageHeader title="Builds" />
       <Box mb="1em">
         <FormLabel htmlFor="apview">Default to Ability Point view</FormLabel>
         <Switch
@@ -75,49 +87,64 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
         dropdownMode={isSmall}
       />
       {weapon && (
-        <Flex flexWrap="wrap" justifyContent="center" mt="1em">
-          {abilitiesGameOrder.map(ability => (
-            <Box
-              key={ability}
-              p="5px"
-              cursor={abilities.indexOf(ability) === -1 ? "pointer" : undefined}
-              onClick={() => {
-                if (abilities.indexOf(ability) !== -1) return
-                setAbilities(abilities.concat(ability))
-              }}
-            >
-              <AbilityIcon
-                ability={abilities.indexOf(ability) === -1 ? ability : "EMPTY"}
-                size="SUB"
-              />{" "}
-            </Box>
-          ))}
-        </Flex>
-      )}
-      {abilities.length > 0 && (
-        <>
-          <Heading size="sm" mx="auto" width="50%" textAlign="center" pt="1em">
-            Only showing builds featuring the following abilities
-          </Heading>
-          <Flex flexWrap="wrap" justifyContent="center" pt="1em">
-            {abilities.map(ability => (
+        <FieldsetWithLegend
+          title="Click an ability to filter by it"
+          titleFontSize="md"
+          centerTitle
+          dividerMode
+        >
+          <Flex flexWrap="wrap" justifyContent="center">
+            {abilitiesGameOrder.map(ability => (
               <Box
                 key={ability}
-                cursor="pointer"
                 p="5px"
-                onClick={() =>
-                  setAbilities(
-                    abilities.filter(
-                      abilityInArray => ability !== abilityInArray
-                    )
-                  )
+                cursor={
+                  abilities.indexOf(ability) === -1 ? "pointer" : undefined
                 }
+                onClick={() => {
+                  if (abilities.indexOf(ability) !== -1) return
+                  setAbilities(abilities.concat(ability))
+                }}
               >
-                <AbilityIcon ability={ability} size="SUB" />{" "}
+                <AbilityIcon
+                  ability={
+                    abilities.indexOf(ability) === -1 ? ability : "EMPTY"
+                  }
+                  size="SUB"
+                />{" "}
               </Box>
             ))}
           </Flex>
-        </>
+        </FieldsetWithLegend>
+      )}
+      {abilities.length > 0 && (
+        <Box textAlign="center" width="100%">
+          <FieldsetWithLegend
+            title="Only showing builds featuring the following abilities"
+            titleFontSize="md"
+            centerTitle
+            fullWidth
+          >
+            <Flex flexWrap="wrap" justifyContent="center">
+              {abilities.map(ability => (
+                <Box
+                  key={ability}
+                  cursor="pointer"
+                  p="5px"
+                  onClick={() =>
+                    setAbilities(
+                      abilities.filter(
+                        abilityInArray => ability !== abilityInArray
+                      )
+                    )
+                  }
+                >
+                  <AbilityIcon ability={ability} size="SUB" />{" "}
+                </Box>
+              ))}
+            </Flex>
+          </FieldsetWithLegend>
+        </Box>
       )}
       {loading && <Loading />}
       {buildsFilterByAbilities.length > 0 && data && (
@@ -143,7 +170,7 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
                 ))}
             </Flex>
           </InfiniteScroll>
-          <Box w="50%" textAlign="center" mx="auto">
+          <Box w="50%" textAlign="center" mx="auto" mt="1em">
             <Heading size="sm">No more builds to show</Heading>
             <Button
               variantColor={themeColor}
@@ -155,6 +182,12 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
             </Button>
           </Box>
         </>
+      )}
+      {weapon && buildsFilterByAbilities.length === 0 && (
+        <Alert status="info" borderRadius="5px" mt="1em">
+          <AlertIcon />
+          No builds found with the current selection. Please adjust it above.
+        </Alert>
       )}
     </>
   )
