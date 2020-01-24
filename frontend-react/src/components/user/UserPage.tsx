@@ -130,7 +130,9 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
   return (
     <>
       <Helmet>
-        <title>{user.username} | sendou.ink</title>
+        <title>
+          {user.username}#{user.discriminator} | sendou.ink
+        </title>
       </Helmet>
       <AvatarWithInfo user={user} />
       {user.weapons && user.weapons.length > 0 && (

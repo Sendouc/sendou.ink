@@ -110,6 +110,11 @@ export interface Build {
   shoesItem?: ShoesGear
   updatedAt: string
   top: boolean
+  discord_user?: {
+    username: string
+    discriminator: string
+    discord_id: string
+  }
 }
 
 export interface Placement {
@@ -145,7 +150,8 @@ export interface SearchForBuildsData {
 }
 
 export interface SearchForBuildsVars {
-  discord_id: string
+  discord_id?: string
+  weapon?: Weapon
 }
 
 export interface PlayerInfoData {

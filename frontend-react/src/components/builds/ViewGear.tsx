@@ -17,7 +17,7 @@ const ViewGear: React.FC<ViewGearProps> = ({ build }) => {
       gridRowGap="10px"
       justifyItems="center"
       alignItems="center"
-      mt={noItems ? "2" : "0"}
+      mt="1em"
     >
       <GearImage
         englishName={build.headgearItem}

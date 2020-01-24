@@ -7,7 +7,7 @@ interface LoadingProps {}
 const Loading: React.FC<LoadingProps> = () => {
   const { themeColorWithShade } = useContext(MyThemeContext)
   return (
-    <Box textAlign="center">
+    <Box textAlign="center" pt="2em">
       <Spinner
         color={themeColorWithShade}
         size="xl"

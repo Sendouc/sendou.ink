@@ -3,7 +3,7 @@ import { Box } from "@chakra-ui/core"
 import MyThemeContext from "../../themeContext"
 
 interface DividingBoxProps {
-  children: JSX.Element | JSX.Element[] | string
+  children: React.ReactNode
   location: "top" | "left" | "bottom" | "right"
   margin?: string
   width?: string

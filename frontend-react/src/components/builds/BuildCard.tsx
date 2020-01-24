@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react"
+import React, { useState, useContext, useEffect } from "react"
 import { Build } from "../../types"
 import {
   Box,
@@ -16,20 +16,31 @@ import { FaInfo, FaPlus, FaMinus } from "react-icons/fa"
 import ViewGear from "./ViewGear"
 import ViewAP from "./ViewAP"
 import MyThemeContext from "../../themeContext"
+import { Link } from "@reach/router"
 
 interface BuildCardProps {
   build: Build
-  defaultToAPView: Boolean
+  defaultToAPView: boolean
+  showUser?: boolean
 }
 
-const BuildCard: React.FC<BuildCardProps> = ({ build, defaultToAPView }) => {
+const BuildCard: React.FC<BuildCardProps> = ({
+  build,
+  defaultToAPView,
+  showUser = false,
+}) => {
   const [apView, setApView] = useState(defaultToAPView)
   const { borderStyle, themeColor, darkerBgColor, grayWithShade } = useContext(
     MyThemeContext
   )
 
+  useEffect(() => {
+    setApView(defaultToAPView)
+  }, [defaultToAPView])
+
   return (
     <Box
+      as="fieldset"
       width="325px"
       borderWidth="1px"
       border={borderStyle}
@@ -39,6 +50,19 @@ const BuildCard: React.FC<BuildCardProps> = ({ build, defaultToAPView }) => {
       pb="6"
       px="6"
     >
+      {showUser && build.discord_user && (
+        <Box
+          as="legend"
+          color={grayWithShade}
+          fontWeight="semibold"
+          letterSpacing="wide"
+          fontSize="s"
+        >
+          <Link to={`/u/${build.discord_user.discord_id}`}>
+            {build.discord_user.username}#{build.discord_user.discriminator}
+          </Link>
+        </Box>
+      )}
       <Flex justifyContent="space-between">
         <Box width="24" height="auto">
           <WeaponImage englishName={build.weapon} size="MEDIUM" />
@@ -58,11 +82,12 @@ const BuildCard: React.FC<BuildCardProps> = ({ build, defaultToAPView }) => {
         fontWeight="semibold"
         letterSpacing="wide"
         fontSize="xs"
+        ml="8px"
       >
         {new Date(parseInt(build.updatedAt)).toLocaleString()}
       </Box>
       {build.title && (
-        <Box mt="1" fontWeight="semibold" as="h4" lineHeight="tight">
+        <Box ml="8px" fontWeight="semibold" as="h4" lineHeight="tight">
           {build.title}
         </Box>
       )}

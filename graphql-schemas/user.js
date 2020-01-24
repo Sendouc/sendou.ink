@@ -37,7 +37,6 @@ const typeDef = gql`
     username: String!
     "Discord discriminator. For example with Sendou#0043 0043 is the discriminator."
     discriminator: String!
-    "String that allows finding users avatar on Discord."
     discord_id: String!
     twitch_name: String
     twitter_name: String

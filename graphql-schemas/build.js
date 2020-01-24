@@ -11,7 +11,7 @@ const gear = require("../utils/gear")
 
 const typeDef = gql`
   extend type Query {
-    searchForBuilds(discord_id: String!): [Build!]!
+    searchForBuilds(discord_id: String, weapon: String): [Build!]!
     "Returns builds by given weapon. If weapon is omitted returns latest builds instead."
     searchForBuildsByWeapon(weapon: String, page: Int): BuildCollection!
   }
@@ -93,8 +93,13 @@ const typeDef = gql`
 const resolvers = {
   Query: {
     searchForBuilds: (root, args) => {
-      return Build.find({ discord_id: args.discord_id })
-        .sort({ weapon: "asc" })
+      if (!args.discord_id && !args.weapon)
+        throw new UserInputError(
+          "Discord ID or weapon has to be in the arguments"
+        )
+      return Build.find({ ...args })
+        .sort({ top: "desc", updatedAt: "desc" })
+        .populate("discord_user")
         .catch(e => {
           throw new UserInputError(e.message, {
             invalidArgs: args,

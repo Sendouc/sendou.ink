@@ -1,8 +1,8 @@
-import React, { useContext } from "react"
+import React from "react"
 import { Weapon } from "../../types"
 import { Box, Flex } from "@chakra-ui/core"
 import WeaponImage from "../common/WeaponImage"
-import MyThemeContext from "../../themeContext"
+import FieldsetWithLegend from "../common/FieldsetWithLegend"
 
 interface WeaponPoolProps {
   weapons: Weapon[]
@@ -14,29 +14,8 @@ const styles = {
 } as const
 
 const WeaponPool: React.FC<WeaponPoolProps> = ({ weapons }) => {
-  const { colorMode, grayWithShade } = useContext(MyThemeContext)
-  const borderStyle: string = styles[colorMode]
-
   return (
-    <Box
-      as="fieldset"
-      maxW="sm"
-      border={borderStyle}
-      rounded="lg"
-      overflow="hidden"
-      display="inline-block"
-      p="1em"
-    >
-      <Box
-        as="legend"
-        color={grayWithShade}
-        fontWeight="semibold"
-        letterSpacing="wide"
-        fontSize="xs"
-        textTransform="uppercase"
-      >
-        Weapon pool
-      </Box>
+    <FieldsetWithLegend title="WEAPON POOL" titleFontSize="xs">
       <Flex>
         {weapons.map(wpn => (
           <Box mx="0.3em" key={wpn}>
@@ -44,7 +23,7 @@ const WeaponPool: React.FC<WeaponPoolProps> = ({ weapons }) => {
           </Box>
         ))}
       </Flex>
-    </Box>
+    </FieldsetWithLegend>
   )
 }
 
