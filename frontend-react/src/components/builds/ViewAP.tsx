@@ -3,7 +3,7 @@
 import React, { useContext } from "react"
 import { Build, Ability } from "../../types"
 import { Box, Flex } from "@chakra-ui/core"
-import DividingBox from "../ui/DividingBox"
+import DividingBox from "../common/DividingBox"
 import AbilityIcon from "./AbilityIcon"
 import MyThemeContext from "../../themeContext"
 

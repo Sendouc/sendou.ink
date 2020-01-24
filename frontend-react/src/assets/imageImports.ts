@@ -25,6 +25,7 @@ import TI from "./abilityIcons/TI.png"
 import OS from "./abilityIcons/OS.png"
 import AD from "./abilityIcons/AD.png"
 import UNKNOWN from "./abilityIcons/UNKNOWN.png"
+import EMPTY from "./abilityIcons/EMPTY.png"
 import * as top500logo from "./top500.png"
 
 //https://stackoverflow.com/questions/42118296/dynamically-import-images-from-a-directory-using-webpack
@@ -42,34 +43,35 @@ function importAll(r: __WebpackModuleApi.RequireContext) {
 }
 
 export const abilityIcons = {
-  BDU: BDU,
-  BRU: BRU,
-  CB: CB,
-  DR: DR,
-  H: H,
-  ISM: ISM,
-  ISS: ISS,
-  LDE: LDE,
-  MPU: MPU,
-  NS: NS,
-  OG: OG,
-  QR: QR,
-  QSJ: QSJ,
-  REC: REC,
-  RES: RES,
-  RP: RP,
-  RSU: RSU,
-  SCU: SCU,
-  SJ: SJ,
-  SPU: SPU,
-  SS: SS,
-  SSU: SSU,
-  T: T,
-  TI: TI,
-  OS: OS,
-  AD: AD,
-  UNKNOWN: UNKNOWN,
+  BDU,
+  BRU,
+  CB,
+  DR,
+  H,
+  ISM,
+  ISS,
+  LDE,
+  MPU,
+  NS,
+  OG,
+  QR,
+  QSJ,
+  REC,
+  RES,
+  RP,
+  RSU,
+  SCU,
+  SJ,
+  SPU,
+  SS,
+  SSU,
+  T,
+  TI,
+  OS,
+  AD,
+  UNKNOWN,
   "": UNKNOWN,
+  EMPTY,
 } as const
 
 export const top500 = top500logo

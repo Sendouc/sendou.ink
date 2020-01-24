@@ -19,6 +19,35 @@ export const stackableAbilities = [
   "AD",
 ] as const
 
+export const abilitiesGameOrder = [
+  "ISM",
+  "ISS",
+  "REC",
+  "RSU",
+  "SSU",
+  "SCU",
+  "SS",
+  "SPU",
+  "QR",
+  "QSJ",
+  "BRU",
+  "RES",
+  "BDU",
+  "MPU",
+  "OG",
+  "LDE",
+  "T",
+  "CB",
+  "NS",
+  "H",
+  "TI",
+  "RP",
+  "AD",
+  "SJ",
+  "OS",
+  "DR",
+] as const
+
 export const themeColors = [
   "gray",
   "red",

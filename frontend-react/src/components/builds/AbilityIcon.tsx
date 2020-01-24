@@ -42,6 +42,7 @@ interface AbilityIconProps {
     | HeadOnlyAbility
     | ClothingOnlyAbility
     | ShoesOnlyAbility
+    | "EMPTY"
   size: "MAIN" | "SUB"
 }
 

@@ -15,7 +15,7 @@ import NavItem from "./NavItem"
 import { useQuery } from "@apollo/react-hooks"
 import { USER } from "../../graphql/queries/user"
 import UserAvatar from "../common/UserAvatar"
-import DividingBox from "../ui/DividingBox"
+import DividingBox from "../common/DividingBox"
 import { UserData } from "../../types"
 import ColorPicker from "./ColorPicker"
 

@@ -63,6 +63,7 @@ const WeaponSelector: React.FC<WeaponSelectorProps> = ({
           if (oneWeaponArray.length !== 1) return
           setWeapon(oneWeaponArray[0])
         }}
+        autoFocus
       />
       <Flex flexWrap="wrap" justifyContent="center" pt="1em">
         {weapons.filter(filterWeaponArray).map(weapon => (
