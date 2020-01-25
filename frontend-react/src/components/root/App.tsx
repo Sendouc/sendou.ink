@@ -8,6 +8,7 @@ import useLocalStorage from "@rehooks/local-storage"
 import { ThemeColor } from "../../types"
 import { MyThemeProvider } from "../../themeContext"
 import { Theme } from "../../types"
+import { Helmet } from "react-helmet-async"
 
 const App: React.FC = () => {
   const chakraTheme = useChakraTheme()
@@ -47,6 +48,9 @@ const App: React.FC = () => {
 
   return (
     <MyThemeProvider value={theme[colorMode]}>
+      <Helmet>
+        <link rel="icon" type="image/png" href={`/favicon_${themeColor}.png`} />
+      </Helmet>
       <Box
         marginLeft={[null, null, "250px"]}
         mt={["4em", null, "0"]}

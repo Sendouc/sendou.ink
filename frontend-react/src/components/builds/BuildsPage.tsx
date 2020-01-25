@@ -34,6 +34,7 @@ import BuildCard from "./BuildCard"
 import InfiniteScroll from "react-infinite-scroller"
 import FieldsetWithLegend from "../common/FieldsetWithLegend"
 import PageHeader from "../common/PageHeader"
+import AbilitySelector from "./AbilitySelector"
 
 const BuildsPage: React.FC<RouteComponentProps> = () => {
   const { themeColor } = useContext(MyThemeContext)
@@ -72,79 +73,22 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
         <title>{weapon ? `${weapon} ` : ""}Builds | sendou.ink</title>
       </Helmet>
       <PageHeader title="Builds" />
-      <Box mb="1em">
-        <FormLabel htmlFor="apview">Default to Ability Point view</FormLabel>
-        <Switch
-          id="apview"
-          color={themeColor}
-          isChecked={prefersAPView === null ? false : prefersAPView}
-          onChange={() => setAPPreference(!prefersAPView)}
+      <FormLabel htmlFor="apview">Default to Ability Point view</FormLabel>
+      <Switch
+        id="apview"
+        color={themeColor}
+        isChecked={prefersAPView === null ? false : prefersAPView}
+        onChange={() => setAPPreference(!prefersAPView)}
+      />
+      <Box mt="1em">
+        <WeaponSelector
+          weapon={weapon}
+          setWeapon={(weapon: Weapon | null) => setWeapon(weapon)}
+          dropdownMode={isSmall}
         />
       </Box>
-      <WeaponSelector
-        weapon={weapon}
-        setWeapon={(weapon: Weapon | null) => setWeapon(weapon)}
-        dropdownMode={isSmall}
-      />
       {weapon && (
-        <FieldsetWithLegend
-          title="Click an ability to filter by it"
-          titleFontSize="md"
-          centerTitle
-          dividerMode
-        >
-          <Flex flexWrap="wrap" justifyContent="center">
-            {abilitiesGameOrder.map(ability => (
-              <Box
-                key={ability}
-                p="5px"
-                cursor={
-                  abilities.indexOf(ability) === -1 ? "pointer" : undefined
-                }
-                onClick={() => {
-                  if (abilities.indexOf(ability) !== -1) return
-                  setAbilities(abilities.concat(ability))
-                }}
-              >
-                <AbilityIcon
-                  ability={
-                    abilities.indexOf(ability) === -1 ? ability : "EMPTY"
-                  }
-                  size="SUB"
-                />{" "}
-              </Box>
-            ))}
-          </Flex>
-        </FieldsetWithLegend>
-      )}
-      {abilities.length > 0 && (
-        <Box textAlign="center" width="100%">
-          <FieldsetWithLegend
-            title="Only showing builds featuring the following abilities"
-            titleFontSize="md"
-            centerTitle
-            fullWidth
-          >
-            <Flex flexWrap="wrap" justifyContent="center">
-              {abilities.map(ability => (
-                <Box
-                  key={ability}
-                  cursor="pointer"
-                  p="5px"
-                  onClick={() =>
-                    setAbilities(
-                      abilities.filter(
-                        abilityInArray => ability !== abilityInArray
-                      )
-                    )
-                  }
-                >
-                  <AbilityIcon ability={ability} size="SUB" />{" "}
-                </Box>
-              ))}
-            </Flex>
-          </FieldsetWithLegend>
-        </Box>
+        <AbilitySelector abilities={abilities} setAbilities={setAbilities} />
       )}
       {loading && <Loading />}
       {buildsFilterByAbilities.length > 0 && data && (
@@ -154,7 +98,7 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
             loadMore={page => setBuildsToShow(page * 4)}
             hasMore={buildsToShow < data.searchForBuilds.length}
           >
-            <Flex flexWrap="wrap" pt="2em">
+            <Flex flexWrap="wrap" pt="2em" justifyContent="center">
               {buildsFilterByAbilities
                 .filter((build, index) => index < buildsToShow)
                 .map(build => (
@@ -184,7 +128,7 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
         </>
       )}
       {weapon && buildsFilterByAbilities.length === 0 && (
-        <Alert status="info" borderRadius="5px" mt="1em">
+        <Alert status="info" borderRadius="5px" mt="2em">
           <AlertIcon />
           No builds found with the current selection. Please adjust it above.
         </Alert>

@@ -1,5 +1,5 @@
 import React from "react"
-import { Box } from "@chakra-ui/core"
+import { Box, BoxProps } from "@chakra-ui/core"
 import { useContext } from "react"
 import MyThemeContext from "../../themeContext"
 
@@ -12,13 +12,14 @@ interface FieldsetWithLegendProps {
   fullWidth?: boolean
 }
 
-const FieldsetWithLegend: React.FC<FieldsetWithLegendProps> = ({
+const FieldsetWithLegend: React.FC<FieldsetWithLegendProps & BoxProps> = ({
   children,
   title,
   titleFontSize,
   dividerMode = false,
   centerTitle = false,
   fullWidth = false,
+  ...props
 }) => {
   const { borderStyle, textColor } = useContext(MyThemeContext)
   return (
@@ -31,6 +32,7 @@ const FieldsetWithLegend: React.FC<FieldsetWithLegendProps> = ({
       display="inline-block"
       p="1em"
       w={fullWidth ? "100%" : undefined}
+      {...props}
     >
       <Box
         as="legend"

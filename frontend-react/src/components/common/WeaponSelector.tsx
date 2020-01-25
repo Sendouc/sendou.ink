@@ -1,6 +1,6 @@
 import React from "react"
 import { Weapon } from "../../types"
-import { Input, Flex, PseudoBox, Select, Box } from "@chakra-ui/core"
+import { Input, Flex, PseudoBox, Select } from "@chakra-ui/core"
 import { useState } from "react"
 import { weapons } from "../../utils/lists"
 import WeaponImage from "./WeaponImage"
@@ -51,29 +51,28 @@ const WeaponSelector: React.FC<WeaponSelectorProps> = ({
 
   return (
     <>
-      <Box pb="1em">
-        <Input
-          placeholder="Filter weapons"
-          value={input}
-          onChange={handleInputChange}
-          w="50%"
-          ml="auto"
-          mr="auto"
-          onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) => {
-            if (event.key !== "Enter") return
-            const oneWeaponArray = weapons.filter(filterWeaponArray)
-            if (oneWeaponArray.length !== 1) return
-            setWeapon(oneWeaponArray[0])
-          }}
-          autoFocus
-        />
-      </Box>
+      <Input
+        placeholder="Filter weapons"
+        value={input}
+        onChange={handleInputChange}
+        w="50%"
+        ml="auto"
+        mr="auto"
+        onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) => {
+          if (event.key !== "Enter") return
+          const oneWeaponArray = weapons.filter(filterWeaponArray)
+          if (oneWeaponArray.length !== 1) return
+          setWeapon(oneWeaponArray[0])
+        }}
+        autoFocus
+      />
       <FieldsetWithLegend
         title="Click a weapon to select it"
         titleFontSize="md"
         dividerMode
         centerTitle
         fullWidth
+        mt="1em"
       >
         <Flex flexWrap="wrap" justifyContent="center">
           {weapons.filter(filterWeaponArray).map(weapon => (
