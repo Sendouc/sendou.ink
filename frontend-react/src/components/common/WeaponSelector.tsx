@@ -36,6 +36,7 @@ const WeaponSelector: React.FC<WeaponSelectorProps> = ({
         onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
           setWeapon(event.target.value as Weapon)
         }
+        mb="1em"
       >
         {weapons.map(weapon => (
           <option
