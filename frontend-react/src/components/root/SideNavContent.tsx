@@ -71,7 +71,9 @@ export const SideNavContent: React.FC<SideNavProps> = ({ showLogo = true }) => {
       <Flex direction="column">
         {showLogo && (
           <Flex alignSelf="center">
-            <Logo />
+            <Link to="/">
+              <Logo />
+            </Link>
           </Flex>
         )}
         <Flex>

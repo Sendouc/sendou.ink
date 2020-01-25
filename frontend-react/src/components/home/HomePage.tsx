@@ -10,15 +10,12 @@ const HomePage: React.FC<RouteComponentProps> = ({}) => {
   const { colorMode, grayWithShade } = useContext(MyThemeContext)
   return (
     <>
-      <Flex flexDirection="column" alignItems="center">
-        <Image
-          className="rgb"
-          src={posterGirl[colorMode]}
-          display="inline-block"
-          title="Made by borzoic (@borzoic_ on Twitter)"
-          w="40vw"
-          h="auto"
-        />
+      <Flex
+        flexDirection="column"
+        alignItems="center"
+        title="Picture by borzoic (@borzoic_ on Twitter)"
+      >
+        <Image className="rgb" src={posterGirl[colorMode]} w="40vw" h="auto" />
         <Heading
           letterSpacing="1px"
           fontFamily="'Pacifico', cursive"
