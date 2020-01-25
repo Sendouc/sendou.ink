@@ -11,7 +11,6 @@ import {
   Build,
 } from "../../types"
 import useBreakPoints from "../../hooks/useBreakPoints"
-import { abilitiesGameOrder } from "../../utils/lists"
 import {
   Box,
   Flex,
@@ -22,7 +21,6 @@ import {
   Alert,
   AlertIcon,
 } from "@chakra-ui/core"
-import AbilityIcon from "./AbilityIcon"
 import { useContext } from "react"
 import MyThemeContext from "../../themeContext"
 import useLocalStorage from "@rehooks/local-storage"
@@ -32,7 +30,6 @@ import Loading from "../common/Loading"
 import Error from "../common/Error"
 import BuildCard from "./BuildCard"
 import InfiniteScroll from "react-infinite-scroller"
-import FieldsetWithLegend from "../common/FieldsetWithLegend"
 import PageHeader from "../common/PageHeader"
 import AbilitySelector from "./AbilitySelector"
 

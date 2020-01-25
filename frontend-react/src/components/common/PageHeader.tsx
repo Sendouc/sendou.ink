@@ -16,6 +16,9 @@ const PageHeader: React.FC<PageHeaderProps> = ({ title }) => {
         borderLeftWidth="5px"
         pl="5px"
         mb="0.5em"
+        fontFamily="'Pacifico', cursive"
+        fontWeight="light"
+        size="2xl"
       >
         {title}
       </Heading>

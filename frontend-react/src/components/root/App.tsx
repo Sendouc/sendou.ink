@@ -57,6 +57,7 @@ const App: React.FC = () => {
         color={theme[colorMode].textColor}
         bg={theme[colorMode].bgColor}
         minH="100vh"
+        fontFamily="'Montserrat', sans-serif"
       >
         <SideNav />
         <MenuBar />

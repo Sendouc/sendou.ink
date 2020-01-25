@@ -28,6 +28,9 @@ import UNKNOWN from "./abilityIcons/UNKNOWN.png"
 import EMPTY from "./abilityIcons/EMPTY.png"
 import * as top500logo from "./top500.png"
 
+import posterGirlDrawingDark from "./poster_girl_dark.png"
+import posterGirlDrawingLight from "./poster_girl_light.png"
+
 //https://stackoverflow.com/questions/42118296/dynamically-import-images-from-a-directory-using-webpack
 export const wpnSmall: object = importAll(require.context("./wpnSmall", false))
 export const wpnMedium: object = importAll(
@@ -75,3 +78,8 @@ export const abilityIcons = {
 } as const
 
 export const top500 = top500logo
+
+export const posterGirl = {
+  light: posterGirlDrawingLight,
+  dark: posterGirlDrawingDark,
+}
