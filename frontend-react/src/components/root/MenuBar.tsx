@@ -4,6 +4,7 @@ import Logo from "./Logo"
 import { MdDehaze } from "react-icons/md"
 import MobileNav from "./MobileNav"
 import MyThemeContext from "../../themeContext"
+import { Link } from "@reach/router"
 
 export const MenuBar: React.FC = () => {
   const btnRef = useRef<HTMLElement | null>(null)
@@ -30,7 +31,9 @@ export const MenuBar: React.FC = () => {
     >
       <Flex size="100%" px="6" justifyContent="space-between">
         <Flex alignItems="center">
-          <Logo mobile />
+          <Link to="/">
+            <Logo mobile />
+          </Link>
         </Flex>
         <Flex alignItems="center" color="gray.500" justify="flex-end">
           <IconButton

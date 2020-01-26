@@ -83,6 +83,7 @@ const WeaponSelector: React.FC<WeaponSelectorProps> = ({
               cursor="pointer"
               onClick={() => setWeapon(weapon)}
               userSelect="none"
+              transition="0.5s"
               _hover={{
                 bg: "rgba(128, 128, 128, 0.3)",
                 borderRadius: "50%",

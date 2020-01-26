@@ -15,19 +15,19 @@ const HomePage: React.FC<RouteComponentProps> = ({}) => {
         alignItems="center"
         title="Picture by borzoic (@borzoic_ on Twitter)"
       >
-        <Image className="rgb" src={posterGirl[colorMode]} w="40vw" h="auto" />
+        <Image className="rgb" src={posterGirl[colorMode]} w="250px" h="auto" />
         <Heading
+          size="2xl"
           letterSpacing="1px"
           fontFamily="'Pacifico', cursive"
-          fontSize="7vw"
           fontWeight="light"
         >
           Sendou.ink
         </Heading>
         <Heading
+          size="md"
           letterSpacing="1px"
           fontWeight="light"
-          fontSize="2vw"
           color={grayWithShade}
         >
           Competitive Splatoon Hub
