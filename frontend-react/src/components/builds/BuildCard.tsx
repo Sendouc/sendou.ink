@@ -9,6 +9,7 @@ import {
   PopoverTrigger,
   PopoverContent,
   PopoverBody,
+  Button,
 } from "@chakra-ui/core"
 import WeaponImage from "../common/WeaponImage"
 import { top500 } from "../../assets/imageImports"
@@ -118,15 +119,15 @@ const BuildCard: React.FC<BuildCardProps> = ({
         ) : (
           <Box />
         )}
-        <IconButton
+        <Button
           variant="ghost"
-          isRound
           variantColor={themeColor}
           aria-label={apView ? "Show gear" : "Show ability point count"}
-          fontSize="20px"
-          icon={apView ? FaMinus : FaPlus}
+          fontSize="15px"
           onClick={() => setApView(!apView)}
-        />
+        >
+          {apView ? "GEAR" : "AP"}
+        </Button>
       </Flex>
     </Box>
   )

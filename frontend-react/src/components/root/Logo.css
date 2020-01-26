@@ -1,0 +1,11 @@
+.desktop:hover > .s {
+  transform: translateY(7px);
+}
+
+.mobile:hover > .s {
+  transform: translateY(1px);
+}
+
+.mobile:hover > .ink {
+  transform: translateY(0px);
+}

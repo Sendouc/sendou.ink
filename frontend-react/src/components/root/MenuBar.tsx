@@ -30,7 +30,7 @@ export const MenuBar: React.FC = () => {
     >
       <Flex size="100%" px="6" justifyContent="space-between">
         <Flex alignItems="center">
-          <Logo />
+          <Logo mobile />
         </Flex>
         <Flex alignItems="center" color="gray.500" justify="flex-end">
           <IconButton

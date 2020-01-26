@@ -26,7 +26,7 @@ const HomePage: React.FC<RouteComponentProps> = ({}) => {
         </Heading>
         <Heading
           letterSpacing="1px"
-          fontFamily="'Lato', regular"
+          fontWeight="light"
           fontSize="2vw"
           color={grayWithShade}
         >
