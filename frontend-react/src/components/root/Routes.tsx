@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from "react"
 import { Router } from "@reach/router"
 import Loading from "../common/Loading"
+import MapPlannerPage from "../plans/MapPlannerPage"
 
 const HomePage = lazy(() => import("../home/HomePage"))
 const UserPage = lazy(() => import("../user/UserPage"))
@@ -13,6 +14,7 @@ const Routes: React.FC = () => {
         <HomePage path="/" />
         <UserPage path="/u/:id" />
         <BuildsPage path="/builds" />
+        <MapPlannerPage path="/plans" />
       </Router>
     </Suspense>
   )

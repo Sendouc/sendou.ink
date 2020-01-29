@@ -61,7 +61,7 @@ const App: React.FC = () => {
       >
         <SideNav />
         <MenuBar />
-        <Box maxWidth="46em" pt={8} px={8} ml="auto" mr="auto">
+        <Box maxWidth="1100px" pt={8} px={8} ml="auto" mr="auto">
           <Routes />
         </Box>
       </Box>

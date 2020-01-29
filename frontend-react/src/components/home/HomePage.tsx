@@ -5,17 +5,21 @@ import { posterGirl } from "../../assets/imageImports"
 import { useContext } from "react"
 import MyThemeContext from "../../themeContext"
 import "./HomePage.css"
+import { Helmet } from "react-helmet-async"
 
 const HomePage: React.FC<RouteComponentProps> = ({}) => {
   const { colorMode, grayWithShade } = useContext(MyThemeContext)
   return (
     <>
+      <Helmet>
+        <title>sendou.ink | Competitive Splatoon Hub</title>
+      </Helmet>
       <Flex
         flexDirection="column"
         alignItems="center"
         title="Picture by borzoic (@borzoic_ on Twitter)"
       >
-        <Image className="rgb" src={posterGirl[colorMode]} w="250px" h="auto" />
+        <Image className="rgb" src={posterGirl[colorMode]} w="400px" h="auto" />
         <Heading
           size="2xl"
           letterSpacing="1px"
