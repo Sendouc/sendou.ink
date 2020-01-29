@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect } from "react"
-import { Build } from "../../types"
 import {
   Box,
   Flex,
@@ -12,13 +11,15 @@ import {
   Button,
   BoxProps,
 } from "@chakra-ui/core"
+import { Link } from "@reach/router"
+import { FaInfo } from "react-icons/fa"
+
 import WeaponImage from "../common/WeaponImage"
 import { top500 } from "../../assets/imageImports"
-import { FaInfo, FaPlus, FaMinus } from "react-icons/fa"
 import ViewGear from "./ViewGear"
 import ViewAP from "./ViewAP"
 import MyThemeContext from "../../themeContext"
-import { Link } from "@reach/router"
+import { Build } from "../../types"
 
 interface BuildCardProps {
   build: Build
