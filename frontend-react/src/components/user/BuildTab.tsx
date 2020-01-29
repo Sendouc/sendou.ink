@@ -15,12 +15,11 @@ const BuildTab: React.FC<BuildTabProps> = ({ builds, canModifyBuilds }) => {
     <>
       <Flex flexWrap="wrap" justifyContent="center">
         {builds.map(build => (
-          <Box key={build.id} p="0.2em">
-            <BuildCard
-              build={build}
-              defaultToAPView={APView !== null ? APView : false}
-            />
-          </Box>
+          <BuildCard
+            build={build}
+            defaultToAPView={APView !== null ? APView : false}
+            m="0.5em"
+          />
         ))}
       </Flex>
     </>

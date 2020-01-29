@@ -10,6 +10,7 @@ import {
   PopoverContent,
   PopoverBody,
   Button,
+  BoxProps,
 } from "@chakra-ui/core"
 import WeaponImage from "../common/WeaponImage"
 import { top500 } from "../../assets/imageImports"
@@ -25,10 +26,11 @@ interface BuildCardProps {
   showUser?: boolean
 }
 
-const BuildCard: React.FC<BuildCardProps> = ({
+const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
   build,
   defaultToAPView,
   showUser = false,
+  ...props
 }) => {
   const [apView, setApView] = useState(defaultToAPView)
   const { borderStyle, themeColor, darkerBgColor, grayWithShade } = useContext(
@@ -50,6 +52,7 @@ const BuildCard: React.FC<BuildCardProps> = ({
       pt="2"
       pb="6"
       px="6"
+      {...props}
     >
       {showUser && build.discord_user && (
         <Box

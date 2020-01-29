@@ -99,15 +99,15 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
               {buildsFilterByAbilities
                 .filter((build, index) => index < buildsToShow)
                 .map(build => (
-                  <Box key={build.id} p="0.2em">
-                    <BuildCard
-                      build={build}
-                      defaultToAPView={
-                        prefersAPView === null ? false : prefersAPView
-                      }
-                      showUser
-                    />
-                  </Box>
+                  <BuildCard
+                    key={build.id}
+                    build={build}
+                    defaultToAPView={
+                      prefersAPView === null ? false : prefersAPView
+                    }
+                    showUser
+                    m="0.5em"
+                  />
                 ))}
             </Flex>
           </InfiniteScroll>
