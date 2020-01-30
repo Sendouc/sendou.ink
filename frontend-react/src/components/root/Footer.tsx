@@ -1,67 +1,69 @@
 import React, { useContext } from "react"
-import { Box, Flex, Heading, IconButton, Link } from "@chakra-ui/core"
+import { Box, Flex, IconButton, Link, Image } from "@chakra-ui/core"
+import { footerSquid, footerOcto } from "../../assets/imageImports"
 import MyThemeContext from "../../themeContext"
-import {
-  FaTwitter,
-  FaGithub,
-  FaYoutube,
-  FaDiscord,
-  FaTwitch,
-} from "react-icons/fa"
+import { FaTwitter, FaGithub, FaDiscord, FaTwitch } from "react-icons/fa"
 
 const ICON_SIZE = "lg"
 
 const Footer: React.FC = () => {
-  const {
-    themeColorWithShade,
-    colorMode,
-    darkerBgColor,
-    themeColor,
-  } = useContext(MyThemeContext)
-  const buttonColor =
-    colorMode === "light" ? `${themeColor}.200` : `${themeColor}.500`
+  const { themeColorWithShade, colorMode } = useContext(MyThemeContext)
+
   return (
     <Box mt="2em">
-      <Link href="https://discord.gg/J6NqUvt" mx="1em">
-        <IconButton
-          isRound
-          variant="ghost"
-          //bg={buttonColor}
-          icon={FaDiscord}
-          aria-label="Link to Discord"
-          size={ICON_SIZE}
+      <Flex alignItems="flex-end">
+        <Link href="https://discord.gg/J6NqUvt" mx="1em">
+          <IconButton
+            isRound
+            variant="ghost"
+            //bg={buttonColor}
+            icon={FaDiscord}
+            aria-label="Link to Discord"
+            size={ICON_SIZE}
+          />
+        </Link>
+        <Link href="https://twitter.com/sendouc" mx="1em">
+          <IconButton
+            isRound
+            variant="ghost"
+            //bg={buttonColor}
+            icon={FaTwitter}
+            aria-label="Link to Twitter"
+            size={ICON_SIZE}
+          />
+        </Link>
+        <Link href="https://www.twitch.tv/sendou" mx="1em">
+          <IconButton
+            isRound
+            variant="ghost"
+            //bg={buttonColor}
+            icon={FaTwitch}
+            aria-label="Link to Twitch"
+            size={ICON_SIZE}
+          />
+        </Link>
+        <Link href="https://github.com/Sendouc/sendou-ink" mx="1em">
+          <IconButton
+            isRound
+            variant="ghost"
+            //bg={buttonColor}
+            icon={FaGithub}
+            aria-label="Link to Github"
+            size={ICON_SIZE}
+          />
+        </Link>
+        <Image
+          src={
+            Math.random() > 0.5 ? footerSquid[colorMode] : footerOcto[colorMode]
+          }
+          bg={themeColorWithShade}
+          w="80px"
+          h="auto"
+          ml="auto"
+          mr="50px"
+          userSelect="none"
         />
-      </Link>
-      <Link href="https://twitter.com/sendouc" mx="1em">
-        <IconButton
-          isRound
-          variant="ghost"
-          //bg={buttonColor}
-          icon={FaTwitter}
-          aria-label="Link to Twitter"
-          size={ICON_SIZE}
-        />
-      </Link>
-      <Link href="https://www.twitch.tv/sendou" mx="1em">
-        <IconButton
-          isRound
-          variant="ghost"
-          //bg={buttonColor}
-          icon={FaTwitch}
-          aria-label="Link to Twitch"
-          size={ICON_SIZE}
-        />
-      </Link>
-      <Link href="https://github.com/Sendouc/sendou-ink" mx="1em">
-        <IconButton
-          isRound
-          variant="ghost"
-          //bg={buttonColor}
-          icon={FaGithub}
-          aria-label="Link to Github"
-          size={ICON_SIZE}
-        />
-      </Link>
+      </Flex>
       <Flex
         bg={themeColorWithShade}
         p="25px"
