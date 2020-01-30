@@ -1,5 +1,10 @@
 import React from "react"
-import { Box, useColorMode, useTheme as useChakraTheme } from "@chakra-ui/core"
+import {
+  Box,
+  useColorMode,
+  useTheme as useChakraTheme,
+  Flex,
+} from "@chakra-ui/core"
 
 import { MenuBar } from "./MenuBar"
 import SideNav from "./SideNav"
@@ -9,6 +14,7 @@ import { ThemeColor } from "../../types"
 import { MyThemeProvider } from "../../themeContext"
 import { Theme } from "../../types"
 import { Helmet } from "react-helmet-async"
+import Footer from "./Footer"
 
 const App: React.FC = () => {
   const chakraTheme = useChakraTheme()
@@ -58,11 +64,15 @@ const App: React.FC = () => {
         bg={theme[colorMode].bgColor}
         minH="100vh"
         fontFamily="'Montserrat', sans-serif"
+        pb="20px"
       >
         <SideNav />
         <MenuBar />
         <Box maxWidth="1100px" pt={8} px={8} ml="auto" mr="auto">
-          <Routes />
+          <Box minH="calc(100vh - 210px)">
+            <Routes />
+          </Box>
+          <Footer />
         </Box>
       </Box>
     </MyThemeProvider>
