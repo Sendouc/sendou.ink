@@ -55,10 +55,11 @@ const PostsAccordion: React.FC<PostsAccordionProps> = ({ posts }) => {
                   <Box w="2em" h="2em" mr="1em" />
                 )}
                 <Grid
-                  gridTemplateColumns="repeat(1, 1fr)"
+                  gridTemplateColumns="repeat(auto-fill, 200px)"
                   width="100%"
-                  rowGap="0.5em"
-                  justifyItems="start"
+                  rowGap="0.7em"
+                  justifyItems="center"
+                  justifyContent="center"
                   alignItems="center"
                 >
                   <Link to={`/u/${discord_user.discord_id}`}>
@@ -116,6 +117,7 @@ const PostsAccordion: React.FC<PostsAccordionProps> = ({ posts }) => {
                   py={4}
                   background={darkerBgColor}
                   whiteSpace="pre-wrap"
+                  textAlign="center"
                 >
                   {post.activity && (
                     <Box>
@@ -159,8 +161,5 @@ const PostsAccordion: React.FC<PostsAccordionProps> = ({ posts }) => {
     </Accordion>
   )
 }
-/*activity?: string
-  looking_for?: string
-  past_experience?: string
-  description?: string*/
+
 export default PostsAccordion
