@@ -8,7 +8,7 @@ interface LogoProps {
 
 const Logo: React.FC<LogoProps> = ({ mobile = false }) => {
   return (
-    <Box className={mobile ? "mobile" : "desktop"}>
+    <Box className={mobile ? "mobile" : "desktop"} userSelect="none">
       <Box
         className="s"
         as="span"

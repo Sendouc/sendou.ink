@@ -185,7 +185,7 @@ const ModesAccordion: React.FC<ModesAccordionProps> = ({ placements }) => {
                   </StyledBox>
                 </Flex>
               </AccordionHeader>
-              <AccordionPanel py={4} background={darkerBgColor}>
+              <AccordionPanel py={4} background={darkerBgColor} mt="3px">
                 <Grid
                   gridTemplateColumns="repeat(4, 1fr)"
                   gridTemplateRows="auto"

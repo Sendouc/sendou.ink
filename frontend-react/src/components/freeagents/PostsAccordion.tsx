@@ -55,7 +55,7 @@ const PostsAccordion: React.FC<PostsAccordionProps> = ({ posts }) => {
                   <Box w="2em" h="2em" mr="1em" />
                 )}
                 <Grid
-                  gridTemplateColumns="repeat(4, 1fr)"
+                  gridTemplateColumns="repeat(1, 1fr)"
                   width="100%"
                   rowGap="0.5em"
                   justifyItems="start"
