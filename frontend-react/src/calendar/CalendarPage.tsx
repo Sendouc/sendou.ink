@@ -5,7 +5,6 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-  PopoverHeader,
   PopoverArrow,
   PopoverCloseButton,
   PopoverBody,
@@ -19,9 +18,7 @@ import MyThemeContext from "../themeContext"
 import PageHeader from "../components/common/PageHeader"
 import { Helmet } from "react-helmet-async"
 
-interface CalendarPageProps {}
-
-const CalendarPage: React.FC<RouteComponentProps> = ({}) => {
+const CalendarPage: React.FC<RouteComponentProps> = () => {
   const {
     themeColor,
     darkerBgColor,

@@ -1,6 +1,6 @@
 import React from "react"
 import { Build } from "../../types"
-import { Flex, Box } from "@chakra-ui/core"
+import { Flex } from "@chakra-ui/core"
 import BuildCard from "../builds/BuildCard"
 import useLocalStorage from "@rehooks/local-storage"
 
@@ -16,6 +16,7 @@ const BuildTab: React.FC<BuildTabProps> = ({ builds, canModifyBuilds }) => {
       <Flex flexWrap="wrap" justifyContent="center">
         {builds.map(build => (
           <BuildCard
+            key={build.id}
             build={build}
             defaultToAPView={APView !== null ? APView : false}
             m="0.5em"

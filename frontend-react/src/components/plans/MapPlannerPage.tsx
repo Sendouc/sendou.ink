@@ -9,7 +9,6 @@ import { Helmet } from "react-helmet-async"
 import { Weapon } from "../../types"
 import Error from "../common/Error"
 import {
-  IconButton,
   Button,
   Flex,
   Box,
@@ -17,17 +16,8 @@ import {
   Input,
   InputRightElement,
 } from "@chakra-ui/core"
-import { MdUndo, MdRedo } from "react-icons/md"
 import MyThemeContext from "../../themeContext"
-import {
-  FaTrashAlt,
-  FaUndo,
-  FaRedo,
-  FaCloudDownloadAlt,
-  FaFileDownload,
-  FaFileUpload,
-  FaFileImage,
-} from "react-icons/fa"
+import { FaFileDownload, FaFileUpload, FaFileImage } from "react-icons/fa"
 import reef from "../../assets/plannerMaps/reef-sz.png"
 import MapSelect from "./MapSelect"
 import { RouteComponentProps } from "@reach/router"

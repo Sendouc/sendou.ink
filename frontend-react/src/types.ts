@@ -128,6 +128,27 @@ export interface Placement {
   year: number
 }
 
+export interface FreeAgentPost {
+  id: string
+  can_vc: "YES" | "USUALLY" | "SOMETIMES" | "NO"
+  playstyles: ("FRONTLINE" | "MIDLINE" | "BACKLINE")[]
+  activity?: string
+  looking_for?: string
+  past_experience?: string
+  description?: string
+  hidden: boolean
+  createdAt: string
+  discord_user: {
+    username: string
+    discriminator: string
+    discord_id: string
+    twitter_name?: string
+    country?: CountryCode
+    weapons?: Weapon[]
+    top500: boolean
+  }
+}
+
 //==============================================================================
 // Apollo
 //==============================================================================
@@ -162,4 +183,8 @@ export interface PlayerInfoData {
 
 export interface PlayerInfoVars {
   twitter: string
+}
+
+export interface FreeAgentPostsData {
+  freeAgentPosts: FreeAgentPost[]
 }

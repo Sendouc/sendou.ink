@@ -1,5 +1,5 @@
 import React from "react"
-import { Avatar } from "@chakra-ui/core"
+import { Avatar, BoxProps } from "@chakra-ui/core"
 
 interface UserAvatarProps {
   name: string
@@ -7,12 +7,18 @@ interface UserAvatarProps {
   size?: undefined | "2xl"
 }
 
-const UserAvatar: React.FC<UserAvatarProps> = ({ name, twitterName, size }) => {
+const UserAvatar: React.FC<UserAvatarProps & BoxProps> = ({
+  name,
+  twitterName,
+  size,
+  ...props
+}) => {
   return (
     <Avatar
       name={name}
       src={`https://avatars.io/twitter/${twitterName}`}
       size={size}
+      {...props}
     />
   )
 }

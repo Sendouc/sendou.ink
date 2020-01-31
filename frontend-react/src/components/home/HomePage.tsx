@@ -7,7 +7,7 @@ import MyThemeContext from "../../themeContext"
 import "./HomePage.css"
 import { Helmet } from "react-helmet-async"
 
-const HomePage: React.FC<RouteComponentProps> = ({}) => {
+const HomePage: React.FC<RouteComponentProps> = () => {
   const { colorMode, grayWithShade } = useContext(MyThemeContext)
   return (
     <>

@@ -1,10 +1,5 @@
 import React from "react"
-import {
-  Box,
-  useColorMode,
-  useTheme as useChakraTheme,
-  Flex,
-} from "@chakra-ui/core"
+import { Box, useColorMode, useTheme as useChakraTheme } from "@chakra-ui/core"
 
 import { MenuBar } from "./MenuBar"
 import SideNav from "./SideNav"
@@ -15,6 +10,7 @@ import { MyThemeProvider } from "../../themeContext"
 import { Theme } from "../../types"
 import { Helmet } from "react-helmet-async"
 import Footer from "./Footer"
+import { useEffect } from "react"
 
 const App: React.FC = () => {
   const chakraTheme = useChakraTheme()
@@ -52,11 +48,14 @@ const App: React.FC = () => {
     } as Theme,
   }
 
+  useEffect(() => {
+    const favicon = document.getElementById("favicon") as HTMLLinkElement
+    if (!favicon) return
+    favicon.href = `/favicon_${themeColor}.png`
+  }, [themeColorFromStorage])
+
   return (
     <MyThemeProvider value={theme[colorMode]}>
-      <Helmet>
-        <link rel="icon" type="image/png" href={`/favicon_${themeColor}.png`} />
-      </Helmet>
       <Box
         marginLeft={[null, null, "250px"]}
         mt={["4em", null, "0"]}

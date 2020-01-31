@@ -1,6 +1,6 @@
-import { gql } from "apollo-boost"
+import { gql, DocumentNode } from "apollo-boost"
 
-export const freeAgentPosts = gql`
+export const FREE_AGENT_POSTS: DocumentNode = gql`
   {
     freeAgentPosts {
       id
