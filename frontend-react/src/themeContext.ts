@@ -10,6 +10,7 @@ const MyThemeContext = React.createContext<Theme>({
   themeColorWithShade: "pink.200",
   grayWithShade: "gray.300",
   themeColorHex: "#D53F8C",
+  themeColorHexLighter: "#FBB6CE",
   themeColor: "pink",
 })
 

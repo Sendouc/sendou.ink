@@ -1,101 +1,41 @@
 import React from "react"
-import { Weapon } from "../../types"
-import { Input, Flex, PseudoBox, Select } from "@chakra-ui/core"
-import { useState } from "react"
-import { weapons } from "../../utils/lists"
+import { Flex, Box } from "@chakra-ui/core"
+import { weaponSelectOptions } from "../../utils/lists"
 import WeaponImage from "./WeaponImage"
-import { useContext } from "react"
-import MyThemeContext from "../../themeContext"
-import FieldsetWithLegend from "./FieldsetWithLegend"
+import { components } from "react-select"
+import Select from "../elements/Select"
 
 interface WeaponSelectorProps {
-  weapon: Weapon | null
-  setWeapon: (weapon: Weapon | null) => void
-  dropdownMode?: boolean
+  setValue: (value: string) => void
+  autoFocus?: boolean
 }
 
+const singleOption = (props: any) => (
+  <components.Option {...props}>
+    <Flex alignItems="center" color={props.isFocused ? "black" : undefined}>
+      <Box mr="0.5em">
+        <WeaponImage size="SMALL" englishName={props.label} />
+      </Box>
+      {props.label}
+    </Flex>
+  </components.Option>
+)
+
 const WeaponSelector: React.FC<WeaponSelectorProps> = ({
-  weapon,
-  setWeapon,
-  dropdownMode = false,
+  setValue,
+  autoFocus = false,
 }) => {
-  const { darkerBgColor } = useContext(MyThemeContext)
-  const [input, setInput] = useState("")
-
-  const filterWeaponArray = (weapon: Weapon) =>
-    input === "" || weapon.toLowerCase().indexOf(input.toLowerCase()) !== -1
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setInput(event.target.value)
-
-  if (dropdownMode)
-    return (
-      <Select
-        placeholder="Filter weapons"
-        value={weapon ?? ""}
-        onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
-          setWeapon(event.target.value as Weapon)
-        }
-        mb="1em"
-      >
-        {weapons.map(weapon => (
-          <option
-            key={weapon}
-            value={weapon}
-            style={{ background: darkerBgColor }}
-          >
-            {weapon}
-          </option>
-        ))}
-      </Select>
-    )
-
   return (
-    <>
-      <Input
-        placeholder="Filter weapons"
-        value={input}
-        onChange={handleInputChange}
-        w="50%"
-        ml="auto"
-        mr="auto"
-        onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) => {
-          if (event.key !== "Enter") return
-          const oneWeaponArray = weapons.filter(filterWeaponArray)
-          if (oneWeaponArray.length !== 1) return
-          setWeapon(oneWeaponArray[0])
-        }}
-        autoFocus
-      />
-      <FieldsetWithLegend
-        title="Click a weapon to select it"
-        titleFontSize="md"
-        dividerMode
-        centerTitle
-        fullWidth
-        mt="1em"
-      >
-        <Flex flexWrap="wrap" justifyContent="center">
-          {weapons.filter(filterWeaponArray).map(weapon => (
-            <PseudoBox
-              key={weapon}
-              px="2px"
-              cursor="pointer"
-              onClick={() => setWeapon(weapon)}
-              userSelect="none"
-              transition="0.5s"
-              _hover={{
-                bg: "rgba(128, 128, 128, 0.3)",
-                borderRadius: "50%",
-                transition: "background-color .5s",
-              }}
-            >
-              <WeaponImage englishName={weapon} size="SMALL" />
-            </PseudoBox>
-          ))}
-        </Flex>
-      </FieldsetWithLegend>
-    </>
+    <Select
+      options={weaponSelectOptions}
+      setValue={setValue}
+      placeholder="Select a weapon"
+      components={{
+        IndicatorSeparator: () => null,
+        Option: singleOption,
+      }}
+      autoFocus={autoFocus}
+    />
   )
 }
 

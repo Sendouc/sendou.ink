@@ -79,13 +79,14 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
       />
       <Box mt="1em">
         <WeaponSelector
-          weapon={weapon}
-          setWeapon={(weapon: Weapon | null) => setWeapon(weapon)}
-          dropdownMode={isSmall}
+          setValue={(weapon: string) => setWeapon(weapon as Weapon)}
+          autoFocus
         />
       </Box>
       {weapon && (
-        <AbilitySelector abilities={abilities} setAbilities={setAbilities} />
+        <Box mt="1em">
+          <AbilitySelector abilities={abilities} setAbilities={setAbilities} />
+        </Box>
       )}
       {loading && <Loading />}
       {buildsFilterByAbilities.length > 0 && data && (

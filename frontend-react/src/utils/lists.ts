@@ -1,3 +1,7 @@
+import { Weapon } from "../types"
+import { wpnSmall } from "../assets/imageImports"
+import english_internal from "./english_internal.json"
+
 export const headOnlyAbilities = ["CB", "LDE", "OG", "T"] as const
 export const clothingOnlyAbilities = ["H", "NS", "TI", "RP", "AD"] as const
 export const shoesOnlyAbilities = ["DR", "SJ", "OS"] as const
@@ -1103,6 +1107,47 @@ export const brellas = [
   "Undercover Sorella Brella",
   "Kensa Undercover Brella",
 ] as const
+
+const weaponMap = (weapon: Weapon) => ({ value: weapon, label: weapon })
+
+export const weaponSelectOptions = [
+  {
+    label: "Shooters",
+    options: [...shooters, ...semiauto].map(weaponMap),
+  },
+  {
+    label: "Blasters",
+    options: blasters.map(weaponMap),
+  },
+  {
+    label: "Rollers",
+    options: rollers.map(weaponMap),
+  },
+  {
+    label: "Brushes",
+    options: brushes.map(weaponMap),
+  },
+  {
+    label: "Chargers",
+    options: chargers.map(weaponMap),
+  },
+  {
+    label: "Sloshers",
+    options: sloshers.map(weaponMap),
+  },
+  {
+    label: "Splatlings",
+    options: splatlings.map(weaponMap),
+  },
+  {
+    label: "Dualies",
+    options: dualies.map(weaponMap),
+  },
+  {
+    label: "Brellas",
+    options: brellas.map(weaponMap),
+  },
+]
 
 export const weaponsByCategory = {
   Shooters: shooters,

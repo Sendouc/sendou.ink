@@ -8,7 +8,6 @@ import useLocalStorage from "@rehooks/local-storage"
 import { ThemeColor } from "../../types"
 import { MyThemeProvider } from "../../themeContext"
 import { Theme } from "../../types"
-import { Helmet } from "react-helmet-async"
 import Footer from "./Footer"
 import { useEffect } from "react"
 
@@ -27,12 +26,14 @@ const App: React.FC = () => {
     light: {
       colorMode: "light",
       bgColor: "#eff0f3",
-      darkerBgColor: "#D6D7DA",
+      //darkerBgColor: "#D6D7DA", FFF0F5
+      darkerBgColor: "#FFFAFA",
       textColor: "#0d0d0d",
       borderStyle: "1px solid rgba(0, 0, 0, .2)",
       themeColorWithShade: `${themeColor}.500`,
       grayWithShade: "gray.600",
       themeColorHex: chakraTheme.colors[themeColor]["500"],
+      themeColorHexLighter: chakraTheme.colors[themeColor]["200"],
       themeColor,
     } as Theme,
     dark: {
@@ -44,6 +45,7 @@ const App: React.FC = () => {
       themeColorWithShade: `${themeColor}.200`,
       grayWithShade: "gray.300",
       themeColorHex: chakraTheme.colors[themeColor]["500"],
+      themeColorHexLighter: chakraTheme.colors[themeColor]["200"],
       themeColor,
     } as Theme,
   }

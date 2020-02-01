@@ -1,4 +1,4 @@
-import React, { StrictMode } from "react"
+import React from "react"
 import ReactDOM from "react-dom"
 import App from "./components/root/App"
 import {
@@ -23,18 +23,16 @@ const client = new ApolloClient({
 const customTheme = { ...theme, icons: { ...theme.icons, ...customIcons } }
 
 ReactDOM.render(
-  <StrictMode>
-    <HelmetProvider>
-      <ApolloProvider client={client}>
-        <ThemeProvider theme={customTheme}>
-          <ColorModeProvider>
-            <CSSReset />
-            <App />
-          </ColorModeProvider>
-        </ThemeProvider>
-      </ApolloProvider>
-    </HelmetProvider>
-  </StrictMode>,
+  <HelmetProvider>
+    <ApolloProvider client={client}>
+      <ThemeProvider theme={customTheme}>
+        <ColorModeProvider>
+          <CSSReset />
+          <App />
+        </ColorModeProvider>
+      </ThemeProvider>
+    </ApolloProvider>
+  </HelmetProvider>,
   document.getElementById("root")
 )
 

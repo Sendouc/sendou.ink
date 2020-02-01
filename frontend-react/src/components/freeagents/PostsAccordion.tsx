@@ -6,10 +6,8 @@ import {
   AccordionHeader,
   AccordionIcon,
   AccordionPanel,
-  SimpleGrid,
   Box,
   Grid,
-  Icon,
   Flex,
   Heading,
 } from "@chakra-ui/core"
