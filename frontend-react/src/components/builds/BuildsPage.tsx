@@ -11,16 +11,7 @@ import {
   Build,
 } from "../../types"
 import useBreakPoints from "../../hooks/useBreakPoints"
-import {
-  Box,
-  Flex,
-  Heading,
-  FormLabel,
-  Switch,
-  Button,
-  Alert,
-  AlertIcon,
-} from "@chakra-ui/core"
+import { Box, Flex, Heading, FormLabel, Switch, Button } from "@chakra-ui/core"
 import { useContext } from "react"
 import MyThemeContext from "../../themeContext"
 import useLocalStorage from "@rehooks/local-storage"
@@ -32,6 +23,7 @@ import BuildCard from "./BuildCard"
 import InfiniteScroll from "react-infinite-scroller"
 import PageHeader from "../common/PageHeader"
 import AbilitySelector from "./AbilitySelector"
+import Alert from "../elements/Alert"
 
 const BuildsPage: React.FC<RouteComponentProps> = () => {
   const { themeColor } = useContext(MyThemeContext)
@@ -126,10 +118,7 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
         </>
       )}
       {weapon && buildsFilterByAbilities.length === 0 && (
-        <Alert status="info" borderRadius="5px" mt="2em">
-          <AlertIcon />
-          No builds found with the current selection. Please adjust it above.
-        </Alert>
+        <Alert status="info">No builds found with the current filter</Alert>
       )}
     </>
   )

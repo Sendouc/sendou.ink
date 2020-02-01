@@ -7,7 +7,9 @@ import Select from "../elements/Select"
 
 interface WeaponSelectorProps {
   setValue: (value: string) => void
+  label?: string
   autoFocus?: boolean
+  clearable?: boolean
 }
 
 const singleOption = (props: any) => (
@@ -23,19 +25,29 @@ const singleOption = (props: any) => (
 
 const WeaponSelector: React.FC<WeaponSelectorProps> = ({
   setValue,
-  autoFocus = false,
+  label,
+  clearable,
+  autoFocus,
 }) => {
   return (
-    <Select
-      options={weaponSelectOptions}
-      setValue={setValue}
-      placeholder="Select a weapon"
-      components={{
-        IndicatorSeparator: () => null,
-        Option: singleOption,
-      }}
-      autoFocus={autoFocus}
-    />
+    <>
+      {label && (
+        <Box mb="0.2em">
+          <b>{label}</b>
+        </Box>
+      )}
+      <Select
+        options={weaponSelectOptions}
+        setValue={setValue}
+        placeholder="Select weapon"
+        clearable={clearable}
+        components={{
+          IndicatorSeparator: () => null,
+          Option: singleOption,
+        }}
+        autoFocus={autoFocus}
+      />
+    </>
   )
 }
 

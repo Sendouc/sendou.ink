@@ -42,7 +42,7 @@ const typeDef = gql`
     twitter_name: String
     country: String
     sens: Sens
-    weapons: [String]!
+    weapons: [String!]!
     custom_url: String
     top500: Boolean!
   }

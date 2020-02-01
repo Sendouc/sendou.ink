@@ -72,7 +72,7 @@ export interface User {
   twitch_name?: string
   twitter_name?: string
   country?: CountryCode
-  weapons?: Weapon[]
+  weapons: Weapon[]
   top500: boolean
   custom_url?: string
   sens?: {
@@ -143,7 +143,7 @@ export interface FreeAgentPost {
     discord_id: string
     twitter_name?: string
     country?: CountryCode
-    weapons?: Weapon[]
+    weapons: Weapon[]
     top500: boolean
   }
 }

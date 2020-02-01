@@ -29,6 +29,7 @@ interface SelectProps {
       value: string
     }>
   >
+  clearable?: boolean
 }
 
 const Select: React.FC<SelectProps> = ({
@@ -36,7 +37,8 @@ const Select: React.FC<SelectProps> = ({
   components,
   placeholder,
   setValue,
-  autoFocus = false,
+  clearable,
+  autoFocus,
 }) => {
   const {
     colorMode,
@@ -46,7 +48,7 @@ const Select: React.FC<SelectProps> = ({
   } = useContext(MyThemeContext)
 
   const handleChange = (selectedOption: any) => {
-    setValue(selectedOption.value)
+    setValue(selectedOption?.value)
   }
 
   return (
@@ -56,6 +58,7 @@ const Select: React.FC<SelectProps> = ({
       onChange={handleChange}
       placeholder={placeholder}
       isSearchable
+      isClearable={clearable}
       options={options}
       components={{
         IndicatorSeparator: () => null,

@@ -1,11 +1,12 @@
 import React, { useState } from "react"
 import FieldsetWithLegend from "../common/FieldsetWithLegend"
-import { Flex, Box, Button } from "@chakra-ui/core"
+import { Flex, Box } from "@chakra-ui/core"
 import { abilitiesGameOrder } from "../../utils/lists"
 import AbilityIcon from "./AbilityIcon"
 import { Ability } from "../../types"
 import { useContext } from "react"
 import MyThemeContext from "../../themeContext"
+import Button from "../elements/Button"
 
 interface AbilitySelectorProps {
   abilities: Ability[]
@@ -21,7 +22,6 @@ const AbilitySelector: React.FC<AbilitySelectorProps> = ({
   return show ? (
     <>
       <Button
-        variantColor={themeColor}
         onClick={() => {
           setShow(!show)
           setAbilities([])
@@ -86,9 +86,7 @@ const AbilitySelector: React.FC<AbilitySelectorProps> = ({
       )}
     </>
   ) : (
-    <Button variantColor={themeColor} onClick={() => setShow(!show)}>
-      Filter by ability
-    </Button>
+    <Button onClick={() => setShow(!show)}>Filter by ability</Button>
   )
 }
 

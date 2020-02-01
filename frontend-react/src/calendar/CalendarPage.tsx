@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react"
 import jstz from "jstz"
 import {
-  Button,
   Popover,
   PopoverTrigger,
   PopoverContent,
@@ -17,6 +16,7 @@ import { useContext } from "react"
 import MyThemeContext from "../themeContext"
 import PageHeader from "../components/common/PageHeader"
 import { Helmet } from "react-helmet-async"
+import Button from "../components/elements/Button"
 
 const CalendarPage: React.FC<RouteComponentProps> = () => {
   const {
@@ -46,14 +46,11 @@ const CalendarPage: React.FC<RouteComponentProps> = () => {
       <PageHeader title="Competitive Calendar" />
       <Popover placement="top-start">
         <PopoverTrigger>
-          <Button
-            variantColor={themeColor}
-            variant="outline"
-            onClick={() => setShowCode(!showCode)}
-            mt="1em"
-          >
-            Show emoji code
-          </Button>
+          <Box mt="1em">
+            <Button outlined onClick={() => setShowCode(!showCode)}>
+              Show emoji code
+            </Button>
+          </Box>
         </PopoverTrigger>
         <PopoverContent zIndex={4} background={darkerBgColor} width="280px">
           <PopoverArrow />

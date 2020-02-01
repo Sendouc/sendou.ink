@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import { SketchField, Tools } from "@sendou/react-sketch"
 import { CirclePicker } from "react-color"
 import weaponDict from "../../utils/english_internal.json"
@@ -9,20 +9,19 @@ import { Helmet } from "react-helmet-async"
 import { Weapon } from "../../types"
 import Error from "../common/Error"
 import {
-  Button,
   Flex,
   Box,
   InputGroup,
   Input,
   InputRightElement,
 } from "@chakra-ui/core"
-import MyThemeContext from "../../themeContext"
 import { FaFileDownload, FaFileUpload, FaFileImage } from "react-icons/fa"
 import reef from "../../assets/plannerMaps/reef-sz.png"
 import MapSelect from "./MapSelect"
 import { RouteComponentProps } from "@reach/router"
 import PageHeader from "../common/PageHeader"
 import DraggableWeaponSelector from "./DraggableWeaponSelector"
+import Button from "../elements/Button"
 
 const MapPlannerPage: React.FC<RouteComponentProps> = () => {
   let sketch: any = null
@@ -53,7 +52,6 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
     enableCopyPaste: false,
   }
   const fileInput = useRef<HTMLInputElement | null>(null)
-  const { themeColor } = useContext(MyThemeContext)
   const [tool, setTool] = useState(Tools.Pencil)
   const [color, setColor] = useState("#f44336")
   const [canUndo, setCanUndo] = useState(false)
@@ -202,9 +200,8 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
       <Flex justifyContent="space-between" mt="1em" flexWrap="wrap">
         <Button
           onClick={() => download(sketch.toDataURL(), "png")}
-          leftIcon={FaFileImage}
-          variantColor={themeColor}
-          variant="outline"
+          icon={FaFileImage}
+          outlined
         >
           Download as .png
         </Button>
@@ -216,18 +213,12 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
               "json"
             )
           }
-          leftIcon={FaFileDownload}
-          variantColor={themeColor}
-          variant="outline"
+          icon={FaFileDownload}
+          outlined
         >
           Download as .json
         </Button>
-        <Button
-          onClick={() => handleUpload()}
-          leftIcon={FaFileUpload}
-          variantColor={themeColor}
-          variant="outline"
-        >
+        <Button onClick={() => handleUpload()} icon={FaFileUpload} outlined>
           Load from .json
         </Button>
         <input type="file" accept=".json" ref={fileInput} />
@@ -244,10 +235,9 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
           />
           <InputRightElement width="7rem">
             <Button
-              h="1.75rem"
               size="sm"
               onClick={() => addTextToSketch()}
-              isDisabled={text === ""}
+              disabled={text === ""}
             >
               Add to picture
             </Button>
