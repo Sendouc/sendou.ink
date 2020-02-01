@@ -20,6 +20,7 @@ import ViewGear from "./ViewGear"
 import ViewAP from "./ViewAP"
 import MyThemeContext from "../../themeContext"
 import { Build } from "../../types"
+import Gears from "./Gears"
 
 interface BuildCardProps {
   build: Build
@@ -96,6 +97,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
           {build.title}
         </Box>
       )}
+      <Gears build={build} />
       {apView ? <ViewAP build={build} /> : <ViewGear build={build} />}
       <Flex justifyContent="space-between" mt="1em">
         {build.description ? (

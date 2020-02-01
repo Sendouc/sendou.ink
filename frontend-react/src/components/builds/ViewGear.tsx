@@ -3,53 +3,51 @@ import { Grid } from "@chakra-ui/core"
 import GearImage from "./GearImage"
 import { Build } from "../../types"
 import AbilityIcon from "./AbilityIcon"
+import Box from "../elements/Box"
 
 interface ViewGearProps {
   build: Build
 }
 
+const MARGINX = "3px"
+
 const ViewGear: React.FC<ViewGearProps> = ({ build }) => {
-  const noItems =
-    !build.headgearItem && !build.clothingItem && !build.clothingItem
   return (
-    <Grid
-      gridTemplateColumns={`${noItems ? "" : "75px "} 60px 45px 45px 45px`}
-      gridRowGap="10px"
-      justifyItems="center"
-      alignItems="center"
-      mt="1em"
-    >
-      <GearImage
-        englishName={build.headgearItem}
-        renderNullIfNoName={noItems}
-      />
-      {build.headgear.map((ability, index) => (
-        <AbilityIcon
-          key={index}
-          ability={ability}
-          size={index === 0 ? "MAIN" : "SUB"}
-        />
-      ))}
-      <GearImage
-        englishName={build.clothingItem}
-        renderNullIfNoName={noItems}
-      />
-      {build.clothing.map((ability, index) => (
-        <AbilityIcon
-          key={index}
-          ability={ability}
-          size={index === 0 ? "MAIN" : "SUB"}
-        />
-      ))}
-      <GearImage englishName={build.shoesItem} renderNullIfNoName={noItems} />
-      {build.shoes.map((ability, index) => (
-        <AbilityIcon
-          key={index}
-          ability={ability}
-          size={index === 0 ? "MAIN" : "SUB"}
-        />
-      ))}
-    </Grid>
+    <>
+      <Box asFlex alignItems="center" justifyContent="center">
+        {build.headgear.map((ability, index) => (
+          <Box mx={MARGINX} key={index}>
+            <AbilityIcon
+              key={index}
+              ability={ability}
+              size={index === 0 ? "MAIN" : "SUB"}
+            />
+          </Box>
+        ))}
+      </Box>
+      <Box asFlex alignItems="center" justifyContent="center">
+        {build.clothing.map((ability, index) => (
+          <Box mx={MARGINX} key={index}>
+            <AbilityIcon
+              key={index}
+              ability={ability}
+              size={index === 0 ? "MAIN" : "SUB"}
+            />
+          </Box>
+        ))}
+      </Box>
+      <Box asFlex alignItems="center" justifyContent="center">
+        {build.shoes.map((ability, index) => (
+          <Box mx={MARGINX} key={index}>
+            <AbilityIcon
+              key={index}
+              ability={ability}
+              size={index === 0 ? "MAIN" : "SUB"}
+            />
+          </Box>
+        ))}
+      </Box>
+    </>
   )
 }
 
