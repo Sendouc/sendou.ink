@@ -25,7 +25,9 @@ export type ThemeColor = ElementType<typeof themeColors>
 export type HeadOnlyAbility = ElementType<typeof headOnlyAbilities>
 export type ClothingOnlyAbility = ElementType<typeof clothingOnlyAbilities>
 export type ShoesOnlyAbility = ElementType<typeof shoesOnlyAbilities>
-export type StackableAbility = ElementType<typeof stackableAbilities>
+export type StackableAbility =
+  | ElementType<typeof stackableAbilities>
+  | "UNKNOWN"
 export type Ability =
   | HeadOnlyAbility
   | ClothingOnlyAbility
@@ -90,7 +92,7 @@ export interface Build {
     HeadOnlyAbility | StackableAbility,
     StackableAbility,
     StackableAbility,
-    StackableAbility
+    StackableAbility | "UNKNOWN"
   ]
   clothing: [
     ClothingOnlyAbility | StackableAbility,
@@ -102,7 +104,7 @@ export interface Build {
     ShoesOnlyAbility | StackableAbility,
     StackableAbility,
     StackableAbility,
-    StackableAbility
+    StackableAbility | "UNKNOWN"
   ]
   headgearItem?: HeadGear
   clothingItem?: ClothingGear

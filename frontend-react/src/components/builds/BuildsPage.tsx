@@ -33,7 +33,6 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
   const [prefersAPView, setAPPreference] = useLocalStorage<boolean>(
     "prefersAPView"
   )
-  const isSmall = useBreakPoints(870)
 
   const { data, error, loading } = useQuery<
     SearchForBuildsData,
@@ -53,7 +52,7 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
           ...build.clothing,
           ...build.shoes,
         ])
-        return abilities.every(ability => abilitiesInBuild.has(ability))
+        return abilities.every(ability => abilitiesInBuild.has(ability as any))
       })
 
   return (
@@ -71,6 +70,7 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
       />
       <Box mt="1em">
         <WeaponSelector
+          label="Select a weapon to start viewing builds"
           setValue={(weapon: string) => setWeapon(weapon as Weapon)}
           autoFocus
         />

@@ -4,8 +4,6 @@ import { Flex, Box } from "@chakra-ui/core"
 import { abilitiesGameOrder } from "../../utils/lists"
 import AbilityIcon from "./AbilityIcon"
 import { Ability } from "../../types"
-import { useContext } from "react"
-import MyThemeContext from "../../themeContext"
 import Button from "../elements/Button"
 
 interface AbilitySelectorProps {
@@ -18,7 +16,6 @@ const AbilitySelector: React.FC<AbilitySelectorProps> = ({
   setAbilities,
 }) => {
   const [show, setShow] = useState(false)
-  const { themeColor } = useContext(MyThemeContext)
   return show ? (
     <>
       <Button

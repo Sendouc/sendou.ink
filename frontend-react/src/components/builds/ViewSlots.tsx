@@ -1,22 +1,21 @@
 import React from "react"
-import { Grid } from "@chakra-ui/core"
-import GearImage from "./GearImage"
-import { Build } from "../../types"
+import { Build, Ability } from "../../types"
 import AbilityIcon from "./AbilityIcon"
 import Box from "../elements/Box"
 
-interface ViewGearProps {
-  build: Build
+interface ViewSlotsProps {
+  build: Partial<Build>
 }
 
-const MARGINX = "3px"
-
-const ViewGear: React.FC<ViewGearProps> = ({ build }) => {
+const ViewSlots: React.FC<ViewSlotsProps> = ({ build }) => {
   return (
     <>
       <Box asFlex alignItems="center" justifyContent="center">
-        {build.headgear.map((ability, index) => (
-          <Box mx={MARGINX} key={index}>
+        {(
+          build.headgear ??
+          (["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"] as Ability[])
+        ).map((ability, index) => (
+          <Box mx="3px" key={index}>
             <AbilityIcon
               key={index}
               ability={ability}
@@ -26,8 +25,11 @@ const ViewGear: React.FC<ViewGearProps> = ({ build }) => {
         ))}
       </Box>
       <Box asFlex alignItems="center" justifyContent="center" my="0.5em">
-        {build.clothing.map((ability, index) => (
-          <Box mx={MARGINX} key={index}>
+        {(
+          build.clothing ??
+          (["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"] as Ability[])
+        ).map((ability, index) => (
+          <Box mx="3px" key={index}>
             <AbilityIcon
               key={index}
               ability={ability}
@@ -37,8 +39,11 @@ const ViewGear: React.FC<ViewGearProps> = ({ build }) => {
         ))}
       </Box>
       <Box asFlex alignItems="center" justifyContent="center">
-        {build.shoes.map((ability, index) => (
-          <Box mx={MARGINX} key={index}>
+        {(
+          build.shoes ??
+          (["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"] as Ability[])
+        ).map((ability, index) => (
+          <Box mx="3px" key={index}>
             <AbilityIcon
               key={index}
               ability={ability}
@@ -51,4 +56,4 @@ const ViewGear: React.FC<ViewGearProps> = ({ build }) => {
   )
 }
 
-export default ViewGear
+export default ViewSlots

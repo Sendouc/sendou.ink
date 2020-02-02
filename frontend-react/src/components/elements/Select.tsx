@@ -22,9 +22,8 @@ interface SelectProps {
         label: string
         value: string
       }>
-  placeholder: string
   width?: string
-  label?: string
+  label: string
   required?: boolean
   setValue: (value: any) => void
   autoFocus?: boolean
@@ -40,7 +39,6 @@ interface SelectProps {
 const Select: React.FC<SelectProps> = ({
   options,
   components,
-  placeholder,
   setValue,
   clearable,
   autoFocus,
@@ -66,7 +64,7 @@ const Select: React.FC<SelectProps> = ({
         className="basic-single"
         classNamePrefix="select"
         onChange={handleChange}
-        placeholder={placeholder}
+        placeholder={null}
         isSearchable
         isClearable={clearable}
         options={options}

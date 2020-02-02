@@ -7,7 +7,7 @@ import Select from "../elements/Select"
 
 interface WeaponSelectorProps {
   setValue: (value: any) => void
-  label?: string
+  label: string
   required?: boolean
   autoFocus?: boolean
   clearable?: boolean
@@ -38,7 +38,6 @@ const WeaponSelector: React.FC<WeaponSelectorProps> = ({
         required={required}
         options={weaponSelectOptions}
         setValue={setValue}
-        placeholder="Select weapon"
         clearable={clearable}
         components={{
           IndicatorSeparator: () => null,

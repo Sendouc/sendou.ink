@@ -1,6 +1,4 @@
 import { Weapon } from "../types"
-import { wpnSmall } from "../assets/imageImports"
-import english_internal from "./english_internal.json"
 
 export const headOnlyAbilities = ["CB", "LDE", "OG", "T"] as const
 export const clothingOnlyAbilities = ["H", "NS", "TI", "RP", "AD"] as const

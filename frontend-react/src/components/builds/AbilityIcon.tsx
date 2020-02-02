@@ -4,6 +4,7 @@ import {
   HeadOnlyAbility,
   ClothingOnlyAbility,
   ShoesOnlyAbility,
+  Ability,
 } from "../../types"
 import { abilityIcons } from "../../assets/imageImports"
 
@@ -37,12 +38,7 @@ const subAbilityStyle = {
 } as const
 
 interface AbilityIconProps {
-  ability:
-    | StackableAbility
-    | HeadOnlyAbility
-    | ClothingOnlyAbility
-    | ShoesOnlyAbility
-    | "EMPTY"
+  ability: Ability | "EMPTY"
   size: "MAIN" | "SUB"
 }
 

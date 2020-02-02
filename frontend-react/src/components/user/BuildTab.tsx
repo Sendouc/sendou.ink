@@ -1,24 +1,48 @@
 import React from "react"
 import { Build } from "../../types"
-import { Flex } from "@chakra-ui/core"
-import BuildCard from "../builds/BuildCard"
 import useLocalStorage from "@rehooks/local-storage"
-import Button from "../elements/Button"
 import { useState } from "react"
-import Alert from "../elements/Alert"
+import { HeadGear, ClothingGear, ShoesGear, Ability } from "../../types"
 import BuildFormModal from "./BuildFormModal"
+import Button from "../elements/Button"
+import Alert from "../elements/Alert"
+import Box from "../elements/Box"
+import BuildCard from "../builds/BuildCard"
 
 interface BuildTabProps {
   builds: Build[]
   canModifyBuilds: boolean
 }
 
+type ExistingGearObject = Record<
+  Partial<HeadGear | ClothingGear | ShoesGear>,
+  Ability[]
+>
+
+const buildsReducer = (acc: ExistingGearObject, cur: Build) => {
+  if (cur.headgearItem) {
+    acc[cur.headgearItem] = [...cur.headgear]
+  }
+  if (cur.clothingItem) {
+    acc[cur.clothingItem] = [...cur.clothing]
+  }
+  if (cur.shoesItem) {
+    acc[cur.shoesItem] = [...cur.shoes]
+  }
+  return acc
+}
+
 const BuildTab: React.FC<BuildTabProps> = ({ builds, canModifyBuilds }) => {
   const [APView] = useLocalStorage<boolean>("prefersAPView")
   const [formOpen, setFormOpen] = useState(true)
+
+  const existingGear = builds
+    ? builds.reduce(buildsReducer, {} as ExistingGearObject)
+    : ({} as ExistingGearObject)
+
   return (
     <>
-      {formOpen && <BuildFormModal />}
+      {formOpen && <BuildFormModal existingGear={existingGear} />}
       {canModifyBuilds && builds.length < 100 && (
         <Button onClick={() => setFormOpen(true)}>Add build</Button>
       )}
@@ -27,7 +51,7 @@ const BuildTab: React.FC<BuildTabProps> = ({ builds, canModifyBuilds }) => {
           You already have 100 builds. Please delete one before adding a new one
         </Alert>
       )}
-      <Flex flexWrap="wrap" justifyContent="center" mt="1em">
+      <Box asFlex flexWrap="wrap" justifyContent="center" mt="1em">
         {builds.map(build => (
           <BuildCard
             key={build.id}
@@ -36,7 +60,7 @@ const BuildTab: React.FC<BuildTabProps> = ({ builds, canModifyBuilds }) => {
             m="0.5em"
           />
         ))}
-      </Flex>
+      </Box>
     </>
   )
 }

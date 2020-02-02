@@ -1,5 +1,4 @@
 import React, { useContext } from "react"
-import Button from "./Button"
 import Box from "./Box"
 import MyThemeContext from "../../themeContext"
 import useBreakPoints from "../../hooks/useBreakPoints"
@@ -21,11 +20,11 @@ const Modal: React.FC<ModalProps> = ({ children, title }) => {
       width="100%"
       height="100%"
       overflow="auto"
-      bg="rgba(0,0,0,0.4)"
+      bg="rgba(0,0,0,0.75)"
     >
       <Box
         bg={darkerBgColor}
-        margin="15% auto"
+        margin="5% auto"
         padding="20px"
         border="1px solid #888"
         borderRadius="5px"

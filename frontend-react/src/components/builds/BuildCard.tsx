@@ -16,7 +16,7 @@ import { FaInfo } from "react-icons/fa"
 
 import WeaponImage from "../common/WeaponImage"
 import { top500 } from "../../assets/imageImports"
-import ViewGear from "./ViewGear"
+import ViewSlots from "./ViewSlots"
 import ViewAP from "./ViewAP"
 import MyThemeContext from "../../themeContext"
 import { Build } from "../../types"
@@ -98,7 +98,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
         </Box>
       )}
       <Gears build={build} />
-      {apView ? <ViewAP build={build} /> : <ViewGear build={build} />}
+      {apView ? <ViewAP build={build} /> : <ViewSlots build={build} />}
       <Flex justifyContent="space-between" mt="1em">
         {build.description ? (
           <Popover placement="top">
