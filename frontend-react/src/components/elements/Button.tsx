@@ -11,6 +11,7 @@ interface ButtonProps {
   icon?: IconType
   outlined?: boolean
   disabled?: boolean
+  negative?: boolean
 }
 
 const Button: React.FC<ButtonProps> = ({

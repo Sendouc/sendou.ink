@@ -2,7 +2,7 @@ import React from "react"
 import { Box as ChakraBox, BoxProps } from "@chakra-ui/core"
 
 interface MyBoxProps {
-  children?: JSX.Element | JSX.Element[]
+  children?: JSX.Element | JSX.Element[] | string | string[]
   asFlex?: boolean
 }
 

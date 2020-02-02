@@ -4,6 +4,7 @@ import { weaponSelectOptions } from "../../utils/lists"
 import WeaponImage from "./WeaponImage"
 import { components } from "react-select"
 import Select from "../elements/Select"
+import { Weapon } from "../../types"
 
 interface WeaponSelectorProps {
   setValue: (value: string) => void

@@ -25,7 +25,7 @@ const ViewGear: React.FC<ViewGearProps> = ({ build }) => {
           </Box>
         ))}
       </Box>
-      <Box asFlex alignItems="center" justifyContent="center">
+      <Box asFlex alignItems="center" justifyContent="center" my="0.5em">
         {build.clothing.map((ability, index) => (
           <Box mx={MARGINX} key={index}>
             <AbilityIcon
