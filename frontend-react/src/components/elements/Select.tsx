@@ -9,6 +9,8 @@ import ReactSelect, {
 } from "react-select"
 import MyThemeContext from "../../themeContext"
 import { SelectComponents } from "react-select/src/components"
+import Box from "./Box"
+import Label from "./Label"
 
 interface SelectProps {
   options:
@@ -21,7 +23,10 @@ interface SelectProps {
         value: string
       }>
   placeholder: string
-  setValue: (value: string) => void
+  width?: string
+  label?: string
+  required?: boolean
+  setValue: (value: any) => void
   autoFocus?: boolean
   components?: Partial<
     SelectComponents<{
@@ -39,6 +44,9 @@ const Select: React.FC<SelectProps> = ({
   setValue,
   clearable,
   autoFocus,
+  label,
+  required,
+  width = "300px",
 }) => {
   const {
     colorMode,
@@ -52,43 +60,46 @@ const Select: React.FC<SelectProps> = ({
   }
 
   return (
-    <ReactSelect
-      className="basic-single"
-      classNamePrefix="select"
-      onChange={handleChange}
-      placeholder={placeholder}
-      isSearchable
-      isClearable={clearable}
-      options={options}
-      components={{
-        IndicatorSeparator: () => null,
-        ...components,
-      }}
-      theme={theme => ({
-        ...theme,
-        borderRadius: 5,
-        colors: {
-          ...theme.colors,
-          primary25: `${themeColorHexLighter}`,
-          primary: `${themeColorHex}`,
-          neutral0: darkerBgColor,
-        },
-      })}
-      autoFocus={autoFocus}
-      styles={{
-        singleValue: base => ({
-          ...base,
-          padding: 5,
+    <Box w={width}>
+      {label && <Label required={required}>{label}</Label>}
+      <ReactSelect
+        className="basic-single"
+        classNamePrefix="select"
+        onChange={handleChange}
+        placeholder={placeholder}
+        isSearchable
+        isClearable={clearable}
+        options={options}
+        components={{
+          IndicatorSeparator: () => null,
+          ...components,
+        }}
+        theme={theme => ({
+          ...theme,
           borderRadius: 5,
-          color: colorMode === "light" ? "black" : "white",
-          display: "flex",
-        }),
-        input: base => ({
-          ...base,
-          color: colorMode === "light" ? "black" : "white",
-        }),
-      }}
-    />
+          colors: {
+            ...theme.colors,
+            primary25: `${themeColorHexLighter}`,
+            primary: `${themeColorHex}`,
+            neutral0: darkerBgColor,
+          },
+        })}
+        autoFocus={autoFocus}
+        styles={{
+          singleValue: base => ({
+            ...base,
+            padding: 5,
+            borderRadius: 5,
+            color: colorMode === "light" ? "black" : "white",
+            display: "flex",
+          }),
+          input: base => ({
+            ...base,
+            color: colorMode === "light" ? "black" : "white",
+          }),
+        }}
+      />
+    </Box>
   )
 }
 

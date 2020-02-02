@@ -3079,3 +3079,2605 @@ export const shoesGearEnglish = [
   "Yellow Seahorses",
   "Zombie Hi-Horses",
 ] as const
+
+export const headSelectOptions = [
+  {
+    label: "amiibo",
+    options: [
+      {
+        value: "Enchanted Hat",
+        label: "Enchanted Hat",
+      },
+      {
+        value: "Fresh Fish Head",
+        label: "Fresh Fish Head",
+      },
+      {
+        value: "Marinated Headphones",
+        label: "Marinated Headphones",
+      },
+      {
+        value: "Pearlescent Crown",
+        label: "Pearlescent Crown",
+      },
+      {
+        value: "Power Mask",
+        label: "Power Mask",
+      },
+      {
+        value: "Power Mask Mk I",
+        label: "Power Mask Mk I",
+      },
+      {
+        value: "Samurai Helmet",
+        label: "Samurai Helmet",
+      },
+      {
+        value: "Squid Clip-Ons",
+        label: "Squid Clip-Ons",
+      },
+      {
+        value: "Squid Hairclip",
+        label: "Squid Hairclip",
+      },
+      {
+        value: "Squinja Mask",
+        label: "Squinja Mask",
+      },
+      {
+        value: "Steel Helm",
+        label: "Steel Helm",
+      },
+    ],
+  },
+  {
+    label: "Annaki",
+    options: [
+      {
+        value: "Annaki Beret",
+        label: "Annaki Beret",
+      },
+      {
+        value: "Annaki Beret & Glasses",
+        label: "Annaki Beret & Glasses",
+      },
+      {
+        value: "Annaki Mask",
+        label: "Annaki Mask",
+      },
+    ],
+  },
+  {
+    label: "Cuttlegear",
+    options: [
+      {
+        value: "Armor Helmet Replica",
+        label: "Armor Helmet Replica",
+      },
+      {
+        value: "Conductor Cap",
+        label: "Conductor Cap",
+      },
+      {
+        value: "Golden Toothpick",
+        label: "Golden Toothpick",
+      },
+      {
+        value: "Hero Headphones Replica",
+        label: "Hero Headphones Replica",
+      },
+      {
+        value: "Hero Headset Replica",
+        label: "Hero Headset Replica",
+      },
+      {
+        value: "Null Visor Replica",
+        label: "Null Visor Replica",
+      },
+      {
+        value: "Octoling Shades",
+        label: "Octoling Shades",
+      },
+      {
+        value: "Old-Timey Hat",
+        label: "Old-Timey Hat",
+      },
+      {
+        value: "Studio Octophones",
+        label: "Studio Octophones",
+      },
+    ],
+  },
+  {
+    label: "Enperry",
+    options: [
+      {
+        value: "Eminence Cuff",
+        label: "Eminence Cuff",
+      },
+      {
+        value: "King Facemask",
+        label: "King Facemask",
+      },
+      {
+        value: "King Flip Mesh",
+        label: "King Flip Mesh",
+      },
+      {
+        value: "Octoking Facemask",
+        label: "Octoking Facemask",
+      },
+    ],
+  },
+  {
+    label: "Firefin",
+    options: [
+      {
+        value: "Black FishFry Bandana",
+        label: "Black FishFry Bandana",
+      },
+      {
+        value: "Blowfish Bell Hat",
+        label: "Blowfish Bell Hat",
+      },
+      {
+        value: "Blowfish Newsie",
+        label: "Blowfish Newsie",
+      },
+      {
+        value: "Camo Mesh",
+        label: "Camo Mesh",
+      },
+      {
+        value: "Firefin Facemask",
+        label: "Firefin Facemask",
+      },
+      {
+        value: "FishFry Biscuit Bandana",
+        label: "FishFry Biscuit Bandana",
+      },
+      {
+        value: "FishFry Visor",
+        label: "FishFry Visor",
+      },
+      {
+        value: "Fugu Bell Hat",
+        label: "Fugu Bell Hat",
+      },
+      {
+        value: "Jet Cap",
+        label: "Jet Cap",
+      },
+      {
+        value: "Jungle Hat",
+        label: "Jungle Hat",
+      },
+      {
+        value: "Knitted Hat",
+        label: "Knitted Hat",
+      },
+      {
+        value: "Octoglasses",
+        label: "Octoglasses",
+      },
+    ],
+  },
+  {
+    label: "Forge",
+    options: [
+      {
+        value: "Deca Tackle Visor Helmet",
+        label: "Deca Tackle Visor Helmet",
+      },
+      {
+        value: "Designer Headphones",
+        label: "Designer Headphones",
+      },
+      {
+        value: "Digi-Camo Forge Mask",
+        label: "Digi-Camo Forge Mask",
+      },
+      {
+        value: "Forge Mask",
+        label: "Forge Mask",
+      },
+      {
+        value: "Gas Mask",
+        label: "Gas Mask",
+      },
+      {
+        value: "Hockey Helmet",
+        label: "Hockey Helmet",
+      },
+      {
+        value: "Moist Ghillie Helmet",
+        label: "Moist Ghillie Helmet",
+      },
+      {
+        value: "Motocross Nose Guard",
+        label: "Motocross Nose Guard",
+      },
+      {
+        value: "Noise Cancelers",
+        label: "Noise Cancelers",
+      },
+      {
+        value: "Octo Tackle Helmet Deco",
+        label: "Octo Tackle Helmet Deco",
+      },
+      {
+        value: "Paintball Mask",
+        label: "Paintball Mask",
+      },
+      {
+        value: "Pilot Goggles",
+        label: "Pilot Goggles",
+      },
+      {
+        value: "Safari Hat",
+        label: "Safari Hat",
+      },
+      {
+        value: "Sennyu Goggles",
+        label: "Sennyu Goggles",
+      },
+      {
+        value: "Sennyu Headphones",
+        label: "Sennyu Headphones",
+      },
+      {
+        value: "Skull Bandana",
+        label: "Skull Bandana",
+      },
+      {
+        value: "Snorkel Mask",
+        label: "Snorkel Mask",
+      },
+      {
+        value: "Special Forces Beret",
+        label: "Special Forces Beret",
+      },
+      {
+        value: "Splash Goggles",
+        label: "Splash Goggles",
+      },
+      {
+        value: "Squidfin Hook Cans",
+        label: "Squidfin Hook Cans",
+      },
+      {
+        value: "Squidlife Headphones",
+        label: "Squidlife Headphones",
+      },
+      {
+        value: "Stealth Goggles",
+        label: "Stealth Goggles",
+      },
+      {
+        value: "Studio Headphones",
+        label: "Studio Headphones",
+      },
+      {
+        value: "Treasure Hunter",
+        label: "Treasure Hunter",
+      },
+    ],
+  },
+  {
+    label: "Grizzco",
+    options: [
+      {
+        value: "Beekeeper Hat",
+        label: "Beekeeper Hat",
+      },
+      {
+        value: "Cap of Legend",
+        label: "Cap of Legend",
+      },
+      {
+        value: "Dust Blocker 2000",
+        label: "Dust Blocker 2000",
+      },
+      {
+        value: "Headlamp Helmet",
+        label: "Headlamp Helmet",
+      },
+      {
+        value: "Oceanic Hard Hat",
+        label: "Oceanic Hard Hat",
+      },
+      {
+        value: "Octoleet Goggles",
+        label: "Octoleet Goggles",
+      },
+      {
+        value: "Sailor Cap",
+        label: "Sailor Cap",
+      },
+      {
+        value: "Welding Mask",
+        label: "Welding Mask",
+      },
+      {
+        value: "Worker's Cap",
+        label: "Worker's Cap",
+      },
+      {
+        value: "Worker's Head Towel",
+        label: "Worker's Head Towel",
+      },
+    ],
+  },
+  {
+    label: "Inkline",
+    options: [
+      {
+        value: "Bamboo Hat",
+        label: "Bamboo Hat",
+      },
+      {
+        value: "Camping Hat",
+        label: "Camping Hat",
+      },
+      {
+        value: "Lightweight Cap",
+        label: "Lightweight Cap",
+      },
+      {
+        value: "Mountie Hat",
+        label: "Mountie Hat",
+      },
+      {
+        value: "Seashell Bamboo Hat",
+        label: "Seashell Bamboo Hat",
+      },
+      {
+        value: "Short Beanie",
+        label: "Short Beanie",
+      },
+      {
+        value: "Tulip Parasol",
+        label: "Tulip Parasol",
+      },
+      {
+        value: "Yamagiri Beanie",
+        label: "Yamagiri Beanie",
+      },
+    ],
+  },
+  {
+    label: "Krak-On",
+    options: [
+      {
+        value: "Full Moon Glasses",
+        label: "Full Moon Glasses",
+      },
+      {
+        value: "Hickory Work Cap",
+        label: "Hickory Work Cap",
+      },
+      {
+        value: "Long-Billed Cap",
+        label: "Long-Billed Cap",
+      },
+      {
+        value: "Paisley Bandana",
+        label: "Paisley Bandana",
+      },
+      {
+        value: "Two-Stripe Mesh",
+        label: "Two-Stripe Mesh",
+      },
+      {
+        value: "Woolly Urchins Classic",
+        label: "Woolly Urchins Classic",
+      },
+    ],
+  },
+  {
+    label: "Rockenberg",
+    options: [
+      {
+        value: "18K Aviators",
+        label: "18K Aviators",
+      },
+      {
+        value: "SV925 Circle Shades",
+        label: "SV925 Circle Shades",
+      },
+    ],
+  },
+  {
+    label: "Skalop",
+    options: [
+      {
+        value: "Bike Helmet",
+        label: "Bike Helmet",
+      },
+      {
+        value: "Classic Straw Boater",
+        label: "Classic Straw Boater",
+      },
+      {
+        value: "Do-Rag, Cap, & Glasses",
+        label: "Do-Rag, Cap, & Glasses",
+      },
+      {
+        value: "Hothouse Hat",
+        label: "Hothouse Hat",
+      },
+      {
+        value: "Jellyvader Cap",
+        label: "Jellyvader Cap",
+      },
+      {
+        value: "Patched Hat",
+        label: "Patched Hat",
+      },
+      {
+        value: "Skate Helmet",
+        label: "Skate Helmet",
+      },
+      {
+        value: "Sneaky Beanie",
+        label: "Sneaky Beanie",
+      },
+      {
+        value: "Sporty Bobble Hat",
+        label: "Sporty Bobble Hat",
+      },
+      {
+        value: "Squid Nordic",
+        label: "Squid Nordic",
+      },
+      {
+        value: "Squid-Stitch Cap",
+        label: "Squid-Stitch Cap",
+      },
+      {
+        value: "Squidvader Cap",
+        label: "Squidvader Cap",
+      },
+      {
+        value: "Straw Boater",
+        label: "Straw Boater",
+      },
+      {
+        value: "Streetstyle Cap",
+        label: "Streetstyle Cap",
+      },
+      {
+        value: "Urchins Cap",
+        label: "Urchins Cap",
+      },
+      {
+        value: "Visor Skate Helmet",
+        label: "Visor Skate Helmet",
+      },
+    ],
+  },
+  {
+    label: "Splash Mob",
+    options: [
+      {
+        value: "Bobble Hat",
+        label: "Bobble Hat",
+      },
+      {
+        value: "Half-Rim Glasses",
+        label: "Half-Rim Glasses",
+      },
+      {
+        value: "House-Tag Denim Cap",
+        label: "House-Tag Denim Cap",
+      },
+      {
+        value: "Pilot Hat",
+        label: "Pilot Hat",
+      },
+      {
+        value: "Retro Specs",
+        label: "Retro Specs",
+      },
+      {
+        value: "Sennyu Bon Bon Beanie",
+        label: "Sennyu Bon Bon Beanie",
+      },
+      {
+        value: "Sennyu Specs",
+        label: "Sennyu Specs",
+      },
+      {
+        value: "Striped Beanie",
+        label: "Striped Beanie",
+      },
+    ],
+  },
+  {
+    label: "SquidForce",
+    options: [
+      {
+        value: "Anglerfish Mask",
+        label: "Anglerfish Mask",
+      },
+      {
+        value: "Bucket Hat",
+        label: "Bucket Hat",
+      },
+      {
+        value: "Eel-Cake Hat",
+        label: "Eel-Cake Hat",
+      },
+      {
+        value: "Festive Party Cone",
+        label: "Festive Party Cone",
+      },
+      {
+        value: "Hockey Mask",
+        label: "Hockey Mask",
+      },
+      {
+        value: "Koshien Bandana",
+        label: "Koshien Bandana",
+      },
+      {
+        value: "Kyonshi Hat",
+        label: "Kyonshi Hat",
+      },
+      {
+        value: "Li'l Devil Horns",
+        label: "Li'l Devil Horns",
+      },
+      {
+        value: "Mecha Head - HTR",
+        label: "Mecha Head - HTR",
+      },
+      {
+        value: "New Year's Glasses DX",
+        label: "New Year's Glasses DX",
+      },
+      {
+        value: "Painter's Mask",
+        label: "Painter's Mask",
+      },
+      {
+        value: "Squid Facemask",
+        label: "Squid Facemask",
+      },
+      {
+        value: "Twisty Headband",
+        label: "Twisty Headband",
+      },
+      {
+        value: "White Headband",
+        label: "White Headband",
+      },
+      {
+        value: "Jetflame Crest",
+        label: "Jetflame Crest",
+      },
+      {
+        value: "Fierce Fishskull",
+        label: "Fierce Fishskull",
+      },
+      {
+        value: "Hivemind Antenna",
+        label: "Hivemind Antenna",
+      },
+      {
+        value: "Eye of Justice",
+        label: "Eye of Justice",
+      },
+    ],
+  },
+  {
+    label: "Takoroka",
+    options: [
+      {
+        value: "Takoroka Mesh",
+        label: "Takoroka Mesh",
+      },
+      {
+        value: "Takoroka Visor",
+        label: "Takoroka Visor",
+      },
+    ],
+  },
+  {
+    label: "Tentatek",
+    options: [
+      {
+        value: "Cycle King Cap",
+        label: "Cycle King Cap",
+      },
+      {
+        value: "Fake Contacts",
+        label: "Fake Contacts",
+      },
+      {
+        value: "Green Novelty Visor",
+        label: "Green Novelty Visor",
+      },
+      {
+        value: "Orange Novelty Visor",
+        label: "Orange Novelty Visor",
+      },
+      {
+        value: "Pink Novelty Visor",
+        label: "Pink Novelty Visor",
+      },
+      {
+        value: "Purple Novelty Visor",
+        label: "Purple Novelty Visor",
+      },
+      {
+        value: "Soccer Headband",
+        label: "Soccer Headband",
+      },
+      {
+        value: "Sun Visor",
+        label: "Sun Visor",
+      },
+      {
+        value: "Tennis Headband",
+        label: "Tennis Headband",
+      },
+    ],
+  },
+  {
+    label: "Toni Kensa",
+    options: [
+      {
+        value: "Face Visor",
+        label: "Face Visor",
+      },
+      {
+        value: "Ink-Guard Goggles",
+        label: "Ink-Guard Goggles",
+      },
+      {
+        value: "Toni Kensa Goggles",
+        label: "Toni Kensa Goggles",
+      },
+    ],
+  },
+  {
+    label: "Zekko",
+    options: [
+      {
+        value: "Backwards Cap",
+        label: "Backwards Cap",
+      },
+      {
+        value: "Black Arrowbands",
+        label: "Black Arrowbands",
+      },
+      {
+        value: "Double Egg Shades",
+        label: "Double Egg Shades",
+      },
+      {
+        value: "Five-Panel Cap",
+        label: "Five-Panel Cap",
+      },
+      {
+        value: "Jogging Headband",
+        label: "Jogging Headband",
+      },
+      {
+        value: "Matte Bike Helmet",
+        label: "Matte Bike Helmet",
+      },
+      {
+        value: "MTB Helmet",
+        label: "MTB Helmet",
+      },
+      {
+        value: "Tinted Shades",
+        label: "Tinted Shades",
+      },
+      {
+        value: "White Arrowbands",
+        label: "White Arrowbands",
+      },
+      {
+        value: "Zekko Cap",
+        label: "Zekko Cap",
+      },
+      {
+        value: "Zekko Mesh",
+        label: "Zekko Mesh",
+      },
+    ],
+  },
+  {
+    label: "Zink",
+    options: [
+      {
+        value: "B-ball Headband",
+        label: "B-ball Headband",
+      },
+      {
+        value: "Cycling Cap",
+        label: "Cycling Cap",
+      },
+      {
+        value: "Golf Visor",
+        label: "Golf Visor",
+      },
+      {
+        value: "Squash Headband",
+        label: "Squash Headband",
+      },
+      {
+        value: "Swim Goggles",
+        label: "Swim Goggles",
+      },
+    ],
+  },
+] as const
+
+export const clothingSelectOptions = [
+  {
+    label: "amiibo",
+    options: [
+      {
+        value: "Enchanted Robe",
+        label: "Enchanted Robe",
+      },
+      {
+        value: "Fresh Fish Gloves",
+        label: "Fresh Fish Gloves",
+      },
+      {
+        value: "Marinated Top",
+        label: "Marinated Top",
+      },
+      {
+        value: "Pearlescent Hoodie",
+        label: "Pearlescent Hoodie",
+      },
+      {
+        value: "Power Armor",
+        label: "Power Armor",
+      },
+      {
+        value: "Power Armor Mk I",
+        label: "Power Armor Mk I",
+      },
+      {
+        value: "Samurai Jacket",
+        label: "Samurai Jacket",
+      },
+      {
+        value: "School Cardigan",
+        label: "School Cardigan",
+      },
+      {
+        value: "School Uniform",
+        label: "School Uniform",
+      },
+      {
+        value: "Squinja Suit",
+        label: "Squinja Suit",
+      },
+      {
+        value: "Steel Platemail",
+        label: "Steel Platemail",
+      },
+    ],
+  },
+  {
+    label: "Annaki",
+    options: [
+      {
+        value: "Annaki Blue Cuff",
+        label: "Annaki Blue Cuff",
+      },
+      {
+        value: "Annaki Drive Tee ",
+        label: "Annaki Drive Tee ",
+      },
+      {
+        value: "Annaki Evolution Tee",
+        label: "Annaki Evolution Tee",
+      },
+      {
+        value: "Annaki Flannel Hoodie",
+        label: "Annaki Flannel Hoodie",
+      },
+      {
+        value: "Annaki Polpo-Pic Tee",
+        label: "Annaki Polpo-Pic Tee",
+      },
+      {
+        value: "Annaki Red Cuff",
+        label: "Annaki Red Cuff",
+      },
+      {
+        value: "Annaki Yellow Cuff",
+        label: "Annaki Yellow Cuff",
+      },
+      {
+        value: "Crimson Parashooter",
+        label: "Crimson Parashooter",
+      },
+      {
+        value: "Hula Punk Shirt",
+        label: "Hula Punk Shirt",
+      },
+      {
+        value: "Prune Parashooter",
+        label: "Prune Parashooter",
+      },
+      {
+        value: "Red Hula Punk with Tie",
+        label: "Red Hula Punk with Tie",
+      },
+      {
+        value: "Rockin' Leather Jacket",
+        label: "Rockin' Leather Jacket",
+      },
+    ],
+  },
+  {
+    label: "Cuttlegear",
+    options: [
+      {
+        value: "Armor Jacket Replica",
+        label: "Armor Jacket Replica",
+      },
+      {
+        value: "Black Cuttlegear LS",
+        label: "Black Cuttlegear LS",
+      },
+      {
+        value: "Fresh Octo Tee",
+        label: "Fresh Octo Tee",
+      },
+      {
+        value: "Hero Hoodie Replica",
+        label: "Hero Hoodie Replica",
+      },
+      {
+        value: "Hero Jacket Replica",
+        label: "Hero Jacket Replica",
+      },
+      {
+        value: "Neo Octoling Armor",
+        label: "Neo Octoling Armor",
+      },
+      {
+        value: "Null Armor Replica",
+        label: "Null Armor Replica",
+      },
+      {
+        value: "Octarian Retro",
+        label: "Octarian Retro",
+      },
+      {
+        value: "Octo Layered LS",
+        label: "Octo Layered LS",
+      },
+      {
+        value: "Octo Tee",
+        label: "Octo Tee",
+      },
+      {
+        value: "Old-Timey Clothes",
+        label: "Old-Timey Clothes",
+      },
+      {
+        value: "Red Cuttlegear LS",
+        label: "Red Cuttlegear LS",
+      },
+      {
+        value: "Sennyu Suit",
+        label: "Sennyu Suit",
+      },
+    ],
+  },
+  {
+    label: "Enperry",
+    options: [
+      {
+        value: "Black Velour Octoking Tee ",
+        label: "Black Velour Octoking Tee ",
+      },
+      {
+        value: "Grape Hoodie",
+        label: "Grape Hoodie",
+      },
+      {
+        value: "Green Velour Octoking Tee",
+        label: "Green Velour Octoking Tee",
+      },
+      {
+        value: "King Jersey",
+        label: "King Jersey",
+      },
+      {
+        value: "Milky Eminence Jacket",
+        label: "Milky Eminence Jacket",
+      },
+      {
+        value: "N-Pacer Sweat",
+        label: "N-Pacer Sweat",
+      },
+      {
+        value: "Navy Eminence Jacket",
+        label: "Navy Eminence Jacket",
+      },
+      {
+        value: "Navy King Tank",
+        label: "Navy King Tank",
+      },
+      {
+        value: "Octoking HK Jersey",
+        label: "Octoking HK Jersey",
+      },
+      {
+        value: "Slash King Tank",
+        label: "Slash King Tank",
+      },
+      {
+        value: "White King Tank",
+        label: "White King Tank",
+      },
+    ],
+  },
+  {
+    label: "Firefin",
+    options: [
+      {
+        value: "Baseball Jersey",
+        label: "Baseball Jersey",
+      },
+      {
+        value: "Black 8-Bit FishFry",
+        label: "Black 8-Bit FishFry",
+      },
+      {
+        value: "Blue 16-Bit FishFry",
+        label: "Blue 16-Bit FishFry",
+      },
+      {
+        value: "Camo Zip Hoodie",
+        label: "Camo Zip Hoodie",
+      },
+      {
+        value: "Carnivore Tee",
+        label: "Carnivore Tee",
+      },
+      {
+        value: "Dark Urban Vest",
+        label: "Dark Urban Vest",
+      },
+      {
+        value: "Firefin Navy Sweat",
+        label: "Firefin Navy Sweat",
+      },
+      {
+        value: "Fugu Tee",
+        label: "Fugu Tee",
+      },
+      {
+        value: "Gray 8-Bit FishFry",
+        label: "Gray 8-Bit FishFry",
+      },
+      {
+        value: "Green Zip Hoodie",
+        label: "Green Zip Hoodie",
+      },
+      {
+        value: "Herbivore Tee",
+        label: "Herbivore Tee",
+      },
+      {
+        value: "Khaki 16-Bit FishFry",
+        label: "Khaki 16-Bit FishFry",
+      },
+      {
+        value: "White 8-Bit FishFry",
+        label: "White 8-Bit FishFry",
+      },
+      {
+        value: "Yellow Urban Vest",
+        label: "Yellow Urban Vest",
+      },
+      {
+        value: "ω-3 Tee",
+        label: "ω-3 Tee",
+      },
+    ],
+  },
+  {
+    label: "Forge",
+    options: [
+      {
+        value: "Aloha Shirt",
+        label: "Aloha Shirt",
+      },
+      {
+        value: "Blue Sailor Suit",
+        label: "Blue Sailor Suit",
+      },
+      {
+        value: "Brown FA-11 Bomber",
+        label: "Brown FA-11 Bomber",
+      },
+      {
+        value: "Custom Painted F-3 ",
+        label: "Custom Painted F-3 ",
+      },
+      {
+        value: "FA-01 Jacket",
+        label: "FA-01 Jacket",
+      },
+      {
+        value: "FA-01 Reversed",
+        label: "FA-01 Reversed",
+      },
+      {
+        value: "Forge Inkling Parka",
+        label: "Forge Inkling Parka",
+      },
+      {
+        value: "Forge Octarian Jacket",
+        label: "Forge Octarian Jacket",
+      },
+      {
+        value: "Gray FA-11 Bomber",
+        label: "Gray FA-11 Bomber",
+      },
+      {
+        value: "Green Tee",
+        label: "Green Tee",
+      },
+      {
+        value: "Moist Ghillie Suit",
+        label: "Moist Ghillie Suit",
+      },
+      {
+        value: "White Leather F-3",
+        label: "White Leather F-3",
+      },
+      {
+        value: "White Sailor Suit",
+        label: "White Sailor Suit",
+      },
+    ],
+  },
+  {
+    label: "Grizzco",
+    options: [
+      {
+        value: "Anchor Life Vest",
+        label: "Anchor Life Vest",
+      },
+      {
+        value: "Crustwear XXL",
+        label: "Crustwear XXL",
+      },
+      {
+        value: "Dev Uniform",
+        label: "Dev Uniform",
+      },
+      {
+        value: "Garden Gear",
+        label: "Garden Gear",
+      },
+      {
+        value: "Juice Parka",
+        label: "Juice Parka",
+      },
+      {
+        value: "North-Country Parka",
+        label: "North-Country Parka",
+      },
+      {
+        value: "Octoleet Armor",
+        label: "Octoleet Armor",
+      },
+      {
+        value: "Office Attire",
+        label: "Office Attire",
+      },
+      {
+        value: "Online Jersey",
+        label: "Online Jersey",
+      },
+      {
+        value: "Record Shop Look EP",
+        label: "Record Shop Look EP",
+      },
+      {
+        value: "Squiddor Polo",
+        label: "Squiddor Polo",
+      },
+      {
+        value: "SRL Coat",
+        label: "SRL Coat",
+      },
+    ],
+  },
+  {
+    label: "Inkline",
+    options: [
+      {
+        value: "Berry Ski Jacket",
+        label: "Berry Ski Jacket",
+      },
+      {
+        value: "Blue Peaks Tee",
+        label: "Blue Peaks Tee",
+      },
+      {
+        value: "Chili-Pepper Ski Jacket",
+        label: "Chili-Pepper Ski Jacket",
+      },
+      {
+        value: "Chilly Mountain Coat",
+        label: "Chilly Mountain Coat",
+      },
+      {
+        value: "Eggplant Mountain Coat",
+        label: "Eggplant Mountain Coat",
+      },
+      {
+        value: "Fishing Vest",
+        label: "Fishing Vest",
+      },
+      {
+        value: "Forest Vest",
+        label: "Forest Vest",
+      },
+      {
+        value: "Green Striped LS",
+        label: "Green Striped LS",
+      },
+      {
+        value: "Ivory Peaks Tee",
+        label: "Ivory Peaks Tee",
+      },
+      {
+        value: "Matcha Down Jacket",
+        label: "Matcha Down Jacket",
+      },
+      {
+        value: "Mountain Vest",
+        label: "Mountain Vest",
+      },
+      {
+        value: "Olive Ski Jacket",
+        label: "Olive Ski Jacket",
+      },
+      {
+        value: "Striped Peaks LS",
+        label: "Striped Peaks LS",
+      },
+    ],
+  },
+  {
+    label: "Krak-On",
+    options: [
+      {
+        value: "Chili Octo Aloha",
+        label: "Chili Octo Aloha",
+      },
+      {
+        value: "Krak-On 528",
+        label: "Krak-On 528",
+      },
+      {
+        value: "Missus Shrug Tee",
+        label: "Missus Shrug Tee",
+      },
+      {
+        value: "Mister Shrug Tee",
+        label: "Mister Shrug Tee",
+      },
+      {
+        value: "Octobowler Shirt",
+        label: "Octobowler Shirt",
+      },
+      {
+        value: "Rainy-Day Tee",
+        label: "Rainy-Day Tee",
+      },
+      {
+        value: "Rodeo Shirt",
+        label: "Rodeo Shirt",
+      },
+      {
+        value: "Squid-Pattern Waistcoat",
+        label: "Squid-Pattern Waistcoat",
+      },
+      {
+        value: "Squidstar Waistcoat",
+        label: "Squidstar Waistcoat",
+      },
+      {
+        value: "Sunny-Day Tee",
+        label: "Sunny-Day Tee",
+      },
+    ],
+  },
+  {
+    label: "Rockenberg",
+    options: [
+      {
+        value: "Black Baseball LS",
+        label: "Black Baseball LS",
+      },
+      {
+        value: "Black Inky Rider",
+        label: "Black Inky Rider",
+      },
+      {
+        value: "Black Urchin Rock Tee",
+        label: "Black Urchin Rock Tee",
+      },
+      {
+        value: "Chirpy Chips Band Tee",
+        label: "Chirpy Chips Band Tee",
+      },
+      {
+        value: "Hightide Era Band Tee",
+        label: "Hightide Era Band Tee",
+      },
+      {
+        value: "Lumberjack Shirt",
+        label: "Lumberjack Shirt",
+      },
+      {
+        value: "Rockenberg Black",
+        label: "Rockenberg Black",
+      },
+      {
+        value: "Rockenberg White",
+        label: "Rockenberg White",
+      },
+      {
+        value: "Round-Collar Shirt",
+        label: "Round-Collar Shirt",
+      },
+      {
+        value: "Squid Squad Band Tee",
+        label: "Squid Squad Band Tee",
+      },
+      {
+        value: "Vintage Check Shirt",
+        label: "Vintage Check Shirt",
+      },
+      {
+        value: "Wet Floor Band Tee",
+        label: "Wet Floor Band Tee",
+      },
+      {
+        value: "White Baseball LS",
+        label: "White Baseball LS",
+      },
+      {
+        value: "White Inky Rider",
+        label: "White Inky Rider",
+      },
+      {
+        value: "White Urchin Rock Tee",
+        label: "White Urchin Rock Tee",
+      },
+    ],
+  },
+  {
+    label: "Skalop",
+    options: [
+      {
+        value: "Black Hoodie",
+        label: "Black Hoodie",
+      },
+      {
+        value: "Dots-On-Dots Shirt",
+        label: "Dots-On-Dots Shirt",
+      },
+      {
+        value: "Firewave Tee",
+        label: "Firewave Tee",
+      },
+      {
+        value: "Grape Tee",
+        label: "Grape Tee",
+      },
+      {
+        value: "Gray Hoodie",
+        label: "Gray Hoodie",
+      },
+      {
+        value: "Hothouse Hoodie",
+        label: "Hothouse Hoodie",
+      },
+      {
+        value: "Icewave Tee",
+        label: "Icewave Tee",
+      },
+      {
+        value: "Mint Tee",
+        label: "Mint Tee",
+      },
+      {
+        value: "Pearl Tee",
+        label: "Pearl Tee",
+      },
+      {
+        value: "Reggae Tee",
+        label: "Reggae Tee",
+      },
+      {
+        value: "Squid-Stitch Tee",
+        label: "Squid-Stitch Tee",
+      },
+    ],
+  },
+  {
+    label: "Splash Mob",
+    options: [
+      {
+        value: "Baby-Jelly Shirt",
+        label: "Baby-Jelly Shirt",
+      },
+      {
+        value: "Baby-Jelly Shirt & Tie",
+        label: "Baby-Jelly Shirt & Tie",
+      },
+      {
+        value: "Gray College Sweat",
+        label: "Gray College Sweat",
+      },
+      {
+        value: "Green Cardigan",
+        label: "Green Cardigan",
+      },
+      {
+        value: "Lime Easy-Stripe Shirt",
+        label: "Lime Easy-Stripe Shirt",
+      },
+      {
+        value: "Linen Shirt",
+        label: "Linen Shirt",
+      },
+      {
+        value: "Navy College Sweat",
+        label: "Navy College Sweat",
+      },
+      {
+        value: "Navy Striped LS",
+        label: "Navy Striped LS",
+      },
+      {
+        value: "Orange Cardigan",
+        label: "Orange Cardigan",
+      },
+      {
+        value: "Pink Easy-Stripe Shirt",
+        label: "Pink Easy-Stripe Shirt",
+      },
+      {
+        value: "Pink Hoodie",
+        label: "Pink Hoodie",
+      },
+      {
+        value: "Pirate-Stripe Tee",
+        label: "Pirate-Stripe Tee",
+      },
+      {
+        value: "Sage Polo",
+        label: "Sage Polo",
+      },
+      {
+        value: "Sailor-Stripe Tee",
+        label: "Sailor-Stripe Tee",
+      },
+      {
+        value: "Shirt & Tie",
+        label: "Shirt & Tie",
+      },
+      {
+        value: "Shirt with Blue Hoodie",
+        label: "Shirt with Blue Hoodie",
+      },
+      {
+        value: "Shrimp-Pink Polo",
+        label: "Shrimp-Pink Polo",
+      },
+      {
+        value: "Striped Shirt",
+        label: "Striped Shirt",
+      },
+      {
+        value: "Varsity Baseball LS",
+        label: "Varsity Baseball LS",
+      },
+      {
+        value: "Whale-Knit Sweater",
+        label: "Whale-Knit Sweater",
+      },
+      {
+        value: "White Shirt",
+        label: "White Shirt",
+      },
+      {
+        value: "White Striped LS",
+        label: "White Striped LS",
+      },
+    ],
+  },
+  {
+    label: "SquidForce",
+    options: [
+      {
+        value: "Anchor Sweat",
+        label: "Anchor Sweat",
+      },
+      {
+        value: "Basic Tee",
+        label: "Basic Tee",
+      },
+      {
+        value: "Black Anchor Tee",
+        label: "Black Anchor Tee",
+      },
+      {
+        value: "Black Layered LS",
+        label: "Black Layered LS",
+      },
+      {
+        value: "Black Tee",
+        label: "Black Tee",
+      },
+      {
+        value: "Black V-Neck Tee",
+        label: "Black V-Neck Tee",
+      },
+      {
+        value: "Camo Layered LS",
+        label: "Camo Layered LS",
+      },
+      {
+        value: "Friend Tee",
+        label: "Friend Tee",
+      },
+      {
+        value: "Green V-Neck Limited Tee",
+        label: "Green V-Neck Limited Tee",
+      },
+      {
+        value: "Layered Anchor LS",
+        label: "Layered Anchor LS",
+      },
+      {
+        value: "League Tee",
+        label: "League Tee",
+      },
+      {
+        value: "Mecha Body - AKM",
+        label: "Mecha Body - AKM",
+      },
+      {
+        value: "Octo Support Hoodie",
+        label: "Octo Support Hoodie",
+      },
+      {
+        value: "Red V-Neck Limited Tee",
+        label: "Red V-Neck Limited Tee",
+      },
+      {
+        value: "Retro Sweat",
+        label: "Retro Sweat",
+      },
+      {
+        value: "Splatfest Tee",
+        label: "Splatfest Tee",
+      },
+      {
+        value: "Squid Yellow Layered LS",
+        label: "Squid Yellow Layered LS",
+      },
+      {
+        value: "Squidmark LS",
+        label: "Squidmark LS",
+      },
+      {
+        value: "Squidmark Sweat",
+        label: "Squidmark Sweat",
+      },
+      {
+        value: "SWC Logo Tee",
+        label: "SWC Logo Tee",
+      },
+      {
+        value: "White Anchor Tee",
+        label: "White Anchor Tee",
+      },
+      {
+        value: "White Layered LS",
+        label: "White Layered LS",
+      },
+      {
+        value: "White LS",
+        label: "White LS",
+      },
+      {
+        value: "White Tee",
+        label: "White Tee",
+      },
+      {
+        value: "White V-Neck Tee",
+        label: "White V-Neck Tee",
+      },
+      {
+        value: "Yellow Layered LS",
+        label: "Yellow Layered LS",
+      },
+    ],
+  },
+  {
+    label: "Takoroka",
+    options: [
+      {
+        value: "Choco Layered LS",
+        label: "Choco Layered LS",
+      },
+      {
+        value: "FC Albacore",
+        label: "FC Albacore",
+      },
+      {
+        value: "Gray Vector Tee",
+        label: "Gray Vector Tee",
+      },
+      {
+        value: "Layered Vector LS",
+        label: "Layered Vector LS",
+      },
+      {
+        value: "Purple Camo LS",
+        label: "Purple Camo LS",
+      },
+      {
+        value: "Red Vector Tee",
+        label: "Red Vector Tee",
+      },
+      {
+        value: "Slipstream United",
+        label: "Slipstream United",
+      },
+      {
+        value: "Striped Rugby",
+        label: "Striped Rugby",
+      },
+      {
+        value: "Takoroka Crazy Baseball LS",
+        label: "Takoroka Crazy Baseball LS",
+      },
+      {
+        value: "Takoroka Galactic Tie Dye",
+        label: "Takoroka Galactic Tie Dye",
+      },
+      {
+        value: "Takoroka Jersey",
+        label: "Takoroka Jersey",
+      },
+      {
+        value: "Takoroka Nylon Vintage",
+        label: "Takoroka Nylon Vintage",
+      },
+      {
+        value: "Takoroka Rainbow Tie Dye",
+        label: "Takoroka Rainbow Tie Dye",
+      },
+      {
+        value: "Takoroka Windcrusher",
+        label: "Takoroka Windcrusher",
+      },
+      {
+        value: "Tricolor Rugby",
+        label: "Tricolor Rugby",
+      },
+    ],
+  },
+  {
+    label: "Tentatek",
+    options: [
+      {
+        value: "Black Squideye",
+        label: "Black Squideye",
+      },
+      {
+        value: "Blue Tentatek Tee",
+        label: "Blue Tentatek Tee",
+      },
+      {
+        value: "Cycle King Jersey",
+        label: "Cycle King Jersey",
+      },
+      {
+        value: "Lob-Stars Jersey",
+        label: "Lob-Stars Jersey",
+      },
+      {
+        value: "Part-Time Pirate",
+        label: "Part-Time Pirate",
+      },
+      {
+        value: "Red Tentatek Tee",
+        label: "Red Tentatek Tee",
+      },
+      {
+        value: "Silver Tentatek Vest",
+        label: "Silver Tentatek Vest",
+      },
+      {
+        value: "Sky-Blue Squideye",
+        label: "Sky-Blue Squideye",
+      },
+      {
+        value: "Tentatek Slogan Tee",
+        label: "Tentatek Slogan Tee",
+      },
+    ],
+  },
+  {
+    label: "Toni Kensa",
+    options: [
+      {
+        value: "Dark Bomber Jacket",
+        label: "Dark Bomber Jacket",
+      },
+      {
+        value: "Front Zip Vest",
+        label: "Front Zip Vest",
+      },
+      {
+        value: "Half-Sleeve Sweater",
+        label: "Half-Sleeve Sweater",
+      },
+      {
+        value: "Ink-Wash Shirt",
+        label: "Ink-Wash Shirt",
+      },
+      {
+        value: "Inkfall Shirt",
+        label: "Inkfall Shirt",
+      },
+      {
+        value: "Kensa Coat",
+        label: "Kensa Coat",
+      },
+      {
+        value: "Kung-Fu Zip-Up",
+        label: "Kung-Fu Zip-Up",
+      },
+      {
+        value: "Light Bomber Jacket",
+        label: "Light Bomber Jacket",
+      },
+      {
+        value: "Negative Longcuff Sweater",
+        label: "Negative Longcuff Sweater",
+      },
+      {
+        value: "Panda Kung-Fu Zip-Up",
+        label: "Panda Kung-Fu Zip-Up",
+      },
+      {
+        value: "Positive Longcuff Sweater",
+        label: "Positive Longcuff Sweater",
+      },
+      {
+        value: "Pullover Coat",
+        label: "Pullover Coat",
+      },
+      {
+        value: "Short Knit Layers",
+        label: "Short Knit Layers",
+      },
+      {
+        value: "Toni K. Baseball Jersey",
+        label: "Toni K. Baseball Jersey",
+      },
+    ],
+  },
+  {
+    label: "Zekko",
+    options: [
+      {
+        value: "Birded Corduroy Jacket",
+        label: "Birded Corduroy Jacket",
+      },
+      {
+        value: "Black LS",
+        label: "Black LS",
+      },
+      {
+        value: "Black Polo",
+        label: "Black Polo",
+      },
+      {
+        value: "Deep-Octo Satin Jacket",
+        label: "Deep-Octo Satin Jacket",
+      },
+      {
+        value: "Gray Mixed Shirt",
+        label: "Gray Mixed Shirt",
+      },
+      {
+        value: "Green-Check Shirt",
+        label: "Green-Check Shirt",
+      },
+      {
+        value: "Logo Aloha Shirt",
+        label: "Logo Aloha Shirt",
+      },
+      {
+        value: "Olive Zekko Parka",
+        label: "Olive Zekko Parka",
+      },
+      {
+        value: "Red-Check Shirt",
+        label: "Red-Check Shirt",
+      },
+      {
+        value: "Reel Sweat",
+        label: "Reel Sweat",
+      },
+      {
+        value: "Squid Satin Jacket",
+        label: "Squid Satin Jacket",
+      },
+      {
+        value: "Tumeric Zekko Coat",
+        label: "Tumeric Zekko Coat",
+      },
+      {
+        value: "Varsity Jacket",
+        label: "Varsity Jacket",
+      },
+      {
+        value: "Zapfish Satin Jacket",
+        label: "Zapfish Satin Jacket",
+      },
+      {
+        value: "Zekko Baseball LS",
+        label: "Zekko Baseball LS",
+      },
+      {
+        value: "Zekko Hoodie",
+        label: "Zekko Hoodie",
+      },
+      {
+        value: "Zekko Jade Coat",
+        label: "Zekko Jade Coat",
+      },
+      {
+        value: "Zekko Long Carrot Tee",
+        label: "Zekko Long Carrot Tee",
+      },
+      {
+        value: "Zekko Long Radish Tee",
+        label: "Zekko Long Radish Tee",
+      },
+      {
+        value: "Zekko Redleaf Coat",
+        label: "Zekko Redleaf Coat",
+      },
+    ],
+  },
+  {
+    label: "Zink",
+    options: [
+      {
+        value: "B-ball Jersey (Away)",
+        label: "B-ball Jersey (Away)",
+      },
+      {
+        value: "B-ball Jersey (Home)",
+        label: "B-ball Jersey (Home)",
+      },
+      {
+        value: "Cycling Shirt",
+        label: "Cycling Shirt",
+      },
+      {
+        value: "Dakro Golden Tee",
+        label: "Dakro Golden Tee",
+      },
+      {
+        value: "Dakro Nana Tee",
+        label: "Dakro Nana Tee",
+      },
+      {
+        value: "Inkopolis Squaps Jersey",
+        label: "Inkopolis Squaps Jersey",
+      },
+      {
+        value: "Navy Deca Logo Tee",
+        label: "Navy Deca Logo Tee",
+      },
+      {
+        value: "Retro Gamer Jersey",
+        label: "Retro Gamer Jersey",
+      },
+      {
+        value: "School Jersey",
+        label: "School Jersey",
+      },
+      {
+        value: "Urchins Jersey",
+        label: "Urchins Jersey",
+      },
+      {
+        value: "White Deca Logo Tee",
+        label: "White Deca Logo Tee",
+      },
+      {
+        value: "Zink Layered LS",
+        label: "Zink Layered LS",
+      },
+      {
+        value: "Zink LS",
+        label: "Zink LS",
+      },
+    ],
+  },
+] as const
+
+export const shoesSelectOptions = [
+  {
+    label: "amiibo",
+    options: [
+      {
+        value: "Enchanted Boots",
+        label: "Enchanted Boots",
+      },
+      {
+        value: "Fresh Fish Feet",
+        label: "Fresh Fish Feet",
+      },
+      {
+        value: "Fringed Loafers",
+        label: "Fringed Loafers",
+      },
+      {
+        value: "Marinated Slip-Ons",
+        label: "Marinated Slip-Ons",
+      },
+      {
+        value: "Pearlescent Kicks",
+        label: "Pearlescent Kicks",
+      },
+      {
+        value: "Power Boots",
+        label: "Power Boots",
+      },
+      {
+        value: "Power Boots Mk I",
+        label: "Power Boots Mk I",
+      },
+      {
+        value: "Samurai Shoes",
+        label: "Samurai Shoes",
+      },
+      {
+        value: "School Shoes",
+        label: "School Shoes",
+      },
+      {
+        value: "Squinja Boots",
+        label: "Squinja Boots",
+      },
+      {
+        value: "Steel Greaves",
+        label: "Steel Greaves",
+      },
+    ],
+  },
+  {
+    label: "Annaki",
+    options: [
+      {
+        value: "Annaki Arachno Boots",
+        label: "Annaki Arachno Boots",
+      },
+      {
+        value: "Annaki Habaneros",
+        label: "Annaki Habaneros",
+      },
+      {
+        value: "Annaki Tigers",
+        label: "Annaki Tigers",
+      },
+    ],
+  },
+  {
+    label: "Cuttlegear",
+    options: [
+      {
+        value: "Armor Boot Replicas",
+        label: "Armor Boot Replicas",
+      },
+      {
+        value: "Hero Runner Replicas",
+        label: "Hero Runner Replicas",
+      },
+      {
+        value: "Hero Snowboots Replicas",
+        label: "Hero Snowboots Replicas",
+      },
+      {
+        value: "Neo Octoling Boots",
+        label: "Neo Octoling Boots",
+      },
+      {
+        value: "Null Boots Replica",
+        label: "Null Boots Replica",
+      },
+      {
+        value: "Old-Timey Shoes",
+        label: "Old-Timey Shoes",
+      },
+    ],
+  },
+  {
+    label: "Enperry",
+    options: [
+      {
+        value: "Black & Blue Squidkid V",
+        label: "Black & Blue Squidkid V",
+      },
+      {
+        value: "Blue & Black Squidkid IV",
+        label: "Blue & Black Squidkid IV",
+      },
+      {
+        value: "Honey & Orange Squidkid V",
+        label: "Honey & Orange Squidkid V",
+      },
+      {
+        value: "Milky Enperrials",
+        label: "Milky Enperrials",
+      },
+      {
+        value: "N-Pacer Ag",
+        label: "N-Pacer Ag",
+      },
+      {
+        value: "N-Pacer Au",
+        label: "N-Pacer Au",
+      },
+      {
+        value: "N-Pacer CaO",
+        label: "N-Pacer CaO",
+      },
+      {
+        value: "Navy Enperrials",
+        label: "Navy Enperrials",
+      },
+      {
+        value: "Online Squidkid V",
+        label: "Online Squidkid V",
+      },
+      {
+        value: "Pearlescent Squidkid IV",
+        label: "Pearlescent Squidkid IV",
+      },
+      {
+        value: "Red & Black Squidkid IV",
+        label: "Red & Black Squidkid IV",
+      },
+      {
+        value: "Red & White Squidkid V",
+        label: "Red & White Squidkid V",
+      },
+      {
+        value: "Rina Squidkid IV",
+        label: "Rina Squidkid IV",
+      },
+      {
+        value: "Sun & Shade Squidkid IV",
+        label: "Sun & Shade Squidkid IV",
+      },
+    ],
+  },
+  {
+    label: "Firefin",
+    options: [
+      {
+        value: "Red FishFry Sandals",
+        label: "Red FishFry Sandals",
+      },
+      {
+        value: "Yellow FishFry Sandals",
+        label: "Yellow FishFry Sandals",
+      },
+    ],
+  },
+  {
+    label: "Forge",
+    options: [
+      {
+        value: "Moist Ghillie Boots",
+        label: "Moist Ghillie Boots",
+      },
+    ],
+  },
+  {
+    label: "Grizzco",
+    options: [
+      {
+        value: "Angry Rain Boots",
+        label: "Angry Rain Boots",
+      },
+      {
+        value: "Flipper Floppers",
+        label: "Flipper Floppers",
+      },
+      {
+        value: "Friendship Bracelet",
+        label: "Friendship Bracelet",
+      },
+      {
+        value: "Non-slip Senseis",
+        label: "Non-slip Senseis",
+      },
+      {
+        value: "Octoleet Boots",
+        label: "Octoleet Boots",
+      },
+      {
+        value: "Wooden Sandals",
+        label: "Wooden Sandals",
+      },
+    ],
+  },
+  {
+    label: "Inkline",
+    options: [
+      {
+        value: "Acerola Rain Boots",
+        label: "Acerola Rain Boots",
+      },
+      {
+        value: "Birch Climbing Shoes",
+        label: "Birch Climbing Shoes",
+      },
+      {
+        value: "Bubble Rain Boots",
+        label: "Bubble Rain Boots",
+      },
+      {
+        value: "Custom Trail Boots",
+        label: "Custom Trail Boots",
+      },
+      {
+        value: "Green Rain Boots",
+        label: "Green Rain Boots",
+      },
+      {
+        value: "Luminous Delta Straps",
+        label: "Luminous Delta Straps",
+      },
+      {
+        value: "Musselforge Flip-Flops",
+        label: "Musselforge Flip-Flops",
+      },
+      {
+        value: "Neon Delta Straps",
+        label: "Neon Delta Straps",
+      },
+      {
+        value: "Pro Trail Boots",
+        label: "Pro Trail Boots",
+      },
+      {
+        value: "Snow Delta Straps",
+        label: "Snow Delta Straps",
+      },
+      {
+        value: "Sunny Climbing Shoes",
+        label: "Sunny Climbing Shoes",
+      },
+      {
+        value: "Trail Boots",
+        label: "Trail Boots",
+      },
+    ],
+  },
+  {
+    label: "Krak-On",
+    options: [
+      {
+        value: "Banana Basics",
+        label: "Banana Basics",
+      },
+      {
+        value: "Blue Slip-Ons",
+        label: "Blue Slip-Ons",
+      },
+      {
+        value: "Blueberry Casuals",
+        label: "Blueberry Casuals",
+      },
+      {
+        value: "Choco Clogs",
+        label: "Choco Clogs",
+      },
+      {
+        value: "Clownfish Basics",
+        label: "Clownfish Basics",
+      },
+      {
+        value: "Cream Basics",
+        label: "Cream Basics",
+      },
+      {
+        value: "Cream Hi-Tops",
+        label: "Cream Hi-Tops",
+      },
+      {
+        value: "Hunter Hi-Tops",
+        label: "Hunter Hi-Tops",
+      },
+      {
+        value: "Midnight Slip-Ons",
+        label: "Midnight Slip-Ons",
+      },
+      {
+        value: "Oyster Clogs",
+        label: "Oyster Clogs",
+      },
+      {
+        value: "Plum Casuals",
+        label: "Plum Casuals",
+      },
+      {
+        value: "Polka-dot Slip-Ons",
+        label: "Polka-dot Slip-Ons",
+      },
+      {
+        value: "Red Hi-Tops",
+        label: "Red Hi-Tops",
+      },
+      {
+        value: "Red Slip-Ons",
+        label: "Red Slip-Ons",
+      },
+      {
+        value: "Squid-Stitch Slip-Ons",
+        label: "Squid-Stitch Slip-Ons",
+      },
+      {
+        value: "Truffle Canvas Hi-Tops",
+        label: "Truffle Canvas Hi-Tops",
+      },
+    ],
+  },
+  {
+    label: "Rockenberg",
+    options: [
+      {
+        value: "Blue Moto Boots",
+        label: "Blue Moto Boots",
+      },
+      {
+        value: "Cherry Kicks",
+        label: "Cherry Kicks",
+      },
+      {
+        value: "Deepsea Leather Boots",
+        label: "Deepsea Leather Boots",
+      },
+      {
+        value: "Gray Yellow-Soled Wingtips",
+        label: "Gray Yellow-Soled Wingtips",
+      },
+      {
+        value: "Inky Kid Clams",
+        label: "Inky Kid Clams",
+      },
+      {
+        value: "Kid Clams",
+        label: "Kid Clams",
+      },
+      {
+        value: "Moto Boots",
+        label: "Moto Boots",
+      },
+      {
+        value: "Navy Red-Soled Wingtips",
+        label: "Navy Red-Soled Wingtips",
+      },
+      {
+        value: "New-Leaf Leather Boots",
+        label: "New-Leaf Leather Boots",
+      },
+      {
+        value: "Pearl Punk Crowns",
+        label: "Pearl Punk Crowns",
+      },
+      {
+        value: "Punk Blacks",
+        label: "Punk Blacks",
+      },
+      {
+        value: "Punk Cherries",
+        label: "Punk Cherries",
+      },
+      {
+        value: "Punk Whites",
+        label: "Punk Whites",
+      },
+      {
+        value: "Punk Yellows",
+        label: "Punk Yellows",
+      },
+      {
+        value: "Red Work Boots",
+        label: "Red Work Boots",
+      },
+      {
+        value: "Roasted Brogues",
+        label: "Roasted Brogues",
+      },
+      {
+        value: "Sennyu Inksoles",
+        label: "Sennyu Inksoles",
+      },
+      {
+        value: "Smoky Wingtips",
+        label: "Smoky Wingtips",
+      },
+      {
+        value: "Squink Wingtips",
+        label: "Squink Wingtips",
+      },
+      {
+        value: "Tan Work Boots",
+        label: "Tan Work Boots",
+      },
+      {
+        value: "Turquoise Kicks",
+        label: "Turquoise Kicks",
+      },
+      {
+        value: "White Kicks",
+        label: "White Kicks",
+      },
+    ],
+  },
+  {
+    label: "Skalop",
+    options: [],
+  },
+  {
+    label: "Splash Mob",
+    options: [
+      {
+        value: "Green Laceups",
+        label: "Green Laceups",
+      },
+      {
+        value: "Hunting Boots",
+        label: "Hunting Boots",
+      },
+      {
+        value: "Mawcasins",
+        label: "Mawcasins",
+      },
+      {
+        value: "Piranha Moccasins",
+        label: "Piranha Moccasins",
+      },
+      {
+        value: "Shark Moccasins",
+        label: "Shark Moccasins",
+      },
+      {
+        value: "Strapping Reds",
+        label: "Strapping Reds",
+      },
+      {
+        value: "Strapping Whites",
+        label: "Strapping Whites",
+      },
+      {
+        value: "Tea-Green Hunting Boots",
+        label: "Tea-Green Hunting Boots",
+      },
+    ],
+  },
+  {
+    label: "SquidForce",
+    options: [
+      {
+        value: "Mecha Legs - LBS",
+        label: "Mecha Legs - LBS",
+      },
+    ],
+  },
+  {
+    label: "Takoroka",
+    options: [
+      {
+        value: "Athletic Arrows",
+        label: "Athletic Arrows",
+      },
+      {
+        value: "Blue Power Stripes",
+        label: "Blue Power Stripes",
+      },
+      {
+        value: "Crazy Arrows",
+        label: "Crazy Arrows",
+      },
+      {
+        value: "LE Soccer Shoes",
+        label: "LE Soccer Shoes",
+      },
+      {
+        value: "New-Day Arrows",
+        label: "New-Day Arrows",
+      },
+      {
+        value: "Orange Arrows",
+        label: "Orange Arrows",
+      },
+      {
+        value: "Orca Hi-Tops",
+        label: "Orca Hi-Tops",
+      },
+      {
+        value: "Orca Passion Hi-Tops",
+        label: "Orca Passion Hi-Tops",
+      },
+      {
+        value: "Orca Woven Hi-Tops",
+        label: "Orca Woven Hi-Tops",
+      },
+      {
+        value: "Red Power Stripes",
+        label: "Red Power Stripes",
+      },
+      {
+        value: "Soccer Shoes",
+        label: "Soccer Shoes",
+      },
+      {
+        value: "Sunset Orca Hi-Tops",
+        label: "Sunset Orca Hi-Tops",
+      },
+      {
+        value: "Trooper Power Stripes",
+        label: "Trooper Power Stripes",
+      },
+      {
+        value: "White Arrows",
+        label: "White Arrows",
+      },
+    ],
+  },
+  {
+    label: "Tentatek",
+    options: [
+      {
+        value: "Amber Sea Slug Hi-Tops",
+        label: "Amber Sea Slug Hi-Tops",
+      },
+      {
+        value: "Black Norimaki 750s",
+        label: "Black Norimaki 750s",
+      },
+      {
+        value: "Black Trainers",
+        label: "Black Trainers",
+      },
+      {
+        value: "Blue Iromaki 750s",
+        label: "Blue Iromaki 750s",
+      },
+      {
+        value: "Blue Sea Slugs",
+        label: "Blue Sea Slugs",
+      },
+      {
+        value: "Canary Trainers",
+        label: "Canary Trainers",
+      },
+      {
+        value: "Cyan Trainers",
+        label: "Cyan Trainers",
+      },
+      {
+        value: "Gray Sea-Slug Hi-Tops",
+        label: "Gray Sea-Slug Hi-Tops",
+      },
+      {
+        value: "Green Iromaki 750s",
+        label: "Green Iromaki 750s",
+      },
+      {
+        value: "Icy Down Boots",
+        label: "Icy Down Boots",
+      },
+      {
+        value: "Neon Sea Slugs",
+        label: "Neon Sea Slugs",
+      },
+      {
+        value: "Orange Iromaki 750s",
+        label: "Orange Iromaki 750s",
+      },
+      {
+        value: "Pink Trainers",
+        label: "Pink Trainers",
+      },
+      {
+        value: "Purple Iromaki 750s",
+        label: "Purple Iromaki 750s",
+      },
+      {
+        value: "Purple Sea Slugs",
+        label: "Purple Sea Slugs",
+      },
+      {
+        value: "Red Iromaki 750s",
+        label: "Red Iromaki 750s",
+      },
+      {
+        value: "Red Sea Slugs",
+        label: "Red Sea Slugs",
+      },
+      {
+        value: "Red-Mesh Sneakers",
+        label: "Red-Mesh Sneakers",
+      },
+      {
+        value: "Sea Slug Volt 95s",
+        label: "Sea Slug Volt 95s",
+      },
+      {
+        value: "Sesame Salt 270s",
+        label: "Sesame Salt 270s",
+      },
+      {
+        value: "Snowy Down Boots",
+        label: "Snowy Down Boots",
+      },
+      {
+        value: "Violet Trainers",
+        label: "Violet Trainers",
+      },
+      {
+        value: "White Norimaki 750s",
+        label: "White Norimaki 750s",
+      },
+      {
+        value: "Yellow Iromaki 750s",
+        label: "Yellow Iromaki 750s",
+      },
+      {
+        value: "Yellow-Mesh Sneakers",
+        label: "Yellow-Mesh Sneakers",
+      },
+    ],
+  },
+  {
+    label: "Toni Kensa",
+    options: [
+      {
+        value: "Arrow Pull-Ons",
+        label: "Arrow Pull-Ons",
+      },
+      {
+        value: "Toni Kensa Black Hi-Tops",
+        label: "Toni Kensa Black Hi-Tops",
+      },
+      {
+        value: "Toni Kensa Soccer Shoes",
+        label: "Toni Kensa Soccer Shoes",
+      },
+    ],
+  },
+  {
+    label: "Zekko",
+    options: [
+      {
+        value: "Black Flip-Flops",
+        label: "Black Flip-Flops",
+      },
+      {
+        value: "Blue Lo-Tops",
+        label: "Blue Lo-Tops",
+      },
+      {
+        value: "LE Lo-Tops",
+        label: "LE Lo-Tops",
+      },
+      {
+        value: "Marination Lace-Ups",
+        label: "Marination Lace-Ups",
+      },
+      {
+        value: "Orange Lo-Tops",
+        label: "Orange Lo-Tops",
+      },
+      {
+        value: "Pearl-Scout Lace-Ups",
+        label: "Pearl-Scout Lace-Ups",
+      },
+      {
+        value: "Suede Gray Lace-Ups",
+        label: "Suede Gray Lace-Ups",
+      },
+      {
+        value: "Suede Marine Lace-Ups",
+        label: "Suede Marine Lace-Ups",
+      },
+      {
+        value: "Suede Nation Lace-Ups",
+        label: "Suede Nation Lace-Ups",
+      },
+    ],
+  },
+  {
+    label: "Zink",
+    options: [
+      {
+        value: "Black Dakroniks",
+        label: "Black Dakroniks",
+      },
+      {
+        value: "Black Seahorses",
+        label: "Black Seahorses",
+      },
+      {
+        value: "Blue Laceless Dakroniks",
+        label: "Blue Laceless Dakroniks",
+      },
+      {
+        value: "Chocolate Dakroniks",
+        label: "Chocolate Dakroniks",
+      },
+      {
+        value: "Gold Hi-Horses",
+        label: "Gold Hi-Horses",
+      },
+      {
+        value: "Mint Dakroniks",
+        label: "Mint Dakroniks",
+      },
+      {
+        value: "Purple Hi-Horses",
+        label: "Purple Hi-Horses",
+      },
+      {
+        value: "Red Hi-Horses",
+        label: "Red Hi-Horses",
+      },
+      {
+        value: "White Laceless Dakroniks",
+        label: "White Laceless Dakroniks",
+      },
+      {
+        value: "White Seahorses",
+        label: "White Seahorses",
+      },
+      {
+        value: "Yellow Seahorses",
+        label: "Yellow Seahorses",
+      },
+      {
+        value: "Zombie Hi-Horses",
+        label: "Zombie Hi-Horses",
+      },
+    ],
+  },
+] as const

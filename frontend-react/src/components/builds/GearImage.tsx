@@ -5,7 +5,7 @@ import { Box } from "@chakra-ui/core"
 
 interface GearImageProps {
   englishName?: HeadGear | ClothingGear | ShoesGear
-  renderNullIfNoName: boolean
+  renderNullIfNoName?: boolean
 }
 
 const GearImage: React.FC<GearImageProps> = ({

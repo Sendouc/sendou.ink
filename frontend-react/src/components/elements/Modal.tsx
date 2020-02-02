@@ -5,7 +5,6 @@ import MyThemeContext from "../../themeContext"
 import useBreakPoints from "../../hooks/useBreakPoints"
 
 interface ModalProps {
-  children: JSX.Element | JSX.Element[]
   title: string
 }
 

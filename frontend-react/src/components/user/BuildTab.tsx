@@ -15,7 +15,7 @@ interface BuildTabProps {
 
 const BuildTab: React.FC<BuildTabProps> = ({ builds, canModifyBuilds }) => {
   const [APView] = useLocalStorage<boolean>("prefersAPView")
-  const [formOpen, setFormOpen] = useState(false)
+  const [formOpen, setFormOpen] = useState(true)
   return (
     <>
       {formOpen && <BuildFormModal />}
