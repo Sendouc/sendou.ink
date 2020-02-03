@@ -1,10 +1,10 @@
 import React, { useContext } from "react"
-import { Input as ChakraInput } from "@chakra-ui/core"
-import MyThemeContext from "../../themeContext"
+import { Textarea } from "@chakra-ui/core"
 import Label from "./Label"
 import Box from "./Box"
+import MyThemeContext from "../../themeContext"
 
-interface InputProps {
+interface TextAreaProps {
   value?: string
   setValue: (value: string) => void
   label: string
@@ -12,12 +12,12 @@ interface InputProps {
   required?: boolean
 }
 
-const Input: React.FC<InputProps> = ({
+const TextArea: React.FC<TextAreaProps> = ({
   value,
   setValue,
   label,
-  required,
   limit,
+  required,
 }) => {
   const { themeColorHex, grayWithShade } = useContext(MyThemeContext)
 
@@ -27,10 +27,11 @@ const Input: React.FC<InputProps> = ({
   return (
     <>
       {label && <Label required={required}>{label}</Label>}
-      <ChakraInput
+      <Textarea
         value={value ?? ""}
         onChange={handleChange}
         focusBorderColor={themeColorHex}
+        size="md"
       />
       {limit && (
         <Box
@@ -44,4 +45,4 @@ const Input: React.FC<InputProps> = ({
   )
 }
 
-export default Input
+export default TextArea

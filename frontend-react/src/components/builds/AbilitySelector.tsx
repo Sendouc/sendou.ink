@@ -18,14 +18,6 @@ const AbilitySelector: React.FC<AbilitySelectorProps> = ({
   const [show, setShow] = useState(false)
   return show ? (
     <>
-      <Button
-        onClick={() => {
-          setShow(!show)
-          setAbilities([])
-        }}
-      >
-        Hide ability filter
-      </Button>
       <FieldsetWithLegend
         title="Click an ability to filter by it"
         titleFontSize="md"

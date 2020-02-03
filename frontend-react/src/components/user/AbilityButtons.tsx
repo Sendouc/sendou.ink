@@ -13,7 +13,7 @@ const AbilityButtons: React.FC<AbilityButtonsProps> = ({ onClick }) => {
   return (
     <>
       <Box my="1em" textAlign="center">
-        <Label>Main abilities (click to select)</Label>
+        <Label>Main only abilities (click to select)</Label>
       </Box>
       <Box
         asFlex
@@ -36,7 +36,7 @@ const AbilityButtons: React.FC<AbilityButtonsProps> = ({ onClick }) => {
           ))}
       </Box>
       <Box my="1em" textAlign="center">
-        <Label>Sub abilities</Label>
+        <Label>Stackable abilities</Label>
       </Box>
       <Box
         asFlex

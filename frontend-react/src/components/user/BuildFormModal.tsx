@@ -29,9 +29,12 @@ import GearImage from "../builds/GearImage"
 import Input from "../elements/Input"
 import ViewSlots from "../builds/ViewSlots"
 import AbilityButtons from "./AbilityButtons"
+import TextArea from "../elements/TextArea"
+import Button from "../elements/Button"
 
 interface BuildFormModalProps {
   existingGear: ExistingGearObject
+  closeModal: () => void
 }
 
 type ExistingGearObject = Record<
@@ -39,7 +42,10 @@ type ExistingGearObject = Record<
   Ability[]
 >
 
-const BuildFormModal: React.FC<BuildFormModalProps> = ({ existingGear }) => {
+const BuildFormModal: React.FC<BuildFormModalProps> = ({
+  existingGear,
+  closeModal,
+}) => {
   const [build, setBuild] = useState<Partial<Build>>({
     headgear: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
     clothing: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
@@ -48,7 +54,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({ existingGear }) => {
 
   const handleChange = (value: Object) => setBuild({ ...build, ...value })
 
-  const handleAbilityClick = (ability: Ability) => {
+  const handleAbilityButtonClick = (ability: Ability) => {
     if (headOnlyAbilities.indexOf(ability as any) !== -1) {
       if (build.headgear![0] === "UNKNOWN") {
         handleChange({
@@ -109,8 +115,33 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({ existingGear }) => {
     }
   }
 
+  const handleClickBuildAbility = (
+    slot: "HEAD" | "CLOTHING" | "SHOES",
+    index: number
+  ) => {
+    if (slot === "HEAD") {
+      const copy = build.headgear!.slice()
+      copy[index] = "UNKNOWN"
+      handleChange({
+        headgear: copy,
+      })
+    } else if (slot === "CLOTHING") {
+      const copy = build.clothing!.slice()
+      copy[index] = "UNKNOWN"
+      handleChange({
+        clothing: copy,
+      })
+    } else {
+      const copy = build.shoes!.slice()
+      copy[index] = "UNKNOWN"
+      handleChange({
+        shoes: copy,
+      })
+    }
+  }
+
   return (
-    <Modal title="Adding a new build">
+    <Modal title="Adding a new build" closeModal={() => closeModal()}>
       <WeaponSelector
         required
         label="Weapon"
@@ -203,16 +234,33 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({ existingGear }) => {
         <Input
           value={build.title}
           setValue={(value: string) => handleChange({ title: value })}
-          placeholder="Title"
           label="Title"
           limit={100}
         />
       </Box>
       <Box mt="1em">
-        <ViewSlots build={build} />
+        <ViewSlots build={build} onAbilityClick={handleClickBuildAbility} />
       </Box>
       <Box mt="1em">
-        <AbilityButtons onClick={ability => handleAbilityClick(ability)} />
+        <AbilityButtons
+          onClick={ability => handleAbilityButtonClick(ability)}
+        />
+      </Box>
+      <Box mt="1em">
+        <TextArea
+          value={build.description}
+          setValue={(value: string) => handleChange({ description: value })}
+          label="Description"
+          limit={1000}
+        />
+      </Box>
+      <Box mt="1em">
+        <Button onClick={() => console.log("submitting")}>Submit</Button>
+        <Box as="span" ml="0.5em">
+          <Button outlined onClick={() => closeModal()}>
+            Cancel
+          </Button>
+        </Box>
       </Box>
     </Modal>
   )

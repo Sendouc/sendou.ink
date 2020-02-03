@@ -34,7 +34,7 @@ const buildsReducer = (acc: ExistingGearObject, cur: Build) => {
 
 const BuildTab: React.FC<BuildTabProps> = ({ builds, canModifyBuilds }) => {
   const [APView] = useLocalStorage<boolean>("prefersAPView")
-  const [formOpen, setFormOpen] = useState(true)
+  const [formOpen, setFormOpen] = useState(false)
 
   const existingGear = builds
     ? builds.reduce(buildsReducer, {} as ExistingGearObject)
@@ -42,7 +42,12 @@ const BuildTab: React.FC<BuildTabProps> = ({ builds, canModifyBuilds }) => {
 
   return (
     <>
-      {formOpen && <BuildFormModal existingGear={existingGear} />}
+      {formOpen && (
+        <BuildFormModal
+          existingGear={existingGear}
+          closeModal={() => setFormOpen(false)}
+        />
+      )}
       {canModifyBuilds && builds.length < 100 && (
         <Button onClick={() => setFormOpen(true)}>Add build</Button>
       )}

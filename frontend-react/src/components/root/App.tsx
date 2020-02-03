@@ -26,7 +26,6 @@ const App: React.FC = () => {
     light: {
       colorMode: "light",
       bgColor: "#eff0f3",
-      //darkerBgColor: "#D6D7DA", FFF0F5
       darkerBgColor: "#FFFAFA",
       textColor: "#0d0d0d",
       borderStyle: "1px solid rgba(0, 0, 0, .2)",
@@ -69,7 +68,14 @@ const App: React.FC = () => {
       >
         <SideNav />
         <MenuBar />
-        <Box maxWidth="1100px" pt={8} px={8} ml="auto" mr="auto">
+        <Box
+          maxWidth="1100px"
+          pt={8}
+          px={8}
+          ml="auto"
+          mr="auto"
+          overflow="hidden"
+        >
           <Box minH="calc(100vh - 210px)">
             <Routes />
           </Box>

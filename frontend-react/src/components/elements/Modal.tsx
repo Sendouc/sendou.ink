@@ -2,14 +2,27 @@ import React, { useContext } from "react"
 import Box from "./Box"
 import MyThemeContext from "../../themeContext"
 import useBreakPoints from "../../hooks/useBreakPoints"
+import Button from "./Button"
+import IconButton from "./IconButton"
+import { MdClose } from "react-icons/md"
+import { useEffect } from "react"
 
 interface ModalProps {
   title: string
+  closeModal?: () => void
 }
 
-const Modal: React.FC<ModalProps> = ({ children, title }) => {
+const Modal: React.FC<ModalProps> = ({ children, title, closeModal }) => {
   const { darkerBgColor } = useContext(MyThemeContext)
   const isSmall = useBreakPoints(768)
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden"
+
+    return () => {
+      document.body.style.overflow = "visible"
+    }
+  }, [])
 
   return (
     <Box
@@ -24,7 +37,7 @@ const Modal: React.FC<ModalProps> = ({ children, title }) => {
     >
       <Box
         bg={darkerBgColor}
-        margin="5% auto"
+        margin="2% auto"
         padding="20px"
         border="1px solid #888"
         borderRadius="5px"
@@ -32,8 +45,17 @@ const Modal: React.FC<ModalProps> = ({ children, title }) => {
         maxWidth="1100px"
       >
         <>
-          <Box fontSize="24px" fontWeight="black" mb="1.5em">
+          <Box
+            asFlex
+            justifyContent="space-between"
+            fontSize="24px"
+            fontWeight="black"
+            mb="1.5em"
+          >
             {title}
+            {closeModal && (
+              <IconButton icon={MdClose} onClick={() => closeModal()} />
+            )}
           </Box>
           {children}
         </>
