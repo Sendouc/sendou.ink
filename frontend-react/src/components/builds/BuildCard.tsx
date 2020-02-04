@@ -1,7 +1,5 @@
 import React, { useState, useContext, useEffect } from "react"
 import {
-  Box,
-  Flex,
   Image,
   IconButton,
   Popover,
@@ -21,6 +19,7 @@ import ViewAP from "./ViewAP"
 import MyThemeContext from "../../themeContext"
 import { Build } from "../../types"
 import Gears from "./Gears"
+import Box from "../elements/Box"
 
 interface BuildCardProps {
   build: Build
@@ -46,9 +45,9 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
   return (
     <Box
       as="fieldset"
-      width="325px"
       borderWidth="1px"
       border={borderStyle}
+      w="300px"
       rounded="lg"
       overflow="hidden"
       pt="2"
@@ -69,72 +68,81 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
           </Link>
         </Box>
       )}
-      <Flex justifyContent="space-between">
-        <Box width="24" height="auto">
-          <WeaponImage englishName={build.weapon} size="MEDIUM" />
+      <Box display="flex" flexDirection="column" h="100%">
+        <Box display="flex" justifyContent="space-between">
+          <Box width="24">
+            <WeaponImage englishName={build.weapon} size="MEDIUM" />
+          </Box>
+          {build.top && (
+            <Image
+              src={top500}
+              alt="x rank top 500 logo"
+              height="40px"
+              width="auto"
+              title="Maker of the build has reached top 500 with this weapon"
+            />
+          )}
         </Box>
-        {build.top && (
-          <Image
-            src={top500}
-            alt="x rank top 500 logo"
-            height="40px"
-            width="auto"
-            title="Maker of the build has reached top 500 with this weapon"
-          />
-        )}
-      </Flex>
-      <Box
-        color={grayWithShade}
-        fontWeight="semibold"
-        letterSpacing="wide"
-        fontSize="xs"
-        ml="8px"
-      >
-        {new Date(parseInt(build.updatedAt)).toLocaleString()}
-      </Box>
-      {build.title && (
-        <Box ml="8px" fontWeight="semibold" as="h4" lineHeight="tight">
-          {build.title}
-        </Box>
-      )}
-      <Gears build={build} />
-      {apView ? <ViewAP build={build} /> : <ViewSlots build={build} />}
-      <Flex justifyContent="space-between" mt="1em">
-        {build.description ? (
-          <Popover placement="top">
-            <PopoverTrigger>
-              <IconButton
-                variant="ghost"
-                isRound
-                variantColor={themeColor}
-                aria-label="Show description"
-                fontSize="20px"
-                icon={FaInfo}
-              />
-            </PopoverTrigger>
-            <PopoverContent
-              zIndex={4}
-              width="220px"
-              backgroundColor={darkerBgColor}
-            >
-              <PopoverBody textAlign="center" whiteSpace="pre-wrap">
-                {build.description}
-              </PopoverBody>
-            </PopoverContent>
-          </Popover>
-        ) : (
-          <Box />
-        )}
-        <Button
-          variant="ghost"
-          variantColor={themeColor}
-          aria-label={apView ? "Show gear" : "Show ability point count"}
-          fontSize="15px"
-          onClick={() => setApView(!apView)}
+        <Box
+          color={grayWithShade}
+          fontWeight="semibold"
+          letterSpacing="wide"
+          fontSize="xs"
+          ml="8px"
         >
-          {apView ? "GEAR" : "AP"}
-        </Button>
-      </Flex>
+          {new Date(parseInt(build.updatedAt)).toLocaleString()}
+        </Box>
+        {build.title && (
+          <Box ml="8px" fontWeight="semibold" as="h4" lineHeight="tight">
+            {build.title}
+          </Box>
+        )}
+        <Gears build={build} />
+        <Box
+          display="flex"
+          flexDirection="column"
+          flexGrow={1}
+          justifyContent="center"
+        >
+          {apView ? <ViewAP build={build} /> : <ViewSlots build={build} />}
+        </Box>
+        <Box display="flex" justifyContent="space-between" mt="1em">
+          {build.description ? (
+            <Popover placement="top">
+              <PopoverTrigger>
+                <IconButton
+                  variant="ghost"
+                  isRound
+                  variantColor={themeColor}
+                  aria-label="Show description"
+                  fontSize="20px"
+                  icon={FaInfo}
+                />
+              </PopoverTrigger>
+              <PopoverContent
+                zIndex={4}
+                width="220px"
+                backgroundColor={darkerBgColor}
+              >
+                <PopoverBody textAlign="center" whiteSpace="pre-wrap">
+                  {build.description}
+                </PopoverBody>
+              </PopoverContent>
+            </Popover>
+          ) : (
+            <Box />
+          )}
+          <Button
+            variant="ghost"
+            variantColor={themeColor}
+            aria-label={apView ? "Show gear" : "Show ability point count"}
+            fontSize="15px"
+            onClick={() => setApView(!apView)}
+          >
+            {apView ? "GEAR" : "AP"}
+          </Button>
+        </Box>
+      </Box>
     </Box>
   )
 }

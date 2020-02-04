@@ -1,19 +1,13 @@
 import React from "react"
-import {
-  StackableAbility,
-  HeadOnlyAbility,
-  ClothingOnlyAbility,
-  ShoesOnlyAbility,
-  Ability,
-} from "../../types"
+import { Ability } from "../../types"
 import { abilityIcons } from "../../assets/imageImports"
 
 const mainAbilityStyle = {
   //https://github.com/loadout-ink/splat2-calc
   zIndex: 2,
   borderRadius: "50%",
-  width: "50px",
-  height: "50px",
+  width: "55px",
+  height: "55px",
   background: "#000",
   border: "2px solid #888",
   borderRight: "0px",
