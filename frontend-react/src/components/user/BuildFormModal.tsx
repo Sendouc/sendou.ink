@@ -22,7 +22,6 @@ import {
   headOnlyAbilities,
   clothingOnlyAbilities,
   shoesOnlyAbilities,
-  headGear,
 } from "../../utils/lists"
 import Box from "../elements/Box"
 import GearImage from "../builds/GearImage"
@@ -31,6 +30,9 @@ import ViewSlots from "../builds/ViewSlots"
 import AbilityButtons from "./AbilityButtons"
 import TextArea from "../elements/TextArea"
 import Button from "../elements/Button"
+import { useMutation } from "@apollo/react-hooks"
+import { ADD_BUILD } from "../../graphql/mutations/addBuild"
+import { useToast } from "@chakra-ui/core"
 
 interface BuildFormModalProps {
   existingGear: ExistingGearObject
@@ -46,10 +48,36 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
   existingGear,
   closeModal,
 }) => {
+  const toast = useToast()
   const [build, setBuild] = useState<Partial<Build>>({
     headgear: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
     clothing: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
     shoes: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+  })
+
+  const [addBuild] = useMutation<{ addBuild: Build }, Build>(ADD_BUILD, {
+    variables: { ...(build as Build) },
+    onCompleted: data => {
+      closeModal()
+      toast({
+        description: `New ${data.addBuild.weapon} build created`,
+        position: "top-right",
+        status: "success",
+        duration: 10000,
+        isClosable: true,
+      })
+    },
+    onError: error => {
+      toast({
+        title: "An error occurred",
+        description: error.message,
+        position: "top-right",
+        status: "success",
+        duration: 10000,
+        isClosable: true,
+      })
+    },
+    refetchQueries: ["searchForBuilds"],
   })
 
   const handleChange = (value: Object) => setBuild({ ...build, ...value })
@@ -138,6 +166,23 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
         shoes: copy,
       })
     }
+  }
+
+  const buildCanBeSubmitted = () => {
+    if (!build.weapon) {
+      return false
+    }
+
+    const abilitiesFilled =
+      build.headgear?.every(ability => ability !== "UNKNOWN") &&
+      build.clothing?.every(ability => ability !== "UNKNOWN") &&
+      build.shoes?.every(ability => ability !== "UNKNOWN")
+
+    if (!abilitiesFilled) {
+      return false
+    }
+
+    return true
   }
 
   return (
@@ -255,7 +300,9 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
         />
       </Box>
       <Box mt="1em">
-        <Button onClick={() => console.log("submitting")}>Submit</Button>
+        <Button disabled={!buildCanBeSubmitted()} onClick={() => addBuild()}>
+          Submit
+        </Button>
         <Box as="span" ml="0.5em">
           <Button outlined onClick={() => closeModal()}>
             Cancel
