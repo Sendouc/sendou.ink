@@ -10,7 +10,7 @@ import {
   BoxProps,
 } from "@chakra-ui/core"
 import { Link } from "@reach/router"
-import { FaInfo } from "react-icons/fa"
+import { FaInfo, FaEdit } from "react-icons/fa"
 
 import WeaponImage from "../common/WeaponImage"
 import { top500 } from "../../assets/imageImports"
@@ -25,12 +25,16 @@ interface BuildCardProps {
   build: Build
   defaultToAPView: boolean
   showUser?: boolean
+  canModify?: boolean
+  setBuildBeingEdited?: (build: Build) => void
 }
 
 const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
   build,
   defaultToAPView,
-  showUser = false,
+  canModify,
+  setBuildBeingEdited,
+  showUser,
   ...props
 }) => {
   const [apView, setApView] = useState(defaultToAPView)
@@ -45,14 +49,14 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
   return (
     <Box
       as="fieldset"
+      display="block"
       borderWidth="1px"
       border={borderStyle}
       w="300px"
       rounded="lg"
       overflow="hidden"
-      pt="2"
-      pb="6"
-      px="6"
+      //pb={showUser && build.discord_user ? "20px" : "15px"}
+      p="15px"
       {...props}
     >
       {showUser && build.discord_user && (
@@ -130,7 +134,20 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
               </PopoverContent>
             </Popover>
           ) : (
-            <Box />
+            <Box w="24px" />
+          )}
+          {canModify && (
+            <IconButton
+              variant="ghost"
+              isRound
+              variantColor={themeColor}
+              onClick={
+                setBuildBeingEdited && (() => setBuildBeingEdited(build))
+              }
+              aria-label="Show description"
+              fontSize="20px"
+              icon={FaEdit}
+            />
           )}
           <Button
             variant="ghost"

@@ -8,6 +8,8 @@ import Button from "../elements/Button"
 import Alert from "../elements/Alert"
 import Box from "../elements/Box"
 import BuildCard from "../builds/BuildCard"
+import IconButton from "../elements/IconButton"
+import { FaTrashAlt, FaEdit } from "react-icons/fa"
 
 interface BuildTabProps {
   builds: Build[]
@@ -35,6 +37,7 @@ const buildsReducer = (acc: ExistingGearObject, cur: Build) => {
 const BuildTab: React.FC<BuildTabProps> = ({ builds, canModifyBuilds }) => {
   const [APView] = useLocalStorage<boolean>("prefersAPView")
   const [formOpen, setFormOpen] = useState(false)
+  const [buildBeingEdited, setBuildBeingEdited] = useState<Build | null>(null)
 
   const existingGear = builds
     ? builds.reduce(buildsReducer, {} as ExistingGearObject)
@@ -45,7 +48,11 @@ const BuildTab: React.FC<BuildTabProps> = ({ builds, canModifyBuilds }) => {
       {formOpen && (
         <BuildFormModal
           existingGear={existingGear}
-          closeModal={() => setFormOpen(false)}
+          closeModal={() => {
+            setFormOpen(false)
+            setBuildBeingEdited(null)
+          }}
+          buildBeingEdited={buildBeingEdited}
         />
       )}
       {canModifyBuilds && builds.length < 100 && (
@@ -56,9 +63,14 @@ const BuildTab: React.FC<BuildTabProps> = ({ builds, canModifyBuilds }) => {
           You already have 100 builds. Please delete one before adding a new one
         </Alert>
       )}
-      <Box asFlex flexWrap="wrap" justifyContent="center" mt="1em">
+      <Box display="flex" flexWrap="wrap" justifyContent="center" mt="1em">
         {builds.map(build => (
           <BuildCard
+            canModify={canModifyBuilds}
+            setBuildBeingEdited={(build: Build) => {
+              setBuildBeingEdited(build)
+              setFormOpen(true)
+            }}
             key={build.id}
             build={build}
             defaultToAPView={APView !== null ? APView : false}

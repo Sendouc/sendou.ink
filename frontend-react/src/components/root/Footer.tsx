@@ -1,11 +1,11 @@
 import React, { useState, useContext } from "react"
-import { Box, Flex, IconButton, Link, Image } from "@chakra-ui/core"
+import { Link, Image } from "@chakra-ui/core"
 import { footerSquid, footerOcto } from "../../assets/imageImports"
 import MyThemeContext from "../../themeContext"
 import { FaTwitter, FaGithub, FaDiscord, FaTwitch } from "react-icons/fa"
 import useBreakPoints from "../../hooks/useBreakPoints"
-
-const ICON_SIZE = "lg"
+import Box from "../elements/Box"
+import IconButton from "../elements/IconButton"
 
 const Footer: React.FC = () => {
   const [footerBojoing] = useState(0.5 ? footerSquid : footerOcto)
@@ -14,40 +14,32 @@ const Footer: React.FC = () => {
 
   return (
     <Box mt="2em">
-      <Flex alignItems="flex-end">
+      <Box display="flex" alignItems="flex-end">
         <Link href="https://discord.gg/J6NqUvt" mx="1em">
           <IconButton
-            variant="ghost"
             icon={FaDiscord}
             aria-label="Link to Discord"
-            size={ICON_SIZE}
             display={isSmall ? "none" : undefined}
           />
         </Link>
         <Link href="https://twitter.com/sendouc" mx="1em">
           <IconButton
-            variant="ghost"
             icon={FaTwitter}
             aria-label="Link to Twitter"
-            size={ICON_SIZE}
             display={isSmall ? "none" : undefined}
           />
         </Link>
         <Link href="https://www.twitch.tv/sendou" mx="1em">
           <IconButton
-            variant="ghost"
             icon={FaTwitch}
             aria-label="Link to Twitch"
-            size={ICON_SIZE}
             display={isSmall ? "none" : undefined}
           />
         </Link>
         <Link href="https://github.com/Sendouc/sendou-ink" mx="1em">
           <IconButton
-            variant="ghost"
             icon={FaGithub}
             aria-label="Link to Github"
-            size={ICON_SIZE}
             display={isSmall ? "none" : undefined}
           />
         </Link>
@@ -60,8 +52,9 @@ const Footer: React.FC = () => {
           mr="50px"
           userSelect="none"
         />
-      </Flex>
-      <Flex
+      </Box>
+      <Box
+        display="flex"
         bg={themeColorWithShade}
         p="25px"
         flexShrink={0}
@@ -73,7 +66,8 @@ const Footer: React.FC = () => {
         justifyContent={isSmall ? "center" : undefined}
       >
         {isSmall && (
-          <Flex
+          <Box
+            display="flex"
             alignItems="center"
             flexWrap="wrap"
             justifyContent="center"
@@ -91,7 +85,7 @@ const Footer: React.FC = () => {
             <Link href="https://github.com/Sendouc/sendou-ink" m="1em">
               <Box as={FaGithub} size="50px" />
             </Link>
-          </Flex>
+          </Box>
         )}
         <Link
           mx="2em"
@@ -114,7 +108,7 @@ const Footer: React.FC = () => {
         >
           External links
         </Link>
-      </Flex>
+      </Box>
     </Box>
   )
 }

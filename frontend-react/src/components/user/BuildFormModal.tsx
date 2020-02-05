@@ -33,10 +33,13 @@ import Button from "../elements/Button"
 import { useMutation } from "@apollo/react-hooks"
 import { ADD_BUILD } from "../../graphql/mutations/addBuild"
 import { useToast } from "@chakra-ui/core"
+import { UPDATE_BUILD } from "../../graphql/mutations/updateBuild"
+import { DELETE_BUILD } from "../../graphql/mutations/deleteBuild"
 
 interface BuildFormModalProps {
   existingGear: ExistingGearObject
   closeModal: () => void
+  buildBeingEdited?: Build | null
 }
 
 type ExistingGearObject = Record<
@@ -47,13 +50,18 @@ type ExistingGearObject = Record<
 const BuildFormModal: React.FC<BuildFormModalProps> = ({
   existingGear,
   closeModal,
+  buildBeingEdited,
 }) => {
   const toast = useToast()
-  const [build, setBuild] = useState<Partial<Build>>({
-    headgear: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
-    clothing: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
-    shoes: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
-  })
+  const [build, setBuild] = useState<Partial<Build>>(
+    buildBeingEdited
+      ? buildBeingEdited
+      : {
+          headgear: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+          clothing: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+          shoes: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+        }
+  )
 
   const [addBuild] = useMutation<{ addBuild: Build }, Build>(ADD_BUILD, {
     variables: { ...(build as Build) },
@@ -64,7 +72,6 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
         position: "top-right",
         status: "success",
         duration: 10000,
-        isClosable: true,
       })
     },
     onError: error => {
@@ -74,7 +81,55 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
         position: "top-right",
         status: "success",
         duration: 10000,
-        isClosable: true,
+      })
+    },
+    refetchQueries: ["searchForBuilds"],
+  })
+
+  const [updateBuild] = useMutation<{ updateBuild: Build }, Build>(
+    UPDATE_BUILD,
+    {
+      variables: { ...(build as Build) },
+      onCompleted: () => {
+        closeModal()
+        toast({
+          description: "Build updated",
+          position: "top-right",
+          status: "success",
+          duration: 10000,
+        })
+      },
+      onError: error => {
+        toast({
+          title: "An error occurred",
+          description: error.message,
+          position: "top-right",
+          status: "success",
+          duration: 10000,
+        })
+      },
+      refetchQueries: ["searchForBuilds"],
+    }
+  )
+
+  const [deleteBuild] = useMutation<boolean, { id: string }>(DELETE_BUILD, {
+    variables: { id: build.id as string },
+    onCompleted: () => {
+      closeModal()
+      toast({
+        description: "Build deleted",
+        position: "top-right",
+        status: "success",
+        duration: 10000,
+      })
+    },
+    onError: error => {
+      toast({
+        title: "An error occurred",
+        description: error.message,
+        position: "top-right",
+        status: "success",
+        duration: 10000,
       })
     },
     refetchQueries: ["searchForBuilds"],
@@ -186,7 +241,21 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
   }
 
   return (
-    <Modal title="Adding a new build" closeModal={() => closeModal()}>
+    <Modal
+      title={buildBeingEdited ? "Editing existing build" : "Adding a new build"}
+      closeModal={() => closeModal()}
+    >
+      {buildBeingEdited && (
+        <Box
+          color="red.500"
+          mb="1em"
+          textDecoration="underline"
+          cursor="pointer"
+          onClick={() => deleteBuild()}
+        >
+          Delete build
+        </Box>
+      )}
       <WeaponSelector
         required
         label="Weapon"
@@ -300,7 +369,10 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
         />
       </Box>
       <Box mt="1em">
-        <Button disabled={!buildCanBeSubmitted()} onClick={() => addBuild()}>
+        <Button
+          disabled={!buildCanBeSubmitted()}
+          onClick={buildBeingEdited ? () => updateBuild() : () => addBuild()}
+        >
           Submit
         </Button>
         <Box as="span" ml="0.5em">

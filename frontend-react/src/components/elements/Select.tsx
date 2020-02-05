@@ -1,12 +1,5 @@
 import React, { useContext } from "react"
-import ReactSelect, {
-  components,
-  OptionsType,
-  GroupedOptionsType,
-  ValueType,
-  OptionTypeBase,
-  createFilter,
-} from "react-select"
+import ReactSelect, { OptionsType, GroupedOptionsType } from "react-select"
 import MyThemeContext from "../../themeContext"
 import { SelectComponents } from "react-select/src/components"
 import Box from "./Box"
@@ -34,6 +27,7 @@ interface SelectProps {
     }>
   >
   clearable?: boolean
+  initialValue?: string
 }
 
 const Select: React.FC<SelectProps> = ({
@@ -44,6 +38,7 @@ const Select: React.FC<SelectProps> = ({
   autoFocus,
   label,
   required,
+  initialValue,
   width = "300px",
 }) => {
   const {

@@ -4,14 +4,16 @@ import { IconType } from "react-icons/lib/cjs"
 
 interface IconButtonProps {
   icon: IconType
-  onClick: () => void
+  display?: string
+  onClick?: () => void
 }
 
-const IconButton: React.FC<IconButtonProps> = ({ icon, onClick }) => {
+const IconButton: React.FC<IconButtonProps> = ({ icon, onClick, display }) => {
   return (
     <ChakraIconButton
       aria-label=""
       icon={icon}
+      display={display}
       variant="ghost"
       onClick={onClick}
       size="lg"

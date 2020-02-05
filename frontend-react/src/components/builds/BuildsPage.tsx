@@ -10,7 +10,6 @@ import {
   SearchForBuildsVars,
   Build,
 } from "../../types"
-import useBreakPoints from "../../hooks/useBreakPoints"
 import { Box, Flex, Heading, FormLabel, Switch, Button } from "@chakra-ui/core"
 import { useContext } from "react"
 import MyThemeContext from "../../themeContext"

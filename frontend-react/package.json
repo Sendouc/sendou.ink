@@ -7,7 +7,7 @@
     "@chakra-ui/core": "^0.5.2",
     "@emotion/core": "^10.0.27",
     "@emotion/styled": "^10.0.27",
-    "@reach/router": "^1.3.0",
+    "@reach/router": "^1.3.1",
     "@sendou/react-sketch": "^0.5.2",
     "@testing-library/jest-dom": "^5.1.1",
     "@testing-library/react": "^9.4.0",

@@ -1,6 +1,6 @@
-import { gql } from "apollo-boost"
+import { gql, DocumentNode } from "apollo-boost"
 
-export const updateBuild = gql`
+export const UPDATE_BUILD: DocumentNode = gql`
   mutation updateBuild(
     $id: ID!
     $weapon: String!
