@@ -5,7 +5,7 @@ function getWindowWidth() {
   return width
 }
 
-export default function useBreakPoints(breakpoint: number) {
+export default function useBreakPoints(breakpoints: number | number[]) {
   const [windowWidth, setWindowWidth] = useState<number>(getWindowWidth())
 
   useEffect(() => {
@@ -17,5 +17,9 @@ export default function useBreakPoints(breakpoint: number) {
     return () => window.removeEventListener("resize", handleResize)
   }, [])
 
-  return windowWidth < breakpoint
+  if (Array.isArray(breakpoints)) {
+    return breakpoints.map(breakpoint => windowWidth < breakpoint)
+  }
+
+  return windowWidth < breakpoints
 }

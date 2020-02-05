@@ -115,7 +115,7 @@ const ModesAccordion: React.FC<ModesAccordionProps> = ({ placements }) => {
   const { themeColorWithShade, grayWithShade, darkerBgColor } = useContext(
     MyThemeContext
   )
-  const isSmall = useBreakPoints(560)
+  const isSmall: boolean[] = useBreakPoints([560, 835]) as boolean[]
 
   const allModesTabsData: AllModesAccordionData = placements.reduce(
     accordionReducer,
@@ -143,7 +143,7 @@ const ModesAccordion: React.FC<ModesAccordionProps> = ({ placements }) => {
                   justifyItems="center"
                   alignItems="center"
                   w="100%"
-                  display={isSmall ? "none" : "grid"}
+                  display={isSmall[0] ? "none" : "grid"}
                 >
                   <StyledBox color={grayWithShade} gridArea="1 / 1 / 2 / 2">
                     Best placement
@@ -164,15 +164,20 @@ const ModesAccordion: React.FC<ModesAccordionProps> = ({ placements }) => {
                   <StyledBox color={grayWithShade} gridArea="3 / 2 / 4 / 3">
                     {allModesTabsData[key]?.highestXPowerDate}
                   </StyledBox>
-                  <StyledBox color={grayWithShade} gridArea="1 / 3 / 2 / 4">
-                    Number of placements
-                  </StyledBox>
-                  <StyledBox size="s" gridArea="2 / 3 / 3 / 4">
-                    {allModesTabsData[key]?.placements.length}
-                  </StyledBox>
+                  {!isSmall[1] && (
+                    <>
+                      <StyledBox color={grayWithShade} gridArea="1 / 3 / 2 / 4">
+                        Number of placements
+                      </StyledBox>
+
+                      <StyledBox size="s" gridArea="2 / 3 / 3 / 4">
+                        {allModesTabsData[key]?.placements.length}
+                      </StyledBox>
+                    </>
+                  )}
                 </Grid>
                 <Flex
-                  display={!isSmall ? "none" : "flex"}
+                  display={!isSmall[0] ? "none" : "flex"}
                   flexDirection="column"
                   pl="1em"
                 >
