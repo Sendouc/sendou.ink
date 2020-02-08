@@ -16,8 +16,8 @@
   "dependencies": {
     "@rehooks/local-storage": "^2.1.1",
     "@types/react-color": "^3.0.1",
-    "apollo-server": "^2.9.16",
-    "apollo-server-express": "^2.9.16",
+    "apollo-server": "^2.10.0",
+    "apollo-server-express": "^2.10.0",
     "axios": "^0.19.2",
     "btoa": "^1.2.1",
     "connect-mongo": "^3.2.0",

@@ -18,6 +18,14 @@ interface SelectProps {
   width?: string
   label: string
   required?: boolean
+  value?:
+    | {
+        label: string
+        value: string
+      }
+    | string
+    | string[]
+    | null
   setValue: (value: any) => void
   autoFocus?: boolean
   components?: Partial<
@@ -27,19 +35,20 @@ interface SelectProps {
     }>
   >
   clearable?: boolean
-  initialValue?: string
+  isMulti?: boolean
 }
 
 const Select: React.FC<SelectProps> = ({
   options,
   components,
+  value,
   setValue,
   clearable,
   autoFocus,
   label,
   required,
-  initialValue,
-  width = "300px",
+  isMulti,
+  width = "290px",
 }) => {
   const {
     colorMode,
@@ -49,7 +58,21 @@ const Select: React.FC<SelectProps> = ({
   } = useContext(MyThemeContext)
 
   const handleChange = (selectedOption: any) => {
-    setValue(selectedOption?.value)
+    if (Array.isArray(selectedOption)) {
+      setValue(selectedOption.map(obj => obj.value))
+    } else {
+      setValue(selectedOption?.value)
+    }
+  }
+
+  const getValue = () => {
+    if (typeof value === "string") {
+      return { label: value, value: value }
+    } else if (Array.isArray(value)) {
+      return value.map(weapon => ({ label: weapon, value: weapon }))
+    }
+
+    return value
   }
 
   return (
@@ -58,10 +81,12 @@ const Select: React.FC<SelectProps> = ({
       <ReactSelect
         className="basic-single"
         classNamePrefix="select"
+        value={getValue()}
         onChange={handleChange}
         placeholder={null}
         isSearchable
-        isClearable={clearable}
+        isMulti={!!isMulti}
+        isClearable={isMulti ? false : clearable}
         options={options}
         components={{
           IndicatorSeparator: () => null,
@@ -88,7 +113,12 @@ const Select: React.FC<SelectProps> = ({
           }),
           input: base => ({
             ...base,
-            color: colorMode === "light" ? "black" : "white",
+            color: "black",
+          }),
+          multiValue: base => ({
+            ...base,
+            background: themeColorHexLighter,
+            color: "black",
           }),
         }}
       />

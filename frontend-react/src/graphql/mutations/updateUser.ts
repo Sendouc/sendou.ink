@@ -1,6 +1,6 @@
-import { gql } from "apollo-boost"
+import { gql, DocumentNode } from "apollo-boost"
 
-export const updateUser = gql`
+export const UPDATE_USER: DocumentNode = gql`
   mutation updateUser(
     $country: String
     $motion_sens: Float

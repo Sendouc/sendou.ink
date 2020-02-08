@@ -40,7 +40,7 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
     FREE_AGENT_POSTS
   )
   const {
-    data: userData,
+    //data: userData,
     error: userQueryError,
     loading: userQueryLoading,
   } = useQuery<UserData>(USER)

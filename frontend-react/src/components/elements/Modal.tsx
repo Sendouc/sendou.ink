@@ -2,7 +2,6 @@ import React, { useContext } from "react"
 import Box from "./Box"
 import MyThemeContext from "../../themeContext"
 import useBreakPoints from "../../hooks/useBreakPoints"
-import Button from "./Button"
 import IconButton from "./IconButton"
 import { MdClose } from "react-icons/md"
 import { useEffect } from "react"
@@ -38,7 +37,7 @@ const Modal: React.FC<ModalProps> = ({ children, title, closeModal }) => {
       <Box
         bg={darkerBgColor}
         margin="2% auto"
-        padding="20px"
+        padding="10px 20px 20px 20px"
         border="1px solid #888"
         borderRadius="5px"
         w={isSmall ? "100%" : "80%"}
@@ -48,6 +47,7 @@ const Modal: React.FC<ModalProps> = ({ children, title, closeModal }) => {
           <Box
             asFlex
             justifyContent="space-between"
+            alignItems="center"
             fontSize="24px"
             fontWeight="black"
             mb="1.5em"

@@ -15,34 +15,22 @@ const Footer: React.FC = () => {
   return (
     <Box mt="2em">
       <Box display="flex" alignItems="flex-end">
-        <Link href="https://discord.gg/J6NqUvt" mx="1em">
-          <IconButton
-            icon={FaDiscord}
-            aria-label="Link to Discord"
-            display={isSmall ? "none" : undefined}
-          />
-        </Link>
-        <Link href="https://twitter.com/sendouc" mx="1em">
-          <IconButton
-            icon={FaTwitter}
-            aria-label="Link to Twitter"
-            display={isSmall ? "none" : undefined}
-          />
-        </Link>
-        <Link href="https://www.twitch.tv/sendou" mx="1em">
-          <IconButton
-            icon={FaTwitch}
-            aria-label="Link to Twitch"
-            display={isSmall ? "none" : undefined}
-          />
-        </Link>
-        <Link href="https://github.com/Sendouc/sendou-ink" mx="1em">
-          <IconButton
-            icon={FaGithub}
-            aria-label="Link to Github"
-            display={isSmall ? "none" : undefined}
-          />
-        </Link>
+        {!isSmall && (
+          <>
+            <Link href="https://discord.gg/J6NqUvt" mx="1em">
+              <IconButton icon={FaDiscord} aria-label="Link to Discord" />
+            </Link>
+            <Link href="https://twitter.com/sendouc" mx="1em">
+              <IconButton icon={FaTwitter} aria-label="Link to Twitter" />
+            </Link>
+            <Link href="https://www.twitch.tv/sendou" mx="1em">
+              <IconButton icon={FaTwitch} aria-label="Link to Twitch" />
+            </Link>
+            <Link href="https://github.com/Sendouc/sendou-ink" mx="1em">
+              <IconButton icon={FaGithub} aria-label="Link to Github" />
+            </Link>
+          </>
+        )}
         <Image
           src={footerBojoing[colorMode]}
           bg={themeColorWithShade}

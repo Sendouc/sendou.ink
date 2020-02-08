@@ -8,8 +8,6 @@ import Button from "../elements/Button"
 import Alert from "../elements/Alert"
 import Box from "../elements/Box"
 import BuildCard from "../builds/BuildCard"
-import IconButton from "../elements/IconButton"
-import { FaTrashAlt, FaEdit } from "react-icons/fa"
 
 interface BuildTabProps {
   builds: Build[]

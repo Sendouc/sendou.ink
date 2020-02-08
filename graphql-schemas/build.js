@@ -146,11 +146,17 @@ const resolvers = {
           throw new UserInputError("Title too long.", {
             invalidArgs: args,
           })
+        else {
+          args.title = undefined
+        }
+
       if (args.description) {
         if (args.description.length > 1000)
           throw new UserInputError("Description too long.", {
             invalidArgs: args,
           })
+      } else {
+        args.description = undefined
       }
       if (!weapons.includes(args.weapon))
         throw new UserInputError("Invalid weapon.", {
@@ -168,18 +174,24 @@ const resolvers = {
           throw new UserInputError("Invalid headgear item.", {
             invalidArgs: args,
           })
+      } else {
+        args.headgearItem = undefined
       }
       if (args.clothingItem) {
         if (!items.includes(args.clothingItem))
           throw new UserInputError("Invalid clothing item.", {
             invalidArgs: args,
           })
+      } else {
+        args.clothingItem = undefined
       }
       if (args.shoesItem) {
         if (!items.includes(args.shoesItem))
           throw new UserInputError("Invalid shoes item.", {
             invalidArgs: args,
           })
+      } else {
+        args.shoesItem = undefined
       }
 
       const existingBuilds = await Build.find({

@@ -11,6 +11,8 @@ interface WeaponSelectorProps {
   required?: boolean
   autoFocus?: boolean
   clearable?: boolean
+  isMulti?: boolean
+  initialValue?: string | string[]
 }
 
 const singleOption = (props: any) => (
@@ -30,6 +32,8 @@ const WeaponSelector: React.FC<WeaponSelectorProps> = ({
   clearable,
   autoFocus,
   required,
+  isMulti,
+  initialValue,
 }) => {
   return (
     <>
@@ -37,8 +41,10 @@ const WeaponSelector: React.FC<WeaponSelectorProps> = ({
         label={label}
         required={required}
         options={weaponSelectOptions}
+        value={initialValue}
         setValue={setValue}
         clearable={clearable}
+        isMulti={!!isMulti}
         components={{
           IndicatorSeparator: () => null,
           Option: singleOption,

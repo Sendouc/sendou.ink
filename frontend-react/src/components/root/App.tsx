@@ -53,7 +53,7 @@ const App: React.FC = () => {
     const favicon = document.getElementById("favicon") as HTMLLinkElement
     if (!favicon) return
     favicon.href = `/favicon_${themeColor}.png`
-  }, [themeColorFromStorage])
+  }, [themeColorFromStorage, themeColor])
 
   return (
     <MyThemeProvider value={theme[colorMode]}>

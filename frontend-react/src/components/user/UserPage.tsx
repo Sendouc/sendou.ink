@@ -121,7 +121,7 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
       title: "X Rank Top 500",
       content: (
         <TabPanel key={2}>
-          <p>you are noob :)</p>
+          <p>to do</p>
         </TabPanel>
       ),
     })
@@ -134,7 +134,10 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
           {user.username}#{user.discriminator} | sendou.ink
         </title>
       </Helmet>
-      <AvatarWithInfo user={user} />
+      <AvatarWithInfo
+        user={user}
+        canEdit={userLean?.discord_id === user.discord_id}
+      />
       {user.weapons && user.weapons.length > 0 && (
         <Box textAlign="center" mt="1em">
           <WeaponPool weapons={user.weapons} />

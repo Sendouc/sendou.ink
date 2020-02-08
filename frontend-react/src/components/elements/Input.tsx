@@ -1,5 +1,9 @@
 import React, { useContext } from "react"
-import { Input as ChakraInput } from "@chakra-ui/core"
+import {
+  Input as ChakraInput,
+  InputGroup,
+  InputLeftAddon,
+} from "@chakra-ui/core"
 import MyThemeContext from "../../themeContext"
 import Label from "./Label"
 import Box from "./Box"
@@ -10,6 +14,8 @@ interface InputProps {
   label: string
   limit?: number
   required?: boolean
+  disabled?: boolean
+  textLeft?: string
 }
 
 const Input: React.FC<InputProps> = ({
@@ -17,7 +23,9 @@ const Input: React.FC<InputProps> = ({
   setValue,
   label,
   required,
+  disabled,
   limit,
+  textLeft,
 }) => {
   const { themeColorHex, grayWithShade } = useContext(MyThemeContext)
 
@@ -27,11 +35,15 @@ const Input: React.FC<InputProps> = ({
   return (
     <>
       {label && <Label required={required}>{label}</Label>}
-      <ChakraInput
-        value={value ?? ""}
-        onChange={handleChange}
-        focusBorderColor={themeColorHex}
-      />
+      <InputGroup>
+        {textLeft && <InputLeftAddon>{textLeft}</InputLeftAddon>}
+        <ChakraInput
+          value={value ?? ""}
+          isDisabled={disabled}
+          onChange={handleChange}
+          focusBorderColor={themeColorHex}
+        />
+      </InputGroup>
       {limit && (
         <Box
           as="span"

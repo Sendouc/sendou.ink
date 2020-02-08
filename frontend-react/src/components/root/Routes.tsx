@@ -5,7 +5,7 @@ import Loading from "../common/Loading"
 const HomePage = lazy(() => import("../home/HomePage"))
 const UserPage = lazy(() => import("../user/UserPage"))
 const BuildsPage = lazy(() => import("../builds/BuildsPage"))
-const CalendarPage = lazy(() => import("../../calendar/CalendarPage"))
+const CalendarPage = lazy(() => import("../calendar/CalendarPage"))
 const MapPlannerPage = lazy(() => import("../plans/MapPlannerPage"))
 const FreeAgentsPage = lazy(() => import("../freeagents/FreeAgentsPage"))
 
@@ -19,6 +19,7 @@ const Routes: React.FC = () => {
         <MapPlannerPage path="/plans" />
         <CalendarPage path="/calendar" />
         <FreeAgentsPage path="/freeagents" />
+        <HomePage default />
       </Router>
     </Suspense>
   )

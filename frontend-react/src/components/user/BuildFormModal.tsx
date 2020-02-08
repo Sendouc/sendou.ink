@@ -260,6 +260,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
         required
         label="Weapon"
         setValue={(weapon: Weapon) => handleChange({ weapon })}
+        initialValue={build.weapon}
       />
       {build.weapon && (
         <WeaponImage englishName={build.weapon as Weapon} size="MEDIUM" />
@@ -270,6 +271,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
             label="Headgear"
             options={headSelectOptions}
             clearable
+            value={build.headgearItem}
             setValue={(headgearItem: HeadGear) => {
               if (
                 (!build.headgear ||
@@ -296,6 +298,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
             label="Clothing"
             options={clothingSelectOptions}
             clearable
+            value={build.clothingItem}
             setValue={(clothingItem: ClothingGear) => {
               if (
                 (!build.clothing ||
@@ -322,6 +325,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
             label="Shoes"
             options={shoesSelectOptions}
             clearable
+            value={build.shoesItem}
             setValue={(shoesItem: ShoesGear) => {
               if (
                 (!build.shoes ||

@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react"
 import Draggable from "react-draggable"
 import { Tools } from "@sendou/react-sketch"
 import { useHotkeys } from "react-hotkeys-hook"
-import { Box, Flex, Tooltip, IconButton } from "@chakra-ui/core"
+import { Box, Flex, IconButton } from "@chakra-ui/core"
 import {
   FaPencilAlt,
   FaRegSquare,
@@ -27,7 +27,6 @@ interface DraggableToolsSelectorProps {
 }
 
 const DraggableToolsSelector: React.FC<DraggableToolsSelectorProps> = ({
-  tool,
   setTool,
   redo,
   redoIsDisabled,

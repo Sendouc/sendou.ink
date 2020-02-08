@@ -13,18 +13,15 @@ import {
 } from "@chakra-ui/core"
 import { RouteComponentProps } from "@reach/router"
 import { useContext } from "react"
-import MyThemeContext from "../themeContext"
-import PageHeader from "../components/common/PageHeader"
+import MyThemeContext from "../../themeContext"
+import PageHeader from "../common/PageHeader"
 import { Helmet } from "react-helmet-async"
-import Button from "../components/elements/Button"
+import Button from "../elements/Button"
 
 const CalendarPage: React.FC<RouteComponentProps> = () => {
-  const {
-    themeColor,
-    darkerBgColor,
-    themeColorWithShade,
-    grayWithShade,
-  } = useContext(MyThemeContext)
+  const { darkerBgColor, themeColorWithShade, grayWithShade } = useContext(
+    MyThemeContext
+  )
   const [showCode, setShowCode] = useState(false)
   const calenderDiv = useRef<HTMLDivElement | null>(null)
 
