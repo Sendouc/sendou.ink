@@ -11,8 +11,8 @@ export const summaries = gql`
       }
       score {
         total
-        eu
-        na
+        eu_count
+        na_count
       }
       plus_server
       suggested

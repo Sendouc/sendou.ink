@@ -9,8 +9,10 @@ const summarySchema = new mongoose.Schema({
   suggested: Boolean,
   score: {
     total: { type: Number, required: true, min: 0, max: 100 },
-    eu: { type: Number, required: true, min: 0, max: 100 },
-    na: { type: Number, required: true, min: 0, max: 100 },
+    eu: { type: Number, min: 0, max: 100 },
+    na: { type: Number, min: 0, max: 100 },
+    eu_count: [Number],
+    na_count: [Number],
   },
 })
 

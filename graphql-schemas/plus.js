@@ -96,8 +96,6 @@ const typeDef = gql`
 
   type Score {
     total: Float!
-    eu: Float
-    na: Float
     eu_count: [Int]
     na_count: [Int]
   }
@@ -637,16 +635,6 @@ const resolvers = {
           const same_total = same_region.reduce((acc, cur) => acc + cur)
           const other_total = other_region.reduce((acc, cur) => acc + cur)
 
-          const same_score = +(
-            ((same_total / same_region.length + 2) / 4) *
-            100
-          ).toFixed(2)
-
-          const other_score = +(
-            ((other_total / other_region.length + 1) / 2) *
-            100
-          ).toFixed(2)
-
           const total_score = +(
             ((same_total / same_region.length +
               other_total / other_region.length +
@@ -660,10 +648,12 @@ const resolvers = {
             const scoreIndex = scoreMap[cur]
             if (!acc[scoreIndex]) acc[scoreIndex] = 1
             else acc[scoreIndex] = acc[scoreIndex] + 1
+
+            return acc
           }
 
-          const same_count = same_region.reduce(countReducer, [])
-          const other_count = other_region.reduce(countReducer, [])
+          const same_count = same_region.reduce(countReducer, [0, 0, 0, 0])
+          const other_count = other_region.reduce(countReducer, [0, 0, 0, 0])
 
           const summary = {
             discord_id,

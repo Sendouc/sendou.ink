@@ -22,8 +22,12 @@ const summaryMap = summary => {
           <b>
             <span style={{ ...getColor(score.total) }}>{score.total}</span>%
           </b>{" "}
-          (EU <span style={getColor(score.eu)}>{score.eu}</span>% | NA{" "}
-          <span style={getColor(score.na)}>{score.na}</span>%)
+          {score.eu_count.length > 0 && (
+            <>
+              (EU <span>{score.eu_count.join("/")}</span> | NA{" "}
+              <span>{score.na_count.join("/")}</span>)
+            </>
+          )}
           {summary.vouched && (
             <Popup
               content="User was vouched to the server last month"
