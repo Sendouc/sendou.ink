@@ -26,6 +26,7 @@ import BuildTab from "./BuildTab"
 import MyThemeContext from "../../themeContext"
 import { PLAYER_INFO } from "../../graphql/queries/playerInfo"
 import XRankTab from "./XRankTab"
+import { weapons } from "../../utils/lists"
 
 interface Tab {
   id: number
@@ -95,7 +96,9 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
       content: (
         <TabPanel key={1}>
           <BuildTab
-            builds={builds}
+            builds={builds.sort(
+              (a, b) => weapons.indexOf(a.weapon) - weapons.indexOf(b.weapon)
+            )}
             canModifyBuilds={userLean?.discord_id === user.discord_id}
           />
         </TabPanel>

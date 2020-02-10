@@ -23,7 +23,6 @@ teamSchema.virtual("member_users", {
   ref: "User",
   localField: "member_discord_ids",
   foreignField: "discord_id",
-  justOne: true,
 })
 
 module.exports = mongoose.model("Team", teamSchema)

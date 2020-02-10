@@ -150,6 +150,34 @@ export interface FreeAgentPost {
   }
 }
 
+export interface TournamentResult {
+  date: string
+  tweet_id?: string
+  tournament_name: string
+  placement: number
+}
+
+export interface Team {
+  name: string
+  twitter_name?: string
+  captain_discord_id: string
+  member_discord_ids: string[]
+  member_users: {
+    discord_id: string
+    username: string
+    discriminator: string
+    twitch_name?: string
+    twitter_name?: string
+    country?: CountryCode
+    weapons: Weapon[]
+    custom_url?: string
+  }[]
+  countries: string[]
+  tag?: String
+  lf_post?: String
+  tournament_results: TournamentResult[]
+}
+
 //==============================================================================
 // Apollo
 //==============================================================================

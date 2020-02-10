@@ -16,6 +16,7 @@
     "@types/node": "^13.7.0",
     "@types/reach__router": "^1.2.6",
     "@types/react": "^16.9.19",
+    "@types/react-datepicker": "^2.11.0",
     "@types/react-dom": "^16.9.5",
     "@types/react-infinite-scroller": "^1.2.1",
     "@types/react-select": "^3.0.10",
@@ -23,7 +24,9 @@
     "emotion-theming": "^10.0.27",
     "graphql": "^14.6.0",
     "jstz": "^2.1.1",
+    "node-sass": "^4.13.1",
     "react": "^16.12.0",
+    "react-datepicker": "^2.12.0",
     "react-dom": "^16.12.0",
     "react-draggable": "^4.2.0",
     "react-helmet-async": "^1.0.4",
@@ -32,6 +35,7 @@
     "react-infinite-scroller": "^1.2.4",
     "react-scripts": "^3.3.1",
     "react-select": "^3.0.8",
+    "react-tweet-embed": "^1.2.2",
     "typescript": "^3.7.5"
   },
   "scripts": {
