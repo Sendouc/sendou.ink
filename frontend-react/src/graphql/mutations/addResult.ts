@@ -7,7 +7,7 @@ export const ADD_RESULT: DocumentNode = gql`
     $tournament_name: String!
     $placement: Int!
   ) {
-    updateUser(
+    addResult(
       date: $date
       tweet_id: $tweet_id
       tournament_name: $tournament_name

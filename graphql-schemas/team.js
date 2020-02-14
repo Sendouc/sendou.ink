@@ -87,12 +87,11 @@ const resolvers = {
         throw new UserInputError("Must be logged in")
       }
 
-      if (user.team.captain_discord_id !== user.discord_id) {
-        //??
-        throw new UserInputError("Must be a captain to add a result")
-      }
+      const team = await Team.findById(user.team)
 
-      if (user.team.tournament_results.length >= 100) {
+      if (!team) throw new UserInputError("Not a team captain")
+
+      if (team.tournament_results.length > 100) {
         throw new UserInputError("Can't have more than 100 tournament results")
       }
 
@@ -100,7 +99,7 @@ const resolvers = {
         throw new UserInputError("Invalid date")
       }
 
-      if (args.tweet_id && !isNaN(args.tweet_id)) {
+      if (args.tweet_id && isNaN(args.tweet_id)) {
         throw new UserInputError("Tweet ID can only contain numbers")
       }
 
@@ -117,8 +116,7 @@ const resolvers = {
         throw new UserInputError("Placement has to be between 1 and 500")
       }
 
-      const team = await Team.findById(user.team)
-      team.push({
+      team.tournament_results.push({
         date: args.date,
         tournament_name: args.tournament_name,
         placement: args.placement,

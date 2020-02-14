@@ -26,7 +26,7 @@
     "express-session": "^1.17.0",
     "graphql": "^14.6.0",
     "lodash": "^4.17.15",
-    "mongoose": "^5.8.11",
+    "mongoose": "^5.8.12",
     "mongoose-unique-validator": "^2.0.3",
     "node-fetch": "^2.6.0",
     "passport": "^0.4.1",

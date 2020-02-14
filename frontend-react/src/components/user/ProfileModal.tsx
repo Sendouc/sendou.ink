@@ -79,7 +79,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
         title: "An error occurred",
         description: error.message,
         position: "top-right",
-        status: "success",
+        status: "error",
         duration: 10000,
       })
     },

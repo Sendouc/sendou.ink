@@ -80,6 +80,7 @@ const resolvers = {
       if (process.env.LOGGED_IN) {
         return {
           id: "5cee8f73d1120d4315c55011",
+          team: "5e3ecc0ea7dd3830303eaaa7",
           discord_id: "79237403620945920",
           __v: 0,
           avatar: "2e292c1b5d1366c24a9e4b6c1cffc700",

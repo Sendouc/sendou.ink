@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import Modal from "../elements/Modal"
 import Box from "../elements/Box"
 import { TournamentResult } from "../../types"
@@ -7,22 +7,27 @@ import { useMutation } from "@apollo/react-hooks"
 import { useToast } from "@chakra-ui/core"
 import { ADD_RESULT } from "../../graphql/mutations/addResult"
 import TweetEmbed from "react-tweet-embed"
-import { useContext } from "react"
-import MyThemeContext from "../../themeContext"
 import DatePicker from "../elements/DatePicker"
 import Label from "../elements/Label"
+import PlacementInput from "./PlacementInput"
+import Button from "../elements/Button"
 
 interface AddResultModalProps {
   closeModal: () => void
 }
 
 const AddResultModal: React.FC<AddResultModalProps> = ({ closeModal }) => {
-  const { colorMode } = useContext(MyThemeContext)
-  const [result, setResult] = useState<Partial<TournamentResult>>({})
+  const [result, setResult] = useState<Partial<TournamentResult>>({
+    placement: 1,
+    date: (new Date() as unknown) as string,
+  })
   const toast = useToast()
 
   const [addResult] = useMutation<boolean, TournamentResult>(ADD_RESULT, {
-    variables: result as TournamentResult,
+    variables: {
+      ...(result as TournamentResult),
+      date: result.date?.toString() as string,
+    },
     onCompleted: () => {
       closeModal()
       toast({
@@ -37,15 +42,30 @@ const AddResultModal: React.FC<AddResultModalProps> = ({ closeModal }) => {
         title: "An error occurred",
         description: error.message,
         position: "top-right",
-        status: "success",
+        status: "error",
         duration: 10000,
       })
     },
-    refetchQueries: ["searchForUser"],
+    refetchQueries: ["searchForTeam"],
   })
 
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!result.tournament_name) {
+      setError("Tournament name is a required field")
+    } else if (result.tournament_name.length > 100) {
+      setError("Tournament name has to be 100 or less characters")
+    } else if (result.tweet_id && isNaN(result.tweet_id as any)) {
+      setError("Invalid Tweet ID")
+    } else if (result.placement && result.placement > 500) {
+      setError("Placement has to be between 1 and 500.")
+    } else {
+      setError(null)
+    }
+  }, [result])
+
   const handleChange = (newValueObject: Partial<TournamentResult>) => {
-    console.log("newV", newValueObject)
     setResult({ ...result, ...newValueObject })
   }
 
@@ -83,6 +103,27 @@ const AddResultModal: React.FC<AddResultModalProps> = ({ closeModal }) => {
           </Box>
         )}
       </Box>
+      <Box mt="1em">
+        <PlacementInput
+          value={result.placement}
+          onChange={value => handleChange({ placement: value })}
+        />
+      </Box>
+      <Box mt="1em">
+        <Button disabled={!!error} onClick={() => addResult()}>
+          Submit
+        </Button>
+        <Box as="span" ml="0.5em">
+          <Button outlined onClick={() => closeModal()}>
+            Cancel
+          </Button>
+        </Box>
+      </Box>
+      {error && (
+        <Box mt="0.5em" color="red.500">
+          {error}
+        </Box>
+      )}
     </Modal>
   )
 }

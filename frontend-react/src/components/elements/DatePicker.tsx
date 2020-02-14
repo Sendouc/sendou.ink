@@ -1,4 +1,4 @@
-import React from "react"
+import React, { forwardRef } from "react"
 import HackerOneDatePicker from "react-datepicker"
 import Button from "./Button"
 import "react-datepicker/src/stylesheets/datepicker.scss"
@@ -13,15 +13,20 @@ interface CustomInputProps {
   onClick?: () => void
 }
 
-const CustomInput: React.FC<CustomInputProps> = ({ value, onClick }) => (
-  <Button onClick={onClick as () => void}>{value as string}</Button>
-)
-
 const DatePicker: React.FC<DatePickerProps> = ({ date, setDate }) => {
+  const CustomInput: React.FC<CustomInputProps> = forwardRef(
+    ({ onClick, value }, ref) => (
+      <Button onClick={onClick as () => void}>{value as string}</Button>
+    )
+  )
+
   return (
     <HackerOneDatePicker
       selected={date}
-      onChange={date => setDate(date)}
+      onChange={date => {
+        date?.setUTCHours(0, 0, 0, 0)
+        setDate(date)
+      }}
       customInput={<CustomInput />}
     />
   )
