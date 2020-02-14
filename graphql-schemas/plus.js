@@ -9,11 +9,14 @@ const Suggested = require("../mongoose-models/suggested")
 const Summary = require("../mongoose-models/summary")
 const VotedPerson = require("../mongoose-models/votedperson")
 const State = require("../mongoose-models/state")
+const Player = require("../mongoose-models/player")
+const Placement = require("../mongoose-models/placement")
 
 const typeDef = gql`
   extend type Query {
     plusInfo: PlusGeneralInfo
     hasAccess(discord_id: String!, server: String!): Boolean!
+    xPowers(discord_id: String!): [Int]!
     suggestions: [Suggested!]
     vouches: [User!]
     usersForVoting: UsersForVoting!
@@ -225,6 +228,36 @@ const resolvers = {
         voter_count: votedIds.size,
         eligible_voters,
       }
+    },
+    xPowers: async (root, args, ctx) => {
+      const user = await User.findOne({ discord_id: args.discord_id })
+      if (!user || !user.twitter_name) return [null, null, null, null]
+
+      const twitter = user.twitter_name.toLowerCase()
+
+      const player = await Player.findOne({
+        twitter,
+      })
+
+      if (!player) return [null, null, null, null]
+
+      const placements = await Placement.find({ unique_id: player.unique_id })
+
+      return placements.reduce(
+        (acc, cur) => {
+          const modeIndex = cur.mode - 1
+          const xPower = Math.floor(cur.x_power / 100) * 100
+
+          if (acc[modeIndex] === null) {
+            acc[modeIndex] = xPower
+          } else if (xPower > acc[modeIndex]) {
+            acc[modeIndex] = xPower
+          }
+
+          return acc
+        },
+        [null, null, null, null]
+      )
     },
     usersForVoting: async (root, args, ctx) => {
       if (!ctx.user) throw new UserInputError("Not logged in")
