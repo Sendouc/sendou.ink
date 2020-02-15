@@ -9,11 +9,14 @@ const Suggested = require("../mongoose-models/suggested")
 const Summary = require("../mongoose-models/summary")
 const VotedPerson = require("../mongoose-models/votedperson")
 const State = require("../mongoose-models/state")
+const Player = require("../mongoose-models/player")
+const Placement = require("../mongoose-models/placement")
 
 const typeDef = gql`
   extend type Query {
     plusInfo: PlusGeneralInfo
-    hasAccess(discord_id: String!, server: String!): Boolean!
+    hasAccess(discord_id: String!): String
+    xPowers(discord_id: String!): [Int]!
     suggestions: [Suggested!]
     vouches: [User!]
     usersForVoting: UsersForVoting!
@@ -96,8 +99,6 @@ const typeDef = gql`
 
   type Score {
     total: Float!
-    eu: Float
-    na: Float
     eu_count: [Int]
     na_count: [Int]
   }
@@ -178,10 +179,7 @@ const resolvers = {
           ? "ONE"
           : membership_code
 
-      if (membership_code === "ONE") return true
-      if (membership_code === "TWO" && args.server === "TWO") return true
-
-      return false
+      return membership_code
     },
     plusInfo: async (root, args, ctx) => {
       if (!ctx.user) return null
@@ -227,6 +225,36 @@ const resolvers = {
         voter_count: votedIds.size,
         eligible_voters,
       }
+    },
+    xPowers: async (root, args, ctx) => {
+      const user = await User.findOne({ discord_id: args.discord_id })
+      if (!user || !user.twitter_name) return [null, null, null, null]
+
+      const twitter = user.twitter_name.toLowerCase()
+
+      const player = await Player.findOne({
+        twitter,
+      })
+
+      if (!player) return [null, null, null, null]
+
+      const placements = await Placement.find({ unique_id: player.unique_id })
+
+      return placements.reduce(
+        (acc, cur) => {
+          const modeIndex = cur.mode - 1
+          const xPower = Math.floor(cur.x_power / 100) * 100
+
+          if (acc[modeIndex] === null) {
+            acc[modeIndex] = xPower
+          } else if (xPower > acc[modeIndex]) {
+            acc[modeIndex] = xPower
+          }
+
+          return acc
+        },
+        [null, null, null, null]
+      )
     },
     usersForVoting: async (root, args, ctx) => {
       if (!ctx.user) throw new UserInputError("Not logged in")
@@ -637,16 +665,6 @@ const resolvers = {
           const same_total = same_region.reduce((acc, cur) => acc + cur)
           const other_total = other_region.reduce((acc, cur) => acc + cur)
 
-          const same_score = +(
-            ((same_total / same_region.length + 2) / 4) *
-            100
-          ).toFixed(2)
-
-          const other_score = +(
-            ((other_total / other_region.length + 1) / 2) *
-            100
-          ).toFixed(2)
-
           const total_score = +(
             ((same_total / same_region.length +
               other_total / other_region.length +
@@ -660,10 +678,12 @@ const resolvers = {
             const scoreIndex = scoreMap[cur]
             if (!acc[scoreIndex]) acc[scoreIndex] = 1
             else acc[scoreIndex] = acc[scoreIndex] + 1
+
+            return acc
           }
 
-          const same_count = same_region.reduce(countReducer, [])
-          const other_count = other_region.reduce(countReducer, [])
+          const same_count = same_region.reduce(countReducer, [0, 0, 0, 0])
+          const other_count = other_region.reduce(countReducer, [0, 0, 0, 0])
 
           const summary = {
             discord_id,
