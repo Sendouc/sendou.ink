@@ -15,7 +15,7 @@ const Placement = require("../mongoose-models/placement")
 const typeDef = gql`
   extend type Query {
     plusInfo: PlusGeneralInfo
-    hasAccess(discord_id: String!, server: String!): Boolean!
+    hasAccess(discord_id: String!): String
     xPowers(discord_id: String!): [Int]!
     suggestions: [Suggested!]
     vouches: [User!]
@@ -179,10 +179,7 @@ const resolvers = {
           ? "ONE"
           : membership_code
 
-      if (membership_code === "ONE") return true
-      if (membership_code === "TWO" && args.server === "TWO") return true
-
-      return false
+      return membership_code
     },
     plusInfo: async (root, args, ctx) => {
       if (!ctx.user) return null
