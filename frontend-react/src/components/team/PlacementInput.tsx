@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React, { useContext, ReactText } from "react"
 import Label from "../elements/Label"
 import {
   NumberInput,
@@ -19,7 +19,14 @@ const PlacementInput: React.FC<PlacementInputProps> = ({ value, onChange }) => {
   return (
     <>
       <Label>Placement</Label>
-      <NumberInput size="lg" defaultValue={1} min={1} max={500}>
+      <NumberInput
+        size="lg"
+        defaultValue={1}
+        min={1}
+        max={500}
+        value={value}
+        onChange={(value: ReactText) => onChange(value as number)}
+      >
         <NumberInputField focusBorderColor={themeColorHex} />
         <NumberInputStepper>
           <NumberIncrementStepper />

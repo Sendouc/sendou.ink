@@ -12,7 +12,7 @@ const teamSchema = new mongoose.Schema({
   tournament_results: [
     {
       date: Date,
-      tweet_url: String,
+      tweet_id: String,
       tournament_name: String,
       placement: Number,
     },

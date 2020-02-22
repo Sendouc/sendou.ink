@@ -44,7 +44,6 @@ const TeamPage: React.FC<RouteComponentProps & TeamPageProps> = ({ name }) => {
 
   const team = data.searchForTeam
   const user = userData.user
-  console.log("team", team)
 
   return (
     <>
@@ -61,6 +60,9 @@ const TeamPage: React.FC<RouteComponentProps & TeamPageProps> = ({ name }) => {
       </Box>
       <Box mt="1em">
         <Results
+          results={team.tournament_results.sort(
+            (a, b) => parseInt(b.date) - parseInt(a.date)
+          )}
           canAddResults={
             team.captain_discord_id === user?.discord_id &&
             team.tournament_results.length < 100

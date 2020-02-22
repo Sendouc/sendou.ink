@@ -35,6 +35,10 @@ import boingDrawingLight from "./boing_light.png"
 import boingOctoDrawingDark from "./b8ing_dark.png"
 import boingOctoDrawingLight from "./b8ing_light.png"
 
+import firstPlace from "./first_place.png"
+import secondPlace from "./second_place.png"
+import thirdPlace from "./third_place.png"
+
 //https://stackoverflow.com/questions/42118296/dynamically-import-images-from-a-directory-using-webpack
 export const wpnSmall: object = importAll(require.context("./wpnSmall", false))
 export const wpnMedium: object = importAll(
@@ -97,3 +101,5 @@ export const footerOcto = {
   light: boingOctoDrawingLight,
   dark: boingOctoDrawingDark,
 }
+
+export const medalEmoji = [null, firstPlace, secondPlace, thirdPlace] as const

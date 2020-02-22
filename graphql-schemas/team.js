@@ -45,7 +45,7 @@ const resolvers = {
   Query: {
     teams: (root, args) => Team.find({}),
     searchForTeam: (root, { name }) => {
-      const name_regex = `^${name.replace("_", " ")}$`
+      const name_regex = `^${name.replace("-", " ")}$`
       return Team.findOne({
         name: { $regex: new RegExp(name_regex, "i") },
       }).populate("member_users")
@@ -120,7 +120,7 @@ const resolvers = {
         date: args.date,
         tournament_name: args.tournament_name,
         placement: args.placement,
-        tweet_id: args.tweet_id ? args.tweet_id : undefined,
+        tweet_id: args.tweet_id,
       })
       await team.save()
       return true
