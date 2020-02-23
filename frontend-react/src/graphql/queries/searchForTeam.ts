@@ -5,6 +5,12 @@ export const SEARCH_FOR_TEAM: DocumentNode = gql`
     searchForTeam(name: $name) {
       name
       twitter_name
+      challonge_name
+      discord_url
+      founded {
+        month
+        year
+      }
       captain_discord_id
       member_discord_ids
       member_users {

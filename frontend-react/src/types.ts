@@ -160,6 +160,12 @@ export interface TournamentResult {
 export interface Team {
   name: string
   twitter_name?: string
+  challonge_name?: string
+  discord_url?: string
+  founded?: {
+    month: number
+    year: number
+  }
   captain_discord_id: string
   member_discord_ids: string[]
   member_users: {

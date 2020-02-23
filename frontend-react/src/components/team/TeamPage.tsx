@@ -50,8 +50,14 @@ const TeamPage: React.FC<RouteComponentProps & TeamPageProps> = ({ name }) => {
       <Helmet>
         <title>{team.name} | sendou.ink</title>
       </Helmet>
-      <LogoHeader name={team.name} twitter_name={team.twitter_name} />
-      <Box display="flex" flexWrap="wrap" justifyContent="center">
+      <LogoHeader
+        name={team.name}
+        twitter_name={team.twitter_name}
+        challonge_name={team.challonge_name}
+        discord_url={team.discord_url}
+        founded={team.founded}
+      />
+      <Box display="flex" flexWrap="wrap" justifyContent="center" mt="1em">
         {team.member_users.map(member => (
           <Box key={member.discord_id} p="0.5em">
             <MemberCard member={member} />

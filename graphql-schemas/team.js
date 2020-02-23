@@ -29,9 +29,17 @@ const typeDef = gql`
     placement: Int!
   }
 
+  type Founded {
+    month: Int!
+    year: Int!
+  }
+
   type Team {
     name: String!
     twitter_name: String
+    challonge_name: String
+    discord_url: String
+    founded: Founded
     captain_discord_id: String!
     member_discord_ids: [String!]!
     member_users: [User!]!

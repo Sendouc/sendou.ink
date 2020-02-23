@@ -66,7 +66,6 @@ const AddResultModal: React.FC<AddResultModalProps> = ({ closeModal }) => {
   }, [result])
 
   const handleChange = (newValueObject: Partial<TournamentResult>) => {
-    console.log("newValue", newValueObject)
     setResult({ ...result, ...newValueObject })
   }
 
