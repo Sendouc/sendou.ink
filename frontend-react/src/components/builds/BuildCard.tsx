@@ -38,7 +38,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
   ...props
 }) => {
   const [apView, setApView] = useState(defaultToAPView)
-  const { borderStyle, themeColor, darkerBgColor, grayWithShade } = useContext(
+  const { themeColor, darkerBgColor, grayWithShade } = useContext(
     MyThemeContext
   )
 
@@ -48,30 +48,13 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
 
   return (
     <Box
-      as="fieldset"
-      display="block"
-      borderWidth="1px"
-      border={borderStyle}
       w="300px"
       rounded="lg"
       overflow="hidden"
-      //pb={showUser && build.discord_user ? "20px" : "15px"}
+      boxShadow="0px 0px 16px 6px rgba(0,0,0,0.1)"
       p="15px"
       {...props}
     >
-      {showUser && build.discord_user && (
-        <Box
-          as="legend"
-          color={grayWithShade}
-          fontWeight="semibold"
-          letterSpacing="wide"
-          fontSize="s"
-        >
-          <Link to={`/u/${build.discord_user.discord_id}`}>
-            {build.discord_user.username}#{build.discord_user.discriminator}
-          </Link>
-        </Box>
-      )}
       <Box display="flex" flexDirection="column" h="100%">
         <Box display="flex" justifyContent="space-between">
           <Box width="24">
@@ -93,6 +76,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
           letterSpacing="wide"
           fontSize="xs"
           ml="8px"
+          mt="1em"
         >
           {new Date(parseInt(build.updatedAt)).toLocaleString()}
         </Box>
@@ -101,12 +85,28 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
             {build.title}
           </Box>
         )}
-        <Gears build={build} />
+        {showUser && build.discord_user && (
+          <Box
+            color={grayWithShade}
+            fontWeight="semibold"
+            letterSpacing="wide"
+            fontSize="sm"
+            ml="8px"
+          >
+            <Link to={`/u/${build.discord_user.discord_id}`}>
+              {build.discord_user.username}#{build.discord_user.discriminator}
+            </Link>
+          </Box>
+        )}
+        <Box mt="1em">
+          <Gears build={build} />
+        </Box>
         <Box
           display="flex"
           flexDirection="column"
           flexGrow={1}
           justifyContent="center"
+          mt="1em"
         >
           {apView ? <ViewAP build={build} /> : <ViewSlots build={build} />}
         </Box>
@@ -136,7 +136,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
           ) : (
             <Box w="24px" />
           )}
-          {canModify && (
+          {canModify ? (
             <IconButton
               variant="ghost"
               isRound
@@ -148,16 +148,17 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
               fontSize="20px"
               icon={FaEdit}
             />
+          ) : (
+            <Button
+              variant="ghost"
+              variantColor={themeColor}
+              aria-label={apView ? "Show gear" : "Show ability point count"}
+              fontSize="15px"
+              onClick={() => setApView(!apView)}
+            >
+              {apView ? "GEAR" : "AP"}
+            </Button>
           )}
-          <Button
-            variant="ghost"
-            variantColor={themeColor}
-            aria-label={apView ? "Show gear" : "Show ability point count"}
-            fontSize="15px"
-            onClick={() => setApView(!apView)}
-          >
-            {apView ? "GEAR" : "AP"}
-          </Button>
         </Box>
       </Box>
     </Box>

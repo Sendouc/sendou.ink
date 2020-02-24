@@ -113,7 +113,7 @@ const Select: React.FC<SelectProps> = ({
           }),
           input: base => ({
             ...base,
-            color: "black",
+            color: colorMode === "light" ? "black" : "white",
           }),
           multiValue: base => ({
             ...base,

@@ -27,7 +27,7 @@ import Alert from "../elements/Alert"
 const BuildsPage: React.FC<RouteComponentProps> = () => {
   const { themeColor } = useContext(MyThemeContext)
   const [weapon, setWeapon] = useState<Weapon | null>(null)
-  const [buildsToShow, setBuildsToShow] = useState(4)
+  const [buildsToShow, setBuildsToShow] = useState(10)
   const [abilities, setAbilities] = useState<Ability[]>([])
   const [prefersAPView, setAPPreference] = useLocalStorage<boolean>(
     "prefersAPView"
@@ -84,7 +84,7 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
         <>
           <InfiniteScroll
             pageStart={1}
-            loadMore={page => setBuildsToShow(page * 4)}
+            loadMore={page => setBuildsToShow(page * 10)}
             hasMore={buildsToShow < data.searchForBuilds.length}
           >
             <Flex flexWrap="wrap" pt="2em" justifyContent="center">
@@ -116,7 +116,7 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
           </Box>
         </>
       )}
-      {weapon && buildsFilterByAbilities.length === 0 && (
+      {weapon && buildsFilterByAbilities.length === 0 && !loading && (
         <Alert status="info">No builds found with the current filter</Alert>
       )}
     </>
