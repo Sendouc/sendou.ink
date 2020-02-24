@@ -3,9 +3,7 @@ import UserAvatar from "../common/UserAvatar"
 import Box from "../elements/Box"
 import { useContext } from "react"
 import MyThemeContext from "../../themeContext"
-import { Icon } from "@chakra-ui/core"
 import { FaTwitter, FaTrophy, FaDiscord } from "react-icons/fa"
-import { Link } from "@reach/router"
 import { months } from "../../utils/lists"
 
 interface LogoHeaderProps {

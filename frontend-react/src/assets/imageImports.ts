@@ -39,6 +39,14 @@ import firstPlace from "./first_place.png"
 import secondPlace from "./second_place.png"
 import thirdPlace from "./third_place.png"
 
+import alfonsino from "./Splatoon1Maps/alfonsino.png"
+import bluefin from "./Splatoon1Maps/bluefin.png"
+import bridge from "./Splatoon1Maps/bridge.png"
+import flounder from "./Splatoon1Maps/flounder.png"
+import resort from "./Splatoon1Maps/resort.png"
+import rig from "./Splatoon1Maps/rig.png"
+import underpass from "./Splatoon1Maps/underpass.png"
+
 //https://stackoverflow.com/questions/42118296/dynamically-import-images-from-a-directory-using-webpack
 export const wpnSmall: object = importAll(require.context("./wpnSmall", false))
 export const wpnMedium: object = importAll(
@@ -103,3 +111,34 @@ export const footerOcto = {
 }
 
 export const medalEmoji = [null, firstPlace, secondPlace, thirdPlace] as const
+
+export const Splatoon1Maps = [
+  {
+    image: alfonsino,
+    name: "Museum D'Alfonsino",
+  },
+  {
+    image: bluefin,
+    name: "Bluefin Depot",
+  },
+  {
+    image: bridge,
+    name: "Hammerhead Bridge",
+  },
+  {
+    image: flounder,
+    name: "Flounder Heights",
+  },
+  {
+    image: resort,
+    name: "Mahi-Mahi Resort",
+  },
+  {
+    image: rig,
+    name: "Saltspray Rig",
+  },
+  {
+    image: underpass,
+    name: "Urchin Underpass",
+  },
+]

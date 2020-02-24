@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from "react"
 import { Router } from "@reach/router"
 import Loading from "../common/Loading"
+import NotFound from "./NotFound"
 
 const HomePage = lazy(() => import("../home/HomePage"))
 const UserPage = lazy(() => import("../user/UserPage"))
@@ -21,7 +22,7 @@ const Routes: React.FC = () => {
         <MapPlannerPage path="/plans" />
         <CalendarPage path="/calendar" />
         <FreeAgentsPage path="/freeagents" />
-        <HomePage default />
+        <NotFound default />
       </Router>
     </Suspense>
   )
