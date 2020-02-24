@@ -9,6 +9,7 @@ import MyThemeContext from "../../themeContext"
 import { IconButton } from "@chakra-ui/core"
 import { FaTwitter } from "react-icons/fa"
 import TweetEmbed from "react-tweet-embed"
+import useBreakPoints from "../../hooks/useBreakPoints"
 
 interface ResultsProps {
   results: TournamentResult[]
@@ -36,6 +37,7 @@ const Results: React.FC<ResultsProps> = ({ results, canAddResults }) => {
     [key: string]: boolean
   }>({})
   const { grayWithShade } = useContext(MyThemeContext)
+  const isSmall = useBreakPoints(350)
 
   console.log("results", results)
   return (
@@ -46,68 +48,97 @@ const Results: React.FC<ResultsProps> = ({ results, canAddResults }) => {
           Add tournament result
         </Button>
       )}
-      <Box mt="1em">
+      <Box
+        display="grid"
+        mt="1em"
+        gridTemplateColumns={isSmall ? "repeat(3, 1fr)" : "repeat(4, 1fr)"}
+        gridRowGap="1em"
+      >
         {results.map(result => {
           return (
             <React.Fragment key={result.tournament_name}>
-              <Box display="flex" alignItems="center" my="0.5em">
-                {result.placement < 4 ? (
-                  <Box maxW="50px" h="auto">
-                    <img
-                      src={medalEmoji[result.placement]}
-                      alt={`Placement emoji for ${result.placement}`}
-                    />
-                  </Box>
-                ) : (
-                  <Box fontSize="35px" w="50px">
-                    {result.placement}
-                    <Box as="span" fontSize="25px">
-                      {ordinal_suffix_of(result.placement)}
-                    </Box>
-                  </Box>
-                )}{" "}
+              {result.placement < 4 ? (
                 <Box
-                  fontWeight="semibold"
-                  letterSpacing="wide"
-                  fontSize="24px"
-                  minWidth="150px"
-                  px="0.5em"
-                  textAlign="center"
+                  maxW="50px"
+                  h="auto"
+                  display="flex"
+                  alignItems="center"
                   justifyContent="center"
                 >
-                  {result.tournament_name}
+                  <img
+                    src={medalEmoji[result.placement]}
+                    alt={`Placement emoji for ${result.placement}`}
+                  />
                 </Box>
-                <Box color={grayWithShade}>
+              ) : (
+                <Box
+                  fontSize="35px"
+                  w="50px"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  {result.placement}
+                  <Box as="span" fontSize="25px">
+                    {ordinal_suffix_of(result.placement)}
+                  </Box>
+                </Box>
+              )}{" "}
+              <Box
+                fontWeight="semibold"
+                letterSpacing="wide"
+                fontSize="24px"
+                minWidth="150px"
+                px="0.5em"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                textAlign="center"
+              >
+                {result.tournament_name}
+              </Box>
+              {!isSmall && (
+                <Box
+                  color={grayWithShade}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
                   {new Date(parseInt(result.date)).toLocaleDateString()}
-                </Box>{" "}
-                <Box>
-                  {result.tweet_id && (
-                    <IconButton
-                      variant="ghost"
-                      aria-label="Show tweet"
-                      fontSize="20px"
-                      icon={FaTwitter}
-                      onClick={() =>
-                        setExpandedTweets({
-                          ...expandedTweets,
-                          [result.tweet_id as string]: !expandedTweets[
-                            result.tweet_id as string
-                          ],
-                        })
-                      }
-                    />
-                  )}
                 </Box>
+              )}{" "}
+              <Box display="flex" alignItems="center" justifyContent="center">
+                {result.tweet_id && (
+                  <IconButton
+                    variant="ghost"
+                    aria-label="Show tweet"
+                    fontSize="20px"
+                    icon={FaTwitter}
+                    onClick={() =>
+                      setExpandedTweets({
+                        ...expandedTweets,
+                        [result.tweet_id as string]: !expandedTweets[
+                          result.tweet_id as string
+                        ],
+                      })
+                    }
+                  />
+                )}
               </Box>
               {result.tweet_id && expandedTweets[result.tweet_id] && (
-                <TweetEmbed
-                  id={result.tweet_id}
-                  options={{
-                    theme: "dark",
-                    dnt: "true",
-                    conversation: "none",
-                  }}
-                />
+                <>
+                  <Box />
+                  <TweetEmbed
+                    id={result.tweet_id}
+                    options={{
+                      theme: "dark",
+                      dnt: "true",
+                      conversation: "none",
+                    }}
+                  />
+                  {!isSmall && <Box />}
+                  <Box />
+                </>
               )}
             </React.Fragment>
           )
