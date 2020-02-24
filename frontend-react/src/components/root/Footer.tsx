@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react"
 import { Link, Image } from "@chakra-ui/core"
+import { Link as ReachLink } from "@reach/router"
 import { footerSquid, footerOcto } from "../../assets/imageImports"
 import MyThemeContext from "../../themeContext"
 import { FaTwitter, FaGithub, FaDiscord, FaTwitch } from "react-icons/fa"
@@ -75,27 +76,24 @@ const Footer: React.FC = () => {
             </Link>
           </Box>
         )}
-        <Link
-          mx="2em"
-          my="1em"
-          color={colorMode === "light" ? "#fffffe" : "#0d0d0d"}
-        >
-          About
-        </Link>
-        <Link
-          mx="2em"
-          my="1em"
-          color={colorMode === "light" ? "#fffffe" : "#0d0d0d"}
-        >
-          Thanks to
-        </Link>
-        <Link
-          mx="2em"
-          my="1em"
-          color={colorMode === "light" ? "#fffffe" : "#0d0d0d"}
-        >
-          External links
-        </Link>
+        <ReachLink to="/about">
+          <Box
+            mx="2em"
+            my="1em"
+            color={colorMode === "light" ? "#fffffe" : "#0d0d0d"}
+          >
+            About
+          </Box>
+        </ReachLink>
+        <ReachLink to="/links">
+          <Box
+            mx="2em"
+            my="1em"
+            color={colorMode === "light" ? "#fffffe" : "#0d0d0d"}
+          >
+            External links
+          </Box>
+        </ReachLink>
       </Box>
     </Box>
   )

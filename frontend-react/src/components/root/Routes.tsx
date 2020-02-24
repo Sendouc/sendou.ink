@@ -10,6 +10,8 @@ const CalendarPage = lazy(() => import("../calendar/CalendarPage"))
 const MapPlannerPage = lazy(() => import("../plans/MapPlannerPage"))
 const FreeAgentsPage = lazy(() => import("../freeagents/FreeAgentsPage"))
 const TeamPage = lazy(() => import("../team/TeamPage"))
+const About = lazy(() => import("./About"))
+const Links = lazy(() => import("./Links"))
 
 const Routes: React.FC = () => {
   return (
@@ -22,6 +24,8 @@ const Routes: React.FC = () => {
         <MapPlannerPage path="/plans" />
         <CalendarPage path="/calendar" />
         <FreeAgentsPage path="/freeagents" />
+        <About path="/about" />
+        <Links path="/links" />
         <NotFound default />
       </Router>
     </Suspense>
