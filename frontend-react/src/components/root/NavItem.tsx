@@ -1,12 +1,10 @@
 import React, { useContext } from "react"
 import { PseudoBox, ListIcon, ListItem } from "@chakra-ui/core"
-import { Link } from "@reach/router"
+import { Link, useLocation } from "@reach/router"
 import { IconType } from "react-icons/lib/cjs"
 import MyThemeContext from "../../themeContext"
 
-/*const hoverColor = { light: "gray.900", dark: "whiteAlpha.900" }
-const activeColor = { light: "orange.800", dark: "pink.100" }
-const activeBg = { light: "orange.50", dark: "#308c7a4d" }*/
+const hoverColor = { light: "gray.900", dark: "whiteAlpha.900" }
 
 interface NavItemProps {
   to: string
@@ -15,7 +13,13 @@ interface NavItemProps {
 }
 
 const NavItem: React.FC<NavItemProps> = ({ to, Icon, title }) => {
-  const { themeColorWithShade } = useContext(MyThemeContext)
+  const { themeColorWithShade, colorMode, themeColor } = useContext(
+    MyThemeContext
+  )
+
+  const location = useLocation()
+  console.log("location", location)
+  const isActive = ("/" + to).indexOf(location.pathname) !== -1
 
   return (
     <ListItem>
@@ -30,6 +34,17 @@ const NavItem: React.FC<NavItemProps> = ({ to, Icon, title }) => {
           fontWeight="medium"
           outline="none"
           _focus={{ shadow: "outline" }}
+          _hover={{
+            color: hoverColor[colorMode],
+            transform: "translateX(2px)",
+          }}
+          {...(isActive && {
+            bg:
+              colorMode === "light" ? `${themeColor}.100` : `${themeColor}.800`,
+            rounded: "sm",
+            //color: activeColor[colorMode],
+            _hover: {},
+          })}
         >
           <ListIcon icon={Icon} color={themeColorWithShade} size="1.5em" />{" "}
           {title}

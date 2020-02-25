@@ -10,7 +10,11 @@ import {
 import { ApolloProvider } from "@apollo/react-hooks"
 import { QueryParamProvider } from "use-query-params"
 import { HelmetProvider } from "react-helmet-async"
-import { globalHistory } from "@reach/router"
+import {
+  LocationProvider,
+  createMemorySource,
+  createHistory,
+} from "@reach/router"
 import ApolloClient from "apollo-boost"
 import * as serviceWorker from "./serviceWorker"
 import customIcons from "./assets/icons"
@@ -24,19 +28,23 @@ const client = new ApolloClient({
 
 const customTheme = { ...theme, icons: { ...theme.icons, ...customIcons } }
 
+let history = createHistory(window as any)
+
 ReactDOM.render(
-  <QueryParamProvider reachHistory={globalHistory}>
-    <HelmetProvider>
-      <ApolloProvider client={client}>
-        <ThemeProvider theme={customTheme}>
-          <ColorModeProvider>
-            <CSSReset />
-            <App />
-          </ColorModeProvider>
-        </ThemeProvider>
-      </ApolloProvider>
-    </HelmetProvider>
-  </QueryParamProvider>,
+  <LocationProvider history={history}>
+    <QueryParamProvider reachHistory={history}>
+      <HelmetProvider>
+        <ApolloProvider client={client}>
+          <ThemeProvider theme={customTheme}>
+            <ColorModeProvider>
+              <CSSReset />
+              <App />
+            </ColorModeProvider>
+          </ThemeProvider>
+        </ApolloProvider>
+      </HelmetProvider>
+    </QueryParamProvider>
+  </LocationProvider>,
   document.getElementById("root")
 )
 
