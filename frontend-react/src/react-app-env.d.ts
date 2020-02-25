@@ -6,3 +6,4 @@ declare module "*.png" {
 }
 
 declare module "@sendou/react-sketch"
+declare module "react-super-responsive-table"

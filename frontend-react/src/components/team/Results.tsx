@@ -10,25 +10,11 @@ import { IconButton } from "@chakra-ui/core"
 import { FaTwitter } from "react-icons/fa"
 import TweetEmbed from "react-tweet-embed"
 import useBreakPoints from "../../hooks/useBreakPoints"
+import { ordinal_suffix_of } from "../../utils/helperFunctions"
 
 interface ResultsProps {
   results: TournamentResult[]
   canAddResults: boolean
-}
-
-function ordinal_suffix_of(i: number) {
-  var j = i % 10,
-    k = i % 100
-  if (j === 1 && k !== 11) {
-    return "st"
-  }
-  if (j === 2 && k !== 12) {
-    return "nd"
-  }
-  if (j === 3 && k !== 13) {
-    return "rd"
-  }
-  return "th"
 }
 
 const Results: React.FC<ResultsProps> = ({ results, canAddResults }) => {
@@ -39,7 +25,6 @@ const Results: React.FC<ResultsProps> = ({ results, canAddResults }) => {
   const { grayWithShade } = useContext(MyThemeContext)
   const isSmall = useBreakPoints(350)
 
-  console.log("results", results)
   return (
     <>
       {showModal && <AddResultModal closeModal={() => setShowModal(false)} />}
