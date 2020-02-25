@@ -3,7 +3,7 @@
   border-color: red;
 }
 
-.pagination a {
+.pagination span {
   color: black;
   float: left;
   padding: 8px 16px;
@@ -11,11 +11,19 @@
   font-weight: bold;
 }
 
-.pagination a.active {
+.pagination span:not(.dots) {
+  cursor: pointer;
+}
+
+.pagination span.active {
   border-bottom: 3px solid;
 }
 
-.pagination a:hover:not(.active) {
+.pagination span:hover:not(.active):not(.dots) {
   background-color: rgba(165, 165, 165, 0.15);
   border-radius: 5px;
+}
+
+.dots {
+  user-select: none;
 }

@@ -5,7 +5,6 @@ import { useQueryParams, StringParam, NumberParam } from "use-query-params"
 import Loading from "../common/Loading"
 import Error from "../common/Error"
 import { SEARCH_FOR_PLACEMENTS } from "../../graphql/queries/searchForPlacements"
-//import Top500Forms from "./Top500Forms"
 import WpnImage from "../common/WeaponImage"
 import { months, modesShort } from "../../utils/lists"
 import { RouteComponentProps } from "@reach/router"
@@ -20,12 +19,9 @@ import MyThemeContext from "../../themeContext"
 import useBreakPoints from "../../hooks/useBreakPoints"
 import "./Top500BrowserPage.css"
 import Pagination from "../common/Pagination"
-
-/*<Icon
-                  name={key as any}
-                  color={themeColorWithShade}
-                  size="5em"
-                />*/
+import Top500Forms from "./Top500Forms"
+import PageHeader from "../common/PageHeader"
+import Button from "../elements/Button"
 
 interface Placement {
   id: string
@@ -90,126 +86,126 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
 
   const handleClear = () => {
     setForms({})
+    setQuery({}, "replace")
+  }
+
+  const handleFormChange = (value: Object) => {
+    setForms({ ...forms, ...value })
   }
 
   if (error) return <Error errorMessage={error.message} />
-  if (loading || !data) return <Loading />
+  if (loading && !data) return <Loading />
 
-  const placements = data.searchForPlacements.placements
-
-  console.log("placements[0]", placements)
+  const placements = data ? data.searchForPlacements.placements : []
 
   return (
     <>
       <Helmet>
-        <title>Top 500 Browser</title>
+        <title>Top 500 Browser | sendou.ink</title>
       </Helmet>
-      {/*<Box mt="1em">
-          <Top500Forms
-            forms={forms}
-            setForms={setForms}
-            onSubmit={() => setQuery(forms)}
-            onClear={handleClear}
-          />
-  </Box>*/}
-      <Pagination />
-      <Box textAlign="center">
-        <Table>
-          <Thead>
-            <Tr>
-              <Th>Name</Th>
-              <Th>Weapon</Th>
-              <Th>X Power</Th>
-              <Th>Placement</Th>
-              <Th>Mode</Th>
-              <Th>Month</Th>
-              <Th>Year</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {placements.map(placement => (
-              <Tr key={placement.id}>
-                <Td>
-                  <Flex alignItems="center">
-                    {placement.player?.twitter && (
-                      <UserAvatar
-                        name={placement.name}
-                        twitterName={placement.player.twitter}
-                        size="sm"
-                      />
-                    )}
-                    <Box
-                      as="span"
-                      ml={placement.player?.twitter ? "0.5em" : undefined}
-                    >
-                      {placement.name}
-                    </Box>
-                  </Flex>
-                </Td>
-                <Td>
-                  <Flex alignItems="center">
-                    <Box
-                      ml={isSmall ? undefined : "auto"}
-                      mr={isSmall ? undefined : "auto"}
-                    >
-                      <WpnImage
-                        englishName={placement.weapon as Weapon}
-                        size="SMALL"
-                      />
-                    </Box>
-                  </Flex>
-                </Td>
-                <Td>{placement.x_power}</Td>
-                <Td>
-                  {placement.rank}
-                  {ordinal_suffix_of(placement.rank)}
-                </Td>
-                <Td>
-                  <Icon
-                    name={modesShort[placement.mode] as any}
-                    color={themeColorWithShade}
-                    size="2em"
-                  />
-                </Td>
-                <Td>{months[placement.month]}</Td>
-                <Td>{placement.year}</Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
+      <PageHeader title="X Rank Browser" />
+      <Box>
+        <Top500Forms forms={forms} handleChange={handleFormChange} />
+        <Flex mt="1em">
+          <Button onClick={() => setQuery(forms)}>Apply</Button>
+          <Box mx="1em">
+            <Button outlined onClick={handleClear}>
+              Clear filters
+            </Button>
+          </Box>
+        </Flex>
       </Box>
-
-      <Pagination />
-
-      {/*<div style={{ margin: "1em 0 1em 0" }}>
+      <Box mt="2em">
         <Pagination
-          activePage={forms.page}
-          onPageChange={(e, { activePage }) => {
-            setForms({ ...forms, page: activePage })
-            setQuery({ ...query, page: activePage })
+          currentPage={forms.page ?? 1}
+          pageCount={data?.searchForPlacements.pageCount ?? 999}
+          onChange={page => {
+            setForms({ ...forms, page })
+            setQuery({ ...query, page })
           }}
-          totalPages={data.searchForPlacements.pageCount}
-          firstItem={null}
-          lastItem={null}
-          prevItem={{ content: <Icon name="angle left" />, icon: true }}
-          nextItem={{ content: <Icon name="angle right" />, icon: true }}
         />
-        </div>*/}
-      {/*<div style={{ margin: "1em 0 1em 0" }}>
-        <Pagination
-          activePage={forms.page}
-          onPageChange={(e, { activePage }) => {
-            setForms({ ...forms, page: activePage })
-            setQuery({ ...query, page: activePage })
-            window.scrollTo(0, 0)
-          }}
-          totalPages={data.searchForPlacements.pageCount}
-          firstItem={null}
-          lastItem={null}
-          prevItem={{ content: <Icon name="angle left" />, icon: true }}
-          nextItem={{ content: <Icon name="angle right" />, icon: true }}
-        />
-        </div>*/}
+      </Box>
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          <Box textAlign="center">
+            <Table>
+              <Thead>
+                <Tr>
+                  <Th>Name</Th>
+                  <Th>Weapon</Th>
+                  <Th>X Power</Th>
+                  <Th>Placement</Th>
+                  <Th>Mode</Th>
+                  <Th>Month</Th>
+                  <Th>Year</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {placements.map(placement => (
+                  <Tr key={placement.id}>
+                    <Td>
+                      <Flex alignItems="center">
+                        {placement.player?.twitter && (
+                          <UserAvatar
+                            name={placement.name}
+                            twitterName={placement.player.twitter}
+                            size="xs"
+                          />
+                        )}
+                        <Box
+                          as="span"
+                          ml={placement.player?.twitter ? "0.5em" : undefined}
+                        >
+                          {placement.name}
+                        </Box>
+                      </Flex>
+                    </Td>
+                    <Td>
+                      <Flex alignItems="center">
+                        <Box
+                          ml={isSmall ? undefined : "auto"}
+                          mr={isSmall ? undefined : "auto"}
+                        >
+                          <WpnImage
+                            englishName={placement.weapon as Weapon}
+                            size="SMALL"
+                          />
+                        </Box>
+                      </Flex>
+                    </Td>
+                    <Td>{placement.x_power}</Td>
+                    <Td>
+                      {placement.rank}
+                      {ordinal_suffix_of(placement.rank)}
+                    </Td>
+                    <Td>
+                      <Icon
+                        name={modesShort[placement.mode] as any}
+                        color={themeColorWithShade}
+                        size="2em"
+                      />
+                    </Td>
+                    <Td>{months[placement.month]}</Td>
+                    <Td>{placement.year}</Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </Box>
+          <Box mt="1em">
+            <Pagination
+              currentPage={forms.page ?? 1}
+              pageCount={data?.searchForPlacements.pageCount ?? 999}
+              onChange={page => {
+                setForms({ ...forms, page })
+                setQuery({ ...query, page })
+              }}
+            />
+          </Box>
+        </>
+      )}
     </>
   )
 }

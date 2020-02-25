@@ -8,7 +8,9 @@ import {
   theme,
 } from "@chakra-ui/core"
 import { ApolloProvider } from "@apollo/react-hooks"
+import { QueryParamProvider } from "use-query-params"
 import { HelmetProvider } from "react-helmet-async"
+import { globalHistory } from "@reach/router"
 import ApolloClient from "apollo-boost"
 import * as serviceWorker from "./serviceWorker"
 import customIcons from "./assets/icons"
@@ -23,16 +25,18 @@ const client = new ApolloClient({
 const customTheme = { ...theme, icons: { ...theme.icons, ...customIcons } }
 
 ReactDOM.render(
-  <HelmetProvider>
-    <ApolloProvider client={client}>
-      <ThemeProvider theme={customTheme}>
-        <ColorModeProvider>
-          <CSSReset />
-          <App />
-        </ColorModeProvider>
-      </ThemeProvider>
-    </ApolloProvider>
-  </HelmetProvider>,
+  <QueryParamProvider reachHistory={globalHistory}>
+    <HelmetProvider>
+      <ApolloProvider client={client}>
+        <ThemeProvider theme={customTheme}>
+          <ColorModeProvider>
+            <CSSReset />
+            <App />
+          </ColorModeProvider>
+        </ThemeProvider>
+      </ApolloProvider>
+    </HelmetProvider>
+  </QueryParamProvider>,
   document.getElementById("root")
 )
 

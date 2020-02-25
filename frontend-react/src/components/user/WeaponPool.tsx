@@ -11,7 +11,7 @@ interface WeaponPoolProps {
 const WeaponPool: React.FC<WeaponPoolProps> = ({ weapons }) => {
   return (
     <FieldsetWithLegend title="WEAPON POOL" titleFontSize="xs">
-      <Flex>
+      <Flex justifyContent="center">
         {weapons.map(wpn => (
           <Box mx="0.3em" key={wpn}>
             <WeaponImage englishName={wpn} size="SMALL" />
