@@ -4,8 +4,6 @@ import { Link, useLocation } from "@reach/router"
 import { IconType } from "react-icons/lib/cjs"
 import MyThemeContext from "../../themeContext"
 
-const hoverColor = { light: "gray.900", dark: "whiteAlpha.900" }
-
 interface NavItemProps {
   to: string
   Icon: IconType
@@ -18,8 +16,8 @@ const NavItem: React.FC<NavItemProps> = ({ to, Icon, title }) => {
   )
 
   const location = useLocation()
-  console.log("location", location)
-  const isActive = ("/" + to).indexOf(location.pathname) !== -1
+  const isActive =
+    ("/" + to).indexOf(location.pathname) !== -1 && location.pathname !== "/"
 
   return (
     <ListItem>
@@ -35,14 +33,12 @@ const NavItem: React.FC<NavItemProps> = ({ to, Icon, title }) => {
           outline="none"
           _focus={{ shadow: "outline" }}
           _hover={{
-            color: hoverColor[colorMode],
             transform: "translateX(2px)",
           }}
           {...(isActive && {
             bg:
               colorMode === "light" ? `${themeColor}.100` : `${themeColor}.800`,
             rounded: "sm",
-            //color: activeColor[colorMode],
             _hover: {},
           })}
         >

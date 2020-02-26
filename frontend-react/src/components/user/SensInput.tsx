@@ -22,7 +22,7 @@ const MotionInput: React.FC<MotionInputProps> = ({
   value,
   onChange,
 }) => {
-  const { themeColorHex } = useContext(MyThemeContext)
+  const { themeColorHex, darkerBgColor } = useContext(MyThemeContext)
   return (
     <Box>
       <Label>{label}</Label>
@@ -63,7 +63,11 @@ const MotionInput: React.FC<MotionInputProps> = ({
         max={5}
         step={0.5}
       >
-        <NumberInputField type="number" focusBorderColor={themeColorHex} />
+        <NumberInputField
+          type="number"
+          focusBorderColor={themeColorHex}
+          background={darkerBgColor}
+        />
         <NumberInputStepper>
           <NumberIncrementStepper />
           <NumberDecrementStepper />

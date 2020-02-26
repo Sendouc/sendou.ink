@@ -27,7 +27,9 @@ const Input: React.FC<InputProps> = ({
   limit,
   textLeft,
 }) => {
-  const { themeColorHex, grayWithShade } = useContext(MyThemeContext)
+  const { themeColorHex, grayWithShade, darkerBgColor } = useContext(
+    MyThemeContext
+  )
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setValue(event.target.value)
@@ -42,6 +44,8 @@ const Input: React.FC<InputProps> = ({
           isDisabled={disabled}
           onChange={handleChange}
           focusBorderColor={themeColorHex}
+          background={darkerBgColor}
+          borderColor="#CCCCCC"
         />
       </InputGroup>
       {limit && (

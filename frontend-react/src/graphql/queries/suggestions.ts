@@ -1,6 +1,6 @@
-import { gql } from "apollo-boost"
+import { gql, DocumentNode } from "apollo-boost"
 
-export const suggestions = gql`
+export const SUGGESTIONS: DocumentNode = gql`
   {
     suggestions {
       discord_user {

@@ -4,7 +4,7 @@ import { Avatar, BoxProps } from "@chakra-ui/core"
 interface UserAvatarProps {
   name: string
   twitterName?: string
-  size?: undefined | "2xl" | "xs"
+  size?: undefined | "2xl" | "xs" | "sm"
 }
 
 const UserAvatar: React.FC<UserAvatarProps & BoxProps> = ({

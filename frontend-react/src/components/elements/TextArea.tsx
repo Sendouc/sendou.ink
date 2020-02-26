@@ -19,7 +19,9 @@ const TextArea: React.FC<TextAreaProps> = ({
   limit,
   required,
 }) => {
-  const { themeColorHex, grayWithShade } = useContext(MyThemeContext)
+  const { themeColorHex, grayWithShade, darkerBgColor } = useContext(
+    MyThemeContext
+  )
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setValue(event.target.value)
@@ -32,6 +34,8 @@ const TextArea: React.FC<TextAreaProps> = ({
         onChange={handleChange}
         focusBorderColor={themeColorHex}
         size="md"
+        background={darkerBgColor}
+        borderColor="#CCCCCC"
       />
       {limit && (
         <Box

@@ -1,6 +1,6 @@
-import { gql } from "apollo-boost"
+import { gql, DocumentNode } from "apollo-boost"
 
-export const vouches = gql`
+export const VOUCHES: DocumentNode = gql`
   {
     vouches {
       username

@@ -49,8 +49,6 @@ const typeDef = gql`
   }
 
   type PlusGeneralInfo {
-    plus_one_invite_link: String
-    plus_two_invite_link: String!
     voting_ends: String
     voter_count: Int!
     eligible_voters: Int!
@@ -183,10 +181,7 @@ const resolvers = {
     },
     plusInfo: async (root, args, ctx) => {
       if (!ctx.user) return null
-      if (
-        !ctx.user.plus ||
-        (!ctx.user.plus.membership_status && !ctx.user.plus.vouch_status)
-      ) {
+      if (!ctx.user.plus || !ctx.user.plus.membership_status) {
         return null
       }
 
@@ -218,9 +213,6 @@ const resolvers = {
       })
 
       return {
-        plus_one_invite_link:
-          plus_server === "ONE" ? process.env.PLUS_ONE_LINK : null,
-        plus_two_invite_link: process.env.PLUS_TWO_LINK,
         voting_ends: state.voting_ends,
         voter_count: votedIds.size,
         eligible_voters,

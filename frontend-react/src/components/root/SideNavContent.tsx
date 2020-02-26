@@ -18,13 +18,10 @@ import UserAvatar from "../common/UserAvatar"
 import DividingBox from "../common/DividingBox"
 import { UserData } from "../../types"
 import ColorPicker from "./ColorPicker"
+import Error from "../common/Error"
 
-const UserItem: React.FC | null = () => {
-  const { data, error, loading } = useQuery<UserData>(USER)
-
-  if (loading) return null
-
-  if (!data || !data.user || error) {
+const UserItem: React.FC<{ data?: UserData }> = ({ data }) => {
+  if (!data || !data.user) {
     // prolly need to do href here
     return (
       <List>
@@ -59,7 +56,11 @@ interface SideNavProps {
 
 export const SideNavContent: React.FC<SideNavProps> = ({ showLogo = true }) => {
   const { colorMode, toggleColorMode } = useColorMode()
+  const { data, error, loading } = useQuery<UserData>(USER)
 
+  if (error) return <Error errorMessage={error.message} />
+
+  console.log("data", data)
   return (
     <Flex
       direction="column"
@@ -83,7 +84,9 @@ export const SideNavContent: React.FC<SideNavProps> = ({ showLogo = true }) => {
             <NavItem to="builds" Icon={FaTshirt} title="Builds" />
             <NavItem to="freeagents" Icon={FaUserSecret} title="Free Agents" />
             <NavItem to="xsearch" Icon={FaTrophy} title="Top 500 Browser" />
-            <NavItem to="plus" Icon={FaPlus} title="+1" />
+            {data?.user?.plus?.membership_status && (
+              <NavItem to="plus" Icon={FaPlus} title="Plus Server" />
+            )}
           </List>
         </Flex>
       </Flex>
@@ -108,7 +111,7 @@ export const SideNavContent: React.FC<SideNavProps> = ({ showLogo = true }) => {
             <ColorPicker />
           </Flex>
         </DividingBox>
-        <UserItem />
+        {!loading && !error && <UserItem data={data} />}
       </Flex>
     </Flex>
   )

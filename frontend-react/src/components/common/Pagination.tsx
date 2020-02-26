@@ -1,7 +1,6 @@
 import React, { useContext } from "react"
 import "./Pagination.css"
 import { Box } from "@chakra-ui/core"
-import { Link } from "@reach/router"
 import MyThemeContext from "../../themeContext"
 
 interface PaginationProps {

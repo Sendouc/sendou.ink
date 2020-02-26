@@ -10,11 +10,7 @@ import {
 import { ApolloProvider } from "@apollo/react-hooks"
 import { QueryParamProvider } from "use-query-params"
 import { HelmetProvider } from "react-helmet-async"
-import {
-  LocationProvider,
-  createMemorySource,
-  createHistory,
-} from "@reach/router"
+import { LocationProvider, createHistory } from "@reach/router"
 import ApolloClient from "apollo-boost"
 import * as serviceWorker from "./serviceWorker"
 import customIcons from "./assets/icons"
