@@ -44,6 +44,7 @@ const WeaponSelector: React.FC<WeaponSelectorProps> = ({
         value={initialValue}
         setValue={setValue}
         clearable={clearable}
+        isSearchable
         isMulti={!!isMulti}
         components={{
           IndicatorSeparator: () => null,

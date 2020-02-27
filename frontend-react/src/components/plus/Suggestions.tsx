@@ -19,7 +19,6 @@ import {
   PopoverContent,
   PopoverBody,
   PopoverArrow,
-  PopoverCloseButton,
 } from "@chakra-ui/core"
 import { Link } from "@reach/router"
 import MyThemeContext from "../../themeContext"
@@ -209,7 +208,7 @@ const Suggestions: React.FC<SuggestionsProps> = ({
             size="sm"
           />
         </Flex>
-        <Box>
+        <Flex flexDirection="column" justifyContent="center">
           <Box as="span" fontWeight="bold">
             <Link to={`/u/${suggested_user.discord_id}`}>
               {suggested_user.username}#{suggested_user.discriminator}
@@ -240,7 +239,7 @@ const Suggestions: React.FC<SuggestionsProps> = ({
               </PopoverContent>
             </Popover>
           </Flex>
-        </Box>
+        </Flex>
       </React.Fragment>
     )
   }
@@ -321,7 +320,6 @@ const Suggestions: React.FC<SuggestionsProps> = ({
           </Flex>
         </>
       )}
-      {/*<SuggestionList suggestionsArray={data.suggestions} />*/}
     </>
   )
 }

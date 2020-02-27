@@ -34,6 +34,7 @@ const TextArea: React.FC<TextAreaProps> = ({
         onChange={handleChange}
         focusBorderColor={themeColorHex}
         size="md"
+        _hover={{}}
         background={darkerBgColor}
         borderColor="#CCCCCC"
       />

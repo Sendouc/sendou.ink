@@ -60,7 +60,6 @@ export const SideNavContent: React.FC<SideNavProps> = ({ showLogo = true }) => {
 
   if (error) return <Error errorMessage={error.message} />
 
-  console.log("data", data)
   return (
     <Flex
       direction="column"

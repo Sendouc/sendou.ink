@@ -44,6 +44,7 @@ const Input: React.FC<InputProps> = ({
           isDisabled={disabled}
           onChange={handleChange}
           focusBorderColor={themeColorHex}
+          _hover={{}}
           background={darkerBgColor}
           borderColor="#CCCCCC"
         />

@@ -36,6 +36,7 @@ interface SelectProps {
   >
   clearable?: boolean
   isMulti?: boolean
+  isSearchable?: boolean
 }
 
 const Select: React.FC<SelectProps> = ({
@@ -48,6 +49,7 @@ const Select: React.FC<SelectProps> = ({
   label,
   required,
   isMulti,
+  isSearchable,
   width = "290px",
 }) => {
   const {
@@ -84,7 +86,7 @@ const Select: React.FC<SelectProps> = ({
         value={getValue()}
         onChange={handleChange}
         placeholder={null}
-        isSearchable
+        isSearchable={!!isSearchable}
         isMulti={!!isMulti}
         isClearable={isMulti ? false : clearable}
         options={options}
