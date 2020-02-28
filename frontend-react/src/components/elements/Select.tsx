@@ -4,8 +4,6 @@ import MyThemeContext from "../../themeContext"
 import { SelectComponents } from "react-select/src/components"
 import Box from "./Box"
 import Label from "./Label"
-import { Flex } from "@chakra-ui/core"
-import Button from "./Button"
 
 interface SelectProps {
   options?:

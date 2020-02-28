@@ -42,8 +42,6 @@ const UserSelector: React.FC<UserSelectorProps> = ({ setValue }) => {
       />
     </>
   )
-
-  return null
 }
 
 export default UserSelector
