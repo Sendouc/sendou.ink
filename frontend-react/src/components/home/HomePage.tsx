@@ -6,6 +6,7 @@ import { useContext } from "react"
 import MyThemeContext from "../../themeContext"
 import "./HomePage.css"
 import { Helmet } from "react-helmet-async"
+import Stats from "./Stats"
 
 const HomePage: React.FC<RouteComponentProps> = () => {
   const { colorMode, grayWithShade } = useContext(MyThemeContext)
@@ -36,6 +37,7 @@ const HomePage: React.FC<RouteComponentProps> = () => {
         >
           Competitive Splatoon Hub
         </Heading>
+        <Stats />
       </Flex>
     </>
   )
