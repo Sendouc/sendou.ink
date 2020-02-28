@@ -1,7 +1,5 @@
-import React, { useContext } from "react"
+import React, { useContext, useState } from "react"
 import { useQuery } from "@apollo/react-hooks"
-
-//import SuggestionForm from "./SuggestionForm"
 import { SUGGESTIONS } from "../../graphql/queries/suggestions"
 import Loading from "../common/Loading"
 import Error from "../common/Error"
@@ -23,57 +21,8 @@ import {
 import { Link } from "@reach/router"
 import MyThemeContext from "../../themeContext"
 import { IoIosChatbubbles } from "react-icons/io"
-
-/*const SuggestionList = ({ suggestionsArray }) => {
-  if (suggestionsArray.length === 0) return null
-
-  const suggestionLists = suggestionsArray.map(suggestion => (
-    <React.Fragment key={suggestion.suggester_discord_user.discord_id}>
-      <List.Item>
-        <List.Content>
-          {suggestion.discord_user.twitter_name && (
-            <Image
-              avatar
-              size="mini"
-              src={`https://avatars.io/twitter/${suggestion.discord_user.twitter_name}`}
-            />
-          )}
-          <List.Header as="a" href={`/u/${suggestion.discord_user.discord_id}`}>
-            {suggestion.discord_user.username}#
-            {suggestion.discord_user.discriminator}
-          </List.Header>
-          <List.Description>
-            <div style={{ marginTop: "0.5em" }}>
-              <b>
-                {suggestion.plus_region} | Suggested to join{" "}
-                {suggestion.plus_server === "ONE" ? "+1 " : "+2 "} by{" "}
-                <a href={`/u/${suggestion.suggester_discord_user.discord_id}`}>
-                  {suggestion.suggester_discord_user.username}#
-                  {suggestion.suggester_discord_user.discriminator}
-                </a>
-              </b>
-            </div>
-          </List.Description>
-          <List.Description style={{ whiteSpace: "pre-wrap" }}>
-            {suggestion.description}
-          </List.Description>
-        </List.Content>
-      </List.Item>
-      <Divider />
-    </React.Fragment>
-  ))
-
-  return (
-    <>
-      {suggestionLists.length > 0 && (
-        <>
-          <h2>Suggested</h2>
-          {suggestionLists}
-        </>
-      )}
-    </>
-  )
-}*/
+import Button from "../elements/Button"
+import SuggestionVouchModal from "./SuggestionVouchModal"
 
 interface SuggestionsProps {
   user: UserLean
@@ -120,14 +69,11 @@ interface VouchesData {
   vouches: VouchUser[]
 }
 
-const Suggestions: React.FC<SuggestionsProps> = ({
-  user,
-  //showSuggestionForm,
-  //setShowSuggestionForm,
-}) => {
+const Suggestions: React.FC<SuggestionsProps> = ({ user }) => {
   const { grayWithShade, themeColor, darkerBgColor } = useContext(
     MyThemeContext
   )
+  const [showSuggestionForm, setShowSuggestionForm] = useState(false)
   const { data, error, loading } = useQuery<SuggestionsData>(SUGGESTIONS)
   const {
     data: vouchesData,
@@ -244,6 +190,10 @@ const Suggestions: React.FC<SuggestionsProps> = ({
     )
   }
 
+  const buttonText = getButtonText()
+
+  console.log("data", data)
+
   return (
     <>
       {/*!showSuggestionForm && (canSuggest || canVouch) && (
@@ -264,34 +214,52 @@ const Suggestions: React.FC<SuggestionsProps> = ({
           canVouchFor={user.plus.can_vouch}
         />
       )*/}
-      {vouchesData.vouches.length > 0 && (
-        <>
-          <Flex flexWrap="wrap">
-            <Box mr="2em" mb="1em">
-              {plusOneVouches.length > 0 && (
+      {showSuggestionForm && (
+        <SuggestionVouchModal
+          closeModal={() => setShowSuggestionForm(false)}
+          canSuggest={canSuggest}
+          canVouch={canVouch}
+          plusServer={user.plus.membership_status!}
+        />
+      )}
+
+      <Box mt="1em">
+        {buttonText && (
+          <Button onClick={() => setShowSuggestionForm(true)}>
+            {buttonText}
+          </Button>
+        )}
+        {vouchesData.vouches.length > 0 && (
+          <Flex flexWrap="wrap" mt="1em">
+            {plusOneVouches.length > 0 && (
+              <Box mr="2em" mb="1em">
                 <Heading size="md">Vouched players to +1</Heading>
-              )}
-              <Grid
-                gridRowGap="0.5em"
-                gridTemplateColumns="min-content 1fr"
-                mt="1em"
-              >
-                {plusOneVouches.map(vouchMap)}
-              </Grid>
-            </Box>
-            <Box>
-              {plusOneVouches.length > 0 && (
+
+                <Grid
+                  gridRowGap="0.5em"
+                  gridTemplateColumns="min-content 1fr"
+                  mt="1em"
+                >
+                  {plusOneVouches.map(vouchMap)}
+                </Grid>
+              </Box>
+            )}
+            {plusTwoVouches.length > 0 && (
+              <Box>
                 <Heading size="md">Vouched players to +2</Heading>
-              )}
-              <Grid
-                gridRowGap="0.5em"
-                gridTemplateColumns="min-content 1fr"
-                mt="1em"
-              >
-                {plusTwoVouches.map(vouchMap)}
-              </Grid>
-            </Box>
+
+                <Grid
+                  gridRowGap="0.5em"
+                  gridTemplateColumns="min-content 1fr"
+                  mt="1em"
+                >
+                  {plusTwoVouches.map(vouchMap)}
+                </Grid>
+              </Box>
+            )}
           </Flex>
+        )}
+        {data.suggestions.length > 0 && (
           <Flex flexWrap="wrap" mt="2em">
             <Box mr="2em" mb="1em">
               {plusOneSuggested.length > 0 && (
@@ -318,8 +286,8 @@ const Suggestions: React.FC<SuggestionsProps> = ({
               </Grid>
             </Box>
           </Flex>
-        </>
-      )}
+        )}
+      </Box>
     </>
   )
 }

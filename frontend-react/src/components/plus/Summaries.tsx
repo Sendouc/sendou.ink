@@ -1,9 +1,21 @@
 import React, { useContext } from "react"
 import UserAvatar from "../common/UserAvatar"
 import { Summary } from "./VotingHistoryPage"
-import { Heading, Box, Grid, Flex } from "@chakra-ui/core"
+import {
+  Heading,
+  Box,
+  Grid,
+  Flex,
+  Popover,
+  PopoverTrigger,
+  IconButton,
+  PopoverContent,
+  PopoverArrow,
+  PopoverBody,
+} from "@chakra-ui/core"
 import { Link } from "@reach/router"
 import MyThemeContext from "../../themeContext"
+import { FaBolt } from "react-icons/fa"
 
 const getColor = (score: number) =>
   score < 50 ? { color: "red" } : { color: "green" }
@@ -50,7 +62,9 @@ interface SummariesProps {
 }
 
 const Summaries: React.FC<SummariesProps> = ({ summaries }) => {
-  const { grayWithShade } = useContext(MyThemeContext)
+  const { grayWithShade, themeColor, darkerBgColor } = useContext(
+    MyThemeContext
+  )
   const members: Summary[] = []
   const suggested: Summary[] = []
 
@@ -88,12 +102,30 @@ const Summaries: React.FC<SummariesProps> = ({ summaries }) => {
                 <Count count={score.na_count} />)
               </>
             )}
-            {/*summary.vouched && (
-              <Popup
-                content="User was vouched to the server last month"
-                trigger={<Icon name="bolt" color="teal" size="large" />}
-              />
-          )*/}
+            {summary.vouched && (
+              <Popover placement="top">
+                <PopoverTrigger>
+                  <IconButton
+                    variant="ghost"
+                    isRound
+                    variantColor={themeColor}
+                    aria-label="Show description"
+                    fontSize="20px"
+                    icon={FaBolt}
+                  />
+                </PopoverTrigger>
+                <PopoverContent
+                  zIndex={4}
+                  width="220px"
+                  backgroundColor={darkerBgColor}
+                >
+                  <PopoverArrow />
+                  <PopoverBody textAlign="center">
+                    User was voted to the server this month
+                  </PopoverBody>
+                </PopoverContent>
+              </Popover>
+            )}
           </Box>
         </Box>
       </React.Fragment>

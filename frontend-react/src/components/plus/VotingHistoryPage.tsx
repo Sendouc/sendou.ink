@@ -6,11 +6,15 @@ import { USER } from "../../graphql/queries/user"
 import Error from "../common/Error"
 import { months } from "../../utils/lists"
 //import SummaryLists from "./SummaryLists"
-import { Redirect, RouteComponentProps } from "@reach/router"
+import { Redirect, RouteComponentProps, Link } from "@reach/router"
 import { UserLean, UserData } from "../../types"
 import { Flex, Box } from "@chakra-ui/core"
 import Select from "../elements/Select"
 import Summaries from "./Summaries"
+import PageHeader from "../common/PageHeader"
+import Button from "../elements/Button"
+import { FaHistory } from "react-icons/fa"
+import { Helmet } from "react-helmet-async"
 
 export interface Summary {
   discord_user: {
@@ -109,6 +113,10 @@ const VotingHistoryPage: React.FC<RouteComponentProps> = () => {
   const year = parseInt(parts[1])
   return (
     <>
+      <Helmet>
+        <title>Plus Server Voting History | sendou.ink</title>
+      </Helmet>
+      <PageHeader title="Voting History" />
       <Flex flexWrap="wrap" justifyContent="center">
         {userData.user.plus.membership_status === "ONE" && (
           <Box m="0.5em">

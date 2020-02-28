@@ -24,13 +24,11 @@ const UserItem: React.FC<{ data?: UserData }> = ({ data }) => {
   if (!data || !data.user) {
     // prolly need to do href here
     return (
-      <List>
-        <NavItem
-          to="auth/discord"
-          Icon={FaSignInAlt}
-          title="Log in via Discord"
-        />
-      </List>
+      <NavItem
+        to="auth/discord"
+        Icon={FaSignInAlt}
+        title="Log in via Discord"
+      />
     )
   }
 
@@ -77,7 +75,7 @@ export const SideNavContent: React.FC<SideNavProps> = ({ showLogo = true }) => {
           </Flex>
         )}
         <Flex>
-          <List spacing={4} mt="2em">
+          <List mt="2em">
             <NavItem to="plans" Icon={FaMap} title="Map Planner" />
             <NavItem to="calendar" Icon={FaCalendarAlt} title="Calendar" />
             <NavItem to="builds" Icon={FaTshirt} title="Builds" />

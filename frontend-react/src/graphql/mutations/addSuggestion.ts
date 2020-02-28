@@ -1,6 +1,6 @@
-import { gql } from "apollo-boost"
+import { gql, DocumentNode } from "apollo-boost"
 
-export const addSuggestion = gql`
+export const ADD_SUGGESTION: DocumentNode = gql`
   mutation addSuggestion(
     $discord_id: String!
     $region: String!

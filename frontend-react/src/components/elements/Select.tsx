@@ -1,12 +1,14 @@
-import React, { useContext } from "react"
+import React, { useContext, useState } from "react"
 import ReactSelect, { OptionsType, GroupedOptionsType } from "react-select"
 import MyThemeContext from "../../themeContext"
 import { SelectComponents } from "react-select/src/components"
 import Box from "./Box"
 import Label from "./Label"
+import { Flex } from "@chakra-ui/core"
+import Button from "./Button"
 
 interface SelectProps {
-  options:
+  options?:
     | OptionsType<{
         label: string
         value: string
@@ -16,7 +18,7 @@ interface SelectProps {
         value: string
       }>
   width?: string
-  label: string
+  label?: string
   required?: boolean
   value?:
     | {
@@ -26,7 +28,7 @@ interface SelectProps {
     | string
     | string[]
     | null
-  setValue: (value: any) => void
+  setValue?: (value: any) => void
   autoFocus?: boolean
   components?: Partial<
     SelectComponents<{
@@ -36,7 +38,10 @@ interface SelectProps {
   >
   clearable?: boolean
   isMulti?: boolean
+  isLoading?: boolean
+  isDisabled?: boolean
   isSearchable?: boolean
+  hideMenuBeforeTyping?: boolean
 }
 
 const Select: React.FC<SelectProps> = ({
@@ -49,7 +54,10 @@ const Select: React.FC<SelectProps> = ({
   label,
   required,
   isMulti,
+  isLoading,
+  isDisabled,
   isSearchable,
+  hideMenuBeforeTyping,
   width = "290px",
 }) => {
   const {
@@ -58,8 +66,10 @@ const Select: React.FC<SelectProps> = ({
     themeColorHex,
     themeColorHexLighter,
   } = useContext(MyThemeContext)
+  const [inputValue, setInputValue] = useState("")
 
   const handleChange = (selectedOption: any) => {
+    if (!setValue || !selectedOption) return
     if (Array.isArray(selectedOption)) {
       setValue(selectedOption.map(obj => obj.value))
     } else {
@@ -84,16 +94,31 @@ const Select: React.FC<SelectProps> = ({
         className="basic-single"
         classNamePrefix="select"
         value={getValue()}
+        inputValue={inputValue}
+        onInputChange={newValue => setInputValue(newValue)}
+        menuIsOpen={
+          hideMenuBeforeTyping ? !!(inputValue.length >= 3) : undefined
+        }
         onChange={handleChange}
         placeholder={null}
         isSearchable={!!isSearchable}
         isMulti={!!isMulti}
+        isLoading={isLoading}
+        isDisabled={isDisabled}
         isClearable={isMulti ? false : clearable}
         options={options}
-        components={{
-          IndicatorSeparator: () => null,
-          ...components,
-        }}
+        components={
+          hideMenuBeforeTyping
+            ? {
+                IndicatorSeparator: () => null,
+                DropdownIndicator: () => null,
+                ...components,
+              }
+            : {
+                IndicatorSeparator: () => null,
+                ...components,
+              }
+        }
         theme={theme => ({
           ...theme,
           borderRadius: 5,
@@ -102,6 +127,7 @@ const Select: React.FC<SelectProps> = ({
             primary25: `${themeColorHexLighter}`,
             primary: `${themeColorHex}`,
             neutral0: darkerBgColor,
+            neutral5: darkerBgColor,
           },
         })}
         autoFocus={autoFocus}

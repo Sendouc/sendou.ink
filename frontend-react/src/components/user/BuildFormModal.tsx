@@ -79,7 +79,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
         title: "An error occurred",
         description: error.message,
         position: "top-right",
-        status: "success",
+        status: "error",
         duration: 10000,
       })
     },
@@ -104,7 +104,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
           title: "An error occurred",
           description: error.message,
           position: "top-right",
-          status: "success",
+          status: "error",
           duration: 10000,
         })
       },

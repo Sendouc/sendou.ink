@@ -6,12 +6,11 @@ import { IconType } from "react-icons/lib/cjs"
 
 interface ButtonProps {
   children: string | string[]
-  onClick: () => void
+  onClick?: () => void
   size?: "xs" | "sm" | "lg" | "md"
   icon?: IconType
   outlined?: boolean
   disabled?: boolean
-  negative?: boolean
 }
 
 const Button: React.FC<ButtonProps> = ({

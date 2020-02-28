@@ -7,9 +7,10 @@ import MyThemeContext from "../../themeContext"
 interface TextAreaProps {
   value?: string
   setValue: (value: string) => void
-  label: string
+  label?: string
   limit?: number
   required?: boolean
+  id?: string
 }
 
 const TextArea: React.FC<TextAreaProps> = ({

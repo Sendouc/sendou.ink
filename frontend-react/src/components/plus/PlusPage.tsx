@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 import { useQuery } from "@apollo/react-hooks"
 
 import Suggestions from "./Suggestions"
@@ -7,8 +7,11 @@ import Error from "../common/Error"
 import { PLUS_INFO } from "../../graphql/queries/plusInfo"
 import { USER } from "../../graphql/queries/user"
 //import Voting from "./Voting"
-import { Redirect, RouteComponentProps } from "@reach/router"
+import { Redirect, RouteComponentProps, Link } from "@reach/router"
 import PageHeader from "../common/PageHeader"
+import { FaHistory } from "react-icons/fa"
+import Button from "../elements/Button"
+import { Helmet } from "react-helmet-async"
 
 interface PlusInfoData {
   plusInfo: {
@@ -19,8 +22,6 @@ interface PlusInfoData {
 }
 
 const PlusPage: React.FC<RouteComponentProps> = () => {
-  const [showSuggestionForm, setShowSuggestionForm] = useState(false)
-
   const { data, error, loading } = useQuery<PlusInfoData>(PLUS_INFO)
   const {
     data: userData,
@@ -36,8 +37,10 @@ const PlusPage: React.FC<RouteComponentProps> = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Plus Server Home | sendou.ink</title>
+      </Helmet>
       <PageHeader title="Plus Server" />
-      {/*Inv link here*/}
       {/*data.plusInfo.voting_ends && userData.user.plus?.membership_status ? (
         <Voting
           user={userData.user}
@@ -61,6 +64,11 @@ const PlusPage: React.FC<RouteComponentProps> = () => {
           handleError={handleError}
         />
       )*/}
+      <Link to="/plus/history">
+        <Button outlined icon={FaHistory}>
+          Show voting history
+        </Button>
+      </Link>
       <Suggestions user={userData.user} />
     </>
   )
