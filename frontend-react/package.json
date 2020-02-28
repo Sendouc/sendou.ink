@@ -40,6 +40,7 @@
     "react-select": "^3.0.8",
     "react-super-responsive-table": "^5.1.1",
     "react-tweet-embed": "^1.2.2",
+    "source-map-explorer": "^2.3.1",
     "typescript": "^3.8.2",
     "use-query-params": "^0.6.0"
   },
@@ -47,7 +48,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "eslintConfig": {
     "extends": "react-app"

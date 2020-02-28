@@ -1,5 +1,13 @@
-import React from "react"
-import { IconButton, useColorMode, Flex, List } from "@chakra-ui/core"
+import React, { useContext } from "react"
+import {
+  IconButton,
+  useColorMode,
+  Flex,
+  List,
+  ListIcon,
+  PseudoBox,
+  ListItem,
+} from "@chakra-ui/core"
 import { Link } from "@reach/router"
 import {
   FaTshirt,
@@ -19,16 +27,39 @@ import DividingBox from "../common/DividingBox"
 import { UserData } from "../../types"
 import ColorPicker from "./ColorPicker"
 import Error from "../common/Error"
+import MyThemeContext from "../../themeContext"
 
 const UserItem: React.FC<{ data?: UserData }> = ({ data }) => {
+  const { themeColorWithShade } = useContext(MyThemeContext)
   if (!data || !data.user) {
-    // prolly need to do href here
     return (
-      <NavItem
-        to="auth/discord"
-        Icon={FaSignInAlt}
-        title="Log in via Discord"
-      />
+      <List>
+        <ListItem>
+          <a href="/auth/discord">
+            <PseudoBox
+              mx={-2}
+              display="flex"
+              cursor="pointer"
+              px="2"
+              py="1"
+              transition="all 0.2s"
+              fontWeight="medium"
+              outline="none"
+              _focus={{ shadow: "outline" }}
+              _hover={{
+                transform: "translateX(2px)",
+              }}
+            >
+              <ListIcon
+                icon={FaSignInAlt}
+                color={themeColorWithShade}
+                size="1.5em"
+              />{" "}
+              Log in via Discord
+            </PseudoBox>
+          </a>
+        </ListItem>
+      </List>
     )
   }
 

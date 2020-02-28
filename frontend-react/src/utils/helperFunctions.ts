@@ -17,3 +17,11 @@ export function ordinal_suffix_of(i: number) {
   }
   return "th"
 }
+
+export function importAll(r: __WebpackModuleApi.RequireContext) {
+  const images: any = {}
+  r.keys().forEach(item => {
+    images[item.substring(6, item.length - 4)] = r(item)
+  })
+  return images
+}

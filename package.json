@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env LOGGED_IN=TRUE node index.js",
+    "start": "node index.js",
     "withprod": "cross-env LOGGED_IN=TRUE USE_PRODUCTION_DB=TRUE node index.js",
-    "loggedout": "node index.js",
-    "watch": "cross-env LOGGED_IN=TRUE nodemon index.js",
+    "withdev": "cross-env LOGGED_IN=TRUE node index.js",
+    "watchdev": "cross-env LOGGED_IN=TRUE nodemon index.js",
+    "watchprod": "cross-env LOGGED_IN=TRUE USE_PRODUCTION_DB=TRUE nodemon index.js",
     "build": "cd frontend-react && npm install && npm run build && mv build ../build",
     "testbuild": "rmdir /s /q build && cd frontend-react && npm run build && move build ../build"
   },
