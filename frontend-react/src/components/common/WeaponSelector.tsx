@@ -4,15 +4,16 @@ import { weaponSelectOptions } from "../../utils/lists"
 import WeaponImage from "./WeaponImage"
 import { components } from "react-select"
 import Select from "../elements/Select"
+import { Weapon } from "../../types"
 
 interface WeaponSelectorProps {
+  value?: Weapon | Weapon[] | "" | null
   setValue: (value: any) => void
   label: string
   required?: boolean
   autoFocus?: boolean
   clearable?: boolean
   isMulti?: boolean
-  initialValue?: string | string[]
 }
 
 const singleOption = (props: any) => (
@@ -27,13 +28,13 @@ const singleOption = (props: any) => (
 )
 
 const WeaponSelector: React.FC<WeaponSelectorProps> = ({
+  value,
   setValue,
   label,
   clearable,
   autoFocus,
   required,
   isMulti,
-  initialValue,
 }) => {
   return (
     <>
@@ -41,7 +42,7 @@ const WeaponSelector: React.FC<WeaponSelectorProps> = ({
         label={label}
         required={required}
         options={weaponSelectOptions}
-        value={initialValue}
+        value={value}
         setValue={setValue}
         clearable={clearable}
         isSearchable

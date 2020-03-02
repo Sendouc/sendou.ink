@@ -27,6 +27,7 @@ interface DraggableToolsSelectorProps {
 }
 
 const DraggableToolsSelector: React.FC<DraggableToolsSelectorProps> = ({
+  tool,
   setTool,
   redo,
   redoIsDisabled,
@@ -35,7 +36,7 @@ const DraggableToolsSelector: React.FC<DraggableToolsSelectorProps> = ({
   removeSelected,
   removeIsDisabled,
 }) => {
-  const { darkerBgColor } = useContext(MyThemeContext)
+  const { darkerBgColor, themeColorHex } = useContext(MyThemeContext)
   const [activeDrags, setActiveDrags] = useState(0)
   useHotkeys("p", () => setTool(Tools.Pencil))
   useHotkeys("l", () => setTool(Tools.Line))
@@ -78,6 +79,8 @@ const DraggableToolsSelector: React.FC<DraggableToolsSelectorProps> = ({
             size="lg"
             aria-label="Pencil tool"
             icon={FaPencilAlt}
+            border={tool === Tools.Pencil ? "2px solid" : undefined}
+            borderColor={themeColorHex}
             title="Pencil (P)"
           />
           <IconButton
@@ -86,6 +89,8 @@ const DraggableToolsSelector: React.FC<DraggableToolsSelectorProps> = ({
             size="lg"
             aria-label="Line tool"
             icon={AiOutlineLine}
+            border={tool === Tools.Line ? "2px solid" : undefined}
+            borderColor={themeColorHex}
             title="Line (L)"
           />
           <IconButton
@@ -94,6 +99,8 @@ const DraggableToolsSelector: React.FC<DraggableToolsSelectorProps> = ({
             size="lg"
             aria-label="Rectangle tool"
             icon={FaRegSquare}
+            border={tool === Tools.Rectangle ? "2px solid" : undefined}
+            borderColor={themeColorHex}
             title="Rectangle (R)"
           />
           <IconButton
@@ -102,6 +109,8 @@ const DraggableToolsSelector: React.FC<DraggableToolsSelectorProps> = ({
             size="lg"
             aria-label="Circle tool"
             icon={FaRegCircle}
+            border={tool === Tools.Circle ? "2px solid" : undefined}
+            borderColor={themeColorHex}
             title="Circle (C)"
           />
           <IconButton
@@ -110,6 +119,8 @@ const DraggableToolsSelector: React.FC<DraggableToolsSelectorProps> = ({
             size="lg"
             aria-label="Select tool"
             icon={FaRegObjectGroup}
+            border={tool === Tools.Select ? "2px solid" : undefined}
+            borderColor={themeColorHex}
             title="Select (S)"
           />
           <IconButton

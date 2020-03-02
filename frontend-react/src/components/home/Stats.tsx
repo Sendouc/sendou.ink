@@ -52,7 +52,7 @@ const Stats: React.FC = () => {
         mt="0.5em"
         textAlign="center"
       >
-        <Box>
+        <Box mb="0.5em">
           {xRankMonths()} months of{" "}
           <Link to="/xsearch">
             <Box as="span" color={themeColorWithShade}>
@@ -60,7 +60,7 @@ const Stats: React.FC = () => {
             </Box>
           </Link>
         </Box>
-        <Box>
+        <Box mb="0.5em">
           {getStatString(stats.build_count)}{" "}
           <Link to="/builds">
             <Box as="span" color={themeColorWithShade}>
@@ -68,8 +68,8 @@ const Stats: React.FC = () => {
             </Box>
           </Link>
         </Box>
-        <Box>{getStatString(stats.user_count)} users</Box>
-        <Box>
+        <Box mb="0.5em">{getStatString(stats.user_count)} users</Box>
+        <Box mb="0.5em">
           {getStatString(stats.fa_count)}{" "}
           <Link to="/freeagents">
             <Box as="span" color={themeColorWithShade}>
@@ -97,7 +97,7 @@ const Stats: React.FC = () => {
         mt="0.5em"
         textAlign="center"
       >
-        <Box>
+        <Box mb="0.5em">
           <Link to="/calendar">
             <Box as="span" color={themeColorWithShade}>
               Calendar

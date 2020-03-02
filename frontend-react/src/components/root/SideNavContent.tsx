@@ -7,6 +7,11 @@ import {
   ListIcon,
   PseudoBox,
   ListItem,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Box,
 } from "@chakra-ui/core"
 import { Link } from "@reach/router"
 import {
@@ -17,6 +22,8 @@ import {
   FaTrophy,
   FaUserSecret,
   FaSignInAlt,
+  FaUserAlt,
+  FaDoorOpen,
 } from "react-icons/fa"
 import Logo from "./Logo"
 import NavItem from "./NavItem"
@@ -30,7 +37,7 @@ import Error from "../common/Error"
 import MyThemeContext from "../../themeContext"
 
 const UserItem: React.FC<{ data?: UserData }> = ({ data }) => {
-  const { themeColorWithShade } = useContext(MyThemeContext)
+  const { themeColorWithShade, bgColor } = useContext(MyThemeContext)
   if (!data || !data.user) {
     return (
       <List>
@@ -64,18 +71,42 @@ const UserItem: React.FC<{ data?: UserData }> = ({ data }) => {
   }
 
   return (
-    <Link
-      to={
-        data.user.custom_url
-          ? `u/${data.user.custom_url}`
-          : `u/${data.user.discord_id}`
-      }
-    >
-      <UserAvatar
-        name={data.user.username}
-        twitterName={data.user.twitter_name}
-      />
-    </Link>
+    <Menu>
+      <MenuButton>
+        <UserAvatar
+          name={data.user.username}
+          twitterName={data.user.twitter_name}
+        />
+      </MenuButton>
+      <MenuList bg={bgColor}>
+        <MenuItem>
+          <Link
+            to={
+              data.user.custom_url
+                ? `u/${data.user.custom_url}`
+                : `u/${data.user.discord_id}`
+            }
+          >
+            <Flex alignItems="center" justifyContent="center">
+              <Box as={FaUserAlt} w="24px" h="auto" mr="1em" />{" "}
+              <Box as="span" mt="2px">
+                Profile
+              </Box>
+            </Flex>
+          </Link>
+        </MenuItem>
+        <MenuItem>
+          <a href="/logout">
+            <Flex alignItems="center" justifyContent="center">
+              <Box as={FaDoorOpen} w="24px" h="auto" mr="1em" />{" "}
+              <Box as="span" mt="2px">
+                Log out
+              </Box>
+            </Flex>
+          </a>
+        </MenuItem>
+      </MenuList>
+    </Menu>
   )
 }
 

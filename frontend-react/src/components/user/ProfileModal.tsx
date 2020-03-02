@@ -145,7 +145,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
             label="Weapon pool"
             isMulti
             setValue={(value: Weapon[]) => handleChange({ weapons: value })}
-            initialValue={profile.weapons}
+            value={profile.weapons}
           />
         </Box>
         <Box mt="1em">

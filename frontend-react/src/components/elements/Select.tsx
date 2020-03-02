@@ -67,7 +67,11 @@ const Select: React.FC<SelectProps> = ({
   const [inputValue, setInputValue] = useState("")
 
   const handleChange = (selectedOption: any) => {
-    if (!setValue || !selectedOption) return
+    if (!setValue) return
+    if (!selectedOption) {
+      setValue(null)
+      return
+    }
     if (Array.isArray(selectedOption)) {
       setValue(selectedOption.map(obj => obj.value))
     } else {

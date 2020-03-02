@@ -260,7 +260,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
         required
         label="Weapon"
         setValue={(weapon: Weapon) => handleChange({ weapon })}
-        initialValue={build.weapon}
+        value={build.weapon}
       />
       {build.weapon && (
         <WeaponImage englishName={build.weapon as Weapon} size="MEDIUM" />

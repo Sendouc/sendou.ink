@@ -6,6 +6,7 @@ import MyThemeContext from "../../themeContext"
 import { months } from "../../utils/lists"
 import Select from "../elements/Select"
 import Label from "../elements/Label"
+import { Weapon } from "../../types"
 
 interface Top500FormsProps {
   forms: {
@@ -38,7 +39,9 @@ const Top500Forms: React.FC<Top500FormsProps> = ({ forms, handleChange }) => {
       year++
     }
   }
-  console.log("forms.mode", forms.mode)
+
+  monthChoices.reverse()
+
   return (
     <Box maxW="500px">
       <Input
@@ -49,12 +52,18 @@ const Top500Forms: React.FC<Top500FormsProps> = ({ forms, handleChange }) => {
       <Box mt="0.5em">
         <WeaponSelector
           label="Weapon"
+          value={(forms.weapon as Weapon) ?? null}
           setValue={(value: string) => handleChange({ weapon: value })}
           clearable
         />
       </Box>
       <Box mt="0.5em">
         <Select
+          value={
+            forms.month && forms.year
+              ? `${months[forms.month]} ${forms.year}`
+              : ""
+          }
           options={monthChoices}
           label="Month"
           setValue={(value: any) => {
@@ -69,7 +78,7 @@ const Top500Forms: React.FC<Top500FormsProps> = ({ forms, handleChange }) => {
       <Box mt="0.5em">
         <Label>Mode</Label>
         <RadioGroup
-          value={forms.mode}
+          value={"" + forms.mode}
           defaultValue="0"
           spacing={5}
           isInline

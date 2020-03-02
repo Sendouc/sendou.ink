@@ -19,9 +19,6 @@ import RadioGroup from "../elements/RadioGroup"
 import Box from "../elements/Box"
 import { continents } from "../../utils/lists"
 
-/*can_vc: "YES" | "USUALLY" | "SOMETIMES" | "NO"
-  playstyles: ("FRONTLINE" | "MIDLINE" | "BACKLINE")[]*/
-
 const playstyleToEnum = {
   "Frontline/Slayer": "FRONTLINE",
   "Midline/Support": "MIDLINE",
@@ -123,6 +120,7 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
       <Box maxW="600px" my="1em">
         <WeaponSelector
           label="Filter by weapon"
+          value={weapon}
           setValue={(weapon: string) => setWeapon(weapon as Weapon)}
           clearable
         />
