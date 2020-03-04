@@ -17,7 +17,7 @@ const NavItem: React.FC<NavItemProps> = ({ to, Icon, title }) => {
 
   const location = useLocation()
   const isActive =
-    ("/" + to).indexOf(location.pathname) !== -1 && location.pathname !== "/"
+    location.pathname.indexOf(to) !== -1 && location.pathname !== "/"
 
   return (
     <ListItem>

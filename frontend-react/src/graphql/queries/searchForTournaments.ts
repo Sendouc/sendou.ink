@@ -1,6 +1,6 @@
-import { gql } from "apollo-boost"
+import { gql, DocumentNode } from "apollo-boost"
 
-export const searchForTournaments = gql`
+export const SEARCH_FOR_TOURNAMENTS: DocumentNode = gql`
   query searchForTournaments(
     $page: Int
     $tournament_name: String

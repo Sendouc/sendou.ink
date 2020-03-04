@@ -8,6 +8,10 @@ const HomePage = lazy(() => import("../home/HomePage"))
 const UserPage = lazy(() => import("../user/UserPage"))
 const BuildsPage = lazy(() => import("../builds/BuildsPage"))
 const CalendarPage = lazy(() => import("../calendar/CalendarPage"))
+const TournamentsPage = lazy(() => import("../tournaments/TournamentsPage"))
+const TournamentsDetailsPage = lazy(() =>
+  import("../tournaments/TournamentDetailsPage")
+)
 const MapPlannerPage = lazy(() => import("../plans/MapPlannerPage"))
 const FreeAgentsPage = lazy(() => import("../freeagents/FreeAgentsPage"))
 const TeamPage = lazy(() => import("../team/TeamPage"))
@@ -28,6 +32,8 @@ const Routes: React.FC = () => {
           <BuildsPage path="/builds" />
           <MapPlannerPage path="/plans" />
           <CalendarPage path="/calendar" />
+          <TournamentsPage path="/tournaments" />
+          <TournamentsDetailsPage path="/tournaments/:id" />
           <FreeAgentsPage path="/freeagents" />
           <XSearch path="/xsearch" />
           <About path="/about" />

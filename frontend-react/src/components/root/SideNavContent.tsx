@@ -24,6 +24,7 @@ import {
   FaSignInAlt,
   FaUserAlt,
   FaDoorOpen,
+  FaListOl,
 } from "react-icons/fa"
 import Logo from "./Logo"
 import NavItem from "./NavItem"
@@ -142,7 +143,8 @@ export const SideNavContent: React.FC<SideNavProps> = ({ showLogo = true }) => {
             <NavItem to="calendar" Icon={FaCalendarAlt} title="Calendar" />
             <NavItem to="builds" Icon={FaTshirt} title="Builds" />
             <NavItem to="freeagents" Icon={FaUserSecret} title="Free Agents" />
-            <NavItem to="xsearch" Icon={FaTrophy} title="Top 500 Browser" />
+            <NavItem to="tournaments" Icon={FaTrophy} title="Tournaments" />
+            <NavItem to="xsearch" Icon={FaListOl} title="Top 500 Browser" />
             {data?.user?.plus?.membership_status && (
               <NavItem to="plus" Icon={FaPlus} title="Plus Server" />
             )}

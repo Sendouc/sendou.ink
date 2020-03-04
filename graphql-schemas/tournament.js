@@ -1,7 +1,6 @@
 const { UserInputError, gql } = require("apollo-server-express")
 const Tournament = require("../mongoose-models/tournament")
 const Round = require("../mongoose-models/round")
-const mongoose = require("mongoose")
 
 const typeDef = gql`
   extend type Query {

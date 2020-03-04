@@ -61,7 +61,7 @@ const BuildTab: React.FC<BuildTabProps> = ({ builds, canModifyBuilds }) => {
           You already have 100 builds. Please delete one before adding a new one
         </Alert>
       )}
-      <Box display="flex" flexWrap="wrap" justifyContent="center" mt="1em">
+      <Box display="flex" flexWrap="wrap" mt="1em">
         {builds.map(build => (
           <BuildCard
             canModify={canModifyBuilds}

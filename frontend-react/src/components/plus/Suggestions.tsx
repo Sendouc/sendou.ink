@@ -192,8 +192,6 @@ const Suggestions: React.FC<SuggestionsProps> = ({ user }) => {
 
   const buttonText = getButtonText()
 
-  console.log("data", data)
-
   return (
     <>
       {/*!showSuggestionForm && (canSuggest || canVouch) && (
