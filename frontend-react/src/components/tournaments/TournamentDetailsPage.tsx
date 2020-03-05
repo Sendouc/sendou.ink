@@ -25,7 +25,9 @@ interface TournamentDetailsPageProps {
 
 const TournamentDetailsPage: React.FC<RouteComponentProps &
   TournamentDetailsPageProps> = ({ id }) => {
-  const { themeColorWithShade, grayWithShade } = useContext(MyThemeContext)
+  const { themeColorWithShade, grayWithShade, textColor } = useContext(
+    MyThemeContext
+  )
   const { data, error, loading } = useQuery<
     SearchForTournamentByIdData,
     SearchForTournamentByIdVars
@@ -40,7 +42,6 @@ const TournamentDetailsPage: React.FC<RouteComponentProps &
   if (!data || !data.searchForTournamentById) return <Redirect to="/404" />
 
   const tournament = data.searchForTournamentById
-  console.log({ tournament })
 
   const abilityMap = (ability: Ability, index: number) => {
     const gridArea = `3 / ${1 + index} / 4 / ${2 + index}`
@@ -117,7 +118,7 @@ const TournamentDetailsPage: React.FC<RouteComponentProps &
                   alignItems="center"
                 >
                   <Box color={grayWithShade}>VICTORY</Box>
-                  <Box color="white" fontSize="xl">
+                  <Box color={textColor} fontSize="xl">
                     {round.winning_team_name}
                   </Box>
                 </Flex>
@@ -159,7 +160,7 @@ const TournamentDetailsPage: React.FC<RouteComponentProps &
                     alignItems="center"
                   >
                     <Box color={grayWithShade}>DEFEAT</Box>
-                    <Box color="white" fontSize="xl">
+                    <Box color={textColor} fontSize="xl">
                       {round.losing_team_name}
                     </Box>
                   </Flex>

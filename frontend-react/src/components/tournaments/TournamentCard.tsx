@@ -5,6 +5,7 @@ import { months } from "../../utils/lists"
 import trophy from "../../assets/trophy.png"
 import WeaponImage from "../common/WeaponImage"
 import { Weapon } from "../../types"
+import Flag from "../common/Flag"
 
 interface TournamentCardProps {
   tournament: {
@@ -25,9 +26,7 @@ const TournamentCard: React.FC<TournamentCardProps> = ({
   tournament,
   styledOnHover,
 }) => {
-  const { grayWithShade, themeColorWithShade, darkerBgColor } = useContext(
-    MyThemeContext
-  )
+  const { grayWithShade } = useContext(MyThemeContext)
   const a = new Date(parseInt(tournament.date))
   const dateStr = `${a.getDate()} ${
     months[a.getMonth() + 1]
@@ -43,7 +42,8 @@ const TournamentCard: React.FC<TournamentCardProps> = ({
       h="100%"
       flexDirection="column"
       justifyContent="space-between"
-      _hover={styledOnHover ? { bg: darkerBgColor } : undefined}
+      transition="all 0.2s"
+      _hover={styledOnHover ? { transform: "translateY(-3px)" } : undefined}
     >
       <Box fontWeight="semibold" as="h4" lineHeight="tight">
         {tournament.name}
@@ -55,7 +55,7 @@ const TournamentCard: React.FC<TournamentCardProps> = ({
         fontSize="xs"
         mt="0.5em"
       >
-        {dateStr}
+        {dateStr} {tournament.jpn && <Flag code="jp" />}
       </Box>
       <Flex
         alignItems="center"

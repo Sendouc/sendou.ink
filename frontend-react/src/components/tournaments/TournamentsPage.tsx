@@ -14,6 +14,7 @@ import Loading from "../common/Loading"
 import Error from "../common/Error"
 import TournamentCard from "./TournamentCard"
 import { Box, Grid } from "@chakra-ui/core"
+import TournamentFilters from "./TournamentFilters"
 
 interface SearchForTournamentsData {
   searchForTournaments: {
@@ -77,12 +78,14 @@ const TournamentsPage: React.FC<RouteComponentProps> = ({}) => {
         <title>Tournaments | sendou.ink</title>
       </Helmet>
       <PageHeader title="Tournaments" />
+      <TournamentFilters />
       <Grid
-        gridGap="0.5em"
+        gridGap="1em"
         gridTemplateColumns="repeat(auto-fit, minmax(260px, 1fr))"
+        mt="1em"
       >
         {tournaments.map(tournament => (
-          <Box key={tournament.id} p="0.5em">
+          <Box key={tournament.id}>
             <Link to={`/tournaments/${tournament.id}`}>
               <TournamentCard tournament={tournament} styledOnHover />
             </Link>
