@@ -9,7 +9,7 @@ import {
 import Error from "../common/Error"
 import Loading from "../common/Loading"
 import TournamentCard from "./TournamentCard"
-import { Box, Flex, Image, Avatar, Icon, Grid } from "@chakra-ui/core"
+import { Box, Flex, Avatar, Icon, Grid } from "@chakra-ui/core"
 import Button from "../elements/Button"
 import { Helmet } from "react-helmet-async"
 import { FaLongArrowAltLeft } from "react-icons/fa"

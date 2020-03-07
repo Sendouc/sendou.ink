@@ -8,6 +8,8 @@ export const SEARCH_FOR_TOURNAMENTS: DocumentNode = gql`
     $team_name: String
     $player_name: String
     $comp: [String]
+    $mode: Mode
+    $stage: String
   ) {
     searchForTournaments(
       page: $page
@@ -16,6 +18,8 @@ export const SEARCH_FOR_TOURNAMENTS: DocumentNode = gql`
       team_name: $team_name
       player_name: $player_name
       comp: $comp
+      mode: $mode
+      stage: $stage
     ) {
       tournaments {
         id

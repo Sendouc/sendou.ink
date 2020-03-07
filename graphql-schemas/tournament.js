@@ -12,6 +12,8 @@ const typeDef = gql`
       unique_id: String
       team_name: String
       comp: [String]
+      stage: String
+      mode: Mode
       page: Int
     ): TournamentCollection!
   }
@@ -166,6 +168,14 @@ const resolvers = {
         })
       }
 
+      if (args.mode) {
+        roundSearchCriteria.mode = args.mode
+      }
+
+      if (args.stage) {
+        roundSearchCriteria.stage = args.stage
+      }
+
       // if criteria were presented that we have to search
       // from the Round collection
       let tournament_ids = null
@@ -176,7 +186,15 @@ const resolvers = {
       if (args.region && args.region === "jpn")
         tournamentSearchCriteria.jpn = true
 
-      if (roundSearchCriteria.$or.length !== 0) {
+      if (roundSearchCriteria.$or.length === 0) {
+        delete roundSearchCriteria.$or
+      }
+
+      if (
+        roundSearchCriteria.$or ||
+        roundSearchCriteria.stage ||
+        roundSearchCriteria.mode
+      ) {
         tournament_ids = await Round.find(roundSearchCriteria).distinct(
           "tournament_id"
         )

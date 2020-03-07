@@ -35,7 +35,7 @@ const Input: React.FC<InputProps> = ({
     setValue(event.target.value)
 
   return (
-    <>
+    <Box>
       {label && <Label required={required}>{label}</Label>}
       <InputGroup>
         {textLeft && <InputLeftAddon>{textLeft}</InputLeftAddon>}
@@ -57,7 +57,7 @@ const Input: React.FC<InputProps> = ({
           {(value ?? "").length}/{limit}
         </Box>
       )}
-    </>
+    </Box>
   )
 }
 
