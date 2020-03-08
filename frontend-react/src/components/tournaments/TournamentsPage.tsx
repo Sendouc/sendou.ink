@@ -71,7 +71,7 @@ const TournamentsPage: React.FC<RouteComponentProps> = () => {
     stage: query.stage,
   })
 
-  const { data, error } = useQuery<
+  const { data, error, loading } = useQuery<
     SearchForTournamentsData,
     SearchForTournamentsVars
   >(SEARCH_FOR_TOURNAMENTS, {
@@ -92,6 +92,10 @@ const TournamentsPage: React.FC<RouteComponentProps> = () => {
   const encodedQuery = encodeQueryParams(queryMap, query)
   const linkSuffix = `?${stringify(encodedQuery)}`
 
+  console.log(
+    "data?.searchForTournaments.pageCount",
+    data?.searchForTournaments.pageCount
+  )
   return (
     <>
       <Helmet>
@@ -102,7 +106,11 @@ const TournamentsPage: React.FC<RouteComponentProps> = () => {
         forms={forms}
         handleChange={handleFormChange}
         handleClear={handleClear}
-        onSubmit={() => setQuery(forms)}
+        onSubmit={() => {
+          const newObject = { ...forms, page: 1 }
+          setForms(newObject)
+          setQuery(newObject)
+        }}
       />
       {data && data.searchForTournaments.tournaments.length > 0 ? (
         <>
@@ -147,10 +155,12 @@ const TournamentsPage: React.FC<RouteComponentProps> = () => {
           )}
         </>
       ) : (
-        <Alert status="info" mt="2em">
-          <AlertIcon />
-          Your doesn't match any tournaments. Try another filter!
-        </Alert>
+        !loading && (
+          <Alert status="info" mt="2em">
+            <AlertIcon />
+            Your doesn't match any tournaments. Try another filter!
+          </Alert>
+        )
       )}
     </>
   )

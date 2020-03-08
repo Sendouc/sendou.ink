@@ -2,6 +2,7 @@ import React, { useContext } from "react"
 import "./Pagination.css"
 import { Box } from "@chakra-ui/core"
 import MyThemeContext from "../../themeContext"
+import ReactPaginate from "react-paginate"
 
 interface PaginationProps {
   pageCount: number
@@ -16,7 +17,8 @@ const Pagination: React.FC<PaginationProps> = ({
 }) => {
   const { colorMode, themeColorHex } = useContext(MyThemeContext)
   return (
-    <Box className="pagination">
+    <>
+      {/*<Box className="pagination">
       <Box
         as="span"
         style={{
@@ -27,7 +29,7 @@ const Pagination: React.FC<PaginationProps> = ({
       >
         &laquo;
       </Box>
-      {[...Array(6)].map((page, index) => {
+      {[...Array(Math.min(pageCount, 6))].map((page, index) => {
         const pageNumber = index + currentPage
         return (
           <Box
@@ -57,7 +59,27 @@ const Pagination: React.FC<PaginationProps> = ({
       >
         &raquo;
       </Box>
-    </Box>
+      </Box>*/}
+      <ReactPaginate
+        previousLabel={<>&laquo;</>}
+        nextLabel={<>&raquo;</>}
+        breakLabel={"..."}
+        breakClassName={"page"}
+        pageCount={pageCount}
+        marginPagesDisplayed={2}
+        pageRangeDisplayed={3}
+        onPageChange={({ selected }) => onChange(selected)}
+        containerClassName="pagination"
+        pageClassName="page"
+        previousClassName="page"
+        nextClassName="page"
+        pageLinkClassName="page"
+        activeLinkClassName="active-page"
+        disabledClassName="disabled-page"
+        //subContainerClassName={'pages pagination'}
+        activeClassName={"active"}
+      />
+    </>
   )
 }
 

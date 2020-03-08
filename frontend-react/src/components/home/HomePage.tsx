@@ -1,6 +1,6 @@
 import React from "react"
 import { RouteComponentProps } from "@reach/router"
-import { Image, Heading, Flex } from "@chakra-ui/core"
+import { Image, Heading, Flex, Box } from "@chakra-ui/core"
 import { posterGirl } from "../../assets/imageImports"
 import { useContext } from "react"
 import MyThemeContext from "../../themeContext"
@@ -15,12 +15,14 @@ const HomePage: React.FC<RouteComponentProps> = () => {
       <Helmet>
         <title>sendou.ink | Competitive Splatoon Hub</title>
       </Helmet>
-      <Flex
-        flexDirection="column"
-        alignItems="center"
-        title="Picture by borzoic (@borzoic_ on Twitter)"
-      >
-        <Image className="rgb" src={posterGirl[colorMode]} w="400px" h="auto" />
+      <Flex flexDirection="column" alignItems="center">
+        <Image
+          className="rgb"
+          src={posterGirl[colorMode]}
+          w="400px"
+          h="auto"
+          title="Picture by borzoic (@borzoic_ on Twitter)"
+        />
         <Heading
           size="2xl"
           letterSpacing="1px"
@@ -29,6 +31,7 @@ const HomePage: React.FC<RouteComponentProps> = () => {
         >
           Sendou.ink
         </Heading>
+
         <Heading
           size="md"
           letterSpacing="1px"

@@ -17,17 +17,52 @@ import MyThemeContext from "../../themeContext"
 import { mapIcons } from "../../assets/imageImports"
 import WeaponImage from "../common/WeaponImage"
 import AbilityIcon from "../builds/AbilityIcon"
-import { Ability } from "../../types"
+import { Ability, Weapon } from "../../types"
+import {
+  useQueryParams,
+  StringParam,
+  ArrayParam,
+  encodeQueryParams,
+} from "use-query-params"
+import { stringify } from "querystring"
+import { removeFalsy } from "../../utils/helperFunctions"
 
 interface TournamentDetailsPageProps {
   id?: string
 }
 
+interface Round {
+  stage: string
+  mode: "SZ" | "TC" | "RM" | "CB" | "TW"
+  round_name: string
+  round_number: number
+  game_number: number
+  winning_team_name: string
+  winning_team_players: string[]
+  winning_team_weapons: Weapon[]
+  winning_team_main_abilities: Ability[][]
+  losing_team_name: string
+  losing_team_players: string[]
+  losing_team_weapons: Weapon[]
+  losing_team_main_abilities: Ability[][]
+}
+
+const filterMap = {
+  team_name: StringParam,
+  player_name: StringParam,
+  comp: ArrayParam,
+  mode: StringParam,
+  stage: StringParam,
+}
+
 const TournamentDetailsPage: React.FC<RouteComponentProps &
   TournamentDetailsPageProps> = ({ id }) => {
-  const { themeColorWithShade, grayWithShade, textColor } = useContext(
-    MyThemeContext
-  )
+  const {
+    themeColorWithShade,
+    grayWithShade,
+    textColor,
+    darkerBgColor,
+  } = useContext(MyThemeContext)
   const { data, error, loading } = useQuery<
     SearchForTournamentByIdData,
     SearchForTournamentByIdVars
@@ -35,6 +70,7 @@ const TournamentDetailsPage: React.FC<RouteComponentProps &
     variables: { id: id! },
     skip: !id,
   })
+  const [filter] = useQueryParams(filterMap)
 
   if (!id) return <Redirect to="/404" />
   if (error) return <Error errorMessage={error.message} />
@@ -52,12 +88,69 @@ const TournamentDetailsPage: React.FC<RouteComponentProps &
     )
   }
 
+  const matchesFilter = (round: Round) => {
+    const { team_name, player_name, comp, mode, stage } = filter
+    if (team_name) {
+      const teamNameUpper = team_name.toUpperCase()
+      if (
+        round.winning_team_name.toUpperCase() === teamNameUpper ||
+        round.losing_team_name.toUpperCase() === teamNameUpper
+      ) {
+        return true
+      }
+    }
+
+    if (player_name) {
+      const playerNameUpper = player_name.toUpperCase()
+      if (
+        round.winning_team_players.some(
+          player => player.toUpperCase() === playerNameUpper
+        ) ||
+        round.losing_team_players.some(
+          player => player.toUpperCase() === playerNameUpper
+        )
+      ) {
+        return true
+      }
+    }
+
+    if (comp) {
+      if (
+        comp.every(
+          weapon => round.winning_team_weapons.indexOf(weapon as any) !== -1
+        ) ||
+        comp.every(
+          weapon => round.losing_team_weapons.indexOf(weapon as any) !== -1
+        )
+      ) {
+        return true
+      }
+    }
+
+    if (mode && stage) {
+      if (mode === round.mode && stage === round.stage) {
+        return true
+      }
+    }
+
+    return false
+  }
+
+  const encoded = encodeQueryParams(filterMap, removeFalsy(filter))
+  const linkSuffix = `?${stringify(encoded)}`
+
+  console.log("filter", filter)
+
   return (
     <>
       <Helmet>
         <title>{tournament.name} | sendou.ink</title>
       </Helmet>
-      <Link to="/tournaments">
+      <Link
+        to={
+          linkSuffix.length === 1 ? "/tournaments" : `/tournaments${linkSuffix}`
+        }
+      >
         <Button outlined icon={FaLongArrowAltLeft}>
           All tournaments
         </Button>
@@ -84,6 +177,7 @@ const TournamentDetailsPage: React.FC<RouteComponentProps &
               </Box>
             )}
             <Box
+              bg={matchesFilter(round) ? darkerBgColor : undefined}
               display="flex"
               rounded="lg"
               overflow="hidden"
@@ -104,7 +198,7 @@ const TournamentDetailsPage: React.FC<RouteComponentProps &
                 <Avatar src={mapIcons[round.stage]} size="lg" my="5px" />
                 {round.stage}
                 <Icon
-                  name={"sz" as any}
+                  name={round.mode.toLowerCase() as any}
                   color={themeColorWithShade}
                   size="2em"
                 />

@@ -31,7 +31,7 @@ const TournamentFilters: React.FC<TournamentFiltersProps> = ({
   onSubmit,
 }) => {
   const { themeColor } = useContext(MyThemeContext)
-  const [show, setShow] = useState(true)
+  const [show, setShow] = useState(false)
   return (
     <>
       <Button onClick={() => setShow(!show)}>

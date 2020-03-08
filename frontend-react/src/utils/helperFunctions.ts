@@ -25,3 +25,14 @@ export function importAll(r: __WebpackModuleApi.RequireContext) {
   })
   return images
 }
+
+// https://coderwall.com/p/urxpsa/remove-falsy-values-or-empty-strings-from-javascript-objects
+export const removeFalsy = (obj: { [key: string]: any }) => {
+  const newObj: { [key: string]: any } = {}
+  Object.keys(obj).forEach((prop: any) => {
+    if (obj[prop]) {
+      newObj[prop] = obj[prop]
+    }
+  })
+  return newObj
+}
