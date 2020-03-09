@@ -37,13 +37,12 @@ const typeDef = gql`
     username: String!
     "Discord discriminator. For example with Sendou#0043 0043 is the discriminator."
     discriminator: String!
-    "String that allows finding users avatar on Discord."
     discord_id: String!
     twitch_name: String
     twitter_name: String
     country: String
     sens: Sens
-    weapons: [String]!
+    weapons: [String!]!
     custom_url: String
     top500: Boolean!
   }
@@ -81,6 +80,7 @@ const resolvers = {
       if (process.env.LOGGED_IN) {
         return {
           id: "5cee8f73d1120d4315c55011",
+          team: "5e3ecc0ea7dd3830303eaaa7",
           discord_id: "79237403620945920",
           __v: 0,
           avatar: "2e292c1b5d1366c24a9e4b6c1cffc700",

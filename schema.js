@@ -17,6 +17,7 @@ const {
 const { FAPost, faPostResolvers } = require("./graphql-schemas/fapost")
 const { Plus, plusResolvers } = require("./graphql-schemas/plus")
 const { Team, teamResolvers } = require("./graphql-schemas/team")
+const { General, generalResolvers } = require("./graphql-schemas/general")
 
 const Query = gql`
   type Query {
@@ -48,6 +49,7 @@ const schema = makeExecutableSchema({
     FAPost,
     Plus,
     Team,
+    General,
   ],
   resolvers: merge(
     resolvers,
@@ -62,7 +64,8 @@ const schema = makeExecutableSchema({
     tournamentResolvers,
     faPostResolvers,
     plusResolvers,
-    teamResolvers
+    teamResolvers,
+    generalResolvers
   ),
 })
 

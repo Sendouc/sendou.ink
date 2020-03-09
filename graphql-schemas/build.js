@@ -11,7 +11,7 @@ const gear = require("../utils/gear")
 
 const typeDef = gql`
   extend type Query {
-    searchForBuilds(discord_id: String!): [Build]!
+    searchForBuilds(discord_id: String, weapon: String): [Build!]!
     "Returns builds by given weapon. If weapon is omitted returns latest builds instead."
     searchForBuildsByWeapon(weapon: String, page: Int): BuildCollection!
   }
@@ -58,7 +58,7 @@ const typeDef = gql`
     discord_user: User!
   }
   type BuildCollection {
-    builds: [Build]!
+    builds: [Build!]!
     pageCount: Int!
   }
   enum Ability {
@@ -93,8 +93,13 @@ const typeDef = gql`
 const resolvers = {
   Query: {
     searchForBuilds: (root, args) => {
-      return Build.find({ discord_id: args.discord_id })
-        .sort({ weapon: "asc" })
+      if (!args.discord_id && !args.weapon)
+        throw new UserInputError(
+          "Discord ID or weapon has to be in the arguments"
+        )
+      return Build.find({ ...args })
+        .sort({ top: "desc", updatedAt: "desc" })
+        .populate("discord_user")
         .catch(e => {
           throw new UserInputError(e.message, {
             invalidArgs: args,
@@ -141,11 +146,17 @@ const resolvers = {
           throw new UserInputError("Title too long.", {
             invalidArgs: args,
           })
+        else {
+          args.title = undefined
+        }
+
       if (args.description) {
         if (args.description.length > 1000)
           throw new UserInputError("Description too long.", {
             invalidArgs: args,
           })
+      } else {
+        args.description = undefined
       }
       if (!weapons.includes(args.weapon))
         throw new UserInputError("Invalid weapon.", {
@@ -163,18 +174,24 @@ const resolvers = {
           throw new UserInputError("Invalid headgear item.", {
             invalidArgs: args,
           })
+      } else {
+        args.headgearItem = undefined
       }
       if (args.clothingItem) {
         if (!items.includes(args.clothingItem))
           throw new UserInputError("Invalid clothing item.", {
             invalidArgs: args,
           })
+      } else {
+        args.clothingItem = undefined
       }
       if (args.shoesItem) {
         if (!items.includes(args.shoesItem))
           throw new UserInputError("Invalid shoes item.", {
             invalidArgs: args,
           })
+      } else {
+        args.shoesItem = undefined
       }
 
       const existingBuilds = await Build.find({
