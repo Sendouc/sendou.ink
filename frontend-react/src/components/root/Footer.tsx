@@ -9,7 +9,9 @@ import Box from "../elements/Box"
 import IconButton from "../elements/IconButton"
 
 const Footer: React.FC = () => {
-  const [footerBojoing] = useState(0.5 ? footerSquid : footerOcto)
+  const [footerBojoing] = useState(
+    Math.random() > 0.5 ? footerSquid : footerOcto
+  )
   const { themeColorWithShade, colorMode } = useContext(MyThemeContext)
   const isSmall = useBreakPoints(480)
 
