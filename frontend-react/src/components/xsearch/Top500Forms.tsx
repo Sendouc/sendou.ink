@@ -84,11 +84,7 @@ const Top500Forms: React.FC<Top500FormsProps> = ({ forms, handleChange }) => {
           isInline
           onChange={(e, value: any) => handleChange({ mode: parseInt(value) })}
         >
-          <Radio
-            variantColor={themeColor}
-            value="0"
-            isChecked={forms.mode === 0 || !forms.mode}
-          >
+          <Radio variantColor={themeColor} value="0">
             All modes
           </Radio>
           <Radio variantColor={themeColor} value="1">

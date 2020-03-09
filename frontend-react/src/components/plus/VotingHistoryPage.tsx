@@ -123,7 +123,7 @@ const VotingHistoryPage: React.FC<RouteComponentProps> = () => {
       </Link>
       <Flex flexWrap="wrap" justifyContent="center" mt="1em">
         {userData.user.plus.membership_status === "ONE" && (
-          <Box m="0.5em">
+          <Box m="0.5em" minW="250px">
             <Select
               label=""
               options={[
@@ -135,7 +135,7 @@ const VotingHistoryPage: React.FC<RouteComponentProps> = () => {
             />
           </Box>
         )}
-        <Box m="0.5em">
+        <Box m="0.5em" minW="250px">
           <Select
             label=""
             options={monthChoices.map(my => ({ label: my, value: my }))}

@@ -90,7 +90,7 @@ const Select: React.FC<SelectProps> = ({
   }
 
   return (
-    <Box w={width}>
+    <Box>
       {label && <Label required={required}>{label}</Label>}
       <ReactSelect
         className="basic-single"

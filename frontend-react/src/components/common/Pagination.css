@@ -1,29 +1,21 @@
 .pagination {
   display: inline-block;
-  border-color: red;
-}
-
-.pagination span {
-  color: black;
-  float: left;
   padding: 8px 16px;
   text-decoration: none;
   font-weight: bold;
+  font-size: 18px;
+  user-select: none;
 }
 
-.pagination span:not(.dots) {
-  cursor: pointer;
+.page {
+  display: inline;
+  margin: 0.2em;
 }
 
-.pagination span.active {
+.active-page {
   border-bottom: 3px solid;
 }
 
-.pagination span:hover:not(.active):not(.dots) {
-  background-color: rgba(165, 165, 165, 0.15);
-  border-radius: 5px;
-}
-
-.dots {
-  user-select: none;
+.disabled-page {
+  display: none;
 }

@@ -141,14 +141,14 @@ const resolvers = {
   Mutation: {
     addBuild: async (root, args, ctx) => {
       if (!ctx.user) throw new AuthenticationError("Not logged in.")
-      if (args.title)
+      if (args.title) {
         if (args.title.length > 100)
           throw new UserInputError("Title too long.", {
             invalidArgs: args,
           })
-        else {
-          args.title = undefined
-        }
+      } else {
+        args.title = undefined
+      }
 
       if (args.description) {
         if (args.description.length > 1000)

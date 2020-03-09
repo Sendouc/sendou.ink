@@ -11,13 +11,15 @@ import { FREE_AGENT_POSTS } from "../../graphql/queries/freeAgentPosts"
 import Loading from "../common/Loading"
 import Error from "../common/Error"
 import { RouteComponentProps } from "@reach/router"
-import PostsAccordion from "./PostsAccordion"
+import PostsAccordion from "./Posts"
 import PageHeader from "../common/PageHeader"
 import { Helmet } from "react-helmet-async"
 import WeaponSelector from "../common/WeaponSelector"
 import RadioGroup from "../elements/RadioGroup"
 import Box from "../elements/Box"
 import { continents } from "../../utils/lists"
+import { Collapse } from "@chakra-ui/core"
+import Button from "../elements/Button"
 
 const playstyleToEnum = {
   "Frontline/Slayer": "FRONTLINE",
@@ -27,6 +29,7 @@ const playstyleToEnum = {
 
 const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
   const [weapon, setWeapon] = useState<Weapon | null>(null)
+  const [show, setShow] = useState(false)
   const [playstyle, setPlaystyle] = useState<
     "Any" | "Frontline/Slayer" | "Midline/Support" | "Backline/Anchor"
   >("Any")
@@ -96,35 +99,40 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
         <title>Free Agents | sendou.ink</title>
       </Helmet>
       <PageHeader title="Free Agents" />
-      <Box maxW="600px" my="1em">
-        <RadioGroup
-          value={playstyle}
-          setValue={setPlaystyle}
-          label="Filter by playstyle"
-          options={[
-            "Any",
-            "Frontline/Slayer",
-            "Midline/Support",
-            "Backline/Anchor",
-          ]}
-        />
-      </Box>
-      <Box maxW="600px" my="1em">
-        <RadioGroup
-          value={region}
-          setValue={setRegion}
-          label="Filter by region"
-          options={["Any", "Europe", "The Americas", "Oceania", "Other"]}
-        />
-      </Box>
-      <Box maxW="600px" my="1em">
-        <WeaponSelector
-          label="Filter by weapon"
-          value={weapon}
-          setValue={(weapon: string) => setWeapon(weapon as Weapon)}
-          clearable
-        />
-      </Box>
+      <Button onClick={() => setShow(!show)}>
+        {show ? "Hide filters" : "Show filters"}
+      </Button>
+      <Collapse mt={4} isOpen={show}>
+        <Box maxW="600px" my="1em">
+          <RadioGroup
+            value={playstyle}
+            setValue={setPlaystyle}
+            label="Filter by playstyle"
+            options={[
+              "Any",
+              "Frontline/Slayer",
+              "Midline/Support",
+              "Backline/Anchor",
+            ]}
+          />
+        </Box>
+        <Box maxW="600px" my="1em">
+          <RadioGroup
+            value={region}
+            setValue={setRegion}
+            label="Filter by region"
+            options={["Any", "Europe", "The Americas", "Oceania", "Other"]}
+          />
+        </Box>
+        <Box maxW="600px" my="1em">
+          <WeaponSelector
+            label="Filter by weapon"
+            value={weapon}
+            setValue={(weapon: string) => setWeapon(weapon as Weapon)}
+            clearable
+          />
+        </Box>
+      </Collapse>
       <PostsAccordion posts={faPosts.filter(postsFilter)} />
     </>
   )

@@ -789,6 +789,32 @@ export const continents = {
   zw: "AF",
 } as const
 
+export const maps = [
+  "The Reef",
+  "Musselforge Fitness",
+  "Starfish Mainstage",
+  "Humpback Pump Track",
+  "Inkblot Art Academy",
+  "Sturgeon Shipyard",
+  "Moray Towers",
+  "Port Mackerel",
+  "Manta Maria",
+  "Kelp Dome",
+  "Snapper Canal",
+  "Blackbelly Skatepark",
+  "MakoMart",
+  "Walleye Warehouse",
+  "Shellendorf Institute",
+  "Arowana Mall",
+  "Goby Arena",
+  "Piranha Pit",
+  "Camp Triggerfish",
+  "Wahoo World",
+  "New Albacore Hotel",
+  "Ancho-V Games",
+  "Skipper Pavilion",
+]
+
 export const modes = [
   "",
   "Splat Zones",

@@ -33,7 +33,7 @@
     "webhook-discord": "^3.5.1"
   },
   "devDependencies": {
-    "cross-env": "^7.0.1",
+    "cross-env": "^7.0.2",
     "nodemon": "^2.0.2"
   }
 }
