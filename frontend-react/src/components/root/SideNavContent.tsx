@@ -80,22 +80,22 @@ const UserItem: React.FC<{ data?: UserData }> = ({ data }) => {
         />
       </MenuButton>
       <MenuList bg={bgColor}>
-        <MenuItem>
-          <Link
-            to={
-              data.user.custom_url
-                ? `u/${data.user.custom_url}`
-                : `u/${data.user.discord_id}`
-            }
-          >
+        <Link
+          to={
+            data.user.custom_url
+              ? `u/${data.user.custom_url}`
+              : `u/${data.user.discord_id}`
+          }
+        >
+          <MenuItem>
             <Flex alignItems="center" justifyContent="center">
               <Box as={FaUserAlt} w="24px" h="auto" mr="1em" />{" "}
               <Box as="span" mt="2px">
                 Profile
               </Box>
             </Flex>
-          </Link>
-        </MenuItem>
+          </MenuItem>
+        </Link>
         <MenuItem>
           <a href="/logout">
             <Flex alignItems="center" justifyContent="center">
