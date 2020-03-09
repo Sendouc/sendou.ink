@@ -39,7 +39,11 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
   const toast = useToast()
 
   useEffect(() => {
-    if (profile.motion_sens !== null && !profile.stick_sens) {
+    if (
+      profile.motion_sens !== null &&
+      !profile.stick_sens &&
+      profile.stick_sens !== 0
+    ) {
       setError("Motion sensitivity entered without stick sensitivity")
     } else if (profile.custom_url && profile.custom_url.length < 2) {
       setError("Custom URL has to be over 2 characters long")
@@ -110,6 +114,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
         <Box mt="1em">
           <Select
             label="Country"
+            isSearchable
             value={
               profile.country
                 ? {

@@ -267,26 +267,29 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
       )}
       <Box asFlex mt="1em" justifyContent="space-between" flexWrap="wrap">
         <Box asFlex flexDirection="column" alignItems="center">
-          <Select
-            label="Headgear"
-            options={headSelectOptions}
-            clearable
-            value={build.headgearItem}
-            setValue={(headgearItem: HeadGear) => {
-              if (
-                (!build.headgear ||
-                  build.headgear.every(ability => ability === "UNKNOWN")) &&
-                existingGear.hasOwnProperty(headgearItem)
-              ) {
-                handleChange({
-                  headgearItem,
-                  headgear: existingGear[headgearItem],
-                })
-              } else {
-                handleChange({ headgearItem })
-              }
-            }}
-          />
+          <Box minW="275px">
+            <Select
+              label="Headgear"
+              options={headSelectOptions}
+              clearable
+              isSearchable
+              value={build.headgearItem}
+              setValue={(headgearItem: HeadGear) => {
+                if (
+                  (!build.headgear ||
+                    build.headgear.every(ability => ability === "UNKNOWN")) &&
+                  existingGear.hasOwnProperty(headgearItem)
+                ) {
+                  handleChange({
+                    headgearItem,
+                    headgear: existingGear[headgearItem],
+                  })
+                } else {
+                  handleChange({ headgearItem })
+                }
+              }}
+            />
+          </Box>
           {build.headgearItem && (
             <Box mt="0.5em">
               <GearImage englishName={build.headgearItem} />
@@ -294,26 +297,29 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
           )}
         </Box>
         <Box asFlex flexDirection="column" alignItems="center">
-          <Select
-            label="Clothing"
-            options={clothingSelectOptions}
-            clearable
-            value={build.clothingItem}
-            setValue={(clothingItem: ClothingGear) => {
-              if (
-                (!build.clothing ||
-                  build.clothing.every(ability => ability === "UNKNOWN")) &&
-                existingGear.hasOwnProperty(clothingItem)
-              ) {
-                handleChange({
-                  clothingItem,
-                  clothing: existingGear[clothingItem],
-                })
-              } else {
-                handleChange({ clothingItem })
-              }
-            }}
-          />
+          <Box minW="275px">
+            <Select
+              label="Clothing"
+              options={clothingSelectOptions}
+              clearable
+              isSearchable
+              value={build.clothingItem}
+              setValue={(clothingItem: ClothingGear) => {
+                if (
+                  (!build.clothing ||
+                    build.clothing.every(ability => ability === "UNKNOWN")) &&
+                  existingGear.hasOwnProperty(clothingItem)
+                ) {
+                  handleChange({
+                    clothingItem,
+                    clothing: existingGear[clothingItem],
+                  })
+                } else {
+                  handleChange({ clothingItem })
+                }
+              }}
+            />
+          </Box>
           {build.clothingItem && (
             <Box mt="0.5em">
               <GearImage englishName={build.clothingItem} />
@@ -321,26 +327,29 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
           )}
         </Box>
         <Box asFlex flexDirection="column" alignItems="center">
-          <Select
-            label="Shoes"
-            options={shoesSelectOptions}
-            clearable
-            value={build.shoesItem}
-            setValue={(shoesItem: ShoesGear) => {
-              if (
-                (!build.shoes ||
-                  build.shoes.every(ability => ability === "UNKNOWN")) &&
-                existingGear.hasOwnProperty(shoesItem)
-              ) {
-                handleChange({
-                  shoesItem,
-                  shoes: existingGear[shoesItem],
-                })
-              } else {
-                handleChange({ shoesItem })
-              }
-            }}
-          />
+          <Box minW="275px">
+            <Select
+              label="Shoes"
+              options={shoesSelectOptions}
+              clearable
+              isSearchable
+              value={build.shoesItem}
+              setValue={(shoesItem: ShoesGear) => {
+                if (
+                  (!build.shoes ||
+                    build.shoes.every(ability => ability === "UNKNOWN")) &&
+                  existingGear.hasOwnProperty(shoesItem)
+                ) {
+                  handleChange({
+                    shoesItem,
+                    shoes: existingGear[shoesItem],
+                  })
+                } else {
+                  handleChange({ shoesItem })
+                }
+              }}
+            />
+          </Box>
           {build.shoesItem && (
             <Box mt="0.5em">
               <GearImage englishName={build.shoesItem} />

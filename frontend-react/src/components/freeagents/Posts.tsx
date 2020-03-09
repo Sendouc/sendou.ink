@@ -20,11 +20,7 @@ const Posts: React.FC<PostsAccordionProps> = ({ posts }) => {
   }
   return (
     <>
-      <Grid
-        gridGap="1em"
-        gridTemplateColumns="repeat(auto-fit, minmax(260px, 1fr))"
-        mt="1em"
-      >
+      <Grid gridTemplateColumns="repeat(auto-fit, minmax(260px, 1fr))" mt="1em">
         <InfiniteScroll
           pageStart={1}
           loadMore={page => setAgentsToShow(page * 10)}
@@ -33,7 +29,9 @@ const Posts: React.FC<PostsAccordionProps> = ({ posts }) => {
           {posts
             .filter((post, index) => index < agentsToShow)
             .map(post => (
-              <FreeAgentCard key={post.id} post={post} />
+              <Box my="1em">
+                <FreeAgentCard key={post.id} post={post} />
+              </Box>
             ))}
         </InfiniteScroll>
       </Grid>
