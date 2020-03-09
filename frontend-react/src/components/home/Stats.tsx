@@ -81,7 +81,7 @@ const Stats: React.FC = () => {
           {getStatString(stats.tournament_count)}{" "}
           <Link to="/tournaments">
             <Box as="span" color={themeColorWithShade}>
-              tournaments' data
+              tournament results
             </Box>
           </Link>
         </Box>
