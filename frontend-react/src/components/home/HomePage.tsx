@@ -1,6 +1,6 @@
 import React from "react"
 import { RouteComponentProps } from "@reach/router"
-import { Image, Heading, Flex, Box } from "@chakra-ui/core"
+import { Image, Heading, Flex } from "@chakra-ui/core"
 import { posterGirl } from "../../assets/imageImports"
 import { useContext } from "react"
 import MyThemeContext from "../../themeContext"
