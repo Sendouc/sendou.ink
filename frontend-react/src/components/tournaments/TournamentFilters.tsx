@@ -8,6 +8,7 @@ import Label from "../elements/Label"
 import MyThemeContext from "../../themeContext"
 import { Weapon } from "../../types"
 import { maps } from "../../utils/lists"
+import { FaFilter } from "react-icons/fa"
 
 interface TournamentFiltersProps {
   forms: {
@@ -34,7 +35,7 @@ const TournamentFilters: React.FC<TournamentFiltersProps> = ({
   const [show, setShow] = useState(false)
   return (
     <>
-      <Button onClick={() => setShow(!show)}>
+      <Button icon={FaFilter} onClick={() => setShow(!show)}>
         {show ? "Hide filters" : "Show filters"}
       </Button>
       <Collapse mt={4} isOpen={show}>

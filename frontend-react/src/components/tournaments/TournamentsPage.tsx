@@ -92,16 +92,12 @@ const TournamentsPage: React.FC<RouteComponentProps> = () => {
   const encodedQuery = encodeQueryParams(queryMap, query)
   const linkSuffix = `?${stringify(encodedQuery)}`
 
-  console.log(
-    "data?.searchForTournaments.pageCount",
-    data?.searchForTournaments.pageCount
-  )
   return (
     <>
       <Helmet>
-        <title>Tournaments | sendou.ink</title>
+        <title>Tournament Results | sendou.ink</title>
       </Helmet>
-      <PageHeader title="Tournaments" />
+      <PageHeader title="Tournament Results" />
       <TournamentFilters
         forms={forms}
         handleChange={handleFormChange}

@@ -11,15 +11,16 @@ import { FREE_AGENT_POSTS } from "../../graphql/queries/freeAgentPosts"
 import Loading from "../common/Loading"
 import Error from "../common/Error"
 import { RouteComponentProps } from "@reach/router"
-import PostsAccordion from "./Posts"
+import Posts from "./Posts"
 import PageHeader from "../common/PageHeader"
 import { Helmet } from "react-helmet-async"
 import WeaponSelector from "../common/WeaponSelector"
 import RadioGroup from "../elements/RadioGroup"
 import Box from "../elements/Box"
 import { continents } from "../../utils/lists"
-import { Collapse } from "@chakra-ui/core"
+import { Collapse, Flex } from "@chakra-ui/core"
 import Button from "../elements/Button"
+import { FaFilter } from "react-icons/fa"
 
 const playstyleToEnum = {
   "Frontline/Slayer": "FRONTLINE",
@@ -29,7 +30,8 @@ const playstyleToEnum = {
 
 const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
   const [weapon, setWeapon] = useState<Weapon | null>(null)
-  const [show, setShow] = useState(false)
+  const [showFilters, setShowFilters] = useState(false)
+  const [showModal, setShowModal] = useState(false)
   const [playstyle, setPlaystyle] = useState<
     "Any" | "Frontline/Slayer" | "Midline/Support" | "Backline/Anchor"
   >("Any")
@@ -40,16 +42,22 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
     FREE_AGENT_POSTS
   )
   const {
-    //data: userData,
+    data: userData,
     error: userQueryError,
     loading: userQueryLoading,
   } = useQuery<UserData>(USER)
 
-  if (loading || userQueryLoading || !data) return <Loading />
   if (error) return <Error errorMessage={error.message} />
+  if (loading || userQueryLoading || !data || !userData) return <Loading />
   if (userQueryError) return <Error errorMessage={userQueryError.message} />
 
   const faPosts = data.freeAgentPosts
+
+  const ownFAPost = faPosts.find(
+    post => post.discord_user.discord_id === userData.user?.discord_id
+  )
+
+  const buttonText = ownFAPost ? "Edit free agent post" : "New free agent post"
 
   const postsFilter = (post: FreeAgentPost) => {
     if (post.hidden) return false
@@ -93,16 +101,40 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
     return true
   }
 
+  const showModalButton = () => {
+    if (!userData.user) return false
+
+    if (ownFAPost && ownFAPost.hidden) {
+      const weekFromCreatingFAPost = parseInt(ownFAPost.createdAt) + 604800000
+      if (weekFromCreatingFAPost > Date.now()) {
+        return false
+      }
+    }
+
+    return true
+  }
+
   return (
     <>
       <Helmet>
         <title>Free Agents | sendou.ink</title>
       </Helmet>
       <PageHeader title="Free Agents" />
-      <Button onClick={() => setShow(!show)}>
-        {show ? "Hide filters" : "Show filters"}
-      </Button>
-      <Collapse mt={4} isOpen={show}>
+      <Flex justifyContent="space-between" flexWrap="wrap">
+        <Box m="0.5em">
+          <Button icon={FaFilter} onClick={() => setShowFilters(!showFilters)}>
+            {showFilters ? "Hide filters" : "Show filters"}
+          </Button>
+        </Box>
+        {showModalButton && (
+          <Box m="0.5em">
+            <Button onClick={() => setShowModal(true)}>
+              {buttonText} (coming back soon)
+            </Button>
+          </Box>
+        )}
+      </Flex>
+      <Collapse mt={4} isOpen={showFilters}>
         <Box maxW="600px" my="1em">
           <RadioGroup
             value={playstyle}
@@ -133,7 +165,7 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
           />
         </Box>
       </Collapse>
-      <PostsAccordion posts={faPosts.filter(postsFilter)} />
+      <Posts posts={faPosts.filter(postsFilter)} />
     </>
   )
 }

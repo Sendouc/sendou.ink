@@ -197,11 +197,7 @@ const SuggestionVouchModal: React.FC<SuggestionVouchModalProps> = ({
           onChange={(e, value) => handleChange({ region: value as string })}
           value={form.region}
         >
-          <Radio
-            variantColor={themeColor}
-            value="EU"
-            isDisabled={plusServer !== "ONE"}
-          >
+          <Radio variantColor={themeColor} value="EU">
             Europe
           </Radio>
           <Radio variantColor={themeColor} value="NA">

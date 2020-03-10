@@ -115,7 +115,7 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
           </Box>
         </Flex>
       </Box>
-      <Box mt="2em">
+      <Box mt="2em" mb="1em">
         <Pagination
           currentPage={forms.page ?? 1}
           pageCount={data?.searchForPlacements.pageCount ?? 999}

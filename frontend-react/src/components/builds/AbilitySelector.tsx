@@ -5,6 +5,7 @@ import { abilitiesGameOrder } from "../../utils/lists"
 import AbilityIcon from "./AbilityIcon"
 import { Ability } from "../../types"
 import Button from "../elements/Button"
+import { FaFilter } from "react-icons/fa"
 
 interface AbilitySelectorProps {
   abilities: Ability[]
@@ -75,7 +76,9 @@ const AbilitySelector: React.FC<AbilitySelectorProps> = ({
       )}
     </>
   ) : (
-    <Button onClick={() => setShow(!show)}>Filter by ability</Button>
+    <Button icon={FaFilter} onClick={() => setShow(!show)}>
+      Filter by ability
+    </Button>
   )
 }
 

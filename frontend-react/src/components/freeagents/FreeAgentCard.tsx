@@ -38,7 +38,6 @@ const FreeAgentCard: React.FC<FreeAgentCardProps> = ({ post }) => {
       p="25px"
       flexDirection="column"
       justifyContent="space-between"
-      maxW="500px"
     >
       <Flex justifyContent="space-between" flexWrap="wrap" alignItems="center">
         <Box color="#999999" width="50px" m="1em">

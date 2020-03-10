@@ -232,7 +232,6 @@ const Suggestions: React.FC<SuggestionsProps> = ({ user }) => {
             {plusOneVouches.length > 0 && (
               <Box mr="2em" mb="1em">
                 <Heading size="md">Vouched players to +1</Heading>
-
                 <Grid
                   gridRowGap="0.5em"
                   gridTemplateColumns="min-content 1fr"
@@ -245,7 +244,6 @@ const Suggestions: React.FC<SuggestionsProps> = ({ user }) => {
             {plusTwoVouches.length > 0 && (
               <Box>
                 <Heading size="md">Vouched players to +2</Heading>
-
                 <Grid
                   gridRowGap="0.5em"
                   gridTemplateColumns="min-content 1fr"
@@ -258,31 +256,31 @@ const Suggestions: React.FC<SuggestionsProps> = ({ user }) => {
           </Flex>
         )}
         {data.suggestions.length > 0 && (
-          <Flex flexWrap="wrap" mt="2em">
-            <Box mr="2em" mb="1em">
-              {plusOneSuggested.length > 0 && (
+          <Flex flexWrap="wrap" mt="1em">
+            {plusOneSuggested.length > 0 && (
+              <Box mr="2em" mb="1em">
                 <Heading size="md">Suggested players to +1</Heading>
-              )}
-              <Grid
-                gridRowGap="0.5em"
-                gridTemplateColumns="min-content 1fr"
-                mt="1em"
-              >
-                {plusOneSuggested.map(suggestionMap)}
-              </Grid>
-            </Box>
-            <Box mr="2em" mb="1em">
-              {plusTwoSuggested.length > 0 && (
+                <Grid
+                  gridRowGap="0.5em"
+                  gridTemplateColumns="min-content 1fr"
+                  mt="1em"
+                >
+                  {plusOneSuggested.map(suggestionMap)}
+                </Grid>
+              </Box>
+            )}
+            {plusTwoSuggested.length > 0 && (
+              <Box mr="2em" mb="1em">
                 <Heading size="md">Suggested players to +2</Heading>
-              )}
-              <Grid
-                gridRowGap="0.5em"
-                gridTemplateColumns="min-content 1fr"
-                mt="1em"
-              >
-                {plusTwoSuggested.map(suggestionMap)}
-              </Grid>
-            </Box>
+                <Grid
+                  gridRowGap="0.5em"
+                  gridTemplateColumns="min-content 1fr"
+                  mt="1em"
+                >
+                  {plusTwoSuggested.map(suggestionMap)}
+                </Grid>
+              </Box>
+            )}
           </Flex>
         )}
       </Box>
