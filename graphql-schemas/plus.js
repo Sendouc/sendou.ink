@@ -327,7 +327,7 @@ const resolvers = {
 
       return Summary.find(searchCriteria)
         .populate("discord_user")
-        .sort({ "score.total": "desc", year: "desc", month: "desc" })
+        .sort({ year: "desc", month: "desc", "score.total": "desc" })
     },
   },
   Mutation: {
