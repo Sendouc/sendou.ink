@@ -21,6 +21,7 @@ import { continents } from "../../utils/lists"
 import { Collapse, Flex } from "@chakra-ui/core"
 import Button from "../elements/Button"
 import { FaFilter } from "react-icons/fa"
+import FAPostModal from "./FAPostModal"
 
 const playstyleToEnum = {
   "Frontline/Slayer": "FRONTLINE",
@@ -103,6 +104,7 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
 
   const showModalButton = () => {
     if (!userData.user) return false
+    console.log("ownFAPost", ownFAPost)
 
     if (ownFAPost && ownFAPost.hidden) {
       const weekFromCreatingFAPost = parseInt(ownFAPost.createdAt) + 604800000
@@ -120,17 +122,18 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
         <title>Free Agents | sendou.ink</title>
       </Helmet>
       <PageHeader title="Free Agents" />
+      {showModal && (
+        <FAPostModal closeModal={() => setShowModal(false)} post={ownFAPost} />
+      )}
       <Flex justifyContent="space-between" flexWrap="wrap">
         <Box m="0.5em">
           <Button icon={FaFilter} onClick={() => setShowFilters(!showFilters)}>
             {showFilters ? "Hide filters" : "Show filters"}
           </Button>
         </Box>
-        {showModalButton && (
+        {showModalButton() && (
           <Box m="0.5em">
-            <Button onClick={() => setShowModal(true)}>
-              {buttonText} (coming back soon)
-            </Button>
+            <Button onClick={() => setShowModal(true)}>{buttonText}</Button>
           </Box>
         )}
       </Flex>

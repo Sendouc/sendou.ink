@@ -29,8 +29,8 @@ const Posts: React.FC<PostsAccordionProps> = ({ posts }) => {
           {posts
             .filter((post, index) => index < agentsToShow)
             .map(post => (
-              <Box my="1em">
-                <FreeAgentCard key={post.id} post={post} />
+              <Box my="1em" key={post.id}>
+                <FreeAgentCard post={post} />
               </Box>
             ))}
         </InfiniteScroll>

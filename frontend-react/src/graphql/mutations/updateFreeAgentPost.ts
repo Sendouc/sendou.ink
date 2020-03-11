@@ -1,15 +1,15 @@
-import { gql } from "apollo-boost"
+import { gql, DocumentNode } from "apollo-boost"
 
-export const addFreeAgentPost = gql`
-  mutation addFreeAgentPost(
+export const UPDATE_FREE_AGENT_POST: DocumentNode = gql`
+  mutation updateFreeAgentPost(
     $can_vc: CanVC!
-    $playstyles: [Playstyle!]
+    $playstyles: [Playstyle!]!
     $activity: String
     $looking_for: String
     $past_experience: String
     $description: String
   ) {
-    addFreeAgentPost(
+    updateFreeAgentPost(
       can_vc: $can_vc
       playstyles: $playstyles
       activity: $activity

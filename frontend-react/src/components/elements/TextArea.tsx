@@ -10,6 +10,7 @@ interface TextAreaProps {
   label?: string
   limit?: number
   required?: boolean
+  height?: string
   id?: string
 }
 
@@ -19,6 +20,7 @@ const TextArea: React.FC<TextAreaProps> = ({
   label,
   limit,
   required,
+  height,
 }) => {
   const { themeColorHex, grayWithShade, darkerBgColor } = useContext(
     MyThemeContext
@@ -35,6 +37,7 @@ const TextArea: React.FC<TextAreaProps> = ({
         onChange={handleChange}
         focusBorderColor={themeColorHex}
         size="md"
+        height={height}
         _hover={{}}
         background={darkerBgColor}
         borderColor="#CCCCCC"

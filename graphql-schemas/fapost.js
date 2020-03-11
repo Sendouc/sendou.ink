@@ -1,4 +1,8 @@
-const { UserInputError, gql } = require("apollo-server-express")
+const {
+  UserInputError,
+  AuthenticationError,
+  gql,
+} = require("apollo-server-express")
 const FAPost = require("../mongoose-models/fapost")
 const sendFAPostToDiscord = require("../utils/webhook")
 
@@ -13,7 +17,7 @@ const typeDef = gql`
   extend type Mutation {
     addFreeAgentPost(
       can_vc: CanVC!
-      playstyles: [Playstyle!]
+      playstyles: [Playstyle!]!
       activity: String
       looking_for: String
       past_experience: String
@@ -22,7 +26,7 @@ const typeDef = gql`
     hideFreeAgentPost: Boolean!
     updateFreeAgentPost(
       can_vc: CanVC!
-      playstyles: [Playstyle!]
+      playstyles: [Playstyle!]!
       activity: String
       looking_for: String
       past_experience: String

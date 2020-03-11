@@ -50,7 +50,7 @@ const Modal: React.FC<ModalProps> = ({ children, title, closeModal }) => {
             alignItems="center"
             fontSize="24px"
             fontWeight="black"
-            mb="1.5em"
+            mb="0.5em"
           >
             {title}
             {closeModal && (

@@ -128,7 +128,7 @@ const SuggestionVouchModal: React.FC<SuggestionVouchModalProps> = ({
   }
 
   return (
-    <Modal title={"Suggesting or vouching a player"} closeModal={closeModal}>
+    <Modal title="Suggesting or vouching a player" closeModal={closeModal}>
       <FormControl isRequired isInvalid={showErrors && !form.discord_id}>
         <FormLabel htmlFor="user">Discord username</FormLabel>
         <UserSelector
@@ -142,8 +142,9 @@ const SuggestionVouchModal: React.FC<SuggestionVouchModalProps> = ({
       </FormControl>
 
       <FormControl isRequired mt="1em">
-        <FormLabel htmlFor="server">Action</FormLabel>
+        <FormLabel htmlFor="action">Action</FormLabel>
         <RadioGroup
+          id="action"
           spacing={5}
           isInline
           onChange={(e, value) => setActionType(value as string)}
