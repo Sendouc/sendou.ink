@@ -74,7 +74,7 @@ export interface User {
   twitch_name?: string
   twitter_name?: string
   country?: CountryCode
-  weapons: Weapon[]
+  weapons?: Weapon[]
   top500: boolean
   custom_url?: string
   sens?: {
