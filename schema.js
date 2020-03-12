@@ -3,7 +3,7 @@
 const { merge } = require("lodash")
 const { makeExecutableSchema, gql } = require("apollo-server-express")
 const { Build, buildResolvers } = require("./graphql-schemas/build")
-const { Maplist, maplistResolvers } = require("./graphql-schemas/maplist")
+const { Maplist, maplistResolvers } = require("./graphql-schemas/maps")
 const { Placement, placementResolvers } = require("./graphql-schemas/placement")
 const { Player, playerResolvers } = require("./graphql-schemas/player")
 const { Rotation, rotationResolvers } = require("./graphql-schemas/rotation")

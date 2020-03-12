@@ -185,12 +185,6 @@ const resolvers = {
         return null
       }
 
-      const plus_server =
-        ctx.user.plus.membership_status === "ONE" ||
-        ctx.user.plus.vouch_status === "ONE"
-          ? "ONE"
-          : "TWO"
-
       const state = await State.findOne({})
 
       const date = new Date()
