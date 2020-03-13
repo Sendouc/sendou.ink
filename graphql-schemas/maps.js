@@ -27,10 +27,10 @@ const typeDef = gql`
 
   type Maplist {
     name: String!
-    sz: Int!
-    tc: Int!
-    rm: Int!
-    cb: Int!
+    sz: [String!]!
+    tc: [String!]!
+    rm: [String!]!
+    cb: [String!]!
   }
 
   type MapVote {
