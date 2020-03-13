@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { RouteComponentProps, Link } from "@reach/router"
+import { RouteComponentProps, Link, Redirect } from "@reach/router"
 import { useQuery, useMutation } from "@apollo/react-hooks"
 import { MAP_VOTES, MapVotesData } from "../../graphql/queries/mapVotes"
 import Error from "../common/Error"
@@ -15,9 +15,15 @@ import {
   ADD_MAP_VOTES,
 } from "../../graphql/mutations/addMapVotes"
 import Alert from "../elements/Alert"
+import { USER } from "../../graphql/queries/user"
 
 const MapVoting: React.FC<RouteComponentProps> = ({}) => {
   const { data, error, loading } = useQuery<MapVotesData>(MAP_VOTES)
+  const {
+    data: userData,
+    error: userQueryError,
+    loading: userQueryLoading,
+  } = useQuery(USER)
   const toast = useToast()
   const [votes, setVotes] = useState<
     {
@@ -70,7 +76,10 @@ const MapVoting: React.FC<RouteComponentProps> = ({}) => {
   }, [data, error, loading])
 
   if (error) return <Error errorMessage={error.message} />
-  if (loading) return <Loading />
+  if (userQueryError) return <Error errorMessage={userQueryError.message} />
+  if (loading || userQueryLoading || !userData || !data) return <Loading />
+  if (!userData.user) return <Redirect to="/access" />
+  if (!data.mapVotes) return <Redirect to="/404" />
 
   return (
     <>
