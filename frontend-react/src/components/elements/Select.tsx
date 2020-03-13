@@ -89,6 +89,12 @@ const Select: React.FC<SelectProps> = ({
     return value
   }
 
+  const getOptionColor = (focused: boolean) => {
+    if (focused) return "black"
+
+    return colorMode === "light" ? "black" : "white"
+  }
+
   return (
     <Box>
       {label && <Label required={required}>{label}</Label>}
@@ -150,6 +156,13 @@ const Select: React.FC<SelectProps> = ({
             background: themeColorHexLighter,
             color: "black",
           }),
+          option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+            return {
+              ...styles,
+              backgroundColor: isFocused ? themeColorHexLighter : undefined,
+              color: getOptionColor(isFocused),
+            }
+          },
         }}
       />
     </Box>
