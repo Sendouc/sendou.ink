@@ -104,7 +104,6 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
 
   const showModalButton = () => {
     if (!userData.user) return false
-    console.log("ownFAPost", ownFAPost)
 
     if (ownFAPost && ownFAPost.hidden) {
       const weekFromCreatingFAPost = parseInt(ownFAPost.createdAt) + 604800000

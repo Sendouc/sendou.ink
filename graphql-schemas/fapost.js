@@ -4,6 +4,7 @@ const {
   gql,
 } = require("apollo-server-express")
 const FAPost = require("../mongoose-models/fapost")
+const FALike = require("../mongoose-models/falike")
 const sendFAPostToDiscord = require("../utils/webhook")
 
 const canVCValues = ["YES", "USUALLY", "SOMETIMES", "NO"]
@@ -32,6 +33,8 @@ const typeDef = gql`
       past_experience: String
       description: String
     ): Boolean!
+    addLike(discord_id: String!): Boolean!
+    deleteLike(discord_id: String!): Boolean!
   }
 
   enum CanVC {
@@ -195,6 +198,46 @@ const resolvers = {
           invalidArgs: args,
         })
       })
+
+      await FALike.deleteMany({
+        $or: [
+          { liker_discord_id: ctx.user.discord_id },
+          { liked_discord_id: ctx.user.discord_id },
+        ],
+      })
+
+      return true
+    },
+    addLike: async (root, args, ctx) => {
+      if (!ctx.user) throw new AuthenticationError("Not logged in.")
+
+      const post = await FAPost.findOne({ discord_id: ctx.user.discord_id })
+
+      if (!post) {
+        throw new UserInputError("Not a free agent")
+      }
+
+      const likedPost = await FAPost.findOne({ discord_id: args.discord_id })
+
+      if (!likedPost) {
+        throw new UserInputError("Liked user not a free agent")
+      }
+
+      await FALike.findOneAndUpdate(
+        { liker_discord_id: ctx.user.discord_id },
+        {
+          liker_discord_id: ctx.user.discord_id,
+          liked_discord_id: args.discord_id,
+        },
+        { upsert: true }
+      )
+
+      return true
+    },
+    deleteLike: async (root, args, ctx) => {
+      if (!ctx.user) throw new AuthenticationError("Not logged in.")
+
+      await FALike.deleteOne({ liked_discord_id: args.discord_id })
 
       return true
     },
