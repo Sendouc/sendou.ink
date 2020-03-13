@@ -1,4 +1,8 @@
-const { UserInputError, gql } = require("apollo-server-express")
+const {
+  UserInputError,
+  AuthenticationError,
+  gql,
+} = require("apollo-server-express")
 const Maplist = require("../mongoose-models/maplist")
 const MapBallot = require("../mongoose-models/mapballot")
 const maps = require("../utils/maps")
@@ -7,6 +11,10 @@ const typeDef = gql`
   extend type Query {
     maplists: [Maplist!]!
     mapVotes: [MapVote!]
+  }
+
+  extend type Mutation {
+    addMapVotes(votes: [MapVote!]!): boolean
   }
 
   type Maplist {
@@ -56,6 +64,47 @@ const resolvers = {
       }
 
       return mapBallot.maps
+    },
+  },
+  Mutation: {
+    addMapVotes: (root, args, ctx) => {
+      if (!ctx.user || !ctx.user.plus || !ctx.user.plus.membership_status) {
+        throw new AuthenticationError("Insufficient access")
+      }
+
+      const legitVotes = [-1, 0, 1]
+
+      args.votes.forEach((vote, index) => {
+        if (vote.name !== maps[index]) {
+          throw new UserInputError(
+            `Invalid map or position: ${vote.name} on the index ${index}`
+          )
+        }
+
+        if (legitVotes.indexOf(vote.sz) === -1) {
+          throw new UserInputError(`Invalid vote for sz: ${vote.sz}`)
+        }
+
+        if (legitVotes.indexOf(vote.tc) === -1) {
+          throw new UserInputError(`Invalid vote for sz: ${vote.tc}`)
+        }
+
+        if (legitVotes.indexOf(vote.rm) === -1) {
+          throw new UserInputError(`Invalid vote for sz: ${vote.rm}`)
+        }
+
+        if (legitVotes.indexOf(vote.cb) === -1) {
+          throw new UserInputError(`Invalid vote for sz: ${vote.cb}`)
+        }
+
+        const discord_id = ctx.user.discord_id
+
+        MapBallot.findOneAndUpdate(
+          { discord_id },
+          { discord_id, maps: args.votes },
+          { upsert: true }
+        )
+      })
     },
   },
 }
