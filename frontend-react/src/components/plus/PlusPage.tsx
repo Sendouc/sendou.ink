@@ -9,9 +9,10 @@ import { USER } from "../../graphql/queries/user"
 //import Voting from "./Voting"
 import { Redirect, RouteComponentProps, Link } from "@reach/router"
 import PageHeader from "../common/PageHeader"
-import { FaHistory } from "react-icons/fa"
+import { FaHistory, FaVoteYea } from "react-icons/fa"
 import Button from "../elements/Button"
 import { Helmet } from "react-helmet-async"
+import { Flex, Box } from "@chakra-ui/core"
 
 interface PlusInfoData {
   plusInfo: {
@@ -64,11 +65,20 @@ const PlusPage: React.FC<RouteComponentProps> = () => {
           handleError={handleError}
         />
       )*/}
-      <Link to="/plus/history">
-        <Button outlined icon={FaHistory}>
-          Show voting history
-        </Button>
-      </Link>
+      <Flex>
+        <Box mr="1em">
+          <Link to="/plus/history">
+            <Button outlined icon={FaHistory}>
+              Show voting history
+            </Button>
+          </Link>
+        </Box>
+        <Link to="/plus/mapvoting">
+          <Button outlined icon={FaVoteYea}>
+            Vote on maps
+          </Button>
+        </Link>
+      </Flex>
       <Suggestions user={userData.user} />
     </>
   )

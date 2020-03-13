@@ -13,16 +13,24 @@ const typeDef = gql`
     mapVotes: [MapVote!]
   }
 
+  input MapVoteInput {
+    name: String!
+    sz: Int!
+    tc: Int!
+    rm: Int!
+    cb: Int!
+  }
+
   extend type Mutation {
-    addMapVotes(votes: [MapVote!]!): boolean
+    addMapVotes(votes: [MapVoteInput!]!): Boolean
   }
 
   type Maplist {
     name: String!
-    sz: [String!]!
-    tc: [String!]!
-    rm: [String!]!
-    cb: [String!]!
+    sz: Int!
+    tc: Int!
+    rm: Int!
+    cb: Int!
   }
 
   type MapVote {
@@ -67,7 +75,7 @@ const resolvers = {
     },
   },
   Mutation: {
-    addMapVotes: (root, args, ctx) => {
+    addMapVotes: async (root, args, ctx) => {
       if (!ctx.user || !ctx.user.plus || !ctx.user.plus.membership_status) {
         throw new AuthenticationError("Insufficient access")
       }
@@ -96,15 +104,16 @@ const resolvers = {
         if (legitVotes.indexOf(vote.cb) === -1) {
           throw new UserInputError(`Invalid vote for sz: ${vote.cb}`)
         }
-
-        const discord_id = ctx.user.discord_id
-
-        MapBallot.findOneAndUpdate(
-          { discord_id },
-          { discord_id, maps: args.votes },
-          { upsert: true }
-        )
       })
+
+      const discord_id = ctx.user.discord_id
+      await MapBallot.findOneAndUpdate(
+        { discord_id },
+        { discord_id, maps: args.votes },
+        { upsert: true }
+      )
+
+      return true
     },
   },
 }
