@@ -7,7 +7,7 @@ import Loading from "../common/Loading"
 import { Helmet } from "react-helmet-async"
 import PageHeader from "../common/PageHeader"
 import MapVoteGrid from "./MapVoteGrid"
-import { Box, useToast } from "@chakra-ui/core"
+import { useToast } from "@chakra-ui/core"
 import Button from "../elements/Button"
 import { FaEnvelope, FaLongArrowAltLeft } from "react-icons/fa"
 import {
@@ -17,7 +17,7 @@ import {
 import Alert from "../elements/Alert"
 import { USER } from "../../graphql/queries/user"
 
-const MapVoting: React.FC<RouteComponentProps> = ({}) => {
+const MapVoting: React.FC<RouteComponentProps> = () => {
   const { data, error, loading } = useQuery<MapVotesData>(MAP_VOTES)
   const {
     data: userData,

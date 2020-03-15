@@ -13,6 +13,7 @@ const playstyleValues = ["FRONTLINE", "MIDLINE", "BACKLINE"]
 const typeDef = gql`
   extend type Query {
     freeAgentPosts: [FAPost!]!
+    freeAgentMatches: FAMatches!
   }
 
   extend type Mutation {
@@ -48,6 +49,11 @@ const typeDef = gql`
     FRONTLINE
     MIDLINE
     BACKLINE
+  }
+
+  type FAMatches {
+    matched_discord_ids: [String!]!
+    number_of_likes_received: Int!
   }
 
   "Represents a free agent post of a player looking for a team"
@@ -112,6 +118,36 @@ const resolvers = {
             invalidArgs: args,
           })
         })
+    },
+    freeAgentMatches: async (root, args, ctx) => {
+      if (!ctx.user) throw new AuthenticationError("Not logged in.")
+
+      const post = await FAPost.findOne({ discord_id: ctx.user.discord_id })
+
+      if (!post) {
+        throw new UserInputError("Not a free agent")
+      }
+
+      const likesGiven = await FALike.find({
+        liker_discord_id: ctx.user.discord_id,
+      })
+
+      const likesReceived = await FALike.find({
+        liked_discord_id: ctx.user.discord_id,
+      })
+
+      const number_of_likes_received = likesReceived.length
+      const likerDiscordIds = likesReceived.map(
+        FALike => FALike.liker_discord_id
+      )
+
+      const matched_discord_ids = likesGiven.reduce((acc, cur) => {
+        if (likerDiscordIds.indexOf(cur.liked_discord_id) === -1) return acc
+
+        return [...acc, cur.liked_discord_id]
+      }, [])
+
+      return { matched_discord_ids, number_of_likes_received }
     },
   },
   Mutation: {

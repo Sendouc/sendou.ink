@@ -78,7 +78,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
           ml="8px"
           mt="1em"
         >
-          {new Date(parseInt(build.updatedAt)).toLocaleString()}
+          {new Date(parseInt(build.updatedAt)).toLocaleDateString()}
         </Box>
         {build.title && (
           <Box ml="8px" fontWeight="semibold" as="h4" lineHeight="tight">
