@@ -10,6 +10,7 @@ const maps = require("../utils/maps")
 const typeDef = gql`
   extend type Query {
     maplists: [Maplist!]!
+    plusMaplists: [Maplist!]!
     mapVotes: [MapVote!]
   }
 
@@ -69,6 +70,9 @@ const resolvers = {
             invalidArgs: args,
           })
         })
+    },
+    plusMaplists: (root, args) => {
+      return Maplist.find({ plus: { $ne: null } })
     },
     mapVotes: async (root, args, ctx) => {
       if (!ctx.user || !ctx.user.plus || !ctx.user.plus.membership_status) {
