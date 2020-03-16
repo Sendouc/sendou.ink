@@ -138,13 +138,6 @@ const resolvers = {
         ballot => !!ballot.discord_user.plus.membership_status
       )
 
-      /*type MapVoteCount {
-    name: String!
-    sz: [Int!]!
-    tc: [Int!]!
-    rm: [Int!]!
-    cb: [Int!]!
-  }*/
       const voter_count = validBallots.length
       const vote_counts = maps.map(stage => ({
         name: stage,
@@ -223,7 +216,6 @@ const resolvers = {
       }
 
       for (const stageObj of cbMaps) {
-        console.log("cbMapPool.length", cbMapPool.length)
         if (cbMapPool.length >= 8 && stageObj.score <= 0) {
           break
         }
@@ -236,42 +228,29 @@ const resolvers = {
       rmMapPool.sort((a, b) => maps.indexOf(a) - maps.indexOf(b))
       cbMapPool.sort((a, b) => maps.indexOf(a) - maps.indexOf(b))
 
-      console.log("szMapPool", szMapPool)
-      console.log("tcMapPool", tcMapPool)
-      console.log("rmMapPool", rmMapPool)
-      console.log("cbMapPool", cbMapPool)
-
-      /*type PlusMaplistInfo {
-        month: Int!
-        year: Int!
-        voter_count: Int!
-        vote_counts: [MapVoteCount!]!
-      }
-    
-      type Maplist {
-        name: String!
-        sz: [String!]!
-        tc: [String!]!
-        rm: [String!]!
-        cb: [String!]!
-        plus: PlusMaplistInfo
-      }*/
+      const now = new Date()
 
       const maplist = {
-        name: `Plus Server getmonth getyear`,
+        name: `Plus Server ${now.toLocaleString("default", {
+          month: "long",
+        })} ${now.getFullYear()}`,
         sz: szMapPool,
         tc: tcMapPool,
         rm: rmMapPool,
         cb: cbMapPool,
+        order: 0,
         plus: {
-          month: 1,
-          year: 1999,
+          month: now.getMonth() + 1,
+          year: now.getFullYear(),
           voter_count,
           vote_counts,
         },
       }
 
-      console.log("maplist", maplist)
+      await Maplist.updateMany({ order: 0 }, { order: 1 })
+      await Maplist.create(maplist)
+
+      return true
     },
   },
 }

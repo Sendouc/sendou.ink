@@ -42,7 +42,7 @@
     "react-select": "^3.0.8",
     "react-super-responsive-table": "^5.1.1",
     "react-tweet-embed": "^1.2.2",
-    "source-map-explorer": "^2.3.1",
+    "source-map-explorer": "^2.4.0",
     "typescript": "^3.8.3",
     "use-query-params": "^0.6.0"
   },
