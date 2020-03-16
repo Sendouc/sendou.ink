@@ -21,75 +21,75 @@ const patches = {
   5: {
     2018: {
       name: "3.0",
-      link: "https://splatoonwiki.org/wiki/Version_3.0.0_(Splatoon_2)"
+      link: "https://splatoonwiki.org/wiki/Version_3.0.0_(Splatoon_2)",
     },
     2019: {
       name: "4.8",
-      link: "https://splatoonwiki.org/wiki/Version_4.8.0_(Splatoon_2)"
-    }
+      link: "https://splatoonwiki.org/wiki/Version_4.8.0_(Splatoon_2)",
+    },
   },
   6: {
     2018: {
       name: "3.1",
-      link: "https://splatoonwiki.org/wiki/Version_3.1.0_(Splatoon_2)"
+      link: "https://splatoonwiki.org/wiki/Version_3.1.0_(Splatoon_2)",
     },
     2019: {
       name: "4.9",
-      link: "https://splatoonwiki.org/wiki/Version_4.9.0_(Splatoon_2)"
-    }
+      link: "https://splatoonwiki.org/wiki/Version_4.9.0_(Splatoon_2)",
+    },
   },
   7: {
     2018: {
       name: "3.2",
-      link: "https://splatoonwiki.org/wiki/Version_3.2.0_(Splatoon_2)"
+      link: "https://splatoonwiki.org/wiki/Version_3.2.0_(Splatoon_2)",
     },
     2019: {
       name: "5.0",
-      link: "https://splatoonwiki.org/wiki/Version_5.0.0_(Splatoon_2)"
-    }
+      link: "https://splatoonwiki.org/wiki/Version_5.0.0_(Splatoon_2)",
+    },
   },
   9: {
     2018: {
       name: "4.0",
-      link: "https://splatoonwiki.org/wiki/Version_4.0.0_(Splatoon_2)"
-    }
+      link: "https://splatoonwiki.org/wiki/Version_4.0.0_(Splatoon_2)",
+    },
   },
   10: {
     2018: {
       name: "4.1",
-      link: "https://splatoonwiki.org/wiki/Version_4.1.0_(Splatoon_2)"
-    }
+      link: "https://splatoonwiki.org/wiki/Version_4.1.0_(Splatoon_2)",
+    },
   },
   11: {
     2018: {
       name: "4.2",
-      link: "https://splatoonwiki.org/wiki/Version_4.2.0_(Splatoon_2)"
-    }
+      link: "https://splatoonwiki.org/wiki/Version_4.2.0_(Splatoon_2)",
+    },
   },
   12: {
     2018: {
       name: "4.3",
-      link: "https://splatoonwiki.org/wiki/Version_4.3.0_(Splatoon_2)"
-    }
+      link: "https://splatoonwiki.org/wiki/Version_4.3.0_(Splatoon_2)",
+    },
   },
   1: {
     2019: {
       name: "4.4",
-      link: "https://splatoonwiki.org/wiki/Version_4.4.0_(Splatoon_2)"
-    }
+      link: "https://splatoonwiki.org/wiki/Version_4.4.0_(Splatoon_2)",
+    },
   },
   3: {
     2019: {
       name: "4.5",
-      link: "https://splatoonwiki.org/wiki/Version_4.5.0_(Splatoon_2)"
-    }
+      link: "https://splatoonwiki.org/wiki/Version_4.5.0_(Splatoon_2)",
+    },
   },
   4: {
     2019: {
       name: "4.6+4.7",
-      link: "https://splatoonwiki.org/wiki/List_of_updates_in_Splatoon_2"
-    }
-  }
+      link: "https://splatoonwiki.org/wiki/List_of_updates_in_Splatoon_2",
+    },
+  },
 }
 
 const presetColors = [
@@ -102,7 +102,7 @@ const presetColors = [
   "#A52A2A",
   "#1BC5CD",
   "#000080",
-  "#5BCCA0"
+  "#5BCCA0",
 ]
 
 const setPlotDataInitial = () => {
@@ -113,7 +113,7 @@ const setPlotDataInitial = () => {
         name: i,
         year: 2018,
         xLabel: month[i],
-        patch: patches[i][2018].name
+        patch: patches[i][2018].name,
       })
     } else {
       arr_to_return.push({ name: i, year: 2018, xLabel: month[i] })
@@ -132,7 +132,7 @@ const setPlotDataInitial = () => {
           name: j,
           year: i,
           xLabel,
-          patch: patches[j][i].name
+          patch: patches[j][i].name,
         })
       } else {
         arr_to_return.push({ name: j, year: i, xLabel })
@@ -210,7 +210,7 @@ const reducer = (state, action) => {
 
       const keyObj = {
         weapon,
-        color: getColor(state)
+        color: getColor(state),
       }
       return { data: toPlotData, keys: [...state.keys, keyObj] }
     case "delete":
@@ -223,7 +223,7 @@ const reducer = (state, action) => {
       const newKey = `${weaponLeft} + ${weaponRight}`
       const newKeysWithCombined = [
         ...state.keys,
-        { weapon: newKey, color: getColor(state) }
+        { weapon: newKey, color: getColor(state) },
       ].filter(k => k.weapon !== weaponLeft && k.weapon !== weaponRight)
       const newDataWithCombined = [...state.data].map(d => {
         const dataObj = { ...d }
@@ -249,7 +249,7 @@ const reducer = (state, action) => {
           ...k,
           color: "#000000".replace(/0/g, function() {
             return (~~(Math.random() * 16)).toString(16)
-          })
+          }),
         }
       })
       return { data: state.data, keys: keysWithNewColor }
@@ -261,12 +261,12 @@ const reducer = (state, action) => {
 export default function useTrends(weapon, mode) {
   const [plotData, dispatch] = useReducer(reducer, {
     data: setPlotDataInitial(),
-    keys: []
+    keys: [],
   })
   // Skip query if there is no weapon provided
   const { data, loading, error } = useQuery(searchForTrend, {
     skip: !weapon,
-    variables: { weapon }
+    variables: { weapon },
   })
 
   useEffect(() => {

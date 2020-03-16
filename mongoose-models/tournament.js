@@ -8,20 +8,20 @@ const tournamentSchema = new mongoose.Schema({
   date: { type: Date, required: true },
   popular_weapons: {
     type: [String],
-    validate: [popular_weapon_limit, "{PATH} must be 5"]
+    validate: [popular_weapon_limit, "{PATH} must be 5"],
   },
   winning_team_name: { type: String, required: true },
   winning_team_players: {
     type: [String],
     required: true,
-    validate: [player_limit, "{PATH} must be 4"]
+    validate: [player_limit, "{PATH} must be 4"],
   },
   winning_team_unique_ids: {
     type: [String],
     required: false,
     validate: [player_limit, "{PATH} must be 4"],
-    default: [null, null, null, null]
-  }
+    default: [null, null, null, null],
+  },
 })
 
 function popular_weapon_limit(val) {

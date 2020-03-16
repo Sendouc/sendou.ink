@@ -12,7 +12,7 @@ const gear = [
       "School Cardigan",
       "School Uniform",
       "Squinja Suit",
-      "Steel Platemail"
+      "Steel Platemail",
     ],
     head: [
       "Enchanted Hat",
@@ -25,7 +25,7 @@ const gear = [
       "Squid Clip-Ons",
       "Squid Hairclip",
       "Squinja Mask",
-      "Steel Helm"
+      "Steel Helm",
     ],
     shoes: [
       "Enchanted Boots",
@@ -38,8 +38,8 @@ const gear = [
       "Samurai Shoes",
       "School Shoes",
       "Squinja Boots",
-      "Steel Greaves"
-    ]
+      "Steel Greaves",
+    ],
   },
   {
     brand: "Annaki",
@@ -55,10 +55,10 @@ const gear = [
       "Hula Punk Shirt",
       "Prune Parashooter",
       "Red Hula Punk with Tie",
-      "Rockin' Leather Jacket"
+      "Rockin' Leather Jacket",
     ],
     head: ["Annaki Beret", "Annaki Beret & Glasses", "Annaki Mask"],
-    shoes: ["Annaki Arachno Boots", "Annaki Habaneros", "Annaki Tigers"]
+    shoes: ["Annaki Arachno Boots", "Annaki Habaneros", "Annaki Tigers"],
   },
   {
     brand: "Cuttlegear",
@@ -75,7 +75,7 @@ const gear = [
       "Octo Tee",
       "Old-Timey Clothes",
       "Red Cuttlegear LS",
-      "Sennyu Suit"
+      "Sennyu Suit",
     ],
     head: [
       "Armor Helmet Replica",
@@ -86,7 +86,7 @@ const gear = [
       "Null Visor Replica",
       "Octoling Shades",
       "Old-Timey Hat",
-      "Studio Octophones"
+      "Studio Octophones",
     ],
     shoes: [
       "Armor Boot Replicas",
@@ -94,8 +94,8 @@ const gear = [
       "Hero Snowboots Replicas",
       "Neo Octoling Boots",
       "Null Boots Replica",
-      "Old-Timey Shoes"
-    ]
+      "Old-Timey Shoes",
+    ],
   },
   {
     brand: "Enperry",
@@ -110,13 +110,13 @@ const gear = [
       "Navy King Tank",
       "Octoking HK Jersey",
       "Slash King Tank",
-      "White King Tank"
+      "White King Tank",
     ],
     head: [
       "Eminence Cuff",
       "King Facemask",
       "King Flip Mesh",
-      "Octoking Facemask"
+      "Octoking Facemask",
     ],
     shoes: [
       "Black & Blue Squidkid V",
@@ -132,8 +132,8 @@ const gear = [
       "Red & Black Squidkid IV",
       "Red & White Squidkid V",
       "Rina Squidkid IV",
-      "Sun & Shade Squidkid IV"
-    ]
+      "Sun & Shade Squidkid IV",
+    ],
   },
   {
     brand: "Firefin",
@@ -152,7 +152,7 @@ const gear = [
       "Khaki 16-Bit FishFry",
       "White 8-Bit FishFry",
       "Yellow Urban Vest",
-      "ω-3 Tee"
+      "ω-3 Tee",
     ],
     head: [
       "Black FishFry Bandana",
@@ -166,9 +166,9 @@ const gear = [
       "Jet Cap",
       "Jungle Hat",
       "Knitted Hat",
-      "Octoglasses"
+      "Octoglasses",
     ],
-    shoes: ["Red FishFry Sandals", "Yellow FishFry Sandals"]
+    shoes: ["Red FishFry Sandals", "Yellow FishFry Sandals"],
   },
   {
     brand: "Forge",
@@ -185,7 +185,7 @@ const gear = [
       "Green Tee",
       "Moist Ghillie Suit",
       "White Leather F-3",
-      "White Sailor Suit"
+      "White Sailor Suit",
     ],
     head: [
       "Deca Tackle Visor Helmet",
@@ -211,9 +211,9 @@ const gear = [
       "Squidlife Headphones",
       "Stealth Goggles",
       "Studio Headphones",
-      "Treasure Hunter"
+      "Treasure Hunter",
     ],
-    shoes: ["Moist Ghillie Boots"]
+    shoes: ["Moist Ghillie Boots"],
   },
   {
     brand: "Grizzco",
@@ -229,7 +229,7 @@ const gear = [
       "Online Jersey",
       "Record Shop Look EP",
       "Squiddor Polo",
-      "SRL Coat"
+      "SRL Coat",
     ],
     head: [
       "Beekeeper Hat",
@@ -241,7 +241,7 @@ const gear = [
       "Sailor Cap",
       "Welding Mask",
       "Worker's Cap",
-      "Worker's Head Towel"
+      "Worker's Head Towel",
     ],
     shoes: [
       "Angry Rain Boots",
@@ -249,8 +249,8 @@ const gear = [
       "Friendship Bracelet",
       "Non-slip Senseis",
       "Octoleet Boots",
-      "Wooden Sandals"
-    ]
+      "Wooden Sandals",
+    ],
   },
   {
     brand: "Inkline",
@@ -267,7 +267,7 @@ const gear = [
       "Matcha Down Jacket",
       "Mountain Vest",
       "Olive Ski Jacket",
-      "Striped Peaks LS"
+      "Striped Peaks LS",
     ],
     head: [
       "Bamboo Hat",
@@ -277,7 +277,7 @@ const gear = [
       "Seashell Bamboo Hat",
       "Short Beanie",
       "Tulip Parasol",
-      "Yamagiri Beanie"
+      "Yamagiri Beanie",
     ],
     shoes: [
       "Acerola Rain Boots",
@@ -291,8 +291,8 @@ const gear = [
       "Pro Trail Boots",
       "Snow Delta Straps",
       "Sunny Climbing Shoes",
-      "Trail Boots"
-    ]
+      "Trail Boots",
+    ],
   },
   {
     brand: "Krak-On",
@@ -306,7 +306,7 @@ const gear = [
       "Rodeo Shirt",
       "Squid-Pattern Waistcoat",
       "Squidstar Waistcoat",
-      "Sunny-Day Tee"
+      "Sunny-Day Tee",
     ],
     head: [
       "Full Moon Glasses",
@@ -314,7 +314,7 @@ const gear = [
       "Long-Billed Cap",
       "Paisley Bandana",
       "Two-Stripe Mesh",
-      "Woolly Urchins Classic"
+      "Woolly Urchins Classic",
     ],
     shoes: [
       "Banana Basics",
@@ -332,8 +332,8 @@ const gear = [
       "Red Hi-Tops",
       "Red Slip-Ons",
       "Squid-Stitch Slip-Ons",
-      "Truffle Canvas Hi-Tops"
-    ]
+      "Truffle Canvas Hi-Tops",
+    ],
   },
   {
     brand: "Rockenberg",
@@ -352,7 +352,7 @@ const gear = [
       "Wet Floor Band Tee",
       "White Baseball LS",
       "White Inky Rider",
-      "White Urchin Rock Tee"
+      "White Urchin Rock Tee",
     ],
     head: ["18K Aviators", "SV925 Circle Shades"],
     shoes: [
@@ -377,8 +377,8 @@ const gear = [
       "Squink Wingtips",
       "Tan Work Boots",
       "Turquoise Kicks",
-      "White Kicks"
-    ]
+      "White Kicks",
+    ],
   },
   {
     brand: "Skalop",
@@ -393,7 +393,7 @@ const gear = [
       "Mint Tee",
       "Pearl Tee",
       "Reggae Tee",
-      "Squid-Stitch Tee"
+      "Squid-Stitch Tee",
     ],
     head: [
       "Bike Helmet",
@@ -411,9 +411,9 @@ const gear = [
       "Straw Boater",
       "Streetstyle Cap",
       "Urchins Cap",
-      "Visor Skate Helmet"
+      "Visor Skate Helmet",
     ],
-    shoes: []
+    shoes: [],
   },
   {
     brand: "Splash Mob",
@@ -439,7 +439,7 @@ const gear = [
       "Varsity Baseball LS",
       "Whale-Knit Sweater",
       "White Shirt",
-      "White Striped LS"
+      "White Striped LS",
     ],
     head: [
       "Bobble Hat",
@@ -449,7 +449,7 @@ const gear = [
       "Retro Specs",
       "Sennyu Bon Bon Beanie",
       "Sennyu Specs",
-      "Striped Beanie"
+      "Striped Beanie",
     ],
     shoes: [
       "Green Laceups",
@@ -459,8 +459,8 @@ const gear = [
       "Shark Moccasins",
       "Strapping Reds",
       "Strapping Whites",
-      "Tea-Green Hunting Boots"
-    ]
+      "Tea-Green Hunting Boots",
+    ],
   },
   {
     brand: "SquidForce",
@@ -490,7 +490,7 @@ const gear = [
       "White LS",
       "White Tee",
       "White V-Neck Tee",
-      "Yellow Layered LS"
+      "Yellow Layered LS",
     ],
     head: [
       "Anglerfish Mask",
@@ -510,9 +510,9 @@ const gear = [
       "Jetflame Crest",
       "Fierce Fishskull",
       "Hivemind Antenna",
-      "Eye of Justice"
+      "Eye of Justice",
     ],
-    shoes: ["Mecha Legs - LBS"]
+    shoes: ["Mecha Legs - LBS"],
   },
   {
     brand: "Takoroka",
@@ -531,7 +531,7 @@ const gear = [
       "Takoroka Nylon Vintage",
       "Takoroka Rainbow Tie Dye",
       "Takoroka Windcrusher",
-      "Tricolor Rugby"
+      "Tricolor Rugby",
     ],
     head: ["Takoroka Mesh", "Takoroka Visor"],
     shoes: [
@@ -548,8 +548,8 @@ const gear = [
       "Soccer Shoes",
       "Sunset Orca Hi-Tops",
       "Trooper Power Stripes",
-      "White Arrows"
-    ]
+      "White Arrows",
+    ],
   },
   {
     brand: "Tentatek",
@@ -562,7 +562,7 @@ const gear = [
       "Red Tentatek Tee",
       "Silver Tentatek Vest",
       "Sky-Blue Squideye",
-      "Tentatek Slogan Tee"
+      "Tentatek Slogan Tee",
     ],
     head: [
       "Cycle King Cap",
@@ -573,7 +573,7 @@ const gear = [
       "Purple Novelty Visor",
       "Soccer Headband",
       "Sun Visor",
-      "Tennis Headband"
+      "Tennis Headband",
     ],
     shoes: [
       "Amber Sea Slug Hi-Tops",
@@ -600,8 +600,8 @@ const gear = [
       "Violet Trainers",
       "White Norimaki 750s",
       "Yellow Iromaki 750s",
-      "Yellow-Mesh Sneakers"
-    ]
+      "Yellow-Mesh Sneakers",
+    ],
   },
   {
     brand: "Toni Kensa",
@@ -619,14 +619,14 @@ const gear = [
       "Positive Longcuff Sweater",
       "Pullover Coat",
       "Short Knit Layers",
-      "Toni K. Baseball Jersey"
+      "Toni K. Baseball Jersey",
     ],
     head: ["Face Visor", "Ink-Guard Goggles", "Toni Kensa Goggles"],
     shoes: [
       "Arrow Pull-Ons",
       "Toni Kensa Black Hi-Tops",
-      "Toni Kensa Soccer Shoes"
-    ]
+      "Toni Kensa Soccer Shoes",
+    ],
   },
   {
     brand: "Zekko",
@@ -650,7 +650,7 @@ const gear = [
       "Zekko Jade Coat",
       "Zekko Long Carrot Tee",
       "Zekko Long Radish Tee",
-      "Zekko Redleaf Coat"
+      "Zekko Redleaf Coat",
     ],
     head: [
       "Backwards Cap",
@@ -663,7 +663,7 @@ const gear = [
       "Tinted Shades",
       "White Arrowbands",
       "Zekko Cap",
-      "Zekko Mesh"
+      "Zekko Mesh",
     ],
     shoes: [
       "Black Flip-Flops",
@@ -674,8 +674,8 @@ const gear = [
       "Pearl-Scout Lace-Ups",
       "Suede Gray Lace-Ups",
       "Suede Marine Lace-Ups",
-      "Suede Nation Lace-Ups"
-    ]
+      "Suede Nation Lace-Ups",
+    ],
   },
   {
     brand: "Zink",
@@ -692,14 +692,14 @@ const gear = [
       "Urchins Jersey",
       "White Deca Logo Tee",
       "Zink Layered LS",
-      "Zink LS"
+      "Zink LS",
     ],
     head: [
       "B-ball Headband",
       "Cycling Cap",
       "Golf Visor",
       "Squash Headband",
-      "Swim Goggles"
+      "Swim Goggles",
     ],
     shoes: [
       "Black Dakroniks",
@@ -713,9 +713,9 @@ const gear = [
       "White Laceless Dakroniks",
       "White Seahorses",
       "Yellow Seahorses",
-      "Zombie Hi-Horses"
-    ]
-  }
-];
+      "Zombie Hi-Horses",
+    ],
+  },
+]
 
-module.exports = gear;
+module.exports = gear

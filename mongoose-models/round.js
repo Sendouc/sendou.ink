@@ -4,7 +4,7 @@ const roundSchema = new mongoose.Schema({
   tournament_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Tournament",
-    required: true
+    required: true,
   },
   stage: { type: String, required: true },
   mode: { type: String, required: true },
@@ -15,18 +15,18 @@ const roundSchema = new mongoose.Schema({
   winning_team_players: {
     type: [String],
     required: true,
-    validate: [player_limit, "{PATH} must be 4"]
+    validate: [player_limit, "{PATH} must be 4"],
   },
   winning_team_weapons: {
     type: [String],
     required: true,
-    validate: [player_limit, "{PATH} must be 4"]
+    validate: [player_limit, "{PATH} must be 4"],
   },
   winning_team_unique_ids: {
     type: [String],
     required: false,
     validate: [player_limit, "{PATH} must be 4"],
-    default: [null, null, null, null]
+    default: [null, null, null, null],
   },
   winning_team_main_abilities: {
     type: [[String]],
@@ -36,8 +36,8 @@ const roundSchema = new mongoose.Schema({
       [null, null, null],
       [null, null, null],
       [null, null, null],
-      [null, null, null]
-    ]
+      [null, null, null],
+    ],
   },
   winning_team_sub_abilities: {
     type: [[String]],
@@ -47,25 +47,25 @@ const roundSchema = new mongoose.Schema({
       [null, null, null, null, null, null, null, null, null],
       [null, null, null, null, null, null, null, null, null],
       [null, null, null, null, null, null, null, null, null],
-      [null, null, null, null, null, null, null, null, null]
-    ]
+      [null, null, null, null, null, null, null, null, null],
+    ],
   },
   losing_team_name: { type: String, required: true },
   losing_team_players: {
     type: [String],
     required: true,
-    validate: [player_limit, "{PATH} must be 4"]
+    validate: [player_limit, "{PATH} must be 4"],
   },
   losing_team_weapons: {
     type: [String],
     required: true,
-    validate: [player_limit, "{PATH} must be 4"]
+    validate: [player_limit, "{PATH} must be 4"],
   },
   losing_team_unique_ids: {
     type: [String],
     required: false,
     validate: [player_limit, "{PATH} must be 4"],
-    default: [null, null, null, null]
+    default: [null, null, null, null],
   },
   losing_team_main_abilities: {
     type: [[String]],
@@ -75,8 +75,8 @@ const roundSchema = new mongoose.Schema({
       [null, null, null],
       [null, null, null],
       [null, null, null],
-      [null, null, null]
-    ]
+      [null, null, null],
+    ],
   },
   losing_team_sub_abilities: {
     type: [[String]],
@@ -86,9 +86,9 @@ const roundSchema = new mongoose.Schema({
       [null, null, null, null, null, null, null, null, null],
       [null, null, null, null, null, null, null, null, null],
       [null, null, null, null, null, null, null, null, null],
-      [null, null, null, null, null, null, null, null, null]
-    ]
-  }
+      [null, null, null, null, null, null, null, null, null],
+    ],
+  },
 })
 
 function player_limit(val) {

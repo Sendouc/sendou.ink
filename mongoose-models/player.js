@@ -10,93 +10,93 @@ const playerSchema = new mongoose.Schema({
     type: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Placement"
-      }
+        ref: "Placement",
+      },
     ],
-    validate: [arrayLimit, "{PATH} exceeds the limit of 4"]
+    validate: [arrayLimit, "{PATH} exceeds the limit of 4"],
   },
   topTotalScore: Number,
   topShooter: {
     type: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Placement"
-      }
+        ref: "Placement",
+      },
     ],
-    validate: [arrayLimit, "{PATH} exceeds the limit of 4"]
+    validate: [arrayLimit, "{PATH} exceeds the limit of 4"],
   },
   topShooterScore: Number,
   topBlaster: {
     type: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Placement"
-      }
+        ref: "Placement",
+      },
     ],
-    validate: [arrayLimit, "{PATH} exceeds the limit of 4"]
+    validate: [arrayLimit, "{PATH} exceeds the limit of 4"],
   },
   topBlasterScore: Number,
   topRoller: {
     type: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Placement"
-      }
+        ref: "Placement",
+      },
     ],
-    validate: [arrayLimit, "{PATH} exceeds the limit of 4"]
+    validate: [arrayLimit, "{PATH} exceeds the limit of 4"],
   },
   topRollerScore: Number,
   topCharger: {
     type: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Placement"
-      }
+        ref: "Placement",
+      },
     ],
-    validate: [arrayLimit, "{PATH} exceeds the limit of 4"]
+    validate: [arrayLimit, "{PATH} exceeds the limit of 4"],
   },
   topChargerScore: Number,
   topSlosher: {
     type: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Placement"
-      }
+        ref: "Placement",
+      },
     ],
-    validate: [arrayLimit, "{PATH} exceeds the limit of 4"]
+    validate: [arrayLimit, "{PATH} exceeds the limit of 4"],
   },
   topSlosherScore: Number,
   topSplatling: {
     type: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Placement"
-      }
+        ref: "Placement",
+      },
     ],
-    validate: [arrayLimit, "{PATH} exceeds the limit of 4"]
+    validate: [arrayLimit, "{PATH} exceeds the limit of 4"],
   },
   topSplatlingScore: Number,
   topDualies: {
     type: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Placement"
-      }
+        ref: "Placement",
+      },
     ],
-    validate: [arrayLimit, "{PATH} exceeds the limit of 4"]
+    validate: [arrayLimit, "{PATH} exceeds the limit of 4"],
   },
   topDualiesScore: Number,
   topBrella: {
     type: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Placement"
-      }
+        ref: "Placement",
+      },
     ],
-    validate: [arrayLimit, "{PATH} exceeds the limit of 4"]
+    validate: [arrayLimit, "{PATH} exceeds the limit of 4"],
   },
   topBrellaScore: Number,
-  weaponsCount: Number
+  weaponsCount: Number,
 })
 
 function arrayLimit(val) {
