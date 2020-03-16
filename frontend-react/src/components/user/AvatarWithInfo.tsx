@@ -95,7 +95,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user, canEdit }) => {
               </a>
             </ListItem>
           )}
-          {user.sens?.stick && (
+          {user.sens && (!!user.sens.stick || user.sens.stick === 0) && (
             <ListItem>
               <ListIcon icon={FaGamepad} />
               {getSensString(user.sens.motion, user.sens.stick)}
