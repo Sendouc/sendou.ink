@@ -72,7 +72,10 @@ const resolvers = {
         })
     },
     plusMaplists: (root, args) => {
-      return Maplist.find({ plus: { $ne: null } })
+      return Maplist.find({ plus: { $ne: null } }).sort({
+        "plus.year": "desc",
+        "plus.month": "desc",
+      })
     },
     mapVotes: async (root, args, ctx) => {
       if (!ctx.user || !ctx.user.plus || !ctx.user.plus.membership_status) {

@@ -9,6 +9,7 @@ import {
   headGearEnglish,
   clothingGearEnglish,
   shoesGearEnglish,
+  maps,
 } from "./utils/lists"
 
 // https://github.com/microsoft/TypeScript/issues/28046#issuecomment-480516434
@@ -19,6 +20,7 @@ type ElementType<T extends ReadonlyArray<unknown>> = T extends ReadonlyArray<
   : never
 
 export type Weapon = ElementType<typeof weapons>
+export type Stage = ElementType<typeof maps>
 export type CountryCode = ElementType<typeof countryCodes>
 export type ThemeColor = ElementType<typeof themeColors>
 

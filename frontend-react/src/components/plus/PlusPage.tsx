@@ -13,6 +13,11 @@ import { FaHistory, FaVoteYea } from "react-icons/fa"
 import Button from "../elements/Button"
 import { Helmet } from "react-helmet-async"
 import { Flex, Box } from "@chakra-ui/core"
+import Maplist from "./Maplist"
+import {
+  PLUS_MAPLISTS,
+  PlusMaplistsData,
+} from "../../graphql/queries/plusMaplists"
 
 interface PlusInfoData {
   plusInfo: {
@@ -29,12 +34,21 @@ const PlusPage: React.FC<RouteComponentProps> = () => {
     error: userQueryError,
     loading: userQueryLoading,
   } = useQuery(USER)
+  const {
+    data: maplistData,
+    error: maplistError,
+    loading: maplistLoading,
+  } = useQuery<PlusMaplistsData>(PLUS_MAPLISTS)
 
   if (error) return <Error errorMessage={error.message} />
-  if (loading || userQueryLoading || !data) return <Loading />
   if (userQueryError) return <Error errorMessage={userQueryError.message} />
+  if (maplistError) return <Error errorMessage={maplistError.message} />
+  if (loading || userQueryLoading || !data || maplistLoading || !maplistData)
+    return <Loading />
   if (!userData.user) return <Redirect to="/access" />
   if (!data.plusInfo) return <Redirect to="/404" />
+
+  const maplist = maplistData.plusMaplists[0]
 
   return (
     <>
@@ -65,7 +79,7 @@ const PlusPage: React.FC<RouteComponentProps> = () => {
           handleError={handleError}
         />
       )*/}
-      <Flex>
+      <Flex mb="1em">
         <Box mr="1em">
           <Link to="/plus/history">
             <Button outlined icon={FaHistory}>
@@ -79,6 +93,14 @@ const PlusPage: React.FC<RouteComponentProps> = () => {
           </Button>
         </Link>
       </Flex>
+      <Maplist
+        name={maplist.name}
+        sz={maplist.sz}
+        tc={maplist.tc}
+        rm={maplist.rm}
+        cb={maplist.cb}
+        voterCount={maplist.plus.voter_count}
+      />
       <Suggestions user={userData.user} />
     </>
   )
