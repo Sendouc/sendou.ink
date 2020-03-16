@@ -29,6 +29,7 @@ const MaplistCard: React.FC<MaplistCardProps> = ({ title, stages }) => {
         {stages.map(stage => {
           return (
             <Avatar
+              key={stage}
               src={mapIcons[stage]}
               size="lg"
               my="5px"

@@ -18,7 +18,7 @@ export interface PlusMaplistsData {
         tc: number[]
         rm: number[]
         cb: number[]
-      }
+      }[]
     }
   }[]
 }

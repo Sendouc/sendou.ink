@@ -58,7 +58,10 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
     post => post.discord_user.discord_id === userData.user?.discord_id
   )
 
-  const buttonText = ownFAPost ? "Edit free agent post" : "New free agent post"
+  const buttonText =
+    ownFAPost && !ownFAPost.hidden
+      ? "Edit free agent post"
+      : "New free agent post"
 
   const postsFilter = (post: FreeAgentPost) => {
     if (post.hidden) return false
@@ -122,7 +125,10 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
       </Helmet>
       <PageHeader title="Free Agents" />
       {showModal && (
-        <FAPostModal closeModal={() => setShowModal(false)} post={ownFAPost} />
+        <FAPostModal
+          closeModal={() => setShowModal(false)}
+          post={ownFAPost?.hidden ? undefined : ownFAPost}
+        />
       )}
       <Flex justifyContent="space-between" flexWrap="wrap">
         <Box m="0.5em">
