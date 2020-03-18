@@ -165,69 +165,53 @@ const resolvers = {
         })
       )
 
-      let szMaps = []
-      let tcMaps = []
-      let rmMaps = []
-      let cbMaps = []
+      let allMaps = []
       vote_counts.forEach(count => {
-        szMaps.push({
-          name: count.name,
-          score: +((count.sz[0] * -1 + count.sz[2]) / voter_count).toFixed(2),
-        })
-        tcMaps.push({
-          name: count.name,
-          score: +((count.tc[0] * -1 + count.tc[2]) / voter_count).toFixed(2),
-        })
-        rmMaps.push({
-          name: count.name,
-          score: +((count.rm[0] * -1 + count.rm[2]) / voter_count).toFixed(2),
-        })
-        cbMaps.push({
-          name: count.name,
-          score: +((count.cb[0] * -1 + count.cb[2]) / voter_count).toFixed(2),
+        ;["sz", "tc", "rm", "cb"].forEach(mode => {
+          allMaps.push({
+            name: count.name,
+            score: +(
+              (count[mode][0] * -1 + count[mode][2]) /
+              voter_count
+            ).toFixed(2),
+            mode,
+          })
         })
       })
 
-      szMaps = szMaps.sort((a, b) => b.score - a.score)
-      tcMaps = tcMaps.sort((a, b) => b.score - a.score)
-      rmMaps = rmMaps.sort((a, b) => b.score - a.score)
-      cbMaps = cbMaps.sort((a, b) => b.score - a.score)
+      allMaps = allMaps.sort((a, b) => b.score - a.score)
 
       szMapPool = []
       tcMapPool = []
       rmMapPool = []
       cbMapPool = []
 
-      for (const stageObj of szMaps) {
-        if (szMapPool.length >= 8 && stageObj.score <= 0) {
-          break
-        }
-
-        szMapPool.push(stageObj.name)
+      const pools = {
+        sz: szMapPool,
+        tc: tcMapPool,
+        rm: rmMapPool,
+        cb: cbMapPool,
       }
 
-      for (const stageObj of tcMaps) {
-        if (tcMapPool.length >= 8 && stageObj.score <= 0) {
-          break
+      const mapCount = {}
+
+      for (const stageObj of allMaps) {
+        const alreadyInCount = mapCount[stageObj.name]
+          ? mapCount[stageObj.name]
+          : 0
+
+        if (alreadyInCount === 2) {
+          continue
         }
 
-        tcMapPool.push(stageObj.name)
-      }
+        const pool = pools[stageObj.mode]
 
-      for (const stageObj of rmMaps) {
-        if (rmMapPool.length >= 8 && stageObj.score <= 0) {
-          break
+        if (pool.length === 8) {
+          continue
         }
 
-        rmMapPool.push(stageObj.name)
-      }
-
-      for (const stageObj of cbMaps) {
-        if (cbMapPool.length >= 8 && stageObj.score <= 0) {
-          break
-        }
-
-        cbMapPool.push(stageObj.name)
+        mapCount[stageObj.name] = alreadyInCount + 1
+        pool.push(stageObj.name)
       }
 
       szMapPool.sort((a, b) => maps.indexOf(a) - maps.indexOf(b))
