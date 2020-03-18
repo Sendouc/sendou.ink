@@ -98,6 +98,8 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
 
   const placements = data ? data.searchForPlacements.placements : []
 
+  console.log("forms.page", forms.page)
+
   return (
     <>
       <Helmet>
@@ -115,7 +117,7 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
           </Box>
         </Flex>
       </Box>
-      <Box mt="2em" mb="1em">
+      <Box mt="1em">
         <Pagination
           currentPage={forms.page ?? 1}
           pageCount={data?.searchForPlacements.pageCount ?? 999}

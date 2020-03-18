@@ -8,7 +8,11 @@ interface PaginationProps {
   onChange: (page: number) => void
 }
 
-const Pagination: React.FC<PaginationProps> = ({ pageCount, onChange }) => {
+const Pagination: React.FC<PaginationProps> = ({
+  pageCount,
+  onChange,
+  currentPage,
+}) => {
   return (
     <ReactPaginate
       previousLabel={<>&laquo;</>}
@@ -18,7 +22,8 @@ const Pagination: React.FC<PaginationProps> = ({ pageCount, onChange }) => {
       pageCount={pageCount}
       marginPagesDisplayed={2}
       pageRangeDisplayed={3}
-      onPageChange={({ selected }) => onChange(selected)}
+      onPageChange={({ selected }) => onChange(selected + 1)}
+      forcePage={currentPage - 1}
       containerClassName="pagination"
       pageClassName="page"
       previousClassName="page"
