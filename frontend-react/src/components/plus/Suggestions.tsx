@@ -17,6 +17,12 @@ import {
   PopoverContent,
   PopoverBody,
   PopoverArrow,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+  Badge,
 } from "@chakra-ui/core"
 import { Link } from "@reach/router"
 import MyThemeContext from "../../themeContext"
@@ -227,23 +233,53 @@ const Suggestions: React.FC<SuggestionsProps> = ({ user }) => {
             {buttonText}
           </Button>
         )}
-        {vouchesData.vouches.length > 0 && (
-          <Flex flexWrap="wrap" mt="1em">
-            {plusOneVouches.length > 0 && (
-              <Box mr="2em" mb="1em">
-                <Heading size="md">Vouched players to +1</Heading>
-                <Grid
-                  gridRowGap="0.5em"
-                  gridTemplateColumns="min-content 1fr"
-                  mt="1em"
-                >
-                  {plusOneVouches.map(vouchMap)}
-                </Grid>
-              </Box>
+        <Tabs isFitted variant="line" mt="2em" variantColor={themeColor}>
+          <TabList>
+            {user.plus.membership_status === "ONE" && (
+              <Tab>
+                Vouches to +1{" "}
+                <Badge variantColor={themeColor} ml="0.5em">
+                  {plusOneVouches.length}
+                </Badge>
+              </Tab>
             )}
-            {plusTwoVouches.length > 0 && (
-              <Box>
-                <Heading size="md">Vouched players to +2</Heading>
+            <Tab>
+              Vouches to +2{" "}
+              <Badge variantColor={themeColor} ml="0.5em">
+                {plusTwoVouches.length}
+              </Badge>
+            </Tab>
+            {user.plus.membership_status === "ONE" && (
+              <Tab>
+                Suggestions to +1{" "}
+                <Badge variantColor={themeColor} ml="0.5em">
+                  {plusOneSuggested.length}
+                </Badge>
+              </Tab>
+            )}
+            <Tab>
+              Suggestions to +2{" "}
+              <Badge variantColor={themeColor} ml="0.5em">
+                {plusTwoSuggested.length}
+              </Badge>
+            </Tab>
+          </TabList>
+          <TabPanels mb="1em">
+            {user.plus.membership_status === "ONE" && (
+              <TabPanel>
+                <Box mt="1em">
+                  <Grid
+                    gridRowGap="0.5em"
+                    gridTemplateColumns="min-content 1fr"
+                    mt="1em"
+                  >
+                    {plusOneVouches.map(vouchMap)}
+                  </Grid>
+                </Box>
+              </TabPanel>
+            )}
+            <TabPanel>
+              <Box mt="1em">
                 <Grid
                   gridRowGap="0.5em"
                   gridTemplateColumns="min-content 1fr"
@@ -252,26 +288,22 @@ const Suggestions: React.FC<SuggestionsProps> = ({ user }) => {
                   {plusTwoVouches.map(vouchMap)}
                 </Grid>
               </Box>
+            </TabPanel>
+            {user.plus.membership_status === "ONE" && (
+              <TabPanel>
+                <Box mt="1em">
+                  <Grid
+                    gridRowGap="0.5em"
+                    gridTemplateColumns="min-content 1fr"
+                    mt="1em"
+                  >
+                    {plusOneSuggested.map(suggestionMap)}
+                  </Grid>
+                </Box>
+              </TabPanel>
             )}
-          </Flex>
-        )}
-        {data.suggestions.length > 0 && (
-          <Flex flexWrap="wrap" mt="1em">
-            {plusOneSuggested.length > 0 && (
-              <Box mr="2em" mb="1em">
-                <Heading size="md">Suggested players to +1</Heading>
-                <Grid
-                  gridRowGap="0.5em"
-                  gridTemplateColumns="min-content 1fr"
-                  mt="1em"
-                >
-                  {plusOneSuggested.map(suggestionMap)}
-                </Grid>
-              </Box>
-            )}
-            {plusTwoSuggested.length > 0 && (
-              <Box mr="2em" mb="1em">
-                <Heading size="md">Suggested players to +2</Heading>
+            <TabPanel>
+              <Box mt="1em">
                 <Grid
                   gridRowGap="0.5em"
                   gridTemplateColumns="min-content 1fr"
@@ -280,9 +312,9 @@ const Suggestions: React.FC<SuggestionsProps> = ({ user }) => {
                   {plusTwoSuggested.map(suggestionMap)}
                 </Grid>
               </Box>
-            )}
-          </Flex>
-        )}
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
       </Box>
     </>
   )
