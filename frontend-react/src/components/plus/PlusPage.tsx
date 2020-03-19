@@ -9,7 +9,7 @@ import { USER } from "../../graphql/queries/user"
 //import Voting from "./Voting"
 import { Redirect, RouteComponentProps, Link } from "@reach/router"
 import PageHeader from "../common/PageHeader"
-import { FaHistory, FaVoteYea } from "react-icons/fa"
+import { FaHistory, FaVoteYea, FaMapMarkedAlt } from "react-icons/fa"
 import Button from "../elements/Button"
 import { Helmet } from "react-helmet-async"
 import { Flex, Box } from "@chakra-ui/core"
@@ -79,19 +79,28 @@ const PlusPage: React.FC<RouteComponentProps> = () => {
           handleError={handleError}
         />
       )*/}
-      <Flex mb="1em">
-        <Box mr="1em">
+      <Flex mb="1em" flexWrap="wrap">
+        <Box mr="1em" mt="1em">
           <Link to="/plus/history">
             <Button outlined icon={FaHistory}>
-              Show voting history
+              Show player voting history
             </Button>
           </Link>
         </Box>
-        <Link to="/plus/mapvoting">
-          <Button outlined icon={FaVoteYea}>
-            Vote on maps
-          </Button>
-        </Link>
+        <Box mr="1em" mt="1em">
+          <Link to="/plus/maphistory">
+            <Button outlined icon={FaMapMarkedAlt}>
+              Show map voting history
+            </Button>
+          </Link>
+        </Box>
+        <Box mr="1em" mt="1em">
+          <Link to="/plus/mapvoting">
+            <Button outlined icon={FaVoteYea}>
+              Vote on maps
+            </Button>
+          </Link>
+        </Box>
       </Flex>
       <Maplist
         name={maplist.name}

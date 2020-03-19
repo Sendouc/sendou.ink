@@ -19,6 +19,7 @@ const XSearch = lazy(() => import("../xsearch/Top500BrowserPage"))
 const PlusPage = lazy(() => import("../plus/PlusPage"))
 const Access = lazy(() => import("./Access"))
 const VotingHistoryPage = lazy(() => import("../plus/VotingHistoryPage"))
+const MapVotingHistoryPage = lazy(() => import("../plus/MapVotingHistoryPage"))
 const MapVoting = lazy(() => import("../plus/MapVoting"))
 const About = lazy(() => import("./About"))
 const Links = lazy(() => import("./Links"))
@@ -43,6 +44,7 @@ const Routes: React.FC = () => {
           <Access path="/access" />
           <PlusPage path="/plus" />
           <VotingHistoryPage path="/plus/history" />
+          <MapVotingHistoryPage path="/plus/maphistory" />
           <MapVoting path="/plus/mapvoting" />
           <NotFound default />
         </ScrollToTop>

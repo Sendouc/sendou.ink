@@ -8,9 +8,15 @@ interface IconButtonProps {
   icon: IconType
   onClick?: () => void
   colored?: boolean
+  disabled?: boolean
 }
 
-const IconButton: React.FC<IconButtonProps> = ({ colored, icon, onClick }) => {
+const IconButton: React.FC<IconButtonProps> = ({
+  colored,
+  icon,
+  disabled,
+  onClick,
+}) => {
   const { themeColor } = useContext(MyThemeContext)
   return (
     <ChakraIconButton
@@ -21,6 +27,7 @@ const IconButton: React.FC<IconButtonProps> = ({ colored, icon, onClick }) => {
       onClick={onClick}
       size="lg"
       variantColor={colored ? themeColor : undefined}
+      isDisabled={disabled}
     />
   )
 }

@@ -1,16 +1,16 @@
 import React, { useContext } from "react"
-import { Heading, Flex, Box, Avatar } from "@chakra-ui/core"
+import { Heading, Flex, Box, Avatar, Icon } from "@chakra-ui/core"
 import { mapIcons } from "../../assets/imageImports"
 import MyThemeContext from "../../themeContext"
 import { Stage } from "../../types"
 
 interface MaplistCardProps {
-  title: string
+  modeShort: string
   stages: Stage[]
 }
 
-const MaplistCard: React.FC<MaplistCardProps> = ({ title, stages }) => {
-  const { themeColorHex } = useContext(MyThemeContext)
+const MaplistCard: React.FC<MaplistCardProps> = ({ modeShort, stages }) => {
+  const { themeColorHex, themeColorWithShade } = useContext(MyThemeContext)
   return (
     <Flex
       flexDirection="column"
@@ -23,7 +23,7 @@ const MaplistCard: React.FC<MaplistCardProps> = ({ title, stages }) => {
       w="350px"
     >
       <Heading textAlign="center" mb="0.5em" color={themeColorHex}>
-        {title}
+        <Icon name={modeShort as any} color={themeColorWithShade} size="2em" />
       </Heading>
       <Flex alignItems="center" justifyContent="center" flexWrap="wrap">
         {stages.map(stage => {
@@ -65,10 +65,10 @@ const Maplist: React.FC<MaplistProps> = ({
       <Heading size="lg">{name} maps</Heading>
       <Box>Based on {voterCount} votes</Box>
       <Flex flexWrap="wrap" pt="1em">
-        <MaplistCard stages={sz} title="Splat Zones" />
-        <MaplistCard stages={tc} title="Tower Control" />
-        <MaplistCard stages={rm} title="Rainmaker" />
-        <MaplistCard stages={cb} title="Clam Blitz" />
+        <MaplistCard stages={sz} modeShort="sz" />
+        <MaplistCard stages={tc} modeShort="tc" />
+        <MaplistCard stages={rm} modeShort="rm" />
+        <MaplistCard stages={cb} modeShort="cb" />
       </Flex>
     </>
   )
