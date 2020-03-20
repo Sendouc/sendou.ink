@@ -33,8 +33,9 @@ const MaplistCard: React.FC<MaplistCardProps> = ({ modeShort, stages }) => {
               src={mapIcons[stage]}
               size="lg"
               my="5px"
-              mr="0.5em"
+              mx="0.2em"
               title={stage}
+              textAlign="center"
             />
           )
         })}
