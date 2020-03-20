@@ -29,6 +29,8 @@ import MyThemeContext from "../../themeContext"
 import { IoIosChatbubbles } from "react-icons/io"
 import Button from "../elements/Button"
 import SuggestionVouchModal from "./SuggestionVouchModal"
+import useBreakPoints from "../../hooks/useBreakPoints"
+import Select from "../elements/Select"
 
 interface SuggestionsProps {
   user: UserLean
@@ -80,12 +82,14 @@ const Suggestions: React.FC<SuggestionsProps> = ({ user }) => {
     MyThemeContext
   )
   const [showSuggestionForm, setShowSuggestionForm] = useState(false)
+  const [tabIndex, setTabIndex] = useState(0)
   const { data, error, loading } = useQuery<SuggestionsData>(SUGGESTIONS)
   const {
     data: vouchesData,
     error: vouchesError,
     loading: vouchesLoading,
   } = useQuery<VouchesData>(VOUCHES)
+  const isSmall = useBreakPoints(570)
 
   if (error) return <Error errorMessage={error.message} />
   if (vouchesError) return <Error errorMessage={vouchesError.message} />
@@ -233,39 +237,59 @@ const Suggestions: React.FC<SuggestionsProps> = ({ user }) => {
             {buttonText}
           </Button>
         )}
-        <Tabs isFitted variant="line" mt="2em" variantColor={themeColor}>
-          <TabList>
-            {user.plus.membership_status === "ONE" && (
+        {!isSmall ? (
+          <Tabs
+            index={tabIndex}
+            onChange={chosenIndex => setTabIndex(chosenIndex)}
+            isFitted
+            variant="line"
+            mt="2em"
+            variantColor={themeColor}
+          >
+            <TabList>
+              {user.plus.membership_status === "ONE" && (
+                <Tab>
+                  Vouches to +1{" "}
+                  <Badge variantColor={themeColor} ml="0.5em">
+                    {plusOneVouches.length}
+                  </Badge>
+                </Tab>
+              )}
               <Tab>
-                Vouches to +1{" "}
+                Vouches to +2{" "}
                 <Badge variantColor={themeColor} ml="0.5em">
-                  {plusOneVouches.length}
+                  {plusTwoVouches.length}
                 </Badge>
               </Tab>
-            )}
-            <Tab>
-              Vouches to +2{" "}
-              <Badge variantColor={themeColor} ml="0.5em">
-                {plusTwoVouches.length}
-              </Badge>
-            </Tab>
-            {user.plus.membership_status === "ONE" && (
+              {user.plus.membership_status === "ONE" && (
+                <Tab>
+                  Suggestions to +1{" "}
+                  <Badge variantColor={themeColor} ml="0.5em">
+                    {plusOneSuggested.length}
+                  </Badge>
+                </Tab>
+              )}
               <Tab>
-                Suggestions to +1{" "}
+                Suggestions to +2{" "}
                 <Badge variantColor={themeColor} ml="0.5em">
-                  {plusOneSuggested.length}
+                  {plusTwoSuggested.length}
                 </Badge>
               </Tab>
-            )}
-            <Tab>
-              Suggestions to +2{" "}
-              <Badge variantColor={themeColor} ml="0.5em">
-                {plusTwoSuggested.length}
-              </Badge>
-            </Tab>
-          </TabList>
-          <TabPanels mb="1em">
-            {user.plus.membership_status === "ONE" && (
+            </TabList>
+            <TabPanels mb="1em">
+              {user.plus.membership_status === "ONE" && (
+                <TabPanel>
+                  <Box mt="1em">
+                    <Grid
+                      gridRowGap="0.5em"
+                      gridTemplateColumns="min-content 1fr"
+                      mt="1em"
+                    >
+                      {plusOneVouches.map(vouchMap)}
+                    </Grid>
+                  </Box>
+                </TabPanel>
+              )}
               <TabPanel>
                 <Box mt="1em">
                   <Grid
@@ -273,23 +297,23 @@ const Suggestions: React.FC<SuggestionsProps> = ({ user }) => {
                     gridTemplateColumns="min-content 1fr"
                     mt="1em"
                   >
-                    {plusOneVouches.map(vouchMap)}
+                    {plusTwoVouches.map(vouchMap)}
                   </Grid>
                 </Box>
               </TabPanel>
-            )}
-            <TabPanel>
-              <Box mt="1em">
-                <Grid
-                  gridRowGap="0.5em"
-                  gridTemplateColumns="min-content 1fr"
-                  mt="1em"
-                >
-                  {plusTwoVouches.map(vouchMap)}
-                </Grid>
-              </Box>
-            </TabPanel>
-            {user.plus.membership_status === "ONE" && (
+              {user.plus.membership_status === "ONE" && (
+                <TabPanel>
+                  <Box mt="1em">
+                    <Grid
+                      gridRowGap="0.5em"
+                      gridTemplateColumns="min-content 1fr"
+                      mt="1em"
+                    >
+                      {plusOneSuggested.map(suggestionMap)}
+                    </Grid>
+                  </Box>
+                </TabPanel>
+              )}
               <TabPanel>
                 <Box mt="1em">
                   <Grid
@@ -297,24 +321,60 @@ const Suggestions: React.FC<SuggestionsProps> = ({ user }) => {
                     gridTemplateColumns="min-content 1fr"
                     mt="1em"
                   >
-                    {plusOneSuggested.map(suggestionMap)}
+                    {plusTwoSuggested.map(suggestionMap)}
                   </Grid>
                 </Box>
               </TabPanel>
-            )}
-            <TabPanel>
+            </TabPanels>
+          </Tabs>
+        ) : (
+          <>
+            {user.plus.membership_status === "ONE" && (
               <Box mt="1em">
+                <Heading>Vouched to +1</Heading>
                 <Grid
                   gridRowGap="0.5em"
                   gridTemplateColumns="min-content 1fr"
                   mt="1em"
                 >
-                  {plusTwoSuggested.map(suggestionMap)}
+                  {plusOneVouches.map(vouchMap)}
                 </Grid>
               </Box>
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
+            )}
+            <Box mt="1em">
+              <Heading>Vouched to +2</Heading>
+              <Grid
+                gridRowGap="0.5em"
+                gridTemplateColumns="min-content 1fr"
+                mt="1em"
+              >
+                {plusTwoVouches.map(vouchMap)}
+              </Grid>
+            </Box>
+            {user.plus.membership_status === "ONE" && (
+              <Box mt="1em">
+                <Heading>Suggested to +1</Heading>
+                <Grid
+                  gridRowGap="0.5em"
+                  gridTemplateColumns="min-content 1fr"
+                  mt="1em"
+                >
+                  {plusOneSuggested.map(suggestionMap)}
+                </Grid>
+              </Box>
+            )}
+            <Box mt="1em">
+              <Heading>Suggested to +2</Heading>
+              <Grid
+                gridRowGap="0.5em"
+                gridTemplateColumns="min-content 1fr"
+                mt="1em"
+              >
+                {plusTwoSuggested.map(suggestionMap)}
+              </Grid>
+            </Box>
+          </>
+        )}
       </Box>
     </>
   )

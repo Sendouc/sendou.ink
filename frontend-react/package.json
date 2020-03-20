@@ -14,7 +14,7 @@
     "@testing-library/react": "^10.0.1",
     "@testing-library/user-event": "^10.0.0",
     "@types/jest": "^25.1.4",
-    "@types/reach__router": "^1.3.0",
+    "@types/reach__router": "^1.3.1",
     "@types/react": "^16.9.23",
     "@types/react-color": "^3.0.1",
     "@types/react-datepicker": "^2.11.0",
