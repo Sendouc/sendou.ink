@@ -76,7 +76,7 @@ const MaplistCard: React.FC<MaplistCardProps> = ({
             size="2em"
           />
         </Heading>
-        <Flex alignItems="center" flexWrap="wrap">
+        <Flex flexDirection="column" justifyContent="center" flexWrap="wrap">
           {votedMaps.map(stage => {
             return (
               <Flex key={stage.name} my="0.5em">

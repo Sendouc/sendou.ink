@@ -194,24 +194,49 @@ const resolvers = {
       }
 
       const mapCount = {}
+      let modeToAddTo = "sz"
+      const nextModeDict = {
+        sz: "tc",
+        tc: "rm",
+        rm: "cb",
+        cb: "sz",
+      }
 
-      for (const stageObj of allMaps) {
-        const alreadyInCount = mapCount[stageObj.name]
-          ? mapCount[stageObj.name]
-          : 0
+      while (
+        szMapPool.length < 8 ||
+        tcMapPool.length < 8 ||
+        rmMapPool.length < 8 ||
+        cbMapPool.length < 8
+      ) {
+        for (const stageObj of allMaps) {
+          const pool = pools[modeToAddTo]
 
-        if (alreadyInCount === 2) {
-          continue
+          if (pool.length === 8) {
+            break
+          }
+
+          const alreadyInCount = mapCount[stageObj.name]
+            ? mapCount[stageObj.name]
+            : 0
+
+          if (alreadyInCount === 2) {
+            continue
+          }
+
+          if (stageObj.mode !== modeToAddTo) {
+            continue
+          }
+
+          if (pool.indexOf(stageObj.name) !== -1) {
+            continue
+          }
+
+          mapCount[stageObj.name] = alreadyInCount + 1
+          pool.push(stageObj.name)
+          break
         }
 
-        const pool = pools[stageObj.mode]
-
-        if (pool.length === 8) {
-          continue
-        }
-
-        mapCount[stageObj.name] = alreadyInCount + 1
-        pool.push(stageObj.name)
+        modeToAddTo = nextModeDict[modeToAddTo]
       }
 
       szMapPool.sort((a, b) => maps.indexOf(a) - maps.indexOf(b))
