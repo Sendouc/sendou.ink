@@ -6,11 +6,11 @@ import MyThemeContext from "../../themeContext"
 
 interface NavItemProps {
   to: string
-  Icon: IconType
+  icon: IconType | string
   title: string
 }
 
-const NavItem: React.FC<NavItemProps> = ({ to, Icon, title }) => {
+const NavItem: React.FC<NavItemProps> = ({ to, icon, title }) => {
   const { themeColorWithShade, colorMode, themeColor } = useContext(
     MyThemeContext
   )
@@ -42,7 +42,11 @@ const NavItem: React.FC<NavItemProps> = ({ to, Icon, title }) => {
             _hover: {},
           })}
         >
-          <ListIcon icon={Icon} color={themeColorWithShade} size="1.5em" />{" "}
+          <ListIcon
+            icon={icon as any}
+            color={themeColorWithShade}
+            size="1.5em"
+          />{" "}
           {title}
         </PseudoBox>
       </Link>

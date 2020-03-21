@@ -46,6 +46,15 @@ const customIcons = {
     ),
     viewBox: "0 0 128 128",
   },
+  itz: {
+    path: (
+      <g fill="currentColor">
+        <path d="M2 17l-1 9c0 2 0 2 16 2h16v28l1 28 8-10 9-9V28h50l-4 4-22 25-31 34-12 13v15h94v-16h-11l-34-1-22-1 33-36 34-36V11H2v6z" />{" "}
+        <path d="M1 75l1 39v5h17V41H1v34z" />{" "}
+      </g>
+    ),
+    viewBox: "0 0 128 128",
+  },
 }
 
 export default customIcons

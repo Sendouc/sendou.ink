@@ -12,6 +12,7 @@ import {
   MenuItem,
   MenuList,
   Box,
+  Icon,
 } from "@chakra-ui/core"
 import { Link } from "@reach/router"
 import {
@@ -139,18 +140,19 @@ export const SideNavContent: React.FC<SideNavProps> = ({ showLogo = true }) => {
         )}
         <Flex>
           <List mt="2em">
-            <NavItem to="plans" Icon={FaMap} title="Map Planner" />
-            <NavItem to="calendar" Icon={FaCalendarAlt} title="Calendar" />
-            <NavItem to="builds" Icon={FaTshirt} title="Builds" />
-            <NavItem to="freeagents" Icon={FaUserSecret} title="Free Agents" />
+            <NavItem to="plans" icon={FaMap} title="Map Planner" />
+            <NavItem to="calendar" icon={FaCalendarAlt} title="Calendar" />
+            <NavItem to="builds" icon={FaTshirt} title="Builds" />
+            <NavItem to="freeagents" icon={FaUserSecret} title="Free Agents" />
             <NavItem
               to="tournaments"
-              Icon={FaTrophy}
+              icon={FaTrophy}
               title="Tournament Results"
             />
-            <NavItem to="xsearch" Icon={FaListOl} title="Top 500 Browser" />
+            <NavItem to="xsearch" icon={FaListOl} title="Top 500 Browser" />
+            <NavItem to="play" icon="itz" title="In The Zone" />
             {data?.user?.plus?.membership_status && (
-              <NavItem to="plus" Icon={FaPlus} title="Plus Server" />
+              <NavItem to="plus" icon={FaPlus} title="Plus Server" />
             )}
           </List>
         </Flex>
