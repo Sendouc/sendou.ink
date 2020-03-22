@@ -1,5 +1,4 @@
 import React, { useState } from "react"
-import PageHeader from "../common/PageHeader"
 import { RouteComponentProps } from "@reach/router"
 import InTheZoneBanner from "./InTheZoneBanner"
 import { Box, Flex, Heading } from "@chakra-ui/core"
@@ -20,7 +19,7 @@ const EventsPage: React.FC<RouteComponentProps> = () => {
           textAlign="center"
           mb="1em"
         >
-          The premier western Splatoon Splat Zones tournament
+          The premier western Splat Zones tournament
         </Heading>
         <InTheZoneBanner runningNumber={runningNumber} />
         <Flex mt="2em">

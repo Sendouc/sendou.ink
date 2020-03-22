@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useContext } from "react"
+import React, { useState, useContext } from "react"
 import { useQuery } from "@apollo/react-hooks"
 import Loading from "../common/Loading"
 import Error from "../common/Error"
-import { months } from "../../utils/lists"
 import { RouteComponentProps } from "@reach/router"
 import { Flex, Heading, Avatar, Box, Icon } from "@chakra-ui/core"
 import PageHeader from "../common/PageHeader"
@@ -14,8 +13,7 @@ import {
 import MyThemeContext from "../../themeContext"
 import { Stage } from "../../types"
 import { mapIcons } from "../../assets/imageImports"
-import { FaCheck, FaArrowLeft, FaArrowRight } from "react-icons/fa"
-import Alert from "../elements/Alert"
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa"
 import IconButton from "../elements/IconButton"
 
 interface MaplistCardProps {

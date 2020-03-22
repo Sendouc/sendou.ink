@@ -30,7 +30,6 @@ import { IoIosChatbubbles } from "react-icons/io"
 import Button from "../elements/Button"
 import SuggestionVouchModal from "./SuggestionVouchModal"
 import useBreakPoints from "../../hooks/useBreakPoints"
-import Select from "../elements/Select"
 
 interface SuggestionsProps {
   user: UserLean

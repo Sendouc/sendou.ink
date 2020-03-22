@@ -1,58 +1,27 @@
 import React from "react"
 import { Flex, Icon, Box } from "@chakra-ui/core"
 
-//https://stackoverflow.com/a/9083076
-function romanize(num: number) {
-  if (isNaN(num)) return NaN
-  let digits = String(+num).split(""),
-    key = [
-      "",
-      "C",
-      "CC",
-      "CCC",
-      "CD",
-      "D",
-      "DC",
-      "DCC",
-      "DCCC",
-      "CM",
-      "",
-      "X",
-      "XX",
-      "XXX",
-      "XL",
-      "L",
-      "LX",
-      "LXX",
-      "LXXX",
-      "XC",
-      "",
-      "I",
-      "II",
-      "III",
-      "IV",
-      "V",
-      "VI",
-      "VII",
-      "VIII",
-      "IX",
-    ],
-    roman = "",
-    i = 3
-  while (i--) roman = (key[+digits.pop()! + i * 10] || "") + roman
-  return Array(+digits.join("") + 1).join("M") + roman
+//https://stackoverflow.com/a/19303725
+function seededRandom(seed: number) {
+  var x = Math.sin(seed++) * 10000
+  return x - Math.floor(x)
 }
 
 //https://stackoverflow.com/a/23603772
-function getRandomColor(runningNumber: number) {
-  const color = "hsl(" + random(runningNumber) * 360 + ", 100%, 75%)"
+function getRandomColor(runningNumber: number, l: number) {
+  const color = "hsl(" + seededRandom(runningNumber) * 360 + `, 100%, ${l}%)`
   return color
 }
 
-//https://stackoverflow.com/a/19303725
-function random(seed: number) {
-  var x = Math.sin(seed++) * 10000
-  return x - Math.floor(x)
+//https://codepen.io/chrisgresh/pen/aNjovb
+function getRandomGradient(runningNumber: number) {
+  const newColor1 = getRandomColor(runningNumber, 20)
+  const newColor2 = getRandomColor(runningNumber, 80)
+  const angle = Math.round(seededRandom(runningNumber) * 360)
+
+  return (
+    "linear-gradient(" + angle + "deg, " + newColor1 + ", " + newColor2 + ")"
+  )
 }
 
 interface InTheZoneBannerProps {
@@ -64,7 +33,7 @@ const InTheZoneBanner: React.FC<InTheZoneBannerProps> = ({ runningNumber }) => {
     <Flex
       justifyContent="center"
       alignItems="center"
-      bg={getRandomColor(runningNumber)}
+      backgroundImage={getRandomGradient(runningNumber)}
       borderRadius="5px"
       p="40px"
       color="black"

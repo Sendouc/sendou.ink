@@ -12,7 +12,6 @@ import {
   MenuItem,
   MenuList,
   Box,
-  Icon,
 } from "@chakra-ui/core"
 import { Link } from "@reach/router"
 import {
@@ -150,7 +149,7 @@ export const SideNavContent: React.FC<SideNavProps> = ({ showLogo = true }) => {
               title="Tournament Results"
             />
             <NavItem to="xsearch" icon={FaListOl} title="Top 500 Browser" />
-            <NavItem to="play" icon="itz" title="In The Zone" />
+            {/*<NavItem to="play" icon="itz" title="In The Zone" />*/}
             {data?.user?.plus?.membership_status && (
               <NavItem to="plus" icon={FaPlus} title="Plus Server" />
             )}
