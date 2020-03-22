@@ -25,6 +25,7 @@ import { FREE_AGENT_POSTS } from "../../graphql/queries/freeAgentPosts"
 import { UPDATE_FREE_AGENT_POST } from "../../graphql/mutations/updateFreeAgentPost"
 import { HIDE_FREE_AGENT_POST } from "../../graphql/mutations/hideFreeAgentPost"
 import Alert from "../elements/Alert"
+import { FREE_AGENT_MATCHES } from "../../graphql/queries/freeAgentMatches"
 
 interface FAPostModalProps {
   closeModal: () => void
@@ -88,7 +89,10 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
           duration: 10000,
         })
       },
-      refetchQueries: [{ query: FREE_AGENT_POSTS }],
+      refetchQueries: [
+        { query: FREE_AGENT_POSTS },
+        { query: FREE_AGENT_MATCHES },
+      ],
     }
   )
 

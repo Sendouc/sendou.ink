@@ -1,6 +1,13 @@
 import React, { useContext, useState } from "react"
-import { Flex, Box, Image, IconButton, Heading } from "@chakra-ui/core"
-import { FreeAgentPost } from "../../types"
+import {
+  Flex,
+  Box,
+  Image,
+  IconButton,
+  Heading,
+  useToast,
+} from "@chakra-ui/core"
+import { FreeAgentPost, UserData } from "../../types"
 import UserAvatar from "../common/UserAvatar"
 import { Link } from "@reach/router"
 import MyThemeContext from "../../themeContext"
@@ -11,9 +18,17 @@ import Flag from "../common/Flag"
 import RoleIcons from "./RoleIcons"
 import WeaponImage from "../common/WeaponImage"
 import VCIcon from "./VCIcon"
+import Heart from "./Heart"
+import { useMutation, useQuery } from "@apollo/react-hooks"
+import { ADD_LIKE } from "../../graphql/mutations/addLike"
+import { FREE_AGENT_MATCHES } from "../../graphql/queries/freeAgentMatches"
+import { DELETE_LIKE } from "../../graphql/mutations/deleteLike"
+import { USER } from "../../graphql/queries/user"
 
 interface FreeAgentCardProps {
   post: FreeAgentPost
+  canLike: boolean
+  likedUsersIds: string[]
 }
 
 const hasExtraInfo = (post: FreeAgentPost) => {
@@ -25,11 +40,75 @@ const hasExtraInfo = (post: FreeAgentPost) => {
   return true
 }
 
-const FreeAgentCard: React.FC<FreeAgentCardProps> = ({ post }) => {
+const FreeAgentCard: React.FC<FreeAgentCardProps> = ({
+  post,
+  canLike,
+  likedUsersIds,
+}) => {
   const [expanded, setExpanded] = useState(false)
   const { grayWithShade, themeColorWithShade } = useContext(MyThemeContext)
   const { discord_user } = post
   const canBeExpanded = hasExtraInfo(post)
+  const toast = useToast()
+
+  const { data } = useQuery<UserData>(USER)
+
+  const [addLike] = useMutation<{ addLike: boolean }, { discord_id: string }>(
+    ADD_LIKE,
+    {
+      onCompleted: data => {
+        toast({
+          description: `Liked a free agent post by ${post.discord_user.username}`,
+          position: "top-right",
+          status: "success",
+          duration: 10000,
+        })
+      },
+      onError: error => {
+        toast({
+          title: "An error occurred",
+          description: error.message,
+          position: "top-right",
+          status: "error",
+          duration: 10000,
+        })
+      },
+      refetchQueries: [{ query: FREE_AGENT_MATCHES }],
+    }
+  )
+
+  const [deleteLike] = useMutation<
+    { deleteLike: boolean },
+    { discord_id: string }
+  >(DELETE_LIKE, {
+    onCompleted: data => {
+      toast({
+        description: `Unliked a free agent post by ${post.discord_user.username}`,
+        position: "top-right",
+        status: "success",
+        duration: 10000,
+      })
+    },
+    onError: error => {
+      toast({
+        title: "An error occurred",
+        description: error.message,
+        position: "top-right",
+        status: "error",
+        duration: 10000,
+      })
+    },
+    refetchQueries: [{ query: FREE_AGENT_MATCHES }],
+  })
+
+  const liked = likedUsersIds.indexOf(discord_user.discord_id) !== -1
+
+  const handleHeartClick = () => {
+    if (liked)
+      deleteLike({ variables: { discord_id: discord_user.discord_id } })
+    else addLike({ variables: { discord_id: discord_user.discord_id } })
+  }
+
   return (
     <Flex
       rounded="lg"
@@ -55,7 +134,7 @@ const FreeAgentCard: React.FC<FreeAgentCardProps> = ({ post }) => {
           )}
         </Box>
       </Flex>
-      <Flex flexDirection="column" alignItems="center">
+      <Flex flexDirection="column" alignItems="center" justifyContent="center">
         <UserAvatar
           twitterName={discord_user.twitter_name}
           name={discord_user.username}
@@ -108,20 +187,29 @@ const FreeAgentCard: React.FC<FreeAgentCardProps> = ({ post }) => {
           <VCIcon canVC={post.can_vc} />
         </Box>
       </Flex>
-      {canBeExpanded && (
-        <Flex mt="2em" justifyContent="center">
+      <Flex flexDirection="column" mt="2em" justifyContent="center">
+        {data &&
+          data.user &&
+          data.user.discord_id !== discord_user.discord_id && (
+            <Heart
+              disabled={!canLike}
+              active={liked}
+              onClick={() => handleHeartClick()}
+            />
+          )}
+        {canBeExpanded && (
           <IconButton
             variant="ghost"
             aria-label="More information"
             isRound
-            fontSize="20px"
+            size="lg"
             icon={expanded ? FaMinus : FaPlus}
             onClick={() => setExpanded(!expanded)}
           />
-        </Flex>
-      )}
+        )}
+      </Flex>
       {expanded && (
-        <Box whiteSpace="pre-wrap">
+        <Box whiteSpace="pre-wrap" mt="0.5em">
           {post.activity && (
             <Box>
               <Heading size="md" color={themeColorWithShade}>

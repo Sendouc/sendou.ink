@@ -22,6 +22,11 @@ import { Collapse, Flex } from "@chakra-ui/core"
 import Button from "../elements/Button"
 import { FaFilter } from "react-icons/fa"
 import FAPostModal from "./FAPostModal"
+import {
+  FreeAgentMatchesData,
+  FREE_AGENT_MATCHES,
+} from "../../graphql/queries/freeAgentMatches"
+import Matches from "./Matches"
 
 const playstyleToEnum = {
   "Frontline/Slayer": "FRONTLINE",
@@ -47,15 +52,19 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
     error: userQueryError,
     loading: userQueryLoading,
   } = useQuery<UserData>(USER)
+  const { data: matchesData, error: matchesError } = useQuery<
+    FreeAgentMatchesData
+  >(FREE_AGENT_MATCHES)
 
   if (error) return <Error errorMessage={error.message} />
-  if (loading || userQueryLoading || !data || !userData) return <Loading />
   if (userQueryError) return <Error errorMessage={userQueryError.message} />
+  if (matchesError) return <Error errorMessage={matchesError.message} />
+  if (loading || userQueryLoading) return <Loading />
 
-  const faPosts = data.freeAgentPosts
+  const faPosts = data!.freeAgentPosts
 
   const ownFAPost = faPosts.find(
-    post => post.discord_user.discord_id === userData.user?.discord_id
+    post => post.discord_user.discord_id === userData!.user?.discord_id
   )
 
   const buttonText =
@@ -106,7 +115,7 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
   }
 
   const showModalButton = () => {
-    if (!userData.user) return false
+    if (!userData!.user) return false
 
     if (ownFAPost && ownFAPost.hidden) {
       const weekFromCreatingFAPost = parseInt(ownFAPost.createdAt) + 604800000
@@ -173,7 +182,23 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
           />
         </Box>
       </Collapse>
-      <Posts posts={faPosts.filter(postsFilter)} />
+      {matchesData && (
+        <Box mt="1em">
+          <Matches
+            matches={matchesData.freeAgentMatches.matched_discord_users}
+            likesReceived={
+              matchesData.freeAgentMatches.number_of_likes_received
+            }
+          />
+        </Box>
+      )}
+      <Posts
+        posts={faPosts.filter(postsFilter)}
+        canLike={!!(ownFAPost && !ownFAPost.hidden)}
+        likedUsersIds={
+          !matchesData ? [] : matchesData.freeAgentMatches.liked_discord_ids
+        }
+      />
     </>
   )
 }

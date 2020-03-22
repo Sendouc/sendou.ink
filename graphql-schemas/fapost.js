@@ -52,8 +52,9 @@ const typeDef = gql`
   }
 
   type FAMatches {
-    matched_discord_ids: [String!]!
+    matched_discord_users: [User!]!
     number_of_likes_received: Int!
+    liked_discord_ids: [String!]!
   }
 
   "Represents a free agent post of a player looking for a team"
@@ -125,12 +126,12 @@ const resolvers = {
       const post = await FAPost.findOne({ discord_id: ctx.user.discord_id })
 
       if (!post) {
-        throw new UserInputError("Not a free agent")
+        return { matched_discord_ids: [], number_of_likes_received: 0 }
       }
 
       const likesGiven = await FALike.find({
         liker_discord_id: ctx.user.discord_id,
-      })
+      }).populate("liked_discord_user")
 
       const likesReceived = await FALike.find({
         liked_discord_id: ctx.user.discord_id,
@@ -141,13 +142,18 @@ const resolvers = {
         FALike => FALike.liker_discord_id
       )
 
-      const matched_discord_ids = likesGiven.reduce((acc, cur) => {
-        if (likerDiscordIds.indexOf(cur.liked_discord_id) === -1) return acc
+      const matched_discord_users = likesGiven.reduce((acc, cur) => {
+        if (likerDiscordIds.indexOf(cur.liked_discord_user.discord_id) === -1)
+          return acc
 
-        return [...acc, cur.liked_discord_id]
+        return [...acc, cur.liked_discord_user]
       }, [])
 
-      return { matched_discord_ids, number_of_likes_received }
+      return {
+        matched_discord_users,
+        number_of_likes_received,
+        liked_discord_ids: likesGiven.map(like => like.liked_discord_id),
+      }
     },
   },
   Mutation: {
@@ -247,6 +253,10 @@ const resolvers = {
     addLike: async (root, args, ctx) => {
       if (!ctx.user) throw new AuthenticationError("Not logged in.")
 
+      if (ctx.user.discord_id === args.discord_id) {
+        throw new UserInputError("Can't like your own free agent post")
+      }
+
       const post = await FAPost.findOne({ discord_id: ctx.user.discord_id })
 
       if (!post) {
@@ -259,21 +269,17 @@ const resolvers = {
         throw new UserInputError("Liked user not a free agent")
       }
 
-      await FALike.findOneAndUpdate(
-        { liker_discord_id: ctx.user.discord_id },
-        {
-          liker_discord_id: ctx.user.discord_id,
-          liked_discord_id: args.discord_id,
-        },
-        { upsert: true }
-      )
+      await FALike.create({
+        liker_discord_id: ctx.user.discord_id,
+        liked_discord_id: args.discord_id,
+      })
 
       return true
     },
     deleteLike: async (root, args, ctx) => {
       if (!ctx.user) throw new AuthenticationError("Not logged in.")
 
-      await FALike.deleteOne({ liked_discord_id: args.discord_id })
+      await FALike.deleteMany({ liked_discord_id: args.discord_id })
 
       return true
     },

@@ -8,9 +8,15 @@ import Button from "../elements/Button"
 
 interface PostsAccordionProps {
   posts: FreeAgentPost[]
+  canLike: boolean
+  likedUsersIds: string[]
 }
 
-const Posts: React.FC<PostsAccordionProps> = ({ posts }) => {
+const Posts: React.FC<PostsAccordionProps> = ({
+  posts,
+  canLike,
+  likedUsersIds,
+}) => {
   const [agentsToShow, setAgentsToShow] = useState(5)
 
   if (posts.length === 0) {
@@ -30,7 +36,11 @@ const Posts: React.FC<PostsAccordionProps> = ({ posts }) => {
             .filter((post, index) => index < agentsToShow)
             .map(post => (
               <Box my="1em" key={post.id}>
-                <FreeAgentCard post={post} />
+                <FreeAgentCard
+                  post={post}
+                  canLike={canLike}
+                  likedUsersIds={likedUsersIds}
+                />
               </Box>
             ))}
         </InfiniteScroll>

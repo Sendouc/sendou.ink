@@ -9,6 +9,7 @@ interface IconButtonProps {
   onClick?: () => void
   colored?: boolean
   disabled?: boolean
+  color?: string
 }
 
 const IconButton: React.FC<IconButtonProps> = ({
@@ -16,6 +17,7 @@ const IconButton: React.FC<IconButtonProps> = ({
   icon,
   disabled,
   onClick,
+  color,
 }) => {
   const { themeColor } = useContext(MyThemeContext)
   return (
@@ -27,6 +29,7 @@ const IconButton: React.FC<IconButtonProps> = ({
       onClick={onClick}
       size="lg"
       variantColor={colored ? themeColor : undefined}
+      color={color}
       isDisabled={disabled}
     />
   )

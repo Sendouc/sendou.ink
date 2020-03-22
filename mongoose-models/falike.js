@@ -5,11 +5,11 @@ const faLikeSchema = new mongoose.Schema({
   liked_discord_id: String,
 })
 
-/*mapBallotSchema.virtual("liker_discord_id", {
+faLikeSchema.virtual("liked_discord_user", {
   ref: "User",
-  localField: "discord_id",
+  localField: "liked_discord_id",
   foreignField: "discord_id",
   justOne: true,
-})*/
+})
 
 module.exports = mongoose.model("FALike", faLikeSchema)
