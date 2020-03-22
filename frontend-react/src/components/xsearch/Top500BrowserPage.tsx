@@ -98,8 +98,6 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
 
   const placements = data ? data.searchForPlacements.placements : []
 
-  console.log("forms.page", forms.page)
-
   return (
     <>
       <Helmet>
