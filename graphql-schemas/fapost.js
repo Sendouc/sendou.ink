@@ -121,16 +121,17 @@ const resolvers = {
         })
     },
     freeAgentMatches: async (root, args, ctx) => {
-      if (!ctx.user) throw new AuthenticationError("Not logged in.")
+      const defaultReturnable = {
+        matched_discord_users: [],
+        number_of_likes_received: 0,
+        liked_discord_ids: [],
+      }
+      if (!ctx.user) return defaultReturnable
 
       const post = await FAPost.findOne({ discord_id: ctx.user.discord_id })
 
       if (!post) {
-        return {
-          matched_discord_users: [],
-          number_of_likes_received: 0,
-          liked_discord_ids: [],
-        }
+        return defaultReturnable
       }
 
       let likesGiven = await FALike.find({
@@ -152,8 +153,6 @@ const resolvers = {
 
         return [...acc, cur.liked_discord_user]
       }, [])
-
-      console.log("matched_discord_users", matched_discord_users)
 
       return {
         matched_discord_users,
