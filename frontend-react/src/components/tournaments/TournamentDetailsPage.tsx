@@ -139,8 +139,6 @@ const TournamentDetailsPage: React.FC<RouteComponentProps &
   const encoded = encodeQueryParams(filterMap, removeFalsy(filter))
   const linkSuffix = `?${stringify(encoded)}`
 
-  console.log("filter", filter)
-
   return (
     <>
       <Helmet>
