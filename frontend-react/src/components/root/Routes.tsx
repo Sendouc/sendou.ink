@@ -3,6 +3,7 @@ import { Router } from "@reach/router"
 import Loading from "../common/Loading"
 import NotFound from "./NotFound"
 import { ScrollToTop } from "./ScrollToTop"
+import AdminPage from "../admin/AdminPage"
 
 const HomePage = lazy(() => import("../home/HomePage"))
 const UserPage = lazy(() => import("../user/UserPage"))
@@ -31,6 +32,7 @@ const Routes: React.FC = () => {
       <Router>
         <ScrollToTop path="/">
           <HomePage path="/" />
+          <AdminPage path="/admin" />
           <UserPage path="/u/:id" />
           <TeamPage path="/t/:name" />
           <BuildsPage path="/builds" />
