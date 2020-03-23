@@ -22,6 +22,7 @@ import Pagination from "../common/Pagination"
 import Top500Forms from "./Top500Forms"
 import PageHeader from "../common/PageHeader"
 import Button from "../elements/Button"
+import Alert from "../elements/Alert"
 
 interface Placement {
   id: string
@@ -85,8 +86,8 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
   })
 
   const handleClear = () => {
-    setForms({})
-    setQuery({}, "replace")
+    setForms({ page: 1 })
+    setQuery({ page: 1 }, "replace")
   }
 
   const handleFormChange = (value: Object) => {
@@ -106,8 +107,20 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
       <PageHeader title="X Rank Browser" />
       <Box>
         <Top500Forms forms={forms} handleChange={handleFormChange} />
+        {forms.unique_id && (
+          <Alert status="info">
+            Viewing placements by player with the id {forms.unique_id}
+          </Alert>
+        )}
         <Flex mt="1em">
-          <Button onClick={() => setQuery(forms)}>Apply</Button>
+          <Button
+            onClick={() => {
+              setQuery({ ...forms, page: 1 })
+              setForms({ ...forms, page: 1 })
+            }}
+          >
+            Apply
+          </Button>
           <Box mx="1em">
             <Button outlined onClick={handleClear}>
               Clear filters
@@ -146,7 +159,14 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
                 {placements.map(placement => (
                   <Tr key={placement.id}>
                     <Td>
-                      <Flex alignItems="center">
+                      <Flex
+                        alignItems="center"
+                        cursor="pointer"
+                        onClick={() => {
+                          setForms({ unique_id: placement.unique_id, page: 1 })
+                          setQuery({ unique_id: placement.unique_id, page: 1 })
+                        }}
+                      >
                         {placement.player?.twitter && (
                           <UserAvatar
                             name={placement.name}
