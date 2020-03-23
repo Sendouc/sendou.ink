@@ -24,10 +24,9 @@ const HomePage: React.FC<RouteComponentProps> = () => {
           title="Picture by borzoic (@borzoic_ on Twitter)"
         />
         <Heading
-          size="2xl"
           letterSpacing="1px"
-          fontFamily="'Pacifico', cursive"
-          fontWeight="light"
+          fontFamily="'Rubik', sans-serif"
+          fontWeight="bold"
         >
           Sendou.ink
         </Heading>
