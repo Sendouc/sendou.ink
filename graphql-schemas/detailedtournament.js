@@ -13,54 +13,73 @@ const typeDef = gql`
     ): Boolean!
   }
 
-  # all team datas here to display results? -> ask lean for Tournament format -> maybe top 3?
-
   input DetailedTournamentInput {
     name: String!
-    bracket: String!
+    bracket_url: String!
     date: String!
-    winning_team_name: String!
-    winning_team_discord_ids: [String]
+    top_3_team_names: [[String]!]!
+    top_3_discord_ids: [[String]!]!
   }
 
-  input DetailedRoundInput {
+  input DetailedSetInput {
     round_number: Int!
     game_number: Int!
     stage: String!
     mode: Mode!
-    winners: TeamRoundInfo!
-    losers: TeamRoundInfo!
+    duration: Int!
+    winners: TeamInfo!
+    losers: TeamInfo!
   }
 
-  type DetailedTournament {}
+  type DetailedTournament {
+    name: String!
+    bracket_url: String!
+    date: String!
+    top_3_team_names: [[String]!]!
+    top_3_discord_ids: [[String]!]!
+  }
 
-  type DetailedRound {
+  type DetailedSet {
     tournament_id: DetailedTournament!
     round_number: Int!
     game_number: Int!
     stage: String!
     mode: Mode!
-    winners: TeamRoundInfo!
-    losers: TeamRoundInfo!
-  }
-
-  # DC BOOl? name needed?
-  type TeamRoundInfo {
-    team_name: String!
-    names: [String!]!
-    discord_ids: [String!]!
-    weapons: [String!]!
-    main_abilities: [[Ability]!]!
-    sub_abilities: [[Ability]!]!
-    kills: [[Int]!]!
-    deaths: [[Int]!]!
-    specials: [[Int]!]!
-    paint: [[Int]!]!
-    gear: [[String]!]!
     "Duration of the round in seconds"
     duration: Int!
+    winners: TeamInfo!
+    losers: TeamInfo!
+  }
+
+  type TeamInfo {
+    team_name: String!
+    players: [DetailedPlayer!]!
     "Score between 0 and 100 (KO)"
     score: Int!
+  }
+
+  type DetailedPlayer {
+    discord_id: String!
+    weapon: String!
+    main_abilities: [Ability]!
+    sub_abilities: [Ability]!
+    kills: Int!
+    assists: Int!
+    deaths: Int!
+    specials: Int!
+    paint: Int!
+    gear: [String]!
+  }
+
+  type DraftLeaderboard {
+    players: [DraftPlayer!]!
+  }
+
+  type DraftPlayer {
+    discord_id: String!
+    first: Int!
+    second: Int!
+    third: Int!
   }
 `
 
