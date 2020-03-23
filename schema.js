@@ -14,6 +14,10 @@ const {
   Tournament,
   tournamentResolvers,
 } = require("./graphql-schemas/tournament")
+const {
+  DetailedTournament,
+  detailedTournamentResolvers,
+} = require("./graphql-schemas/detailedtournament")
 const { FAPost, faPostResolvers } = require("./graphql-schemas/fapost")
 const { Plus, plusResolvers } = require("./graphql-schemas/plus")
 const { Team, teamResolvers } = require("./graphql-schemas/team")
@@ -46,6 +50,7 @@ const schema = makeExecutableSchema({
     Link,
     Trend,
     Tournament,
+    DetailedTournament,
     FAPost,
     Plus,
     Team,
@@ -62,6 +67,7 @@ const schema = makeExecutableSchema({
     linkResolvers,
     trendResolvers,
     tournamentResolvers,
+    detailedTournamentResolvers,
     faPostResolvers,
     plusResolvers,
     teamResolvers,
