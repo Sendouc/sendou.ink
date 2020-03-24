@@ -75,7 +75,9 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
   const postsFilter = (post: FreeAgentPost) => {
     if (post.hidden) return false
 
-    if (weapon && post.discord_user.weapons.indexOf(weapon) === -1) {
+    const usersWeapons = post.discord_user.weapons ?? []
+
+    if (weapon && usersWeapons.indexOf(weapon) === -1) {
       return false
     }
 
