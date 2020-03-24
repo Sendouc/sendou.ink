@@ -6,7 +6,7 @@ const typeDef = gql`
   extend type Mutation {
     addDetailedTournament(
       tournament: DetailedTournamentInput!
-      sets: [DetailedSetInput!]!
+      maps: [DetailedMapInput!]!
       lanistaToken: String!
     ): Boolean!
   }
@@ -16,7 +16,7 @@ const typeDef = gql`
     bracket_url: String!
     date: String!
     top_3_team_names: [String!]!
-    top_3_discord_ids: [[String]!]!
+    top_3_discord_ids: [[String!]!]!
   }
 
   type DetailedTournament {
@@ -24,10 +24,11 @@ const typeDef = gql`
     bracket_url: String!
     date: String!
     top_3_team_names: [String!]!
-    top_3_discord_ids: [[String]!]!
+    top_3_discord_ids: [[String!]!]!
+    type: EventType!
   }
 
-  input DetailedSetInput {
+  input DetailedMapInput {
     round_number: Int!
     game_number: Int!
     stage: String!
@@ -37,7 +38,7 @@ const typeDef = gql`
     losers: TeamInfoInput!
   }
 
-  type DetailedSet {
+  type DetailedMap {
     tournament_id: DetailedTournament!
     round_number: Int!
     game_number: Int!
@@ -47,6 +48,7 @@ const typeDef = gql`
     duration: Int!
     winners: TeamInfo!
     losers: TeamInfo!
+    type: EventType!
   }
 
   input TeamInfoInput {
@@ -65,7 +67,7 @@ const typeDef = gql`
   input DetailedPlayerInput {
     discord_id: String!
     weapon: String!
-    main_abilities: [Ability]!
+    main_abilities: [Ability!]!
     sub_abilities: [Ability]!
     kills: Int!
     assists: Int!
@@ -78,18 +80,19 @@ const typeDef = gql`
   type DetailedPlayer {
     discord_id: String!
     weapon: String!
-    main_abilities: [Ability]!
+    main_abilities: [Ability!]!
     sub_abilities: [Ability]!
     kills: Int!
     assists: Int!
     deaths: Int!
     specials: Int!
     paint: Int!
-    gear: [String]!
+    gear: [String!]!
   }
 
   type DraftLeaderboard {
     players: [DraftPlayer!]!
+    plus_server: PlusServer!
   }
 
   type DraftPlayer {
@@ -97,6 +100,10 @@ const typeDef = gql`
     first: Int!
     second: Int!
     third: Int!
+  }
+
+  enum EventType {
+    PLUSDRAFT
   }
 `
 
