@@ -284,7 +284,10 @@ const resolvers = {
     deleteLike: async (root, args, ctx) => {
       if (!ctx.user) throw new AuthenticationError("Not logged in.")
 
-      await FALike.deleteMany({ liked_discord_id: args.discord_id })
+      await FALike.deleteMany({
+        liker_discord_id: ctx.user.discord_id,
+        liked_discord_id: args.discord_id,
+      })
 
       return true
     },
