@@ -67,28 +67,31 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
     setProfile({ ...profile, ...newValueObject })
   }
 
-  const [updateUser] = useMutation<boolean, UpdateUserVars>(UPDATE_USER, {
-    variables: profile,
-    onCompleted: () => {
-      closeModal()
-      toast({
-        description: "Profile updated",
-        position: "top-right",
-        status: "success",
-        duration: 10000,
-      })
-    },
-    onError: error => {
-      toast({
-        title: "An error occurred",
-        description: error.message,
-        position: "top-right",
-        status: "error",
-        duration: 10000,
-      })
-    },
-    refetchQueries: ["searchForUser"],
-  })
+  const [updateUser, { loading }] = useMutation<boolean, UpdateUserVars>(
+    UPDATE_USER,
+    {
+      variables: profile,
+      onCompleted: () => {
+        closeModal()
+        toast({
+          description: "Profile updated",
+          position: "top-right",
+          status: "success",
+          duration: 10000,
+        })
+      },
+      onError: error => {
+        toast({
+          title: "An error occurred",
+          description: error.message,
+          position: "top-right",
+          status: "error",
+          duration: 10000,
+        })
+      },
+      refetchQueries: ["searchForUser"],
+    }
+  )
 
   return (
     <Modal title="Editing profile" closeModal={closeModal}>
@@ -154,7 +157,11 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
           />
         </Box>
         <Box mt="1em">
-          <Button onClick={() => updateUser()} disabled={!!error}>
+          <Button
+            onClick={() => updateUser()}
+            disabled={!!error}
+            loading={loading}
+          >
             Submit
           </Button>
           <Box as="span" ml="0.5em">

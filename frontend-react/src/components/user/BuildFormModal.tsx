@@ -63,7 +63,10 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
         }
   )
 
-  const [addBuild] = useMutation<{ addBuild: Build }, Build>(ADD_BUILD, {
+  const [addBuild, { loading: addLoading }] = useMutation<
+    { addBuild: Build },
+    Build
+  >(ADD_BUILD, {
     variables: { ...(build as Build) },
     onCompleted: data => {
       closeModal()
@@ -86,33 +89,36 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
     refetchQueries: ["searchForBuilds"],
   })
 
-  const [updateBuild] = useMutation<{ updateBuild: Build }, Build>(
-    UPDATE_BUILD,
-    {
-      variables: { ...(build as Build) },
-      onCompleted: () => {
-        closeModal()
-        toast({
-          description: "Build updated",
-          position: "top-right",
-          status: "success",
-          duration: 10000,
-        })
-      },
-      onError: error => {
-        toast({
-          title: "An error occurred",
-          description: error.message,
-          position: "top-right",
-          status: "error",
-          duration: 10000,
-        })
-      },
-      refetchQueries: ["searchForBuilds"],
-    }
-  )
+  const [updateBuild, { loading: updateLoading }] = useMutation<
+    { updateBuild: Build },
+    Build
+  >(UPDATE_BUILD, {
+    variables: { ...(build as Build) },
+    onCompleted: () => {
+      closeModal()
+      toast({
+        description: "Build updated",
+        position: "top-right",
+        status: "success",
+        duration: 10000,
+      })
+    },
+    onError: error => {
+      toast({
+        title: "An error occurred",
+        description: error.message,
+        position: "top-right",
+        status: "error",
+        duration: 10000,
+      })
+    },
+    refetchQueries: ["searchForBuilds"],
+  })
 
-  const [deleteBuild] = useMutation<boolean, { id: string }>(DELETE_BUILD, {
+  const [deleteBuild, { loading: deleteLoading }] = useMutation<
+    boolean,
+    { id: string }
+  >(DELETE_BUILD, {
     variables: { id: build.id as string },
     onCompleted: () => {
       closeModal()
@@ -245,7 +251,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
       title={buildBeingEdited ? "Editing existing build" : "Adding a new build"}
       closeModal={() => closeModal()}
     >
-      {buildBeingEdited && (
+      {buildBeingEdited && !deleteLoading && (
         <Box
           color="red.500"
           mb="1em"
@@ -385,6 +391,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
         <Button
           disabled={!buildCanBeSubmitted()}
           onClick={buildBeingEdited ? () => updateBuild() : () => addBuild()}
+          loading={addLoading || updateLoading}
         >
           Submit
         </Button>

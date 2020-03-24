@@ -11,7 +11,13 @@ function isNum(maybeNumber) {
     top_3_team_names: [String!]!
     top_3_discord_ids: [[String!]!]!*/
 
-function validateDetailedTournamentInput(input) {
+async function validateDetailedTournamentInput(input) {
+  const existingTournament = await DetailedTournament.find({ name: input.name })
+
+  if (existingTournament) {
+    throw new UserInputError("Tournament with that name already exists")
+  }
+
   if (input.top_3_team_names.length !== 3) {
     throw new UserInputError("Length of top_3_team_names was not 3")
   }

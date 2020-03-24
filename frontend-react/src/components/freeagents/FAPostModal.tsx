@@ -38,89 +38,90 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
   )
   const [showErrors, setShowErrors] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [disableSubmit, setDisableSubmit] = useState(false)
   const toast = useToast()
   const { themeColor, grayWithShade } = useContext(MyThemeContext)
 
-  const [addFreeAgentPost] = useMutation<boolean, AddFreeAgentPostVars>(
-    ADD_FREE_AGENT_POST,
-    {
-      variables: { ...(form as AddFreeAgentPostVars) },
-      onCompleted: data => {
-        closeModal()
-        toast({
-          description: `Free agent post added`,
-          position: "top-right",
-          status: "success",
-          duration: 10000,
-        })
-      },
-      onError: error => {
-        toast({
-          title: "An error occurred",
-          description: error.message,
-          position: "top-right",
-          status: "error",
-          duration: 10000,
-        })
-      },
-      refetchQueries: [{ query: FREE_AGENT_POSTS }],
-    }
-  )
+  const [addFreeAgentPost, { loading }] = useMutation<
+    boolean,
+    AddFreeAgentPostVars
+  >(ADD_FREE_AGENT_POST, {
+    variables: { ...(form as AddFreeAgentPostVars) },
+    onCompleted: data => {
+      closeModal()
+      toast({
+        description: `Free agent post added`,
+        position: "top-right",
+        status: "success",
+        duration: 10000,
+      })
+    },
+    onError: error => {
+      toast({
+        title: "An error occurred",
+        description: error.message,
+        position: "top-right",
+        status: "error",
+        duration: 10000,
+      })
+    },
+    refetchQueries: [{ query: FREE_AGENT_POSTS }],
+  })
 
-  const [editFreeAgentPost] = useMutation<boolean, AddFreeAgentPostVars>(
-    UPDATE_FREE_AGENT_POST,
-    {
-      variables: { ...(form as AddFreeAgentPostVars) },
-      onCompleted: data => {
-        closeModal()
-        toast({
-          description: `Free agent post edited`,
-          position: "top-right",
-          status: "success",
-          duration: 10000,
-        })
-      },
-      onError: error => {
-        toast({
-          title: "An error occurred",
-          description: error.message,
-          position: "top-right",
-          status: "error",
-          duration: 10000,
-        })
-      },
-      refetchQueries: [
-        { query: FREE_AGENT_POSTS },
-        { query: FREE_AGENT_MATCHES },
-      ],
-    }
-  )
+  const [editFreeAgentPost, { loading: editLoading }] = useMutation<
+    boolean,
+    AddFreeAgentPostVars
+  >(UPDATE_FREE_AGENT_POST, {
+    variables: { ...(form as AddFreeAgentPostVars) },
+    onCompleted: data => {
+      closeModal()
+      toast({
+        description: `Free agent post edited`,
+        position: "top-right",
+        status: "success",
+        duration: 10000,
+      })
+    },
+    onError: error => {
+      toast({
+        title: "An error occurred",
+        description: error.message,
+        position: "top-right",
+        status: "error",
+        duration: 10000,
+      })
+    },
+    refetchQueries: [{ query: FREE_AGENT_POSTS }],
+  })
 
-  const [hideFreeAgentPost] = useMutation<boolean, AddFreeAgentPostVars>(
-    HIDE_FREE_AGENT_POST,
-    {
-      variables: { ...(form as AddFreeAgentPostVars) },
-      onCompleted: data => {
-        closeModal()
-        toast({
-          description: `Free agent post deleted`,
-          position: "top-right",
-          status: "success",
-          duration: 10000,
-        })
-      },
-      onError: error => {
-        toast({
-          title: "An error occurred",
-          description: error.message,
-          position: "top-right",
-          status: "error",
-          duration: 10000,
-        })
-      },
-      refetchQueries: [{ query: FREE_AGENT_POSTS }],
-    }
-  )
+  const [hideFreeAgentPost, { loading: hideLoading }] = useMutation<
+    boolean,
+    AddFreeAgentPostVars
+  >(HIDE_FREE_AGENT_POST, {
+    variables: { ...(form as AddFreeAgentPostVars) },
+    onCompleted: data => {
+      closeModal()
+      toast({
+        description: `Free agent post deleted`,
+        position: "top-right",
+        status: "success",
+        duration: 10000,
+      })
+    },
+    onError: error => {
+      toast({
+        title: "An error occurred",
+        description: error.message,
+        position: "top-right",
+        status: "error",
+        duration: 10000,
+      })
+    },
+    refetchQueries: [
+      { query: FREE_AGENT_POSTS },
+      { query: FREE_AGENT_MATCHES },
+    ],
+  })
 
   const handleChange = (newValueObject: Partial<AddFreeAgentPostVars>) => {
     setForm({ ...form, ...newValueObject })
@@ -129,6 +130,7 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
   const actionType = post ? "EDIT" : "NEW"
 
   const handleSubmit = () => {
+    if (disableSubmit) return
     if (
       form.playstyles?.length === 0 ||
       !form.can_vc ||
@@ -141,8 +143,10 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
       return
     }
 
+    setDisableSubmit(true)
     if (actionType === "NEW") addFreeAgentPost()
     if (actionType === "EDIT") editFreeAgentPost()
+    setDisableSubmit(false)
   }
 
   return (
@@ -173,7 +177,7 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
           </Box>
           <Flex flexWrap="wrap" mt="1em">
             <Box mr="1em">
-              <Button onClick={() => hideFreeAgentPost()}>
+              <Button onClick={() => hideFreeAgentPost()} loading={hideLoading}>
                 Confirm deletion
               </Button>
             </Box>
@@ -315,7 +319,12 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
 
       <Flex flexWrap="wrap" mt="1em">
         <Box mr="1em">
-          <Button onClick={() => handleSubmit()}>Submit</Button>
+          <Button
+            onClick={() => handleSubmit()}
+            loading={loading || editLoading}
+          >
+            Submit
+          </Button>
         </Box>
         <Button outlined onClick={() => closeModal()}>
           Cancel

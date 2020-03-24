@@ -56,7 +56,7 @@ const SuggestionVouchModal: React.FC<SuggestionVouchModalProps> = ({
   const toast = useToast()
   const { themeColor } = useContext(MyThemeContext)
 
-  const [addSuggestion] = useMutation<boolean, AddSuggestionVars>(
+  const [addSuggestion, { loading }] = useMutation<boolean, AddSuggestionVars>(
     ADD_SUGGESTION,
     {
       variables: { ...(form as AddSuggestionVars) },
@@ -82,7 +82,10 @@ const SuggestionVouchModal: React.FC<SuggestionVouchModalProps> = ({
     }
   )
 
-  const [addVouch] = useMutation<boolean, AddVouchVars>(ADD_VOUCH, {
+  const [addVouch, { loading: vouchLoading }] = useMutation<
+    boolean,
+    AddVouchVars
+  >(ADD_VOUCH, {
     variables: { ...(form as AddVouchVars) },
     onCompleted: data => {
       closeModal()
@@ -241,7 +244,12 @@ const SuggestionVouchModal: React.FC<SuggestionVouchModalProps> = ({
       )}
       <Flex flexWrap="wrap" mt="1em">
         <Box mr="1em">
-          <Button onClick={() => handleSubmit()}>Submit</Button>
+          <Button
+            onClick={() => handleSubmit()}
+            loading={loading || vouchLoading}
+          >
+            Submit
+          </Button>
         </Box>
         <Button outlined onClick={() => closeModal()}>
           Cancel

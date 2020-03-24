@@ -35,7 +35,10 @@ const MapVoting: React.FC<RouteComponentProps> = () => {
     }[]
   >([])
 
-  const [addMapVotes] = useMutation<boolean, AddMapVotesVars>(ADD_MAP_VOTES, {
+  const [addMapVotes, { loading: addVotesLoading }] = useMutation<
+    boolean,
+    AddMapVotesVars
+  >(ADD_MAP_VOTES, {
     variables: { votes },
     onCompleted: data => {
       window.scrollTo(0, 0)
@@ -97,7 +100,11 @@ const MapVoting: React.FC<RouteComponentProps> = () => {
         generated monthly
       </Alert>
       <MapVoteGrid votes={votes} setVotes={setVotes} />
-      <Button icon={FaEnvelope} onClick={() => addMapVotes()}>
+      <Button
+        icon={FaEnvelope}
+        onClick={() => addMapVotes()}
+        loading={addVotesLoading}
+      >
         Submit
       </Button>
     </>
