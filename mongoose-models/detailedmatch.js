@@ -19,18 +19,22 @@ const TeamInfo = {
   score: Number,
 }
 
-const detailedSetSchema = new mongoose.Schema({
+const Map = {
   tournament_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "DetailedTournament",
   },
-  round_number: Number,
-  game_number: Number,
   stage: String,
   mode: String,
   duration: Number,
   winners: TeamInfo,
   losers: TeamInfo,
+}
+
+const detailedMatchSchema = new mongoose.Schema({
+  round_number: Number,
+  round_name: String,
+  match_details: [Map],
 })
 
-module.exports = mongoose.model("DetailedSet", detailedSetSchema)
+module.exports = mongoose.model("DetailedMatch", detailedMatchSchema)

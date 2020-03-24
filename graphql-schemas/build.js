@@ -163,14 +163,8 @@ const resolvers = {
           invalidArgs: args,
         })
 
-      const items = gear.flatMap(brand => {
-        const headItems = brand.head ? brand.head : []
-        const clothesItems = brand.clothes ? brand.clothes : []
-        const shoesItems = brand.shoes ? brand.shoes : []
-        return headItems.concat(clothesItems).concat(shoesItems)
-      })
       if (args.headgearItem) {
-        if (!items.includes(args.headgearItem))
+        if (!gear.includes(args.headgearItem))
           throw new UserInputError("Invalid headgear item.", {
             invalidArgs: args,
           })
@@ -178,7 +172,7 @@ const resolvers = {
         args.headgearItem = undefined
       }
       if (args.clothingItem) {
-        if (!items.includes(args.clothingItem))
+        if (!gear.includes(args.clothingItem))
           throw new UserInputError("Invalid clothing item.", {
             invalidArgs: args,
           })
@@ -186,7 +180,7 @@ const resolvers = {
         args.clothingItem = undefined
       }
       if (args.shoesItem) {
-        if (!items.includes(args.shoesItem))
+        if (!gear.includes(args.shoesItem))
           throw new UserInputError("Invalid shoes item.", {
             invalidArgs: args,
           })
@@ -254,26 +248,20 @@ const resolvers = {
           invalidArgs: args,
         })
 
-      const items = gear.flatMap(brand => {
-        const headItems = brand.head ? brand.head : []
-        const clothesItems = brand.clothes ? brand.clothes : []
-        const shoesItems = brand.shoes ? brand.shoes : []
-        return headItems.concat(clothesItems).concat(shoesItems)
-      })
       if (args.headgearItem) {
-        if (!items.includes(args.headgearItem))
+        if (!gear.includes(args.headgearItem))
           throw new UserInputError("Invalid headgear item.", {
             invalidArgs: args,
           })
       }
       if (args.clothingItem) {
-        if (!items.includes(args.clothingItem))
+        if (!gear.includes(args.clothingItem))
           throw new UserInputError("Invalid clothing item.", {
             invalidArgs: args,
           })
       }
       if (args.shoesItem) {
-        if (!items.includes(args.shoesItem))
+        if (!gear.includes(args.shoesItem))
           throw new UserInputError("Invalid shoes item.", {
             invalidArgs: args,
           })

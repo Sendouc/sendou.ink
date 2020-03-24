@@ -38,7 +38,6 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
   )
   const [showErrors, setShowErrors] = useState(false)
   const [deleting, setDeleting] = useState(false)
-  const [disableSubmit, setDisableSubmit] = useState(false)
   const toast = useToast()
   const { themeColor, grayWithShade } = useContext(MyThemeContext)
 
@@ -130,7 +129,6 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
   const actionType = post ? "EDIT" : "NEW"
 
   const handleSubmit = () => {
-    if (disableSubmit) return
     if (
       form.playstyles?.length === 0 ||
       !form.can_vc ||
@@ -143,10 +141,8 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
       return
     }
 
-    setDisableSubmit(true)
     if (actionType === "NEW") addFreeAgentPost()
-    if (actionType === "EDIT") editFreeAgentPost()
-    setDisableSubmit(false)
+    else if (actionType === "EDIT") editFreeAgentPost()
   }
 
   return (

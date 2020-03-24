@@ -1,12 +1,12 @@
 const { UserInputError, gql } = require("apollo-server-express")
 const DetailedTournament = require("../mongoose-models/detailedtournament")
-const DetailedSet = require("../mongoose-models/detailedset")
+const DetailedMatch = require("../mongoose-models/detailedmatch")
 
 const typeDef = gql`
   extend type Mutation {
     addDetailedTournament(
       tournament: DetailedTournamentInput!
-      maps: [DetailedMapInput!]!
+      matches: [DetailedMatchInput!]!
       lanistaToken: String!
     ): Boolean!
   }
@@ -28,9 +28,20 @@ const typeDef = gql`
     type: EventType!
   }
 
-  input DetailedMapInput {
+  input DetailedMatchInput {
+    round_name: String!
     round_number: Int!
-    game_number: Int!
+    match_details: [DetailedMapInput!]!
+  }
+
+  type DetailedMatch {
+    round_name: String!
+    round_number: Int!
+    match_details: [DetailedMap!]!
+    type: EventType!
+  }
+
+  input DetailedMapInput {
     stage: String!
     mode: Mode!
     duration: Int!
@@ -40,15 +51,12 @@ const typeDef = gql`
 
   type DetailedMap {
     tournament_id: DetailedTournament!
-    round_number: Int!
-    game_number: Int!
     stage: String!
     mode: Mode!
     "Duration of the round in seconds"
     duration: Int!
     winners: TeamInfo!
     losers: TeamInfo!
-    type: EventType!
   }
 
   input TeamInfoInput {
