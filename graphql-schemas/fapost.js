@@ -214,7 +214,7 @@ const resolvers = {
       validateFAPost(args)
 
       await FAPost.findOneAndUpdate(
-        { discord_id: ctx.user.discord_id },
+        { discord_id: ctx.user.discord_id, hidden: false },
         { ...args }
       ).catch(e => {
         throw new UserInputError(error.message, {
