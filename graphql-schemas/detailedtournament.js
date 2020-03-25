@@ -25,6 +25,7 @@ const typeDef = gql`
     date: String!
     top_3_team_names: [String!]!
     top_3_discord_ids: [[String!]!]!
+    participants_discord_ids: [String!]!
     type: EventType!
   }
 
