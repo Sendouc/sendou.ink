@@ -86,7 +86,6 @@ function validateDetailedPlayerInput(input, problems) {
   }
 
   if (input.sub_abilities.flat().length !== 9) {
-    console.log("input.sub", input.sub_abilities)
     problems.push(
       `Invalid sub abilities length: ${input.sub_abilities.flat().length}`
     )

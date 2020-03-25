@@ -35,6 +35,7 @@ const detailedMatchSchema = new mongoose.Schema({
   round_number: Number,
   round_name: String,
   match_details: [Map],
+  type: String,
 })
 
 module.exports = mongoose.model("DetailedMatch", detailedMatchSchema)

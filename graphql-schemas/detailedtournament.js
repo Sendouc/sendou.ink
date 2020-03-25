@@ -5,6 +5,8 @@ const {
 } = require("apollo-server-express")
 const DetailedTournament = require("../mongoose-models/detailedtournament")
 const DetailedMatch = require("../mongoose-models/detailedmatch")
+const Leaderboard = require("../mongoose-models/leaderboard")
+const PlayerStat = require("../mongoose-models/playerstat")
 const {
   validateDetailedTournamentInput,
   validateDetailedMapInput,
@@ -26,6 +28,7 @@ const typeDef = gql`
     date: String!
     top_3_team_names: [String!]!
     top_3_discord_ids: [[String!]!]!
+    participant_discord_ids: [String!]!
   }
 
   type DetailedTournament {
@@ -34,7 +37,7 @@ const typeDef = gql`
     date: String!
     top_3_team_names: [String!]!
     top_3_discord_ids: [[String!]!]!
-    participants_discord_ids: [String!]!
+    participant_discord_ids: [String!]!
     type: EventType!
   }
 
@@ -108,20 +111,39 @@ const typeDef = gql`
     gear: [String!]!
   }
 
-  type DraftLeaderboard {
-    players: [DraftPlayer!]!
-    plus_server: PlusServer!
+  type Leaderboard {
+    players: [TournamentPlayer!]!
+    type: EventType!
   }
 
-  type DraftPlayer {
+  type TournamentPlayer {
     discord_id: String!
+    "Number of first places"
     first: Int!
+    "Number of second places"
     second: Int!
+    "Number of third places"
     third: Int!
   }
 
+  type PlayerStat {
+    discord_id: String!
+    "Weapon of the stat. ALL if stat is all weapon stats summed up"
+    weapon: String!
+    kills: Int!
+    assists: Int!
+    deaths: Int!
+    specials: Int!
+    paint: Int!
+    seconds_played: Int!
+    games_played: Int!
+    wins: Int!
+    type: EventType!
+  }
+
   enum EventType {
-    PLUSDRAFT
+    DRAFTONE
+    DRAFTTWO
   }
 `
 
@@ -139,17 +161,33 @@ const resolvers = {
         match.map_details.map(map => validateDetailedMapInput(map))
       )
 
-      console.log("tournamentInputProblems", tournamentInputProblems)
-      console.log("maptInputProblems", maptInputProblems.flat(3))
-
       const problems = [
         ...tournamentInputProblems,
         ...maptInputProblems.flat(3),
       ]
 
-      if (problems.length > 0) {
+      /*if (problems.length > 0) {
         throw new UserInputError(problems.join(","))
-      }
+      }*/
+
+      const eventType = args.plus_server === "TWO" ? "DRAFTTWO" : "DRAFTONE"
+
+      /*type DetailedTournament {
+    name: String!
+    bracket_url: String!
+    date: String!
+    top_3_team_names: [String!]!
+    top_3_discord_ids: [[String!]!]!
+    participant_discord_ids: [String!]!
+    type: EventType!
+  }*/
+      const tournament = args.tournament
+      tournament.type = eventType
+
+      //const savedTournament = await DetailedTournament.create(tournament)
+
+      console.log("savedTournament", savedTournament._id)
+
       return true
 
       //put tourney in db

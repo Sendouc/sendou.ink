@@ -4,8 +4,10 @@ const detailedTournamentSchema = new mongoose.Schema({
   name: String,
   bracket_url: String,
   date: Date,
-  top_3_team_names: [[String]],
+  top_3_team_names: [String],
   top_3_discord_ids: [[String]],
+  participant_discord_ids: [String],
+  type: String,
 })
 
 module.exports = mongoose.model("DetailedTournament", detailedTournamentSchema)
