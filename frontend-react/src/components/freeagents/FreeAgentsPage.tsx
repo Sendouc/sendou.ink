@@ -27,6 +27,7 @@ import {
   FREE_AGENT_MATCHES,
 } from "../../graphql/queries/freeAgentMatches"
 import Matches from "./Matches"
+import Alert from "../elements/Alert"
 
 const playstyleToEnum = {
   "Frontline/Slayer": "FRONTLINE",
@@ -116,17 +117,35 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
     return true
   }
 
-  const showModalButton = () => {
-    if (!userData!.user) return false
+  const getTopRightContent = () => {
+    if (!userData!.user)
+      return (
+        <Box maxW="300px">
+          <Alert status="info" mt="0">
+            Log in to make your own free agent post and start matching!
+          </Alert>
+        </Box>
+      )
 
     if (ownFAPost && ownFAPost.hidden) {
       const weekFromCreatingFAPost = parseInt(ownFAPost.createdAt) + 604800000
       if (weekFromCreatingFAPost > Date.now()) {
-        return false
+        return (
+          <Box maxW="300px">
+            <Alert status="info" mt="0">
+              You need to wait a week after deleting your old free agent post
+              before making a new one
+            </Alert>
+          </Box>
+        )
       }
     }
 
-    return true
+    return (
+      <Box m="0.5em">
+        <Button onClick={() => setShowModal(true)}>{buttonText}</Button>
+      </Box>
+    )
   }
 
   return (
@@ -147,11 +166,7 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
             {showFilters ? "Hide filters" : "Show filters"}
           </Button>
         </Box>
-        {showModalButton() && (
-          <Box m="0.5em">
-            <Button onClick={() => setShowModal(true)}>{buttonText}</Button>
-          </Box>
-        )}
+        {getTopRightContent()}
       </Flex>
       <Collapse mt={4} isOpen={showFilters}>
         <Box maxW="600px" my="1em">

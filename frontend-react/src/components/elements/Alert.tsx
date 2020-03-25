@@ -4,12 +4,18 @@ import { Alert as ChakraAlert, AlertIcon, CloseButton } from "@chakra-ui/core"
 interface AlertProps {
   children: string | string[]
   status: "error" | "success" | "warning" | "info"
+  mt?: string
   onClose?: () => void
 }
 
-const Alert: React.FC<AlertProps> = ({ children, status, onClose }) => {
+const Alert: React.FC<AlertProps> = ({
+  children,
+  status,
+  onClose,
+  mt = "2em",
+}) => {
   return (
-    <ChakraAlert status={status} borderRadius="5px" mt="2em">
+    <ChakraAlert status={status} borderRadius="5px" mt={mt}>
       <AlertIcon />
       {children}
       {onClose && (

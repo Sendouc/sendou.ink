@@ -14,7 +14,7 @@ import { useToast, Heading, Flex, Box } from "@chakra-ui/core"
 import Input from "../elements/Input"
 import Button from "../elements/Button"
 
-const AdminPage: React.FC<RouteComponentProps> = ({}) => {
+const AdminPage: React.FC<RouteComponentProps> = () => {
   const [updateTwitterForms, setUpdateTwitterForms] = useState<
     Partial<UpdateTwitterVars>
   >({})
