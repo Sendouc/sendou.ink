@@ -86,7 +86,7 @@ const typeDef = gql`
     discord_id: String!
     weapon: String!
     main_abilities: [Ability!]!
-    sub_abilities: [Ability]!
+    sub_abilities: [[Ability]!]!
     kills: Int!
     assists: Int!
     deaths: Int!
@@ -99,7 +99,7 @@ const typeDef = gql`
     discord_id: String!
     weapon: String!
     main_abilities: [Ability!]!
-    sub_abilities: [Ability]!
+    sub_abilities: [[Ability]!]!
     kills: Int!
     assists: Int!
     deaths: Int!
@@ -132,12 +132,24 @@ const resolvers = {
         throw new AuthenticationError("Invalid token provided")
       }
 
-      validateDetailedTournamentInput(args.tournament)
-      args.matches.forEach(match =>
-        match.map_details.forEach(map => validateDetailedMapInput(map))
+      const tournamentInputProblems = await validateDetailedTournamentInput(
+        args.tournament
+      )
+      const maptInputProblems = args.matches.map(match =>
+        match.map_details.map(map => validateDetailedMapInput(map))
       )
 
-      console.log("args", args)
+      console.log("tournamentInputProblems", tournamentInputProblems)
+      console.log("maptInputProblems", maptInputProblems.flat(3))
+
+      const problems = [
+        ...tournamentInputProblems,
+        ...maptInputProblems.flat(3),
+      ]
+
+      if (problems.length > 0) {
+        throw new UserInputError(problems.join(","))
+      }
       return true
 
       //put tourney in db

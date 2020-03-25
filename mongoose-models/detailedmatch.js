@@ -4,7 +4,7 @@ const Player = {
   discord_id: String,
   weapon: String,
   main_abilities: [String],
-  sub_abilities: [String],
+  sub_abilities: [[String]],
   kills: Number,
   assists: Number,
   deaths: Number,
