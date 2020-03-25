@@ -85,6 +85,7 @@ mongoose
   })
 
 const server = new ApolloServer({
+  introspection: true,
   schema,
   context: ({ req }) => {
     if (process.env.LOGGED_IN) {
