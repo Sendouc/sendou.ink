@@ -19,7 +19,14 @@ const IconButton: React.FC<IconButtonProps> = ({
   onClick,
   color,
 }) => {
-  const { themeColor } = useContext(MyThemeContext)
+  const { themeColorWithShade } = useContext(MyThemeContext)
+
+  const getColor = () => {
+    if (color) return color
+    if (colored) return themeColorWithShade
+    return undefined
+  }
+
   return (
     <ChakraIconButton
       aria-label=""
@@ -28,8 +35,7 @@ const IconButton: React.FC<IconButtonProps> = ({
       variant="ghost"
       onClick={onClick}
       size="lg"
-      variantColor={colored ? themeColor : undefined}
-      color={color}
+      color={getColor()}
       isDisabled={disabled}
     />
   )
