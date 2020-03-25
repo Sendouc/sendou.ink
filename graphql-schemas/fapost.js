@@ -168,7 +168,7 @@ const resolvers = {
       validateFAPost(args)
 
       const existingFAPost = await FAPost.findOne({
-        discord_user: ctx.user.discord_id,
+        discord_id: ctx.user.discord_id,
       }).catch(e => {
         throw new UserInputError(e.message, {
           invalidArgs: args,
