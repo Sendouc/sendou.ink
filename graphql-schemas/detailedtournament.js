@@ -1,10 +1,19 @@
-const { UserInputError, gql } = require("apollo-server-express")
+const {
+  AuthenticationError,
+  UserInputError,
+  gql,
+} = require("apollo-server-express")
 const DetailedTournament = require("../mongoose-models/detailedtournament")
 const DetailedMatch = require("../mongoose-models/detailedmatch")
+const {
+  validateDetailedTournamentInput,
+  validateDetailedMapInput,
+} = require("../utils/validators")
 
 const typeDef = gql`
   extend type Mutation {
     addDetailedTournament(
+      plus_server: PlusServer!
       tournament: DetailedTournamentInput!
       matches: [DetailedMatchInput!]!
       lanistaToken: String!
@@ -32,13 +41,13 @@ const typeDef = gql`
   input DetailedMatchInput {
     round_name: String!
     round_number: Int!
-    match_details: [DetailedMapInput!]!
+    map_details: [DetailedMapInput!]!
   }
 
   type DetailedMatch {
     round_name: String!
     round_number: Int!
-    match_details: [DetailedMap!]!
+    map_details: [DetailedMap!]!
     type: EventType!
   }
 
@@ -119,7 +128,19 @@ const typeDef = gql`
 const resolvers = {
   Mutation: {
     addDetailedTournament: async (root, args) => {
-      console.log("args", args)
+      if (args.lanistaToken !== process.env.LANISTA_TOKEN) {
+        throw new AuthenticationError("Invalid token provided")
+      }
+
+      validateDetailedTournamentInput(args.tournament)
+      args.matches.forEach(match =>
+        match.map_details.forEach(map => validateDetailedMapInput(map))
+      )
+
+      //put tourney in db
+      //put matches in db
+      //update leaderboard
+      // stats?
     },
   },
 }
@@ -128,10 +149,3 @@ module.exports = {
   DetailedTournament: typeDef,
   detailedTournamentResolvers: resolvers,
 }
-
-/*{"tournament": {"name": "Test Tournament #1", "bracket_url": "www.google.com", "date": "1585006225", "top_3_team_names": ["Team 1", "Team 2", "Team 3"] "top_3_discord_ids": [["123", "123", "123", "123"], ["123", "123", "123", "123"], ["123", "123", "123", "123"]]}, "sets": {"round_number": 1, "game_number: 1, stage: "The Reef", mode: "SZ", duration: 300, winners: {"team_name": "Cool Team", players: [{"discord_id": "123", "weapon": "Tentatek Splattershot", "main_abilities": ["ISM", "ISM", "ISM"], "sub_abilities": ["ISM", "ISM", "ISM", "ISM", "ISM", "ISM", "ISM", "ISM", "ISM"], "kills": 1, "assists": 1, "deaths": 1, "specials": 1, "paint": 1000, "gear": ["asd", "asd", "asd"]}], "score": 100}, losers: {"team_name": "Cool Team", players: [{"discord_id": "123", "weapon": "Tentatek Splattershot", "main_abilities": ["ISM", "ISM", "ISM"], "sub_abilities": ["ISM", "ISM", "ISM", "ISM", "ISM", "ISM", "ISM", "ISM", "ISM"], "kills": 1, "assists": 1, "deaths": 1, "specials": 1, "paint": 1000, "gear": ["asd", "asd", "asd"]}], "score": 100}}, "lanistaToken": "asd"}
-
-
-
-//player
-{"team_name": "Cool Team", players: [{"discord_id": "123", "weapon": "Tentatek Splattershot", "main_abilities": ["ISM", "ISM", "ISM"], "sub_abilities": ["ISM", "ISM", "ISM", "ISM", "ISM", "ISM", "ISM", "ISM", "ISM"], "kills": 1, "assists": 1, "deaths": 1, "specials": 1, "paint": 1000, "gear": ["asd", "asd", "asd"]}], "score": 100}*/

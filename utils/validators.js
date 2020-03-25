@@ -62,19 +62,6 @@ async function validateDetailedMapInput(input) {
   input.losers.players.forEach(player => validateDetailedPlayerInput(player))
 }
 
-/*input DetailedPlayerInput {
-  discord_id: String!
-  weapon: String!
-  main_abilities: [Ability!]!
-  sub_abilities: [Ability]!
-  kills: Int!
-  assists: Int!
-  deaths: Int!
-  specials: Int!
-  paint: Int!
-  gear: [String]!
-}*/
-
 async function validateDetailedPlayerInput(input) {
   if (!isNum(input.discord_id)) {
     throw new UserInputError(`Invalid Discord ID: ${input.discord_id}`)
@@ -129,4 +116,5 @@ async function validateDetailedPlayerInput(input) {
 
 module.exports = {
   validateDetailedTournamentInput,
+  validateDetailedMapInput,
 }
