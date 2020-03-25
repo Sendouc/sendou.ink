@@ -137,6 +137,9 @@ const resolvers = {
         match.map_details.forEach(map => validateDetailedMapInput(map))
       )
 
+      console.log("args", args)
+      return true
+
       //put tourney in db
       //put matches in db
       //update leaderboard

@@ -2,6 +2,7 @@ require("dotenv").config()
 const { ApolloServer } = require("apollo-server-express")
 const mongoose = require("mongoose")
 const express = require("express")
+const bodyParser = require("body-parser")
 const session = require("express-session")
 const MongoStore = require("connect-mongo")(session)
 const cors = require("cors")
@@ -86,6 +87,7 @@ mongoose
 
 const server = new ApolloServer({
   introspection: true,
+  playground: true,
   schema,
   context: ({ req }) => {
     if (process.env.LOGGED_IN) {
@@ -123,6 +125,9 @@ const server = new ApolloServer({
 })
 
 const app = express()
+
+app.use(bodyParser.json({ limit: "1mb" }))
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }))
 
 app.use(cors())
 
