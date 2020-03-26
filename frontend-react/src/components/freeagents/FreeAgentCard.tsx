@@ -1,12 +1,5 @@
 import React, { useContext, useState } from "react"
-import {
-  Flex,
-  Box,
-  Image,
-  IconButton,
-  Heading,
-  useToast,
-} from "@chakra-ui/core"
+import { Flex, Box, Image, IconButton, Heading } from "@chakra-ui/core"
 import { FreeAgentPost, UserData } from "../../types"
 import UserAvatar from "../common/UserAvatar"
 import { Link } from "@reach/router"
@@ -49,30 +42,12 @@ const FreeAgentCard: React.FC<FreeAgentCardProps> = ({
   const { grayWithShade, themeColorWithShade } = useContext(MyThemeContext)
   const { discord_user } = post
   const canBeExpanded = hasExtraInfo(post)
-  const toast = useToast()
 
   const { data } = useQuery<UserData>(USER)
 
   const [addLike] = useMutation<{ addLike: boolean }, { discord_id: string }>(
     ADD_LIKE,
     {
-      onCompleted: data => {
-        toast({
-          description: `Liked a free agent post by ${post.discord_user.username}`,
-          position: "top-right",
-          status: "success",
-          duration: 10000,
-        })
-      },
-      onError: error => {
-        toast({
-          title: "An error occurred",
-          description: error.message,
-          position: "top-right",
-          status: "error",
-          duration: 10000,
-        })
-      },
       refetchQueries: [{ query: FREE_AGENT_MATCHES }],
     }
   )
@@ -81,23 +56,6 @@ const FreeAgentCard: React.FC<FreeAgentCardProps> = ({
     { deleteLike: boolean },
     { discord_id: string }
   >(DELETE_LIKE, {
-    onCompleted: data => {
-      toast({
-        description: `Unliked a free agent post by ${post.discord_user.username}`,
-        position: "top-right",
-        status: "success",
-        duration: 10000,
-      })
-    },
-    onError: error => {
-      toast({
-        title: "An error occurred",
-        description: error.message,
-        position: "top-right",
-        status: "error",
-        duration: 10000,
-      })
-    },
     refetchQueries: [{ query: FREE_AGENT_MATCHES }],
   })
 
