@@ -166,34 +166,21 @@ const resolvers = {
         ...maptInputProblems.flat(3),
       ]
 
-      /*if (problems.length > 0) {
+      if (problems.length > 0) {
         throw new UserInputError(problems.join(","))
-      }*/
+      }
 
       const eventType = args.plus_server === "TWO" ? "DRAFTTWO" : "DRAFTONE"
-
-      /*type DetailedTournament {
-    name: String!
-    bracket_url: String!
-    date: String!
-    top_3_team_names: [String!]!
-    top_3_discord_ids: [[String!]!]!
-    participant_discord_ids: [String!]!
-    type: EventType!
-  }*/
       const tournament = args.tournament
       tournament.type = eventType
 
       //const savedTournament = await DetailedTournament.create(tournament)
 
-      console.log("savedTournament", savedTournament._id)
-
-      return true
-
-      //put tourney in db
       //put matches in db
       //update leaderboard
       // stats?
+
+      return true
     },
   },
 }
