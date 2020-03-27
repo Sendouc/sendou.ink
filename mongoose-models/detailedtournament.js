@@ -10,4 +10,10 @@ const detailedTournamentSchema = new mongoose.Schema({
   type: String,
 })
 
+detailedTournamentSchema.virtual("top_3_discord_users", {
+  ref: "User",
+  localField: "top_3_discord_ids",
+  foreignField: "discord_id",
+})
+
 module.exports = mongoose.model("DetailedTournament", detailedTournamentSchema)

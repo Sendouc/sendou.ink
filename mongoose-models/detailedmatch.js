@@ -20,10 +20,6 @@ const TeamInfo = {
 }
 
 const Map = {
-  tournament_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "DetailedTournament",
-  },
   stage: String,
   mode: String,
   duration: Number,
@@ -32,9 +28,13 @@ const Map = {
 }
 
 const detailedMatchSchema = new mongoose.Schema({
+  tournament_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "DetailedTournament",
+  },
   round_number: Number,
   round_name: String,
-  match_details: [Map],
+  map_details: [Map],
   type: String,
 })
 

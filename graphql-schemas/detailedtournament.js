@@ -13,6 +13,10 @@ const {
 } = require("../utils/validators")
 
 const typeDef = gql`
+  extend type Query {
+    plusDraftCups: DraftCupCollection!
+  }
+
   extend type Mutation {
     addDetailedTournament(
       plus_server: PlusServer!
@@ -20,6 +24,11 @@ const typeDef = gql`
       matches: [DetailedMatchInput!]!
       lanistaToken: String!
     ): Boolean!
+  }
+
+  type DraftCupCollection {
+    leaderboards: [Leaderboard!]!
+    tournaments: [DetailedTournament!]!
   }
 
   input DetailedTournamentInput {
@@ -36,7 +45,7 @@ const typeDef = gql`
     bracket_url: String!
     date: String!
     top_3_team_names: [String!]!
-    top_3_discord_ids: [[String!]!]!
+    top_3_discord_users: [[User!]!]!
     participant_discord_ids: [String!]!
     type: EventType!
   }
@@ -48,6 +57,7 @@ const typeDef = gql`
   }
 
   type DetailedMatch {
+    tournament_id: DetailedTournament!
     round_name: String!
     round_number: Int!
     map_details: [DetailedMap!]!
@@ -63,7 +73,6 @@ const typeDef = gql`
   }
 
   type DetailedMap {
-    tournament_id: DetailedTournament!
     stage: String!
     mode: Mode!
     "Duration of the round in seconds"
@@ -117,7 +126,7 @@ const typeDef = gql`
   }
 
   type TournamentPlayer {
-    discord_id: String!
+    discord_user: User!
     "Number of first places"
     first: Int!
     "Number of second places"
@@ -147,7 +156,120 @@ const typeDef = gql`
   }
 `
 
+async function updateLeaderboard(top_3_discord_ids, type) {
+  let leaderboard = await Leaderboard.findOne({ type })
+
+  if (!leaderboard) leaderboard = { players: [] }
+
+  const newPlayers = []
+
+  top_3_discord_ids.forEach((team, index) => {
+    const placement = ["first", "second", "third"][index]
+    team.forEach(discord_id => {
+      const foundPlayer = leaderboard.players.find(
+        player => discord_id === player.discord_id
+      )
+      if (foundPlayer) {
+        foundPlayer[placement] = foundPlayer[placement] + 1
+      } else {
+        const newPlayer = { discord_id, first: 0, second: 0, third: 0 }
+        newPlayer[placement] = newPlayer[placement] + 1
+        newPlayers.push(newPlayer)
+      }
+    })
+  })
+
+  const newLeaderboard = {
+    players: [...leaderboard.players, ...newPlayers],
+    type,
+  }
+  newLeaderboard.players.sort(
+    (a, b) =>
+      b.first * 4 +
+      b.second * 2 +
+      b.third -
+      (a.first * 4 + a.second * 2 + a.third)
+  )
+
+  await Leaderboard.findOneAndUpdate({ type }, newLeaderboard, { upsert: true })
+}
+
+async function generateStats(type) {
+  const matches = await DetailedMatch.find({})
+  const stats = {}
+  matches.forEach(match => {
+    match.map_details.forEach(map_detail => {
+      const { duration, winners, losers } = map_detail
+      ;[winners, losers].forEach((teamInfo, index) => {
+        teamInfo.players.forEach(player => {
+          const {
+            discord_id,
+            weapon,
+            kills,
+            assists,
+            deaths,
+            specials,
+            paint,
+          } = player
+          if (!stats[discord_id]) {
+            stats[discord_id] = {}
+          }
+          ;[weapon, "ALL"].forEach(weaponOrAll => {
+            const weaponStats = stats[discord_id][weaponOrAll]
+              ? stats[discord_id][weaponOrAll]
+              : {
+                  discord_id,
+                  weapon: weaponOrAll,
+                  kills: 0,
+                  assists: 0,
+                  deaths: 0,
+                  specials: 0,
+                  paint: 0,
+                  seconds_played: 0,
+                  games_played: 0,
+                  wins: 0,
+                  type,
+                }
+            weaponStats.kills = weaponStats.kills + kills
+            weaponStats.assists = weaponStats.assists + assists
+            weaponStats.deaths = weaponStats.deaths + deaths
+            weaponStats.specials = weaponStats.specials + specials
+            weaponStats.paint = weaponStats.paint + paint
+            weaponStats.seconds_played = weaponStats.seconds_played + duration
+            weaponStats.games_played = weaponStats.games_played + 1
+            weaponStats.wins = weaponStats.wins + (index === 0 ? 1 : 0)
+
+            stats[discord_id][weaponOrAll] = weaponStats
+          })
+        })
+      })
+    })
+  })
+
+  const statsForDb = []
+  Object.keys(stats).forEach(discord_id => {
+    Object.keys(stats[discord_id]).forEach(weapon => {
+      statsForDb.push(stats[discord_id][weapon])
+    })
+  })
+
+  PlayerStat.deleteMany({ type })
+  await PlayerStat.insertMany(statsForDb)
+}
+
 const resolvers = {
+  Query: {
+    plusDraftCups: async (root, args) => {
+      const leaderboards = await Leaderboard.find()
+        .or([{ type: "DRAFTONE" }, { type: "DRAFTTWO" }])
+        .populate("players.discord_user")
+      const tournaments = await DetailedTournament.find()
+        .or([{ type: "DRAFTONE" }, { type: "DRAFTTWO" }])
+        .populate("top_3_discord_users")
+
+      return { leaderboards, tournaments }
+    },
+  },
   Mutation: {
     addDetailedTournament: async (root, args) => {
       if (args.lanistaToken !== process.env.LANISTA_TOKEN) {
@@ -166,20 +288,24 @@ const resolvers = {
         ...maptInputProblems.flat(3),
       ]
 
+      const eventType = args.plus_server === "TWO" ? "DRAFTTWO" : "DRAFTONE"
       if (problems.length > 0) {
         throw new UserInputError(problems.join(","))
       }
-
-      const eventType = args.plus_server === "TWO" ? "DRAFTTWO" : "DRAFTONE"
       const tournament = args.tournament
       tournament.type = eventType
 
-      //const savedTournament = await DetailedTournament.create(tournament)
+      const savedTournament = await DetailedTournament.create(tournament)
 
-      //put matches in db
-      //update leaderboard
-      // stats?
+      args.matches.forEach(match => {
+        match.tournament_id = savedTournament._id
+        match.type = eventType
+      })
 
+      await DetailedMatch.insertMany(args.matches)
+
+      await updateLeaderboard(args.tournament.top_3_discord_ids, eventType)
+      await generateStats(eventType)
       return true
     },
   },
