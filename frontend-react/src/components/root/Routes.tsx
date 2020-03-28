@@ -13,12 +13,12 @@ const TournamentsPage = lazy(() => import("../tournaments/TournamentsPage"))
 const TournamentsDetailsPage = lazy(() =>
   import("../tournaments/TournamentDetailsPage")
 )
-//const EventsPage = lazy(() => import("../events/EventsPage"))
 const MapPlannerPage = lazy(() => import("../plans/MapPlannerPage"))
 const FreeAgentsPage = lazy(() => import("../freeagents/FreeAgentsPage"))
 const TeamPage = lazy(() => import("../team/TeamPage"))
 const XSearch = lazy(() => import("../xsearch/Top500BrowserPage"))
 const PlusPage = lazy(() => import("../plus/PlusPage"))
+const DraftCupPage = lazy(() => import("../plusdraftcup/DraftCupPage"))
 const Access = lazy(() => import("./Access"))
 const VotingHistoryPage = lazy(() => import("../plus/VotingHistoryPage"))
 const MapVotingHistoryPage = lazy(() => import("../plus/MapVotingHistoryPage"))
@@ -40,13 +40,13 @@ const Routes: React.FC = () => {
           <CalendarPage path="/calendar" />
           <TournamentsPage path="/tournaments" />
           <TournamentsDetailsPage path="/tournaments/:id" />
-          {/*<EventsPage path="/play" />*/}
           <FreeAgentsPage path="/freeagents" />
           <XSearch path="/xsearch" />
           <About path="/about" />
           <Links path="/links" />
           <Access path="/access" />
           <PlusPage path="/plus" />
+          <DraftCupPage path="/plus/draft" />
           <VotingHistoryPage path="/plus/history" />
           <MapVotingHistoryPage path="/plus/maphistory" />
           <MapVoting path="/plus/mapvoting" />

@@ -133,6 +133,7 @@ const typeDef = gql`
     second: Int!
     "Number of third places"
     third: Int!
+    score: Int!
   }
 
   type PlayerStat {
@@ -258,6 +259,11 @@ async function generateStats(type) {
 }
 
 const resolvers = {
+  TournamentPlayer: {
+    score: root => {
+      return root.first * 4 + root.second * 2 + root.third
+    },
+  },
   Query: {
     plusDraftCups: async (root, args) => {
       const leaderboards = await Leaderboard.find()

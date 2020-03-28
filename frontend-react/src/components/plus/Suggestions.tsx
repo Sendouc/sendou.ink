@@ -203,24 +203,6 @@ const Suggestions: React.FC<SuggestionsProps> = ({ user }) => {
 
   return (
     <>
-      {/*!showSuggestionForm && (canSuggest || canVouch) && (
-        <div style={{ marginTop: "2em" }}>
-          <Button onClick={() => setShowSuggestionForm(true)}>
-            {getButtonText()}
-          </Button>
-        </div>
-      )}
-      {showSuggestionForm && (
-        <SuggestionForm
-          plusServer={plusServer}
-          hideForm={() => setShowSuggestionForm(false)}
-          handleSuccess={handleSuccess}
-          handleError={handleError}
-          canSuggest={canSuggest}
-          canVouch={canVouch}
-          canVouchFor={user.plus.can_vouch}
-        />
-      )*/}
       {showSuggestionForm && (
         <SuggestionVouchModal
           closeModal={() => setShowSuggestionForm(false)}

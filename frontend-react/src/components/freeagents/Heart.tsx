@@ -35,7 +35,7 @@ const Heart: React.FC<HeartProps> = ({ disabled, active, onClick }) => {
             />
           </Flex>
         </PopoverTrigger>
-        <PopoverContent zIndex={4} p="0.5em" bg={darkerBgColor}>
+        <PopoverContent zIndex={4} p="0.5em" bg={darkerBgColor} border="0">
           {getPopoverContent()}
         </PopoverContent>
       </Popover>
