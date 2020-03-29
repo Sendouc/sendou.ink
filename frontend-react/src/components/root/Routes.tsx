@@ -19,6 +19,7 @@ const TeamPage = lazy(() => import("../team/TeamPage"))
 const XSearch = lazy(() => import("../xsearch/Top500BrowserPage"))
 const PlusPage = lazy(() => import("../plus/PlusPage"))
 const DraftCupPage = lazy(() => import("../plusdraftcup/DraftCupPage"))
+const DraftCupDetails = lazy(() => import("../plusdraftcup/DraftCupDetails"))
 const Access = lazy(() => import("./Access"))
 const VotingHistoryPage = lazy(() => import("../plus/VotingHistoryPage"))
 const MapVotingHistoryPage = lazy(() => import("../plus/MapVotingHistoryPage"))
@@ -47,6 +48,7 @@ const Routes: React.FC = () => {
           <Access path="/access" />
           <PlusPage path="/plus" />
           <DraftCupPage path="/plus/draft" />
+          <DraftCupDetails path="/plus/draft/:id" />
           <VotingHistoryPage path="/plus/history" />
           <MapVotingHistoryPage path="/plus/maphistory" />
           <MapVoting path="/plus/mapvoting" />

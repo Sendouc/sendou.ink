@@ -186,6 +186,27 @@ export interface Team {
   tournament_results: TournamentResult[]
 }
 
+export interface DetailedTeamInfo {
+  team_name: string
+  score: number
+  players: {
+    discord_user: {
+      username: string
+      discriminator: string
+      twitter_name: string
+    }
+    weapon: Weapon
+    main_abilities: Ability[]
+    sub_abilities: Ability[][]
+    kills: number
+    assists: number
+    deaths: number
+    specials: number
+    paint: number
+    gear: (HeadGear | ClothingGear | ShoesGear)[]
+  }[]
+}
+
 //==============================================================================
 // Apollo
 //==============================================================================

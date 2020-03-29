@@ -4,7 +4,7 @@ const {
   gql,
 } = require("apollo-server-express")
 const Maplist = require("../mongoose-models/maplist")
-const MapBallot = require("../mongoose-models/mapballot")
+const MapBallot = require("../mongoose-models/mapballot") //[PositiveVoteCount!]!
 const maps = require("../utils/maps")
 
 const typeDef = gql`
@@ -12,6 +12,7 @@ const typeDef = gql`
     maplists: [Maplist!]!
     plusMaplists: [Maplist!]!
     mapVotes: [MapVote!]
+    positiveVotes(mode: Mode = SZ): Boolean
   }
 
   input MapVoteInput {
@@ -91,6 +92,23 @@ const resolvers = {
       }
 
       return mapBallot.maps
+    },
+    positiveVotes: async (root, args, ctx) => {
+      const ballots = await MapBallot.find({})
+
+      const count = {}
+      ballots.forEach(ballot => {
+        ballot.maps.forEach(stage => {
+          let toIcrement = 0
+          if (stage[args.mode.toLowerCase()] === 1) toIcrement = 1
+
+          const votes = count[stage.name] ? count[stage.name] : 0
+          count[stage.name] = votes + toIcrement
+        })
+      })
+
+      console.log(count)
+      return true
     },
   },
   Mutation: {

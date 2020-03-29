@@ -38,4 +38,18 @@ const detailedMatchSchema = new mongoose.Schema({
   type: String,
 })
 
+detailedMatchSchema.virtual("map_details.winners.players.discord_user", {
+  ref: "User",
+  localField: "map_details.winners.players.discord_id",
+  foreignField: "discord_id",
+  justOne: true,
+})
+
+detailedMatchSchema.virtual("map_details.losers.players.discord_user", {
+  ref: "User",
+  localField: "map_details.losers.players.discord_id",
+  foreignField: "discord_id",
+  justOne: true,
+})
+
 module.exports = mongoose.model("DetailedMatch", detailedMatchSchema)

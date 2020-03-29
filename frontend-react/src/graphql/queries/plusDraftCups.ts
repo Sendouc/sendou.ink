@@ -7,7 +7,6 @@ export interface PlusDraftCupsData {
       top_3_team_names: string[]
       top_3_discord_users: {
         username: string
-        discord_id: string
         discriminator: string
         twitter_name?: string
       }[][]
@@ -41,7 +40,6 @@ export const PLUS_DRAFT_CUPS: DocumentNode = gql`
         top_3_team_names
         top_3_discord_users {
           username
-          discord_id
           discriminator
           twitter_name
         }

@@ -15,6 +15,7 @@ const {
 const typeDef = gql`
   extend type Query {
     plusDraftCups: DraftCupCollection!
+    searchForDraftCup(name: String!): DraftCupDetailCollection!
   }
 
   extend type Mutation {
@@ -29,6 +30,11 @@ const typeDef = gql`
   type DraftCupCollection {
     leaderboards: [Leaderboard!]!
     tournaments: [DetailedTournament!]!
+  }
+
+  type DraftCupDetailCollection {
+    tournament: DetailedTournament!
+    matches: [DetailedMatch!]!
   }
 
   input DetailedTournamentInput {
@@ -108,7 +114,7 @@ const typeDef = gql`
   }
 
   type DetailedPlayer {
-    discord_id: String!
+    discord_user: User!
     weapon: String!
     main_abilities: [Ability!]!
     sub_abilities: [[Ability]!]!
@@ -274,6 +280,26 @@ const resolvers = {
         .populate("top_3_discord_users")
 
       return { leaderboards, tournaments }
+    },
+    searchForDraftCup: async (root, args) => {
+      // \ to escape + in the name
+      const tournament = await DetailedTournament.findOne({
+        name: { $regex: "\\" + args.name, $options: "i" },
+      }).populate("top_3_discord_users")
+
+      if (!tournament) return []
+
+      const matches = await DetailedMatch.find({
+        tournament_id: tournament._id,
+      })
+        .sort({
+          round_number: "asc",
+          game_number: "asc",
+        })
+        .populate("map_details.winners.players.discord_user")
+        .populate("map_details.losers.players.discord_user")
+
+      return { tournament, matches }
     },
   },
   Mutation: {
