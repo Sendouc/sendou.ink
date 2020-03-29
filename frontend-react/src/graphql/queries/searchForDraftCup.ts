@@ -25,7 +25,7 @@ export interface SearchForDraftCupData {
         duration: number
         winners: DetailedTeamInfo
         losers: DetailedTeamInfo
-      }
+      }[]
     }[]
   }
 }

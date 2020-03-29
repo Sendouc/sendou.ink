@@ -8,11 +8,12 @@ const sizeMap = {
   MAIN: "50px",
   SUB: "40px",
   TINY: "30px",
-}
+  SUBTINY: "20px",
+} as const
 
 interface AbilityIconProps {
   ability: Ability | "EMPTY"
-  size: "MAIN" | "SUB" | "TINY"
+  size: "MAIN" | "SUB" | "TINY" | "SUBTINY"
 }
 
 const AbilityIcon: React.FC<AbilityIconProps> = ({ ability, size }) => {
