@@ -18,8 +18,6 @@ const DraftCupPage: React.FC<RouteComponentProps> = () => {
   if (error) return <Error errorMessage={error.message} />
   if (loading) return <Loading />
 
-  console.log("data", data)
-
   return (
     <>
       <Helmet>
