@@ -164,33 +164,30 @@ const DraftLeaderboard: React.FC<DraftLeaderboardProps> = ({
   }
 
   return (
-    <>
-      <Heading size="lg">Leaderboards</Heading>
-      <Tabs
-        //index={tabIndex}
-        //onChange={chosenIndex => setTabIndex(chosenIndex)}
-        isFitted
-        variant="line"
-        variantColor={themeColor}
-      >
-        <TabList>
-          {!!plusOneLeaderboard && <Tab>+1</Tab>}
-          {!!plusTwoLeaderboard && <Tab>+2</Tab>}
-        </TabList>
-        <TabPanels mb="1em">
-          {!!plusOneLeaderboard && (
-            <TabPanel mt="1em">
-              <LeaderboardTabPanel players={plusOneLeaderboard.players} />
-            </TabPanel>
-          )}
-          {!!plusTwoLeaderboard && (
-            <TabPanel mt="1em">
-              <LeaderboardTabPanel players={plusTwoLeaderboard.players} />
-            </TabPanel>
-          )}
-        </TabPanels>
-      </Tabs>
-    </>
+    <Tabs
+      //index={tabIndex}
+      //onChange={chosenIndex => setTabIndex(chosenIndex)}
+      isFitted
+      variant="line"
+      variantColor={themeColor}
+    >
+      <TabList>
+        {!!plusOneLeaderboard && <Tab>+1</Tab>}
+        {!!plusTwoLeaderboard && <Tab>+2</Tab>}
+      </TabList>
+      <TabPanels mb="1em">
+        {!!plusOneLeaderboard && (
+          <TabPanel mt="1em">
+            <LeaderboardTabPanel players={plusOneLeaderboard.players} />
+          </TabPanel>
+        )}
+        {!!plusTwoLeaderboard && (
+          <TabPanel mt="1em">
+            <LeaderboardTabPanel players={plusTwoLeaderboard.players} />
+          </TabPanel>
+        )}
+      </TabPanels>
+    </Tabs>
   )
 }
 

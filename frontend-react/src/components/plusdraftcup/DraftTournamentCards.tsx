@@ -12,10 +12,12 @@ import {
 } from "@chakra-ui/core"
 import trophy from "../../assets/trophy.png"
 import MyThemeContext from "../../themeContext"
-import { months } from "../../utils/lists"
+import { months, themeColors } from "../../utils/lists"
 import { Link } from "@reach/router"
 import UserAvatar from "../common/UserAvatar"
 import { medalEmoji } from "../../assets/imageImports"
+import useBreakPoints from "../../hooks/useBreakPoints"
+import Button from "../elements/Button"
 
 interface DraftTournamentCardsProps {
   tournaments: {
@@ -45,6 +47,7 @@ interface DraftTournamentCardProps {
     date: string
     type: "DRAFTONE" | "DRAFTTWO"
   }
+  link?: string
 }
 
 interface MedalRowProps {
@@ -59,8 +62,9 @@ interface MedalRowProps {
 
 export const DraftTournamentCard: React.FC<DraftTournamentCardProps> = ({
   tournament,
+  link,
 }) => {
-  const { grayWithShade, darkerBgColor } = useContext(MyThemeContext)
+  const { grayWithShade, themeColorHexLighter } = useContext(MyThemeContext)
   const a = new Date(parseInt(tournament.date))
   const dateStr = `${a.getDate()} ${
     months[a.getMonth() + 1]
@@ -72,35 +76,28 @@ export const DraftTournamentCard: React.FC<DraftTournamentCardProps> = ({
     small,
   }) => {
     return (
-      <Flex alignItems="center" mt="1.5em" fontWeight="semibold" as="h4">
+      <Flex
+        alignItems="center"
+        flexDirection="column"
+        mt="1.5em"
+        fontWeight="semibold"
+        as="h4"
+        flexWrap="wrap"
+      >
         <Image
           w={small ? "30px" : "40px"}
           h="auto"
           src={medalImage}
           mr="0.5em"
-        />{" "}
-        {players.map(user => (
-          <Box key={`${user.username}#${user.discriminator}`} mx="0.2em">
-            <Popover trigger="hover" placement="top-start">
-              <PopoverTrigger>
-                <Box>
-                  <UserAvatar
-                    twitterName={user.twitter_name}
-                    name={user.username}
-                    size={small ? "sm" : "lg"}
-                  />
-                </Box>
-              </PopoverTrigger>
-              <PopoverContent
-                border="0"
-                p="0.5em"
-                zIndex={4}
-                bg={darkerBgColor}
-              >
-                <PopoverArrow />
-                {user.username}#{user.discriminator}
-              </PopoverContent>
-            </Popover>
+        />
+        {players.map((user, index) => (
+          <Box
+            color={index % 2 === 0 ? undefined : themeColorHexLighter}
+            mx="0.25em"
+          >
+            <Link to="/">
+              {user.username}#{user.discriminator}
+            </Link>
           </Box>
         ))}
       </Flex>
@@ -108,8 +105,7 @@ export const DraftTournamentCard: React.FC<DraftTournamentCardProps> = ({
   }
 
   return (
-    <Box
-      display="flex"
+    <Flex
       rounded="lg"
       overflow="hidden"
       boxShadow="0px 0px 16px 6px rgba(0,0,0,0.1)"
@@ -118,9 +114,10 @@ export const DraftTournamentCard: React.FC<DraftTournamentCardProps> = ({
       h="100%"
       flexDirection="column"
       justifyContent="space-between"
+      alignItems="center"
       transition="all 0.2s"
     >
-      <Box fontWeight="semibold" as="h4" lineHeight="tight">
+      <Box fontWeight="semibold" as="h4" lineHeight="tight" textAlign="center">
         {tournament.name}
       </Box>
       <Box
@@ -129,6 +126,7 @@ export const DraftTournamentCard: React.FC<DraftTournamentCardProps> = ({
         letterSpacing="wide"
         fontSize="xs"
         mt="0.5em"
+        textAlign="center"
       >
         {dateStr}
       </Box>
@@ -136,21 +134,24 @@ export const DraftTournamentCard: React.FC<DraftTournamentCardProps> = ({
         players={tournament.top_3_discord_users[0]}
         medalImage={trophy}
       />
-      <Flex>
-        <MedalRow
-          players={tournament.top_3_discord_users[1]}
-          medalImage={medalEmoji[2]}
-          small
-        />
-        <Box ml="1.5em">
-          <MedalRow
-            players={tournament.top_3_discord_users[2]}
-            medalImage={medalEmoji[3]}
-            small
-          />
+      <MedalRow
+        players={tournament.top_3_discord_users[1]}
+        medalImage={medalEmoji[2]}
+        small
+      />
+      <MedalRow
+        players={tournament.top_3_discord_users[2]}
+        medalImage={medalEmoji[3]}
+        small
+      />
+      {link && (
+        <Box mt="2em">
+          <Link to={link}>
+            <Button outlined>View matches</Button>
+          </Link>
         </Box>
-      </Flex>
-    </Box>
+      )}
+    </Flex>
   )
 }
 
@@ -167,16 +168,14 @@ const DraftTournamentCards: React.FC<DraftTournamentCardsProps> = ({
         {tournaments.map(tournament => {
           const date = new Date(parseInt(tournament.date))
           return (
-            <Link
-              key={tournament.bracket_url}
-              to={`/plus/draft/${
+            <DraftTournamentCard
+              tournament={tournament}
+              link={`/plus/draft/${
                 tournament.type === "DRAFTTWO" ? "2" : "1"
               }-${months[
                 date.getMonth() + 1
               ].toLowerCase()}-${date.getFullYear()}`}
-            >
-              <DraftTournamentCard tournament={tournament} />
-            </Link>
+            />
           )
         })}
       </Grid>

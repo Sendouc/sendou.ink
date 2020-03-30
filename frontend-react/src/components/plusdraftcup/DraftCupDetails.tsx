@@ -1,5 +1,5 @@
 import React, { useContext } from "react"
-import { RouteComponentProps } from "@reach/router"
+import { RouteComponentProps, Link } from "@reach/router"
 import {
   SEARCH_FOR_DRAFT_CUP,
   SearchForDraftCupData,
@@ -10,7 +10,7 @@ import Loading from "../common/Loading"
 import Error from "../common/Error"
 import { DraftTournamentCard } from "./DraftTournamentCards"
 import Button from "../elements/Button"
-import { FaExternalLinkAlt } from "react-icons/fa"
+import { FaExternalLinkAlt, FaLongArrowAltLeft } from "react-icons/fa"
 import { Box, Flex, Avatar, Icon, Grid } from "@chakra-ui/core"
 import MyThemeContext from "../../themeContext"
 import {
@@ -129,7 +129,6 @@ const DetailedMapCard: React.FC<DetailedMapCardProps> = ({
                   key={`${player.discord_user.username}#${player.discord_user.discriminator}`}
                   gridTemplateColumns="repeat(3, 1fr)"
                   gridTemplateRows="1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr"
-                  //gridRowGap="0.5em"
                   gridColumnGap="0.5em"
                   m="0.75em"
                 >
@@ -139,7 +138,9 @@ const DetailedMapCard: React.FC<DetailedMapCardProps> = ({
                     alignItems="flex-end"
                     fontWeight={600}
                   >
-                    {player.discord_user.username}
+                    <Link to={`/u/${player.discord_user.discord_id}`}>
+                      {player.discord_user.username}
+                    </Link>
                   </Flex>
                   <Flex
                     gridArea="2 / 1 / 3 / 4"
@@ -235,6 +236,13 @@ const DraftCupDetails: React.FC<RouteComponentProps & DraftCupDetailsProps> = ({
 
   return (
     <>
+      <Box mb="1em">
+        <Link to="/plus/draft">
+          <Button outlined icon={FaLongArrowAltLeft}>
+            Back to Draft Cup home
+          </Button>
+        </Link>
+      </Box>
       <DraftTournamentCard tournament={tournament} />
       <Box mt="1em">
         <a href={tournament.bracket_url}>

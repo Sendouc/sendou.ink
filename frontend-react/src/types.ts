@@ -194,6 +194,7 @@ export interface DetailedTeamInfo {
       username: string
       discriminator: string
       twitter_name: string
+      discord_id: string
     }
     weapon: Weapon
     main_abilities: Ability[]

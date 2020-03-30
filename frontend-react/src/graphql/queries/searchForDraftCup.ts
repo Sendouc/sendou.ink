@@ -12,6 +12,7 @@ export interface SearchForDraftCupData {
         username: string
         discriminator: string
         twitter_name?: string
+        discord_id: string
       }[][]
       participant_discord_ids: [string]
       type: "DRAFTONE" | "DRAFTTWO"
@@ -46,6 +47,7 @@ export const SEARCH_FOR_DRAFT_CUP: DocumentNode = gql`
           username
           discriminator
           twitter_name
+          discord_id
         }
         participant_discord_ids
         type
@@ -76,6 +78,7 @@ export const SEARCH_FOR_DRAFT_CUP: DocumentNode = gql`
         username
         discriminator
         twitter_name
+        discord_id
       }
       weapon
       main_abilities
