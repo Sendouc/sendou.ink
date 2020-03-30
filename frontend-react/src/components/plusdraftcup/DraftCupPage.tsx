@@ -21,9 +21,9 @@ const DraftCupPage: React.FC<RouteComponentProps> = () => {
   return (
     <>
       <Helmet>
-        <title>Draft Cup | sendou.ink</title>
+        <title>Draft Cup Home | sendou.ink</title>
       </Helmet>
-      <PageHeader title="Draft Cup" />
+      <PageHeader title="Plus Server Draft Cups" />
       <DraftTournamentCards tournaments={data!.plusDraftCups.tournaments} />
       <DraftLeaderboard leaderboards={data!.plusDraftCups.leaderboards} />
     </>

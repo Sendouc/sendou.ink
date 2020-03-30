@@ -9,7 +9,6 @@ import {
   Box,
   Flex,
   Image,
-  Heading,
 } from "@chakra-ui/core"
 import MyThemeContext from "../../themeContext"
 import UserAvatar from "../common/UserAvatar"

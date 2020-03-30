@@ -47,8 +47,8 @@ const Routes: React.FC = () => {
           <Links path="/links" />
           <Access path="/access" />
           <PlusPage path="/plus" />
-          <DraftCupPage path="/plus/draft" />
-          <DraftCupDetails path="/plus/draft/:id" />
+          <DraftCupPage path="/draft" />
+          <DraftCupDetails path="/draft/:id" />
           <VotingHistoryPage path="/plus/history" />
           <MapVotingHistoryPage path="/plus/maphistory" />
           <MapVoting path="/plus/mapvoting" />

@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React, { useContext, useState } from "react"
 import { RouteComponentProps, Link } from "@reach/router"
 import {
   SEARCH_FOR_DRAFT_CUP,
@@ -25,6 +25,7 @@ import WeaponImage from "../common/WeaponImage"
 import AbilityIcon from "../builds/AbilityIcon"
 import GearImage from "../builds/GearImage"
 import SplatnetIcon from "../common/SplatnetIcon"
+import { Helmet } from "react-helmet-async"
 
 interface DraftCupDetailsProps {
   id?: string
@@ -39,6 +40,17 @@ interface DetailedMapCardProps {
     losers: DetailedTeamInfo
   }
   gameNumber: number
+}
+
+interface CollapsedMapCardProps {
+  mapDetails: {
+    stage: string
+    mode: "TW" | "SZ" | "TC" | "RM" | "CB"
+    duration: number
+    winners: DetailedTeamInfo
+    losers: DetailedTeamInfo
+  }[]
+  expand: () => void
 }
 
 const abilityMap = (ability: Ability, index: number) => {
@@ -71,9 +83,9 @@ const DetailedMapCard: React.FC<DetailedMapCardProps> = ({
   const { themeColorWithShade, grayWithShade, textColor } = useContext(
     MyThemeContext
   )
+
   return (
-    <Box
-      display="flex"
+    <Flex
       rounded="lg"
       overflow="hidden"
       boxShadow="0px 0px 16px 6px rgba(0,0,0,0.1)"
@@ -184,7 +196,7 @@ const DetailedMapCard: React.FC<DetailedMapCardProps> = ({
                   >
                     <Box color={grayWithShade}>x</Box>
                     <Box mx="3px">{player.kills + player.assists}</Box>
-                    <Box fontSize="0.75em" mt="2px">
+                    <Box fontSize="0.75em" mt="3px">
                       ({player.assists})
                     </Box>
                   </Flex>
@@ -215,7 +227,63 @@ const DetailedMapCard: React.FC<DetailedMapCardProps> = ({
           </Flex>
         )
       })}
-    </Box>
+    </Flex>
+  )
+}
+
+const CollapsedMapCard: React.FC<CollapsedMapCardProps> = ({
+  expand,
+  mapDetails,
+}) => {
+  const { grayWithShade } = useContext(MyThemeContext)
+  const winnerTeamName = mapDetails[0].winners.team_name
+  const loserTeamName = mapDetails[0].losers.team_name
+  const winnerPlayers = mapDetails[0].winners.players
+  const loserPlayers = mapDetails[0].losers.players
+  const teamData = {
+    [winnerTeamName]: { players: winnerPlayers, score: 0 },
+    [loserTeamName]: { players: loserPlayers, score: 0 },
+  }
+  mapDetails.forEach(stage => {
+    teamData[stage.winners.team_name].score =
+      teamData[stage.winners.team_name].score + 1
+  })
+
+  const scores = Object.keys(teamData)
+    .map(key => {
+      return { players: teamData[key].players, score: teamData[key].score }
+    })
+    .sort((a, b) => b.score - a.score)
+
+  return (
+    <Flex
+      rounded="lg"
+      overflow="hidden"
+      boxShadow="0px 0px 16px 6px rgba(0,0,0,0.1)"
+      p="25px"
+      flexDirection="column"
+      justifyContent="space-between"
+      alignItems="center"
+    >
+      {scores.map(scoreObj => (
+        <React.Fragment key={scoreObj.score}>
+          <Flex flexWrap="wrap" fontWeight="bold" color={grayWithShade}>
+            {scoreObj.players.map(player => (
+              <Box
+                key={`${player.discord_user.username}#${player.discord_user.discord_id}`}
+                mx="0.5em"
+              >
+                {player.discord_user.username}
+              </Box>
+            ))}
+          </Flex>
+          <Box fontWeight="bolder" fontSize="1.25em" mb="1em">
+            {scoreObj.score}
+          </Box>
+        </React.Fragment>
+      ))}
+      <Button onClick={() => expand()}>Expand</Button>
+    </Flex>
   )
 }
 
@@ -228,6 +296,7 @@ const DraftCupDetails: React.FC<RouteComponentProps & DraftCupDetailsProps> = ({
     SearchForDraftCupData,
     SearchForDraftCupVars
   >(SEARCH_FOR_DRAFT_CUP, { variables: { name: "+2 Draft Cup March 2020" } })
+  const [expanded, setExpanded] = useState<number | null>(null)
 
   if (loading) return <Loading />
   if (error) return <Error errorMessage={error.message} />
@@ -236,6 +305,9 @@ const DraftCupDetails: React.FC<RouteComponentProps & DraftCupDetailsProps> = ({
 
   return (
     <>
+      <Helmet>
+        <title>{tournament.name} | sendou.ink</title>
+      </Helmet>
       <Box mb="1em">
         <Link to="/plus/draft">
           <Button outlined icon={FaLongArrowAltLeft}>
@@ -251,7 +323,7 @@ const DraftCupDetails: React.FC<RouteComponentProps & DraftCupDetailsProps> = ({
           </Button>
         </a>
       </Box>
-      {[matches[0]].map(match => {
+      {matches.map(match => {
         return (
           <Box key={match.round_name} mt="1em">
             <Box
@@ -266,13 +338,20 @@ const DraftCupDetails: React.FC<RouteComponentProps & DraftCupDetailsProps> = ({
               {match.round_name}
             </Box>
 
-            {match.map_details.map((mapDetails, index) => (
-              <DetailedMapCard
-                key={`${mapDetails.mode}${mapDetails.stage}`}
-                mapDetails={mapDetails}
-                gameNumber={index + 1}
+            {expanded === match.round_number ? (
+              match.map_details.map((mapDetails, index) => (
+                <DetailedMapCard
+                  key={`${mapDetails.mode}${mapDetails.stage}`}
+                  mapDetails={mapDetails}
+                  gameNumber={index + 1}
+                />
+              ))
+            ) : (
+              <CollapsedMapCard
+                expand={() => setExpanded(match.round_number)}
+                mapDetails={match.map_details}
               />
-            ))}
+            )}
           </Box>
         )
       })}

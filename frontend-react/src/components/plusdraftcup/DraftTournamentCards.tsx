@@ -1,22 +1,10 @@
 import React, { useContext } from "react"
-import {
-  Flex,
-  Grid,
-  PseudoBox,
-  Box,
-  Image,
-  PopoverTrigger,
-  Popover,
-  PopoverContent,
-  PopoverArrow,
-} from "@chakra-ui/core"
+import { Flex, Grid, Box, Image } from "@chakra-ui/core"
 import trophy from "../../assets/trophy.png"
 import MyThemeContext from "../../themeContext"
-import { months, themeColors } from "../../utils/lists"
+import { months } from "../../utils/lists"
 import { Link } from "@reach/router"
-import UserAvatar from "../common/UserAvatar"
 import { medalEmoji } from "../../assets/imageImports"
-import useBreakPoints from "../../hooks/useBreakPoints"
 import Button from "../elements/Button"
 
 interface DraftTournamentCardsProps {
@@ -94,6 +82,7 @@ export const DraftTournamentCard: React.FC<DraftTournamentCardProps> = ({
           <Box
             color={index % 2 === 0 ? undefined : themeColorHexLighter}
             mx="0.25em"
+            key={`${user.username}#${user.discriminator}`}
           >
             <Link to="/">
               {user.username}#{user.discriminator}
@@ -169,8 +158,9 @@ const DraftTournamentCards: React.FC<DraftTournamentCardsProps> = ({
           const date = new Date(parseInt(tournament.date))
           return (
             <DraftTournamentCard
+              key={tournament.name}
               tournament={tournament}
-              link={`/plus/draft/${
+              link={`/draft/${
                 tournament.type === "DRAFTTWO" ? "2" : "1"
               }-${months[
                 date.getMonth() + 1
