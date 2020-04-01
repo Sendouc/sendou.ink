@@ -13,13 +13,13 @@ const Gears: React.FC<GearsProps> = ({ build }) => {
   }
   return (
     <Box asFlex justifyContent="center">
-      <Box w={build.headgearItem ? "85px" : undefined} mx="2px">
+      <Box w={build.headgearItem ? "85px" : undefined} h="85px" mx="2px">
         <GearImage englishName={build.headgearItem} renderNullIfNoName />
       </Box>
-      <Box w={build.clothingItem ? "85px" : undefined} mx="2px">
+      <Box w={build.clothingItem ? "85px" : undefined} h="85px" mx="2px">
         <GearImage englishName={build.clothingItem} renderNullIfNoName />
       </Box>
-      <Box w={build.shoesItem ? "85px" : undefined} mx="2px">
+      <Box w={build.shoesItem ? "85px" : undefined} h="85px" mx="2px">
         <GearImage englishName={build.shoesItem} renderNullIfNoName />
       </Box>
     </Box>

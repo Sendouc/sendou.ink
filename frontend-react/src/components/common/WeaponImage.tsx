@@ -11,13 +11,13 @@ interface WeaponImageProps {
 
 const WeaponImage: React.FC<WeaponImageProps> = ({ englishName, size }) => {
   const dictToUse: any = size === "MEDIUM" ? wpnMedium : wpnSmall
-  const wh = size === "MEDIUM" ? "128px" : "32px"
+  const wh = "32px"
   return (
     <img
       src={dictToUse[english_internal[englishName]]}
       alt={englishName}
       title={englishName}
-      style={{ width: wh, height: wh }}
+      style={size === "SMALL" ? { width: wh, height: wh } : undefined}
     />
   )
 }

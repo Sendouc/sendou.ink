@@ -1,5 +1,6 @@
 :root {
   --main-bg-color: blue;
+  --white-or-black: white;
 }
 
 .kill-icon-svg .bg1,
@@ -8,7 +9,7 @@
 }
 .kill-icon-svg .white,
 .killed-icon-svg .white {
-  fill: #fff;
+  fill: var(--white-or-black);
 }
 .special-icon0-svg .bg1 {
   fill: var(--main-bg-color);

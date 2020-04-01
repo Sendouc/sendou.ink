@@ -167,6 +167,11 @@ const SplatnetIcon: React.FC<SplatnetIconProps> = ({ iconFor }) => {
   const style = {
     width: "35px",
     height: "auto",
+    zIndex: 2,
+    borderRadius: "50%",
+    background: "#000",
+    backgroundSize: "125%",
+    userSelect: "none",
     "--main-bg-color": themeColorHex,
   } as React.CSSProperties
   const Component = weaponToSvg[iconFor]

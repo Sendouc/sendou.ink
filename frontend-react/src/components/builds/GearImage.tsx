@@ -16,7 +16,7 @@ const GearImage: React.FC<GearImageProps> = ({
 }) => {
   if (!englishName && renderNullIfNoName) return null
   if (!englishName) return <Box />
-  const wh = mini ? "32px" : "128px"
+  const wh = "32px"
   return (
     <img
       alt={englishName}
@@ -24,7 +24,7 @@ const GearImage: React.FC<GearImageProps> = ({
         mini ? "-icon" : ""
       }/${english_internal[englishName]}.png`}
       title={englishName}
-      style={{ width: wh, height: wh }}
+      style={mini ? { width: wh, height: wh } : undefined}
     />
   )
 }

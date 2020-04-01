@@ -84,6 +84,9 @@ const DetailedMapCard: React.FC<DetailedMapCardProps> = ({
     MyThemeContext
   )
 
+  const minutes = Math.floor(mapDetails.duration / 60)
+  const seconds = mapDetails.duration - minutes * 60
+
   return (
     <Flex
       rounded="lg"
@@ -109,6 +112,9 @@ const DetailedMapCard: React.FC<DetailedMapCardProps> = ({
           color={themeColorWithShade}
           size="2em"
         />
+        <Box color={grayWithShade}>{`${minutes}:${
+          seconds > 9 ? "" : "0"
+        }${seconds}`}</Box>
       </Flex>
       {[mapDetails.winners, mapDetails.losers].map((teamInfo, index) => {
         return (
@@ -309,7 +315,7 @@ const DraftCupDetails: React.FC<RouteComponentProps & DraftCupDetailsProps> = ({
         <title>{tournament.name} | sendou.ink</title>
       </Helmet>
       <Box mb="1em">
-        <Link to="/plus/draft">
+        <Link to="/draft">
           <Button outlined icon={FaLongArrowAltLeft}>
             Back to Draft Cup home
           </Button>
