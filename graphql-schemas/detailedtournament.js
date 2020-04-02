@@ -25,6 +25,10 @@ const typeDef = gql`
       matches: [DetailedMatchInput!]!
       lanistaToken: String!
     ): Boolean!
+    replaceDraftLeaderboard(
+      plus_server: PlusServer!
+      players: [TournamentPlayerInput!]!
+    ): Boolean!
   }
 
   type DraftCupCollection {
@@ -140,6 +144,13 @@ const typeDef = gql`
     "Number of third places"
     third: Int!
     score: Int!
+  }
+
+  input TournamentPlayerInput {
+    discord_id: String!
+    first: Int!
+    second: Int!
+    third: Int!
   }
 
   type PlayerStat {
@@ -338,6 +349,24 @@ const resolvers = {
 
       await updateLeaderboard(args.tournament.top_3_discord_ids, eventType)
       await generateStats(eventType)
+      return true
+    },
+    replaceDraftLeaderboard: async (root, args, ctx) => {
+      if (!ctx.user) throw new AuthenticationError("Not logged in.")
+      if (ctx.user.discord_id !== process.env.ADMIN_ID)
+        throw new AuthenticationError("not admin")
+
+      const players = args.players.sort(
+        (a, b) =>
+          b.first * 4 +
+          b.second * 2 +
+          b.third -
+          (a.first * 4 + a.second * 2 + a.third)
+      )
+
+      const type = `DRAFT${args.plus_server}`
+      await Leaderboard.updateOne({ type }, { type, players }, { upsert: true })
+
       return true
     },
   },

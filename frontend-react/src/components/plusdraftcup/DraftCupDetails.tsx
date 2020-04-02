@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react"
+import React, { useContext, useState, useEffect } from "react"
 import { RouteComponentProps, Link } from "@reach/router"
 import {
   SEARCH_FOR_DRAFT_CUP,
@@ -51,6 +51,7 @@ interface CollapsedMapCardProps {
     losers: DetailedTeamInfo
   }[]
   expand: () => void
+  loading: boolean
 }
 
 const abilityMap = (ability: Ability, index: number) => {
@@ -176,14 +177,10 @@ const DetailedMapCard: React.FC<DetailedMapCardProps> = ({
                   {player.main_abilities.map(abilityMap)}
                   <Flex gridArea="6 / 1 / 7 / 4" alignItems="center">
                     {player.sub_abilities.flat().map((ability, index) => (
-                      <>
+                      <React.Fragment key={index}>
                         {(index === 3 || index === 6) && <Box w="5px" />}
-                        <AbilityIcon
-                          key={index}
-                          ability={ability}
-                          size="SUBTINY"
-                        />
-                      </>
+                        <AbilityIcon ability={ability} size="SUBTINY" />
+                      </React.Fragment>
                     ))}
                   </Flex>
                   <Flex gridArea="7 / 1 / 8 / 2" justifyContent="center">
@@ -240,6 +237,7 @@ const DetailedMapCard: React.FC<DetailedMapCardProps> = ({
 const CollapsedMapCard: React.FC<CollapsedMapCardProps> = ({
   expand,
   mapDetails,
+  loading,
 }) => {
   const { grayWithShade } = useContext(MyThemeContext)
   const winnerTeamName = mapDetails[0].winners.team_name
@@ -288,7 +286,9 @@ const CollapsedMapCard: React.FC<CollapsedMapCardProps> = ({
           </Box>
         </React.Fragment>
       ))}
-      <Button onClick={() => expand()}>Expand</Button>
+      <Button onClick={() => expand()} loading={loading}>
+        Expand
+      </Button>
     </Flex>
   )
 }
@@ -303,6 +303,12 @@ const DraftCupDetails: React.FC<RouteComponentProps & DraftCupDetailsProps> = ({
     SearchForDraftCupVars
   >(SEARCH_FOR_DRAFT_CUP, { variables: { name: "+2 Draft Cup March 2020" } })
   const [expanded, setExpanded] = useState<number | null>(null)
+  const [loadingSet, setLoadingSet] = useState<number | null>(null)
+
+  useEffect(() => {
+    if (!loadingSet) return
+    setExpanded(loadingSet)
+  }, [loadingSet])
 
   if (loading) return <Loading />
   if (error) return <Error errorMessage={error.message} />
@@ -354,7 +360,8 @@ const DraftCupDetails: React.FC<RouteComponentProps & DraftCupDetailsProps> = ({
               ))
             ) : (
               <CollapsedMapCard
-                expand={() => setExpanded(match.round_number)}
+                expand={() => setLoadingSet(match.round_number)}
+                loading={loadingSet === match.round_number}
                 mapDetails={match.map_details}
               />
             )}
