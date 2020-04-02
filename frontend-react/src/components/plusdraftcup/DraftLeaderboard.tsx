@@ -67,7 +67,10 @@ const DraftLeaderboard: React.FC<DraftLeaderboardProps> = ({
       >
         {players.map((player, i, array) => {
           print = false
-          if (i > 0 && player.score !== array[i - 1].score) {
+          if (i === 0) {
+            placement = 1
+            print = true
+          } else if (i > 0 && player.score !== array[i - 1].score) {
             placement = i + 1
             print = true
           }

@@ -6,6 +6,7 @@ const {
 const DetailedTournament = require("../mongoose-models/detailedtournament")
 const DetailedMatch = require("../mongoose-models/detailedmatch")
 const Leaderboard = require("../mongoose-models/leaderboard")
+const User = require("../mongoose-models/user")
 const PlayerStat = require("../mongoose-models/playerstat")
 const {
   validateDetailedTournamentInput,
@@ -364,8 +365,20 @@ const resolvers = {
           (a.first * 4 + a.second * 2 + a.third)
       )
 
+      const users = await User.find({})
+
+      const filteredPlayers = players.filter(player => {
+        const found = users.find(user => user.discord_id === player.discord_id)
+
+        return !!found
+      })
+
       const type = `DRAFT${args.plus_server}`
-      await Leaderboard.updateOne({ type }, { type, players }, { upsert: true })
+      await Leaderboard.updateOne(
+        { type },
+        { type, players: filteredPlayers },
+        { upsert: true }
+      )
 
       return true
     },
