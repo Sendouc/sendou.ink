@@ -331,6 +331,13 @@ const resolvers = {
         throw new AuthenticationError("Not plus member.")
       }
 
+      const state = await State.findOne({})
+      if (state && !!state.voting_ends) {
+        throw new UserInputError(
+          "Voting already started so suggesting not possible"
+        )
+      }
+
       const user = await User.findOne({ discord_id: args.discord_id }).catch(
         e => {
           throw (new Error(),
@@ -412,6 +419,13 @@ const resolvers = {
         throw new AuthenticationError("Not plus member.")
       }
 
+      const state = await State.findOne({})
+      if (state && !!state.voting_ends) {
+        throw new UserInputError(
+          "Voting already started so suggesting not possible"
+        )
+      }
+
       if (args.server !== "ONE" && args.server !== "TWO")
         throw new UserInputError("Invalid plus server given.")
       if (args.region !== "EU" && args.region !== "NA")
@@ -470,7 +484,7 @@ const resolvers = {
 
       const date = new Date()
       if (!state.voting_ends || state.voting_ends < date.getTime())
-        throw new Error("Voting now open right now")
+        throw new UserInputError("Voting is not open right now")
 
       const votedUsers = {}
 
