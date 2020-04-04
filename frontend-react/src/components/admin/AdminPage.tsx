@@ -10,9 +10,11 @@ import {
   UPDATE_TWITTER,
   UpdateTwitterVars,
 } from "../../graphql/mutations/updateTwitter"
-import { useToast, Heading, Flex, Box } from "@chakra-ui/core"
+import { useToast, Flex, Box } from "@chakra-ui/core"
 import Input from "../elements/Input"
 import Button from "../elements/Button"
+import VotingManager from "./VotingManager"
+import SubHeader from "../common/SubHeader"
 
 const AdminPage: React.FC<RouteComponentProps> = () => {
   const [updateTwitterForms, setUpdateTwitterForms] = useState<
@@ -28,7 +30,7 @@ const AdminPage: React.FC<RouteComponentProps> = () => {
     UpdateTwitterVars
   >(UPDATE_TWITTER, {
     variables: updateTwitterForms as UpdateTwitterVars,
-    onCompleted: data => {
+    onCompleted: (data) => {
       toast({
         description: "Twitter updated",
         position: "top-right",
@@ -36,7 +38,7 @@ const AdminPage: React.FC<RouteComponentProps> = () => {
         duration: 10000,
       })
     },
-    onError: error => {
+    onError: (error) => {
       toast({
         title: "An error occurred",
         description: error.message,
@@ -56,12 +58,12 @@ const AdminPage: React.FC<RouteComponentProps> = () => {
   return (
     <>
       <PageHeader title="Admin" />
-      <Heading>Update Twitter</Heading>
+      <SubHeader>Update Twitter</SubHeader>
       <Flex my="1em">
         <Box mr="1em">
           <Input
             value={updateTwitterForms.unique_id ?? ""}
-            setValue={value =>
+            setValue={(value) =>
               setUpdateTwitterForms({ ...updateTwitterForms, unique_id: value })
             }
             label="Unique ID"
@@ -69,13 +71,16 @@ const AdminPage: React.FC<RouteComponentProps> = () => {
         </Box>
         <Input
           value={updateTwitterForms.twitter ?? ""}
-          setValue={value =>
+          setValue={(value) =>
             setUpdateTwitterForms({ ...updateTwitterForms, twitter: value })
           }
           label="Twitter"
         />
       </Flex>
       <Button onClick={() => updateTwitter()}>Submit</Button>
+      <Box>
+        <VotingManager />
+      </Box>
     </>
   )
 }

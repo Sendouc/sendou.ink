@@ -9,13 +9,14 @@ import { useQuery, useMutation } from "@apollo/react-hooks"
 import Loading from "../common/Loading"
 import Error from "../common/Error"
 import { ADD_VOTES, AddVotesVars } from "../../graphql/mutations/addVotes"
-import { useToast, Progress, Box, Flex, Grid } from "@chakra-ui/core"
+import { useToast, Progress, Box, Flex } from "@chakra-ui/core"
 import { UserLean } from "../../types"
 import Alert from "../elements/Alert"
 import MyThemeContext from "../../themeContext"
 import Button from "../elements/Button"
 import PersonForVoting from "./PersonForVoting"
 import SubHeader from "../common/SubHeader"
+import { PLUS_INFO } from "../../graphql/queries/plusInfo"
 
 interface VotingProps {
   user: UserLean
@@ -71,6 +72,9 @@ const Voting: React.FC<VotingProps> = ({
     refetchQueries: [
       {
         query: USERS_FOR_VOTING,
+      },
+      {
+        query: PLUS_INFO,
       },
     ],
   })
@@ -136,7 +140,9 @@ const Voting: React.FC<VotingProps> = ({
   return (
     <>
       <Alert status={alreadyVoted ? "success" : "info"}>{`${
-        alreadyVoted ? "You have voted! " : ""
+        alreadyVoted
+          ? "You have voted! Editing and resubmitting before deadline possible. "
+          : ""
       }Voting ends ${new Date(votingEnds).toLocaleString()} (${hoursLeft}
           hours left)`}</Alert>
       <Box mt="1em" textAlign="center" color={grayWithShade}>

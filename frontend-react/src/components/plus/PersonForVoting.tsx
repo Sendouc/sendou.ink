@@ -1,7 +1,7 @@
 import React, { useContext } from "react"
 import { Link } from "@reach/router"
 import UserAvatar from "../common/UserAvatar"
-import { Flex, Avatar, Box, Grid } from "@chakra-ui/core"
+import { Flex, Box, Grid } from "@chakra-ui/core"
 import MyThemeContext from "../../themeContext"
 
 interface VotingButtonProps {
@@ -143,6 +143,16 @@ const PersonForVoting: React.FC<PersonForVotingProps> = ({
         />
       ) : (
         <Box gridArea="2 / 4 / 3 / 5" />
+      )}
+      {description && (
+        <Box p="1em" gridArea="3 / 1 / 3 / 5">
+          <Box as="span" fontStyle="italic">
+            "{description}"
+          </Box>
+          <Box as="span" ml="0.5em" color={grayWithShade}>
+            - {suggester!.username}#{suggester!.discriminator}
+          </Box>
+        </Box>
       )}
     </Grid>
   )

@@ -23,10 +23,12 @@ const DatePicker: React.FC<DatePickerProps> = ({ date, setDate }) => {
   return (
     <HackerOneDatePicker
       selected={date}
-      onChange={date => {
-        date?.setUTCHours(0, 0, 0, 0)
-        setDate(date)
-      }}
+      onChange={(date) => setDate(date)}
+      showTimeSelect
+      timeFormat="HH:mm"
+      timeIntervals={15}
+      timeCaption="time"
+      dateFormat="MMMM d, yyyy h:mm aa"
       customInput={<CustomInput />}
     />
   )

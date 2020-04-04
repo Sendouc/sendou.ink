@@ -125,16 +125,16 @@ const typeDef = gql`
 const validateVotes = (votes, users, suggested, user) => {
   const region = user.plus.plus_region
 
-  votes.forEach(vote => {
+  votes.forEach((vote) => {
     const { discord_id, score } = vote
 
     let votedUser = users.find(
-      userInServer => userInServer.discord_id === discord_id
+      (userInServer) => userInServer.discord_id === discord_id
     )
 
     if (!votedUser) {
       votedUser = suggested.find(
-        suggested => suggested.discord_user.discord_id === discord_id
+        (suggested) => suggested.discord_user.discord_id === discord_id
       )
       if (!votedUser)
         throw new UserInputError(
@@ -159,11 +159,13 @@ const resolvers = {
   Query: {
     hasAccess: async (root, args) => {
       const user = await User.findOne({ discord_id: args.discord_id }).catch(
-        e => {
-          throw (new Error(),
-          {
-            invalidArgs: args,
-          })
+        (e) => {
+          throw (
+            (new Error(),
+            {
+              invalidArgs: args,
+            })
+          )
         }
       )
 
@@ -198,7 +200,7 @@ const resolvers = {
 
       const votedIds = new Set()
 
-      votedPeople.forEach(vote => {
+      votedPeople.forEach((vote) => {
         votedIds.add(vote.voter_discord_id)
       })
 
@@ -256,21 +258,25 @@ const resolvers = {
 
           { "plus.vouch_status": plus_server },
         ],
-      }).catch(e => {
-        throw (new Error(),
-        {
-          error: e,
-        })
+      }).catch((e) => {
+        throw (
+          (new Error(),
+          {
+            error: e,
+          })
+        )
       })
 
       const suggested = await Suggested.find({ plus_server })
         .populate("discord_user")
         .populate("suggester_discord_user")
-        .catch(e => {
-          throw (new Error(),
-          {
-            error: e,
-          })
+        .catch((e) => {
+          throw (
+            (new Error(),
+            {
+              error: e,
+            })
+          )
         })
 
       const date = new Date()
@@ -297,7 +303,7 @@ const resolvers = {
         .populate("discord_user")
         .populate("suggester_discord_user")
         .sort({ plus_server: "asc", createdAt: "desc" })
-        .catch(e => {
+        .catch((e) => {
           throw new UserInputError(e.message, {
             invalidArgs: args,
           })
@@ -339,23 +345,27 @@ const resolvers = {
       }
 
       const user = await User.findOne({ discord_id: args.discord_id }).catch(
-        e => {
-          throw (new Error(),
-          {
-            invalidArgs: args,
-            error: e,
-          })
+        (e) => {
+          throw (
+            (new Error(),
+            {
+              invalidArgs: args,
+              error: e,
+            })
+          )
         }
       )
 
       const suggestion = await Suggested.findOne({
         suggester_discord_id: ctx.user.discord_id,
-      }).catch(e => {
-        throw (new Error(),
-        {
-          invalidArgs: args,
-          error: e,
-        })
+      }).catch((e) => {
+        throw (
+          (new Error(),
+          {
+            invalidArgs: args,
+            error: e,
+          })
+        )
       })
 
       if (suggestion) throw new UserInputError("Already suggested this month.")
@@ -363,12 +373,14 @@ const resolvers = {
       const duplicateSuggestion = await Suggested.findOne({
         discord_id: args.discord_id,
         plus_server: args.server,
-      }).catch(e => {
-        throw (new Error(),
-        {
-          invalidArgs: args,
-          error: e,
-        })
+      }).catch((e) => {
+        throw (
+          (new Error(),
+          {
+            invalidArgs: args,
+            error: e,
+          })
+        )
       })
 
       if (duplicateSuggestion)
@@ -404,11 +416,13 @@ const resolvers = {
         description: args.description,
       })
 
-      await newSuggestion.save().catch(e => {
-        throw (new Error(),
-        {
-          invalidArgs: args,
-        })
+      await newSuggestion.save().catch((e) => {
+        throw (
+          (new Error(),
+          {
+            invalidArgs: args,
+          })
+        )
       })
 
       return true
@@ -488,7 +502,7 @@ const resolvers = {
 
       const votedUsers = {}
 
-      args.votes.forEach(vote => {
+      args.votes.forEach((vote) => {
         if (votedUsers[vote.discord_id])
           throw new UserInputVote(
             `Duplicate vote with the id ${vote.discord_id}`
@@ -525,7 +539,7 @@ const resolvers = {
         year,
       })
 
-      const toInsert = args.votes.map(vote => ({
+      const toInsert = args.votes.map((vote) => ({
         discord_id: vote.discord_id,
         voter_discord_id: ctx.user.discord_id,
         month,
@@ -566,7 +580,7 @@ const resolvers = {
       const plus_one_voted = {}
       const plus_two_voted = {}
 
-      votes.forEach(vote => {
+      votes.forEach((vote) => {
         const {
           discord_id,
           plus_server,
@@ -580,7 +594,7 @@ const resolvers = {
 
         if (!voted_plus_region) {
           const suggestedUser = suggested.find(
-            suggested => suggested.discord_id === discord_id
+            (suggested) => suggested.discord_id === discord_id
           )
           voted_plus_region = suggestedUser.plus_region
         }
@@ -600,7 +614,7 @@ const resolvers = {
               : null
           if (!plus_region)
             plus_region = suggested.find(
-              suggester => suggester.discord_id === discord_id
+              (suggester) => suggester.discord_id === discord_id
             ).plus_region
           plus_x_voted[discord_id].plus_region = plus_region
         }
@@ -651,7 +665,7 @@ const resolvers = {
 
       votingArrays.forEach((votingArray, index) => {
         const arrays_plus_server = index === 0 ? "ONE" : "TWO"
-        Object.keys(votingArray).forEach(discord_id => {
+        Object.keys(votingArray).forEach((discord_id) => {
           const {
             same_region,
             other_region,
@@ -810,17 +824,24 @@ const resolvers = {
         { $set: { "plus.voucher_discord_id": null } }
       )
 
-      userUpdates.forEach(async userUpdateFunction => {
+      userUpdates.forEach(async (userUpdateFunction) => {
         await userUpdateFunction()
       })
 
-      preventVouchingUpdates.forEach(async userUpdateFunction => {
+      preventVouchingUpdates.forEach(async (userUpdateFunction) => {
         await userUpdateFunction()
       })
 
       await Summary.insertMany(summariesToInsert)
       await Suggested.deleteMany({})
-      await VotedPerson.deleteMany({})
+
+      let lastMonth = month - 1
+      let lastYear = year
+      if (lastMonth === 0) {
+        lastMonth = 12
+        lastYear -= 1
+      }
+      await VotedPerson.deleteMany({ month: lastMonth, year: lastYear })
       await State.updateOne({}, { $set: { voting_ends: null } })
 
       return true

@@ -1,7 +1,6 @@
 import React, { useContext } from "react"
 import "./SubHeader.css"
 import MyThemeContext from "../../themeContext"
-import { Box, useTheme } from "@chakra-ui/core"
 
 interface SubHeaderProps {
   children: string[] | string
