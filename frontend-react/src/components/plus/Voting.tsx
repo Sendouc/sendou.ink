@@ -217,9 +217,11 @@ const Voting: React.FC<VotingProps> = ({
               <PersonForVoting
                 key={suggestion.discord_user.discord_id}
                 user={suggestion.discord_user}
+                suggester={suggestion.suggester_discord_user}
                 votes={votes}
                 setVotes={setVotes}
                 sameRegion={false}
+                description={suggestion.description}
               />
             )
           })}

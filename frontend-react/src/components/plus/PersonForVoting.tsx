@@ -83,6 +83,8 @@ const PersonForVoting: React.FC<PersonForVotingProps> = ({
     setVotes({ ...votes, [user.discord_id]: value })
   }
 
+  console.log("description", description)
+
   return (
     <Grid
       gridTemplateColumns="repeat(4, 1fr)"
@@ -101,16 +103,17 @@ const PersonForVoting: React.FC<PersonForVotingProps> = ({
       >
         <UserAvatar twitterName={user.twitter_name} name={user.username} />
 
-        <Link to={`/u/${user.discord_id}`}>
+        <a target="_blank" rel="noopener" href={`/u/${user.discord_id}`}>
           <Box
             color={grayWithShade}
             fontWeight="semibold"
             letterSpacing="wide"
             mx="0.5em"
+            mt="0.2em"
           >
             {user.username}#{user.discriminator}
           </Box>
-        </Link>
+        </a>
       </Flex>
       {sameRegion ? (
         <VotingButton
@@ -145,7 +148,7 @@ const PersonForVoting: React.FC<PersonForVotingProps> = ({
         <Box gridArea="2 / 4 / 3 / 5" />
       )}
       {description && (
-        <Box p="1em" gridArea="3 / 1 / 3 / 5">
+        <Box p="1em" gridArea="3 / 1 / 3 / 5" textAlign="center">
           <Box as="span" fontStyle="italic">
             "{description}"
           </Box>
