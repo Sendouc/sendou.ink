@@ -83,8 +83,6 @@ const PersonForVoting: React.FC<PersonForVotingProps> = ({
     setVotes({ ...votes, [user.discord_id]: value })
   }
 
-  console.log("description", description)
-
   return (
     <Grid
       gridTemplateColumns="repeat(4, 1fr)"
