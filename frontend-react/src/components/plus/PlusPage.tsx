@@ -4,7 +4,7 @@ import { useQuery } from "@apollo/react-hooks"
 import Suggestions from "./Suggestions"
 import Loading from "../common/Loading"
 import Error from "../common/Error"
-import { PLUS_INFO } from "../../graphql/queries/plusInfo"
+import { PLUS_INFO, PlusInfoData } from "../../graphql/queries/plusInfo"
 import { USER } from "../../graphql/queries/user"
 //import Voting from "./Voting"
 import { Redirect, RouteComponentProps, Link } from "@reach/router"
@@ -18,14 +18,7 @@ import {
   PLUS_MAPLISTS,
   PlusMaplistsData,
 } from "../../graphql/queries/plusMaplists"
-
-interface PlusInfoData {
-  plusInfo: {
-    voting_ends?: String
-    voter_count: number
-    eligible_voters: number
-  }
-}
+import Voting from "./Voting"
 
 const PlusPage: React.FC<RouteComponentProps> = () => {
   const { data, error, loading } = useQuery<PlusInfoData>(PLUS_INFO)
@@ -49,6 +42,7 @@ const PlusPage: React.FC<RouteComponentProps> = () => {
   if (!data.plusInfo) return <Redirect to="/404" />
 
   const maplist = maplistData.plusMaplists[0]
+  const plusInfo = data.plusInfo
 
   return (
     <>
@@ -56,29 +50,6 @@ const PlusPage: React.FC<RouteComponentProps> = () => {
         <title>Plus Server Home | sendou.ink</title>
       </Helmet>
       <PageHeader title="Plus Server" />
-      {/*data.plusInfo.voting_ends && userData.user.plus?.membership_status ? (
-        <Voting
-          user={userData.user}
-          handleSuccess={handleSuccess}
-          handleError={handleError}
-          votedSoFar={data.plusInfo.voter_count}
-          eligibleVoters={data.plusInfo.eligible_voters}
-          votingEnds={
-            data.plusInfo.voting_ends
-              ? parseInt(data.plusInfo.voting_ends)
-              : null
-          }
-        />
-      ) : (
-        <Suggestions
-          user={userData.user}
-          plusServer={userData.user?.plus?.membership_status}
-          showSuggestionForm={showSuggestionForm}
-          setShowSuggestionForm={setShowSuggestionForm}
-          handleSuccess={handleSuccess}
-          handleError={handleError}
-        />
-      )*/}
       <Flex mb="1em" flexWrap="wrap">
         <Box mr="1em" mt="1em">
           <Link to="/plus/history">
@@ -102,15 +73,26 @@ const PlusPage: React.FC<RouteComponentProps> = () => {
           </Link>
         </Box>
       </Flex>
-      <Maplist
-        name={maplist.name}
-        sz={maplist.sz}
-        tc={maplist.tc}
-        rm={maplist.rm}
-        cb={maplist.cb}
-        voterCount={maplist.plus.voter_count}
-      />
-      <Suggestions user={userData.user} />
+      {plusInfo.voting_ends ? (
+        <Voting
+          user={userData.user}
+          votingEnds={parseInt(plusInfo.voting_ends)}
+          votedSoFar={plusInfo.voter_count}
+          eligibleVoters={plusInfo.eligible_voters}
+        />
+      ) : (
+        <>
+          <Maplist
+            name={maplist.name}
+            sz={maplist.sz}
+            tc={maplist.tc}
+            rm={maplist.rm}
+            cb={maplist.cb}
+            voterCount={maplist.plus.voter_count}
+          />
+          <Suggestions user={userData.user} />
+        </>
+      )}
     </>
   )
 }
