@@ -23,7 +23,7 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express-session": "^1.17.0",
-    "graphql": "^14.6.0",
+    "graphql": "^15.0.0",
     "lodash": "^4.17.15",
     "mongoose": "^5.9.7",
     "mongoose-unique-validator": "^2.0.3",
