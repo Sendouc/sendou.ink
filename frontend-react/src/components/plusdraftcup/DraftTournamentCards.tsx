@@ -15,6 +15,7 @@ interface DraftTournamentCardsProps {
       username: string
       discriminator: string
       twitter_name?: string
+      discord_id: string
     }[][]
     bracket_url: string
     date: string
@@ -30,6 +31,7 @@ interface DraftTournamentCardProps {
       username: string
       discriminator: string
       twitter_name?: string
+      discord_id: string
     }[][]
     bracket_url: string
     date: string
@@ -43,6 +45,7 @@ interface MedalRowProps {
     username: string
     discriminator: string
     twitter_name?: string
+    discord_id: string
   }[]
   medalImage: string
   small?: boolean
@@ -84,7 +87,7 @@ export const DraftTournamentCard: React.FC<DraftTournamentCardProps> = ({
             mx="0.25em"
             key={`${user.username}#${user.discriminator}`}
           >
-            <Link to="/">
+            <Link to={`/u/${user.discord_id}`}>
               {user.username}#{user.discriminator}
             </Link>
           </Box>
@@ -154,7 +157,7 @@ const DraftTournamentCards: React.FC<DraftTournamentCardsProps> = ({
         gridTemplateColumns="repeat(auto-fit, minmax(260px, 1fr))"
         mt="1em"
       >
-        {tournaments.map(tournament => {
+        {tournaments.map((tournament) => {
           const date = new Date(parseInt(tournament.date))
           return (
             <DraftTournamentCard

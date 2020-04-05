@@ -9,6 +9,7 @@ export interface PlusDraftCupsData {
         username: string
         discriminator: string
         twitter_name?: string
+        discord_id: string
       }[][]
       bracket_url: string
       date: string
@@ -42,6 +43,7 @@ export const PLUS_DRAFT_CUPS: DocumentNode = gql`
           username
           discriminator
           twitter_name
+          discord_id
         }
         bracket_url
         date

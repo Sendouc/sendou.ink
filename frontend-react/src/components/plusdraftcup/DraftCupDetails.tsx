@@ -94,6 +94,7 @@ const DetailedMapCard: React.FC<DetailedMapCardProps> = ({
       overflow="hidden"
       boxShadow="0px 0px 16px 6px rgba(0,0,0,0.1)"
       p="25px"
+      my="1em"
       flexDirection="column"
       justifyContent="space-between"
       alignItems="center"
