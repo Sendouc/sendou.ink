@@ -303,7 +303,7 @@ const DraftCupDetails: React.FC<RouteComponentProps & DraftCupDetailsProps> = ({
     SearchForDraftCupVars
   >(SEARCH_FOR_DRAFT_CUP, {
     variables: {
-      name: `Plus ${idParts[0] === "ONE" ? "One" : "Two"} Draft Cup ${
+      name: `Plus ${idParts[0] === "1" ? "One" : "Two"} Draft Cup ${
         idParts[1]
       } ${idParts[2]}`,
     },

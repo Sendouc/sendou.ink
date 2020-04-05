@@ -15,6 +15,7 @@ const userSchema = new mongoose.Schema({
     stick: { type: Number, min: -5, max: 5 },
     motion: { type: Number, min: -5, max: 5 },
   },
+  bio: String,
   weapons: [String],
   top500: Boolean,
   custom_url: String,

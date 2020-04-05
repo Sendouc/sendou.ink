@@ -294,8 +294,9 @@ const resolvers = {
       return { leaderboards, tournaments }
     },
     searchForDraftCup: async (root, args) => {
+      console.log("args.name", args.name)
       const tournament = await DetailedTournament.findOne({
-        name: { $regex: args.name, $options: "i" },
+        name: { $regex: new RegExp(args.name, "i") },
       }).populate("top_3_discord_users")
 
       if (!tournament) throw new UserInputError("no draft cup with that name")

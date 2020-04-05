@@ -21,6 +21,7 @@ const typeDef = gql`
       stick_sens: Float
       weapons: [String!]
       custom_url: String
+      bio: String
     ): Boolean
   }
 
@@ -42,6 +43,7 @@ const typeDef = gql`
     twitter_name: String
     country: String
     sens: Sens
+    bio: String
     weapons: [String!]
     custom_url: String
     top500: Boolean!
@@ -49,7 +51,7 @@ const typeDef = gql`
 `
 const resolvers = {
   User: {
-    top500: async root => {
+    top500: async (root) => {
       if (typeof root.top500 === "boolean") return root.top500
 
       if (!root.twitter_name) {
@@ -58,11 +60,13 @@ const resolvers = {
       }
 
       const player = await Player.findOne({ twitter: root.twitter_name }).catch(
-        e => {
-          throw (new UserInputError(),
-          {
-            invalidArgs: args,
-          })
+        (e) => {
+          throw (
+            (new UserInputError(),
+            {
+              invalidArgs: args,
+            })
+          )
         }
       )
 
@@ -111,7 +115,7 @@ const resolvers = {
           invalidArgs: args,
         })
 
-      return User.findOne(searchCriteria).catch(e => {
+      return User.findOne(searchCriteria).catch((e) => {
         throw new UserInputError(e.message, {
           invalidArgs: args,
         })
@@ -120,7 +124,7 @@ const resolvers = {
     users: (root, args) => {
       return User.find({})
         .sort({ username: "asc" })
-        .catch(e => {
+        .catch((e) => {
           throw new Error(e.message)
         })
     },
@@ -131,7 +135,7 @@ const resolvers = {
       if (args.country)
         if (
           countries
-            .map(countryObj => countryObj.code)
+            .map((countryObj) => countryObj.code)
             .includes(args.country === -1)
         ) {
           throw new UserInputError("Invalid country ID", {
@@ -171,7 +175,7 @@ const resolvers = {
       }
 
       if (args.weapons) {
-        if (args.weapons.some(weapon => weapons.indexOf(weapon) === -1)) {
+        if (args.weapons.some((weapon) => weapons.indexOf(weapon) === -1)) {
           throw new UserInputError("Invalid weapon in the pool", {
             invalidArgs: args,
           })
@@ -202,7 +206,7 @@ const resolvers = {
         }
 
         const userWithCustomUrl = await User.findOne({ custom_url: url }).catch(
-          e => {
+          (e) => {
             throw new Error(error.message)
           }
         )
@@ -218,7 +222,7 @@ const resolvers = {
         args.custom_url = url
       }
 
-      await User.findByIdAndUpdate(ctx.user._id, { ...args }).catch(e => {
+      await User.findByIdAndUpdate(ctx.user._id, { ...args }).catch((e) => {
         throw new UserInputError(error.message, {
           invalidArgs: args,
         })
