@@ -184,9 +184,9 @@ async function updateLeaderboard(top_3_discord_ids, type) {
 
   top_3_discord_ids.forEach((team, index) => {
     const placement = ["first", "second", "third"][index]
-    team.forEach(discord_id => {
+    team.forEach((discord_id) => {
       const foundPlayer = leaderboard.players.find(
-        player => discord_id === player.discord_id
+        (player) => discord_id === player.discord_id
       )
       if (foundPlayer) {
         foundPlayer[placement] = foundPlayer[placement] + 1
@@ -216,11 +216,11 @@ async function updateLeaderboard(top_3_discord_ids, type) {
 async function generateStats(type) {
   const matches = await DetailedMatch.find({})
   const stats = {}
-  matches.forEach(match => {
-    match.map_details.forEach(map_detail => {
+  matches.forEach((match) => {
+    match.map_details.forEach((map_detail) => {
       const { duration, winners, losers } = map_detail
       ;[winners, losers].forEach((teamInfo, index) => {
-        teamInfo.players.forEach(player => {
+        teamInfo.players.forEach((player) => {
           const {
             discord_id,
             weapon,
@@ -233,7 +233,7 @@ async function generateStats(type) {
           if (!stats[discord_id]) {
             stats[discord_id] = {}
           }
-          ;[weapon, "ALL"].forEach(weaponOrAll => {
+          ;[weapon, "ALL"].forEach((weaponOrAll) => {
             const weaponStats = stats[discord_id][weaponOrAll]
               ? stats[discord_id][weaponOrAll]
               : {
@@ -266,8 +266,8 @@ async function generateStats(type) {
   })
 
   const statsForDb = []
-  Object.keys(stats).forEach(discord_id => {
-    Object.keys(stats[discord_id]).forEach(weapon => {
+  Object.keys(stats).forEach((discord_id) => {
+    Object.keys(stats[discord_id]).forEach((weapon) => {
       statsForDb.push(stats[discord_id][weapon])
     })
   })
@@ -278,7 +278,7 @@ async function generateStats(type) {
 
 const resolvers = {
   TournamentPlayer: {
-    score: root => {
+    score: (root) => {
       return root.first * 4 + root.second * 2 + root.third
     },
   },
@@ -294,12 +294,11 @@ const resolvers = {
       return { leaderboards, tournaments }
     },
     searchForDraftCup: async (root, args) => {
-      // \ to escape + in the name
       const tournament = await DetailedTournament.findOne({
-        name: { $regex: "\\" + args.name, $options: "i" },
+        name: { $regex: args.name, $options: "i" },
       }).populate("top_3_discord_users")
 
-      if (!tournament) return []
+      if (!tournament) throw new UserInputError("no draft cup with that name")
 
       const matches = await DetailedMatch.find({
         tournament_id: tournament._id,
@@ -323,8 +322,8 @@ const resolvers = {
       const tournamentInputProblems = await validateDetailedTournamentInput(
         args.tournament
       )
-      const maptInputProblems = args.matches.map(match =>
-        match.map_details.map(map => validateDetailedMapInput(map))
+      const maptInputProblems = args.matches.map((match) =>
+        match.map_details.map((map) => validateDetailedMapInput(map))
       )
 
       const problems = [
@@ -341,7 +340,7 @@ const resolvers = {
 
       const savedTournament = await DetailedTournament.create(tournament)
 
-      args.matches.forEach(match => {
+      args.matches.forEach((match) => {
         match.tournament_id = savedTournament._id
         match.type = eventType
       })
@@ -367,8 +366,10 @@ const resolvers = {
 
       const users = await User.find({})
 
-      const filteredPlayers = players.filter(player => {
-        const found = users.find(user => user.discord_id === player.discord_id)
+      const filteredPlayers = players.filter((player) => {
+        const found = users.find(
+          (user) => user.discord_id === player.discord_id
+        )
 
         return !!found
       })

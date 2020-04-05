@@ -52,7 +52,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
       rounded="lg"
       overflow="hidden"
       boxShadow="0px 0px 16px 6px rgba(0,0,0,0.1)"
-      p="15px"
+      p="20px"
       {...props}
     >
       <Box display="flex" flexDirection="column" h="100%">

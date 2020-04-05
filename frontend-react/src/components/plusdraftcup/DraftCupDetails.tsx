@@ -248,13 +248,13 @@ const CollapsedMapCard: React.FC<CollapsedMapCardProps> = ({
     [winnerTeamName]: { players: winnerPlayers, score: 0 },
     [loserTeamName]: { players: loserPlayers, score: 0 },
   }
-  mapDetails.forEach(stage => {
+  mapDetails.forEach((stage) => {
     teamData[stage.winners.team_name].score =
       teamData[stage.winners.team_name].score + 1
   })
 
   const scores = Object.keys(teamData)
-    .map(key => {
+    .map((key) => {
       return { players: teamData[key].players, score: teamData[key].score }
     })
     .sort((a, b) => b.score - a.score)
@@ -269,10 +269,10 @@ const CollapsedMapCard: React.FC<CollapsedMapCardProps> = ({
       justifyContent="space-between"
       alignItems="center"
     >
-      {scores.map(scoreObj => (
+      {scores.map((scoreObj) => (
         <React.Fragment key={scoreObj.score}>
           <Flex flexWrap="wrap" fontWeight="bold" color={grayWithShade}>
-            {scoreObj.players.map(player => (
+            {scoreObj.players.map((player) => (
               <Box
                 key={`${player.discord_user.username}#${player.discord_user.discord_id}`}
                 mx="0.5em"
@@ -301,7 +301,13 @@ const DraftCupDetails: React.FC<RouteComponentProps & DraftCupDetailsProps> = ({
   const { data, error, loading } = useQuery<
     SearchForDraftCupData,
     SearchForDraftCupVars
-  >(SEARCH_FOR_DRAFT_CUP, { variables: { name: "+2 Draft Cup March 2020" } })
+  >(SEARCH_FOR_DRAFT_CUP, {
+    variables: {
+      name: `Plus ${idParts[0] === "ONE" ? "One" : "Two"} Draft Cup ${
+        idParts[1]
+      } ${idParts[2]}`,
+    },
+  })
   const [expanded, setExpanded] = useState<number | null>(null)
   const [loadingSet, setLoadingSet] = useState<number | null>(null)
 
@@ -335,7 +341,7 @@ const DraftCupDetails: React.FC<RouteComponentProps & DraftCupDetailsProps> = ({
           </Button>
         </a>
       </Box>
-      {matches.map(match => {
+      {matches.map((match) => {
         return (
           <Box key={match.round_name} mt="1em">
             <Box

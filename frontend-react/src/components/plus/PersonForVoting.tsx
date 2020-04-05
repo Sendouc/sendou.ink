@@ -1,5 +1,4 @@
 import React, { useContext } from "react"
-import { Link } from "@reach/router"
 import UserAvatar from "../common/UserAvatar"
 import { Flex, Box, Grid } from "@chakra-ui/core"
 import MyThemeContext from "../../themeContext"
@@ -101,7 +100,11 @@ const PersonForVoting: React.FC<PersonForVotingProps> = ({
       >
         <UserAvatar twitterName={user.twitter_name} name={user.username} />
 
-        <a target="_blank" rel="noopener" href={`/u/${user.discord_id}`}>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={`/u/${user.discord_id}`}
+        >
           <Box
             color={grayWithShade}
             fontWeight="semibold"
