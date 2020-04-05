@@ -132,7 +132,7 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
         <Pagination
           currentPage={forms.page ?? 1}
           pageCount={data?.searchForPlacements.pageCount ?? 999}
-          onChange={page => {
+          onChange={(page) => {
             setForms({ ...forms, page })
             setQuery({ ...query, page })
           }}
@@ -156,7 +156,7 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {placements.map(placement => (
+                {placements.map((placement) => (
                   <Tr key={placement.id}>
                     <Td>
                       <Flex
@@ -164,7 +164,10 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
                         cursor="pointer"
                         onClick={() => {
                           setForms({ unique_id: placement.unique_id, page: 1 })
-                          setQuery({ unique_id: placement.unique_id, page: 1 })
+                          setQuery(
+                            { unique_id: placement.unique_id, page: 1 },
+                            "replace"
+                          )
                         }}
                       >
                         {placement.player?.twitter && (
@@ -218,7 +221,7 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
             <Pagination
               currentPage={forms.page ?? 1}
               pageCount={data?.searchForPlacements.pageCount ?? 999}
-              onChange={page => {
+              onChange={(page) => {
                 setForms({ ...forms, page })
                 setQuery({ ...query, page })
               }}
