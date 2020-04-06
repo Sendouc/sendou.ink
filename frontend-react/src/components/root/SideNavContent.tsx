@@ -97,16 +97,16 @@ const UserItem: React.FC<{ data?: UserData }> = ({ data }) => {
             </Flex>
           </MenuItem>
         </Link>
-        <MenuItem>
-          <a href="/logout">
+        <a href="/logout">
+          <MenuItem>
             <Flex alignItems="center" justifyContent="center">
               <Box as={FaDoorOpen} w="24px" h="auto" mr="1em" />{" "}
               <Box as="span" mt="2px">
                 Log out
               </Box>
             </Flex>
-          </a>
-        </MenuItem>
+          </MenuItem>
+        </a>
       </MenuList>
     </Menu>
   )

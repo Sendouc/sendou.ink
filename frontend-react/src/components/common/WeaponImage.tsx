@@ -17,7 +17,11 @@ const WeaponImage: React.FC<WeaponImageProps> = ({ englishName, size }) => {
       src={dictToUse[english_internal[englishName]]}
       alt={englishName}
       title={englishName}
-      style={size === "SMALL" ? { width: wh, height: wh } : undefined}
+      style={
+        size === "SMALL"
+          ? { width: wh, height: wh, display: "inline-block" }
+          : undefined
+      }
     />
   )
 }

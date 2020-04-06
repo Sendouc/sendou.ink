@@ -32,6 +32,7 @@ const AbilityIcon: React.FC<AbilityIconProps> = ({ ability, size }) => {
         backgroundSize: "100%",
         boxShadow: "0 0 0 1px #000",
         userSelect: "none",
+        display: "inline-block",
       }}
       alt={ability}
     />

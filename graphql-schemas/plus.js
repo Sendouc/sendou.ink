@@ -396,7 +396,10 @@ const resolvers = {
       if (args.server !== "ONE" && args.server !== "TWO")
         throw new UserInputError("Server arg has to be 'ONE' or 'TWO'.")
 
-      if (user.plus.membership_status === args.server)
+      if (
+        user.plus.membership_status === args.server ||
+        user.plus.membership_status === "ONE"
+      )
         throw new UserInputError(
           "Suggested user is already a member of the server."
         )

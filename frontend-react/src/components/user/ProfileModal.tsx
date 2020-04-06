@@ -15,6 +15,8 @@ import Button from "../elements/Button"
 import { useContext } from "react"
 import MyThemeContext from "../../themeContext"
 import { useEffect } from "react"
+import MarkdownInput from "./MarkdownInput"
+import SubHeader from "../common/SubHeader"
 
 interface ProfileModalProps {
   closeModal: () => void
@@ -27,6 +29,7 @@ interface UpdateUserVars {
   stick_sens?: number
   weapons?: Weapon[]
   custom_url?: string
+  bio?: string
 }
 
 const ProfileModal: React.FC<ProfileModalProps> = ({
@@ -80,7 +83,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
           duration: 10000,
         })
       },
-      onError: error => {
+      onError: (error) => {
         toast({
           title: "An error occurred",
           description: error.message,
@@ -122,13 +125,14 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
               profile.country
                 ? {
                     value: profile.country,
-                    label: countries.find(obj => obj.code === profile.country)!
-                      .name,
+                    label: countries.find(
+                      (obj) => obj.code === profile.country
+                    )!.name,
                   }
                 : null
             }
             setValue={(country: string) => handleChange({ country: country })}
-            options={countries.map(countryObj => ({
+            options={countries.map((countryObj) => ({
               label: countryObj.name,
               value: countryObj.code,
             }))}
@@ -139,13 +143,13 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
             <SensInput
               label="Stick sensitivity"
               value={profile.stick_sens}
-              onChange={value => handleChange({ stick_sens: value })}
+              onChange={(value) => handleChange({ stick_sens: value })}
             />
           </Box>
           <SensInput
             label="Motion sensitivity"
             value={profile.motion_sens}
-            onChange={value => handleChange({ motion_sens: value })}
+            onChange={(value) => handleChange({ motion_sens: value })}
           />
         </Box>
         <Box mt="1em">
@@ -154,6 +158,13 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
             isMulti
             setValue={(value: Weapon[]) => handleChange({ weapons: value })}
             value={profile.weapons}
+          />
+        </Box>
+        <Box mt="1em">
+          <MarkdownInput
+            value={profile.bio ?? ""}
+            setValue={(value: string) => handleChange({ bio: value })}
+            label="Bio"
           />
         </Box>
         <Box mt="1em">
