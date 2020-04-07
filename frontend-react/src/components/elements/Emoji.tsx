@@ -10,10 +10,10 @@ import cb from "../../assets/cb.png"
 import { Image } from "@chakra-ui/core"
 
 const modeCodes: Record<string, string> = {
-  sz,
-  tc,
-  rm,
-  cb,
+  splat_zones: sz,
+  tower_control: tc,
+  rainmaker: rm,
+  clam_blitz: cb,
 } as const
 
 interface EmojiProps {
