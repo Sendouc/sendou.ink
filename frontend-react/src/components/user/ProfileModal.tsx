@@ -60,6 +60,8 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
       setError("Custom URL can only contain letters and numbers")
     } else if (profile.weapons && profile.weapons.length > 5) {
       setError("Weapon pool's max size is 5")
+    } else if (profile.bio && profile.bio.length > 10000) {
+      setError("Bio's max length is 10000")
     } else {
       setError(null)
     }
@@ -164,6 +166,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
             value={profile.bio ?? ""}
             setValue={(value: string) => handleChange({ bio: value })}
             label="Bio"
+            limit={10000}
           />
         </Box>
         <Box mt="1em">

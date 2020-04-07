@@ -188,7 +188,7 @@ const resolvers = {
         }
       }
 
-      if (args.bio && args.bio.length > 1000000) {
+      if (args.bio && args.bio.length > 10000) {
         throw new UserInputError("bio too long", {
           invalidArgs: args,
         })
