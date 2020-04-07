@@ -9,12 +9,14 @@ interface MarkdownInputProps {
   value: string
   setValue: (value: string) => void
   label: string
+  limit?: number
 }
 
 const MarkdownInput: React.FC<MarkdownInputProps> = ({
   value,
   setValue,
   label,
+  limit,
 }) => {
   const [preview, setPreview] = useState(false)
   return (
@@ -30,6 +32,7 @@ const MarkdownInput: React.FC<MarkdownInputProps> = ({
           setValue={setValue}
           label={label}
           height="150px"
+          limit={limit}
         />
       )}
       <Box mt="0.5em">

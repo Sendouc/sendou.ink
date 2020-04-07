@@ -1,4 +1,14 @@
 import { gql, DocumentNode } from "apollo-boost"
+import { User } from "../../types"
+
+export interface SearchForUserData {
+  searchForUser?: User
+}
+
+export interface SearchForUserVars {
+  discord_id?: string
+  custom_url?: string
+}
 
 export const SEARCH_FOR_USER: DocumentNode = gql`
   query searchForUser($discord_id: String, $custom_url: String) {
@@ -13,6 +23,7 @@ export const SEARCH_FOR_USER: DocumentNode = gql`
       weapons
       top500
       custom_url
+      bio
       sens {
         stick
         motion

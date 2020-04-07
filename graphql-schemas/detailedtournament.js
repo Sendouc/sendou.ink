@@ -294,7 +294,6 @@ const resolvers = {
       return { leaderboards, tournaments }
     },
     searchForDraftCup: async (root, args) => {
-      console.log("args.name", args.name)
       const tournament = await DetailedTournament.findOne({
         name: { $regex: new RegExp(args.name, "i") },
       }).populate("top_3_discord_users")

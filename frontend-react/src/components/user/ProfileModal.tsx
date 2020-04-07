@@ -16,7 +16,6 @@ import { useContext } from "react"
 import MyThemeContext from "../../themeContext"
 import { useEffect } from "react"
 import MarkdownInput from "./MarkdownInput"
-import SubHeader from "../common/SubHeader"
 
 interface ProfileModalProps {
   closeModal: () => void
@@ -51,7 +50,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
     } else if (profile.custom_url && profile.custom_url.length < 2) {
       setError("Custom URL has to be over 2 characters long")
     } else if (profile.custom_url && profile.custom_url.length > 32) {
-      setError("Custom URL has to be under 32 characters long")
+      setError("Custom URL can be at most 32 characters long")
     } else if (profile.custom_url && !isNaN(profile.custom_url as any)) {
       setError("Custom URL has to contain at least one letter")
     } else if (

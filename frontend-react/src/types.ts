@@ -79,6 +79,7 @@ export interface User {
   weapons?: Weapon[]
   top500: boolean
   custom_url?: string
+  bio?: string
   sens?: {
     stick: number
     motion?: number
@@ -214,15 +215,6 @@ export interface DetailedTeamInfo {
 
 export interface UserData {
   user?: UserLean
-}
-
-export interface SearchForUserData {
-  searchForUser?: User
-}
-
-export interface SearchForUserVars {
-  discord_id?: string
-  custom_url?: string
 }
 
 export interface SearchForBuildsData {

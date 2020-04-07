@@ -7,6 +7,7 @@ export const UPDATE_USER: DocumentNode = gql`
     $stick_sens: Float
     $weapons: [String!]
     $custom_url: String
+    $bio: String
   ) {
     updateUser(
       country: $country
@@ -14,6 +15,7 @@ export const UPDATE_USER: DocumentNode = gql`
       stick_sens: $stick_sens
       weapons: $weapons
       custom_url: $custom_url
+      bio: $bio
     )
   }
 `

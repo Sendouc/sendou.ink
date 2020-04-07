@@ -14,7 +14,7 @@ const Logo: React.FC<LogoProps> = ({ mobile = false }) => {
         as="span"
         display="inline-block"
         transform="translateY(-7px)"
-        fontSize="30px"
+        fontSize={mobile ? "25px" : "30px"}
         fontFamily="'Pacifico', cursive"
         transition="1.1s"
       >
@@ -25,7 +25,7 @@ const Logo: React.FC<LogoProps> = ({ mobile = false }) => {
         as="span"
         display="inline-block"
         transform="translateY(7px)"
-        fontSize="30px"
+        fontSize={mobile ? "25px" : "30px"}
         fontFamily="'Pacifico', cursive"
         transition="1.1s"
       >

@@ -2,13 +2,15 @@ import React, { useContext } from "react"
 import { RouteComponentProps, Redirect } from "@reach/router"
 import { useQuery } from "@apollo/react-hooks"
 
-import { SEARCH_FOR_USER } from "../../graphql/queries/searchForUser"
+import {
+  SEARCH_FOR_USER,
+  SearchForUserData,
+  SearchForUserVars,
+} from "../../graphql/queries/searchForUser"
 import { USER } from "../../graphql/queries/user"
 import Loading from "../common/Loading"
 import Error from "../common/Error"
 import {
-  SearchForUserData,
-  SearchForUserVars,
   UserData,
   SearchForBuildsData,
   SearchForBuildsVars,
@@ -27,6 +29,9 @@ import MyThemeContext from "../../themeContext"
 import { PLAYER_INFO } from "../../graphql/queries/playerInfo"
 import XRankTab from "./XRankTab"
 import { weapons } from "../../utils/lists"
+import Alert from "../elements/Alert"
+import Markdown from "../elements/Markdown"
+import SubHeader from "../common/SubHeader"
 
 interface Tab {
   id: number
@@ -124,7 +129,11 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
       title: "X Rank Top 500",
       content: (
         <TabPanel key={2}>
-          <p>to do</p>
+          <Alert status="info">
+            If you have reached Top 500 in a finished X Rank season you can have
+            it displayed here! Just contact Sendou#0043 on Discord with your
+            in-game nick.
+          </Alert>
         </TabPanel>
       ),
     })
@@ -146,9 +155,15 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
           <WeaponPool weapons={user.weapons} />
         </Box>
       )}
+      {user.bio && (
+        <Box my="1em">
+          <SubHeader>Bio</SubHeader>
+          <Markdown value={user.bio} />
+        </Box>
+      )}
       <Tabs isFitted variant="line" mt="2em" variantColor={themeColor}>
         <TabList mb="1em">
-          {tabs.map(tabObj => (
+          {tabs.map((tabObj) => (
             <Tab key={tabObj.id} color={textColor}>
               <Box
                 as={tabObj.icon}
@@ -160,7 +175,7 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
             </Tab>
           ))}
         </TabList>
-        <TabPanels>{tabs.map(tabObj => tabObj.content)}</TabPanels>
+        <TabPanels>{tabs.map((tabObj) => tabObj.content)}</TabPanels>
       </Tabs>
     </>
   )

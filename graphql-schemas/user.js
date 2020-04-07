@@ -188,6 +188,12 @@ const resolvers = {
         }
       }
 
+      if (args.bio && args.bio.length > 1000000) {
+        throw new UserInputError("bio too long", {
+          invalidArgs: args,
+        })
+      }
+
       const user = ctx.user
 
       if (args.custom_url) {
