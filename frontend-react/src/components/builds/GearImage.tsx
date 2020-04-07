@@ -22,7 +22,9 @@ const GearImage: React.FC<GearImageProps> = ({
       alt={englishName}
       src={`https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/gear/${english_internal[englishName]}.png`}
       title={englishName}
-      style={mini ? { width: wh, height: wh } : undefined}
+      style={
+        mini ? { width: wh, height: wh, display: "inline-block" } : undefined
+      }
     />
   )
 }
