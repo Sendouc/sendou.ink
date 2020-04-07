@@ -168,6 +168,12 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
             label="Bio"
             limit={10000}
           />
+          <Box color={grayWithShade} mt="0.5em" fontSize="15px">
+            Markdown is supported. See:{" "}
+            <a href="/markdown" target="_blank" rel="noreferrer noopener">
+              https://sendou.ink/markdown
+            </a>
+          </Box>
         </Box>
         <Box mt="1em">
           <Button

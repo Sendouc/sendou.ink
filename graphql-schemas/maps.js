@@ -66,7 +66,7 @@ const resolvers = {
     maplists: (root, args) => {
       return Maplist.find({})
         .sort({ order: "asc" })
-        .catch(e => {
+        .catch((e) => {
           throw new UserInputError(e.message, {
             invalidArgs: args,
           })
@@ -88,7 +88,7 @@ const resolvers = {
       })
 
       if (!mapBallot) {
-        return maps.map(map => ({ name: map, sz: 0, tc: 0, rm: 0, cb: 0 }))
+        return maps.map((map) => ({ name: map, sz: 0, tc: 0, rm: 0, cb: 0 }))
       }
 
       return mapBallot.maps
@@ -97,8 +97,8 @@ const resolvers = {
       const ballots = await MapBallot.find({})
 
       const count = {}
-      ballots.forEach(ballot => {
-        ballot.maps.forEach(stage => {
+      ballots.forEach((ballot) => {
+        ballot.maps.forEach((stage) => {
           let toIcrement = 0
           if (stage[args.mode.toLowerCase()] === 1) toIcrement = 1
 
@@ -160,11 +160,11 @@ const resolvers = {
       const ballots = await MapBallot.find({}).populate("discord_user")
 
       const validBallots = ballots.filter(
-        ballot => !!ballot.discord_user.plus.membership_status
+        (ballot) => !!ballot.discord_user.plus.membership_status
       )
 
       const voter_count = validBallots.length
-      const vote_counts = maps.map(stage => ({
+      const vote_counts = maps.map((stage) => ({
         name: stage,
         sz: [0, 0, 0],
         tc: [0, 0, 0],
@@ -172,7 +172,7 @@ const resolvers = {
         cb: [0, 0, 0],
       }))
 
-      validBallots.forEach(ballot =>
+      validBallots.forEach((ballot) =>
         ballot.maps.forEach((stage, index) => {
           const { sz, tc, rm, cb } = stage
           // one is added to the index so -1 vote goes to 0 index, 0 to 1 and 1 to 2
@@ -184,8 +184,8 @@ const resolvers = {
       )
 
       let allMaps = []
-      vote_counts.forEach(count => {
-        ;["sz", "tc", "rm", "cb"].forEach(mode => {
+      vote_counts.forEach((count) => {
+        ;["sz", "tc", "rm", "cb"].forEach((mode) => {
           allMaps.push({
             name: count.name,
             score: +(
@@ -212,7 +212,26 @@ const resolvers = {
       }
 
       const mapCount = {}
-      let modeToAddTo = "sz"
+
+      // we switch monthly to add variance
+      const now = new Date()
+      const month = now.getMonth() + 1
+      const monthModes = [
+        null,
+        "sz",
+        "tc",
+        "rm",
+        "cb",
+        "sz",
+        "tc",
+        "rm",
+        "cb",
+        "sz",
+        "tc",
+        "rm",
+        "cb",
+      ]
+      let modeToAddTo = monthModes[month]
       const nextModeDict = {
         sz: "tc",
         tc: "rm",
@@ -262,8 +281,6 @@ const resolvers = {
       rmMapPool.sort((a, b) => maps.indexOf(a) - maps.indexOf(b))
       cbMapPool.sort((a, b) => maps.indexOf(a) - maps.indexOf(b))
 
-      const now = new Date()
-
       const maplist = {
         name: `Plus Server ${now.toLocaleString("default", {
           month: "long",
@@ -274,7 +291,7 @@ const resolvers = {
         cb: cbMapPool,
         order: 0,
         plus: {
-          month: now.getMonth() + 1,
+          month,
           year: now.getFullYear(),
           voter_count,
           vote_counts,
