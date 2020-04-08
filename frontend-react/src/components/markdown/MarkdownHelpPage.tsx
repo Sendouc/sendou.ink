@@ -1,15 +1,20 @@
-import React, { useContext } from "react"
+import React, { useContext, useState } from "react"
 import { RouteComponentProps } from "@reach/router"
 import PageHeader from "../common/PageHeader"
-import { Box, Link, Flex } from "@chakra-ui/core"
+import { Box, Link, Flex, Collapse } from "@chakra-ui/core"
 import MyThemeContext from "../../themeContext"
 import WeaponImage from "../common/WeaponImage"
 import Emoji from "../elements/Emoji"
+import Button from "../elements/Button"
+import { weaponCodes, abilitiesGameOrder, gearCodes } from "../../utils/lists"
 
 interface MarkdownHelpPageProps {}
 
 const MarkdownHelpPage: React.FC<RouteComponentProps> = () => {
   const { themeColorWithShade } = useContext(MyThemeContext)
+  const [showWeapons, setShowWeapons] = useState(false)
+  const [showAbilities, setShowAbilities] = useState(false)
+  const [showGear, setShowGear] = useState(false)
   return (
     <>
       <PageHeader title="Markdown Help" />
@@ -34,22 +39,6 @@ const MarkdownHelpPage: React.FC<RouteComponentProps> = () => {
           few representatives as example:
         </p>
         <p style={{ marginTop: "0.5em" }}>
-          <b>Weapon emoji</b>
-          <Flex flexDir="column">
-            <Box>
-              :luna_blaster: ->{" "}
-              <WeaponImage size="SMALL" englishName="Luna Blaster" />
-            </Box>
-            <Box>
-              :.96_gal: -> <WeaponImage size="SMALL" englishName=".96 Gal" />
-            </Box>
-            <Box>
-              :custom_e-liter_4k_scope: ->{" "}
-              <WeaponImage size="SMALL" englishName="Custom E-liter 4K Scope" />
-            </Box>
-          </Flex>
-        </p>
-        <p style={{ marginTop: "0.5em" }}>
           <b>Mode emoji</b>
           <Flex flexDir="column">
             <Box>
@@ -67,17 +56,31 @@ const MarkdownHelpPage: React.FC<RouteComponentProps> = () => {
           </Flex>
         </p>
         <p style={{ marginTop: "0.5em" }}>
-          <b>Ability emoji</b>
+          <b>Weapon emoji</b>
           <Flex flexDir="column">
             <Box>
-              :ssu: -> <Emoji value=":ssu:" />
+              :luna_blaster: ->{" "}
+              <WeaponImage size="SMALL" englishName="Luna Blaster" />
             </Box>
             <Box>
-              :t: -> <Emoji value=":t:" />
+              :96_gal: -> <WeaponImage size="SMALL" englishName=".96 Gal" />
             </Box>
             <Box>
-              :rp: -> <Emoji value=":rp:" />
+              :custom_e-liter_4k_scope: ->{" "}
+              <WeaponImage size="SMALL" englishName="Custom E-liter 4K Scope" />
             </Box>
+            <Box w="250px" my="0.5em">
+              <Button onClick={() => setShowWeapons(!showWeapons)}>
+                {showWeapons ? "Hide" : "Show all"}
+              </Button>
+            </Box>
+            <Collapse mt={4} isOpen={showWeapons}>
+              <Flex flexDir="column">
+                {Object.keys(weaponCodes).map((code) => (
+                  <Box>:{code}:</Box>
+                ))}
+              </Flex>
+            </Collapse>
           </Flex>
         </p>
         <p style={{ marginTop: "0.5em" }}>
@@ -92,6 +95,18 @@ const MarkdownHelpPage: React.FC<RouteComponentProps> = () => {
             <Box>
               :rp: -> <Emoji value=":rp:" />
             </Box>
+            <Box w="250px" my="0.5em">
+              <Button onClick={() => setShowAbilities(!showAbilities)}>
+                {showAbilities ? "Hide" : "Show all"}
+              </Button>
+            </Box>
+            <Collapse mt={4} isOpen={showAbilities}>
+              <Flex flexDir="column">
+                {abilitiesGameOrder.map((code) => (
+                  <Box>:{code.toLowerCase()}:</Box>
+                ))}
+              </Flex>
+            </Collapse>
           </Flex>
         </p>
         <p style={{ marginTop: "0.5em" }}>
@@ -106,6 +121,18 @@ const MarkdownHelpPage: React.FC<RouteComponentProps> = () => {
             <Box>
               :black_norimaki_750s: -> <Emoji value=":black_norimaki_750s:" />
             </Box>
+            <Box w="250px" my="0.5em">
+              <Button onClick={() => setShowGear(!showGear)}>
+                {showGear ? "Hide" : "Show all"}
+              </Button>
+            </Box>
+            <Collapse mt={4} isOpen={showGear}>
+              <Flex flexDir="column">
+                {Object.keys(gearCodes).map((code) => (
+                  <Box>:{code}:</Box>
+                ))}
+              </Flex>
+            </Collapse>
           </Flex>
         </p>
       </Box>

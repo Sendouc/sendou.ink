@@ -1,9 +1,10 @@
 const { UserInputError, gql } = require("apollo-server-express")
 const Trend = require("../mongoose-models/trend")
+const weapons = require("../utils/weapons")
 
 const typeDef = gql`
   extend type Query {
-    searchForTrend(weapon: String!): Trend
+    xTrends: [Trend!]!
   }
   type Year {
     year: Int!
@@ -24,12 +25,10 @@ const typeDef = gql`
 
 const resolvers = {
   Query: {
-    searchForTrend: (root, args) => {
-      return Trend.findOne({ weapon: args.weapon }).catch(e => {
-        throw new UserInputError(e.message, {
-          invalidArgs: args,
-        })
-      })
+    xTrends: async (root, args) => {
+      const trends = await Trend.find({})
+
+      return trends.filter((trend) => weapons.includes(trend.weapon))
     },
   },
 }
