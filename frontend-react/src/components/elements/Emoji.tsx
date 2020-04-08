@@ -7,9 +7,11 @@ import sz from "../../assets/sz.png"
 import tc from "../../assets/tc.png"
 import rm from "../../assets/rm.png"
 import cb from "../../assets/cb.png"
+import tw from "../../assets/tw.png"
 import { Image } from "@chakra-ui/core"
 
 const modeCodes: Record<string, string> = {
+  turf_war: tw,
   splat_zones: sz,
   tower_control: tc,
   rainmaker: rm,

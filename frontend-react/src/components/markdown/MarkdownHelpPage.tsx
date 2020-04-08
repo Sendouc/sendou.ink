@@ -42,6 +42,9 @@ const MarkdownHelpPage: React.FC<RouteComponentProps> = () => {
           <b>Mode emoji</b>
           <Flex flexDir="column">
             <Box>
+              :turf_war: -> <Emoji value=":turf_war:" />
+            </Box>
+            <Box>
               :splat_zones: -> <Emoji value=":splat_zones:" />
             </Box>
             <Box>
