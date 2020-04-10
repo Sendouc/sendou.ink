@@ -58,7 +58,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
       <Box display="flex" flexDirection="column" h="100%">
         <Box display="flex" justifyContent="space-between">
           <Box width="24">
-            <WeaponImage englishName={build.weapon} size="MEDIUM" />
+            <WeaponImage englishName={build.weapon} size="BIG" />
           </Box>
           {build.top && (
             <Image

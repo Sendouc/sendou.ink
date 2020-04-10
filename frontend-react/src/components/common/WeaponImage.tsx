@@ -6,22 +6,35 @@ import { Weapon } from "../../types.js"
 
 interface WeaponImageProps {
   englishName: Weapon
-  size: "SMALL" | "MEDIUM"
+  size: "SMALL" | "MEDIUM" | "BIG"
+  asInlineBlock?: boolean
+  noTitle?: boolean
 }
 
-const WeaponImage: React.FC<WeaponImageProps> = ({ englishName, size }) => {
+const sizeWhMap: Record<"SMALL" | "MEDIUM" | "BIG", string | undefined> = {
+  SMALL: "32px",
+  MEDIUM: "64px",
+  BIG: undefined,
+}
+
+const WeaponImage: React.FC<WeaponImageProps> = ({
+  englishName,
+  size,
+  asInlineBlock,
+  noTitle,
+}) => {
   const dictToUse: any = wpnMedium
-  const wh = "32px"
+  const wh = sizeWhMap[size]
   return (
     <img
       src={dictToUse[english_internal[englishName]]}
       alt={englishName}
-      title={englishName}
-      style={
-        size === "SMALL"
-          ? { width: wh, height: wh, display: "inline-block" }
-          : undefined
-      }
+      title={noTitle ? undefined : englishName}
+      style={{
+        width: wh,
+        height: wh,
+        display: asInlineBlock ? "inline-block" : undefined,
+      }}
     />
   )
 }

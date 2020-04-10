@@ -68,7 +68,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
     Build
   >(ADD_BUILD, {
     variables: { ...(build as Build) },
-    onCompleted: data => {
+    onCompleted: (data) => {
       closeModal()
       toast({
         description: `New ${data.addBuild.weapon} build created`,
@@ -77,7 +77,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
         duration: 10000,
       })
     },
-    onError: error => {
+    onError: (error) => {
       toast({
         title: "An error occurred",
         description: error.message,
@@ -103,7 +103,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
         duration: 10000,
       })
     },
-    onError: error => {
+    onError: (error) => {
       toast({
         title: "An error occurred",
         description: error.message,
@@ -129,7 +129,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
         duration: 10000,
       })
     },
-    onError: error => {
+    onError: (error) => {
       toast({
         title: "An error occurred",
         description: error.message,
@@ -235,9 +235,9 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
     }
 
     const abilitiesFilled =
-      build.headgear?.every(ability => ability !== "UNKNOWN") &&
-      build.clothing?.every(ability => ability !== "UNKNOWN") &&
-      build.shoes?.every(ability => ability !== "UNKNOWN")
+      build.headgear?.every((ability) => ability !== "UNKNOWN") &&
+      build.clothing?.every((ability) => ability !== "UNKNOWN") &&
+      build.shoes?.every((ability) => ability !== "UNKNOWN")
 
     if (!abilitiesFilled) {
       return false
@@ -269,7 +269,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
         value={build.weapon}
       />
       {build.weapon && (
-        <WeaponImage englishName={build.weapon as Weapon} size="MEDIUM" />
+        <WeaponImage englishName={build.weapon as Weapon} size="BIG" />
       )}
       <Box asFlex mt="1em" justifyContent="space-between" flexWrap="wrap">
         <Box asFlex flexDirection="column" alignItems="center">
@@ -283,7 +283,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
               setValue={(headgearItem: HeadGear) => {
                 if (
                   (!build.headgear ||
-                    build.headgear.every(ability => ability === "UNKNOWN")) &&
+                    build.headgear.every((ability) => ability === "UNKNOWN")) &&
                   existingGear.hasOwnProperty(headgearItem)
                 ) {
                   handleChange({
@@ -313,7 +313,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
               setValue={(clothingItem: ClothingGear) => {
                 if (
                   (!build.clothing ||
-                    build.clothing.every(ability => ability === "UNKNOWN")) &&
+                    build.clothing.every((ability) => ability === "UNKNOWN")) &&
                   existingGear.hasOwnProperty(clothingItem)
                 ) {
                   handleChange({
@@ -343,7 +343,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
               setValue={(shoesItem: ShoesGear) => {
                 if (
                   (!build.shoes ||
-                    build.shoes.every(ability => ability === "UNKNOWN")) &&
+                    build.shoes.every((ability) => ability === "UNKNOWN")) &&
                   existingGear.hasOwnProperty(shoesItem)
                 ) {
                   handleChange({
@@ -376,7 +376,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
       </Box>
       <Box mt="1em">
         <AbilityButtons
-          onClick={ability => handleAbilityButtonClick(ability)}
+          onClick={(ability) => handleAbilityButtonClick(ability)}
         />
       </Box>
       <Box mt="1em">

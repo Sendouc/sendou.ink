@@ -5,10 +5,10 @@ export interface XTrendsData {
     weapon: string
     counts: {
       year: number
-      SZ: number[]
-      TC: number[]
-      RM: number[]
-      CB: number[]
+      SZ: (null | number)[]
+      TC: (null | number)[]
+      RM: (null | number)[]
+      CB: (null | number)[]
     }[]
   }[]
 }
