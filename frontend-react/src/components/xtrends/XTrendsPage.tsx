@@ -14,11 +14,14 @@ import {
   PopoverTrigger,
   PopoverContent,
   PopoverArrow,
+  Badge,
 } from "@chakra-ui/core"
 import WeaponImage from "../common/WeaponImage"
 import MyThemeContext from "../../themeContext"
 import ModeButtons from "./ModeButtons"
 import Select from "../elements/Select"
+import Button from "../elements/Button"
+import { FaChartLine } from "react-icons/fa"
 
 const tiers = [
   {
@@ -69,7 +72,9 @@ const tiers = [
 ] as const
 
 const XTrendsPage: React.FC<RouteComponentProps> = () => {
-  const { grayWithShade, darkerBgColor } = useContext(MyThemeContext)
+  const { grayWithShade, darkerBgColor, themeColor } = useContext(
+    MyThemeContext
+  )
   const { data, error, loading } = useQuery<XTrendsData>(X_TRENDS)
   const [month, setMonth] = useState("March 2020")
   const [mode, setMode] = useState<"SZ" | "TC" | "RM" | "CB">("SZ")
@@ -119,8 +124,6 @@ const XTrendsPage: React.FC<RouteComponentProps> = () => {
     return weapons.indexOf(a.name) - weapons.indexOf(b.name)
   })
 
-  console.log("weaponMonths", weaponMonths)
-
   return (
     <>
       <PageHeader title="X Trends" />
@@ -149,7 +152,7 @@ const XTrendsPage: React.FC<RouteComponentProps> = () => {
         <Flex key={tier.criteria}>
           <Flex
             flexDir="column"
-            w="100px"
+            w="80px"
             minH="100px"
             padding="10px"
             borderRight="5px solid"
@@ -188,7 +191,21 @@ const XTrendsPage: React.FC<RouteComponentProps> = () => {
                   </PopoverTrigger>
                   <PopoverContent zIndex={4} p="0.5em" bg={darkerBgColor}>
                     <PopoverArrow />
-                    {weapon.name} - {weapon.amount}
+                    <Flex
+                      justifyContent="space-evenly"
+                      alignItems="center"
+                      mr="0.5em"
+                    >
+                      <Flex alignItems="center">
+                        <Badge variantColor={themeColor} mr="0.5em">
+                          {weapon.amount}
+                        </Badge>
+                        {weapon.name}{" "}
+                      </Flex>
+                      <Box>
+                        <Button icon={FaChartLine}>Add to chart</Button>
+                      </Box>
+                    </Flex>
                   </PopoverContent>
                 </Popover>
               ))}

@@ -32,7 +32,7 @@
     "react-color": "^2.18.0",
     "react-datepicker": "^2.14.1",
     "react-dom": "^16.13.1",
-    "react-draggable": "^4.2.0",
+    "react-draggable": "^4.3.0",
     "react-helmet-async": "^1.0.4",
     "react-hotkeys-hook": "^2.1.1",
     "react-icons": "^3.9.0",
