@@ -37,6 +37,7 @@ import { UserData } from "../../types"
 import ColorPicker from "./ColorPicker"
 import Error from "../common/Error"
 import MyThemeContext from "../../themeContext"
+import { MdTimeline } from "react-icons/md"
 
 const UserItem: React.FC<{ data?: UserData }> = ({ data }) => {
   const { themeColorWithShade, bgColor } = useContext(MyThemeContext)
@@ -151,6 +152,11 @@ export const SideNavContent: React.FC<SideNavProps> = ({ showLogo = true }) => {
             />
             <NavItem to="draft" icon={FaPeopleCarry} title="Draft Cup" />
             <NavItem to="xsearch" icon={FaListOl} title="Top 500 Browser" />
+            <NavItem
+              to="xtrends"
+              icon={MdTimeline}
+              title="Top 500 Tier Lists"
+            />
             {data?.user?.plus?.membership_status && (
               <NavItem to="plus" icon={FaPlus} title="Plus Server" />
             )}

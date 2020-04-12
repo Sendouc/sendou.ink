@@ -14,14 +14,14 @@ import {
   PopoverTrigger,
   PopoverContent,
   PopoverArrow,
-  Badge,
 } from "@chakra-ui/core"
 import WeaponImage from "../common/WeaponImage"
 import MyThemeContext from "../../themeContext"
 import ModeButtons from "./ModeButtons"
 import Select from "../elements/Select"
-import Button from "../elements/Button"
-import { FaChartLine } from "react-icons/fa"
+import WeaponLineChart from "./WeaponLineChart"
+import { Helmet } from "react-helmet-async"
+import Alert from "../elements/Alert"
 
 const tiers = [
   {
@@ -72,7 +72,7 @@ const tiers = [
 ] as const
 
 const XTrendsPage: React.FC<RouteComponentProps> = () => {
-  const { grayWithShade, darkerBgColor, themeColor } = useContext(
+  const { grayWithShade, darkerBgColor, themeColorWithShade } = useContext(
     MyThemeContext
   )
   const { data, error, loading } = useQuery<XTrendsData>(X_TRENDS)
@@ -124,26 +124,33 @@ const XTrendsPage: React.FC<RouteComponentProps> = () => {
     return weapons.indexOf(a.name) - weapons.indexOf(b.name)
   })
 
+  const xRankMonths = Object.keys(weaponMonths).sort((a, b) => {
+    const partsA = a.split(" ")
+    const partsB = b.split(" ")
+    if (partsA[1] !== partsB[1]) {
+      return parseInt(partsB[1]) - parseInt(partsA[1])
+    }
+
+    return months.indexOf(partsB[0] as any) - months.indexOf(partsA[0] as any)
+  })
+
   return (
     <>
-      <PageHeader title="X Trends" />
+      <PageHeader title="Top 500 Tier Lists" />
+      <Helmet>
+        <title>Top 500 Tier Lists | sendou.ink</title>
+      </Helmet>
+      <Box my="1em">
+        <Alert status="info">
+          Here you can find X Rank Top 500 usage tier lists. For example for a
+          weapon to be in the X tier it needs at least 30 placements in that
+          mode that month.
+        </Alert>
+      </Box>
       <Select
         value={month}
         setValue={(value) => setMonth(value)}
-        options={Object.keys(weaponMonths)
-          .sort((a, b) => {
-            const partsA = a.split(" ")
-            const partsB = b.split(" ")
-            if (partsA[1] !== partsB[1]) {
-              return parseInt(partsB[1]) - parseInt(partsA[1])
-            }
-
-            return (
-              months.indexOf(partsB[0] as any) -
-              months.indexOf(partsA[0] as any)
-            )
-          })
-          .map((month) => ({ label: month, value: month }))}
+        options={xRankMonths.map((month) => ({ label: month, value: month }))}
       />
       <Box my="1em">
         <ModeButtons mode={mode} setMode={setMode} />
@@ -154,7 +161,7 @@ const XTrendsPage: React.FC<RouteComponentProps> = () => {
             flexDir="column"
             w="80px"
             minH="100px"
-            padding="10px"
+            px="10px"
             borderRight="5px solid"
             borderColor={tier.color}
             marginRight="1em"
@@ -164,10 +171,16 @@ const XTrendsPage: React.FC<RouteComponentProps> = () => {
               {tier.label}
             </Box>
             <Box color={grayWithShade}>
-              {tier.criteria === 0.002 ? "At least 1" : `${tier.criteria}%`}
+              {tier.criteria === 0.002 ? ">0%" : `${tier.criteria}%`}
             </Box>
           </Flex>
-          <Flex flexDir="row" flex={1} flexWrap="wrap" alignItems="center">
+          <Flex
+            flexDir="row"
+            flex={1}
+            flexWrap="wrap"
+            alignItems="center"
+            py="1em"
+          >
             {weaponsOrdered
               .filter((weapon) => {
                 const previousCriteria =
@@ -179,9 +192,9 @@ const XTrendsPage: React.FC<RouteComponentProps> = () => {
                 )
               })
               .map((weapon) => (
-                <Popover key={weapon.name} placement="top-start">
+                <Popover key={weapon.name} placement="top-start" usePortal>
                   <PopoverTrigger>
-                    <Box mx="0.25em">
+                    <Box m="0.5em" cursor="pointer">
                       <WeaponImage
                         englishName={weapon.name}
                         size="MEDIUM"
@@ -191,20 +204,27 @@ const XTrendsPage: React.FC<RouteComponentProps> = () => {
                   </PopoverTrigger>
                   <PopoverContent zIndex={4} p="0.5em" bg={darkerBgColor}>
                     <PopoverArrow />
-                    <Flex
-                      justifyContent="space-evenly"
-                      alignItems="center"
-                      mr="0.5em"
-                    >
-                      <Flex alignItems="center">
-                        <Badge variantColor={themeColor} mr="0.5em">
-                          {weapon.amount}
-                        </Badge>
-                        {weapon.name}{" "}
-                      </Flex>
-                      <Box>
-                        <Button icon={FaChartLine}>Add to chart</Button>
+                    <Flex flexDir="column" alignItems="center">
+                      <Box
+                        as="span"
+                        borderBottom="2px solid"
+                        borderColor={themeColorWithShade}
+                        fontWeight="bolder"
+                        fontSize="1.2em"
+                        mb="0.5em"
+                        textAlign="center"
+                      >
+                        {weapon.name} ({mode})
                       </Box>
+                      <WeaponLineChart
+                        counts={
+                          data!.xTrends.find(
+                            (weaponObj) => weaponObj.weapon === weapon.name
+                          )!.counts
+                        }
+                        mode={mode}
+                        lastMonthYear={xRankMonths[0]}
+                      />
                     </Flex>
                   </PopoverContent>
                 </Popover>

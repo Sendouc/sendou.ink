@@ -22,6 +22,7 @@
     "@types/react-infinite-scroller": "^1.2.1",
     "@types/react-paginate": "^6.2.1",
     "@types/react-select": "^3.0.11",
+    "@types/recharts": "^1.8.9",
     "@types/webpack-env": "^1.15.1",
     "apollo-boost": "^0.4.7",
     "emotion-theming": "^10.0.27",
@@ -44,6 +45,7 @@
     "react-string-replace": "^0.4.4",
     "react-super-responsive-table": "^5.1.1",
     "react-tweet-embed": "^1.2.2",
+    "recharts": "^1.8.5",
     "source-map-explorer": "^2.4.2",
     "typescript": "^3.8.3",
     "use-query-params": "^0.6.0"

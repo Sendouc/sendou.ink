@@ -2,7 +2,7 @@ import React from "react"
 import { Alert as ChakraAlert, AlertIcon, CloseButton } from "@chakra-ui/core"
 
 interface AlertProps {
-  children: string | string[]
+  children: string | string[] | JSX.Element | JSX.Element[]
   status: "error" | "success" | "warning" | "info"
   mt?: string
   onClose?: () => void
