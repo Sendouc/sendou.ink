@@ -26,6 +26,7 @@ import {
   FaDoorOpen,
   FaListOl,
   FaPeopleCarry,
+  FaSearch,
 } from "react-icons/fa"
 import Logo from "./Logo"
 import NavItem from "./NavItem"
@@ -144,6 +145,7 @@ export const SideNavContent: React.FC<SideNavProps> = ({ showLogo = true }) => {
             <NavItem to="plans" icon={FaMap} title="Map Planner" />
             <NavItem to="calendar" icon={FaCalendarAlt} title="Calendar" />
             <NavItem to="builds" icon={FaTshirt} title="Builds" />
+            <NavItem to="u" icon={FaSearch} title="User Search" />
             <NavItem to="freeagents" icon={FaUserSecret} title="Free Agents" />
             <NavItem
               to="tournaments"

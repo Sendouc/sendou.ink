@@ -7,6 +7,7 @@ import AdminPage from "../admin/AdminPage"
 
 const HomePage = lazy(() => import("../home/HomePage"))
 const UserPage = lazy(() => import("../user/UserPage"))
+const UserSearchPage = lazy(() => import("../usersearch/UserSearchPage"))
 const MarkdownHelpPage = lazy(() => import("../markdown/MarkdownHelpPage"))
 const BuildsPage = lazy(() => import("../builds/BuildsPage"))
 const CalendarPage = lazy(() => import("../calendar/CalendarPage"))
@@ -37,6 +38,7 @@ const Routes: React.FC = () => {
           <HomePage path="/" />
           <AdminPage path="/admin" />
           <UserPage path="/u/:id" />
+          <UserSearchPage path="/u" />
           <MarkdownHelpPage path="/markdown" />
           <TeamPage path="/t/:name" />
           <BuildsPage path="/builds" />

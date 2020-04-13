@@ -16,6 +16,7 @@ interface InputProps {
   required?: boolean
   disabled?: boolean
   textLeft?: string
+  size?: "sm" | "md" | "lg"
 }
 
 const Input: React.FC<InputProps> = ({
@@ -26,6 +27,7 @@ const Input: React.FC<InputProps> = ({
   disabled,
   limit,
   textLeft,
+  size,
 }) => {
   const { themeColorHex, grayWithShade, darkerBgColor } = useContext(
     MyThemeContext
@@ -47,6 +49,7 @@ const Input: React.FC<InputProps> = ({
           _hover={{}}
           background={darkerBgColor}
           borderColor="#CCCCCC"
+          size={size}
         />
       </InputGroup>
       {limit && (
