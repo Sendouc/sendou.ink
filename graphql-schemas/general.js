@@ -11,7 +11,6 @@ const typeDef = gql`
   type Stats {
     build_count: Int!
     fa_count: Int!
-    # top500_count: Int!
     user_count: Int!
     tournament_count: Int!
   }
