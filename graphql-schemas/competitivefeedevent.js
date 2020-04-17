@@ -36,13 +36,11 @@ const typeDef = gql`
 const resolvers = {
   Mutation: {
     addCompetitiveFeedEvent: async (root, args, ctx) => {
-      console.log("args", args)
       if (args.lohiToken !== process.env.LOHI_TOKEN) {
         throw new UserInputError("Invalid token provided")
       }
-      console.log("jaa")
 
-      const user = await User.find({ discord_id: args.poster_discord_id })
+      const user = await User.findOne({ discord_id: args.poster_discord_id })
       if (!user) {
         const newUser = new User({
           discord_id: ctx.poster_discord_id,
