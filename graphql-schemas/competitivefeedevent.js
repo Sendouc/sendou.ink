@@ -40,7 +40,9 @@ const resolvers = {
         throw new UserInputError("Invalid token provided")
       }
 
-      const user = await User.findOne({ discord_id: args.poster_discord_id })
+      const user = await User.findOne({
+        discord_id: args.event.poster_discord_id,
+      })
       if (!user) {
         const newUser = new User({
           discord_id: ctx.poster_discord_id,
