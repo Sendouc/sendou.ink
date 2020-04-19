@@ -78,7 +78,7 @@ const resolvers = {
         .sort({ topTotalScore: "desc" })
         .limit(args.amount)
         .populate("topTotal", { unique_id: 0 })
-        .catch(e => {
+        .catch((e) => {
           throw new UserInputError(e.message, {
             invalidArgs: args,
           })
@@ -245,7 +245,7 @@ const resolvers = {
 
       const player = await Player.findOne({
         unique_id: args.unique_id.trim(),
-      }).catch(e => {
+      }).catch((e) => {
         throw new UserInputError(e.message, {
           invalidArgs: args,
         })
@@ -266,7 +266,7 @@ const resolvers = {
 
       const user = await User.findOne({
         twitter_name,
-      }).catch(e => {
+      }).catch((e) => {
         throw new UserInputError(e.message, {
           invalidArgs: args,
         })
@@ -287,18 +287,26 @@ const resolvers = {
     },
   },
   Player: {
-    discord_id: async root => {
+    discord_id: async (root) => {
       if (!root.twitter) return null
+      if (root.discord_id) return root.discord_id
       const user = await User.findOne({ twitter_name: root.twitter }).catch(
-        e => {
-          throw (new UserInputError(),
-          {
-            invalidArgs: args,
-          })
+        (e) => {
+          throw (
+            (new UserInputError(),
+            {
+              invalidArgs: args,
+            })
+          )
         }
       )
 
       if (!user) return null
+
+      await Player.updateOne(
+        { twitter: root.twitter },
+        { $set: { discord_id: user.discord_id } }
+      )
 
       return user.discord_id
     },

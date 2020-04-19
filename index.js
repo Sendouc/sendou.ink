@@ -9,6 +9,7 @@ const cors = require("cors")
 const passport = require("passport")
 const DiscordStrategy = require("passport-discord").Strategy
 const User = require("./mongoose-models/user")
+const Player = require("./mongoose-models/player")
 const path = require("path")
 const schema = require("./schema")
 
@@ -28,7 +29,7 @@ passport.use(
       callbackURL,
       scope: ["identify", "connections"],
     },
-    function(accessToken, refreshToken, profile, cb) {
+    async function (accessToken, refreshToken, profile, cb) {
       const userToSave = {
         username: profile.username,
         discriminator: profile.discriminator,
@@ -45,11 +46,16 @@ passport.use(
         }
       }
 
-      User.updateOne(
+      await Player.updateOne(
+        { discord_id: userToSave.discord_id },
+        { $set: { twitter: userToSave.twitter_name } }
+      )
+
+      await User.updateOne(
         { discord_id: userToSave.discord_id },
         userToSave,
         { upsert: true },
-        function(err, user) {
+        function (err, user) {
           return cb(err, userToSave)
         }
       )
@@ -57,12 +63,12 @@ passport.use(
   )
 )
 
-passport.serializeUser(function(user, done) {
+passport.serializeUser(function (user, done) {
   done(null, user.discord_id)
 })
 
-passport.deserializeUser(function(discord_id, done) {
-  User.findOne({ discord_id }, function(err, user) {
+passport.deserializeUser(function (discord_id, done) {
+  User.findOne({ discord_id }, function (err, user) {
     done(err, user)
   })
 })
@@ -81,7 +87,7 @@ mongoose
   .then(() => {
     console.log(`connected to MongoDB (${dbName})`)
   })
-  .catch(error => {
+  .catch((error) => {
     console.log("error connection to MongoDB:", error.message)
   })
 
@@ -181,12 +187,12 @@ app.get(
   passport.authenticate("discord", {
     failureRedirect: "/404",
   }),
-  function(req, res) {
+  function (req, res) {
     res.redirect("/u/" + req.user.discord_id) // Successful auth
   }
 )
 
-app.get("/logout", function(req, res) {
+app.get("/logout", function (req, res) {
   req.logout()
   res.redirect("/")
 })

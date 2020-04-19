@@ -31,6 +31,7 @@ export const SEARCH_FOR_PLACEMENTS: DocumentNode = gql`
         mode
         player {
           twitter
+          discord_id
         }
       }
       pageCount

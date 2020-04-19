@@ -3,6 +3,7 @@ const mongoose = require("mongoose")
 const playerSchema = new mongoose.Schema({
   name: { type: String, required: true },
   unique_id: { type: String, unique: true, required: true },
+  discord_id: String,
   alias: String,
   twitter: String,
   weapons: [String],
