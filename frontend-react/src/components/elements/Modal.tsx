@@ -1,10 +1,10 @@
 import React, { useContext } from "react"
-import Box from "./Box"
 import MyThemeContext from "../../themeContext"
 import useBreakPoints from "../../hooks/useBreakPoints"
 import IconButton from "./IconButton"
 import { MdClose } from "react-icons/md"
 import { useEffect } from "react"
+import { Box, Flex } from "@chakra-ui/core"
 
 interface ModalProps {
   title: string
@@ -44,8 +44,7 @@ const Modal: React.FC<ModalProps> = ({ children, title, closeModal }) => {
         maxWidth="1100px"
       >
         <>
-          <Box
-            asFlex
+          <Flex
             justifyContent="space-between"
             alignItems="center"
             fontSize="24px"
@@ -56,7 +55,7 @@ const Modal: React.FC<ModalProps> = ({ children, title, closeModal }) => {
             {closeModal && (
               <IconButton icon={MdClose} onClick={() => closeModal()} />
             )}
-          </Box>
+          </Flex>
           {children}
         </>
       </Box>

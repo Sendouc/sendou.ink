@@ -7,6 +7,7 @@ import {
   PopoverContent,
   PopoverBody,
   Button,
+  Box,
   BoxProps,
 } from "@chakra-ui/core"
 import { Link } from "@reach/router"
@@ -19,7 +20,6 @@ import ViewAP from "./ViewAP"
 import MyThemeContext from "../../themeContext"
 import { Build } from "../../types"
 import Gears from "./Gears"
-import Box from "../elements/Box"
 
 interface BuildCardProps {
   build: Build

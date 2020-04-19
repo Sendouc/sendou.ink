@@ -5,9 +5,9 @@ import {
   NumberInputField,
   NumberIncrementStepper,
   NumberDecrementStepper,
+  Box,
 } from "@chakra-ui/core"
 import Label from "../elements/Label"
-import Box from "../elements/Box"
 import { useContext } from "react"
 import MyThemeContext from "../../themeContext"
 
@@ -28,7 +28,7 @@ const MotionInput: React.FC<MotionInputProps> = ({
       <Label>{label}</Label>
       <ChakraNumberInput
         value={value}
-        onChange={value => {
+        onChange={(value) => {
           const parsed = parseFloat(value.toString())
           if (
             [

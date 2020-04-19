@@ -16,9 +16,8 @@ import PageHeader from "../common/PageHeader"
 import { Helmet } from "react-helmet-async"
 import WeaponSelector from "../common/WeaponSelector"
 import RadioGroup from "../elements/RadioGroup"
-import Box from "../elements/Box"
 import { continents } from "../../utils/lists"
-import { Collapse, Flex } from "@chakra-ui/core"
+import { Collapse, Flex, Box } from "@chakra-ui/core"
 import Button from "../elements/Button"
 import { FaFilter } from "react-icons/fa"
 import FAPostModal from "./FAPostModal"
@@ -65,7 +64,7 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
   const faPosts = data!.freeAgentPosts
 
   const ownFAPost = faPosts.find(
-    post => post.discord_user.discord_id === userData!.user?.discord_id
+    (post) => post.discord_user.discord_id === userData!.user?.discord_id
   )
 
   const buttonText =

@@ -1,7 +1,6 @@
 import React, { useContext } from "react"
-import { Textarea } from "@chakra-ui/core"
+import { Textarea, Box } from "@chakra-ui/core"
 import Label from "./Label"
-import Box from "./Box"
 import MyThemeContext from "../../themeContext"
 
 interface TextAreaProps {

@@ -1,7 +1,7 @@
 import React from "react"
 import { Build, Ability } from "../../types"
 import AbilityIcon from "./AbilityIcon"
-import Box from "../elements/Box"
+import { Flex, Box } from "@chakra-ui/core"
 
 interface ViewSlotsProps {
   build: Partial<Build>
@@ -11,7 +11,7 @@ interface ViewSlotsProps {
 const ViewSlots: React.FC<ViewSlotsProps> = ({ build, onAbilityClick }) => {
   return (
     <>
-      <Box asFlex alignItems="center" justifyContent="center">
+      <Flex alignItems="center" justifyContent="center">
         {(
           build.headgear ??
           (["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"] as Ability[])
@@ -31,8 +31,8 @@ const ViewSlots: React.FC<ViewSlotsProps> = ({ build, onAbilityClick }) => {
             />
           </Box>
         ))}
-      </Box>
-      <Box asFlex alignItems="center" justifyContent="center" my="0.5em">
+      </Flex>
+      <Flex alignItems="center" justifyContent="center" my="0.5em">
         {(
           build.clothing ??
           (["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"] as Ability[])
@@ -54,8 +54,8 @@ const ViewSlots: React.FC<ViewSlotsProps> = ({ build, onAbilityClick }) => {
             />
           </Box>
         ))}
-      </Box>
-      <Box asFlex alignItems="center" justifyContent="center">
+      </Flex>
+      <Flex alignItems="center" justifyContent="center">
         {(
           build.shoes ??
           (["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"] as Ability[])
@@ -75,7 +75,7 @@ const ViewSlots: React.FC<ViewSlotsProps> = ({ build, onAbilityClick }) => {
             />
           </Box>
         ))}
-      </Box>
+      </Flex>
     </>
   )
 }

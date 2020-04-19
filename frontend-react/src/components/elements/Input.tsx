@@ -3,10 +3,10 @@ import {
   Input as ChakraInput,
   InputGroup,
   InputLeftAddon,
+  Box,
 } from "@chakra-ui/core"
 import MyThemeContext from "../../themeContext"
 import Label from "./Label"
-import Box from "./Box"
 
 interface InputProps {
   value?: string

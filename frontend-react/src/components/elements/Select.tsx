@@ -2,8 +2,8 @@ import React, { useContext, useState } from "react"
 import ReactSelect, { OptionsType, GroupedOptionsType } from "react-select"
 import MyThemeContext from "../../themeContext"
 import { SelectComponents } from "react-select/src/components"
-import Box from "./Box"
 import Label from "./Label"
+import { Box } from "@chakra-ui/core"
 
 interface SelectProps {
   options?:
@@ -56,7 +56,6 @@ const Select: React.FC<SelectProps> = ({
   isDisabled,
   isSearchable,
   hideMenuBeforeTyping,
-  width = "290px",
 }) => {
   const {
     colorMode,
@@ -73,7 +72,7 @@ const Select: React.FC<SelectProps> = ({
       return
     }
     if (Array.isArray(selectedOption)) {
-      setValue(selectedOption.map(obj => obj.value))
+      setValue(selectedOption.map((obj) => obj.value))
     } else {
       setValue(selectedOption?.value)
     }
@@ -83,7 +82,7 @@ const Select: React.FC<SelectProps> = ({
     if (typeof value === "string") {
       return { label: value, value: value }
     } else if (Array.isArray(value)) {
-      return value.map(weapon => ({ label: weapon, value: weapon }))
+      return value.map((weapon) => ({ label: weapon, value: weapon }))
     }
 
     return value
@@ -103,7 +102,7 @@ const Select: React.FC<SelectProps> = ({
         classNamePrefix="select"
         value={getValue()}
         inputValue={inputValue}
-        onInputChange={newValue => setInputValue(newValue)}
+        onInputChange={(newValue) => setInputValue(newValue)}
         menuIsOpen={
           hideMenuBeforeTyping ? !!(inputValue.length >= 3) : undefined
         }
@@ -127,7 +126,7 @@ const Select: React.FC<SelectProps> = ({
                 ...components,
               }
         }
-        theme={theme => ({
+        theme={(theme) => ({
           ...theme,
           borderRadius: 5,
           colors: {
@@ -140,18 +139,18 @@ const Select: React.FC<SelectProps> = ({
         })}
         autoFocus={autoFocus}
         styles={{
-          singleValue: base => ({
+          singleValue: (base) => ({
             ...base,
             padding: 5,
             borderRadius: 5,
             color: colorMode === "light" ? "black" : "white",
             display: "flex",
           }),
-          input: base => ({
+          input: (base) => ({
             ...base,
             color: colorMode === "light" ? "black" : "white",
           }),
-          multiValue: base => ({
+          multiValue: (base) => ({
             ...base,
             background: themeColorHexLighter,
             color: "black",

@@ -23,7 +23,6 @@ import {
   clothingOnlyAbilities,
   shoesOnlyAbilities,
 } from "../../utils/lists"
-import Box from "../elements/Box"
 import GearImage from "../builds/GearImage"
 import Input from "../elements/Input"
 import ViewSlots from "../builds/ViewSlots"
@@ -32,7 +31,7 @@ import TextArea from "../elements/TextArea"
 import Button from "../elements/Button"
 import { useMutation } from "@apollo/react-hooks"
 import { ADD_BUILD } from "../../graphql/mutations/addBuild"
-import { useToast } from "@chakra-ui/core"
+import { useToast, Box, Flex } from "@chakra-ui/core"
 import { UPDATE_BUILD } from "../../graphql/mutations/updateBuild"
 import { DELETE_BUILD } from "../../graphql/mutations/deleteBuild"
 
@@ -271,8 +270,8 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
       {build.weapon && (
         <WeaponImage englishName={build.weapon as Weapon} size="BIG" />
       )}
-      <Box asFlex mt="1em" justifyContent="space-between" flexWrap="wrap">
-        <Box asFlex flexDirection="column" alignItems="center">
+      <Flex mt="1em" justifyContent="space-between" flexWrap="wrap">
+        <Flex flexDirection="column" alignItems="center">
           <Box minW="275px">
             <Select
               label="Headgear"
@@ -301,8 +300,8 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
               <GearImage englishName={build.headgearItem} />
             </Box>
           )}
-        </Box>
-        <Box asFlex flexDirection="column" alignItems="center">
+        </Flex>
+        <Flex flexDirection="column" alignItems="center">
           <Box minW="275px">
             <Select
               label="Clothing"
@@ -331,8 +330,8 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
               <GearImage englishName={build.clothingItem} />
             </Box>
           )}
-        </Box>
-        <Box asFlex flexDirection="column" alignItems="center">
+        </Flex>
+        <Flex flexDirection="column" alignItems="center">
           <Box minW="275px">
             <Select
               label="Shoes"
@@ -361,8 +360,8 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
               <GearImage englishName={build.shoesItem} />
             </Box>
           )}
-        </Box>
-      </Box>
+        </Flex>
+      </Flex>
       <Box mt="1em">
         <Input
           value={build.title}

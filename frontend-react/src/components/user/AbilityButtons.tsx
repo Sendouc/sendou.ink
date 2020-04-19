@@ -1,9 +1,9 @@
 import React from "react"
 import { abilitiesGameOrder } from "../../utils/lists"
 import AbilityIcon from "../builds/AbilityIcon"
-import Box from "../elements/Box"
 import Label from "../elements/Label"
 import { Ability } from "../../types"
+import { Box, Flex } from "@chakra-ui/core"
 
 interface AbilityButtonsProps {
   onClick: (ability: Ability) => void
@@ -15,16 +15,10 @@ const AbilityButtons: React.FC<AbilityButtonsProps> = ({ onClick }) => {
       <Box my="1em" textAlign="center">
         <Label>Main only abilities (click to select)</Label>
       </Box>
-      <Box
-        asFlex
-        flexWrap="wrap"
-        justifyContent="center"
-        maxW="340px"
-        mx="auto"
-      >
+      <Flex flexWrap="wrap" justifyContent="center" maxW="340px" mx="auto">
         {abilitiesGameOrder
           .slice(14, abilitiesGameOrder.length)
-          .map(ability => (
+          .map((ability) => (
             <Box
               m="0.3em"
               key={ability}
@@ -34,18 +28,12 @@ const AbilityButtons: React.FC<AbilityButtonsProps> = ({ onClick }) => {
               <AbilityIcon ability={ability} size="SUB" />
             </Box>
           ))}
-      </Box>
+      </Flex>
       <Box my="1em" textAlign="center">
         <Label>Stackable abilities</Label>
       </Box>
-      <Box
-        asFlex
-        flexWrap="wrap"
-        justifyContent="center"
-        maxW="350px"
-        mx="auto"
-      >
-        {abilitiesGameOrder.slice(0, 14).map(ability => (
+      <Flex flexWrap="wrap" justifyContent="center" maxW="350px" mx="auto">
+        {abilitiesGameOrder.slice(0, 14).map((ability) => (
           <Box
             m="0.3em"
             key={ability}
@@ -56,7 +44,7 @@ const AbilityButtons: React.FC<AbilityButtonsProps> = ({ onClick }) => {
             <AbilityIcon ability={ability} size="SUB" />
           </Box>
         ))}
-      </Box>
+      </Flex>
     </>
   )
 }

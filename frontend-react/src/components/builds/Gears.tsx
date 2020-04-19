@@ -1,7 +1,7 @@
 import React from "react"
 import { Build } from "../../types"
-import Box from "../elements/Box"
 import GearImage from "./GearImage"
+import { Flex, Box } from "@chakra-ui/core"
 
 interface GearsProps {
   build: Build
@@ -12,7 +12,7 @@ const Gears: React.FC<GearsProps> = ({ build }) => {
     return <Box h="30px" />
   }
   return (
-    <Box asFlex justifyContent="center">
+    <Flex justifyContent="center">
       <Box w={build.headgearItem ? "85px" : undefined} h="85px" mx="2px">
         <GearImage englishName={build.headgearItem} renderNullIfNoName />
       </Box>
@@ -22,7 +22,7 @@ const Gears: React.FC<GearsProps> = ({ build }) => {
       <Box w={build.shoesItem ? "85px" : undefined} h="85px" mx="2px">
         <GearImage englishName={build.shoesItem} renderNullIfNoName />
       </Box>
-    </Box>
+    </Flex>
   )
 }
 

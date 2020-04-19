@@ -6,8 +6,8 @@ import { HeadGear, ClothingGear, ShoesGear, Ability } from "../../types"
 import BuildFormModal from "./BuildFormModal"
 import Button from "../elements/Button"
 import Alert from "../elements/Alert"
-import Box from "../elements/Box"
 import BuildCard from "../builds/BuildCard"
+import { Box } from "@chakra-ui/core"
 
 interface BuildTabProps {
   builds: Build[]
@@ -62,7 +62,7 @@ const BuildTab: React.FC<BuildTabProps> = ({ builds, canModifyBuilds }) => {
         </Alert>
       )}
       <Box display="flex" flexWrap="wrap" mt="1em">
-        {builds.map(build => (
+        {builds.map((build) => (
           <BuildCard
             canModify={canModifyBuilds}
             setBuildBeingEdited={(build: Build) => {

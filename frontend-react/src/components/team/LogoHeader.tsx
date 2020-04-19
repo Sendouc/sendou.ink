@@ -1,10 +1,10 @@
 import React from "react"
 import UserAvatar from "../common/UserAvatar"
-import Box from "../elements/Box"
 import { useContext } from "react"
 import MyThemeContext from "../../themeContext"
 import { FaTwitter, FaTrophy, FaDiscord } from "react-icons/fa"
 import { months } from "../../utils/lists"
+import { Box } from "@chakra-ui/core"
 
 interface LogoHeaderProps {
   name: string

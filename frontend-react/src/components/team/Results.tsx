@@ -2,11 +2,10 @@ import React, { useContext } from "react"
 import Button from "../elements/Button"
 import { useState } from "react"
 import AddResultModal from "./AddResultModal"
-import Box from "../elements/Box"
 import { TournamentResult } from "../../types"
 import { medalEmoji } from "../../assets/imageImports"
 import MyThemeContext from "../../themeContext"
-import { IconButton } from "@chakra-ui/core"
+import { IconButton, Box } from "@chakra-ui/core"
 import { FaTwitter } from "react-icons/fa"
 import TweetEmbed from "react-tweet-embed"
 import useBreakPoints from "../../hooks/useBreakPoints"
@@ -39,7 +38,7 @@ const Results: React.FC<ResultsProps> = ({ results, canAddResults }) => {
         gridTemplateColumns={isSmall ? "repeat(3, 1fr)" : "repeat(4, 1fr)"}
         gridRowGap="1em"
       >
-        {results.map(result => {
+        {results.map((result) => {
           return (
             <React.Fragment key={result.tournament_name}>
               {result.placement < 4 ? (

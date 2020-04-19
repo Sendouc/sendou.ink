@@ -1,7 +1,6 @@
 import React, { useContext } from "react"
-import { RadioGroup as ChakraRadioGroup, Radio } from "@chakra-ui/core"
+import { RadioGroup as ChakraRadioGroup, Radio, Box } from "@chakra-ui/core"
 import MyThemeContext from "../../themeContext"
-import Box from "./Box"
 
 interface RadioGroupProps {
   options: string[]
@@ -27,10 +26,10 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
       <ChakraRadioGroup
         spacing={5}
         isInline
-        onChange={e => setValue(e.target.value)}
+        onChange={(e) => setValue(e.target.value)}
         value={value}
       >
-        {options.map(option => (
+        {options.map((option) => (
           <Radio
             key={option}
             variantColor={themeColor}

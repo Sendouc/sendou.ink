@@ -1,11 +1,10 @@
 import React, { useState, useContext } from "react"
-import { Link, Image } from "@chakra-ui/core"
+import { Link, Image, Box } from "@chakra-ui/core"
 import { Link as ReachLink } from "@reach/router"
 import { footerSquid, footerOcto } from "../../assets/imageImports"
 import MyThemeContext from "../../themeContext"
 import { FaTwitter, FaGithub, FaDiscord, FaTwitch } from "react-icons/fa"
 import useBreakPoints from "../../hooks/useBreakPoints"
-import Box from "../elements/Box"
 import IconButton from "../elements/IconButton"
 
 const Footer: React.FC = () => {

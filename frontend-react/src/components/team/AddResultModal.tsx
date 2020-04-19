@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react"
 import Modal from "../elements/Modal"
-import Box from "../elements/Box"
 import { TournamentResult } from "../../types"
 import Input from "../elements/Input"
 import { useMutation } from "@apollo/react-hooks"
-import { useToast } from "@chakra-ui/core"
+import { useToast, Box } from "@chakra-ui/core"
 import { ADD_RESULT } from "../../graphql/mutations/addResult"
 import TweetEmbed from "react-tweet-embed"
 import DatePicker from "../elements/DatePicker"
@@ -37,7 +36,7 @@ const AddResultModal: React.FC<AddResultModalProps> = ({ closeModal }) => {
         duration: 10000,
       })
     },
-    onError: error => {
+    onError: (error) => {
       toast({
         title: "An error occurred",
         description: error.message,
@@ -76,21 +75,21 @@ const AddResultModal: React.FC<AddResultModalProps> = ({ closeModal }) => {
           <Input
             label="Tournament name"
             value={result.tournament_name}
-            setValue={value => handleChange({ tournament_name: value })}
+            setValue={(value) => handleChange({ tournament_name: value })}
           />
         </Box>
         <Box mt="1em">
           <Label>Date</Label>
           <DatePicker
             date={result.date ? new Date(result.date) : new Date()}
-            setDate={value => handleChange({ date: value?.toString() })}
+            setDate={(value) => handleChange({ date: value?.toString() })}
           />
         </Box>
         <Box mt="1em">
           <Input
             label="Tweet id"
             value={result.tweet_id}
-            setValue={value => handleChange({ tweet_id: value })}
+            setValue={(value) => handleChange({ tweet_id: value })}
             textLeft="https://twitter.com/.../status/"
           />
         </Box>
@@ -106,7 +105,7 @@ const AddResultModal: React.FC<AddResultModalProps> = ({ closeModal }) => {
       <Box mt="1em">
         <PlacementInput
           value={result.placement}
-          onChange={value => handleChange({ placement: value })}
+          onChange={(value) => handleChange({ placement: value })}
         />
       </Box>
       <Box mt="1em">

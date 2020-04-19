@@ -1,6 +1,5 @@
 import React from "react"
 import { Weapon, CountryCode } from "../../types"
-import Box from "../elements/Box"
 import { useContext } from "react"
 import MyThemeContext from "../../themeContext"
 import { Link } from "@reach/router"
@@ -8,6 +7,7 @@ import UserAvatar from "../common/UserAvatar"
 import WeaponImage from "../common/WeaponImage"
 import Flag from "../common/Flag"
 import { countries } from "../../utils/lists"
+import { Box } from "@chakra-ui/core"
 
 interface MemberCardProps {
   member: {
@@ -54,11 +54,11 @@ const MemberCard: React.FC<MemberCardProps> = ({ member }) => {
         {member.country && (
           <Box mt="0.5em" display="flex" alignItems="center">
             <Flag code={member.country} />
-            {countries.find(obj => obj.code === member.country)?.name}
+            {countries.find((obj) => obj.code === member.country)?.name}
           </Box>
         )}
         <Box display="flex" mt="0.5em">
-          {member.weapons.map(wpn => (
+          {member.weapons.map((wpn) => (
             <Box mx="0.3em" key={wpn}>
               <WeaponImage englishName={wpn} size="SMALL" />
             </Box>

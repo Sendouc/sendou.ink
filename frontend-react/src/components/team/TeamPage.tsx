@@ -7,10 +7,10 @@ import Loading from "../common/Loading"
 import Error from "../common/Error"
 import LogoHeader from "./LogoHeader"
 import MemberCard from "./MemberCard"
-import Box from "../elements/Box"
 import { Helmet } from "react-helmet-async"
 import Results from "./Results"
 import { USER } from "../../graphql/queries/user"
+import { Box } from "@chakra-ui/core"
 
 interface SearchForTeamData {
   searchForTeam: Team
@@ -58,7 +58,7 @@ const TeamPage: React.FC<RouteComponentProps & TeamPageProps> = ({ name }) => {
         founded={team.founded}
       />
       <Box display="flex" flexWrap="wrap" justifyContent="center" mt="1em">
-        {team.member_users.map(member => (
+        {team.member_users.map((member) => (
           <Box key={member.discord_id} p="0.5em">
             <MemberCard member={member} />
           </Box>

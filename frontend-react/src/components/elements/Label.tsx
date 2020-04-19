@@ -1,5 +1,5 @@
 import React from "react"
-import Box from "./Box"
+import { Box } from "@chakra-ui/core"
 
 interface LabelProps {
   required?: boolean
