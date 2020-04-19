@@ -45,9 +45,9 @@ const resolvers = {
       })
       if (!user) {
         const newUser = new User({
-          discord_id: ctx.poster_discord_id,
-          username: args.poster_username,
-          discriminator: args.poster_discriminator,
+          discord_id: args.event.poster_discord_id,
+          username: args.event.poster_username,
+          discriminator: args.event.poster_discriminator,
         })
         await newUser.save()
       }
