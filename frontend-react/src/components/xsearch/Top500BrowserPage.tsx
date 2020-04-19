@@ -4,7 +4,11 @@ import { useQueryParams, StringParam, NumberParam } from "use-query-params"
 
 import Loading from "../common/Loading"
 import Error from "../common/Error"
-import { SEARCH_FOR_PLACEMENTS } from "../../graphql/queries/searchForPlacements"
+import {
+  SEARCH_FOR_PLACEMENTS,
+  SearchForPlacementsData,
+  SearchForPlacementsVars,
+} from "../../graphql/queries/searchForPlacements"
 import WpnImage from "../common/WeaponImage"
 import { months, modesShort } from "../../utils/lists"
 import { RouteComponentProps } from "@reach/router"
@@ -23,38 +27,6 @@ import Top500Forms from "./Top500Forms"
 import PageHeader from "../common/PageHeader"
 import Button from "../elements/Button"
 import Alert from "../elements/Alert"
-
-interface Placement {
-  id: string
-  mode: number
-  name: string
-  player?: {
-    twitter: string
-  }
-  rank: number
-  unique_id: string
-  weapon: string
-  x_power: number
-  month: number
-  year: number
-}
-
-interface SearchForPlacementsData {
-  searchForPlacements: {
-    placements: Placement[]
-    pageCount: number
-  }
-}
-
-interface SearchForPlacementsVars {
-  page?: number
-  name?: string
-  weapon?: string
-  mode?: number
-  unique_id?: string
-  month?: number
-  year?: number
-}
 
 const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
   const { themeColorWithShade } = useContext(MyThemeContext)
