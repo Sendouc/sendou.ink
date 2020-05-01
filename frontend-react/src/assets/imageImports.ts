@@ -72,9 +72,7 @@ import rig from "./Splatoon1Maps/rig.png"
 import underpass from "./Splatoon1Maps/underpass.png"
 
 //https://stackoverflow.com/questions/42118296/dynamically-import-images-from-a-directory-using-webpack
-export const wpnMedium: object = importAll(
-  require.context("./wpnMedium", false)
-)
+export const weapons: object = importAll(require.context("./weapons", false))
 
 function importAll(r: __WebpackModuleApi.RequireContext) {
   const images: any = {}

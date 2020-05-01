@@ -48,7 +48,7 @@
     "recharts": "^1.8.5",
     "source-map-explorer": "^2.4.2",
     "typescript": "^3.8.3",
-    "use-query-params": "^1.1.2"
+    "use-query-params": "^0.6.0"
   },
   "scripts": {
     "start": "react-scripts start",

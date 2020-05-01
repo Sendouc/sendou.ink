@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react"
 import { SketchField, Tools } from "@sendou/react-sketch"
 import { CirclePicker } from "react-color"
 import weaponDict from "../../utils/english_internal.json"
-import { wpnMedium } from "../../assets/imageImports"
+import { weapons } from "../../assets/imageImports"
 import DraggableToolsSelector from "./DraggableToolsSelector"
 import useBreakPoints from "../../hooks/useBreakPoints"
 import { Helmet } from "react-helmet-async"
@@ -71,7 +71,7 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
   }, [sketch])
 
   const addImageToSketch = (weapon: Weapon) => {
-    const wpnDict: any = wpnMedium
+    const wpnDict: any = weapons
     sketch.addImg(wpnDict[weaponDict[weapon]])
     setTool(Tools.Select)
   }
@@ -142,7 +142,7 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
     }
     const fileObj = fileInput.current.files[0]
     const reader = new FileReader()
-    reader.onload = function(event) {
+    reader.onload = function (event) {
       const jsonObj = JSON.parse(event.target!.result as any)
       setControlledValue(jsonObj)
     }
@@ -175,7 +175,7 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
       />
       <Box ml="950px">
         <DraggableWeaponSelector
-          addWeaponImage={weapon => addImageToSketch(weapon)}
+          addWeaponImage={(weapon) => addImageToSketch(weapon)}
         />
       </Box>
       {isSmall && (
@@ -252,7 +252,7 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
         <CirclePicker
           color={color}
           width="220px"
-          onChangeComplete={newColor => setColor(newColor.hex)}
+          onChangeComplete={(newColor) => setColor(newColor.hex)}
           colors={[
             "#f44336",
             "#e91e63",

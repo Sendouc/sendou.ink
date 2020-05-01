@@ -1,7 +1,7 @@
 import React from "react"
 
 import english_internal from "../../utils/english_internal.json"
-import { wpnMedium } from "../../assets/imageImports"
+import { weapons } from "../../assets/imageImports"
 import { Weapon } from "../../types.js"
 
 interface WeaponImageProps {
@@ -23,7 +23,7 @@ const WeaponImage: React.FC<WeaponImageProps> = ({
   asInlineBlock,
   noTitle,
 }) => {
-  const dictToUse: any = wpnMedium
+  const dictToUse: any = weapons
   const wh = sizeWhMap[size]
   return (
     <img
