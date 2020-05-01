@@ -3,18 +3,18 @@ import React, { useContext } from "react"
 import { SideNavContent } from "./SideNavContent"
 import MyThemeContext from "../../themeContext"
 
-const shadow = {
-  light: "0px 1px 10px 8px rgba(0,0,0,0.15)",
-  dark: "0px 1px 10px 8px rgba(255,255,255,0.04)",
-} as const
-
 const SideNav = () => {
-  const { darkerBgColor, themeColorHexLighter } = useContext(MyThemeContext)
+  const {
+    darkerBgColor,
+    themeColorHex,
+    themeColorHexLighter,
+    colorMode,
+  } = useContext(MyThemeContext)
   return (
     <Box
       bg={darkerBgColor}
-      borderRight="1px solid"
-      borderColor={themeColorHexLighter}
+      borderRight="2px solid"
+      borderColor={colorMode === "light" ? themeColorHex : themeColorHexLighter}
       height="100%"
       width="250px"
       position="fixed"
