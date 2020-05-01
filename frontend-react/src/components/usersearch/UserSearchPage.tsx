@@ -72,7 +72,7 @@ const UserSearchPage: React.FC<RouteComponentProps> = () => {
       />
       <Box>
         {usersSliced.map((user) => (
-          <Link to={`/u/${user.discord_id}`}>
+          <Link key={user.discord_id} to={`/u/${user.discord_id}`}>
             <PseudoBox
               borderRadius="5px"
               p="10px"

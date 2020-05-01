@@ -67,7 +67,14 @@ const Stats: React.FC = () => {
             </Box>
           </Link>
         </Box>
-        <Box mb="0.5em">{getStatString(stats.user_count)} users</Box>
+        <Box mb="0.5em">
+          {getStatString(stats.user_count)}{" "}
+          <Link to="/u">
+            <Box as="span" color={themeColorWithShade}>
+              users
+            </Box>
+          </Link>{" "}
+        </Box>
         <Box mb="0.5em">
           {getStatString(stats.fa_count)}{" "}
           <Link to="/freeagents">

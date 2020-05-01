@@ -11,7 +11,6 @@ import {
   BoxProps,
 } from "@chakra-ui/core"
 import { Link } from "@reach/router"
-import { FaInfo } from "react-icons/fa"
 
 import WeaponImage from "../common/WeaponImage"
 import { top500 } from "../../assets/imageImports"

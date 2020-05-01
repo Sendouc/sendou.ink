@@ -45,23 +45,23 @@ const Links: React.FC<RouteComponentProps> = () => {
         <title>Links | sendou.ink</title>
       </Helmet>
       <PageHeader title="Links" />
-      <Heading size="lg" mb="0.5em">
+      <Heading size="lg" mb="0.5em" fontFamily="'Rubik', sans-serif">
         Guides
       </Heading>
       <Flex flexDirection="column">
-        {links.filter(link => link.type === "GUIDE").map(linkMap)}
+        {links.filter((link) => link.type === "GUIDE").map(linkMap)}
       </Flex>
-      <Heading size="lg" mb="0.5em">
+      <Heading size="lg" mb="0.5em" fontFamily="'Rubik', sans-serif">
         Discord
       </Heading>
       <Flex flexDirection="column">
-        {links.filter(link => link.type === "DISCORD").map(linkMap)}
+        {links.filter((link) => link.type === "DISCORD").map(linkMap)}
       </Flex>
-      <Heading size="lg" mb="0.5em">
+      <Heading size="lg" mb="0.5em" fontFamily="'Rubik', sans-serif">
         Misc
       </Heading>
       <Flex flexDirection="column">
-        {links.filter(link => link.type === "MISC").map(linkMap)}
+        {links.filter((link) => link.type === "MISC").map(linkMap)}
       </Flex>
     </>
   )

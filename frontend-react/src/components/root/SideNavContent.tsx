@@ -15,19 +15,11 @@ import {
 } from "@chakra-ui/core"
 import { Link } from "@reach/router"
 import {
-  FaPlus,
-  FaTrophy,
-  FaSignInAlt,
-  FaUserAlt,
-  FaDoorOpen,
-} from "react-icons/fa"
-import {
   FiSun,
   FiMoon,
   FiMap,
   FiCalendar,
   FiUsers,
-  FiUserPlus,
   FiAward,
   FiFolderPlus,
   FiSearch,
@@ -36,6 +28,7 @@ import {
   FiUser,
   FiPlus,
   FiShoppingCart,
+  FiLogIn,
 } from "react-icons/fi"
 import { RiTShirt2Line } from "react-icons/ri"
 import Logo from "./Logo"
@@ -48,7 +41,6 @@ import { UserData } from "../../types"
 import ColorPicker from "./ColorPicker"
 import Error from "../common/Error"
 import MyThemeContext from "../../themeContext"
-import { MdTimeline } from "react-icons/md"
 
 const UserItem: React.FC<{ data?: UserData }> = ({ data }) => {
   const { themeColorWithShade, bgColor } = useContext(MyThemeContext)
@@ -72,7 +64,7 @@ const UserItem: React.FC<{ data?: UserData }> = ({ data }) => {
               }}
             >
               <ListIcon
-                icon={FaSignInAlt}
+                icon={FiLogIn}
                 color={themeColorWithShade}
                 size="1.5em"
               />{" "}

@@ -1,11 +1,9 @@
 import React, { useState, useContext } from "react"
-import { Link, Image, Box, Flex } from "@chakra-ui/core"
-import { Link as ReachLink } from "@reach/router"
+import { Image, Box, Flex } from "@chakra-ui/core"
+import { Link } from "@reach/router"
 import { footerSquid, footerOcto } from "../../assets/imageImports"
 import MyThemeContext from "../../themeContext"
 import { FaTwitter, FaGithub, FaDiscord, FaTwitch } from "react-icons/fa"
-import useBreakPoints from "../../hooks/useBreakPoints"
-import IconButton from "../elements/IconButton"
 
 const Footer: React.FC = () => {
   const [footerBojoing] = useState(
@@ -38,12 +36,10 @@ const Footer: React.FC = () => {
         justifyContent="space-between"
       >
         <Flex flexWrap="wrap" justifyContent="space-between">
-          <Link href="/about">
-            <a style={{ marginRight: "1em" }}>About</a>
-          </Link>
-          <Link href="/links">
-            <a>External links</a>
-          </Link>
+          <Box mr="1em">
+            <Link to="/about">About</Link>
+          </Box>
+          <Link to="/links">External links</Link>
         </Flex>
         <Flex alignItems="center" flexWrap="wrap" justifyContent="center">
           <a href="https://discord.gg/J6NqUvt">
