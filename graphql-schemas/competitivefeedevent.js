@@ -3,6 +3,9 @@ const User = require("../mongoose-models/user")
 const CompetitiveFeedEvent = require("../mongoose-models/competitivefeedevent")
 
 const typeDef = gql`
+  extend type Query {
+    upcomingEvents: [CompetitiveFeedEvent!]!
+  }
   extend type Mutation {
     addCompetitiveFeedEvent(
       event: CompetitiveFeedEventInput!
@@ -14,6 +17,7 @@ const typeDef = gql`
     date: String!
     description: String!
     poster_discord_id: String!
+    poster_discord_user: User!
     message_discord_id: String!
     message_url: String!
     discord_invite_url: String!
@@ -34,8 +38,15 @@ const typeDef = gql`
   }
 `
 const resolvers = {
+  Query: {
+    upcomingEvents: () => {
+      return CompetitiveFeedEvent.find({ date: { $gte: new Date() } })
+        .sort({ date: "asc" })
+        .populate("poster_discord_user")
+    },
+  },
   Mutation: {
-    addCompetitiveFeedEvent: async (root, args, ctx) => {
+    addCompetitiveFeedEvent: async (_root, args) => {
       if (args.lohiToken !== process.env.LOHI_TOKEN) {
         throw new UserInputError("Invalid token provided")
       }

@@ -15,6 +15,7 @@ competitiveFeedEventSchema.virtual("poster_discord_user", {
   ref: "User",
   localField: "poster_discord_id",
   foreignField: "discord_id",
+  justOne: true,
 })
 
 module.exports = mongoose.model(
