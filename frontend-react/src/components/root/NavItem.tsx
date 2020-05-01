@@ -29,7 +29,6 @@ const NavItem: React.FC<NavItemProps> = ({ to, icon, title }) => {
           px="2"
           py="1"
           transition="all 0.2s"
-          fontFamily="'Rubik', cursive"
           fontSize="1.1em"
           outline="none"
           _focus={{ shadow: "outline" }}

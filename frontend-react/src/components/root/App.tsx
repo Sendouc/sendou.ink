@@ -1,4 +1,5 @@
-import React from "react"
+import React, { useEffect } from "react"
+import "./App.css"
 import { Box, useColorMode, useTheme as useChakraTheme } from "@chakra-ui/core"
 
 import { MenuBar } from "./MenuBar"
@@ -9,7 +10,6 @@ import { ThemeColor } from "../../types"
 import { MyThemeProvider } from "../../themeContext"
 import { Theme } from "../../types"
 import Footer from "./Footer"
-import { useEffect } from "react"
 
 const App: React.FC = () => {
   const chakraTheme = useChakraTheme()
@@ -63,7 +63,6 @@ const App: React.FC = () => {
         color={theme[colorMode].textColor}
         bg={theme[colorMode].bgColor}
         minH="100vh"
-        fontFamily="'Montserrat', sans-serif"
         pb="20px"
       >
         <SideNav />

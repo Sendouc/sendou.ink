@@ -17,7 +17,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({ title }) => {
         borderLeftWidth="5px"
         pl="5px"
         mb="0.5em"
-        fontFamily="'Rubik', cursive"
+        fontFamily="'Rubik', sans-serif"
         fontWeight="bold"
       >
         {title}

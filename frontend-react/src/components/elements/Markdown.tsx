@@ -136,7 +136,7 @@ const Markdown: React.FC<MarkdownProps> = ({ value }) => {
             my={4}
             size="lg"
             {...getCoreProps(props)}
-            fontFamily="'Rubik', cursive"
+            fontFamily="'Rubik', sans-serif"
           >
             {children}
           </Heading>

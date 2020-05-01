@@ -28,13 +28,7 @@ const LogoHeader: React.FC<LogoHeaderProps> = ({
   return (
     <Box display="flex" flexDirection="column" alignItems="center">
       <UserAvatar name={name} twitterName={twitter_name} size="2xl" />
-      <Box
-        fontFamily="'Pacifico', cursive"
-        fontWeight="light"
-        fontSize="48px"
-        w="100%"
-        textAlign="center"
-      >
+      <Box fontWeight="light" fontSize="48px" w="100%" textAlign="center">
         {name}
       </Box>
       {founded && (
