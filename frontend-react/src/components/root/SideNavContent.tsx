@@ -15,19 +15,29 @@ import {
 } from "@chakra-ui/core"
 import { Link } from "@reach/router"
 import {
-  FaTshirt,
-  FaCalendarAlt,
-  FaMap,
   FaPlus,
   FaTrophy,
-  FaUserSecret,
   FaSignInAlt,
   FaUserAlt,
   FaDoorOpen,
-  FaListOl,
-  FaPeopleCarry,
-  FaSearch,
 } from "react-icons/fa"
+import {
+  FiSun,
+  FiMoon,
+  FiMap,
+  FiCalendar,
+  FiUsers,
+  FiUserPlus,
+  FiAward,
+  FiFolderPlus,
+  FiSearch,
+  FiBarChart2,
+  FiLogOut,
+  FiUser,
+  FiPlus,
+  FiShoppingCart,
+} from "react-icons/fi"
+import { RiTShirt2Line } from "react-icons/ri"
 import Logo from "./Logo"
 import NavItem from "./NavItem"
 import { useQuery } from "@apollo/react-hooks"
@@ -92,7 +102,7 @@ const UserItem: React.FC<{ data?: UserData }> = ({ data }) => {
         >
           <MenuItem>
             <Flex alignItems="center" justifyContent="center">
-              <Box as={FaUserAlt} w="24px" h="auto" mr="1em" />{" "}
+              <Box as={FiUser} w="24px" h="auto" mr="1em" />{" "}
               <Box as="span" mt="2px">
                 Profile
               </Box>
@@ -102,7 +112,7 @@ const UserItem: React.FC<{ data?: UserData }> = ({ data }) => {
         <a href="/logout">
           <MenuItem>
             <Flex alignItems="center" justifyContent="center">
-              <Box as={FaDoorOpen} w="24px" h="auto" mr="1em" />{" "}
+              <Box as={FiLogOut} w="24px" h="auto" mr="1em" />{" "}
               <Box as="span" mt="2px">
                 Log out
               </Box>
@@ -142,25 +152,29 @@ export const SideNavContent: React.FC<SideNavProps> = ({ showLogo = true }) => {
         )}
         <Flex>
           <List mt="2em">
-            <NavItem to="plans" icon={FaMap} title="Map Planner" />
-            <NavItem to="calendar" icon={FaCalendarAlt} title="Calendar" />
-            <NavItem to="builds" icon={FaTshirt} title="Builds" />
-            <NavItem to="u" icon={FaSearch} title="User Search" />
-            <NavItem to="freeagents" icon={FaUserSecret} title="Free Agents" />
+            <NavItem to="plans" icon={FiMap} title="Map Planner" />
+            <NavItem to="calendar" icon={FiCalendar} title="Calendar" />
+            <NavItem to="builds" icon={RiTShirt2Line} title="Builds" />
+            <NavItem to="u" icon={FiUsers} title="User Search" />
+            <NavItem
+              to="freeagents"
+              icon={FiShoppingCart}
+              title="Free Agents"
+            />
             <NavItem
               to="tournaments"
-              icon={FaTrophy}
+              icon={FiAward}
               title="Tournament Results"
             />
-            <NavItem to="draft" icon={FaPeopleCarry} title="Draft Cup" />
-            <NavItem to="xsearch" icon={FaListOl} title="Top 500 Browser" />
+            <NavItem to="draft" icon={FiFolderPlus} title="Draft Cup" />
+            <NavItem to="xsearch" icon={FiSearch} title="Top 500 Browser" />
             <NavItem
               to="xtrends"
-              icon={MdTimeline}
+              icon={FiBarChart2}
               title="Top 500 Tier Lists"
             />
             {data?.user?.plus?.membership_status && (
-              <NavItem to="plus" icon={FaPlus} title="Plus Server" />
+              <NavItem to="plus" icon={FiPlus} title="Plus Server" />
             )}
           </List>
         </Flex>
@@ -181,7 +195,7 @@ export const SideNavContent: React.FC<SideNavProps> = ({ showLogo = true }) => {
               color="current"
               fontSize="20px"
               onClick={toggleColorMode}
-              icon={colorMode === "light" ? "moon" : "sun"}
+              icon={colorMode === "light" ? FiSun : FiMoon}
             />
             <ColorPicker />
           </Flex>

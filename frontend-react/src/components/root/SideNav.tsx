@@ -9,11 +9,12 @@ const shadow = {
 } as const
 
 const SideNav = () => {
-  const { darkerBgColor, colorMode } = useContext(MyThemeContext)
+  const { darkerBgColor, themeColorHexLighter } = useContext(MyThemeContext)
   return (
     <Box
       bg={darkerBgColor}
-      boxShadow={shadow[colorMode]}
+      borderRight="1px solid"
+      borderColor={themeColorHexLighter}
       height="100%"
       width="250px"
       position="fixed"

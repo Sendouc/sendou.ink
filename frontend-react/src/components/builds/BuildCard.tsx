@@ -11,7 +11,7 @@ import {
   BoxProps,
 } from "@chakra-ui/core"
 import { Link } from "@reach/router"
-import { FaInfo, FaEdit } from "react-icons/fa"
+import { FaInfo } from "react-icons/fa"
 
 import WeaponImage from "../common/WeaponImage"
 import { top500 } from "../../assets/imageImports"
@@ -20,6 +20,7 @@ import ViewAP from "./ViewAP"
 import MyThemeContext from "../../themeContext"
 import { Build } from "../../types"
 import Gears from "./Gears"
+import { FiEdit, FiInfo } from "react-icons/fi"
 
 interface BuildCardProps {
   build: Build
@@ -120,7 +121,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
                   variantColor={themeColor}
                   aria-label="Show description"
                   fontSize="20px"
-                  icon={FaInfo}
+                  icon={FiInfo}
                 />
               </PopoverTrigger>
               <PopoverContent
@@ -146,7 +147,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
               }
               aria-label="Show description"
               fontSize="20px"
-              icon={FaEdit}
+              icon={FiEdit}
             />
           ) : (
             <Button
