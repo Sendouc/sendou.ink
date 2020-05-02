@@ -5,6 +5,7 @@ const {
 } = require("apollo-server-express")
 const DetailedTournament = require("../mongoose-models/detailedtournament")
 const DetailedMatch = require("../mongoose-models/detailedmatch")
+const AnalyzerMap = require("../mongoose-models/analyzermap")
 const Leaderboard = require("../mongoose-models/leaderboard")
 const User = require("../mongoose-models/user")
 const PlayerStat = require("../mongoose-models/playerstat")
@@ -26,6 +27,11 @@ const typeDef = gql`
       matches: [DetailedMatchInput!]!
       lanistaToken: String!
     ): Boolean!
+    addPrivateBattles(
+      submitterDiscordId: String!
+      maps: [DetailedMapInput!]!
+      lanistaToken: String!
+    ): Int! # returns the number of matches that were added i.e. matches sent - duplicates matches
     replaceDraftLeaderboard(
       plus_server: PlusServer!
       players: [TournamentPlayerInput!]!
@@ -76,6 +82,8 @@ const typeDef = gql`
   }
 
   input DetailedMapInput {
+    date: String
+    hash: String
     stage: String!
     mode: Mode!
     duration: Int!
@@ -84,29 +92,32 @@ const typeDef = gql`
   }
 
   type DetailedMap {
+    date: String
     stage: String!
     mode: Mode!
     "Duration of the round in seconds"
     duration: Int!
     winners: TeamInfo!
     losers: TeamInfo!
+    type: EventType!
   }
 
   input TeamInfoInput {
-    team_name: String!
+    team_name: String
     players: [DetailedPlayerInput!]!
     score: Int!
   }
 
   type TeamInfo {
-    team_name: String!
+    team_name: String
     players: [DetailedPlayer!]!
     "Score between 0 and 100 (KO)"
     score: Int!
   }
 
   input DetailedPlayerInput {
-    discord_id: String!
+    discord_id: String
+    unique_id: String
     weapon: String!
     main_abilities: [Ability!]!
     sub_abilities: [[Ability]!]!
@@ -115,11 +126,12 @@ const typeDef = gql`
     deaths: Int!
     specials: Int!
     paint: Int!
-    gear: [String]!
+    gear: [String!]
   }
 
   type DetailedPlayer {
-    discord_user: User!
+    discord_user: User
+    unique_id: String
     weapon: String!
     main_abilities: [Ability!]!
     sub_abilities: [[Ability]!]!
@@ -128,7 +140,7 @@ const typeDef = gql`
     deaths: Int!
     specials: Int!
     paint: Int!
-    gear: [String!]!
+    gear: [String!]
   }
 
   type Leaderboard {
@@ -172,6 +184,7 @@ const typeDef = gql`
   enum EventType {
     DRAFTONE
     DRAFTTWO
+    ANALYZER
   }
 `
 
@@ -350,6 +363,41 @@ const resolvers = {
       await updateLeaderboard(args.tournament.top_3_discord_ids, eventType)
       await generateStats(eventType)
       return true
+    },
+    addPrivateBattles: async (root, args, ctx) => {
+      if (args.lanistaToken !== process.env.LANISTA_TOKEN) {
+        throw new AuthenticationError("Invalid token provided")
+      }
+
+      //lean & sendou right now - will be unhardcoded next
+      if (
+        !["86905636402495488", "79237403620945920"].includes(submitterDiscordId)
+      ) {
+        throw new AuthenticationError("No permissions to add results")
+      }
+
+      const maptInputProblems = args.matches.map((match) =>
+        match.map_details.map((map) => validateDetailedMapInput(map))
+      )
+
+      if (maptInputProblems.length > 0) {
+        throw new UserInputError(maptInputProblems.join(","))
+      }
+
+      const eventType = "ANALYZER"
+
+      let saved = 0
+
+      args.maps.forEach((playedMap) => {
+        const existingMap = await AnalyzerMap.findOne({hash: playedMap.hash})
+        if (!existingMap) {
+          playedMap.type = eventType
+          await AnalyzerMap.create(playedMap)
+          saved++
+        }
+      })
+
+      return saved
     },
     replaceDraftLeaderboard: async (root, args, ctx) => {
       if (!ctx.user) throw new AuthenticationError("Not logged in.")

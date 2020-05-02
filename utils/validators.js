@@ -27,14 +27,14 @@ async function validateDetailedTournamentInput(input) {
     problems.push("Length of top_3_discord_ids was not 3")
   }
 
-  input.top_3_discord_ids.forEach(discord_id_arr => {
+  input.top_3_discord_ids.forEach((discord_id_arr) => {
     if (discord_id_arr.length !== 4) {
       problems.push(
         "Length of top_3_discord_ids contained an array that had invalid length"
       )
     }
 
-    discord_id_arr.forEach(discord_id => {
+    discord_id_arr.forEach((discord_id) => {
       if (!isNum(discord_id)) problems.push(`Invalid Discord ID: ${discord_id}`)
     })
   })
@@ -60,10 +60,10 @@ function validateDetailedMapInput(input) {
     problems.push("Losing team has greater or equal score as the winner team")
   }
 
-  input.winners.players.forEach(player =>
+  input.winners.players.forEach((player) =>
     validateDetailedPlayerInput(player, problems)
   )
-  input.losers.players.forEach(player =>
+  input.losers.players.forEach((player) =>
     validateDetailedPlayerInput(player, problems)
   )
 
@@ -71,7 +71,7 @@ function validateDetailedMapInput(input) {
 }
 
 function validateDetailedPlayerInput(input, problems) {
-  if (!isNum(input.discord_id)) {
+  if (input.discord_id && !isNum(input.discord_id)) {
     problems.push(`Invalid Discord ID: ${input.discord_id}`)
   }
 
@@ -111,15 +111,16 @@ function validateDetailedPlayerInput(input, problems) {
     problems.push(`Invalid paint count: ${input.paint}`)
   }
 
-  if (input.gear.length !== 3) {
-    problems.push(`Invalid gear length: ${input.gear.length}`)
-  }
+  if (input.gear) {
+    if (input.gear.length !== 3)
+      problems.push(`Invalid gear length: ${input.gear.length}`)
 
-  input.gear.forEach(gearPiece => {
-    if (!gear.includes(gearPiece)) {
-      problems.push(`Invalid gear: ${gearPiece}`)
-    }
-  })
+    input.gear.forEach((gearPiece) => {
+      if (!gear.includes(gearPiece)) {
+        problems.push(`Invalid gear: ${gearPiece}`)
+      }
+    })
+  }
 
   return problems
 }
