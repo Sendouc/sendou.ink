@@ -388,8 +388,8 @@ const resolvers = {
 
       let saved = 0
 
-      args.maps.forEach((playedMap) => {
-        const existingMap = await AnalyzerMap.findOne({hash: playedMap.hash})
+      args.maps.forEach(async (playedMap) => {
+        const existingMap = await AnalyzerMap.findOne({ hash: playedMap.hash })
         if (!existingMap) {
           playedMap.type = eventType
           await AnalyzerMap.create(playedMap)
