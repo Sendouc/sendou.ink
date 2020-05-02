@@ -11,9 +11,9 @@ import {
 } from "../../graphql/queries/searchForPlacements"
 import WpnImage from "../common/WeaponImage"
 import { months, modesShort } from "../../utils/lists"
-import { RouteComponentProps } from "@reach/router"
+import { RouteComponentProps, Link } from "@reach/router"
 import { Helmet } from "react-helmet-async"
-import { Box, Flex, Icon } from "@chakra-ui/core"
+import { Box, Flex, Icon, Badge } from "@chakra-ui/core"
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table"
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css"
 import { ordinal_suffix_of } from "../../utils/helperFunctions"
@@ -125,6 +125,7 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
                   <Th>Mode</Th>
                   <Th>Month</Th>
                   <Th>Year</Th>
+                  <Th />
                 </Tr>
               </Thead>
               <Tbody>
@@ -133,14 +134,9 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
                     <Td>
                       <Flex
                         alignItems="center"
-                        cursor="pointer"
-                        onClick={() => {
-                          setForms({ unique_id: placement.unique_id, page: 1 })
-                          setQuery(
-                            { unique_id: placement.unique_id, page: 1 },
-                            "replace"
-                          )
-                        }}
+                        cursor={
+                          placement.player?.discord_id ? "pointer" : undefined
+                        }
                       >
                         {placement.player?.twitter && (
                           <UserAvatar
@@ -152,8 +148,19 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
                         <Box
                           as="span"
                           ml={placement.player?.twitter ? "0.5em" : undefined}
+                          color={
+                            placement.player?.discord_id
+                              ? themeColorWithShade
+                              : undefined
+                          }
                         >
-                          {placement.name}
+                          {placement.player?.discord_id ? (
+                            <Link to={`/u/${placement.player.discord_id}`}>
+                              {placement.name}
+                            </Link>
+                          ) : (
+                            <>{placement.name}</>
+                          )}
                         </Box>
                       </Flex>
                     </Td>
@@ -184,6 +191,20 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
                     </Td>
                     <Td>{months[placement.month]}</Td>
                     <Td>{placement.year}</Td>
+                    <Td>
+                      <Badge
+                        cursor="pointer"
+                        onClick={() => {
+                          setForms({ unique_id: placement.unique_id, page: 1 })
+                          setQuery(
+                            { unique_id: placement.unique_id, page: 1 },
+                            "replace"
+                          )
+                        }}
+                      >
+                        ID
+                      </Badge>
+                    </Td>
                   </Tr>
                 ))}
               </Tbody>
