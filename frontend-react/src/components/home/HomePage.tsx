@@ -7,6 +7,7 @@ import MyThemeContext from "../../themeContext"
 import "./HomePage.css"
 import { Helmet } from "react-helmet-async"
 import Stats from "./Stats"
+import WeeksTournaments from "./WeeksTournaments"
 
 const HomePage: React.FC<RouteComponentProps> = () => {
   const { colorMode, grayWithShade } = useContext(MyThemeContext)
@@ -15,7 +16,7 @@ const HomePage: React.FC<RouteComponentProps> = () => {
       <Helmet>
         <title>sendou.ink | Competitive Splatoon Hub</title>
       </Helmet>
-      <Flex flexDirection="column" alignItems="center">
+      <Flex flexDirection="column" alignItems="center" mb="1.5em">
         <Image className="rgb" src={posterGirl[colorMode]} w="400px" h="auto" />
         <Heading
           letterSpacing="1px"
@@ -35,6 +36,7 @@ const HomePage: React.FC<RouteComponentProps> = () => {
         </Heading>
         <Stats />
       </Flex>
+      <WeeksTournaments />
     </>
   )
 }

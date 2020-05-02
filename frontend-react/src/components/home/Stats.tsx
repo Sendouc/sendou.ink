@@ -40,13 +40,13 @@ const Stats: React.FC = () => {
   const { stats } = data
   return (
     <>
-      <Box fontSize="2xl" fontWeight="hairline" mt="2em" color={grayWithShade}>
+      <Box fontSize="xl" fontWeight="hairline" mt="1em" color={grayWithShade}>
         Featuring...
       </Box>
       <Flex
         flexDirection="column"
         alignItems="center"
-        fontSize="2xl"
+        fontSize="xl"
         fontWeight="black"
         mt="0.5em"
         textAlign="center"
@@ -92,15 +92,14 @@ const Stats: React.FC = () => {
           </Link>
         </Box>
       </Flex>
-      <Box fontSize="2xl" fontWeight="hairline" mt="1em" color={grayWithShade}>
+      <Box fontSize="xl" fontWeight="hairline" mt="0.5em" color={grayWithShade}>
         As well as
       </Box>
       <Flex
         flexDirection="column"
         alignItems="center"
-        fontSize="2xl"
+        fontSize="xl"
         fontWeight="black"
-        mt="0.5em"
         textAlign="center"
       >
         <Box mb="0.5em">
