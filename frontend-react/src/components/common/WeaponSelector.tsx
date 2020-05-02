@@ -14,6 +14,7 @@ interface WeaponSelectorProps {
   autoFocus?: boolean
   clearable?: boolean
   isMulti?: boolean
+  menuIsOpen?: boolean
 }
 
 const singleOption = (props: any) => (
@@ -35,6 +36,7 @@ const WeaponSelector: React.FC<WeaponSelectorProps> = ({
   autoFocus,
   required,
   isMulti,
+  menuIsOpen,
 }) => {
   return (
     <>
@@ -47,6 +49,7 @@ const WeaponSelector: React.FC<WeaponSelectorProps> = ({
         clearable={clearable}
         isSearchable
         isMulti={!!isMulti}
+        menuIsOpen={menuIsOpen}
         components={{
           IndicatorSeparator: () => null,
           Option: singleOption,

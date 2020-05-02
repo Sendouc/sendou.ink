@@ -21,7 +21,7 @@ const badgeColor: { [key: string]: string } = {
   Sunday: "blue",
 } as const
 
-const CalendarPage: React.FC<RouteComponentProps> = ({}) => {
+const CalendarPage: React.FC<RouteComponentProps> = () => {
   const { darkerBgColor, grayWithShade } = useContext(MyThemeContext)
   const { data, error, loading } = useQuery<UpcomingEventsData>(UPCOMING_EVENTS)
 
@@ -87,6 +87,9 @@ const CalendarPage: React.FC<RouteComponentProps> = ({}) => {
       })}
       <Box color={grayWithShade} mt="2em">
         All events listed in your local time: {new Date().toTimeString()}
+        <p style={{ marginTop: "0.5em" }}>
+          If you want your event displayed here message Sendou#0043 on Discord
+        </p>
       </Box>
     </>
   )

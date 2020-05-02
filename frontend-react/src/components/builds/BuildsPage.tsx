@@ -44,14 +44,16 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
 
   const buildsFilterByAbilities: Build[] = !data
     ? []
-    : data.searchForBuilds.filter(build => {
+    : data.searchForBuilds.filter((build) => {
         if (abilities.length === 0) return true
         const abilitiesInBuild = new Set([
           ...build.headgear,
           ...build.clothing,
           ...build.shoes,
         ])
-        return abilities.every(ability => abilitiesInBuild.has(ability as any))
+        return abilities.every((ability) =>
+          abilitiesInBuild.has(ability as any)
+        )
       })
 
   return (
@@ -72,6 +74,7 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
           label="Select a weapon to start viewing builds"
           setValue={(weapon: string) => setWeapon(weapon as Weapon)}
           autoFocus
+          menuIsOpen={!weapon}
         />
       </Box>
       {weapon && (
@@ -84,13 +87,13 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
         <>
           <InfiniteScroll
             pageStart={1}
-            loadMore={page => setBuildsToShow(page * 10)}
+            loadMore={(page) => setBuildsToShow(page * 10)}
             hasMore={buildsToShow < data.searchForBuilds.length}
           >
             <Flex flexWrap="wrap" pt="2em">
               {buildsFilterByAbilities
                 .filter((build, index) => index < buildsToShow)
-                .map(build => (
+                .map((build) => (
                   <BuildCard
                     key={build.id}
                     build={build}

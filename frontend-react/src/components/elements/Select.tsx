@@ -39,6 +39,7 @@ interface SelectProps {
   isLoading?: boolean
   isDisabled?: boolean
   isSearchable?: boolean
+  menuIsOpen?: boolean
   hideMenuBeforeTyping?: boolean
 }
 
@@ -55,6 +56,7 @@ const Select: React.FC<SelectProps> = ({
   isLoading,
   isDisabled,
   isSearchable,
+  menuIsOpen,
   hideMenuBeforeTyping,
 }) => {
   const {
@@ -94,6 +96,15 @@ const Select: React.FC<SelectProps> = ({
     return colorMode === "light" ? "black" : "white"
   }
 
+  const menuIsOpenCheck = () => {
+    if (menuIsOpen) return true
+    if (hideMenuBeforeTyping) {
+      return !!(inputValue.length >= 3)
+    }
+
+    return undefined
+  }
+
   return (
     <Box>
       {label && <Label required={required}>{label}</Label>}
@@ -103,9 +114,7 @@ const Select: React.FC<SelectProps> = ({
         value={getValue()}
         inputValue={inputValue}
         onInputChange={(newValue) => setInputValue(newValue)}
-        menuIsOpen={
-          hideMenuBeforeTyping ? !!(inputValue.length >= 3) : undefined
-        }
+        menuIsOpen={menuIsOpenCheck()}
         onChange={handleChange}
         placeholder={null}
         isSearchable={!!isSearchable}

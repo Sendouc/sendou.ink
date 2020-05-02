@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react"
 import { CompetitiveFeedEvent } from "../../graphql/queries/upcomingEvents"
 import Markdown from "../elements/Markdown"
-import { Heading, Box, Flex, Link as ChakraLink } from "@chakra-ui/core"
+import { Heading, Box, Flex } from "@chakra-ui/core"
 import Button from "../elements/Button"
 import { FiInfo, FiClock } from "react-icons/fi"
 import { FaDiscord } from "react-icons/fa"

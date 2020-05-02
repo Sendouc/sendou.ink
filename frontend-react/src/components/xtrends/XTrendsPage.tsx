@@ -76,7 +76,7 @@ const XTrendsPage: React.FC<RouteComponentProps> = () => {
     MyThemeContext
   )
   const { data, error, loading } = useQuery<XTrendsData>(X_TRENDS)
-  const [month, setMonth] = useState("March 2020")
+  const [month, setMonth] = useState<string | null>(null)
   const [mode, setMode] = useState<"SZ" | "TC" | "RM" | "CB">("SZ")
   const [weaponMonths, setWeaponMonths] = useState<Record<
     string,
@@ -116,14 +116,6 @@ const XTrendsPage: React.FC<RouteComponentProps> = () => {
   if (error) return <Error errorMessage={error.message} />
   if (loading || !weaponMonths) return <Loading />
 
-  const weaponsOrdered = weaponMonths[month][mode].sort((a, b) => {
-    const comparision = b.amount - a.amount
-
-    if (comparision !== 0) return comparision
-
-    return weapons.indexOf(a.name) - weapons.indexOf(b.name)
-  })
-
   const xRankMonths = Object.keys(weaponMonths).sort((a, b) => {
     const partsA = a.split(" ")
     const partsB = b.split(" ")
@@ -133,6 +125,18 @@ const XTrendsPage: React.FC<RouteComponentProps> = () => {
 
     return months.indexOf(partsB[0] as any) - months.indexOf(partsA[0] as any)
   })
+
+  if (!month) setMonth(xRankMonths[0])
+
+  const weaponsOrdered = month
+    ? weaponMonths[month][mode].sort((a, b) => {
+        const comparision = b.amount - a.amount
+
+        if (comparision !== 0) return comparision
+
+        return weapons.indexOf(a.name) - weapons.indexOf(b.name)
+      })
+    : []
 
   return (
     <>
