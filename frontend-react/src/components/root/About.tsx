@@ -12,7 +12,7 @@ const About: React.FC<RouteComponentProps> = () => {
         <title>About | sendou.ink</title>
       </Helmet>
       <div style={{ marginTop: "1em" }}>
-        <Heading size="lg" mb="0.5em">
+        <Heading size="lg" mb="0.5em" fontFamily="'Rubik', sans-serif">
           Help
         </Heading>
         If you need help using the site don't hesitate to ask on our Discord.
@@ -29,20 +29,55 @@ const About: React.FC<RouteComponentProps> = () => {
         <Heading size="lg">Thanks to</Heading>
         <ul style={{ marginLeft: "1.2em", marginTop: "0.5em" }}>
           <li>
-            <a href="https://twitter.com/LeanYoshi">Lean</a> (provided the Top
-            500 X Rank data)
+            <Link
+              isExternal
+              color={themeColorWithShade}
+              href="https://twitter.com/LeanYoshi"
+            >
+              Lean
+            </Link>{" "}
+            (provided the Top 500 X Rank data)
           </li>
           <li>
-            <a href="https://twitter.com/zorg_z0rg_z0r8">zorg</a> (provided
-            background pictures for the map planner)
+            <Link
+              isExternal
+              color={themeColorWithShade}
+              href="https://twitter.com/zorg_z0rg_z0r8"
+            >
+              zorg
+            </Link>{" "}
+            (provided background pictures for the map planner)
           </li>
           <li>
-            <a href="https://twitter.com/ganbawoomy">ganbawoomy</a> (provided
-            the data for tournament browser)
+            <Link
+              isExternal
+              color={themeColorWithShade}
+              href="https://twitter.com/ganbawoomy"
+            >
+              ganbawoomy
+            </Link>{" "}
+            (provided the data for tournament browser)
           </li>
           <li>
-            <a href="https://twitter.com/noaim_brn">NoAim™bUrn</a> (gave plenty
-            of useful feedback)
+            <Link
+              isExternal
+              color={themeColorWithShade}
+              href="https://twitter.com/noaim_brn"
+            >
+              NoAim™bUrn
+            </Link>{" "}
+            (gave plenty of useful feedback)
+          </li>
+          <li>
+            <Link
+              isExternal
+              color={themeColorWithShade}
+              href="https://twitter.com/borzoic_"
+            >
+              borzoic
+            </Link>{" "}
+            (art for the site like the inkling on the front page as well as
+            footer pictures)
           </li>
         </ul>
       </div>

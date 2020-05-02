@@ -36,3 +36,11 @@ export const removeFalsy = (obj: { [key: string]: any }) => {
   })
   return newObj
 }
+
+// https://stackoverflow.com/a/31810991
+export const getWeek = (date: Date) => {
+  const onejan = new Date(date.getFullYear(), 0, 1)
+  const today = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+  const dayOfYear = (today.getTime() - onejan.getTime() + 86400000) / 86400000
+  return Math.ceil(dayOfYear / 7)
+}

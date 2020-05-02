@@ -19,7 +19,7 @@
   content: "";
   position: absolute;
   top: 50%;
-  border-bottom: 4px solid;
+  border-bottom: 2px solid;
   border-color: var(--sub-header-border);
   width: 592px; /* half of limiter */
   margin: 0 20px;

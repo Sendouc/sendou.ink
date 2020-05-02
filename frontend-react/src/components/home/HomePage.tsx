@@ -16,13 +16,7 @@ const HomePage: React.FC<RouteComponentProps> = () => {
         <title>sendou.ink | Competitive Splatoon Hub</title>
       </Helmet>
       <Flex flexDirection="column" alignItems="center">
-        <Image
-          className="rgb"
-          src={posterGirl[colorMode]}
-          w="400px"
-          h="auto"
-          title="Picture by borzoic (@borzoic_ on Twitter)"
-        />
+        <Image className="rgb" src={posterGirl[colorMode]} w="400px" h="auto" />
         <Heading
           letterSpacing="1px"
           fontFamily="'Rubik', sans-serif"

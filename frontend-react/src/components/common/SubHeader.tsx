@@ -3,7 +3,7 @@ import "./SubHeader.css"
 import MyThemeContext from "../../themeContext"
 
 interface SubHeaderProps {
-  children: string[] | string
+  children: React.ReactNode
 }
 
 const SubHeader: React.FC<SubHeaderProps> = ({ children }) => {

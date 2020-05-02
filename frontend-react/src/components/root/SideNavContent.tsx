@@ -27,8 +27,8 @@ import {
   FiLogOut,
   FiUser,
   FiPlus,
-  FiShoppingCart,
   FiLogIn,
+  FiHeart,
 } from "react-icons/fi"
 import { RiTShirt2Line } from "react-icons/ri"
 import Logo from "./Logo"
@@ -148,11 +148,7 @@ export const SideNavContent: React.FC<SideNavProps> = ({ showLogo = true }) => {
             <NavItem to="calendar" icon={FiCalendar} title="Calendar" />
             <NavItem to="builds" icon={RiTShirt2Line} title="Builds" />
             <NavItem to="u" icon={FiUsers} title="User Search" />
-            <NavItem
-              to="freeagents"
-              icon={FiShoppingCart}
-              title="Free Agents"
-            />
+            <NavItem to="freeagents" icon={FiHeart} title="Free Agents" />
             <NavItem
               to="tournaments"
               icon={FiAward}

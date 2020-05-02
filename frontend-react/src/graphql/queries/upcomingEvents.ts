@@ -1,24 +1,25 @@
 import { gql, DocumentNode } from "apollo-boost"
-import { User } from "../../types"
 
-export interface UpcomingEventsData {
-  upcomingEvents: {
-    name: string
-    date: string
-    description: string
-    message_url: string
-    discord_invite_url: string
-    picture_url?: string
-    poster_discord_user: {
-      username: string
-      discriminator: string
-      twitter_name?: string
-      discord_id: string
-    }
-  }[]
+export interface CompetitiveFeedEvent {
+  name: string
+  date: string
+  description: string
+  message_url: string
+  discord_invite_url: string
+  picture_url?: string
+  poster_discord_user: {
+    username: string
+    discriminator: string
+    twitter_name?: string
+    discord_id: string
+  }
 }
 
-export const SEARCH_FOR_USER: DocumentNode = gql`
+export interface UpcomingEventsData {
+  upcomingEvents: CompetitiveFeedEvent[]
+}
+
+export const UPCOMING_EVENTS: DocumentNode = gql`
   {
     upcomingEvents {
       name

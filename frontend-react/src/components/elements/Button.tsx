@@ -9,6 +9,7 @@ interface ButtonProps {
   onClick?: () => void
   size?: "xs" | "sm" | "lg" | "md"
   icon?: IconType
+  width?: string
   outlined?: boolean
   disabled?: boolean
   loading?: boolean
@@ -21,6 +22,7 @@ const Button: React.FC<ButtonProps> = ({
   size,
   disabled,
   loading,
+  width,
   outlined = false,
 }) => {
   const { themeColor } = useContext(MyThemeContext)
@@ -33,6 +35,7 @@ const Button: React.FC<ButtonProps> = ({
       size={size}
       isDisabled={disabled}
       isLoading={loading}
+      width={width ?? undefined}
     >
       {children}
     </ChakraButton>

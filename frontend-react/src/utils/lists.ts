@@ -1586,6 +1586,16 @@ export const months = [
   "December",
 ] as const
 
+export const days = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+] as const
+
 export const weapons = [
   "Sploosh-o-matic",
   "Neo Sploosh-o-matic",
