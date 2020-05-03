@@ -12,6 +12,7 @@ build
 # misc
 xrank_data
 tourney_maps
+ability_jsons_output
 .DS_Store
 .env
 .env.local

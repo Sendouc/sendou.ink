@@ -4,12 +4,14 @@ import Loading from "../common/Loading"
 import NotFound from "./NotFound"
 import { ScrollToTop } from "./ScrollToTop"
 import AdminPage from "../admin/AdminPage"
+import BuildAnalyzerPage from "../analyzer/BuildAnalyzerPage"
 
 const HomePage = lazy(() => import("../home/HomePage"))
 const UserPage = lazy(() => import("../user/UserPage"))
 const UserSearchPage = lazy(() => import("../usersearch/UserSearchPage"))
 const MarkdownHelpPage = lazy(() => import("../markdown/MarkdownHelpPage"))
 const BuildsPage = lazy(() => import("../builds/BuildsPage"))
+const BuildsAnalyzerPage = lazy(() => import("../analyzer/BuildAnalyzerPage"))
 const CalendarPage = lazy(() => import("../calendar/CalendarPage"))
 const TournamentsPage = lazy(() => import("../tournaments/TournamentsPage"))
 const TournamentsDetailsPage = lazy(() =>
@@ -42,6 +44,7 @@ const Routes: React.FC = () => {
           <MarkdownHelpPage path="/markdown" />
           <TeamPage path="/t/:name" />
           <BuildsPage path="/builds" />
+          <BuildAnalyzerPage path="/analyzer" />
           <MapPlannerPage path="/plans" />
           <CalendarPage path="/calendar" />
           <TournamentsPage path="/tournaments" />
