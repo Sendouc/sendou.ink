@@ -58,6 +58,7 @@ export interface UserLean {
   username: string
   discord_id: string
   twitter_name?: string
+  avatar?: string
   custom_url?: string
   plus?: {
     membership_status?: "ONE" | "TWO"
@@ -73,6 +74,7 @@ export interface User {
   username: string
   discriminator: string
   discord_id: string
+  avatar?: string
   twitch_name?: string
   twitter_name?: string
   country?: CountryCode
@@ -150,6 +152,7 @@ export interface FreeAgentPost {
     country?: CountryCode
     weapons?: Weapon[]
     top500: boolean
+    avatar?: string
   }
 }
 

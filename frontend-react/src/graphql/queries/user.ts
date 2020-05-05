@@ -6,6 +6,7 @@ export const USER: DocumentNode = gql`
       id
       username
       twitter_name
+      avatar
       discord_id
       custom_url
       plus {

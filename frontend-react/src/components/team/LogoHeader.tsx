@@ -27,7 +27,7 @@ const LogoHeader: React.FC<LogoHeaderProps> = ({
   const { themeColorWithShade, grayWithShade } = useContext(MyThemeContext)
   return (
     <Box display="flex" flexDirection="column" alignItems="center">
-      <UserAvatar name={name} twitterName={twitter_name} size="2xl" />
+      {/*<UserAvatar name={name} twitterName={twitter_name} size="2xl" />*/}
       <Box fontWeight="light" fontSize="48px" w="100%" textAlign="center">
         {name}
       </Box>

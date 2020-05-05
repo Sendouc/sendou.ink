@@ -47,11 +47,11 @@ const TournamentInfo: React.FC<TournamentInfoProps> = ({
         </Flex>
 
         <Flex alignItems="center" color={grayWithShade} my="0.5em">
-          {poster.twitter_name && (
+          {poster.avatar && (
             <Box mr="0.5em">
               <UserAvatar
-                twitterName={poster.twitter_name}
                 name={poster.username}
+                src={poster.avatar}
                 size="sm"
               />
             </Box>

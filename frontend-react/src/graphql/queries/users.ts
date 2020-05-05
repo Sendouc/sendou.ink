@@ -6,6 +6,7 @@ export interface UsersData {
     discriminator: string
     twitter_name?: string
     username: string
+    avatar?: string
   }[]
 }
 
@@ -16,6 +17,7 @@ export const USERS: DocumentNode = gql`
       discriminator
       discord_id
       twitter_name
+      avatar
     }
   }
 `

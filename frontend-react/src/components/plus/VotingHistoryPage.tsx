@@ -20,7 +20,7 @@ export interface Summary {
     discord_id: string
     username: string
     discriminator: string
-    twitter_name: string
+    avatar?: string
   }
   score: {
     total: number
@@ -131,21 +131,21 @@ const VotingHistoryPage: React.FC<RouteComponentProps> = () => {
                 { label: "+2", value: "+2" },
               ]}
               value={forms.plus_server}
-              setValue={value => setForms({ ...forms, plus_server: value })}
+              setValue={(value) => setForms({ ...forms, plus_server: value })}
             />
           </Box>
         )}
         <Box m="0.5em" minW="250px">
           <Select
             label=""
-            options={monthChoices.map(my => ({ label: my, value: my }))}
+            options={monthChoices.map((my) => ({ label: my, value: my }))}
             value={forms.monthYear}
-            setValue={value => setForms({ ...forms, monthYear: value })}
+            setValue={(value) => setForms({ ...forms, monthYear: value })}
           />
         </Box>
       </Flex>
       <Summaries
-        summaries={data.summaries!.filter(summary => {
+        summaries={data.summaries!.filter((summary) => {
           const server = summary.plus_server === "ONE" ? "+1" : "+2"
           return (
             summary.month === month &&

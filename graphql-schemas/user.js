@@ -79,6 +79,11 @@ const resolvers = {
       await User.findByIdAndUpdate(root._id, { top500: true })
       return true
     },
+    avatar: (root) => {
+      if (!root.avatar) return null
+
+      return `https://cdn.discordapp.com/avatars/${root.discord_id}/${root.avatar}.jpg`
+    },
   },
   Query: {
     user: (root, args, ctx) => {

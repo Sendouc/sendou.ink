@@ -79,10 +79,7 @@ const UserItem: React.FC<{ data?: UserData }> = ({ data }) => {
   return (
     <Menu>
       <MenuButton>
-        <UserAvatar
-          name={data.user.username}
-          twitterName={data.user.twitter_name}
-        />
+        <UserAvatar name={data.user.username} src={data.user.avatar} />
       </MenuButton>
       <MenuList bg={bgColor}>
         <Link

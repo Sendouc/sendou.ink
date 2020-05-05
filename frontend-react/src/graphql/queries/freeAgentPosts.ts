@@ -20,6 +20,7 @@ export const FREE_AGENT_POSTS: DocumentNode = gql`
         country
         weapons
         top500
+        avatar
       }
     }
   }

@@ -80,10 +80,7 @@ const UserSearchPage: React.FC<RouteComponentProps> = () => {
               transition="0.5s all"
             >
               <Flex key={user.discord_id} alignItems="center">
-                <UserAvatar
-                  name={user.username}
-                  twitterName={user.twitter_name}
-                />{" "}
+                <UserAvatar name={user.username} src={user.avatar} />{" "}
                 <Flex flexDir="column" ml="0.5em">
                   <Box fontWeight="bold" fontSize="1.1em">
                     {user.username}#{user.discriminator}

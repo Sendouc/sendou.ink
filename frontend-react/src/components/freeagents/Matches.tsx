@@ -15,7 +15,7 @@ interface MatchesProps {
   matches: {
     username: string
     discriminator: string
-    twitter_name?: string
+    avatar?: string
   }[]
   likesReceived: number
 }
@@ -56,15 +56,12 @@ const Matches: React.FC<MatchesProps> = ({ matches, likesReceived }) => {
         {matches.length > 0 ? (
           <>
             <Flex justifyContent="center" flexWrap="wrap">
-              {matches.map(match => (
+              {matches.map((match) => (
                 <Box key={`${match.username}${match.discriminator}`} p="0.5em">
                   <Popover trigger="hover">
                     <PopoverTrigger>
                       <Box>
-                        <UserAvatar
-                          twitterName={match.twitter_name}
-                          name={match.username}
-                        />
+                        <UserAvatar src={match.avatar} name={match.username} />
                       </Box>
                     </PopoverTrigger>
                     <PopoverContent zIndex={4} p="0.5em" bg={darkerBgColor}>

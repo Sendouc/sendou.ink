@@ -94,10 +94,10 @@ const FreeAgentCard: React.FC<FreeAgentCardProps> = ({
       </Flex>
       <Flex flexDirection="column" alignItems="center" justifyContent="center">
         <UserAvatar
-          twitterName={discord_user.twitter_name}
           name={discord_user.username}
           mr="5px"
           size="lg"
+          src={discord_user.avatar}
         />
 
         <Box

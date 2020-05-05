@@ -5,7 +5,7 @@ export interface VotingSuggested {
     discord_id: string
     username: string
     discriminator: string
-    twitter_name?: string
+    avatar?: string
   }
   suggester_discord_user: {
     username: string
@@ -20,7 +20,7 @@ export interface UsersForVotingData {
     users: {
       username: string
       discriminator: string
-      twitter_name?: string
+      avatar?: string
       discord_id: string
       plus: {
         membership_status?: "ONE" | "TWO"
@@ -44,7 +44,7 @@ export const USERS_FOR_VOTING: DocumentNode = gql`
       users {
         username
         discriminator
-        twitter_name
+        avatar
         discord_id
         plus {
           membership_status
@@ -57,7 +57,7 @@ export const USERS_FOR_VOTING: DocumentNode = gql`
           discord_id
           username
           discriminator
-          twitter_name
+          avatar
         }
         suggester_discord_user {
           username

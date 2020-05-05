@@ -24,6 +24,7 @@ export const SEARCH_FOR_USER: DocumentNode = gql`
       top500
       custom_url
       bio
+      avatar
       sens {
         stick
         motion

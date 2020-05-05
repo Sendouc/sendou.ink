@@ -40,7 +40,7 @@ interface Suggestion {
     discord_id: string
     username: string
     discriminator: string
-    twitter_name?: string
+    avatar?: string
   }
   suggester_discord_user: {
     discord_id: string
@@ -60,7 +60,7 @@ interface SuggestionsData {
 interface VouchUser {
   username: string
   discriminator: string
-  twitter_name: string
+  avatar?: string
   discord_id: string
   plus: {
     voucher_user: {
@@ -96,7 +96,7 @@ const Suggestions: React.FC<SuggestionsProps> = ({ user }) => {
   if (!data.suggestions || !user.plus) return null
 
   const ownSuggestion = data.suggestions.find(
-    suggestion =>
+    (suggestion) =>
       suggestion.suggester_discord_user.discord_id === user.discord_id
   )
 
@@ -113,28 +113,24 @@ const Suggestions: React.FC<SuggestionsProps> = ({ user }) => {
   }
 
   const plusOneVouches = vouchesData.vouches.filter(
-    vouch => vouch.plus.vouch_status === "ONE"
+    (vouch) => vouch.plus.vouch_status === "ONE"
   )
   const plusTwoVouches = vouchesData.vouches.filter(
-    vouch => vouch.plus.vouch_status === "TWO"
+    (vouch) => vouch.plus.vouch_status === "TWO"
   )
 
   const plusOneSuggested = data.suggestions.filter(
-    suggestion => suggestion.plus_server === "ONE"
+    (suggestion) => suggestion.plus_server === "ONE"
   )
   const plusTwoSuggested = data.suggestions.filter(
-    suggestion => suggestion.plus_server === "TWO"
+    (suggestion) => suggestion.plus_server === "TWO"
   )
 
   const vouchMap = (vouch: VouchUser) => {
     return (
       <React.Fragment key={vouch.discord_id}>
         <Flex mr="1em" alignItems="center">
-          <UserAvatar
-            twitterName={vouch.twitter_name}
-            name={vouch.username}
-            size="sm"
-          />
+          <UserAvatar src={vouch.avatar} name={vouch.username} size="sm" />
         </Flex>
         <Box>
           <Box as="span" fontWeight="bold">
@@ -158,7 +154,7 @@ const Suggestions: React.FC<SuggestionsProps> = ({ user }) => {
       <React.Fragment key={suggestion.discord_user.discord_id}>
         <Flex mr="1em" alignItems="center">
           <UserAvatar
-            twitterName={suggested_user.twitter_name}
+            src={suggested_user.avatar}
             name={suggested_user.username}
             size="sm"
           />
@@ -221,7 +217,7 @@ const Suggestions: React.FC<SuggestionsProps> = ({ user }) => {
         {!isSmall ? (
           <Tabs
             index={tabIndex}
-            onChange={chosenIndex => setTabIndex(chosenIndex)}
+            onChange={(chosenIndex) => setTabIndex(chosenIndex)}
             isFitted
             variant="line"
             mt="2em"

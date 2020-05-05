@@ -138,13 +138,6 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
                           placement.player?.discord_id ? "pointer" : undefined
                         }
                       >
-                        {placement.player?.twitter && (
-                          <UserAvatar
-                            name={placement.name}
-                            twitterName={placement.player.twitter}
-                            size="xs"
-                          />
-                        )}
                         <Box
                           as="span"
                           ml={placement.player?.twitter ? "0.5em" : undefined}

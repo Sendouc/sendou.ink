@@ -3,24 +3,17 @@ import { Avatar, BoxProps } from "@chakra-ui/core"
 
 interface UserAvatarProps {
   name: string
-  twitterName?: string
+  src?: string
   size?: undefined | "2xl" | "lg" | "xs" | "sm"
 }
 
 const UserAvatar: React.FC<UserAvatarProps & BoxProps> = ({
   name,
-  twitterName,
+  src,
   size,
   ...props
 }) => {
-  return (
-    <Avatar
-      name={name}
-      //src={`https://avatars.io/twitter/${twitterName}`}
-      size={size}
-      {...props}
-    />
-  )
+  return <Avatar name={name} src={src} size={size} {...props} />
 }
 
 export default UserAvatar

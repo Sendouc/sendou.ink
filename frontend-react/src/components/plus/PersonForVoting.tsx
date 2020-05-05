@@ -57,7 +57,7 @@ interface PersonForVotingProps {
   user: {
     username: string
     discriminator: string
-    twitter_name?: string | undefined
+    avatar?: string
     discord_id: string
   }
   suggester?: {
@@ -98,7 +98,7 @@ const PersonForVoting: React.FC<PersonForVotingProps> = ({
         alignItems="center"
         flexDirection="column"
       >
-        <UserAvatar twitterName={user.twitter_name} name={user.username} />
+        <UserAvatar src={user.avatar} name={user.username} />
 
         <a
           target="_blank"

@@ -13,6 +13,7 @@ export interface CompetitiveFeedEvent {
     discriminator: string
     twitter_name?: string
     discord_id: string
+    avatar?: string
   }
 }
 
@@ -35,6 +36,7 @@ export const UPCOMING_EVENTS: DocumentNode = gql`
         discriminator
         twitter_name
         discord_id
+        avatar
       }
     }
   }

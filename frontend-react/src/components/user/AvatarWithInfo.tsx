@@ -48,11 +48,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user, canEdit }) => {
         alignItems="center"
         flexDirection="column"
       >
-        <UserAvatar
-          name={user.username}
-          twitterName={user.twitter_name}
-          size="2xl"
-        />
+        <UserAvatar name={user.username} src={user.avatar} size="2xl" />
         <List
           spacing={2}
           mt="1em"
@@ -76,7 +72,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user, canEdit }) => {
           {user.country && (
             <ListItem>
               <Flag code={user.country} />
-              {countries.find(obj => obj.code === user.country)?.name}
+              {countries.find((obj) => obj.code === user.country)?.name}
             </ListItem>
           )}
           {user.twitter_name && (

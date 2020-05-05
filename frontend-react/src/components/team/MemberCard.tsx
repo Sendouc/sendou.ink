@@ -50,7 +50,7 @@ const MemberCard: React.FC<MemberCardProps> = ({ member }) => {
         </Link>
       </Box>
       <Box display="flex" flexDirection="column" alignItems="center">
-        <UserAvatar name={member.username} twitterName={member.twitter_name} />
+        {/*<UserAvatar name={member.username} twitterName={member.twitter_name} />*/}
         {member.country && (
           <Box mt="0.5em" display="flex" alignItems="center">
             <Flag code={member.country} />

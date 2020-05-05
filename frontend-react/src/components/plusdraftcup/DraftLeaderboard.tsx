@@ -22,7 +22,7 @@ interface LeaderboardPlayer {
     username: string
     discord_id: string
     discriminator: string
-    twitter_name?: string
+    avatar?: string
   }
   first: number
   second: number
@@ -47,8 +47,8 @@ const DraftLeaderboard: React.FC<DraftLeaderboardProps> = ({
   const { themeColor, grayWithShade } = useContext(MyThemeContext)
   const isSmall = useBreakPoints(550)
 
-  const plusOneLeaderboard = leaderboards.find(lb => lb.type === "DRAFTONE")
-  const plusTwoLeaderboard = leaderboards.find(lb => lb.type === "DRAFTTWO")
+  const plusOneLeaderboard = leaderboards.find((lb) => lb.type === "DRAFTONE")
+  const plusTwoLeaderboard = leaderboards.find((lb) => lb.type === "DRAFTTWO")
 
   if (!plusOneLeaderboard && !plusTwoLeaderboard) return null
 
@@ -93,7 +93,7 @@ const DraftLeaderboard: React.FC<DraftLeaderboardProps> = ({
 
               <Link to={`/u/${player.discord_user.discord_id}`}>
                 <UserAvatar
-                  twitterName={player.discord_user.twitter_name}
+                  src={player.discord_user.avatar}
                   name={player.discord_user.username}
                 />
               </Link>

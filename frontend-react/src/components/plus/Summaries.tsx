@@ -68,7 +68,7 @@ const Summaries: React.FC<SummariesProps> = ({ summaries }) => {
   const members: Summary[] = []
   const suggested: Summary[] = []
 
-  summaries.forEach(summary => {
+  summaries.forEach((summary) => {
     if (summary.suggested) suggested.push(summary)
     else members.push(summary)
   })
@@ -79,7 +79,7 @@ const Summaries: React.FC<SummariesProps> = ({ summaries }) => {
       <React.Fragment key={discord_user.discord_id}>
         <Flex mr="1em" alignItems="center">
           <UserAvatar
-            twitterName={discord_user.twitter_name}
+            src={discord_user.avatar}
             name={discord_user.username}
             size="sm"
           />
