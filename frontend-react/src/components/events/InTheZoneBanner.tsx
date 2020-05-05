@@ -38,7 +38,10 @@ const InTheZoneBanner: React.FC<InTheZoneBannerProps> = ({ runningNumber }) => {
       p="40px"
       color="black"
     >
-      <Icon size="128px" name={"itz" as any} />
+      <img
+        src="https://abload.de/img/itz_main_logog7jls.png"
+        style={{ width: "128px" }}
+      />
       <Box fontSize="70px" fontWeight="bolder" ml="0.2em">
         {runningNumber}
       </Box>

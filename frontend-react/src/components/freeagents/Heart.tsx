@@ -6,11 +6,17 @@ import MyThemeContext from "../../themeContext"
 
 interface HeartProps {
   disabled: boolean
+  loading: boolean
   active: boolean
   onClick: () => void
 }
 
-const Heart: React.FC<HeartProps> = ({ disabled, active, onClick }) => {
+const Heart: React.FC<HeartProps> = ({
+  disabled,
+  active,
+  loading,
+  onClick,
+}) => {
   const { darkerBgColor } = useContext(MyThemeContext)
 
   const getPopoverContent = () => {
@@ -29,6 +35,7 @@ const Heart: React.FC<HeartProps> = ({ disabled, active, onClick }) => {
             <IconButton
               colored
               disabled={disabled}
+              loading={loading}
               icon={active ? FaHeart : FaRegHeart}
               color="red.500"
               onClick={onClick}

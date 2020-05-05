@@ -9,6 +9,7 @@ interface IconButtonProps {
   onClick?: () => void
   colored?: boolean
   disabled?: boolean
+  loading?: boolean
   color?: string
 }
 
@@ -16,6 +17,7 @@ const IconButton: React.FC<IconButtonProps> = ({
   colored,
   icon,
   disabled,
+  loading,
   onClick,
   color,
 }) => {
@@ -37,6 +39,7 @@ const IconButton: React.FC<IconButtonProps> = ({
       size="lg"
       color={getColor()}
       isDisabled={disabled}
+      isLoading={loading}
     />
   )
 }

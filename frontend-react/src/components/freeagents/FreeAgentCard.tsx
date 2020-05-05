@@ -45,14 +45,14 @@ const FreeAgentCard: React.FC<FreeAgentCardProps> = ({
 
   const { data } = useQuery<UserData>(USER)
 
-  const [addLike] = useMutation<{ addLike: boolean }, { discord_id: string }>(
-    ADD_LIKE,
-    {
-      refetchQueries: [{ query: FREE_AGENT_MATCHES }],
-    }
-  )
+  const [addLike, { loading: likeLoading }] = useMutation<
+    { addLike: boolean },
+    { discord_id: string }
+  >(ADD_LIKE, {
+    refetchQueries: [{ query: FREE_AGENT_MATCHES }],
+  })
 
-  const [deleteLike] = useMutation<
+  const [deleteLike, { loading: deleteLoading }] = useMutation<
     { deleteLike: boolean },
     { discord_id: string }
   >(DELETE_LIKE, {
@@ -122,7 +122,7 @@ const FreeAgentCard: React.FC<FreeAgentCardProps> = ({
           {discord_user.country && (
             <>
               <Flag code={discord_user.country} />
-              {countries.find(obj => obj.code === discord_user.country)?.name}
+              {countries.find((obj) => obj.code === discord_user.country)?.name}
             </>
           )}
         </Box>
@@ -130,7 +130,7 @@ const FreeAgentCard: React.FC<FreeAgentCardProps> = ({
       <Flex flexDirection="column" alignItems="center" mt="1em">
         <Flex justifyContent="center" w="250px">
           {discord_user?.weapons &&
-            discord_user.weapons.map(wpn => (
+            discord_user.weapons.map((wpn) => (
               <Box mx="0.3em" key={wpn}>
                 <WeaponImage englishName={wpn} size="SMALL" />
               </Box>
@@ -151,6 +151,7 @@ const FreeAgentCard: React.FC<FreeAgentCardProps> = ({
           data.user.discord_id !== discord_user.discord_id && (
             <Heart
               disabled={!canLike}
+              loading={likeLoading || deleteLoading}
               active={liked}
               onClick={() => handleHeartClick()}
             />

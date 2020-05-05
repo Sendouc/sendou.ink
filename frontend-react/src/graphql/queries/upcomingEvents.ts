@@ -25,6 +25,7 @@ export const UPCOMING_EVENTS: DocumentNode = gql`
       name
       date
       description
+      message_discord_id
       message_url
       discord_invite_url
       picture_url

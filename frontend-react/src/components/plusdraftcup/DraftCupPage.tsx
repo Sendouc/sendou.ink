@@ -33,7 +33,9 @@ const DraftCupPage: React.FC<RouteComponentProps> = () => {
       </Box>
 
       <DraftTournamentCards tournaments={data!.plusDraftCups.tournaments} />
-      <DraftLeaderboard leaderboards={data!.plusDraftCups.leaderboards} />
+      <Box mt="1em">
+        <DraftLeaderboard leaderboards={data!.plusDraftCups.leaderboards} />
+      </Box>
     </>
   )
 }

@@ -1,7 +1,7 @@
 import React from "react"
 import AbilityButtons from "../user/AbilityButtons"
 import ViewSlots from "../builds/ViewSlots"
-import { Box } from "@chakra-ui/core"
+import { Box, Flex } from "@chakra-ui/core"
 import {
   Build,
   Ability,
@@ -15,13 +15,20 @@ import {
   clothingOnlyAbilities,
   shoesOnlyAbilities,
 } from "../../utils/lists"
+import APWithInfo from "./APWithInfo"
+import { Explanation } from "../../hooks/useAbilityEffects"
 
 interface EditableBuildProps {
   build: Partial<Build>
   setBuild: React.Dispatch<React.SetStateAction<Partial<Build>>>
+  explanations: Explanation[]
 }
 
-const EditableBuild: React.FC<EditableBuildProps> = ({ build, setBuild }) => {
+const EditableBuild: React.FC<EditableBuildProps> = ({
+  build,
+  setBuild,
+  explanations,
+}) => {
   const handleChange = (value: Object) => setBuild({ ...build, ...value })
 
   const handleAbilityButtonClick = (ability: Ability) => {
@@ -111,9 +118,10 @@ const EditableBuild: React.FC<EditableBuildProps> = ({ build, setBuild }) => {
   }
   return (
     <>
-      <Box mt="1em">
+      <Flex mt="1em">
         <ViewSlots build={build} onAbilityClick={handleClickBuildAbility} />
-      </Box>
+        <APWithInfo explanations={explanations} build={build} />
+      </Flex>
       <Box mt="1em">
         <AbilityButtons
           onClick={(ability) => handleAbilityButtonClick(ability)}

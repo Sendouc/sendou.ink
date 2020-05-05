@@ -1,10 +1,16 @@
-import { Build, Ability } from "../types"
+import { Build, Ability, Weapon } from "../types"
 import { useEffect, useState } from "react"
+import { getEffect } from "../utils/getAbilityEffect"
+import weaponJson from "../utils/weapon_data.json"
+import abilityJson from "../utils/ability_data.json"
 
-interface Explanation {
+export interface Explanation {
   ability: Ability
-  effect: number
   explanation: string
+}
+
+interface WeaponDataFromJson {
+  InkSaverLv: "Middle" | "High" | string
 }
 
 function buildToAP(build: Partial<Build>) {
@@ -43,22 +49,56 @@ function buildToAP(build: Partial<Build>) {
   return AP
 }
 
-function calculateISM(amount: number) {
-  console.log(amount)
-  return { ability: "ISM" as Ability, effect: 0, explanation: "asd" }
-}
-
-const abilityFunctions: Partial<Record<
-  Ability,
-  (amount: number) => Explanation
->> = {
-  ISM: calculateISM,
-} as const
-
 export default function useAbilityEffects(build: Partial<Build>) {
   const [explanations, setExplanations] = useState<Explanation[]>([])
+  const weaponData: Record<Weapon, WeaponDataFromJson> = weaponJson
+
+  function calculateISM(amount: number) {
+    const ISM = abilityJson["Ink Saver (Main)"]
+    const buildWeaponData = weaponData[build.weapon!]
+    const inkSaverLvl = buildWeaponData.InkSaverLv as "High" | "Middle" | "Low"
+
+    const keyObj = {
+      High: {
+        High: "ConsumeRt_Main_High_High",
+        Mid: "ConsumeRt_Main_High_Mid",
+        Low: "ConsumeRt_Main_High_Low",
+      },
+      Middle: {
+        High: "ConsumeRt_Main_High",
+        Mid: "ConsumeRt_Main_Mid",
+        Low: "ConsumeRt_Main_Low",
+      },
+      Low: {
+        High: "ConsumeRt_Main_Low_High",
+        Mid: "ConsumeRt_Main_Low_Mid",
+        Low: "ConsumeRt_Main_Low_Low",
+      },
+    } as const
+
+    const high = ISM[keyObj[inkSaverLvl].High]
+    const mid = ISM[keyObj[inkSaverLvl].Mid]
+    const low = ISM[keyObj[inkSaverLvl].Low]
+    const highMidLow = [high, mid, low]
+    const effect = getEffect(highMidLow, amount)
+    return {
+      ability: "ISM" as Ability,
+      explanation: `Main weapon consumes ${(effect[0] * 100).toFixed(
+        2
+      )}% of ink it normally does`,
+    }
+  }
+
+  const abilityFunctions: Partial<Record<
+    Ability,
+    (amount: number) => Explanation
+  >> = {
+    ISM: calculateISM,
+  } as const
 
   useEffect(() => {
+    if (!build.weapon) return
+    console.log("usingEffect")
     const AP = buildToAP(build)
 
     const newExplanations: Explanation[] = []

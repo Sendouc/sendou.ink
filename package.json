@@ -16,8 +16,8 @@
   "author": "Sendou",
   "license": "ISC",
   "dependencies": {
-    "apollo-server": "^2.12.0",
-    "apollo-server-express": "^2.12.0",
+    "apollo-server": "^2.13.0",
+    "apollo-server-express": "^2.13.0",
     "axios": "^0.19.2",
     "btoa": "^1.2.1",
     "connect-mongo": "^3.2.0",

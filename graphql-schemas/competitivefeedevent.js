@@ -11,6 +11,9 @@ const typeDef = gql`
       event: CompetitiveFeedEventInput!
       lohiToken: String!
     ): Boolean!
+    updateCompetitiveFeedEvent(
+      event: UpdateCompetitiveFeedEventInput!
+    ): Boolean!
   }
   type CompetitiveFeedEvent {
     name: String!
@@ -33,6 +36,15 @@ const typeDef = gql`
     poster_discriminator: String!
     message_discord_id: String!
     message_url: String!
+    discord_invite_url: String!
+    picture_url: String
+  }
+
+  input UpdateCompetitiveFeedEventInput {
+    name: String!
+    date: String!
+    description: String!
+    message_discord_id: String!
     discord_invite_url: String!
     picture_url: String
   }
@@ -75,6 +87,52 @@ const resolvers = {
       await newCompFeedEvent.save()
 
       return true
+    },
+    updateCompetitiveFeedEvent: async (_root, { event }, ctx) => {
+      if (!ctx.user) throw new AuthenticationError("not logged in")
+
+      const existingEvent = await CompetitiveFeedEvent.findOne({
+        message_discord_id: event.message_discord_id,
+      })
+      if (!existingEvent)
+        throw new UserInputError("no event matching message_discord_id")
+
+      if (existingEvent.poster_discord_id !== ctx.user.discord_id) {
+        throw new AuthenticationError("no permissions to edit the event")
+      }
+
+      /* name: String!
+    date: String!
+    description: String!
+    message_discord_id: String!
+    discord_invite_url: String!
+    picture_url: String
+    */
+
+      if (event.name !== existingEvent.name) {
+        const eventWithName = await CompetitiveFeedEvent.findOne({
+          name: event.name,
+        })
+        if (!eventWithName) {
+          throw new UserInputError("tournament with this name already exists")
+        }
+      }
+
+      const dateNow = new Date()
+      const newDate = new Date(event.date)
+
+      if (!newDate) {
+        throw new UserInputError("invalid new date")
+      }
+
+      if (newDate.getTime() < dateNow.getTime()) {
+        throw new UserInputError("new date in the past")
+      }
+
+      await CompetitiveFeedEvent.update(
+        { message_discord_id: event.message_discord_id },
+        { $set: { ...event } }
+      )
     },
   },
 }

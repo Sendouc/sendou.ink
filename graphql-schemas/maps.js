@@ -107,7 +107,6 @@ const resolvers = {
         })
       })
 
-      console.log(count)
       return true
     },
   },

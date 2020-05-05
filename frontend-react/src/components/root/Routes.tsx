@@ -3,17 +3,16 @@ import { Router } from "@reach/router"
 import Loading from "../common/Loading"
 import NotFound from "./NotFound"
 import { ScrollToTop } from "./ScrollToTop"
-import AdminPage from "../admin/AdminPage"
-import BuildAnalyzerPage from "../analyzer/BuildAnalyzerPage"
 
 const HomePage = lazy(() => import("../home/HomePage"))
 const UserPage = lazy(() => import("../user/UserPage"))
 const UserSearchPage = lazy(() => import("../usersearch/UserSearchPage"))
 const MarkdownHelpPage = lazy(() => import("../markdown/MarkdownHelpPage"))
 const BuildsPage = lazy(() => import("../builds/BuildsPage"))
-const BuildsAnalyzerPage = lazy(() => import("../analyzer/BuildAnalyzerPage"))
+const BuildAnalyzerPage = lazy(() => import("../analyzer/BuildAnalyzerPage"))
 const CalendarPage = lazy(() => import("../calendar/CalendarPage"))
 const TournamentsPage = lazy(() => import("../tournaments/TournamentsPage"))
+const EventPage = lazy(() => import("../events/EventsPage"))
 const TournamentsDetailsPage = lazy(() =>
   import("../tournaments/TournamentDetailsPage")
 )
@@ -31,6 +30,7 @@ const MapVotingHistoryPage = lazy(() => import("../plus/MapVotingHistoryPage"))
 const MapVoting = lazy(() => import("../plus/MapVoting"))
 const About = lazy(() => import("./About"))
 const Links = lazy(() => import("./Links"))
+const AdminPage = lazy(() => import("../admin/AdminPage"))
 
 const Routes: React.FC = () => {
   return (
@@ -44,7 +44,8 @@ const Routes: React.FC = () => {
           <MarkdownHelpPage path="/markdown" />
           <TeamPage path="/t/:name" />
           <BuildsPage path="/builds" />
-          <BuildAnalyzerPage path="/analyzer" />
+          {/*<BuildAnalyzerPage path="/analyzer" />*/}
+          <EventPage path="/event" />
           <MapPlannerPage path="/plans" />
           <CalendarPage path="/calendar" />
           <TournamentsPage path="/tournaments" />

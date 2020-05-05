@@ -6,21 +6,7 @@ import { Box, Flex } from "@chakra-ui/core"
 import DividingBox from "../common/DividingBox"
 import AbilityIcon from "./AbilityIcon"
 import MyThemeContext from "../../themeContext"
-
-const mainOnlyAbilities = [
-  "CB",
-  "LDE",
-  "OG",
-  "T",
-  "H",
-  "NS",
-  "TI",
-  "RP",
-  "AD",
-  "DR",
-  "SJ",
-  "OS",
-] as const
+import { mainOnlyAbilities } from "../../utils/lists"
 
 interface ViewAPProps {
   build: Build
@@ -35,7 +21,7 @@ const ViewAP: React.FC<ViewAPProps> = ({ build }) => {
   ]
 
   const abilityToPoints: Partial<Record<Ability, number>> = {}
-  abilityArrays.forEach(arr =>
+  abilityArrays.forEach((arr) =>
     arr.forEach((ability, index) => {
       let abilityPoints = index === 0 ? 10 : 3
       if (mainOnlyAbilities.indexOf(ability as any) !== -1) abilityPoints = 999
@@ -59,7 +45,7 @@ const ViewAP: React.FC<ViewAPProps> = ({ build }) => {
   const APArrays = (Object.keys(pointsToAbilities) as Array<
     keyof typeof pointsToAbilities
   >)
-    .map(points => [points, pointsToAbilities[points as any]])
+    .map((points) => [points, pointsToAbilities[points as any]])
     .sort((a1, a2) => parseInt(a2[0] as string) - parseInt(a1[0] as string))
 
   let indexToPrintAPAt = APArrays[0][0] === "999" ? 1 : 0
