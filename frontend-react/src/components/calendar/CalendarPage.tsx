@@ -10,7 +10,7 @@ import Loading from "../common/Loading"
 import Error from "../common/Error"
 import { getWeek, ordinal_suffix_of } from "../../utils/helperFunctions"
 import SubHeader from "../common/SubHeader"
-import { Box, Badge, Flex } from "@chakra-ui/core"
+import { Box, Badge, Flex, Divider } from "@chakra-ui/core"
 import { months, days } from "../../utils/lists"
 import MyThemeContext from "../../themeContext"
 import TournamentInfo from "./TournamentInfo"
@@ -85,7 +85,8 @@ const CalendarPage: React.FC<RouteComponentProps> = () => {
           </React.Fragment>
         )
       })}
-      <Box color={grayWithShade} mt="2em">
+      <Divider my="2em" />
+      <Box color={grayWithShade}>
         All events listed in your local time: {new Date().toTimeString()}
         <p style={{ marginTop: "0.5em" }}>
           If you want your event displayed here message Sendou#0043 on Discord

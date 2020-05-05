@@ -5,6 +5,7 @@ export interface CompetitiveFeedEvent {
   date: string
   description: string
   message_url: string
+  message_discord_id: string
   discord_invite_url: string
   picture_url?: string
   poster_discord_user: {

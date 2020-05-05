@@ -14,6 +14,7 @@ const typeDef = gql`
     updateCompetitiveFeedEvent(
       event: UpdateCompetitiveFeedEventInput!
     ): Boolean!
+    deleteCompetitiveFeedEvent(message_discord_id: String!): Boolean!
   }
   type CompetitiveFeedEvent {
     name: String!
@@ -101,19 +102,11 @@ const resolvers = {
         throw new AuthenticationError("no permissions to edit the event")
       }
 
-      /* name: String!
-    date: String!
-    description: String!
-    message_discord_id: String!
-    discord_invite_url: String!
-    picture_url: String
-    */
-
       if (event.name !== existingEvent.name) {
         const eventWithName = await CompetitiveFeedEvent.findOne({
           name: event.name,
         })
-        if (!eventWithName) {
+        if (eventWithName) {
           throw new UserInputError("tournament with this name already exists")
         }
       }
@@ -129,10 +122,27 @@ const resolvers = {
         throw new UserInputError("new date in the past")
       }
 
-      await CompetitiveFeedEvent.update(
+      await CompetitiveFeedEvent.updateOne(
         { message_discord_id: event.message_discord_id },
         { $set: { ...event } }
       )
+
+      return true
+    },
+    deleteCompetitiveFeedEvent: async (_root, { message_discord_id }, ctx) => {
+      if (!ctx.user) throw new AuthenticationError("not logged in")
+
+      const event = await CompetitiveFeedEvent.findOne({
+        message_discord_id,
+      })
+
+      if (!event) throw new UserInputError("no event matching the id")
+
+      if (event.poster_discord_id !== ctx.user.discord_id)
+        throw new AuthenticationError("no permissions to remove the post")
+
+      await CompetitiveFeedEvent.deleteOne({ message_discord_id })
+      return true
     },
   },
 }
