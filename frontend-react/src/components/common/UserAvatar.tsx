@@ -16,7 +16,7 @@ const UserAvatar: React.FC<UserAvatarProps & BoxProps> = ({
   return (
     <Avatar
       name={name}
-      src={`https://avatars.io/twitter/${twitterName}`}
+      //src={`https://avatars.io/twitter/${twitterName}`}
       size={size}
       {...props}
     />
