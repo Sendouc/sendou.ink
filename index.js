@@ -34,6 +34,7 @@ passport.use(
         username: profile.username,
         discriminator: profile.discriminator,
         discord_id: profile.id,
+        avatar: profile.avatar,
       }
       for (var i = 0; i < profile.connections.length; i++) {
         const connection = profile.connections[i]

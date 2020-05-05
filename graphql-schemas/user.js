@@ -38,6 +38,7 @@ const typeDef = gql`
     username: String!
     "Discord discriminator. For example with Sendou#0043 0043 is the discriminator."
     discriminator: String!
+    avatar: String
     discord_id: String!
     twitch_name: String
     twitter_name: String
@@ -87,7 +88,7 @@ const resolvers = {
           team: "5e3ecc0ea7dd3830303eaaa7",
           discord_id: "79237403620945920",
           __v: 0,
-          avatar: "2e292c1b5d1366c24a9e4b6c1cffc700",
+          avatar: "a22c9557975494f859242aaf9b317058",
           discriminator: "0043",
           twitch_name: "sendou",
           twitter_name: "sendouc",
