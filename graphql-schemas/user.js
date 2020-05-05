@@ -82,7 +82,7 @@ const resolvers = {
     avatar: (root) => {
       if (!root.avatar) return null
 
-      return `https://cdn.discordapp.com/avatars/${root.discord_id}/${root.avatar}.jpg`
+      return `https://cdn.discordapp.com/avatars/${root.discord_id}/${root.avatar}.`
     },
   },
   Query: {

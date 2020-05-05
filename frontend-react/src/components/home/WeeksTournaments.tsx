@@ -42,7 +42,11 @@ const WeeksTournaments: React.FC = () => {
             <Heading fontFamily="'Rubik', sans-serif" size="md">
               {tournament.name}
             </Heading>
-            <Flex alignItems="center" color={grayWithShade}>
+            <Flex
+              alignItems="center"
+              justifyContent="center"
+              color={grayWithShade}
+            >
               <Box as={FiClock} mr="0.5em" color={themeColorWithShade} />
               {new Date(parseInt(tournament.date)).toLocaleString()}
             </Flex>
