@@ -14,6 +14,7 @@ import { Box, Badge, Flex, Divider } from "@chakra-ui/core"
 import { months, days } from "../../utils/lists"
 import MyThemeContext from "../../themeContext"
 import TournamentInfo from "./TournamentInfo"
+import { Helmet } from "react-helmet-async"
 
 const badgeColor: { [key: string]: string } = {
   Friday: "purple",
@@ -36,6 +37,9 @@ const CalendarPage: React.FC<RouteComponentProps> = () => {
   const thisWeekNumber = getWeek(new Date())
   return (
     <>
+      <Helmet>
+        <title>Competitive Calendar | sendou.ink</title>
+      </Helmet>
       <PageHeader title="Competitive Calendar" />
       {events.map((event) => {
         const time = new Date(parseInt(event.date))
@@ -58,13 +62,15 @@ const CalendarPage: React.FC<RouteComponentProps> = () => {
 
         return (
           <React.Fragment key={event.discord_invite_url}>
-            {printWeekHeader && (
+            {printWeekHeader ? (
               <Box my="2em">
                 <SubHeader>
                   Week {weekNumber}{" "}
                   {thisWeekNumber === weekNumber && <>(This week)</>}
                 </SubHeader>
               </Box>
+            ) : (
+              <Divider my="2em" />
             )}
             {printDayHeader && (
               <Flex
