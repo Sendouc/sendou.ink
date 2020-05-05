@@ -1,13 +1,11 @@
-import React from "react"
-import { Weapon, CountryCode } from "../../types"
-import { useContext } from "react"
-import MyThemeContext from "../../themeContext"
-import { Link } from "@reach/router"
-import UserAvatar from "../common/UserAvatar"
-import WeaponImage from "../common/WeaponImage"
-import Flag from "../common/Flag"
-import { countries } from "../../utils/lists"
 import { Box } from "@chakra-ui/core"
+import { Link } from "@reach/router"
+import React, { useContext } from "react"
+import MyThemeContext from "../../themeContext"
+import { CountryCode, Weapon } from "../../types"
+import { countries } from "../../utils/lists"
+import Flag from "../common/Flag"
+import WeaponImage from "../common/WeaponImage"
 
 interface MemberCardProps {
   member: {

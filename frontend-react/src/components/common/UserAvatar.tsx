@@ -1,5 +1,5 @@
-import React, { useState } from "react"
 import { Avatar, BoxProps } from "@chakra-ui/core"
+import React, { useState } from "react"
 
 interface UserAvatarProps {
   name: string

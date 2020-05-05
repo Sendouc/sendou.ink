@@ -1,49 +1,32 @@
-import React, { useState, useContext } from "react"
-import Modal from "../elements/Modal"
 import { useMutation } from "@apollo/react-hooks"
 import {
-  useToast,
-  FormControl,
-  FormLabel,
-  RadioGroup,
-  Radio,
-  Flex,
   Box,
+  Flex,
+  FormControl,
   FormErrorMessage,
-  CheckboxGroup,
-  Checkbox,
   FormHelperText,
   Image,
+  useToast,
 } from "@chakra-ui/core"
-import MyThemeContext from "../../themeContext"
-import TextArea from "../elements/TextArea"
-import Button from "../elements/Button"
-import { FreeAgentPost } from "../../types"
+import React, { useState } from "react"
 import {
-  AddFreeAgentPostVars,
-  ADD_FREE_AGENT_POST,
-} from "../../graphql/mutations/addFreeAgentPost"
-import { FREE_AGENT_POSTS } from "../../graphql/queries/freeAgentPosts"
-import { UPDATE_FREE_AGENT_POST } from "../../graphql/mutations/updateFreeAgentPost"
-import { HIDE_FREE_AGENT_POST } from "../../graphql/mutations/hideFreeAgentPost"
-import Alert from "../elements/Alert"
-import { FREE_AGENT_MATCHES } from "../../graphql/queries/freeAgentMatches"
+  DeleteCompetitiveFeedEventVars,
+  DELETE_COMPETITIVE_FEED_EVENT,
+} from "../../graphql/mutations/deleteCompetitiveFeedEvent"
+import {
+  UpdateCompetitiveFeedEventVars,
+  UPDATE_COMPETITIVE_FEED_EVENT,
+} from "../../graphql/mutations/updateCompetitiveFeedEvent"
 import {
   CompetitiveFeedEvent,
   UPCOMING_EVENTS,
 } from "../../graphql/queries/upcomingEvents"
-import {
-  UPDATE_COMPETITIVE_FEED_EVENT,
-  UpdateCompetitiveFeedEventVars,
-} from "../../graphql/mutations/updateCompetitiveFeedEvent"
-import Input from "../elements/Input"
+import Button from "../elements/Button"
 import DatePicker from "../elements/DatePicker"
+import Input from "../elements/Input"
 import Label from "../elements/Label"
+import Modal from "../elements/Modal"
 import MarkdownInput from "../user/MarkdownInput"
-import {
-  DELETE_COMPETITIVE_FEED_EVENT,
-  DeleteCompetitiveFeedEventVars,
-} from "../../graphql/mutations/deleteCompetitiveFeedEvent"
 
 interface TournamentModalProps {
   closeModal: () => void
@@ -58,7 +41,6 @@ const TournamentModal: React.FC<TournamentModalProps> = ({
   const [showErrors, setShowErrors] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const toast = useToast()
-  const { themeColor, grayWithShade } = useContext(MyThemeContext)
 
   const [updateCompetitiveFeedEvent, { loading }] = useMutation<
     boolean,
