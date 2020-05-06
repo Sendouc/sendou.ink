@@ -95,7 +95,11 @@ const TournamentInfo: React.FC<TournamentInfoProps> = ({
           <>
             <Markdown value={tournament.description} />
             {tournament.picture_url && (
-              <Image borderRadius="5px" src={tournament.picture_url} />
+              <Image
+                borderRadius="5px"
+                maxH="500px"
+                src={tournament.picture_url}
+              />
             )}
           </>
         )}
