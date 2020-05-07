@@ -1,11 +1,8 @@
 import React, { useContext } from "react"
 import { Explanation } from "../../hooks/useAbilityEffects"
-import { Build, Ability } from "../../types"
-import { mainOnlyAbilities, abilitiesGameOrder } from "../../utils/lists"
-import { Flex, Box } from "@chakra-ui/core"
-import DividingBox from "../common/DividingBox"
 import MyThemeContext from "../../themeContext"
-import AbilityIcon from "../builds/AbilityIcon"
+import { Ability, Build } from "../../types"
+import { abilitiesGameOrder, mainOnlyAbilities } from "../../utils/lists"
 //import { mainOnlyAbilities } from "../../utils/lists"
 
 interface APWithInfoProps {

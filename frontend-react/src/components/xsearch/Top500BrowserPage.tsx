@@ -1,32 +1,30 @@
-import React, { useState, useContext } from "react"
 import { useQuery } from "@apollo/react-hooks"
-import { useQueryParams, StringParam, NumberParam } from "use-query-params"
-
-import Loading from "../common/Loading"
-import Error from "../common/Error"
+import { Badge, Box, Flex, Icon } from "@chakra-ui/core"
+import { Link, RouteComponentProps } from "@reach/router"
+import React, { useContext, useState } from "react"
+import { Helmet } from "react-helmet-async"
+import { Table, Tbody, Td, Th, Thead, Tr } from "react-super-responsive-table"
+import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css"
+import { NumberParam, StringParam, useQueryParams } from "use-query-params"
 import {
-  SEARCH_FOR_PLACEMENTS,
   SearchForPlacementsData,
   SearchForPlacementsVars,
+  SEARCH_FOR_PLACEMENTS,
 } from "../../graphql/queries/searchForPlacements"
-import WpnImage from "../common/WeaponImage"
-import { months, modesShort } from "../../utils/lists"
-import { RouteComponentProps, Link } from "@reach/router"
-import { Helmet } from "react-helmet-async"
-import { Box, Flex, Icon, Badge } from "@chakra-ui/core"
-import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table"
-import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css"
-import { ordinal_suffix_of } from "../../utils/helperFunctions"
-import { Weapon } from "../../types"
-import UserAvatar from "../common/UserAvatar"
-import MyThemeContext from "../../themeContext"
 import useBreakPoints from "../../hooks/useBreakPoints"
-import "./Top500BrowserPage.css"
-import Pagination from "../common/Pagination"
-import Top500Forms from "./Top500Forms"
+import MyThemeContext from "../../themeContext"
+import { Weapon } from "../../types"
+import { ordinal_suffix_of } from "../../utils/helperFunctions"
+import { modesShort, months } from "../../utils/lists"
+import Error from "../common/Error"
+import Loading from "../common/Loading"
 import PageHeader from "../common/PageHeader"
-import Button from "../elements/Button"
+import Pagination from "../common/Pagination"
+import WpnImage from "../common/WeaponImage"
 import Alert from "../elements/Alert"
+import Button from "../elements/Button"
+import "./Top500BrowserPage.css"
+import Top500Forms from "./Top500Forms"
 
 const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
   const { themeColorWithShade } = useContext(MyThemeContext)

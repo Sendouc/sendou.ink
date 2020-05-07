@@ -1,10 +1,8 @@
-import React from "react"
-import UserAvatar from "../common/UserAvatar"
-import { useContext } from "react"
-import MyThemeContext from "../../themeContext"
-import { FaTwitter, FaTrophy, FaDiscord } from "react-icons/fa"
-import { months } from "../../utils/lists"
 import { Box } from "@chakra-ui/core"
+import React, { useContext } from "react"
+import { FaDiscord, FaTrophy, FaTwitter } from "react-icons/fa"
+import MyThemeContext from "../../themeContext"
+import { months } from "../../utils/lists"
 
 interface LogoHeaderProps {
   name: string

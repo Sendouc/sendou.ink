@@ -1,5 +1,5 @@
+import { Box, Flex } from "@chakra-ui/core"
 import React from "react"
-import { Flex, Icon, Box } from "@chakra-ui/core"
 
 //https://stackoverflow.com/a/19303725
 function seededRandom(seed: number) {
@@ -41,6 +41,7 @@ const InTheZoneBanner: React.FC<InTheZoneBannerProps> = ({ runningNumber }) => {
       <img
         src="https://abload.de/img/itz_main_logog7jls.png"
         style={{ width: "128px" }}
+        alt="In The Zone logo"
       />
       <Box fontSize="70px" fontWeight="bolder" ml="0.2em">
         {runningNumber}
