@@ -15,20 +15,14 @@ import {
   clothingOnlyAbilities,
   shoesOnlyAbilities,
 } from "../../utils/lists"
-import APWithInfo from "./APWithInfo"
 import { Explanation } from "../../hooks/useAbilityEffects"
 
 interface EditableBuildProps {
   build: Partial<Build>
   setBuild: React.Dispatch<React.SetStateAction<Partial<Build>>>
-  explanations: Explanation[]
 }
 
-const EditableBuild: React.FC<EditableBuildProps> = ({
-  build,
-  setBuild,
-  explanations,
-}) => {
+const EditableBuild: React.FC<EditableBuildProps> = ({ build, setBuild }) => {
   const handleChange = (value: Object) => setBuild({ ...build, ...value })
 
   const handleAbilityButtonClick = (ability: Ability) => {
@@ -118,10 +112,7 @@ const EditableBuild: React.FC<EditableBuildProps> = ({
   }
   return (
     <>
-      <Flex mt="1em">
-        <ViewSlots build={build} onAbilityClick={handleClickBuildAbility} />
-        <APWithInfo explanations={explanations} build={build} />
-      </Flex>
+      <ViewSlots build={build} onAbilityClick={handleClickBuildAbility} />
       <Box mt="1em">
         <AbilityButtons
           onClick={(ability) => handleAbilityButtonClick(ability)}

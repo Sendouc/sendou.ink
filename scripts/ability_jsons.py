@@ -31,8 +31,6 @@ for code in ability_jsons:
         data = json.loads(url.read().decode())
         print_dict[lang_dict[code]] = data[code]
 
-print(json.dumps(print_dict, indent=4, sort_keys=True))
-
 weapon_dict = {}
 
 with urllib.request.urlopen(
@@ -42,7 +40,13 @@ with urllib.request.urlopen(
     for weapon_obj in data:
         weapon_dict[lang_dict[weapon_obj["Name"]]] = weapon_obj
 
-print(json.dumps(weapon_dict, indent=4, sort_keys=True))
+with urllib.request.urlopen(
+    "https://raw.githubusercontent.com/Leanny/leanny.github.io/master/data/Mush/latest/WeaponInfo_Sub.json"
+) as url:
+    data = json.loads(url.read().decode())
+    for weapon_obj in data:
+        if weapon_obj["Name"] in lang_dict:
+            weapon_dict[lang_dict[weapon_obj["Name"]]] = weapon_obj
 
 with open("ability_jsons_output/ability_data.json", "w") as fp:
     json.dump(print_dict, fp)

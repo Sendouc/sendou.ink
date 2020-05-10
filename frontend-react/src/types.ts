@@ -40,6 +40,21 @@ export type HeadGear = ElementType<typeof headGearEnglish>
 export type ClothingGear = ElementType<typeof clothingGearEnglish>
 export type ShoesGear = ElementType<typeof shoesGearEnglish>
 
+export type SubWeapon =
+  | "Splat Bomb"
+  | "Suction Bomb"
+  | "Burst Bomb"
+  | "Curling Bomb"
+  | "Autobomb"
+  | "Ink Mine"
+  | "Sprinkler"
+  | "Toxic Mist"
+  | "Point Sensor"
+  | "Splash Wall"
+  | "Squid Beakon"
+  | "Fizzy Bomb"
+  | "Torpedo"
+
 export interface Theme {
   colorMode: "dark" | "light"
   bgColor: string
