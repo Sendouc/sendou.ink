@@ -38,14 +38,36 @@ with urllib.request.urlopen(
 ) as url:
     data = json.loads(url.read().decode())
     for weapon_obj in data:
-        weapon_dict[lang_dict[weapon_obj["Name"]]] = weapon_obj
+        weapon_dict[lang_dict[weapon_obj["Name"]].strip()] = weapon_obj
 
 with urllib.request.urlopen(
     "https://raw.githubusercontent.com/Leanny/leanny.github.io/master/data/Mush/latest/WeaponInfo_Sub.json"
 ) as url:
     data = json.loads(url.read().decode())
     for weapon_obj in data:
-        if weapon_obj["Name"] in lang_dict:
+        name = weapon_obj["Name"]
+        if (
+            name in lang_dict
+            and "Rival" not in name
+            and "LastBoss" not in name
+            and "VictoryClam" != name
+            and "Mission" not in name
+        ):
+            normalized_name = name.replace("_", "")
+            if normalized_name == "TimerTrap":
+                normalized_name = "Trap"
+            elif normalized_name == "PoisonFog":
+                normalized_name = "BombPoisonFog"
+            elif normalized_name == "PointSensor":
+                normalized_name = "BombPointSensor"
+            elif normalized_name == "Flag":
+                normalized_name = "JumpBeacon"
+            with urllib.request.urlopen(
+                f"https://raw.githubusercontent.com/Leanny/leanny.github.io/master/data/Parameter/latest/WeaponBullet/{normalized_name}.json"
+            ) as url2:
+                data2 = json.loads(url2.read().decode())
+                mInkConsume = data2["param"]["mInkConsume"]
+            weapon_obj["mInkConsume"] = mInkConsume
             weapon_dict[lang_dict[weapon_obj["Name"]]] = weapon_obj
 
 with open("ability_jsons_output/ability_data.json", "w") as fp:

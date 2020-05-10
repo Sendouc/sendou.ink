@@ -3197,24 +3197,81 @@
     "Sub": "Bomb_Tako"
   },
   "Splat Bomb": {
-    "Id": 1000,
+    "Id": 0,
     "InkSaverType": "C",
-    "Name": "Bomb_Splash"
+    "Name": "Bomb_Splash",
+    "mInkConsume": 0.7
   },
-  "Suction Bomb": { "Id": 1, "InkSaverType": "C", "Name": "Bomb_Suction" },
-  "Burst Bomb": { "Id": 2, "InkSaverType": "A", "Name": "Bomb_Quick" },
+  "Suction Bomb": {
+    "Id": 1,
+    "InkSaverType": "C",
+    "Name": "Bomb_Suction",
+    "mInkConsume": 0.7
+  },
+  "Burst Bomb": {
+    "Id": 2,
+    "InkSaverType": "A",
+    "Name": "Bomb_Quick",
+    "mInkConsume": 0.4
+  },
   "Curling Bomb": {
-    "Id": 1100,
+    "Id": 3,
     "InkSaverType": "C",
-    "Name": "Bomb_Curling"
+    "Name": "Bomb_Curling",
+    "mInkConsume": 0.7
   },
-  "Autobomb": { "Id": 1200, "InkSaverType": "C", "Name": "Bomb_Robo" },
-  "Ink Mine": { "Id": 5, "InkSaverType": "D", "Name": "TimerTrap" },
-  "Sprinkler": { "Id": 6, "InkSaverType": "D", "Name": "Sprinkler" },
-  "Toxic Mist": { "Id": 7, "InkSaverType": "B", "Name": "PoisonFog" },
-  "Point Sensor": { "Id": 8, "InkSaverType": "B", "Name": "PointSensor" },
-  "Splash Wall": { "Id": 9, "InkSaverType": "C", "Name": "Shield" },
-  "Squid Beakon": { "Id": 10, "InkSaverType": "D", "Name": "Flag" },
-  "Fizzy Bomb": { "Id": 11, "InkSaverType": "B", "Name": "Bomb_Piyo" },
-  "Torpedo": { "Id": 12, "InkSaverType": "C", "Name": "Bomb_Tako" }
+  "Autobomb": {
+    "Id": 4,
+    "InkSaverType": "B",
+    "Name": "Bomb_Robo",
+    "mInkConsume": 0.55
+  },
+  "Ink Mine": {
+    "Id": 5,
+    "InkSaverType": "D",
+    "Name": "TimerTrap",
+    "mInkConsume": 0.6
+  },
+  "Sprinkler": {
+    "Id": 6,
+    "InkSaverType": "D",
+    "Name": "Sprinkler",
+    "mInkConsume": 0.6
+  },
+  "Toxic Mist": {
+    "Id": 7,
+    "InkSaverType": "B",
+    "Name": "PoisonFog",
+    "mInkConsume": 0.6
+  },
+  "Point Sensor": {
+    "Id": 8,
+    "InkSaverType": "B",
+    "Name": "PointSensor",
+    "mInkConsume": 0.45
+  },
+  "Splash Wall": {
+    "Id": 9,
+    "InkSaverType": "C",
+    "Name": "Shield",
+    "mInkConsume": 0.6
+  },
+  "Squid Beakon": {
+    "Id": 10,
+    "InkSaverType": "D",
+    "Name": "Flag",
+    "mInkConsume": 0.75
+  },
+  "Fizzy Bomb": {
+    "Id": 11,
+    "InkSaverType": "B",
+    "Name": "Bomb_Piyo",
+    "mInkConsume": 0.6
+  },
+  "Torpedo": {
+    "Id": 12,
+    "InkSaverType": "C",
+    "Name": "Bomb_Tako",
+    "mInkConsume": 0.65
+  }
 }

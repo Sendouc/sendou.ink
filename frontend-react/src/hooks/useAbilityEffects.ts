@@ -15,6 +15,7 @@ interface WeaponDataFromJson {
   InkSaverLv?: "Middle" | "High" | string
   InkSaverType?: "A" | "B" | "C" | "D" | string
   Sub?: string
+  mInkConsume?: number
 }
 
 function buildToAP(build: Partial<Build>) {
@@ -100,6 +101,9 @@ export default function useAbilityEffects(build: Partial<Build>) {
     const subInternal = buildWeaponData.Sub! as keyof typeof internalEnglish
     const subWeapon = internalEnglish[subInternal] as SubWeapon
 
+    const subWeaponData = weaponData[subWeapon]
+    const inkConsumption = subWeaponData.mInkConsume!
+
     const letterGrade = weaponData[subWeapon].InkSaverType
     const highKey = `ConsumeRt_Sub_${letterGrade}_High` as keyof typeof ISS
     const midKey = `ConsumeRt_Sub_${letterGrade}_Mid` as keyof typeof ISS
@@ -112,8 +116,8 @@ export default function useAbilityEffects(build: Partial<Build>) {
     const effect = getEffect(highMidLow, amount)
     return [
       {
-        title: "Sub weapon ink consumption",
-        effect: `${parseFloat((effect[0] * 100).toFixed(2))}%`,
+        title: `${subWeapon} ink consumption`,
+        effect: `${parseFloat((effect[0] * inkConsumption * 100).toFixed(2))}%`,
         effectFromMax: effect[1] * 100,
       },
     ]
