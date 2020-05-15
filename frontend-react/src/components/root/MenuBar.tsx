@@ -1,25 +1,28 @@
-import React, { useRef, useContext } from "react"
 import { Box, Flex, IconButton, useDisclosure } from "@chakra-ui/core"
-import Logo from "./Logo"
-import { MdDehaze } from "react-icons/md"
-import MobileNav from "./MobileNav"
-import MyThemeContext from "../../themeContext"
 import { Link } from "@reach/router"
+import React, { useContext, useRef } from "react"
+import { MdDehaze } from "react-icons/md"
+import MyThemeContext from "../../themeContext"
+import Logo from "./Logo"
+import MobileNav from "./MobileNav"
 
 export const MenuBar: React.FC = () => {
   const btnRef = useRef<HTMLElement | null>(null)
 
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const { colorMode, darkerBgColor, textColor } = useContext(MyThemeContext)
-  const shadow = {
-    light: "0px 1px 10px 8px rgba(0,0,0,0.15)",
-    dark: "0px 1px 10px 8px rgba(255,255,255,0.04)",
-  }
+  const {
+    darkerBgColor,
+    textColor,
+    colorMode,
+    themeColorHex,
+    themeColorHexLighter,
+  } = useContext(MyThemeContext)
   return (
     <Box
       bg={darkerBgColor}
-      boxShadow={shadow[colorMode]}
       as="header"
+      borderBottom="2px solid"
+      borderColor={colorMode === "light" ? themeColorHex : themeColorHexLighter}
       position="fixed"
       top="0"
       zIndex={4}
