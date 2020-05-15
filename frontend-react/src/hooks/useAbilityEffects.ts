@@ -16,6 +16,8 @@ interface WeaponDataFromJson {
   InkSaverType?: "A" | "B" | "C" | "D" | string
   Sub?: string
   mInkConsume?: number
+  ShotMoveVelType?: "A" | "B" | "C" | "D" | "E" | string
+  MoveVelLv?: "Low" | "Middle" | "High" | string
 }
 
 function buildToAP(build: Partial<Build>) {
@@ -117,7 +119,9 @@ export default function useAbilityEffects(build: Partial<Build>) {
     return [
       {
         title: `${subWeapon} ink consumption`,
-        effect: `${parseFloat((effect[0] * inkConsumption * 100).toFixed(2))}%`,
+        effect: `${parseFloat(
+          (effect[0] * inkConsumption * 100).toFixed(2)
+        )}% of ink tank`,
         effectFromMax: effect[1] * 100,
       },
     ]
@@ -135,16 +139,75 @@ export default function useAbilityEffects(build: Partial<Build>) {
     const highMidLowSquid = [highSquid, midSquid, lowSquid]
     const effectSquid = getEffect(highMidLowSquid, amount)
 
-    const highKeyHumanoid = "RecoverNrmlFrm_Ink_High"
+    /*const highKeyHumanoid = "RecoverNrmlFrm_Ink_High"
     const midKeyHumanoid = "RecoverNrmlFrm_Ink_Mid"
     const lowKeyHumanoid = "RecoverNrmlFrm_Ink_Low"
     const highHumanoid = REC[highKeyHumanoid]
     const midHumanoid = REC[midKeyHumanoid]
     const lowHumanoid = REC[lowKeyHumanoid]
     const highMidLowHumanoid = [highHumanoid, midHumanoid, lowHumanoid]
-    const effectHumanoid = getEffect(highMidLowHumanoid, amount)
+    const effectHumanoid = getEffect(highMidLowHumanoid, amount)*/
 
     return [
+      {
+        title: "Ink tank recovery from empty to full (squid form)",
+        effect: `${Math.ceil(effectSquid[0])} frames (${parseFloat(
+          (effectSquid[0] / 60).toFixed(2)
+        )} seconds)`,
+        effectFromMax: effectSquid[1] * 100,
+      },
+      /*{
+        title: "Ink tank recovery from empty to full (humanoid form)",
+        effect: `${Math.ceil(effectHumanoid[0])} frames (${parseFloat(
+          (effectHumanoid[0] / 60).toFixed(2)
+        )} seconds)`,
+        effectFromMax: effectHumanoid[1] * 100,
+      },*/
+    ]
+  }
+
+  function calculateRSU(amount: number) {
+    const RSU = abilityJson["Run Speed Up"]
+
+    const buildWeaponData = weaponData[build.weapon!]
+    const grade = buildWeaponData.ShotMoveVelType // "A" | "B" | "C" | "D" | "E"
+    const moveLv = buildWeaponData.MoveVelLv // "Low" | "Middle" | "High"
+
+    const commonKey =
+      moveLv === "Middle"
+        ? ""
+        : moveLv === "Low"
+        ? "_BigWeapon"
+        : "_ShortWeapon"
+    const highKey = `MoveVel_Human${commonKey}_High` as keyof typeof RSU
+    const midKey = `MoveVel_Human${commonKey}_Mid` as keyof typeof RSU
+    const lowKey = `MoveVel_Human${commonKey}_Low` as keyof typeof RSU
+    console.log("moveLv", moveLv)
+    console.log("commonKey", commonKey)
+
+    const high = RSU[highKey]
+    const mid = RSU[midKey]
+    const low = RSU[lowKey]
+    const highMidLow = [high, mid, low]
+
+    const moveEffect = getEffect(highMidLow, amount)
+
+    const highShootKey = `MoveVelRt_Human_Shot${grade}_High` as keyof typeof RSU
+    const midShootKey = `MoveVelRt_Human_Shot${grade}_Mid` as keyof typeof RSU
+    const lowShootKey = `MoveVelRt_Human_Shot${grade}_Low` as keyof typeof RSU
+    const highShoot = RSU[highShootKey]
+    const midShoot = RSU[midShootKey]
+    const lowShoot = RSU[lowShootKey]
+    const highMidLowShoot = [highShoot, midShoot, lowShoot]
+
+    const shootEffect = getEffect(highMidLowShoot, amount)
+
+    console.log("moveEffect", moveEffect)
+    console.log("shootEffect", shootEffect)
+
+    return []
+
+    /*return [
       {
         title: "Ink tank recovery from empty to full (squid form)",
         effect: `${Math.ceil(effectSquid[0])} frames (${parseFloat(
@@ -159,7 +222,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         )} seconds)`,
         effectFromMax: effectHumanoid[1] * 100,
       },
-    ]
+    ]*/
   }
 
   const abilityFunctions: Partial<Record<
@@ -169,6 +232,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
     ISM: calculateISM,
     ISS: calculateISS,
     REC: calculateREC,
+    RSU: calculateRSU,
   } as const
 
   useEffect(() => {

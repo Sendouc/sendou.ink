@@ -61,7 +61,7 @@ const BuildStats: React.FC<APWithInfoProps> = ({ explanations, build }) => {
   return (
     <>
       {explanations.map((explanation) => (
-        <Box my="1em">
+        <Box my="1em" key={explanation.title}>
           <BuildStat
             title={explanation.title}
             effect={explanation.effect}
