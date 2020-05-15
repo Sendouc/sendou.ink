@@ -1,20 +1,22 @@
-import React, { useContext } from "react"
 import { useQuery } from "@apollo/react-hooks"
-import {
-  UPCOMING_EVENTS,
-  UpcomingEventsData,
-} from "../../graphql/queries/upcomingEvents"
+import { Badge, Box, Divider, Flex } from "@chakra-ui/core"
 import { RouteComponentProps } from "@reach/router"
-import PageHeader from "../common/PageHeader"
-import Loading from "../common/Loading"
-import Error from "../common/Error"
-import { getWeek, ordinal_suffix_of } from "../../utils/helperFunctions"
-import SubHeader from "../common/SubHeader"
-import { Box, Badge, Flex, Divider } from "@chakra-ui/core"
-import { months, days } from "../../utils/lists"
-import MyThemeContext from "../../themeContext"
-import TournamentInfo from "./TournamentInfo"
+import React, { useContext, useState } from "react"
 import { Helmet } from "react-helmet-async"
+import {
+  UpcomingEventsData,
+  UPCOMING_EVENTS,
+} from "../../graphql/queries/upcomingEvents"
+import MyThemeContext from "../../themeContext"
+import { getWeek, ordinal_suffix_of } from "../../utils/helperFunctions"
+import { days, months } from "../../utils/lists"
+import Error from "../common/Error"
+import Loading from "../common/Loading"
+import PageHeader from "../common/PageHeader"
+import SubHeader from "../common/SubHeader"
+import TournamentInfo from "./TournamentInfo"
+import Input from "../elements/Input"
+import { FaFilter } from "react-icons/fa"
 
 const badgeColor: { [key: string]: string } = {
   Friday: "purple",
@@ -25,6 +27,7 @@ const badgeColor: { [key: string]: string } = {
 const CalendarPage: React.FC<RouteComponentProps> = () => {
   const { darkerBgColor, grayWithShade } = useContext(MyThemeContext)
   const { data, error, loading } = useQuery<UpcomingEventsData>(UPCOMING_EVENTS)
+  const [filter, setFilter] = useState("")
 
   if (loading) return <Loading />
   if (error) return <Error errorMessage={error.message} />
@@ -35,13 +38,27 @@ const CalendarPage: React.FC<RouteComponentProps> = () => {
   let lastPrintedDay: number | null = null
   let lastPrintedMonth: number | null = null
   const thisWeekNumber = getWeek(new Date())
+
+  const filteredTournaments = events.filter(
+    (event) =>
+      event.name.toLowerCase().includes(filter.toLowerCase()) ||
+      `${event.poster_discord_user.username}#${event.poster_discord_user.discord_id}`
+        .toLowerCase()
+        .includes(filter.toLowerCase())
+  )
   return (
     <>
       <Helmet>
         <title>Competitive Calendar | sendou.ink</title>
       </Helmet>
       <PageHeader title="Competitive Calendar" />
-      {events.map((event) => {
+      <Input
+        value={filter}
+        setValue={(value) => setFilter(value)}
+        label="Filter tournaments"
+        icon={FaFilter}
+      />
+      {filteredTournaments.map((event) => {
         const time = new Date(parseInt(event.date))
         const weekNumber = getWeek(time)
         const thisDay = time.getDate()

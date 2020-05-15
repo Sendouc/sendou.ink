@@ -4,9 +4,12 @@ import {
   InputGroup,
   InputLeftAddon,
   Box,
+  InputLeftElement,
+  Icon,
 } from "@chakra-ui/core"
 import MyThemeContext from "../../themeContext"
 import Label from "./Label"
+import { IconType } from "react-icons/lib/cjs"
 
 interface InputProps {
   value?: string
@@ -17,6 +20,7 @@ interface InputProps {
   disabled?: boolean
   textLeft?: string
   size?: "sm" | "md" | "lg"
+  icon?: IconType
 }
 
 const Input: React.FC<InputProps> = ({
@@ -28,8 +32,9 @@ const Input: React.FC<InputProps> = ({
   limit,
   textLeft,
   size,
+  icon,
 }) => {
-  const { themeColorHex, grayWithShade, darkerBgColor } = useContext(
+  const { themeColorHex, grayWithShade, darkerBgColor, textColor } = useContext(
     MyThemeContext
   )
 
@@ -41,6 +46,8 @@ const Input: React.FC<InputProps> = ({
       {label && <Label required={required}>{label}</Label>}
       <InputGroup>
         {textLeft && <InputLeftAddon>{textLeft}</InputLeftAddon>}
+        <InputLeftElement children={<Box as={icon} color={textColor} />} />
+        {icon && <InputLeftElement color="white" children={icon} />}
         <ChakraInput
           value={value ?? ""}
           isDisabled={disabled}
