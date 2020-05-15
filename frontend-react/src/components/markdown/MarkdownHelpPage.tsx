@@ -42,19 +42,19 @@ const MarkdownHelpPage: React.FC<RouteComponentProps> = () => {
           <b>Mode emoji</b>
           <Flex flexDir="column">
             <Box>
-              :turf_war: -> <Emoji value=":turf_war:" />
+              :turf_war: -{">"} <Emoji value=":turf_war:" />
             </Box>
             <Box>
-              :splat_zones: -> <Emoji value=":splat_zones:" />
+              :splat_zones: -{">"} <Emoji value=":splat_zones:" />
             </Box>
             <Box>
-              :tower_control: -> <Emoji value=":tower_control:" />
+              :tower_control: -{">"} <Emoji value=":tower_control:" />
             </Box>
             <Box>
-              :rainmaker: -> <Emoji value=":rainmaker:" />
+              :rainmaker: -{">"} <Emoji value=":rainmaker:" />
             </Box>
             <Box>
-              :clam_blitz: -> <Emoji value=":clam_blitz:" />
+              :clam_blitz: -{">"} <Emoji value=":clam_blitz:" />
             </Box>
           </Flex>
         </p>
@@ -62,14 +62,14 @@ const MarkdownHelpPage: React.FC<RouteComponentProps> = () => {
           <b>Weapon emoji</b>
           <Flex flexDir="column">
             <Box>
-              :luna_blaster: ->{" "}
+              :luna_blaster: -{">"}{" "}
               <WeaponImage size="SMALL" englishName="Luna Blaster" />
             </Box>
             <Box>
-              :96_gal: -> <WeaponImage size="SMALL" englishName=".96 Gal" />
+              :96_gal: -{">"} <WeaponImage size="SMALL" englishName=".96 Gal" />
             </Box>
             <Box>
-              :custom_e-liter_4k_scope: ->{" "}
+              :custom_e-liter_4k_scope: -{">"}{" "}
               <WeaponImage size="SMALL" englishName="Custom E-liter 4K Scope" />
             </Box>
             <Box w="250px" my="0.5em">
@@ -90,13 +90,13 @@ const MarkdownHelpPage: React.FC<RouteComponentProps> = () => {
           <b>Ability emoji</b>
           <Flex flexDir="column">
             <Box>
-              :ssu: -> <Emoji value=":ssu:" />
+              :ssu: -{">"} <Emoji value=":ssu:" />
             </Box>
             <Box>
-              :t: -> <Emoji value=":t:" />
+              :t: -{">"} <Emoji value=":t:" />
             </Box>
             <Box>
-              :rp: -> <Emoji value=":rp:" />
+              :rp: -{">"} <Emoji value=":rp:" />
             </Box>
             <Box w="250px" my="0.5em">
               <Button onClick={() => setShowAbilities(!showAbilities)}>
@@ -116,13 +116,14 @@ const MarkdownHelpPage: React.FC<RouteComponentProps> = () => {
           <b>Gear emoji</b>
           <Flex flexDir="column">
             <Box>
-              :power_armor: -> <Emoji value=":power_armor:" />
+              :power_armor: -{">"} <Emoji value=":power_armor:" />
             </Box>
             <Box>
-              :olive_zekko_parka: -> <Emoji value=":olive_zekko_parka:" />
+              :olive_zekko_parka: -{">"} <Emoji value=":olive_zekko_parka:" />
             </Box>
             <Box>
-              :black_norimaki_750s: -> <Emoji value=":black_norimaki_750s:" />
+              :black_norimaki_750s: -{">"}{" "}
+              <Emoji value=":black_norimaki_750s:" />
             </Box>
             <Box w="250px" my="0.5em">
               <Button onClick={() => setShowGear(!showGear)}>
