@@ -2,7 +2,7 @@ import { useQuery } from "@apollo/react-hooks"
 import { Box, Flex, Heading, Image } from "@chakra-ui/core"
 import { Link } from "@reach/router"
 import React, { useContext, useState } from "react"
-import { FaDiscord, FaEdit, FaInfo } from "react-icons/fa"
+import { FaEdit, FaInfo } from "react-icons/fa"
 import { FiClock } from "react-icons/fi"
 import { CompetitiveFeedEvent } from "../../graphql/queries/upcomingEvents"
 import { USER } from "../../graphql/queries/user"
@@ -66,7 +66,7 @@ const TournamentInfo: React.FC<TournamentInfoProps> = ({
         <Flex flexWrap="wrap" my="1em">
           <Box mb="1em" mr="1em">
             <a href={tournament.discord_invite_url}>
-              <Button outlined icon={FaDiscord} width="150px">
+              <Button outlined icon={"discord" as any} width="150px">
                 Join Discord
               </Button>
             </a>

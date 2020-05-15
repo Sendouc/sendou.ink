@@ -1,9 +1,9 @@
-import React, { useState, useContext } from "react"
-import { Image, Box, Flex } from "@chakra-ui/core"
+import { Box, Flex, Icon, Image } from "@chakra-ui/core"
 import { Link } from "@reach/router"
-import { footerSquid, footerOcto } from "../../assets/imageImports"
+import React, { useContext, useState } from "react"
+import { FaGithub, FaTwitch, FaTwitter } from "react-icons/fa"
+import { footerOcto, footerSquid } from "../../assets/imageImports"
 import MyThemeContext from "../../themeContext"
-import { FaTwitter, FaGithub, FaDiscord, FaTwitch } from "react-icons/fa"
 
 const Footer: React.FC = () => {
   const [footerBojoing] = useState(
@@ -43,7 +43,7 @@ const Footer: React.FC = () => {
         </Flex>
         <Flex alignItems="center" flexWrap="wrap" justifyContent="center">
           <a href="https://discord.gg/J6NqUvt">
-            <Box as={FaDiscord} size="30px" m="1em" />
+            <Icon name={"discord" as string} size="30px" m="1em" />
           </a>
           <a href="https://twitter.com/sendouc">
             <Box as={FaTwitter} size="30px" m="1em" />
