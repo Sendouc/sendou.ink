@@ -405,6 +405,7 @@ const gear = [
   "Red V-Neck Limited Tee",
   "Retro Sweat",
   "Splatfest Tee",
+  "Splatfest Tee Replica",
   "Squid Yellow Layered LS",
   "Squidmark LS",
   "Squidmark Sweat",

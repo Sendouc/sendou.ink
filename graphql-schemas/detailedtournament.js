@@ -296,7 +296,7 @@ const resolvers = {
     },
   },
   Query: {
-    plusDraftCups: async (root, args) => {
+    plusDraftCups: async () => {
       const leaderboards = await Leaderboard.find()
         .or([{ type: "DRAFTONE" }, { type: "DRAFTTWO" }])
         .populate("players.discord_user")
@@ -306,7 +306,7 @@ const resolvers = {
 
       return { leaderboards, tournaments }
     },
-    searchForDraftCup: async (root, args) => {
+    searchForDraftCup: async (_, args) => {
       const tournament = await DetailedTournament.findOne({
         name: { $regex: new RegExp(args.name, "i") },
       }).populate("top_3_discord_users")
@@ -327,7 +327,7 @@ const resolvers = {
     },
   },
   Mutation: {
-    addDetailedTournament: async (root, args) => {
+    addDetailedTournament: async (_, args) => {
       if (args.lanistaToken !== process.env.LANISTA_TOKEN) {
         throw new AuthenticationError("Invalid token provided")
       }
