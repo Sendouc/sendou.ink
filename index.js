@@ -175,6 +175,8 @@ if (process.env.NODE_ENV === "production") {
 
 app.use(session(sess))
 
+app.use(compression())
+
 app.use(express.static("build"))
 
 app.use(passport.initialize())
@@ -198,8 +200,6 @@ app.get("/logout", function (req, res) {
   req.logout()
   res.redirect("/")
 })
-
-app.use(compression())
 
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "build", "index.html"))
