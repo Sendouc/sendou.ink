@@ -9,6 +9,7 @@ import {
   Button,
   Box,
   BoxProps,
+  PseudoBox,
 } from "@chakra-ui/core"
 import { Link } from "@reach/router"
 
@@ -27,20 +28,27 @@ interface BuildCardProps {
   showUser?: boolean
   canModify?: boolean
   setBuildBeingEdited?: (build: Build) => void
+  otherBuildCount?: number
+  onShowAllByUser?: () => void
 }
 
 const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
   build,
   defaultToAPView,
   canModify,
-  setBuildBeingEdited,
   showUser,
+  setBuildBeingEdited,
+  otherBuildCount,
+  onShowAllByUser,
   ...props
 }) => {
   const [apView, setApView] = useState(defaultToAPView)
-  const { themeColor, darkerBgColor, grayWithShade } = useContext(
-    MyThemeContext
-  )
+  const {
+    themeColor,
+    darkerBgColor,
+    grayWithShade,
+    themeColorWithShade,
+  } = useContext(MyThemeContext)
 
   useEffect(() => {
     setApView(defaultToAPView)
@@ -110,7 +118,12 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
         >
           {apView ? <ViewAP build={build} /> : <ViewSlots build={build} />}
         </Box>
-        <Box display="flex" justifyContent="space-between" mt="1em">
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mt="1em"
+        >
           {build.description ? (
             <Popover placement="top">
               <PopoverTrigger>
@@ -134,7 +147,21 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
               </PopoverContent>
             </Popover>
           ) : (
-            <Box w="24px" />
+            <Box w="40px" />
+          )}
+          {otherBuildCount && (
+            <PseudoBox
+              ml="8px"
+              fontSize="0.8em"
+              color={themeColorWithShade}
+              textAlign="center"
+              onClick={onShowAllByUser}
+              cursor="pointer"
+              _hover={{ textDecoration: "underline" }}
+            >
+              Show all {otherBuildCount} builds by{" "}
+              {build.discord_user!.username}
+            </PseudoBox>
           )}
           {canModify ? (
             <IconButton

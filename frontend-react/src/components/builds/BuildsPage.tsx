@@ -29,6 +29,7 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
   const [weapon, setWeapon] = useState<Weapon | null>(null)
   const [buildsToShow, setBuildsToShow] = useState(10)
   const [abilities, setAbilities] = useState<Ability[]>([])
+  const [expandedUsers, setExpandedUsers] = useState<Set<string>>(new Set())
   const [prefersAPView, setAPPreference] = useLocalStorage<boolean>(
     "prefersAPView"
   )
@@ -44,8 +45,8 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
 
   const buildsFilterByAbilities: Build[] = !data
     ? []
-    : data.searchForBuilds.filter((build) => {
-        if (abilities.length === 0) return true
+    : abilities.length > 0
+    ? data.searchForBuilds.filter((build) => {
         const abilitiesInBuild = new Set([
           ...build.headgear,
           ...build.clothing,
@@ -55,6 +56,25 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
           abilitiesInBuild.has(ability as any)
         )
       })
+    : data.searchForBuilds
+
+  const usersOtherBuilds: { [key: string]: Build[] } = {}
+
+  const buildsOnePerUserUnlessExpanded = buildsFilterByAbilities.reduce(
+    (buildsArray: Build[], build) => {
+      const discord_id = build.discord_user!.discord_id
+      if (!usersOtherBuilds[discord_id]) {
+        usersOtherBuilds[discord_id] = []
+        return [...buildsArray, build]
+      }
+
+      usersOtherBuilds[discord_id] = [...usersOtherBuilds[discord_id], build]
+      return buildsArray
+    },
+    []
+  )
+
+  console.log("usersOtherBuilds", usersOtherBuilds)
 
   return (
     <>
@@ -91,19 +111,57 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
             hasMore={buildsToShow < data.searchForBuilds.length}
           >
             <Flex flexWrap="wrap" pt="2em">
-              {buildsFilterByAbilities
-                .filter((build, index) => index < buildsToShow)
-                .map((build) => (
-                  <BuildCard
-                    key={build.id}
-                    build={build}
-                    defaultToAPView={
-                      prefersAPView === null ? false : prefersAPView
-                    }
-                    showUser
-                    m="0.5em"
-                  />
-                ))}
+              {buildsOnePerUserUnlessExpanded
+                .filter((_, index) => index < buildsToShow)
+                .reduce((buildElementsArray: JSX.Element[], build) => {
+                  const allBuildsByUserToShow = []
+                  allBuildsByUserToShow.push(
+                    <BuildCard
+                      key={build.id}
+                      build={build}
+                      defaultToAPView={
+                        prefersAPView === null ? false : prefersAPView
+                      }
+                      showUser
+                      otherBuildCount={
+                        usersOtherBuilds[build.discord_user!.discord_id]
+                          .length &&
+                        !expandedUsers.has(build.discord_user!.discord_id)
+                          ? usersOtherBuilds[build.discord_user!.discord_id]
+                              .length + 1
+                          : undefined
+                      }
+                      onShowAllByUser={() =>
+                        setExpandedUsers(
+                          new Set(
+                            expandedUsers.add(build.discord_user!.discord_id)
+                          )
+                        )
+                      }
+                      m="0.5em"
+                    />
+                  )
+
+                  if (expandedUsers.has(build.discord_user!.discord_id)) {
+                    allBuildsByUserToShow.push(
+                      ...usersOtherBuilds[
+                        build.discord_user!.discord_id
+                      ].map((build) => (
+                        <BuildCard
+                          key={build.id}
+                          build={build}
+                          defaultToAPView={
+                            prefersAPView === null ? false : prefersAPView
+                          }
+                          showUser
+                          m="0.5em"
+                        />
+                      ))
+                    )
+                  }
+
+                  return [...buildElementsArray, ...allBuildsByUserToShow]
+                }, [])}
             </Flex>
           </InfiniteScroll>
           <Box w="50%" textAlign="center" mx="auto" mt="1em">
