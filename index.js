@@ -2,6 +2,7 @@ require("dotenv").config()
 const { ApolloServer } = require("apollo-server-express")
 const mongoose = require("mongoose")
 const express = require("express")
+const compression = require("compression")
 const bodyParser = require("body-parser")
 const session = require("express-session")
 const MongoStore = require("connect-mongo")(session)
@@ -197,6 +198,8 @@ app.get("/logout", function (req, res) {
   req.logout()
   res.redirect("/")
 })
+
+app.use(compression())
 
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "build", "index.html"))

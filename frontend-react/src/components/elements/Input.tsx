@@ -1,15 +1,14 @@
-import React, { useContext } from "react"
 import {
+  Box,
   Input as ChakraInput,
   InputGroup,
   InputLeftAddon,
-  Box,
   InputLeftElement,
-  Icon,
 } from "@chakra-ui/core"
+import React, { useContext } from "react"
+import { IconType } from "react-icons/lib/cjs"
 import MyThemeContext from "../../themeContext"
 import Label from "./Label"
-import { IconType } from "react-icons/lib/cjs"
 
 interface InputProps {
   value?: string
