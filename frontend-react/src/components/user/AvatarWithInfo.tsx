@@ -1,18 +1,12 @@
-import React, { useState } from "react"
-import { Flex, List, ListItem, ListIcon } from "@chakra-ui/core"
-import {
-  FaUserAlt,
-  FaTwitter,
-  FaTwitch,
-  FaGamepad,
-  FaEdit,
-} from "react-icons/fa"
-
-import UserAvatar from "../common/UserAvatar"
+import { Box, Flex, Heading } from "@chakra-ui/core"
+import React, { useContext, useState } from "react"
+import { FaEdit, FaGamepad, FaTwitch, FaTwitter } from "react-icons/fa"
+import MyThemeContext from "../../themeContext"
 import { User } from "../../types"
 import Flag from "../common/Flag"
-import { countries } from "../../utils/lists"
-import IconButton from "../elements/IconButton"
+import UserAvatar from "../common/UserAvatar"
+import WeaponImage from "../common/WeaponImage"
+import Button from "../elements/Button"
 import ProfileModal from "./ProfileModal"
 
 function getSensString(motion: number | undefined, stick: number): string {
@@ -29,6 +23,7 @@ interface AvatarWithInfoProps {
 }
 
 const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user, canEdit }) => {
+  const { grayWithShade } = useContext(MyThemeContext)
   const [showModal, setShowModal] = useState(false)
   return (
     <>
@@ -42,62 +37,78 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user, canEdit }) => {
           }}
         />
       )}
-      <Flex
-        justifyContent="center"
-        flexWrap="wrap"
-        alignItems="center"
-        flexDirection="column"
-      >
-        <UserAvatar name={user.username} src={user.avatar} size="2xl" />
-        <List
-          spacing={2}
-          mt="1em"
-          mx="0.5em"
-          fontWeight="light"
-          textAlign="center"
-        >
-          {canEdit && (
-            <ListItem>
-              <IconButton
-                colored
-                icon={FaEdit}
-                onClick={() => setShowModal(true)}
-              />
-            </ListItem>
-          )}
-          <ListItem>
-            <ListIcon icon={FaUserAlt} />
-            {user.username}#{user.discriminator}
-          </ListItem>
-          {user.country && (
-            <ListItem>
-              <Flag code={user.country} />
-              {countries.find((obj) => obj.code === user.country)?.name}
-            </ListItem>
-          )}
-          {user.twitter_name && (
-            <ListItem>
-              <ListIcon icon={FaTwitter} />
-              <a href={`https://twitter.com/${user.twitter_name}`}>
-                {user.twitter_name}
-              </a>
-            </ListItem>
-          )}
-          {user.twitch_name && (
-            <ListItem>
-              <ListIcon icon={FaTwitch} />
-              <a href={`https://www.twitch.tv/${user.twitch_name}`}>
-                {user.twitch_name}
-              </a>
-            </ListItem>
-          )}
-          {user.sens && (!!user.sens.stick || user.sens.stick === 0) && (
-            <ListItem>
-              <ListIcon icon={FaGamepad} />
-              {getSensString(user.sens.motion, user.sens.stick)}
-            </ListItem>
-          )}
-        </List>
+      <Flex flexWrap="wrap">
+        <UserAvatar
+          name={user.username}
+          src={user.avatar}
+          size="2xl"
+          mr="0.3em"
+          mb="0.5rem"
+        />
+        <Flex flexDirection="column" justifyContent="center" mb="0.5rem">
+          <Flex alignItems="center" my="0.2rem">
+            <Heading fontFamily="'Rubik', sans-serif" size="lg" ml="0.5rem">
+              {user.username}#{user.discriminator}
+            </Heading>
+            {user.country && <Flag code={user.country} />}
+          </Flex>
+          <Flex>
+            <Flex maxW="300px" flexWrap="wrap">
+              {user.twitter_name && (
+                <Flex
+                  alignItems="center"
+                  mx="0.5em"
+                  my="0.1em"
+                  color={grayWithShade}
+                >
+                  <Box as={FaTwitter} mr="0.2em" />
+                  <a href={`https://twitter.com/${user.twitter_name}`}>
+                    {user.twitter_name}
+                  </a>
+                </Flex>
+              )}
+              {user.twitch_name && (
+                <Flex
+                  alignItems="center"
+                  mx="0.5em"
+                  my="0.1em"
+                  color={grayWithShade}
+                >
+                  <Box as={FaTwitch} mr="0.2em" />
+                  <a href={`https://www.twitch.tv/${user.twitch_name}`}>
+                    {user.twitch_name}
+                  </a>
+                </Flex>
+              )}
+              {user.sens && (!!user.sens.stick || user.sens.stick === 0) && (
+                <Flex
+                  alignItems="center"
+                  mx="0.5em"
+                  my="0.1em"
+                  color={grayWithShade}
+                  w="100%"
+                >
+                  <Box as={FaGamepad} mr="0.2em" />
+                  {getSensString(user.sens.motion, user.sens.stick)}
+                </Flex>
+              )}
+              {user.weapons && user.weapons.length > 0 && (
+                <Flex mt="0.2rem" w="100%">
+                  {user.weapons.map((wpn) => (
+                    <Box mx="0.2em" key={wpn}>
+                      <WeaponImage englishName={wpn} size="SMALL" />
+                    </Box>
+                  ))}
+                </Flex>
+              )}
+            </Flex>
+          </Flex>
+        </Flex>
+        {canEdit && (
+          <Button icon={FaEdit} onClick={() => setShowModal(true)}>
+            Edit profile
+          </Button>
+        )}
       </Flex>
     </>
   )

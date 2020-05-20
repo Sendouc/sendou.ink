@@ -80,7 +80,7 @@ const Markdown: React.FC<MarkdownProps> = ({ value }) => {
       text: (props: any) => {
         const { children } = props
         return (
-          <Text as="span">
+          <Text as="span" fontFamily="'Rubik', sans-serif">
             {reactStringReplace(children, /(:\S+:)/g, (match, i) => (
               <Emoji key={i} value={match} />
             ))}

@@ -1,5 +1,8 @@
 import React from "react"
-import { Button as ChakraButton } from "@chakra-ui/core"
+import {
+  Button as ChakraButton,
+  ButtonProps as ChakraButtonProps,
+} from "@chakra-ui/core"
 import { useContext } from "react"
 import MyThemeContext from "../../themeContext"
 import { IconType } from "react-icons/lib/cjs"
@@ -15,7 +18,7 @@ interface ButtonProps {
   loading?: boolean
 }
 
-const Button: React.FC<ButtonProps> = ({
+const Button: React.FC<ButtonProps & ChakraButtonProps> = ({
   children,
   onClick,
   icon,
@@ -24,6 +27,7 @@ const Button: React.FC<ButtonProps> = ({
   loading,
   width,
   outlined = false,
+  ...props
 }) => {
   const { themeColor } = useContext(MyThemeContext)
   return (
@@ -36,6 +40,7 @@ const Button: React.FC<ButtonProps> = ({
       isDisabled={disabled}
       isLoading={loading}
       width={width ?? undefined}
+      {...props}
     >
       {children}
     </ChakraButton>

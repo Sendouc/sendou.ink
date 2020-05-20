@@ -1,45 +1,42 @@
-import React, { useContext } from "react"
-import { RouteComponentProps, Redirect } from "@reach/router"
 import { useQuery } from "@apollo/react-hooks"
-
 import {
-  SEARCH_FOR_USER,
+  Badge,
+  Box,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+} from "@chakra-ui/core"
+import { Redirect, RouteComponentProps } from "@reach/router"
+import React, { useContext } from "react"
+import { Helmet } from "react-helmet-async"
+import { FaTrophy, FaTshirt } from "react-icons/fa"
+import { IconType } from "react-icons/lib/cjs"
+import { PLAYER_INFO } from "../../graphql/queries/playerInfo"
+import { SEARCH_FOR_BUILDS } from "../../graphql/queries/searchForBuilds"
+import {
   SearchForUserData,
   SearchForUserVars,
+  SEARCH_FOR_USER,
 } from "../../graphql/queries/searchForUser"
 import { USER } from "../../graphql/queries/user"
-import Loading from "../common/Loading"
-import Error from "../common/Error"
+import MyThemeContext from "../../themeContext"
 import {
-  UserData,
-  SearchForBuildsData,
-  SearchForBuildsVars,
   PlayerInfoData,
   PlayerInfoVars,
+  SearchForBuildsData,
+  SearchForBuildsVars,
+  UserData,
 } from "../../types"
-import { FaTshirt, FaTrophy } from "react-icons/fa"
-import { IconType } from "react-icons/lib/cjs"
-import AvatarWithInfo from "./AvatarWithInfo"
-import WeaponPool from "./WeaponPool"
-import {
-  Box,
-  Tabs,
-  TabList,
-  Tab,
-  TabPanels,
-  TabPanel,
-  Badge,
-} from "@chakra-ui/core"
-import { Helmet } from "react-helmet-async"
-import { SEARCH_FOR_BUILDS } from "../../graphql/queries/searchForBuilds"
-import BuildTab from "./BuildTab"
-import MyThemeContext from "../../themeContext"
-import { PLAYER_INFO } from "../../graphql/queries/playerInfo"
-import XRankTab from "./XRankTab"
 import { weapons } from "../../utils/lists"
+import Error from "../common/Error"
+import Loading from "../common/Loading"
 import Alert from "../elements/Alert"
 import Markdown from "../elements/Markdown"
-import SubHeader from "../common/SubHeader"
+import AvatarWithInfo from "./AvatarWithInfo"
+import BuildTab from "./BuildTab"
+import XRankTab from "./XRankTab"
 
 interface Tab {
   id: number
@@ -172,14 +169,8 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
         user={user}
         canEdit={userLean?.discord_id === user.discord_id}
       />
-      {user.weapons && user.weapons.length > 0 && (
-        <Box textAlign="center" mt="1em">
-          <WeaponPool weapons={user.weapons} />
-        </Box>
-      )}
       {user.bio && (
-        <Box my="1em">
-          <SubHeader>Bio</SubHeader>
+        <Box my="2em">
           <Markdown value={user.bio} />
         </Box>
       )}
