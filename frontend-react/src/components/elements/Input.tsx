@@ -45,8 +45,12 @@ const Input: React.FC<InputProps> = ({
       {label && <Label required={required}>{label}</Label>}
       <InputGroup>
         {textLeft && <InputLeftAddon>{textLeft}</InputLeftAddon>}
-        <InputLeftElement children={<Box as={icon} color={textColor} />} />
-        {icon && <InputLeftElement color="white" children={icon} />}
+        {icon && (
+          <InputLeftElement
+            color="white"
+            children={<Box as={icon} color={textColor} />}
+          />
+        )}
         <ChakraInput
           value={value ?? ""}
           isDisabled={disabled}
