@@ -21,7 +21,15 @@ import { FaTshirt, FaTrophy } from "react-icons/fa"
 import { IconType } from "react-icons/lib/cjs"
 import AvatarWithInfo from "./AvatarWithInfo"
 import WeaponPool from "./WeaponPool"
-import { Box, Tabs, TabList, Tab, TabPanels, TabPanel } from "@chakra-ui/core"
+import {
+  Box,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanels,
+  TabPanel,
+  Badge,
+} from "@chakra-ui/core"
 import { Helmet } from "react-helmet-async"
 import { SEARCH_FOR_BUILDS } from "../../graphql/queries/searchForBuilds"
 import BuildTab from "./BuildTab"
@@ -36,7 +44,7 @@ import SubHeader from "../common/SubHeader"
 interface Tab {
   id: number
   icon: IconType
-  title: String
+  title: JSX.Element
   content: JSX.Element
 }
 
@@ -91,13 +99,20 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
   const user = data.searchForUser
   const builds = buildsData.searchForBuilds
 
-  const tabs = [] as Tab[]
+  const tabs: Tab[] = []
 
   if (builds.length > 0 || userLean?.discord_id === user.discord_id) {
     tabs.push({
       id: 1,
       icon: FaTshirt,
-      title: "Builds",
+      title: (
+        <>
+          Builds{" "}
+          <Badge variantColor={themeColor} ml="0.5em">
+            {builds.length}
+          </Badge>
+        </>
+      ),
       content: (
         <TabPanel key={1}>
           <BuildTab
@@ -115,7 +130,14 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
     tabs.push({
       id: 2,
       icon: FaTrophy,
-      title: "X Rank Top 500",
+      title: (
+        <>
+          X Rank Top 500{" "}
+          <Badge variantColor={themeColor} ml="0.5em">
+            {playerData.playerInfo.placements.length}
+          </Badge>
+        </>
+      ),
       content: (
         <TabPanel key={2}>
           <XRankTab placements={playerData.playerInfo.placements} />
@@ -126,7 +148,7 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
     tabs.push({
       id: 2,
       icon: FaTrophy,
-      title: "X Rank Top 500",
+      title: <>X Rank Top 500</>,
       content: (
         <TabPanel key={2}>
           <Alert status="info">
