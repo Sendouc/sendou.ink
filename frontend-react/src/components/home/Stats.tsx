@@ -1,11 +1,10 @@
-import React, { useContext } from "react"
 import { useQuery } from "@apollo/react-hooks"
-import { STATS } from "../../graphql/queries/stats"
-import Error from "../common/Error"
-import Loading from "../common/Loading"
-import { Flex, Box } from "@chakra-ui/core"
-import MyThemeContext from "../../themeContext"
+import { Box, Flex, Skeleton } from "@chakra-ui/core"
 import { Link } from "@reach/router"
+import React, { useContext } from "react"
+import { STATS } from "../../graphql/queries/stats"
+import MyThemeContext from "../../themeContext"
+import Error from "../common/Error"
 
 interface StatsData {
   stats: {
@@ -16,14 +15,6 @@ interface StatsData {
   }
 }
 
-const getStatString = (value: number) => {
-  if (value < 100) return value
-
-  const evenNumber = Math.floor(value / 100) * 100
-
-  return `Over ${evenNumber}`
-}
-
 const xRankMonths = () => {
   const date = new Date()
   const fullYears = date.getFullYear() - 2019
@@ -32,12 +23,26 @@ const xRankMonths = () => {
 
 const Stats: React.FC = () => {
   const { grayWithShade, themeColorWithShade } = useContext(MyThemeContext)
-  const { data, error, loading } = useQuery<StatsData>(STATS)
+  const { data, error } = useQuery<StatsData>(STATS)
 
   if (error) return <Error errorMessage={error.message} />
-  if (loading || !data) return <Loading />
 
-  const { stats } = data
+  const stats = data?.stats
+
+  const getStatString = (value?: number) => {
+    if (!value) {
+      return (
+        <Skeleton
+          height="20px"
+          width="50px"
+          display="inline-block"
+          mr="0.2em"
+        />
+      )
+    }
+    return value
+  }
+
   return (
     <>
       <Box fontSize="xl" fontWeight="hairline" mt="1em" color={grayWithShade}>
@@ -60,7 +65,7 @@ const Stats: React.FC = () => {
           </Link>
         </Box>
         <Box mb="0.5em">
-          {getStatString(stats.build_count)}{" "}
+          {getStatString(stats?.build_count)}{" "}
           <Link to="/builds">
             <Box as="span" color={themeColorWithShade}>
               builds
@@ -68,7 +73,7 @@ const Stats: React.FC = () => {
           </Link>
         </Box>
         <Box mb="0.5em">
-          {getStatString(stats.user_count)}{" "}
+          {getStatString(stats?.user_count)}{" "}
           <Link to="/u">
             <Box as="span" color={themeColorWithShade}>
               users
@@ -76,7 +81,7 @@ const Stats: React.FC = () => {
           </Link>{" "}
         </Box>
         <Box mb="0.5em">
-          {getStatString(stats.fa_count)}{" "}
+          {getStatString(stats?.fa_count)}{" "}
           <Link to="/freeagents">
             <Box as="span" color={themeColorWithShade}>
               free agents
@@ -84,7 +89,7 @@ const Stats: React.FC = () => {
           </Link>
         </Box>
         <Box>
-          {getStatString(stats.tournament_count)}{" "}
+          {getStatString(stats?.tournament_count)}{" "}
           <Link to="/tournaments">
             <Box as="span" color={themeColorWithShade}>
               tournament results
