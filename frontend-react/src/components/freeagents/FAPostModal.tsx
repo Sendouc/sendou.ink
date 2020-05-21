@@ -46,7 +46,7 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
     AddFreeAgentPostVars
   >(ADD_FREE_AGENT_POST, {
     variables: { ...(form as AddFreeAgentPostVars) },
-    onCompleted: data => {
+    onCompleted: (data) => {
       closeModal()
       toast({
         description: `Free agent post added`,
@@ -55,7 +55,7 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
         duration: 10000,
       })
     },
-    onError: error => {
+    onError: (error) => {
       toast({
         title: "An error occurred",
         description: error.message,
@@ -72,7 +72,7 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
     AddFreeAgentPostVars
   >(UPDATE_FREE_AGENT_POST, {
     variables: { ...(form as AddFreeAgentPostVars) },
-    onCompleted: data => {
+    onCompleted: (data) => {
       closeModal()
       toast({
         description: `Free agent post edited`,
@@ -81,7 +81,7 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
         duration: 10000,
       })
     },
-    onError: error => {
+    onError: (error) => {
       toast({
         title: "An error occurred",
         description: error.message,
@@ -98,7 +98,7 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
     AddFreeAgentPostVars
   >(HIDE_FREE_AGENT_POST, {
     variables: { ...(form as AddFreeAgentPostVars) },
-    onCompleted: data => {
+    onCompleted: (data) => {
       closeModal()
       toast({
         description: `Free agent post deleted`,
@@ -107,7 +107,7 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
         duration: 10000,
       })
     },
-    onError: error => {
+    onError: (error) => {
       toast({
         title: "An error occurred",
         description: error.message,
@@ -188,7 +188,7 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
           Profile picture, Discord name, Twitter user, weapon pool and Top 500
           history are automatically synced up with your profile. Also please
           note that the post automatically sent to Discord can't be edited
-          afterwardsso you want to set these before making a post.
+          afterwards so you want to set these before making a post.
         </Alert>
       )}
       <FormControl
@@ -201,7 +201,7 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
           id="playstyles"
           variantColor={themeColor}
           value={form.playstyles ?? []}
-          onChange={value =>
+          onChange={(value) =>
             handleChange({
               playstyles: value as ("FRONTLINE" | "MIDLINE" | "BACKLINE")[],
             })
