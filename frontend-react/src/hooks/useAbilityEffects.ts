@@ -9,6 +9,7 @@ export interface Explanation {
   effect: string
   effectFromMax: number
   ability: Ability
+  info?: string
 }
 
 interface WeaponDataFromJson {
@@ -471,6 +472,10 @@ export default function useAbilityEffects(build: Partial<Build>) {
         )} seconds)`,
         effectFromMax: effect[1] * 100,
         ability: "SPU" as Ability,
+        info:
+          specialWeapon === "Inkjet"
+            ? "Special Power Up also increases Ink Jet's shots' painting and blast radius"
+            : undefined,
       })
     }
 
@@ -508,7 +513,196 @@ export default function useAbilityEffects(build: Partial<Build>) {
       })
     }
 
+    if (specialWeapon === "Splashdown") {
+      const highNear = specialWeaponData.mBurst_Radius_Near_H
+      const lowNear = specialWeaponData.mBurst_Radius_Near
+      const midNear = (highNear + lowNear) / 2
+      const highMidLowNear = [highNear, midNear, lowNear]
+
+      const effectNear = getEffect(highMidLowNear, amount)
+      const effectAtZeroNear = getEffect(highMidLowNear, 0)
+
+      const highMiddle = specialWeaponData.mBurst_Radius_Middle_H
+      const lowMiddle = specialWeaponData.mBurst_Radius_Middle
+      const midMiddle = (highMiddle + lowMiddle) / 2
+      const highMidLowMiddle = [highMiddle, midMiddle, lowMiddle]
+
+      const effectMiddle = getEffect(highMidLowMiddle, amount)
+      const effectAtZeroMiddle = getEffect(highMidLowMiddle, 0)
+      toReturn.push({
+        title: "Splashdown 180dmg hitbox size",
+        effect: `${parseFloat(
+          ((effectNear[0] / effectAtZeroNear[0]) * 100).toFixed(2)
+        )}%`,
+        effectFromMax: effectNear[1] * 100,
+        ability: "SPU" as Ability,
+      })
+      toReturn.push({
+        title: "Splashdown 70dmg hitbox size",
+        effect: `${parseFloat(
+          ((effectMiddle[0] / effectAtZeroMiddle[0]) * 100).toFixed(2)
+        )}%`,
+        effectFromMax: effectMiddle[1] * 100,
+        ability: "SPU" as Ability,
+        info:
+          "55dmg hitbox can't be increased with Special Power Up so the total radius of the special doesn't change",
+      })
+    }
+
+    if (specialWeapon === "Ink Armor") {
+      const high = specialWeaponData.mEnergyAbsorbFrmH
+      const mid = specialWeaponData.mEnergyAbsorbFrmM
+      const low = specialWeaponData.mEnergyAbsorbFrm
+      const highMidLow = [high, mid, low]
+
+      const effect = getEffect(highMidLow, amount)
+      toReturn.push({
+        title: `Ink Armor activation time`,
+        effect: `${Math.ceil(effect[0])} frames (${parseFloat(
+          (effect[0] / 60).toFixed(2)
+        )} seconds)`,
+        effectFromMax: effect[1] * 100,
+        ability: "SPU" as Ability,
+      })
+    }
+
+    if (specialWeapon === "Ink Storm") {
+      const high = specialWeaponData.mRainAreaFrameHigh
+      const mid = specialWeaponData.mRainAreaFrameMid
+      const low = specialWeaponData.mRainAreaFrame
+      const highMidLow = [high, mid, low]
+
+      const effect = getEffect(highMidLow, amount)
+      toReturn.push({
+        title: `Ink Storm duration`,
+        effect: `${Math.ceil(effect[0])} frames (${parseFloat(
+          (effect[0] / 60).toFixed(2)
+        )} seconds)`,
+        effectFromMax: effect[1] * 100,
+        ability: "SPU" as Ability,
+        info:
+          "Amount inked by Ink Storm is not increased only in how long distance the droplets are spread",
+      })
+    }
+
+    if (specialWeapon === "Baller") {
+      const high = specialWeaponData.mHP_High
+      const mid = specialWeaponData.mHP_Mid
+      const low = specialWeaponData.mHP_Low
+      const highMidLow = [high, mid, low]
+
+      const effect = getEffect(highMidLow, amount)
+      const effectAtZero = getEffect(highMidLow, 0)
+      toReturn.push({
+        title: `Baller durability`,
+        effect: `${parseFloat(
+          ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
+        )}%`,
+        effectFromMax: effect[1] * 100,
+        ability: "SPU" as Ability,
+      })
+
+      const highHit = specialWeaponData.mBurst_Radius_FarHigh
+      const midHit = specialWeaponData.mBurst_Radius_FarMid
+      const lowHit = specialWeaponData.mBurst_Radius_Far
+      const highMidLowHit = [highHit, midHit, lowHit]
+
+      const effectHit = getEffect(highMidLowHit, amount)
+      const effectAtZeroHit = getEffect(highMidLowHit, 0)
+      toReturn.push({
+        title: `Baller 55dmg explosion hitbox size`,
+        effect: `${parseFloat(
+          ((effectHit[0] / effectAtZeroHit[0]) * 100).toFixed(2)
+        )}%`,
+        effectFromMax: effectHit[1] * 100,
+        ability: "SPU" as Ability,
+      })
+    }
+
+    if (specialWeapon === "Bubble Blower") {
+      const highSize = specialWeaponData.mBombCoreRadiusRateHigh
+      const midSize = specialWeaponData.mBombCoreRadiusRateMid
+      const lowSize = 1.0
+      const highMidLowSize = [highSize, midSize, lowSize]
+
+      const effectSize = getEffect(highMidLowSize, amount)
+      const effectAtZeroSize = getEffect(highMidLowSize, 0)
+      toReturn.push({
+        title: `Bubble Blower bubble size`,
+        effect: `${parseFloat(
+          ((effectSize[0] / effectAtZeroSize[0]) * 100).toFixed(2)
+        )}%`,
+        effectFromMax: effectSize[1] * 100,
+        ability: "SPU" as Ability,
+      })
+
+      const highHit = specialWeaponData.mCollisionPlayerRadiusMaxHigh
+      const midHit = specialWeaponData.mCollisionPlayerRadiusMaxMid
+      const lowHit = specialWeaponData.mCollisionPlayerRadiusMax
+      const highMidLowHit = [highHit, midHit, lowHit]
+
+      const effectHit = getEffect(highMidLowHit, amount)
+      const effectAtZeroHit = getEffect(highMidLowHit, 0)
+      toReturn.push({
+        title: `Bubble Blower explosion hitbox`,
+        effect: `${parseFloat(
+          ((effectHit[0] / effectAtZeroHit[0]) * 100).toFixed(2)
+        )}%`,
+        effectFromMax: effectHit[1] * 100,
+        ability: "SPU" as Ability,
+      })
+    }
+
+    if (specialWeapon === "Booyah Bomb") {
+      const high = specialWeaponData.mChargeRtAutoIncr_High
+      const mid = specialWeaponData.mChargeRtAutoIncr_Mid
+      const low = specialWeaponData.mChargeRtAutoIncr_Low
+      const highMidLow = [high, mid, low]
+
+      const effect = getEffect(highMidLow, amount)
+      const effectAtZero = getEffect(highMidLow, 0)
+      toReturn.push({
+        title: `Booyah Bomb autocharge speed`,
+        effect: `${parseFloat(
+          ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
+        )}%`,
+        effectFromMax: effect[1] * 100,
+        ability: "SPU" as Ability,
+      })
+    }
+
     return toReturn
+  }
+
+  function calculateQR(amount: number) {
+    const QR = abilityJson["Quick Respawn"]
+
+    const highAround = QR.Dying_AroudFrm_High
+    const midAround = QR.Dying_AroudFrm_Mid
+    const lowAround = QR.Dying_AroudFrm_Low
+    const highMidLowAround = [highAround, midAround, lowAround]
+    const effectAround = getEffect(highMidLowAround, amount)
+
+    const highChase = QR.Dying_ChaseFrm_High
+    const midChase = QR.Dying_ChaseFrm_Mid
+    const lowChase = QR.Dying_ChaseFrm_Low
+    const highMidLowChase = [highChase, midChase, lowChase]
+    const effectChase = getEffect(highMidLowChase, amount)
+
+    const totalFrames = Math.ceil(150 + effectAround[0] + effectChase[0])
+
+    return [
+      {
+        title: "Quick Respawn time",
+        effect: `${totalFrames} frames (${parseFloat(
+          (totalFrames / 60).toFixed(2)
+        )} seconds)`,
+        effectFromMax: effectAround[1] * 100,
+        ability: "QR" as Ability,
+        info:
+          "Quick Respawn activates when enemy kills you twice without you getting a kill in between",
+      },
+    ]
   }
 
   const abilityFunctions: Partial<Record<
@@ -523,6 +717,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
     SCU: calculateSCU,
     SS: calculateSS,
     SPU: calculateSPU,
+    QR: calculateQR,
   } as const
 
   useEffect(() => {

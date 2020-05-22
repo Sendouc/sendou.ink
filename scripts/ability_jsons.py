@@ -84,13 +84,13 @@ special_power_keys = {
     "mEnergyAbsorbFrm": "Armor Wind Up Time",  # armor
     "mPaintGauge_SpecialFrm": "Special Duration Time",  # generic duration
     "mBurst_SplashPaintR": "Splash Paint Radius",  # inkjet
-    "mBurst_SplashVelL": "Splash Velocity L",  # splashdown
-    "mBurst_SplashVelH": "Splash Velocity H",  # splashdown
+    "mBurst_SplashVelL": "Splash Velocity L",
+    "mBurst_SplashVelH": "Splash Velocity H",
     # "mBurst_Landing_AddHeight": "Additional High", unused probably splashdown values
     # "mBurst_Landing_AddHeight_SJ": "Additional High (Super Jump)",
     "mRainAreaFrame": "Rain Duration",  # ink storm
-    "mBurst_Radius_Far": "Explosion Radius (Far)",  # baller
-    "mBurst_Radius_Middle": "Explosion Radius (Middle)",  # baller
+    "mBurst_Radius_Near": "Explosion Radius (Near)",
+    "mBurst_Radius_Middle": "Explosion Radius (Middle)",
     # "mBurst_Radius_Near": "Explosion Radius (Near)", # baller commented out because currently unchanged by SPU
     "mHP": "HP",  # baller
     "mBombCoreRadiusRate": "Bubble Size Radius Rate",  # bubble blower

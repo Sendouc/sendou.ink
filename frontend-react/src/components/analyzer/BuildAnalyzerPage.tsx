@@ -1,4 +1,4 @@
-import { Box, FormLabel, Switch } from "@chakra-ui/core"
+import { Box, FormLabel, Switch, Badge } from "@chakra-ui/core"
 import { RouteComponentProps } from "@reach/router"
 import React, { useState, useContext } from "react"
 import { Helmet } from "react-helmet-async"
@@ -29,6 +29,7 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
         <title>Build Analyzer | sendou.ink</title>
       </Helmet>
       <PageHeader title="Build Analyzer" />
+      <Badge variantColor={themeColor}>Patch 5.2.</Badge>
       <Box my="1em">
         <WeaponSelector
           value={build.weapon}
@@ -37,13 +38,7 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
           menuIsOpen={!build.weapon}
         />
       </Box>
-      <Box my="1em">
-        <BuildStats
-          build={build}
-          explanations={explanations}
-          hideExtra={hideExtra}
-        />
-      </Box>
+      <EditableBuild build={build} setBuild={setBuild} />
       <Box my="1em">
         <FormLabel htmlFor="show-all">Hide stats at base value</FormLabel>
         <Switch
@@ -53,7 +48,13 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
           onChange={() => setHideExtra(!hideExtra)}
         />
       </Box>
-      <EditableBuild build={build} setBuild={setBuild} />
+      <Box my="1em">
+        <BuildStats
+          build={build}
+          explanations={explanations}
+          hideExtra={hideExtra}
+        />
+      </Box>
     </>
   )
 }
