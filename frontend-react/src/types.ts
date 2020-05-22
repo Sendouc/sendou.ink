@@ -55,6 +55,23 @@ export type SubWeapon =
   | "Fizzy Bomb"
   | "Torpedo"
 
+export type SpecialWeapon =
+  | "Tenta Missiles"
+  | "Sting Ray"
+  | "Inkjet"
+  | "Splashdown"
+  | "Ink Armor"
+  | "Curling-Bomb Launcher"
+  | "Burst-Bomb Launcher"
+  | "Autobomb Launcher"
+  | "Splat-Bomb Launcher"
+  | "Suction-Bomb Launcher"
+  | "Ink Storm"
+  | "Baller"
+  | "Bubble Blower"
+  | "Booyah Bomb"
+  | "Ultra Stamp"
+
 export interface Theme {
   colorMode: "dark" | "light"
   bgColor: string

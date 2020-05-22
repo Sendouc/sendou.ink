@@ -74,8 +74,6 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
     []
   )
 
-  console.log("usersOtherBuilds", usersOtherBuilds)
-
   return (
     <>
       <Helmet>

@@ -4,13 +4,19 @@ import MyThemeContext from "../../themeContext"
 import { Ability, Build } from "../../types"
 import { mainOnlyAbilities } from "../../utils/lists"
 import { Progress, Box, Flex } from "@chakra-ui/core"
+import AbilityIcon from "../builds/AbilityIcon"
 
-interface APWithInfoProps {
+interface BuildStatsProps {
   explanations: Explanation[]
   build: Partial<Build>
+  hideExtra: boolean
 }
 
-const BuildStats: React.FC<APWithInfoProps> = ({ explanations, build }) => {
+const BuildStats: React.FC<BuildStatsProps> = ({
+  explanations,
+  build,
+  hideExtra,
+}) => {
   const { themeColor, themeColorWithShade } = useContext(MyThemeContext)
   const abilityArrays: Ability[][] = [
     build.headgear ?? [],
@@ -35,15 +41,23 @@ const BuildStats: React.FC<APWithInfoProps> = ({ explanations, build }) => {
   const BuildStat: React.FC<{
     title: String
     effect: string
+    ability: Ability
     progressBarValue: number
-  }> = ({ title, effect, progressBarValue = 0 }) => {
+  }> = ({ title, effect, ability, progressBarValue = 0 }) => {
     return (
       <>
         <Flex justifyContent="space-between">
-          <Box fontWeight="bold" mr="1em">
+          <Flex fontWeight="bold" mr="1em" mb="0.5em" alignItems="center">
+            <Box mr="0.5em">
+              <AbilityIcon ability={ability} size="TINY" />
+            </Box>
             {title}
-          </Box>
-          <Box fontWeight="bold" color={themeColorWithShade}>
+          </Flex>
+          <Box
+            fontWeight="bold"
+            color={themeColorWithShade}
+            alignSelf="flex-end"
+          >
             {effect}
           </Box>
         </Flex>
@@ -58,13 +72,18 @@ const BuildStats: React.FC<APWithInfoProps> = ({ explanations, build }) => {
     )
   }
 
+  const explanationsToUse = !hideExtra
+    ? explanations
+    : explanations.filter((e) => e.effectFromMax !== 0)
+
   return (
     <>
-      {explanations.map((explanation) => (
+      {explanationsToUse.map((explanation) => (
         <Box my="1em" key={explanation.title}>
           <BuildStat
             title={explanation.title}
             effect={explanation.effect}
+            ability={explanation.ability}
             progressBarValue={explanation.effectFromMax}
           />
         </Box>

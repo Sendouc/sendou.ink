@@ -21,6 +21,7 @@ ability_jsons_output
 .env.production.local
 .vs
 .vscode
+leanny.github.io/
 
 npm-debug.log*
 yarn-debug.log*
