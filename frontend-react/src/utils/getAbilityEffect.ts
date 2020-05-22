@@ -32,5 +32,5 @@ export function getEffect(abilityVals: number[], ap: number) {
   const percentage = tmp / 100.0
   const result = low + (high - low) * lerpN(slope, percentage)
 
-  return [result, lerpN(slope, percentage)]
+  return [result, lerpN(slope, percentage) * 100]
 }

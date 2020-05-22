@@ -118,7 +118,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
       toReturn.push({
         title,
         effect: `${parseFloat((1 / (mInkConsume * effect[0])).toFixed(2))}`,
-        effectFromMax: effect[1] * 100,
+        effectFromMax: effect[1],
         ability: "ISM" as Ability,
       })
     }
@@ -130,7 +130,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${parseFloat(
           (1 / (mInkConsumeRepeat * effect[0])).toFixed(2)
         )}`,
-        effectFromMax: effect[1] * 100,
+        effectFromMax: effect[1],
         ability: "ISM" as Ability,
       })
     }
@@ -142,7 +142,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${parseFloat(
           (1 / (mFullChargeInkConsume * effect[0])).toFixed(2)
         )}`,
-        effectFromMax: effect[1] * 100,
+        effectFromMax: effect[1],
         ability: "ISM" as Ability,
       })
     }
@@ -154,7 +154,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${parseFloat(
           (1 / (mMinChargeInkConsume * effect[0])).toFixed(2)
         )}`,
-        effectFromMax: effect[1] * 100,
+        effectFromMax: effect[1],
         ability: "ISM" as Ability,
       })
     }
@@ -171,7 +171,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${parseFloat(
           (1 / (mInkConsumeSplashJump * effect[0])).toFixed(2)
         )}`,
-        effectFromMax: effect[1] * 100,
+        effectFromMax: effect[1],
         ability: "ISM" as Ability,
       })
     } else if (mInkConsumeSplashJump && mInkConsumeSplashStand) {
@@ -180,7 +180,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${parseFloat(
           (1 / (mInkConsumeSplashStand * effect[0])).toFixed(2)
         )}`,
-        effectFromMax: effect[1] * 100,
+        effectFromMax: effect[1],
         ability: "ISM" as Ability,
       })
 
@@ -189,7 +189,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${parseFloat(
           (1 / (mInkConsumeSplashJump * effect[0])).toFixed(2)
         )}`,
-        effectFromMax: effect[1] * 100,
+        effectFromMax: effect[1],
         ability: "ISM" as Ability,
       })
     }
@@ -201,7 +201,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${parseFloat(
           (mSideStepInkConsume * effect[0] * 100).toFixed(2)
         )}% of ink tank`,
-        effectFromMax: effect[1] * 100,
+        effectFromMax: effect[1],
         ability: "ISM" as Ability,
       })
     }
@@ -213,7 +213,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${parseFloat(
           (mInkConsumeUmbrella * effect[0] * 100).toFixed(2)
         )}% of ink tank`,
-        effectFromMax: effect[1] * 100,
+        effectFromMax: effect[1],
         ability: "ISM" as Ability,
       })
     }
@@ -245,7 +245,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${parseFloat(
           (effect[0] * inkConsumption * 100).toFixed(2)
         )}% of ink tank`,
-        effectFromMax: effect[1] * 100,
+        effectFromMax: effect[1],
         ability: "ISS" as Ability,
       },
     ]
@@ -278,7 +278,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${Math.ceil(effectSquid[0])} frames (${parseFloat(
           (Math.ceil(effectSquid[0]) / 60).toFixed(2)
         )} seconds)`,
-        effectFromMax: effectSquid[1] * 100,
+        effectFromMax: effectSquid[1],
         ability: "REC" as Ability,
       },
       /*{
@@ -286,7 +286,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${Math.ceil(effectHumanoid[0])} frames (${parseFloat(
           (effectHumanoid[0] / 60).toFixed(2)
         )} seconds)`,
-        effectFromMax: effectHumanoid[1] * 100,
+        effectFromMax: effectHumanoid[1],
       },*/
     ]
   }
@@ -331,7 +331,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${parseFloat(
           moveEffect[0].toFixed(2)
         )} distance units / frame`,
-        effectFromMax: moveEffect[1] * 100,
+        effectFromMax: moveEffect[1],
         ability: "RSU" as Ability,
       },
       {
@@ -339,7 +339,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${parseFloat(
           (moveEffect[0] * shootEffect[0]).toFixed(2)
         )} distance units / frame`,
-        effectFromMax: shootEffect[1] * 100,
+        effectFromMax: shootEffect[1],
         ability: "RSU" as Ability,
       },
     ]
@@ -372,7 +372,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
       {
         title: "Swim speed",
         effect: `${parseFloat(effect[0].toFixed(2))} distance units / frame`,
-        effectFromMax: effect[1] * 100,
+        effectFromMax: effect[1],
         ability: "SSU" as Ability,
       },
     ]
@@ -397,7 +397,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${parseFloat((effect[0] * 100).toFixed(2))}% (${Math.ceil(
           points / effect[0]
         )}p)`,
-        effectFromMax: effect[1] * 100,
+        effectFromMax: effect[1],
         ability: "SCU" as Ability,
       },
     ]
@@ -420,7 +420,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
       effect: `${parseFloat(
         ((1.0 - effect[0]) * 100).toFixed(2)
       )}% of the charge`,
-      effectFromMax: effect[1] * 100,
+      effectFromMax: effect[1],
       ability: "SS" as Ability,
     })
 
@@ -439,7 +439,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
       toReturn.push({
         title: "Special lost when killed mid-Splashdown",
         effect: `${parseFloat(((1.0 - lost) * 100).toFixed(2))}% of the charge`,
-        effectFromMax: fromMax * 100,
+        effectFromMax: fromMax,
         ability: "SS" as Ability,
       })
     }
@@ -470,7 +470,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${Math.ceil(effect[0])} frames (${parseFloat(
           (Math.ceil(effect[0]) / 60).toFixed(2)
         )} seconds)`,
-        effectFromMax: effect[1] * 100,
+        effectFromMax: effect[1],
         ability: "SPU" as Ability,
         info:
           specialWeapon === "Inkjet"
@@ -500,7 +500,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${parseFloat(
           ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
         )}%`,
-        effectFromMax: effect[1] * 100,
+        effectFromMax: effect[1],
         ability: "SPU" as Ability,
       })
       toReturn.push({
@@ -508,7 +508,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${parseFloat(
           ((effectPaint[0] / effectPaintAtZero[0]) * 100).toFixed(2)
         )}%`,
-        effectFromMax: effectPaint[1] * 100,
+        effectFromMax: effectPaint[1],
         ability: "SPU" as Ability,
       })
     }
@@ -534,7 +534,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${parseFloat(
           ((effectNear[0] / effectAtZeroNear[0]) * 100).toFixed(2)
         )}%`,
-        effectFromMax: effectNear[1] * 100,
+        effectFromMax: effectNear[1],
         ability: "SPU" as Ability,
       })
       toReturn.push({
@@ -542,7 +542,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${parseFloat(
           ((effectMiddle[0] / effectAtZeroMiddle[0]) * 100).toFixed(2)
         )}%`,
-        effectFromMax: effectMiddle[1] * 100,
+        effectFromMax: effectMiddle[1],
         ability: "SPU" as Ability,
         info:
           "55dmg hitbox can't be increased with Special Power Up so the total radius of the special doesn't change",
@@ -561,7 +561,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${Math.ceil(effect[0])} frames (${parseFloat(
           (Math.ceil(effect[0]) / 60).toFixed(2)
         )} seconds)`,
-        effectFromMax: effect[1] * 100,
+        effectFromMax: effect[1],
         ability: "SPU" as Ability,
       })
     }
@@ -578,7 +578,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${Math.ceil(effect[0])} frames (${parseFloat(
           (Math.ceil(effect[0]) / 60).toFixed(2)
         )} seconds)`,
-        effectFromMax: effect[1] * 100,
+        effectFromMax: effect[1],
         ability: "SPU" as Ability,
         info:
           "Amount inked by Ink Storm is not increased only in how long distance the droplets are spread",
@@ -598,7 +598,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${parseFloat(
           ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
         )}%`,
-        effectFromMax: effect[1] * 100,
+        effectFromMax: effect[1],
         ability: "SPU" as Ability,
       })
 
@@ -614,7 +614,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${parseFloat(
           ((effectHit[0] / effectAtZeroHit[0]) * 100).toFixed(2)
         )}%`,
-        effectFromMax: effectHit[1] * 100,
+        effectFromMax: effectHit[1],
         ability: "SPU" as Ability,
       })
     }
@@ -632,7 +632,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${parseFloat(
           ((effectSize[0] / effectAtZeroSize[0]) * 100).toFixed(2)
         )}%`,
-        effectFromMax: effectSize[1] * 100,
+        effectFromMax: effectSize[1],
         ability: "SPU" as Ability,
       })
 
@@ -648,7 +648,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${parseFloat(
           ((effectHit[0] / effectAtZeroHit[0]) * 100).toFixed(2)
         )}%`,
-        effectFromMax: effectHit[1] * 100,
+        effectFromMax: effectHit[1],
         ability: "SPU" as Ability,
       })
     }
@@ -666,7 +666,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${parseFloat(
           ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
         )}%`,
-        effectFromMax: effect[1] * 100,
+        effectFromMax: effect[1],
         ability: "SPU" as Ability,
       })
     }
@@ -697,7 +697,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${totalFrames} frames (${parseFloat(
           (totalFrames / 60).toFixed(2)
         )} seconds)`,
-        effectFromMax: effectAround[1] * 100,
+        effectFromMax: effectAround[1],
         ability: "QR" as Ability,
         info:
           "Quick Respawn activates when enemy kills you twice without you getting a kill in between",
@@ -726,7 +726,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${Math.ceil(effectTame[0])} frames (${parseFloat(
           (Math.ceil(effectTame[0]) / 60).toFixed(2)
         )} seconds)`,
-        effectFromMax: effectTame[1] * 100,
+        effectFromMax: effectTame[1],
         ability: "QSJ" as Ability,
       },
       {
@@ -734,10 +734,160 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${Math.ceil(effectMove[0])} frames (${parseFloat(
           (Math.ceil(effectMove[0]) / 60).toFixed(2)
         )} seconds)`,
-        effectFromMax: effectMove[1] * 100,
+        effectFromMax: effectMove[1],
         ability: "QSJ" as Ability,
       },
     ]
+  }
+
+  function calculateBRU(amount: number) {
+    const BRU = abilityJson["Sub Power Up"]
+    const buildWeaponData = weaponData[build.weapon!]
+    const subWeapon = buildWeaponData.Sub! as SubWeapon
+    const subWeaponData = weaponData[subWeapon]
+
+    const toReturn = []
+
+    if (
+      [
+        "Splat Bomb",
+        "Suction Bomb",
+        "Burst Bomb",
+        "Curling Bomb",
+        "Autobomb",
+        "Toxic Mist",
+        "Fizzy Bomb",
+        "Torpedo",
+        "Point Sensor",
+      ].includes(subWeapon)
+    ) {
+      let baseKey = "BombThrow_VelZ"
+      if (subWeapon === "Torpedo") baseKey = "BombThrow_VelZ_BombTako"
+      if (subWeapon === "Fizzy Bomb") baseKey = "BombThrow_VelZ_BombPiyo"
+      if (subWeapon === "Point Sensor") baseKey = "BombThrow_VelZ_PointSensor"
+      const highKey = `${baseKey}_High` as keyof typeof BRU
+      const midKey = `${baseKey}_Mid` as keyof typeof BRU
+      const lowKey = `${baseKey}_Low` as keyof typeof BRU
+      const highVelo = BRU[highKey]
+      const midVelo = BRU[midKey]
+      const lowVelo = BRU[lowKey]
+      const highMidLowVelo = [highVelo, midVelo, lowVelo]
+      const effectVelo = getEffect(highMidLowVelo, amount)
+      const effectVeloAtZero = getEffect(highMidLowVelo, 0)
+
+      toReturn.push({
+        title: `${subWeapon} velocity and range`,
+        effect: `${parseFloat(
+          ((effectVelo[0] / effectVeloAtZero[0]) * 100).toFixed(2)
+        )}% (${parseFloat(effectVelo[0].toFixed(2))})`,
+        effectFromMax: effectVelo[1],
+        ability: "BRU" as Ability,
+      })
+    }
+
+    if (subWeapon === "Sprinkler") {
+      const highFirst = subWeaponData.mPeriod_FirstHigh
+      const midFirst = subWeaponData.mPeriod_FirstMid
+      const lowFirst = subWeaponData.mPeriod_First
+      const highMidLowFirst = [highFirst, midFirst, lowFirst]
+      const effectFirst = getEffect(highMidLowFirst, amount)
+
+      toReturn.push({
+        title: "Sprinkler full-power phase duration",
+        effect: `${Math.ceil(effectFirst[0])} frames (${parseFloat(
+          (Math.ceil(effectFirst[0]) / 60).toFixed(2)
+        )} seconds)`,
+        effectFromMax: effectFirst[1],
+        ability: "BRU" as Ability,
+      })
+
+      const highSecond = subWeaponData.mPeriod_SecondHigh
+      const midSecond = subWeaponData.mPeriod_SecondMid
+      const lowSecond = subWeaponData.mPeriod_Second
+      const highMidLowSecond = [highSecond, midSecond, lowSecond]
+      const effectSecond = getEffect(highMidLowSecond, amount)
+
+      toReturn.push({
+        title: "Sprinkler mid-phase duration",
+        effect: `${Math.ceil(effectSecond[0])} frames (${parseFloat(
+          (Math.ceil(effectSecond[0]) / 60).toFixed(2)
+        )} seconds)`,
+        effectFromMax: effectSecond[1],
+        ability: "BRU" as Ability,
+      })
+    }
+
+    if (["Point Sensor", "Ink Mine"].includes(subWeapon)) {
+      const high = subWeaponData.mMarkingFrameHigh
+      const mid = subWeaponData.mMarkingFrameMid
+      const low = subWeaponData.mMarkingFrame
+      const highMidLow = [high, mid, low]
+      const effect = getEffect(highMidLow, amount)
+
+      toReturn.push({
+        title: `${subWeapon} tracking duration`,
+        effect: `${Math.ceil(effect[0])} frames (${parseFloat(
+          (Math.ceil(effect[0]) / 60).toFixed(2)
+        )} seconds)`,
+        effectFromMax: effect[1],
+        ability: "BRU" as Ability,
+      })
+    }
+
+    if (subWeapon === "Ink Mine") {
+      const high = subWeaponData.mPlayerColRadiusHigh
+      const mid = subWeaponData.mPlayerColRadiusMid
+      const low = subWeaponData.mPlayerColRadius
+      const highMidLow = [high, mid, low]
+      const effect = getEffect(highMidLow, amount)
+      const effectAtZero = getEffect(highMidLow, 0)
+
+      toReturn.push({
+        title: "Ink Mine tracking range",
+        effect: `${parseFloat(
+          ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
+        )}%`,
+        effectFromMax: effect[1],
+        ability: "BRU" as Ability,
+      })
+    }
+
+    if (subWeapon === "Splash Wall") {
+      const high = subWeaponData.mMaxHpHigh
+      const mid = subWeaponData.mMaxHpMid
+      const low = subWeaponData.mMaxHp
+      const highMidLow = [high, mid, low]
+      const effect = getEffect(highMidLow, amount)
+      const effectAtZero = getEffect(highMidLow, 0)
+
+      toReturn.push({
+        title: "Splash Wall durability",
+        effect: `${parseFloat(
+          ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
+        )}%`,
+        effectFromMax: effect[1],
+        ability: "BRU" as Ability,
+      })
+    }
+
+    if (subWeapon === "Squid Beakon") {
+      const high = subWeaponData.mSubRt_Effect_ActualCnt_High
+      const mid = subWeaponData.mSubRt_Effect_ActualCnt_Mid
+      const low = subWeaponData.mSubRt_Effect_ActualCnt_Low
+      const highMidLow = [high, mid, low]
+      const effect = getEffect(highMidLow, amount)
+
+      toReturn.push({
+        title: "Squid Beakon Quick Super Jump boost",
+        effect: `${Math.floor(effect[0])}AP`,
+        effectFromMax: effect[1],
+        ability: "BRU" as Ability,
+        info:
+          "When jumping to Sub Power Up boosted beakons QSJ AP bonus is applied on top of any existing QSJ the jumper has. 57AP can't be exceeded",
+      })
+    }
+
+    return toReturn
   }
 
   const abilityFunctions: Partial<Record<
@@ -754,6 +904,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
     SPU: calculateSPU,
     QR: calculateQR,
     QSJ: calculateQSJ,
+    BRU: calculateBRU,
   } as const
 
   useEffect(() => {

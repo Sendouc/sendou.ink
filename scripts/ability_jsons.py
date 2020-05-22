@@ -98,11 +98,28 @@ special_power_keys = {
     "mChargeRtAutoIncr": "Booyah Charge Speed",  # booyah charge speed
 }
 
+sub_power_keys = [
+    "mPeriod",
+    "mMarking",
+    "mPlayerColRadius",
+    "mMaxHp",
+    "mSubRt_Effect_ActualCnt_",
+]
+
+sub_internal_english = {
+    "JumpBeacon": "Squid Beakon",
+    "Shield": "Splash Wall",
+    "Trap": "Ink Mine",
+    "BombPointSensor": "Point Sensor",
+    "Sprinkler": "Sprinkler",
+}
+
 rel_path = "leanny.github.io/data/Parameter/latest/WeaponBullet/*.json"
 abs_file_path = os.path.join(script_dir, rel_path)
 for filepath in glob.iglob(abs_file_path):  # iterate through .json files
+    is_bomb = False
     if "Bomb" in filepath and "Launcher" not in filepath:
-        continue
+        is_bomb = True
     with open(filepath) as f:
         data = json.loads(f.read())
         weapon_internal = (
@@ -125,8 +142,9 @@ for filepath in glob.iglob(abs_file_path):  # iterate through .json files
                 and key != "mSideStepInkConsumeScale"  # toxic mist
                 and key
                 != "mMaxChargeInkConsume"  # used to calculate how much charger consumes if shot mid-charge
-                and "mInkConsumeCore"
-                not in key  # comment out to include roller rolling
+                and "mInkConsumeCore"  # comment out to include roller rolling
+                not in key
+                and not is_bomb
             ):
 
                 append_to_key = ""
@@ -143,20 +161,17 @@ for filepath in glob.iglob(abs_file_path):  # iterate through .json files
                     append_to_key = "Repeat"
                     weapon_internal = weapon_internal.replace("Repeat", "")
 
-                worked = False
                 for englishWeapon, wDict in weapon_dict.items():
                     if weapon_internal in wDict["Name"].replace("_", ""):
                         wDict[f"{key}{append_to_key}"] = data["param"][key]
-                        worked = True
 
-                if not worked:
-                    print(weapon_internal)
-            for SPU_key in special_power_keys:  # in ?
+            for SPU_key in special_power_keys:
                 if (
                     SPU_key in key
                     and weapon_internal != "Gachihoko"
                     and weapon_internal != "Trap"
                     and weapon_internal != "Cannon"
+                    and not is_bomb
                 ):
                     if "Launcher" in weapon_internal:
                         weapon_internal = "Launcher" + weapon_internal.replace(
@@ -164,6 +179,13 @@ for filepath in glob.iglob(abs_file_path):  # iterate through .json files
                         ).replace("Launcher", "")
                     translated_special = lang_dict[weapon_internal]
                     obj = weapon_dict.get(translated_special, {"Name": weapon_internal})
+                    obj[key] = data["param"][key]
+                    weapon_dict[translated_special] = obj
+
+            for BRU_key in sub_power_keys:
+                if BRU_key in key and weapon_internal in sub_internal_english.keys():
+                    translated_sub = sub_internal_english[weapon_internal]
+                    obj = weapon_dict.get(translated_sub, {"Name": weapon_internal})
                     obj[key] = data["param"][key]
                     weapon_dict[translated_special] = obj
 
