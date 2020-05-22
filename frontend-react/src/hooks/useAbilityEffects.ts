@@ -276,7 +276,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
       {
         title: "Ink tank recovery from empty to full (squid form)",
         effect: `${Math.ceil(effectSquid[0])} frames (${parseFloat(
-          (effectSquid[0] / 60).toFixed(2)
+          (Math.ceil(effectSquid[0]) / 60).toFixed(2)
         )} seconds)`,
         effectFromMax: effectSquid[1] * 100,
         ability: "REC" as Ability,
@@ -468,7 +468,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
       toReturn.push({
         title: `${specialWeapon} duration`,
         effect: `${Math.ceil(effect[0])} frames (${parseFloat(
-          (effect[0] / 60).toFixed(2)
+          (Math.ceil(effect[0]) / 60).toFixed(2)
         )} seconds)`,
         effectFromMax: effect[1] * 100,
         ability: "SPU" as Ability,
@@ -559,7 +559,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
       toReturn.push({
         title: `Ink Armor activation time`,
         effect: `${Math.ceil(effect[0])} frames (${parseFloat(
-          (effect[0] / 60).toFixed(2)
+          (Math.ceil(effect[0]) / 60).toFixed(2)
         )} seconds)`,
         effectFromMax: effect[1] * 100,
         ability: "SPU" as Ability,
@@ -576,7 +576,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
       toReturn.push({
         title: `Ink Storm duration`,
         effect: `${Math.ceil(effect[0])} frames (${parseFloat(
-          (effect[0] / 60).toFixed(2)
+          (Math.ceil(effect[0]) / 60).toFixed(2)
         )} seconds)`,
         effectFromMax: effect[1] * 100,
         ability: "SPU" as Ability,
@@ -705,6 +705,41 @@ export default function useAbilityEffects(build: Partial<Build>) {
     ]
   }
 
+  function calculateQSJ(amount: number) {
+    const QSJ = abilityJson["Quick Super Jump"]
+
+    const highMove = QSJ.DokanWarp_MoveFrm_High
+    const midMove = QSJ.DokanWarp_MoveFrm_Mid
+    const lowMove = QSJ.DokanWarp_MoveFrm_Low
+    const highMidLowMove = [highMove, midMove, lowMove]
+    const effectMove = getEffect(highMidLowMove, amount)
+
+    const highTame = QSJ.DokanWarp_TameFrm_High
+    const midTame = QSJ.DokanWarp_TameFrm_Mid
+    const lowTame = QSJ.DokanWarp_TameFrm_Low
+    const highMidLowTame = [highTame, midTame, lowTame]
+    const effectTame = getEffect(highMidLowTame, amount)
+
+    return [
+      {
+        title: "Quick Super Jump time (on the ground)",
+        effect: `${Math.ceil(effectTame[0])} frames (${parseFloat(
+          (Math.ceil(effectTame[0]) / 60).toFixed(2)
+        )} seconds)`,
+        effectFromMax: effectTame[1] * 100,
+        ability: "QSJ" as Ability,
+      },
+      {
+        title: "Quick Super Jump time (in the air)",
+        effect: `${Math.ceil(effectMove[0])} frames (${parseFloat(
+          (Math.ceil(effectMove[0]) / 60).toFixed(2)
+        )} seconds)`,
+        effectFromMax: effectMove[1] * 100,
+        ability: "QSJ" as Ability,
+      },
+    ]
+  }
+
   const abilityFunctions: Partial<Record<
     string,
     (amount: number) => Explanation[]
@@ -718,6 +753,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
     SS: calculateSS,
     SPU: calculateSPU,
     QR: calculateQR,
+    QSJ: calculateQSJ,
   } as const
 
   useEffect(() => {
