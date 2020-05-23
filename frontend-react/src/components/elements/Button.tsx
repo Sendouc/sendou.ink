@@ -13,6 +13,7 @@ interface ButtonProps {
   size?: "xs" | "sm" | "lg" | "md"
   icon?: IconType
   width?: string
+  color?: string
   outlined?: boolean
   disabled?: boolean
   loading?: boolean
@@ -26,6 +27,7 @@ const Button: React.FC<ButtonProps & ChakraButtonProps> = ({
   disabled,
   loading,
   width,
+  color,
   outlined = false,
   ...props
 }) => {
@@ -33,7 +35,7 @@ const Button: React.FC<ButtonProps & ChakraButtonProps> = ({
   return (
     <ChakraButton
       variant={outlined ? "outline" : "solid"}
-      variantColor={themeColor}
+      variantColor={color ?? themeColor}
       leftIcon={icon}
       onClick={onClick}
       size={size}

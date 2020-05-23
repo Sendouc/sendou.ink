@@ -7,19 +7,26 @@ import { Build } from "../../types"
 import PageHeader from "../common/PageHeader"
 import WeaponSelector from "../common/WeaponSelector"
 import BuildStats from "./BuildStats"
-import EditableBuild from "./EditableBuild"
+import EditableBuilds from "./EditableBuilds"
 import MyThemeContext from "../../themeContext"
+
+const defaultBuild: Partial<Build> = {
+  weapon: "Splattershot Jr.",
+  headgear: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+  clothing: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+  shoes: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+}
 
 const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
   const { themeColor } = useContext(MyThemeContext)
-  const [build, setBuild] = useState<Partial<Build>>({
-    weapon: "Splattershot Jr.",
-    headgear: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
-    clothing: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
-    shoes: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
-  })
-  const [hideExtra, setHideExtra] = useState(true)
+  const [build, setBuild] = useState<Partial<Build>>(defaultBuild)
+  const [otherBuild, setOtherBuild] = useState<Partial<Build>>(defaultBuild)
+  const [showOther, setShowOther] = useState(false)
+  const [otherFocused, setOtherFocused] = useState(false)
+  const [hideExtra, setHideExtra] = useState(false)
+
   const explanations = useAbilityEffects(build)
+  const otherExplanations = useAbilityEffects(otherBuild)
 
   console.log("explanations", explanations)
 
@@ -34,11 +41,24 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
         <WeaponSelector
           value={build.weapon}
           label=""
-          setValue={(weapon) => setBuild({ ...build, weapon })}
+          setValue={(weapon) => {
+            setBuild({ ...build, weapon })
+            setOtherBuild({ ...otherBuild, weapon })
+          }}
           menuIsOpen={!build.weapon}
         />
       </Box>
-      <EditableBuild build={build} setBuild={setBuild} />
+      <EditableBuilds
+        build={build}
+        otherBuild={otherBuild}
+        setBuild={otherFocused ? setOtherBuild : setBuild}
+        showOther={showOther}
+        setShowOther={setShowOther}
+        changeFocus={() => {
+          setOtherFocused(!otherFocused)
+        }}
+        otherFocused={otherFocused}
+      />
       <Box my="1em">
         <FormLabel htmlFor="show-all">Hide stats at base value</FormLabel>
         <Switch
@@ -52,6 +72,7 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
         <BuildStats
           build={build}
           explanations={explanations}
+          otherExplanations={showOther ? otherExplanations : undefined}
           hideExtra={hideExtra}
         />
       </Box>

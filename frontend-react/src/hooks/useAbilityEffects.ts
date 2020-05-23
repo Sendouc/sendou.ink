@@ -8,33 +8,10 @@ export interface Explanation {
   title: string
   effect: string
   effectFromMax: number
+  effectFromMaxActual?: number
   ability: Ability
   info?: string
-}
-
-interface WeaponDataFromJson {
-  InkSaverLv?: "Middle" | "High" | string
-  InkSaverType?: "A" | "B" | "C" | "D" | string
-  Sub?: string
-  Special?: string
-  mInkConsume?: number
-  mInkConsumeRepeat?: number
-  mFullChargeInkConsume?: number
-  mMinChargeInkConsume?: number
-  mInkConsumeSplashJump?: number
-  mInkConsumeSplashStand?: number
-  mSideStepInkConsume?: number
-  mInkConsumeUmbrella?: number
-  ShotMoveVelType?: "A" | "B" | "C" | "D" | "E" | string
-  MoveVelLv?: "Low" | "Middle" | "High" | string
-  SpecialCost?: number
-  //mBurst_PaintR?: number
-  //mBurst_PaintRMid?: number
-  //mBurst_PaintRHigh?: number
-  //mTargetInCircleRadius?: number
-  //mTargetInCircleRadiusMid?: number
-  //mTargetInCircleRadiusHigh?: number
-  //mPaintGauge_SpecialFrm?: number
+  getEffect?: (ap: number) => number
 }
 
 function buildToAP(build: Partial<Build>) {
@@ -119,7 +96,12 @@ export default function useAbilityEffects(build: Partial<Build>) {
         title,
         effect: `${parseFloat((1 / (mInkConsume * effect[0])).toFixed(2))}`,
         effectFromMax: effect[1],
+        effectFromMaxActual: (getEffect(highMidLow, 57)[0] / effect[0]) * 100,
         ability: "ISM" as Ability,
+        getEffect: (ap: number) =>
+          parseFloat(
+            (1 / (mInkConsume * getEffect(highMidLow, ap)[0])).toFixed(2)
+          ),
       })
     }
 
@@ -131,7 +113,12 @@ export default function useAbilityEffects(build: Partial<Build>) {
           (1 / (mInkConsumeRepeat * effect[0])).toFixed(2)
         )}`,
         effectFromMax: effect[1],
+        effectFromMaxActual: (getEffect(highMidLow, 57)[0] / effect[0]) * 100,
         ability: "ISM" as Ability,
+        getEffect: (ap: number) =>
+          parseFloat(
+            (1 / (mInkConsumeRepeat * getEffect(highMidLow, ap)[0])).toFixed(2)
+          ),
       })
     }
 
@@ -143,7 +130,15 @@ export default function useAbilityEffects(build: Partial<Build>) {
           (1 / (mFullChargeInkConsume * effect[0])).toFixed(2)
         )}`,
         effectFromMax: effect[1],
+        effectFromMaxActual: (getEffect(highMidLow, 57)[0] / effect[0]) * 100,
         ability: "ISM" as Ability,
+        getEffect: (ap: number) =>
+          parseFloat(
+            (
+              1 /
+              (mFullChargeInkConsume * getEffect(highMidLow, ap)[0])
+            ).toFixed(2)
+          ),
       })
     }
 
@@ -155,7 +150,14 @@ export default function useAbilityEffects(build: Partial<Build>) {
           (1 / (mMinChargeInkConsume * effect[0])).toFixed(2)
         )}`,
         effectFromMax: effect[1],
+        effectFromMaxActual: (getEffect(highMidLow, 57)[0] / effect[0]) * 100,
         ability: "ISM" as Ability,
+        getEffect: (ap: number) =>
+          parseFloat(
+            (1 / (mMinChargeInkConsume * getEffect(highMidLow, ap)[0])).toFixed(
+              2
+            )
+          ),
       })
     }
 
@@ -172,7 +174,15 @@ export default function useAbilityEffects(build: Partial<Build>) {
           (1 / (mInkConsumeSplashJump * effect[0])).toFixed(2)
         )}`,
         effectFromMax: effect[1],
+        effectFromMaxActual: (getEffect(highMidLow, 57)[0] / effect[0]) * 100,
         ability: "ISM" as Ability,
+        getEffect: (ap: number) =>
+          parseFloat(
+            (
+              1 /
+              (mInkConsumeSplashJump * getEffect(highMidLow, ap)[0])
+            ).toFixed(2)
+          ),
       })
     } else if (mInkConsumeSplashJump && mInkConsumeSplashStand) {
       toReturn.push({
@@ -181,7 +191,15 @@ export default function useAbilityEffects(build: Partial<Build>) {
           (1 / (mInkConsumeSplashStand * effect[0])).toFixed(2)
         )}`,
         effectFromMax: effect[1],
+        effectFromMaxActual: (getEffect(highMidLow, 57)[0] / effect[0]) * 100,
         ability: "ISM" as Ability,
+        getEffect: (ap: number) =>
+          parseFloat(
+            (
+              1 /
+              (mInkConsumeSplashStand * getEffect(highMidLow, ap)[0])
+            ).toFixed(2)
+          ),
       })
 
       toReturn.push({
@@ -190,31 +208,57 @@ export default function useAbilityEffects(build: Partial<Build>) {
           (1 / (mInkConsumeSplashJump * effect[0])).toFixed(2)
         )}`,
         effectFromMax: effect[1],
+        effectFromMaxActual: (getEffect(highMidLow, 57)[0] / effect[0]) * 100,
         ability: "ISM" as Ability,
+        getEffect: (ap: number) =>
+          parseFloat(
+            (
+              1 /
+              (mInkConsumeSplashJump * getEffect(highMidLow, ap)[0])
+            ).toFixed(2)
+          ),
       })
     }
 
     const mSideStepInkConsume = buildWeaponData.mSideStepInkConsume
     if (mSideStepInkConsume) {
       toReturn.push({
-        title: "Dodge rolls per ink tank",
+        title: "Dodge roll ink consumption",
         effect: `${parseFloat(
           (mSideStepInkConsume * effect[0] * 100).toFixed(2)
         )}% of ink tank`,
         effectFromMax: effect[1],
+        effectFromMaxActual: parseFloat(
+          (mSideStepInkConsume * effect[0] * 100).toFixed(2)
+        ),
         ability: "ISM" as Ability,
+        getEffect: (ap: number) =>
+          parseFloat(
+            (mSideStepInkConsume * getEffect(highMidLow, ap)[0] * 100).toFixed(
+              2
+            )
+          ),
       })
     }
 
     const mInkConsumeUmbrella = buildWeaponData.mInkConsumeUmbrella
     if (mInkConsumeUmbrella) {
       toReturn.push({
-        title: "Brella launch ink consumption",
+        title: "Brella shield launch ink consumption",
         effect: `${parseFloat(
           (mInkConsumeUmbrella * effect[0] * 100).toFixed(2)
         )}% of ink tank`,
         effectFromMax: effect[1],
+        effectFromMaxActual: parseFloat(
+          (mInkConsumeUmbrella * effect[0] * 100).toFixed(2)
+        ),
         ability: "ISM" as Ability,
+        getEffect: (ap: number) =>
+          parseFloat(
+            (mInkConsumeUmbrella * getEffect(highMidLow, ap)[0] * 100).toFixed(
+              2
+            )
+          ),
       })
     }
 
@@ -246,6 +290,9 @@ export default function useAbilityEffects(build: Partial<Build>) {
           (effect[0] * inkConsumption * 100).toFixed(2)
         )}% of ink tank`,
         effectFromMax: effect[1],
+        effectFromMaxActual: parseFloat(
+          (effect[0] * inkConsumption * 100).toFixed(2)
+        ),
         ability: "ISS" as Ability,
       },
     ]
@@ -279,6 +326,8 @@ export default function useAbilityEffects(build: Partial<Build>) {
           (Math.ceil(effectSquid[0]) / 60).toFixed(2)
         )} seconds)`,
         effectFromMax: effectSquid[1],
+        effectFromMaxActual:
+          (effectSquid[0] / getEffect(highMidLowSquid, 0)[0]) * 100,
         ability: "REC" as Ability,
       },
       /*{

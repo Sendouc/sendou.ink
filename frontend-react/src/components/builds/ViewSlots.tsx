@@ -1,16 +1,20 @@
 import React from "react"
 import { Build, Ability } from "../../types"
 import AbilityIcon from "./AbilityIcon"
-import { Flex, Box } from "@chakra-ui/core"
+import { Flex, Box, BoxProps } from "@chakra-ui/core"
 
 interface ViewSlotsProps {
   build: Partial<Build>
   onAbilityClick?: (gear: "HEAD" | "CLOTHING" | "SHOES", index: number) => void
 }
 
-const ViewSlots: React.FC<ViewSlotsProps> = ({ build, onAbilityClick }) => {
+const ViewSlots: React.FC<ViewSlotsProps & BoxProps> = ({
+  build,
+  onAbilityClick,
+  ...props
+}) => {
   return (
-    <>
+    <Box {...props}>
       <Flex alignItems="center" justifyContent="center">
         {(
           build.headgear ??
@@ -76,7 +80,7 @@ const ViewSlots: React.FC<ViewSlotsProps> = ({ build, onAbilityClick }) => {
           </Box>
         ))}
       </Flex>
-    </>
+    </Box>
   )
 }
 
