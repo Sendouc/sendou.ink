@@ -190,7 +190,10 @@ const BuildStats: React.FC<BuildStatsProps> = ({
                 explanation.effectFromMaxActual ?? explanation.effectFromMax
               }
               otherEffect={otherExplanation?.effect}
-              otherProgressBarValue={otherExplanation?.effectFromMax}
+              otherProgressBarValue={
+                otherExplanation?.effectFromMaxActual ??
+                otherExplanation?.effectFromMax
+              }
               getEffect={explanation.getEffect}
               info={explanation.info}
               ap={explanation.ap}

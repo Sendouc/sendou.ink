@@ -1234,6 +1234,103 @@ export default function useAbilityEffects(build: Partial<Build>) {
     ]
   }
 
+  function calculateBDU(amount: number) {
+    const BDU = abilityJson["Bomb Defense Up DX"]
+
+    const highSub = BDU.BurstDamageRt_SubL_High
+    const midSub = BDU.BurstDamageRt_SubL_Mid
+    const lowSub = BDU.BurstDamageRt_SubL_Low
+    const highMidLowSub = [highSub, midSub, lowSub]
+    const effectSub = getEffect(highMidLowSub, amount)
+
+    const highSpecial = BDU.BurstDamageRt_Special_High
+    const midSpecial = BDU.BurstDamageRt_Special_Mid
+    const lowSpecial = BDU.BurstDamageRt_Special_Low
+    const highMidLowSpecial = [highSpecial, midSpecial, lowSpecial]
+    const effectSpecial = getEffect(highMidLowSpecial, amount)
+
+    const inkMineData = weaponData["Ink Mine"]
+    const pointSensorData = weaponData["Point Sensor"]
+    let high = inkMineData.mMarkingFrameHigh
+    let mid = inkMineData.mMarkingFrameMid
+    let low = inkMineData.mMarkingFrame
+    let highMidLow = [high, mid, low]
+    const mineFrames = getEffect(highMidLow, 0)[0]
+
+    high = pointSensorData.mMarkingFrameHigh
+    mid = pointSensorData.mMarkingFrameMid
+    low = pointSensorData.mMarkingFrame
+    highMidLow = [high, mid, low]
+    const sensorFrames = getEffect(highMidLow, 0)[0]
+
+    const highSensor = BDU.MarkingTime_ShortRt_High
+    const midSensor = BDU.MarkingTime_ShortRt_Mid
+    const lowSensor = BDU.MarkingTime_ShortRt_Low
+    const highMidLowSensor = [highSensor, midSensor, lowSensor]
+    const effectSensor = getEffect(highMidLowSensor, amount)
+
+    const highMine = BDU.MarkingTime_ShortRt_Trap_High
+    const midMine = BDU.MarkingTime_ShortRt_Trap_Mid
+    const lowMine = BDU.MarkingTime_ShortRt_Trap_Low
+    const highMidLowMine = [highMine, midMine, lowMine]
+    const effectMine = getEffect(highMidLowMine, amount)
+
+    return [
+      {
+        title: "Sub Weapon damage radius (indirect)",
+        effect: `${parseFloat((effectSub[0] * 100).toFixed(2))}%`,
+        effectFromMax: effectSub[1],
+        effectFromMaxActual: effectSub[0] * 100,
+        ability: "BDU" as Ability,
+        ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat((getEffect(highMidLowSub, ap)[0] * 100).toFixed(3)),
+        info:
+          "Bomb Defense Up DX also lessens the radius of a direct bomb hit but it will never make a bomb not kill that would have dealt over 100dmg without any of the ability on",
+      },
+      {
+        title: "Special Weapon damage radius (indirect)",
+        effect: `${parseFloat((effectSpecial[0] * 100).toFixed(2))}%`,
+        effectFromMax: effectSpecial[1],
+        effectFromMaxActual: effectSpecial[0] * 100,
+        ability: "BDU" as Ability,
+        ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat((getEffect(highMidLowSpecial, ap)[0] * 100).toFixed(3)),
+        info:
+          "Tenta Missiles, Inkjet, Splashdown, Baller, Bubble Blower, Booyah Bomb & Ultra Stamp generate damage lessened by Bomb Defense Up DX. OHKO's are unaffected",
+      },
+      {
+        title: "Base tracking time (Point Sensor)",
+        effect: `${Math.ceil(
+          sensorFrames * effectSensor[0]
+        )} frames (${parseFloat(
+          (Math.ceil(sensorFrames * effectSensor[0]) / 60).toFixed(2)
+        )} seconds)`,
+        effectFromMax: effectSensor[1],
+        ability: "BDU" as Ability,
+        ap: amount,
+        effectFromMaxActual:
+          (Math.ceil(sensorFrames * effectSensor[0]) / sensorFrames) * 100,
+        getEffect: (ap: number) =>
+          Math.ceil(sensorFrames * getEffect(highMidLowSensor, ap)[0]),
+      },
+      {
+        title: "Base tracking time (Ink Mine)",
+        effect: `${Math.ceil(mineFrames * effectMine[0])} frames (${parseFloat(
+          (Math.ceil(mineFrames * effectMine[0]) / 60).toFixed(2)
+        )} seconds)`,
+        effectFromMax: effectMine[1],
+        ability: "BDU" as Ability,
+        ap: amount,
+        effectFromMaxActual:
+          (Math.ceil(mineFrames * effectMine[0]) / mineFrames) * 100,
+        getEffect: (ap: number) =>
+          Math.ceil(mineFrames * getEffect(highMidLowMine, ap)[0]),
+      },
+    ]
+  }
+
   const abilityFunctions: Partial<Record<
     string,
     (amount: number) => Explanation[]
@@ -1250,6 +1347,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
     QSJ: calculateQSJ,
     BRU: calculateBRU,
     RES: calculateRES,
+    BDU: calculateBDU,
   } as const
 
   useEffect(() => {
