@@ -730,7 +730,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effectFromMax: effect[1],
         ability: "SPU" as Ability,
         info:
-          "Amount inked by Ink Storm is not increased only in how long distance the droplets are spread",
+          "Amount inked by Ink Storm is not increased only in how long distance the droplets are spread. Special Power Up also increases the distance you can throw the seed.",
         ap: amount,
         effectFromMaxActual:
           (effect[0] / getEffect(highMidLow, MAX_AP)[0]) * 100,
@@ -1144,6 +1144,96 @@ export default function useAbilityEffects(build: Partial<Build>) {
     return toReturn
   }
 
+  function calculateRES(amount: number) {
+    const RES = abilityJson["Ink Resistance Up"]
+
+    const highArmor = RES.OpInk_Armor_HP_High
+    const midArmor = RES.OpInk_Armor_HP_Mid
+    const lowArmor = RES.OpInk_Armor_HP_Low
+    const highMidLowArmor = [highArmor, midArmor, lowArmor]
+    const effectArmor = getEffect(highMidLowArmor, amount)
+
+    const highPerFrame = RES.OpInk_Damage_High
+    const midPerFrame = RES.OpInk_Damage_Mid
+    const lowPerFrame = RES.OpInk_Damage_Low
+    const highMidLowPerFrame = [highPerFrame, midPerFrame, lowPerFrame]
+    const effectPerFrame = getEffect(highMidLowPerFrame, amount)
+
+    const highLimit = RES.OpInk_Damage_Lmt_High
+    const midLimit = RES.OpInk_Damage_Lmt_Mid
+    const lowLimit = RES.OpInk_Damage_Lmt_Low
+    const highMidLowLimit = [highLimit, midLimit, lowLimit]
+    const effectLimit = getEffect(highMidLowLimit, amount)
+
+    const highVel = RES.OpInk_VelGnd_High
+    const midVel = RES.OpInk_VelGnd_Mid
+    const lowVel = RES.OpInk_VelGnd_Low
+    const highMidLowVel = [highVel, midVel, lowVel]
+    const effectVel = getEffect(highMidLowVel, amount)
+
+    return [
+      {
+        title: "Frames before taking damage from enemy ink",
+        effect: `${Math.ceil(effectArmor[0])} frames`,
+        effectFromMax: effectArmor[1],
+        ability: "RES" as Ability,
+        ap: amount,
+        effectFromMaxActual:
+          (Math.ceil(effectArmor[0]) /
+            Math.ceil(getEffect(highMidLowArmor, MAX_AP)[0])) *
+          100,
+        getEffect: (ap: number) => Math.ceil(getEffect(highMidLowArmor, ap)[0]),
+        info:
+          "Ink Resistance Up also allows you to jump higher and strafe faster while shooting in enemy ink",
+      },
+      {
+        title: "Damage taken in enemy ink",
+        effect: `${parseFloat(
+          (effectPerFrame[0] * 100 - 0.05).toFixed(1)
+        )}hp / frame`,
+        effectFromMax: effectPerFrame[1],
+        ability: "RES" as Ability,
+        ap: amount,
+        effectFromMaxActual:
+          (parseFloat((effectPerFrame[0] * 100 - 0.05).toFixed(1)) /
+            parseFloat(
+              (getEffect(highMidLowPerFrame, 0)[0] * 100 - 0.05).toFixed(1)
+            )) *
+          100,
+        getEffect: (ap: number) =>
+          parseFloat(
+            (getEffect(highMidLowPerFrame, ap)[0] * 100 - 0.05).toFixed(1)
+          ),
+      },
+      {
+        title: "Limit on the damage enemy ink can deal on you",
+        effect: `${parseFloat((effectLimit[0] * 100 - 0.05).toFixed(1))}hp`,
+        effectFromMax: effectLimit[1],
+        ability: "RES" as Ability,
+        ap: amount,
+        effectFromMaxActual: parseFloat(
+          (effectLimit[0] * 100 - 0.05).toFixed(1)
+        ),
+        getEffect: (ap: number) =>
+          parseFloat(
+            (getEffect(highMidLowLimit, ap)[0] * 100 - 0.05).toFixed(1)
+          ),
+      },
+      {
+        title: "Run speed in enemy ink",
+        effect: `${parseFloat(
+          (effectVel[0] * 100).toFixed(2)
+        )}% of normal speed`,
+        effectFromMax: effectVel[1],
+        ability: "RES" as Ability,
+        ap: amount,
+        effectFromMaxActual: parseFloat((effectVel[0] * 100).toFixed(2)),
+        getEffect: (ap: number) =>
+          parseFloat((getEffect(highMidLowVel, ap)[0] * 100).toFixed(2)),
+      },
+    ]
+  }
+
   const abilityFunctions: Partial<Record<
     string,
     (amount: number) => Explanation[]
@@ -1159,6 +1249,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
     QR: calculateQR,
     QSJ: calculateQSJ,
     BRU: calculateBRU,
+    RES: calculateRES,
   } as const
 
   useEffect(() => {
