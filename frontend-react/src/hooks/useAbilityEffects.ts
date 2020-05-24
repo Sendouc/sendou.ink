@@ -305,6 +305,10 @@ export default function useAbilityEffects(build: Partial<Build>) {
         ),
         ability: "ISS" as Ability,
         ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(
+            (inkConsumption * getEffect(highMidLow, ap)[0] * 100).toFixed(2)
+          ),
       },
     ]
   }
@@ -341,6 +345,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
           (effectSquid[0] / getEffect(highMidLowSquid, 0)[0]) * 100,
         ability: "REC" as Ability,
         ap: amount,
+        getEffect: (ap: number) => Math.ceil(getEffect(highMidLowSquid, ap)[0]),
       },
       /*{
         title: "Ink tank recovery from empty to full (humanoid form)",
@@ -393,8 +398,11 @@ export default function useAbilityEffects(build: Partial<Build>) {
           moveEffect[0].toFixed(2)
         )} distance units / frame`,
         effectFromMax: moveEffect[1],
+        effectFromMaxActual: (moveEffect[0] / 2.4) * 100,
         ability: "RSU" as Ability,
         ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(getEffect(highMidLow, ap)[0].toFixed(4)),
       },
       {
         title: "Run speed (firing)",
@@ -402,8 +410,15 @@ export default function useAbilityEffects(build: Partial<Build>) {
           (moveEffect[0] * shootEffect[0]).toFixed(2)
         )} distance units / frame`,
         effectFromMax: shootEffect[1],
+        effectFromMaxActual: ((moveEffect[0] * shootEffect[0]) / 2.4) * 100,
         ability: "RSU" as Ability,
         ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(
+            (
+              getEffect(highMidLow, ap)[0] * getEffect(highMidLowShoot, ap)[0]
+            ).toFixed(4)
+          ),
       },
     ]
   }
@@ -436,8 +451,10 @@ export default function useAbilityEffects(build: Partial<Build>) {
         title: "Swim speed",
         effect: `${parseFloat(effect[0].toFixed(2))} distance units / frame`,
         effectFromMax: effect[1],
+        effectFromMaxActual: (effect[0] / 2.4) * 100,
         ability: "SSU" as Ability,
         ap: amount,
+        getEffect: (ap: number) => getEffect(highMidLow, ap)[0],
       },
     ]
   }
@@ -457,13 +474,16 @@ export default function useAbilityEffects(build: Partial<Build>) {
 
     return [
       {
-        title: "Special charge speed",
-        effect: `${parseFloat((effect[0] * 100).toFixed(2))}% (${Math.ceil(
-          points / effect[0]
-        )}p)`,
+        title: "Points to special",
+        effect: `${Math.ceil(points / effect[0])}p (${parseFloat(
+          (effect[0] * 100).toFixed(2)
+        )}% speed)`,
         effectFromMax: effect[1],
+        effectFromMaxActual: (getEffect(highMidLow, 0)[0] / effect[0]) * 100,
         ability: "SCU" as Ability,
         ap: amount,
+        getEffect: (ap: number) =>
+          Math.ceil(points / getEffect(highMidLow, ap)[0]),
       },
     ]
   }
@@ -486,8 +506,11 @@ export default function useAbilityEffects(build: Partial<Build>) {
         ((1.0 - effect[0]) * 100).toFixed(2)
       )}% of the charge`,
       effectFromMax: effect[1],
+      effectFromMaxActual: (1.0 - effect[0]) * 100,
       ability: "SS" as Ability,
       ap: amount,
+      getEffect: (ap: number) =>
+        parseFloat(((1.0 - getEffect(highMidLow, ap)[0]) * 100).toFixed(2)),
     })
 
     if (weaponData[build.weapon!].Special === "Splashdown") {
@@ -506,8 +529,14 @@ export default function useAbilityEffects(build: Partial<Build>) {
         title: "Special lost when killed mid-Splashdown",
         effect: `${parseFloat(((1.0 - lost) * 100).toFixed(2))}% of the charge`,
         effectFromMax: fromMax,
+        effectFromMaxActual: parseFloat(((1.0 - lost) * 100).toFixed(2)),
         ability: "SS" as Ability,
         ap: amount,
+        getEffect: (ap: number) =>
+          Math.max(
+            0,
+            parseFloat(((1.0 - getEffect(highMidLow, ap)[0]) * 100).toFixed(2))
+          ),
       })
     }
 
@@ -538,12 +567,14 @@ export default function useAbilityEffects(build: Partial<Build>) {
           (Math.ceil(effect[0]) / 60).toFixed(2)
         )} seconds)`,
         effectFromMax: effect[1],
+        effectFromMaxActual: (effect[0] / getEffect(highMidLow, 57)[0]) * 100,
         ability: "SPU" as Ability,
         info:
           specialWeapon === "Inkjet"
             ? "Special Power Up also increases Ink Jet's shots' painting and blast radius"
             : undefined,
         ap: amount,
+        getEffect: (ap: number) => Math.ceil(getEffect(highMidLow, ap)[0]),
       })
     }
 
@@ -569,8 +600,13 @@ export default function useAbilityEffects(build: Partial<Build>) {
           ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
         )}%`,
         effectFromMax: effect[1],
+        effectFromMaxActual: (effect[0] / getEffect(highMidLow, 57)[0]) * 100,
         ability: "SPU" as Ability,
         ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(
+            ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(3)
+          ),
       })
       toReturn.push({
         title: "Tenta Missiles ink coverage",
@@ -578,8 +614,17 @@ export default function useAbilityEffects(build: Partial<Build>) {
           ((effectPaint[0] / effectPaintAtZero[0]) * 100).toFixed(2)
         )}%`,
         effectFromMax: effectPaint[1],
+        effectFromMaxActual:
+          (effectPaint[0] / getEffect(highMidLowPaint, 57)[0]) * 100,
         ability: "SPU" as Ability,
         ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(
+            (
+              (getEffect(highMidLowPaint, ap)[0] / effectPaintAtZero[0]) *
+              100
+            ).toFixed(3)
+          ),
       })
     }
 

@@ -23,12 +23,10 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
   const [otherBuild, setOtherBuild] = useState<Partial<Build>>(defaultBuild)
   const [showOther, setShowOther] = useState(false)
   const [otherFocused, setOtherFocused] = useState(false)
-  const [hideExtra, setHideExtra] = useState(false)
+  const [hideExtra, setHideExtra] = useState(true)
 
   const explanations = useAbilityEffects(build)
   const otherExplanations = useAbilityEffects(otherBuild)
-
-  console.log("explanations", explanations)
 
   return (
     <>

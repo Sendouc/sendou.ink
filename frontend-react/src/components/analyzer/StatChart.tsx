@@ -101,7 +101,7 @@ const StatChart: React.FC<StatChartProps> = ({
       <LineChart data={getData()}>
         <CartesianGrid strokeDasharray="3 3" color="#000" />
         <XAxis dataKey="name" />
-        <YAxis />
+        <YAxis domain={["dataMin", "dataMax"]} />
         <Tooltip
           contentStyle={{
             background: darkerBgColor,

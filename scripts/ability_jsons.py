@@ -178,6 +178,7 @@ for filepath in glob.iglob(abs_file_path):  # iterate through .json files
                             "Bomb", ""
                         ).replace("Launcher", "")
                     translated_special = lang_dict[weapon_internal]
+
                     obj = weapon_dict.get(translated_special, {"Name": weapon_internal})
                     obj[key] = data["param"][key]
                     weapon_dict[translated_special] = obj
@@ -187,7 +188,7 @@ for filepath in glob.iglob(abs_file_path):  # iterate through .json files
                     translated_sub = sub_internal_english[weapon_internal]
                     obj = weapon_dict.get(translated_sub, {"Name": weapon_internal})
                     obj[key] = data["param"][key]
-                    weapon_dict[translated_special] = obj
+                    weapon_dict[translated_sub] = obj
 
 
 with open("ability_jsons_output/ability_data.json", "w") as fp:
