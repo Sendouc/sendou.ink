@@ -30,9 +30,7 @@ const BuildStats: React.FC<BuildStatsProps> = ({
   hideExtra,
 }) => {
   const { colorMode } = useContext(MyThemeContext)
-  const [expandedCharts, setExpandedCharts] = useState<Set<string>>(
-    new Set(["Shots per ink tank"])
-  )
+  const [expandedCharts, setExpandedCharts] = useState<Set<string>>(new Set())
 
   const abilityArrays: Ability[][] = [
     build.headgear ?? [],
@@ -158,6 +156,7 @@ const BuildStats: React.FC<BuildStatsProps> = ({
               ap={ap}
               otherAp={otherAp}
               getEffect={getEffect}
+              ability={ability}
             />
           </Box>
         )}

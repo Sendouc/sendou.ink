@@ -10,12 +10,15 @@ import {
   Line,
 } from "recharts"
 import MyThemeContext from "../../themeContext"
+import { Ability } from "../../types"
+import { possibleAps } from "../../utils/lists"
 
 interface StatChartProps {
   title: string
   getEffect: (ap: number) => number
   ap: number
   otherAp?: number
+  ability: Ability
 }
 
 const StatChart: React.FC<StatChartProps> = ({
@@ -23,13 +26,21 @@ const StatChart: React.FC<StatChartProps> = ({
   ap,
   otherAp,
   getEffect,
+  ability,
 }) => {
   const { themeColorHex, darkerBgColor } = useContext(MyThemeContext)
 
   const getData = () => {
     const toReturn = []
-    for (let i = 0; i < 58; i++) {
-      toReturn.push({ name: `${i}AP`, [title]: getEffect(i) })
+    const LDEAbilities = ["ISM", "ISS", "REC"]
+    if (LDEAbilities.includes(ability)) {
+      for (let i = 0; i < 58; i++) {
+        toReturn.push({ name: `${i}AP`, [title]: getEffect(i) })
+      }
+    } else {
+      possibleAps.forEach((ap) => {
+        toReturn.push({ name: `${ap}AP`, [title]: getEffect(ap) })
+      })
     }
 
     return toReturn
