@@ -15,6 +15,8 @@ export interface Explanation {
   ap: number
 }
 
+const MAX_AP = 57
+
 function buildToAP(build: Partial<Build>) {
   const AP: Partial<Record<Ability, number>> = {}
 
@@ -97,7 +99,8 @@ export default function useAbilityEffects(build: Partial<Build>) {
         title,
         effect: `${parseFloat((1 / (mInkConsume * effect[0])).toFixed(2))}`,
         effectFromMax: effect[1],
-        effectFromMaxActual: (getEffect(highMidLow, 57)[0] / effect[0]) * 100,
+        effectFromMaxActual:
+          (getEffect(highMidLow, MAX_AP)[0] / effect[0]) * 100,
         ability: "ISM" as Ability,
         getEffect: (ap: number) =>
           parseFloat(
@@ -115,7 +118,8 @@ export default function useAbilityEffects(build: Partial<Build>) {
           (1 / (mInkConsumeRepeat * effect[0])).toFixed(2)
         )}`,
         effectFromMax: effect[1],
-        effectFromMaxActual: (getEffect(highMidLow, 57)[0] / effect[0]) * 100,
+        effectFromMaxActual:
+          (getEffect(highMidLow, MAX_AP)[0] / effect[0]) * 100,
         ability: "ISM" as Ability,
         getEffect: (ap: number) =>
           parseFloat(
@@ -133,7 +137,8 @@ export default function useAbilityEffects(build: Partial<Build>) {
           (1 / (mFullChargeInkConsume * effect[0])).toFixed(2)
         )}`,
         effectFromMax: effect[1],
-        effectFromMaxActual: (getEffect(highMidLow, 57)[0] / effect[0]) * 100,
+        effectFromMaxActual:
+          (getEffect(highMidLow, MAX_AP)[0] / effect[0]) * 100,
         ability: "ISM" as Ability,
         getEffect: (ap: number) =>
           parseFloat(
@@ -154,7 +159,8 @@ export default function useAbilityEffects(build: Partial<Build>) {
           (1 / (mMinChargeInkConsume * effect[0])).toFixed(2)
         )}`,
         effectFromMax: effect[1],
-        effectFromMaxActual: (getEffect(highMidLow, 57)[0] / effect[0]) * 100,
+        effectFromMaxActual:
+          (getEffect(highMidLow, MAX_AP)[0] / effect[0]) * 100,
         ability: "ISM" as Ability,
         getEffect: (ap: number) =>
           parseFloat(
@@ -179,7 +185,8 @@ export default function useAbilityEffects(build: Partial<Build>) {
           (1 / (mInkConsumeSplashJump * effect[0])).toFixed(2)
         )}`,
         effectFromMax: effect[1],
-        effectFromMaxActual: (getEffect(highMidLow, 57)[0] / effect[0]) * 100,
+        effectFromMaxActual:
+          (getEffect(highMidLow, MAX_AP)[0] / effect[0]) * 100,
         ability: "ISM" as Ability,
         getEffect: (ap: number) =>
           parseFloat(
@@ -197,7 +204,8 @@ export default function useAbilityEffects(build: Partial<Build>) {
           (1 / (mInkConsumeSplashStand * effect[0])).toFixed(2)
         )}`,
         effectFromMax: effect[1],
-        effectFromMaxActual: (getEffect(highMidLow, 57)[0] / effect[0]) * 100,
+        effectFromMaxActual:
+          (getEffect(highMidLow, MAX_AP)[0] / effect[0]) * 100,
         ability: "ISM" as Ability,
         getEffect: (ap: number) =>
           parseFloat(
@@ -215,7 +223,8 @@ export default function useAbilityEffects(build: Partial<Build>) {
           (1 / (mInkConsumeSplashJump * effect[0])).toFixed(2)
         )}`,
         effectFromMax: effect[1],
-        effectFromMaxActual: (getEffect(highMidLow, 57)[0] / effect[0]) * 100,
+        effectFromMaxActual:
+          (getEffect(highMidLow, MAX_AP)[0] / effect[0]) * 100,
         ability: "ISM" as Ability,
         getEffect: (ap: number) =>
           parseFloat(
@@ -567,7 +576,8 @@ export default function useAbilityEffects(build: Partial<Build>) {
           (Math.ceil(effect[0]) / 60).toFixed(2)
         )} seconds)`,
         effectFromMax: effect[1],
-        effectFromMaxActual: (effect[0] / getEffect(highMidLow, 57)[0]) * 100,
+        effectFromMaxActual:
+          (effect[0] / getEffect(highMidLow, MAX_AP)[0]) * 100,
         ability: "SPU" as Ability,
         info:
           specialWeapon === "Inkjet"
@@ -600,7 +610,8 @@ export default function useAbilityEffects(build: Partial<Build>) {
           ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
         )}%`,
         effectFromMax: effect[1],
-        effectFromMaxActual: (effect[0] / getEffect(highMidLow, 57)[0]) * 100,
+        effectFromMaxActual:
+          (effect[0] / getEffect(highMidLow, MAX_AP)[0]) * 100,
         ability: "SPU" as Ability,
         ap: amount,
         getEffect: (ap: number) =>
@@ -615,7 +626,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         )}%`,
         effectFromMax: effectPaint[1],
         effectFromMaxActual:
-          (effectPaint[0] / getEffect(highMidLowPaint, 57)[0]) * 100,
+          (effectPaint[0] / getEffect(highMidLowPaint, MAX_AP)[0]) * 100,
         ability: "SPU" as Ability,
         ap: amount,
         getEffect: (ap: number) =>
@@ -650,8 +661,17 @@ export default function useAbilityEffects(build: Partial<Build>) {
           ((effectNear[0] / effectAtZeroNear[0]) * 100).toFixed(2)
         )}%`,
         effectFromMax: effectNear[1],
+        effectFromMaxActual:
+          (effectNear[0] / getEffect(highMidLowNear, MAX_AP)[0]) * 100,
         ability: "SPU" as Ability,
         ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(
+            (
+              (getEffect(highMidLowNear, ap)[0] / effectAtZeroNear[0]) *
+              100
+            ).toFixed(3)
+          ),
       })
       toReturn.push({
         title: "Splashdown 70dmg hitbox size",
@@ -659,10 +679,19 @@ export default function useAbilityEffects(build: Partial<Build>) {
           ((effectMiddle[0] / effectAtZeroMiddle[0]) * 100).toFixed(2)
         )}%`,
         effectFromMax: effectMiddle[1],
+        effectFromMaxActual:
+          (effectMiddle[0] / getEffect(highMidLowMiddle, MAX_AP)[0]) * 100,
         ability: "SPU" as Ability,
         info:
           "55dmg hitbox can't be increased with Special Power Up so the total radius of the special doesn't change",
         ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(
+            (
+              (getEffect(highMidLowMiddle, ap)[0] / effectAtZeroMiddle[0]) *
+              100
+            ).toFixed(3)
+          ),
       })
     }
 
@@ -681,6 +710,8 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effectFromMax: effect[1],
         ability: "SPU" as Ability,
         ap: amount,
+        effectFromMaxActual: (effect[0] / getEffect(highMidLow, 0)[0]) * 100,
+        getEffect: (ap: number) => Math.ceil(getEffect(highMidLow, ap)[0]),
       })
     }
 
@@ -701,6 +732,9 @@ export default function useAbilityEffects(build: Partial<Build>) {
         info:
           "Amount inked by Ink Storm is not increased only in how long distance the droplets are spread",
         ap: amount,
+        effectFromMaxActual:
+          (effect[0] / getEffect(highMidLow, MAX_AP)[0]) * 100,
+        getEffect: (ap: number) => Math.ceil(getEffect(highMidLow, ap)[0]),
       })
     }
 
@@ -718,25 +752,42 @@ export default function useAbilityEffects(build: Partial<Build>) {
           ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
         )}%`,
         effectFromMax: effect[1],
+        effectFromMaxActual:
+          (effect[0] / getEffect(highMidLow, MAX_AP)[0]) * 100,
         ability: "SPU" as Ability,
         ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(
+            ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(3)
+          ),
       })
 
-      const highHit = specialWeaponData.mBurst_Radius_FarHigh
-      const midHit = specialWeaponData.mBurst_Radius_FarMid
-      const lowHit = specialWeaponData.mBurst_Radius_Far
+      const highHit = specialWeaponData.mBurst_Radius_MiddleHigh
+      const midHit = specialWeaponData.mBurst_Radius_MiddleMid
+      const lowHit = specialWeaponData.mBurst_Radius_Middle
       const highMidLowHit = [highHit, midHit, lowHit]
 
       const effectHit = getEffect(highMidLowHit, amount)
       const effectAtZeroHit = getEffect(highMidLowHit, 0)
+      console.log("effectHit", effectHit)
+
       toReturn.push({
         title: `Baller 55dmg explosion hitbox size`,
         effect: `${parseFloat(
           ((effectHit[0] / effectAtZeroHit[0]) * 100).toFixed(2)
         )}%`,
         effectFromMax: effectHit[1],
+        effectFromMaxActual:
+          (effectHit[0] / getEffect(highMidLowHit, MAX_AP)[0]) * 100,
         ability: "SPU" as Ability,
         ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(
+            (
+              (getEffect(highMidLowHit, ap)[0] / effectAtZeroHit[0]) *
+              100
+            ).toFixed(3)
+          ),
       })
     }
 
@@ -754,8 +805,17 @@ export default function useAbilityEffects(build: Partial<Build>) {
           ((effectSize[0] / effectAtZeroSize[0]) * 100).toFixed(2)
         )}%`,
         effectFromMax: effectSize[1],
+        effectFromMaxActual:
+          (effectSize[0] / getEffect(highMidLowSize, MAX_AP)[0]) * 100,
         ability: "SPU" as Ability,
         ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(
+            (
+              (getEffect(highMidLowSize, ap)[0] / effectAtZeroSize[0]) *
+              100
+            ).toFixed(3)
+          ),
       })
 
       const highHit = specialWeaponData.mCollisionPlayerRadiusMaxHigh
@@ -771,8 +831,17 @@ export default function useAbilityEffects(build: Partial<Build>) {
           ((effectHit[0] / effectAtZeroHit[0]) * 100).toFixed(2)
         )}%`,
         effectFromMax: effectHit[1],
+        effectFromMaxActual:
+          (effectHit[0] / getEffect(highMidLowHit, MAX_AP)[0]) * 100,
         ability: "SPU" as Ability,
         ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(
+            (
+              (getEffect(highMidLowHit, ap)[0] / effectAtZeroHit[0]) *
+              100
+            ).toFixed(3)
+          ),
       })
     }
 
@@ -790,8 +859,14 @@ export default function useAbilityEffects(build: Partial<Build>) {
           ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
         )}%`,
         effectFromMax: effect[1],
+        effectFromMaxActual:
+          (effect[0] / getEffect(highMidLow, MAX_AP)[0]) * 100,
         ability: "SPU" as Ability,
         ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(
+            ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(3)
+          ),
       })
     }
 
@@ -815,6 +890,10 @@ export default function useAbilityEffects(build: Partial<Build>) {
 
     const totalFrames = Math.ceil(150 + effectAround[0] + effectChase[0])
 
+    const effectAtZero = Math.ceil(
+      150 + getEffect(highMidLowAround, 0)[0] + getEffect(highMidLowChase, 0)[0]
+    )
+
     return [
       {
         title: "Quick Respawn time",
@@ -822,10 +901,17 @@ export default function useAbilityEffects(build: Partial<Build>) {
           (totalFrames / 60).toFixed(2)
         )} seconds)`,
         effectFromMax: effectAround[1],
+        effectFromMaxActual: (totalFrames / effectAtZero) * 100,
         ability: "QR" as Ability,
         info:
           "Quick Respawn activates when enemy kills you twice without you getting a kill in between",
         ap: amount,
+        getEffect: (ap: number) =>
+          Math.ceil(
+            150 +
+              getEffect(highMidLowChase, ap)[0] +
+              getEffect(highMidLowAround, ap)[0]
+          ),
       },
     ]
   }
@@ -833,17 +919,17 @@ export default function useAbilityEffects(build: Partial<Build>) {
   function calculateQSJ(amount: number) {
     const QSJ = abilityJson["Quick Super Jump"]
 
-    const highMove = QSJ.DokanWarp_MoveFrm_High
-    const midMove = QSJ.DokanWarp_MoveFrm_Mid
-    const lowMove = QSJ.DokanWarp_MoveFrm_Low
-    const highMidLowMove = [highMove, midMove, lowMove]
-    const effectMove = getEffect(highMidLowMove, amount)
-
     const highTame = QSJ.DokanWarp_TameFrm_High
     const midTame = QSJ.DokanWarp_TameFrm_Mid
     const lowTame = QSJ.DokanWarp_TameFrm_Low
     const highMidLowTame = [highTame, midTame, lowTame]
     const effectTame = getEffect(highMidLowTame, amount)
+
+    const highMove = QSJ.DokanWarp_MoveFrm_High
+    const midMove = QSJ.DokanWarp_MoveFrm_Mid
+    const lowMove = QSJ.DokanWarp_MoveFrm_Low
+    const highMidLowMove = [highMove, midMove, lowMove]
+    const effectMove = getEffect(highMidLowMove, amount)
 
     return [
       {
@@ -852,8 +938,11 @@ export default function useAbilityEffects(build: Partial<Build>) {
           (Math.ceil(effectTame[0]) / 60).toFixed(2)
         )} seconds)`,
         effectFromMax: effectTame[1],
+        effectFromMaxActual:
+          (effectTame[0] / getEffect(highMidLowTame, 0)[0]) * 100,
         ability: "QSJ" as Ability,
         ap: amount,
+        getEffect: (ap: number) => Math.ceil(getEffect(highMidLowTame, ap)[0]),
       },
       {
         title: "Quick Super Jump time (in the air)",
@@ -863,6 +952,9 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effectFromMax: effectMove[1],
         ability: "QSJ" as Ability,
         ap: amount,
+        effectFromMaxActual:
+          (effectMove[0] / getEffect(highMidLowMove, 0)[0]) * 100,
+        getEffect: (ap: number) => Math.ceil(getEffect(highMidLowMove, ap)[0]),
       },
     ]
   }
@@ -908,8 +1000,12 @@ export default function useAbilityEffects(build: Partial<Build>) {
           ((effectVelo[0] / effectVeloAtZero[0]) * 100).toFixed(2)
         )}% (${parseFloat(effectVelo[0].toFixed(2))})`,
         effectFromMax: effectVelo[1],
+        effectFromMaxActual:
+          (effectVelo[0] / getEffect(highMidLowVelo, MAX_AP)[0]) * 100,
         ability: "BRU" as Ability,
         ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(getEffect(highMidLowVelo, ap)[0].toFixed(2)),
       })
     }
 
@@ -928,6 +1024,9 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effectFromMax: effectFirst[1],
         ability: "BRU" as Ability,
         ap: amount,
+        effectFromMaxActual:
+          (effectFirst[0] / getEffect(highMidLowFirst, MAX_AP)[0]) * 100,
+        getEffect: (ap: number) => Math.ceil(getEffect(highMidLowFirst, ap)[0]),
       })
 
       const highSecond = subWeaponData.mPeriod_SecondHigh
@@ -944,6 +1043,10 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effectFromMax: effectSecond[1],
         ability: "BRU" as Ability,
         ap: amount,
+        effectFromMaxActual:
+          (effectSecond[0] / getEffect(highMidLowSecond, MAX_AP)[0]) * 100,
+        getEffect: (ap: number) =>
+          Math.ceil(getEffect(highMidLowSecond, ap)[0]),
       })
     }
 
@@ -962,6 +1065,9 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effectFromMax: effect[1],
         ability: "BRU" as Ability,
         ap: amount,
+        effectFromMaxActual:
+          (effect[0] / getEffect(highMidLow, MAX_AP)[0]) * 100,
+        getEffect: (ap: number) => Math.ceil(getEffect(highMidLow, ap)[0]),
       })
     }
 
@@ -981,6 +1087,9 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effectFromMax: effect[1],
         ability: "BRU" as Ability,
         ap: amount,
+        effectFromMaxActual:
+          (effect[0] / getEffect(highMidLow, MAX_AP)[0]) * 100,
+        getEffect: (ap: number) => Math.ceil(getEffect(highMidLow, ap)[0]),
       })
     }
 
@@ -1000,6 +1109,12 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effectFromMax: effect[1],
         ability: "BRU" as Ability,
         ap: amount,
+        effectFromMaxActual:
+          (effect[0] / getEffect(highMidLow, MAX_AP)[0]) * 100,
+        getEffect: (ap: number) =>
+          parseFloat(
+            ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(3)
+          ),
       })
     }
 
@@ -1016,6 +1131,11 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effectFromMax: effect[1],
         ability: "BRU" as Ability,
         ap: amount,
+        effectFromMaxActual:
+          (Math.floor(effect[0]) /
+            Math.floor(getEffect(highMidLow, MAX_AP)[0])) *
+          100,
+        getEffect: (ap: number) => Math.floor(getEffect(highMidLow, ap)[0]),
         info:
           "When jumping to Sub Power Up boosted beakons QSJ AP bonus is applied on top of any existing QSJ the jumper has. 57AP can't be exceeded",
       })
