@@ -1,29 +1,20 @@
+import {
+  Box,
+  Flex,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  Progress,
+} from "@chakra-ui/core"
 import React, { useContext, useState } from "react"
+import { FaChartLine, FaQuestion } from "react-icons/fa"
 import { Explanation } from "../../hooks/useAbilityEffects"
 import MyThemeContext from "../../themeContext"
 import { Ability, Build } from "../../types"
 import { mainOnlyAbilities } from "../../utils/lists"
-import {
-  Progress,
-  Box,
-  Flex,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@chakra-ui/core"
 import AbilityIcon from "../builds/AbilityIcon"
-import {
-  LineChart,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Legend,
-  Tooltip,
-  Line,
-  ResponsiveContainer,
-} from "recharts"
 import IconButton from "../elements/IconButton"
-import { FaChartLine, FaInfo, FaQuestion } from "react-icons/fa"
+import StatChart from "./StatChart"
 
 interface BuildStatsProps {
   explanations: Explanation[]
@@ -38,7 +29,11 @@ const BuildStats: React.FC<BuildStatsProps> = ({
   build,
   hideExtra,
 }) => {
-  const { colorMode, themeColorWithShade } = useContext(MyThemeContext)
+  const { colorMode } = useContext(MyThemeContext)
+  const [expandedCharts, setExpandedCharts] = useState<Set<string>>(
+    new Set(["Shots per ink tank"])
+  )
+
   const abilityArrays: Ability[][] = [
     build.headgear ?? [],
     build.clothing ?? [],
@@ -68,6 +63,10 @@ const BuildStats: React.FC<BuildStatsProps> = ({
     progressBarValue: number
     otherProgressBarValue?: number
     getEffect?: (ap: number) => number
+    ap: number
+    otherAp?: number
+    chartExpanded: boolean
+    toggleChart: () => void
   }> = ({
     title,
     effect,
@@ -76,21 +75,14 @@ const BuildStats: React.FC<BuildStatsProps> = ({
     otherProgressBarValue,
     getEffect,
     info,
+    ap,
+    otherAp,
+    chartExpanded,
+    toggleChart,
     progressBarValue = 0,
   }) => {
-    const [showChart, setShowChart] = useState(false)
-    const { themeColorHex, darkerBgColor, themeColorWithShade } = useContext(
-      MyThemeContext
-    )
+    const { darkerBgColor, themeColorWithShade } = useContext(MyThemeContext)
 
-    const getData = () => {
-      const toReturn = []
-      for (let i = 0; i < 58; i++) {
-        toReturn.push({ name: `${i}AP`, [title]: getEffect!(i) })
-      }
-
-      return toReturn
-    }
     return (
       <>
         <Flex justifyContent="space-between">
@@ -98,10 +90,7 @@ const BuildStats: React.FC<BuildStatsProps> = ({
             <Box mr="0.5em">
               <AbilityIcon ability={ability} size="TINY" />
             </Box>
-            <IconButton
-              icon={FaChartLine}
-              onClick={() => setShowChart(!showChart)}
-            />
+            <IconButton icon={FaChartLine} onClick={() => toggleChart()} />
             {title}
             {info && (
               <Popover trigger="hover" placement="top-start">
@@ -162,38 +151,19 @@ const BuildStats: React.FC<BuildStatsProps> = ({
             </Flex>
           </>
         )}
-        {getEffect && showChart && (
+        {getEffect && chartExpanded && (
           <Box my="1em" ml="-26px">
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={getData()}>
-                <CartesianGrid strokeDasharray="3 3" color="#000" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip
-                  contentStyle={{
-                    background: darkerBgColor,
-                    borderRadius: "5px",
-                    border: 0,
-                  }}
-                />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey={title}
-                  stroke={themeColorHex}
-                  dot={false}
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            <StatChart
+              title={title}
+              ap={ap}
+              otherAp={otherAp}
+              getEffect={getEffect}
+            />
           </Box>
         )}
       </>
     )
   }
-
-  /*const explanationsToUse = !hideExtra
-    ? explanations
-    : explanations.filter((e) => e.effectFromMax !== 0)*/
 
   return (
     <>
@@ -224,6 +194,19 @@ const BuildStats: React.FC<BuildStatsProps> = ({
               otherProgressBarValue={otherExplanation?.effectFromMax}
               getEffect={explanation.getEffect}
               info={explanation.info}
+              ap={explanation.ap}
+              otherAp={otherExplanation?.ap}
+              chartExpanded={expandedCharts.has(explanation.title)}
+              toggleChart={() => {
+                const newSet = new Set(expandedCharts)
+                if (newSet.has(explanation.title)) {
+                  newSet.delete(explanation.title)
+                } else {
+                  newSet.add(explanation.title)
+                }
+
+                setExpandedCharts(newSet)
+              }}
             />
           </Box>
         )

@@ -12,6 +12,7 @@ export interface Explanation {
   ability: Ability
   info?: string
   getEffect?: (ap: number) => number
+  ap: number
 }
 
 function buildToAP(build: Partial<Build>) {
@@ -102,6 +103,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
           parseFloat(
             (1 / (mInkConsume * getEffect(highMidLow, ap)[0])).toFixed(2)
           ),
+        ap: amount,
       })
     }
 
@@ -119,6 +121,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
           parseFloat(
             (1 / (mInkConsumeRepeat * getEffect(highMidLow, ap)[0])).toFixed(2)
           ),
+        ap: amount,
       })
     }
 
@@ -139,6 +142,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
               (mFullChargeInkConsume * getEffect(highMidLow, ap)[0])
             ).toFixed(2)
           ),
+        ap: amount,
       })
     }
 
@@ -158,6 +162,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
               2
             )
           ),
+        ap: amount,
       })
     }
 
@@ -183,6 +188,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
               (mInkConsumeSplashJump * getEffect(highMidLow, ap)[0])
             ).toFixed(2)
           ),
+        ap: amount,
       })
     } else if (mInkConsumeSplashJump && mInkConsumeSplashStand) {
       toReturn.push({
@@ -200,6 +206,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
               (mInkConsumeSplashStand * getEffect(highMidLow, ap)[0])
             ).toFixed(2)
           ),
+        ap: amount,
       })
 
       toReturn.push({
@@ -217,6 +224,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
               (mInkConsumeSplashJump * getEffect(highMidLow, ap)[0])
             ).toFixed(2)
           ),
+        ap: amount,
       })
     }
 
@@ -238,6 +246,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
               2
             )
           ),
+        ap: amount,
       })
     }
 
@@ -259,6 +268,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
               2
             )
           ),
+        ap: amount,
       })
     }
 
@@ -294,6 +304,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
           (effect[0] * inkConsumption * 100).toFixed(2)
         ),
         ability: "ISS" as Ability,
+        ap: amount,
       },
     ]
   }
@@ -329,6 +340,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effectFromMaxActual:
           (effectSquid[0] / getEffect(highMidLowSquid, 0)[0]) * 100,
         ability: "REC" as Ability,
+        ap: amount,
       },
       /*{
         title: "Ink tank recovery from empty to full (humanoid form)",
@@ -382,6 +394,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         )} distance units / frame`,
         effectFromMax: moveEffect[1],
         ability: "RSU" as Ability,
+        ap: amount,
       },
       {
         title: "Run speed (firing)",
@@ -390,6 +403,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         )} distance units / frame`,
         effectFromMax: shootEffect[1],
         ability: "RSU" as Ability,
+        ap: amount,
       },
     ]
   }
@@ -423,6 +437,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${parseFloat(effect[0].toFixed(2))} distance units / frame`,
         effectFromMax: effect[1],
         ability: "SSU" as Ability,
+        ap: amount,
       },
     ]
   }
@@ -448,6 +463,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         )}p)`,
         effectFromMax: effect[1],
         ability: "SCU" as Ability,
+        ap: amount,
       },
     ]
   }
@@ -471,6 +487,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
       )}% of the charge`,
       effectFromMax: effect[1],
       ability: "SS" as Ability,
+      ap: amount,
     })
 
     if (weaponData[build.weapon!].Special === "Splashdown") {
@@ -490,6 +507,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${parseFloat(((1.0 - lost) * 100).toFixed(2))}% of the charge`,
         effectFromMax: fromMax,
         ability: "SS" as Ability,
+        ap: amount,
       })
     }
 
@@ -525,6 +543,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
           specialWeapon === "Inkjet"
             ? "Special Power Up also increases Ink Jet's shots' painting and blast radius"
             : undefined,
+        ap: amount,
       })
     }
 
@@ -551,6 +570,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         )}%`,
         effectFromMax: effect[1],
         ability: "SPU" as Ability,
+        ap: amount,
       })
       toReturn.push({
         title: "Tenta Missiles ink coverage",
@@ -559,6 +579,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         )}%`,
         effectFromMax: effectPaint[1],
         ability: "SPU" as Ability,
+        ap: amount,
       })
     }
 
@@ -585,6 +606,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         )}%`,
         effectFromMax: effectNear[1],
         ability: "SPU" as Ability,
+        ap: amount,
       })
       toReturn.push({
         title: "Splashdown 70dmg hitbox size",
@@ -595,6 +617,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         ability: "SPU" as Ability,
         info:
           "55dmg hitbox can't be increased with Special Power Up so the total radius of the special doesn't change",
+        ap: amount,
       })
     }
 
@@ -612,6 +635,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         )} seconds)`,
         effectFromMax: effect[1],
         ability: "SPU" as Ability,
+        ap: amount,
       })
     }
 
@@ -631,6 +655,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         ability: "SPU" as Ability,
         info:
           "Amount inked by Ink Storm is not increased only in how long distance the droplets are spread",
+        ap: amount,
       })
     }
 
@@ -649,6 +674,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         )}%`,
         effectFromMax: effect[1],
         ability: "SPU" as Ability,
+        ap: amount,
       })
 
       const highHit = specialWeaponData.mBurst_Radius_FarHigh
@@ -665,6 +691,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         )}%`,
         effectFromMax: effectHit[1],
         ability: "SPU" as Ability,
+        ap: amount,
       })
     }
 
@@ -683,6 +710,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         )}%`,
         effectFromMax: effectSize[1],
         ability: "SPU" as Ability,
+        ap: amount,
       })
 
       const highHit = specialWeaponData.mCollisionPlayerRadiusMaxHigh
@@ -699,6 +727,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         )}%`,
         effectFromMax: effectHit[1],
         ability: "SPU" as Ability,
+        ap: amount,
       })
     }
 
@@ -717,6 +746,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         )}%`,
         effectFromMax: effect[1],
         ability: "SPU" as Ability,
+        ap: amount,
       })
     }
 
@@ -750,6 +780,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         ability: "QR" as Ability,
         info:
           "Quick Respawn activates when enemy kills you twice without you getting a kill in between",
+        ap: amount,
       },
     ]
   }
@@ -777,6 +808,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         )} seconds)`,
         effectFromMax: effectTame[1],
         ability: "QSJ" as Ability,
+        ap: amount,
       },
       {
         title: "Quick Super Jump time (in the air)",
@@ -785,6 +817,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         )} seconds)`,
         effectFromMax: effectMove[1],
         ability: "QSJ" as Ability,
+        ap: amount,
       },
     ]
   }
@@ -831,6 +864,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         )}% (${parseFloat(effectVelo[0].toFixed(2))})`,
         effectFromMax: effectVelo[1],
         ability: "BRU" as Ability,
+        ap: amount,
       })
     }
 
@@ -848,6 +882,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         )} seconds)`,
         effectFromMax: effectFirst[1],
         ability: "BRU" as Ability,
+        ap: amount,
       })
 
       const highSecond = subWeaponData.mPeriod_SecondHigh
@@ -863,6 +898,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         )} seconds)`,
         effectFromMax: effectSecond[1],
         ability: "BRU" as Ability,
+        ap: amount,
       })
     }
 
@@ -880,6 +916,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         )} seconds)`,
         effectFromMax: effect[1],
         ability: "BRU" as Ability,
+        ap: amount,
       })
     }
 
@@ -898,6 +935,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         )}%`,
         effectFromMax: effect[1],
         ability: "BRU" as Ability,
+        ap: amount,
       })
     }
 
@@ -916,6 +954,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         )}%`,
         effectFromMax: effect[1],
         ability: "BRU" as Ability,
+        ap: amount,
       })
     }
 
@@ -931,6 +970,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
         effect: `${Math.floor(effect[0])}AP`,
         effectFromMax: effect[1],
         ability: "BRU" as Ability,
+        ap: amount,
         info:
           "When jumping to Sub Power Up boosted beakons QSJ AP bonus is applied on top of any existing QSJ the jumper has. 57AP can't be exceeded",
       })
