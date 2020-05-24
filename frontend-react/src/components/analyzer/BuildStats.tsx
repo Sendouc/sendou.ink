@@ -21,6 +21,8 @@ interface BuildStatsProps {
   otherExplanations?: Explanation[]
   build: Partial<Build>
   hideExtra: boolean
+  showNotActualProgress: boolean
+  startChartsAtZero: boolean
 }
 
 const BuildStats: React.FC<BuildStatsProps> = ({
@@ -28,6 +30,8 @@ const BuildStats: React.FC<BuildStatsProps> = ({
   otherExplanations,
   build,
   hideExtra,
+  showNotActualProgress,
+  startChartsAtZero,
 }) => {
   const { colorMode } = useContext(MyThemeContext)
   const [expandedCharts, setExpandedCharts] = useState<Set<string>>(new Set())
@@ -157,6 +161,7 @@ const BuildStats: React.FC<BuildStatsProps> = ({
               otherAp={otherAp}
               getEffect={getEffect}
               ability={ability}
+              startChartsAtZero={startChartsAtZero}
             />
           </Box>
         )}
@@ -187,12 +192,15 @@ const BuildStats: React.FC<BuildStatsProps> = ({
               ability={explanation.ability}
               effect={explanation.effect}
               progressBarValue={
-                explanation.effectFromMaxActual ?? explanation.effectFromMax
+                showNotActualProgress
+                  ? explanation.effectFromMax
+                  : explanation.effectFromMaxActual
               }
               otherEffect={otherExplanation?.effect}
               otherProgressBarValue={
-                otherExplanation?.effectFromMaxActual ??
-                otherExplanation?.effectFromMax
+                showNotActualProgress
+                  ? otherExplanation?.effectFromMax
+                  : otherExplanation?.effectFromMaxActual
               }
               getEffect={explanation.getEffect}
               info={explanation.info}

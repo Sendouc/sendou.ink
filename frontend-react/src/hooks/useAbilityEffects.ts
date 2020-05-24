@@ -8,10 +8,10 @@ export interface Explanation {
   title: string
   effect: string
   effectFromMax: number
-  effectFromMaxActual?: number
+  effectFromMaxActual: number
   ability: Ability
   info?: string
-  getEffect?: (ap: number) => number
+  getEffect: (ap: number) => number
   ap: number
 }
 
@@ -1363,6 +1363,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
     })
 
     setExplanations(newExplanations)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [build])
 
   return explanations

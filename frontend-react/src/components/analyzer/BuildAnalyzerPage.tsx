@@ -9,6 +9,8 @@ import WeaponSelector from "../common/WeaponSelector"
 import BuildStats from "./BuildStats"
 import EditableBuilds from "./EditableBuilds"
 import MyThemeContext from "../../themeContext"
+import { FaWrench } from "react-icons/fa"
+import Button from "../elements/Button"
 
 const defaultBuild: Partial<Build> = {
   weapon: "Splattershot Jr.",
@@ -22,8 +24,11 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
   const [build, setBuild] = useState<Partial<Build>>(defaultBuild)
   const [otherBuild, setOtherBuild] = useState<Partial<Build>>(defaultBuild)
   const [showOther, setShowOther] = useState(false)
+  const [showNotActualProgress, setShowNotActualProgress] = useState(false)
+  const [startChartsAtZero, setStartChartsAtZero] = useState(false)
   const [otherFocused, setOtherFocused] = useState(false)
   const [hideExtra, setHideExtra] = useState(true)
+  const [showSettings, setShowSettings] = useState(false)
 
   const explanations = useAbilityEffects(build)
   const otherExplanations = useAbilityEffects(otherBuild)
@@ -57,21 +62,54 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
         }}
         otherFocused={otherFocused}
       />
-      <Box my="1em">
-        <FormLabel htmlFor="show-all">Hide stats at base value</FormLabel>
-        <Switch
-          id="show-all"
-          color={themeColor}
-          isChecked={hideExtra}
-          onChange={() => setHideExtra(!hideExtra)}
-        />
-      </Box>
+      <Button icon={FaWrench} onClick={() => setShowSettings(!showSettings)}>
+        {showSettings ? "Hide settings" : "Show settings"}
+      </Button>
+      {showSettings && (
+        <Box my="1em">
+          <Switch
+            id="show-all"
+            color={themeColor}
+            isChecked={hideExtra}
+            onChange={() => setHideExtra(!hideExtra)}
+            mr="0.5em"
+          />
+          <FormLabel htmlFor="show-all">Hide stats at base value</FormLabel>
+
+          <Box>
+            <Switch
+              id="show-not-actual"
+              color={themeColor}
+              isChecked={showNotActualProgress}
+              onChange={() => setShowNotActualProgress(!showNotActualProgress)}
+              mr="0.5em"
+            />
+            <FormLabel htmlFor="show-not-actual">
+              Progress bars show progress to max value
+            </FormLabel>
+          </Box>
+          <Box>
+            <Switch
+              id="charts-zero"
+              color={themeColor}
+              isChecked={startChartsAtZero}
+              onChange={() => setStartChartsAtZero(!startChartsAtZero)}
+              mr="0.5em"
+            />
+            <FormLabel htmlFor="charts-zero">
+              Start charts Y axis from zero
+            </FormLabel>
+          </Box>
+        </Box>
+      )}
       <Box my="1em">
         <BuildStats
           build={build}
           explanations={explanations}
           otherExplanations={showOther ? otherExplanations : undefined}
           hideExtra={hideExtra}
+          showNotActualProgress={showNotActualProgress}
+          startChartsAtZero={startChartsAtZero}
         />
       </Box>
     </>

@@ -19,6 +19,7 @@ interface StatChartProps {
   ap: number
   otherAp?: number
   ability: Ability
+  startChartsAtZero: boolean
 }
 
 const StatChart: React.FC<StatChartProps> = ({
@@ -27,6 +28,7 @@ const StatChart: React.FC<StatChartProps> = ({
   otherAp,
   getEffect,
   ability,
+  startChartsAtZero,
 }) => {
   const { themeColorHex, darkerBgColor } = useContext(MyThemeContext)
 
@@ -101,7 +103,9 @@ const StatChart: React.FC<StatChartProps> = ({
       <LineChart data={getData()}>
         <CartesianGrid strokeDasharray="3 3" color="#000" />
         <XAxis dataKey="name" />
-        <YAxis domain={["dataMin", "dataMax"]} />
+        <YAxis
+          domain={startChartsAtZero ? undefined : ["dataMin", "dataMax"]}
+        />
         <Tooltip
           contentStyle={{
             background: darkerBgColor,
