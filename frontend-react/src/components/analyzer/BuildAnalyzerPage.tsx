@@ -3,7 +3,7 @@ import { RouteComponentProps } from "@reach/router"
 import React, { useState, useContext } from "react"
 import { Helmet } from "react-helmet-async"
 import useAbilityEffects from "../../hooks/useAbilityEffects"
-import { Build } from "../../types"
+import { Build, Ability } from "../../types"
 import PageHeader from "../common/PageHeader"
 import WeaponSelector from "../common/WeaponSelector"
 import BuildStats from "./BuildStats"
@@ -13,6 +13,7 @@ import { FaWrench } from "react-icons/fa"
 import Button from "../elements/Button"
 
 const defaultBuild: Partial<Build> = {
+  weapon: ".96 Gal",
   headgear: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
   clothing: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
   shoes: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
@@ -28,9 +29,13 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
   const [otherFocused, setOtherFocused] = useState(false)
   const [hideExtra, setHideExtra] = useState(true)
   const [showSettings, setShowSettings] = useState(false)
+  const [bonusAp, setBonusAp] = useState<Partial<Record<Ability, boolean>>>({})
+  const [otherBonusAp, setOtherBonusAp] = useState<
+    Partial<Record<Ability, boolean>>
+  >({})
 
-  const explanations = useAbilityEffects(build)
-  const otherExplanations = useAbilityEffects(otherBuild)
+  const explanations = useAbilityEffects(build, bonusAp)
+  const otherExplanations = useAbilityEffects(otherBuild, otherBonusAp)
 
   return (
     <>
@@ -67,6 +72,10 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
             setOtherFocused(!otherFocused)
           }}
           otherFocused={otherFocused}
+          bonusAp={bonusAp}
+          setBonusAp={setBonusAp}
+          otherBonusAp={otherBonusAp}
+          setOtherBonusAp={setOtherBonusAp}
         />
       )}
       <Button

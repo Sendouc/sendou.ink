@@ -17,6 +17,7 @@ import {
 } from "../../utils/lists"
 import Button from "../elements/Button"
 import { FaPlus, FaMinus } from "react-icons/fa"
+import HeadOnlyToggle from "./HeadOnlyToggle"
 
 interface EditableBuildsProps {
   build: Partial<Build>
@@ -26,6 +27,14 @@ interface EditableBuildsProps {
   setShowOther: React.Dispatch<React.SetStateAction<boolean>>
   otherFocused: boolean
   changeFocus: () => void
+  bonusAp: Partial<Record<Ability, boolean>>
+  setBonusAp: React.Dispatch<
+    React.SetStateAction<Partial<Record<Ability, boolean>>>
+  >
+  otherBonusAp: Partial<Record<Ability, boolean>>
+  setOtherBonusAp: React.Dispatch<
+    React.SetStateAction<Partial<Record<Ability, boolean>>>
+  >
 }
 
 const EditableBuilds: React.FC<EditableBuildsProps> = ({
@@ -36,6 +45,10 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
   setShowOther,
   otherFocused,
   changeFocus,
+  bonusAp,
+  setBonusAp,
+  otherBonusAp,
+  setOtherBonusAp,
 }) => {
   const buildToEdit = otherFocused ? otherBuild : build
   const handleChange = (value: Object) => setBuild({ ...buildToEdit, ...value })
@@ -130,6 +143,10 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
       })
     }
   }
+
+  const headAbility = build.headgear ? build.headgear[0] : "SSU"
+  const otherHeadAbility = otherBuild.headgear ? otherBuild.headgear[0] : "SSU"
+
   return (
     <>
       <Button
@@ -157,6 +174,18 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
             m="1em"
             cursor={!otherFocused ? undefined : "not-allowed"}
           />
+          {["OG", "CB"].includes(headAbility) && (
+            <HeadOnlyToggle
+              ability={headAbility as any}
+              active={bonusAp[headAbility] ?? false}
+              setActive={() =>
+                setBonusAp({
+                  ...bonusAp,
+                  [headAbility]: !bonusAp[headAbility],
+                })
+              }
+            />
+          )}
         </Flex>
         {showOther && (
           <Flex flexDirection="column">
@@ -175,6 +204,18 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
               m="1em"
               cursor={otherFocused ? undefined : "not-allowed"}
             />
+            {["OG", "CB"].includes(otherHeadAbility) && (
+              <HeadOnlyToggle
+                ability={otherHeadAbility as any}
+                active={otherBonusAp[otherHeadAbility] ?? false}
+                setActive={() =>
+                  setOtherBonusAp({
+                    ...otherBonusAp,
+                    [otherHeadAbility]: !otherBonusAp[otherHeadAbility],
+                  })
+                }
+              />
+            )}
           </Flex>
         )}
       </Flex>
