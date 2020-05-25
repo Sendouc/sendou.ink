@@ -2152,7 +2152,8 @@ export default function useAbilityEffects(
     Object.keys(abilityFunctions).forEach((ability) => {
       const func = abilityFunctions[ability]
       const abilityForFunc = ability as Ability
-      const explanations = func!(AP[abilityForFunc] ?? 0)
+      const APcount = AP[abilityForFunc] ?? 0
+      const explanations = func!(Math.min(57, APcount))
       newExplanations = [...newExplanations, ...explanations]
     })
 
