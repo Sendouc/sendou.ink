@@ -13,7 +13,6 @@ import { FaWrench } from "react-icons/fa"
 import Button from "../elements/Button"
 
 const defaultBuild: Partial<Build> = {
-  weapon: ".96 Gal",
   headgear: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
   clothing: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
   shoes: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
