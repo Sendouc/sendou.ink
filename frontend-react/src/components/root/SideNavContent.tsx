@@ -30,7 +30,7 @@ import {
   FiLogIn,
   FiHeart,
 } from "react-icons/fi"
-import { RiTShirt2Line } from "react-icons/ri"
+import { RiTShirt2Line, RiTShirtAirLine } from "react-icons/ri"
 import Logo from "./Logo"
 import NavItem from "./NavItem"
 import { useQuery } from "@apollo/react-hooks"
@@ -144,6 +144,11 @@ export const SideNavContent: React.FC<SideNavProps> = ({ showLogo = true }) => {
             <NavItem to="plans" icon={FiMap} title="Map Planner" />
             <NavItem to="calendar" icon={FiCalendar} title="Calendar" />
             <NavItem to="builds" icon={RiTShirt2Line} title="Builds" />
+            <NavItem
+              to="analyzer"
+              icon={RiTShirtAirLine}
+              title="Build Analyzer"
+            />
             <NavItem to="u" icon={FiUsers} title="User Search" />
             <NavItem to="freeagents" icon={FiHeart} title="Free Agents" />
             <NavItem
