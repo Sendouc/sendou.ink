@@ -29,13 +29,20 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
   const [otherFocused, setOtherFocused] = useState(false)
   const [hideExtra, setHideExtra] = useState(true)
   const [showSettings, setShowSettings] = useState(false)
+
   const [bonusAp, setBonusAp] = useState<Partial<Record<Ability, boolean>>>({})
   const [otherBonusAp, setOtherBonusAp] = useState<
     Partial<Record<Ability, boolean>>
   >({})
+  const [lde, setLde] = useState(0)
+  const [otherLde, setOtherLde] = useState(0)
 
-  const explanations = useAbilityEffects(build, bonusAp)
-  const otherExplanations = useAbilityEffects(otherBuild, otherBonusAp)
+  const explanations = useAbilityEffects(build, bonusAp, lde)
+  const otherExplanations = useAbilityEffects(
+    otherBuild,
+    otherBonusAp,
+    otherLde
+  )
 
   return (
     <>
@@ -76,6 +83,10 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
           setBonusAp={setBonusAp}
           otherBonusAp={otherBonusAp}
           setOtherBonusAp={setOtherBonusAp}
+          lde={lde}
+          setLde={setLde}
+          otherLde={otherLde}
+          setOtherLde={setOtherLde}
         />
       )}
       <Button

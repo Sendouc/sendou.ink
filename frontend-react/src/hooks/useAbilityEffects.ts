@@ -19,7 +19,8 @@ const MAX_AP = 57
 
 function buildToAP(
   build: Partial<Build>,
-  bonusAp: Partial<Record<Ability, boolean>>
+  bonusAp: Partial<Record<Ability, boolean>>,
+  lde: number
 ) {
   const AP: Partial<Record<Ability, number>> = {}
 
@@ -38,6 +39,14 @@ function buildToAP(
             const a = ability as Ability
             const existing = AP[a] ?? 0
             AP[a] = existing + 10
+          }
+        }
+        if (ability === "LDE" && lde > 0) {
+          for (const ability of ["ISM", "ISS", "REC"]) {
+            const a = ability as Ability
+            const existing = AP[a] ?? 0
+            const toAdd = Math.floor((24 / 21) * lde)
+            AP[a] = existing + toAdd
           }
         }
         const existing = AP[ability] ?? 0
@@ -75,7 +84,8 @@ function buildToAP(
 
 export default function useAbilityEffects(
   build: Partial<Build>,
-  bonusAp: Partial<Record<Ability, boolean>>
+  bonusAp: Partial<Record<Ability, boolean>>,
+  lde: number
 ) {
   const [explanations, setExplanations] = useState<Explanation[]>([])
   const weaponData: Record<Weapon | SubWeapon | SpecialWeapon, any> = weaponJson
@@ -2136,7 +2146,7 @@ export default function useAbilityEffects(
 
   useEffect(() => {
     if (!build.weapon) return
-    const AP = buildToAP(build, bonusAp)
+    const AP = buildToAP(build, bonusAp, lde)
 
     let newExplanations: Explanation[] = []
     Object.keys(abilityFunctions).forEach((ability) => {
@@ -2148,7 +2158,7 @@ export default function useAbilityEffects(
 
     setExplanations(newExplanations)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [build, bonusAp])
+  }, [build, bonusAp, lde])
 
   return explanations
 }
