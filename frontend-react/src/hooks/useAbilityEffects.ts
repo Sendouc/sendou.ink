@@ -30,11 +30,14 @@ function buildToAP(build: Partial<Build>) {
     })
   }
 
+  let subWorth = 3
+
   if (build.clothing) {
     build.clothing.forEach((ability, index) => {
       if (ability !== "UNKNOWN") {
+        if (ability === "AD") subWorth *= 2
         const existing = AP[ability] ?? 0
-        const toAdd = index === 0 ? 10 : 3
+        const toAdd = index === 0 ? 10 : subWorth
         AP[ability] = existing + toAdd
       }
     })
@@ -769,7 +772,6 @@ export default function useAbilityEffects(build: Partial<Build>) {
 
       const effectHit = getEffect(highMidLowHit, amount)
       const effectAtZeroHit = getEffect(highMidLowHit, 0)
-      console.log("effectHit", effectHit)
 
       toReturn.push({
         title: `Baller 55dmg explosion hitbox size`,

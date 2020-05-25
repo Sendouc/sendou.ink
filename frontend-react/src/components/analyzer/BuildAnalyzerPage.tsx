@@ -69,7 +69,11 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
           otherFocused={otherFocused}
         />
       )}
-      <Button icon={FaWrench} onClick={() => setShowSettings(!showSettings)}>
+      <Button
+        icon={FaWrench}
+        onClick={() => setShowSettings(!showSettings)}
+        mt="1em"
+      >
         {showSettings ? "Hide settings" : "Show settings"}
       </Button>
       {showSettings && (

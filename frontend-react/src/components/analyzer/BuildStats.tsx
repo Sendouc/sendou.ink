@@ -89,7 +89,7 @@ const BuildStats: React.FC<BuildStatsProps> = ({
       <>
         <Flex justifyContent="space-between">
           <Flex fontWeight="bold" mr="1em" mb="0.5em" alignItems="center">
-            <Box mr="0.5em">
+            <Box mr="0.5em" minW="30px">
               <AbilityIcon ability={ability} size="TINY" />
             </Box>
             <IconButton icon={FaChartLine} onClick={() => toggleChart()} />
