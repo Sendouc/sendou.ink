@@ -1,4 +1,4 @@
-import { Box, FormLabel, Switch, Badge } from "@chakra-ui/core"
+import { Box, FormLabel, Switch, Badge, Flex } from "@chakra-ui/core"
 import { RouteComponentProps } from "@reach/router"
 import React, { useState, useContext } from "react"
 import { Helmet } from "react-helmet-async"
@@ -13,14 +13,13 @@ import { FaWrench } from "react-icons/fa"
 import Button from "../elements/Button"
 
 const defaultBuild: Partial<Build> = {
-  weapon: "Splattershot Jr.",
   headgear: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
   clothing: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
   shoes: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
 }
 
 const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
-  const { themeColor } = useContext(MyThemeContext)
+  const { themeColor, grayWithShade } = useContext(MyThemeContext)
   const [build, setBuild] = useState<Partial<Build>>(defaultBuild)
   const [otherBuild, setOtherBuild] = useState<Partial<Build>>(defaultBuild)
   const [showOther, setShowOther] = useState(false)
@@ -39,7 +38,13 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
         <title>Build Analyzer | sendou.ink</title>
       </Helmet>
       <PageHeader title="Build Analyzer" />
-      <Badge variantColor={themeColor}>Patch 5.2.</Badge>
+      <Flex justifyContent="space-between">
+        <Badge variantColor={themeColor}>Patch 5.2.</Badge>
+        <Box color={grayWithShade} fontSize="0.75em">
+          AP = Ability Point = Mains * 10 + Subs * 3
+        </Box>
+      </Flex>
+
       <Box my="1em">
         <WeaponSelector
           value={build.weapon}
@@ -51,17 +56,19 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
           menuIsOpen={!build.weapon}
         />
       </Box>
-      <EditableBuilds
-        build={build}
-        otherBuild={otherBuild}
-        setBuild={otherFocused ? setOtherBuild : setBuild}
-        showOther={showOther}
-        setShowOther={setShowOther}
-        changeFocus={() => {
-          setOtherFocused(!otherFocused)
-        }}
-        otherFocused={otherFocused}
-      />
+      {build.weapon && (
+        <EditableBuilds
+          build={build}
+          otherBuild={otherBuild}
+          setBuild={otherFocused ? setOtherBuild : setBuild}
+          showOther={showOther}
+          setShowOther={setShowOther}
+          changeFocus={() => {
+            setOtherFocused(!otherFocused)
+          }}
+          otherFocused={otherFocused}
+        />
+      )}
       <Button icon={FaWrench} onClick={() => setShowSettings(!showSettings)}>
         {showSettings ? "Hide settings" : "Show settings"}
       </Button>
