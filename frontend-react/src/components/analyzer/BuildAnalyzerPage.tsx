@@ -25,7 +25,7 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
   const [otherBuild, setOtherBuild] = useState<Partial<Build>>(defaultBuild)
   const [showOther, setShowOther] = useState(false)
   const [showNotActualProgress, setShowNotActualProgress] = useState(false)
-  const [startChartsAtZero, setStartChartsAtZero] = useState(false)
+  const [startChartsAtZero, setStartChartsAtZero] = useState(true)
   const [otherFocused, setOtherFocused] = useState(false)
   const [hideExtra, setHideExtra] = useState(true)
   const [showSettings, setShowSettings] = useState(false)

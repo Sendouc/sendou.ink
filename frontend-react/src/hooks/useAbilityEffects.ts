@@ -995,7 +995,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
       const effectVeloAtZero = getEffect(highMidLowVelo, 0)
 
       toReturn.push({
-        title: `${subWeapon} velocity and range`,
+        title: `${subWeapon} range and velocity`,
         effect: `${parseFloat(
           ((effectVelo[0] / effectVeloAtZero[0]) * 100).toFixed(2)
         )}% (${parseFloat(effectVelo[0].toFixed(2))})`,
@@ -1221,15 +1221,6 @@ export default function useAbilityEffects(build: Partial<Build>) {
       },
       {
         title: "Run speed in enemy ink",
-        /*effect: `${parseFloat(
-          (effectVel[0] * 100).toFixed(2)
-        )}% of normal speed`,
-        effectFromMax: effectVel[1],
-        ability: "RES" as Ability,
-        ap: amount,
-        effectFromMaxActual: parseFloat((effectVel[0] * 100).toFixed(2)),
-        getEffect: (ap: number) =>
-          parseFloat((getEffect(highMidLowVel, ap)[0] * 100).toFixed(2)),*/
         effect: `${parseFloat(effectVel[0].toFixed(2))} distance units / frame`,
         effectFromMax: effectVel[1],
         effectFromMaxActual: (effectVel[0] / 2.4) * 100,
@@ -1338,6 +1329,769 @@ export default function useAbilityEffects(build: Partial<Build>) {
     ]
   }
 
+  const calculateDamage = (
+    baseDamage: number,
+    multiplier: number,
+    cap: number
+  ) => Math.min(cap, Math.floor(baseDamage * multiplier)) / 10
+
+  function calculateMPU(amount: number) {
+    const buildWeaponData = weaponData[build.weapon!]
+
+    const toReturn = []
+
+    if (
+      buildWeaponData.mDamageRate_MWPUG_High &&
+      buildWeaponData.mDamageRate_MWPUG_Mid &&
+      buildWeaponData.mDamageMax &&
+      buildWeaponData.mDamage_MWPUG_Max &&
+      buildWeaponData.mDamageRate_MWPUG_High !==
+        buildWeaponData.mDamageRate_MWPUG_Mid
+    ) {
+      const high = buildWeaponData.mDamageRate_MWPUG_High
+      const mid = buildWeaponData.mDamageRate_MWPUG_Mid
+      const low = 1.0
+      const highMidLow = [high, mid, low]
+
+      const effect = getEffect(highMidLow, amount)
+      const baseDamageMax = buildWeaponData.mDamageMax
+      const damageMax = calculateDamage(
+        baseDamageMax,
+        effect[0],
+        buildWeaponData.mDamage_MWPUG_Max
+      )
+      const baseDamageMin = buildWeaponData.mDamageMin ?? -1
+      const damageMin = calculateDamage(
+        baseDamageMin,
+        effect[0],
+        buildWeaponData.mDamage_MWPUG_Max
+      )
+      const damageMinStr = baseDamageMin !== -1 ? `${damageMin} - ` : ""
+      toReturn.push({
+        title: `${build.weapon} damage per shot`,
+        effect: `${damageMinStr}${damageMax}`,
+        effectFromMax: effect[1],
+        effectFromMaxActual: damageMax,
+        ability: "MPU" as Ability,
+        ap: amount,
+        getEffect: (ap: number) =>
+          calculateDamage(
+            baseDamageMax,
+            getEffect(highMidLow, ap)[0],
+            buildWeaponData.mDamage_MWPUG_Max
+          ),
+      })
+    }
+
+    if (
+      buildWeaponData.mSplashPaintRadius_MWPUG_High &&
+      buildWeaponData.mSplashPaintRadius_MWPUG_Mid &&
+      buildWeaponData.mSplashPaintRadius &&
+      buildWeaponData.mSplashPaintRadius_MWPUG_High !==
+        buildWeaponData.mSplashPaintRadius_MWPUG_Mid
+    ) {
+      const high = buildWeaponData.mSplashPaintRadius_MWPUG_High
+      const mid = buildWeaponData.mSplashPaintRadius_MWPUG_Mid
+      const low = buildWeaponData.mSplashPaintRadius
+      const highMidLow = [high, mid, low]
+
+      const effect = getEffect(highMidLow, amount)
+      const effectAtZero = getEffect(highMidLow, 0)
+      const effectAtMax = getEffect(highMidLow, MAX_AP)
+      toReturn.push({
+        title: `${build.weapon} bullet ink coverage`,
+        effect: `${parseFloat(
+          ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
+        )}%`,
+        effectFromMax: effect[1],
+        effectFromMaxActual: (effect[0] / effectAtMax[0]) * 100,
+        ability: "MPU" as Ability,
+        ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(
+            ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(2)
+          ),
+      })
+    }
+
+    const RNG_MAX = 15
+
+    if (
+      buildWeaponData.mDegRandom_MWPUG_High &&
+      buildWeaponData.mDegRandom_MWPUG_Mid &&
+      buildWeaponData.mDegRandom &&
+      buildWeaponData.mDegRandom_MWPUG_High !==
+        buildWeaponData.mDegRandom_MWPUG_Mid
+    ) {
+      const high = buildWeaponData.mDegRandom_MWPUG_High
+      const mid = buildWeaponData.mDegRandom_MWPUG_Mid
+      const low = buildWeaponData.mDegRandom
+      const highMidLow = [high, mid, low]
+
+      const effect = getEffect(highMidLow, amount)
+      const effectAtZero = getEffect(highMidLow, 0)
+      toReturn.push({
+        title: `${build.weapon} bullet spread (on the ground)`,
+        effect: `${parseFloat(effect[0].toFixed(2))} (${parseFloat(
+          ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
+        )}%)`,
+        effectFromMax: effect[1],
+        effectFromMaxActual: (effect[0] / RNG_MAX) * 100,
+        ability: "MPU" as Ability,
+        ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(getEffect(highMidLow, ap)[0].toFixed(3)),
+      })
+    }
+
+    if (
+      buildWeaponData.mDegJumpRandom_MWPUG_High &&
+      buildWeaponData.mDegJumpRandom_MWPUG_Mid &&
+      buildWeaponData.mDegJumpRandom &&
+      buildWeaponData.mDegJumpRandom_MWPUG_Mid !==
+        buildWeaponData.mDegJumpRandom_MWPUG_High
+    ) {
+      const high = buildWeaponData.mDegJumpRandom_MWPUG_High
+      const mid = buildWeaponData.mDegJumpRandom_MWPUG_Mid
+      const low = buildWeaponData.mDegJumpRandom
+      const highMidLow = [high, mid, low]
+
+      const effect = getEffect(highMidLow, amount)
+      const effectAtZero = getEffect(highMidLow, 0)
+      toReturn.push({
+        title: `${build.weapon} bullet spread (in the air)`,
+        effect: `${parseFloat(effect[0].toFixed(2))} (${parseFloat(
+          ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
+        )}%)`,
+        effectFromMax: effect[1],
+        effectFromMaxActual: (effect[0] / RNG_MAX) * 100,
+        ability: "MPU" as Ability,
+        ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(getEffect(highMidLow, ap)[0].toFixed(3)),
+      })
+    }
+
+    if (
+      buildWeaponData.mInitVelRate_MWPUG_High &&
+      buildWeaponData.mInitVelRate_MWPUG_Mid &&
+      buildWeaponData.mInitVelRate_MWPUG_High !==
+        buildWeaponData.mInitVelRate_MWPUG_Mid
+    ) {
+      const high = buildWeaponData.mInitVelRate_MWPUG_High
+      const mid = buildWeaponData.mInitVelRate_MWPUG_Mid
+      const low = 1.0
+      const highMidLow = [high, mid, low]
+
+      const effect = getEffect(highMidLow, amount)
+      const effectAtZero = getEffect(highMidLow, 0)
+      const effectAtMax = getEffect(highMidLow, MAX_AP)
+      toReturn.push({
+        title: `${build.weapon} range and bullet velocity`,
+        effect: `${parseFloat(
+          ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
+        )}%`,
+        effectFromMax: effect[1],
+        effectFromMaxActual: (effect[0] / effectAtMax[0]) * 100,
+        ability: "MPU" as Ability,
+        ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(
+            ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(2)
+          ),
+      })
+    }
+
+    if (
+      build.weapon === "Luna Blaster" ||
+      build.weapon === "Luna Blaster Neo" ||
+      build.weapon === "Kensa Luna Blaster"
+    ) {
+      const high = buildWeaponData.mCollisionRadiusMiddleRate_MWPUG_High_Burst
+      const mid = buildWeaponData.mCollisionRadiusMiddleRate_MWPUG_Mid_Burst
+      const low = 1.0
+      const highMidLow = [high, mid, low]
+
+      const effect = getEffect(highMidLow, amount)
+
+      const radius = buildWeaponData.mCollisionRadiusMiddle_Burst * effect[0]
+      const totalRadius = buildWeaponData.mCollisionRadiusFar_Burst
+
+      toReturn.push({
+        title: `${build.weapon} 70dmg hitbox portion of the total explosion hitbox`,
+        effect: `${parseFloat(((radius / totalRadius) * 100).toFixed(2))}%`,
+        effectFromMax: effect[1],
+        effectFromMaxActual: (radius / totalRadius) * 100,
+        ability: "MPU" as Ability,
+        ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(
+            (
+              ((getEffect(highMidLow, ap)[0] *
+                buildWeaponData.mCollisionRadiusMiddle_Burst) /
+                totalRadius) *
+              100
+            ).toFixed(3)
+          ),
+      })
+    }
+
+    if (build.weapon!.includes("Rapid")) {
+      const high = buildWeaponData.mCollisionRadiusFarRate_MWPUG_High_Burst
+      const mid = buildWeaponData.mCollisionRadiusFarRate_MWPUG_Mid_Burst
+      const low = 1.0
+      const highMidLow = [high, mid, low]
+
+      const baseValue = buildWeaponData.mCollisionRadiusFar_Burst
+      const maxValue = buildWeaponData.mCollisionRadiusFar_MWPUG_Max_Burst
+      const effect = getEffect(highMidLow, amount)
+
+      const value = Math.min(maxValue, effect[0] * baseValue)
+      const valueAtZero = getEffect(highMidLow, 0)[0] * baseValue
+      const valueAtMax = Math.min(
+        maxValue,
+        getEffect(highMidLow, MAX_AP)[0] * baseValue
+      )
+      toReturn.push({
+        title: `${build.weapon} bullet explosion hitbox size`,
+        effect: `${parseFloat(((value / valueAtZero) * 100).toFixed(2))}%`,
+        effectFromMax: effect[1],
+        effectFromMaxActual: (value / valueAtMax) * 100,
+        ability: "MPU" as Ability,
+        ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(
+            (
+              (Math.min(maxValue, getEffect(highMidLow, ap)[0] * baseValue) /
+                valueAtZero) *
+              100
+            ).toFixed(3)
+          ),
+      })
+    }
+
+    if (
+      buildWeaponData.mSphereSplashDropPaintRadiusRate_MWPUG_High_Burst &&
+      buildWeaponData.mSphereSplashDropPaintRadiusRate_MWPUG_Mid_Burst &&
+      buildWeaponData.mSphereSplashDropPaintRadiusRate_MWPUG_High_Burst !==
+        buildWeaponData.mSphereSplashDropPaintRadiusRate_MWPUG_Mid_Burst
+    ) {
+      const high =
+        buildWeaponData.mSphereSplashDropPaintRadiusRate_MWPUG_High_Burst
+      const mid =
+        buildWeaponData.mSphereSplashDropPaintRadiusRate_MWPUG_Mid_Burst
+      const low = 1.0
+      const highMidLow = [high, mid, low]
+
+      const effect = getEffect(highMidLow, amount)
+      const effectAtZero = getEffect(highMidLow, 0)
+      const effectAtMax = getEffect(highMidLow, MAX_AP)
+      toReturn.push({
+        title: `${build.weapon} bullet explosion paint`,
+        effect: `${parseFloat(
+          ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
+        )}%`,
+        effectFromMax: effect[1],
+        effectFromMaxActual: (effect[0] / effectAtMax[0]) * 100,
+        ability: "MPU" as Ability,
+        ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(
+            ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(2)
+          ),
+      })
+    }
+
+    if (
+      buildWeaponData.mDashSpeed_MWPUG_High &&
+      buildWeaponData.mDashSpeed_MWPUG_Mid &&
+      buildWeaponData.mDashSpeed &&
+      buildWeaponData.mDashSpeed_MWPUG_High !==
+        buildWeaponData.mDashSpeed_MWPUG_Mid
+    ) {
+      const high = buildWeaponData.mDashSpeed_MWPUG_High
+      const mid = buildWeaponData.mDashSpeed_MWPUG_Mid
+      const low = buildWeaponData.mDashSpeed
+      const highMidLow = [high, mid, low]
+
+      const effect = getEffect(highMidLow, amount)
+      const effectAtZero = getEffect(highMidLow, 0)
+      const effectAtMax = getEffect(highMidLow, MAX_AP)
+      toReturn.push({
+        title: `${build.weapon} movement speed holding trigger down`,
+        effect: `${parseFloat(
+          ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
+        )}%`,
+        effectFromMax: effect[1],
+        effectFromMaxActual: (effect[0] / effectAtMax[0]) * 100,
+        ability: "MPU" as Ability,
+        ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(
+            ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(2)
+          ),
+      })
+    }
+
+    if (
+      buildWeaponData.mCorePaintWidthHalfRate_MWPUG_High &&
+      buildWeaponData.mCorePaintWidthHalfRate_MWPUG_Mid &&
+      buildWeaponData.mCorePaintWidthHalfRate_MWPUG_High !==
+        buildWeaponData.mCorePaintWidthHalfRate_MWPUG_Mid
+    ) {
+      const high = buildWeaponData.mCorePaintWidthHalfRate_MWPUG_High
+      const mid = buildWeaponData.mCorePaintWidthHalfRate_MWPUG_Mid
+      const low = 1.0
+      const highMidLow = [high, mid, low]
+
+      const effect = getEffect(highMidLow, amount)
+      const effectAtZero = getEffect(highMidLow, 0)
+      const effectAtMax = getEffect(highMidLow, MAX_AP)
+      toReturn.push({
+        title: `${build.weapon} ink trail width`,
+        effect: `${parseFloat(
+          ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
+        )}%`,
+        effectFromMax: effect[1],
+        effectFromMaxActual: (effect[0] / effectAtMax[0]) * 100,
+        ability: "MPU" as Ability,
+        ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(
+            ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(2)
+          ),
+      })
+    }
+
+    if (
+      buildWeaponData.mFullChargeDistance_MWPUG_High &&
+      buildWeaponData.mFullChargeDistance_MWPUG_Mid &&
+      buildWeaponData.mFullChargeDistance &&
+      buildWeaponData.mFullChargeDistance_MWPUG_High !==
+        buildWeaponData.mFullChargeDistance_MWPUG_Mid
+    ) {
+      const high = buildWeaponData.mFullChargeDistance_MWPUG_High
+      const mid = buildWeaponData.mFullChargeDistance_MWPUG_Mid
+      const low = buildWeaponData.mFullChargeDistance
+      const highMidLow = [high, mid, low]
+
+      const effect = getEffect(highMidLow, amount)
+      const effectAtZero = getEffect(highMidLow, 0)
+      const effectAtMax = getEffect(highMidLow, MAX_AP)
+      toReturn.push({
+        title: `${build.weapon} fully charged shot range`,
+        effect: `${parseFloat(
+          ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
+        )}%`,
+        effectFromMax: effect[1],
+        effectFromMaxActual: (effect[0] / effectAtMax[0]) * 100,
+        ability: "MPU" as Ability,
+        ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(
+            ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(2)
+          ),
+      })
+    }
+
+    if (
+      buildWeaponData.mSplashPaintRadiusRate_MWPUG_High &&
+      buildWeaponData.mSplashPaintRadiusRate_MWPUG_Mid &&
+      buildWeaponData.mSplashPaintRadiusRate_MWPUG_High !==
+        buildWeaponData.mSplashPaintRadiusRate_MWPUG_Mid
+    ) {
+      const high = buildWeaponData.mSplashPaintRadiusRate_MWPUG_High
+      const mid = buildWeaponData.mSplashPaintRadiusRate_MWPUG_Mid
+      const low = 1.0
+      const highMidLow = [high, mid, low]
+
+      const effect = getEffect(highMidLow, amount)
+      const effectAtZero = getEffect(highMidLow, 0)
+      const effectAtMax = getEffect(highMidLow, MAX_AP)
+      toReturn.push({
+        title: `${build.weapon} ink coverage`,
+        effect: `${parseFloat(
+          ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
+        )}%`,
+        effectFromMax: effect[1],
+        effectFromMaxActual: (effect[0] / effectAtMax[0]) * 100,
+        ability: "MPU" as Ability,
+        ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(
+            ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(2)
+          ),
+      })
+    }
+
+    if (
+      buildWeaponData.mFullChargeDamageRate_MWPUG_High &&
+      buildWeaponData.mFullChargeDamageRate_MWPUG_Mid &&
+      buildWeaponData.mFullChargeDamageRate_MWPUG_High !==
+        buildWeaponData.mFullChargeDamageRate_MWPUG_Mid
+    ) {
+      const high = buildWeaponData.mFullChargeDamageRate_MWPUG_High
+      const mid = buildWeaponData.mFullChargeDamageRate_MWPUG_Mid
+      const low = 1.0
+      const highMidLow = [high, mid, low]
+
+      const effect = getEffect(highMidLow, amount)
+      const effectAtZero = getEffect(highMidLow, 0)
+      const effectAtMax = getEffect(highMidLow, MAX_AP)
+
+      if (!build.weapon!.includes("Bamboozler")) {
+        toReturn.push({
+          title: `${build.weapon} damage`,
+          effect: `${parseFloat(
+            ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
+          )}%`,
+          effectFromMax: effect[1],
+          effectFromMaxActual: (effect[0] / effectAtMax[0]) * 100,
+          ability: "MPU" as Ability,
+          ap: amount,
+          getEffect: (ap: number) =>
+            parseFloat(
+              ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(
+                2
+              )
+            ),
+        })
+      } else {
+        const damagePerShot = buildWeaponData.mFullChargeDamage
+        const maxDmg = buildWeaponData.mFullChargeDamage_MWPUG_Max
+        const damage = calculateDamage(damagePerShot, effect[0], maxDmg)
+        const damageAtMax = calculateDamage(
+          damagePerShot,
+          effectAtMax[0],
+          maxDmg
+        )
+        toReturn.push({
+          title: `${build.weapon} damage per fully charged shot`,
+          effect: `${damage}`,
+          effectFromMax: effect[1],
+          effectFromMaxActual: (damage / damageAtMax) * 100,
+          ability: "MPU" as Ability,
+          ap: amount,
+          getEffect: (ap: number) =>
+            calculateDamage(
+              damagePerShot,
+              getEffect(highMidLow, ap)[0],
+              maxDmg
+            ),
+        })
+      }
+    }
+
+    if (
+      buildWeaponData.mDropSplashPaintRadiusRate_MWPUG_High &&
+      buildWeaponData.mDropSplashPaintRadiusRate_MWPUG_Mid &&
+      buildWeaponData.mDropSplashPaintRadiusRate_MWPUG_High !==
+        buildWeaponData.mDropSplashPaintRadiusRate_MWPUG_Mid
+    ) {
+      const high = buildWeaponData.mDropSplashPaintRadiusRate_MWPUG_High
+      const mid = buildWeaponData.mDropSplashPaintRadiusRate_MWPUG_Mid
+      const low = 1.0
+      const highMidLow = [high, mid, low]
+
+      const effect = getEffect(highMidLow, amount)
+      const effectAtZero = getEffect(highMidLow, 0)
+      const effectAtMax = getEffect(highMidLow, MAX_AP)
+      toReturn.push({
+        title: `${build.weapon} ink coverage`,
+        effect: `${parseFloat(
+          ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
+        )}%`,
+        effectFromMax: effect[1],
+        effectFromMaxActual: (effect[0] / effectAtMax[0]) * 100,
+        ability: "MPU" as Ability,
+        ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(
+            ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(2)
+          ),
+      })
+    }
+
+    if (
+      buildWeaponData.mFirstGroupBulletFirstPaintRRate_MWPUG_High &&
+      buildWeaponData.mFirstGroupBulletFirstPaintRRate_MWPUG_Mid &&
+      buildWeaponData.mFirstGroupBulletFirstPaintRRate_MWPUG_High !==
+        buildWeaponData.mFirstGroupBulletFirstPaintRRate_MWPUG_Mid
+    ) {
+      const high = buildWeaponData.mFirstGroupBulletFirstPaintRRate_MWPUG_High
+      const mid = buildWeaponData.mFirstGroupBulletFirstPaintRRate_MWPUG_Mid
+      const low = 1.0
+      const highMidLow = [high, mid, low]
+
+      const effect = getEffect(highMidLow, amount)
+      const effectAtZero = getEffect(highMidLow, 0)
+      const effectAtMax = getEffect(highMidLow, MAX_AP)
+      toReturn.push({
+        title: `${build.weapon} ink coverage`,
+        effect: `${parseFloat(
+          ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
+        )}%`,
+        effectFromMax: effect[1],
+        effectFromMaxActual: (effect[0] / effectAtMax[0]) * 100,
+        ability: "MPU" as Ability,
+        ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(
+            ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(2)
+          ),
+        info: build.weapon!.includes("Sloshing")
+          ? "Ink coverage bonus is only applied to the circle at the end of the shot"
+          : undefined,
+      })
+    }
+
+    if (
+      buildWeaponData.mFirstGroupSplashPaintRadiusRate_MWPUG_High &&
+      buildWeaponData.mFirstGroupSplashPaintRadiusRate_MWPUG_Mid &&
+      buildWeaponData.mFirstGroupSplashPaintRadiusRate_MWPUG_High !==
+        buildWeaponData.mFirstGroupSplashPaintRadiusRate_MWPUG_Mid
+    ) {
+      const high = buildWeaponData.mFirstGroupSplashPaintRadiusRate_MWPUG_High
+      const mid = buildWeaponData.mFirstGroupSplashPaintRadiusRate_MWPUG_Mid
+      const low = 1.0
+      const highMidLow = [high, mid, low]
+
+      const effect = getEffect(highMidLow, amount)
+      const effectAtZero = getEffect(highMidLow, 0)
+      const effectAtMax = getEffect(highMidLow, MAX_AP)
+      toReturn.push({
+        title: `${build.weapon} ink coverage`,
+        effect: `${parseFloat(
+          ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
+        )}%`,
+        effectFromMax: effect[1],
+        effectFromMaxActual: (effect[0] / effectAtMax[0]) * 100,
+        ability: "MPU" as Ability,
+        ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(
+            ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(2)
+          ),
+        info:
+          "Ink coverage bonus is only applied to the line before the impact",
+      })
+    }
+
+    if (
+      buildWeaponData.mDamageMaxMaxChargeRate_MWPUG_High_2 &&
+      buildWeaponData.mDamageMaxMaxChargeRate_MWPUG_Mid_2 &&
+      buildWeaponData.mDamageMaxMaxChargeRate_MWPUG_High_2 !==
+        buildWeaponData.mDamageMaxMaxChargeRate_MWPUG_Mid_2
+    ) {
+      const high = buildWeaponData.mDamageMaxMaxChargeRate_MWPUG_High_2
+      const mid = buildWeaponData.mDamageMaxMaxChargeRate_MWPUG_Mid_2
+      const low = 1.0
+      const highMidLow = [high, mid, low]
+
+      const effect = getEffect(highMidLow, amount)
+      const baseDamageMax = buildWeaponData.mDamageMaxMaxCharge_2
+      const damageMax = calculateDamage(
+        baseDamageMax,
+        effect[0],
+        buildWeaponData.mDamageMaxMaxCharge_MWPUG_Max_2
+      )
+      const baseDamageMin = buildWeaponData.mDamageMin ?? -1
+      const damageMin = calculateDamage(
+        baseDamageMin,
+        effect[0],
+        buildWeaponData.mDamageMaxMaxCharge_MWPUG_Max_2
+      )
+      const damageMinStr = baseDamageMin !== -1 ? `${damageMin} - ` : ""
+      toReturn.push({
+        title: `${build.weapon} damage per shot (fully charged)`,
+        effect: `${damageMinStr}${damageMax}`,
+        effectFromMax: effect[1],
+        effectFromMaxActual: damageMax,
+        ability: "MPU" as Ability,
+        ap: amount,
+        getEffect: (ap: number) =>
+          calculateDamage(
+            baseDamageMax,
+            getEffect(highMidLow, ap)[0],
+            buildWeaponData.mDamageMaxMaxCharge_MWPUG_Max_2
+          ),
+      })
+    }
+
+    if (
+      buildWeaponData.mCanopyNakedFrame_MWPUG_High &&
+      buildWeaponData.mCanopyNakedFrame_MWPUG_Mid &&
+      buildWeaponData.mCanopyNakedFrame &&
+      buildWeaponData.mCanopyNakedFrame_MWPUG_High !==
+        buildWeaponData.mCanopyNakedFrame_MWPUG_Mid
+    ) {
+      const high = buildWeaponData.mCanopyNakedFrame_MWPUG_High
+      const mid = buildWeaponData.mCanopyNakedFrame_MWPUG_Mid
+      const low = buildWeaponData.mCanopyNakedFrame
+      const highMidLow = [high, mid, low]
+
+      const effect = getEffect(highMidLow, amount)
+      const effectAtZero = getEffect(highMidLow, 0)
+      toReturn.push({
+        title: `${build.weapon} shield recharge time`,
+        effect: `${Math.ceil(effect[0])} frames (${parseFloat(
+          (Math.ceil(effect[0]) / 60).toFixed(2)
+        )} seconds)`,
+        effectFromMax: effect[1],
+        effectFromMaxActual: (effect[0] / effectAtZero[0]) * 100,
+        ability: "MPU" as Ability,
+        ap: amount,
+        getEffect: (ap: number) => Math.ceil(getEffect(highMidLow, ap)[0]),
+      })
+    }
+
+    if (
+      buildWeaponData.mCanopyHP_MWPUG_High &&
+      buildWeaponData.mCanopyHP &&
+      buildWeaponData.mCanopyNakedFrame &&
+      buildWeaponData.mCanopyHP_MWPUG_High !== buildWeaponData.mCanopyHP
+    ) {
+      const high = buildWeaponData.mCanopyHP_MWPUG_High
+      const mid = buildWeaponData.mCanopyHP_MWPUG_Mid
+      const low = buildWeaponData.mCanopyHP
+      const highMidLow = [high, mid, low]
+
+      const effect = getEffect(highMidLow, amount)
+      const effectAtZero = getEffect(highMidLow, 0)
+      const effectAtMax = getEffect(highMidLow, MAX_AP)
+      toReturn.push({
+        title: `${build.weapon} shield durability`,
+        effect: `${parseFloat(
+          ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
+        )}%`,
+        effectFromMax: effect[1],
+        effectFromMaxActual: (effect[0] / effectAtMax[0]) * 100,
+        ability: "MPU" as Ability,
+        ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(
+            ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(2)
+          ),
+      })
+    }
+
+    if (
+      buildWeaponData.mFirstSecondMaxChargeShootingFrameTimes_MWPUG_High_2 &&
+      buildWeaponData.mFirstSecondMaxChargeShootingFrameTimes_MWPUG_Mid_2 &&
+      buildWeaponData.mFirstSecondMaxChargeShootingFrameTimes_MWPUG_High_2 !==
+        buildWeaponData.mFirstSecondMaxChargeShootingFrameTimes_MWPUG_Mid_2
+    ) {
+      const high =
+        buildWeaponData.mFirstSecondMaxChargeShootingFrameTimes_MWPUG_High_2
+      const mid =
+        buildWeaponData.mFirstSecondMaxChargeShootingFrameTimes_MWPUG_Mid_2
+      const low = 1.0
+      const highMidLow = [high, mid, low]
+
+      const effect = getEffect(highMidLow, amount)
+
+      const firstCircle = buildWeaponData.mFirstPeriodMaxChargeShootingFrame_2
+      const secondCircle = buildWeaponData.mSecondPeriodMaxChargeShootingFrame_2
+
+      const total = Math.ceil((firstCircle + secondCircle) * effect[0])
+      const maxTotal = Math.ceil(
+        (firstCircle + secondCircle) * getEffect(highMidLow, MAX_AP)[0]
+      )
+      toReturn.push({
+        title: `${build.weapon} full charged shooting duration`,
+        effect: `${total} frames (${parseFloat(
+          (total / 60).toFixed(2)
+        )} seconds)`,
+        effectFromMax: effect[1],
+        effectFromMaxActual: (total / maxTotal) * 100,
+        ability: "MPU" as Ability,
+        ap: amount,
+        getEffect: (ap: number) =>
+          Math.ceil(
+            (firstCircle + secondCircle) * getEffect(highMidLow, ap)[0]
+          ),
+      })
+    }
+
+    if (
+      build.weapon === "Slosher" ||
+      build.weapon === "Slosher Deco" ||
+      build.weapon === "Soda Slosher"
+    ) {
+      const high = buildWeaponData.mBulletDamageMaxDist_MWPUG_High
+      const mid = buildWeaponData.mBulletDamageMaxDist_MWPUG_Mid
+      const low = buildWeaponData.mBulletDamageMaxDist
+      const highMidLow = [high, mid, low]
+
+      const effect = getEffect(highMidLow, amount)
+
+      toReturn.push({
+        title: `${build.weapon} "mBulletDamageMaxDist"`,
+        effect: `${parseFloat(effect[0].toFixed(2))}`,
+        effectFromMax: effect[1],
+        effectFromMaxActual: effect[1],
+        ability: "MPU" as Ability,
+        ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(getEffect(highMidLow, ap)[0].toFixed(3)),
+        info:
+          "Slosher has weird physics so we haven't fully deciphered this parameter.",
+      })
+
+      const high2 = buildWeaponData.mBulletDamageMinDist_MWPUG_High
+      const mid2 = buildWeaponData.mBulletDamageMinDist_MWPUG_Mid
+      const low2 = buildWeaponData.mBulletDamageMinDist
+      const highMidLow2 = [high2, mid2, low2]
+
+      const effect2 = getEffect(highMidLow2, amount)
+
+      toReturn.push({
+        title: `${build.weapon} "mBulletDamageMinDist"`,
+        effect: `${parseFloat(effect2[0].toFixed(2))}`,
+        effectFromMax: effect2[1],
+        effectFromMaxActual: effect2[1],
+        ability: "MPU" as Ability,
+        ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(getEffect(highMidLow2, ap)[0].toFixed(3)),
+        info:
+          "Slosher has weird physics so we haven't fully deciphered this parameter.",
+      })
+    }
+
+    if (
+      buildWeaponData.mSplashDamageInsideRate_MWPUG_High_Stand &&
+      buildWeaponData.mSplashDamageInsideRate_MWPUG_Mid_Stand &&
+      buildWeaponData.mSplashDamageInsideRate_MWPUG_High_Stand !==
+        buildWeaponData.mSplashDamageInsideRate_MWPUG_Mid_Stand
+    ) {
+      const high = buildWeaponData.mSplashDamageInsideRate_MWPUG_High_Stand
+      const mid = buildWeaponData.mSplashDamageInsideRate_MWPUG_Mid_Stand
+      const low = 1.0
+      const highMidLow = [high, mid, low]
+
+      const effect = getEffect(highMidLow, amount)
+      const effectAtZero = getEffect(highMidLow, 0)
+      const effectAtMax = getEffect(highMidLow, MAX_AP)
+      toReturn.push({
+        title: `${build.weapon} damage`,
+        effect: `${parseFloat(
+          ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
+        )}%`,
+        effectFromMax: effect[1],
+        effectFromMaxActual: (effect[0] / effectAtMax[0]) * 100,
+        ability: "MPU" as Ability,
+        ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(
+            ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(2)
+          ),
+      })
+    }
+
+    return toReturn
+  }
+
   const abilityFunctions: Partial<Record<
     string,
     (amount: number) => Explanation[]
@@ -1355,6 +2109,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
     BRU: calculateBRU,
     RES: calculateRES,
     BDU: calculateBDU,
+    MPU: calculateMPU,
   } as const
 
   useEffect(() => {
