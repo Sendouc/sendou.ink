@@ -110,7 +110,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
       })
     }
 
-    const mInkConsumeRepeat = buildWeaponData.mInkConsumeRepeat
+    const mInkConsumeRepeat = buildWeaponData.mInkConsume_Repeat
     if (mInkConsumeRepeat && mInkConsumeRepeat !== mInkConsume) {
       toReturn.push({
         title: "Shots per ink tank (autofire mode)",
