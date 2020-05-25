@@ -1221,7 +1221,7 @@ export default function useAbilityEffects(build: Partial<Build>) {
       },
       {
         title: "Run speed in enemy ink",
-        effect: `${parseFloat(
+        /*effect: `${parseFloat(
           (effectVel[0] * 100).toFixed(2)
         )}% of normal speed`,
         effectFromMax: effectVel[1],
@@ -1229,7 +1229,14 @@ export default function useAbilityEffects(build: Partial<Build>) {
         ap: amount,
         effectFromMaxActual: parseFloat((effectVel[0] * 100).toFixed(2)),
         getEffect: (ap: number) =>
-          parseFloat((getEffect(highMidLowVel, ap)[0] * 100).toFixed(2)),
+          parseFloat((getEffect(highMidLowVel, ap)[0] * 100).toFixed(2)),*/
+        effect: `${parseFloat(effectVel[0].toFixed(2))} distance units / frame`,
+        effectFromMax: effectVel[1],
+        effectFromMaxActual: (effectVel[0] / 2.4) * 100,
+        ability: "RES" as Ability,
+        ap: amount,
+        getEffect: (ap: number) =>
+          parseFloat(getEffect(highMidLowLimit, ap)[0].toFixed(4)),
       },
     ]
   }
