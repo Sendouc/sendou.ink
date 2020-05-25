@@ -115,13 +115,21 @@ const Stats: React.FC = () => {
           </Link>{" "}
           to discover upcoming events
         </Box>
-        <Box>
+        <Box mb="0.5em">
           <Link to="/plans">
             <Box as="span" color={themeColorWithShade}>
               Map drawing tool
             </Box>
           </Link>{" "}
           to easily share your plans
+        </Box>
+        <Box>
+          <Link to="/analyzer">
+            <Box as="span" color={themeColorWithShade}>
+              Build analyzer
+            </Box>
+          </Link>{" "}
+          to find out exactly what your builds are doing
         </Box>
       </Flex>
     </>
