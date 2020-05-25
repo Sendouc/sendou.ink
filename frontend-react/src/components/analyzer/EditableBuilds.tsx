@@ -132,14 +132,16 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
   }
   return (
     <>
+      <Button
+        icon={showOther ? FaMinus : FaPlus}
+        onClick={() => setShowOther(!showOther)}
+        mt="1em"
+        mb="2em"
+      >
+        {showOther ? "Stop comparing" : "Compare"}
+      </Button>
       <Flex justifyContent="space-evenly" flexWrap="wrap" mb="1em">
         <Flex flexDirection="column">
-          <ViewSlots
-            build={build}
-            onAbilityClick={!otherFocused ? handleClickBuildAbility : undefined}
-            m="1em"
-            cursor={!otherFocused ? undefined : "not-allowed"}
-          />
           {showOther && (
             <Button
               disabled={!otherFocused}
@@ -149,9 +151,22 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
               {!otherFocused ? "Editing" : "Edit"}
             </Button>
           )}
+          <ViewSlots
+            build={build}
+            onAbilityClick={!otherFocused ? handleClickBuildAbility : undefined}
+            m="1em"
+            cursor={!otherFocused ? undefined : "not-allowed"}
+          />
         </Flex>
         {showOther && (
           <Flex flexDirection="column">
+            <Button
+              disabled={otherFocused}
+              color="blue"
+              onClick={() => changeFocus()}
+            >
+              {otherFocused ? "Editing" : "Edit"}
+            </Button>
             <ViewSlots
               build={otherBuild}
               onAbilityClick={
@@ -160,23 +175,9 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
               m="1em"
               cursor={otherFocused ? undefined : "not-allowed"}
             />
-            <Button
-              disabled={otherFocused}
-              color="blue"
-              onClick={() => changeFocus()}
-            >
-              {otherFocused ? "Editing" : "Edit"}
-            </Button>
           </Flex>
         )}
       </Flex>
-      <Button
-        icon={showOther ? FaMinus : FaPlus}
-        onClick={() => setShowOther(!showOther)}
-        my="1em"
-      >
-        {showOther ? "Stop comparing" : "Compare"}
-      </Button>
       <Box mt="1em">
         <AbilityButtons
           onClick={(ability) => handleAbilityButtonClick(ability)}
