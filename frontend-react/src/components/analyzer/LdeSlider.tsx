@@ -16,8 +16,18 @@ interface LdeSliderProps {
 }
 
 const LdeSlider: React.FC<LdeSliderProps> = ({ value, setValue }) => {
-  const { themeColor, themeColorWithShade } = useContext(MyThemeContext)
+  const { themeColor, themeColorWithShade, grayWithShade } = useContext(
+    MyThemeContext
+  )
   const bonusAp = Math.floor((24 / 21) * value)
+
+  const getLdeEffect = () => {
+    if (value === 21)
+      return "Enemy has reached the 30 point mark OR there is 30 seconds or less on the clock OR it is overtime"
+
+    if (value > 0) return `Enemy has reached the ${51 - value} point mark`
+    return "Enemy has not reached the 50 point mark or there is more than 30 seconds on the clock"
+  }
   return (
     <Flex
       justifyContent="center"
@@ -48,6 +58,15 @@ const LdeSlider: React.FC<LdeSliderProps> = ({ value, setValue }) => {
           ))}
         </Box>
       )}
+      <Box
+        color={grayWithShade}
+        fontSize="0.75em"
+        maxW="200px"
+        mt="1em"
+        textAlign="center"
+      >
+        {getLdeEffect()}
+      </Box>
     </Flex>
   )
 }
