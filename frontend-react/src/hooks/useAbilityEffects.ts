@@ -481,12 +481,14 @@ export default function useAbilityEffects(
 
     const effect = getEffect(highMidLow, amount)
 
+    const speed = build.clothing![0] === "NS" ? effect[0] * 0.9 : effect[0]
+
     return [
       {
         title: "Swim speed",
-        effect: `${parseFloat(effect[0].toFixed(2))} distance units / frame`,
+        effect: `${parseFloat(speed.toFixed(2))} distance units / frame`,
         effectFromMax: effect[1],
-        effectFromMaxActual: (effect[0] / 2.4) * 100,
+        effectFromMaxActual: (speed / 2.4) * 100,
         ability: "SSU" as Ability,
         ap: amount,
         getEffect: (ap: number) => getEffect(highMidLow, ap)[0],
