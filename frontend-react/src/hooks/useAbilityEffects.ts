@@ -1872,12 +1872,7 @@ export default function useAbilityEffects(
       })
     }
 
-    if (
-      buildWeaponData.mFirstGroupSplashPaintRadiusRate_MWPUG_High &&
-      buildWeaponData.mFirstGroupSplashPaintRadiusRate_MWPUG_Mid &&
-      buildWeaponData.mFirstGroupSplashPaintRadiusRate_MWPUG_High !==
-        buildWeaponData.mFirstGroupSplashPaintRadiusRate_MWPUG_Mid
-    ) {
+    if (build.weapon === "Explosher" || build.weapon === "Custom Explosher") {
       const high = buildWeaponData.mFirstGroupSplashPaintRadiusRate_MWPUG_High
       const mid = buildWeaponData.mFirstGroupSplashPaintRadiusRate_MWPUG_Mid
       const low = 1.0
