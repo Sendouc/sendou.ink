@@ -26,25 +26,28 @@ const UserSearchPage: React.FC<RouteComponentProps> = () => {
   if (error) return <Error errorMessage={error.message} />
   if (loading) return <Loading />
 
-  const usersFiltered = data!.users.filter((user) => {
-    const filterLower = filter.toLowerCase()
-    if (user.discord_id.includes(filterLower)) return true
+  const usersFiltered =
+    filter === ""
+      ? data!.users
+      : data!.users.filter((user) => {
+          const filterLower = filter.toLowerCase()
+          if (user.discord_id.includes(filterLower)) return true
 
-    if (
-      `${user.username}#${user.discriminator}`
-        .toLowerCase()
-        .includes(filterLower)
-    )
-      return true
+          if (
+            `${user.username}#${user.discriminator}`
+              .toLowerCase()
+              .includes(filterLower)
+          )
+            return true
 
-    if (
-      user.twitter_name &&
-      user.twitter_name.toLowerCase().includes(filterLower)
-    )
-      return true
+          if (
+            user.twitter_name &&
+            user.twitter_name.toLowerCase().includes(filterLower)
+          )
+            return true
 
-    return false
-  })
+          return false
+        })
 
   const usersSliced = usersFiltered.slice(
     20 * (currentPage - 1),

@@ -30,7 +30,7 @@ passport.use(
       callbackURL,
       scope: ["identify", "connections"],
     },
-    async function (accessToken, refreshToken, profile, cb) {
+    function (accessToken, refreshToken, profile, cb) {
       const userToSave = {
         username: profile.username,
         discriminator: profile.discriminator,
@@ -48,12 +48,7 @@ passport.use(
         }
       }
 
-      await Player.updateOne(
-        { discord_id: userToSave.discord_id },
-        { $set: { twitter: userToSave.twitter_name } }
-      )
-
-      await User.updateOne(
+      User.updateOne(
         { discord_id: userToSave.discord_id },
         userToSave,
         { upsert: true },
