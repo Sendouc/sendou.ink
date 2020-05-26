@@ -1164,7 +1164,7 @@ export default function useAbilityEffects(
           100,
         getEffect: (ap: number) => Math.floor(getEffect(highMidLow, ap)[0]),
         info:
-          "When jumping to Sub Power Up boosted beakons QSJ AP bonus is applied on top of any existing QSJ the jumper has. 57AP can't be exceeded",
+          "When jumping to Sub Power Up boosted beakons QSJ AP bonus is applied on top of any existing QSJ the jumper has. 57AP can't be exceeded. Value shown is the bonus if the user of Beakon has 0AP invested in QSJ.",
       })
     }
 
