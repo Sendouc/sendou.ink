@@ -128,16 +128,18 @@ export default function useAbilityEffects(
         build.weapon!.includes("Nautilus")
           ? "Full charges per ink tank"
           : "Shots per ink tank"
+
+      const tank = build.weapon!.includes("Jr.") ? 1.1 : 1
       toReturn.push({
         title,
-        effect: `${parseFloat((1 / (mInkConsume * effect[0])).toFixed(2))}`,
+        effect: `${parseFloat((tank / (mInkConsume * effect[0])).toFixed(2))}`,
         effectFromMax: effect[1],
         effectFromMaxActual:
           (getEffect(highMidLow, MAX_AP)[0] / effect[0]) * 100,
         ability: "ISM" as Ability,
         getEffect: (ap: number) =>
           parseFloat(
-            (1 / (mInkConsume * getEffect(highMidLow, ap)[0])).toFixed(2)
+            (tank / (mInkConsume * getEffect(highMidLow, ap)[0])).toFixed(2)
           ),
         ap: amount,
       })
@@ -323,7 +325,7 @@ export default function useAbilityEffects(
     const subWeapon = buildWeaponData.Sub! as SubWeapon
 
     const subWeaponData = weaponData[subWeapon]
-    const inkConsumption = subWeaponData.mInkConsume!
+    let inkConsumption = subWeaponData.mInkConsume!
 
     const letterGrade = weaponData[subWeapon].InkSaverType
     const highKey = `ConsumeRt_Sub_${letterGrade}_High` as keyof typeof ISS
@@ -335,21 +337,25 @@ export default function useAbilityEffects(
     const low = ISS[lowKey]
     const highMidLow = [high, mid, low]
     const effect = getEffect(highMidLow, amount)
+    const tank = build.weapon!.includes("Jr.") ? 1.1 : 1
     return [
       {
         title: `${subWeapon} ink consumption`,
         effect: `${parseFloat(
-          (effect[0] * inkConsumption * 100).toFixed(2)
+          (((effect[0] * inkConsumption) / tank) * 100).toFixed(2)
         )}% of ink tank`,
         effectFromMax: effect[1],
         effectFromMaxActual: parseFloat(
-          (effect[0] * inkConsumption * 100).toFixed(2)
+          (((effect[0] * inkConsumption) / tank) * 100).toFixed(2)
         ),
         ability: "ISS" as Ability,
         ap: amount,
         getEffect: (ap: number) =>
           parseFloat(
-            (inkConsumption * getEffect(highMidLow, ap)[0] * 100).toFixed(2)
+            (
+              ((inkConsumption * getEffect(highMidLow, ap)[0]) / tank) *
+              100
+            ).toFixed(2)
           ),
       },
     ]
@@ -367,35 +373,22 @@ export default function useAbilityEffects(
     const highMidLowSquid = [highSquid, midSquid, lowSquid]
     const effectSquid = getEffect(highMidLowSquid, amount)
 
-    /*const highKeyHumanoid = "RecoverNrmlFrm_Ink_High"
-    const midKeyHumanoid = "RecoverNrmlFrm_Ink_Mid"
-    const lowKeyHumanoid = "RecoverNrmlFrm_Ink_Low"
-    const highHumanoid = REC[highKeyHumanoid]
-    const midHumanoid = REC[midKeyHumanoid]
-    const lowHumanoid = REC[lowKeyHumanoid]
-    const highMidLowHumanoid = [highHumanoid, midHumanoid, lowHumanoid]
-    const effectHumanoid = getEffect(highMidLowHumanoid, amount)*/
+    const tank = build.weapon!.includes("Jr.") ? 1.1 : 1
 
     return [
       {
         title: "Ink tank recovery from empty to full (squid form)",
-        effect: `${Math.ceil(effectSquid[0])} frames (${parseFloat(
-          (Math.ceil(effectSquid[0]) / 60).toFixed(2)
+        effect: `${Math.ceil(effectSquid[0] * tank)} frames (${parseFloat(
+          (Math.ceil(effectSquid[0] * tank) / 60).toFixed(2)
         )} seconds)`,
         effectFromMax: effectSquid[1],
         effectFromMaxActual:
           (effectSquid[0] / getEffect(highMidLowSquid, 0)[0]) * 100,
         ability: "REC" as Ability,
         ap: amount,
-        getEffect: (ap: number) => Math.ceil(getEffect(highMidLowSquid, ap)[0]),
+        getEffect: (ap: number) =>
+          Math.ceil(getEffect(highMidLowSquid, ap)[0] * tank),
       },
-      /*{
-        title: "Ink tank recovery from empty to full (humanoid form)",
-        effect: `${Math.ceil(effectHumanoid[0])} frames (${parseFloat(
-          (effectHumanoid[0] / 60).toFixed(2)
-        )} seconds)`,
-        effectFromMax: effectHumanoid[1],
-      },*/
     ]
   }
 
