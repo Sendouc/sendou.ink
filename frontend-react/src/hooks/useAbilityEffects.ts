@@ -1306,7 +1306,7 @@ export default function useAbilityEffects(
 
     return [
       {
-        title: "Sub Weapon damage radius (indirect)",
+        title: "Sub Weapon damage (indirect)",
         effect: `${parseFloat((effectSub[0] * 100).toFixed(2))}%`,
         effectFromMax: effectSub[1],
         effectFromMaxActual: effectSub[0] * 100,
@@ -1315,10 +1315,10 @@ export default function useAbilityEffects(
         getEffect: (ap: number) =>
           parseFloat((getEffect(highMidLowSub, ap)[0] * 100).toFixed(3)),
         info:
-          "Bomb Defense Up DX also lessens the radius of a direct bomb hit but it will never make a bomb not kill that would have dealt over 100dmg without any of the ability on",
+          "Bomb Defense Up DX also lessens the damage of a direct bomb hit but it will never make a bomb not kill that would have dealt over 100dmg without any of the ability on",
       },
       {
-        title: "Special Weapon damage radius (indirect)",
+        title: "Special Weapon damage (indirect)",
         effect: `${parseFloat((effectSpecial[0] * 100).toFixed(2))}%`,
         effectFromMax: effectSpecial[1],
         effectFromMaxActual: effectSpecial[0] * 100,
