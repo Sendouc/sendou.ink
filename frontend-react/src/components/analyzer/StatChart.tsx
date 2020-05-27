@@ -32,21 +32,8 @@ const StatChart: React.FC<StatChartProps> = ({
 }) => {
   const { themeColorHex, darkerBgColor } = useContext(MyThemeContext)
 
-  const getData = () => {
-    const toReturn = []
-    const LDEAbilities = ["ISM", "ISS", "REC"]
-    if (LDEAbilities.includes(ability)) {
-      for (let i = 0; i < 58; i++) {
-        toReturn.push({ name: `${i}AP`, [title]: getEffect(i) })
-      }
-    } else {
-      possibleAps.forEach((ap) => {
-        toReturn.push({ name: `${ap}AP`, [title]: getEffect(ap) })
-      })
-    }
-
-    return toReturn
-  }
+  const getData = () =>
+    possibleAps.map((ap) => ({ name: `${ap}AP`, [title]: getEffect(ap) }))
 
   const CustomizedDot = (props: any) => {
     const { cx, cy, payload } = props
