@@ -442,18 +442,14 @@ export default function useAbilityEffects(
       {
         title: "Run speed (firing)",
         effect: `${parseFloat(
-          (moveEffect[0] * shootEffect[0]).toFixed(2)
+          shootEffect[0].toFixed(2)
         )} distance units / frame`,
         effectFromMax: shootEffect[1],
-        effectFromMaxActual: ((moveEffect[0] * shootEffect[0]) / 2.4) * 100,
+        effectFromMaxActual: (shootEffect[0] / 2.4) * 100,
         ability: "RSU" as Ability,
         ap: amount,
         getEffect: (ap: number) =>
-          parseFloat(
-            (
-              getEffect(highMidLow, ap)[0] * getEffect(highMidLowShoot, ap)[0]
-            ).toFixed(4)
-          ),
+          parseFloat(getEffect(highMidLowShoot, ap)[0].toFixed(4)),
       },
     ]
   }
