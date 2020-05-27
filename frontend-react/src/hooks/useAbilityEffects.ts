@@ -490,7 +490,8 @@ export default function useAbilityEffects(
         effectFromMaxActual: (speed / 2.4) * 100,
         ability: "SSU" as Ability,
         ap: amount,
-        getEffect: (ap: number) => getEffect(highMidLow, ap)[0],
+        getEffect: (ap: number) =>
+          parseFloat(getEffect(highMidLow, ap)[0].toFixed(3)),
       },
     ]
   }

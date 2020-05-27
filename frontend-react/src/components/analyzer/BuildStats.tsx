@@ -163,7 +163,6 @@ const BuildStats: React.FC<BuildStatsProps> = ({
               ap={ap}
               otherAp={otherAp}
               getEffect={getEffect}
-              ability={ability}
               startChartsAtZero={startChartsAtZero}
             />
           </Box>

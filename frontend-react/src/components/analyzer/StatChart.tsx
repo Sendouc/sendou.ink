@@ -1,16 +1,15 @@
 import React, { useContext } from "react"
 import {
-  ResponsiveContainer,
-  LineChart,
   CartesianGrid,
-  XAxis,
-  YAxis,
-  Tooltip,
   Legend,
   Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
 } from "recharts"
 import MyThemeContext from "../../themeContext"
-import { Ability } from "../../types"
 import { possibleAps } from "../../utils/lists"
 
 interface StatChartProps {
@@ -18,7 +17,6 @@ interface StatChartProps {
   getEffect: (ap: number) => number
   ap: number
   otherAp?: number
-  ability: Ability
   startChartsAtZero: boolean
 }
 
@@ -27,7 +25,6 @@ const StatChart: React.FC<StatChartProps> = ({
   ap,
   otherAp,
   getEffect,
-  ability,
   startChartsAtZero,
 }) => {
   const { themeColorHex, darkerBgColor } = useContext(MyThemeContext)
