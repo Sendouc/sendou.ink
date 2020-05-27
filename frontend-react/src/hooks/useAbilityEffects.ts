@@ -207,8 +207,8 @@ export default function useAbilityEffects(
       })
     }
 
-    const mInkConsumeSplashJump = buildWeaponData.mInkConsumeSplashJump
-    const mInkConsumeSplashStand = buildWeaponData.mInkConsumeSplashStand
+    const mInkConsumeSplashJump = buildWeaponData.mInkConsumeSplash_Jump
+    const mInkConsumeSplashStand = buildWeaponData.mInkConsumeSplash_Stand
 
     if (
       mInkConsumeSplashJump &&
