@@ -146,7 +146,7 @@ for filepath in glob.iglob(abs_file_path):  # iterate through .json files
         if not did_thing:
             english = lang_dict.get(weapon_internal, None)
             if english:
-                weapon_dict[english] = {**data, "Name": english}
+                weapon_dict[english] = {**wDict, **data, "Name": english}
                 did_thing = True
 
         values_to_skip = ["BombChase", "ShooterQuickLong", "SuperLaser"]

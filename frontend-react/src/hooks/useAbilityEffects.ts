@@ -590,7 +590,11 @@ export default function useAbilityEffects(
     if (
       specialWeaponData.mPaintGauge_SpecialFrm &&
       specialWeaponData.mPaintGauge_SpecialFrmM &&
-      specialWeaponData.mPaintGauge_SpecialFrmH
+      specialWeaponData.mPaintGauge_SpecialFrmH &&
+      specialWeaponData.mPaintGauge_SpecialFrmH >
+        specialWeaponData.mPaintGauge_SpecialFrmM &&
+      specialWeaponData.mPaintGauge_SpecialFrmM >
+        specialWeaponData.mPaintGauge_SpecialFrm
     ) {
       const high = specialWeaponData.mPaintGauge_SpecialFrmH
       const mid = specialWeaponData.mPaintGauge_SpecialFrmM
