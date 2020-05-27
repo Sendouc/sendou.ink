@@ -83,7 +83,9 @@ const BuildStats: React.FC<BuildStatsProps> = ({
     toggleChart,
     progressBarValue = 0,
   }) => {
-    const { darkerBgColor, themeColorWithShade } = useContext(MyThemeContext)
+    const { darkerBgColor, themeColorWithShade, colorMode } = useContext(
+      MyThemeContext
+    )
 
     return (
       <>
@@ -131,6 +133,7 @@ const BuildStats: React.FC<BuildStatsProps> = ({
           value={progressBarValue}
           hasStripe
           isAnimated
+          bg={colorMode === "dark" ? "#464b64" : `orange.100`}
         />
         {otherEffect && (
           <>
@@ -140,6 +143,7 @@ const BuildStats: React.FC<BuildStatsProps> = ({
               value={otherProgressBarValue}
               hasStripe
               isAnimated
+              bg={colorMode === "dark" ? "#464b64" : `blue.100`}
             />
             <Flex justifyContent="space-between">
               <Box />

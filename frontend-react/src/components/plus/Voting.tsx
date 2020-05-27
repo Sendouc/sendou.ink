@@ -36,7 +36,7 @@ const Voting: React.FC<VotingProps> = ({
   votedSoFar,
   eligibleVoters,
 }) => {
-  const { themeColor, grayWithShade } = useContext(MyThemeContext)
+  const { themeColor, grayWithShade, colorMode } = useContext(MyThemeContext)
   const { data, loading, error } = useQuery<UsersForVotingData>(
     USERS_FOR_VOTING
   )
@@ -149,6 +149,7 @@ const Voting: React.FC<VotingProps> = ({
         <Progress
           value={(votedSoFar / eligibleVoters) * 100}
           color={themeColor}
+          bg={colorMode === "dark" ? "#464b64" : `${themeColor}.100`}
         />
         {votedSoFar}/{eligibleVoters} voted so far
       </Box>
