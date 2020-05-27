@@ -425,6 +425,7 @@ export default function useAbilityEffects(
     const highMidLowShoot = [highShoot, midShoot, lowShoot]
 
     const shootEffect = getEffect(highMidLowShoot, amount)
+    const moveSpeed = buildWeaponData.mMoveSpeed
 
     return [
       {
@@ -442,14 +443,16 @@ export default function useAbilityEffects(
       {
         title: "Run speed (firing)",
         effect: `${parseFloat(
-          shootEffect[0].toFixed(2)
+          (shootEffect[0] * moveSpeed).toFixed(2)
         )} distance units / frame`,
         effectFromMax: shootEffect[1],
-        effectFromMaxActual: (shootEffect[0] / 2.4) * 100,
+        effectFromMaxActual: ((shootEffect[0] * moveSpeed) / 2.4) * 100,
         ability: "RSU" as Ability,
         ap: amount,
         getEffect: (ap: number) =>
-          parseFloat(getEffect(highMidLowShoot, ap)[0].toFixed(4)),
+          parseFloat(
+            (getEffect(highMidLowShoot, ap)[0] * moveSpeed).toFixed(4)
+          ),
       },
     ]
   }

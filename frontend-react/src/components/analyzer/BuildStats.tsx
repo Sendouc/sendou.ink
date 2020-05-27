@@ -33,7 +33,6 @@ const BuildStats: React.FC<BuildStatsProps> = ({
   showNotActualProgress,
   startChartsAtZero,
 }) => {
-  const { colorMode } = useContext(MyThemeContext)
   const [expandedCharts, setExpandedCharts] = useState<Set<string>>(new Set())
 
   const abilityArrays: Ability[][] = [
