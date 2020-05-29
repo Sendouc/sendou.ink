@@ -7,6 +7,7 @@ const votedPersonSchema = new mongoose.Schema({
   month: { type: Number, required: true },
   year: { type: Number, required: true },
   plus_server: { type: String, required: true },
+  stale: { type: Boolean, default: false },
 })
 
 votedPersonSchema.virtual("discord_user", {

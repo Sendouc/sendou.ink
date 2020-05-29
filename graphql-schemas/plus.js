@@ -93,6 +93,7 @@ const typeDef = gql`
     year: Int!
     "Voting result -2 to +2 (-1 to +1 cross-region)"
     score: Int!
+    stale: Boolean!
   }
 
   type Score {
@@ -189,12 +190,8 @@ const resolvers = {
 
       const state = await State.findOne({})
 
-      const date = new Date()
-      const year = date.getFullYear()
-      const month = date.getMonth() + 1
       const votedPeople = await VotedPerson.find({
-        month,
-        year,
+        stale: false,
         plus_server: ctx.user.plus.membership_status,
       })
 
@@ -279,13 +276,7 @@ const resolvers = {
           )
         })
 
-      const date = new Date()
-      const year = date.getFullYear()
-      const month = date.getMonth() + 1
       const votes = await VotedPerson.find({
-        plus_server,
-        month,
-        year,
         voter_discord_id: ctx.user.discord_id,
       })
 
@@ -538,8 +529,7 @@ const resolvers = {
       const month = date.getMonth() + 1
       await VotedPerson.deleteMany({
         voter_discord_id: ctx.user.discord_id,
-        month,
-        year,
+        stale: false,
       })
 
       const toInsert = args.votes.map((vote) => ({
@@ -571,10 +561,7 @@ const resolvers = {
       const date = new Date()
       const year = date.getFullYear()
       const month = date.getMonth() + 1
-      const votes = await VotedPerson.find({
-        month,
-        year,
-      })
+      const votes = await VotedPerson.find({ stale: false })
         .populate("discord_user")
         .populate("voter_discord_user")
 
@@ -838,13 +825,8 @@ const resolvers = {
       await Summary.insertMany(summariesToInsert)
       await Suggested.deleteMany({})
 
-      let lastMonth = month - 1
-      let lastYear = year
-      if (lastMonth === 0) {
-        lastMonth = 12
-        lastYear -= 1
-      }
-      await VotedPerson.deleteMany({ month: lastMonth, year: lastYear })
+      await VotedPerson.deleteMany({ stale: true })
+      await VotedPerson.updateMany({}, { $set: { stale: true } })
       await State.updateOne({}, { $set: { voting_ends: null } })
 
       return true
