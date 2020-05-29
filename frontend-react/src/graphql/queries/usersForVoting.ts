@@ -16,6 +16,14 @@ export interface VotingSuggested {
   description: string
 }
 
+export interface Vote {
+  discord_id: string
+  score: number
+  month: number
+  year: number
+  stale: boolean
+}
+
 export interface UsersForVotingData {
   usersForVoting: {
     users: {
@@ -31,13 +39,7 @@ export interface UsersForVotingData {
       }
     }[]
     suggested: VotingSuggested[]
-    votes: {
-      discord_id: string
-      score: number
-      month: number
-      year: number
-      stale: boolean
-    }[]
+    votes: Vote[]
   }
 }
 

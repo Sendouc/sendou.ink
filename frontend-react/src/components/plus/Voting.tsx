@@ -1,22 +1,21 @@
-import React, { useState, useEffect, useContext } from "react"
+import { useMutation, useQuery } from "@apollo/react-hooks"
+import { Box, Flex, Progress, useToast } from "@chakra-ui/core"
+import React, { useContext, useEffect, useState } from "react"
+import { AddVotesVars, ADD_VOTES } from "../../graphql/mutations/addVotes"
+import { PLUS_INFO } from "../../graphql/queries/plusInfo"
 import {
-  USERS_FOR_VOTING,
   UsersForVotingData,
+  USERS_FOR_VOTING,
   VotingSuggested,
 } from "../../graphql/queries/usersForVoting"
-import { useQuery, useMutation } from "@apollo/react-hooks"
-
-import Loading from "../common/Loading"
-import Error from "../common/Error"
-import { ADD_VOTES, AddVotesVars } from "../../graphql/mutations/addVotes"
-import { useToast, Progress, Box, Flex } from "@chakra-ui/core"
-import { UserLean } from "../../types"
-import Alert from "../elements/Alert"
 import MyThemeContext from "../../themeContext"
+import { UserLean } from "../../types"
+import Error from "../common/Error"
+import Loading from "../common/Loading"
+import SubHeader from "../common/SubHeader"
+import Alert from "../elements/Alert"
 import Button from "../elements/Button"
 import PersonForVoting from "./PersonForVoting"
-import SubHeader from "../common/SubHeader"
-import { PLUS_INFO } from "../../graphql/queries/plusInfo"
 
 interface VotingProps {
   user: UserLean
@@ -41,6 +40,7 @@ const Voting: React.FC<VotingProps> = ({
     USERS_FOR_VOTING
   )
   const [votes, setVotes] = useState<Record<string, number>>({})
+  const [oldVotes, setOldVotes] = useState<Record<string, number>>({})
   const [suggestedArrays, setSuggestedArrays] = useState<SuggestedArrays>({
     sameRegion: [],
     otherRegion: [],
@@ -51,7 +51,7 @@ const Voting: React.FC<VotingProps> = ({
     boolean,
     AddVotesVars
   >(ADD_VOTES, {
-    onCompleted: (data) => {
+    onCompleted: () => {
       window.scrollTo(0, 0)
       toast({
         description: `Votes submitted`,
@@ -111,10 +111,14 @@ const Voting: React.FC<VotingProps> = ({
 
     if (data!.usersForVoting.votes) {
       const voteObj: Record<string, number> = {}
-      data!.usersForVoting.votes.forEach(
-        (vote) => (voteObj[vote.discord_id] = vote.score)
+      const oldVoteObj: Record<string, number> = {}
+      data!.usersForVoting.votes.forEach((vote) =>
+        vote.stale
+          ? (oldVoteObj[vote.discord_id] = vote.score)
+          : (voteObj[vote.discord_id] = vote.score)
       )
       setVotes(voteObj)
+      setOldVotes(oldVoteObj)
     }
   }, [loading, error, data, user])
 
@@ -130,7 +134,7 @@ const Voting: React.FC<VotingProps> = ({
     )
 
   const hoursLeft = Math.ceil((votingEnds - date.getTime()) / (1000 * 60 * 60))
-  const alreadyVoted = data!.usersForVoting.votes.length > 0
+  const alreadyVoted = votes.length > 0
 
   const missingVotes =
     data!.usersForVoting.users.length +
@@ -166,6 +170,7 @@ const Voting: React.FC<VotingProps> = ({
               user={userForVoting}
               votes={votes}
               setVotes={setVotes}
+              oldVote={oldVotes[userForVoting.discord_id]}
             />
           )
         })}
@@ -185,6 +190,7 @@ const Voting: React.FC<VotingProps> = ({
                 votes={votes}
                 setVotes={setVotes}
                 description={suggestion.description}
+                oldVote={oldVotes[suggestion.discord_user.discord_id]}
               />
             )
           })}
@@ -203,6 +209,7 @@ const Voting: React.FC<VotingProps> = ({
             votes={votes}
             setVotes={setVotes}
             sameRegion={false}
+            oldVote={oldVotes[userForVoting.discord_id]}
           />
         )
       })}
@@ -223,6 +230,7 @@ const Voting: React.FC<VotingProps> = ({
                 setVotes={setVotes}
                 sameRegion={false}
                 description={suggestion.description}
+                oldVote={oldVotes[suggestion.discord_user.discord_id]}
               />
             )
           })}
