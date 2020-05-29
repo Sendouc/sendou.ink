@@ -539,6 +539,7 @@ const resolvers = {
         year,
         plus_server,
         score: vote.score,
+        stale: false,
       }))
       await VotedPerson.insertMany(toInsert)
 

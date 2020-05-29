@@ -36,6 +36,7 @@ export interface UsersForVotingData {
       score: number
       month: number
       year: number
+      stale: boolean
     }[]
   }
 }
@@ -75,6 +76,7 @@ export const USERS_FOR_VOTING: DocumentNode = gql`
         score
         month
         year
+        stale
       }
     }
   }
