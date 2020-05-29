@@ -395,6 +395,25 @@ const resolvers = {
           "Suggested user is already a member of the server."
         )
 
+      const date = new Date()
+      const month = date.getMonth() + 1
+      const year = date.getFullYear()
+
+      const kickedSummary = await Summary.findOne({
+        discord_id: args.discord_id,
+        plus_server: args.server,
+        suggested: { $in: [null, false] },
+        month,
+        year,
+        score: { $lt: 0 },
+      })
+
+      if (kickedSummary) {
+        throw new UserInputError(
+          "Can't suggest because user got kicked less than month ago."
+        )
+      }
+
       if (ctx.user.plus.membership_status !== "ONE" && args.server === "ONE")
         throw new UserInputError("Can't suggest to +1 without being +1 member.")
 
@@ -463,6 +482,25 @@ const resolvers = {
           user.plus.vouch_status === "ONE")
       )
         throw new UserInputError("User already has access.")
+
+      const date = new Date()
+      const month = date.getMonth() + 1
+      const year = date.getFullYear()
+
+      const kickedSummary = await Summary.findOne({
+        discord_id: args.discord_id,
+        plus_server: args.server,
+        suggested: { $in: [null, false] },
+        month,
+        year,
+        score: { $lt: 0 },
+      })
+
+      if (kickedSummary) {
+        throw new UserInputError(
+          "Can't vouch because user got kicked less than month ago."
+        )
+      }
 
       if (!user.plus) user.plus = {}
       user.plus.vouch_status = args.server
