@@ -387,7 +387,9 @@ const resolvers = {
 
       if (
         user.plus.membership_status === args.server ||
-        user.plus.membership_status === "ONE"
+        user.plus.membership_status === "ONE" ||
+        user.plus.vouch_status === args.server ||
+        user.plus.vouch_status === "ONE"
       )
         throw new UserInputError(
           "Suggested user is already a member of the server."
