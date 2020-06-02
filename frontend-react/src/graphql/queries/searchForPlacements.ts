@@ -5,7 +5,6 @@ interface Placement {
   mode: number
   name: string
   player?: {
-    twitter: string
     discord_id?: string
   }
   rank: number
@@ -63,7 +62,6 @@ export const SEARCH_FOR_PLACEMENTS: DocumentNode = gql`
         year
         mode
         player {
-          twitter
           discord_id
         }
       }
