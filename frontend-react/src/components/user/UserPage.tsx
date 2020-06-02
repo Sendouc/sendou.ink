@@ -113,9 +113,24 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
       content: (
         <TabPanel key={1}>
           <BuildTab
-            builds={builds.sort(
-              (a, b) => weapons.indexOf(a.weapon) - weapons.indexOf(b.weapon)
-            )}
+            builds={builds.sort((a, b) => {
+              const weaponPool = user.weapons
+              if (weaponPool) {
+                if (
+                  weaponPool.includes(a.weapon) &&
+                  weaponPool.includes(b.weapon)
+                ) {
+                  return (
+                    weaponPool.indexOf(a.weapon) - weaponPool.indexOf(b.weapon)
+                  )
+                }
+                const poolComparision =
+                  weaponPool.indexOf(b.weapon) - weaponPool.indexOf(a.weapon)
+
+                if (poolComparision !== 0) return poolComparision
+              }
+              return weapons.indexOf(a.weapon) - weapons.indexOf(b.weapon)
+            })}
             canModifyBuilds={userLean?.discord_id === user.discord_id}
           />
         </TabPanel>
