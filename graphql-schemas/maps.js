@@ -9,7 +9,7 @@ const maps = require("../utils/maps")
 
 const typeDef = gql`
   extend type Query {
-    maplists: [Maplist!]!
+    maplists(name: String): [Maplist!]!
     plusMaplists: [Maplist!]!
     mapVotes: [MapVote!]
     positiveVotes(mode: Mode = SZ): Boolean
@@ -64,7 +64,9 @@ const typeDef = gql`
 const resolvers = {
   Query: {
     maplists: (root, args) => {
-      return Maplist.find({})
+      console.log("args", args)
+      const criteria = args.name ? { name: args.name } : {}
+      return Maplist.find(criteria)
         .sort({ order: "asc" })
         .catch((e) => {
           throw new UserInputError(e.message, {
