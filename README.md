@@ -1,5 +1,6 @@
-# ![s.ink logo](https://raw.githubusercontent.com/Sendouc/sendou-ink/master/utils/sink_banner.png)
-
+<p align="center">
+<img src="https://raw.githubusercontent.com/Sendouc/sendou-ink/master/sink_squid.png">
+</p>
 [![Discord Server](https://discordapp.com/api/guilds/407936403356516365/embed.png)](https://discord.gg/J6NqUvt)
 
 Goal of sendou.ink is to provide useful tools and resources for the competitive Splatoon community.
@@ -8,61 +9,46 @@ Live version: [https://sendou.ink/](https://sendou.ink/)
 
 ## What's happening
 
-This site was originally a full stack web development school project. It is my first time working on a web site project of my own so it has been very much a learning experience in that sense. Although make no mistake it has been through several iterations already and I still have plans to keep improving as well as adding more functionality!
+This site was originally a full stack web development school project. Since I have continued working on it as a hobby. I use a big portion of the tools offered by it myself so finding continued motivation has been easy.
 
 ## Technologies used
 
 - React
+- TypeScript
 - Node.js
 - GraphQL (Apollo Server)
 - MongoDB (+Mongoose)
-- Python (couple different scripts to parse data)
+- Python (a couple of different scripts to parse data)
 
-## Screenshot
+## A few highlight features
 
-![Screenshot](./screenshot.png)
+🦑 Planner tool where you can draw on any map in the game to conveniently make up game plans
 
-## Current features
+🦑 Calendar that collects together all the events happening in the community
 
-🦑 [Maplist Generator](https://sendou.ink/maps)
-Fully configure and randomly generate map lists to play on.
+🦑 Users can make an account and submit their builds and browse builds made by others
 
-🦑 [Rotation Viewer](https://sendou.ink/rotation)
-View the upcoming rotations in the matchmaking and mark maps as unfavored. Unfavored maps are saved without having to register.
+🦑 It is possible to submit yourself as "free agent". If two FA's like each other they are notified and a new team can be founded
 
-🦑 [Build Viewer](https://sendou.ink/builds)
-Search for builds by weapon submitted by other users.
+🦑 X Rank Top 500 results can be browsed through far more conveniently than on the official app
 
-🦑 [Tournament Viewer](https://sendou.ink/tournaments)
-Browser past tournaments of the competitive scene. Included is filtering feature that allows you to find tournaments featuring certain team composition for example.
+🦑 Browse through detailed tournament results
 
-🦑 [Map Planner](https://sendou.ink/plans)
-Make plans by drawing on maps using variety of tools. You can also save and load from file.
+🦑 Choose between light and dark mode as well as 10 different accent colors
 
-🦑 [X Rank Leaderboards](https://sendou.ink/xleaderboard)
-X Rank (solo queue) leaderboards by weapon class. Ordered by the average of the top four historical scores.
+## Trello
 
-🦑 [Top 500 Browser](https://sendou.ink/xsearch)
-Filter and browse through thousands of X Rank placements dating back to May 2018.
+I use a [Trello board](https://trello.com/b/P46kMiY9/sendouink) to keep track of the things I still need to do and that are in progress. Anyone is free to check it out to see what bugs I am aware of as well as future plans for sendou.ink.
 
-🦑 [X Rank Trends](https://sendou.ink/trends)
-Draw charts based on the appearance of different of different weapons in X Rank. Easily see the impact different patches had and how weapons compare to each other.
-
-🦑 [Competitive Calendar](https://sendou.ink/calendar)
-See all the upcoming events in the competitive Splatoon community on one page.
-
-🦑 [Links](https://sendou.ink/links)
-Links to all sorts of useful resources about competitive Splatoon.
-
-You can also log in to save up to 100 builds of your own that can include your abilities, gear as well as description of it.
-
-## Installation
+## Installation (TODO: improve this)
 
 1. Install [Node](https://nodejs.org/en/)
 2. Use `npm install` in the root folder
 3. Use `npm install` in the **/react-ui** folder
 4. Use `npm run watch` in the root folder
 5. Use `npm start` in the **/react-ui** folder
+
+In addition connection to MongoDB as well as a few other ENV variables need to be configured.
 
 Server will run on [http://localhost:3001/](http://localhost:3001/)  
 Front-end will run on [http://localhost:3000/](http://localhost:3000/)
