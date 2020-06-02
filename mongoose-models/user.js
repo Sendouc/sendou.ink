@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
   },
   twitch_name: String,
   twitter_name: String,
+  youtube_name: String,
   country: String,
   sens: {
     stick: { type: Number, min: -5, max: 5 },

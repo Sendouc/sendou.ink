@@ -42,6 +42,7 @@ const typeDef = gql`
     discord_id: String!
     twitch_name: String
     twitter_name: String
+    youtube_name: String
     country: String
     sens: Sens
     bio: String

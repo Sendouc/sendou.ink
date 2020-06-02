@@ -44,6 +44,8 @@ passport.use(
             userToSave.twitch_name = connection.name.toLowerCase()
           } else if (connection.type === "twitter") {
             userToSave.twitter_name = connection.name.toLowerCase()
+          } else if (connection.type === "youtube") {
+            userToSave.youtube_name = connection.name.toLowerCase()
           }
         }
       }

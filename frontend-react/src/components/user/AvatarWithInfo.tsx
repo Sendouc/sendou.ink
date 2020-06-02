@@ -1,6 +1,12 @@
 import { Box, Flex, Heading } from "@chakra-ui/core"
 import React, { useContext, useState } from "react"
-import { FaEdit, FaGamepad, FaTwitch, FaTwitter } from "react-icons/fa"
+import {
+  FaEdit,
+  FaGamepad,
+  FaTwitch,
+  FaTwitter,
+  FaYoutube,
+} from "react-icons/fa"
 import MyThemeContext from "../../themeContext"
 import { User } from "../../types"
 import Flag from "../common/Flag"
@@ -77,6 +83,19 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user, canEdit }) => {
                   <Box as={FaTwitch} mr="0.2em" />
                   <a href={`https://www.twitch.tv/${user.twitch_name}`}>
                     {user.twitch_name}
+                  </a>
+                </Flex>
+              )}
+              {user.youtube_name && (
+                <Flex
+                  alignItems="center"
+                  mx="0.5em"
+                  my="0.1em"
+                  color={grayWithShade}
+                >
+                  <Box as={FaYoutube} mr="0.2em" />
+                  <a href={`https://youtube.com/c/${user.youtube_name}`}>
+                    {user.youtube_name}
                   </a>
                 </Flex>
               )}
