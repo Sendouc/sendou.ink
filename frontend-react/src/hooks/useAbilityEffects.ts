@@ -2016,12 +2016,11 @@ export default function useAbilityEffects(
 
       const effect = getEffect(highMidLow, amount)
 
-      const firstCircle = buildWeaponData.mFirstPeriodMaxChargeShootingFrame_2
       const secondCircle = buildWeaponData.mSecondPeriodMaxChargeShootingFrame_2
 
-      const total = Math.ceil((firstCircle + secondCircle) * effect[0])
+      const total = Math.ceil(secondCircle * effect[0])
       const maxTotal = Math.ceil(
-        (firstCircle + secondCircle) * getEffect(highMidLow, MAX_AP)[0]
+        secondCircle * getEffect(highMidLow, MAX_AP)[0]
       )
       toReturn.push({
         title: `${build.weapon} full charged shooting duration`,
@@ -2033,9 +2032,7 @@ export default function useAbilityEffects(
         ability: "MPU" as Ability,
         ap: amount,
         getEffect: (ap: number) =>
-          Math.ceil(
-            (firstCircle + secondCircle) * getEffect(highMidLow, ap)[0]
-          ),
+          Math.ceil(secondCircle * getEffect(highMidLow, ap)[0]),
       })
     }
 
