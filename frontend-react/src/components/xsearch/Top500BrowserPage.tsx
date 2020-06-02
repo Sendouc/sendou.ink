@@ -138,7 +138,6 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
                       >
                         <Box
                           as="span"
-                          ml={placement.player?.twitter ? "0.5em" : undefined}
                           color={
                             placement.player?.discord_id
                               ? themeColorWithShade
