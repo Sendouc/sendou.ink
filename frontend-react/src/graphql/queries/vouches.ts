@@ -7,6 +7,7 @@ export const VOUCHES: DocumentNode = gql`
       discriminator
       twitter_name
       discord_id
+      avatar
       plus {
         voucher_user {
           username

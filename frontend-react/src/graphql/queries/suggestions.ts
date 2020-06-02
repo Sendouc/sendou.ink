@@ -8,6 +8,7 @@ export const SUGGESTIONS: DocumentNode = gql`
         username
         discriminator
         twitter_name
+        avatar
       }
       suggester_discord_user {
         discord_id

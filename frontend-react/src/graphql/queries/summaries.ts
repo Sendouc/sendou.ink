@@ -8,6 +8,7 @@ export const SUMMARIES: DocumentNode = gql`
         username
         discriminator
         twitter_name
+        avatar
       }
       score {
         total

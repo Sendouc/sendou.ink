@@ -64,7 +64,6 @@ const typeDef = gql`
 const resolvers = {
   Query: {
     maplists: (root, args) => {
-      console.log("args", args)
       const criteria = args.name ? { name: args.name } : {}
       return Maplist.find(criteria)
         .sort({ order: "asc" })
