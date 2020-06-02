@@ -40,6 +40,10 @@ This site was originally a full stack web development school project. Since I ha
 
 I use a [Trello board](https://trello.com/b/P46kMiY9/sendouink) to keep track of the things I still need to do and that are in progress. Anyone is free to check it out to see what bugs I am aware of as well as future plans for sendou.ink.
 
+## GraphQL
+
+Serving the site is a GraphQL API. You can explore the schema here: [https://sendou.ink/graphql](https://sendou.ink/graphql). It was made specifically for this site but you are free to use it within reason if it is of use to you.
+
 ## Installation (TODO: improve this)
 
 1. Install [Node](https://nodejs.org/en/)
