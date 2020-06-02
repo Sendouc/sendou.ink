@@ -1,6 +1,7 @@
 <p align="center">
 <img src="https://github.com/Sendouc/sendou-ink/blob/master/sink-squid.png">
 </p>
+
 [![Discord Server](https://discordapp.com/api/guilds/407936403356516365/embed.png)](https://discord.gg/J6NqUvt)
 
 Goal of sendou.ink is to provide useful tools and resources for the competitive Splatoon community.
