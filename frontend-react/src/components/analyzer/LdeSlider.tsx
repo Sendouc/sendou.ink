@@ -48,7 +48,7 @@ const LdeSlider: React.FC<LdeSliderProps> = ({ value, setValue }) => {
           </Box>
         </SliderThumb>
       </Slider>
-      {value > 1 && (
+      {value > 0 && (
         <Box color={themeColorWithShade} fontWeight="bold" mt="1em">
           +{bonusAp}AP{" "}
           {["ISM", "ISS", "REC"].map((ability) => (
