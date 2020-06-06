@@ -43,6 +43,7 @@ const typeDef = gql`
     twitch_name: String
     twitter_name: String
     youtube_name: String
+    youtube_id: String
     country: String
     sens: Sens
     bio: String

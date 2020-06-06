@@ -45,11 +45,13 @@ passport.use(
           } else if (connection.type === "twitter") {
             userToSave.twitter_name = connection.name.toLowerCase()
           } else if (connection.type === "youtube") {
-            userToSave.youtube_name = connection.name.toLowerCase()
+            userToSave.youtube_name = connection.name
+            userToSave.youtube_id = connection.id
           }
         }
       }
 
+      console.log("userToSave", userToSave)
       User.updateOne(
         { discord_id: userToSave.discord_id },
         userToSave,
