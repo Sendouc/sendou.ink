@@ -101,9 +101,9 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
       <Box display="flex" flexDirection="column">
         <Box>
           <Label>Profile picture</Label>
-          Your profile picture comes from your Twitter account. In order to get
-          it showing verify your Twitter account on Discord, log out and back in
-          on sendou.ink.
+          Your profile picture comes from your Discord profile. If you change
+          your profile picture on Discord you need to log out and back in to get
+          it updated on sendou.ink.
         </Box>
         <Box mt="1em">
           <Input
