@@ -110,6 +110,7 @@ export interface User {
   twitch_name?: string
   twitter_name?: string
   youtube_name?: string
+  youtube_id?: string
   country?: CountryCode
   weapons?: Weapon[]
   top500: boolean

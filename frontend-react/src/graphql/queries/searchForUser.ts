@@ -20,6 +20,7 @@ export const SEARCH_FOR_USER: DocumentNode = gql`
       twitch_name
       twitter_name
       youtube_name
+      youtube_id
       country
       weapons
       top500

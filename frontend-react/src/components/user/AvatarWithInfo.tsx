@@ -86,7 +86,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user, canEdit }) => {
                   </a>
                 </Flex>
               )}
-              {user.youtube_name && (
+              {user.youtube_name && user.youtube_id && (
                 <Flex
                   alignItems="center"
                   mx="0.5em"
@@ -94,7 +94,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user, canEdit }) => {
                   color={grayWithShade}
                 >
                   <Box as={FaYoutube} mr="0.2em" />
-                  <a href={`https://youtube.com/c/${user.youtube_name}`}>
+                  <a href={`https://youtube.com/channel/${user.youtube_id}`}>
                     {user.youtube_name}
                   </a>
                 </Flex>
