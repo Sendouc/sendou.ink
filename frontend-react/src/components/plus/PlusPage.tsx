@@ -6,7 +6,6 @@ import Loading from "../common/Loading"
 import Error from "../common/Error"
 import { PLUS_INFO, PlusInfoData } from "../../graphql/queries/plusInfo"
 import { USER } from "../../graphql/queries/user"
-//import Voting from "./Voting"
 import { Redirect, RouteComponentProps, Link } from "@reach/router"
 import PageHeader from "../common/PageHeader"
 import { FaHistory, FaVoteYea, FaMapMarkedAlt } from "react-icons/fa"
@@ -42,6 +41,7 @@ const PlusPage: React.FC<RouteComponentProps> = () => {
   if (!data.plusInfo) return <Redirect to="/404" />
 
   const maplist = maplistData.plusMaplists[0]
+  const lastMonthsMaplist = maplistData.plusMaplists[1]
   const plusInfo = data.plusInfo
 
   return (
@@ -85,9 +85,13 @@ const PlusPage: React.FC<RouteComponentProps> = () => {
           <Maplist
             name={maplist.name}
             sz={maplist.sz}
+            pastSz={lastMonthsMaplist.sz}
             tc={maplist.tc}
+            pastTc={lastMonthsMaplist.tc}
             rm={maplist.rm}
+            pastRm={lastMonthsMaplist.rm}
             cb={maplist.cb}
+            pastCb={lastMonthsMaplist.cb}
             voterCount={maplist.plus.voter_count}
           />
           <Suggestions user={userData.user} />
