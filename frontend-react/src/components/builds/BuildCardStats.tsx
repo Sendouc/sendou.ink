@@ -47,7 +47,7 @@ const BuildCardStats: React.FC<BuildCardStatsProps> = ({
     >
       <ViewSlots build={build} />
       <Link to={`/analyzer?${queryParam}`}>
-        <Button icon={RiTShirtAirLine} outlined>
+        <Button icon={RiTShirtAirLine} outlined mt="1em">
           Show in build analyzer
         </Button>
       </Link>
