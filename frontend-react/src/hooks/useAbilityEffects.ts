@@ -84,8 +84,8 @@ function buildToAP(
 
 export default function useAbilityEffects(
   build: Partial<Build>,
-  bonusAp: Partial<Record<Ability, boolean>>,
-  lde: number
+  bonusAp: Partial<Record<Ability, boolean>> = {},
+  lde: number = 0
 ) {
   const [explanations, setExplanations] = useState<Explanation[]>([])
   const weaponData: Record<Weapon | SubWeapon | SpecialWeapon, any> = weaponJson
@@ -2150,7 +2150,7 @@ export default function useAbilityEffects(
 
     setExplanations(newExplanations)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [build, bonusAp, lde])
+  }, [JSON.stringify(build), bonusAp, lde])
 
   return explanations
 }

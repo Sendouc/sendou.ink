@@ -48,6 +48,7 @@
     "recharts": "^1.8.5",
     "source-map-explorer": "^2.4.2",
     "typescript": "^3.9.5",
+    "use-onclickoutside": "^0.3.1",
     "use-query-params": "^0.6.0"
   },
   "scripts": {

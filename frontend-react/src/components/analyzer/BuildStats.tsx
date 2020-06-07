@@ -20,18 +20,18 @@ interface BuildStatsProps {
   explanations: Explanation[]
   otherExplanations?: Explanation[]
   build: Partial<Build>
-  hideExtra: boolean
-  showNotActualProgress: boolean
-  startChartsAtZero: boolean
+  hideExtra?: boolean
+  showNotActualProgress?: boolean
+  startChartsAtZero?: boolean
 }
 
 const BuildStats: React.FC<BuildStatsProps> = ({
   explanations,
   otherExplanations,
   build,
-  hideExtra,
-  showNotActualProgress,
-  startChartsAtZero,
+  hideExtra = true,
+  showNotActualProgress = false,
+  startChartsAtZero = true,
 }) => {
   const [expandedCharts, setExpandedCharts] = useState<Set<string>>(new Set())
 
