@@ -90,6 +90,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
               letterSpacing="wide"
               fontSize="xs"
               ml="8px"
+              title={new Date(parseInt(build.updatedAt)).toLocaleString()}
             >
               {new Date(parseInt(build.updatedAt)).toLocaleDateString()}
             </Box>
@@ -103,6 +104,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
                 ml="0.25em"
                 whiteSpace="nowrap"
                 overflow="hidden"
+                title={`${build.discord_user.username}#${build.discord_user.discriminator}`}
               >
                 •{"  "}
                 <Link to={`/u/${build.discord_user.discord_id}`}>
