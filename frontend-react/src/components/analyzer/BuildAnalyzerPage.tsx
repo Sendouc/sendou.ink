@@ -1,9 +1,9 @@
 import { Box, FormLabel, Switch, Badge, Flex } from "@chakra-ui/core"
-import { RouteComponentProps } from "@reach/router"
+import { RouteComponentProps, useLocation } from "@reach/router"
 import React, { useState, useContext } from "react"
 import { Helmet } from "react-helmet-async"
 import useAbilityEffects from "../../hooks/useAbilityEffects"
-import { Build, Ability } from "../../types"
+import { Build, Ability, Weapon } from "../../types"
 import PageHeader from "../common/PageHeader"
 import WeaponSelector from "../common/WeaponSelector"
 import BuildStats from "./BuildStats"
@@ -20,7 +20,8 @@ const defaultBuild: Partial<Build> = {
 
 const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
   const { themeColor, grayWithShade } = useContext(MyThemeContext)
-  const [build, setBuild] = useState<Partial<Build>>(defaultBuild)
+  const location = useLocation()
+  const [build, setBuild] = useState<Partial<Build>>(getBuildFromUrl())
   const [otherBuild, setOtherBuild] = useState<Partial<Build>>(defaultBuild)
   const [showOther, setShowOther] = useState(false)
   const [showNotActualProgress, setShowNotActualProgress] = useState(false)
@@ -42,6 +43,26 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
     otherBonusAp,
     otherLde
   )
+
+  function getBuildFromUrl() {
+    const buildToReturn = { ...defaultBuild }
+    const decoded = new URLSearchParams(location.search)
+
+    for (const [key, value] of decoded) {
+      switch (key) {
+        case "weapon":
+          buildToReturn.weapon = value as Weapon
+          break
+        case "headgear":
+        case "clothing":
+        case "shoes":
+          const abilityKey = key as "headgear" | "clothing" | "shoes"
+          buildToReturn[abilityKey] = value.split(",") as any
+      }
+    }
+
+    return buildToReturn
+  }
 
   return (
     <>

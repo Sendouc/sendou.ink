@@ -1,11 +1,10 @@
-import React, { useContext, RefObject } from "react"
-import MyThemeContext from "../../themeContext"
-import useBreakPoints from "../../hooks/useBreakPoints"
-import IconButton from "./IconButton"
-import { MdClose } from "react-icons/md"
-import { useEffect } from "react"
 import { Box, Flex } from "@chakra-ui/core"
+import React, { useContext, useEffect } from "react"
+import { MdClose } from "react-icons/md"
 import useOnClickOutside from "use-onclickoutside"
+import useBreakPoints from "../../hooks/useBreakPoints"
+import MyThemeContext from "../../themeContext"
+import IconButton from "./IconButton"
 
 interface ModalProps {
   title: string

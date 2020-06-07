@@ -1,28 +1,26 @@
-import React, { useState, useContext, useEffect } from "react"
 import {
-  Image,
-  IconButton,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverBody,
-  Button,
   Box,
   BoxProps,
-  PseudoBox,
   Flex,
+  IconButton,
+  Image,
+  Popover,
+  PopoverBody,
+  PopoverContent,
+  PopoverTrigger,
+  PseudoBox,
 } from "@chakra-ui/core"
 import { Link } from "@reach/router"
-
-import WeaponImage from "../common/WeaponImage"
+import React, { useContext, useEffect, useState } from "react"
+import { FiBarChart2, FiEdit, FiInfo, FiTarget } from "react-icons/fi"
 import { top500 } from "../../assets/imageImports"
-import ViewSlots from "./ViewSlots"
-import ViewAP from "./ViewAP"
 import MyThemeContext from "../../themeContext"
 import { Build } from "../../types"
-import Gears from "./Gears"
-import { FiEdit, FiInfo, FiTarget, FiBarChart2 } from "react-icons/fi"
+import WeaponImage from "../common/WeaponImage"
 import BuildCardStats from "./BuildCardStats"
+import Gears from "./Gears"
+import ViewAP from "./ViewAP"
+import ViewSlots from "./ViewSlots"
 
 interface BuildCardProps {
   build: Build
