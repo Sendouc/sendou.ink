@@ -160,7 +160,12 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
     <>
       <Button
         icon={showOther ? FaMinus : FaPlus}
-        onClick={() => setShowOther(!showOther)}
+        onClick={() => {
+          if (showOther && otherFocused) {
+            changeFocus()
+          }
+          setShowOther(!showOther)
+        }}
         mt="1em"
         mb="2em"
       >
