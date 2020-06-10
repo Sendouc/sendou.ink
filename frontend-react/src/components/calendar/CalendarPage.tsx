@@ -1,7 +1,13 @@
 import { useQuery } from "@apollo/react-hooks"
 import { Badge, Box, Divider, Flex } from "@chakra-ui/core"
-import { RouteComponentProps } from "@reach/router"
-import React, { useContext, useState } from "react"
+import { RouteComponentProps, useLocation } from "@reach/router"
+import React, {
+  useContext,
+  useState,
+  useRef,
+  useEffect,
+  useLayoutEffect,
+} from "react"
 import { Helmet } from "react-helmet-async"
 import {
   UpcomingEventsData,
@@ -26,8 +32,18 @@ const badgeColor: { [key: string]: string } = {
 
 const CalendarPage: React.FC<RouteComponentProps> = () => {
   const { darkerBgColor, grayWithShade } = useContext(MyThemeContext)
+  const location = useLocation()
+  const matchingRef = useRef<HTMLDivElement>(null)
   const { data, error, loading } = useQuery<UpcomingEventsData>(UPCOMING_EVENTS)
   const [filter, setFilter] = useState("")
+
+  const searchParamsEventName = new URLSearchParams(location.search).get("name")
+
+  useEffect(() => {
+    if (!matchingRef?.current) return
+
+    matchingRef.current.scrollIntoView({ behavior: "smooth", block: "start" })
+  })
 
   if (loading) return <Loading />
   if (error) return <Error errorMessage={error.message} />
@@ -104,7 +120,17 @@ const CalendarPage: React.FC<RouteComponentProps> = () => {
                 </Badge>
               </Flex>
             )}
-            <TournamentInfo tournament={event} date={time} />
+            <div
+              ref={
+                event.name === searchParamsEventName ? matchingRef : undefined
+              }
+            >
+              <TournamentInfo
+                tournament={event}
+                date={time}
+                expandedByDefault={event.name === searchParamsEventName}
+              />
+            </div>
           </React.Fragment>
         )
       })}

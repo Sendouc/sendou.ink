@@ -16,14 +16,16 @@ import TournamentModal from "./TournamentModal"
 interface TournamentInfoProps {
   tournament: CompetitiveFeedEvent
   date: Date
+  expandedByDefault?: boolean
 }
 
 const TournamentInfo: React.FC<TournamentInfoProps> = ({
   tournament,
   date,
+  expandedByDefault,
 }) => {
   const { themeColorWithShade, grayWithShade } = useContext(MyThemeContext)
-  const [expanded, setExpanded] = useState(false)
+  const [expanded, setExpanded] = useState(!!expandedByDefault)
   const [showModal, setShowModal] = useState(false)
   const poster = tournament.poster_discord_user
 

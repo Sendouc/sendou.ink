@@ -1,15 +1,12 @@
-import React, { useState } from "react"
-import { Box, Flex, Image } from "@chakra-ui/core"
-import Markdown from "../elements/Markdown"
-import { FiExternalLink } from "react-icons/fi"
-import IconButton from "../elements/IconButton"
-import { IoMdClose } from "react-icons/io"
 import { useQuery } from "@apollo/react-hooks"
+import { Box, Flex, Image } from "@chakra-ui/core"
+import React, { useState } from "react"
+import { IoMdClose } from "react-icons/io"
 import { BANNERS, BannersData } from "../../graphql/queries/banners"
+import IconButton from "../elements/IconButton"
+import Markdown from "../elements/Markdown"
 
-interface SideNavBannerProps {}
-
-const SideNavBanner: React.FC<SideNavBannerProps> = ({}) => {
+const SideNavBanner: React.FC = () => {
   const [closed, setClosed] = useState(false)
   const { data } = useQuery<BannersData>(BANNERS)
 
@@ -53,8 +50,9 @@ const SideNavBanner: React.FC<SideNavBannerProps> = ({}) => {
 
       <Markdown value={banner.description} />
       <Flex justifyContent="center" alignItems="center">
-        <a href={banner.link}>Learn more</a>
-        <Box as={FiExternalLink} ml="0.5em" mb="0.2em" />
+        <a style={{ textDecoration: "underline" }} href={banner.link}>
+          Learn more
+        </a>
       </Flex>
     </Box>
   )
