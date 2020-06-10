@@ -206,7 +206,7 @@ const countries = [
   { code: "se", name: "Sweden" },
   { code: "ch", name: "Switzerland" },
   { code: "sy", name: "Syrian Arab Republic" },
-  { code: "tw", name: "Taiwan, Province of China" },
+  { code: "tw", name: "Taiwan" },
   { code: "tj", name: "Tajikistan" },
   { code: "tz", name: "Tanzania, United Republic of" },
   { code: "th", name: "Thailand" },

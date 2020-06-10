@@ -41,6 +41,7 @@ import { UserData } from "../../types"
 import ColorPicker from "./ColorPicker"
 import Error from "../common/Error"
 import MyThemeContext from "../../themeContext"
+import SideNavBanner from "./SideNavBanner"
 
 const UserItem: React.FC<{ data?: UserData }> = ({ data }) => {
   const { themeColorWithShade, bgColor } = useContext(MyThemeContext)
@@ -139,35 +140,26 @@ export const SideNavContent: React.FC<SideNavProps> = ({ showLogo = true }) => {
             </Link>
           </Flex>
         )}
-        <Flex>
-          <List mt="2em">
-            <NavItem to="plans" icon={FiMap} title="Map Planner" />
-            <NavItem to="calendar" icon={FiCalendar} title="Calendar" />
-            <NavItem to="builds" icon={RiTShirt2Line} title="Builds" />
-            <NavItem
-              to="analyzer"
-              icon={RiTShirtAirLine}
-              title="Build Analyzer"
-            />
-            <NavItem to="u" icon={FiUsers} title="User Search" />
-            <NavItem to="freeagents" icon={FiHeart} title="Free Agents" />
-            <NavItem
-              to="tournaments"
-              icon={FiAward}
-              title="Tournament Results"
-            />
-            <NavItem to="draft" icon={FiFolderPlus} title="Draft Cup" />
-            <NavItem to="xsearch" icon={FiSearch} title="Top 500 Browser" />
-            <NavItem
-              to="xtrends"
-              icon={FiBarChart2}
-              title="Top 500 Tier Lists"
-            />
-            {data?.user?.plus?.membership_status && (
-              <NavItem to="plus" icon={FiPlus} title="Plus Server" />
-            )}
-          </List>
-        </Flex>
+        <List mt="2em">
+          <NavItem to="plans" icon={FiMap} title="Map Planner" />
+          <NavItem to="calendar" icon={FiCalendar} title="Calendar" />
+          <NavItem to="builds" icon={RiTShirt2Line} title="Builds" />
+          <NavItem
+            to="analyzer"
+            icon={RiTShirtAirLine}
+            title="Build Analyzer"
+          />
+          <NavItem to="u" icon={FiUsers} title="User Search" />
+          <NavItem to="freeagents" icon={FiHeart} title="Free Agents" />
+          <NavItem to="tournaments" icon={FiAward} title="Tournament Results" />
+          <NavItem to="draft" icon={FiFolderPlus} title="Draft Cup" />
+          <NavItem to="xsearch" icon={FiSearch} title="Top 500 Browser" />
+          <NavItem to="xtrends" icon={FiBarChart2} title="Top 500 Tier Lists" />
+          {data?.user?.plus?.membership_status && (
+            <NavItem to="plus" icon={FiPlus} title="Plus Server" />
+          )}
+        </List>
+        <SideNavBanner />
       </Flex>
       <Flex align="flex-end" direction="column" alignItems="center">
         <DividingBox location="bottom" margin="0.7em">

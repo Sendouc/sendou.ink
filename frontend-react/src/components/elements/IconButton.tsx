@@ -11,6 +11,7 @@ interface IconButtonProps {
   disabled?: boolean
   loading?: boolean
   color?: string
+  size?: "sm" | "md" | "lg"
 }
 
 const IconButton: React.FC<IconButtonProps> = ({
@@ -20,6 +21,7 @@ const IconButton: React.FC<IconButtonProps> = ({
   loading,
   onClick,
   color,
+  size = "lg",
 }) => {
   const { themeColorWithShade } = useContext(MyThemeContext)
 
@@ -36,7 +38,7 @@ const IconButton: React.FC<IconButtonProps> = ({
       isRound
       variant="ghost"
       onClick={onClick}
-      size="lg"
+      size={size}
       color={getColor()}
       isDisabled={disabled}
       isLoading={loading}
