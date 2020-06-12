@@ -6,7 +6,11 @@ import { BANNERS, BannersData } from "../../graphql/queries/banners"
 import IconButton from "../elements/IconButton"
 import Markdown from "../elements/Markdown"
 
-const SideNavBanner: React.FC = () => {
+interface SideNavBannerProps {
+  showClose?: boolean
+}
+
+const SideNavBanner: React.FC<SideNavBannerProps> = ({ showClose = true }) => {
   const [closed, setClosed] = useState(false)
   const { data } = useQuery<BannersData>(BANNERS)
 
@@ -27,25 +31,27 @@ const SideNavBanner: React.FC = () => {
       borderRadius="5px"
       p="1em"
       backgroundColor={banner.bgColor}
-      mt="2em"
+      my="2em"
       color={banner.textColor}
       w="200px"
       mx="auto"
       textAlign="center"
     >
-      <Box position="absolute" right="30px" mt="-10px">
-        <IconButton
-          icon={IoMdClose}
-          size="md"
-          onClick={() => {
-            setClosed(true)
-            localStorage.setItem(
-              "closedBanners",
-              JSON.stringify(closedBannerIds.concat(banner.id))
-            )
-          }}
-        />
-      </Box>
+      {showClose && (
+        <Box position="absolute" right="30px" mt="-10px">
+          <IconButton
+            icon={IoMdClose}
+            size="md"
+            onClick={() => {
+              setClosed(true)
+              localStorage.setItem(
+                "closedBanners",
+                JSON.stringify(closedBannerIds.concat(banner.id))
+              )
+            }}
+          />
+        </Box>
+      )}
       <Image src={banner.logoUrl} maxW="50%" mb="0.5em" minH="50px" mx="auto" />
 
       <Markdown value={banner.description} />

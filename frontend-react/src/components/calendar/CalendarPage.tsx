@@ -1,14 +1,9 @@
 import { useQuery } from "@apollo/react-hooks"
 import { Badge, Box, Divider, Flex } from "@chakra-ui/core"
 import { RouteComponentProps, useLocation } from "@reach/router"
-import React, {
-  useContext,
-  useState,
-  useRef,
-  useEffect,
-  useLayoutEffect,
-} from "react"
+import React, { useContext, useEffect, useRef, useState } from "react"
 import { Helmet } from "react-helmet-async"
+import { FaFilter } from "react-icons/fa"
 import {
   UpcomingEventsData,
   UPCOMING_EVENTS,
@@ -20,9 +15,8 @@ import Error from "../common/Error"
 import Loading from "../common/Loading"
 import PageHeader from "../common/PageHeader"
 import SubHeader from "../common/SubHeader"
-import TournamentInfo from "./TournamentInfo"
 import Input from "../elements/Input"
-import { FaFilter } from "react-icons/fa"
+import TournamentInfo from "./TournamentInfo"
 
 const badgeColor: { [key: string]: string } = {
   Friday: "purple",

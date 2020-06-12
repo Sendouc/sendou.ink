@@ -5,6 +5,7 @@ import {
   DrawerCloseButton,
   useColorMode,
   DrawerOverlay,
+  Box,
 } from "@chakra-ui/core"
 
 import { SideNavContent } from "./SideNavContent"
@@ -27,8 +28,10 @@ const MobileNav: React.FC<MobileNavProps> = ({ btnRef, isOpen, onClose }) => {
     >
       <DrawerOverlay />
       <DrawerContent bg={bgColor[colorMode]}>
-        <DrawerCloseButton />
-        <SideNavContent showLogo={false} />
+        <Box overflowX="hidden" mx="auto">
+          <DrawerCloseButton />
+          <SideNavContent isMobile />
+        </Box>
       </DrawerContent>
     </Drawer>
   )

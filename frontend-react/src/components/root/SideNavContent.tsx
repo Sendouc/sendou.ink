@@ -115,10 +115,12 @@ const UserItem: React.FC<{ data?: UserData }> = ({ data }) => {
 }
 
 interface SideNavProps {
-  showLogo?: boolean
+  isMobile?: boolean
 }
 
-export const SideNavContent: React.FC<SideNavProps> = ({ showLogo = true }) => {
+export const SideNavContent: React.FC<SideNavProps> = ({
+  isMobile = false,
+}) => {
   const { colorMode, toggleColorMode } = useColorMode()
   const { data, error, loading } = useQuery<UserData>(USER)
 
@@ -133,11 +135,36 @@ export const SideNavContent: React.FC<SideNavProps> = ({ showLogo = true }) => {
       alignItems="center"
     >
       <Flex direction="column">
-        {showLogo && (
+        {!isMobile && (
           <Flex alignSelf="center">
             <Link to="/">
               <Logo />
             </Link>
+          </Flex>
+        )}
+        {isMobile && (
+          <Flex align="flex-end" direction="column" alignItems="center">
+            <DividingBox location="bottom" margin="0.7em">
+              <Flex
+                alignSelf="center"
+                alignItems="center"
+                justifyContent="center"
+                flexBasis="100%"
+              >
+                <IconButton
+                  aria-label={`Switch to ${
+                    colorMode === "light" ? "dark" : "light"
+                  } mode`}
+                  variant="ghost"
+                  color="current"
+                  fontSize="20px"
+                  onClick={toggleColorMode}
+                  icon={colorMode === "light" ? FiSun : FiMoon}
+                />
+                <ColorPicker />
+              </Flex>
+            </DividingBox>
+            {!loading && !error && <UserItem data={data} />}
           </Flex>
         )}
         <List mt="2em">
@@ -159,31 +186,33 @@ export const SideNavContent: React.FC<SideNavProps> = ({ showLogo = true }) => {
             <NavItem to="plus" icon={FiPlus} title="Plus Server" />
           )}
         </List>
-        <SideNavBanner />
+        <SideNavBanner showClose={!isMobile} />
       </Flex>
-      <Flex align="flex-end" direction="column" alignItems="center">
-        <DividingBox location="bottom" margin="0.7em">
-          <Flex
-            alignSelf="center"
-            alignItems="center"
-            justifyContent="center"
-            flexBasis="100%"
-          >
-            <IconButton
-              aria-label={`Switch to ${
-                colorMode === "light" ? "dark" : "light"
-              } mode`}
-              variant="ghost"
-              color="current"
-              fontSize="20px"
-              onClick={toggleColorMode}
-              icon={colorMode === "light" ? FiSun : FiMoon}
-            />
-            <ColorPicker />
-          </Flex>
-        </DividingBox>
-        {!loading && !error && <UserItem data={data} />}
-      </Flex>
+      {!isMobile && (
+        <Flex align="flex-end" direction="column" alignItems="center">
+          <DividingBox location="bottom" margin="0.7em">
+            <Flex
+              alignSelf="center"
+              alignItems="center"
+              justifyContent="center"
+              flexBasis="100%"
+            >
+              <IconButton
+                aria-label={`Switch to ${
+                  colorMode === "light" ? "dark" : "light"
+                } mode`}
+                variant="ghost"
+                color="current"
+                fontSize="20px"
+                onClick={toggleColorMode}
+                icon={colorMode === "light" ? FiSun : FiMoon}
+              />
+              <ColorPicker />
+            </Flex>
+          </DividingBox>
+          {!loading && !error && <UserItem data={data} />}
+        </Flex>
+      )}
     </Flex>
   )
 }
