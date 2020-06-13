@@ -65,7 +65,7 @@ const TeamPage: React.FC<RouteComponentProps> = () => {
           "Rapid Blaster Pro",
           "Foil Flingza Roller",
         ]}
-        role="Support"
+        role="Utility"
         country="fi"
       />
       <Box my="4em">
@@ -80,7 +80,7 @@ const TeamPage: React.FC<RouteComponentProps> = () => {
             "Sploosh-o-matic 7",
             "Bamboozler 14 Mk I",
           ]}
-          role="Backline"
+          role="Anchor"
           country="nl"
         />
       </Box>
@@ -94,7 +94,7 @@ const TeamPage: React.FC<RouteComponentProps> = () => {
             "Enperry Splat Dualies",
             "Foil Squeezer",
           ]}
-          role="Frontline"
+          role="Slayer"
           country="fr"
         />
       </Box>
@@ -104,7 +104,7 @@ const TeamPage: React.FC<RouteComponentProps> = () => {
           discordId="427319047785545759"
           avatar="https://cdn.discordapp.com/avatars/427319047785545759/a_e371e275e604e31b155c7f66e3cbce48."
           weapons={["L-3 Nozzlenose", "L-3 Nozzlenose D"]}
-          role="Frontline"
+          role="Slayer"
           country="fr"
         />
       </Box>
