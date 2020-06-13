@@ -4,7 +4,7 @@ import React, { useState } from "react"
 interface UserAvatarProps {
   name: string
   src?: string
-  size?: undefined | "2xl" | "lg" | "xs" | "sm"
+  size?: undefined | "2xl" | "xl" | "lg" | "xs" | "sm"
 }
 
 const UserAvatar: React.FC<UserAvatarProps & BoxProps> = ({

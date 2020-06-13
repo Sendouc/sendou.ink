@@ -4,17 +4,18 @@ import { countries } from "../../utils/lists"
 
 interface FlagProps {
   code: CountryCode
+  size?: "16" | "32"
 }
 
-const Flag: React.FC<FlagProps> = ({ code }) => {
+const Flag: React.FC<FlagProps> = ({ code, size = "16" }) => {
   return (
     <img
-      src={`https://www.countryflags.io/${code}/flat/16.png`}
+      src={`https://www.countryflags.io/${code}/flat/${size}.png`}
       style={{
         display: "inline",
         margin: "0 8px",
-        width: "16px",
-        height: "16px",
+        width: `${size}px`,
+        height: `${size}px`,
       }}
       alt={`Flag of ${code}`}
       title={countries.find((obj) => obj.code === code)?.name}

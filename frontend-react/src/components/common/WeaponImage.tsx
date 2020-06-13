@@ -6,13 +6,17 @@ import { Weapon } from "../../types.js"
 
 interface WeaponImageProps {
   englishName: Weapon
-  size: "SMALL" | "MEDIUM" | "BIG"
+  size: "SMALL" | "SMEDIUM" | "MEDIUM" | "BIG"
   asInlineBlock?: boolean
   noTitle?: boolean
 }
 
-const sizeWhMap: Record<"SMALL" | "MEDIUM" | "BIG", string | undefined> = {
+const sizeWhMap: Record<
+  "SMALL" | "SMEDIUM" | "MEDIUM" | "BIG",
+  string | undefined
+> = {
   SMALL: "32px",
+  SMEDIUM: "48px",
   MEDIUM: "64px",
   BIG: undefined,
 }

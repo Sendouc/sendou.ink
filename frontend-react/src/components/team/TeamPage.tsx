@@ -1,31 +1,13 @@
-import React from "react"
-import { RouteComponentProps, Redirect } from "@reach/router"
-import { useQuery } from "@apollo/react-hooks"
-import { SEARCH_FOR_TEAM } from "../../graphql/queries/searchForTeam"
-import { Team, UserData } from "../../types"
-import Loading from "../common/Loading"
-import Error from "../common/Error"
-import LogoHeader from "./LogoHeader"
-import MemberCard from "./MemberCard"
-import { Helmet } from "react-helmet-async"
-import Results from "./Results"
-import { USER } from "../../graphql/queries/user"
 import { Box } from "@chakra-ui/core"
+import { RouteComponentProps } from "@reach/router"
+import React from "react"
+import { Helmet } from "react-helmet-async"
+import Chart from "./Chart"
+import TeamPlayer from "./TeamPlayer"
+import LogoHeader from "./LogoHeader"
 
-interface SearchForTeamData {
-  searchForTeam: Team
-}
-
-interface SearchForTeamVars {
-  name: string
-}
-
-interface TeamPageProps {
-  name?: string
-}
-
-const TeamPage: React.FC<RouteComponentProps & TeamPageProps> = ({ name }) => {
-  const { data, error, loading } = useQuery<
+const TeamPage: React.FC<RouteComponentProps> = () => {
+  /*const { data, error, loading } = useQuery<
     SearchForTeamData,
     SearchForTeamVars
   >(SEARCH_FOR_TEAM, {
@@ -43,36 +25,61 @@ const TeamPage: React.FC<RouteComponentProps & TeamPageProps> = ({ name }) => {
   if (!data || !data.searchForTeam || !userData) return <Redirect to="/404" />
 
   const team = data.searchForTeam
-  const user = userData.user
+  const user = userData.user*/
 
   return (
     <>
       <Helmet>
-        <title>{team.name} | sendou.ink</title>
+        <title>Scoze Gaming | sendou.ink</title>
       </Helmet>
-      <LogoHeader
-        name={team.name}
-        twitter_name={team.twitter_name}
-        challonge_name={team.challonge_name}
-        discord_url={team.discord_url}
-        founded={team.founded}
+      <Chart countries={["fi", "fr", "nl"]} />
+      <LogoHeader name="Scoze Gaming" />
+      <TeamPlayer
+        username="Sendou"
+        avatar="https://cdn.discordapp.com/avatars/79237403620945920/a22c9557975494f859242aaf9b317058."
+        weapons={[
+          "Tenta Brella",
+          "N-ZAP '85",
+          "Rapid Blaster Pro",
+          "Foil Flingza Roller",
+        ]}
+        role="Support"
+        country="fi"
       />
-      <Box display="flex" flexWrap="wrap" justifyContent="center" mt="1em">
-        {team.member_users.map((member) => (
-          <Box key={member.discord_id} p="0.5em">
-            <MemberCard member={member} />
-          </Box>
-        ))}
+      <Box my="4em">
+        <TeamPlayer
+          username="Brian"
+          avatar="https://cdn.discordapp.com/avatars/81154649993785344/6632c59857ad4266f61eabc62d917ef6."
+          weapons={[
+            "Splatterscope",
+            "Heavy Splatling Remix",
+            "Explosher",
+            "Sploosh-o-matic 7",
+          ]}
+          role="Backline"
+          country="nl"
+        />
       </Box>
-      <Box mt="1em">
-        <Results
-          results={team.tournament_results.sort(
-            (a, b) => parseInt(b.date) - parseInt(a.date)
-          )}
-          canAddResults={
-            team.captain_discord_id === user?.discord_id &&
-            team.tournament_results.length < 100
-          }
+      <Box my="4em">
+        <TeamPlayer
+          username="kurisu"
+          avatar="https://cdn.discordapp.com/avatars/601212946420334635/7125efcf758514841c93e6398f17de3a."
+          weapons={[
+            "Kensa Splattershot",
+            "Enperry Splat Dualies",
+            "Foil Squeezer",
+          ]}
+          role="Frontline"
+          country="fr"
+        />
+      </Box>
+      <Box my="4em">
+        <TeamPlayer
+          username="SkoXay"
+          avatar="https://cdn.discordapp.com/avatars/427319047785545759/a_e371e275e604e31b155c7f66e3cbce48."
+          weapons={["L-3 Nozzlenose", "L-3 Nozzlenose D"]}
+          role="Frontline"
+          country="fr"
         />
       </Box>
     </>
