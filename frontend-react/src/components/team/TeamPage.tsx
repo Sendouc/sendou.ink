@@ -71,7 +71,7 @@ const TeamPage: React.FC<RouteComponentProps> = () => {
       <Box my="4em">
         <TeamPlayer
           username="Brian"
-          discordId="79237403620945920"
+          discordId="81154649993785344"
           avatar="https://cdn.discordapp.com/avatars/81154649993785344/6632c59857ad4266f61eabc62d917ef6."
           weapons={[
             "Splatterscope",
