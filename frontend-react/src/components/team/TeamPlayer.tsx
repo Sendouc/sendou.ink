@@ -5,9 +5,12 @@ import MyThemeContext from "../../themeContext"
 import WeaponImage from "../common/WeaponImage"
 import { Weapon, CountryCode } from "../../types"
 import Flag from "../common/Flag"
+import useBreakPoints from "../../hooks/useBreakPoints"
+import { Link } from "@reach/router"
 
 interface TeamPlayerProps {
   username: string
+  discordId: string
   avatar?: string
   weapons?: Weapon[]
   role?: string
@@ -16,12 +19,14 @@ interface TeamPlayerProps {
 
 const TeamPlayer: React.FC<TeamPlayerProps> = ({
   username,
+  discordId,
   avatar,
   weapons,
   role,
   country,
 }) => {
-  const { themeColorWithShade, grayWithShade } = useContext(MyThemeContext)
+  const { themeColorWithShade } = useContext(MyThemeContext)
+  const isSmall = useBreakPoints(850)
   return (
     <>
       <Flex>
@@ -50,10 +55,16 @@ const TeamPlayer: React.FC<TeamPlayerProps> = ({
           justifyContent="space-between"
           alignItems="flex-end"
         >
-          <Box ml="0.5em" fontSize="1.7em" fontWeight="bold">
-            {username} {country && <Flag code={country} size="32" />}
+          <Box
+            ml="0.5em"
+            fontSize="1.7em"
+            fontWeight="bold"
+            whiteSpace="nowrap"
+          >
+            <Link to={`/u/${discordId}`}> {username}</Link>
+            {country && <Flag code={country} size="32" />}
           </Box>
-          {weapons && weapons.length > 0 && (
+          {weapons && !isSmall && (
             <Flex mt="0.2rem">
               {weapons.map((wpn) => (
                 <Box m="0.4em" key={wpn}>
@@ -74,6 +85,15 @@ const TeamPlayer: React.FC<TeamPlayerProps> = ({
       >
         {role}
       </Box>
+      {weapons && isSmall && (
+        <Flex mt="0.2rem" justifyContent="space-between">
+          {weapons.map((wpn) => (
+            <Box m="0.4em" key={wpn}>
+              <WeaponImage englishName={wpn} size="SMALL" />
+            </Box>
+          ))}
+        </Flex>
+      )}
     </>
   )
 }
