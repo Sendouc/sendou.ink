@@ -13,6 +13,7 @@ const typeDef = gql`
 
   extend type Mutation {
     addTeam(name: String!): Boolean!
+    joinTeam(inviteCode: String!): Boolean!
   }
 
   extend type User {
@@ -44,6 +45,7 @@ const typeDef = gql`
     disbanded: Boolean
     founded: Founded
     members: [Member!]
+    countries: [String!]
     pastMembersDiscordIds: [String]
     tag: String
     # inviteCode: String
@@ -122,6 +124,8 @@ const resolvers = {
         : undefined
       const xpPlacements = bestPlacement ? [bestPlacement] : undefined
 
+      const countries = user.country ? [user.country] : undefined
+
       const team = new Team({
         name,
         members: [
@@ -130,12 +134,72 @@ const resolvers = {
             captain: true,
           },
         ],
+        countries,
         inviteCode: uuidv4(),
         teamXp,
         xpPlacements,
       })
 
       await User.findByIdAndUpdate(user._id, { $set: { team: team._id } })
+      await team.save()
+
+      return true
+    },
+    joinTeam: async (root, { inviteCode }, { user }) => {
+      if (!user) throw new UserInputError("Must be logged in to join a team")
+      if (user.team) {
+        throw new UserInputError(
+          "Can't join a team since you are already in one"
+        )
+      }
+
+      const team = await Team.findOne({ inviteCode })
+      if (!team) {
+        throw new UserInputError("Invalid invite code provided")
+      }
+
+      if (team.members.length >= 12) {
+        throw new UserInputError(
+          "This team already has the max number of members"
+        )
+      }
+
+      team.members.push({
+        discordId: user.discord_id,
+      })
+
+      const bestPlacement = await getUsersBestPlacement(
+        user.twitter_name,
+        user.discord_id
+      )
+
+      if (bestPlacement) {
+        const teamsPlacements = team.xpPlacements || []
+        teamsPlacements.push(bestPlacement)
+        teamsPlacements.sort((a, b) => b.xPower - a.xPower)
+
+        if (teamsPlacements.length === 5) teamsPlacements.pop()
+
+        team.xpPlacements = teamsPlacements
+
+        let teamXp = teamsPlacements.reduce(
+          (acc, cur) => (acc += cur.xPower),
+          0
+        )
+
+        teamXp += 2000 * (4 - teamsPlacements.length)
+        teamXp /= 4
+
+        team.teamXp = teamXp
+      }
+
+      if (user.country) {
+        const countries = team.countries || []
+        if (!countries.includes(user.country)) countries.push(user.country)
+
+        team.countries = countries
+      }
+
       await team.save()
 
       return true

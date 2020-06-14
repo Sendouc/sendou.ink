@@ -14,6 +14,7 @@ const teamSchema = new mongoose.Schema({
       role: String,
     },
   ],
+  countries: [String],
   pastMembersDiscordIds: [String],
   tag: String,
   inviteCode: String,

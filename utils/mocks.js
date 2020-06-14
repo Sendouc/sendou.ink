@@ -8,6 +8,7 @@ const mockUser = {
   twitch_name: "sendou",
   twitter_name: "sendouc",
   username: "Sendou",
+  country: "fi",
   top500: true,
   custom_url: "sendou",
   plus: {
