@@ -1,6 +1,9 @@
 const { UserInputError, gql } = require("apollo-server-express")
+const { v4: uuidv4 } = require("uuid")
 const Team = require("../mongoose-models/team")
 const User = require("../mongoose-models/user")
+const Placement = require("../mongoose-models/placement")
+const Player = require("../mongoose-models/player")
 
 const typeDef = gql`
   extend type Query {
@@ -9,24 +12,11 @@ const typeDef = gql`
   }
 
   extend type Mutation {
-    addTeam(name: String!): Team!
-    addResult(
-      date: String!
-      tweet_id: String
-      tournament_name: String!
-      placement: Int!
-    ): Boolean!
+    addTeam(name: String!): Boolean!
   }
 
   extend type User {
     team: Team
-  }
-
-  type Result {
-    date: String!
-    tweet_id: String
-    tournament_name: String!
-    placement: Int!
   }
 
   type Founded {
@@ -34,29 +24,68 @@ const typeDef = gql`
     year: Int!
   }
 
+  type Member {
+    discordId: String!
+    captain: Boolean
+    role: String
+  }
+
+  type TeamMemberPlacement {
+    discordId: String!
+    mode: Int!
+    weapon: String!
+    month: Int!
+    year: Int!
+    xPower: Float!
+  }
+
   type Team {
     name: String!
-    twitter_name: String
-    challonge_name: String
-    discord_url: String
+    disbanded: Boolean
     founded: Founded
-    captain_discord_id: String!
-    member_discord_ids: [String!]!
-    member_users: [User!]!
-    countries: [String!]!
+    members: [Member!]
+    pastMembersDiscordIds: [String]
     tag: String
-    lf_post: String
-    tournament_results: [Result!]!
+    # inviteCode: String
+    lfPost: String
+    xpPlacements: [TeamMemberPlacement!]
+    teamXp: Float
   }
 `
+
+const getUsersBestPlacement = async (twitter, discordId) => {
+  if (!twitter) return null
+
+  const player = await Player.findOne({ twitter })
+  if (!player) return null
+
+  const placements = await Placement.find({ unique_id: player.unique_id })
+  if (!placements.length) return null
+
+  const best = placements.reduce((best, placement) => {
+    if (placement.x_power > best.x_power) return placement
+
+    return best
+  })
+
+  return {
+    discordId,
+    mode: best.mode,
+    weapon: best.weapon,
+    month: best.month,
+    year: best.year,
+    xPower: best.x_power,
+  }
+}
+
 const resolvers = {
   Query: {
-    teams: (root, args) => Team.find({}),
-    searchForTeam: (root, { name }) => {
-      const name_regex = `^${name.replace("-", " ")}$`
+    teams: () => Team.find({}),
+    searchForTeam: (_root, args) => {
+      const name_regex = `^${args.name.replace("-", " ")}$`
       return Team.findOne({
         name: { $regex: new RegExp(name_regex, "i") },
-      }).populate("member_users")
+      }).populate("memberUsers")
     },
   },
   Mutation: {
@@ -78,59 +107,37 @@ const resolvers = {
       const name_regex = `^${name}$`
       const existing_team = await Team.findOne({
         name: { $regex: new RegExp(name_regex, "i") },
+        disbanded: { $ne: true },
       })
-      if (existing_team)
+      if (existing_team) {
         throw new UserInputError("Team with this name already exists")
+      }
+
+      const bestPlacement = await getUsersBestPlacement(
+        user.twitter_name,
+        user.discord_id
+      )
+      const teamXp = bestPlacement
+        ? (bestPlacement.xPower + 2000 * 3) / 4
+        : undefined
+      const xpPlacements = bestPlacement ? [bestPlacement] : undefined
 
       const team = new Team({
         name,
-        captain_discord_id: user.discord_id,
-        member_discord_ids: [user.discord_id],
+        members: [
+          {
+            discordId: user.discord_id,
+            captain: true,
+          },
+        ],
+        inviteCode: uuidv4(),
+        teamXp,
+        xpPlacements,
       })
+
       await User.findByIdAndUpdate(user._id, { $set: { team: team._id } })
-      return team.save()
-    },
-    addResult: async (root, args, { user }) => {
-      if (!user) {
-        throw new UserInputError("Must be logged in")
-      }
-
-      const team = await Team.findById(user.team)
-
-      if (!team) throw new UserInputError("Not a team captain")
-
-      if (team.tournament_results.length > 100) {
-        throw new UserInputError("Can't have more than 100 tournament results")
-      }
-
-      if (Date.parse(args.date) === NaN) {
-        throw new UserInputError("Invalid date")
-      }
-
-      if (args.tweet_id && isNaN(args.tweet_id)) {
-        throw new UserInputError("Tweet ID can only contain numbers")
-      }
-
-      if (
-        args.tournament_name.length < 2 ||
-        args.tournament_name.length > 100
-      ) {
-        throw new UserInputError(
-          "Tournament name has to be between 2 and 100 characters long"
-        )
-      }
-
-      if (args.placement < 1 || args.placement > 500) {
-        throw new UserInputError("Placement has to be between 1 and 500")
-      }
-
-      team.tournament_results.push({
-        date: args.date,
-        tournament_name: args.tournament_name,
-        placement: args.placement,
-        tweet_id: args.tweet_id,
-      })
       await team.save()
+
       return true
     },
   },

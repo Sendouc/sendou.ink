@@ -13,6 +13,7 @@ const User = require("./mongoose-models/user")
 const Player = require("./mongoose-models/player")
 const path = require("path")
 const schema = require("./schema")
+const mockUser = require("./utils/mocks")
 
 mongoose.set("useFindAndModify", false)
 mongoose.set("useCreateIndex", true)
@@ -98,34 +99,7 @@ const server = new ApolloServer({
   schema,
   context: ({ req }) => {
     if (process.env.LOGGED_IN) {
-      return {
-        user: {
-          _id: "5cee8f73d1120d4315c55011",
-          team: "5e3ecc0ea7dd3830303eaaa7",
-          discord_id: "79237403620945920",
-          __v: 0,
-          avatar: "2e292c1b5d1366c24a9e4b6c1cffc700",
-          discriminator: "0043",
-          twitch_name: "sendou",
-          twitter_name: "sendouc",
-          username: "Sendou",
-          custom_url: "sendou",
-          weapons: [
-            "Tenta Brella",
-            "Range Blaster",
-            "Kensa Sloshing Machine",
-            "Custom Blaster",
-          ],
-          country: "fi",
-          top500: true,
-          plus: {
-            membership_status: "ONE",
-            vouch_status: null,
-            plus_region: "EU",
-            can_vouch: "ONE",
-          },
-        },
-      }
+      return { user: mockUser }
     }
     return { user: req.user }
   },

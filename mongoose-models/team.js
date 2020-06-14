@@ -2,32 +2,38 @@ const mongoose = require("mongoose")
 
 const teamSchema = new mongoose.Schema({
   name: String,
-  twitter_name: String,
-  challonge_name: String,
-  discord_url: String,
+  disbanded: Boolean,
   founded: {
     month: Number,
     year: Number,
   },
-  captain_discord_id: String,
-  member_discord_ids: [String],
-  countries: [String],
-  tag: String,
-  invite_code: String,
-  lf_post: String,
-  tournament_results: [
+  members: [
     {
-      date: Date,
-      tweet_id: String,
-      tournament_name: String,
-      placement: Number,
+      discordId: String,
+      captain: Boolean,
+      role: String,
     },
   ],
+  pastMembersDiscordIds: [String],
+  tag: String,
+  inviteCode: String,
+  lfPost: String,
+  xpPlacements: [
+    {
+      discordId: String,
+      mode: Number,
+      weapon: String,
+      month: Number,
+      year: Number,
+      xPower: Number,
+    },
+  ],
+  teamXp: Number,
 })
 
-teamSchema.virtual("member_users", {
+teamSchema.virtual("memberUsers", {
   ref: "User",
-  localField: "member_discord_ids",
+  localField: "members.discordId",
   foreignField: "discord_id",
 })
 
