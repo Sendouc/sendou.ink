@@ -5,6 +5,7 @@ const Team = require("../mongoose-models/team")
 const countries = require("../utils/countries")
 const weapons = require("../utils/weapons")
 const mockUser = require("../utils/mocks")
+const { recalculateTeamsCountries } = require("./team")
 require("dotenv").config()
 
 const typeDef = gql`
@@ -54,25 +55,6 @@ const typeDef = gql`
     top500: Boolean!
   }
 `
-
-const recalculateTeamsCountries = async (team, newCountry, discordIdToSkip) => {
-  const newCountries = new Set()
-  newCountries.add(newCountry)
-  for (const member of team.members) {
-    if (member.discordId === discordIdToSkip) {
-      continue
-    }
-    const user = await User.findOne({ discord_id: member.discordId })
-    console.log("user.id", user.id)
-    console.log("user.country", user.country)
-    if (user.country) newCountries.add(user.country)
-  }
-
-  console.log("newCountries", newCountries)
-  team.countries = Array.from(newCountries)
-
-  await team.save()
-}
 
 const resolvers = {
   User: {
@@ -165,6 +147,7 @@ const resolvers = {
               args.country,
               ctx.user.discord_id
             )
+            await team.save()
           } else {
             const countries = team.countries || []
             if (!countries.includes(args.country)) countries.push(args.country)

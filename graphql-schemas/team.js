@@ -14,6 +14,11 @@ const typeDef = gql`
   extend type Mutation {
     addTeam(name: String!): Boolean!
     joinTeam(inviteCode: String!): Boolean!
+    resetInviteCode: String!
+    leaveTeam: Boolean!
+    # disbandTeam: Boolean!
+    # transferCaptain: Boolean!
+    # updateTeam(newValues: UpdateTeamInput!): Boolean!
   }
 
   extend type User {
@@ -78,6 +83,48 @@ const getUsersBestPlacement = async (twitter, discordId) => {
     year: best.year,
     xPower: best.x_power,
   }
+}
+
+const recalculateTeamsXp = async (team, discordIdToSkip) => {
+  const teamsPlacements = []
+
+  for (const member of team.members) {
+    if (member.discordId === discordIdToSkip) {
+      continue
+    }
+    const user = await User.findOne({ discord_id: member.discordId })
+    const bestPlacement = await getUsersBestPlacement(
+      user.twitter_name,
+      user.discord_id
+    )
+    if (bestPlacement) teamsPlacements.push(bestPlacement)
+  }
+
+  const xpPlacements = teamsPlacements
+    .sort((a, b) => b.xPower - a.xPower)
+    .slice(0, 4)
+  team.xpPlacements = xpPlacements
+
+  let teamXp = xpPlacements.reduce((acc, cur) => (acc += cur.xPower), 0)
+
+  teamXp += 2000 * (4 - xpPlacements.length)
+  teamXp /= 4
+
+  team.teamXp = teamXp
+}
+
+const recalculateTeamsCountries = async (team, newCountry, discordIdToSkip) => {
+  const newCountries = new Set()
+  if (newCountry) newCountries.add(newCountry)
+  for (const member of team.members) {
+    if (member.discordId === discordIdToSkip) {
+      continue
+    }
+    const user = await User.findOne({ discord_id: member.discordId })
+    if (user.country) newCountries.add(user.country)
+  }
+
+  team.countries = Array.from(newCountries)
 }
 
 const resolvers = {
@@ -201,6 +248,47 @@ const resolvers = {
       }
 
       await team.save()
+      await User.findByIdAndUpdate(ctx.user._id, { $set: { team: team._id } })
+
+      return true
+    },
+    leaveTeam: async (_root, _args, { user }) => {
+      if (!user) throw new UserInputError("Must be logged in to leave a team")
+      if (!user.team) {
+        throw new UserInputError("Can't leave a team if you aren't in one")
+      }
+
+      const team = await Team.findById(user.team)
+      if (!team) {
+        throw new Error("Unexpected error: team not found with the id")
+      }
+      const memberOfTeam = team.members.find(
+        (member) => member.discordId === user.discord_id
+      )
+      if (!memberOfTeam) {
+        throw new Error("Unexpected error: user not found in the member list")
+      }
+
+      if (memberOfTeam.captain) {
+        throw new UserInputError("Can't leave a team you are captain for")
+      }
+
+      team.members = team.members.filter(
+        (member) => member.discordId !== user._id
+      )
+
+      await User.findByIdAndUpdate(user._id, { $unset: { team: "" } })
+      const pastMembers = team.pastMembersDiscordIds
+        ? team.pastMembersDiscordIds
+        : []
+      if (!pastMembers.includes(user.discord_id))
+        pastMembers.push(user.discord_id)
+      team.pastMembersDiscordIds = pastMembers
+
+      await recalculateTeamsCountries(team, null, user.discord_id)
+      await recalculateTeamsXp(team, user.discord_id)
+
+      await team.save()
 
       return true
     },
@@ -210,4 +298,5 @@ const resolvers = {
 module.exports = {
   Team: typeDef,
   teamResolvers: resolvers,
+  recalculateTeamsCountries,
 }
