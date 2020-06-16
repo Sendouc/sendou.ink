@@ -1,6 +1,7 @@
 const { UserInputError, gql } = require("apollo-server-express")
 const User = require("../mongoose-models/user")
 const Player = require("../mongoose-models/player")
+const Team = require("../mongoose-models/team")
 const countries = require("../utils/countries")
 const weapons = require("../utils/weapons")
 const mockUser = require("../utils/mocks")
@@ -53,6 +54,26 @@ const typeDef = gql`
     top500: Boolean!
   }
 `
+
+const recalculateTeamsCountries = async (team, newCountry, discordIdToSkip) => {
+  const newCountries = new Set()
+  newCountries.add(newCountry)
+  for (const member of team.members) {
+    if (member.discordId === discordIdToSkip) {
+      continue
+    }
+    const user = await User.findOne({ discord_id: member.discordId })
+    console.log("user.id", user.id)
+    console.log("user.country", user.country)
+    if (user.country) newCountries.add(user.country)
+  }
+
+  console.log("newCountries", newCountries)
+  team.countries = Array.from(newCountries)
+
+  await team.save()
+}
+
 const resolvers = {
   User: {
     top500: async (root) => {
@@ -91,7 +112,7 @@ const resolvers = {
   Query: {
     user: (root, args, ctx) => {
       if (process.env.LOGGED_IN) {
-        return { user: mockUser }
+        return mockUser
       }
       return ctx.user
     },
@@ -123,7 +144,7 @@ const resolvers = {
   Mutation: {
     updateUser: async (root, args, ctx) => {
       if (!ctx.user) throw new AuthenticationError("not authenticated")
-      if (args.country)
+      if (args.country) {
         if (
           countries
             .map((countryObj) => countryObj.code)
@@ -133,6 +154,25 @@ const resolvers = {
             invalidArgs: args,
           })
         }
+
+        if (ctx.user.team) {
+          const team = await Team.findById(ctx.user.team)
+
+          if (ctx.user.country && ctx.user.country !== args.country) {
+            // triggered if user is changing their country - shouldn't happen too often at all
+            await recalculateTeamsCountries(
+              team,
+              args.country,
+              ctx.user.discord_id
+            )
+          } else {
+            const countries = team.countries || []
+            if (!countries.includes(args.country)) countries.push(args.country)
+            team.countries = countries
+            await team.save()
+          }
+        }
+      }
 
       if (args.stick_sens !== null) {
         const number = Math.floor(args.stick_sens * 10)

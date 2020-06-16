@@ -17,7 +17,7 @@ const typeDef = gql`
   }
 
   extend type User {
-    team: Team
+    team: ID
   }
 
   type Founded {
