@@ -12,8 +12,6 @@ const gear = require("../utils/gear")
 const typeDef = gql`
   extend type Query {
     searchForBuilds(discord_id: String, weapon: String): [Build!]!
-    "Returns builds by given weapon. If weapon is omitted returns latest builds instead."
-    searchForBuildsByWeapon(weapon: String, page: Int): BuildCollection!
   }
   extend type Mutation {
     addBuild(
@@ -90,6 +88,28 @@ const typeDef = gql`
     AD
   }
 `
+const altMap = new Map([
+  ["Splattershot", "Hero Shot Replica"],
+  ["Tentatek Splattershot", "Octo Shot Replica"],
+  ["Blaster", "Hero Blaster Replica"],
+  ["Splat Roller", "Hero Roller Replica"],
+  ["Octobrush", "Herobrush Replica"],
+  ["Splat Charger", "Hero Charger Replica"],
+  ["Slosher", "Hero Slosher Replica"],
+  ["Heavy Splatling", "Hero Splatling Replica"],
+  ["Splat Dualies", "Hero Dualie Replicas"],
+  ["Splat Brella", "Hero Brella Replica"],
+])
+
+const getBuildSearchCriteria = (args) => {
+  if (altMap.has(args.weapon))
+    return {
+      weapon: { $in: [args.weapon, altMap.get(args.weapon)] },
+    }
+
+  return { ...args }
+}
+
 const resolvers = {
   Query: {
     searchForBuilds: (root, args) => {
@@ -97,45 +117,15 @@ const resolvers = {
         throw new UserInputError(
           "Discord ID or weapon has to be in the arguments"
         )
-      return Build.find({ ...args })
+
+      return Build.find(getBuildSearchCriteria(args))
         .sort({ top: "desc", updatedAt: "desc" })
         .populate("discord_user")
-        .catch(e => {
+        .catch((e) => {
           throw new UserInputError(e.message, {
             invalidArgs: args,
           })
         })
-    },
-    searchForBuildsByWeapon: async (root, args) => {
-      const buildsPerPage = 18
-      const currentPage = args.page ? args.page - 1 : 0
-      const searchCriteria = !args.weapon ? {} : { weapon: args.weapon }
-      const buildCount = await Build.countDocuments(searchCriteria).catch(e => {
-        throw new UserInputError(e.message, {
-          invalidArgs: args,
-        })
-      })
-      const pageCount = Math.ceil(buildCount / buildsPerPage)
-      // if 0 documents we don't care if the page is wrong
-      if (buildCount !== 0) {
-        if (args.page > pageCount)
-          throw new UserInputError("too big page number given", {
-            invalidArgs: args,
-          })
-      }
-
-      const builds = await Build.find(searchCriteria)
-        .skip(buildsPerPage * currentPage)
-        .limit(buildsPerPage)
-        .sort({ top: !args.weapon ? null : "desc", updatedAt: "desc" })
-        .populate("discord_user")
-        .catch(e => {
-          throw new UserInputError(e.message, {
-            invalidArgs: args,
-          })
-        })
-
-      return { builds, pageCount }
     },
   },
   Mutation: {
@@ -190,7 +180,7 @@ const resolvers = {
 
       const existingBuilds = await Build.find({
         discord_id: ctx.user.discord_id,
-      }).catch(e => {
+      }).catch((e) => {
         throw new UserInputError(e.message, {
           invalidArgs: args,
         })
@@ -201,11 +191,13 @@ const resolvers = {
         })
 
       const build = new Build({ ...args, discord_id: ctx.user.discord_id })
-      return build.save().catch(e => {
-        throw (new UserInputError(),
-        {
-          invalidArgs: args,
-        })
+      return build.save().catch((e) => {
+        throw (
+          (new UserInputError(),
+          {
+            invalidArgs: args,
+          })
+        )
       })
     },
     deleteBuild: async (root, args, ctx) => {
@@ -279,7 +271,7 @@ const resolvers = {
       await Build.findByIdAndUpdate(build._id, {
         ...args,
         top: build.top ? build.top : null,
-      }).catch(e => {
+      }).catch((e) => {
         throw new UserInputError(error.message, {
           invalidArgs: args,
         })
@@ -289,14 +281,16 @@ const resolvers = {
     },
   },
   Build: {
-    top: async root => {
+    top: async (root) => {
       if (typeof root.top === "boolean") return root.top
       const user = await User.findOne({ discord_id: root.discord_id }).catch(
-        e => {
-          throw (new UserInputError(),
-          {
-            invalidArgs: args,
-          })
+        (e) => {
+          throw (
+            (new UserInputError(),
+            {
+              invalidArgs: args,
+            })
+          )
         }
       )
 
@@ -308,11 +302,13 @@ const resolvers = {
       }
 
       const player = await Player.findOne({ twitter: user.twitter_name }).catch(
-        e => {
-          throw (new UserInputError(),
-          {
-            invalidArgs: args,
-          })
+        (e) => {
+          throw (
+            (new UserInputError(),
+            {
+              invalidArgs: args,
+            })
+          )
         }
       )
 

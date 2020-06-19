@@ -158,6 +158,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
             isMulti
             setValue={(value: Weapon[]) => handleChange({ weapons: value })}
             value={profile.weapons}
+            showAlts
           />
         </Box>
         <Box mt="1em">

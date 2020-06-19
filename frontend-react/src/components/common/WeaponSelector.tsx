@@ -1,6 +1,9 @@
 import React from "react"
 import { Flex, Box } from "@chakra-ui/core"
-import { weaponSelectOptions } from "../../utils/lists"
+import {
+  weaponSelectOptions,
+  weaponSelectOptionsWithAlts,
+} from "../../utils/lists"
 import WeaponImage from "./WeaponImage"
 import { components } from "react-select"
 import Select from "../elements/Select"
@@ -15,6 +18,7 @@ interface WeaponSelectorProps {
   clearable?: boolean
   isMulti?: boolean
   menuIsOpen?: boolean
+  showAlts?: boolean
 }
 
 const singleOption = (props: any) => (
@@ -37,13 +41,14 @@ const WeaponSelector: React.FC<WeaponSelectorProps> = ({
   required,
   isMulti,
   menuIsOpen,
+  showAlts,
 }) => {
   return (
     <>
       <Select
         label={label}
         required={required}
-        options={weaponSelectOptions}
+        options={showAlts ? weaponSelectOptionsWithAlts : weaponSelectOptions}
         value={value}
         setValue={setValue}
         clearable={clearable}

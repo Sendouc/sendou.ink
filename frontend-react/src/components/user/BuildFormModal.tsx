@@ -266,6 +266,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
         label="Weapon"
         setValue={(weapon: Weapon) => handleChange({ weapon })}
         value={build.weapon}
+        showAlts
       />
       {build.weapon && (
         <WeaponImage englishName={build.weapon as Weapon} size="BIG" />

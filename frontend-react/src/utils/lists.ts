@@ -62,7 +62,9 @@ export const weaponCodes: Record<string, Weapon> = {
   aerospray_rg: "Aerospray RG",
   aerospray_pg: "Aerospray PG",
   splattershot: "Splattershot",
+  hero_shot_replica: "Hero Shot Replica",
   tentatek_splattershot: "Tentatek Splattershot",
+  octo_shot_replica: "Octo Shot Replica",
   kensa_splattershot: "Kensa Splattershot",
   "52_gal": ".52 Gal",
   "52_gal_deco": ".52 Gal Deco",
@@ -89,6 +91,7 @@ export const weaponCodes: Record<string, Weapon> = {
   luna_blaster_neo: "Luna Blaster Neo",
   kensa_luna_blaster: "Kensa Luna Blaster",
   blaster: "Blaster",
+  hero_blaster_replica: "Hero Blaster Replica",
   custom_blaster: "Custom Blaster",
   range_blaster: "Range Blaster",
   custom_range_blaster: "Custom Range Blaster",
@@ -103,6 +106,7 @@ export const weaponCodes: Record<string, Weapon> = {
   carbon_roller: "Carbon Roller",
   carbon_roller_deco: "Carbon Roller Deco",
   splat_roller: "Splat Roller",
+  hero_roller_replica: "Hero Roller Replica",
   "krak-on_splat_roller": "Krak-On Splat Roller",
   kensa_splat_roller: "Kensa Splat Roller",
   dynamo_roller: "Dynamo Roller",
@@ -114,12 +118,14 @@ export const weaponCodes: Record<string, Weapon> = {
   inkbrush_nouveau: "Inkbrush Nouveau",
   permanent_inkbrush: "Permanent Inkbrush",
   octobrush: "Octobrush",
+  herobrush_replica: "Herobrush Replica",
   octobrush_nouveau: "Octobrush Nouveau",
   kensa_octobrush: "Kensa Octobrush",
   classic_squiffer: "Classic Squiffer",
   new_squiffer: "New Squiffer",
   fresh_squiffer: "Fresh Squiffer",
   splat_charger: "Splat Charger",
+  hero_charger_replica: "Hero Charger Replica",
   firefin_splat_charger: "Firefin Splat Charger",
   kensa_charger: "Kensa Charger",
   splatterscope: "Splatterscope",
@@ -150,6 +156,7 @@ export const weaponCodes: Record<string, Weapon> = {
   zink_mini_splatling: "Zink Mini Splatling",
   kensa_mini_splatling: "Kensa Mini Splatling",
   heavy_splatling: "Heavy Splatling",
+  hero_splatling_replica: "Hero Splatling Replica",
   heavy_splatling_deco: "Heavy Splatling Deco",
   heavy_splatling_remix: "Heavy Splatling Remix",
   hydra_splatling: "Hydra Splatling",
@@ -162,6 +169,7 @@ export const weaponCodes: Record<string, Weapon> = {
   dapple_dualies_nouveau: "Dapple Dualies Nouveau",
   clear_dapple_dualies: "Clear Dapple Dualies",
   splat_dualies: "Splat Dualies",
+  hero_dualies_replicas: "Hero Dualie Replicas",
   enperry_splat_dualies: "Enperry Splat Dualies",
   kensa_splat_dualies: "Kensa Splat Dualies",
   glooga_dualies: "Glooga Dualies",
@@ -172,6 +180,7 @@ export const weaponCodes: Record<string, Weapon> = {
   dark_tetra_dualies: "Dark Tetra Dualies",
   light_tetra_dualies: "Light Tetra Dualies",
   splat_brella: "Splat Brella",
+  hero_brella_replica: "Hero Brella Replica",
   sorella_brella: "Sorella Brella",
   tenta_brella: "Tenta Brella",
   tenta_sorella_brella: "Tenta Sorella Brella",
@@ -1673,7 +1682,9 @@ export const weapons = [
   "Aerospray RG",
   "Aerospray PG",
   "Splattershot",
+  "Hero Shot Replica",
   "Tentatek Splattershot",
+  "Octo Shot Replica",
   "Kensa Splattershot",
   ".52 Gal",
   ".52 Gal Deco",
@@ -1700,6 +1711,7 @@ export const weapons = [
   "Luna Blaster Neo",
   "Kensa Luna Blaster",
   "Blaster",
+  "Hero Blaster Replica",
   "Custom Blaster",
   "Range Blaster",
   "Custom Range Blaster",
@@ -1714,6 +1726,7 @@ export const weapons = [
   "Carbon Roller",
   "Carbon Roller Deco",
   "Splat Roller",
+  "Hero Roller Replica",
   "Krak-On Splat Roller",
   "Kensa Splat Roller",
   "Dynamo Roller",
@@ -1725,12 +1738,14 @@ export const weapons = [
   "Inkbrush Nouveau",
   "Permanent Inkbrush",
   "Octobrush",
+  "Herobrush Replica",
   "Octobrush Nouveau",
   "Kensa Octobrush",
   "Classic Squiffer",
   "New Squiffer",
   "Fresh Squiffer",
   "Splat Charger",
+  "Hero Charger Replica",
   "Firefin Splat Charger",
   "Kensa Charger",
   "Splatterscope",
@@ -1761,6 +1776,7 @@ export const weapons = [
   "Zink Mini Splatling",
   "Kensa Mini Splatling",
   "Heavy Splatling",
+  "Hero Splatling Replica",
   "Heavy Splatling Deco",
   "Heavy Splatling Remix",
   "Hydra Splatling",
@@ -1773,6 +1789,7 @@ export const weapons = [
   "Dapple Dualies Nouveau",
   "Clear Dapple Dualies",
   "Splat Dualies",
+  "Hero Dualie Replicas",
   "Enperry Splat Dualies",
   "Kensa Splat Dualies",
   "Glooga Dualies",
@@ -1783,6 +1800,7 @@ export const weapons = [
   "Dark Tetra Dualies",
   "Light Tetra Dualies",
   "Splat Brella",
+  "Hero Brella Replica",
   "Sorella Brella",
   "Tenta Brella",
   "Tenta Sorella Brella",
@@ -1805,7 +1823,9 @@ export const shooters = [
   "Aerospray RG",
   "Aerospray PG",
   "Splattershot",
+  "Hero Shot Replica",
   "Tentatek Splattershot",
+  "Octo Shot Replica",
   "Kensa Splattershot",
   ".52 Gal",
   ".52 Gal Deco",
@@ -1838,6 +1858,7 @@ export const blasters = [
   "Luna Blaster Neo",
   "Kensa Luna Blaster",
   "Blaster",
+  "Hero Blaster Replica",
   "Custom Blaster",
   "Range Blaster",
   "Custom Range Blaster",
@@ -1855,6 +1876,7 @@ export const rollers = [
   "Carbon Roller",
   "Carbon Roller Deco",
   "Splat Roller",
+  "Hero Roller Replica",
   "Krak-On Splat Roller",
   "Kensa Splat Roller",
   "Dynamo Roller",
@@ -1869,6 +1891,7 @@ export const brushes = [
   "Inkbrush Nouveau",
   "Permanent Inkbrush",
   "Octobrush",
+  "Herobrush Replica",
   "Octobrush Nouveau",
   "Kensa Octobrush",
 ] as const
@@ -1878,6 +1901,7 @@ export const chargers = [
   "New Squiffer",
   "Fresh Squiffer",
   "Splat Charger",
+  "Hero Charger Replica",
   "Firefin Splat Charger",
   "Kensa Charger",
   "Splatterscope",
@@ -1914,6 +1938,7 @@ export const splatlings = [
   "Zink Mini Splatling",
   "Kensa Mini Splatling",
   "Heavy Splatling",
+  "Hero Splatling Replica",
   "Heavy Splatling Deco",
   "Heavy Splatling Remix",
   "Hydra Splatling",
@@ -1929,6 +1954,7 @@ export const dualies = [
   "Dapple Dualies Nouveau",
   "Clear Dapple Dualies",
   "Splat Dualies",
+  "Hero Dualie Replicas",
   "Enperry Splat Dualies",
   "Kensa Splat Dualies",
   "Glooga Dualies",
@@ -1942,6 +1968,7 @@ export const dualies = [
 
 export const brellas = [
   "Splat Brella",
+  "Hero Brella Replica",
   "Sorella Brella",
   "Tenta Brella",
   "Tenta Sorella Brella",
@@ -1954,6 +1981,63 @@ export const brellas = [
 const weaponMap = (weapon: Weapon) => ({ value: weapon, label: weapon })
 
 export const weaponSelectOptions = [
+  {
+    label: "Shooters",
+    options: [...shooters, ...semiauto]
+      .map(weaponMap)
+      .filter((weapon) => !weapon.value.includes("Replica")),
+  },
+  {
+    label: "Blasters",
+    options: blasters
+      .map(weaponMap)
+      .filter((weapon) => !weapon.value.includes("Replica")),
+  },
+  {
+    label: "Rollers",
+    options: rollers
+      .map(weaponMap)
+      .filter((weapon) => !weapon.value.includes("Replica")),
+  },
+  {
+    label: "Brushes",
+    options: brushes
+      .map(weaponMap)
+      .filter((weapon) => !weapon.value.includes("Replica")),
+  },
+  {
+    label: "Chargers",
+    options: chargers
+      .map(weaponMap)
+      .filter((weapon) => !weapon.value.includes("Replica")),
+  },
+  {
+    label: "Sloshers",
+    options: sloshers
+      .map(weaponMap)
+      .filter((weapon) => !weapon.value.includes("Replica")),
+  },
+  {
+    label: "Splatlings",
+    options: splatlings
+      .map(weaponMap)
+      .filter((weapon) => !weapon.value.includes("Replica")),
+  },
+  {
+    label: "Dualies",
+    options: dualies
+      .map(weaponMap)
+      .filter((weapon) => !weapon.value.includes("Replica")),
+  },
+  {
+    label: "Brellas",
+    options: brellas
+      .map(weaponMap)
+      .filter((weapon) => !weapon.value.includes("Replica")),
+  },
+]
+
+export const weaponSelectOptionsWithAlts = [
   {
     label: "Shooters",
     options: [...shooters, ...semiauto].map(weaponMap),
