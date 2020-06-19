@@ -72,12 +72,29 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
       ? "Edit free agent post"
       : "New free agent post"
 
+  const altWeaponMap = new Map([
+    ["Splattershot", "Hero Shot Replica"],
+    ["Tentatek Splattershot", "Octo Shot Replica"],
+    ["Blaster", "Hero Blaster Replica"],
+    ["Splat Roller", "Hero Roller Replica"],
+    ["Octobrush", "Herobrush Replica"],
+    ["Splat Charger", "Hero Charger Replica"],
+    ["Slosher", "Hero Slosher Replica"],
+    ["Heavy Splatling", "Hero Splatling Replica"],
+    ["Splat Dualies", "Hero Dualie Replicas"],
+    ["Splat Brella", "Hero Brella Replica"],
+  ])
+
   const postsFilter = (post: FreeAgentPost) => {
     if (post.hidden) return false
 
     const usersWeapons = post.discord_user.weapons ?? []
 
-    if (weapon && usersWeapons.indexOf(weapon) === -1) {
+    if (
+      weapon &&
+      (usersWeapons.includes(weapon) ||
+        usersWeapons.includes(altWeaponMap.get(weapon) as any))
+    ) {
       return false
     }
 
