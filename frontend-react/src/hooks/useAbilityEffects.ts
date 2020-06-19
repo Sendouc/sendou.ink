@@ -613,7 +613,7 @@ export default function useAbilityEffects(
         ability: "SPU" as Ability,
         info:
           specialWeapon === "Inkjet"
-            ? "Special Power Up also increases Ink Jet's shots' painting and blast radius"
+            ? "Special Power Up also increases Inkjet's shots' painting and blast radius"
             : undefined,
         ap: amount,
         getEffect: (ap: number) => Math.ceil(getEffect(highMidLow, ap)[0]),

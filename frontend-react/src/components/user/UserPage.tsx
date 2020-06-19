@@ -164,12 +164,14 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
       content: (
         <TabPanel key={2}>
           <Alert status="info">
-            If you have reached Top 500 in a finished X Rank season you can have
-            it displayed here! Make sure your Twitter account is verified on
-            verified and it shows on your sendou.ink profile and then contact
-            Sendou#0043 on Discord with your in-game nick. Once set up new
-            results are added automatically and no further action is needed
-            unless you change your name on Twitter.
+            <>
+              If you have reached Top 500 in a <b>finished</b> X Rank season you
+              can have it displayed here! Make sure your Twitter account is
+              verified on Discord to get it showing on your sendou.ink profile
+              and then contact Sendou#0043 on Discord with your in-game nick.
+              Once set up new results are added automatically and no further
+              action is needed unless you change your name on Twitter.
+            </>
           </Alert>
         </TabPanel>
       ),
