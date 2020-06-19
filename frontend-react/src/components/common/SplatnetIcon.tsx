@@ -116,6 +116,7 @@ const weaponToSvg = {
   "Goo Tuber": Splashdown,
   "Custom Goo Tuber": Inkjet,
   Slosher: Missiles,
+  "Hero Slosher Replica": Missiles,
   "Slosher Deco": Baller,
   "Soda Slosher": BurstBombRush,
   "Tri-Slosher": InkArmor,

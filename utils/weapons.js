@@ -90,6 +90,7 @@ const weapons = [
   "Goo Tuber",
   "Custom Goo Tuber",
   "Slosher",
+  "Hero Slosher Replica",
   "Slosher Deco",
   "Soda Slosher",
   "Tri-Slosher",

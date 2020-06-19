@@ -141,6 +141,7 @@ export const weaponCodes: Record<string, Weapon> = {
   goo_tuber: "Goo Tuber",
   custom_goo_tuber: "Custom Goo Tuber",
   slosher: "Slosher",
+  hero_slosher_replica: "Hero Slosher Replica",
   slosher_deco: "Slosher Deco",
   soda_slosher: "Soda Slosher",
   "tri-slosher": "Tri-Slosher",
@@ -1761,6 +1762,7 @@ export const weapons = [
   "Goo Tuber",
   "Custom Goo Tuber",
   "Slosher",
+  "Hero Slosher Replica",
   "Slosher Deco",
   "Soda Slosher",
   "Tri-Slosher",
@@ -1920,6 +1922,7 @@ export const chargers = [
 
 export const sloshers = [
   "Slosher",
+  "Hero Slosher Replica",
   "Slosher Deco",
   "Soda Slosher",
   "Tri-Slosher",
