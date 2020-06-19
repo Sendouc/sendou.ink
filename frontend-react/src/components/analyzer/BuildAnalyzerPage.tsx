@@ -22,7 +22,10 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
   const { themeColor, grayWithShade } = useContext(MyThemeContext)
   const location = useLocation()
   const [build, setBuild] = useState<Partial<Build>>(getBuildFromUrl())
-  const [otherBuild, setOtherBuild] = useState<Partial<Build>>(defaultBuild)
+  const [otherBuild, setOtherBuild] = useState<Partial<Build>>({
+    ...defaultBuild,
+    weapon: getBuildFromUrl().weapon,
+  })
   const [showOther, setShowOther] = useState(false)
   const [showNotActualProgress, setShowNotActualProgress] = useState(false)
   const [startChartsAtZero, setStartChartsAtZero] = useState(true)
