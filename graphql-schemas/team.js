@@ -16,7 +16,7 @@ const typeDef = gql`
     joinTeam(inviteCode: String!): Boolean!
     resetInviteCode: String!
     leaveTeam: Boolean!
-    # disbandTeam: Boolean!
+    disbandTeam: Boolean!
     # transferCaptain: Boolean!
     # updateTeam(newValues: UpdateTeamInput!): Boolean!
   }
@@ -252,6 +252,24 @@ const resolvers = {
 
       return true
     },
+    resetInviteCode: async (_root, _args, { user }) => {
+      if (!user)
+        throw new UserInputError("Must be logged in to reset invite code")
+      if (!user.team) {
+        throw new UserInputError("Must have team to reset invite code")
+      }
+
+      const team = await Team.findById(user.team)
+      if (!team) {
+        throw new Error("Unexpected error: team not found with the id")
+      }
+
+      const newCode = uuidv4()
+      team.inviteCode = newCode
+      await team.save()
+
+      return newCode
+    },
     leaveTeam: async (_root, _args, { user }) => {
       if (!user) throw new UserInputError("Must be logged in to leave a team")
       if (!user.team) {
@@ -274,7 +292,7 @@ const resolvers = {
       }
 
       team.members = team.members.filter(
-        (member) => member.discordId !== user._id
+        (member) => member.discordId !== user.discord_id
       )
 
       await User.findByIdAndUpdate(user._id, { $unset: { team: "" } })
@@ -285,10 +303,54 @@ const resolvers = {
         pastMembers.push(user.discord_id)
       team.pastMembersDiscordIds = pastMembers
 
-      await recalculateTeamsCountries(team, null, user.discord_id)
-      await recalculateTeamsXp(team, user.discord_id)
+      Promise.all([
+        recalculateTeamsCountries(team, null, user.discord_id),
+        recalculateTeamsXp(team, user.discord_id),
+      ])
+
+      console.error("above not working")
 
       await team.save()
+
+      return true
+    },
+    disbandTeam: async (_root, _args, { user }) => {
+      if (!user)
+        throw new UserInputError("Must be logged in to reset invite code")
+      if (!user.team) {
+        throw new UserInputError("Must have team to reset invite code")
+      }
+
+      const team = await Team.findById(user.team)
+      if (!team) {
+        throw new Error("Unexpected error: team not found with the id")
+      }
+
+      const memberOfTeam = team.members.find(
+        (member) => member.discordId === user.discord_id
+      )
+      if (!memberOfTeam) {
+        throw new Error("Unexpected error: user not found in the member list")
+      }
+
+      if (!memberOfTeam.captain) {
+        throw new UserInputError(
+          "Can't disband a team you are not a captain for"
+        )
+      }
+
+      team.disbanded = true
+
+      await Promise.all(
+        team.members
+          .map((member) =>
+            User.findOneAndUpdate(
+              { discord_id: member.discordId },
+              { $unset: { team: "" } }
+            )
+          )
+          .concat(team.save())
+      )
 
       return true
     },

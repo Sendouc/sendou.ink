@@ -16,8 +16,8 @@
   "author": "Sendou",
   "license": "ISC",
   "dependencies": {
-    "apollo-server": "^2.14.4",
-    "apollo-server-express": "^2.14.4",
+    "apollo-server": "^2.15.0",
+    "apollo-server-express": "^2.15.0",
     "axios": "^0.19.2",
     "btoa": "^1.2.1",
     "compression": "^1.7.4",
