@@ -23,13 +23,13 @@ import MapSelect from "./MapSelect"
 export interface PlannerMapBg {
   view: "M" | "R"
   stage: Stage
-  mode: "SZ" | "TC" | "RM" | "CB" | "TW"
+  mode: "SZ" | "TC" | "RM" | "CB"
 }
 
-const REEFTW = {
+const REEF = {
   view: "M",
   stage: "The Reef",
-  mode: "TW",
+  mode: "SZ",
 } as const
 
 const reversedCodes = [
@@ -126,12 +126,12 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
   const [color, setColor] = useState("#f44336")
   const [canUndo, setCanUndo] = useState(false)
   const [canRedo, setCanRedo] = useState(false)
-  const [bg, setBg] = useState<PlannerMapBg>(REEFTW)
+  const [bg, setBg] = useState<PlannerMapBg>(REEF)
   const [controlledValue, setControlledValue] = useState(defaultValue)
 
   // doesn't work properly when coming back from another page - not sure why
   useLayoutEffect(() => {
-    sketch.setBackgroundFromDataUrl(plannerMapBgToImage(REEFTW))
+    sketch.setBackgroundFromDataUrl(plannerMapBgToImage(REEF))
   }, [sketch])
 
   const addImageToSketch = (weapon: Weapon) => {
@@ -227,7 +227,7 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
     )
       return
     console.log("2")
-    if (!["TW", "SZ", "TC", "RM", "CB"].includes(mode)) return
+    if (!["SZ", "TC", "RM", "CB"].includes(mode)) return
     console.log("3")
 
     setBg({

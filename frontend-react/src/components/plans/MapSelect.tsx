@@ -93,7 +93,6 @@ const MapSelect: React.FC<MapSelectProps> = ({ bg, setBg }) => {
         <ModeButtons
           mode={bg.mode}
           setMode={(mode) => setBg({ ...bg, mode })}
-          showTW
         />
       </Flex>
       <Flex justify="center" align="center" my="1em">

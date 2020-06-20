@@ -7,38 +7,15 @@ import cb from "../../assets/cb.png"
 import tw from "../../assets/tw.png"
 
 interface ModeButtonsProps {
-  mode: "TW" | "SZ" | "TC" | "RM" | "CB"
-  setMode: (mode: "TW" | "SZ" | "TC" | "RM" | "CB") => void
-  showTW?: boolean
+  mode: "SZ" | "TC" | "RM" | "CB"
+  setMode: (mode: "SZ" | "TC" | "RM" | "CB") => void
 }
 
 const iconSize = "45px"
 
-const ModeButtons: React.FC<ModeButtonsProps> = ({ mode, setMode, showTW }) => {
+const ModeButtons: React.FC<ModeButtonsProps> = ({ mode, setMode }) => {
   return (
     <Flex>
-      {showTW && (
-        <Flex
-          flexDir="column"
-          p="10px"
-          style={{ filter: mode === "TW" ? undefined : "grayscale(100%)" }}
-          cursor="pointer"
-          onClick={() => setMode("TW" as any)}
-          alignItems="center"
-        >
-          <PseudoBox
-            _hover={{ transform: mode === "TW" ? undefined : "scale(1.2)" }}
-            transition="all 0.2s"
-          >
-            <Image src={tw} display="inline-block" w={iconSize} h={iconSize} />
-          </PseudoBox>
-          {mode === "TW" && (
-            <Box fontSize="1.25em" fontWeight="bold">
-              TW
-            </Box>
-          )}
-        </Flex>
-      )}
       <Flex
         flexDir="column"
         p="10px"

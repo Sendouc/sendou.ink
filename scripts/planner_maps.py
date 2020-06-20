@@ -9,7 +9,7 @@ for filepath in glob.iglob("stageImgs/*.png"):
     name = filepath.replace("stageImgs\\", "").replace(".png", "").replace("v", "")
 
     img_type, map_code, mode, version = name.split(" ")
-    if mode == "SF":
+    if mode in ["TW", "SF"]:
         continue
 
     code = f"{img_type} {map_code} {mode}"
