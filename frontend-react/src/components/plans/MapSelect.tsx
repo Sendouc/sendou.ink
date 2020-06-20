@@ -1,32 +1,9 @@
 import React from "react"
-import { Select } from "@chakra-ui/core"
 import { useContext } from "react"
 import MyThemeContext from "../../themeContext"
-
-import academy from "../../assets/plannerMaps/academy-sz.png"
-import arena from "../../assets/plannerMaps/arena-sz.png"
-import camp from "../../assets/plannerMaps/camp-sz.png"
-import canal from "../../assets/plannerMaps/canal-sz.png"
-import dome from "../../assets/plannerMaps/dome-sz.png"
-import fitness from "../../assets/plannerMaps/fitness-sz.png"
-import games from "../../assets/plannerMaps/games-sz.png"
-import hotel from "../../assets/plannerMaps/hotel-sz.png"
-import institute from "../../assets/plannerMaps/institute-sz.png"
-import mainstage from "../../assets/plannerMaps/mainstage-sz.png"
-import mall from "../../assets/plannerMaps/mall-sz.png"
-import manta from "../../assets/plannerMaps/manta-sz.png"
-import mart from "../../assets/plannerMaps/mart-sz.png"
-import pavilion from "../../assets/plannerMaps/pavilion-sz.png"
-import pit from "../../assets/plannerMaps/pit-sz.png"
-import pitrm from "../../assets/plannerMaps/pit-rm.png"
-import port from "../../assets/plannerMaps/port-sz.png"
-import pumptrack from "../../assets/plannerMaps/pumptrack-sz.png"
-import reef from "../../assets/plannerMaps/reef-sz.png"
-import shipyard from "../../assets/plannerMaps/shipyard-sz.png"
-import skatepark from "../../assets/plannerMaps/skatepark-sz.png"
-import towers from "../../assets/plannerMaps/towers-sz.png"
-import warehouse from "../../assets/plannerMaps/warehouse-sz.png"
-import world from "../../assets/plannerMaps/world-sz.png"
+import Select from "../elements/Select"
+import { Box } from "@chakra-ui/core"
+import { Stage } from "../../types"
 
 interface MapSelectProps {
   map: string | null
@@ -34,101 +11,132 @@ interface MapSelectProps {
 }
 
 const maps = [
-  { key: "The Reef", text: "The Reef", value: reef },
+  { label: "The Reef", value: "The Reef" },
   {
-    key: "Musselforge Fitness",
-    text: "Musselforge Fitness",
-    value: fitness,
+    label: "Musselforge Fitness",
+    value: "Musselforge Fitness",
   },
   {
-    key: "Starfish Mainstage",
-    text: "Starfish Mainstage",
-    value: mainstage,
+    label: "Starfish Mainstage",
+    value: "Starfish Mainstage",
   },
   {
-    key: "Humpback Pump Track",
-    text: "Humpback Pump Track",
-    value: pumptrack,
+    label: "Humpback Pump Track",
+    value: "Humpback Pump Track",
   },
   {
-    key: "Inkblot Art Academy",
-    text: "Inkblot Art Academy",
-    value: academy,
+    label: "Inkblot Art Academy",
+    value: "Inkblot Art Academy",
   },
   {
-    key: "Sturgeon Shipyard",
-    text: "Sturgeon Shipyard",
-    value: shipyard,
+    label: "Sturgeon Shipyard",
+    value: "Sturgeon Shipyard",
   },
-  { key: "Moray Towers", text: "Moray Towers", value: towers },
-  { key: "Port Mackerel", text: "Port Mackerel", value: port },
-  { key: "Manta Maria", text: "Manta Maria", value: manta },
-  { key: "Kelp Dome", text: "Kelp Dome", value: dome },
-  { key: "Snapper Canal", text: "Snapper Canal", value: canal },
+  { label: "Moray Towers", value: "Moray Towers" },
+  { label: "Port Mackerel", value: "Port Mackerel" },
+  { label: "Manta Maria", value: "Manta Maria" },
+  { label: "Kelp Dome", value: "Kelp Dome" },
+  { label: "Snapper Canal", value: "Snapper Canal" },
   {
-    key: "Blackbelly Skatepark",
-    text: "Blackbelly Skatepark",
-    value: skatepark,
+    label: "Blackbelly Skatepark",
+    value: "Blackbelly Skatepark",
   },
-  { key: "MakoMart", text: "MakoMart", value: mart },
+  { label: "MakoMart", value: "MakoMart" },
   {
-    key: "Walleye Warehouse",
-    text: "Walleye Warehouse",
-    value: warehouse,
+    label: "Walleye Warehouse",
+    value: "Walleye Warehouse",
   },
   {
-    key: "Shellendorf Institute",
-    text: "Shellendorf Institute",
-    value: institute,
+    label: "Shellendorf Institute",
+    value: "Shellendorf Institute",
   },
-  { key: "Arowana Mall", text: "Arowana Mall", value: mall },
-  { key: "Goby Arena", text: "Goby Arena", value: arena },
-  { key: "Piranha Pit", text: "Piranha Pit", value: pit },
+  { label: "Arowana Mall", value: "Arowana Mall" },
+  { label: "Goby Arena", value: "Goby Arena" },
+  { label: "Piranha Pit", value: "Piranha Pit" },
   {
-    key: "Piranha Pit (RM)",
-    text: "Piranha Pit (RM)",
-    value: pitrm,
+    label: "Camp Triggerfish",
+    value: "Camp Triggerfish",
   },
+  { label: "Wahoo World", value: "Wahoo World" },
   {
-    key: "Camp Triggerfish",
-    text: "Camp Triggerfish",
-    value: camp,
+    label: "New Albacore Hotel",
+    value: "New Albacore Hotel",
   },
-  { key: "Wahoo World", text: "Wahoo World", value: world },
+  { label: "Ancho-V Games", value: "Ancho-V Games" },
   {
-    key: "New Albacore Hotel",
-    text: "New Albacore Hotel",
-    value: hotel,
-  },
-  { key: "Ancho-V Games", text: "Ancho-V Games", value: games },
-  {
-    key: "Skipper Pavilion",
-    text: "Skipper Pavilion",
-    value: pavilion,
+    label: "Skipper Pavilion",
+    value: "Skipper Pavilion",
   },
 ]
 
+const codes = [
+  ["AG", "Ancho-V Games"],
+  ["AM", "Arowana Mall"],
+  ["BS", "Blackbelly Skatepark"],
+  ["CT", "Camp Triggerfish"],
+  ["GA", "Goby Arena"],
+  ["HP", "Humpback Pump Track"],
+  ["IA", "Inkblot Art Academy"],
+  ["KD", "Kelp Dome"],
+  ["MF", "Musselforge Fitness"],
+  ["MK", "MakoMart"],
+  ["MM", "Manta Maria"],
+  ["MT", "Moray Towers"],
+  ["NA", "New Albacore Hotel"],
+  ["PM", "Port Mackerel"],
+  ["PP", "Piranha Pit"],
+  ["SC", "Snapper Canal"],
+  ["SI", "Shellendorf Institute"],
+  ["SM", "Starfish Mainstage"],
+  ["SP", "Skipper Pavilion"],
+  ["SS", "Sturgeon Shipyard"],
+  ["TR", "The Reef"],
+  ["WH", "Wahoo World"],
+  ["WW", "Walleye Warehouse"],
+] as const
+
+const reversedCodes = [
+  ["Ancho-V Games", "AG"],
+  ["Arowana Mall", "AM"],
+  ["Blackbelly Skatepark", "BS"],
+  ["Camp Triggerfish", "CT"],
+  ["Goby Arena", "GA"],
+  ["Humpback Pump Track", "HP"],
+  ["Inkblot Art Academy", "IA"],
+  ["Kelp Dome", "KD"],
+  ["Musselforge Fitness", "MF"],
+  ["MakoMart", "MK"],
+  ["Manta Maria", "MM"],
+  ["Moray Towers", "MT"],
+  ["New Albacore Hotel", "NA"],
+  ["Port Mackerel", "PM"],
+  ["Piranha Pit", "PP"],
+  ["Snapper Canal", "SC"],
+  ["Shellendorf Institute", "SI"],
+  ["Starfish Mainstage", "SM"],
+  ["Skipper Pavilion", "SP"],
+  ["Sturgeon Shipyard", "SS"],
+  ["The Reef", "TR"],
+  ["Wahoo World", "WH"],
+  ["Walleye Warehouse", "WW"],
+] as const
+
+const codeToStage = new Map(codes)
+const stageToCode = new Map(reversedCodes)
+
 const MapSelect: React.FC<MapSelectProps> = ({ map, setMap }) => {
   const { darkerBgColor } = useContext(MyThemeContext)
+
+  const handleChange = (stage: any) => {
+    setMap(
+      `${process.env.PUBLIC_URL}/plannerMaps/M ${stageToCode.get(stage)} SZ.png`
+    )
+  }
+
   return (
-    <Select
-      placeholder="Select map"
-      value={map ?? ""}
-      onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
-        setMap(event.target.value)
-      }
-      width="250px"
-    >
-      {maps.map(map => (
-        <option
-          key={map.key}
-          value={map.value}
-          style={{ background: darkerBgColor }}
-        >
-          {map.text}
-        </option>
-      ))}
-    </Select>
+    <Box w="250px">
+      <Select options={maps} setValue={handleChange} />
+    </Box>
   )
 }
 

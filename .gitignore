@@ -22,6 +22,7 @@ ability_jsons_output
 .vs
 .vscode
 leanny.github.io/
+stageImgs/
 
 npm-debug.log*
 yarn-debug.log*

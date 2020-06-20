@@ -303,12 +303,10 @@ const resolvers = {
         pastMembers.push(user.discord_id)
       team.pastMembersDiscordIds = pastMembers
 
-      Promise.all([
+      await Promise.all([
         recalculateTeamsCountries(team, null, user.discord_id),
         recalculateTeamsXp(team, user.discord_id),
       ])
-
-      console.error("above not working")
 
       await team.save()
 

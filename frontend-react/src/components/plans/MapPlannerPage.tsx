@@ -16,12 +16,13 @@ import {
   InputRightElement,
 } from "@chakra-ui/core"
 import { FaFileDownload, FaFileUpload, FaFileImage } from "react-icons/fa"
-import reef from "../../assets/plannerMaps/reef-sz.png"
 import MapSelect from "./MapSelect"
 import { RouteComponentProps } from "@reach/router"
 import PageHeader from "../common/PageHeader"
 import DraggableWeaponSelector from "./DraggableWeaponSelector"
 import Button from "../elements/Button"
+
+const reef = `${process.env.PUBLIC_URL}/plannerMaps/M TR SZ.png`
 
 const MapPlannerPage: React.FC<RouteComponentProps> = () => {
   let sketch: any = null
@@ -52,7 +53,7 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
     enableCopyPaste: false,
   }
   const fileInput = useRef<HTMLInputElement | null>(null)
-  const [tool, setTool] = useState(Tools.Pencil)
+  const [tool, setTool] = useState(Tools.RectangleLabel)
   const [color, setColor] = useState("#f44336")
   const [canUndo, setCanUndo] = useState(false)
   const [canRedo, setCanRedo] = useState(false)
@@ -60,6 +61,8 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
   const [bg, setBg] = useState<string | null>(null)
   const [uploadError, setUploadError] = useState<string | null>(null)
   const [controlledValue, setControlledValue] = useState(defaultValue)
+
+  console.log("bg", bg)
 
   // doesn't work properly when coming back from another page - not sure why
   useEffect(() => {
