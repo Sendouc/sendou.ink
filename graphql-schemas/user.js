@@ -17,6 +17,12 @@ const typeDef = gql`
     "Returns all users"
     users: [User!]!
   }
+
+  input DiscordIdAvatar {
+    discordId: String!
+    avatar: String!
+  }
+
   extend type Mutation {
     updateUser(
       country: String
@@ -26,6 +32,7 @@ const typeDef = gql`
       custom_url: String
       bio: String
     ): Boolean
+    updateAvatars(lohiToken: String!, toUpdate: [DiscordIdAvatar!]!): Boolean
   }
 
   "The control sensitivity used in Splatoon 2"
@@ -247,6 +254,22 @@ const resolvers = {
           invalidArgs: args,
         })
       })
+
+      return true
+    },
+    updateAvatars: async (root, args) => {
+      if (args.lohiToken !== process.env.LOHI_TOKEN) {
+        throw new UserInputError("Invalid token")
+      }
+
+      await Promise.all(
+        args.toUpdate.map((user) =>
+          User.updateOne(
+            { discord_id: user.discordId },
+            { $set: { avatar: user.avatar } }
+          )
+        )
+      )
 
       return true
     },
