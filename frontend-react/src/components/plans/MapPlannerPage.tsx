@@ -348,7 +348,7 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
         style={{ display: "none" }}
         onChange={() => setBg({ ...bg })}
       />
-      <Flex mt="1em" justify="center">
+      <Flex mt="2em" justify="center">
         <MapSelect bg={bg} setBg={setBg} />
       </Flex>
     </>
