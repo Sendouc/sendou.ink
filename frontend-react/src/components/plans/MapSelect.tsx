@@ -2,12 +2,14 @@ import React from "react"
 import { useContext } from "react"
 import MyThemeContext from "../../themeContext"
 import Select from "../elements/Select"
-import { Box } from "@chakra-ui/core"
+import { Box, Flex, FormLabel, Switch } from "@chakra-ui/core"
 import { Stage } from "../../types"
+import { PlannerMapBg } from "./MapPlannerPage"
+import ModeButtons from "../xtrends/ModeButtons"
 
 interface MapSelectProps {
-  map: string | null
-  setMap: (map: string) => void
+  bg: PlannerMapBg
+  setBg: React.Dispatch<React.SetStateAction<PlannerMapBg>>
 }
 
 const maps = [
@@ -95,48 +97,45 @@ const codes = [
   ["WW", "Walleye Warehouse"],
 ] as const
 
-const reversedCodes = [
-  ["Ancho-V Games", "AG"],
-  ["Arowana Mall", "AM"],
-  ["Blackbelly Skatepark", "BS"],
-  ["Camp Triggerfish", "CT"],
-  ["Goby Arena", "GA"],
-  ["Humpback Pump Track", "HP"],
-  ["Inkblot Art Academy", "IA"],
-  ["Kelp Dome", "KD"],
-  ["Musselforge Fitness", "MF"],
-  ["MakoMart", "MK"],
-  ["Manta Maria", "MM"],
-  ["Moray Towers", "MT"],
-  ["New Albacore Hotel", "NA"],
-  ["Port Mackerel", "PM"],
-  ["Piranha Pit", "PP"],
-  ["Snapper Canal", "SC"],
-  ["Shellendorf Institute", "SI"],
-  ["Starfish Mainstage", "SM"],
-  ["Skipper Pavilion", "SP"],
-  ["Sturgeon Shipyard", "SS"],
-  ["The Reef", "TR"],
-  ["Wahoo World", "WH"],
-  ["Walleye Warehouse", "WW"],
-] as const
-
 const codeToStage = new Map(codes)
-const stageToCode = new Map(reversedCodes)
 
-const MapSelect: React.FC<MapSelectProps> = ({ map, setMap }) => {
-  const { darkerBgColor } = useContext(MyThemeContext)
-
-  const handleChange = (stage: any) => {
-    setMap(
-      `${process.env.PUBLIC_URL}/plannerMaps/M ${stageToCode.get(stage)} SZ.png`
-    )
-  }
+const MapSelect: React.FC<MapSelectProps> = ({ bg, setBg }) => {
+  const { themeColor } = useContext(MyThemeContext)
 
   return (
-    <Box w="250px">
-      <Select options={maps} setValue={handleChange} />
-    </Box>
+    <Flex
+      w="400px"
+      h="300px"
+      rounded="lg"
+      overflow="hidden"
+      boxShadow="0px 0px 16px 6px rgba(0,0,0,0.1)"
+      p="20px"
+      justify="space-evenly"
+      flexDir="column"
+    >
+      <Select
+        options={maps}
+        value={{ label: bg.stage, value: bg.stage }}
+        setValue={(value: any) => setBg({ ...bg, stage: value })}
+        isSearchable
+      />
+      <Flex justify="center">
+        <ModeButtons
+          mode={bg.mode}
+          setMode={(mode) => setBg({ ...bg, mode })}
+          showTW
+        />
+      </Flex>
+      <Flex justify="space-evenly" align="center" my="1em">
+        <FormLabel htmlFor="email-alerts">Minimap</FormLabel>
+        <Switch
+          color={themeColor}
+          isChecked={bg.view === "R"}
+          onChange={() => setBg({ ...bg, view: bg.view === "R" ? "M" : "R" })}
+        />
+        <FormLabel htmlFor="email-alerts">Top-down</FormLabel>
+      </Flex>
+    </Flex>
   )
 }
 

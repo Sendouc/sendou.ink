@@ -157,7 +157,10 @@ const XTrendsPage: React.FC<RouteComponentProps> = () => {
         options={xRankMonths.map((month) => ({ label: month, value: month }))}
       />
       <Box my="1em">
-        <ModeButtons mode={mode} setMode={setMode} />
+        <ModeButtons
+          mode={mode}
+          setMode={(mode) => setMode(mode as "SZ" | "TC" | "RM" | "CB")}
+        />
       </Box>
       {tiers.map((tier, index, tiers) => (
         <Flex key={tier.criteria}>

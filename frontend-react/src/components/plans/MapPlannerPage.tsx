@@ -6,7 +6,7 @@ import { weapons } from "../../assets/imageImports"
 import DraggableToolsSelector from "./DraggableToolsSelector"
 import useBreakPoints from "../../hooks/useBreakPoints"
 import { Helmet } from "react-helmet-async"
-import { Weapon } from "../../types"
+import { Weapon, Stage } from "../../types"
 import Error from "../common/Error"
 import {
   Flex,
@@ -22,7 +22,50 @@ import PageHeader from "../common/PageHeader"
 import DraggableWeaponSelector from "./DraggableWeaponSelector"
 import Button from "../elements/Button"
 
-const reef = `${process.env.PUBLIC_URL}/plannerMaps/M TR SZ.png`
+export interface PlannerMapBg {
+  view: "M" | "R"
+  stage: Stage
+  mode: "SZ" | "TC" | "RM" | "CB" | "TW"
+}
+
+const REEFTW = {
+  view: "M",
+  stage: "The Reef",
+  mode: "TW",
+} as const
+
+const reversedCodes = [
+  ["Ancho-V Games", "AG"],
+  ["Arowana Mall", "AM"],
+  ["Blackbelly Skatepark", "BS"],
+  ["Camp Triggerfish", "CT"],
+  ["Goby Arena", "GA"],
+  ["Humpback Pump Track", "HP"],
+  ["Inkblot Art Academy", "IA"],
+  ["Kelp Dome", "KD"],
+  ["Musselforge Fitness", "MF"],
+  ["MakoMart", "MK"],
+  ["Manta Maria", "MM"],
+  ["Moray Towers", "MT"],
+  ["New Albacore Hotel", "NA"],
+  ["Port Mackerel", "PM"],
+  ["Piranha Pit", "PP"],
+  ["Snapper Canal", "SC"],
+  ["Shellendorf Institute", "SI"],
+  ["Starfish Mainstage", "SM"],
+  ["Skipper Pavilion", "SP"],
+  ["Sturgeon Shipyard", "SS"],
+  ["The Reef", "TR"],
+  ["Wahoo World", "WH"],
+  ["Walleye Warehouse", "WW"],
+] as const
+
+const stageToCode = new Map<Stage, string>(reversedCodes)
+
+const plannerMapBgToImage = (bg: PlannerMapBg) =>
+  `${process.env.PUBLIC_URL}/plannerMaps/${bg.view} ${stageToCode.get(
+    bg.stage
+  )} ${bg.mode}.png`
 
 const MapPlannerPage: React.FC<RouteComponentProps> = () => {
   let sketch: any = null
@@ -58,19 +101,17 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
   const [canUndo, setCanUndo] = useState(false)
   const [canRedo, setCanRedo] = useState(false)
   const [text, setText] = useState("")
-  const [bg, setBg] = useState<string | null>(null)
+  const [bg, setBg] = useState<PlannerMapBg>(REEFTW)
   const [uploadError, setUploadError] = useState<string | null>(null)
   const [controlledValue, setControlledValue] = useState(defaultValue)
-
-  console.log("bg", bg)
 
   // doesn't work properly when coming back from another page - not sure why
   useEffect(() => {
     if (!sketch) {
       return
     }
-    setBg(reef)
-    sketch.setBackgroundFromDataUrl(reef)
+    setBg(REEFTW)
+    sketch.setBackgroundFromDataUrl(plannerMapBgToImage(REEFTW))
   }, [sketch])
 
   const addImageToSketch = (weapon: Weapon) => {
@@ -129,9 +170,10 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
     document.body.appendChild(a)
     a.style.display = "none"
     a.href = dataUrl
-    a.download = `${
+    /*a.download = `${
       bg.replace("/static/media/", "").split("-")[0]
-    } plans ${getDateFormatted()}.${extension}`
+    } plans ${getDateFormatted()}.${extension}`*/
+    a.download = "asd"
     a.click()
     window.URL.revokeObjectURL(dataUrl)
   }
@@ -153,12 +195,12 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
     reader.readAsText(fileObj)
   }
 
-  const onBgChange = (value: string) => {
+  useEffect(() => {
+    if (!sketch) return
     sketch.clear()
-    setBg(value)
     setCanUndo(false)
-    sketch.setBackgroundFromDataUrl(value)
-  }
+    sketch.setBackgroundFromDataUrl(plannerMapBgToImage(bg))
+  }, [bg])
 
   return (
     <>
@@ -227,55 +269,53 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
         <input type="file" accept=".json" ref={fileInput} />
       </Flex>
       {uploadError && <span style={{ color: "red" }}>{uploadError}</span>}
-      <Flex justifyContent="space-between" mt="1em" flexWrap="wrap">
-        <InputGroup size="md">
-          <Input
-            pr="7rem"
-            width="430px"
-            onChange={(e: React.FormEvent<HTMLInputElement>) =>
-              setText(e.currentTarget.value)
-            }
-          />
-          <InputRightElement width="7rem">
-            <Button
-              size="sm"
-              onClick={() => addTextToSketch()}
-              disabled={text === ""}
-            >
-              Add to picture
-            </Button>
-          </InputRightElement>
-        </InputGroup>
-        <Box>
-          <MapSelect map={bg} setMap={onBgChange} />
-        </Box>
-        {/*<Label basic color="red" pointing="above">
+      <InputGroup size="md">
+        <Input
+          pr="7rem"
+          width="430px"
+          onChange={(e: React.FormEvent<HTMLInputElement>) =>
+            setText(e.currentTarget.value)
+          }
+        />
+        <InputRightElement width="7rem">
+          <Button
+            size="sm"
+            onClick={() => addTextToSketch()}
+            disabled={text === ""}
+          >
+            Add to picture
+          </Button>
+        </InputRightElement>
+      </InputGroup>
+      <Box>
+        <MapSelect bg={bg} setBg={setBg} />
+      </Box>
+      {/*<Label basic color="red" pointing="above">
                 Please note that changing the map also clears all the drawings
         </Label>*/}
-        <CirclePicker
-          color={color}
-          width="220px"
-          onChangeComplete={(newColor) => setColor(newColor.hex)}
-          colors={[
-            "#f44336",
-            "#e91e63",
-            "#9c27b0",
-            "#673ab7",
-            "#3f51b5",
-            "#2196f3",
-            "#03a9f4",
-            "#00bcd4",
-            "#009688",
-            "#4caf50",
-            "#8bc34a",
-            "#cddc39",
-            "#ffeb3b",
-            "#ffc107",
-            "#ff9800",
-          ]}
-        />
-        <Box />
-      </Flex>
+      <CirclePicker
+        color={color}
+        width="220px"
+        onChangeComplete={(newColor) => setColor(newColor.hex)}
+        colors={[
+          "#f44336",
+          "#e91e63",
+          "#9c27b0",
+          "#673ab7",
+          "#3f51b5",
+          "#2196f3",
+          "#03a9f4",
+          "#00bcd4",
+          "#009688",
+          "#4caf50",
+          "#8bc34a",
+          "#cddc39",
+          "#ffeb3b",
+          "#ffc107",
+          "#ff9800",
+        ]}
+      />
+      <Box />
     </>
   )
 }
