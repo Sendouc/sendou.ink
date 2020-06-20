@@ -1,11 +1,9 @@
-import React from "react"
-import { useContext } from "react"
+import { Flex, FormLabel, Switch } from "@chakra-ui/core"
+import React, { useContext } from "react"
 import MyThemeContext from "../../themeContext"
 import Select from "../elements/Select"
-import { Box, Flex, FormLabel, Switch } from "@chakra-ui/core"
-import { Stage } from "../../types"
-import { PlannerMapBg } from "./MapPlannerPage"
 import ModeButtons from "../xtrends/ModeButtons"
+import { PlannerMapBg } from "./MapPlannerPage"
 
 interface MapSelectProps {
   bg: PlannerMapBg
@@ -71,34 +69,6 @@ const maps = [
   },
 ]
 
-const codes = [
-  ["AG", "Ancho-V Games"],
-  ["AM", "Arowana Mall"],
-  ["BS", "Blackbelly Skatepark"],
-  ["CT", "Camp Triggerfish"],
-  ["GA", "Goby Arena"],
-  ["HP", "Humpback Pump Track"],
-  ["IA", "Inkblot Art Academy"],
-  ["KD", "Kelp Dome"],
-  ["MF", "Musselforge Fitness"],
-  ["MK", "MakoMart"],
-  ["MM", "Manta Maria"],
-  ["MT", "Moray Towers"],
-  ["NA", "New Albacore Hotel"],
-  ["PM", "Port Mackerel"],
-  ["PP", "Piranha Pit"],
-  ["SC", "Snapper Canal"],
-  ["SI", "Shellendorf Institute"],
-  ["SM", "Starfish Mainstage"],
-  ["SP", "Skipper Pavilion"],
-  ["SS", "Sturgeon Shipyard"],
-  ["TR", "The Reef"],
-  ["WH", "Wahoo World"],
-  ["WW", "Walleye Warehouse"],
-] as const
-
-const codeToStage = new Map(codes)
-
 const MapSelect: React.FC<MapSelectProps> = ({ bg, setBg }) => {
   const { themeColor } = useContext(MyThemeContext)
 
@@ -126,14 +96,13 @@ const MapSelect: React.FC<MapSelectProps> = ({ bg, setBg }) => {
           showTW
         />
       </Flex>
-      <Flex justify="space-evenly" align="center" my="1em">
-        <FormLabel htmlFor="email-alerts">Minimap</FormLabel>
+      <Flex justify="center" align="center" my="1em">
+        <FormLabel htmlFor="email-alerts">Show top-down view</FormLabel>
         <Switch
           color={themeColor}
           isChecked={bg.view === "R"}
           onChange={() => setBg({ ...bg, view: bg.view === "R" ? "M" : "R" })}
         />
-        <FormLabel htmlFor="email-alerts">Top-down</FormLabel>
       </Flex>
     </Flex>
   )
