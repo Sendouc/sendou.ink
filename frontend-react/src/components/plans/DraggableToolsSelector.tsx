@@ -2,7 +2,15 @@ import React, { useState, useContext } from "react"
 import Draggable from "react-draggable"
 import { Tools } from "@sendou/react-sketch"
 import { useHotkeys } from "react-hotkeys-hook"
-import { Box, Flex, IconButton } from "@chakra-ui/core"
+import {
+  Box,
+  Flex,
+  IconButton,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverBody,
+} from "@chakra-ui/core"
 import {
   FaPencilAlt,
   FaRegSquare,
@@ -11,9 +19,47 @@ import {
   FaTrashAlt,
   FaRedo,
   FaUndo,
+  FaFont,
 } from "react-icons/fa"
 import { AiOutlineLine } from "react-icons/ai"
 import MyThemeContext from "../../themeContext"
+import { CirclePicker, ColorResult } from "react-color"
+
+interface PlannerColorPickerProps {
+  color: string
+  setColor: (newColor: string) => void
+}
+
+const PlannerColorPicker: React.FC<PlannerColorPickerProps> = ({
+  color,
+  setColor,
+}) => {
+  const { darkerBgColor } = useContext(MyThemeContext)
+  return (
+    <Popover placement="bottom">
+      <PopoverTrigger>
+        <Box
+          cursor="pointer"
+          height="27px"
+          width="27px"
+          backgroundColor={color}
+          borderRadius="50%"
+          display="inline-block"
+          mr="11px"
+          ml="10px"
+        />
+      </PopoverTrigger>
+      <PopoverContent zIndex={4} width="260px" backgroundColor={darkerBgColor}>
+        <PopoverBody textAlign="center">
+          <CirclePicker
+            width="260px"
+            onChangeComplete={(color: ColorResult) => setColor(color.hex)}
+          />
+        </PopoverBody>
+      </PopoverContent>
+    </Popover>
+  )
+}
 
 interface DraggableToolsSelectorProps {
   tool: any
@@ -24,6 +70,9 @@ interface DraggableToolsSelectorProps {
   undoIsDisabled: boolean
   removeSelected: () => void
   removeIsDisabled: boolean
+  addText: () => void
+  color: string
+  setColor: (newColor: string) => void
 }
 
 const DraggableToolsSelector: React.FC<DraggableToolsSelectorProps> = ({
@@ -35,6 +84,9 @@ const DraggableToolsSelector: React.FC<DraggableToolsSelectorProps> = ({
   undoIsDisabled,
   removeSelected,
   removeIsDisabled,
+  addText,
+  color,
+  setColor,
 }) => {
   const { darkerBgColor, themeColorHex } = useContext(MyThemeContext)
   const [activeDrags, setActiveDrags] = useState(0)
@@ -150,6 +202,17 @@ const DraggableToolsSelector: React.FC<DraggableToolsSelectorProps> = ({
             icon={FaRedo}
             title="Redo"
           />
+          <IconButton
+            onClick={() => addText()}
+            variant="ghost"
+            size="lg"
+            aria-label="Add text"
+            icon={FaFont}
+            title="Add text"
+          />
+          <Flex justify="center" align="center">
+            <PlannerColorPicker color={color} setColor={setColor} />
+          </Flex>
         </Flex>
       </Box>
     </Draggable>

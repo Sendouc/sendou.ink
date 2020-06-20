@@ -100,7 +100,6 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
   const [color, setColor] = useState("#f44336")
   const [canUndo, setCanUndo] = useState(false)
   const [canRedo, setCanRedo] = useState(false)
-  const [text, setText] = useState("")
   const [bg, setBg] = useState<PlannerMapBg>(REEFTW)
   const [uploadError, setUploadError] = useState<string | null>(null)
   const [controlledValue, setControlledValue] = useState(defaultValue)
@@ -121,7 +120,7 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
   }
 
   const addTextToSketch = () => {
-    sketch.addText(text, {
+    sketch.addText("Double-click to edit", {
       fill: color,
       fontFamily: "lato",
       stroke: "#000000",
@@ -170,10 +169,9 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
     document.body.appendChild(a)
     a.style.display = "none"
     a.href = dataUrl
-    /*a.download = `${
-      bg.replace("/static/media/", "").split("-")[0]
-    } plans ${getDateFormatted()}.${extension}`*/
-    a.download = "asd"
+    a.download = `${bg.view}-${stageToCode.get(bg.stage)}-${
+      bg.mode
+    } plans ${getDateFormatted()}.${extension}`
     a.click()
     window.URL.revokeObjectURL(dataUrl)
   }
@@ -217,6 +215,9 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
         undoIsDisabled={!canUndo}
         removeSelected={removeSelected}
         removeIsDisabled={tool !== Tools.Select}
+        addText={addTextToSketch}
+        color={color}
+        setColor={(newColor) => setColor(newColor)}
       />
       <Box ml="950px">
         <DraggableWeaponSelector
@@ -269,53 +270,7 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
         <input type="file" accept=".json" ref={fileInput} />
       </Flex>
       {uploadError && <span style={{ color: "red" }}>{uploadError}</span>}
-      <InputGroup size="md">
-        <Input
-          pr="7rem"
-          width="430px"
-          onChange={(e: React.FormEvent<HTMLInputElement>) =>
-            setText(e.currentTarget.value)
-          }
-        />
-        <InputRightElement width="7rem">
-          <Button
-            size="sm"
-            onClick={() => addTextToSketch()}
-            disabled={text === ""}
-          >
-            Add to picture
-          </Button>
-        </InputRightElement>
-      </InputGroup>
-      <Box>
-        <MapSelect bg={bg} setBg={setBg} />
-      </Box>
-      {/*<Label basic color="red" pointing="above">
-                Please note that changing the map also clears all the drawings
-        </Label>*/}
-      <CirclePicker
-        color={color}
-        width="220px"
-        onChangeComplete={(newColor) => setColor(newColor.hex)}
-        colors={[
-          "#f44336",
-          "#e91e63",
-          "#9c27b0",
-          "#673ab7",
-          "#3f51b5",
-          "#2196f3",
-          "#03a9f4",
-          "#00bcd4",
-          "#009688",
-          "#4caf50",
-          "#8bc34a",
-          "#cddc39",
-          "#ffeb3b",
-          "#ffc107",
-          "#ff9800",
-        ]}
-      />
-      <Box />
+      <MapSelect bg={bg} setBg={setBg} />
     </>
   )
 }
