@@ -3,6 +3,7 @@ import { PseudoBox, ListIcon, ListItem } from "@chakra-ui/core"
 import { Link, useLocation } from "@reach/router"
 import { IconType } from "react-icons/lib/cjs"
 import MyThemeContext from "../../themeContext"
+import { useTranslation } from "react-i18next"
 
 interface NavItemProps {
   to: string
@@ -14,6 +15,7 @@ const NavItem: React.FC<NavItemProps> = ({ to, icon, title }) => {
   const { themeColorWithShade, colorMode, themeColor } = useContext(
     MyThemeContext
   )
+  const { t } = useTranslation()
 
   const location = useLocation()
   const isActive =
@@ -47,7 +49,7 @@ const NavItem: React.FC<NavItemProps> = ({ to, icon, title }) => {
             color={themeColorWithShade}
             size="1.5em"
           />{" "}
-          {title}
+          {t(`navigation;${title}`)}
         </PseudoBox>
       </Link>
     </ListItem>

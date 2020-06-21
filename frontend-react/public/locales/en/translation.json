@@ -924,5 +924,21 @@
     "Clam\nBlitz": "Clam\nBlitz",
     "Tower Control": "Tower Control",
     "Tower\nControl": "Tower\nControl"
+  },
+  "navigation": {
+    "Map Planner": "Map Planner",
+    "Calendar": "Calendar",
+    "Builds": "Builds",
+    "Build Analyzer": "Build Analyzer",
+    "User Search": "User Search",
+    "Free Agents": "Free Agents",
+    "Tournament Results": "Tournament Results",
+    "Draft Cup": "Draft Cup",
+    "Top 500 Browser": "Top 500 Browser",
+    "Top 500 Tier Lists": "Top 500 Tier Lists",
+    "Plus Server": "Plus Server",
+    "Profile": "Profile",
+    "Log out": "Log out",
+    "Log in via Discord": "Log in via Discord"
   }
 }

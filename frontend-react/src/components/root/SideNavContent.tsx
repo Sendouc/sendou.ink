@@ -51,6 +51,7 @@ import { useTranslation } from "react-i18next"
 
 const UserItem: React.FC<{ data?: UserData }> = ({ data }) => {
   const { themeColorWithShade, bgColor } = useContext(MyThemeContext)
+  const { t } = useTranslation()
   if (!data || !data.user) {
     return (
       <List>
@@ -75,7 +76,7 @@ const UserItem: React.FC<{ data?: UserData }> = ({ data }) => {
                 color={themeColorWithShade}
                 size="1.5em"
               />{" "}
-              Log in via Discord
+              {t("Log in via Discord")}
             </PseudoBox>
           </a>
         </ListItem>
@@ -100,7 +101,7 @@ const UserItem: React.FC<{ data?: UserData }> = ({ data }) => {
             <Flex alignItems="center" justifyContent="center">
               <Box as={FiUser} w="24px" h="auto" mr="1em" />{" "}
               <Box as="span" mt="2px">
-                Profile
+                {t("Profile")}
               </Box>
             </Flex>
           </MenuItem>
@@ -110,7 +111,7 @@ const UserItem: React.FC<{ data?: UserData }> = ({ data }) => {
             <Flex alignItems="center" justifyContent="center">
               <Box as={FiLogOut} w="24px" h="auto" mr="1em" />{" "}
               <Box as="span" mt="2px">
-                Log out
+                {t("Log out")}
               </Box>
             </Flex>
           </MenuItem>
