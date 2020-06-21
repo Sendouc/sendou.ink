@@ -4,6 +4,7 @@ import MyThemeContext from "../../themeContext"
 import Select from "../elements/Select"
 import ModeButtons from "../xtrends/ModeButtons"
 import { PlannerMapBg } from "./MapPlannerPage"
+import { useTranslation } from "react-i18next"
 
 interface MapSelectProps {
   bg: PlannerMapBg
@@ -71,6 +72,7 @@ const maps = [
 
 const MapSelect: React.FC<MapSelectProps> = ({ bg, setBg }) => {
   const { themeColor } = useContext(MyThemeContext)
+  const { t } = useTranslation()
 
   return (
     <Flex
@@ -84,8 +86,11 @@ const MapSelect: React.FC<MapSelectProps> = ({ bg, setBg }) => {
       flexDir="column"
     >
       <Select
-        options={maps}
-        value={{ label: bg.stage, value: bg.stage }}
+        options={maps.map((stage) => ({
+          value: stage.value,
+          label: t(`game;${stage.label}`),
+        }))}
+        value={{ label: t(`game;${bg.stage}`), value: bg.stage }}
         setValue={(value: any) => setBg({ ...bg, stage: value })}
         isSearchable
       />
@@ -96,8 +101,9 @@ const MapSelect: React.FC<MapSelectProps> = ({ bg, setBg }) => {
         />
       </Flex>
       <Flex justify="center" align="center" my="1em">
-        <FormLabel htmlFor="email-alerts">Show top-down view</FormLabel>
+        <FormLabel htmlFor="view">{t("Show top-down view")}</FormLabel>
         <Switch
+          id="view"
           color={themeColor}
           isChecked={bg.view === "R"}
           onChange={() => setBg({ ...bg, view: bg.view === "R" ? "M" : "R" })}

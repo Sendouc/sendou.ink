@@ -5,6 +5,7 @@ import WeaponImage from "../common/WeaponImage"
 import { Box, Flex } from "@chakra-ui/core"
 import { Weapon } from "../../types"
 import MyThemeContext from "../../themeContext"
+import { useTranslation } from "react-i18next"
 
 interface DraggableWeaponSelector {
   addWeaponImage: (weapon: Weapon) => void
@@ -14,6 +15,7 @@ const DraggableWeaponSelector: React.FC<DraggableWeaponSelector> = ({
   addWeaponImage,
 }) => {
   const { darkerBgColor } = useContext(MyThemeContext)
+  const { t } = useTranslation()
   const [activeDrags, setActiveDrags] = useState(0)
 
   const onStart = () => {
@@ -43,12 +45,12 @@ const DraggableWeaponSelector: React.FC<DraggableWeaponSelector> = ({
               padding: "0.3em",
             }}
           >
-            Weapons
+            {t("plans;Weapons")}
           </div>
         </strong>
         <Box overflowY="scroll" height="50vh">
           <Flex flexWrap="wrap">
-            {weapons.map(wpn => (
+            {weapons.map((wpn) => (
               <Box as="span" key={wpn} onClick={() => addWeaponImage(wpn)}>
                 <WeaponImage size="SMALL" englishName={wpn} />
               </Box>

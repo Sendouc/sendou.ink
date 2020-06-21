@@ -24,6 +24,7 @@ import {
 import { AiOutlineLine } from "react-icons/ai"
 import MyThemeContext from "../../themeContext"
 import { CirclePicker, ColorResult } from "react-color"
+import { useTranslation } from "react-i18next"
 
 interface PlannerColorPickerProps {
   color: string
@@ -89,6 +90,7 @@ const DraggableToolsSelector: React.FC<DraggableToolsSelectorProps> = ({
   setColor,
 }) => {
   const { darkerBgColor, themeColorHex } = useContext(MyThemeContext)
+  const { t } = useTranslation()
   const [activeDrags, setActiveDrags] = useState(0)
   useHotkeys("p", () => setTool(Tools.Pencil))
   useHotkeys("l", () => setTool(Tools.Line))
@@ -121,7 +123,7 @@ const DraggableToolsSelector: React.FC<DraggableToolsSelectorProps> = ({
             padding="0.3em"
             textAlign="center"
           >
-            Tools
+            {t("plans;Tools")}
           </Box>
         </strong>
         <Flex flexWrap="wrap" justifyContent="center">
@@ -129,86 +131,86 @@ const DraggableToolsSelector: React.FC<DraggableToolsSelectorProps> = ({
             onClick={() => setTool(Tools.Pencil)}
             variant="ghost"
             size="lg"
-            aria-label="Pencil tool"
+            aria-label={t("plans;Pencil (P)")}
             icon={FaPencilAlt}
             border={tool === Tools.Pencil ? "2px solid" : undefined}
             borderColor={themeColorHex}
-            title="Pencil (P)"
+            title={t("plans;Pencil (P)")}
           />
           <IconButton
             onClick={() => setTool(Tools.Line)}
             variant="ghost"
             size="lg"
-            aria-label="Line tool"
+            aria-label={t("plans;Line (L)")}
             icon={AiOutlineLine}
             border={tool === Tools.Line ? "2px solid" : undefined}
             borderColor={themeColorHex}
-            title="Line (L)"
+            title={t("plans;Line (L)")}
           />
           <IconButton
             onClick={() => setTool(Tools.Rectangle)}
             variant="ghost"
             size="lg"
-            aria-label="Rectangle tool"
+            aria-label={t("plans;Rectangle (R)")}
             icon={FaRegSquare}
             border={tool === Tools.Rectangle ? "2px solid" : undefined}
             borderColor={themeColorHex}
-            title="Rectangle (R)"
+            title={t("plans;Rectangle (R)")}
           />
           <IconButton
             onClick={() => setTool(Tools.Circle)}
             variant="ghost"
             size="lg"
-            aria-label="Circle tool"
+            aria-label={t("plans;Circle (C)")}
             icon={FaRegCircle}
             border={tool === Tools.Circle ? "2px solid" : undefined}
             borderColor={themeColorHex}
-            title="Circle (C)"
+            title={t("plans;Circle (C)")}
           />
           <IconButton
             onClick={() => setTool(Tools.Select)}
             variant="ghost"
             size="lg"
-            aria-label="Select tool"
+            aria-label={t("plans;Select (S)")}
             icon={FaRegObjectGroup}
             border={tool === Tools.Select ? "2px solid" : undefined}
             borderColor={themeColorHex}
-            title="Select (S)"
+            title={t("plans;Select (S)")}
           />
           <IconButton
             onClick={() => removeSelected()}
             isDisabled={removeIsDisabled}
             variant="ghost"
             size="lg"
-            aria-label="Delete tool"
+            aria-label={t("plans;Delete selected")}
             icon={FaTrashAlt}
-            title="Delete selected"
+            title={t("plans;Delete selected")}
           />
           <IconButton
             onClick={() => undo()}
             isDisabled={undoIsDisabled}
             variant="ghost"
             size="lg"
-            aria-label="Undo tool"
+            aria-label={t("plans;Undo")}
             icon={FaUndo}
-            title="Undo"
+            title={t("plans;Undo")}
           />
           <IconButton
             onClick={() => redo()}
             isDisabled={redoIsDisabled}
             variant="ghost"
             size="lg"
-            aria-label="Redo tool"
+            aria-label={t("plans;Redo")}
             icon={FaRedo}
-            title="Redo"
+            title={t("plans;Redo")}
           />
           <IconButton
             onClick={() => addText()}
             variant="ghost"
             size="lg"
-            aria-label="Add text"
+            aria-label={t("plans;Add text")}
             icon={FaFont}
-            title="Add text"
+            title={t("plans;Add text")}
           />
           <Flex justify="center" align="center">
             <PlannerColorPicker color={color} setColor={setColor} />

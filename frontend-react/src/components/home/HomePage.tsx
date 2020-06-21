@@ -16,7 +16,7 @@ const HomePage: React.FC<RouteComponentProps> = () => {
   return (
     <>
       <Helmet>
-        <title>sendou.ink | Competitive Splatoon Hub</title>
+        <title>sendou.ink | {t("home;Competitive Splatoon Hub")}</title>
       </Helmet>
       <Flex flexDirection="column" alignItems="center" mb="1.5em">
         <Image className="rgb" src={posterGirl[colorMode]} w="400px" h="auto" />

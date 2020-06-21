@@ -5,6 +5,7 @@ import tc from "../../assets/tc.png"
 import rm from "../../assets/rm.png"
 import cb from "../../assets/cb.png"
 import tw from "../../assets/tw.png"
+import { useTranslation } from "react-i18next"
 
 interface ModeButtonsProps {
   mode: "SZ" | "TC" | "RM" | "CB"
@@ -14,6 +15,7 @@ interface ModeButtonsProps {
 const iconSize = "45px"
 
 const ModeButtons: React.FC<ModeButtonsProps> = ({ mode, setMode }) => {
+  const { t } = useTranslation()
   return (
     <Flex>
       <Flex
@@ -28,11 +30,17 @@ const ModeButtons: React.FC<ModeButtonsProps> = ({ mode, setMode }) => {
           _hover={{ transform: mode === "SZ" ? undefined : "scale(1.2)" }}
           transition="all 0.2s"
         >
-          <Image src={sz} display="inline-block" w={iconSize} h={iconSize} />
+          <Image
+            src={sz}
+            display="inline-block"
+            w={iconSize}
+            h={iconSize}
+            title={t("game;Splat Zones")}
+          />
         </PseudoBox>
         {mode === "SZ" && (
           <Box fontSize="1.25em" fontWeight="bold">
-            SZ
+            {t("plans;splatZonesShort")}
           </Box>
         )}
       </Flex>
@@ -48,11 +56,17 @@ const ModeButtons: React.FC<ModeButtonsProps> = ({ mode, setMode }) => {
           _hover={{ transform: mode === "TC" ? undefined : "scale(1.2)" }}
           transition="all 0.2s"
         >
-          <Image src={tc} display="inline-block" w={iconSize} h={iconSize} />
+          <Image
+            src={tc}
+            display="inline-block"
+            w={iconSize}
+            h={iconSize}
+            title={t("game;Tower Control")}
+          />
         </PseudoBox>
         {mode === "TC" && (
           <Box fontSize="1.25em" fontWeight="bold">
-            TC
+            {t("plans;towerControlShort")}
           </Box>
         )}
       </Flex>
@@ -68,11 +82,17 @@ const ModeButtons: React.FC<ModeButtonsProps> = ({ mode, setMode }) => {
           _hover={{ transform: mode === "RM" ? undefined : "scale(1.2)" }}
           transition="all 0.2s"
         >
-          <Image src={rm} display="inline-block" w={iconSize} h={iconSize} />
+          <Image
+            src={rm}
+            display="inline-block"
+            w={iconSize}
+            h={iconSize}
+            title={t("game;Rainmaker")}
+          />
         </PseudoBox>
         {mode === "RM" && (
           <Box fontSize="1.25em" fontWeight="bold">
-            RM
+            {t("plans;rainMakerShort")}
           </Box>
         )}
       </Flex>
@@ -88,11 +108,17 @@ const ModeButtons: React.FC<ModeButtonsProps> = ({ mode, setMode }) => {
           _hover={{ transform: mode === "CB" ? undefined : "scale(1.2)" }}
           transition="all 0.2s"
         >
-          <Image src={cb} display="inline-block" w={iconSize} h={iconSize} />
+          <Image
+            src={cb}
+            display="inline-block"
+            w={iconSize}
+            h={iconSize}
+            title={t("game;Clam Blitz")}
+          />
         </PseudoBox>
         {mode === "CB" && (
           <Box fontSize="1.25em" fontWeight="bold">
-            CB
+            {t("plans;clamBlitzShort")}
           </Box>
         )}
       </Flex>

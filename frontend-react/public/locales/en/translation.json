@@ -955,5 +955,29 @@
     "calendarExplanation": "<0><0>Calendar</0></0> to discover upcoming events",
     "drawingToolExplanation": "<0><0>Map drawing tool</0></0> to easily share your plans",
     "analyzerExplanation": "<0><0>Build analyzer</0></0> to find out exactly what your builds are doing"
+  },
+  "plans": {
+    "tooNarrowAlert": "Unfortunately this tool isn't designed for narrow screens but you can still give it a go",
+    "Weapons": "Weapons",
+    "Tools": "Tools",
+    "Pencil (P)": "Pencil (P)",
+    "Line (L)": "Line (L)",
+    "Rectangle (R)": "Rectangle (R)",
+    "Circle (C)": "Circle (C)",
+    "Select (S)": "Select (S)",
+    "Delete selected": "Delete selected",
+    "Undo": "Undo",
+    "Redo": "Redo",
+    "Add text": "Add text",
+    "Clear drawings": "Clear drawings",
+    "Download as .png": "Download as .png",
+    "Download as .json": "Download as .json",
+    "Load from .json": "Load from .json",
+    "splatZonesShort": "SZ",
+    "towerControlShort": "TC",
+    "rainMakerShort": "RM",
+    "clamBlitzShort": "CB",
+    "turfWarShort": "TW",
+    "Show top-down view": "Show top-down view"
   }
 }

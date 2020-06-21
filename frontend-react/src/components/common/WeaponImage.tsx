@@ -3,6 +3,7 @@ import React from "react"
 import english_internal from "../../utils/english_internal.json"
 import { weapons } from "../../assets/imageImports"
 import { Weapon } from "../../types.js"
+import { useTranslation } from "react-i18next"
 
 interface WeaponImageProps {
   englishName: Weapon
@@ -27,13 +28,14 @@ const WeaponImage: React.FC<WeaponImageProps> = ({
   asInlineBlock,
   noTitle,
 }) => {
+  const { t } = useTranslation()
   const dictToUse: any = weapons
   const wh = sizeWhMap[size]
   return (
     <img
       src={dictToUse[english_internal[englishName]]}
-      alt={englishName}
-      title={noTitle ? undefined : englishName}
+      alt={t(`game;${englishName}`)}
+      title={noTitle ? undefined : t(`game;${englishName}`)}
       style={{
         width: wh,
         height: wh,

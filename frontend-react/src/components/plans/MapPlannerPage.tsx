@@ -19,6 +19,7 @@ import Button from "../elements/Button"
 import DraggableToolsSelector from "./DraggableToolsSelector"
 import DraggableWeaponSelector from "./DraggableWeaponSelector"
 import MapSelect from "./MapSelect"
+import { useTranslation } from "react-i18next"
 
 export interface PlannerMapBg {
   view: "M" | "R"
@@ -128,6 +129,7 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
   const [canRedo, setCanRedo] = useState(false)
   const [bg, setBg] = useState<PlannerMapBg>(REEF)
   const [controlledValue, setControlledValue] = useState(defaultValue)
+  const { t } = useTranslation()
 
   // doesn't work properly when coming back from another page - not sure why
   useLayoutEffect(() => {
@@ -264,9 +266,9 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
   return (
     <>
       <Helmet>
-        <title>Map Planner | sendou.ink</title>
+        <title>{t("navigation;Map Planner")} | sendou.ink</title>
       </Helmet>
-      <PageHeader title="Map Planner" />
+      <PageHeader title={t("navigation;Map Planner")} />
       <DraggableToolsSelector
         tool={tool}
         setTool={setTool}
@@ -285,12 +287,7 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
           addWeaponImage={(weapon) => addImageToSketch(weapon)}
         />
       </Box>
-      {isSmall && (
-        <Error
-          errorMessage="Unfortunately this tool isn't designed for narrow screens but you can
-        still give it a go."
-        />
-      )}
+      {isSmall && <Error errorMessage={t("plans;tooNarrowAlert")} />}
       <SketchField
         name="sketch"
         className="canvas-area"
@@ -314,7 +311,7 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
           outlined
           color="red"
         >
-          Clear drawings
+          {t("plans;Clear drawings")}
         </Button>
         <Box w="300px" />
         <Button
@@ -322,7 +319,7 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
           icon={FaFileImage}
           outlined
         >
-          Download as .png
+          {t("plans;Download as .png")}
         </Button>
         <Button
           onClick={() =>
@@ -335,10 +332,10 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
           icon={FaFileDownload}
           outlined
         >
-          Download as .json
+          {t("plans;Download as .json")}
         </Button>
         <Button onClick={() => handleUpload()} icon={FaFileUpload} outlined>
-          Load from .json
+          {t("plans;Load from .json")}
         </Button>
       </Flex>
       <input
