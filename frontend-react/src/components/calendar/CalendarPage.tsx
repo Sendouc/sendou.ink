@@ -1,16 +1,17 @@
 import { useQuery } from "@apollo/react-hooks"
-import { Badge, Box, Divider, Flex } from "@chakra-ui/core"
+import { Box, Divider, Flex } from "@chakra-ui/core"
 import { RouteComponentProps, useLocation } from "@reach/router"
 import React, { useContext, useEffect, useRef, useState } from "react"
 import { Helmet } from "react-helmet-async"
+import { Trans, useTranslation } from "react-i18next"
 import { FaFilter } from "react-icons/fa"
 import {
   UpcomingEventsData,
   UPCOMING_EVENTS,
 } from "../../graphql/queries/upcomingEvents"
 import MyThemeContext from "../../themeContext"
-import { getWeek, ordinal_suffix_of } from "../../utils/helperFunctions"
-import { days, months } from "../../utils/lists"
+import { getWeek } from "../../utils/helperFunctions"
+import { days } from "../../utils/lists"
 import Error from "../common/Error"
 import Loading from "../common/Loading"
 import PageHeader from "../common/PageHeader"
@@ -26,6 +27,7 @@ const badgeColor: { [key: string]: string } = {
 
 const CalendarPage: React.FC<RouteComponentProps> = () => {
   const { darkerBgColor, grayWithShade } = useContext(MyThemeContext)
+  const { t, i18n } = useTranslation()
   const location = useLocation()
   const matchingRef = useRef<HTMLDivElement>(null)
   const { data, error, loading } = useQuery<UpcomingEventsData>(UPCOMING_EVENTS)
@@ -56,16 +58,19 @@ const CalendarPage: React.FC<RouteComponentProps> = () => {
         .toLowerCase()
         .includes(filter.toLowerCase())
   )
+
+  const timeNow = new Date().toTimeString()
+
   return (
     <>
       <Helmet>
-        <title>Competitive Calendar | sendou.ink</title>
+        <title>{t("calendar;Competitive Calendar")} | sendou.ink</title>
       </Helmet>
-      <PageHeader title="Competitive Calendar" />
+      <PageHeader title={t("calendar;Competitive Calendar")} />
       <Input
         value={filter}
         setValue={(value) => setFilter(value)}
-        label="Filter tournaments"
+        label={t("calendar;Filter tournaments")}
         icon={FaFilter}
       />
       {filteredTournaments.map((event) => {
@@ -92,8 +97,12 @@ const CalendarPage: React.FC<RouteComponentProps> = () => {
             {printWeekHeader ? (
               <Box my="2em">
                 <SubHeader>
-                  Week {weekNumber}{" "}
-                  {thisWeekNumber === weekNumber && <>(This week)</>}
+                  <Trans i18nKey="calendar;weekNumber">
+                    Week {{ weekNumber }}
+                  </Trans>{" "}
+                  {thisWeekNumber === weekNumber && (
+                    <>({t("calendar;This week")})</>
+                  )}
                 </SubHeader>
               </Box>
             ) : (
@@ -106,12 +115,13 @@ const CalendarPage: React.FC<RouteComponentProps> = () => {
                 p="0.5em"
                 my="1.5em"
                 alignItems="center"
+                textTransform="capitalize"
               >
-                {months[thisMonth + 1]} {thisDay}
-                {ordinal_suffix_of(thisDay)}
-                <Badge ml="1em" variantColor={colorForBadge}>
-                  {thisDayOfTheWeek}
-                </Badge>
+                {new Date(parseInt(event.date)).toLocaleString(i18n.language, {
+                  weekday: "long",
+                  month: "long",
+                  day: "numeric",
+                })}
               </Flex>
             )}
             <div
@@ -130,10 +140,12 @@ const CalendarPage: React.FC<RouteComponentProps> = () => {
       })}
       <Divider my="2em" />
       <Box color={grayWithShade}>
-        All events listed in your local time: {new Date().toTimeString()}
-        <p style={{ marginTop: "0.5em" }}>
-          If you want your event displayed here message Sendou#0043 on Discord
-        </p>
+        <Trans i18nKey="calendar;footer">
+          All events listed in your local time: {{ timeNow }}
+          <p style={{ marginTop: "0.5em" }}>
+            If you want your event displayed here message Sendou#0043 on Discord
+          </p>
+        </Trans>
       </Box>
     </>
   )

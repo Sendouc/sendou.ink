@@ -12,6 +12,7 @@ import UserAvatar from "../common/UserAvatar"
 import Button from "../elements/Button"
 import Markdown from "../elements/Markdown"
 import TournamentModal from "./TournamentModal"
+import { useTranslation } from "react-i18next"
 
 interface TournamentInfoProps {
   tournament: CompetitiveFeedEvent
@@ -25,6 +26,7 @@ const TournamentInfo: React.FC<TournamentInfoProps> = ({
   expandedByDefault,
 }) => {
   const { themeColorWithShade, grayWithShade } = useContext(MyThemeContext)
+  const { t } = useTranslation()
   const [expanded, setExpanded] = useState(!!expandedByDefault)
   const [showModal, setShowModal] = useState(false)
   const poster = tournament.poster_discord_user
@@ -69,7 +71,7 @@ const TournamentInfo: React.FC<TournamentInfoProps> = ({
           <Box mb="1em" mr="1em">
             <a href={tournament.discord_invite_url}>
               <Button outlined icon={"discord" as any} width="150px">
-                Join Discord
+                {t("calendar;Join Discord")}
               </Button>
             </a>
           </Box>
@@ -80,7 +82,7 @@ const TournamentInfo: React.FC<TournamentInfoProps> = ({
               width="150px"
               icon={FaInfo}
             >
-              {expanded ? "Hide info" : "Show info"}
+              {expanded ? t("calendar;Hide info") : t("calendar;Show info")}
             </Button>
           </Box>
           {userData?.user?.discord_id === poster.discord_id && (
@@ -89,7 +91,7 @@ const TournamentInfo: React.FC<TournamentInfoProps> = ({
               width="150px"
               onClick={() => setShowModal(true)}
             >
-              Edit
+              {t("calendar;Edit")}
             </Button>
           )}
         </Flex>

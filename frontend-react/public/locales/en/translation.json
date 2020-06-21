@@ -979,5 +979,16 @@
     "clamBlitzShort": "CB",
     "turfWarShort": "TW",
     "Show top-down view": "Show top-down view"
+  },
+  "calendar": {
+    "Competitive Calendar": "Competitive Calendar",
+    "Filter tournaments": "Filter tournaments",
+    "weekNumber": "Week {{weekNumber}}",
+    "This week": "This week",
+    "Join Discord": "Join Discord",
+    "Hide info": "Hide info",
+    "Show info": "Show info",
+    "Edit": "Edit",
+    "footer": "All events listed in your local time: {{timeNow}}<2>If you want your event displayed here message Sendou#0043 on Discord</2>"
   }
 }
