@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React, { useContext, Suspense } from "react"
 import {
   IconButton,
   useColorMode,
@@ -12,6 +12,10 @@ import {
   MenuItem,
   MenuList,
   Box,
+  PopoverTrigger,
+  Popover,
+  PopoverContent,
+  PopoverBody,
 } from "@chakra-ui/core"
 import { Link } from "@reach/router"
 import {
@@ -29,6 +33,7 @@ import {
   FiPlus,
   FiLogIn,
   FiHeart,
+  FiGlobe,
 } from "react-icons/fi"
 import { RiTShirt2Line, RiTShirtAirLine } from "react-icons/ri"
 import Logo from "./Logo"
@@ -42,6 +47,7 @@ import ColorPicker from "./ColorPicker"
 import Error from "../common/Error"
 import MyThemeContext from "../../themeContext"
 import SideNavBanner from "./SideNavBanner"
+import { useTranslation } from "react-i18next"
 
 const UserItem: React.FC<{ data?: UserData }> = ({ data }) => {
   const { themeColorWithShade, bgColor } = useContext(MyThemeContext)
@@ -114,6 +120,18 @@ const UserItem: React.FC<{ data?: UserData }> = ({ data }) => {
   )
 }
 
+const languages = [
+  { code: "de", name: "Deutsch" },
+  { code: "en", name: "English" },
+  { code: "es", name: "Español" },
+  { code: "fr", name: "Français" },
+  { code: "it", name: "Italiano" },
+  { code: "ja", name: "日本語" },
+  { code: "nl", name: "Nederlands" },
+  { code: "ru", name: "Русский" },
+  { code: "zh", name: "汉语" },
+] as const
+
 interface SideNavProps {
   isMobile?: boolean
 }
@@ -121,10 +139,16 @@ interface SideNavProps {
 export const SideNavContent: React.FC<SideNavProps> = ({
   isMobile = false,
 }) => {
+  const { i18n } = useTranslation()
   const { colorMode, toggleColorMode } = useColorMode()
   const { data, error, loading } = useQuery<UserData>(USER)
+  const { bgColor, themeColorWithShade, darkerBgColor } = useContext(
+    MyThemeContext
+  )
 
   if (error) return <Error errorMessage={error.message} />
+
+  console.log("i18n", i18n.language)
 
   return (
     <Flex
@@ -208,6 +232,41 @@ export const SideNavContent: React.FC<SideNavProps> = ({
                 icon={colorMode === "light" ? FiSun : FiMoon}
               />
               <ColorPicker />
+              <Popover placement="top">
+                <PopoverTrigger>
+                  <IconButton
+                    aria-label="Switch language"
+                    variant="ghost"
+                    color="current"
+                    fontSize="20px"
+                    icon={FiGlobe}
+                  />
+                </PopoverTrigger>
+                <PopoverContent
+                  zIndex={4}
+                  width="150px"
+                  backgroundColor={bgColor}
+                >
+                  <PopoverBody textAlign="center">
+                    {languages.map((language) => (
+                      <PseudoBox
+                        key={language.code}
+                        cursor="pointer"
+                        color={
+                          i18n.language === language.code
+                            ? themeColorWithShade
+                            : undefined
+                        }
+                        mx="0.5em"
+                        _hover={{ bg: darkerBgColor }}
+                        onClick={() => i18n.changeLanguage(language.code)}
+                      >
+                        {language.name}
+                      </PseudoBox>
+                    ))}
+                  </PopoverBody>
+                </PopoverContent>
+              </Popover>
             </Flex>
           </DividingBox>
           {!loading && !error && <UserItem data={data} />}

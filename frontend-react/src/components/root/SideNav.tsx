@@ -1,7 +1,8 @@
 import { Box } from "@chakra-ui/core"
-import React, { useContext } from "react"
+import React, { useContext, Suspense } from "react"
 import { SideNavContent } from "./SideNavContent"
 import MyThemeContext from "../../themeContext"
+import Loading from "../common/Loading"
 
 const SideNav = () => {
   const {
@@ -24,7 +25,9 @@ const SideNav = () => {
       overflowX="hidden"
       display={["none", null, "block"]}
     >
-      <SideNavContent />
+      <Suspense fallback={<Loading />}>
+        <SideNavContent />
+      </Suspense>
     </Box>
   )
 }

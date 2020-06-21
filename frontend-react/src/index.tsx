@@ -14,6 +14,7 @@ import { LocationProvider, createHistory } from "@reach/router"
 import ApolloClient from "apollo-boost"
 import * as serviceWorker from "./serviceWorker"
 import customIcons from "./assets/icons"
+import "./i18n"
 
 const client = new ApolloClient({
   uri:

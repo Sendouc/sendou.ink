@@ -8,6 +8,7 @@ import WeaponImage from "./WeaponImage"
 import { components } from "react-select"
 import Select from "../elements/Select"
 import { Weapon } from "../../types"
+import { useTranslation } from "react-i18next"
 
 interface WeaponSelectorProps {
   value?: Weapon | Weapon[] | "" | null
@@ -21,17 +22,6 @@ interface WeaponSelectorProps {
   showAlts?: boolean
 }
 
-const singleOption = (props: any) => (
-  <components.Option {...props}>
-    <Flex alignItems="center" color={props.isFocused ? "black" : undefined}>
-      <Box mr="0.5em">
-        <WeaponImage size="SMALL" englishName={props.label} />
-      </Box>
-      {props.label}
-    </Flex>
-  </components.Option>
-)
-
 const WeaponSelector: React.FC<WeaponSelectorProps> = ({
   value,
   setValue,
@@ -43,6 +33,18 @@ const WeaponSelector: React.FC<WeaponSelectorProps> = ({
   menuIsOpen,
   showAlts,
 }) => {
+  const { t } = useTranslation()
+  const singleOption = (props: any) => (
+    <components.Option {...props}>
+      <Flex alignItems="center" color={props.isFocused ? "black" : undefined}>
+        <Box mr="0.5em">
+          <WeaponImage size="SMALL" englishName={props.label} />
+        </Box>
+        {t(`game;${props.label}`)}
+      </Flex>
+    </components.Option>
+  )
+
   return (
     <>
       <Select
