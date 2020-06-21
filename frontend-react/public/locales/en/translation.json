@@ -940,5 +940,20 @@
     "Profile": "Profile",
     "Log out": "Log out",
     "Log in via Discord": "Log in via Discord"
+  },
+  "home": {
+    "Competitive Splatoon Hub": "Competitive Splatoon Hub",
+    "Play in competitive events this week": "Play in competitive events this week",
+    "View more info": "View more info",
+    "Featuring...": "Featuring...",
+    "xRankMonths": "{{xRankMonthCount}} months of <3><0>X Rank Top 500 data</0></3>",
+    "buildCount": "<0></0> <2><0>builds</0></2>",
+    "userCount": "<0></0> <2><0>users</0></2>",
+    "faCount": "<0></0> <2><0>free agents</0></2>",
+    "tournamentCount": "<0></0> <2><0>tournament results</0></2>",
+    "As well as": "As well as",
+    "calendarExplanation": "<0><0>Calendar</0></0> to discover upcoming events",
+    "drawingToolExplanation": "<0><0>Map drawing tool</0></0> to easily share your plans",
+    "analyzerExplanation": "<0><0>Build analyzer</0></0> to find out exactly what your builds are doing"
   }
 }

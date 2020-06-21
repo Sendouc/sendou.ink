@@ -13,10 +13,12 @@ import { FiClock, FiInfo } from "react-icons/fi"
 import MyThemeContext from "../../themeContext"
 import Button from "../elements/Button"
 import { Link } from "@reach/router"
+import { useTranslation } from "react-i18next"
 
 const WeeksTournaments: React.FC = () => {
   const { themeColorWithShade, grayWithShade } = useContext(MyThemeContext)
   const { data, error, loading } = useQuery<UpcomingEventsData>(UPCOMING_EVENTS)
+  const { t } = useTranslation()
 
   if (loading) return <Loading />
   if (error) return <Error errorMessage={error.message} />
@@ -31,7 +33,7 @@ const WeeksTournaments: React.FC = () => {
 
   return (
     <>
-      <SubHeader>Play in competitive events this week</SubHeader>
+      <SubHeader>{t("home;Play in competitive events this week")}</SubHeader>
       <Flex alignItems="center" flexDirection="column">
         {events.map((tournament) => (
           <Box
@@ -55,7 +57,7 @@ const WeeksTournaments: React.FC = () => {
         <Box mt="1em">
           <Link to="/calendar">
             <Button outlined icon={FiInfo}>
-              View more info
+              {t("home;View more info")}
             </Button>
           </Link>
         </Box>

@@ -76,7 +76,7 @@ const UserItem: React.FC<{ data?: UserData }> = ({ data }) => {
                 color={themeColorWithShade}
                 size="1.5em"
               />{" "}
-              {t("Log in via Discord")}
+              {t("navigation;Log in via Discord")}
             </PseudoBox>
           </a>
         </ListItem>
@@ -101,7 +101,7 @@ const UserItem: React.FC<{ data?: UserData }> = ({ data }) => {
             <Flex alignItems="center" justifyContent="center">
               <Box as={FiUser} w="24px" h="auto" mr="1em" />{" "}
               <Box as="span" mt="2px">
-                {t("Profile")}
+                {t("navigation;Profile")}
               </Box>
             </Flex>
           </MenuItem>
@@ -111,7 +111,7 @@ const UserItem: React.FC<{ data?: UserData }> = ({ data }) => {
             <Flex alignItems="center" justifyContent="center">
               <Box as={FiLogOut} w="24px" h="auto" mr="1em" />{" "}
               <Box as="span" mt="2px">
-                {t("Log out")}
+                {t("navigation;Log out")}
               </Box>
             </Flex>
           </MenuItem>

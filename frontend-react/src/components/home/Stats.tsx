@@ -5,6 +5,7 @@ import React, { useContext } from "react"
 import { STATS } from "../../graphql/queries/stats"
 import MyThemeContext from "../../themeContext"
 import Error from "../common/Error"
+import { useTranslation, Trans } from "react-i18next"
 
 interface StatsData {
   stats: {
@@ -24,12 +25,17 @@ const xRankMonths = () => {
 const Stats: React.FC = () => {
   const { grayWithShade, themeColorWithShade } = useContext(MyThemeContext)
   const { data, error } = useQuery<StatsData>(STATS)
+  const { t } = useTranslation()
 
   if (error) return <Error errorMessage={error.message} />
 
   const stats = data?.stats
 
-  const getStatString = (value?: number) => {
+  interface StatOrSkeletonProps {
+    value?: number
+  }
+
+  const StatOrSkeleton: React.FC<StatOrSkeletonProps> = ({ value }) => {
     if (!value) {
       return (
         <Skeleton
@@ -40,13 +46,17 @@ const Stats: React.FC = () => {
         />
       )
     }
-    return value
+    return <>{value}</>
   }
+
+  const getStatString = (_asd: any) => 2
+
+  const xRankMonthCount = xRankMonths()
 
   return (
     <>
       <Box fontSize="xl" fontWeight="hairline" mt="1em" color={grayWithShade}>
-        Featuring...
+        {t("home;Featuring...")}
       </Box>
       <Flex
         flexDirection="column"
@@ -57,48 +67,58 @@ const Stats: React.FC = () => {
         textAlign="center"
       >
         <Box mb="0.5em">
-          {xRankMonths()} months of{" "}
-          <Link to="/xsearch">
-            <Box as="span" color={themeColorWithShade}>
-              X Rank Top 500 data
-            </Box>
-          </Link>
+          <Trans i18nKey="home;xRankMonths">
+            {{ xRankMonthCount }} months of{" "}
+            <Link to="/xsearch">
+              <Box as="span" color={themeColorWithShade}>
+                X Rank Top 500 data
+              </Box>
+            </Link>
+          </Trans>
         </Box>
         <Box mb="0.5em">
-          {getStatString(stats?.build_count)}{" "}
-          <Link to="/builds">
-            <Box as="span" color={themeColorWithShade}>
-              builds
-            </Box>
-          </Link>
+          <Trans i18nKey="home;buildCount">
+            <StatOrSkeleton value={stats?.build_count} />{" "}
+            <Link to="/builds">
+              <Box as="span" color={themeColorWithShade}>
+                builds
+              </Box>
+            </Link>
+          </Trans>
         </Box>
         <Box mb="0.5em">
-          {getStatString(stats?.user_count)}{" "}
-          <Link to="/u">
-            <Box as="span" color={themeColorWithShade}>
-              users
-            </Box>
-          </Link>{" "}
+          <Trans i18nKey="home;userCount">
+            <StatOrSkeleton value={stats?.user_count} />{" "}
+            <Link to="/u">
+              <Box as="span" color={themeColorWithShade}>
+                users
+              </Box>
+            </Link>{" "}
+          </Trans>
         </Box>
         <Box mb="0.5em">
-          {getStatString(stats?.fa_count)}{" "}
-          <Link to="/freeagents">
-            <Box as="span" color={themeColorWithShade}>
-              free agents
-            </Box>
-          </Link>
+          <Trans i18nKey="home;faCount">
+            <StatOrSkeleton value={stats?.fa_count} />{" "}
+            <Link to="/freeagents">
+              <Box as="span" color={themeColorWithShade}>
+                free agents
+              </Box>
+            </Link>
+          </Trans>
         </Box>
         <Box>
-          {getStatString(stats?.tournament_count)}{" "}
-          <Link to="/tournaments">
-            <Box as="span" color={themeColorWithShade}>
-              tournament results
-            </Box>
-          </Link>
+          <Trans i18nKey="home;tournamentCount">
+            <StatOrSkeleton value={stats?.tournament_count} />{" "}
+            <Link to="/tournaments">
+              <Box as="span" color={themeColorWithShade}>
+                tournament results
+              </Box>
+            </Link>
+          </Trans>
         </Box>
       </Flex>
       <Box fontSize="xl" fontWeight="hairline" mt="0.5em" color={grayWithShade}>
-        As well as
+        {t("home;As well as")}
       </Box>
       <Flex
         flexDirection="column"
@@ -108,28 +128,34 @@ const Stats: React.FC = () => {
         textAlign="center"
       >
         <Box mb="0.5em">
-          <Link to="/calendar">
-            <Box as="span" color={themeColorWithShade}>
-              Calendar
-            </Box>
-          </Link>{" "}
-          to discover upcoming events
+          <Trans i18nKey="home;calendarExplanation">
+            <Link to="/calendar">
+              <Box as="span" color={themeColorWithShade}>
+                Calendar
+              </Box>
+            </Link>{" "}
+            to discover upcoming events
+          </Trans>
         </Box>
         <Box mb="0.5em">
-          <Link to="/plans">
-            <Box as="span" color={themeColorWithShade}>
-              Map drawing tool
-            </Box>
-          </Link>{" "}
-          to easily share your plans
+          <Trans i18nKey="home;drawingToolExplanation">
+            <Link to="/plans">
+              <Box as="span" color={themeColorWithShade}>
+                Map drawing tool
+              </Box>
+            </Link>{" "}
+            to easily share your plans
+          </Trans>
         </Box>
         <Box>
-          <Link to="/analyzer">
-            <Box as="span" color={themeColorWithShade}>
-              Build analyzer
-            </Box>
-          </Link>{" "}
-          to find out exactly what your builds are doing
+          <Trans i18nKey="home;analyzerExplanation">
+            <Link to="/analyzer">
+              <Box as="span" color={themeColorWithShade}>
+                Build analyzer
+              </Box>
+            </Link>{" "}
+            to find out exactly what your builds are doing
+          </Trans>
         </Box>
       </Flex>
     </>

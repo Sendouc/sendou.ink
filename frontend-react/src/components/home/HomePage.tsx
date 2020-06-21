@@ -8,9 +8,11 @@ import "./HomePage.css"
 import { Helmet } from "react-helmet-async"
 import Stats from "./Stats"
 import WeeksTournaments from "./WeeksTournaments"
+import { useTranslation } from "react-i18next"
 
 const HomePage: React.FC<RouteComponentProps> = () => {
   const { colorMode, grayWithShade } = useContext(MyThemeContext)
+  const { t } = useTranslation()
   return (
     <>
       <Helmet>
@@ -32,7 +34,7 @@ const HomePage: React.FC<RouteComponentProps> = () => {
           fontWeight="light"
           color={grayWithShade}
         >
-          Competitive Splatoon Hub
+          {t("home;Competitive Splatoon Hub")}
         </Heading>
         <Stats />
       </Flex>
