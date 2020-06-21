@@ -23,9 +23,11 @@ import InfiniteScroll from "react-infinite-scroller"
 import PageHeader from "../common/PageHeader"
 import AbilitySelector from "./AbilitySelector"
 import Alert from "../elements/Alert"
+import { useTranslation, Trans } from "react-i18next"
 
 const BuildsPage: React.FC<RouteComponentProps> = () => {
   const { themeColor } = useContext(MyThemeContext)
+  const { t } = useTranslation()
   const [weapon, setWeapon] = useState<Weapon | null>(null)
   const [buildsToShow, setBuildsToShow] = useState(10)
   const [abilities, setAbilities] = useState<Ability[]>([])
@@ -77,10 +79,15 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
   return (
     <>
       <Helmet>
-        <title>{weapon ? `${weapon} ` : ""}Builds | sendou.ink</title>
+        <title>
+          {t("navigation;Builds")} {weapon ? `- ${t(`game;${weapon}`)}` : ""} -
+          sendou.ink
+        </title>
       </Helmet>
-      <PageHeader title="Builds" />
-      <FormLabel htmlFor="apview">Default to Ability Point view</FormLabel>
+      <PageHeader title={t("navigation;Builds")} />
+      <FormLabel htmlFor="apview">
+        {t("builds;Default to Ability Point view")}
+      </FormLabel>
       <Switch
         id="apview"
         color={themeColor}
@@ -89,7 +96,8 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
       />
       <Box mt="1em">
         <WeaponSelector
-          label="Select a weapon to start viewing builds"
+          label={t("builds;Select a weapon to start viewing builds")}
+          value={weapon}
           setValue={(weapon: string) => setWeapon(weapon as Weapon)}
           autoFocus
           menuIsOpen={!weapon}
@@ -163,20 +171,24 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
             </Flex>
           </InfiniteScroll>
           <Box w="50%" textAlign="center" mx="auto" mt="1em">
-            <Heading size="sm">No more builds to show</Heading>
+            <Heading size="sm" fontFamily="rubik">
+              {t("builds;No more builds to show")}
+            </Heading>
             <Button
               variantColor={themeColor}
               variant="outline"
               mt="1em"
               onClick={() => window.scrollTo(0, 0)}
             >
-              Return to the top
+              {t("builds;Return to the top")}
             </Button>
           </Box>
         </>
       )}
       {weapon && buildsFilterByAbilities.length === 0 && !loading && (
-        <Alert status="info">No builds found with the current filter</Alert>
+        <Alert status="info">
+          {t("builds;No builds found with the current filter")}
+        </Alert>
       )}
     </>
   )

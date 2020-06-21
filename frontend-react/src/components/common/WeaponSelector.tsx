@@ -50,7 +50,17 @@ const WeaponSelector: React.FC<WeaponSelectorProps> = ({
       <Select
         label={label}
         required={required}
-        options={showAlts ? weaponSelectOptionsWithAlts : weaponSelectOptions}
+        options={
+          showAlts
+            ? weaponSelectOptionsWithAlts.map((category) => ({
+                ...category,
+                label: t(`builds;${category.label}`),
+              }))
+            : weaponSelectOptions.map((category) => ({
+                ...category,
+                label: t(`builds;${category.label}`),
+              }))
+        }
         value={value}
         setValue={setValue}
         clearable={clearable}

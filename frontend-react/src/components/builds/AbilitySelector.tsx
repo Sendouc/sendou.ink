@@ -6,6 +6,7 @@ import AbilityIcon from "./AbilityIcon"
 import { Ability } from "../../types"
 import Button from "../elements/Button"
 import { FaFilter } from "react-icons/fa"
+import { useTranslation } from "react-i18next"
 
 interface AbilitySelectorProps {
   abilities: Ability[]
@@ -17,17 +18,18 @@ const AbilitySelector: React.FC<AbilitySelectorProps> = ({
   setAbilities,
 }) => {
   const [show, setShow] = useState(false)
+  const { t } = useTranslation()
   return show ? (
     <>
       <FieldsetWithLegend
-        title="Click an ability to filter by it"
+        title={t("builds;Click an ability to filter by it")}
         titleFontSize="md"
         centerTitle
         dividerMode
         mt="1em"
       >
         <Flex flexWrap="wrap" justifyContent="center">
-          {abilitiesGameOrder.map(ability => (
+          {abilitiesGameOrder.map((ability) => (
             <Box
               key={ability}
               p="5px"
@@ -48,13 +50,15 @@ const AbilitySelector: React.FC<AbilitySelectorProps> = ({
       {abilities.length > 0 && (
         <Box textAlign="center" width="100%">
           <FieldsetWithLegend
-            title="Only showing builds featuring the following abilities"
+            title={t(
+              "builds;Only showing builds featuring the following abilities"
+            )}
             titleFontSize="md"
             centerTitle
             fullWidth
           >
             <Flex flexWrap="wrap" justifyContent="center">
-              {abilities.map(ability => (
+              {abilities.map((ability) => (
                 <Box
                   key={ability}
                   cursor="pointer"
@@ -62,7 +66,7 @@ const AbilitySelector: React.FC<AbilitySelectorProps> = ({
                   onClick={() =>
                     setAbilities(
                       abilities.filter(
-                        abilityInArray => ability !== abilityInArray
+                        (abilityInArray) => ability !== abilityInArray
                       )
                     )
                   }
@@ -77,7 +81,7 @@ const AbilitySelector: React.FC<AbilitySelectorProps> = ({
     </>
   ) : (
     <Button icon={FaFilter} onClick={() => setShow(!show)}>
-      Filter by ability
+      {t("builds;Filter by ability")}
     </Button>
   )
 }

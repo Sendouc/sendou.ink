@@ -4,6 +4,8 @@ import MyThemeContext from "../../themeContext"
 import { SelectComponents } from "react-select/src/components"
 import Label from "./Label"
 import { Box } from "@chakra-ui/core"
+import { weapons } from "../../utils/lists"
+import { useTranslation } from "react-i18next"
 
 interface SelectProps {
   options?:
@@ -65,6 +67,7 @@ const Select: React.FC<SelectProps> = ({
     themeColorHex,
     themeColorHexLighter,
   } = useContext(MyThemeContext)
+  const { t } = useTranslation()
   const [inputValue, setInputValue] = useState("")
 
   const handleChange = (selectedOption: any) => {
@@ -82,9 +85,15 @@ const Select: React.FC<SelectProps> = ({
 
   const getValue = () => {
     if (typeof value === "string") {
-      return { label: value, value: value }
+      return {
+        label: weapons.includes(value as any) ? t(`game;${value}`) : value,
+        value: value,
+      }
     } else if (Array.isArray(value)) {
-      return value.map((weapon) => ({ label: weapon, value: weapon }))
+      return value.map((weapon) => ({
+        label: weapons.includes(weapon as any) ? t(`game;${weapon}`) : weapon,
+        value: weapon,
+      }))
     }
 
     return value

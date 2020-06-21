@@ -20,7 +20,6 @@
     "Cuttlegear": "Cuttlegear",
     "amiibo": "amiibo",
     "Princess Cannon": "Princess Cannon",
-    "": "",
     "Fire Rate": "Fire Rate",
     "Bomb Defense Up DX": "Bomb Defense Up DX",
     "Sub Power Up": "Sub Power Up",
@@ -990,5 +989,26 @@
     "Show info": "Show info",
     "Edit": "Edit",
     "footer": "All events listed in your local time: {{timeNow}}<2>If you want your event displayed here message Sendou#0043 on Discord</2>"
+  },
+  "builds": {
+    "Default to Ability Point view": "Default to Ability Point view",
+    "Select a weapon to start viewing builds": "Select a weapon to start viewing builds",
+    "Filter by ability": "Filter by ability",
+    "Click an ability to filter by it": "Click an ability to filter by it",
+    "Only showing builds featuring the following abilities": "Only showing builds featuring the following abilities",
+    "Shooters": "Shooters",
+    "Blasters": "Blasters",
+    "Rollers": "Rollers",
+    "Brushes": "Brushes",
+    "Chargers": "Chargers",
+    "Sloshers": "Sloshers",
+    "Splatlings": "Splatings",
+    "Dualies": "Dualies",
+    "Brellas": "Brellas",
+    "Maker of the build has reached top 500 with this weapon": "Maker of the build has reached top 500 with this weapon",
+    "expandBuilds": "Show all {{otherBuildCount}} builds by {{username}}",
+    "No more builds to show": "No more builds to show",
+    "No builds found with the current filter": "No builds found with the current filter",
+    "Return to the top": "Return to the top"
   }
 }

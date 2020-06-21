@@ -21,6 +21,7 @@ import BuildCardStats from "./BuildCardStats"
 import Gears from "./Gears"
 import ViewAP from "./ViewAP"
 import ViewSlots from "./ViewSlots"
+import { useTranslation, Trans } from "react-i18next"
 
 interface BuildCardProps {
   build: Build
@@ -50,10 +51,13 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
     grayWithShade,
     themeColorWithShade,
   } = useContext(MyThemeContext)
+  const { t } = useTranslation()
 
   useEffect(() => {
     setApView(defaultToAPView)
   }, [defaultToAPView])
+
+  const username = build.discord_user!.username
 
   return (
     <>
@@ -79,7 +83,9 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
                 alt="x rank top 500 logo"
                 height="40px"
                 width="auto"
-                title="Maker of the build has reached top 500 with this weapon"
+                title={t(
+                  "builds;Maker of the build has reached top 500 with this weapon"
+                )}
               />
             )}
           </Box>
@@ -212,8 +218,9 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
                 cursor="pointer"
                 _hover={{ textDecoration: "underline" }}
               >
-                Show all {otherBuildCount} builds by{" "}
-                {build.discord_user!.username}
+                <Trans i18nKey="builds;expandBuilds">
+                  Show all {{ otherBuildCount }} builds by {{ username }}
+                </Trans>
               </PseudoBox>
             )}
           </Box>
