@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import { getEffect } from "../utils/getAbilityEffect"
 import weaponJson from "../utils/weapon_data.json"
 import abilityJson from "../utils/ability_data.json"
+import { useTranslation } from "react-i18next"
 
 export interface Explanation {
   title: string
@@ -87,6 +88,7 @@ export default function useAbilityEffects(
   bonusAp: Partial<Record<Ability, boolean>> = {},
   lde: number = 0
 ) {
+  const { t } = useTranslation()
   const [explanations, setExplanations] = useState<Explanation[]>([])
   const weaponData: Record<Weapon | SubWeapon | SpecialWeapon, any> = weaponJson
 
@@ -126,8 +128,8 @@ export default function useAbilityEffects(
       const title =
         build.weapon!.includes("Splatling") ||
         build.weapon!.includes("Nautilus")
-          ? "Full charges per ink tank"
-          : "Shots per ink tank"
+          ? t("analyzer;Full charges per ink tank")
+          : t("analyzer;Shots per ink tank")
 
       const tank = build.weapon!.includes("Jr.") ? 1.1 : 1
       toReturn.push({
@@ -148,7 +150,7 @@ export default function useAbilityEffects(
     const mInkConsumeRepeat = buildWeaponData.mInkConsume_Repeat
     if (mInkConsumeRepeat && mInkConsumeRepeat !== mInkConsume) {
       toReturn.push({
-        title: "Shots per ink tank (autofire mode)",
+        title: t("analyzer;Shots per ink tank (autofire mode)"),
         effect: `${parseFloat(
           (1 / (mInkConsumeRepeat * effect[0])).toFixed(2)
         )}`,
@@ -167,7 +169,7 @@ export default function useAbilityEffects(
     const mFullChargeInkConsume = buildWeaponData.mFullChargeInkConsume
     if (mFullChargeInkConsume) {
       toReturn.push({
-        title: "Fully charged shots per ink tank",
+        title: t("analyzer;Fully charged shots per ink tank"),
         effect: `${parseFloat(
           (1 / (mFullChargeInkConsume * effect[0])).toFixed(2)
         )}`,
@@ -189,7 +191,7 @@ export default function useAbilityEffects(
     const mMinChargeInkConsume = buildWeaponData.mMinChargeInkConsume
     if (mMinChargeInkConsume) {
       toReturn.push({
-        title: "Tap shots per ink tank",
+        title: t("analyzer;Tap shots per ink tank"),
         effect: `${parseFloat(
           (1 / (mMinChargeInkConsume * effect[0])).toFixed(2)
         )}`,
@@ -215,7 +217,7 @@ export default function useAbilityEffects(
       mInkConsumeSplashJump === mInkConsumeSplashStand
     ) {
       toReturn.push({
-        title: "Swings per ink tank",
+        title: t("analyzer;Swings per ink tank"),
         effect: `${parseFloat(
           (1 / (mInkConsumeSplashJump * effect[0])).toFixed(2)
         )}`,
@@ -234,7 +236,7 @@ export default function useAbilityEffects(
       })
     } else if (mInkConsumeSplashJump && mInkConsumeSplashStand) {
       toReturn.push({
-        title: "Ground swings per ink tank",
+        title: t("analyzer;Ground swings per ink tank"),
         effect: `${parseFloat(
           (1 / (mInkConsumeSplashStand * effect[0])).toFixed(2)
         )}`,
@@ -253,7 +255,7 @@ export default function useAbilityEffects(
       })
 
       toReturn.push({
-        title: "Jumping swings per ink tank",
+        title: t("analyzer;Jumping swings per ink tank"),
         effect: `${parseFloat(
           (1 / (mInkConsumeSplashJump * effect[0])).toFixed(2)
         )}`,
@@ -275,10 +277,10 @@ export default function useAbilityEffects(
     const mSideStepInkConsume = buildWeaponData.mSideStepInkConsume
     if (mSideStepInkConsume) {
       toReturn.push({
-        title: "Dodge roll ink consumption",
+        title: t("analyzer;Dodge roll ink consumption"),
         effect: `${parseFloat(
           (mSideStepInkConsume * effect[0] * 100).toFixed(2)
-        )}% of ink tank`,
+        )}% ${t("analyzer;of ink tank")}`,
         effectFromMax: effect[1],
         effectFromMaxActual: parseFloat(
           (mSideStepInkConsume * effect[0] * 100).toFixed(2)
@@ -297,10 +299,10 @@ export default function useAbilityEffects(
     const mInkConsumeUmbrella = buildWeaponData.mInkConsumeUmbrella
     if (mInkConsumeUmbrella) {
       toReturn.push({
-        title: "Brella shield launch ink consumption",
+        title: t("analyzer;Brella shield launch ink consumption"),
         effect: `${parseFloat(
           (mInkConsumeUmbrella * effect[0] * 100).toFixed(2)
-        )}% of ink tank`,
+        )}% ${t("analyzer;of ink tank")}`,
         effectFromMax: effect[1],
         effectFromMaxActual: parseFloat(
           (mInkConsumeUmbrella * effect[0] * 100).toFixed(2)
@@ -338,12 +340,14 @@ export default function useAbilityEffects(
     const highMidLow = [high, mid, low]
     const effect = getEffect(highMidLow, amount)
     const tank = build.weapon!.includes("Jr.") ? 1.1 : 1
+
+    const subWeaponTranslated = t(`game;${subWeapon}`)
     return [
       {
-        title: `${subWeapon} ink consumption`,
+        title: `${subWeaponTranslated} ${t("analyzer;ink consumption")}`,
         effect: `${parseFloat(
           (((effect[0] * inkConsumption) / tank) * 100).toFixed(2)
-        )}% of ink tank`,
+        )}% ${t("analyzer;of ink tank")}`,
         effectFromMax: effect[1],
         effectFromMaxActual: parseFloat(
           (((effect[0] * inkConsumption) / tank) * 100).toFixed(2)
@@ -377,10 +381,12 @@ export default function useAbilityEffects(
 
     return [
       {
-        title: "Ink tank recovery from empty to full (squid form)",
-        effect: `${Math.ceil(effectSquid[0] * tank)} frames (${parseFloat(
+        title: t("analyzer;Ink tank recovery from empty to full (squid form)"),
+        effect: `${Math.ceil(effectSquid[0] * tank)} ${t(
+          "analyzer;frames"
+        )} (${parseFloat(
           (Math.ceil(effectSquid[0] * tank) / 60).toFixed(2)
-        )} seconds)`,
+        )} ${t("analyzer;seconds")})`,
         effectFromMax: effectSquid[1],
         effectFromMaxActual:
           (effectSquid[0] / getEffect(highMidLowSquid, 0)[0]) * 100,
@@ -429,10 +435,10 @@ export default function useAbilityEffects(
 
     return [
       {
-        title: "Run speed",
-        effect: `${parseFloat(
-          moveEffect[0].toFixed(2)
-        )} distance units / frame`,
+        title: t("analyzer;Run speed"),
+        effect: `${parseFloat(moveEffect[0].toFixed(2))} ${t(
+          "analyzer;distance units / frame"
+        )}`,
         effectFromMax: moveEffect[1],
         effectFromMaxActual: (moveEffect[0] / 2.4) * 100,
         ability: "RSU" as Ability,
@@ -441,10 +447,10 @@ export default function useAbilityEffects(
           parseFloat(getEffect(highMidLow, ap)[0].toFixed(4)),
       },
       {
-        title: "Run speed (firing)",
-        effect: `${parseFloat(
-          (shootEffect[0] * moveSpeed).toFixed(2)
-        )} distance units / frame`,
+        title: t("analyzer;Run speed (firing)"),
+        effect: `${parseFloat((shootEffect[0] * moveSpeed).toFixed(2))} ${t(
+          "analyzer;distance units / frame"
+        )}`,
         effectFromMax: shootEffect[1],
         effectFromMaxActual: ((shootEffect[0] * moveSpeed) / 2.4) * 100,
         ability: "RSU" as Ability,
@@ -484,8 +490,10 @@ export default function useAbilityEffects(
 
     return [
       {
-        title: "Swim speed",
-        effect: `${parseFloat(speed.toFixed(2))} distance units / frame`,
+        title: t("analyzer;Swim speed"),
+        effect: `${parseFloat(speed.toFixed(2))} ${t(
+          "analyzer;distance units / frame"
+        )}`,
         effectFromMax: effect[1],
         effectFromMaxActual: (speed / 2.4) * 100,
         ability: "SSU" as Ability,
@@ -511,10 +519,12 @@ export default function useAbilityEffects(
 
     return [
       {
-        title: "Points to special",
-        effect: `${Math.ceil(points / effect[0])}p (${parseFloat(
-          (effect[0] * 100).toFixed(2)
-        )}% speed)`,
+        title: t("analyzer;Points to special"),
+        effect: `${Math.ceil(points / effect[0])}${t(
+          "analyzer;pointShort"
+        )} (${parseFloat((effect[0] * 100).toFixed(2))}% ${t(
+          "analyzer;speed"
+        )})`,
         effectFromMax: effect[1],
         effectFromMaxActual: (getEffect(highMidLow, 0)[0] / effect[0]) * 100,
         ability: "SCU" as Ability,
@@ -538,10 +548,10 @@ export default function useAbilityEffects(
     const toReturn = []
 
     toReturn.push({
-      title: "Special lost when killed",
-      effect: `${parseFloat(
-        ((1.0 - effect[0]) * 100).toFixed(2)
-      )}% of the charge`,
+      title: t("analyzer;Special lost when killed"),
+      effect: `${parseFloat(((1.0 - effect[0]) * 100).toFixed(2))}% ${t(
+        "analyzer;of the charge"
+      )}`,
       effectFromMax: effect[1],
       effectFromMaxActual: (1.0 - effect[0]) * 100,
       ability: "SS" as Ability,
@@ -563,8 +573,10 @@ export default function useAbilityEffects(
       const fromMax = (lost - effectAtZero[0]) / 0.25
 
       toReturn.push({
-        title: "Special lost when killed mid-Splashdown",
-        effect: `${parseFloat(((1.0 - lost) * 100).toFixed(2))}% of the charge`,
+        title: t("analyzer;Special lost when killed mid-Splashdown"),
+        effect: `${parseFloat(((1.0 - lost) * 100).toFixed(2))}% ${t(
+          "analyzer;of the charge"
+        )}`,
         effectFromMax: fromMax,
         effectFromMaxActual: parseFloat(((1.0 - lost) * 100).toFixed(2)),
         ability: "SS" as Ability,
@@ -587,6 +599,8 @@ export default function useAbilityEffects(
 
     const toReturn = []
 
+    const specialWeaponTranslated = t(`game;${specialWeapon}`)
+
     if (
       specialWeaponData.mPaintGauge_SpecialFrm &&
       specialWeaponData.mPaintGauge_SpecialFrmM &&
@@ -603,17 +617,19 @@ export default function useAbilityEffects(
 
       const effect = getEffect(highMidLow, amount)
       toReturn.push({
-        title: `${specialWeapon} duration`,
-        effect: `${Math.ceil(effect[0])} frames (${parseFloat(
+        title: `${specialWeaponTranslated} ${t("analyzer;duration")}`,
+        effect: `${Math.ceil(effect[0])} ${t("analyzer;frames")} (${parseFloat(
           (Math.ceil(effect[0]) / 60).toFixed(2)
-        )} seconds)`,
+        )} ${t("analyzer;seconds")})`,
         effectFromMax: effect[1],
         effectFromMaxActual:
           (effect[0] / getEffect(highMidLow, MAX_AP)[0]) * 100,
         ability: "SPU" as Ability,
         info:
           specialWeapon === "Inkjet"
-            ? "Special Power Up also increases Inkjet's shots' painting and blast radius"
+            ? t(
+                "analyzer;Special Power Up also increases Inkjet's shots' painting and blast radius"
+              )
             : undefined,
         ap: amount,
         getEffect: (ap: number) => Math.ceil(getEffect(highMidLow, ap)[0]),
@@ -637,7 +653,7 @@ export default function useAbilityEffects(
       const effectPaint = getEffect(highMidLowPaint, amount)
       const effectPaintAtZero = getEffect(highMidLowPaint, 0)
       toReturn.push({
-        title: "Tenta Missiles reticle size",
+        title: `${specialWeaponTranslated} ${t("analyzer;reticle size")}`,
         effect: `${parseFloat(
           ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
         )}%`,
@@ -652,7 +668,7 @@ export default function useAbilityEffects(
           ),
       })
       toReturn.push({
-        title: "Tenta Missiles ink coverage",
+        title: `${specialWeaponTranslated} ${t("analyzer;ink coverage")}`,
         effect: `${parseFloat(
           ((effectPaint[0] / effectPaintAtZero[0]) * 100).toFixed(2)
         )}%`,
@@ -688,7 +704,7 @@ export default function useAbilityEffects(
       const effectMiddle = getEffect(highMidLowMiddle, amount)
       const effectAtZeroMiddle = getEffect(highMidLowMiddle, 0)
       toReturn.push({
-        title: "Splashdown 180dmg hitbox size",
+        title: `${specialWeaponTranslated} ${t("analyzer;180dmg hitbox size")}`,
         effect: `${parseFloat(
           ((effectNear[0] / effectAtZeroNear[0]) * 100).toFixed(2)
         )}%`,
@@ -706,7 +722,7 @@ export default function useAbilityEffects(
           ),
       })
       toReturn.push({
-        title: "Splashdown 70dmg hitbox size",
+        title: `${specialWeaponTranslated} ${t("analyzer;70dmg hitbox size")}`,
         effect: `${parseFloat(
           ((effectMiddle[0] / effectAtZeroMiddle[0]) * 100).toFixed(2)
         )}%`,
@@ -714,8 +730,9 @@ export default function useAbilityEffects(
         effectFromMaxActual:
           (effectMiddle[0] / getEffect(highMidLowMiddle, MAX_AP)[0]) * 100,
         ability: "SPU" as Ability,
-        info:
-          "55dmg hitbox can't be increased with Special Power Up so the total radius of the special doesn't change",
+        info: t(
+          "analyzer;55dmg hitbox can't be increased with Special Power Up so the total radius of the special doesn't change"
+        ),
         ap: amount,
         getEffect: (ap: number) =>
           parseFloat(
@@ -735,10 +752,10 @@ export default function useAbilityEffects(
 
       const effect = getEffect(highMidLow, amount)
       toReturn.push({
-        title: `Ink Armor activation time`,
-        effect: `${Math.ceil(effect[0])} frames (${parseFloat(
+        title: `${specialWeaponTranslated} ${t("analyzer;activation time")}`,
+        effect: `${Math.ceil(effect[0])} ${t("analyzer;frames")} (${parseFloat(
           (Math.ceil(effect[0]) / 60).toFixed(2)
-        )} seconds)`,
+        )} ${t("analyzer;seconds")})`,
         effectFromMax: effect[1],
         ability: "SPU" as Ability,
         ap: amount,
@@ -755,14 +772,15 @@ export default function useAbilityEffects(
 
       const effect = getEffect(highMidLow, amount)
       toReturn.push({
-        title: `Ink Storm duration`,
-        effect: `${Math.ceil(effect[0])} frames (${parseFloat(
+        title: `${specialWeaponTranslated} ${t("analyzer;duration")}`,
+        effect: `${Math.ceil(effect[0])} ${t("analyzer;frames")} (${parseFloat(
           (Math.ceil(effect[0]) / 60).toFixed(2)
-        )} seconds)`,
+        )} ${t("analyzer;seconds")})`,
         effectFromMax: effect[1],
         ability: "SPU" as Ability,
-        info:
-          "Amount inked by Ink Storm is not increased only in how long distance the droplets are spread. Special Power Up also increases the distance you can throw the seed.",
+        info: t(
+          "analyzer;Amount inked by Ink Storm is not increased only in how long distance the droplets are spread. Special Power Up also increases the distance you can throw the seed."
+        ),
         ap: amount,
         effectFromMaxActual:
           (effect[0] / getEffect(highMidLow, MAX_AP)[0]) * 100,
@@ -778,8 +796,9 @@ export default function useAbilityEffects(
 
       const effect = getEffect(highMidLow, amount)
       const effectAtZero = getEffect(highMidLow, 0)
+
       toReturn.push({
-        title: `Baller durability`,
+        title: `${specialWeaponTranslated} ${t("analyzer;durability")}`,
         effect: `${parseFloat(
           ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
         )}%`,
@@ -803,7 +822,9 @@ export default function useAbilityEffects(
       const effectAtZeroHit = getEffect(highMidLowHit, 0)
 
       toReturn.push({
-        title: `Baller 55dmg explosion hitbox size`,
+        title: `${specialWeaponTranslated} ${t(
+          "analyzer;55dmg explosion hitbox size"
+        )}`,
         effect: `${parseFloat(
           ((effectHit[0] / effectAtZeroHit[0]) * 100).toFixed(2)
         )}%`,
@@ -831,7 +852,7 @@ export default function useAbilityEffects(
       const effectSize = getEffect(highMidLowSize, amount)
       const effectAtZeroSize = getEffect(highMidLowSize, 0)
       toReturn.push({
-        title: `Bubble Blower bubble size`,
+        title: `${specialWeaponTranslated} ${t("analyzer;bubble size")}`,
         effect: `${parseFloat(
           ((effectSize[0] / effectAtZeroSize[0]) * 100).toFixed(2)
         )}%`,
@@ -857,7 +878,7 @@ export default function useAbilityEffects(
       const effectHit = getEffect(highMidLowHit, amount)
       const effectAtZeroHit = getEffect(highMidLowHit, 0)
       toReturn.push({
-        title: `Bubble Blower explosion hitbox`,
+        title: `${specialWeaponTranslated} ${t("analyzer;explosion hitbox")}`,
         effect: `${parseFloat(
           ((effectHit[0] / effectAtZeroHit[0]) * 100).toFixed(2)
         )}%`,
@@ -885,7 +906,7 @@ export default function useAbilityEffects(
       const effect = getEffect(highMidLow, amount)
       const effectAtZero = getEffect(highMidLow, 0)
       toReturn.push({
-        title: `Booyah Bomb autocharge speed`,
+        title: `${specialWeaponTranslated} ${t("analyzer;autocharge speed")}`,
         effect: `${parseFloat(
           ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
         )}%`,
@@ -927,15 +948,16 @@ export default function useAbilityEffects(
 
     return [
       {
-        title: "Quick Respawn time",
-        effect: `${totalFrames} frames (${parseFloat(
+        title: `${t("game;Quick Respawn")} ${t("analyzer;time")}`,
+        effect: `${totalFrames} ${t("analyzer;frames")} (${parseFloat(
           (totalFrames / 60).toFixed(2)
-        )} seconds)`,
+        )} ${t("analyzer;seconds")})`,
         effectFromMax: effectAround[1],
         effectFromMaxActual: (totalFrames / effectAtZero) * 100,
         ability: "QR" as Ability,
-        info:
-          "Quick Respawn activates when enemy kills you twice without you getting a kill in between",
+        info: t(
+          "analyzer;Quick Respawn activates when enemy kills you twice without you getting a kill in between"
+        ),
         ap: amount,
         getEffect: (ap: number) =>
           Math.ceil(
@@ -964,10 +986,14 @@ export default function useAbilityEffects(
 
     return [
       {
-        title: "Quick Super Jump time (on the ground)",
-        effect: `${Math.ceil(effectTame[0])} frames (${parseFloat(
-          (Math.ceil(effectTame[0]) / 60).toFixed(2)
-        )} seconds)`,
+        title: `${t("game;Quick Super Jump")} ${t("analyzer;time")} ${t(
+          "analyzer;(on the ground)"
+        )}`,
+        effect: `${Math.ceil(effectTame[0])} ${t(
+          "analyzer;frames"
+        )} (${parseFloat((Math.ceil(effectTame[0]) / 60).toFixed(2))} ${t(
+          "analyzer;seconds"
+        )})`,
         effectFromMax: effectTame[1],
         effectFromMaxActual:
           (effectTame[0] / getEffect(highMidLowTame, 0)[0]) * 100,
@@ -976,10 +1002,14 @@ export default function useAbilityEffects(
         getEffect: (ap: number) => Math.ceil(getEffect(highMidLowTame, ap)[0]),
       },
       {
-        title: "Quick Super Jump time (in the air)",
-        effect: `${Math.ceil(effectMove[0])} frames (${parseFloat(
-          (Math.ceil(effectMove[0]) / 60).toFixed(2)
-        )} seconds)`,
+        title: `${t("game;Quick Super Jump")} ${t("analyzer;time")} ${t(
+          "analyzer;(in the air)"
+        )}`,
+        effect: `${Math.ceil(effectMove[0])} ${t(
+          "analyzer;frames"
+        )} (${parseFloat((Math.ceil(effectMove[0]) / 60).toFixed(2))} ${t(
+          "analyzer;seconds"
+        )})`,
         effectFromMax: effectMove[1],
         ability: "QSJ" as Ability,
         ap: amount,
@@ -997,6 +1027,8 @@ export default function useAbilityEffects(
     const subWeaponData = weaponData[subWeapon]
 
     const toReturn = []
+
+    const subWeaponTranslated = t(`game;${subWeapon}`)
 
     if (
       [
@@ -1026,7 +1058,7 @@ export default function useAbilityEffects(
       const effectVeloAtZero = getEffect(highMidLowVelo, 0)
 
       toReturn.push({
-        title: `${subWeapon} range and velocity`,
+        title: `${subWeaponTranslated} ${t("analyzer;range and velocity")}`,
         effect: `${parseFloat(
           ((effectVelo[0] / effectVeloAtZero[0]) * 100).toFixed(2)
         )}% (${parseFloat(effectVelo[0].toFixed(2))})`,
@@ -1048,10 +1080,14 @@ export default function useAbilityEffects(
       const effectFirst = getEffect(highMidLowFirst, amount)
 
       toReturn.push({
-        title: "Sprinkler full-power phase duration",
-        effect: `${Math.ceil(effectFirst[0])} frames (${parseFloat(
-          (Math.ceil(effectFirst[0]) / 60).toFixed(2)
-        )} seconds)`,
+        title: `${subWeaponTranslated} ${t(
+          "analyzer;full-power phase duration"
+        )}`,
+        effect: `${Math.ceil(effectFirst[0])} ${t(
+          "analyzer;frames"
+        )} (${parseFloat((Math.ceil(effectFirst[0]) / 60).toFixed(2))} ${t(
+          "analyzer;seconds"
+        )})`,
         effectFromMax: effectFirst[1],
         ability: "BRU" as Ability,
         ap: amount,
@@ -1067,10 +1103,12 @@ export default function useAbilityEffects(
       const effectSecond = getEffect(highMidLowSecond, amount)
 
       toReturn.push({
-        title: "Sprinkler mid-phase duration",
-        effect: `${Math.ceil(effectSecond[0])} frames (${parseFloat(
-          (Math.ceil(effectSecond[0]) / 60).toFixed(2)
-        )} seconds)`,
+        title: `${subWeaponTranslated} ${t("analyzer;mid-phase duration")}`,
+        effect: `${Math.ceil(effectSecond[0])} ${t(
+          "analyzer;frames"
+        )} (${parseFloat((Math.ceil(effectSecond[0]) / 60).toFixed(2))} ${t(
+          "analyzer;seconds"
+        )})`,
         effectFromMax: effectSecond[1],
         ability: "BRU" as Ability,
         ap: amount,
@@ -1089,10 +1127,10 @@ export default function useAbilityEffects(
       const effect = getEffect(highMidLow, amount)
 
       toReturn.push({
-        title: `${subWeapon} tracking duration`,
-        effect: `${Math.ceil(effect[0])} frames (${parseFloat(
+        title: `${subWeaponTranslated} ${t("analyzer;tracking duration")}`,
+        effect: `${Math.ceil(effect[0])} ${t("analyzer;frames")} (${parseFloat(
           (Math.ceil(effect[0]) / 60).toFixed(2)
-        )} seconds)`,
+        )} ${t("analyzer;seconds")})`,
         effectFromMax: effect[1],
         ability: "BRU" as Ability,
         ap: amount,
@@ -1111,7 +1149,7 @@ export default function useAbilityEffects(
       const effectAtZero = getEffect(highMidLow, 0)
 
       toReturn.push({
-        title: "Ink Mine tracking range",
+        title: `${subWeaponTranslated} ${t("analyzer;tracking range")}`,
         effect: `${parseFloat(
           ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
         )}%`,
@@ -1133,7 +1171,7 @@ export default function useAbilityEffects(
       const effectAtZero = getEffect(highMidLow, 0)
 
       toReturn.push({
-        title: "Splash Wall durability",
+        title: `${subWeaponTranslated} ${t("analyzer;durability")}`,
         effect: `${parseFloat(
           ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
         )}%`,
@@ -1157,8 +1195,10 @@ export default function useAbilityEffects(
       const effect = getEffect(highMidLow, amount)
 
       toReturn.push({
-        title: "Squid Beakon Quick Super Jump boost",
-        effect: `${Math.floor(effect[0])}AP`,
+        title: `${subWeaponTranslated} ${t("game;Quick Super Jump")} ${t(
+          "analyzer;boost"
+        )}`,
+        effect: `${Math.floor(effect[0])}${t("analyzer;abilityPointShort")}`,
         effectFromMax: effect[1],
         ability: "BRU" as Ability,
         ap: amount,
@@ -1167,8 +1207,9 @@ export default function useAbilityEffects(
             Math.floor(getEffect(highMidLow, MAX_AP)[0])) *
           100,
         getEffect: (ap: number) => Math.floor(getEffect(highMidLow, ap)[0]),
-        info:
-          "When jumping to Sub Power Up boosted beakons QSJ AP bonus is applied on top of any existing QSJ the jumper has. 57AP can't be exceeded. Value shown is the bonus if the user of Beakon has 0AP invested in QSJ.",
+        info: t(
+          "analyzer;When jumping to Sub Power Up boosted beakons QSJ AP bonus is applied on top of any existing QSJ the jumper has. 57AP can't be exceeded. Value shown is the bonus if the user of Beakon has 0AP invested in QSJ."
+        ),
       })
     }
 

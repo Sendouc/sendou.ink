@@ -2,6 +2,7 @@ import React, { useContext } from "react"
 import { Box, Switch, FormLabel, Flex } from "@chakra-ui/core"
 import MyThemeContext from "../../themeContext"
 import AbilityIcon from "../builds/AbilityIcon"
+import { useTranslation } from "react-i18next"
 
 interface HeadOnlyToggleProps {
   ability: "OG" | "CB"
@@ -15,6 +16,7 @@ const HeadOnlyToggle: React.FC<HeadOnlyToggleProps> = ({
   setActive,
 }) => {
   const { themeColor, themeColorWithShade } = useContext(MyThemeContext)
+  const { t } = useTranslation()
   return (
     <Flex
       justifyContent="center"
@@ -36,7 +38,7 @@ const HeadOnlyToggle: React.FC<HeadOnlyToggleProps> = ({
       </Box>
       {active && ability === "OG" && (
         <Box color={themeColorWithShade} fontWeight="bold" mt="1em">
-          +15AP{" "}
+          +15{t("analyzer;abilityPointShort")}{" "}
           {["SSU", "RSU", "RES"].map((ability) => (
             <Box as="span" mx="0.2em" key={ability}>
               <AbilityIcon ability={ability as any} size="SUBTINY" />
@@ -46,7 +48,7 @@ const HeadOnlyToggle: React.FC<HeadOnlyToggleProps> = ({
       )}
       {active && ability === "CB" && (
         <Box color={themeColorWithShade} fontWeight="bold" mt="1em">
-          +10AP{" "}
+          +10{t("analyzer;abilityPointShort")}{" "}
           {["ISM", "ISS", "REC", "RSU", "SSU", "SCU"].map((ability) => (
             <Box as="span" mx="0.2em" key={ability}>
               <AbilityIcon ability={ability as any} size="SUBTINY" />

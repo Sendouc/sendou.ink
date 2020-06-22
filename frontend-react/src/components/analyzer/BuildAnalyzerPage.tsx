@@ -11,6 +11,9 @@ import EditableBuilds from "./EditableBuilds"
 import MyThemeContext from "../../themeContext"
 import { FaWrench } from "react-icons/fa"
 import Button from "../elements/Button"
+import { useTranslation, Trans } from "react-i18next"
+
+const CURRENT_PATCH = "5.2."
 
 const defaultBuild: Partial<Build> = {
   headgear: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
@@ -20,6 +23,7 @@ const defaultBuild: Partial<Build> = {
 
 const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
   const { themeColor, grayWithShade } = useContext(MyThemeContext)
+  const { t } = useTranslation()
   const location = useLocation()
   const [build, setBuild] = useState<Partial<Build>>(getBuildFromUrl())
   const [otherBuild, setOtherBuild] = useState<Partial<Build>>({
@@ -70,13 +74,17 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
   return (
     <>
       <Helmet>
-        <title>Build Analyzer | sendou.ink</title>
+        <title>{t("navigation;Build Analyzer")} | sendou.ink</title>
       </Helmet>
-      <PageHeader title="Build Analyzer" />
+      <PageHeader title={t("navigation;Build Analyzer")} />
       <Flex justifyContent="space-between">
-        <Badge variantColor={themeColor}>Patch 5.2.</Badge>
+        <Badge variantColor={themeColor}>
+          <Trans i18nKey="analyzer;currentPatch">
+            Patch {{ CURRENT_PATCH }}
+          </Trans>
+        </Badge>
         <Box color={grayWithShade} fontSize="0.75em">
-          AP = Ability Point = Mains * 10 + Subs * 3
+          {t("analyzer;apExplanation")}
         </Box>
       </Flex>
 
@@ -117,7 +125,9 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
         onClick={() => setShowSettings(!showSettings)}
         mt="1em"
       >
-        {showSettings ? "Hide settings" : "Show settings"}
+        {showSettings
+          ? t("analyzer;Hide settings")
+          : t("analyzer;Show settings")}
       </Button>
       {showSettings && (
         <Box my="1em">
@@ -128,7 +138,9 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
             onChange={() => setHideExtra(!hideExtra)}
             mr="0.5em"
           />
-          <FormLabel htmlFor="show-all">Hide stats at base value</FormLabel>
+          <FormLabel htmlFor="show-all">
+            {t("analyzer;Hide stats at base value")}
+          </FormLabel>
 
           <Box>
             <Switch
@@ -139,7 +151,7 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
               mr="0.5em"
             />
             <FormLabel htmlFor="show-not-actual">
-              Progress bars show progress to max value
+              {t("analyzer;Progress bars show progress to max value")}
             </FormLabel>
           </Box>
           <Box>
@@ -151,7 +163,7 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
               mr="0.5em"
             />
             <FormLabel htmlFor="charts-zero">
-              Start charts Y axis from zero
+              {t("analyzer;Start charts Y axis from zero")}
             </FormLabel>
           </Box>
         </Box>

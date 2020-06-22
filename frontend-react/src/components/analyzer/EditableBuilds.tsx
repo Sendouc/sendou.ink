@@ -19,6 +19,7 @@ import Button from "../elements/Button"
 import { FaPlus, FaMinus } from "react-icons/fa"
 import HeadOnlyToggle from "./HeadOnlyToggle"
 import LdeSlider from "./LdeSlider"
+import { useTranslation } from "react-i18next"
 
 interface EditableBuildsProps {
   build: Partial<Build>
@@ -59,6 +60,7 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
   setLde,
   setOtherLde,
 }) => {
+  const { t } = useTranslation()
   const buildToEdit = otherFocused ? otherBuild : build
   const handleChange = (value: Object) => setBuild({ ...buildToEdit, ...value })
 
@@ -169,7 +171,7 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
         mt="1em"
         mb="2em"
       >
-        {showOther ? "Stop comparing" : "Compare"}
+        {showOther ? t("analyzer;Stop comparing") : t("analyzer;Compare")}
       </Button>
       <Flex justifyContent="space-evenly" flexWrap="wrap" mb="1em">
         <Flex flexDirection="column">
@@ -179,7 +181,7 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
               color="orange"
               onClick={() => changeFocus()}
             >
-              {!otherFocused ? "Editing" : "Edit"}
+              {!otherFocused ? t("analyzer;Editing") : t("calendar;Edit")}
             </Button>
           )}
           <ViewSlots

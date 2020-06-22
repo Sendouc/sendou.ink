@@ -28,7 +28,7 @@
     "apollo-boost": "^0.4.9",
     "emotion-theming": "^10.0.27",
     "graphql": "^15.1.0",
-    "i18next": "^19.5.0",
+    "i18next": "^19.5.1",
     "i18next-browser-languagedetector": "^5.0.0",
     "i18next-http-backend": "^1.0.15",
     "jstz": "^2.1.1",

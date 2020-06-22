@@ -9,6 +9,7 @@ import {
   SliderThumb,
 } from "@chakra-ui/core"
 import AbilityIcon from "../builds/AbilityIcon"
+import { useTranslation, Trans } from "react-i18next"
 
 interface LdeSliderProps {
   value: number
@@ -19,14 +20,20 @@ const LdeSlider: React.FC<LdeSliderProps> = ({ value, setValue }) => {
   const { themeColor, themeColorWithShade, grayWithShade } = useContext(
     MyThemeContext
   )
+  const { t } = useTranslation()
   const bonusAp = Math.floor((24 / 21) * value)
 
   const getLdeEffect = () => {
-    if (value === 21)
-      return "Enemy has reached the 30 point mark OR there is 30 seconds or less on the clock OR it is overtime"
+    if (value === 21) return t("analyzer;ldeFullEffectExplanation")
 
-    if (value > 0) return `Enemy has reached the ${51 - value} point mark`
-    return "Enemy has not reached the 50 point mark or there is more than 30 seconds on the clock"
+    const pointMark = 51 - value
+    if (value > 0)
+      return (
+        <Trans i18nKey="analyzer;ldeInBetweenExplanation">
+          Enemy has reached the {{ pointMark }} point mark
+        </Trans>
+      )
+    return t("analyzer;ldeNoEffectExplanation")
   }
   return (
     <Flex
@@ -50,7 +57,8 @@ const LdeSlider: React.FC<LdeSliderProps> = ({ value, setValue }) => {
       </Slider>
       {value > 0 && (
         <Box color={themeColorWithShade} fontWeight="bold" mt="1em">
-          +{bonusAp}AP{" "}
+          +{bonusAp}
+          {t("analyzer;abilityPointShort")}{" "}
           {["ISM", "ISS", "REC"].map((ability) => (
             <Box as="span" mx="0.2em" key={ability}>
               <AbilityIcon ability={ability as any} size="SUBTINY" />
