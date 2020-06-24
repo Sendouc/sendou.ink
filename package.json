@@ -27,12 +27,12 @@
     "express-session": "^1.17.1",
     "graphql": "^15.1.0",
     "lodash": "^4.17.15",
-    "mongoose": "^5.9.19",
+    "mongoose": "^5.9.20",
     "mongoose-unique-validator": "^2.0.3",
     "node-fetch": "^2.6.0",
     "passport": "^0.4.1",
     "passport-discord": "^0.1.4",
-    "uuid": "^8.1.0",
+    "uuid": "^8.2.0",
     "webhook-discord": "^3.7.4"
   },
   "devDependencies": {

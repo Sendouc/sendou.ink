@@ -1,6 +1,6 @@
 import os, json
 
-codes = ["EUde", "EUes", "EUfr", "EUit", "EUnl", "EUru", "JPja", "EUen"]
+codes = ["EUde", "EUes", "EUfr", "EUit", "EUnl", "EUru", "JPja", "EUen", "USes"]
 script_dir = os.path.dirname(__file__)
 
 with open("lang_dict_EUen.json") as f:

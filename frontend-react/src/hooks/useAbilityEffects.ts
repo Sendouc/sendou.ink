@@ -1245,7 +1245,7 @@ export default function useAbilityEffects(
 
     return [
       {
-        title: "Frames before taking damage from enemy ink",
+        title: t("analyzer;Frames before taking damage from enemy ink"),
         effect: `${Math.ceil(effectArmor[0])} frames`,
         effectFromMax: effectArmor[1],
         ability: "RES" as Ability,
@@ -1255,14 +1255,15 @@ export default function useAbilityEffects(
             Math.ceil(getEffect(highMidLowArmor, MAX_AP)[0])) *
           100,
         getEffect: (ap: number) => Math.ceil(getEffect(highMidLowArmor, ap)[0]),
-        info:
-          "Ink Resistance Up also allows you to jump higher and strafe faster while shooting in enemy ink",
+        info: t(
+          "analyzer;Ink Resistance Up also allows you to jump higher and strafe faster while shooting in enemy ink"
+        ),
       },
       {
-        title: "Damage taken in enemy ink",
-        effect: `${parseFloat(
-          (effectPerFrame[0] * 100 - 0.05).toFixed(1)
-        )}hp / frame`,
+        title: t("analyzer;Damage taken in enemy ink"),
+        effect: `${parseFloat((effectPerFrame[0] * 100 - 0.05).toFixed(1))}${t(
+          "analyzer;hp / frame"
+        )}`,
         effectFromMax: effectPerFrame[1],
         ability: "RES" as Ability,
         ap: amount,
@@ -1278,7 +1279,7 @@ export default function useAbilityEffects(
           ),
       },
       {
-        title: "Limit on the damage enemy ink can deal on you",
+        title: t("analyzer;Limit on the damage enemy ink can deal on you"),
         effect: `${parseFloat((effectLimit[0] * 100 - 0.05).toFixed(1))}hp`,
         effectFromMax: effectLimit[1],
         ability: "RES" as Ability,
@@ -1292,8 +1293,10 @@ export default function useAbilityEffects(
           ),
       },
       {
-        title: "Run speed in enemy ink",
-        effect: `${parseFloat(effectVel[0].toFixed(2))} distance units / frame`,
+        title: t("analyzer;Run speed in enemy ink"),
+        effect: `${parseFloat(effectVel[0].toFixed(2))} ${t(
+          "analyzer;distance units / frame"
+        )}`,
         effectFromMax: effectVel[1],
         effectFromMaxActual: (effectVel[0] / 2.4) * 100,
         ability: "RES" as Ability,
@@ -1347,7 +1350,7 @@ export default function useAbilityEffects(
 
     return [
       {
-        title: "Sub Weapon damage (indirect)",
+        title: t("analyzer;Sub Weapon damage (indirect)"),
         effect: `${parseFloat((effectSub[0] * 100).toFixed(2))}%`,
         effectFromMax: effectSub[1],
         effectFromMaxActual: effectSub[0] * 100,
@@ -1355,11 +1358,12 @@ export default function useAbilityEffects(
         ap: amount,
         getEffect: (ap: number) =>
           parseFloat((getEffect(highMidLowSub, ap)[0] * 100).toFixed(3)),
-        info:
-          "Bomb Defense Up DX also lessens the damage of a direct bomb hit but it will never make a bomb not kill that would have dealt over 100dmg without any of the ability on",
+        info: t(
+          "analyzer;Bomb Defense Up DX also lessens the damage of a direct bomb hit but it will never make a bomb not kill that would have dealt over 100dmg without any of the ability on"
+        ),
       },
       {
-        title: "Special Weapon damage (indirect)",
+        title: t("analyzer;Special Weapon damage (indirect)"),
         effect: `${parseFloat((effectSpecial[0] * 100).toFixed(2))}%`,
         effectFromMax: effectSpecial[1],
         effectFromMaxActual: effectSpecial[0] * 100,
@@ -1367,16 +1371,17 @@ export default function useAbilityEffects(
         ap: amount,
         getEffect: (ap: number) =>
           parseFloat((getEffect(highMidLowSpecial, ap)[0] * 100).toFixed(3)),
-        info:
-          "Tenta Missiles, Inkjet, Splashdown, Baller, Bubble Blower, Booyah Bomb & Ultra Stamp generate damage lessened by Bomb Defense Up DX. OHKO's are unaffected",
+        info: t(
+          "analyzer;Tenta Missiles, Inkjet, Splashdown, Baller, Bubble Blower, Booyah Bomb & Ultra Stamp generate damage lessened by Bomb Defense Up DX. OHKO's are unaffected"
+        ),
       },
       {
-        title: "Base tracking time (Point Sensor)",
-        effect: `${Math.ceil(
-          sensorFrames * effectSensor[0]
-        )} frames (${parseFloat(
+        title: t("analyzer;Base tracking time (Point Sensor)"),
+        effect: `${Math.ceil(sensorFrames * effectSensor[0])} ${t(
+          "analyzer;frames"
+        )} (${parseFloat(
           (Math.ceil(sensorFrames * effectSensor[0]) / 60).toFixed(2)
-        )} seconds)`,
+        )} ${t("analyzer;seconds")})`,
         effectFromMax: effectSensor[1],
         ability: "BDU" as Ability,
         ap: amount,
@@ -1386,10 +1391,12 @@ export default function useAbilityEffects(
           Math.ceil(sensorFrames * getEffect(highMidLowSensor, ap)[0]),
       },
       {
-        title: "Base tracking time (Ink Mine)",
-        effect: `${Math.ceil(mineFrames * effectMine[0])} frames (${parseFloat(
+        title: t("analyzer;Base tracking time (Ink Mine)"),
+        effect: `${Math.ceil(mineFrames * effectMine[0])} ${t(
+          "analyzer;frames"
+        )} (${parseFloat(
           (Math.ceil(mineFrames * effectMine[0]) / 60).toFixed(2)
-        )} seconds)`,
+        )} ${t("analyzer;seconds")})`,
         effectFromMax: effectMine[1],
         ability: "BDU" as Ability,
         ap: amount,
@@ -1411,6 +1418,8 @@ export default function useAbilityEffects(
     const buildWeaponData = weaponData[build.weapon!]
 
     const toReturn = []
+
+    const weaponTranslated = t(`game;${build.weapon}`)
 
     if (
       buildWeaponData.mDamageRate_MWPUG_High &&
@@ -1440,7 +1449,7 @@ export default function useAbilityEffects(
       )
       const damageMinStr = baseDamageMin !== -1 ? `${damageMin} - ` : ""
       toReturn.push({
-        title: `${build.weapon} damage per shot`,
+        title: `${weaponTranslated} ${t("analyzer;damage per shot")}`,
         effect: `${damageMinStr}${damageMax}`,
         effectFromMax: effect[1],
         effectFromMaxActual: damageMax,
@@ -1471,7 +1480,7 @@ export default function useAbilityEffects(
       const effectAtZero = getEffect(highMidLow, 0)
       const effectAtMax = getEffect(highMidLow, MAX_AP)
       toReturn.push({
-        title: `${build.weapon} bullet ink coverage`,
+        title: `${weaponTranslated} ${t("analyzer;bullet ink coverage")}`,
         effect: `${parseFloat(
           ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
         )}%`,
@@ -1503,7 +1512,9 @@ export default function useAbilityEffects(
       const effect = getEffect(highMidLow, amount)
       const effectAtZero = getEffect(highMidLow, 0)
       toReturn.push({
-        title: `${build.weapon} bullet spread (on the ground)`,
+        title: `${weaponTranslated} ${t(
+          "analyzer;bullet spread (not jumping)"
+        )}`,
         effect: `${parseFloat(effect[0].toFixed(2))} (${parseFloat(
           ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
         )}%)`,
@@ -1531,7 +1542,9 @@ export default function useAbilityEffects(
       const effect = getEffect(highMidLow, amount)
       const effectAtZero = getEffect(highMidLow, 0)
       toReturn.push({
-        title: `${build.weapon} bullet spread (in the air)`,
+        title: `${weaponTranslated} ${t(
+          "analyzer;bullet spread (in the air)"
+        )}`,
         effect: `${parseFloat(effect[0].toFixed(2))} (${parseFloat(
           ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
         )}%)`,
@@ -1559,7 +1572,7 @@ export default function useAbilityEffects(
       const effectAtZero = getEffect(highMidLow, 0)
       const effectAtMax = getEffect(highMidLow, MAX_AP)
       toReturn.push({
-        title: `${build.weapon} range and bullet velocity`,
+        title: `${weaponTranslated} ${t("analyzer;range and bullet velocity")}`,
         effect: `${parseFloat(
           ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
         )}%`,
@@ -1590,7 +1603,9 @@ export default function useAbilityEffects(
       const totalRadius = buildWeaponData.mCollisionRadiusFar_Burst
 
       toReturn.push({
-        title: `${build.weapon} 70dmg hitbox portion of the total explosion hitbox`,
+        title: `${weaponTranslated} ${t(
+          "analyzer;70dmg hitbox portion of the total explosion hitbox"
+        )}`,
         effect: `${parseFloat(((radius / totalRadius) * 100).toFixed(2))}%`,
         effectFromMax: effect[1],
         effectFromMaxActual: (radius / totalRadius) * 100,
@@ -1625,7 +1640,9 @@ export default function useAbilityEffects(
         getEffect(highMidLow, MAX_AP)[0] * baseValue
       )
       toReturn.push({
-        title: `${build.weapon} bullet explosion hitbox size`,
+        title: `${weaponTranslated} ${t(
+          "analyzer;bullet explosion hitbox size"
+        )}`,
         effect: `${parseFloat(((value / valueAtZero) * 100).toFixed(2))}%`,
         effectFromMax: effect[1],
         effectFromMaxActual: (value / valueAtMax) * 100,
@@ -1659,7 +1676,7 @@ export default function useAbilityEffects(
       const effectAtZero = getEffect(highMidLow, 0)
       const effectAtMax = getEffect(highMidLow, MAX_AP)
       toReturn.push({
-        title: `${build.weapon} bullet explosion paint`,
+        title: `${weaponTranslated} ${t("analyzer;bullet explosion paint")}`,
         effect: `${parseFloat(
           ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
         )}%`,
@@ -1690,7 +1707,9 @@ export default function useAbilityEffects(
       const effectAtZero = getEffect(highMidLow, 0)
       const effectAtMax = getEffect(highMidLow, MAX_AP)
       toReturn.push({
-        title: `${build.weapon} movement speed holding trigger down`,
+        title: `${weaponTranslated} ${t(
+          "analyzer;movement speed holding trigger down"
+        )}`,
         effect: `${parseFloat(
           ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
         )}%`,
@@ -1720,7 +1739,7 @@ export default function useAbilityEffects(
       const effectAtZero = getEffect(highMidLow, 0)
       const effectAtMax = getEffect(highMidLow, MAX_AP)
       toReturn.push({
-        title: `${build.weapon} ink trail width`,
+        title: `${weaponTranslated} ${t("analyzer;ink trail width")}`,
         effect: `${parseFloat(
           ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
         )}%`,
@@ -1751,7 +1770,7 @@ export default function useAbilityEffects(
       const effectAtZero = getEffect(highMidLow, 0)
       const effectAtMax = getEffect(highMidLow, MAX_AP)
       toReturn.push({
-        title: `${build.weapon} fully charged shot range`,
+        title: `${weaponTranslated} ${t("analyzer;fully charged shot range")}`,
         effect: `${parseFloat(
           ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
         )}%`,
@@ -1781,7 +1800,7 @@ export default function useAbilityEffects(
       const effectAtZero = getEffect(highMidLow, 0)
       const effectAtMax = getEffect(highMidLow, MAX_AP)
       toReturn.push({
-        title: `${build.weapon} ink coverage`,
+        title: `${weaponTranslated} ${t("analyzer;ink coverage")}`,
         effect: `${parseFloat(
           ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
         )}%`,
@@ -1813,7 +1832,7 @@ export default function useAbilityEffects(
 
       if (!build.weapon!.includes("Bamboozler")) {
         toReturn.push({
-          title: `${build.weapon} damage`,
+          title: `${weaponTranslated} ${t("analyzer;damage")}`,
           effect: `${parseFloat(
             ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
           )}%`,
@@ -1838,7 +1857,9 @@ export default function useAbilityEffects(
           maxDmg
         )
         toReturn.push({
-          title: `${build.weapon} damage per fully charged shot`,
+          title: `${weaponTranslated} ${t(
+            "analyzer;damage per fully charged shot"
+          )}`,
           effect: `${damage}`,
           effectFromMax: effect[1],
           effectFromMaxActual: (damage / damageAtMax) * 100,
@@ -1869,7 +1890,7 @@ export default function useAbilityEffects(
       const effectAtZero = getEffect(highMidLow, 0)
       const effectAtMax = getEffect(highMidLow, MAX_AP)
       toReturn.push({
-        title: `${build.weapon} ink coverage`,
+        title: `${weaponTranslated} ${t("analyzer;ink coverage")}`,
         effect: `${parseFloat(
           ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
         )}%`,
@@ -1899,7 +1920,7 @@ export default function useAbilityEffects(
       const effectAtZero = getEffect(highMidLow, 0)
       const effectAtMax = getEffect(highMidLow, MAX_AP)
       toReturn.push({
-        title: `${build.weapon} ink coverage`,
+        title: `${weaponTranslated} ${t("analyzer;ink coverage")}`,
         effect: `${parseFloat(
           ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
         )}%`,
@@ -1912,7 +1933,9 @@ export default function useAbilityEffects(
             ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(2)
           ),
         info: build.weapon!.includes("Sloshing")
-          ? "Ink coverage bonus is only applied to the circle at the end of the shot"
+          ? t(
+              "analyzer;Ink coverage bonus is only applied to the circle at the end of the shot"
+            )
           : undefined,
       })
     }
@@ -1927,7 +1950,7 @@ export default function useAbilityEffects(
       const effectAtZero = getEffect(highMidLow, 0)
       const effectAtMax = getEffect(highMidLow, MAX_AP)
       toReturn.push({
-        title: `${build.weapon} ink coverage`,
+        title: `${weaponTranslated} ${t("analyzer;ink coverage")}`,
         effect: `${parseFloat(
           ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
         )}%`,
@@ -1939,8 +1962,9 @@ export default function useAbilityEffects(
           parseFloat(
             ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(2)
           ),
-        info:
-          "Ink coverage bonus is only applied to the line before the impact",
+        info: t(
+          "analyzer;Ink coverage bonus is only applied to the line before the impact"
+        ),
       })
     }
 
@@ -1970,7 +1994,9 @@ export default function useAbilityEffects(
       )
       const damageMinStr = baseDamageMin !== -1 ? `${damageMin} - ` : ""
       toReturn.push({
-        title: `${build.weapon} damage per shot (fully charged)`,
+        title: `${weaponTranslated} ${t(
+          "analyzer;damage per shot (fully charged)"
+        )}`,
         effect: `${damageMinStr}${damageMax}`,
         effectFromMax: effect[1],
         effectFromMaxActual: damageMax,
@@ -2000,10 +2026,10 @@ export default function useAbilityEffects(
       const effect = getEffect(highMidLow, amount)
       const effectAtZero = getEffect(highMidLow, 0)
       toReturn.push({
-        title: `${build.weapon} shield recharge time`,
-        effect: `${Math.ceil(effect[0])} frames (${parseFloat(
+        title: `${weaponTranslated} ${t("analyzer;shield recharge time")}`,
+        effect: `${Math.ceil(effect[0])} ${t("analyzer;frames")} (${parseFloat(
           (Math.ceil(effect[0]) / 60).toFixed(2)
-        )} seconds)`,
+        )} ${t("analyzer;seconds")})`,
         effectFromMax: effect[1],
         effectFromMaxActual: (effect[0] / effectAtZero[0]) * 100,
         ability: "MPU" as Ability,
@@ -2027,7 +2053,7 @@ export default function useAbilityEffects(
       const effectAtZero = getEffect(highMidLow, 0)
       const effectAtMax = getEffect(highMidLow, MAX_AP)
       toReturn.push({
-        title: `${build.weapon} shield durability`,
+        title: `${weaponTranslated} ${t("analyzer;shield durability")}`,
         effect: `${parseFloat(
           ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
         )}%`,
@@ -2064,10 +2090,12 @@ export default function useAbilityEffects(
         secondCircle * getEffect(highMidLow, MAX_AP)[0]
       )
       toReturn.push({
-        title: `${build.weapon} full charged shooting duration`,
-        effect: `${total} frames (${parseFloat(
+        title: `${weaponTranslated} ${t(
+          "analyzer;full charge shooting duration"
+        )}`,
+        effect: `${total} ${t("analyzer;frames")} (${parseFloat(
           (total / 60).toFixed(2)
-        )} seconds)`,
+        )} ${t("analyzer;seconds")})`,
         effectFromMax: effect[1],
         effectFromMaxActual: (total / maxTotal) * 100,
         ability: "MPU" as Ability,
@@ -2090,7 +2118,7 @@ export default function useAbilityEffects(
       const effect = getEffect(highMidLow, amount)
 
       toReturn.push({
-        title: `${build.weapon} "mBulletDamageMaxDist"`,
+        title: `${weaponTranslated} "mBulletDamageMaxDist"`,
         effect: `${parseFloat(effect[0].toFixed(2))}`,
         effectFromMax: effect[1],
         effectFromMaxActual: effect[1],
@@ -2098,8 +2126,9 @@ export default function useAbilityEffects(
         ap: amount,
         getEffect: (ap: number) =>
           parseFloat(getEffect(highMidLow, ap)[0].toFixed(3)),
-        info:
-          "Slosher has weird physics so we haven't fully deciphered this parameter.",
+        info: t(
+          "analyzer;Slosher has weird physics so we haven't fully deciphered this parameter."
+        ),
       })
 
       const high2 = buildWeaponData.mBulletDamageMinDist_MWPUG_High
@@ -2110,7 +2139,7 @@ export default function useAbilityEffects(
       const effect2 = getEffect(highMidLow2, amount)
 
       toReturn.push({
-        title: `${build.weapon} "mBulletDamageMinDist"`,
+        title: `${weaponTranslated} "mBulletDamageMinDist"`,
         effect: `${parseFloat(effect2[0].toFixed(2))}`,
         effectFromMax: effect2[1],
         effectFromMaxActual: effect2[1],
@@ -2118,8 +2147,9 @@ export default function useAbilityEffects(
         ap: amount,
         getEffect: (ap: number) =>
           parseFloat(getEffect(highMidLow2, ap)[0].toFixed(3)),
-        info:
-          "Slosher has weird physics so we haven't fully deciphered this parameter.",
+        info: t(
+          "analyzer;Slosher has weird physics so we haven't fully deciphered this parameter."
+        ),
       })
     }
 
@@ -2138,7 +2168,7 @@ export default function useAbilityEffects(
       const effectAtZero = getEffect(highMidLow, 0)
       const effectAtMax = getEffect(highMidLow, MAX_AP)
       toReturn.push({
-        title: `${build.weapon} damage`,
+        title: `${weaponTranslated} ${t("analyzer;damage")}`,
         effect: `${parseFloat(
           ((effect[0] / effectAtZero[0]) * 100).toFixed(2)
         )}%`,
