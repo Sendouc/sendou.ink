@@ -8,6 +8,7 @@ import Button from "../elements/Button"
 import Alert from "../elements/Alert"
 import BuildCard from "../builds/BuildCard"
 import { Box } from "@chakra-ui/core"
+import { useTranslation } from "react-i18next"
 
 interface BuildTabProps {
   builds: Build[]
@@ -36,6 +37,7 @@ const BuildTab: React.FC<BuildTabProps> = ({ builds, canModifyBuilds }) => {
   const [APView] = useLocalStorage<boolean>("prefersAPView")
   const [formOpen, setFormOpen] = useState(false)
   const [buildBeingEdited, setBuildBeingEdited] = useState<Build | null>(null)
+  const { t } = useTranslation()
 
   const existingGear = builds
     ? builds.reduce(buildsReducer, {} as ExistingGearObject)
@@ -54,12 +56,12 @@ const BuildTab: React.FC<BuildTabProps> = ({ builds, canModifyBuilds }) => {
         />
       )}
       {canModifyBuilds && builds.length < 100 && (
-        <Button onClick={() => setFormOpen(true)}>Add build</Button>
+        <Button onClick={() => setFormOpen(true)}>
+          {t("users;Add build")}
+        </Button>
       )}
       {canModifyBuilds && builds.length >= 100 && (
-        <Alert status="info">
-          You already have 100 builds. Please delete one before adding a new one
-        </Alert>
+        <Alert status="info">{t("users;tooManyBuilds")}</Alert>
       )}
       <Box display="flex" flexWrap="wrap" mt="1em">
         {builds.map((build) => (

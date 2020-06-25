@@ -149,8 +149,6 @@ export const SideNavContent: React.FC<SideNavProps> = ({
 
   if (error) return <Error errorMessage={error.message} />
 
-  console.log("i18n", i18n.language)
-
   return (
     <Flex
       direction="column"

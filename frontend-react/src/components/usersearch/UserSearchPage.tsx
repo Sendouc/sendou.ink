@@ -12,9 +12,11 @@ import PageHeader from "../common/PageHeader"
 import { Helmet } from "react-helmet-async"
 import Input from "../elements/Input"
 import Pagination from "../common/Pagination"
+import { useTranslation } from "react-i18next"
 
 const UserSearchPage: React.FC<RouteComponentProps> = () => {
   const { darkerBgColor } = useContext(MyThemeContext)
+  const { t } = useTranslation()
   const { data, error, loading } = useQuery<UsersData>(USERS)
   const [filter, setFilter] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
@@ -56,14 +58,14 @@ const UserSearchPage: React.FC<RouteComponentProps> = () => {
 
   return (
     <>
-      <PageHeader title="User Search" />
+      <PageHeader title={t("navigation;User Search")} />
       <Helmet>
-        <title>User Search | sendou.ink</title>
+        <title>{t("navigation;User Search")} | sendou.ink</title>
       </Helmet>
       <Box my="1em">
         <Input
           size="lg"
-          label="Filter by username, Twitter name or Discord ID"
+          label={t("users;Filter by username, Twitter name or Discord ID")}
           value={filter}
           setValue={(value: string) => setFilter(value)}
         />

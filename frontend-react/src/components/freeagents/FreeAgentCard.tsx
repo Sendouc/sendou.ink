@@ -17,6 +17,7 @@ import { ADD_LIKE } from "../../graphql/mutations/addLike"
 import { FREE_AGENT_MATCHES } from "../../graphql/queries/freeAgentMatches"
 import { DELETE_LIKE } from "../../graphql/mutations/deleteLike"
 import { USER } from "../../graphql/queries/user"
+import { useTranslation } from "react-i18next"
 
 interface FreeAgentCardProps {
   post: FreeAgentPost
@@ -40,6 +41,7 @@ const FreeAgentCard: React.FC<FreeAgentCardProps> = ({
 }) => {
   const [expanded, setExpanded] = useState(false)
   const { grayWithShade, themeColorWithShade } = useContext(MyThemeContext)
+  const { t } = useTranslation()
   const { discord_user } = post
   const canBeExpanded = hasExtraInfo(post)
 
@@ -122,7 +124,7 @@ const FreeAgentCard: React.FC<FreeAgentCardProps> = ({
           {discord_user.country && (
             <>
               <Flag code={discord_user.country} />
-              {countries.find((obj) => obj.code === discord_user.country)?.name}
+              {t(`countries;${discord_user.country.toUpperCase()}`)}
             </>
           )}
         </Box>

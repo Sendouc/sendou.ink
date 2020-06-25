@@ -15,6 +15,7 @@ import { useContext } from "react"
 import MyThemeContext from "../../themeContext"
 import { useEffect } from "react"
 import MarkdownInput from "./MarkdownInput"
+import { useTranslation } from "react-i18next"
 
 interface ProfileModalProps {
   closeModal: () => void
@@ -35,6 +36,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
   existingProfile,
 }) => {
   const { grayWithShade } = useContext(MyThemeContext)
+  const { t } = useTranslation()
   const [profile, setProfile] = useState<UpdateUserVars>(existingProfile)
   const [error, setError] = useState<string | null>(null)
   const toast = useToast()
@@ -45,22 +47,22 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
       !profile.stick_sens &&
       profile.stick_sens !== 0
     ) {
-      setError("Motion sensitivity entered without stick sensitivity")
+      setError(t("users;Motion sensitivity entered without stick sensitivity"))
     } else if (profile.custom_url && profile.custom_url.length < 2) {
-      setError("Custom URL has to be over 2 characters long")
+      setError(t("users;Custom URL has to be over 2 characters long"))
     } else if (profile.custom_url && profile.custom_url.length > 32) {
-      setError("Custom URL can be at most 32 characters long")
+      setError(t("users;Custom URL can be at most 32 characters long"))
     } else if (profile.custom_url && !isNaN(profile.custom_url as any)) {
-      setError("Custom URL has to contain at least one letter")
+      setError(t("users;Custom URL has to contain at least one letter"))
     } else if (
       profile.custom_url &&
       !/^[a-z0-9]+$/i.test(profile.custom_url as any)
     ) {
-      setError("Custom URL can only contain letters and numbers")
+      setError(t("users;Custom URL can only contain letters and numbers"))
     } else if (profile.weapons && profile.weapons.length > 5) {
-      setError("Weapon pool's max size is 5")
+      setError(t("users;Weapon pool's max size is 5"))
     } else if (profile.bio && profile.bio.length > 10000) {
-      setError("Bio's max length is 10000")
+      setError(t("users;Bio's max length is 10000"))
     } else {
       setError(null)
     }
@@ -77,7 +79,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
       onCompleted: () => {
         closeModal()
         toast({
-          description: "Profile updated",
+          description: t("users;Profile updated"),
           position: "top-right",
           status: "success",
           duration: 10000,
@@ -85,7 +87,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
       },
       onError: (error) => {
         toast({
-          title: "An error occurred",
+          title: t("An error occurred"),
           description: error.message,
           position: "top-right",
           status: "error",
@@ -97,64 +99,62 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
   )
 
   return (
-    <Modal title="Editing profile" closeModal={closeModal}>
+    <Modal title={t("users;Editing profile")} closeModal={closeModal}>
       <Box display="flex" flexDirection="column">
         <Box>
-          <Label>Profile picture</Label>
-          Your profile picture comes from your Discord profile. If you change
-          your profile picture on Discord you need to log out and back in to get
-          it updated on sendou.ink.
+          <Label>{t("users;Profile picture")}</Label>
+          {t("users;profilePicExplanation")}
         </Box>
         <Box mt="1em">
           <Input
-            label="Custom URL"
+            label={t("users;Custom URL")}
             textLeft="https://sendou.ink/u/"
             value={profile.custom_url ?? ""}
             disabled={!!existingProfile.custom_url}
             setValue={(value: string) => handleChange({ custom_url: value })}
           />
           <Box color={grayWithShade} mt="0.5em" fontSize="15px">
-            Please note Custom URL can't be updated after you have set it.
+            {t(
+              "users;Please note Custom URL can't be updated after you have set it."
+            )}
           </Box>
         </Box>
         <Box mt="1em">
           <Select
-            label="Country"
+            label={t("users;Country")}
             isSearchable
             value={
               profile.country
                 ? {
                     value: profile.country,
-                    label: countries.find(
-                      (obj) => obj.code === profile.country
-                    )!.name,
+                    label: t(`countries;${profile.country.toUpperCase()}`),
                   }
                 : null
             }
             setValue={(country: string) => handleChange({ country: country })}
             options={countries.map((countryObj) => ({
-              label: countryObj.name,
-              value: countryObj.code,
+              label: t(`countries;${countryObj.toUpperCase()}`),
+              value: countryObj,
             }))}
           />
         </Box>
         <Box display="flex" mt="1em" flexWrap="wrap">
           <Box mr="1em">
             <SensInput
-              label="Stick sensitivity"
+              label={t("users;Stick sensitivity")}
               value={profile.stick_sens}
               onChange={(value) => handleChange({ stick_sens: value })}
             />
           </Box>
           <SensInput
-            label="Motion sensitivity"
+            label={t("users;Motion sensitivity")}
             value={profile.motion_sens}
             onChange={(value) => handleChange({ motion_sens: value })}
           />
         </Box>
         <Box mt="1em">
           <WeaponSelector
-            label="Weapon pool"
+            label={t("users;Weapon pool")}
             isMulti
             setValue={(value: Weapon[]) => handleChange({ weapons: value })}
             value={profile.weapons}
@@ -163,13 +163,13 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
         </Box>
         <Box mt="1em">
           <MarkdownInput
+            label={t("users;Bio")}
             value={profile.bio ?? ""}
             setValue={(value: string) => handleChange({ bio: value })}
-            label="Bio"
             limit={10000}
           />
           <Box color={grayWithShade} mt="0.5em" fontSize="15px">
-            Markdown is supported. See:{" "}
+            {t("users;markdownPrompt")}{" "}
             <a href="/markdown" target="_blank" rel="noreferrer noopener">
               https://sendou.ink/markdown
             </a>
@@ -181,11 +181,11 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
             disabled={!!error}
             loading={loading}
           >
-            Submit
+            {t("users;Submit")}
           </Button>
           <Box as="span" ml="0.5em">
             <Button outlined onClick={() => closeModal()}>
-              Cancel
+              {t("users;Cancel")}
             </Button>
           </Box>
         </Box>

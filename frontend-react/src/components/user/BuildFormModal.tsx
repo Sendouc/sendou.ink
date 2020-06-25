@@ -34,6 +34,7 @@ import { ADD_BUILD } from "../../graphql/mutations/addBuild"
 import { useToast, Box, Flex } from "@chakra-ui/core"
 import { UPDATE_BUILD } from "../../graphql/mutations/updateBuild"
 import { DELETE_BUILD } from "../../graphql/mutations/deleteBuild"
+import { useTranslation } from "react-i18next"
 
 interface BuildFormModalProps {
   existingGear: ExistingGearObject
@@ -51,6 +52,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
   closeModal,
   buildBeingEdited,
 }) => {
+  const { t } = useTranslation()
   const toast = useToast()
   const [build, setBuild] = useState<Partial<Build>>(
     buildBeingEdited
@@ -70,7 +72,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
     onCompleted: (data) => {
       closeModal()
       toast({
-        description: `New ${data.addBuild.weapon} build created`,
+        description: t("users;New build created"),
         position: "top-right",
         status: "success",
         duration: 10000,
@@ -78,7 +80,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
     },
     onError: (error) => {
       toast({
-        title: "An error occurred",
+        title: t("users;An error occurred"),
         description: error.message,
         position: "top-right",
         status: "error",
@@ -96,7 +98,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
     onCompleted: () => {
       closeModal()
       toast({
-        description: "Build updated",
+        description: t("users;Build updated"),
         position: "top-right",
         status: "success",
         duration: 10000,
@@ -104,7 +106,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
     },
     onError: (error) => {
       toast({
-        title: "An error occurred",
+        title: t("users;An error occurred"),
         description: error.message,
         position: "top-right",
         status: "error",
@@ -122,7 +124,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
     onCompleted: () => {
       closeModal()
       toast({
-        description: "Build deleted",
+        description: t("users;Build deleted"),
         position: "top-right",
         status: "success",
         duration: 10000,
@@ -130,7 +132,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
     },
     onError: (error) => {
       toast({
-        title: "An error occurred",
+        title: t("users;An error occurred"),
         description: error.message,
         position: "top-right",
         status: "error",
@@ -247,7 +249,11 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
 
   return (
     <Modal
-      title={buildBeingEdited ? "Editing existing build" : "Adding a new build"}
+      title={
+        buildBeingEdited
+          ? t("users;Editing existing build")
+          : t("users;Adding a new build")
+      }
       closeModal={() => closeModal()}
     >
       {buildBeingEdited && !deleteLoading && (
@@ -258,12 +264,12 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
           cursor="pointer"
           onClick={() => deleteBuild()}
         >
-          Delete build
+          {t("users;Delete build")}
         </Box>
       )}
       <WeaponSelector
         required
-        label="Weapon"
+        label={t("users;Weapon")}
         setValue={(weapon: Weapon) => handleChange({ weapon })}
         value={build.weapon}
         showAlts
@@ -275,7 +281,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
         <Flex flexDirection="column" alignItems="center">
           <Box minW="275px">
             <Select
-              label="Headgear"
+              label={t("users;Headgear")}
               options={headSelectOptions}
               clearable
               isSearchable
@@ -305,7 +311,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
         <Flex flexDirection="column" alignItems="center">
           <Box minW="275px">
             <Select
-              label="Clothing"
+              label={t("users;Clothing")}
               options={clothingSelectOptions}
               clearable
               isSearchable
@@ -335,7 +341,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
         <Flex flexDirection="column" alignItems="center">
           <Box minW="275px">
             <Select
-              label="Shoes"
+              label={t("users;Shoes")}
               options={shoesSelectOptions}
               clearable
               isSearchable
@@ -367,7 +373,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
         <Input
           value={build.title}
           setValue={(value: string) => handleChange({ title: value })}
-          label="Title"
+          label={t("users;Title")}
           limit={100}
         />
       </Box>
@@ -383,7 +389,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
         <TextArea
           value={build.description}
           setValue={(value: string) => handleChange({ description: value })}
-          label="Description"
+          label={t("users;Description")}
           limit={1000}
         />
       </Box>
@@ -393,11 +399,11 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
           onClick={buildBeingEdited ? () => updateBuild() : () => addBuild()}
           loading={addLoading || updateLoading}
         >
-          Submit
+          {t("users;Submit")}
         </Button>
         <Box as="span" ml="0.5em">
           <Button outlined onClick={() => closeModal()}>
-            Cancel
+            {t("users;Cancel")}
           </Button>
         </Box>
       </Box>

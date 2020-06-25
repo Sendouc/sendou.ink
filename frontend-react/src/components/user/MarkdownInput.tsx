@@ -4,6 +4,7 @@ import Button from "../elements/Button"
 import { Box } from "@chakra-ui/core"
 import Markdown from "../elements/Markdown"
 import SubHeader from "../common/SubHeader"
+import { useTranslation } from "react-i18next"
 
 interface MarkdownInputProps {
   value: string
@@ -19,11 +20,14 @@ const MarkdownInput: React.FC<MarkdownInputProps> = ({
   limit,
 }) => {
   const [preview, setPreview] = useState(false)
+  const { t } = useTranslation()
   return (
     <>
       {preview ? (
         <>
-          <SubHeader>{label} Preview</SubHeader>
+          <SubHeader>
+            {label} {t("users;Preview")}
+          </SubHeader>
           <Markdown value={value} />
         </>
       ) : (
@@ -37,7 +41,7 @@ const MarkdownInput: React.FC<MarkdownInputProps> = ({
       )}
       <Box mt="0.5em">
         <Button outlined onClick={() => setPreview(!preview)}>
-          {preview ? "Edit" : "Preview"}
+          {preview ? t("users;Edit") : t("users;Preview")}
         </Button>
       </Box>
     </>

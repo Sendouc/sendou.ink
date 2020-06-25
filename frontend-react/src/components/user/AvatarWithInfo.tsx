@@ -14,14 +14,7 @@ import UserAvatar from "../common/UserAvatar"
 import WeaponImage from "../common/WeaponImage"
 import Button from "../elements/Button"
 import ProfileModal from "./ProfileModal"
-
-function getSensString(motion: number | undefined, stick: number): string {
-  const stickSensString = `${stick > 0 ? "+" : ""}${stick} Stick`
-  const motionSensString =
-    motion !== undefined ? ` ${motion > 0 ? "+" : ""}${motion} Motion` : ""
-
-  return `${stickSensString} ${motionSensString}`
-}
+import { useTranslation } from "react-i18next"
 
 interface AvatarWithInfoProps {
   user: User
@@ -30,7 +23,21 @@ interface AvatarWithInfoProps {
 
 const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user, canEdit }) => {
   const { grayWithShade } = useContext(MyThemeContext)
+  const { t } = useTranslation()
   const [showModal, setShowModal] = useState(false)
+
+  function getSensString(motion: number | undefined, stick: number): string {
+    const stickSensString = `${stick > 0 ? "+" : ""}${stick} ${t(
+      "users;Stick"
+    )}`
+    const motionSensString =
+      motion !== undefined
+        ? ` ${motion > 0 ? "+" : ""}${motion} ${t("users;Motion")}`
+        : ""
+
+    return `${stickSensString} ${motionSensString}`
+  }
+
   return (
     <>
       {showModal && (
@@ -125,7 +132,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user, canEdit }) => {
         </Flex>
         {canEdit && (
           <Button icon={FaEdit} onClick={() => setShowModal(true)}>
-            Edit profile
+            {t("users;Edit profile")}
           </Button>
         )}
       </Flex>

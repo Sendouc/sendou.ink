@@ -134,11 +134,7 @@ const resolvers = {
     updateUser: async (root, args, ctx) => {
       if (!ctx.user) throw new AuthenticationError("not authenticated")
       if (args.country) {
-        if (
-          countries
-            .map((countryObj) => countryObj.code)
-            .includes(args.country === -1)
-        ) {
+        if (countries.includes(args.country === -1)) {
           throw new UserInputError("Invalid country ID", {
             invalidArgs: args,
           })

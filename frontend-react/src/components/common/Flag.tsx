@@ -1,6 +1,7 @@
 import React from "react"
 import { CountryCode } from "../../types"
 import { countries } from "../../utils/lists"
+import { useTranslation } from "react-i18next"
 
 interface FlagProps {
   code: CountryCode
@@ -8,6 +9,7 @@ interface FlagProps {
 }
 
 const Flag: React.FC<FlagProps> = ({ code, size = "16" }) => {
+  const { t } = useTranslation()
   return (
     <img
       src={`https://www.countryflags.io/${code}/flat/${size}.png`}
@@ -17,8 +19,8 @@ const Flag: React.FC<FlagProps> = ({ code, size = "16" }) => {
         width: `${size}px`,
         height: `${size}px`,
       }}
-      alt={`Flag of ${code}`}
-      title={countries.find((obj) => obj.code === code)?.name}
+      alt={t(`countries;${code.toUpperCase()}`)}
+      title={t(`countries;${code.toUpperCase()}`)}
     />
   )
 }

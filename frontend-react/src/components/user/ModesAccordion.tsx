@@ -15,6 +15,8 @@ import {
 import MyThemeContext from "../../themeContext"
 import WeaponImage from "../common/WeaponImage"
 import useBreakPoints from "../../hooks/useBreakPoints"
+import { useTranslation } from "react-i18next"
+import { TFunctionResult } from "i18next"
 
 interface ModesAccordionProps {
   placements: Placement[]
@@ -25,6 +27,7 @@ interface AllModesAccordionData {
   tc?: ModeAccordionData
   rm?: ModeAccordionData
   cb?: ModeAccordionData
+  locale: string
 }
 
 interface ModeAccordionData {
@@ -43,9 +46,18 @@ interface StyleBoxProps {
     | number[]
     | undefined
     | (string | number | undefined)[]
+    | TFunctionResult
   gridArea?: string
   color?: string
   size?: string
+}
+
+const getLocalizedMonth = (month: number, year: number, locale: string) => {
+  const date = new Date()
+  date.setDate(1)
+  date.setMonth(month - 1)
+
+  return date.toLocaleString(locale, { month: "long", year: "numeric" })
 }
 
 const StyledBox: React.FC<StyleBoxProps> = ({
@@ -79,13 +91,13 @@ const StyledBox: React.FC<StyleBoxProps> = ({
     </Box>
   )
 
-const accordionReducer = function(
+const accordionReducer = function (
   acc: AllModesAccordionData,
   cur: Placement
 ): AllModesAccordionData {
   const key = modesShort[cur.mode]
   const modeData = acc[key]
-  const date = `${months[cur.month]} ${cur.year}`
+  const date = getLocalizedMonth(cur.month, cur.year, acc.locale)
   if (!modeData) {
     acc[key] = {
       highestPlacement: cur.rank,
@@ -112,6 +124,7 @@ const accordionReducer = function(
 }
 
 const ModesAccordion: React.FC<ModesAccordionProps> = ({ placements }) => {
+  const { t, i18n } = useTranslation()
   const { themeColorWithShade, grayWithShade, darkerBgColor } = useContext(
     MyThemeContext
   )
@@ -119,13 +132,13 @@ const ModesAccordion: React.FC<ModesAccordionProps> = ({ placements }) => {
 
   const allModesTabsData: AllModesAccordionData = placements.reduce(
     accordionReducer,
-    {}
+    { locale: i18n.language }
   )
   return (
     <Accordion allowMultiple>
       {(["sz", "tc", "rm", "cb"] as const)
-        .filter(key => allModesTabsData.hasOwnProperty(key))
-        .map(key => {
+        .filter((key) => allModesTabsData.hasOwnProperty(key))
+        .map((key) => {
           return (
             <AccordionItem key={key}>
               <AccordionHeader>
@@ -146,7 +159,7 @@ const ModesAccordion: React.FC<ModesAccordionProps> = ({ placements }) => {
                   display={isSmall[0] ? "none" : "grid"}
                 >
                   <StyledBox color={grayWithShade} gridArea="1 / 1 / 2 / 2">
-                    Best placement
+                    {t("users;Best placement")}
                   </StyledBox>
                   <StyledBox size="s" gridArea="2 / 1 / 3 / 2">
                     {allModesTabsData[key]?.highestPlacement}
@@ -156,7 +169,7 @@ const ModesAccordion: React.FC<ModesAccordionProps> = ({ placements }) => {
                   </StyledBox>
 
                   <StyledBox color={grayWithShade} gridArea="1 / 2 / 2 / 3">
-                    Highest Power
+                    {t("users;Highest power")}
                   </StyledBox>
                   <StyledBox size="s" gridArea="2 / 2 / 3 / 3">
                     {allModesTabsData[key]?.highestXPower}
@@ -167,7 +180,7 @@ const ModesAccordion: React.FC<ModesAccordionProps> = ({ placements }) => {
                   {!isSmall[1] && (
                     <>
                       <StyledBox color={grayWithShade} gridArea="1 / 3 / 2 / 4">
-                        Number of placements
+                        {t("users;Number of placements")}
                       </StyledBox>
 
                       <StyledBox size="s" gridArea="2 / 3 / 3 / 4">
@@ -182,7 +195,7 @@ const ModesAccordion: React.FC<ModesAccordionProps> = ({ placements }) => {
                   pl="1em"
                 >
                   <StyledBox color={grayWithShade}>
-                    Best placement / power
+                    {t("users;Best placement / power")}
                   </StyledBox>
                   <StyledBox size="s">
                     {allModesTabsData[key]?.highestPlacement} /{" "}
@@ -197,7 +210,7 @@ const ModesAccordion: React.FC<ModesAccordionProps> = ({ placements }) => {
                   gridRowGap="10px"
                   alignItems="center"
                 >
-                  {allModesTabsData[key]?.placements.map(placement => {
+                  {allModesTabsData[key]?.placements.map((placement) => {
                     return (
                       <React.Fragment key={placement.id}>
                         <Box
@@ -206,7 +219,11 @@ const ModesAccordion: React.FC<ModesAccordionProps> = ({ placements }) => {
                           fontSize="xs"
                           color={grayWithShade}
                         >
-                          {months[placement.month]} {placement.year}
+                          {getLocalizedMonth(
+                            placement.month,
+                            placement.year,
+                            i18n.language
+                          )}
                         </Box>
                         <WeaponImage
                           englishName={placement.weapon}

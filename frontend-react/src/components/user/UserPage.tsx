@@ -37,6 +37,7 @@ import Markdown from "../elements/Markdown"
 import AvatarWithInfo from "./AvatarWithInfo"
 import BuildTab from "./BuildTab"
 import XRankTab from "./XRankTab"
+import { useTranslation, Trans } from "react-i18next"
 
 interface Tab {
   id: number
@@ -50,6 +51,7 @@ interface UserPageProps {
 }
 
 const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
+  const { t } = useTranslation()
   const { data, error, loading } = useQuery<
     SearchForUserData,
     SearchForUserVars
@@ -79,9 +81,12 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
     skip: !data || !data.searchForUser || !data.searchForUser.twitter_name,
   })
 
-  const { textColor, themeColor, themeColorWithShade } = useContext(
-    MyThemeContext
-  )
+  const {
+    textColor,
+    themeColor,
+    themeColorWithShade,
+    grayWithShade,
+  } = useContext(MyThemeContext)
 
   if (loading || userLoading || buildsLoading || playerLoading)
     return <Loading />
@@ -104,7 +109,7 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
       icon: FaTshirt,
       title: (
         <>
-          Builds{" "}
+          {t("navigation;Builds")}{" "}
           <Badge variantColor={themeColor} ml="0.5em">
             {builds.length}
           </Badge>
@@ -144,7 +149,7 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
       icon: FaTrophy,
       title: (
         <>
-          X Rank Top 500{" "}
+          {t("users;X Rank Top 500")}{" "}
           <Badge variantColor={themeColor} ml="0.5em">
             {playerData.playerInfo.placements.length}
           </Badge>
@@ -160,19 +165,19 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
     tabs.push({
       id: 2,
       icon: FaTrophy,
-      title: <>X Rank Top 500</>,
+      title: <>{t("users;X Rank Top 500")}</>,
       content: (
         <TabPanel key={2}>
-          <Alert status="info">
-            <>
+          <Box color={grayWithShade}>
+            <Trans i18nKey="users;noPlacementsPrompt">
               If you have reached Top 500 in a <b>finished</b> X Rank season you
               can have it displayed here! Make sure your Twitter account is
               verified on Discord to get it showing on your sendou.ink profile
               and then contact Sendou#0043 on Discord with your in-game nick.
               Once set up new results are added automatically and no further
               action is needed unless you change your name on Twitter.
-            </>
-          </Alert>
+            </Trans>
+          </Box>
         </TabPanel>
       ),
     })
