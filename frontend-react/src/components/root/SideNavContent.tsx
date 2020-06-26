@@ -123,14 +123,21 @@ const UserItem: React.FC<{ data?: UserData }> = ({ data }) => {
 
 const languages = [
   { code: "de", name: "Deutsch" },
+  { code: "el", name: "Ελληνικά" },
   { code: "en", name: "English" },
-  { code: "es", name: "Español" },
+  { code: "es", name: "Español (Latinoamérica)" },
+  { code: "es-ES", name: "Español (España)" },
+  { code: "fi", name: "Suomi" },
   { code: "fr", name: "Français" },
   { code: "it", name: "Italiano" },
   { code: "ja", name: "日本語" },
+  { code: "ko", name: "한국어" },
   { code: "nl", name: "Nederlands" },
+  { code: "pt-BR", name: "Português" },
   { code: "ru", name: "Русский" },
-  { code: "zh", name: "汉语" },
+  { code: "se", name: "Svenska" },
+  { code: "zh-CN", name: "简体中文" },
+  { code: "zh-TW", name: "繁體中文" },
 ] as const
 
 interface SideNavProps {
@@ -243,7 +250,7 @@ export const SideNavContent: React.FC<SideNavProps> = ({
                 </PopoverTrigger>
                 <PopoverContent
                   zIndex={4}
-                  width="150px"
+                  width="230px"
                   backgroundColor={bgColor}
                 >
                   <PopoverBody textAlign="center">
