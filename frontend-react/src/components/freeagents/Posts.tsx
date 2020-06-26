@@ -5,6 +5,7 @@ import Alert from "../elements/Alert"
 import FreeAgentCard from "./FreeAgentCard"
 import InfiniteScroll from "react-infinite-scroller"
 import Button from "../elements/Button"
+import { useTranslation } from "react-i18next"
 
 interface PostsAccordionProps {
   posts: FreeAgentPost[]
@@ -17,11 +18,14 @@ const Posts: React.FC<PostsAccordionProps> = ({
   canLike,
   likedUsersIds,
 }) => {
+  const { t } = useTranslation()
   const [agentsToShow, setAgentsToShow] = useState(5)
 
   if (posts.length === 0) {
     return (
-      <Alert status="info">No free agents found with the current filter</Alert>
+      <Alert status="info">
+        {t("freeagents;No free agents found with the current filter")}
+      </Alert>
     )
   }
   return (
@@ -29,12 +33,12 @@ const Posts: React.FC<PostsAccordionProps> = ({
       <Grid gridTemplateColumns="repeat(auto-fit, minmax(260px, 1fr))" mt="1em">
         <InfiniteScroll
           pageStart={1}
-          loadMore={page => setAgentsToShow(page * 10)}
+          loadMore={(page) => setAgentsToShow(page * 10)}
           hasMore={agentsToShow < posts.length}
         >
           {posts
-            .filter((post, index) => index < agentsToShow)
-            .map(post => (
+            .filter((_, index) => index < agentsToShow)
+            .map((post) => (
               <Box my="1em" key={post.id}>
                 <FreeAgentCard
                   post={post}
@@ -46,10 +50,12 @@ const Posts: React.FC<PostsAccordionProps> = ({
         </InfiniteScroll>
       </Grid>
       <Box w="50%" textAlign="center" mx="auto" mt="1em">
-        <Heading size="sm">No more free agents to show</Heading>
+        <Heading size="sm">
+          {t("freeagents;No more free agents to show")}
+        </Heading>
         <Box mt="1em">
           <Button outlined onClick={() => window.scrollTo(0, 0)}>
-            Return to the top
+            {t("freeagents;Return to the top")}
           </Button>
         </Box>
       </Box>

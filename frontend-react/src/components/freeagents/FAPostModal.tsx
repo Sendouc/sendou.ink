@@ -26,6 +26,7 @@ import { UPDATE_FREE_AGENT_POST } from "../../graphql/mutations/updateFreeAgentP
 import { HIDE_FREE_AGENT_POST } from "../../graphql/mutations/hideFreeAgentPost"
 import Alert from "../elements/Alert"
 import { FREE_AGENT_MATCHES } from "../../graphql/queries/freeAgentMatches"
+import { useTranslation } from "react-i18next"
 
 interface FAPostModalProps {
   closeModal: () => void
@@ -33,6 +34,7 @@ interface FAPostModalProps {
 }
 
 const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
+  const { t } = useTranslation()
   const [form, setForm] = useState<Partial<AddFreeAgentPostVars>>(
     post ? post : {}
   )
@@ -49,7 +51,7 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
     onCompleted: (data) => {
       closeModal()
       toast({
-        description: `Free agent post added`,
+        description: t("freeagents;Free agent post added"),
         position: "top-right",
         status: "success",
         duration: 10000,
@@ -57,7 +59,7 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
     },
     onError: (error) => {
       toast({
-        title: "An error occurred",
+        title: t("users;An error occurred"),
         description: error.message,
         position: "top-right",
         status: "error",
@@ -75,7 +77,7 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
     onCompleted: (data) => {
       closeModal()
       toast({
-        description: `Free agent post edited`,
+        description: t("freeagents;Free agent post edited"),
         position: "top-right",
         status: "success",
         duration: 10000,
@@ -83,7 +85,7 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
     },
     onError: (error) => {
       toast({
-        title: "An error occurred",
+        title: t("users;An error occurred"),
         description: error.message,
         position: "top-right",
         status: "error",
@@ -101,7 +103,7 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
     onCompleted: (data) => {
       closeModal()
       toast({
-        description: `Free agent post deleted`,
+        description: t("freeagents;Free agent post deleted"),
         position: "top-right",
         status: "success",
         duration: 10000,
@@ -109,7 +111,7 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
     },
     onError: (error) => {
       toast({
-        title: "An error occurred",
+        title: t("users;An error occurred"),
         description: error.message,
         position: "top-right",
         status: "error",
@@ -149,8 +151,8 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
     <Modal
       title={
         actionType === "NEW"
-          ? "Adding a new free agent post"
-          : "Editing a free agent post"
+          ? t("freeagents;Adding a new free agent post")
+          : t("freeagents;Editing a free agent post")
       }
       closeModal={closeModal}
     >
@@ -162,41 +164,33 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
           cursor="pointer"
           onClick={() => setDeleting(true)}
         >
-          Delete free agent post
+          {t("freeagents;Delete free agent post")}
         </Box>
       )}
       {deleting && (
         <>
-          <Box color={grayWithShade}>
-            Note that if you decide to delete your post you need to wait a week
-            before posting a new one.
-          </Box>
+          <Box color={grayWithShade}>{t("freeagents;deleteNotif")}</Box>
           <Flex flexWrap="wrap" mt="1em">
             <Box mr="1em">
               <Button onClick={() => hideFreeAgentPost()} loading={hideLoading}>
-                Confirm deletion
+                {t("freeagents;Confirm deletion")}
               </Button>
             </Box>
             <Button outlined onClick={() => setDeleting(false)}>
-              Cancel
+              {t("users;Cancel")}
             </Button>
           </Flex>
         </>
       )}
       {actionType === "NEW" && (
-        <Alert status="info">
-          Profile picture, Discord name, Twitter user, weapon pool and Top 500
-          history are automatically synced up with your profile. Also please
-          note that the post automatically sent to Discord can't be edited
-          afterwards so you want to set these before making a post.
-        </Alert>
+        <Alert status="info">{t("freeagents;theyAreSynced")}</Alert>
       )}
       <FormControl
         isRequired
         isInvalid={showErrors && form.playstyles?.length === 0}
         mt="1em"
       >
-        <FormLabel htmlFor="playstyles">Playstyles</FormLabel>
+        <FormLabel htmlFor="playstyles">{t("freeagents;Playstyles")}</FormLabel>
         <CheckboxGroup
           id="playstyles"
           variantColor={themeColor}
@@ -207,15 +201,21 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
             })
           }
         >
-          <Checkbox value="FRONTLINE">Frontline/Slayer</Checkbox>
-          <Checkbox value="MIDLINE">Midline/Support</Checkbox>
-          <Checkbox value="BACKLINE">Backline/Anchor</Checkbox>
+          <Checkbox value="FRONTLINE">
+            {t("freeagents;Frontline/Slayer")}
+          </Checkbox>
+          <Checkbox value="MIDLINE">{t("freeagents;Midline/Support")}</Checkbox>
+          <Checkbox value="BACKLINE">
+            {t("freeagents;Backline/Anchor")}
+          </Checkbox>
         </CheckboxGroup>
-        <FormErrorMessage>Required field</FormErrorMessage>
+        <FormErrorMessage>{t("freeagents;Required field")}</FormErrorMessage>
       </FormControl>
 
       <FormControl isRequired isInvalid={showErrors && !form.can_vc} mt="1em">
-        <FormLabel htmlFor="canVc">Can you voice chat?</FormLabel>
+        <FormLabel htmlFor="canVc">
+          {t("freeagents;Can you voice chat?")}
+        </FormLabel>
         <RadioGroup
           id="canVc"
           variantColor={themeColor}
@@ -226,12 +226,12 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
             })
           }
         >
-          <Radio value="YES">Yes</Radio>
-          <Radio value="USUALLY">Usually</Radio>
-          <Radio value="SOMETIMES">Sometimes</Radio>
-          <Radio value="NO">No</Radio>
+          <Radio value="YES">{t("freeagents;Yes")}</Radio>
+          <Radio value="USUALLY">{t("freeagents;Usually")}</Radio>
+          <Radio value="SOMETIMES">{t("freeagents;Sometimes")}</Radio>
+          <Radio value="NO">{t("freeagents;No")}</Radio>
         </RadioGroup>
-        <FormErrorMessage>Required field</FormErrorMessage>
+        <FormErrorMessage>{t("freeagents;Required field")}</FormErrorMessage>
       </FormControl>
 
       <FormControl
@@ -243,7 +243,7 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
         mt="1em"
       >
         <FormLabel htmlFor="pastExperience">
-          Past competitive experience
+          {t("freeagents;Past competitive experience")}
         </FormLabel>
         <TextArea
           id="pastExperience"
@@ -253,7 +253,7 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
           value={form.past_experience ?? ""}
           limit={100}
         />
-        <FormErrorMessage>Value too long</FormErrorMessage>
+        <FormErrorMessage>{t("freeagents;Value too long")}</FormErrorMessage>
       </FormControl>
 
       <FormControl
@@ -261,7 +261,7 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
         mt="1em"
       >
         <FormLabel htmlFor="activity">
-          What is your activity like on a typical week?
+          {t("freeagents;What is your activity like on a typical week?")}
         </FormLabel>
         <TextArea
           id="activity"
@@ -271,7 +271,7 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
           value={form.activity ?? ""}
           limit={100}
         />
-        <FormErrorMessage>Value too long</FormErrorMessage>
+        <FormErrorMessage>{t("freeagents;Value too long")}</FormErrorMessage>
       </FormControl>
 
       <FormControl
@@ -281,7 +281,7 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
         mt="1em"
       >
         <FormLabel htmlFor="lookingFor">
-          What are you looking from a team?
+          {t("freeagents;What are you looking from a team?")}
         </FormLabel>
         <TextArea
           id="lookingFor"
@@ -291,7 +291,7 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
           value={form.looking_for ?? ""}
           limit={100}
         />
-        <FormErrorMessage>Value too long</FormErrorMessage>
+        <FormErrorMessage>{t("freeagents;Value too long")}</FormErrorMessage>
       </FormControl>
 
       <FormControl
@@ -300,7 +300,7 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
         }
         mt="1em"
       >
-        <FormLabel htmlFor="lookingFor">Free word</FormLabel>
+        <FormLabel htmlFor="lookingFor">{t("freeagents;Free word")}</FormLabel>
         <TextArea
           id="lookingFor"
           setValue={(value: string) =>
@@ -310,7 +310,7 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
           height="150px"
           limit={1000}
         />
-        <FormErrorMessage>Value too long</FormErrorMessage>
+        <FormErrorMessage>{t("freeagents;Value too long")}</FormErrorMessage>
       </FormControl>
 
       <Flex flexWrap="wrap" mt="1em">
@@ -319,11 +319,11 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
             onClick={() => handleSubmit()}
             loading={loading || editLoading}
           >
-            Submit
+            {t("users;Submit")}
           </Button>
         </Box>
         <Button outlined onClick={() => closeModal()}>
-          Cancel
+          {t("users;Cancel")}
         </Button>
       </Flex>
     </Modal>

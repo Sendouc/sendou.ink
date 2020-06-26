@@ -115,7 +115,7 @@ const Select: React.FC<SelectProps> = ({
   }
 
   return (
-    <Box>
+    <Box zIndex={99999999}>
       {label && <Label required={required}>{label}</Label>}
       <ReactSelect
         className="basic-single"
@@ -180,6 +180,7 @@ const Select: React.FC<SelectProps> = ({
               color: getOptionColor(isFocused),
             }
           },
+          menu: (styles) => ({ ...styles, zIndex: 999 }),
         }}
       />
     </Box>

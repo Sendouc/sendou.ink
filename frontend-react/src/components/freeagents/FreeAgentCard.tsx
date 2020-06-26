@@ -86,10 +86,10 @@ const FreeAgentCard: React.FC<FreeAgentCardProps> = ({
           {discord_user.top500 && (
             <Image
               src={top500}
-              alt="x rank top 500 logo"
+              alt={t("freeagents;Free agent has reached Top 500 in X Rank")}
               height="40px"
               width="auto"
-              title="Free agent has reached Top 500 in X Rank"
+              title={t("freeagents;Free agent has reached Top 500 in X Rank")}
             />
           )}
         </Box>
@@ -161,7 +161,7 @@ const FreeAgentCard: React.FC<FreeAgentCardProps> = ({
         {canBeExpanded && (
           <IconButton
             variant="ghost"
-            aria-label="More information"
+            aria-label={t("freeagents;Show more information")}
             isRound
             size="lg"
             icon={expanded ? FaMinus : FaPlus}
@@ -174,7 +174,7 @@ const FreeAgentCard: React.FC<FreeAgentCardProps> = ({
           {post.activity && (
             <Box>
               <Heading size="md" color={themeColorWithShade}>
-                Activity
+                {t("freeagents;Activity")}
               </Heading>
               {post.activity}
             </Box>
@@ -182,7 +182,7 @@ const FreeAgentCard: React.FC<FreeAgentCardProps> = ({
           {post.looking_for && (
             <Box mt={post.activity ? "1em" : undefined}>
               <Heading size="md" color={themeColorWithShade}>
-                Looking for
+                {t("freeagents;Looking for")}
               </Heading>
               {post.looking_for}
             </Box>
@@ -190,7 +190,7 @@ const FreeAgentCard: React.FC<FreeAgentCardProps> = ({
           {post.past_experience && (
             <Box mt={post.activity || post.looking_for ? "1em" : undefined}>
               <Heading size="md" color={themeColorWithShade}>
-                Past experience
+                {t("freeagents;Past experience")}
               </Heading>
               {post.past_experience}
             </Box>
@@ -204,7 +204,7 @@ const FreeAgentCard: React.FC<FreeAgentCardProps> = ({
               }
             >
               <Heading size="md" color={themeColorWithShade}>
-                Description
+                {t("freeagents;Description")}
               </Heading>
               {post.description}
             </Box>

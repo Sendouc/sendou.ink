@@ -3,7 +3,7 @@ import { RadioGroup as ChakraRadioGroup, Radio, Box } from "@chakra-ui/core"
 import MyThemeContext from "../../themeContext"
 
 interface RadioGroupProps {
-  options: string[]
+  options: { label: string; value: string }[]
   value: string
   label?: string
   setValue: (value: any) => void
@@ -29,14 +29,14 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
         onChange={(e) => setValue(e.target.value)}
         value={value}
       >
-        {options.map((option) => (
+        {options.map(({ label, value }) => (
           <Radio
-            key={option}
+            key={value}
             variantColor={themeColor}
-            value={option}
-            isChecked={value === option}
+            value={value}
+            isChecked={value === value}
           >
-            {option}
+            {label}
           </Radio>
         ))}
       </ChakraRadioGroup>

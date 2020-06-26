@@ -27,6 +27,7 @@ import {
 } from "../../graphql/queries/freeAgentMatches"
 import Matches from "./Matches"
 import Alert from "../elements/Alert"
+import { useTranslation, Trans } from "react-i18next"
 
 const playstyleToEnum = {
   "Frontline/Slayer": "FRONTLINE",
@@ -35,6 +36,7 @@ const playstyleToEnum = {
 } as const
 
 const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
+  const { t } = useTranslation()
   const [weapon, setWeapon] = useState<Weapon | null>(null)
   const [showFilters, setShowFilters] = useState(false)
   const [showModal, setShowModal] = useState(false)
@@ -69,8 +71,8 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
 
   const buttonText =
     ownFAPost && !ownFAPost.hidden
-      ? "Edit free agent post"
-      : "New free agent post"
+      ? t("freeagents;Edit free agent post")
+      : t("freeagents;New free agent post")
 
   const altWeaponMap = new Map([
     ["Splattershot", "Hero Shot Replica"],
@@ -140,7 +142,7 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
       return (
         <Box maxW="300px">
           <Alert status="info" mt="0">
-            Log in to make your own free agent post and start matching!
+            {t("freeagents;loginPrompt")}
           </Alert>
         </Box>
       )
@@ -151,8 +153,7 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
         return (
           <Box maxW="300px">
             <Alert status="info" mt="0">
-              You need to wait a week after deleting your old free agent post
-              before making a new one
+              {t("freeagents;pleaseWaitPrompt")}
             </Alert>
           </Box>
         )
@@ -166,12 +167,16 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
     )
   }
 
+  const name = userData!.user!.username
+  const disc = userData!.user!.discord_id
+  const matchFullName = `${name}#${disc}`
+
   return (
     <>
       <Helmet>
-        <title>Free Agents | sendou.ink</title>
+        <title>{t("navigation;Free Agents")} | sendou.ink</title>
       </Helmet>
-      <PageHeader title="Free Agents" />
+      <PageHeader title={t("navigation;Free Agents")} />
       {showModal && (
         <FAPostModal
           closeModal={() => setShowModal(false)}
@@ -181,7 +186,9 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
       <Flex justifyContent="space-between" flexWrap="wrap">
         <Box m="0.5em">
           <Button icon={FaFilter} onClick={() => setShowFilters(!showFilters)}>
-            {showFilters ? "Hide filters" : "Show filters"}
+            {showFilters
+              ? t("freeagents;Hide filters")
+              : t("freeagents;Show filters")}
           </Button>
         </Box>
         {getTopRightContent()}
@@ -191,26 +198,41 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
           <RadioGroup
             value={playstyle}
             setValue={setPlaystyle}
-            label="Filter by playstyle"
+            label={t("freeagents;Playstyle")}
             options={[
-              "Any",
-              "Frontline/Slayer",
-              "Midline/Support",
-              "Backline/Anchor",
+              { value: "Any", label: t("freeagents;Any") },
+              {
+                value: "Frontline/Slayer",
+                label: t("freeagents;Frontline/Slayer"),
+              },
+              {
+                value: "Midline/Support",
+                label: t("freeagents;Midline/Support"),
+              },
+              {
+                value: "Backline/Anchor",
+                label: t("freeagents;Backline/Anchor"),
+              },
             ]}
-          />
+          ></RadioGroup>
         </Box>
         <Box maxW="600px" my="1em">
           <RadioGroup
             value={region}
             setValue={setRegion}
-            label="Filter by region"
-            options={["Any", "Europe", "The Americas", "Oceania", "Other"]}
+            label={t("freeagents;Region")}
+            options={[
+              { value: "Any", label: t("freeagents;Any") },
+              { value: "Europe", label: t("freeagents;Europe") },
+              { value: "The Americas", label: t("freeagents;The Americas") },
+              { value: "Oceania", label: t("freeagents;Oceania") },
+              { value: "Other", label: t("freeagents;Other") },
+            ]}
           />
         </Box>
         <Box maxW="600px" my="1em">
           <WeaponSelector
-            label="Filter by weapon"
+            label="Weapon"
             value={weapon}
             setValue={(weapon: string) => setWeapon(weapon as Weapon)}
             clearable
