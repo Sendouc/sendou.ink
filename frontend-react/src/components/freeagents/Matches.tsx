@@ -13,7 +13,6 @@ import {
 import UserAvatar from "../common/UserAvatar"
 import MyThemeContext from "../../themeContext"
 import { useTranslation, Trans } from "react-i18next"
-import questionMark from "../../assets/questionMark.jpg"
 
 interface MatchesProps {
   matches: {
