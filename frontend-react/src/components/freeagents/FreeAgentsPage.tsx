@@ -92,8 +92,10 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
 
     if (
       weapon &&
-      (usersWeapons.includes(weapon) ||
-        usersWeapons.includes(altWeaponMap.get(weapon) as any))
+      !(
+        usersWeapons.includes(weapon) ||
+        usersWeapons.includes(altWeaponMap.get(weapon) as any)
+      )
     ) {
       return false
     }
