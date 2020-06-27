@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React, { useContext, useState } from "react"
 import {
   IconButton,
   useColorMode,
@@ -140,6 +140,58 @@ const languages = [
   { code: "zh-TW", name: "繁體中文" },
 ] as const
 
+interface LanguagePickerProps {
+  isMobile?: boolean
+}
+
+const LanguagePicker: React.FC<LanguagePickerProps> = ({ isMobile }) => {
+  const { i18n } = useTranslation()
+  const { bgColor, themeColorWithShade, darkerBgColor } = useContext(
+    MyThemeContext
+  )
+  return (
+    <Popover placement={isMobile ? "bottom" : "top"} usePortal={!isMobile}>
+      <PopoverTrigger>
+        <IconButton
+          aria-label="Switch language"
+          variant="ghost"
+          color="current"
+          fontSize="20px"
+          icon={FiGlobe}
+        />
+      </PopoverTrigger>
+      <PopoverContent zIndex={4} backgroundColor={bgColor} w="250px">
+        <PopoverBody>
+          {languages.map((language) => (
+            <PseudoBox
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              key={language.code}
+              cursor="pointer"
+              color={
+                i18n.language === language.code
+                  ? themeColorWithShade
+                  : undefined
+              }
+              mx="0.5em"
+              fontWeight={i18n.language === language.code ? "bold" : "normal"}
+              my={isMobile ? "0.5em" : undefined}
+              _hover={{ bg: darkerBgColor }}
+              onClick={() => i18n.changeLanguage(language.code)}
+            >
+              {language.name}{" "}
+              {i18n.language === language.code && (
+                <FiGlobe style={{ marginLeft: "0.2em" }} />
+              )}
+            </PseudoBox>
+          ))}
+        </PopoverBody>
+      </PopoverContent>
+    </Popover>
+  )
+}
+
 interface SideNavProps {
   isMobile?: boolean
 }
@@ -147,12 +199,8 @@ interface SideNavProps {
 export const SideNavContent: React.FC<SideNavProps> = ({
   isMobile = false,
 }) => {
-  const { i18n } = useTranslation()
   const { colorMode, toggleColorMode } = useColorMode()
   const { data, error, loading } = useQuery<UserData>(USER)
-  const { bgColor, themeColorWithShade, darkerBgColor } = useContext(
-    MyThemeContext
-  )
 
   if (error) return <Error errorMessage={error.message} />
 
@@ -192,6 +240,7 @@ export const SideNavContent: React.FC<SideNavProps> = ({
                   icon={colorMode === "light" ? FiSun : FiMoon}
                 />
                 <ColorPicker />
+                <LanguagePicker isMobile />
               </Flex>
             </DividingBox>
             {!loading && !error && <UserItem data={data} />}
@@ -238,41 +287,7 @@ export const SideNavContent: React.FC<SideNavProps> = ({
                 icon={colorMode === "light" ? FiSun : FiMoon}
               />
               <ColorPicker />
-              <Popover placement="top">
-                <PopoverTrigger>
-                  <IconButton
-                    aria-label="Switch language"
-                    variant="ghost"
-                    color="current"
-                    fontSize="20px"
-                    icon={FiGlobe}
-                  />
-                </PopoverTrigger>
-                <PopoverContent
-                  zIndex={4}
-                  width="230px"
-                  backgroundColor={bgColor}
-                >
-                  <PopoverBody textAlign="center">
-                    {languages.map((language) => (
-                      <PseudoBox
-                        key={language.code}
-                        cursor="pointer"
-                        color={
-                          i18n.language === language.code
-                            ? themeColorWithShade
-                            : undefined
-                        }
-                        mx="0.5em"
-                        _hover={{ bg: darkerBgColor }}
-                        onClick={() => i18n.changeLanguage(language.code)}
-                      >
-                        {language.name}
-                      </PseudoBox>
-                    ))}
-                  </PopoverBody>
-                </PopoverContent>
-              </Popover>
+              <LanguagePicker />
             </Flex>
           </DividingBox>
           {!loading && !error && <UserItem data={data} />}
