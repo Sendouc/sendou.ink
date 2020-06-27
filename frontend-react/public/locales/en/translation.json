@@ -1493,5 +1493,16 @@
     "Back to Draft Cup home": "Back to Draft Cup home",
     "Expand": "Expand",
     "paintShort": "p"
+  },
+  "xsearch": {
+    "Name": "Name",
+    "Month": "Month",
+    "Year": "Year",
+    "Mode": "Mode",
+    "All modes": "All modes",
+    "idViewed": "Viewing placements by player with the id {{idViewed}}",
+    "X Power": "X Power",
+    "Placement": "Placement",
+    "ID": "ID"
   }
 }

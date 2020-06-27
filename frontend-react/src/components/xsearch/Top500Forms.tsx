@@ -7,6 +7,7 @@ import { months } from "../../utils/lists"
 import Select from "../elements/Select"
 import Label from "../elements/Label"
 import { Weapon } from "../../types"
+import { useTranslation } from "react-i18next"
 
 interface Top500FormsProps {
   forms: {
@@ -19,7 +20,25 @@ interface Top500FormsProps {
   handleChange: (value: Object) => void
 }
 
+const getLocalizedMonthYearString = (
+  month: number,
+  year: number,
+  locale: string
+) => {
+  const dateForLocalization = new Date()
+  dateForLocalization.setDate(1)
+  dateForLocalization.setMonth(month)
+  dateForLocalization.setFullYear(year)
+  const localizedString = dateForLocalization.toLocaleString(locale, {
+    month: "long",
+    year: "numeric",
+  })
+
+  return localizedString.charAt(0).toUpperCase() + localizedString.slice(1)
+}
+
 const Top500Forms: React.FC<Top500FormsProps> = ({ forms, handleChange }) => {
+  const { t, i18n } = useTranslation()
   const { themeColor } = useContext(MyThemeContext)
 
   const monthChoices = []
@@ -30,7 +49,7 @@ const Top500Forms: React.FC<Top500FormsProps> = ({ forms, handleChange }) => {
   const currentYear = date.getFullYear()
   while (true) {
     if (month === currentMonth && year === currentYear) break
-    const monthString = `${months[month]} ${year}`
+    const monthString = getLocalizedMonthYearString(month, year, i18n.language)
     monthChoices.push({ label: monthString, value: `${month},${year}` })
 
     month++
@@ -47,11 +66,11 @@ const Top500Forms: React.FC<Top500FormsProps> = ({ forms, handleChange }) => {
       <Input
         value={forms.name ?? ""}
         setValue={(value: string) => handleChange({ name: value })}
-        label="Name"
+        label={t("xsearch;Name")}
       />
       <Box mt="0.5em">
         <WeaponSelector
-          label="Weapon"
+          label={t("freeagents;Weapon")}
           value={(forms.weapon as Weapon) ?? null}
           setValue={(value: string) => handleChange({ weapon: value })}
           clearable
@@ -61,11 +80,18 @@ const Top500Forms: React.FC<Top500FormsProps> = ({ forms, handleChange }) => {
         <Select
           value={
             forms.month && forms.year
-              ? `${months[forms.month]} ${forms.year}`
+              ? {
+                  value: `${months[forms.month]} ${forms.year}`,
+                  label: getLocalizedMonthYearString(
+                    forms.month,
+                    forms.year,
+                    i18n.language
+                  ),
+                }
               : ""
           }
           options={monthChoices}
-          label="Month"
+          label={t("xsearch;Month")}
           setValue={(value: any) => {
             const monthParts = value.split(",")
             const month = parseInt(monthParts[0])
@@ -76,7 +102,7 @@ const Top500Forms: React.FC<Top500FormsProps> = ({ forms, handleChange }) => {
         />
       </Box>
       <Box mt="0.5em">
-        <Label>Mode</Label>
+        <Label>{t("xsearch;Mode")}</Label>
         <RadioGroup
           value={"" + forms.mode}
           defaultValue="0"
@@ -85,19 +111,19 @@ const Top500Forms: React.FC<Top500FormsProps> = ({ forms, handleChange }) => {
           onChange={(e, value: any) => handleChange({ mode: parseInt(value) })}
         >
           <Radio variantColor={themeColor} value="0">
-            All modes
+            {t("xsearch;All modes")}
           </Radio>
           <Radio variantColor={themeColor} value="1">
-            SZ
+            {t("plans;splatZonesShort")}
           </Radio>
           <Radio variantColor={themeColor} value="2">
-            TC
+            {t("plans;towerControlShort")}
           </Radio>
           <Radio variantColor={themeColor} value="3">
-            RM
+            {t("plans;rainMakerShort")}
           </Radio>
           <Radio variantColor={themeColor} value="4">
-            CB
+            {t("plans;clamBlitzShort")}
           </Radio>
         </RadioGroup>
       </Box>

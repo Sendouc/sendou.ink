@@ -24,8 +24,21 @@ import Alert from "../elements/Alert"
 import Button from "../elements/Button"
 import "./Top500BrowserPage.css"
 import Top500Forms from "./Top500Forms"
+import { useTranslation, Trans } from "react-i18next"
+
+const getLocalizedMonth = (month: number, locale: string) => {
+  const dateForLocalization = new Date()
+  dateForLocalization.setDate(1)
+  dateForLocalization.setMonth(month)
+  const localizedString = dateForLocalization.toLocaleString(locale, {
+    month: "long",
+  })
+
+  return localizedString.charAt(0).toUpperCase() + localizedString.slice(1)
+}
 
 const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
+  const { t, i18n } = useTranslation()
   const { themeColorWithShade } = useContext(MyThemeContext)
   const isSmall = useBreakPoints(640)
   const [query, setQuery] = useQueryParams({
@@ -68,17 +81,21 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
 
   const placements = data ? data.searchForPlacements.placements : []
 
+  const idViewed = forms.unique_id
+
   return (
     <>
       <Helmet>
-        <title>Top 500 Browser | sendou.ink</title>
+        <title>{t("navigation;Top 500 Browser")} | sendou.ink</title>
       </Helmet>
-      <PageHeader title="X Rank Browser" />
+      <PageHeader title={t("navigation;Top 500 Browser")} />
       <Box>
         <Top500Forms forms={forms} handleChange={handleFormChange} />
         {forms.unique_id && (
           <Alert status="info">
-            Viewing placements by player with the id {forms.unique_id}
+            <Trans i18nKey="xsearch;idViewed">
+              Viewing placements by player with the id {{ idViewed }}
+            </Trans>
           </Alert>
         )}
         <Flex mt="1em">
@@ -88,11 +105,11 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
               setForms({ ...forms, page: 1 })
             }}
           >
-            Apply
+            {t("tournaments;Apply")}
           </Button>
           <Box mx="1em">
             <Button outlined onClick={handleClear}>
-              Clear filters
+              {t("tournaments;Clear filters")}
             </Button>
           </Box>
         </Flex>
@@ -115,13 +132,13 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
             <Table>
               <Thead>
                 <Tr>
-                  <Th>Name</Th>
-                  <Th>Weapon</Th>
-                  <Th>X Power</Th>
-                  <Th>Placement</Th>
-                  <Th>Mode</Th>
-                  <Th>Month</Th>
-                  <Th>Year</Th>
+                  <Th>{t("xsearch;Name")}</Th>
+                  <Th>{t("freeagents;Weapon")}</Th>
+                  <Th>{t("xsearch;X Power")}</Th>
+                  <Th>{t("xsearch;Placement")}</Th>
+                  <Th>{t("xsearch;Mode")}</Th>
+                  <Th>{t("xsearch;Month")}</Th>
+                  <Th>{t("xsearch;Year")}</Th>
                   <Th />
                 </Tr>
               </Thead>
@@ -175,7 +192,7 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
                         size="2em"
                       />
                     </Td>
-                    <Td>{months[placement.month]}</Td>
+                    <Td>{getLocalizedMonth(placement.month, i18n.language)}</Td>
                     <Td>{placement.year}</Td>
                     <Td>
                       <Badge
@@ -188,7 +205,7 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
                           )
                         }}
                       >
-                        ID
+                        {t("xsearch;ID")}
                       </Badge>
                     </Td>
                   </Tr>
