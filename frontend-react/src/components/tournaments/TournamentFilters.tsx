@@ -9,6 +9,7 @@ import MyThemeContext from "../../themeContext"
 import { Weapon } from "../../types"
 import { maps } from "../../utils/lists"
 import { FaFilter } from "react-icons/fa"
+import { useTranslation } from "react-i18next"
 
 interface TournamentFiltersProps {
   forms: {
@@ -31,40 +32,41 @@ const TournamentFilters: React.FC<TournamentFiltersProps> = ({
   handleClear,
   onSubmit,
 }) => {
+  const { t } = useTranslation()
   const { themeColor } = useContext(MyThemeContext)
   const [show, setShow] = useState(false)
   return (
     <>
       <Button icon={FaFilter} onClick={() => setShow(!show)}>
-        {show ? "Hide filters" : "Show filters"}
+        {show ? t("freeagents;Hide filters") : t("freeagents;Show filters")}
       </Button>
       <Collapse mt={4} isOpen={show}>
         <Grid maxW="500px" gridRowGap="1em" gridTemplateColumns="1fr">
           <Input
-            label="Tournament"
+            label={t("tournaments;Tournament")}
             value={forms.tournament_name ?? ""}
             setValue={(value: string) =>
               handleChange({ tournament_name: value })
             }
           />
           <Input
-            label="Team"
+            label={t("tournaments;Team")}
             value={forms.team_name ?? ""}
             setValue={(value: string) => handleChange({ team_name: value })}
           />
           <Input
-            label="Player"
+            label={t("tournaments;Player")}
             value={forms.player_name ?? ""}
             setValue={(value: string) => handleChange({ player_name: value })}
           />
           <WeaponSelector
-            label="Comp"
+            label={t("tournaments;Comp")}
             value={(forms.comp as Weapon[]) ?? []}
             setValue={(value: Weapon[]) => handleChange({ comp: value })}
             isMulti
           />
           <Select
-            label="Map & mode"
+            label={t("tournaments;Map & mode")}
             isSearchable
             value={
               forms.stage && forms.mode ? `${forms.stage} (${forms.mode})` : ""
@@ -79,17 +81,34 @@ const TournamentFilters: React.FC<TournamentFiltersProps> = ({
             options={maps.reduce(
               (acc: { label: string; value: string }[], cur: string) => [
                 ...acc,
-                { label: `${cur} (TW)`, value: `${cur} (TW)` },
-                { label: `${cur} (SZ)`, value: `${cur} (SZ)` },
-                { label: `${cur} (TC)`, value: `${cur} (TC)` },
-                { label: `${cur} (RM)`, value: `${cur} (RM)` },
-                { label: `${cur} (CB)`, value: `${cur} (CB)` },
+                {
+                  label: `${t("game;" + cur)} - ${t("plans;turfWarShort")}`,
+                  value: `${cur} (TW)`,
+                },
+                {
+                  label: `${t("game;" + cur)} - ${t("plans;splatZonesShort")}`,
+                  value: `${cur} (SZ)`,
+                },
+                {
+                  label: `${t("game;" + cur)} - ${t(
+                    "plans;towerControlShort"
+                  )}`,
+                  value: `${cur} (TC)`,
+                },
+                {
+                  label: `${t("game;" + cur)} - ${t("plans;rainMakerShort")}`,
+                  value: `${cur} (RM)`,
+                },
+                {
+                  label: `${t("game;" + cur)} - ${t("plans;clamBlitzShort")}`,
+                  value: `${cur} (CB)`,
+                },
               ],
               []
             )}
           />
           <Box mt="0.5em">
-            <Label>Mode</Label>
+            <Label>{t("tournaments;Region")}</Label>
             <RadioGroup
               value={forms.region ?? "all"}
               defaultValue="0"
@@ -98,21 +117,21 @@ const TournamentFilters: React.FC<TournamentFiltersProps> = ({
               onChange={(e, value: any) => handleChange({ region: value })}
             >
               <Radio variantColor={themeColor} value="all">
-                All
+                {t("tournaments;All")}
               </Radio>
               <Radio variantColor={themeColor} value="western">
-                Western only
+                {t("tournaments;Western")}
               </Radio>
               <Radio variantColor={themeColor} value="jpn">
-                Japanese only
+                {t("tournaments;Japanese")}
               </Radio>
             </RadioGroup>
           </Box>
           <Flex mt="1em">
-            <Button onClick={onSubmit}>Apply</Button>
+            <Button onClick={onSubmit}>{t("tournaments;Apply")}</Button>
             <Box mx="1em">
               <Button outlined onClick={handleClear}>
-                Clear filters
+                {t("tournaments;Clear filters")}
               </Button>
             </Box>
           </Flex>

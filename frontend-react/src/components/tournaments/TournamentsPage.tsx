@@ -18,6 +18,7 @@ import { Box, Grid, Alert, AlertIcon } from "@chakra-ui/core"
 import TournamentFilters from "./TournamentFilters"
 import Pagination from "../common/Pagination"
 import { stringify } from "querystring"
+import { useTranslation } from "react-i18next"
 
 interface SearchForTournamentsData {
   searchForTournaments: {
@@ -59,6 +60,7 @@ const queryMap = {
 }
 
 const TournamentsPage: React.FC<RouteComponentProps> = () => {
+  const { t } = useTranslation()
   const [query, setQuery] = useQueryParams(queryMap)
   const [forms, setForms] = useState<SearchForTournamentsVars>({
     page: query.page,
@@ -95,9 +97,9 @@ const TournamentsPage: React.FC<RouteComponentProps> = () => {
   return (
     <>
       <Helmet>
-        <title>Tournament Results | sendou.ink</title>
+        <title>{t("navigation;Tournament Results")} | sendou.ink</title>
       </Helmet>
-      <PageHeader title="Tournament Results" />
+      <PageHeader title={t("navigation;Tournament Results")} />
       <TournamentFilters
         forms={forms}
         handleChange={handleFormChange}
@@ -114,7 +116,7 @@ const TournamentsPage: React.FC<RouteComponentProps> = () => {
             <Pagination
               currentPage={forms.page ?? 1}
               pageCount={data?.searchForTournaments.pageCount ?? 999}
-              onChange={page => {
+              onChange={(page) => {
                 setForms({ ...forms, page })
                 setQuery({ ...query, page })
               }}
@@ -127,7 +129,7 @@ const TournamentsPage: React.FC<RouteComponentProps> = () => {
                 gridTemplateColumns="repeat(auto-fit, minmax(260px, 1fr))"
                 mt="1em"
               >
-                {data.searchForTournaments.tournaments.map(tournament => (
+                {data.searchForTournaments.tournaments.map((tournament) => (
                   <Box key={tournament.id}>
                     <Link to={`/tournaments/${tournament.id}${linkSuffix}`}>
                       <TournamentCard tournament={tournament} styledOnHover />
@@ -139,7 +141,7 @@ const TournamentsPage: React.FC<RouteComponentProps> = () => {
                 <Pagination
                   currentPage={forms.page ?? 1}
                   pageCount={data.searchForTournaments.pageCount}
-                  onChange={page => {
+                  onChange={(page) => {
                     setForms({ ...forms, page })
                     setQuery({ ...query, page })
                   }}

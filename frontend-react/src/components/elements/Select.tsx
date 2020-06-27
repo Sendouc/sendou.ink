@@ -115,7 +115,7 @@ const Select: React.FC<SelectProps> = ({
   }
 
   return (
-    <Box zIndex={99999999}>
+    <Box>
       {label && <Label required={required}>{label}</Label>}
       <ReactSelect
         className="basic-single"
@@ -173,7 +173,7 @@ const Select: React.FC<SelectProps> = ({
             background: themeColorHexLighter,
             color: "black",
           }),
-          option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+          option: (styles, { isFocused }) => {
             return {
               ...styles,
               backgroundColor: isFocused ? themeColorHexLighter : undefined,

@@ -26,6 +26,7 @@ import {
 } from "use-query-params"
 import { stringify } from "querystring"
 import { removeFalsy } from "../../utils/helperFunctions"
+import { useTranslation } from "react-i18next"
 
 interface TournamentDetailsPageProps {
   id?: string
@@ -55,8 +56,10 @@ const filterMap = {
   stage: StringParam,
 }
 
-const TournamentDetailsPage: React.FC<RouteComponentProps &
-  TournamentDetailsPageProps> = ({ id }) => {
+const TournamentDetailsPage: React.FC<
+  RouteComponentProps & TournamentDetailsPageProps
+> = ({ id }) => {
+  const { t } = useTranslation()
   const {
     themeColorWithShade,
     grayWithShade,
@@ -104,10 +107,10 @@ const TournamentDetailsPage: React.FC<RouteComponentProps &
       const playerNameUpper = player_name.toUpperCase()
       if (
         round.winning_team_players.some(
-          player => player.toUpperCase() === playerNameUpper
+          (player) => player.toUpperCase() === playerNameUpper
         ) ||
         round.losing_team_players.some(
-          player => player.toUpperCase() === playerNameUpper
+          (player) => player.toUpperCase() === playerNameUpper
         )
       ) {
         return true
@@ -117,10 +120,10 @@ const TournamentDetailsPage: React.FC<RouteComponentProps &
     if (comp) {
       if (
         comp.every(
-          weapon => round.winning_team_weapons.indexOf(weapon as any) !== -1
+          (weapon) => round.winning_team_weapons.indexOf(weapon as any) !== -1
         ) ||
         comp.every(
-          weapon => round.losing_team_weapons.indexOf(weapon as any) !== -1
+          (weapon) => round.losing_team_weapons.indexOf(weapon as any) !== -1
         )
       ) {
         return true
@@ -150,7 +153,7 @@ const TournamentDetailsPage: React.FC<RouteComponentProps &
         }
       >
         <Button outlined icon={FaLongArrowAltLeft}>
-          All tournaments
+          {t("tournaments;All tournaments")}
         </Button>
       </Link>
       <Flex justifyContent="center" mt="1em">
@@ -158,7 +161,7 @@ const TournamentDetailsPage: React.FC<RouteComponentProps &
           <TournamentCard tournament={tournament} />
         </Box>
       </Flex>
-      {tournament.rounds.map(round => {
+      {tournament.rounds.map((round) => {
         return (
           <Box key={`${round.round_name}_${round.game_number}`} mt="1em">
             {round.game_number === 1 && (
@@ -194,7 +197,7 @@ const TournamentDetailsPage: React.FC<RouteComponentProps &
               >
                 <Box color={themeColorWithShade}>{round.game_number}.</Box>
                 <Avatar src={mapIcons[round.stage]} size="lg" my="5px" />
-                {round.stage}
+                {t("game;" + round.stage)}
                 <Icon
                   name={round.mode.toLowerCase() as any}
                   color={themeColorWithShade}
@@ -209,7 +212,7 @@ const TournamentDetailsPage: React.FC<RouteComponentProps &
                   fontSize="md"
                   alignItems="center"
                 >
-                  <Box color={grayWithShade}>VICTORY</Box>
+                  <Box color={grayWithShade}>{t("tournaments;VICTORY")}</Box>
                   <Box color={textColor} fontSize="xl">
                     {round.winning_team_name}
                   </Box>
@@ -251,7 +254,7 @@ const TournamentDetailsPage: React.FC<RouteComponentProps &
                     fontSize="md"
                     alignItems="center"
                   >
-                    <Box color={grayWithShade}>DEFEAT</Box>
+                    <Box color={grayWithShade}>{t("tournaments;DEFEAT")}</Box>
                     <Box color={textColor} fontSize="xl">
                       {round.losing_team_name}
                     </Box>

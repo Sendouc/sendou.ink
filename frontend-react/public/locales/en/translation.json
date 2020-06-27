@@ -1468,5 +1468,22 @@
     "What is your activity like on a typical week?": "What is your activity like on a typical week?",
     "What are you looking from a team?": "What are you looking from a team?",
     "Free word": "Free word"
+  },
+  "tournaments": {
+    "Tournament": "Tournament",
+    "Team": "Team",
+    "Player": "Player",
+    "Comp": "Comp",
+    "Map & mode": "Map & mode",
+    "Region": "Region",
+    "All": "All",
+    "Western": "Western",
+    "Japanese": "Japanese",
+    "Apply": "Apply",
+    "Clear filters": "Clear filters",
+    "All tournaments": "All tournaments",
+    "Popular weapons": "Popular weapons",
+    "VICTORY": "VICTORY",
+    "DEFEAT": "DEFEAT"
   }
 }

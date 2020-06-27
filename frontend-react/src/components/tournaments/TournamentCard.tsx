@@ -6,6 +6,7 @@ import trophy from "../../assets/trophy.png"
 import WeaponImage from "../common/WeaponImage"
 import { Weapon } from "../../types"
 import Flag from "../common/Flag"
+import { useTranslation } from "react-i18next"
 
 interface TournamentCardProps {
   tournament: {
@@ -26,6 +27,7 @@ const TournamentCard: React.FC<TournamentCardProps> = ({
   tournament,
   styledOnHover,
 }) => {
+  const { t } = useTranslation()
   const { grayWithShade } = useContext(MyThemeContext)
   const a = new Date(parseInt(tournament.date))
   const dateStr = `${a.getDate()} ${
@@ -78,10 +80,10 @@ const TournamentCard: React.FC<TournamentCardProps> = ({
           fontSize="xs"
           mt="1.5em"
         >
-          Popular weapons
+          {t("tournaments;Popular weapons")}
         </Box>
         <Flex flexWrap="wrap">
-          {tournament.popular_weapons.map(weapon => (
+          {tournament.popular_weapons.map((weapon) => (
             <Box key={weapon} mx="0.2em">
               <WeaponImage englishName={weapon as Weapon} size="SMALL" />
             </Box>
