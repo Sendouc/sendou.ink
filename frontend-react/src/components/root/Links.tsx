@@ -8,6 +8,8 @@ import PageHeader from "../common/PageHeader"
 import { RouteComponentProps } from "@reach/router"
 import { Heading, Link, Flex, Box } from "@chakra-ui/core"
 import MyThemeContext from "../../themeContext"
+import { useTranslation } from "react-i18next"
+import Alert from "../elements/Alert"
 
 interface Link {
   title: string
@@ -21,6 +23,7 @@ interface LinksData {
 }
 
 const Links: React.FC<RouteComponentProps> = () => {
+  const { t, i18n } = useTranslation()
   const { data, error, loading } = useQuery<LinksData>(LINKS)
   const { themeColorWithShade, grayWithShade } = useContext(MyThemeContext)
 
@@ -42,23 +45,26 @@ const Links: React.FC<RouteComponentProps> = () => {
   return (
     <>
       <Helmet>
-        <title>Links | sendou.ink</title>
+        <title>{t("footer;Links")} | sendou.ink</title>
       </Helmet>
       <PageHeader title="Links" />
-      <Heading size="lg" mb="0.5em" fontFamily="'Rubik', sans-serif">
-        Guides
+      {i18n.language !== "en" && (
+        <Alert status="info">{t("footer;englishOnly")}</Alert>
+      )}
+      <Heading size="lg" mb="0.5em" fontFamily="'Rubik', sans-serif" mt="1em">
+        {t("footer;Guides")}
       </Heading>
       <Flex flexDirection="column">
         {links.filter((link) => link.type === "GUIDE").map(linkMap)}
       </Flex>
       <Heading size="lg" mb="0.5em" fontFamily="'Rubik', sans-serif">
-        Discord
+        {t("footer;Discord")}
       </Heading>
       <Flex flexDirection="column">
         {links.filter((link) => link.type === "DISCORD").map(linkMap)}
       </Flex>
       <Heading size="lg" mb="0.5em" fontFamily="'Rubik', sans-serif">
-        Misc
+        {t("footer;Misc")}
       </Heading>
       <Flex flexDirection="column">
         {links.filter((link) => link.type === "MISC").map(linkMap)}

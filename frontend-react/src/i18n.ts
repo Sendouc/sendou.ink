@@ -3,6 +3,8 @@ import { initReactI18next } from "react-i18next"
 import LanguageDetector from "i18next-browser-languagedetector"
 import Backend from "i18next-http-backend"
 
+console.log("NODE_ENV", process.env.NODE_ENV)
+
 i18n
   .use(Backend)
   .use(LanguageDetector)
@@ -12,7 +14,7 @@ i18n
     fallbackLng: "en",
     keySeparator: ";",
     returnEmptyString: false,
-    debug: true,
+    debug: process.env.NODE_ENV === "development",
     interpolation: {
       escapeValue: false,
     },

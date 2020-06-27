@@ -1507,5 +1507,26 @@
   },
   "xtrends": {
     "trendsExplanation": "Here you can find X Rank Top 500 usage tier lists. For example for a weapon to be in the X tier it needs at least 30 placements in that mode that month."
+  },
+  "footer": {
+    "About": "About",
+    "External links": "External links",
+    "Feedback": "Help/Feedback",
+    "feedbackText": "Noticed a bug? Something could be done better? Thought of a new cool feature you'd like to see on the site? Need help using the site? You can either:",
+    "Thanks to": "Thanks to",
+    "createIssue": "Create an issue on <2>GitHub</2",
+    "postOnDiscord": "Post on the #helpdesk or #feedback channel of our <2>Discord</2>",
+    "dmMe": "DM me on <2>Twitter</2> or Discord (Sendou#0043)",
+    "provided the Top 500 X Rank data": "provided the Top 500 X Rank data",
+    "provided background pictures for the map planner": "provided background pictures for the map planner",
+    "provided the data for tournament browser": "provided the data for tournament browser",
+    "gave plenty of useful feedback": "gave plenty of useful feedback",
+    "art for the site like the inkling on the front page as well as footer pictures": "art for the site like the inkling on the front page as well as footer pictures",
+    "translation": "translation",
+    "Links": "Links",
+    "Guides": "Guides",
+    "Discord": "Discord",
+    "Misc": "Misc",
+    "englishOnly": "This content is currently available in English only. We will look into adding resources in other languages too."
   }
 }

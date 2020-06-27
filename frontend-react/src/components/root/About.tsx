@@ -1,32 +1,67 @@
 import React, { useContext } from "react"
 import { RouteComponentProps } from "@reach/router"
-import { Heading, Link } from "@chakra-ui/core"
+import { Heading, Link, List, ListItem } from "@chakra-ui/core"
 import MyThemeContext from "../../themeContext"
 import { Helmet } from "react-helmet-async"
+import { useTranslation, Trans } from "react-i18next"
 
 const About: React.FC<RouteComponentProps> = () => {
+  const { t } = useTranslation()
   const { themeColorWithShade } = useContext(MyThemeContext)
   return (
     <>
       <Helmet>
-        <title>About | sendou.ink</title>
+        <title>{t("footer;About")} | sendou.ink</title>
       </Helmet>
       <div style={{ marginTop: "1em" }}>
         <Heading size="lg" mb="0.5em" fontFamily="'Rubik', sans-serif">
-          Help
+          {t("footer;Feedback")}
         </Heading>
-        If you need help using the site don't hesitate to ask on our Discord.
-        Bug reports are also useful:{" "}
-        <Link
-          href="https://discord.gg/J6NqUvt"
-          isExternal
-          color={themeColorWithShade}
-        >
-          https://discord.gg/J6NqUvt
-        </Link>
+        {t("footer;feedbackText")}
+        <List styleType="decimal" mt="1em">
+          <ListItem>
+            <Trans i18nKey="footer;createIssue">
+              Create an issue on{" "}
+              <Link
+                href="https://github.com/Sendouc/sendou-ink/issues"
+                isExternal
+                color={themeColorWithShade}
+              >
+                GitHub
+              </Link>
+            </Trans>
+          </ListItem>
+          <ListItem>
+            <Trans i18nKey="footer;postOnDiscord">
+              Post on the #helpdesk or #feedback channel of our{" "}
+              <Link
+                href="https://discord.gg/J6NqUvt"
+                isExternal
+                color={themeColorWithShade}
+              >
+                Discord
+              </Link>
+            </Trans>
+          </ListItem>
+          <ListItem>
+            <Trans i18nKey="footer;dmMe">
+              DM me on{" "}
+              <Link
+                href="https://twitter.com/sendouc"
+                isExternal
+                color={themeColorWithShade}
+              >
+                Twitter
+              </Link>{" "}
+              or Discord (Sendou#0043)
+            </Trans>
+          </ListItem>
+        </List>
       </div>
       <div style={{ marginTop: "1em" }}>
-        <Heading size="lg">Thanks to</Heading>
+        <Heading size="lg" mb="0.5em" fontFamily="'Rubik', sans-serif">
+          {t("footer;Thanks to")}
+        </Heading>
         <ul style={{ marginLeft: "1.2em", marginTop: "0.5em" }}>
           <li>
             <Link
@@ -36,7 +71,7 @@ const About: React.FC<RouteComponentProps> = () => {
             >
               Lean
             </Link>{" "}
-            (provided the Top 500 X Rank data)
+            - {t("footer;provided the Top 500 X Rank data")}
           </li>
           <li>
             <Link
@@ -46,7 +81,7 @@ const About: React.FC<RouteComponentProps> = () => {
             >
               zorg
             </Link>{" "}
-            (provided background pictures for the map planner)
+            - {t("footer;provided background pictures for the map planner")}
           </li>
           <li>
             <Link
@@ -56,7 +91,7 @@ const About: React.FC<RouteComponentProps> = () => {
             >
               ganbawoomy
             </Link>{" "}
-            (provided the data for tournament browser)
+            - {t("footer;provided the data for tournament browser")}
           </li>
           <li>
             <Link
@@ -66,7 +101,7 @@ const About: React.FC<RouteComponentProps> = () => {
             >
               NoAim™bUrn
             </Link>{" "}
-            (gave plenty of useful feedback)
+            - {t("footer;gave plenty of useful feedback")}
           </li>
           <li>
             <Link
@@ -76,8 +111,10 @@ const About: React.FC<RouteComponentProps> = () => {
             >
               borzoic
             </Link>{" "}
-            (art for the site like the inkling on the front page as well as
-            footer pictures)
+            -{" "}
+            {t(
+              "footer;art for the site like the inkling on the front page as well as footer pictures"
+            )}
           </li>
         </ul>
       </div>
