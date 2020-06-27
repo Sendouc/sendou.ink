@@ -22,6 +22,11 @@ import Select from "../elements/Select"
 import WeaponLineChart from "./WeaponLineChart"
 import { Helmet } from "react-helmet-async"
 import Alert from "../elements/Alert"
+import { useTranslation } from "react-i18next"
+import {
+  getLocalizedMonthYearString,
+  parseAndGetLocalizedMonthYear,
+} from "../../utils/helperFunctions"
 
 const tiers = [
   {
@@ -71,7 +76,15 @@ const tiers = [
   },
 ] as const
 
+const modeTranslationKey = new Map([
+  ["SZ", "splatZonesShort"],
+  ["TC", "towerControlShort"],
+  ["RM", "rainMakerShort"],
+  ["CB", "clamBlitzShort"],
+])
+
 const XTrendsPage: React.FC<RouteComponentProps> = () => {
+  const { t, i18n } = useTranslation()
   const { grayWithShade, darkerBgColor, themeColorWithShade } = useContext(
     MyThemeContext
   )
@@ -142,19 +155,25 @@ const XTrendsPage: React.FC<RouteComponentProps> = () => {
     <>
       <PageHeader title="Top 500 Tier Lists" />
       <Helmet>
-        <title>Top 500 Tier Lists | sendou.ink</title>
+        <title>{t("navigation;Top 500 Tier Lists")} | sendou.ink</title>
       </Helmet>
       <Box my="1em">
-        <Alert status="info">
-          Here you can find X Rank Top 500 usage tier lists. For example for a
-          weapon to be in the X tier it needs at least 30 placements in that
-          mode that month.
-        </Alert>
+        <Alert status="info">{t("xtrends;trendsExplanation")}</Alert>
       </Box>
       <Select
-        value={month}
+        value={
+          month
+            ? {
+                label: parseAndGetLocalizedMonthYear(month, i18n.language),
+                value: month,
+              }
+            : null
+        }
         setValue={(value) => setMonth(value)}
-        options={xRankMonths.map((month) => ({ label: month, value: month }))}
+        options={xRankMonths.map((month) => ({
+          label: parseAndGetLocalizedMonthYear(month, i18n.language),
+          value: month,
+        }))}
       />
       <Box my="1em">
         <ModeButtons
@@ -221,7 +240,8 @@ const XTrendsPage: React.FC<RouteComponentProps> = () => {
                         mb="0.5em"
                         textAlign="center"
                       >
-                        {weapon.name} ({mode})
+                        {t("game;" + weapon.name)} (
+                        {t("plans;" + modeTranslationKey.get(mode))})
                       </Box>
                       <WeaponLineChart
                         counts={

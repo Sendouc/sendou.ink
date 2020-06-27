@@ -1,3 +1,5 @@
+import { months } from "./lists"
+
 export function choose(choices: any[]) {
   var index = Math.floor(Math.random() * choices.length)
   return choices[index]
@@ -40,4 +42,32 @@ export const getWeek = (dateInput: Date) => {
         7
     )
   )
+}
+
+export const getLocalizedMonthYearString = (
+  month: number,
+  year: number,
+  locale: string
+) => {
+  const dateForLocalization = new Date()
+  dateForLocalization.setDate(1)
+  dateForLocalization.setMonth(month)
+  dateForLocalization.setFullYear(year)
+  const localizedString = dateForLocalization.toLocaleString(locale, {
+    month: "long",
+    year: "numeric",
+  })
+
+  return localizedString.charAt(0).toUpperCase() + localizedString.slice(1)
+}
+
+export const parseAndGetLocalizedMonthYear = (
+  monthYear: string,
+  locale: string
+) => {
+  const [monthToParse, yearToParse] = monthYear.split(" ")
+  const year = parseInt(yearToParse)
+  const month = months.indexOf(monthToParse as any)
+
+  return getLocalizedMonthYearString(month, year, locale)
 }

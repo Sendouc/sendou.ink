@@ -3,6 +3,8 @@ import { LineChart, Line, Tooltip } from "recharts"
 import MyThemeContext from "../../themeContext"
 import { months } from "../../utils/lists"
 import { Box, Flex, Badge } from "@chakra-ui/core"
+import { useTranslation } from "react-i18next"
+import { parseAndGetLocalizedMonthYear } from "../../utils/helperFunctions"
 
 interface WeaponLineChartProps {
   counts: {
@@ -66,11 +68,8 @@ const WeaponLineChart: React.FC<WeaponLineChartProps> = ({
     )
   }
 
-  const CustomTooltip: React.FC<CustomTooltipProps> = ({
-    active,
-    payload,
-    label,
-  }) => {
+  const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload }) => {
+    const { i18n } = useTranslation()
     if (active) {
       return (
         <Flex
@@ -82,7 +81,10 @@ const WeaponLineChart: React.FC<WeaponLineChartProps> = ({
           border="1px solid"
         >
           <Box fontWeight="bolder" fontSize="1.1em">
-            {payload[0].payload.name}
+            {parseAndGetLocalizedMonthYear(
+              payload[0].payload.name,
+              i18n.language
+            )}
           </Box>
           <Box fontWeight="bold">
             <Badge variantColor={themeColor} mr="0.5em">

@@ -1504,5 +1504,8 @@
     "X Power": "X Power",
     "Placement": "Placement",
     "ID": "ID"
+  },
+  "xtrends": {
+    "trendsExplanation": "Here you can find X Rank Top 500 usage tier lists. For example for a weapon to be in the X tier it needs at least 30 placements in that mode that month."
   }
 }

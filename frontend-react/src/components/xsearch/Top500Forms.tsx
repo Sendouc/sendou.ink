@@ -8,6 +8,7 @@ import Select from "../elements/Select"
 import Label from "../elements/Label"
 import { Weapon } from "../../types"
 import { useTranslation } from "react-i18next"
+import { getLocalizedMonthYearString } from "../../utils/helperFunctions"
 
 interface Top500FormsProps {
   forms: {
@@ -18,23 +19,6 @@ interface Top500FormsProps {
     year?: number
   }
   handleChange: (value: Object) => void
-}
-
-const getLocalizedMonthYearString = (
-  month: number,
-  year: number,
-  locale: string
-) => {
-  const dateForLocalization = new Date()
-  dateForLocalization.setDate(1)
-  dateForLocalization.setMonth(month)
-  dateForLocalization.setFullYear(year)
-  const localizedString = dateForLocalization.toLocaleString(locale, {
-    month: "long",
-    year: "numeric",
-  })
-
-  return localizedString.charAt(0).toUpperCase() + localizedString.slice(1)
 }
 
 const Top500Forms: React.FC<Top500FormsProps> = ({ forms, handleChange }) => {
