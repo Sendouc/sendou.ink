@@ -1,6 +1,5 @@
-import React, { useContext } from "react"
+import React from "react"
 import { Avatar, Flex, Box } from "@chakra-ui/core"
-import MyThemeContext from "../../themeContext"
 
 interface LogoHeaderProps {
   name: string

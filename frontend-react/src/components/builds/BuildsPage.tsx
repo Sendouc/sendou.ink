@@ -23,7 +23,7 @@ import InfiniteScroll from "react-infinite-scroller"
 import PageHeader from "../common/PageHeader"
 import AbilitySelector from "./AbilitySelector"
 import Alert from "../elements/Alert"
-import { useTranslation, Trans } from "react-i18next"
+import { useTranslation } from "react-i18next"
 
 const BuildsPage: React.FC<RouteComponentProps> = () => {
   const { themeColor } = useContext(MyThemeContext)

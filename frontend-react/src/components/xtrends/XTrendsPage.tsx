@@ -23,10 +23,7 @@ import WeaponLineChart from "./WeaponLineChart"
 import { Helmet } from "react-helmet-async"
 import Alert from "../elements/Alert"
 import { useTranslation } from "react-i18next"
-import {
-  getLocalizedMonthYearString,
-  parseAndGetLocalizedMonthYear,
-} from "../../utils/helperFunctions"
+import { parseAndGetLocalizedMonthYear } from "../../utils/helperFunctions"
 
 const tiers = [
   {

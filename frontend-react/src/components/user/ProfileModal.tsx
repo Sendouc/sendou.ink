@@ -66,7 +66,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
     } else {
       setError(null)
     }
-  }, [profile])
+  }, [profile, t])
 
   const handleChange = (newValueObject: UpdateUserVars) => {
     setProfile({ ...profile, ...newValueObject })

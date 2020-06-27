@@ -1,4 +1,4 @@
-import React, { useContext, Suspense } from "react"
+import React, { useContext } from "react"
 import {
   IconButton,
   useColorMode,

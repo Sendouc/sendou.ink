@@ -1,6 +1,5 @@
 import React from "react"
 import { CountryCode } from "../../types"
-import { countries } from "../../utils/lists"
 import { useTranslation } from "react-i18next"
 
 interface FlagProps {

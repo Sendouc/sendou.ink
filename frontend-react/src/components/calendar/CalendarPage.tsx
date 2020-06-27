@@ -11,19 +11,12 @@ import {
 } from "../../graphql/queries/upcomingEvents"
 import MyThemeContext from "../../themeContext"
 import { getWeek } from "../../utils/helperFunctions"
-import { days } from "../../utils/lists"
 import Error from "../common/Error"
 import Loading from "../common/Loading"
 import PageHeader from "../common/PageHeader"
 import SubHeader from "../common/SubHeader"
 import Input from "../elements/Input"
 import TournamentInfo from "./TournamentInfo"
-
-const badgeColor: { [key: string]: string } = {
-  Friday: "purple",
-  Saturday: "green",
-  Sunday: "blue",
-} as const
 
 const CalendarPage: React.FC<RouteComponentProps> = () => {
   const { darkerBgColor, grayWithShade } = useContext(MyThemeContext)
@@ -77,7 +70,6 @@ const CalendarPage: React.FC<RouteComponentProps> = () => {
         const time = new Date(parseInt(event.date))
         const weekNumber = getWeek(time)
         const thisDay = time.getDate()
-        const thisDayOfTheWeek = days[time.getDay()]
         const thisMonth = time.getMonth()
         const printWeekHeader = weekNumber !== lastPrintedWeek
         const printDayHeader =
@@ -89,8 +81,6 @@ const CalendarPage: React.FC<RouteComponentProps> = () => {
           lastPrintedDay = thisDay
           lastPrintedMonth = thisMonth
         }
-
-        const colorForBadge = badgeColor[thisDayOfTheWeek] ?? "red"
 
         return (
           <React.Fragment key={event.discord_invite_url}>

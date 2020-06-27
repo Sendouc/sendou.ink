@@ -29,12 +29,12 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
         onChange={(e) => setValue(e.target.value)}
         value={value}
       >
-        {options.map(({ label, value }) => (
+        {options.map(({ label, value: valueOfOption }) => (
           <Radio
-            key={value}
+            key={valueOfOption}
             variantColor={themeColor}
-            value={value}
-            isChecked={value === value}
+            value={valueOfOption}
+            isChecked={valueOfOption === value}
           >
             {label}
           </Radio>

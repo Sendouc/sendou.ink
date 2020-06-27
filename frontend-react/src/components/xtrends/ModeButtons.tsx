@@ -4,7 +4,6 @@ import sz from "../../assets/sz.png"
 import tc from "../../assets/tc.png"
 import rm from "../../assets/rm.png"
 import cb from "../../assets/cb.png"
-import tw from "../../assets/tw.png"
 import { useTranslation } from "react-i18next"
 
 interface ModeButtonsProps {

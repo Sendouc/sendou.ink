@@ -1,10 +1,7 @@
-import { Box, Flex, Icon, Image } from "@chakra-ui/core"
-import { Link } from "@reach/router"
+import { Box, Image } from "@chakra-ui/core"
 import React, { useContext, useState, Suspense } from "react"
-import { FaGithub, FaTwitch, FaTwitter } from "react-icons/fa"
 import { footerOcto, footerSquid } from "../../assets/imageImports"
 import MyThemeContext from "../../themeContext"
-import { useTranslation } from "react-i18next"
 import FooterContent from "./FooterContent"
 
 const Footer: React.FC = () => {

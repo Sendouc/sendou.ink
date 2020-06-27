@@ -49,8 +49,6 @@ const Stats: React.FC = () => {
     return <>{value}</>
   }
 
-  const getStatString = (_asd: any) => 2
-
   const xRankMonthCount = xRankMonths()
 
   return (

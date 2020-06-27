@@ -5,11 +5,9 @@ import { Link } from "@reach/router"
 import { FaGithub } from "react-icons/fa"
 import MyThemeContext from "../../themeContext"
 
-interface FooterContentProps {}
-
-const FooterContent: React.FC<FooterContentProps> = ({}) => {
+const FooterContent: React.FC = () => {
   const { t } = useTranslation()
-  const { themeColorWithShade, colorMode } = useContext(MyThemeContext)
+  const { themeColorWithShade } = useContext(MyThemeContext)
   return (
     <Flex
       bg={themeColorWithShade}

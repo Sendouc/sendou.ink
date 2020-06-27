@@ -1,6 +1,6 @@
 import React, { useContext } from "react"
 import { Placement } from "../../types"
-import { modesShort, months } from "../../utils/lists"
+import { modesShort } from "../../utils/lists"
 import {
   Accordion,
   AccordionItem,

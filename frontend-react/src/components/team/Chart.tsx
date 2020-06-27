@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react"
+import React, { useContext } from "react"
 import { ComposableMap, Geographies, Geography } from "react-simple-maps"
 import { CountryCode } from "../../types"
 import MyThemeContext from "../../themeContext"

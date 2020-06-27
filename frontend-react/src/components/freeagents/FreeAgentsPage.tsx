@@ -27,7 +27,7 @@ import {
 } from "../../graphql/queries/freeAgentMatches"
 import Matches from "./Matches"
 import Alert from "../elements/Alert"
-import { useTranslation, Trans } from "react-i18next"
+import { useTranslation } from "react-i18next"
 
 const playstyleToEnum = {
   "Frontline/Slayer": "FRONTLINE",
@@ -166,10 +166,6 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
       </Box>
     )
   }
-
-  const name = userData!.user!.username
-  const disc = userData!.user!.discord_id
-  const matchFullName = `${name}#${disc}`
 
   return (
     <>

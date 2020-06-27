@@ -5,7 +5,6 @@ import { Helmet } from "react-helmet-async"
 import Chart from "./Chart"
 import TeamPlayer from "./TeamPlayer"
 import LogoHeader from "./LogoHeader"
-import USAChart from "./USAChart"
 import Markdown from "../elements/Markdown"
 
 const TeamPage: React.FC<RouteComponentProps> = () => {

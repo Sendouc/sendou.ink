@@ -14,7 +14,7 @@ import {
 import useBreakPoints from "../../hooks/useBreakPoints"
 import MyThemeContext from "../../themeContext"
 import { Weapon } from "../../types"
-import { modesShort, months } from "../../utils/lists"
+import { modesShort } from "../../utils/lists"
 import Error from "../common/Error"
 import Loading from "../common/Loading"
 import PageHeader from "../common/PageHeader"

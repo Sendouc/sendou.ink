@@ -32,7 +32,6 @@ import {
 import { weapons } from "../../utils/lists"
 import Error from "../common/Error"
 import Loading from "../common/Loading"
-import Alert from "../elements/Alert"
 import Markdown from "../elements/Markdown"
 import AvatarWithInfo from "./AvatarWithInfo"
 import BuildTab from "./BuildTab"
