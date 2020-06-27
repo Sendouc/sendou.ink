@@ -22,6 +22,7 @@ export interface PlusDraftCupsData {
           discord_id: string
           discriminator: string
           twitter_name?: string
+          avatar?: string
         }
         first: number
         second: number
@@ -56,6 +57,7 @@ export const PLUS_DRAFT_CUPS: DocumentNode = gql`
             discord_id
             discriminator
             twitter_name
+            avatar
           }
           first
           second

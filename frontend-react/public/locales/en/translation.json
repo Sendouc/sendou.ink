@@ -1485,5 +1485,13 @@
     "Popular weapons": "Popular weapons",
     "VICTORY": "VICTORY",
     "DEFEAT": "DEFEAT"
+  },
+  "draft": {
+    "draftExplanation": "Draft Cup is a tournament series open for +1 and +2 members. On this page you can browse the leaderboards and detailed match reports.",
+    "View matches": "View matches",
+    "Bracket": "Bracket",
+    "Back to Draft Cup home": "Back to Draft Cup home",
+    "Expand": "Expand",
+    "paintShort": "p"
   }
 }

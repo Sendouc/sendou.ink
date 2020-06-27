@@ -131,7 +131,7 @@ const languages = [
   { code: "nl", name: "Nederlands" },
   { code: "pt-BR", name: "Português" },
   { code: "fi", name: "Suomi" },
-  { code: "se", name: "Svenska" },
+  { code: "sv", name: "Svenska" },
   { code: "el", name: "Ελληνικά" },
   { code: "ru", name: "Русский" },
   { code: "ja", name: "日本語" },

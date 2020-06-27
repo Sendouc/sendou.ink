@@ -26,6 +26,7 @@ import AbilityIcon from "../builds/AbilityIcon"
 import GearImage from "../builds/GearImage"
 import SplatnetIcon from "../common/SplatnetIcon"
 import { Helmet } from "react-helmet-async"
+import { useTranslation } from "react-i18next"
 
 interface DraftCupDetailsProps {
   id?: string
@@ -81,6 +82,7 @@ const DetailedMapCard: React.FC<DetailedMapCardProps> = ({
   mapDetails,
   gameNumber,
 }) => {
+  const { t } = useTranslation()
   const { themeColorWithShade, grayWithShade, textColor } = useContext(
     MyThemeContext
   )
@@ -108,7 +110,7 @@ const DetailedMapCard: React.FC<DetailedMapCardProps> = ({
       >
         <Box color={themeColorWithShade}>{gameNumber}.</Box>
         <Avatar src={mapIcons[mapDetails.stage]} size="lg" my="5px" />
-        {mapDetails.stage}
+        {t("game;" + mapDetails.stage)}
         <Icon
           name={mapDetails.mode.toLowerCase() as any}
           color={themeColorWithShade}
@@ -134,7 +136,9 @@ const DetailedMapCard: React.FC<DetailedMapCardProps> = ({
               alignItems="center"
             >
               <Box color={grayWithShade} textAlign="center">
-                {index === 0 ? "VICTORY" : "DEFEAT"}
+                {index === 0
+                  ? t("tournaments;VICTORY")
+                  : t("tournaments;DEFEAT")}
               </Box>
               <Box color={themeColorWithShade}>
                 {teamInfo.score === 100 ? "KO" : teamInfo.score}
@@ -144,7 +148,7 @@ const DetailedMapCard: React.FC<DetailedMapCardProps> = ({
               </Box>
             </Flex>
             <Flex flexWrap="wrap" justifyContent="center">
-              {teamInfo.players.map((player, index) => (
+              {teamInfo.players.map((player) => (
                 <Grid
                   key={`${player.discord_user.username}#${player.discord_user.discriminator}`}
                   gridTemplateColumns="repeat(3, 1fr)"
@@ -169,7 +173,8 @@ const DetailedMapCard: React.FC<DetailedMapCardProps> = ({
                     color={grayWithShade}
                     fontWeight={600}
                   >
-                    {player.paint}p
+                    {player.paint}
+                    {t("draft;paintShort")}
                   </Flex>
                   <Flex gridArea="3 / 2 / 4 / 3" justifyContent="center">
                     <WeaponImage englishName={player.weapon} size="SMALL" />
@@ -240,6 +245,7 @@ const CollapsedMapCard: React.FC<CollapsedMapCardProps> = ({
   mapDetails,
   loading,
 }) => {
+  const { t } = useTranslation()
   const { grayWithShade } = useContext(MyThemeContext)
   const winnerTeamName = mapDetails[0].winners.team_name
   const loserTeamName = mapDetails[0].losers.team_name
@@ -288,7 +294,7 @@ const CollapsedMapCard: React.FC<CollapsedMapCardProps> = ({
         </React.Fragment>
       ))}
       <Button onClick={() => expand()} loading={loading}>
-        Expand
+        {t("draft;Expand")}
       </Button>
     </Flex>
   )
@@ -297,6 +303,7 @@ const CollapsedMapCard: React.FC<CollapsedMapCardProps> = ({
 const DraftCupDetails: React.FC<RouteComponentProps & DraftCupDetailsProps> = ({
   id,
 }) => {
+  const { t } = useTranslation()
   const { themeColorWithShade, grayWithShade } = useContext(MyThemeContext)
   const idParts = id!.split("-")
   const { data, error, loading } = useQuery<
@@ -330,7 +337,7 @@ const DraftCupDetails: React.FC<RouteComponentProps & DraftCupDetailsProps> = ({
       <Box mb="1em">
         <Link to="/draft">
           <Button outlined icon={FaLongArrowAltLeft}>
-            Back to Draft Cup home
+            {t("draft;Back to Draft Cup home")}
           </Button>
         </Link>
       </Box>
@@ -338,7 +345,7 @@ const DraftCupDetails: React.FC<RouteComponentProps & DraftCupDetailsProps> = ({
       <Box mt="1em">
         <a href={tournament.bracket_url}>
           <Button icon={FaExternalLinkAlt} outlined>
-            Bracket
+            {t("draft;Bracket")}
           </Button>
         </a>
       </Box>

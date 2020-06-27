@@ -14,7 +14,6 @@ import {
 import useBreakPoints from "../../hooks/useBreakPoints"
 import MyThemeContext from "../../themeContext"
 import { Weapon } from "../../types"
-import { ordinal_suffix_of } from "../../utils/helperFunctions"
 import { modesShort, months } from "../../utils/lists"
 import Error from "../common/Error"
 import Loading from "../common/Loading"
@@ -168,10 +167,7 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
                       </Flex>
                     </Td>
                     <Td>{placement.x_power}</Td>
-                    <Td>
-                      {placement.rank}
-                      {ordinal_suffix_of(placement.rank)}
-                    </Td>
+                    <Td>{placement.rank}</Td>
                     <Td>
                       <Icon
                         name={modesShort[placement.mode] as any}

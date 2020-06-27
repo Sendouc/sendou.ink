@@ -13,8 +13,10 @@ import { Helmet } from "react-helmet-async"
 import DraftTournamentCards from "./DraftTournamentCards"
 import { Box } from "@chakra-ui/core"
 import MyThemeContext from "../../themeContext"
+import { useTranslation } from "react-i18next"
 
 const DraftCupPage: React.FC<RouteComponentProps> = () => {
+  const { t } = useTranslation()
   const { grayWithShade } = useContext(MyThemeContext)
   const { data, error, loading } = useQuery<PlusDraftCupsData>(PLUS_DRAFT_CUPS)
 
@@ -24,13 +26,10 @@ const DraftCupPage: React.FC<RouteComponentProps> = () => {
   return (
     <>
       <Helmet>
-        <title>Draft Cup Home | sendou.ink</title>
+        <title>{t("navigation;Draft Cup")} | sendou.ink</title>
       </Helmet>
-      <PageHeader title="Plus Server Draft Cups" />
-      <Box color={grayWithShade}>
-        Draft Cup is a tournament series open for +1 and +2 members. On this
-        page you can browse the leaderboards and detailed match reports.
-      </Box>
+      <PageHeader title={t("navigation;Draft Cup")} />
+      <Box color={grayWithShade}>{t("draft;draftExplanation")}</Box>
 
       <DraftTournamentCards tournaments={data!.plusDraftCups.tournaments} />
       <Box mt="1em">

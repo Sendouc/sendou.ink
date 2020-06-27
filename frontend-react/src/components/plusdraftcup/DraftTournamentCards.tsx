@@ -6,6 +6,7 @@ import { months } from "../../utils/lists"
 import { Link } from "@reach/router"
 import { medalEmoji } from "../../assets/imageImports"
 import Button from "../elements/Button"
+import { useTranslation } from "react-i18next"
 
 interface DraftTournamentCardsProps {
   tournaments: {
@@ -55,11 +56,8 @@ export const DraftTournamentCard: React.FC<DraftTournamentCardProps> = ({
   tournament,
   link,
 }) => {
+  const { t, i18n } = useTranslation()
   const { grayWithShade, themeColorHexLighter } = useContext(MyThemeContext)
-  const a = new Date(parseInt(tournament.date))
-  const dateStr = `${a.getDate()} ${
-    months[a.getMonth() + 1]
-  } ${a.getFullYear()}`
 
   const MedalRow: React.FC<MedalRowProps> = ({
     players,
@@ -119,8 +117,13 @@ export const DraftTournamentCard: React.FC<DraftTournamentCardProps> = ({
         fontSize="xs"
         mt="0.5em"
         textAlign="center"
+        textTransform="capitalize"
       >
-        {dateStr}
+        {new Date(parseInt(tournament.date)).toLocaleString(i18n.language, {
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        })}
       </Box>
       <MedalRow
         players={tournament.top_3_discord_users[0]}
@@ -139,7 +142,7 @@ export const DraftTournamentCard: React.FC<DraftTournamentCardProps> = ({
       {link && (
         <Box mt="2em">
           <Link to={link}>
-            <Button outlined>View matches</Button>
+            <Button outlined>{t("draft;View matches")}</Button>
           </Link>
         </Box>
       )}

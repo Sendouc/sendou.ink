@@ -14,7 +14,6 @@ import MyThemeContext from "../../themeContext"
 import UserAvatar from "../common/UserAvatar"
 import { Link } from "@reach/router"
 import { medalEmoji } from "../../assets/imageImports"
-import { ordinal_suffix_of } from "../../utils/helperFunctions"
 import useBreakPoints from "../../hooks/useBreakPoints"
 
 interface LeaderboardPlayer {
@@ -83,12 +82,7 @@ const DraftLeaderboard: React.FC<DraftLeaderboardProps> = ({
                 alignItems="center"
                 ml="0.5em"
               >
-                {(print || i === 0) && (
-                  <>
-                    {placement}
-                    {ordinal_suffix_of(placement)}
-                  </>
-                )}
+                {(print || i === 0) && <>{placement}</>}
               </Flex>
 
               <Link to={`/u/${player.discord_user.discord_id}`}>
