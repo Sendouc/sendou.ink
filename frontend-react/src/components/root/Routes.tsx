@@ -30,6 +30,7 @@ const MapVotingHistoryPage = lazy(() => import("../plus/MapVotingHistoryPage"))
 const MapVoting = lazy(() => import("../plus/MapVoting"))
 const About = lazy(() => import("./About"))
 const Links = lazy(() => import("./Links"))
+const TranslatePage = lazy(() => import("../translate/TranslatePage"))
 const AdminPage = lazy(() => import("../admin/AdminPage"))
 
 const Routes: React.FC = () => {
@@ -39,6 +40,7 @@ const Routes: React.FC = () => {
         <ScrollToTop path="/">
           <HomePage path="/" />
           <AdminPage path="/admin" />
+          <TranslatePage path="/translate" />
           <UserPage path="/u/:id" />
           <UserSearchPage path="/u" />
           <MarkdownHelpPage path="/markdown" />

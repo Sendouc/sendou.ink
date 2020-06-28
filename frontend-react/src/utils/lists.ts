@@ -1,5 +1,24 @@
 import { Weapon, Ability, HeadGear, ClothingGear, ShoesGear } from "../types"
 
+export const languages = [
+  { code: "de", name: "Deutsch" },
+  { code: "en", name: "English" },
+  { code: "es", name: "Español (Latinoamérica)" },
+  { code: "es-ES", name: "Español (España)" },
+  { code: "fr", name: "Français" },
+  { code: "it", name: "Italiano" },
+  { code: "nl", name: "Nederlands" },
+  { code: "pt-BR", name: "Português" },
+  { code: "fi", name: "Suomi" },
+  { code: "sv", name: "Svenska" },
+  { code: "el", name: "Ελληνικά" },
+  { code: "ru", name: "Русский" },
+  { code: "ja", name: "日本語" },
+  { code: "ko", name: "한국어" },
+  { code: "zh-CN", name: "简体中文" },
+  { code: "zh-TW", name: "繁體中文" },
+] as const
+
 export const possibleAps = [
   0,
   3,
