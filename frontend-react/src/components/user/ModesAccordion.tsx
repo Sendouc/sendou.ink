@@ -52,10 +52,11 @@ interface StyleBoxProps {
   size?: string
 }
 
-const getLocalizedMonth = (month: number, year: number, locale: string) => {
+const getLocalizedMonthYear = (month: number, year: number, locale: string) => {
   const date = new Date()
   date.setDate(1)
   date.setMonth(month - 1)
+  date.setFullYear(year)
 
   return date.toLocaleString(locale, { month: "long", year: "numeric" })
 }
@@ -97,7 +98,7 @@ const accordionReducer = function (
 ): AllModesAccordionData {
   const key = modesShort[cur.mode]
   const modeData = acc[key]
-  const date = getLocalizedMonth(cur.month, cur.year, acc.locale)
+  const date = getLocalizedMonthYear(cur.month, cur.year, acc.locale)
   if (!modeData) {
     acc[key] = {
       highestPlacement: cur.rank,
@@ -219,7 +220,7 @@ const ModesAccordion: React.FC<ModesAccordionProps> = ({ placements }) => {
                           fontSize="xs"
                           color={grayWithShade}
                         >
-                          {getLocalizedMonth(
+                          {getLocalizedMonthYear(
                             placement.month,
                             placement.year,
                             i18n.language

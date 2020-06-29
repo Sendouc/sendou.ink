@@ -1240,7 +1240,8 @@
     "Hide info": "Hide info",
     "Show info": "Show info",
     "Edit": "Edit",
-    "footer": "All events listed in your local time: {{timeNow}}<2>If you want your event displayed here message Sendou#0043 on Discord</2>"
+    "footer": "All events listed in your local time: {{timeNow}}<2>If you want your event displayed here message Sendou#0043 on Discord</2>",
+    "plusVotingInfo": "<0>Plus Server voting</0> of the month starts and lasts for the weekend"
   },
   "builds": {
     "Default to Ability Point view": "Default to Ability Point view",
@@ -1360,7 +1361,8 @@
     "shield durability": "shield durability",
     "full charge shooting duration": "full charge shooting duration",
     "Slosher has weird physics so we haven't fully deciphered this parameter.": "Slosher has weird physics so we haven't fully deciphered this parameter.",
-    "damage": "damage"
+    "damage": "damage",
+    "pointShort": "p"
   },
   "users": {
     "Filter by username, Twitter name or Discord ID": "Filter by username, Twitter name or Discord ID",

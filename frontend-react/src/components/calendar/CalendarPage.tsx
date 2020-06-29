@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/react-hooks"
-import { Box, Divider, Flex } from "@chakra-ui/core"
+import { Box, Divider, Flex, Avatar } from "@chakra-ui/core"
 import { RouteComponentProps, useLocation } from "@reach/router"
 import React, { useContext, useEffect, useRef, useState } from "react"
 import { Helmet } from "react-helmet-async"
@@ -8,6 +8,7 @@ import { FaFilter } from "react-icons/fa"
 import {
   UpcomingEventsData,
   UPCOMING_EVENTS,
+  CompetitiveFeedEvent,
 } from "../../graphql/queries/upcomingEvents"
 import MyThemeContext from "../../themeContext"
 import { getWeek } from "../../utils/helperFunctions"
@@ -17,13 +18,56 @@ import PageHeader from "../common/PageHeader"
 import SubHeader from "../common/SubHeader"
 import Input from "../elements/Input"
 import TournamentInfo from "./TournamentInfo"
+import plusServerImage from "../../assets/plusServer.jpg"
+import { UserData } from "../../types"
+import { USER } from "../../graphql/queries/user"
+
+const getFirstFridayDate = () => {
+  const today = new Date()
+  const month =
+    today.getDate() < 7 && today.getDay() > 5
+      ? today.getMonth()
+      : today.getMonth() + 1
+
+  let day = 1
+  while (day <= 7) {
+    const dateOfVoting = new Date(
+      Date.UTC(today.getFullYear(), month, day, 15, 0, 0)
+    )
+
+    if (dateOfVoting.getDay() === 5) return "" + dateOfVoting.getTime()
+
+    day++
+  }
+
+  console.error("Couldn't resolve first friday of the month for voting")
+  return "" + new Date(2000, 1, 1).getTime()
+}
+
+const PLUS_VOTING_TEMPLATE: CompetitiveFeedEvent = {
+  name: "",
+  date: getFirstFridayDate(),
+  description: "",
+  message_url: "",
+  message_discord_id: "",
+  discord_invite_url: "",
+  poster_discord_user: {
+    username: "",
+    discriminator: "",
+    discord_id: "",
+  },
+  isVotingTemplate: true,
+}
 
 const CalendarPage: React.FC<RouteComponentProps> = () => {
   const { darkerBgColor, grayWithShade } = useContext(MyThemeContext)
   const { t, i18n } = useTranslation()
   const location = useLocation()
   const matchingRef = useRef<HTMLDivElement>(null)
+
   const { data, error, loading } = useQuery<UpcomingEventsData>(UPCOMING_EVENTS)
+  const { data: userData } = useQuery<UserData>(USER)
+
   const [filter, setFilter] = useState("")
 
   const searchParamsEventName = new URLSearchParams(location.search).get("name")
@@ -52,6 +96,13 @@ const CalendarPage: React.FC<RouteComponentProps> = () => {
         .includes(filter.toLowerCase())
   )
 
+  const isPlusServerMember = !!userData?.user?.plus?.membership_status
+
+  if (isPlusServerMember) {
+    filteredTournaments.push(PLUS_VOTING_TEMPLATE)
+    filteredTournaments.sort((a, b) => parseInt(a.date) - parseInt(b.date))
+  }
+
   const timeNow = new Date().toTimeString()
 
   return (
@@ -72,6 +123,11 @@ const CalendarPage: React.FC<RouteComponentProps> = () => {
         const thisDay = time.getDate()
         const thisMonth = time.getMonth()
         const printWeekHeader = weekNumber !== lastPrintedWeek
+
+        /*const isFriday = time.getDay() === 5
+        const isFirstFridayOfTheMonth = isFriday && thisDay <= 7
+        const displayPlusServerVotingInfo = isPlusServerMember && isFirstFridayOfTheMonth*/
+
         const printDayHeader =
           thisDay !== lastPrintedDay || thisMonth !== lastPrintedMonth
         if (printWeekHeader) {
@@ -114,17 +170,27 @@ const CalendarPage: React.FC<RouteComponentProps> = () => {
                 })}
               </Flex>
             )}
-            <div
-              ref={
-                event.name === searchParamsEventName ? matchingRef : undefined
-              }
-            >
-              <TournamentInfo
-                tournament={event}
-                date={time}
-                expandedByDefault={event.name === searchParamsEventName}
-              />
-            </div>
+            {event.isVotingTemplate ? (
+              <Flex alignItems="center">
+                <Avatar size="sm" src={plusServerImage} mr="0.5em" />{" "}
+                <Trans i18nKey="calendar;plusVotingInfo">
+                  <b style={{ marginRight: "0.2em" }}>Plus Server voting</b> of
+                  the month starts and lasts for the weekend
+                </Trans>
+              </Flex>
+            ) : (
+              <div
+                ref={
+                  event.name === searchParamsEventName ? matchingRef : undefined
+                }
+              >
+                <TournamentInfo
+                  tournament={event}
+                  date={time}
+                  expandedByDefault={event.name === searchParamsEventName}
+                />
+              </div>
+            )}
           </React.Fragment>
         )
       })}

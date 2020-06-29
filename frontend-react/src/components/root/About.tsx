@@ -116,6 +116,26 @@ const About: React.FC<RouteComponentProps> = () => {
               "footer;art for the site like the inkling on the front page as well as footer pictures"
             )}
           </li>
+          <li>
+            <Link
+              isExternal
+              color={themeColorWithShade}
+              href="https://twitter.com/sp9rK_spl"
+            >
+              sp9rK
+            </Link>{" "}
+            - {t("footer;translation")} (Ελληνικά)
+          </li>
+          <li>
+            <Link
+              isExternal
+              color={themeColorWithShade}
+              href="https://twitter.com/V_CH3RRY"
+            >
+              Villy / 앤드류
+            </Link>{" "}
+            - {t("footer;translation")} (한국어)
+          </li>
         </ul>
       </div>
     </>

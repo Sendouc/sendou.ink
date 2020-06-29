@@ -15,6 +15,7 @@ export interface CompetitiveFeedEvent {
     discord_id: string
     avatar?: string
   }
+  isVotingTemplate?: boolean
 }
 
 export interface UpcomingEventsData {
