@@ -38,9 +38,9 @@ const WeaponSelector: React.FC<WeaponSelectorProps> = ({
     <components.Option {...props}>
       <Flex alignItems="center" color={props.isFocused ? "black" : undefined}>
         <Box mr="0.5em">
-          <WeaponImage size="SMALL" englishName={props.label} />
+          <WeaponImage size="SMALL" englishName={props.value} />
         </Box>
-        {t(`game;${props.label}`)}
+        {props.label}
       </Flex>
     </components.Option>
   )
@@ -53,12 +53,18 @@ const WeaponSelector: React.FC<WeaponSelectorProps> = ({
         options={
           showAlts
             ? weaponSelectOptionsWithAlts.map((category) => ({
-                ...category,
                 label: t(`builds;${category.label}`),
+                options: category.options.map((weapon) => ({
+                  value: weapon.value,
+                  label: t(`game;${weapon.value}`),
+                })),
               }))
             : weaponSelectOptions.map((category) => ({
-                ...category,
                 label: t(`builds;${category.label}`),
+                options: category.options.map((weapon) => ({
+                  value: weapon.value,
+                  label: t(`game;${weapon.value}`),
+                })),
               }))
         }
         value={value}
