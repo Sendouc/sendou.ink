@@ -1361,7 +1361,8 @@
     "shield durability": "shield durability",
     "full charge shooting duration": "full charge shooting duration",
     "Slosher has weird physics so we haven't fully deciphered this parameter.": "Slosher has weird physics so we haven't fully deciphered this parameter.",
-    "damage": "damage"
+    "damage": "damage",
+    "pointShort": "p"
   },
   "users": {
     "Filter by username, Twitter name or Discord ID": "Filter by username, Twitter name or Discord ID",
