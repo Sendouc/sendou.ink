@@ -1312,7 +1312,7 @@
     "70dmg hitbox size": "hitbox-storlek för 70 skada",
     "55dmg hitbox can't be increased with Special Power Up so the total radius of the special doesn't change": "Hitboxen för 55 skada kan inte göras större med Special Power Up så totala radien av specialet ändras inte",
     "activation time": "activation time",
-    "Amount inked by Ink Storm is not increased only in how long distance the droplets are spread. Special Power Up also increases the distance you can throw the seed.": "Amount inked by Ink Storm is not increased only in how long distance the droplets are spread. Special Power Up also increases the distance you can throw the seed.", // TODO
+    "Amount inked by Ink Storm is not increased only in how long distance the droplets are spread. Special Power Up also increases the distance you can throw the seed.": "Ink Storm får större area av påverkan, men mängden färg ökar inte. Special Power Up låter dig också kasta fröet längre.",
     "durability": "hållbarhet",
     "55dmg explosion hitbox size": "Hitbox-storlek för 55 skada i explosion",
     "bubble size": "bubbelstorlek",
