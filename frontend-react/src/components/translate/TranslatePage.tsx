@@ -38,7 +38,7 @@ const exportToJson = (
   }
 }
 
-const TranslatePage: React.FC<RouteComponentProps> = ({}) => {
+const TranslatePage: React.FC<RouteComponentProps> = () => {
   const { themeColorWithShade, themeColor } = useContext(MyThemeContext)
   const [english, setEnglish] = useState<any>(null)
   const [toTranslate, setToTranslate] = useState<any>(null)
