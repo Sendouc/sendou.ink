@@ -23,11 +23,11 @@ const EventsPage: React.FC<RouteComponentProps> = () => {
         </Heading>
         <InTheZoneBanner runningNumber={runningNumber} />
         <Flex mt="2em">
-          <Button onClick={() => setRunningNumber(runningNumber + 1)}>
-            Plus
-          </Button>
           <Button onClick={() => setRunningNumber(runningNumber - 1)}>
             Minus
+          </Button>
+          <Button onClick={() => setRunningNumber(runningNumber + 1)}>
+            Plus
           </Button>
         </Flex>
       </Box>
