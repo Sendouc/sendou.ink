@@ -51,7 +51,7 @@ export const getLocalizedMonthYearString = (
 ) => {
   const dateForLocalization = new Date()
   dateForLocalization.setDate(1)
-  dateForLocalization.setMonth(month)
+  dateForLocalization.setMonth(month - 1)
   dateForLocalization.setFullYear(year)
   const localizedString = dateForLocalization.toLocaleString(locale, {
     month: "long",
