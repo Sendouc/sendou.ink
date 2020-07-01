@@ -1318,7 +1318,7 @@
     "55dmg explosion hitbox size": "55-Schaden Trefferradius",
     "bubble size": "Blasengröße",
     "explosion hitbox": "Explosionsradius",
-    "autocharge speed": "Autoladegeschwindigkeit",
+    "autocharge speed": "Aufladegeschwindigkeit (ohne Booyah-Rufe)",
     "time": "Zeit",
     "Quick Respawn activates when enemy kills you twice without you getting a kill in between": "Schnelle Rückkehr aktiviert sich nur, wenn du ohne einen Gegner zu eliminieren, eliminiert wirst",
     "(in the air)": "(in der Luft)",
