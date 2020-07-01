@@ -1240,7 +1240,7 @@
     "Show info": "Ausklappen",
     "Edit": "Bearbeiten",
     "footer": "Alle Events werden in deiner Zeitzone angezeigt: {{timeNow}}<2>Dein Event fehlt? Kontaktiere Sendou#0043 auf Discord (auf englisch)</2>",
-    "plusVotingInfo": "<0>Plus Server Wahl</0> findet über dieses Wochenende statt"
+    "plusVotingInfo": "<0>Plus Server Wahlen</0> finden über dieses Wochenende statt"
   },
   "builds": {
     "Select a weapon to start viewing builds": "Wähle eine Waffe aus, für welche du Ausrüstungen sehen willst:",
@@ -1277,7 +1277,7 @@
     "Stackable abilities": "Stapelbare Effekte",
     "Show settings": "Einstellungen ausklappen",
     "Hide settings": "Einstellungen einklappen",
-    "Hide stats at base value": "Effekte mit Standardwerten verstecken",
+    "Hide stats at base value": "Effekte mit Standardwerten einklappen",
     "Progress bars show progress to max value": "Die Leiste zeigt den Fortschritt zum Maximalwert",
     "Start charts Y axis from zero": "Die Y-Achse des Diagramms startet von 0",
     "Full charges per ink tank": "Vollaufgeladene Schussrunden pro Tintentank",
