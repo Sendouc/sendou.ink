@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next"
 interface BuildTabProps {
   builds: Build[]
   canModifyBuilds: boolean
+  unlimitedBuilds: boolean
 }
 
 type ExistingGearObject = Record<
@@ -33,7 +34,11 @@ const buildsReducer = (acc: ExistingGearObject, cur: Build) => {
   return acc
 }
 
-const BuildTab: React.FC<BuildTabProps> = ({ builds, canModifyBuilds }) => {
+const BuildTab: React.FC<BuildTabProps> = ({
+  builds,
+  canModifyBuilds,
+  unlimitedBuilds,
+}) => {
   const [APView] = useLocalStorage<boolean>("prefersAPView")
   const [formOpen, setFormOpen] = useState(false)
   const [buildBeingEdited, setBuildBeingEdited] = useState<Build | null>(null)
@@ -42,6 +47,8 @@ const BuildTab: React.FC<BuildTabProps> = ({ builds, canModifyBuilds }) => {
   const existingGear = builds
     ? builds.reduce(buildsReducer, {} as ExistingGearObject)
     : ({} as ExistingGearObject)
+
+  const canAddBuilds = builds.length < 100 || unlimitedBuilds
 
   return (
     <>
@@ -55,12 +62,12 @@ const BuildTab: React.FC<BuildTabProps> = ({ builds, canModifyBuilds }) => {
           buildBeingEdited={buildBeingEdited}
         />
       )}
-      {canModifyBuilds && builds.length < 100 && (
+      {canModifyBuilds && canAddBuilds && (
         <Button onClick={() => setFormOpen(true)}>
           {t("users;Add build")}
         </Button>
       )}
-      {canModifyBuilds && builds.length >= 100 && (
+      {canModifyBuilds && !canAddBuilds && (
         <Alert status="info">{t("users;tooManyBuilds")}</Alert>
       )}
       <Box display="flex" flexWrap="wrap" mt="1em">

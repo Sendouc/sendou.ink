@@ -22,6 +22,7 @@ import Gears from "./Gears"
 import ViewAP from "./ViewAP"
 import ViewSlots from "./ViewSlots"
 import { useTranslation, Trans } from "react-i18next"
+import Flag from "../common/Flag"
 
 interface BuildCardProps {
   build: Build
@@ -88,6 +89,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
                 )}
               />
             )}
+            {build.jpn && <Flag code="jp" size="32" />}
           </Box>
           <Flex alignItems="center">
             <Box
