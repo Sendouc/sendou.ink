@@ -136,9 +136,10 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
               return weapons.indexOf(a.weapon) - weapons.indexOf(b.weapon)
             })}
             canModifyBuilds={userLean?.discord_id === user.discord_id}
-            unlimitedBuilds={canAddJpnBuildsIds.includes(
-              userData.user!.discord_id
-            )}
+            unlimitedBuilds={
+              !!userData.user?.discord_id &&
+              canAddJpnBuildsIds.includes(userData.user?.discord_id)
+            }
           />
         </TabPanel>
       ),
