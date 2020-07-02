@@ -15,6 +15,7 @@ export const SEARCH_FOR_BUILDS: DocumentNode = gql`
       shoesItem
       updatedAt
       top
+      jpn
       discord_user {
         username
         discriminator

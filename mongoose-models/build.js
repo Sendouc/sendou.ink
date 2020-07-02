@@ -13,6 +13,7 @@ const buildSchema = new mongoose.Schema(
     shoes: { type: [String], required: true },
     shoesItem: { type: String, required: false },
     top: { type: Boolean },
+    jpn: { type: Boolean },
   },
   { timestamps: true }
 )

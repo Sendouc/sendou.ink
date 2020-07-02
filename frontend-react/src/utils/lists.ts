@@ -6630,3 +6630,5 @@ export const shoesSelectOptions = [
     ],
   },
 ] as const
+
+export const canAddJpnBuildsIds = ["312082701865713665"] as string[]
