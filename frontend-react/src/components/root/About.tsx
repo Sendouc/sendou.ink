@@ -120,6 +120,36 @@ const About: React.FC<RouteComponentProps> = () => {
             <Link
               isExternal
               color={themeColorWithShade}
+              href="https://twitter.com/spookyporo"
+            >
+              naga
+            </Link>{" "}
+            - {t("footer;translation")} (Español (España))
+          </li>
+          <li>
+            <Link
+              isExternal
+              color={themeColorWithShade}
+              href="https://twitter.com/DatPretto"
+            >
+              Pretto
+            </Link>{" "}
+            - {t("footer;translation")} (Italiano)
+          </li>
+          <li>
+            <Link
+              isExternal
+              color={themeColorWithShade}
+              href="https://twitter.com/VoltoMatte"
+            >
+              Volto
+            </Link>{" "}
+            - {t("footer;translation")} (Italiano)
+          </li>
+          <li>
+            <Link
+              isExternal
+              color={themeColorWithShade}
               href="https://twitter.com/sp9rK_spl"
             >
               sp9rK

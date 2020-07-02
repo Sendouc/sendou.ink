@@ -150,6 +150,7 @@ export interface Build {
   shoesItem?: ShoesGear
   updatedAt: string
   top: boolean
+  jpn: boolean
   discord_user?: {
     username: string
     discriminator: string

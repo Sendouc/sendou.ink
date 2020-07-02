@@ -25,7 +25,7 @@ import { USER } from "../../graphql/queries/user"
 const getFirstFridayDate = () => {
   const today = new Date()
   const month =
-    today.getDate() < 7 && today.getDay() > 5
+    today.getDate() <= 7 && today.getDay() <= 5
       ? today.getMonth()
       : today.getMonth() + 1
 
@@ -123,10 +123,6 @@ const CalendarPage: React.FC<RouteComponentProps> = () => {
         const thisDay = time.getDate()
         const thisMonth = time.getMonth()
         const printWeekHeader = weekNumber !== lastPrintedWeek
-
-        /*const isFriday = time.getDay() === 5
-        const isFirstFridayOfTheMonth = isFriday && thisDay <= 7
-        const displayPlusServerVotingInfo = isPlusServerMember && isFirstFridayOfTheMonth*/
 
         const printDayHeader =
           thisDay !== lastPrintedDay || thisMonth !== lastPrintedMonth

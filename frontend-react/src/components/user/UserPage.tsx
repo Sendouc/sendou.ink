@@ -29,7 +29,7 @@ import {
   SearchForBuildsVars,
   UserData,
 } from "../../types"
-import { weapons } from "../../utils/lists"
+import { weapons, canAddJpnBuildsIds } from "../../utils/lists"
 import Error from "../common/Error"
 import Loading from "../common/Loading"
 import Markdown from "../elements/Markdown"
@@ -136,6 +136,10 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
               return weapons.indexOf(a.weapon) - weapons.indexOf(b.weapon)
             })}
             canModifyBuilds={userLean?.discord_id === user.discord_id}
+            unlimitedBuilds={
+              !!userData.user?.discord_id &&
+              canAddJpnBuildsIds.includes(userData.user?.discord_id)
+            }
           />
         </TabPanel>
       ),

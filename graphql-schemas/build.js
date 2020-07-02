@@ -54,6 +54,7 @@ const typeDef = gql`
     updatedAt: String!
     top: Boolean!
     discord_user: User!
+    jpn: Boolean
   }
   type BuildCollection {
     builds: [Build!]!
@@ -119,7 +120,7 @@ const resolvers = {
         )
 
       return Build.find(getBuildSearchCriteria(args))
-        .sort({ top: "desc", updatedAt: "desc" })
+        .sort({ top: "desc", jpn: "desc", updatedAt: "desc" })
         .populate("discord_user")
         .catch((e) => {
           throw new UserInputError(e.message, {
@@ -185,12 +186,19 @@ const resolvers = {
           invalidArgs: args,
         })
       })
-      if (existingBuilds.length >= 100)
+      if (
+        existingBuilds.length >= 100 &&
+        ctx.user.discord_id !== process.env.GANBA_ID
+      )
         throw new UserInputError("Can't have more than 100 builds per user.", {
           invalidArgs: args,
         })
 
-      const build = new Build({ ...args, discord_id: ctx.user.discord_id })
+      const build = new Build({
+        ...args,
+        discord_id: ctx.user.discord_id,
+        jpn: ctx.user.discord_id === process.env.GANBA_ID,
+      })
       return build.save().catch((e) => {
         throw (
           (new UserInputError(),

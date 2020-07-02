@@ -29,7 +29,7 @@ import { useTranslation, Trans } from "react-i18next"
 const getLocalizedMonth = (month: number, locale: string) => {
   const dateForLocalization = new Date()
   dateForLocalization.setDate(1)
-  dateForLocalization.setMonth(month)
+  dateForLocalization.setMonth(month - 1)
   const localizedString = dateForLocalization.toLocaleString(locale, {
     month: "long",
   })
