@@ -1231,11 +1231,11 @@
     "Filter tournaments": "Turniersuche",
     "weekNumber": "Woche {{weekNumber}}",
     "This week": "Diese Woche",
-    "Join Discord": "Tritt dem Discordserver bei",
+    "Join Discord": "Discord",
     "Hide info": "Einklappen",
     "Show info": "Ausklappen",
     "Edit": "Bearbeiten",
-    "footer": "Alle Events werden in deiner Zeitzone angezeigt: {{timeNow}}<2>Dein Event fehlt? Kontaktiere Sendou#0043 auf Discord (auf englisch)</2>",
+    "footer": "Alle Events werden in deiner Zeitzone angezeigt: {{timeNow}}<2>Dein Event fehlt? Kontaktiere Sendou#0043 auf Discord (auf englisch)!</2>",
     "plusVotingInfo": "<0>Plus Server Wahlen</0> finden \u00fcber dieses Wochenende statt"
   },
   "builds": {
@@ -1356,7 +1356,8 @@
     "shield durability": "Schildhaltbarkeit",
     "full charge shooting duration": "Schussdauer (wenn voll aufgeladen)",
     "Slosher has weird physics so we haven't fully deciphered this parameter.": "der Schwapper hat einzigartige Physik, also ist dieser Parameter noch nicht implementiert.",
-    "damage": "Schaden"
+    "damage": "Schaden",
+    "Damage taken in enemy ink": "Schaden durch Gegnertinte"
   },
   "users": {
     "Filter by username, Twitter name or Discord ID": "Namen, Twitter Namen oder Discord ID suchen",
