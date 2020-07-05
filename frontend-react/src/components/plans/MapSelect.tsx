@@ -77,7 +77,7 @@ const MapSelect: React.FC<MapSelectProps> = ({ bg, setBg }) => {
   return (
     <Flex
       w="400px"
-      h="300px"
+      h="500px"
       rounded="lg"
       overflow="hidden"
       boxShadow="0px 0px 16px 6px rgba(0,0,0,0.1)"
