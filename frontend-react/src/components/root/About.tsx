@@ -120,6 +120,16 @@ const About: React.FC<RouteComponentProps> = () => {
             <Link
               isExternal
               color={themeColorWithShade}
+              href="https://twitter.com/Yuza_i"
+            >
+              yuza
+            </Link>{" "}
+            - {t("footer;translation")} (Deutsch)
+          </li>
+          <li>
+            <Link
+              isExternal
+              color={themeColorWithShade}
               href="https://twitter.com/spookyporo"
             >
               naga
@@ -145,6 +155,26 @@ const About: React.FC<RouteComponentProps> = () => {
               Volto
             </Link>{" "}
             - {t("footer;translation")} (Italiano)
+          </li>
+          <li>
+            <Link
+              isExternal
+              color={themeColorWithShade}
+              href="https://twitter.com/Guigas_Jr"
+            >
+              Guigas
+            </Link>{" "}
+            - {t("footer;translation")} (Português)
+          </li>
+          <li>
+            <Link
+              isExternal
+              color={themeColorWithShade}
+              href="https://twitter.com/Walavouchey"
+            >
+              Walavouchey
+            </Link>{" "}
+            - {t("footer;translation")} (Svenska)
           </li>
           <li>
             <Link
