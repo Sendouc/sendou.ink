@@ -26,7 +26,7 @@ const TournamentInfo: React.FC<TournamentInfoProps> = ({
   expandedByDefault,
 }) => {
   const { themeColorWithShade, grayWithShade } = useContext(MyThemeContext)
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [expanded, setExpanded] = useState(!!expandedByDefault)
   const [showModal, setShowModal] = useState(false)
   const poster = tournament.poster_discord_user
@@ -47,7 +47,7 @@ const TournamentInfo: React.FC<TournamentInfoProps> = ({
         </Heading>
         <Flex alignItems="center" color={grayWithShade}>
           <Box as={FiClock} mr="0.5em" color={themeColorWithShade} />
-          {date.toLocaleString()}
+          {date.toLocaleString(i18n.language)}
         </Flex>
 
         <Flex alignItems="center" color={grayWithShade} my="0.5em">

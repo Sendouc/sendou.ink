@@ -40,7 +40,7 @@ const FreeAgentCard: React.FC<FreeAgentCardProps> = ({
 }) => {
   const [expanded, setExpanded] = useState(false)
   const { grayWithShade, themeColorWithShade } = useContext(MyThemeContext)
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { discord_user } = post
   const canBeExpanded = hasExtraInfo(post)
 
@@ -79,7 +79,7 @@ const FreeAgentCard: React.FC<FreeAgentCardProps> = ({
     >
       <Flex justifyContent="space-between" flexWrap="wrap" alignItems="center">
         <Box color="#999999" width="50px" m="1em">
-          {new Date(parseInt(post.createdAt)).toLocaleDateString()}
+          {new Date(parseInt(post.createdAt)).toLocaleDateString(i18n.language)}
         </Box>
         <Box width="50px" m="1em">
           {discord_user.top500 && (

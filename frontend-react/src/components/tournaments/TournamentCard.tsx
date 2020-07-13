@@ -27,12 +27,11 @@ const TournamentCard: React.FC<TournamentCardProps> = ({
   tournament,
   styledOnHover,
 }) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { grayWithShade } = useContext(MyThemeContext)
-  const a = new Date(parseInt(tournament.date))
-  const dateStr = `${a.getDate()} ${
-    months[a.getMonth() + 1]
-  } ${a.getFullYear()}`
+  const dateStr = new Date(parseInt(tournament.date)).toLocaleDateString(
+    i18n.language
+  )
   return (
     <PseudoBox
       display="flex"

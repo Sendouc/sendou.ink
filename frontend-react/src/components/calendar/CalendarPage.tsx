@@ -157,7 +157,6 @@ const CalendarPage: React.FC<RouteComponentProps> = () => {
                 p="0.5em"
                 my="1.5em"
                 alignItems="center"
-                textTransform="capitalize"
               >
                 {new Date(parseInt(event.date)).toLocaleString(i18n.language, {
                   weekday: "long",
