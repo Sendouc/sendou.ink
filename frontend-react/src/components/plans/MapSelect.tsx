@@ -101,7 +101,7 @@ const MapSelect: React.FC<MapSelectProps> = ({ bg, setBg }) => {
         />
       </Flex>
       <Flex justify="center" align="center" my="1em">
-        <FormLabel htmlFor="view">{t("Show top-down view")}</FormLabel>
+        <FormLabel htmlFor="view">{t("plans;Show top-down view")}</FormLabel>
         <Switch
           id="view"
           color={themeColor}
