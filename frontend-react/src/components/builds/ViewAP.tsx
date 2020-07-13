@@ -7,12 +7,14 @@ import DividingBox from "../common/DividingBox"
 import AbilityIcon from "./AbilityIcon"
 import MyThemeContext from "../../themeContext"
 import { mainOnlyAbilities } from "../../utils/lists"
+import { useTranslation } from "react-i18next"
 
 interface ViewAPProps {
   build: Build
 }
 
 const ViewAP: React.FC<ViewAPProps> = ({ build }) => {
+  const { t } = useTranslation()
   const { grayWithShade } = useContext(MyThemeContext)
   const abilityArrays: Ability[][] = [
     build.headgear,
@@ -77,7 +79,7 @@ const ViewAP: React.FC<ViewAPProps> = ({ build }) => {
                   {indexToPrintAPAt === index ? (
                     <>
                       <br />
-                      AP
+                      {t("analyzer;abilityPointShort")}
                     </>
                   ) : null}
                 </Box>

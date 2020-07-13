@@ -122,7 +122,7 @@ const Summaries: React.FC<SummariesProps> = ({ summaries }) => {
                 >
                   <PopoverArrow />
                   <PopoverBody textAlign="center">
-                    User was voted to the server this month
+                    User was vouched this month
                   </PopoverBody>
                 </PopoverContent>
               </Popover>

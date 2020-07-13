@@ -11,6 +11,7 @@ import {
 } from "recharts"
 import MyThemeContext from "../../themeContext"
 import { possibleAps } from "../../utils/lists"
+import { useTranslation } from "react-i18next"
 
 interface StatChartProps {
   title: string
@@ -27,6 +28,7 @@ const StatChart: React.FC<StatChartProps> = ({
   getEffect,
   startChartsAtZero,
 }) => {
+  const { t } = useTranslation()
   const { themeColorHex, darkerBgColor } = useContext(MyThemeContext)
 
   const getData = () =>
@@ -35,7 +37,7 @@ const StatChart: React.FC<StatChartProps> = ({
   const CustomizedDot = (props: any) => {
     const { cx, cy, payload } = props
 
-    if (payload.name === `${ap}AP`) {
+    if (payload.name === `${ap}${t("analyzer;abilityPointShort")}`) {
       return (
         <svg
           x={cx - 5}
@@ -57,7 +59,7 @@ const StatChart: React.FC<StatChartProps> = ({
       )
     }
 
-    if (payload.name === `${otherAp}AP`) {
+    if (payload.name === `${otherAp}${t("analyzer;abilityPointShort")}`) {
       return (
         <svg
           x={cx - 5}
