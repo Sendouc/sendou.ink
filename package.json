@@ -25,15 +25,15 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express-session": "^1.17.1",
-    "graphql": "^15.2.0",
-    "lodash": "^4.17.15",
-    "mongoose": "^5.9.21",
+    "graphql": "^15.3.0",
+    "lodash": "^4.17.19",
+    "mongoose": "^5.9.24",
     "mongoose-unique-validator": "^2.0.3",
     "node-fetch": "^2.6.0",
     "passport": "^0.4.1",
     "passport-discord": "^0.1.4",
     "uuid": "^8.2.0",
-    "webhook-discord": "^3.7.4"
+    "webhook-discord": "^3.7.5"
   },
   "devDependencies": {
     "cross-env": "^7.0.2",
