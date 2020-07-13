@@ -1280,7 +1280,9 @@ export default function useAbilityEffects(
       },
       {
         title: t("analyzer;Limit on the damage enemy ink can deal on you"),
-        effect: `${parseFloat((effectLimit[0] * 100 - 0.05).toFixed(1))}hp`,
+        effect: `${parseFloat((effectLimit[0] * 100 - 0.05).toFixed(1))}${t(
+          "analyzer;hp"
+        )}`,
         effectFromMax: effectLimit[1],
         ability: "RES" as Ability,
         ap: amount,
