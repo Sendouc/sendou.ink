@@ -1180,7 +1180,7 @@
     "Calendar": "Calendário",
     "Builds": "Builds",
     "Build Analyzer": "Analisar Builds",
-    "User Search": "Busca de Usuário",
+    "User Search": "Buscar Usuário",
     "Tournament Results": "Resultados de Torneios",
     "Draft Cup": "Draft Cup",
     "Top 500 Browser": " Top 500",
@@ -1189,7 +1189,7 @@
     "Profile": "Perfil",
     "Log out": "Log out",
     "Log in via Discord": "Log in via Discord",
-    "Free Agents": "Formação de Times"
+    "Free Agents": "Formar Times"
   },
   "home": {
     "Competitive Splatoon Hub": "Centro Competitivo de Splatoon",
@@ -1405,7 +1405,8 @@
     "Slosher has weird physics so we haven't fully deciphered this parameter.": "Slosher tem físicas estranhas então nós não deciframos esse parâmetro completamente.",
     "damage": "dano",
     "pointShort": "p",
-    "Damage taken in enemy ink": "Dano inflingido ao ficar sobre a tinta inimiga"
+    "Damage taken in enemy ink": "Dano inflingido ao ficar sobre a tinta inimiga",
+    "hp": "hp"
   },
   "users": {
     "Filter by username, Twitter name or Discord ID": "Filtrar por nome de usuário, nome do Twitter ou ID do Discord",
@@ -1532,4 +1533,3 @@
     "Free word": "Texto livre"
   }
 }
-
