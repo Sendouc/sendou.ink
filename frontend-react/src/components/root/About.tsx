@@ -140,6 +140,16 @@ const About: React.FC<RouteComponentProps> = () => {
             <Link
               isExternal
               color={themeColorWithShade}
+              href="https://twitter.com/Grey_spl"
+            >
+              Grey
+            </Link>{" "}
+            - {t("footer;translation")} (Français)
+          </li>
+          <li>
+            <Link
+              isExternal
+              color={themeColorWithShade}
               href="https://twitter.com/DatPretto"
             >
               Pretto
