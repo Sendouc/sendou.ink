@@ -1329,6 +1329,7 @@
     "Frames before taking damage from enemy ink": "schadensfreie Bilder vor erstem Schaden durch Gegnertinte",
     "Ink Resistance Up also allows you to jump higher and strafe faster while shooting in enemy ink": "Tintentoleranz + erm\u00f6glicht dir zudem, h\u00f6her zu springen und schneller zu laufen, w\u00e4hrend du in Gegnertinte stehend schie\u00dft",
     "hp / frame": "KP / Bild",
+    "hp": "KP",
     "Limit on the damage enemy ink can deal on you": "Schadensgrenze, die Gegnertinte dir zuf\u00fcgen kann",
     "Run speed in enemy ink": "Laufgeschwindigkeit in Gegnertinte",
     "Sub Weapon damage (indirect)": "Schaden durch Sekund\u00e4rwaffen (indirekt)",
