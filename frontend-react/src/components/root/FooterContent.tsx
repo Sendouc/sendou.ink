@@ -27,7 +27,7 @@ const FooterContent: React.FC = () => {
         <Link to="/links">{t("footer;External links")}</Link>
       </Flex>
       <Flex alignItems="center" flexWrap="wrap" justifyContent="center">
-        <a href="https://discord.gg/J6NqUvt">
+        <a href="https://discord.gg/sendou">
           <Icon name={"discord" as string} size="30px" m="1em" />
         </a>
         <a href="https://github.com/Sendouc/sendou-ink">

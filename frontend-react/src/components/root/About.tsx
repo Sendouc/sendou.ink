@@ -35,7 +35,7 @@ const About: React.FC<RouteComponentProps> = () => {
             <Trans i18nKey="footer;postOnDiscord">
               Post on the #helpdesk or #feedback channel of our{" "}
               <Link
-                href="https://discord.gg/J6NqUvt"
+                href="https://discord.gg/sendou"
                 isExternal
                 color={themeColorWithShade}
               >
