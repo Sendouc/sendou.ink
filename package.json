@@ -1,6 +1,6 @@
 {
-  "name": "sendou-ink",
-  "version": "2.0.0",
+  "name": "sendou.ink-backend",
+  "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
