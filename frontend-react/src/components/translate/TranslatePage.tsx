@@ -85,19 +85,19 @@ const TranslatePage: React.FC<RouteComponentProps> = () => {
     return () => {
       clearTimeout(handler)
     }
-  }, [toTranslate])
+  }, [toTranslate, languageDropdownValue])
 
   const getPercentage = (keyToCheck: any) => {
     if (!english || !toTranslate) return 0
     let englishCount = 0
     let translatedCount = 0
 
-    for (const [key, value] of Object.entries(english[keyToCheck] ?? {})) {
-      if (value) englishCount++
+    for (const entry of Object.entries(english[keyToCheck] ?? {})) {
+      if (entry[1]) englishCount++
     }
 
-    for (const [key, value] of Object.entries(toTranslate[keyToCheck] ?? {})) {
-      if (value) translatedCount++
+    for (const entry of Object.entries(toTranslate[keyToCheck] ?? {})) {
+      if (entry[1]) translatedCount++
     }
 
     return Math.ceil((translatedCount / englishCount) * 100)

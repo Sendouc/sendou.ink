@@ -1,7 +1,6 @@
 import React, { useContext } from "react"
 import { Box, Image, Flex, PseudoBox } from "@chakra-ui/core"
 import MyThemeContext from "../../themeContext"
-import { months } from "../../utils/lists"
 import trophy from "../../assets/trophy.png"
 import WeaponImage from "../common/WeaponImage"
 import { Weapon } from "../../types"
