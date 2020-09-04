@@ -114,7 +114,8 @@ const DetailedMapCard: React.FC<DetailedMapCardProps> = ({
         <Icon
           name={mapDetails.mode.toLowerCase() as any}
           color={themeColorWithShade}
-          size="2em"
+          w="2em"
+          h="2em"
         />
         <Box color={grayWithShade}>{`${minutes}:${
           seconds > 9 ? "" : "0"
@@ -336,7 +337,7 @@ const DraftCupDetails: React.FC<RouteComponentProps & DraftCupDetailsProps> = ({
       </Helmet>
       <Box mb="1em">
         <Link to="/draft">
-          <Button outlined icon={FaLongArrowAltLeft}>
+          <Button outlined icon={<FaLongArrowAltLeft />}>
             {t("draft;Back to Draft Cup home")}
           </Button>
         </Link>
@@ -344,7 +345,7 @@ const DraftCupDetails: React.FC<RouteComponentProps & DraftCupDetailsProps> = ({
       <DraftTournamentCard tournament={tournament} />
       <Box mt="1em">
         <a href={tournament.bracket_url}>
-          <Button icon={FaExternalLinkAlt} outlined>
+          <Button icon={<FaExternalLinkAlt />} outlined>
             {t("draft;Bracket")}
           </Button>
         </a>

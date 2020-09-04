@@ -181,7 +181,10 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
       )}
       <Flex justifyContent="space-between" flexWrap="wrap">
         <Box m="0.5em">
-          <Button icon={FaFilter} onClick={() => setShowFilters(!showFilters)}>
+          <Button
+            icon={<FaFilter />}
+            onClick={() => setShowFilters(!showFilters)}
+          >
             {showFilters
               ? t("freeagents;Hide filters")
               : t("freeagents;Show filters")}

@@ -13,8 +13,12 @@ import Footer from "./Footer"
 
 const App: React.FC = () => {
   const chakraTheme = useChakraTheme()
-  const { colorMode } = useColorMode()
+  let { colorMode } = useColorMode()
+  //@ts-ignore
+  //if (colorMode === "") colorMode = "dark"
   const [themeColorFromStorage] = useLocalStorage<ThemeColor>("colorPreference")
+
+  console.log({ chakraTheme, colorMode })
 
   const themeColor = themeColorFromStorage
     ? themeColorFromStorage

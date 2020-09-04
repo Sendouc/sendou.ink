@@ -8,7 +8,6 @@ import {
   PopoverBody,
   PopoverContent,
   PopoverTrigger,
-  PseudoBox,
 } from "@chakra-ui/core"
 import { Link } from "@reach/router"
 import React, { useContext, useEffect, useState } from "react"
@@ -137,21 +136,21 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
             <IconButton
               variant="ghost"
               isRound
-              variantColor={themeColor}
+              colorScheme={themeColor}
               onClick={() => setApView(!apView)}
               aria-label="Set build card view"
               fontSize="20px"
-              icon={FiTarget}
+              icon={<FiTarget />}
               mr="0.5em"
             />
             <IconButton
               variant="ghost"
               isRound
-              variantColor={themeColor}
+              colorScheme={themeColor}
               onClick={() => setShowStats(!showStats)}
               aria-label="Show build stats view"
               fontSize="20px"
-              icon={FiBarChart2}
+              icon={<FiBarChart2 />}
               mr="0.5em"
             />
             {build.description && (
@@ -160,10 +159,10 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
                   <IconButton
                     variant="ghost"
                     isRound
-                    variantColor={themeColor}
+                    colorScheme={themeColor}
                     aria-label="Show description"
                     fontSize="20px"
-                    icon={FiInfo}
+                    icon={<FiInfo />}
                   />
                 </PopoverTrigger>
                 <PopoverContent
@@ -181,13 +180,13 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
               <IconButton
                 variant="ghost"
                 isRound
-                variantColor={themeColor}
+                colorScheme={themeColor}
                 onClick={
                   setBuildBeingEdited && (() => setBuildBeingEdited(build))
                 }
                 aria-label="Show description"
                 fontSize="20px"
-                icon={FiEdit}
+                icon={<FiEdit />}
                 ml="0.5em"
               />
             )}
@@ -211,7 +210,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
             mt="1em"
           >
             {otherBuildCount && (
-              <PseudoBox
+              <Box
                 mx="auto"
                 fontSize="0.8em"
                 color={themeColorWithShade}
@@ -223,7 +222,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
                 <Trans i18nKey="builds;expandBuilds">
                   Show all {{ otherBuildCount }} builds by {{ username }}
                 </Trans>
-              </PseudoBox>
+              </Box>
             )}
           </Box>
         </Box>

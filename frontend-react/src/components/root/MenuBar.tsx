@@ -7,7 +7,7 @@ import Logo from "./Logo"
 import MobileNav from "./MobileNav"
 
 export const MenuBar: React.FC = () => {
-  const btnRef = useRef<HTMLElement | null>(null)
+  const btnRef = useRef<HTMLButtonElement | null>(null)
 
   const { isOpen, onOpen, onClose } = useDisclosure()
   const {
@@ -32,7 +32,7 @@ export const MenuBar: React.FC = () => {
       height="4em"
       display={["block", null, "none"]}
     >
-      <Flex size="100%" px="6" justifyContent="space-between">
+      <Flex h="100%" w="100%" px="6" justifyContent="space-between">
         <Flex alignItems="center">
           <Link to="/">
             <Logo mobile />
@@ -47,7 +47,7 @@ export const MenuBar: React.FC = () => {
             ml="2"
             fontSize="35px"
             onClick={onOpen}
-            icon={MdDehaze}
+            icon={<MdDehaze />}
           />
         </Flex>
       </Flex>

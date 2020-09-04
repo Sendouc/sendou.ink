@@ -28,7 +28,7 @@ const FooterContent: React.FC = () => {
       </Flex>
       <Flex alignItems="center" flexWrap="wrap" justifyContent="center">
         <a href="https://discord.gg/sendou">
-          <Icon name={"discord" as string} size="30px" m="1em" />
+          <Icon name={"discord" as string} h="30px" w="30px" m="1em" />
         </a>
         <a href="https://github.com/Sendouc/sendou-ink">
           <Box as={FaGithub} size="30px" m="1em" />

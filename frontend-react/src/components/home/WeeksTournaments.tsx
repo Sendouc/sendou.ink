@@ -56,7 +56,7 @@ const WeeksTournaments: React.FC = () => {
         ))}
         <Box mt="1em">
           <Link to="/calendar">
-            <Button outlined icon={FiInfo}>
+            <Button outlined icon={<FiInfo />}>
               {t("home;View more info")}
             </Button>
           </Link>

@@ -40,7 +40,7 @@ const MapVoting: React.FC<RouteComponentProps> = () => {
     AddMapVotesVars
   >(ADD_MAP_VOTES, {
     variables: { votes },
-    onCompleted: data => {
+    onCompleted: (data) => {
       window.scrollTo(0, 0)
       toast({
         description: `Map votes submitted`,
@@ -49,7 +49,7 @@ const MapVoting: React.FC<RouteComponentProps> = () => {
         duration: 10000,
       })
     },
-    onError: error => {
+    onError: (error) => {
       toast({
         title: "An error occurred",
         description: error.message,
@@ -68,7 +68,7 @@ const MapVoting: React.FC<RouteComponentProps> = () => {
 
     // this is to remove the __typename property
     setVotes(
-      data.mapVotes.map(vote => ({
+      data.mapVotes.map((vote) => ({
         name: vote.name,
         sz: vote.sz,
         tc: vote.tc,
@@ -91,7 +91,7 @@ const MapVoting: React.FC<RouteComponentProps> = () => {
       </Helmet>
       <PageHeader title="Map Voting" />
       <Link to="/plus">
-        <Button outlined icon={FaLongArrowAltLeft}>
+        <Button outlined icon={<FaLongArrowAltLeft />}>
           Back to actions page
         </Button>
       </Link>
@@ -101,7 +101,7 @@ const MapVoting: React.FC<RouteComponentProps> = () => {
       </Alert>
       <MapVoteGrid votes={votes} setVotes={setVotes} />
       <Button
-        icon={FaEnvelope}
+        icon={<FaEnvelope />}
         onClick={() => addMapVotes()}
         loading={addVotesLoading}
       >

@@ -87,7 +87,7 @@ const WeaponLineChart: React.FC<WeaponLineChartProps> = ({
             )}
           </Box>
           <Box fontWeight="bold">
-            <Badge variantColor={themeColor} mr="0.5em">
+            <Badge colorScheme={themeColor} mr="0.5em">
               {payload[0].payload["Top 500 results"]}
             </Badge>
           </Box>

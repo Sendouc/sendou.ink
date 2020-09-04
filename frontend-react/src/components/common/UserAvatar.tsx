@@ -1,4 +1,4 @@
-import { Avatar, BoxProps } from "@chakra-ui/core"
+import { Avatar, BoxProps, AvatarProps } from "@chakra-ui/core"
 import React, { useState } from "react"
 
 interface UserAvatarProps {
@@ -7,7 +7,7 @@ interface UserAvatarProps {
   size?: undefined | "2xl" | "xl" | "lg" | "xs" | "sm"
 }
 
-const UserAvatar: React.FC<UserAvatarProps & BoxProps> = ({
+const UserAvatar: React.FC<UserAvatarProps & AvatarProps> = ({
   name,
   src,
   size,
@@ -19,14 +19,15 @@ const UserAvatar: React.FC<UserAvatarProps & BoxProps> = ({
       <Avatar
         name={name}
         src={`${src}${isBeingHovered ? "gif" : "jpg"}`}
-        size={size}
+        h={size}
+        w={size}
         {...props}
         onMouseEnter={() => setIsBeingHovered(true)}
         onMouseLeave={() => setIsBeingHovered(false)}
       />
     )
   }
-  return <Avatar name={name} src={`${src}jpg`} size={size} {...props} />
+  return <Avatar name={name} src={`${src}jpg`} h={size} w={size} {...props} />
 }
 
 export default UserAvatar

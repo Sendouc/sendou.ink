@@ -108,10 +108,10 @@ const Summaries: React.FC<SummariesProps> = ({ summaries }) => {
                   <IconButton
                     variant="ghost"
                     isRound
-                    variantColor={themeColor}
+                    colorScheme={themeColor}
                     aria-label="Show description"
                     fontSize="20px"
-                    icon={FaBolt}
+                    icon={<FaBolt />}
                   />
                 </PopoverTrigger>
                 <PopoverContent

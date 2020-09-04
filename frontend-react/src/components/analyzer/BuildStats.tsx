@@ -93,7 +93,7 @@ const BuildStats: React.FC<BuildStatsProps> = ({
             <Box mr="0.5em" minW="30px">
               <AbilityIcon ability={ability} size="TINY" />
             </Box>
-            <IconButton icon={FaChartLine} onClick={() => toggleChart()} />
+            <IconButton icon={<FaChartLine />} onClick={() => toggleChart()} />
             {title}
             {info && (
               <Popover trigger="hover" placement="top-start">

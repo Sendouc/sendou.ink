@@ -140,7 +140,7 @@ const TranslatePage: React.FC<RouteComponentProps> = () => {
                   textTransform="capitalize"
                   textAlign="center"
                   border="2px solid"
-                  borderColor={active ? themeColorWithShade : null}
+                  borderColor={active ? themeColorWithShade : undefined}
                   cursor="pointer"
                 >
                   {key}
@@ -158,7 +158,7 @@ const TranslatePage: React.FC<RouteComponentProps> = () => {
           </Flex>
           <Box mt="1em">
             <Button
-              icon={FaDownload}
+              icon={<FaDownload />}
               onClick={() =>
                 exportToJson(
                   toTranslate,
@@ -177,7 +177,7 @@ const TranslatePage: React.FC<RouteComponentProps> = () => {
                   {englishViewed[key]}
                   {englishViewed[key] !== key && (
                     <Badge
-                      variantColor={themeColor}
+                      colorScheme={themeColor}
                       textTransform="none"
                       ml="0.5em"
                     >

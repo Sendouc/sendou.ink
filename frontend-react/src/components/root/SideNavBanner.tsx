@@ -40,7 +40,7 @@ const SideNavBanner: React.FC<SideNavBannerProps> = ({ showClose = true }) => {
       {showClose && (
         <Box position="absolute" right="30px" mt="-10px">
           <IconButton
-            icon={IoMdClose}
+            icon={<IoMdClose />}
             size="md"
             onClick={() => {
               setClosed(true)

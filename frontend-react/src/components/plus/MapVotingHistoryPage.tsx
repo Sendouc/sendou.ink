@@ -71,11 +71,12 @@ const MaplistCard: React.FC<MaplistCardProps> = ({
           <Icon
             name={modeShort as any}
             color={themeColorWithShade}
-            size="2em"
+            h="2em"
+            w="2em"
           />
         </Heading>
         <Flex flexDirection="column" justifyContent="center" flexWrap="wrap">
-          {votedMaps.map(stage => {
+          {votedMaps.map((stage) => {
             return (
               <Flex key={stage.name} my="0.5em">
                 <Avatar
@@ -134,13 +135,13 @@ const MapVotingHistoryPage: React.FC<RouteComponentProps> = () => {
       <PageHeader title="Map Voting History" />
       <Flex justifyContent="center" alignItems="center">
         <IconButton
-          icon={FaArrowLeft}
+          icon={<FaArrowLeft />}
           disabled={index === 0}
           onClick={() => setIndex(index - 1)}
         />
         <Heading size="lg">{maplistObject.name}</Heading>
         <IconButton
-          icon={FaArrowRight}
+          icon={<FaArrowRight />}
           disabled={index === data.plusMaplists.length - 1}
           onClick={() => setIndex(index + 1)}
         />

@@ -189,7 +189,8 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
                       <Icon
                         name={modesShort[placement.mode] as any}
                         color={themeColorWithShade}
-                        size="2em"
+                        h="2em"
+                        w="2em"
                       />
                     </Td>
                     <Td>{getLocalizedMonth(placement.month, i18n.language)}</Td>

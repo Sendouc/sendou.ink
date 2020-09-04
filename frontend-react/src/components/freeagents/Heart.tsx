@@ -36,7 +36,7 @@ const Heart: React.FC<HeartProps> = ({
               colored
               disabled={disabled}
               loading={loading}
-              icon={active ? FaHeart : FaRegHeart}
+              icon={active ? <FaHeart /> : <FaRegHeart />}
               color="red.500"
               onClick={onClick}
             />

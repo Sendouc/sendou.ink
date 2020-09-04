@@ -131,7 +131,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user, canEdit }) => {
           </Flex>
         </Flex>
         {canEdit && (
-          <Button icon={FaEdit} onClick={() => setShowModal(true)}>
+          <Button icon={<FaEdit />} onClick={() => setShowModal(true)}>
             {t("users;Edit profile")}
           </Button>
         )}

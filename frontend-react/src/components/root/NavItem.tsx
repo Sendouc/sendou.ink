@@ -1,5 +1,5 @@
 import React, { useContext } from "react"
-import { PseudoBox, ListIcon, ListItem } from "@chakra-ui/core"
+import { Box, ListIcon, ListItem } from "@chakra-ui/core"
 import { Link, useLocation } from "@reach/router"
 import { IconType } from "react-icons/lib/cjs"
 import MyThemeContext from "../../themeContext"
@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next"
 
 interface NavItemProps {
   to: string
-  icon: IconType | string
+  icon: any
   title: string
 }
 
@@ -24,7 +24,7 @@ const NavItem: React.FC<NavItemProps> = ({ to, icon, title }) => {
   return (
     <ListItem>
       <Link to={to}>
-        <PseudoBox
+        <Box
           mx={-2}
           display="flex"
           cursor="pointer"
@@ -45,12 +45,13 @@ const NavItem: React.FC<NavItemProps> = ({ to, icon, title }) => {
           })}
         >
           <ListIcon
-            icon={icon as any}
+            name={icon}
             color={themeColorWithShade}
-            size="1.5em"
+            w="1.5em"
+            h="1.5em"
           />{" "}
           {t(`navigation;${title}`)}
-        </PseudoBox>
+        </Box>
       </Link>
     </ListItem>
   )

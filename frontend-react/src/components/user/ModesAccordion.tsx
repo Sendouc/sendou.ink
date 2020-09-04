@@ -4,7 +4,7 @@ import { modesShort } from "../../utils/lists"
 import {
   Accordion,
   AccordionItem,
-  AccordionHeader,
+  AccordionButton,
   AccordionIcon,
   AccordionPanel,
   Flex,
@@ -142,12 +142,13 @@ const ModesAccordion: React.FC<ModesAccordionProps> = ({ placements }) => {
         .map((key) => {
           return (
             <AccordionItem key={key}>
-              <AccordionHeader>
-                <AccordionIcon size="2em" mr="1em" />
+              <AccordionButton>
+                <AccordionIcon h="2em" w="2em" mr="1em" />
                 <Icon
                   name={key as any}
                   color={themeColorWithShade}
-                  size="5em"
+                  w="5em"
+                  h="5em"
                 />{" "}
                 <Grid
                   ml="50px"
@@ -203,7 +204,7 @@ const ModesAccordion: React.FC<ModesAccordionProps> = ({ placements }) => {
                     {allModesTabsData[key]?.highestXPower}
                   </StyledBox>
                 </Flex>
-              </AccordionHeader>
+              </AccordionButton>
               <AccordionPanel py={4} background={darkerBgColor} mt="3px">
                 <Grid
                   gridTemplateColumns="repeat(4, 1fr)"

@@ -28,7 +28,12 @@ const MaplistCard: React.FC<MaplistCardProps> = ({
       w="350px"
     >
       <Heading textAlign="center" mb="0.5em" color={themeColorHex}>
-        <Icon name={modeShort as any} color={themeColorWithShade} size="2em" />
+        <Icon
+          name={modeShort as any}
+          color={themeColorWithShade}
+          w="2em"
+          h="2em"
+        />
       </Heading>
       <Flex alignItems="center" justifyContent="center" flexWrap="wrap">
         {stages.map((stage) => {
@@ -43,7 +48,7 @@ const MaplistCard: React.FC<MaplistCardProps> = ({
               textAlign="center"
             >
               {newMaps.includes(stage) && (
-                <AvatarBadge size="1em" bg={themeColorWithShade} />
+                <AvatarBadge h="1em" w="1em" bg={themeColorWithShade} />
               )}
             </Avatar>
           )

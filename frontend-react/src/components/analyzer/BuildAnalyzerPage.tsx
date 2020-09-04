@@ -80,7 +80,7 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
       </Helmet>
       <PageHeader title={t("navigation;Build Analyzer")} />
       <Flex justifyContent="space-between">
-        <Badge variantColor={themeColor}>
+        <Badge colorScheme={themeColor}>
           <Trans i18nKey="analyzer;currentPatch">
             Patch {{ CURRENT_PATCH }}
           </Trans>
@@ -113,7 +113,7 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
         setOtherLde={setOtherLde}
       />
       <Button
-        icon={FaWrench}
+        icon={<FaWrench />}
         onClick={() => setShowSettings(!showSettings)}
         mt="1em"
       >

@@ -1,12 +1,8 @@
 import React from "react"
 import ReactDOM from "react-dom"
 import App from "./components/root/App"
-import {
-  ThemeProvider,
-  ColorModeProvider,
-  CSSReset,
-  theme,
-} from "@chakra-ui/core"
+import { ChakraProvider } from "@chakra-ui/core"
+import theme from "@chakra-ui/theme"
 import { ApolloProvider } from "@apollo/react-hooks"
 import { QueryParamProvider } from "use-query-params"
 import { HelmetProvider } from "react-helmet-async"
@@ -14,7 +10,6 @@ import { LocationProvider, createHistory } from "@reach/router"
 import * as Sentry from "@sentry/react"
 import ApolloClient from "apollo-boost"
 import * as serviceWorker from "./serviceWorker"
-import customIcons from "./assets/icons"
 import "./i18n"
 
 if (process.env.NODE_ENV === "production") {
@@ -31,8 +26,6 @@ const client = new ApolloClient({
       : "http://localhost:3001/graphql",
 })
 
-const customTheme = { ...theme, icons: { ...theme.icons, ...customIcons } }
-
 let history = createHistory(window as any)
 
 ReactDOM.render(
@@ -40,12 +33,9 @@ ReactDOM.render(
     <QueryParamProvider reachHistory={history}>
       <HelmetProvider>
         <ApolloProvider client={client}>
-          <ThemeProvider theme={customTheme}>
-            <ColorModeProvider>
-              <CSSReset />
-              <App />
-            </ColorModeProvider>
-          </ThemeProvider>
+          <ChakraProvider theme={theme} resetCSS>
+            <App />
+          </ChakraProvider>
         </ApolloProvider>
       </HelmetProvider>
     </QueryParamProvider>

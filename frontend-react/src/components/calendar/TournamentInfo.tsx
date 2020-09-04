@@ -80,14 +80,14 @@ const TournamentInfo: React.FC<TournamentInfoProps> = ({
               outlined={expanded}
               onClick={() => setExpanded(!expanded)}
               width="150px"
-              icon={FaInfo}
+              icon={<FaInfo />}
             >
               {expanded ? t("calendar;Hide info") : t("calendar;Show info")}
             </Button>
           </Box>
           {userData?.user?.discord_id === poster.discord_id && (
             <Button
-              icon={FaEdit}
+              icon={<FaEdit />}
               width="150px"
               onClick={() => setShowModal(true)}
             >

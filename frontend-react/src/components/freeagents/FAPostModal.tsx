@@ -192,8 +192,7 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
       >
         <FormLabel htmlFor="playstyles">{t("freeagents;Playstyles")}</FormLabel>
         <CheckboxGroup
-          id="playstyles"
-          variantColor={themeColor}
+          colorScheme={themeColor}
           value={form.playstyles ?? []}
           onChange={(value) =>
             handleChange({
@@ -218,9 +217,9 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
         </FormLabel>
         <RadioGroup
           id="canVc"
-          variantColor={themeColor}
+          colorScheme={themeColor}
           value={form.can_vc}
-          onChange={(e, value) =>
+          onChange={(value) =>
             handleChange({
               can_vc: value as "YES" | "USUALLY" | "SOMETIMES" | "NO",
             })

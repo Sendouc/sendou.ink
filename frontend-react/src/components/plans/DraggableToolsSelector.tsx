@@ -132,7 +132,7 @@ const DraggableToolsSelector: React.FC<DraggableToolsSelectorProps> = ({
             variant="ghost"
             size="lg"
             aria-label={t("plans;Pencil (P)")}
-            icon={FaPencilAlt}
+            icon={<FaPencilAlt />}
             border={tool === Tools.Pencil ? "2px solid" : undefined}
             borderColor={themeColorHex}
             title={t("plans;Pencil (P)")}
@@ -142,7 +142,7 @@ const DraggableToolsSelector: React.FC<DraggableToolsSelectorProps> = ({
             variant="ghost"
             size="lg"
             aria-label={t("plans;Line (L)")}
-            icon={AiOutlineLine}
+            icon={<AiOutlineLine />}
             border={tool === Tools.Line ? "2px solid" : undefined}
             borderColor={themeColorHex}
             title={t("plans;Line (L)")}
@@ -152,7 +152,7 @@ const DraggableToolsSelector: React.FC<DraggableToolsSelectorProps> = ({
             variant="ghost"
             size="lg"
             aria-label={t("plans;Rectangle (R)")}
-            icon={FaRegSquare}
+            icon={<FaRegSquare />}
             border={tool === Tools.Rectangle ? "2px solid" : undefined}
             borderColor={themeColorHex}
             title={t("plans;Rectangle (R)")}
@@ -162,7 +162,7 @@ const DraggableToolsSelector: React.FC<DraggableToolsSelectorProps> = ({
             variant="ghost"
             size="lg"
             aria-label={t("plans;Circle (C)")}
-            icon={FaRegCircle}
+            icon={<FaRegCircle />}
             border={tool === Tools.Circle ? "2px solid" : undefined}
             borderColor={themeColorHex}
             title={t("plans;Circle (C)")}
@@ -172,7 +172,7 @@ const DraggableToolsSelector: React.FC<DraggableToolsSelectorProps> = ({
             variant="ghost"
             size="lg"
             aria-label={t("plans;Select (S)")}
-            icon={FaRegObjectGroup}
+            icon={<FaRegObjectGroup />}
             border={tool === Tools.Select ? "2px solid" : undefined}
             borderColor={themeColorHex}
             title={t("plans;Select (S)")}
@@ -183,7 +183,7 @@ const DraggableToolsSelector: React.FC<DraggableToolsSelectorProps> = ({
             variant="ghost"
             size="lg"
             aria-label={t("plans;Delete selected")}
-            icon={FaTrashAlt}
+            icon={<FaTrashAlt />}
             title={t("plans;Delete selected")}
           />
           <IconButton
@@ -192,7 +192,7 @@ const DraggableToolsSelector: React.FC<DraggableToolsSelectorProps> = ({
             variant="ghost"
             size="lg"
             aria-label={t("plans;Undo")}
-            icon={FaUndo}
+            icon={<FaUndo />}
             title={t("plans;Undo")}
           />
           <IconButton
@@ -201,7 +201,7 @@ const DraggableToolsSelector: React.FC<DraggableToolsSelectorProps> = ({
             variant="ghost"
             size="lg"
             aria-label={t("plans;Redo")}
-            icon={FaRedo}
+            icon={<FaRedo />}
             title={t("plans;Redo")}
           />
           <IconButton
@@ -209,7 +209,7 @@ const DraggableToolsSelector: React.FC<DraggableToolsSelectorProps> = ({
             variant="ghost"
             size="lg"
             aria-label={t("plans;Add text")}
-            icon={FaFont}
+            icon={<FaFont />}
             title={t("plans;Add text")}
           />
           <Flex justify="center" align="center">

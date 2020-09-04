@@ -163,7 +163,7 @@ const FreeAgentCard: React.FC<FreeAgentCardProps> = ({
             aria-label={t("freeagents;Show more information")}
             isRound
             size="lg"
-            icon={expanded ? FaMinus : FaPlus}
+            icon={expanded ? <FaMinus /> : <FaPlus />}
             onClick={() => setExpanded(!expanded)}
           />
         )}

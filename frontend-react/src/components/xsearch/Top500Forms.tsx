@@ -1,7 +1,7 @@
 import React, { useContext } from "react"
 import Input from "../elements/Input"
 import WeaponSelector from "../common/WeaponSelector"
-import { Box, RadioGroup, Radio } from "@chakra-ui/core"
+import { Box, RadioGroup, Radio, Stack } from "@chakra-ui/core"
 import MyThemeContext from "../../themeContext"
 import { months } from "../../utils/lists"
 import Select from "../elements/Select"
@@ -90,25 +90,25 @@ const Top500Forms: React.FC<Top500FormsProps> = ({ forms, handleChange }) => {
         <RadioGroup
           value={"" + forms.mode}
           defaultValue="0"
-          spacing={5}
-          isInline
-          onChange={(e, value: any) => handleChange({ mode: parseInt(value) })}
+          onChange={(value) => handleChange({ mode: parseInt(value as any) })}
         >
-          <Radio variantColor={themeColor} value="0">
-            {t("xsearch;All modes")}
-          </Radio>
-          <Radio variantColor={themeColor} value="1">
-            {t("plans;splatZonesShort")}
-          </Radio>
-          <Radio variantColor={themeColor} value="2">
-            {t("plans;towerControlShort")}
-          </Radio>
-          <Radio variantColor={themeColor} value="3">
-            {t("plans;rainMakerShort")}
-          </Radio>
-          <Radio variantColor={themeColor} value="4">
-            {t("plans;clamBlitzShort")}
-          </Radio>
+          <Stack direction="row">
+            <Radio colorScheme={themeColor} value="0">
+              {t("xsearch;All modes")}
+            </Radio>
+            <Radio colorScheme={themeColor} value="1">
+              {t("plans;splatZonesShort")}
+            </Radio>
+            <Radio colorScheme={themeColor} value="2">
+              {t("plans;towerControlShort")}
+            </Radio>
+            <Radio colorScheme={themeColor} value="3">
+              {t("plans;rainMakerShort")}
+            </Radio>
+            <Radio colorScheme={themeColor} value="4">
+              {t("plans;clamBlitzShort")}
+            </Radio>
+          </Stack>
         </RadioGroup>
       </Box>
     </Box>

@@ -63,11 +63,7 @@ const MotionInput: React.FC<MotionInputProps> = ({
         max={5}
         step={0.5}
       >
-        <NumberInputField
-          type="number"
-          focusBorderColor={themeColorHex}
-          background={darkerBgColor}
-        />
+        <NumberInputField type="number" background={darkerBgColor} />
         <NumberInputStepper>
           <NumberIncrementStepper />
           <NumberDecrementStepper />

@@ -1,5 +1,5 @@
 import React, { useContext } from "react"
-import { Box, Image, Flex, PseudoBox } from "@chakra-ui/core"
+import { Box, Image, Flex } from "@chakra-ui/core"
 import MyThemeContext from "../../themeContext"
 import trophy from "../../assets/trophy.png"
 import WeaponImage from "../common/WeaponImage"
@@ -32,7 +32,7 @@ const TournamentCard: React.FC<TournamentCardProps> = ({
     i18n.language
   )
   return (
-    <PseudoBox
+    <Box
       display="flex"
       rounded="lg"
       overflow="hidden"
@@ -88,7 +88,7 @@ const TournamentCard: React.FC<TournamentCardProps> = ({
           ))}
         </Flex>
       </Box>
-    </PseudoBox>
+    </Box>
   )
 }
 

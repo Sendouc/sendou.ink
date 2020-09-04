@@ -172,10 +172,10 @@ const Suggestions: React.FC<SuggestionsProps> = ({ user }) => {
                 <IconButton
                   variant="ghost"
                   isRound
-                  variantColor={themeColor}
+                  colorScheme={themeColor}
                   aria-label="Show description"
                   fontSize="20px"
-                  icon={IoIosChatbubbles}
+                  icon={<IoIosChatbubbles />}
                 />
               </PopoverTrigger>
               <PopoverContent
@@ -221,34 +221,34 @@ const Suggestions: React.FC<SuggestionsProps> = ({ user }) => {
             isFitted
             variant="line"
             mt="2em"
-            variantColor={themeColor}
+            colorScheme={themeColor}
           >
             <TabList>
               {user.plus.membership_status === "ONE" && (
                 <Tab>
                   Vouches to +1{" "}
-                  <Badge variantColor={themeColor} ml="0.5em">
+                  <Badge colorScheme={themeColor} ml="0.5em">
                     {plusOneVouches.length}
                   </Badge>
                 </Tab>
               )}
               <Tab>
                 Vouches to +2{" "}
-                <Badge variantColor={themeColor} ml="0.5em">
+                <Badge colorScheme={themeColor} ml="0.5em">
                   {plusTwoVouches.length}
                 </Badge>
               </Tab>
               {user.plus.membership_status === "ONE" && (
                 <Tab>
                   Suggestions to +1{" "}
-                  <Badge variantColor={themeColor} ml="0.5em">
+                  <Badge colorScheme={themeColor} ml="0.5em">
                     {plusOneSuggested.length}
                   </Badge>
                 </Tab>
               )}
               <Tab>
                 Suggestions to +2{" "}
-                <Badge variantColor={themeColor} ml="0.5em">
+                <Badge colorScheme={themeColor} ml="0.5em">
                   {plusTwoSuggested.length}
                 </Badge>
               </Tab>

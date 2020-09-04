@@ -152,7 +152,7 @@ const TournamentDetailsPage: React.FC<
           linkSuffix.length === 1 ? "/tournaments" : `/tournaments${linkSuffix}`
         }
       >
-        <Button outlined icon={FaLongArrowAltLeft}>
+        <Button outlined icon={<FaLongArrowAltLeft />}>
           {t("tournaments;All tournaments")}
         </Button>
       </Link>
@@ -201,7 +201,8 @@ const TournamentDetailsPage: React.FC<
                 <Icon
                   name={round.mode.toLowerCase() as any}
                   color={themeColorWithShade}
-                  size="2em"
+                  w="2em"
+                  h="2em"
                 />
               </Flex>
               <Flex mt="2em" flexDirection="column" alignItems="center">

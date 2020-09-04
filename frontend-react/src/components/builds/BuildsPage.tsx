@@ -175,7 +175,7 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
               {t("builds;No more builds to show")}
             </Heading>
             <Button
-              variantColor={themeColor}
+              colorScheme={themeColor}
               variant="outline"
               mt="1em"
               onClick={() => window.scrollTo(0, 0)}

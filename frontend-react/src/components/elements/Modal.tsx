@@ -62,7 +62,7 @@ const Modal: React.FC<ModalProps> = ({
           >
             {title}
             {closeModal && (
-              <IconButton icon={MdClose} onClick={() => closeModal()} />
+              <IconButton icon={<MdClose />} onClick={() => closeModal()} />
             )}
           </Flex>
           {children}

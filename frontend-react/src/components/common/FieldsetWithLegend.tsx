@@ -12,7 +12,7 @@ interface FieldsetWithLegendProps {
   fullWidth?: boolean
 }
 
-const FieldsetWithLegend: React.FC<FieldsetWithLegendProps & BoxProps> = ({
+const FieldsetWithLegend: React.FC<FieldsetWithLegendProps & any> = ({
   children,
   title,
   titleFontSize,

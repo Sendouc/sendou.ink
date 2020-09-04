@@ -5,13 +5,12 @@ import {
 } from "@chakra-ui/core"
 import { useContext } from "react"
 import MyThemeContext from "../../themeContext"
-import { IconType } from "react-icons/lib/cjs"
 
 interface ButtonProps {
   children: string | string[]
   onClick?: () => void
   size?: "xs" | "sm" | "lg" | "md"
-  icon?: IconType
+  icon?: ChakraButtonProps["leftIcon"]
   width?: string
   color?: string
   outlined?: boolean
@@ -35,7 +34,7 @@ const Button: React.FC<ButtonProps & ChakraButtonProps> = ({
   return (
     <ChakraButton
       variant={outlined ? "outline" : "solid"}
-      variantColor={color ?? themeColor}
+      colorScheme={color ?? themeColor}
       leftIcon={icon}
       onClick={onClick}
       size={size}

@@ -117,7 +117,7 @@ const VotingHistoryPage: React.FC<RouteComponentProps> = () => {
       </Helmet>
       <PageHeader title="Voting History" />
       <Link to="/plus">
-        <Button outlined icon={FaLongArrowAltLeft}>
+        <Button outlined icon={<FaLongArrowAltLeft />}>
           Back to actions page
         </Button>
       </Link>

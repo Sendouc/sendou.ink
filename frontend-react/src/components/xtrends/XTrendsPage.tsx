@@ -215,7 +215,7 @@ const XTrendsPage: React.FC<RouteComponentProps> = () => {
                 )
               })
               .map((weapon) => (
-                <Popover key={weapon.name} placement="top-start" usePortal>
+                <Popover key={weapon.name} placement="top-start">
                   <PopoverTrigger>
                     <Box m="0.5em" cursor="pointer">
                       <WeaponImage

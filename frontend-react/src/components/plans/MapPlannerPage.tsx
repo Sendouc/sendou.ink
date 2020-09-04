@@ -299,7 +299,7 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
             sketch.clear()
             setBg({ ...bg })
           }}
-          icon={FaBomb}
+          icon={<FaBomb />}
           outlined
           color="red"
         >
@@ -308,7 +308,7 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
         <Box w="300px" />
         <Button
           onClick={() => download(sketch.toDataURL(), "png")}
-          icon={FaFileImage}
+          icon={<FaFileImage />}
           outlined
         >
           {t("plans;Download as .png")}
@@ -321,12 +321,12 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
               "json"
             )
           }
-          icon={FaFileDownload}
+          icon={<FaFileDownload />}
           outlined
         >
           {t("plans;Download as .json")}
         </Button>
-        <Button onClick={() => handleUpload()} icon={FaFileUpload} outlined>
+        <Button onClick={() => handleUpload()} icon={<FaFileUpload />} outlined>
           {t("plans;Load from .json")}
         </Button>
       </Flex>

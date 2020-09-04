@@ -14,6 +14,7 @@ import {
   Flex,
   Box,
   FormErrorMessage,
+  Stack,
 } from "@chakra-ui/core"
 import MyThemeContext from "../../themeContext"
 import TextArea from "../elements/TextArea"
@@ -60,7 +61,7 @@ const SuggestionVouchModal: React.FC<SuggestionVouchModalProps> = ({
     ADD_SUGGESTION,
     {
       variables: { ...(form as AddSuggestionVars) },
-      onCompleted: data => {
+      onCompleted: (data) => {
         closeModal()
         toast({
           description: `Suggestion added`,
@@ -69,7 +70,7 @@ const SuggestionVouchModal: React.FC<SuggestionVouchModalProps> = ({
           duration: 10000,
         })
       },
-      onError: error => {
+      onError: (error) => {
         toast({
           title: "An error occurred",
           description: error.message,
@@ -87,7 +88,7 @@ const SuggestionVouchModal: React.FC<SuggestionVouchModalProps> = ({
     AddVouchVars
   >(ADD_VOUCH, {
     variables: { ...(form as AddVouchVars) },
-    onCompleted: data => {
+    onCompleted: (data) => {
       closeModal()
       toast({
         description: `Player vouched`,
@@ -96,7 +97,7 @@ const SuggestionVouchModal: React.FC<SuggestionVouchModalProps> = ({
         duration: 10000,
       })
     },
-    onError: error => {
+    onError: (error) => {
       toast({
         title: "An error occurred",
         description: error.message,
@@ -136,7 +137,7 @@ const SuggestionVouchModal: React.FC<SuggestionVouchModalProps> = ({
         <FormLabel htmlFor="user">Discord username</FormLabel>
         <UserSelector
           id="user"
-          setValue={value => handleChange({ discord_id: value })}
+          setValue={(value) => handleChange({ discord_id: value })}
         />
         <FormErrorMessage>Required field</FormErrorMessage>
         <FormHelperText>
@@ -148,21 +149,25 @@ const SuggestionVouchModal: React.FC<SuggestionVouchModalProps> = ({
         <FormLabel htmlFor="action">Action</FormLabel>
         <RadioGroup
           id="action"
-          spacing={5}
-          isInline
-          onChange={(e, value) => setActionType(value as string)}
+          onChange={(value) => setActionType(value as string)}
           value={actionType}
         >
-          <Radio
-            variantColor={themeColor}
-            value="SUGGEST"
-            isDisabled={!canSuggest}
-          >
-            Suggest
-          </Radio>
-          <Radio variantColor={themeColor} value="VOUCH" isDisabled={!canVouch}>
-            Vouch
-          </Radio>
+          <Stack direction="row">
+            <Radio
+              colorScheme={themeColor}
+              value="SUGGEST"
+              isDisabled={!canSuggest}
+            >
+              Suggest
+            </Radio>
+            <Radio
+              colorScheme={themeColor}
+              value="VOUCH"
+              isDisabled={!canVouch}
+            >
+              Vouch
+            </Radio>
+          </Stack>
         </RadioGroup>
         <FormHelperText>
           Vouching only possible if you got high enough ratio in the last voting
@@ -173,21 +178,21 @@ const SuggestionVouchModal: React.FC<SuggestionVouchModalProps> = ({
         <FormLabel htmlFor="server">Server</FormLabel>
         <RadioGroup
           id="server"
-          spacing={5}
-          isInline
-          onChange={(e, value) => handleChange({ server: value as string })}
+          onChange={(value) => handleChange({ server: value as string })}
           value={form.server}
         >
-          <Radio
-            variantColor={themeColor}
-            value="ONE"
-            isDisabled={plusServer !== "ONE"}
-          >
-            +1
-          </Radio>
-          <Radio variantColor={themeColor} value="TWO">
-            +2
-          </Radio>
+          <Stack direction="row">
+            <Radio
+              colorScheme={themeColor}
+              value="ONE"
+              isDisabled={plusServer !== "ONE"}
+            >
+              +1
+            </Radio>
+            <Radio colorScheme={themeColor} value="TWO">
+              +2
+            </Radio>
+          </Stack>
           <FormErrorMessage>Required field</FormErrorMessage>
         </RadioGroup>
       </FormControl>
@@ -196,17 +201,17 @@ const SuggestionVouchModal: React.FC<SuggestionVouchModalProps> = ({
         <FormLabel htmlFor="region">Region</FormLabel>
         <RadioGroup
           id="region"
-          spacing={5}
-          isInline
-          onChange={(e, value) => handleChange({ region: value as string })}
+          onChange={(value) => handleChange({ region: value as string })}
           value={form.region}
         >
-          <Radio variantColor={themeColor} value="EU">
-            Europe
-          </Radio>
-          <Radio variantColor={themeColor} value="NA">
-            The Americas
-          </Radio>
+          <Stack direction="row">
+            <Radio colorScheme={themeColor} value="EU">
+              Europe
+            </Radio>
+            <Radio colorScheme={themeColor} value="NA">
+              The Americas
+            </Radio>
+          </Stack>
         </RadioGroup>
         <FormErrorMessage>Required field</FormErrorMessage>
         <FormHelperText>

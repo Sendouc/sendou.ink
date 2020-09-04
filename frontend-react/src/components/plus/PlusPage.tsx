@@ -53,21 +53,21 @@ const PlusPage: React.FC<RouteComponentProps> = () => {
       <Flex mb="1em" flexWrap="wrap">
         <Box mr="1em" mt="1em">
           <Link to="/plus/history">
-            <Button outlined icon={FaHistory}>
+            <Button outlined icon={<FaHistory />}>
               Show player voting history
             </Button>
           </Link>
         </Box>
         <Box mr="1em" mt="1em">
           <Link to="/plus/maphistory">
-            <Button outlined icon={FaMapMarkedAlt}>
+            <Button outlined icon={<FaMapMarkedAlt />}>
               Show map voting history
             </Button>
           </Link>
         </Box>
         <Box mr="1em" mt="1em">
           <Link to="/plus/mapvoting">
-            <Button outlined icon={FaVoteYea}>
+            <Button outlined icon={<FaVoteYea />}>
               Vote on maps
             </Button>
           </Link>

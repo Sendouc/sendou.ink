@@ -5,13 +5,12 @@ import {
   Flex,
   List,
   ListIcon,
-  PseudoBox,
+  Box,
   ListItem,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
-  Box,
   PopoverTrigger,
   Popover,
   PopoverContent,
@@ -58,7 +57,7 @@ const UserItem: React.FC<{ data?: UserData }> = ({ data }) => {
       <List>
         <ListItem>
           <a href="/auth/discord">
-            <PseudoBox
+            <Box
               mx={-2}
               display="flex"
               cursor="pointer"
@@ -72,13 +71,9 @@ const UserItem: React.FC<{ data?: UserData }> = ({ data }) => {
                 transform: "translateX(2px)",
               }}
             >
-              <ListIcon
-                icon={FiLogIn}
-                color={themeColorWithShade}
-                size="1.5em"
-              />{" "}
+              <ListIcon as={FiLogIn} color={themeColorWithShade} size="1.5em" />{" "}
               {t("navigation;Log in via Discord")}
-            </PseudoBox>
+            </Box>
           </a>
         </ListItem>
       </List>
@@ -132,20 +127,20 @@ const LanguagePicker: React.FC<LanguagePickerProps> = ({ isMobile }) => {
     MyThemeContext
   )
   return (
-    <Popover placement={isMobile ? "bottom" : "top"} usePortal={!isMobile}>
+    <Popover placement={isMobile ? "bottom" : "top"}>
       <PopoverTrigger>
         <IconButton
           aria-label="Switch language"
           variant="ghost"
           color="current"
           fontSize="20px"
-          icon={FiGlobe}
+          icon={<FiGlobe />}
         />
       </PopoverTrigger>
       <PopoverContent zIndex={4} backgroundColor={bgColor} w="250px">
         <PopoverBody>
           {languages.map((language) => (
-            <PseudoBox
+            <Box
               display="flex"
               alignItems="center"
               justifyContent="center"
@@ -166,7 +161,7 @@ const LanguagePicker: React.FC<LanguagePickerProps> = ({ isMobile }) => {
               {i18n.language === language.code && (
                 <FiGlobe style={{ marginLeft: "0.2em" }} />
               )}
-            </PseudoBox>
+            </Box>
           ))}
         </PopoverBody>
       </PopoverContent>
@@ -219,7 +214,7 @@ export const SideNavContent: React.FC<SideNavProps> = ({
                   color="current"
                   fontSize="20px"
                   onClick={toggleColorMode}
-                  icon={colorMode === "light" ? FiSun : FiMoon}
+                  icon={colorMode === "light" ? <FiSun /> : <FiMoon />}
                 />
                 <ColorPicker />
                 <LanguagePicker isMobile />
@@ -266,7 +261,7 @@ export const SideNavContent: React.FC<SideNavProps> = ({
                 color="current"
                 fontSize="20px"
                 onClick={toggleColorMode}
-                icon={colorMode === "light" ? FiSun : FiMoon}
+                icon={colorMode === "light" ? <FiSun /> : <FiMoon />}
               />
               <ColorPicker />
               <LanguagePicker />
