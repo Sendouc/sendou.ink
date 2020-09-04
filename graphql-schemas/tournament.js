@@ -81,13 +81,13 @@ const resolvers = {
       if (!args.id.match(/^[0-9a-fA-F]{24}$/)) return null
       const rounds = await Round.find({ tournament_id: args.id })
         .sort({ round_number: "asc", game_number: "asc" })
-        .catch(e => {
+        .catch((e) => {
           throw new UserInputError(e.message, {
             invalidArgs: args,
           })
         })
 
-      const tournament = await Tournament.findById(args.id).catch(e => {
+      const tournament = await Tournament.findById(args.id).catch((e) => {
         throw new UserInputError(e.message, {
           invalidArgs: args,
         })
@@ -99,7 +99,8 @@ const resolvers = {
     },
     searchForTournaments: async (root, args) => {
       Object.keys(args).forEach(
-        key => (args[key] == null || args[key].length === 0) && delete args[key]
+        (key) =>
+          (args[key] == null || args[key].length === 0) && delete args[key]
       )
 
       const tournamentsPerPage = 18
@@ -112,14 +113,18 @@ const resolvers = {
       if (args.team_name) {
         roundSearchCriteria.$or.push({
           winning_team_name: {
-            $regex: args.team_name,
-            $options: "i",
+            $regex: new RegExp(
+              args.team_name.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&"),
+              "i"
+            ),
           },
         })
         roundSearchCriteria.$or.push({
           losing_team_name: {
-            $regex: args.team_name,
-            $options: "i",
+            $regex: new RegExp(
+              args.team_name.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&"),
+              "i"
+            ),
           },
         })
       }
@@ -127,14 +132,18 @@ const resolvers = {
       if (args.player_name) {
         roundSearchCriteria.$or.push({
           winning_team_players: {
-            $regex: args.player_name,
-            $options: "i",
+            $regex: new RegExp(
+              args.player_name.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&"),
+              "i"
+            ),
           },
         })
         roundSearchCriteria.$or.push({
           losing_team_players: {
-            $regex: args.player_name,
-            $options: "i",
+            $regex: new RegExp(
+              args.player_name.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&"),
+              "i"
+            ),
           },
         })
       }
@@ -142,14 +151,18 @@ const resolvers = {
       if (args.unique_id) {
         roundSearchCriteria.$or.push({
           winning_team_unique_ids: {
-            $regex: args.unique_id,
-            $options: "i",
+            $regex: new RegExp(
+              args.unique_id.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&"),
+              "i"
+            ),
           },
         })
         roundSearchCriteria.$or.push({
           losing_team_unique_ids: {
-            $regex: args.unique_id,
-            $options: "i",
+            $regex: new RegExp(
+              args.unique_id.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&"),
+              "i"
+            ),
           },
         })
       }
@@ -206,13 +219,15 @@ const resolvers = {
 
       if (args.tournament_name)
         tournamentSearchCriteria.name = {
-          $regex: args.tournament_name,
-          $options: "i",
+          $regex: new RegExp(
+            args.tournament_name.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&"),
+            "i"
+          ),
         }
 
       const tournamentCount = await Tournament.countDocuments(
         tournamentSearchCriteria
-      ).catch(e => {
+      ).catch((e) => {
         throw new UserInputError(e.message, {
           invalidArgs: args,
         })
@@ -231,7 +246,7 @@ const resolvers = {
         .skip(tournamentsPerPage * currentPage)
         .limit(tournamentsPerPage)
         .sort({ date: "desc" })
-        .catch(e => {
+        .catch((e) => {
           throw new UserInputError(e.message, {
             invalidArgs: args,
           })

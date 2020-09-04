@@ -48,7 +48,7 @@ const resolvers = {
       const placements = await Placement.find({ weapon: args.weapon })
         .sort({ x_power: "desc" })
         .select({ weapon: 0 })
-        .catch(e => {
+        .catch((e) => {
           throw new UserInputError(e.message, {
             invalidArgs: args,
           })
@@ -85,7 +85,7 @@ const resolvers = {
         throw new UserInputError("no id or twitter provided", {
           invalidArgs: args,
         })
-      const player = await Player.findOne(searchCriteria).catch(e => {
+      const player = await Player.findOne(searchCriteria).catch((e) => {
         throw new UserInputError(e.message, {
           invalidArgs: args,
         })
@@ -97,7 +97,7 @@ const resolvers = {
 
       const placements = await Placement.find({ unique_id: player.unique_id })
         .sort({ year: "desc", month: "desc" })
-        .catch(e => {
+        .catch((e) => {
           throw new UserInputError(e.message, {
             invalidArgs: args,
           })
@@ -112,19 +112,24 @@ const resolvers = {
           .sort({ x_power: "desc" })
           .limit(100)
           .select({ name: 1, weapon: 1, x_power: 1, unique_id: 1 })
-          .catch(e => {
+          .catch((e) => {
             throw new UserInputError(e.message, {
               invalidArgs: args,
             })
           })
       } else {
         placements = await Placement.find({
-          name: { $regex: args.name, $options: "i" },
+          name: {
+            $regex: new RegExp(
+              args.name.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&"),
+              "i"
+            ),
+          },
         })
           .sort({ x_power: "desc" })
           .limit(100)
           .select({ name: 1, weapon: 1, x_power: 1, unique_id: 1 })
-          .catch(e => {
+          .catch((e) => {
             throw new UserInputError(e.message, {
               invalidArgs: args,
             })
@@ -133,7 +138,7 @@ const resolvers = {
 
       let uids = []
 
-      return placements.filter(p => {
+      return placements.filter((p) => {
         if (uids.length === 21) {
           return false
         }
@@ -151,7 +156,12 @@ const resolvers = {
       const searchCriteria = {}
 
       if (args.name)
-        searchCriteria.name = { $regex: new RegExp(args.name, "i") }
+        searchCriteria.name = {
+          $regex: new RegExp(
+            args.name.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&"),
+            "i"
+          ),
+        }
       if (args.weapon) searchCriteria.weapon = args.weapon
       if (args.mode) searchCriteria.mode = args.mode
       if (args.unique_id) searchCriteria.unique_id = args.unique_id
@@ -160,7 +170,7 @@ const resolvers = {
 
       const placementCount = await Placement.countDocuments(
         searchCriteria
-      ).catch(e => {
+      ).catch((e) => {
         throw new UserInputError(e.message, {
           invalidArgs: args,
         })
@@ -180,7 +190,7 @@ const resolvers = {
         .limit(perPage)
         .sort({ x_power: "desc" })
         .populate("player")
-        .catch(e => {
+        .catch((e) => {
           throw new UserInputError(e.message, {
             invalidArgs: args,
           })
