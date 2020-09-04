@@ -12,7 +12,6 @@ import { QueryParamProvider } from "use-query-params"
 import { HelmetProvider } from "react-helmet-async"
 import { LocationProvider, createHistory } from "@reach/router"
 import * as Sentry from "@sentry/react"
-import { Integrations } from "@sentry/tracing"
 import ApolloClient from "apollo-boost"
 import * as serviceWorker from "./serviceWorker"
 import customIcons from "./assets/icons"
@@ -22,8 +21,6 @@ if (process.env.NODE_ENV === "production") {
   Sentry.init({
     dsn:
       "https://fbdedefb54744b33aa0450f1f9f52ee9@o443322.ingest.sentry.io/5416867",
-    integrations: [new Integrations.BrowserTracing()],
-    tracesSampleRate: 0.5,
   })
 }
 
