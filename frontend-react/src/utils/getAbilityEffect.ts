@@ -23,12 +23,17 @@ function lerpN(p: number, s: number) {
   return Math.pow(Math.E, -1 * ((Math.log(p) * Math.log(s)) / Math.log(2)))
 }
 
-export function getEffect(abilityVals: number[], ap: number) {
+export function getEffect(
+  abilityVals: number[],
+  ap: number,
+  ninjaSquid: boolean = false
+) {
   const high = abilityVals[0]
   const mid = abilityVals[1]
   const low = abilityVals[2]
   const slope = get_slope(high, mid, low)
-  const tmp = calcSkillPoint2Percent(ap)
+  let tmp = calcSkillPoint2Percent(ap)
+  if (ninjaSquid) tmp *= 0.8
   const percentage = tmp / 100.0
   const result = low + (high - low) * lerpN(slope, percentage)
 

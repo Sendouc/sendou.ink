@@ -158,6 +158,11 @@ export interface Build {
   }
 }
 
+export type AnalyzerBuild = Pick<
+  Build,
+  "weapon" | "headgear" | "clothing" | "shoes"
+>
+
 export interface Placement {
   id: string
   weapon: Weapon

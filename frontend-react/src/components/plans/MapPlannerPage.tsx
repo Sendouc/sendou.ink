@@ -20,7 +20,6 @@ import DraggableToolsSelector from "./DraggableToolsSelector"
 import DraggableWeaponSelector from "./DraggableWeaponSelector"
 import MapSelect from "./MapSelect"
 import { useTranslation } from "react-i18next"
-import { IoIosReturnLeft } from "react-icons/io"
 
 export interface PlannerMapBg {
   view: "M" | "R"

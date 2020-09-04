@@ -3,12 +3,12 @@ import AbilityButtons from "../user/AbilityButtons"
 import ViewSlots from "../builds/ViewSlots"
 import { Box, Flex } from "@chakra-ui/core"
 import {
-  Build,
   Ability,
   HeadOnlyAbility,
   ClothingOnlyAbility,
   ShoesOnlyAbility,
   StackableAbility,
+  AnalyzerBuild,
 } from "../../types"
 import {
   headOnlyAbilities,
@@ -22,9 +22,9 @@ import LdeSlider from "./LdeSlider"
 import { useTranslation } from "react-i18next"
 
 interface EditableBuildsProps {
-  build: Partial<Build>
-  otherBuild: Partial<Build>
-  setBuild: React.Dispatch<React.SetStateAction<Partial<Build>>>
+  build: Omit<AnalyzerBuild, "weapon">
+  otherBuild: Omit<AnalyzerBuild, "weapon">
+  setBuild: React.Dispatch<React.SetStateAction<Omit<AnalyzerBuild, "weapon">>>
   showOther: boolean
   setShowOther: React.Dispatch<React.SetStateAction<boolean>>
   otherFocused: boolean

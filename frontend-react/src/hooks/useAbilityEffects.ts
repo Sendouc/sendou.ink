@@ -1,4 +1,11 @@
-import { Build, Ability, Weapon, SubWeapon, SpecialWeapon } from "../types"
+import {
+  Build,
+  Ability,
+  Weapon,
+  SubWeapon,
+  SpecialWeapon,
+  AnalyzerBuild,
+} from "../types"
 import { useEffect, useState } from "react"
 import { getEffect } from "../utils/getAbilityEffect"
 import weaponJson from "../utils/weaponData.json"
@@ -84,7 +91,7 @@ function buildToAP(
 }
 
 export default function useAbilityEffects(
-  build: Partial<Build>,
+  build: AnalyzerBuild,
   bonusAp: Partial<Record<Ability, boolean>> = {},
   lde: number = 0
 ) {
@@ -94,7 +101,7 @@ export default function useAbilityEffects(
 
   function calculateISM(amount: number) {
     const ISM = abilityJson["Ink Saver (Main)"]
-    const buildWeaponData = weaponData[build.weapon!]
+    const buildWeaponData = weaponData[build.weapon]
     const inkSaverLvl = buildWeaponData.InkSaverLv as "High" | "Middle" | "Low"
 
     const keyObj = {
@@ -126,12 +133,11 @@ export default function useAbilityEffects(
     const mInkConsume = buildWeaponData.mInkConsume
     if (mInkConsume) {
       const title =
-        build.weapon!.includes("Splatling") ||
-        build.weapon!.includes("Nautilus")
+        build.weapon.includes("Splatling") || build.weapon.includes("Nautilus")
           ? t("analyzer;Full charges per ink tank")
           : t("analyzer;Shots per ink tank")
 
-      const tank = build.weapon!.includes("Jr.") ? 1.1 : 1
+      const tank = build.weapon.includes("Jr.") ? 1.1 : 1
       toReturn.push({
         title,
         effect: `${parseFloat((tank / (mInkConsume * effect[0])).toFixed(2))}`,
@@ -274,7 +280,7 @@ export default function useAbilityEffects(
       })
     }
 
-    const mSideStepInkConsume = buildWeaponData.mSideStepInkConsume
+    const mSideStepInkConsume = buildWeaponData.mSideStepInkConsume_2
     if (mSideStepInkConsume) {
       toReturn.push({
         title: t("analyzer;Dodge roll ink consumption"),
@@ -323,7 +329,7 @@ export default function useAbilityEffects(
 
   function calculateISS(amount: number) {
     const ISS = abilityJson["Ink Saver (Sub)"]
-    const buildWeaponData = weaponData[build.weapon!]
+    const buildWeaponData = weaponData[build.weapon]
     const subWeapon = buildWeaponData.Sub! as SubWeapon
 
     const subWeaponData = weaponData[subWeapon]
@@ -339,7 +345,7 @@ export default function useAbilityEffects(
     const low = ISS[lowKey]
     const highMidLow = [high, mid, low]
     const effect = getEffect(highMidLow, amount)
-    const tank = build.weapon!.includes("Jr.") ? 1.1 : 1
+    const tank = build.weapon.includes("Jr.") ? 1.1 : 1
 
     const subWeaponTranslated = t(`game;${subWeapon}`)
     return [
@@ -377,7 +383,7 @@ export default function useAbilityEffects(
     const highMidLowSquid = [highSquid, midSquid, lowSquid]
     const effectSquid = getEffect(highMidLowSquid, amount)
 
-    const tank = build.weapon!.includes("Jr.") ? 1.1 : 1
+    const tank = build.weapon.includes("Jr.") ? 1.1 : 1
 
     return [
       {
@@ -401,7 +407,7 @@ export default function useAbilityEffects(
   function calculateRSU(amount: number) {
     const RSU = abilityJson["Run Speed Up"]
 
-    const buildWeaponData = weaponData[build.weapon!]
+    const buildWeaponData = weaponData[build.weapon]
     const grade = buildWeaponData.ShotMoveVelType // "A" | "B" | "C" | "D" | "E"
     const moveLv = buildWeaponData.MoveVelLv // "Low" | "Middle" | "High"
 
@@ -466,7 +472,7 @@ export default function useAbilityEffects(
   function calculateSSU(amount: number) {
     const SSU = abilityJson["Swim Speed Up"]
 
-    const buildWeaponData = weaponData[build.weapon!]
+    const buildWeaponData = weaponData[build.weapon]
     const moveLv = buildWeaponData.MoveVelLv // "Low" | "Middle" | "High"
 
     const commonKey =
@@ -484,9 +490,10 @@ export default function useAbilityEffects(
     const low = SSU[lowKey]
     const highMidLow = [high, mid, low]
 
-    const effect = getEffect(highMidLow, amount)
+    const hasNinjaSquid = build.clothing[0] === "NS"
+    const effect = getEffect(highMidLow, amount, hasNinjaSquid)
 
-    const speed = build.clothing![0] === "NS" ? effect[0] * 0.9 : effect[0]
+    const speed = hasNinjaSquid ? effect[0] * 0.9 : effect[0]
 
     return [
       {
@@ -507,7 +514,7 @@ export default function useAbilityEffects(
   function calculateSCU(amount: number) {
     const SCU = abilityJson["Special Charge Up"]
 
-    const buildWeaponData = weaponData[build.weapon!]
+    const buildWeaponData = weaponData[build.weapon]
     const points = buildWeaponData.SpecialCost!
 
     const high = SCU.SpecialRt_Charge_High
@@ -535,7 +542,11 @@ export default function useAbilityEffects(
     ]
   }
 
-  function calculateSS(amount: number) {
+  function calculateSS(amountBeforeRP: number) {
+    const respawnPunishAPMultiplier = build.clothing[0] === "RP" ? 0.7 : 1
+    const respawnPunishEffectMultiplier = build.clothing[0] === "RP" ? 0.775 : 1
+    const amount = Math.floor(amountBeforeRP * respawnPunishAPMultiplier)
+
     const SS = abilityJson["Special Saver"]
 
     const high = SS.SpecialRt_Restart_High
@@ -543,32 +554,34 @@ export default function useAbilityEffects(
     const low = SS.SpecialRt_Restart_Low
     const highMidLow = [high, mid, low]
 
-    const effect = getEffect(highMidLow, amount)
+    const [specialLostBeforeRP, effectFromMax] = getEffect(highMidLow, amount)
+    const specialLost = specialLostBeforeRP * respawnPunishEffectMultiplier
 
     const toReturn = []
 
     toReturn.push({
       title: t("analyzer;Special lost when killed"),
-      effect: `${parseFloat(((1.0 - effect[0]) * 100).toFixed(2))}% ${t(
+      effect: `${parseFloat(((1.0 - specialLost) * 100).toFixed(2))}% ${t(
         "analyzer;of the charge"
       )}`,
-      effectFromMax: effect[1],
-      effectFromMaxActual: (1.0 - effect[0]) * 100,
+      effectFromMax,
+      effectFromMaxActual: (1.0 - specialLost) * 100,
       ability: "SS" as Ability,
       ap: amount,
       getEffect: (ap: number) =>
         parseFloat(((1.0 - getEffect(highMidLow, ap)[0]) * 100).toFixed(2)),
     })
 
-    if (weaponData[build.weapon!].Special === "Splashdown") {
+    if (weaponData[build.weapon].Special === "Splashdown") {
       const high = SS.SpecialRt_Restart_SuperLanding_High
       const mid = SS.SpecialRt_Restart_SuperLanding_Mid
       const low = SS.SpecialRt_Restart_SuperLanding_Low
       const highMidLow = [high, mid, low]
 
-      const effect = getEffect(highMidLow, amount)
+      const [specialLostBeforeRP] = getEffect(highMidLow, amount)
+      const specialLost = specialLostBeforeRP * respawnPunishEffectMultiplier
 
-      const lost = effect[0] > 1 ? 1 : effect[0]
+      const lost = specialLost > 1 ? 1 : specialLost
       const effectAtZero = getEffect(highMidLow, 0)
       const fromMax = (lost - effectAtZero[0]) / 0.25
 
@@ -593,7 +606,7 @@ export default function useAbilityEffects(
   }
 
   function calculateSPU(amount: number) {
-    const buildWeaponData = weaponData[build.weapon!]
+    const buildWeaponData = weaponData[build.weapon]
     const specialWeapon = buildWeaponData.Special! as SpecialWeapon
     const specialWeaponData = weaponData[specialWeapon]
 
@@ -940,7 +953,10 @@ export default function useAbilityEffects(
     const highMidLowChase = [highChase, midChase, lowChase]
     const effectChase = getEffect(highMidLowChase, amount)
 
-    const totalFrames = Math.ceil(150 + effectAround[0] + effectChase[0])
+    const respawnPunishExtraFrames = build.clothing[0] === "RP" ? 68 : 0
+    const totalFrames =
+      Math.ceil(150 + effectAround[0] + effectChase[0]) +
+      respawnPunishExtraFrames
 
     const effectAtZero = Math.ceil(
       150 + getEffect(highMidLowAround, 0)[0] + getEffect(highMidLowChase, 0)[0]
@@ -1022,7 +1038,7 @@ export default function useAbilityEffects(
 
   function calculateBRU(amount: number) {
     const BRU = abilityJson["Sub Power Up"]
-    const buildWeaponData = weaponData[build.weapon!]
+    const buildWeaponData = weaponData[build.weapon]
     const subWeapon = buildWeaponData.Sub! as SubWeapon
     const subWeaponData = weaponData[subWeapon]
 
@@ -1417,7 +1433,7 @@ export default function useAbilityEffects(
   ) => Math.min(cap, Math.floor(baseDamage * multiplier)) / 10
 
   function calculateMPU(amount: number) {
-    const buildWeaponData = weaponData[build.weapon!]
+    const buildWeaponData = weaponData[build.weapon]
 
     const toReturn = []
 
@@ -1462,6 +1478,49 @@ export default function useAbilityEffects(
             baseDamageMax,
             getEffect(highMidLow, ap)[0],
             buildWeaponData.mDamage_MWPUG_Max
+          ),
+      })
+    }
+
+    if (
+      buildWeaponData.mSideStepOneMuzzleDamageRate_MWPUG_High_2 &&
+      buildWeaponData.mSideStepOneMuzzleDamageRate_MWPUG_Mid_2 &&
+      buildWeaponData.mSideStepOneMuzzleDamageMax_2 &&
+      buildWeaponData.mSideStepOneMuzzleDamage_MWPUG_Max_2 &&
+      buildWeaponData.mSideStepOneMuzzleDamageRate_MWPUG_High_2 !==
+        buildWeaponData.mSideStepOneMuzzleDamageRate_MWPUG_Mid_2
+    ) {
+      const high = buildWeaponData.mSideStepOneMuzzleDamageRate_MWPUG_High_2
+      const mid = buildWeaponData.mSideStepOneMuzzleDamageRate_MWPUG_Mid_2
+      const low = 1.0
+      const highMidLow = [high, mid, low]
+
+      const effect = getEffect(highMidLow, amount)
+      const baseDamageMax = buildWeaponData.mSideStepOneMuzzleDamageMax_2
+      const damageMax = calculateDamage(
+        baseDamageMax,
+        effect[0],
+        buildWeaponData.mSideStepOneMuzzleDamage_MWPUG_Max_2
+      )
+      const baseDamageMin = buildWeaponData.mSideStepOneMuzzleDamageMin_2 ?? -1
+      const damageMin = calculateDamage(
+        baseDamageMin,
+        effect[0],
+        buildWeaponData.mSideStepOneMuzzleDamage_MWPUG_Max_2
+      )
+      const damageMinStr = baseDamageMin !== -1 ? `${damageMin} - ` : ""
+      toReturn.push({
+        title: `${weaponTranslated} damage per shot (turret mode)`,
+        effect: `${damageMinStr}${damageMax}`,
+        effectFromMax: effect[1],
+        effectFromMaxActual: damageMax,
+        ability: "MPU" as Ability,
+        ap: amount,
+        getEffect: (ap: number) =>
+          calculateDamage(
+            baseDamageMax,
+            getEffect(highMidLow, ap)[0],
+            buildWeaponData.mSideStepOneMuzzleDamage_MWPUG_Max_2
           ),
       })
     }
@@ -1625,7 +1684,7 @@ export default function useAbilityEffects(
       })
     }
 
-    if (build.weapon!.includes("Rapid")) {
+    if (build.weapon.includes("Rapid")) {
       const high = buildWeaponData.mCollisionRadiusFarRate_MWPUG_High_Burst
       const mid = buildWeaponData.mCollisionRadiusFarRate_MWPUG_Mid_Burst
       const low = 1.0
@@ -1832,7 +1891,7 @@ export default function useAbilityEffects(
       const effectAtZero = getEffect(highMidLow, 0)
       const effectAtMax = getEffect(highMidLow, MAX_AP)
 
-      if (!build.weapon!.includes("Bamboozler")) {
+      if (!build.weapon.includes("Bamboozler")) {
         toReturn.push({
           title: `${weaponTranslated} ${t("analyzer;damage")}`,
           effect: `${parseFloat(
@@ -1934,7 +1993,7 @@ export default function useAbilityEffects(
           parseFloat(
             ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(2)
           ),
-        info: build.weapon!.includes("Sloshing")
+        info: build.weapon.includes("Sloshing")
           ? t(
               "analyzer;Ink coverage bonus is only applied to the circle at the end of the shot"
             )

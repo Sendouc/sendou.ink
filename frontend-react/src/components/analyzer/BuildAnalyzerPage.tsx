@@ -3,7 +3,7 @@ import { RouteComponentProps, useLocation } from "@reach/router"
 import React, { useState, useContext } from "react"
 import { Helmet } from "react-helmet-async"
 import useAbilityEffects from "../../hooks/useAbilityEffects"
-import { Build, Ability, Weapon } from "../../types"
+import { Ability, Weapon, AnalyzerBuild } from "../../types"
 import PageHeader from "../common/PageHeader"
 import WeaponSelector from "../common/WeaponSelector"
 import BuildStats from "./BuildStats"
@@ -15,7 +15,9 @@ import { useTranslation, Trans } from "react-i18next"
 
 const CURRENT_PATCH = "5.3."
 
-const defaultBuild: Partial<Build> = {
+type AnalyzerBuildNoWeapon = Omit<AnalyzerBuild, "weapon">
+
+const defaultBuild: AnalyzerBuildNoWeapon = {
   headgear: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
   clothing: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
   shoes: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
@@ -25,11 +27,11 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
   const { themeColor, grayWithShade } = useContext(MyThemeContext)
   const { t } = useTranslation()
   const location = useLocation()
-  const [build, setBuild] = useState<Partial<Build>>(getBuildFromUrl())
-  const [otherBuild, setOtherBuild] = useState<Partial<Build>>({
+  const [build, setBuild] = useState<AnalyzerBuildNoWeapon>(getBuildFromUrl())
+  const [otherBuild, setOtherBuild] = useState<AnalyzerBuildNoWeapon>({
     ...defaultBuild,
-    weapon: getBuildFromUrl().weapon,
   })
+  const [weapon, setWeapon] = useState<Weapon>("Splattershot Jr.")
   const [showOther, setShowOther] = useState(false)
   const [showNotActualProgress, setShowNotActualProgress] = useState(false)
   const [startChartsAtZero, setStartChartsAtZero] = useState(true)
@@ -44,9 +46,9 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
   const [lde, setLde] = useState(0)
   const [otherLde, setOtherLde] = useState(0)
 
-  const explanations = useAbilityEffects(build, bonusAp, lde)
+  const explanations = useAbilityEffects({ ...build, weapon }, bonusAp, lde)
   const otherExplanations = useAbilityEffects(
-    otherBuild,
+    { ...otherBuild, weapon },
     otherBonusAp,
     otherLde
   )
@@ -58,7 +60,7 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
     for (const [key, value] of decoded) {
       switch (key) {
         case "weapon":
-          buildToReturn.weapon = value as Weapon
+          setWeapon(value as Weapon)
           break
         case "headgear":
         case "clothing":
@@ -89,37 +91,27 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
       </Flex>
 
       <Box my="1em">
-        <WeaponSelector
-          value={build.weapon}
-          label=""
-          setValue={(weapon) => {
-            setBuild({ ...build, weapon })
-            setOtherBuild({ ...otherBuild, weapon })
-          }}
-          menuIsOpen={!build.weapon}
-        />
+        <WeaponSelector value={weapon} label="" setValue={setWeapon} />
       </Box>
-      {build.weapon && (
-        <EditableBuilds
-          build={build}
-          otherBuild={otherBuild}
-          setBuild={otherFocused ? setOtherBuild : setBuild}
-          showOther={showOther}
-          setShowOther={setShowOther}
-          changeFocus={() => {
-            setOtherFocused(!otherFocused)
-          }}
-          otherFocused={otherFocused}
-          bonusAp={bonusAp}
-          setBonusAp={setBonusAp}
-          otherBonusAp={otherBonusAp}
-          setOtherBonusAp={setOtherBonusAp}
-          lde={lde}
-          setLde={setLde}
-          otherLde={otherLde}
-          setOtherLde={setOtherLde}
-        />
-      )}
+      <EditableBuilds
+        build={build}
+        otherBuild={otherBuild}
+        setBuild={otherFocused ? setOtherBuild : setBuild}
+        showOther={showOther}
+        setShowOther={setShowOther}
+        changeFocus={() => {
+          setOtherFocused(!otherFocused)
+        }}
+        otherFocused={otherFocused}
+        bonusAp={bonusAp}
+        setBonusAp={setBonusAp}
+        otherBonusAp={otherBonusAp}
+        setOtherBonusAp={setOtherBonusAp}
+        lde={lde}
+        setLde={setLde}
+        otherLde={otherLde}
+        setOtherLde={setOtherLde}
+      />
       <Button
         icon={FaWrench}
         onClick={() => setShowSettings(!showSettings)}

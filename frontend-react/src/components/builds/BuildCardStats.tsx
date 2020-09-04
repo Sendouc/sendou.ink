@@ -1,6 +1,6 @@
 import React from "react"
 import useAbilityEffects from "../../hooks/useAbilityEffects"
-import { Build } from "../../types"
+import { Build, AnalyzerBuild } from "../../types"
 import BuildStats from "../analyzer/BuildStats"
 import Modal from "../elements/Modal"
 import ViewSlots from "./ViewSlots"
@@ -21,7 +21,7 @@ const BuildCardStats: React.FC<BuildCardStatsProps> = ({
 }) => {
   const explanations = useAbilityEffects(build, unchangingBonus, 0)
 
-  const defaultBuild: Partial<Build> = {
+  const defaultBuild: AnalyzerBuild = {
     weapon: build.weapon,
     headgear: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
     clothing: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
