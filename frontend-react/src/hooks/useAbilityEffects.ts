@@ -1,8 +1,8 @@
 import { Build, Ability, Weapon, SubWeapon, SpecialWeapon } from "../types"
 import { useEffect, useState } from "react"
 import { getEffect } from "../utils/getAbilityEffect"
-import weaponJson from "../utils/weapon_data.json"
-import abilityJson from "../utils/ability_data.json"
+import weaponJson from "../utils/weaponData.json"
+import abilityJson from "../utils/abilityData.json"
 import { useTranslation } from "react-i18next"
 
 export interface Explanation {

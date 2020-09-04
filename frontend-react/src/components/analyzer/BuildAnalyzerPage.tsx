@@ -13,7 +13,7 @@ import { FaWrench } from "react-icons/fa"
 import Button from "../elements/Button"
 import { useTranslation, Trans } from "react-i18next"
 
-const CURRENT_PATCH = "5.2."
+const CURRENT_PATCH = "5.3."
 
 const defaultBuild: Partial<Build> = {
   headgear: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
