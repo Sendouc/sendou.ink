@@ -20,6 +20,7 @@ import DraggableToolsSelector from "./DraggableToolsSelector"
 import DraggableWeaponSelector from "./DraggableWeaponSelector"
 import MapSelect from "./MapSelect"
 import { useTranslation } from "react-i18next"
+import { IoIosReturnLeft } from "react-icons/io"
 
 export interface PlannerMapBg {
   view: "M" | "R"
@@ -208,7 +209,6 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
   }
 
   const parseAndSetForms = (name: string) => {
-    console.log("name", name)
     const firstPart = name.split(" ")[0]
     if (!(firstPart.length === 7 || !firstPart.includes("-"))) return
 
@@ -218,19 +218,12 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
     const [view, stage, mode] = split
 
     if (!["M", "R"].includes(view)) return
-    console.log(
-      "Array.from(reversedCodes.values()",
-      Array.from(reversedCodes.values())
-    )
     if (
       !Array.from(reversedCodes.values())
         .map((tuple) => tuple[1])
         .includes(stage as any)
     )
-      return
-    console.log("2")
-    if (!["SZ", "TC", "RM", "CB"].includes(mode)) return
-    console.log("3")
+      if (!["SZ", "TC", "RM", "CB"].includes(mode)) return
 
     setBg({
       view: view as any,

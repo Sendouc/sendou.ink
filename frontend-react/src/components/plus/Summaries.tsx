@@ -75,7 +75,6 @@ const Summaries: React.FC<SummariesProps> = ({ summaries }) => {
 
   const summaryMap = (summary: Summary) => {
     const { discord_user, score } = summary
-    console.log("discord_user", discord_user)
     return (
       <React.Fragment key={discord_user.discord_id}>
         <Flex mr="1em" alignItems="center">

@@ -65,7 +65,6 @@ const TranslatePage: React.FC<RouteComponentProps> = () => {
         const dataFromLocalStorage = localStorage.getItem(
           `translation_${languageDropdownValue}`
         )
-        console.log(dataFromLocalStorage)
 
         setToTranslate(
           dataFromLocalStorage ? JSON.parse(dataFromLocalStorage) : data

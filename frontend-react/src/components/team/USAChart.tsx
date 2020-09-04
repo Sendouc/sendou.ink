@@ -16,7 +16,6 @@ const USAChart: React.FC<USAChartProps> = ({ states }) => {
           {({ geographies }) => (
             <>
               {geographies.map((geo) => {
-                console.log("geo", geo)
                 return (
                   <Geography
                     key={geo.rsmKey}
