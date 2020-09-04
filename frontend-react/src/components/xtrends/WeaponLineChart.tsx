@@ -49,8 +49,8 @@ const WeaponLineChart: React.FC<WeaponLineChartProps> = ({
       return [...acc, ...cur[mode].slice(1)] as number[]
     }, [])
 
-    let nextMonth = 4
-    let nextYear = 2018
+    let nextMonth = counts[0].year === 2018 ? 4 : 0
+    let nextYear = counts[0].year
 
     return countsPutTogether.reduce(
       (acc: { name: string; "Top 500 results": number }[], cur) => {
