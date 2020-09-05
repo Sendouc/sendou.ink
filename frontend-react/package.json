@@ -21,7 +21,7 @@
     "@types/react-paginate": "^6.2.1",
     "@types/react-select": "^3.0.19",
     "@types/react-simple-maps": "^1.0.3",
-    "@types/recharts": "^1.8.14",
+    "@types/recharts": "^1.8.15",
     "@types/webpack-env": "^1.15.2",
     "apollo-boost": "^0.4.9",
     "emotion-theming": "^10.0.27",
