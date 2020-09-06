@@ -10,7 +10,6 @@ const cors = require("cors")
 const passport = require("passport")
 const DiscordStrategy = require("passport-discord").Strategy
 const User = require("./mongoose-models/user")
-const Player = require("./mongoose-models/player")
 const path = require("path")
 const schema = require("./schema")
 const mockUser = require("./utils/mocks")
@@ -52,15 +51,16 @@ passport.use(
         }
       }
 
-      console.log("userToSave", userToSave)
-      User.updateOne(
-        { discord_id: userToSave.discord_id },
-        userToSave,
-        { upsert: true },
-        function (err, user) {
-          return cb(err, userToSave)
-        }
-      )
+      Promise.all([
+        User.updateOne(
+          { discord_id: userToSave.discord_id },
+          userToSave,
+          { upsert: true },
+          function (err, user) {
+            return cb(err, userToSave)
+          }
+        ),
+      ])
     }
   )
 )
