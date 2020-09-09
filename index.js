@@ -8,11 +8,22 @@ const session = require("express-session")
 const MongoStore = require("connect-mongo")(session)
 const cors = require("cors")
 const passport = require("passport")
+const { Model, knexSnakeCaseMappers } = require("objection")
+const Knex = require("knex")
 const DiscordStrategy = require("passport-discord").Strategy
 const User = require("./mongoose-models/user")
 const path = require("path")
 const schema = require("./schema")
 const mockUser = require("./utils/mocks")
+
+const knex = Knex({
+  client: "pg",
+  connection: "postgresql://localhost:5432/postgres",
+
+  ...knexSnakeCaseMappers(),
+})
+
+Model.knex(knex)
 
 mongoose.set("useFindAndModify", false)
 mongoose.set("useCreateIndex", true)
@@ -52,6 +63,21 @@ passport.use(
       }
 
       Promise.all([
+        knex.raw(
+          `? ON CONFLICT (discord_id)
+              DO UPDATE SET
+              username = EXCLUDED.username,
+              discriminator = EXCLUDED.discriminator,
+              discord_avatar = EXCLUDED.discord_avatar`,
+          [
+            knex("users").insert({
+              username: profile.username,
+              discriminator: profile.discriminator,
+              discordId: profile.id,
+              discordAvatar: profile.avatar,
+            }),
+          ]
+        ),
         User.updateOne(
           { discord_id: userToSave.discord_id },
           userToSave,
@@ -61,6 +87,8 @@ passport.use(
           }
         ),
       ])
+        .then((result) => cb(null, userToSave))
+        .catch((err) => cb(err, userToSave))
     }
   )
 )

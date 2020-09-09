@@ -1,19 +1,19 @@
 import * as Knex from "knex"
 
 export async function up(knex: Knex): Promise<void> {
-  return knex.schema.createTable("salmonRunRecordUserRosters", function (
+  return knex.schema.createTable("salmon_run_record_user_rosters", function (
     table
   ) {
-    table.integer("userId").notNullable().references("id").inTable("users")
+    table.integer("user_id").notNullable().references("id").inTable("users")
     table
-      .integer("recordId")
+      .integer("record_id")
       .notNullable()
       .references("id")
-      .inTable("salmonRunRecords")
-    table.unique(["userId", "recordId"])
+      .inTable("salmon_run_records")
+    table.unique(["user_id", "record_id"])
   })
 }
 
 export async function down(knex: Knex): Promise<void> {
-  return knex.schema.dropTable("salmonRunRecordUserRosters")
+  return knex.schema.dropTable("salmon_run_record_user_rosters")
 }

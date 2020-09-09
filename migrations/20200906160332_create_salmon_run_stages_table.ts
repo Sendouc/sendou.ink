@@ -3,7 +3,7 @@ import srMaps = require("../utils/srMaps")
 
 export async function up(knex: Knex): Promise<void> {
   return knex.schema
-    .createTable("salmonRunStages", function (table) {
+    .createTable("salmon_run_stages", function (table) {
       table.increments()
       table.string("name").notNullable().unique()
     })
@@ -13,5 +13,5 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-  return knex.schema.dropTable("salmonRunStages")
+  return knex.schema.dropTable("salmon_run_stages")
 }

@@ -1,48 +1,27 @@
 import * as Knex from "knex"
+import {
+  salmonRunRecordWildcards,
+  salmonRunRecordCategories,
+} from "../utils/enums"
 
 export async function up(knex: Knex): Promise<void> {
-  return knex.schema.createTable("salmonRunRecords", function (table) {
+  return knex.schema.createTable("salmon_run_records", function (table) {
     table.increments()
     table.boolean("approved").notNullable()
-    table.integer("goldenEggCount").notNullable()
-    table.enu("wildcards", ["1_WILDCARD", "4_WILCARDS", "4_GOLDEN_WILDCARDS"])
+    table.integer("golden_egg_count").notNullable()
+    table.enu("wildcards", salmonRunRecordWildcards)
+    table.enu("category", salmonRunRecordCategories).notNullable()
     table
-      .enu("category", [
-        "TOTAL",
-        "TOTAL_NO_NIGHT",
-        "PRINCESS",
-        "NT_NORMAL",
-        "HT_NORMAL",
-        "LT_NORMAL",
-        "NT_RUSH",
-        "HT_RUSH",
-        "LT_RUSH",
-        "NT_FOG",
-        "HT_FOG",
-        "LT_FOG",
-        "NT_GOLDIE",
-        "HT_GOLDIE",
-        "LT_GOLDIE",
-        "NT_GRILLERS",
-        "HT_GRILLERS",
-        "LT_GRILLERS",
-        "NT_MOTHERSHIP",
-        "HT_MOTHERSHIP",
-        "LT_MOTHERSHIP",
-        "LT_COHOCK",
-      ])
-      .notNullable()
-    table
-      .integer("stageId")
+      .integer("stage_id")
       .notNullable()
       .references("id")
-      .inTable("salmonRunStages")
-    table.integer("grizzcoWeaponId").references("id").inTable("weapons")
+      .inTable("salmon_run_stages")
+    table.integer("grizzco_weapon_id").references("id").inTable("weapons")
     table.specificType("links", "TEXT[]")
-    table.timestamp("createdAt").defaultTo(knex.fn.now())
+    table.timestamp("created_at").defaultTo(knex.fn.now())
   })
 }
 
 export async function down(knex: Knex): Promise<void> {
-  return knex.schema.dropTable("salmonRunRecords")
+  return knex.schema.dropTable("salmon_run_records")
 }

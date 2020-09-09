@@ -5,8 +5,8 @@ export async function up(knex: Knex): Promise<void> {
     table.increments()
     table.string("username", 32).notNullable()
     table.string("discriminator", 4).notNullable()
-    table.string("discordId", 18).notNullable().unique()
-    table.string("discordAvatar")
+    table.string("discord_id", 18).notNullable().unique()
+    table.string("discord_avatar")
     //table.string('avatar');
   })
 }
