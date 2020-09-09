@@ -31,7 +31,7 @@ const typeDef = gql`
 
 const resolvers = {
   Mutation: {
-    createSalmonRunRecord: async (root, args) => {
+    createSalmonRunRecord: async (root: any, args: any) => {
       console.log(args)
       return true
     },

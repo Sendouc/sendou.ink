@@ -8,6 +8,7 @@ coverage
 
 # build
 build
+dist
 
 # misc
 xrank_data
