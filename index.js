@@ -39,7 +39,7 @@ passport.use(
       callbackURL,
       scope: ["identify", "connections"],
     },
-    function (accessToken, refreshToken, profile, cb) {
+    function (_accessToken, _refreshToken, profile, cb) {
       const userToSave = {
         username: profile.username,
         discriminator: profile.discriminator,
@@ -76,16 +76,11 @@ passport.use(
             }),
           ]
         ),
-        User.updateOne(
-          { discord_id: userToSave.discord_id },
-          userToSave,
-          { upsert: true },
-          function (err, user) {
-            return cb(err, userToSave)
-          }
-        ),
+        User.updateOne({ discord_id: userToSave.discord_id }, userToSave, {
+          upsert: true,
+        }),
       ])
-        .then((result) => cb(null, userToSave))
+        .then(() => cb(null, userToSave))
         .catch((err) => cb(err, userToSave))
     }
   )
