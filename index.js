@@ -1,4 +1,3 @@
-require("dotenv").config()
 const { ApolloServer } = require("apollo-server-express")
 const mongoose = require("mongoose")
 const express = require("express")
@@ -10,6 +9,7 @@ const cors = require("cors")
 const passport = require("passport")
 const { Model, knexSnakeCaseMappers } = require("objection")
 const Knex = require("knex")
+import knexConfiguration from "./knexfile"
 const DiscordStrategy = require("passport-discord").Strategy
 const User = require("./mongoose-models/user")
 const path = require("path")
@@ -17,9 +17,7 @@ const schema = require("./schema")
 const mockUser = require("./utils/mocks")
 
 const knex = Knex({
-  client: "pg",
-  connection: "postgresql://localhost:5432/postgres",
-
+  ...knexConfiguration,
   ...knexSnakeCaseMappers(),
 })
 

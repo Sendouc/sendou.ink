@@ -1,4 +1,7 @@
+require("dotenv").config()
+
 module.exports = {
   client: "pg",
-  connection: "postgresql://localhost:5432/postgres",
+  connection: process.env.POSTGRESQL_URI,
+  ssl: true,
 }
