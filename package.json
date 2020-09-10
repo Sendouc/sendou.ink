@@ -35,7 +35,7 @@
     "lodash": "^4.17.20",
     "mongoose": "^5.10.3",
     "mongoose-unique-validator": "^2.0.3",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "objection": "^2.2.3",
     "passport": "^0.4.1",
     "passport-discord": "^0.1.4",
