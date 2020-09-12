@@ -1,6 +1,6 @@
 import { Box, FormLabel, Switch, Badge, Flex } from "@chakra-ui/core"
 import { RouteComponentProps, useLocation } from "@reach/router"
-import React, { useState, useContext } from "react"
+import React, { useState, useContext, useEffect } from "react"
 import { Helmet } from "react-helmet-async"
 import useAbilityEffects from "../../hooks/useAbilityEffects"
 import { Ability, Weapon, AnalyzerBuild } from "../../types"
@@ -27,7 +27,7 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
   const { themeColor, grayWithShade } = useContext(MyThemeContext)
   const { t } = useTranslation()
   const location = useLocation()
-  const [build, setBuild] = useState<AnalyzerBuildNoWeapon>(getBuildFromUrl())
+  const [build, setBuild] = useState<AnalyzerBuildNoWeapon>({ ...defaultBuild })
   const [otherBuild, setOtherBuild] = useState<AnalyzerBuildNoWeapon>({
     ...defaultBuild,
   })
@@ -54,13 +54,16 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
   )
 
   function getBuildFromUrl() {
-    const buildToReturn = { ...defaultBuild }
+    const buildToReturn: AnalyzerBuild = {
+      ...defaultBuild,
+      weapon: "Splattershot Jr.",
+    }
     const decoded = new URLSearchParams(location.search)
 
     for (const [key, value] of decoded) {
       switch (key) {
         case "weapon":
-          setWeapon(value as Weapon)
+          buildToReturn.weapon = value as Weapon
           break
         case "headgear":
         case "clothing":
@@ -72,6 +75,13 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
 
     return buildToReturn
   }
+
+  useEffect(() => {
+    const { weapon, ...buildFromUrl } = getBuildFromUrl()
+
+    setWeapon(weapon)
+    setBuild(buildFromUrl)
+  }, [])
 
   return (
     <>

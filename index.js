@@ -1,4 +1,3 @@
-require("dotenv").config()
 const { ApolloServer } = require("apollo-server-express")
 const mongoose = require("mongoose")
 const express = require("express")
@@ -8,12 +7,21 @@ const session = require("express-session")
 const MongoStore = require("connect-mongo")(session)
 const cors = require("cors")
 const passport = require("passport")
+const { Model, knexSnakeCaseMappers } = require("objection")
+const Knex = require("knex")
+import knexConfiguration from "./knexfile"
 const DiscordStrategy = require("passport-discord").Strategy
 const User = require("./mongoose-models/user")
-const Player = require("./mongoose-models/player")
 const path = require("path")
 const schema = require("./schema")
 const mockUser = require("./utils/mocks")
+
+const knex = Knex({
+  ...knexConfiguration,
+  ...knexSnakeCaseMappers(),
+})
+
+Model.knex(knex)
 
 mongoose.set("useFindAndModify", false)
 mongoose.set("useCreateIndex", true)
@@ -31,7 +39,7 @@ passport.use(
       callbackURL,
       scope: ["identify", "connections"],
     },
-    function (accessToken, refreshToken, profile, cb) {
+    function (_accessToken, _refreshToken, profile, cb) {
       const userToSave = {
         username: profile.username,
         discriminator: profile.discriminator,
@@ -52,15 +60,28 @@ passport.use(
         }
       }
 
-      console.log("userToSave", userToSave)
-      User.updateOne(
-        { discord_id: userToSave.discord_id },
-        userToSave,
-        { upsert: true },
-        function (err, user) {
-          return cb(err, userToSave)
-        }
-      )
+      Promise.all([
+        knex.raw(
+          `? ON CONFLICT (discord_id)
+              DO UPDATE SET
+              username = EXCLUDED.username,
+              discriminator = EXCLUDED.discriminator,
+              discord_avatar = EXCLUDED.discord_avatar`,
+          [
+            knex("users").insert({
+              username: profile.username,
+              discriminator: profile.discriminator,
+              discordId: profile.id,
+              discordAvatar: profile.avatar,
+            }),
+          ]
+        ),
+        User.updateOne({ discord_id: userToSave.discord_id }, userToSave, {
+          upsert: true,
+        }),
+      ])
+        .then(() => cb(null, userToSave))
+        .catch((err) => cb(err, userToSave))
     }
   )
 )
@@ -175,7 +196,7 @@ app.get("/logout", function (req, res) {
 })
 
 app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "build", "index.html"))
+  res.sendFile(path.resolve(__dirname, "../build", "index.html"))
 })
 
 const PORT = process.env.PORT || 3001

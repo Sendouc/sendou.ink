@@ -23,7 +23,7 @@ const About: React.FC<RouteComponentProps> = () => {
             <Trans i18nKey="footer;createIssue">
               Create an issue on{" "}
               <Link
-                href="https://github.com/Sendouc/sendou-ink/issues"
+                href="https://github.com/Sendouc/sendou.ink/issues"
                 isExternal
                 color={themeColorWithShade}
               >

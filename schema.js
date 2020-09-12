@@ -27,6 +27,10 @@ const { Plus, plusResolvers } = require("./graphql-schemas/plus")
 const { Team, teamResolvers } = require("./graphql-schemas/team")
 const { General, generalResolvers } = require("./graphql-schemas/general")
 const { Banner, bannerResolvers } = require("./graphql-schemas/banner")
+const {
+  SalmonRunRecord,
+  salmonRunRecordResolvers,
+} = require("./graphql-schemas/salmonRunRecord")
 
 const Query = gql`
   type Query {
@@ -62,6 +66,7 @@ const schema = makeExecutableSchema({
     Team,
     General,
     Banner,
+    SalmonRunRecord,
   ],
   resolvers: merge(
     resolvers,
@@ -80,7 +85,8 @@ const schema = makeExecutableSchema({
     plusResolvers,
     teamResolvers,
     generalResolvers,
-    bannerResolvers
+    bannerResolvers,
+    salmonRunRecordResolvers
   ),
 })
 

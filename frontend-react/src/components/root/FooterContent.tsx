@@ -30,7 +30,7 @@ const FooterContent: React.FC = () => {
         <a href="https://discord.gg/sendou">
           <Icon name={"discord" as string} h="30px" w="30px" m="1em" />
         </a>
-        <a href="https://github.com/Sendouc/sendou-ink">
+        <a href="https://github.com/Sendouc/sendou.ink">
           <Box as={FaGithub} size="30px" m="1em" />
         </a>
       </Flex>

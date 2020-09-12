@@ -1,8 +1,4 @@
-<p align="center">
-<img src="https://github.com/Sendouc/sendou-ink/blob/master/sink-squid.png">
-</p>
-
-[![Discord Server](https://discordapp.com/api/guilds/407936403356516365/embed.png)](https://discord.gg/J6NqUvt)
+[![Discord Server](https://discordapp.com/api/guilds/299182152161951744/embed.png)](https://discord.gg/sendou)
 
 Goal of sendou.ink is to provide useful tools and resources for the competitive Splatoon community.
 
@@ -36,10 +32,6 @@ This site was originally a full stack web development school project. Since I ha
 🦑 Browse through detailed tournament results
 
 🦑 Choose between light and dark mode as well as 10 different accent colors
-
-## Trello
-
-I use a [Trello board](https://trello.com/b/P46kMiY9/sendouink) to keep track of the things I still need to do and that are in progress. Anyone is free to check it out to see what bugs I am aware of as well as future plans for sendou.ink.
 
 ## GraphQL
 
