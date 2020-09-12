@@ -15,6 +15,7 @@ import { Stage } from "../../types"
 import { mapIcons } from "../../assets/imageImports"
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa"
 import IconButton from "../elements/IconButton"
+import { modeIconMap } from "../../assets/icons"
 
 interface MaplistCardProps {
   maplist: Stage[]
@@ -39,6 +40,9 @@ const MaplistCard: React.FC<MaplistCardProps> = ({
     colorMode,
     themeColorWithShade,
   } = useContext(MyThemeContext)
+
+  const modeIconKey = modeShort.toUpperCase() as "SZ" | "TC" | "RM" | "CB"
+  const ModeIcon = modeIconMap[modeIconKey]
 
   const votedMaps = voteCounts.reduce((acc, cur) => {
     const maxScore =
@@ -68,12 +72,7 @@ const MaplistCard: React.FC<MaplistCardProps> = ({
         w="350px"
       >
         <Heading textAlign="center" mb="0.5em" color={themeColorHex}>
-          <Icon
-            name={modeShort as any}
-            color={themeColorWithShade}
-            h="2em"
-            w="2em"
-          />
+          <ModeIcon color={themeColorWithShade} h="2em" w="2em" />
         </Heading>
         <Flex flexDirection="column" justifyContent="center" flexWrap="wrap">
           {votedMaps.map((stage) => {

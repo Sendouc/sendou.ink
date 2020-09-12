@@ -27,6 +27,7 @@ import GearImage from "../builds/GearImage"
 import SplatnetIcon from "../common/SplatnetIcon"
 import { Helmet } from "react-helmet-async"
 import { useTranslation } from "react-i18next"
+import { modeIconMap } from "../../assets/icons"
 
 interface DraftCupDetailsProps {
   id?: string
@@ -90,6 +91,8 @@ const DetailedMapCard: React.FC<DetailedMapCardProps> = ({
   const minutes = Math.floor(mapDetails.duration / 60)
   const seconds = mapDetails.duration - minutes * 60
 
+  const ModeIcon = modeIconMap[mapDetails.mode]
+
   return (
     <Flex
       rounded="lg"
@@ -111,12 +114,7 @@ const DetailedMapCard: React.FC<DetailedMapCardProps> = ({
         <Box color={themeColorWithShade}>{gameNumber}.</Box>
         <Avatar src={mapIcons[mapDetails.stage]} size="lg" my="5px" />
         {t("game;" + mapDetails.stage)}
-        <Icon
-          name={mapDetails.mode.toLowerCase() as any}
-          color={themeColorWithShade}
-          w="2em"
-          h="2em"
-        />
+        <ModeIcon color={themeColorWithShade} w="2em" h="2em" />
         <Box color={grayWithShade}>{`${minutes}:${
           seconds > 9 ? "" : "0"
         }${seconds}`}</Box>

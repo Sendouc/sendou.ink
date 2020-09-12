@@ -13,6 +13,7 @@ import Button from "../elements/Button"
 import Markdown from "../elements/Markdown"
 import TournamentModal from "./TournamentModal"
 import { useTranslation } from "react-i18next"
+import { DiscordIcon } from "../../assets/icons"
 
 interface TournamentInfoProps {
   tournament: CompetitiveFeedEvent
@@ -70,7 +71,7 @@ const TournamentInfo: React.FC<TournamentInfoProps> = ({
         <Flex flexWrap="wrap" my="1em">
           <Box mb="1em" mr="1em">
             <a href={tournament.discord_invite_url}>
-              <Button outlined icon={"discord" as any} width="150px">
+              <Button outlined icon={<DiscordIcon />} width="150px">
                 {t("calendar;Join Discord")}
               </Button>
             </a>

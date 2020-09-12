@@ -17,6 +17,7 @@ import WeaponImage from "../common/WeaponImage"
 import useBreakPoints from "../../hooks/useBreakPoints"
 import { useTranslation } from "react-i18next"
 import { TFunctionResult } from "i18next"
+import { modeIconMap } from "../../assets/icons"
 
 interface ModesAccordionProps {
   placements: Placement[]
@@ -140,16 +141,13 @@ const ModesAccordion: React.FC<ModesAccordionProps> = ({ placements }) => {
       {(["sz", "tc", "rm", "cb"] as const)
         .filter((key) => allModesTabsData.hasOwnProperty(key))
         .map((key) => {
+          const modeIconKey = key.toUpperCase() as "SZ" | "TC" | "RM" | "CB"
+          const ModeIcon = modeIconMap[modeIconKey]
           return (
             <AccordionItem key={key}>
               <AccordionButton>
                 <AccordionIcon h="2em" w="2em" mr="1em" />
-                <Icon
-                  name={key as any}
-                  color={themeColorWithShade}
-                  w="5em"
-                  h="5em"
-                />{" "}
+                <ModeIcon color={themeColorWithShade} w="5em" h="5em" />{" "}
                 <Grid
                   ml="50px"
                   gridTemplateColumns="repeat(3, 1fr)"

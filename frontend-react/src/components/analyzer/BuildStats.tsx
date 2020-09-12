@@ -127,21 +127,17 @@ const BuildStats: React.FC<BuildStatsProps> = ({
           </Box>
         </Flex>
         <Progress
-          color="orange"
+          colorScheme="orange"
           height={otherEffect ? "16px" : "32px"}
           value={progressBarValue}
-          hasStripe
-          isAnimated
           bg={colorMode === "dark" ? "#464b64" : `orange.100`}
         />
         {otherEffect && (
           <>
             <Progress
-              color="blue"
+              colorScheme="blue"
               height="16px"
               value={otherProgressBarValue}
-              hasStripe
-              isAnimated
               bg={colorMode === "dark" ? "#464b64" : `blue.100`}
             />
             <Flex justifyContent="space-between">

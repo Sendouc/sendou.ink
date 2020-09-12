@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next"
 import { Link } from "@reach/router"
 import { FaGithub } from "react-icons/fa"
 import MyThemeContext from "../../themeContext"
+import { DiscordIcon } from "../../assets/icons"
 
 const FooterContent: React.FC = () => {
   const { t } = useTranslation()
@@ -28,7 +29,7 @@ const FooterContent: React.FC = () => {
       </Flex>
       <Flex alignItems="center" flexWrap="wrap" justifyContent="center">
         <a href="https://discord.gg/sendou">
-          <Icon name={"discord" as string} h="30px" w="30px" m="1em" />
+          <DiscordIcon h="30px" w="30px" m="1em" />
         </a>
         <a href="https://github.com/Sendouc/sendou.ink">
           <Box as={FaGithub} size="30px" m="1em" />

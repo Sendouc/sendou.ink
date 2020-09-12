@@ -25,6 +25,7 @@ import Button from "../elements/Button"
 import "./Top500BrowserPage.css"
 import Top500Forms from "./Top500Forms"
 import { useTranslation, Trans } from "react-i18next"
+import { modeIconMap } from "../../assets/icons"
 
 const getLocalizedMonth = (month: number, locale: string) => {
   const dateForLocalization = new Date()
@@ -143,74 +144,78 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {placements.map((placement) => (
-                  <Tr key={placement.id}>
-                    <Td>
-                      <Flex
-                        alignItems="center"
-                        cursor={
-                          placement.player?.discord_id ? "pointer" : undefined
-                        }
-                      >
-                        <Box
-                          as="span"
-                          color={
-                            placement.player?.discord_id
-                              ? themeColorWithShade
-                              : undefined
+                {placements.map((placement) => {
+                  const modes = ["SZ", "SZ", "TC", "RM", "CB"] as const
+                  const ModeIcon = modeIconMap[modes[placement.mode]]
+                  return (
+                    <Tr key={placement.id}>
+                      <Td>
+                        <Flex
+                          alignItems="center"
+                          cursor={
+                            placement.player?.discord_id ? "pointer" : undefined
                           }
                         >
-                          {placement.player?.discord_id ? (
-                            <Link to={`/u/${placement.player.discord_id}`}>
-                              {placement.name}
-                            </Link>
-                          ) : (
-                            <>{placement.name}</>
-                          )}
-                        </Box>
-                      </Flex>
-                    </Td>
-                    <Td>
-                      <Flex alignItems="center">
-                        <Box
-                          ml={isSmall ? undefined : "auto"}
-                          mr={isSmall ? undefined : "auto"}
+                          <Box
+                            as="span"
+                            color={
+                              placement.player?.discord_id
+                                ? themeColorWithShade
+                                : undefined
+                            }
+                          >
+                            {placement.player?.discord_id ? (
+                              <Link to={`/u/${placement.player.discord_id}`}>
+                                {placement.name}
+                              </Link>
+                            ) : (
+                              <>{placement.name}</>
+                            )}
+                          </Box>
+                        </Flex>
+                      </Td>
+                      <Td>
+                        <Flex alignItems="center">
+                          <Box
+                            ml={isSmall ? undefined : "auto"}
+                            mr={isSmall ? undefined : "auto"}
+                          >
+                            <WpnImage
+                              englishName={placement.weapon as Weapon}
+                              size="SMALL"
+                            />
+                          </Box>
+                        </Flex>
+                      </Td>
+                      <Td>{placement.x_power}</Td>
+                      <Td>{placement.rank}</Td>
+                      <Td>
+                        <ModeIcon color={themeColorWithShade} h="2em" w="2em" />
+                      </Td>
+                      <Td>
+                        {getLocalizedMonth(placement.month, i18n.language)}
+                      </Td>
+                      <Td>{placement.year}</Td>
+                      <Td>
+                        <Badge
+                          cursor="pointer"
+                          onClick={() => {
+                            setForms({
+                              unique_id: placement.unique_id,
+                              page: 1,
+                            })
+                            setQuery(
+                              { unique_id: placement.unique_id, page: 1 },
+                              "replace"
+                            )
+                          }}
                         >
-                          <WpnImage
-                            englishName={placement.weapon as Weapon}
-                            size="SMALL"
-                          />
-                        </Box>
-                      </Flex>
-                    </Td>
-                    <Td>{placement.x_power}</Td>
-                    <Td>{placement.rank}</Td>
-                    <Td>
-                      <Icon
-                        name={modesShort[placement.mode] as any}
-                        color={themeColorWithShade}
-                        h="2em"
-                        w="2em"
-                      />
-                    </Td>
-                    <Td>{getLocalizedMonth(placement.month, i18n.language)}</Td>
-                    <Td>{placement.year}</Td>
-                    <Td>
-                      <Badge
-                        cursor="pointer"
-                        onClick={() => {
-                          setForms({ unique_id: placement.unique_id, page: 1 })
-                          setQuery(
-                            { unique_id: placement.unique_id, page: 1 },
-                            "replace"
-                          )
-                        }}
-                      >
-                        {t("xsearch;ID")}
-                      </Badge>
-                    </Td>
-                  </Tr>
-                ))}
+                          {t("xsearch;ID")}
+                        </Badge>
+                      </Td>
+                    </Tr>
+                  )
+                })}
               </Tbody>
             </Table>
           </Box>

@@ -146,8 +146,6 @@ const TranslatePage: React.FC<RouteComponentProps> = () => {
                   {key}
                   <Progress
                     mt="1em"
-                    hasStripe
-                    isAnimated
                     color={percentage === 100 ? "green" : "yellow"}
                     size="sm"
                     value={percentage}

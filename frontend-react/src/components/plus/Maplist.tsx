@@ -3,6 +3,7 @@ import { Heading, Flex, Box, Avatar, Icon, AvatarBadge } from "@chakra-ui/core"
 import { mapIcons } from "../../assets/imageImports"
 import MyThemeContext from "../../themeContext"
 import { Stage } from "../../types"
+import { modeIconMap } from "../../assets/icons"
 
 interface MaplistCardProps {
   modeShort: string
@@ -16,6 +17,10 @@ const MaplistCard: React.FC<MaplistCardProps> = ({
   newMaps,
 }) => {
   const { themeColorHex, themeColorWithShade } = useContext(MyThemeContext)
+
+  const modeIconKey = modeShort.toUpperCase() as "SZ" | "TC" | "RM" | "CB"
+  const ModeIcon = modeIconMap[modeIconKey]
+
   return (
     <Flex
       flexDirection="column"
@@ -28,12 +33,7 @@ const MaplistCard: React.FC<MaplistCardProps> = ({
       w="350px"
     >
       <Heading textAlign="center" mb="0.5em" color={themeColorHex}>
-        <Icon
-          name={modeShort as any}
-          color={themeColorWithShade}
-          w="2em"
-          h="2em"
-        />
+        <ModeIcon color={themeColorWithShade} w="2em" h="2em" />
       </Heading>
       <Flex alignItems="center" justifyContent="center" flexWrap="wrap">
         {stages.map((stage) => {

@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "startprod": "cross-env USE_PRODUCTION_DB=TRUE ts-node-dev index.js",
-    "withprod": "cross-env LOGGED_IN=TRUE USE_PRODUCTION_DB=TRUE node index.js",
+    "withprod": "cross-env LOGGED_IN=TRUE USE_PRODUCTION_DB=TRUE ts-node-dev index.js",
     "withdev": "cross-env LOGGED_IN=TRUE node index.js",
     "watchdev": "cross-env LOGGED_IN=TRUE nodemon index.js",
     "watchprod": "cross-env LOGGED_IN=TRUE USE_PRODUCTION_DB=TRUE nodemon index.js",

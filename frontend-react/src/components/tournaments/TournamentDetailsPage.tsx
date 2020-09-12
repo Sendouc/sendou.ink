@@ -27,6 +27,7 @@ import {
 import { stringify } from "querystring"
 import { removeFalsy } from "../../utils/helperFunctions"
 import { useTranslation } from "react-i18next"
+import { modeIconMap } from "../../assets/icons"
 
 interface TournamentDetailsPageProps {
   id?: string
@@ -162,6 +163,7 @@ const TournamentDetailsPage: React.FC<
         </Box>
       </Flex>
       {tournament.rounds.map((round) => {
+        const ModeIcon = modeIconMap[round.mode]
         return (
           <Box key={`${round.round_name}_${round.game_number}`} mt="1em">
             {round.game_number === 1 && (
@@ -198,12 +200,7 @@ const TournamentDetailsPage: React.FC<
                 <Box color={themeColorWithShade}>{round.game_number}.</Box>
                 <Avatar src={mapIcons[round.stage]} size="lg" my="5px" />
                 {t("game;" + round.stage)}
-                <Icon
-                  name={round.mode.toLowerCase() as any}
-                  color={themeColorWithShade}
-                  w="2em"
-                  h="2em"
-                />
+                <ModeIcon color={themeColorWithShade} w="2em" h="2em" />
               </Flex>
               <Flex mt="2em" flexDirection="column" alignItems="center">
                 <Flex
