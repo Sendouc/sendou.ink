@@ -1,7 +1,7 @@
 const salmonRunRecordWildcards = [
-  "1_WILDCARD",
-  "4_WILCARDS",
-  "4_GOLDEN_WILDCARDS",
+  "ONE_WILDCARD",
+  "FOUR_WILCARDS",
+  "FOUR_GOLDEN_WILDCARDS",
 ]
 
 const salmonRunRecordCategories = [

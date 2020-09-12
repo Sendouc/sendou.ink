@@ -1,6 +1,6 @@
-const { Model } = require("objection")
+import * as Objection from "objection"
 
-class User extends Model {
+class User extends Objection.Model {
   static get tableName() {
     return "users"
   }
