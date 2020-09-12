@@ -4,11 +4,36 @@ import {
   salmonRunRecordCategories,
 } from "../utils/enums"
 import salmonRunStages from "../utils/srMaps"
+import Weapon from "./Weapon"
+import User from "./User"
+import SalmonRunStage from "./SalmonRunStage"
+
+function isValidURL(str: string) {
+  var pattern = new RegExp(
+    "^(https?:\\/\\/)?" +
+      "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" +
+      "((\\d{1,3}\\.){3}\\d{1,3}))" +
+      "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" +
+      "(\\?[;&a-z\\d%_.~+=-]*)?" +
+      "(\\#[-a-z\\d_]*)?$",
+    "i"
+  )
+  return !!pattern.test(str)
+}
 
 class SalmonRunRecord extends Objection.Model {
-  static get tableName() {
-    return "salmonRunRecords"
-  }
+  static tableName = "salmonRunRecords"
+
+  id!: number
+  approved!: boolean
+  goldenEggCount!: number
+  wildcards!: string
+  category!: string
+  links!: string[]
+  stageId!: number
+  grizzcoWeaponId?: number
+  weapons?: Weapon[]
+  users!: User[]
 
   static get jsonSchema() {
     return {
@@ -39,11 +64,53 @@ class SalmonRunRecord extends Objection.Model {
     }
   }
 
-  static get relationMappings() {
-    const User = require("./User")
-    const Weapon = require("./Weapon")
-    const SalmonRunStage = require("./SalmonRunStage")
+  $beforeInsert() {
+    const weaponsLen = this.weapons ? this.weapons.length : 0
 
+    if (this.wildcards) {
+      if (!this.wildcards.includes("GOLDEN") && !this.grizzcoWeaponId) {
+        throw new Objection.ValidationError({
+          type: "ModelValidation",
+          message: "grizzco weapon needs to be defined with green wildcards",
+        })
+      }
+
+      if (this.wildcards.includes("ONE") && weaponsLen !== 3) {
+        throw new Objection.ValidationError({
+          type: "ModelValidation",
+          message: "three weapons needed with one wildcard",
+        })
+      }
+
+      if (this.wildcards.includes("FOUR") && weaponsLen !== 0) {
+        throw new Objection.ValidationError({
+          type: "ModelValidation",
+          message: "no weapons allowed with four wildcards",
+        })
+      }
+    } else if (weaponsLen !== 4) {
+      throw new Objection.ValidationError({
+        type: "ModelValidation",
+        message: "four weapons needed with no wildcards",
+      })
+    } else if (this.grizzcoWeaponId) {
+      throw new Objection.ValidationError({
+        type: "ModelValidation",
+        message: "grizzco weapon not allowed without wildcards defined",
+      })
+    }
+
+    for (const link of this.links) {
+      if (!isValidURL(link)) {
+        throw new Objection.ValidationError({
+          type: "ModelValidation",
+          message: "invalid link provided",
+        })
+      }
+    }
+  }
+
+  static get relationMappings() {
     return {
       grizzcoWeapon: {
         relation: Objection.Model.BelongsToOneRelation,
@@ -96,4 +163,4 @@ class SalmonRunRecord extends Objection.Model {
   }
 }
 
-module.exports = SalmonRunRecord
+export default SalmonRunRecord

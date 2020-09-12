@@ -37,30 +37,32 @@ const typeDef = gql`
 
 const resolvers = {
   Mutation: {
-    createSalmonRunRecord: async (_, { input }) => {
-      await SalmonRunRecord.query().insertGraph(
-        {
-          approved: false,
-          goldenEggCount: input.goldenEggCount,
-          wildcards: input.wildcards,
-          category: input.category,
-          links: input.links,
-          stageId: salmonRunStages.indexOf(input.stage) + 1,
-          grizzcoWeaponId: input.grizzcoWeapon
-            ? grizzcoWeapons.indexOf(input.grizzcoWeapon) + 1 + 139
-            : undefined,
+    createSalmonRunRecord: async (_: any, { input }: any) => {
+      await SalmonRunRecord.transaction((trx) =>
+        SalmonRunRecord.query(trx).insertGraph(
+          {
+            approved: false,
+            goldenEggCount: input.goldenEggCount,
+            wildcards: input.wildcards,
+            category: input.category,
+            links: input.links,
+            stageId: salmonRunStages.indexOf(input.stage) + 1,
+            grizzcoWeaponId: input.grizzcoWeapon
+              ? grizzcoWeapons.indexOf(input.grizzcoWeapon) + 1 + 139
+              : undefined,
 
-          users: input.rosterUserIds
-            ? input.rosterUserIds.map((id) => ({ id }))
-            : undefined,
+            users: input.rosterUserIds
+              ? input.rosterUserIds.map((id: number) => ({ id }))
+              : undefined,
 
-          weapons: input.weaponRotation
-            ? input.weaponRotation.map((weapon) => ({
-                id: weapons.indexOf(weapon) + 1,
-              }))
-            : undefined,
-        },
-        { relate: true }
+            weapons: input.weaponRotation
+              ? input.weaponRotation.map((weapon: string) => ({
+                  id: weapons.indexOf(weapon) + 1,
+                }))
+              : undefined,
+          },
+          { relate: true }
+        )
       )
       return true
     },

@@ -1,9 +1,7 @@
 import * as Objection from "objection"
 
 class Weapon extends Objection.Model {
-  static get tableName() {
-    return "weapons"
-  }
+  static tableName = "weapons"
 }
 
-module.exports = Weapon
+export default Weapon

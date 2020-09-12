@@ -1,9 +1,7 @@
 import * as Objection from "objection"
 
 class User extends Objection.Model {
-  static get tableName() {
-    return "users"
-  }
+  static tableName = "users"
 }
 
-module.exports = User
+export default User

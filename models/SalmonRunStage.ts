@@ -1,9 +1,7 @@
 import * as Objection from "objection"
 
 class SalmonRunStage extends Objection.Model {
-  static get tableName() {
-    return "salmonRunStage"
-  }
+  static tableName = "salmonRunStages"
 }
 
-module.exports = SalmonRunStage
+export default SalmonRunStage
