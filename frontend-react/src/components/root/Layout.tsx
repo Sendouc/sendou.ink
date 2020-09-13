@@ -21,7 +21,15 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const { darkerBgColor, bgColor, textColor } = useContext(MyThemeContext)
+  const {
+    darkerBgColor,
+    bgColor,
+    textColor,
+    colorMode,
+    themeColorHex,
+    themeColorHexLighter,
+    themeColorWithShade,
+  } = useContext(MyThemeContext)
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   useEffect(() => {
@@ -48,6 +56,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         m={4}
         size="lg"
         display={["flex", null, "none"]}
+        boxShadow="0px 0px 16px 6px rgba(0,0,0,0.1)"
       >
         Open
       </IconButton>
