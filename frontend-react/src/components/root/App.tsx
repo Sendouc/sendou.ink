@@ -1,12 +1,11 @@
-import React, { useEffect } from "react"
-import "./App.css"
 import { useColorMode, useTheme as useChakraTheme } from "@chakra-ui/core"
-import Routes from "./Routes"
 import useLocalStorage from "@rehooks/local-storage"
-import { ThemeColor } from "../../types"
+import React, { useEffect } from "react"
 import { MyThemeProvider } from "../../themeContext"
-import { Theme } from "../../types"
+import { Theme, ThemeColor } from "../../types"
+import "./App.css"
 import Layout from "./Layout"
+import Routes from "./Routes"
 
 const App: React.FC = () => {
   const chakraTheme = useChakraTheme()
@@ -28,7 +27,7 @@ const App: React.FC = () => {
       colorMode: "light",
       bgColor: "#eff0f3",
       darkerBgColor: "#FFFAFA",
-      textColor: "#0d0d0d",
+      textColor: "blackAlpha.900",
       borderStyle: "1px solid rgba(0, 0, 0, .2)",
       themeColorWithShade: `${themeColor}.500`,
       grayWithShade: "gray.600",
@@ -40,7 +39,7 @@ const App: React.FC = () => {
       colorMode: "dark",
       bgColor: "#031e3e",
       darkerBgColor: "#0e2a56",
-      textColor: "#fffffe",
+      textColor: "whiteAlpha.900",
       borderStyle: "1px solid rgba(255, 255, 255, .2)",
       themeColorWithShade: `${themeColor}.200`,
       grayWithShade: "gray.300",
@@ -55,11 +54,6 @@ const App: React.FC = () => {
     if (!favicon) return
     favicon.href = `/favicon_${themeColor}.png`
   }, [themeColorFromStorage, themeColor])
-
-  /* @TODO
-  color={theme[colorMode].textColor}
-        bg={theme[colorMode].bgColor}
-  */
 
   return (
     <MyThemeProvider value={theme[colorMode]}>

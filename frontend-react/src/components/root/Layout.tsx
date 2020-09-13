@@ -9,7 +9,7 @@ import {
   IconButton,
   useDisclosure,
 } from "@chakra-ui/core"
-import React, { useContext } from "react"
+import React, { useContext, useEffect } from "react"
 import { FiMenu } from "react-icons/fi"
 import MyThemeContext from "../../themeContext"
 import Footer from "./Footer"
@@ -24,11 +24,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { darkerBgColor, bgColor, textColor } = useContext(MyThemeContext)
   const { isOpen, onOpen, onClose } = useDisclosure()
 
+  useEffect(() => {
+    document.body.style.backgroundColor = bgColor
+  }, [bgColor])
+
   return (
     <>
       <TopNav />
       <IconNavBar />
-      <Box color={textColor} bg={bgColor} minH="100vh">
+      <Box color={textColor} minH="100vh" pt="1rem">
         <Container maxWidth="80ch">{children}</Container>
         <Footer />
       </Box>
