@@ -1192,7 +1192,17 @@
     "Log out": "Log out",
     "Log in via Discord": "Login via Discord",
     "Choose language": "Choose language",
-    "Choose theme": "Choose theme"
+    "Choose theme": "Choose theme",
+    "Gray": "Gray",
+    "Red": "Red",
+    "Orange": "Orange",
+    "Yellow": "Yellow",
+    "Green": "Green",
+    "Teal": "Teal",
+    "Blue": "Blue",
+    "Cyan": "Cyan",
+    "Purple": "Purple",
+    "Pink": "Pink"
   },
   "home": {
     "Competitive Splatoon Hub": "Competitive Splatoon Hub",

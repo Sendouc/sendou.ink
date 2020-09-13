@@ -53,7 +53,7 @@ const TopNav = () => {
       p={1}
     >
       <Suspense fallback={null}>
-        <Box>
+        <Flex alignItems="center">
           <IconButton
             aria-label={`Switch to ${
               colorMode === "light" ? "dark" : "light"
@@ -64,11 +64,10 @@ const TopNav = () => {
             onClick={toggleColorMode}
             icon={colorMode === "light" ? <FiSun /> : <FiMoon />}
             borderRadius="50%"
-            mr="0.5rem"
           />
           <ColorSelector />
           <LanguageSelector />
-        </Box>
+        </Flex>
         <Box
           fontFamily="Rubik, sans-serif"
           color="gray.600"

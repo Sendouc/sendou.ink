@@ -33,16 +33,15 @@ export const LanguageSelector = () => {
 
   return (
     <Menu>
-      <MenuButton>
-        <IconButton
-          aria-label="Switch language"
-          variant="ghost"
-          color="current"
-          fontSize="20px"
-          icon={<FiGlobe />}
-          borderRadius="50%"
-        />
-      </MenuButton>
+      <MenuButton
+        as={IconButton}
+        aria-label="Switch language"
+        variant="ghost"
+        color="current"
+        fontSize="20px"
+        icon={<FiGlobe />}
+        borderRadius="50%"
+      />
       <MenuList bg={darkerBgColor}>
         <MenuOptionGroup
           title={t("navigation;Choose language")}
@@ -50,6 +49,7 @@ export const LanguageSelector = () => {
         >
           {languages.map((lang) => (
             <MenuItemOption
+              key={lang.code}
               value={lang.code}
               onClick={() => i18n.changeLanguage(lang.code)}
             >

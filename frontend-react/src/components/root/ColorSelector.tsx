@@ -1,5 +1,6 @@
 import {
   Box,
+  Flex,
   Menu,
   MenuButton,
   MenuItemOption,
@@ -15,16 +16,16 @@ import MyThemeContext from "../../themeContext"
 import { themeColors as choices } from "../../utils/lists"
 
 export const themeColors = [
-  "gray",
-  "red",
-  "orange",
-  "yellow",
-  "green",
-  "teal",
-  "blue",
-  "cyan",
-  "purple",
-  "pink",
+  "Gray",
+  "Red",
+  "Orange",
+  "Yellow",
+  "Green",
+  "Teal",
+  "Blue",
+  "Cyan",
+  "Purple",
+  "Pink",
 ] as const
 
 const ColorSelector = () => {
@@ -44,16 +45,16 @@ const ColorSelector = () => {
 
   return (
     <Menu>
-      <MenuButton>
-        <Box
-          cursor="pointer"
-          height="20px"
-          width="20px"
-          backgroundColor={themeColorHex}
-          borderRadius="50%"
-          mx="10px"
-        />
-      </MenuButton>
+      <MenuButton
+        as={Box}
+        cursor="pointer"
+        height="20px"
+        width="20px"
+        backgroundColor={themeColorHex}
+        borderRadius="50%"
+        display="inline-block"
+        mx="0.5rem"
+      />
       <MenuList bg={darkerBgColor}>
         <MenuOptionGroup
           title={t("navigation;Choose theme")}
@@ -61,19 +62,22 @@ const ColorSelector = () => {
         >
           {hexCodes.map((hexCode, i) => (
             <MenuItemOption
+              key={hexCode}
               value={hexCode}
               onClick={() => handleColorChoice(hexCode)}
             >
-              <Box
-                cursor="pointer"
-                height="20px"
-                width="20px"
-                backgroundColor={hexCode}
-                borderRadius="50%"
-                mx="10px"
-                display="inline-block"
-              />
-              {themeColors[i]}
+              <Flex alignItems="center">
+                <Box
+                  cursor="pointer"
+                  height="20px"
+                  width="20px"
+                  backgroundColor={hexCode}
+                  borderRadius="50%"
+                  mx="10px"
+                  display="inline-block"
+                />
+                <Box>{t(`navigation;${themeColors[i]}`)}</Box>
+              </Flex>
             </MenuItemOption>
           ))}
         </MenuOptionGroup>

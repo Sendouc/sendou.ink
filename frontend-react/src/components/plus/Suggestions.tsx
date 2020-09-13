@@ -1,35 +1,35 @@
-import React, { useContext, useState } from "react"
 import { useQuery } from "@apollo/react-hooks"
-import { SUGGESTIONS } from "../../graphql/queries/suggestions"
-import Loading from "../common/Loading"
-import Error from "../common/Error"
-import { VOUCHES } from "../../graphql/queries/vouches"
-import UserAvatar from "../common/UserAvatar"
-import { UserLean } from "../../types"
 import {
-  Heading,
-  Grid,
+  Badge,
   Box,
   Flex,
-  Popover,
-  PopoverTrigger,
+  Grid,
+  Heading,
   IconButton,
-  PopoverContent,
-  PopoverBody,
+  Popover,
   PopoverArrow,
-  Tabs,
-  TabList,
-  TabPanels,
+  PopoverBody,
+  PopoverContent,
+  PopoverTrigger,
   Tab,
+  TabList,
   TabPanel,
-  Badge,
+  TabPanels,
+  Tabs,
 } from "@chakra-ui/core"
 import { Link } from "@reach/router"
-import MyThemeContext from "../../themeContext"
+import React, { useContext, useState } from "react"
 import { IoIosChatbubbles } from "react-icons/io"
+import { SUGGESTIONS } from "../../graphql/queries/suggestions"
+import { VOUCHES } from "../../graphql/queries/vouches"
+import useBreakPoints from "../../hooks/useBreakPoints"
+import MyThemeContext from "../../themeContext"
+import { UserLean } from "../../types"
+import Error from "../common/Error"
+import Loading from "../common/Loading"
+import UserAvatar from "../common/UserAvatar"
 import Button from "../elements/Button"
 import SuggestionVouchModal from "./SuggestionVouchModal"
-import useBreakPoints from "../../hooks/useBreakPoints"
 
 interface SuggestionsProps {
   user: UserLean

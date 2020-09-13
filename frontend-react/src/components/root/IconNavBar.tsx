@@ -1,35 +1,21 @@
-import React, { useContext, Suspense } from "react"
 import {
   Flex,
   Image,
   Menu,
   MenuButton,
-  MenuList,
-  MenuItem,
   MenuGroup,
+  MenuItem,
+  MenuList,
 } from "@chakra-ui/core"
-import MyThemeContext from "../../themeContext"
 import { Link } from "@reach/router"
+import React, { Suspense, useContext } from "react"
+import MyThemeContext from "../../themeContext"
 
 export const navIcons: {
   code: string
   displayName: string
   menuItems: { code: string; displayName: string }[]
 }[] = [
-  {
-    code: "builds",
-    displayName: "Builds",
-    menuItems: [
-      { code: "builds", displayName: "Browser" },
-      { code: "analyzer", displayName: "Analyzer" },
-    ],
-  },
-  //{ name: "analyzer", displayName: "Build Analyzer" },
-  { code: "calendar", displayName: "Calendar", menuItems: [] },
-  { code: "freeagents", displayName: "Free Agents", menuItems: [] },
-  //{ name: "teams", displayName: "Teams" },
-  { code: "plans", displayName: "Map Planner", menuItems: [] },
-  { code: "tournaments", displayName: "Tournaments", menuItems: [] },
   {
     code: "xsearch",
     displayName: "Top 500",
@@ -38,7 +24,21 @@ export const navIcons: {
       { code: "xtrends", displayName: "Trends" },
     ],
   },
-  { code: "sr", displayName: "Salmon Run", menuItems: [] },
+  //{ code: "sr", displayName: "Salmon Run", menuItems: [] },
+  {
+    code: "builds",
+    displayName: "Builds",
+    menuItems: [
+      { code: "builds", displayName: "Browser" },
+      { code: "analyzer", displayName: "Analyzer" },
+    ],
+  },
+  { code: "calendar", displayName: "Calendar", menuItems: [] },
+  { code: "freeagents", displayName: "Free Agents", menuItems: [] },
+  //{ name: "teams", displayName: "Teams" },
+  { code: "plans", displayName: "Map Planner", menuItems: [] },
+  { code: "tournaments", displayName: "Tournaments", menuItems: [] },
+  { code: "plus", displayName: "Plus Server", menuItems: [] },
 ]
 
 const IconNavBar = () => {
@@ -70,7 +70,7 @@ const IconNavBar = () => {
           }
 
           return (
-            <Menu>
+            <Menu key={code}>
               <MenuButton>
                 <Image
                   src={`${process.env.PUBLIC_URL}/navIcons/${code}.png`}
