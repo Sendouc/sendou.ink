@@ -1,6 +1,5 @@
-import React from "react"
-import { Box, BoxProps } from "@chakra-ui/core"
-import { useContext } from "react"
+import { Box } from "@chakra-ui/core"
+import React, { useContext } from "react"
 import MyThemeContext from "../../themeContext"
 
 interface FieldsetWithLegendProps {

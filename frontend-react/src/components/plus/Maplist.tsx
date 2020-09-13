@@ -1,9 +1,9 @@
+import { Avatar, AvatarBadge, Box, Flex, Heading } from "@chakra-ui/core"
 import React, { useContext } from "react"
-import { Heading, Flex, Box, Avatar, Icon, AvatarBadge } from "@chakra-ui/core"
+import { modeIconMap } from "../../assets/icons"
 import { mapIcons } from "../../assets/imageImports"
 import MyThemeContext from "../../themeContext"
 import { Stage } from "../../types"
-import { modeIconMap } from "../../assets/icons"
 
 interface MaplistCardProps {
   modeShort: string

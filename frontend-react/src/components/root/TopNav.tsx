@@ -10,6 +10,7 @@ import MyThemeContext from "../../themeContext"
 import { UserData } from "../../types"
 import UserAvatar from "../common/UserAvatar"
 import Button from "../elements/Button"
+import ColorSelector from "./ColorSelector"
 import { LanguageSelector } from "./LanguageSelector"
 
 const TopNav = () => {
@@ -65,6 +66,7 @@ const TopNav = () => {
             borderRadius="50%"
             mr="0.5rem"
           />
+          <ColorSelector />
           <LanguageSelector />
         </Box>
         <Box

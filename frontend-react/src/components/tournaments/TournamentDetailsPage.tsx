@@ -1,33 +1,33 @@
-import React, { useContext } from "react"
-import { RouteComponentProps, Redirect, Link } from "@reach/router"
 import { useQuery } from "@apollo/react-hooks"
-import {
-  SEARCH_FOR_TOURNAMENT_BY_ID,
-  SearchForTournamentByIdData,
-  SearchForTournamentByIdVars,
-} from "../../graphql/queries/searchForTournamentById"
-import Error from "../common/Error"
-import Loading from "../common/Loading"
-import TournamentCard from "./TournamentCard"
-import { Box, Flex, Avatar, Icon, Grid } from "@chakra-ui/core"
-import Button from "../elements/Button"
+import { Avatar, Box, Flex, Grid } from "@chakra-ui/core"
+import { Link, Redirect, RouteComponentProps } from "@reach/router"
+import { stringify } from "querystring"
+import React, { useContext } from "react"
 import { Helmet } from "react-helmet-async"
+import { useTranslation } from "react-i18next"
 import { FaLongArrowAltLeft } from "react-icons/fa"
-import MyThemeContext from "../../themeContext"
-import { mapIcons } from "../../assets/imageImports"
-import WeaponImage from "../common/WeaponImage"
-import AbilityIcon from "../builds/AbilityIcon"
-import { Ability, Weapon } from "../../types"
 import {
-  useQueryParams,
-  StringParam,
   ArrayParam,
   encodeQueryParams,
+  StringParam,
+  useQueryParams,
 } from "use-query-params"
-import { stringify } from "querystring"
-import { removeFalsy } from "../../utils/helperFunctions"
-import { useTranslation } from "react-i18next"
 import { modeIconMap } from "../../assets/icons"
+import { mapIcons } from "../../assets/imageImports"
+import {
+  SearchForTournamentByIdData,
+  SearchForTournamentByIdVars,
+  SEARCH_FOR_TOURNAMENT_BY_ID,
+} from "../../graphql/queries/searchForTournamentById"
+import MyThemeContext from "../../themeContext"
+import { Ability, Weapon } from "../../types"
+import { removeFalsy } from "../../utils/helperFunctions"
+import AbilityIcon from "../builds/AbilityIcon"
+import Error from "../common/Error"
+import Loading from "../common/Loading"
+import WeaponImage from "../common/WeaponImage"
+import Button from "../elements/Button"
+import TournamentCard from "./TournamentCard"
 
 interface TournamentDetailsPageProps {
   id?: string

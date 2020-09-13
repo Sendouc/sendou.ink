@@ -1,15 +1,14 @@
-import React from "react"
 import {
-  NumberInput as ChakraNumberInput,
-  NumberInputStepper,
-  NumberInputField,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
   Box,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput as ChakraNumberInput,
+  NumberInputField,
+  NumberInputStepper,
 } from "@chakra-ui/core"
-import Label from "../elements/Label"
-import { useContext } from "react"
+import React, { useContext } from "react"
 import MyThemeContext from "../../themeContext"
+import Label from "../elements/Label"
 
 interface MotionInputProps {
   label: string
@@ -22,7 +21,7 @@ const MotionInput: React.FC<MotionInputProps> = ({
   value,
   onChange,
 }) => {
-  const { themeColorHex, darkerBgColor } = useContext(MyThemeContext)
+  const { darkerBgColor } = useContext(MyThemeContext)
   return (
     <Box>
       <Label>{label}</Label>

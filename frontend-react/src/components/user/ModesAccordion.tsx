@@ -1,23 +1,22 @@
-import React, { useContext } from "react"
-import { Placement } from "../../types"
-import { modesShort } from "../../utils/lists"
 import {
   Accordion,
-  AccordionItem,
   AccordionButton,
   AccordionIcon,
+  AccordionItem,
   AccordionPanel,
-  Flex,
-  Icon,
   Box,
+  Flex,
   Grid,
 } from "@chakra-ui/core"
-import MyThemeContext from "../../themeContext"
-import WeaponImage from "../common/WeaponImage"
-import useBreakPoints from "../../hooks/useBreakPoints"
-import { useTranslation } from "react-i18next"
 import { TFunctionResult } from "i18next"
+import React, { useContext } from "react"
+import { useTranslation } from "react-i18next"
 import { modeIconMap } from "../../assets/icons"
+import useBreakPoints from "../../hooks/useBreakPoints"
+import MyThemeContext from "../../themeContext"
+import { Placement } from "../../types"
+import { modesShort } from "../../utils/lists"
+import WeaponImage from "../common/WeaponImage"
 
 interface ModesAccordionProps {
   placements: Placement[]

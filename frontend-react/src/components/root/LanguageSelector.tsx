@@ -28,9 +28,9 @@ export const languages = [
 ] as const
 
 export const LanguageSelector = () => {
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { darkerBgColor } = useContext(MyThemeContext)
-  console.log(i18n.language)
+
   return (
     <Menu>
       <MenuButton>
@@ -44,7 +44,10 @@ export const LanguageSelector = () => {
         />
       </MenuButton>
       <MenuList bg={darkerBgColor}>
-        <MenuOptionGroup title="Choose language" value={i18n.language}>
+        <MenuOptionGroup
+          title={t("navigation;Choose language")}
+          value={i18n.language}
+        >
           {languages.map((lang) => (
             <MenuItemOption
               value={lang.code}

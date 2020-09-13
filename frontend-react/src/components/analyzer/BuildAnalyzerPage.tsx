@@ -1,17 +1,17 @@
-import { Box, FormLabel, Switch, Badge, Flex } from "@chakra-ui/core"
+import { Badge, Box, Flex, FormLabel, Switch } from "@chakra-ui/core"
 import { RouteComponentProps, useLocation } from "@reach/router"
-import React, { useState, useContext, useEffect } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { Helmet } from "react-helmet-async"
+import { Trans, useTranslation } from "react-i18next"
+import { FaWrench } from "react-icons/fa"
 import useAbilityEffects from "../../hooks/useAbilityEffects"
-import { Ability, Weapon, AnalyzerBuild } from "../../types"
+import MyThemeContext from "../../themeContext"
+import { Ability, AnalyzerBuild, Weapon } from "../../types"
 import PageHeader from "../common/PageHeader"
 import WeaponSelector from "../common/WeaponSelector"
+import Button from "../elements/Button"
 import BuildStats from "./BuildStats"
 import EditableBuilds from "./EditableBuilds"
-import MyThemeContext from "../../themeContext"
-import { FaWrench } from "react-icons/fa"
-import Button from "../elements/Button"
-import { useTranslation, Trans } from "react-i18next"
 
 const CURRENT_PATCH = "5.3."
 
@@ -81,6 +81,7 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
 
     setWeapon(weapon)
     setBuild(buildFromUrl)
+    // eslint-disable-next-line
   }, [])
 
   return (

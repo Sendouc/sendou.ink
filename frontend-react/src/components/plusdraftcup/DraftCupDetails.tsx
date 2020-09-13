@@ -1,33 +1,33 @@
-import React, { useContext, useState, useEffect } from "react"
-import { RouteComponentProps, Link } from "@reach/router"
-import {
-  SEARCH_FOR_DRAFT_CUP,
-  SearchForDraftCupData,
-  SearchForDraftCupVars,
-} from "../../graphql/queries/searchForDraftCup"
 import { useQuery } from "@apollo/react-hooks"
-import Loading from "../common/Loading"
-import Error from "../common/Error"
-import { DraftTournamentCard } from "./DraftTournamentCards"
-import Button from "../elements/Button"
-import { FaExternalLinkAlt, FaLongArrowAltLeft } from "react-icons/fa"
-import { Box, Flex, Avatar, Icon, Grid } from "@chakra-ui/core"
-import MyThemeContext from "../../themeContext"
-import {
-  DetailedTeamInfo,
-  Ability,
-  HeadGear,
-  ClothingGear,
-  ShoesGear,
-} from "../../types"
-import { mapIcons } from "../../assets/imageImports"
-import WeaponImage from "../common/WeaponImage"
-import AbilityIcon from "../builds/AbilityIcon"
-import GearImage from "../builds/GearImage"
-import SplatnetIcon from "../common/SplatnetIcon"
+import { Avatar, Box, Flex, Grid } from "@chakra-ui/core"
+import { Link, RouteComponentProps } from "@reach/router"
+import React, { useContext, useEffect, useState } from "react"
 import { Helmet } from "react-helmet-async"
 import { useTranslation } from "react-i18next"
+import { FaExternalLinkAlt, FaLongArrowAltLeft } from "react-icons/fa"
 import { modeIconMap } from "../../assets/icons"
+import { mapIcons } from "../../assets/imageImports"
+import {
+  SearchForDraftCupData,
+  SearchForDraftCupVars,
+  SEARCH_FOR_DRAFT_CUP,
+} from "../../graphql/queries/searchForDraftCup"
+import MyThemeContext from "../../themeContext"
+import {
+  Ability,
+  ClothingGear,
+  DetailedTeamInfo,
+  HeadGear,
+  ShoesGear,
+} from "../../types"
+import AbilityIcon from "../builds/AbilityIcon"
+import GearImage from "../builds/GearImage"
+import Error from "../common/Error"
+import Loading from "../common/Loading"
+import SplatnetIcon from "../common/SplatnetIcon"
+import WeaponImage from "../common/WeaponImage"
+import Button from "../elements/Button"
+import { DraftTournamentCard } from "./DraftTournamentCards"
 
 interface DraftCupDetailsProps {
   id?: string

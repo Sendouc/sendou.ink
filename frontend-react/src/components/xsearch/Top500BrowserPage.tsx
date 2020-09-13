@@ -1,11 +1,13 @@
 import { useQuery } from "@apollo/react-hooks"
-import { Badge, Box, Flex, Icon } from "@chakra-ui/core"
+import { Badge, Box, Flex } from "@chakra-ui/core"
 import { Link, RouteComponentProps } from "@reach/router"
 import React, { useContext, useState } from "react"
 import { Helmet } from "react-helmet-async"
+import { Trans, useTranslation } from "react-i18next"
 import { Table, Tbody, Td, Th, Thead, Tr } from "react-super-responsive-table"
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css"
 import { NumberParam, StringParam, useQueryParams } from "use-query-params"
+import { modeIconMap } from "../../assets/icons"
 import {
   SearchForPlacementsData,
   SearchForPlacementsVars,
@@ -14,7 +16,6 @@ import {
 import useBreakPoints from "../../hooks/useBreakPoints"
 import MyThemeContext from "../../themeContext"
 import { Weapon } from "../../types"
-import { modesShort } from "../../utils/lists"
 import Error from "../common/Error"
 import Loading from "../common/Loading"
 import PageHeader from "../common/PageHeader"
@@ -24,8 +25,6 @@ import Alert from "../elements/Alert"
 import Button from "../elements/Button"
 import "./Top500BrowserPage.css"
 import Top500Forms from "./Top500Forms"
-import { useTranslation, Trans } from "react-i18next"
-import { modeIconMap } from "../../assets/icons"
 
 const getLocalizedMonth = (month: number, locale: string) => {
   const dateForLocalization = new Date()

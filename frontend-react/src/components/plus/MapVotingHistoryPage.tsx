@@ -1,21 +1,21 @@
-import React, { useState, useContext } from "react"
 import { useQuery } from "@apollo/react-hooks"
-import Loading from "../common/Loading"
-import Error from "../common/Error"
+import { Avatar, Box, Flex, Heading } from "@chakra-ui/core"
 import { RouteComponentProps } from "@reach/router"
-import { Flex, Heading, Avatar, Box, Icon } from "@chakra-ui/core"
-import PageHeader from "../common/PageHeader"
+import React, { useContext, useState } from "react"
 import { Helmet } from "react-helmet-async"
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa"
+import { modeIconMap } from "../../assets/icons"
+import { mapIcons } from "../../assets/imageImports"
 import {
-  PLUS_MAPLISTS,
   PlusMaplistsData,
+  PLUS_MAPLISTS,
 } from "../../graphql/queries/plusMaplists"
 import MyThemeContext from "../../themeContext"
 import { Stage } from "../../types"
-import { mapIcons } from "../../assets/imageImports"
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa"
+import Error from "../common/Error"
+import Loading from "../common/Loading"
+import PageHeader from "../common/PageHeader"
 import IconButton from "../elements/IconButton"
-import { modeIconMap } from "../../assets/icons"
 
 interface MaplistCardProps {
   maplist: Stage[]

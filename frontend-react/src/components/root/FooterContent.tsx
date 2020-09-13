@@ -1,10 +1,10 @@
-import React, { useContext } from "react"
-import { Flex, Box, Icon } from "@chakra-ui/core"
-import { useTranslation } from "react-i18next"
+import { Box, Flex } from "@chakra-ui/core"
 import { Link } from "@reach/router"
+import React, { useContext } from "react"
+import { useTranslation } from "react-i18next"
 import { FaGithub } from "react-icons/fa"
-import MyThemeContext from "../../themeContext"
 import { DiscordIcon } from "../../assets/icons"
+import MyThemeContext from "../../themeContext"
 
 const FooterContent: React.FC = () => {
   const { t } = useTranslation()

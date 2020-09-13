@@ -1,24 +1,20 @@
-import React, { useContext } from "react"
-import TopNav from "./TopNav"
-import IconNavBar, { navIcons } from "./IconNavBar"
 import {
   Box,
+  Container,
   Drawer,
+  DrawerBody,
+  DrawerCloseButton,
   DrawerContent,
   DrawerOverlay,
-  DrawerBody,
-  useDisclosure,
   IconButton,
-  DrawerCloseButton,
-  Image,
-  Heading,
-  Flex,
-  Container,
+  useDisclosure,
 } from "@chakra-ui/core"
+import React, { useContext } from "react"
 import { FiMenu } from "react-icons/fi"
-import { Link } from "@reach/router"
 import MyThemeContext from "../../themeContext"
 import Footer from "./Footer"
+import IconNavBar from "./IconNavBar"
+import TopNav from "./TopNav"
 
 interface LayoutProps {
   children: React.ReactNode
@@ -32,15 +28,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     <>
       <TopNav />
       <IconNavBar />
-      <Box
-        color={textColor}
-        bg={bgColor}
-        //p={4}
-        maxW="75rem"
-        mx="auto"
-        minH="100vh"
-        //pb="20px"
-      >
+      <Box color={textColor} bg={bgColor} minH="100vh">
         <Container maxWidth="80ch">{children}</Container>
         <Footer />
       </Box>
