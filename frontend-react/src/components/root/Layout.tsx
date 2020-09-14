@@ -9,6 +9,7 @@ import {
   IconButton,
   useDisclosure,
 } from "@chakra-ui/core"
+import { useLocation } from "@reach/router"
 import React, { useContext, useEffect } from "react"
 import { FiMenu } from "react-icons/fi"
 import MyThemeContext from "../../themeContext"
@@ -20,9 +21,12 @@ interface LayoutProps {
   children: React.ReactNode
 }
 
+const PAGES_WITH_WIDE_CONTAINER = ["/analyzer", "/xsearch", "/builds", "/plans"]
+
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { darkerBgColor, bgColor, textColor } = useContext(MyThemeContext)
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const location = useLocation()
 
   useEffect(() => {
     document.body.style.backgroundColor = bgColor
@@ -33,7 +37,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <TopNav />
       <IconNavBar />
       <Box color={textColor} minH="100vh" pt="1rem">
-        <Container maxWidth="80ch">{children}</Container>
+        <Container
+          maxWidth={
+            PAGES_WITH_WIDE_CONTAINER.includes(location.pathname)
+              ? "120ch"
+              : "60ch"
+          }
+        >
+          {children}
+        </Container>
         <Footer />
       </Box>
 

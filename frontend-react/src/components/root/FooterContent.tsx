@@ -8,18 +8,19 @@ import MyThemeContext from "../../themeContext"
 
 const FooterContent: React.FC = () => {
   const { t } = useTranslation()
-  const { themeColorWithShade } = useContext(MyThemeContext)
+  const { darkerBgColor, themeColorWithShade } = useContext(MyThemeContext)
   return (
     <Flex
-      bg={themeColorWithShade}
       p="25px"
       flexShrink={0}
-      borderRadius="5px"
       alignItems="center"
       fontWeight="bold"
       letterSpacing="1px"
       flexWrap="wrap"
       justifyContent="space-between"
+      bg={darkerBgColor}
+      borderTopColor={themeColorWithShade}
+      borderTopWidth="5px"
     >
       <Flex flexWrap="wrap" justifyContent="space-between">
         <Box mr="1em">

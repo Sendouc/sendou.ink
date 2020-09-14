@@ -1,6 +1,7 @@
 import {
   Box,
   Flex,
+  IconButton,
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -13,7 +14,6 @@ import MyThemeContext from "../../themeContext"
 import { Ability, Build } from "../../types"
 import { mainOnlyAbilities } from "../../utils/lists"
 import AbilityIcon from "../builds/AbilityIcon"
-import IconButton from "../elements/IconButton"
 import StatChart from "./StatChart"
 
 interface BuildStatsProps {
@@ -90,10 +90,17 @@ const BuildStats: React.FC<BuildStatsProps> = ({
       <>
         <Flex justifyContent="space-between">
           <Flex fontWeight="bold" mr="1em" mb="0.5em" alignItems="center">
-            <Box mr="0.5em" minW="30px">
+            <Box minW="30px">
               <AbilityIcon ability={ability} size="TINY" />
             </Box>
-            <IconButton icon={<FaChartLine />} onClick={() => toggleChart()} />
+            <IconButton
+              aria-label="Show chart for the stat"
+              mx="0.5rem"
+              icon={<FaChartLine />}
+              onClick={() => toggleChart()}
+              isRound
+              variant="ghost"
+            />
             {title}
             {info && (
               <Popover trigger="hover" placement="top-start">

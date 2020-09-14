@@ -93,8 +93,8 @@ const IconNavBar = () => {
               <MenuList bg={darkerBgColor}>
                 <MenuGroup title={displayName}>
                   {menuItems.map((item) => (
-                    <Link to={item.code}>
-                      <MenuItem key={item.code}>{item.displayName}</MenuItem>
+                    <Link key={item.code} to={item.code}>
+                      <MenuItem>{item.displayName}</MenuItem>
                     </Link>
                   ))}
                 </MenuGroup>

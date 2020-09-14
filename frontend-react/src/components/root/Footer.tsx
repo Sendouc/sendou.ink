@@ -1,5 +1,5 @@
 import { Box, Image } from "@chakra-ui/core"
-import React, { useContext, useState, Suspense } from "react"
+import React, { Suspense, useContext, useState } from "react"
 import { footerOcto, footerSquid } from "../../assets/imageImports"
 import MyThemeContext from "../../themeContext"
 import FooterContent from "./FooterContent"
@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
   const { themeColorWithShade, colorMode } = useContext(MyThemeContext)
 
   return (
-    <Box mt="2em" color={colorMode === "light" ? "white" : "black"}>
+    <Box mt="2em">
       <Box display="flex" alignItems="flex-end">
         <Image
           src={footerBojoing[colorMode]}

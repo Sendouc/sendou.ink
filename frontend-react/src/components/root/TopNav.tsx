@@ -14,8 +14,8 @@ import ColorSelector from "./ColorSelector"
 import { LanguageSelector } from "./LanguageSelector"
 
 const TopNav = () => {
-  const { bgColor } = useContext(MyThemeContext)
-  const { colorMode, toggleColorMode } = useColorMode()
+  const { bgColor, colorMode } = useContext(MyThemeContext)
+  const { toggleColorMode } = useColorMode()
 
   const UserItem = () => {
     const { t } = useTranslation()
@@ -73,6 +73,7 @@ const TopNav = () => {
           color="gray.600"
           fontWeight="bold"
           letterSpacing={1}
+          display={["none", null, "block"]}
         >
           {" "}
           <Link to="/">sendou.ink </Link>
