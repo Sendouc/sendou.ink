@@ -21,15 +21,7 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const {
-    darkerBgColor,
-    bgColor,
-    textColor,
-    colorMode,
-    themeColorHex,
-    themeColorHexLighter,
-    themeColorWithShade,
-  } = useContext(MyThemeContext)
+  const { darkerBgColor, bgColor, textColor } = useContext(MyThemeContext)
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   useEffect(() => {

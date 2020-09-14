@@ -134,13 +134,15 @@ const Suggestions = () => {
 
   const canSuggest = !ownSuggestion
 
-  const canVouch = Boolean(
-    user?.plus?.can_vouch && !user?.plus?.can_vouch_again_after
-  )
+  const canVouch = !!user?.plus?.can_vouch && !user?.plus?.can_vouch_again_after
 
   const getButtonText = () => {
-    // can't suggest or vouch if voting is underway
-    if (plusInfoData?.plusInfo?.voting_ends) return undefined
+    // can't suggest or vouch if voting is underway OR is not plus server member
+    if (
+      plusInfoData?.plusInfo?.voting_ends ||
+      !userData?.user?.plus?.membership_status
+    )
+      return undefined
 
     if (canSuggest && canVouch) return "Suggest or vouch a player"
     else if (canSuggest) return "Suggest a player"
@@ -161,7 +163,7 @@ const Suggestions = () => {
       )}
 
       {buttonText && (
-        <Button my="0.5rem" onClick={() => setShowSuggestionForm(true)}>
+        <Button mb="0.5rem" onClick={() => setShowSuggestionForm(true)}>
           {buttonText}
         </Button>
       )}

@@ -38,7 +38,14 @@ export const navIcons: {
   //{ name: "teams", displayName: "Teams" },
   { code: "plans", displayName: "Map Planner", menuItems: [] },
   { code: "tournaments", displayName: "Tournaments", menuItems: [] },
-  { code: "plus", displayName: "Plus Server", menuItems: [] },
+  {
+    code: "plus",
+    displayName: "Plus Server",
+    menuItems: [
+      { code: "plus", displayName: "Suggested and vouched players" },
+      { code: "plus/history", displayName: "Voting history" },
+    ],
+  },
 ]
 
 const IconNavBar = () => {

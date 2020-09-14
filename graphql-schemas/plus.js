@@ -285,10 +285,8 @@ const resolvers = {
 
       return { users, suggested, votes }
     },
-    suggestions: (root, args, ctx) => {
-      const searchCriteria =
-        ctx.user.plus.membership_status === "ONE" ? {} : { plus_server: "TWO" }
-      return Suggested.find(searchCriteria)
+    suggestions: (root, args) => {
+      return Suggested.find({})
         .populate("discord_user")
         .populate("suggester_discord_user")
         .sort({ plus_server: "asc", createdAt: "desc" })
@@ -298,20 +296,13 @@ const resolvers = {
           })
         })
     },
-    vouches: (root, args, { user }) => {
-      const searchCriteria =
-        user.plus.membership_status === "ONE"
-          ? { "plus.vouch_status": { $ne: null } }
-          : { "plus.vouch_status": "TWO" }
-      return User.find(searchCriteria)
+    vouches: () => {
+      return User.find({ "plus.vouch_status": { $ne: null } })
         .sort({ "plus.vouch_status": "asc" })
         .populate("plus.voucher_user")
     },
-    summaries: (root, args, ctx) => {
-      const searchCriteria =
-        ctx.user.plus.membership_status === "ONE" ? {} : { plus_server: "TWO" }
-
-      return Summary.find(searchCriteria)
+    summaries: () => {
+      return Summary.find({})
         .populate("discord_user")
         .sort({ year: "desc", month: "desc", "score.total": "desc" })
     },
