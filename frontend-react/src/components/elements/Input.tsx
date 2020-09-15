@@ -65,6 +65,7 @@ const Input: React.FC<InputProps & BoxProps> = ({
           background={darkerBgColor}
           borderColor={darkerBgColor}
           size={size}
+          style={{ border: "1px" }}
         />
       </InputGroup>
       {limit && (

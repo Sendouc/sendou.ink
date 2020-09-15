@@ -1,29 +1,29 @@
-import React, { useEffect, useState, useContext } from "react"
-import { RouteComponentProps } from "@reach/router"
 import { useQuery } from "@apollo/react-hooks"
-import { XTrendsData, X_TRENDS } from "../../graphql/queries/xTrends"
-import Loading from "../common/Loading"
-import Error from "../common/Error"
-import PageHeader from "../common/PageHeader"
-import { months, weapons } from "../../utils/lists"
-import { Weapon } from "../../types"
 import {
-  Flex,
   Box,
+  Flex,
   Popover,
-  PopoverTrigger,
-  PopoverContent,
   PopoverArrow,
+  PopoverContent,
+  PopoverTrigger,
 } from "@chakra-ui/core"
-import WeaponImage from "../common/WeaponImage"
-import MyThemeContext from "../../themeContext"
-import ModeButtons from "./ModeButtons"
-import Select from "../elements/Select"
-import WeaponLineChart from "./WeaponLineChart"
+import { RouteComponentProps } from "@reach/router"
+import React, { useContext, useEffect, useState } from "react"
 import { Helmet } from "react-helmet-async"
-import Alert from "../elements/Alert"
 import { useTranslation } from "react-i18next"
+import { XTrendsData, X_TRENDS } from "../../graphql/queries/xTrends"
+import MyThemeContext from "../../themeContext"
+import { Weapon } from "../../types"
 import { parseAndGetLocalizedMonthYear } from "../../utils/helperFunctions"
+import { months, weapons } from "../../utils/lists"
+import Error from "../common/Error"
+import Loading from "../common/Loading"
+import PageHeader from "../common/PageHeader"
+import Section from "../common/Section"
+import WeaponImage from "../common/WeaponImage"
+import Select from "../elements/Select"
+import ModeButtons from "./ModeButtons"
+import WeaponLineChart from "./WeaponLineChart"
 
 const tiers = [
   {
@@ -154,9 +154,6 @@ const XTrendsPage: React.FC<RouteComponentProps> = () => {
       <Helmet>
         <title>{t("navigation;Top 500 Tier Lists")} | sendou.ink</title>
       </Helmet>
-      <Box my="1em">
-        <Alert status="info">{t("xtrends;trendsExplanation")}</Alert>
-      </Box>
       <Select
         value={
           month
@@ -178,8 +175,11 @@ const XTrendsPage: React.FC<RouteComponentProps> = () => {
           setMode={(mode) => setMode(mode as "SZ" | "TC" | "RM" | "CB")}
         />
       </Box>
+      <Box my={10} color={grayWithShade}>
+        {t("xtrends;trendsExplanation")}
+      </Box>
       {tiers.map((tier, index, tiers) => (
-        <Flex key={tier.criteria}>
+        <Section key={tier.criteria} display="flex" my={4}>
           <Flex
             flexDir="column"
             w="80px"
@@ -254,7 +254,7 @@ const XTrendsPage: React.FC<RouteComponentProps> = () => {
                 </Popover>
               ))}
           </Flex>
-        </Flex>
+        </Section>
       ))}
     </>
   )

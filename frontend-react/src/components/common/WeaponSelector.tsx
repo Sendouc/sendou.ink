@@ -1,14 +1,14 @@
+import { Box, Flex } from "@chakra-ui/core"
 import React from "react"
-import { Flex, Box } from "@chakra-ui/core"
+import { useTranslation } from "react-i18next"
+import { components } from "react-select"
+import { Weapon } from "../../types"
 import {
   weaponSelectOptions,
   weaponSelectOptionsWithAlts,
 } from "../../utils/lists"
-import WeaponImage from "./WeaponImage"
-import { components } from "react-select"
 import Select from "../elements/Select"
-import { Weapon } from "../../types"
-import { useTranslation } from "react-i18next"
+import WeaponImage from "./WeaponImage"
 
 interface WeaponSelectorProps {
   value?: Weapon | Weapon[] | "" | null
@@ -46,41 +46,38 @@ const WeaponSelector: React.FC<WeaponSelectorProps> = ({
   )
 
   return (
-    <>
-      <Select
-        label={label}
-        required={required}
-        options={
-          showAlts
-            ? weaponSelectOptionsWithAlts.map((category) => ({
-                label: t(`builds;${category.label}`),
-                options: category.options.map((weapon) => ({
-                  value: weapon.value,
-                  label: t(`game;${weapon.value}`),
-                })),
-              }))
-            : weaponSelectOptions.map((category) => ({
-                label: t(`builds;${category.label}`),
-                options: category.options.map((weapon) => ({
-                  value: weapon.value,
-                  label: t(`game;${weapon.value}`),
-                })),
-              }))
-        }
-        value={value}
-        setValue={setValue}
-        clearable={clearable}
-        isSearchable
-        isMulti={!!isMulti}
-        menuIsOpen={menuIsOpen}
-        components={{
-          IndicatorSeparator: () => null,
-          Option: singleOption,
-        }}
-        autoFocus={autoFocus}
-        width="100%"
-      />
-    </>
+    <Select
+      label={label}
+      required={required}
+      options={
+        showAlts
+          ? weaponSelectOptionsWithAlts.map((category) => ({
+              label: t(`builds;${category.label}`),
+              options: category.options.map((weapon) => ({
+                value: weapon.value,
+                label: t(`game;${weapon.value}`),
+              })),
+            }))
+          : weaponSelectOptions.map((category) => ({
+              label: t(`builds;${category.label}`),
+              options: category.options.map((weapon) => ({
+                value: weapon.value,
+                label: t(`game;${weapon.value}`),
+              })),
+            }))
+      }
+      value={value}
+      setValue={setValue}
+      clearable={clearable}
+      isSearchable
+      isMulti={!!isMulti}
+      menuIsOpen={menuIsOpen}
+      components={{
+        IndicatorSeparator: () => null,
+        Option: singleOption,
+      }}
+      autoFocus={autoFocus}
+    />
   )
 }
 

@@ -11,17 +11,17 @@ import {
 } from "@chakra-ui/core"
 import { Link } from "@reach/router"
 import React, { useContext, useEffect, useState } from "react"
+import { Trans, useTranslation } from "react-i18next"
 import { FiBarChart2, FiEdit, FiInfo, FiTarget } from "react-icons/fi"
 import { top500 } from "../../assets/imageImports"
 import MyThemeContext from "../../themeContext"
 import { Build } from "../../types"
+import Flag from "../common/Flag"
 import WeaponImage from "../common/WeaponImage"
 import BuildCardStats from "./BuildCardStats"
 import Gears from "./Gears"
 import ViewAP from "./ViewAP"
 import ViewSlots from "./ViewSlots"
-import { useTranslation, Trans } from "react-i18next"
-import Flag from "../common/Flag"
 
 interface BuildCardProps {
   build: Build
@@ -69,6 +69,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
         rounded="lg"
         overflow="hidden"
         boxShadow="0px 0px 16px 6px rgba(0,0,0,0.1)"
+        bg={darkerBgColor}
         p="20px"
         {...props}
       >

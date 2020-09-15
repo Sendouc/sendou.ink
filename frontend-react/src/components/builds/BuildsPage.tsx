@@ -1,29 +1,27 @@
-import React from "react"
-import { Helmet } from "react-helmet-async"
+import { useQuery } from "@apollo/react-hooks"
+import { Box, Button, Flex, FormLabel, Heading, Switch } from "@chakra-ui/core"
 import { RouteComponentProps } from "@reach/router"
-import WeaponSelector from "../common/WeaponSelector"
-import { useState } from "react"
+import useLocalStorage from "@rehooks/local-storage"
+import React, { useContext, useState } from "react"
+import { Helmet } from "react-helmet-async"
+import { useTranslation } from "react-i18next"
+import InfiniteScroll from "react-infinite-scroller"
+import { SEARCH_FOR_BUILDS } from "../../graphql/queries/searchForBuilds"
+import MyThemeContext from "../../themeContext"
 import {
-  Weapon,
   Ability,
+  Build,
   SearchForBuildsData,
   SearchForBuildsVars,
-  Build,
+  Weapon,
 } from "../../types"
-import { Box, Flex, Heading, FormLabel, Switch, Button } from "@chakra-ui/core"
-import { useContext } from "react"
-import MyThemeContext from "../../themeContext"
-import useLocalStorage from "@rehooks/local-storage"
-import { useQuery } from "@apollo/react-hooks"
-import { SEARCH_FOR_BUILDS } from "../../graphql/queries/searchForBuilds"
-import Loading from "../common/Loading"
 import Error from "../common/Error"
-import BuildCard from "./BuildCard"
-import InfiniteScroll from "react-infinite-scroller"
+import Loading from "../common/Loading"
 import PageHeader from "../common/PageHeader"
-import AbilitySelector from "./AbilitySelector"
+import WeaponSelector from "../common/WeaponSelector"
 import Alert from "../elements/Alert"
-import { useTranslation } from "react-i18next"
+import AbilitySelector from "./AbilitySelector"
+import BuildCard from "./BuildCard"
 
 const BuildsPage: React.FC<RouteComponentProps> = () => {
   const { themeColor } = useContext(MyThemeContext)
@@ -94,7 +92,7 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
         isChecked={prefersAPView === null ? false : prefersAPView}
         onChange={() => setAPPreference(!prefersAPView)}
       />
-      <Box mt="1em">
+      <Box my={6} maxW="24rem">
         <WeaponSelector
           label={t("builds;Select a weapon to start viewing builds")}
           value={weapon}
