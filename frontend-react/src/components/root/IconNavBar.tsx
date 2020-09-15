@@ -81,6 +81,7 @@ export const navIcons: {
       },
       { code: "plus", displayName: "Suggested and vouched players" },
       { code: "plus/history", displayName: "Voting history" },
+      { code: "draft", displayName: "Draft Cup" },
     ],
   },
 ]

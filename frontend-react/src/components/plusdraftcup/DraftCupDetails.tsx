@@ -24,6 +24,7 @@ import AbilityIcon from "../builds/AbilityIcon"
 import GearImage from "../builds/GearImage"
 import Error from "../common/Error"
 import Loading from "../common/Loading"
+import Section from "../common/Section"
 import SplatnetIcon from "../common/SplatnetIcon"
 import WeaponImage from "../common/WeaponImage"
 import Button from "../elements/Button"
@@ -94,15 +95,13 @@ const DetailedMapCard: React.FC<DetailedMapCardProps> = ({
   const ModeIcon = modeIconMap[mapDetails.mode]
 
   return (
-    <Flex
-      rounded="lg"
+    <Section
+      display="flex"
       overflow="hidden"
-      boxShadow="0px 0px 16px 6px rgba(0,0,0,0.1)"
-      p="25px"
-      my="1em"
       flexDirection="column"
       justifyContent="space-between"
       alignItems="center"
+      mb={4}
     >
       <Flex
         fontWeight="semibold"
@@ -235,7 +234,7 @@ const DetailedMapCard: React.FC<DetailedMapCardProps> = ({
           </Flex>
         )
       })}
-    </Flex>
+    </Section>
   )
 }
 
@@ -266,11 +265,9 @@ const CollapsedMapCard: React.FC<CollapsedMapCardProps> = ({
     .sort((a, b) => b.score - a.score)
 
   return (
-    <Flex
-      rounded="lg"
+    <Section
+      display="flex"
       overflow="hidden"
-      boxShadow="0px 0px 16px 6px rgba(0,0,0,0.1)"
-      p="25px"
       flexDirection="column"
       justifyContent="space-between"
       alignItems="center"
@@ -295,7 +292,7 @@ const CollapsedMapCard: React.FC<CollapsedMapCardProps> = ({
       <Button onClick={() => expand()} loading={loading}>
         {t("draft;Expand")}
       </Button>
-    </Flex>
+    </Section>
   )
 }
 
