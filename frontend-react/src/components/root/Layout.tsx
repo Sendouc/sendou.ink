@@ -1,16 +1,16 @@
 import {
-  Box,
   Container,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
   DrawerContent,
   DrawerOverlay,
+  Flex,
   IconButton,
   useDisclosure,
 } from "@chakra-ui/core"
 import { useLocation } from "@reach/router"
-import React, { useContext, useEffect } from "react"
+import React, { Suspense, useContext, useEffect } from "react"
 import { FiMenu } from "react-icons/fi"
 import MyThemeContext from "../../themeContext"
 import Footer from "./Footer"
@@ -35,8 +35,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <>
       <TopNav />
-      <IconNavBar />
-      <Box color={textColor} minH="100vh" pt="1rem">
+      <Suspense fallback={null}>
+        <IconNavBar />
+      </Suspense>
+      <Flex flexDirection="column" color={textColor} minH="100vh" pt="1rem">
         <Container
           maxWidth={
             PAGES_WITH_WIDE_CONTAINER.includes(location.pathname)
@@ -47,7 +49,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           {children}
         </Container>
         <Footer />
-      </Box>
+      </Flex>
 
       <IconButton
         aria-label="Open menu"

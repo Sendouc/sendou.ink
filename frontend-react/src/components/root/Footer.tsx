@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
   const { themeColorWithShade, colorMode } = useContext(MyThemeContext)
 
   return (
-    <Box mt="2em">
+    <Box mt="auto">
       <Box display="flex" alignItems="flex-end">
         <Image
           src={footerBojoing[colorMode]}

@@ -9,12 +9,39 @@ import {
 } from "@chakra-ui/core"
 import { Link } from "@reach/router"
 import React, { Suspense, useContext } from "react"
+import { useTranslation } from "react-i18next"
 import MyThemeContext from "../../themeContext"
+
+const getFirstFridayDate = () => {
+  const today = new Date()
+  const month =
+    today.getDate() <= 7 && today.getDay() <= 5
+      ? today.getMonth()
+      : today.getMonth() + 1
+
+  let day = 1
+  while (day <= 7) {
+    const dateOfVoting = new Date(
+      Date.UTC(today.getFullYear(), month, day, 15, 0, 0)
+    )
+
+    if (dateOfVoting.getDay() === 5) return dateOfVoting
+
+    day++
+  }
+
+  console.error("Couldn't resolve first friday of the month for voting")
+  return new Date(2000, 1, 1)
+}
 
 export const navIcons: {
   code: string
   displayName: string
-  menuItems: { code: string; displayName: string }[]
+  menuItems: {
+    code: string
+    displayName: string
+    disabled?: boolean
+  }[]
 }[] = [
   {
     code: "xsearch",
@@ -42,6 +69,16 @@ export const navIcons: {
     code: "plus",
     displayName: "Plus Server",
     menuItems: [
+      {
+        code: "/voting",
+        displayName:
+          "Next voting: " +
+          getFirstFridayDate().toLocaleString("default", {
+            month: "short",
+            day: "numeric",
+          }),
+        disabled: true,
+      },
       { code: "plus", displayName: "Suggested and vouched players" },
       { code: "plus/history", displayName: "Voting history" },
     ],
@@ -49,6 +86,7 @@ export const navIcons: {
 ]
 
 const IconNavBar = () => {
+  const { t } = useTranslation()
   const { darkerBgColor } = useContext(MyThemeContext)
   return (
     <Flex
@@ -94,7 +132,9 @@ const IconNavBar = () => {
                 <MenuGroup title={displayName}>
                   {menuItems.map((item) => (
                     <Link key={item.code} to={item.code}>
-                      <MenuItem>{item.displayName}</MenuItem>
+                      <MenuItem disabled={item.disabled}>
+                        {item.displayName}
+                      </MenuItem>
                     </Link>
                   ))}
                 </MenuGroup>
