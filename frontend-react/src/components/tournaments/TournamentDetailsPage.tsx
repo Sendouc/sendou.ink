@@ -25,6 +25,7 @@ import { removeFalsy } from "../../utils/helperFunctions"
 import AbilityIcon from "../builds/AbilityIcon"
 import Error from "../common/Error"
 import Loading from "../common/Loading"
+import Section from "../common/Section"
 import WeaponImage from "../common/WeaponImage"
 import Button from "../elements/Button"
 import TournamentCard from "./TournamentCard"
@@ -66,6 +67,7 @@ const TournamentDetailsPage: React.FC<
     grayWithShade,
     textColor,
     darkerBgColor,
+    bgColor,
   } = useContext(MyThemeContext)
   const { data, error, loading } = useQuery<
     SearchForTournamentByIdData,
@@ -179,13 +181,11 @@ const TournamentDetailsPage: React.FC<
                 {round.round_name}
               </Box>
             )}
-            <Box
-              bg={matchesFilter(round) ? darkerBgColor : undefined}
+            <Section
+              bg={matchesFilter(round) ? bgColor : darkerBgColor}
               display="flex"
               rounded="lg"
               overflow="hidden"
-              boxShadow="0px 0px 16px 6px rgba(0,0,0,0.1)"
-              p="25px"
               flexDirection="column"
               justifyContent="space-between"
               alignItems="center"
@@ -290,7 +290,7 @@ const TournamentDetailsPage: React.FC<
                   </Flex>
                 </Flex>
               </Flex>
-            </Box>
+            </Section>
           </Box>
         )
       })}

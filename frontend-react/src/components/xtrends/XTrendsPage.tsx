@@ -178,43 +178,44 @@ const XTrendsPage: React.FC<RouteComponentProps> = () => {
       <Box my={10} color={grayWithShade}>
         {t("xtrends;trendsExplanation")}
       </Box>
-      {tiers.map((tier, index, tiers) => (
-        <Section key={tier.criteria} display="flex" my={4}>
-          <Flex
-            flexDir="column"
-            w="80px"
-            minH="100px"
-            px="10px"
-            borderRight="5px solid"
-            borderColor={tier.color}
-            marginRight="1em"
-            justifyContent="center"
-          >
-            <Box fontSize="2em" fontWeight="bolder">
-              {tier.label}
-            </Box>
-            <Box color={grayWithShade}>
-              {tier.criteria === 0.002 ? ">0%" : `${tier.criteria}%`}
-            </Box>
-          </Flex>
-          <Flex
-            flexDir="row"
-            flex={1}
-            flexWrap="wrap"
-            alignItems="center"
-            py="1em"
-          >
-            {weaponsOrdered
-              .filter((weapon) => {
-                const previousCriteria =
-                  index === 0 ? 101 : tiers[index - 1].criteria
-                const percentsInTop500 = weapon.amount / 5
-                return (
-                  percentsInTop500 < previousCriteria &&
-                  percentsInTop500 >= tier.criteria
-                )
-              })
-              .map((weapon) => (
+      {tiers.map((tier, index, tiers) => {
+        const weaponsInTheTier = weaponsOrdered.filter((weapon) => {
+          const previousCriteria = index === 0 ? 101 : tiers[index - 1].criteria
+          const percentsInTop500 = weapon.amount / 5
+          return (
+            percentsInTop500 < previousCriteria &&
+            percentsInTop500 >= tier.criteria
+          )
+        })
+        if (!weaponsInTheTier.length) return null
+
+        return (
+          <Section key={tier.criteria} display="flex" my={4}>
+            <Flex
+              flexDir="column"
+              w="80px"
+              minH="100px"
+              px="10px"
+              borderRight="5px solid"
+              borderColor={tier.color}
+              marginRight="1em"
+              justifyContent="center"
+            >
+              <Box fontSize="2em" fontWeight="bolder">
+                {tier.label}
+              </Box>
+              <Box color={grayWithShade}>
+                {tier.criteria === 0.002 ? ">0%" : `${tier.criteria}%`}
+              </Box>
+            </Flex>
+            <Flex
+              flexDir="row"
+              flex={1}
+              flexWrap="wrap"
+              alignItems="center"
+              py="1em"
+            >
+              {weaponsInTheTier.map((weapon) => (
                 <Popover key={weapon.name} placement="top-start">
                   <PopoverTrigger>
                     <Box m="0.5em" cursor="pointer">
@@ -253,9 +254,10 @@ const XTrendsPage: React.FC<RouteComponentProps> = () => {
                   </PopoverContent>
                 </Popover>
               ))}
-          </Flex>
-        </Section>
-      ))}
+            </Flex>
+          </Section>
+        )
+      })}
     </>
   )
 }
