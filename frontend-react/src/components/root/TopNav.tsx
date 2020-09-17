@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/react-hooks"
-import { Box, Flex, IconButton, useColorMode } from "@chakra-ui/core"
+import { Box, Flex, Grid, IconButton, useColorMode } from "@chakra-ui/core"
 import { Link } from "@reach/router"
 import React, { Suspense, useContext } from "react"
 import { useTranslation } from "react-i18next"
@@ -45,7 +45,8 @@ const TopNav = () => {
   }
 
   return (
-    <Flex
+    <Grid
+      templateColumns="1fr 1fr 1fr"
       bg={bgColor}
       w="100%"
       alignItems="center"
@@ -69,6 +70,7 @@ const TopNav = () => {
           <LanguageSelector />
         </Flex>
         <Box
+          justifySelf="center"
           fontFamily="Rubik, sans-serif"
           color="gray.600"
           fontWeight="bold"
@@ -78,9 +80,11 @@ const TopNav = () => {
           {" "}
           <Link to="/">sendou.ink </Link>
         </Box>
-        <UserItem />
+        <Box justifySelf="flex-end">
+          <UserItem />
+        </Box>
       </Suspense>
-    </Flex>
+    </Grid>
   )
 }
 
