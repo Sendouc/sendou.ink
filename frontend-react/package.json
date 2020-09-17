@@ -40,7 +40,7 @@
     "react-infinite-scroller": "^1.2.4",
     "react-markdown": "^4.3.1",
     "react-paginate": "^6.3.2",
-    "react-scripts": "^3.4.3",
+    "react-scripts": "next",
     "react-select": "^3.1.0",
     "react-simple-maps": "^2.1.2",
     "react-string-replace": "^0.4.4",

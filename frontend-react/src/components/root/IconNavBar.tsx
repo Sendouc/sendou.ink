@@ -6,6 +6,12 @@ import {
   MenuGroup,
   MenuItem,
   MenuList,
+  Popover,
+  PopoverArrow,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
+  Portal,
 } from "@chakra-ui/core"
 import { Link } from "@reach/router"
 import React, { Suspense, useContext } from "react"
@@ -82,6 +88,7 @@ export const navIcons: {
       { code: "plus", displayName: "Suggested and vouched players" },
       { code: "plus/history", displayName: "Voting history" },
       { code: "draft", displayName: "Draft Cup" },
+      { code: "plus/faq", displayName: "FAQ" },
     ],
   },
 ]
@@ -98,9 +105,9 @@ const IconNavBar = () => {
     >
       <Suspense fallback={null}>
         {navIcons.map(({ displayName, code, menuItems }) => {
-          if (!menuItems.length) {
-            return (
-              <Link key={code} to={code}>
+          const MenuNavIcon = () => (
+            <Popover trigger="hover" placement="top">
+              <PopoverTrigger>
                 <Image
                   src={`${process.env.PUBLIC_URL}/navIcons/${code}.png`}
                   h={12}
@@ -111,6 +118,21 @@ const IconNavBar = () => {
                   userSelect="none"
                   ignoreFallback
                 />
+              </PopoverTrigger>
+              <Portal>
+                <PopoverContent w="8rem" bg={darkerBgColor}>
+                  <PopoverArrow />
+                  <PopoverHeader fontWeight="semibold" mx="auto">
+                    {displayName}
+                  </PopoverHeader>
+                </PopoverContent>
+              </Portal>
+            </Popover>
+          )
+          if (!menuItems.length) {
+            return (
+              <Link key={code} to={code}>
+                <MenuNavIcon />
               </Link>
             )
           }
@@ -118,16 +140,7 @@ const IconNavBar = () => {
           return (
             <Menu key={code}>
               <MenuButton>
-                <Image
-                  src={`${process.env.PUBLIC_URL}/navIcons/${code}.png`}
-                  h={12}
-                  w={12}
-                  mx={2}
-                  alt={code}
-                  cursor="pointer"
-                  userSelect="none"
-                  ignoreFallback
-                />
+                <MenuNavIcon />
               </MenuButton>
               <MenuList bg={darkerBgColor}>
                 <MenuGroup title={displayName}>
