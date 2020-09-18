@@ -21,6 +21,7 @@ const Footer: React.FC = () => {
           ml="auto"
           mr="50px"
           userSelect="none"
+          loading="lazy"
         />
       </Box>
       <Suspense fallback={null}>

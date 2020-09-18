@@ -46,7 +46,7 @@ const TopNav = () => {
 
   return (
     <Grid
-      templateColumns="1fr 1fr 1fr"
+      templateColumns={["1fr 1fr", null, "1fr 1fr 1fr"]}
       bg={bgColor}
       w="100%"
       alignItems="center"
