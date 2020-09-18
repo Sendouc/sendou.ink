@@ -3,23 +3,22 @@ import { RouteComponentProps } from "@reach/router"
 import { SketchField, Tools } from "@sendou/react-sketch"
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { Helmet } from "react-helmet-async"
+import { useTranslation } from "react-i18next"
 import {
   FaBomb,
   FaFileDownload,
   FaFileImage,
   FaFileUpload,
 } from "react-icons/fa"
-import { weapons } from "../../assets/imageImports"
 import useBreakPoints from "../../hooks/useBreakPoints"
 import { Stage, Weapon } from "../../types"
-import weaponDict from "../../utils/english_internal.json"
+import english_internal from "../../utils/english_internal.json"
 import Error from "../common/Error"
 import PageHeader from "../common/PageHeader"
 import Button from "../elements/Button"
 import DraggableToolsSelector from "./DraggableToolsSelector"
 import DraggableWeaponSelector from "./DraggableWeaponSelector"
 import MapSelect from "./MapSelect"
-import { useTranslation } from "react-i18next"
 
 export interface PlannerMapBg {
   view: "M" | "R"
@@ -137,8 +136,10 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
   }, [sketch])
 
   const addImageToSketch = (weapon: Weapon) => {
-    const wpnDict: any = weapons
-    sketch.addImg(wpnDict[weaponDict[weapon]])
+    if (!sketch) return
+    import(
+      `../../assets/weapons/Wst_${english_internal[weapon]}.png`
+    ).then((img) => sketch.addImg(img.default))
     setTool(Tools.Select)
   }
 
