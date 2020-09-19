@@ -6,16 +6,9 @@ import {
   MenuGroup,
   MenuItem,
   MenuList,
-  Popover,
-  PopoverArrow,
-  PopoverContent,
-  PopoverHeader,
-  PopoverTrigger,
-  Portal,
 } from "@chakra-ui/core"
 import { Link } from "@reach/router"
 import React, { Suspense, useContext } from "react"
-import { useTranslation } from "react-i18next"
 import MyThemeContext from "../../themeContext"
 
 const getFirstFridayDate = () => {
@@ -94,7 +87,6 @@ export const navIcons: {
 ]
 
 const IconNavBar = () => {
-  const { t } = useTranslation()
   const { darkerBgColor } = useContext(MyThemeContext)
   return (
     <Flex
@@ -106,28 +98,16 @@ const IconNavBar = () => {
       <Suspense fallback={null}>
         {navIcons.map(({ displayName, code, menuItems }) => {
           const MenuNavIcon = () => (
-            <Popover trigger="hover" placement="top">
-              <PopoverTrigger>
-                <Image
-                  src={`${process.env.PUBLIC_URL}/navIcons/${code}.png`}
-                  h={12}
-                  w={12}
-                  mx={2}
-                  alt={code}
-                  cursor="pointer"
-                  userSelect="none"
-                  ignoreFallback
-                />
-              </PopoverTrigger>
-              <Portal>
-                <PopoverContent w="8rem" bg={darkerBgColor}>
-                  <PopoverArrow />
-                  <PopoverHeader fontWeight="semibold" mx="auto">
-                    {displayName}
-                  </PopoverHeader>
-                </PopoverContent>
-              </Portal>
-            </Popover>
+            <Image
+              src={`${process.env.PUBLIC_URL}/navIcons/${code}.png`}
+              h={12}
+              w={12}
+              mx={2}
+              alt={code}
+              cursor="pointer"
+              userSelect="none"
+              ignoreFallback
+            />
           )
           if (!menuItems.length) {
             return (

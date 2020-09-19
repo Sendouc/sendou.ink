@@ -6,15 +6,17 @@ import {
   DrawerContent,
   DrawerOverlay,
   Flex,
+  Heading,
   IconButton,
+  Image,
   useDisclosure,
 } from "@chakra-ui/core"
-import { useLocation } from "@reach/router"
+import { Link, useLocation } from "@reach/router"
 import React, { Suspense, useContext, useEffect } from "react"
 import { FiMenu } from "react-icons/fi"
 import MyThemeContext from "../../themeContext"
 import Footer from "./Footer"
-import IconNavBar from "./IconNavBar"
+import IconNavBar, { navIcons } from "./IconNavBar"
 import TopNav from "./TopNav"
 
 interface LayoutProps {
@@ -71,22 +73,21 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <DrawerContent bg={darkerBgColor}>
           <DrawerCloseButton />
           <DrawerBody>
-            {/*navIcons.map(({ name, displayName }) => (
-              <Link key={name} to={name}>
+            {navIcons.map(({ displayName, code }) => (
+              <Link key={displayName} to={code}>
                 <Flex alignItems="center" my={4} onClick={onClose}>
                   <Image
-                    src={`/images/navIcons/${name}.webp`}
-                    fallbackSrc={`/images/navIcons/${name}.png`}
+                    src={`${process.env.PUBLIC_URL}/navIcons/${code}.png`}
                     h={12}
                     w={12}
                     mx={4}
-                    alt={name}
+                    alt={displayName}
                     cursor="pointer"
                   />
                   <Heading size="md">{displayName}</Heading>
                 </Flex>
               </Link>
-            ))*/}
+            ))}
           </DrawerBody>
         </DrawerContent>
       </Drawer>
