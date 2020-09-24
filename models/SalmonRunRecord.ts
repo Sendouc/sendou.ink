@@ -1,12 +1,12 @@
 import * as Objection from "objection"
 import {
-  salmonRunRecordWildcards,
   salmonRunRecordCategories,
+  salmonRunRecordWildcards,
 } from "../utils/enums"
 import salmonRunStages from "../utils/srMaps"
-import Weapon from "./Weapon"
-import User from "./User"
 import SalmonRunStage from "./SalmonRunStage"
+import User from "./User"
+import Weapon from "./Weapon"
 
 function isValidURL(str: string) {
   var pattern = new RegExp(
