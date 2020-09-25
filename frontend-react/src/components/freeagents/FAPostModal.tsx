@@ -1,32 +1,32 @@
-import React, { useState, useContext } from "react"
-import Modal from "../elements/Modal"
-import { useMutation } from "@apollo/react-hooks"
+import { useMutation } from "@apollo/client"
 import {
-  useToast,
-  FormControl,
-  FormLabel,
-  RadioGroup,
-  Radio,
-  Flex,
   Box,
-  FormErrorMessage,
-  CheckboxGroup,
   Checkbox,
+  CheckboxGroup,
+  Flex,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Radio,
+  RadioGroup,
+  useToast,
 } from "@chakra-ui/core"
-import MyThemeContext from "../../themeContext"
-import TextArea from "../elements/TextArea"
-import Button from "../elements/Button"
-import { FreeAgentPost } from "../../types"
+import React, { useContext, useState } from "react"
+import { useTranslation } from "react-i18next"
 import {
   AddFreeAgentPostVars,
   ADD_FREE_AGENT_POST,
 } from "../../graphql/mutations/addFreeAgentPost"
-import { FREE_AGENT_POSTS } from "../../graphql/queries/freeAgentPosts"
-import { UPDATE_FREE_AGENT_POST } from "../../graphql/mutations/updateFreeAgentPost"
 import { HIDE_FREE_AGENT_POST } from "../../graphql/mutations/hideFreeAgentPost"
-import Alert from "../elements/Alert"
+import { UPDATE_FREE_AGENT_POST } from "../../graphql/mutations/updateFreeAgentPost"
 import { FREE_AGENT_MATCHES } from "../../graphql/queries/freeAgentMatches"
-import { useTranslation } from "react-i18next"
+import { FREE_AGENT_POSTS } from "../../graphql/queries/freeAgentPosts"
+import MyThemeContext from "../../themeContext"
+import { FreeAgentPost } from "../../types"
+import Alert from "../elements/Alert"
+import Button from "../elements/Button"
+import Modal from "../elements/Modal"
+import TextArea from "../elements/TextArea"
 
 interface FAPostModalProps {
   closeModal: () => void

@@ -594,6 +594,8 @@ export type NewUser = {
   fullUsername: Scalars['String'];
   discordId: Scalars['String'];
   avatarUrl: Scalars['String'];
+  /** When appended to sendou.ink/u/ makes for a url to the user's profile */
+  urlIdentifier: Scalars['String'];
 };
 
 export enum LinkType {
@@ -1114,6 +1116,11 @@ export enum SalmonRunRecordCategory {
   LtCohock = 'LT_COHOCK'
 }
 
+export type UserLeanFragment = (
+  { __typename?: 'NewUser' }
+  & Pick<NewUser, 'urlIdentifier' | 'fullUsername' | 'avatarUrl'>
+);
+
 export type GetPeakXPowerLeaderboardQueryVariables = Exact<{
   page?: Maybe<Scalars['Int']>;
   weapon?: Maybe<Scalars['String']>;
@@ -1130,13 +1137,19 @@ export type GetPeakXPowerLeaderboardQuery = (
       & Pick<XRankPlacement, 'id' | 'playerName' | 'xPower' | 'weapon' | 'mode' | 'month' | 'year'>
       & { user?: Maybe<(
         { __typename?: 'NewUser' }
-        & Pick<NewUser, 'discordId' | 'fullUsername' | 'avatarUrl'>
+        & UserLeanFragment
       )> }
     )> }
   ) }
 );
 
-
+export const UserLeanFragmentDoc = gql`
+    fragment UserLean on NewUser {
+  urlIdentifier
+  fullUsername
+  avatarUrl
+}
+    `;
 export const GetPeakXPowerLeaderboardDocument = gql`
     query getPeakXPowerLeaderboard($page: Int, $weapon: String) {
   getPeakXPowerLeaderboard(page: $page, weapon: $weapon) {
@@ -1149,16 +1162,14 @@ export const GetPeakXPowerLeaderboardDocument = gql`
       month
       year
       user {
-        discordId
-        fullUsername
-        avatarUrl
+        ...UserLean
       }
     }
     recordsCount
     pageCount
   }
 }
-    `;
+    ${UserLeanFragmentDoc}`;
 
 /**
  * __useGetPeakXPowerLeaderboardQuery__

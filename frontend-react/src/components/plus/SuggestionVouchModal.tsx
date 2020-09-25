@@ -1,27 +1,27 @@
-import React, { useState, useContext } from "react"
-import Modal from "../elements/Modal"
-import UserSelector from "../common/UserSelector"
+import { useMutation } from "@apollo/client"
+import {
+  Box,
+  Flex,
+  FormControl,
+  FormErrorMessage,
+  FormHelperText,
+  FormLabel,
+  Radio,
+  RadioGroup,
+  Stack,
+  useToast,
+} from "@chakra-ui/core"
+import React, { useContext, useState } from "react"
 import { ADD_SUGGESTION } from "../../graphql/mutations/addSuggestion"
 import { ADD_VOUCH } from "../../graphql/mutations/addVouch"
-import { useMutation } from "@apollo/react-hooks"
-import {
-  useToast,
-  FormControl,
-  FormLabel,
-  FormHelperText,
-  RadioGroup,
-  Radio,
-  Flex,
-  Box,
-  FormErrorMessage,
-  Stack,
-} from "@chakra-ui/core"
-import MyThemeContext from "../../themeContext"
-import TextArea from "../elements/TextArea"
-import Button from "../elements/Button"
 import { SUGGESTIONS } from "../../graphql/queries/suggestions"
-import { VOUCHES } from "../../graphql/queries/vouches"
 import { USER } from "../../graphql/queries/user"
+import { VOUCHES } from "../../graphql/queries/vouches"
+import MyThemeContext from "../../themeContext"
+import UserSelector from "../common/UserSelector"
+import Button from "../elements/Button"
+import Modal from "../elements/Modal"
+import TextArea from "../elements/TextArea"
 
 interface AddSuggestionVars {
   discord_id: string

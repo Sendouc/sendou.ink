@@ -1,4 +1,4 @@
-import { gql, DocumentNode } from "apollo-boost"
+import { DocumentNode, gql } from "@apollo/client"
 
 export const DELETE_LIKE: DocumentNode = gql`
   mutation deleteLike($discord_id: String!) {

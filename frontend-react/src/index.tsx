@@ -1,8 +1,7 @@
-import { ApolloProvider } from "@apollo/react-hooks"
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client"
 import { ChakraProvider } from "@chakra-ui/core"
 import theme from "@chakra-ui/theme"
 import { createHistory, LocationProvider } from "@reach/router"
-import ApolloClient from "apollo-boost"
 import React from "react"
 import ReactDOM from "react-dom"
 import { HelmetProvider } from "react-helmet-async"
@@ -16,6 +15,7 @@ const client = new ApolloClient({
     process.env.NODE_ENV === "production"
       ? "/graphql"
       : "http://localhost:3001/graphql",
+  cache: new InMemoryCache(),
 })
 
 let history = createHistory(window as any)

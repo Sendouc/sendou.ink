@@ -1,4 +1,4 @@
-import { DocumentNode, gql } from "apollo-boost"
+import { DocumentNode, gql } from "@apollo/client"
 
 export interface Suggestion {
   discord_user: {

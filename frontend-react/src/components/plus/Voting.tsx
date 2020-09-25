@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@apollo/react-hooks"
+import { useMutation, useQuery } from "@apollo/client"
 import { Box, Flex, Progress, useToast } from "@chakra-ui/core"
 import React, { useContext, useEffect, useState } from "react"
 import { AddVotesVars, ADD_VOTES } from "../../graphql/mutations/addVotes"

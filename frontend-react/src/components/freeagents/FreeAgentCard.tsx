@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@apollo/react-hooks"
+import { useMutation, useQuery } from "@apollo/client"
 import { Box, Flex, Heading, IconButton, Image } from "@chakra-ui/core"
 import { Link } from "@reach/router"
 import React, { useContext, useState } from "react"

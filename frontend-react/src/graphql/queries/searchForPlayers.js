@@ -1,4 +1,4 @@
-import { gql } from "apollo-boost"
+import { gql } from "@apollo/client"
 
 export const searchForPlayers = gql`
   query searchForPlayers($name: String!, $exact: Boolean) {

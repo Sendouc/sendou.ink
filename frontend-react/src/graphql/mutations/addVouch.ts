@@ -1,4 +1,4 @@
-import { gql, DocumentNode } from "apollo-boost"
+import { DocumentNode, gql } from "@apollo/client"
 
 export const ADD_VOUCH: DocumentNode = gql`
   mutation addVouch($discord_id: String!, $server: String!, $region: String!) {

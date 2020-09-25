@@ -1,4 +1,4 @@
-import { gql, DocumentNode } from "apollo-boost"
+import { DocumentNode, gql } from "@apollo/client"
 import { DetailedTeamInfo } from "../../types"
 
 export interface SearchForDraftCupData {

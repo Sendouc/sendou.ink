@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery } from "@apollo/client"
 import { Box } from "@chakra-ui/core"
 import { RouteComponentProps, useLocation } from "@reach/router"
 import React, { useContext, useEffect, useRef, useState } from "react"

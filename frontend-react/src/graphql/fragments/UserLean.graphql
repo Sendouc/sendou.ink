@@ -1,0 +1,5 @@
+fragment UserLean on NewUser {
+  urlIdentifier
+  fullUsername
+  avatarUrl
+}

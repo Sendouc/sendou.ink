@@ -1,4 +1,4 @@
-import { gql, DocumentNode } from "apollo-boost"
+import { DocumentNode, gql } from "@apollo/client"
 import { User } from "../../types"
 
 export interface SearchForUserData {

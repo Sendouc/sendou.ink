@@ -1,33 +1,33 @@
-import React, { useState } from "react"
-import { useQuery } from "@apollo/react-hooks"
-import { USER } from "../../graphql/queries/user"
-import {
-  UserData,
-  FreeAgentPostsData,
-  Weapon,
-  FreeAgentPost,
-} from "../../types"
-import { FREE_AGENT_POSTS } from "../../graphql/queries/freeAgentPosts"
-import Loading from "../common/Loading"
-import Error from "../common/Error"
+import { useQuery } from "@apollo/client"
+import { Box, Collapse, Flex } from "@chakra-ui/core"
 import { RouteComponentProps } from "@reach/router"
-import Posts from "./Posts"
-import PageHeader from "../common/PageHeader"
+import React, { useState } from "react"
 import { Helmet } from "react-helmet-async"
-import WeaponSelector from "../common/WeaponSelector"
-import RadioGroup from "../elements/RadioGroup"
-import { continents } from "../../utils/lists"
-import { Collapse, Flex, Box } from "@chakra-ui/core"
-import Button from "../elements/Button"
+import { useTranslation } from "react-i18next"
 import { FaFilter } from "react-icons/fa"
-import FAPostModal from "./FAPostModal"
 import {
   FreeAgentMatchesData,
   FREE_AGENT_MATCHES,
 } from "../../graphql/queries/freeAgentMatches"
-import Matches from "./Matches"
+import { FREE_AGENT_POSTS } from "../../graphql/queries/freeAgentPosts"
+import { USER } from "../../graphql/queries/user"
+import {
+  FreeAgentPost,
+  FreeAgentPostsData,
+  UserData,
+  Weapon,
+} from "../../types"
+import { continents } from "../../utils/lists"
+import Error from "../common/Error"
+import Loading from "../common/Loading"
+import PageHeader from "../common/PageHeader"
+import WeaponSelector from "../common/WeaponSelector"
 import Alert from "../elements/Alert"
-import { useTranslation } from "react-i18next"
+import Button from "../elements/Button"
+import RadioGroup from "../elements/RadioGroup"
+import FAPostModal from "./FAPostModal"
+import Matches from "./Matches"
+import Posts from "./Posts"
 
 const playstyleToEnum = {
   "Frontline/Slayer": "FRONTLINE",

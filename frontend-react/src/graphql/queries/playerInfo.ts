@@ -1,4 +1,4 @@
-import { gql, DocumentNode } from "apollo-boost"
+import { DocumentNode, gql } from "@apollo/client"
 
 export const PLAYER_INFO: DocumentNode = gql`
   query playerInfo($twitter: String) {

@@ -1,18 +1,17 @@
+import { useMutation, useQuery } from "@apollo/client"
+import { Box, useToast } from "@chakra-ui/core"
 import React, { useState } from "react"
-
-import DatePicker from "../elements/DatePicker"
-import Loading from "../common/Loading"
-import Error from "../common/Error"
-import { useQuery, useMutation } from "@apollo/react-hooks"
-import { PLUS_INFO, PlusInfoData } from "../../graphql/queries/plusInfo"
-import {
-  START_VOTING,
-  StartVotingVars,
-} from "../../graphql/mutations/startVoting"
 import { END_VOTING } from "../../graphql/mutations/endVoting"
-import { useToast, Box } from "@chakra-ui/core"
-import Button from "../elements/Button"
+import {
+  StartVotingVars,
+  START_VOTING,
+} from "../../graphql/mutations/startVoting"
+import { PlusInfoData, PLUS_INFO } from "../../graphql/queries/plusInfo"
+import Error from "../common/Error"
+import Loading from "../common/Loading"
 import SubHeader from "../common/SubHeader"
+import Button from "../elements/Button"
+import DatePicker from "../elements/DatePicker"
 
 const VotingManager: React.FC = () => {
   const [endDate, setEndDate] = useState<Date | null>(new Date())

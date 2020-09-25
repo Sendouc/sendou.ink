@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery } from "@apollo/client"
 import { Avatar, Box, Flex, Grid } from "@chakra-ui/core"
 import { Link, Redirect, RouteComponentProps } from "@reach/router"
 import { stringify } from "querystring"

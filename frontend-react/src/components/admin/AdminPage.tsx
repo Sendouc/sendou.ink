@@ -1,20 +1,20 @@
+import { useMutation, useQuery } from "@apollo/client"
+import { Box, Flex, useToast } from "@chakra-ui/core"
+import { Redirect, RouteComponentProps } from "@reach/router"
 import React, { useState } from "react"
-import PageHeader from "../common/PageHeader"
-import { RouteComponentProps, Redirect } from "@reach/router"
-import { useQuery, useMutation } from "@apollo/react-hooks"
-import { UserData } from "../../types"
-import { USER } from "../../graphql/queries/user"
-import Loading from "../common/Loading"
-import Error from "../common/Error"
 import {
-  UPDATE_TWITTER,
   UpdateTwitterVars,
+  UPDATE_TWITTER,
 } from "../../graphql/mutations/updateTwitter"
-import { useToast, Flex, Box } from "@chakra-ui/core"
-import Input from "../elements/Input"
-import Button from "../elements/Button"
-import VotingManager from "./VotingManager"
+import { USER } from "../../graphql/queries/user"
+import { UserData } from "../../types"
+import Error from "../common/Error"
+import Loading from "../common/Loading"
+import PageHeader from "../common/PageHeader"
 import SubHeader from "../common/SubHeader"
+import Button from "../elements/Button"
+import Input from "../elements/Input"
+import VotingManager from "./VotingManager"
 
 const AdminPage: React.FC<RouteComponentProps> = () => {
   const [updateTwitterForms, setUpdateTwitterForms] = useState<

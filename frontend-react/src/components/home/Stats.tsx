@@ -1,11 +1,11 @@
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery } from "@apollo/client"
 import { Box, Flex, Skeleton } from "@chakra-ui/core"
 import { Link } from "@reach/router"
 import React, { useContext } from "react"
+import { Trans, useTranslation } from "react-i18next"
 import { STATS } from "../../graphql/queries/stats"
 import MyThemeContext from "../../themeContext"
 import Error from "../common/Error"
-import { useTranslation, Trans } from "react-i18next"
 
 interface StatsData {
   stats: {

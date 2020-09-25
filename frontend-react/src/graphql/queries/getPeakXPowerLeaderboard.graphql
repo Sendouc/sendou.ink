@@ -9,9 +9,7 @@ query getPeakXPowerLeaderboard($page: Int, $weapon: String) {
       month
       year
       user {
-        discordId
-        fullUsername
-        avatarUrl
+        ...UserLean
       }
     }
     recordsCount

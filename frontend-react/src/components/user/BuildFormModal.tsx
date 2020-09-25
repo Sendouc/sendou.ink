@@ -1,40 +1,40 @@
+import { useMutation } from "@apollo/client"
+import { Box, Flex, useToast } from "@chakra-ui/core"
 import React, { useState } from "react"
-import Modal from "../elements/Modal"
-import WeaponSelector from "../common/WeaponSelector"
+import { useTranslation } from "react-i18next"
+import { ADD_BUILD } from "../../graphql/mutations/addBuild"
+import { DELETE_BUILD } from "../../graphql/mutations/deleteBuild"
+import { UPDATE_BUILD } from "../../graphql/mutations/updateBuild"
 import {
-  Weapon,
-  Build,
-  HeadGear,
-  ClothingGear,
-  ShoesGear,
   Ability,
-  HeadOnlyAbility,
+  Build,
+  ClothingGear,
   ClothingOnlyAbility,
+  HeadGear,
+  HeadOnlyAbility,
+  ShoesGear,
   ShoesOnlyAbility,
   StackableAbility,
+  Weapon,
 } from "../../types"
-import WeaponImage from "../common/WeaponImage"
-import Select from "../elements/Select"
 import {
-  headSelectOptions,
-  clothingSelectOptions,
-  shoesSelectOptions,
-  headOnlyAbilities,
   clothingOnlyAbilities,
+  clothingSelectOptions,
+  headOnlyAbilities,
+  headSelectOptions,
   shoesOnlyAbilities,
+  shoesSelectOptions,
 } from "../../utils/lists"
 import GearImage from "../builds/GearImage"
-import Input from "../elements/Input"
 import ViewSlots from "../builds/ViewSlots"
-import AbilityButtons from "./AbilityButtons"
-import TextArea from "../elements/TextArea"
+import WeaponImage from "../common/WeaponImage"
+import WeaponSelector from "../common/WeaponSelector"
 import Button from "../elements/Button"
-import { useMutation } from "@apollo/react-hooks"
-import { ADD_BUILD } from "../../graphql/mutations/addBuild"
-import { useToast, Box, Flex } from "@chakra-ui/core"
-import { UPDATE_BUILD } from "../../graphql/mutations/updateBuild"
-import { DELETE_BUILD } from "../../graphql/mutations/deleteBuild"
-import { useTranslation } from "react-i18next"
+import Input from "../elements/Input"
+import Modal from "../elements/Modal"
+import Select from "../elements/Select"
+import TextArea from "../elements/TextArea"
+import AbilityButtons from "./AbilityButtons"
 
 interface BuildFormModalProps {
   existingGear: ExistingGearObject

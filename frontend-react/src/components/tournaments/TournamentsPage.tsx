@@ -1,24 +1,24 @@
+import { useQuery } from "@apollo/client"
+import { Alert, AlertIcon, Box, Grid } from "@chakra-ui/core"
+import { Link, RouteComponentProps } from "@reach/router"
+import { stringify } from "querystring"
 import React, { useState } from "react"
-import { RouteComponentProps, Link } from "@reach/router"
 import { Helmet } from "react-helmet-async"
-import PageHeader from "../common/PageHeader"
+import { useTranslation } from "react-i18next"
 import {
-  useQueryParams,
-  NumberParam,
-  StringParam,
   ArrayParam,
   encodeQueryParams,
+  NumberParam,
+  StringParam,
+  useQueryParams,
 } from "use-query-params"
-import { useQuery } from "@apollo/react-hooks"
 import { SEARCH_FOR_TOURNAMENTS } from "../../graphql/queries/searchForTournaments"
-import Loading from "../common/Loading"
 import Error from "../common/Error"
-import TournamentCard from "./TournamentCard"
-import { Box, Grid, Alert, AlertIcon } from "@chakra-ui/core"
-import TournamentFilters from "./TournamentFilters"
+import Loading from "../common/Loading"
+import PageHeader from "../common/PageHeader"
 import Pagination from "../common/Pagination"
-import { stringify } from "querystring"
-import { useTranslation } from "react-i18next"
+import TournamentCard from "./TournamentCard"
+import TournamentFilters from "./TournamentFilters"
 
 interface SearchForTournamentsData {
   searchForTournaments: {

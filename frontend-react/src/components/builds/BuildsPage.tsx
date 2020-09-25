@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery } from "@apollo/client"
 import { Box, Button, Flex, FormLabel, Heading, Switch } from "@chakra-ui/core"
 import { RouteComponentProps } from "@reach/router"
 import useLocalStorage from "@rehooks/local-storage"

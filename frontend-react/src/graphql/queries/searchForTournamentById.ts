@@ -1,5 +1,5 @@
-import { gql, DocumentNode } from "apollo-boost"
-import { Weapon, Ability } from "../../types"
+import { DocumentNode, gql } from "@apollo/client"
+import { Ability, Weapon } from "../../types"
 
 export interface SearchForTournamentByIdVars {
   id: string

@@ -1,19 +1,19 @@
+import { useQuery } from "@apollo/client"
+import { Box, Flex, Heading } from "@chakra-ui/core"
+import { Link } from "@reach/router"
 import React, { useContext } from "react"
-import Loading from "../common/Loading"
-import Error from "../common/Error"
-import { useQuery } from "@apollo/react-hooks"
+import { useTranslation } from "react-i18next"
+import { FiClock, FiInfo } from "react-icons/fi"
 import {
   UpcomingEventsData,
   UPCOMING_EVENTS,
 } from "../../graphql/queries/upcomingEvents"
-import { getWeek } from "../../utils/helperFunctions"
-import SubHeader from "../common/SubHeader"
-import { Heading, Flex, Box } from "@chakra-ui/core"
-import { FiClock, FiInfo } from "react-icons/fi"
 import MyThemeContext from "../../themeContext"
+import { getWeek } from "../../utils/helperFunctions"
+import Error from "../common/Error"
+import Loading from "../common/Loading"
+import SubHeader from "../common/SubHeader"
 import Button from "../elements/Button"
-import { Link } from "@reach/router"
-import { useTranslation } from "react-i18next"
 
 const WeeksTournaments: React.FC = () => {
   const { themeColorWithShade, grayWithShade } = useContext(MyThemeContext)

@@ -1,8 +1,8 @@
+import { useQuery } from "@apollo/client"
 import React from "react"
-import { useQuery } from "@apollo/react-hooks"
 import { USERS, UsersData } from "../../graphql/queries/users"
-import Error from "./Error"
 import Select from "../elements/Select"
+import Error from "./Error"
 
 interface UserSelectorProps {
   id?: string

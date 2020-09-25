@@ -67,6 +67,8 @@ const typeDef = gql`
     fullUsername: String!
     discordId: String!
     avatarUrl: String!
+    "When appended to sendou.ink/u/ makes for a url to the user's profile"
+    urlIdentifier: String!
   }
 `
 
@@ -75,6 +77,7 @@ const resolvers = {
     fullUsername: (root) => `${root.username}#${root.discriminator}`,
     avatarUrl: (root) =>
       `https://cdn.discordapp.com/avatars/${root.discordId}/${root.discordAvatar}.`,
+    urlIdentifier: (root) => root.discordId,
   },
   User: {
     top500: async (root) => {
