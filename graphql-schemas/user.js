@@ -61,9 +61,21 @@ const typeDef = gql`
     custom_url: String
     top500: Boolean!
   }
+
+  type NewUser {
+    id: ID!
+    fullUsername: String!
+    discordId: String!
+    avatarUrl: String!
+  }
 `
 
 const resolvers = {
+  NewUser: {
+    fullUsername: (root) => `${root.username}#${root.discriminator}`,
+    avatarUrl: (root) =>
+      `https://cdn.discordapp.com/avatars/${root.discordId}/${root.discordAvatar}.`,
+  },
   User: {
     top500: async (root) => {
       if (typeof root.top500 === "boolean") return root.top500

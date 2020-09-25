@@ -1,6 +1,9 @@
 import { gql, UserInputError } from "apollo-server-express"
 import { raw } from "objection"
+import Weapon from "../models/Weapon"
 import XRankPlacement from "../models/XRankPlacement"
+
+const RECORDS_PER_PAGE = 25
 
 /*
 const placements = await Placement.find({ month: 12 })
@@ -22,6 +25,10 @@ const typeDef = gql`
   extend type Query {
     getXRankPlacements: [XRankPlacement!]!
     getXRankLeaderboards(type: XRankLeaderboardType!): [XRankPlacement!]!
+    getPeakXPowerLeaderboard(
+      page: Int = 1
+      weapon: String
+    ): PaginatedXRankPlacements!
   }
 
   enum XRankLeaderboardType {
@@ -41,15 +48,24 @@ const typeDef = gql`
 
   type XRankPlacement {
     id: ID!
+    "Player's ID. Comes from their Nintendo Switch account."
     playerId: String!
+    "Player's name at the time of the placement."
     playerName: String!
+    "Player's ranking in the mode that month (1-500)"
     ranking: Int!
     xPower: Float!
     weapon: String!
     mode: RankedMode!
     month: Int!
     year: Int!
-    user: User
+    user: NewUser
+  }
+
+  type PaginatedXRankPlacements {
+    records: [XRankPlacement!]!
+    recordsCount: Int!
+    pageCount: Int!
   }
 
   type Placement {
@@ -63,20 +79,9 @@ const resolvers = {
     },
     getXRankLeaderboards: async (_: any, { type }: any) => {
       switch (type) {
-        case "PEAK_X_POWER":
-          return XRankPlacement.query()
-            .from(
-              XRankPlacement.query()
-                .distinctOn("playerId")
-                .orderBy(["playerId", { column: "xPower", order: "desc" }])
-                .as("players")
-            )
-            .orderBy("xPower", "desc")
-            .limit(100)
-        case "WEAPON_PEAK_X_POWER":
-          return []
         case "FOUR_MODE_PEAK_AVERAGE":
           const a = await XRankPlacement.query()
+            .debug()
             .from(
               XRankPlacement.query()
                 .select(["xRankPlacements.playerId", "xRankPlacements.mode"])
@@ -115,16 +120,47 @@ const resolvers = {
           throw new UserInputError("invalid leaderboard type")
       }
     },
+    getPeakXPowerLeaderboard: (_: any, args: any) => {
+      if (!args.weapon) {
+        return XRankPlacement.query()
+          .from(
+            XRankPlacement.query()
+              .distinctOn("playerId")
+              .orderBy(["playerId", { column: "xPower", order: "desc" }])
+              .as("players")
+          )
+          .orderBy("xPower", "desc")
+          .page(args.page - 1, RECORDS_PER_PAGE)
+          .withGraphFetched("weapon")
+      }
+
+      return XRankPlacement.query()
+        .from(
+          XRankPlacement.query()
+            .distinctOn("playerId")
+            .where(
+              "weaponId",
+              "=",
+              Weapon.query().findOne({ name: args.weapon }).select("id")
+            )
+            .orderBy(["playerId", { column: "xPower", order: "desc" }])
+            .as("players")
+        )
+        .orderBy("xPower", "desc")
+        .page(args.page - 1, RECORDS_PER_PAGE)
+        .withGraphFetched("weapon")
+    },
   },
   XRankPlacement: {
     xPower: (root: any) => root.xPower / 10,
+    weapon: (root: any) => root.weapon.name,
+  },
+  PaginatedXRankPlacements: {
+    pageCount: (root: any) => Math.ceil(root.total / RECORDS_PER_PAGE),
+    recordsCount: (root: any) => root.total,
+    records: (root: any) => root.results,
   },
 }
-
-/*
-              XRankPlacement.query()
-                .where("playerId", ref("playerId"))
-                .select("playerName"),*/
 
 module.exports = {
   Placement: typeDef,
