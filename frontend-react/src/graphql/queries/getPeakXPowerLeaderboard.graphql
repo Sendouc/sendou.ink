@@ -1,0 +1,20 @@
+query getPeakXPowerLeaderboard($page: Int, $weapon: String) {
+  getPeakXPowerLeaderboard(page: $page, weapon: $weapon) {
+    records {
+      id
+      playerName
+      xPower
+      weapon
+      mode
+      month
+      year
+      user {
+        discordId
+        fullUsername
+        avatarUrl
+      }
+    }
+    recordsCount
+    pageCount
+  }
+}
