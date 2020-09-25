@@ -1,7 +1,10 @@
 import { gql, UserInputError } from "apollo-server-express"
 import { raw } from "objection"
+import UserObjection from "../models/User"
 import Weapon from "../models/Weapon"
 import XRankPlacement from "../models/XRankPlacement"
+import Player from "../mongoose-models/player"
+import User from "../mongoose-models/user"
 
 const RECORDS_PER_PAGE = 25
 
@@ -19,6 +22,25 @@ const placements = await Placement.find({ month: 12 })
           weaponId: Weapon.query().findOne({ name: p.weapon }).select("id"),
         }))
       ) 
+
+
+      const players = await Player.find({})
+          const users = await User.find({})
+
+          for (const player of players) {
+            if (!player.twitter) continue
+
+            const found = users.find(
+              (u: any) => u.twitter_name === player.twitter
+            )
+            if (!found) continue
+
+            await UserObjection.query()
+              .patch({ playerId: player.unique_id })
+              .where("discordId", "=", found.discord_id)
+          }
+
+          break
 */
 
 const typeDef = gql`
@@ -79,6 +101,24 @@ const resolvers = {
     },
     getXRankLeaderboards: async (_: any, { type }: any) => {
       switch (type) {
+        case "PEAK_X_POWER":
+          const players = await Player.find({})
+          const users = await User.find({})
+
+          for (const player of players) {
+            if (!player.twitter) continue
+
+            const found = users.find(
+              (u: any) => u.twitter_name === player.twitter
+            )
+            if (!found) continue
+
+            await UserObjection.query()
+              .patch({ playerId: player.unique_id })
+              .where("discordId", "=", found.discord_id)
+          }
+
+          break
         case "FOUR_MODE_PEAK_AVERAGE":
           const a = await XRankPlacement.query()
             .debug()
@@ -154,6 +194,7 @@ const resolvers = {
   XRankPlacement: {
     xPower: (root: any) => root.xPower / 10,
     weapon: (root: any) => root.weapon.name,
+    user: (root: any) => null,
   },
   PaginatedXRankPlacements: {
     pageCount: (root: any) => Math.ceil(root.total / RECORDS_PER_PAGE),
