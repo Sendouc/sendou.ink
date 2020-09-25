@@ -13,7 +13,7 @@ import { Link } from "@reach/router"
 import React, { useContext, useEffect, useState } from "react"
 import { Trans, useTranslation } from "react-i18next"
 import { FiBarChart2, FiEdit, FiInfo, FiTarget } from "react-icons/fi"
-import { top500 } from "../../assets/imageImports"
+import top500logo from "../../assets/top500.png"
 import MyThemeContext from "../../themeContext"
 import { Build } from "../../types"
 import Flag from "../common/Flag"
@@ -80,7 +80,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
             </Box>
             {build.top && (
               <Image
-                src={top500}
+                src={top500logo}
                 alt="x rank top 500 logo"
                 height="40px"
                 width="auto"

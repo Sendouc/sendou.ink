@@ -23,7 +23,13 @@ interface LayoutProps {
   children: React.ReactNode
 }
 
-const PAGES_WITH_WIDE_CONTAINER = ["/analyzer", "/xsearch", "/builds", "/plans"]
+const PAGES_WITH_WIDE_CONTAINER = [
+  "/analyzer",
+  "/xsearch",
+  "/builds",
+  "/plans",
+  "/xleaderboards",
+]
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { darkerBgColor, bgColor, textColor } = useContext(MyThemeContext)

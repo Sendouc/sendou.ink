@@ -71,3 +71,9 @@ export const parseAndGetLocalizedMonthYear = (
 
   return getLocalizedMonthYearString(month, year, locale)
 }
+
+export const getPlacementString = (placement: number) => {
+  if (placement > 0 && placement < 4) return ["", "🥇", "🥈", "🥉"][placement]
+
+  return placement + "."
+}

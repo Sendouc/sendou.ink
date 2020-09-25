@@ -65,7 +65,6 @@ import resort from "./Splatoon1Maps/resort.png"
 import rig from "./Splatoon1Maps/rig.png"
 import underpass from "./Splatoon1Maps/underpass.png"
 import thirdPlace from "./third_place.png"
-import * as top500logo from "./top500.png"
 
 export const abilityIcons = {
   BDU,
@@ -98,8 +97,6 @@ export const abilityIcons = {
   "": UNKNOWN,
   EMPTY,
 } as const
-
-export const top500 = top500logo
 
 export const posterGirl = {
   light: posterGirlDrawingLight,

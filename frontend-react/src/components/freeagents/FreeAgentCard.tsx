@@ -4,7 +4,7 @@ import { Link } from "@reach/router"
 import React, { useContext, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { FaMinus, FaPlus, FaTwitter } from "react-icons/fa"
-import { top500 } from "../../assets/imageImports"
+import top500logo from "../../assets/top500.png"
 import { ADD_LIKE } from "../../graphql/mutations/addLike"
 import { DELETE_LIKE } from "../../graphql/mutations/deleteLike"
 import { FREE_AGENT_MATCHES } from "../../graphql/queries/freeAgentMatches"
@@ -83,7 +83,7 @@ const FreeAgentCard: React.FC<FreeAgentCardProps> = ({
         <Box width="50px" m="1em">
           {discord_user.top500 && (
             <Image
-              src={top500}
+              src={top500logo}
               alt={t("freeagents;Free agent has reached Top 500 in X Rank")}
               height="40px"
               width="auto"
