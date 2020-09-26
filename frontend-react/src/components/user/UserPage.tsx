@@ -11,6 +11,7 @@ import {
 import { Redirect, RouteComponentProps } from "@reach/router"
 import React, { useContext } from "react"
 import { Helmet } from "react-helmet-async"
+import { Trans, useTranslation } from "react-i18next"
 import { FaTrophy, FaTshirt } from "react-icons/fa"
 import { IconType } from "react-icons/lib/cjs"
 import { PLAYER_INFO } from "../../graphql/queries/playerInfo"
@@ -29,16 +30,15 @@ import {
   SearchForBuildsVars,
   UserData,
 } from "../../types"
-import { weapons, canAddJpnBuildsIds } from "../../utils/lists"
+import { canAddJpnBuildsIds, weapons } from "../../utils/lists"
 import Error from "../common/Error"
 import Loading from "../common/Loading"
 import Markdown from "../elements/Markdown"
 import AvatarWithInfo from "./AvatarWithInfo"
 import BuildTab from "./BuildTab"
 import XRankTab from "./XRankTab"
-import { useTranslation, Trans } from "react-i18next"
 
-interface Tab {
+interface TabI {
   id: number
   icon: IconType
   title: JSX.Element
@@ -100,7 +100,7 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
   const user = data.searchForUser
   const builds = buildsData.searchForBuilds
 
-  const tabs: Tab[] = []
+  const tabs: TabI[] = []
 
   if (builds.length > 0 || userLean?.discord_id === user.discord_id) {
     tabs.push({

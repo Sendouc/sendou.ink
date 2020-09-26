@@ -1,17 +1,17 @@
-import React, { useState, useContext } from "react"
+import { Box, Flex } from "@chakra-ui/core"
+import React, { useContext, useState } from "react"
 import Draggable from "react-draggable"
+import { useTranslation } from "react-i18next"
+import MyThemeContext from "../../themeContext"
+import { Weapon } from "../../types"
 import { weapons } from "../../utils/lists"
 import WeaponImage from "../common/WeaponImage"
-import { Box, Flex } from "@chakra-ui/core"
-import { Weapon } from "../../types"
-import MyThemeContext from "../../themeContext"
-import { useTranslation } from "react-i18next"
 
-interface DraggableWeaponSelector {
+interface DraggableWeaponSelectorProps {
   addWeaponImage: (weapon: Weapon) => void
 }
 
-const DraggableWeaponSelector: React.FC<DraggableWeaponSelector> = ({
+const DraggableWeaponSelector: React.FC<DraggableWeaponSelectorProps> = ({
   addWeaponImage,
 }) => {
   const { darkerBgColor } = useContext(MyThemeContext)

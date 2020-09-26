@@ -1,15 +1,17 @@
-import React, { useContext } from "react"
-import MyThemeContext from "../../themeContext"
 import {
-  Flex,
   Box,
-  Slider,
-  SliderTrack,
-  SliderFilledTrack,
-  SliderThumb,
+  Flex,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  Text,
 } from "@chakra-ui/core"
+import React, { useContext } from "react"
+import { Trans, useTranslation } from "react-i18next"
+import MyThemeContext from "../../themeContext"
 import AbilityIcon from "../builds/AbilityIcon"
-import { useTranslation, Trans } from "react-i18next"
 
 interface LdeSliderProps {
   value: number
@@ -17,9 +19,7 @@ interface LdeSliderProps {
 }
 
 const LdeSlider: React.FC<LdeSliderProps> = ({ value, setValue }) => {
-  const { themeColor, themeColorWithShade, grayWithShade } = useContext(
-    MyThemeContext
-  )
+  const { themeColorWithShade, grayWithShade } = useContext(MyThemeContext)
   const { t } = useTranslation()
   const bonusAp = Math.floor((24 / 21) * value)
 
@@ -42,20 +42,31 @@ const LdeSlider: React.FC<LdeSliderProps> = ({ value, setValue }) => {
       flexDirection="column"
       mb="1em"
     >
-      <Slider
-        value={value}
-        onChange={(value: number) => setValue(value)}
-        max={21}
+      <Text
+        fontSize="sm"
+        color={grayWithShade}
+        textTransform="uppercase"
+        letterSpacing="wider"
+        lineHeight="1rem"
+        fontWeight="medium"
+        mb={1}
       >
-        <SliderTrack bg={`${themeColor}.100`}>
-          <SliderFilledTrack bg={themeColorWithShade} />
-        </SliderTrack>
-        <SliderThumb w={6} h={6}>
-          <Box minW="30px">
-            <AbilityIcon ability="LDE" size="TINY" />
-          </Box>
-        </SliderThumb>
-      </Slider>
+        {t("analyzer;Intensity")}
+      </Text>
+      <NumberInput
+        size="lg"
+        defaultValue={0}
+        min={0}
+        max={21}
+        value={value}
+        onChange={(_, value) => setValue(value)}
+      >
+        <NumberInputField />
+        <NumberInputStepper>
+          <NumberIncrementStepper />
+          <NumberDecrementStepper />
+        </NumberInputStepper>
+      </NumberInput>
       {value > 0 && (
         <Box color={themeColorWithShade} fontWeight="bold" mt="1em">
           +{bonusAp}

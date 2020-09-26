@@ -1,14 +1,12 @@
-import React, { useContext, useState } from "react"
+import { Box, Collapse, Flex, Link } from "@chakra-ui/core"
 import { RouteComponentProps } from "@reach/router"
-import PageHeader from "../common/PageHeader"
-import { Box, Link, Flex, Collapse } from "@chakra-ui/core"
+import React, { useContext, useState } from "react"
 import MyThemeContext from "../../themeContext"
+import { abilitiesGameOrder, gearCodes, weaponCodes } from "../../utils/lists"
+import PageHeader from "../common/PageHeader"
 import WeaponImage from "../common/WeaponImage"
-import Emoji from "../elements/Emoji"
 import Button from "../elements/Button"
-import { weaponCodes, abilitiesGameOrder, gearCodes } from "../../utils/lists"
-
-interface MarkdownHelpPageProps {}
+import Emoji from "../elements/Emoji"
 
 const MarkdownHelpPage: React.FC<RouteComponentProps> = () => {
   const { themeColorWithShade } = useContext(MyThemeContext)

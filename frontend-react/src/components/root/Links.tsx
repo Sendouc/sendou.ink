@@ -1,17 +1,17 @@
-import React, { useContext } from "react"
 import { useQuery } from "@apollo/react-hooks"
-import { LINKS } from "../../graphql/queries/links"
-import Loading from "../common/Loading"
-import Error from "../common/Error"
-import { Helmet } from "react-helmet-async"
-import PageHeader from "../common/PageHeader"
+import { Box, Flex, Heading, Link } from "@chakra-ui/core"
 import { RouteComponentProps } from "@reach/router"
-import { Heading, Link, Flex, Box } from "@chakra-ui/core"
-import MyThemeContext from "../../themeContext"
+import React, { useContext } from "react"
+import { Helmet } from "react-helmet-async"
 import { useTranslation } from "react-i18next"
+import { LINKS } from "../../graphql/queries/links"
+import MyThemeContext from "../../themeContext"
+import Error from "../common/Error"
+import Loading from "../common/Loading"
+import PageHeader from "../common/PageHeader"
 import Alert from "../elements/Alert"
 
-interface Link {
+interface LinkI {
   title: string
   url: string
   description: string
@@ -19,7 +19,7 @@ interface Link {
 }
 
 interface LinksData {
-  links: Link[]
+  links: LinkI[]
 }
 
 const Links: React.FC<RouteComponentProps> = () => {
@@ -31,7 +31,7 @@ const Links: React.FC<RouteComponentProps> = () => {
   if (error) return <Error errorMessage={error.message} />
   const links = data.links
 
-  const linkMap = (link: Link) => (
+  const linkMap = (link: LinkI) => (
     <React.Fragment key={link.title}>
       <Link href={link.url} color={themeColorWithShade}>
         <b>{link.title}</b>
