@@ -1398,6 +1398,7 @@
     "Custom URL can be at most 32 characters long": "Custom URL can be at most 32 characters long",
     "Custom URL has to contain at least one letter": "Custom URL has to contain at least one letter",
     "Custom URL can only contain letters and numbers": "Custom URL can only contain letters and numbers",
+    "Filter builds by title or weapon": "Filter builds by title or weapon",
     "Weapon pool's max size is 5": "Weapon pool's max size is 5",
     "Bio's max length is 10000": "Bio's max length is 10000",
     "Profile updated": "Profile updated",
