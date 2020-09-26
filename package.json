@@ -4,16 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "startprod": "cross-env USE_PRODUCTION_DB=TRUE ts-node-dev index.js",
-    "withprod": "cross-env LOGGED_IN=TRUE USE_PRODUCTION_DB=TRUE node index.js",
-    "withdev": "cross-env LOGGED_IN=TRUE node index.js",
-    "watchdev": "cross-env LOGGED_IN=TRUE nodemon index.js",
-    "watchprod": "cross-env LOGGED_IN=TRUE USE_PRODUCTION_DB=TRUE nodemon index.js",
+    "start": "node dist/index.js",
+    "dev": "concurrently \"cross-env USE_PRODUCTION_DB=TRUE ts-node-dev index.js\" \"cd frontend-react && npm start\"",
+    "dev:loggedin": "concurrently \"cross-env LOGGED_IN=TRUE USE_PRODUCTION_DB=TRUE ts-node-dev index.js\" \"cd frontend-react && npm start\"",
     "build": "npm run build:frontend && npm run build:backend",
     "build:frontend": "rm -rf build && cd frontend-react && npm install && npm run build && mv build ../build",
     "build:backend": "rm -rf dist && tsc",
-    "testbuild": "rmdir /s /q build && cd frontend-react && npm run build && move build ../build",
     "migrate:make": "knex migrate:make",
     "migrate:rollback": "knex migrate:rollback",
     "migrate:latest": "knex migrate:latest"
@@ -44,6 +40,7 @@
     "webhook-discord": "^3.7.5"
   },
   "devDependencies": {
+    "concurrently": "^5.3.0",
     "cross-env": "^7.0.2",
     "nodemon": "^2.0.4",
     "ts-node-dev": "^1.0.0-pre.62",

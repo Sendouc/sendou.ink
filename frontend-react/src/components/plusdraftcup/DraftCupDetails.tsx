@@ -1,32 +1,34 @@
-import React, { useContext, useState, useEffect } from "react"
-import { RouteComponentProps, Link } from "@reach/router"
-import {
-  SEARCH_FOR_DRAFT_CUP,
-  SearchForDraftCupData,
-  SearchForDraftCupVars,
-} from "../../graphql/queries/searchForDraftCup"
 import { useQuery } from "@apollo/react-hooks"
-import Loading from "../common/Loading"
-import Error from "../common/Error"
-import { DraftTournamentCard } from "./DraftTournamentCards"
-import Button from "../elements/Button"
-import { FaExternalLinkAlt, FaLongArrowAltLeft } from "react-icons/fa"
-import { Box, Flex, Avatar, Icon, Grid } from "@chakra-ui/core"
-import MyThemeContext from "../../themeContext"
-import {
-  DetailedTeamInfo,
-  Ability,
-  HeadGear,
-  ClothingGear,
-  ShoesGear,
-} from "../../types"
-import { mapIcons } from "../../assets/imageImports"
-import WeaponImage from "../common/WeaponImage"
-import AbilityIcon from "../builds/AbilityIcon"
-import GearImage from "../builds/GearImage"
-import SplatnetIcon from "../common/SplatnetIcon"
+import { Avatar, Box, Flex, Grid } from "@chakra-ui/core"
+import { Link, RouteComponentProps } from "@reach/router"
+import React, { useContext, useEffect, useState } from "react"
 import { Helmet } from "react-helmet-async"
 import { useTranslation } from "react-i18next"
+import { FaExternalLinkAlt, FaLongArrowAltLeft } from "react-icons/fa"
+import { modeIconMap } from "../../assets/icons"
+import { mapIcons } from "../../assets/imageImports"
+import {
+  SearchForDraftCupData,
+  SearchForDraftCupVars,
+  SEARCH_FOR_DRAFT_CUP,
+} from "../../graphql/queries/searchForDraftCup"
+import MyThemeContext from "../../themeContext"
+import {
+  Ability,
+  ClothingGear,
+  DetailedTeamInfo,
+  HeadGear,
+  ShoesGear,
+} from "../../types"
+import AbilityIcon from "../builds/AbilityIcon"
+import GearImage from "../builds/GearImage"
+import Error from "../common/Error"
+import Loading from "../common/Loading"
+import Section from "../common/Section"
+import SplatnetIcon from "../common/SplatnetIcon"
+import WeaponImage from "../common/WeaponImage"
+import Button from "../elements/Button"
+import { DraftTournamentCard } from "./DraftTournamentCards"
 
 interface DraftCupDetailsProps {
   id?: string
@@ -90,16 +92,16 @@ const DetailedMapCard: React.FC<DetailedMapCardProps> = ({
   const minutes = Math.floor(mapDetails.duration / 60)
   const seconds = mapDetails.duration - minutes * 60
 
+  const ModeIcon = modeIconMap[mapDetails.mode]
+
   return (
-    <Flex
-      rounded="lg"
+    <Section
+      display="flex"
       overflow="hidden"
-      boxShadow="0px 0px 16px 6px rgba(0,0,0,0.1)"
-      p="25px"
-      my="1em"
       flexDirection="column"
       justifyContent="space-between"
       alignItems="center"
+      mb={4}
     >
       <Flex
         fontWeight="semibold"
@@ -111,11 +113,7 @@ const DetailedMapCard: React.FC<DetailedMapCardProps> = ({
         <Box color={themeColorWithShade}>{gameNumber}.</Box>
         <Avatar src={mapIcons[mapDetails.stage]} size="lg" my="5px" />
         {t("game;" + mapDetails.stage)}
-        <Icon
-          name={mapDetails.mode.toLowerCase() as any}
-          color={themeColorWithShade}
-          size="2em"
-        />
+        <ModeIcon color={themeColorWithShade} w="2em" h="2em" />
         <Box color={grayWithShade}>{`${minutes}:${
           seconds > 9 ? "" : "0"
         }${seconds}`}</Box>
@@ -236,7 +234,7 @@ const DetailedMapCard: React.FC<DetailedMapCardProps> = ({
           </Flex>
         )
       })}
-    </Flex>
+    </Section>
   )
 }
 
@@ -267,11 +265,9 @@ const CollapsedMapCard: React.FC<CollapsedMapCardProps> = ({
     .sort((a, b) => b.score - a.score)
 
   return (
-    <Flex
-      rounded="lg"
+    <Section
+      display="flex"
       overflow="hidden"
-      boxShadow="0px 0px 16px 6px rgba(0,0,0,0.1)"
-      p="25px"
       flexDirection="column"
       justifyContent="space-between"
       alignItems="center"
@@ -296,7 +292,7 @@ const CollapsedMapCard: React.FC<CollapsedMapCardProps> = ({
       <Button onClick={() => expand()} loading={loading}>
         {t("draft;Expand")}
       </Button>
-    </Flex>
+    </Section>
   )
 }
 
@@ -336,7 +332,7 @@ const DraftCupDetails: React.FC<RouteComponentProps & DraftCupDetailsProps> = ({
       </Helmet>
       <Box mb="1em">
         <Link to="/draft">
-          <Button outlined icon={FaLongArrowAltLeft}>
+          <Button outlined icon={<FaLongArrowAltLeft />}>
             {t("draft;Back to Draft Cup home")}
           </Button>
         </Link>
@@ -344,7 +340,7 @@ const DraftCupDetails: React.FC<RouteComponentProps & DraftCupDetailsProps> = ({
       <DraftTournamentCard tournament={tournament} />
       <Box mt="1em">
         <a href={tournament.bracket_url}>
-          <Button icon={FaExternalLinkAlt} outlined>
+          <Button icon={<FaExternalLinkAlt />} outlined>
             {t("draft;Bracket")}
           </Button>
         </a>

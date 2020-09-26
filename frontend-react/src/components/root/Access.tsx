@@ -13,7 +13,7 @@ const Access: React.FC<RouteComponentProps> = () => {
       </Alert>
       <Box mt="1em">
         <a href="/auth/discord">
-          <Button icon={FaDiscord}>Log in via Discord</Button>
+          <Button icon={<FaDiscord />}>Log in via Discord</Button>
         </a>
       </Box>
     </>

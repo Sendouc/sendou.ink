@@ -1,17 +1,17 @@
-import { Box, FormLabel, Switch, Badge, Flex } from "@chakra-ui/core"
+import { Badge, Box, Flex, FormLabel, Switch, Wrap } from "@chakra-ui/core"
 import { RouteComponentProps, useLocation } from "@reach/router"
-import React, { useState, useContext, useEffect } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { Helmet } from "react-helmet-async"
+import { Trans, useTranslation } from "react-i18next"
+import { FiSettings } from "react-icons/fi"
 import useAbilityEffects from "../../hooks/useAbilityEffects"
-import { Ability, Weapon, AnalyzerBuild } from "../../types"
+import MyThemeContext from "../../themeContext"
+import { Ability, AnalyzerBuild, Weapon } from "../../types"
 import PageHeader from "../common/PageHeader"
 import WeaponSelector from "../common/WeaponSelector"
+import Button from "../elements/Button"
 import BuildStats from "./BuildStats"
 import EditableBuilds from "./EditableBuilds"
-import MyThemeContext from "../../themeContext"
-import { FaWrench } from "react-icons/fa"
-import Button from "../elements/Button"
-import { useTranslation, Trans } from "react-i18next"
 
 const CURRENT_PATCH = "5.3."
 
@@ -81,6 +81,7 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
 
     setWeapon(weapon)
     setBuild(buildFromUrl)
+    // eslint-disable-next-line
   }, [])
 
   return (
@@ -90,7 +91,7 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
       </Helmet>
       <PageHeader title={t("navigation;Build Analyzer")} />
       <Flex justifyContent="space-between">
-        <Badge variantColor={themeColor}>
+        <Badge colorScheme={themeColor}>
           <Trans i18nKey="analyzer;currentPatch">
             Patch {{ CURRENT_PATCH }}
           </Trans>
@@ -103,83 +104,95 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
       <Box my="1em">
         <WeaponSelector value={weapon} label="" setValue={setWeapon} />
       </Box>
-      <EditableBuilds
-        build={build}
-        otherBuild={otherBuild}
-        setBuild={otherFocused ? setOtherBuild : setBuild}
-        showOther={showOther}
-        setShowOther={setShowOther}
-        changeFocus={() => {
-          setOtherFocused(!otherFocused)
-        }}
-        otherFocused={otherFocused}
-        bonusAp={bonusAp}
-        setBonusAp={setBonusAp}
-        otherBonusAp={otherBonusAp}
-        setOtherBonusAp={setOtherBonusAp}
-        lde={lde}
-        setLde={setLde}
-        otherLde={otherLde}
-        setOtherLde={setOtherLde}
-      />
-      <Button
-        icon={FaWrench}
-        onClick={() => setShowSettings(!showSettings)}
-        mt="1em"
-      >
-        {showSettings
-          ? t("analyzer;Hide settings")
-          : t("analyzer;Show settings")}
-      </Button>
-      {showSettings && (
-        <Box my="1em">
-          <Switch
-            id="show-all"
-            color={themeColor}
-            isChecked={hideExtra}
-            onChange={() => setHideExtra(!hideExtra)}
-            mr="0.5em"
-          />
-          <FormLabel htmlFor="show-all">
-            {t("analyzer;Hide stats at base value")}
-          </FormLabel>
-
-          <Box>
-            <Switch
-              id="show-not-actual"
-              color={themeColor}
-              isChecked={showNotActualProgress}
-              onChange={() => setShowNotActualProgress(!showNotActualProgress)}
-              mr="0.5em"
-            />
-            <FormLabel htmlFor="show-not-actual">
-              {t("analyzer;Progress bars show progress to max value")}
-            </FormLabel>
-          </Box>
-          <Box>
-            <Switch
-              id="charts-zero"
-              color={themeColor}
-              isChecked={startChartsAtZero}
-              onChange={() => setStartChartsAtZero(!startChartsAtZero)}
-              mr="0.5em"
-            />
-            <FormLabel htmlFor="charts-zero">
-              {t("analyzer;Start charts Y axis from zero")}
-            </FormLabel>
+      <Wrap justify="space-between">
+        <Box>
+          <Box position="sticky" top={0}>
+            {weapon && (
+              <EditableBuilds
+                build={build}
+                otherBuild={otherBuild}
+                setBuild={otherFocused ? setOtherBuild : setBuild}
+                showOther={showOther}
+                setShowOther={setShowOther}
+                changeFocus={() => {
+                  setOtherFocused(!otherFocused)
+                }}
+                otherFocused={otherFocused}
+                bonusAp={bonusAp}
+                setBonusAp={setBonusAp}
+                otherBonusAp={otherBonusAp}
+                setOtherBonusAp={setOtherBonusAp}
+                lde={lde}
+                setLde={setLde}
+                otherLde={otherLde}
+                setOtherLde={setOtherLde}
+              />
+            )}
           </Box>
         </Box>
-      )}
-      <Box my="1em">
-        <BuildStats
-          build={build}
-          explanations={explanations}
-          otherExplanations={showOther ? otherExplanations : undefined}
-          hideExtra={hideExtra}
-          showNotActualProgress={showNotActualProgress}
-          startChartsAtZero={startChartsAtZero}
-        />
-      </Box>
+        <Box>
+          <Button
+            leftIcon={<FiSettings />}
+            onClick={() => setShowSettings(!showSettings)}
+            my="1rem"
+          >
+            {showSettings
+              ? t("analyzer;Hide settings")
+              : t("analyzer;Show settings")}
+          </Button>
+          {showSettings && (
+            <Box my="1em">
+              <Switch
+                id="show-all"
+                color="blue"
+                isChecked={hideExtra}
+                onChange={() => setHideExtra(!hideExtra)}
+                mr="0.5em"
+              />
+              <FormLabel htmlFor="show-all">
+                {t("analyzer;Hide stats at base value")}
+              </FormLabel>
+
+              <Box>
+                <Switch
+                  id="show-not-actual"
+                  color="blue"
+                  isChecked={showNotActualProgress}
+                  onChange={() =>
+                    setShowNotActualProgress(!showNotActualProgress)
+                  }
+                  mr="0.5em"
+                />
+                <FormLabel htmlFor="show-not-actual">
+                  {t("analyzer;Progress bars show progress to max value")}
+                </FormLabel>
+              </Box>
+              <Box>
+                <Switch
+                  id="charts-zero"
+                  color="blue"
+                  isChecked={startChartsAtZero}
+                  onChange={() => setStartChartsAtZero(!startChartsAtZero)}
+                  mr="0.5em"
+                />
+                <FormLabel htmlFor="charts-zero">
+                  {t("analyzer;Start charts Y axis from zero")}
+                </FormLabel>
+              </Box>
+            </Box>
+          )}
+          <Box m="1rem" w={["95%", null, "30rem"]}>
+            <BuildStats
+              build={build}
+              explanations={explanations}
+              otherExplanations={showOther ? otherExplanations : undefined}
+              hideExtra={hideExtra}
+              showNotActualProgress={showNotActualProgress}
+              startChartsAtZero={startChartsAtZero}
+            />
+          </Box>
+        </Box>
+      </Wrap>
     </>
   )
 }

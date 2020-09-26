@@ -1,11 +1,13 @@
 import React from "react"
-import { IconButton as ChakraIconButton } from "@chakra-ui/core"
-import { IconType } from "react-icons/lib/cjs"
+import {
+  IconButton as ChakraIconButton,
+  IconButtonProps as ChakraIconButtonProps,
+} from "@chakra-ui/core"
 import { useContext } from "react"
 import MyThemeContext from "../../themeContext"
 
 interface IconButtonProps {
-  icon: IconType
+  icon: ChakraIconButtonProps["icon"]
   onClick?: () => void
   colored?: boolean
   disabled?: boolean

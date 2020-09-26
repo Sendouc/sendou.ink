@@ -1,20 +1,18 @@
-import React, { useEffect } from "react"
-import "./App.css"
-import { Box, useColorMode, useTheme as useChakraTheme } from "@chakra-ui/core"
-
-import { MenuBar } from "./MenuBar"
-import SideNav from "./SideNav"
-import Routes from "./Routes"
+import { useColorMode, useTheme as useChakraTheme } from "@chakra-ui/core"
 import useLocalStorage from "@rehooks/local-storage"
-import { ThemeColor } from "../../types"
+import React, { useEffect } from "react"
 import { MyThemeProvider } from "../../themeContext"
-import { Theme } from "../../types"
-import Footer from "./Footer"
+import { Theme, ThemeColor } from "../../types"
+import "./App.css"
+import Layout from "./Layout"
+import Routes from "./Routes"
 
 const App: React.FC = () => {
   const chakraTheme = useChakraTheme()
   const { colorMode } = useColorMode()
   const [themeColorFromStorage] = useLocalStorage<ThemeColor>("colorPreference")
+
+  console.log({ chakraTheme, colorMode })
 
   const themeColor = themeColorFromStorage
     ? themeColorFromStorage
@@ -27,7 +25,7 @@ const App: React.FC = () => {
       colorMode: "light",
       bgColor: "#eff0f3",
       darkerBgColor: "#FFFAFA",
-      textColor: "#0d0d0d",
+      textColor: "blackAlpha.900",
       borderStyle: "1px solid rgba(0, 0, 0, .2)",
       themeColorWithShade: `${themeColor}.500`,
       grayWithShade: "gray.600",
@@ -37,9 +35,9 @@ const App: React.FC = () => {
     } as Theme,
     dark: {
       colorMode: "dark",
-      bgColor: "#232946",
-      darkerBgColor: "#0A102D",
-      textColor: "#fffffe",
+      bgColor: "#031e3e",
+      darkerBgColor: "#0e2a56",
+      textColor: "whiteAlpha.900",
       borderStyle: "1px solid rgba(255, 255, 255, .2)",
       themeColorWithShade: `${themeColor}.200`,
       grayWithShade: "gray.300",
@@ -57,30 +55,9 @@ const App: React.FC = () => {
 
   return (
     <MyThemeProvider value={theme[colorMode]}>
-      <Box
-        marginLeft={[null, null, "250px"]}
-        mt={["4em", null, "0"]}
-        color={theme[colorMode].textColor}
-        bg={theme[colorMode].bgColor}
-        minH="100vh"
-        pb="20px"
-      >
-        <SideNav />
-        <MenuBar />
-        <Box
-          maxWidth="1100px"
-          pt={8}
-          px={8}
-          ml="auto"
-          mr="auto"
-          overflow="hidden"
-        >
-          <Box minH="calc(100vh - 210px)">
-            <Routes />
-          </Box>
-          <Footer />
-        </Box>
-      </Box>
+      <Layout>
+        <Routes />
+      </Layout>
     </MyThemeProvider>
   )
 }

@@ -1,19 +1,20 @@
-import React, { useContext } from "react"
-import { RouteComponentProps } from "@reach/router"
-import PageHeader from "../common/PageHeader"
 import { useQuery } from "@apollo/react-hooks"
+import { Box } from "@chakra-ui/core"
+import { RouteComponentProps } from "@reach/router"
+import React, { useContext } from "react"
+import { Helmet } from "react-helmet-async"
+import { useTranslation } from "react-i18next"
 import {
   PlusDraftCupsData,
   PLUS_DRAFT_CUPS,
 } from "../../graphql/queries/plusDraftCups"
+import MyThemeContext from "../../themeContext"
 import Error from "../common/Error"
 import Loading from "../common/Loading"
+import PageHeader from "../common/PageHeader"
+import Section from "../common/Section"
 import DraftLeaderboard from "./DraftLeaderboard"
-import { Helmet } from "react-helmet-async"
 import DraftTournamentCards from "./DraftTournamentCards"
-import { Box } from "@chakra-ui/core"
-import MyThemeContext from "../../themeContext"
-import { useTranslation } from "react-i18next"
 
 const DraftCupPage: React.FC<RouteComponentProps> = () => {
   const { t } = useTranslation()
@@ -32,9 +33,9 @@ const DraftCupPage: React.FC<RouteComponentProps> = () => {
       <Box color={grayWithShade}>{t("draft;draftExplanation")}</Box>
 
       <DraftTournamentCards tournaments={data!.plusDraftCups.tournaments} />
-      <Box mt="1em">
+      <Section mt="1em">
         <DraftLeaderboard leaderboards={data!.plusDraftCups.leaderboards} />
-      </Box>
+      </Section>
     </>
   )
 }

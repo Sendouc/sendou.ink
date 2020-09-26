@@ -1,12 +1,13 @@
+import { Box, Flex, Grid, Image } from "@chakra-ui/core"
+import { Link } from "@reach/router"
 import React, { useContext } from "react"
-import { Flex, Grid, Box, Image } from "@chakra-ui/core"
+import { useTranslation } from "react-i18next"
+import { medalEmoji } from "../../assets/imageImports"
 import trophy from "../../assets/trophy.png"
 import MyThemeContext from "../../themeContext"
 import { months } from "../../utils/lists"
-import { Link } from "@reach/router"
-import { medalEmoji } from "../../assets/imageImports"
+import Section from "../common/Section"
 import Button from "../elements/Button"
-import { useTranslation } from "react-i18next"
 
 interface DraftTournamentCardsProps {
   tournaments: {
@@ -57,7 +58,7 @@ export const DraftTournamentCard: React.FC<DraftTournamentCardProps> = ({
   link,
 }) => {
   const { t, i18n } = useTranslation()
-  const { grayWithShade, themeColorHexLighter } = useContext(MyThemeContext)
+  const { grayWithShade, themeColorWithShade } = useContext(MyThemeContext)
 
   const MedalRow: React.FC<MedalRowProps> = ({
     players,
@@ -81,7 +82,7 @@ export const DraftTournamentCard: React.FC<DraftTournamentCardProps> = ({
         />
         {players.map((user, index) => (
           <Box
-            color={index % 2 === 0 ? undefined : themeColorHexLighter}
+            color={index % 2 === 0 ? undefined : themeColorWithShade}
             mx="0.25em"
             key={`${user.username}#${user.discriminator}`}
           >
@@ -95,11 +96,9 @@ export const DraftTournamentCard: React.FC<DraftTournamentCardProps> = ({
   }
 
   return (
-    <Flex
-      rounded="lg"
+    <Section
+      display="flex"
       overflow="hidden"
-      boxShadow="0px 0px 16px 6px rgba(0,0,0,0.1)"
-      p="25px"
       w="100%"
       h="100%"
       flexDirection="column"
@@ -146,7 +145,7 @@ export const DraftTournamentCard: React.FC<DraftTournamentCardProps> = ({
           </Link>
         </Box>
       )}
-    </Flex>
+    </Section>
   )
 }
 

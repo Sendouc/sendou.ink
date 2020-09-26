@@ -1,9 +1,7 @@
-import React from "react"
-
-import english_internal from "../../utils/english_internal.json"
-import { weapons } from "../../assets/imageImports"
-import { Weapon } from "../../types.js"
+import React, { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
+import { Weapon } from "../../types.js"
+import english_internal from "../../utils/english_internal.json"
 
 interface WeaponImageProps {
   englishName: Weapon
@@ -28,20 +26,31 @@ const WeaponImage: React.FC<WeaponImageProps> = ({
   asInlineBlock,
   noTitle,
 }) => {
+  const [src, setSrc] = useState<string | null>(null)
   const { t } = useTranslation()
-  const dictToUse: any = weapons
   const wh = sizeWhMap[size]
+
+  useEffect(() => {
+    import(
+      `../../assets/weapons/Wst_${english_internal[englishName]}.png`
+    ).then((img) => setSrc(img.default))
+  }, [])
+
   return (
-    <img
-      src={dictToUse[english_internal[englishName]]}
-      alt={t(`game;${englishName}`)}
-      title={noTitle ? undefined : t(`game;${englishName}`)}
-      style={{
-        width: wh,
-        height: wh,
-        display: asInlineBlock ? "inline-block" : undefined,
-      }}
-    />
+    <>
+      {src && (
+        <img
+          src={src}
+          alt={t(`game;${englishName}`)}
+          title={noTitle ? undefined : t(`game;${englishName}`)}
+          style={{
+            width: wh,
+            height: wh,
+            display: asInlineBlock ? "inline-block" : undefined,
+          }}
+        />
+      )}
+    </>
   )
 }
 

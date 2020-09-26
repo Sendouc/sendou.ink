@@ -1,22 +1,22 @@
-import React, { useContext } from "react"
-import { Placement } from "../../types"
-import { modesShort } from "../../utils/lists"
 import {
   Accordion,
-  AccordionItem,
-  AccordionHeader,
+  AccordionButton,
   AccordionIcon,
+  AccordionItem,
   AccordionPanel,
-  Flex,
-  Icon,
   Box,
+  Flex,
   Grid,
 } from "@chakra-ui/core"
-import MyThemeContext from "../../themeContext"
-import WeaponImage from "../common/WeaponImage"
-import useBreakPoints from "../../hooks/useBreakPoints"
-import { useTranslation } from "react-i18next"
 import { TFunctionResult } from "i18next"
+import React, { useContext } from "react"
+import { useTranslation } from "react-i18next"
+import { modeIconMap } from "../../assets/icons"
+import useBreakPoints from "../../hooks/useBreakPoints"
+import MyThemeContext from "../../themeContext"
+import { Placement } from "../../types"
+import { modesShort } from "../../utils/lists"
+import WeaponImage from "../common/WeaponImage"
 
 interface ModesAccordionProps {
   placements: Placement[]
@@ -140,15 +140,13 @@ const ModesAccordion: React.FC<ModesAccordionProps> = ({ placements }) => {
       {(["sz", "tc", "rm", "cb"] as const)
         .filter((key) => allModesTabsData.hasOwnProperty(key))
         .map((key) => {
+          const modeIconKey = key.toUpperCase() as "SZ" | "TC" | "RM" | "CB"
+          const ModeIcon = modeIconMap[modeIconKey]
           return (
             <AccordionItem key={key}>
-              <AccordionHeader>
-                <AccordionIcon size="2em" mr="1em" />
-                <Icon
-                  name={key as any}
-                  color={themeColorWithShade}
-                  size="5em"
-                />{" "}
+              <AccordionButton>
+                <AccordionIcon h="2em" w="2em" mr="1em" />
+                <ModeIcon color={themeColorWithShade} w="5em" h="5em" />{" "}
                 <Grid
                   ml="50px"
                   gridTemplateColumns="repeat(3, 1fr)"
@@ -203,7 +201,7 @@ const ModesAccordion: React.FC<ModesAccordionProps> = ({ placements }) => {
                     {allModesTabsData[key]?.highestXPower}
                   </StyledBox>
                 </Flex>
-              </AccordionHeader>
+              </AccordionButton>
               <AccordionPanel py={4} background={darkerBgColor} mt="3px">
                 <Grid
                   gridTemplateColumns="repeat(4, 1fr)"

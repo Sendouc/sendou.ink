@@ -1,4 +1,4 @@
-import { Avatar, BoxProps } from "@chakra-ui/core"
+import { Avatar, AvatarProps } from "@chakra-ui/core"
 import React, { useState } from "react"
 
 interface UserAvatarProps {
@@ -7,7 +7,7 @@ interface UserAvatarProps {
   size?: undefined | "2xl" | "xl" | "lg" | "xs" | "sm"
 }
 
-const UserAvatar: React.FC<UserAvatarProps & BoxProps> = ({
+const UserAvatar: React.FC<UserAvatarProps & AvatarProps> = ({
   name,
   src,
   size,

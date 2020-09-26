@@ -165,7 +165,7 @@ const DraftLeaderboard: React.FC<DraftLeaderboardProps> = ({
       //onChange={chosenIndex => setTabIndex(chosenIndex)}
       isFitted
       variant="line"
-      variantColor={themeColor}
+      colorScheme={themeColor}
     >
       <TabList>
         {!!plusOneLeaderboard && <Tab>+1</Tab>}

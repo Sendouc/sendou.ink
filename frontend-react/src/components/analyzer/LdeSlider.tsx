@@ -47,9 +47,10 @@ const LdeSlider: React.FC<LdeSliderProps> = ({ value, setValue }) => {
         onChange={(value: number) => setValue(value)}
         max={21}
       >
-        <SliderTrack bg={`${themeColor}.100`} />
-        <SliderFilledTrack bg={themeColorWithShade} />
-        <SliderThumb size={6}>
+        <SliderTrack bg={`${themeColor}.100`}>
+          <SliderFilledTrack bg={themeColorWithShade} />
+        </SliderTrack>
+        <SliderThumb w={6} h={6}>
           <Box minW="30px">
             <AbilityIcon ability="LDE" size="TINY" />
           </Box>

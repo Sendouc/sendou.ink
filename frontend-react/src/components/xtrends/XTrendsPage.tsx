@@ -1,29 +1,29 @@
-import React, { useEffect, useState, useContext } from "react"
-import { RouteComponentProps } from "@reach/router"
 import { useQuery } from "@apollo/react-hooks"
-import { XTrendsData, X_TRENDS } from "../../graphql/queries/xTrends"
-import Loading from "../common/Loading"
-import Error from "../common/Error"
-import PageHeader from "../common/PageHeader"
-import { months, weapons } from "../../utils/lists"
-import { Weapon } from "../../types"
 import {
-  Flex,
   Box,
+  Flex,
   Popover,
-  PopoverTrigger,
-  PopoverContent,
   PopoverArrow,
+  PopoverContent,
+  PopoverTrigger,
 } from "@chakra-ui/core"
-import WeaponImage from "../common/WeaponImage"
-import MyThemeContext from "../../themeContext"
-import ModeButtons from "./ModeButtons"
-import Select from "../elements/Select"
-import WeaponLineChart from "./WeaponLineChart"
+import { RouteComponentProps } from "@reach/router"
+import React, { useContext, useEffect, useState } from "react"
 import { Helmet } from "react-helmet-async"
-import Alert from "../elements/Alert"
 import { useTranslation } from "react-i18next"
+import { XTrendsData, X_TRENDS } from "../../graphql/queries/xTrends"
+import MyThemeContext from "../../themeContext"
+import { Weapon } from "../../types"
 import { parseAndGetLocalizedMonthYear } from "../../utils/helperFunctions"
+import { months, weapons } from "../../utils/lists"
+import Error from "../common/Error"
+import Loading from "../common/Loading"
+import PageHeader from "../common/PageHeader"
+import Section from "../common/Section"
+import WeaponImage from "../common/WeaponImage"
+import Select from "../elements/Select"
+import ModeButtons from "./ModeButtons"
+import WeaponLineChart from "./WeaponLineChart"
 
 const tiers = [
   {
@@ -154,9 +154,6 @@ const XTrendsPage: React.FC<RouteComponentProps> = () => {
       <Helmet>
         <title>{t("navigation;Top 500 Tier Lists")} | sendou.ink</title>
       </Helmet>
-      <Box my="1em">
-        <Alert status="info">{t("xtrends;trendsExplanation")}</Alert>
-      </Box>
       <Select
         value={
           month
@@ -178,44 +175,48 @@ const XTrendsPage: React.FC<RouteComponentProps> = () => {
           setMode={(mode) => setMode(mode as "SZ" | "TC" | "RM" | "CB")}
         />
       </Box>
-      {tiers.map((tier, index, tiers) => (
-        <Flex key={tier.criteria}>
-          <Flex
-            flexDir="column"
-            w="80px"
-            minH="100px"
-            px="10px"
-            borderRight="5px solid"
-            borderColor={tier.color}
-            marginRight="1em"
-            justifyContent="center"
-          >
-            <Box fontSize="2em" fontWeight="bolder">
-              {tier.label}
-            </Box>
-            <Box color={grayWithShade}>
-              {tier.criteria === 0.002 ? ">0%" : `${tier.criteria}%`}
-            </Box>
-          </Flex>
-          <Flex
-            flexDir="row"
-            flex={1}
-            flexWrap="wrap"
-            alignItems="center"
-            py="1em"
-          >
-            {weaponsOrdered
-              .filter((weapon) => {
-                const previousCriteria =
-                  index === 0 ? 101 : tiers[index - 1].criteria
-                const percentsInTop500 = weapon.amount / 5
-                return (
-                  percentsInTop500 < previousCriteria &&
-                  percentsInTop500 >= tier.criteria
-                )
-              })
-              .map((weapon) => (
-                <Popover key={weapon.name} placement="top-start" usePortal>
+      <Box my={10} color={grayWithShade}>
+        {t("xtrends;trendsExplanation")}
+      </Box>
+      {tiers.map((tier, index, tiers) => {
+        const weaponsInTheTier = weaponsOrdered.filter((weapon) => {
+          const previousCriteria = index === 0 ? 101 : tiers[index - 1].criteria
+          const percentsInTop500 = weapon.amount / 5
+          return (
+            percentsInTop500 < previousCriteria &&
+            percentsInTop500 >= tier.criteria
+          )
+        })
+        if (!weaponsInTheTier.length) return null
+
+        return (
+          <Section key={tier.criteria} display="flex" my={4}>
+            <Flex
+              flexDir="column"
+              w="80px"
+              minH="100px"
+              px="10px"
+              borderRight="5px solid"
+              borderColor={tier.color}
+              marginRight="1em"
+              justifyContent="center"
+            >
+              <Box fontSize="2em" fontWeight="bolder">
+                {tier.label}
+              </Box>
+              <Box color={grayWithShade}>
+                {tier.criteria === 0.002 ? ">0%" : `${tier.criteria}%`}
+              </Box>
+            </Flex>
+            <Flex
+              flexDir="row"
+              flex={1}
+              flexWrap="wrap"
+              alignItems="center"
+              py="1em"
+            >
+              {weaponsInTheTier.map((weapon) => (
+                <Popover key={weapon.name} placement="top-start">
                   <PopoverTrigger>
                     <Box m="0.5em" cursor="pointer">
                       <WeaponImage
@@ -253,9 +254,10 @@ const XTrendsPage: React.FC<RouteComponentProps> = () => {
                   </PopoverContent>
                 </Popover>
               ))}
-          </Flex>
-        </Flex>
-      ))}
+            </Flex>
+          </Section>
+        )
+      })}
     </>
   )
 }

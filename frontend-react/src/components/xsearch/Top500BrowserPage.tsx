@@ -1,11 +1,13 @@
 import { useQuery } from "@apollo/react-hooks"
-import { Badge, Box, Flex, Icon } from "@chakra-ui/core"
+import { Badge, Box, Flex } from "@chakra-ui/core"
 import { Link, RouteComponentProps } from "@reach/router"
 import React, { useContext, useState } from "react"
 import { Helmet } from "react-helmet-async"
+import { Trans, useTranslation } from "react-i18next"
 import { Table, Tbody, Td, Th, Thead, Tr } from "react-super-responsive-table"
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css"
 import { NumberParam, StringParam, useQueryParams } from "use-query-params"
+import { modeIconMap } from "../../assets/icons"
 import {
   SearchForPlacementsData,
   SearchForPlacementsVars,
@@ -14,7 +16,6 @@ import {
 import useBreakPoints from "../../hooks/useBreakPoints"
 import MyThemeContext from "../../themeContext"
 import { Weapon } from "../../types"
-import { modesShort } from "../../utils/lists"
 import Error from "../common/Error"
 import Loading from "../common/Loading"
 import PageHeader from "../common/PageHeader"
@@ -24,7 +25,6 @@ import Alert from "../elements/Alert"
 import Button from "../elements/Button"
 import "./Top500BrowserPage.css"
 import Top500Forms from "./Top500Forms"
-import { useTranslation, Trans } from "react-i18next"
 
 const getLocalizedMonth = (month: number, locale: string) => {
   const dateForLocalization = new Date()
@@ -143,73 +143,78 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {placements.map((placement) => (
-                  <Tr key={placement.id}>
-                    <Td>
-                      <Flex
-                        alignItems="center"
-                        cursor={
-                          placement.player?.discord_id ? "pointer" : undefined
-                        }
-                      >
-                        <Box
-                          as="span"
-                          color={
-                            placement.player?.discord_id
-                              ? themeColorWithShade
-                              : undefined
+                {placements.map((placement) => {
+                  const modes = ["SZ", "SZ", "TC", "RM", "CB"] as const
+                  const ModeIcon = modeIconMap[modes[placement.mode]]
+                  return (
+                    <Tr key={placement.id}>
+                      <Td>
+                        <Flex
+                          alignItems="center"
+                          cursor={
+                            placement.player?.discord_id ? "pointer" : undefined
                           }
                         >
-                          {placement.player?.discord_id ? (
-                            <Link to={`/u/${placement.player.discord_id}`}>
-                              {placement.name}
-                            </Link>
-                          ) : (
-                            <>{placement.name}</>
-                          )}
-                        </Box>
-                      </Flex>
-                    </Td>
-                    <Td>
-                      <Flex alignItems="center">
-                        <Box
-                          ml={isSmall ? undefined : "auto"}
-                          mr={isSmall ? undefined : "auto"}
+                          <Box
+                            as="span"
+                            color={
+                              placement.player?.discord_id
+                                ? themeColorWithShade
+                                : undefined
+                            }
+                          >
+                            {placement.player?.discord_id ? (
+                              <Link to={`/u/${placement.player.discord_id}`}>
+                                {placement.name}
+                              </Link>
+                            ) : (
+                              <>{placement.name}</>
+                            )}
+                          </Box>
+                        </Flex>
+                      </Td>
+                      <Td>
+                        <Flex alignItems="center">
+                          <Box
+                            ml={isSmall ? undefined : "auto"}
+                            mr={isSmall ? undefined : "auto"}
+                          >
+                            <WpnImage
+                              englishName={placement.weapon as Weapon}
+                              size="SMALL"
+                            />
+                          </Box>
+                        </Flex>
+                      </Td>
+                      <Td>{placement.x_power}</Td>
+                      <Td>{placement.rank}</Td>
+                      <Td>
+                        <ModeIcon color={themeColorWithShade} h="2em" w="2em" />
+                      </Td>
+                      <Td>
+                        {getLocalizedMonth(placement.month, i18n.language)}
+                      </Td>
+                      <Td>{placement.year}</Td>
+                      <Td>
+                        <Badge
+                          cursor="pointer"
+                          onClick={() => {
+                            setForms({
+                              unique_id: placement.unique_id,
+                              page: 1,
+                            })
+                            setQuery(
+                              { unique_id: placement.unique_id, page: 1 },
+                              "replace"
+                            )
+                          }}
                         >
-                          <WpnImage
-                            englishName={placement.weapon as Weapon}
-                            size="SMALL"
-                          />
-                        </Box>
-                      </Flex>
-                    </Td>
-                    <Td>{placement.x_power}</Td>
-                    <Td>{placement.rank}</Td>
-                    <Td>
-                      <Icon
-                        name={modesShort[placement.mode] as any}
-                        color={themeColorWithShade}
-                        size="2em"
-                      />
-                    </Td>
-                    <Td>{getLocalizedMonth(placement.month, i18n.language)}</Td>
-                    <Td>{placement.year}</Td>
-                    <Td>
-                      <Badge
-                        cursor="pointer"
-                        onClick={() => {
-                          setForms({ unique_id: placement.unique_id, page: 1 })
-                          setQuery(
-                            { unique_id: placement.unique_id, page: 1 },
-                            "replace"
-                          )
-                        }}
-                      >
-                        {t("xsearch;ID")}
-                      </Badge>
-                    </Td>
-                  </Tr>
-                ))}
+                          {t("xsearch;ID")}
+                        </Badge>
+                      </Td>
+                    </Tr>
+                  )
+                })}
               </Tbody>
             </Table>
           </Box>

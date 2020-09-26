@@ -1,5 +1,5 @@
-import React, { Suspense, lazy } from "react"
 import { Router } from "@reach/router"
+import React, { lazy, Suspense } from "react"
 import Loading from "../common/Loading"
 import NotFound from "./NotFound"
 import { ScrollToTop } from "./ScrollToTop"
@@ -13,8 +13,8 @@ const BuildAnalyzerPage = lazy(() => import("../analyzer/BuildAnalyzerPage"))
 const CalendarPage = lazy(() => import("../calendar/CalendarPage"))
 const TournamentsPage = lazy(() => import("../tournaments/TournamentsPage"))
 const EventPage = lazy(() => import("../events/EventsPage"))
-const TournamentsDetailsPage = lazy(() =>
-  import("../tournaments/TournamentDetailsPage")
+const TournamentsDetailsPage = lazy(
+  () => import("../tournaments/TournamentDetailsPage")
 )
 const MapPlannerPage = lazy(() => import("../plans/MapPlannerPage"))
 const FreeAgentsPage = lazy(() => import("../freeagents/FreeAgentsPage"))
@@ -22,12 +22,11 @@ const TeamPage = lazy(() => import("../team/TeamPage"))
 const XSearch = lazy(() => import("../xsearch/Top500BrowserPage"))
 const XTrends = lazy(() => import("../xtrends/XTrendsPage"))
 const PlusPage = lazy(() => import("../plus/PlusPage"))
+const PlusFAQPage = lazy(() => import("../plus/PlusFAQPage"))
 const DraftCupPage = lazy(() => import("../plusdraftcup/DraftCupPage"))
 const DraftCupDetails = lazy(() => import("../plusdraftcup/DraftCupDetails"))
 const Access = lazy(() => import("./Access"))
 const VotingHistoryPage = lazy(() => import("../plus/VotingHistoryPage"))
-const MapVotingHistoryPage = lazy(() => import("../plus/MapVotingHistoryPage"))
-const MapVoting = lazy(() => import("../plus/MapVoting"))
 const About = lazy(() => import("./About"))
 const Links = lazy(() => import("./Links"))
 const TranslatePage = lazy(() => import("../translate/TranslatePage"))
@@ -62,8 +61,7 @@ const Routes: React.FC = () => {
           <DraftCupPage path="/draft" />
           <DraftCupDetails path="/draft/:id" />
           <VotingHistoryPage path="/plus/history" />
-          <MapVotingHistoryPage path="/plus/maphistory" />
-          <MapVoting path="/plus/mapvoting" />
+          <PlusFAQPage path="/plus/faq" />
           <NotFound default />
         </ScrollToTop>
       </Router>

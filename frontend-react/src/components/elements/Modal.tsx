@@ -18,7 +18,7 @@ const Modal: React.FC<ModalProps> = ({
   closeModal,
   closeOnOutsideClick,
 }) => {
-  const { darkerBgColor } = useContext(MyThemeContext)
+  const { bgColor } = useContext(MyThemeContext)
   const isSmall = useBreakPoints(768)
   const ref: any = React.useRef()
   useOnClickOutside(ref, closeOnOutsideClick ? (closeModal as any) : null)
@@ -43,7 +43,7 @@ const Modal: React.FC<ModalProps> = ({
       bg="rgba(0,0,0,0.75)"
     >
       <Box
-        bg={darkerBgColor}
+        bg={bgColor}
         margin="2% auto"
         padding="10px 20px 20px 20px"
         border="1px solid #888"
@@ -62,7 +62,7 @@ const Modal: React.FC<ModalProps> = ({
           >
             {title}
             {closeModal && (
-              <IconButton icon={MdClose} onClick={() => closeModal()} />
+              <IconButton icon={<MdClose />} onClick={() => closeModal()} />
             )}
           </Flex>
           {children}

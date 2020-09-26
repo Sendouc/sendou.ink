@@ -1,25 +1,25 @@
+import { Box, Flex, IconButton } from "@chakra-ui/core"
 import React from "react"
-import AbilityButtons from "../user/AbilityButtons"
-import ViewSlots from "../builds/ViewSlots"
-import { Box, Flex } from "@chakra-ui/core"
+import { useTranslation } from "react-i18next"
+import { FiCopy, FiEdit, FiSquare } from "react-icons/fi"
 import {
   Ability,
-  HeadOnlyAbility,
+  AnalyzerBuild,
   ClothingOnlyAbility,
+  HeadOnlyAbility,
   ShoesOnlyAbility,
   StackableAbility,
-  AnalyzerBuild,
 } from "../../types"
 import {
-  headOnlyAbilities,
   clothingOnlyAbilities,
+  headOnlyAbilities,
   shoesOnlyAbilities,
 } from "../../utils/lists"
+import ViewSlots from "../builds/ViewSlots"
 import Button from "../elements/Button"
-import { FaPlus, FaMinus } from "react-icons/fa"
+import AbilityButtons from "../user/AbilityButtons"
 import HeadOnlyToggle from "./HeadOnlyToggle"
 import LdeSlider from "./LdeSlider"
-import { useTranslation } from "react-i18next"
 
 interface EditableBuildsProps {
   build: Omit<AnalyzerBuild, "weapon">
@@ -161,7 +161,7 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
   return (
     <>
       <Button
-        icon={showOther ? FaMinus : FaPlus}
+        icon={showOther ? <FiSquare /> : <FiCopy />}
         onClick={() => {
           if (showOther && otherFocused) {
             changeFocus()
@@ -176,13 +176,15 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
       <Flex justifyContent="space-evenly" flexWrap="wrap" mb="1em">
         <Flex flexDirection="column">
           {showOther && (
-            <Button
+            <IconButton
+              aria-label="Edit orange build"
               disabled={!otherFocused}
-              color="orange"
+              colorScheme="orange"
               onClick={() => changeFocus()}
-            >
-              {!otherFocused ? t("analyzer;Editing") : t("calendar;Edit")}
-            </Button>
+              icon={<FiEdit />}
+              isRound
+              mx="auto"
+            />
           )}
           <ViewSlots
             build={build}
@@ -211,13 +213,15 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
         </Flex>
         {showOther && (
           <Flex flexDirection="column">
-            <Button
+            <IconButton
+              aria-label="Edit blue build"
               disabled={otherFocused}
-              color="blue"
+              colorScheme="blue"
               onClick={() => changeFocus()}
-            >
-              {otherFocused ? "Editing" : "Edit"}
-            </Button>
+              icon={<FiEdit />}
+              isRound
+              mx="auto"
+            />
             <ViewSlots
               build={otherBuild}
               onAbilityClick={

@@ -1,11 +1,11 @@
-import React, { useContext, useState } from "react"
-import ReactSelect, { OptionsType, GroupedOptionsType } from "react-select"
-import MyThemeContext from "../../themeContext"
-import { SelectComponents } from "react-select/src/components"
-import Label from "./Label"
 import { Box } from "@chakra-ui/core"
-import { weapons } from "../../utils/lists"
+import React, { useContext, useState } from "react"
 import { useTranslation } from "react-i18next"
+import ReactSelect, { GroupedOptionsType, OptionsType } from "react-select"
+import { SelectComponents } from "react-select/src/components"
+import MyThemeContext from "../../themeContext"
+import { weapons } from "../../utils/lists"
+import Label from "./Label"
 
 interface SelectProps {
   options?:
@@ -150,7 +150,8 @@ const Select: React.FC<SelectProps> = ({
           colors: {
             ...theme.colors,
             primary25: `${themeColorHexLighter}`,
-            primary: `${themeColorHex}`,
+            primary:
+              colorMode === "dark" ? themeColorHexLighter : themeColorHex,
             neutral0: darkerBgColor,
             neutral5: darkerBgColor,
           },
@@ -181,6 +182,11 @@ const Select: React.FC<SelectProps> = ({
             }
           },
           menu: (styles) => ({ ...styles, zIndex: 999 }),
+          control: (base) => ({
+            ...base,
+            border: "0px",
+            height: "2.5rem",
+          }),
         }}
       />
     </Box>

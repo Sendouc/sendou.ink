@@ -1,5 +1,6 @@
 import {
   Box,
+  BoxProps,
   Input as ChakraInput,
   InputGroup,
   InputLeftAddon,
@@ -22,7 +23,7 @@ interface InputProps {
   icon?: IconType
 }
 
-const Input: React.FC<InputProps> = ({
+const Input: React.FC<InputProps & BoxProps> = ({
   value,
   setValue,
   label,
@@ -32,16 +33,20 @@ const Input: React.FC<InputProps> = ({
   textLeft,
   size,
   icon,
+  ...props
 }) => {
-  const { themeColorHex, grayWithShade, darkerBgColor, textColor } = useContext(
-    MyThemeContext
-  )
+  const {
+    themeColorWithShade,
+    grayWithShade,
+    darkerBgColor,
+    textColor,
+  } = useContext(MyThemeContext)
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setValue(event.target.value)
 
   return (
-    <Box>
+    <Box {...props}>
       {label && <Label required={required}>{label}</Label>}
       <InputGroup>
         {textLeft && <InputLeftAddon>{textLeft}</InputLeftAddon>}
@@ -55,11 +60,12 @@ const Input: React.FC<InputProps> = ({
           value={value ?? ""}
           isDisabled={disabled}
           onChange={handleChange}
-          focusBorderColor={themeColorHex}
+          focusBorderColor={themeColorWithShade}
           _hover={{}}
           background={darkerBgColor}
-          borderColor="#CCCCCC"
+          borderColor={darkerBgColor}
           size={size}
+          style={{ border: "1px" }}
         />
       </InputGroup>
       {limit && (

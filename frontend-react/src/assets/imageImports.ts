@@ -1,7 +1,9 @@
+import AD from "./abilityIcons/AD.png"
 import BDU from "./abilityIcons/BDU.png"
 import BRU from "./abilityIcons/BRU.png"
 import CB from "./abilityIcons/CB.png"
 import DR from "./abilityIcons/DR.png"
+import EMPTY from "./abilityIcons/EMPTY.png"
 import H from "./abilityIcons/H.png"
 import ISM from "./abilityIcons/ISM.png"
 import ISS from "./abilityIcons/ISS.png"
@@ -9,6 +11,7 @@ import LDE from "./abilityIcons/LDE.png"
 import MPU from "./abilityIcons/MPU.png"
 import NS from "./abilityIcons/NS.png"
 import OG from "./abilityIcons/OG.png"
+import OS from "./abilityIcons/OS.png"
 import QR from "./abilityIcons/QR.png"
 import QSJ from "./abilityIcons/QSJ.png"
 import REC from "./abilityIcons/REC.png"
@@ -22,25 +25,14 @@ import SS from "./abilityIcons/SS.png"
 import SSU from "./abilityIcons/SSU.png"
 import T from "./abilityIcons/T.png"
 import TI from "./abilityIcons/TI.png"
-import OS from "./abilityIcons/OS.png"
-import AD from "./abilityIcons/AD.png"
 import UNKNOWN from "./abilityIcons/UNKNOWN.png"
-import EMPTY from "./abilityIcons/EMPTY.png"
-import * as top500logo from "./top500.png"
-
-import posterGirlDrawingDark from "./poster_girl_dark.png"
-import posterGirlDrawingLight from "./poster_girl_light.png"
-import boingDrawingDark from "./boing_dark.png"
-import boingDrawingLight from "./boing_light.png"
 import boingOctoDrawingDark from "./b8ing_dark.png"
 import boingOctoDrawingLight from "./b8ing_light.png"
-
+import boingDrawingDark from "./boing_dark.png"
+import boingDrawingLight from "./boing_light.png"
 import firstPlace from "./first_place.png"
-import secondPlace from "./second_place.png"
-import thirdPlace from "./third_place.png"
-
-import arowana_mall_thumbnail from "./mapThumbnails/arowana_mall.png"
 import anchov_games_thumbnail from "./mapThumbnails/ancho-v_games.png"
+import arowana_mall_thumbnail from "./mapThumbnails/arowana_mall.png"
 import blackbelly_skatepark_thumbnail from "./mapThumbnails/blackbelly_skatepark.png"
 import camp_triggerfish_thumbnail from "./mapThumbnails/camp_triggerfish.png"
 import goby_arena_thumbnail from "./mapThumbnails/goby_arena.png"
@@ -62,7 +54,9 @@ import sturgeon_shipyard_thumbnail from "./mapThumbnails/sturgeon_shipyard.png"
 import the_reef_thumbnail from "./mapThumbnails/the_reef.png"
 import wahoo_world_thumbnail from "./mapThumbnails/wahoo_world.png"
 import walleye_warehouse_thumbnail from "./mapThumbnails/walleye_warehouse.png"
-
+import posterGirlDrawingDark from "./poster_girl_dark.png"
+import posterGirlDrawingLight from "./poster_girl_light.png"
+import secondPlace from "./second_place.png"
 import alfonsino from "./Splatoon1Maps/alfonsino.png"
 import bluefin from "./Splatoon1Maps/bluefin.png"
 import bridge from "./Splatoon1Maps/bridge.png"
@@ -70,17 +64,7 @@ import flounder from "./Splatoon1Maps/flounder.png"
 import resort from "./Splatoon1Maps/resort.png"
 import rig from "./Splatoon1Maps/rig.png"
 import underpass from "./Splatoon1Maps/underpass.png"
-
-//https://stackoverflow.com/questions/42118296/dynamically-import-images-from-a-directory-using-webpack
-export const weapons: object = importAll(require.context("./weapons", false))
-
-function importAll(r: __WebpackModuleApi.RequireContext) {
-  const images: any = {}
-  r.keys().forEach((item) => {
-    images[item.substring(6, item.length - 4)] = r(item)
-  })
-  return images
-}
+import thirdPlace from "./third_place.png"
 
 export const abilityIcons = {
   BDU,
@@ -113,8 +97,6 @@ export const abilityIcons = {
   "": UNKNOWN,
   EMPTY,
 } as const
-
-export const top500 = top500logo
 
 export const posterGirl = {
   light: posterGirlDrawingLight,

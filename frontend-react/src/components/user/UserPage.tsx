@@ -109,7 +109,7 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
       title: (
         <>
           {t("navigation;Builds")}{" "}
-          <Badge variantColor={themeColor} ml="0.5em">
+          <Badge colorScheme={themeColor} ml="0.5em">
             {builds.length}
           </Badge>
         </>
@@ -153,7 +153,7 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
       title: (
         <>
           {t("users;X Rank Top 500")}{" "}
-          <Badge variantColor={themeColor} ml="0.5em">
+          <Badge colorScheme={themeColor} ml="0.5em">
             {playerData.playerInfo.placements.length}
           </Badge>
         </>
@@ -202,7 +202,7 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
           <Markdown value={user.bio} />
         </Box>
       )}
-      <Tabs isFitted variant="line" mt="2em" variantColor={themeColor}>
+      <Tabs isFitted variant="line" mt="2em" colorScheme={themeColor}>
         <TabList mb="1em">
           {tabs.map((tabObj) => (
             <Tab key={tabObj.id} color={textColor}>

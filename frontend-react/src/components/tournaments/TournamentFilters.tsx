@@ -1,6 +1,14 @@
 import React, { useState, useContext } from "react"
 import Button from "../elements/Button"
-import { Collapse, Grid, Flex, Box, RadioGroup, Radio } from "@chakra-ui/core"
+import {
+  Collapse,
+  Grid,
+  Flex,
+  Box,
+  RadioGroup,
+  Radio,
+  Stack,
+} from "@chakra-ui/core"
 import Input from "../elements/Input"
 import WeaponSelector from "../common/WeaponSelector"
 import Select from "../elements/Select"
@@ -37,7 +45,7 @@ const TournamentFilters: React.FC<TournamentFiltersProps> = ({
   const [show, setShow] = useState(false)
   return (
     <>
-      <Button icon={FaFilter} onClick={() => setShow(!show)}>
+      <Button icon={<FaFilter />} onClick={() => setShow(!show)}>
         {show ? t("freeagents;Hide filters") : t("freeagents;Show filters")}
       </Button>
       <Collapse mt={4} isOpen={show}>
@@ -112,19 +120,19 @@ const TournamentFilters: React.FC<TournamentFiltersProps> = ({
             <RadioGroup
               value={forms.region ?? "all"}
               defaultValue="0"
-              spacing={5}
-              isInline
-              onChange={(e, value: any) => handleChange({ region: value })}
+              onChange={(value) => handleChange({ region: value })}
             >
-              <Radio variantColor={themeColor} value="all">
-                {t("tournaments;All")}
-              </Radio>
-              <Radio variantColor={themeColor} value="western">
-                {t("tournaments;Western")}
-              </Radio>
-              <Radio variantColor={themeColor} value="jpn">
-                {t("tournaments;Japanese")}
-              </Radio>
+              <Stack direction="row">
+                <Radio colorScheme={themeColor} value="all">
+                  {t("tournaments;All")}
+                </Radio>
+                <Radio colorScheme={themeColor} value="western">
+                  {t("tournaments;Western")}
+                </Radio>
+                <Radio colorScheme={themeColor} value="jpn">
+                  {t("tournaments;Japanese")}
+                </Radio>
+              </Stack>
             </RadioGroup>
           </Box>
           <Flex mt="1em">

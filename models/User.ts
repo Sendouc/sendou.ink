@@ -1,9 +1,7 @@
-const { Model } = require("objection")
+import * as Objection from "objection"
 
-class User extends Model {
-  static get tableName() {
-    return "users"
-  }
+class User extends Objection.Model {
+  static tableName = "users"
 }
 
-module.exports = User
+export default User

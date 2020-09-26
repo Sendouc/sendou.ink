@@ -4,7 +4,7 @@ import { RouteComponentProps, Link } from "@reach/router"
 import { USERS, UsersData } from "../../graphql/queries/users"
 import Error from "../common/Error"
 import Loading from "../common/Loading"
-import { Box, Flex, PseudoBox } from "@chakra-ui/core"
+import { Box, Flex } from "@chakra-ui/core"
 import UserAvatar from "../common/UserAvatar"
 import { FaTwitter } from "react-icons/fa"
 import MyThemeContext from "../../themeContext"
@@ -78,7 +78,7 @@ const UserSearchPage: React.FC<RouteComponentProps> = () => {
       <Box>
         {usersSliced.map((user) => (
           <Link key={user.discord_id} to={`/u/${user.discord_id}`}>
-            <PseudoBox
+            <Box
               borderRadius="5px"
               p="10px"
               _hover={{ bg: darkerBgColor }}
@@ -98,7 +98,7 @@ const UserSearchPage: React.FC<RouteComponentProps> = () => {
                   )}
                 </Flex>
               </Flex>
-            </PseudoBox>
+            </Box>
           </Link>
         ))}
       </Box>

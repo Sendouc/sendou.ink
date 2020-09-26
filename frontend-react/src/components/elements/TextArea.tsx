@@ -25,15 +25,12 @@ const TextArea: React.FC<TextAreaProps> = ({
     MyThemeContext
   )
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setValue(event.target.value)
-
   return (
     <>
       {label && <Label required={required}>{label}</Label>}
       <Textarea
         value={value ?? ""}
-        onChange={handleChange}
+        onChange={(e) => setValue(e.target.value)}
         focusBorderColor={themeColorHex}
         size="md"
         height={height}

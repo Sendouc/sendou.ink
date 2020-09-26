@@ -18,7 +18,7 @@ const About: React.FC<RouteComponentProps> = () => {
           {t("footer;Feedback")}
         </Heading>
         {t("footer;feedbackText")}
-        <List styleType="decimal" mt="1em">
+        <List styleType="decimal" m="1em">
           <ListItem>
             <Trans i18nKey="footer;createIssue">
               Create an issue on{" "}

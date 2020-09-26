@@ -1,22 +1,23 @@
-import React, { useContext, useState } from "react"
-import { Flex, Box, Image, IconButton, Heading } from "@chakra-ui/core"
-import { FreeAgentPost, UserData } from "../../types"
-import UserAvatar from "../common/UserAvatar"
-import { Link } from "@reach/router"
-import MyThemeContext from "../../themeContext"
-import { FaTwitter, FaPlus, FaMinus } from "react-icons/fa"
-import { top500 } from "../../assets/imageImports"
-import Flag from "../common/Flag"
-import RoleIcons from "./RoleIcons"
-import WeaponImage from "../common/WeaponImage"
-import VCIcon from "./VCIcon"
-import Heart from "./Heart"
 import { useMutation, useQuery } from "@apollo/react-hooks"
-import { ADD_LIKE } from "../../graphql/mutations/addLike"
-import { FREE_AGENT_MATCHES } from "../../graphql/queries/freeAgentMatches"
-import { DELETE_LIKE } from "../../graphql/mutations/deleteLike"
-import { USER } from "../../graphql/queries/user"
+import { Box, Flex, Heading, IconButton, Image } from "@chakra-ui/core"
+import { Link } from "@reach/router"
+import React, { useContext, useState } from "react"
 import { useTranslation } from "react-i18next"
+import { FaMinus, FaPlus, FaTwitter } from "react-icons/fa"
+import top500 from "../../assets/top500.png"
+import { ADD_LIKE } from "../../graphql/mutations/addLike"
+import { DELETE_LIKE } from "../../graphql/mutations/deleteLike"
+import { FREE_AGENT_MATCHES } from "../../graphql/queries/freeAgentMatches"
+import { USER } from "../../graphql/queries/user"
+import MyThemeContext from "../../themeContext"
+import { FreeAgentPost, UserData } from "../../types"
+import Flag from "../common/Flag"
+import Section from "../common/Section"
+import UserAvatar from "../common/UserAvatar"
+import WeaponImage from "../common/WeaponImage"
+import Heart from "./Heart"
+import RoleIcons from "./RoleIcons"
+import VCIcon from "./VCIcon"
 
 interface FreeAgentCardProps {
   post: FreeAgentPost
@@ -69,16 +70,14 @@ const FreeAgentCard: React.FC<FreeAgentCardProps> = ({
   }
 
   return (
-    <Flex
-      rounded="lg"
+    <Section
+      display="flex"
       overflow="hidden"
-      boxShadow="0px 0px 16px 6px rgba(0,0,0,0.1)"
-      p="25px"
       flexDirection="column"
       justifyContent="space-between"
     >
       <Flex justifyContent="space-between" flexWrap="wrap" alignItems="center">
-        <Box color="#999999" width="50px" m="1em">
+        <Box color="#999999" width="50px" m="1em" whiteSpace="nowrap">
           {new Date(parseInt(post.createdAt)).toLocaleDateString(i18n.language)}
         </Box>
         <Box width="50px" m="1em">
@@ -163,7 +162,7 @@ const FreeAgentCard: React.FC<FreeAgentCardProps> = ({
             aria-label={t("freeagents;Show more information")}
             isRound
             size="lg"
-            icon={expanded ? FaMinus : FaPlus}
+            icon={expanded ? <FaMinus /> : <FaPlus />}
             onClick={() => setExpanded(!expanded)}
           />
         )}
@@ -210,7 +209,7 @@ const FreeAgentCard: React.FC<FreeAgentCardProps> = ({
           )}
         </Box>
       )}
-    </Flex>
+    </Section>
   )
 }
 
