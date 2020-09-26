@@ -45,7 +45,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           maxWidth={
             PAGES_WITH_WIDE_CONTAINER.includes(location.pathname)
               ? "120ch"
-              : "60ch"
+              : "70ch"
           }
         >
           {children}
