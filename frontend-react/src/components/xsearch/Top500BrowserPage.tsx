@@ -11,7 +11,7 @@ import { modeIconMap } from "../../assets/icons"
 import {
   SearchForPlacementsData,
   SearchForPlacementsVars,
-  SEARCH_FOR_PLACEMENTS,
+  SEARCH_FOR_PLACEMENTS
 } from "../../graphql/queries/searchForPlacements"
 import useBreakPoints from "../../hooks/useBreakPoints"
 import MyThemeContext from "../../themeContext"

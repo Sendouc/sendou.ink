@@ -13,7 +13,7 @@ import {
   Build,
   SearchForBuildsData,
   SearchForBuildsVars,
-  Weapon,
+  Weapon
 } from "../../types"
 import Error from "../common/Error"
 import Loading from "../common/Loading"

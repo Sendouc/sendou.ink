@@ -7,7 +7,7 @@ import {
   Popover,
   PopoverBody,
   PopoverContent,
-  PopoverTrigger,
+  PopoverTrigger
 } from "@chakra-ui/core"
 import { Link } from "@reach/router"
 import React, { useContext, useEffect, useState } from "react"

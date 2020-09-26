@@ -1,7 +1,7 @@
 import * as Objection from "objection"
 import {
   salmonRunRecordCategories,
-  salmonRunRecordWildcards,
+  salmonRunRecordWildcards
 } from "../utils/enums"
 import salmonRunStages from "../utils/srMaps"
 import SalmonRunStage from "./SalmonRunStage"

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import { useTranslation } from "react-i18next"
 import { Weapon } from "../../types.js"
 import english_internal from "../../utils/english_internal.json"
@@ -26,30 +26,21 @@ const WeaponImage: React.FC<WeaponImageProps> = ({
   asInlineBlock,
   noTitle,
 }) => {
-  const [src, setSrc] = useState<string | null>(null)
   const { t } = useTranslation()
   const wh = sizeWhMap[size]
 
-  useEffect(() => {
-    import(
-      `../../assets/weapons/Wst_${english_internal[englishName]}.png`
-    ).then((img) => setSrc(img.default))
-  }, [])
-
   return (
     <>
-      {src && (
-        <img
-          src={src}
-          alt={t(`game;${englishName}`)}
-          title={noTitle ? undefined : t(`game;${englishName}`)}
-          style={{
-            width: wh,
-            height: wh,
-            display: asInlineBlock ? "inline-block" : undefined,
-          }}
-        />
-      )}
+      <img
+        src={`https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/weapons/Wst_${english_internal[englishName]}.png`}
+        alt={t(`game;${englishName}`)}
+        title={noTitle ? undefined : t(`game;${englishName}`)}
+        style={{
+          width: wh,
+          height: wh,
+          display: asInlineBlock ? "inline-block" : undefined,
+        }}
+      />
     </>
   )
 }

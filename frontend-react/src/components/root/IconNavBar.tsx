@@ -1,14 +1,16 @@
 import {
+  Box,
   Flex,
   Image,
   Menu,
   MenuButton,
   MenuGroup,
   MenuItem,
-  MenuList,
+  MenuList
 } from "@chakra-ui/core"
 import { Link } from "@reach/router"
 import React, { Suspense, useContext } from "react"
+import { useTranslation } from "react-i18next"
 import MyThemeContext from "../../themeContext"
 
 const getFirstFridayDate = () => {
@@ -40,6 +42,7 @@ export const navIcons: {
     code: string
     displayName: string
     disabled?: boolean
+    toAppend?: string
   }[]
 }[] = [
   {
@@ -70,13 +73,14 @@ export const navIcons: {
     menuItems: [
       {
         code: "/voting",
-        displayName:
-          "Next voting: " +
+        displayName: "Next voting",
+        disabled: true,
+        toAppend:
+          ": " +
           getFirstFridayDate().toLocaleString("default", {
             month: "short",
             day: "numeric",
           }),
-        disabled: true,
       },
       { code: "plus", displayName: "Suggested and vouched players" },
       { code: "plus/history", displayName: "Voting history" },
@@ -87,27 +91,34 @@ export const navIcons: {
 ]
 
 const IconNavBar = () => {
-  const { darkerBgColor } = useContext(MyThemeContext)
+  const { t } = useTranslation()
+  const { darkerBgColor, textColor } = useContext(MyThemeContext)
   return (
-    <Flex
-      bg={darkerBgColor}
-      justifyContent="center"
-      py={2}
-      display={["none", null, "flex"]}
-    >
+    <Flex bg={darkerBgColor} justifyContent="center" py={2} flexWrap="wrap">
       <Suspense fallback={null}>
         {navIcons.map(({ displayName, code, menuItems }) => {
           const MenuNavIcon = () => (
-            <Image
-              src={`${process.env.PUBLIC_URL}/navIcons/${code}.png`}
-              h={12}
-              w={12}
+            <Flex
+              flexDirection="column"
+              alignItems="center"
               mx={2}
-              alt={code}
-              cursor="pointer"
-              userSelect="none"
-              ignoreFallback
-            />
+              color={textColor}
+            >
+              <Image
+                src={`${process.env.PUBLIC_URL}/navIcons/${code}.png`}
+                h={12}
+                w={12}
+                alt={code}
+                cursor="pointer"
+                userSelect="none"
+                ignoreFallback
+              />
+              {menuItems.length > 0 && (
+                <Box ml="0.2rem" lineHeight="0.5rem">
+                  ▾
+                </Box>
+              )}
+            </Flex>
           )
           if (!menuItems.length) {
             return (
@@ -122,12 +133,13 @@ const IconNavBar = () => {
               <MenuButton>
                 <MenuNavIcon />
               </MenuButton>
-              <MenuList bg={darkerBgColor}>
-                <MenuGroup title={displayName}>
+              <MenuList bg={darkerBgColor} color={textColor}>
+                <MenuGroup title={t(`navigation;${displayName}`)}>
                   {menuItems.map((item) => (
                     <Link key={item.code} to={item.code}>
                       <MenuItem disabled={item.disabled}>
-                        {item.displayName}
+                        {t(`navigation;${item.displayName}`)}
+                        {item.toAppend}
                       </MenuItem>
                     </Link>
                   ))}

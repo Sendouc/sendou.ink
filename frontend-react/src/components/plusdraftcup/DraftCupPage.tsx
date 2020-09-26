@@ -6,7 +6,7 @@ import { Helmet } from "react-helmet-async"
 import { useTranslation } from "react-i18next"
 import {
   PlusDraftCupsData,
-  PLUS_DRAFT_CUPS,
+  PLUS_DRAFT_CUPS
 } from "../../graphql/queries/plusDraftCups"
 import MyThemeContext from "../../themeContext"
 import Error from "../common/Error"

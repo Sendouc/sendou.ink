@@ -6,7 +6,7 @@ import { Helmet } from "react-helmet-async"
 import { Trans, useTranslation } from "react-i18next"
 import {
   UpcomingEventsData,
-  UPCOMING_EVENTS,
+  UPCOMING_EVENTS
 } from "../../graphql/queries/upcomingEvents"
 import MyThemeContext from "../../themeContext"
 import { getWeek } from "../../utils/helperFunctions"
