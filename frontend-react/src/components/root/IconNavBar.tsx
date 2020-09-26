@@ -94,12 +94,7 @@ const IconNavBar = () => {
   const { t } = useTranslation()
   const { darkerBgColor, textColor } = useContext(MyThemeContext)
   return (
-    <Flex
-      bg={darkerBgColor}
-      justifyContent="center"
-      py={2}
-      display={["none", null, "flex"]}
-    >
+    <Flex bg={darkerBgColor} justifyContent="center" py={2} flexWrap="wrap">
       <Suspense fallback={null}>
         {navIcons.map(({ displayName, code, menuItems }) => {
           const MenuNavIcon = () => (
