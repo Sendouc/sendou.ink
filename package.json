@@ -7,6 +7,7 @@
     "start": "node dist/index.js",
     "dev": "concurrently \"cross-env USE_PRODUCTION_DB=TRUE ts-node-dev index.js\" \"cd frontend-react && npm start\"",
     "dev:loggedin": "concurrently \"cross-env LOGGED_IN=TRUE USE_PRODUCTION_DB=TRUE ts-node-dev index.js\" \"cd frontend-react && npm start\"",
+    "install:all": "concurrently \"npm i\" \"cd frontend-react && npm i\"",
     "build": "npm run build:frontend && npm run build:backend",
     "build:frontend": "rm -rf build && cd frontend-react && npm install && npm run build && mv build ../build",
     "build:backend": "rm -rf dist && tsc",
