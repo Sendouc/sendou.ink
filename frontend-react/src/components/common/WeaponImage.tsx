@@ -31,10 +31,11 @@ const WeaponImage: React.FC<WeaponImageProps> = ({
   const wh = sizeWhMap[size]
 
   useEffect(() => {
+    if (!english_internal) return
     import(
       `../../assets/weapons/Wst_${english_internal[englishName]}.png`
     ).then((img) => setSrc(img.default))
-  }, [])
+  }, [english_internal])
 
   return (
     <>

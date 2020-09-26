@@ -12,8 +12,6 @@ const App: React.FC = () => {
   const { colorMode } = useColorMode()
   const [themeColorFromStorage] = useLocalStorage<ThemeColor>("colorPreference")
 
-  console.log({ chakraTheme, colorMode })
-
   const themeColor = themeColorFromStorage
     ? themeColorFromStorage
     : colorMode === "light"
