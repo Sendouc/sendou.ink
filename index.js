@@ -12,9 +12,13 @@ const Knex = require("knex")
 import knexConfiguration from "./knexfile"
 const DiscordStrategy = require("passport-discord").Strategy
 const User = require("./mongoose-models/user")
+const ObjectionUser = require("./models/User").default
+const Placement = require("./models/XRankPlacement").default
 const path = require("path")
 const schema = require("./schema")
 const mockUser = require("./utils/mocks")
+const depthLimit = require("graphql-depth-limit")
+const DataLoader = require("dataloader")
 
 const knex = Knex({
   ...knexConfiguration,
@@ -119,11 +123,41 @@ const server = new ApolloServer({
   playground: true,
   schema,
   context: ({ req }) => {
-    if (process.env.LOGGED_IN) {
-      return { user: mockUser }
+    return {
+      user: process.env.LOGGED_IN ? mockUser : req.user,
+      playerLoader: new DataLoader(async (playerIds) => {
+        const users = await ObjectionUser.query()
+          .select()
+          .whereIn("playerId", playerIds)
+
+        const userMap = new Map()
+        users.forEach((user) => {
+          userMap.set(user.playerId, user)
+        })
+
+        return playerIds.map((id) => userMap.get(id))
+      }),
+      xRankPlacementLoader: new DataLoader(async (playerIds) => {
+        const placements = await Placement.query()
+          .select()
+          .whereIn("playerId", playerIds)
+
+        const placementsMap = new Map()
+        placements.forEach((placement) => {
+          const arr = placementsMap.get(placement.playerId)
+
+          if (arr) {
+            arr.push(placement)
+          } else {
+            placementsMap.set(placement.playerId, [placement])
+          }
+        })
+
+        return playerIds.map((id) => placementsMap.get(id))
+      }),
     }
-    return { user: req.user }
   },
+  validationRules: [depthLimit(4)],
 })
 
 const app = express()

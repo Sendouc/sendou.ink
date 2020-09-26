@@ -1,4 +1,4 @@
-import { Text } from "@chakra-ui/core"
+import { Avatar, Text } from "@chakra-ui/core"
 import React, { useContext, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useGetPeakXPowerLeaderboardQuery } from "../../generated/graphql"
@@ -64,7 +64,7 @@ export const PeakXPowerLeaderboard: React.FC<PeakXPowerLeaderboardProps> = ({
         onChange={setPage}
       />
     */}
-      <Table>
+      <Table maxW="50rem">
         <TableHead>
           <TableRow>
             <TableHeader></TableHeader>
@@ -89,17 +89,25 @@ export const PeakXPowerLeaderboard: React.FC<PeakXPowerLeaderboardProps> = ({
                         </Text>
                       )}
                   </TableCell>
-                  <TableCell></TableCell>
                   <TableCell>
-                    <Text fontWeight="bold">{record.playerName}</Text>
+                    {record.user?.avatarUrl && (
+                      <Avatar
+                        src={record.user.avatarUrl}
+                        size="sm"
+                        name={record.user.fullUsername}
+                      />
+                    )}
                   </TableCell>
+                  <TableCell>{record.playerName}</TableCell>
                   <TableCell>
                     <WeaponImage
                       englishName={record.weapon as Weapon}
                       size="SMALL"
                     />
                   </TableCell>
-                  <TableCell>{record.xPower}</TableCell>
+                  <TableCell>
+                    <Text fontWeight="bold">{record.xPower}</Text>
+                  </TableCell>
                   <TableCell color={grayWithShade}>
                     {record.month}/{record.year}
                   </TableCell>

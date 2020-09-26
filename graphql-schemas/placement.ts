@@ -1,10 +1,7 @@
 import { gql, UserInputError } from "apollo-server-express"
 import { raw } from "objection"
-import UserObjection from "../models/User"
 import Weapon from "../models/Weapon"
 import XRankPlacement from "../models/XRankPlacement"
-import Player from "../mongoose-models/player"
-import User from "../mongoose-models/user"
 
 const RECORDS_PER_PAGE = 25
 
@@ -95,6 +92,16 @@ const typeDef = gql`
   }
 `
 const resolvers = {
+  XRankPlacement: {
+    xPower: (root: any) => root.xPower / 10,
+    weapon: (root: any) => root.weapon.name,
+    user: (root: any, _: any, ctx: any) => ctx.playerLoader.load(root.playerId),
+  },
+  PaginatedXRankPlacements: {
+    pageCount: (root: any) => Math.ceil(root.total / RECORDS_PER_PAGE),
+    recordsCount: (root: any) => root.total,
+    records: (root: any) => root.results,
+  },
   Query: {
     getXRankPlacements: async () => {
       return []
@@ -102,7 +109,7 @@ const resolvers = {
     getXRankLeaderboards: async (_: any, { type }: any) => {
       switch (type) {
         case "PEAK_X_POWER":
-          const players = await Player.find({})
+          /*const players = await Player.find({})
           const users = await User.find({})
 
           for (const player of players) {
@@ -116,7 +123,7 @@ const resolvers = {
             await UserObjection.query()
               .patch({ playerId: player.unique_id })
               .where("discordId", "=", found.discord_id)
-          }
+          }*/
 
           break
         case "FOUR_MODE_PEAK_AVERAGE":
@@ -163,6 +170,7 @@ const resolvers = {
     getPeakXPowerLeaderboard: (_: any, args: any) => {
       if (!args.weapon) {
         return XRankPlacement.query()
+          .withGraphFetched("weapon")
           .from(
             XRankPlacement.query()
               .distinctOn("playerId")
@@ -171,10 +179,10 @@ const resolvers = {
           )
           .orderBy("xPower", "desc")
           .page(args.page - 1, RECORDS_PER_PAGE)
-          .withGraphFetched("weapon")
       }
 
       return XRankPlacement.query()
+        .withGraphFetched("weapon")
         .from(
           XRankPlacement.query()
             .distinctOn("playerId")
@@ -188,18 +196,7 @@ const resolvers = {
         )
         .orderBy("xPower", "desc")
         .page(args.page - 1, RECORDS_PER_PAGE)
-        .withGraphFetched("weapon")
     },
-  },
-  XRankPlacement: {
-    xPower: (root: any) => root.xPower / 10,
-    weapon: (root: any) => root.weapon.name,
-    user: (root: any) => null,
-  },
-  PaginatedXRankPlacements: {
-    pageCount: (root: any) => Math.ceil(root.total / RECORDS_PER_PAGE),
-    recordsCount: (root: any) => root.total,
-    records: (root: any) => root.results,
   },
 }
 
