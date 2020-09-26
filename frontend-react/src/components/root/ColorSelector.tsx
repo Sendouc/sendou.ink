@@ -30,7 +30,7 @@ export const themeColors = [
 
 const ColorSelector = () => {
   const { t } = useTranslation()
-  const { themeColorHex, darkerBgColor } = useContext(MyThemeContext)
+  const { themeColorHex, darkerBgColor, textColor } = useContext(MyThemeContext)
   const theme = useChakraTheme()
 
   const hexCodes = choices.map((color) =>
@@ -55,7 +55,7 @@ const ColorSelector = () => {
         display="inline-block"
         mx="0.5rem"
       />
-      <MenuList bg={darkerBgColor}>
+      <MenuList bg={darkerBgColor} color={textColor}>
         <MenuOptionGroup
           title={t("navigation;Choose theme")}
           value={themeColorHex.toLowerCase()}

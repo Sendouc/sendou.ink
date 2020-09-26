@@ -1,5 +1,5 @@
 import { ApolloProvider } from "@apollo/react-hooks"
-import { ChakraProvider } from "@chakra-ui/core"
+import { ChakraProvider, DarkMode } from "@chakra-ui/core"
 import theme from "@chakra-ui/theme"
 import { createHistory, LocationProvider } from "@reach/router"
 import ApolloClient from "apollo-boost"
@@ -26,7 +26,9 @@ ReactDOM.render(
       <HelmetProvider>
         <ApolloProvider client={client}>
           <ChakraProvider theme={theme} resetCSS>
-            <App />
+            <DarkMode>
+              <App />
+            </DarkMode>
           </ChakraProvider>
         </ApolloProvider>
       </HelmetProvider>

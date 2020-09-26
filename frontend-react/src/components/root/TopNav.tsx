@@ -1,9 +1,8 @@
 import { useQuery } from "@apollo/react-hooks"
-import { Box, Flex, Grid, IconButton, useColorMode } from "@chakra-ui/core"
+import { Box, Flex, Grid } from "@chakra-ui/core"
 import { Link } from "@reach/router"
 import React, { Suspense, useContext } from "react"
 import { useTranslation } from "react-i18next"
-import { FiMoon, FiSun } from "react-icons/fi"
 import { DiscordIcon } from "../../assets/icons"
 import { USER } from "../../graphql/queries/user"
 import MyThemeContext from "../../themeContext"
@@ -14,8 +13,7 @@ import ColorSelector from "./ColorSelector"
 import { LanguageSelector } from "./LanguageSelector"
 
 const TopNav = () => {
-  const { bgColor, colorMode } = useContext(MyThemeContext)
-  const { toggleColorMode } = useColorMode()
+  const { bgColor } = useContext(MyThemeContext)
 
   const UserItem = () => {
     const { t } = useTranslation()
@@ -55,7 +53,7 @@ const TopNav = () => {
     >
       <Suspense fallback={null}>
         <Flex alignItems="center">
-          <IconButton
+          {/*<IconButton
             aria-label={`Switch to ${
               colorMode === "light" ? "dark" : "light"
             } mode`}
@@ -65,7 +63,7 @@ const TopNav = () => {
             onClick={toggleColorMode}
             icon={colorMode === "light" ? <FiSun /> : <FiMoon />}
             borderRadius="50%"
-          />
+          />*/}
           <ColorSelector />
           <LanguageSelector />
         </Flex>

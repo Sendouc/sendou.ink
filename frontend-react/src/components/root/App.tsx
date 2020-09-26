@@ -9,9 +9,7 @@ import Routes from "./Routes"
 
 const App: React.FC = () => {
   const chakraTheme = useChakraTheme()
-  let { colorMode = "light" } = useColorMode()
-  //@ts-ignore
-  if (colorMode === "") colorMode = "light"
+  let { colorMode } = useColorMode()
   const [themeColorFromStorage] = useLocalStorage<ThemeColor>("colorPreference")
 
   console.log({ chakraTheme, colorMode })

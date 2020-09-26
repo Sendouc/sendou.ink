@@ -29,7 +29,7 @@ export const languages = [
 
 export const LanguageSelector = () => {
   const { t, i18n } = useTranslation()
-  const { darkerBgColor } = useContext(MyThemeContext)
+  const { darkerBgColor, textColor } = useContext(MyThemeContext)
 
   return (
     <Menu>
@@ -37,12 +37,12 @@ export const LanguageSelector = () => {
         as={IconButton}
         aria-label="Switch language"
         variant="ghost"
-        color="current"
         fontSize="20px"
         icon={<FiGlobe />}
         borderRadius="50%"
+        color={textColor}
       />
-      <MenuList bg={darkerBgColor}>
+      <MenuList bg={darkerBgColor} color={textColor}>
         <MenuOptionGroup
           title={t("navigation;Choose language")}
           value={i18n.language}

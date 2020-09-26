@@ -1,4 +1,5 @@
 import {
+  Box,
   Flex,
   Image,
   Menu,
@@ -87,7 +88,7 @@ export const navIcons: {
 ]
 
 const IconNavBar = () => {
-  const { darkerBgColor } = useContext(MyThemeContext)
+  const { darkerBgColor, textColor } = useContext(MyThemeContext)
   return (
     <Flex
       bg={darkerBgColor}
@@ -98,16 +99,27 @@ const IconNavBar = () => {
       <Suspense fallback={null}>
         {navIcons.map(({ displayName, code, menuItems }) => {
           const MenuNavIcon = () => (
-            <Image
-              src={`${process.env.PUBLIC_URL}/navIcons/${code}.png`}
-              h={12}
-              w={12}
+            <Flex
+              flexDirection="column"
+              alignItems="center"
               mx={2}
-              alt={code}
-              cursor="pointer"
-              userSelect="none"
-              ignoreFallback
-            />
+              color={textColor}
+            >
+              <Image
+                src={`${process.env.PUBLIC_URL}/navIcons/${code}.png`}
+                h={12}
+                w={12}
+                alt={code}
+                cursor="pointer"
+                userSelect="none"
+                ignoreFallback
+              />
+              {menuItems.length > 0 && (
+                <Box ml="0.2rem" lineHeight="0.5rem">
+                  ▾
+                </Box>
+              )}
+            </Flex>
           )
           if (!menuItems.length) {
             return (
@@ -122,8 +134,8 @@ const IconNavBar = () => {
               <MenuButton>
                 <MenuNavIcon />
               </MenuButton>
-              <MenuList bg={darkerBgColor}>
-                <MenuGroup title={displayName}>
+              <MenuList bg={darkerBgColor} color={textColor}>
+                <MenuGroup title={t(`navigation;${displayName}`)}>
                   {menuItems.map((item) => (
                     <Link key={item.code} to={item.code}>
                       <MenuItem disabled={item.disabled}>
