@@ -42,6 +42,7 @@ export const navIcons: {
     code: string
     displayName: string
     disabled?: boolean
+    toAppend?: string
   }[]
 }[] = [
   {
@@ -72,13 +73,14 @@ export const navIcons: {
     menuItems: [
       {
         code: "/voting",
-        displayName:
-          "Next voting: " +
+        displayName: "Next voting",
+        disabled: true,
+        toAppend:
+          ": " +
           getFirstFridayDate().toLocaleString("default", {
             month: "short",
             day: "numeric",
           }),
-        disabled: true,
       },
       { code: "plus", displayName: "Suggested and vouched players" },
       { code: "plus/history", displayName: "Voting history" },
@@ -141,7 +143,8 @@ const IconNavBar = () => {
                   {menuItems.map((item) => (
                     <Link key={item.code} to={item.code}>
                       <MenuItem disabled={item.disabled}>
-                        {item.displayName}
+                        {t(`navigation;${item.displayName}`)}
+                        {item.toAppend}
                       </MenuItem>
                     </Link>
                   ))}
