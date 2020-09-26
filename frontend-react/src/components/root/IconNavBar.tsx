@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/core"
 import { Link } from "@reach/router"
 import React, { Suspense, useContext } from "react"
+import { useTranslation } from "react-i18next"
 import MyThemeContext from "../../themeContext"
 
 const getFirstFridayDate = () => {
@@ -88,6 +89,7 @@ export const navIcons: {
 ]
 
 const IconNavBar = () => {
+  const { t } = useTranslation()
   const { darkerBgColor, textColor } = useContext(MyThemeContext)
   return (
     <Flex
