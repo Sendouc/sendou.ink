@@ -114,7 +114,16 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
             loadMore={(page) => setBuildsToShow(page * 10)}
             hasMore={buildsToShow < data.searchForBuilds.length}
           >
-            <Flex flexWrap="wrap" pt="2em">
+            <Flex
+              flexWrap="wrap"
+              pt="2em"
+              width="100vw"
+              position="relative"
+              left="50%"
+              right="50%"
+              mx="-50vw"
+              justifyContent="center"
+            >
               {buildsOnePerUserUnlessExpanded
                 .filter((_, index) => index < buildsToShow)
                 .reduce((buildElementsArray: JSX.Element[], build) => {

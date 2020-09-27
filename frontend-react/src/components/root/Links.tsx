@@ -11,7 +11,7 @@ import Loading from "../common/Loading"
 import PageHeader from "../common/PageHeader"
 import Alert from "../elements/Alert"
 
-interface Link {
+interface LinkI {
   title: string
   url: string
   description: string
@@ -19,7 +19,7 @@ interface Link {
 }
 
 interface LinksData {
-  links: Link[]
+  links: LinkI[]
 }
 
 const Links: React.FC<RouteComponentProps> = () => {
@@ -31,7 +31,7 @@ const Links: React.FC<RouteComponentProps> = () => {
   if (error) return <Error errorMessage={error.message} />
   const links = data.links
 
-  const linkMap = (link: Link) => (
+  const linkMap = (link: LinkI) => (
     <React.Fragment key={link.title}>
       <Link href={link.url} color={themeColorWithShade}>
         <b>{link.title}</b>

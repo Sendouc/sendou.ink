@@ -38,7 +38,7 @@ import AvatarWithInfo from "./AvatarWithInfo"
 import BuildTab from "./BuildTab"
 import XRankTab from "./XRankTab"
 
-interface Tab {
+interface TabI {
   id: number
   icon: IconType
   title: JSX.Element
@@ -100,7 +100,7 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
   const user = data.searchForUser
   const builds = buildsData.searchForBuilds
 
-  const tabs: Tab[] = []
+  const tabs: TabI[] = []
 
   if (builds.length > 0 || userLean?.discord_id === user.discord_id) {
     tabs.push({

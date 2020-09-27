@@ -137,9 +137,9 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
 
   const addImageToSketch = (weapon: Weapon) => {
     if (!sketch) return
-    import(
-      `../../assets/weapons/Wst_${english_internal[weapon]}.png`
-    ).then((img) => sketch.addImg(img.default))
+    sketch.addImg(
+      `https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/weapons/Wst_${english_internal[weapon]}.png`
+    )
     setTool(Tools.Select)
   }
 
