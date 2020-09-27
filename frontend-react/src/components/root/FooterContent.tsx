@@ -11,7 +11,7 @@ const FooterContent: React.FC = () => {
   const { themeColorWithShade } = useContext(MyThemeContext)
   return (
     <Flex
-      pb="25px"
+      pb="50px"
       flexShrink={0}
       alignItems="center"
       fontWeight="bold"

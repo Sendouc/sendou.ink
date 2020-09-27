@@ -8,7 +8,7 @@ import {
   MenuItem,
   MenuList,
 } from "@chakra-ui/core"
-import { Link } from "@reach/router"
+import { Link, useLocation } from "@reach/router"
 import React, { Suspense, useContext } from "react"
 import { useTranslation } from "react-i18next"
 import MyThemeContext from "../../themeContext"
@@ -92,11 +92,19 @@ export const navIcons: {
 
 const IconNavBar = () => {
   const { t } = useTranslation()
-  const { darkerBgColor, textColor } = useContext(MyThemeContext)
+  const { darkerBgColor, textColor, themeColorWithShade } = useContext(
+    MyThemeContext
+  )
+  const location = useLocation()
+
   return (
     <Flex bg={darkerBgColor} justifyContent="center" py={2} flexWrap="wrap">
       <Suspense fallback={null}>
         {navIcons.map(({ displayName, code, menuItems }) => {
+          const codesTogether =
+            "/" +
+            code +
+            menuItems.reduce((acc, { code }) => acc + "/" + code, "")
           const MenuNavIcon = () => (
             <Flex
               flexDirection="column"
@@ -104,6 +112,26 @@ const IconNavBar = () => {
               mx={2}
               color={textColor}
             >
+              {location.pathname !== "/" &&
+              codesTogether.includes(location.pathname) ? (
+                <Box
+                  h="5px"
+                  w="5px"
+                  mb={1}
+                  bgColor={themeColorWithShade}
+                  borderRadius="50%"
+                  lineHeight="0.5rem"
+                />
+              ) : (
+                <Box
+                  h="5px"
+                  w="5px"
+                  mb={1}
+                  bgColor={darkerBgColor}
+                  borderRadius="50%"
+                  lineHeight="0.5rem"
+                />
+              )}
               <Image
                 src={`${process.env.PUBLIC_URL}/navIcons/${code}.png`}
                 h={12}
@@ -138,8 +166,33 @@ const IconNavBar = () => {
                   {menuItems.map((item) => (
                     <Link key={item.code} to={item.code}>
                       <MenuItem disabled={item.disabled}>
-                        {t(`navigation;${item.displayName}`)}
-                        {item.toAppend}
+                        {location.pathname === "/" + item.code ? (
+                          <Box
+                            h="5px"
+                            w="5px"
+                            mb={1}
+                            bgColor={themeColorWithShade}
+                            borderRadius="50%"
+                            lineHeight="0.5rem"
+                            mr="7px"
+                            mt="4px"
+                          />
+                        ) : (
+                          <Box
+                            h="5px"
+                            w="5px"
+                            mb={1}
+                            borderRadius="50%"
+                            lineHeight="0.5rem"
+                            mr="7px"
+                            mt="4px"
+                            opacity={1}
+                          />
+                        )}
+                        <Box>
+                          {t(`navigation;${item.displayName}`)}
+                          {item.toAppend}
+                        </Box>
                       </MenuItem>
                     </Link>
                   ))}

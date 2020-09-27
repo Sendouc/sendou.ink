@@ -30,26 +30,6 @@ const Footer: React.FC = () => {
       </Suspense>
     </Box>
   )
-
-  return (
-    <Box mt="auto">
-      <Box display="flex" alignItems="flex-end">
-        <Image
-          src={footerBojoing[colorMode]}
-          bg={themeColorWithShade}
-          w="80px"
-          h="auto"
-          ml="auto"
-          mr="50px"
-          userSelect="none"
-          loading="lazy"
-        />
-      </Box>
-      <Suspense fallback={null}>
-        <FooterContent />
-      </Suspense>
-    </Box>
-  )
 }
 
 export default Footer
