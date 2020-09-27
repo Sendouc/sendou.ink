@@ -136,7 +136,7 @@ const IconNavBar = () => {
                 ignoreFallback
               />
               {menuItems.length > 0 && (
-                <Box ml="0.2rem" lineHeight="0.5rem">
+                <Box ml="0.1rem" lineHeight="0.5rem">
                   ▾
                 </Box>
               )}
