@@ -92,13 +92,16 @@ export const navIcons: {
 
 const IconNavBar = () => {
   const { t } = useTranslation()
-  const { darkerBgColor, textColor, themeColorWithShade } = useContext(
-    MyThemeContext
-  )
+  const {
+    darkerBgColor,
+    textColor,
+    themeColorWithShade,
+    grayWithShade,
+  } = useContext(MyThemeContext)
   const location = useLocation()
 
   return (
-    <Flex bg={darkerBgColor} justifyContent="center" py={2} flexWrap="wrap">
+    <Flex bg={darkerBgColor} py={2} justifyContent="center" flexWrap="wrap">
       <Suspense fallback={null}>
         {navIcons.map(({ displayName, code, menuItems }) => {
           const codesTogether =
@@ -109,28 +112,19 @@ const IconNavBar = () => {
             <Flex
               flexDirection="column"
               alignItems="center"
-              mx={2}
+              justifyContent="center"
+              m="5px 15px"
               color={textColor}
             >
               {location.pathname !== "/" &&
               codesTogether.includes(location.pathname) ? (
-                <Box
-                  h="5px"
-                  w="5px"
-                  mb={1}
-                  bgColor={themeColorWithShade}
-                  borderRadius="50%"
-                  lineHeight="0.5rem"
-                />
+                <Box color={themeColorWithShade} fontSize="0.75em">
+                  {displayName}
+                </Box>
               ) : (
-                <Box
-                  h="5px"
-                  w="5px"
-                  mb={1}
-                  bgColor={darkerBgColor}
-                  borderRadius="50%"
-                  lineHeight="0.5rem"
-                />
+                <Box color={grayWithShade} fontSize="0.75em">
+                  {displayName}
+                </Box>
               )}
               <Image
                 src={`${process.env.PUBLIC_URL}/navIcons/${code}.png`}
