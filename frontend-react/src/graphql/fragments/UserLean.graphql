@@ -1,5 +1,5 @@
 fragment UserLean on NewUser {
-  urlIdentifier
+  profilePath
   fullUsername
   avatarUrl
 }

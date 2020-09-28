@@ -1,4 +1,5 @@
-import { Avatar, Text } from "@chakra-ui/core"
+import { Avatar, Link as ChakraLink, Text } from "@chakra-ui/core"
+import { Link } from "@reach/router"
 import React, { useContext, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useGetPeakXPowerLeaderboardQuery } from "../../generated/graphql"
@@ -7,6 +8,7 @@ import { Weapon } from "../../types"
 import { getPlacementString } from "../../utils/helperFunctions"
 import Error from "../common/Error"
 import Loading from "../common/Loading"
+import Pagination from "../common/Pagination"
 import {
   Table,
   TableBody,
@@ -29,7 +31,7 @@ export const PeakXPowerLeaderboard: React.FC<PeakXPowerLeaderboardProps> = ({
   const { data, error } = useGetPeakXPowerLeaderboardQuery({
     variables: { weapon, page },
   })
-  const { darkerBgColor, bgColor, grayWithShade } = useContext(MyThemeContext)
+  const { grayWithShade, themeColorWithShade } = useContext(MyThemeContext)
 
   if (error) return <Error errorMessage={error.message} />
   if (!data) return <Loading />
@@ -64,11 +66,16 @@ export const PeakXPowerLeaderboard: React.FC<PeakXPowerLeaderboardProps> = ({
         onChange={setPage}
       />
     */}
+      <Pagination
+        currentPage={page}
+        pageCount={data.getPeakXPowerLeaderboard.pageCount}
+        onChange={setPage}
+      />
       <Table maxW="50rem">
         <TableHead>
           <TableRow>
             <TableHeader></TableHeader>
-            <TableHeader></TableHeader>
+            <TableHeader p={0}></TableHeader>
             <TableHeader>Name</TableHeader>
             <TableHeader>Weapon</TableHeader>
             <TableHeader>X Power</TableHeader>
@@ -79,7 +86,7 @@ export const PeakXPowerLeaderboard: React.FC<PeakXPowerLeaderboardProps> = ({
           {data.getPeakXPowerLeaderboard.records.map(
             (record, index, allRecords) => {
               return (
-                <TableRow bg={index % 2 === 0 ? "white" : "gray.50"}>
+                <TableRow>
                   <TableCell>
                     {page === 1 &&
                       (index === 0 ||
@@ -89,7 +96,7 @@ export const PeakXPowerLeaderboard: React.FC<PeakXPowerLeaderboardProps> = ({
                         </Text>
                       )}
                   </TableCell>
-                  <TableCell>
+                  <TableCell p={0}>
                     {record.user?.avatarUrl && (
                       <Avatar
                         src={record.user.avatarUrl}
@@ -98,7 +105,19 @@ export const PeakXPowerLeaderboard: React.FC<PeakXPowerLeaderboardProps> = ({
                       />
                     )}
                   </TableCell>
-                  <TableCell>{record.playerName}</TableCell>
+                  <TableCell>
+                    {record.user ? (
+                      <ChakraLink
+                        as={Link}
+                        color={themeColorWithShade}
+                        to={record.user.profilePath}
+                      >
+                        {record.user?.fullUsername}
+                      </ChakraLink>
+                    ) : (
+                      <>{record.playerName}</>
+                    )}
+                  </TableCell>
                   <TableCell>
                     <WeaponImage
                       englishName={record.weapon as Weapon}

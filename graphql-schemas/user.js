@@ -67,8 +67,8 @@ const typeDef = gql`
     fullUsername: String!
     discordId: String!
     avatarUrl: String!
-    "When appended to sendou.ink/u/ makes for a url to the user's profile"
-    urlIdentifier: String!
+    "Location of user's profile"
+    profilePath: String!
     top500placements: [XRankPlacement!]
   }
 `
@@ -78,7 +78,7 @@ const resolvers = {
     fullUsername: (root) => `${root.username}#${root.discriminator}`,
     avatarUrl: (root) =>
       `https://cdn.discordapp.com/avatars/${root.discordId}/${root.discordAvatar}.jpg`,
-    urlIdentifier: (root) => root.discordId,
+    profilePath: (root) => "/u/" + root.discordId,
     top500placements: (root, _, ctx) =>
       ctx.xRankPlacementLoader.load(root.playerId),
   },

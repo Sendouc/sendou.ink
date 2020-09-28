@@ -6,7 +6,7 @@ import {
   MenuButton,
   MenuGroup,
   MenuItem,
-  MenuList
+  MenuList,
 } from "@chakra-ui/core"
 import { Link, useLocation } from "@reach/router"
 import React, { Suspense, useContext } from "react"
@@ -51,6 +51,7 @@ export const navIcons: {
     menuItems: [
       { code: "xsearch", displayName: "Browser" },
       { code: "xtrends", displayName: "Trends" },
+      { code: "xleaderboards", displayName: "Leaderboards" },
     ],
   },
   //{ code: "sr", displayName: "Salmon Run", menuItems: [] },

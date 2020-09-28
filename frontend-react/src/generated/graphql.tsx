@@ -594,8 +594,9 @@ export type NewUser = {
   fullUsername: Scalars['String'];
   discordId: Scalars['String'];
   avatarUrl: Scalars['String'];
-  /** When appended to sendou.ink/u/ makes for a url to the user's profile */
-  urlIdentifier: Scalars['String'];
+  /** Location of user's profile */
+  profilePath: Scalars['String'];
+  top500placements?: Maybe<Array<XRankPlacement>>;
 };
 
 export enum LinkType {
@@ -1118,7 +1119,7 @@ export enum SalmonRunRecordCategory {
 
 export type UserLeanFragment = (
   { __typename?: 'NewUser' }
-  & Pick<NewUser, 'urlIdentifier' | 'fullUsername' | 'avatarUrl'>
+  & Pick<NewUser, 'profilePath' | 'fullUsername' | 'avatarUrl'>
 );
 
 export type GetPeakXPowerLeaderboardQueryVariables = Exact<{
@@ -1145,7 +1146,7 @@ export type GetPeakXPowerLeaderboardQuery = (
 
 export const UserLeanFragmentDoc = gql`
     fragment UserLean on NewUser {
-  urlIdentifier
+  profilePath
   fullUsername
   avatarUrl
 }
