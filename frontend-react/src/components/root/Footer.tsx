@@ -19,7 +19,7 @@ const Footer: React.FC = () => {
         w="80px"
         ml="auto"
         mr="35%"
-        mb="-5%"
+        mb="-5.1%"
         mt="5rem"
         userSelect="none"
         loading="lazy"

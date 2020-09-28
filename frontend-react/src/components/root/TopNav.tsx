@@ -1,5 +1,16 @@
 import { useQuery } from "@apollo/client"
-import { Box, Flex, Grid, IconButton, useColorMode } from "@chakra-ui/core"
+import {
+  Box,
+  Flex,
+  Grid,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuGroup,
+  MenuItem,
+  MenuList,
+  useColorMode,
+} from "@chakra-ui/core"
 import { Link } from "@reach/router"
 import React, { Suspense, useContext } from "react"
 import { useTranslation } from "react-i18next"
@@ -14,7 +25,9 @@ import ColorSelector from "./ColorSelector"
 import { LanguageSelector } from "./LanguageSelector"
 
 const TopNav = () => {
-  const { bgColor, colorMode } = useContext(MyThemeContext)
+  const { bgColor, colorMode, darkerBgColor, textColor } = useContext(
+    MyThemeContext
+  )
   const { toggleColorMode } = useColorMode()
 
   const UserItem = () => {
@@ -30,17 +43,29 @@ const TopNav = () => {
           </Button>
         </a>
       )
-
+    //*<Link to={`/u/${data.user.discord_id}`}>
     return (
-      <Link to={`/u/${data.user.discord_id}`}>
-        <UserAvatar
-          src={data.user.avatar}
-          name={data.user.username}
-          size="sm"
-          m={1}
-          cursor="pointer"
-        />
-      </Link>
+      <Menu>
+        <MenuButton>
+          <UserAvatar
+            src={data.user.avatar}
+            name={data.user.username}
+            size="sm"
+            m={1}
+            cursor="pointer"
+          />
+        </MenuButton>
+        <MenuList bg={darkerBgColor} color={textColor}>
+          <MenuGroup title={data.user.username}>
+            <Link to={`/u/${data.user.discord_id}`}>
+              <MenuItem>{t("navigation;Profile")}</MenuItem>
+            </Link>
+            <a href="/logout">
+              <MenuItem>{t("navigation;Log out")}</MenuItem>
+            </a>
+          </MenuGroup>
+        </MenuList>
+      </Menu>
     )
   }
 
