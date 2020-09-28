@@ -1,5 +1,4 @@
 import { gql, UserInputError } from "apollo-server-express"
-import { raw } from "objection"
 import Weapon from "../models/Weapon"
 import XRankPlacement from "../models/XRankPlacement"
 
@@ -140,15 +139,23 @@ const resolvers = {
             .avg("peak")
             .groupBy("playerId")
             .orderBy("avg", "desc")
-            .page(10, 25)
+            .page(0, 25)
           console.log(a)
 
           return []
         case "PLACEMENTS_COUNT":
-          const p = await XRankPlacement.query()
-            .select(["xRankPlacements.playerId", raw("count(*)")])
+          /*const p = await XRankPlacement.query()
+            .select("playerId", "playerName")
+            .count("*")
             .groupBy("playerId")
             .orderBy("count", "desc")
+            .page(0, RECORDS_PER_PAGE)*/
+          const p = await XRankPlacement.query()
+            .select("playerId", "playerName")
+            .count("*")
+            .groupBy("playerId")
+            .orderBy("count", "desc")
+            .page(0, RECORDS_PER_PAGE)
           console.log(p)
 
           return []

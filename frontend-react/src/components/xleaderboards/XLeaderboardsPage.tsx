@@ -24,7 +24,9 @@ const selectOptions = [
       value: "PEAK_XP",
     },
   ],
-  ...weapons.map((wpn) => ({ label: "X Power - " + wpn, value: wpn })),
+  ...weapons
+    .filter((wpn) => !wpn.includes("Hero"))
+    .map((wpn) => ({ label: "X Power - " + wpn, value: wpn })),
 ] as const
 
 const XLeaderboardsPage: React.FC<RouteComponentProps> = () => {
