@@ -1,14 +1,14 @@
-import { Avatar, Link as ChakraLink, Text } from "@chakra-ui/core"
-import { Link } from "@reach/router"
-import React, { useContext, useState } from "react"
-import { useTranslation } from "react-i18next"
-import { useGetPeakXPowerLeaderboardQuery } from "../../generated/graphql"
-import MyThemeContext from "../../themeContext"
-import { Weapon } from "../../types"
-import { getPlacementString } from "../../utils/helperFunctions"
-import Error from "../common/Error"
-import Loading from "../common/Loading"
-import Pagination from "../common/Pagination"
+import { Avatar, Link as ChakraLink, Text } from "@chakra-ui/core";
+import { Link } from "@reach/router";
+import React, { useContext, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useGetPeakXPowerLeaderboardQuery } from "../../generated/graphql";
+import MyThemeContext from "../../themeContext";
+import { Weapon } from "../../types";
+import { getPlacementString } from "../../utils/helperFunctions";
+import Error from "../common/Error";
+import Loading from "../common/Loading";
+import Pagination from "../common/Pagination";
 import {
   Table,
   TableBody,
@@ -16,25 +16,25 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../common/Table"
-import WeaponImage from "../common/WeaponImage"
+} from "../common/Table";
+import WeaponImage from "../common/WeaponImage";
 
 interface PeakXPowerLeaderboardProps {
-  weapon?: Weapon
+  weapon?: Weapon;
 }
 
 export const PeakXPowerLeaderboard: React.FC<PeakXPowerLeaderboardProps> = ({
   weapon,
 }) => {
-  const { t } = useTranslation()
-  const [page, setPage] = useState(1)
+  const { t } = useTranslation();
+  const [page, setPage] = useState(1);
   const { data, error } = useGetPeakXPowerLeaderboardQuery({
     variables: { weapon, page },
-  })
-  const { grayWithShade, themeColorWithShade } = useContext(MyThemeContext)
+  });
+  const { grayWithShade, themeColorWithShade } = useContext(MyThemeContext);
 
-  if (error) return <Error errorMessage={error.message} />
-  if (!data) return <Loading />
+  if (error) return <Error errorMessage={error.message} />;
+  if (!data) return <Loading />;
 
   return (
     <>
@@ -86,7 +86,7 @@ export const PeakXPowerLeaderboard: React.FC<PeakXPowerLeaderboardProps> = ({
           {data.getPeakXPowerLeaderboard.records.map(
             (record, index, allRecords) => {
               return (
-                <TableRow>
+                <TableRow key={record.id}>
                   <TableCell>
                     {page === 1 &&
                       (index === 0 ||
@@ -131,11 +131,11 @@ export const PeakXPowerLeaderboard: React.FC<PeakXPowerLeaderboardProps> = ({
                     {record.month}/{record.year}
                   </TableCell>
                 </TableRow>
-              )
+              );
             }
           )}
         </TableBody>
       </Table>
     </>
-  )
-}
+  );
+};

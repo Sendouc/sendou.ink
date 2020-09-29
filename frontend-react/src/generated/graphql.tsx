@@ -20,7 +20,7 @@ export type Query = {
   mapVotes?: Maybe<Array<MapVote>>;
   positiveVotes?: Maybe<Scalars['Boolean']>;
   getXRankPlacements: Array<XRankPlacement>;
-  getXRankLeaderboards: Array<XRankPlacement>;
+  getXRankLeaderboard: PaginatedXRankLeaderboard;
   getPeakXPowerLeaderboard: PaginatedXRankPlacements;
   playerCount: Scalars['Int'];
   topTotalPlayers: Array<Player>;
@@ -79,7 +79,8 @@ export type QueryPositiveVotesArgs = {
 };
 
 
-export type QueryGetXRankLeaderboardsArgs = {
+export type QueryGetXRankLeaderboardArgs = {
+  page?: Maybe<Scalars['Int']>;
   type: XRankLeaderboardType;
 };
 
@@ -211,7 +212,6 @@ export type Mutation = {
   resetInviteCode: Scalars['String'];
   leaveTeam: Scalars['Boolean'];
   disbandTeam: Scalars['Boolean'];
-  createSalmonRunRecord: Scalars['Boolean'];
 };
 
 
@@ -375,11 +375,6 @@ export type MutationJoinTeamArgs = {
   inviteCode: Scalars['String'];
 };
 
-
-export type MutationCreateSalmonRunRecordArgs = {
-  input: CreateSalmonRunRecordInput;
-};
-
 export type Build = {
   __typename?: 'Build';
   id: Scalars['ID'];
@@ -479,8 +474,6 @@ export type MapVote = {
 };
 
 export enum XRankLeaderboardType {
-  PeakXPower = 'PEAK_X_POWER',
-  WeaponPeakXPower = 'WEAPON_PEAK_X_POWER',
   FourModePeakAverage = 'FOUR_MODE_PEAK_AVERAGE',
   UniqueWeaponsCount = 'UNIQUE_WEAPONS_COUNT',
   PlacementsCount = 'PLACEMENTS_COUNT'
@@ -513,6 +506,21 @@ export type XRankPlacement = {
 export type PaginatedXRankPlacements = {
   __typename?: 'PaginatedXRankPlacements';
   records: Array<XRankPlacement>;
+  recordsCount: Scalars['Int'];
+  pageCount: Scalars['Int'];
+};
+
+export type XRankLeaderboardEntry = {
+  __typename?: 'XRankLeaderboardEntry';
+  score: Scalars['Float'];
+  playerName: Scalars['String'];
+  playerId: Scalars['String'];
+  user?: Maybe<NewUser>;
+};
+
+export type PaginatedXRankLeaderboard = {
+  __typename?: 'PaginatedXRankLeaderboard';
+  records: Array<XRankLeaderboardEntry>;
   recordsCount: Scalars['Int'];
   pageCount: Scalars['Int'];
 };
@@ -1075,48 +1083,6 @@ export type Banner = {
   staleAfter: Scalars['String'];
 };
 
-export type CreateSalmonRunRecordInput = {
-  goldenEggCount: Scalars['Int'];
-  stage: Scalars['String'];
-  wildcards?: Maybe<SalmonRunRecordWildcards>;
-  category: SalmonRunRecordCategory;
-  rosterUserIds?: Maybe<Array<Scalars['Int']>>;
-  grizzcoWeapon?: Maybe<Scalars['String']>;
-  weaponRotation?: Maybe<Array<Scalars['String']>>;
-  links: Array<Scalars['String']>;
-};
-
-export enum SalmonRunRecordWildcards {
-  OneWildcard = 'ONE_WILDCARD',
-  FourWilcards = 'FOUR_WILCARDS',
-  FourGoldenWildcards = 'FOUR_GOLDEN_WILDCARDS'
-}
-
-export enum SalmonRunRecordCategory {
-  Total = 'TOTAL',
-  TotalNoNight = 'TOTAL_NO_NIGHT',
-  Princess = 'PRINCESS',
-  NtNormal = 'NT_NORMAL',
-  HtNormal = 'HT_NORMAL',
-  LtNormal = 'LT_NORMAL',
-  NtRush = 'NT_RUSH',
-  HtRush = 'HT_RUSH',
-  LtRush = 'LT_RUSH',
-  NtFog = 'NT_FOG',
-  HtFog = 'HT_FOG',
-  LtFog = 'LT_FOG',
-  NtGoldie = 'NT_GOLDIE',
-  HtGoldie = 'HT_GOLDIE',
-  LtGoldie = 'LT_GOLDIE',
-  NtGrillers = 'NT_GRILLERS',
-  HtGrillers = 'HT_GRILLERS',
-  LtGrillers = 'LT_GRILLERS',
-  NtMothership = 'NT_MOTHERSHIP',
-  HtMothership = 'HT_MOTHERSHIP',
-  LtMothership = 'LT_MOTHERSHIP',
-  LtCohock = 'LT_COHOCK'
-}
-
 export type UserLeanFragment = (
   { __typename?: 'NewUser' }
   & Pick<NewUser, 'profilePath' | 'fullUsername' | 'avatarUrl'>
@@ -1136,6 +1102,28 @@ export type GetPeakXPowerLeaderboardQuery = (
     & { records: Array<(
       { __typename?: 'XRankPlacement' }
       & Pick<XRankPlacement, 'id' | 'playerName' | 'xPower' | 'weapon' | 'mode' | 'month' | 'year'>
+      & { user?: Maybe<(
+        { __typename?: 'NewUser' }
+        & UserLeanFragment
+      )> }
+    )> }
+  ) }
+);
+
+export type GetXRankLeaderboardQueryVariables = Exact<{
+  page?: Maybe<Scalars['Int']>;
+  type: XRankLeaderboardType;
+}>;
+
+
+export type GetXRankLeaderboardQuery = (
+  { __typename?: 'Query' }
+  & { getXRankLeaderboard: (
+    { __typename?: 'PaginatedXRankLeaderboard' }
+    & Pick<PaginatedXRankLeaderboard, 'pageCount' | 'recordsCount'>
+    & { records: Array<(
+      { __typename?: 'XRankLeaderboardEntry' }
+      & Pick<XRankLeaderboardEntry, 'playerName' | 'playerId' | 'score'>
       & { user?: Maybe<(
         { __typename?: 'NewUser' }
         & UserLeanFragment
@@ -1198,3 +1186,46 @@ export function useGetPeakXPowerLeaderboardLazyQuery(baseOptions?: Apollo.LazyQu
 export type GetPeakXPowerLeaderboardQueryHookResult = ReturnType<typeof useGetPeakXPowerLeaderboardQuery>;
 export type GetPeakXPowerLeaderboardLazyQueryHookResult = ReturnType<typeof useGetPeakXPowerLeaderboardLazyQuery>;
 export type GetPeakXPowerLeaderboardQueryResult = Apollo.QueryResult<GetPeakXPowerLeaderboardQuery, GetPeakXPowerLeaderboardQueryVariables>;
+export const GetXRankLeaderboardDocument = gql`
+    query getXRankLeaderboard($page: Int, $type: XRankLeaderboardType!) {
+  getXRankLeaderboard(page: $page, type: $type) {
+    records {
+      playerName
+      playerId
+      score
+      user {
+        ...UserLean
+      }
+    }
+    pageCount
+    recordsCount
+  }
+}
+    ${UserLeanFragmentDoc}`;
+
+/**
+ * __useGetXRankLeaderboardQuery__
+ *
+ * To run a query within a React component, call `useGetXRankLeaderboardQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetXRankLeaderboardQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetXRankLeaderboardQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *      type: // value for 'type'
+ *   },
+ * });
+ */
+export function useGetXRankLeaderboardQuery(baseOptions?: Apollo.QueryHookOptions<GetXRankLeaderboardQuery, GetXRankLeaderboardQueryVariables>) {
+        return Apollo.useQuery<GetXRankLeaderboardQuery, GetXRankLeaderboardQueryVariables>(GetXRankLeaderboardDocument, baseOptions);
+      }
+export function useGetXRankLeaderboardLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetXRankLeaderboardQuery, GetXRankLeaderboardQueryVariables>) {
+          return Apollo.useLazyQuery<GetXRankLeaderboardQuery, GetXRankLeaderboardQueryVariables>(GetXRankLeaderboardDocument, baseOptions);
+        }
+export type GetXRankLeaderboardQueryHookResult = ReturnType<typeof useGetXRankLeaderboardQuery>;
+export type GetXRankLeaderboardLazyQueryHookResult = ReturnType<typeof useGetXRankLeaderboardLazyQuery>;
+export type GetXRankLeaderboardQueryResult = Apollo.QueryResult<GetXRankLeaderboardQuery, GetXRankLeaderboardQueryVariables>;
