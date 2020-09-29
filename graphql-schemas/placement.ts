@@ -4,6 +4,12 @@ import XRankPlacement from "../models/XRankPlacement"
 
 const RECORDS_PER_PAGE = 25
 
+const paginatedResolvers = {
+  pageCount: (root: any) => Math.ceil(root.total / RECORDS_PER_PAGE),
+  recordsCount: (root: any) => root.total,
+  records: (root: any) => root.results,
+}
+
 /*
 const placements = await Placement.find({ month: 12 })
       await XRankPlacement.query().insert(
@@ -42,7 +48,10 @@ const placements = await Placement.find({ month: 12 })
 const typeDef = gql`
   extend type Query {
     getXRankPlacements: [XRankPlacement!]!
-    getXRankLeaderboards(type: XRankLeaderboardType!): [XRankPlacement!]!
+    getXRankLeaderboard(
+      page: Int = 1
+      type: XRankLeaderboardType!
+    ): PaginatedXRankLeaderboard!
     getPeakXPowerLeaderboard(
       page: Int = 1
       weapon: String
@@ -50,8 +59,6 @@ const typeDef = gql`
   }
 
   enum XRankLeaderboardType {
-    PEAK_X_POWER
-    WEAPON_PEAK_X_POWER
     FOUR_MODE_PEAK_AVERAGE
     UNIQUE_WEAPONS_COUNT
     PLACEMENTS_COUNT
@@ -86,6 +93,20 @@ const typeDef = gql`
     pageCount: Int!
   }
 
+  type XRankLeaderboardEntry {
+    score: Float!
+    playerName: String!
+    playerId: String!
+    user: NewUser
+  }
+
+  type PaginatedXRankLeaderboard {
+    records: [XRankLeaderboardEntry!]!
+    recordsCount: Int!
+    pageCount: Int!
+  }
+
+  # placeholder
   type Placement {
     name: String
   }
@@ -96,38 +117,24 @@ const resolvers = {
     weapon: (root: any) => root.weapon.name,
     user: (root: any, _: any, ctx: any) => ctx.playerLoader.load(root.playerId),
   },
-  PaginatedXRankPlacements: {
-    pageCount: (root: any) => Math.ceil(root.total / RECORDS_PER_PAGE),
-    recordsCount: (root: any) => root.total,
-    records: (root: any) => root.results,
+  PaginatedXRankPlacements: paginatedResolvers,
+  XRankLeaderboardEntry: {
+    playerName: (root: any, _: any, ctx: any) =>
+      ctx.xRankPlayerNameLoader.load(root.playerId),
+    // if score is over 10.000 it means it represents X Power
+    score: (root: any) =>
+      root.score > 10000 ? Math.round((root.score / 10) * 10) / 10 : root.score,
+    user: (root: any, _: any, ctx: any) => ctx.playerLoader.load(root.playerId),
   },
+  PaginatedXRankLeaderboard: paginatedResolvers,
   Query: {
     getXRankPlacements: async () => {
       return []
     },
-    getXRankLeaderboards: async (_: any, { type }: any) => {
-      switch (type) {
-        case "PEAK_X_POWER":
-          /*const players = await Player.find({})
-          const users = await User.find({})
-
-          for (const player of players) {
-            if (!player.twitter) continue
-
-            const found = users.find(
-              (u: any) => u.twitter_name === player.twitter
-            )
-            if (!found) continue
-
-            await UserObjection.query()
-              .patch({ playerId: player.unique_id })
-              .where("discordId", "=", found.discord_id)
-          }*/
-
-          break
+    getXRankLeaderboard: async (_: any, args: any) => {
+      switch (args.type) {
         case "FOUR_MODE_PEAK_AVERAGE":
-          const a = await XRankPlacement.query()
-            .debug()
+          return XRankPlacement.query()
             .from(
               XRankPlacement.query()
                 .select(["xRankPlacements.playerId", "xRankPlacements.mode"])
@@ -136,39 +143,24 @@ const resolvers = {
                 .as("peakPowers")
             )
             .select("peakPowers.playerId")
-            .avg("peak")
+            .avg("peak as score")
             .groupBy("playerId")
-            .orderBy("avg", "desc")
-            .page(0, 25)
-          console.log(a)
-
-          return []
+            .orderBy("score", "desc")
+            .page(args.page - 1, RECORDS_PER_PAGE)
         case "PLACEMENTS_COUNT":
-          /*const p = await XRankPlacement.query()
-            .select("playerId", "playerName")
-            .count("*")
+          return XRankPlacement.query()
+            .select("playerId")
+            .count("* as score")
             .groupBy("playerId")
-            .orderBy("count", "desc")
-            .page(0, RECORDS_PER_PAGE)*/
-          const p = await XRankPlacement.query()
-            .select("playerId", "playerName")
-            .count("*")
-            .groupBy("playerId")
-            .orderBy("count", "desc")
-            .page(0, RECORDS_PER_PAGE)
-          console.log(p)
-
-          return []
+            .orderBy("score", "desc")
+            .page(args.page - 1, RECORDS_PER_PAGE)
         case "UNIQUE_WEAPONS_COUNT":
-          const l = await XRankPlacement.query()
+          return XRankPlacement.query()
             .select("xRankPlacements.playerId")
-            .countDistinct("weapon_id")
+            .countDistinct("weapon_id as score")
             .groupBy("playerId")
-            .orderBy("count", "desc")
-            .page(10, 25)
-          console.log(l)
-
-          return []
+            .orderBy("score", "desc")
+            .page(args.page - 1, RECORDS_PER_PAGE)
         default:
           // should not be possible to occur
           throw new UserInputError("invalid leaderboard type")

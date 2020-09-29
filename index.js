@@ -13,7 +13,7 @@ import knexConfiguration from "./knexfile"
 const DiscordStrategy = require("passport-discord").Strategy
 const User = require("./mongoose-models/user")
 const ObjectionUser = require("./models/User").default
-const Placement = require("./models/XRankPlacement").default
+const XRankPlacement = require("./models/XRankPlacement").default
 const path = require("path")
 const schema = require("./schema")
 const mockUser = require("./utils/mocks")
@@ -138,7 +138,7 @@ const server = new ApolloServer({
         return playerIds.map((id) => userMap.get(id))
       }),
       xRankPlacementLoader: new DataLoader(async (playerIds) => {
-        const placements = await Placement.query()
+        const placements = await XRankPlacement.query()
           .select()
           .whereIn("playerId", playerIds)
 
@@ -154,6 +154,18 @@ const server = new ApolloServer({
         })
 
         return playerIds.map((id) => placementsMap.get(id))
+      }),
+      xRankPlayerNameLoader: new DataLoader(async (playerIds) => {
+        const placements = await XRankPlacement.query()
+          .select()
+          .whereIn("playerId", playerIds)
+
+        const nameMap = new Map()
+        placements.forEach((placement) => {
+          nameMap.set(placement.playerId, placement.playerName)
+        })
+
+        return playerIds.map((id) => nameMap.get(id))
       }),
     }
   },

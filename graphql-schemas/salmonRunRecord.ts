@@ -1,13 +1,11 @@
 const { gql } = require("apollo-server-express")
 import SalmonRunRecord from "../models/SalmonRunRecord"
-import Weapon from "../models/Weapon"
-import SalmonRunStage from "../models/SalmonRunStage"
 import {
-  salmonRunRecordWildcards,
   salmonRunRecordCategories,
+  salmonRunRecordWildcards,
 } from "../utils/enums"
-import salmonRunStages from "../utils/srMaps"
 import grizzcoWeapons from "../utils/grizzcoWeapons"
+import salmonRunStages from "../utils/srMaps"
 import weapons from "../utils/weapons"
 
 const typeDef = gql`
