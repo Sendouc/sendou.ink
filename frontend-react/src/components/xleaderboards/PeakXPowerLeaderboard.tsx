@@ -1,4 +1,4 @@
-import { Avatar, Link as ChakraLink, Text } from "@chakra-ui/core";
+import { Avatar, Box, Flex, Link as ChakraLink, Text } from "@chakra-ui/core";
 import { Link } from "@reach/router";
 import React, { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -49,46 +49,17 @@ export const PeakXPowerLeaderboard: React.FC<PeakXPowerLeaderboardProps> = ({
 
   return (
     <>
-      {/*
-      <Pagination
-        currentPage={page}
-        pageCount={data.getPeakXPowerLeaderboard.pageCount}
-        onChange={setPage}
-      />
-      {data.getPeakXPowerLeaderboard.records.map((record) => {
-        return (
-          <Section my="2rem">
-            <Box fontSize="1.5rem">{record.playerName}</Box>{" "}
-            <Flex alignItems="center" mt="1rem">
-              <WeaponImage
-                englishName={record.weapon as Weapon}
-                size="MEDIUM"
-              />
-              <Box fontWeight="bold" fontSize="1.3rem" ml="1rem">
-                {record.xPower}
-              </Box>
-            </Flex>
-          </Section>
-        )
-      })}
-      <Pagination
-        currentPage={page}
-        pageCount={data.getPeakXPowerLeaderboard.pageCount}
-        onChange={setPage}
-      />
-    */}
-      {data && (
+      <Box my={4}>
         <Pagination
           currentPage={page}
-          pageCount={data.getPeakXPowerLeaderboard.pageCount}
+          pageCount={data?.getPeakXPowerLeaderboard.pageCount ?? 1}
           onChange={setPage}
         />
-      )}
+      </Box>
       <Table maxW="50rem">
         <TableHead>
           <TableRow>
             {page === 1 && <TableHeader></TableHeader>}
-            <TableHeader></TableHeader>
             <TableHeader>Name</TableHeader>
             <TableHeader>Weapon</TableHeader>
             <TableHeader>X Power</TableHeader>
@@ -112,23 +83,22 @@ export const PeakXPowerLeaderboard: React.FC<PeakXPowerLeaderboardProps> = ({
                       </TableCell>
                     )}
                     <TableCell>
-                      {record.user?.avatarUrl && (
-                        <Avatar
-                          src={record.user.avatarUrl}
-                          size="sm"
-                          name={record.user.fullUsername}
-                        />
-                      )}
-                    </TableCell>
-                    <TableCell>
                       {record.user ? (
-                        <ChakraLink
-                          as={Link}
-                          color={themeColorWithShade}
-                          to={record.user.profilePath}
-                        >
-                          {record.user?.fullUsername}
-                        </ChakraLink>
+                        <Flex alignItems="center">
+                          <ChakraLink
+                            as={Link}
+                            color={themeColorWithShade}
+                            to={record.user.profilePath}
+                          >
+                            <Avatar
+                              src={record.user.avatarUrl}
+                              size="sm"
+                              name={record.user.fullUsername}
+                              mr="0.5rem"
+                            />
+                          </ChakraLink>
+                          {record.user.fullUsername}
+                        </Flex>
                       ) : (
                         <>{record.playerName}</>
                       )}
@@ -151,6 +121,14 @@ export const PeakXPowerLeaderboard: React.FC<PeakXPowerLeaderboardProps> = ({
             )}
         </TableBody>
       </Table>
+      <Box my={4}>
+        <Pagination
+          currentPage={page}
+          pageCount={data?.getPeakXPowerLeaderboard.pageCount ?? 1}
+          onChange={setPage}
+          scrollToTop
+        />
+      </Box>
     </>
   );
 };

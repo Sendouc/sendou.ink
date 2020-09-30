@@ -43,7 +43,7 @@ const selectOptions = [
     },
   ],
   ...weapons
-    .filter((wpn) => !wpn.includes("Hero"))
+    .filter((wpn) => !wpn.includes("Hero") && !wpn.includes("Octo"))
     .map((wpn) => ({ label: "X Power - " + wpn, value: wpn })),
 ] as const;
 
@@ -53,7 +53,7 @@ const XLeaderboardsPage: React.FC<RouteComponentProps> = () => {
   return (
     <>
       <PageHeader title="X Leaderboards" />
-      <Box>
+      <Box my={10}>
         <Select
           options={selectOptions}
           value={

@@ -1,6 +1,5 @@
 .pagination {
   display: inline-block;
-  padding: 8px 16px;
   text-decoration: none;
   font-weight: bold;
   font-size: 18px;
@@ -14,8 +13,4 @@
 
 .active-page {
   border-bottom: 3px solid;
-}
-
-.disabled-page {
-  display: none;
 }

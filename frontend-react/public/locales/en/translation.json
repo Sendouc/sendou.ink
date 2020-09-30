@@ -1210,7 +1210,9 @@
     "Blue": "Blue",
     "Cyan": "Cyan",
     "Purple": "Purple",
-    "Pink": "Pink"
+    "Pink": "Pink",
+    "paginationNext": "Next",
+    "paginationPrevious": "Previous"
   },
   "home": {
     "Competitive Splatoon Hub": "Competitive Splatoon Hub",
