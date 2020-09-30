@@ -1,13 +1,13 @@
-import { DocumentNode, gql } from "@apollo/client"
+import { DocumentNode, gql } from "@apollo/client";
 
 export interface MapVotesData {
   mapVotes: {
-    name: string
-    sz: -1 | 0 | 1
-    tc: -1 | 0 | 1
-    rm: -1 | 0 | 1
-    cb: -1 | 0 | 1
-  }[]
+    name: string;
+    sz: -1 | 0 | 1;
+    tc: -1 | 0 | 1;
+    rm: -1 | 0 | 1;
+    cb: -1 | 0 | 1;
+  }[];
 }
 
 export const MAP_VOTES: DocumentNode = gql`
@@ -20,4 +20,4 @@ export const MAP_VOTES: DocumentNode = gql`
       cb
     }
   }
-`
+`;

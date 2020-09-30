@@ -1,14 +1,14 @@
-import { Flex, FormLabel, Switch } from "@chakra-ui/core"
-import React, { useContext } from "react"
-import MyThemeContext from "../../themeContext"
-import Select from "../elements/Select"
-import ModeButtons from "../xtrends/ModeButtons"
-import { PlannerMapBg } from "./MapPlannerPage"
-import { useTranslation } from "react-i18next"
+import { Flex, FormLabel, Switch } from "@chakra-ui/core";
+import React, { useContext } from "react";
+import MyThemeContext from "../../themeContext";
+import Select from "../elements/Select";
+import ModeButtons from "../xtrends/ModeButtons";
+import { PlannerMapBg } from "./MapPlannerPage";
+import { useTranslation } from "react-i18next";
 
 interface MapSelectProps {
-  bg: PlannerMapBg
-  setBg: React.Dispatch<React.SetStateAction<PlannerMapBg>>
+  bg: PlannerMapBg;
+  setBg: React.Dispatch<React.SetStateAction<PlannerMapBg>>;
 }
 
 const maps = [
@@ -68,11 +68,11 @@ const maps = [
     label: "Skipper Pavilion",
     value: "Skipper Pavilion",
   },
-]
+];
 
 const MapSelect: React.FC<MapSelectProps> = ({ bg, setBg }) => {
-  const { themeColor } = useContext(MyThemeContext)
-  const { t } = useTranslation()
+  const { themeColor } = useContext(MyThemeContext);
+  const { t } = useTranslation();
 
   return (
     <Flex
@@ -110,7 +110,7 @@ const MapSelect: React.FC<MapSelectProps> = ({ bg, setBg }) => {
         />
       </Flex>
     </Flex>
-  )
-}
+  );
+};
 
-export default MapSelect
+export default MapSelect;

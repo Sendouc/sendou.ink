@@ -1,79 +1,79 @@
-import { useQuery } from "@apollo/client"
-import { Badge, Box, Divider, Flex, Grid } from "@chakra-ui/core"
-import { Link } from "@reach/router"
-import React, { useContext, useState } from "react"
-import { PlusInfoData, PLUS_INFO } from "../../graphql/queries/plusInfo"
+import { useQuery } from "@apollo/client";
+import { Badge, Box, Divider, Flex, Grid } from "@chakra-ui/core";
+import { Link } from "@reach/router";
+import React, { useContext, useState } from "react";
+import { PlusInfoData, PLUS_INFO } from "../../graphql/queries/plusInfo";
 import {
   Suggestion,
   SUGGESTIONS,
-  SuggestionsData
-} from "../../graphql/queries/suggestions"
-import { USER } from "../../graphql/queries/user"
-import { VOUCHES } from "../../graphql/queries/vouches"
-import MyThemeContext from "../../themeContext"
-import { UserData } from "../../types"
-import Error from "../common/Error"
-import Loading from "../common/Loading"
-import SubHeader from "../common/SubHeader"
-import UserAvatar from "../common/UserAvatar"
-import Button from "../elements/Button"
-import SuggestionVouchModal from "./SuggestionVouchModal"
+  SuggestionsData,
+} from "../../graphql/queries/suggestions";
+import { USER } from "../../graphql/queries/user";
+import { VOUCHES } from "../../graphql/queries/vouches";
+import MyThemeContext from "../../themeContext";
+import { UserData } from "../../types";
+import Error from "../common/Error";
+import Loading from "../common/Loading";
+import SubHeader from "../common/SubHeader";
+import UserAvatar from "../common/UserAvatar";
+import Button from "../elements/Button";
+import SuggestionVouchModal from "./SuggestionVouchModal";
 
 interface VouchUser {
-  username: string
-  discriminator: string
-  avatar?: string
-  discord_id: string
+  username: string;
+  discriminator: string;
+  avatar?: string;
+  discord_id: string;
   plus: {
     voucher_user: {
-      username: string
-      discriminator: string
-      discord_id: string
-    }
-    vouch_status: string
-  }
+      username: string;
+      discriminator: string;
+      discord_id: string;
+    };
+    vouch_status: string;
+  };
 }
 
 interface VouchesData {
-  vouches: VouchUser[]
+  vouches: VouchUser[];
 }
 
 const Suggestions = () => {
-  const { grayWithShade, themeColor } = useContext(MyThemeContext)
+  const { grayWithShade, themeColor } = useContext(MyThemeContext);
 
-  const { data, error, loading } = useQuery<SuggestionsData>(SUGGESTIONS)
+  const { data, error, loading } = useQuery<SuggestionsData>(SUGGESTIONS);
   const {
     data: vouchesData,
     error: vouchesError,
     loading: vouchesLoading,
-  } = useQuery<VouchesData>(VOUCHES)
-  const { data: userData, error: userError } = useQuery<UserData>(USER)
+  } = useQuery<VouchesData>(VOUCHES);
+  const { data: userData, error: userError } = useQuery<UserData>(USER);
   const { data: plusInfoData, error: plusInfoError } = useQuery<PlusInfoData>(
     PLUS_INFO
-  )
+  );
 
-  const [showSuggestionForm, setShowSuggestionForm] = useState(false)
+  const [showSuggestionForm, setShowSuggestionForm] = useState(false);
 
-  if (error) return <Error errorMessage={error.message} />
-  if (userError) return <Error errorMessage={userError.message} />
-  if (plusInfoError) return <Error errorMessage={plusInfoError.message} />
-  if (vouchesError) return <Error errorMessage={vouchesError.message} />
-  if (loading || vouchesLoading || !data || !vouchesData) return <Loading />
-  if (!data.suggestions) return null
+  if (error) return <Error errorMessage={error.message} />;
+  if (userError) return <Error errorMessage={userError.message} />;
+  if (plusInfoError) return <Error errorMessage={plusInfoError.message} />;
+  if (vouchesError) return <Error errorMessage={vouchesError.message} />;
+  if (loading || vouchesLoading || !data || !vouchesData) return <Loading />;
+  if (!data.suggestions) return null;
 
   const plusOneVouches = vouchesData.vouches.filter(
     (vouch) => vouch.plus.vouch_status === "ONE"
-  )
+  );
   const plusTwoVouches = vouchesData.vouches.filter(
     (vouch) => vouch.plus.vouch_status === "TWO"
-  )
+  );
 
   const plusOneSuggested = data.suggestions.filter(
     (suggestion) => suggestion.plus_server === "ONE"
-  )
+  );
   const plusTwoSuggested = data.suggestions.filter(
     (suggestion) => suggestion.plus_server === "TWO"
-  )
+  );
 
   const vouchMap = (vouch: VouchUser) => {
     return (
@@ -93,12 +93,12 @@ const Suggestions = () => {
           </Box>
         </Box>
       </React.Fragment>
-    )
-  }
+    );
+  };
 
   const suggestionMap = (suggestion: Suggestion, index: number) => {
-    const suggested_user = suggestion.discord_user
-    const suggester_user = suggestion.suggester_discord_user
+    const suggested_user = suggestion.discord_user;
+    const suggester_user = suggestion.suggester_discord_user;
     return (
       <React.Fragment key={suggestion.discord_user.discord_id}>
         {index !== 0 && <Divider my="1rem" />}
@@ -122,19 +122,20 @@ const Suggestions = () => {
           {suggestion.description}
         </Box>
       </React.Fragment>
-    )
-  }
+    );
+  };
 
-  const user = userData?.user
+  const user = userData?.user;
 
   const ownSuggestion = data.suggestions.find(
     (suggestion) =>
       suggestion.suggester_discord_user.discord_id === user?.discord_id
-  )
+  );
 
-  const canSuggest = !ownSuggestion
+  const canSuggest = !ownSuggestion;
 
-  const canVouch = !!user?.plus?.can_vouch && !user?.plus?.can_vouch_again_after
+  const canVouch =
+    !!user?.plus?.can_vouch && !user?.plus?.can_vouch_again_after;
 
   const getButtonText = () => {
     // can't suggest or vouch if voting is underway OR is not plus server member
@@ -142,14 +143,14 @@ const Suggestions = () => {
       plusInfoData?.plusInfo?.voting_ends ||
       !userData?.user?.plus?.membership_status
     )
-      return undefined
+      return undefined;
 
-    if (canSuggest && canVouch) return "Suggest or vouch a player"
-    else if (canSuggest) return "Suggest a player"
-    else if (canVouch) return "Vouch a player"
-  }
+    if (canSuggest && canVouch) return "Suggest or vouch a player";
+    else if (canSuggest) return "Suggest a player";
+    else if (canVouch) return "Vouch a player";
+  };
 
-  const buttonText = getButtonText()
+  const buttonText = getButtonText();
 
   return (
     <>
@@ -206,7 +207,7 @@ const Suggestions = () => {
         {plusTwoSuggested.map(suggestionMap)}
       </Box>
     </>
-  )
-}
+  );
+};
 
-export default Suggestions
+export default Suggestions;

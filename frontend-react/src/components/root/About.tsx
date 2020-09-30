@@ -1,13 +1,13 @@
-import React, { useContext } from "react"
-import { RouteComponentProps } from "@reach/router"
-import { Heading, Link, List, ListItem } from "@chakra-ui/core"
-import MyThemeContext from "../../themeContext"
-import { Helmet } from "react-helmet-async"
-import { useTranslation, Trans } from "react-i18next"
+import React, { useContext } from "react";
+import { RouteComponentProps } from "@reach/router";
+import { Heading, Link, List, ListItem } from "@chakra-ui/core";
+import MyThemeContext from "../../themeContext";
+import { Helmet } from "react-helmet-async";
+import { useTranslation, Trans } from "react-i18next";
 
 const About: React.FC<RouteComponentProps> = () => {
-  const { t } = useTranslation()
-  const { themeColorWithShade } = useContext(MyThemeContext)
+  const { t } = useTranslation();
+  const { themeColorWithShade } = useContext(MyThemeContext);
   return (
     <>
       <Helmet>
@@ -209,7 +209,7 @@ const About: React.FC<RouteComponentProps> = () => {
         </ul>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default About
+export default About;

@@ -5,22 +5,22 @@ import {
   InputGroup,
   InputLeftAddon,
   InputLeftElement,
-} from "@chakra-ui/core"
-import React, { useContext } from "react"
-import { IconType } from "react-icons/lib/cjs"
-import MyThemeContext from "../../themeContext"
-import Label from "./Label"
+} from "@chakra-ui/core";
+import React, { useContext } from "react";
+import { IconType } from "react-icons/lib/cjs";
+import MyThemeContext from "../../themeContext";
+import Label from "./Label";
 
 interface InputProps {
-  value?: string
-  setValue: (value: string) => void
-  label: string
-  limit?: number
-  required?: boolean
-  disabled?: boolean
-  textLeft?: string
-  size?: "sm" | "md" | "lg"
-  icon?: IconType
+  value?: string;
+  setValue: (value: string) => void;
+  label: string;
+  limit?: number;
+  required?: boolean;
+  disabled?: boolean;
+  textLeft?: string;
+  size?: "sm" | "md" | "lg";
+  icon?: IconType;
 }
 
 const Input: React.FC<InputProps & BoxProps> = ({
@@ -40,10 +40,10 @@ const Input: React.FC<InputProps & BoxProps> = ({
     grayWithShade,
     darkerBgColor,
     textColor,
-  } = useContext(MyThemeContext)
+  } = useContext(MyThemeContext);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setValue(event.target.value)
+    setValue(event.target.value);
 
   return (
     <Box {...props}>
@@ -77,7 +77,7 @@ const Input: React.FC<InputProps & BoxProps> = ({
         </Box>
       )}
     </Box>
-  )
-}
+  );
+};
 
-export default Input
+export default Input;

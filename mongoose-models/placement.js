@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const placementSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -9,13 +9,13 @@ const placementSchema = new mongoose.Schema({
   unique_id: { type: String, required: true },
   month: { type: Number, min: 1, max: 12, required: true },
   year: { type: Number, min: 2017, required: true },
-})
+});
 
 placementSchema.virtual("player", {
   ref: "Player",
   localField: "unique_id",
   foreignField: "unique_id",
   justOne: true,
-})
+});
 
-module.exports = mongoose.model("Placement", placementSchema)
+module.exports = mongoose.model("Placement", placementSchema);

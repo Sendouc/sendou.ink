@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client"
+import { gql } from "@apollo/client";
 
 export const topShooterPlayers = gql`
   {
@@ -20,4 +20,4 @@ export const topShooterPlayers = gql`
       }
     }
   }
-`
+`;

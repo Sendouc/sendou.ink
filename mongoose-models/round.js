@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const roundSchema = new mongoose.Schema({
   tournament_id: {
@@ -89,10 +89,10 @@ const roundSchema = new mongoose.Schema({
       [null, null, null, null, null, null, null, null, null],
     ],
   },
-})
+});
 
 function player_limit(val) {
-  return val.length === 4
+  return val.length === 4;
 }
 
-module.exports = mongoose.model("Round", roundSchema)
+module.exports = mongoose.model("Round", roundSchema);

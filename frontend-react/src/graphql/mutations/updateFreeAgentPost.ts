@@ -1,4 +1,4 @@
-import { DocumentNode, gql } from "@apollo/client"
+import { DocumentNode, gql } from "@apollo/client";
 
 export const UPDATE_FREE_AGENT_POST: DocumentNode = gql`
   mutation updateFreeAgentPost(
@@ -18,4 +18,4 @@ export const UPDATE_FREE_AGENT_POST: DocumentNode = gql`
       description: $description
     )
   }
-`
+`;

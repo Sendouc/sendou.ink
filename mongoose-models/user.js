@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true },
@@ -30,13 +30,13 @@ const userSchema = new mongoose.Schema({
     can_vouch: String,
     can_vouch_again_after: Date,
   },
-})
+});
 
 userSchema.virtual("plus.voucher_user", {
   ref: "User",
   localField: "plus.voucher_discord_id",
   foreignField: "discord_id",
   justOne: true,
-})
+});
 
-module.exports = mongoose.model("User", userSchema)
+module.exports = mongoose.model("User", userSchema);

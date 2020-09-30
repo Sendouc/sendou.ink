@@ -1,8 +1,8 @@
-import React from "react"
-import { Box } from "@chakra-ui/core"
+import React from "react";
+import { Box } from "@chakra-ui/core";
 
 interface LabelProps {
-  required?: boolean
+  required?: boolean;
 }
 
 const Label: React.FC<LabelProps> = ({ children, required }) => {
@@ -15,7 +15,7 @@ const Label: React.FC<LabelProps> = ({ children, required }) => {
         </Box>
       )}
     </Box>
-  )
-}
+  );
+};
 
-export default Label
+export default Label;

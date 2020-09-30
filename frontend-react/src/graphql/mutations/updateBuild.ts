@@ -1,4 +1,4 @@
-import { DocumentNode, gql } from "@apollo/client"
+import { DocumentNode, gql } from "@apollo/client";
 
 export const UPDATE_BUILD: DocumentNode = gql`
   mutation updateBuild(
@@ -26,4 +26,4 @@ export const UPDATE_BUILD: DocumentNode = gql`
       shoesItem: $shoesItem
     )
   }
-`
+`;

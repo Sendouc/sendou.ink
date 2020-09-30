@@ -7,30 +7,30 @@ import {
   Popover,
   PopoverBody,
   PopoverContent,
-  PopoverTrigger
-} from "@chakra-ui/core"
-import { Link } from "@reach/router"
-import React, { useContext, useEffect, useState } from "react"
-import { Trans, useTranslation } from "react-i18next"
-import { FiBarChart2, FiEdit, FiInfo, FiTarget } from "react-icons/fi"
-import top500logo from "../../assets/top500.png"
-import MyThemeContext from "../../themeContext"
-import { Build } from "../../types"
-import Flag from "../common/Flag"
-import WeaponImage from "../common/WeaponImage"
-import BuildCardStats from "./BuildCardStats"
-import Gears from "./Gears"
-import ViewAP from "./ViewAP"
-import ViewSlots from "./ViewSlots"
+  PopoverTrigger,
+} from "@chakra-ui/core";
+import { Link } from "@reach/router";
+import React, { useContext, useEffect, useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
+import { FiBarChart2, FiEdit, FiInfo, FiTarget } from "react-icons/fi";
+import top500logo from "../../assets/top500.png";
+import MyThemeContext from "../../themeContext";
+import { Build } from "../../types";
+import Flag from "../common/Flag";
+import WeaponImage from "../common/WeaponImage";
+import BuildCardStats from "./BuildCardStats";
+import Gears from "./Gears";
+import ViewAP from "./ViewAP";
+import ViewSlots from "./ViewSlots";
 
 interface BuildCardProps {
-  build: Build
-  defaultToAPView: boolean
-  showUser?: boolean
-  canModify?: boolean
-  setBuildBeingEdited?: (build: Build) => void
-  otherBuildCount?: number
-  onShowAllByUser?: () => void
+  build: Build;
+  defaultToAPView: boolean;
+  showUser?: boolean;
+  canModify?: boolean;
+  setBuildBeingEdited?: (build: Build) => void;
+  otherBuildCount?: number;
+  onShowAllByUser?: () => void;
 }
 
 const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
@@ -43,21 +43,21 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
   onShowAllByUser,
   ...props
 }) => {
-  const [apView, setApView] = useState(defaultToAPView)
-  const [showStats, setShowStats] = useState(false)
+  const [apView, setApView] = useState(defaultToAPView);
+  const [showStats, setShowStats] = useState(false);
   const {
     themeColor,
     darkerBgColor,
     grayWithShade,
     themeColorWithShade,
-  } = useContext(MyThemeContext)
-  const { t } = useTranslation()
+  } = useContext(MyThemeContext);
+  const { t } = useTranslation();
 
   useEffect(() => {
-    setApView(defaultToAPView)
-  }, [defaultToAPView])
+    setApView(defaultToAPView);
+  }, [defaultToAPView]);
 
-  const username = build.discord_user!.username
+  const username = build.discord_user!.username;
 
   return (
     <>
@@ -229,7 +229,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
         </Box>
       </Box>
     </>
-  )
-}
+  );
+};
 
-export default BuildCard
+export default BuildCard;

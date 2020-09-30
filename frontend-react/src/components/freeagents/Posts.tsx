@@ -1,16 +1,16 @@
-import React, { useState } from "react"
-import { FreeAgentPost } from "../../types"
-import { Grid, Box, Heading } from "@chakra-ui/core"
-import Alert from "../elements/Alert"
-import FreeAgentCard from "./FreeAgentCard"
-import InfiniteScroll from "react-infinite-scroller"
-import Button from "../elements/Button"
-import { useTranslation } from "react-i18next"
+import React, { useState } from "react";
+import { FreeAgentPost } from "../../types";
+import { Grid, Box, Heading } from "@chakra-ui/core";
+import Alert from "../elements/Alert";
+import FreeAgentCard from "./FreeAgentCard";
+import InfiniteScroll from "react-infinite-scroller";
+import Button from "../elements/Button";
+import { useTranslation } from "react-i18next";
 
 interface PostsAccordionProps {
-  posts: FreeAgentPost[]
-  canLike: boolean
-  likedUsersIds: string[]
+  posts: FreeAgentPost[];
+  canLike: boolean;
+  likedUsersIds: string[];
 }
 
 const Posts: React.FC<PostsAccordionProps> = ({
@@ -18,15 +18,15 @@ const Posts: React.FC<PostsAccordionProps> = ({
   canLike,
   likedUsersIds,
 }) => {
-  const { t } = useTranslation()
-  const [agentsToShow, setAgentsToShow] = useState(5)
+  const { t } = useTranslation();
+  const [agentsToShow, setAgentsToShow] = useState(5);
 
   if (posts.length === 0) {
     return (
       <Alert status="info">
         {t("freeagents;No free agents found with the current filter")}
       </Alert>
-    )
+    );
   }
   return (
     <>
@@ -60,7 +60,7 @@ const Posts: React.FC<PostsAccordionProps> = ({
         </Box>
       </Box>
     </>
-  )
-}
+  );
+};
 
-export default Posts
+export default Posts;

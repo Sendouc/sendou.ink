@@ -4,12 +4,12 @@ import {
   MenuButton,
   MenuItemOption,
   MenuList,
-  MenuOptionGroup
-} from "@chakra-ui/core"
-import React, { useContext } from "react"
-import { useTranslation } from "react-i18next"
-import { FiGlobe } from "react-icons/fi"
-import MyThemeContext from "../../themeContext"
+  MenuOptionGroup,
+} from "@chakra-ui/core";
+import React, { useContext } from "react";
+import { useTranslation } from "react-i18next";
+import { FiGlobe } from "react-icons/fi";
+import MyThemeContext from "../../themeContext";
 
 export const languages = [
   { code: "de", name: "Deutsch" },
@@ -25,11 +25,11 @@ export const languages = [
   { code: "ja", name: "日本語" },
   { code: "ko", name: "한국어" },
   { code: "zh-TW", name: "繁體中文" },
-] as const
+] as const;
 
 export const LanguageSelector = () => {
-  const { t, i18n } = useTranslation()
-  const { darkerBgColor, textColor } = useContext(MyThemeContext)
+  const { t, i18n } = useTranslation();
+  const { darkerBgColor, textColor } = useContext(MyThemeContext);
 
   return (
     <Menu>
@@ -59,5 +59,5 @@ export const LanguageSelector = () => {
         </MenuOptionGroup>
       </MenuList>
     </Menu>
-  )
-}
+  );
+};

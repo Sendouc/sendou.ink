@@ -1,4 +1,4 @@
-import { DocumentNode, gql } from "@apollo/client"
+import { DocumentNode, gql } from "@apollo/client";
 
 export const ADD_RESULT: DocumentNode = gql`
   mutation addResult(
@@ -14,4 +14,4 @@ export const ADD_RESULT: DocumentNode = gql`
       placement: $placement
     )
   }
-`
+`;

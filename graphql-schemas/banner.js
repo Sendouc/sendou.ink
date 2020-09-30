@@ -1,5 +1,5 @@
-const { gql } = require("apollo-server-express")
-const Banner = require("../mongoose-models/banner")
+const { gql } = require("apollo-server-express");
+const Banner = require("../mongoose-models/banner");
 
 const typeDef = gql`
   extend type Query {
@@ -14,18 +14,18 @@ const typeDef = gql`
     bgColor: String!
     staleAfter: String!
   }
-`
+`;
 const resolvers = {
   Query: {
     banners: () => {
       return Banner.find({ staleAfter: { $gte: new Date() } }).sort({
         date: "asc",
-      })
+      });
     },
   },
-}
+};
 
 module.exports = {
   Banner: typeDef,
   bannerResolvers: resolvers,
-}
+};

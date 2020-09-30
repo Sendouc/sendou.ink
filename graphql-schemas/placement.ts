@@ -1,14 +1,14 @@
-import { gql, UserInputError } from "apollo-server-express"
-import Weapon from "../models/Weapon"
-import XRankPlacement from "../models/XRankPlacement"
+import { gql, UserInputError } from "apollo-server-express";
+import Weapon from "../models/Weapon";
+import XRankPlacement from "../models/XRankPlacement";
 
-const RECORDS_PER_PAGE = 25
+const RECORDS_PER_PAGE = 25;
 
 const paginatedResolvers = {
   pageCount: (root: any) => Math.ceil(root.total / RECORDS_PER_PAGE),
   recordsCount: (root: any) => root.total,
   records: (root: any) => root.results,
-}
+};
 
 /*
 const placements = await Placement.find({ month: 12 })
@@ -110,7 +110,7 @@ const typeDef = gql`
   type Placement {
     name: String
   }
-`
+`;
 const resolvers = {
   XRankPlacement: {
     xPower: (root: any) => root.xPower / 10,
@@ -129,7 +129,7 @@ const resolvers = {
   PaginatedXRankLeaderboard: paginatedResolvers,
   Query: {
     getXRankPlacements: async () => {
-      return []
+      return [];
     },
     getXRankLeaderboard: async (_: any, args: any) => {
       switch (args.type) {
@@ -146,24 +146,24 @@ const resolvers = {
             .avg("peak as score")
             .groupBy("playerId")
             .orderBy("score", "desc")
-            .page(args.page - 1, RECORDS_PER_PAGE)
+            .page(args.page - 1, RECORDS_PER_PAGE);
         case "PLACEMENTS_COUNT":
           return XRankPlacement.query()
             .select("playerId")
             .count("* as score")
             .groupBy("playerId")
             .orderBy("score", "desc")
-            .page(args.page - 1, RECORDS_PER_PAGE)
+            .page(args.page - 1, RECORDS_PER_PAGE);
         case "UNIQUE_WEAPONS_COUNT":
           return XRankPlacement.query()
             .select("xRankPlacements.playerId")
             .countDistinct("weapon_id as score")
             .groupBy("playerId")
             .orderBy("score", "desc")
-            .page(args.page - 1, RECORDS_PER_PAGE)
+            .page(args.page - 1, RECORDS_PER_PAGE);
         default:
           // should not be possible to occur
-          throw new UserInputError("invalid leaderboard type")
+          throw new UserInputError("invalid leaderboard type");
       }
     },
     getPeakXPowerLeaderboard: (_: any, args: any) => {
@@ -177,7 +177,7 @@ const resolvers = {
               .as("players")
           )
           .orderBy("xPower", "desc")
-          .page(args.page - 1, RECORDS_PER_PAGE)
+          .page(args.page - 1, RECORDS_PER_PAGE);
       }
 
       return XRankPlacement.query()
@@ -194,12 +194,12 @@ const resolvers = {
             .as("players")
         )
         .orderBy("xPower", "desc")
-        .page(args.page - 1, RECORDS_PER_PAGE)
+        .page(args.page - 1, RECORDS_PER_PAGE);
     },
   },
-}
+};
 
 module.exports = {
   Placement: typeDef,
   placementResolvers: resolvers,
-}
+};

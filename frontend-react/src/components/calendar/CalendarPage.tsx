@@ -1,50 +1,54 @@
-import { useQuery } from "@apollo/client"
-import { Box } from "@chakra-ui/core"
-import { RouteComponentProps, useLocation } from "@reach/router"
-import React, { useContext, useEffect, useRef, useState } from "react"
-import { Helmet } from "react-helmet-async"
-import { Trans, useTranslation } from "react-i18next"
+import { useQuery } from "@apollo/client";
+import { Box } from "@chakra-ui/core";
+import { RouteComponentProps, useLocation } from "@reach/router";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { Trans, useTranslation } from "react-i18next";
 import {
   UpcomingEventsData,
-  UPCOMING_EVENTS
-} from "../../graphql/queries/upcomingEvents"
-import MyThemeContext from "../../themeContext"
-import { getWeek } from "../../utils/helperFunctions"
-import Error from "../common/Error"
-import Loading from "../common/Loading"
-import PageHeader from "../common/PageHeader"
-import SubHeader from "../common/SubHeader"
-import Input from "../elements/Input"
-import TournamentInfo from "./TournamentInfo"
+  UPCOMING_EVENTS,
+} from "../../graphql/queries/upcomingEvents";
+import MyThemeContext from "../../themeContext";
+import { getWeek } from "../../utils/helperFunctions";
+import Error from "../common/Error";
+import Loading from "../common/Loading";
+import PageHeader from "../common/PageHeader";
+import SubHeader from "../common/SubHeader";
+import Input from "../elements/Input";
+import TournamentInfo from "./TournamentInfo";
 
 const CalendarPage: React.FC<RouteComponentProps> = () => {
-  const { grayWithShade } = useContext(MyThemeContext)
-  const { t } = useTranslation()
+  const { grayWithShade } = useContext(MyThemeContext);
+  const { t } = useTranslation();
 
-  const [filter, setFilter] = useState("")
+  const [filter, setFilter] = useState("");
 
-  const location = useLocation()
-  const matchingRef = useRef<HTMLDivElement>(null)
+  const location = useLocation();
+  const matchingRef = useRef<HTMLDivElement>(null);
 
-  const { data, error, loading } = useQuery<UpcomingEventsData>(UPCOMING_EVENTS)
+  const { data, error, loading } = useQuery<UpcomingEventsData>(
+    UPCOMING_EVENTS
+  );
 
-  const searchParamsEventName = new URLSearchParams(location.search).get("name")
+  const searchParamsEventName = new URLSearchParams(location.search).get(
+    "name"
+  );
 
   useEffect(() => {
-    if (!matchingRef?.current) return
+    if (!matchingRef?.current) return;
 
-    matchingRef.current.scrollIntoView({ behavior: "smooth", block: "start" })
-  })
+    matchingRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
 
-  if (loading) return <Loading />
-  if (error) return <Error errorMessage={error.message} />
+  if (loading) return <Loading />;
+  if (error) return <Error errorMessage={error.message} />;
 
-  const events = data!.upcomingEvents
+  const events = data!.upcomingEvents;
 
-  let lastPrintedWeek: number | null = null
-  const thisWeekNumber = getWeek(new Date())
+  let lastPrintedWeek: number | null = null;
+  const thisWeekNumber = getWeek(new Date());
 
-  const timeNow = new Date().toTimeString()
+  const timeNow = new Date().toTimeString();
 
   const filteredTournaments = events.filter(
     (event) =>
@@ -52,7 +56,7 @@ const CalendarPage: React.FC<RouteComponentProps> = () => {
       `${event.poster_discord_user.username}#${event.poster_discord_user.discord_id}`
         .toLowerCase()
         .includes(filter.toLowerCase())
-  )
+  );
 
   return (
     <>
@@ -67,12 +71,12 @@ const CalendarPage: React.FC<RouteComponentProps> = () => {
         m="3rem 0 2rem"
       />
       {filteredTournaments.map((event) => {
-        const time = new Date(parseInt(event.date))
-        const weekNumber = getWeek(time)
-        const printWeekHeader = weekNumber !== lastPrintedWeek
+        const time = new Date(parseInt(event.date));
+        const weekNumber = getWeek(time);
+        const printWeekHeader = weekNumber !== lastPrintedWeek;
 
         if (printWeekHeader) {
-          lastPrintedWeek = weekNumber
+          lastPrintedWeek = weekNumber;
         }
 
         return (
@@ -101,7 +105,7 @@ const CalendarPage: React.FC<RouteComponentProps> = () => {
               />
             </div>
           </React.Fragment>
-        )
+        );
       })}
       <Box color={grayWithShade}>
         <Trans i18nKey="calendar;footer">
@@ -112,7 +116,7 @@ const CalendarPage: React.FC<RouteComponentProps> = () => {
         </Trans>
       </Box>
     </>
-  )
-}
+  );
+};
 
-export default CalendarPage
+export default CalendarPage;

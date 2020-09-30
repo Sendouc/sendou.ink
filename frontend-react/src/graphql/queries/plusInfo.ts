@@ -1,11 +1,11 @@
-import { DocumentNode, gql } from "@apollo/client"
+import { DocumentNode, gql } from "@apollo/client";
 
 export interface PlusInfoData {
   plusInfo?: {
-    voting_ends?: string
-    voter_count: number
-    eligible_voters: number
-  }
+    voting_ends?: string;
+    voter_count: number;
+    eligible_voters: number;
+  };
 }
 
 export const PLUS_INFO: DocumentNode = gql`
@@ -16,4 +16,4 @@ export const PLUS_INFO: DocumentNode = gql`
       eligible_voters
     }
   }
-`
+`;

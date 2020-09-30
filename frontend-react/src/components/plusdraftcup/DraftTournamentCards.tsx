@@ -1,64 +1,64 @@
-import { Box, Flex, Grid, Image } from "@chakra-ui/core"
-import { Link } from "@reach/router"
-import React, { useContext } from "react"
-import { useTranslation } from "react-i18next"
-import { medalEmoji } from "../../assets/imageImports"
-import trophy from "../../assets/trophy.png"
-import MyThemeContext from "../../themeContext"
-import { months } from "../../utils/lists"
-import Section from "../common/Section"
-import Button from "../elements/Button"
+import { Box, Flex, Grid, Image } from "@chakra-ui/core";
+import { Link } from "@reach/router";
+import React, { useContext } from "react";
+import { useTranslation } from "react-i18next";
+import { medalEmoji } from "../../assets/imageImports";
+import trophy from "../../assets/trophy.png";
+import MyThemeContext from "../../themeContext";
+import { months } from "../../utils/lists";
+import Section from "../common/Section";
+import Button from "../elements/Button";
 
 interface DraftTournamentCardsProps {
   tournaments: {
-    name: string
-    top_3_team_names: string[]
+    name: string;
+    top_3_team_names: string[];
     top_3_discord_users: {
-      username: string
-      discriminator: string
-      twitter_name?: string
-      discord_id: string
-    }[][]
-    bracket_url: string
-    date: string
-    type: "DRAFTONE" | "DRAFTTWO"
-  }[]
+      username: string;
+      discriminator: string;
+      twitter_name?: string;
+      discord_id: string;
+    }[][];
+    bracket_url: string;
+    date: string;
+    type: "DRAFTONE" | "DRAFTTWO";
+  }[];
 }
 
 interface DraftTournamentCardProps {
   tournament: {
-    name: string
-    top_3_team_names: string[]
+    name: string;
+    top_3_team_names: string[];
     top_3_discord_users: {
-      username: string
-      discriminator: string
-      twitter_name?: string
-      discord_id: string
-    }[][]
-    bracket_url: string
-    date: string
-    type: "DRAFTONE" | "DRAFTTWO"
-  }
-  link?: string
+      username: string;
+      discriminator: string;
+      twitter_name?: string;
+      discord_id: string;
+    }[][];
+    bracket_url: string;
+    date: string;
+    type: "DRAFTONE" | "DRAFTTWO";
+  };
+  link?: string;
 }
 
 interface MedalRowProps {
   players: {
-    username: string
-    discriminator: string
-    twitter_name?: string
-    discord_id: string
-  }[]
-  medalImage: string
-  small?: boolean
+    username: string;
+    discriminator: string;
+    twitter_name?: string;
+    discord_id: string;
+  }[];
+  medalImage: string;
+  small?: boolean;
 }
 
 export const DraftTournamentCard: React.FC<DraftTournamentCardProps> = ({
   tournament,
   link,
 }) => {
-  const { t, i18n } = useTranslation()
-  const { grayWithShade, themeColorWithShade } = useContext(MyThemeContext)
+  const { t, i18n } = useTranslation();
+  const { grayWithShade, themeColorWithShade } = useContext(MyThemeContext);
 
   const MedalRow: React.FC<MedalRowProps> = ({
     players,
@@ -92,8 +92,8 @@ export const DraftTournamentCard: React.FC<DraftTournamentCardProps> = ({
           </Box>
         ))}
       </Flex>
-    )
-  }
+    );
+  };
 
   return (
     <Section
@@ -146,8 +146,8 @@ export const DraftTournamentCard: React.FC<DraftTournamentCardProps> = ({
         </Box>
       )}
     </Section>
-  )
-}
+  );
+};
 
 const DraftTournamentCards: React.FC<DraftTournamentCardsProps> = ({
   tournaments,
@@ -160,7 +160,7 @@ const DraftTournamentCards: React.FC<DraftTournamentCardsProps> = ({
         mt="1em"
       >
         {tournaments.map((tournament) => {
-          const date = new Date(parseInt(tournament.date))
+          const date = new Date(parseInt(tournament.date));
           return (
             <DraftTournamentCard
               key={tournament.name}
@@ -171,11 +171,11 @@ const DraftTournamentCards: React.FC<DraftTournamentCardsProps> = ({
                 date.getMonth() + 1
               ].toLowerCase()}-${date.getFullYear()}`}
             />
-          )
+          );
         })}
       </Grid>
     </>
-  )
-}
+  );
+};
 
-export default DraftTournamentCards
+export default DraftTournamentCards;

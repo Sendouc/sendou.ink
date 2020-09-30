@@ -1,15 +1,15 @@
-import { DocumentNode, gql } from "@apollo/client"
+import { DocumentNode, gql } from "@apollo/client";
 
 export interface BannersData {
   banners: {
-    id: string
-    logoUrl: string
-    description: string
-    link: string
-    textColor: string
-    bgColor: string
-    staleAfter: string
-  }[]
+    id: string;
+    logoUrl: string;
+    description: string;
+    link: string;
+    textColor: string;
+    bgColor: string;
+    staleAfter: string;
+  }[];
 }
 
 export const BANNERS: DocumentNode = gql`
@@ -24,4 +24,4 @@ export const BANNERS: DocumentNode = gql`
       staleAfter
     }
   }
-`
+`;

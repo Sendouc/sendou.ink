@@ -1,15 +1,15 @@
-import { Box, Flex } from "@chakra-ui/core"
-import React, { useContext, useEffect } from "react"
-import { MdClose } from "react-icons/md"
-import useOnClickOutside from "use-onclickoutside"
-import useBreakPoints from "../../hooks/useBreakPoints"
-import MyThemeContext from "../../themeContext"
-import IconButton from "./IconButton"
+import { Box, Flex } from "@chakra-ui/core";
+import React, { useContext, useEffect } from "react";
+import { MdClose } from "react-icons/md";
+import useOnClickOutside from "use-onclickoutside";
+import useBreakPoints from "../../hooks/useBreakPoints";
+import MyThemeContext from "../../themeContext";
+import IconButton from "./IconButton";
 
 interface ModalProps {
-  title: string
-  closeModal?: () => void
-  closeOnOutsideClick?: boolean
+  title: string;
+  closeModal?: () => void;
+  closeOnOutsideClick?: boolean;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -18,18 +18,18 @@ const Modal: React.FC<ModalProps> = ({
   closeModal,
   closeOnOutsideClick,
 }) => {
-  const { bgColor } = useContext(MyThemeContext)
-  const isSmall = useBreakPoints(768)
-  const ref: any = React.useRef()
-  useOnClickOutside(ref, closeOnOutsideClick ? (closeModal as any) : null)
+  const { bgColor } = useContext(MyThemeContext);
+  const isSmall = useBreakPoints(768);
+  const ref: any = React.useRef();
+  useOnClickOutside(ref, closeOnOutsideClick ? (closeModal as any) : null);
 
   useEffect(() => {
-    document.body.style.overflow = "hidden"
+    document.body.style.overflow = "hidden";
 
     return () => {
-      document.body.style.overflow = "visible"
-    }
-  }, [])
+      document.body.style.overflow = "visible";
+    };
+  }, []);
 
   return (
     <Box
@@ -69,7 +69,7 @@ const Modal: React.FC<ModalProps> = ({
         </>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
-export default Modal
+export default Modal;

@@ -1,32 +1,32 @@
-import { useMutation, useQuery } from "@apollo/client"
-import { Box, Flex, Progress, useToast } from "@chakra-ui/core"
-import React, { useContext, useEffect, useState } from "react"
-import { AddVotesVars, ADD_VOTES } from "../../graphql/mutations/addVotes"
-import { PLUS_INFO } from "../../graphql/queries/plusInfo"
+import { useMutation, useQuery } from "@apollo/client";
+import { Box, Flex, Progress, useToast } from "@chakra-ui/core";
+import React, { useContext, useEffect, useState } from "react";
+import { AddVotesVars, ADD_VOTES } from "../../graphql/mutations/addVotes";
+import { PLUS_INFO } from "../../graphql/queries/plusInfo";
 import {
   UsersForVotingData,
   USERS_FOR_VOTING,
   VotingSuggested,
-} from "../../graphql/queries/usersForVoting"
-import MyThemeContext from "../../themeContext"
-import { UserLean } from "../../types"
-import Error from "../common/Error"
-import Loading from "../common/Loading"
-import SubHeader from "../common/SubHeader"
-import Alert from "../elements/Alert"
-import Button from "../elements/Button"
-import PersonForVoting from "./PersonForVoting"
+} from "../../graphql/queries/usersForVoting";
+import MyThemeContext from "../../themeContext";
+import { UserLean } from "../../types";
+import Error from "../common/Error";
+import Loading from "../common/Loading";
+import SubHeader from "../common/SubHeader";
+import Alert from "../elements/Alert";
+import Button from "../elements/Button";
+import PersonForVoting from "./PersonForVoting";
 
 interface VotingProps {
-  user: UserLean
-  votingEnds: number
-  votedSoFar: number
-  eligibleVoters: number
+  user: UserLean;
+  votingEnds: number;
+  votedSoFar: number;
+  eligibleVoters: number;
 }
 
 interface SuggestedArrays {
-  sameRegion: VotingSuggested[]
-  otherRegion: VotingSuggested[]
+  sameRegion: VotingSuggested[];
+  otherRegion: VotingSuggested[];
 }
 
 const Voting: React.FC<VotingProps> = ({
@@ -35,30 +35,30 @@ const Voting: React.FC<VotingProps> = ({
   votedSoFar,
   eligibleVoters,
 }) => {
-  const { themeColor, grayWithShade, colorMode } = useContext(MyThemeContext)
+  const { themeColor, grayWithShade, colorMode } = useContext(MyThemeContext);
   const { data, loading, error } = useQuery<UsersForVotingData>(
     USERS_FOR_VOTING
-  )
-  const [votes, setVotes] = useState<Record<string, number>>({})
-  const [oldVotes, setOldVotes] = useState<Record<string, number>>({})
+  );
+  const [votes, setVotes] = useState<Record<string, number>>({});
+  const [oldVotes, setOldVotes] = useState<Record<string, number>>({});
   const [suggestedArrays, setSuggestedArrays] = useState<SuggestedArrays>({
     sameRegion: [],
     otherRegion: [],
-  })
-  const toast = useToast()
+  });
+  const toast = useToast();
 
   const [addVotesMutation, { loading: addVotesLoading }] = useMutation<
     boolean,
     AddVotesVars
   >(ADD_VOTES, {
     onCompleted: () => {
-      window.scrollTo(0, 0)
+      window.scrollTo(0, 0);
       toast({
         description: `Votes submitted`,
         position: "top-right",
         status: "success",
         duration: 10000,
-      })
+      });
     },
     onError: (error) => {
       toast({
@@ -67,7 +67,7 @@ const Voting: React.FC<VotingProps> = ({
         position: "top-right",
         status: "error",
         duration: 10000,
-      })
+      });
     },
     refetchQueries: [
       {
@@ -77,7 +77,7 @@ const Voting: React.FC<VotingProps> = ({
         query: PLUS_INFO,
       },
     ],
-  })
+  });
 
   const handleSubmit = async () => {
     await addVotesMutation({
@@ -87,59 +87,59 @@ const Voting: React.FC<VotingProps> = ({
           score: (votes as any)[key],
         })),
       },
-    })
-  }
+    });
+  };
 
   useEffect(() => {
-    if (loading || error) return
+    if (loading || error) return;
 
-    const sameRegionSuggested: VotingSuggested[] = []
-    const otherRegionSuggested: VotingSuggested[] = []
+    const sameRegionSuggested: VotingSuggested[] = [];
+    const otherRegionSuggested: VotingSuggested[] = [];
 
     data!.usersForVoting.suggested.forEach((suggested) => {
       if (suggested.plus_region === user.plus!.plus_region) {
-        sameRegionSuggested.push(suggested)
+        sameRegionSuggested.push(suggested);
       } else {
-        otherRegionSuggested.push(suggested)
+        otherRegionSuggested.push(suggested);
       }
-    })
+    });
 
     setSuggestedArrays({
       sameRegion: sameRegionSuggested,
       otherRegion: otherRegionSuggested,
-    })
+    });
 
     if (data!.usersForVoting.votes) {
-      const voteObj: Record<string, number> = {}
-      const oldVoteObj: Record<string, number> = {}
+      const voteObj: Record<string, number> = {};
+      const oldVoteObj: Record<string, number> = {};
       data!.usersForVoting.votes.forEach((vote) =>
         vote.stale
           ? (oldVoteObj[vote.discord_id] = vote.score)
           : (voteObj[vote.discord_id] = vote.score)
-      )
-      setVotes(voteObj)
-      setOldVotes(oldVoteObj)
+      );
+      setVotes(voteObj);
+      setOldVotes(oldVoteObj);
     }
-  }, [loading, error, data, user])
+  }, [loading, error, data, user]);
 
-  if (loading) return <Loading />
-  if (error) return <Error errorMessage={error.message} />
+  if (loading) return <Loading />;
+  if (error) return <Error errorMessage={error.message} />;
 
-  const date = new Date()
+  const date = new Date();
   if (votingEnds < date.getTime())
     return (
       <Alert status="info">
         Voting is over. Results will be posted a bit later.
       </Alert>
-    )
+    );
 
-  const hoursLeft = Math.ceil((votingEnds - date.getTime()) / (1000 * 60 * 60))
-  const alreadyVoted = votes.length > 0
+  const hoursLeft = Math.ceil((votingEnds - date.getTime()) / (1000 * 60 * 60));
+  const alreadyVoted = votes.length > 0;
 
   const missingVotes =
     data!.usersForVoting.users.length +
     data!.usersForVoting.suggested.length -
-    Object.keys(votes).length
+    Object.keys(votes).length;
 
   return (
     <>
@@ -163,7 +163,7 @@ const Voting: React.FC<VotingProps> = ({
         </SubHeader>
         {data!.usersForVoting.users.map((userForVoting) => {
           if (userForVoting.plus.plus_region !== user.plus!.plus_region)
-            return null
+            return null;
           return (
             <PersonForVoting
               key={userForVoting.discord_id}
@@ -172,7 +172,7 @@ const Voting: React.FC<VotingProps> = ({
               setVotes={setVotes}
               oldVote={oldVotes[userForVoting.discord_id]}
             />
-          )
+          );
         })}
       </Box>
       {suggestedArrays.sameRegion.length > 0 && (
@@ -192,7 +192,7 @@ const Voting: React.FC<VotingProps> = ({
                 description={suggestion.description}
                 oldVote={oldVotes[suggestion.discord_user.discord_id]}
               />
-            )
+            );
           })}
         </>
       )}
@@ -201,7 +201,7 @@ const Voting: React.FC<VotingProps> = ({
       </SubHeader>
       {data!.usersForVoting.users.map((userForVoting) => {
         if (userForVoting.plus.plus_region === user.plus!.plus_region)
-          return null
+          return null;
         return (
           <PersonForVoting
             key={userForVoting.discord_id}
@@ -211,7 +211,7 @@ const Voting: React.FC<VotingProps> = ({
             sameRegion={false}
             oldVote={oldVotes[userForVoting.discord_id]}
           />
-        )
+        );
       })}
       {suggestedArrays.otherRegion.length > 0 && (
         <>
@@ -232,7 +232,7 @@ const Voting: React.FC<VotingProps> = ({
                 description={suggestion.description}
                 oldVote={oldVotes[suggestion.discord_user.discord_id]}
               />
-            )
+            );
           })}
         </>
       )}
@@ -254,7 +254,7 @@ const Voting: React.FC<VotingProps> = ({
         )}
       </Flex>
     </>
-  )
-}
+  );
+};
 
-export default Voting
+export default Voting;

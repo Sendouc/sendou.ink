@@ -1,14 +1,14 @@
-import { DocumentNode, gql } from "@apollo/client"
+import { DocumentNode, gql } from "@apollo/client";
 
 export interface UpdateCompetitiveFeedEventVars {
   event: {
-    name: string
-    date: string
-    description: string
-    message_discord_id: string
-    discord_invite_url: string
-    picture_url?: string
-  }
+    name: string;
+    date: string;
+    description: string;
+    message_discord_id: string;
+    discord_invite_url: string;
+    picture_url?: string;
+  };
 }
 
 export const UPDATE_COMPETITIVE_FEED_EVENT: DocumentNode = gql`
@@ -17,4 +17,4 @@ export const UPDATE_COMPETITIVE_FEED_EVENT: DocumentNode = gql`
   ) {
     updateCompetitiveFeedEvent(event: $event)
   }
-`
+`;

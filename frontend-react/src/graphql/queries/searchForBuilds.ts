@@ -1,4 +1,4 @@
-import { DocumentNode, gql } from "@apollo/client"
+import { DocumentNode, gql } from "@apollo/client";
 
 export const SEARCH_FOR_BUILDS: DocumentNode = gql`
   query searchForBuilds($discord_id: String, $weapon: String) {
@@ -23,4 +23,4 @@ export const SEARCH_FOR_BUILDS: DocumentNode = gql`
       }
     }
   }
-`
+`;

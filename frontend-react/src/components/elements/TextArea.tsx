@@ -1,16 +1,16 @@
-import React, { useContext } from "react"
-import { Textarea, Box } from "@chakra-ui/core"
-import Label from "./Label"
-import MyThemeContext from "../../themeContext"
+import React, { useContext } from "react";
+import { Textarea, Box } from "@chakra-ui/core";
+import Label from "./Label";
+import MyThemeContext from "../../themeContext";
 
 interface TextAreaProps {
-  value?: string
-  setValue: (value: string) => void
-  label?: string
-  limit?: number
-  required?: boolean
-  height?: string
-  id?: string
+  value?: string;
+  setValue: (value: string) => void;
+  label?: string;
+  limit?: number;
+  required?: boolean;
+  height?: string;
+  id?: string;
 }
 
 const TextArea: React.FC<TextAreaProps> = ({
@@ -23,7 +23,7 @@ const TextArea: React.FC<TextAreaProps> = ({
 }) => {
   const { themeColorHex, grayWithShade, darkerBgColor } = useContext(
     MyThemeContext
-  )
+  );
 
   return (
     <>
@@ -47,7 +47,7 @@ const TextArea: React.FC<TextAreaProps> = ({
         </Box>
       )}
     </>
-  )
-}
+  );
+};
 
-export default TextArea
+export default TextArea;

@@ -1,73 +1,73 @@
-import { useMutation, useQuery } from "@apollo/client"
-import { Box, Flex, Heading, IconButton, Image } from "@chakra-ui/core"
-import { Link } from "@reach/router"
-import React, { useContext, useState } from "react"
-import { useTranslation } from "react-i18next"
-import { FaMinus, FaPlus, FaTwitter } from "react-icons/fa"
-import top500logo from "../../assets/top500.png"
-import { ADD_LIKE } from "../../graphql/mutations/addLike"
-import { DELETE_LIKE } from "../../graphql/mutations/deleteLike"
-import { FREE_AGENT_MATCHES } from "../../graphql/queries/freeAgentMatches"
-import { USER } from "../../graphql/queries/user"
-import MyThemeContext from "../../themeContext"
-import { FreeAgentPost, UserData } from "../../types"
-import Flag from "../common/Flag"
-import Section from "../common/Section"
-import UserAvatar from "../common/UserAvatar"
-import WeaponImage from "../common/WeaponImage"
-import Heart from "./Heart"
-import RoleIcons from "./RoleIcons"
-import VCIcon from "./VCIcon"
+import { useMutation, useQuery } from "@apollo/client";
+import { Box, Flex, Heading, IconButton, Image } from "@chakra-ui/core";
+import { Link } from "@reach/router";
+import React, { useContext, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { FaMinus, FaPlus, FaTwitter } from "react-icons/fa";
+import top500logo from "../../assets/top500.png";
+import { ADD_LIKE } from "../../graphql/mutations/addLike";
+import { DELETE_LIKE } from "../../graphql/mutations/deleteLike";
+import { FREE_AGENT_MATCHES } from "../../graphql/queries/freeAgentMatches";
+import { USER } from "../../graphql/queries/user";
+import MyThemeContext from "../../themeContext";
+import { FreeAgentPost, UserData } from "../../types";
+import Flag from "../common/Flag";
+import Section from "../common/Section";
+import UserAvatar from "../common/UserAvatar";
+import WeaponImage from "../common/WeaponImage";
+import Heart from "./Heart";
+import RoleIcons from "./RoleIcons";
+import VCIcon from "./VCIcon";
 
 interface FreeAgentCardProps {
-  post: FreeAgentPost
-  canLike: boolean
-  likedUsersIds: string[]
+  post: FreeAgentPost;
+  canLike: boolean;
+  likedUsersIds: string[];
 }
 
 const hasExtraInfo = (post: FreeAgentPost) => {
-  const { activity, description, looking_for, past_experience } = post
+  const { activity, description, looking_for, past_experience } = post;
   if (!activity && !description && !looking_for && !past_experience) {
-    return false
+    return false;
   }
 
-  return true
-}
+  return true;
+};
 
 const FreeAgentCard: React.FC<FreeAgentCardProps> = ({
   post,
   canLike,
   likedUsersIds,
 }) => {
-  const [expanded, setExpanded] = useState(false)
-  const { grayWithShade, themeColorWithShade } = useContext(MyThemeContext)
-  const { t, i18n } = useTranslation()
-  const { discord_user } = post
-  const canBeExpanded = hasExtraInfo(post)
+  const [expanded, setExpanded] = useState(false);
+  const { grayWithShade, themeColorWithShade } = useContext(MyThemeContext);
+  const { t, i18n } = useTranslation();
+  const { discord_user } = post;
+  const canBeExpanded = hasExtraInfo(post);
 
-  const { data } = useQuery<UserData>(USER)
+  const { data } = useQuery<UserData>(USER);
 
   const [addLike, { loading: likeLoading }] = useMutation<
     { addLike: boolean },
     { discord_id: string }
   >(ADD_LIKE, {
     refetchQueries: [{ query: FREE_AGENT_MATCHES }],
-  })
+  });
 
   const [deleteLike, { loading: deleteLoading }] = useMutation<
     { deleteLike: boolean },
     { discord_id: string }
   >(DELETE_LIKE, {
     refetchQueries: [{ query: FREE_AGENT_MATCHES }],
-  })
+  });
 
-  const liked = likedUsersIds.indexOf(discord_user.discord_id) !== -1
+  const liked = likedUsersIds.indexOf(discord_user.discord_id) !== -1;
 
   const handleHeartClick = () => {
     if (liked)
-      deleteLike({ variables: { discord_id: discord_user.discord_id } })
-    else addLike({ variables: { discord_id: discord_user.discord_id } })
-  }
+      deleteLike({ variables: { discord_id: discord_user.discord_id } });
+    else addLike({ variables: { discord_id: discord_user.discord_id } });
+  };
 
   return (
     <Section
@@ -210,7 +210,7 @@ const FreeAgentCard: React.FC<FreeAgentCardProps> = ({
         </Box>
       )}
     </Section>
-  )
-}
+  );
+};
 
-export default FreeAgentCard
+export default FreeAgentCard;

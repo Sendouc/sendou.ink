@@ -1,4 +1,4 @@
-import { useMutation } from "@apollo/client"
+import { useMutation } from "@apollo/client";
 import {
   Box,
   Checkbox,
@@ -10,38 +10,38 @@ import {
   Radio,
   RadioGroup,
   useToast,
-} from "@chakra-ui/core"
-import React, { useContext, useState } from "react"
-import { useTranslation } from "react-i18next"
+} from "@chakra-ui/core";
+import React, { useContext, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   AddFreeAgentPostVars,
   ADD_FREE_AGENT_POST,
-} from "../../graphql/mutations/addFreeAgentPost"
-import { HIDE_FREE_AGENT_POST } from "../../graphql/mutations/hideFreeAgentPost"
-import { UPDATE_FREE_AGENT_POST } from "../../graphql/mutations/updateFreeAgentPost"
-import { FREE_AGENT_MATCHES } from "../../graphql/queries/freeAgentMatches"
-import { FREE_AGENT_POSTS } from "../../graphql/queries/freeAgentPosts"
-import MyThemeContext from "../../themeContext"
-import { FreeAgentPost } from "../../types"
-import Alert from "../elements/Alert"
-import Button from "../elements/Button"
-import Modal from "../elements/Modal"
-import TextArea from "../elements/TextArea"
+} from "../../graphql/mutations/addFreeAgentPost";
+import { HIDE_FREE_AGENT_POST } from "../../graphql/mutations/hideFreeAgentPost";
+import { UPDATE_FREE_AGENT_POST } from "../../graphql/mutations/updateFreeAgentPost";
+import { FREE_AGENT_MATCHES } from "../../graphql/queries/freeAgentMatches";
+import { FREE_AGENT_POSTS } from "../../graphql/queries/freeAgentPosts";
+import MyThemeContext from "../../themeContext";
+import { FreeAgentPost } from "../../types";
+import Alert from "../elements/Alert";
+import Button from "../elements/Button";
+import Modal from "../elements/Modal";
+import TextArea from "../elements/TextArea";
 
 interface FAPostModalProps {
-  closeModal: () => void
-  post?: FreeAgentPost
+  closeModal: () => void;
+  post?: FreeAgentPost;
 }
 
 const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const [form, setForm] = useState<Partial<AddFreeAgentPostVars>>(
     post ? post : {}
-  )
-  const [showErrors, setShowErrors] = useState(false)
-  const [deleting, setDeleting] = useState(false)
-  const toast = useToast()
-  const { themeColor, grayWithShade } = useContext(MyThemeContext)
+  );
+  const [showErrors, setShowErrors] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const toast = useToast();
+  const { themeColor, grayWithShade } = useContext(MyThemeContext);
 
   const [addFreeAgentPost, { loading }] = useMutation<
     boolean,
@@ -49,13 +49,13 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
   >(ADD_FREE_AGENT_POST, {
     variables: { ...(form as AddFreeAgentPostVars) },
     onCompleted: (data) => {
-      closeModal()
+      closeModal();
       toast({
         description: t("freeagents;Free agent post added"),
         position: "top-right",
         status: "success",
         duration: 10000,
-      })
+      });
     },
     onError: (error) => {
       toast({
@@ -64,10 +64,10 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
         position: "top-right",
         status: "error",
         duration: 10000,
-      })
+      });
     },
     refetchQueries: [{ query: FREE_AGENT_POSTS }],
-  })
+  });
 
   const [editFreeAgentPost, { loading: editLoading }] = useMutation<
     boolean,
@@ -75,13 +75,13 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
   >(UPDATE_FREE_AGENT_POST, {
     variables: { ...(form as AddFreeAgentPostVars) },
     onCompleted: (data) => {
-      closeModal()
+      closeModal();
       toast({
         description: t("freeagents;Free agent post edited"),
         position: "top-right",
         status: "success",
         duration: 10000,
-      })
+      });
     },
     onError: (error) => {
       toast({
@@ -90,10 +90,10 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
         position: "top-right",
         status: "error",
         duration: 10000,
-      })
+      });
     },
     refetchQueries: [{ query: FREE_AGENT_POSTS }],
-  })
+  });
 
   const [hideFreeAgentPost, { loading: hideLoading }] = useMutation<
     boolean,
@@ -101,13 +101,13 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
   >(HIDE_FREE_AGENT_POST, {
     variables: { ...(form as AddFreeAgentPostVars) },
     onCompleted: (data) => {
-      closeModal()
+      closeModal();
       toast({
         description: t("freeagents;Free agent post deleted"),
         position: "top-right",
         status: "success",
         duration: 10000,
-      })
+      });
     },
     onError: (error) => {
       toast({
@@ -116,19 +116,19 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
         position: "top-right",
         status: "error",
         duration: 10000,
-      })
+      });
     },
     refetchQueries: [
       { query: FREE_AGENT_POSTS },
       { query: FREE_AGENT_MATCHES },
     ],
-  })
+  });
 
   const handleChange = (newValueObject: Partial<AddFreeAgentPostVars>) => {
-    setForm({ ...form, ...newValueObject })
-  }
+    setForm({ ...form, ...newValueObject });
+  };
 
-  const actionType = post ? "EDIT" : "NEW"
+  const actionType = post ? "EDIT" : "NEW";
 
   const handleSubmit = () => {
     if (
@@ -139,13 +139,13 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
       (form.looking_for ?? "").length > 100 ||
       (form.description ?? "").length > 1000
     ) {
-      setShowErrors(true)
-      return
+      setShowErrors(true);
+      return;
     }
 
-    if (actionType === "NEW") addFreeAgentPost()
-    else if (actionType === "EDIT") editFreeAgentPost()
-  }
+    if (actionType === "NEW") addFreeAgentPost();
+    else if (actionType === "EDIT") editFreeAgentPost();
+  };
 
   return (
     <Modal
@@ -326,7 +326,7 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
         </Button>
       </Flex>
     </Modal>
-  )
-}
+  );
+};
 
-export default FAPostModal
+export default FAPostModal;

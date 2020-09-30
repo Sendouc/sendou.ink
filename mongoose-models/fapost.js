@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const faPostSchema = new mongoose.Schema(
   {
@@ -12,13 +12,13 @@ const faPostSchema = new mongoose.Schema(
     hidden: { type: Boolean, default: false },
   },
   { timestamps: true }
-)
+);
 
 faPostSchema.virtual("discord_user", {
   ref: "User",
   localField: "discord_id",
   foreignField: "discord_id",
   justOne: true,
-})
+});
 
-module.exports = mongoose.model("FAPost", faPostSchema)
+module.exports = mongoose.model("FAPost", faPostSchema);

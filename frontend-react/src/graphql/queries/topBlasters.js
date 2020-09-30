@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client"
+import { gql } from "@apollo/client";
 
 export const topBlasterPlayers = gql`
   {
@@ -20,4 +20,4 @@ export const topBlasterPlayers = gql`
       }
     }
   }
-`
+`;

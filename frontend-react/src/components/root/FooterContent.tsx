@@ -1,14 +1,14 @@
-import { Box, Flex } from "@chakra-ui/core"
-import { Link } from "@reach/router"
-import React, { useContext } from "react"
-import { useTranslation } from "react-i18next"
-import { FaGithub } from "react-icons/fa"
-import { DiscordIcon } from "../../assets/icons"
-import MyThemeContext from "../../themeContext"
+import { Box, Flex } from "@chakra-ui/core";
+import { Link } from "@reach/router";
+import React, { useContext } from "react";
+import { useTranslation } from "react-i18next";
+import { FaGithub } from "react-icons/fa";
+import { DiscordIcon } from "../../assets/icons";
+import MyThemeContext from "../../themeContext";
 
 const FooterContent: React.FC = () => {
-  const { t } = useTranslation()
-  const { themeColorWithShade } = useContext(MyThemeContext)
+  const { t } = useTranslation();
+  const { themeColorWithShade } = useContext(MyThemeContext);
   return (
     <Flex
       pb="50px"
@@ -36,7 +36,7 @@ const FooterContent: React.FC = () => {
         </a>
       </Flex>
     </Flex>
-  )
-}
+  );
+};
 
-export default FooterContent
+export default FooterContent;

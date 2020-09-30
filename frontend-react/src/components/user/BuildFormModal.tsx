@@ -1,10 +1,10 @@
-import { useMutation } from "@apollo/client"
-import { Box, Flex, useToast } from "@chakra-ui/core"
-import React, { useState } from "react"
-import { useTranslation } from "react-i18next"
-import { ADD_BUILD } from "../../graphql/mutations/addBuild"
-import { DELETE_BUILD } from "../../graphql/mutations/deleteBuild"
-import { UPDATE_BUILD } from "../../graphql/mutations/updateBuild"
+import { useMutation } from "@apollo/client";
+import { Box, Flex, useToast } from "@chakra-ui/core";
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { ADD_BUILD } from "../../graphql/mutations/addBuild";
+import { DELETE_BUILD } from "../../graphql/mutations/deleteBuild";
+import { UPDATE_BUILD } from "../../graphql/mutations/updateBuild";
 import {
   Ability,
   Build,
@@ -16,7 +16,7 @@ import {
   ShoesOnlyAbility,
   StackableAbility,
   Weapon,
-} from "../../types"
+} from "../../types";
 import {
   clothingOnlyAbilities,
   clothingSelectOptions,
@@ -24,36 +24,36 @@ import {
   headSelectOptions,
   shoesOnlyAbilities,
   shoesSelectOptions,
-} from "../../utils/lists"
-import GearImage from "../builds/GearImage"
-import ViewSlots from "../builds/ViewSlots"
-import WeaponImage from "../common/WeaponImage"
-import WeaponSelector from "../common/WeaponSelector"
-import Button from "../elements/Button"
-import Input from "../elements/Input"
-import Modal from "../elements/Modal"
-import Select from "../elements/Select"
-import TextArea from "../elements/TextArea"
-import AbilityButtons from "./AbilityButtons"
+} from "../../utils/lists";
+import GearImage from "../builds/GearImage";
+import ViewSlots from "../builds/ViewSlots";
+import WeaponImage from "../common/WeaponImage";
+import WeaponSelector from "../common/WeaponSelector";
+import Button from "../elements/Button";
+import Input from "../elements/Input";
+import Modal from "../elements/Modal";
+import Select from "../elements/Select";
+import TextArea from "../elements/TextArea";
+import AbilityButtons from "./AbilityButtons";
 
 interface BuildFormModalProps {
-  existingGear: ExistingGearObject
-  closeModal: () => void
-  buildBeingEdited?: Build | null
+  existingGear: ExistingGearObject;
+  closeModal: () => void;
+  buildBeingEdited?: Build | null;
 }
 
 type ExistingGearObject = Record<
   Partial<HeadGear | ClothingGear | ShoesGear>,
   Ability[]
->
+>;
 
 const BuildFormModal: React.FC<BuildFormModalProps> = ({
   existingGear,
   closeModal,
   buildBeingEdited,
 }) => {
-  const { t } = useTranslation()
-  const toast = useToast()
+  const { t } = useTranslation();
+  const toast = useToast();
   const [build, setBuild] = useState<Partial<Build>>(
     buildBeingEdited
       ? buildBeingEdited
@@ -62,7 +62,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
           clothing: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
           shoes: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
         }
-  )
+  );
 
   const [addBuild, { loading: addLoading }] = useMutation<
     { addBuild: Build },
@@ -70,13 +70,13 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
   >(ADD_BUILD, {
     variables: { ...(build as Build) },
     onCompleted: (data) => {
-      closeModal()
+      closeModal();
       toast({
         description: t("users;New build created"),
         position: "top-right",
         status: "success",
         duration: 10000,
-      })
+      });
     },
     onError: (error) => {
       toast({
@@ -85,10 +85,10 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
         position: "top-right",
         status: "error",
         duration: 10000,
-      })
+      });
     },
     refetchQueries: ["searchForBuilds"],
-  })
+  });
 
   const [updateBuild, { loading: updateLoading }] = useMutation<
     { updateBuild: Build },
@@ -96,13 +96,13 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
   >(UPDATE_BUILD, {
     variables: { ...(build as Build) },
     onCompleted: () => {
-      closeModal()
+      closeModal();
       toast({
         description: t("users;Build updated"),
         position: "top-right",
         status: "success",
         duration: 10000,
-      })
+      });
     },
     onError: (error) => {
       toast({
@@ -111,10 +111,10 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
         position: "top-right",
         status: "error",
         duration: 10000,
-      })
+      });
     },
     refetchQueries: ["searchForBuilds"],
-  })
+  });
 
   const [deleteBuild, { loading: deleteLoading }] = useMutation<
     boolean,
@@ -122,13 +122,13 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
   >(DELETE_BUILD, {
     variables: { id: build.id as string },
     onCompleted: () => {
-      closeModal()
+      closeModal();
       toast({
         description: t("users;Build deleted"),
         position: "top-right",
         status: "success",
         duration: 10000,
-      })
+      });
     },
     onError: (error) => {
       toast({
@@ -137,12 +137,12 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
         position: "top-right",
         status: "error",
         duration: 10000,
-      })
+      });
     },
     refetchQueries: ["searchForBuilds"],
-  })
+  });
 
-  const handleChange = (value: Object) => setBuild({ ...build, ...value })
+  const handleChange = (value: Object) => setBuild({ ...build, ...value });
 
   const handleAbilityButtonClick = (ability: Ability) => {
     if (headOnlyAbilities.indexOf(ability as any) !== -1) {
@@ -154,7 +154,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
             build.headgear![2],
             build.headgear![3],
           ],
-        })
+        });
       }
     } else if (clothingOnlyAbilities.indexOf(ability as any) !== -1) {
       if (build.clothing![0] === "UNKNOWN") {
@@ -165,87 +165,87 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
             build.clothing![2],
             build.clothing![3],
           ],
-        })
+        });
       }
     } else if (shoesOnlyAbilities.indexOf(ability as any) !== -1) {
       if (build.shoes![0] === "UNKNOWN") {
         handleChange({
           shoes: [ability, build.shoes![1], build.shoes![2], build.shoes![3]],
-        })
+        });
       }
     } else {
-      const headI = build.headgear!.indexOf("UNKNOWN")
+      const headI = build.headgear!.indexOf("UNKNOWN");
       if (headI !== -1) {
-        const copy = build.headgear!.slice()
-        copy[headI] = ability as HeadOnlyAbility | StackableAbility
+        const copy = build.headgear!.slice();
+        copy[headI] = ability as HeadOnlyAbility | StackableAbility;
         handleChange({
           headgear: copy,
-        })
-        return
+        });
+        return;
       }
 
-      const clothingI = build.clothing!.indexOf("UNKNOWN")
+      const clothingI = build.clothing!.indexOf("UNKNOWN");
       if (clothingI !== -1) {
-        const copy = build.clothing!.slice()
-        copy[clothingI] = ability as ClothingOnlyAbility | StackableAbility
+        const copy = build.clothing!.slice();
+        copy[clothingI] = ability as ClothingOnlyAbility | StackableAbility;
         handleChange({
           clothing: copy,
-        })
-        return
+        });
+        return;
       }
 
-      const shoesI = build.shoes!.indexOf("UNKNOWN")
+      const shoesI = build.shoes!.indexOf("UNKNOWN");
       if (shoesI !== -1) {
-        const copy = build.shoes!.slice()
-        copy[shoesI] = ability as ShoesOnlyAbility | StackableAbility
+        const copy = build.shoes!.slice();
+        copy[shoesI] = ability as ShoesOnlyAbility | StackableAbility;
         handleChange({
           shoes: copy,
-        })
+        });
       }
     }
-  }
+  };
 
   const handleClickBuildAbility = (
     slot: "HEAD" | "CLOTHING" | "SHOES",
     index: number
   ) => {
     if (slot === "HEAD") {
-      const copy = build.headgear!.slice()
-      copy[index] = "UNKNOWN"
+      const copy = build.headgear!.slice();
+      copy[index] = "UNKNOWN";
       handleChange({
         headgear: copy,
-      })
+      });
     } else if (slot === "CLOTHING") {
-      const copy = build.clothing!.slice()
-      copy[index] = "UNKNOWN"
+      const copy = build.clothing!.slice();
+      copy[index] = "UNKNOWN";
       handleChange({
         clothing: copy,
-      })
+      });
     } else {
-      const copy = build.shoes!.slice()
-      copy[index] = "UNKNOWN"
+      const copy = build.shoes!.slice();
+      copy[index] = "UNKNOWN";
       handleChange({
         shoes: copy,
-      })
+      });
     }
-  }
+  };
 
   const buildCanBeSubmitted = () => {
     if (!build.weapon) {
-      return false
+      return false;
     }
 
     const abilitiesFilled =
       build.headgear?.every((ability) => ability !== "UNKNOWN") &&
       build.clothing?.every((ability) => ability !== "UNKNOWN") &&
-      build.shoes?.every((ability) => ability !== "UNKNOWN")
+      build.shoes?.every((ability) => ability !== "UNKNOWN");
 
     if (!abilitiesFilled) {
-      return false
+      return false;
     }
 
-    return true
-  }
+    return true;
+  };
 
   return (
     <Modal
@@ -295,9 +295,9 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
                   handleChange({
                     headgearItem,
                     headgear: existingGear[headgearItem],
-                  })
+                  });
                 } else {
-                  handleChange({ headgearItem })
+                  handleChange({ headgearItem });
                 }
               }}
             />
@@ -325,9 +325,9 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
                   handleChange({
                     clothingItem,
                     clothing: existingGear[clothingItem],
-                  })
+                  });
                 } else {
-                  handleChange({ clothingItem })
+                  handleChange({ clothingItem });
                 }
               }}
             />
@@ -355,9 +355,9 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
                   handleChange({
                     shoesItem,
                     shoes: existingGear[shoesItem],
-                  })
+                  });
                 } else {
-                  handleChange({ shoesItem })
+                  handleChange({ shoesItem });
                 }
               }}
             />
@@ -408,7 +408,7 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
         </Box>
       </Box>
     </Modal>
-  )
-}
+  );
+};
 
-export default BuildFormModal
+export default BuildFormModal;

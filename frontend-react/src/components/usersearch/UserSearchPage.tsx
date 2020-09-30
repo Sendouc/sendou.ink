@@ -1,60 +1,60 @@
-import { useQuery } from "@apollo/client"
-import { Box, Flex } from "@chakra-ui/core"
-import { Link, RouteComponentProps } from "@reach/router"
-import React, { useContext, useEffect, useState } from "react"
-import { Helmet } from "react-helmet-async"
-import { useTranslation } from "react-i18next"
-import { FaTwitter } from "react-icons/fa"
-import { USERS, UsersData } from "../../graphql/queries/users"
-import MyThemeContext from "../../themeContext"
-import Error from "../common/Error"
-import Loading from "../common/Loading"
-import PageHeader from "../common/PageHeader"
-import Pagination from "../common/Pagination"
-import UserAvatar from "../common/UserAvatar"
-import Input from "../elements/Input"
+import { useQuery } from "@apollo/client";
+import { Box, Flex } from "@chakra-ui/core";
+import { Link, RouteComponentProps } from "@reach/router";
+import React, { useContext, useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
+import { FaTwitter } from "react-icons/fa";
+import { USERS, UsersData } from "../../graphql/queries/users";
+import MyThemeContext from "../../themeContext";
+import Error from "../common/Error";
+import Loading from "../common/Loading";
+import PageHeader from "../common/PageHeader";
+import Pagination from "../common/Pagination";
+import UserAvatar from "../common/UserAvatar";
+import Input from "../elements/Input";
 
 const UserSearchPage: React.FC<RouteComponentProps> = () => {
-  const { darkerBgColor } = useContext(MyThemeContext)
-  const { t } = useTranslation()
-  const { data, error, loading } = useQuery<UsersData>(USERS)
-  const [filter, setFilter] = useState("")
-  const [currentPage, setCurrentPage] = useState(1)
+  const { darkerBgColor } = useContext(MyThemeContext);
+  const { t } = useTranslation();
+  const { data, error, loading } = useQuery<UsersData>(USERS);
+  const [filter, setFilter] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    setCurrentPage(1)
-  }, [filter])
+    setCurrentPage(1);
+  }, [filter]);
 
-  if (error) return <Error errorMessage={error.message} />
-  if (loading) return <Loading />
+  if (error) return <Error errorMessage={error.message} />;
+  if (loading) return <Loading />;
 
   const usersFiltered =
     filter === ""
       ? data!.users
       : data!.users.filter((user) => {
-          const filterLower = filter.toLowerCase()
-          if (user.discord_id.includes(filterLower)) return true
+          const filterLower = filter.toLowerCase();
+          if (user.discord_id.includes(filterLower)) return true;
 
           if (
             `${user.username}#${user.discriminator}`
               .toLowerCase()
               .includes(filterLower)
           )
-            return true
+            return true;
 
           if (
             user.twitter_name &&
             user.twitter_name.toLowerCase().includes(filterLower)
           )
-            return true
+            return true;
 
-          return false
-        })
+          return false;
+        });
 
   const usersSliced = usersFiltered.slice(
     20 * (currentPage - 1),
     20 * (currentPage - 1) + 20
-  )
+  );
 
   return (
     <>
@@ -108,7 +108,7 @@ const UserSearchPage: React.FC<RouteComponentProps> = () => {
         onChange={(page: number) => setCurrentPage(page)}
       />
     </>
-  )
-}
+  );
+};
 
-export default UserSearchPage
+export default UserSearchPage;

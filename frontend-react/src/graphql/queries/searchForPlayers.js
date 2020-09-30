@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client"
+import { gql } from "@apollo/client";
 
 export const searchForPlayers = gql`
   query searchForPlayers($name: String!, $exact: Boolean) {
@@ -9,4 +9,4 @@ export const searchForPlayers = gql`
       unique_id
     }
   }
-`
+`;

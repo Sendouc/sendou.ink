@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const playerSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -98,10 +98,10 @@ const playerSchema = new mongoose.Schema({
   },
   topBrellaScore: Number,
   weaponsCount: Number,
-})
+});
 
 function arrayLimit(val) {
-  return val.length <= 4
+  return val.length <= 4;
 }
 
-module.exports = mongoose.model("Player", playerSchema)
+module.exports = mongoose.model("Player", playerSchema);

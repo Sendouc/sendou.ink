@@ -1,13 +1,13 @@
-import { DocumentNode, gql } from "@apollo/client"
-import { User } from "../../types"
+import { DocumentNode, gql } from "@apollo/client";
+import { User } from "../../types";
 
 export interface SearchForUserData {
-  searchForUser?: User
+  searchForUser?: User;
 }
 
 export interface SearchForUserVars {
-  discord_id?: string
-  custom_url?: string
+  discord_id?: string;
+  custom_url?: string;
 }
 
 export const SEARCH_FOR_USER: DocumentNode = gql`
@@ -33,4 +33,4 @@ export const SEARCH_FOR_USER: DocumentNode = gql`
       }
     }
   }
-`
+`;

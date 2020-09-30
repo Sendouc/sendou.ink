@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client"
+import { gql } from "@apollo/client";
 
 export const topFlex = gql`
   {
@@ -12,4 +12,4 @@ export const topFlex = gql`
       topTotalScore
     }
   }
-`
+`;

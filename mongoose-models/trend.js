@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const trendSchema = new mongoose.Schema({
   weapon: { type: String, required: true },
@@ -11,6 +11,6 @@ const trendSchema = new mongoose.Schema({
       CB: [Number],
     },
   ],
-})
+});
 
-module.exports = mongoose.model("Trend", trendSchema)
+module.exports = mongoose.model("Trend", trendSchema);

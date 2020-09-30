@@ -1,25 +1,25 @@
-import { DocumentNode, gql } from "@apollo/client"
+import { DocumentNode, gql } from "@apollo/client";
 
 export interface CompetitiveFeedEvent {
-  name: string
-  date: string
-  description: string
-  message_url: string
-  message_discord_id: string
-  discord_invite_url: string
-  picture_url?: string
+  name: string;
+  date: string;
+  description: string;
+  message_url: string;
+  message_discord_id: string;
+  discord_invite_url: string;
+  picture_url?: string;
   poster_discord_user: {
-    username: string
-    discriminator: string
-    twitter_name?: string
-    discord_id: string
-    avatar?: string
-  }
-  isVotingTemplate?: boolean
+    username: string;
+    discriminator: string;
+    twitter_name?: string;
+    discord_id: string;
+    avatar?: string;
+  };
+  isVotingTemplate?: boolean;
 }
 
 export interface UpcomingEventsData {
-  upcomingEvents: CompetitiveFeedEvent[]
+  upcomingEvents: CompetitiveFeedEvent[];
 }
 
 export const UPCOMING_EVENTS: DocumentNode = gql`
@@ -41,4 +41,4 @@ export const UPCOMING_EVENTS: DocumentNode = gql`
       }
     }
   }
-`
+`;

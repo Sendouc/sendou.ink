@@ -1,4 +1,4 @@
-import { DocumentNode, gql } from "@apollo/client"
+import { DocumentNode, gql } from "@apollo/client";
 
 export const SEARCH_FOR_TOURNAMENTS: DocumentNode = gql`
   query searchForTournaments(
@@ -35,4 +35,4 @@ export const SEARCH_FOR_TOURNAMENTS: DocumentNode = gql`
       pageCount
     }
   }
-`
+`;

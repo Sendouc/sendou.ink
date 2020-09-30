@@ -2,7 +2,10 @@ import { Avatar, Link as ChakraLink, Text } from "@chakra-ui/core";
 import { Link } from "@reach/router";
 import React, { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useGetPeakXPowerLeaderboardQuery } from "../../generated/graphql";
+import {
+  GetPeakXPowerLeaderboardDocument,
+  useGetPeakXPowerLeaderboardQuery,
+} from "../../generated/graphql";
 import MyThemeContext from "../../themeContext";
 import { Weapon } from "../../types";
 import { getPlacementString } from "../../utils/helperFunctions";
@@ -27,13 +30,20 @@ export const PeakXPowerLeaderboard: React.FC<PeakXPowerLeaderboardProps> = ({
 }) => {
   const { t } = useTranslation();
   const [page, setPage] = useState(1);
-  const [pageCount, setPageCount] = useState(0);
-  const { data, error } = useGetPeakXPowerLeaderboardQuery({
+  const {
+    previousData,
+    data = previousData,
+    error,
+    client,
+  } = useGetPeakXPowerLeaderboardQuery({
     variables: { weapon, page },
-    onCompleted: (data) =>
-      setPageCount(data.getPeakXPowerLeaderboard.pageCount),
   });
   const { grayWithShade, themeColorWithShade } = useContext(MyThemeContext);
+
+  client.query({
+    query: GetPeakXPowerLeaderboardDocument,
+    variables: { page: page + 1, weapon },
+  });
 
   if (error) return <Error errorMessage={error.message} />;
 
@@ -67,12 +77,18 @@ export const PeakXPowerLeaderboard: React.FC<PeakXPowerLeaderboardProps> = ({
         onChange={setPage}
       />
     */}
-      <Pagination currentPage={page} pageCount={pageCount} onChange={setPage} />
+      {data && (
+        <Pagination
+          currentPage={page}
+          pageCount={data.getPeakXPowerLeaderboard.pageCount}
+          onChange={setPage}
+        />
+      )}
       <Table maxW="50rem">
         <TableHead>
           <TableRow>
+            {page === 1 && <TableHeader></TableHeader>}
             <TableHeader></TableHeader>
-            <TableHeader p={0}></TableHeader>
             <TableHeader>Name</TableHeader>
             <TableHeader>Weapon</TableHeader>
             <TableHeader>X Power</TableHeader>
@@ -85,16 +101,17 @@ export const PeakXPowerLeaderboard: React.FC<PeakXPowerLeaderboardProps> = ({
               (record, index, allRecords) => {
                 return (
                   <TableRow key={record.id}>
-                    <TableCell>
-                      {page === 1 &&
-                        (index === 0 ||
+                    {page === 1 && (
+                      <TableCell>
+                        {(index === 0 ||
                           record.xPower !== allRecords[index - 1].xPower) && (
                           <Text fontWeight="bold" fontSize="sm">
                             {getPlacementString(index + 1)}
                           </Text>
                         )}
-                    </TableCell>
-                    <TableCell p={0}>
+                      </TableCell>
+                    )}
+                    <TableCell>
                       {record.user?.avatarUrl && (
                         <Avatar
                           src={record.user.avatarUrl}

@@ -4,6 +4,6 @@ const srMaps = [
   "Lost Outpost",
   "Salmonid Smokeyard",
   "Ruins of Ark Polaris",
-]
+];
 
-module.exports = srMaps
+module.exports = srMaps;

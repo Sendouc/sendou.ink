@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const summarySchema = new mongoose.Schema({
   discord_id: { type: String, required: true },
@@ -14,13 +14,13 @@ const summarySchema = new mongoose.Schema({
     eu_count: [Number],
     na_count: [Number],
   },
-})
+});
 
 summarySchema.virtual("discord_user", {
   ref: "User",
   localField: "discord_id",
   foreignField: "discord_id",
   justOne: true,
-})
+});
 
-module.exports = mongoose.model("SummaryPerson", summarySchema)
+module.exports = mongoose.model("SummaryPerson", summarySchema);

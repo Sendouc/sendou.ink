@@ -6,15 +6,15 @@ import {
   AccordionPanel,
   Box,
   Link,
-} from "@chakra-ui/core"
-import { RouteComponentProps } from "@reach/router"
-import React, { useContext } from "react"
-import { Helmet } from "react-helmet-async"
-import MyThemeContext from "../../themeContext"
-import PageHeader from "../common/PageHeader"
+} from "@chakra-ui/core";
+import { RouteComponentProps } from "@reach/router";
+import React, { useContext } from "react";
+import { Helmet } from "react-helmet-async";
+import MyThemeContext from "../../themeContext";
+import PageHeader from "../common/PageHeader";
 
 export const PlusFAQPage: React.FC<RouteComponentProps> = () => {
-  const { themeColorWithShade, darkerBgColor } = useContext(MyThemeContext)
+  const { themeColorWithShade, darkerBgColor } = useContext(MyThemeContext);
 
   const questionsAndAnswers = [
     {
@@ -119,7 +119,7 @@ export const PlusFAQPage: React.FC<RouteComponentProps> = () => {
         </>
       ),
     },
-  ]
+  ];
 
   return (
     <>
@@ -143,7 +143,7 @@ export const PlusFAQPage: React.FC<RouteComponentProps> = () => {
         ))}
       </Accordion>
     </>
-  )
-}
+  );
+};
 
-export default PlusFAQPage
+export default PlusFAQPage;

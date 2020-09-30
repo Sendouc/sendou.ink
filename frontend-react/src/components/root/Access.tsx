@@ -1,9 +1,9 @@
-import React from "react"
-import { RouteComponentProps } from "@reach/router"
-import Alert from "../elements/Alert"
-import Button from "../elements/Button"
-import { FaDiscord } from "react-icons/fa"
-import { Box } from "@chakra-ui/core"
+import React from "react";
+import { RouteComponentProps } from "@reach/router";
+import Alert from "../elements/Alert";
+import Button from "../elements/Button";
+import { FaDiscord } from "react-icons/fa";
+import { Box } from "@chakra-ui/core";
 
 const Access: React.FC<RouteComponentProps> = () => {
   return (
@@ -17,7 +17,7 @@ const Access: React.FC<RouteComponentProps> = () => {
         </a>
       </Box>
     </>
-  )
-}
+  );
+};
 
-export default Access
+export default Access;

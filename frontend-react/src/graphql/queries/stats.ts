@@ -1,4 +1,4 @@
-import { DocumentNode, gql } from "@apollo/client"
+import { DocumentNode, gql } from "@apollo/client";
 
 export const STATS: DocumentNode = gql`
   {
@@ -9,4 +9,4 @@ export const STATS: DocumentNode = gql`
       user_count
     }
   }
-`
+`;

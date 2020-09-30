@@ -1,46 +1,46 @@
-import { useQuery } from "@apollo/client"
-import { Badge, Box, Flex } from "@chakra-ui/core"
-import { Link, RouteComponentProps } from "@reach/router"
-import React, { useContext, useState } from "react"
-import { Helmet } from "react-helmet-async"
-import { Trans, useTranslation } from "react-i18next"
-import { Table, Tbody, Td, Th, Thead, Tr } from "react-super-responsive-table"
-import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css"
-import { NumberParam, StringParam, useQueryParams } from "use-query-params"
-import { modeIconMap } from "../../assets/icons"
+import { useQuery } from "@apollo/client";
+import { Badge, Box, Flex } from "@chakra-ui/core";
+import { Link, RouteComponentProps } from "@reach/router";
+import React, { useContext, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { Trans, useTranslation } from "react-i18next";
+import { Table, Tbody, Td, Th, Thead, Tr } from "react-super-responsive-table";
+import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
+import { NumberParam, StringParam, useQueryParams } from "use-query-params";
+import { modeIconMap } from "../../assets/icons";
 import {
   SearchForPlacementsData,
   SearchForPlacementsVars,
-  SEARCH_FOR_PLACEMENTS
-} from "../../graphql/queries/searchForPlacements"
-import useBreakPoints from "../../hooks/useBreakPoints"
-import MyThemeContext from "../../themeContext"
-import { Weapon } from "../../types"
-import Error from "../common/Error"
-import Loading from "../common/Loading"
-import PageHeader from "../common/PageHeader"
-import Pagination from "../common/Pagination"
-import WpnImage from "../common/WeaponImage"
-import Alert from "../elements/Alert"
-import Button from "../elements/Button"
-import "./Top500BrowserPage.css"
-import Top500Forms from "./Top500Forms"
+  SEARCH_FOR_PLACEMENTS,
+} from "../../graphql/queries/searchForPlacements";
+import useBreakPoints from "../../hooks/useBreakPoints";
+import MyThemeContext from "../../themeContext";
+import { Weapon } from "../../types";
+import Error from "../common/Error";
+import Loading from "../common/Loading";
+import PageHeader from "../common/PageHeader";
+import Pagination from "../common/Pagination";
+import WpnImage from "../common/WeaponImage";
+import Alert from "../elements/Alert";
+import Button from "../elements/Button";
+import "./Top500BrowserPage.css";
+import Top500Forms from "./Top500Forms";
 
 const getLocalizedMonth = (month: number, locale: string) => {
-  const dateForLocalization = new Date()
-  dateForLocalization.setDate(1)
-  dateForLocalization.setMonth(month - 1)
+  const dateForLocalization = new Date();
+  dateForLocalization.setDate(1);
+  dateForLocalization.setMonth(month - 1);
   const localizedString = dateForLocalization.toLocaleString(locale, {
     month: "long",
-  })
+  });
 
-  return localizedString.charAt(0).toUpperCase() + localizedString.slice(1)
-}
+  return localizedString.charAt(0).toUpperCase() + localizedString.slice(1);
+};
 
 const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
-  const { t, i18n } = useTranslation()
-  const { themeColorWithShade } = useContext(MyThemeContext)
-  const isSmall = useBreakPoints(640)
+  const { t, i18n } = useTranslation();
+  const { themeColorWithShade } = useContext(MyThemeContext);
+  const isSmall = useBreakPoints(640);
   const [query, setQuery] = useQueryParams({
     page: NumberParam,
     name: StringParam,
@@ -49,7 +49,7 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
     unique_id: StringParam,
     month: NumberParam,
     year: NumberParam,
-  })
+  });
   const [forms, setForms] = useState<SearchForPlacementsVars>({
     page: query.page ?? 1,
     name: query.name,
@@ -58,30 +58,30 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
     unique_id: query.unique_id,
     month: query.month,
     year: query.year,
-  })
+  });
 
   const { data, error, loading } = useQuery<
     SearchForPlacementsData,
     SearchForPlacementsVars
   >(SEARCH_FOR_PLACEMENTS, {
     variables: query,
-  })
+  });
 
   const handleClear = () => {
-    setForms({ page: 1 })
-    setQuery({ page: 1 }, "replace")
-  }
+    setForms({ page: 1 });
+    setQuery({ page: 1 }, "replace");
+  };
 
   const handleFormChange = (value: Object) => {
-    setForms({ ...forms, ...value })
-  }
+    setForms({ ...forms, ...value });
+  };
 
-  if (error) return <Error errorMessage={error.message} />
-  if (loading && !data) return <Loading />
+  if (error) return <Error errorMessage={error.message} />;
+  if (loading && !data) return <Loading />;
 
-  const placements = data ? data.searchForPlacements.placements : []
+  const placements = data ? data.searchForPlacements.placements : [];
 
-  const idViewed = forms.unique_id
+  const idViewed = forms.unique_id;
 
   return (
     <>
@@ -101,8 +101,8 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
         <Flex mt="1em">
           <Button
             onClick={() => {
-              setQuery({ ...forms, page: 1 })
-              setForms({ ...forms, page: 1 })
+              setQuery({ ...forms, page: 1 });
+              setForms({ ...forms, page: 1 });
             }}
           >
             {t("tournaments;Apply")}
@@ -119,8 +119,8 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
           currentPage={forms.page ?? 1}
           pageCount={data?.searchForPlacements.pageCount ?? 999}
           onChange={(page) => {
-            setForms({ ...forms, page })
-            setQuery({ ...query, page })
+            setForms({ ...forms, page });
+            setQuery({ ...query, page });
           }}
         />
       </Box>
@@ -144,8 +144,8 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
               </Thead>
               <Tbody>
                 {placements.map((placement) => {
-                  const modes = ["SZ", "SZ", "TC", "RM", "CB"] as const
-                  const ModeIcon = modeIconMap[modes[placement.mode]]
+                  const modes = ["SZ", "SZ", "TC", "RM", "CB"] as const;
+                  const ModeIcon = modeIconMap[modes[placement.mode]];
                   return (
                     <Tr key={placement.id}>
                       <Td>
@@ -202,18 +202,18 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
                             setForms({
                               unique_id: placement.unique_id,
                               page: 1,
-                            })
+                            });
                             setQuery(
                               { unique_id: placement.unique_id, page: 1 },
                               "replace"
-                            )
+                            );
                           }}
                         >
                           {t("xsearch;ID")}
                         </Badge>
                       </Td>
                     </Tr>
-                  )
+                  );
                 })}
               </Tbody>
             </Table>
@@ -223,15 +223,15 @@ const Top500BrowserPage: React.FC<RouteComponentProps> = () => {
               currentPage={forms.page ?? 1}
               pageCount={data?.searchForPlacements.pageCount ?? 999}
               onChange={(page) => {
-                setForms({ ...forms, page })
-                setQuery({ ...query, page })
+                setForms({ ...forms, page });
+                setQuery({ ...query, page });
               }}
             />
           </Box>
         </>
       )}
     </>
-  )
-}
+  );
+};
 
-export default Top500BrowserPage
+export default Top500BrowserPage;

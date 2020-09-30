@@ -1,6 +1,6 @@
-const { UserInputError, gql } = require("apollo-server-express")
-const Trend = require("../mongoose-models/trend")
-const weapons = require("../utils/weapons")
+const { UserInputError, gql } = require("apollo-server-express");
+const Trend = require("../mongoose-models/trend");
+const weapons = require("../utils/weapons");
 
 const typeDef = gql`
   extend type Query {
@@ -21,19 +21,19 @@ const typeDef = gql`
     weapon: String!
     counts: [Year!]!
   }
-`
+`;
 
 const resolvers = {
   Query: {
     xTrends: async (root, args) => {
-      const trends = await Trend.find({})
+      const trends = await Trend.find({});
 
-      return trends.filter((trend) => weapons.includes(trend.weapon))
+      return trends.filter((trend) => weapons.includes(trend.weapon));
     },
   },
-}
+};
 
 module.exports = {
   Trend: typeDef,
   trendResolvers: resolvers,
-}
+};

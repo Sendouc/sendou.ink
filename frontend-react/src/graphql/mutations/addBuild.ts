@@ -1,4 +1,4 @@
-import { DocumentNode, gql } from "@apollo/client"
+import { DocumentNode, gql } from "@apollo/client";
 
 export const ADD_BUILD: DocumentNode = gql`
   mutation addBuild(
@@ -36,4 +36,4 @@ export const ADD_BUILD: DocumentNode = gql`
       updatedAt
     }
   }
-`
+`;

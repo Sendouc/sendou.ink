@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const detailedTournamentSchema = new mongoose.Schema({
   name: String,
@@ -8,12 +8,12 @@ const detailedTournamentSchema = new mongoose.Schema({
   top_3_discord_ids: [[String]],
   participant_discord_ids: [String],
   type: String,
-})
+});
 
 detailedTournamentSchema.virtual("top_3_discord_users", {
   ref: "User",
   localField: "top_3_discord_ids",
   foreignField: "discord_id",
-})
+});
 
-module.exports = mongoose.model("DetailedTournament", detailedTournamentSchema)
+module.exports = mongoose.model("DetailedTournament", detailedTournamentSchema);

@@ -1,8 +1,8 @@
 // https://github.com/chakra-ui/chakra-ui/issues/135#issuecomment-644878591
 
-import { Box } from "@chakra-ui/core"
-import React, { useContext } from "react"
-import MyThemeContext from "../../themeContext"
+import { Box } from "@chakra-ui/core";
+import React, { useContext } from "react";
+import MyThemeContext from "../../themeContext";
 
 /**
  * Represents tabular data - that is, information presented in a
@@ -14,7 +14,7 @@ export function Table(props: any) {
     <Box overflow="auto">
       <Box as="table" width="full" {...props} />
     </Box>
-  )
+  );
 }
 
 /**
@@ -22,7 +22,7 @@ export function Table(props: any) {
  * renders a `<thead>` HTML element.
  */
 export function TableHead(props: any) {
-  return <Box as="thead" {...props} />
+  return <Box as="thead" {...props} />;
 }
 
 /**
@@ -31,7 +31,7 @@ export function TableHead(props: any) {
  * HTML element.
  */
 export function TableRow(props: any) {
-  const { darkerBgColor } = useContext(MyThemeContext)
+  const { darkerBgColor } = useContext(MyThemeContext);
   return (
     <Box
       as="tr"
@@ -39,7 +39,7 @@ export function TableRow(props: any) {
       _even={{ backgroundColor: darkerBgColor }}
       borderRadius="5px"
     />
-  )
+  );
 }
 
 /**
@@ -47,7 +47,7 @@ export function TableRow(props: any) {
  * element.
  */
 export function TableHeader(props: any) {
-  const { themeColorWithShade } = useContext(MyThemeContext)
+  const { themeColorWithShade } = useContext(MyThemeContext);
   return (
     <Box
       as="th"
@@ -63,7 +63,7 @@ export function TableHeader(props: any) {
       fontWeight="medium"
       {...props}
     />
-  )
+  );
 }
 
 /**
@@ -71,7 +71,7 @@ export function TableHeader(props: any) {
  * the table. It renders a `<tbody>` HTML element.
  */
 export function TableBody(props: any) {
-  return <Box as="tbody" {...props} />
+  return <Box as="tbody" {...props} />;
 }
 
 /**
@@ -88,5 +88,5 @@ export function TableCell(props: any) {
       whiteSpace="nowrap"
       {...props}
     />
-  )
+  );
 }

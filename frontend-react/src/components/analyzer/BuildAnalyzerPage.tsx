@@ -1,88 +1,90 @@
-import { Badge, Box, Flex, FormLabel, Switch, Wrap } from "@chakra-ui/core"
-import { RouteComponentProps, useLocation } from "@reach/router"
-import React, { useContext, useEffect, useState } from "react"
-import { Helmet } from "react-helmet-async"
-import { Trans, useTranslation } from "react-i18next"
-import { FiSettings } from "react-icons/fi"
-import useAbilityEffects from "../../hooks/useAbilityEffects"
-import MyThemeContext from "../../themeContext"
-import { Ability, AnalyzerBuild, Weapon } from "../../types"
-import PageHeader from "../common/PageHeader"
-import WeaponSelector from "../common/WeaponSelector"
-import Button from "../elements/Button"
-import BuildStats from "./BuildStats"
-import EditableBuilds from "./EditableBuilds"
+import { Badge, Box, Flex, FormLabel, Switch, Wrap } from "@chakra-ui/core";
+import { RouteComponentProps, useLocation } from "@reach/router";
+import React, { useContext, useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { Trans, useTranslation } from "react-i18next";
+import { FiSettings } from "react-icons/fi";
+import useAbilityEffects from "../../hooks/useAbilityEffects";
+import MyThemeContext from "../../themeContext";
+import { Ability, AnalyzerBuild, Weapon } from "../../types";
+import PageHeader from "../common/PageHeader";
+import WeaponSelector from "../common/WeaponSelector";
+import Button from "../elements/Button";
+import BuildStats from "./BuildStats";
+import EditableBuilds from "./EditableBuilds";
 
-const CURRENT_PATCH = "5.3."
+const CURRENT_PATCH = "5.3.";
 
-type AnalyzerBuildNoWeapon = Omit<AnalyzerBuild, "weapon">
+type AnalyzerBuildNoWeapon = Omit<AnalyzerBuild, "weapon">;
 
 const defaultBuild: AnalyzerBuildNoWeapon = {
   headgear: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
   clothing: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
   shoes: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
-}
+};
 
 const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
-  const { themeColor, grayWithShade } = useContext(MyThemeContext)
-  const { t } = useTranslation()
-  const location = useLocation()
-  const [build, setBuild] = useState<AnalyzerBuildNoWeapon>({ ...defaultBuild })
+  const { themeColor, grayWithShade } = useContext(MyThemeContext);
+  const { t } = useTranslation();
+  const location = useLocation();
+  const [build, setBuild] = useState<AnalyzerBuildNoWeapon>({
+    ...defaultBuild,
+  });
   const [otherBuild, setOtherBuild] = useState<AnalyzerBuildNoWeapon>({
     ...defaultBuild,
-  })
-  const [weapon, setWeapon] = useState<Weapon>("Splattershot Jr.")
-  const [showOther, setShowOther] = useState(false)
-  const [showNotActualProgress, setShowNotActualProgress] = useState(false)
-  const [startChartsAtZero, setStartChartsAtZero] = useState(true)
-  const [otherFocused, setOtherFocused] = useState(false)
-  const [hideExtra, setHideExtra] = useState(true)
-  const [showSettings, setShowSettings] = useState(false)
+  });
+  const [weapon, setWeapon] = useState<Weapon>("Splattershot Jr.");
+  const [showOther, setShowOther] = useState(false);
+  const [showNotActualProgress, setShowNotActualProgress] = useState(false);
+  const [startChartsAtZero, setStartChartsAtZero] = useState(true);
+  const [otherFocused, setOtherFocused] = useState(false);
+  const [hideExtra, setHideExtra] = useState(true);
+  const [showSettings, setShowSettings] = useState(false);
 
-  const [bonusAp, setBonusAp] = useState<Partial<Record<Ability, boolean>>>({})
+  const [bonusAp, setBonusAp] = useState<Partial<Record<Ability, boolean>>>({});
   const [otherBonusAp, setOtherBonusAp] = useState<
     Partial<Record<Ability, boolean>>
-  >({})
-  const [lde, setLde] = useState(0)
-  const [otherLde, setOtherLde] = useState(0)
+  >({});
+  const [lde, setLde] = useState(0);
+  const [otherLde, setOtherLde] = useState(0);
 
-  const explanations = useAbilityEffects({ ...build, weapon }, bonusAp, lde)
+  const explanations = useAbilityEffects({ ...build, weapon }, bonusAp, lde);
   const otherExplanations = useAbilityEffects(
     { ...otherBuild, weapon },
     otherBonusAp,
     otherLde
-  )
+  );
 
   function getBuildFromUrl() {
     const buildToReturn: AnalyzerBuild = {
       ...defaultBuild,
       weapon: "Splattershot Jr.",
-    }
-    const decoded = new URLSearchParams(location.search)
+    };
+    const decoded = new URLSearchParams(location.search);
 
     for (const [key, value] of decoded) {
       switch (key) {
         case "weapon":
-          buildToReturn.weapon = value as Weapon
-          break
+          buildToReturn.weapon = value as Weapon;
+          break;
         case "headgear":
         case "clothing":
         case "shoes":
-          const abilityKey = key as "headgear" | "clothing" | "shoes"
-          buildToReturn[abilityKey] = value.split(",") as any
+          const abilityKey = key as "headgear" | "clothing" | "shoes";
+          buildToReturn[abilityKey] = value.split(",") as any;
       }
     }
 
-    return buildToReturn
+    return buildToReturn;
   }
 
   useEffect(() => {
-    const { weapon, ...buildFromUrl } = getBuildFromUrl()
+    const { weapon, ...buildFromUrl } = getBuildFromUrl();
 
-    setWeapon(weapon)
-    setBuild(buildFromUrl)
+    setWeapon(weapon);
+    setBuild(buildFromUrl);
     // eslint-disable-next-line
-  }, [])
+  }, []);
 
   return (
     <>
@@ -115,7 +117,7 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
                 showOther={showOther}
                 setShowOther={setShowOther}
                 changeFocus={() => {
-                  setOtherFocused(!otherFocused)
+                  setOtherFocused(!otherFocused);
                 }}
                 otherFocused={otherFocused}
                 bonusAp={bonusAp}
@@ -194,7 +196,7 @@ const BuildAnalyzerPage: React.FC<RouteComponentProps> = () => {
         </Box>
       </Wrap>
     </>
-  )
-}
+  );
+};
 
-export default BuildAnalyzerPage
+export default BuildAnalyzerPage;

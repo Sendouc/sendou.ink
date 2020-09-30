@@ -7,34 +7,34 @@ import {
   NumberInputField,
   NumberInputStepper,
   Text,
-} from "@chakra-ui/core"
-import React, { useContext } from "react"
-import { Trans, useTranslation } from "react-i18next"
-import MyThemeContext from "../../themeContext"
-import AbilityIcon from "../builds/AbilityIcon"
+} from "@chakra-ui/core";
+import React, { useContext } from "react";
+import { Trans, useTranslation } from "react-i18next";
+import MyThemeContext from "../../themeContext";
+import AbilityIcon from "../builds/AbilityIcon";
 
 interface LdeSliderProps {
-  value: number
-  setValue: (value: number) => void
+  value: number;
+  setValue: (value: number) => void;
 }
 
 const LdeSlider: React.FC<LdeSliderProps> = ({ value, setValue }) => {
-  const { themeColorWithShade, grayWithShade } = useContext(MyThemeContext)
-  const { t } = useTranslation()
-  const bonusAp = Math.floor((24 / 21) * value)
+  const { themeColorWithShade, grayWithShade } = useContext(MyThemeContext);
+  const { t } = useTranslation();
+  const bonusAp = Math.floor((24 / 21) * value);
 
   const getLdeEffect = () => {
-    if (value === 21) return t("analyzer;ldeFullEffectExplanation")
+    if (value === 21) return t("analyzer;ldeFullEffectExplanation");
 
-    const pointMark = 51 - value
+    const pointMark = 51 - value;
     if (value > 0)
       return (
         <Trans i18nKey="analyzer;ldeInBetweenExplanation">
           Enemy has reached the {{ pointMark }} point mark
         </Trans>
-      )
-    return t("analyzer;ldeNoEffectExplanation")
-  }
+      );
+    return t("analyzer;ldeNoEffectExplanation");
+  };
   return (
     <Flex
       justifyContent="center"
@@ -88,7 +88,7 @@ const LdeSlider: React.FC<LdeSliderProps> = ({ value, setValue }) => {
         {getLdeEffect()}
       </Box>
     </Flex>
-  )
-}
+  );
+};
 
-export default LdeSlider
+export default LdeSlider;

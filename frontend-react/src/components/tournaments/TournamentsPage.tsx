@@ -1,51 +1,51 @@
-import { useQuery } from "@apollo/client"
-import { Alert, AlertIcon, Box, Grid } from "@chakra-ui/core"
-import { Link, RouteComponentProps } from "@reach/router"
-import { stringify } from "querystring"
-import React, { useState } from "react"
-import { Helmet } from "react-helmet-async"
-import { useTranslation } from "react-i18next"
+import { useQuery } from "@apollo/client";
+import { Alert, AlertIcon, Box, Grid } from "@chakra-ui/core";
+import { Link, RouteComponentProps } from "@reach/router";
+import { stringify } from "querystring";
+import React, { useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
 import {
   ArrayParam,
   encodeQueryParams,
   NumberParam,
   StringParam,
   useQueryParams,
-} from "use-query-params"
-import { SEARCH_FOR_TOURNAMENTS } from "../../graphql/queries/searchForTournaments"
-import Error from "../common/Error"
-import Loading from "../common/Loading"
-import PageHeader from "../common/PageHeader"
-import Pagination from "../common/Pagination"
-import TournamentCard from "./TournamentCard"
-import TournamentFilters from "./TournamentFilters"
+} from "use-query-params";
+import { SEARCH_FOR_TOURNAMENTS } from "../../graphql/queries/searchForTournaments";
+import Error from "../common/Error";
+import Loading from "../common/Loading";
+import PageHeader from "../common/PageHeader";
+import Pagination from "../common/Pagination";
+import TournamentCard from "./TournamentCard";
+import TournamentFilters from "./TournamentFilters";
 
 interface SearchForTournamentsData {
   searchForTournaments: {
     tournaments: {
-      id: string
-      name: string
-      jpn: boolean
-      google_sheet_url?: string
-      bracket?: string
-      date: string
-      popular_weapons: string[]
-      winning_team_name: string
-      winning_team_players: string[]
-    }[]
-    pageCount: number
-  }
+      id: string;
+      name: string;
+      jpn: boolean;
+      google_sheet_url?: string;
+      bracket?: string;
+      date: string;
+      popular_weapons: string[];
+      winning_team_name: string;
+      winning_team_players: string[];
+    }[];
+    pageCount: number;
+  };
 }
 
 interface SearchForTournamentsVars {
-  tournament_name?: string
-  region?: string
-  player_name?: string
-  team_name?: string
-  comp?: string[]
-  page?: number
-  mode?: string
-  stage?: string
+  tournament_name?: string;
+  region?: string;
+  player_name?: string;
+  team_name?: string;
+  comp?: string[];
+  page?: number;
+  mode?: string;
+  stage?: string;
 }
 
 const queryMap = {
@@ -57,11 +57,11 @@ const queryMap = {
   comp: ArrayParam,
   mode: StringParam,
   stage: StringParam,
-}
+};
 
 const TournamentsPage: React.FC<RouteComponentProps> = () => {
-  const { t } = useTranslation()
-  const [query, setQuery] = useQueryParams(queryMap)
+  const { t } = useTranslation();
+  const [query, setQuery] = useQueryParams(queryMap);
   const [forms, setForms] = useState<SearchForTournamentsVars>({
     page: query.page,
     tournament_name: query.tournament_name,
@@ -71,28 +71,28 @@ const TournamentsPage: React.FC<RouteComponentProps> = () => {
     comp: query.comp,
     mode: query.mode,
     stage: query.stage,
-  })
+  });
 
   const { data, error, loading } = useQuery<
     SearchForTournamentsData,
     SearchForTournamentsVars
   >(SEARCH_FOR_TOURNAMENTS, {
     variables: query,
-  })
+  });
 
-  if (error) return <Error errorMessage={error.message} />
+  if (error) return <Error errorMessage={error.message} />;
 
   const handleFormChange = (value: Object) => {
-    setForms({ ...forms, ...value })
-  }
+    setForms({ ...forms, ...value });
+  };
 
   const handleClear = () => {
-    setForms({})
-    setQuery({}, "replace")
-  }
+    setForms({});
+    setQuery({}, "replace");
+  };
 
-  const encodedQuery = encodeQueryParams(queryMap, query)
-  const linkSuffix = `?${stringify(encodedQuery)}`
+  const encodedQuery = encodeQueryParams(queryMap, query);
+  const linkSuffix = `?${stringify(encodedQuery)}`;
 
   return (
     <>
@@ -105,9 +105,9 @@ const TournamentsPage: React.FC<RouteComponentProps> = () => {
         handleChange={handleFormChange}
         handleClear={handleClear}
         onSubmit={() => {
-          const newObject = { ...forms, page: 1 }
-          setForms(newObject)
-          setQuery(newObject)
+          const newObject = { ...forms, page: 1 };
+          setForms(newObject);
+          setQuery(newObject);
         }}
       />
       {data && data.searchForTournaments.tournaments.length > 0 ? (
@@ -117,8 +117,8 @@ const TournamentsPage: React.FC<RouteComponentProps> = () => {
               currentPage={forms.page ?? 1}
               pageCount={data?.searchForTournaments.pageCount ?? 999}
               onChange={(page) => {
-                setForms({ ...forms, page })
-                setQuery({ ...query, page })
+                setForms({ ...forms, page });
+                setQuery({ ...query, page });
               }}
             />
           </Box>
@@ -142,8 +142,8 @@ const TournamentsPage: React.FC<RouteComponentProps> = () => {
                   currentPage={forms.page ?? 1}
                   pageCount={data.searchForTournaments.pageCount}
                   onChange={(page) => {
-                    setForms({ ...forms, page })
-                    setQuery({ ...query, page })
+                    setForms({ ...forms, page });
+                    setQuery({ ...query, page });
                   }}
                 />
               </Box>
@@ -161,7 +161,7 @@ const TournamentsPage: React.FC<RouteComponentProps> = () => {
         )
       )}
     </>
-  )
-}
+  );
+};
 
-export default TournamentsPage
+export default TournamentsPage;

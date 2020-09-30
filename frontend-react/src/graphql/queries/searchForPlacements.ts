@@ -1,35 +1,35 @@
-import { DocumentNode, gql } from "@apollo/client"
+import { DocumentNode, gql } from "@apollo/client";
 
 interface Placement {
-  id: string
-  mode: number
-  name: string
+  id: string;
+  mode: number;
+  name: string;
   player?: {
-    discord_id?: string
-  }
-  rank: number
-  unique_id: string
-  weapon: string
-  x_power: number
-  month: number
-  year: number
+    discord_id?: string;
+  };
+  rank: number;
+  unique_id: string;
+  weapon: string;
+  x_power: number;
+  month: number;
+  year: number;
 }
 
 export interface SearchForPlacementsData {
   searchForPlacements: {
-    placements: Placement[]
-    pageCount: number
-  }
+    placements: Placement[];
+    pageCount: number;
+  };
 }
 
 export interface SearchForPlacementsVars {
-  page?: number
-  name?: string
-  weapon?: string
-  mode?: number
-  unique_id?: string
-  month?: number
-  year?: number
+  page?: number;
+  name?: string;
+  weapon?: string;
+  mode?: number;
+  unique_id?: string;
+  month?: number;
+  year?: number;
 }
 
 export const SEARCH_FOR_PLACEMENTS: DocumentNode = gql`
@@ -68,4 +68,4 @@ export const SEARCH_FOR_PLACEMENTS: DocumentNode = gql`
       pageCount
     }
   }
-`
+`;

@@ -1,16 +1,16 @@
-import React, { useState } from "react"
-import TextArea from "../elements/TextArea"
-import Button from "../elements/Button"
-import { Box } from "@chakra-ui/core"
-import Markdown from "../elements/Markdown"
-import SubHeader from "../common/SubHeader"
-import { useTranslation } from "react-i18next"
+import React, { useState } from "react";
+import TextArea from "../elements/TextArea";
+import Button from "../elements/Button";
+import { Box } from "@chakra-ui/core";
+import Markdown from "../elements/Markdown";
+import SubHeader from "../common/SubHeader";
+import { useTranslation } from "react-i18next";
 
 interface MarkdownInputProps {
-  value: string
-  setValue: (value: string) => void
-  label: string
-  limit?: number
+  value: string;
+  setValue: (value: string) => void;
+  label: string;
+  limit?: number;
 }
 
 const MarkdownInput: React.FC<MarkdownInputProps> = ({
@@ -19,8 +19,8 @@ const MarkdownInput: React.FC<MarkdownInputProps> = ({
   label,
   limit,
 }) => {
-  const [preview, setPreview] = useState(false)
-  const { t } = useTranslation()
+  const [preview, setPreview] = useState(false);
+  const { t } = useTranslation();
   return (
     <>
       {preview ? (
@@ -45,7 +45,7 @@ const MarkdownInput: React.FC<MarkdownInputProps> = ({
         </Button>
       </Box>
     </>
-  )
-}
+  );
+};
 
-export default MarkdownInput
+export default MarkdownInput;

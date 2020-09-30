@@ -1,9 +1,9 @@
-import React from "react"
-import { Placement } from "../../types"
-import ModesAccordion from "./ModesAccordion"
+import React from "react";
+import { Placement } from "../../types";
+import ModesAccordion from "./ModesAccordion";
 
 interface XRankTabProps {
-  placements: Placement[]
+  placements: Placement[];
 }
 
 const XRankTab: React.FC<XRankTabProps> = ({ placements }) => {
@@ -11,7 +11,7 @@ const XRankTab: React.FC<XRankTabProps> = ({ placements }) => {
     <>
       <ModesAccordion placements={placements} />
     </>
-  )
-}
+  );
+};
 
-export default XRankTab
+export default XRankTab;

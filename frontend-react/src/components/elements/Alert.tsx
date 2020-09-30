@@ -1,11 +1,11 @@
-import React from "react"
-import { Alert as ChakraAlert, AlertIcon, CloseButton } from "@chakra-ui/core"
+import React from "react";
+import { Alert as ChakraAlert, AlertIcon, CloseButton } from "@chakra-ui/core";
 
 interface AlertProps {
-  children: string | string[] | JSX.Element | JSX.Element[]
-  status: "error" | "success" | "warning" | "info"
-  mt?: string
-  onClose?: () => void
+  children: string | string[] | JSX.Element | JSX.Element[];
+  status: "error" | "success" | "warning" | "info";
+  mt?: string;
+  onClose?: () => void;
 }
 
 const Alert: React.FC<AlertProps> = ({
@@ -27,7 +27,7 @@ const Alert: React.FC<AlertProps> = ({
         />
       )}
     </ChakraAlert>
-  )
-}
+  );
+};
 
-export default Alert
+export default Alert;

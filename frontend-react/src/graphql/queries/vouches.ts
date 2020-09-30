@@ -1,4 +1,4 @@
-import { DocumentNode, gql } from "@apollo/client"
+import { DocumentNode, gql } from "@apollo/client";
 
 export const VOUCHES: DocumentNode = gql`
   {
@@ -18,4 +18,4 @@ export const VOUCHES: DocumentNode = gql`
       }
     }
   }
-`
+`;

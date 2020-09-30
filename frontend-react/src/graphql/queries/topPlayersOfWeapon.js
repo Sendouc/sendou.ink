@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client"
+import { gql } from "@apollo/client";
 
 export const topPlayersOfWeapon = gql`
   query topPlayers($weapon: String!) {
@@ -16,4 +16,4 @@ export const topPlayersOfWeapon = gql`
       }
     }
   }
-`
+`;

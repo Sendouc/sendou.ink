@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client";
 import {
   Box,
   Flex,
@@ -10,31 +10,31 @@ import {
   MenuItem,
   MenuList,
   useColorMode,
-} from "@chakra-ui/core"
-import { Link } from "@reach/router"
-import React, { Suspense, useContext } from "react"
-import { useTranslation } from "react-i18next"
-import { FiMoon, FiSun } from "react-icons/fi"
-import { DiscordIcon } from "../../assets/icons"
-import { USER } from "../../graphql/queries/user"
-import MyThemeContext from "../../themeContext"
-import { UserData } from "../../types"
-import UserAvatar from "../common/UserAvatar"
-import Button from "../elements/Button"
-import ColorSelector from "./ColorSelector"
-import { LanguageSelector } from "./LanguageSelector"
+} from "@chakra-ui/core";
+import { Link } from "@reach/router";
+import React, { Suspense, useContext } from "react";
+import { useTranslation } from "react-i18next";
+import { FiMoon, FiSun } from "react-icons/fi";
+import { DiscordIcon } from "../../assets/icons";
+import { USER } from "../../graphql/queries/user";
+import MyThemeContext from "../../themeContext";
+import { UserData } from "../../types";
+import UserAvatar from "../common/UserAvatar";
+import Button from "../elements/Button";
+import ColorSelector from "./ColorSelector";
+import { LanguageSelector } from "./LanguageSelector";
 
 const TopNav = () => {
   const { bgColor, colorMode, darkerBgColor, textColor } = useContext(
     MyThemeContext
-  )
-  const { toggleColorMode } = useColorMode()
+  );
+  const { toggleColorMode } = useColorMode();
 
   const UserItem = () => {
-    const { t } = useTranslation()
-    const { data, loading } = useQuery<UserData>(USER)
+    const { t } = useTranslation();
+    const { data, loading } = useQuery<UserData>(USER);
 
-    if (loading) return <Box />
+    if (loading) return <Box />;
     if (!data?.user)
       return (
         <a href="/auth/discord">
@@ -42,7 +42,7 @@ const TopNav = () => {
             {t("navigation;Log in via Discord")}
           </Button>
         </a>
-      )
+      );
     //*<Link to={`/u/${data.user.discord_id}`}>
     return (
       <Menu>
@@ -66,8 +66,8 @@ const TopNav = () => {
           </MenuGroup>
         </MenuList>
       </Menu>
-    )
-  }
+    );
+  };
 
   return (
     <Grid
@@ -110,7 +110,7 @@ const TopNav = () => {
         </Box>
       </Suspense>
     </Grid>
-  )
-}
+  );
+};
 
-export default TopNav
+export default TopNav;

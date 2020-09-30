@@ -1,18 +1,18 @@
-import * as Objection from "objection"
-import Weapon from "./Weapon"
+import * as Objection from "objection";
+import Weapon from "./Weapon";
 
 class XRankPlacement extends Objection.Model {
-  static tableName = "xRankPlacements"
+  static tableName = "xRankPlacements";
 
-  id!: number
-  playerId!: string
-  playerName!: string
-  ranking!: number
-  xPower!: number
-  mode!: string
-  month!: number
-  year!: number
-  weaponId!: number
+  id!: number;
+  playerId!: string;
+  playerName!: string;
+  ranking!: number;
+  xPower!: number;
+  mode!: string;
+  month!: number;
+  year!: number;
+  weaponId!: number;
 
   static get relationMappings() {
     return {
@@ -24,8 +24,8 @@ class XRankPlacement extends Objection.Model {
           to: "weapons.id",
         },
       },
-    }
+    };
   }
 }
 
-export default XRankPlacement
+export default XRankPlacement;

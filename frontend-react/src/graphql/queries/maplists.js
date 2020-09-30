@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client"
+import { gql } from "@apollo/client";
 
 export const maplists = gql`
   {
@@ -10,4 +10,4 @@ export const maplists = gql`
       cb
     }
   }
-`
+`;

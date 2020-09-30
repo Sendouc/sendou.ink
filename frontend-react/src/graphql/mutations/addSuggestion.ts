@@ -1,4 +1,4 @@
-import { DocumentNode, gql } from "@apollo/client"
+import { DocumentNode, gql } from "@apollo/client";
 
 export const ADD_SUGGESTION: DocumentNode = gql`
   mutation addSuggestion(
@@ -14,4 +14,4 @@ export const ADD_SUGGESTION: DocumentNode = gql`
       description: $description
     )
   }
-`
+`;

@@ -1,49 +1,49 @@
-import React, { useContext } from "react"
-import Input from "../elements/Input"
-import WeaponSelector from "../common/WeaponSelector"
-import { Box, RadioGroup, Radio, Stack } from "@chakra-ui/core"
-import MyThemeContext from "../../themeContext"
-import { months } from "../../utils/lists"
-import Select from "../elements/Select"
-import Label from "../elements/Label"
-import { Weapon } from "../../types"
-import { useTranslation } from "react-i18next"
-import { getLocalizedMonthYearString } from "../../utils/helperFunctions"
+import React, { useContext } from "react";
+import Input from "../elements/Input";
+import WeaponSelector from "../common/WeaponSelector";
+import { Box, RadioGroup, Radio, Stack } from "@chakra-ui/core";
+import MyThemeContext from "../../themeContext";
+import { months } from "../../utils/lists";
+import Select from "../elements/Select";
+import Label from "../elements/Label";
+import { Weapon } from "../../types";
+import { useTranslation } from "react-i18next";
+import { getLocalizedMonthYearString } from "../../utils/helperFunctions";
 
 interface Top500FormsProps {
   forms: {
-    name?: string
-    weapon?: string
-    mode?: number
-    month?: number
-    year?: number
-  }
-  handleChange: (value: Object) => void
+    name?: string;
+    weapon?: string;
+    mode?: number;
+    month?: number;
+    year?: number;
+  };
+  handleChange: (value: Object) => void;
 }
 
 const Top500Forms: React.FC<Top500FormsProps> = ({ forms, handleChange }) => {
-  const { t, i18n } = useTranslation()
-  const { themeColor } = useContext(MyThemeContext)
+  const { t, i18n } = useTranslation();
+  const { themeColor } = useContext(MyThemeContext);
 
-  const monthChoices = []
-  let month = 5
-  let year = 2018
-  const date = new Date()
-  const currentMonth = date.getMonth() + 1
-  const currentYear = date.getFullYear()
+  const monthChoices = [];
+  let month = 5;
+  let year = 2018;
+  const date = new Date();
+  const currentMonth = date.getMonth() + 1;
+  const currentYear = date.getFullYear();
   while (true) {
-    if (month === currentMonth && year === currentYear) break
-    const monthString = getLocalizedMonthYearString(month, year, i18n.language)
-    monthChoices.push({ label: monthString, value: `${month},${year}` })
+    if (month === currentMonth && year === currentYear) break;
+    const monthString = getLocalizedMonthYearString(month, year, i18n.language);
+    monthChoices.push({ label: monthString, value: `${month},${year}` });
 
-    month++
+    month++;
     if (month === 13) {
-      month = 1
-      year++
+      month = 1;
+      year++;
     }
   }
 
-  monthChoices.reverse()
+  monthChoices.reverse();
 
   return (
     <Box maxW="500px">
@@ -77,10 +77,10 @@ const Top500Forms: React.FC<Top500FormsProps> = ({ forms, handleChange }) => {
           options={monthChoices}
           label={t("xsearch;Month")}
           setValue={(value: any) => {
-            const monthParts = value.split(",")
-            const month = parseInt(monthParts[0])
-            const year = parseInt(monthParts[1])
-            handleChange({ month, year })
+            const monthParts = value.split(",");
+            const month = parseInt(monthParts[0]);
+            const year = parseInt(monthParts[1]);
+            handleChange({ month, year });
           }}
           width="100%"
         />
@@ -112,7 +112,7 @@ const Top500Forms: React.FC<Top500FormsProps> = ({ forms, handleChange }) => {
         </RadioGroup>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
-export default Top500Forms
+export default Top500Forms;
