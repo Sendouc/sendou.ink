@@ -1,0 +1,19 @@
+query getXRankPlacements($page: Int) {
+  getXRankPlacements(page: $page) {
+    records {
+      id
+      playerName
+      xPower
+      weapon
+      ranking
+      mode
+      month
+      year
+      user {
+        ...UserLean
+      }
+    }
+    pageCount
+    recordsCount
+  }
+}

@@ -163,8 +163,8 @@ const IconNavBar = () => {
                       <MenuItem disabled={item.disabled}>
                         {location.pathname === "/" + item.code ? (
                           <Box
-                            h="5px"
-                            w="5px"
+                            h="7px"
+                            w="7px"
                             mb={1}
                             bgColor={themeColorWithShade}
                             borderRadius="50%"
@@ -174,8 +174,8 @@ const IconNavBar = () => {
                           />
                         ) : (
                           <Box
-                            h="5px"
-                            w="5px"
+                            h="7px"
+                            w="7px"
                             mb={1}
                             borderRadius="50%"
                             lineHeight="0.5rem"
