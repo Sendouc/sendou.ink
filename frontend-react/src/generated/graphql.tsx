@@ -81,6 +81,7 @@ export type QueryPositiveVotesArgs = {
 
 export type QueryGetXRankPlacementsArgs = {
   page?: Maybe<Scalars['Int']>;
+  filter?: Maybe<GetXRankPlacementsInput>;
 };
 
 
@@ -476,6 +477,13 @@ export type MapVote = {
   tc: Scalars['Int'];
   rm: Scalars['Int'];
   cb: Scalars['Int'];
+};
+
+export type GetXRankPlacementsInput = {
+  name?: Maybe<Scalars['String']>;
+  mode?: Maybe<RankedMode>;
+  month?: Maybe<Scalars['Int']>;
+  year?: Maybe<Scalars['Int']>;
 };
 
 export enum XRankLeaderboardType {
@@ -1139,6 +1147,7 @@ export type GetXRankLeaderboardQuery = (
 
 export type GetXRankPlacementsQueryVariables = Exact<{
   page?: Maybe<Scalars['Int']>;
+  filter?: Maybe<GetXRankPlacementsInput>;
 }>;
 
 
@@ -1256,8 +1265,8 @@ export type GetXRankLeaderboardQueryHookResult = ReturnType<typeof useGetXRankLe
 export type GetXRankLeaderboardLazyQueryHookResult = ReturnType<typeof useGetXRankLeaderboardLazyQuery>;
 export type GetXRankLeaderboardQueryResult = Apollo.QueryResult<GetXRankLeaderboardQuery, GetXRankLeaderboardQueryVariables>;
 export const GetXRankPlacementsDocument = gql`
-    query getXRankPlacements($page: Int) {
-  getXRankPlacements(page: $page) {
+    query getXRankPlacements($page: Int, $filter: GetXRankPlacementsInput) {
+  getXRankPlacements(page: $page, filter: $filter) {
     records {
       id
       playerName
@@ -1290,6 +1299,7 @@ export const GetXRankPlacementsDocument = gql`
  * const { data, loading, error } = useGetXRankPlacementsQuery({
  *   variables: {
  *      page: // value for 'page'
+ *      filter: // value for 'filter'
  *   },
  * });
  */

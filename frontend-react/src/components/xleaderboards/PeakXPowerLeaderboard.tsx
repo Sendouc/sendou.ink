@@ -30,6 +30,7 @@ export const PeakXPowerLeaderboard: React.FC<PeakXPowerLeaderboardProps> = ({
 }) => {
   const { t } = useTranslation();
   const [page, setPage] = useState(1);
+
   const {
     previousData,
     data = previousData,

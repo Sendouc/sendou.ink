@@ -47,7 +47,10 @@ const placements = await Placement.find({ month: 12 })
 
 const typeDef = gql`
   extend type Query {
-    getXRankPlacements(page: Int = 1): PaginatedXRankPlacements!
+    getXRankPlacements(
+      page: Int = 1
+      filter: GetXRankPlacementsInput
+    ): PaginatedXRankPlacements!
     getXRankLeaderboard(
       page: Int = 1
       type: XRankLeaderboardType!
@@ -56,6 +59,13 @@ const typeDef = gql`
       page: Int = 1
       weapon: String
     ): PaginatedXRankPlacements!
+  }
+
+  input GetXRankPlacementsInput {
+    name: String
+    mode: RankedMode
+    month: Int
+    year: Int
   }
 
   enum XRankLeaderboardType {
@@ -130,7 +140,6 @@ const resolvers = {
   Query: {
     getXRankPlacements: async (_: any, args: any) => {
       return XRankPlacement.query()
-        .debug()
         .orderByRaw(
           `"year" desc, "month" desc, "ranking" asc, CASE WHEN mode = 'SZ' THEN 0 WHEN mode = 'TC' THEN 1 WHEN mode = 'RM' THEN 2 WHEN mode = 'CB' THEN 3 ELSE -1 END`
         )

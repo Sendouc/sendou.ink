@@ -1,5 +1,5 @@
-query getXRankPlacements($page: Int) {
-  getXRankPlacements(page: $page) {
+query getXRankPlacements($page: Int, $filter: GetXRankPlacementsInput) {
+  getXRankPlacements(page: $page, filter: $filter) {
     records {
       id
       playerName

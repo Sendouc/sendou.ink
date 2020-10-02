@@ -1,7 +1,8 @@
 // https://github.com/chakra-ui/chakra-ui/issues/135#issuecomment-644878591
 
-import { Box } from "@chakra-ui/core";
+import { Box, BoxProps, IconButton } from "@chakra-ui/core";
 import React, { useContext } from "react";
+import { TiFilter } from "react-icons/ti";
 import MyThemeContext from "../../themeContext";
 
 /**
@@ -9,7 +10,7 @@ import MyThemeContext from "../../themeContext";
  * two-dimensional table comprised of rows and columns of cells containing
  * data. It renders a `<table>` HTML element.
  */
-export function Table(props: any) {
+export function Table(props: BoxProps) {
   return (
     <Box overflow="auto">
       <Box as="table" width="full" {...props} />
@@ -21,7 +22,7 @@ export function Table(props: any) {
  * Defines a set of rows defining the head of the columns of the table. It
  * renders a `<thead>` HTML element.
  */
-export function TableHead(props: any) {
+export function TableHead(props: BoxProps) {
   return <Box as="thead" {...props} />;
 }
 
@@ -30,7 +31,7 @@ export function TableHead(props: any) {
  * using a mix of `TableCell` and `TableHeader` elements. It renders a `<tr>`
  * HTML element.
  */
-export function TableRow(props: any) {
+export function TableRow(props: BoxProps) {
   const { darkerBgColor } = useContext(MyThemeContext);
   return (
     <Box
@@ -42,27 +43,41 @@ export function TableRow(props: any) {
   );
 }
 
-/**
- * Defines a cell as header of a group of table cells. It renders a `<th>` HTML
- * element.
- */
-export function TableHeader(props: any) {
+interface TableHeaderProps {
+  filterContent?: React.ReactNode;
+}
+
+export function TableHeader(props: BoxProps & TableHeaderProps) {
   const { themeColorWithShade } = useContext(MyThemeContext);
   return (
-    <Box
-      as="th"
-      px="4"
-      py="3"
-      backgroundColor={themeColorWithShade}
-      textAlign="left"
-      fontSize="xs"
-      textColor="black"
-      textTransform="uppercase"
-      letterSpacing="wider"
-      lineHeight="1rem"
-      fontWeight="medium"
-      {...props}
-    />
+    <>
+      <Box
+        as="th"
+        px="4"
+        py="3"
+        backgroundColor={themeColorWithShade}
+        textAlign="left"
+        fontSize="xs"
+        textColor="black"
+        textTransform="uppercase"
+        letterSpacing="wider"
+        lineHeight="1rem"
+        fontWeight="medium"
+        {...props}
+      >
+        {props.children}
+        {props.filterContent && (
+          <IconButton
+            aria-label="Show filter popup"
+            variant="ghost"
+            color="current"
+            fontSize="20px"
+            icon={<TiFilter />}
+            borderRadius="50%"
+          />
+        )}
+      </Box>
+    </>
   );
 }
 
@@ -70,7 +85,7 @@ export function TableHeader(props: any) {
  * Encapsulates a set of table rows, indicating that they comprise the body of
  * the table. It renders a `<tbody>` HTML element.
  */
-export function TableBody(props: any) {
+export function TableBody(props: BoxProps) {
   return <Box as="tbody" {...props} />;
 }
 
@@ -78,7 +93,7 @@ export function TableBody(props: any) {
  * Defines a cell of a table that contains data. It renders a `<td>` HTML
  * element.
  */
-export function TableCell(props: any) {
+export function TableCell(props: BoxProps) {
   return (
     <Box
       as="td"
