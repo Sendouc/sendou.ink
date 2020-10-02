@@ -26,6 +26,7 @@ const DraftCupPage = lazy(() => import("../plusdraftcup/DraftCupPage"))
 const DraftCupDetails = lazy(() => import("../plusdraftcup/DraftCupDetails"))
 const Access = lazy(() => import("./Access"))
 const VotingHistoryPage = lazy(() => import("../plus/VotingHistoryPage"))
+const VotingPage = lazy(() => import("../plus/VotingPage"))
 const About = lazy(() => import("./About"))
 const Links = lazy(() => import("./Links"))
 const TranslatePage = lazy(() => import("../translate/TranslatePage"))
@@ -58,6 +59,7 @@ const Routes: React.FC = () => {
           <PlusPage path="/plus" />
           <DraftCupPage path="/draft" />
           <DraftCupDetails path="/draft/:id" />
+          <VotingPage path="/plus/voting" />
           <VotingHistoryPage path="/plus/history" />
           <PlusFAQPage path="/plus/faq" />
           <NotFound default />

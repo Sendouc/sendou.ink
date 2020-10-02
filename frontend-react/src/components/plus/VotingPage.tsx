@@ -1,44 +1,40 @@
 import { useMutation, useQuery } from "@apollo/react-hooks"
 import { Box, Flex, Progress, useToast } from "@chakra-ui/core"
+import { Redirect, RouteComponentProps } from "@reach/router"
 import React, { useContext, useEffect, useState } from "react"
 import { AddVotesVars, ADD_VOTES } from "../../graphql/mutations/addVotes"
-import { PLUS_INFO } from "../../graphql/queries/plusInfo"
+import { PlusInfoData, PLUS_INFO } from "../../graphql/queries/plusInfo"
+import { USER } from "../../graphql/queries/user"
 import {
   UsersForVotingData,
   USERS_FOR_VOTING,
   VotingSuggested,
 } from "../../graphql/queries/usersForVoting"
 import MyThemeContext from "../../themeContext"
-import { UserLean } from "../../types"
+import { UserData } from "../../types"
 import Error from "../common/Error"
 import Loading from "../common/Loading"
+import PageHeader from "../common/PageHeader"
 import SubHeader from "../common/SubHeader"
 import Alert from "../elements/Alert"
 import Button from "../elements/Button"
 import PersonForVoting from "./PersonForVoting"
-
-interface VotingProps {
-  user: UserLean
-  votingEnds: number
-  votedSoFar: number
-  eligibleVoters: number
-}
 
 interface SuggestedArrays {
   sameRegion: VotingSuggested[]
   otherRegion: VotingSuggested[]
 }
 
-const Voting: React.FC<VotingProps> = ({
-  user,
-  votingEnds,
-  votedSoFar,
-  eligibleVoters,
-}) => {
+const VotingPage: React.FC<RouteComponentProps> = () => {
   const { themeColor, grayWithShade, colorMode } = useContext(MyThemeContext)
   const { data, loading, error } = useQuery<UsersForVotingData>(
     USERS_FOR_VOTING
   )
+  const { data: plusInfoData, loading: plusInfoLoading } = useQuery<
+    PlusInfoData
+  >(PLUS_INFO)
+  const { data: userData } = useQuery<UserData>(USER)
+
   const [votes, setVotes] = useState<Record<string, number>>({})
   const [oldVotes, setOldVotes] = useState<Record<string, number>>({})
   const [suggestedArrays, setSuggestedArrays] = useState<SuggestedArrays>({
@@ -90,8 +86,10 @@ const Voting: React.FC<VotingProps> = ({
     })
   }
 
+  const user = userData?.user
+
   useEffect(() => {
-    if (loading || error) return
+    if (loading || error || !user) return
 
     const sameRegionSuggested: VotingSuggested[] = []
     const otherRegionSuggested: VotingSuggested[] = []
@@ -122,8 +120,23 @@ const Voting: React.FC<VotingProps> = ({
     }
   }, [loading, error, data, user])
 
-  if (loading) return <Loading />
+  if (plusInfoData && !plusInfoData.plusInfo) {
+    return <Redirect to="/404" />
+  }
+  if (
+    loading ||
+    !user ||
+    !plusInfoData?.plusInfo ||
+    !plusInfoData.plusInfo.voting_ends
+  )
+    return <Loading />
   if (error) return <Error errorMessage={error.message} />
+
+  const votingEnds = parseInt(plusInfoData.plusInfo.voting_ends)
+  const {
+    voter_count: votedSoFar,
+    eligible_voters: eligibleVoters,
+  } = plusInfoData.plusInfo
 
   const date = new Date()
   if (votingEnds < date.getTime())
@@ -143,6 +156,7 @@ const Voting: React.FC<VotingProps> = ({
 
   return (
     <>
+      <PageHeader title="Voting" />
       <Alert status={alreadyVoted ? "success" : "info"}>{`${
         alreadyVoted
           ? "You have voted! Editing and resubmitting before deadline possible. "
@@ -257,4 +271,4 @@ const Voting: React.FC<VotingProps> = ({
   )
 }
 
-export default Voting
+export default VotingPage

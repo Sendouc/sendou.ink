@@ -1,3 +1,4 @@
+import { useQuery } from "@apollo/react-hooks"
 import {
   Box,
   Flex,
@@ -11,6 +12,7 @@ import {
 import { Link, useLocation } from "@reach/router"
 import React, { Suspense, useContext } from "react"
 import { useTranslation } from "react-i18next"
+import { PlusInfoData, PLUS_INFO } from "../../graphql/queries/plusInfo"
 import MyThemeContext from "../../themeContext"
 
 const getFirstFridayDate = () => {
@@ -41,7 +43,6 @@ export const navIcons: {
   menuItems: {
     code: string
     displayName: string
-    disabled?: boolean
     toAppend?: string
   }[]
 }[] = [
@@ -72,9 +73,8 @@ export const navIcons: {
     displayName: "Plus Server",
     menuItems: [
       {
-        code: "/voting",
-        displayName: "Next voting",
-        disabled: true,
+        code: "plus/voting",
+        displayName: "Voting",
         toAppend:
           ": " +
           getFirstFridayDate().toLocaleString("default", {
@@ -99,6 +99,10 @@ const IconNavBar = () => {
     grayWithShade,
   } = useContext(MyThemeContext)
   const location = useLocation()
+
+  const { data: plusInfoData } = useQuery<PlusInfoData>(PLUS_INFO)
+
+  const isVoting = !!plusInfoData?.plusInfo?.voting_ends
 
   return (
     <Flex bg={darkerBgColor} py={2} justifyContent="center" flexWrap="wrap">
@@ -159,7 +163,9 @@ const IconNavBar = () => {
                 <MenuGroup title={t(`navigation;${displayName}`)}>
                   {menuItems.map((item) => (
                     <Link key={item.code} to={item.code}>
-                      <MenuItem disabled={item.disabled}>
+                      <MenuItem
+                        disabled={item.displayName === "Voting" && !isVoting}
+                      >
                         {location.pathname === "/" + item.code ? (
                           <Box
                             h="5px"
@@ -184,8 +190,16 @@ const IconNavBar = () => {
                           />
                         )}
                         <Box>
-                          {t(`navigation;${item.displayName}`)}
-                          {item.toAppend}
+                          {t(
+                            `navigation;${
+                              item.displayName !== "Voting"
+                                ? item.displayName
+                                : isVoting
+                                ? "Voting"
+                                : "Next voting"
+                            }`
+                          )}
+                          {!isVoting && item.toAppend}
                         </Box>
                       </MenuItem>
                     </Link>
