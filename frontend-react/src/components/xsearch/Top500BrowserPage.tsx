@@ -3,7 +3,7 @@ import { Link, RouteComponentProps } from "@reach/router";
 import React, { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  GetPeakXPowerLeaderboardDocument,
+  GetXRankPlacementsDocument,
   GetXRankPlacementsInput,
   useGetXRankPlacementsQuery,
 } from "../../generated/graphql";
@@ -21,6 +21,7 @@ import {
   TableRow,
 } from "../common/Table";
 import WeaponImage from "../common/WeaponImage";
+import Top500Filters from "./Top500Filters";
 
 export const Top500Browser: React.FC<RouteComponentProps> = () => {
   const { t } = useTranslation();
@@ -34,11 +35,13 @@ export const Top500Browser: React.FC<RouteComponentProps> = () => {
   } = useGetXRankPlacementsQuery({
     variables: { page, filter },
   });
-  const { grayWithShade, themeColorWithShade } = useContext(MyThemeContext);
+  const { grayWithShade, themeColorWithShade, themeColor } = useContext(
+    MyThemeContext
+  );
 
   client.query({
-    query: GetPeakXPowerLeaderboardDocument,
-    variables: { page: page + 1, weapon: ".96 Gal" },
+    query: GetXRankPlacementsDocument,
+    variables: { page: page + 1, filter },
   });
 
   if (error) return <Error errorMessage={error.message} />;
@@ -46,6 +49,13 @@ export const Top500Browser: React.FC<RouteComponentProps> = () => {
   return (
     <>
       <PageHeader title="Top 500 Browser" />
+      <Top500Filters
+        filter={filter}
+        handleChange={(newFilter) => {
+          setFilter({ ...filter, ...newFilter });
+          setPage(1);
+        }}
+      />
       <Box my={4}>
         <Pagination
           currentPage={page}

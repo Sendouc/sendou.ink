@@ -140,6 +140,10 @@ const resolvers = {
   Query: {
     getXRankPlacements: async (_: any, args: any) => {
       return XRankPlacement.query()
+        .modify("filterMode", args.filter?.mode)
+        .modify("filterMonth", args.filter?.month)
+        .modify("filterYear", args.filter?.year)
+        .modify("filterName", args.filter?.name)
         .orderByRaw(
           `"year" desc, "month" desc, "ranking" asc, CASE WHEN mode = 'SZ' THEN 0 WHEN mode = 'TC' THEN 1 WHEN mode = 'RM' THEN 2 WHEN mode = 'CB' THEN 3 ELSE -1 END`
         )
