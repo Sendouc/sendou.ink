@@ -1,8 +1,7 @@
 // https://github.com/chakra-ui/chakra-ui/issues/135#issuecomment-644878591
 
-import { Box, BoxProps, IconButton } from "@chakra-ui/core";
+import { Box, BoxProps } from "@chakra-ui/core";
 import React, { useContext } from "react";
-import { TiFilter } from "react-icons/ti";
 import MyThemeContext from "../../themeContext";
 
 /**
@@ -43,12 +42,9 @@ export function TableRow(props: BoxProps) {
   );
 }
 
-interface TableHeaderProps {
-  filterContent?: React.ReactNode;
-}
-
-export function TableHeader(props: BoxProps & TableHeaderProps) {
+export function TableHeader(props: BoxProps) {
   const { themeColorWithShade } = useContext(MyThemeContext);
+
   return (
     <>
       <Box
@@ -64,19 +60,7 @@ export function TableHeader(props: BoxProps & TableHeaderProps) {
         lineHeight="1rem"
         fontWeight="medium"
         {...props}
-      >
-        {props.children}
-        {props.filterContent && (
-          <IconButton
-            aria-label="Show filter popup"
-            variant="ghost"
-            color="current"
-            fontSize="20px"
-            icon={<TiFilter />}
-            borderRadius="50%"
-          />
-        )}
-      </Box>
+      />
     </>
   );
 }

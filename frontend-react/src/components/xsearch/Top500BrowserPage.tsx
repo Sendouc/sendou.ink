@@ -1,13 +1,4 @@
-import {
-  Avatar,
-  Box,
-  Flex,
-  Link as ChakraLink,
-  Radio,
-  RadioGroup,
-  Stack,
-  Text,
-} from "@chakra-ui/core";
+import { Avatar, Box, Flex, Link as ChakraLink, Text } from "@chakra-ui/core";
 import { Link, RouteComponentProps } from "@reach/router";
 import React, { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -69,22 +60,7 @@ export const Top500Browser: React.FC<RouteComponentProps> = () => {
             <TableHeader>Weapon</TableHeader>
             <TableHeader>X Power</TableHeader>
             <TableHeader>Ranking</TableHeader>
-            <TableHeader
-              filterContent={
-                <RadioGroup defaultValue="1">
-                  <Stack>
-                    <Radio value="SZ" isDisabled>
-                      Splat Zones
-                    </Radio>
-                    <Radio value="TC">Tower Control</Radio>
-                    <Radio value="RM">Rainmaker</Radio>
-                    <Radio value="CB">Clam Blitz</Radio>
-                  </Stack>
-                </RadioGroup>
-              }
-            >
-              Mode
-            </TableHeader>
+            <TableHeader>Mode</TableHeader>
             <TableHeader>Month</TableHeader>
           </TableRow>
         </TableHead>

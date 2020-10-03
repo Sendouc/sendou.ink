@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@apollo/client";
 import { Box, Flex, Progress, useToast } from "@chakra-ui/core";
-import { RouteComponentProps } from "@reach/router";
+import { Redirect, RouteComponentProps } from "@reach/router";
 import React, { useContext, useEffect, useState } from "react";
 import { AddVotesVars, ADD_VOTES } from "../../graphql/mutations/addVotes";
 import { PlusInfoData, PLUS_INFO } from "../../graphql/queries/plusInfo";
@@ -30,9 +30,7 @@ const VotingPage: React.FC<RouteComponentProps> = () => {
   const { data, loading, error } = useQuery<UsersForVotingData>(
     USERS_FOR_VOTING
   );
-  const { data: plusInfoData, loading: plusInfoLoading } = useQuery<
-    PlusInfoData
-  >(PLUS_INFO);
+  const { data: plusInfoData } = useQuery<PlusInfoData>(PLUS_INFO);
   const { data: userData } = useQuery<UserData>(USER);
 
   const [votes, setVotes] = useState<Record<string, number>>({});
@@ -121,7 +119,7 @@ const VotingPage: React.FC<RouteComponentProps> = () => {
   }, [loading, error, data, user]);
 
   if (plusInfoData && !plusInfoData.plusInfo) {
-    return <Redirect to="/404" />;
+    return <Redirect to="/access" />;
   }
   if (
     loading ||

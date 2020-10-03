@@ -1,9 +1,9 @@
-import React from "react";
+import { Box } from "@chakra-ui/core";
 import { RouteComponentProps } from "@reach/router";
+import React from "react";
+import { DiscordIcon } from "../../assets/icons";
 import Alert from "../elements/Alert";
 import Button from "../elements/Button";
-import { FaDiscord } from "react-icons/fa";
-import { Box } from "@chakra-ui/core";
 
 const Access: React.FC<RouteComponentProps> = () => {
   return (
@@ -13,7 +13,7 @@ const Access: React.FC<RouteComponentProps> = () => {
       </Alert>
       <Box mt="1em">
         <a href="/auth/discord">
-          <Button icon={<FaDiscord />}>Log in via Discord</Button>
+          <Button icon={<DiscordIcon />}>Log in via Discord</Button>
         </a>
       </Box>
     </>

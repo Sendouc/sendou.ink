@@ -11,6 +11,10 @@
   margin: 0.2em;
 }
 
+li:first-child {
+  margin-left: 0;
+}
+
 .active-page {
   border-bottom: 3px solid;
 }
