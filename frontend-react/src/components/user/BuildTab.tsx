@@ -92,11 +92,11 @@ const BuildTab: React.FC<BuildTabProps> = ({
         display="flex"
         flexWrap="wrap"
         mt="1em"
-        width="100vw"
+        width="80vw"
         position="relative"
         left="50%"
         right="50%"
-        mx="-50vw"
+        mx="-40vw"
         justifyContent="center"
       >
         {filteredBuilds.map((build) => (
