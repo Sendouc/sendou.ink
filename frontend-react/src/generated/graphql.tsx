@@ -964,7 +964,7 @@ export type GetPeakXPowerLeaderboardQuery = (
     & Pick<PaginatedXRankPlacements, 'recordsCount' | 'pageCount'>
     & { records: Array<(
       { __typename?: 'XRankPlacement' }
-      & Pick<XRankPlacement, 'id' | 'playerName' | 'xPower' | 'weapon' | 'mode' | 'month' | 'year'>
+      & Pick<XRankPlacement, 'id' | 'playerId' | 'playerName' | 'xPower' | 'weapon' | 'mode' | 'month' | 'year'>
       & { user?: Maybe<(
         { __typename?: 'NewUser' }
         & UserLeanFragment
@@ -1045,6 +1045,7 @@ export const GetPeakXPowerLeaderboardDocument = gql`
   getPeakXPowerLeaderboard(page: $page, weapon: $weapon) {
     records {
       id
+      playerId
       playerName
       xPower
       weapon

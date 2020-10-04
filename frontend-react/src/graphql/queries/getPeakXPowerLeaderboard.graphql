@@ -2,6 +2,7 @@ query getPeakXPowerLeaderboard($page: Int, $weapon: String) {
   getPeakXPowerLeaderboard(page: $page, weapon: $weapon) {
     records {
       id
+      playerId
       playerName
       xPower
       weapon

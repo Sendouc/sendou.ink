@@ -6,7 +6,7 @@ import {
   Link as ChakraLink,
   Text,
 } from "@chakra-ui/core";
-import { Link, RouteComponentProps } from "@reach/router";
+import { Link, RouteComponentProps, useLocation } from "@reach/router";
 import React, { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import CB from "../../assets/cb.png";
@@ -45,8 +45,14 @@ const modeImages: Record<RankedMode, string> = {
 
 export const Top500Browser: React.FC<RouteComponentProps> = () => {
   const { t } = useTranslation();
-  const [filter, setFilter] = useState<GetXRankPlacementsInput>({});
+  const location = useLocation();
+
+  const urlParams = new URLSearchParams(location.search);
+  const [filter, setFilter] = useState<GetXRankPlacementsInput>({
+    playerId: urlParams.get("id"),
+  });
   const [page, setPage] = useState(1);
+
   const {
     previousData,
     data = previousData,

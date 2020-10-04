@@ -94,10 +94,24 @@ const XRankScoreLeaderboard: React.FC<PeakXPowerLeaderboardProps> = ({
                               mr="0.5rem"
                             />
                           </ChakraLink>
-                          {record.user.fullUsername}
+                          <ChakraLink
+                            as={Link}
+                            color={themeColorWithShade}
+                            to={`/xsearch?id=${record.playerId}`}
+                          >
+                            {record.user.fullUsername}
+                          </ChakraLink>
                         </Flex>
                       ) : (
-                        <>{record.playerName}</>
+                        <>
+                          <ChakraLink
+                            as={Link}
+                            color={themeColorWithShade}
+                            to={`/xsearch?id=${record.playerId}`}
+                          >
+                            {record.playerName}
+                          </ChakraLink>
+                        </>
                       )}
                     </TableCell>
                     <TableCell>{record.score}</TableCell>
