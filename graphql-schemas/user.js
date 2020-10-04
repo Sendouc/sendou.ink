@@ -1,5 +1,6 @@
 const { UserInputError, gql } = require("apollo-server-express");
 const User = require("../mongoose-models/user");
+const ObjectionUser = require("../models/User").default;
 const Player = require("../mongoose-models/player");
 const Team = require("../mongoose-models/team");
 const countries = require("../utils/countries");
@@ -16,6 +17,8 @@ const typeDef = gql`
     searchForUser(discord_id: String, twitter: String, custom_url: String): User
     "Returns all users"
     users: [User!]!
+    "Get user by sendou.ink ID, Discord ID or custom URL path."
+    getUserByIdentifier(identifier: String!): NewUser
   }
 
   input DiscordIdAvatar {
@@ -69,7 +72,7 @@ const typeDef = gql`
     avatarUrl: String!
     "Location of user's profile"
     profilePath: String!
-    top500placements: [XRankPlacement!]
+    xRankPlacements: [XRankPlacement!]
   }
 `;
 
@@ -79,7 +82,7 @@ const resolvers = {
     avatarUrl: (root) =>
       `https://cdn.discordapp.com/avatars/${root.discordId}/${root.discordAvatar}.jpg`,
     profilePath: (root) => "/u/" + root.discordId,
-    top500placements: (root, _, ctx) =>
+    xRankPlacements: (root, _, ctx) =>
       ctx.xRankPlacementLoader.load(root.playerId),
   },
   User: {
@@ -122,6 +125,9 @@ const resolvers = {
         return mockUser;
       }
       return ctx.user;
+    },
+    getUserByIdentifier: (root, args) => {
+      return ObjectionUser.query().findOne("discordId", "=", args.identifier);
     },
     searchForUser: (root, args) => {
       let searchCriteria = {};

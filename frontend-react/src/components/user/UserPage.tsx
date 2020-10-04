@@ -14,7 +14,7 @@ import { Helmet } from "react-helmet-async";
 import { Trans, useTranslation } from "react-i18next";
 import { FaTrophy, FaTshirt } from "react-icons/fa";
 import { IconType } from "react-icons/lib/cjs";
-import { PLAYER_INFO } from "../../graphql/queries/playerInfo";
+import { useGetUsersXRankPlacementsQuery } from "../../generated/graphql";
 import { SEARCH_FOR_BUILDS } from "../../graphql/queries/searchForBuilds";
 import {
   SearchForUserData,
@@ -24,8 +24,6 @@ import {
 import { USER } from "../../graphql/queries/user";
 import MyThemeContext from "../../themeContext";
 import {
-  PlayerInfoData,
-  PlayerInfoVars,
   SearchForBuildsData,
   SearchForBuildsVars,
   UserData,
@@ -72,12 +70,14 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
   });
 
   const {
-    data: playerData,
-    error: playerError,
-    loading: playerLoading,
-  } = useQuery<PlayerInfoData, PlayerInfoVars>(PLAYER_INFO, {
-    variables: { twitter: data?.searchForUser?.twitter_name as any },
-    skip: !data || !data.searchForUser || !data.searchForUser.twitter_name,
+    data: xRankPlacementsData,
+    loading: xRankPlacementsLoading,
+    error: xRankPlacementsError,
+  } = useGetUsersXRankPlacementsQuery({
+    skip: !data?.searchForUser?.discord_id,
+    variables: {
+      identifier: data?.searchForUser?.discord_id ?? "-1",
+    },
   });
 
   const {
@@ -87,12 +87,13 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
     grayWithShade,
   } = useContext(MyThemeContext);
 
-  if (loading || userLoading || buildsLoading || playerLoading)
+  if (loading || userLoading || buildsLoading || xRankPlacementsLoading)
     return <Loading />;
   if (error) return <Error errorMessage={error.message} />;
   if (userError) return <Error errorMessage={userError.message} />;
   if (buildsError) return <Error errorMessage={buildsError.message} />;
-  if (playerError) return <Error errorMessage={playerError.message} />;
+  if (xRankPlacementsError)
+    return <Error errorMessage={xRankPlacementsError.message} />;
   if (!data || !data.searchForUser || !userData || !buildsData)
     return <Redirect to="/404" />;
 
@@ -117,7 +118,7 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
       content: (
         <TabPanel key={1}>
           <BuildTab
-            builds={builds.sort((a, b) => {
+            builds={[...builds].sort((a, b) => {
               const weaponPool = user.weapons;
               if (weaponPool) {
                 if (
@@ -146,7 +147,7 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
     });
   }
 
-  if (playerData?.playerInfo?.placements) {
+  if (xRankPlacementsData?.getUserByIdentifier?.xRankPlacements) {
     tabs.push({
       id: 2,
       icon: FaTrophy,
@@ -154,13 +155,13 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
         <>
           {t("users;X Rank Top 500")}{" "}
           <Badge colorScheme={themeColor} ml="0.5em">
-            {playerData.playerInfo.placements.length}
+            {xRankPlacementsData.getUserByIdentifier.xRankPlacements.length}
           </Badge>
         </>
       ),
       content: (
         <TabPanel key={2}>
-          <XRankTab placements={playerData.playerInfo.placements} />
+          <XRankTab placementsData={xRankPlacementsData} />
         </TabPanel>
       ),
     });

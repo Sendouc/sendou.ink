@@ -32,7 +32,7 @@ const Top500Filters: React.FC<Top500FilterProps> = ({
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [name]);
+  }, [name, filter.name, handleChange]);
 
   const monthChoices = [];
   let month = 5;

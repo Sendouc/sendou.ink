@@ -140,7 +140,8 @@ const server = new ApolloServer({
       xRankPlacementLoader: new DataLoader(async (playerIds) => {
         const placements = await XRankPlacement.query()
           .select()
-          .whereIn("playerId", playerIds);
+          .whereIn("playerId", playerIds)
+          .withGraphFetched("weapon");
 
         const placementsMap = new Map();
         placements.forEach((placement) => {

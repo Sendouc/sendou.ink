@@ -12,21 +12,31 @@ import { TFunctionResult } from "i18next";
 import React, { useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { modeIconMap } from "../../assets/icons";
+import {
+  GetUsersXRankPlacementsQuery,
+  XRankPlacement,
+} from "../../generated/graphql";
 import useBreakPoints from "../../hooks/useBreakPoints";
 import MyThemeContext from "../../themeContext";
-import { Placement } from "../../types";
-import { modesShort } from "../../utils/lists";
+import { Weapon } from "../../types";
 import WeaponImage from "../common/WeaponImage";
 
+type Placement = {
+  __typename?: "XRankPlacement" | undefined;
+} & Pick<
+  XRankPlacement,
+  "id" | "weapon" | "ranking" | "mode" | "xPower" | "month" | "year"
+>;
+
 interface ModesAccordionProps {
-  placements: Placement[];
+  placementsData: GetUsersXRankPlacementsQuery;
 }
 
 interface AllModesAccordionData {
-  sz?: ModeAccordionData;
-  tc?: ModeAccordionData;
-  rm?: ModeAccordionData;
-  cb?: ModeAccordionData;
+  SZ?: ModeAccordionData;
+  TC?: ModeAccordionData;
+  RM?: ModeAccordionData;
+  CB?: ModeAccordionData;
   locale: string;
 }
 
@@ -96,27 +106,27 @@ const accordionReducer = function (
   acc: AllModesAccordionData,
   cur: Placement
 ): AllModesAccordionData {
-  const key = modesShort[cur.mode];
+  const key = cur.mode;
   const modeData = acc[key];
   const date = getLocalizedMonthYear(cur.month, cur.year, acc.locale);
   if (!modeData) {
     acc[key] = {
-      highestPlacement: cur.rank,
+      highestPlacement: cur.ranking,
       highestPlacementDate: date,
-      highestXPower: cur.x_power,
+      highestXPower: cur.xPower,
       highestXPowerDate: date,
       placements: [cur],
     };
   } else {
     modeData.placements.push(cur);
 
-    if (cur.x_power > modeData.highestXPower) {
-      modeData.highestXPower = cur.x_power;
+    if (cur.xPower > modeData.highestXPower) {
+      modeData.highestXPower = cur.xPower;
       modeData.highestXPowerDate = date;
     }
 
-    if (cur.rank < modeData.highestPlacement) {
-      modeData.highestPlacement = cur.rank;
+    if (cur.ranking < modeData.highestPlacement) {
+      modeData.highestPlacement = cur.ranking;
       modeData.highestPlacementDate = date;
     }
   }
@@ -124,12 +134,14 @@ const accordionReducer = function (
   return acc;
 };
 
-const ModesAccordion: React.FC<ModesAccordionProps> = ({ placements }) => {
+const ModesAccordion: React.FC<ModesAccordionProps> = ({ placementsData }) => {
   const { t, i18n } = useTranslation();
   const { themeColorWithShade, grayWithShade, darkerBgColor } = useContext(
     MyThemeContext
   );
   const isSmall: boolean[] = useBreakPoints([560, 835]) as boolean[];
+
+  const placements = placementsData.getUserByIdentifier!.xRankPlacements!;
 
   const allModesTabsData: AllModesAccordionData = placements.reduce(
     accordionReducer,
@@ -137,11 +149,10 @@ const ModesAccordion: React.FC<ModesAccordionProps> = ({ placements }) => {
   );
   return (
     <Accordion allowMultiple>
-      {(["sz", "tc", "rm", "cb"] as const)
+      {(["SZ", "TC", "RM", "CB"] as const)
         .filter((key) => allModesTabsData.hasOwnProperty(key))
         .map((key) => {
-          const modeIconKey = key.toUpperCase() as "SZ" | "TC" | "RM" | "CB";
-          const ModeIcon = modeIconMap[modeIconKey];
+          const ModeIcon = modeIconMap[key];
           return (
             <AccordionItem key={key}>
               <AccordionButton>
@@ -225,11 +236,11 @@ const ModesAccordion: React.FC<ModesAccordionProps> = ({ placements }) => {
                           )}
                         </Box>
                         <WeaponImage
-                          englishName={placement.weapon}
+                          englishName={placement.weapon as Weapon}
                           size="SMALL"
                         />
-                        <Box>{placement.rank}</Box>
-                        <Box>{placement.x_power}</Box>
+                        <Box>{placement.ranking}</Box>
+                        <Box>{placement.xPower}</Box>
                       </React.Fragment>
                     );
                   })}

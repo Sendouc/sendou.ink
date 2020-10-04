@@ -40,6 +40,8 @@ export type Query = {
   searchForUser?: Maybe<User>;
   /** Returns all users */
   users: Array<User>;
+  /** Get user by sendou.ink ID, Discord ID or custom URL path. */
+  getUserByIdentifier?: Maybe<NewUser>;
   links: Array<Link>;
   xTrends: Array<Trend>;
   searchForTournamentById?: Maybe<Tournament>;
@@ -146,6 +148,11 @@ export type QuerySearchForUserArgs = {
   discord_id?: Maybe<Scalars['String']>;
   twitter?: Maybe<Scalars['String']>;
   custom_url?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetUserByIdentifierArgs = {
+  identifier: Scalars['String'];
 };
 
 
@@ -617,7 +624,7 @@ export type NewUser = {
   avatarUrl: Scalars['String'];
   /** Location of user's profile */
   profilePath: Scalars['String'];
-  top500placements?: Maybe<Array<XRankPlacement>>;
+  xRankPlacements?: Maybe<Array<XRankPlacement>>;
 };
 
 export enum LinkType {
@@ -1123,6 +1130,22 @@ export type GetPeakXPowerLeaderboardQuery = (
   ) }
 );
 
+export type GetUsersXRankPlacementsQueryVariables = Exact<{
+  identifier: Scalars['String'];
+}>;
+
+
+export type GetUsersXRankPlacementsQuery = (
+  { __typename?: 'Query' }
+  & { getUserByIdentifier?: Maybe<(
+    { __typename?: 'NewUser' }
+    & { xRankPlacements?: Maybe<Array<(
+      { __typename?: 'XRankPlacement' }
+      & Pick<XRankPlacement, 'id' | 'weapon' | 'ranking' | 'mode' | 'xPower' | 'month' | 'year'>
+    )>> }
+  )> }
+);
+
 export type GetXRankLeaderboardQueryVariables = Exact<{
   page?: Maybe<Scalars['Int']>;
   type: XRankLeaderboardType;
@@ -1221,6 +1244,47 @@ export function useGetPeakXPowerLeaderboardLazyQuery(baseOptions?: Apollo.LazyQu
 export type GetPeakXPowerLeaderboardQueryHookResult = ReturnType<typeof useGetPeakXPowerLeaderboardQuery>;
 export type GetPeakXPowerLeaderboardLazyQueryHookResult = ReturnType<typeof useGetPeakXPowerLeaderboardLazyQuery>;
 export type GetPeakXPowerLeaderboardQueryResult = Apollo.QueryResult<GetPeakXPowerLeaderboardQuery, GetPeakXPowerLeaderboardQueryVariables>;
+export const GetUsersXRankPlacementsDocument = gql`
+    query getUsersXRankPlacements($identifier: String!) {
+  getUserByIdentifier(identifier: $identifier) {
+    xRankPlacements {
+      id
+      weapon
+      ranking
+      mode
+      xPower
+      month
+      year
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetUsersXRankPlacementsQuery__
+ *
+ * To run a query within a React component, call `useGetUsersXRankPlacementsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUsersXRankPlacementsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUsersXRankPlacementsQuery({
+ *   variables: {
+ *      identifier: // value for 'identifier'
+ *   },
+ * });
+ */
+export function useGetUsersXRankPlacementsQuery(baseOptions?: Apollo.QueryHookOptions<GetUsersXRankPlacementsQuery, GetUsersXRankPlacementsQueryVariables>) {
+        return Apollo.useQuery<GetUsersXRankPlacementsQuery, GetUsersXRankPlacementsQueryVariables>(GetUsersXRankPlacementsDocument, baseOptions);
+      }
+export function useGetUsersXRankPlacementsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUsersXRankPlacementsQuery, GetUsersXRankPlacementsQueryVariables>) {
+          return Apollo.useLazyQuery<GetUsersXRankPlacementsQuery, GetUsersXRankPlacementsQueryVariables>(GetUsersXRankPlacementsDocument, baseOptions);
+        }
+export type GetUsersXRankPlacementsQueryHookResult = ReturnType<typeof useGetUsersXRankPlacementsQuery>;
+export type GetUsersXRankPlacementsLazyQueryHookResult = ReturnType<typeof useGetUsersXRankPlacementsLazyQuery>;
+export type GetUsersXRankPlacementsQueryResult = Apollo.QueryResult<GetUsersXRankPlacementsQuery, GetUsersXRankPlacementsQueryVariables>;
 export const GetXRankLeaderboardDocument = gql`
     query getXRankLeaderboard($page: Int, $type: XRankLeaderboardType!) {
   getXRankLeaderboard(page: $page, type: $type) {
