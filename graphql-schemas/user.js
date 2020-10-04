@@ -82,7 +82,7 @@ const resolvers = {
       `https://cdn.discordapp.com/avatars/${root.discordId}/${root.discordAvatar}.jpg`,
     profilePath: (root) => "/u/" + root.discordId,
     xRankPlacements: (root, _, ctx) =>
-      ctx.xRankPlacementLoader.load(root.playerId),
+      root.playerId ? ctx.xRankPlacementLoader.load(root.playerId) : null,
   },
   User: {
     top500: async (root) => {
