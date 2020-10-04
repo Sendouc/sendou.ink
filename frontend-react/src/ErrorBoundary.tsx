@@ -1,5 +1,7 @@
+// @ts-nocheck
 import { Box, Flex, Heading, Image } from "@chakra-ui/core";
 import React from "react";
+import { AiOutlineReload } from "react-icons/ai";
 import errorGirl from "./assets/error_girl.png";
 
 type HocProps = {
@@ -15,12 +17,37 @@ class ErrorBoundary extends React.Component<HocProps, HocState> {
   };
 
   componentDidCatch(error: Error | null, errorInfo: object) {
-    console.log({ error });
     this.setState({ error: error });
   }
 
   render() {
     if (this.state.error) {
+      if (this.state.error.message.includes("Loading chunk")) {
+        return (
+          <Flex
+            flexDir="column"
+            justifyContent="center"
+            alignItems="center"
+            bg="white"
+            padding="6rem"
+            borderRadius="5px"
+          >
+            <Heading as="h3" mx="auto">
+              New version of sendou.ink has been released! Click the icon below
+              to reload the page and start using the newest version.
+            </Heading>
+            <AiOutlineReload
+              style={{
+                width: "48px",
+                height: "48px",
+                cursor: "pointer",
+                color: "blue",
+              }}
+              onClick={() => window.location.reload(false)}
+            />
+          </Flex>
+        );
+      }
       return (
         <Flex
           flexDir="column"
