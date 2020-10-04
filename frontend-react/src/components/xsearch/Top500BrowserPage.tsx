@@ -1,10 +1,22 @@
-import { Avatar, Box, Flex, Link as ChakraLink, Text } from "@chakra-ui/core";
+import {
+  Avatar,
+  Box,
+  Flex,
+  Image,
+  Link as ChakraLink,
+  Text,
+} from "@chakra-ui/core";
 import { Link, RouteComponentProps } from "@reach/router";
 import React, { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
+import CB from "../../assets/cb.png";
+import RM from "../../assets/rm.png";
+import SZ from "../../assets/sz.png";
+import TC from "../../assets/tc.png";
 import {
   GetXRankPlacementsDocument,
   GetXRankPlacementsInput,
+  RankedMode,
   useGetXRankPlacementsQuery,
 } from "../../generated/graphql";
 import MyThemeContext from "../../themeContext";
@@ -22,6 +34,13 @@ import {
 } from "../common/Table";
 import WeaponImage from "../common/WeaponImage";
 import Top500Filters from "./Top500Filters";
+
+const modeImages: Record<RankedMode, string> = {
+  SZ,
+  TC,
+  RM,
+  CB,
+};
 
 export const Top500Browser: React.FC<RouteComponentProps> = () => {
   const { t } = useTranslation();
@@ -108,7 +127,9 @@ export const Top500Browser: React.FC<RouteComponentProps> = () => {
                     <Text fontWeight="bold">{record.xPower}</Text>
                   </TableCell>
                   <TableCell color={grayWithShade}>{record.ranking}</TableCell>
-                  <TableCell>{record.mode}</TableCell>
+                  <TableCell>
+                    <Image src={modeImages[record.mode]} w="32px" h="32px" />
+                  </TableCell>
                   <TableCell color={grayWithShade}>
                     {record.month}/{record.year}
                   </TableCell>
