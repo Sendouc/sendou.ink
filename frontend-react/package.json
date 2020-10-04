@@ -38,7 +38,6 @@
     "react-scripts": "next",
     "react-select": "^3.1.0",
     "react-string-replace": "^0.4.4",
-    "react-super-responsive-table": "^5.1.2",
     "recharts": "^1.8.5",
     "source-map-explorer": "^2.5.0",
     "typescript": "^3.8.3",

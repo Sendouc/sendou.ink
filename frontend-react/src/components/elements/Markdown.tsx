@@ -1,18 +1,26 @@
-import React, { useContext } from "react";
 import {
-  Text,
+  Checkbox,
   Code,
   Divider,
-  Link,
-  List,
-  Checkbox,
-  ListItem,
   Heading,
   Image,
+  Link,
+  List,
+  ListItem,
+  Text,
 } from "@chakra-ui/core";
+import React, { useContext } from "react";
 import ReactMarkdown from "react-markdown";
-import MyThemeContext from "../../themeContext";
 import reactStringReplace from "react-string-replace";
+import MyThemeContext from "../../themeContext";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../common/Table";
 import Emoji from "./Emoji";
 
 interface MarkdownProps {
@@ -145,6 +153,29 @@ const Markdown: React.FC<MarkdownProps> = ({ value }) => {
       inlineCode: (props: any) => {
         const { children } = props;
         return <Code {...getCoreProps(props)}>{children}</Code>;
+      },
+      table: (props: any) => {
+        const { children } = props;
+        return <Table {...getCoreProps(props)}>{children}</Table>;
+      },
+      tableHead: (props: any) => {
+        const { children } = props;
+        return <TableHead {...getCoreProps(props)}>{children}</TableHead>;
+      },
+      tableBody: (props: any) => {
+        const { children } = props;
+        return <TableBody {...getCoreProps(props)}>{children}</TableBody>;
+      },
+      tableRow: (props: any) => {
+        const { children } = props;
+        return <TableRow {...getCoreProps(props)}>{children}</TableRow>;
+      },
+      tableCell: (props: any) => {
+        const { children, isHeader } = props;
+        if (isHeader) {
+          return <TableHeader {...getCoreProps(props)}>{children}</TableHeader>;
+        }
+        return <TableCell {...getCoreProps(props)}>{children}</TableCell>;
       },
     };
   };
