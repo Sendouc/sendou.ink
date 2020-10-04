@@ -1541,7 +1541,8 @@
     "PEAK_XP": "X Power - all weapons",
     "UNIQUE_WEAPONS_COUNT": "Top 500 placements with different weapons",
     "FOUR_MODE_PEAK_AVERAGE": "4 mode peak X Power average",
-    "PLACEMENTS_COUNT": "Top 500 placements"
+    "PLACEMENTS_COUNT": "Top 500 placements",
+    "Score": "Score"
   },
   "footer": {
     "About": "About",

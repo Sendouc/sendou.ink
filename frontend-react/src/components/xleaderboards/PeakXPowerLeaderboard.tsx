@@ -61,10 +61,10 @@ export const PeakXPowerLeaderboard: React.FC<PeakXPowerLeaderboardProps> = ({
         <TableHead>
           <TableRow>
             {page === 1 && <TableHeader></TableHeader>}
-            <TableHeader>Name</TableHeader>
-            <TableHeader>Weapon</TableHeader>
-            <TableHeader>X Power</TableHeader>
-            <TableHeader>Month</TableHeader>
+            <TableHeader>{t("xsearch;Name")}</TableHeader>
+            <TableHeader>{t("freeagents;Weapon")}</TableHeader>
+            <TableHeader>{t("xsearch;X Power")}</TableHeader>
+            <TableHeader>{t("xsearch;Month")}</TableHeader>
           </TableRow>
         </TableHead>
         <TableBody>

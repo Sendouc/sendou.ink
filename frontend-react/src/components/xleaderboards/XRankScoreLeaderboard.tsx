@@ -59,8 +59,8 @@ const XRankScoreLeaderboard: React.FC<PeakXPowerLeaderboardProps> = ({
         <TableHead>
           <TableRow>
             {page === 1 && <TableHeader w={1} />}
-            <TableHeader>Name</TableHeader>
-            <TableHeader>Score</TableHeader>
+            <TableHeader>{t("xsearch;Name")}</TableHeader>
+            <TableHeader>{t("xleaderboards;Score")}</TableHeader>
           </TableRow>
         </TableHead>
         <TableBody>

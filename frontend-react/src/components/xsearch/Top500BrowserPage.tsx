@@ -90,12 +90,12 @@ export const Top500Browser: React.FC<RouteComponentProps> = () => {
       <Table maxW="50rem">
         <TableHead>
           <TableRow>
-            <TableHeader>Name</TableHeader>
-            <TableHeader>Weapon</TableHeader>
-            <TableHeader>X Power</TableHeader>
-            <TableHeader p={1}>Ranking</TableHeader>
-            <TableHeader>Mode</TableHeader>
-            <TableHeader>Month</TableHeader>
+            <TableHeader>{t("xsearch;Name")}</TableHeader>
+            <TableHeader>{t("freeagents;Weapon")}</TableHeader>
+            <TableHeader>{t("xsearch;X Power")}</TableHeader>
+            <TableHeader p={1}>{t("xsearch;Placement")}</TableHeader>
+            <TableHeader>{t("xsearch;Mode")}</TableHeader>
+            <TableHeader>{t("xsearch;Month")}</TableHeader>
             <TableHeader></TableHeader>
           </TableRow>
         </TableHead>
