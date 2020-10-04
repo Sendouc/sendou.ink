@@ -18,6 +18,8 @@ const Pagination: React.FC<PaginationProps> = ({
   scrollToTop = false,
 }) => {
   const { t } = useTranslation();
+
+  console.log({ currentPage, pageCount });
   return (
     <ReactPaginate
       previousLabel={
@@ -26,7 +28,11 @@ const Pagination: React.FC<PaginationProps> = ({
         </Button>
       }
       nextLabel={
-        <Button my={2} disabled={currentPage === pageCount} size="sm">
+        <Button
+          my={2}
+          disabled={currentPage === pageCount || !pageCount}
+          size="sm"
+        >
           {t("navigation;paginationNext")}
         </Button>
       }
