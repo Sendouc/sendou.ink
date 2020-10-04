@@ -32,7 +32,8 @@ const Top500Filters: React.FC<Top500FilterProps> = ({
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [name, filter.name, handleChange]);
+    // eslint-disable-next-line
+  }, [name]);
 
   const monthChoices = [];
   let month = 5;

@@ -35,9 +35,7 @@ export const Top500Browser: React.FC<RouteComponentProps> = () => {
   } = useGetXRankPlacementsQuery({
     variables: { page, filter },
   });
-  const { grayWithShade, themeColorWithShade, themeColor } = useContext(
-    MyThemeContext
-  );
+  const { grayWithShade, themeColorWithShade } = useContext(MyThemeContext);
 
   client.query({
     query: GetXRankPlacementsDocument,
