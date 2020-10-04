@@ -10,41 +10,6 @@ const paginatedResolvers = {
   records: (root: any) => root.results,
 };
 
-/*
-const placements = await Placement.find({ month: 12 })
-      await XRankPlacement.query().insert(
-        placements.map((p: any) => ({
-          playerId: p.unique_id,
-          playerName: p.name,
-          ranking: p.rank,
-          xPower: Math.round(p.x_power * 10),
-          mode: ["", "SZ", "TC", "RM", "CB"][p.mode],
-          month: p.month,
-          year: p.year,
-          weaponId: Weapon.query().findOne({ name: p.weapon }).select("id"),
-        }))
-      ) 
-
-
-      const players = await Player.find({})
-          const users = await User.find({})
-
-          for (const player of players) {
-            if (!player.twitter) continue
-
-            const found = users.find(
-              (u: any) => u.twitter_name === player.twitter
-            )
-            if (!found) continue
-
-            await UserObjection.query()
-              .patch({ playerId: player.unique_id })
-              .where("discordId", "=", found.discord_id)
-          }
-
-          break
-*/
-
 const typeDef = gql`
   extend type Query {
     getXRankPlacements(
