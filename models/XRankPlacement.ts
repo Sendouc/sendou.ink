@@ -35,6 +35,11 @@ class XRankPlacement extends Objection.Model {
 
       query.where(Objection.raw("player_name ILIKE ?", name));
     },
+    filterPlayerId(query, id) {
+      if (!id) return query;
+
+      query.where("playerId", "=", id);
+    },
   };
 
   static get relationMappings() {

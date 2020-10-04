@@ -33,6 +33,7 @@ import {
   TableRow,
 } from "../common/Table";
 import WeaponImage from "../common/WeaponImage";
+import Button from "../elements/Button";
 import Top500Filters from "./Top500Filters";
 
 const modeImages: Record<RankedMode, string> = {
@@ -86,9 +87,10 @@ export const Top500Browser: React.FC<RouteComponentProps> = () => {
             <TableHeader>Name</TableHeader>
             <TableHeader>Weapon</TableHeader>
             <TableHeader>X Power</TableHeader>
-            <TableHeader>Ranking</TableHeader>
+            <TableHeader p={1}>Ranking</TableHeader>
             <TableHeader>Mode</TableHeader>
             <TableHeader>Month</TableHeader>
+            <TableHeader></TableHeader>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -132,6 +134,19 @@ export const Top500Browser: React.FC<RouteComponentProps> = () => {
                   </TableCell>
                   <TableCell color={grayWithShade}>
                     {record.month}/{record.year}
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      size="xs"
+                      cursor="pointer"
+                      onClick={() => {
+                        setFilter({ playerId: record.playerId });
+                        setPage(1);
+                      }}
+                      outlined
+                    >
+                      {t("xsearch;ID")}
+                    </Button>
                   </TableCell>
                 </TableRow>
               );

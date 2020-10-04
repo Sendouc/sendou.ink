@@ -3,6 +3,7 @@ query getXRankPlacements($page: Int, $filter: GetXRankPlacementsInput) {
     records {
       id
       playerName
+      playerId
       xPower
       weapon
       ranking

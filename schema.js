@@ -8,7 +8,6 @@ const {
   Placement,
   placementResolvers,
 } = require("./graphql-schemas/placement");
-const { Player, playerResolvers } = require("./graphql-schemas/player");
 const { Rotation, rotationResolvers } = require("./graphql-schemas/rotation");
 const { User, userResolvers } = require("./graphql-schemas/user");
 const { Link, linkResolvers } = require("./graphql-schemas/link");
@@ -27,7 +26,6 @@ const {
 } = require("./graphql-schemas/competitivefeedevent");
 const { FAPost, faPostResolvers } = require("./graphql-schemas/fapost");
 const { Plus, plusResolvers } = require("./graphql-schemas/plus");
-const { Team, teamResolvers } = require("./graphql-schemas/team");
 const { General, generalResolvers } = require("./graphql-schemas/general");
 const { Banner, bannerResolvers } = require("./graphql-schemas/banner");
 /*const {
@@ -56,7 +54,6 @@ const schema = makeExecutableSchema({
     Build,
     Maplist,
     Placement,
-    Player,
     Rotation,
     User,
     Link,
@@ -66,7 +63,6 @@ const schema = makeExecutableSchema({
     CompetitiveFeedEvent,
     FAPost,
     Plus,
-    Team,
     General,
     Banner,
     //SalmonRunRecord,
@@ -76,7 +72,6 @@ const schema = makeExecutableSchema({
     buildResolvers,
     maplistResolvers,
     placementResolvers,
-    playerResolvers,
     rotationResolvers,
     userResolvers,
     linkResolvers,
@@ -86,7 +81,6 @@ const schema = makeExecutableSchema({
     competitiveFeedEventResolvers,
     faPostResolvers,
     plusResolvers,
-    teamResolvers,
     generalResolvers,
     bannerResolvers
     //salmonRunRecordResolvers

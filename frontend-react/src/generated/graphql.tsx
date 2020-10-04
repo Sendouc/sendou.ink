@@ -22,17 +22,6 @@ export type Query = {
   getXRankPlacements: PaginatedXRankPlacements;
   getXRankLeaderboard: PaginatedXRankLeaderboard;
   getPeakXPowerLeaderboard: PaginatedXRankPlacements;
-  playerCount: Scalars['Int'];
-  topTotalPlayers: Array<Player>;
-  topShooterPlayers: Array<Player>;
-  topBlasterPlayers: Array<Player>;
-  topRollerPlayers: Array<Player>;
-  topChargerPlayers: Array<Player>;
-  topSlosherPlayers: Array<Player>;
-  topSplatlingPlayers: Array<Player>;
-  topDualiesPlayers: Array<Player>;
-  topBrellaPlayers: Array<Player>;
-  topFlex: Array<Player>;
   rotationData?: Maybe<Scalars['String']>;
   /** Returns the current logged in user or null if not logged in. */
   user?: Maybe<User>;
@@ -58,8 +47,6 @@ export type Query = {
   vouches?: Maybe<Array<User>>;
   usersForVoting: UsersForVoting;
   summaries?: Maybe<Array<Summary>>;
-  searchForTeam?: Maybe<Team>;
-  teams: Array<Team>;
   stats?: Maybe<Stats>;
   banners: Array<Banner>;
 };
@@ -96,51 +83,6 @@ export type QueryGetXRankLeaderboardArgs = {
 export type QueryGetPeakXPowerLeaderboardArgs = {
   page?: Maybe<Scalars['Int']>;
   weapon?: Maybe<Scalars['String']>;
-};
-
-
-export type QueryTopTotalPlayersArgs = {
-  amount?: Maybe<Scalars['Int']>;
-};
-
-
-export type QueryTopShooterPlayersArgs = {
-  amount?: Maybe<Scalars['Int']>;
-};
-
-
-export type QueryTopBlasterPlayersArgs = {
-  amount?: Maybe<Scalars['Int']>;
-};
-
-
-export type QueryTopRollerPlayersArgs = {
-  amount?: Maybe<Scalars['Int']>;
-};
-
-
-export type QueryTopChargerPlayersArgs = {
-  amount?: Maybe<Scalars['Int']>;
-};
-
-
-export type QueryTopSlosherPlayersArgs = {
-  amount?: Maybe<Scalars['Int']>;
-};
-
-
-export type QueryTopSplatlingPlayersArgs = {
-  amount?: Maybe<Scalars['Int']>;
-};
-
-
-export type QueryTopDualiesPlayersArgs = {
-  amount?: Maybe<Scalars['Int']>;
-};
-
-
-export type QueryTopBrellaPlayersArgs = {
-  amount?: Maybe<Scalars['Int']>;
 };
 
 
@@ -188,11 +130,6 @@ export type QueryXPowersArgs = {
   discord_id: Scalars['String'];
 };
 
-
-export type QuerySearchForTeamArgs = {
-  name: Scalars['String'];
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
   _empty?: Maybe<Scalars['String']>;
@@ -201,7 +138,6 @@ export type Mutation = {
   updateBuild?: Maybe<Scalars['Boolean']>;
   addMapVotes?: Maybe<Scalars['Boolean']>;
   generateMaplistFromVotes?: Maybe<Scalars['Boolean']>;
-  updateTwitter?: Maybe<Scalars['Boolean']>;
   updateUser?: Maybe<Scalars['Boolean']>;
   updateAvatars?: Maybe<Scalars['Boolean']>;
   addDetailedTournament: Scalars['Boolean'];
@@ -220,11 +156,6 @@ export type Mutation = {
   addVotes: Scalars['Boolean'];
   startVoting: Scalars['Boolean'];
   endVoting: Scalars['Boolean'];
-  addTeam: Scalars['Boolean'];
-  joinTeam: Scalars['Boolean'];
-  resetInviteCode: Scalars['String'];
-  leaveTeam: Scalars['Boolean'];
-  disbandTeam: Scalars['Boolean'];
 };
 
 
@@ -262,12 +193,6 @@ export type MutationUpdateBuildArgs = {
 
 export type MutationAddMapVotesArgs = {
   votes: Array<MapVoteInput>;
-};
-
-
-export type MutationUpdateTwitterArgs = {
-  unique_id: Scalars['String'];
-  twitter: Scalars['String'];
 };
 
 
@@ -378,16 +303,6 @@ export type MutationStartVotingArgs = {
   ends: Scalars['String'];
 };
 
-
-export type MutationAddTeamArgs = {
-  name: Scalars['String'];
-};
-
-
-export type MutationJoinTeamArgs = {
-  inviteCode: Scalars['String'];
-};
-
 export type Build = {
   __typename?: 'Build';
   id: Scalars['ID'];
@@ -491,6 +406,7 @@ export type GetXRankPlacementsInput = {
   mode?: Maybe<RankedMode>;
   month?: Maybe<Scalars['Int']>;
   year?: Maybe<Scalars['Int']>;
+  playerId?: Maybe<Scalars['String']>;
 };
 
 export enum XRankLeaderboardType {
@@ -545,41 +461,6 @@ export type PaginatedXRankLeaderboard = {
   pageCount: Scalars['Int'];
 };
 
-export type Placement = {
-  __typename?: 'Placement';
-  name?: Maybe<Scalars['String']>;
-};
-
-export type Player = {
-  __typename?: 'Player';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  unique_id: Scalars['String'];
-  alias?: Maybe<Scalars['String']>;
-  twitter?: Maybe<Scalars['String']>;
-  discord_id?: Maybe<Scalars['String']>;
-  weapons: Array<Scalars['String']>;
-  topTotal: Array<Placement>;
-  topTotalScore?: Maybe<Scalars['Float']>;
-  topShooter?: Maybe<Array<Maybe<Placement>>>;
-  topShooterScore?: Maybe<Scalars['Float']>;
-  topBlaster?: Maybe<Array<Maybe<Placement>>>;
-  topBlasterScore?: Maybe<Scalars['Float']>;
-  topRoller?: Maybe<Array<Maybe<Placement>>>;
-  topRollerScore?: Maybe<Scalars['Float']>;
-  topCharger?: Maybe<Array<Maybe<Placement>>>;
-  topChargerScore?: Maybe<Scalars['Float']>;
-  topSlosher?: Maybe<Array<Maybe<Placement>>>;
-  topSlosherScore?: Maybe<Scalars['Float']>;
-  topSplatling?: Maybe<Array<Maybe<Placement>>>;
-  topSplatlingScore?: Maybe<Scalars['Float']>;
-  topDualies?: Maybe<Array<Maybe<Placement>>>;
-  topDualiesScore?: Maybe<Scalars['Float']>;
-  topBrella?: Maybe<Array<Maybe<Placement>>>;
-  topBrellaScore?: Maybe<Scalars['Float']>;
-  weaponsCount?: Maybe<Scalars['Int']>;
-};
-
 export type DiscordIdAvatar = {
   discordId: Scalars['String'];
   avatar: Scalars['String'];
@@ -613,7 +494,6 @@ export type User = {
   custom_url?: Maybe<Scalars['String']>;
   top500: Scalars['Boolean'];
   plus?: Maybe<PlusStatus>;
-  team?: Maybe<Scalars['ID']>;
 };
 
 export type NewUser = {
@@ -1047,43 +927,6 @@ export type UsersForVoting = {
   votes: Array<VotedPerson>;
 };
 
-export type Founded = {
-  __typename?: 'Founded';
-  month: Scalars['Int'];
-  year: Scalars['Int'];
-};
-
-export type Member = {
-  __typename?: 'Member';
-  discordId: Scalars['String'];
-  captain?: Maybe<Scalars['Boolean']>;
-  role?: Maybe<Scalars['String']>;
-};
-
-export type TeamMemberPlacement = {
-  __typename?: 'TeamMemberPlacement';
-  discordId: Scalars['String'];
-  mode: Scalars['Int'];
-  weapon: Scalars['String'];
-  month: Scalars['Int'];
-  year: Scalars['Int'];
-  xPower: Scalars['Float'];
-};
-
-export type Team = {
-  __typename?: 'Team';
-  name: Scalars['String'];
-  disbanded?: Maybe<Scalars['Boolean']>;
-  founded?: Maybe<Founded>;
-  members?: Maybe<Array<Member>>;
-  countries?: Maybe<Array<Scalars['String']>>;
-  pastMembersDiscordIds?: Maybe<Array<Maybe<Scalars['String']>>>;
-  tag?: Maybe<Scalars['String']>;
-  lfPost?: Maybe<Scalars['String']>;
-  xpPlacements?: Maybe<Array<TeamMemberPlacement>>;
-  teamXp?: Maybe<Scalars['Float']>;
-};
-
 export type Stats = {
   __typename?: 'Stats';
   build_count: Scalars['Int'];
@@ -1181,7 +1024,7 @@ export type GetXRankPlacementsQuery = (
     & Pick<PaginatedXRankPlacements, 'pageCount' | 'recordsCount'>
     & { records: Array<(
       { __typename?: 'XRankPlacement' }
-      & Pick<XRankPlacement, 'id' | 'playerName' | 'xPower' | 'weapon' | 'ranking' | 'mode' | 'month' | 'year'>
+      & Pick<XRankPlacement, 'id' | 'playerName' | 'playerId' | 'xPower' | 'weapon' | 'ranking' | 'mode' | 'month' | 'year'>
       & { user?: Maybe<(
         { __typename?: 'NewUser' }
         & UserLeanFragment
@@ -1334,6 +1177,7 @@ export const GetXRankPlacementsDocument = gql`
     records {
       id
       playerName
+      playerId
       xPower
       weapon
       ranking

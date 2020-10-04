@@ -6,7 +6,6 @@ const Team = require("../mongoose-models/team");
 const countries = require("../utils/countries");
 const weapons = require("../utils/weapons");
 const mockUser = require("../utils/mocks");
-const { recalculateTeamsCountries } = require("./team");
 require("dotenv").config();
 
 const typeDef = gql`
@@ -163,25 +162,6 @@ const resolvers = {
           throw new UserInputError("Invalid country ID", {
             invalidArgs: args,
           });
-        }
-
-        if (ctx.user.team) {
-          const team = await Team.findById(ctx.user.team);
-
-          if (ctx.user.country && ctx.user.country !== args.country) {
-            // triggered if user is changing their country - shouldn't happen too often at all
-            await recalculateTeamsCountries(
-              team,
-              args.country,
-              ctx.user.discord_id
-            );
-            await team.save();
-          } else {
-            const countries = team.countries || [];
-            if (!countries.includes(args.country)) countries.push(args.country);
-            team.countries = countries;
-            await team.save();
-          }
         }
       }
 

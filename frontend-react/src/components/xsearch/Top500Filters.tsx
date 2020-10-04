@@ -1,10 +1,11 @@
 import { Box, Radio, RadioGroup, Stack } from "@chakra-ui/core";
 import React, { useContext, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { GetXRankPlacementsInput, RankedMode } from "../../generated/graphql";
 import MyThemeContext from "../../themeContext";
 import { getLocalizedMonthYearString } from "../../utils/helperFunctions";
 import { months } from "../../utils/lists";
+import Alert from "../elements/Alert";
 import Button from "../elements/Button";
 import Input from "../elements/Input";
 import Label from "../elements/Label";
@@ -35,6 +36,13 @@ const Top500Filters: React.FC<Top500FilterProps> = ({
     // eslint-disable-next-line
   }, [name]);
 
+  useEffect(() => {
+    if (!filter.name && !!name) {
+      setName("");
+    }
+    // eslint-disable-next-line
+  }, [filter.name]);
+
   const monthChoices = [];
   let month = 5;
   let year = 2018;
@@ -55,8 +63,10 @@ const Top500Filters: React.FC<Top500FilterProps> = ({
 
   monthChoices.reverse();
 
+  const idViewed = filter.playerId;
+
   return (
-    <Box maxW="500px">
+    <Box maxW="600px">
       <Input value={name} setValue={setName} label={t("xsearch;Name")} />
       <Box my={3}>
         <Select
@@ -105,6 +115,13 @@ const Top500Filters: React.FC<Top500FilterProps> = ({
             </Radio>
           </Stack>
         </RadioGroup>
+        {idViewed && (
+          <Alert status="info">
+            <Trans i18nKey="xsearch;idViewed">
+              Viewing placements by player with the id {{ idViewed }}
+            </Trans>
+          </Alert>
+        )}
         <Button
           onClick={() =>
             handleChange({
@@ -112,6 +129,7 @@ const Top500Filters: React.FC<Top500FilterProps> = ({
               name: undefined,
               month: undefined,
               year: undefined,
+              playerId: undefined,
             })
           }
           my={6}

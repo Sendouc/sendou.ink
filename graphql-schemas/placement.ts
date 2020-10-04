@@ -66,6 +66,7 @@ const typeDef = gql`
     mode: RankedMode
     month: Int
     year: Int
+    playerId: String
   }
 
   enum XRankLeaderboardType {
@@ -115,11 +116,6 @@ const typeDef = gql`
     recordsCount: Int!
     pageCount: Int!
   }
-
-  # placeholder
-  type Placement {
-    name: String
-  }
 `;
 const resolvers = {
   XRankPlacement: {
@@ -144,6 +140,7 @@ const resolvers = {
         .modify("filterMonth", args.filter?.month)
         .modify("filterYear", args.filter?.year)
         .modify("filterName", args.filter?.name)
+        .modify("filterPlayerId", args.filter?.playerId)
         .orderByRaw(
           `"year" desc, "month" desc, "ranking" asc, CASE WHEN mode = 'SZ' THEN 0 WHEN mode = 'TC' THEN 1 WHEN mode = 'RM' THEN 2 WHEN mode = 'CB' THEN 3 ELSE -1 END`
         )
