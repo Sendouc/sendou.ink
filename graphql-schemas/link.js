@@ -1,5 +1,5 @@
-const { UserInputError, gql } = require("apollo-server-express")
-const Link = require("../mongoose-models/link")
+const { UserInputError, gql } = require("apollo-server-express");
+const Link = require("../mongoose-models/link");
 
 const typeDef = gql`
   extend type Query {
@@ -16,22 +16,22 @@ const typeDef = gql`
     description: String!
     type: LinkType!
   }
-`
+`;
 const resolvers = {
   Query: {
     links: (root, args) => {
       return Link.find({})
         .sort({ title: "asc" })
-        .catch(e => {
+        .catch((e) => {
           throw new UserInputError(e.message, {
             invalidArgs: args,
-          })
-        })
+          });
+        });
     },
   },
-}
+};
 
 module.exports = {
   Link: typeDef,
   linkResolvers: resolvers,
-}
+};

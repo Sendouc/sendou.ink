@@ -5,89 +5,89 @@ import {
   SubWeapon,
   SpecialWeapon,
   AnalyzerBuild,
-} from "../types"
-import { useEffect, useState } from "react"
-import { getEffect } from "../utils/getAbilityEffect"
-import weaponJson from "../utils/weaponData.json"
-import abilityJson from "../utils/abilityData.json"
-import { useTranslation } from "react-i18next"
+} from "../types";
+import { useEffect, useState } from "react";
+import { getEffect } from "../utils/getAbilityEffect";
+import weaponJson from "../utils/weaponData.json";
+import abilityJson from "../utils/abilityData.json";
+import { useTranslation } from "react-i18next";
 
 export interface Explanation {
-  title: string
-  effect: string
-  effectFromMax: number
-  effectFromMaxActual: number
-  ability: Ability
-  info?: string
-  getEffect: (ap: number) => number
-  ap: number
+  title: string;
+  effect: string;
+  effectFromMax: number;
+  effectFromMaxActual: number;
+  ability: Ability;
+  info?: string;
+  getEffect: (ap: number) => number;
+  ap: number;
 }
 
-const MAX_AP = 57
+const MAX_AP = 57;
 
 function buildToAP(
   build: Partial<Build>,
   bonusAp: Partial<Record<Ability, boolean>>,
   lde: number
 ) {
-  const AP: Partial<Record<Ability, number>> = {}
+  const AP: Partial<Record<Ability, number>> = {};
 
   if (build.headgear) {
     build.headgear.forEach((ability, index) => {
       if (ability !== "UNKNOWN") {
         if (ability === "OG" && bonusAp["OG"]) {
           for (const ability of ["SSU", "RSU", "RES"]) {
-            const a = ability as Ability
-            const existing = AP[a] ?? 0
-            AP[a] = existing + 15
+            const a = ability as Ability;
+            const existing = AP[a] ?? 0;
+            AP[a] = existing + 15;
           }
         }
         if (ability === "CB" && bonusAp["CB"]) {
           for (const ability of ["ISM", "ISS", "REC", "RSU", "SSU", "SCU"]) {
-            const a = ability as Ability
-            const existing = AP[a] ?? 0
-            AP[a] = existing + 10
+            const a = ability as Ability;
+            const existing = AP[a] ?? 0;
+            AP[a] = existing + 10;
           }
         }
         if (ability === "LDE" && lde > 0) {
           for (const ability of ["ISM", "ISS", "REC"]) {
-            const a = ability as Ability
-            const existing = AP[a] ?? 0
-            const toAdd = Math.floor((24 / 21) * lde)
-            AP[a] = existing + toAdd
+            const a = ability as Ability;
+            const existing = AP[a] ?? 0;
+            const toAdd = Math.floor((24 / 21) * lde);
+            AP[a] = existing + toAdd;
           }
         }
-        const existing = AP[ability] ?? 0
-        const toAdd = index === 0 ? 10 : 3
-        AP[ability] = existing + toAdd
+        const existing = AP[ability] ?? 0;
+        const toAdd = index === 0 ? 10 : 3;
+        AP[ability] = existing + toAdd;
       }
-    })
+    });
   }
 
-  let subWorth = 3
+  let subWorth = 3;
 
   if (build.clothing) {
     build.clothing.forEach((ability, index) => {
       if (ability !== "UNKNOWN") {
-        if (ability === "AD") subWorth *= 2
-        const existing = AP[ability] ?? 0
-        const toAdd = index === 0 ? 10 : subWorth
-        AP[ability] = existing + toAdd
+        if (ability === "AD") subWorth *= 2;
+        const existing = AP[ability] ?? 0;
+        const toAdd = index === 0 ? 10 : subWorth;
+        AP[ability] = existing + toAdd;
       }
-    })
+    });
   }
 
   if (build.shoes) {
     build.shoes.forEach((ability, index) => {
       if (ability !== "UNKNOWN") {
-        const existing = AP[ability] ?? 0
-        const toAdd = index === 0 ? 10 : 3
-        AP[ability] = existing + toAdd
+        const existing = AP[ability] ?? 0;
+        const toAdd = index === 0 ? 10 : 3;
+        AP[ability] = existing + toAdd;
       }
-    })
+    });
   }
 
-  return AP
+  return AP;
 }
 
 export default function useAbilityEffects(
@@ -95,14 +95,17 @@ export default function useAbilityEffects(
   bonusAp: Partial<Record<Ability, boolean>> = {},
   lde: number = 0
 ) {
-  const { t } = useTranslation()
-  const [explanations, setExplanations] = useState<Explanation[]>([])
-  const weaponData: Record<Weapon | SubWeapon | SpecialWeapon, any> = weaponJson
+  const { t } = useTranslation();
+  const [explanations, setExplanations] = useState<Explanation[]>([]);
+  const weaponData: Record<
+    Weapon | SubWeapon | SpecialWeapon,
+    any
+  > = weaponJson;
 
   function calculateISM(amount: number) {
-    const ISM = abilityJson["Ink Saver (Main)"]
-    const buildWeaponData = weaponData[build.weapon]
-    const inkSaverLvl = buildWeaponData.InkSaverLv as "High" | "Middle" | "Low"
+    const ISM = abilityJson["Ink Saver (Main)"];
+    const buildWeaponData = weaponData[build.weapon];
+    const inkSaverLvl = buildWeaponData.InkSaverLv as "High" | "Middle" | "Low";
 
     const keyObj = {
       High: {
@@ -120,24 +123,24 @@ export default function useAbilityEffects(
         Mid: "ConsumeRt_Main_Low_Mid",
         Low: "ConsumeRt_Main_Low_Low",
       },
-    } as const
+    } as const;
 
-    const high = ISM[keyObj[inkSaverLvl].High]
-    const mid = ISM[keyObj[inkSaverLvl].Mid]
-    const low = ISM[keyObj[inkSaverLvl].Low]
-    const highMidLow = [high, mid, low]
-    const effect = getEffect(highMidLow, amount)
+    const high = ISM[keyObj[inkSaverLvl].High];
+    const mid = ISM[keyObj[inkSaverLvl].Mid];
+    const low = ISM[keyObj[inkSaverLvl].Low];
+    const highMidLow = [high, mid, low];
+    const effect = getEffect(highMidLow, amount);
 
-    const toReturn = []
+    const toReturn = [];
 
-    const mInkConsume = buildWeaponData.mInkConsume
+    const mInkConsume = buildWeaponData.mInkConsume;
     if (mInkConsume) {
       const title =
         build.weapon.includes("Splatling") || build.weapon.includes("Nautilus")
           ? t("analyzer;Full charges per ink tank")
-          : t("analyzer;Shots per ink tank")
+          : t("analyzer;Shots per ink tank");
 
-      const tank = build.weapon.includes("Jr.") ? 1.1 : 1
+      const tank = build.weapon.includes("Jr.") ? 1.1 : 1;
       toReturn.push({
         title,
         effect: `${parseFloat((tank / (mInkConsume * effect[0])).toFixed(2))}`,
@@ -150,10 +153,10 @@ export default function useAbilityEffects(
             (tank / (mInkConsume * getEffect(highMidLow, ap)[0])).toFixed(2)
           ),
         ap: amount,
-      })
+      });
     }
 
-    const mInkConsumeRepeat = buildWeaponData.mInkConsume_Repeat
+    const mInkConsumeRepeat = buildWeaponData.mInkConsume_Repeat;
     if (mInkConsumeRepeat && mInkConsumeRepeat !== mInkConsume) {
       toReturn.push({
         title: t("analyzer;Shots per ink tank (autofire mode)"),
@@ -169,10 +172,10 @@ export default function useAbilityEffects(
             (1 / (mInkConsumeRepeat * getEffect(highMidLow, ap)[0])).toFixed(2)
           ),
         ap: amount,
-      })
+      });
     }
 
-    const mFullChargeInkConsume = buildWeaponData.mFullChargeInkConsume
+    const mFullChargeInkConsume = buildWeaponData.mFullChargeInkConsume;
     if (mFullChargeInkConsume) {
       toReturn.push({
         title: t("analyzer;Fully charged shots per ink tank"),
@@ -191,10 +194,10 @@ export default function useAbilityEffects(
             ).toFixed(2)
           ),
         ap: amount,
-      })
+      });
     }
 
-    const mMinChargeInkConsume = buildWeaponData.mMinChargeInkConsume
+    const mMinChargeInkConsume = buildWeaponData.mMinChargeInkConsume;
     if (mMinChargeInkConsume) {
       toReturn.push({
         title: t("analyzer;Tap shots per ink tank"),
@@ -212,11 +215,11 @@ export default function useAbilityEffects(
             )
           ),
         ap: amount,
-      })
+      });
     }
 
-    const mInkConsumeSplashJump = buildWeaponData.mInkConsumeSplash_Jump
-    const mInkConsumeSplashStand = buildWeaponData.mInkConsumeSplash_Stand
+    const mInkConsumeSplashJump = buildWeaponData.mInkConsumeSplash_Jump;
+    const mInkConsumeSplashStand = buildWeaponData.mInkConsumeSplash_Stand;
 
     if (
       mInkConsumeSplashJump &&
@@ -239,7 +242,7 @@ export default function useAbilityEffects(
             ).toFixed(2)
           ),
         ap: amount,
-      })
+      });
     } else if (mInkConsumeSplashJump && mInkConsumeSplashStand) {
       toReturn.push({
         title: t("analyzer;Ground swings per ink tank"),
@@ -258,7 +261,7 @@ export default function useAbilityEffects(
             ).toFixed(2)
           ),
         ap: amount,
-      })
+      });
 
       toReturn.push({
         title: t("analyzer;Jumping swings per ink tank"),
@@ -277,10 +280,10 @@ export default function useAbilityEffects(
             ).toFixed(2)
           ),
         ap: amount,
-      })
+      });
     }
 
-    const mSideStepInkConsume = buildWeaponData.mSideStepInkConsume_2
+    const mSideStepInkConsume = buildWeaponData.mSideStepInkConsume_2;
     if (mSideStepInkConsume) {
       toReturn.push({
         title: t("analyzer;Dodge roll ink consumption"),
@@ -299,10 +302,10 @@ export default function useAbilityEffects(
             )
           ),
         ap: amount,
-      })
+      });
     }
 
-    const mInkConsumeUmbrella = buildWeaponData.mInkConsumeUmbrella
+    const mInkConsumeUmbrella = buildWeaponData.mInkConsumeUmbrella;
     if (mInkConsumeUmbrella) {
       toReturn.push({
         title: t("analyzer;Brella shield launch ink consumption"),
@@ -321,33 +324,33 @@ export default function useAbilityEffects(
             )
           ),
         ap: amount,
-      })
+      });
     }
 
-    return toReturn
+    return toReturn;
   }
 
   function calculateISS(amount: number) {
-    const ISS = abilityJson["Ink Saver (Sub)"]
-    const buildWeaponData = weaponData[build.weapon]
-    const subWeapon = buildWeaponData.Sub! as SubWeapon
+    const ISS = abilityJson["Ink Saver (Sub)"];
+    const buildWeaponData = weaponData[build.weapon];
+    const subWeapon = buildWeaponData.Sub! as SubWeapon;
 
-    const subWeaponData = weaponData[subWeapon]
-    let inkConsumption = subWeaponData.mInkConsume!
+    const subWeaponData = weaponData[subWeapon];
+    let inkConsumption = subWeaponData.mInkConsume!;
 
-    const letterGrade = weaponData[subWeapon].InkSaverType
-    const highKey = `ConsumeRt_Sub_${letterGrade}_High` as keyof typeof ISS
-    const midKey = `ConsumeRt_Sub_${letterGrade}_Mid` as keyof typeof ISS
-    const lowKey = `ConsumeRt_Sub_${letterGrade}_Low` as keyof typeof ISS
+    const letterGrade = weaponData[subWeapon].InkSaverType;
+    const highKey = `ConsumeRt_Sub_${letterGrade}_High` as keyof typeof ISS;
+    const midKey = `ConsumeRt_Sub_${letterGrade}_Mid` as keyof typeof ISS;
+    const lowKey = `ConsumeRt_Sub_${letterGrade}_Low` as keyof typeof ISS;
 
-    const high = ISS[highKey]
-    const mid = ISS[midKey]
-    const low = ISS[lowKey]
-    const highMidLow = [high, mid, low]
-    const effect = getEffect(highMidLow, amount)
-    const tank = build.weapon.includes("Jr.") ? 1.1 : 1
+    const high = ISS[highKey];
+    const mid = ISS[midKey];
+    const low = ISS[lowKey];
+    const highMidLow = [high, mid, low];
+    const effect = getEffect(highMidLow, amount);
+    const tank = build.weapon.includes("Jr.") ? 1.1 : 1;
 
-    const subWeaponTranslated = t(`game;${subWeapon}`)
+    const subWeaponTranslated = t(`game;${subWeapon}`);
     return [
       {
         title: `${subWeaponTranslated} ${t("analyzer;ink consumption")}`,
@@ -368,22 +371,22 @@ export default function useAbilityEffects(
             ).toFixed(2)
           ),
       },
-    ]
+    ];
   }
 
   function calculateREC(amount: number) {
-    const REC = abilityJson["Ink Recovery Up"]
+    const REC = abilityJson["Ink Recovery Up"];
 
-    const highKeySquid = "RecoverFullFrm_Ink_High"
-    const midKeySquid = "RecoverFullFrm_Ink_Mid"
-    const lowKeySquid = "RecoverFullFrm_Ink_Low"
-    const highSquid = REC[highKeySquid]
-    const midSquid = REC[midKeySquid]
-    const lowSquid = REC[lowKeySquid]
-    const highMidLowSquid = [highSquid, midSquid, lowSquid]
-    const effectSquid = getEffect(highMidLowSquid, amount)
+    const highKeySquid = "RecoverFullFrm_Ink_High";
+    const midKeySquid = "RecoverFullFrm_Ink_Mid";
+    const lowKeySquid = "RecoverFullFrm_Ink_Low";
+    const highSquid = REC[highKeySquid];
+    const midSquid = REC[midKeySquid];
+    const lowSquid = REC[lowKeySquid];
+    const highMidLowSquid = [highSquid, midSquid, lowSquid];
+    const effectSquid = getEffect(highMidLowSquid, amount);
 
-    const tank = build.weapon.includes("Jr.") ? 1.1 : 1
+    const tank = build.weapon.includes("Jr.") ? 1.1 : 1;
 
     return [
       {
@@ -401,43 +404,43 @@ export default function useAbilityEffects(
         getEffect: (ap: number) =>
           Math.ceil(getEffect(highMidLowSquid, ap)[0] * tank),
       },
-    ]
+    ];
   }
 
   function calculateRSU(amount: number) {
-    const RSU = abilityJson["Run Speed Up"]
+    const RSU = abilityJson["Run Speed Up"];
 
-    const buildWeaponData = weaponData[build.weapon]
-    const grade = buildWeaponData.ShotMoveVelType // "A" | "B" | "C" | "D" | "E"
-    const moveLv = buildWeaponData.MoveVelLv // "Low" | "Middle" | "High"
+    const buildWeaponData = weaponData[build.weapon];
+    const grade = buildWeaponData.ShotMoveVelType; // "A" | "B" | "C" | "D" | "E"
+    const moveLv = buildWeaponData.MoveVelLv; // "Low" | "Middle" | "High"
 
     const commonKey =
       moveLv === "Middle"
         ? ""
         : moveLv === "Low"
         ? "_BigWeapon"
-        : "_ShortWeapon"
-    const highKey = `MoveVel_Human${commonKey}_High` as keyof typeof RSU
-    const midKey = `MoveVel_Human${commonKey}_Mid` as keyof typeof RSU
-    const lowKey = `MoveVel_Human${commonKey}_Low` as keyof typeof RSU
+        : "_ShortWeapon";
+    const highKey = `MoveVel_Human${commonKey}_High` as keyof typeof RSU;
+    const midKey = `MoveVel_Human${commonKey}_Mid` as keyof typeof RSU;
+    const lowKey = `MoveVel_Human${commonKey}_Low` as keyof typeof RSU;
 
-    const high = RSU[highKey]
-    const mid = RSU[midKey]
-    const low = RSU[lowKey]
-    const highMidLow = [high, mid, low]
+    const high = RSU[highKey];
+    const mid = RSU[midKey];
+    const low = RSU[lowKey];
+    const highMidLow = [high, mid, low];
 
-    const moveEffect = getEffect(highMidLow, amount)
+    const moveEffect = getEffect(highMidLow, amount);
 
-    const highShootKey = `MoveVelRt_Human_Shot${grade}_High` as keyof typeof RSU
-    const midShootKey = `MoveVelRt_Human_Shot${grade}_Mid` as keyof typeof RSU
-    const lowShootKey = `MoveVelRt_Human_Shot${grade}_Low` as keyof typeof RSU
-    const highShoot = RSU[highShootKey]
-    const midShoot = RSU[midShootKey]
-    const lowShoot = RSU[lowShootKey]
-    const highMidLowShoot = [highShoot, midShoot, lowShoot]
+    const highShootKey = `MoveVelRt_Human_Shot${grade}_High` as keyof typeof RSU;
+    const midShootKey = `MoveVelRt_Human_Shot${grade}_Mid` as keyof typeof RSU;
+    const lowShootKey = `MoveVelRt_Human_Shot${grade}_Low` as keyof typeof RSU;
+    const highShoot = RSU[highShootKey];
+    const midShoot = RSU[midShootKey];
+    const lowShoot = RSU[lowShootKey];
+    const highMidLowShoot = [highShoot, midShoot, lowShoot];
 
-    const shootEffect = getEffect(highMidLowShoot, amount)
-    const moveSpeed = buildWeaponData.mMoveSpeed
+    const shootEffect = getEffect(highMidLowShoot, amount);
+    const moveSpeed = buildWeaponData.mMoveSpeed;
 
     return [
       {
@@ -466,34 +469,34 @@ export default function useAbilityEffects(
             (getEffect(highMidLowShoot, ap)[0] * moveSpeed).toFixed(4)
           ),
       },
-    ]
+    ];
   }
 
   function calculateSSU(amount: number) {
-    const SSU = abilityJson["Swim Speed Up"]
+    const SSU = abilityJson["Swim Speed Up"];
 
-    const buildWeaponData = weaponData[build.weapon]
-    const moveLv = buildWeaponData.MoveVelLv // "Low" | "Middle" | "High"
+    const buildWeaponData = weaponData[build.weapon];
+    const moveLv = buildWeaponData.MoveVelLv; // "Low" | "Middle" | "High"
 
     const commonKey =
       moveLv === "Middle"
         ? ""
         : moveLv === "Low"
         ? "_BigWeapon"
-        : "_ShortWeapon"
-    const highKey = `MoveVel_Stealth${commonKey}_High` as keyof typeof SSU
-    const midKey = `MoveVel_Stealth${commonKey}_Mid` as keyof typeof SSU
-    const lowKey = `MoveVel_Stealth${commonKey}_Low` as keyof typeof SSU
+        : "_ShortWeapon";
+    const highKey = `MoveVel_Stealth${commonKey}_High` as keyof typeof SSU;
+    const midKey = `MoveVel_Stealth${commonKey}_Mid` as keyof typeof SSU;
+    const lowKey = `MoveVel_Stealth${commonKey}_Low` as keyof typeof SSU;
 
-    const high = SSU[highKey]
-    const mid = SSU[midKey]
-    const low = SSU[lowKey]
-    const highMidLow = [high, mid, low]
+    const high = SSU[highKey];
+    const mid = SSU[midKey];
+    const low = SSU[lowKey];
+    const highMidLow = [high, mid, low];
 
-    const hasNinjaSquid = build.clothing[0] === "NS"
-    const effect = getEffect(highMidLow, amount, hasNinjaSquid)
+    const hasNinjaSquid = build.clothing[0] === "NS";
+    const effect = getEffect(highMidLow, amount, hasNinjaSquid);
 
-    const speed = hasNinjaSquid ? effect[0] * 0.9 : effect[0]
+    const speed = hasNinjaSquid ? effect[0] * 0.9 : effect[0];
 
     return [
       {
@@ -508,21 +511,21 @@ export default function useAbilityEffects(
         getEffect: (ap: number) =>
           parseFloat(getEffect(highMidLow, ap)[0].toFixed(3)),
       },
-    ]
+    ];
   }
 
   function calculateSCU(amount: number) {
-    const SCU = abilityJson["Special Charge Up"]
+    const SCU = abilityJson["Special Charge Up"];
 
-    const buildWeaponData = weaponData[build.weapon]
-    const points = buildWeaponData.SpecialCost!
+    const buildWeaponData = weaponData[build.weapon];
+    const points = buildWeaponData.SpecialCost!;
 
-    const high = SCU.SpecialRt_Charge_High
-    const mid = SCU.SpecialRt_Charge_Mid
-    const low = SCU.SpecialRt_Charge_Low
-    const highMidLow = [high, mid, low]
+    const high = SCU.SpecialRt_Charge_High;
+    const mid = SCU.SpecialRt_Charge_Mid;
+    const low = SCU.SpecialRt_Charge_Low;
+    const highMidLow = [high, mid, low];
 
-    const effect = getEffect(highMidLow, amount)
+    const effect = getEffect(highMidLow, amount);
 
     return [
       {
@@ -539,25 +542,26 @@ export default function useAbilityEffects(
         getEffect: (ap: number) =>
           Math.ceil(points / getEffect(highMidLow, ap)[0]),
       },
-    ]
+    ];
   }
 
   function calculateSS(amountBeforeRP: number) {
-    const respawnPunishAPMultiplier = build.clothing[0] === "RP" ? 0.7 : 1
-    const respawnPunishEffectMultiplier = build.clothing[0] === "RP" ? 0.775 : 1
-    const amount = Math.floor(amountBeforeRP * respawnPunishAPMultiplier)
+    const respawnPunishAPMultiplier = build.clothing[0] === "RP" ? 0.7 : 1;
+    const respawnPunishEffectMultiplier =
+      build.clothing[0] === "RP" ? 0.775 : 1;
+    const amount = Math.floor(amountBeforeRP * respawnPunishAPMultiplier);
 
-    const SS = abilityJson["Special Saver"]
+    const SS = abilityJson["Special Saver"];
 
-    const high = SS.SpecialRt_Restart_High
-    const mid = SS.SpecialRt_Restart_Mid
-    const low = SS.SpecialRt_Restart_Low
-    const highMidLow = [high, mid, low]
+    const high = SS.SpecialRt_Restart_High;
+    const mid = SS.SpecialRt_Restart_Mid;
+    const low = SS.SpecialRt_Restart_Low;
+    const highMidLow = [high, mid, low];
 
-    const [specialLostBeforeRP, effectFromMax] = getEffect(highMidLow, amount)
-    const specialLost = specialLostBeforeRP * respawnPunishEffectMultiplier
+    const [specialLostBeforeRP, effectFromMax] = getEffect(highMidLow, amount);
+    const specialLost = specialLostBeforeRP * respawnPunishEffectMultiplier;
 
-    const toReturn = []
+    const toReturn = [];
 
     toReturn.push({
       title: t("analyzer;Special lost when killed"),
@@ -570,20 +574,20 @@ export default function useAbilityEffects(
       ap: amount,
       getEffect: (ap: number) =>
         parseFloat(((1.0 - getEffect(highMidLow, ap)[0]) * 100).toFixed(2)),
-    })
+    });
 
     if (weaponData[build.weapon].Special === "Splashdown") {
-      const high = SS.SpecialRt_Restart_SuperLanding_High
-      const mid = SS.SpecialRt_Restart_SuperLanding_Mid
-      const low = SS.SpecialRt_Restart_SuperLanding_Low
-      const highMidLow = [high, mid, low]
+      const high = SS.SpecialRt_Restart_SuperLanding_High;
+      const mid = SS.SpecialRt_Restart_SuperLanding_Mid;
+      const low = SS.SpecialRt_Restart_SuperLanding_Low;
+      const highMidLow = [high, mid, low];
 
-      const [specialLostBeforeRP] = getEffect(highMidLow, amount)
-      const specialLost = specialLostBeforeRP * respawnPunishEffectMultiplier
+      const [specialLostBeforeRP] = getEffect(highMidLow, amount);
+      const specialLost = specialLostBeforeRP * respawnPunishEffectMultiplier;
 
-      const lost = specialLost > 1 ? 1 : specialLost
-      const effectAtZero = getEffect(highMidLow, 0)
-      const fromMax = (lost - effectAtZero[0]) / 0.25
+      const lost = specialLost > 1 ? 1 : specialLost;
+      const effectAtZero = getEffect(highMidLow, 0);
+      const fromMax = (lost - effectAtZero[0]) / 0.25;
 
       toReturn.push({
         title: t("analyzer;Special lost when killed mid-Splashdown"),
@@ -599,20 +603,20 @@ export default function useAbilityEffects(
             0,
             parseFloat(((1.0 - getEffect(highMidLow, ap)[0]) * 100).toFixed(2))
           ),
-      })
+      });
     }
 
-    return toReturn
+    return toReturn;
   }
 
   function calculateSPU(amount: number) {
-    const buildWeaponData = weaponData[build.weapon]
-    const specialWeapon = buildWeaponData.Special! as SpecialWeapon
-    const specialWeaponData = weaponData[specialWeapon]
+    const buildWeaponData = weaponData[build.weapon];
+    const specialWeapon = buildWeaponData.Special! as SpecialWeapon;
+    const specialWeaponData = weaponData[specialWeapon];
 
-    const toReturn = []
+    const toReturn = [];
 
-    const specialWeaponTranslated = t(`game;${specialWeapon}`)
+    const specialWeaponTranslated = t(`game;${specialWeapon}`);
 
     if (
       specialWeaponData.mPaintGauge_SpecialFrm &&
@@ -623,12 +627,12 @@ export default function useAbilityEffects(
       specialWeaponData.mPaintGauge_SpecialFrmM >
         specialWeaponData.mPaintGauge_SpecialFrm
     ) {
-      const high = specialWeaponData.mPaintGauge_SpecialFrmH
-      const mid = specialWeaponData.mPaintGauge_SpecialFrmM
-      const low = specialWeaponData.mPaintGauge_SpecialFrm
-      const highMidLow = [high, mid, low]
+      const high = specialWeaponData.mPaintGauge_SpecialFrmH;
+      const mid = specialWeaponData.mPaintGauge_SpecialFrmM;
+      const low = specialWeaponData.mPaintGauge_SpecialFrm;
+      const highMidLow = [high, mid, low];
 
-      const effect = getEffect(highMidLow, amount)
+      const effect = getEffect(highMidLow, amount);
       toReturn.push({
         title: `${specialWeaponTranslated} ${t("analyzer;duration")}`,
         effect: `${Math.ceil(effect[0])} ${t("analyzer;frames")} (${parseFloat(
@@ -646,25 +650,25 @@ export default function useAbilityEffects(
             : undefined,
         ap: amount,
         getEffect: (ap: number) => Math.ceil(getEffect(highMidLow, ap)[0]),
-      })
+      });
     }
 
     if (specialWeapon === "Tenta Missiles") {
-      const high = specialWeaponData.mTargetInCircleRadiusHigh
-      const mid = specialWeaponData.mTargetInCircleRadiusMid
-      const low = specialWeaponData.mTargetInCircleRadius
-      const highMidLow = [high, mid, low]
+      const high = specialWeaponData.mTargetInCircleRadiusHigh;
+      const mid = specialWeaponData.mTargetInCircleRadiusMid;
+      const low = specialWeaponData.mTargetInCircleRadius;
+      const highMidLow = [high, mid, low];
 
-      const effect = getEffect(highMidLow, amount)
-      const effectAtZero = getEffect(highMidLow, 0)
+      const effect = getEffect(highMidLow, amount);
+      const effectAtZero = getEffect(highMidLow, 0);
 
-      const highPaint = specialWeaponData.mBurst_PaintRHigh
-      const midPaint = specialWeaponData.mBurst_PaintRMid
-      const lowPaint = specialWeaponData.mBurst_PaintR
-      const highMidLowPaint = [highPaint, midPaint, lowPaint]
+      const highPaint = specialWeaponData.mBurst_PaintRHigh;
+      const midPaint = specialWeaponData.mBurst_PaintRMid;
+      const lowPaint = specialWeaponData.mBurst_PaintR;
+      const highMidLowPaint = [highPaint, midPaint, lowPaint];
 
-      const effectPaint = getEffect(highMidLowPaint, amount)
-      const effectPaintAtZero = getEffect(highMidLowPaint, 0)
+      const effectPaint = getEffect(highMidLowPaint, amount);
+      const effectPaintAtZero = getEffect(highMidLowPaint, 0);
       toReturn.push({
         title: `${specialWeaponTranslated} ${t("analyzer;reticle size")}`,
         effect: `${parseFloat(
@@ -679,7 +683,7 @@ export default function useAbilityEffects(
           parseFloat(
             ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(3)
           ),
-      })
+      });
       toReturn.push({
         title: `${specialWeaponTranslated} ${t("analyzer;ink coverage")}`,
         effect: `${parseFloat(
@@ -697,25 +701,25 @@ export default function useAbilityEffects(
               100
             ).toFixed(3)
           ),
-      })
+      });
     }
 
     if (specialWeapon === "Splashdown") {
-      const highNear = specialWeaponData.mBurst_Radius_Near_H
-      const lowNear = specialWeaponData.mBurst_Radius_Near
-      const midNear = (highNear + lowNear) / 2
-      const highMidLowNear = [highNear, midNear, lowNear]
+      const highNear = specialWeaponData.mBurst_Radius_Near_H;
+      const lowNear = specialWeaponData.mBurst_Radius_Near;
+      const midNear = (highNear + lowNear) / 2;
+      const highMidLowNear = [highNear, midNear, lowNear];
 
-      const effectNear = getEffect(highMidLowNear, amount)
-      const effectAtZeroNear = getEffect(highMidLowNear, 0)
+      const effectNear = getEffect(highMidLowNear, amount);
+      const effectAtZeroNear = getEffect(highMidLowNear, 0);
 
-      const highMiddle = specialWeaponData.mBurst_Radius_Middle_H
-      const lowMiddle = specialWeaponData.mBurst_Radius_Middle
-      const midMiddle = (highMiddle + lowMiddle) / 2
-      const highMidLowMiddle = [highMiddle, midMiddle, lowMiddle]
+      const highMiddle = specialWeaponData.mBurst_Radius_Middle_H;
+      const lowMiddle = specialWeaponData.mBurst_Radius_Middle;
+      const midMiddle = (highMiddle + lowMiddle) / 2;
+      const highMidLowMiddle = [highMiddle, midMiddle, lowMiddle];
 
-      const effectMiddle = getEffect(highMidLowMiddle, amount)
-      const effectAtZeroMiddle = getEffect(highMidLowMiddle, 0)
+      const effectMiddle = getEffect(highMidLowMiddle, amount);
+      const effectAtZeroMiddle = getEffect(highMidLowMiddle, 0);
       toReturn.push({
         title: `${specialWeaponTranslated} ${t("analyzer;180dmg hitbox size")}`,
         effect: `${parseFloat(
@@ -733,7 +737,7 @@ export default function useAbilityEffects(
               100
             ).toFixed(3)
           ),
-      })
+      });
       toReturn.push({
         title: `${specialWeaponTranslated} ${t("analyzer;70dmg hitbox size")}`,
         effect: `${parseFloat(
@@ -754,16 +758,16 @@ export default function useAbilityEffects(
               100
             ).toFixed(3)
           ),
-      })
+      });
     }
 
     if (specialWeapon === "Ink Armor") {
-      const high = specialWeaponData.mEnergyAbsorbFrmH
-      const mid = specialWeaponData.mEnergyAbsorbFrmM
-      const low = specialWeaponData.mEnergyAbsorbFrm
-      const highMidLow = [high, mid, low]
+      const high = specialWeaponData.mEnergyAbsorbFrmH;
+      const mid = specialWeaponData.mEnergyAbsorbFrmM;
+      const low = specialWeaponData.mEnergyAbsorbFrm;
+      const highMidLow = [high, mid, low];
 
-      const effect = getEffect(highMidLow, amount)
+      const effect = getEffect(highMidLow, amount);
       toReturn.push({
         title: `${specialWeaponTranslated} ${t("analyzer;activation time")}`,
         effect: `${Math.ceil(effect[0])} ${t("analyzer;frames")} (${parseFloat(
@@ -774,16 +778,16 @@ export default function useAbilityEffects(
         ap: amount,
         effectFromMaxActual: (effect[0] / getEffect(highMidLow, 0)[0]) * 100,
         getEffect: (ap: number) => Math.ceil(getEffect(highMidLow, ap)[0]),
-      })
+      });
     }
 
     if (specialWeapon === "Ink Storm") {
-      const high = specialWeaponData.mRainAreaFrameHigh
-      const mid = specialWeaponData.mRainAreaFrameMid
-      const low = specialWeaponData.mRainAreaFrame
-      const highMidLow = [high, mid, low]
+      const high = specialWeaponData.mRainAreaFrameHigh;
+      const mid = specialWeaponData.mRainAreaFrameMid;
+      const low = specialWeaponData.mRainAreaFrame;
+      const highMidLow = [high, mid, low];
 
-      const effect = getEffect(highMidLow, amount)
+      const effect = getEffect(highMidLow, amount);
       toReturn.push({
         title: `${specialWeaponTranslated} ${t("analyzer;duration")}`,
         effect: `${Math.ceil(effect[0])} ${t("analyzer;frames")} (${parseFloat(
@@ -798,17 +802,17 @@ export default function useAbilityEffects(
         effectFromMaxActual:
           (effect[0] / getEffect(highMidLow, MAX_AP)[0]) * 100,
         getEffect: (ap: number) => Math.ceil(getEffect(highMidLow, ap)[0]),
-      })
+      });
     }
 
     if (specialWeapon === "Baller") {
-      const high = specialWeaponData.mHP_High
-      const mid = specialWeaponData.mHP_Mid
-      const low = specialWeaponData.mHP_Low
-      const highMidLow = [high, mid, low]
+      const high = specialWeaponData.mHP_High;
+      const mid = specialWeaponData.mHP_Mid;
+      const low = specialWeaponData.mHP_Low;
+      const highMidLow = [high, mid, low];
 
-      const effect = getEffect(highMidLow, amount)
-      const effectAtZero = getEffect(highMidLow, 0)
+      const effect = getEffect(highMidLow, amount);
+      const effectAtZero = getEffect(highMidLow, 0);
 
       toReturn.push({
         title: `${specialWeaponTranslated} ${t("analyzer;durability")}`,
@@ -824,15 +828,15 @@ export default function useAbilityEffects(
           parseFloat(
             ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(3)
           ),
-      })
+      });
 
-      const highHit = specialWeaponData.mBurst_Radius_MiddleHigh
-      const midHit = specialWeaponData.mBurst_Radius_MiddleMid
-      const lowHit = specialWeaponData.mBurst_Radius_Middle
-      const highMidLowHit = [highHit, midHit, lowHit]
+      const highHit = specialWeaponData.mBurst_Radius_MiddleHigh;
+      const midHit = specialWeaponData.mBurst_Radius_MiddleMid;
+      const lowHit = specialWeaponData.mBurst_Radius_Middle;
+      const highMidLowHit = [highHit, midHit, lowHit];
 
-      const effectHit = getEffect(highMidLowHit, amount)
-      const effectAtZeroHit = getEffect(highMidLowHit, 0)
+      const effectHit = getEffect(highMidLowHit, amount);
+      const effectAtZeroHit = getEffect(highMidLowHit, 0);
 
       toReturn.push({
         title: `${specialWeaponTranslated} ${t(
@@ -853,17 +857,17 @@ export default function useAbilityEffects(
               100
             ).toFixed(3)
           ),
-      })
+      });
     }
 
     if (specialWeapon === "Bubble Blower") {
-      const highSize = specialWeaponData.mBombCoreRadiusRateHigh
-      const midSize = specialWeaponData.mBombCoreRadiusRateMid
-      const lowSize = 1.0
-      const highMidLowSize = [highSize, midSize, lowSize]
+      const highSize = specialWeaponData.mBombCoreRadiusRateHigh;
+      const midSize = specialWeaponData.mBombCoreRadiusRateMid;
+      const lowSize = 1.0;
+      const highMidLowSize = [highSize, midSize, lowSize];
 
-      const effectSize = getEffect(highMidLowSize, amount)
-      const effectAtZeroSize = getEffect(highMidLowSize, 0)
+      const effectSize = getEffect(highMidLowSize, amount);
+      const effectAtZeroSize = getEffect(highMidLowSize, 0);
       toReturn.push({
         title: `${specialWeaponTranslated} ${t("analyzer;bubble size")}`,
         effect: `${parseFloat(
@@ -881,15 +885,15 @@ export default function useAbilityEffects(
               100
             ).toFixed(3)
           ),
-      })
+      });
 
-      const highHit = specialWeaponData.mCollisionPlayerRadiusMaxHigh
-      const midHit = specialWeaponData.mCollisionPlayerRadiusMaxMid
-      const lowHit = specialWeaponData.mCollisionPlayerRadiusMax
-      const highMidLowHit = [highHit, midHit, lowHit]
+      const highHit = specialWeaponData.mCollisionPlayerRadiusMaxHigh;
+      const midHit = specialWeaponData.mCollisionPlayerRadiusMaxMid;
+      const lowHit = specialWeaponData.mCollisionPlayerRadiusMax;
+      const highMidLowHit = [highHit, midHit, lowHit];
 
-      const effectHit = getEffect(highMidLowHit, amount)
-      const effectAtZeroHit = getEffect(highMidLowHit, 0)
+      const effectHit = getEffect(highMidLowHit, amount);
+      const effectAtZeroHit = getEffect(highMidLowHit, 0);
       toReturn.push({
         title: `${specialWeaponTranslated} ${t("analyzer;explosion hitbox")}`,
         effect: `${parseFloat(
@@ -907,17 +911,17 @@ export default function useAbilityEffects(
               100
             ).toFixed(3)
           ),
-      })
+      });
     }
 
     if (specialWeapon === "Booyah Bomb") {
-      const high = specialWeaponData.mChargeRtAutoIncr_High
-      const mid = specialWeaponData.mChargeRtAutoIncr_Mid
-      const low = specialWeaponData.mChargeRtAutoIncr_Low
-      const highMidLow = [high, mid, low]
+      const high = specialWeaponData.mChargeRtAutoIncr_High;
+      const mid = specialWeaponData.mChargeRtAutoIncr_Mid;
+      const low = specialWeaponData.mChargeRtAutoIncr_Low;
+      const highMidLow = [high, mid, low];
 
-      const effect = getEffect(highMidLow, amount)
-      const effectAtZero = getEffect(highMidLow, 0)
+      const effect = getEffect(highMidLow, amount);
+      const effectAtZero = getEffect(highMidLow, 0);
       toReturn.push({
         title: `${specialWeaponTranslated} ${t("analyzer;autocharge speed")}`,
         effect: `${parseFloat(
@@ -932,35 +936,35 @@ export default function useAbilityEffects(
           parseFloat(
             ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(3)
           ),
-      })
+      });
     }
 
-    return toReturn
+    return toReturn;
   }
 
   function calculateQR(amount: number) {
-    const QR = abilityJson["Quick Respawn"]
+    const QR = abilityJson["Quick Respawn"];
 
-    const highAround = QR.Dying_AroudFrm_High
-    const midAround = QR.Dying_AroudFrm_Mid
-    const lowAround = QR.Dying_AroudFrm_Low
-    const highMidLowAround = [highAround, midAround, lowAround]
-    const effectAround = getEffect(highMidLowAround, amount)
+    const highAround = QR.Dying_AroudFrm_High;
+    const midAround = QR.Dying_AroudFrm_Mid;
+    const lowAround = QR.Dying_AroudFrm_Low;
+    const highMidLowAround = [highAround, midAround, lowAround];
+    const effectAround = getEffect(highMidLowAround, amount);
 
-    const highChase = QR.Dying_ChaseFrm_High
-    const midChase = QR.Dying_ChaseFrm_Mid
-    const lowChase = QR.Dying_ChaseFrm_Low
-    const highMidLowChase = [highChase, midChase, lowChase]
-    const effectChase = getEffect(highMidLowChase, amount)
+    const highChase = QR.Dying_ChaseFrm_High;
+    const midChase = QR.Dying_ChaseFrm_Mid;
+    const lowChase = QR.Dying_ChaseFrm_Low;
+    const highMidLowChase = [highChase, midChase, lowChase];
+    const effectChase = getEffect(highMidLowChase, amount);
 
-    const respawnPunishExtraFrames = build.clothing[0] === "RP" ? 68 : 0
+    const respawnPunishExtraFrames = build.clothing[0] === "RP" ? 68 : 0;
     const totalFrames =
       Math.ceil(150 + effectAround[0] + effectChase[0]) +
-      respawnPunishExtraFrames
+      respawnPunishExtraFrames;
 
     const effectAtZero = Math.ceil(
       150 + getEffect(highMidLowAround, 0)[0] + getEffect(highMidLowChase, 0)[0]
-    )
+    );
 
     return [
       {
@@ -982,23 +986,23 @@ export default function useAbilityEffects(
               getEffect(highMidLowAround, ap)[0]
           ),
       },
-    ]
+    ];
   }
 
   function calculateQSJ(amount: number) {
-    const QSJ = abilityJson["Quick Super Jump"]
+    const QSJ = abilityJson["Quick Super Jump"];
 
-    const highTame = QSJ.DokanWarp_TameFrm_High
-    const midTame = QSJ.DokanWarp_TameFrm_Mid
-    const lowTame = QSJ.DokanWarp_TameFrm_Low
-    const highMidLowTame = [highTame, midTame, lowTame]
-    const effectTame = getEffect(highMidLowTame, amount)
+    const highTame = QSJ.DokanWarp_TameFrm_High;
+    const midTame = QSJ.DokanWarp_TameFrm_Mid;
+    const lowTame = QSJ.DokanWarp_TameFrm_Low;
+    const highMidLowTame = [highTame, midTame, lowTame];
+    const effectTame = getEffect(highMidLowTame, amount);
 
-    const highMove = QSJ.DokanWarp_MoveFrm_High
-    const midMove = QSJ.DokanWarp_MoveFrm_Mid
-    const lowMove = QSJ.DokanWarp_MoveFrm_Low
-    const highMidLowMove = [highMove, midMove, lowMove]
-    const effectMove = getEffect(highMidLowMove, amount)
+    const highMove = QSJ.DokanWarp_MoveFrm_High;
+    const midMove = QSJ.DokanWarp_MoveFrm_Mid;
+    const lowMove = QSJ.DokanWarp_MoveFrm_Low;
+    const highMidLowMove = [highMove, midMove, lowMove];
+    const effectMove = getEffect(highMidLowMove, amount);
 
     return [
       {
@@ -1033,18 +1037,18 @@ export default function useAbilityEffects(
           (effectMove[0] / getEffect(highMidLowMove, 0)[0]) * 100,
         getEffect: (ap: number) => Math.ceil(getEffect(highMidLowMove, ap)[0]),
       },
-    ]
+    ];
   }
 
   function calculateBRU(amount: number) {
-    const BRU = abilityJson["Sub Power Up"]
-    const buildWeaponData = weaponData[build.weapon]
-    const subWeapon = buildWeaponData.Sub! as SubWeapon
-    const subWeaponData = weaponData[subWeapon]
+    const BRU = abilityJson["Sub Power Up"];
+    const buildWeaponData = weaponData[build.weapon];
+    const subWeapon = buildWeaponData.Sub! as SubWeapon;
+    const subWeaponData = weaponData[subWeapon];
 
-    const toReturn = []
+    const toReturn = [];
 
-    const subWeaponTranslated = t(`game;${subWeapon}`)
+    const subWeaponTranslated = t(`game;${subWeapon}`);
 
     if (
       [
@@ -1059,19 +1063,19 @@ export default function useAbilityEffects(
         "Point Sensor",
       ].includes(subWeapon)
     ) {
-      let baseKey = "BombThrow_VelZ"
-      if (subWeapon === "Torpedo") baseKey = "BombThrow_VelZ_BombTako"
-      if (subWeapon === "Fizzy Bomb") baseKey = "BombThrow_VelZ_BombPiyo"
-      if (subWeapon === "Point Sensor") baseKey = "BombThrow_VelZ_PointSensor"
-      const highKey = `${baseKey}_High` as keyof typeof BRU
-      const midKey = `${baseKey}_Mid` as keyof typeof BRU
-      const lowKey = `${baseKey}_Low` as keyof typeof BRU
-      const highVelo = BRU[highKey]
-      const midVelo = BRU[midKey]
-      const lowVelo = BRU[lowKey]
-      const highMidLowVelo = [highVelo, midVelo, lowVelo]
-      const effectVelo = getEffect(highMidLowVelo, amount)
-      const effectVeloAtZero = getEffect(highMidLowVelo, 0)
+      let baseKey = "BombThrow_VelZ";
+      if (subWeapon === "Torpedo") baseKey = "BombThrow_VelZ_BombTako";
+      if (subWeapon === "Fizzy Bomb") baseKey = "BombThrow_VelZ_BombPiyo";
+      if (subWeapon === "Point Sensor") baseKey = "BombThrow_VelZ_PointSensor";
+      const highKey = `${baseKey}_High` as keyof typeof BRU;
+      const midKey = `${baseKey}_Mid` as keyof typeof BRU;
+      const lowKey = `${baseKey}_Low` as keyof typeof BRU;
+      const highVelo = BRU[highKey];
+      const midVelo = BRU[midKey];
+      const lowVelo = BRU[lowKey];
+      const highMidLowVelo = [highVelo, midVelo, lowVelo];
+      const effectVelo = getEffect(highMidLowVelo, amount);
+      const effectVeloAtZero = getEffect(highMidLowVelo, 0);
 
       toReturn.push({
         title: `${subWeaponTranslated} ${t("analyzer;range and velocity")}`,
@@ -1085,15 +1089,15 @@ export default function useAbilityEffects(
         ap: amount,
         getEffect: (ap: number) =>
           parseFloat(getEffect(highMidLowVelo, ap)[0].toFixed(2)),
-      })
+      });
     }
 
     if (subWeapon === "Sprinkler") {
-      const highFirst = subWeaponData.mPeriod_FirstHigh
-      const midFirst = subWeaponData.mPeriod_FirstMid
-      const lowFirst = subWeaponData.mPeriod_First
-      const highMidLowFirst = [highFirst, midFirst, lowFirst]
-      const effectFirst = getEffect(highMidLowFirst, amount)
+      const highFirst = subWeaponData.mPeriod_FirstHigh;
+      const midFirst = subWeaponData.mPeriod_FirstMid;
+      const lowFirst = subWeaponData.mPeriod_First;
+      const highMidLowFirst = [highFirst, midFirst, lowFirst];
+      const effectFirst = getEffect(highMidLowFirst, amount);
 
       toReturn.push({
         title: `${subWeaponTranslated} ${t(
@@ -1110,13 +1114,13 @@ export default function useAbilityEffects(
         effectFromMaxActual:
           (effectFirst[0] / getEffect(highMidLowFirst, MAX_AP)[0]) * 100,
         getEffect: (ap: number) => Math.ceil(getEffect(highMidLowFirst, ap)[0]),
-      })
+      });
 
-      const highSecond = subWeaponData.mPeriod_SecondHigh
-      const midSecond = subWeaponData.mPeriod_SecondMid
-      const lowSecond = subWeaponData.mPeriod_Second
-      const highMidLowSecond = [highSecond, midSecond, lowSecond]
-      const effectSecond = getEffect(highMidLowSecond, amount)
+      const highSecond = subWeaponData.mPeriod_SecondHigh;
+      const midSecond = subWeaponData.mPeriod_SecondMid;
+      const lowSecond = subWeaponData.mPeriod_Second;
+      const highMidLowSecond = [highSecond, midSecond, lowSecond];
+      const effectSecond = getEffect(highMidLowSecond, amount);
 
       toReturn.push({
         title: `${subWeaponTranslated} ${t("analyzer;mid-phase duration")}`,
@@ -1132,15 +1136,15 @@ export default function useAbilityEffects(
           (effectSecond[0] / getEffect(highMidLowSecond, MAX_AP)[0]) * 100,
         getEffect: (ap: number) =>
           Math.ceil(getEffect(highMidLowSecond, ap)[0]),
-      })
+      });
     }
 
     if (["Point Sensor", "Ink Mine"].includes(subWeapon)) {
-      const high = subWeaponData.mMarkingFrameHigh
-      const mid = subWeaponData.mMarkingFrameMid
-      const low = subWeaponData.mMarkingFrame
-      const highMidLow = [high, mid, low]
-      const effect = getEffect(highMidLow, amount)
+      const high = subWeaponData.mMarkingFrameHigh;
+      const mid = subWeaponData.mMarkingFrameMid;
+      const low = subWeaponData.mMarkingFrame;
+      const highMidLow = [high, mid, low];
+      const effect = getEffect(highMidLow, amount);
 
       toReturn.push({
         title: `${subWeaponTranslated} ${t("analyzer;tracking duration")}`,
@@ -1153,16 +1157,16 @@ export default function useAbilityEffects(
         effectFromMaxActual:
           (effect[0] / getEffect(highMidLow, MAX_AP)[0]) * 100,
         getEffect: (ap: number) => Math.ceil(getEffect(highMidLow, ap)[0]),
-      })
+      });
     }
 
     if (subWeapon === "Ink Mine") {
-      const high = subWeaponData.mPlayerColRadiusHigh
-      const mid = subWeaponData.mPlayerColRadiusMid
-      const low = subWeaponData.mPlayerColRadius
-      const highMidLow = [high, mid, low]
-      const effect = getEffect(highMidLow, amount)
-      const effectAtZero = getEffect(highMidLow, 0)
+      const high = subWeaponData.mPlayerColRadiusHigh;
+      const mid = subWeaponData.mPlayerColRadiusMid;
+      const low = subWeaponData.mPlayerColRadius;
+      const highMidLow = [high, mid, low];
+      const effect = getEffect(highMidLow, amount);
+      const effectAtZero = getEffect(highMidLow, 0);
 
       toReturn.push({
         title: `${subWeaponTranslated} ${t("analyzer;tracking range")}`,
@@ -1175,16 +1179,16 @@ export default function useAbilityEffects(
         effectFromMaxActual:
           (effect[0] / getEffect(highMidLow, MAX_AP)[0]) * 100,
         getEffect: (ap: number) => Math.ceil(getEffect(highMidLow, ap)[0]),
-      })
+      });
     }
 
     if (subWeapon === "Splash Wall") {
-      const high = subWeaponData.mMaxHpHigh
-      const mid = subWeaponData.mMaxHpMid
-      const low = subWeaponData.mMaxHp
-      const highMidLow = [high, mid, low]
-      const effect = getEffect(highMidLow, amount)
-      const effectAtZero = getEffect(highMidLow, 0)
+      const high = subWeaponData.mMaxHpHigh;
+      const mid = subWeaponData.mMaxHpMid;
+      const low = subWeaponData.mMaxHp;
+      const highMidLow = [high, mid, low];
+      const effect = getEffect(highMidLow, amount);
+      const effectAtZero = getEffect(highMidLow, 0);
 
       toReturn.push({
         title: `${subWeaponTranslated} ${t("analyzer;durability")}`,
@@ -1200,15 +1204,15 @@ export default function useAbilityEffects(
           parseFloat(
             ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(3)
           ),
-      })
+      });
     }
 
     if (subWeapon === "Squid Beakon") {
-      const high = subWeaponData.mSubRt_Effect_ActualCnt_High
-      const mid = subWeaponData.mSubRt_Effect_ActualCnt_Mid
-      const low = subWeaponData.mSubRt_Effect_ActualCnt_Low
-      const highMidLow = [high, mid, low]
-      const effect = getEffect(highMidLow, amount)
+      const high = subWeaponData.mSubRt_Effect_ActualCnt_High;
+      const mid = subWeaponData.mSubRt_Effect_ActualCnt_Mid;
+      const low = subWeaponData.mSubRt_Effect_ActualCnt_Low;
+      const highMidLow = [high, mid, low];
+      const effect = getEffect(highMidLow, amount);
 
       toReturn.push({
         title: `${subWeaponTranslated} ${t("game;Quick Super Jump")} ${t(
@@ -1226,38 +1230,38 @@ export default function useAbilityEffects(
         info: t(
           "analyzer;When jumping to Sub Power Up boosted beakons QSJ AP bonus is applied on top of any existing QSJ the jumper has. 57AP can't be exceeded. Value shown is the bonus if the user of Beakon has 0AP invested in QSJ."
         ),
-      })
+      });
     }
 
-    return toReturn
+    return toReturn;
   }
 
   function calculateRES(amount: number) {
-    const RES = abilityJson["Ink Resistance Up"]
+    const RES = abilityJson["Ink Resistance Up"];
 
-    const highArmor = RES.OpInk_Armor_HP_High
-    const midArmor = RES.OpInk_Armor_HP_Mid
-    const lowArmor = RES.OpInk_Armor_HP_Low
-    const highMidLowArmor = [highArmor, midArmor, lowArmor]
-    const effectArmor = getEffect(highMidLowArmor, amount)
+    const highArmor = RES.OpInk_Armor_HP_High;
+    const midArmor = RES.OpInk_Armor_HP_Mid;
+    const lowArmor = RES.OpInk_Armor_HP_Low;
+    const highMidLowArmor = [highArmor, midArmor, lowArmor];
+    const effectArmor = getEffect(highMidLowArmor, amount);
 
-    const highPerFrame = RES.OpInk_Damage_High
-    const midPerFrame = RES.OpInk_Damage_Mid
-    const lowPerFrame = RES.OpInk_Damage_Low
-    const highMidLowPerFrame = [highPerFrame, midPerFrame, lowPerFrame]
-    const effectPerFrame = getEffect(highMidLowPerFrame, amount)
+    const highPerFrame = RES.OpInk_Damage_High;
+    const midPerFrame = RES.OpInk_Damage_Mid;
+    const lowPerFrame = RES.OpInk_Damage_Low;
+    const highMidLowPerFrame = [highPerFrame, midPerFrame, lowPerFrame];
+    const effectPerFrame = getEffect(highMidLowPerFrame, amount);
 
-    const highLimit = RES.OpInk_Damage_Lmt_High
-    const midLimit = RES.OpInk_Damage_Lmt_Mid
-    const lowLimit = RES.OpInk_Damage_Lmt_Low
-    const highMidLowLimit = [highLimit, midLimit, lowLimit]
-    const effectLimit = getEffect(highMidLowLimit, amount)
+    const highLimit = RES.OpInk_Damage_Lmt_High;
+    const midLimit = RES.OpInk_Damage_Lmt_Mid;
+    const lowLimit = RES.OpInk_Damage_Lmt_Low;
+    const highMidLowLimit = [highLimit, midLimit, lowLimit];
+    const effectLimit = getEffect(highMidLowLimit, amount);
 
-    const highVel = RES.OpInk_VelGnd_High
-    const midVel = RES.OpInk_VelGnd_Mid
-    const lowVel = RES.OpInk_VelGnd_Low
-    const highMidLowVel = [highVel, midVel, lowVel]
-    const effectVel = getEffect(highMidLowVel, amount)
+    const highVel = RES.OpInk_VelGnd_High;
+    const midVel = RES.OpInk_VelGnd_Mid;
+    const lowVel = RES.OpInk_VelGnd_Low;
+    const highMidLowVel = [highVel, midVel, lowVel];
+    const effectVel = getEffect(highMidLowVel, amount);
 
     return [
       {
@@ -1322,49 +1326,49 @@ export default function useAbilityEffects(
         getEffect: (ap: number) =>
           parseFloat(getEffect(highMidLowLimit, ap)[0].toFixed(4)),
       },
-    ]
+    ];
   }
 
   function calculateBDU(amount: number) {
-    const BDU = abilityJson["Bomb Defense Up DX"]
+    const BDU = abilityJson["Bomb Defense Up DX"];
 
-    const highSub = BDU.BurstDamageRt_SubL_High
-    const midSub = BDU.BurstDamageRt_SubL_Mid
-    const lowSub = BDU.BurstDamageRt_SubL_Low
-    const highMidLowSub = [highSub, midSub, lowSub]
-    const effectSub = getEffect(highMidLowSub, amount)
+    const highSub = BDU.BurstDamageRt_SubL_High;
+    const midSub = BDU.BurstDamageRt_SubL_Mid;
+    const lowSub = BDU.BurstDamageRt_SubL_Low;
+    const highMidLowSub = [highSub, midSub, lowSub];
+    const effectSub = getEffect(highMidLowSub, amount);
 
-    const highSpecial = BDU.BurstDamageRt_Special_High
-    const midSpecial = BDU.BurstDamageRt_Special_Mid
-    const lowSpecial = BDU.BurstDamageRt_Special_Low
-    const highMidLowSpecial = [highSpecial, midSpecial, lowSpecial]
-    const effectSpecial = getEffect(highMidLowSpecial, amount)
+    const highSpecial = BDU.BurstDamageRt_Special_High;
+    const midSpecial = BDU.BurstDamageRt_Special_Mid;
+    const lowSpecial = BDU.BurstDamageRt_Special_Low;
+    const highMidLowSpecial = [highSpecial, midSpecial, lowSpecial];
+    const effectSpecial = getEffect(highMidLowSpecial, amount);
 
-    const inkMineData = weaponData["Ink Mine"]
-    const pointSensorData = weaponData["Point Sensor"]
-    let high = inkMineData.mMarkingFrameHigh
-    let mid = inkMineData.mMarkingFrameMid
-    let low = inkMineData.mMarkingFrame
-    let highMidLow = [high, mid, low]
-    const mineFrames = getEffect(highMidLow, 0)[0]
+    const inkMineData = weaponData["Ink Mine"];
+    const pointSensorData = weaponData["Point Sensor"];
+    let high = inkMineData.mMarkingFrameHigh;
+    let mid = inkMineData.mMarkingFrameMid;
+    let low = inkMineData.mMarkingFrame;
+    let highMidLow = [high, mid, low];
+    const mineFrames = getEffect(highMidLow, 0)[0];
 
-    high = pointSensorData.mMarkingFrameHigh
-    mid = pointSensorData.mMarkingFrameMid
-    low = pointSensorData.mMarkingFrame
-    highMidLow = [high, mid, low]
-    const sensorFrames = getEffect(highMidLow, 0)[0]
+    high = pointSensorData.mMarkingFrameHigh;
+    mid = pointSensorData.mMarkingFrameMid;
+    low = pointSensorData.mMarkingFrame;
+    highMidLow = [high, mid, low];
+    const sensorFrames = getEffect(highMidLow, 0)[0];
 
-    const highSensor = BDU.MarkingTime_ShortRt_High
-    const midSensor = BDU.MarkingTime_ShortRt_Mid
-    const lowSensor = BDU.MarkingTime_ShortRt_Low
-    const highMidLowSensor = [highSensor, midSensor, lowSensor]
-    const effectSensor = getEffect(highMidLowSensor, amount)
+    const highSensor = BDU.MarkingTime_ShortRt_High;
+    const midSensor = BDU.MarkingTime_ShortRt_Mid;
+    const lowSensor = BDU.MarkingTime_ShortRt_Low;
+    const highMidLowSensor = [highSensor, midSensor, lowSensor];
+    const effectSensor = getEffect(highMidLowSensor, amount);
 
-    const highMine = BDU.MarkingTime_ShortRt_Trap_High
-    const midMine = BDU.MarkingTime_ShortRt_Trap_Mid
-    const lowMine = BDU.MarkingTime_ShortRt_Trap_Low
-    const highMidLowMine = [highMine, midMine, lowMine]
-    const effectMine = getEffect(highMidLowMine, amount)
+    const highMine = BDU.MarkingTime_ShortRt_Trap_High;
+    const midMine = BDU.MarkingTime_ShortRt_Trap_Mid;
+    const lowMine = BDU.MarkingTime_ShortRt_Trap_Low;
+    const highMidLowMine = [highMine, midMine, lowMine];
+    const effectMine = getEffect(highMidLowMine, amount);
 
     return [
       {
@@ -1423,21 +1427,21 @@ export default function useAbilityEffects(
         getEffect: (ap: number) =>
           Math.ceil(mineFrames * getEffect(highMidLowMine, ap)[0]),
       },
-    ]
+    ];
   }
 
   const calculateDamage = (
     baseDamage: number,
     multiplier: number,
     cap: number
-  ) => Math.min(cap, Math.floor(baseDamage * multiplier)) / 10
+  ) => Math.min(cap, Math.floor(baseDamage * multiplier)) / 10;
 
   function calculateMPU(amount: number) {
-    const buildWeaponData = weaponData[build.weapon]
+    const buildWeaponData = weaponData[build.weapon];
 
-    const toReturn = []
+    const toReturn = [];
 
-    const weaponTranslated = t(`game;${build.weapon}`)
+    const weaponTranslated = t(`game;${build.weapon}`);
 
     if (
       buildWeaponData.mDamageRate_MWPUG_High &&
@@ -1447,25 +1451,25 @@ export default function useAbilityEffects(
       buildWeaponData.mDamageRate_MWPUG_High !==
         buildWeaponData.mDamageRate_MWPUG_Mid
     ) {
-      const high = buildWeaponData.mDamageRate_MWPUG_High
-      const mid = buildWeaponData.mDamageRate_MWPUG_Mid
-      const low = 1.0
-      const highMidLow = [high, mid, low]
+      const high = buildWeaponData.mDamageRate_MWPUG_High;
+      const mid = buildWeaponData.mDamageRate_MWPUG_Mid;
+      const low = 1.0;
+      const highMidLow = [high, mid, low];
 
-      const effect = getEffect(highMidLow, amount)
-      const baseDamageMax = buildWeaponData.mDamageMax
+      const effect = getEffect(highMidLow, amount);
+      const baseDamageMax = buildWeaponData.mDamageMax;
       const damageMax = calculateDamage(
         baseDamageMax,
         effect[0],
         buildWeaponData.mDamage_MWPUG_Max
-      )
-      const baseDamageMin = buildWeaponData.mDamageMin ?? -1
+      );
+      const baseDamageMin = buildWeaponData.mDamageMin ?? -1;
       const damageMin = calculateDamage(
         baseDamageMin,
         effect[0],
         buildWeaponData.mDamage_MWPUG_Max
-      )
-      const damageMinStr = baseDamageMin !== -1 ? `${damageMin} - ` : ""
+      );
+      const damageMinStr = baseDamageMin !== -1 ? `${damageMin} - ` : "";
       toReturn.push({
         title: `${weaponTranslated} ${t("analyzer;damage per shot")}`,
         effect: `${damageMinStr}${damageMax}`,
@@ -1479,7 +1483,7 @@ export default function useAbilityEffects(
             getEffect(highMidLow, ap)[0],
             buildWeaponData.mDamage_MWPUG_Max
           ),
-      })
+      });
     }
 
     if (
@@ -1490,25 +1494,25 @@ export default function useAbilityEffects(
       buildWeaponData.mSideStepOneMuzzleDamageRate_MWPUG_High_2 !==
         buildWeaponData.mSideStepOneMuzzleDamageRate_MWPUG_Mid_2
     ) {
-      const high = buildWeaponData.mSideStepOneMuzzleDamageRate_MWPUG_High_2
-      const mid = buildWeaponData.mSideStepOneMuzzleDamageRate_MWPUG_Mid_2
-      const low = 1.0
-      const highMidLow = [high, mid, low]
+      const high = buildWeaponData.mSideStepOneMuzzleDamageRate_MWPUG_High_2;
+      const mid = buildWeaponData.mSideStepOneMuzzleDamageRate_MWPUG_Mid_2;
+      const low = 1.0;
+      const highMidLow = [high, mid, low];
 
-      const effect = getEffect(highMidLow, amount)
-      const baseDamageMax = buildWeaponData.mSideStepOneMuzzleDamageMax_2
+      const effect = getEffect(highMidLow, amount);
+      const baseDamageMax = buildWeaponData.mSideStepOneMuzzleDamageMax_2;
       const damageMax = calculateDamage(
         baseDamageMax,
         effect[0],
         buildWeaponData.mSideStepOneMuzzleDamage_MWPUG_Max_2
-      )
-      const baseDamageMin = buildWeaponData.mSideStepOneMuzzleDamageMin_2 ?? -1
+      );
+      const baseDamageMin = buildWeaponData.mSideStepOneMuzzleDamageMin_2 ?? -1;
       const damageMin = calculateDamage(
         baseDamageMin,
         effect[0],
         buildWeaponData.mSideStepOneMuzzleDamage_MWPUG_Max_2
-      )
-      const damageMinStr = baseDamageMin !== -1 ? `${damageMin} - ` : ""
+      );
+      const damageMinStr = baseDamageMin !== -1 ? `${damageMin} - ` : "";
       toReturn.push({
         title: `${weaponTranslated} damage per shot (turret mode)`,
         effect: `${damageMinStr}${damageMax}`,
@@ -1522,7 +1526,7 @@ export default function useAbilityEffects(
             getEffect(highMidLow, ap)[0],
             buildWeaponData.mSideStepOneMuzzleDamage_MWPUG_Max_2
           ),
-      })
+      });
     }
 
     if (
@@ -1532,14 +1536,14 @@ export default function useAbilityEffects(
       buildWeaponData.mSplashPaintRadius_MWPUG_High !==
         buildWeaponData.mSplashPaintRadius_MWPUG_Mid
     ) {
-      const high = buildWeaponData.mSplashPaintRadius_MWPUG_High
-      const mid = buildWeaponData.mSplashPaintRadius_MWPUG_Mid
-      const low = buildWeaponData.mSplashPaintRadius
-      const highMidLow = [high, mid, low]
+      const high = buildWeaponData.mSplashPaintRadius_MWPUG_High;
+      const mid = buildWeaponData.mSplashPaintRadius_MWPUG_Mid;
+      const low = buildWeaponData.mSplashPaintRadius;
+      const highMidLow = [high, mid, low];
 
-      const effect = getEffect(highMidLow, amount)
-      const effectAtZero = getEffect(highMidLow, 0)
-      const effectAtMax = getEffect(highMidLow, MAX_AP)
+      const effect = getEffect(highMidLow, amount);
+      const effectAtZero = getEffect(highMidLow, 0);
+      const effectAtMax = getEffect(highMidLow, MAX_AP);
       toReturn.push({
         title: `${weaponTranslated} ${t("analyzer;bullet ink coverage")}`,
         effect: `${parseFloat(
@@ -1553,10 +1557,10 @@ export default function useAbilityEffects(
           parseFloat(
             ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(2)
           ),
-      })
+      });
     }
 
-    const RNG_MAX = 15
+    const RNG_MAX = 15;
 
     if (
       buildWeaponData.mDegRandom_MWPUG_High &&
@@ -1565,13 +1569,13 @@ export default function useAbilityEffects(
       buildWeaponData.mDegRandom_MWPUG_High !==
         buildWeaponData.mDegRandom_MWPUG_Mid
     ) {
-      const high = buildWeaponData.mDegRandom_MWPUG_High
-      const mid = buildWeaponData.mDegRandom_MWPUG_Mid
-      const low = buildWeaponData.mDegRandom
-      const highMidLow = [high, mid, low]
+      const high = buildWeaponData.mDegRandom_MWPUG_High;
+      const mid = buildWeaponData.mDegRandom_MWPUG_Mid;
+      const low = buildWeaponData.mDegRandom;
+      const highMidLow = [high, mid, low];
 
-      const effect = getEffect(highMidLow, amount)
-      const effectAtZero = getEffect(highMidLow, 0)
+      const effect = getEffect(highMidLow, amount);
+      const effectAtZero = getEffect(highMidLow, 0);
       toReturn.push({
         title: `${weaponTranslated} ${t(
           "analyzer;bullet spread (not jumping)"
@@ -1585,7 +1589,7 @@ export default function useAbilityEffects(
         ap: amount,
         getEffect: (ap: number) =>
           parseFloat(getEffect(highMidLow, ap)[0].toFixed(3)),
-      })
+      });
     }
 
     if (
@@ -1595,13 +1599,13 @@ export default function useAbilityEffects(
       buildWeaponData.mDegJumpRandom_MWPUG_Mid !==
         buildWeaponData.mDegJumpRandom_MWPUG_High
     ) {
-      const high = buildWeaponData.mDegJumpRandom_MWPUG_High
-      const mid = buildWeaponData.mDegJumpRandom_MWPUG_Mid
-      const low = buildWeaponData.mDegJumpRandom
-      const highMidLow = [high, mid, low]
+      const high = buildWeaponData.mDegJumpRandom_MWPUG_High;
+      const mid = buildWeaponData.mDegJumpRandom_MWPUG_Mid;
+      const low = buildWeaponData.mDegJumpRandom;
+      const highMidLow = [high, mid, low];
 
-      const effect = getEffect(highMidLow, amount)
-      const effectAtZero = getEffect(highMidLow, 0)
+      const effect = getEffect(highMidLow, amount);
+      const effectAtZero = getEffect(highMidLow, 0);
       toReturn.push({
         title: `${weaponTranslated} ${t(
           "analyzer;bullet spread (in the air)"
@@ -1615,7 +1619,7 @@ export default function useAbilityEffects(
         ap: amount,
         getEffect: (ap: number) =>
           parseFloat(getEffect(highMidLow, ap)[0].toFixed(3)),
-      })
+      });
     }
 
     if (
@@ -1624,14 +1628,14 @@ export default function useAbilityEffects(
       buildWeaponData.mInitVelRate_MWPUG_High !==
         buildWeaponData.mInitVelRate_MWPUG_Mid
     ) {
-      const high = buildWeaponData.mInitVelRate_MWPUG_High
-      const mid = buildWeaponData.mInitVelRate_MWPUG_Mid
-      const low = 1.0
-      const highMidLow = [high, mid, low]
+      const high = buildWeaponData.mInitVelRate_MWPUG_High;
+      const mid = buildWeaponData.mInitVelRate_MWPUG_Mid;
+      const low = 1.0;
+      const highMidLow = [high, mid, low];
 
-      const effect = getEffect(highMidLow, amount)
-      const effectAtZero = getEffect(highMidLow, 0)
-      const effectAtMax = getEffect(highMidLow, MAX_AP)
+      const effect = getEffect(highMidLow, amount);
+      const effectAtZero = getEffect(highMidLow, 0);
+      const effectAtMax = getEffect(highMidLow, MAX_AP);
       toReturn.push({
         title: `${weaponTranslated} ${t("analyzer;range and bullet velocity")}`,
         effect: `${parseFloat(
@@ -1645,7 +1649,7 @@ export default function useAbilityEffects(
           parseFloat(
             ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(2)
           ),
-      })
+      });
     }
 
     if (
@@ -1653,15 +1657,15 @@ export default function useAbilityEffects(
       build.weapon === "Luna Blaster Neo" ||
       build.weapon === "Kensa Luna Blaster"
     ) {
-      const high = buildWeaponData.mCollisionRadiusMiddleRate_MWPUG_High_Burst
-      const mid = buildWeaponData.mCollisionRadiusMiddleRate_MWPUG_Mid_Burst
-      const low = 1.0
-      const highMidLow = [high, mid, low]
+      const high = buildWeaponData.mCollisionRadiusMiddleRate_MWPUG_High_Burst;
+      const mid = buildWeaponData.mCollisionRadiusMiddleRate_MWPUG_Mid_Burst;
+      const low = 1.0;
+      const highMidLow = [high, mid, low];
 
-      const effect = getEffect(highMidLow, amount)
+      const effect = getEffect(highMidLow, amount);
 
-      const radius = buildWeaponData.mCollisionRadiusMiddle_Burst * effect[0]
-      const totalRadius = buildWeaponData.mCollisionRadiusFar_Burst
+      const radius = buildWeaponData.mCollisionRadiusMiddle_Burst * effect[0];
+      const totalRadius = buildWeaponData.mCollisionRadiusFar_Burst;
 
       toReturn.push({
         title: `${weaponTranslated} ${t(
@@ -1681,25 +1685,25 @@ export default function useAbilityEffects(
               100
             ).toFixed(3)
           ),
-      })
+      });
     }
 
     if (build.weapon.includes("Rapid")) {
-      const high = buildWeaponData.mCollisionRadiusFarRate_MWPUG_High_Burst
-      const mid = buildWeaponData.mCollisionRadiusFarRate_MWPUG_Mid_Burst
-      const low = 1.0
-      const highMidLow = [high, mid, low]
+      const high = buildWeaponData.mCollisionRadiusFarRate_MWPUG_High_Burst;
+      const mid = buildWeaponData.mCollisionRadiusFarRate_MWPUG_Mid_Burst;
+      const low = 1.0;
+      const highMidLow = [high, mid, low];
 
-      const baseValue = buildWeaponData.mCollisionRadiusFar_Burst
-      const maxValue = buildWeaponData.mCollisionRadiusFar_MWPUG_Max_Burst
-      const effect = getEffect(highMidLow, amount)
+      const baseValue = buildWeaponData.mCollisionRadiusFar_Burst;
+      const maxValue = buildWeaponData.mCollisionRadiusFar_MWPUG_Max_Burst;
+      const effect = getEffect(highMidLow, amount);
 
-      const value = Math.min(maxValue, effect[0] * baseValue)
-      const valueAtZero = getEffect(highMidLow, 0)[0] * baseValue
+      const value = Math.min(maxValue, effect[0] * baseValue);
+      const valueAtZero = getEffect(highMidLow, 0)[0] * baseValue;
       const valueAtMax = Math.min(
         maxValue,
         getEffect(highMidLow, MAX_AP)[0] * baseValue
-      )
+      );
       toReturn.push({
         title: `${weaponTranslated} ${t(
           "analyzer;bullet explosion hitbox size"
@@ -1717,7 +1721,7 @@ export default function useAbilityEffects(
               100
             ).toFixed(3)
           ),
-      })
+      });
     }
 
     if (
@@ -1727,15 +1731,15 @@ export default function useAbilityEffects(
         buildWeaponData.mSphereSplashDropPaintRadiusRate_MWPUG_Mid_Burst
     ) {
       const high =
-        buildWeaponData.mSphereSplashDropPaintRadiusRate_MWPUG_High_Burst
+        buildWeaponData.mSphereSplashDropPaintRadiusRate_MWPUG_High_Burst;
       const mid =
-        buildWeaponData.mSphereSplashDropPaintRadiusRate_MWPUG_Mid_Burst
-      const low = 1.0
-      const highMidLow = [high, mid, low]
+        buildWeaponData.mSphereSplashDropPaintRadiusRate_MWPUG_Mid_Burst;
+      const low = 1.0;
+      const highMidLow = [high, mid, low];
 
-      const effect = getEffect(highMidLow, amount)
-      const effectAtZero = getEffect(highMidLow, 0)
-      const effectAtMax = getEffect(highMidLow, MAX_AP)
+      const effect = getEffect(highMidLow, amount);
+      const effectAtZero = getEffect(highMidLow, 0);
+      const effectAtMax = getEffect(highMidLow, MAX_AP);
       toReturn.push({
         title: `${weaponTranslated} ${t("analyzer;bullet explosion paint")}`,
         effect: `${parseFloat(
@@ -1749,7 +1753,7 @@ export default function useAbilityEffects(
           parseFloat(
             ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(2)
           ),
-      })
+      });
     }
 
     if (
@@ -1759,14 +1763,14 @@ export default function useAbilityEffects(
       buildWeaponData.mDashSpeed_MWPUG_High !==
         buildWeaponData.mDashSpeed_MWPUG_Mid
     ) {
-      const high = buildWeaponData.mDashSpeed_MWPUG_High
-      const mid = buildWeaponData.mDashSpeed_MWPUG_Mid
-      const low = buildWeaponData.mDashSpeed
-      const highMidLow = [high, mid, low]
+      const high = buildWeaponData.mDashSpeed_MWPUG_High;
+      const mid = buildWeaponData.mDashSpeed_MWPUG_Mid;
+      const low = buildWeaponData.mDashSpeed;
+      const highMidLow = [high, mid, low];
 
-      const effect = getEffect(highMidLow, amount)
-      const effectAtZero = getEffect(highMidLow, 0)
-      const effectAtMax = getEffect(highMidLow, MAX_AP)
+      const effect = getEffect(highMidLow, amount);
+      const effectAtZero = getEffect(highMidLow, 0);
+      const effectAtMax = getEffect(highMidLow, MAX_AP);
       toReturn.push({
         title: `${weaponTranslated} ${t(
           "analyzer;movement speed holding trigger down"
@@ -1782,7 +1786,7 @@ export default function useAbilityEffects(
           parseFloat(
             ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(2)
           ),
-      })
+      });
     }
 
     if (
@@ -1791,14 +1795,14 @@ export default function useAbilityEffects(
       buildWeaponData.mCorePaintWidthHalfRate_MWPUG_High !==
         buildWeaponData.mCorePaintWidthHalfRate_MWPUG_Mid
     ) {
-      const high = buildWeaponData.mCorePaintWidthHalfRate_MWPUG_High
-      const mid = buildWeaponData.mCorePaintWidthHalfRate_MWPUG_Mid
-      const low = 1.0
-      const highMidLow = [high, mid, low]
+      const high = buildWeaponData.mCorePaintWidthHalfRate_MWPUG_High;
+      const mid = buildWeaponData.mCorePaintWidthHalfRate_MWPUG_Mid;
+      const low = 1.0;
+      const highMidLow = [high, mid, low];
 
-      const effect = getEffect(highMidLow, amount)
-      const effectAtZero = getEffect(highMidLow, 0)
-      const effectAtMax = getEffect(highMidLow, MAX_AP)
+      const effect = getEffect(highMidLow, amount);
+      const effectAtZero = getEffect(highMidLow, 0);
+      const effectAtMax = getEffect(highMidLow, MAX_AP);
       toReturn.push({
         title: `${weaponTranslated} ${t("analyzer;ink trail width")}`,
         effect: `${parseFloat(
@@ -1812,7 +1816,7 @@ export default function useAbilityEffects(
           parseFloat(
             ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(2)
           ),
-      })
+      });
     }
 
     if (
@@ -1822,14 +1826,14 @@ export default function useAbilityEffects(
       buildWeaponData.mFullChargeDistance_MWPUG_High !==
         buildWeaponData.mFullChargeDistance_MWPUG_Mid
     ) {
-      const high = buildWeaponData.mFullChargeDistance_MWPUG_High
-      const mid = buildWeaponData.mFullChargeDistance_MWPUG_Mid
-      const low = buildWeaponData.mFullChargeDistance
-      const highMidLow = [high, mid, low]
+      const high = buildWeaponData.mFullChargeDistance_MWPUG_High;
+      const mid = buildWeaponData.mFullChargeDistance_MWPUG_Mid;
+      const low = buildWeaponData.mFullChargeDistance;
+      const highMidLow = [high, mid, low];
 
-      const effect = getEffect(highMidLow, amount)
-      const effectAtZero = getEffect(highMidLow, 0)
-      const effectAtMax = getEffect(highMidLow, MAX_AP)
+      const effect = getEffect(highMidLow, amount);
+      const effectAtZero = getEffect(highMidLow, 0);
+      const effectAtMax = getEffect(highMidLow, MAX_AP);
       toReturn.push({
         title: `${weaponTranslated} ${t("analyzer;fully charged shot range")}`,
         effect: `${parseFloat(
@@ -1843,7 +1847,7 @@ export default function useAbilityEffects(
           parseFloat(
             ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(2)
           ),
-      })
+      });
     }
 
     if (
@@ -1852,14 +1856,14 @@ export default function useAbilityEffects(
       buildWeaponData.mSplashPaintRadiusRate_MWPUG_High !==
         buildWeaponData.mSplashPaintRadiusRate_MWPUG_Mid
     ) {
-      const high = buildWeaponData.mSplashPaintRadiusRate_MWPUG_High
-      const mid = buildWeaponData.mSplashPaintRadiusRate_MWPUG_Mid
-      const low = 1.0
-      const highMidLow = [high, mid, low]
+      const high = buildWeaponData.mSplashPaintRadiusRate_MWPUG_High;
+      const mid = buildWeaponData.mSplashPaintRadiusRate_MWPUG_Mid;
+      const low = 1.0;
+      const highMidLow = [high, mid, low];
 
-      const effect = getEffect(highMidLow, amount)
-      const effectAtZero = getEffect(highMidLow, 0)
-      const effectAtMax = getEffect(highMidLow, MAX_AP)
+      const effect = getEffect(highMidLow, amount);
+      const effectAtZero = getEffect(highMidLow, 0);
+      const effectAtMax = getEffect(highMidLow, MAX_AP);
       toReturn.push({
         title: `${weaponTranslated} ${t("analyzer;ink coverage")}`,
         effect: `${parseFloat(
@@ -1873,7 +1877,7 @@ export default function useAbilityEffects(
           parseFloat(
             ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(2)
           ),
-      })
+      });
     }
 
     if (
@@ -1882,14 +1886,14 @@ export default function useAbilityEffects(
       buildWeaponData.mFullChargeDamageRate_MWPUG_High !==
         buildWeaponData.mFullChargeDamageRate_MWPUG_Mid
     ) {
-      const high = buildWeaponData.mFullChargeDamageRate_MWPUG_High
-      const mid = buildWeaponData.mFullChargeDamageRate_MWPUG_Mid
-      const low = 1.0
-      const highMidLow = [high, mid, low]
+      const high = buildWeaponData.mFullChargeDamageRate_MWPUG_High;
+      const mid = buildWeaponData.mFullChargeDamageRate_MWPUG_Mid;
+      const low = 1.0;
+      const highMidLow = [high, mid, low];
 
-      const effect = getEffect(highMidLow, amount)
-      const effectAtZero = getEffect(highMidLow, 0)
-      const effectAtMax = getEffect(highMidLow, MAX_AP)
+      const effect = getEffect(highMidLow, amount);
+      const effectAtZero = getEffect(highMidLow, 0);
+      const effectAtMax = getEffect(highMidLow, MAX_AP);
 
       if (!build.weapon.includes("Bamboozler")) {
         toReturn.push({
@@ -1907,16 +1911,16 @@ export default function useAbilityEffects(
                 2
               )
             ),
-        })
+        });
       } else {
-        const damagePerShot = buildWeaponData.mFullChargeDamage
-        const maxDmg = buildWeaponData.mFullChargeDamage_MWPUG_Max
-        const damage = calculateDamage(damagePerShot, effect[0], maxDmg)
+        const damagePerShot = buildWeaponData.mFullChargeDamage;
+        const maxDmg = buildWeaponData.mFullChargeDamage_MWPUG_Max;
+        const damage = calculateDamage(damagePerShot, effect[0], maxDmg);
         const damageAtMax = calculateDamage(
           damagePerShot,
           effectAtMax[0],
           maxDmg
-        )
+        );
         toReturn.push({
           title: `${weaponTranslated} ${t(
             "analyzer;damage per fully charged shot"
@@ -1932,7 +1936,7 @@ export default function useAbilityEffects(
               getEffect(highMidLow, ap)[0],
               maxDmg
             ),
-        })
+        });
       }
     }
 
@@ -1942,14 +1946,14 @@ export default function useAbilityEffects(
       buildWeaponData.mDropSplashPaintRadiusRate_MWPUG_High !==
         buildWeaponData.mDropSplashPaintRadiusRate_MWPUG_Mid
     ) {
-      const high = buildWeaponData.mDropSplashPaintRadiusRate_MWPUG_High
-      const mid = buildWeaponData.mDropSplashPaintRadiusRate_MWPUG_Mid
-      const low = 1.0
-      const highMidLow = [high, mid, low]
+      const high = buildWeaponData.mDropSplashPaintRadiusRate_MWPUG_High;
+      const mid = buildWeaponData.mDropSplashPaintRadiusRate_MWPUG_Mid;
+      const low = 1.0;
+      const highMidLow = [high, mid, low];
 
-      const effect = getEffect(highMidLow, amount)
-      const effectAtZero = getEffect(highMidLow, 0)
-      const effectAtMax = getEffect(highMidLow, MAX_AP)
+      const effect = getEffect(highMidLow, amount);
+      const effectAtZero = getEffect(highMidLow, 0);
+      const effectAtMax = getEffect(highMidLow, MAX_AP);
       toReturn.push({
         title: `${weaponTranslated} ${t("analyzer;ink coverage")}`,
         effect: `${parseFloat(
@@ -1963,7 +1967,7 @@ export default function useAbilityEffects(
           parseFloat(
             ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(2)
           ),
-      })
+      });
     }
 
     if (
@@ -1972,14 +1976,14 @@ export default function useAbilityEffects(
       buildWeaponData.mFirstGroupBulletFirstPaintRRate_MWPUG_High !==
         buildWeaponData.mFirstGroupBulletFirstPaintRRate_MWPUG_Mid
     ) {
-      const high = buildWeaponData.mFirstGroupBulletFirstPaintRRate_MWPUG_High
-      const mid = buildWeaponData.mFirstGroupBulletFirstPaintRRate_MWPUG_Mid
-      const low = 1.0
-      const highMidLow = [high, mid, low]
+      const high = buildWeaponData.mFirstGroupBulletFirstPaintRRate_MWPUG_High;
+      const mid = buildWeaponData.mFirstGroupBulletFirstPaintRRate_MWPUG_Mid;
+      const low = 1.0;
+      const highMidLow = [high, mid, low];
 
-      const effect = getEffect(highMidLow, amount)
-      const effectAtZero = getEffect(highMidLow, 0)
-      const effectAtMax = getEffect(highMidLow, MAX_AP)
+      const effect = getEffect(highMidLow, amount);
+      const effectAtZero = getEffect(highMidLow, 0);
+      const effectAtMax = getEffect(highMidLow, MAX_AP);
       toReturn.push({
         title: `${weaponTranslated} ${t("analyzer;ink coverage")}`,
         effect: `${parseFloat(
@@ -1998,18 +2002,18 @@ export default function useAbilityEffects(
               "analyzer;Ink coverage bonus is only applied to the circle at the end of the shot"
             )
           : undefined,
-      })
+      });
     }
 
     if (build.weapon === "Explosher" || build.weapon === "Custom Explosher") {
-      const high = buildWeaponData.mFirstGroupSplashPaintRadiusRate_MWPUG_High
-      const mid = buildWeaponData.mFirstGroupSplashPaintRadiusRate_MWPUG_Mid
-      const low = 1.0
-      const highMidLow = [high, mid, low]
+      const high = buildWeaponData.mFirstGroupSplashPaintRadiusRate_MWPUG_High;
+      const mid = buildWeaponData.mFirstGroupSplashPaintRadiusRate_MWPUG_Mid;
+      const low = 1.0;
+      const highMidLow = [high, mid, low];
 
-      const effect = getEffect(highMidLow, amount)
-      const effectAtZero = getEffect(highMidLow, 0)
-      const effectAtMax = getEffect(highMidLow, MAX_AP)
+      const effect = getEffect(highMidLow, amount);
+      const effectAtZero = getEffect(highMidLow, 0);
+      const effectAtMax = getEffect(highMidLow, MAX_AP);
       toReturn.push({
         title: `${weaponTranslated} ${t("analyzer;ink coverage")}`,
         effect: `${parseFloat(
@@ -2026,7 +2030,7 @@ export default function useAbilityEffects(
         info: t(
           "analyzer;Ink coverage bonus is only applied to the line before the impact"
         ),
-      })
+      });
     }
 
     if (
@@ -2035,25 +2039,25 @@ export default function useAbilityEffects(
       buildWeaponData.mDamageMaxMaxChargeRate_MWPUG_High_2 !==
         buildWeaponData.mDamageMaxMaxChargeRate_MWPUG_Mid_2
     ) {
-      const high = buildWeaponData.mDamageMaxMaxChargeRate_MWPUG_High_2
-      const mid = buildWeaponData.mDamageMaxMaxChargeRate_MWPUG_Mid_2
-      const low = 1.0
-      const highMidLow = [high, mid, low]
+      const high = buildWeaponData.mDamageMaxMaxChargeRate_MWPUG_High_2;
+      const mid = buildWeaponData.mDamageMaxMaxChargeRate_MWPUG_Mid_2;
+      const low = 1.0;
+      const highMidLow = [high, mid, low];
 
-      const effect = getEffect(highMidLow, amount)
-      const baseDamageMax = buildWeaponData.mDamageMaxMaxCharge_2
+      const effect = getEffect(highMidLow, amount);
+      const baseDamageMax = buildWeaponData.mDamageMaxMaxCharge_2;
       const damageMax = calculateDamage(
         baseDamageMax,
         effect[0],
         buildWeaponData.mDamageMaxMaxCharge_MWPUG_Max_2
-      )
-      const baseDamageMin = buildWeaponData.mDamageMin ?? -1
+      );
+      const baseDamageMin = buildWeaponData.mDamageMin ?? -1;
       const damageMin = calculateDamage(
         baseDamageMin,
         effect[0],
         buildWeaponData.mDamageMaxMaxCharge_MWPUG_Max_2
-      )
-      const damageMinStr = baseDamageMin !== -1 ? `${damageMin} - ` : ""
+      );
+      const damageMinStr = baseDamageMin !== -1 ? `${damageMin} - ` : "";
       toReturn.push({
         title: `${weaponTranslated} ${t(
           "analyzer;damage per shot (fully charged)"
@@ -2069,7 +2073,7 @@ export default function useAbilityEffects(
             getEffect(highMidLow, ap)[0],
             buildWeaponData.mDamageMaxMaxCharge_MWPUG_Max_2
           ),
-      })
+      });
     }
 
     if (
@@ -2079,13 +2083,13 @@ export default function useAbilityEffects(
       buildWeaponData.mCanopyNakedFrame_MWPUG_High !==
         buildWeaponData.mCanopyNakedFrame_MWPUG_Mid
     ) {
-      const high = buildWeaponData.mCanopyNakedFrame_MWPUG_High
-      const mid = buildWeaponData.mCanopyNakedFrame_MWPUG_Mid
-      const low = buildWeaponData.mCanopyNakedFrame
-      const highMidLow = [high, mid, low]
+      const high = buildWeaponData.mCanopyNakedFrame_MWPUG_High;
+      const mid = buildWeaponData.mCanopyNakedFrame_MWPUG_Mid;
+      const low = buildWeaponData.mCanopyNakedFrame;
+      const highMidLow = [high, mid, low];
 
-      const effect = getEffect(highMidLow, amount)
-      const effectAtZero = getEffect(highMidLow, 0)
+      const effect = getEffect(highMidLow, amount);
+      const effectAtZero = getEffect(highMidLow, 0);
       toReturn.push({
         title: `${weaponTranslated} ${t("analyzer;shield recharge time")}`,
         effect: `${Math.ceil(effect[0])} ${t("analyzer;frames")} (${parseFloat(
@@ -2096,7 +2100,7 @@ export default function useAbilityEffects(
         ability: "MPU" as Ability,
         ap: amount,
         getEffect: (ap: number) => Math.ceil(getEffect(highMidLow, ap)[0]),
-      })
+      });
     }
 
     if (
@@ -2105,14 +2109,14 @@ export default function useAbilityEffects(
       buildWeaponData.mCanopyNakedFrame &&
       buildWeaponData.mCanopyHP_MWPUG_High !== buildWeaponData.mCanopyHP
     ) {
-      const high = buildWeaponData.mCanopyHP_MWPUG_High
-      const mid = buildWeaponData.mCanopyHP_MWPUG_Mid
-      const low = buildWeaponData.mCanopyHP
-      const highMidLow = [high, mid, low]
+      const high = buildWeaponData.mCanopyHP_MWPUG_High;
+      const mid = buildWeaponData.mCanopyHP_MWPUG_Mid;
+      const low = buildWeaponData.mCanopyHP;
+      const highMidLow = [high, mid, low];
 
-      const effect = getEffect(highMidLow, amount)
-      const effectAtZero = getEffect(highMidLow, 0)
-      const effectAtMax = getEffect(highMidLow, MAX_AP)
+      const effect = getEffect(highMidLow, amount);
+      const effectAtZero = getEffect(highMidLow, 0);
+      const effectAtMax = getEffect(highMidLow, MAX_AP);
       toReturn.push({
         title: `${weaponTranslated} ${t("analyzer;shield durability")}`,
         effect: `${parseFloat(
@@ -2126,7 +2130,7 @@ export default function useAbilityEffects(
           parseFloat(
             ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(2)
           ),
-      })
+      });
     }
 
     if (
@@ -2136,20 +2140,21 @@ export default function useAbilityEffects(
         buildWeaponData.mFirstSecondMaxChargeShootingFrameTimes_MWPUG_Mid_2
     ) {
       const high =
-        buildWeaponData.mFirstSecondMaxChargeShootingFrameTimes_MWPUG_High_2
+        buildWeaponData.mFirstSecondMaxChargeShootingFrameTimes_MWPUG_High_2;
       const mid =
-        buildWeaponData.mFirstSecondMaxChargeShootingFrameTimes_MWPUG_Mid_2
-      const low = 1.0
-      const highMidLow = [high, mid, low]
+        buildWeaponData.mFirstSecondMaxChargeShootingFrameTimes_MWPUG_Mid_2;
+      const low = 1.0;
+      const highMidLow = [high, mid, low];
 
-      const effect = getEffect(highMidLow, amount)
+      const effect = getEffect(highMidLow, amount);
 
-      const secondCircle = buildWeaponData.mSecondPeriodMaxChargeShootingFrame_2
+      const secondCircle =
+        buildWeaponData.mSecondPeriodMaxChargeShootingFrame_2;
 
-      const total = Math.ceil(secondCircle * effect[0])
+      const total = Math.ceil(secondCircle * effect[0]);
       const maxTotal = Math.ceil(
         secondCircle * getEffect(highMidLow, MAX_AP)[0]
-      )
+      );
       toReturn.push({
         title: `${weaponTranslated} ${t(
           "analyzer;full charge shooting duration"
@@ -2163,7 +2168,7 @@ export default function useAbilityEffects(
         ap: amount,
         getEffect: (ap: number) =>
           Math.ceil(secondCircle * getEffect(highMidLow, ap)[0]),
-      })
+      });
     }
 
     if (
@@ -2171,12 +2176,12 @@ export default function useAbilityEffects(
       build.weapon === "Slosher Deco" ||
       build.weapon === "Soda Slosher"
     ) {
-      const high = buildWeaponData.mBulletDamageMaxDist_MWPUG_High
-      const mid = buildWeaponData.mBulletDamageMaxDist_MWPUG_Mid
-      const low = buildWeaponData.mBulletDamageMaxDist
-      const highMidLow = [high, mid, low]
+      const high = buildWeaponData.mBulletDamageMaxDist_MWPUG_High;
+      const mid = buildWeaponData.mBulletDamageMaxDist_MWPUG_Mid;
+      const low = buildWeaponData.mBulletDamageMaxDist;
+      const highMidLow = [high, mid, low];
 
-      const effect = getEffect(highMidLow, amount)
+      const effect = getEffect(highMidLow, amount);
 
       toReturn.push({
         title: `${weaponTranslated} "mBulletDamageMaxDist"`,
@@ -2190,14 +2195,14 @@ export default function useAbilityEffects(
         info: t(
           "analyzer;Slosher has weird physics so we haven't fully deciphered this parameter."
         ),
-      })
+      });
 
-      const high2 = buildWeaponData.mBulletDamageMinDist_MWPUG_High
-      const mid2 = buildWeaponData.mBulletDamageMinDist_MWPUG_Mid
-      const low2 = buildWeaponData.mBulletDamageMinDist
-      const highMidLow2 = [high2, mid2, low2]
+      const high2 = buildWeaponData.mBulletDamageMinDist_MWPUG_High;
+      const mid2 = buildWeaponData.mBulletDamageMinDist_MWPUG_Mid;
+      const low2 = buildWeaponData.mBulletDamageMinDist;
+      const highMidLow2 = [high2, mid2, low2];
 
-      const effect2 = getEffect(highMidLow2, amount)
+      const effect2 = getEffect(highMidLow2, amount);
 
       toReturn.push({
         title: `${weaponTranslated} "mBulletDamageMinDist"`,
@@ -2211,7 +2216,7 @@ export default function useAbilityEffects(
         info: t(
           "analyzer;Slosher has weird physics so we haven't fully deciphered this parameter."
         ),
-      })
+      });
     }
 
     if (
@@ -2220,14 +2225,14 @@ export default function useAbilityEffects(
       buildWeaponData.mSplashDamageInsideRate_MWPUG_High_Stand !==
         buildWeaponData.mSplashDamageInsideRate_MWPUG_Mid_Stand
     ) {
-      const high = buildWeaponData.mSplashDamageInsideRate_MWPUG_High_Stand
-      const mid = buildWeaponData.mSplashDamageInsideRate_MWPUG_Mid_Stand
-      const low = 1.0
-      const highMidLow = [high, mid, low]
+      const high = buildWeaponData.mSplashDamageInsideRate_MWPUG_High_Stand;
+      const mid = buildWeaponData.mSplashDamageInsideRate_MWPUG_Mid_Stand;
+      const low = 1.0;
+      const highMidLow = [high, mid, low];
 
-      const effect = getEffect(highMidLow, amount)
-      const effectAtZero = getEffect(highMidLow, 0)
-      const effectAtMax = getEffect(highMidLow, MAX_AP)
+      const effect = getEffect(highMidLow, amount);
+      const effectAtZero = getEffect(highMidLow, 0);
+      const effectAtMax = getEffect(highMidLow, MAX_AP);
       toReturn.push({
         title: `${weaponTranslated} ${t("analyzer;damage")}`,
         effect: `${parseFloat(
@@ -2241,10 +2246,10 @@ export default function useAbilityEffects(
           parseFloat(
             ((getEffect(highMidLow, ap)[0] / effectAtZero[0]) * 100).toFixed(2)
           ),
-      })
+      });
     }
 
-    return toReturn
+    return toReturn;
   }
 
   const abilityFunctions: Partial<Record<
@@ -2265,24 +2270,24 @@ export default function useAbilityEffects(
     RES: calculateRES,
     BDU: calculateBDU,
     MPU: calculateMPU,
-  } as const
+  } as const;
 
   useEffect(() => {
-    if (!build.weapon) return
-    const AP = buildToAP(build, bonusAp, lde)
+    if (!build.weapon) return;
+    const AP = buildToAP(build, bonusAp, lde);
 
-    let newExplanations: Explanation[] = []
+    let newExplanations: Explanation[] = [];
     Object.keys(abilityFunctions).forEach((ability) => {
-      const func = abilityFunctions[ability]
-      const abilityForFunc = ability as Ability
-      const APcount = AP[abilityForFunc] ?? 0
-      const explanations = func!(Math.min(57, APcount))
-      newExplanations = [...newExplanations, ...explanations]
-    })
+      const func = abilityFunctions[ability];
+      const abilityForFunc = ability as Ability;
+      const APcount = AP[abilityForFunc] ?? 0;
+      const explanations = func!(Math.min(57, APcount));
+      newExplanations = [...newExplanations, ...explanations];
+    });
 
-    setExplanations(newExplanations)
+    setExplanations(newExplanations);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(build), bonusAp, lde])
+  }, [JSON.stringify(build), bonusAp, lde]);
 
-  return explanations
+  return explanations;
 }

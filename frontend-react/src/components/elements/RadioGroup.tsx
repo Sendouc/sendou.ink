@@ -1,17 +1,17 @@
-import React, { useContext } from "react"
+import React, { useContext } from "react";
 import {
   RadioGroup as ChakraRadioGroup,
   Radio,
   Box,
   Stack,
-} from "@chakra-ui/core"
-import MyThemeContext from "../../themeContext"
+} from "@chakra-ui/core";
+import MyThemeContext from "../../themeContext";
 
 interface RadioGroupProps {
-  options: { label: string; value: string }[]
-  value: string
-  label?: string
-  setValue: (value: any) => void
+  options: { label: string; value: string }[];
+  value: string;
+  label?: string;
+  setValue: (value: any) => void;
 }
 
 const RadioGroup: React.FC<RadioGroupProps> = ({
@@ -20,7 +20,7 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
   options,
   label,
 }) => {
-  const { themeColor } = useContext(MyThemeContext)
+  const { themeColor } = useContext(MyThemeContext);
   return (
     <>
       {label && (
@@ -43,7 +43,7 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
         </Stack>
       </ChakraRadioGroup>
     </>
-  )
-}
+  );
+};
 
-export default RadioGroup
+export default RadioGroup;

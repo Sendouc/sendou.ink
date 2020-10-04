@@ -1,24 +1,30 @@
-import { Container, Flex } from "@chakra-ui/core"
-import { useLocation } from "@reach/router"
-import React, { Suspense, useContext, useEffect } from "react"
-import MyThemeContext from "../../themeContext"
-import Footer from "./Footer"
-import IconNavBar from "./IconNavBar"
-import TopNav from "./TopNav"
+import { Container, Flex } from "@chakra-ui/core";
+import { useLocation } from "@reach/router";
+import React, { Suspense, useContext, useEffect } from "react";
+import MyThemeContext from "../../themeContext";
+import Footer from "./Footer";
+import IconNavBar from "./IconNavBar";
+import TopNav from "./TopNav";
 
 interface LayoutProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
-const PAGES_WITH_WIDE_CONTAINER = ["/analyzer", "/xsearch", "/builds", "/plans"]
+const PAGES_WITH_WIDE_CONTAINER = [
+  "/analyzer",
+  "/xsearch",
+  "/builds",
+  "/plans",
+  "/xleaderboards",
+];
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const { bgColor, textColor } = useContext(MyThemeContext)
-  const location = useLocation()
+  const { bgColor, textColor } = useContext(MyThemeContext);
+  const location = useLocation();
 
   useEffect(() => {
-    document.body.style.backgroundColor = bgColor
-  }, [bgColor])
+    document.body.style.backgroundColor = bgColor;
+  }, [bgColor]);
 
   return (
     <>
@@ -39,7 +45,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <Footer />
       </Flex>
     </>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;

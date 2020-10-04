@@ -1,6 +1,5 @@
 .pagination {
   display: inline-block;
-  padding: 8px 16px;
   text-decoration: none;
   font-weight: bold;
   font-size: 18px;
@@ -12,10 +11,10 @@
   margin: 0.2em;
 }
 
-.active-page {
-  border-bottom: 3px solid;
+li:first-child {
+  margin-left: 0;
 }
 
-.disabled-page {
-  display: none;
+.active-page {
+  border-bottom: 3px solid;
 }

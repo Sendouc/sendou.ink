@@ -1,28 +1,28 @@
-import React, { useContext } from "react"
-import { ReactComponent as ColorDefs } from "../../assets/splatnet/colorDefs.svg"
+import React, { useContext } from "react";
+import { ReactComponent as ColorDefs } from "../../assets/splatnet/colorDefs.svg";
 
-import { ReactComponent as Kills } from "../../assets/splatnet/kills.svg"
-import { ReactComponent as Deaths } from "../../assets/splatnet/deaths.svg"
+import { ReactComponent as Kills } from "../../assets/splatnet/kills.svg";
+import { ReactComponent as Deaths } from "../../assets/splatnet/deaths.svg";
 
-import { ReactComponent as Baller } from "../../assets/splatnet/baller.svg"
-import { ReactComponent as BooyahBomb } from "../../assets/splatnet/booyah-bomb.svg"
-import { ReactComponent as BubbleBlower } from "../../assets/splatnet/bubbleblower.svg"
-import { ReactComponent as BurstBombRush } from "../../assets/splatnet/burstbomb-rush.svg"
-import { ReactComponent as InkArmor } from "../../assets/splatnet/inkarmor.svg"
-import { ReactComponent as Inkjet } from "../../assets/splatnet/inkjet.svg"
-import { ReactComponent as Inkstorm } from "../../assets/splatnet/inkstorm.svg"
-import { ReactComponent as Missiles } from "../../assets/splatnet/missiles.svg"
-import { ReactComponent as Stingray } from "../../assets/splatnet/ray.svg"
-import { ReactComponent as Splashdown } from "../../assets/splatnet/splashdown.svg"
-import { ReactComponent as UltraStamp } from "../../assets/splatnet/stamp.svg"
-import { ReactComponent as SuctionRush } from "../../assets/splatnet/suction-rush.svg"
-import { ReactComponent as SplatBombRush } from "../../assets/splatnet/splatbomb-rush.svg"
-import { ReactComponent as AutoBombRush } from "../../assets/splatnet/autobomb-rush.svg"
-import { ReactComponent as CurlingBombRush } from "../../assets/splatnet/curlingbomb-rush.svg"
+import { ReactComponent as Baller } from "../../assets/splatnet/baller.svg";
+import { ReactComponent as BooyahBomb } from "../../assets/splatnet/booyah-bomb.svg";
+import { ReactComponent as BubbleBlower } from "../../assets/splatnet/bubbleblower.svg";
+import { ReactComponent as BurstBombRush } from "../../assets/splatnet/burstbomb-rush.svg";
+import { ReactComponent as InkArmor } from "../../assets/splatnet/inkarmor.svg";
+import { ReactComponent as Inkjet } from "../../assets/splatnet/inkjet.svg";
+import { ReactComponent as Inkstorm } from "../../assets/splatnet/inkstorm.svg";
+import { ReactComponent as Missiles } from "../../assets/splatnet/missiles.svg";
+import { ReactComponent as Stingray } from "../../assets/splatnet/ray.svg";
+import { ReactComponent as Splashdown } from "../../assets/splatnet/splashdown.svg";
+import { ReactComponent as UltraStamp } from "../../assets/splatnet/stamp.svg";
+import { ReactComponent as SuctionRush } from "../../assets/splatnet/suction-rush.svg";
+import { ReactComponent as SplatBombRush } from "../../assets/splatnet/splatbomb-rush.svg";
+import { ReactComponent as AutoBombRush } from "../../assets/splatnet/autobomb-rush.svg";
+import { ReactComponent as CurlingBombRush } from "../../assets/splatnet/curlingbomb-rush.svg";
 
-import "./SplatoonIcon.css"
-import MyThemeContext from "../../themeContext"
-import { Weapon } from "../../types"
+import "./SplatoonIcon.css";
+import MyThemeContext from "../../themeContext";
+import { Weapon } from "../../types";
 
 const weaponToSvg = {
   "Sploosh-o-matic": Splashdown,
@@ -166,14 +166,14 @@ const weaponToSvg = {
   "Kensa Undercover Brella": InkArmor,
   kills: Kills,
   deaths: Deaths,
-} as const
+} as const;
 
 interface SplatnetIconProps {
-  iconFor: "kills" | "deaths" | Weapon
+  iconFor: "kills" | "deaths" | Weapon;
 }
 
 const SplatnetIcon: React.FC<SplatnetIconProps> = ({ iconFor }) => {
-  const { themeColorHex } = useContext(MyThemeContext)
+  const { themeColorHex } = useContext(MyThemeContext);
   const style = {
     width: "35px",
     height: "auto",
@@ -183,14 +183,14 @@ const SplatnetIcon: React.FC<SplatnetIconProps> = ({ iconFor }) => {
     backgroundSize: "125%",
     userSelect: "none",
     "--main-bg-color": themeColorHex,
-  } as React.CSSProperties
-  const Component = weaponToSvg[iconFor]
+  } as React.CSSProperties;
+  const Component = weaponToSvg[iconFor];
   return (
     <>
       <Component style={style} />
       <ColorDefs style={{ width: 0, height: 0 }} />
     </>
-  )
-}
+  );
+};
 
-export default SplatnetIcon
+export default SplatnetIcon;

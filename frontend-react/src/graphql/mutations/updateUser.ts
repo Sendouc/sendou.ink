@@ -1,4 +1,4 @@
-import { gql, DocumentNode } from "apollo-boost"
+import { DocumentNode, gql } from "@apollo/client";
 
 export const UPDATE_USER: DocumentNode = gql`
   mutation updateUser(
@@ -18,4 +18,4 @@ export const UPDATE_USER: DocumentNode = gql`
       bio: $bio
     )
   }
-`
+`;

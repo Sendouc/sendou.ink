@@ -3,6 +3,6 @@ const grizzcoWeapons = [
   "Grizzco Brella",
   "Grizzco Charger",
   "Grizzco Slosher",
-]
+];
 
-module.exports = grizzcoWeapons
+module.exports = grizzcoWeapons;

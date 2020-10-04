@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery } from "@apollo/client";
 import {
   Box,
   Flex,
@@ -6,24 +6,24 @@ import {
   PopoverArrow,
   PopoverContent,
   PopoverTrigger,
-} from "@chakra-ui/core"
-import { RouteComponentProps } from "@reach/router"
-import React, { useContext, useEffect, useState } from "react"
-import { Helmet } from "react-helmet-async"
-import { useTranslation } from "react-i18next"
-import { XTrendsData, X_TRENDS } from "../../graphql/queries/xTrends"
-import MyThemeContext from "../../themeContext"
-import { Weapon } from "../../types"
-import { parseAndGetLocalizedMonthYear } from "../../utils/helperFunctions"
-import { months, weapons } from "../../utils/lists"
-import Error from "../common/Error"
-import Loading from "../common/Loading"
-import PageHeader from "../common/PageHeader"
-import Section from "../common/Section"
-import WeaponImage from "../common/WeaponImage"
-import Select from "../elements/Select"
-import ModeButtons from "./ModeButtons"
-import WeaponLineChart from "./WeaponLineChart"
+} from "@chakra-ui/core";
+import { RouteComponentProps } from "@reach/router";
+import React, { useContext, useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
+import { XTrendsData, X_TRENDS } from "../../graphql/queries/xTrends";
+import MyThemeContext from "../../themeContext";
+import { Weapon } from "../../types";
+import { parseAndGetLocalizedMonthYear } from "../../utils/helperFunctions";
+import { months, weapons } from "../../utils/lists";
+import Error from "../common/Error";
+import Loading from "../common/Loading";
+import PageHeader from "../common/PageHeader";
+import Section from "../common/Section";
+import WeaponImage from "../common/WeaponImage";
+import Select from "../elements/Select";
+import ModeButtons from "./ModeButtons";
+import WeaponLineChart from "./WeaponLineChart";
 
 const tiers = [
   {
@@ -71,82 +71,82 @@ const tiers = [
     criteria: 0.002, //1 in 500
     color: "green.700",
   },
-] as const
+] as const;
 
 const modeTranslationKey = new Map([
   ["SZ", "splatZonesShort"],
   ["TC", "towerControlShort"],
   ["RM", "rainMakerShort"],
   ["CB", "clamBlitzShort"],
-])
+]);
 
 const XTrendsPage: React.FC<RouteComponentProps> = () => {
-  const { t, i18n } = useTranslation()
+  const { t, i18n } = useTranslation();
   const { grayWithShade, darkerBgColor, themeColorWithShade } = useContext(
     MyThemeContext
-  )
-  const { data, error, loading } = useQuery<XTrendsData>(X_TRENDS)
-  const [month, setMonth] = useState<string | null>(null)
-  const [mode, setMode] = useState<"SZ" | "TC" | "RM" | "CB">("SZ")
+  );
+  const { data, error, loading } = useQuery<XTrendsData>(X_TRENDS);
+  const [month, setMonth] = useState<string | null>(null);
+  const [mode, setMode] = useState<"SZ" | "TC" | "RM" | "CB">("SZ");
   const [weaponMonths, setWeaponMonths] = useState<Record<
     string,
     Record<"SZ" | "TC" | "RM" | "CB", { name: Weapon; amount: number }[]>
-  > | null>(null)
+  > | null>(null);
 
   useEffect(() => {
-    if (loading || error || !!weaponMonths) return
+    if (loading || error || !!weaponMonths) return;
 
     const newWeaponMonths: Record<
       string,
       Record<"SZ" | "TC" | "RM" | "CB", { name: Weapon; amount: number }[]>
-    > = {}
+    > = {};
     data!.xTrends.forEach((weaponObj) => {
       weaponObj.counts.forEach((count) => {
-        const arrays = [count.SZ, count.TC, count.RM, count.CB]
+        const arrays = [count.SZ, count.TC, count.RM, count.CB];
         arrays.forEach((arr, modeIndex) => {
-          const modes = ["SZ", "TC", "RM", "CB"] as const
-          const mode = modes[modeIndex]
+          const modes = ["SZ", "TC", "RM", "CB"] as const;
+          const mode = modes[modeIndex];
           arr.forEach((num, numIndex) => {
-            if (num === null || num === 0) return
-            const monthString = `${months[numIndex]} ${count.year}`
+            if (num === null || num === 0) return;
+            const monthString = `${months[numIndex]} ${count.year}`;
             if (!newWeaponMonths[monthString]) {
-              newWeaponMonths[monthString] = { SZ: [], TC: [], RM: [], CB: [] }
+              newWeaponMonths[monthString] = { SZ: [], TC: [], RM: [], CB: [] };
             }
-            let weaponMonth = newWeaponMonths[monthString][mode]
-            weaponMonth.push({ name: weaponObj.weapon as Weapon, amount: num })
-            newWeaponMonths[monthString][mode] = weaponMonth
-          })
-        })
-      })
-    })
+            let weaponMonth = newWeaponMonths[monthString][mode];
+            weaponMonth.push({ name: weaponObj.weapon as Weapon, amount: num });
+            newWeaponMonths[monthString][mode] = weaponMonth;
+          });
+        });
+      });
+    });
 
-    setWeaponMonths(newWeaponMonths)
-  }, [data, loading, error, weaponMonths])
+    setWeaponMonths(newWeaponMonths);
+  }, [data, loading, error, weaponMonths]);
 
-  if (error) return <Error errorMessage={error.message} />
-  if (loading || !weaponMonths) return <Loading />
+  if (error) return <Error errorMessage={error.message} />;
+  if (loading || !weaponMonths) return <Loading />;
 
   const xRankMonths = Object.keys(weaponMonths).sort((a, b) => {
-    const partsA = a.split(" ")
-    const partsB = b.split(" ")
+    const partsA = a.split(" ");
+    const partsB = b.split(" ");
     if (partsA[1] !== partsB[1]) {
-      return parseInt(partsB[1]) - parseInt(partsA[1])
+      return parseInt(partsB[1]) - parseInt(partsA[1]);
     }
 
-    return months.indexOf(partsB[0] as any) - months.indexOf(partsA[0] as any)
-  })
+    return months.indexOf(partsB[0] as any) - months.indexOf(partsA[0] as any);
+  });
 
-  if (!month) setMonth(xRankMonths[0])
+  if (!month) setMonth(xRankMonths[0]);
 
   const weaponsOrdered = month
     ? weaponMonths[month][mode].sort((a, b) => {
-        const comparision = b.amount - a.amount
+        const comparision = b.amount - a.amount;
 
-        if (comparision !== 0) return comparision
+        if (comparision !== 0) return comparision;
 
-        return weapons.indexOf(a.name) - weapons.indexOf(b.name)
+        return weapons.indexOf(a.name) - weapons.indexOf(b.name);
       })
-    : []
+    : [];
 
   return (
     <>
@@ -180,14 +180,15 @@ const XTrendsPage: React.FC<RouteComponentProps> = () => {
       </Box>
       {tiers.map((tier, index, tiers) => {
         const weaponsInTheTier = weaponsOrdered.filter((weapon) => {
-          const previousCriteria = index === 0 ? 101 : tiers[index - 1].criteria
-          const percentsInTop500 = weapon.amount / 5
+          const previousCriteria =
+            index === 0 ? 101 : tiers[index - 1].criteria;
+          const percentsInTop500 = weapon.amount / 5;
           return (
             percentsInTop500 < previousCriteria &&
             percentsInTop500 >= tier.criteria
-          )
-        })
-        if (!weaponsInTheTier.length) return null
+          );
+        });
+        if (!weaponsInTheTier.length) return null;
 
         return (
           <Section key={tier.criteria} display="flex" my={4}>
@@ -256,10 +257,10 @@ const XTrendsPage: React.FC<RouteComponentProps> = () => {
               ))}
             </Flex>
           </Section>
-        )
+        );
       })}
     </>
-  )
-}
+  );
+};
 
-export default XTrendsPage
+export default XTrendsPage;

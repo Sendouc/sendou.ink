@@ -1,24 +1,24 @@
-import { ApolloProvider } from "@apollo/react-hooks"
-import { ChakraProvider, extendTheme } from "@chakra-ui/core"
-import { createHistory, LocationProvider } from "@reach/router"
-import ApolloClient from "apollo-boost"
-import React from "react"
-import ReactDOM from "react-dom"
-import { HelmetProvider } from "react-helmet-async"
-import { QueryParamProvider } from "use-query-params"
-import App from "./components/root/App"
-import ErrorBoundary from "./ErrorBoundary"
-import "./i18n"
-import * as serviceWorker from "./serviceWorker"
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import { ChakraProvider, extendTheme } from "@chakra-ui/core";
+import { createHistory, LocationProvider } from "@reach/router";
+import React from "react";
+import ReactDOM from "react-dom";
+import { HelmetProvider } from "react-helmet-async";
+import { QueryParamProvider } from "use-query-params";
+import App from "./components/root/App";
+import ErrorBoundary from "./ErrorBoundary";
+import "./i18n";
+import * as serviceWorker from "./serviceWorker";
 
 const client = new ApolloClient({
   uri:
     process.env.NODE_ENV === "production"
       ? "/graphql"
       : "http://localhost:3001/graphql",
-})
+  cache: new InMemoryCache(),
+});
 
-let history = createHistory(window as any)
+let history = createHistory(window as any);
 
 ReactDOM.render(
   <ErrorBoundary>
@@ -37,6 +37,6 @@ ReactDOM.render(
     </LocationProvider>
   </ErrorBoundary>,
   document.getElementById("root")
-)
+);
 
-serviceWorker.unregister()
+serviceWorker.unregister();

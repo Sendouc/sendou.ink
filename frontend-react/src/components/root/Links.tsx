@@ -1,35 +1,35 @@
-import { useQuery } from "@apollo/react-hooks"
-import { Box, Flex, Heading, Link } from "@chakra-ui/core"
-import { RouteComponentProps } from "@reach/router"
-import React, { useContext } from "react"
-import { Helmet } from "react-helmet-async"
-import { useTranslation } from "react-i18next"
-import { LINKS } from "../../graphql/queries/links"
-import MyThemeContext from "../../themeContext"
-import Error from "../common/Error"
-import Loading from "../common/Loading"
-import PageHeader from "../common/PageHeader"
-import Alert from "../elements/Alert"
+import { useQuery } from "@apollo/client";
+import { Box, Flex, Heading, Link } from "@chakra-ui/core";
+import { RouteComponentProps } from "@reach/router";
+import React, { useContext } from "react";
+import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
+import { LINKS } from "../../graphql/queries/links";
+import MyThemeContext from "../../themeContext";
+import Error from "../common/Error";
+import Loading from "../common/Loading";
+import PageHeader from "../common/PageHeader";
+import Alert from "../elements/Alert";
 
 interface LinkI {
-  title: string
-  url: string
-  description: string
-  type: "GUIDE" | "DISCORD" | "MISC"
+  title: string;
+  url: string;
+  description: string;
+  type: "GUIDE" | "DISCORD" | "MISC";
 }
 
 interface LinksData {
-  links: LinkI[]
+  links: LinkI[];
 }
 
 const Links: React.FC<RouteComponentProps> = () => {
-  const { t, i18n } = useTranslation()
-  const { data, error, loading } = useQuery<LinksData>(LINKS)
-  const { themeColorWithShade, grayWithShade } = useContext(MyThemeContext)
+  const { t, i18n } = useTranslation();
+  const { data, error, loading } = useQuery<LinksData>(LINKS);
+  const { themeColorWithShade, grayWithShade } = useContext(MyThemeContext);
 
-  if (loading || !data) return <Loading />
-  if (error) return <Error errorMessage={error.message} />
-  const links = data.links
+  if (loading || !data) return <Loading />;
+  if (error) return <Error errorMessage={error.message} />;
+  const links = data.links;
 
   const linkMap = (link: LinkI) => (
     <React.Fragment key={link.title}>
@@ -40,7 +40,7 @@ const Links: React.FC<RouteComponentProps> = () => {
         {link.description}
       </Box>
     </React.Fragment>
-  )
+  );
 
   return (
     <>
@@ -70,7 +70,7 @@ const Links: React.FC<RouteComponentProps> = () => {
         {links.filter((link) => link.type === "MISC").map(linkMap)}
       </Flex>
     </>
-  )
-}
+  );
+};
 
-export default Links
+export default Links;

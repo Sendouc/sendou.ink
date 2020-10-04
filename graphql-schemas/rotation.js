@@ -1,13 +1,13 @@
-const { gql } = require("apollo-server-express")
-const axios = require("axios")
+const { gql } = require("apollo-server-express");
+const axios = require("axios");
 
 const typeDef = gql`
   extend type Query {
     rotationData: String
   }
-`
+`;
 
-let rotationData = { timestamp: 0 } //will probably not work
+let rotationData = { timestamp: 0 }; //will probably not work
 
 const resolvers = {
   Query: {
@@ -21,18 +21,18 @@ const resolvers = {
               "User-Agent": "sendou.ink - owner: @Sendouc on Twitter",
             },
           }
-        )
-        rotationData = result.data
-        rotationData.timestamp = Math.floor(Date.now() / 1000)
-        return JSON.stringify(rotationData)
+        );
+        rotationData = result.data;
+        rotationData.timestamp = Math.floor(Date.now() / 1000);
+        return JSON.stringify(rotationData);
       } else {
-        return JSON.stringify(rotationData)
+        return JSON.stringify(rotationData);
       }
     },
   },
-}
+};
 
 module.exports = {
   Rotation: typeDef,
   rotationResolvers: resolvers,
-}
+};

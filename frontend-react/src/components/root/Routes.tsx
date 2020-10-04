@@ -1,36 +1,37 @@
-import { Router } from "@reach/router"
-import React, { lazy, Suspense } from "react"
-import Loading from "../common/Loading"
-import NotFound from "./NotFound"
-import { ScrollToTop } from "./ScrollToTop"
+import { Router } from "@reach/router";
+import React, { lazy, Suspense } from "react";
+import Loading from "../common/Loading";
+import NotFound from "./NotFound";
+import { ScrollToTop } from "./ScrollToTop";
 
-const HomePage = lazy(() => import("../home/HomePage"))
-const UserPage = lazy(() => import("../user/UserPage"))
-const UserSearchPage = lazy(() => import("../usersearch/UserSearchPage"))
-const MarkdownHelpPage = lazy(() => import("../markdown/MarkdownHelpPage"))
-const BuildsPage = lazy(() => import("../builds/BuildsPage"))
-const BuildAnalyzerPage = lazy(() => import("../analyzer/BuildAnalyzerPage"))
-const CalendarPage = lazy(() => import("../calendar/CalendarPage"))
-const TournamentsPage = lazy(() => import("../tournaments/TournamentsPage"))
-const EventPage = lazy(() => import("../events/EventsPage"))
+const HomePage = lazy(() => import("../home/HomePage"));
+const UserPage = lazy(() => import("../user/UserPage"));
+const UserSearchPage = lazy(() => import("../usersearch/UserSearchPage"));
+const MarkdownHelpPage = lazy(() => import("../markdown/MarkdownHelpPage"));
+const BuildsPage = lazy(() => import("../builds/BuildsPage"));
+const BuildAnalyzerPage = lazy(() => import("../analyzer/BuildAnalyzerPage"));
+const CalendarPage = lazy(() => import("../calendar/CalendarPage"));
+const TournamentsPage = lazy(() => import("../tournaments/TournamentsPage"));
+const EventPage = lazy(() => import("../events/EventsPage"));
 const TournamentsDetailsPage = lazy(
   () => import("../tournaments/TournamentDetailsPage")
-)
-const MapPlannerPage = lazy(() => import("../plans/MapPlannerPage"))
-const FreeAgentsPage = lazy(() => import("../freeagents/FreeAgentsPage"))
-const XSearch = lazy(() => import("../xsearch/Top500BrowserPage"))
-const XTrends = lazy(() => import("../xtrends/XTrendsPage"))
-const PlusPage = lazy(() => import("../plus/PlusPage"))
-const PlusFAQPage = lazy(() => import("../plus/PlusFAQPage"))
-const DraftCupPage = lazy(() => import("../plusdraftcup/DraftCupPage"))
-const DraftCupDetails = lazy(() => import("../plusdraftcup/DraftCupDetails"))
-const Access = lazy(() => import("./Access"))
-const VotingHistoryPage = lazy(() => import("../plus/VotingHistoryPage"))
-const VotingPage = lazy(() => import("../plus/VotingPage"))
-const About = lazy(() => import("./About"))
-const Links = lazy(() => import("./Links"))
-const TranslatePage = lazy(() => import("../translate/TranslatePage"))
-const AdminPage = lazy(() => import("../admin/AdminPage"))
+);
+const MapPlannerPage = lazy(() => import("../plans/MapPlannerPage"));
+const FreeAgentsPage = lazy(() => import("../freeagents/FreeAgentsPage"));
+const XSearch = lazy(() => import("../xsearch/Top500BrowserPage"));
+const XTrends = lazy(() => import("../xtrends/XTrendsPage"));
+const XLeaderboards = lazy(() => import("../xleaderboards/XLeaderboardsPage"));
+const PlusPage = lazy(() => import("../plus/PlusPage"));
+const PlusFAQPage = lazy(() => import("../plus/PlusFAQPage"));
+const DraftCupPage = lazy(() => import("../plusdraftcup/DraftCupPage"));
+const DraftCupDetails = lazy(() => import("../plusdraftcup/DraftCupDetails"));
+const Access = lazy(() => import("./Access"));
+const VotingHistoryPage = lazy(() => import("../plus/VotingHistoryPage"));
+const VotingPage = lazy(() => import("../plus/VotingPage"));
+const About = lazy(() => import("./About"));
+const Links = lazy(() => import("./Links"));
+const TranslatePage = lazy(() => import("../translate/TranslatePage"));
+const AdminPage = lazy(() => import("../admin/AdminPage"));
 
 const Routes: React.FC = () => {
   return (
@@ -53,6 +54,7 @@ const Routes: React.FC = () => {
           <FreeAgentsPage path="/freeagents" />
           <XSearch path="/xsearch" />
           <XTrends path="/xtrends" />
+          <XLeaderboards path="/xleaderboards" />
           <About path="/about" />
           <Links path="/links" />
           <Access path="/access" />
@@ -66,7 +68,7 @@ const Routes: React.FC = () => {
         </ScrollToTop>
       </Router>
     </Suspense>
-  )
-}
+  );
+};
 
-export default Routes
+export default Routes;

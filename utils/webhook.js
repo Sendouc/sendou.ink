@@ -1,7 +1,7 @@
-const webhook = require("webhook-discord")
+const webhook = require("webhook-discord");
 
 function sendFAPostToDiscord(args) {
-  const Hook = new webhook.Webhook(process.env.FA_WEBHOOK_URL)
+  const Hook = new webhook.Webhook(process.env.FA_WEBHOOK_URL);
 
   const msg = new webhook.MessageBuilder()
     .setName(args.user.username)
@@ -10,50 +10,52 @@ function sendFAPostToDiscord(args) {
     .addField(
       "",
       `[User page on sendou.ink](https://sendou.ink/u/${args.user.discord_id})`
-    )
+    );
 
   if (args.can_vc) {
-    const can_vc = args.can_vc.toLowerCase()
-    msg.addField("Voice Chat", can_vc[0].toUpperCase() + can_vc.slice(1))
+    const can_vc = args.can_vc.toLowerCase();
+    msg.addField("Voice Chat", can_vc[0].toUpperCase() + can_vc.slice(1));
   }
 
   if (args.playstyles) {
     msg.addField(
       "Playstyle",
-      args.playstyles.map(playstyle => playstyle.toLowerCase()).join(", ")
-    )
+      args.playstyles.map((playstyle) => playstyle.toLowerCase()).join(", ")
+    );
   }
 
   if (args.user.weapons.length > 0) {
-    msg.addField("Weapons", args.user.weapons.join(", "))
+    msg.addField("Weapons", args.user.weapons.join(", "));
   }
 
   if (args.past_experience) {
-    msg.addField("Past experience", args.past_experience)
+    msg.addField("Past experience", args.past_experience);
   }
 
   if (args.activity) {
-    msg.addField("Activity", args.activity)
+    msg.addField("Activity", args.activity);
   }
 
   if (args.looking_for) {
-    msg.addField("Looking for", args.looking_for)
+    msg.addField("Looking for", args.looking_for);
   }
 
   if (args.description) {
-    msg.addField("Description", args.description)
+    msg.addField("Description", args.description);
   }
 
   if (args.user.twitter_name) {
-    msg.setAvatar(`https://avatars.io/twitter/${args.user.twitter_name}`)
+    msg.setAvatar(`https://avatars.io/twitter/${args.user.twitter_name}`);
   }
 
   if (args.user.country) {
-    const top500string = args.user.top500 ? " <:top500:594551830764191763>" : ""
-    msg.setText(`:flag_${args.user.country}:${top500string}`)
+    const top500string = args.user.top500
+      ? " <:top500:594551830764191763>"
+      : "";
+    msg.setText(`:flag_${args.user.country}:${top500string}`);
   }
 
-  return Hook.send(msg)
+  return Hook.send(msg);
 }
 
-module.exports = sendFAPostToDiscord
+module.exports = sendFAPostToDiscord;

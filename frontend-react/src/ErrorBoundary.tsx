@@ -1,28 +1,35 @@
-import { Box, Flex, Heading, Image } from "@chakra-ui/core"
-import React from "react"
-import errorGirl from "./assets/error_girl.png"
+import { Box, Flex, Heading, Image } from "@chakra-ui/core";
+import React from "react";
+import errorGirl from "./assets/error_girl.png";
 
 type HocProps = {
   // here you can extend hoc with new props
-}
+};
 type HocState = {
-  readonly error: Error | null | undefined
-}
+  readonly error: Error | null | undefined;
+};
 
 class ErrorBoundary extends React.Component<HocProps, HocState> {
   readonly state: HocState = {
     error: null,
-  }
+  };
 
   componentDidCatch(error: Error | null, errorInfo: object) {
-    console.log({ error })
-    this.setState({ error: error })
+    console.log({ error });
+    this.setState({ error: error });
   }
 
   render() {
     if (this.state.error) {
       return (
-        <Flex flexDir="column" justifyContent="center" alignItems="center">
+        <Flex
+          flexDir="column"
+          justifyContent="center"
+          alignItems="center"
+          bg="white"
+          padding="6rem"
+          borderRadius="5px"
+        >
           <Image w="24rem" mx="auto" src={errorGirl} />
           <Heading as="h3" mx="auto">
             An <span style={{ color: "red" }}>error</span> occurred:{" "}
@@ -62,11 +69,11 @@ class ErrorBoundary extends React.Component<HocProps, HocState> {
             <code>{this.state.error.stack}</code>
           </pre>
         </Flex>
-      )
+      );
     }
 
-    return this.props.children
+    return this.props.children;
   }
 }
 
-export default ErrorBoundary
+export default ErrorBoundary;

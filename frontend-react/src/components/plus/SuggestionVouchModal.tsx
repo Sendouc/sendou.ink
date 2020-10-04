@@ -1,46 +1,46 @@
-import React, { useState, useContext } from "react"
-import Modal from "../elements/Modal"
-import UserSelector from "../common/UserSelector"
-import { ADD_SUGGESTION } from "../../graphql/mutations/addSuggestion"
-import { ADD_VOUCH } from "../../graphql/mutations/addVouch"
-import { useMutation } from "@apollo/react-hooks"
+import { useMutation } from "@apollo/client";
 import {
-  useToast,
-  FormControl,
-  FormLabel,
-  FormHelperText,
-  RadioGroup,
-  Radio,
-  Flex,
   Box,
+  Flex,
+  FormControl,
   FormErrorMessage,
+  FormHelperText,
+  FormLabel,
+  Radio,
+  RadioGroup,
   Stack,
-} from "@chakra-ui/core"
-import MyThemeContext from "../../themeContext"
-import TextArea from "../elements/TextArea"
-import Button from "../elements/Button"
-import { SUGGESTIONS } from "../../graphql/queries/suggestions"
-import { VOUCHES } from "../../graphql/queries/vouches"
-import { USER } from "../../graphql/queries/user"
+  useToast,
+} from "@chakra-ui/core";
+import React, { useContext, useState } from "react";
+import { ADD_SUGGESTION } from "../../graphql/mutations/addSuggestion";
+import { ADD_VOUCH } from "../../graphql/mutations/addVouch";
+import { SUGGESTIONS } from "../../graphql/queries/suggestions";
+import { USER } from "../../graphql/queries/user";
+import { VOUCHES } from "../../graphql/queries/vouches";
+import MyThemeContext from "../../themeContext";
+import UserSelector from "../common/UserSelector";
+import Button from "../elements/Button";
+import Modal from "../elements/Modal";
+import TextArea from "../elements/TextArea";
 
 interface AddSuggestionVars {
-  discord_id: string
-  region: string
-  server: string
-  description: string
+  discord_id: string;
+  region: string;
+  server: string;
+  description: string;
 }
 
 interface AddVouchVars {
-  discord_id: string
-  region: string
-  server: string
+  discord_id: string;
+  region: string;
+  server: string;
 }
 
 interface SuggestionVouchModalProps {
-  closeModal: () => void
-  canSuggest: boolean
-  canVouch: boolean
-  plusServer: "ONE" | "TWO"
+  closeModal: () => void;
+  canSuggest: boolean;
+  canVouch: boolean;
+  plusServer: "ONE" | "TWO";
 }
 
 const SuggestionVouchModal: React.FC<SuggestionVouchModalProps> = ({
@@ -49,26 +49,26 @@ const SuggestionVouchModal: React.FC<SuggestionVouchModalProps> = ({
   canVouch,
   plusServer,
 }) => {
-  const [form, setForm] = useState<Partial<AddSuggestionVars>>({})
+  const [form, setForm] = useState<Partial<AddSuggestionVars>>({});
   const [actionType, setActionType] = useState<string>(
     !canSuggest ? "VOUCH" : "SUGGEST"
-  )
-  const [showErrors, setShowErrors] = useState(false)
-  const toast = useToast()
-  const { themeColor } = useContext(MyThemeContext)
+  );
+  const [showErrors, setShowErrors] = useState(false);
+  const toast = useToast();
+  const { themeColor } = useContext(MyThemeContext);
 
   const [addSuggestion, { loading }] = useMutation<boolean, AddSuggestionVars>(
     ADD_SUGGESTION,
     {
       variables: { ...(form as AddSuggestionVars) },
       onCompleted: (data) => {
-        closeModal()
+        closeModal();
         toast({
           description: `Suggestion added`,
           position: "top-right",
           status: "success",
           duration: 10000,
-        })
+        });
       },
       onError: (error) => {
         toast({
@@ -77,11 +77,11 @@ const SuggestionVouchModal: React.FC<SuggestionVouchModalProps> = ({
           position: "top-right",
           status: "error",
           duration: 10000,
-        })
+        });
       },
       refetchQueries: [{ query: SUGGESTIONS }],
     }
-  )
+  );
 
   const [addVouch, { loading: vouchLoading }] = useMutation<
     boolean,
@@ -89,13 +89,13 @@ const SuggestionVouchModal: React.FC<SuggestionVouchModalProps> = ({
   >(ADD_VOUCH, {
     variables: { ...(form as AddVouchVars) },
     onCompleted: (data) => {
-      closeModal()
+      closeModal();
       toast({
         description: `Player vouched`,
         position: "top-right",
         status: "success",
         duration: 10000,
-      })
+      });
     },
     onError: (error) => {
       toast({
@@ -104,32 +104,32 @@ const SuggestionVouchModal: React.FC<SuggestionVouchModalProps> = ({
         position: "top-right",
         status: "error",
         duration: 10000,
-      })
+      });
     },
     refetchQueries: [{ query: VOUCHES }, { query: USER }],
-  })
+  });
 
   const handleChange = (newValueObject: Partial<AddSuggestionVars>) => {
-    setForm({ ...form, ...newValueObject })
-  }
+    setForm({ ...form, ...newValueObject });
+  };
 
   const handleSubmit = () => {
     if (!form.discord_id || !form.region || !form.server) {
-      setShowErrors(true)
-      return
+      setShowErrors(true);
+      return;
     }
     if (
       (!form.description ||
         (form.description && form.description.length > 1000)) &&
       actionType === "SUGGEST"
     ) {
-      setShowErrors(true)
-      return
+      setShowErrors(true);
+      return;
     }
 
-    if (actionType === "SUGGEST") addSuggestion()
-    if (actionType === "VOUCH") addVouch()
-  }
+    if (actionType === "SUGGEST") addSuggestion();
+    if (actionType === "VOUCH") addVouch();
+  };
 
   return (
     <Modal title="Suggesting or vouching a player" closeModal={closeModal}>
@@ -261,7 +261,7 @@ const SuggestionVouchModal: React.FC<SuggestionVouchModalProps> = ({
         </Button>
       </Flex>
     </Modal>
-  )
-}
+  );
+};
 
-export default SuggestionVouchModal
+export default SuggestionVouchModal;

@@ -5,15 +5,15 @@ import {
   NumberInput,
   NumberInputField,
   NumberInputStepper,
-} from "@chakra-ui/core"
-import React, { useContext } from "react"
-import MyThemeContext from "../../themeContext"
-import Label from "../elements/Label"
+} from "@chakra-ui/core";
+import React, { useContext } from "react";
+import MyThemeContext from "../../themeContext";
+import Label from "../elements/Label";
 
 interface MotionInputProps {
-  label: string
-  value?: number
-  onChange: (value: number) => void
+  label: string;
+  value?: number;
+  onChange: (value: number) => void;
 }
 
 const MotionInput: React.FC<MotionInputProps> = ({
@@ -21,7 +21,7 @@ const MotionInput: React.FC<MotionInputProps> = ({
   value,
   onChange,
 }) => {
-  const { darkerBgColor } = useContext(MyThemeContext)
+  const { darkerBgColor } = useContext(MyThemeContext);
   return (
     <Box>
       <Label>{label}</Label>
@@ -40,7 +40,7 @@ const MotionInput: React.FC<MotionInputProps> = ({
         </NumberInputStepper>
       </NumberInput>
     </Box>
-  )
-}
+  );
+};
 
-export default MotionInput
+export default MotionInput;

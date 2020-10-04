@@ -1,17 +1,17 @@
-import React from "react"
-import { Placement } from "../../types"
-import ModesAccordion from "./ModesAccordion"
+import React from "react";
+import { GetUsersXRankPlacementsQuery } from "../../generated/graphql";
+import ModesAccordion from "./ModesAccordion";
 
 interface XRankTabProps {
-  placements: Placement[]
+  placementsData: GetUsersXRankPlacementsQuery;
 }
 
-const XRankTab: React.FC<XRankTabProps> = ({ placements }) => {
+const XRankTab: React.FC<XRankTabProps> = ({ placementsData }) => {
   return (
     <>
-      <ModesAccordion placements={placements} />
+      <ModesAccordion placementsData={placementsData} />
     </>
-  )
-}
+  );
+};
 
-export default XRankTab
+export default XRankTab;

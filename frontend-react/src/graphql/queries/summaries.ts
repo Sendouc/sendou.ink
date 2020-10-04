@@ -1,4 +1,4 @@
-import { gql, DocumentNode } from "apollo-boost"
+import { DocumentNode, gql } from "@apollo/client";
 
 export const SUMMARIES: DocumentNode = gql`
   {
@@ -22,4 +22,4 @@ export const SUMMARIES: DocumentNode = gql`
       month
     }
   }
-`
+`;

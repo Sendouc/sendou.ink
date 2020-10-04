@@ -1,35 +1,37 @@
-import React, { useContext } from "react"
-import Loading from "../common/Loading"
-import Error from "../common/Error"
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery } from "@apollo/client";
+import { Box, Flex, Heading } from "@chakra-ui/core";
+import { Link } from "@reach/router";
+import React, { useContext } from "react";
+import { useTranslation } from "react-i18next";
+import { FiClock, FiInfo } from "react-icons/fi";
 import {
   UpcomingEventsData,
   UPCOMING_EVENTS,
-} from "../../graphql/queries/upcomingEvents"
-import { getWeek } from "../../utils/helperFunctions"
-import SubHeader from "../common/SubHeader"
-import { Heading, Flex, Box } from "@chakra-ui/core"
-import { FiClock, FiInfo } from "react-icons/fi"
-import MyThemeContext from "../../themeContext"
-import Button from "../elements/Button"
-import { Link } from "@reach/router"
-import { useTranslation } from "react-i18next"
+} from "../../graphql/queries/upcomingEvents";
+import MyThemeContext from "../../themeContext";
+import { getWeek } from "../../utils/helperFunctions";
+import Error from "../common/Error";
+import Loading from "../common/Loading";
+import SubHeader from "../common/SubHeader";
+import Button from "../elements/Button";
 
 const WeeksTournaments: React.FC = () => {
-  const { themeColorWithShade, grayWithShade } = useContext(MyThemeContext)
-  const { data, error, loading } = useQuery<UpcomingEventsData>(UPCOMING_EVENTS)
-  const { t } = useTranslation()
+  const { themeColorWithShade, grayWithShade } = useContext(MyThemeContext);
+  const { data, error, loading } = useQuery<UpcomingEventsData>(
+    UPCOMING_EVENTS
+  );
+  const { t } = useTranslation();
 
-  if (loading) return <Loading />
-  if (error) return <Error errorMessage={error.message} />
+  if (loading) return <Loading />;
+  if (error) return <Error errorMessage={error.message} />;
 
-  const thisWeekNumber = getWeek(new Date())
+  const thisWeekNumber = getWeek(new Date());
 
   const events = data!.upcomingEvents.filter(
     (event) => getWeek(new Date(parseInt(event.date))) === thisWeekNumber
-  )
+  );
 
-  if (events.length === 0) return null
+  if (events.length === 0) return null;
 
   return (
     <>
@@ -63,7 +65,7 @@ const WeeksTournaments: React.FC = () => {
         </Box>
       </Flex>
     </>
-  )
-}
+  );
+};
 
-export default WeeksTournaments
+export default WeeksTournaments;

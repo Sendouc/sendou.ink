@@ -1,14 +1,14 @@
-import React from "react"
-import { Flex, Box } from "@chakra-ui/core"
-import { FaCrosshairs, FaBriefcaseMedical, FaAnchor } from "react-icons/fa"
-import { useTranslation } from "react-i18next"
+import React from "react";
+import { Flex, Box } from "@chakra-ui/core";
+import { FaCrosshairs, FaBriefcaseMedical, FaAnchor } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 interface RoleIconsProps {
-  playstyles: ("FRONTLINE" | "MIDLINE" | "BACKLINE")[]
+  playstyles: ("FRONTLINE" | "MIDLINE" | "BACKLINE")[];
 }
 
 const RoleIcons: React.FC<RoleIconsProps> = ({ playstyles }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <Flex>
       <Box
@@ -37,7 +37,7 @@ const RoleIcons: React.FC<RoleIconsProps> = ({ playstyles }) => {
         cursor="help"
       />
     </Flex>
-  )
-}
+  );
+};
 
-export default RoleIcons
+export default RoleIcons;

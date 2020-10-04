@@ -1,22 +1,24 @@
-import { useColorMode, useTheme as useChakraTheme } from "@chakra-ui/core"
-import useLocalStorage from "@rehooks/local-storage"
-import React, { useEffect } from "react"
-import { MyThemeProvider } from "../../themeContext"
-import { Theme, ThemeColor } from "../../types"
-import "./App.css"
-import Layout from "./Layout"
-import Routes from "./Routes"
+import { useColorMode, useTheme as useChakraTheme } from "@chakra-ui/core";
+import useLocalStorage from "@rehooks/local-storage";
+import React, { useEffect } from "react";
+import { MyThemeProvider } from "../../themeContext";
+import { Theme, ThemeColor } from "../../types";
+import "./App.css";
+import Layout from "./Layout";
+import Routes from "./Routes";
 
 const App: React.FC = () => {
-  const chakraTheme = useChakraTheme()
-  const { colorMode } = useColorMode()
-  const [themeColorFromStorage] = useLocalStorage<ThemeColor>("colorPreference")
+  const chakraTheme = useChakraTheme();
+  const { colorMode } = useColorMode();
+  const [themeColorFromStorage] = useLocalStorage<ThemeColor>(
+    "colorPreference"
+  );
 
   const themeColor = themeColorFromStorage
     ? themeColorFromStorage
     : colorMode === "light"
     ? "pink"
-    : "orange"
+    : "orange";
 
   const theme = {
     light: {
@@ -43,13 +45,13 @@ const App: React.FC = () => {
       themeColorHexLighter: chakraTheme.colors[themeColor]["200"],
       themeColor,
     } as Theme,
-  }
+  };
 
   useEffect(() => {
-    const favicon = document.getElementById("favicon") as HTMLLinkElement
-    if (!favicon) return
-    favicon.href = `/favicon_${themeColor}.png`
-  }, [themeColorFromStorage, themeColor])
+    const favicon = document.getElementById("favicon") as HTMLLinkElement;
+    if (!favicon) return;
+    favicon.href = `/favicon_${themeColor}.png`;
+  }, [themeColorFromStorage, themeColor]);
 
   return (
     <MyThemeProvider value={theme[colorMode]}>
@@ -57,7 +59,7 @@ const App: React.FC = () => {
         <Routes />
       </Layout>
     </MyThemeProvider>
-  )
-}
+  );
+};
 
-export default App
+export default App;

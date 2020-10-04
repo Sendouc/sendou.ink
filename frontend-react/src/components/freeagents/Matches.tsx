@@ -1,5 +1,5 @@
-import React, { useContext } from "react"
-import FieldsetWithLegend from "../common/FieldsetWithLegend"
+import React, { useContext } from "react";
+import FieldsetWithLegend from "../common/FieldsetWithLegend";
 import {
   Flex,
   Box,
@@ -9,27 +9,27 @@ import {
   PopoverArrow,
   AvatarGroup,
   Avatar,
-} from "@chakra-ui/core"
-import UserAvatar from "../common/UserAvatar"
-import MyThemeContext from "../../themeContext"
-import { useTranslation, Trans } from "react-i18next"
+} from "@chakra-ui/core";
+import UserAvatar from "../common/UserAvatar";
+import MyThemeContext from "../../themeContext";
+import { useTranslation, Trans } from "react-i18next";
 
 interface MatchesProps {
   matches: {
-    username: string
-    discriminator: string
-    avatar?: string
-  }[]
-  likesReceived: number
+    username: string;
+    discriminator: string;
+    avatar?: string;
+  }[];
+  likesReceived: number;
 }
 
 const Matches: React.FC<MatchesProps> = ({ matches, likesReceived }) => {
-  const { t } = useTranslation()
-  const { grayWithShade, darkerBgColor } = useContext(MyThemeContext)
+  const { t } = useTranslation();
+  const { grayWithShade, darkerBgColor } = useContext(MyThemeContext);
 
-  if (matches.length === 0 && likesReceived === 0) return null
+  if (matches.length === 0 && likesReceived === 0) return null;
 
-  const unrequitedLove = likesReceived - matches.length
+  const unrequitedLove = likesReceived - matches.length;
 
   return (
     <Flex justifyContent="center">
@@ -42,7 +42,7 @@ const Matches: React.FC<MatchesProps> = ({ matches, likesReceived }) => {
           <>
             <Flex justifyContent="center" flexWrap="wrap">
               {matches.map((match) => {
-                const matchFullName = `${match.username}#${match.discriminator}`
+                const matchFullName = `${match.username}#${match.discriminator}`;
                 return (
                   <Box
                     key={`${match.username}${match.discriminator}`}
@@ -68,7 +68,7 @@ const Matches: React.FC<MatchesProps> = ({ matches, likesReceived }) => {
                       </PopoverContent>
                     </Popover>
                   </Box>
-                )
+                );
               })}
             </Flex>
           </>
@@ -91,7 +91,7 @@ const Matches: React.FC<MatchesProps> = ({ matches, likesReceived }) => {
         )}
       </FieldsetWithLegend>
     </Flex>
-  )
-}
+  );
+};
 
-export default Matches
+export default Matches;

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@apollo/react-hooks": "^3.1.5",
+    "@apollo/client": "^3.3.0-beta.6",
     "@chakra-ui/core": "^1.0.0-rc.5",
     "@reach/router": "^1.3.4",
     "@rehooks/local-storage": "^2.4.0",
@@ -18,7 +18,6 @@
     "@types/react-select": "^3.0.19",
     "@types/recharts": "^1.8.15",
     "@types/webpack-env": "^1.15.2",
-    "apollo-boost": "^0.4.9",
     "graphql": "^15.3.0",
     "i18next": "^19.7.0",
     "i18next-browser-languagedetector": "^6.0.1",
@@ -39,7 +38,6 @@
     "react-scripts": "next",
     "react-select": "^3.1.0",
     "react-string-replace": "^0.4.4",
-    "react-super-responsive-table": "^5.1.2",
     "recharts": "^1.8.5",
     "source-map-explorer": "^2.5.0",
     "typescript": "^3.8.3",
@@ -51,7 +49,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "analyze": "source-map-explorer 'build/static/js/*.js'"
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
+    "gen": "graphql-codegen --config codegen.yml"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -68,5 +67,10 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@graphql-codegen/cli": "^1.17.8",
+    "@graphql-codegen/typescript": "^1.17.9",
+    "@graphql-codegen/typescript-operations": "^1.17.8",
+    "@graphql-codegen/typescript-react-apollo": "^2.0.6"
+  }
 }

@@ -1,60 +1,58 @@
-import { useMutation, useQuery } from "@apollo/react-hooks"
-import { Box, Flex, Progress, useToast } from "@chakra-ui/core"
-import { Redirect, RouteComponentProps } from "@reach/router"
-import React, { useContext, useEffect, useState } from "react"
-import { AddVotesVars, ADD_VOTES } from "../../graphql/mutations/addVotes"
-import { PlusInfoData, PLUS_INFO } from "../../graphql/queries/plusInfo"
-import { USER } from "../../graphql/queries/user"
+import { useMutation, useQuery } from "@apollo/client";
+import { Box, Flex, Progress, useToast } from "@chakra-ui/core";
+import { Redirect, RouteComponentProps } from "@reach/router";
+import React, { useContext, useEffect, useState } from "react";
+import { AddVotesVars, ADD_VOTES } from "../../graphql/mutations/addVotes";
+import { PlusInfoData, PLUS_INFO } from "../../graphql/queries/plusInfo";
+import { USER } from "../../graphql/queries/user";
 import {
   UsersForVotingData,
   USERS_FOR_VOTING,
   VotingSuggested,
-} from "../../graphql/queries/usersForVoting"
-import MyThemeContext from "../../themeContext"
-import { UserData } from "../../types"
-import Error from "../common/Error"
-import Loading from "../common/Loading"
-import PageHeader from "../common/PageHeader"
-import SubHeader from "../common/SubHeader"
-import Alert from "../elements/Alert"
-import Button from "../elements/Button"
-import PersonForVoting from "./PersonForVoting"
+} from "../../graphql/queries/usersForVoting";
+import MyThemeContext from "../../themeContext";
+import { UserData } from "../../types";
+import Error from "../common/Error";
+import Loading from "../common/Loading";
+import PageHeader from "../common/PageHeader";
+import SubHeader from "../common/SubHeader";
+import Alert from "../elements/Alert";
+import Button from "../elements/Button";
+import PersonForVoting from "./PersonForVoting";
 
 interface SuggestedArrays {
-  sameRegion: VotingSuggested[]
-  otherRegion: VotingSuggested[]
+  sameRegion: VotingSuggested[];
+  otherRegion: VotingSuggested[];
 }
 
 const VotingPage: React.FC<RouteComponentProps> = () => {
-  const { themeColor, grayWithShade, colorMode } = useContext(MyThemeContext)
+  const { themeColor, grayWithShade, colorMode } = useContext(MyThemeContext);
   const { data, loading, error } = useQuery<UsersForVotingData>(
     USERS_FOR_VOTING
-  )
-  const { data: plusInfoData, loading: plusInfoLoading } = useQuery<
-    PlusInfoData
-  >(PLUS_INFO)
-  const { data: userData } = useQuery<UserData>(USER)
+  );
+  const { data: plusInfoData } = useQuery<PlusInfoData>(PLUS_INFO);
+  const { data: userData } = useQuery<UserData>(USER);
 
-  const [votes, setVotes] = useState<Record<string, number>>({})
-  const [oldVotes, setOldVotes] = useState<Record<string, number>>({})
+  const [votes, setVotes] = useState<Record<string, number>>({});
+  const [oldVotes, setOldVotes] = useState<Record<string, number>>({});
   const [suggestedArrays, setSuggestedArrays] = useState<SuggestedArrays>({
     sameRegion: [],
     otherRegion: [],
-  })
-  const toast = useToast()
+  });
+  const toast = useToast();
 
   const [addVotesMutation, { loading: addVotesLoading }] = useMutation<
     boolean,
     AddVotesVars
   >(ADD_VOTES, {
     onCompleted: () => {
-      window.scrollTo(0, 0)
+      window.scrollTo(0, 0);
       toast({
         description: `Votes submitted`,
         position: "top-right",
         status: "success",
         duration: 10000,
-      })
+      });
     },
     onError: (error) => {
       toast({
@@ -63,7 +61,7 @@ const VotingPage: React.FC<RouteComponentProps> = () => {
         position: "top-right",
         status: "error",
         duration: 10000,
-      })
+      });
     },
     refetchQueries: [
       {
@@ -73,7 +71,7 @@ const VotingPage: React.FC<RouteComponentProps> = () => {
         query: PLUS_INFO,
       },
     ],
-  })
+  });
 
   const handleSubmit = async () => {
     await addVotesMutation({
@@ -83,45 +81,45 @@ const VotingPage: React.FC<RouteComponentProps> = () => {
           score: (votes as any)[key],
         })),
       },
-    })
-  }
+    });
+  };
 
-  const user = userData?.user
+  const user = userData?.user;
 
   useEffect(() => {
-    if (loading || error || !user) return
+    if (loading || error || !user) return;
 
-    const sameRegionSuggested: VotingSuggested[] = []
-    const otherRegionSuggested: VotingSuggested[] = []
+    const sameRegionSuggested: VotingSuggested[] = [];
+    const otherRegionSuggested: VotingSuggested[] = [];
 
     data!.usersForVoting.suggested.forEach((suggested) => {
       if (suggested.plus_region === user.plus!.plus_region) {
-        sameRegionSuggested.push(suggested)
+        sameRegionSuggested.push(suggested);
       } else {
-        otherRegionSuggested.push(suggested)
+        otherRegionSuggested.push(suggested);
       }
-    })
+    });
 
     setSuggestedArrays({
       sameRegion: sameRegionSuggested,
       otherRegion: otherRegionSuggested,
-    })
+    });
 
     if (data!.usersForVoting.votes) {
-      const voteObj: Record<string, number> = {}
-      const oldVoteObj: Record<string, number> = {}
+      const voteObj: Record<string, number> = {};
+      const oldVoteObj: Record<string, number> = {};
       data!.usersForVoting.votes.forEach((vote) =>
         vote.stale
           ? (oldVoteObj[vote.discord_id] = vote.score)
           : (voteObj[vote.discord_id] = vote.score)
-      )
-      setVotes(voteObj)
-      setOldVotes(oldVoteObj)
+      );
+      setVotes(voteObj);
+      setOldVotes(oldVoteObj);
     }
-  }, [loading, error, data, user])
+  }, [loading, error, data, user]);
 
   if (plusInfoData && !plusInfoData.plusInfo) {
-    return <Redirect to="/404" />
+    return <Redirect to="/access" />;
   }
   if (
     loading ||
@@ -129,30 +127,30 @@ const VotingPage: React.FC<RouteComponentProps> = () => {
     !plusInfoData?.plusInfo ||
     !plusInfoData.plusInfo.voting_ends
   )
-    return <Loading />
-  if (error) return <Error errorMessage={error.message} />
+    return <Loading />;
+  if (error) return <Error errorMessage={error.message} />;
 
-  const votingEnds = parseInt(plusInfoData.plusInfo.voting_ends)
+  const votingEnds = parseInt(plusInfoData.plusInfo.voting_ends);
   const {
     voter_count: votedSoFar,
     eligible_voters: eligibleVoters,
-  } = plusInfoData.plusInfo
+  } = plusInfoData.plusInfo;
 
-  const date = new Date()
+  const date = new Date();
   if (votingEnds < date.getTime())
     return (
       <Alert status="info">
         Voting is over. Results will be posted a bit later.
       </Alert>
-    )
+    );
 
-  const hoursLeft = Math.ceil((votingEnds - date.getTime()) / (1000 * 60 * 60))
-  const alreadyVoted = votes.length > 0
+  const hoursLeft = Math.ceil((votingEnds - date.getTime()) / (1000 * 60 * 60));
+  const alreadyVoted = votes.length > 0;
 
   const missingVotes =
     data!.usersForVoting.users.length +
     data!.usersForVoting.suggested.length -
-    Object.keys(votes).length
+    Object.keys(votes).length;
 
   return (
     <>
@@ -177,7 +175,7 @@ const VotingPage: React.FC<RouteComponentProps> = () => {
         </SubHeader>
         {data!.usersForVoting.users.map((userForVoting) => {
           if (userForVoting.plus.plus_region !== user.plus!.plus_region)
-            return null
+            return null;
           return (
             <PersonForVoting
               key={userForVoting.discord_id}
@@ -186,7 +184,7 @@ const VotingPage: React.FC<RouteComponentProps> = () => {
               setVotes={setVotes}
               oldVote={oldVotes[userForVoting.discord_id]}
             />
-          )
+          );
         })}
       </Box>
       {suggestedArrays.sameRegion.length > 0 && (
@@ -206,7 +204,7 @@ const VotingPage: React.FC<RouteComponentProps> = () => {
                 description={suggestion.description}
                 oldVote={oldVotes[suggestion.discord_user.discord_id]}
               />
-            )
+            );
           })}
         </>
       )}
@@ -215,7 +213,7 @@ const VotingPage: React.FC<RouteComponentProps> = () => {
       </SubHeader>
       {data!.usersForVoting.users.map((userForVoting) => {
         if (userForVoting.plus.plus_region === user.plus!.plus_region)
-          return null
+          return null;
         return (
           <PersonForVoting
             key={userForVoting.discord_id}
@@ -225,7 +223,7 @@ const VotingPage: React.FC<RouteComponentProps> = () => {
             sameRegion={false}
             oldVote={oldVotes[userForVoting.discord_id]}
           />
-        )
+        );
       })}
       {suggestedArrays.otherRegion.length > 0 && (
         <>
@@ -246,7 +244,7 @@ const VotingPage: React.FC<RouteComponentProps> = () => {
                 description={suggestion.description}
                 oldVote={oldVotes[suggestion.discord_user.discord_id]}
               />
-            )
+            );
           })}
         </>
       )}
@@ -268,7 +266,7 @@ const VotingPage: React.FC<RouteComponentProps> = () => {
         )}
       </Flex>
     </>
-  )
-}
+  );
+};
 
-export default VotingPage
+export default VotingPage;

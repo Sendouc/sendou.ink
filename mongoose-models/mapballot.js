@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const mapBallotSchema = new mongoose.Schema({
   discord_id: String,
@@ -11,13 +11,13 @@ const mapBallotSchema = new mongoose.Schema({
       cb: Number,
     },
   ],
-})
+});
 
 mapBallotSchema.virtual("discord_user", {
   ref: "User",
   localField: "discord_id",
   foreignField: "discord_id",
   justOne: true,
-})
+});
 
-module.exports = mongoose.model("MapBallot", mapBallotSchema)
+module.exports = mongoose.model("MapBallot", mapBallotSchema);

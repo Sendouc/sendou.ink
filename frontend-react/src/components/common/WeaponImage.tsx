@@ -1,13 +1,13 @@
-import React from "react"
-import { useTranslation } from "react-i18next"
-import { Weapon } from "../../types.js"
-import english_internal from "../../utils/english_internal.json"
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { Weapon } from "../../types.js";
+import english_internal from "../../utils/english_internal.json";
 
 interface WeaponImageProps {
-  englishName: Weapon
-  size: "SMALL" | "SMEDIUM" | "MEDIUM" | "BIG"
-  asInlineBlock?: boolean
-  noTitle?: boolean
+  englishName: Weapon;
+  size: "SMALL" | "SMEDIUM" | "MEDIUM" | "BIG";
+  asInlineBlock?: boolean;
+  noTitle?: boolean;
 }
 
 const sizeWhMap: Record<
@@ -18,7 +18,7 @@ const sizeWhMap: Record<
   SMEDIUM: "48px",
   MEDIUM: "64px",
   BIG: undefined,
-}
+};
 
 const WeaponImage: React.FC<WeaponImageProps> = ({
   englishName,
@@ -26,8 +26,8 @@ const WeaponImage: React.FC<WeaponImageProps> = ({
   asInlineBlock,
   noTitle,
 }) => {
-  const { t } = useTranslation()
-  const wh = sizeWhMap[size]
+  const { t } = useTranslation();
+  const wh = sizeWhMap[size];
 
   return (
     <>
@@ -42,7 +42,7 @@ const WeaponImage: React.FC<WeaponImageProps> = ({
         }}
       />
     </>
-  )
-}
+  );
+};
 
-export default WeaponImage
+export default WeaponImage;

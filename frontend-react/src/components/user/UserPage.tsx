@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery } from "@apollo/client";
 import {
   Badge,
   Box,
@@ -7,60 +7,58 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
-} from "@chakra-ui/core"
-import { Redirect, RouteComponentProps } from "@reach/router"
-import React, { useContext } from "react"
-import { Helmet } from "react-helmet-async"
-import { Trans, useTranslation } from "react-i18next"
-import { FaTrophy, FaTshirt } from "react-icons/fa"
-import { IconType } from "react-icons/lib/cjs"
-import { PLAYER_INFO } from "../../graphql/queries/playerInfo"
-import { SEARCH_FOR_BUILDS } from "../../graphql/queries/searchForBuilds"
+} from "@chakra-ui/core";
+import { Redirect, RouteComponentProps } from "@reach/router";
+import React, { useContext } from "react";
+import { Helmet } from "react-helmet-async";
+import { Trans, useTranslation } from "react-i18next";
+import { FaTrophy, FaTshirt } from "react-icons/fa";
+import { IconType } from "react-icons/lib/cjs";
+import { useGetUsersXRankPlacementsQuery } from "../../generated/graphql";
+import { SEARCH_FOR_BUILDS } from "../../graphql/queries/searchForBuilds";
 import {
   SearchForUserData,
   SearchForUserVars,
   SEARCH_FOR_USER,
-} from "../../graphql/queries/searchForUser"
-import { USER } from "../../graphql/queries/user"
-import MyThemeContext from "../../themeContext"
+} from "../../graphql/queries/searchForUser";
+import { USER } from "../../graphql/queries/user";
+import MyThemeContext from "../../themeContext";
 import {
-  PlayerInfoData,
-  PlayerInfoVars,
   SearchForBuildsData,
   SearchForBuildsVars,
   UserData,
-} from "../../types"
-import { canAddJpnBuildsIds, weapons } from "../../utils/lists"
-import Error from "../common/Error"
-import Loading from "../common/Loading"
-import Markdown from "../elements/Markdown"
-import AvatarWithInfo from "./AvatarWithInfo"
-import BuildTab from "./BuildTab"
-import XRankTab from "./XRankTab"
+} from "../../types";
+import { canAddJpnBuildsIds, weapons } from "../../utils/lists";
+import Error from "../common/Error";
+import Loading from "../common/Loading";
+import Markdown from "../elements/Markdown";
+import AvatarWithInfo from "./AvatarWithInfo";
+import BuildTab from "./BuildTab";
+import XRankTab from "./XRankTab";
 
 interface TabI {
-  id: number
-  icon: IconType
-  title: JSX.Element
-  content: JSX.Element
+  id: number;
+  icon: IconType;
+  title: JSX.Element;
+  content: JSX.Element;
 }
 
 interface UserPageProps {
-  id?: string
+  id?: string;
 }
 
 const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const { data, error, loading } = useQuery<
     SearchForUserData,
     SearchForUserVars
   >(SEARCH_FOR_USER, {
     variables: isNaN(id as any) ? { custom_url: id } : { discord_id: id },
-  })
+  });
 
   const { data: userData, error: userError, loading: userLoading } = useQuery<
     UserData
-  >(USER)
+  >(USER);
 
   const {
     data: buildsData,
@@ -69,38 +67,41 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
   } = useQuery<SearchForBuildsData, SearchForBuildsVars>(SEARCH_FOR_BUILDS, {
     variables: { discord_id: data?.searchForUser?.discord_id as any },
     skip: !data || !data.searchForUser,
-  })
+  });
 
   const {
-    data: playerData,
-    error: playerError,
-    loading: playerLoading,
-  } = useQuery<PlayerInfoData, PlayerInfoVars>(PLAYER_INFO, {
-    variables: { twitter: data?.searchForUser?.twitter_name as any },
-    skip: !data || !data.searchForUser || !data.searchForUser.twitter_name,
-  })
+    data: xRankPlacementsData,
+    loading: xRankPlacementsLoading,
+    error: xRankPlacementsError,
+  } = useGetUsersXRankPlacementsQuery({
+    skip: !data?.searchForUser?.discord_id,
+    variables: {
+      identifier: data?.searchForUser?.discord_id ?? "-1",
+    },
+  });
 
   const {
     textColor,
     themeColor,
     themeColorWithShade,
     grayWithShade,
-  } = useContext(MyThemeContext)
+  } = useContext(MyThemeContext);
 
-  if (loading || userLoading || buildsLoading || playerLoading)
-    return <Loading />
-  if (error) return <Error errorMessage={error.message} />
-  if (userError) return <Error errorMessage={userError.message} />
-  if (buildsError) return <Error errorMessage={buildsError.message} />
-  if (playerError) return <Error errorMessage={playerError.message} />
+  if (loading || userLoading || buildsLoading || xRankPlacementsLoading)
+    return <Loading />;
+  if (error) return <Error errorMessage={error.message} />;
+  if (userError) return <Error errorMessage={userError.message} />;
+  if (buildsError) return <Error errorMessage={buildsError.message} />;
+  if (xRankPlacementsError)
+    return <Error errorMessage={xRankPlacementsError.message} />;
   if (!data || !data.searchForUser || !userData || !buildsData)
-    return <Redirect to="/404" />
+    return <Redirect to="/404" />;
 
-  const userLean = userData.user
-  const user = data.searchForUser
-  const builds = buildsData.searchForBuilds
+  const userLean = userData.user;
+  const user = data.searchForUser;
+  const builds = buildsData.searchForBuilds;
 
-  const tabs: TabI[] = []
+  const tabs: TabI[] = [];
 
   if (builds.length > 0 || userLean?.discord_id === user.discord_id) {
     tabs.push({
@@ -117,8 +118,8 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
       content: (
         <TabPanel key={1}>
           <BuildTab
-            builds={builds.sort((a, b) => {
-              const weaponPool = user.weapons
+            builds={[...builds].sort((a, b) => {
+              const weaponPool = user.weapons;
               if (weaponPool) {
                 if (
                   weaponPool.includes(a.weapon) &&
@@ -126,14 +127,14 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
                 ) {
                   return (
                     weaponPool.indexOf(a.weapon) - weaponPool.indexOf(b.weapon)
-                  )
+                  );
                 }
                 const poolComparision =
-                  weaponPool.indexOf(b.weapon) - weaponPool.indexOf(a.weapon)
+                  weaponPool.indexOf(b.weapon) - weaponPool.indexOf(a.weapon);
 
-                if (poolComparision !== 0) return poolComparision
+                if (poolComparision !== 0) return poolComparision;
               }
-              return weapons.indexOf(a.weapon) - weapons.indexOf(b.weapon)
+              return weapons.indexOf(a.weapon) - weapons.indexOf(b.weapon);
             })}
             canModifyBuilds={userLean?.discord_id === user.discord_id}
             unlimitedBuilds={
@@ -143,10 +144,10 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
           />
         </TabPanel>
       ),
-    })
+    });
   }
 
-  if (playerData?.playerInfo?.placements) {
+  if (xRankPlacementsData?.getUserByIdentifier?.xRankPlacements) {
     tabs.push({
       id: 2,
       icon: FaTrophy,
@@ -154,16 +155,16 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
         <>
           {t("users;X Rank Top 500")}{" "}
           <Badge colorScheme={themeColor} ml="0.5em">
-            {playerData.playerInfo.placements.length}
+            {xRankPlacementsData.getUserByIdentifier.xRankPlacements.length}
           </Badge>
         </>
       ),
       content: (
         <TabPanel key={2}>
-          <XRankTab placements={playerData.playerInfo.placements} />
+          <XRankTab placementsData={xRankPlacementsData} />
         </TabPanel>
       ),
-    })
+    });
   } else if (userLean?.discord_id === user.discord_id) {
     tabs.push({
       id: 2,
@@ -183,7 +184,7 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
           </Box>
         </TabPanel>
       ),
-    })
+    });
   }
 
   return (
@@ -219,7 +220,7 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
         <TabPanels>{tabs.map((tabObj) => tabObj.content)}</TabPanels>
       </Tabs>
     </>
-  )
-}
+  );
+};
 
-export default UserPage
+export default UserPage;

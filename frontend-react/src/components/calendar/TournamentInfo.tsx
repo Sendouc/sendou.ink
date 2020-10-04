@@ -1,24 +1,24 @@
-import { useQuery } from "@apollo/react-hooks"
-import { Box, Flex, Heading, Image } from "@chakra-ui/core"
-import { Link } from "@reach/router"
-import React, { useContext, useState } from "react"
-import { useTranslation } from "react-i18next"
-import { FiClock, FiEdit, FiInfo } from "react-icons/fi"
-import { DiscordIcon } from "../../assets/icons"
-import { CompetitiveFeedEvent } from "../../graphql/queries/upcomingEvents"
-import { USER } from "../../graphql/queries/user"
-import MyThemeContext from "../../themeContext"
-import { UserData } from "../../types"
-import Section from "../common/Section"
-import UserAvatar from "../common/UserAvatar"
-import IconButton from "../elements/IconButton"
-import Markdown from "../elements/Markdown"
-import TournamentModal from "./TournamentModal"
+import { useQuery } from "@apollo/client";
+import { Box, Flex, Heading, Image } from "@chakra-ui/core";
+import { Link } from "@reach/router";
+import React, { useContext, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { FiClock, FiEdit, FiInfo } from "react-icons/fi";
+import { DiscordIcon } from "../../assets/icons";
+import { CompetitiveFeedEvent } from "../../graphql/queries/upcomingEvents";
+import { USER } from "../../graphql/queries/user";
+import MyThemeContext from "../../themeContext";
+import { UserData } from "../../types";
+import Section from "../common/Section";
+import UserAvatar from "../common/UserAvatar";
+import IconButton from "../elements/IconButton";
+import Markdown from "../elements/Markdown";
+import TournamentModal from "./TournamentModal";
 
 interface TournamentInfoProps {
-  tournament: CompetitiveFeedEvent
-  date: Date
-  expandedByDefault?: boolean
+  tournament: CompetitiveFeedEvent;
+  date: Date;
+  expandedByDefault?: boolean;
 }
 
 const TournamentInfo: React.FC<TournamentInfoProps> = ({
@@ -26,13 +26,13 @@ const TournamentInfo: React.FC<TournamentInfoProps> = ({
   date,
   expandedByDefault,
 }) => {
-  const { themeColorWithShade, grayWithShade } = useContext(MyThemeContext)
-  const { i18n } = useTranslation()
-  const [expanded, setExpanded] = useState(!!expandedByDefault)
-  const [showModal, setShowModal] = useState(false)
-  const poster = tournament.poster_discord_user
+  const { themeColorWithShade, grayWithShade } = useContext(MyThemeContext);
+  const { i18n } = useTranslation();
+  const [expanded, setExpanded] = useState(!!expandedByDefault);
+  const [showModal, setShowModal] = useState(false);
+  const poster = tournament.poster_discord_user;
 
-  const { data: userData } = useQuery<UserData>(USER)
+  const { data: userData } = useQuery<UserData>(USER);
 
   return (
     <Section my={5}>
@@ -127,7 +127,7 @@ const TournamentInfo: React.FC<TournamentInfoProps> = ({
         </Box>
       )}
     </Section>
-  )
-}
+  );
+};
 
-export default TournamentInfo
+export default TournamentInfo;

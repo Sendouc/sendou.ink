@@ -1,78 +1,78 @@
-import React, { useState } from "react"
-import { useQuery } from "@apollo/react-hooks"
-import { USER } from "../../graphql/queries/user"
-import {
-  UserData,
-  FreeAgentPostsData,
-  Weapon,
-  FreeAgentPost,
-} from "../../types"
-import { FREE_AGENT_POSTS } from "../../graphql/queries/freeAgentPosts"
-import Loading from "../common/Loading"
-import Error from "../common/Error"
-import { RouteComponentProps } from "@reach/router"
-import Posts from "./Posts"
-import PageHeader from "../common/PageHeader"
-import { Helmet } from "react-helmet-async"
-import WeaponSelector from "../common/WeaponSelector"
-import RadioGroup from "../elements/RadioGroup"
-import { continents } from "../../utils/lists"
-import { Collapse, Flex, Box } from "@chakra-ui/core"
-import Button from "../elements/Button"
-import { FaFilter } from "react-icons/fa"
-import FAPostModal from "./FAPostModal"
+import { useQuery } from "@apollo/client";
+import { Box, Collapse, Flex } from "@chakra-ui/core";
+import { RouteComponentProps } from "@reach/router";
+import React, { useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
+import { FaFilter } from "react-icons/fa";
 import {
   FreeAgentMatchesData,
   FREE_AGENT_MATCHES,
-} from "../../graphql/queries/freeAgentMatches"
-import Matches from "./Matches"
-import Alert from "../elements/Alert"
-import { useTranslation } from "react-i18next"
+} from "../../graphql/queries/freeAgentMatches";
+import { FREE_AGENT_POSTS } from "../../graphql/queries/freeAgentPosts";
+import { USER } from "../../graphql/queries/user";
+import {
+  FreeAgentPost,
+  FreeAgentPostsData,
+  UserData,
+  Weapon,
+} from "../../types";
+import { continents } from "../../utils/lists";
+import Error from "../common/Error";
+import Loading from "../common/Loading";
+import PageHeader from "../common/PageHeader";
+import WeaponSelector from "../common/WeaponSelector";
+import Alert from "../elements/Alert";
+import Button from "../elements/Button";
+import RadioGroup from "../elements/RadioGroup";
+import FAPostModal from "./FAPostModal";
+import Matches from "./Matches";
+import Posts from "./Posts";
 
 const playstyleToEnum = {
   "Frontline/Slayer": "FRONTLINE",
   "Midline/Support": "MIDLINE",
   "Backline/Anchor": "BACKLINE",
-} as const
+} as const;
 
 const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
-  const { t } = useTranslation()
-  const [weapon, setWeapon] = useState<Weapon | null>(null)
-  const [showFilters, setShowFilters] = useState(false)
-  const [showModal, setShowModal] = useState(false)
+  const { t } = useTranslation();
+  const [weapon, setWeapon] = useState<Weapon | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [playstyle, setPlaystyle] = useState<
     "Any" | "Frontline/Slayer" | "Midline/Support" | "Backline/Anchor"
-  >("Any")
+  >("Any");
   const [region, setRegion] = useState<
     "Any" | "Europe" | "The Americas" | "Oceania" | "Other"
-  >("Any")
+  >("Any");
   const { data, error, loading } = useQuery<FreeAgentPostsData>(
     FREE_AGENT_POSTS
-  )
+  );
   const {
     data: userData,
     error: userQueryError,
     loading: userQueryLoading,
-  } = useQuery<UserData>(USER)
+  } = useQuery<UserData>(USER);
   const { data: matchesData, error: matchesError } = useQuery<
     FreeAgentMatchesData
-  >(FREE_AGENT_MATCHES)
+  >(FREE_AGENT_MATCHES);
 
-  if (error) return <Error errorMessage={error.message} />
-  if (userQueryError) return <Error errorMessage={userQueryError.message} />
-  if (matchesError) return <Error errorMessage={matchesError.message} />
-  if (loading || userQueryLoading) return <Loading />
+  if (error) return <Error errorMessage={error.message} />;
+  if (userQueryError) return <Error errorMessage={userQueryError.message} />;
+  if (matchesError) return <Error errorMessage={matchesError.message} />;
+  if (loading || userQueryLoading) return <Loading />;
 
-  const faPosts = data!.freeAgentPosts
+  const faPosts = data!.freeAgentPosts;
 
   const ownFAPost = faPosts.find(
     (post) => post.discord_user.discord_id === userData!.user?.discord_id
-  )
+  );
 
   const buttonText =
     ownFAPost && !ownFAPost.hidden
       ? t("freeagents;Edit free agent post")
-      : t("freeagents;New free agent post")
+      : t("freeagents;New free agent post");
 
   const altWeaponMap = new Map([
     ["Splattershot", "Hero Shot Replica"],
@@ -85,12 +85,12 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
     ["Heavy Splatling", "Hero Splatling Replica"],
     ["Splat Dualies", "Hero Dualie Replicas"],
     ["Splat Brella", "Hero Brella Replica"],
-  ])
+  ]);
 
   const postsFilter = (post: FreeAgentPost) => {
-    if (post.hidden) return false
+    if (post.hidden) return false;
 
-    const usersWeapons = post.discord_user.weapons ?? []
+    const usersWeapons = post.discord_user.weapons ?? [];
 
     if (
       weapon &&
@@ -99,31 +99,31 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
         usersWeapons.includes(altWeaponMap.get(weapon) as any)
       )
     ) {
-      return false
+      return false;
     }
 
     if (playstyle !== "Any") {
       if (post.playstyles.indexOf(playstyleToEnum[playstyle]) === -1)
-        return false
+        return false;
     }
 
     if (region !== "Any") {
       if (!post.discord_user.country) {
-        if (region === "Other") return true
+        if (region === "Other") return true;
 
-        return false
+        return false;
       }
 
-      const continentCode = continents[post.discord_user.country]
+      const continentCode = continents[post.discord_user.country];
 
-      if (region === "Europe" && continentCode !== "EU") return false
+      if (region === "Europe" && continentCode !== "EU") return false;
       else if (
         region === "The Americas" &&
         continentCode !== "NA" &&
         continentCode !== "SA"
       )
-        return false
-      else if (region === "Oceania" && continentCode !== "OC") return false
+        return false;
+      else if (region === "Oceania" && continentCode !== "OC") return false;
       else if (
         region === "Other" &&
         continentCode !== "AF" &&
@@ -131,11 +131,11 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
         continentCode !== "AS" &&
         continentCode !== "OC"
       )
-        return false
+        return false;
     }
 
-    return true
-  }
+    return true;
+  };
 
   const getTopRightContent = () => {
     if (!userData!.user)
@@ -145,10 +145,10 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
             {t("freeagents;loginPrompt")}
           </Alert>
         </Box>
-      )
+      );
 
     if (ownFAPost && ownFAPost.hidden) {
-      const weekFromCreatingFAPost = parseInt(ownFAPost.createdAt) + 604800000
+      const weekFromCreatingFAPost = parseInt(ownFAPost.createdAt) + 604800000;
       if (weekFromCreatingFAPost > Date.now()) {
         return (
           <Box maxW="300px">
@@ -156,7 +156,7 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
               {t("freeagents;pleaseWaitPrompt")}
             </Alert>
           </Box>
-        )
+        );
       }
     }
 
@@ -164,8 +164,8 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
       <Box m="0.5em">
         <Button onClick={() => setShowModal(true)}>{buttonText}</Button>
       </Box>
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -256,7 +256,7 @@ const FreeAgentsPage: React.FC<RouteComponentProps> = () => {
         }
       />
     </>
-  )
-}
+  );
+};
 
-export default FreeAgentsPage
+export default FreeAgentsPage;

@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery } from "@apollo/client";
 import {
   Box,
   Flex,
@@ -8,43 +8,43 @@ import {
   MenuGroup,
   MenuItem,
   MenuList,
-} from "@chakra-ui/core"
-import { Link, useLocation } from "@reach/router"
-import React, { Suspense, useContext } from "react"
-import { useTranslation } from "react-i18next"
-import { PlusInfoData, PLUS_INFO } from "../../graphql/queries/plusInfo"
-import MyThemeContext from "../../themeContext"
+} from "@chakra-ui/core";
+import { Link, useLocation } from "@reach/router";
+import React, { Suspense, useContext } from "react";
+import { useTranslation } from "react-i18next";
+import { PlusInfoData, PLUS_INFO } from "../../graphql/queries/plusInfo";
+import MyThemeContext from "../../themeContext";
 
 const getFirstFridayDate = () => {
-  const today = new Date()
+  const today = new Date();
   const month =
     today.getDate() <= 7 && today.getDay() <= 5
       ? today.getMonth()
-      : today.getMonth() + 1
+      : today.getMonth() + 1;
 
-  let day = 1
+  let day = 1;
   while (day <= 7) {
     const dateOfVoting = new Date(
       Date.UTC(today.getFullYear(), month, day, 15, 0, 0)
-    )
+    );
 
-    if (dateOfVoting.getDay() === 5) return dateOfVoting
+    if (dateOfVoting.getDay() === 5) return dateOfVoting;
 
-    day++
+    day++;
   }
 
-  console.error("Couldn't resolve first friday of the month for voting")
-  return new Date(2000, 1, 1)
-}
+  console.error("Couldn't resolve first friday of the month for voting");
+  return new Date(2000, 1, 1);
+};
 
 export const navIcons: {
-  code: string
-  displayName: string
+  code: string;
+  displayName: string;
   menuItems: {
-    code: string
-    displayName: string
-    toAppend?: string
-  }[]
+    code: string;
+    displayName: string;
+    toAppend?: string;
+  }[];
 }[] = [
   {
     code: "xsearch",
@@ -52,6 +52,7 @@ export const navIcons: {
     menuItems: [
       { code: "xsearch", displayName: "Browser" },
       { code: "xtrends", displayName: "Trends" },
+      { code: "xleaderboards", displayName: "Leaderboards" },
     ],
   },
   //{ code: "sr", displayName: "Salmon Run", menuItems: [] },
@@ -88,21 +89,21 @@ export const navIcons: {
       { code: "plus/faq", displayName: "FAQ" },
     ],
   },
-]
+];
 
 const IconNavBar = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const {
     darkerBgColor,
     textColor,
     themeColorWithShade,
     grayWithShade,
-  } = useContext(MyThemeContext)
-  const location = useLocation()
+  } = useContext(MyThemeContext);
+  const location = useLocation();
 
-  const { data: plusInfoData } = useQuery<PlusInfoData>(PLUS_INFO)
+  const { data: plusInfoData } = useQuery<PlusInfoData>(PLUS_INFO);
 
-  const isVoting = !!plusInfoData?.plusInfo?.voting_ends
+  const isVoting = !!plusInfoData?.plusInfo?.voting_ends;
 
   return (
     <Flex bg={darkerBgColor} py={2} justifyContent="center" flexWrap="wrap">
@@ -111,7 +112,7 @@ const IconNavBar = () => {
           const codesTogether =
             "/" +
             code +
-            menuItems.reduce((acc, { code }) => acc + "/" + code, "")
+            menuItems.reduce((acc, { code }) => acc + "/" + code, "");
           const MenuNavIcon = () => (
             <Flex
               flexDirection="column"
@@ -145,13 +146,13 @@ const IconNavBar = () => {
                 </Box>
               )}
             </Flex>
-          )
+          );
           if (!menuItems.length) {
             return (
               <Link key={code} to={code}>
                 <MenuNavIcon />
               </Link>
-            )
+            );
           }
 
           return (
@@ -168,8 +169,8 @@ const IconNavBar = () => {
                       >
                         {location.pathname === "/" + item.code ? (
                           <Box
-                            h="5px"
-                            w="5px"
+                            h="7px"
+                            w="7px"
                             mb={1}
                             bgColor={themeColorWithShade}
                             borderRadius="50%"
@@ -179,8 +180,8 @@ const IconNavBar = () => {
                           />
                         ) : (
                           <Box
-                            h="5px"
-                            w="5px"
+                            h="7px"
+                            w="7px"
                             mb={1}
                             borderRadius="50%"
                             lineHeight="0.5rem"
@@ -207,11 +208,11 @@ const IconNavBar = () => {
                 </MenuGroup>
               </MenuList>
             </Menu>
-          )
+          );
         })}
       </Suspense>
     </Flex>
-  )
-}
+  );
+};
 
-export default IconNavBar
+export default IconNavBar;

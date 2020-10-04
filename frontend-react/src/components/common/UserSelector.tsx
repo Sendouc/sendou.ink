@@ -1,18 +1,18 @@
-import React from "react"
-import { useQuery } from "@apollo/react-hooks"
-import { USERS, UsersData } from "../../graphql/queries/users"
-import Error from "./Error"
-import Select from "../elements/Select"
+import { useQuery } from "@apollo/client";
+import React from "react";
+import { USERS, UsersData } from "../../graphql/queries/users";
+import Select from "../elements/Select";
+import Error from "./Error";
 
 interface UserSelectorProps {
-  id?: string
-  setValue?: (value: string) => void
+  id?: string;
+  setValue?: (value: string) => void;
 }
 
 const UserSelector: React.FC<UserSelectorProps> = ({ setValue }) => {
-  const { data, error, loading } = useQuery<UsersData>(USERS)
+  const { data, error, loading } = useQuery<UsersData>(USERS);
 
-  if (error) return <Error errorMessage={error.message} />
+  if (error) return <Error errorMessage={error.message} />;
   return (
     <>
       <Select
@@ -32,7 +32,7 @@ const UserSelector: React.FC<UserSelectorProps> = ({ setValue }) => {
         isDisabled={loading}
       />
     </>
-  )
-}
+  );
+};
 
-export default UserSelector
+export default UserSelector;

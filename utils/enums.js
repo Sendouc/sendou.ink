@@ -2,7 +2,7 @@ const salmonRunRecordWildcards = [
   "ONE_WILDCARD",
   "FOUR_WILCARDS",
   "FOUR_GOLDEN_WILDCARDS",
-]
+];
 
 const salmonRunRecordCategories = [
   "TOTAL",
@@ -27,6 +27,6 @@ const salmonRunRecordCategories = [
   "HT_MOTHERSHIP",
   "LT_MOTHERSHIP",
   "LT_COHOCK",
-]
+];
 
-module.exports = { salmonRunRecordWildcards, salmonRunRecordCategories }
+module.exports = { salmonRunRecordWildcards, salmonRunRecordCategories };

@@ -1,35 +1,39 @@
-const { ApolloServer } = require("apollo-server-express")
-const mongoose = require("mongoose")
-const express = require("express")
-const compression = require("compression")
-const bodyParser = require("body-parser")
-const session = require("express-session")
-const MongoStore = require("connect-mongo")(session)
-const cors = require("cors")
-const passport = require("passport")
-const { Model, knexSnakeCaseMappers } = require("objection")
-const Knex = require("knex")
-import knexConfiguration from "./knexfile"
-const DiscordStrategy = require("passport-discord").Strategy
-const User = require("./mongoose-models/user")
-const path = require("path")
-const schema = require("./schema")
-const mockUser = require("./utils/mocks")
+const { ApolloServer } = require("apollo-server-express");
+const mongoose = require("mongoose");
+const express = require("express");
+const compression = require("compression");
+const bodyParser = require("body-parser");
+const session = require("express-session");
+const MongoStore = require("connect-mongo")(session);
+const cors = require("cors");
+const passport = require("passport");
+const { Model, knexSnakeCaseMappers } = require("objection");
+const Knex = require("knex");
+import knexConfiguration from "./knexfile";
+const DiscordStrategy = require("passport-discord").Strategy;
+const User = require("./mongoose-models/user");
+const ObjectionUser = require("./models/User").default;
+const XRankPlacement = require("./models/XRankPlacement").default;
+const path = require("path");
+const schema = require("./schema");
+const mockUser = require("./utils/mocks");
+const depthLimit = require("graphql-depth-limit");
+const DataLoader = require("dataloader");
 
 const knex = Knex({
   ...knexConfiguration,
   ...knexSnakeCaseMappers(),
-})
+});
 
-Model.knex(knex)
+Model.knex(knex);
 
-mongoose.set("useFindAndModify", false)
-mongoose.set("useCreateIndex", true)
+mongoose.set("useFindAndModify", false);
+mongoose.set("useCreateIndex", true);
 
 const callbackURL =
   process.env.NODE_ENV === "development"
     ? "http://localhost:3001/auth/discord/callback"
-    : "https://sendou.ink/auth/discord/callback"
+    : "https://sendou.ink/auth/discord/callback";
 
 passport.use(
   new DiscordStrategy(
@@ -45,17 +49,17 @@ passport.use(
         discriminator: profile.discriminator,
         discord_id: profile.id,
         avatar: profile.avatar,
-      }
+      };
       for (var i = 0; i < profile.connections.length; i++) {
-        const connection = profile.connections[i]
+        const connection = profile.connections[i];
         if (connection.visibility === 1 && connection.verified) {
           if (connection.type === "twitch") {
-            userToSave.twitch_name = connection.name.toLowerCase()
+            userToSave.twitch_name = connection.name.toLowerCase();
           } else if (connection.type === "twitter") {
-            userToSave.twitter_name = connection.name.toLowerCase()
+            userToSave.twitter_name = connection.name.toLowerCase();
           } else if (connection.type === "youtube") {
-            userToSave.youtube_name = connection.name
-            userToSave.youtube_id = connection.id
+            userToSave.youtube_name = connection.name;
+            userToSave.youtube_id = connection.id;
           }
         }
       }
@@ -81,25 +85,25 @@ passport.use(
         }),
       ])
         .then(() => cb(null, userToSave))
-        .catch((err) => cb(err, userToSave))
+        .catch((err) => cb(err, userToSave));
     }
   )
-)
+);
 
 passport.serializeUser(function (user, done) {
-  done(null, user.discord_id)
-})
+  done(null, user.discord_id);
+});
 
 passport.deserializeUser(function (discord_id, done) {
   User.findOne({ discord_id }, function (err, user) {
-    done(err, user)
-  })
-})
+    done(err, user);
+  });
+});
 
-console.log("connecting to MongoDB")
+console.log("connecting to MongoDB");
 let dbName =
-  process.env.NODE_ENV === "development" ? "development" : "production"
-if (process.env.USE_PRODUCTION_DB) dbName = "production"
+  process.env.NODE_ENV === "development" ? "development" : "production";
+if (process.env.USE_PRODUCTION_DB) dbName = "production";
 
 mongoose
   .connect(process.env.MONGODB_URI, {
@@ -108,30 +112,73 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    console.log(`connected to MongoDB (${dbName})`)
+    console.log(`connected to MongoDB (${dbName})`);
   })
   .catch((error) => {
-    console.log("error connection to MongoDB:", error.message)
-  })
+    console.log("error connection to MongoDB:", error.message);
+  });
 
 const server = new ApolloServer({
   introspection: true,
   playground: true,
   schema,
   context: ({ req }) => {
-    if (process.env.LOGGED_IN) {
-      return { user: mockUser }
-    }
-    return { user: req.user }
+    return {
+      user: process.env.LOGGED_IN ? mockUser : req.user,
+      playerLoader: new DataLoader(async (playerIds) => {
+        const users = await ObjectionUser.query()
+          .select()
+          .whereIn("playerId", playerIds);
+
+        const userMap = new Map();
+        users.forEach((user) => {
+          userMap.set(user.playerId, user);
+        });
+
+        return playerIds.map((id) => userMap.get(id));
+      }),
+      xRankPlacementLoader: new DataLoader(async (playerIds) => {
+        const placements = await XRankPlacement.query()
+          .select()
+          .whereIn("playerId", playerIds)
+          .withGraphFetched("weapon");
+
+        const placementsMap = new Map();
+        placements.forEach((placement) => {
+          const arr = placementsMap.get(placement.playerId);
+
+          if (arr) {
+            arr.push(placement);
+          } else {
+            placementsMap.set(placement.playerId, [placement]);
+          }
+        });
+
+        return playerIds.map((id) => placementsMap.get(id));
+      }),
+      xRankPlayerNameLoader: new DataLoader(async (playerIds) => {
+        const placements = await XRankPlacement.query()
+          .select()
+          .whereIn("playerId", playerIds);
+
+        const nameMap = new Map();
+        placements.forEach((placement) => {
+          nameMap.set(placement.playerId, placement.playerName);
+        });
+
+        return playerIds.map((id) => nameMap.get(id));
+      }),
+    };
   },
-})
+  validationRules: [depthLimit(4)],
+});
 
-const app = express()
+const app = express();
 
-app.use(bodyParser.json({ limit: "1mb" }))
-app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }))
+app.use(bodyParser.json({ limit: "1mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 
-app.use(cors())
+app.use(cors());
 
 //https://stackoverflow.com/questions/8605720/how-to-force-ssl-https-in-express-js/31144924#31144924
 
@@ -142,12 +189,12 @@ function requireHTTPS(req, res, next) {
     req.get("x-forwarded-proto") !== "https" &&
     process.env.NODE_ENV !== "development"
   ) {
-    return res.redirect("https://" + req.get("host") + req.url)
+    return res.redirect("https://" + req.get("host") + req.url);
   }
-  next()
+  next();
 }
 
-app.use(requireHTTPS)
+app.use(requireHTTPS);
 
 //https://www.npmjs.com/package/express-session
 
@@ -160,25 +207,25 @@ let sess = {
     mongooseConnection: mongoose.connection,
     touchAfter: 24 * 3600,
   }),
-}
+};
 
 if (process.env.NODE_ENV === "production") {
-  sess.cookie.secure = true
-  app.set("trust proxy", 1)
+  sess.cookie.secure = true;
+  app.set("trust proxy", 1);
 }
 
-app.use(session(sess))
+app.use(session(sess));
 
-app.use(compression())
+app.use(compression());
 
-app.use(express.static("build"))
+app.use(express.static("build"));
 
-app.use(passport.initialize())
-app.use(passport.session())
+app.use(passport.initialize());
+app.use(passport.session());
 
-server.applyMiddleware({ app })
+server.applyMiddleware({ app });
 
-app.get("/auth/discord", passport.authenticate("discord"))
+app.get("/auth/discord", passport.authenticate("discord"));
 
 app.get(
   "/auth/discord/callback",
@@ -186,20 +233,22 @@ app.get(
     failureRedirect: "/404",
   }),
   function (req, res) {
-    res.redirect("/u/" + req.user.discord_id) // Successful auth
+    res.redirect("/u/" + req.user.discord_id); // Successful auth
   }
-)
+);
 
 app.get("/logout", function (req, res) {
-  req.logout()
-  res.redirect("/")
-})
+  req.logout();
+  res.redirect("/");
+});
 
 app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "../build", "index.html"))
-})
+  res.sendFile(path.resolve(__dirname, "../build", "index.html"));
+});
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT || 3001;
 app.listen({ port: PORT }, () => {
-  console.log(`Server running on http://localhost:${PORT}${server.graphqlPath}`)
-})
+  console.log(
+    `Server running on http://localhost:${PORT}${server.graphqlPath}`
+  );
+});

@@ -1,6 +1,6 @@
-import React, { useContext } from "react"
-import UserAvatar from "../common/UserAvatar"
-import { Summary } from "./VotingHistoryPage"
+import React, { useContext } from "react";
+import UserAvatar from "../common/UserAvatar";
+import { Summary } from "./VotingHistoryPage";
 import {
   Heading,
   Box,
@@ -12,22 +12,22 @@ import {
   PopoverContent,
   PopoverArrow,
   PopoverBody,
-} from "@chakra-ui/core"
-import { Link } from "@reach/router"
-import MyThemeContext from "../../themeContext"
-import { FaBolt } from "react-icons/fa"
+} from "@chakra-ui/core";
+import { Link } from "@reach/router";
+import MyThemeContext from "../../themeContext";
+import { FaBolt } from "react-icons/fa";
 
 const getColor = (score: number) =>
-  score < 50 ? { color: "red" } : { color: "green" }
+  score < 50 ? { color: "red" } : { color: "green" };
 
 interface CountProps {
-  count: number[]
+  count: number[];
 }
 
 const Count: React.FC<CountProps> = ({ count }) => {
-  const { colorMode } = useContext(MyThemeContext)
-  const printOuter = count[0] !== 0 || count[3] !== 0
-  const shade = colorMode === "light" ? "600" : "400"
+  const { colorMode } = useContext(MyThemeContext);
+  const printOuter = count[0] !== 0 || count[3] !== 0;
+  const shade = colorMode === "light" ? "600" : "400";
   return (
     <Box as="span" fontSize="18px">
       {printOuter && (
@@ -54,27 +54,27 @@ const Count: React.FC<CountProps> = ({ count }) => {
         </>
       )}
     </Box>
-  )
-}
+  );
+};
 
 interface SummariesProps {
-  summaries: Summary[]
+  summaries: Summary[];
 }
 
 const Summaries: React.FC<SummariesProps> = ({ summaries }) => {
   const { grayWithShade, themeColor, darkerBgColor } = useContext(
     MyThemeContext
-  )
-  const members: Summary[] = []
-  const suggested: Summary[] = []
+  );
+  const members: Summary[] = [];
+  const suggested: Summary[] = [];
 
   summaries.forEach((summary) => {
-    if (summary.suggested) suggested.push(summary)
-    else members.push(summary)
-  })
+    if (summary.suggested) suggested.push(summary);
+    else members.push(summary);
+  });
 
   const summaryMap = (summary: Summary) => {
-    const { discord_user, score } = summary
+    const { discord_user, score } = summary;
     return (
       <React.Fragment key={discord_user.discord_id}>
         <Flex mr="1em" alignItems="center">
@@ -129,8 +129,8 @@ const Summaries: React.FC<SummariesProps> = ({ summaries }) => {
           </Box>
         </Box>
       </React.Fragment>
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -144,7 +144,7 @@ const Summaries: React.FC<SummariesProps> = ({ summaries }) => {
         {suggested.map(summaryMap)}
       </Grid>
     </>
-  )
-}
+  );
+};
 
-export default Summaries
+export default Summaries;

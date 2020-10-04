@@ -1,38 +1,38 @@
-import { useQuery } from "@apollo/react-hooks"
-import { Box, Button, Flex, FormLabel, Heading, Switch } from "@chakra-ui/core"
-import { RouteComponentProps } from "@reach/router"
-import useLocalStorage from "@rehooks/local-storage"
-import React, { useContext, useState } from "react"
-import { Helmet } from "react-helmet-async"
-import { useTranslation } from "react-i18next"
-import InfiniteScroll from "react-infinite-scroller"
-import { SEARCH_FOR_BUILDS } from "../../graphql/queries/searchForBuilds"
-import MyThemeContext from "../../themeContext"
+import { useQuery } from "@apollo/client";
+import { Box, Button, Flex, FormLabel, Heading, Switch } from "@chakra-ui/core";
+import { RouteComponentProps } from "@reach/router";
+import useLocalStorage from "@rehooks/local-storage";
+import React, { useContext, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
+import InfiniteScroll from "react-infinite-scroller";
+import { SEARCH_FOR_BUILDS } from "../../graphql/queries/searchForBuilds";
+import MyThemeContext from "../../themeContext";
 import {
   Ability,
   Build,
   SearchForBuildsData,
   SearchForBuildsVars,
   Weapon,
-} from "../../types"
-import Error from "../common/Error"
-import Loading from "../common/Loading"
-import PageHeader from "../common/PageHeader"
-import WeaponSelector from "../common/WeaponSelector"
-import Alert from "../elements/Alert"
-import AbilitySelector from "./AbilitySelector"
-import BuildCard from "./BuildCard"
+} from "../../types";
+import Error from "../common/Error";
+import Loading from "../common/Loading";
+import PageHeader from "../common/PageHeader";
+import WeaponSelector from "../common/WeaponSelector";
+import Alert from "../elements/Alert";
+import AbilitySelector from "./AbilitySelector";
+import BuildCard from "./BuildCard";
 
 const BuildsPage: React.FC<RouteComponentProps> = () => {
-  const { themeColor } = useContext(MyThemeContext)
-  const { t } = useTranslation()
-  const [weapon, setWeapon] = useState<Weapon | null>(null)
-  const [buildsToShow, setBuildsToShow] = useState(10)
-  const [abilities, setAbilities] = useState<Ability[]>([])
-  const [expandedUsers, setExpandedUsers] = useState<Set<string>>(new Set())
+  const { themeColor } = useContext(MyThemeContext);
+  const { t } = useTranslation();
+  const [weapon, setWeapon] = useState<Weapon | null>(null);
+  const [buildsToShow, setBuildsToShow] = useState(10);
+  const [abilities, setAbilities] = useState<Ability[]>([]);
+  const [expandedUsers, setExpandedUsers] = useState<Set<string>>(new Set());
   const [prefersAPView, setAPPreference] = useLocalStorage<boolean>(
     "prefersAPView"
-  )
+  );
 
   const { data, error, loading } = useQuery<
     SearchForBuildsData,
@@ -40,8 +40,8 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
   >(SEARCH_FOR_BUILDS, {
     variables: { weapon: weapon as any },
     skip: !weapon,
-  })
-  if (error) return <Error errorMessage={error.message} />
+  });
+  if (error) return <Error errorMessage={error.message} />;
 
   const buildsFilterByAbilities: Build[] = !data
     ? []
@@ -51,28 +51,28 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
           ...build.headgear,
           ...build.clothing,
           ...build.shoes,
-        ])
+        ]);
         return abilities.every((ability) =>
           abilitiesInBuild.has(ability as any)
-        )
+        );
       })
-    : data.searchForBuilds
+    : data.searchForBuilds;
 
-  const usersOtherBuilds: { [key: string]: Build[] } = {}
+  const usersOtherBuilds: { [key: string]: Build[] } = {};
 
   const buildsOnePerUserUnlessExpanded = buildsFilterByAbilities.reduce(
     (buildsArray: Build[], build) => {
-      const discord_id = build.discord_user!.discord_id
+      const discord_id = build.discord_user!.discord_id;
       if (!usersOtherBuilds[discord_id]) {
-        usersOtherBuilds[discord_id] = []
-        return [...buildsArray, build]
+        usersOtherBuilds[discord_id] = [];
+        return [...buildsArray, build];
       }
 
-      usersOtherBuilds[discord_id] = [...usersOtherBuilds[discord_id], build]
-      return buildsArray
+      usersOtherBuilds[discord_id] = [...usersOtherBuilds[discord_id], build];
+      return buildsArray;
     },
     []
-  )
+  );
 
   return (
     <>
@@ -127,7 +127,7 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
               {buildsOnePerUserUnlessExpanded
                 .filter((_, index) => index < buildsToShow)
                 .reduce((buildElementsArray: JSX.Element[], build) => {
-                  const allBuildsByUserToShow = []
+                  const allBuildsByUserToShow = [];
                   allBuildsByUserToShow.push(
                     <BuildCard
                       key={build.id}
@@ -153,7 +153,7 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
                       }
                       m="0.5em"
                     />
-                  )
+                  );
 
                   if (expandedUsers.has(build.discord_user!.discord_id)) {
                     allBuildsByUserToShow.push(
@@ -170,10 +170,10 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
                           m="0.5em"
                         />
                       ))
-                    )
+                    );
                   }
 
-                  return [...buildElementsArray, ...allBuildsByUserToShow]
+                  return [...buildElementsArray, ...allBuildsByUserToShow];
                 }, [])}
             </Flex>
           </InfiniteScroll>
@@ -198,7 +198,7 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
         </Alert>
       )}
     </>
-  )
-}
+  );
+};
 
-export default BuildsPage
+export default BuildsPage;

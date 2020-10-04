@@ -1,28 +1,50 @@
-import React from "react"
-import "./Pagination.css"
-import ReactPaginate from "react-paginate"
+import React from "react";
+import { useTranslation } from "react-i18next";
+import ReactPaginate from "react-paginate";
+import Button from "../elements/Button";
+import "./Pagination.css";
 
 interface PaginationProps {
-  pageCount: number
-  currentPage: number
-  onChange: (page: number) => void
+  pageCount: number;
+  currentPage: number;
+  onChange: (page: number) => void;
+  scrollToTop?: boolean;
 }
 
 const Pagination: React.FC<PaginationProps> = ({
   pageCount,
   onChange,
   currentPage,
+  scrollToTop = false,
 }) => {
+  const { t } = useTranslation();
+
+  console.log({ currentPage, pageCount });
   return (
     <ReactPaginate
-      previousLabel={<>&laquo;</>}
-      nextLabel={<>&raquo;</>}
-      breakLabel={"..."}
-      breakClassName={"page"}
+      previousLabel={
+        <Button my={2} disabled={currentPage === 1} size="sm">
+          {t("navigation;paginationPrevious")}
+        </Button>
+      }
+      nextLabel={
+        <Button
+          my={2}
+          disabled={currentPage === pageCount || !pageCount}
+          size="sm"
+        >
+          {t("navigation;paginationNext")}
+        </Button>
+      }
+      breakLabel="..."
+      breakClassName="page"
       pageCount={pageCount}
       marginPagesDisplayed={2}
       pageRangeDisplayed={3}
-      onPageChange={({ selected }) => onChange(selected + 1)}
+      onPageChange={({ selected }) => {
+        onChange(selected + 1);
+        if (scrollToTop) window.scrollTo(0, 0);
+      }}
       forcePage={currentPage - 1}
       containerClassName="pagination"
       pageClassName="page"
@@ -31,9 +53,9 @@ const Pagination: React.FC<PaginationProps> = ({
       pageLinkClassName="page"
       activeLinkClassName="active-page"
       disabledClassName="disabled-page"
-      activeClassName={"active"}
+      activeClassName="active"
     />
-  )
-}
+  );
+};
 
-export default Pagination
+export default Pagination;

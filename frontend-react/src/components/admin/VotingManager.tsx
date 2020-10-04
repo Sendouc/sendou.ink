@@ -1,36 +1,35 @@
-import React, { useState } from "react"
-
-import DatePicker from "../elements/DatePicker"
-import Loading from "../common/Loading"
-import Error from "../common/Error"
-import { useQuery, useMutation } from "@apollo/react-hooks"
-import { PLUS_INFO, PlusInfoData } from "../../graphql/queries/plusInfo"
+import { useMutation, useQuery } from "@apollo/client";
+import { Box, useToast } from "@chakra-ui/core";
+import React, { useState } from "react";
+import { END_VOTING } from "../../graphql/mutations/endVoting";
 import {
-  START_VOTING,
   StartVotingVars,
-} from "../../graphql/mutations/startVoting"
-import { END_VOTING } from "../../graphql/mutations/endVoting"
-import { useToast, Box } from "@chakra-ui/core"
-import Button from "../elements/Button"
-import SubHeader from "../common/SubHeader"
+  START_VOTING,
+} from "../../graphql/mutations/startVoting";
+import { PlusInfoData, PLUS_INFO } from "../../graphql/queries/plusInfo";
+import Error from "../common/Error";
+import Loading from "../common/Loading";
+import SubHeader from "../common/SubHeader";
+import Button from "../elements/Button";
+import DatePicker from "../elements/DatePicker";
 
 const VotingManager: React.FC = () => {
-  const [endDate, setEndDate] = useState<Date | null>(new Date())
-  const [confirmed, setConfirmed] = useState(false)
-  const toast = useToast()
-  const { data, error, loading } = useQuery<PlusInfoData>(PLUS_INFO)
+  const [endDate, setEndDate] = useState<Date | null>(new Date());
+  const [confirmed, setConfirmed] = useState(false);
+  const toast = useToast();
+  const { data, error, loading } = useQuery<PlusInfoData>(PLUS_INFO);
 
   const [startVotingMutation] = useMutation<boolean, StartVotingVars>(
     START_VOTING,
     {
       onCompleted: (data) => {
-        setConfirmed(false)
+        setConfirmed(false);
         toast({
           description: `Voting started`,
           position: "top-right",
           status: "success",
           duration: 10000,
-        })
+        });
       },
       onError: (error) => {
         toast({
@@ -39,7 +38,7 @@ const VotingManager: React.FC = () => {
           position: "top-right",
           status: "error",
           duration: 10000,
-        })
+        });
       },
       refetchQueries: [
         {
@@ -47,17 +46,17 @@ const VotingManager: React.FC = () => {
         },
       ],
     }
-  )
+  );
 
   const [endVotingMutation] = useMutation(END_VOTING, {
     onCompleted: (data) => {
-      setConfirmed(false)
+      setConfirmed(false);
       toast({
         description: `Voting ended`,
         position: "top-right",
         status: "success",
         duration: 10000,
-      })
+      });
     },
     onError: (error) => {
       toast({
@@ -66,18 +65,18 @@ const VotingManager: React.FC = () => {
         position: "top-right",
         status: "error",
         duration: 10000,
-      })
+      });
     },
     refetchQueries: [
       {
         query: PLUS_INFO,
       },
     ],
-  })
+  });
 
-  if (loading) return <Loading />
-  if (error) return <Error errorMessage={error.message} />
-  if (!data?.plusInfo) return <>No data plusinfo</>
+  if (loading) return <Loading />;
+  if (error) return <Error errorMessage={error.message} />;
+  if (!data?.plusInfo) return <>No data plusinfo</>;
 
   return (
     <>
@@ -119,7 +118,7 @@ const VotingManager: React.FC = () => {
         </>
       )}
     </>
-  )
-}
+  );
+};
 
-export default VotingManager
+export default VotingManager;

@@ -1,13 +1,13 @@
-import { Box, BoxProps } from "@chakra-ui/core"
-import React, { useContext } from "react"
-import MyThemeContext from "../../themeContext"
+import { Box, BoxProps } from "@chakra-ui/core";
+import React, { useContext } from "react";
+import MyThemeContext from "../../themeContext";
 
 interface SectionProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 const Section: React.FC<SectionProps & BoxProps> = ({ children, ...props }) => {
-  const { darkerBgColor } = useContext(MyThemeContext)
+  const { darkerBgColor } = useContext(MyThemeContext);
   return (
     <Box
       bg={darkerBgColor}
@@ -18,7 +18,7 @@ const Section: React.FC<SectionProps & BoxProps> = ({ children, ...props }) => {
     >
       {children}
     </Box>
-  )
-}
+  );
+};
 
-export default Section
+export default Section;

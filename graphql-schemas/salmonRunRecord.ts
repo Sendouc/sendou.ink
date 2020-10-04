@@ -1,14 +1,12 @@
-const { gql } = require("apollo-server-express")
-import SalmonRunRecord from "../models/SalmonRunRecord"
-import Weapon from "../models/Weapon"
-import SalmonRunStage from "../models/SalmonRunStage"
+const { gql } = require("apollo-server-express");
+import SalmonRunRecord from "../models/SalmonRunRecord";
 import {
-  salmonRunRecordWildcards,
   salmonRunRecordCategories,
-} from "../utils/enums"
-import salmonRunStages from "../utils/srMaps"
-import grizzcoWeapons from "../utils/grizzcoWeapons"
-import weapons from "../utils/weapons"
+  salmonRunRecordWildcards,
+} from "../utils/enums";
+import grizzcoWeapons from "../utils/grizzcoWeapons";
+import salmonRunStages from "../utils/srMaps";
+import weapons from "../utils/weapons";
 
 const typeDef = gql`
   extend type Mutation {
@@ -33,7 +31,7 @@ const typeDef = gql`
   enum SalmonRunRecordCategory {
     ${salmonRunRecordCategories.map((category) => category + "\n")}
   }
-`
+`;
 
 const resolvers = {
   Mutation: {
@@ -63,13 +61,13 @@ const resolvers = {
           },
           { relate: true }
         )
-      )
-      return true
+      );
+      return true;
     },
   },
-}
+};
 
 module.exports = {
   SalmonRunRecord: typeDef,
   salmonRunRecordResolvers: resolvers,
-}
+};
