@@ -1185,11 +1185,35 @@
     "Tournament Results": "Turneringsresultat",
     "Draft Cup": "Draft Cup",
     "Top 500 Browser": "Topp 500",
-    "Top 500 Tier Lists": "Topp 500 Trender",
+    "Top 500": "Topp 500",
+    "Top 500 Tier Lists": "Top 500 Trender",
+    "Leaderboards": "Ledartavlor",
     "Plus Server": "Plus Server",
     "Profile": "Profil",
     "Log out": "Logga ut",
-    "Log in via Discord": "Logga in via Discord"
+    "Log in via Discord": "Logga in via Discord",
+    "Choose language": "V\u00e4lj spr\u00e5k",
+    "Choose theme": "V\u00e4lj tema",
+    "Browser": "Vy",
+    "Trends": "Trender",
+    "Analyzer": "Analyserare",
+    "FAQ": "FAQ",
+    "Voting history": "Omr\u00f6stningshistorik",
+    "Suggested and vouched players": "F\u00f6reslagna spelare och spelare med garanter",
+    "Next voting": "N\u00e4sta omr\u00f6stning",
+    "Voting": "Omr\u00f6stning",
+    "Gray": "Gr\u00e5",
+    "Red": "R\u00f6d",
+    "Orange": "Orange",
+    "Yellow": "Gul",
+    "Green": "Gr\u00f6n",
+    "Teal": "Bl\u00e5gr\u00f6n",
+    "Blue": "Bl\u00e5",
+    "Cyan": "Turkos",
+    "Purple": "Lila",
+    "Pink": "Rosa",
+    "paginationNext": "N\u00e4sta",
+    "paginationPrevious": "F\u00f6reg\u00e5ende"
   },
   "home": {
     "Competitive Splatoon Hub": "Centrum f\u00f6r t\u00e4vlingsinriktad Splatoon",
@@ -1324,7 +1348,7 @@
     "(on the ground)": "(p\u00e5 marken)",
     "range and velocity": "r\u00e4ckvidd och hastighet",
     "full-power phase duration": "varaktighet av h\u00f6g f\u00e4rgl\u00e4ggningshastighet",
-    "mid-phase duration": "varaktighet av mellan f\u00e4rgl\u00e4ggningshastighet",
+    "mid-phase duration": "varaktighet av medium f\u00e4rgl\u00e4ggningshastighet",
     "tracking duration": "varaktighet av sp\u00e5rning",
     "tracking range": "r\u00e4ckvidd av sp\u00e5rning",
     "boost": "boost",
@@ -1332,6 +1356,7 @@
     "Frames before taking damage from enemy ink": "Frames innan man tar skada fr\u00e5n fiendens bl\u00e4ck",
     "Ink Resistance Up also allows you to jump higher and strafe faster while shooting in enemy ink": "Ink Resistance Up till\u00e5ter ocks\u00e5 dig att hoppa h\u00f6gre och g\u00e5 snabbare n\u00e4r du skjuter i fiendens bl\u00e4ck",
     "hp / frame": "hp / frame",
+    "hp": "hp",
     "Limit on the damage enemy ink can deal on you": "H\u00f6gst antal skada du kan ta fr\u00e5n fiendens bl\u00e4ck",
     "Run speed in enemy ink": "Hastighet p\u00e5 fiendens bl\u00e4ck",
     "Sub Weapon damage (indirect)": "Skada fr\u00e5n Sub-Vapen (indirekt)",
@@ -1359,7 +1384,10 @@
     "shield durability": "sk\u00f6ldens h\u00e5llbarhet",
     "full charge shooting duration": "skjuttid f\u00f6r fullst\u00e4ndig laddning",
     "Slosher has weird physics so we haven't fully deciphered this parameter.": "Sloshern har konstig fysik s\u00e5 vi vet inte riktigt vad denna parameter g\u00f6r.",
-    "damage": "skada"
+    "damage": "skada",
+    "pointShort": "p",
+    "Damage taken in enemy ink": "Skada taget i fiende f\u00e4rg",
+    "Intensity": "Intensitet"
   },
   "users": {
     "Filter by username, Twitter name or Discord ID": "Filtrera efter anv\u00e4ndarnamn, Twitter- eller Discord ID",
@@ -1372,6 +1400,7 @@
     "Custom URL can be at most 32 characters long": "Anpassad URL kan vara h\u00f6gst 32 tecken l\u00e5ng",
     "Custom URL has to contain at least one letter": "Anpassad URL m\u00e5ste inneh\u00e5lla \u00e5tminstone en bokstav",
     "Custom URL can only contain letters and numbers": "Anpassad URL kan bara inneh\u00e5lla bokst\u00e4ver och siffror",
+    "Filter builds by title or weapon": "Filtrera utrustningar efter titel eller vapen",
     "Weapon pool's max size is 5": "Vapensamlingens maxstorlek \u00e4r 5",
     "Bio's max length is 10000": "Beskrivningens maxl\u00e4ngd \u00e4r 10 000",
     "Profile updated": "Profil uppdaterad",
@@ -1506,6 +1535,13 @@
   },
   "xtrends": {
     "trendsExplanation": "H\u00e4r hittar du de mest anv\u00e4nda vapen i topp 500 X-Rang f\u00f6rdelade i niv\u00e5er. T.ex. f\u00f6r att ett vapen ska vara i niv\u00e5 X, beh\u00f6ver den \u00e5tminstone 30 placeringar i det spell\u00e4get den m\u00e5naden."
+  },
+  "xleaderboards": {
+    "PEAK_XP": "X-Po\u00e4ng - alla vapen",
+    "UNIQUE_WEAPONS_COUNT": "Topp 500-placeringar med olika vapen",
+    "FOUR_MODE_PEAK_AVERAGE": "Genomsnitt av h\u00f6gsta X-Po\u00e4ng i 4 spell\u00e4gen",
+    "PLACEMENTS_COUNT": "Top 500-placeringar",
+    "Score": "Po\u00e4ng"
   },
   "footer": {
     "About": "Om",
