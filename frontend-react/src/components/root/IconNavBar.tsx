@@ -18,7 +18,7 @@ import MyThemeContext from "../../themeContext";
 const getFirstFridayDate = () => {
   const today = new Date();
   const month =
-    today.getDate() <= 7 && today.getDay() <= 5
+    today.getDate() - ((1 + today.getDay()) % 7) <= 0
       ? today.getMonth()
       : today.getMonth() + 1;
 
