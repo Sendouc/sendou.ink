@@ -173,13 +173,11 @@ const UserPage: React.FC<RouteComponentProps & UserPageProps> = ({ id }) => {
       content: (
         <TabPanel key={2}>
           <Box color={grayWithShade}>
-            <Trans i18nKey="users;noPlacementsPrompt">
+            <Trans i18nKey="users;noPlacementsPromptNew">
               If you have reached Top 500 in a <b>finished</b> X Rank season you
-              can have it displayed here! Make sure your Twitter account is
-              verified on Discord to get it showing on your sendou.ink profile
-              and then contact Sendou#0043 on Discord with your in-game nick.
-              Once set up new results are added automatically and no further
-              action is needed unless you change your name on Twitter.
+              can have it displayed here! Simply contact Sendou#0043 on Discord
+              with your in-game name. Once set up new results are added
+              automatically and no further action is needed.
             </Trans>
           </Box>
         </TabPanel>
