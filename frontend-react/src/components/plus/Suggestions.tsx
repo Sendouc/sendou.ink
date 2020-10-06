@@ -16,6 +16,7 @@ import Error from "../common/Error";
 import Loading from "../common/Loading";
 import SubHeader from "../common/SubHeader";
 import UserAvatar from "../common/UserAvatar";
+import Alert from "../elements/Alert";
 import Button from "../elements/Button";
 import SuggestionVouchModal from "./SuggestionVouchModal";
 
@@ -168,44 +169,68 @@ const Suggestions = () => {
           {buttonText}
         </Button>
       )}
-      <SubHeader>
-        Vouched to +1{" "}
-        <Badge colorScheme={themeColor} ml="0.5em">
-          {plusOneVouches.length}
-        </Badge>
-      </SubHeader>
-      <Grid gridRowGap="0.5em" gridTemplateColumns="min-content 1fr" mt="1em">
-        {plusOneVouches.map(vouchMap)}
-      </Grid>
-      <Box mt="1em">
-        <SubHeader>
-          Vouched to +2{" "}
-          <Badge colorScheme={themeColor} ml="0.5em">
-            {plusTwoVouches.length}
-          </Badge>
-        </SubHeader>
-        <Grid gridRowGap="0.5em" gridTemplateColumns="min-content 1fr" mt="1em">
-          {plusTwoVouches.map(vouchMap)}
-        </Grid>
-      </Box>
-      <Box mt="1em">
-        <SubHeader>
-          Suggested to +1{" "}
-          <Badge colorScheme={themeColor} ml="0.5em">
-            {plusOneSuggested.length}
-          </Badge>
-        </SubHeader>
-        {plusOneSuggested.map(suggestionMap)}
-      </Box>
-      <Box mt="1em">
-        <SubHeader>
-          Suggested to +2{" "}
-          <Badge colorScheme={themeColor} ml="0.5em">
-            {plusTwoSuggested.length}
-          </Badge>
-        </SubHeader>
-        {plusTwoSuggested.map(suggestionMap)}
-      </Box>
+      {plusOneVouches.length === 0 &&
+        plusTwoVouches.length === 0 &&
+        plusOneSuggested.length === 0 &&
+        plusTwoSuggested.length === 0 && (
+          <Alert status="info">No suggestions or vouches yet this month</Alert>
+        )}
+      {plusOneVouches.length > 0 && (
+        <>
+          <SubHeader>
+            Vouched to +1{" "}
+            <Badge colorScheme={themeColor} ml="0.5em">
+              {plusOneVouches.length}
+            </Badge>
+          </SubHeader>
+          <Grid
+            gridRowGap="0.5em"
+            gridTemplateColumns="min-content 1fr"
+            mt="1em"
+          >
+            {plusOneVouches.map(vouchMap)}
+          </Grid>
+        </>
+      )}
+      {plusTwoVouches.length > 0 && (
+        <Box mt="1em">
+          <SubHeader>
+            Vouched to +2{" "}
+            <Badge colorScheme={themeColor} ml="0.5em">
+              {plusTwoVouches.length}
+            </Badge>
+          </SubHeader>
+          <Grid
+            gridRowGap="0.5em"
+            gridTemplateColumns="min-content 1fr"
+            mt="1em"
+          >
+            {plusTwoVouches.map(vouchMap)}
+          </Grid>
+        </Box>
+      )}
+      {plusOneSuggested.length > 0 && (
+        <Box mt="1em">
+          <SubHeader>
+            Suggested to +1{" "}
+            <Badge colorScheme={themeColor} ml="0.5em">
+              {plusOneSuggested.length}
+            </Badge>
+          </SubHeader>
+          {plusOneSuggested.map(suggestionMap)}
+        </Box>
+      )}
+      {plusTwoSuggested.length > 0 && (
+        <Box mt="1em">
+          <SubHeader>
+            Suggested to +2{" "}
+            <Badge colorScheme={themeColor} ml="0.5em">
+              {plusTwoSuggested.length}
+            </Badge>
+          </SubHeader>
+          {plusTwoSuggested.map(suggestionMap)}
+        </Box>
+      )}
     </>
   );
 };
