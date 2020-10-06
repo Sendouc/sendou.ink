@@ -1,21 +1,27 @@
+import {
+  Alert as ChakraAlert,
+  AlertIcon,
+  AlertProps as ChakraAlertProps,
+  CloseButton,
+} from "@chakra-ui/core";
 import React from "react";
-import { Alert as ChakraAlert, AlertIcon, CloseButton } from "@chakra-ui/core";
 
 interface AlertProps {
-  children: string | string[] | JSX.Element | JSX.Element[];
+  children: React.ReactNode;
   status: "error" | "success" | "warning" | "info";
   mt?: string;
   onClose?: () => void;
 }
 
-const Alert: React.FC<AlertProps> = ({
+const Alert: React.FC<AlertProps & ChakraAlertProps> = ({
   children,
   status,
   onClose,
   mt = "2em",
+  ...props
 }) => {
   return (
-    <ChakraAlert status={status} borderRadius="5px" mt={mt}>
+    <ChakraAlert status={status} borderRadius="5px" mt={mt} {...props}>
       <AlertIcon />
       {children}
       {onClose && (

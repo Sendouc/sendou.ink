@@ -138,6 +138,12 @@ const Suggestions = () => {
   const canVouch =
     !!user?.plus?.can_vouch && !user?.plus?.can_vouch_again_after;
 
+  const canVouchAgainAfterString = user?.plus?.can_vouch_again_after
+    ? new Date(
+        parseInt(user.plus.can_vouch_again_after)
+      ).toLocaleDateString("en", { month: "long" })
+    : null;
+
   const getButtonText = () => {
     // can't suggest or vouch if voting is underway OR is not plus server member
     if (
@@ -168,6 +174,12 @@ const Suggestions = () => {
         <Button mb="0.5rem" onClick={() => setShowSuggestionForm(true)}>
           {buttonText}
         </Button>
+      )}
+      {canVouchAgainAfterString && (
+        <Alert status="warning" my={4}>
+          Due to your vouch getting kicked you need to wait till at least{" "}
+          {canVouchAgainAfterString}'s voting is over to vouch again
+        </Alert>
       )}
       {plusOneVouches.length === 0 &&
         plusTwoVouches.length === 0 &&
