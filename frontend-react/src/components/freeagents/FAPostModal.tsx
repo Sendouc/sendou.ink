@@ -9,6 +9,7 @@ import {
   FormLabel,
   Radio,
   RadioGroup,
+  Stack,
   useToast,
 } from "@chakra-ui/core";
 import React, { useContext, useState } from "react";
@@ -200,13 +201,17 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
             })
           }
         >
-          <Checkbox value="FRONTLINE">
-            {t("freeagents;Frontline/Slayer")}
-          </Checkbox>
-          <Checkbox value="MIDLINE">{t("freeagents;Midline/Support")}</Checkbox>
-          <Checkbox value="BACKLINE">
-            {t("freeagents;Backline/Anchor")}
-          </Checkbox>
+          <Stack spacing="20px" isInline>
+            <Checkbox value="FRONTLINE">
+              {t("freeagents;Frontline/Slayer")}
+            </Checkbox>
+            <Checkbox value="MIDLINE">
+              {t("freeagents;Midline/Support")}
+            </Checkbox>
+            <Checkbox value="BACKLINE">
+              {t("freeagents;Backline/Anchor")}
+            </Checkbox>
+          </Stack>
         </CheckboxGroup>
         <FormErrorMessage>{t("freeagents;Required field")}</FormErrorMessage>
       </FormControl>
@@ -225,10 +230,12 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
             })
           }
         >
-          <Radio value="YES">{t("freeagents;Yes")}</Radio>
-          <Radio value="USUALLY">{t("freeagents;Usually")}</Radio>
-          <Radio value="SOMETIMES">{t("freeagents;Sometimes")}</Radio>
-          <Radio value="NO">{t("freeagents;No")}</Radio>
+          <Stack spacing="20px" isInline>
+            <Radio value="YES">{t("freeagents;Yes")}</Radio>
+            <Radio value="USUALLY">{t("freeagents;Usually")}</Radio>
+            <Radio value="SOMETIMES">{t("freeagents;Sometimes")}</Radio>
+            <Radio value="NO">{t("freeagents;No")}</Radio>
+          </Stack>
         </RadioGroup>
         <FormErrorMessage>{t("freeagents;Required field")}</FormErrorMessage>
       </FormControl>
