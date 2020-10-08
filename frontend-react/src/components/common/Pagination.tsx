@@ -19,7 +19,6 @@ const Pagination: React.FC<PaginationProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  console.log({ currentPage, pageCount });
   return (
     <ReactPaginate
       previousLabel={
