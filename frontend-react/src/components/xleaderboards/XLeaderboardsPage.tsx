@@ -65,7 +65,7 @@ const XLeaderboardsPage: React.FC<RouteComponentProps> = () => {
         </title>
       </Helmet>
       <PageHeader title={t("navigation;X Rank Leaderboards")} />
-      <Box my={10}>
+      <Box my={10} maxW="24rem">
         <Select
           options={selectOptions.map(({ value, label }) => ({
             value,
