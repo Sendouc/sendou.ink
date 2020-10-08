@@ -10,6 +10,7 @@ import {
 import MyThemeContext from "../../themeContext";
 import { getPlacementString } from "../../utils/helperFunctions";
 import Error from "../common/Error";
+import Loading from "../common/Loading";
 import Pagination from "../common/Pagination";
 import {
   Table,
@@ -44,6 +45,7 @@ const XRankScoreLeaderboard: React.FC<PeakXPowerLeaderboardProps> = ({
     variables: { page: page + 1, type },
   });
 
+  if (!data) return <Loading />;
   if (error) return <Error errorMessage={error.message} />;
 
   return (

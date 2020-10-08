@@ -10,6 +10,7 @@ import MyThemeContext from "../../themeContext";
 import { Weapon } from "../../types";
 import { getPlacementString } from "../../utils/helperFunctions";
 import Error from "../common/Error";
+import Loading from "../common/Loading";
 import Pagination from "../common/Pagination";
 import {
   Table,
@@ -46,6 +47,7 @@ export const PeakXPowerLeaderboard: React.FC<PeakXPowerLeaderboardProps> = ({
     variables: { page: page + 1, weapon },
   });
 
+  if (!data) return <Loading />;
   if (error) return <Error errorMessage={error.message} />;
 
   return (
