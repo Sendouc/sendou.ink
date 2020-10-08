@@ -1188,6 +1188,7 @@
     "Top 500": "Top 500",
     "Top 500 Tier Lists": "Top 500 Tier Lists",
     "Leaderboards": "Leaderboards",
+    "X Rank Leaderboards": "X Rank Leaderboards",
     "Plus Server": "Plus Server",
     "Profile": "Profile",
     "Log out": "Log out",
@@ -1538,7 +1539,7 @@
     "trendsExplanation": "Here you can find X Rank Top 500 usage tier lists. For example for a weapon to be in the X tier it needs at least 30 placements in that mode that month."
   },
   "xleaderboards": {
-    "PEAK_XP": "X Power - all weapons",
+    "PEAK_XP": "X Power (all weapons)",
     "UNIQUE_WEAPONS_COUNT": "Top 500 placements with different weapons",
     "FOUR_MODE_PEAK_AVERAGE": "4 mode peak X Power average",
     "PLACEMENTS_COUNT": "Top 500 placements",

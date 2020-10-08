@@ -1,6 +1,7 @@
 import { Box } from "@chakra-ui/core";
 import { RouteComponentProps } from "@reach/router";
 import React, { useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { XRankLeaderboardType } from "../../generated/graphql";
 import { Weapon } from "../../types";
@@ -26,7 +27,7 @@ const Leaderboard = ({ type }: { type: string }) => {
 const selectOptions = [
   ...[
     {
-      label: "X Power - All weapons",
+      label: "X Power (all weapons)",
       value: "PEAK_XP",
     },
     {
@@ -44,23 +45,35 @@ const selectOptions = [
   ],
   ...weapons
     .filter((wpn) => !wpn.includes("Hero") && !wpn.includes("Octo"))
-    .map((wpn) => ({ label: "X Power - " + wpn, value: wpn })),
+    .map((wpn) => ({ label: `X Power (${wpn})`, value: wpn })),
 ] as const;
 
 const XLeaderboardsPage: React.FC<RouteComponentProps> = () => {
   const { t } = useTranslation();
   const [value, setValue] = useState("PEAK_XP");
+
+  const leaderboardNameLocalized = weapons.includes(value as Weapon)
+    ? t(`xsearch;X Power`) + " (" + t(`game;${value}`) + ")"
+    : t(`xleaderboards;${value}`);
+
   return (
     <>
-      <PageHeader title="X Leaderboards" />
+      <Helmet>
+        <title>
+          {t("navigation;X Rank Leaderboards")} - {leaderboardNameLocalized} -
+          sendou.ink
+        </title>
+      </Helmet>
+      <PageHeader title={t("navigation;X Rank Leaderboards")} />
       <Box my={10}>
         <Select
-          options={selectOptions}
-          value={
-            weapons.includes(value as Weapon)
-              ? t(`xsearch;X Power`) + " - " + t(`game;${value}`)
-              : t(`xleaderboards;${value}`)
-          }
+          options={selectOptions.map(({ value, label }) => ({
+            value,
+            label: weapons.includes(value as Weapon)
+              ? t(`xsearch;X Power`) + " (" + t(`game;${value}`) + ")"
+              : t(`xleaderboards;${value}`),
+          }))}
+          value={leaderboardNameLocalized}
           setValue={setValue}
           isSearchable
         />
