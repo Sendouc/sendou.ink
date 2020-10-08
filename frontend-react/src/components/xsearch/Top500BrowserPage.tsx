@@ -8,6 +8,7 @@ import {
 } from "@chakra-ui/core";
 import { Link, RouteComponentProps, useLocation } from "@reach/router";
 import React, { useContext, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import CB from "../../assets/cb.png";
 import RM from "../../assets/rm.png";
@@ -72,6 +73,9 @@ export const Top500Browser: React.FC<RouteComponentProps> = () => {
 
   return (
     <>
+      <Helmet>
+        <title>{t("navigation;Top 500 Browser")} | sendou.ink</title>
+      </Helmet>
       <PageHeader title="Top 500 Browser" />
       <Top500Filters
         filter={filter}
