@@ -35,6 +35,7 @@ const typeDef = gql`
       bio: String
     ): Boolean
     updateAvatars(lohiToken: String!, toUpdate: [DiscordIdAvatar!]!): Boolean
+    updatePlayerId(discordId: String!, playerId: String!): Boolean!
   }
 
   "The control sensitivity used in Splatoon 2"
@@ -271,6 +272,18 @@ const resolvers = {
           )
         )
       );
+
+      return true;
+    },
+    updatePlayerId: async (_, args, ctx) => {
+      if (!ctx.user) throw new AuthenticationError("not logged in");
+      if (ctx.user.discord_id !== process.env.ADMIN_ID) {
+        throw new AuthenticationError("not admin");
+      }
+
+      await ObjectionUser.query()
+        .patch({ playerId: args.playerId })
+        .where("discordId", "=", args.discordId);
 
       return true;
     },

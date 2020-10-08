@@ -1,0 +1,3 @@
+mutation updatePlayerId($playerId: String!, $discordId: String!) {
+  updatePlayerId(playerId: $playerId, discordId: $discordId)
+}

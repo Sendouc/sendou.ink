@@ -140,6 +140,7 @@ export type Mutation = {
   generateMaplistFromVotes?: Maybe<Scalars['Boolean']>;
   updateUser?: Maybe<Scalars['Boolean']>;
   updateAvatars?: Maybe<Scalars['Boolean']>;
+  updatePlayerId: Scalars['Boolean'];
   addDetailedTournament: Scalars['Boolean'];
   addPrivateBattles: Scalars['Int'];
   replaceDraftLeaderboard: Scalars['Boolean'];
@@ -209,6 +210,12 @@ export type MutationUpdateUserArgs = {
 export type MutationUpdateAvatarsArgs = {
   lohiToken: Scalars['String'];
   toUpdate: Array<DiscordIdAvatar>;
+};
+
+
+export type MutationUpdatePlayerIdArgs = {
+  discordId: Scalars['String'];
+  playerId: Scalars['String'];
 };
 
 
@@ -951,6 +958,17 @@ export type UserLeanFragment = (
   & Pick<NewUser, 'profilePath' | 'fullUsername' | 'avatarUrl'>
 );
 
+export type UpdatePlayerIdMutationVariables = Exact<{
+  playerId: Scalars['String'];
+  discordId: Scalars['String'];
+}>;
+
+
+export type UpdatePlayerIdMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'updatePlayerId'>
+);
+
 export type GetPeakXPowerLeaderboardQueryVariables = Exact<{
   page?: Maybe<Scalars['Int']>;
   weapon?: Maybe<Scalars['String']>;
@@ -1040,6 +1058,37 @@ export const UserLeanFragmentDoc = gql`
   avatarUrl
 }
     `;
+export const UpdatePlayerIdDocument = gql`
+    mutation updatePlayerId($playerId: String!, $discordId: String!) {
+  updatePlayerId(playerId: $playerId, discordId: $discordId)
+}
+    `;
+export type UpdatePlayerIdMutationFn = Apollo.MutationFunction<UpdatePlayerIdMutation, UpdatePlayerIdMutationVariables>;
+
+/**
+ * __useUpdatePlayerIdMutation__
+ *
+ * To run a mutation, you first call `useUpdatePlayerIdMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePlayerIdMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePlayerIdMutation, { data, loading, error }] = useUpdatePlayerIdMutation({
+ *   variables: {
+ *      playerId: // value for 'playerId'
+ *      discordId: // value for 'discordId'
+ *   },
+ * });
+ */
+export function useUpdatePlayerIdMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePlayerIdMutation, UpdatePlayerIdMutationVariables>) {
+        return Apollo.useMutation<UpdatePlayerIdMutation, UpdatePlayerIdMutationVariables>(UpdatePlayerIdDocument, baseOptions);
+      }
+export type UpdatePlayerIdMutationHookResult = ReturnType<typeof useUpdatePlayerIdMutation>;
+export type UpdatePlayerIdMutationResult = Apollo.MutationResult<UpdatePlayerIdMutation>;
+export type UpdatePlayerIdMutationOptions = Apollo.BaseMutationOptions<UpdatePlayerIdMutation, UpdatePlayerIdMutationVariables>;
 export const GetPeakXPowerLeaderboardDocument = gql`
     query getPeakXPowerLeaderboard($page: Int, $weapon: String) {
   getPeakXPowerLeaderboard(page: $page, weapon: $weapon) {
