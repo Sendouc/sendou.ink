@@ -80,7 +80,7 @@ const BuildTab: React.FC<BuildTabProps> = ({
         <Alert status="info">{t("users;tooManyBuilds")}</Alert>
       )}
       {builds.length > 10 && (
-        <Box>
+        <Box mb="2rem">
           <Input
             label={t("users;Filter builds by title or weapon")}
             value={buildFilter}
