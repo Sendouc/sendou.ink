@@ -3,14 +3,12 @@
 const { merge } = require("lodash");
 const { makeExecutableSchema, gql } = require("apollo-server-express");
 const { Build, buildResolvers } = require("./graphql-schemas/build");
-const { Maplist, maplistResolvers } = require("./graphql-schemas/maps");
 const {
   Placement,
   placementResolvers,
 } = require("./graphql-schemas/placement");
 const { Rotation, rotationResolvers } = require("./graphql-schemas/rotation");
 const { User, userResolvers } = require("./graphql-schemas/user");
-const { Link, linkResolvers } = require("./graphql-schemas/link");
 const { Trend, trendResolvers } = require("./graphql-schemas/trend");
 const {
   Tournament,
@@ -27,7 +25,6 @@ const {
 const { FAPost, faPostResolvers } = require("./graphql-schemas/fapost");
 const { Plus, plusResolvers } = require("./graphql-schemas/plus");
 const { General, generalResolvers } = require("./graphql-schemas/general");
-const { Banner, bannerResolvers } = require("./graphql-schemas/banner");
 /*const {
   SalmonRunRecord,
   salmonRunRecordResolvers,
@@ -52,11 +49,9 @@ const schema = makeExecutableSchema({
     Query,
     Mutation,
     Build,
-    Maplist,
     Placement,
     Rotation,
     User,
-    Link,
     Trend,
     Tournament,
     DetailedTournament,
@@ -64,25 +59,21 @@ const schema = makeExecutableSchema({
     FAPost,
     Plus,
     General,
-    Banner,
     //SalmonRunRecord,
   ],
   resolvers: merge(
     resolvers,
     buildResolvers,
-    maplistResolvers,
     placementResolvers,
     rotationResolvers,
     userResolvers,
-    linkResolvers,
     trendResolvers,
     tournamentResolvers,
     detailedTournamentResolvers,
     competitiveFeedEventResolvers,
     faPostResolvers,
     plusResolvers,
-    generalResolvers,
-    bannerResolvers
+    generalResolvers
     //salmonRunRecordResolvers
   ),
 });
