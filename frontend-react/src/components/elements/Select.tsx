@@ -1,48 +1,48 @@
-import React, { useContext, useState } from "react"
-import ReactSelect, { OptionsType, GroupedOptionsType } from "react-select"
-import MyThemeContext from "../../themeContext"
-import { SelectComponents } from "react-select/src/components"
-import Label from "./Label"
-import { Box } from "@chakra-ui/core"
-import { weapons } from "../../utils/lists"
-import { useTranslation } from "react-i18next"
+import { Box } from "@chakra-ui/core";
+import React, { useContext, useState } from "react";
+import { useTranslation } from "react-i18next";
+import ReactSelect, { GroupedOptionsType, OptionsType } from "react-select";
+import { SelectComponents } from "react-select/src/components";
+import MyThemeContext from "../../themeContext";
+import { weapons } from "../../utils/lists";
+import Label from "./Label";
 
 interface SelectProps {
   options?:
     | OptionsType<{
-        label: string
-        value: string
+        label: string;
+        value: string;
       }>
     | GroupedOptionsType<{
-        label: string
-        value: string
-      }>
-  width?: string
-  label?: string
-  required?: boolean
+        label: string;
+        value: string;
+      }>;
+  width?: string;
+  label?: string;
+  required?: boolean;
   value?:
     | {
-        label: string
-        value: string
+        label: string;
+        value: string;
       }
     | string
     | string[]
-    | null
-  setValue?: (value: any) => void
-  autoFocus?: boolean
+    | null;
+  setValue?: (value: any) => void;
+  autoFocus?: boolean;
   components?: Partial<
     SelectComponents<{
-      label: string
-      value: string
+      label: string;
+      value: string;
     }>
-  >
-  clearable?: boolean
-  isMulti?: boolean
-  isLoading?: boolean
-  isDisabled?: boolean
-  isSearchable?: boolean
-  menuIsOpen?: boolean
-  hideMenuBeforeTyping?: boolean
+  >;
+  clearable?: boolean;
+  isMulti?: boolean;
+  isLoading?: boolean;
+  isDisabled?: boolean;
+  isSearchable?: boolean;
+  menuIsOpen?: boolean;
+  hideMenuBeforeTyping?: boolean;
 }
 
 const Select: React.FC<SelectProps> = ({
@@ -66,53 +66,53 @@ const Select: React.FC<SelectProps> = ({
     darkerBgColor,
     themeColorHex,
     themeColorHexLighter,
-  } = useContext(MyThemeContext)
-  const { t } = useTranslation()
-  const [inputValue, setInputValue] = useState("")
+  } = useContext(MyThemeContext);
+  const { t } = useTranslation();
+  const [inputValue, setInputValue] = useState("");
 
   const handleChange = (selectedOption: any) => {
-    if (!setValue) return
+    if (!setValue) return;
     if (!selectedOption) {
-      setValue(null)
-      return
+      setValue(null);
+      return;
     }
     if (Array.isArray(selectedOption)) {
-      setValue(selectedOption.map((obj) => obj.value))
+      setValue(selectedOption.map((obj) => obj.value));
     } else {
-      setValue(selectedOption?.value)
+      setValue(selectedOption?.value);
     }
-  }
+  };
 
   const getValue = () => {
     if (typeof value === "string") {
       return {
         label: weapons.includes(value as any) ? t(`game;${value}`) : value,
         value: value,
-      }
+      };
     } else if (Array.isArray(value)) {
       return value.map((weapon) => ({
         label: weapons.includes(weapon as any) ? t(`game;${weapon}`) : weapon,
         value: weapon,
-      }))
+      }));
     }
 
-    return value
-  }
+    return value;
+  };
 
   const getOptionColor = (focused: boolean) => {
-    if (focused) return "black"
+    if (focused) return "black";
 
-    return colorMode === "light" ? "black" : "white"
-  }
+    return colorMode === "light" ? "black" : "white";
+  };
 
   const menuIsOpenCheck = () => {
-    if (menuIsOpen) return true
+    if (menuIsOpen) return true;
     if (hideMenuBeforeTyping) {
-      return !!(inputValue.length >= 3)
+      return !!(inputValue.length >= 3);
     }
 
-    return undefined
-  }
+    return undefined;
+  };
 
   return (
     <Box>
@@ -150,7 +150,8 @@ const Select: React.FC<SelectProps> = ({
           colors: {
             ...theme.colors,
             primary25: `${themeColorHexLighter}`,
-            primary: `${themeColorHex}`,
+            primary:
+              colorMode === "dark" ? themeColorHexLighter : themeColorHex,
             neutral0: darkerBgColor,
             neutral5: darkerBgColor,
           },
@@ -178,13 +179,18 @@ const Select: React.FC<SelectProps> = ({
               ...styles,
               backgroundColor: isFocused ? themeColorHexLighter : undefined,
               color: getOptionColor(isFocused),
-            }
+            };
           },
           menu: (styles) => ({ ...styles, zIndex: 999 }),
+          control: (base) => ({
+            ...base,
+            border: "0px",
+            height: "2.5rem",
+          }),
         }}
       />
     </Box>
-  )
-}
+  );
+};
 
-export default Select
+export default Select;

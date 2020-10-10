@@ -19,9 +19,9 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": "https://sendou.ink",
-  "display": "standalone",
-  "theme_color": "#2B5262",
-  "background_color": "#13272E",
+  "start_url": "/",
+  "display": "minimal-ui",
+  "theme_color": "#031e3e",
+  "background_color": "#031e3e",
   "categories": ["games"]
 }

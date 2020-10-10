@@ -1,8 +1,4 @@
-<p align="center">
-<img src="https://github.com/Sendouc/sendou-ink/blob/master/sink-squid.png">
-</p>
-
-[![Discord Server](https://discordapp.com/api/guilds/407936403356516365/embed.png)](https://discord.gg/J6NqUvt)
+[![Discord Server](https://discordapp.com/api/guilds/299182152161951744/embed.png)](https://discord.gg/sendou)
 
 Goal of sendou.ink is to provide useful tools and resources for the competitive Splatoon community.
 
@@ -37,25 +33,22 @@ This site was originally a full stack web development school project. Since I ha
 
 🦑 Choose between light and dark mode as well as 10 different accent colors
 
-## Trello
-
-I use a [Trello board](https://trello.com/b/P46kMiY9/sendouink) to keep track of the things I still need to do and that are in progress. Anyone is free to check it out to see what bugs I am aware of as well as future plans for sendou.ink.
-
 ## GraphQL
 
 Serving the site is a GraphQL API. You can explore the schema here: [https://sendou.ink/graphql](https://sendou.ink/graphql). It was made specifically for this site but you are free to use it within reason if it is of use to you.
 
-## Installation (TODO: improve this)
+## Installation & getting started
 
 1. Install [Node](https://nodejs.org/en/)
-2. Use `npm install` in the root folder
-3. Use `npm install` in the **/react-ui** folder
-4. Use `npm run watch` in the root folder
-5. Use `npm start` in the **/react-ui** folder
+2. Use the `npm run install:all` command in the root folder
+3. Make a copy of the `.env.template` file and rename it to `.env`. Populate the values depending on what you are developing. Database URI's at least are necessary to spin up the backend.
+4. Use the `npm run dev` command in the root folder to develop logged out and `npm run dev:loggedin` to develop logged in as a mocked user.
 
-In addition connection to MongoDB as well as a few other ENV variables need to be configured.
+- Please note that the scripts are currently assuming an \*NIX based system so trying to run them on PowerShell or something might not work.
 
-Server will run on [http://localhost:3001/](http://localhost:3001/)  
+Making the installation process smoother is one big point of improvement hopefully in the near future.
+
+Server will run on [http://localhost:3001/graphql](http://localhost:3001/)  
 Front-end will run on [http://localhost:3000/](http://localhost:3000/)
 
 ## Contributing

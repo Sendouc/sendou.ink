@@ -1,62 +1,62 @@
-import React, { useEffect, useState, useContext } from "react"
-import { RouteComponentProps } from "@reach/router"
-import { Helmet } from "react-helmet-async"
-import PageHeader from "../common/PageHeader"
-import { Box, Flex, Progress, Badge } from "@chakra-ui/core"
-import Select from "../elements/Select"
-import { languages } from "../../utils/lists"
-import MyThemeContext from "../../themeContext"
-import Input from "../elements/Input"
-import Button from "../elements/Button"
-import { FaDownload } from "react-icons/fa"
+import React, { useEffect, useState, useContext } from "react";
+import { RouteComponentProps } from "@reach/router";
+import { Helmet } from "react-helmet-async";
+import PageHeader from "../common/PageHeader";
+import { Box, Flex, Progress, Badge } from "@chakra-ui/core";
+import Select from "../elements/Select";
+import { languages } from "../../utils/lists";
+import MyThemeContext from "../../themeContext";
+import Input from "../elements/Input";
+import Button from "../elements/Button";
+import { FaDownload } from "react-icons/fa";
 
 const exportToJson = (
   objectData: Object,
   locale: string,
   dateString: string
 ) => {
-  let filename = `translation_${locale}_${dateString}.json`
-  let contentType = "application/json;charset=utf-8;"
+  let filename = `translation_${locale}_${dateString}.json`;
+  let contentType = "application/json;charset=utf-8;";
   if (window.navigator && window.navigator.msSaveOrOpenBlob) {
     var blob = new Blob(
       [decodeURIComponent(encodeURI(JSON.stringify(objectData)))],
       { type: contentType }
-    )
-    navigator.msSaveOrOpenBlob(blob, filename)
+    );
+    navigator.msSaveOrOpenBlob(blob, filename);
   } else {
-    var a = document.createElement("a")
-    a.download = filename
+    var a = document.createElement("a");
+    a.download = filename;
     a.href =
       "data:" +
       contentType +
       "," +
-      encodeURIComponent(JSON.stringify(objectData))
-    a.target = "_blank"
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
+      encodeURIComponent(JSON.stringify(objectData));
+    a.target = "_blank";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }
-}
+};
 
 const TranslatePage: React.FC<RouteComponentProps> = () => {
-  const { themeColorWithShade, themeColor } = useContext(MyThemeContext)
-  const [english, setEnglish] = useState<any>(null)
-  const [toTranslate, setToTranslate] = useState<any>(null)
+  const { themeColorWithShade, themeColor } = useContext(MyThemeContext);
+  const [english, setEnglish] = useState<any>(null);
+  const [toTranslate, setToTranslate] = useState<any>(null);
   const [languageDropdownValue, setLanguageDropdownValue] = useState<
     string | null
-  >(null)
-  const [selectedKey, setSelectedKey] = useState("game")
+  >(null);
+  const [selectedKey, setSelectedKey] = useState("game");
 
   useEffect(() => {
     fetch(
       "https://raw.githubusercontent.com/Sendouc/sendou-ink/master/frontend-react/public/locales/en/translation.json"
     )
       .then((response) => response.json())
-      .then((data) => setEnglish(data))
-  }, [])
+      .then((data) => setEnglish(data));
+  }, []);
 
   useEffect(() => {
-    if (!languageDropdownValue) return
+    if (!languageDropdownValue) return;
     fetch(
       `https://raw.githubusercontent.com/Sendouc/sendou-ink/master/frontend-react/public/locales/${languageDropdownValue}/translation.json`
     )
@@ -64,47 +64,46 @@ const TranslatePage: React.FC<RouteComponentProps> = () => {
       .then((data) => {
         const dataFromLocalStorage = localStorage.getItem(
           `translation_${languageDropdownValue}`
-        )
-        console.log(dataFromLocalStorage)
+        );
 
         setToTranslate(
           dataFromLocalStorage ? JSON.parse(dataFromLocalStorage) : data
-        )
-      })
-  }, [languageDropdownValue])
+        );
+      });
+  }, [languageDropdownValue]);
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      if (!languageDropdownValue || !toTranslate) return
+      if (!languageDropdownValue || !toTranslate) return;
       localStorage.setItem(
         `translation_${languageDropdownValue}`,
         JSON.stringify(toTranslate)
-      )
-    }, 500)
+      );
+    }, 500);
 
     return () => {
-      clearTimeout(handler)
-    }
-  }, [toTranslate])
+      clearTimeout(handler);
+    };
+  }, [toTranslate, languageDropdownValue]);
 
   const getPercentage = (keyToCheck: any) => {
-    if (!english || !toTranslate) return 0
-    let englishCount = 0
-    let translatedCount = 0
+    if (!english || !toTranslate) return 0;
+    let englishCount = 0;
+    let translatedCount = 0;
 
-    for (const [key, value] of Object.entries(english[keyToCheck] ?? {})) {
-      if (value) englishCount++
+    for (const entry of Object.entries(english[keyToCheck] ?? {})) {
+      if (entry[1]) englishCount++;
     }
 
-    for (const [key, value] of Object.entries(toTranslate[keyToCheck] ?? {})) {
-      if (value) translatedCount++
+    for (const entry of Object.entries(toTranslate[keyToCheck] ?? {})) {
+      if (entry[1]) translatedCount++;
     }
 
-    return Math.ceil((translatedCount / englishCount) * 100)
-  }
+    return Math.ceil((translatedCount / englishCount) * 100);
+  };
 
-  const englishViewed = english ? english[selectedKey] ?? {} : {}
-  const toTranslateViewed = toTranslate ? toTranslate[selectedKey] ?? {} : {}
+  const englishViewed = english ? english[selectedKey] ?? {} : {};
+  const toTranslateViewed = toTranslate ? toTranslate[selectedKey] ?? {} : {};
 
   return (
     <>
@@ -126,8 +125,8 @@ const TranslatePage: React.FC<RouteComponentProps> = () => {
         <>
           <Flex mt="1em" flexWrap="wrap">
             {Object.keys(english).map((key) => {
-              const percentage = getPercentage(key)
-              const active = selectedKey === key
+              const percentage = getPercentage(key);
+              const active = selectedKey === key;
               return (
                 <Box
                   onClick={() => setSelectedKey(key)}
@@ -141,25 +140,23 @@ const TranslatePage: React.FC<RouteComponentProps> = () => {
                   textTransform="capitalize"
                   textAlign="center"
                   border="2px solid"
-                  borderColor={active ? themeColorWithShade : null}
+                  borderColor={active ? themeColorWithShade : undefined}
                   cursor="pointer"
                 >
                   {key}
                   <Progress
                     mt="1em"
-                    hasStripe
-                    isAnimated
                     color={percentage === 100 ? "green" : "yellow"}
                     size="sm"
                     value={percentage}
                   />
                 </Box>
-              )
+              );
             })}
           </Flex>
           <Box mt="1em">
             <Button
-              icon={FaDownload}
+              icon={<FaDownload />}
               onClick={() =>
                 exportToJson(
                   toTranslate,
@@ -178,7 +175,7 @@ const TranslatePage: React.FC<RouteComponentProps> = () => {
                   {englishViewed[key]}
                   {englishViewed[key] !== key && (
                     <Badge
-                      variantColor={themeColor}
+                      colorScheme={themeColor}
                       textTransform="none"
                       ml="0.5em"
                     >
@@ -192,15 +189,15 @@ const TranslatePage: React.FC<RouteComponentProps> = () => {
                     value={toTranslateViewed[key] ?? ""}
                     setValue={(value) => {
                       if (value === "") {
-                        const keysObject = toTranslate[selectedKey] ?? {}
-                        delete keysObject[key]
+                        const keysObject = toTranslate[selectedKey] ?? {};
+                        delete keysObject[key];
 
-                        const newToTranslate = { ...toTranslate }
+                        const newToTranslate = { ...toTranslate };
                         if (Object.keys(keysObject).length === 0) {
-                          delete newToTranslate[selectedKey]
+                          delete newToTranslate[selectedKey];
                         }
 
-                        setToTranslate(newToTranslate)
+                        setToTranslate(newToTranslate);
                       } else {
                         setToTranslate({
                           ...toTranslate,
@@ -208,7 +205,7 @@ const TranslatePage: React.FC<RouteComponentProps> = () => {
                             ...toTranslate[selectedKey],
                             [key]: value,
                           },
-                        })
+                        });
                       }
                     }}
                   />
@@ -219,7 +216,7 @@ const TranslatePage: React.FC<RouteComponentProps> = () => {
         </>
       )}
     </>
-  )
-}
+  );
+};
 
-export default TranslatePage
+export default TranslatePage;

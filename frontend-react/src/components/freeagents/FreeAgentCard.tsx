@@ -1,90 +1,89 @@
-import React, { useContext, useState } from "react"
-import { Flex, Box, Image, IconButton, Heading } from "@chakra-ui/core"
-import { FreeAgentPost, UserData } from "../../types"
-import UserAvatar from "../common/UserAvatar"
-import { Link } from "@reach/router"
-import MyThemeContext from "../../themeContext"
-import { FaTwitter, FaPlus, FaMinus } from "react-icons/fa"
-import { top500 } from "../../assets/imageImports"
-import Flag from "../common/Flag"
-import RoleIcons from "./RoleIcons"
-import WeaponImage from "../common/WeaponImage"
-import VCIcon from "./VCIcon"
-import Heart from "./Heart"
-import { useMutation, useQuery } from "@apollo/react-hooks"
-import { ADD_LIKE } from "../../graphql/mutations/addLike"
-import { FREE_AGENT_MATCHES } from "../../graphql/queries/freeAgentMatches"
-import { DELETE_LIKE } from "../../graphql/mutations/deleteLike"
-import { USER } from "../../graphql/queries/user"
-import { useTranslation } from "react-i18next"
+import { useMutation, useQuery } from "@apollo/client";
+import { Box, Flex, Heading, IconButton, Image } from "@chakra-ui/core";
+import { Link } from "@reach/router";
+import React, { useContext, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { FaMinus, FaPlus, FaTwitter } from "react-icons/fa";
+import top500logo from "../../assets/top500.png";
+import { ADD_LIKE } from "../../graphql/mutations/addLike";
+import { DELETE_LIKE } from "../../graphql/mutations/deleteLike";
+import { FREE_AGENT_MATCHES } from "../../graphql/queries/freeAgentMatches";
+import { USER } from "../../graphql/queries/user";
+import MyThemeContext from "../../themeContext";
+import { FreeAgentPost, UserData } from "../../types";
+import Flag from "../common/Flag";
+import Section from "../common/Section";
+import UserAvatar from "../common/UserAvatar";
+import WeaponImage from "../common/WeaponImage";
+import Heart from "./Heart";
+import RoleIcons from "./RoleIcons";
+import VCIcon from "./VCIcon";
 
 interface FreeAgentCardProps {
-  post: FreeAgentPost
-  canLike: boolean
-  likedUsersIds: string[]
+  post: FreeAgentPost;
+  canLike: boolean;
+  likedUsersIds: string[];
 }
 
 const hasExtraInfo = (post: FreeAgentPost) => {
-  const { activity, description, looking_for, past_experience } = post
+  const { activity, description, looking_for, past_experience } = post;
   if (!activity && !description && !looking_for && !past_experience) {
-    return false
+    return false;
   }
 
-  return true
-}
+  return true;
+};
 
 const FreeAgentCard: React.FC<FreeAgentCardProps> = ({
   post,
   canLike,
   likedUsersIds,
 }) => {
-  const [expanded, setExpanded] = useState(false)
-  const { grayWithShade, themeColorWithShade } = useContext(MyThemeContext)
-  const { t } = useTranslation()
-  const { discord_user } = post
-  const canBeExpanded = hasExtraInfo(post)
+  const [expanded, setExpanded] = useState(false);
+  const { grayWithShade, themeColorWithShade } = useContext(MyThemeContext);
+  const { t, i18n } = useTranslation();
+  const { discord_user } = post;
+  const canBeExpanded = hasExtraInfo(post);
 
-  const { data } = useQuery<UserData>(USER)
+  const { data } = useQuery<UserData>(USER);
 
   const [addLike, { loading: likeLoading }] = useMutation<
     { addLike: boolean },
     { discord_id: string }
   >(ADD_LIKE, {
     refetchQueries: [{ query: FREE_AGENT_MATCHES }],
-  })
+  });
 
   const [deleteLike, { loading: deleteLoading }] = useMutation<
     { deleteLike: boolean },
     { discord_id: string }
   >(DELETE_LIKE, {
     refetchQueries: [{ query: FREE_AGENT_MATCHES }],
-  })
+  });
 
-  const liked = likedUsersIds.indexOf(discord_user.discord_id) !== -1
+  const liked = likedUsersIds.indexOf(discord_user.discord_id) !== -1;
 
   const handleHeartClick = () => {
     if (liked)
-      deleteLike({ variables: { discord_id: discord_user.discord_id } })
-    else addLike({ variables: { discord_id: discord_user.discord_id } })
-  }
+      deleteLike({ variables: { discord_id: discord_user.discord_id } });
+    else addLike({ variables: { discord_id: discord_user.discord_id } });
+  };
 
   return (
-    <Flex
-      rounded="lg"
+    <Section
+      display="flex"
       overflow="hidden"
-      boxShadow="0px 0px 16px 6px rgba(0,0,0,0.1)"
-      p="25px"
       flexDirection="column"
       justifyContent="space-between"
     >
       <Flex justifyContent="space-between" flexWrap="wrap" alignItems="center">
-        <Box color="#999999" width="50px" m="1em">
-          {new Date(parseInt(post.createdAt)).toLocaleDateString()}
+        <Box color="#999999" width="50px" m="1em" whiteSpace="nowrap">
+          {new Date(parseInt(post.createdAt)).toLocaleDateString(i18n.language)}
         </Box>
         <Box width="50px" m="1em">
           {discord_user.top500 && (
             <Image
-              src={top500}
+              src={top500logo}
               alt={t("freeagents;Free agent has reached Top 500 in X Rank")}
               height="40px"
               width="auto"
@@ -163,7 +162,7 @@ const FreeAgentCard: React.FC<FreeAgentCardProps> = ({
             aria-label={t("freeagents;Show more information")}
             isRound
             size="lg"
-            icon={expanded ? FaMinus : FaPlus}
+            icon={expanded ? <FaMinus /> : <FaPlus />}
             onClick={() => setExpanded(!expanded)}
           />
         )}
@@ -210,8 +209,8 @@ const FreeAgentCard: React.FC<FreeAgentCardProps> = ({
           )}
         </Box>
       )}
-    </Flex>
-  )
-}
+    </Section>
+  );
+};
 
-export default FreeAgentCard
+export default FreeAgentCard;

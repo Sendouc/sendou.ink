@@ -1,18 +1,18 @@
-import React from "react"
-import { RouteComponentProps } from "@reach/router"
-import { Image, Heading, Flex, Box } from "@chakra-ui/core"
-import { posterGirl } from "../../assets/imageImports"
-import { useContext } from "react"
-import MyThemeContext from "../../themeContext"
-import "./HomePage.css"
-import { Helmet } from "react-helmet-async"
-import Stats from "./Stats"
-import WeeksTournaments from "./WeeksTournaments"
-import { useTranslation } from "react-i18next"
+import React from "react";
+import { RouteComponentProps } from "@reach/router";
+import { Image, Heading, Flex, Box } from "@chakra-ui/core";
+import { posterGirl } from "../../assets/imageImports";
+import { useContext } from "react";
+import MyThemeContext from "../../themeContext";
+import "./HomePage.css";
+import { Helmet } from "react-helmet-async";
+import Stats from "./Stats";
+import WeeksTournaments from "./WeeksTournaments";
+import { useTranslation } from "react-i18next";
 
 const HomePage: React.FC<RouteComponentProps> = () => {
-  const { colorMode, grayWithShade } = useContext(MyThemeContext)
-  const { t } = useTranslation()
+  const { colorMode, grayWithShade } = useContext(MyThemeContext);
+  const { t } = useTranslation();
   return (
     <>
       <Helmet>
@@ -42,7 +42,7 @@ const HomePage: React.FC<RouteComponentProps> = () => {
         <WeeksTournaments />
       </Box>
     </>
-  )
-}
+  );
+};
 
-export default HomePage
+export default HomePage;

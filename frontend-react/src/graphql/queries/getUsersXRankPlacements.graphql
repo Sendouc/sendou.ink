@@ -1,0 +1,13 @@
+query getUsersXRankPlacements($identifier: String!) {
+  getUserByIdentifier(identifier: $identifier) {
+    xRankPlacements {
+      id
+      weapon
+      ranking
+      mode
+      xPower
+      month
+      year
+    }
+  }
+}

@@ -1,45 +1,46 @@
-import React, { useState, useContext } from "react"
-import Modal from "../elements/Modal"
-import UserSelector from "../common/UserSelector"
-import { ADD_SUGGESTION } from "../../graphql/mutations/addSuggestion"
-import { ADD_VOUCH } from "../../graphql/mutations/addVouch"
-import { useMutation } from "@apollo/react-hooks"
+import { useMutation } from "@apollo/client";
 import {
-  useToast,
-  FormControl,
-  FormLabel,
-  FormHelperText,
-  RadioGroup,
-  Radio,
-  Flex,
   Box,
+  Flex,
+  FormControl,
   FormErrorMessage,
-} from "@chakra-ui/core"
-import MyThemeContext from "../../themeContext"
-import TextArea from "../elements/TextArea"
-import Button from "../elements/Button"
-import { SUGGESTIONS } from "../../graphql/queries/suggestions"
-import { VOUCHES } from "../../graphql/queries/vouches"
-import { USER } from "../../graphql/queries/user"
+  FormHelperText,
+  FormLabel,
+  Radio,
+  RadioGroup,
+  Stack,
+  useToast,
+} from "@chakra-ui/core";
+import React, { useContext, useState } from "react";
+import { ADD_SUGGESTION } from "../../graphql/mutations/addSuggestion";
+import { ADD_VOUCH } from "../../graphql/mutations/addVouch";
+import { SUGGESTIONS } from "../../graphql/queries/suggestions";
+import { USER } from "../../graphql/queries/user";
+import { VOUCHES } from "../../graphql/queries/vouches";
+import MyThemeContext from "../../themeContext";
+import UserSelector from "../common/UserSelector";
+import Button from "../elements/Button";
+import Modal from "../elements/Modal";
+import TextArea from "../elements/TextArea";
 
 interface AddSuggestionVars {
-  discord_id: string
-  region: string
-  server: string
-  description: string
+  discord_id: string;
+  region: string;
+  server: string;
+  description: string;
 }
 
 interface AddVouchVars {
-  discord_id: string
-  region: string
-  server: string
+  discord_id: string;
+  region: string;
+  server: string;
 }
 
 interface SuggestionVouchModalProps {
-  closeModal: () => void
-  canSuggest: boolean
-  canVouch: boolean
-  plusServer: "ONE" | "TWO"
+  closeModal: () => void;
+  canSuggest: boolean;
+  canVouch: boolean;
+  plusServer: "ONE" | "TWO";
 }
 
 const SuggestionVouchModal: React.FC<SuggestionVouchModalProps> = ({
@@ -48,87 +49,87 @@ const SuggestionVouchModal: React.FC<SuggestionVouchModalProps> = ({
   canVouch,
   plusServer,
 }) => {
-  const [form, setForm] = useState<Partial<AddSuggestionVars>>({})
+  const [form, setForm] = useState<Partial<AddSuggestionVars>>({});
   const [actionType, setActionType] = useState<string>(
     !canSuggest ? "VOUCH" : "SUGGEST"
-  )
-  const [showErrors, setShowErrors] = useState(false)
-  const toast = useToast()
-  const { themeColor } = useContext(MyThemeContext)
+  );
+  const [showErrors, setShowErrors] = useState(false);
+  const toast = useToast();
+  const { themeColor } = useContext(MyThemeContext);
 
   const [addSuggestion, { loading }] = useMutation<boolean, AddSuggestionVars>(
     ADD_SUGGESTION,
     {
       variables: { ...(form as AddSuggestionVars) },
-      onCompleted: data => {
-        closeModal()
+      onCompleted: (data) => {
+        closeModal();
         toast({
           description: `Suggestion added`,
           position: "top-right",
           status: "success",
           duration: 10000,
-        })
+        });
       },
-      onError: error => {
+      onError: (error) => {
         toast({
           title: "An error occurred",
           description: error.message,
           position: "top-right",
           status: "error",
           duration: 10000,
-        })
+        });
       },
       refetchQueries: [{ query: SUGGESTIONS }],
     }
-  )
+  );
 
   const [addVouch, { loading: vouchLoading }] = useMutation<
     boolean,
     AddVouchVars
   >(ADD_VOUCH, {
     variables: { ...(form as AddVouchVars) },
-    onCompleted: data => {
-      closeModal()
+    onCompleted: (data) => {
+      closeModal();
       toast({
         description: `Player vouched`,
         position: "top-right",
         status: "success",
         duration: 10000,
-      })
+      });
     },
-    onError: error => {
+    onError: (error) => {
       toast({
         title: "An error occurred",
         description: error.message,
         position: "top-right",
         status: "error",
         duration: 10000,
-      })
+      });
     },
     refetchQueries: [{ query: VOUCHES }, { query: USER }],
-  })
+  });
 
   const handleChange = (newValueObject: Partial<AddSuggestionVars>) => {
-    setForm({ ...form, ...newValueObject })
-  }
+    setForm({ ...form, ...newValueObject });
+  };
 
   const handleSubmit = () => {
     if (!form.discord_id || !form.region || !form.server) {
-      setShowErrors(true)
-      return
+      setShowErrors(true);
+      return;
     }
     if (
       (!form.description ||
         (form.description && form.description.length > 1000)) &&
       actionType === "SUGGEST"
     ) {
-      setShowErrors(true)
-      return
+      setShowErrors(true);
+      return;
     }
 
-    if (actionType === "SUGGEST") addSuggestion()
-    if (actionType === "VOUCH") addVouch()
-  }
+    if (actionType === "SUGGEST") addSuggestion();
+    if (actionType === "VOUCH") addVouch();
+  };
 
   return (
     <Modal title="Suggesting or vouching a player" closeModal={closeModal}>
@@ -136,7 +137,7 @@ const SuggestionVouchModal: React.FC<SuggestionVouchModalProps> = ({
         <FormLabel htmlFor="user">Discord username</FormLabel>
         <UserSelector
           id="user"
-          setValue={value => handleChange({ discord_id: value })}
+          setValue={(value) => handleChange({ discord_id: value })}
         />
         <FormErrorMessage>Required field</FormErrorMessage>
         <FormHelperText>
@@ -148,21 +149,25 @@ const SuggestionVouchModal: React.FC<SuggestionVouchModalProps> = ({
         <FormLabel htmlFor="action">Action</FormLabel>
         <RadioGroup
           id="action"
-          spacing={5}
-          isInline
-          onChange={(e, value) => setActionType(value as string)}
+          onChange={(value) => setActionType(value as string)}
           value={actionType}
         >
-          <Radio
-            variantColor={themeColor}
-            value="SUGGEST"
-            isDisabled={!canSuggest}
-          >
-            Suggest
-          </Radio>
-          <Radio variantColor={themeColor} value="VOUCH" isDisabled={!canVouch}>
-            Vouch
-          </Radio>
+          <Stack direction="row">
+            <Radio
+              colorScheme={themeColor}
+              value="SUGGEST"
+              isDisabled={!canSuggest}
+            >
+              Suggest
+            </Radio>
+            <Radio
+              colorScheme={themeColor}
+              value="VOUCH"
+              isDisabled={!canVouch}
+            >
+              Vouch
+            </Radio>
+          </Stack>
         </RadioGroup>
         <FormHelperText>
           Vouching only possible if you got high enough ratio in the last voting
@@ -173,21 +178,21 @@ const SuggestionVouchModal: React.FC<SuggestionVouchModalProps> = ({
         <FormLabel htmlFor="server">Server</FormLabel>
         <RadioGroup
           id="server"
-          spacing={5}
-          isInline
-          onChange={(e, value) => handleChange({ server: value as string })}
+          onChange={(value) => handleChange({ server: value as string })}
           value={form.server}
         >
-          <Radio
-            variantColor={themeColor}
-            value="ONE"
-            isDisabled={plusServer !== "ONE"}
-          >
-            +1
-          </Radio>
-          <Radio variantColor={themeColor} value="TWO">
-            +2
-          </Radio>
+          <Stack direction="row">
+            <Radio
+              colorScheme={themeColor}
+              value="ONE"
+              isDisabled={plusServer !== "ONE"}
+            >
+              +1
+            </Radio>
+            <Radio colorScheme={themeColor} value="TWO">
+              +2
+            </Radio>
+          </Stack>
           <FormErrorMessage>Required field</FormErrorMessage>
         </RadioGroup>
       </FormControl>
@@ -196,17 +201,17 @@ const SuggestionVouchModal: React.FC<SuggestionVouchModalProps> = ({
         <FormLabel htmlFor="region">Region</FormLabel>
         <RadioGroup
           id="region"
-          spacing={5}
-          isInline
-          onChange={(e, value) => handleChange({ region: value as string })}
+          onChange={(value) => handleChange({ region: value as string })}
           value={form.region}
         >
-          <Radio variantColor={themeColor} value="EU">
-            Europe
-          </Radio>
-          <Radio variantColor={themeColor} value="NA">
-            The Americas
-          </Radio>
+          <Stack direction="row">
+            <Radio colorScheme={themeColor} value="EU">
+              Europe
+            </Radio>
+            <Radio colorScheme={themeColor} value="NA">
+              The Americas
+            </Radio>
+          </Stack>
         </RadioGroup>
         <FormErrorMessage>Required field</FormErrorMessage>
         <FormHelperText>
@@ -256,7 +261,7 @@ const SuggestionVouchModal: React.FC<SuggestionVouchModalProps> = ({
         </Button>
       </Flex>
     </Modal>
-  )
-}
+  );
+};
 
-export default SuggestionVouchModal
+export default SuggestionVouchModal;

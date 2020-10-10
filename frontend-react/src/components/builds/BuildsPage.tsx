@@ -1,40 +1,38 @@
-import React from "react"
-import { Helmet } from "react-helmet-async"
-import { RouteComponentProps } from "@reach/router"
-import WeaponSelector from "../common/WeaponSelector"
-import { useState } from "react"
+import { useQuery } from "@apollo/client";
+import { Box, Button, Flex, FormLabel, Heading, Switch } from "@chakra-ui/core";
+import { RouteComponentProps } from "@reach/router";
+import useLocalStorage from "@rehooks/local-storage";
+import React, { useContext, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
+import InfiniteScroll from "react-infinite-scroller";
+import { SEARCH_FOR_BUILDS } from "../../graphql/queries/searchForBuilds";
+import MyThemeContext from "../../themeContext";
 import {
-  Weapon,
   Ability,
+  Build,
   SearchForBuildsData,
   SearchForBuildsVars,
-  Build,
-} from "../../types"
-import { Box, Flex, Heading, FormLabel, Switch, Button } from "@chakra-ui/core"
-import { useContext } from "react"
-import MyThemeContext from "../../themeContext"
-import useLocalStorage from "@rehooks/local-storage"
-import { useQuery } from "@apollo/react-hooks"
-import { SEARCH_FOR_BUILDS } from "../../graphql/queries/searchForBuilds"
-import Loading from "../common/Loading"
-import Error from "../common/Error"
-import BuildCard from "./BuildCard"
-import InfiniteScroll from "react-infinite-scroller"
-import PageHeader from "../common/PageHeader"
-import AbilitySelector from "./AbilitySelector"
-import Alert from "../elements/Alert"
-import { useTranslation } from "react-i18next"
+  Weapon,
+} from "../../types";
+import Error from "../common/Error";
+import Loading from "../common/Loading";
+import PageHeader from "../common/PageHeader";
+import WeaponSelector from "../common/WeaponSelector";
+import Alert from "../elements/Alert";
+import AbilitySelector from "./AbilitySelector";
+import BuildCard from "./BuildCard";
 
 const BuildsPage: React.FC<RouteComponentProps> = () => {
-  const { themeColor } = useContext(MyThemeContext)
-  const { t } = useTranslation()
-  const [weapon, setWeapon] = useState<Weapon | null>(null)
-  const [buildsToShow, setBuildsToShow] = useState(10)
-  const [abilities, setAbilities] = useState<Ability[]>([])
-  const [expandedUsers, setExpandedUsers] = useState<Set<string>>(new Set())
+  const { themeColor } = useContext(MyThemeContext);
+  const { t } = useTranslation();
+  const [weapon, setWeapon] = useState<Weapon | null>(null);
+  const [buildsToShow, setBuildsToShow] = useState(10);
+  const [abilities, setAbilities] = useState<Ability[]>([]);
+  const [expandedUsers, setExpandedUsers] = useState<Set<string>>(new Set());
   const [prefersAPView, setAPPreference] = useLocalStorage<boolean>(
     "prefersAPView"
-  )
+  );
 
   const { data, error, loading } = useQuery<
     SearchForBuildsData,
@@ -42,8 +40,8 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
   >(SEARCH_FOR_BUILDS, {
     variables: { weapon: weapon as any },
     skip: !weapon,
-  })
-  if (error) return <Error errorMessage={error.message} />
+  });
+  if (error) return <Error errorMessage={error.message} />;
 
   const buildsFilterByAbilities: Build[] = !data
     ? []
@@ -53,28 +51,28 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
           ...build.headgear,
           ...build.clothing,
           ...build.shoes,
-        ])
+        ]);
         return abilities.every((ability) =>
           abilitiesInBuild.has(ability as any)
-        )
+        );
       })
-    : data.searchForBuilds
+    : data.searchForBuilds;
 
-  const usersOtherBuilds: { [key: string]: Build[] } = {}
+  const usersOtherBuilds: { [key: string]: Build[] } = {};
 
   const buildsOnePerUserUnlessExpanded = buildsFilterByAbilities.reduce(
     (buildsArray: Build[], build) => {
-      const discord_id = build.discord_user!.discord_id
+      const discord_id = build.discord_user!.discord_id;
       if (!usersOtherBuilds[discord_id]) {
-        usersOtherBuilds[discord_id] = []
-        return [...buildsArray, build]
+        usersOtherBuilds[discord_id] = [];
+        return [...buildsArray, build];
       }
 
-      usersOtherBuilds[discord_id] = [...usersOtherBuilds[discord_id], build]
-      return buildsArray
+      usersOtherBuilds[discord_id] = [...usersOtherBuilds[discord_id], build];
+      return buildsArray;
     },
     []
-  )
+  );
 
   return (
     <>
@@ -94,7 +92,7 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
         isChecked={prefersAPView === null ? false : prefersAPView}
         onChange={() => setAPPreference(!prefersAPView)}
       />
-      <Box mt="1em">
+      <Box my={6} maxW="24rem">
         <WeaponSelector
           label={t("builds;Select a weapon to start viewing builds")}
           value={weapon}
@@ -116,11 +114,20 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
             loadMore={(page) => setBuildsToShow(page * 10)}
             hasMore={buildsToShow < data.searchForBuilds.length}
           >
-            <Flex flexWrap="wrap" pt="2em">
+            <Flex
+              flexWrap="wrap"
+              pt="2em"
+              width="100vw"
+              position="relative"
+              left="50%"
+              right="50%"
+              mx="-50vw"
+              justifyContent="center"
+            >
               {buildsOnePerUserUnlessExpanded
                 .filter((_, index) => index < buildsToShow)
                 .reduce((buildElementsArray: JSX.Element[], build) => {
-                  const allBuildsByUserToShow = []
+                  const allBuildsByUserToShow = [];
                   allBuildsByUserToShow.push(
                     <BuildCard
                       key={build.id}
@@ -146,7 +153,7 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
                       }
                       m="0.5em"
                     />
-                  )
+                  );
 
                   if (expandedUsers.has(build.discord_user!.discord_id)) {
                     allBuildsByUserToShow.push(
@@ -163,10 +170,10 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
                           m="0.5em"
                         />
                       ))
-                    )
+                    );
                   }
 
-                  return [...buildElementsArray, ...allBuildsByUserToShow]
+                  return [...buildElementsArray, ...allBuildsByUserToShow];
                 }, [])}
             </Flex>
           </InfiniteScroll>
@@ -175,7 +182,7 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
               {t("builds;No more builds to show")}
             </Heading>
             <Button
-              variantColor={themeColor}
+              colorScheme={themeColor}
               variant="outline"
               mt="1em"
               onClick={() => window.scrollTo(0, 0)}
@@ -191,7 +198,7 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
         </Alert>
       )}
     </>
-  )
-}
+  );
+};
 
-export default BuildsPage
+export default BuildsPage;

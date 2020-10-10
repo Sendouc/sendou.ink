@@ -1,4 +1,4 @@
-import { gql, DocumentNode } from "apollo-boost"
+import { DocumentNode, gql } from "@apollo/client";
 
 export const FREE_AGENT_POSTS: DocumentNode = gql`
   {
@@ -24,4 +24,4 @@ export const FREE_AGENT_POSTS: DocumentNode = gql`
       }
     }
   }
-`
+`;

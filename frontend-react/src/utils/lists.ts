@@ -1,4 +1,4 @@
-import { Weapon, Ability, HeadGear, ClothingGear, ShoesGear } from "../types"
+import { Weapon, Ability, HeadGear, ClothingGear, ShoesGear } from "../types";
 
 export const languages = [
   { code: "de", name: "Deutsch" },
@@ -17,7 +17,7 @@ export const languages = [
   { code: "ko", name: "한국어" },
   { code: "zh-CN", name: "简体中文" },
   { code: "zh-TW", name: "繁體中文" },
-] as const
+] as const;
 
 export const possibleAps = [
   0,
@@ -66,7 +66,7 @@ export const possibleAps = [
   54,
   56,
   57,
-] as const
+] as const;
 
 export const weaponCodes: Record<string, Weapon> = {
   "sploosh-o-matic": "Sploosh-o-matic",
@@ -208,7 +208,7 @@ export const weaponCodes: Record<string, Weapon> = {
   undercover_brella: "Undercover Brella",
   undercover_sorella_brella: "Undercover Sorella Brella",
   kensa_undercover_brella: "Kensa Undercover Brella",
-} as const
+} as const;
 
 export const abilityCodes: Record<string, Ability> = {
   ism: "ISM",
@@ -237,7 +237,7 @@ export const abilityCodes: Record<string, Ability> = {
   sj: "SJ",
   os: "OS",
   dr: "DR",
-} as const
+} as const;
 
 export const gearCodes: Record<string, HeadGear | ClothingGear | ShoesGear> = {
   enchanted_hat: "Enchanted Hat",
@@ -821,11 +821,11 @@ export const gearCodes: Record<string, HeadGear | ClothingGear | ShoesGear> = {
   white_seahorses: "White Seahorses",
   yellow_seahorses: "Yellow Seahorses",
   "zombie_hi-horses": "Zombie Hi-Horses",
-} as const
+} as const;
 
-export const headOnlyAbilities = ["CB", "LDE", "OG", "T"] as const
-export const clothingOnlyAbilities = ["H", "NS", "TI", "RP", "AD"] as const
-export const shoesOnlyAbilities = ["DR", "SJ", "OS"] as const
+export const headOnlyAbilities = ["CB", "LDE", "OG", "T"] as const;
+export const clothingOnlyAbilities = ["H", "NS", "TI", "RP", "AD"] as const;
+export const shoesOnlyAbilities = ["DR", "SJ", "OS"] as const;
 export const stackableAbilities = [
   "BDU",
   "REC",
@@ -842,7 +842,7 @@ export const stackableAbilities = [
   "SS",
   "BRU",
   "AD",
-] as const
+] as const;
 
 export const mainOnlyAbilities = [
   "CB",
@@ -857,7 +857,7 @@ export const mainOnlyAbilities = [
   "DR",
   "SJ",
   "OS",
-] as const
+] as const;
 
 export const abilitiesGameOrder = [
   "ISM",
@@ -886,7 +886,7 @@ export const abilitiesGameOrder = [
   "SJ",
   "OS",
   "DR",
-] as const
+] as const;
 
 export const themeColors = [
   "gray",
@@ -899,7 +899,7 @@ export const themeColors = [
   "cyan",
   "purple",
   "pink",
-] as const
+] as const;
 
 export const countries = [
   "af",
@@ -1141,7 +1141,7 @@ export const countries = [
   "ye",
   "zm",
   "zw",
-] as const
+] as const;
 
 export const countryCodes = [
   "af",
@@ -1383,7 +1383,7 @@ export const countryCodes = [
   "ye",
   "zm",
   "zw",
-] as const
+] as const;
 
 export const continents = {
   af: "AS",
@@ -1625,7 +1625,7 @@ export const continents = {
   ye: "AS",
   zm: "AF",
   zw: "AF",
-} as const
+} as const;
 
 export const maps = [
   "The Reef",
@@ -1651,7 +1651,7 @@ export const maps = [
   "New Albacore Hotel",
   "Ancho-V Games",
   "Skipper Pavilion",
-]
+];
 
 export const modes = [
   "",
@@ -1659,9 +1659,9 @@ export const modes = [
   "Tower Control",
   "Rainmaker",
   "Clam Blitz",
-] as const
+] as const;
 
-export const modesShort = ["", "sz", "tc", "rm", "cb"] as const
+export const modesShort = ["", "sz", "tc", "rm", "cb"] as const;
 
 export const months = [
   "",
@@ -1677,7 +1677,7 @@ export const months = [
   "October",
   "November",
   "December",
-] as const
+] as const;
 
 export const days = [
   "Sunday",
@@ -1687,7 +1687,7 @@ export const days = [
   "Thursday",
   "Friday",
   "Saturday",
-] as const
+] as const;
 
 export const weapons = [
   "Sploosh-o-matic",
@@ -1829,7 +1829,7 @@ export const weapons = [
   "Undercover Brella",
   "Undercover Sorella Brella",
   "Kensa Undercover Brella",
-] as const
+] as const;
 
 export const shooters = [
   "Sploosh-o-matic",
@@ -1861,7 +1861,7 @@ export const shooters = [
   ".96 Gal Deco",
   "Jet Squelcher",
   "Custom Jet Squelcher",
-] as const
+] as const;
 
 export const semiauto = [
   "L-3 Nozzlenose",
@@ -1872,7 +1872,7 @@ export const semiauto = [
   "Cherry H-3 Nozzlenose",
   "Squeezer",
   "Foil Squeezer",
-] as const
+] as const;
 
 export const blasters = [
   "Luna Blaster",
@@ -1891,7 +1891,7 @@ export const blasters = [
   "Rapid Blaster Pro Deco",
   "Clash Blaster",
   "Clash Blaster Neo",
-] as const
+] as const;
 
 export const rollers = [
   "Carbon Roller",
@@ -1905,7 +1905,7 @@ export const rollers = [
   "Kensa Dynamo Roller",
   "Flingza Roller",
   "Foil Flingza Roller",
-] as const
+] as const;
 
 export const brushes = [
   "Inkbrush",
@@ -1915,7 +1915,7 @@ export const brushes = [
   "Herobrush Replica",
   "Octobrush Nouveau",
   "Kensa Octobrush",
-] as const
+] as const;
 
 export const chargers = [
   "Classic Squiffer",
@@ -1937,7 +1937,7 @@ export const chargers = [
   "Bamboozler 14 Mk III",
   "Goo Tuber",
   "Custom Goo Tuber",
-] as const
+] as const;
 
 export const sloshers = [
   "Slosher",
@@ -1953,7 +1953,7 @@ export const sloshers = [
   "Bloblobber Deco",
   "Explosher",
   "Custom Explosher",
-] as const
+] as const;
 
 export const splatlings = [
   "Mini Splatling",
@@ -1969,7 +1969,7 @@ export const splatlings = [
   "Ballpoint Splatling Nouveau",
   "Nautilus 47",
   "Nautilus 79",
-] as const
+] as const;
 
 export const dualies = [
   "Dapple Dualies",
@@ -1986,7 +1986,7 @@ export const dualies = [
   "Custom Dualie Squelchers",
   "Dark Tetra Dualies",
   "Light Tetra Dualies",
-] as const
+] as const;
 
 export const brellas = [
   "Splat Brella",
@@ -1998,9 +1998,9 @@ export const brellas = [
   "Undercover Brella",
   "Undercover Sorella Brella",
   "Kensa Undercover Brella",
-] as const
+] as const;
 
-const weaponMap = (weapon: Weapon) => ({ value: weapon, label: weapon })
+const weaponMap = (weapon: Weapon) => ({ value: weapon, label: weapon });
 
 export const weaponSelectOptions = [
   {
@@ -2057,7 +2057,7 @@ export const weaponSelectOptions = [
       .map(weaponMap)
       .filter((weapon) => !weapon.value.includes("Replica")),
   },
-]
+];
 
 export const weaponSelectOptionsWithAlts = [
   {
@@ -2096,7 +2096,7 @@ export const weaponSelectOptionsWithAlts = [
     label: "Brellas",
     options: brellas.map(weaponMap),
   },
-]
+];
 
 export const weaponsByCategory = {
   Shooters: shooters,
@@ -2109,7 +2109,7 @@ export const weaponsByCategory = {
   Splatlings: splatlings,
   Dualies: dualies,
   Brellas: brellas,
-} as const
+} as const;
 
 export const categoryKeys = [
   "Shooters",
@@ -2122,7 +2122,7 @@ export const categoryKeys = [
   "Splatlings",
   "Dualies",
   "Brellas",
-] as const
+] as const;
 
 export const gearEnglish = [
   {
@@ -2842,7 +2842,7 @@ export const gearEnglish = [
       "Zombie Hi-Horses",
     ],
   },
-] as const
+] as const;
 
 export const clothingGear = [
   "Clt_AMB000",
@@ -3103,7 +3103,7 @@ export const clothingGear = [
   "Clt_VST007",
   "Clt_VST008",
   "Clt_VST009",
-] as const
+] as const;
 
 export const clothingGearEnglish = [
   "Enchanted Robe",
@@ -3361,7 +3361,7 @@ export const clothingGearEnglish = [
   "White Deca Logo Tee",
   "Zink Layered LS",
   "Zink LS",
-] as const
+] as const;
 
 export const headGear = [
   "Hed_ACC001",
@@ -3527,7 +3527,7 @@ export const headGear = [
   "Hed_VIS002",
   "Hed_VIS003",
   "Hed_VIS004",
-] as const
+] as const;
 
 export const headGearEnglish = [
   "Enchanted Hat",
@@ -3691,7 +3691,7 @@ export const headGearEnglish = [
   "Golf Visor",
   "Squash Headband",
   "Swim Goggles",
-] as const
+] as const;
 
 export const shoesGear = [
   "Shs_AMB000",
@@ -3859,7 +3859,7 @@ export const shoesGear = [
   "Shs_TRS000",
   "Shs_TRS001",
   "Shs_TRS002",
-] as const
+] as const;
 
 export const shoesGearEnglish = [
   "Enchanted Boots",
@@ -4027,7 +4027,7 @@ export const shoesGearEnglish = [
   "White Seahorses",
   "Yellow Seahorses",
   "Zombie Hi-Horses",
-] as const
+] as const;
 
 export const headSelectOptions = [
   {
@@ -4764,7 +4764,7 @@ export const headSelectOptions = [
       },
     ],
   },
-] as const
+] as const;
 
 export const clothingSelectOptions = [
   {
@@ -5877,7 +5877,7 @@ export const clothingSelectOptions = [
       },
     ],
   },
-] as const
+] as const;
 
 export const shoesSelectOptions = [
   {
@@ -6629,6 +6629,6 @@ export const shoesSelectOptions = [
       },
     ],
   },
-] as const
+] as const;
 
-export const canAddJpnBuildsIds = ["312082701865713665"] as string[]
+export const canAddJpnBuildsIds = ["312082701865713665"] as string[];

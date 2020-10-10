@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const bannerSchema = new mongoose.Schema({
   logoUrl: String,
@@ -7,6 +7,6 @@ const bannerSchema = new mongoose.Schema({
   textColor: String,
   bgColor: String,
   staleAfter: Date,
-})
+});
 
-module.exports = mongoose.model("Banner", bannerSchema)
+module.exports = mongoose.model("Banner", bannerSchema);

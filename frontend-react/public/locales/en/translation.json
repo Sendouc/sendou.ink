@@ -1175,7 +1175,6 @@
     "ZM": "Zambia",
     "ZW": "Zimbabwe"
   },
-
   "navigation": {
     "Map Planner": "Map Planner",
     "Calendar": "Calendar",
@@ -1186,11 +1185,36 @@
     "Tournament Results": "Tournament Results",
     "Draft Cup": "Draft Cup",
     "Top 500 Browser": "Top 500 Browser",
+    "Top 500": "Top 500",
     "Top 500 Tier Lists": "Top 500 Tier Lists",
+    "Leaderboards": "Leaderboards",
+    "X Rank Leaderboards": "X Rank Leaderboards",
     "Plus Server": "Plus Server",
     "Profile": "Profile",
     "Log out": "Log out",
-    "Log in via Discord": "Log in via Discord"
+    "Log in via Discord": "Log in via Discord",
+    "Choose language": "Choose language",
+    "Choose theme": "Choose theme",
+    "Browser": "Browser",
+    "Trends": "Trends",
+    "Analyzer": "Analyzer",
+    "FAQ": "FAQ",
+    "Voting history": "Voting history",
+    "Suggested and vouched players": "Suggested and vouched players",
+    "Next voting": "Next voting",
+    "Voting": "Voting",
+    "Gray": "Gray",
+    "Red": "Red",
+    "Orange": "Orange",
+    "Yellow": "Yellow",
+    "Green": "Green",
+    "Teal": "Teal",
+    "Blue": "Blue",
+    "Cyan": "Cyan",
+    "Purple": "Purple",
+    "Pink": "Pink",
+    "paginationNext": "Next",
+    "paginationPrevious": "Previous"
   },
   "home": {
     "Competitive Splatoon Hub": "Competitive Splatoon Hub",
@@ -1334,6 +1358,7 @@
     "Frames before taking damage from enemy ink": "Frames before taking damage from enemy ink",
     "Ink Resistance Up also allows you to jump higher and strafe faster while shooting in enemy ink": "Ink Resistance Up also allows you to jump higher and strafe faster while shooting in enemy ink",
     "hp / frame": "hp / frame",
+    "hp": "hp",
     "Limit on the damage enemy ink can deal on you": "Limit on the damage enemy ink can deal on you",
     "Run speed in enemy ink": "Run speed in enemy ink",
     "Sub Weapon damage (indirect)": "Sub Weapon damage (indirect)",
@@ -1363,7 +1388,8 @@
     "Slosher has weird physics so we haven't fully deciphered this parameter.": "Slosher has weird physics so we haven't fully deciphered this parameter.",
     "damage": "damage",
     "pointShort": "p",
-    "Damage taken in enemy ink": "Damage taken in enemy ink"
+    "Damage taken in enemy ink": "Damage taken in enemy ink",
+    "Intensity": "Intensity"
   },
   "users": {
     "Filter by username, Twitter name or Discord ID": "Filter by username, Twitter name or Discord ID",
@@ -1376,6 +1402,7 @@
     "Custom URL can be at most 32 characters long": "Custom URL can be at most 32 characters long",
     "Custom URL has to contain at least one letter": "Custom URL has to contain at least one letter",
     "Custom URL can only contain letters and numbers": "Custom URL can only contain letters and numbers",
+    "Filter builds by title or weapon": "Filter builds by title or weapon",
     "Weapon pool's max size is 5": "Weapon pool's max size is 5",
     "Bio's max length is 10000": "Bio's max length is 10000",
     "Profile updated": "Profile updated",
@@ -1413,7 +1440,7 @@
     "Highest power": "Highest power",
     "Number of placements": "Number of placements",
     "Best placement / power": "Best placement / power",
-    "noPlacementsPrompt": "If you have reached Top 500 in a <1>finished</1> X Rank season you can have it displayed here! Make sure your Twitter account is verified on Discord to get it showing on your sendou.ink profile and then contact Sendou#0043 on Discord with your in-game nick. Once set up new results are added automatically and no further action is needed unless you change your name on Twitter."
+    "noPlacementsPromptNew": "If you have reached Top 500 in a <1>finished</1> X Rank season you can have it displayed here! Simply contact Sendou#0043 on Discord with your in-game nick. Once set up new results are added automatically and no further action is needed."
   },
   "freeagents": {
     "loginPrompt": "Log in to make your own free agent post and start matching!",
@@ -1510,6 +1537,13 @@
   },
   "xtrends": {
     "trendsExplanation": "Here you can find X Rank Top 500 usage tier lists. For example for a weapon to be in the X tier it needs at least 30 placements in that mode that month."
+  },
+  "xleaderboards": {
+    "PEAK_XP": "X Power (all weapons)",
+    "UNIQUE_WEAPONS_COUNT": "Top 500 placements with different weapons",
+    "FOUR_MODE_PEAK_AVERAGE": "4 mode peak X Power average",
+    "PLACEMENTS_COUNT": "Top 500 placements",
+    "Score": "Score"
   },
   "footer": {
     "About": "About",

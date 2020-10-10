@@ -1,38 +1,38 @@
-import { useQuery } from "@apollo/react-hooks"
-import { Box, Flex, Skeleton } from "@chakra-ui/core"
-import { Link } from "@reach/router"
-import React, { useContext } from "react"
-import { STATS } from "../../graphql/queries/stats"
-import MyThemeContext from "../../themeContext"
-import Error from "../common/Error"
-import { useTranslation, Trans } from "react-i18next"
+import { useQuery } from "@apollo/client";
+import { Box, Flex, Skeleton } from "@chakra-ui/core";
+import { Link } from "@reach/router";
+import React, { useContext } from "react";
+import { Trans, useTranslation } from "react-i18next";
+import { STATS } from "../../graphql/queries/stats";
+import MyThemeContext from "../../themeContext";
+import Error from "../common/Error";
 
 interface StatsData {
   stats: {
-    build_count: number
-    tournament_count: number
-    fa_count: number
-    user_count: number
-  }
+    build_count: number;
+    tournament_count: number;
+    fa_count: number;
+    user_count: number;
+  };
 }
 
 const xRankMonths = () => {
-  const date = new Date()
-  const fullYears = date.getFullYear() - 2019
-  return 8 + fullYears * 12 + date.getMonth()
-}
+  const date = new Date();
+  const fullYears = date.getFullYear() - 2019;
+  return 8 + fullYears * 12 + date.getMonth();
+};
 
 const Stats: React.FC = () => {
-  const { grayWithShade, themeColorWithShade } = useContext(MyThemeContext)
-  const { data, error } = useQuery<StatsData>(STATS)
-  const { t } = useTranslation()
+  const { grayWithShade, themeColorWithShade } = useContext(MyThemeContext);
+  const { data, error } = useQuery<StatsData>(STATS);
+  const { t } = useTranslation();
 
-  if (error) return <Error errorMessage={error.message} />
+  if (error) return <Error errorMessage={error.message} />;
 
-  const stats = data?.stats
+  const stats = data?.stats;
 
   interface StatOrSkeletonProps {
-    value?: number
+    value?: number;
   }
 
   const StatOrSkeleton: React.FC<StatOrSkeletonProps> = ({ value }) => {
@@ -44,12 +44,12 @@ const Stats: React.FC = () => {
           display="inline-block"
           mr="0.2em"
         />
-      )
+      );
     }
-    return <>{value}</>
-  }
+    return <>{value}</>;
+  };
 
-  const xRankMonthCount = xRankMonths()
+  const xRankMonthCount = xRankMonths();
 
   return (
     <>
@@ -157,7 +157,7 @@ const Stats: React.FC = () => {
         </Box>
       </Flex>
     </>
-  )
-}
+  );
+};
 
-export default Stats
+export default Stats;

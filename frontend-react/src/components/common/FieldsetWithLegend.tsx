@@ -1,18 +1,17 @@
-import React from "react"
-import { Box, BoxProps } from "@chakra-ui/core"
-import { useContext } from "react"
-import MyThemeContext from "../../themeContext"
+import { Box } from "@chakra-ui/core";
+import React, { useContext } from "react";
+import MyThemeContext from "../../themeContext";
 
 interface FieldsetWithLegendProps {
-  children: React.ReactNode
-  title: React.ReactNode
-  titleFontSize: string
-  dividerMode?: boolean
-  centerTitle?: boolean
-  fullWidth?: boolean
+  children: React.ReactNode;
+  title: React.ReactNode;
+  titleFontSize: string;
+  dividerMode?: boolean;
+  centerTitle?: boolean;
+  fullWidth?: boolean;
 }
 
-const FieldsetWithLegend: React.FC<FieldsetWithLegendProps & BoxProps> = ({
+const FieldsetWithLegend: React.FC<FieldsetWithLegendProps & any> = ({
   children,
   title,
   titleFontSize,
@@ -21,7 +20,7 @@ const FieldsetWithLegend: React.FC<FieldsetWithLegendProps & BoxProps> = ({
   fullWidth = false,
   ...props
 }) => {
-  const { borderStyle, textColor } = useContext(MyThemeContext)
+  const { borderStyle, textColor } = useContext(MyThemeContext);
   return (
     <Box
       as="fieldset"
@@ -47,7 +46,7 @@ const FieldsetWithLegend: React.FC<FieldsetWithLegendProps & BoxProps> = ({
       </Box>
       {children}
     </Box>
-  )
-}
+  );
+};
 
-export default FieldsetWithLegend
+export default FieldsetWithLegend;

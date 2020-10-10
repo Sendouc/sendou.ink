@@ -1,13 +1,13 @@
-import React from "react"
-import { HeadGear, ClothingGear, ShoesGear } from "../../types"
-import english_internal from "../../utils/english_internal.json"
-import { Box } from "@chakra-ui/core"
-import { useTranslation } from "react-i18next"
+import React from "react";
+import { HeadGear, ClothingGear, ShoesGear } from "../../types";
+import english_internal from "../../utils/english_internal.json";
+import { Box } from "@chakra-ui/core";
+import { useTranslation } from "react-i18next";
 
 interface GearImageProps {
-  englishName?: HeadGear | ClothingGear | ShoesGear
-  renderNullIfNoName?: boolean
-  mini?: boolean
+  englishName?: HeadGear | ClothingGear | ShoesGear;
+  renderNullIfNoName?: boolean;
+  mini?: boolean;
 }
 
 const GearImage: React.FC<GearImageProps> = ({
@@ -15,10 +15,10 @@ const GearImage: React.FC<GearImageProps> = ({
   renderNullIfNoName,
   mini,
 }) => {
-  const { t } = useTranslation()
-  if (!englishName && renderNullIfNoName) return null
-  if (!englishName) return <Box />
-  const wh = "32px"
+  const { t } = useTranslation();
+  if (!englishName && renderNullIfNoName) return null;
+  if (!englishName) return <Box />;
+  const wh = "32px";
   return (
     <img
       alt={t(`game;${englishName}`)}
@@ -28,7 +28,7 @@ const GearImage: React.FC<GearImageProps> = ({
         mini ? { width: wh, height: wh, display: "inline-block" } : undefined
       }
     />
-  )
-}
+  );
+};
 
-export default GearImage
+export default GearImage;

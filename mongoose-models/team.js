@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const teamSchema = new mongoose.Schema({
   name: String,
@@ -30,12 +30,12 @@ const teamSchema = new mongoose.Schema({
     },
   ],
   teamXp: Number,
-})
+});
 
 teamSchema.virtual("memberUsers", {
   ref: "User",
   localField: "members.discordId",
   foreignField: "discord_id",
-})
+});
 
-module.exports = mongoose.model("Team", teamSchema)
+module.exports = mongoose.model("Team", teamSchema);

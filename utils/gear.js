@@ -581,6 +581,6 @@ const gear = [
   "White Seahorses",
   "Yellow Seahorses",
   "Zombie Hi-Horses",
-]
+];
 
-module.exports = gear
+module.exports = gear;

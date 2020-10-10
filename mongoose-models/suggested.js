@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const suggestedSchema = new mongoose.Schema(
   {
@@ -9,20 +9,20 @@ const suggestedSchema = new mongoose.Schema(
     description: { type: String, required: true },
   },
   { timestamps: true }
-)
+);
 
 suggestedSchema.virtual("discord_user", {
   ref: "User",
   localField: "discord_id",
   foreignField: "discord_id",
   justOne: true,
-})
+});
 
 suggestedSchema.virtual("suggester_discord_user", {
   ref: "User",
   localField: "suggester_discord_id",
   foreignField: "discord_id",
   justOne: true,
-})
+});
 
-module.exports = mongoose.model("Suggested", suggestedSchema)
+module.exports = mongoose.model("Suggested", suggestedSchema);

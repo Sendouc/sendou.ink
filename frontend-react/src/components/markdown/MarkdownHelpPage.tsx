@@ -1,20 +1,18 @@
-import React, { useContext, useState } from "react"
-import { RouteComponentProps } from "@reach/router"
-import PageHeader from "../common/PageHeader"
-import { Box, Link, Flex, Collapse } from "@chakra-ui/core"
-import MyThemeContext from "../../themeContext"
-import WeaponImage from "../common/WeaponImage"
-import Emoji from "../elements/Emoji"
-import Button from "../elements/Button"
-import { weaponCodes, abilitiesGameOrder, gearCodes } from "../../utils/lists"
-
-interface MarkdownHelpPageProps {}
+import { Box, Collapse, Flex, Link } from "@chakra-ui/core";
+import { RouteComponentProps } from "@reach/router";
+import React, { useContext, useState } from "react";
+import MyThemeContext from "../../themeContext";
+import { abilitiesGameOrder, gearCodes, weaponCodes } from "../../utils/lists";
+import PageHeader from "../common/PageHeader";
+import WeaponImage from "../common/WeaponImage";
+import Button from "../elements/Button";
+import Emoji from "../elements/Emoji";
 
 const MarkdownHelpPage: React.FC<RouteComponentProps> = () => {
-  const { themeColorWithShade } = useContext(MyThemeContext)
-  const [showWeapons, setShowWeapons] = useState(false)
-  const [showAbilities, setShowAbilities] = useState(false)
-  const [showGear, setShowGear] = useState(false)
+  const { themeColorWithShade } = useContext(MyThemeContext);
+  const [showWeapons, setShowWeapons] = useState(false);
+  const [showAbilities, setShowAbilities] = useState(false);
+  const [showGear, setShowGear] = useState(false);
   return (
     <>
       <PageHeader title="Markdown Help" />
@@ -141,7 +139,7 @@ const MarkdownHelpPage: React.FC<RouteComponentProps> = () => {
         </p>
       </Box>
     </>
-  )
-}
+  );
+};
 
-export default MarkdownHelpPage
+export default MarkdownHelpPage;

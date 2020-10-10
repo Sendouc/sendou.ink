@@ -1,21 +1,20 @@
-import React from "react"
-import { Heading } from "@chakra-ui/core"
-import { useContext } from "react"
-import MyThemeContext from "../../themeContext"
+import React from "react";
+import { Heading } from "@chakra-ui/core";
+import { useContext } from "react";
+import MyThemeContext from "../../themeContext";
 
 interface PageHeaderProps {
-  title: string
+  title: string;
 }
 
 const PageHeader: React.FC<PageHeaderProps> = ({ title }) => {
-  const { themeColorWithShade } = useContext(MyThemeContext)
+  const { themeColorWithShade } = useContext(MyThemeContext);
   return (
     <>
       <Heading
         className="shadow"
-        borderLeftColor={themeColorWithShade}
-        borderLeftWidth="5px"
-        pl="5px"
+        borderBottomColor={themeColorWithShade}
+        borderBottomWidth="5px"
         mb="0.5em"
         fontFamily="'Rubik', sans-serif"
         fontWeight="bold"
@@ -23,7 +22,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({ title }) => {
         {title}
       </Heading>
     </>
-  )
-}
+  );
+};
 
-export default PageHeader
+export default PageHeader;

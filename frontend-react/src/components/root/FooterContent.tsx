@@ -1,41 +1,42 @@
-import React, { useContext } from "react"
-import { Flex, Box, Icon } from "@chakra-ui/core"
-import { useTranslation } from "react-i18next"
-import { Link } from "@reach/router"
-import { FaGithub } from "react-icons/fa"
-import MyThemeContext from "../../themeContext"
+import { Box, Flex } from "@chakra-ui/core";
+import { Link } from "@reach/router";
+import React, { useContext } from "react";
+import { useTranslation } from "react-i18next";
+import { FaGithub } from "react-icons/fa";
+import { DiscordIcon } from "../../assets/icons";
+import MyThemeContext from "../../themeContext";
 
 const FooterContent: React.FC = () => {
-  const { t } = useTranslation()
-  const { themeColorWithShade } = useContext(MyThemeContext)
+  const { t } = useTranslation();
+  const { themeColorWithShade } = useContext(MyThemeContext);
   return (
     <Flex
-      bg={themeColorWithShade}
-      p="25px"
+      pb="50px"
       flexShrink={0}
-      borderRadius="5px"
       alignItems="center"
       fontWeight="bold"
       letterSpacing="1px"
       flexWrap="wrap"
-      justifyContent="space-between"
+      justifyContent="space-evenly"
+      bg={themeColorWithShade}
+      color="black"
     >
-      <Flex flexWrap="wrap" justifyContent="space-between">
-        <Box mr="1em">
+      <Flex flexDirection="column" fontSize="1.2rem">
+        <Box my="1em">
           <Link to="/about">{t("footer;About")}</Link>
         </Box>
         <Link to="/links">{t("footer;External links")}</Link>
       </Flex>
       <Flex alignItems="center" flexWrap="wrap" justifyContent="center">
-        <a href="https://discord.gg/J6NqUvt">
-          <Icon name={"discord" as string} size="30px" m="1em" />
+        <a href="https://discord.gg/sendou">
+          <DiscordIcon h="30px" w="30px" m="1em" />
         </a>
-        <a href="https://github.com/Sendouc/sendou-ink">
+        <a href="https://github.com/Sendouc/sendou.ink">
           <Box as={FaGithub} size="30px" m="1em" />
         </a>
       </Flex>
     </Flex>
-  )
-}
+  );
+};
 
-export default FooterContent
+export default FooterContent;

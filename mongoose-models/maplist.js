@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const maplistSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -21,6 +21,6 @@ const maplistSchema = new mongoose.Schema({
       },
     ],
   },
-})
+});
 
-module.exports = mongoose.model("Maplist", maplistSchema)
+module.exports = mongoose.model("Maplist", maplistSchema);

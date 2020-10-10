@@ -238,6 +238,6 @@ const countries = [
   "ye",
   "zm",
   "zw",
-]
+];
 
-module.exports = countries
+module.exports = countries;

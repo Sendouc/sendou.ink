@@ -1,28 +1,28 @@
 import {
   Box,
   Flex,
+  IconButton,
   Popover,
   PopoverContent,
   PopoverTrigger,
   Progress,
-} from "@chakra-ui/core"
-import React, { useContext, useState } from "react"
-import { FaChartLine, FaQuestion } from "react-icons/fa"
-import { Explanation } from "../../hooks/useAbilityEffects"
-import MyThemeContext from "../../themeContext"
-import { Ability, Build } from "../../types"
-import { mainOnlyAbilities } from "../../utils/lists"
-import AbilityIcon from "../builds/AbilityIcon"
-import IconButton from "../elements/IconButton"
-import StatChart from "./StatChart"
+} from "@chakra-ui/core";
+import React, { useContext, useState } from "react";
+import { FaChartLine, FaQuestion } from "react-icons/fa";
+import { Explanation } from "../../hooks/useAbilityEffects";
+import MyThemeContext from "../../themeContext";
+import { Ability, Build } from "../../types";
+import { mainOnlyAbilities } from "../../utils/lists";
+import AbilityIcon from "../builds/AbilityIcon";
+import StatChart from "./StatChart";
 
 interface BuildStatsProps {
-  explanations: Explanation[]
-  otherExplanations?: Explanation[]
-  build: Partial<Build>
-  hideExtra?: boolean
-  showNotActualProgress?: boolean
-  startChartsAtZero?: boolean
+  explanations: Explanation[];
+  otherExplanations?: Explanation[];
+  build: Partial<Build>;
+  hideExtra?: boolean;
+  showNotActualProgress?: boolean;
+  startChartsAtZero?: boolean;
 }
 
 const BuildStats: React.FC<BuildStatsProps> = ({
@@ -33,41 +33,41 @@ const BuildStats: React.FC<BuildStatsProps> = ({
   showNotActualProgress = false,
   startChartsAtZero = true,
 }) => {
-  const [expandedCharts, setExpandedCharts] = useState<Set<string>>(new Set())
+  const [expandedCharts, setExpandedCharts] = useState<Set<string>>(new Set());
 
   const abilityArrays: Ability[][] = [
     build.headgear ?? [],
     build.clothing ?? [],
     build.shoes ?? [],
-  ]
+  ];
 
-  const abilityToPoints: Partial<Record<Ability, number>> = {}
+  const abilityToPoints: Partial<Record<Ability, number>> = {};
   abilityArrays.forEach((arr) =>
     arr.forEach((ability, index) => {
       if (ability !== "UNKNOWN") {
-        let abilityPoints = index === 0 ? 10 : 3
+        let abilityPoints = index === 0 ? 10 : 3;
         if (mainOnlyAbilities.indexOf(ability as any) !== -1)
-          abilityPoints = 999
+          abilityPoints = 999;
         abilityToPoints[ability] = abilityToPoints.hasOwnProperty(ability)
           ? (abilityToPoints[ability] as any) + abilityPoints
-          : abilityPoints
+          : abilityPoints;
       }
     })
-  )
+  );
 
   const BuildStat: React.FC<{
-    title: string
-    effect: string
-    otherEffect?: string
-    ability: Ability
-    info?: string
-    progressBarValue: number
-    otherProgressBarValue?: number
-    getEffect?: (ap: number) => number
-    ap: number
-    otherAp?: number
-    chartExpanded: boolean
-    toggleChart: () => void
+    title: string;
+    effect: string;
+    otherEffect?: string;
+    ability: Ability;
+    info?: string;
+    progressBarValue: number;
+    otherProgressBarValue?: number;
+    getEffect?: (ap: number) => number;
+    ap: number;
+    otherAp?: number;
+    chartExpanded: boolean;
+    toggleChart: () => void;
   }> = ({
     title,
     effect,
@@ -84,16 +84,23 @@ const BuildStats: React.FC<BuildStatsProps> = ({
   }) => {
     const { darkerBgColor, themeColorWithShade, colorMode } = useContext(
       MyThemeContext
-    )
+    );
 
     return (
       <>
         <Flex justifyContent="space-between">
           <Flex fontWeight="bold" mr="1em" mb="0.5em" alignItems="center">
-            <Box mr="0.5em" minW="30px">
+            <Box minW="30px">
               <AbilityIcon ability={ability} size="TINY" />
             </Box>
-            <IconButton icon={FaChartLine} onClick={() => toggleChart()} />
+            <IconButton
+              aria-label="Show chart for the stat"
+              mx="0.5rem"
+              icon={<FaChartLine />}
+              onClick={() => toggleChart()}
+              isRound
+              variant="ghost"
+            />
             {title}
             {info && (
               <Popover trigger="hover" placement="top-start">
@@ -127,21 +134,17 @@ const BuildStats: React.FC<BuildStatsProps> = ({
           </Box>
         </Flex>
         <Progress
-          color="orange"
+          colorScheme="orange"
           height={otherEffect ? "16px" : "32px"}
           value={progressBarValue}
-          hasStripe
-          isAnimated
           bg={colorMode === "dark" ? "#464b64" : `orange.100`}
         />
         {otherEffect && (
           <>
             <Progress
-              color="blue"
+              colorScheme="blue"
               height="16px"
               value={otherProgressBarValue}
-              hasStripe
-              isAnimated
               bg={colorMode === "dark" ? "#464b64" : `blue.100`}
             />
             <Flex justifyContent="space-between">
@@ -168,23 +171,23 @@ const BuildStats: React.FC<BuildStatsProps> = ({
           </Box>
         )}
       </>
-    )
-  }
+    );
+  };
 
   return (
     <>
       {explanations.map((_explanation, index) => {
-        const explanation = explanations[index]
+        const explanation = explanations[index];
         const otherExplanation = otherExplanations
           ? otherExplanations[index]
-          : undefined
+          : undefined;
 
         if (
           explanation.effectFromMax === 0 &&
           (!otherExplanation || otherExplanation.effectFromMax === 0) &&
           hideExtra
         ) {
-          return null
+          return null;
         }
 
         return (
@@ -210,21 +213,21 @@ const BuildStats: React.FC<BuildStatsProps> = ({
               otherAp={otherExplanation?.ap}
               chartExpanded={expandedCharts.has(explanation.title)}
               toggleChart={() => {
-                const newSet = new Set(expandedCharts)
+                const newSet = new Set(expandedCharts);
                 if (newSet.has(explanation.title)) {
-                  newSet.delete(explanation.title)
+                  newSet.delete(explanation.title);
                 } else {
-                  newSet.add(explanation.title)
+                  newSet.add(explanation.title);
                 }
 
-                setExpandedCharts(newSet)
+                setExpandedCharts(newSet);
               }}
             />
           </Box>
-        )
+        );
       })}
     </>
-  )
-}
+  );
+};
 
-export default BuildStats
+export default BuildStats;

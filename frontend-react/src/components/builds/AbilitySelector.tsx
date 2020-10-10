@@ -1,24 +1,24 @@
-import React, { useState } from "react"
-import FieldsetWithLegend from "../common/FieldsetWithLegend"
-import { Flex, Box } from "@chakra-ui/core"
-import { abilitiesGameOrder } from "../../utils/lists"
-import AbilityIcon from "./AbilityIcon"
-import { Ability } from "../../types"
-import Button from "../elements/Button"
-import { FaFilter } from "react-icons/fa"
-import { useTranslation } from "react-i18next"
+import React, { useState } from "react";
+import FieldsetWithLegend from "../common/FieldsetWithLegend";
+import { Flex, Box } from "@chakra-ui/core";
+import { abilitiesGameOrder } from "../../utils/lists";
+import AbilityIcon from "./AbilityIcon";
+import { Ability } from "../../types";
+import Button from "../elements/Button";
+import { FaFilter } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 interface AbilitySelectorProps {
-  abilities: Ability[]
-  setAbilities: (abilities: Ability[]) => void
+  abilities: Ability[];
+  setAbilities: (abilities: Ability[]) => void;
 }
 
 const AbilitySelector: React.FC<AbilitySelectorProps> = ({
   abilities,
   setAbilities,
 }) => {
-  const [show, setShow] = useState(false)
-  const { t } = useTranslation()
+  const [show, setShow] = useState(false);
+  const { t } = useTranslation();
   return show ? (
     <>
       <FieldsetWithLegend
@@ -35,8 +35,8 @@ const AbilitySelector: React.FC<AbilitySelectorProps> = ({
               p="5px"
               cursor={abilities.indexOf(ability) === -1 ? "pointer" : undefined}
               onClick={() => {
-                if (abilities.indexOf(ability) !== -1) return
-                setAbilities(abilities.concat(ability))
+                if (abilities.indexOf(ability) !== -1) return;
+                setAbilities(abilities.concat(ability));
               }}
             >
               <AbilityIcon
@@ -80,10 +80,10 @@ const AbilitySelector: React.FC<AbilitySelectorProps> = ({
       )}
     </>
   ) : (
-    <Button icon={FaFilter} onClick={() => setShow(!show)}>
+    <Button icon={<FaFilter />} onClick={() => setShow(!show)}>
       {t("builds;Filter by ability")}
     </Button>
-  )
-}
+  );
+};
 
-export default AbilitySelector
+export default AbilitySelector;

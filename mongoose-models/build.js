@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const buildSchema = new mongoose.Schema(
   {
@@ -16,13 +16,13 @@ const buildSchema = new mongoose.Schema(
     jpn: { type: Boolean },
   },
   { timestamps: true }
-)
+);
 
 buildSchema.virtual("discord_user", {
   ref: "User",
   localField: "discord_id",
   foreignField: "discord_id",
   justOne: true,
-})
+});
 
-module.exports = mongoose.model("Build", buildSchema)
+module.exports = mongoose.model("Build", buildSchema);
