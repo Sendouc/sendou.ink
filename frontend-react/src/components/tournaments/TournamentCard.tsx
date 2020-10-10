@@ -1,45 +1,42 @@
-import React, { useContext } from "react"
-import { Box, Image, Flex, PseudoBox } from "@chakra-ui/core"
-import MyThemeContext from "../../themeContext"
-import { months } from "../../utils/lists"
-import trophy from "../../assets/trophy.png"
-import WeaponImage from "../common/WeaponImage"
-import { Weapon } from "../../types"
-import Flag from "../common/Flag"
-import { useTranslation } from "react-i18next"
+import { Box, Flex, Image } from "@chakra-ui/core";
+import React, { useContext } from "react";
+import { useTranslation } from "react-i18next";
+import trophy from "../../assets/trophy.png";
+import MyThemeContext from "../../themeContext";
+import { Weapon } from "../../types";
+import Flag from "../common/Flag";
+import Section from "../common/Section";
+import WeaponImage from "../common/WeaponImage";
 
 interface TournamentCardProps {
   tournament: {
-    id: string
-    name: string
-    jpn: boolean
-    google_sheet_url?: string
-    bracket?: string
-    date: string
-    popular_weapons: string[]
-    winning_team_name: string
-    winning_team_players: string[]
-  }
-  styledOnHover?: boolean
+    id: string;
+    name: string;
+    jpn: boolean;
+    google_sheet_url?: string;
+    bracket?: string;
+    date: string;
+    popular_weapons: string[];
+    winning_team_name: string;
+    winning_team_players: string[];
+  };
+  styledOnHover?: boolean;
 }
 
 const TournamentCard: React.FC<TournamentCardProps> = ({
   tournament,
   styledOnHover,
 }) => {
-  const { t } = useTranslation()
-  const { grayWithShade } = useContext(MyThemeContext)
-  const a = new Date(parseInt(tournament.date))
-  const dateStr = `${a.getDate()} ${
-    months[a.getMonth() + 1]
-  } ${a.getFullYear()}`
+  const { t, i18n } = useTranslation();
+  const { grayWithShade } = useContext(MyThemeContext);
+  const dateStr = new Date(parseInt(tournament.date)).toLocaleDateString(
+    i18n.language
+  );
   return (
-    <PseudoBox
+    <Section
       display="flex"
       rounded="lg"
       overflow="hidden"
-      boxShadow="0px 0px 16px 6px rgba(0,0,0,0.1)"
-      p="25px"
       w="100%"
       h="100%"
       flexDirection="column"
@@ -90,8 +87,8 @@ const TournamentCard: React.FC<TournamentCardProps> = ({
           ))}
         </Flex>
       </Box>
-    </PseudoBox>
-  )
-}
+    </Section>
+  );
+};
 
-export default TournamentCard
+export default TournamentCard;

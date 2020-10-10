@@ -1,18 +1,18 @@
-import React, { useState, useEffect, useContext } from "react"
-import { Spinner, Box } from "@chakra-ui/core"
-import MyThemeContext from "../../themeContext"
+import React, { useState, useEffect, useContext } from "react";
+import { Spinner, Box } from "@chakra-ui/core";
+import MyThemeContext from "../../themeContext";
 
 const Loading: React.FC = () => {
-  const { themeColorWithShade } = useContext(MyThemeContext)
-  const [showSpinner, setShowSpinner] = useState(false)
+  const { themeColorWithShade } = useContext(MyThemeContext);
+  const [showSpinner, setShowSpinner] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowSpinner(true), 1000)
+    const timer = setTimeout(() => setShowSpinner(true), 1000);
 
-    return () => clearTimeout(timer)
-  }, [])
+    return () => clearTimeout(timer);
+  }, []);
 
-  if (!showSpinner) return null
+  if (!showSpinner) return null;
 
   return (
     <Box textAlign="center" pt="2em">
@@ -23,7 +23,7 @@ const Loading: React.FC = () => {
         speed="0.65s"
       />
     </Box>
-  )
-}
+  );
+};
 
-export default Loading
+export default Loading;

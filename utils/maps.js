@@ -22,6 +22,6 @@ const maps = [
   "New Albacore Hotel",
   "Ancho-V Games",
   "Skipper Pavilion",
-]
+];
 
-module.exports = maps
+module.exports = maps;

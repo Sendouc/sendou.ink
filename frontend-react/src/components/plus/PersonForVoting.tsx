@@ -1,17 +1,17 @@
-import { Box, Flex, Grid } from "@chakra-ui/core"
-import React, { useContext, useState } from "react"
-import MyThemeContext from "../../themeContext"
-import { months } from "../../utils/lists"
-import UserAvatar from "../common/UserAvatar"
-import Button from "../elements/Button"
-import Markdown from "../elements/Markdown"
+import { Box, Flex, Grid } from "@chakra-ui/core";
+import React, { useContext, useState } from "react";
+import MyThemeContext from "../../themeContext";
+import { months } from "../../utils/lists";
+import UserAvatar from "../common/UserAvatar";
+import Button from "../elements/Button";
+import Markdown from "../elements/Markdown";
 
 interface VotingButtonProps {
-  value: 2 | 1 | -1 | -2
-  handleClick: (oldValue: number) => void
-  gridArea: string
-  active: boolean
-  lastTime: boolean
+  value: 2 | 1 | -1 | -2;
+  handleClick: (oldValue: number) => void;
+  gridArea: string;
+  active: boolean;
+  lastTime: boolean;
 }
 
 const buttonBg = {
@@ -19,7 +19,7 @@ const buttonBg = {
   "-1": "red.500",
   "1": "green.500",
   "2": "green.500",
-} as const
+} as const;
 
 const VotingButton: React.FC<VotingButtonProps> = ({
   value,
@@ -28,13 +28,13 @@ const VotingButton: React.FC<VotingButtonProps> = ({
   active,
   lastTime,
 }) => {
-  const { grayWithShade } = useContext(MyThemeContext)
+  const { grayWithShade } = useContext(MyThemeContext);
 
-  const d = new Date()
-  let month = d.getMonth()
-  if (month === 0) month = 12
+  const d = new Date();
+  let month = d.getMonth();
+  if (month === 0) month = 12;
 
-  const monthStr = months[month]
+  const monthStr = months[month];
   return (
     <Flex
       flexDirection="column"
@@ -65,26 +65,26 @@ const VotingButton: React.FC<VotingButtonProps> = ({
         </Box>
       )}
     </Flex>
-  )
-}
+  );
+};
 
 interface PersonForVotingProps {
-  votes: Record<string, number>
-  setVotes: React.Dispatch<React.SetStateAction<Record<string, number>>>
+  votes: Record<string, number>;
+  setVotes: React.Dispatch<React.SetStateAction<Record<string, number>>>;
   user: {
-    username: string
-    discriminator: string
-    avatar?: string
-    discord_id: string
-    bio?: string
-  }
+    username: string;
+    discriminator: string;
+    avatar?: string;
+    discord_id: string;
+    bio?: string;
+  };
   suggester?: {
-    username: string
-    discriminator: string
-  }
-  description?: string
-  sameRegion?: boolean
-  oldVote?: number
+    username: string;
+    discriminator: string;
+  };
+  description?: string;
+  sameRegion?: boolean;
+  oldVote?: number;
 }
 
 const PersonForVoting: React.FC<PersonForVotingProps> = ({
@@ -96,12 +96,12 @@ const PersonForVoting: React.FC<PersonForVotingProps> = ({
   oldVote,
   sameRegion = true,
 }) => {
-  const [showBio, setShowBio] = useState(false)
-  const { grayWithShade } = useContext(MyThemeContext)
+  const [showBio, setShowBio] = useState(false);
+  const { grayWithShade } = useContext(MyThemeContext);
 
   const handleClick = (value: number) => {
-    setVotes({ ...votes, [user.discord_id]: value })
-  }
+    setVotes({ ...votes, [user.discord_id]: value });
+  };
 
   return (
     <Box
@@ -199,7 +199,7 @@ const PersonForVoting: React.FC<PersonForVotingProps> = ({
         </Box>
       )}
     </Box>
-  )
-}
+  );
+};
 
-export default PersonForVoting
+export default PersonForVoting;

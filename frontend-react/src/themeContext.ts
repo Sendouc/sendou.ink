@@ -1,5 +1,5 @@
-import React from "react"
-import { Theme } from "./types"
+import React from "react";
+import { Theme } from "./types";
 
 const MyThemeContext = React.createContext<Theme>({
   colorMode: "dark",
@@ -12,7 +12,7 @@ const MyThemeContext = React.createContext<Theme>({
   themeColorHex: "#D53F8C",
   themeColorHexLighter: "#FBB6CE",
   themeColor: "pink",
-})
+});
 
-export const MyThemeProvider = MyThemeContext.Provider
-export default MyThemeContext
+export const MyThemeProvider = MyThemeContext.Provider;
+export default MyThemeContext;

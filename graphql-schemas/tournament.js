@@ -1,6 +1,6 @@
-const { UserInputError, gql } = require("apollo-server-express")
-const Tournament = require("../mongoose-models/tournament")
-const Round = require("../mongoose-models/round")
+const { UserInputError, gql } = require("apollo-server-express");
+const Tournament = require("../mongoose-models/tournament");
+const Round = require("../mongoose-models/round");
 
 const typeDef = gql`
   extend type Query {
@@ -73,85 +73,98 @@ const typeDef = gql`
     western
     jpn
   }
-`
+`;
 
 const resolvers = {
   Query: {
     searchForTournamentById: async (root, args) => {
-      if (!args.id.match(/^[0-9a-fA-F]{24}$/)) return null
+      if (!args.id.match(/^[0-9a-fA-F]{24}$/)) return null;
       const rounds = await Round.find({ tournament_id: args.id })
         .sort({ round_number: "asc", game_number: "asc" })
-        .catch(e => {
+        .catch((e) => {
           throw new UserInputError(e.message, {
             invalidArgs: args,
-          })
-        })
+          });
+        });
 
-      const tournament = await Tournament.findById(args.id).catch(e => {
+      const tournament = await Tournament.findById(args.id).catch((e) => {
         throw new UserInputError(e.message, {
           invalidArgs: args,
-        })
-      })
+        });
+      });
 
-      if (!tournament) return null
-      tournament.rounds = rounds
-      return tournament
+      if (!tournament) return null;
+      tournament.rounds = rounds;
+      return tournament;
     },
     searchForTournaments: async (root, args) => {
       Object.keys(args).forEach(
-        key => (args[key] == null || args[key].length === 0) && delete args[key]
-      )
+        (key) =>
+          (args[key] == null || args[key].length === 0) && delete args[key]
+      );
 
-      const tournamentsPerPage = 18
-      const currentPage = args.page ? args.page - 1 : 0
+      const tournamentsPerPage = 18;
+      const currentPage = args.page ? args.page - 1 : 0;
 
       const roundSearchCriteria = {
         $or: [],
-      }
+      };
 
       if (args.team_name) {
         roundSearchCriteria.$or.push({
           winning_team_name: {
-            $regex: args.team_name,
-            $options: "i",
+            $regex: new RegExp(
+              args.team_name.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&"),
+              "i"
+            ),
           },
-        })
+        });
         roundSearchCriteria.$or.push({
           losing_team_name: {
-            $regex: args.team_name,
-            $options: "i",
+            $regex: new RegExp(
+              args.team_name.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&"),
+              "i"
+            ),
           },
-        })
+        });
       }
 
       if (args.player_name) {
         roundSearchCriteria.$or.push({
           winning_team_players: {
-            $regex: args.player_name,
-            $options: "i",
+            $regex: new RegExp(
+              args.player_name.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&"),
+              "i"
+            ),
           },
-        })
+        });
         roundSearchCriteria.$or.push({
           losing_team_players: {
-            $regex: args.player_name,
-            $options: "i",
+            $regex: new RegExp(
+              args.player_name.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&"),
+              "i"
+            ),
           },
-        })
+        });
       }
 
       if (args.unique_id) {
         roundSearchCriteria.$or.push({
           winning_team_unique_ids: {
-            $regex: args.unique_id,
-            $options: "i",
+            $regex: new RegExp(
+              args.unique_id.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&"),
+              "i"
+            ),
           },
-        })
+        });
         roundSearchCriteria.$or.push({
           losing_team_unique_ids: {
-            $regex: args.unique_id,
-            $options: "i",
+            $regex: new RegExp(
+              args.unique_id.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&"),
+              "i"
+            ),
           },
-        })
+        });
       }
 
       if (args.comp) {
@@ -159,35 +172,35 @@ const resolvers = {
           winning_team_weapons: {
             $all: args.comp,
           },
-        })
+        });
 
         roundSearchCriteria.$or.push({
           losing_team_weapons: {
             $all: args.comp,
           },
-        })
+        });
       }
 
       if (args.mode) {
-        roundSearchCriteria.mode = args.mode
+        roundSearchCriteria.mode = args.mode;
       }
 
       if (args.stage) {
-        roundSearchCriteria.stage = args.stage
+        roundSearchCriteria.stage = args.stage;
       }
 
       // if criteria were presented that we have to search
       // from the Round collection
-      let tournament_ids = null
-      const tournamentSearchCriteria = {}
+      let tournament_ids = null;
+      const tournamentSearchCriteria = {};
 
       if (args.region && args.region === "western")
-        tournamentSearchCriteria.jpn = false
+        tournamentSearchCriteria.jpn = false;
       if (args.region && args.region === "jpn")
-        tournamentSearchCriteria.jpn = true
+        tournamentSearchCriteria.jpn = true;
 
       if (roundSearchCriteria.$or.length === 0) {
-        delete roundSearchCriteria.$or
+        delete roundSearchCriteria.$or;
       }
 
       if (
@@ -197,52 +210,54 @@ const resolvers = {
       ) {
         tournament_ids = await Round.find(roundSearchCriteria).distinct(
           "tournament_id"
-        )
+        );
 
         tournamentSearchCriteria._id = {
           $in: tournament_ids,
-        }
+        };
       }
 
       if (args.tournament_name)
         tournamentSearchCriteria.name = {
-          $regex: args.tournament_name,
-          $options: "i",
-        }
+          $regex: new RegExp(
+            args.tournament_name.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&"),
+            "i"
+          ),
+        };
 
       const tournamentCount = await Tournament.countDocuments(
         tournamentSearchCriteria
-      ).catch(e => {
+      ).catch((e) => {
         throw new UserInputError(e.message, {
           invalidArgs: args,
-        })
-      })
+        });
+      });
 
-      const pageCount = Math.ceil(tournamentCount / tournamentsPerPage)
+      const pageCount = Math.ceil(tournamentCount / tournamentsPerPage);
       // if 0 documents we don't care if the page is wrong
       if (tournamentCount !== 0) {
         if (args.page > pageCount)
           throw new UserInputError("too big page number given", {
             invalidArgs: args,
-          })
+          });
       }
 
       const tournaments = await Tournament.find(tournamentSearchCriteria)
         .skip(tournamentsPerPage * currentPage)
         .limit(tournamentsPerPage)
         .sort({ date: "desc" })
-        .catch(e => {
+        .catch((e) => {
           throw new UserInputError(e.message, {
             invalidArgs: args,
-          })
-        })
+          });
+        });
 
-      return { tournaments, pageCount }
+      return { tournaments, pageCount };
     },
   },
-}
+};
 
 module.exports = {
   Tournament: typeDef,
   tournamentResolvers: resolvers,
-}
+};

@@ -1,6 +1,6 @@
-import React from "react"
-import { Ability } from "../../types"
-import { abilityIcons } from "../../assets/imageImports"
+import React from "react";
+import { Ability } from "../../types";
+import { abilityIcons } from "../../assets/imageImports";
 
 //https://github.com/loadout-ink/splat2-calc
 
@@ -9,11 +9,11 @@ const sizeMap = {
   SUB: "40px",
   TINY: "30px",
   SUBTINY: "20px",
-} as const
+} as const;
 
 interface AbilityIconProps {
-  ability: Ability | "EMPTY"
-  size: "MAIN" | "SUB" | "TINY" | "SUBTINY"
+  ability: Ability | "EMPTY";
+  size: "MAIN" | "SUB" | "TINY" | "SUBTINY";
 }
 
 const AbilityIcon: React.FC<AbilityIconProps> = ({ ability, size }) => {
@@ -36,7 +36,7 @@ const AbilityIcon: React.FC<AbilityIconProps> = ({ ability, size }) => {
       }}
       alt={ability}
     />
-  )
-}
+  );
+};
 
-export default AbilityIcon
+export default AbilityIcon;

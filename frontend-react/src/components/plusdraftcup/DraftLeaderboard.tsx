@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React, { useContext } from "react";
 import {
   Tabs,
   TabList,
@@ -9,50 +9,50 @@ import {
   Box,
   Flex,
   Image,
-} from "@chakra-ui/core"
-import MyThemeContext from "../../themeContext"
-import UserAvatar from "../common/UserAvatar"
-import { Link } from "@reach/router"
-import { medalEmoji } from "../../assets/imageImports"
-import useBreakPoints from "../../hooks/useBreakPoints"
+} from "@chakra-ui/core";
+import MyThemeContext from "../../themeContext";
+import UserAvatar from "../common/UserAvatar";
+import { Link } from "@reach/router";
+import { medalEmoji } from "../../assets/imageImports";
+import useBreakPoints from "../../hooks/useBreakPoints";
 
 interface LeaderboardPlayer {
   discord_user: {
-    username: string
-    discord_id: string
-    discriminator: string
-    avatar?: string
-  }
-  first: number
-  second: number
-  third: number
-  score: number
+    username: string;
+    discord_id: string;
+    discriminator: string;
+    avatar?: string;
+  };
+  first: number;
+  second: number;
+  third: number;
+  score: number;
 }
 
 interface DraftLeaderboardProps {
   leaderboards: {
-    players: LeaderboardPlayer[]
-    type: "DRAFTONE" | "DRAFTTWO"
-  }[]
+    players: LeaderboardPlayer[];
+    type: "DRAFTONE" | "DRAFTTWO";
+  }[];
 }
 
 interface LeaderboardTabPanelProps {
-  players: LeaderboardPlayer[]
+  players: LeaderboardPlayer[];
 }
 
 const DraftLeaderboard: React.FC<DraftLeaderboardProps> = ({
   leaderboards,
 }) => {
-  const { themeColor, grayWithShade } = useContext(MyThemeContext)
-  const isSmall = useBreakPoints(550)
+  const { themeColor, grayWithShade } = useContext(MyThemeContext);
+  const isSmall = useBreakPoints(550);
 
-  const plusOneLeaderboard = leaderboards.find((lb) => lb.type === "DRAFTONE")
-  const plusTwoLeaderboard = leaderboards.find((lb) => lb.type === "DRAFTTWO")
+  const plusOneLeaderboard = leaderboards.find((lb) => lb.type === "DRAFTONE");
+  const plusTwoLeaderboard = leaderboards.find((lb) => lb.type === "DRAFTTWO");
 
-  if (!plusOneLeaderboard && !plusTwoLeaderboard) return null
+  if (!plusOneLeaderboard && !plusTwoLeaderboard) return null;
 
-  let placement = 1
-  let print = false
+  let placement = 1;
+  let print = false;
   const LeaderboardTabPanel: React.FC<LeaderboardTabPanelProps> = ({
     players,
   }) => {
@@ -65,13 +65,13 @@ const DraftLeaderboard: React.FC<DraftLeaderboardProps> = ({
         maxW="550px"
       >
         {players.map((player, i, array) => {
-          print = false
+          print = false;
           if (i === 0) {
-            placement = 1
-            print = true
+            placement = 1;
+            print = true;
           } else if (i > 0 && player.score !== array[i - 1].score) {
-            placement = i + 1
-            print = true
+            placement = i + 1;
+            print = true;
           }
           return (
             <React.Fragment key={player.discord_user.discord_id}>
@@ -153,11 +153,11 @@ const DraftLeaderboard: React.FC<DraftLeaderboardProps> = ({
                 </>
               )}
             </React.Fragment>
-          )
+          );
         })}
       </Grid>
-    )
-  }
+    );
+  };
 
   return (
     <Tabs
@@ -165,7 +165,7 @@ const DraftLeaderboard: React.FC<DraftLeaderboardProps> = ({
       //onChange={chosenIndex => setTabIndex(chosenIndex)}
       isFitted
       variant="line"
-      variantColor={themeColor}
+      colorScheme={themeColor}
     >
       <TabList>
         {!!plusOneLeaderboard && <Tab>+1</Tab>}
@@ -184,7 +184,7 @@ const DraftLeaderboard: React.FC<DraftLeaderboardProps> = ({
         )}
       </TabPanels>
     </Tabs>
-  )
-}
+  );
+};
 
-export default DraftLeaderboard
+export default DraftLeaderboard;

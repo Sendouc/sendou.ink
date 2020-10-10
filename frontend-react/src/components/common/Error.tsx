@@ -1,12 +1,12 @@
-import React from "react"
-import Alert from "../elements/Alert"
+import React from "react";
+import Alert from "../elements/Alert";
 
 interface ErrorProps {
-  errorMessage: string
+  errorMessage: string;
 }
 
 const Error: React.FC<ErrorProps> = ({ errorMessage }) => {
-  return <Alert status="error">{errorMessage}</Alert>
-}
+  return <Alert status="error">{errorMessage}</Alert>;
+};
 
-export default Error
+export default Error;

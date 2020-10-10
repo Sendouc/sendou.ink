@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React, { useContext } from "react";
 import {
   CartesianGrid,
   Legend,
@@ -8,16 +8,17 @@ import {
   Tooltip,
   XAxis,
   YAxis,
-} from "recharts"
-import MyThemeContext from "../../themeContext"
-import { possibleAps } from "../../utils/lists"
+} from "recharts";
+import MyThemeContext from "../../themeContext";
+import { possibleAps } from "../../utils/lists";
+import { useTranslation } from "react-i18next";
 
 interface StatChartProps {
-  title: string
-  getEffect: (ap: number) => number
-  ap: number
-  otherAp?: number
-  startChartsAtZero: boolean
+  title: string;
+  getEffect: (ap: number) => number;
+  ap: number;
+  otherAp?: number;
+  startChartsAtZero: boolean;
 }
 
 const StatChart: React.FC<StatChartProps> = ({
@@ -27,15 +28,16 @@ const StatChart: React.FC<StatChartProps> = ({
   getEffect,
   startChartsAtZero,
 }) => {
-  const { themeColorHex, darkerBgColor } = useContext(MyThemeContext)
+  const { t } = useTranslation();
+  const { themeColorHex, darkerBgColor } = useContext(MyThemeContext);
 
   const getData = () =>
-    possibleAps.map((ap) => ({ name: `${ap}AP`, [title]: getEffect(ap) }))
+    possibleAps.map((ap) => ({ name: `${ap}AP`, [title]: getEffect(ap) }));
 
   const CustomizedDot = (props: any) => {
-    const { cx, cy, payload } = props
+    const { cx, cy, payload } = props;
 
-    if (payload.name === `${ap}AP`) {
+    if (payload.name === `${ap}${t("analyzer;abilityPointShort")}`) {
       return (
         <svg
           x={cx - 5}
@@ -54,10 +56,10 @@ const StatChart: React.FC<StatChartProps> = ({
             fill="#DD6B20"
           />
         </svg>
-      )
+      );
     }
 
-    if (payload.name === `${otherAp}AP`) {
+    if (payload.name === `${otherAp}${t("analyzer;abilityPointShort")}`) {
       return (
         <svg
           x={cx - 5}
@@ -76,11 +78,11 @@ const StatChart: React.FC<StatChartProps> = ({
             fill="#3182CE"
           />
         </svg>
-      )
+      );
     }
 
-    return null
-  }
+    return null;
+  };
 
   return (
     <ResponsiveContainer width="100%" height={300}>
@@ -107,7 +109,7 @@ const StatChart: React.FC<StatChartProps> = ({
         />
       </LineChart>
     </ResponsiveContainer>
-  )
-}
+  );
+};
 
-export default StatChart
+export default StatChart;

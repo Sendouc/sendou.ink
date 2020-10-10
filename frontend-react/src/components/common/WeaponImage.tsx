@@ -1,15 +1,13 @@
-import React from "react"
-
-import english_internal from "../../utils/english_internal.json"
-import { weapons } from "../../assets/imageImports"
-import { Weapon } from "../../types.js"
-import { useTranslation } from "react-i18next"
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { Weapon } from "../../types.js";
+import english_internal from "../../utils/english_internal.json";
 
 interface WeaponImageProps {
-  englishName: Weapon
-  size: "SMALL" | "SMEDIUM" | "MEDIUM" | "BIG"
-  asInlineBlock?: boolean
-  noTitle?: boolean
+  englishName: Weapon;
+  size: "SMALL" | "SMEDIUM" | "MEDIUM" | "BIG";
+  asInlineBlock?: boolean;
+  noTitle?: boolean;
 }
 
 const sizeWhMap: Record<
@@ -20,7 +18,7 @@ const sizeWhMap: Record<
   SMEDIUM: "48px",
   MEDIUM: "64px",
   BIG: undefined,
-}
+};
 
 const WeaponImage: React.FC<WeaponImageProps> = ({
   englishName,
@@ -28,21 +26,23 @@ const WeaponImage: React.FC<WeaponImageProps> = ({
   asInlineBlock,
   noTitle,
 }) => {
-  const { t } = useTranslation()
-  const dictToUse: any = weapons
-  const wh = sizeWhMap[size]
-  return (
-    <img
-      src={dictToUse[english_internal[englishName]]}
-      alt={t(`game;${englishName}`)}
-      title={noTitle ? undefined : t(`game;${englishName}`)}
-      style={{
-        width: wh,
-        height: wh,
-        display: asInlineBlock ? "inline-block" : undefined,
-      }}
-    />
-  )
-}
+  const { t } = useTranslation();
+  const wh = sizeWhMap[size];
 
-export default WeaponImage
+  return (
+    <>
+      <img
+        src={`https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/weapons/Wst_${english_internal[englishName]}.png`}
+        alt={t(`game;${englishName}`)}
+        title={noTitle ? undefined : t(`game;${englishName}`)}
+        style={{
+          width: wh,
+          height: wh,
+          display: asInlineBlock ? "inline-block" : undefined,
+        }}
+      />
+    </>
+  );
+};
+
+export default WeaponImage;

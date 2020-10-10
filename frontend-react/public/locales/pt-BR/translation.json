@@ -1189,7 +1189,27 @@
     "Profile": "Perfil",
     "Log out": "Log out",
     "Log in via Discord": "Log in via Discord",
-    "Free Agents": "Formação de Times"
+    "Free Agents": "Formação de Times",
+    "Top 500": " Top 500",
+    "Choose language": " Escolha o seu idioma",
+    "Choose theme": "Escolha o tema",
+    "Browser": "Navegador",
+    "Trends": "tendências",
+    "Analyzer": "Analisador",
+    "FAQ": "Perguntas frequêntes",
+    "Voting history": "Histórico de votações",
+    "Suggested and vouched players": "Jogadores sugeridos e indicados",
+    "Next voting": "Próxima votação",
+    "Gray": "Cinza",
+    "Red": "Vermelho",
+    "Orange": "Laranja",
+    "Yellow": "Amarelo",
+    "Green": "Verde",
+    "Blue": "Azul",
+    "Teal": "Teal",
+    "Cyan": "Ciano",
+    "Purple": "Roxo",
+    "Pink": "Rosa"
   },
   "home": {
     "Competitive Splatoon Hub": "Centro Competitivo de Splatoon",
@@ -1237,7 +1257,7 @@
     "This week": "Essa semana",
     "Join Discord": "Entrar no Discord",
     "Hide info": "Esconder info",
-    "Show info": "Mostrar infor",
+    "Show info": "Mostrar info",
     "Edit": "Editar",
     "footer": "Todos os eventos estão listados em seu fuso horário local: {{timeNow}}<2>Se quiser que seu evento apareça aqui, mande uma mensagem para Sendou#0043 no Discord</2>",
     "plusVotingInfo": "<0>A votação mensal do Plus Server</0> acontece nos finais de semana"
@@ -1516,7 +1536,7 @@
     "Delete free agent post": "Apagando postagem de jogador sem time",
     "deleteNotif": "Note que se você apagar sua postagem você precisará esperar uma semana antes de postar uma nova.",
     "Confirm deletion": "Confirmar exclusão",
-    "theyAreSynced": "Foto de perfil, nome no Discord, usuário do Twitter, Lista de armas e histórico de Top 500 são automaticamente sincronizados com o seu perfil. Além disso, a postagem automático no Discord não pode ser alterada após a confirmação, então preencha todos esses dados no seu perfil antes de fazer a postagem",
+    "theyAreSynced": "Foto de perfil, nome no Discord, usuário do Twitter, Lista de armas e histórico de Top 500 são automaticamente sincronizados com o seu perfil. Além disso, a postagem automática no Discord não pode ser alterada após a confirmação, então preencha todos esses dados no seu perfil antes de fazer a postagem",
     "Playstyles": "Estilos de jogo",
     "Required field": "Campo obrigatório",
     "Value too long": "Valor muito grande",
@@ -1532,4 +1552,3 @@
     "Free word": "Texto livre"
   }
 }
-

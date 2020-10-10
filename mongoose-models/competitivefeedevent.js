@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const competitiveFeedEventSchema = new mongoose.Schema({
   name: String,
@@ -9,16 +9,16 @@ const competitiveFeedEventSchema = new mongoose.Schema({
   message_url: String,
   discord_invite_url: String,
   picture_url: String,
-})
+});
 
 competitiveFeedEventSchema.virtual("poster_discord_user", {
   ref: "User",
   localField: "poster_discord_id",
   foreignField: "discord_id",
   justOne: true,
-})
+});
 
 module.exports = mongoose.model(
   "CompetitiveFeedEvent",
   competitiveFeedEventSchema
-)
+);

@@ -1,13 +1,13 @@
-import { gql, DocumentNode } from "apollo-boost"
+import { DocumentNode, gql } from "@apollo/client";
 
 export interface UsersData {
   users: {
-    discord_id: string
-    discriminator: string
-    twitter_name?: string
-    username: string
-    avatar?: string
-  }[]
+    discord_id: string;
+    discriminator: string;
+    twitter_name?: string;
+    username: string;
+    avatar?: string;
+  }[];
 }
 
 export const USERS: DocumentNode = gql`
@@ -20,4 +20,4 @@ export const USERS: DocumentNode = gql`
       avatar
     }
   }
-`
+`;

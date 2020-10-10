@@ -1,13 +1,13 @@
-import React, { useContext } from "react"
-import { RouteComponentProps } from "@reach/router"
-import { Heading, Link, List, ListItem } from "@chakra-ui/core"
-import MyThemeContext from "../../themeContext"
-import { Helmet } from "react-helmet-async"
-import { useTranslation, Trans } from "react-i18next"
+import React, { useContext } from "react";
+import { RouteComponentProps } from "@reach/router";
+import { Heading, Link, List, ListItem } from "@chakra-ui/core";
+import MyThemeContext from "../../themeContext";
+import { Helmet } from "react-helmet-async";
+import { useTranslation, Trans } from "react-i18next";
 
 const About: React.FC<RouteComponentProps> = () => {
-  const { t } = useTranslation()
-  const { themeColorWithShade } = useContext(MyThemeContext)
+  const { t } = useTranslation();
+  const { themeColorWithShade } = useContext(MyThemeContext);
   return (
     <>
       <Helmet>
@@ -18,12 +18,12 @@ const About: React.FC<RouteComponentProps> = () => {
           {t("footer;Feedback")}
         </Heading>
         {t("footer;feedbackText")}
-        <List styleType="decimal" mt="1em">
+        <List styleType="decimal" m="1em">
           <ListItem>
             <Trans i18nKey="footer;createIssue">
               Create an issue on{" "}
               <Link
-                href="https://github.com/Sendouc/sendou-ink/issues"
+                href="https://github.com/Sendouc/sendou.ink/issues"
                 isExternal
                 color={themeColorWithShade}
               >
@@ -35,7 +35,7 @@ const About: React.FC<RouteComponentProps> = () => {
             <Trans i18nKey="footer;postOnDiscord">
               Post on the #helpdesk or #feedback channel of our{" "}
               <Link
-                href="https://discord.gg/J6NqUvt"
+                href="https://discord.gg/sendou"
                 isExternal
                 color={themeColorWithShade}
               >
@@ -120,11 +120,31 @@ const About: React.FC<RouteComponentProps> = () => {
             <Link
               isExternal
               color={themeColorWithShade}
+              href="https://twitter.com/Yuza_i"
+            >
+              yuza
+            </Link>{" "}
+            - {t("footer;translation")} (Deutsch)
+          </li>
+          <li>
+            <Link
+              isExternal
+              color={themeColorWithShade}
               href="https://twitter.com/spookyporo"
             >
               naga
             </Link>{" "}
             - {t("footer;translation")} (Español (España))
+          </li>
+          <li>
+            <Link
+              isExternal
+              color={themeColorWithShade}
+              href="https://twitter.com/Grey_spl"
+            >
+              Grey
+            </Link>{" "}
+            - {t("footer;translation")} (Français)
           </li>
           <li>
             <Link
@@ -150,6 +170,26 @@ const About: React.FC<RouteComponentProps> = () => {
             <Link
               isExternal
               color={themeColorWithShade}
+              href="https://twitter.com/Guigas_Jr"
+            >
+              Guigas
+            </Link>{" "}
+            - {t("footer;translation")} (Português)
+          </li>
+          <li>
+            <Link
+              isExternal
+              color={themeColorWithShade}
+              href="https://twitter.com/Walavouchey"
+            >
+              Walavouchey
+            </Link>{" "}
+            - {t("footer;translation")} (Svenska)
+          </li>
+          <li>
+            <Link
+              isExternal
+              color={themeColorWithShade}
               href="https://twitter.com/sp9rK_spl"
             >
               sp9rK
@@ -169,7 +209,7 @@ const About: React.FC<RouteComponentProps> = () => {
         </ul>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default About
+export default About;

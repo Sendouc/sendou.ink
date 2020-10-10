@@ -1,13 +1,13 @@
-import React, { useContext } from "react"
-import { Box, Switch, FormLabel, Flex } from "@chakra-ui/core"
-import MyThemeContext from "../../themeContext"
-import AbilityIcon from "../builds/AbilityIcon"
-import { useTranslation } from "react-i18next"
+import React, { useContext } from "react";
+import { Box, Switch, FormLabel, Flex } from "@chakra-ui/core";
+import MyThemeContext from "../../themeContext";
+import AbilityIcon from "../builds/AbilityIcon";
+import { useTranslation } from "react-i18next";
 
 interface HeadOnlyToggleProps {
-  ability: "OG" | "CB"
-  active: boolean
-  setActive: () => void
+  ability: "OG" | "CB";
+  active: boolean;
+  setActive: () => void;
 }
 
 const HeadOnlyToggle: React.FC<HeadOnlyToggleProps> = ({
@@ -15,8 +15,8 @@ const HeadOnlyToggle: React.FC<HeadOnlyToggleProps> = ({
   active,
   setActive,
 }) => {
-  const { themeColor, themeColorWithShade } = useContext(MyThemeContext)
-  const { t } = useTranslation()
+  const { themeColor, themeColorWithShade } = useContext(MyThemeContext);
+  const { t } = useTranslation();
   return (
     <Flex
       justifyContent="center"
@@ -57,7 +57,7 @@ const HeadOnlyToggle: React.FC<HeadOnlyToggleProps> = ({
         </Box>
       )}
     </Flex>
-  )
-}
+  );
+};
 
-export default HeadOnlyToggle
+export default HeadOnlyToggle;

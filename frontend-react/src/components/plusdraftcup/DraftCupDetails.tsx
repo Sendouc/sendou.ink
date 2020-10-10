@@ -1,62 +1,64 @@
-import React, { useContext, useState, useEffect } from "react"
-import { RouteComponentProps, Link } from "@reach/router"
+import { useQuery } from "@apollo/client";
+import { Avatar, Box, Flex, Grid } from "@chakra-ui/core";
+import { Link, RouteComponentProps } from "@reach/router";
+import React, { useContext, useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
+import { FaExternalLinkAlt, FaLongArrowAltLeft } from "react-icons/fa";
+import { modeIconMap } from "../../assets/icons";
+import { mapIcons } from "../../assets/imageImports";
 import {
-  SEARCH_FOR_DRAFT_CUP,
   SearchForDraftCupData,
   SearchForDraftCupVars,
-} from "../../graphql/queries/searchForDraftCup"
-import { useQuery } from "@apollo/react-hooks"
-import Loading from "../common/Loading"
-import Error from "../common/Error"
-import { DraftTournamentCard } from "./DraftTournamentCards"
-import Button from "../elements/Button"
-import { FaExternalLinkAlt, FaLongArrowAltLeft } from "react-icons/fa"
-import { Box, Flex, Avatar, Icon, Grid } from "@chakra-ui/core"
-import MyThemeContext from "../../themeContext"
+  SEARCH_FOR_DRAFT_CUP,
+} from "../../graphql/queries/searchForDraftCup";
+import MyThemeContext from "../../themeContext";
 import {
-  DetailedTeamInfo,
   Ability,
-  HeadGear,
   ClothingGear,
+  DetailedTeamInfo,
+  HeadGear,
   ShoesGear,
-} from "../../types"
-import { mapIcons } from "../../assets/imageImports"
-import WeaponImage from "../common/WeaponImage"
-import AbilityIcon from "../builds/AbilityIcon"
-import GearImage from "../builds/GearImage"
-import SplatnetIcon from "../common/SplatnetIcon"
-import { Helmet } from "react-helmet-async"
-import { useTranslation } from "react-i18next"
+} from "../../types";
+import AbilityIcon from "../builds/AbilityIcon";
+import GearImage from "../builds/GearImage";
+import Error from "../common/Error";
+import Loading from "../common/Loading";
+import Section from "../common/Section";
+import SplatnetIcon from "../common/SplatnetIcon";
+import WeaponImage from "../common/WeaponImage";
+import Button from "../elements/Button";
+import { DraftTournamentCard } from "./DraftTournamentCards";
 
 interface DraftCupDetailsProps {
-  id?: string
+  id?: string;
 }
 
 interface DetailedMapCardProps {
   mapDetails: {
-    stage: string
-    mode: "TW" | "SZ" | "TC" | "RM" | "CB"
-    duration: number
-    winners: DetailedTeamInfo
-    losers: DetailedTeamInfo
-  }
-  gameNumber: number
+    stage: string;
+    mode: "TW" | "SZ" | "TC" | "RM" | "CB";
+    duration: number;
+    winners: DetailedTeamInfo;
+    losers: DetailedTeamInfo;
+  };
+  gameNumber: number;
 }
 
 interface CollapsedMapCardProps {
   mapDetails: {
-    stage: string
-    mode: "TW" | "SZ" | "TC" | "RM" | "CB"
-    duration: number
-    winners: DetailedTeamInfo
-    losers: DetailedTeamInfo
-  }[]
-  expand: () => void
-  loading: boolean
+    stage: string;
+    mode: "TW" | "SZ" | "TC" | "RM" | "CB";
+    duration: number;
+    winners: DetailedTeamInfo;
+    losers: DetailedTeamInfo;
+  }[];
+  expand: () => void;
+  loading: boolean;
 }
 
 const abilityMap = (ability: Ability, index: number) => {
-  const gridArea = `5 / ${1 + index} / 6 / ${2 + index}`
+  const gridArea = `5 / ${1 + index} / 6 / ${2 + index}`;
   return (
     <Flex
       gridArea={gridArea}
@@ -66,40 +68,40 @@ const abilityMap = (ability: Ability, index: number) => {
     >
       <AbilityIcon ability={ability ? ability : "UNKNOWN"} size="TINY" />
     </Flex>
-  )
-}
+  );
+};
 
 const gearMap = (gear: HeadGear | ClothingGear | ShoesGear, index: number) => {
-  const gridArea = `4 / ${1 + index} / 5 / ${2 + index}`
+  const gridArea = `4 / ${1 + index} / 5 / ${2 + index}`;
   return (
     <Flex gridArea={gridArea} key={index} justifyContent="center">
       <GearImage englishName={gear} mini />
     </Flex>
-  )
-}
+  );
+};
 
 const DetailedMapCard: React.FC<DetailedMapCardProps> = ({
   mapDetails,
   gameNumber,
 }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const { themeColorWithShade, grayWithShade, textColor } = useContext(
     MyThemeContext
-  )
+  );
 
-  const minutes = Math.floor(mapDetails.duration / 60)
-  const seconds = mapDetails.duration - minutes * 60
+  const minutes = Math.floor(mapDetails.duration / 60);
+  const seconds = mapDetails.duration - minutes * 60;
+
+  const ModeIcon = modeIconMap[mapDetails.mode];
 
   return (
-    <Flex
-      rounded="lg"
+    <Section
+      display="flex"
       overflow="hidden"
-      boxShadow="0px 0px 16px 6px rgba(0,0,0,0.1)"
-      p="25px"
-      my="1em"
       flexDirection="column"
       justifyContent="space-between"
       alignItems="center"
+      mb={4}
     >
       <Flex
         fontWeight="semibold"
@@ -111,11 +113,7 @@ const DetailedMapCard: React.FC<DetailedMapCardProps> = ({
         <Box color={themeColorWithShade}>{gameNumber}.</Box>
         <Avatar src={mapIcons[mapDetails.stage]} size="lg" my="5px" />
         {t("game;" + mapDetails.stage)}
-        <Icon
-          name={mapDetails.mode.toLowerCase() as any}
-          color={themeColorWithShade}
-          size="2em"
-        />
+        <ModeIcon color={themeColorWithShade} w="2em" h="2em" />
         <Box color={grayWithShade}>{`${minutes}:${
           seconds > 9 ? "" : "0"
         }${seconds}`}</Box>
@@ -234,44 +232,42 @@ const DetailedMapCard: React.FC<DetailedMapCardProps> = ({
               ))}
             </Flex>
           </Flex>
-        )
+        );
       })}
-    </Flex>
-  )
-}
+    </Section>
+  );
+};
 
 const CollapsedMapCard: React.FC<CollapsedMapCardProps> = ({
   expand,
   mapDetails,
   loading,
 }) => {
-  const { t } = useTranslation()
-  const { grayWithShade } = useContext(MyThemeContext)
-  const winnerTeamName = mapDetails[0].winners.team_name
-  const loserTeamName = mapDetails[0].losers.team_name
-  const winnerPlayers = mapDetails[0].winners.players
-  const loserPlayers = mapDetails[0].losers.players
+  const { t } = useTranslation();
+  const { grayWithShade } = useContext(MyThemeContext);
+  const winnerTeamName = mapDetails[0].winners.team_name;
+  const loserTeamName = mapDetails[0].losers.team_name;
+  const winnerPlayers = mapDetails[0].winners.players;
+  const loserPlayers = mapDetails[0].losers.players;
   const teamData = {
     [winnerTeamName]: { players: winnerPlayers, score: 0 },
     [loserTeamName]: { players: loserPlayers, score: 0 },
-  }
+  };
   mapDetails.forEach((stage) => {
     teamData[stage.winners.team_name].score =
-      teamData[stage.winners.team_name].score + 1
-  })
+      teamData[stage.winners.team_name].score + 1;
+  });
 
   const scores = Object.keys(teamData)
     .map((key) => {
-      return { players: teamData[key].players, score: teamData[key].score }
+      return { players: teamData[key].players, score: teamData[key].score };
     })
-    .sort((a, b) => b.score - a.score)
+    .sort((a, b) => b.score - a.score);
 
   return (
-    <Flex
-      rounded="lg"
+    <Section
+      display="flex"
       overflow="hidden"
-      boxShadow="0px 0px 16px 6px rgba(0,0,0,0.1)"
-      p="25px"
       flexDirection="column"
       justifyContent="space-between"
       alignItems="center"
@@ -296,16 +292,16 @@ const CollapsedMapCard: React.FC<CollapsedMapCardProps> = ({
       <Button onClick={() => expand()} loading={loading}>
         {t("draft;Expand")}
       </Button>
-    </Flex>
-  )
-}
+    </Section>
+  );
+};
 
 const DraftCupDetails: React.FC<RouteComponentProps & DraftCupDetailsProps> = ({
   id,
 }) => {
-  const { t } = useTranslation()
-  const { themeColorWithShade, grayWithShade } = useContext(MyThemeContext)
-  const idParts = id!.split("-")
+  const { t } = useTranslation();
+  const { themeColorWithShade, grayWithShade } = useContext(MyThemeContext);
+  const idParts = id!.split("-");
   const { data, error, loading } = useQuery<
     SearchForDraftCupData,
     SearchForDraftCupVars
@@ -315,19 +311,19 @@ const DraftCupDetails: React.FC<RouteComponentProps & DraftCupDetailsProps> = ({
         idParts[1]
       } ${idParts[2]}`,
     },
-  })
-  const [expanded, setExpanded] = useState<number | null>(null)
-  const [loadingSet, setLoadingSet] = useState<number | null>(null)
+  });
+  const [expanded, setExpanded] = useState<number | null>(null);
+  const [loadingSet, setLoadingSet] = useState<number | null>(null);
 
   useEffect(() => {
-    if (!loadingSet) return
-    setExpanded(loadingSet)
-  }, [loadingSet])
+    if (!loadingSet) return;
+    setExpanded(loadingSet);
+  }, [loadingSet]);
 
-  if (loading) return <Loading />
-  if (error) return <Error errorMessage={error.message} />
+  if (loading) return <Loading />;
+  if (error) return <Error errorMessage={error.message} />;
 
-  const { tournament, matches } = data!.searchForDraftCup
+  const { tournament, matches } = data!.searchForDraftCup;
 
   return (
     <>
@@ -336,7 +332,7 @@ const DraftCupDetails: React.FC<RouteComponentProps & DraftCupDetailsProps> = ({
       </Helmet>
       <Box mb="1em">
         <Link to="/draft">
-          <Button outlined icon={FaLongArrowAltLeft}>
+          <Button outlined icon={<FaLongArrowAltLeft />}>
             {t("draft;Back to Draft Cup home")}
           </Button>
         </Link>
@@ -344,7 +340,7 @@ const DraftCupDetails: React.FC<RouteComponentProps & DraftCupDetailsProps> = ({
       <DraftTournamentCard tournament={tournament} />
       <Box mt="1em">
         <a href={tournament.bracket_url}>
-          <Button icon={FaExternalLinkAlt} outlined>
+          <Button icon={<FaExternalLinkAlt />} outlined>
             {t("draft;Bracket")}
           </Button>
         </a>
@@ -380,10 +376,10 @@ const DraftCupDetails: React.FC<RouteComponentProps & DraftCupDetailsProps> = ({
               />
             )}
           </Box>
-        )
+        );
       })}
     </>
-  )
-}
+  );
+};
 
-export default DraftCupDetails
+export default DraftCupDetails;

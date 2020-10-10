@@ -1,41 +1,51 @@
-import React, { useContext } from "react"
-import { Placement } from "../../types"
-import { modesShort } from "../../utils/lists"
 import {
   Accordion,
-  AccordionItem,
-  AccordionHeader,
+  AccordionButton,
   AccordionIcon,
+  AccordionItem,
   AccordionPanel,
-  Flex,
-  Icon,
   Box,
+  Flex,
   Grid,
-} from "@chakra-ui/core"
-import MyThemeContext from "../../themeContext"
-import WeaponImage from "../common/WeaponImage"
-import useBreakPoints from "../../hooks/useBreakPoints"
-import { useTranslation } from "react-i18next"
-import { TFunctionResult } from "i18next"
+} from "@chakra-ui/core";
+import { TFunctionResult } from "i18next";
+import React, { useContext } from "react";
+import { useTranslation } from "react-i18next";
+import { modeIconMap } from "../../assets/icons";
+import {
+  GetUsersXRankPlacementsQuery,
+  XRankPlacement,
+} from "../../generated/graphql";
+import useBreakPoints from "../../hooks/useBreakPoints";
+import MyThemeContext from "../../themeContext";
+import { Weapon } from "../../types";
+import WeaponImage from "../common/WeaponImage";
+
+type Placement = {
+  __typename?: "XRankPlacement" | undefined;
+} & Pick<
+  XRankPlacement,
+  "id" | "weapon" | "ranking" | "mode" | "xPower" | "month" | "year"
+>;
 
 interface ModesAccordionProps {
-  placements: Placement[]
+  placementsData: GetUsersXRankPlacementsQuery;
 }
 
 interface AllModesAccordionData {
-  sz?: ModeAccordionData
-  tc?: ModeAccordionData
-  rm?: ModeAccordionData
-  cb?: ModeAccordionData
-  locale: string
+  SZ?: ModeAccordionData;
+  TC?: ModeAccordionData;
+  RM?: ModeAccordionData;
+  CB?: ModeAccordionData;
+  locale: string;
 }
 
 interface ModeAccordionData {
-  highestPlacement: number
-  highestPlacementDate: string
-  highestXPower: number
-  highestXPowerDate: string
-  placements: Placement[]
+  highestPlacement: number;
+  highestPlacementDate: string;
+  highestXPower: number;
+  highestXPowerDate: string;
+  placements: Placement[];
 }
 
 interface StyleBoxProps {
@@ -46,20 +56,20 @@ interface StyleBoxProps {
     | number[]
     | undefined
     | (string | number | undefined)[]
-    | TFunctionResult
-  gridArea?: string
-  color?: string
-  size?: string
+    | TFunctionResult;
+  gridArea?: string;
+  color?: string;
+  size?: string;
 }
 
 const getLocalizedMonthYear = (month: number, year: number, locale: string) => {
-  const date = new Date()
-  date.setDate(1)
-  date.setMonth(month - 1)
-  date.setFullYear(year)
+  const date = new Date();
+  date.setDate(1);
+  date.setMonth(month - 1);
+  date.setFullYear(year);
 
-  return date.toLocaleString(locale, { month: "long", year: "numeric" })
-}
+  return date.toLocaleString(locale, { month: "long", year: "numeric" });
+};
 
 const StyledBox: React.FC<StyleBoxProps> = ({
   children,
@@ -90,65 +100,64 @@ const StyledBox: React.FC<StyleBoxProps> = ({
     >
       {children}
     </Box>
-  )
+  );
 
 const accordionReducer = function (
   acc: AllModesAccordionData,
   cur: Placement
 ): AllModesAccordionData {
-  const key = modesShort[cur.mode]
-  const modeData = acc[key]
-  const date = getLocalizedMonthYear(cur.month, cur.year, acc.locale)
+  const key = cur.mode;
+  const modeData = acc[key];
+  const date = getLocalizedMonthYear(cur.month, cur.year, acc.locale);
   if (!modeData) {
     acc[key] = {
-      highestPlacement: cur.rank,
+      highestPlacement: cur.ranking,
       highestPlacementDate: date,
-      highestXPower: cur.x_power,
+      highestXPower: cur.xPower,
       highestXPowerDate: date,
       placements: [cur],
-    }
+    };
   } else {
-    modeData.placements.push(cur)
+    modeData.placements.push(cur);
 
-    if (cur.x_power > modeData.highestXPower) {
-      modeData.highestXPower = cur.x_power
-      modeData.highestXPowerDate = date
+    if (cur.xPower > modeData.highestXPower) {
+      modeData.highestXPower = cur.xPower;
+      modeData.highestXPowerDate = date;
     }
 
-    if (cur.rank < modeData.highestPlacement) {
-      modeData.highestPlacement = cur.rank
-      modeData.highestPlacementDate = date
+    if (cur.ranking < modeData.highestPlacement) {
+      modeData.highestPlacement = cur.ranking;
+      modeData.highestPlacementDate = date;
     }
   }
 
-  return acc
-}
+  return acc;
+};
 
-const ModesAccordion: React.FC<ModesAccordionProps> = ({ placements }) => {
-  const { t, i18n } = useTranslation()
+const ModesAccordion: React.FC<ModesAccordionProps> = ({ placementsData }) => {
+  const { t, i18n } = useTranslation();
   const { themeColorWithShade, grayWithShade, darkerBgColor } = useContext(
     MyThemeContext
-  )
-  const isSmall: boolean[] = useBreakPoints([560, 835]) as boolean[]
+  );
+  const isSmall: boolean[] = useBreakPoints([560, 835]) as boolean[];
+
+  const placements = placementsData.getUserByIdentifier!.xRankPlacements!;
 
   const allModesTabsData: AllModesAccordionData = placements.reduce(
     accordionReducer,
     { locale: i18n.language }
-  )
+  );
   return (
     <Accordion allowMultiple>
-      {(["sz", "tc", "rm", "cb"] as const)
+      {(["SZ", "TC", "RM", "CB"] as const)
         .filter((key) => allModesTabsData.hasOwnProperty(key))
         .map((key) => {
+          const ModeIcon = modeIconMap[key];
           return (
             <AccordionItem key={key}>
-              <AccordionHeader>
-                <AccordionIcon size="2em" mr="1em" />
-                <Icon
-                  name={key as any}
-                  color={themeColorWithShade}
-                  size="5em"
-                />{" "}
+              <AccordionButton>
+                <AccordionIcon h="2em" w="2em" mr="1em" />
+                <ModeIcon color={themeColorWithShade} w="5em" h="5em" />{" "}
                 <Grid
                   ml="50px"
                   gridTemplateColumns="repeat(3, 1fr)"
@@ -203,7 +212,7 @@ const ModesAccordion: React.FC<ModesAccordionProps> = ({ placements }) => {
                     {allModesTabsData[key]?.highestXPower}
                   </StyledBox>
                 </Flex>
-              </AccordionHeader>
+              </AccordionButton>
               <AccordionPanel py={4} background={darkerBgColor} mt="3px">
                 <Grid
                   gridTemplateColumns="repeat(4, 1fr)"
@@ -227,21 +236,21 @@ const ModesAccordion: React.FC<ModesAccordionProps> = ({ placements }) => {
                           )}
                         </Box>
                         <WeaponImage
-                          englishName={placement.weapon}
+                          englishName={placement.weapon as Weapon}
                           size="SMALL"
                         />
-                        <Box>{placement.rank}</Box>
-                        <Box>{placement.x_power}</Box>
+                        <Box>{placement.ranking}</Box>
+                        <Box>{placement.xPower}</Box>
                       </React.Fragment>
-                    )
+                    );
                   })}
                 </Grid>
               </AccordionPanel>
             </AccordionItem>
-          )
+          );
         })}
     </Accordion>
-  )
-}
+  );
+};
 
-export default ModesAccordion
+export default ModesAccordion;

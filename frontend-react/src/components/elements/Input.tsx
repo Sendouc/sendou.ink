@@ -1,28 +1,29 @@
 import {
   Box,
+  BoxProps,
   Input as ChakraInput,
   InputGroup,
   InputLeftAddon,
   InputLeftElement,
-} from "@chakra-ui/core"
-import React, { useContext } from "react"
-import { IconType } from "react-icons/lib/cjs"
-import MyThemeContext from "../../themeContext"
-import Label from "./Label"
+} from "@chakra-ui/core";
+import React, { useContext } from "react";
+import { IconType } from "react-icons/lib/cjs";
+import MyThemeContext from "../../themeContext";
+import Label from "./Label";
 
 interface InputProps {
-  value?: string
-  setValue: (value: string) => void
-  label: string
-  limit?: number
-  required?: boolean
-  disabled?: boolean
-  textLeft?: string
-  size?: "sm" | "md" | "lg"
-  icon?: IconType
+  value?: string;
+  setValue: (value: string) => void;
+  label: string;
+  limit?: number;
+  required?: boolean;
+  disabled?: boolean;
+  textLeft?: string;
+  size?: "sm" | "md" | "lg";
+  icon?: IconType;
 }
 
-const Input: React.FC<InputProps> = ({
+const Input: React.FC<InputProps & BoxProps> = ({
   value,
   setValue,
   label,
@@ -32,16 +33,20 @@ const Input: React.FC<InputProps> = ({
   textLeft,
   size,
   icon,
+  ...props
 }) => {
-  const { themeColorHex, grayWithShade, darkerBgColor, textColor } = useContext(
-    MyThemeContext
-  )
+  const {
+    themeColorWithShade,
+    grayWithShade,
+    darkerBgColor,
+    textColor,
+  } = useContext(MyThemeContext);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setValue(event.target.value)
+    setValue(event.target.value);
 
   return (
-    <Box>
+    <Box {...props}>
       {label && <Label required={required}>{label}</Label>}
       <InputGroup>
         {textLeft && <InputLeftAddon>{textLeft}</InputLeftAddon>}
@@ -55,11 +60,12 @@ const Input: React.FC<InputProps> = ({
           value={value ?? ""}
           isDisabled={disabled}
           onChange={handleChange}
-          focusBorderColor={themeColorHex}
+          focusBorderColor={themeColorWithShade}
           _hover={{}}
           background={darkerBgColor}
-          borderColor="#CCCCCC"
+          borderColor={darkerBgColor}
           size={size}
+          style={{ border: "1px" }}
         />
       </InputGroup>
       {limit && (
@@ -71,7 +77,7 @@ const Input: React.FC<InputProps> = ({
         </Box>
       )}
     </Box>
-  )
-}
+  );
+};
 
-export default Input
+export default Input;

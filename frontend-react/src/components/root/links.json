@@ -1,0 +1,168 @@
+{
+  "guides": [
+    {
+      "title": "Callouts",
+      "url": "https://drive.google.com/drive/folders/0B3prVTgFFXASZm1EQkdFbk1JYVk",
+      "description": "by FLC and Hitzel. Images of every map with proposed name for every important location for more precise callouts in voice chat. Also includes some general tips on how to callout."
+    },
+    {
+      "title": "Coaching",
+      "url": "https://docs.google.com/document/d/1pmdHhGNj6SXZA9W3BUAgntI3urgiJDql35p-d7Qsdaw",
+      "description": "by Dr. Prodigy and FLC. Guide that explains what a coach should be doing in the context of this game."
+    },
+    {
+      "title": "Roles",
+      "url": "https://docs.google.com/document/d/1t97IZrN0pI_ceUtJrB-8clapCp1P3oddyFzSQ2lGICg",
+      "description": "by FLC. Outline of how the author thinks about the game regarding team compositions and player roles."
+    },
+    {
+      "title": "Advanced Techniques, Tips and Tricks (YouTube)",
+      "url": "https://www.youtube.com/watch?v=VVzxXG446X4",
+      "description": "by Wadsm. Different tricks to keep in mind."
+    },
+    {
+      "title": "The Ultimate Gear Guide (YouTube)",
+      "url": "https://www.youtube.com/watch?v=3Ygwtq03MrM",
+      "description": "by Wadsm. Everything you need to know about gear and abilities."
+    },
+    {
+      "title": "How to become good (YouTube)",
+      "url": "https://www.youtube.com/watch?v=GudFu9yOVe8",
+      "description": "by Wadsm. General tips on how to improve in Splatoon 2."
+    },
+    {
+      "title": "Rainmaker paths (YouTube)",
+      "url": "https://www.youtube.com/watch?v=KrXSbLr9tjo",
+      "description": "by Kiver. Video that goes over every map explaining where the Rainmaker should go."
+    },
+    {
+      "title": "Tournament Organizing",
+      "url": "https://docs.google.com/document/d/1SO7drZS-fIU2CGQKvb7R5LdvrIwk5o1O-iPh0GJqfSg",
+      "description": "by Ink.Jordan. How to run an event of your own."
+    },
+    {
+      "title": "The One's Guides",
+      "url": "https://docs.google.com/document/d/e/2PACX-1vTsAddC7nWZQ4Aclaj1Y2Qa9YsjG949YOLmb94T1N3mEXp7b-Nb0ZR-ztQiYDu3eIydwZyKpCyFesPg/pub",
+      "description": "guides on Brella and Explosher both in video and written formats."
+    }
+  ],
+  "misc": [
+    {
+      "title": "Rotations",
+      "url": "https://splatoon2.ink/",
+      "description": "view upcoming rotations and browse the current SplatNet Gear."
+    },
+    {
+      "title": "Frame Data",
+      "url": "https://docs.google.com/spreadsheets/d/1WnSDbSja9lar_VHZ89r_ix2mFk1KYsony2k71xtZDBc",
+      "description": "by Shadó Chimera. Frame data for every weapon."
+    },
+    {
+      "title": "Salmon Run Records",
+      "url": "https://gungeespla.github.io/salmon_run_records/",
+      "description": "all Salmon Run records in one place."
+    },
+    {
+      "title": "Salmon Run Rotations",
+      "url": "https://content.oatmealdome.me/bcat/salmon_run",
+      "description": "future Salmon Run rotations."
+    },
+    {
+      "title": "Splatoon News (Twitter)",
+      "url": "https://twitter.com/SplatoonNews_",
+      "description": "upcoming events and other news regarding competitive Splatoon in one Twitter account."
+    },
+    {
+      "title": "Tier List Maker",
+      "url": "https://tiermaker.com/create/splatoon-2-tier-list",
+      "description": "make a tier list of your own like all the cool kids on Twitter."
+    },
+    {
+      "title": "Tournament Weapon Data",
+      "url": "https://docs.google.com/spreadsheets/u/1/d/e/2PACX-1vTpmSpKjJgUJxavOIAnuFseJ0ZOfA7Ynh45XJJyK7K4YOnkt-veC20oP96JFyWolYfBrcAlzddPMkTG/pubhtml",
+      "description": "by ganbawoomy. Focus on Japanese tournaments. Lets you browse past tournaments and get information about what weapons were played by the top placing teams."
+    },
+    {
+      "title": "Weapon Ranges",
+      "url": "https://docs.google.com/spreadsheets/d/1iJ78fSrf0OxjAFmzPcdhAeyT9_diDlyQymFvxdN8K_A",
+      "description": "by Oculus049. Spreadsheet with weapons listed by range."
+    },
+    {
+      "title": "splatoon2.ink",
+      "url": "https://splatoon2.ink/",
+      "description": "information about map and SplatNet gear rotations."
+    },
+    {
+      "title": "stat.ink",
+      "url": "https://stat.ink/",
+      "description": "upload your battle history to save it beyond the 50 limit imposed by Nintendo's app."
+    },
+    {
+      "title": "Lean's datamine page",
+      "url": "https://leanny.github.io/",
+      "description": "datamined information about the game."
+    },
+    {
+      "title": "Inkipedia",
+      "url": "https://splatoonwiki.org",
+      "description": "Splatoon wiki. Useful for looking up random information about the game."
+    },
+    {
+      "title": "splat_zone jp (YouTube)",
+      "url": "https://www.youtube.com/channel/UCLN8s9Ogn71QcCYIPtb9mtw",
+      "description": "YouTube channel where you can watch top tier Japanese competitive gameplay."
+    },
+    {
+      "title": "Japanese player listing",
+      "url": "https://docs.google.com/spreadsheets/d/1ggjZuFrV2BVF6CguM-idLe0JJbjUIwYMTXn3RGBL_kQ",
+      "description": "find Japanese top players to follow on Openrec (Japanese streaming website), YouTube and Twitter. Weapons are included so it's easy to find people that play your weapons."
+    },
+    {
+      "title": "Ikaclo",
+      "url": "https://www.ikaclo.com/",
+      "description": "Japanese gear sharing website. Cool feature is seeing what gear has been released with what abilities."
+    }
+  ],
+  "discord": [
+    {
+      "title": "sendou.ink",
+      "url": "https://discord.gg/sendou",
+      "description": "the server of this website. Aside from discussing anything related to this website occasionally tournaments are held."
+    },
+    {
+      "title": "The Inkademy",
+      "url": "https://discord.gg/8UsJDDg",
+      "description": "the biggest competitive Splatoon server with a bit of everything ranging from discussion about the game to LFG channels."
+    },
+    {
+      "title": "Salmon Run Server",
+      "url": "https://discord.gg/EY3JZqk",
+      "description": "if Salmon Run is your thing this server is probably the place to be."
+    },
+    {
+      "title": "Salmon Run Overfishing",
+      "url": "https://discord.gg/pXHRffE",
+      "description": "more competitive Salmon Run server with a lot of resources."
+    },
+    {
+      "title": "CHECKPOINT 1",
+      "url": "https://discord.gg/X9z9fbM",
+      "description": "LFG server meant for casual and low level players."
+    },
+    {
+      "title": "Inkopolis Crosswalk",
+      "url": "https://discord.gg/mw3hkwG",
+      "description": "more comprehensive list of Discord servers than this one."
+    },
+    {
+      "title": "Plus Server",
+      "url": "https://discord.gg/FW4dKrY",
+      "description": "definitive LFG server in the western Splatoon. Any top player you know uses it and you can as well."
+    },
+    {
+      "title": "LUTI",
+      "url": "https://discord.gg/GuD7h36",
+      "description": "the biggest western Splatoon event. Being a league divided into multiple divisions based on experience makes it a natural place for new teams to get started."
+    }
+  ]
+}

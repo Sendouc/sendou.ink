@@ -1,47 +1,48 @@
-import React, { useState, useContext } from "react"
-import Modal from "../elements/Modal"
-import { useMutation } from "@apollo/react-hooks"
+import { useMutation } from "@apollo/client";
 import {
-  useToast,
-  FormControl,
-  FormLabel,
-  RadioGroup,
-  Radio,
-  Flex,
   Box,
-  FormErrorMessage,
-  CheckboxGroup,
   Checkbox,
-} from "@chakra-ui/core"
-import MyThemeContext from "../../themeContext"
-import TextArea from "../elements/TextArea"
-import Button from "../elements/Button"
-import { FreeAgentPost } from "../../types"
+  CheckboxGroup,
+  Flex,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Radio,
+  RadioGroup,
+  Stack,
+  useToast,
+} from "@chakra-ui/core";
+import React, { useContext, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   AddFreeAgentPostVars,
   ADD_FREE_AGENT_POST,
-} from "../../graphql/mutations/addFreeAgentPost"
-import { FREE_AGENT_POSTS } from "../../graphql/queries/freeAgentPosts"
-import { UPDATE_FREE_AGENT_POST } from "../../graphql/mutations/updateFreeAgentPost"
-import { HIDE_FREE_AGENT_POST } from "../../graphql/mutations/hideFreeAgentPost"
-import Alert from "../elements/Alert"
-import { FREE_AGENT_MATCHES } from "../../graphql/queries/freeAgentMatches"
-import { useTranslation } from "react-i18next"
+} from "../../graphql/mutations/addFreeAgentPost";
+import { HIDE_FREE_AGENT_POST } from "../../graphql/mutations/hideFreeAgentPost";
+import { UPDATE_FREE_AGENT_POST } from "../../graphql/mutations/updateFreeAgentPost";
+import { FREE_AGENT_MATCHES } from "../../graphql/queries/freeAgentMatches";
+import { FREE_AGENT_POSTS } from "../../graphql/queries/freeAgentPosts";
+import MyThemeContext from "../../themeContext";
+import { FreeAgentPost } from "../../types";
+import Alert from "../elements/Alert";
+import Button from "../elements/Button";
+import Modal from "../elements/Modal";
+import TextArea from "../elements/TextArea";
 
 interface FAPostModalProps {
-  closeModal: () => void
-  post?: FreeAgentPost
+  closeModal: () => void;
+  post?: FreeAgentPost;
 }
 
 const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const [form, setForm] = useState<Partial<AddFreeAgentPostVars>>(
     post ? post : {}
-  )
-  const [showErrors, setShowErrors] = useState(false)
-  const [deleting, setDeleting] = useState(false)
-  const toast = useToast()
-  const { themeColor, grayWithShade } = useContext(MyThemeContext)
+  );
+  const [showErrors, setShowErrors] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const toast = useToast();
+  const { themeColor, grayWithShade } = useContext(MyThemeContext);
 
   const [addFreeAgentPost, { loading }] = useMutation<
     boolean,
@@ -49,13 +50,13 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
   >(ADD_FREE_AGENT_POST, {
     variables: { ...(form as AddFreeAgentPostVars) },
     onCompleted: (data) => {
-      closeModal()
+      closeModal();
       toast({
         description: t("freeagents;Free agent post added"),
         position: "top-right",
         status: "success",
         duration: 10000,
-      })
+      });
     },
     onError: (error) => {
       toast({
@@ -64,10 +65,10 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
         position: "top-right",
         status: "error",
         duration: 10000,
-      })
+      });
     },
     refetchQueries: [{ query: FREE_AGENT_POSTS }],
-  })
+  });
 
   const [editFreeAgentPost, { loading: editLoading }] = useMutation<
     boolean,
@@ -75,13 +76,13 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
   >(UPDATE_FREE_AGENT_POST, {
     variables: { ...(form as AddFreeAgentPostVars) },
     onCompleted: (data) => {
-      closeModal()
+      closeModal();
       toast({
         description: t("freeagents;Free agent post edited"),
         position: "top-right",
         status: "success",
         duration: 10000,
-      })
+      });
     },
     onError: (error) => {
       toast({
@@ -90,10 +91,10 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
         position: "top-right",
         status: "error",
         duration: 10000,
-      })
+      });
     },
     refetchQueries: [{ query: FREE_AGENT_POSTS }],
-  })
+  });
 
   const [hideFreeAgentPost, { loading: hideLoading }] = useMutation<
     boolean,
@@ -101,13 +102,13 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
   >(HIDE_FREE_AGENT_POST, {
     variables: { ...(form as AddFreeAgentPostVars) },
     onCompleted: (data) => {
-      closeModal()
+      closeModal();
       toast({
         description: t("freeagents;Free agent post deleted"),
         position: "top-right",
         status: "success",
         duration: 10000,
-      })
+      });
     },
     onError: (error) => {
       toast({
@@ -116,19 +117,19 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
         position: "top-right",
         status: "error",
         duration: 10000,
-      })
+      });
     },
     refetchQueries: [
       { query: FREE_AGENT_POSTS },
       { query: FREE_AGENT_MATCHES },
     ],
-  })
+  });
 
   const handleChange = (newValueObject: Partial<AddFreeAgentPostVars>) => {
-    setForm({ ...form, ...newValueObject })
-  }
+    setForm({ ...form, ...newValueObject });
+  };
 
-  const actionType = post ? "EDIT" : "NEW"
+  const actionType = post ? "EDIT" : "NEW";
 
   const handleSubmit = () => {
     if (
@@ -139,13 +140,13 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
       (form.looking_for ?? "").length > 100 ||
       (form.description ?? "").length > 1000
     ) {
-      setShowErrors(true)
-      return
+      setShowErrors(true);
+      return;
     }
 
-    if (actionType === "NEW") addFreeAgentPost()
-    else if (actionType === "EDIT") editFreeAgentPost()
-  }
+    if (actionType === "NEW") addFreeAgentPost();
+    else if (actionType === "EDIT") editFreeAgentPost();
+  };
 
   return (
     <Modal
@@ -192,8 +193,7 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
       >
         <FormLabel htmlFor="playstyles">{t("freeagents;Playstyles")}</FormLabel>
         <CheckboxGroup
-          id="playstyles"
-          variantColor={themeColor}
+          colorScheme={themeColor}
           value={form.playstyles ?? []}
           onChange={(value) =>
             handleChange({
@@ -201,13 +201,17 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
             })
           }
         >
-          <Checkbox value="FRONTLINE">
-            {t("freeagents;Frontline/Slayer")}
-          </Checkbox>
-          <Checkbox value="MIDLINE">{t("freeagents;Midline/Support")}</Checkbox>
-          <Checkbox value="BACKLINE">
-            {t("freeagents;Backline/Anchor")}
-          </Checkbox>
+          <Stack spacing="20px" isInline>
+            <Checkbox value="FRONTLINE">
+              {t("freeagents;Frontline/Slayer")}
+            </Checkbox>
+            <Checkbox value="MIDLINE">
+              {t("freeagents;Midline/Support")}
+            </Checkbox>
+            <Checkbox value="BACKLINE">
+              {t("freeagents;Backline/Anchor")}
+            </Checkbox>
+          </Stack>
         </CheckboxGroup>
         <FormErrorMessage>{t("freeagents;Required field")}</FormErrorMessage>
       </FormControl>
@@ -218,18 +222,20 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
         </FormLabel>
         <RadioGroup
           id="canVc"
-          variantColor={themeColor}
+          colorScheme={themeColor}
           value={form.can_vc}
-          onChange={(e, value) =>
+          onChange={(value) =>
             handleChange({
               can_vc: value as "YES" | "USUALLY" | "SOMETIMES" | "NO",
             })
           }
         >
-          <Radio value="YES">{t("freeagents;Yes")}</Radio>
-          <Radio value="USUALLY">{t("freeagents;Usually")}</Radio>
-          <Radio value="SOMETIMES">{t("freeagents;Sometimes")}</Radio>
-          <Radio value="NO">{t("freeagents;No")}</Radio>
+          <Stack spacing="20px" isInline>
+            <Radio value="YES">{t("freeagents;Yes")}</Radio>
+            <Radio value="USUALLY">{t("freeagents;Usually")}</Radio>
+            <Radio value="SOMETIMES">{t("freeagents;Sometimes")}</Radio>
+            <Radio value="NO">{t("freeagents;No")}</Radio>
+          </Stack>
         </RadioGroup>
         <FormErrorMessage>{t("freeagents;Required field")}</FormErrorMessage>
       </FormControl>
@@ -327,7 +333,7 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
         </Button>
       </Flex>
     </Modal>
-  )
-}
+  );
+};
 
-export default FAPostModal
+export default FAPostModal;

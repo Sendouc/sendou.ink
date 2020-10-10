@@ -1,29 +1,37 @@
-import React, { useState, useContext } from "react"
-import Button from "../elements/Button"
-import { Collapse, Grid, Flex, Box, RadioGroup, Radio } from "@chakra-ui/core"
-import Input from "../elements/Input"
-import WeaponSelector from "../common/WeaponSelector"
-import Select from "../elements/Select"
-import Label from "../elements/Label"
-import MyThemeContext from "../../themeContext"
-import { Weapon } from "../../types"
-import { maps } from "../../utils/lists"
-import { FaFilter } from "react-icons/fa"
-import { useTranslation } from "react-i18next"
+import React, { useState, useContext } from "react";
+import Button from "../elements/Button";
+import {
+  Collapse,
+  Grid,
+  Flex,
+  Box,
+  RadioGroup,
+  Radio,
+  Stack,
+} from "@chakra-ui/core";
+import Input from "../elements/Input";
+import WeaponSelector from "../common/WeaponSelector";
+import Select from "../elements/Select";
+import Label from "../elements/Label";
+import MyThemeContext from "../../themeContext";
+import { Weapon } from "../../types";
+import { maps } from "../../utils/lists";
+import { FaFilter } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 interface TournamentFiltersProps {
   forms: {
-    tournament_name?: string
-    region?: string
-    player_name?: string
-    team_name?: string
-    comp?: string[]
-    mode?: string
-    stage?: string
-  }
-  handleChange: (value: Object) => void
-  handleClear: () => void
-  onSubmit: () => void
+    tournament_name?: string;
+    region?: string;
+    player_name?: string;
+    team_name?: string;
+    comp?: string[];
+    mode?: string;
+    stage?: string;
+  };
+  handleChange: (value: Object) => void;
+  handleClear: () => void;
+  onSubmit: () => void;
 }
 
 const TournamentFilters: React.FC<TournamentFiltersProps> = ({
@@ -32,12 +40,12 @@ const TournamentFilters: React.FC<TournamentFiltersProps> = ({
   handleClear,
   onSubmit,
 }) => {
-  const { t } = useTranslation()
-  const { themeColor } = useContext(MyThemeContext)
-  const [show, setShow] = useState(false)
+  const { t } = useTranslation();
+  const { themeColor } = useContext(MyThemeContext);
+  const [show, setShow] = useState(false);
   return (
     <>
-      <Button icon={FaFilter} onClick={() => setShow(!show)}>
+      <Button icon={<FaFilter />} onClick={() => setShow(!show)}>
         {show ? t("freeagents;Hide filters") : t("freeagents;Show filters")}
       </Button>
       <Collapse mt={4} isOpen={show}>
@@ -72,11 +80,11 @@ const TournamentFilters: React.FC<TournamentFiltersProps> = ({
               forms.stage && forms.mode ? `${forms.stage} (${forms.mode})` : ""
             }
             setValue={(value: string) => {
-              const partsArray = value.split(" (")
+              const partsArray = value.split(" (");
               handleChange({
                 stage: partsArray[0],
                 mode: partsArray[1].substring(0, partsArray[1].length - 1),
-              })
+              });
             }}
             options={maps.reduce(
               (acc: { label: string; value: string }[], cur: string) => [
@@ -112,19 +120,19 @@ const TournamentFilters: React.FC<TournamentFiltersProps> = ({
             <RadioGroup
               value={forms.region ?? "all"}
               defaultValue="0"
-              spacing={5}
-              isInline
-              onChange={(e, value: any) => handleChange({ region: value })}
+              onChange={(value) => handleChange({ region: value })}
             >
-              <Radio variantColor={themeColor} value="all">
-                {t("tournaments;All")}
-              </Radio>
-              <Radio variantColor={themeColor} value="western">
-                {t("tournaments;Western")}
-              </Radio>
-              <Radio variantColor={themeColor} value="jpn">
-                {t("tournaments;Japanese")}
-              </Radio>
+              <Stack direction="row">
+                <Radio colorScheme={themeColor} value="all">
+                  {t("tournaments;All")}
+                </Radio>
+                <Radio colorScheme={themeColor} value="western">
+                  {t("tournaments;Western")}
+                </Radio>
+                <Radio colorScheme={themeColor} value="jpn">
+                  {t("tournaments;Japanese")}
+                </Radio>
+              </Stack>
             </RadioGroup>
           </Box>
           <Flex mt="1em">
@@ -138,7 +146,7 @@ const TournamentFilters: React.FC<TournamentFiltersProps> = ({
         </Grid>
       </Collapse>
     </>
-  )
-}
+  );
+};
 
-export default TournamentFilters
+export default TournamentFilters;

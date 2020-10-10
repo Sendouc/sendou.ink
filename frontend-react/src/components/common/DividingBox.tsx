@@ -1,12 +1,12 @@
-import React, { useContext } from "react"
-import { Box } from "@chakra-ui/core"
-import MyThemeContext from "../../themeContext"
+import React, { useContext } from "react";
+import { Box } from "@chakra-ui/core";
+import MyThemeContext from "../../themeContext";
 
 interface DividingBoxProps {
-  children: React.ReactNode
-  location: "top" | "left" | "bottom" | "right"
-  margin?: string
-  width?: string
+  children: React.ReactNode;
+  location: "top" | "left" | "bottom" | "right";
+  margin?: string;
+  width?: string;
 }
 
 const DividingBox: React.FC<DividingBoxProps> = ({
@@ -15,7 +15,7 @@ const DividingBox: React.FC<DividingBoxProps> = ({
   width = undefined,
   margin = "0.4em",
 }) => {
-  const { borderStyle } = useContext(MyThemeContext)
+  const { borderStyle } = useContext(MyThemeContext);
   return (
     <Box
       borderLeft={location === "left" ? borderStyle : undefined}
@@ -30,7 +30,7 @@ const DividingBox: React.FC<DividingBoxProps> = ({
     >
       {children}
     </Box>
-  )
-}
+  );
+};
 
-export default DividingBox
+export default DividingBox;

@@ -1,15 +1,15 @@
-import React from "react"
-import { Build } from "../../types"
-import GearImage from "./GearImage"
-import { Flex, Box } from "@chakra-ui/core"
+import React from "react";
+import { Build } from "../../types";
+import GearImage from "./GearImage";
+import { Flex, Box } from "@chakra-ui/core";
 
 interface GearsProps {
-  build: Build
+  build: Build;
 }
 
 const Gears: React.FC<GearsProps> = ({ build }) => {
   if (!build.headgearItem && !build.clothingItem && !build.shoesItem) {
-    return <Box h="30px" />
+    return <Box h="30px" />;
   }
   return (
     <Flex justifyContent="center">
@@ -23,7 +23,7 @@ const Gears: React.FC<GearsProps> = ({ build }) => {
         <GearImage englishName={build.shoesItem} renderNullIfNoName />
       </Box>
     </Flex>
-  )
-}
+  );
+};
 
-export default Gears
+export default Gears;

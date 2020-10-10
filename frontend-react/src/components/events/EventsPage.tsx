@@ -1,11 +1,11 @@
-import React, { useState } from "react"
-import { RouteComponentProps } from "@reach/router"
-import InTheZoneBanner from "./InTheZoneBanner"
-import { Box, Flex, Heading } from "@chakra-ui/core"
-import Button from "../elements/Button"
+import React, { useState } from "react";
+import { RouteComponentProps } from "@reach/router";
+import InTheZoneBanner from "./InTheZoneBanner";
+import { Box, Flex, Heading } from "@chakra-ui/core";
+import Button from "../elements/Button";
 
 const EventsPage: React.FC<RouteComponentProps> = () => {
-  const [runningNumber, setRunningNumber] = useState(10)
+  const [runningNumber, setRunningNumber] = useState(10);
   return (
     <>
       <Box>
@@ -32,7 +32,7 @@ const EventsPage: React.FC<RouteComponentProps> = () => {
         </Flex>
       </Box>
     </>
-  )
-}
+  );
+};
 
-export default EventsPage
+export default EventsPage;

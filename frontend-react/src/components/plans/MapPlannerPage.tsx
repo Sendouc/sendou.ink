@@ -1,37 +1,36 @@
-import { Box, Flex } from "@chakra-ui/core"
-import { RouteComponentProps } from "@reach/router"
-import { SketchField, Tools } from "@sendou/react-sketch"
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react"
-import { Helmet } from "react-helmet-async"
+import { Box, Flex } from "@chakra-ui/core";
+import { RouteComponentProps } from "@reach/router";
+import { SketchField, Tools } from "@sendou/react-sketch";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
 import {
   FaBomb,
   FaFileDownload,
   FaFileImage,
   FaFileUpload,
-} from "react-icons/fa"
-import { weapons } from "../../assets/imageImports"
-import useBreakPoints from "../../hooks/useBreakPoints"
-import { Stage, Weapon } from "../../types"
-import weaponDict from "../../utils/english_internal.json"
-import Error from "../common/Error"
-import PageHeader from "../common/PageHeader"
-import Button from "../elements/Button"
-import DraggableToolsSelector from "./DraggableToolsSelector"
-import DraggableWeaponSelector from "./DraggableWeaponSelector"
-import MapSelect from "./MapSelect"
-import { useTranslation } from "react-i18next"
+} from "react-icons/fa";
+import useBreakPoints from "../../hooks/useBreakPoints";
+import { Stage, Weapon } from "../../types";
+import english_internal from "../../utils/english_internal.json";
+import Error from "../common/Error";
+import PageHeader from "../common/PageHeader";
+import Button from "../elements/Button";
+import DraggableToolsSelector from "./DraggableToolsSelector";
+import DraggableWeaponSelector from "./DraggableWeaponSelector";
+import MapSelect from "./MapSelect";
 
 export interface PlannerMapBg {
-  view: "M" | "R"
-  stage: Stage
-  mode: "SZ" | "TC" | "RM" | "CB"
+  view: "M" | "R";
+  stage: Stage;
+  mode: "SZ" | "TC" | "RM" | "CB";
 }
 
 const REEF = {
   view: "M",
   stage: "The Reef",
   mode: "SZ",
-} as const
+} as const;
 
 const reversedCodes = [
   ["Ancho-V Games", "AG"],
@@ -57,9 +56,9 @@ const reversedCodes = [
   ["The Reef", "TR"],
   ["Wahoo World", "WH"],
   ["Walleye Warehouse", "WW"],
-] as const
+] as const;
 
-const stageToCode = new Map<Stage, string>(reversedCodes)
+const stageToCode = new Map<Stage, string>(reversedCodes);
 
 const codes = [
   ["AG", "Ancho-V Games"],
@@ -85,18 +84,18 @@ const codes = [
   ["TR", "The Reef"],
   ["WH", "Wahoo World"],
   ["WW", "Walleye Warehouse"],
-] as const
+] as const;
 
-const codeToStage = new Map(codes)
+const codeToStage = new Map(codes);
 
 const plannerMapBgToImage = (bg: PlannerMapBg) =>
   `${process.env.PUBLIC_URL}/plannerMaps/${bg.view} ${stageToCode.get(
     bg.stage
-  )} ${bg.mode}.png`
+  )} ${bg.mode}.png`;
 
 const MapPlannerPage: React.FC<RouteComponentProps> = () => {
-  let sketch: any = null
-  const isSmall = useBreakPoints(1127)
+  let sketch: any = null;
+  const isSmall = useBreakPoints(1127);
   const defaultValue = {
     shadowWidth: 0,
     shadowOffset: 0,
@@ -121,26 +120,28 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
     expandImages: false,
     expandControlled: false,
     enableCopyPaste: false,
-  }
-  const fileInput = useRef<HTMLInputElement | null>(null)
-  const [tool, setTool] = useState(Tools.RectangleLabel)
-  const [color, setColor] = useState("#f44336")
-  const [canUndo, setCanUndo] = useState(false)
-  const [canRedo, setCanRedo] = useState(false)
-  const [bg, setBg] = useState<PlannerMapBg>(REEF)
-  const [controlledValue, setControlledValue] = useState(defaultValue)
-  const { t } = useTranslation()
+  };
+  const fileInput = useRef<HTMLInputElement | null>(null);
+  const [tool, setTool] = useState(Tools.RectangleLabel);
+  const [color, setColor] = useState("#f44336");
+  const [canUndo, setCanUndo] = useState(false);
+  const [canRedo, setCanRedo] = useState(false);
+  const [bg, setBg] = useState<PlannerMapBg>(REEF);
+  const [controlledValue, setControlledValue] = useState(defaultValue);
+  const { t } = useTranslation();
 
   // doesn't work properly when coming back from another page - not sure why
   useLayoutEffect(() => {
-    sketch.setBackgroundFromDataUrl(plannerMapBgToImage(REEF))
-  }, [sketch])
+    sketch.setBackgroundFromDataUrl(plannerMapBgToImage(REEF));
+  }, [sketch]);
 
   const addImageToSketch = (weapon: Weapon) => {
-    const wpnDict: any = weapons
-    sketch.addImg(wpnDict[weaponDict[weapon]])
-    setTool(Tools.Select)
-  }
+    if (!sketch) return;
+    sketch.addImg(
+      `https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/weapons/Wst_${english_internal[weapon]}.png`
+    );
+    setTool(Tools.Select);
+  };
 
   const addTextToSketch = () => {
     sketch.addText("Double-click to edit", {
@@ -149,119 +150,115 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
       stroke: "#000000",
       strokeWidth: 3,
       paintFirst: "stroke",
-    })
-    setTool(Tools.Select)
-  }
+    });
+    setTool(Tools.Select);
+  };
 
   const undo = () => {
-    sketch.undo()
-    setCanUndo(sketch.canUndo())
-    setCanRedo(sketch.canRedo())
-  }
+    sketch.undo();
+    setCanUndo(sketch.canUndo());
+    setCanRedo(sketch.canRedo());
+  };
 
   const redo = () => {
-    sketch.redo()
-    setCanUndo(sketch.canUndo())
-    setCanRedo(sketch.canRedo())
-  }
+    sketch.redo();
+    setCanUndo(sketch.canUndo());
+    setCanRedo(sketch.canRedo());
+  };
 
   const removeSelected = () => {
-    sketch.removeSelected()
-  }
+    sketch.removeSelected();
+  };
 
   const onSketchChange = () => {
-    if (!sketch) return
-    let prev = canUndo
-    let now = sketch.canUndo()
+    if (!sketch) return;
+    let prev = canUndo;
+    let now = sketch.canUndo();
     if (prev !== now) {
-      setCanUndo(now)
+      setCanUndo(now);
     }
-  }
+  };
 
   const getDateFormatted = () => {
-    const today = new Date()
+    const today = new Date();
     const date =
-      today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate()
+      today.getFullYear() +
+      "-" +
+      (today.getMonth() + 1) +
+      "-" +
+      today.getDate();
     const time =
-      today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds()
-    return date + " " + time
-  }
+      today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    return date + " " + time;
+  };
 
   const download = (dataUrl: string, extension: string) => {
-    if (!bg) return
-    let a = document.createElement("a")
-    document.body.appendChild(a)
-    a.style.display = "none"
-    a.href = dataUrl
+    if (!bg) return;
+    let a = document.createElement("a");
+    document.body.appendChild(a);
+    a.style.display = "none";
+    a.href = dataUrl;
     a.download = `${bg.view}-${stageToCode.get(bg.stage)}-${
       bg.mode
-    } plans ${getDateFormatted()}.${extension}`
-    a.click()
-    window.URL.revokeObjectURL(dataUrl)
-  }
+    } plans ${getDateFormatted()}.${extension}`;
+    a.click();
+    window.URL.revokeObjectURL(dataUrl);
+  };
 
   const handleUpload = () => {
     if (!fileInput.current) {
-      return
+      return;
     }
-    fileInput.current.click()
-  }
+    fileInput.current.click();
+  };
 
   const parseAndSetForms = (name: string) => {
-    console.log("name", name)
-    const firstPart = name.split(" ")[0]
-    if (!(firstPart.length === 7 || !firstPart.includes("-"))) return
+    const firstPart = name.split(" ")[0];
+    if (!(firstPart.length === 7 || !firstPart.includes("-"))) return;
 
-    const split = firstPart.split("-")
-    if (split.length !== 3) return
+    const split = firstPart.split("-");
+    if (split.length !== 3) return;
 
-    const [view, stage, mode] = split
+    const [view, stage, mode] = split;
 
-    if (!["M", "R"].includes(view)) return
-    console.log(
-      "Array.from(reversedCodes.values()",
-      Array.from(reversedCodes.values())
-    )
+    if (!["M", "R"].includes(view)) return;
     if (
       !Array.from(reversedCodes.values())
         .map((tuple) => tuple[1])
         .includes(stage as any)
     )
-      return
-    console.log("2")
-    if (!["SZ", "TC", "RM", "CB"].includes(mode)) return
-    console.log("3")
+      if (!["SZ", "TC", "RM", "CB"].includes(mode)) return;
 
     setBg({
       view: view as any,
       stage: codeToStage.get(stage as any)!,
       mode: mode as any,
-    })
-  }
+    });
+  };
 
-  const files = fileInput.current?.files
+  const files = fileInput.current?.files;
 
   useEffect(() => {
-    if (!fileInput.current?.files?.length) return
+    if (!fileInput.current?.files?.length) return;
 
-    const fileObj = fileInput.current.files[0]
-    const reader = new FileReader()
+    const fileObj = fileInput.current.files[0];
+    const reader = new FileReader();
     reader.onload = function (event) {
-      const jsonObj = JSON.parse(event.target!.result as any)
-      setControlledValue(jsonObj)
-    }
+      const jsonObj = JSON.parse(event.target!.result as any);
+      setControlledValue(jsonObj);
+    };
 
-    reader.readAsText(fileObj)
+    reader.readAsText(fileObj);
 
-    parseAndSetForms(fileObj.name)
-  }, [files])
+    parseAndSetForms(fileObj.name);
+  }, [files]);
 
   useEffect(() => {
-    if (!sketch) return
-    setCanUndo(false)
-    sketch.setBackgroundFromDataUrl(plannerMapBgToImage(bg))
+    if (!sketch) return;
+    setCanUndo(false);
+    sketch.setBackgroundFromDataUrl(plannerMapBgToImage(bg));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bg])
+  }, [bg]);
 
   return (
     <>
@@ -304,10 +301,10 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
       <Flex justifyContent="space-between" mt="1em" flexWrap="wrap">
         <Button
           onClick={() => {
-            sketch.clear()
-            setBg({ ...bg })
+            sketch.clear();
+            setBg({ ...bg });
           }}
-          icon={FaBomb}
+          icon={<FaBomb />}
           outlined
           color="red"
         >
@@ -316,7 +313,7 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
         <Box w="300px" />
         <Button
           onClick={() => download(sketch.toDataURL(), "png")}
-          icon={FaFileImage}
+          icon={<FaFileImage />}
           outlined
         >
           {t("plans;Download as .png")}
@@ -329,12 +326,12 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
               "json"
             )
           }
-          icon={FaFileDownload}
+          icon={<FaFileDownload />}
           outlined
         >
           {t("plans;Download as .json")}
         </Button>
-        <Button onClick={() => handleUpload()} icon={FaFileUpload} outlined>
+        <Button onClick={() => handleUpload()} icon={<FaFileUpload />} outlined>
           {t("plans;Load from .json")}
         </Button>
       </Flex>
@@ -349,7 +346,7 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
         <MapSelect bg={bg} setBg={setBg} />
       </Flex>
     </>
-  )
-}
+  );
+};
 
-export default MapPlannerPage
+export default MapPlannerPage;

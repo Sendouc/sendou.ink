@@ -1,38 +1,38 @@
-import { gql, DocumentNode } from "apollo-boost"
-import { DetailedTeamInfo } from "../../types"
+import { DocumentNode, gql } from "@apollo/client";
+import { DetailedTeamInfo } from "../../types";
 
 export interface SearchForDraftCupData {
   searchForDraftCup: {
     tournament: {
-      name: string
-      bracket_url: string
-      date: string
-      top_3_team_names: string[]
+      name: string;
+      bracket_url: string;
+      date: string;
+      top_3_team_names: string[];
       top_3_discord_users: {
-        username: string
-        discriminator: string
-        twitter_name?: string
-        discord_id: string
-      }[][]
-      participant_discord_ids: [string]
-      type: "DRAFTONE" | "DRAFTTWO"
-    }
+        username: string;
+        discriminator: string;
+        twitter_name?: string;
+        discord_id: string;
+      }[][];
+      participant_discord_ids: [string];
+      type: "DRAFTONE" | "DRAFTTWO";
+    };
     matches: {
-      round_name: string
-      round_number: number
+      round_name: string;
+      round_number: number;
       map_details: {
-        stage: string
-        mode: "TW" | "SZ" | "TC" | "RM" | "CB"
-        duration: number
-        winners: DetailedTeamInfo
-        losers: DetailedTeamInfo
-      }[]
-    }[]
-  }
+        stage: string;
+        mode: "TW" | "SZ" | "TC" | "RM" | "CB";
+        duration: number;
+        winners: DetailedTeamInfo;
+        losers: DetailedTeamInfo;
+      }[];
+    }[];
+  };
 }
 
 export interface SearchForDraftCupVars {
-  name: string
+  name: string;
 }
 
 export const SEARCH_FOR_DRAFT_CUP: DocumentNode = gql`
@@ -91,4 +91,4 @@ export const SEARCH_FOR_DRAFT_CUP: DocumentNode = gql`
       gear
     }
   }
-`
+`;

@@ -1,12 +1,12 @@
-import { gql, DocumentNode } from "apollo-boost"
+import { DocumentNode, gql } from "@apollo/client";
 
 export interface AddFreeAgentPostVars {
-  can_vc: "YES" | "USUALLY" | "SOMETIMES" | "NO"
-  playstyles: ("FRONTLINE" | "MIDLINE" | "BACKLINE")[]
-  activity?: string
-  looking_for?: string
-  past_experience?: string
-  description?: string
+  can_vc: "YES" | "USUALLY" | "SOMETIMES" | "NO";
+  playstyles: ("FRONTLINE" | "MIDLINE" | "BACKLINE")[];
+  activity?: string;
+  looking_for?: string;
+  past_experience?: string;
+  description?: string;
 }
 
 export const ADD_FREE_AGENT_POST: DocumentNode = gql`
@@ -27,4 +27,4 @@ export const ADD_FREE_AGENT_POST: DocumentNode = gql`
       description: $description
     )
   }
-`
+`;

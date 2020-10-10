@@ -1,20 +1,20 @@
-import React from "react"
-import { Flex, Box, Image, PseudoBox } from "@chakra-ui/core"
-import sz from "../../assets/sz.png"
-import tc from "../../assets/tc.png"
-import rm from "../../assets/rm.png"
-import cb from "../../assets/cb.png"
-import { useTranslation } from "react-i18next"
+import React from "react";
+import { Flex, Box, Image } from "@chakra-ui/core";
+import sz from "../../assets/sz.png";
+import tc from "../../assets/tc.png";
+import rm from "../../assets/rm.png";
+import cb from "../../assets/cb.png";
+import { useTranslation } from "react-i18next";
 
 interface ModeButtonsProps {
-  mode: "SZ" | "TC" | "RM" | "CB"
-  setMode: (mode: "SZ" | "TC" | "RM" | "CB") => void
+  mode: "SZ" | "TC" | "RM" | "CB";
+  setMode: (mode: "SZ" | "TC" | "RM" | "CB") => void;
 }
 
-const iconSize = "45px"
+const iconSize = "45px";
 
 const ModeButtons: React.FC<ModeButtonsProps> = ({ mode, setMode }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <Flex>
       <Flex
@@ -25,7 +25,7 @@ const ModeButtons: React.FC<ModeButtonsProps> = ({ mode, setMode }) => {
         onClick={() => setMode("SZ")}
         alignItems="center"
       >
-        <PseudoBox
+        <Box
           _hover={{ transform: mode === "SZ" ? undefined : "scale(1.2)" }}
           transition="all 0.2s"
         >
@@ -36,7 +36,7 @@ const ModeButtons: React.FC<ModeButtonsProps> = ({ mode, setMode }) => {
             h={iconSize}
             title={t("game;Splat Zones")}
           />
-        </PseudoBox>
+        </Box>
         {mode === "SZ" && (
           <Box fontSize="1.25em" fontWeight="bold">
             {t("plans;splatZonesShort")}
@@ -51,7 +51,7 @@ const ModeButtons: React.FC<ModeButtonsProps> = ({ mode, setMode }) => {
         onClick={() => setMode("TC")}
         alignItems="center"
       >
-        <PseudoBox
+        <Box
           _hover={{ transform: mode === "TC" ? undefined : "scale(1.2)" }}
           transition="all 0.2s"
         >
@@ -62,7 +62,7 @@ const ModeButtons: React.FC<ModeButtonsProps> = ({ mode, setMode }) => {
             h={iconSize}
             title={t("game;Tower Control")}
           />
-        </PseudoBox>
+        </Box>
         {mode === "TC" && (
           <Box fontSize="1.25em" fontWeight="bold">
             {t("plans;towerControlShort")}
@@ -77,7 +77,7 @@ const ModeButtons: React.FC<ModeButtonsProps> = ({ mode, setMode }) => {
         onClick={() => setMode("RM")}
         alignItems="center"
       >
-        <PseudoBox
+        <Box
           _hover={{ transform: mode === "RM" ? undefined : "scale(1.2)" }}
           transition="all 0.2s"
         >
@@ -88,7 +88,7 @@ const ModeButtons: React.FC<ModeButtonsProps> = ({ mode, setMode }) => {
             h={iconSize}
             title={t("game;Rainmaker")}
           />
-        </PseudoBox>
+        </Box>
         {mode === "RM" && (
           <Box fontSize="1.25em" fontWeight="bold">
             {t("plans;rainMakerShort")}
@@ -103,7 +103,7 @@ const ModeButtons: React.FC<ModeButtonsProps> = ({ mode, setMode }) => {
         onClick={() => setMode("CB")}
         alignItems="center"
       >
-        <PseudoBox
+        <Box
           _hover={{ transform: mode === "CB" ? undefined : "scale(1.2)" }}
           transition="all 0.2s"
         >
@@ -114,7 +114,7 @@ const ModeButtons: React.FC<ModeButtonsProps> = ({ mode, setMode }) => {
             h={iconSize}
             title={t("game;Clam Blitz")}
           />
-        </PseudoBox>
+        </Box>
         {mode === "CB" && (
           <Box fontSize="1.25em" fontWeight="bold">
             {t("plans;clamBlitzShort")}
@@ -122,7 +122,7 @@ const ModeButtons: React.FC<ModeButtonsProps> = ({ mode, setMode }) => {
         )}
       </Flex>
     </Flex>
-  )
-}
+  );
+};
 
-export default ModeButtons
+export default ModeButtons;

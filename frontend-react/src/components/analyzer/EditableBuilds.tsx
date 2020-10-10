@@ -1,46 +1,46 @@
-import React from "react"
-import AbilityButtons from "../user/AbilityButtons"
-import ViewSlots from "../builds/ViewSlots"
-import { Box, Flex } from "@chakra-ui/core"
+import { Box, Flex, IconButton } from "@chakra-ui/core";
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { FiCopy, FiEdit, FiSquare } from "react-icons/fi";
 import {
-  Build,
   Ability,
-  HeadOnlyAbility,
+  AnalyzerBuild,
   ClothingOnlyAbility,
+  HeadOnlyAbility,
   ShoesOnlyAbility,
   StackableAbility,
-} from "../../types"
+} from "../../types";
 import {
-  headOnlyAbilities,
   clothingOnlyAbilities,
+  headOnlyAbilities,
   shoesOnlyAbilities,
-} from "../../utils/lists"
-import Button from "../elements/Button"
-import { FaPlus, FaMinus } from "react-icons/fa"
-import HeadOnlyToggle from "./HeadOnlyToggle"
-import LdeSlider from "./LdeSlider"
-import { useTranslation } from "react-i18next"
+} from "../../utils/lists";
+import ViewSlots from "../builds/ViewSlots";
+import Button from "../elements/Button";
+import AbilityButtons from "../user/AbilityButtons";
+import HeadOnlyToggle from "./HeadOnlyToggle";
+import LdeSlider from "./LdeSlider";
 
 interface EditableBuildsProps {
-  build: Partial<Build>
-  otherBuild: Partial<Build>
-  setBuild: React.Dispatch<React.SetStateAction<Partial<Build>>>
-  showOther: boolean
-  setShowOther: React.Dispatch<React.SetStateAction<boolean>>
-  otherFocused: boolean
-  changeFocus: () => void
-  bonusAp: Partial<Record<Ability, boolean>>
+  build: Omit<AnalyzerBuild, "weapon">;
+  otherBuild: Omit<AnalyzerBuild, "weapon">;
+  setBuild: React.Dispatch<React.SetStateAction<Omit<AnalyzerBuild, "weapon">>>;
+  showOther: boolean;
+  setShowOther: React.Dispatch<React.SetStateAction<boolean>>;
+  otherFocused: boolean;
+  changeFocus: () => void;
+  bonusAp: Partial<Record<Ability, boolean>>;
   setBonusAp: React.Dispatch<
     React.SetStateAction<Partial<Record<Ability, boolean>>>
-  >
-  otherBonusAp: Partial<Record<Ability, boolean>>
+  >;
+  otherBonusAp: Partial<Record<Ability, boolean>>;
   setOtherBonusAp: React.Dispatch<
     React.SetStateAction<Partial<Record<Ability, boolean>>>
-  >
-  lde: number
-  otherLde: number
-  setLde: React.Dispatch<React.SetStateAction<number>>
-  setOtherLde: React.Dispatch<React.SetStateAction<number>>
+  >;
+  lde: number;
+  otherLde: number;
+  setLde: React.Dispatch<React.SetStateAction<number>>;
+  setOtherLde: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const EditableBuilds: React.FC<EditableBuildsProps> = ({
@@ -60,9 +60,10 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
   setLde,
   setOtherLde,
 }) => {
-  const { t } = useTranslation()
-  const buildToEdit = otherFocused ? otherBuild : build
-  const handleChange = (value: Object) => setBuild({ ...buildToEdit, ...value })
+  const { t } = useTranslation();
+  const buildToEdit = otherFocused ? otherBuild : build;
+  const handleChange = (value: Object) =>
+    setBuild({ ...buildToEdit, ...value });
 
   const handleAbilityButtonClick = (ability: Ability) => {
     if (headOnlyAbilities.indexOf(ability as any) !== -1) {
@@ -74,7 +75,7 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
             buildToEdit.headgear![2],
             buildToEdit.headgear![3],
           ],
-        })
+        });
       }
     } else if (clothingOnlyAbilities.indexOf(ability as any) !== -1) {
       if (buildToEdit.clothing![0] === "UNKNOWN") {
@@ -85,7 +86,7 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
             buildToEdit.clothing![2],
             buildToEdit.clothing![3],
           ],
-        })
+        });
       }
     } else if (shoesOnlyAbilities.indexOf(ability as any) !== -1) {
       if (buildToEdit.shoes![0] === "UNKNOWN") {
@@ -96,77 +97,77 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
             buildToEdit.shoes![2],
             buildToEdit.shoes![3],
           ],
-        })
+        });
       }
     } else {
-      const headI = buildToEdit.headgear!.indexOf("UNKNOWN")
+      const headI = buildToEdit.headgear!.indexOf("UNKNOWN");
       if (headI !== -1) {
-        const copy = buildToEdit.headgear!.slice()
-        copy[headI] = ability as HeadOnlyAbility | StackableAbility
+        const copy = buildToEdit.headgear!.slice();
+        copy[headI] = ability as HeadOnlyAbility | StackableAbility;
         handleChange({
           headgear: copy,
-        })
-        return
+        });
+        return;
       }
 
-      const clothingI = buildToEdit.clothing!.indexOf("UNKNOWN")
+      const clothingI = buildToEdit.clothing!.indexOf("UNKNOWN");
       if (clothingI !== -1) {
-        const copy = buildToEdit.clothing!.slice()
-        copy[clothingI] = ability as ClothingOnlyAbility | StackableAbility
+        const copy = buildToEdit.clothing!.slice();
+        copy[clothingI] = ability as ClothingOnlyAbility | StackableAbility;
         handleChange({
           clothing: copy,
-        })
-        return
+        });
+        return;
       }
 
-      const shoesI = buildToEdit.shoes!.indexOf("UNKNOWN")
+      const shoesI = buildToEdit.shoes!.indexOf("UNKNOWN");
       if (shoesI !== -1) {
-        const copy = buildToEdit.shoes!.slice()
-        copy[shoesI] = ability as ShoesOnlyAbility | StackableAbility
+        const copy = buildToEdit.shoes!.slice();
+        copy[shoesI] = ability as ShoesOnlyAbility | StackableAbility;
         handleChange({
           shoes: copy,
-        })
+        });
       }
     }
-  }
+  };
 
   const handleClickBuildAbility = (
     slot: "HEAD" | "CLOTHING" | "SHOES",
     index: number
   ) => {
     if (slot === "HEAD") {
-      const copy = buildToEdit.headgear!.slice()
-      copy[index] = "UNKNOWN"
+      const copy = buildToEdit.headgear!.slice();
+      copy[index] = "UNKNOWN";
       handleChange({
         headgear: copy,
-      })
+      });
     } else if (slot === "CLOTHING") {
-      const copy = buildToEdit.clothing!.slice()
-      copy[index] = "UNKNOWN"
+      const copy = buildToEdit.clothing!.slice();
+      copy[index] = "UNKNOWN";
       handleChange({
         clothing: copy,
-      })
+      });
     } else {
-      const copy = buildToEdit.shoes!.slice()
-      copy[index] = "UNKNOWN"
+      const copy = buildToEdit.shoes!.slice();
+      copy[index] = "UNKNOWN";
       handleChange({
         shoes: copy,
-      })
+      });
     }
-  }
+  };
 
-  const headAbility = build.headgear ? build.headgear[0] : "SSU"
-  const otherHeadAbility = otherBuild.headgear ? otherBuild.headgear[0] : "SSU"
+  const headAbility = build.headgear ? build.headgear[0] : "SSU";
+  const otherHeadAbility = otherBuild.headgear ? otherBuild.headgear[0] : "SSU";
 
   return (
     <>
       <Button
-        icon={showOther ? FaMinus : FaPlus}
+        icon={showOther ? <FiSquare /> : <FiCopy />}
         onClick={() => {
           if (showOther && otherFocused) {
-            changeFocus()
+            changeFocus();
           }
-          setShowOther(!showOther)
+          setShowOther(!showOther);
         }}
         mt="1em"
         mb="2em"
@@ -176,13 +177,15 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
       <Flex justifyContent="space-evenly" flexWrap="wrap" mb="1em">
         <Flex flexDirection="column">
           {showOther && (
-            <Button
+            <IconButton
+              aria-label="Edit orange build"
               disabled={!otherFocused}
-              color="orange"
+              colorScheme="orange"
               onClick={() => changeFocus()}
-            >
-              {!otherFocused ? t("analyzer;Editing") : t("calendar;Edit")}
-            </Button>
+              icon={<FiEdit />}
+              isRound
+              mx="auto"
+            />
           )}
           <ViewSlots
             build={build}
@@ -211,13 +214,15 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
         </Flex>
         {showOther && (
           <Flex flexDirection="column">
-            <Button
+            <IconButton
+              aria-label="Edit blue build"
               disabled={otherFocused}
-              color="blue"
+              colorScheme="blue"
               onClick={() => changeFocus()}
-            >
-              {otherFocused ? "Editing" : "Edit"}
-            </Button>
+              icon={<FiEdit />}
+              isRound
+              mx="auto"
+            />
             <ViewSlots
               build={otherBuild}
               onAbilityClick={
@@ -253,7 +258,7 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
         />
       </Box>
     </>
-  )
-}
+  );
+};
 
-export default EditableBuilds
+export default EditableBuilds;

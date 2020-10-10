@@ -1,16 +1,16 @@
-import { gql, DocumentNode } from "apollo-boost"
+import { DocumentNode, gql } from "@apollo/client";
 
 export interface XTrendsData {
   xTrends: {
-    weapon: string
+    weapon: string;
     counts: {
-      year: number
-      SZ: (null | number)[]
-      TC: (null | number)[]
-      RM: (null | number)[]
-      CB: (null | number)[]
-    }[]
-  }[]
+      year: number;
+      SZ: (null | number)[];
+      TC: (null | number)[];
+      RM: (null | number)[];
+      CB: (null | number)[];
+    }[];
+  }[];
 }
 
 export const X_TRENDS: DocumentNode = gql`
@@ -26,4 +26,4 @@ export const X_TRENDS: DocumentNode = gql`
       }
     }
   }
-`
+`;

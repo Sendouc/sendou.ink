@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const playerStatSchema = new mongoose.Schema({
   discord_id: String,
@@ -12,6 +12,6 @@ const playerStatSchema = new mongoose.Schema({
   games_played: Number,
   wins: Number,
   type: String,
-})
+});
 
-module.exports = mongoose.model("PlayerStat", playerStatSchema)
+module.exports = mongoose.model("PlayerStat", playerStatSchema);

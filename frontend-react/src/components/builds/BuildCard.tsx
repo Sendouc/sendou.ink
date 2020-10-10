@@ -8,30 +8,29 @@ import {
   PopoverBody,
   PopoverContent,
   PopoverTrigger,
-  PseudoBox,
-} from "@chakra-ui/core"
-import { Link } from "@reach/router"
-import React, { useContext, useEffect, useState } from "react"
-import { FiBarChart2, FiEdit, FiInfo, FiTarget } from "react-icons/fi"
-import { top500 } from "../../assets/imageImports"
-import MyThemeContext from "../../themeContext"
-import { Build } from "../../types"
-import WeaponImage from "../common/WeaponImage"
-import BuildCardStats from "./BuildCardStats"
-import Gears from "./Gears"
-import ViewAP from "./ViewAP"
-import ViewSlots from "./ViewSlots"
-import { useTranslation, Trans } from "react-i18next"
-import Flag from "../common/Flag"
+} from "@chakra-ui/core";
+import { Link } from "@reach/router";
+import React, { useContext, useEffect, useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
+import { FiBarChart2, FiEdit, FiInfo, FiTarget } from "react-icons/fi";
+import top500logo from "../../assets/top500.png";
+import MyThemeContext from "../../themeContext";
+import { Build } from "../../types";
+import Flag from "../common/Flag";
+import WeaponImage from "../common/WeaponImage";
+import BuildCardStats from "./BuildCardStats";
+import Gears from "./Gears";
+import ViewAP from "./ViewAP";
+import ViewSlots from "./ViewSlots";
 
 interface BuildCardProps {
-  build: Build
-  defaultToAPView: boolean
-  showUser?: boolean
-  canModify?: boolean
-  setBuildBeingEdited?: (build: Build) => void
-  otherBuildCount?: number
-  onShowAllByUser?: () => void
+  build: Build;
+  defaultToAPView: boolean;
+  showUser?: boolean;
+  canModify?: boolean;
+  setBuildBeingEdited?: (build: Build) => void;
+  otherBuildCount?: number;
+  onShowAllByUser?: () => void;
 }
 
 const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
@@ -44,21 +43,21 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
   onShowAllByUser,
   ...props
 }) => {
-  const [apView, setApView] = useState(defaultToAPView)
-  const [showStats, setShowStats] = useState(false)
+  const [apView, setApView] = useState(defaultToAPView);
+  const [showStats, setShowStats] = useState(false);
   const {
     themeColor,
     darkerBgColor,
     grayWithShade,
     themeColorWithShade,
-  } = useContext(MyThemeContext)
-  const { t } = useTranslation()
+  } = useContext(MyThemeContext);
+  const { t } = useTranslation();
 
   useEffect(() => {
-    setApView(defaultToAPView)
-  }, [defaultToAPView])
+    setApView(defaultToAPView);
+  }, [defaultToAPView]);
 
-  const username = build.discord_user!.username
+  const username = build.discord_user!.username;
 
   return (
     <>
@@ -70,6 +69,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
         rounded="lg"
         overflow="hidden"
         boxShadow="0px 0px 16px 6px rgba(0,0,0,0.1)"
+        bg={darkerBgColor}
         p="20px"
         {...props}
       >
@@ -80,7 +80,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
             </Box>
             {build.top && (
               <Image
-                src={top500}
+                src={top500logo}
                 alt="x rank top 500 logo"
                 height="40px"
                 width="auto"
@@ -137,21 +137,21 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
             <IconButton
               variant="ghost"
               isRound
-              variantColor={themeColor}
+              colorScheme={themeColor}
               onClick={() => setApView(!apView)}
               aria-label="Set build card view"
               fontSize="20px"
-              icon={FiTarget}
+              icon={<FiTarget />}
               mr="0.5em"
             />
             <IconButton
               variant="ghost"
               isRound
-              variantColor={themeColor}
+              colorScheme={themeColor}
               onClick={() => setShowStats(!showStats)}
               aria-label="Show build stats view"
               fontSize="20px"
-              icon={FiBarChart2}
+              icon={<FiBarChart2 />}
               mr="0.5em"
             />
             {build.description && (
@@ -160,10 +160,10 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
                   <IconButton
                     variant="ghost"
                     isRound
-                    variantColor={themeColor}
+                    colorScheme={themeColor}
                     aria-label="Show description"
                     fontSize="20px"
-                    icon={FiInfo}
+                    icon={<FiInfo />}
                   />
                 </PopoverTrigger>
                 <PopoverContent
@@ -181,13 +181,13 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
               <IconButton
                 variant="ghost"
                 isRound
-                variantColor={themeColor}
+                colorScheme={themeColor}
                 onClick={
                   setBuildBeingEdited && (() => setBuildBeingEdited(build))
                 }
                 aria-label="Show description"
                 fontSize="20px"
-                icon={FiEdit}
+                icon={<FiEdit />}
                 ml="0.5em"
               />
             )}
@@ -211,7 +211,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
             mt="1em"
           >
             {otherBuildCount && (
-              <PseudoBox
+              <Box
                 mx="auto"
                 fontSize="0.8em"
                 color={themeColorWithShade}
@@ -223,13 +223,13 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
                 <Trans i18nKey="builds;expandBuilds">
                   Show all {{ otherBuildCount }} builds by {{ username }}
                 </Trans>
-              </PseudoBox>
+              </Box>
             )}
           </Box>
         </Box>
       </Box>
     </>
-  )
-}
+  );
+};
 
-export default BuildCard
+export default BuildCard;

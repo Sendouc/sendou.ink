@@ -1,51 +1,42 @@
-import React from "react"
-import ReactDOM from "react-dom"
-import App from "./components/root/App"
-import {
-  ThemeProvider,
-  ColorModeProvider,
-  CSSReset,
-  theme,
-} from "@chakra-ui/core"
-import { ApolloProvider } from "@apollo/react-hooks"
-import { QueryParamProvider } from "use-query-params"
-import { HelmetProvider } from "react-helmet-async"
-import { LocationProvider, createHistory } from "@reach/router"
-import ApolloClient from "apollo-boost"
-import * as serviceWorker from "./serviceWorker"
-import customIcons from "./assets/icons"
-import "./i18n"
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import { ChakraProvider, extendTheme } from "@chakra-ui/core";
+import { createHistory, LocationProvider } from "@reach/router";
+import React from "react";
+import ReactDOM from "react-dom";
+import { HelmetProvider } from "react-helmet-async";
+import { QueryParamProvider } from "use-query-params";
+import App from "./components/root/App";
+import ErrorBoundary from "./ErrorBoundary";
+import "./i18n";
+import * as serviceWorker from "./serviceWorker";
 
 const client = new ApolloClient({
   uri:
     process.env.NODE_ENV === "production"
       ? "/graphql"
       : "http://localhost:3001/graphql",
-})
+  cache: new InMemoryCache(),
+});
 
-const customTheme = { ...theme, icons: { ...theme.icons, ...customIcons } }
-
-let history = createHistory(window as any)
+let history = createHistory(window as any);
 
 ReactDOM.render(
-  <LocationProvider history={history}>
-    <QueryParamProvider reachHistory={history}>
-      <HelmetProvider>
-        <ApolloProvider client={client}>
-          <ThemeProvider theme={customTheme}>
-            <ColorModeProvider>
-              <CSSReset />
+  <ErrorBoundary>
+    <LocationProvider history={history}>
+      <QueryParamProvider reachHistory={history}>
+        <HelmetProvider>
+          <ApolloProvider client={client}>
+            <ChakraProvider
+              theme={extendTheme({ config: { useSystemColorMode: true } })}
+            >
               <App />
-            </ColorModeProvider>
-          </ThemeProvider>
-        </ApolloProvider>
-      </HelmetProvider>
-    </QueryParamProvider>
-  </LocationProvider>,
+            </ChakraProvider>
+          </ApolloProvider>
+        </HelmetProvider>
+      </QueryParamProvider>
+    </LocationProvider>
+  </ErrorBoundary>,
   document.getElementById("root")
-)
+);
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister()
+serviceWorker.unregister();

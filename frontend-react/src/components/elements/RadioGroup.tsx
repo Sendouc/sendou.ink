@@ -1,12 +1,17 @@
-import React, { useContext } from "react"
-import { RadioGroup as ChakraRadioGroup, Radio, Box } from "@chakra-ui/core"
-import MyThemeContext from "../../themeContext"
+import React, { useContext } from "react";
+import {
+  RadioGroup as ChakraRadioGroup,
+  Radio,
+  Box,
+  Stack,
+} from "@chakra-ui/core";
+import MyThemeContext from "../../themeContext";
 
 interface RadioGroupProps {
-  options: { label: string; value: string }[]
-  value: string
-  label?: string
-  setValue: (value: any) => void
+  options: { label: string; value: string }[];
+  value: string;
+  label?: string;
+  setValue: (value: any) => void;
 }
 
 const RadioGroup: React.FC<RadioGroupProps> = ({
@@ -15,7 +20,7 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
   options,
   label,
 }) => {
-  const { themeColor } = useContext(MyThemeContext)
+  const { themeColor } = useContext(MyThemeContext);
   return (
     <>
       {label && (
@@ -23,25 +28,22 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
           <b>{label}</b>
         </Box>
       )}
-      <ChakraRadioGroup
-        spacing={5}
-        isInline
-        onChange={(e) => setValue(e.target.value)}
-        value={value}
-      >
-        {options.map(({ label, value: valueOfOption }) => (
-          <Radio
-            key={valueOfOption}
-            variantColor={themeColor}
-            value={valueOfOption}
-            isChecked={valueOfOption === value}
-          >
-            {label}
-          </Radio>
-        ))}
+      <ChakraRadioGroup onChange={setValue} value={value}>
+        <Stack direction="row">
+          {options.map(({ label, value: valueOfOption }) => (
+            <Radio
+              key={valueOfOption}
+              colorScheme={themeColor}
+              value={valueOfOption}
+              isChecked={valueOfOption === value}
+            >
+              {label}
+            </Radio>
+          ))}
+        </Stack>
       </ChakraRadioGroup>
     </>
-  )
-}
+  );
+};
 
-export default RadioGroup
+export default RadioGroup;

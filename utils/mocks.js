@@ -18,6 +18,6 @@ const mockUser = {
     plus_region: "EU",
     can_vouch: "ONE",
   },
-}
+};
 
-module.exports = mockUser
+module.exports = mockUser;

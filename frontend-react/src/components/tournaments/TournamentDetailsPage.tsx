@@ -1,51 +1,53 @@
-import React, { useContext } from "react"
-import { RouteComponentProps, Redirect, Link } from "@reach/router"
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery } from "@apollo/client";
+import { Avatar, Box, Flex, Grid } from "@chakra-ui/core";
+import { Link, Redirect, RouteComponentProps } from "@reach/router";
+import { stringify } from "querystring";
+import React, { useContext } from "react";
+import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
+import { FaLongArrowAltLeft } from "react-icons/fa";
 import {
-  SEARCH_FOR_TOURNAMENT_BY_ID,
-  SearchForTournamentByIdData,
-  SearchForTournamentByIdVars,
-} from "../../graphql/queries/searchForTournamentById"
-import Error from "../common/Error"
-import Loading from "../common/Loading"
-import TournamentCard from "./TournamentCard"
-import { Box, Flex, Avatar, Icon, Grid } from "@chakra-ui/core"
-import Button from "../elements/Button"
-import { Helmet } from "react-helmet-async"
-import { FaLongArrowAltLeft } from "react-icons/fa"
-import MyThemeContext from "../../themeContext"
-import { mapIcons } from "../../assets/imageImports"
-import WeaponImage from "../common/WeaponImage"
-import AbilityIcon from "../builds/AbilityIcon"
-import { Ability, Weapon } from "../../types"
-import {
-  useQueryParams,
-  StringParam,
   ArrayParam,
   encodeQueryParams,
-} from "use-query-params"
-import { stringify } from "querystring"
-import { removeFalsy } from "../../utils/helperFunctions"
-import { useTranslation } from "react-i18next"
+  StringParam,
+  useQueryParams,
+} from "use-query-params";
+import { modeIconMap } from "../../assets/icons";
+import { mapIcons } from "../../assets/imageImports";
+import {
+  SearchForTournamentByIdData,
+  SearchForTournamentByIdVars,
+  SEARCH_FOR_TOURNAMENT_BY_ID,
+} from "../../graphql/queries/searchForTournamentById";
+import MyThemeContext from "../../themeContext";
+import { Ability, Weapon } from "../../types";
+import { removeFalsy } from "../../utils/helperFunctions";
+import AbilityIcon from "../builds/AbilityIcon";
+import Error from "../common/Error";
+import Loading from "../common/Loading";
+import Section from "../common/Section";
+import WeaponImage from "../common/WeaponImage";
+import Button from "../elements/Button";
+import TournamentCard from "./TournamentCard";
 
 interface TournamentDetailsPageProps {
-  id?: string
+  id?: string;
 }
 
 interface Round {
-  stage: string
-  mode: "SZ" | "TC" | "RM" | "CB" | "TW"
-  round_name: string
-  round_number: number
-  game_number: number
-  winning_team_name: string
-  winning_team_players: string[]
-  winning_team_weapons: Weapon[]
-  winning_team_main_abilities: Ability[][]
-  losing_team_name: string
-  losing_team_players: string[]
-  losing_team_weapons: Weapon[]
-  losing_team_main_abilities: Ability[][]
+  stage: string;
+  mode: "SZ" | "TC" | "RM" | "CB" | "TW";
+  round_name: string;
+  round_number: number;
+  game_number: number;
+  winning_team_name: string;
+  winning_team_players: string[];
+  winning_team_weapons: Weapon[];
+  winning_team_main_abilities: Ability[][];
+  losing_team_name: string;
+  losing_team_players: string[];
+  losing_team_weapons: Weapon[];
+  losing_team_main_abilities: Ability[][];
 }
 
 const filterMap = {
@@ -54,57 +56,58 @@ const filterMap = {
   comp: ArrayParam,
   mode: StringParam,
   stage: StringParam,
-}
+};
 
 const TournamentDetailsPage: React.FC<
   RouteComponentProps & TournamentDetailsPageProps
 > = ({ id }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const {
     themeColorWithShade,
     grayWithShade,
     textColor,
     darkerBgColor,
-  } = useContext(MyThemeContext)
+    bgColor,
+  } = useContext(MyThemeContext);
   const { data, error, loading } = useQuery<
     SearchForTournamentByIdData,
     SearchForTournamentByIdVars
   >(SEARCH_FOR_TOURNAMENT_BY_ID, {
     variables: { id: id! },
     skip: !id,
-  })
-  const [filter] = useQueryParams(filterMap)
+  });
+  const [filter] = useQueryParams(filterMap);
 
-  if (!id) return <Redirect to="/404" />
-  if (error) return <Error errorMessage={error.message} />
-  if (loading) return <Loading />
-  if (!data || !data.searchForTournamentById) return <Redirect to="/404" />
+  if (!id) return <Redirect to="/404" />;
+  if (error) return <Error errorMessage={error.message} />;
+  if (loading) return <Loading />;
+  if (!data || !data.searchForTournamentById) return <Redirect to="/404" />;
 
-  const tournament = data.searchForTournamentById
+  const tournament = data.searchForTournamentById;
 
   const abilityMap = (ability: Ability, index: number) => {
-    const gridArea = `3 / ${1 + index} / 4 / ${2 + index}`
+    const gridArea = `3 / ${1 + index} / 4 / ${2 + index}`;
     return (
       <Box gridArea={gridArea} key={index}>
         <AbilityIcon ability={ability ? ability : "UNKNOWN"} size="TINY" />
       </Box>
-    )
-  }
+    );
+  };
 
   const matchesFilter = (round: Round) => {
-    const { team_name, player_name, comp, mode, stage } = filter
+    const { team_name, player_name, comp, mode, stage } = filter;
     if (team_name) {
-      const teamNameUpper = team_name.toUpperCase()
+      const teamNameUpper = team_name.toUpperCase();
       if (
         round.winning_team_name.toUpperCase() === teamNameUpper ||
         round.losing_team_name.toUpperCase() === teamNameUpper
       ) {
-        return true
+        return true;
       }
     }
 
     if (player_name) {
-      const playerNameUpper = player_name.toUpperCase()
+      const playerNameUpper = player_name.toUpperCase();
       if (
         round.winning_team_players.some(
           (player) => player.toUpperCase() === playerNameUpper
@@ -113,7 +116,7 @@ const TournamentDetailsPage: React.FC<
           (player) => player.toUpperCase() === playerNameUpper
         )
       ) {
-        return true
+        return true;
       }
     }
 
@@ -126,21 +129,21 @@ const TournamentDetailsPage: React.FC<
           (weapon) => round.losing_team_weapons.indexOf(weapon as any) !== -1
         )
       ) {
-        return true
+        return true;
       }
     }
 
     if (mode && stage) {
       if (mode === round.mode && stage === round.stage) {
-        return true
+        return true;
       }
     }
 
-    return false
-  }
+    return false;
+  };
 
-  const encoded = encodeQueryParams(filterMap, removeFalsy(filter))
-  const linkSuffix = `?${stringify(encoded)}`
+  const encoded = encodeQueryParams(filterMap, removeFalsy(filter));
+  const linkSuffix = `?${stringify(encoded)}`;
 
   return (
     <>
@@ -152,7 +155,7 @@ const TournamentDetailsPage: React.FC<
           linkSuffix.length === 1 ? "/tournaments" : `/tournaments${linkSuffix}`
         }
       >
-        <Button outlined icon={FaLongArrowAltLeft}>
+        <Button outlined icon={<FaLongArrowAltLeft />}>
           {t("tournaments;All tournaments")}
         </Button>
       </Link>
@@ -162,6 +165,7 @@ const TournamentDetailsPage: React.FC<
         </Box>
       </Flex>
       {tournament.rounds.map((round) => {
+        const ModeIcon = modeIconMap[round.mode];
         return (
           <Box key={`${round.round_name}_${round.game_number}`} mt="1em">
             {round.game_number === 1 && (
@@ -177,13 +181,11 @@ const TournamentDetailsPage: React.FC<
                 {round.round_name}
               </Box>
             )}
-            <Box
-              bg={matchesFilter(round) ? darkerBgColor : undefined}
+            <Section
+              bg={matchesFilter(round) ? bgColor : darkerBgColor}
               display="flex"
               rounded="lg"
               overflow="hidden"
-              boxShadow="0px 0px 16px 6px rgba(0,0,0,0.1)"
-              p="25px"
               flexDirection="column"
               justifyContent="space-between"
               alignItems="center"
@@ -198,11 +200,7 @@ const TournamentDetailsPage: React.FC<
                 <Box color={themeColorWithShade}>{round.game_number}.</Box>
                 <Avatar src={mapIcons[round.stage]} size="lg" my="5px" />
                 {t("game;" + round.stage)}
-                <Icon
-                  name={round.mode.toLowerCase() as any}
-                  color={themeColorWithShade}
-                  size="2em"
-                />
+                <ModeIcon color={themeColorWithShade} w="2em" h="2em" />
               </Flex>
               <Flex mt="2em" flexDirection="column" alignItems="center">
                 <Flex
@@ -292,12 +290,12 @@ const TournamentDetailsPage: React.FC<
                   </Flex>
                 </Flex>
               </Flex>
-            </Box>
+            </Section>
           </Box>
-        )
+        );
       })}
     </>
-  )
-}
+  );
+};
 
-export default TournamentDetailsPage
+export default TournamentDetailsPage;

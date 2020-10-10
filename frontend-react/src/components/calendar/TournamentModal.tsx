@@ -1,4 +1,4 @@
-import { useMutation } from "@apollo/react-hooks"
+import { useMutation } from "@apollo/client";
 import {
   Box,
   Flex,
@@ -7,40 +7,42 @@ import {
   FormHelperText,
   Image,
   useToast,
-} from "@chakra-ui/core"
-import React, { useState } from "react"
+} from "@chakra-ui/core";
+import React, { useState } from "react";
 import {
   DeleteCompetitiveFeedEventVars,
   DELETE_COMPETITIVE_FEED_EVENT,
-} from "../../graphql/mutations/deleteCompetitiveFeedEvent"
+} from "../../graphql/mutations/deleteCompetitiveFeedEvent";
 import {
   UpdateCompetitiveFeedEventVars,
   UPDATE_COMPETITIVE_FEED_EVENT,
-} from "../../graphql/mutations/updateCompetitiveFeedEvent"
+} from "../../graphql/mutations/updateCompetitiveFeedEvent";
 import {
   CompetitiveFeedEvent,
   UPCOMING_EVENTS,
-} from "../../graphql/queries/upcomingEvents"
-import Button from "../elements/Button"
-import DatePicker from "../elements/DatePicker"
-import Input from "../elements/Input"
-import Label from "../elements/Label"
-import Modal from "../elements/Modal"
-import MarkdownInput from "../user/MarkdownInput"
+} from "../../graphql/queries/upcomingEvents";
+import Button from "../elements/Button";
+import DatePicker from "../elements/DatePicker";
+import Input from "../elements/Input";
+import Label from "../elements/Label";
+import Modal from "../elements/Modal";
+import MarkdownInput from "../user/MarkdownInput";
 
 interface TournamentModalProps {
-  closeModal: () => void
-  competitiveFeedEvent: CompetitiveFeedEvent
+  closeModal: () => void;
+  competitiveFeedEvent: CompetitiveFeedEvent;
 }
 
 const TournamentModal: React.FC<TournamentModalProps> = ({
   closeModal,
   competitiveFeedEvent,
 }) => {
-  const [event, setEvent] = useState<CompetitiveFeedEvent>(competitiveFeedEvent)
-  const [showErrors, setShowErrors] = useState(false)
-  const [deleting, setDeleting] = useState(false)
-  const toast = useToast()
+  const [event, setEvent] = useState<CompetitiveFeedEvent>(
+    competitiveFeedEvent
+  );
+  const [showErrors, setShowErrors] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const toast = useToast();
 
   const [updateCompetitiveFeedEvent, { loading }] = useMutation<
     boolean,
@@ -59,13 +61,13 @@ const TournamentModal: React.FC<TournamentModalProps> = ({
       } as UpdateCompetitiveFeedEventVars),
     },
     onCompleted: () => {
-      closeModal()
+      closeModal();
       toast({
         description: `Event updated`,
         position: "top-right",
         status: "success",
         duration: 10000,
-      })
+      });
     },
     onError: (error) => {
       toast({
@@ -74,10 +76,10 @@ const TournamentModal: React.FC<TournamentModalProps> = ({
         position: "top-right",
         status: "error",
         duration: 10000,
-      })
+      });
     },
     refetchQueries: [{ query: UPCOMING_EVENTS }],
-  })
+  });
 
   const [deleteCompetitiveFeedEvent, { loading: deleteLoading }] = useMutation<
     boolean,
@@ -85,13 +87,13 @@ const TournamentModal: React.FC<TournamentModalProps> = ({
   >(DELETE_COMPETITIVE_FEED_EVENT, {
     variables: { message_discord_id: event.message_discord_id },
     onCompleted: (data) => {
-      closeModal()
+      closeModal();
       toast({
         description: `Event deleted`,
         position: "top-right",
         status: "success",
         duration: 10000,
-      })
+      });
     },
     onError: (error) => {
       toast({
@@ -100,17 +102,17 @@ const TournamentModal: React.FC<TournamentModalProps> = ({
         position: "top-right",
         status: "error",
         duration: 10000,
-      })
+      });
     },
     refetchQueries: [{ query: UPCOMING_EVENTS }],
-  })
+  });
 
   const handleChange = (newValueObject: Partial<CompetitiveFeedEvent>) => {
-    setEvent({ ...event, ...newValueObject })
-  }
+    setEvent({ ...event, ...newValueObject });
+  };
 
-  const date = new Date(parseInt(event.date))
-  const dateNow = new Date()
+  const date = new Date(parseInt(event.date));
+  const dateNow = new Date();
 
   const handleSubmit = () => {
     if (
@@ -121,12 +123,12 @@ const TournamentModal: React.FC<TournamentModalProps> = ({
       !event.description ||
       event.description.length > 3000
     ) {
-      setShowErrors(true)
-      return
+      setShowErrors(true);
+      return;
     }
 
-    updateCompetitiveFeedEvent()
-  }
+    updateCompetitiveFeedEvent();
+  };
 
   return (
     <Modal title="Editing upcoming event info" closeModal={closeModal}>
@@ -247,7 +249,7 @@ const TournamentModal: React.FC<TournamentModalProps> = ({
         </Button>
       </Flex>
     </Modal>
-  )
-}
+  );
+};
 
-export default TournamentModal
+export default TournamentModal;

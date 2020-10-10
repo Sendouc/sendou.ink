@@ -138,6 +138,6 @@ const weapons = [
   "Undercover Brella",
   "Undercover Sorella Brella",
   "Kensa Undercover Brella",
-]
+];
 
-module.exports = weapons
+module.exports = weapons;

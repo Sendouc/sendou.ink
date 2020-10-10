@@ -1,17 +1,19 @@
-import React from "react"
-import { IconButton as ChakraIconButton } from "@chakra-ui/core"
-import { IconType } from "react-icons/lib/cjs"
-import { useContext } from "react"
-import MyThemeContext from "../../themeContext"
+import React from "react";
+import {
+  IconButton as ChakraIconButton,
+  IconButtonProps as ChakraIconButtonProps,
+} from "@chakra-ui/core";
+import { useContext } from "react";
+import MyThemeContext from "../../themeContext";
 
 interface IconButtonProps {
-  icon: IconType
-  onClick?: () => void
-  colored?: boolean
-  disabled?: boolean
-  loading?: boolean
-  color?: string
-  size?: "sm" | "md" | "lg"
+  icon: ChakraIconButtonProps["icon"];
+  onClick?: () => void;
+  colored?: boolean;
+  disabled?: boolean;
+  loading?: boolean;
+  color?: string;
+  size?: "sm" | "md" | "lg";
 }
 
 const IconButton: React.FC<IconButtonProps> = ({
@@ -23,13 +25,13 @@ const IconButton: React.FC<IconButtonProps> = ({
   color,
   size = "lg",
 }) => {
-  const { themeColorWithShade } = useContext(MyThemeContext)
+  const { themeColorWithShade } = useContext(MyThemeContext);
 
   const getColor = () => {
-    if (color) return color
-    if (colored) return themeColorWithShade
-    return undefined
-  }
+    if (color) return color;
+    if (colored) return themeColorWithShade;
+    return undefined;
+  };
 
   return (
     <ChakraIconButton
@@ -43,7 +45,7 @@ const IconButton: React.FC<IconButtonProps> = ({
       isDisabled={disabled}
       isLoading={loading}
     />
-  )
-}
+  );
+};
 
-export default IconButton
+export default IconButton;

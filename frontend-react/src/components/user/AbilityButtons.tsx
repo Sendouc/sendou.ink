@@ -1,17 +1,17 @@
-import React from "react"
-import { abilitiesGameOrder } from "../../utils/lists"
-import AbilityIcon from "../builds/AbilityIcon"
-import Label from "../elements/Label"
-import { Ability } from "../../types"
-import { Box, Flex } from "@chakra-ui/core"
-import { useTranslation } from "react-i18next"
+import React from "react";
+import { abilitiesGameOrder } from "../../utils/lists";
+import AbilityIcon from "../builds/AbilityIcon";
+import Label from "../elements/Label";
+import { Ability } from "../../types";
+import { Box, Flex } from "@chakra-ui/core";
+import { useTranslation } from "react-i18next";
 
 interface AbilityButtonsProps {
-  onClick: (ability: Ability) => void
+  onClick: (ability: Ability) => void;
 }
 
 const AbilityButtons: React.FC<AbilityButtonsProps> = ({ onClick }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <>
       <Box my="1em" textAlign="center">
@@ -48,7 +48,7 @@ const AbilityButtons: React.FC<AbilityButtonsProps> = ({ onClick }) => {
         ))}
       </Flex>
     </>
-  )
-}
+  );
+};
 
-export default AbilityButtons
+export default AbilityButtons;

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const tournamentSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -22,14 +22,14 @@ const tournamentSchema = new mongoose.Schema({
     validate: [player_limit, "{PATH} must be 4"],
     default: [null, null, null, null],
   },
-})
+});
 
 function popular_weapon_limit(val) {
-  return val.length === 5
+  return val.length === 5;
 }
 
 function player_limit(val) {
-  return val.length === 4
+  return val.length === 4;
 }
 
-module.exports = mongoose.model("Tournament", tournamentSchema)
+module.exports = mongoose.model("Tournament", tournamentSchema);

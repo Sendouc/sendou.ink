@@ -1,45 +1,43 @@
-import React, { useState } from "react"
-import Modal from "../elements/Modal"
-import Label from "../elements/Label"
-import Input from "../elements/Input"
-import { useMutation } from "@apollo/react-hooks"
-import { UPDATE_USER } from "../../graphql/mutations/updateUser"
-import { Weapon } from "../../types"
-import { useToast, Box } from "@chakra-ui/core"
-import Select from "../elements/Select"
-import { countries } from "../../utils/lists"
-import SensInput from "./SensInput"
-import WeaponSelector from "../common/WeaponSelector"
-import Button from "../elements/Button"
-import { useContext } from "react"
-import MyThemeContext from "../../themeContext"
-import { useEffect } from "react"
-import MarkdownInput from "./MarkdownInput"
-import { useTranslation } from "react-i18next"
+import { useMutation } from "@apollo/client";
+import { Box, useToast } from "@chakra-ui/core";
+import React, { useContext, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { UPDATE_USER } from "../../graphql/mutations/updateUser";
+import MyThemeContext from "../../themeContext";
+import { Weapon } from "../../types";
+import { countries } from "../../utils/lists";
+import WeaponSelector from "../common/WeaponSelector";
+import Button from "../elements/Button";
+import Input from "../elements/Input";
+import Label from "../elements/Label";
+import Modal from "../elements/Modal";
+import Select from "../elements/Select";
+import MarkdownInput from "./MarkdownInput";
+import SensInput from "./SensInput";
 
 interface ProfileModalProps {
-  closeModal: () => void
-  existingProfile: UpdateUserVars
+  closeModal: () => void;
+  existingProfile: UpdateUserVars;
 }
 
 interface UpdateUserVars {
-  country?: string
-  motion_sens?: number
-  stick_sens?: number
-  weapons?: Weapon[]
-  custom_url?: string
-  bio?: string
+  country?: string;
+  motion_sens?: number;
+  stick_sens?: number;
+  weapons?: Weapon[];
+  custom_url?: string;
+  bio?: string;
 }
 
 const ProfileModal: React.FC<ProfileModalProps> = ({
   closeModal,
   existingProfile,
 }) => {
-  const { grayWithShade } = useContext(MyThemeContext)
-  const { t } = useTranslation()
-  const [profile, setProfile] = useState<UpdateUserVars>(existingProfile)
-  const [error, setError] = useState<string | null>(null)
-  const toast = useToast()
+  const { grayWithShade } = useContext(MyThemeContext);
+  const { t } = useTranslation();
+  const [profile, setProfile] = useState<UpdateUserVars>(existingProfile);
+  const [error, setError] = useState<string | null>(null);
+  const toast = useToast();
 
   useEffect(() => {
     if (
@@ -47,43 +45,43 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
       !profile.stick_sens &&
       profile.stick_sens !== 0
     ) {
-      setError(t("users;Motion sensitivity entered without stick sensitivity"))
+      setError(t("users;Motion sensitivity entered without stick sensitivity"));
     } else if (profile.custom_url && profile.custom_url.length < 2) {
-      setError(t("users;Custom URL has to be over 2 characters long"))
+      setError(t("users;Custom URL has to be over 2 characters long"));
     } else if (profile.custom_url && profile.custom_url.length > 32) {
-      setError(t("users;Custom URL can be at most 32 characters long"))
+      setError(t("users;Custom URL can be at most 32 characters long"));
     } else if (profile.custom_url && !isNaN(profile.custom_url as any)) {
-      setError(t("users;Custom URL has to contain at least one letter"))
+      setError(t("users;Custom URL has to contain at least one letter"));
     } else if (
       profile.custom_url &&
       !/^[a-z0-9]+$/i.test(profile.custom_url as any)
     ) {
-      setError(t("users;Custom URL can only contain letters and numbers"))
+      setError(t("users;Custom URL can only contain letters and numbers"));
     } else if (profile.weapons && profile.weapons.length > 5) {
-      setError(t("users;Weapon pool's max size is 5"))
+      setError(t("users;Weapon pool's max size is 5"));
     } else if (profile.bio && profile.bio.length > 10000) {
-      setError(t("users;Bio's max length is 10000"))
+      setError(t("users;Bio's max length is 10000"));
     } else {
-      setError(null)
+      setError(null);
     }
-  }, [profile, t])
+  }, [profile, t]);
 
   const handleChange = (newValueObject: UpdateUserVars) => {
-    setProfile({ ...profile, ...newValueObject })
-  }
+    setProfile({ ...profile, ...newValueObject });
+  };
 
   const [updateUser, { loading }] = useMutation<boolean, UpdateUserVars>(
     UPDATE_USER,
     {
       variables: profile,
       onCompleted: () => {
-        closeModal()
+        closeModal();
         toast({
           description: t("users;Profile updated"),
           position: "top-right",
           status: "success",
           duration: 10000,
-        })
+        });
       },
       onError: (error) => {
         toast({
@@ -92,11 +90,11 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
           position: "top-right",
           status: "error",
           duration: 10000,
-        })
+        });
       },
       refetchQueries: ["searchForUser"],
     }
-  )
+  );
 
   return (
     <Modal title={t("users;Editing profile")} closeModal={closeModal}>
@@ -196,7 +194,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
         )}
       </Box>
     </Modal>
-  )
-}
+  );
+};
 
-export default ProfileModal
+export default ProfileModal;
