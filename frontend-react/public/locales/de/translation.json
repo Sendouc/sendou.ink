@@ -1441,7 +1441,7 @@
     "noPlacementsPrompt": "Falls du top 500 in einer <1>abgeschlossenen</1> X-Rang saison erreicht hast, kannst du sie hier darstellen lassen! Stelle sicher, dass dein Twitter-Profil auf Discord best\u00e4tigt ist, sodass es auf deinem sendou.ink Profil angezeigt wird und kontaktiere Sendou#0043 auf Discord mit deinem Spielnamen. Nachdem es ein Mal verbunden ist, werden die Ergebnisse automatisch hinzugef\u00fcgt. Man muss nichts Weiteres tun, au\u00dfer du \u00e4nderst deinen Twitter-Namen."
   },
   "freeagents": {
-    "loginPrompt": "Melde dich an, um deinen eigenen Teamsuch-Post hochzuladen!",
+    "loginPrompt": "Melde dich an, um deinen eigenen Beitrag zur Teamsuche hochzuladen!",
     "pleaseWaitPrompt": "Du musst eine Woche nach dem L\u00f6schen deines alten Posts warten, bis du einen Neuen erstellen kannst.",
     "Hide filters": "Filter einklappen",
     "Show filters": "Filter ausklappen",
