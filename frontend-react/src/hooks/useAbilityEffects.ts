@@ -1,16 +1,19 @@
-import {
-  Build,
-  Ability,
-  Weapon,
-  SubWeapon,
-  SpecialWeapon,
-  AnalyzerBuild,
-} from "../types";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import {
+  Ability,
+
+
+
+  AnalyzerBuild, Build,
+
+
+
+  SpecialWeapon, SubWeapon, Weapon
+} from "../types";
+import abilityJson from "../utils/abilityData.json";
 import { getEffect } from "../utils/getAbilityEffect";
 import weaponJson from "../utils/weaponData.json";
-import abilityJson from "../utils/abilityData.json";
-import { useTranslation } from "react-i18next";
 
 export interface Explanation {
   title: string;
@@ -350,17 +353,23 @@ export default function useAbilityEffects(
     const effect = getEffect(highMidLow, amount);
     const tank = build.weapon.includes("Jr.") ? 1.1 : 1;
 
+    let percentage = parseFloat(
+      (((effect[0] * inkConsumption) / tank) * 100).toFixed(2))
+
+    const morePrecisePercentage = parseFloat(
+      (((effect[0] * inkConsumption) / tank) * 100).toFixed(5))
+
+    if (percentage === 50 && morePrecisePercentage > 50) {
+      percentage = 50.01
+    }
+
     const subWeaponTranslated = t(`game;${subWeapon}`);
     return [
       {
         title: `${subWeaponTranslated} ${t("analyzer;ink consumption")}`,
-        effect: `${parseFloat(
-          (((effect[0] * inkConsumption) / tank) * 100).toFixed(2)
-        )}% ${t("analyzer;of ink tank")}`,
+        effect: `${percentage}% ${t("analyzer;of ink tank")}`,
         effectFromMax: effect[1],
-        effectFromMaxActual: parseFloat(
-          (((effect[0] * inkConsumption) / tank) * 100).toFixed(2)
-        ),
+        effectFromMaxActual: percentage,
         ability: "ISS" as Ability,
         ap: amount,
         getEffect: (ap: number) =>
@@ -368,7 +377,7 @@ export default function useAbilityEffects(
             (
               ((inkConsumption * getEffect(highMidLow, ap)[0]) / tank) *
               100
-            ).toFixed(2)
+            ).toFixed(5)
           ),
       },
     ];
