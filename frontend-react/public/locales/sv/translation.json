@@ -968,7 +968,7 @@
     "CR": "Costa Rica",
     "CW": "Cura\u00e7ao",
     "CY": "Cypern",
-    "CI": "Côte d’Ivoire",
+    "CI": "C\u00f4te d\u2019Ivoire",
     "DK": "Danmark",
     "DJ": "Djibouti",
     "DM": "Dominica",
@@ -1186,8 +1186,9 @@
     "Draft Cup": "Draft Cup",
     "Top 500 Browser": "Topp 500",
     "Top 500": "Topp 500",
-    "Top 500 Tier Lists": "Top 500 Trender",
+    "Top 500 Tier Lists": "Topp 500 Trender",
     "Leaderboards": "Ledartavlor",
+    "X Rank Leaderboards": "X-Rang Ledartavlor",
     "Plus Server": "Plus Server",
     "Profile": "Profil",
     "Log out": "Logga ut",
@@ -1409,7 +1410,7 @@
     "Profile picture": "Profilbild",
     "profilePicExplanation": "Din profilbild kommer fr\u00e5n din Discord-profil. Om du \u00e4ndrar din profilbild p\u00e5 Discord beh\u00f6ver du logga ut och in igen f\u00f6r att den ska uppdateras p\u00e5 sendou.ink.",
     "Custom URL": "Anpassad URL",
-    "Please note Custom URL can't be updated after you have set it.": "Observera att en anpassad URL kan inte \u00e4ndras efter att du har satt den.",
+    "Please note Custom URL can't be updated after you have set it.": "Observera att en anpassad URL kan inte \u00e4ndras i efterhand.",
     "Country": "Land",
     "Stick sensitivity": "Stick-k\u00e4nslighet",
     "Motion sensitivity": "Motion-k\u00e4nslighet",
@@ -1419,7 +1420,7 @@
     "Submit": "Skicka",
     "Cancel": "Avbryt",
     "Edit": "Redigera",
-    "Preview": "F\u00f6rhandsvisning",
+    "Preview": "F\u00f6rhandsgranskning",
     "Add build": "L\u00e4gg till utrustning",
     "tooManyBuilds": "Du har redan 100 utrustningar. Var god ta bort en innan du l\u00e4gger till en ny",
     "New build created": "Ny utrustning skapat",
@@ -1438,7 +1439,7 @@
     "Highest power": "H\u00f6gsta X-Po\u00e4ng",
     "Number of placements": "Antal placeringar",
     "Best placement / power": "B\u00e4sta placering / X-Po\u00e4ng",
-    "noPlacementsPrompt": "Om du har n\u00e5tt topp 500 i en <1>avslutad</1> X-Rang-s\u00e4song kan du ha det uppvisat h\u00e4r! Se till att ditt Twitter-konto \u00e4r verifierat p\u00e5 Discord s\u00e5 att den syns p\u00e5 din sendou.ink-profil och kontakta sedan Sendou#0043 p\u00e5 Discord med ditt anv\u00e4ndarnamn i spelet. N\u00e4r det \u00e4r klart l\u00e4ggs till nya resultat automatiskt och du beh\u00f6ver inte g\u00f6ra n\u00e5got mer s\u00e5 l\u00e4nge du inte \u00e4ndrar ditt namn p\u00e5 Twitter."
+    "noPlacementsPromptNew": "Om du har n\u00e5tt topp 500 i en <1>avslutad</1> X-Rang-s\u00e4song kan du ha det uppvisat h\u00e4r! Kontakta bara Sendou#0043 p\u00e5 Discord med ditt anv\u00e4ndarnamn i spelet. N\u00e4r allt \u00e4r klart l\u00e4ggs nya resultat upp helt automatiskt."
   },
   "freeagents": {
     "loginPrompt": "Logga in f\u00f6r att registrera dig som en fri agent och b\u00f6rja spela med andra!",
@@ -1537,10 +1538,10 @@
     "trendsExplanation": "H\u00e4r hittar du de mest anv\u00e4nda vapen i topp 500 X-Rang f\u00f6rdelade i niv\u00e5er. T.ex. f\u00f6r att ett vapen ska vara i niv\u00e5 X, beh\u00f6ver den \u00e5tminstone 30 placeringar i det spell\u00e4get den m\u00e5naden."
   },
   "xleaderboards": {
-    "PEAK_XP": "X-Po\u00e4ng - alla vapen",
+    "PEAK_XP": "X-Po\u00e4ng (alla vapen)",
     "UNIQUE_WEAPONS_COUNT": "Topp 500-placeringar med olika vapen",
     "FOUR_MODE_PEAK_AVERAGE": "Genomsnitt av h\u00f6gsta X-Po\u00e4ng i 4 spell\u00e4gen",
-    "PLACEMENTS_COUNT": "Top 500-placeringar",
+    "PLACEMENTS_COUNT": "Topp 500-placeringar",
     "Score": "Po\u00e4ng"
   },
   "footer": {
