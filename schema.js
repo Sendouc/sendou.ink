@@ -29,6 +29,7 @@ const { General, generalResolvers } = require("./graphql-schemas/general");
   SalmonRunRecord,
   salmonRunRecordResolvers,
 } = require("./graphql-schemas/salmonRunRecord")*/
+const { Maplist, maplistResolvers} = require("./graphql-schemas/maps")
 
 const Query = gql`
   type Query {
@@ -59,6 +60,7 @@ const schema = makeExecutableSchema({
     FAPost,
     Plus,
     General,
+    Maplist,
     //SalmonRunRecord,
   ],
   resolvers: merge(
@@ -73,7 +75,8 @@ const schema = makeExecutableSchema({
     competitiveFeedEventResolvers,
     faPostResolvers,
     plusResolvers,
-    generalResolvers
+    generalResolvers,
+    maplistResolvers
     //salmonRunRecordResolvers
   ),
 });
