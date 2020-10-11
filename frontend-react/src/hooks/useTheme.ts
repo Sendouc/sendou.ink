@@ -12,14 +12,14 @@ export function useTheme(): Parameters<typeof extendTheme>[0] {
   );
   return {
     components: {
-      Input: {
+      /*Input: {
         baseStyle: {
           field: {
             bgColor: "black",
             width: "50%"
           }
         }
-      },
+      },*/
       Button: {
         defaultProps: {
           colorScheme: themeColor

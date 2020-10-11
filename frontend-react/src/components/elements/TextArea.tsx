@@ -1,7 +1,7 @@
+import { Box, Textarea } from "@chakra-ui/core";
 import React, { useContext } from "react";
-import { Textarea, Box } from "@chakra-ui/core";
-import Label from "./Label";
 import MyThemeContext from "../../themeContext";
+import Label from "./Label";
 
 interface TextAreaProps {
   value?: string;
@@ -21,7 +21,7 @@ const TextArea: React.FC<TextAreaProps> = ({
   required,
   height,
 }) => {
-  const { themeColorHex, grayWithShade, darkerBgColor } = useContext(
+  const { themeColorWithShade, grayWithShade, darkerBgColor } = useContext(
     MyThemeContext
   );
 
@@ -31,12 +31,12 @@ const TextArea: React.FC<TextAreaProps> = ({
       <Textarea
         value={value ?? ""}
         onChange={(e) => setValue(e.target.value)}
-        focusBorderColor={themeColorHex}
+        _focus={{ border: "1px solid", borderColor: themeColorWithShade }}
         size="md"
         height={height}
         _hover={{}}
         background={darkerBgColor}
-        borderColor="#CCCCCC"
+        borderColor={darkerBgColor}
       />
       {limit && (
         <Box
