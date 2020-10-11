@@ -44,7 +44,7 @@ const selectOptions = [
     },
   ],
   ...weapons
-    .filter((wpn) => !wpn.includes("Hero") && !wpn.includes("Octo"))
+    .filter((wpn) => !wpn.includes("Hero") && wpn !== "Octo Shot Replica")
     .map((wpn) => ({ label: `X Power (${wpn})`, value: wpn })),
 ] as const;
 
