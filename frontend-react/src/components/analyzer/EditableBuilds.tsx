@@ -1,4 +1,4 @@
-import { Box, Flex, IconButton } from "@chakra-ui/core";
+import { Box, Button, Flex, IconButton } from "@chakra-ui/core";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { FiCopy, FiEdit, FiSquare } from "react-icons/fi";
@@ -8,15 +8,14 @@ import {
   ClothingOnlyAbility,
   HeadOnlyAbility,
   ShoesOnlyAbility,
-  StackableAbility,
+  StackableAbility
 } from "../../types";
 import {
   clothingOnlyAbilities,
   headOnlyAbilities,
-  shoesOnlyAbilities,
+  shoesOnlyAbilities
 } from "../../utils/lists";
 import ViewSlots from "../builds/ViewSlots";
-import Button from "../elements/Button";
 import AbilityButtons from "../user/AbilityButtons";
 import HeadOnlyToggle from "./HeadOnlyToggle";
 import LdeSlider from "./LdeSlider";
@@ -162,7 +161,7 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
   return (
     <>
       <Button
-        icon={showOther ? <FiSquare /> : <FiCopy />}
+        leftIcon={showOther ? <FiSquare /> : <FiCopy />}
         onClick={() => {
           if (showOther && otherFocused) {
             changeFocus();

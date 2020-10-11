@@ -1,10 +1,9 @@
+import { Box, Button } from "@chakra-ui/core";
 import React, { useState } from "react";
-import TextArea from "../elements/TextArea";
-import Button from "../elements/Button";
-import { Box } from "@chakra-ui/core";
-import Markdown from "../elements/Markdown";
-import SubHeader from "../common/SubHeader";
 import { useTranslation } from "react-i18next";
+import SubHeader from "../common/SubHeader";
+import Markdown from "../elements/Markdown";
+import TextArea from "../elements/TextArea";
 
 interface MarkdownInputProps {
   value: string;
@@ -40,7 +39,7 @@ const MarkdownInput: React.FC<MarkdownInputProps> = ({
         />
       )}
       <Box mt="0.5em">
-        <Button outlined onClick={() => setPreview(!preview)}>
+        <Button variant="outline" onClick={() => setPreview(!preview)}>
           {preview ? t("users;Edit") : t("users;Preview")}
         </Button>
       </Box>

@@ -1,5 +1,5 @@
 import { useMutation } from "@apollo/client";
-import { Box, Flex, useToast } from "@chakra-ui/core";
+import { Box, Button, Flex, useToast } from "@chakra-ui/core";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ADD_BUILD } from "../../graphql/mutations/addBuild";
@@ -29,7 +29,6 @@ import GearImage from "../builds/GearImage";
 import ViewSlots from "../builds/ViewSlots";
 import WeaponImage from "../common/WeaponImage";
 import WeaponSelector from "../common/WeaponSelector";
-import Button from "../elements/Button";
 import Input from "../elements/Input";
 import Modal from "../elements/Modal";
 import Select from "../elements/Select";
@@ -397,12 +396,12 @@ const BuildFormModal: React.FC<BuildFormModalProps> = ({
         <Button
           disabled={!buildCanBeSubmitted()}
           onClick={buildBeingEdited ? () => updateBuild() : () => addBuild()}
-          loading={addLoading || updateLoading}
+          isLoading={addLoading || updateLoading}
         >
           {t("users;Submit")}
         </Button>
         <Box as="span" ml="0.5em">
-          <Button outlined onClick={() => closeModal()}>
+          <Button variant="outline" onClick={() => closeModal()}>
             {t("users;Cancel")}
           </Button>
         </Box>

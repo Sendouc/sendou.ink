@@ -1,4 +1,4 @@
-import { Box, Flex, Grid, Image } from "@chakra-ui/core";
+import { Box, Button, Flex, Grid, Image } from "@chakra-ui/core";
 import { Link } from "@reach/router";
 import React, { useContext } from "react";
 import { useTranslation } from "react-i18next";
@@ -7,7 +7,6 @@ import trophy from "../../assets/trophy.png";
 import MyThemeContext from "../../themeContext";
 import { months } from "../../utils/lists";
 import Section from "../common/Section";
-import Button from "../elements/Button";
 
 interface DraftTournamentCardsProps {
   tournaments: {
@@ -141,7 +140,7 @@ export const DraftTournamentCard: React.FC<DraftTournamentCardProps> = ({
       {link && (
         <Box mt="2em">
           <Link to={link}>
-            <Button outlined>{t("draft;View matches")}</Button>
+            <Button variant="outline">{t("draft;View matches")}</Button>
           </Link>
         </Box>
       )}

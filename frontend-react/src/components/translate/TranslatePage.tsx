@@ -1,14 +1,13 @@
-import React, { useEffect, useState, useContext } from "react";
+import { Badge, Box, Button, Flex, Progress } from "@chakra-ui/core";
 import { RouteComponentProps } from "@reach/router";
+import React, { useContext, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import PageHeader from "../common/PageHeader";
-import { Box, Flex, Progress, Badge } from "@chakra-ui/core";
-import Select from "../elements/Select";
-import { languages } from "../../utils/lists";
-import MyThemeContext from "../../themeContext";
-import Input from "../elements/Input";
-import Button from "../elements/Button";
 import { FaDownload } from "react-icons/fa";
+import MyThemeContext from "../../themeContext";
+import { languages } from "../../utils/lists";
+import PageHeader from "../common/PageHeader";
+import Input from "../elements/Input";
+import Select from "../elements/Select";
 
 const exportToJson = (
   objectData: Object,
@@ -156,7 +155,7 @@ const TranslatePage: React.FC<RouteComponentProps> = () => {
           </Flex>
           <Box mt="1em">
             <Button
-              icon={<FaDownload />}
+              leftIcon={<FaDownload />}
               onClick={() =>
                 exportToJson(
                   toTranslate,

@@ -1,6 +1,12 @@
-import { useColorMode, useTheme as useChakraTheme } from "@chakra-ui/core";
+import {
+  ChakraProvider,
+  extendTheme,
+  theme as chakraTheme,
+  useColorMode,
+} from "@chakra-ui/core";
 import useLocalStorage from "@rehooks/local-storage";
 import React, { useEffect } from "react";
+import { useTheme } from "../../hooks/useTheme";
 import { MyThemeProvider } from "../../themeContext";
 import { Theme, ThemeColor } from "../../types";
 import "./App.css";
@@ -8,11 +14,12 @@ import Layout from "./Layout";
 import Routes from "./Routes";
 
 const App: React.FC = () => {
-  const chakraTheme = useChakraTheme();
   const { colorMode } = useColorMode();
   const [themeColorFromStorage] = useLocalStorage<ThemeColor>(
     "colorPreference"
   );
+
+  const newTheme = useTheme();
 
   const themeColor = themeColorFromStorage
     ? themeColorFromStorage
@@ -54,11 +61,13 @@ const App: React.FC = () => {
   }, [themeColorFromStorage, themeColor]);
 
   return (
-    <MyThemeProvider value={theme[colorMode]}>
-      <Layout>
-        <Routes />
-      </Layout>
-    </MyThemeProvider>
+    <ChakraProvider theme={extendTheme(newTheme)}>
+      <MyThemeProvider value={theme[colorMode]}>
+        <Layout>
+          <Routes />
+        </Layout>
+      </MyThemeProvider>
+    </ChakraProvider>
   );
 };
 

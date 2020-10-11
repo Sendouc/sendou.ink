@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@apollo/client";
-import { Box, Flex, Progress, useToast } from "@chakra-ui/core";
+import { Box, Button, Flex, Progress, useToast } from "@chakra-ui/core";
 import { Redirect, RouteComponentProps } from "@reach/router";
 import React, { useContext, useEffect, useState } from "react";
 import { AddVotesVars, ADD_VOTES } from "../../graphql/mutations/addVotes";
@@ -8,7 +8,7 @@ import { USER } from "../../graphql/queries/user";
 import {
   UsersForVotingData,
   USERS_FOR_VOTING,
-  VotingSuggested,
+  VotingSuggested
 } from "../../graphql/queries/usersForVoting";
 import MyThemeContext from "../../themeContext";
 import { UserData } from "../../types";
@@ -17,7 +17,6 @@ import Loading from "../common/Loading";
 import PageHeader from "../common/PageHeader";
 import SubHeader from "../common/SubHeader";
 import Alert from "../elements/Alert";
-import Button from "../elements/Button";
 import PersonForVoting from "./PersonForVoting";
 
 interface SuggestedArrays {
@@ -253,7 +252,7 @@ const VotingPage: React.FC<RouteComponentProps> = () => {
           <Button
             disabled={missingVotes > 0}
             onClick={handleSubmit}
-            loading={addVotesLoading}
+            isLoading={addVotesLoading}
           >
             Submit
           </Button>

@@ -1,4 +1,4 @@
-import { Badge, Box, Flex, FormLabel, Switch, Wrap } from "@chakra-ui/core";
+import { Badge, Box, Button, Flex, FormLabel, Switch, Wrap } from "@chakra-ui/core";
 import { RouteComponentProps, useLocation } from "@reach/router";
 import React, { useContext, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -9,7 +9,6 @@ import MyThemeContext from "../../themeContext";
 import { Ability, AnalyzerBuild, Weapon } from "../../types";
 import PageHeader from "../common/PageHeader";
 import WeaponSelector from "../common/WeaponSelector";
-import Button from "../elements/Button";
 import BuildStats from "./BuildStats";
 import EditableBuilds from "./EditableBuilds";
 

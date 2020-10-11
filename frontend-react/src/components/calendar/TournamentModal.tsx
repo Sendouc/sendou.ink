@@ -1,27 +1,25 @@
 import { useMutation } from "@apollo/client";
 import {
-  Box,
-  Flex,
+  Box, Button, Flex,
   FormControl,
   FormErrorMessage,
   FormHelperText,
   Image,
-  useToast,
+  useToast
 } from "@chakra-ui/core";
 import React, { useState } from "react";
 import {
   DeleteCompetitiveFeedEventVars,
-  DELETE_COMPETITIVE_FEED_EVENT,
+  DELETE_COMPETITIVE_FEED_EVENT
 } from "../../graphql/mutations/deleteCompetitiveFeedEvent";
 import {
   UpdateCompetitiveFeedEventVars,
-  UPDATE_COMPETITIVE_FEED_EVENT,
+  UPDATE_COMPETITIVE_FEED_EVENT
 } from "../../graphql/mutations/updateCompetitiveFeedEvent";
 import {
   CompetitiveFeedEvent,
-  UPCOMING_EVENTS,
+  UPCOMING_EVENTS
 } from "../../graphql/queries/upcomingEvents";
-import Button from "../elements/Button";
 import DatePicker from "../elements/DatePicker";
 import Input from "../elements/Input";
 import Label from "../elements/Label";
@@ -147,12 +145,12 @@ const TournamentModal: React.FC<TournamentModalProps> = ({
             <Box mr="1em">
               <Button
                 onClick={() => deleteCompetitiveFeedEvent()}
-                loading={deleteLoading}
+                isLoading={deleteLoading}
               >
                 Confirm deletion
               </Button>
             </Box>
-            <Button outlined onClick={() => setDeleting(false)}>
+            <Button variant="outline" onClick={() => setDeleting(false)}>
               Cancel
             </Button>
           </Flex>
@@ -239,12 +237,12 @@ const TournamentModal: React.FC<TournamentModalProps> = ({
         <Box mr="1em">
           <Button
             onClick={() => handleSubmit()}
-            loading={loading || deleteLoading}
+            isLoading={loading || deleteLoading}
           >
             Submit
           </Button>
         </Box>
-        <Button outlined onClick={() => closeModal()}>
+        <Button variant="outline" onClick={() => closeModal()}>
           Cancel
         </Button>
       </Flex>

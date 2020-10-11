@@ -1,12 +1,12 @@
 import { useQuery } from "@apollo/client";
-import { Badge, Box, Divider, Flex, Grid } from "@chakra-ui/core";
+import { Badge, Box, Button, Divider, Flex, Grid } from "@chakra-ui/core";
 import { Link } from "@reach/router";
 import React, { useContext, useState } from "react";
 import { PlusInfoData, PLUS_INFO } from "../../graphql/queries/plusInfo";
 import {
-  Suggestion,
-  SUGGESTIONS,
-  SuggestionsData,
+    Suggestion,
+    SUGGESTIONS,
+    SuggestionsData
 } from "../../graphql/queries/suggestions";
 import { USER } from "../../graphql/queries/user";
 import { VOUCHES } from "../../graphql/queries/vouches";
@@ -17,7 +17,6 @@ import Loading from "../common/Loading";
 import SubHeader from "../common/SubHeader";
 import UserAvatar from "../common/UserAvatar";
 import Alert from "../elements/Alert";
-import Button from "../elements/Button";
 import SuggestionVouchModal from "./SuggestionVouchModal";
 
 interface VouchUser {

@@ -1,15 +1,14 @@
 import { useQuery } from "@apollo/client";
 import {
-  Box,
-  Flex,
-  Grid,
-  IconButton,
-  Menu,
-  MenuButton,
-  MenuGroup,
-  MenuItem,
-  MenuList,
-  useColorMode,
+    Box, Button, Flex,
+    Grid,
+    IconButton,
+    Menu,
+    MenuButton,
+    MenuGroup,
+    MenuItem,
+    MenuList,
+    useColorMode
 } from "@chakra-ui/core";
 import { Link } from "@reach/router";
 import React, { Suspense, useContext } from "react";
@@ -20,7 +19,6 @@ import { USER } from "../../graphql/queries/user";
 import MyThemeContext from "../../themeContext";
 import { UserData } from "../../types";
 import UserAvatar from "../common/UserAvatar";
-import Button from "../elements/Button";
 import ColorSelector from "./ColorSelector";
 import { LanguageSelector } from "./LanguageSelector";
 

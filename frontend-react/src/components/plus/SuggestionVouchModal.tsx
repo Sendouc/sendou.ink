@@ -1,7 +1,6 @@
 import { useMutation } from "@apollo/client";
 import {
-  Box,
-  Flex,
+  Box, Button, Flex,
   FormControl,
   FormErrorMessage,
   FormHelperText,
@@ -9,7 +8,7 @@ import {
   Radio,
   RadioGroup,
   Stack,
-  useToast,
+  useToast
 } from "@chakra-ui/core";
 import React, { useContext, useState } from "react";
 import { ADD_SUGGESTION } from "../../graphql/mutations/addSuggestion";
@@ -19,7 +18,6 @@ import { USER } from "../../graphql/queries/user";
 import { VOUCHES } from "../../graphql/queries/vouches";
 import MyThemeContext from "../../themeContext";
 import UserSelector from "../common/UserSelector";
-import Button from "../elements/Button";
 import Modal from "../elements/Modal";
 import TextArea from "../elements/TextArea";
 
@@ -251,12 +249,12 @@ const SuggestionVouchModal: React.FC<SuggestionVouchModalProps> = ({
         <Box mr="1em">
           <Button
             onClick={() => handleSubmit()}
-            loading={loading || vouchLoading}
+            isLoading={loading || vouchLoading}
           >
             Submit
           </Button>
         </Box>
-        <Button outlined onClick={() => closeModal()}>
+        <Button variant="outline" onClick={() => closeModal()}>
           Cancel
         </Button>
       </Flex>

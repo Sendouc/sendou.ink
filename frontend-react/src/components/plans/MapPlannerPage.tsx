@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/core";
+import { Box, Button, Flex } from "@chakra-ui/core";
 import { RouteComponentProps } from "@reach/router";
 import { SketchField, Tools } from "@sendou/react-sketch";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
@@ -8,14 +8,13 @@ import {
   FaBomb,
   FaFileDownload,
   FaFileImage,
-  FaFileUpload,
+  FaFileUpload
 } from "react-icons/fa";
 import useBreakPoints from "../../hooks/useBreakPoints";
 import { Stage, Weapon } from "../../types";
 import english_internal from "../../utils/english_internal.json";
 import Error from "../common/Error";
 import PageHeader from "../common/PageHeader";
-import Button from "../elements/Button";
 import DraggableToolsSelector from "./DraggableToolsSelector";
 import DraggableWeaponSelector from "./DraggableWeaponSelector";
 import MapSelect from "./MapSelect";
@@ -304,8 +303,8 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
             sketch.clear();
             setBg({ ...bg });
           }}
-          icon={<FaBomb />}
-          outlined
+          leftIcon={<FaBomb />}
+          variant="outline"
           color="red"
         >
           {t("plans;Clear drawings")}
@@ -313,8 +312,8 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
         <Box w="300px" />
         <Button
           onClick={() => download(sketch.toDataURL(), "png")}
-          icon={<FaFileImage />}
-          outlined
+          leftIcon={<FaFileImage />}
+          variant="outline"
         >
           {t("plans;Download as .png")}
         </Button>
@@ -326,12 +325,12 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
               "json"
             )
           }
-          icon={<FaFileDownload />}
-          outlined
+          leftIcon={<FaFileDownload />}
+          variant="outline"
         >
           {t("plans;Download as .json")}
         </Button>
-        <Button onClick={() => handleUpload()} icon={<FaFileUpload />} outlined>
+        <Button onClick={() => handleUpload()} leftIcon={<FaFileUpload />} variant="outline">
           {t("plans;Load from .json")}
         </Button>
       </Flex>

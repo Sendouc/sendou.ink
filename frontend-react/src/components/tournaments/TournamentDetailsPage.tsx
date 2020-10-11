@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Avatar, Box, Flex, Grid } from "@chakra-ui/core";
+import { Avatar, Box, Button, Flex, Grid } from "@chakra-ui/core";
 import { Link, Redirect, RouteComponentProps } from "@reach/router";
 import { stringify } from "querystring";
 import React, { useContext } from "react";
@@ -10,14 +10,14 @@ import {
   ArrayParam,
   encodeQueryParams,
   StringParam,
-  useQueryParams,
+  useQueryParams
 } from "use-query-params";
 import { modeIconMap } from "../../assets/icons";
 import { mapIcons } from "../../assets/imageImports";
 import {
   SearchForTournamentByIdData,
   SearchForTournamentByIdVars,
-  SEARCH_FOR_TOURNAMENT_BY_ID,
+  SEARCH_FOR_TOURNAMENT_BY_ID
 } from "../../graphql/queries/searchForTournamentById";
 import MyThemeContext from "../../themeContext";
 import { Ability, Weapon } from "../../types";
@@ -27,7 +27,6 @@ import Error from "../common/Error";
 import Loading from "../common/Loading";
 import Section from "../common/Section";
 import WeaponImage from "../common/WeaponImage";
-import Button from "../elements/Button";
 import TournamentCard from "./TournamentCard";
 
 interface TournamentDetailsPageProps {
@@ -155,7 +154,7 @@ const TournamentDetailsPage: React.FC<
           linkSuffix.length === 1 ? "/tournaments" : `/tournaments${linkSuffix}`
         }
       >
-        <Button outlined icon={<FaLongArrowAltLeft />}>
+        <Button variant="outline" leftIcon={<FaLongArrowAltLeft />}>
           {t("tournaments;All tournaments")}
         </Button>
       </Link>

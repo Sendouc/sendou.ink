@@ -1,14 +1,13 @@
-import React from "react";
+import { Box, Button, Flex, Heading, Image } from "@chakra-ui/core";
 import { RouteComponentProps } from "@reach/router";
-import { Image, Heading, Flex, Box } from "@chakra-ui/core";
+import React, { useContext } from "react";
+import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
 import { posterGirl } from "../../assets/imageImports";
-import { useContext } from "react";
 import MyThemeContext from "../../themeContext";
 import "./HomePage.css";
-import { Helmet } from "react-helmet-async";
 import Stats from "./Stats";
 import WeeksTournaments from "./WeeksTournaments";
-import { useTranslation } from "react-i18next";
 
 const HomePage: React.FC<RouteComponentProps> = () => {
   const { colorMode, grayWithShade } = useContext(MyThemeContext);
@@ -18,6 +17,7 @@ const HomePage: React.FC<RouteComponentProps> = () => {
       <Helmet>
         <title>sendou.ink | {t("home;Competitive Splatoon Hub")}</title>
       </Helmet>
+      <Button>asd</Button>
       <Flex flexDirection="column" alignItems="center" mb="1.5em">
         <Image className="rgb" src={posterGirl[colorMode]} w="400px" h="auto" />
         <Heading

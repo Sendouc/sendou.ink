@@ -1,5 +1,6 @@
-import { Box, Flex, Heading } from "@chakra-ui/core";
+import { Box, Button, Flex, Heading } from "@chakra-ui/core";
 import React, { useContext, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   FaEdit,
   FaGamepad,
@@ -12,9 +13,7 @@ import { User } from "../../types";
 import Flag from "../common/Flag";
 import UserAvatar from "../common/UserAvatar";
 import WeaponImage from "../common/WeaponImage";
-import Button from "../elements/Button";
 import ProfileModal from "./ProfileModal";
-import { useTranslation } from "react-i18next";
 
 interface AvatarWithInfoProps {
   user: User;
@@ -131,7 +130,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user, canEdit }) => {
           </Flex>
         </Flex>
         {canEdit && (
-          <Button icon={<FaEdit />} onClick={() => setShowModal(true)}>
+          <Button leftIcon={<FaEdit />} onClick={() => setShowModal(true)}>
             {t("users;Edit profile")}
           </Button>
         )}

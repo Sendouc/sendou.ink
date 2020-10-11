@@ -1,5 +1,5 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
-import { ChakraProvider, extendTheme } from "@chakra-ui/core";
+import { ChakraProvider } from "@chakra-ui/core";
 import { createHistory, LocationProvider } from "@reach/router";
 import React from "react";
 import ReactDOM from "react-dom";
@@ -26,9 +26,7 @@ ReactDOM.render(
       <QueryParamProvider reachHistory={history}>
         <HelmetProvider>
           <ApolloProvider client={client}>
-            <ChakraProvider
-              theme={extendTheme({ config: { useSystemColorMode: true } })}
-            >
+            <ChakraProvider>
               <App />
             </ChakraProvider>
           </ApolloProvider>

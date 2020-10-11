@@ -1,19 +1,18 @@
 import { useQuery } from "@apollo/client";
-import { Box, Flex, Heading } from "@chakra-ui/core";
+import { Box, Button, Flex, Heading } from "@chakra-ui/core";
 import { Link } from "@reach/router";
 import React, { useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { FiClock, FiInfo } from "react-icons/fi";
 import {
   UpcomingEventsData,
-  UPCOMING_EVENTS,
+  UPCOMING_EVENTS
 } from "../../graphql/queries/upcomingEvents";
 import MyThemeContext from "../../themeContext";
 import { getWeek } from "../../utils/helperFunctions";
 import Error from "../common/Error";
 import Loading from "../common/Loading";
 import SubHeader from "../common/SubHeader";
-import Button from "../elements/Button";
 
 const WeeksTournaments: React.FC = () => {
   const { themeColorWithShade, grayWithShade } = useContext(MyThemeContext);
@@ -58,7 +57,7 @@ const WeeksTournaments: React.FC = () => {
         ))}
         <Box mt="1em">
           <Link to="/calendar">
-            <Button outlined icon={<FiInfo />}>
+            <Button variant="outline" leftIcon={<FiInfo />}>
               {t("home;View more info")}
             </Button>
           </Link>

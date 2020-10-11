@@ -1,11 +1,10 @@
-import { Box } from "@chakra-ui/core";
+import { Box, Button } from "@chakra-ui/core";
 import useLocalStorage from "@rehooks/local-storage";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Ability, Build, ClothingGear, HeadGear, ShoesGear } from "../../types";
 import BuildCard from "../builds/BuildCard";
 import Alert from "../elements/Alert";
-import Button from "../elements/Button";
 import Input from "../elements/Input";
 import BuildFormModal from "./BuildFormModal";
 

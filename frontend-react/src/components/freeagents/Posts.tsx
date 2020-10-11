@@ -1,11 +1,10 @@
+import { Box, Button, Grid, Heading } from "@chakra-ui/core";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import InfiniteScroll from "react-infinite-scroller";
 import { FreeAgentPost } from "../../types";
-import { Grid, Box, Heading } from "@chakra-ui/core";
 import Alert from "../elements/Alert";
 import FreeAgentCard from "./FreeAgentCard";
-import InfiniteScroll from "react-infinite-scroller";
-import Button from "../elements/Button";
-import { useTranslation } from "react-i18next";
 
 interface PostsAccordionProps {
   posts: FreeAgentPost[];
@@ -54,7 +53,7 @@ const Posts: React.FC<PostsAccordionProps> = ({
           {t("freeagents;No more free agents to show")}
         </Heading>
         <Box mt="1em">
-          <Button outlined onClick={() => window.scrollTo(0, 0)}>
+          <Button variant="outline" onClick={() => window.scrollTo(0, 0)}>
             {t("freeagents;Return to the top")}
           </Button>
         </Box>

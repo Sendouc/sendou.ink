@@ -1,10 +1,10 @@
 import { useQuery } from "@apollo/client";
-import { Box, Flex, useToast } from "@chakra-ui/core";
+import { Box, Button, Flex, useToast } from "@chakra-ui/core";
 import { Redirect, RouteComponentProps } from "@reach/router";
 import React, { useState } from "react";
 import {
   MutationUpdatePlayerIdArgs,
-  useUpdatePlayerIdMutation,
+  useUpdatePlayerIdMutation
 } from "../../generated/graphql";
 import { USER } from "../../graphql/queries/user";
 import { UserData } from "../../types";
@@ -12,7 +12,6 @@ import Error from "../common/Error";
 import Loading from "../common/Loading";
 import PageHeader from "../common/PageHeader";
 import SubHeader from "../common/SubHeader";
-import Button from "../elements/Button";
 import Input from "../elements/Input";
 import VotingManager from "./VotingManager";
 

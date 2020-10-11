@@ -1,5 +1,5 @@
 import { useMutation } from "@apollo/client";
-import { Box, useToast } from "@chakra-ui/core";
+import { Box, Button, useToast } from "@chakra-ui/core";
 import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { UPDATE_USER } from "../../graphql/mutations/updateUser";
@@ -7,7 +7,6 @@ import MyThemeContext from "../../themeContext";
 import { Weapon } from "../../types";
 import { countries } from "../../utils/lists";
 import WeaponSelector from "../common/WeaponSelector";
-import Button from "../elements/Button";
 import Input from "../elements/Input";
 import Label from "../elements/Label";
 import Modal from "../elements/Modal";
@@ -177,12 +176,12 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
           <Button
             onClick={() => updateUser()}
             disabled={!!error}
-            loading={loading}
+            isLoading={loading}
           >
             {t("users;Submit")}
           </Button>
           <Box as="span" ml="0.5em">
-            <Button outlined onClick={() => closeModal()}>
+            <Button variant="outline" onClick={() => closeModal()}>
               {t("users;Cancel")}
             </Button>
           </Box>

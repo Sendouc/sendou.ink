@@ -1,12 +1,12 @@
+import { Button } from "@chakra-ui/core";
+import { Link } from "@reach/router";
 import React from "react";
+import { RiTShirtAirLine } from "react-icons/ri";
 import useAbilityEffects from "../../hooks/useAbilityEffects";
-import { Build, AnalyzerBuild } from "../../types";
+import { AnalyzerBuild, Build } from "../../types";
 import BuildStats from "../analyzer/BuildStats";
 import Modal from "../elements/Modal";
 import ViewSlots from "./ViewSlots";
-import Button from "../elements/Button";
-import { Link } from "@reach/router";
-import { RiTShirtAirLine } from "react-icons/ri";
 
 interface BuildCardStatsProps {
   build: Build;
@@ -47,7 +47,7 @@ const BuildCardStats: React.FC<BuildCardStatsProps> = ({
     >
       <ViewSlots build={build} />
       <Link to={`/analyzer?${queryParam}`}>
-        <Button icon={<RiTShirtAirLine />} outlined mt="1em">
+        <Button leftIcon={<RiTShirtAirLine />} variant="outline" mt="1em">
           Show in build analyzer
         </Button>
       </Link>

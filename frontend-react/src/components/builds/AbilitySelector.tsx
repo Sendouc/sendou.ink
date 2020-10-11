@@ -1,12 +1,11 @@
+import { Box, Button, Flex } from "@chakra-ui/core";
 import React, { useState } from "react";
-import FieldsetWithLegend from "../common/FieldsetWithLegend";
-import { Flex, Box } from "@chakra-ui/core";
-import { abilitiesGameOrder } from "../../utils/lists";
-import AbilityIcon from "./AbilityIcon";
-import { Ability } from "../../types";
-import Button from "../elements/Button";
-import { FaFilter } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
+import { FaFilter } from "react-icons/fa";
+import { Ability } from "../../types";
+import { abilitiesGameOrder } from "../../utils/lists";
+import FieldsetWithLegend from "../common/FieldsetWithLegend";
+import AbilityIcon from "./AbilityIcon";
 
 interface AbilitySelectorProps {
   abilities: Ability[];
@@ -80,7 +79,7 @@ const AbilitySelector: React.FC<AbilitySelectorProps> = ({
       )}
     </>
   ) : (
-    <Button icon={<FaFilter />} onClick={() => setShow(!show)}>
+    <Button leftIcon={<FaFilter />} onClick={() => setShow(!show)}>
       {t("builds;Filter by ability")}
     </Button>
   );

@@ -1,4 +1,4 @@
-import { Box, Radio, RadioGroup, Stack } from "@chakra-ui/core";
+import { Box, Button, Radio, RadioGroup, Stack } from "@chakra-ui/core";
 import React, { useContext, useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { GetXRankPlacementsInput, RankedMode } from "../../generated/graphql";
@@ -6,7 +6,6 @@ import MyThemeContext from "../../themeContext";
 import { getLocalizedMonthYearString } from "../../utils/helperFunctions";
 import { months } from "../../utils/lists";
 import Alert from "../elements/Alert";
-import Button from "../elements/Button";
 import Input from "../elements/Input";
 import Label from "../elements/Label";
 import Select from "../elements/Select";
@@ -133,7 +132,7 @@ const Top500Filters: React.FC<Top500FilterProps> = ({
             })
           }
           my={6}
-          outlined
+          variant="outline"
         >
           {t("tournaments;Clear filters")}
         </Button>

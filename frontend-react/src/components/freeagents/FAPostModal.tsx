@@ -1,7 +1,6 @@
 import { useMutation } from "@apollo/client";
 import {
-  Box,
-  Checkbox,
+  Box, Button, Checkbox,
   CheckboxGroup,
   Flex,
   FormControl,
@@ -10,13 +9,13 @@ import {
   Radio,
   RadioGroup,
   Stack,
-  useToast,
+  useToast
 } from "@chakra-ui/core";
 import React, { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   AddFreeAgentPostVars,
-  ADD_FREE_AGENT_POST,
+  ADD_FREE_AGENT_POST
 } from "../../graphql/mutations/addFreeAgentPost";
 import { HIDE_FREE_AGENT_POST } from "../../graphql/mutations/hideFreeAgentPost";
 import { UPDATE_FREE_AGENT_POST } from "../../graphql/mutations/updateFreeAgentPost";
@@ -25,7 +24,6 @@ import { FREE_AGENT_POSTS } from "../../graphql/queries/freeAgentPosts";
 import MyThemeContext from "../../themeContext";
 import { FreeAgentPost } from "../../types";
 import Alert from "../elements/Alert";
-import Button from "../elements/Button";
 import Modal from "../elements/Modal";
 import TextArea from "../elements/TextArea";
 
@@ -173,11 +171,11 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
           <Box color={grayWithShade}>{t("freeagents;deleteNotif")}</Box>
           <Flex flexWrap="wrap" mt="1em">
             <Box mr="1em">
-              <Button onClick={() => hideFreeAgentPost()} loading={hideLoading}>
+              <Button onClick={() => hideFreeAgentPost()} isLoading={hideLoading}>
                 {t("freeagents;Confirm deletion")}
               </Button>
             </Box>
-            <Button outlined onClick={() => setDeleting(false)}>
+            <Button variant="outline" onClick={() => setDeleting(false)}>
               {t("users;Cancel")}
             </Button>
           </Flex>
@@ -323,12 +321,12 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
         <Box mr="1em">
           <Button
             onClick={() => handleSubmit()}
-            loading={loading || editLoading}
+            isLoading={loading || editLoading}
           >
             {t("users;Submit")}
           </Button>
         </Box>
-        <Button outlined onClick={() => closeModal()}>
+        <Button variant="outline" onClick={() => closeModal()}>
           {t("users;Cancel")}
         </Button>
       </Flex>

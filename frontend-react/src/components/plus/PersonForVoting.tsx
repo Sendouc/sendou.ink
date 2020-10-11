@@ -1,9 +1,8 @@
-import { Box, Flex, Grid } from "@chakra-ui/core";
+import { Box, Button, Flex, Grid } from "@chakra-ui/core";
 import React, { useContext, useState } from "react";
 import MyThemeContext from "../../themeContext";
 import { months } from "../../utils/lists";
 import UserAvatar from "../common/UserAvatar";
-import Button from "../elements/Button";
 import Markdown from "../elements/Markdown";
 
 interface VotingButtonProps {
@@ -188,7 +187,7 @@ const PersonForVoting: React.FC<PersonForVotingProps> = ({
       </Grid>
       {user.bio && (
         <Box textAlign="center" my="1em">
-          <Button onClick={() => setShowBio(!showBio)} outlined>
+          <Button onClick={() => setShowBio(!showBio)} variant="outline">
             {showBio ? "Hide bio" : "Show bio"}
           </Button>
         </Box>

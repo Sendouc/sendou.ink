@@ -1,7 +1,7 @@
+import { Button } from "@chakra-ui/core";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import ReactPaginate from "react-paginate";
-import Button from "../elements/Button";
 import "./Pagination.css";
 
 interface PaginationProps {

@@ -1,6 +1,7 @@
 import {
   Avatar,
   Box,
+  Button,
   Flex,
   Image,
   Link as ChakraLink,
@@ -34,7 +35,6 @@ import {
   TableRow,
 } from "../common/Table";
 import WeaponImage from "../common/WeaponImage";
-import Button from "../elements/Button";
 import Top500Filters from "./Top500Filters";
 
 const modeImages: Record<RankedMode, string> = {
@@ -148,12 +148,11 @@ export const Top500Browser: React.FC<RouteComponentProps> = () => {
                   <TableCell>
                     <Button
                       size="xs"
-                      cursor="pointer"
                       onClick={() => {
                         setFilter({ playerId: record.playerId });
                         setPage(1);
                       }}
-                      outlined
+                      variant="outline"
                     >
                       {t("xsearch;ID")}
                     </Button>

@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Avatar, Box, Flex, Grid } from "@chakra-ui/core";
+import { Avatar, Box, Button, Flex, Grid } from "@chakra-ui/core";
 import { Link, RouteComponentProps } from "@reach/router";
 import React, { useContext, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -10,7 +10,7 @@ import { mapIcons } from "../../assets/imageImports";
 import {
   SearchForDraftCupData,
   SearchForDraftCupVars,
-  SEARCH_FOR_DRAFT_CUP,
+  SEARCH_FOR_DRAFT_CUP
 } from "../../graphql/queries/searchForDraftCup";
 import MyThemeContext from "../../themeContext";
 import {
@@ -18,7 +18,7 @@ import {
   ClothingGear,
   DetailedTeamInfo,
   HeadGear,
-  ShoesGear,
+  ShoesGear
 } from "../../types";
 import AbilityIcon from "../builds/AbilityIcon";
 import GearImage from "../builds/GearImage";
@@ -27,7 +27,6 @@ import Loading from "../common/Loading";
 import Section from "../common/Section";
 import SplatnetIcon from "../common/SplatnetIcon";
 import WeaponImage from "../common/WeaponImage";
-import Button from "../elements/Button";
 import { DraftTournamentCard } from "./DraftTournamentCards";
 
 interface DraftCupDetailsProps {
@@ -289,7 +288,7 @@ const CollapsedMapCard: React.FC<CollapsedMapCardProps> = ({
           </Box>
         </React.Fragment>
       ))}
-      <Button onClick={() => expand()} loading={loading}>
+      <Button onClick={() => expand()} isLoading={loading}>
         {t("draft;Expand")}
       </Button>
     </Section>
@@ -332,7 +331,7 @@ const DraftCupDetails: React.FC<RouteComponentProps & DraftCupDetailsProps> = ({
       </Helmet>
       <Box mb="1em">
         <Link to="/draft">
-          <Button outlined icon={<FaLongArrowAltLeft />}>
+          <Button variant="outline" leftIcon={<FaLongArrowAltLeft />}>
             {t("draft;Back to Draft Cup home")}
           </Button>
         </Link>
@@ -340,7 +339,7 @@ const DraftCupDetails: React.FC<RouteComponentProps & DraftCupDetailsProps> = ({
       <DraftTournamentCard tournament={tournament} />
       <Box mt="1em">
         <a href={tournament.bracket_url}>
-          <Button icon={<FaExternalLinkAlt />} outlined>
+          <Button leftIcon={<FaExternalLinkAlt />} variant="outline">
             {t("draft;Bracket")}
           </Button>
         </a>

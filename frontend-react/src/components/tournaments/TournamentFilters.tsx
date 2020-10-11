@@ -1,23 +1,23 @@
-import React, { useState, useContext } from "react";
-import Button from "../elements/Button";
 import {
-  Collapse,
-  Grid,
-  Flex,
   Box,
-  RadioGroup,
+  Button,
+  Collapse,
+  Flex,
+  Grid,
   Radio,
+  RadioGroup,
   Stack,
 } from "@chakra-ui/core";
-import Input from "../elements/Input";
-import WeaponSelector from "../common/WeaponSelector";
-import Select from "../elements/Select";
-import Label from "../elements/Label";
+import React, { useContext, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { FaFilter } from "react-icons/fa";
 import MyThemeContext from "../../themeContext";
 import { Weapon } from "../../types";
 import { maps } from "../../utils/lists";
-import { FaFilter } from "react-icons/fa";
-import { useTranslation } from "react-i18next";
+import WeaponSelector from "../common/WeaponSelector";
+import Input from "../elements/Input";
+import Label from "../elements/Label";
+import Select from "../elements/Select";
 
 interface TournamentFiltersProps {
   forms: {
@@ -45,7 +45,7 @@ const TournamentFilters: React.FC<TournamentFiltersProps> = ({
   const [show, setShow] = useState(false);
   return (
     <>
-      <Button icon={<FaFilter />} onClick={() => setShow(!show)}>
+      <Button leftIcon={<FaFilter />} onClick={() => setShow(!show)}>
         {show ? t("freeagents;Hide filters") : t("freeagents;Show filters")}
       </Button>
       <Collapse mt={4} isOpen={show}>
@@ -138,7 +138,7 @@ const TournamentFilters: React.FC<TournamentFiltersProps> = ({
           <Flex mt="1em">
             <Button onClick={onSubmit}>{t("tournaments;Apply")}</Button>
             <Box mx="1em">
-              <Button outlined onClick={handleClear}>
+              <Button variant="outline" onClick={handleClear}>
                 {t("tournaments;Clear filters")}
               </Button>
             </Box>
