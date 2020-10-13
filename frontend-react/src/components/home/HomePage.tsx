@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Heading, Image } from "@chakra-ui/core";
+import { Box, Flex, Heading, Image } from "@chakra-ui/core";
 import { RouteComponentProps } from "@reach/router";
 import React, { useContext } from "react";
 import { Helmet } from "react-helmet-async";
@@ -17,7 +17,6 @@ const HomePage: React.FC<RouteComponentProps> = () => {
       <Helmet>
         <title>sendou.ink | {t("home;Competitive Splatoon Hub")}</title>
       </Helmet>
-      <Button>asd</Button>
       <Flex flexDirection="column" alignItems="center" mb="1.5em">
         <Image className="rgb" src={posterGirl[colorMode]} w="400px" h="auto" />
         <Heading
