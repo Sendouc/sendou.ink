@@ -2,13 +2,40 @@ import { objectType, queryType, stringArg } from "@nexus/schema";
 
 export const User = objectType({
   name: "User",
+  // FIXME: Remove properties that don't need to be exposed: username, avatar & discriminator
   definition(t) {
-    t.model.id();
-    t.model.username();
-    t.model.discriminator();
-    t.string("fullUserName", {resolve: (root, asd) => `${root.username}`})
+    t.model.discordId()
+    t.model.username()
+    t.model.discriminator()
+    t.model.discordAvatar()
+    t.model.profile()
+    t.string("fullUsername", {
+      resolve: (root) => `${root.username}#${root.discriminator}`})
+    t.string("avatarUrl", {
+      resolve: (root) => `https://cdn.discordapp.com/avatars/${root.discordId}/${root.discordAvatar}.jpg`,
+      nullable: true
+    })
+    t.string("profilePath", {
+      resolve: (root) => `/u/${root.discordId}`
+    })
   },
 });
+
+export const Profile = objectType({
+  name: "Profile",
+  definition(t) {
+    // FIXME: Add Twitter
+    t.model.customUrlPath()
+    t.model.twitchName()
+    t.model.youtubeId()
+    t.model.country()
+    t.model.bio()
+    // FIXME: Sens as float
+    t.model.sensMotion()
+    t.model.sensStick()
+    t.model.weaponPool()
+  }
+})
 
 export const Query = queryType({
   definition(t) {

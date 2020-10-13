@@ -2,13 +2,28 @@
 ### Do not make changes to this file directly
 
 
+type Profile {
+  bio: String
+  country: String
+  customUrlPath: String
+  sensMotion: Int
+  sensStick: Int
+  twitchName: String
+  weaponPool: [String!]!
+  youtubeId: String
+}
+
 type Query {
   getUserByIdentifier(identifier: String!): User
 }
 
 type User {
+  avatarUrl: String
+  discordAvatar: String
+  discordId: String!
   discriminator: String!
-  fullUserName: String
-  id: Int!
+  fullUsername: String!
+  profile: Profile
+  profilePath: String!
   username: String!
 }
