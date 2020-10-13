@@ -18,10 +18,20 @@ export const Query = queryType({
       args: {
         identifier: stringArg({required: true})
       },
-      resolve: (_root, {identifier}, ctx) => ctx.prisma.user.findOne({
+      resolve: (_root, {identifier}, ctx) => ctx.prisma.user.findFirst({
         where: {
-          discordId: identifier
-        }
+          // this is ok because the values are mutually exclusive: customUrlPath can't contain only numbers etc.
+          OR: [
+            {
+              discordId: identifier
+            },
+            {
+              profile: {
+                customUrlPath: identifier.toLowerCase()
+              }
+            },
+          ]
+        },
       })
     })
   }
