@@ -1,0 +1,30 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  username      String
+  discriminator String
+  discordId     String   @unique
+  discordAvatar String?
+  profile       Profile?
+}
+
+model Profile {
+  twitchName    String?
+  youtubeId     String?
+  country       String?
+  sensMotion    Int?
+  sensStick     Int?
+  bio           String?
+  weaponPool    String[]
+  customUrlPath String?  @unique
+  user          User     @relation(fields: [userId], references: [id])
+  userId        Int      @unique
+}
