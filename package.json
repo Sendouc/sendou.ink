@@ -6,12 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "migrate:save": "dotenv -e .env.local -- npx prisma migrate save --name init --experimental",
-    "migrate:up": "dotenv -e .env.local -- npx prisma migrate up --experimental",
-    "studio": "dotenv -e .env.local -- npx prisma studio"
+    "migrate:save": "npx prisma migrate save --name init --experimental",
+    "migrate:up": "npx prisma migrate up --experimental",
+    "studio": "npx prisma studio",
+    "generate:prisma": "npx prisma generate",
+    "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
     "@nexus/schema": "^0.16.0",
+    "@prisma/client": "^2.8.1",
     "apollo-server-micro": "^2.17.0",
     "next": "^9.5.5",
     "nexus-plugin-prisma": "^0.21.0",
@@ -21,7 +24,7 @@
   "devDependencies": {
     "@prisma/cli": "^2.8.1",
     "@types/react": "^16.9.49",
-    "dotenv-cli": "^4.0.0",
+    "ts-node": "^9.0.0",
     "typescript": "^4.0.3"
   }
 }
