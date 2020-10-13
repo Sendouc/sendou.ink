@@ -113,6 +113,10 @@ const IconNavBar = () => {
             "/" +
             code +
             menuItems.reduce((acc, { code }) => acc + "/" + code, "");
+
+          const isActive =
+            location.pathname !== "/" &&
+            codesTogether.includes(location.pathname);
           const MenuNavIcon = () => (
             <Flex
               flexDirection="column"
@@ -121,16 +125,12 @@ const IconNavBar = () => {
               m="5px 15px"
               color={textColor}
             >
-              {location.pathname !== "/" &&
-              codesTogether.includes(location.pathname) ? (
-                <Box color={themeColorWithShade} fontSize="0.75em">
-                  {displayName}
-                </Box>
-              ) : (
-                <Box color={grayWithShade} fontSize="0.75em">
-                  {displayName}
-                </Box>
-              )}
+              <Box
+                color={isActive ? themeColorWithShade : grayWithShade}
+                fontSize="0.75em"
+              >
+                {t(`navigation;${displayName}`)}
+              </Box>
               <Image
                 src={`${process.env.PUBLIC_URL}/navIcons/${code}.png`}
                 h={12}
