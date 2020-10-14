@@ -1,5 +1,13 @@
-const MyApp = ({ Component, pageProps }) => {
-  return <Component {...pageProps} />
-}
+import { ChakraProvider } from "@chakra-ui/core";
+import type { AppProps } from "next/app";
+import Layout from "scenes/Layout";
 
-export default MyApp
+const MyApp = (props: AppProps) => {
+  return (
+    <ChakraProvider>
+      <Layout {...props} />
+    </ChakraProvider>
+  );
+};
+
+export default MyApp;
