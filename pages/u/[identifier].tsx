@@ -16,8 +16,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const apolloClient = initializeApollo();
 
-  console.log({ params });
-
   await apolloClient.query({
     query: GetUserByIdentifierDocument,
     variables: {
@@ -25,8 +23,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       identifier: params!.identifier,
     },
   });
-
-  console.log(apolloClient.cache.extract());
 
   return {
     props: {
