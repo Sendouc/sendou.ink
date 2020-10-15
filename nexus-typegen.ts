@@ -3,12 +3,14 @@
  * Do not make changes to this file directly
  */
 
-import * as Context from "./graphql/context";
+import * as Context from "./graphql/context"
+
+
 
 declare global {
   interface NexusGenCustomOutputProperties<TypeName extends string> {
-    model: NexusPrisma<TypeName, "model">;
-    crud: any;
+    model: NexusPrisma<TypeName, 'model'>
+    crud: any
   }
 }
 
@@ -16,21 +18,22 @@ declare global {
   interface NexusGen extends NexusGenTypes {}
 }
 
-export interface NexusGenInputs {}
+export interface NexusGenInputs {
+}
 
-export interface NexusGenEnums {}
+export interface NexusGenEnums {
+}
 
 export interface NexusGenScalars {
-  String: string;
-  Int: number;
-  Float: number;
-  Boolean: boolean;
-  ID: string;
+  String: string
+  Int: number
+  Float: number
+  Boolean: boolean
+  ID: string
 }
 
 export interface NexusGenRootTypes {
-  Profile: {
-    // root type
+  Profile: { // root type
     bio?: string | null; // String
     country?: string | null; // String
     customUrlPath?: string | null; // String
@@ -39,28 +42,26 @@ export interface NexusGenRootTypes {
     twitchName?: string | null; // String
     weaponPool: string[]; // [String!]!
     youtubeId?: string | null; // String
-  };
+  }
   Query: {};
-  User: {
-    // root type
+  User: { // root type
     discordAvatar?: string | null; // String
     discordId: string; // String!
     discriminator: string; // String!
     username: string; // String!
-  };
+  }
 }
 
 export interface NexusGenAllTypes extends NexusGenRootTypes {
-  String: NexusGenScalars["String"];
-  Int: NexusGenScalars["Int"];
-  Float: NexusGenScalars["Float"];
-  Boolean: NexusGenScalars["Boolean"];
-  ID: NexusGenScalars["ID"];
+  String: NexusGenScalars['String'];
+  Int: NexusGenScalars['Int'];
+  Float: NexusGenScalars['Float'];
+  Boolean: NexusGenScalars['Boolean'];
+  ID: NexusGenScalars['ID'];
 }
 
 export interface NexusGenFieldTypes {
-  Profile: {
-    // field return type
+  Profile: { // field return type
     bio: string | null; // String
     country: string | null; // String
     customUrlPath: string | null; // String
@@ -69,34 +70,32 @@ export interface NexusGenFieldTypes {
     twitchName: string | null; // String
     weaponPool: string[]; // [String!]!
     youtubeId: string | null; // String
-  };
-  Query: {
-    // field return type
-    getUserByIdentifier: NexusGenRootTypes["User"] | null; // User
-  };
-  User: {
-    // field return type
+  }
+  Query: { // field return type
+    getUserByIdentifier: NexusGenRootTypes['User'] | null; // User
+  }
+  User: { // field return type
     avatarUrl: string | null; // String
     discordAvatar: string | null; // String
     discordId: string; // String!
     discriminator: string; // String!
     fullUsername: string; // String!
-    profile: NexusGenRootTypes["Profile"] | null; // Profile
+    profile: NexusGenRootTypes['Profile'] | null; // Profile
     profilePath: string; // String!
     username: string; // String!
-  };
+  }
 }
 
 export interface NexusGenArgTypes {
   Query: {
-    getUserByIdentifier: {
-      // args
+    getUserByIdentifier: { // args
       identifier: string; // String!
-    };
-  };
+    }
+  }
 }
 
-export interface NexusGenAbstractResolveReturnTypes {}
+export interface NexusGenAbstractResolveReturnTypes {
+}
 
 export interface NexusGenInheritedFields {}
 
@@ -126,28 +125,19 @@ export interface NexusGenTypes {
   interfaceNames: NexusGenInterfaceNames;
   scalarNames: NexusGenScalarNames;
   unionNames: NexusGenUnionNames;
-  allInputTypes:
-    | NexusGenTypes["inputNames"]
-    | NexusGenTypes["enumNames"]
-    | NexusGenTypes["scalarNames"];
-  allOutputTypes:
-    | NexusGenTypes["objectNames"]
-    | NexusGenTypes["enumNames"]
-    | NexusGenTypes["unionNames"]
-    | NexusGenTypes["interfaceNames"]
-    | NexusGenTypes["scalarNames"];
-  allNamedTypes:
-    | NexusGenTypes["allInputTypes"]
-    | NexusGenTypes["allOutputTypes"];
-  abstractTypes: NexusGenTypes["interfaceNames"] | NexusGenTypes["unionNames"];
+  allInputTypes: NexusGenTypes['inputNames'] | NexusGenTypes['enumNames'] | NexusGenTypes['scalarNames'];
+  allOutputTypes: NexusGenTypes['objectNames'] | NexusGenTypes['enumNames'] | NexusGenTypes['unionNames'] | NexusGenTypes['interfaceNames'] | NexusGenTypes['scalarNames'];
+  allNamedTypes: NexusGenTypes['allInputTypes'] | NexusGenTypes['allOutputTypes']
+  abstractTypes: NexusGenTypes['interfaceNames'] | NexusGenTypes['unionNames'];
   abstractResolveReturn: NexusGenAbstractResolveReturnTypes;
 }
 
+
 declare global {
-  interface NexusGenPluginTypeConfig<TypeName extends string> {}
-  interface NexusGenPluginFieldConfig<
-    TypeName extends string,
-    FieldName extends string
-  > {}
-  interface NexusGenPluginSchemaConfig {}
+  interface NexusGenPluginTypeConfig<TypeName extends string> {
+  }
+  interface NexusGenPluginFieldConfig<TypeName extends string, FieldName extends string> {
+  }
+  interface NexusGenPluginSchemaConfig {
+  }
 }
