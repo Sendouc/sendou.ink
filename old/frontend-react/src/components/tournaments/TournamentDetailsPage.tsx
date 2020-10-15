@@ -10,14 +10,14 @@ import {
   ArrayParam,
   encodeQueryParams,
   StringParam,
-  useQueryParams
+  useQueryParams,
 } from "use-query-params";
 import { modeIconMap } from "../../assets/icons";
 import { mapIcons } from "../../assets/imageImports";
 import {
   SearchForTournamentByIdData,
   SearchForTournamentByIdVars,
-  SEARCH_FOR_TOURNAMENT_BY_ID
+  SEARCH_FOR_TOURNAMENT_BY_ID,
 } from "../../graphql/queries/searchForTournamentById";
 import MyThemeContext from "../../themeContext";
 import { Ability, Weapon } from "../../types";

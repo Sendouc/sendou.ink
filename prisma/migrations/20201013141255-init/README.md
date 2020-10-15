@@ -24,7 +24,7 @@ CREATE TABLE "public"."Profile" (
 "bio" text   ,
 "weaponPool" text []  ,
 "customUrlPath" text   ,
-"userId" integer   NOT NULL 
+"userId" integer   NOT NULL
 )
 
 CREATE UNIQUE INDEX "User.discordId_unique" ON "public"."User"("discordId")
@@ -75,5 +75,3 @@ migration ..20201013141255-init
 +  userId        Int      @unique
 +}
 ```
-
-

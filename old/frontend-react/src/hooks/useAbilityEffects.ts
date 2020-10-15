@@ -2,14 +2,11 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Ability,
-
-
-
-  AnalyzerBuild, Build,
-
-
-
-  SpecialWeapon, SubWeapon, Weapon
+  AnalyzerBuild,
+  Build,
+  SpecialWeapon,
+  SubWeapon,
+  Weapon,
 } from "../types";
 import abilityJson from "../utils/abilityData.json";
 import { getEffect } from "../utils/getAbilityEffect";
@@ -354,13 +351,15 @@ export default function useAbilityEffects(
     const tank = build.weapon.includes("Jr.") ? 1.1 : 1;
 
     let percentage = parseFloat(
-      (((effect[0] * inkConsumption) / tank) * 100).toFixed(2))
+      (((effect[0] * inkConsumption) / tank) * 100).toFixed(2)
+    );
 
     const morePrecisePercentage = parseFloat(
-      (((effect[0] * inkConsumption) / tank) * 100).toFixed(5))
+      (((effect[0] * inkConsumption) / tank) * 100).toFixed(5)
+    );
 
     if (percentage === 50 && morePrecisePercentage > 50) {
-      percentage = 50.01
+      percentage = 50.01;
     }
 
     const subWeaponTranslated = t(`game;${subWeapon}`);

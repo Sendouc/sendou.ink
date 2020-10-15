@@ -29,7 +29,7 @@ const { General, generalResolvers } = require("./graphql-schemas/general");
   SalmonRunRecord,
   salmonRunRecordResolvers,
 } = require("./graphql-schemas/salmonRunRecord")*/
-const { Maplist, maplistResolvers} = require("./graphql-schemas/maps")
+const { Maplist, maplistResolvers } = require("./graphql-schemas/maps");
 
 const Query = gql`
   type Query {

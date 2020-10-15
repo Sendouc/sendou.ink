@@ -3,7 +3,6 @@ import * as userTypes from "graphql/schema/user";
 import { nexusSchemaPrisma } from "nexus-plugin-prisma/schema";
 import path from "path";
 
-
 export const schema = makeSchema({
   types: [userTypes],
   plugins: [nexusSchemaPrisma()],
@@ -14,7 +13,7 @@ export const schema = makeSchema({
   },
   nonNullDefaults: {
     input: true,
-    output: true
+    output: true,
   },
   typegenAutoConfig: {
     contextType: "Context.Context",

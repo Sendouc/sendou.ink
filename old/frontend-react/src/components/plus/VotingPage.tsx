@@ -8,7 +8,7 @@ import { USER } from "../../graphql/queries/user";
 import {
   UsersForVotingData,
   USERS_FOR_VOTING,
-  VotingSuggested
+  VotingSuggested,
 } from "../../graphql/queries/usersForVoting";
 import MyThemeContext from "../../themeContext";
 import { UserData } from "../../types";

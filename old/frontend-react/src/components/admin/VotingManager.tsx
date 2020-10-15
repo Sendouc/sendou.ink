@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { END_VOTING } from "../../graphql/mutations/endVoting";
 import {
   StartVotingVars,
-  START_VOTING
+  START_VOTING,
 } from "../../graphql/mutations/startVoting";
 import { PlusInfoData, PLUS_INFO } from "../../graphql/queries/plusInfo";
 import Error from "../common/Error";

@@ -3,10 +3,8 @@ import useLocalStorage from "@rehooks/local-storage";
 import { ThemeColor } from "../types";
 
 export function useTheme(): Parameters<typeof extendTheme>[0] {
-  const { colorMode } = useColorMode()
-  const defaultThemeColor = colorMode === "light"
-    ? "pink"
-    : "orange";
+  const { colorMode } = useColorMode();
+  const defaultThemeColor = colorMode === "light" ? "pink" : "orange";
   const [themeColor = defaultThemeColor] = useLocalStorage<ThemeColor>(
     "colorPreference"
   );
@@ -22,10 +20,10 @@ export function useTheme(): Parameters<typeof extendTheme>[0] {
       },*/
       Button: {
         defaultProps: {
-          colorScheme: themeColor
-        }
-      }
+          colorScheme: themeColor,
+        },
+      },
     },
-    config: { useSystemColorMode: true }
-  } as const
+    config: { useSystemColorMode: true },
+  } as const;
 }

@@ -1,6 +1,8 @@
 import { useMutation } from "@apollo/client";
 import {
-  Box, Button, Flex,
+  Box,
+  Button,
+  Flex,
   FormControl,
   FormErrorMessage,
   FormHelperText,
@@ -8,7 +10,7 @@ import {
   Radio,
   RadioGroup,
   Stack,
-  useToast
+  useToast,
 } from "@chakra-ui/core";
 import React, { useContext, useState } from "react";
 import { ADD_SUGGESTION } from "../../graphql/mutations/addSuggestion";

@@ -1,24 +1,26 @@
 import { useMutation } from "@apollo/client";
 import {
-  Box, Button, Flex,
+  Box,
+  Button,
+  Flex,
   FormControl,
   FormErrorMessage,
   FormHelperText,
   Image,
-  useToast
+  useToast,
 } from "@chakra-ui/core";
 import React, { useState } from "react";
 import {
   DeleteCompetitiveFeedEventVars,
-  DELETE_COMPETITIVE_FEED_EVENT
+  DELETE_COMPETITIVE_FEED_EVENT,
 } from "../../graphql/mutations/deleteCompetitiveFeedEvent";
 import {
   UpdateCompetitiveFeedEventVars,
-  UPDATE_COMPETITIVE_FEED_EVENT
+  UPDATE_COMPETITIVE_FEED_EVENT,
 } from "../../graphql/mutations/updateCompetitiveFeedEvent";
 import {
   CompetitiveFeedEvent,
-  UPCOMING_EVENTS
+  UPCOMING_EVENTS,
 } from "../../graphql/queries/upcomingEvents";
 import DatePicker from "../elements/DatePicker";
 import Input from "../elements/Input";

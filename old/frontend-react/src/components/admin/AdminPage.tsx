@@ -4,7 +4,7 @@ import { Redirect, RouteComponentProps } from "@reach/router";
 import React, { useState } from "react";
 import {
   MutationUpdatePlayerIdArgs,
-  useUpdatePlayerIdMutation
+  useUpdatePlayerIdMutation,
 } from "../../generated/graphql";
 import { USER } from "../../graphql/queries/user";
 import { UserData } from "../../types";

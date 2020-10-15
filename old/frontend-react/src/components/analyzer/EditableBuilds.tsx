@@ -8,12 +8,12 @@ import {
   ClothingOnlyAbility,
   HeadOnlyAbility,
   ShoesOnlyAbility,
-  StackableAbility
+  StackableAbility,
 } from "../../types";
 import {
   clothingOnlyAbilities,
   headOnlyAbilities,
-  shoesOnlyAbilities
+  shoesOnlyAbilities,
 } from "../../utils/lists";
 import ViewSlots from "../builds/ViewSlots";
 import AbilityButtons from "../user/AbilityButtons";

@@ -1,6 +1,6 @@
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 const main = async () => {
   await prisma.user.create({
@@ -16,21 +16,26 @@ const main = async () => {
           customUrlPath: "tester",
           sensMotion: 45,
           sensStick: -20,
-          weaponPool: ["Tenta Brella", "Range Blaster", "Luna Blaster", "N-ZAP '89"],
+          weaponPool: [
+            "Tenta Brella",
+            "Range Blaster",
+            "Luna Blaster",
+            "N-ZAP '89",
+          ],
           twitchName: "nintendo",
-          youtubeId: "UCAtobAxsQcACwDZCSH9uJfA"
-        }
-      }
-    }
-  })
+          youtubeId: "UCAtobAxsQcACwDZCSH9uJfA",
+        },
+      },
+    },
+  });
 
-  console.log("User created")
-}
+  console.log("User created");
+};
 
 main()
-  .catch(e => console.error(e))
+  .catch((e) => console.error(e))
   .finally(async () => {
-    await prisma.$disconnect()
-  })
+    await prisma.$disconnect();
+  });
 
-export { }
+export {};

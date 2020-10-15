@@ -1,7 +1,9 @@
-import { gql } from '@apollo/client';
-import * as Apollo from '@apollo/client';
+import { gql } from "@apollo/client";
+import * as Apollo from "@apollo/client";
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type Exact<T extends { [key: string]: unknown }> = {
+  [K in keyof T]: T[K];
+};
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -12,75 +14,80 @@ export type Scalars = {
 };
 
 export type Profile = {
-  __typename?: 'Profile';
-  customUrlPath?: Maybe<Scalars['String']>;
-  twitchName?: Maybe<Scalars['String']>;
-  youtubeId?: Maybe<Scalars['String']>;
-  country?: Maybe<Scalars['String']>;
-  bio?: Maybe<Scalars['String']>;
-  sensMotion?: Maybe<Scalars['Int']>;
-  sensStick?: Maybe<Scalars['Int']>;
-  weaponPool: Array<Scalars['String']>;
+  __typename?: "Profile";
+  customUrlPath?: Maybe<Scalars["String"]>;
+  twitchName?: Maybe<Scalars["String"]>;
+  youtubeId?: Maybe<Scalars["String"]>;
+  country?: Maybe<Scalars["String"]>;
+  bio?: Maybe<Scalars["String"]>;
+  sensMotion?: Maybe<Scalars["Int"]>;
+  sensStick?: Maybe<Scalars["Int"]>;
+  weaponPool: Array<Scalars["String"]>;
 };
 
 export type Query = {
-  __typename?: 'Query';
+  __typename?: "Query";
   getUserByIdentifier?: Maybe<User>;
 };
 
-
 export type QueryGetUserByIdentifierArgs = {
-  identifier: Scalars['String'];
+  identifier: Scalars["String"];
 };
 
 export type User = {
-  __typename?: 'User';
-  discordId: Scalars['String'];
-  username: Scalars['String'];
-  discriminator: Scalars['String'];
-  discordAvatar?: Maybe<Scalars['String']>;
+  __typename?: "User";
+  discordId: Scalars["String"];
+  username: Scalars["String"];
+  discriminator: Scalars["String"];
+  discordAvatar?: Maybe<Scalars["String"]>;
   profile?: Maybe<Profile>;
-  fullUsername: Scalars['String'];
-  avatarUrl?: Maybe<Scalars['String']>;
-  profilePath: Scalars['String'];
+  fullUsername: Scalars["String"];
+  avatarUrl?: Maybe<Scalars["String"]>;
+  profilePath: Scalars["String"];
 };
 
 export type GetUserByIdentifierQueryVariables = Exact<{
-  identifier: Scalars['String'];
+  identifier: Scalars["String"];
 }>;
 
-
-export type GetUserByIdentifierQuery = (
-  { __typename?: 'Query' }
-  & { getUserByIdentifier?: Maybe<(
-    { __typename?: 'User' }
-    & Pick<User, 'fullUsername' | 'avatarUrl'>
-    & { profile?: Maybe<(
-      { __typename?: 'Profile' }
-      & Pick<Profile, 'customUrlPath' | 'twitchName' | 'youtubeId' | 'country' | 'bio' | 'sensMotion' | 'sensStick' | 'weaponPool'>
-    )> }
-  )> }
-);
-
+export type GetUserByIdentifierQuery = { __typename?: "Query" } & {
+  getUserByIdentifier?: Maybe<
+    { __typename?: "User" } & Pick<User, "fullUsername" | "avatarUrl"> & {
+        profile?: Maybe<
+          { __typename?: "Profile" } & Pick<
+            Profile,
+            | "customUrlPath"
+            | "twitchName"
+            | "youtubeId"
+            | "country"
+            | "bio"
+            | "sensMotion"
+            | "sensStick"
+            | "weaponPool"
+          >
+        >;
+      }
+  >;
+};
 
 export const GetUserByIdentifierDocument = gql`
-    query GetUserByIdentifier($identifier: String!) {
-  getUserByIdentifier(identifier: $identifier) {
-    fullUsername
-    avatarUrl
-    profile {
-      customUrlPath
-      twitchName
-      youtubeId
-      country
-      bio
-      sensMotion
-      sensStick
-      weaponPool
+  query GetUserByIdentifier($identifier: String!) {
+    getUserByIdentifier(identifier: $identifier) {
+      fullUsername
+      avatarUrl
+      profile {
+        customUrlPath
+        twitchName
+        youtubeId
+        country
+        bio
+        sensMotion
+        sensStick
+        weaponPool
+      }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useGetUserByIdentifierQuery__
@@ -98,12 +105,35 @@ export const GetUserByIdentifierDocument = gql`
  *   },
  * });
  */
-export function useGetUserByIdentifierQuery(baseOptions?: Apollo.QueryHookOptions<GetUserByIdentifierQuery, GetUserByIdentifierQueryVariables>) {
-        return Apollo.useQuery<GetUserByIdentifierQuery, GetUserByIdentifierQueryVariables>(GetUserByIdentifierDocument, baseOptions);
-      }
-export function useGetUserByIdentifierLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserByIdentifierQuery, GetUserByIdentifierQueryVariables>) {
-          return Apollo.useLazyQuery<GetUserByIdentifierQuery, GetUserByIdentifierQueryVariables>(GetUserByIdentifierDocument, baseOptions);
-        }
-export type GetUserByIdentifierQueryHookResult = ReturnType<typeof useGetUserByIdentifierQuery>;
-export type GetUserByIdentifierLazyQueryHookResult = ReturnType<typeof useGetUserByIdentifierLazyQuery>;
-export type GetUserByIdentifierQueryResult = Apollo.QueryResult<GetUserByIdentifierQuery, GetUserByIdentifierQueryVariables>;
+export function useGetUserByIdentifierQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetUserByIdentifierQuery,
+    GetUserByIdentifierQueryVariables
+  >
+) {
+  return Apollo.useQuery<
+    GetUserByIdentifierQuery,
+    GetUserByIdentifierQueryVariables
+  >(GetUserByIdentifierDocument, baseOptions);
+}
+export function useGetUserByIdentifierLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetUserByIdentifierQuery,
+    GetUserByIdentifierQueryVariables
+  >
+) {
+  return Apollo.useLazyQuery<
+    GetUserByIdentifierQuery,
+    GetUserByIdentifierQueryVariables
+  >(GetUserByIdentifierDocument, baseOptions);
+}
+export type GetUserByIdentifierQueryHookResult = ReturnType<
+  typeof useGetUserByIdentifierQuery
+>;
+export type GetUserByIdentifierLazyQueryHookResult = ReturnType<
+  typeof useGetUserByIdentifierLazyQuery
+>;
+export type GetUserByIdentifierQueryResult = Apollo.QueryResult<
+  GetUserByIdentifierQuery,
+  GetUserByIdentifierQueryVariables
+>;

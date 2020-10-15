@@ -8,7 +8,7 @@ import {
   FaBomb,
   FaFileDownload,
   FaFileImage,
-  FaFileUpload
+  FaFileUpload,
 } from "react-icons/fa";
 import useBreakPoints from "../../hooks/useBreakPoints";
 import { Stage, Weapon } from "../../types";
@@ -330,7 +330,11 @@ const MapPlannerPage: React.FC<RouteComponentProps> = () => {
         >
           {t("plans;Download as .json")}
         </Button>
-        <Button onClick={() => handleUpload()} leftIcon={<FaFileUpload />} variant="outline">
+        <Button
+          onClick={() => handleUpload()}
+          leftIcon={<FaFileUpload />}
+          variant="outline"
+        >
           {t("plans;Load from .json")}
         </Button>
       </Flex>

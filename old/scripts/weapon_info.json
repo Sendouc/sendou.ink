@@ -1,1 +1,776 @@
-{"Sploosh-o-matic": {"Sub": "Curling Bomb", "Special": "Splashdown", "Range": 80, "SpecialCost": 160}, "Neo Sploosh-o-matic": {"Sub": "Squid Beakon", "Special": "Tenta Missiles", "Range": 80, "SpecialCost": 170}, "Sploosh-o-matic 7": {"Sub": "Splat Bomb", "Special": "Ultra Stamp", "Range": 80, "SpecialCost": 180}, "Splattershot Jr.": {"Sub": "Splat Bomb", "Special": "Ink Armor", "Range": 110, "SpecialCost": 180}, "Custom Splattershot Jr.": {"Sub": "Autobomb", "Special": "Ink Storm", "Range": 110, "SpecialCost": 160}, "Kensa Splattershot Jr.": {"Sub": "Torpedo", "Special": "Bubble Blower", "Range": 110, "SpecialCost": 200}, "Splash-o-matic": {"Sub": "Toxic Mist", "Special": "Inkjet", "Range": 117, "SpecialCost": 170}, "Neo Splash-o-matic": {"Sub": "Burst Bomb", "Special": "Suction-Bomb Launcher", "Range": 117, "SpecialCost": 210}, "Aerospray MG": {"Sub": "Suction Bomb", "Special": "Curling-Bomb Launcher", "Range": 110, "SpecialCost": 160}, "Aerospray RG": {"Sub": "Sprinkler", "Special": "Baller", "Range": 110, "SpecialCost": 180}, "Aerospray PG": {"Sub": "Burst Bomb", "Special": "Booyah Bomb", "Range": 110, "SpecialCost": 190}, "Splattershot": {"Sub": "Burst Bomb", "Special": "Splashdown", "Range": 125, "SpecialCost": 170}, "Tentatek Splattershot": {"Sub": "Splat Bomb", "Special": "Inkjet", "Range": 125, "SpecialCost": 210}, "Kensa Splattershot": {"Sub": "Suction Bomb", "Special": "Tenta Missiles", "Range": 125, "SpecialCost": 180}, ".52 Gal": {"Sub": "Point Sensor", "Special": "Baller", "Range": 133, "SpecialCost": 170}, ".52 Gal Deco": {"Sub": "Curling Bomb", "Special": "Sting Ray", "Range": 133, "SpecialCost": 190}, "Kensa .52 Gal": {"Sub": "Splash Wall", "Special": "Booyah Bomb", "Range": 133, "SpecialCost": 180}, "N-ZAP '85": {"Sub": "Suction Bomb", "Special": "Ink Armor", "Range": 125, "SpecialCost": 200}, "N-ZAP '89": {"Sub": "Autobomb", "Special": "Tenta Missiles", "Range": 125, "SpecialCost": 180}, "N-ZAP '83": {"Sub": "Sprinkler", "Special": "Ink Storm", "Range": 125, "SpecialCost": 180}, "Splattershot Pro": {"Sub": "Point Sensor", "Special": "Ink Storm", "Range": 170, "SpecialCost": 170}, "Forge Splattershot Pro": {"Sub": "Suction Bomb", "Special": "Bubble Blower", "Range": 170, "SpecialCost": 200}, "Kensa Splattershot Pro": {"Sub": "Splat Bomb", "Special": "Booyah Bomb", "Range": 170, "SpecialCost": 210}, ".96 Gal": {"Sub": "Sprinkler", "Special": "Ink Armor", "Range": 180, "SpecialCost": 190}, ".96 Gal Deco": {"Sub": "Splash Wall", "Special": "Splashdown", "Range": 180, "SpecialCost": 170}, "Jet Squelcher": {"Sub": "Toxic Mist", "Special": "Tenta Missiles", "Range": 225, "SpecialCost": 180}, "Custom Jet Squelcher": {"Sub": "Burst Bomb", "Special": "Sting Ray", "Range": 225, "SpecialCost": 180}, "Luna Blaster": {"Sub": "Splat Bomb", "Special": "Baller", "Range": 110, "SpecialCost": 180}, "Luna Blaster Neo": {"Sub": "Ink Mine", "Special": "Suction-Bomb Launcher", "Range": 110, "SpecialCost": 170}, "Kensa Luna Blaster": {"Sub": "Fizzy Bomb", "Special": "Ink Storm", "Range": 110, "SpecialCost": 170}, "Blaster": {"Sub": "Toxic Mist", "Special": "Splashdown", "Range": 133, "SpecialCost": 170}, "Custom Blaster": {"Sub": "Autobomb", "Special": "Inkjet", "Range": 133, "SpecialCost": 190}, "Range Blaster": {"Sub": "Suction Bomb", "Special": "Ink Storm", "Range": 170, "SpecialCost": 200}, "Custom Range Blaster": {"Sub": "Curling Bomb", "Special": "Bubble Blower", "Range": 170, "SpecialCost": 180}, "Grim Range Blaster": {"Sub": "Burst Bomb", "Special": "Tenta Missiles", "Range": 170, "SpecialCost": 190}, "Clash Blaster": {"Sub": "Splat Bomb", "Special": "Sting Ray", "Range": 110, "SpecialCost": 180}, "Clash Blaster Neo": {"Sub": "Curling Bomb", "Special": "Tenta Missiles", "Range": 110, "SpecialCost": 180}, "Rapid Blaster": {"Sub": "Ink Mine", "Special": "Splat-Bomb Launcher", "Range": 167, "SpecialCost": 200}, "Rapid Blaster Deco": {"Sub": "Suction Bomb", "Special": "Inkjet", "Range": 167, "SpecialCost": 190}, "Kensa Rapid Blaster": {"Sub": "Torpedo", "Special": "Baller", "Range": 167, "SpecialCost": 200}, "Rapid Blaster Pro": {"Sub": "Toxic Mist", "Special": "Ink Storm", "Range": 192, "SpecialCost": 180}, "Rapid Blaster Pro Deco": {"Sub": "Splash Wall", "Special": "Ink Armor", "Range": 192, "SpecialCost": 180}, "L-3 Nozzlenose": {"Sub": "Curling Bomb", "Special": "Baller", "Range": 135, "SpecialCost": 190}, "L-3 Nozzlenose D": {"Sub": "Burst Bomb", "Special": "Inkjet", "Range": 135, "SpecialCost": 180}, "Kensa L-3 Nozzlenose": {"Sub": "Splash Wall", "Special": "Ultra Stamp", "Range": 135, "SpecialCost": 180}, "H-3 Nozzlenose": {"Sub": "Point Sensor", "Special": "Tenta Missiles", "Range": 170, "SpecialCost": 170}, "H-3 Nozzlenose D": {"Sub": "Suction Bomb", "Special": "Ink Armor", "Range": 170, "SpecialCost": 220}, "Cherry H-3 Nozzlenose": {"Sub": "Splash Wall", "Special": "Bubble Blower", "Range": 170, "SpecialCost": 190}, "Squeezer": {"Sub": "Splash Wall", "Special": "Sting Ray", "Range": 200, "SpecialCost": 180}, "Foil Squeezer": {"Sub": "Splat Bomb", "Special": "Bubble Blower", "Range": 200, "SpecialCost": 180}, "Carbon Roller": {"Sub": "Autobomb", "Special": "Ink Storm", "Range": 95, "SpecialCost": 160}, "Carbon Roller Deco": {"Sub": "Burst Bomb", "Special": "Autobomb Launcher", "Range": 95, "SpecialCost": 190}, "Splat Roller": {"Sub": "Curling Bomb", "Special": "Splashdown", "Range": 118, "SpecialCost": 170}, "Krak-On Splat Roller": {"Sub": "Squid Beakon", "Special": "Baller", "Range": 118, "SpecialCost": 170}, "Kensa Splat Roller": {"Sub": "Splat Bomb", "Special": "Bubble Blower", "Range": 118, "SpecialCost": 180}, "Dynamo Roller": {"Sub": "Ink Mine", "Special": "Sting Ray", "Range": 185, "SpecialCost": 180}, "Gold Dynamo Roller": {"Sub": "Splat Bomb", "Special": "Ink Armor", "Range": 185, "SpecialCost": 190}, "Kensa Dynamo Roller": {"Sub": "Sprinkler", "Special": "Booyah Bomb", "Range": 185, "SpecialCost": 180}, "Flingza Roller": {"Sub": "Splash Wall", "Special": "Splat-Bomb Launcher", "Range": 140, "SpecialCost": 180}, "Foil Flingza Roller": {"Sub": "Suction Bomb", "Special": "Tenta Missiles", "Range": 140, "SpecialCost": 180}, "Inkbrush": {"Sub": "Splat Bomb", "Special": "Splashdown", "Range": 70, "SpecialCost": 150}, "Inkbrush Nouveau": {"Sub": "Ink Mine", "Special": "Baller", "Range": 70, "SpecialCost": 160}, "Permanent Inkbrush": {"Sub": "Sprinkler", "Special": "Ink Armor", "Range": 70, "SpecialCost": 180}, "Octobrush": {"Sub": "Autobomb", "Special": "Inkjet", "Range": 105, "SpecialCost": 180}, "Octobrush Nouveau": {"Sub": "Squid Beakon", "Special": "Tenta Missiles", "Range": 105, "SpecialCost": 170}, "Kensa Octobrush": {"Sub": "Suction Bomb", "Special": "Ultra Stamp", "Range": 105, "SpecialCost": 180}, "Classic Squiffer": {"Sub": "Point Sensor", "Special": "Ink Armor", "Range": 185, "SpecialCost": 170}, "New Squiffer": {"Sub": "Autobomb", "Special": "Baller", "Range": 185, "SpecialCost": 180}, "Fresh Squiffer": {"Sub": "Suction Bomb", "Special": "Inkjet", "Range": 185, "SpecialCost": 180}, "Splat Charger": {"Sub": "Splat Bomb", "Special": "Sting Ray", "Range": 260, "SpecialCost": 220}, "Firefin Splat Charger": {"Sub": "Splash Wall", "Special": "Suction-Bomb Launcher", "Range": 260, "SpecialCost": 210}, "Kensa Charger": {"Sub": "Sprinkler", "Special": "Baller", "Range": 260, "SpecialCost": 190}, "Splatterscope": {"Sub": "Splat Bomb", "Special": "Sting Ray", "Range": 280, "SpecialCost": 220}, "Firefin Splatterscope": {"Sub": "Splash Wall", "Special": "Suction-Bomb Launcher", "Range": 280, "SpecialCost": 210}, "Kensa Splatterscope": {"Sub": "Sprinkler", "Special": "Baller", "Range": 280, "SpecialCost": 190}, "E-liter 4K": {"Sub": "Ink Mine", "Special": "Ink Storm", "Range": 310, "SpecialCost": 170}, "Custom E-liter 4K": {"Sub": "Squid Beakon", "Special": "Bubble Blower", "Range": 310, "SpecialCost": 170}, "E-liter 4K Scope": {"Sub": "Ink Mine", "Special": "Ink Storm", "Range": 330, "SpecialCost": 170}, "Custom E-liter 4K Scope": {"Sub": "Squid Beakon", "Special": "Bubble Blower", "Range": 330, "SpecialCost": 170}, "Bamboozler 14 Mk I": {"Sub": "Curling Bomb", "Special": "Tenta Missiles", "Range": 210, "SpecialCost": 180}, "Bamboozler 14 Mk II": {"Sub": "Toxic Mist", "Special": "Burst-Bomb Launcher", "Range": 210, "SpecialCost": 160}, "Bamboozler 14 Mk III": {"Sub": "Fizzy Bomb", "Special": "Bubble Blower", "Range": 210, "SpecialCost": 190}, "Goo Tuber": {"Sub": "Suction Bomb", "Special": "Splashdown", "Range": 210, "SpecialCost": 160}, "Custom Goo Tuber": {"Sub": "Curling Bomb", "Special": "Inkjet", "Range": 210, "SpecialCost": 170}, "Slosher": {"Sub": "Suction Bomb", "Special": "Tenta Missiles", "Range": 145, "SpecialCost": 190}, "Slosher Deco": {"Sub": "Sprinkler", "Special": "Baller", "Range": 145, "SpecialCost": 220}, "Soda Slosher": {"Sub": "Splat Bomb", "Special": "Burst-Bomb Launcher", "Range": 145, "SpecialCost": 200}, "Tri-Slosher": {"Sub": "Burst Bomb", "Special": "Ink Armor", "Range": 110, "SpecialCost": 190}, "Tri-Slosher Nouveau": {"Sub": "Splat Bomb", "Special": "Ink Storm", "Range": 110, "SpecialCost": 170}, "Sloshing Machine": {"Sub": "Autobomb", "Special": "Sting Ray", "Range": 147, "SpecialCost": 190}, "Sloshing Machine Neo": {"Sub": "Point Sensor", "Special": "Splat-Bomb Launcher", "Range": 147, "SpecialCost": 180}, "Kensa Sloshing Machine": {"Sub": "Fizzy Bomb", "Special": "Splashdown", "Range": 147, "SpecialCost": 190}, "Bloblobber": {"Sub": "Splash Wall", "Special": "Ink Storm", "Range": 150, "SpecialCost": 180}, "Bloblobber Deco": {"Sub": "Sprinkler", "Special": "Suction-Bomb Launcher", "Range": 150, "SpecialCost": 190}, "Explosher": {"Sub": "Sprinkler", "Special": "Bubble Blower", "Range": 207, "SpecialCost": 210}, "Custom Explosher": {"Sub": "Point Sensor", "Special": "Baller", "Range": 207, "SpecialCost": 220}, "Mini Splatling": {"Sub": "Burst Bomb", "Special": "Tenta Missiles", "Range": 150, "SpecialCost": 210}, "Zink Mini Splatling": {"Sub": "Curling Bomb", "Special": "Ink Storm", "Range": 150, "SpecialCost": 180}, "Kensa Mini Splatling": {"Sub": "Toxic Mist", "Special": "Ultra Stamp", "Range": 150, "SpecialCost": 180}, "Heavy Splatling": {"Sub": "Sprinkler", "Special": "Sting Ray", "Range": 210, "SpecialCost": 200}, "Heavy Splatling Deco": {"Sub": "Splash Wall", "Special": "Bubble Blower", "Range": 210, "SpecialCost": 180}, "Heavy Splatling Remix": {"Sub": "Point Sensor", "Special": "Booyah Bomb", "Range": 210, "SpecialCost": 190}, "Hydra Splatling": {"Sub": "Autobomb", "Special": "Splashdown", "Range": 245, "SpecialCost": 170}, "Custom Hydra Splatling": {"Sub": "Ink Mine", "Special": "Ink Armor", "Range": 245, "SpecialCost": 200}, "Ballpoint Splatling": {"Sub": "Toxic Mist", "Special": "Inkjet", "Range": 245, "SpecialCost": 200}, "Ballpoint Splatling Nouveau": {"Sub": "Squid Beakon", "Special": "Ink Storm", "Range": 245, "SpecialCost": 220}, "Nautilus 47": {"Sub": "Point Sensor", "Special": "Baller", "Range": 180, "SpecialCost": 180}, "Nautilus 79": {"Sub": "Suction Bomb", "Special": "Inkjet", "Range": 180, "SpecialCost": 180}, "Dapple Dualies": {"Sub": "Squid Beakon", "Special": "Suction-Bomb Launcher", "Range": 95, "SpecialCost": 170}, "Dapple Dualies Nouveau": {"Sub": "Toxic Mist", "Special": "Ink Storm", "Range": 95, "SpecialCost": 170}, "Clear Dapple Dualies": {"Sub": "Torpedo", "Special": "Splashdown", "Range": 95, "SpecialCost": 170}, "Splat Dualies": {"Sub": "Burst Bomb", "Special": "Tenta Missiles", "Range": 125, "SpecialCost": 180}, "Enperry Splat Dualies": {"Sub": "Curling Bomb", "Special": "Inkjet", "Range": 125, "SpecialCost": 210}, "Kensa Splat Dualies": {"Sub": "Suction Bomb", "Special": "Baller", "Range": 125, "SpecialCost": 210}, "Glooga Dualies": {"Sub": "Ink Mine", "Special": "Inkjet", "Range": 160, "SpecialCost": 180}, "Glooga Dualies Deco": {"Sub": "Splash Wall", "Special": "Baller", "Range": 160, "SpecialCost": 180}, "Kensa Glooga Dualies": {"Sub": "Fizzy Bomb", "Special": "Ink Armor", "Range": 160, "SpecialCost": 180}, "Dualie Squelchers": {"Sub": "Point Sensor", "Special": "Tenta Missiles", "Range": 170, "SpecialCost": 190}, "Custom Dualie Squelchers": {"Sub": "Splat Bomb", "Special": "Ink Storm", "Range": 170, "SpecialCost": 210}, "Dark Tetra Dualies": {"Sub": "Autobomb", "Special": "Splashdown", "Range": 140, "SpecialCost": 190}, "Light Tetra Dualies": {"Sub": "Sprinkler", "Special": "Autobomb Launcher", "Range": 140, "SpecialCost": 200}, "Splat Brella": {"Sub": "Sprinkler", "Special": "Ink Storm", "Range": 125, "SpecialCost": 200}, "Sorella Brella": {"Sub": "Autobomb", "Special": "Splat-Bomb Launcher", "Range": 125, "SpecialCost": 180}, "Tenta Brella": {"Sub": "Squid Beakon", "Special": "Bubble Blower", "Range": 150, "SpecialCost": 200}, "Tenta Sorella Brella": {"Sub": "Splash Wall", "Special": "Curling-Bomb Launcher", "Range": 150, "SpecialCost": 170}, "Tenta Camo Brella": {"Sub": "Ink Mine", "Special": "Ultra Stamp", "Range": 150, "SpecialCost": 200}, "Undercover Brella": {"Sub": "Ink Mine", "Special": "Splashdown", "Range": 118, "SpecialCost": 150}, "Undercover Sorella Brella": {"Sub": "Splat Bomb", "Special": "Baller", "Range": 118, "SpecialCost": 180}, "Kensa Undercover Brella": {"Sub": "Torpedo", "Special": "Ink Armor", "Range": 118, "SpecialCost": 200}}
+{
+  "Sploosh-o-matic": {
+    "Sub": "Curling Bomb",
+    "Special": "Splashdown",
+    "Range": 80,
+    "SpecialCost": 160
+  },
+  "Neo Sploosh-o-matic": {
+    "Sub": "Squid Beakon",
+    "Special": "Tenta Missiles",
+    "Range": 80,
+    "SpecialCost": 170
+  },
+  "Sploosh-o-matic 7": {
+    "Sub": "Splat Bomb",
+    "Special": "Ultra Stamp",
+    "Range": 80,
+    "SpecialCost": 180
+  },
+  "Splattershot Jr.": {
+    "Sub": "Splat Bomb",
+    "Special": "Ink Armor",
+    "Range": 110,
+    "SpecialCost": 180
+  },
+  "Custom Splattershot Jr.": {
+    "Sub": "Autobomb",
+    "Special": "Ink Storm",
+    "Range": 110,
+    "SpecialCost": 160
+  },
+  "Kensa Splattershot Jr.": {
+    "Sub": "Torpedo",
+    "Special": "Bubble Blower",
+    "Range": 110,
+    "SpecialCost": 200
+  },
+  "Splash-o-matic": {
+    "Sub": "Toxic Mist",
+    "Special": "Inkjet",
+    "Range": 117,
+    "SpecialCost": 170
+  },
+  "Neo Splash-o-matic": {
+    "Sub": "Burst Bomb",
+    "Special": "Suction-Bomb Launcher",
+    "Range": 117,
+    "SpecialCost": 210
+  },
+  "Aerospray MG": {
+    "Sub": "Suction Bomb",
+    "Special": "Curling-Bomb Launcher",
+    "Range": 110,
+    "SpecialCost": 160
+  },
+  "Aerospray RG": {
+    "Sub": "Sprinkler",
+    "Special": "Baller",
+    "Range": 110,
+    "SpecialCost": 180
+  },
+  "Aerospray PG": {
+    "Sub": "Burst Bomb",
+    "Special": "Booyah Bomb",
+    "Range": 110,
+    "SpecialCost": 190
+  },
+  "Splattershot": {
+    "Sub": "Burst Bomb",
+    "Special": "Splashdown",
+    "Range": 125,
+    "SpecialCost": 170
+  },
+  "Tentatek Splattershot": {
+    "Sub": "Splat Bomb",
+    "Special": "Inkjet",
+    "Range": 125,
+    "SpecialCost": 210
+  },
+  "Kensa Splattershot": {
+    "Sub": "Suction Bomb",
+    "Special": "Tenta Missiles",
+    "Range": 125,
+    "SpecialCost": 180
+  },
+  ".52 Gal": {
+    "Sub": "Point Sensor",
+    "Special": "Baller",
+    "Range": 133,
+    "SpecialCost": 170
+  },
+  ".52 Gal Deco": {
+    "Sub": "Curling Bomb",
+    "Special": "Sting Ray",
+    "Range": 133,
+    "SpecialCost": 190
+  },
+  "Kensa .52 Gal": {
+    "Sub": "Splash Wall",
+    "Special": "Booyah Bomb",
+    "Range": 133,
+    "SpecialCost": 180
+  },
+  "N-ZAP '85": {
+    "Sub": "Suction Bomb",
+    "Special": "Ink Armor",
+    "Range": 125,
+    "SpecialCost": 200
+  },
+  "N-ZAP '89": {
+    "Sub": "Autobomb",
+    "Special": "Tenta Missiles",
+    "Range": 125,
+    "SpecialCost": 180
+  },
+  "N-ZAP '83": {
+    "Sub": "Sprinkler",
+    "Special": "Ink Storm",
+    "Range": 125,
+    "SpecialCost": 180
+  },
+  "Splattershot Pro": {
+    "Sub": "Point Sensor",
+    "Special": "Ink Storm",
+    "Range": 170,
+    "SpecialCost": 170
+  },
+  "Forge Splattershot Pro": {
+    "Sub": "Suction Bomb",
+    "Special": "Bubble Blower",
+    "Range": 170,
+    "SpecialCost": 200
+  },
+  "Kensa Splattershot Pro": {
+    "Sub": "Splat Bomb",
+    "Special": "Booyah Bomb",
+    "Range": 170,
+    "SpecialCost": 210
+  },
+  ".96 Gal": {
+    "Sub": "Sprinkler",
+    "Special": "Ink Armor",
+    "Range": 180,
+    "SpecialCost": 190
+  },
+  ".96 Gal Deco": {
+    "Sub": "Splash Wall",
+    "Special": "Splashdown",
+    "Range": 180,
+    "SpecialCost": 170
+  },
+  "Jet Squelcher": {
+    "Sub": "Toxic Mist",
+    "Special": "Tenta Missiles",
+    "Range": 225,
+    "SpecialCost": 180
+  },
+  "Custom Jet Squelcher": {
+    "Sub": "Burst Bomb",
+    "Special": "Sting Ray",
+    "Range": 225,
+    "SpecialCost": 180
+  },
+  "Luna Blaster": {
+    "Sub": "Splat Bomb",
+    "Special": "Baller",
+    "Range": 110,
+    "SpecialCost": 180
+  },
+  "Luna Blaster Neo": {
+    "Sub": "Ink Mine",
+    "Special": "Suction-Bomb Launcher",
+    "Range": 110,
+    "SpecialCost": 170
+  },
+  "Kensa Luna Blaster": {
+    "Sub": "Fizzy Bomb",
+    "Special": "Ink Storm",
+    "Range": 110,
+    "SpecialCost": 170
+  },
+  "Blaster": {
+    "Sub": "Toxic Mist",
+    "Special": "Splashdown",
+    "Range": 133,
+    "SpecialCost": 170
+  },
+  "Custom Blaster": {
+    "Sub": "Autobomb",
+    "Special": "Inkjet",
+    "Range": 133,
+    "SpecialCost": 190
+  },
+  "Range Blaster": {
+    "Sub": "Suction Bomb",
+    "Special": "Ink Storm",
+    "Range": 170,
+    "SpecialCost": 200
+  },
+  "Custom Range Blaster": {
+    "Sub": "Curling Bomb",
+    "Special": "Bubble Blower",
+    "Range": 170,
+    "SpecialCost": 180
+  },
+  "Grim Range Blaster": {
+    "Sub": "Burst Bomb",
+    "Special": "Tenta Missiles",
+    "Range": 170,
+    "SpecialCost": 190
+  },
+  "Clash Blaster": {
+    "Sub": "Splat Bomb",
+    "Special": "Sting Ray",
+    "Range": 110,
+    "SpecialCost": 180
+  },
+  "Clash Blaster Neo": {
+    "Sub": "Curling Bomb",
+    "Special": "Tenta Missiles",
+    "Range": 110,
+    "SpecialCost": 180
+  },
+  "Rapid Blaster": {
+    "Sub": "Ink Mine",
+    "Special": "Splat-Bomb Launcher",
+    "Range": 167,
+    "SpecialCost": 200
+  },
+  "Rapid Blaster Deco": {
+    "Sub": "Suction Bomb",
+    "Special": "Inkjet",
+    "Range": 167,
+    "SpecialCost": 190
+  },
+  "Kensa Rapid Blaster": {
+    "Sub": "Torpedo",
+    "Special": "Baller",
+    "Range": 167,
+    "SpecialCost": 200
+  },
+  "Rapid Blaster Pro": {
+    "Sub": "Toxic Mist",
+    "Special": "Ink Storm",
+    "Range": 192,
+    "SpecialCost": 180
+  },
+  "Rapid Blaster Pro Deco": {
+    "Sub": "Splash Wall",
+    "Special": "Ink Armor",
+    "Range": 192,
+    "SpecialCost": 180
+  },
+  "L-3 Nozzlenose": {
+    "Sub": "Curling Bomb",
+    "Special": "Baller",
+    "Range": 135,
+    "SpecialCost": 190
+  },
+  "L-3 Nozzlenose D": {
+    "Sub": "Burst Bomb",
+    "Special": "Inkjet",
+    "Range": 135,
+    "SpecialCost": 180
+  },
+  "Kensa L-3 Nozzlenose": {
+    "Sub": "Splash Wall",
+    "Special": "Ultra Stamp",
+    "Range": 135,
+    "SpecialCost": 180
+  },
+  "H-3 Nozzlenose": {
+    "Sub": "Point Sensor",
+    "Special": "Tenta Missiles",
+    "Range": 170,
+    "SpecialCost": 170
+  },
+  "H-3 Nozzlenose D": {
+    "Sub": "Suction Bomb",
+    "Special": "Ink Armor",
+    "Range": 170,
+    "SpecialCost": 220
+  },
+  "Cherry H-3 Nozzlenose": {
+    "Sub": "Splash Wall",
+    "Special": "Bubble Blower",
+    "Range": 170,
+    "SpecialCost": 190
+  },
+  "Squeezer": {
+    "Sub": "Splash Wall",
+    "Special": "Sting Ray",
+    "Range": 200,
+    "SpecialCost": 180
+  },
+  "Foil Squeezer": {
+    "Sub": "Splat Bomb",
+    "Special": "Bubble Blower",
+    "Range": 200,
+    "SpecialCost": 180
+  },
+  "Carbon Roller": {
+    "Sub": "Autobomb",
+    "Special": "Ink Storm",
+    "Range": 95,
+    "SpecialCost": 160
+  },
+  "Carbon Roller Deco": {
+    "Sub": "Burst Bomb",
+    "Special": "Autobomb Launcher",
+    "Range": 95,
+    "SpecialCost": 190
+  },
+  "Splat Roller": {
+    "Sub": "Curling Bomb",
+    "Special": "Splashdown",
+    "Range": 118,
+    "SpecialCost": 170
+  },
+  "Krak-On Splat Roller": {
+    "Sub": "Squid Beakon",
+    "Special": "Baller",
+    "Range": 118,
+    "SpecialCost": 170
+  },
+  "Kensa Splat Roller": {
+    "Sub": "Splat Bomb",
+    "Special": "Bubble Blower",
+    "Range": 118,
+    "SpecialCost": 180
+  },
+  "Dynamo Roller": {
+    "Sub": "Ink Mine",
+    "Special": "Sting Ray",
+    "Range": 185,
+    "SpecialCost": 180
+  },
+  "Gold Dynamo Roller": {
+    "Sub": "Splat Bomb",
+    "Special": "Ink Armor",
+    "Range": 185,
+    "SpecialCost": 190
+  },
+  "Kensa Dynamo Roller": {
+    "Sub": "Sprinkler",
+    "Special": "Booyah Bomb",
+    "Range": 185,
+    "SpecialCost": 180
+  },
+  "Flingza Roller": {
+    "Sub": "Splash Wall",
+    "Special": "Splat-Bomb Launcher",
+    "Range": 140,
+    "SpecialCost": 180
+  },
+  "Foil Flingza Roller": {
+    "Sub": "Suction Bomb",
+    "Special": "Tenta Missiles",
+    "Range": 140,
+    "SpecialCost": 180
+  },
+  "Inkbrush": {
+    "Sub": "Splat Bomb",
+    "Special": "Splashdown",
+    "Range": 70,
+    "SpecialCost": 150
+  },
+  "Inkbrush Nouveau": {
+    "Sub": "Ink Mine",
+    "Special": "Baller",
+    "Range": 70,
+    "SpecialCost": 160
+  },
+  "Permanent Inkbrush": {
+    "Sub": "Sprinkler",
+    "Special": "Ink Armor",
+    "Range": 70,
+    "SpecialCost": 180
+  },
+  "Octobrush": {
+    "Sub": "Autobomb",
+    "Special": "Inkjet",
+    "Range": 105,
+    "SpecialCost": 180
+  },
+  "Octobrush Nouveau": {
+    "Sub": "Squid Beakon",
+    "Special": "Tenta Missiles",
+    "Range": 105,
+    "SpecialCost": 170
+  },
+  "Kensa Octobrush": {
+    "Sub": "Suction Bomb",
+    "Special": "Ultra Stamp",
+    "Range": 105,
+    "SpecialCost": 180
+  },
+  "Classic Squiffer": {
+    "Sub": "Point Sensor",
+    "Special": "Ink Armor",
+    "Range": 185,
+    "SpecialCost": 170
+  },
+  "New Squiffer": {
+    "Sub": "Autobomb",
+    "Special": "Baller",
+    "Range": 185,
+    "SpecialCost": 180
+  },
+  "Fresh Squiffer": {
+    "Sub": "Suction Bomb",
+    "Special": "Inkjet",
+    "Range": 185,
+    "SpecialCost": 180
+  },
+  "Splat Charger": {
+    "Sub": "Splat Bomb",
+    "Special": "Sting Ray",
+    "Range": 260,
+    "SpecialCost": 220
+  },
+  "Firefin Splat Charger": {
+    "Sub": "Splash Wall",
+    "Special": "Suction-Bomb Launcher",
+    "Range": 260,
+    "SpecialCost": 210
+  },
+  "Kensa Charger": {
+    "Sub": "Sprinkler",
+    "Special": "Baller",
+    "Range": 260,
+    "SpecialCost": 190
+  },
+  "Splatterscope": {
+    "Sub": "Splat Bomb",
+    "Special": "Sting Ray",
+    "Range": 280,
+    "SpecialCost": 220
+  },
+  "Firefin Splatterscope": {
+    "Sub": "Splash Wall",
+    "Special": "Suction-Bomb Launcher",
+    "Range": 280,
+    "SpecialCost": 210
+  },
+  "Kensa Splatterscope": {
+    "Sub": "Sprinkler",
+    "Special": "Baller",
+    "Range": 280,
+    "SpecialCost": 190
+  },
+  "E-liter 4K": {
+    "Sub": "Ink Mine",
+    "Special": "Ink Storm",
+    "Range": 310,
+    "SpecialCost": 170
+  },
+  "Custom E-liter 4K": {
+    "Sub": "Squid Beakon",
+    "Special": "Bubble Blower",
+    "Range": 310,
+    "SpecialCost": 170
+  },
+  "E-liter 4K Scope": {
+    "Sub": "Ink Mine",
+    "Special": "Ink Storm",
+    "Range": 330,
+    "SpecialCost": 170
+  },
+  "Custom E-liter 4K Scope": {
+    "Sub": "Squid Beakon",
+    "Special": "Bubble Blower",
+    "Range": 330,
+    "SpecialCost": 170
+  },
+  "Bamboozler 14 Mk I": {
+    "Sub": "Curling Bomb",
+    "Special": "Tenta Missiles",
+    "Range": 210,
+    "SpecialCost": 180
+  },
+  "Bamboozler 14 Mk II": {
+    "Sub": "Toxic Mist",
+    "Special": "Burst-Bomb Launcher",
+    "Range": 210,
+    "SpecialCost": 160
+  },
+  "Bamboozler 14 Mk III": {
+    "Sub": "Fizzy Bomb",
+    "Special": "Bubble Blower",
+    "Range": 210,
+    "SpecialCost": 190
+  },
+  "Goo Tuber": {
+    "Sub": "Suction Bomb",
+    "Special": "Splashdown",
+    "Range": 210,
+    "SpecialCost": 160
+  },
+  "Custom Goo Tuber": {
+    "Sub": "Curling Bomb",
+    "Special": "Inkjet",
+    "Range": 210,
+    "SpecialCost": 170
+  },
+  "Slosher": {
+    "Sub": "Suction Bomb",
+    "Special": "Tenta Missiles",
+    "Range": 145,
+    "SpecialCost": 190
+  },
+  "Slosher Deco": {
+    "Sub": "Sprinkler",
+    "Special": "Baller",
+    "Range": 145,
+    "SpecialCost": 220
+  },
+  "Soda Slosher": {
+    "Sub": "Splat Bomb",
+    "Special": "Burst-Bomb Launcher",
+    "Range": 145,
+    "SpecialCost": 200
+  },
+  "Tri-Slosher": {
+    "Sub": "Burst Bomb",
+    "Special": "Ink Armor",
+    "Range": 110,
+    "SpecialCost": 190
+  },
+  "Tri-Slosher Nouveau": {
+    "Sub": "Splat Bomb",
+    "Special": "Ink Storm",
+    "Range": 110,
+    "SpecialCost": 170
+  },
+  "Sloshing Machine": {
+    "Sub": "Autobomb",
+    "Special": "Sting Ray",
+    "Range": 147,
+    "SpecialCost": 190
+  },
+  "Sloshing Machine Neo": {
+    "Sub": "Point Sensor",
+    "Special": "Splat-Bomb Launcher",
+    "Range": 147,
+    "SpecialCost": 180
+  },
+  "Kensa Sloshing Machine": {
+    "Sub": "Fizzy Bomb",
+    "Special": "Splashdown",
+    "Range": 147,
+    "SpecialCost": 190
+  },
+  "Bloblobber": {
+    "Sub": "Splash Wall",
+    "Special": "Ink Storm",
+    "Range": 150,
+    "SpecialCost": 180
+  },
+  "Bloblobber Deco": {
+    "Sub": "Sprinkler",
+    "Special": "Suction-Bomb Launcher",
+    "Range": 150,
+    "SpecialCost": 190
+  },
+  "Explosher": {
+    "Sub": "Sprinkler",
+    "Special": "Bubble Blower",
+    "Range": 207,
+    "SpecialCost": 210
+  },
+  "Custom Explosher": {
+    "Sub": "Point Sensor",
+    "Special": "Baller",
+    "Range": 207,
+    "SpecialCost": 220
+  },
+  "Mini Splatling": {
+    "Sub": "Burst Bomb",
+    "Special": "Tenta Missiles",
+    "Range": 150,
+    "SpecialCost": 210
+  },
+  "Zink Mini Splatling": {
+    "Sub": "Curling Bomb",
+    "Special": "Ink Storm",
+    "Range": 150,
+    "SpecialCost": 180
+  },
+  "Kensa Mini Splatling": {
+    "Sub": "Toxic Mist",
+    "Special": "Ultra Stamp",
+    "Range": 150,
+    "SpecialCost": 180
+  },
+  "Heavy Splatling": {
+    "Sub": "Sprinkler",
+    "Special": "Sting Ray",
+    "Range": 210,
+    "SpecialCost": 200
+  },
+  "Heavy Splatling Deco": {
+    "Sub": "Splash Wall",
+    "Special": "Bubble Blower",
+    "Range": 210,
+    "SpecialCost": 180
+  },
+  "Heavy Splatling Remix": {
+    "Sub": "Point Sensor",
+    "Special": "Booyah Bomb",
+    "Range": 210,
+    "SpecialCost": 190
+  },
+  "Hydra Splatling": {
+    "Sub": "Autobomb",
+    "Special": "Splashdown",
+    "Range": 245,
+    "SpecialCost": 170
+  },
+  "Custom Hydra Splatling": {
+    "Sub": "Ink Mine",
+    "Special": "Ink Armor",
+    "Range": 245,
+    "SpecialCost": 200
+  },
+  "Ballpoint Splatling": {
+    "Sub": "Toxic Mist",
+    "Special": "Inkjet",
+    "Range": 245,
+    "SpecialCost": 200
+  },
+  "Ballpoint Splatling Nouveau": {
+    "Sub": "Squid Beakon",
+    "Special": "Ink Storm",
+    "Range": 245,
+    "SpecialCost": 220
+  },
+  "Nautilus 47": {
+    "Sub": "Point Sensor",
+    "Special": "Baller",
+    "Range": 180,
+    "SpecialCost": 180
+  },
+  "Nautilus 79": {
+    "Sub": "Suction Bomb",
+    "Special": "Inkjet",
+    "Range": 180,
+    "SpecialCost": 180
+  },
+  "Dapple Dualies": {
+    "Sub": "Squid Beakon",
+    "Special": "Suction-Bomb Launcher",
+    "Range": 95,
+    "SpecialCost": 170
+  },
+  "Dapple Dualies Nouveau": {
+    "Sub": "Toxic Mist",
+    "Special": "Ink Storm",
+    "Range": 95,
+    "SpecialCost": 170
+  },
+  "Clear Dapple Dualies": {
+    "Sub": "Torpedo",
+    "Special": "Splashdown",
+    "Range": 95,
+    "SpecialCost": 170
+  },
+  "Splat Dualies": {
+    "Sub": "Burst Bomb",
+    "Special": "Tenta Missiles",
+    "Range": 125,
+    "SpecialCost": 180
+  },
+  "Enperry Splat Dualies": {
+    "Sub": "Curling Bomb",
+    "Special": "Inkjet",
+    "Range": 125,
+    "SpecialCost": 210
+  },
+  "Kensa Splat Dualies": {
+    "Sub": "Suction Bomb",
+    "Special": "Baller",
+    "Range": 125,
+    "SpecialCost": 210
+  },
+  "Glooga Dualies": {
+    "Sub": "Ink Mine",
+    "Special": "Inkjet",
+    "Range": 160,
+    "SpecialCost": 180
+  },
+  "Glooga Dualies Deco": {
+    "Sub": "Splash Wall",
+    "Special": "Baller",
+    "Range": 160,
+    "SpecialCost": 180
+  },
+  "Kensa Glooga Dualies": {
+    "Sub": "Fizzy Bomb",
+    "Special": "Ink Armor",
+    "Range": 160,
+    "SpecialCost": 180
+  },
+  "Dualie Squelchers": {
+    "Sub": "Point Sensor",
+    "Special": "Tenta Missiles",
+    "Range": 170,
+    "SpecialCost": 190
+  },
+  "Custom Dualie Squelchers": {
+    "Sub": "Splat Bomb",
+    "Special": "Ink Storm",
+    "Range": 170,
+    "SpecialCost": 210
+  },
+  "Dark Tetra Dualies": {
+    "Sub": "Autobomb",
+    "Special": "Splashdown",
+    "Range": 140,
+    "SpecialCost": 190
+  },
+  "Light Tetra Dualies": {
+    "Sub": "Sprinkler",
+    "Special": "Autobomb Launcher",
+    "Range": 140,
+    "SpecialCost": 200
+  },
+  "Splat Brella": {
+    "Sub": "Sprinkler",
+    "Special": "Ink Storm",
+    "Range": 125,
+    "SpecialCost": 200
+  },
+  "Sorella Brella": {
+    "Sub": "Autobomb",
+    "Special": "Splat-Bomb Launcher",
+    "Range": 125,
+    "SpecialCost": 180
+  },
+  "Tenta Brella": {
+    "Sub": "Squid Beakon",
+    "Special": "Bubble Blower",
+    "Range": 150,
+    "SpecialCost": 200
+  },
+  "Tenta Sorella Brella": {
+    "Sub": "Splash Wall",
+    "Special": "Curling-Bomb Launcher",
+    "Range": 150,
+    "SpecialCost": 170
+  },
+  "Tenta Camo Brella": {
+    "Sub": "Ink Mine",
+    "Special": "Ultra Stamp",
+    "Range": 150,
+    "SpecialCost": 200
+  },
+  "Undercover Brella": {
+    "Sub": "Ink Mine",
+    "Special": "Splashdown",
+    "Range": 118,
+    "SpecialCost": 150
+  },
+  "Undercover Sorella Brella": {
+    "Sub": "Splat Bomb",
+    "Special": "Baller",
+    "Range": 118,
+    "SpecialCost": 180
+  },
+  "Kensa Undercover Brella": {
+    "Sub": "Torpedo",
+    "Special": "Ink Armor",
+    "Range": 118,
+    "SpecialCost": 200
+  }
+}

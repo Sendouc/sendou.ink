@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { FiClock, FiInfo } from "react-icons/fi";
 import {
   UpcomingEventsData,
-  UPCOMING_EVENTS
+  UPCOMING_EVENTS,
 } from "../../graphql/queries/upcomingEvents";
 import MyThemeContext from "../../themeContext";
 import { getWeek } from "../../utils/helperFunctions";

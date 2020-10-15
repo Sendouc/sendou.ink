@@ -1,6 +1,8 @@
 import { useMutation } from "@apollo/client";
 import {
-  Box, Button, Checkbox,
+  Box,
+  Button,
+  Checkbox,
   CheckboxGroup,
   Flex,
   FormControl,
@@ -9,13 +11,13 @@ import {
   Radio,
   RadioGroup,
   Stack,
-  useToast
+  useToast,
 } from "@chakra-ui/core";
 import React, { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   AddFreeAgentPostVars,
-  ADD_FREE_AGENT_POST
+  ADD_FREE_AGENT_POST,
 } from "../../graphql/mutations/addFreeAgentPost";
 import { HIDE_FREE_AGENT_POST } from "../../graphql/mutations/hideFreeAgentPost";
 import { UPDATE_FREE_AGENT_POST } from "../../graphql/mutations/updateFreeAgentPost";
@@ -171,7 +173,10 @@ const FAPostModal: React.FC<FAPostModalProps> = ({ closeModal, post }) => {
           <Box color={grayWithShade}>{t("freeagents;deleteNotif")}</Box>
           <Flex flexWrap="wrap" mt="1em">
             <Box mr="1em">
-              <Button onClick={() => hideFreeAgentPost()} isLoading={hideLoading}>
+              <Button
+                onClick={() => hideFreeAgentPost()}
+                isLoading={hideLoading}
+              >
                 {t("freeagents;Confirm deletion")}
               </Button>
             </Box>

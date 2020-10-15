@@ -44,11 +44,10 @@ const theme = {
     textColor: "whiteAlpha.900",
     gray: "gray.300",
   },
-} as const
+} as const;
 
 export const useMyTheme = () => {
-  const { colorMode } = useColorMode()
+  const { colorMode } = useColorMode();
 
-  return theme[colorMode]
-}
-
+  return theme[colorMode];
+};

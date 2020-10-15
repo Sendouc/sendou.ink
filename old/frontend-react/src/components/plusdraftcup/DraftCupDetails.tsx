@@ -10,7 +10,7 @@ import { mapIcons } from "../../assets/imageImports";
 import {
   SearchForDraftCupData,
   SearchForDraftCupVars,
-  SEARCH_FOR_DRAFT_CUP
+  SEARCH_FOR_DRAFT_CUP,
 } from "../../graphql/queries/searchForDraftCup";
 import MyThemeContext from "../../themeContext";
 import {
@@ -18,7 +18,7 @@ import {
   ClothingGear,
   DetailedTeamInfo,
   HeadGear,
-  ShoesGear
+  ShoesGear,
 } from "../../types";
 import AbilityIcon from "../builds/AbilityIcon";
 import GearImage from "../builds/GearImage";
