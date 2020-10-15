@@ -5,7 +5,6 @@ import type { AppProps } from "next/app";
 import Layout from "scenes/Layout";
 
 const MyApp = (props: AppProps) => {
-  console.log({ props });
   const apolloClient = useApollo(props.pageProps.initialApolloState);
 
   return (

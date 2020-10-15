@@ -5,15 +5,10 @@ import {
   InMemoryCache,
   NormalizedCacheObject,
 } from "@apollo/client";
-import { IncomingMessage, ServerResponse } from "http";
+import { Context } from "nexus-plugin-prisma/typegen";
 import { useMemo } from "react";
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
-
-export type ResolverContext = {
-  req?: IncomingMessage;
-  res?: ServerResponse;
-};
 
 function createIsomorphLink(context: ResolverContext = {}) {
   if (typeof window === "undefined") {
@@ -29,7 +24,7 @@ function createIsomorphLink(context: ResolverContext = {}) {
   }
 }
 
-function createApolloClient(context?: ResolverContext) {
+function createApolloClient(context?: Context) {
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
     link: createIsomorphLink(context),
@@ -41,7 +36,7 @@ export function initializeApollo(
   initialState: any = null,
   // Pages with Next.js data fetching methods, like `getStaticProps`, can send
   // a custom context which will be used by `SchemaLink` to server render pages
-  context?: ResolverContext
+  context?: Context
 ) {
   const _apolloClient = apolloClient ?? createApolloClient(context);
 

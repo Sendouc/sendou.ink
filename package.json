@@ -9,7 +9,7 @@
     "migrate:save": "npx prisma migrate save --name init --experimental",
     "migrate:up": "npx prisma migrate up --experimental",
     "studio": "npx prisma studio",
-    "generate:prisma": "npx prisma generate",
+    "generate": "npx prisma generate",
     "seed": "ts-node prisma/seed.ts",
     "gen": "graphql-codegen --config codegen.yml",
     "prettier": "prettier --write ."

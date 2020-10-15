@@ -118,7 +118,7 @@ const IconNavBar = () => {
               {t(`navigation;${displayName}`)}
             </Box>
             <Image
-              src={`navIcons/${code}.png`}
+              src={`/navIcons/${code}.png`}
               h={12}
               w={12}
               alt={code}

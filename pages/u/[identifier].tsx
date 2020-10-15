@@ -1,3 +1,4 @@
+import { PrismaClient } from "@prisma/client";
 import {
   GetUserByIdentifierDocument,
   useGetUserByIdentifierQuery,
@@ -14,7 +15,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const apolloClient = initializeApollo();
+  const apolloClient = initializeApollo(null, { prisma: new PrismaClient() });
 
   await apolloClient.query({
     query: GetUserByIdentifierDocument,
@@ -27,13 +28,16 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   return {
     props: {
       initialApolloState: apolloClient.cache.extract(),
+      identifier: params!.identifier,
     },
     revalidate: 1,
   };
 };
 
-const ProfilePage = () => {
-  const { getUserByIdentifier } = useGetUserByIdentifierQuery().data!;
+const ProfilePage = ({ identifier }: { identifier: string }) => {
+  const { getUserByIdentifier } = useGetUserByIdentifierQuery({
+    variables: { identifier },
+  }).data!;
   return <Profile user={getUserByIdentifier!} />;
 };
 
