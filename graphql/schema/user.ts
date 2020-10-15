@@ -8,6 +8,7 @@ export const User = objectType({
     t.model.username()
     t.model.discriminator()
     t.model.discordAvatar()
+    // FIXME: this seems to generate extra query (on top of the one it's expected to generatei thi)
     t.model.profile()
     t.string("fullUsername", {
       resolve: (root) => `${root.username}#${root.discriminator}`})
@@ -45,7 +46,9 @@ export const Query = queryType({
       args: {
         identifier: stringArg({required: true})
       },
-      resolve: (_root, {identifier}, ctx) => ctx.prisma.user.findFirst({
+      resolve: (_root, {identifier}, ctx) => {
+        console.log({ctx})
+        return ctx.prisma.user.findFirst({
         where: {
           // this is ok because the values are mutually exclusive: customUrlPath can't contain only numbers etc.
           OR: [
@@ -60,6 +63,7 @@ export const Query = queryType({
           ]
         },
       })
+    }
     })
   }
 })

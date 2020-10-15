@@ -1,0 +1,16 @@
+query GetUserByIdentifier($identifier: String!) {
+  getUserByIdentifier(identifier: $identifier) {
+    fullUsername
+    avatarUrl
+    profile {
+      customUrlPath
+      twitchName
+      youtubeId
+      country
+      bio
+      sensMotion
+      sensStick
+      weaponPool
+    }
+  }
+}
