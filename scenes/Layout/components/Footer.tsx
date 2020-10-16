@@ -4,14 +4,12 @@ import footerOctoLight from "assets/b8ing_light.png";
 import footerSquidDark from "assets/boing_dark.png";
 import footerSquidLight from "assets/boing_light.png";
 import { useMyTheme } from "lib/useMyTheme";
-import { useState } from "react";
+import { useRouter } from "next/dist/client/router";
 import FooterContent from "./FooterContent";
 import FooterWaves from "./FooterWaves";
 
 const Footer: React.FC = () => {
-  const [species] = useState<"octo" | "squid">(
-    Math.random() > 0.5 ? "octo" : "squid"
-  );
+  const species = useRouter().asPath.charCodeAt(1) % 2 === 0 ? "squid" : "octo";
   const { themeColor } = useMyTheme();
   const footerImageSrc = useColorModeValue(
     { octo: footerOctoLight, squid: footerSquidLight },

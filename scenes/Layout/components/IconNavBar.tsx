@@ -136,7 +136,9 @@ const IconNavBar = () => {
         if (!menuItems.length) {
           return (
             <Link key={code} href={code}>
-              <MenuNavIcon />
+              <a>
+                <MenuNavIcon />
+              </a>
             </Link>
           );
         }

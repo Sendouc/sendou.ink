@@ -10,7 +10,7 @@ import { useMemo } from "react";
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 
-function createIsomorphLink(context: ResolverContext = {}) {
+function createIsomorphLink(context: Context | {} = {}) {
   if (typeof window === "undefined") {
     const { SchemaLink } = require("@apollo/client/link/schema");
     const { schema } = require("graphql/schema");
