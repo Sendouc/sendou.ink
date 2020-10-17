@@ -26,7 +26,9 @@
     "nexus-plugin-prisma": "^0.22.0",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
-    "react-icons": "^3.11.0"
+    "react-icons": "^3.11.0",
+    "react-markdown": "^4.3.1",
+    "react-string-replace": "^0.4.4"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "1.17.10",

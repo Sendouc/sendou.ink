@@ -7,6 +7,7 @@ import Layout from "scenes/Layout";
 const MyApp = (props: AppProps) => {
   const apolloClient = useApollo(props.pageProps.initialApolloState);
 
+  // FIXME: on initial load components render twice
   return (
     <ApolloProvider client={apolloClient}>
       <ChakraProvider>
