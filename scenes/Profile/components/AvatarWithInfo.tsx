@@ -32,6 +32,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user }) => {
     <>
       <Flex flexWrap="wrap">
         <Avatar
+          data-cy="profile-page-avatar"
           name={user.fullUsername}
           src={user.avatarUrl ?? ""}
           size="2xl"

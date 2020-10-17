@@ -74,6 +74,7 @@ const TopNav = () => {
     >
       <Flex alignItems="center">
         <IconButton
+          data-cy="color-mode-toggle"
           aria-label={`Switch to ${
             colorMode === "light" ? "dark" : "light"
           } mode`}

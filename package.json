@@ -12,7 +12,8 @@
     "generate": "npx prisma generate",
     "seed": "ts-node prisma/seed.ts",
     "gen": "graphql-codegen --config codegen.yml",
-    "prettier": "prettier --write ."
+    "prettier": "prettier --write .",
+    "cypress:open": "cypress open"
   },
   "dependencies": {
     "@apollo/client": "^3.2.4",
@@ -39,6 +40,7 @@
     "@graphql-codegen/typescript-react-apollo": "2.0.7",
     "@prisma/cli": "^2.8.0",
     "@types/react": "^16.9.49",
+    "cypress": "^5.4.0",
     "prettier": "^2.1.2",
     "ts-node": "^9.0.0",
     "typescript": "^4.0.3"
