@@ -1,7 +1,7 @@
 datasource db {
   provider = "postgresql"
   // FIXME: should use same .env system as Next.JS
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 generator client {
