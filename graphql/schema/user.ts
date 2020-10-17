@@ -23,7 +23,7 @@ export const User = objectType({
 export const Profile = objectType({
   name: "Profile",
   definition(t) {
-    // FIXME: Add Twitter
+    t.model.twitterName();
     t.model.customUrlPath();
     t.model.twitchName();
     t.model.youtubeId();

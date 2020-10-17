@@ -4,6 +4,7 @@ query GetUserByIdentifier($identifier: String!) {
     avatarUrl
     profile {
       customUrlPath
+      twitterName
       twitchName
       youtubeId
       country

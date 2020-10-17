@@ -4,7 +4,7 @@ import WeaponImage from "components/WeaponImage";
 import { GetUserByIdentifierQuery } from "generated/graphql";
 import { useTranslation } from "lib/useMockT";
 import { useMyTheme } from "lib/useMyTheme";
-import { FaGamepad, FaTwitch, FaYoutube } from "react-icons/fa";
+import { FaGamepad, FaTwitch, FaTwitter, FaYoutube } from "react-icons/fa";
 
 interface AvatarWithInfoProps {
   user: NonNullable<GetUserByIdentifierQuery["getUserByIdentifier"]>;
@@ -48,20 +48,14 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user }) => {
           </Flex>
           <Flex>
             <Flex maxW="300px" flexWrap="wrap">
-              {/* FIXME:
-              user.twitter_name && (
-                <Flex
-                  alignItems="center"
-                  mx="0.5em"
-                  my="0.1em"
-                  color={gray}
-                >
+              {user.profile?.twitterName && (
+                <Flex alignItems="center" mx="0.5em" my="0.1em" color={gray}>
                   <Box as={FaTwitter} mr="0.2em" />
-                  <a href={`https://twitter.com/${user.twitter_name}`}>
-                    {user.twitter_name}
+                  <a href={`https://twitter.com/${user.profile.twitterName}`}>
+                    {user.profile.twitterName}
                   </a>
                 </Flex>
-              )*/}
+              )}
               {user.profile?.twitchName && (
                 <Flex alignItems="center" mx="0.5em" my="0.1em" color={gray}>
                   <Box as={FaTwitch} mr="0.2em" />

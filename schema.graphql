@@ -9,6 +9,7 @@ type Profile {
   sensMotion: Float
   sensStick: Float
   twitchName: String
+  twitterName: String
   weaponPool: [String!]!
   youtubeId: String
 }
