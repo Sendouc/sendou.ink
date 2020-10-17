@@ -17,13 +17,6 @@ const extendedTheme = extendTheme({
       },
     }),
   },
-  /*components: {
-    Button: {
-      defaultProps: {
-        colorScheme: theme,
-      },
-    },
-  },*/
 });
 
 const MyApp = (props: AppProps) => {

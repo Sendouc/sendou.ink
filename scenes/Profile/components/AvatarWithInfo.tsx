@@ -1,4 +1,4 @@
-import { Avatar, Box, Flex, Heading } from "@chakra-ui/core";
+import { Avatar, Box, Flex, Heading, IconButton } from "@chakra-ui/core";
 import Flag from "components/Flag";
 import WeaponImage from "components/WeaponImage";
 import { GetUserByIdentifierQuery } from "generated/graphql";
@@ -49,37 +49,46 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user }) => {
           <Flex>
             <Flex maxW="300px" flexWrap="wrap">
               {user.profile?.twitterName && (
-                <Flex alignItems="center" mx="0.5em" my="0.1em" color={gray}>
-                  <Box as={FaTwitter} mr="0.2em" />
-                  <a href={`https://twitter.com/${user.profile.twitterName}`}>
-                    {user.profile.twitterName}
-                  </a>
-                </Flex>
+                <a href={`https://twitter.com/${user.profile.twitterName}`}>
+                  <IconButton
+                    aria-label="Link to Twitter"
+                    icon={<FaTwitter />}
+                    color="#1DA1F2"
+                    borderRadius="50%"
+                    variant="ghost"
+                  />
+                </a>
               )}
               {user.profile?.twitchName && (
-                <Flex alignItems="center" mx="0.5em" my="0.1em" color={gray}>
-                  <Box as={FaTwitch} mr="0.2em" />
-                  <a href={`https://www.twitch.tv/${user.profile.twitchName}`}>
-                    {user.profile.twitchName}
-                  </a>
-                </Flex>
+                <a href={`https://www.twitch.tv/${user.profile.twitchName}`}>
+                  <IconButton
+                    aria-label="Link to Twitch"
+                    icon={<FaTwitch />}
+                    color="#6441A4"
+                    borderRadius="50%"
+                    variant="ghost"
+                  />
+                </a>
               )}
               {user.profile?.youtubeId && (
-                <Flex alignItems="center" mx="0.5em" my="0.1em" color={gray}>
-                  <Box as={FaYoutube} mr="0.2em" />
-                  <a
-                    href={`https://youtube.com/channel/${user.profile.youtubeId}`}
-                  >
-                    YouTube
-                  </a>
-                </Flex>
+                <a
+                  href={`https://youtube.com/channel/${user.profile.youtubeId}`}
+                >
+                  <IconButton
+                    aria-label="Link to Twitch"
+                    icon={<FaYoutube />}
+                    color="#FF0000"
+                    borderRadius="50%"
+                    variant="ghost"
+                  />
+                </a>
               )}
               {user.profile?.sensStick &&
                 (!!user.profile.sensStick || user.profile.sensStick === 0) && (
                   <Flex
                     alignItems="center"
-                    mx="0.5em"
-                    my="0.1em"
+                    ml="0.7rem"
+                    mb="0.5rem"
                     color={gray}
                     w="100%"
                   >
