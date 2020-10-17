@@ -2,14 +2,8 @@ import { objectType, queryType, stringArg } from "@nexus/schema";
 
 export const User = objectType({
   name: "User",
-  // FIXME: Remove properties that don't need to be exposed: username, avatar & discriminator
   definition(t) {
     t.model.discordId();
-    t.model.username();
-    t.model.discriminator();
-    t.model.discordAvatar();
-    // FIXME: this seems to generate extra query (on top of the one it's expected to generatei thi)
-    t.model.profile();
     t.string("fullUsername", {
       resolve: (root) => `${root.username}#${root.discriminator}`,
     });
@@ -21,6 +15,8 @@ export const User = objectType({
     t.string("profilePath", {
       resolve: (root) => `/u/${root.discordId}`,
     });
+    // FIXME: this seems to generate extra query (on top of the one it's expected to generate)
+    t.model.profile();
   },
 });
 
@@ -33,9 +29,16 @@ export const Profile = objectType({
     t.model.youtubeId();
     t.model.country();
     t.model.bio();
-    // FIXME: Sens as float
-    t.model.sensMotion();
-    t.model.sensStick();
+    t.float("sensStick", {
+      nullable: true,
+      resolve: (root) =>
+        root.sensStick ? root.sensStick / 10 : root.sensStick,
+    });
+    t.float("sensMotion", {
+      nullable: true,
+      resolve: (root) =>
+        root.sensMotion ? root.sensMotion / 10 : root.sensMotion,
+    });
     t.model.weaponPool();
   },
 });

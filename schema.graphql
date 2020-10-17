@@ -6,8 +6,8 @@ type Profile {
   bio: String
   country: String
   customUrlPath: String
-  sensMotion: Int
-  sensStick: Int
+  sensMotion: Float
+  sensStick: Float
   twitchName: String
   weaponPool: [String!]!
   youtubeId: String
@@ -19,11 +19,8 @@ type Query {
 
 type User {
   avatarUrl: String
-  discordAvatar: String
   discordId: String!
-  discriminator: String!
   fullUsername: String!
   profile: Profile
   profilePath: String!
-  username: String!
 }

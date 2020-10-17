@@ -4,6 +4,7 @@
  */
 
 import * as Context from "./graphql/context"
+import * as Prisma from ".prisma/client"
 
 
 
@@ -33,23 +34,9 @@ export interface NexusGenScalars {
 }
 
 export interface NexusGenRootTypes {
-  Profile: { // root type
-    bio?: string | null; // String
-    country?: string | null; // String
-    customUrlPath?: string | null; // String
-    sensMotion?: number | null; // Int
-    sensStick?: number | null; // Int
-    twitchName?: string | null; // String
-    weaponPool: string[]; // [String!]!
-    youtubeId?: string | null; // String
-  }
+  Profile: Prisma.Profile;
   Query: {};
-  User: { // root type
-    discordAvatar?: string | null; // String
-    discordId: string; // String!
-    discriminator: string; // String!
-    username: string; // String!
-  }
+  User: Prisma.User;
 }
 
 export interface NexusGenAllTypes extends NexusGenRootTypes {
@@ -65,8 +52,8 @@ export interface NexusGenFieldTypes {
     bio: string | null; // String
     country: string | null; // String
     customUrlPath: string | null; // String
-    sensMotion: number | null; // Int
-    sensStick: number | null; // Int
+    sensMotion: number | null; // Float
+    sensStick: number | null; // Float
     twitchName: string | null; // String
     weaponPool: string[]; // [String!]!
     youtubeId: string | null; // String
@@ -76,13 +63,10 @@ export interface NexusGenFieldTypes {
   }
   User: { // field return type
     avatarUrl: string | null; // String
-    discordAvatar: string | null; // String
     discordId: string; // String!
-    discriminator: string; // String!
     fullUsername: string; // String!
     profile: NexusGenRootTypes['Profile'] | null; // Profile
     profilePath: string; // String!
-    username: string; // String!
   }
 }
 

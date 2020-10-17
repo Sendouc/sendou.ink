@@ -19,8 +19,8 @@ export const schema = makeSchema({
     contextType: "Context.Context",
     sources: [
       {
-        source: "@prisma/client",
-        alias: "prisma",
+        source: ".prisma/client",
+        alias: "Prisma",
       },
       {
         source: require.resolve("graphql/context"),

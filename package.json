@@ -9,9 +9,10 @@
     "migrate:save": "npx prisma migrate save --name init --experimental",
     "migrate:up": "npx prisma migrate up --experimental",
     "studio": "npx prisma studio",
-    "generate": "npx prisma generate",
+    "gen:prisma": "npx prisma generate",
+    "gen:nexus": "ts-node --transpile-only -P nexus.tsconfig.json pages/api",
+    "gen:codegen": "graphql-codegen --config codegen.yml",
     "seed": "ts-node prisma/seed.ts",
-    "gen": "graphql-codegen --config codegen.yml",
     "prettier": "prettier --write .",
     "cypress:open": "cypress open"
   },
