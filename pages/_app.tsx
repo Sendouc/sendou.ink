@@ -2,6 +2,7 @@ import { ApolloProvider } from "@apollo/client";
 import { ChakraProvider, extendTheme } from "@chakra-ui/core";
 import { mode } from "@chakra-ui/theme-tools";
 import { useApollo } from "lib/apollo";
+import { Provider as NextAuthProvider } from "next-auth/client";
 import GoogleFonts from "next-google-fonts";
 import type { AppProps } from "next/app";
 import Layout from "scenes/Layout";
@@ -27,11 +28,13 @@ const MyApp = (props: AppProps) => {
       <GoogleFonts
         href={`https://fonts.googleapis.com/css2?family=Rubik&display=swap`}
       />
-      <ApolloProvider client={apolloClient}>
-        <ChakraProvider theme={extendedTheme}>
-          <Layout {...props} />
-        </ChakraProvider>
-      </ApolloProvider>
+      <NextAuthProvider session={props.pageProps.session}>
+        <ApolloProvider client={apolloClient}>
+          <ChakraProvider theme={extendedTheme}>
+            <Layout {...props} />
+          </ChakraProvider>
+        </ApolloProvider>
+      </NextAuthProvider>
     </>
   );
 };

@@ -7,10 +7,13 @@ import { initializeApollo } from "lib/apollo";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Profile from "scenes/Profile";
 
+const prisma = new PrismaClient();
+
 export const getStaticPaths: GetStaticPaths = async () => {
+  const users = await prisma.user.findMany({});
   return {
-    paths: [{ params: { identifier: "455039198672453645" } }],
-    fallback: false,
+    paths: users.map((u) => ({ params: { identifier: u.discordId } })),
+    fallback: true,
   };
 };
 
