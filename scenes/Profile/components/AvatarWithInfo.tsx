@@ -1,5 +1,6 @@
 import { Avatar, Box, Flex, Heading, IconButton } from "@chakra-ui/core";
 import Flag from "components/Flag";
+import Section from "components/Section";
 import WeaponImage from "components/WeaponImage";
 import { GetUserByIdentifierQuery } from "generated/graphql";
 import { useTranslation } from "lib/useMockT";
@@ -30,24 +31,31 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user }) => {
 
   return (
     <>
-      <Flex flexWrap="wrap">
+      <Section
+        display="flex"
+        flexDir="column"
+        flexWrap="wrap"
+        alignItems="center"
+        justifyContent="center"
+        maxW="24rem"
+        mx="auto"
+      >
         <Avatar
           data-cy="profile-page-avatar"
           name={user.fullUsername}
           src={user.avatarUrl ?? ""}
           size="2xl"
-          mr="0.3em"
           mb="0.5rem"
         />
         <Flex flexDirection="column" justifyContent="center" mb="0.5rem">
-          <Flex alignItems="center" my="0.2rem">
-            <Heading fontFamily="'Rubik', sans-serif" size="lg" ml="0.5rem">
+          <Flex alignItems="center" justifyContent="center" my="0.2rem">
+            <Heading fontFamily="'Rubik', sans-serif" size="lg">
               {user.fullUsername}
             </Heading>
             {user.profile?.country && <Flag code={user.profile.country} />}
           </Flex>
-          <Flex>
-            <Flex maxW="300px" flexWrap="wrap">
+          <Flex alignItems="center" justifyContent="center">
+            <Flex flexWrap="wrap" alignItems="center" justifyContent="center">
               {user.profile?.twitterName && (
                 <a href={`https://twitter.com/${user.profile.twitterName}`}>
                   <IconButton
@@ -83,12 +91,27 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user }) => {
                   />
                 </a>
               )}
+              {user.profile?.weaponPool.length && (
+                <Flex
+                  mt="0.2rem"
+                  w="100%"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  {user.profile.weaponPool.map((wpn) => (
+                    <Box mx="0.2em" key={wpn}>
+                      <WeaponImage englishName={wpn} size="SMALL" />
+                    </Box>
+                  ))}
+                </Flex>
+              )}
               {user.profile?.sensStick &&
                 (!!user.profile.sensStick || user.profile.sensStick === 0) && (
                   <Flex
                     alignItems="center"
+                    justifyContent="center"
                     ml="0.7rem"
-                    mb="0.5rem"
+                    mt="0.7rem"
                     color={gray}
                     w="100%"
                   >
@@ -99,19 +122,10 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user }) => {
                     )}
                   </Flex>
                 )}
-              {user.profile?.weaponPool.length && (
-                <Flex mt="0.2rem" w="100%">
-                  {user.profile.weaponPool.map((wpn) => (
-                    <Box mx="0.2em" key={wpn}>
-                      <WeaponImage englishName={wpn} size="SMALL" />
-                    </Box>
-                  ))}
-                </Flex>
-              )}
             </Flex>
           </Flex>
         </Flex>
-      </Flex>
+      </Section>
     </>
   );
 };
