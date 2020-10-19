@@ -5,7 +5,11 @@ describe("Profile", () => {
     cy.visit("/u/455039198672453645");
   });
 
-  it("avatar loads", () => {
+  it("loads avatar", () => {
     cy.get("[data-cy=profile-page-avatar]").find("img");
+  });
+
+  it("renders markdown", () => {
+    cy.get("strong");
   });
 });
