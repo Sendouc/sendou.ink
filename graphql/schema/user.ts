@@ -1,4 +1,10 @@
-import { objectType, queryType, stringArg } from "@nexus/schema";
+import {
+  inputObjectType,
+  mutationType,
+  objectType,
+  queryType,
+  stringArg,
+} from "@nexus/schema";
 
 export const User = objectType({
   name: "User",
@@ -66,6 +72,48 @@ export const Query = queryType({
               },
             ],
           },
+        });
+      },
+    });
+  },
+});
+
+export const UpdateUserProfileInput = inputObjectType({
+  name: "UpdateUserProfileInput",
+  definition(t) {
+    t.string("twitterName");
+    t.string("customUrlPath");
+    t.string("twitchName");
+    t.string("youtubeId");
+    t.string("country");
+    t.string("bio");
+    t.float("sensStick");
+    t.float("sensMotion");
+    t.field("weaponPool", {
+      type: "String",
+      list: [true],
+    });
+  },
+});
+
+export const Mutation = mutationType({
+  definition(t) {
+    t.field("updateUserProfile", {
+      type: Profile,
+      nullable: false,
+      args: {
+        profile: UpdateUserProfileInput,
+      },
+      authorize: async (_root, _args, ctx) => {
+        return true;
+      },
+      resolve: async (_root, args, ctx, a) => {
+        // FIXME: validate
+        return await ctx.prisma.profile.upsert({
+          create: { user: { connect: { id: 4 } }, ...args.profile },
+          // FIXME: doing it like this makes removing values impossible?
+          update: args.profile,
+          where: { userId: 4 },
         });
       },
     });

@@ -5,7 +5,7 @@
 
 import * as Context from "./graphql/context"
 import * as Prisma from ".prisma/client"
-
+import { FieldAuthorizeResolver } from "@nexus/schema/dist/plugins/fieldAuthorizePlugin"
 
 
 declare global {
@@ -20,6 +20,17 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  UpdateUserProfileInput: { // input type
+    bio: string; // String!
+    country: string; // String!
+    customUrlPath: string; // String!
+    sensMotion: number; // Float!
+    sensStick: number; // Float!
+    twitchName: string; // String!
+    twitterName: string; // String!
+    weaponPool: string[]; // [String!]!
+    youtubeId: string; // String!
+  }
 }
 
 export interface NexusGenEnums {
@@ -34,12 +45,14 @@ export interface NexusGenScalars {
 }
 
 export interface NexusGenRootTypes {
+  Mutation: {};
   Profile: Prisma.Profile;
   Query: {};
   User: Prisma.User;
 }
 
 export interface NexusGenAllTypes extends NexusGenRootTypes {
+  UpdateUserProfileInput: NexusGenInputs['UpdateUserProfileInput'];
   String: NexusGenScalars['String'];
   Int: NexusGenScalars['Int'];
   Float: NexusGenScalars['Float'];
@@ -48,6 +61,9 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
 }
 
 export interface NexusGenFieldTypes {
+  Mutation: { // field return type
+    updateUserProfile: NexusGenRootTypes['Profile']; // Profile!
+  }
   Profile: { // field return type
     bio: string | null; // String
     country: string | null; // String
@@ -72,6 +88,11 @@ export interface NexusGenFieldTypes {
 }
 
 export interface NexusGenArgTypes {
+  Mutation: {
+    updateUserProfile: { // args
+      profile: NexusGenInputs['UpdateUserProfileInput']; // UpdateUserProfileInput!
+    }
+  }
   Query: {
     getUserByIdentifier: { // args
       identifier: string; // String!
@@ -84,9 +105,9 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "Profile" | "Query" | "User";
+export type NexusGenObjectNames = "Mutation" | "Profile" | "Query" | "User";
 
-export type NexusGenInputNames = never;
+export type NexusGenInputNames = "UpdateUserProfileInput";
 
 export type NexusGenEnumNames = never;
 
@@ -122,6 +143,15 @@ declare global {
   interface NexusGenPluginTypeConfig<TypeName extends string> {
   }
   interface NexusGenPluginFieldConfig<TypeName extends string, FieldName extends string> {
+    /**
+     * Authorization for an individual field. Returning "true"
+     * or "Promise<true>" means the field can be accessed.
+     * Returning "false" or "Promise<false>" will respond
+     * with a "Not Authorized" error for the field.
+     * Returning or throwing an error will also prevent the
+     * resolver from executing.
+     */
+    authorize?: FieldAuthorizeResolver<TypeName, FieldName>
   }
   interface NexusGenPluginSchemaConfig {
   }

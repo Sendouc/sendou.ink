@@ -10,6 +10,8 @@ export const config = {
 
 export default new ApolloServer({
   schema,
-  context: createContext,
+  context: ({ req }) => {
+    return createContext(req);
+  },
   tracing: process.env.NODE_ENV === "development",
 }).createHandler({ path: "/api/graphql" });

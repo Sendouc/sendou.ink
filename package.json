@@ -17,7 +17,7 @@
     "cypress:open": "cypress open"
   },
   "dependencies": {
-    "@apollo/client": "^3.2.4",
+    "@apollo/client": "^3.2.5",
     "@chakra-ui/core": "^1.0.0-rc.5",
     "@chakra-ui/theme-tools": "^1.0.0-rc.5",
     "@nexus/schema": "^0.16.0",
@@ -32,7 +32,7 @@
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-icons": "^3.11.0",
-    "react-markdown": "^4.3.1",
+    "react-markdown": "^5.0.0",
     "react-string-replace": "^0.4.4"
   },
   "devDependencies": {
