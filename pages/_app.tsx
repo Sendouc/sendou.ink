@@ -18,6 +18,43 @@ const extendedTheme = extendTheme({
       },
     }),
   },
+  components: {
+    Button: {
+      defaultProps: {
+        colorScheme: "lime",
+        color: "black",
+      },
+    },
+    // IconButton: {
+    //   defaultProps: {
+    //     isRound: true,
+    //   },
+    // },
+    Modal: {
+      baseStyle: (props) => ({
+        content: {
+          bg: mode(
+            theme.light.secondaryBgColor,
+            theme.dark.secondaryBgColor
+          )(props),
+        },
+      }),
+    },
+  },
+  colors: {
+    lime: {
+      50: "#e4ffdf",
+      100: "#bbffb0",
+      200: "#92ff7f",
+      300: "#68ff4d",
+      400: "#3fff1d",
+      500: "#27e606",
+      600: "#1bb300",
+      700: "#108000",
+      800: "#054d00",
+      900: "#001b00",
+    },
+  },
 });
 
 const MyApp = (props: AppProps) => {

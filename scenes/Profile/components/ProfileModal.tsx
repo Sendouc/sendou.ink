@@ -43,7 +43,7 @@ const ProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="xl">
       <ModalOverlay>
-        <ModalContent>
+        <ModalContent /*bg={secondaryBgColor}*/>
           <ModalHeader>{t("users;Editing profile")}</ModalHeader>
           <ModalCloseButton />
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -116,10 +116,12 @@ const ProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
             </ModalBody>
 
             <ModalFooter>
-              <Button colorScheme="blue" mr={3} type="submit">
+              <Button mr={3} type="submit">
                 Save
               </Button>
-              <Button onClick={onClose}>Cancel</Button>
+              <Button onClick={onClose} variant="outline">
+                Cancel
+              </Button>
             </ModalFooter>
           </form>
         </ModalContent>

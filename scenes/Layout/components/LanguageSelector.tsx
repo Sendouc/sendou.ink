@@ -39,7 +39,7 @@ export const LanguageSelector = () => {
         variant="ghost"
         fontSize="20px"
         icon={<FiGlobe />}
-        borderRadius="50%"
+        isRound
         color={textColor}
       />
       <MenuList bg={secondaryBgColor} color={textColor}>

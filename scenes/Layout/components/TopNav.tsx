@@ -93,7 +93,8 @@ const TopNav = () => {
           fontSize="20px"
           onClick={toggleColorMode}
           icon={colorMode === "light" ? <FiSun /> : <FiMoon />}
-          borderRadius="50%"
+          mr="5px"
+          isRound
         />
         <LanguageSelector />
       </Flex>

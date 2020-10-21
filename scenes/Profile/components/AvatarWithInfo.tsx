@@ -62,7 +62,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user }) => {
                     aria-label="Link to Twitter"
                     icon={<FaTwitter />}
                     color="#1DA1F2"
-                    borderRadius="50%"
+                    isRound
                     variant="ghost"
                   />
                 </a>
@@ -73,7 +73,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user }) => {
                     aria-label="Link to Twitch"
                     icon={<FaTwitch />}
                     color="#6441A4"
-                    borderRadius="50%"
+                    isRound
                     variant="ghost"
                   />
                 </a>
@@ -86,7 +86,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user }) => {
                     aria-label="Link to Twitch"
                     icon={<FaYoutube />}
                     color="#FF0000"
-                    borderRadius="50%"
+                    isRound
                     variant="ghost"
                   />
                 </a>
