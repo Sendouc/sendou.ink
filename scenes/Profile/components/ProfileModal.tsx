@@ -26,11 +26,9 @@ interface Props {
 
 const ProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
   const { t } = useTranslation();
-  const { handleSubmit, errors, register, formState } = useForm({
+  const { handleSubmit, errors, register } = useForm({
     resolver: zodResolver(ProfileSchema),
   });
-
-  console.log({ formState: formState.errors });
 
   const onSubmit = (data) => {
     Object.keys(data).forEach((key) => {
@@ -41,8 +39,6 @@ const ProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
 
     console.log(data);
   };
-
-  console.log({ errors });
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="xl">
