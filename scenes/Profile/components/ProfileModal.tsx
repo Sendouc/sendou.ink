@@ -15,6 +15,10 @@ import {
   ModalOverlay,
 } from "@chakra-ui/core";
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  UpdateUserProfileInput,
+  useUpdateUserProfileMutation,
+} from "generated/graphql";
 import { useTranslation } from "lib/useMockT";
 import { useForm } from "react-hook-form";
 import { ProfileSchema } from "validators/Profile";
@@ -26,17 +30,21 @@ interface Props {
 
 const ProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
   const { t } = useTranslation();
-  const { handleSubmit, errors, register } = useForm({
+
+  const { handleSubmit, errors, register } = useForm<UpdateUserProfileInput>({
     resolver: zodResolver(ProfileSchema),
   });
+  const [updateUserProfile] = useUpdateUserProfileMutation();
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data: UpdateUserProfileInput) => {
     Object.keys(data).forEach((key) => {
-      if (data[key] === "") {
-        data[key] = null;
+      const typedKey = key as keyof typeof data;
+      if (data[typedKey] === "") {
+        data[typedKey] = null;
       }
     });
 
+    await updateUserProfile({ variables: { profile: data } });
     console.log(data);
   };
 

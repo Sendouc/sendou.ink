@@ -21,15 +21,15 @@ declare global {
 
 export interface NexusGenInputs {
   UpdateUserProfileInput: { // input type
-    bio: string; // String!
-    country: string; // String!
-    customUrlPath: string; // String!
-    sensMotion: number; // Float!
-    sensStick: number; // Float!
-    twitchName: string; // String!
-    twitterName: string; // String!
-    weaponPool: string[]; // [String!]!
-    youtubeId: string; // String!
+    bio?: string | null; // String
+    country?: string | null; // String
+    customUrlPath?: string | null; // String
+    sensMotion?: number | null; // Float
+    sensStick?: number | null; // Float
+    twitchName?: string | null; // String
+    twitterName?: string | null; // String
+    weaponPool?: string[] | null; // [String!]
+    youtubeId?: string | null; // String
   }
 }
 
@@ -62,7 +62,7 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
 
 export interface NexusGenFieldTypes {
   Mutation: { // field return type
-    updateUserProfile: NexusGenRootTypes['Profile']; // Profile!
+    updateUserProfile: boolean; // Boolean!
   }
   Profile: { // field return type
     bio: string | null; // String
@@ -90,7 +90,7 @@ export interface NexusGenFieldTypes {
 export interface NexusGenArgTypes {
   Mutation: {
     updateUserProfile: { // args
-      profile: NexusGenInputs['UpdateUserProfileInput']; // UpdateUserProfileInput!
+      profile?: NexusGenInputs['UpdateUserProfileInput'] | null; // UpdateUserProfileInput
     }
   }
   Query: {

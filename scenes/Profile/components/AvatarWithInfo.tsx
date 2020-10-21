@@ -91,7 +91,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user }) => {
                   />
                 </a>
               )}
-              {user.profile?.weaponPool.length && (
+              {user.profile?.weaponPool && user.profile?.weaponPool.length > 0 && (
                 <Flex
                   mt="0.2rem"
                   w="100%"

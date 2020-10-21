@@ -3,7 +3,7 @@
 
 
 type Mutation {
-  updateUserProfile(profile: UpdateUserProfileInput!): Profile!
+  updateUserProfile(profile: UpdateUserProfileInput): Boolean!
 }
 
 type Profile {
@@ -23,15 +23,15 @@ type Query {
 }
 
 input UpdateUserProfileInput {
-  bio: String!
-  country: String!
-  customUrlPath: String!
-  sensMotion: Float!
-  sensStick: Float!
-  twitchName: String!
-  twitterName: String!
-  weaponPool: [String!]!
-  youtubeId: String!
+  bio: String
+  country: String
+  customUrlPath: String
+  sensMotion: Float
+  sensStick: Float
+  twitchName: String
+  twitterName: String
+  weaponPool: [String!]
+  youtubeId: String
 }
 
 type User {

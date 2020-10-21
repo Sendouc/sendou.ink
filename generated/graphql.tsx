@@ -43,6 +43,38 @@ export type QueryGetUserByIdentifierArgs = {
   identifier: Scalars['String'];
 };
 
+export type UpdateUserProfileInput = {
+  twitterName?: Maybe<Scalars['String']>;
+  customUrlPath?: Maybe<Scalars['String']>;
+  twitchName?: Maybe<Scalars['String']>;
+  youtubeId?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  bio?: Maybe<Scalars['String']>;
+  sensStick?: Maybe<Scalars['Float']>;
+  sensMotion?: Maybe<Scalars['Float']>;
+  weaponPool?: Maybe<Array<Scalars['String']>>;
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  updateUserProfile: Scalars['Boolean'];
+};
+
+
+export type MutationUpdateUserProfileArgs = {
+  profile?: Maybe<UpdateUserProfileInput>;
+};
+
+export type UpdateUserProfileMutationVariables = Exact<{
+  profile: UpdateUserProfileInput;
+}>;
+
+
+export type UpdateUserProfileMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'updateUserProfile'>
+);
+
 export type GetUserByIdentifierQueryVariables = Exact<{
   identifier: Scalars['String'];
 }>;
@@ -61,6 +93,36 @@ export type GetUserByIdentifierQuery = (
 );
 
 
+export const UpdateUserProfileDocument = gql`
+    mutation UpdateUserProfile($profile: UpdateUserProfileInput!) {
+  updateUserProfile(profile: $profile)
+}
+    `;
+export type UpdateUserProfileMutationFn = Apollo.MutationFunction<UpdateUserProfileMutation, UpdateUserProfileMutationVariables>;
+
+/**
+ * __useUpdateUserProfileMutation__
+ *
+ * To run a mutation, you first call `useUpdateUserProfileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserProfileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateUserProfileMutation, { data, loading, error }] = useUpdateUserProfileMutation({
+ *   variables: {
+ *      profile: // value for 'profile'
+ *   },
+ * });
+ */
+export function useUpdateUserProfileMutation(baseOptions?: Apollo.MutationHookOptions<UpdateUserProfileMutation, UpdateUserProfileMutationVariables>) {
+        return Apollo.useMutation<UpdateUserProfileMutation, UpdateUserProfileMutationVariables>(UpdateUserProfileDocument, baseOptions);
+      }
+export type UpdateUserProfileMutationHookResult = ReturnType<typeof useUpdateUserProfileMutation>;
+export type UpdateUserProfileMutationResult = Apollo.MutationResult<UpdateUserProfileMutation>;
+export type UpdateUserProfileMutationOptions = Apollo.BaseMutationOptions<UpdateUserProfileMutation, UpdateUserProfileMutationVariables>;
 export const GetUserByIdentifierDocument = gql`
     query GetUserByIdentifier($identifier: String!) {
   getUserByIdentifier(identifier: $identifier) {

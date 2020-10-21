@@ -13,7 +13,7 @@ export const schema = makeSchema({
     typegen: path.join(process.cwd(), "nexus-typegen.ts"),
   },
   nonNullDefaults: {
-    input: true,
+    input: false,
     output: true,
   },
   typegenAutoConfig: {

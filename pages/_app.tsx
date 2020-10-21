@@ -18,18 +18,17 @@ const extendedTheme = extendTheme({
       },
     }),
   },
+  // FIXME:
+  // 1) round iconButton
+  // 2) table-like lime green input addons
+  // 3) input styling
+  // 4) focus color
   components: {
     Button: {
       defaultProps: {
-        colorScheme: "lime",
-        color: "black",
+        colorScheme: "theme",
       },
     },
-    // IconButton: {
-    //   defaultProps: {
-    //     isRound: true,
-    //   },
-    // },
     Modal: {
       baseStyle: (props) => ({
         content: {
@@ -42,7 +41,7 @@ const extendedTheme = extendTheme({
     },
   },
   colors: {
-    lime: {
+    theme: {
       50: "#e4ffdf",
       100: "#bbffb0",
       200: "#92ff7f",

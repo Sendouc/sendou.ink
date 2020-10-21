@@ -100,7 +100,7 @@ export const UpdateUserProfileInput = inputObjectType({
 export const Mutation = mutationType({
   definition(t) {
     t.field("updateUserProfile", {
-      type: Profile,
+      type: "Boolean",
       nullable: false,
       args: {
         profile: UpdateUserProfileInput,
@@ -113,12 +113,14 @@ export const Mutation = mutationType({
         console.log({ session });
 
         // FIXME: set custom url to lowerCase
-        return await ctx.prisma.profile.upsert({
+        await ctx.prisma.profile.upsert({
           create: { user: { connect: { id: 4 } }, ...args.profile },
           // FIXME: doing it like this makes removing values impossible?
           update: args.profile,
           where: { userId: 4 },
         });
+
+        return true;
       },
     });
   },
