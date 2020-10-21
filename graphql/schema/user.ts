@@ -5,6 +5,7 @@ import {
   queryType,
   stringArg,
 } from "@nexus/schema";
+import { getSession } from "next-auth/client";
 
 export const User = objectType({
   name: "User",
@@ -107,8 +108,11 @@ export const Mutation = mutationType({
       authorize: async (_root, _args, ctx) => {
         return true;
       },
-      resolve: async (_root, args, ctx, a) => {
-        // FIXME: validate
+      resolve: async (_root, args, ctx) => {
+        const session = await getSession({ req: ctx.req });
+        console.log({ session });
+
+        // FIXME: set custom url to lowerCase
         return await ctx.prisma.profile.upsert({
           create: { user: { connect: { id: 4 } }, ...args.profile },
           // FIXME: doing it like this makes removing values impossible?

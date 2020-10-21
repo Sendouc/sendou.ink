@@ -1514,6 +1514,9 @@ const translations = {
     "Best placement / power": "Best placement / power",
     noPlacementsPromptNew:
       "If you have reached Top 500 in a <1>finished</1> X Rank season you can have it displayed here! Simply contact Sendou#0043 on Discord with your in-game nick. Once set up new results are added automatically and no further action is needed.",
+    "Twitter name": "Twitter name",
+    "Twitch name": "Twitch name",
+    "YouTube channel ID": "YouTube channel ID",
   },
   freeagents: {
     loginPrompt: "Log in to make your own free agent post and start matching!",

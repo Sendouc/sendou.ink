@@ -31,8 +31,6 @@ const TopNav = () => {
 
     if (loading) return <Box />;
 
-    console.log({ user });
-
     if (!user) {
       return (
         <Button
