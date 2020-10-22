@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   FormControl,
   FormErrorMessage,
@@ -13,28 +14,61 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  useToast,
 } from "@chakra-ui/core";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  GetUserByIdentifierQuery,
   UpdateUserProfileInput,
   useUpdateUserProfileMutation,
 } from "generated/graphql";
 import { useTranslation } from "lib/useMockT";
 import { useForm } from "react-hook-form";
-import { ProfileSchema } from "validators/Profile";
+import { FaTwitch, FaTwitter, FaYoutube } from "react-icons/fa";
+import { profileSchema } from "validators/profile";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  existingProfile?: NonNullable<
+    GetUserByIdentifierQuery["getUserByIdentifier"]
+  >["profile"];
 }
 
-const ProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
+const ProfileModal: React.FC<Props> = ({
+  isOpen,
+  onClose,
+  existingProfile,
+}) => {
   const { t } = useTranslation();
 
   const { handleSubmit, errors, register } = useForm<UpdateUserProfileInput>({
-    resolver: zodResolver(ProfileSchema),
+    resolver: zodResolver(profileSchema),
+    defaultValues: existingProfile ?? undefined,
   });
-  const [updateUserProfile] = useUpdateUserProfileMutation();
+
+  const toast = useToast();
+  const [updateUserProfile] = useUpdateUserProfileMutation({
+    onCompleted: () => {
+      toast({
+        description: t("users;Profile updated"),
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+        position: "top-right",
+      });
+      onClose();
+    },
+    onError: (error) => {
+      toast({
+        description: error.message,
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+        position: "top-right",
+      });
+    },
+  });
 
   const onSubmit = async (data: UpdateUserProfileInput) => {
     Object.keys(data).forEach((key) => {
@@ -65,7 +99,7 @@ const ProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
                   <Input
                     name="customUrlPath"
                     ref={register}
-                    placeholder={t("users;Custom URL")}
+                    placeholder="sendou"
                   />
                 </InputGroup>
                 <FormErrorMessage>
@@ -75,6 +109,13 @@ const ProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
 
               <FormControl isInvalid={!!errors.twitterName}>
                 <FormLabel htmlFor="twitterName" mt={4}>
+                  <Box
+                    as={FaTwitter}
+                    display="inline-block"
+                    mr={2}
+                    mb={1}
+                    color="#1DA1F2"
+                  />{" "}
                   {t("users;Twitter name")}
                 </FormLabel>
                 <InputGroup>
@@ -82,7 +123,7 @@ const ProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
                   <Input
                     name="twitterName"
                     ref={register}
-                    placeholder={t("users;Twitter name")}
+                    placeholder="sendouc"
                   />
                 </InputGroup>
                 <FormErrorMessage>
@@ -92,6 +133,13 @@ const ProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
 
               <FormControl isInvalid={!!errors.twitchName}>
                 <FormLabel htmlFor="twitchName" mt={4}>
+                  <Box
+                    as={FaTwitch}
+                    display="inline-block"
+                    mr={2}
+                    mb={1}
+                    color="#6441A4"
+                  />
                   {t("users;Twitch name")}
                 </FormLabel>
                 <InputGroup>
@@ -99,7 +147,7 @@ const ProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
                   <Input
                     name="twitchName"
                     ref={register}
-                    placeholder={t("users;Twitch name")}
+                    placeholder="sendou"
                   />
                 </InputGroup>
                 <FormErrorMessage>
@@ -109,6 +157,13 @@ const ProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
 
               <FormControl isInvalid={!!errors.youtubeId}>
                 <FormLabel htmlFor="youtubeId" mt={4}>
+                  <Box
+                    as={FaYoutube}
+                    display="inline-block"
+                    mr={2}
+                    mb={1}
+                    color="#FF0000"
+                  />
                   {t("users;YouTube channel ID")}
                 </FormLabel>
                 <InputGroup>
@@ -116,7 +171,7 @@ const ProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
                   <Input
                     name="youtubeId"
                     ref={register}
-                    placeholder={t("users;YouTube channel ID")}
+                    placeholder="UCWbJLXByvsfQvTcR4HLPs5Q"
                   />
                 </InputGroup>
                 <FormErrorMessage>{errors.youtubeId?.message}</FormErrorMessage>

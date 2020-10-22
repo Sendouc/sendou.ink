@@ -1,5 +1,6 @@
 query GetUserByIdentifier($identifier: String!) {
   getUserByIdentifier(identifier: $identifier) {
+    id
     fullUsername
     avatarUrl
     profile {

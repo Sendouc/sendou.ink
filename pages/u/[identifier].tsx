@@ -5,6 +5,7 @@ import {
 } from "generated/graphql";
 import { initializeApollo } from "lib/apollo";
 import { GetStaticPaths, GetStaticProps } from "next";
+import { useRouter } from "next/router";
 import Profile from "scenes/Profile";
 
 const prisma = new PrismaClient();
@@ -38,10 +39,17 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 };
 
 const ProfilePage = ({ identifier }: { identifier: string }) => {
-  const { getUserByIdentifier } = useGetUserByIdentifierQuery({
+  const { data } = useGetUserByIdentifierQuery({
     variables: { identifier },
-  }).data!;
-  return <Profile user={getUserByIdentifier!} />;
+  });
+  const router = useRouter();
+
+  // FIXME: handle fallback
+  const getUserByIdentifier = data?.getUserByIdentifier;
+  if (!getUserByIdentifier && typeof window !== "undefined")
+    router.push("/404");
+
+  return getUserByIdentifier ? <Profile user={getUserByIdentifier} /> : null;
 };
 
 export default ProfilePage;

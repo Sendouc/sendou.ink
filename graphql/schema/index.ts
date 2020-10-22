@@ -12,10 +12,6 @@ export const schema = makeSchema({
     schema: path.join(process.cwd(), "schema.graphql"),
     typegen: path.join(process.cwd(), "nexus-typegen.ts"),
   },
-  nonNullDefaults: {
-    input: false,
-    output: true,
-  },
   typegenAutoConfig: {
     contextType: "Context.Context",
     sources: [

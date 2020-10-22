@@ -13,6 +13,7 @@ export type Scalars = {
 
 export type User = {
   __typename?: 'User';
+  id: Scalars['Int'];
   discordId: Scalars['String'];
   fullUsername: Scalars['String'];
   avatarUrl?: Maybe<Scalars['String']>;
@@ -62,7 +63,7 @@ export type Mutation = {
 
 
 export type MutationUpdateUserProfileArgs = {
-  profile?: Maybe<UpdateUserProfileInput>;
+  profile: UpdateUserProfileInput;
 };
 
 export type UpdateUserProfileMutationVariables = Exact<{
@@ -84,7 +85,7 @@ export type GetUserByIdentifierQuery = (
   { __typename?: 'Query' }
   & { getUserByIdentifier?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'fullUsername' | 'avatarUrl'>
+    & Pick<User, 'id' | 'fullUsername' | 'avatarUrl'>
     & { profile?: Maybe<(
       { __typename?: 'Profile' }
       & Pick<Profile, 'customUrlPath' | 'twitterName' | 'twitchName' | 'youtubeId' | 'country' | 'bio' | 'sensMotion' | 'sensStick' | 'weaponPool'>
@@ -126,6 +127,7 @@ export type UpdateUserProfileMutationOptions = Apollo.BaseMutationOptions<Update
 export const GetUserByIdentifierDocument = gql`
     query GetUserByIdentifier($identifier: String!) {
   getUserByIdentifier(identifier: $identifier) {
+    id
     fullUsername
     avatarUrl
     profile {

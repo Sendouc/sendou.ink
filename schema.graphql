@@ -3,7 +3,7 @@
 
 
 type Mutation {
-  updateUserProfile(profile: UpdateUserProfileInput): Boolean!
+  updateUserProfile(profile: UpdateUserProfileInput!): Boolean!
 }
 
 type Profile {
@@ -38,6 +38,7 @@ type User {
   avatarUrl: String
   discordId: String!
   fullUsername: String!
+  id: Int!
   profile: Profile
   profilePath: String!
 }

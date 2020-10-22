@@ -82,6 +82,7 @@ export interface NexusGenFieldTypes {
     avatarUrl: string | null; // String
     discordId: string; // String!
     fullUsername: string; // String!
+    id: number; // Int!
     profile: NexusGenRootTypes['Profile'] | null; // Profile
     profilePath: string; // String!
   }
@@ -90,7 +91,7 @@ export interface NexusGenFieldTypes {
 export interface NexusGenArgTypes {
   Mutation: {
     updateUserProfile: { // args
-      profile?: NexusGenInputs['UpdateUserProfileInput'] | null; // UpdateUserProfileInput
+      profile: NexusGenInputs['UpdateUserProfileInput']; // UpdateUserProfileInput!
     }
   }
   Query: {

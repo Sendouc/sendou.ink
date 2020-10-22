@@ -23,6 +23,7 @@ const extendedTheme = extendTheme({
   // 2) table-like lime green input addons
   // 3) input styling
   // 4) focus color
+  // 5) form label bolded
   components: {
     Button: {
       defaultProps: {
