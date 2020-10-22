@@ -14,9 +14,11 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Select,
   useToast,
 } from "@chakra-ui/core";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { countries } from "countries-list";
 import {
   GetUserByIdentifierQuery,
   UpdateUserProfileInput,
@@ -165,6 +167,23 @@ const ProfileModal: React.FC<Props> = ({
                 </InputGroup>
                 <FormErrorMessage>{errors.youtubeId?.message}</FormErrorMessage>
               </FormControl>
+
+              <FormLabel htmlFor="country" mt={4}>
+                {t("users;Country")}
+              </FormLabel>
+              <Select
+                ref={register}
+                name="country"
+                placeholder="Select country"
+              >
+                {(Object.keys(countries) as Array<keyof typeof countries>).map(
+                  (countryCode) => (
+                    <option key={countryCode} value={countryCode}>
+                      {countries[countryCode].name}
+                    </option>
+                  )
+                )}
+              </Select>
             </ModalBody>
 
             <ModalFooter>

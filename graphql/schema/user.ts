@@ -107,9 +107,6 @@ export const Mutation = mutationType({
       args: {
         profile: arg({ type: UpdateUserProfileInput, required: true }),
       },
-      authorize: async (_root, _args, ctx) => {
-        return true;
-      },
       resolve: async (_root, args, ctx) => {
         const user = await getMySession(ctx.req);
         if (!user) throw Error("Not logged in");
@@ -123,10 +120,15 @@ export const Mutation = mutationType({
             },
           });
 
-          if (profileWithSameCustomUrl) throw Error("Custom URL already taken");
+          if (
+            profileWithSameCustomUrl &&
+            profileWithSameCustomUrl.userId !== user.id
+          )
+            throw Error("Custom URL already taken");
         }
 
         const argsForDb = {
+          ...args.profile,
           // can't set array as undefined or null -> need to use [] instead due to how prisma does things
           weaponPool: args.profile?.weaponPool ? args.profile.weaponPool : [],
           customUrlPath: args.profile?.customUrlPath
@@ -138,7 +140,6 @@ export const Mutation = mutationType({
           twitchName: args.profile?.twitchName
             ? args.profile.twitchName.toLowerCase()
             : null,
-          ...args.profile?.weaponPool,
         };
 
         // FIXME: set custom url to lowerCase
@@ -148,8 +149,7 @@ export const Mutation = mutationType({
             ...argsForDb,
           },
           update: {
-            ...args.profile,
-            weaponPool: args.profile?.weaponPool ? args.profile.weaponPool : [],
+            ...argsForDb,
           },
           where: { userId: user.id },
         });

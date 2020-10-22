@@ -1,7 +1,7 @@
 import { Avatar, Box, Flex, Heading, IconButton } from "@chakra-ui/core";
-import Flag from "components/Flag";
 import Section from "components/Section";
 import WeaponImage from "components/WeaponImage";
+import { getEmojiFlag } from "countries-list";
 import { GetUserByIdentifierQuery } from "generated/graphql";
 import { useTranslation } from "lib/useMockT";
 import { useMyTheme } from "lib/useMyTheme";
@@ -52,7 +52,11 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user }) => {
             <Heading fontFamily="'Rubik', sans-serif" size="lg">
               {user.fullUsername}
             </Heading>
-            {user.profile?.country && <Flag code={user.profile.country} />}
+            {user.profile?.country && (
+              <Box as="span" ml={1}>
+                {getEmojiFlag(user.profile.country)}
+              </Box>
+            )}
           </Flex>
           <Flex alignItems="center" justifyContent="center">
             <Flex flexWrap="wrap" alignItems="center" justifyContent="center">

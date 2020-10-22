@@ -24,6 +24,7 @@ const extendedTheme = extendTheme({
   // 3) input styling
   // 4) focus color
   // 5) form label bolded
+  // 6) dropdown border + focus colors
   components: {
     Button: {
       defaultProps: {
