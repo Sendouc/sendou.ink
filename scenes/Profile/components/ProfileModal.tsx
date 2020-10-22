@@ -22,6 +22,7 @@ import {
   UpdateUserProfileInput,
   useUpdateUserProfileMutation,
 } from "generated/graphql";
+import { getToastOptions } from "lib/getToastOptions";
 import { useTranslation } from "lib/useMockT";
 import { useForm } from "react-hook-form";
 import { FaTwitch, FaTwitter, FaYoutube } from "react-icons/fa";
@@ -50,23 +51,11 @@ const ProfileModal: React.FC<Props> = ({
   const toast = useToast();
   const [updateUserProfile] = useUpdateUserProfileMutation({
     onCompleted: () => {
-      toast({
-        description: t("users;Profile updated"),
-        status: "success",
-        duration: 9000,
-        isClosable: true,
-        position: "top-right",
-      });
+      toast(getToastOptions(t("users;Profile updated"), "success"));
       onClose();
     },
     onError: (error) => {
-      toast({
-        description: error.message,
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-        position: "top-right",
-      });
+      toast(getToastOptions(error.message, "error"));
     },
   });
 
