@@ -11,10 +11,10 @@
     "studio": "npx prisma studio",
     "gen:prisma": "npx prisma generate",
     "gen:nexus": "ts-node --transpile-only -P nexus.tsconfig.json pages/api",
-    "gen:codegen": "graphql-codegen --config codegen.yml",
+    "gen": "graphql-codegen --config codegen.yml",
     "seed": "ts-node prisma/seed.ts",
     "prettier": "prettier --write .",
-    "cypress:open": "cypress open"
+    "e2e": "cypress open"
   },
   "dependencies": {
     "@apollo/client": "^3.2.5",
