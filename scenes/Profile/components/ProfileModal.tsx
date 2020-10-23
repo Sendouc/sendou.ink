@@ -3,6 +3,7 @@ import {
   Button,
   FormControl,
   FormErrorMessage,
+  FormHelperText,
   FormLabel,
   Input,
   InputGroup,
@@ -14,7 +15,13 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
   Select,
+  Textarea,
   useToast,
 } from "@chakra-ui/core";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -27,7 +34,7 @@ import {
 import { getToastOptions } from "lib/getToastOptions";
 import { useTranslation } from "lib/useMockT";
 import { useForm } from "react-hook-form";
-import { FaTwitch, FaTwitter, FaYoutube } from "react-icons/fa";
+import { FaGamepad, FaTwitch, FaTwitter, FaYoutube } from "react-icons/fa";
 import { profileSchema } from "validators/profile";
 
 interface Props {
@@ -45,10 +52,21 @@ const ProfileModal: React.FC<Props> = ({
 }) => {
   const { t } = useTranslation();
 
-  const { handleSubmit, errors, register } = useForm<UpdateUserProfileInput>({
+  const { handleSubmit, errors, register, watch } = useForm<
+    UpdateUserProfileInput
+  >({
     resolver: zodResolver(profileSchema),
     defaultValues: existingProfile ?? undefined,
   });
+
+  // FIXME: bio length show
+  const watchBio = watch("bio", "");
+
+  const watchSens = watch("stickSens");
+
+  console.log({ watchSens, watchBio });
+
+  console.log({ errors });
 
   const toast = useToast();
   const [updateUserProfile] = useUpdateUserProfileMutation({
@@ -70,15 +88,19 @@ const ProfileModal: React.FC<Props> = ({
     });
 
     await updateUserProfile({ variables: { profile: data } });
-    console.log(data);
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="xl">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      size="xl"
+      closeOnOverlayClick={false}
+    >
       <ModalOverlay>
-        <ModalContent /*bg={secondaryBgColor}*/>
+        <ModalContent>
           <ModalHeader>{t("users;Editing profile")}</ModalHeader>
-          <ModalCloseButton />
+          <ModalCloseButton borderRadius="50%" />
           <form onSubmit={handleSubmit(onSubmit)}>
             <ModalBody pb={6}>
               <FormControl isInvalid={!!errors.customUrlPath}>
@@ -171,11 +193,7 @@ const ProfileModal: React.FC<Props> = ({
               <FormLabel htmlFor="country" mt={4}>
                 {t("users;Country")}
               </FormLabel>
-              <Select
-                ref={register}
-                name="country"
-                placeholder="Select country"
-              >
+              <Select ref={register} name="country">
                 {(Object.keys(countries) as Array<keyof typeof countries>).map(
                   (countryCode) => (
                     <option key={countryCode} value={countryCode}>
@@ -184,8 +202,50 @@ const ProfileModal: React.FC<Props> = ({
                   )
                 )}
               </Select>
-            </ModalBody>
 
+              <FormLabel htmlFor="sensStick" mt={4}>
+                <Box as={FaGamepad} display="inline-block" mr={2} mb={1} />
+                {t("users;Stick sensitivity")}
+              </FormLabel>
+              <NumberInput size="lg" step={0.5} min={-5} max={5}>
+                <NumberInputField ref={register} name="sensStick" />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+
+              <FormLabel htmlFor="sensMotion" mt={4}>
+                <Box as={FaGamepad} display="inline-block" mr={2} mb={1} />
+                {t("users;Motion sensitivity")}
+              </FormLabel>
+              <NumberInput size="lg" step={0.5} min={-5} max={5}>
+                <NumberInputField ref={register} name="sensMotion" />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+
+              <FormControl isInvalid={!!errors.bio}>
+                <FormLabel htmlFor="bio" mt={4}>
+                  {t("users;Bio")}
+                </FormLabel>
+                <Textarea
+                  ref={register}
+                  name="bio"
+                  placeholder={`# I'm a header\nI'm **bolded**. Embedding weapon images is easy too: :luna_blaster:`}
+                  resize="vertical"
+                />
+                <FormHelperText>
+                  {t("users;markdownPrompt")}{" "}
+                  <a href="/markdown" target="_blank" rel="noreferrer noopener">
+                    https://sendou.ink/markdown
+                  </a>
+                </FormHelperText>
+                <FormErrorMessage>{errors.bio?.message}</FormErrorMessage>
+              </FormControl>
+            </ModalBody>
             <ModalFooter>
               <Button mr={3} type="submit">
                 Save

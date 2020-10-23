@@ -53,7 +53,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user }) => {
               {user.fullUsername}
             </Heading>
             {user.profile?.country && (
-              <Box as="span" ml={1}>
+              <Box as="span" ml={2}>
                 {getEmojiFlag(user.profile.country)}
               </Box>
             )}
