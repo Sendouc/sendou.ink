@@ -25,11 +25,12 @@ const Profile: React.FC<Props> = ({ user }) => {
           {t("users;Edit profile")}
         </Button>
       )}
-      <ProfileModal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        existingProfile={user.profile}
-      />
+      {showModal && (
+        <ProfileModal
+          onClose={() => setShowModal(false)}
+          existingProfile={user.profile}
+        />
+      )}
       {user.profile?.bio && (
         <Box my="2em">
           <Markdown value={user.profile.bio} />

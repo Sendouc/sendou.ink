@@ -68,7 +68,6 @@ const sensToString = (sens: number | undefined | null) => {
 };
 
 interface Props {
-  isOpen: boolean;
   onClose: () => void;
   existingProfile?: NonNullable<
     GetUserByIdentifierQuery["getUserByIdentifier"]
@@ -77,11 +76,7 @@ interface Props {
 
 type FormData = z.infer<typeof profileSchemaFrontend>;
 
-const ProfileModal: React.FC<Props> = ({
-  isOpen,
-  onClose,
-  existingProfile,
-}) => {
+const ProfileModal: React.FC<Props> = ({ onClose, existingProfile }) => {
   const { t } = useTranslation();
 
   const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
@@ -154,12 +149,7 @@ const ProfileModal: React.FC<Props> = ({
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      size="xl"
-      closeOnOverlayClick={false}
-    >
+    <Modal isOpen onClose={onClose} size="xl" closeOnOverlayClick={false}>
       <ModalOverlay>
         <ModalContent>
           <ModalHeader>{t("users;Editing profile")}</ModalHeader>
