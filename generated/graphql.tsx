@@ -53,7 +53,7 @@ export type UpdateUserProfileInput = {
   bio?: Maybe<Scalars['String']>;
   sensStick?: Maybe<Scalars['Float']>;
   sensMotion?: Maybe<Scalars['Float']>;
-  weaponPool?: Maybe<Array<Scalars['String']>>;
+  weaponPool: Array<Scalars['String']>;
 };
 
 export type Mutation = {

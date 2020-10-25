@@ -28,7 +28,7 @@ export interface NexusGenInputs {
     sensStick?: number | null; // Float
     twitchName?: string | null; // String
     twitterName?: string | null; // String
-    weaponPool?: string[] | null; // [String!]
+    weaponPool: string[]; // [String!]!
     youtubeId?: string | null; // String
   }
 }

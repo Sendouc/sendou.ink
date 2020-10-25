@@ -30,7 +30,7 @@ input UpdateUserProfileInput {
   sensStick: Float
   twitchName: String
   twitterName: String
-  weaponPool: [String!]
+  weaponPool: [String!]!
   youtubeId: String
 }
 

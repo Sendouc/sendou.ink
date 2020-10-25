@@ -95,6 +95,7 @@ export const UpdateUserProfileInput = inputObjectType({
     t.field("weaponPool", {
       type: "String",
       list: [true],
+      required: true,
     });
   },
 });
@@ -113,8 +114,6 @@ export const Mutation = mutationType({
 
         const argsForDb = {
           ...args.profile,
-          // can't set array as undefined or null -> need to use [] instead due to how prisma does things
-          weaponPool: args.profile.weaponPool ? args.profile.weaponPool : [],
           customUrlPath:
             typeof args.profile.customUrlPath === "string"
               ? args.profile.customUrlPath.toLowerCase()

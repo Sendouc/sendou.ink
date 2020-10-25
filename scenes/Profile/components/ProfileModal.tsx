@@ -19,15 +19,17 @@ import {
 } from "@chakra-ui/core";
 import { zodResolver } from "@hookform/resolvers/zod";
 import MarkdownTextarea from "components/MarkdownTextarea";
+import WeaponSelector from "components/WeaponSelector";
 import { countries } from "countries-list";
 import {
+  GetUserByIdentifierDocument,
   GetUserByIdentifierQuery,
   UpdateUserProfileInput,
   useUpdateUserProfileMutation,
 } from "generated/graphql";
 import { getToastOptions } from "lib/getToastOptions";
 import { useTranslation } from "lib/useMockT";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { FaGamepad, FaTwitch, FaTwitter, FaYoutube } from "react-icons/fa";
 import {
   profileSchemaFrontend,
@@ -82,7 +84,7 @@ const ProfileModal: React.FC<Props> = ({
 }) => {
   const { t } = useTranslation();
 
-  const { handleSubmit, errors, register, watch } = useForm<FormData>({
+  const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
     resolver: zodResolver(profileSchemaFrontend),
     defaultValues: existingProfile
       ? {
@@ -97,7 +99,7 @@ const ProfileModal: React.FC<Props> = ({
   const watchBio = watch("bio", existingProfile?.bio ?? "");
 
   const toast = useToast();
-  const [updateUserProfile] = useUpdateUserProfileMutation({
+  const [updateUserProfile, { loading }] = useUpdateUserProfileMutation({
     onCompleted: () => {
       toast(getToastOptions(t("users;Profile updated"), "success"));
       onClose();
@@ -110,6 +112,8 @@ const ProfileModal: React.FC<Props> = ({
   const onSubmit = async (formData: FormData) => {
     const mutationData: UpdateUserProfileInput = {
       ...formData,
+      // sens is treated as string on the frontend side of things because
+      // html select uses strings
       sensStick:
         typeof formData.sensStick === "string"
           ? parseFloat(formData.sensStick)
@@ -119,14 +123,34 @@ const ProfileModal: React.FC<Props> = ({
           ? parseFloat(formData.sensMotion)
           : null,
     };
-    Object.keys(mutationData).forEach((key) => {
-      const typedKey = key as keyof UpdateUserProfileInput;
-      if (formData[typedKey] === "" || formData[typedKey] === undefined) {
+
+    for (const [key, value] of Object.entries(mutationData)) {
+      if (value === "" || value === undefined) {
+        const typedKey = key as keyof Omit<typeof mutationData, "weaponPool">;
         mutationData[typedKey] = null;
       }
-    });
+    }
 
-    await updateUserProfile({ variables: { profile: mutationData } });
+    await updateUserProfile({
+      variables: { profile: mutationData },
+      update: (cache) => {
+        const query = {
+          query: GetUserByIdentifierDocument,
+          variables: { identifier: "79237403620945920" },
+        };
+        const data = cache.readQuery<GetUserByIdentifierQuery>(query);
+        cache.writeQuery<GetUserByIdentifierQuery>({
+          ...query,
+          data: {
+            ...data,
+            getUserByIdentifier: {
+              ...data!.getUserByIdentifier!,
+              profile: mutationData,
+            },
+          },
+        });
+      },
+    });
   };
 
   return (
@@ -242,6 +266,29 @@ const ProfileModal: React.FC<Props> = ({
                 )}
               </Select>
 
+              <FormControl isInvalid={!!errors.weaponPool}>
+                <FormLabel htmlFor="weaponPool" mt={4}>
+                  {t("users;Weapon pool")}
+                </FormLabel>
+                <Controller
+                  name="weaponPool"
+                  control={control}
+                  defaultValue={[]}
+                  render={({ onChange, value, name }) => (
+                    <WeaponSelector
+                      name={name}
+                      value={value}
+                      onChange={onChange}
+                    />
+                  )}
+                />
+                <FormErrorMessage>
+                  {/* Seems to be mistyped */}
+                  {/* @ts-ignore */}
+                  {errors.weaponPool?.message}
+                </FormErrorMessage>
+              </FormControl>
+
               <FormLabel htmlFor="sensStick" mt={4}>
                 <Box as={FaGamepad} display="inline-block" mr={2} mb={1} />
                 {t("users;Stick sensitivity")}
@@ -277,7 +324,7 @@ const ProfileModal: React.FC<Props> = ({
               />
             </ModalBody>
             <ModalFooter>
-              <Button mr={3} type="submit">
+              <Button mr={3} type="submit" isLoading={loading}>
                 Save
               </Button>
               <Button onClick={onClose} variant="outline">

@@ -36,6 +36,11 @@ const extendedTheme = extendTheme({
         colorScheme: "theme",
       },
     },
+    Tag: {
+      defaultProps: {
+        colorScheme: "theme",
+      },
+    },
     Modal: {
       baseStyle: (props) => ({
         content: {

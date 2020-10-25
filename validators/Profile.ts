@@ -26,9 +26,7 @@ const profileRootSchema = z.object({
   weaponPool: z
     .array(z.string())
     .max(5)
-    .refine((arr) => arr.every((val) => weaponsWithHero.includes(val as any)))
-    .optional()
-    .nullable(),
+    .refine((arr) => arr.every((val) => weaponsWithHero.includes(val as any))),
 });
 
 export const profileSchemaFrontend = profileRootSchema.extend({
