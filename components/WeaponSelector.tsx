@@ -1,5 +1,5 @@
 import { Select, Tag, TagCloseButton, TagLabel } from "@chakra-ui/core";
-import { weaponsWithHero } from "lib/lists/weaponsWithHero";
+import { weaponsWithHeroCategorized } from "lib/lists/weaponsWithHero";
 import WeaponImage from "./WeaponImage";
 
 interface Props {
@@ -15,10 +15,14 @@ const WeaponSelector: React.FC<Props> = ({ name, value, onChange }) => {
         name={name}
         onChange={(e) => onChange(value.concat(e.target.value))}
       >
-        {weaponsWithHero.map((wpn) => (
-          <option key={wpn} value={wpn}>
-            {wpn}
-          </option>
+        {weaponsWithHeroCategorized.map((wpnCategory) => (
+          <optgroup key={wpnCategory.name} label={wpnCategory.name}>
+            {wpnCategory.weapons.map((wpn) => (
+              <option key={wpn} value={wpn}>
+                {wpn}
+              </option>
+            ))}
+          </optgroup>
         ))}
       </Select>
       {value.map((wpn) => (

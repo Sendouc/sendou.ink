@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe.only("Map Planner", () => {
+describe("Map Planner", () => {
   beforeEach(() => {
     cy.visit("/plans");
   });

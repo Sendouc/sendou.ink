@@ -10,6 +10,7 @@ import Profile from "scenes/Profile";
 
 const prisma = new PrismaClient();
 
+// FIXME: should try to make it so that /u/Sendou and /u/234234298348 point to the same page
 export const getStaticPaths: GetStaticPaths = async () => {
   const users = await prisma.user.findMany({});
   return {
