@@ -46,8 +46,9 @@ const ProfilePage = ({ identifier }: { identifier: string }) => {
 
   // FIXME: handle fallback
   const getUserByIdentifier = data?.getUserByIdentifier;
-  if (!getUserByIdentifier && typeof window !== "undefined")
+  if (!getUserByIdentifier && typeof window !== "undefined") {
     router.push("/404");
+  }
 
   return getUserByIdentifier ? <Profile user={getUserByIdentifier} /> : null;
 };
