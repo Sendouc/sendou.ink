@@ -3,7 +3,6 @@ import {
   Button,
   FormControl,
   FormErrorMessage,
-  FormHelperText,
   FormLabel,
   Input,
   InputGroup,
@@ -16,11 +15,10 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
-  Textarea,
   useToast,
 } from "@chakra-ui/core";
 import { zodResolver } from "@hookform/resolvers/zod";
-import LimitProgress from "components/LimitProgress";
+import MarkdownTextarea from "components/MarkdownTextarea";
 import { countries } from "countries-list";
 import {
   GetUserByIdentifierQuery,
@@ -31,7 +29,10 @@ import { getToastOptions } from "lib/getToastOptions";
 import { useTranslation } from "lib/useMockT";
 import { useForm } from "react-hook-form";
 import { FaGamepad, FaTwitch, FaTwitter, FaYoutube } from "react-icons/fa";
-import { profileSchemaFrontend } from "validators/profile";
+import {
+  profileSchemaFrontend,
+  PROFILE_CHARACTER_LIMIT,
+} from "validators/profile";
 import * as z from "zod";
 
 const sensOptions = [
@@ -265,29 +266,15 @@ const ProfileModal: React.FC<Props> = ({
                 ))}
               </Select>
 
-              <FormControl isInvalid={!!errors.bio}>
-                <FormLabel htmlFor="bio" mt={4}>
-                  {t("users;Bio")}
-                </FormLabel>
-                <Textarea
-                  ref={register}
-                  name="bio"
-                  placeholder={`# I'm a header\nI'm **bolded**. Embedding weapon images is easy too: :luna_blaster:`}
-                  resize="vertical"
-                />
-                <FormHelperText>
-                  <LimitProgress
-                    currentLength={watchBio!.length}
-                    maxLength={10000}
-                    mr={3}
-                  />
-                  {t("users;markdownPrompt")}{" "}
-                  <a href="/markdown" target="_blank" rel="noreferrer noopener">
-                    https://sendou.ink/markdown
-                  </a>
-                </FormHelperText>
-                <FormErrorMessage>{errors.bio?.message}</FormErrorMessage>
-              </FormControl>
+              <MarkdownTextarea
+                fieldName="bio"
+                title={t("users;Bio")}
+                error={errors.bio}
+                register={register}
+                value={watchBio!}
+                maxLength={PROFILE_CHARACTER_LIMIT}
+                placeholder={`# I'm a header\nI'm **bolded**. Embedding weapon images is easy too: :luna_blaster:`}
+              />
             </ModalBody>
             <ModalFooter>
               <Button mr={3} type="submit">

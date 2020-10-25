@@ -2,8 +2,10 @@ import { countries } from "countries-list";
 import { weaponsWithHero } from "lib/lists/weaponsWithHero";
 import * as z from "zod";
 
+export const PROFILE_CHARACTER_LIMIT = 10000;
+
 const profileRootSchema = z.object({
-  bio: z.string().max(10000).optional().nullable(),
+  bio: z.string().max(PROFILE_CHARACTER_LIMIT).optional().nullable(),
   country: z
     .string()
     .refine((val) => Object.keys(countries).includes(val))
