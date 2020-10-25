@@ -31,6 +31,11 @@ const extendedTheme = extendTheme({
         colorScheme: "theme",
       },
     },
+    Radio: {
+      defaultProps: {
+        colorScheme: "theme",
+      },
+    },
     Modal: {
       baseStyle: (props) => ({
         content: {

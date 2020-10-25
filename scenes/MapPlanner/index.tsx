@@ -358,6 +358,7 @@ const MapPlannerPage: NextPage = () => {
         currentBackground={bg}
         changeMode={(mode) => setBg({ ...bg, mode })}
         changeTide={(tide: "low" | "mid" | "high") => setBg({ ...bg, tide })}
+        changeView={(view: "M" | "R") => setBg({ ...bg, view })}
       />
       <input
         type="file"

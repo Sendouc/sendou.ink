@@ -1,4 +1,4 @@
-import { Box, HStack, Image, Select } from "@chakra-ui/core";
+import { Box, HStack, Image, Radio, RadioGroup, Select } from "@chakra-ui/core";
 import salmonRunHighTide from "assets/SalmonRunHighTide.svg";
 import salmonRunLowTide from "assets/SalmonRunLowTide.svg";
 import salmonRunMidTide from "assets/SalmonRunMidTide.svg";
@@ -11,6 +11,7 @@ interface StageSelectorProps {
   currentBackground: PlannerMapBg;
   changeMode: (mode: "SZ" | "TC" | "RM" | "CB") => void;
   changeTide: (tide: "low" | "mid" | "high") => void;
+  changeView: (view: "M" | "R") => void;
 }
 
 const StageSelector: React.FC<StageSelectorProps> = ({
@@ -18,6 +19,7 @@ const StageSelector: React.FC<StageSelectorProps> = ({
   currentBackground,
   changeMode,
   changeTide,
+  changeView,
 }) => {
   return (
     <Box maxW="20rem" m="3rem auto">
@@ -35,7 +37,7 @@ const StageSelector: React.FC<StageSelectorProps> = ({
       </Select>
       {currentBackground.tide ? (
         <>
-          <HStack my={2} display="flex" justifyContent="center">
+          <HStack my={4} display="flex" justifyContent="center">
             <Image
               w={8}
               h={8}
@@ -78,24 +80,36 @@ const StageSelector: React.FC<StageSelectorProps> = ({
           </HStack>
         </>
       ) : (
-        <HStack my={2} display="flex" justifyContent="center">
-          {(["SZ", "TC", "RM", "CB"] as const).map((mode) => (
-            <ModeImage
-              key={mode}
-              onClick={() => changeMode(mode)}
-              mode={mode}
-              w={8}
-              h={8}
-              cursor="pointer"
-              style={{
-                filter:
-                  currentBackground.mode === mode
-                    ? undefined
-                    : "grayscale(100%)",
-              }}
-            />
-          ))}
-        </HStack>
+        <>
+          <HStack justifyContent="center" my={4}>
+            {(["SZ", "TC", "RM", "CB"] as const).map((mode) => (
+              <ModeImage
+                key={mode}
+                onClick={() => changeMode(mode)}
+                mode={mode}
+                w={8}
+                h={8}
+                cursor="pointer"
+                style={{
+                  filter:
+                    currentBackground.mode === mode
+                      ? undefined
+                      : "grayscale(100%)",
+                }}
+              />
+            ))}
+          </HStack>
+          <RadioGroup value={currentBackground.view} onChange={changeView}>
+            <HStack justifyContent="center" spacing={6}>
+              <Radio size="sm" value="M">
+                Minimap
+              </Radio>
+              <Radio size="sm" value="R">
+                Top-down
+              </Radio>
+            </HStack>
+          </RadioGroup>
+        </>
       )}
     </Box>
   );
