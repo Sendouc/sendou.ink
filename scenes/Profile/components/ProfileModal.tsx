@@ -15,16 +15,12 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
   Select,
   Textarea,
   useToast,
 } from "@chakra-ui/core";
 import { zodResolver } from "@hookform/resolvers/zod";
+import LimitProgress from "components/LimitProgress";
 import { countries } from "countries-list";
 import {
   GetUserByIdentifierQuery,
@@ -35,7 +31,38 @@ import { getToastOptions } from "lib/getToastOptions";
 import { useTranslation } from "lib/useMockT";
 import { useForm } from "react-hook-form";
 import { FaGamepad, FaTwitch, FaTwitter, FaYoutube } from "react-icons/fa";
-import { profileSchema } from "validators/profile";
+import { profileSchemaFrontend } from "validators/profile";
+import * as z from "zod";
+
+const sensOptions = [
+  "-5",
+  "-4.5",
+  "-4",
+  "-3.5",
+  "-3",
+  "-2.5",
+  "-2",
+  "-1.5",
+  "-1",
+  "-0.5",
+  "0",
+  "+0.5",
+  "+1",
+  "+1.5",
+  "+2",
+  "+2.5",
+  "+3",
+  "+3.5",
+  "+4",
+  "+4.5",
+  "+5",
+];
+
+const sensToString = (sens: number | undefined | null) => {
+  if (sens === undefined || sens === null) return undefined;
+
+  return sens > 0 ? `+${sens}` : `${sens}`;
+};
 
 interface Props {
   isOpen: boolean;
@@ -45,6 +72,8 @@ interface Props {
   >["profile"];
 }
 
+type FormData = z.infer<typeof profileSchemaFrontend>;
+
 const ProfileModal: React.FC<Props> = ({
   isOpen,
   onClose,
@@ -52,21 +81,19 @@ const ProfileModal: React.FC<Props> = ({
 }) => {
   const { t } = useTranslation();
 
-  const { handleSubmit, errors, register, watch } = useForm<
-    UpdateUserProfileInput
-  >({
-    resolver: zodResolver(profileSchema),
-    defaultValues: existingProfile ?? undefined,
+  const { handleSubmit, errors, register, watch } = useForm<FormData>({
+    resolver: zodResolver(profileSchemaFrontend),
+    defaultValues: existingProfile
+      ? {
+          ...existingProfile,
+          sensMotion: sensToString(existingProfile.sensMotion),
+          sensStick: sensToString(existingProfile.sensStick),
+        }
+      : undefined,
   });
 
   // FIXME: bio length show
-  const watchBio = watch("bio", "");
-
-  const watchSens = watch("stickSens");
-
-  console.log({ watchSens, watchBio });
-
-  console.log({ errors });
+  const watchBio = watch("bio", existingProfile?.bio ?? "");
 
   const toast = useToast();
   const [updateUserProfile] = useUpdateUserProfileMutation({
@@ -79,15 +106,26 @@ const ProfileModal: React.FC<Props> = ({
     },
   });
 
-  const onSubmit = async (data: UpdateUserProfileInput) => {
-    Object.keys(data).forEach((key) => {
-      const typedKey = key as keyof typeof data;
-      if (data[typedKey] === "") {
-        data[typedKey] = null;
+  const onSubmit = async (formData: FormData) => {
+    const mutationData: UpdateUserProfileInput = {
+      ...formData,
+      sensStick:
+        typeof formData.sensStick === "string"
+          ? parseFloat(formData.sensStick)
+          : null,
+      sensMotion:
+        typeof formData.sensMotion === "string"
+          ? parseFloat(formData.sensMotion)
+          : null,
+    };
+    Object.keys(mutationData).forEach((key) => {
+      const typedKey = key as keyof UpdateUserProfileInput;
+      if (formData[typedKey] === "" || formData[typedKey] === undefined) {
+        mutationData[typedKey] = null;
       }
     });
 
-    await updateUserProfile({ variables: { profile: data } });
+    await updateUserProfile({ variables: { profile: mutationData } });
   };
 
   return (
@@ -207,25 +245,25 @@ const ProfileModal: React.FC<Props> = ({
                 <Box as={FaGamepad} display="inline-block" mr={2} mb={1} />
                 {t("users;Stick sensitivity")}
               </FormLabel>
-              <NumberInput size="lg" step={0.5} min={-5} max={5}>
-                <NumberInputField ref={register} name="sensStick" />
-                <NumberInputStepper>
-                  <NumberIncrementStepper />
-                  <NumberDecrementStepper />
-                </NumberInputStepper>
-              </NumberInput>
+              <Select ref={register} name="sensStick">
+                {sensOptions.map((sens) => (
+                  <option key={sens} value={sens}>
+                    {sens}
+                  </option>
+                ))}
+              </Select>
 
               <FormLabel htmlFor="sensMotion" mt={4}>
                 <Box as={FaGamepad} display="inline-block" mr={2} mb={1} />
                 {t("users;Motion sensitivity")}
               </FormLabel>
-              <NumberInput size="lg" step={0.5} min={-5} max={5}>
-                <NumberInputField ref={register} name="sensMotion" />
-                <NumberInputStepper>
-                  <NumberIncrementStepper />
-                  <NumberDecrementStepper />
-                </NumberInputStepper>
-              </NumberInput>
+              <Select ref={register} name="sensMotion">
+                {sensOptions.map((sens) => (
+                  <option key={sens} value={sens}>
+                    {sens}
+                  </option>
+                ))}
+              </Select>
 
               <FormControl isInvalid={!!errors.bio}>
                 <FormLabel htmlFor="bio" mt={4}>
@@ -238,6 +276,11 @@ const ProfileModal: React.FC<Props> = ({
                   resize="vertical"
                 />
                 <FormHelperText>
+                  <LimitProgress
+                    currentLength={watchBio!.length}
+                    maxLength={10000}
+                    mr={3}
+                  />
                   {t("users;markdownPrompt")}{" "}
                   <a href="/markdown" target="_blank" rel="noreferrer noopener">
                     https://sendou.ink/markdown

@@ -7,7 +7,7 @@ import {
   stringArg,
 } from "@nexus/schema";
 import { getMySession } from "lib/getMySession";
-import { profileSchema } from "validators/profile";
+import { profileSchemaBackend } from "validators/profile";
 
 export const User = objectType({
   name: "User",
@@ -111,12 +111,39 @@ export const Mutation = mutationType({
         const user = await getMySession(ctx.req);
         if (!user) throw Error("Not logged in");
 
-        profileSchema.parse(args.profile);
+        const argsForDb = {
+          ...args.profile,
+          // can't set array as undefined or null -> need to use [] instead due to how prisma does things
+          weaponPool: args.profile.weaponPool ? args.profile.weaponPool : [],
+          customUrlPath:
+            typeof args.profile.customUrlPath === "string"
+              ? args.profile.customUrlPath.toLowerCase()
+              : args.profile.customUrlPath,
+          twitterName:
+            typeof args.profile.twitterName === "string"
+              ? args.profile.twitterName.toLowerCase()
+              : args.profile.twitterName,
+          twitchName:
+            typeof args.profile.twitchName === "string"
+              ? args.profile.twitchName.toLowerCase()
+              : args.profile.twitchName,
+          // sens is saved as integers in the database
+          sensStick:
+            typeof args.profile.sensStick === "number"
+              ? args.profile.sensStick * 10
+              : args.profile.sensStick,
+          sensMotion:
+            typeof args.profile.sensMotion === "number"
+              ? args.profile.sensMotion * 10
+              : args.profile.sensMotion,
+        };
 
-        if (args.profile.customUrlPath) {
+        profileSchemaBackend.parse(argsForDb);
+
+        if (argsForDb.customUrlPath) {
           const profileWithSameCustomUrl = await ctx.prisma.profile.findOne({
             where: {
-              customUrlPath: args.profile.customUrlPath,
+              customUrlPath: argsForDb.customUrlPath,
             },
           });
 
@@ -127,22 +154,6 @@ export const Mutation = mutationType({
             throw Error("Custom URL already taken");
         }
 
-        const argsForDb = {
-          ...args.profile,
-          // can't set array as undefined or null -> need to use [] instead due to how prisma does things
-          weaponPool: args.profile?.weaponPool ? args.profile.weaponPool : [],
-          customUrlPath: args.profile?.customUrlPath
-            ? args.profile.customUrlPath.toLowerCase()
-            : null,
-          twitterName: args.profile?.twitterName
-            ? args.profile.twitterName.toLowerCase()
-            : null,
-          twitchName: args.profile?.twitchName
-            ? args.profile.twitchName.toLowerCase()
-            : null,
-        };
-
-        // FIXME: set custom url to lowerCase
         await ctx.prisma.profile.upsert({
           create: {
             user: { connect: { id: user.id } },

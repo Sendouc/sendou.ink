@@ -28,10 +28,10 @@ const FooterContent: React.FC = () => {
       </Flex>
       <Flex alignItems="center" flexWrap="wrap" justifyContent="center">
         <a href="https://discord.gg/sendou">
-          <DiscordIcon h="30px" w="30px" m="1em" />
+          <DiscordIcon h="50px" w="50px" m="1em" />
         </a>
         <a href="https://github.com/Sendouc/sendou.ink">
-          <Box as={FaGithub} size="30px" m="1em" />
+          <Box as={FaGithub} size="50px" m="1em" />
         </a>
       </Flex>
     </Flex>

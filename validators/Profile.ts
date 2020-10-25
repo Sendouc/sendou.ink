@@ -2,7 +2,7 @@ import { countries } from "countries-list";
 import { weaponsWithHero } from "lib/lists/weaponsWithHero";
 import * as z from "zod";
 
-export const profileSchema = z.object({
+const profileRootSchema = z.object({
   bio: z.string().max(10000).optional().nullable(),
   country: z
     .string()
@@ -18,20 +18,6 @@ export const profileSchema = z.object({
     )
     .optional()
     .nullable(),
-  sensMotion: z
-    .number()
-    .min(-5)
-    .max(5)
-    .refine((val) => (val * 10) % 5 === 0)
-    .optional()
-    .nullable(),
-  sensStick: z
-    .number()
-    .min(-5)
-    .max(5)
-    .refine((val) => (val * 10) % 5 === 0)
-    .optional()
-    .nullable(),
   twitchName: z.string().max(25).optional().nullable(),
   twitterName: z.string().max(15).optional().nullable(),
   youtubeId: z.string().optional().nullable(),
@@ -39,6 +25,28 @@ export const profileSchema = z.object({
     .array(z.string())
     .max(5)
     .refine((arr) => arr.every((val) => weaponsWithHero.includes(val as any)))
+    .optional()
+    .nullable(),
+});
+
+export const profileSchemaFrontend = profileRootSchema.extend({
+  sensMotion: z.string(),
+  sensStick: z.string(),
+});
+
+export const profileSchemaBackend = profileRootSchema.extend({
+  sensMotion: z
+    .number()
+    .min(-50)
+    .max(50)
+    .refine((val) => val % 5 === 0)
+    .optional()
+    .nullable(),
+  sensStick: z
+    .number()
+    .min(-50)
+    .max(50)
+    .refine((val) => val % 5 === 0)
     .optional()
     .nullable(),
 });
