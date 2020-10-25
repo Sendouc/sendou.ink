@@ -135,7 +135,7 @@ const IconNavBar = () => {
         );
         if (!menuItems.length) {
           return (
-            <Link key={code} href={code}>
+            <Link key={code} href={"/" + code}>
               <a>
                 <MenuNavIcon />
               </a>
@@ -151,7 +151,7 @@ const IconNavBar = () => {
             <MenuList bg={secondaryBgColor} color={textColor}>
               <MenuGroup title={t(`navigation;${displayName}`)}>
                 {menuItems.map((item) => (
-                  <Link key={item.code} href={item.code}>
+                  <Link key={item.code} href={"/" + item.code}>
                     <MenuItem
                       disabled={item.displayName === "Voting" && !isVoting}
                     >
