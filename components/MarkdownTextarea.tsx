@@ -1,4 +1,5 @@
 import {
+  Box,
   FormControl,
   FormErrorMessage,
   FormHelperText,
@@ -40,16 +41,18 @@ const MarkdownTextarea: React.FC<Props> = ({
         placeholder={placeholder}
         resize="vertical"
       />
-      <FormHelperText>
+      <FormHelperText display="flex" alignItems="center">
         <LimitProgress
           currentLength={value.length}
           maxLength={maxLength}
           mr={3}
         />
-        {t("users;markdownPrompt")}{" "}
-        <a href="/markdown" target="_blank" rel="noreferrer noopener">
-          https://sendou.ink/markdown
-        </a>
+        <Box>
+          {t("users;markdownPrompt")}{" "}
+          <a href="/markdown" target="_blank" rel="noreferrer noopener">
+            https://sendou.ink/markdown
+          </a>
+        </Box>
       </FormHelperText>
       <FormErrorMessage>{error?.message}</FormErrorMessage>
     </FormControl>
