@@ -99,7 +99,13 @@ const IconNavBar = () => {
   const isVoting = false;
 
   return (
-    <Flex bg={secondaryBgColor} py={2} justifyContent="center" flexWrap="wrap">
+    <Flex
+      as="nav"
+      bg={secondaryBgColor}
+      py={2}
+      justifyContent="center"
+      flexWrap="wrap"
+    >
       {navIcons.map(({ displayName, code, menuItems }) => {
         const codesTogether =
           "/" +

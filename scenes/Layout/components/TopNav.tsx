@@ -75,6 +75,7 @@ const TopNav = () => {
 
   return (
     <Grid
+      as="header"
       templateColumns={["1fr 1fr", null, "1fr 1fr 1fr"]}
       bg={bgColor}
       w="100%"

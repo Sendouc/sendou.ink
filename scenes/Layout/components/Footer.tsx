@@ -17,7 +17,7 @@ const Footer: React.FC = () => {
   )[species];
 
   return (
-    <Box mt="auto">
+    <Box as="footer" mt="auto">
       <Image
         src={footerImageSrc}
         bg={themeColor}
