@@ -51,7 +51,9 @@ const ProfilePage = ({ identifier }: { identifier: string }) => {
     router.push("/404");
   }
 
-  return getUserByIdentifier ? <Profile user={getUserByIdentifier} /> : null;
+  return getUserByIdentifier ? (
+    <Profile user={getUserByIdentifier} identifier={identifier} />
+  ) : null;
 };
 
 export default ProfilePage;

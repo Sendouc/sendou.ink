@@ -10,9 +10,10 @@ import ProfileModal from "./components/ProfileModal";
 
 interface Props {
   user: NonNullable<GetUserByIdentifierQuery["getUserByIdentifier"]>;
+  identifier: string;
 }
 
-const Profile: React.FC<Props> = ({ user }) => {
+const Profile: React.FC<Props> = ({ user, identifier }) => {
   const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
   const [loggedInUser] = useUser();
@@ -29,6 +30,7 @@ const Profile: React.FC<Props> = ({ user }) => {
         <ProfileModal
           onClose={() => setShowModal(false)}
           existingProfile={user.profile}
+          identifier={identifier}
         />
       )}
       {user.profile?.bio && (

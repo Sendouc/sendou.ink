@@ -72,11 +72,16 @@ interface Props {
   existingProfile?: NonNullable<
     GetUserByIdentifierQuery["getUserByIdentifier"]
   >["profile"];
+  identifier: string;
 }
 
 type FormData = z.infer<typeof profileSchemaFrontend>;
 
-const ProfileModal: React.FC<Props> = ({ onClose, existingProfile }) => {
+const ProfileModal: React.FC<Props> = ({
+  onClose,
+  existingProfile,
+  identifier,
+}) => {
   const { t } = useTranslation();
 
   const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
@@ -131,7 +136,7 @@ const ProfileModal: React.FC<Props> = ({ onClose, existingProfile }) => {
       update: (cache) => {
         const query = {
           query: GetUserByIdentifierDocument,
-          variables: { identifier: "79237403620945920" },
+          variables: { identifier },
         };
         const data = cache.readQuery<GetUserByIdentifierQuery>(query);
         cache.writeQuery<GetUserByIdentifierQuery>({

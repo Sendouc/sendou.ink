@@ -13,6 +13,7 @@ import { useMyTheme } from "lib/useMyTheme";
 import { useRouter } from "next/dist/client/router";
 import Link from "next/link";
 
+// FIXME: " Warning: Text content did not match. Server: ": Nov 6" Client: ": 6 Nov" "
 const getFirstFridayDate = () => {
   const today = new Date();
   const month =
