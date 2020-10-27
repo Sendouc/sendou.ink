@@ -1229,7 +1229,7 @@
   "plans": {
     "tooNarrowAlert": "Infelizmente essa ferramenta não foi feira para telas estreitas mas você ainda pode tentar",
     "Weapons": "Armas",
-    "Tools": "Ferramentas",
+    "Tools": "Recursos",
     "Pencil (P)": "Pencil (P)",
     "Line (L)": "Linha (L)",
     "Rectangle (R)": "Retângulo (R)",
@@ -1550,5 +1550,12 @@
     "What is your activity like on a typical week?": "Quando você joga em uma semana normal?",
     "What are you looking from a team?": "O que você espera de um time?",
     "Free word": "Texto livre"
+  },
+  "xleaderboards": {
+    "PEAK_XP":"X Power (Todas as armas)",
+    "UNIQUE_WEAPONS_COUNT":"Colocações no top 500 com armas diferentes",
+    "FOUR_MODE_PEAK_AVERAGE":"Média do máximo X power nos 4 modos",
+    "PLACEMENTS_COUNT":"Colocações no top 500",
+    "Score":"Pontuação"
   }
 }
