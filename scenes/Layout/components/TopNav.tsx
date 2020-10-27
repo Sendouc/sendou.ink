@@ -14,7 +14,6 @@ import {
 } from "@chakra-ui/core";
 import { DiscordIcon } from "assets/icons";
 import { useTranslation } from "lib/useMockT";
-import { useMyTheme } from "lib/useMyTheme";
 import useUser from "lib/useUser";
 import { signIn, signOut } from "next-auth/client";
 import Link from "next/link";
@@ -22,7 +21,6 @@ import { FiMoon, FiSun } from "react-icons/fi";
 import { LanguageSelector } from "./LanguageSelector";
 
 const TopNav = () => {
-  const { bgColor, secondaryBgColor } = useMyTheme();
   const { colorMode, toggleColorMode } = useColorMode();
 
   const UserItem = () => {
@@ -59,7 +57,7 @@ const TopNav = () => {
             cursor="pointer"
           />
         </MenuButton>
-        <MenuList bg={secondaryBgColor}>
+        <MenuList>
           <MenuGroup title={`${user.username}#${user.discriminator}`}>
             <Link href={`/u/${user.discordId}`}>
               <MenuItem>{t("navigation;Profile")}</MenuItem>
@@ -77,7 +75,6 @@ const TopNav = () => {
     <Grid
       as="header"
       templateColumns={["1fr 1fr", null, "1fr 1fr 1fr"]}
-      bg={bgColor}
       w="100%"
       alignItems="center"
       justifyContent="space-between"

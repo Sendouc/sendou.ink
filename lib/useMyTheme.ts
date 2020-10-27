@@ -1,6 +1,7 @@
 import { useColorMode } from "@chakra-ui/core";
 import { theme } from "theme";
 
+// This hook can be deprecated
 export const useMyTheme = () => {
   const { colorMode } = useColorMode();
 

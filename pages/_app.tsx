@@ -43,7 +43,17 @@ const extendedTheme = extendTheme({
     },
     Modal: {
       baseStyle: (props) => ({
-        content: {
+        dialog: {
+          bg: mode(
+            theme.light.secondaryBgColor,
+            theme.dark.secondaryBgColor
+          )(props),
+        },
+      }),
+    },
+    Menu: {
+      baseStyle: (props) => ({
+        list: {
           bg: mode(
             theme.light.secondaryBgColor,
             theme.dark.secondaryBgColor
