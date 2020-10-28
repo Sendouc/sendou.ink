@@ -40,14 +40,8 @@ export const Profile = objectType({
     t.model.youtubeId();
     t.model.country();
     t.model.bio();
-    t.float("sensStick", {
-      resolve: (root) =>
-        root.sensStick ? root.sensStick / 10 : root.sensStick,
-    });
-    t.float("sensMotion", {
-      resolve: (root) =>
-        root.sensMotion ? root.sensMotion / 10 : root.sensMotion,
-    });
+    t.model.sensStick();
+    t.model.sensMotion();
     t.model.weaponPool();
   },
 });
@@ -126,15 +120,6 @@ export const Mutation = mutationType({
             typeof args.profile.twitchName === "string"
               ? args.profile.twitchName.toLowerCase()
               : args.profile.twitchName,
-          // sens is saved as integers in the database
-          sensStick:
-            typeof args.profile.sensStick === "number"
-              ? args.profile.sensStick * 10
-              : args.profile.sensStick,
-          sensMotion:
-            typeof args.profile.sensMotion === "number"
-              ? args.profile.sensMotion * 10
-              : args.profile.sensMotion,
         };
 
         profileSchemaBackend.parse(argsForDb);

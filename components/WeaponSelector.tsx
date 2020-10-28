@@ -13,7 +13,10 @@ const WeaponSelector: React.FC<Props> = ({ name, value, onChange }) => {
     <>
       <Select
         name={name}
-        onChange={(e) => onChange(value.concat(e.target.value))}
+        onChange={(e) => {
+          if (!!e.target.value && !value.includes(e.target.value))
+            onChange(value.concat(e.target.value));
+        }}
       >
         {weaponsWithHeroCategorized.map((wpnCategory) => (
           <optgroup key={wpnCategory.name} label={wpnCategory.name}>

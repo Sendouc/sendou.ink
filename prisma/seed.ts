@@ -1,4 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+const { PrismaClient } = require("@prisma/client");
+//import { PrismaClient } from "@prisma/client";
 const fs = require("fs");
 const path = require("path");
 
@@ -36,8 +37,8 @@ const main = async () => {
           bio: "My cool bio! Supports markdown too: **bolded**",
           country: "US",
           customUrlPath: "tester",
-          sensMotion: 45,
-          sensStick: -20,
+          sensMotion: 4.5,
+          sensStick: -2.0,
           weaponPool: [
             "Tenta Brella",
             "Range Blaster",
@@ -53,6 +54,46 @@ const main = async () => {
   });
 
   console.log("User created");
+
+  await prisma.xRankPlacement.deleteMany({});
+  await prisma.player.deleteMany({});
+
+  const getMode = (i: number) => {
+    const j = i + 1;
+    if (j % 1 === 0) return "SZ";
+    if (j % 2 === 0) return "TC";
+    if (j % 3 === 0) return "RM";
+
+    return "CB";
+  };
+
+  await Promise.all(
+    Array(100)
+      .fill(null)
+      .map((_, i) => {
+        const playerName = i % 2 === 0 ? `Player${i}` : `選手${i}`;
+        return prisma.xRankPlacement.create({
+          data: {
+            playerName,
+            playerNameLower: i % 2 === 0 ? `player${i}` : `選手${i}`,
+            mode: getMode(i),
+            month: 12,
+            year: 2020,
+            ranking: Math.ceil((i + 1) / 4),
+            xPower: 3000 - i,
+            weapon: "Splattershot Jr.",
+            player: {
+              create: {
+                playerId: "" + i,
+                names: [playerName],
+              },
+            },
+          },
+        });
+      })
+  );
+
+  console.log("X Rank placements created");
 };
 
 main()

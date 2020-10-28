@@ -18,7 +18,8 @@
   },
   "ts-node": {
     "compilerOptions": {
-      "module": "commonjs"
+      "module": "commonjs",
+      "types": ["node"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

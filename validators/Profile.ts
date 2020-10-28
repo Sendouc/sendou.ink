@@ -26,7 +26,8 @@ const profileRootSchema = z.object({
   weaponPool: z
     .array(z.string())
     .max(5)
-    .refine((arr) => arr.every((val) => weaponsWithHero.includes(val as any))),
+    .refine((arr) => arr.every((val) => weaponsWithHero.includes(val as any)))
+    .refine((arr) => new Set(arr).size === arr.length),
 });
 
 export const profileSchemaFrontend = profileRootSchema.extend({
@@ -37,16 +38,16 @@ export const profileSchemaFrontend = profileRootSchema.extend({
 export const profileSchemaBackend = profileRootSchema.extend({
   sensMotion: z
     .number()
-    .min(-50)
-    .max(50)
-    .refine((val) => val % 5 === 0)
+    .min(-5)
+    .max(5)
+    .refine((val) => (val * 10) % 5 === 0)
     .optional()
     .nullable(),
   sensStick: z
     .number()
     .min(-50)
     .max(50)
-    .refine((val) => val % 5 === 0)
+    .refine((val) => (val * 10) % 5 === 0)
     .optional()
     .nullable(),
 });

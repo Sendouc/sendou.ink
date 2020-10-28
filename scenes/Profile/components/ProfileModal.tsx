@@ -62,7 +62,7 @@ const sensOptions = [
 ];
 
 const sensToString = (sens: number | undefined | null) => {
-  if (sens === undefined || sens === null) return undefined;
+  if (sens === undefined || sens === null) return "";
 
   return sens > 0 ? `+${sens}` : `${sens}`;
 };
@@ -251,6 +251,7 @@ const ProfileModal: React.FC<Props> = ({
               <FormLabel htmlFor="country" mt={4}>
                 {t("users;Country")}
               </FormLabel>
+              {/* FIXME: placeholders for dropdowns */}
               <Select ref={register} name="country">
                 {(Object.keys(countries) as Array<keyof typeof countries>).map(
                   (countryCode) => (
