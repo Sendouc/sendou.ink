@@ -153,6 +153,7 @@ const ProfileModal: React.FC<Props> = ({
     });
   };
 
+  // FIXME: modal seems slow to popup at least in dev?
   return (
     <Modal isOpen onClose={onClose} size="xl" closeOnOverlayClick={false}>
       <ModalOverlay>
