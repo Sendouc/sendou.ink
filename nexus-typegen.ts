@@ -10,8 +10,8 @@ import * as Prisma from ".prisma/client"
 
 declare global {
   interface NexusGenCustomOutputProperties<TypeName extends string> {
+    crud: NexusPrisma<TypeName, 'crud'>
     model: NexusPrisma<TypeName, 'model'>
-    crud: any
   }
 }
 
@@ -20,6 +20,17 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  PlayerIdModeMonthYearCompoundUniqueInput: { // input type
+    mode: NexusGenEnums['RankedMode']; // RankedMode!
+    month: number; // Int!
+    playerId: string; // String!
+    year: number; // Int!
+  }
+  QueryXRankPlacementsOrderByInput: { // input type
+    month?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    ranking?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    year?: NexusGenEnums['SortOrder'] | null; // SortOrder
+  }
   UpdateUserProfileInput: { // input type
     bio?: string | null; // String
     country?: string | null; // String
@@ -31,9 +42,15 @@ export interface NexusGenInputs {
     weaponPool: string[]; // [String!]!
     youtubeId?: string | null; // String
   }
+  XRankPlacementWhereUniqueInput: { // input type
+    id?: number | null; // Int
+    playerId_mode_month_year?: NexusGenInputs['PlayerIdModeMonthYearCompoundUniqueInput'] | null; // PlayerIdModeMonthYearCompoundUniqueInput
+  }
 }
 
 export interface NexusGenEnums {
+  RankedMode: Prisma.RankedMode
+  SortOrder: Prisma.SortOrder
 }
 
 export interface NexusGenScalars {
@@ -46,13 +63,20 @@ export interface NexusGenScalars {
 
 export interface NexusGenRootTypes {
   Mutation: {};
+  Player: Prisma.Player;
   Profile: Prisma.Profile;
   Query: {};
   User: Prisma.User;
+  XRankPlacement: Prisma.XRankPlacement;
 }
 
 export interface NexusGenAllTypes extends NexusGenRootTypes {
+  PlayerIdModeMonthYearCompoundUniqueInput: NexusGenInputs['PlayerIdModeMonthYearCompoundUniqueInput'];
+  QueryXRankPlacementsOrderByInput: NexusGenInputs['QueryXRankPlacementsOrderByInput'];
   UpdateUserProfileInput: NexusGenInputs['UpdateUserProfileInput'];
+  XRankPlacementWhereUniqueInput: NexusGenInputs['XRankPlacementWhereUniqueInput'];
+  RankedMode: NexusGenEnums['RankedMode'];
+  SortOrder: NexusGenEnums['SortOrder'];
   String: NexusGenScalars['String'];
   Int: NexusGenScalars['Int'];
   Float: NexusGenScalars['Float'];
@@ -63,6 +87,12 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
 export interface NexusGenFieldTypes {
   Mutation: { // field return type
     updateUserProfile: boolean; // Boolean!
+  }
+  Player: { // field return type
+    names: string[]; // [String!]!
+    placements: NexusGenRootTypes['XRankPlacement'][]; // [XRankPlacement!]!
+    playerId: string; // String!
+    user: NexusGenRootTypes['User'] | null; // User
   }
   Profile: { // field return type
     bio: string | null; // String
@@ -77,6 +107,7 @@ export interface NexusGenFieldTypes {
   }
   Query: { // field return type
     getUserByIdentifier: NexusGenRootTypes['User'] | null; // User
+    xRankPlacements: NexusGenRootTypes['XRankPlacement'][]; // [XRankPlacement!]!
   }
   User: { // field return type
     avatarUrl: string | null; // String
@@ -86,6 +117,65 @@ export interface NexusGenFieldTypes {
     profile: NexusGenRootTypes['Profile'] | null; // Profile
     profilePath: string; // String!
   }
+  XRankPlacement: { // field return type
+    id: number; // Int!
+    mode: NexusGenEnums['RankedMode']; // RankedMode!
+    month: number; // Int!
+    player: NexusGenRootTypes['Player']; // Player!
+    playerId: string; // String!
+    playerName: string; // String!
+    ranking: number; // Int!
+    weapon: string; // String!
+    xPower: number; // Float!
+    year: number; // Int!
+  }
+}
+
+export interface NexusGenFieldTypeNames {
+  Mutation: { // field return type name
+    updateUserProfile: 'Boolean'
+  }
+  Player: { // field return type name
+    names: 'String'
+    placements: 'XRankPlacement'
+    playerId: 'String'
+    user: 'User'
+  }
+  Profile: { // field return type name
+    bio: 'String'
+    country: 'String'
+    customUrlPath: 'String'
+    sensMotion: 'Float'
+    sensStick: 'Float'
+    twitchName: 'String'
+    twitterName: 'String'
+    weaponPool: 'String'
+    youtubeId: 'String'
+  }
+  Query: { // field return type name
+    getUserByIdentifier: 'User'
+    xRankPlacements: 'XRankPlacement'
+  }
+  User: { // field return type name
+    avatarUrl: 'String'
+    discordId: 'String'
+    fullUsername: 'String'
+    id: 'Int'
+    profile: 'Profile'
+    profilePath: 'String'
+  }
+  XRankPlacement: { // field return type name
+    id: 'Int'
+    mode: 'RankedMode'
+    month: 'Int'
+    player: 'Player'
+    playerId: 'String'
+    playerName: 'String'
+    ranking: 'Int'
+    weapon: 'String'
+    xPower: 'Float'
+    year: 'Int'
+  }
 }
 
 export interface NexusGenArgTypes {
@@ -94,9 +184,24 @@ export interface NexusGenArgTypes {
       profile: NexusGenInputs['UpdateUserProfileInput']; // UpdateUserProfileInput!
     }
   }
+  Player: {
+    placements: { // args
+      after?: NexusGenInputs['XRankPlacementWhereUniqueInput'] | null; // XRankPlacementWhereUniqueInput
+      before?: NexusGenInputs['XRankPlacementWhereUniqueInput'] | null; // XRankPlacementWhereUniqueInput
+      first?: number | null; // Int
+      last?: number | null; // Int
+    }
+  }
   Query: {
     getUserByIdentifier: { // args
       identifier: string; // String!
+    }
+    xRankPlacements: { // args
+      after?: NexusGenInputs['XRankPlacementWhereUniqueInput'] | null; // XRankPlacementWhereUniqueInput
+      before?: NexusGenInputs['XRankPlacementWhereUniqueInput'] | null; // XRankPlacementWhereUniqueInput
+      first?: number | null; // Int
+      last?: number | null; // Int
+      orderBy?: NexusGenInputs['QueryXRankPlacementsOrderByInput'][] | null; // [QueryXRankPlacementsOrderByInput!]
     }
   }
 }
@@ -106,11 +211,11 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "Mutation" | "Profile" | "Query" | "User";
+export type NexusGenObjectNames = "Mutation" | "Player" | "Profile" | "Query" | "User" | "XRankPlacement";
 
-export type NexusGenInputNames = "UpdateUserProfileInput";
+export type NexusGenInputNames = "PlayerIdModeMonthYearCompoundUniqueInput" | "QueryXRankPlacementsOrderByInput" | "UpdateUserProfileInput" | "XRankPlacementWhereUniqueInput";
 
-export type NexusGenEnumNames = never;
+export type NexusGenEnumNames = "RankedMode" | "SortOrder";
 
 export type NexusGenInterfaceNames = never;
 
@@ -124,6 +229,7 @@ export interface NexusGenTypes {
   rootTypes: NexusGenRootTypes;
   argTypes: NexusGenArgTypes;
   fieldTypes: NexusGenFieldTypes;
+  fieldTypeNames: NexusGenFieldTypeNames;
   allTypes: NexusGenAllTypes;
   inheritedFields: NexusGenInheritedFields;
   objectNames: NexusGenObjectNames;
