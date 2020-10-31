@@ -37,11 +37,21 @@ export type Profile = {
 export type Query = {
   __typename?: 'Query';
   getUserByIdentifier?: Maybe<User>;
+  xRankPlacements: Array<XRankPlacement>;
 };
 
 
 export type QueryGetUserByIdentifierArgs = {
   identifier: Scalars['String'];
+};
+
+
+export type QueryXRankPlacementsArgs = {
+  orderBy?: Maybe<Array<QueryXRankPlacementsOrderByInput>>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+  before?: Maybe<XRankPlacementWhereUniqueInput>;
+  after?: Maybe<XRankPlacementWhereUniqueInput>;
 };
 
 export type UpdateUserProfileInput = {
@@ -65,6 +75,67 @@ export type Mutation = {
 export type MutationUpdateUserProfileArgs = {
   profile: UpdateUserProfileInput;
 };
+
+export type XRankPlacement = {
+  __typename?: 'XRankPlacement';
+  id: Scalars['Int'];
+  playerId: Scalars['String'];
+  playerName: Scalars['String'];
+  ranking: Scalars['Int'];
+  xPower: Scalars['Float'];
+  weapon: Scalars['String'];
+  mode: RankedMode;
+  month: Scalars['Int'];
+  year: Scalars['Int'];
+  player: Player;
+};
+
+export type Player = {
+  __typename?: 'Player';
+  playerId: Scalars['String'];
+  /** Set of names player has had in Top 500 results. The most recent one is the first one of the list. */
+  names: Array<Scalars['String']>;
+  user?: Maybe<User>;
+  placements: Array<XRankPlacement>;
+};
+
+
+export type PlayerPlacementsArgs = {
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+  before?: Maybe<XRankPlacementWhereUniqueInput>;
+  after?: Maybe<XRankPlacementWhereUniqueInput>;
+};
+
+export enum RankedMode {
+  Sz = 'SZ',
+  Tc = 'TC',
+  Rm = 'RM',
+  Cb = 'CB'
+}
+
+export type XRankPlacementWhereUniqueInput = {
+  id?: Maybe<Scalars['Int']>;
+  playerId_mode_month_year?: Maybe<PlayerIdModeMonthYearCompoundUniqueInput>;
+};
+
+export type QueryXRankPlacementsOrderByInput = {
+  ranking?: Maybe<SortOrder>;
+  month?: Maybe<SortOrder>;
+  year?: Maybe<SortOrder>;
+};
+
+export type PlayerIdModeMonthYearCompoundUniqueInput = {
+  playerId: Scalars['String'];
+  mode: RankedMode;
+  month: Scalars['Int'];
+  year: Scalars['Int'];
+};
+
+export enum SortOrder {
+  Asc = 'asc',
+  Desc = 'desc'
+}
 
 export type UpdateUserProfileMutationVariables = Exact<{
   profile: UpdateUserProfileInput;
@@ -90,6 +161,17 @@ export type GetUserByIdentifierQuery = (
       { __typename?: 'Profile' }
       & Pick<Profile, 'customUrlPath' | 'twitterName' | 'twitchName' | 'youtubeId' | 'country' | 'bio' | 'sensMotion' | 'sensStick' | 'weaponPool'>
     )> }
+  )> }
+);
+
+export type XRankPlacementsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type XRankPlacementsQuery = (
+  { __typename?: 'Query' }
+  & { xRankPlacements: Array<(
+    { __typename?: 'XRankPlacement' }
+    & Pick<XRankPlacement, 'id' | 'playerId' | 'playerName' | 'ranking' | 'xPower' | 'weapon' | 'mode' | 'month' | 'year'>
   )> }
 );
 
@@ -170,3 +252,43 @@ export function useGetUserByIdentifierLazyQuery(baseOptions?: Apollo.LazyQueryHo
 export type GetUserByIdentifierQueryHookResult = ReturnType<typeof useGetUserByIdentifierQuery>;
 export type GetUserByIdentifierLazyQueryHookResult = ReturnType<typeof useGetUserByIdentifierLazyQuery>;
 export type GetUserByIdentifierQueryResult = Apollo.QueryResult<GetUserByIdentifierQuery, GetUserByIdentifierQueryVariables>;
+export const XRankPlacementsDocument = gql`
+    query XRankPlacements {
+  xRankPlacements(orderBy: [{ranking: asc}, {month: desc}, {year: desc}]) {
+    id
+    playerId
+    playerName
+    ranking
+    xPower
+    weapon
+    mode
+    month
+    year
+  }
+}
+    `;
+
+/**
+ * __useXRankPlacementsQuery__
+ *
+ * To run a query within a React component, call `useXRankPlacementsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useXRankPlacementsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useXRankPlacementsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useXRankPlacementsQuery(baseOptions?: Apollo.QueryHookOptions<XRankPlacementsQuery, XRankPlacementsQueryVariables>) {
+        return Apollo.useQuery<XRankPlacementsQuery, XRankPlacementsQueryVariables>(XRankPlacementsDocument, baseOptions);
+      }
+export function useXRankPlacementsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<XRankPlacementsQuery, XRankPlacementsQueryVariables>) {
+          return Apollo.useLazyQuery<XRankPlacementsQuery, XRankPlacementsQueryVariables>(XRankPlacementsDocument, baseOptions);
+        }
+export type XRankPlacementsQueryHookResult = ReturnType<typeof useXRankPlacementsQuery>;
+export type XRankPlacementsLazyQueryHookResult = ReturnType<typeof useXRankPlacementsLazyQuery>;
+export type XRankPlacementsQueryResult = Apollo.QueryResult<XRankPlacementsQuery, XRankPlacementsQueryVariables>;

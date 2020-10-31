@@ -44,7 +44,7 @@ export const Query = extendType({
         originalResolve: any
       ) {
         console.log({ args: args.orderBy });
-        if (!args.first && !args.last) args.first = 50;
+        if (!args.first && !args.last) args.first = 25;
 
         args.first = Math.min(args.first, 100);
         args.last = Math.min(args.last, 100);

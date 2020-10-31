@@ -1,0 +1,15 @@
+query XRankPlacements {
+  xRankPlacements(
+    orderBy: [{ ranking: asc }, { month: desc }, { year: desc }]
+  ) {
+    id
+    playerId
+    playerName
+    ranking
+    xPower
+    weapon
+    mode
+    month
+    year
+  }
+}
