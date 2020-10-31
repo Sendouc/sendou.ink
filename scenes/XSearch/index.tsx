@@ -72,7 +72,7 @@ const XSearch: React.FC<Props> = ({ placements }) => {
                   {record.playerName}
                 </TableCell>
                 <TableCell>
-                  <WeaponImage englishName={record.weapon} size="SMALL" />
+                  <WeaponImage name={record.weapon} size={32} />
                 </TableCell>
                 <TableCell>
                   <Text fontWeight="bold">{record.xPower}</Text>

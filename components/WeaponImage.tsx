@@ -1,47 +1,31 @@
-import englishToInternal from "lib/englishToInternal.json";
 import { useTranslation } from "lib/useMockT";
+import Image from "next/image";
 import React from "react";
 
 interface WeaponImageProps {
-  englishName: string;
-  size: "SMALL" | "SMEDIUM" | "MEDIUM" | "BIG";
-  asInlineBlock?: boolean;
+  name: string;
+  size: 32 | 64 | 128;
   noTitle?: boolean;
+  isInline?: boolean;
 }
 
-const sizeWhMap: Record<
-  "SMALL" | "SMEDIUM" | "MEDIUM" | "BIG",
-  string | undefined
-> = {
-  SMALL: "32px",
-  SMEDIUM: "48px",
-  MEDIUM: "64px",
-  BIG: undefined,
-};
-
 const WeaponImage: React.FC<WeaponImageProps> = ({
-  englishName,
+  name,
   size,
-  asInlineBlock,
   noTitle,
+  isInline,
 }) => {
   const { t } = useTranslation();
-  const wh = sizeWhMap[size];
-
-  const key = englishName as keyof typeof englishToInternal;
-  const weaponInternal = englishToInternal[key];
 
   return (
     <>
-      <img
-        src={`https://raw.githubusercontent.com/Leanny/leanny.github.io/master/splat2/weapons/Wst_${weaponInternal}.png`}
-        alt={t(`game;${englishName}`)}
-        title={noTitle ? undefined : t(`game;${englishName}`)}
-        style={{
-          width: wh,
-          height: wh,
-          display: asInlineBlock ? "inline-block" : undefined,
-        }}
+      <Image
+        src={`/images/weapons/${name.replace(".", "")}.png`}
+        alt={t(`game;${name}`)}
+        title={noTitle ? undefined : t(`game;${name}`)}
+        width={size}
+        height={size}
+        style={{ display: isInline ? "inline-block" : undefined }}
       />
     </>
   );

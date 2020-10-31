@@ -60,11 +60,11 @@ const main = async () => {
 
   const getMode = (i: number) => {
     const j = i + 1;
-    if (j % 1 === 0) return "SZ";
+    if (j % 4 === 0) return "CB";
     if (j % 2 === 0) return "TC";
     if (j % 3 === 0) return "RM";
 
-    return "CB";
+    return "SZ";
   };
 
   await Promise.all(
@@ -80,7 +80,7 @@ const main = async () => {
             month: 12,
             year: 2020,
             ranking: Math.ceil((i + 1) / 4),
-            xPower: 3000 - i,
+            xPower: 3000 - i * 0.5,
             weapon: "Splattershot Jr.",
             player: {
               create: {

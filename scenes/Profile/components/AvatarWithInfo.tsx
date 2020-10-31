@@ -104,7 +104,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user }) => {
                 >
                   {user.profile.weaponPool.map((wpn) => (
                     <Box mx="0.2em" key={wpn}>
-                      <WeaponImage englishName={wpn} size="SMALL" />
+                      <WeaponImage name={wpn} size={32} />
                     </Box>
                   ))}
                 </Flex>

@@ -1,22 +1,17 @@
-import { Image } from "@chakra-ui/core";
-import cb from "assets/cb.png";
-import rm from "assets/rm.png";
-import sz from "assets/sz.png";
-import tc from "assets/tc.png";
-import tw from "assets/tw.png";
 import AbilityIcon from "components/AbilityIcon";
 import GearImage from "components/GearImage";
 import WeaponImage from "components/WeaponImage";
 import { abilityMarkdownCodes } from "lib/lists/abilityMarkdownCodes";
 import { gearMarkdownCodes } from "lib/lists/gearMarkdownCodes";
 import { weaponMarkdownCodes } from "lib/lists/weaponMarkdownCodes";
+import Image from "next/image";
 
 const modeCodes: Record<string, string> = {
-  turf_war: tw,
-  splat_zones: sz,
-  tower_control: tc,
-  rainmaker: rm,
-  clam_blitz: cb,
+  turf_war: "TW",
+  splat_zones: "SZ",
+  tower_control: "TC",
+  rainmaker: "RM",
+  clam_blitz: "CB",
 } as const;
 
 interface EmojiProps {
@@ -28,8 +23,8 @@ const Emoji: React.FC<EmojiProps> = (props) => {
 
   const keyWeapon = value as keyof typeof weaponMarkdownCodes;
   const weaponName = weaponMarkdownCodes[keyWeapon];
-  if (!!weaponName)
-    return <WeaponImage englishName={weaponName} size="SMALL" asInlineBlock />;
+  console.log({ weaponName });
+  if (!!weaponName) return <WeaponImage name={weaponName} size={32} isInline />;
 
   const keyAbility = value as keyof typeof abilityMarkdownCodes;
   const abilityName = abilityMarkdownCodes[keyAbility];
@@ -39,9 +34,16 @@ const Emoji: React.FC<EmojiProps> = (props) => {
   const gearName = gearMarkdownCodes[keyGear];
   if (!!gearName) return <GearImage englishName={gearName} mini />;
 
-  const mode = modeCodes[value];
-  if (!!mode)
-    return <Image src={mode} display="inline-block" w="32px" h="32px" />;
+  const modeCode = modeCodes[value];
+  if (!!modeCode)
+    return (
+      <Image
+        src={`/modes/${modeCode}.png`}
+        style={{ display: "inline-block" }}
+        width={32}
+        height={32}
+      />
+    );
 
   return <>{props.value}</>;
 };

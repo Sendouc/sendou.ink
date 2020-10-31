@@ -38,7 +38,7 @@ const WeaponSelector: React.FC<Props> = ({ name, value, onChange }) => {
           m={2}
         >
           <TagLabel>
-            <WeaponImage englishName={wpn} size="SMALL" />
+            <WeaponImage name={wpn} size={32} />
           </TagLabel>
           <TagCloseButton
             borderRadius="full"
