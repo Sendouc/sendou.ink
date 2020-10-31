@@ -1,7 +1,6 @@
 import {
   Box,
   Flex,
-  Image,
   Menu,
   MenuButton,
   MenuGroup,
@@ -11,6 +10,7 @@ import {
 import { useTranslation } from "lib/useMockT";
 import { useMyTheme } from "lib/useMyTheme";
 import { useRouter } from "next/dist/client/router";
+import Image from "next/image";
 import Link from "next/link";
 
 // FIXME: " Warning: Text content did not match. Server: ": Nov 6" Client: ": 6 Nov" "
@@ -124,14 +124,14 @@ const IconNavBar = () => {
             <Box color={isActive ? themeColor : gray} fontSize="0.75em">
               {t(`navigation;${displayName}`)}
             </Box>
+            {/* FIXME: same width for each */}
             <Image
-              src={`/navIcons/${code}.png`}
-              h={12}
-              w={12}
+              src={`/layout/${code}.png`}
+              height={48}
+              width={48}
               alt={code}
-              cursor="pointer"
-              userSelect="none"
-              ignoreFallback
+              priority
+              style={{ cursor: "pointer", userSelect: "none" }}
             />
             {menuItems.length > 0 && (
               <Box ml="0.1rem" lineHeight="0.5rem">
