@@ -1,5 +1,5 @@
-const { PrismaClient } = require("@prisma/client");
-//import { PrismaClient } from "@prisma/client";
+//const { PrismaClient } = require("@prisma/client");
+import { PrismaClient } from "@prisma/client";
 const fs = require("fs");
 const path = require("path");
 
@@ -26,7 +26,7 @@ const main = async () => {
 
   await prisma.profile.deleteMany({});
   await prisma.user.deleteMany({});
-  await prisma.user.create({
+  const testUser = await prisma.user.create({
     data: {
       username: "N-ZAP",
       discriminator: "6227",
@@ -86,6 +86,14 @@ const main = async () => {
               create: {
                 playerId: "" + i,
                 names: [playerName],
+                user:
+                  i === 0
+                    ? {
+                        connect: {
+                          id: testUser.id,
+                        },
+                      }
+                    : undefined,
               },
             },
           },

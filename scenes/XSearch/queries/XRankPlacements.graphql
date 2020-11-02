@@ -1,15 +1,17 @@
-query XRankPlacements {
-  xRankPlacements(
-    orderBy: [{ ranking: asc }, { month: desc }, { year: desc }]
-  ) {
-    id
+query getXRankPlacements($month: Int!, $year: Int!, $mode: RankedMode!) {
+  getXRankPlacements(month: $month, year: $year, mode: $mode) {
     playerId
     playerName
     ranking
     xPower
     weapon
     mode
-    month
-    year
+    player {
+      user {
+        avatarUrl
+        fullUsername
+        profilePath
+      }
+    }
   }
 }

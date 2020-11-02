@@ -26,11 +26,6 @@ export interface NexusGenInputs {
     playerId: string; // String!
     year: number; // Int!
   }
-  QueryXRankPlacementsOrderByInput: { // input type
-    month?: NexusGenEnums['SortOrder'] | null; // SortOrder
-    ranking?: NexusGenEnums['SortOrder'] | null; // SortOrder
-    year?: NexusGenEnums['SortOrder'] | null; // SortOrder
-  }
   UpdateUserProfileInput: { // input type
     bio?: string | null; // String
     country?: string | null; // String
@@ -50,7 +45,6 @@ export interface NexusGenInputs {
 
 export interface NexusGenEnums {
   RankedMode: Prisma.RankedMode
-  SortOrder: Prisma.SortOrder
 }
 
 export interface NexusGenScalars {
@@ -72,11 +66,9 @@ export interface NexusGenRootTypes {
 
 export interface NexusGenAllTypes extends NexusGenRootTypes {
   PlayerIdModeMonthYearCompoundUniqueInput: NexusGenInputs['PlayerIdModeMonthYearCompoundUniqueInput'];
-  QueryXRankPlacementsOrderByInput: NexusGenInputs['QueryXRankPlacementsOrderByInput'];
   UpdateUserProfileInput: NexusGenInputs['UpdateUserProfileInput'];
   XRankPlacementWhereUniqueInput: NexusGenInputs['XRankPlacementWhereUniqueInput'];
   RankedMode: NexusGenEnums['RankedMode'];
-  SortOrder: NexusGenEnums['SortOrder'];
   String: NexusGenScalars['String'];
   Int: NexusGenScalars['Int'];
   Float: NexusGenScalars['Float'];
@@ -107,7 +99,7 @@ export interface NexusGenFieldTypes {
   }
   Query: { // field return type
     getUserByIdentifier: NexusGenRootTypes['User'] | null; // User
-    xRankPlacements: NexusGenRootTypes['XRankPlacement'][]; // [XRankPlacement!]!
+    getXRankPlacements: NexusGenRootTypes['XRankPlacement'][]; // [XRankPlacement!]!
   }
   User: { // field return type
     avatarUrl: string | null; // String
@@ -154,7 +146,7 @@ export interface NexusGenFieldTypeNames {
   }
   Query: { // field return type name
     getUserByIdentifier: 'User'
-    xRankPlacements: 'XRankPlacement'
+    getXRankPlacements: 'XRankPlacement'
   }
   User: { // field return type name
     avatarUrl: 'String'
@@ -196,12 +188,10 @@ export interface NexusGenArgTypes {
     getUserByIdentifier: { // args
       identifier: string; // String!
     }
-    xRankPlacements: { // args
-      after?: NexusGenInputs['XRankPlacementWhereUniqueInput'] | null; // XRankPlacementWhereUniqueInput
-      before?: NexusGenInputs['XRankPlacementWhereUniqueInput'] | null; // XRankPlacementWhereUniqueInput
-      first?: number | null; // Int
-      last?: number | null; // Int
-      orderBy?: NexusGenInputs['QueryXRankPlacementsOrderByInput'][] | null; // [QueryXRankPlacementsOrderByInput!]
+    getXRankPlacements: { // args
+      mode: NexusGenEnums['RankedMode']; // RankedMode!
+      month: number; // Int!
+      year: number; // Int!
     }
   }
 }
@@ -213,9 +203,9 @@ export interface NexusGenInheritedFields {}
 
 export type NexusGenObjectNames = "Mutation" | "Player" | "Profile" | "Query" | "User" | "XRankPlacement";
 
-export type NexusGenInputNames = "PlayerIdModeMonthYearCompoundUniqueInput" | "QueryXRankPlacementsOrderByInput" | "UpdateUserProfileInput" | "XRankPlacementWhereUniqueInput";
+export type NexusGenInputNames = "PlayerIdModeMonthYearCompoundUniqueInput" | "UpdateUserProfileInput" | "XRankPlacementWhereUniqueInput";
 
-export type NexusGenEnumNames = "RankedMode" | "SortOrder";
+export type NexusGenEnumNames = "RankedMode";
 
 export type NexusGenInterfaceNames = never;
 

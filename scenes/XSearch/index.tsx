@@ -1,4 +1,4 @@
-import { Button, Text } from "@chakra-ui/core";
+import { Avatar, Text } from "@chakra-ui/core";
 import MyHead from "components/MyHead";
 import {
   Table,
@@ -9,19 +9,20 @@ import {
   TableRow,
 } from "components/Table";
 import WeaponImage from "components/WeaponImage";
-import { XRankPlacementsQuery } from "generated/graphql";
+import { GetXRankPlacementsQuery } from "generated/graphql";
+import { getRankingString } from "lib/getRankingString";
 import { useTranslation } from "lib/useMockT";
 import { useMyTheme } from "lib/useMyTheme";
-import Image from "next/image";
+import Link from "next/link";
 
 interface Props {
-  placements: NonNullable<XRankPlacementsQuery["xRankPlacements"]>;
+  placements: NonNullable<GetXRankPlacementsQuery["getXRankPlacements"]>;
 }
 
 const XSearch: React.FC<Props> = ({ placements }) => {
   const { t } = useTranslation();
-  const { gray, themeColor } = useMyTheme();
-  console.log({ placements });
+  const { gray } = useMyTheme();
+
   return (
     <>
       <MyHead title="Top 500 Browser" />
@@ -36,71 +37,40 @@ const XSearch: React.FC<Props> = ({ placements }) => {
       <Table maxW="50rem">
         <TableHead>
           <TableRow>
+            <TableHeader width={4} />
+            <TableHeader width={4} />
             <TableHeader>{t("xsearch;Name")}</TableHeader>
-            <TableHeader>{t("freeagents;Weapon")}</TableHeader>
             <TableHeader>{t("xsearch;X Power")}</TableHeader>
-            <TableHeader p={1}>{t("xsearch;Placement")}</TableHeader>
-            <TableHeader>{t("xsearch;Mode")}</TableHeader>
-            <TableHeader>{t("xsearch;Month")}</TableHeader>
-            <TableHeader></TableHeader>
+            <TableHeader>{t("freeagents;Weapon")}</TableHeader>
           </TableRow>
         </TableHead>
         <TableBody>
           {placements.map((record) => {
             return (
-              <TableRow key={record.id}>
+              <TableRow key={record.playerId}>
+                <TableCell color={gray}>
+                  {getRankingString(record.ranking)}
+                </TableCell>
                 <TableCell>
-                  {/* {record.user ? (
-                    <Flex alignItems="center">
-                      <ChakraLink
-                        as={Link}
-                        color={themeColor}
-                        to={record.user.profilePath}
-                      >
+                  {record.player.user && (
+                    <Link href={record.player.user.profilePath}>
+                      <a>
                         <Avatar
-                          src={record.user.avatarUrl}
+                          src={record.player.user.avatarUrl ?? undefined}
                           size="sm"
-                          name={record.user.fullUsername}
+                          name={record.player.user.fullUsername}
                           mr="0.5rem"
                         />
-                      </ChakraLink>
-                      {record.playerName}
-                    </Flex>
-                  ) : (
-                    <>{record.playerName}</>
-                  )} */}
-                  {record.playerName}
+                      </a>
+                    </Link>
+                  )}
                 </TableCell>
-                <TableCell>
-                  <WeaponImage name={record.weapon} size={32} />
-                </TableCell>
+                <TableCell>{record.playerName}</TableCell>
                 <TableCell>
                   <Text fontWeight="bold">{record.xPower}</Text>
                 </TableCell>
-                <TableCell color={gray}>{record.ranking}</TableCell>
                 <TableCell>
-                  <Image
-                    src={`/modes/${record.mode}.png`}
-                    alt={record.mode}
-                    width={32}
-                    height={32}
-                  />
-                </TableCell>
-                <TableCell color={gray}>
-                  {record.month}/{record.year}
-                </TableCell>
-                <TableCell>
-                  <Button
-                    size="xs"
-                    onClick={() => {
-                      /*setFilter({ playerId: record.playerId });
-                        setPage(1);*/
-                      console.log(record.playerId);
-                    }}
-                    variant="outline"
-                  >
-                    {t("xsearch;ID")}
-                  </Button>
+                  <WeaponImage name={record.weapon} size={32} />
                 </TableCell>
               </TableRow>
             );

@@ -1,0 +1,16 @@
+export const getLocalizedMonthYearString = (
+  month: number,
+  year: number,
+  locale: string
+) => {
+  const dateForLocalization = new Date();
+  dateForLocalization.setDate(1);
+  dateForLocalization.setMonth(month - 1);
+  dateForLocalization.setFullYear(year);
+  const localizedString = dateForLocalization.toLocaleString(locale, {
+    month: "long",
+    year: "numeric",
+  });
+
+  return localizedString.charAt(0).toUpperCase() + localizedString.slice(1);
+};

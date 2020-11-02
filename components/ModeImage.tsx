@@ -8,7 +8,7 @@ const ModeImage: React.FC<ModeImageProps & ImageProps> = ({
   mode,
   ...props
 }) => {
-  return <Image src={`/images/modeIcons/${mode}.png`} {...props} />;
+  return <Image src={`/modes/${mode}.png`} {...props} />;
 };
 
 export default ModeImage;

@@ -1,4 +1,4 @@
-import { extendType, objectType } from "@nexus/schema";
+import { arg, extendType, intArg, objectType } from "@nexus/schema";
 
 export const XRankPlacmement = objectType({
   name: "XRankPlacement",
@@ -33,22 +33,20 @@ export const Player = objectType({
 export const Query = extendType({
   type: "Query",
   definition(t) {
-    // TODO: limit so that you can only get max 100 results max and 50 by default
-    t.crud.xRankPlacements({
-      ordering: { ranking: true, month: true, year: true },
-      async resolve(
-        root: any,
-        args: any,
-        ctx: any,
-        info: any,
-        originalResolve: any
-      ) {
-        console.log({ args: args.orderBy });
-        if (!args.first && !args.last) args.first = 25;
-
-        args.first = Math.min(args.first, 100);
-        args.last = Math.min(args.last, 100);
-        return originalResolve(root, args, ctx, info);
+    t.field("getXRankPlacements", {
+      type: "XRankPlacement",
+      nullable: false,
+      list: [true],
+      args: {
+        year: intArg({ nullable: false }),
+        month: intArg({ nullable: false }),
+        mode: arg({ type: "RankedMode", nullable: false }),
+      },
+      resolve: (_root, args, ctx) => {
+        return ctx.prisma.xRankPlacement.findMany({
+          where: { month: args.month, year: args.year, mode: args.mode },
+          orderBy: [{ ranking: "asc" }, { month: "desc" }, { year: "desc" }],
+        });
       },
     });
   },

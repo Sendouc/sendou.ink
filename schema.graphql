@@ -37,13 +37,7 @@ type Profile {
 
 type Query {
   getUserByIdentifier(identifier: String!): User
-  xRankPlacements(after: XRankPlacementWhereUniqueInput, before: XRankPlacementWhereUniqueInput, first: Int, last: Int, orderBy: [QueryXRankPlacementsOrderByInput!]): [XRankPlacement!]!
-}
-
-input QueryXRankPlacementsOrderByInput {
-  month: SortOrder
-  ranking: SortOrder
-  year: SortOrder
+  getXRankPlacements(mode: RankedMode!, month: Int!, year: Int!): [XRankPlacement!]!
 }
 
 enum RankedMode {
@@ -51,11 +45,6 @@ enum RankedMode {
   RM
   SZ
   TC
-}
-
-enum SortOrder {
-  asc
-  desc
 }
 
 input UpdateUserProfileInput {
