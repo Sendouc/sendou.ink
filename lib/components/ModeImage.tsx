@@ -1,12 +1,28 @@
 import Image from "next/image";
+import { CSSProperties } from "react";
 
 interface ModeImageProps {
   mode: "SZ" | "TC" | "RM" | "CB";
   size: 32 | 64 | 128;
+  onClick?: () => void;
+  style?: CSSProperties;
 }
 
-const ModeImage: React.FC<ModeImageProps> = ({ mode, size }) => {
-  return <Image src={`/modes/${mode}.png`} width={size} height={size} />;
+const ModeImage: React.FC<ModeImageProps> = ({
+  mode,
+  size,
+  onClick,
+  style,
+}) => {
+  return (
+    <Image
+      src={`/modes/${mode}.png`}
+      width={size}
+      height={size}
+      onClick={onClick}
+      style={style}
+    />
+  );
 };
 
 export default ModeImage;

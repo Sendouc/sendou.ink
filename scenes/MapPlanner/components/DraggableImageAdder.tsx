@@ -58,7 +58,7 @@ const DraggableImageAdder: React.FC<DraggableImageAdderProps> = ({
                 }
                 m="3px"
               >
-                <WeaponImage englishName={wpn} size="SMALL" />
+                <WeaponImage name={wpn} size={32} />
               </Box>
             ))}
             {["Blaster", "Brella", "Charger", "Slosher"].map(

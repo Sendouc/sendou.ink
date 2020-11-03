@@ -82,20 +82,13 @@ const StageSelector: React.FC<StageSelectorProps> = ({
       ) : (
         <>
           <HStack justifyContent="center" my={4}>
+            {/* FIXME: actual radio button component for Top500 page too */}
             {(["SZ", "TC", "RM", "CB"] as const).map((mode) => (
               <ModeImage
                 key={mode}
                 onClick={() => changeMode(mode)}
                 mode={mode}
-                w={8}
-                h={8}
-                cursor="pointer"
-                style={{
-                  filter:
-                    currentBackground.mode === mode
-                      ? undefined
-                      : "grayscale(100%)",
-                }}
+                size={32}
               />
             ))}
           </HStack>
