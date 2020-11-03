@@ -1,5 +1,6 @@
 import { Text } from "@chakra-ui/core";
-import ModeImage from "components/ModeImage";
+import { GetPlayersXRankPlacementsQuery } from "generated/graphql";
+import ModeImage from "lib/components/ModeImage";
 import {
   Table,
   TableBody,
@@ -7,9 +8,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "components/Table";
-import WeaponImage from "components/WeaponImage";
-import { GetPlayersXRankPlacementsQuery } from "generated/graphql";
+} from "lib/components/Table";
+import WeaponImage from "lib/components/WeaponImage";
 import { getRankingString } from "lib/getRankingString";
 import { useTranslation } from "lib/useMockT";
 import { useMyTheme } from "lib/useMyTheme";

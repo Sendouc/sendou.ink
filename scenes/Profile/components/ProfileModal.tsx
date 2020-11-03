@@ -18,8 +18,6 @@ import {
   useToast,
 } from "@chakra-ui/core";
 import { zodResolver } from "@hookform/resolvers/zod";
-import MarkdownTextarea from "components/MarkdownTextarea";
-import WeaponSelector from "components/WeaponSelector";
 import { countries } from "countries-list";
 import {
   GetUserByIdentifierDocument,
@@ -27,6 +25,8 @@ import {
   UpdateUserProfileInput,
   useUpdateUserProfileMutation,
 } from "generated/graphql";
+import MarkdownTextarea from "lib/components/MarkdownTextarea";
+import WeaponSelector from "lib/components/WeaponSelector";
 import { getToastOptions } from "lib/getToastOptions";
 import { useTranslation } from "lib/useMockT";
 import { Controller, useForm } from "react-hook-form";

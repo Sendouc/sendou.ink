@@ -1,7 +1,5 @@
 import { Radio, RadioGroup, Select, Stack } from "@chakra-ui/core";
 import { PrismaClient } from "@prisma/client";
-import LoadingBoundary from "components/LoadingBoundary";
-import PageHeader from "components/PageHeader";
 import {
   GetXRankPlacementsDocument,
   GetXRankPlacementsQueryVariables,
@@ -9,6 +7,8 @@ import {
   useGetXRankPlacementsQuery,
 } from "generated/graphql";
 import { initializeApollo } from "lib/apollo";
+import LoadingBoundary from "lib/components/LoadingBoundary";
+import PageHeader from "lib/components/PageHeader";
 import { getLocalizedMonthYearString } from "lib/getLocalizedMontYearString";
 import { useTranslation } from "lib/useMockT";
 import { GetStaticProps } from "next";

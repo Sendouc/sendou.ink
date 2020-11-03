@@ -1,5 +1,5 @@
 import { Box, Flex, IconButton } from "@chakra-ui/core";
-import ColorPicker from "components/ColorPicker";
+import ColorPicker from "lib/components/ColorPicker";
 import { useMyTheme } from "lib/useMyTheme";
 import { useState } from "react";
 import Draggable from "react-draggable";

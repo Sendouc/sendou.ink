@@ -1,7 +1,7 @@
 import { Box, Button } from "@chakra-ui/core";
-import Markdown from "components/Markdown";
-import MyHead from "components/MyHead";
 import { GetUserByIdentifierQuery } from "generated/graphql";
+import Markdown from "lib/components/Markdown";
+import MyHead from "lib/components/MyHead";
 import { useTranslation } from "lib/useMockT";
 import useUser from "lib/useUser";
 import { useState } from "react";
