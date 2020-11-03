@@ -42,10 +42,9 @@ enum RankedMode {
 
 model XRankPlacement {
   id              Int        @id @default(autoincrement())
-  playerId        String
-  player          Player     @relation(fields: [playerId], references: [playerId])
+  switchAccountId String
+  player          Player     @relation(fields: [switchAccountId], references: [switchAccountId])
   playerName      String
-  playerNameLower String
   ranking         Int
   xPower          Float
   weapon          String
@@ -53,14 +52,13 @@ model XRankPlacement {
   month           Int
   year            Int
 
-  @@unique([playerId, mode, month, year])
-  @@index([playerNameLower])
+  @@unique([switchAccountId, mode, month, year])
 }
 
 model Player {
-  playerId   String           @unique
-  user       User?            @relation(fields: [userId], references: [id])
-  userId     Int?             @unique
-  names      String[]
-  placements XRankPlacement[]
+  switchAccountId String           @unique
+  user            User?            @relation(fields: [userId], references: [id])
+  userId          Int?             @unique
+  name            String
+  placements      XRankPlacement[]
 }

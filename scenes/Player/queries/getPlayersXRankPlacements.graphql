@@ -1,5 +1,5 @@
-query getPlayersXRankPlacements($playerId: String!) {
-  getPlayersXRankPlacements(playerId: $playerId) {
+query getPlayersXRankPlacements($switchAccountId: String!) {
+  getPlayersXRankPlacements(switchAccountId: $switchAccountId) {
     id
     playerName
     ranking

@@ -20,10 +20,10 @@ declare global {
 }
 
 export interface NexusGenInputs {
-  PlayerIdModeMonthYearCompoundUniqueInput: { // input type
+  SwitchAccountIdModeMonthYearCompoundUniqueInput: { // input type
     mode: NexusGenEnums['RankedMode']; // RankedMode!
     month: number; // Int!
-    playerId: string; // String!
+    switchAccountId: string; // String!
     year: number; // Int!
   }
   UpdateUserProfileInput: { // input type
@@ -39,7 +39,7 @@ export interface NexusGenInputs {
   }
   XRankPlacementWhereUniqueInput: { // input type
     id?: number | null; // Int
-    playerId_mode_month_year?: NexusGenInputs['PlayerIdModeMonthYearCompoundUniqueInput'] | null; // PlayerIdModeMonthYearCompoundUniqueInput
+    switchAccountId_mode_month_year?: NexusGenInputs['SwitchAccountIdModeMonthYearCompoundUniqueInput'] | null; // SwitchAccountIdModeMonthYearCompoundUniqueInput
   }
 }
 
@@ -65,7 +65,7 @@ export interface NexusGenRootTypes {
 }
 
 export interface NexusGenAllTypes extends NexusGenRootTypes {
-  PlayerIdModeMonthYearCompoundUniqueInput: NexusGenInputs['PlayerIdModeMonthYearCompoundUniqueInput'];
+  SwitchAccountIdModeMonthYearCompoundUniqueInput: NexusGenInputs['SwitchAccountIdModeMonthYearCompoundUniqueInput'];
   UpdateUserProfileInput: NexusGenInputs['UpdateUserProfileInput'];
   XRankPlacementWhereUniqueInput: NexusGenInputs['XRankPlacementWhereUniqueInput'];
   RankedMode: NexusGenEnums['RankedMode'];
@@ -81,9 +81,9 @@ export interface NexusGenFieldTypes {
     updateUserProfile: boolean; // Boolean!
   }
   Player: { // field return type
-    names: string[]; // [String!]!
+    name: string; // String!
     placements: NexusGenRootTypes['XRankPlacement'][]; // [XRankPlacement!]!
-    playerId: string; // String!
+    switchAccountId: string; // String!
     user: NexusGenRootTypes['User'] | null; // User
   }
   Profile: { // field return type
@@ -115,9 +115,9 @@ export interface NexusGenFieldTypes {
     mode: NexusGenEnums['RankedMode']; // RankedMode!
     month: number; // Int!
     player: NexusGenRootTypes['Player']; // Player!
-    playerId: string; // String!
     playerName: string; // String!
     ranking: number; // Int!
+    switchAccountId: string; // String!
     weapon: string; // String!
     xPower: number; // Float!
     year: number; // Int!
@@ -129,9 +129,9 @@ export interface NexusGenFieldTypeNames {
     updateUserProfile: 'Boolean'
   }
   Player: { // field return type name
-    names: 'String'
+    name: 'String'
     placements: 'XRankPlacement'
-    playerId: 'String'
+    switchAccountId: 'String'
     user: 'User'
   }
   Profile: { // field return type name
@@ -163,9 +163,9 @@ export interface NexusGenFieldTypeNames {
     mode: 'RankedMode'
     month: 'Int'
     player: 'Player'
-    playerId: 'String'
     playerName: 'String'
     ranking: 'Int'
+    switchAccountId: 'String'
     weapon: 'String'
     xPower: 'Float'
     year: 'Int'
@@ -188,7 +188,7 @@ export interface NexusGenArgTypes {
   }
   Query: {
     getPlayersXRankPlacements: { // args
-      playerId: string; // String!
+      switchAccountId: string; // String!
     }
     getUserByIdentifier: { // args
       identifier: string; // String!
@@ -208,7 +208,7 @@ export interface NexusGenInheritedFields {}
 
 export type NexusGenObjectNames = "Mutation" | "Player" | "Profile" | "Query" | "User" | "XRankPlacement";
 
-export type NexusGenInputNames = "PlayerIdModeMonthYearCompoundUniqueInput" | "UpdateUserProfileInput" | "XRankPlacementWhereUniqueInput";
+export type NexusGenInputNames = "SwitchAccountIdModeMonthYearCompoundUniqueInput" | "UpdateUserProfileInput" | "XRankPlacementWhereUniqueInput";
 
 export type NexusGenEnumNames = "RankedMode";
 

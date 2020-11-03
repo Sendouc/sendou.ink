@@ -55,7 +55,7 @@ export type QueryGetXRankPlacementsArgs = {
 
 
 export type QueryGetPlayersXRankPlacementsArgs = {
-  playerId: Scalars['String'];
+  switchAccountId: Scalars['String'];
 };
 
 export type UpdateUserProfileInput = {
@@ -83,7 +83,7 @@ export type MutationUpdateUserProfileArgs = {
 export type XRankPlacement = {
   __typename?: 'XRankPlacement';
   id: Scalars['Int'];
-  playerId: Scalars['String'];
+  switchAccountId: Scalars['String'];
   playerName: Scalars['String'];
   ranking: Scalars['Int'];
   xPower: Scalars['Float'];
@@ -96,9 +96,8 @@ export type XRankPlacement = {
 
 export type Player = {
   __typename?: 'Player';
-  playerId: Scalars['String'];
-  /** Set of names player has had in Top 500 results. The most recent one is the first one of the list. */
-  names: Array<Scalars['String']>;
+  switchAccountId: Scalars['String'];
+  name: Scalars['String'];
   user?: Maybe<User>;
   placements: Array<XRankPlacement>;
 };
@@ -120,18 +119,18 @@ export enum RankedMode {
 
 export type XRankPlacementWhereUniqueInput = {
   id?: Maybe<Scalars['Int']>;
-  playerId_mode_month_year?: Maybe<PlayerIdModeMonthYearCompoundUniqueInput>;
+  switchAccountId_mode_month_year?: Maybe<SwitchAccountIdModeMonthYearCompoundUniqueInput>;
 };
 
-export type PlayerIdModeMonthYearCompoundUniqueInput = {
-  playerId: Scalars['String'];
+export type SwitchAccountIdModeMonthYearCompoundUniqueInput = {
+  switchAccountId: Scalars['String'];
   mode: RankedMode;
   month: Scalars['Int'];
   year: Scalars['Int'];
 };
 
 export type GetPlayersXRankPlacementsQueryVariables = Exact<{
-  playerId: Scalars['String'];
+  switchAccountId: Scalars['String'];
 }>;
 
 
@@ -188,7 +187,7 @@ export type GetXRankPlacementsQuery = (
   { __typename?: 'Query' }
   & { getXRankPlacements: Array<(
     { __typename?: 'XRankPlacement' }
-    & Pick<XRankPlacement, 'playerId' | 'playerName' | 'ranking' | 'xPower' | 'weapon' | 'mode'>
+    & Pick<XRankPlacement, 'switchAccountId' | 'playerName' | 'ranking' | 'xPower' | 'weapon' | 'mode'>
     & { player: (
       { __typename?: 'Player' }
       & { user?: Maybe<(
@@ -201,8 +200,8 @@ export type GetXRankPlacementsQuery = (
 
 
 export const GetPlayersXRankPlacementsDocument = gql`
-    query getPlayersXRankPlacements($playerId: String!) {
-  getPlayersXRankPlacements(playerId: $playerId) {
+    query getPlayersXRankPlacements($switchAccountId: String!) {
+  getPlayersXRankPlacements(switchAccountId: $switchAccountId) {
     id
     playerName
     ranking
@@ -234,7 +233,7 @@ export const GetPlayersXRankPlacementsDocument = gql`
  * @example
  * const { data, loading, error } = useGetPlayersXRankPlacementsQuery({
  *   variables: {
- *      playerId: // value for 'playerId'
+ *      switchAccountId: // value for 'switchAccountId'
  *   },
  * });
  */
@@ -326,7 +325,7 @@ export type GetUserByIdentifierQueryResult = Apollo.QueryResult<GetUserByIdentif
 export const GetXRankPlacementsDocument = gql`
     query getXRankPlacements($month: Int!, $year: Int!, $mode: RankedMode!) {
   getXRankPlacements(month: $month, year: $year, mode: $mode) {
-    playerId
+    switchAccountId
     playerName
     ranking
     xPower

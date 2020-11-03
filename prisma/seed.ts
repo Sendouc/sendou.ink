@@ -75,7 +75,6 @@ const main = async () => {
         return prisma.xRankPlacement.create({
           data: {
             playerName,
-            playerNameLower: i % 2 === 0 ? `player${i}` : `選手${i}`,
             mode: getMode(i),
             month: 12,
             year: 2020,
@@ -84,8 +83,8 @@ const main = async () => {
             weapon: "Splattershot Jr.",
             player: {
               create: {
-                playerId: "" + i,
-                names: [playerName],
+                switchAccountId: "" + i,
+                name: playerName,
                 user:
                   i === 0
                     ? {

@@ -7,20 +7,10 @@ type Mutation {
 }
 
 type Player {
-  """
-  Set of names player has had in Top 500 results. The most recent one is the first one of the list.
-  """
-  names: [String!]!
+  name: String!
   placements(after: XRankPlacementWhereUniqueInput, before: XRankPlacementWhereUniqueInput, first: Int, last: Int): [XRankPlacement!]!
-  playerId: String!
+  switchAccountId: String!
   user: User
-}
-
-input PlayerIdModeMonthYearCompoundUniqueInput {
-  mode: RankedMode!
-  month: Int!
-  playerId: String!
-  year: Int!
 }
 
 type Profile {
@@ -36,7 +26,7 @@ type Profile {
 }
 
 type Query {
-  getPlayersXRankPlacements(playerId: String!): [XRankPlacement!]!
+  getPlayersXRankPlacements(switchAccountId: String!): [XRankPlacement!]!
   getUserByIdentifier(identifier: String!): User
   getXRankPlacements(mode: RankedMode!, month: Int!, year: Int!): [XRankPlacement!]!
 }
@@ -46,6 +36,13 @@ enum RankedMode {
   RM
   SZ
   TC
+}
+
+input SwitchAccountIdModeMonthYearCompoundUniqueInput {
+  mode: RankedMode!
+  month: Int!
+  switchAccountId: String!
+  year: Int!
 }
 
 input UpdateUserProfileInput {
@@ -74,9 +71,9 @@ type XRankPlacement {
   mode: RankedMode!
   month: Int!
   player: Player!
-  playerId: String!
   playerName: String!
   ranking: Int!
+  switchAccountId: String!
   weapon: String!
   xPower: Float!
   year: Int!
@@ -84,5 +81,5 @@ type XRankPlacement {
 
 input XRankPlacementWhereUniqueInput {
   id: Int
-  playerId_mode_month_year: PlayerIdModeMonthYearCompoundUniqueInput
+  switchAccountId_mode_month_year: SwitchAccountIdModeMonthYearCompoundUniqueInput
 }

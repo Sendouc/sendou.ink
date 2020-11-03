@@ -1,6 +1,6 @@
 query getXRankPlacements($month: Int!, $year: Int!, $mode: RankedMode!) {
   getXRankPlacements(month: $month, year: $year, mode: $mode) {
-    playerId
+    switchAccountId
     playerName
     ranking
     xPower

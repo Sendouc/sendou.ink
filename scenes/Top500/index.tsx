@@ -47,7 +47,7 @@ const XSearch: React.FC<Props> = ({ placements }) => {
         <TableBody>
           {placements.map((record) => {
             return (
-              <TableRow key={record.playerId}>
+              <TableRow key={record.switchAccountId}>
                 <TableCell color={gray}>
                   {getRankingString(record.ranking)}
                 </TableCell>

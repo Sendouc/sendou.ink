@@ -15,7 +15,7 @@ const prisma = new PrismaClient();
 export const getStaticPaths: GetStaticPaths = async () => {
   const players = await prisma.player.findMany({});
   return {
-    paths: players.map((p) => ({ params: { id: p.playerId } })),
+    paths: players.map((p) => ({ params: { id: p.switchAccountId } })),
     fallback: true,
   };
 };
@@ -27,7 +27,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     query: GetPlayersXRankPlacementsDocument,
     variables: {
       // FIXME: why ! needed?
-      playerId: params!.id,
+      switchAccountId: params!.id,
     },
   });
 
@@ -37,17 +37,17 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   return {
     props: {
       initialApolloState: apolloClient.cache.extract(),
-      playerId: params!.id,
+      switchAccountId: params!.id,
     },
     //notfound
   };
 };
 
-const PlayerPage = ({ playerId }: { playerId: string }) => {
+const PlayerPage = ({ switchAccountId }: { switchAccountId: string }) => {
   const router = useRouter();
 
   const { data } = useGetPlayersXRankPlacementsQuery({
-    variables: { playerId },
+    variables: { switchAccountId },
     skip: router.isFallback,
   });
 

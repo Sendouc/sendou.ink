@@ -4,7 +4,7 @@ export const XRankPlacmement = objectType({
   name: "XRankPlacement",
   definition(t) {
     t.model.id();
-    t.model.playerId();
+    t.model.switchAccountId();
     t.model.playerName();
     t.model.ranking();
     t.model.xPower();
@@ -19,11 +19,8 @@ export const XRankPlacmement = objectType({
 export const Player = objectType({
   name: "Player",
   definition(t) {
-    t.model.playerId();
-    t.model.names({
-      description:
-        "Set of names player has had in Top 500 results. The most recent one is the first one of the list.",
-    });
+    t.model.switchAccountId();
+    t.model.name();
     t.model.user();
     t.model.placements();
   },
@@ -55,11 +52,11 @@ export const Query = extendType({
       nullable: false,
       list: [true],
       args: {
-        playerId: stringArg({ nullable: false }),
+        switchAccountId: stringArg({ nullable: false }),
       },
       resolve: (_root, args, ctx) => {
         return ctx.prisma.xRankPlacement.findMany({
-          where: { playerId: args.playerId },
+          where: { switchAccountId: args.switchAccountId },
           orderBy: [{ month: "desc" }, { year: "desc" }],
         });
       },

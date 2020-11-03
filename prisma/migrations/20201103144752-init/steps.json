@@ -325,7 +325,7 @@
     {
       "tag": "CreateField",
       "model": "XRankPlacement",
-      "field": "playerId",
+      "field": "switchAccountId",
       "type": "String",
       "arity": "Required"
     },
@@ -359,7 +359,7 @@
         "directive": "relation"
       },
       "argument": "fields",
-      "value": "[playerId]"
+      "value": "[switchAccountId]"
     },
     {
       "tag": "CreateArgument",
@@ -373,19 +373,12 @@
         "directive": "relation"
       },
       "argument": "references",
-      "value": "[playerId]"
+      "value": "[switchAccountId]"
     },
     {
       "tag": "CreateField",
       "model": "XRankPlacement",
       "field": "playerName",
-      "type": "String",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateField",
-      "model": "XRankPlacement",
-      "field": "playerNameLower",
       "type": "String",
       "arity": "Required"
     },
@@ -440,27 +433,11 @@
           "arguments": [
             {
               "name": "",
-              "value": "[playerId, mode, month, year]"
+              "value": "[switchAccountId, mode, month, year]"
             }
           ]
         },
         "directive": "unique"
-      }
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Model",
-          "model": "XRankPlacement",
-          "arguments": [
-            {
-              "name": "",
-              "value": "[playerNameLower]"
-            }
-          ]
-        },
-        "directive": "index"
       }
     },
     {
@@ -470,7 +447,7 @@
     {
       "tag": "CreateField",
       "model": "Player",
-      "field": "playerId",
+      "field": "switchAccountId",
       "type": "String",
       "arity": "Required"
     },
@@ -480,7 +457,7 @@
         "path": {
           "tag": "Field",
           "model": "Player",
-          "field": "playerId"
+          "field": "switchAccountId"
         },
         "directive": "unique"
       }
@@ -552,9 +529,9 @@
     {
       "tag": "CreateField",
       "model": "Player",
-      "field": "names",
+      "field": "name",
       "type": "String",
-      "arity": "List"
+      "arity": "Required"
     },
     {
       "tag": "CreateField",
