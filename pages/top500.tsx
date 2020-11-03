@@ -13,7 +13,7 @@ import { getLocalizedMonthYearString } from "lib/getLocalizedMontYearString";
 import { useTranslation } from "lib/useMockT";
 import { GetStaticProps } from "next";
 import { useState } from "react";
-import XSearch from "scenes/XSearch";
+import XSearch from "scenes/Top500";
 
 const prisma = new PrismaClient();
 

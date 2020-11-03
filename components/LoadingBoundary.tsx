@@ -1,5 +1,6 @@
 import { ApolloError } from "@apollo/client";
 import { Alert, AlertDescription, AlertIcon, Spinner } from "@chakra-ui/core";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 interface Props {
@@ -10,6 +11,7 @@ interface Props {
 
 const LoadingBoundary: React.FC<Props> = ({ children, loading, error }) => {
   const [showSpinner, setShowSpinner] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const timer = setTimeout(() => setShowSpinner(true), 1000);
@@ -17,7 +19,9 @@ const LoadingBoundary: React.FC<Props> = ({ children, loading, error }) => {
     return () => clearTimeout(timer);
   }, []);
 
-  if (loading) return showSpinner ? <Spinner size="xl" /> : null;
+  if (loading || router.isFallback) {
+    return showSpinner ? <Spinner size="xl" /> : null;
+  }
 
   if (error) {
     return (
