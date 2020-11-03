@@ -1,4 +1,4 @@
-import { arg, extendType, intArg, objectType } from "@nexus/schema";
+import { arg, extendType, intArg, objectType, stringArg } from "@nexus/schema";
 
 export const XRankPlacmement = objectType({
   name: "XRankPlacement",
@@ -45,7 +45,22 @@ export const Query = extendType({
       resolve: (_root, args, ctx) => {
         return ctx.prisma.xRankPlacement.findMany({
           where: { month: args.month, year: args.year, mode: args.mode },
-          orderBy: [{ ranking: "asc" }, { month: "desc" }, { year: "desc" }],
+          orderBy: { ranking: "asc" },
+        });
+      },
+    });
+
+    t.field("getPlayersXRankPlacements", {
+      type: "XRankPlacement",
+      nullable: false,
+      list: [true],
+      args: {
+        playerId: stringArg({ nullable: false }),
+      },
+      resolve: (_root, args, ctx) => {
+        return ctx.prisma.xRankPlacement.findMany({
+          where: { playerId: args.playerId },
+          orderBy: [{ month: "desc" }, { year: "desc" }],
         });
       },
     });

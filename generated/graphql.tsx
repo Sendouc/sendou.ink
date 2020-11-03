@@ -38,6 +38,7 @@ export type Query = {
   __typename?: 'Query';
   getUserByIdentifier?: Maybe<User>;
   getXRankPlacements: Array<XRankPlacement>;
+  getPlayersXRankPlacements: Array<XRankPlacement>;
 };
 
 
@@ -50,6 +51,11 @@ export type QueryGetXRankPlacementsArgs = {
   year: Scalars['Int'];
   month: Scalars['Int'];
   mode: RankedMode;
+};
+
+
+export type QueryGetPlayersXRankPlacementsArgs = {
+  playerId: Scalars['String'];
 };
 
 export type UpdateUserProfileInput = {
@@ -124,6 +130,26 @@ export type PlayerIdModeMonthYearCompoundUniqueInput = {
   year: Scalars['Int'];
 };
 
+export type GetPlayersXRankPlacementsQueryVariables = Exact<{
+  playerId: Scalars['String'];
+}>;
+
+
+export type GetPlayersXRankPlacementsQuery = (
+  { __typename?: 'Query' }
+  & { getPlayersXRankPlacements: Array<(
+    { __typename?: 'XRankPlacement' }
+    & Pick<XRankPlacement, 'id' | 'playerName' | 'ranking' | 'xPower' | 'weapon' | 'mode' | 'month' | 'year'>
+    & { player: (
+      { __typename?: 'Player' }
+      & { user?: Maybe<(
+        { __typename?: 'User' }
+        & Pick<User, 'avatarUrl' | 'fullUsername' | 'profilePath'>
+      )> }
+    ) }
+  )> }
+);
+
 export type UpdateUserProfileMutationVariables = Exact<{
   profile: UpdateUserProfileInput;
 }>;
@@ -174,6 +200,53 @@ export type GetXRankPlacementsQuery = (
 );
 
 
+export const GetPlayersXRankPlacementsDocument = gql`
+    query getPlayersXRankPlacements($playerId: String!) {
+  getPlayersXRankPlacements(playerId: $playerId) {
+    id
+    playerName
+    ranking
+    xPower
+    weapon
+    mode
+    month
+    year
+    player {
+      user {
+        avatarUrl
+        fullUsername
+        profilePath
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPlayersXRankPlacementsQuery__
+ *
+ * To run a query within a React component, call `useGetPlayersXRankPlacementsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPlayersXRankPlacementsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPlayersXRankPlacementsQuery({
+ *   variables: {
+ *      playerId: // value for 'playerId'
+ *   },
+ * });
+ */
+export function useGetPlayersXRankPlacementsQuery(baseOptions?: Apollo.QueryHookOptions<GetPlayersXRankPlacementsQuery, GetPlayersXRankPlacementsQueryVariables>) {
+        return Apollo.useQuery<GetPlayersXRankPlacementsQuery, GetPlayersXRankPlacementsQueryVariables>(GetPlayersXRankPlacementsDocument, baseOptions);
+      }
+export function useGetPlayersXRankPlacementsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPlayersXRankPlacementsQuery, GetPlayersXRankPlacementsQueryVariables>) {
+          return Apollo.useLazyQuery<GetPlayersXRankPlacementsQuery, GetPlayersXRankPlacementsQueryVariables>(GetPlayersXRankPlacementsDocument, baseOptions);
+        }
+export type GetPlayersXRankPlacementsQueryHookResult = ReturnType<typeof useGetPlayersXRankPlacementsQuery>;
+export type GetPlayersXRankPlacementsLazyQueryHookResult = ReturnType<typeof useGetPlayersXRankPlacementsLazyQuery>;
+export type GetPlayersXRankPlacementsQueryResult = Apollo.QueryResult<GetPlayersXRankPlacementsQuery, GetPlayersXRankPlacementsQueryVariables>;
 export const UpdateUserProfileDocument = gql`
     mutation UpdateUserProfile($profile: UpdateUserProfileInput!) {
   updateUserProfile(profile: $profile)

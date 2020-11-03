@@ -98,6 +98,7 @@ export interface NexusGenFieldTypes {
     youtubeId: string | null; // String
   }
   Query: { // field return type
+    getPlayersXRankPlacements: NexusGenRootTypes['XRankPlacement'][]; // [XRankPlacement!]!
     getUserByIdentifier: NexusGenRootTypes['User'] | null; // User
     getXRankPlacements: NexusGenRootTypes['XRankPlacement'][]; // [XRankPlacement!]!
   }
@@ -145,6 +146,7 @@ export interface NexusGenFieldTypeNames {
     youtubeId: 'String'
   }
   Query: { // field return type name
+    getPlayersXRankPlacements: 'XRankPlacement'
     getUserByIdentifier: 'User'
     getXRankPlacements: 'XRankPlacement'
   }
@@ -185,6 +187,9 @@ export interface NexusGenArgTypes {
     }
   }
   Query: {
+    getPlayersXRankPlacements: { // args
+      playerId: string; // String!
+    }
     getUserByIdentifier: { // args
       identifier: string; // String!
     }

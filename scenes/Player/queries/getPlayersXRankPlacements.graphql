@@ -1,0 +1,19 @@
+query getPlayersXRankPlacements($playerId: String!) {
+  getPlayersXRankPlacements(playerId: $playerId) {
+    id
+    playerName
+    ranking
+    xPower
+    weapon
+    mode
+    month
+    year
+    player {
+      user {
+        avatarUrl
+        fullUsername
+        profilePath
+      }
+    }
+  }
+}

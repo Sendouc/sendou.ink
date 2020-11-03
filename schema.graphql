@@ -36,6 +36,7 @@ type Profile {
 }
 
 type Query {
+  getPlayersXRankPlacements(playerId: String!): [XRankPlacement!]!
   getUserByIdentifier(identifier: String!): User
   getXRankPlacements(mode: RankedMode!, month: Int!, year: Int!): [XRankPlacement!]!
 }

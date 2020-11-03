@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 interface Props {
   children: React.ReactNode;
-  loading: boolean;
+  loading?: boolean;
   error?: ApolloError;
 }
 
