@@ -14,7 +14,6 @@
     "seed": "ts-node prisma/seed.ts",
     "prettier": "prettier --write .",
     "e2e": "cypress open",
-    "add-locale": "lingui add-locale",
     "extract": "lingui extract",
     "compile": "lingui compile"
   },

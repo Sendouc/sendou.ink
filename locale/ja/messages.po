@@ -1,0 +1,68 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2020-11-04 03:20+0200\n"
+"Mime-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: ja\n"
+
+#: scenes/Profile/components/ProfileModal.tsx:209
+msgid "Cancel"
+msgstr ""
+
+#: scenes/Profile/components/ProfileModal.tsx:161
+msgid "Country"
+msgstr ""
+
+#: scenes/Profile/components/ProfileModal.tsx:109
+msgid "Custom URL"
+msgstr ""
+
+#: scenes/Profile/index.tsx:17
+msgid "Edit profile"
+msgstr ""
+
+#: scenes/Profile/components/ProfileModal.tsx:102
+msgid "Editing profile"
+msgstr ""
+
+#: scenes/Layout/components/TopNav.tsx:19
+msgid "Log in via Discord"
+msgstr ""
+
+#: scenes/Layout/components/TopNav.tsx:36
+msgid "Log out"
+msgstr ""
+
+#: scenes/Profile/components/ProfileModal.tsx:194
+msgid "Motion sensitivity"
+msgstr ""
+
+#: scenes/Layout/components/TopNav.tsx:32
+msgid "Profile"
+msgstr ""
+
+#: scenes/Profile/components/ProfileModal.tsx:206
+msgid "Save"
+msgstr ""
+
+#: scenes/Profile/components/ProfileModal.tsx:184
+msgid "Stick sensitivity"
+msgstr ""
+
+#: scenes/Profile/components/ProfileModal.tsx:137
+msgid "Twitch name"
+msgstr ""
+
+#: scenes/Profile/components/ProfileModal.tsx:123
+msgid "Twitter name"
+msgstr ""
+
+#: scenes/Profile/components/ProfileModal.tsx:172
+msgid "Weapon pool"
+msgstr ""
+
+#: scenes/Profile/components/ProfileModal.tsx:151
+msgid "YouTube channel ID"
+msgstr ""
