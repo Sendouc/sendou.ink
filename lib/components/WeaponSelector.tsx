@@ -1,5 +1,6 @@
 import { Select, Tag, TagCloseButton, TagLabel } from "@chakra-ui/core";
-import { weaponsWithHeroCategorized } from "lib/lists/weaponsWithHero";
+import { useLingui } from "@lingui/react";
+import { weaponsWithHeroCategorizedLocalized } from "lib/lists/weaponsWithHero";
 import WeaponImage from "./WeaponImage";
 
 interface Props {
@@ -9,6 +10,7 @@ interface Props {
 }
 
 const WeaponSelector: React.FC<Props> = ({ name, value, onChange }) => {
+  const { i18n } = useLingui();
   return (
     <>
       <Select
@@ -18,11 +20,11 @@ const WeaponSelector: React.FC<Props> = ({ name, value, onChange }) => {
             onChange(value.concat(e.target.value));
         }}
       >
-        {weaponsWithHeroCategorized.map((wpnCategory) => (
-          <optgroup key={wpnCategory.name} label={wpnCategory.name}>
+        {weaponsWithHeroCategorizedLocalized.map((wpnCategory) => (
+          <optgroup key={wpnCategory.name} label={i18n._(wpnCategory.name)}>
             {wpnCategory.weapons.map((wpn) => (
               <option key={wpn} value={wpn}>
-                {wpn}
+                {i18n._(wpn)}
               </option>
             ))}
           </optgroup>

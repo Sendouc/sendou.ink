@@ -1,4 +1,4 @@
-import { useTranslation } from "lib/useMockT";
+import { useLingui } from "@lingui/react";
 import Image from "next/image";
 import React from "react";
 
@@ -15,14 +15,14 @@ const WeaponImage: React.FC<WeaponImageProps> = ({
   noTitle,
   isInline,
 }) => {
-  const { t } = useTranslation();
+  const { i18n } = useLingui();
 
   return (
     <>
       <Image
         src={`/images/weapons/${name.replace(".", "")}.png`}
-        alt={t(`game;${name}`)}
-        title={noTitle ? undefined : t(`game;${name}`)}
+        alt={i18n._(name)}
+        title={noTitle ? undefined : i18n._(name)}
         width={size}
         height={size}
         style={{ display: isInline ? "inline-block" : undefined }}

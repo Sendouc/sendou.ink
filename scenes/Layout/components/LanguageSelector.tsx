@@ -14,17 +14,17 @@ import { FiGlobe } from "react-icons/fi";
 export const languages = [
   { code: "de", name: "Deutsch" },
   { code: "en", name: "English" },
-  { code: "es-ES", name: "Español" },
+  { code: "es", name: "Español" },
   { code: "fr", name: "Français" },
   { code: "it", name: "Italiano" },
   { code: "nl", name: "Nederlands" },
-  { code: "pt-BR", name: "Português" },
+  { code: "pt", name: "Português" },
   { code: "sv", name: "Svenska" },
   { code: "el", name: "Ελληνικά" },
   { code: "ru", name: "Русский" },
   { code: "ja", name: "日本語" },
   { code: "ko", name: "한국어" },
-  { code: "zh-TW", name: "繁體中文" },
+  { code: "zh", name: "繁體中文" },
 ] as const;
 
 export const LanguageSelector = () => {

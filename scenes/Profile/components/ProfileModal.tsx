@@ -18,7 +18,8 @@ import {
   useToast,
 } from "@chakra-ui/core";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import { countries } from "countries-list";
 import {
   GetUserByIdentifierDocument,
@@ -29,7 +30,6 @@ import {
 import MarkdownTextarea from "lib/components/MarkdownTextarea";
 import WeaponSelector from "lib/components/WeaponSelector";
 import { getToastOptions } from "lib/getToastOptions";
-import { useTranslation } from "lib/useMockT";
 import { Controller, useForm } from "react-hook-form";
 import { FaGamepad, FaTwitch, FaTwitter, FaYoutube } from "react-icons/fa";
 import {
@@ -83,7 +83,7 @@ const ProfileModal: React.FC<Props> = ({
   existingProfile,
   identifier,
 }) => {
-  const { t } = useTranslation();
+  const { i18n } = useLingui();
 
   const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
     resolver: zodResolver(profileSchemaFrontend),
@@ -102,7 +102,7 @@ const ProfileModal: React.FC<Props> = ({
   const toast = useToast();
   const [updateUserProfile, { loading }] = useUpdateUserProfileMutation({
     onCompleted: () => {
-      toast(getToastOptions(t("users;Profile updated"), "success"));
+      toast(getToastOptions(i18n._(t`Profile updated`), "success"));
       onClose();
     },
     onError: (error) => {
@@ -315,12 +315,14 @@ const ProfileModal: React.FC<Props> = ({
 
               <MarkdownTextarea
                 fieldName="bio"
-                title={t("users;Bio")}
+                title={i18n._(t`Bio`)}
                 error={errors.bio}
                 register={register}
                 value={watchBio!}
                 maxLength={PROFILE_CHARACTER_LIMIT}
-                placeholder={`# I'm a header\nI'm **bolded**. Embedding weapon images is easy too: :luna_blaster:`}
+                placeholder={i18n._(
+                  t`# I'm a header\nI'm **bolded**. Embedding weapon images is easy too: :luna_blaster:`
+                )}
               />
             </ModalBody>
             <ModalFooter>

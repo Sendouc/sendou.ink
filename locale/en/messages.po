@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-11-04 01:38+0200\n"
+"POT-Creation-Date: 2020-11-04 14:14+0200\n"
 "Mime-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,62 +13,670 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: scenes/Profile/components/ProfileModal.tsx:209
-msgid "Cancel"
-msgstr "Cancel"
+#: lib/components/MarkdownTextarea.tsx:13
+msgid "Markdown is supported - <0>https://sendou.ink/markdown</0>"
+msgstr "Markdown is supported - <0>https://sendou.ink/markdown</0>"
 
-#: scenes/Profile/components/ProfileModal.tsx:161
-msgid "Country"
-msgstr "Country"
+#: lib/lists/weaponsWithHero.ts:145
+msgid "Shooters"
+msgstr "Shooters"
 
-#: scenes/Profile/components/ProfileModal.tsx:109
-msgid "Custom URL"
-msgstr "Custom URL"
+#: lib/lists/weaponsWithHero.ts:147
+msgid "Sploosh-o-matic"
+msgstr "Sploosh-o-matic"
 
-#: scenes/Profile/index.tsx:17
-msgid "Edit profile"
-msgstr "Edit profile"
+#: lib/lists/weaponsWithHero.ts:148
+msgid "Neo Sploosh-o-matic"
+msgstr "Neo Sploosh-o-matic"
 
-#: scenes/Profile/components/ProfileModal.tsx:102
-msgid "Editing profile"
-msgstr "Editing profile"
+#: lib/lists/weaponsWithHero.ts:149
+msgid "Sploosh-o-matic 7"
+msgstr "Sploosh-o-matic 7"
+
+#: lib/lists/weaponsWithHero.ts:150
+msgid "Splattershot Jr."
+msgstr "Splattershot Jr."
+
+#: lib/lists/weaponsWithHero.ts:151
+msgid "Custom Splattershot Jr."
+msgstr "Custom Splattershot Jr."
+
+#: lib/lists/weaponsWithHero.ts:152
+msgid "Kensa Splattershot Jr."
+msgstr "Kensa Splattershot Jr."
+
+#: lib/lists/weaponsWithHero.ts:153
+msgid "Splash-o-matic"
+msgstr "Splash-o-matic"
+
+#: lib/lists/weaponsWithHero.ts:154
+msgid "Neo Splash-o-matic"
+msgstr "Neo Splash-o-matic"
+
+#: lib/lists/weaponsWithHero.ts:155
+msgid "Aerospray MG"
+msgstr "Aerospray MG"
+
+#: lib/lists/weaponsWithHero.ts:156
+msgid "Aerospray RG"
+msgstr "Aerospray RG"
+
+#: lib/lists/weaponsWithHero.ts:157
+msgid "Aerospray PG"
+msgstr "Aerospray PG"
+
+#: lib/lists/weaponsWithHero.ts:158
+msgid "Splattershot"
+msgstr "Splattershot"
+
+#: lib/lists/weaponsWithHero.ts:159
+msgid "Hero Shot Replica"
+msgstr "Hero Shot Replica"
+
+#: lib/lists/weaponsWithHero.ts:160
+msgid "Tentatek Splattershot"
+msgstr "Tentatek Splattershot"
+
+#: lib/lists/weaponsWithHero.ts:161
+msgid "Octo Shot Replica"
+msgstr "Octo Shot Replica"
+
+#: lib/lists/weaponsWithHero.ts:162
+msgid "Kensa Splattershot"
+msgstr "Kensa Splattershot"
+
+#: lib/lists/weaponsWithHero.ts:163
+msgid ".52 Gal"
+msgstr ".52 Gal"
+
+#: lib/lists/weaponsWithHero.ts:164
+msgid ".52 Gal Deco"
+msgstr ".52 Gal Deco"
+
+#: lib/lists/weaponsWithHero.ts:165
+msgid "Kensa .52 Gal"
+msgstr "Kensa .52 Gal"
+
+#: lib/lists/weaponsWithHero.ts:166
+msgid "N-ZAP '85"
+msgstr "N-ZAP '85"
+
+#: lib/lists/weaponsWithHero.ts:167
+msgid "N-ZAP '89"
+msgstr "N-ZAP '89"
+
+#: lib/lists/weaponsWithHero.ts:168
+msgid "N-ZAP '83"
+msgstr "N-ZAP '83"
+
+#: lib/lists/weaponsWithHero.ts:169
+msgid "Splattershot Pro"
+msgstr "Splattershot Pro"
+
+#: lib/lists/weaponsWithHero.ts:170
+msgid "Forge Splattershot Pro"
+msgstr "Forge Splattershot Pro"
+
+#: lib/lists/weaponsWithHero.ts:171
+msgid "Kensa Splattershot Pro"
+msgstr "Kensa Splattershot Pro"
+
+#: lib/lists/weaponsWithHero.ts:172
+msgid ".96 Gal"
+msgstr ".96 Gal"
+
+#: lib/lists/weaponsWithHero.ts:173
+msgid ".96 Gal Deco"
+msgstr ".96 Gal Deco"
+
+#: lib/lists/weaponsWithHero.ts:174
+msgid "Jet Squelcher"
+msgstr "Jet Squelcher"
+
+#: lib/lists/weaponsWithHero.ts:175
+msgid "Custom Jet Squelcher"
+msgstr "Custom Jet Squelcher"
+
+#: lib/lists/weaponsWithHero.ts:176
+msgid "L-3 Nozzlenose"
+msgstr "L-3 Nozzlenose"
+
+#: lib/lists/weaponsWithHero.ts:177
+msgid "L-3 Nozzlenose D"
+msgstr "L-3 Nozzlenose D"
+
+#: lib/lists/weaponsWithHero.ts:178
+msgid "Kensa L-3 Nozzlenose"
+msgstr "Kensa L-3 Nozzlenose"
+
+#: lib/lists/weaponsWithHero.ts:179
+msgid "H-3 Nozzlenose"
+msgstr "H-3 Nozzlenose"
+
+#: lib/lists/weaponsWithHero.ts:180
+msgid "H-3 Nozzlenose D"
+msgstr "H-3 Nozzlenose D"
+
+#: lib/lists/weaponsWithHero.ts:181
+msgid "Cherry H-3 Nozzlenose"
+msgstr "Cherry H-3 Nozzlenose"
+
+#: lib/lists/weaponsWithHero.ts:182
+msgid "Squeezer"
+msgstr "Squeezer"
+
+#: lib/lists/weaponsWithHero.ts:183
+msgid "Foil Squeezer"
+msgstr "Foil Squeezer"
+
+#: lib/lists/weaponsWithHero.ts:187
+msgid "Blasters"
+msgstr "Blasters"
+
+#: lib/lists/weaponsWithHero.ts:189
+msgid "Luna Blaster"
+msgstr "Luna Blaster"
+
+#: lib/lists/weaponsWithHero.ts:190
+msgid "Luna Blaster Neo"
+msgstr "Luna Blaster Neo"
+
+#: lib/lists/weaponsWithHero.ts:191
+msgid "Kensa Luna Blaster"
+msgstr "Kensa Luna Blaster"
+
+#: lib/lists/weaponsWithHero.ts:192
+msgid "Blaster"
+msgstr "Blaster"
+
+#: lib/lists/weaponsWithHero.ts:193
+msgid "Hero Blaster Replica"
+msgstr "Hero Blaster Replica"
+
+#: lib/lists/weaponsWithHero.ts:194
+msgid "Custom Blaster"
+msgstr "Custom Blaster"
+
+#: lib/lists/weaponsWithHero.ts:195
+msgid "Range Blaster"
+msgstr "Range Blaster"
+
+#: lib/lists/weaponsWithHero.ts:196
+msgid "Custom Range Blaster"
+msgstr "Custom Range Blaster"
+
+#: lib/lists/weaponsWithHero.ts:197
+msgid "Grim Range Blaster"
+msgstr "Grim Range Blaster"
+
+#: lib/lists/weaponsWithHero.ts:198
+msgid "Rapid Blaster"
+msgstr "Rapid Blaster"
+
+#: lib/lists/weaponsWithHero.ts:199
+msgid "Rapid Blaster Deco"
+msgstr "Rapid Blaster Deco"
+
+#: lib/lists/weaponsWithHero.ts:200
+msgid "Kensa Rapid Blaster"
+msgstr "Kensa Rapid Blaster"
+
+#: lib/lists/weaponsWithHero.ts:201
+msgid "Rapid Blaster Pro"
+msgstr "Rapid Blaster Pro"
+
+#: lib/lists/weaponsWithHero.ts:202
+msgid "Rapid Blaster Pro Deco"
+msgstr "Rapid Blaster Pro Deco"
+
+#: lib/lists/weaponsWithHero.ts:203
+msgid "Clash Blaster"
+msgstr "Clash Blaster"
+
+#: lib/lists/weaponsWithHero.ts:204
+msgid "Clash Blaster Neo"
+msgstr "Clash Blaster Neo"
+
+#: lib/lists/weaponsWithHero.ts:208
+msgid "Rollers"
+msgstr "Rollers"
+
+#: lib/lists/weaponsWithHero.ts:210
+msgid "Carbon Roller"
+msgstr "Carbon Roller"
+
+#: lib/lists/weaponsWithHero.ts:211
+msgid "Carbon Roller Deco"
+msgstr "Carbon Roller Deco"
+
+#: lib/lists/weaponsWithHero.ts:212
+msgid "Splat Roller"
+msgstr "Splat Roller"
+
+#: lib/lists/weaponsWithHero.ts:213
+msgid "Hero Roller Replica"
+msgstr "Hero Roller Replica"
+
+#: lib/lists/weaponsWithHero.ts:214
+msgid "Krak-On Splat Roller"
+msgstr "Krak-On Splat Roller"
+
+#: lib/lists/weaponsWithHero.ts:215
+msgid "Kensa Splat Roller"
+msgstr "Kensa Splat Roller"
+
+#: lib/lists/weaponsWithHero.ts:216
+msgid "Dynamo Roller"
+msgstr "Dynamo Roller"
+
+#: lib/lists/weaponsWithHero.ts:217
+msgid "Gold Dynamo Roller"
+msgstr "Gold Dynamo Roller"
+
+#: lib/lists/weaponsWithHero.ts:218
+msgid "Kensa Dynamo Roller"
+msgstr "Kensa Dynamo Roller"
+
+#: lib/lists/weaponsWithHero.ts:219
+msgid "Flingza Roller"
+msgstr "Flingza Roller"
+
+#: lib/lists/weaponsWithHero.ts:220
+msgid "Foil Flingza Roller"
+msgstr "Foil Flingza Roller"
+
+#: lib/lists/weaponsWithHero.ts:224
+msgid "Brushes"
+msgstr "Brushes"
+
+#: lib/lists/weaponsWithHero.ts:226
+msgid "Inkbrush"
+msgstr "Inkbrush"
+
+#: lib/lists/weaponsWithHero.ts:227
+msgid "Inkbrush Nouveau"
+msgstr "Inkbrush Nouveau"
+
+#: lib/lists/weaponsWithHero.ts:228
+msgid "Permanent Inkbrush"
+msgstr "Permanent Inkbrush"
+
+#: lib/lists/weaponsWithHero.ts:229
+msgid "Octobrush"
+msgstr "Octobrush"
+
+#: lib/lists/weaponsWithHero.ts:230
+msgid "Herobrush Replica"
+msgstr "Herobrush Replica"
+
+#: lib/lists/weaponsWithHero.ts:231
+msgid "Octobrush Nouveau"
+msgstr "Octobrush Nouveau"
+
+#: lib/lists/weaponsWithHero.ts:232
+msgid "Kensa Octobrush"
+msgstr "Kensa Octobrush"
+
+#: lib/lists/weaponsWithHero.ts:236
+msgid "Chargers"
+msgstr "Chargers"
+
+#: lib/lists/weaponsWithHero.ts:238
+msgid "Classic Squiffer"
+msgstr "Classic Squiffer"
+
+#: lib/lists/weaponsWithHero.ts:239
+msgid "New Squiffer"
+msgstr "New Squiffer"
+
+#: lib/lists/weaponsWithHero.ts:240
+msgid "Fresh Squiffer"
+msgstr "Fresh Squiffer"
+
+#: lib/lists/weaponsWithHero.ts:241
+msgid "Splat Charger"
+msgstr "Splat Charger"
+
+#: lib/lists/weaponsWithHero.ts:242
+msgid "Hero Charger Replica"
+msgstr "Hero Charger Replica"
+
+#: lib/lists/weaponsWithHero.ts:243
+msgid "Firefin Splat Charger"
+msgstr "Firefin Splat Charger"
+
+#: lib/lists/weaponsWithHero.ts:244
+msgid "Kensa Charger"
+msgstr "Kensa Charger"
+
+#: lib/lists/weaponsWithHero.ts:245
+msgid "Splatterscope"
+msgstr "Splatterscope"
+
+#: lib/lists/weaponsWithHero.ts:246
+msgid "Firefin Splatterscope"
+msgstr "Firefin Splatterscope"
+
+#: lib/lists/weaponsWithHero.ts:247
+msgid "Kensa Splatterscope"
+msgstr "Kensa Splatterscope"
+
+#: lib/lists/weaponsWithHero.ts:248
+msgid "E-liter 4K"
+msgstr "E-liter 4K"
+
+#: lib/lists/weaponsWithHero.ts:249
+msgid "Custom E-liter 4K"
+msgstr "Custom E-liter 4K"
+
+#: lib/lists/weaponsWithHero.ts:250
+msgid "E-liter 4K Scope"
+msgstr "E-liter 4K Scope"
+
+#: lib/lists/weaponsWithHero.ts:251
+msgid "Custom E-liter 4K Scope"
+msgstr "Custom E-liter 4K Scope"
+
+#: lib/lists/weaponsWithHero.ts:252
+msgid "Bamboozler 14 Mk I"
+msgstr "Bamboozler 14 Mk I"
+
+#: lib/lists/weaponsWithHero.ts:253
+msgid "Bamboozler 14 Mk II"
+msgstr "Bamboozler 14 Mk II"
+
+#: lib/lists/weaponsWithHero.ts:254
+msgid "Bamboozler 14 Mk III"
+msgstr "Bamboozler 14 Mk III"
+
+#: lib/lists/weaponsWithHero.ts:255
+msgid "Goo Tuber"
+msgstr "Goo Tuber"
+
+#: lib/lists/weaponsWithHero.ts:256
+msgid "Custom Goo Tuber"
+msgstr "Custom Goo Tuber"
+
+#: lib/lists/weaponsWithHero.ts:260
+msgid "Sloshers"
+msgstr "Sloshers"
+
+#: lib/lists/weaponsWithHero.ts:262
+msgid "Slosher"
+msgstr "Slosher"
+
+#: lib/lists/weaponsWithHero.ts:263
+msgid "Hero Slosher Replica"
+msgstr "Hero Slosher Replica"
+
+#: lib/lists/weaponsWithHero.ts:264
+msgid "Slosher Deco"
+msgstr "Slosher Deco"
+
+#: lib/lists/weaponsWithHero.ts:265
+msgid "Soda Slosher"
+msgstr "Soda Slosher"
+
+#: lib/lists/weaponsWithHero.ts:266
+msgid "Tri-Slosher"
+msgstr "Tri-Slosher"
+
+#: lib/lists/weaponsWithHero.ts:267
+msgid "Tri-Slosher Nouveau"
+msgstr "Tri-Slosher Nouveau"
+
+#: lib/lists/weaponsWithHero.ts:268
+msgid "Sloshing Machine"
+msgstr "Sloshing Machine"
+
+#: lib/lists/weaponsWithHero.ts:269
+msgid "Sloshing Machine Neo"
+msgstr "Sloshing Machine Neo"
+
+#: lib/lists/weaponsWithHero.ts:270
+msgid "Kensa Sloshing Machine"
+msgstr "Kensa Sloshing Machine"
+
+#: lib/lists/weaponsWithHero.ts:271
+msgid "Bloblobber"
+msgstr "Bloblobber"
+
+#: lib/lists/weaponsWithHero.ts:272
+msgid "Bloblobber Deco"
+msgstr "Bloblobber Deco"
+
+#: lib/lists/weaponsWithHero.ts:273
+msgid "Explosher"
+msgstr "Explosher"
+
+#: lib/lists/weaponsWithHero.ts:274
+msgid "Custom Explosher"
+msgstr "Custom Explosher"
+
+#: lib/lists/weaponsWithHero.ts:278
+msgid "Splatlings"
+msgstr "Splatlings"
+
+#: lib/lists/weaponsWithHero.ts:280
+msgid "Mini Splatling"
+msgstr "Mini Splatling"
+
+#: lib/lists/weaponsWithHero.ts:281
+msgid "Zink Mini Splatling"
+msgstr "Zink Mini Splatling"
+
+#: lib/lists/weaponsWithHero.ts:282
+msgid "Kensa Mini Splatling"
+msgstr "Kensa Mini Splatling"
+
+#: lib/lists/weaponsWithHero.ts:283
+msgid "Heavy Splatling"
+msgstr "Heavy Splatling"
+
+#: lib/lists/weaponsWithHero.ts:284
+msgid "Hero Splatling Replica"
+msgstr "Hero Splatling Replica"
+
+#: lib/lists/weaponsWithHero.ts:285
+msgid "Heavy Splatling Deco"
+msgstr "Heavy Splatling Deco"
+
+#: lib/lists/weaponsWithHero.ts:286
+msgid "Heavy Splatling Remix"
+msgstr "Heavy Splatling Remix"
+
+#: lib/lists/weaponsWithHero.ts:287
+msgid "Hydra Splatling"
+msgstr "Hydra Splatling"
+
+#: lib/lists/weaponsWithHero.ts:288
+msgid "Custom Hydra Splatling"
+msgstr "Custom Hydra Splatling"
+
+#: lib/lists/weaponsWithHero.ts:289
+msgid "Ballpoint Splatling"
+msgstr "Ballpoint Splatling"
+
+#: lib/lists/weaponsWithHero.ts:290
+msgid "Ballpoint Splatling Nouveau"
+msgstr "Ballpoint Splatling Nouveau"
+
+#: lib/lists/weaponsWithHero.ts:291
+msgid "Nautilus 47"
+msgstr "Nautilus 47"
+
+#: lib/lists/weaponsWithHero.ts:292
+msgid "Nautilus 79"
+msgstr "Nautilus 79"
+
+#: lib/lists/weaponsWithHero.ts:296
+msgid "Dualies"
+msgstr "Dualies"
+
+#: lib/lists/weaponsWithHero.ts:298
+msgid "Dapple Dualies"
+msgstr "Dapple Dualies"
+
+#: lib/lists/weaponsWithHero.ts:299
+msgid "Dapple Dualies Nouveau"
+msgstr "Dapple Dualies Nouveau"
+
+#: lib/lists/weaponsWithHero.ts:300
+msgid "Clear Dapple Dualies"
+msgstr "Clear Dapple Dualies"
+
+#: lib/lists/weaponsWithHero.ts:301
+msgid "Splat Dualies"
+msgstr "Splat Dualies"
+
+#: lib/lists/weaponsWithHero.ts:302
+msgid "Hero Dualie Replicas"
+msgstr "Hero Dualie Replicas"
+
+#: lib/lists/weaponsWithHero.ts:303
+msgid "Enperry Splat Dualies"
+msgstr "Enperry Splat Dualies"
+
+#: lib/lists/weaponsWithHero.ts:304
+msgid "Kensa Splat Dualies"
+msgstr "Kensa Splat Dualies"
+
+#: lib/lists/weaponsWithHero.ts:305
+msgid "Glooga Dualies"
+msgstr "Glooga Dualies"
+
+#: lib/lists/weaponsWithHero.ts:306
+msgid "Glooga Dualies Deco"
+msgstr "Glooga Dualies Deco"
+
+#: lib/lists/weaponsWithHero.ts:307
+msgid "Kensa Glooga Dualies"
+msgstr "Kensa Glooga Dualies"
+
+#: lib/lists/weaponsWithHero.ts:308
+msgid "Dualie Squelchers"
+msgstr "Dualie Squelchers"
+
+#: lib/lists/weaponsWithHero.ts:309
+msgid "Custom Dualie Squelchers"
+msgstr "Custom Dualie Squelchers"
+
+#: lib/lists/weaponsWithHero.ts:310
+msgid "Dark Tetra Dualies"
+msgstr "Dark Tetra Dualies"
+
+#: lib/lists/weaponsWithHero.ts:311
+msgid "Light Tetra Dualies"
+msgstr "Light Tetra Dualies"
+
+#: lib/lists/weaponsWithHero.ts:315
+msgid "Brellas"
+msgstr "Brellas"
+
+#: lib/lists/weaponsWithHero.ts:317
+msgid "Splat Brella"
+msgstr "Splat Brella"
+
+#: lib/lists/weaponsWithHero.ts:318
+msgid "Hero Brella Replica"
+msgstr "Hero Brella Replica"
+
+#: lib/lists/weaponsWithHero.ts:319
+msgid "Sorella Brella"
+msgstr "Sorella Brella"
+
+#: lib/lists/weaponsWithHero.ts:320
+msgid "Tenta Brella"
+msgstr "Tenta Brella"
+
+#: lib/lists/weaponsWithHero.ts:321
+msgid "Tenta Sorella Brella"
+msgstr "Tenta Sorella Brella"
+
+#: lib/lists/weaponsWithHero.ts:322
+msgid "Tenta Camo Brella"
+msgstr "Tenta Camo Brella"
+
+#: lib/lists/weaponsWithHero.ts:323
+msgid "Undercover Brella"
+msgstr "Undercover Brella"
+
+#: lib/lists/weaponsWithHero.ts:324
+msgid "Undercover Sorella Brella"
+msgstr "Undercover Sorella Brella"
+
+#: lib/lists/weaponsWithHero.ts:325
+msgid "Kensa Undercover Brella"
+msgstr "Kensa Undercover Brella"
 
 #: scenes/Layout/components/TopNav.tsx:19
 msgid "Log in via Discord"
 msgstr "Log in via Discord"
 
-#: scenes/Layout/components/TopNav.tsx:36
-msgid "Log out"
-msgstr "Log out"
-
-#: scenes/Profile/components/ProfileModal.tsx:194
-msgid "Motion sensitivity"
-msgstr "Motion sensitivity"
-
 #: scenes/Layout/components/TopNav.tsx:32
 msgid "Profile"
 msgstr "Profile"
 
-#: scenes/Profile/components/ProfileModal.tsx:206
-msgid "Save"
-msgstr "Save"
+#: scenes/Layout/components/TopNav.tsx:36
+msgid "Log out"
+msgstr "Log out"
 
-#: scenes/Profile/components/ProfileModal.tsx:184
-msgid "Stick sensitivity"
-msgstr "Stick sensitivity"
+#: scenes/Profile/components/ProfileModal.tsx:63
+msgid "{0}"
+msgstr "{0}"
 
-#: scenes/Profile/components/ProfileModal.tsx:137
-msgid "Twitch name"
-msgstr "Twitch name"
+#: scenes/Profile/components/ProfileModal.tsx:102
+msgid "Editing profile"
+msgstr "Editing profile"
+
+#: scenes/Profile/components/ProfileModal.tsx:109
+msgid "Custom URL"
+msgstr "Custom URL"
 
 #: scenes/Profile/components/ProfileModal.tsx:123
 msgid "Twitter name"
 msgstr "Twitter name"
 
-#: scenes/Profile/components/ProfileModal.tsx:172
-msgid "Weapon pool"
-msgstr "Weapon pool"
+#: scenes/Profile/components/ProfileModal.tsx:137
+msgid "Twitch name"
+msgstr "Twitch name"
 
 #: scenes/Profile/components/ProfileModal.tsx:151
 msgid "YouTube channel ID"
 msgstr "YouTube channel ID"
+
+#: scenes/Profile/components/ProfileModal.tsx:161
+msgid "Country"
+msgstr "Country"
+
+#: scenes/Profile/components/ProfileModal.tsx:172
+msgid "Weapon pool"
+msgstr "Weapon pool"
+
+#: scenes/Profile/components/ProfileModal.tsx:184
+msgid "Stick sensitivity"
+msgstr "Stick sensitivity"
+
+#: scenes/Profile/components/ProfileModal.tsx:194
+msgid "Motion sensitivity"
+msgstr "Motion sensitivity"
+
+#: scenes/Profile/components/ProfileModal.tsx:202
+msgid "Bio"
+msgstr "Bio"
+
+#: scenes/Profile/components/ProfileModal.tsx:202
+msgid "# I'm a header\\nI'm **bolded**. Embedding weapon images is easy too: :luna_blaster:"
+msgstr "# I'm a header\\nI'm **bolded**. Embedding weapon images is easy too: :luna_blaster:"
+
+#: scenes/Profile/components/ProfileModal.tsx:206
+msgid "Save"
+msgstr "Save"
+
+#: scenes/Profile/components/ProfileModal.tsx:209
+msgid "Cancel"
+msgstr "Cancel"
+
+#: scenes/Profile/index.tsx:17
+msgid "Edit profile"
+msgstr "Edit profile"

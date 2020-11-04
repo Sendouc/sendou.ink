@@ -6,7 +6,7 @@ import {
   FormLabel,
   Textarea,
 } from "@chakra-ui/core";
-import { useTranslation } from "lib/useMockT";
+import { Trans } from "@lingui/macro";
 import { FieldError } from "react-hook-form";
 import LimitProgress from "./LimitProgress";
 
@@ -29,7 +29,6 @@ const MarkdownTextarea: React.FC<Props> = ({
   register,
   placeholder,
 }) => {
-  const { t } = useTranslation();
   return (
     <FormControl isInvalid={!!error}>
       <FormLabel htmlFor={fieldName} mt={4}>
@@ -48,10 +47,12 @@ const MarkdownTextarea: React.FC<Props> = ({
           mr={3}
         />
         <Box>
-          {t("users;markdownPrompt")}{" "}
-          <a href="/markdown" target="_blank" rel="noreferrer noopener">
-            https://sendou.ink/markdown
-          </a>
+          <Trans>
+            Markdown is supported -{" "}
+            <a href="/markdown" target="_blank" rel="noreferrer noopener">
+              https://sendou.ink/markdown
+            </a>
+          </Trans>
         </Box>
       </FormHelperText>
       <FormErrorMessage>{error?.message}</FormErrorMessage>
