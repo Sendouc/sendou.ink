@@ -1,4 +1,6 @@
 import { Box, HStack, Image, Radio, RadioGroup, Select } from "@chakra-ui/core";
+import { t, Trans } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import salmonRunHighTide from "assets/SalmonRunHighTide.svg";
 import salmonRunLowTide from "assets/SalmonRunLowTide.svg";
 import salmonRunMidTide from "assets/SalmonRunMidTide.svg";
@@ -21,17 +23,22 @@ const StageSelector: React.FC<StageSelectorProps> = ({
   changeTide,
   changeView,
 }) => {
+  const { i18n } = useLingui();
   return (
     <Box maxW="20rem" m="3rem auto">
       <Select value={currentBackground.stage} onChange={handleChange}>
-        <option value="Spawning Grounds">Spawning Grounds</option>
-        <option value="Marooner's Bay">Marooner's Bay</option>
-        <option value="Lost Outpost">Lost Outpost</option>
-        <option value="Salmonid Smokeyard">Salmonid Smokeyard</option>
-        <option value="Ruins of Ark Polaris">Ruins of Ark Polaris‎‎</option>
+        <option value="Spawning Grounds">{i18n._(t`Spawning Grounds`)}</option>
+        <option value="Marooner's Bay">{i18n._(t`Marooner's Bay`)}</option>
+        <option value="Lost Outpost">{i18n._(t`Lost Outpost`)}</option>
+        <option value="Salmonid Smokeyard">
+          {i18n._(t`Salmonid Smokeyard`)}
+        </option>
+        <option value="Ruins of Ark Polaris">
+          {i18n._(t`Ruins of Ark Polaris‎‎`)}
+        </option>
         {stages.map((stage) => (
           <option key={stage} value={stage}>
-            {stage}
+            {i18n._(stage)}
           </option>
         ))}
       </Select>
@@ -95,10 +102,10 @@ const StageSelector: React.FC<StageSelectorProps> = ({
           <RadioGroup value={currentBackground.view} onChange={changeView}>
             <HStack justifyContent="center" spacing={6}>
               <Radio size="sm" value="M">
-                Minimap
+                <Trans>Minimap</Trans>
               </Radio>
               <Radio size="sm" value="R">
-                Top-down
+                <Trans>Top-down</Trans>
               </Radio>
             </HStack>
           </RadioGroup>

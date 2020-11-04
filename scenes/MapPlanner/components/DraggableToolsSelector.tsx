@@ -1,4 +1,5 @@
 import { Box, Flex, IconButton } from "@chakra-ui/core";
+import { Trans } from "@lingui/macro";
 import ColorPicker from "lib/components/ColorPicker";
 import { useMyTheme } from "lib/useMyTheme";
 import { useState } from "react";
@@ -16,11 +17,6 @@ import {
   FaUndo,
 } from "react-icons/fa";
 import { Tool } from "..";
-
-interface PlannerColorPickerProps {
-  color: string;
-  setColor: (newColor: string) => void;
-}
 
 interface DraggableToolsSelectorProps {
   tool: Tool;
@@ -80,7 +76,7 @@ const DraggableToolsSelector: React.FC<DraggableToolsSelectorProps> = ({
             padding="0.3em"
             textAlign="center"
           >
-            Tools
+            <Trans>Tools</Trans>
           </Box>
         </strong>
         <Flex flexWrap="wrap" justifyContent="center">

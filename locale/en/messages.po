@@ -17,6 +17,98 @@ msgstr ""
 msgid "Markdown is supported - <0>https://sendou.ink/markdown</0>"
 msgstr "Markdown is supported - <0>https://sendou.ink/markdown</0>"
 
+#: lib/lists/stages.ts:3
+msgid "The Reef"
+msgstr "The Reef"
+
+#: lib/lists/stages.ts:4
+msgid "Musselforge Fitness"
+msgstr "Musselforge Fitness"
+
+#: lib/lists/stages.ts:5
+msgid "Starfish Mainstage"
+msgstr "Starfish Mainstage"
+
+#: lib/lists/stages.ts:6
+msgid "Humpback Pump Track"
+msgstr "Humpback Pump Track"
+
+#: lib/lists/stages.ts:7
+msgid "Inkblot Art Academy"
+msgstr "Inkblot Art Academy"
+
+#: lib/lists/stages.ts:8
+msgid "Sturgeon Shipyard"
+msgstr "Sturgeon Shipyard"
+
+#: lib/lists/stages.ts:9
+msgid "Moray Towers"
+msgstr "Moray Towers"
+
+#: lib/lists/stages.ts:10
+msgid "Port Mackerel"
+msgstr "Port Mackerel"
+
+#: lib/lists/stages.ts:11
+msgid "Manta Maria"
+msgstr "Manta Maria"
+
+#: lib/lists/stages.ts:12
+msgid "Kelp Dome"
+msgstr "Kelp Dome"
+
+#: lib/lists/stages.ts:13
+msgid "Snapper Canal"
+msgstr "Snapper Canal"
+
+#: lib/lists/stages.ts:14
+msgid "Blackbelly Skatepark"
+msgstr "Blackbelly Skatepark"
+
+#: lib/lists/stages.ts:15
+msgid "MakoMart"
+msgstr "MakoMart"
+
+#: lib/lists/stages.ts:16
+msgid "Walleye Warehouse"
+msgstr "Walleye Warehouse"
+
+#: lib/lists/stages.ts:17
+msgid "Shellendorf Institute"
+msgstr "Shellendorf Institute"
+
+#: lib/lists/stages.ts:18
+msgid "Arowana Mall"
+msgstr "Arowana Mall"
+
+#: lib/lists/stages.ts:19
+msgid "Goby Arena"
+msgstr "Goby Arena"
+
+#: lib/lists/stages.ts:20
+msgid "Piranha Pit"
+msgstr "Piranha Pit"
+
+#: lib/lists/stages.ts:21
+msgid "Camp Triggerfish"
+msgstr "Camp Triggerfish"
+
+#: lib/lists/stages.ts:22
+msgid "Wahoo World"
+msgstr "Wahoo World"
+
+#: lib/lists/stages.ts:23
+msgid "New Albacore Hotel"
+msgstr "New Albacore Hotel"
+
+#: lib/lists/stages.ts:24
+msgid "Ancho-V Games"
+msgstr "Ancho-V Games"
+
+#: lib/lists/stages.ts:25
+msgid "Skipper Pavilion"
+msgstr "Skipper Pavilion"
+
 #: lib/lists/weaponsWithHero.ts:145
 msgid "Shooters"
 msgstr "Shooters"
@@ -621,9 +713,65 @@ msgstr "Profile"
 msgid "Log out"
 msgstr "Log out"
 
+#: scenes/MapPlanner/components/DraggableImageAdder.tsx:25
+msgid "Add image"
+msgstr "Add image"
+
+#: scenes/MapPlanner/components/DraggableToolsSelector.tsx:28
+msgid "Tools"
+msgstr "Tools"
+
+#: scenes/MapPlanner/components/StageSelector.tsx:13
+msgid "Spawning Grounds"
+msgstr "Spawning Grounds"
+
+#: scenes/MapPlanner/components/StageSelector.tsx:14
+msgid "Marooner's Bay"
+msgstr "Marooner's Bay"
+
+#: scenes/MapPlanner/components/StageSelector.tsx:15
+msgid "Lost Outpost"
+msgstr "Lost Outpost"
+
+#: scenes/MapPlanner/components/StageSelector.tsx:17
+msgid "Salmonid Smokeyard"
+msgstr "Salmonid Smokeyard"
+
+#: scenes/MapPlanner/components/StageSelector.tsx:20
+msgid "Ruins of Ark Polaris‎‎"
+msgstr "Ruins of Ark Polaris‎‎"
+
+#: scenes/MapPlanner/components/StageSelector.tsx:52
+msgid "Minimap"
+msgstr "Minimap"
+
+#: scenes/MapPlanner/components/StageSelector.tsx:55
+msgid "Top-down"
+msgstr "Top-down"
+
+#: scenes/MapPlanner/index.tsx:250
+msgid "Clear drawings"
+msgstr "Clear drawings"
+
+#: scenes/MapPlanner/index.tsx:254
+msgid "Download as .png"
+msgstr "Download as .png"
+
+#: scenes/MapPlanner/index.tsx:258
+msgid "Download as .json"
+msgstr "Download as .json"
+
+#: scenes/MapPlanner/index.tsx:261
+msgid "Load from .json"
+msgstr "Load from .json"
+
 #: scenes/Profile/components/ProfileModal.tsx:63
-msgid "{0}"
-msgstr "{0}"
+msgid "Profile updated"
+msgstr "Profile updated"
+
+#: scenes/Profile/components/ProfileModal.tsx:63
+#~ msgid "{0}"
+#~ msgstr "{0}"
 
 #: scenes/Profile/components/ProfileModal.tsx:102
 msgid "Editing profile"

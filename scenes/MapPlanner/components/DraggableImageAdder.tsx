@@ -1,4 +1,5 @@
 import { Box, Flex, Image } from "@chakra-ui/core";
+import { Trans } from "@lingui/macro";
 import WeaponImage from "lib/components/WeaponImage";
 import { weapons } from "lib/lists/weapons";
 import { useMyTheme } from "lib/useMyTheme";
@@ -43,7 +44,7 @@ const DraggableImageAdder: React.FC<DraggableImageAdderProps> = ({
               padding: "0.3em",
             }}
           >
-            Add image
+            <Trans>Add image</Trans>
           </div>
         </strong>
         <Box overflowY="scroll" height="50vh">

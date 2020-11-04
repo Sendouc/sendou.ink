@@ -1,4 +1,5 @@
 import { Button, ButtonGroup, Flex } from "@chakra-ui/core";
+import { Trans } from "@lingui/macro";
 import { stages } from "lib/lists/stages";
 import { NextPage } from "next";
 import dynamic from "next/dynamic";
@@ -308,14 +309,14 @@ const MapPlannerPage: NextPage = () => {
           size="sm"
           variant="outline"
         >
-          Clear drawings
+          <Trans>Clear drawings</Trans>
         </Button>
         <ButtonGroup variant="outline" size="sm" isAttached>
           <Button
             onClick={() => download(sketch.current.toDataURL(), "png")}
             leftIcon={<FaFileImage />}
           >
-            Download as .png
+            <Trans>Download as .png</Trans>
           </Button>
           <Button
             onClick={() =>
@@ -327,10 +328,10 @@ const MapPlannerPage: NextPage = () => {
             }
             leftIcon={<FaFileDownload />}
           >
-            Download as .json
+            <Trans>Download as .json</Trans>
           </Button>
           <Button onClick={() => handleUpload()} leftIcon={<FaFileUpload />}>
-            Load from .json
+            <Trans>Load from .json</Trans>
           </Button>
         </ButtonGroup>
       </Flex>

@@ -17,6 +17,98 @@ msgstr ""
 msgid "Markdown is supported - <0>https://sendou.ink/markdown</0>"
 msgstr ""
 
+#: lib/lists/stages.ts:3
+msgid "The Reef"
+msgstr ""
+
+#: lib/lists/stages.ts:4
+msgid "Musselforge Fitness"
+msgstr ""
+
+#: lib/lists/stages.ts:5
+msgid "Starfish Mainstage"
+msgstr ""
+
+#: lib/lists/stages.ts:6
+msgid "Humpback Pump Track"
+msgstr ""
+
+#: lib/lists/stages.ts:7
+msgid "Inkblot Art Academy"
+msgstr ""
+
+#: lib/lists/stages.ts:8
+msgid "Sturgeon Shipyard"
+msgstr ""
+
+#: lib/lists/stages.ts:9
+msgid "Moray Towers"
+msgstr ""
+
+#: lib/lists/stages.ts:10
+msgid "Port Mackerel"
+msgstr ""
+
+#: lib/lists/stages.ts:11
+msgid "Manta Maria"
+msgstr ""
+
+#: lib/lists/stages.ts:12
+msgid "Kelp Dome"
+msgstr ""
+
+#: lib/lists/stages.ts:13
+msgid "Snapper Canal"
+msgstr ""
+
+#: lib/lists/stages.ts:14
+msgid "Blackbelly Skatepark"
+msgstr ""
+
+#: lib/lists/stages.ts:15
+msgid "MakoMart"
+msgstr ""
+
+#: lib/lists/stages.ts:16
+msgid "Walleye Warehouse"
+msgstr ""
+
+#: lib/lists/stages.ts:17
+msgid "Shellendorf Institute"
+msgstr ""
+
+#: lib/lists/stages.ts:18
+msgid "Arowana Mall"
+msgstr ""
+
+#: lib/lists/stages.ts:19
+msgid "Goby Arena"
+msgstr ""
+
+#: lib/lists/stages.ts:20
+msgid "Piranha Pit"
+msgstr ""
+
+#: lib/lists/stages.ts:21
+msgid "Camp Triggerfish"
+msgstr ""
+
+#: lib/lists/stages.ts:22
+msgid "Wahoo World"
+msgstr ""
+
+#: lib/lists/stages.ts:23
+msgid "New Albacore Hotel"
+msgstr ""
+
+#: lib/lists/stages.ts:24
+msgid "Ancho-V Games"
+msgstr ""
+
+#: lib/lists/stages.ts:25
+msgid "Skipper Pavilion"
+msgstr ""
+
 #: lib/lists/weaponsWithHero.ts:145
 msgid "Shooters"
 msgstr ""
@@ -621,9 +713,65 @@ msgstr ""
 msgid "Log out"
 msgstr ""
 
-#: scenes/Profile/components/ProfileModal.tsx:63
-msgid "{0}"
+#: scenes/MapPlanner/components/DraggableImageAdder.tsx:25
+msgid "Add image"
 msgstr ""
+
+#: scenes/MapPlanner/components/DraggableToolsSelector.tsx:28
+msgid "Tools"
+msgstr ""
+
+#: scenes/MapPlanner/components/StageSelector.tsx:13
+msgid "Spawning Grounds"
+msgstr ""
+
+#: scenes/MapPlanner/components/StageSelector.tsx:14
+msgid "Marooner's Bay"
+msgstr ""
+
+#: scenes/MapPlanner/components/StageSelector.tsx:15
+msgid "Lost Outpost"
+msgstr ""
+
+#: scenes/MapPlanner/components/StageSelector.tsx:17
+msgid "Salmonid Smokeyard"
+msgstr ""
+
+#: scenes/MapPlanner/components/StageSelector.tsx:20
+msgid "Ruins of Ark Polaris‎‎"
+msgstr ""
+
+#: scenes/MapPlanner/components/StageSelector.tsx:52
+msgid "Minimap"
+msgstr ""
+
+#: scenes/MapPlanner/components/StageSelector.tsx:55
+msgid "Top-down"
+msgstr ""
+
+#: scenes/MapPlanner/index.tsx:250
+msgid "Clear drawings"
+msgstr ""
+
+#: scenes/MapPlanner/index.tsx:254
+msgid "Download as .png"
+msgstr ""
+
+#: scenes/MapPlanner/index.tsx:258
+msgid "Download as .json"
+msgstr ""
+
+#: scenes/MapPlanner/index.tsx:261
+msgid "Load from .json"
+msgstr ""
+
+#: scenes/Profile/components/ProfileModal.tsx:63
+msgid "Profile updated"
+msgstr ""
+
+#: scenes/Profile/components/ProfileModal.tsx:63
+#~ msgid "{0}"
+#~ msgstr ""
 
 #: scenes/Profile/components/ProfileModal.tsx:102
 msgid "Editing profile"
