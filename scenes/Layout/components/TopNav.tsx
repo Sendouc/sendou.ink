@@ -12,6 +12,7 @@ import {
   MenuList,
   useColorMode,
 } from "@chakra-ui/core";
+import { Trans } from "@lingui/macro";
 import { DiscordIcon } from "assets/icons";
 import { useTranslation } from "lib/useMockT";
 import useUser from "lib/useUser";
@@ -37,7 +38,7 @@ const TopNav = () => {
           variant="ghost"
           size="sm"
         >
-          {t("navigation;Log in via Discord")}
+          <Trans>Log in via Discord</Trans>
         </Button>
       );
     }
@@ -60,10 +61,12 @@ const TopNav = () => {
         <MenuList>
           <MenuGroup title={`${user.username}#${user.discriminator}`}>
             <Link href={`/u/${user.discordId}`}>
-              <MenuItem>{t("navigation;Profile")}</MenuItem>
+              <MenuItem>
+                <Trans>Profile</Trans>
+              </MenuItem>
             </Link>
             <MenuItem onClick={() => signOut()}>
-              {t("navigation;Log out")}
+              <Trans>Log out</Trans>
             </MenuItem>
           </MenuGroup>
         </MenuList>

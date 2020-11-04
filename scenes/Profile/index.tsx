@@ -1,8 +1,8 @@
 import { Box, Button } from "@chakra-ui/core";
+import { Trans } from "@lingui/macro";
 import { GetUserByIdentifierQuery } from "generated/graphql";
 import Markdown from "lib/components/Markdown";
 import MyHead from "lib/components/MyHead";
-import { useTranslation } from "lib/useMockT";
 import useUser from "lib/useUser";
 import { useState } from "react";
 import AvatarWithInfo from "./components/AvatarWithInfo";
@@ -14,7 +14,6 @@ interface Props {
 }
 
 const Profile: React.FC<Props> = ({ user, identifier }) => {
-  const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
   const [loggedInUser] = useUser();
   return (
@@ -23,7 +22,7 @@ const Profile: React.FC<Props> = ({ user, identifier }) => {
       <AvatarWithInfo user={user} />
       {loggedInUser?.id === user.id && (
         <Button onClick={() => setShowModal(true)}>
-          {t("users;Edit profile")}
+          <Trans>Edit profile</Trans>
         </Button>
       )}
       {showModal && (

@@ -33,3 +33,7 @@ prisma/.env
 
 # vercel
 .vercel
+
+# lingui
+locale/_build/
+locale/**/*.js

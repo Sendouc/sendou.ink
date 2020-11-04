@@ -1,3 +1,4 @@
 old
 .next
 prisma/migrations
+locales/**/*.js

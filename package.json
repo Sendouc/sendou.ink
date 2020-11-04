@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "lingui compile && next build",
     "start": "next start",
     "migrate:save": "npx prisma migrate save --name init --experimental",
     "migrate:up": "npx prisma migrate up --experimental",
@@ -13,13 +13,17 @@
     "gen": "graphql-codegen --config codegen.yml",
     "seed": "ts-node prisma/seed.ts",
     "prettier": "prettier --write .",
-    "e2e": "cypress open"
+    "e2e": "cypress open",
+    "add-locale": "lingui add-locale",
+    "extract": "lingui extract",
+    "compile": "lingui compile"
   },
   "dependencies": {
     "@apollo/client": "^3.2.5",
     "@chakra-ui/core": "^1.0.0-rc.8",
     "@chakra-ui/theme-tools": "^1.0.0-rc.8",
     "@hookform/resolvers": "^1.0.0",
+    "@lingui/react": "^3.0.3",
     "@nexus/schema": "^0.17.0",
     "@prisma/client": "^2.10.1",
     "@sendou/react-sketch": "^0.5.2",
@@ -47,6 +51,8 @@
     "@graphql-codegen/typescript": "1.17.11",
     "@graphql-codegen/typescript-operations": "1.17.8",
     "@graphql-codegen/typescript-react-apollo": "2.0.7",
+    "@lingui/cli": "^3.0.3",
+    "@lingui/macro": "^3.0.3",
     "@prisma/cli": "^2.10.1",
     "@types/next-auth": "^3.1.14",
     "@types/node": "^14.14.6",
@@ -55,5 +61,6 @@
     "prettier": "^2.1.2",
     "ts-node": "^9.0.0",
     "typescript": "^4.0.5"
-  }
+  },
+  "license": "MIT"
 }

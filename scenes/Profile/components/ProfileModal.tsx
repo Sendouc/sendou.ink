@@ -18,6 +18,7 @@ import {
   useToast,
 } from "@chakra-ui/core";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Trans } from "@lingui/macro";
 import { countries } from "countries-list";
 import {
   GetUserByIdentifierDocument,
@@ -158,13 +159,15 @@ const ProfileModal: React.FC<Props> = ({
     <Modal isOpen onClose={onClose} size="xl" closeOnOverlayClick={false}>
       <ModalOverlay>
         <ModalContent>
-          <ModalHeader>{t("users;Editing profile")}</ModalHeader>
+          <ModalHeader>
+            <Trans>Editing profile</Trans>
+          </ModalHeader>
           <ModalCloseButton borderRadius="50%" />
           <form onSubmit={handleSubmit(onSubmit)}>
             <ModalBody pb={6}>
               <FormControl isInvalid={!!errors.customUrlPath}>
                 <FormLabel htmlFor="customUrlPath">
-                  {t("users;Custom URL")}
+                  <Trans>Custom URL</Trans>
                 </FormLabel>
                 <InputGroup>
                   <InputLeftAddon children="https://sendou.ink/u/" />
@@ -188,7 +191,7 @@ const ProfileModal: React.FC<Props> = ({
                     mb={1}
                     color="#1DA1F2"
                   />{" "}
-                  {t("users;Twitter name")}
+                  <Trans>Twitter name</Trans>
                 </FormLabel>
                 <InputGroup>
                   <InputLeftAddon children="https://twitter.com/" />
@@ -212,7 +215,7 @@ const ProfileModal: React.FC<Props> = ({
                     mb={1}
                     color="#6441A4"
                   />
-                  {t("users;Twitch name")}
+                  <Trans>Twitch name</Trans>
                 </FormLabel>
                 <InputGroup>
                   <InputLeftAddon children="https://twitch.tv/" />
@@ -236,7 +239,7 @@ const ProfileModal: React.FC<Props> = ({
                     mb={1}
                     color="#FF0000"
                   />
-                  {t("users;YouTube channel ID")}
+                  <Trans>YouTube channel ID</Trans>
                 </FormLabel>
                 <InputGroup>
                   <InputLeftAddon children="https://youtube.com/channel/" />
@@ -250,7 +253,7 @@ const ProfileModal: React.FC<Props> = ({
               </FormControl>
 
               <FormLabel htmlFor="country" mt={4}>
-                {t("users;Country")}
+                <Trans>Country</Trans>
               </FormLabel>
               {/* FIXME: placeholders for dropdowns */}
               <Select ref={register} name="country">
@@ -265,7 +268,7 @@ const ProfileModal: React.FC<Props> = ({
 
               <FormControl isInvalid={!!errors.weaponPool}>
                 <FormLabel htmlFor="weaponPool" mt={4}>
-                  {t("users;Weapon pool")}
+                  <Trans>Weapon pool</Trans>
                 </FormLabel>
                 <Controller
                   name="weaponPool"
@@ -288,7 +291,7 @@ const ProfileModal: React.FC<Props> = ({
 
               <FormLabel htmlFor="sensStick" mt={4}>
                 <Box as={FaGamepad} display="inline-block" mr={2} mb={1} />
-                {t("users;Stick sensitivity")}
+                <Trans>Stick sensitivity</Trans>
               </FormLabel>
               <Select ref={register} name="sensStick">
                 {sensOptions.map((sens) => (
@@ -300,7 +303,7 @@ const ProfileModal: React.FC<Props> = ({
 
               <FormLabel htmlFor="sensMotion" mt={4}>
                 <Box as={FaGamepad} display="inline-block" mr={2} mb={1} />
-                {t("users;Motion sensitivity")}
+                <Trans>Motion sensitivity</Trans>
               </FormLabel>
               <Select ref={register} name="sensMotion">
                 {sensOptions.map((sens) => (
@@ -322,10 +325,10 @@ const ProfileModal: React.FC<Props> = ({
             </ModalBody>
             <ModalFooter>
               <Button mr={3} type="submit" isLoading={loading}>
-                Save
+                <Trans>Save</Trans>
               </Button>
               <Button onClick={onClose} variant="outline">
-                Cancel
+                <Trans>Cancel</Trans>
               </Button>
             </ModalFooter>
           </form>

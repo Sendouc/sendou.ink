@@ -1,10 +1,14 @@
 import { ApolloProvider } from "@apollo/client";
 import { ChakraProvider, extendTheme } from "@chakra-ui/core";
 import { mode } from "@chakra-ui/theme-tools";
+import { i18n } from "@lingui/core";
+import { I18nProvider } from "@lingui/react";
 import { useApollo } from "lib/apollo";
+import { activate } from "lib/i18n";
 import { Provider as NextAuthProvider } from "next-auth/client";
 import GoogleFonts from "next-google-fonts";
 import type { AppProps } from "next/app";
+import { useEffect } from "react";
 import Layout from "scenes/Layout";
 import { theme } from "theme";
 
@@ -82,6 +86,10 @@ const extendedTheme = extendTheme({
 const MyApp = (props: AppProps) => {
   const apolloClient = useApollo(props.pageProps.initialApolloState);
 
+  useEffect(() => {
+    activate("en");
+  }, []);
+
   return (
     <>
       <GoogleFonts
@@ -90,7 +98,9 @@ const MyApp = (props: AppProps) => {
       <NextAuthProvider session={props.pageProps.session}>
         <ApolloProvider client={apolloClient}>
           <ChakraProvider theme={extendedTheme}>
-            <Layout {...props} />
+            <I18nProvider i18n={i18n}>
+              <Layout {...props} />
+            </I18nProvider>
           </ChakraProvider>
         </ApolloProvider>
       </NextAuthProvider>
