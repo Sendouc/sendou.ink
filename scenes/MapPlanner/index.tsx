@@ -1,5 +1,6 @@
 import { Button, ButtonGroup, Flex } from "@chakra-ui/core";
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
+import Breadcrumbs from "lib/components/Breadcrumbs";
 import { stages } from "lib/lists/stages";
 import { NextPage } from "next";
 import dynamic from "next/dynamic";
@@ -276,6 +277,7 @@ const MapPlannerPage: NextPage = () => {
 
   return (
     <>
+      <Breadcrumbs pages={[{ name: t`Map Planner` }]} />
       <DraggableToolsSelector
         tool={tool}
         setTool={setTool}

@@ -14,7 +14,6 @@ import {
 } from "@chakra-ui/core";
 import { Trans } from "@lingui/macro";
 import { DiscordIcon } from "assets/icons";
-import { useTranslation } from "lib/useMockT";
 import useUser from "lib/useUser";
 import { signIn, signOut } from "next-auth/client";
 import Link from "next/link";
@@ -25,7 +24,6 @@ const TopNav = () => {
   const { colorMode, toggleColorMode } = useColorMode();
 
   const UserItem = () => {
-    const { t } = useTranslation();
     const [user, loading] = useUser();
 
     if (loading) return <Box />;

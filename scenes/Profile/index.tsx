@@ -1,8 +1,8 @@
 import { Box, Button } from "@chakra-ui/core";
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { GetUserByIdentifierQuery } from "generated/graphql";
+import Breadcrumbs from "lib/components/Breadcrumbs";
 import Markdown from "lib/components/Markdown";
-import MyHead from "lib/components/MyHead";
 import useUser from "lib/useUser";
 import { useState } from "react";
 import AvatarWithInfo from "./components/AvatarWithInfo";
@@ -18,7 +18,9 @@ const Profile: React.FC<Props> = ({ user, identifier }) => {
   const [loggedInUser] = useUser();
   return (
     <>
-      <MyHead title={user.fullUsername} />
+      <Breadcrumbs
+        pages={[{ name: t`Users`, link: "/u" }, { name: user.fullUsername }]}
+      />
       <AvatarWithInfo user={user} />
       {loggedInUser?.id === user.id && (
         <Button onClick={() => setShowModal(true)}>

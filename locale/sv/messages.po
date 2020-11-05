@@ -13,6 +13,10 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: lib/components/Breadcrumbs.tsx:16
+msgid "Home"
+msgstr ""
+
 #: lib/components/MarkdownTextarea.tsx:13
 msgid "Markdown is supported - <0>https://sendou.ink/markdown</0>"
 msgstr ""
@@ -701,15 +705,15 @@ msgstr ""
 msgid "Kensa Undercover Brella"
 msgstr ""
 
-#: scenes/Layout/components/TopNav.tsx:19
+#: scenes/Layout/components/TopNav.tsx:17
 msgid "Log in via Discord"
 msgstr ""
 
-#: scenes/Layout/components/TopNav.tsx:32
+#: scenes/Layout/components/TopNav.tsx:30
 msgid "Profile"
 msgstr ""
 
-#: scenes/Layout/components/TopNav.tsx:36
+#: scenes/Layout/components/TopNav.tsx:34
 msgid "Log out"
 msgstr ""
 
@@ -749,19 +753,23 @@ msgstr ""
 msgid "Top-down"
 msgstr ""
 
-#: scenes/MapPlanner/index.tsx:250
+#: scenes/MapPlanner/index.tsx:243
+msgid "Map Planner"
+msgstr ""
+
+#: scenes/MapPlanner/index.tsx:252
 msgid "Clear drawings"
 msgstr ""
 
-#: scenes/MapPlanner/index.tsx:254
+#: scenes/MapPlanner/index.tsx:256
 msgid "Download as .png"
 msgstr ""
 
-#: scenes/MapPlanner/index.tsx:258
+#: scenes/MapPlanner/index.tsx:260
 msgid "Download as .json"
 msgstr ""
 
-#: scenes/MapPlanner/index.tsx:261
+#: scenes/MapPlanner/index.tsx:263
 msgid "Load from .json"
 msgstr ""
 
