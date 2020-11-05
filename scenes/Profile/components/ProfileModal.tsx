@@ -30,12 +30,12 @@ import {
   useUpdateUserProfileMutation,
 } from "generated/graphql";
 import { getToastOptions } from "lib/getToastOptions";
-import { Controller, useForm } from "react-hook-form";
-import { FaGamepad, FaTwitch, FaTwitter, FaYoutube } from "react-icons/fa";
 import {
   profileSchemaFrontend,
   PROFILE_CHARACTER_LIMIT,
-} from "validators/profile";
+} from "lib/validators/profile";
+import { Controller, useForm } from "react-hook-form";
+import { FaGamepad, FaTwitch, FaTwitter, FaYoutube } from "react-icons/fa";
 import * as z from "zod";
 
 const sensOptions = [
