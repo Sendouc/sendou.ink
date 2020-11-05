@@ -86,7 +86,7 @@ const main = async () => {
                 switchAccountId: "" + i,
                 name: playerName,
                 user:
-                  i === 0
+                  i < 5
                     ? {
                         connect: {
                           id: testUser.id,
