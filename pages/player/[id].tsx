@@ -1,10 +1,10 @@
 import { PrismaClient } from "@prisma/client";
+import LoadingBoundary from "components/LoadingBoundary";
 import {
   GetPlayersXRankPlacementsDocument,
   useGetPlayersXRankPlacementsQuery,
 } from "generated/graphql";
 import { initializeApollo } from "lib/apollo";
-import LoadingBoundary from "lib/components/LoadingBoundary";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import Player from "scenes/Player";

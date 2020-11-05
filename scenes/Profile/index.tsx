@@ -1,8 +1,8 @@
 import { Box, Button, Divider } from "@chakra-ui/core";
 import { t, Trans } from "@lingui/macro";
+import Breadcrumbs from "components/Breadcrumbs";
+import Markdown from "components/Markdown";
 import { GetUserByIdentifierQuery } from "generated/graphql";
-import Breadcrumbs from "lib/components/Breadcrumbs";
-import Markdown from "lib/components/Markdown";
 import useUser from "lib/useUser";
 import { useState } from "react";
 import AvatarWithInfo from "./components/AvatarWithInfo";

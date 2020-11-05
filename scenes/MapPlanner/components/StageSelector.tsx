@@ -4,7 +4,7 @@ import { useLingui } from "@lingui/react";
 import salmonRunHighTide from "assets/SalmonRunHighTide.svg";
 import salmonRunLowTide from "assets/SalmonRunLowTide.svg";
 import salmonRunMidTide from "assets/SalmonRunMidTide.svg";
-import ModeImage from "lib/components/ModeImage";
+import ModeImage from "components/ModeImage";
 import { stages } from "lib/lists/stages";
 import { PlannerMapBg } from "..";
 

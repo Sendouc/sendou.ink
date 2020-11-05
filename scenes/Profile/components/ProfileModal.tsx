@@ -20,6 +20,8 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
+import MarkdownTextarea from "components/MarkdownTextarea";
+import WeaponSelector from "components/WeaponSelector";
 import { countries } from "countries-list";
 import {
   GetUserByIdentifierDocument,
@@ -27,8 +29,6 @@ import {
   UpdateUserProfileInput,
   useUpdateUserProfileMutation,
 } from "generated/graphql";
-import MarkdownTextarea from "lib/components/MarkdownTextarea";
-import WeaponSelector from "lib/components/WeaponSelector";
 import { getToastOptions } from "lib/getToastOptions";
 import { Controller, useForm } from "react-hook-form";
 import { FaGamepad, FaTwitch, FaTwitter, FaYoutube } from "react-icons/fa";

@@ -1,6 +1,6 @@
-import AbilityIcon from "lib/components/AbilityIcon";
-import GearImage from "lib/components/GearImage";
-import WeaponImage from "lib/components/WeaponImage";
+import AbilityIcon from "components/AbilityIcon";
+import GearImage from "components/GearImage";
+import WeaponImage from "components/WeaponImage";
 import { abilityMarkdownCodes } from "lib/lists/abilityMarkdownCodes";
 import { gearMarkdownCodes } from "lib/lists/gearMarkdownCodes";
 import { weaponMarkdownCodes } from "lib/lists/weaponMarkdownCodes";

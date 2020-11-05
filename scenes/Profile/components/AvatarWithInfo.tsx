@@ -1,7 +1,7 @@
 import { Avatar, Box, Flex, Heading, IconButton } from "@chakra-ui/core";
+import WeaponImage from "components/WeaponImage";
 import { getEmojiFlag } from "countries-list";
 import { GetUserByIdentifierQuery } from "generated/graphql";
-import WeaponImage from "lib/components/WeaponImage";
 import { useTranslation } from "lib/useMockT";
 import { useMyTheme } from "lib/useMyTheme";
 import { FaGamepad, FaTwitch, FaTwitter, FaYoutube } from "react-icons/fa";

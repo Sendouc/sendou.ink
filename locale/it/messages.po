@@ -13,11 +13,11 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: lib/components/Breadcrumbs.tsx:16
+#: components/Breadcrumbs.tsx:16
 msgid "Home"
 msgstr ""
 
-#: lib/components/MarkdownTextarea.tsx:13
+#: components/MarkdownTextarea.tsx:13
 msgid "Markdown is supported - <0>https://sendou.ink/markdown</0>"
 msgstr ""
 

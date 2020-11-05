@@ -1,6 +1,8 @@
 import { Radio, RadioGroup, Select, Stack } from "@chakra-ui/core";
 import { t } from "@lingui/macro";
 import { PrismaClient } from "@prisma/client";
+import Breadcrumbs from "components/Breadcrumbs";
+import LoadingBoundary from "components/LoadingBoundary";
 import {
   GetXRankPlacementsDocument,
   GetXRankPlacementsQueryVariables,
@@ -8,8 +10,6 @@ import {
   useGetXRankPlacementsQuery,
 } from "generated/graphql";
 import { initializeApollo } from "lib/apollo";
-import Breadcrumbs from "lib/components/Breadcrumbs";
-import LoadingBoundary from "lib/components/LoadingBoundary";
 import { getLocalizedMonthYearString } from "lib/getLocalizedMontYearString";
 import { GetStaticProps } from "next";
 import { useState } from "react";

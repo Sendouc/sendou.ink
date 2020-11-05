@@ -1,6 +1,5 @@
 import { Avatar, Text } from "@chakra-ui/core";
 import { Trans } from "@lingui/macro";
-import { GetXRankPlacementsQuery } from "generated/graphql";
 import {
   Table,
   TableBody,
@@ -8,8 +7,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "lib/components/Table";
-import WeaponImage from "lib/components/WeaponImage";
+} from "components/Table";
+import WeaponImage from "components/WeaponImage";
+import { GetXRankPlacementsQuery } from "generated/graphql";
 import { getRankingString } from "lib/getRankingString";
 import { useMyTheme } from "lib/useMyTheme";
 import Link from "next/link";

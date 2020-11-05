@@ -1,6 +1,6 @@
 import { Button, ButtonGroup, Flex } from "@chakra-ui/core";
 import { t, Trans } from "@lingui/macro";
-import Breadcrumbs from "lib/components/Breadcrumbs";
+import Breadcrumbs from "components/Breadcrumbs";
 import { stages } from "lib/lists/stages";
 import { NextPage } from "next";
 import dynamic from "next/dynamic";

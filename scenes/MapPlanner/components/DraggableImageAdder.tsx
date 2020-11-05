@@ -1,6 +1,6 @@
 import { Box, Flex, Image } from "@chakra-ui/core";
 import { Trans } from "@lingui/macro";
-import WeaponImage from "lib/components/WeaponImage";
+import WeaponImage from "components/WeaponImage";
 import { weapons } from "lib/lists/weapons";
 import { useMyTheme } from "lib/useMyTheme";
 import { useState } from "react";
