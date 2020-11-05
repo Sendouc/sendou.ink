@@ -1,4 +1,4 @@
-import { Box, Button } from "@chakra-ui/core";
+import { Box, Button, Divider } from "@chakra-ui/core";
 import { t, Trans } from "@lingui/macro";
 import { GetUserByIdentifierQuery } from "generated/graphql";
 import Breadcrumbs from "lib/components/Breadcrumbs";
@@ -34,8 +34,9 @@ const Profile: React.FC<Props> = ({ user, identifier }) => {
           identifier={identifier}
         />
       )}
+      <Divider my="2em" />
       {user.profile?.bio && (
-        <Box my="2em">
+        <Box>
           <Markdown value={user.profile.bio} />
         </Box>
       )}

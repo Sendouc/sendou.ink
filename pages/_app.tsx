@@ -30,6 +30,7 @@ const extendedTheme = extendTheme({
   // 5) form label bolded
   // 6) dropdown border + focus colors // especially in light blends in a lot
   // 7) disable dark mode <-> light mode transformation time
+  // 8) divider color (light)
   components: {
     Button: {
       defaultProps: {

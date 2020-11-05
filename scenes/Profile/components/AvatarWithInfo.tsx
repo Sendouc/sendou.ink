@@ -1,7 +1,6 @@
 import { Avatar, Box, Flex, Heading, IconButton } from "@chakra-ui/core";
 import { getEmojiFlag } from "countries-list";
 import { GetUserByIdentifierQuery } from "generated/graphql";
-import Section from "lib/components/Section";
 import WeaponImage from "lib/components/WeaponImage";
 import { useTranslation } from "lib/useMockT";
 import { useMyTheme } from "lib/useMyTheme";
@@ -31,8 +30,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user }) => {
 
   return (
     <>
-      <Section
-        display="flex"
+      <Flex
         flexDir="column"
         flexWrap="wrap"
         alignItems="center"
@@ -129,7 +127,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user }) => {
             </Flex>
           </Flex>
         </Flex>
-      </Section>
+      </Flex>
     </>
   );
 };
