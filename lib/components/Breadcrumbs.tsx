@@ -40,7 +40,10 @@ const Breadcrumbs: React.FC<Props> = ({ pages }) => {
         </BreadcrumbItem>
 
         {pages.map((page, i) => (
-          <BreadcrumbItem isCurrentPage={i === pages.length - 1}>
+          <BreadcrumbItem
+            key={page.name}
+            isCurrentPage={i === pages.length - 1}
+          >
             {page.link ? (
               <NextLink href={page.link}>
                 <BreadcrumbLink>{page.name}</BreadcrumbLink>

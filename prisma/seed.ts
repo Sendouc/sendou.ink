@@ -58,43 +58,49 @@ const main = async () => {
   await prisma.xRankPlacement.deleteMany({});
   await prisma.player.deleteMany({});
 
-  const getMode = (i: number) => {
-    const j = i + 1;
-    if (j % 4 === 0) return "CB";
-    if (j % 2 === 0) return "TC";
-    if (j % 3 === 0) return "RM";
-
-    return "SZ";
-  };
+  const modes = ["SZ", "TC", "RM", "CB"];
+  let ranking = 0;
 
   await Promise.all(
     Array(100)
       .fill(null)
       .map((_, i) => {
         const playerName = i % 2 === 0 ? `Player${i}` : `選手${i}`;
+        const mode = modes.shift()!;
+        modes.push(mode);
+
+        if (mode === "SZ") ranking++;
+
         return prisma.xRankPlacement.create({
           data: {
             playerName,
-            mode: getMode(i),
+            mode: mode as "SZ" | "TC" | "RM" | "CB",
             month: 12,
             year: 2020,
             ranking: Math.ceil((i + 1) / 4),
             xPower: 3000 - i * 0.5,
             weapon: "Splattershot Jr.",
-            player: {
-              create: {
-                switchAccountId: "" + i,
-                name: playerName,
-                user:
-                  i < 5
-                    ? {
-                        connect: {
-                          id: testUser.id,
-                        },
-                      }
-                    : undefined,
-              },
-            },
+            player:
+              i === 0 || i > 3
+                ? {
+                    create: {
+                      switchAccountId: "" + i,
+                      name: playerName,
+                      user:
+                        i === 0
+                          ? {
+                              connect: {
+                                id: testUser.id,
+                              },
+                            }
+                          : undefined,
+                    },
+                  }
+                : {
+                    connect: {
+                      switchAccountId: "0",
+                    },
+                  },
           },
         });
       })
