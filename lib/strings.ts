@@ -28,3 +28,17 @@ export const getDiscordAvatarUrl = ({
   discordId: string;
   discordAvatar: string;
 }) => `https://cdn.discordapp.com/avatars/${discordId}/${discordAvatar}.jpg`;
+
+export const getRankingString = (ranking: number) => {
+  switch (ranking) {
+    case 1:
+      return "🥇";
+    case 2:
+      return "🥈";
+    case 3:
+      return "🥉";
+
+    default:
+      return `${ranking}`;
+  }
+};

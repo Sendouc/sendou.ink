@@ -10,7 +10,7 @@ import {
 } from "components/Table";
 import WeaponImage from "components/WeaponImage";
 import { GetPlayersXRankPlacementsQuery } from "generated/graphql";
-import { getRankingString } from "lib/getRankingString";
+import { getRankingString } from "lib/strings";
 import { useTranslation } from "lib/useMockT";
 import { useMyTheme } from "lib/useMyTheme";
 
