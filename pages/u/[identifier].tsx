@@ -1,59 +1,96 @@
+import { Box, Button, Divider } from "@chakra-ui/core";
+import { t, Trans } from "@lingui/macro";
 import { PrismaClient } from "@prisma/client";
-import {
-  GetUserByIdentifierDocument,
-  useGetUserByIdentifierQuery,
-} from "generated/graphql";
-import { initializeApollo } from "lib/apollo";
+import Breadcrumbs from "components/Breadcrumbs";
+import Markdown from "components/Markdown";
+import { getFullUsername } from "lib/strings";
+import useUser from "lib/useUser";
 import { GetStaticPaths, GetStaticProps } from "next";
-import { useRouter } from "next/router";
-import Profile from "scenes/Profile";
+import {
+  getUserByIdentifier,
+  GetUserByIdentifierData,
+} from "prisma/queries/getUserByIdentifier";
+import { useEffect, useState } from "react";
+import AvatarWithInfo from "scenes/Profile/components/AvatarWithInfo";
 
 const prisma = new PrismaClient();
 
 // FIXME: should try to make it so that /u/Sendou and /u/234234298348 point to the same page
 export const getStaticPaths: GetStaticPaths = async () => {
-  const users = await prisma.user.findMany({});
+  const users = await prisma.user.findMany({ include: { profile: true } });
   return {
-    paths: users.map((u) => ({ params: { identifier: u.discordId } })),
+    paths: users.flatMap((u) =>
+      u.profile?.customUrlPath
+        ? [
+            { params: { identifier: u.discordId } },
+            { params: { identifier: u.profile.customUrlPath } },
+          ]
+        : { params: { identifier: u.discordId } }
+    ),
     fallback: true,
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const apolloClient = initializeApollo(null, { prisma: new PrismaClient() });
+interface Props {
+  user: GetUserByIdentifierData;
+}
 
-  await apolloClient.query({
-    query: GetUserByIdentifierDocument,
-    variables: {
-      // FIXME: why ! needed?
-      identifier: params!.identifier,
-    },
-  });
+export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
+  const user = await getUserByIdentifier(prisma, "tester");
+
+  //const isCustomUrl = isNaN(Number(params!.identifier))
 
   return {
     props: {
-      initialApolloState: apolloClient.cache.extract(),
-      identifier: params!.identifier,
+      user,
     },
     revalidate: 1,
+    notFound: !user,
+    //redirect: isCustomUrl ? { destination: "" } : undefined,
   };
 };
 
-const ProfilePage = ({ identifier }: { identifier: string }) => {
-  const { data } = useGetUserByIdentifierQuery({
-    variables: { identifier },
-  });
-  const router = useRouter();
+const ProfilePage = (props: Props) => {
+  const [user, setUser] = useState(props.user);
+  const [showModal, setShowModal] = useState(false);
 
-  // FIXME: handle fallback
-  const getUserByIdentifier = data?.getUserByIdentifier;
-  if (!getUserByIdentifier && typeof window !== "undefined") {
-    router.push("/404");
-  }
+  useEffect(() => {
+    setUser(user);
+  }, [user]);
 
-  return getUserByIdentifier ? (
-    <Profile user={getUserByIdentifier} identifier={identifier} />
-  ) : null;
+  const [loggedInUser] = useUser();
+
+  // same as router.isFallback
+  if (!user) return null;
+
+  return (
+    <>
+      <Breadcrumbs
+        pages={[
+          { name: t`Users`, link: "/u" },
+          { name: getFullUsername(user) },
+        ]}
+      />
+      <AvatarWithInfo user={user} />
+      {loggedInUser?.id === user.id && (
+        <Button onClick={() => setShowModal(true)}>
+          <Trans>Edit profile</Trans>
+        </Button>
+      )}
+      {/* {showModal && (
+        <ProfileModal
+          onClose={() => setShowModal(false)}
+          existingProfile={user.profile}
+        />
+      )} */}
+      <Divider my="2em" />
+      {user.profile?.bio && (
+        <Box>
+          <Markdown value={user.profile.bio} />
+        </Box>
+      )}
+    </>
+  );
 };
 
 export default ProfilePage;

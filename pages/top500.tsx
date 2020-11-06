@@ -10,7 +10,7 @@ import {
   useGetXRankPlacementsQuery,
 } from "generated/graphql";
 import { initializeApollo } from "lib/apollo";
-import { getLocalizedMonthYearString } from "lib/getLocalizedMontYearString";
+import { getLocalizedMonthYearString } from "lib/strings";
 import { GetStaticProps } from "next";
 import { useState } from "react";
 import XSearch from "scenes/Top500";

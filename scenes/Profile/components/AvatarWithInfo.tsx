@@ -1,13 +1,14 @@
 import { Avatar, Box, Flex, Heading, IconButton } from "@chakra-ui/core";
 import WeaponImage from "components/WeaponImage";
 import { getEmojiFlag } from "countries-list";
-import { GetUserByIdentifierQuery } from "generated/graphql";
+import { getDiscordAvatarUrl, getFullUsername } from "lib/strings";
 import { useTranslation } from "lib/useMockT";
 import { useMyTheme } from "lib/useMyTheme";
+import { GetUserByIdentifierData } from "prisma/queries/getUserByIdentifier";
 import { FaGamepad, FaTwitch, FaTwitter, FaYoutube } from "react-icons/fa";
 
 interface AvatarWithInfoProps {
-  user: NonNullable<GetUserByIdentifierQuery["getUserByIdentifier"]>;
+  user: NonNullable<GetUserByIdentifierData>;
 }
 
 const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user }) => {
@@ -40,15 +41,22 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user }) => {
       >
         <Avatar
           data-cy="profile-page-avatar"
-          name={user.fullUsername}
-          src={user.avatarUrl ?? ""}
+          name={getFullUsername(user)}
+          src={
+            user.discordAvatar
+              ? getDiscordAvatarUrl({
+                  discordId: user.discordId,
+                  discordAvatar: user.discordAvatar,
+                })
+              : undefined
+          }
           size="2xl"
           mb="0.5rem"
         />
         <Flex flexDirection="column" justifyContent="center" mb="0.5rem">
           <Flex alignItems="center" justifyContent="center" my="0.2rem">
             <Heading fontFamily="'Rubik', sans-serif" size="lg">
-              {user.fullUsername}
+              {getFullUsername(user)}
             </Heading>
             {user.profile?.country && (
               <Box as="span" ml={2}>

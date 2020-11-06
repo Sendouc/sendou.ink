@@ -12,3 +12,19 @@ export const getLocalizedMonthYearString = (
     year: "numeric",
   });
 };
+
+export const getFullUsername = ({
+  username,
+  discriminator,
+}: {
+  username: string;
+  discriminator: string;
+}) => `${username}#${discriminator}`;
+
+export const getDiscordAvatarUrl = ({
+  discordId,
+  discordAvatar,
+}: {
+  discordId: string;
+  discordAvatar: string;
+}) => `https://cdn.discordapp.com/avatars/${discordId}/${discordAvatar}.jpg`;

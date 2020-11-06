@@ -7,7 +7,7 @@ import {
   stringArg,
 } from "@nexus/schema";
 import { getMySession } from "lib/getMySession";
-import { profileSchemaBackend } from "validators/profile";
+import { profileSchemaBackend } from "lib/validators/profile";
 
 export const User = objectType({
   name: "User",
