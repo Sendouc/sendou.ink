@@ -5,12 +5,13 @@ import Breadcrumbs from "components/Breadcrumbs";
 import Top500Table from "components/top500/Top500Table";
 import { RankedMode } from "generated/graphql";
 import { getLocalizedMonthYearString } from "lib/strings";
-import { GetStaticProps } from "next";
+import { GetStaticPaths, GetStaticProps } from "next";
+import { useRouter } from "next/router";
 import {
   getTop500PlacementsByMonth,
   GetTop500PlacementsByMonthData,
 } from "prisma/queries/getTop500PlacementsByMonth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const prisma = new PrismaClient();
 
@@ -22,7 +23,12 @@ const getMonthOptions = (latestMonth: number, latestYear: number) => {
   while (true) {
     // FIXME: set language
     const monthString = getLocalizedMonthYearString(month, year, "en");
-    monthChoices.push({ label: monthString, value: `${month},${year}` });
+    monthChoices.push({
+      label: monthString,
+      value: `${month},${year}`,
+      month: `${month}`,
+      year: `${year}`,
+    });
 
     if (month === latestMonth && year === latestYear) break;
 
@@ -38,23 +44,78 @@ const getMonthOptions = (latestMonth: number, latestYear: number) => {
   return monthChoices;
 };
 
-interface Props {
-  placements: GetTop500PlacementsByMonthData;
-  monthOptions: { label: string; value: string }[];
-}
-
-export const getStaticProps: GetStaticProps<Props> = async () => {
+export const getStaticPaths: GetStaticPaths = async () => {
   const mostRecentResult = await prisma.xRankPlacement.findFirst({
     orderBy: [{ month: "desc" }, { year: "desc" }],
   });
 
   if (!mostRecentResult) throw Error("No X Rank Placements");
 
+  return {
+    paths: getMonthOptions(mostRecentResult.month, mostRecentResult.year)
+      .flatMap(({ month, year }) => [
+        {
+          params: {
+            slug: [month, year, "SZ"],
+          },
+        },
+        {
+          params: {
+            slug: [month, year, "TC"],
+          },
+        },
+        {
+          params: {
+            slug: [month, year, "RM"],
+          },
+        },
+        {
+          params: {
+            slug: [month, year, "CB"],
+          },
+        },
+      ])
+      .concat({
+        params: {
+          slug: [],
+        },
+      }),
+    fallback: false,
+  };
+};
+
+interface Props {
+  placements: GetTop500PlacementsByMonthData;
+  monthOptions: { label: string; value: string }[];
+}
+
+export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
+  const mostRecentResult = await prisma.xRankPlacement.findFirst({
+    orderBy: [{ month: "desc" }, { year: "desc" }],
+  });
+
+  if (!mostRecentResult) throw Error("No X Rank Placements");
+
+  const slug = params!.slug
+    ? (params!.slug as string[])
+    : [`${mostRecentResult.month}`, `${mostRecentResult.year}`, "SZ"];
+
+  console.log("1");
+
+  if (slug.length !== 3) return { notFound: true };
+
+  const month = Number(slug[0]);
+  const year = Number(slug[1]);
+
+  console.log("2");
+
+  if (isNaN(month) || isNaN(year)) return { notFound: true };
+
   const placements = await getTop500PlacementsByMonth({
     prisma,
-    month: 12,
-    year: 2020,
-    mode: "SZ",
+    month,
+    year,
+    mode: slug[2] as RankedMode,
   });
 
   return {
@@ -65,6 +126,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
         mostRecentResult.year
       ),
     },
+    notFound: !placements.length,
   };
 };
 
@@ -78,6 +140,14 @@ const XSearchPage = ({ placements, monthOptions }: Props) => {
     year: Number(monthOptions[0].value.split(",")[1]),
     mode: "SZ" as RankedMode,
   });
+
+  const router = useRouter();
+
+  useEffect(() => {
+    router.push(
+      `/top500/${variables.month}/${variables.year}/${variables.mode}`
+    );
+  }, [variables]);
 
   return (
     <>
