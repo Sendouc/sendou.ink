@@ -61,6 +61,7 @@ const ProfilePage = (props: Props) => {
   const [loggedInUser] = useUser();
 
   // same as router.isFallback
+  // FIXME: return null
   if (!user) return null;
 
   return (

@@ -1,12 +1,11 @@
+import { t } from "@lingui/macro";
 import { PrismaClient } from "@prisma/client";
-import LoadingBoundary from "components/LoadingBoundary";
-import {
-  GetPlayersXRankPlacementsDocument,
-  useGetPlayersXRankPlacementsQuery,
-} from "generated/graphql";
-import { initializeApollo } from "lib/apollo";
+import Breadcrumbs from "components/Breadcrumbs";
 import { GetStaticPaths, GetStaticProps } from "next";
-import { useRouter } from "next/router";
+import {
+  GetPlayersTop500Placements,
+  getPlayersTop500Placements,
+} from "prisma/queries/getPlayersTop500Placements";
 import Player from "scenes/Player";
 
 const prisma = new PrismaClient();
@@ -20,41 +19,38 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const apolloClient = initializeApollo(null, { prisma: new PrismaClient() });
+interface Props {
+  placements: GetPlayersTop500Placements;
+}
 
-  const data = await apolloClient.query({
-    query: GetPlayersXRankPlacementsDocument,
-    variables: {
-      // FIXME: why ! needed?
-      switchAccountId: params!.id,
-    },
+export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
+  const placements = await getPlayersTop500Placements({
+    prisma,
+    switchAccountId: params!.id as string,
   });
-
-  console.log({ params });
-  console.log({ data });
 
   return {
     props: {
-      initialApolloState: apolloClient.cache.extract(),
-      switchAccountId: params!.id,
+      placements,
     },
-    //notfound
+    notFound: !placements.length,
   };
 };
 
-const PlayerPage = ({ switchAccountId }: { switchAccountId: string }) => {
-  const router = useRouter();
-
-  const { data } = useGetPlayersXRankPlacementsQuery({
-    variables: { switchAccountId },
-    skip: router.isFallback,
-  });
+const PlayerPage = ({ placements }: Props) => {
+  // FIXME: spinner
+  if (!placements) return null;
 
   return (
-    <LoadingBoundary>
-      <Player placements={data!.getPlayersXRankPlacements} />
-    </LoadingBoundary>
+    <>
+      <Breadcrumbs
+        pages={[
+          { name: t`Top 500 Browser`, link: "/top500" },
+          { name: placements[0].playerName },
+        ]}
+      />
+      <Player placements={placements} />
+    </>
   );
 };
 
