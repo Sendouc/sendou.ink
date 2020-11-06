@@ -1,12 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-
-type Unwrap<T> = T extends Promise<infer U>
-  ? U
-  : T extends (...args: any) => Promise<infer U>
-  ? U
-  : T extends (...args: any) => infer U
-  ? U
-  : T;
+import { Unwrap } from "lib/types";
 
 export type GetUserByIdentifierData = Unwrap<
   ReturnType<typeof getUserByIdentifier>

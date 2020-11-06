@@ -9,16 +9,21 @@ import {
   TableRow,
 } from "components/Table";
 import WeaponImage from "components/WeaponImage";
-import { GetXRankPlacementsQuery } from "generated/graphql";
-import { getRankingString } from "lib/strings";
+import {
+  getDiscordAvatarUrl,
+  getFullUsername,
+  getProfilePath,
+  getRankingString,
+} from "lib/strings";
 import { useMyTheme } from "lib/useMyTheme";
 import Link from "next/link";
+import { GetTop500PlacementsByMonthData } from "prisma/queries/getTop500PlacementsByMonth";
 
 interface Props {
-  placements: NonNullable<GetXRankPlacementsQuery["getXRankPlacements"]>;
+  placements: GetTop500PlacementsByMonthData;
 }
 
-const XSearch: React.FC<Props> = ({ placements }) => {
+const Top500Table: React.FC<Props> = ({ placements }) => {
   const { gray } = useMyTheme();
 
   return (
@@ -40,32 +45,41 @@ const XSearch: React.FC<Props> = ({ placements }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {placements.map((record) => {
+          {placements.map((placement) => {
+            const user = placement.player.user;
             return (
-              <TableRow key={record.switchAccountId}>
+              <TableRow key={placement.switchAccountId}>
                 <TableCell color={gray}>
-                  {getRankingString(record.ranking)}
+                  {getRankingString(placement.ranking)}
                 </TableCell>
                 <TableCell>
-                  {record.player.user && (
-                    <Link href={record.player.user.profilePath}>
+                  {user && (
+                    <Link
+                      href={getProfilePath({
+                        discordId: user.discordId,
+                        customUrlPath: user.profile?.customUrlPath,
+                      })}
+                    >
                       <a>
                         <Avatar
-                          src={record.player.user.avatarUrl ?? undefined}
+                          src={getDiscordAvatarUrl({
+                            discordId: user.discordId,
+                            discordAvatar: user.discordAvatar,
+                          })}
                           size="sm"
-                          name={record.player.user.fullUsername}
+                          name={getFullUsername(user)}
                           mr="0.5rem"
                         />
                       </a>
                     </Link>
                   )}
                 </TableCell>
-                <TableCell>{record.playerName}</TableCell>
+                <TableCell>{placement.playerName}</TableCell>
                 <TableCell>
-                  <Text fontWeight="bold">{record.xPower}</Text>
+                  <Text fontWeight="bold">{placement.xPower}</Text>
                 </TableCell>
                 <TableCell>
-                  <WeaponImage name={record.weapon} size={32} />
+                  <WeaponImage name={placement.weapon} size={32} />
                 </TableCell>
               </TableRow>
             );
@@ -76,4 +90,4 @@ const XSearch: React.FC<Props> = ({ placements }) => {
   );
 };
 
-export default XSearch;
+export default Top500Table;

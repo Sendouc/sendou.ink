@@ -2,18 +2,15 @@ import { Radio, RadioGroup, Select, Stack } from "@chakra-ui/core";
 import { t } from "@lingui/macro";
 import { PrismaClient } from "@prisma/client";
 import Breadcrumbs from "components/Breadcrumbs";
-import LoadingBoundary from "components/LoadingBoundary";
-import {
-  GetXRankPlacementsDocument,
-  GetXRankPlacementsQueryVariables,
-  RankedMode,
-  useGetXRankPlacementsQuery,
-} from "generated/graphql";
-import { initializeApollo } from "lib/apollo";
+import Top500Table from "components/top500/Top500Table";
+import { RankedMode } from "generated/graphql";
 import { getLocalizedMonthYearString } from "lib/strings";
 import { GetStaticProps } from "next";
+import {
+  getTop500PlacementsByMonth,
+  GetTop500PlacementsByMonthData,
+} from "prisma/queries/getTop500PlacementsByMonth";
 import { useState } from "react";
-import XSearch from "scenes/Top500";
 
 const prisma = new PrismaClient();
 
@@ -41,27 +38,28 @@ const getMonthOptions = (latestMonth: number, latestYear: number) => {
   return monthChoices;
 };
 
-export const getStaticProps: GetStaticProps = async () => {
-  const apolloClient = initializeApollo(null, { prisma });
+interface Props {
+  placements: GetTop500PlacementsByMonthData;
+  monthOptions: { label: string; value: string }[];
+}
 
+export const getStaticProps: GetStaticProps<Props> = async () => {
   const mostRecentResult = await prisma.xRankPlacement.findFirst({
     orderBy: [{ month: "desc" }, { year: "desc" }],
   });
 
   if (!mostRecentResult) throw Error("No X Rank Placements");
 
-  await apolloClient.query({
-    query: GetXRankPlacementsDocument,
-    variables: {
-      month: mostRecentResult.month,
-      year: mostRecentResult.year,
-      mode: "SZ",
-    },
+  const placements = await getTop500PlacementsByMonth({
+    prisma,
+    month: 12,
+    year: 2020,
+    mode: "SZ",
   });
 
   return {
     props: {
-      initialApolloState: apolloClient.cache.extract(),
+      placements,
       monthOptions: getMonthOptions(
         mostRecentResult.month,
         mostRecentResult.year
@@ -70,21 +68,17 @@ export const getStaticProps: GetStaticProps = async () => {
   };
 };
 
-const XSearchPage = ({
-  monthOptions,
-}: {
-  monthOptions: { label: string; value: string }[];
-}) => {
-  const [variables, setVariables] = useState<GetXRankPlacementsQueryVariables>({
+const XSearchPage = ({ placements, monthOptions }: Props) => {
+  const [variables, setVariables] = useState<{
+    month: number;
+    year: number;
+    mode: RankedMode;
+  }>({
     month: Number(monthOptions[0].value.split(",")[0]),
     year: Number(monthOptions[0].value.split(",")[1]),
     mode: "SZ" as RankedMode,
   });
-  const { data, loading, error } = useGetXRankPlacementsQuery({
-    variables,
-  });
 
-  //FIXME: should return imported component
   return (
     <>
       <Breadcrumbs pages={[{ name: t`Top 500 Browser` }]} />
@@ -124,9 +118,7 @@ const XSearchPage = ({
           <Radio value="CB">{t`CB`}</Radio>
         </Stack>
       </RadioGroup>
-      <LoadingBoundary loading={loading} error={error}>
-        <XSearch placements={data?.getXRankPlacements!} />
-      </LoadingBoundary>
+      <Top500Table placements={placements} />
     </>
   );
 };

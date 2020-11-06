@@ -13,22 +13,6 @@ export const getLocalizedMonthYearString = (
   });
 };
 
-export const getFullUsername = ({
-  username,
-  discriminator,
-}: {
-  username: string;
-  discriminator: string;
-}) => `${username}#${discriminator}`;
-
-export const getDiscordAvatarUrl = ({
-  discordId,
-  discordAvatar,
-}: {
-  discordId: string;
-  discordAvatar: string;
-}) => `https://cdn.discordapp.com/avatars/${discordId}/${discordAvatar}.jpg`;
-
 export const getRankingString = (ranking: number) => {
   switch (ranking) {
     case 1:
@@ -42,3 +26,29 @@ export const getRankingString = (ranking: number) => {
       return `${ranking}`;
   }
 };
+
+// User attributes - should be virtuals in future if support gets added to Prisma
+
+export const getFullUsername = ({
+  username,
+  discriminator,
+}: {
+  username: string;
+  discriminator: string;
+}) => `${username}#${discriminator}`;
+
+export const getDiscordAvatarUrl = ({
+  discordId,
+  discordAvatar,
+}: {
+  discordId: string;
+  discordAvatar: string | null;
+}) => `https://cdn.discordapp.com/avatars/${discordId}/${discordAvatar}.jpg`;
+
+export const getProfilePath = ({
+  discordId,
+  customUrlPath,
+}: {
+  discordId: string;
+  customUrlPath: string | null | undefined;
+}) => (customUrlPath ? `/u/${customUrlPath}` : `/u/${discordId}`);
