@@ -96,6 +96,7 @@ const MyApp = (props: AppProps) => {
       <GoogleFonts
         href={`https://fonts.googleapis.com/css2?family=Rubik&display=swap`}
       />
+
       <NextAuthProvider session={props.pageProps.session}>
         <ApolloProvider client={apolloClient}>
           <ChakraProvider theme={extendedTheme}>

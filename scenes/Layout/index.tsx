@@ -1,6 +1,9 @@
-import { Container, Flex } from "@chakra-ui/core";
+import { Container, Flex, useToast } from "@chakra-ui/core";
+import { t } from "@lingui/macro";
+import { getToastOptions } from "lib/getToastOptions";
 import { AppProps } from "next/app";
 import { useRouter } from "next/dist/client/router";
+import { SWRConfig } from "swr";
 import Footer from "./components/Footer";
 import IconNavBar from "./components/IconNavBar";
 import TopNav from "./components/TopNav";
@@ -14,10 +17,23 @@ const PAGES_WITH_WIDE_CONTAINER = [
 ];
 
 const Layout = ({ Component, pageProps }: AppProps) => {
+  const toast = useToast();
   const pathname = useRouter().pathname;
 
   return (
-    <>
+    <SWRConfig
+      value={{
+        fetcher: (resource, init) =>
+          fetch(resource, init).then((res) => res.json()),
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+        onError: (error) => {
+          toast(
+            getToastOptions(error.message ?? t`An error occurred`, "error")
+          );
+        },
+      }}
+    >
       <TopNav />
       <IconNavBar />
       <Flex flexDirection="column" minH="100vh" pt="1rem">
@@ -30,7 +46,7 @@ const Layout = ({ Component, pageProps }: AppProps) => {
         </Container>
         <Footer />
       </Flex>
-    </>
+    </SWRConfig>
   );
 };
 

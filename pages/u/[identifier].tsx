@@ -10,8 +10,9 @@ import {
   getUserByIdentifier,
   GetUserByIdentifierData,
 } from "prisma/queries/getUserByIdentifier";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AvatarWithInfo from "scenes/Profile/components/AvatarWithInfo";
+import useSWR from "swr";
 
 const prisma = new PrismaClient();
 
@@ -36,7 +37,7 @@ interface Props {
 }
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
-  const user = await getUserByIdentifier(prisma, "tester");
+  const user = await getUserByIdentifier(prisma, params!.identifier as string);
 
   //const isCustomUrl = isNaN(Number(params!.identifier))
 
@@ -51,17 +52,22 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
 };
 
 const ProfilePage = (props: Props) => {
-  const [user, setUser] = useState(props.user);
   const [showModal, setShowModal] = useState(false);
 
-  useEffect(() => {
-    setUser(user);
-  }, [user]);
-
   const [loggedInUser] = useUser();
+  const { data: user, mutate } = useSWR<GetUserByIdentifierData>(
+    () => {
+      // no need to load user if it's not the same as currently logged in user
+      const userId = props.user?.id;
+      if (!!userId && userId === loggedInUser?.id) return null;
+
+      return `/api/users/${userId}`;
+    },
+    { initialData: props.user }
+  );
 
   // same as router.isFallback
-  // FIXME: return null
+  // FIXME: return spinner
   if (!user) return null;
 
   return (

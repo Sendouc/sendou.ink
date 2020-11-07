@@ -43,6 +43,7 @@
     "react-icons": "^3.11.0",
     "react-markdown": "^5.0.2",
     "react-string-replace": "^0.4.4",
+    "swr": "^0.3.8",
     "zod": "^1.11.10"
   },
   "devDependencies": {
