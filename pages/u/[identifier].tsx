@@ -12,6 +12,7 @@ import {
 } from "prisma/queries/getUserByIdentifier";
 import { useState } from "react";
 import AvatarWithInfo from "scenes/Profile/components/AvatarWithInfo";
+import ProfileModal from "scenes/Profile/components/ProfileModal";
 import useSWR from "swr";
 
 const prisma = new PrismaClient();
@@ -55,11 +56,13 @@ const ProfilePage = (props: Props) => {
   const [showModal, setShowModal] = useState(false);
 
   const [loggedInUser] = useUser();
-  const { data: user, mutate } = useSWR<GetUserByIdentifierData>(
+  const { data: user } = useSWR<GetUserByIdentifierData>(
     () => {
       // no need to load user if it's not the same as currently logged in user
       const userId = props.user?.id;
       if (!!userId && userId === loggedInUser?.id) return null;
+
+      console.log("ye");
 
       return `/api/users/${userId}`;
     },
@@ -84,12 +87,9 @@ const ProfilePage = (props: Props) => {
           <Trans>Edit profile</Trans>
         </Button>
       )}
-      {/* {showModal && (
-        <ProfileModal
-          onClose={() => setShowModal(false)}
-          existingProfile={user.profile}
-        />
-      )} */}
+      {showModal && (
+        <ProfileModal onClose={() => setShowModal(false)} user={user} />
+      )}
       <Divider my="2em" />
       {user.profile?.bio && (
         <Box>

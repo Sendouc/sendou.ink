@@ -23,19 +23,16 @@ import { useLingui } from "@lingui/react";
 import MarkdownTextarea from "components/MarkdownTextarea";
 import WeaponSelector from "components/WeaponSelector";
 import { countries } from "countries-list";
-import {
-  GetUserByIdentifierDocument,
-  GetUserByIdentifierQuery,
-  UpdateUserProfileInput,
-  useUpdateUserProfileMutation,
-} from "generated/graphql";
 import { getToastOptions } from "lib/getToastOptions";
+import { sendData } from "lib/postData";
 import {
   profileSchemaFrontend,
   PROFILE_CHARACTER_LIMIT,
 } from "lib/validators/profile";
+import { GetUserByIdentifierData } from "prisma/queries/getUserByIdentifier";
 import { Controller, useForm } from "react-hook-form";
 import { FaGamepad, FaTwitch, FaTwitter, FaYoutube } from "react-icons/fa";
+import { mutate } from "swr";
 import * as z from "zod";
 
 const sensOptions = [
@@ -70,48 +67,32 @@ const sensToString = (sens: number | undefined | null) => {
 
 interface Props {
   onClose: () => void;
-  existingProfile?: NonNullable<
-    GetUserByIdentifierQuery["getUserByIdentifier"]
-  >["profile"];
-  identifier: string;
+  user: NonNullable<GetUserByIdentifierData>;
 }
 
 type FormData = z.infer<typeof profileSchemaFrontend>;
 
-const ProfileModal: React.FC<Props> = ({
-  onClose,
-  existingProfile,
-  identifier,
-}) => {
+const ProfileModal: React.FC<Props> = ({ onClose, user }) => {
   const { i18n } = useLingui();
 
   const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
     resolver: zodResolver(profileSchemaFrontend),
-    defaultValues: existingProfile
+    defaultValues: user?.profile
       ? {
-          ...existingProfile,
-          sensMotion: sensToString(existingProfile.sensMotion),
-          sensStick: sensToString(existingProfile.sensStick),
+          ...user.profile,
+          sensMotion: sensToString(user.profile.sensMotion),
+          sensStick: sensToString(user.profile.sensStick),
         }
       : undefined,
   });
 
   // FIXME: bio length show
-  const watchBio = watch("bio", existingProfile?.bio ?? "");
+  const watchBio = watch("bio", user.profile?.bio ?? "");
 
   const toast = useToast();
-  const [updateUserProfile, { loading }] = useUpdateUserProfileMutation({
-    onCompleted: () => {
-      toast(getToastOptions(i18n._(t`Profile updated`), "success"));
-      onClose();
-    },
-    onError: (error) => {
-      toast(getToastOptions(error.message, "error"));
-    },
-  });
 
   const onSubmit = async (formData: FormData) => {
-    const mutationData: UpdateUserProfileInput = {
+    const mutationData = {
       ...formData,
       // sens is treated as string on the frontend side of things because
       // html select uses strings
@@ -132,26 +113,13 @@ const ProfileModal: React.FC<Props> = ({
       }
     }
 
-    await updateUserProfile({
-      variables: { profile: mutationData },
-      update: (cache) => {
-        const query = {
-          query: GetUserByIdentifierDocument,
-          variables: { identifier },
-        };
-        const data = cache.readQuery<GetUserByIdentifierQuery>(query);
-        cache.writeQuery<GetUserByIdentifierQuery>({
-          ...query,
-          data: {
-            ...data,
-            getUserByIdentifier: {
-              ...data!.getUserByIdentifier!,
-              profile: mutationData,
-            },
-          },
-        });
-      },
-    });
+    // FIXME: error handling
+    await sendData("PUT", "/api/me/profile", mutationData);
+
+    mutate(`/api/users/${user.id}`);
+
+    toast(getToastOptions(i18n._(t`Profile updated`), "success"));
+    onClose();
   };
 
   // FIXME: modal seems slow to popup at least in dev?
@@ -326,7 +294,11 @@ const ProfileModal: React.FC<Props> = ({
               />
             </ModalBody>
             <ModalFooter>
-              <Button mr={3} type="submit" isLoading={loading}>
+              <Button
+                mr={3}
+                type="submit"
+                //isLoading={loading}
+              >
                 <Trans>Save</Trans>
               </Button>
               <Button onClick={onClose} variant="outline">
