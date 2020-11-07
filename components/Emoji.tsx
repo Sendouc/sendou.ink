@@ -23,7 +23,6 @@ const Emoji: React.FC<EmojiProps> = (props) => {
 
   const keyWeapon = value as keyof typeof weaponMarkdownCodes;
   const weaponName = weaponMarkdownCodes[keyWeapon];
-  console.log({ weaponName });
   if (!!weaponName) return <WeaponImage name={weaponName} size={32} isInline />;
 
   const keyAbility = value as keyof typeof abilityMarkdownCodes;

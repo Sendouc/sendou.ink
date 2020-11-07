@@ -100,14 +100,10 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
     ? (params!.slug as string[])
     : [`${mostRecentResult.month}`, `${mostRecentResult.year}`, "SZ"];
 
-  console.log("1");
-
   if (slug.length !== 3) return { notFound: true };
 
   const month = Number(slug[0]);
   const year = Number(slug[1]);
-
-  console.log("2");
 
   if (isNaN(month) || isNaN(year)) return { notFound: true };
 

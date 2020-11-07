@@ -62,8 +62,6 @@ const ProfilePage = (props: Props) => {
       const userId = props.user?.id;
       if (!!userId && userId === loggedInUser?.id) return null;
 
-      console.log("ye");
-
       return `/api/users/${userId}`;
     },
     { initialData: props.user }
