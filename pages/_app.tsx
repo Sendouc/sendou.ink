@@ -2,12 +2,12 @@ import { ChakraProvider, extendTheme } from "@chakra-ui/core";
 import { mode } from "@chakra-ui/theme-tools";
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
+import Layout from "components/layout";
 import { activate } from "lib/i18n";
 import { Provider as NextAuthProvider } from "next-auth/client";
 import GoogleFonts from "next-google-fonts";
 import type { AppProps } from "next/app";
 import { useEffect } from "react";
-import Layout from "scenes/Layout";
 import { theme } from "theme";
 
 const extendedTheme = extendTheme({

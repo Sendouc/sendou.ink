@@ -20,8 +20,8 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import MarkdownTextarea from "components/MarkdownTextarea";
-import WeaponSelector from "components/WeaponSelector";
+import MarkdownTextarea from "components/common/MarkdownTextarea";
+import WeaponSelector from "components/common/WeaponSelector";
 import { countries } from "countries-list";
 import { getToastOptions } from "lib/getToastOptions";
 import { sendData } from "lib/postData";

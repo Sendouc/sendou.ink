@@ -1,6 +1,6 @@
 import { Button, ButtonGroup, Flex } from "@chakra-ui/core";
 import { t, Trans } from "@lingui/macro";
-import Breadcrumbs from "components/Breadcrumbs";
+import Breadcrumbs from "components/common/Breadcrumbs";
 import { stages } from "lib/lists/stages";
 import { NextPage } from "next";
 import dynamic from "next/dynamic";
@@ -11,11 +11,11 @@ import {
   FaFileImage,
   FaFileUpload,
 } from "react-icons/fa";
-import DraggableImageAdder from "./components/DraggableImageAdder";
-import DraggableToolsSelector from "./components/DraggableToolsSelector";
-import StageSelector from "./components/StageSelector";
+import DraggableImageAdder from "./DraggableImageAdder";
+import DraggableToolsSelector from "./DraggableToolsSelector";
+import StageSelector from "./StageSelector";
 
-const MapSketch = dynamic(() => import("./components/MapSketch"), {
+const MapSketch = dynamic(() => import("./MapSketch"), {
   ssr: false,
 });
 

@@ -1,4 +1,4 @@
-import MapPlanner from "scenes/MapPlanner";
+import MapPlanner from "components/plans";
 
 const MapPlannerPage = () => <MapPlanner />;
 

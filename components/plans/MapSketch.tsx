@@ -1,6 +1,6 @@
 import { Box } from "@chakra-ui/core";
 import { SketchField } from "@sendou/react-sketch";
-import { Tool } from "..";
+import { Tool } from ".";
 
 interface MapSketchProps {
   sketch: any;

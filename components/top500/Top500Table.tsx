@@ -7,8 +7,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "components/Table";
-import WeaponImage from "components/WeaponImage";
+} from "components/common/Table";
+import WeaponImage from "components/common/WeaponImage";
 import {
   getDiscordAvatarUrl,
   getFullUsername,

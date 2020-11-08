@@ -9,7 +9,7 @@ import {
   ListItem,
   Text,
 } from "@chakra-ui/core";
-import Emoji from "components/Emoji";
+import Emoji from "components/common/Emoji";
 import {
   Table,
   TableBody,
@@ -17,7 +17,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "components/Table";
+} from "components/common/Table";
 import { useMyTheme } from "lib/useMyTheme";
 import ReactMarkdown from "react-markdown";
 import reactStringReplace from "react-string-replace";

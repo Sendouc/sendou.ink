@@ -1,12 +1,12 @@
 import { t } from "@lingui/macro";
 import { PrismaClient } from "@prisma/client";
-import Breadcrumbs from "components/Breadcrumbs";
+import Breadcrumbs from "components/common/Breadcrumbs";
+import PlayerTable from "components/player/PlayerTable";
 import { GetStaticPaths, GetStaticProps } from "next";
 import {
   GetPlayersTop500Placements,
   getPlayersTop500Placements,
 } from "prisma/queries/getPlayersTop500Placements";
-import Player from "scenes/Player";
 
 const prisma = new PrismaClient();
 
@@ -49,7 +49,7 @@ const PlayerPage = ({ placements }: Props) => {
           { name: placements[0].playerName },
         ]}
       />
-      <Player placements={placements} />
+      <PlayerTable placements={placements} />
     </>
   );
 };

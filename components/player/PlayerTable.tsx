@@ -1,5 +1,5 @@
 import { Text } from "@chakra-ui/core";
-import ModeImage from "components/ModeImage";
+import ModeImage from "components/common/ModeImage";
 import {
   Table,
   TableBody,
@@ -7,8 +7,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "components/Table";
-import WeaponImage from "components/WeaponImage";
+} from "components/common/Table";
+import WeaponImage from "components/common/WeaponImage";
 import { getRankingString } from "lib/strings";
 import { useTranslation } from "lib/useMockT";
 import { useMyTheme } from "lib/useMyTheme";

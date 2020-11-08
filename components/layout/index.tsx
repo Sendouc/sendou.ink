@@ -4,9 +4,9 @@ import { getToastOptions } from "lib/getToastOptions";
 import { AppProps } from "next/app";
 import { useRouter } from "next/dist/client/router";
 import { SWRConfig } from "swr";
-import Footer from "./components/Footer";
-import IconNavBar from "./components/IconNavBar";
-import TopNav from "./components/TopNav";
+import Footer from "./Footer";
+import IconNavBar from "./IconNavBar";
+import TopNav from "./TopNav";
 
 const PAGES_WITH_WIDE_CONTAINER = [
   "/analyzer",

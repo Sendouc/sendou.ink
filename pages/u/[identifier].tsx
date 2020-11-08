@@ -1,8 +1,10 @@
 import { Box, Button, Divider } from "@chakra-ui/core";
 import { t, Trans } from "@lingui/macro";
 import { PrismaClient } from "@prisma/client";
-import Breadcrumbs from "components/Breadcrumbs";
-import Markdown from "components/Markdown";
+import Breadcrumbs from "components/common/Breadcrumbs";
+import Markdown from "components/common/Markdown";
+import AvatarWithInfo from "components/u/AvatarWithInfo";
+import ProfileModal from "components/u/ProfileModal";
 import { getFullUsername } from "lib/strings";
 import useUser from "lib/useUser";
 import { GetStaticPaths, GetStaticProps } from "next";
@@ -11,8 +13,6 @@ import {
   GetUserByIdentifierData,
 } from "prisma/queries/getUserByIdentifier";
 import { useState } from "react";
-import AvatarWithInfo from "scenes/Profile/components/AvatarWithInfo";
-import ProfileModal from "scenes/Profile/components/ProfileModal";
 import useSWR from "swr";
 
 const prisma = new PrismaClient();

@@ -1,5 +1,5 @@
 import { Avatar, Box, Flex, Heading, IconButton } from "@chakra-ui/core";
-import WeaponImage from "components/WeaponImage";
+import WeaponImage from "components/common/WeaponImage";
 import { getEmojiFlag } from "countries-list";
 import { getDiscordAvatarUrl, getFullUsername } from "lib/strings";
 import { useTranslation } from "lib/useMockT";
