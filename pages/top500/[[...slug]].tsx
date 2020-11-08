@@ -1,9 +1,8 @@
 import { Radio, RadioGroup, Select, Stack } from "@chakra-ui/core";
 import { t } from "@lingui/macro";
-import { PrismaClient } from "@prisma/client";
-import Breadcrumbs from "components/Breadcrumbs";
+import { PrismaClient, RankedMode } from "@prisma/client";
+import Breadcrumbs from "components/common/Breadcrumbs";
 import Top500Table from "components/top500/Top500Table";
-import { RankedMode } from "generated/graphql";
 import { getLocalizedMonthYearString } from "lib/strings";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";

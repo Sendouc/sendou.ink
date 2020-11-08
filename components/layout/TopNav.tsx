@@ -13,7 +13,7 @@ import {
   useColorMode,
 } from "@chakra-ui/core";
 import { Trans } from "@lingui/macro";
-import { DiscordIcon } from "assets/icons";
+import { DiscordIcon } from "lib/assets/icons";
 import useUser from "lib/useUser";
 import { signIn, signOut } from "next-auth/client";
 import Link from "next/link";

@@ -1,10 +1,10 @@
 import { Box, Image, useColorModeValue } from "@chakra-ui/core";
-import footerOctoDark from "assets/b8ing_dark.png";
-import footerOctoLight from "assets/b8ing_light.png";
-import footerSquidDark from "assets/boing_dark.png";
-import footerSquidLight from "assets/boing_light.png";
 import { useMyTheme } from "lib/useMyTheme";
 import { useRouter } from "next/dist/client/router";
+import footerOctoDark from "public/layout/b8ing_dark.png";
+import footerOctoLight from "public/layout/b8ing_light.png";
+import footerSquidDark from "public/layout/boing_dark.png";
+import footerSquidLight from "public/layout/boing_light.png";
 import FooterContent from "./FooterContent";
 import FooterWaves from "./FooterWaves";
 

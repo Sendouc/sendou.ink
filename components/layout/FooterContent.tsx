@@ -1,5 +1,5 @@
 import { Box, Flex } from "@chakra-ui/core";
-import { DiscordIcon } from "assets/icons";
+import { DiscordIcon } from "lib/assets/icons";
 import { useTranslation } from "lib/useMockT";
 import { useMyTheme } from "lib/useMyTheme";
 import Link from "next/link";
