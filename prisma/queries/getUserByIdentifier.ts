@@ -23,8 +23,30 @@ export const getUserByIdentifier = async (
         },
       ],
     },
-    include: {
-      profile: true,
+    select: {
+      id: true,
+      discordId: true,
+      discordAvatar: true,
+      username: true,
+      discriminator: true,
+      profile: {
+        select: {
+          bio: true,
+          country: true,
+          customUrlPath: true,
+          sensMotion: true,
+          sensStick: true,
+          twitchName: true,
+          twitterName: true,
+          weaponPool: true,
+          youtubeId: true,
+        },
+      },
+      player: {
+        select: {
+          switchAccountId: true,
+        },
+      },
     },
   });
 };

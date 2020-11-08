@@ -1,6 +1,6 @@
 import { Box, Button, Divider } from "@chakra-ui/core";
 import { t, Trans } from "@lingui/macro";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, RankedMode } from "@prisma/client";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import Markdown from "components/common/Markdown";
 import AvatarWithInfo from "components/u/AvatarWithInfo";
@@ -8,6 +8,7 @@ import ProfileModal from "components/u/ProfileModal";
 import { getFullUsername } from "lib/strings";
 import useUser from "lib/useUser";
 import { GetStaticPaths, GetStaticProps } from "next";
+import { getPlayersTop500Placements } from "prisma/queries/getPlayersTop500Placements";
 import {
   getUserByIdentifier,
   GetUserByIdentifierData,
@@ -35,16 +36,35 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 interface Props {
   user: GetUserByIdentifierData;
+  peakXPowers: Partial<Record<RankedMode, number>>;
 }
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   const user = await getUserByIdentifier(prisma, params!.identifier as string);
 
+  const peakXPowers: Partial<Record<RankedMode, number>> = {};
+
+  if (!!user?.player?.switchAccountId) {
+    const placements = await getPlayersTop500Placements({
+      prisma,
+      switchAccountId: user.player.switchAccountId,
+    });
+
+    for (const placement of placements) {
+      peakXPowers[placement.mode] = Math.max(
+        peakXPowers[placement.mode] ?? 0,
+        placement.xPower
+      );
+    }
+  }
+
+  // FIXME: redirect
   //const isCustomUrl = isNaN(Number(params!.identifier))
 
   return {
     props: {
       user,
+      peakXPowers,
     },
     revalidate: 1,
     notFound: !user,
@@ -79,7 +99,7 @@ const ProfilePage = (props: Props) => {
           { name: getFullUsername(user) },
         ]}
       />
-      <AvatarWithInfo user={user} />
+      <AvatarWithInfo user={user} peakXPowers={props.peakXPowers} />
       {loggedInUser?.id === user.id && (
         <Button onClick={() => setShowModal(true)}>
           <Trans>Edit profile</Trans>

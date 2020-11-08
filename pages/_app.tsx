@@ -29,6 +29,7 @@ const extendedTheme = extendTheme({
   // 6) dropdown border + focus colors // especially in light blends in a lot
   // 7) disable dark mode <-> light mode transformation time
   // 8) divider color (light)
+  // 9) link color
   components: {
     Button: {
       defaultProps: {

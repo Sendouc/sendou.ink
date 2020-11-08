@@ -1,17 +1,35 @@
-import { Avatar, Box, Flex, Heading, IconButton } from "@chakra-ui/core";
+import {
+  Avatar,
+  Box,
+  Divider,
+  Flex,
+  Heading,
+  IconButton,
+  Link as ChakraLink,
+} from "@chakra-ui/core";
+import { Trans } from "@lingui/macro";
+import { RankedMode } from "@prisma/client";
+import ModeImage from "components/common/ModeImage";
 import WeaponImage from "components/common/WeaponImage";
 import { getEmojiFlag } from "countries-list";
 import { getDiscordAvatarUrl, getFullUsername } from "lib/strings";
 import { useTranslation } from "lib/useMockT";
 import { useMyTheme } from "lib/useMyTheme";
+import NextLink from "next/link";
 import { GetUserByIdentifierData } from "prisma/queries/getUserByIdentifier";
 import { FaGamepad, FaTwitch, FaTwitter, FaYoutube } from "react-icons/fa";
 
 interface AvatarWithInfoProps {
   user: NonNullable<GetUserByIdentifierData>;
+  peakXPowers: Partial<Record<RankedMode, number>>;
 }
 
-const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user }) => {
+// FIXME:  show text on how to get your top 500 linked
+
+const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
+  user,
+  peakXPowers,
+}) => {
   const { gray } = useMyTheme();
   const { t } = useTranslation();
 
@@ -132,6 +150,32 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({ user }) => {
                     )}
                   </Flex>
                 )}
+              {Object.keys(peakXPowers).length > 0 && (
+                <Flex mt={6}>
+                  {(["SZ", "TC", "RM", "CB"] as RankedMode[]).map((mode, i) => (
+                    <>
+                      {peakXPowers[mode] && (
+                        <Flex align="center" justify="center">
+                          {i !== 0 && <Divider orientation="vertical" mx={2} />}
+                          <ModeImage mode={mode} size={32} />{" "}
+                          <Box ml={2} color={gray}>
+                            {peakXPowers[mode]}
+                          </Box>
+                        </Flex>
+                      )}
+                    </>
+                  ))}
+                </Flex>
+              )}
+              {!!user.player?.switchAccountId && (
+                <Box mt={2}>
+                  <NextLink href={`/player/${user.player?.switchAccountId}`}>
+                    <ChakraLink>
+                      <Trans>View all Top 500 results</Trans>
+                    </ChakraLink>
+                  </NextLink>
+                </Box>
+              )}
             </Flex>
           </Flex>
         </Flex>
