@@ -17,6 +17,7 @@ import { useTranslation } from "lib/useMockT";
 import { useMyTheme } from "lib/useMyTheme";
 import NextLink from "next/link";
 import { GetUserByIdentifierData } from "prisma/queries/getUserByIdentifier";
+import { Fragment } from "react";
 import { FaGamepad, FaTwitch, FaTwitter, FaYoutube } from "react-icons/fa";
 
 interface AvatarWithInfoProps {
@@ -153,7 +154,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
               {Object.keys(peakXPowers).length > 0 && (
                 <Flex mt={6}>
                   {(["SZ", "TC", "RM", "CB"] as RankedMode[]).map((mode, i) => (
-                    <>
+                    <Fragment key={mode}>
                       {peakXPowers[mode] && (
                         <Flex align="center" justify="center">
                           {i !== 0 && <Divider orientation="vertical" mx={2} />}
@@ -163,7 +164,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
                           </Box>
                         </Flex>
                       )}
-                    </>
+                    </Fragment>
                   ))}
                 </Flex>
               )}
