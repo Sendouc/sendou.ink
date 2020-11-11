@@ -15,5 +15,14 @@ export const getBuildsByWeapon = async ({
   return prisma.build.findMany({
     where: { weapon },
     orderBy: [{ top500: "desc" }, { jpn: "desc" }, { updatedAt: "desc" }],
+    include: {
+      user: {
+        select: {
+          username: true,
+          discriminator: true,
+          discordId: true,
+        },
+      },
+    },
   });
 };

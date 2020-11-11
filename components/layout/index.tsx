@@ -24,7 +24,20 @@ const Layout = ({ Component, pageProps }: AppProps) => {
     <SWRConfig
       value={{
         fetcher: (resource, init) =>
-          fetch(resource, init).then((res) => res.json()),
+          fetch(resource, init).then(async (res) => {
+            let data = await res.json();
+
+            if (Array.isArray(data)) {
+              data.map((entry) => {
+                if (!entry.updatedAt) return entry;
+                entry.updatedAt = new Date(entry.updatedAt);
+
+                return entry;
+              });
+            }
+
+            return data;
+          }),
         revalidateOnFocus: false,
         revalidateOnReconnect: false,
         onError: (error) => {

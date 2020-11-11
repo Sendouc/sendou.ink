@@ -5,3 +5,5 @@ export type Unwrap<T> = T extends Promise<infer U>
   : T extends (...args: any) => infer U
   ? U
   : T;
+
+export type Unpacked<T> = T extends (infer U)[] ? U : T;
