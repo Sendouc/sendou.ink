@@ -19,8 +19,8 @@
   "dependencies": {
     "@chakra-ui/core": "^1.0.0-rc.8",
     "@chakra-ui/theme-tools": "^1.0.0-rc.8",
-    "@hookform/resolvers": "^1.0.0",
-    "@lingui/react": "^3.0.3",
+    "@hookform/resolvers": "^1.0.1",
+    "@lingui/react": "^3.1.0",
     "@prisma/client": "^2.10.1",
     "@sendou/react-sketch": "^0.5.2",
     "countries-list": "^2.5.6",
@@ -32,7 +32,7 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-draggable": "^4.4.3",
-    "react-hook-form": "^6.9.6",
+    "react-hook-form": "^6.11.0",
     "react-hotkeys-hook": "^2.4.0",
     "react-icons": "^3.11.0",
     "react-markdown": "^5.0.2",
@@ -41,13 +41,13 @@
     "zod": "^1.11.10"
   },
   "devDependencies": {
-    "@lingui/cli": "^3.0.3",
-    "@lingui/macro": "^3.0.3",
+    "@lingui/cli": "^3.1.0",
+    "@lingui/macro": "^3.1.0",
     "@prisma/cli": "^2.10.1",
     "@types/next-auth": "^3.1.14",
-    "@types/node": "^14.14.6",
-    "@types/react": "^16.9.55",
-    "cypress": "^5.5.0",
+    "@types/node": "^14.14.7",
+    "@types/react": "^16.9.56",
+    "cypress": "^5.6.0",
     "prettier": "^2.1.2",
     "ts-node": "^9.0.0",
     "typescript": "^4.0.5"
