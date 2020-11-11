@@ -21,7 +21,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import MarkdownTextarea from "components/common/MarkdownTextarea";
-import WeaponSelector from "components/common/WeaponSelector";
+import WeaponSelector from "components/common/MultiWeaponSelector";
 import { countries } from "countries-list";
 import { getToastOptions } from "lib/getToastOptions";
 import { sendData } from "lib/postData";

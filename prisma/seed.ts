@@ -77,7 +77,7 @@ const main = async () => {
             mode: mode as "SZ" | "TC" | "RM" | "CB",
             month: 12,
             year: 2020,
-            ranking: Math.ceil((i + 1) / 4),
+            ranking,
             xPower: 3000 - i * 0.5,
             weapon: "Splattershot Jr.",
             player:
@@ -107,6 +107,30 @@ const main = async () => {
   );
 
   console.log("X Rank placements created");
+
+  await prisma.build.deleteMany({});
+
+  await prisma.build.create({
+    data: {
+      user: {
+        connect: {
+          id: testUser.id,
+        },
+      },
+      weapon: "Splattershot Jr.",
+      mainAbilities: ["SS", "SS", "SS"],
+      subAbilities: ["SS", "SS", "SS", "SS", "SS", "SS", "SS", "SS", "SS"],
+      title: "Amazing test build",
+      description: "Just testing.",
+      top500: true,
+      jpn: false,
+      abilityPoints: {
+        SS: 57,
+      },
+    },
+  });
+
+  console.log("Builds created");
 };
 
 main()

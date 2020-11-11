@@ -3,7 +3,7 @@ import GearImage from "components/common/GearImage";
 import WeaponImage from "components/common/WeaponImage";
 import { abilityMarkdownCodes } from "lib/lists/abilityMarkdownCodes";
 import { gearMarkdownCodes } from "lib/lists/gearMarkdownCodes";
-import { weaponMarkdownCodes } from "lib/lists/weaponMarkdownCodes";
+import { codeToWeapon } from "lib/lists/weaponCodes";
 import Image from "next/image";
 
 const modeCodes: Record<string, string> = {
@@ -21,8 +21,8 @@ interface EmojiProps {
 const Emoji: React.FC<EmojiProps> = (props) => {
   const value = props.value.replace(/:/g, "").toLowerCase();
 
-  const keyWeapon = value as keyof typeof weaponMarkdownCodes;
-  const weaponName = weaponMarkdownCodes[keyWeapon];
+  const keyWeapon = value as keyof typeof codeToWeapon;
+  const weaponName = codeToWeapon[keyWeapon];
   if (!!weaponName) return <WeaponImage name={weaponName} size={32} isInline />;
 
   const keyAbility = value as keyof typeof abilityMarkdownCodes;

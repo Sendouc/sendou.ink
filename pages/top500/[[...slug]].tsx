@@ -144,6 +144,7 @@ const XSearchPage = ({ placements, monthOptions }: Props) => {
     );
   }, [variables]);
 
+  //FIXME: layout can be persistent between route changes
   return (
     <>
       <Breadcrumbs pages={[{ name: t`Top 500 Browser` }]} />
