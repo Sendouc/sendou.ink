@@ -15,7 +15,7 @@ module.exports = {
     "zh",
   ],
   sourceLocale: "en",
-  fallbackLocales: "en",
+  fallbackLocales: { "en-US": "en" },
   orderBy: "origin",
   catalogs: [
     {
