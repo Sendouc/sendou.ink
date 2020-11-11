@@ -20,7 +20,7 @@ const BuildsPage = () => {
   return (
     <>
       <Breadcrumbs pages={[{ name: t`Builds` }]} />
-      <WeaponSelector value={weapon} onChange={setWeapon} excludeAlt />
+      <WeaponSelector value={weapon} onChange={setWeapon} excludeAlt isHeader />
     </>
   );
 };

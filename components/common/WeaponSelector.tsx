@@ -5,15 +5,17 @@ import { weaponsWithHeroCategorizedLocalized } from "lib/lists/weaponsWithHero";
 interface Props {
   name?: string;
   value: string;
-  excludeAlt?: boolean;
   onChange: (value: string) => void;
+  excludeAlt?: boolean;
+  isHeader?: boolean;
 }
 
 const WeaponSelector: React.FC<Props> = ({
   name,
   value,
   onChange,
-  excludeAlt,
+  excludeAlt = false,
+  isHeader = false,
 }) => {
   const { i18n } = useLingui();
   return (
@@ -22,6 +24,9 @@ const WeaponSelector: React.FC<Props> = ({
         value={value}
         name={name}
         onChange={(e) => onChange(e.target.value)}
+        mx={isHeader ? "auto" : undefined}
+        maxWidth={80}
+        size={isHeader ? "lg" : undefined}
       >
         {weaponsWithHeroCategorizedLocalized.map((wpnCategory) => (
           <optgroup key={wpnCategory.name} label={i18n._(wpnCategory.name)}>
