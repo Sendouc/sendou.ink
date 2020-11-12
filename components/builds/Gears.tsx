@@ -5,7 +5,7 @@ import { GetBuildsByWeaponData } from "prisma/queries/getBuildsByWeapon";
 import React from "react";
 
 interface GearsProps {
-  build: Unpacked<GetBuildsByWeaponData>;
+  build: Unpacked<Unpacked<GetBuildsByWeaponData>>;
 }
 
 const Gears: React.FC<GearsProps> = ({ build }) => {

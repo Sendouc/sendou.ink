@@ -4,7 +4,7 @@ import { Unpacked } from "lib/types";
 import { GetBuildsByWeaponData } from "prisma/queries/getBuildsByWeapon";
 
 interface ViewSlotsProps {
-  build: Unpacked<GetBuildsByWeaponData>;
+  build: Unpacked<Unpacked<GetBuildsByWeaponData>>;
   onAbilityClick?: (gear: "HEAD" | "CLOTHING" | "SHOES", index: number) => void;
 }
 

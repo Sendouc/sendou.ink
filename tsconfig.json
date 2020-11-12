@@ -14,7 +14,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "baseUrl": "."
+    "baseUrl": ".",
+    "downlevelIteration": true
   },
   "ts-node": {
     "compilerOptions": {

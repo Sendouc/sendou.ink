@@ -1,3 +1,4 @@
+import { Box } from "@chakra-ui/core";
 import Image from "next/image";
 
 //https://github.com/loadout-ink/splat2-calc
@@ -19,10 +20,7 @@ const AbilityIcon: React.FC<AbilityIconProps> = ({ ability, size }) => {
   const sizeNumber = sizeMap[size];
 
   return (
-    <Image
-      src={`/abilityIcons/${ability}.png`}
-      width={sizeNumber}
-      height={sizeNumber}
+    <Box
       style={{
         zIndex: 2,
         borderRadius: "50%",
@@ -34,9 +32,17 @@ const AbilityIcon: React.FC<AbilityIconProps> = ({ ability, size }) => {
         boxShadow: "0 0 0 1px #000",
         userSelect: "none",
         display: "inline-block",
+        width: sizeNumber,
+        height: sizeNumber,
       }}
-      alt={ability}
-    />
+    >
+      <Image
+        src={`/abilityIcons/${ability}.png`}
+        width={sizeNumber}
+        height={sizeNumber}
+        alt={ability}
+      />
+    </Box>
   );
 };
 

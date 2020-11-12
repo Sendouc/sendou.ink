@@ -8,7 +8,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@chakra-ui/core";
-import { t, Trans } from "@lingui/macro";
+import { Plural, t, Trans } from "@lingui/macro";
+import { Ability } from "@prisma/client";
+import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
 import { getEmojiFlag } from "countries-list";
 import { Unpacked } from "lib/types";
@@ -19,15 +21,17 @@ import { GetBuildsByWeaponData } from "prisma/queries/getBuildsByWeapon";
 import { useState } from "react";
 import { FiBarChart2, FiInfo, FiTarget } from "react-icons/fi";
 import Gears from "./Gears";
+import ViewAP from "./ViewAP";
 //import ViewAP from "./ViewAP";
 import ViewSlots from "./ViewSlots";
 
 interface BuildCardProps {
-  build: Unpacked<GetBuildsByWeaponData>;
+  build: Unpacked<Unpacked<GetBuildsByWeaponData>>;
   canModify?: boolean;
   //setBuildBeingEdited?: (build: Build) => void;
   otherBuildCount?: number;
   onShowAllByUser?: () => void;
+  showWeaponImage?: boolean;
 }
 
 const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
@@ -36,10 +40,12 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
   //setBuildBeingEdited,
   otherBuildCount,
   onShowAllByUser,
+  showWeaponImage,
   ...props
 }) => {
   const [apView, setApView] = useState(false);
   const [showStats, setShowStats] = useState(false);
+
   const { themeColor, secondaryBgColor, gray } = useMyTheme();
 
   const username = build.user.username;
@@ -53,75 +59,79 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
         w="300px"
         rounded="lg"
         overflow="hidden"
-        boxShadow="0px 0px 16px 6px rgba(0,0,0,0.1)"
+        boxShadow="md"
         bg={secondaryBgColor}
         p="20px"
         {...props}
       >
         <Box display="flex" flexDirection="column" h="100%">
-          <Box display="flex" justifyContent="space-between">
-            <Box width="24">
+          {showWeaponImage && (
+            <Box>
               <WeaponImage name={build.weapon} size={64} />
             </Box>
-            {build.top500 && (
-              <Image
-                src={`/layout/xsearch.png`}
-                alt="x rank top 500 logo"
-                height={40}
-                width={40}
-                title={t`Maker of the build has finished in the top 500 of X Rank with this weapon"`}
-              />
-            )}
-            {build.jpn && getEmojiFlag("jp")}
-          </Box>
+          )}
+          {build.title && (
+            <Box fontWeight="semibold" as="h4" lineHeight="tight" mt="0.3em">
+              {build.title}
+            </Box>
+          )}
+          {/* {build.top500 && (
+            <Image
+              src={`/layout/xsearch.png`}
+              height={20}
+              width={20}
+              title={t`Maker of the build has finished in the top 500 of X Rank with this weapon"`}
+            />
+          )}
+          {build.jpn && getEmojiFlag("jp")} */}
+          {build.user && (
+            <Box
+              my={2}
+              textOverflow="ellipsis"
+              color={gray}
+              fontWeight="semibold"
+              letterSpacing="wide"
+              fontSize="sm"
+              whiteSpace="nowrap"
+              overflow="hidden"
+              title={`${build.user.username}#${build.user.discriminator}`}
+            >
+              <Link href={`/u/${build.user.discordId}`}>
+                <a>
+                  <Flex alignItems="center">
+                    <UserAvatar user={build.user} isSmall mr={2} />
+                    {build.user.username}#{build.user.discriminator}
+                  </Flex>
+                </a>
+              </Link>
+            </Box>
+          )}
           <Flex alignItems="center">
             <Box
               color={gray}
               fontWeight="semibold"
               letterSpacing="wide"
               fontSize="xs"
-              ml="8px"
               title={build.updatedAt.toLocaleString()}
+              mr={2}
             >
               {build.updatedAt.toLocaleDateString()}
             </Box>
-            {build.user && (
-              <Box
-                style={{ textOverflow: "ellipsis" }}
-                color={gray}
-                fontWeight="semibold"
-                letterSpacing="wide"
-                fontSize="sm"
-                ml="0.25em"
-                whiteSpace="nowrap"
-                overflow="hidden"
-                title={`${build.user.username}#${build.user.discriminator}`}
-              >
-                •{"  "}
-                <Link href={`/u/${build.user.discordId}`}>
-                  <a>
-                    {build.user.username}#{build.user.discriminator}
-                  </a>
-                </Link>
-              </Box>
-            )}
+            {build.jpn ? (
+              <>{getEmojiFlag("jp")}</>
+            ) : build.top500 ? (
+              <Image
+                src={`/layout/xsearch.png`}
+                height={24}
+                width={24}
+                title={t`Maker of the build has finished in the top 500 of X Rank with this weapon`}
+              />
+            ) : null}
           </Flex>
-          {build.title && (
-            <Box
-              ml="8px"
-              fontWeight="semibold"
-              as="h4"
-              lineHeight="tight"
-              mt="0.3em"
-            >
-              {build.title}
-            </Box>
-          )}
           <Flex mt="0.3em">
             <IconButton
               variant="ghost"
               isRound
-              colorScheme={themeColor}
               onClick={() => setApView(!apView)}
               aria-label="Set build card view"
               fontSize="20px"
@@ -131,7 +141,6 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
             <IconButton
               variant="ghost"
               isRound
-              colorScheme={themeColor}
               onClick={() => setShowStats(!showStats)}
               aria-label="Show build stats view"
               fontSize="20px"
@@ -144,7 +153,6 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
                   <IconButton
                     variant="ghost"
                     isRound
-                    colorScheme={themeColor}
                     aria-label="Show description"
                     fontSize="20px"
                     icon={<FiInfo />}
@@ -186,9 +194,13 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
             justifyContent="center"
             mt="1em"
           >
-            {/* {apView ? <ViewAP build={build} /> : <ViewSlots build={build} />} */}
-            <ViewSlots build={build} />
+            {apView ? (
+              <ViewAP aps={build.abilityPoints as Record<Ability, number>} />
+            ) : (
+              <ViewSlots build={build} />
+            )}
           </Box>
+          {/* Not that visible in light mode */}
           <Box
             display="flex"
             justifyContent="space-between"
@@ -205,9 +217,11 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
                 cursor="pointer"
                 _hover={{ textDecoration: "underline" }}
               >
-                <Trans>
-                  Show all {otherBuildCount} builds by {username}
-                </Trans>
+                <Plural
+                  value={otherBuildCount}
+                  one={<Trans>Show # more build by {username}</Trans>}
+                  other={<Trans>Show # more builds by {username}</Trans>}
+                />
               </Box>
             )}
           </Box>

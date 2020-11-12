@@ -37,14 +37,6 @@ export const getFullUsername = ({
   discriminator: string;
 }) => `${username}#${discriminator}`;
 
-export const getDiscordAvatarUrl = ({
-  discordId,
-  discordAvatar,
-}: {
-  discordId: string;
-  discordAvatar: string | null;
-}) => `https://cdn.discordapp.com/avatars/${discordId}/${discordAvatar}.jpg`;
-
 export const getProfilePath = ({
   discordId,
   customUrlPath,

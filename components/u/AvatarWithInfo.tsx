@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Box,
   Divider,
   Flex,
@@ -10,9 +9,10 @@ import {
 import { Trans } from "@lingui/macro";
 import { RankedMode } from "@prisma/client";
 import ModeImage from "components/common/ModeImage";
+import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
 import { getEmojiFlag } from "countries-list";
-import { getDiscordAvatarUrl, getFullUsername } from "lib/strings";
+import { getFullUsername } from "lib/strings";
 import { useTranslation } from "lib/useMockT";
 import { useMyTheme } from "lib/useMyTheme";
 import NextLink from "next/link";
@@ -58,17 +58,9 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
         maxW="24rem"
         mx="auto"
       >
-        <Avatar
+        <UserAvatar
+          user={user}
           data-cy="profile-page-avatar"
-          name={getFullUsername(user)}
-          src={
-            user.discordAvatar
-              ? getDiscordAvatarUrl({
-                  discordId: user.discordId,
-                  discordAvatar: user.discordAvatar,
-                })
-              : undefined
-          }
           size="2xl"
           mb="0.5rem"
         />

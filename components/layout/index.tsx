@@ -16,6 +16,21 @@ const PAGES_WITH_WIDE_CONTAINER = [
   "/xleaderboards",
 ];
 
+function reviver(key: any, value: any) {
+  if (Array.isArray(value)) {
+    return value.map((entry) => {
+      if (entry.updatedAt)
+        return { ...entry, updatedAt: new Date(entry.updatedAt) };
+
+      return entry;
+    });
+  }
+
+  if (key === "updatedAt") return new Date(value);
+
+  return value;
+}
+
 const Layout = ({ Component, pageProps }: AppProps) => {
   const toast = useToast();
   const pathname = useRouter().pathname;
@@ -25,18 +40,9 @@ const Layout = ({ Component, pageProps }: AppProps) => {
       value={{
         fetcher: (resource, init) =>
           fetch(resource, init).then(async (res) => {
-            let data = await res.json();
+            let data = await res.text();
 
-            if (Array.isArray(data)) {
-              data.map((entry) => {
-                if (!entry.updatedAt) return entry;
-                entry.updatedAt = new Date(entry.updatedAt);
-
-                return entry;
-              });
-            }
-
-            return data;
+            return JSON.parse(data, reviver);
           }),
         revalidateOnFocus: false,
         revalidateOnReconnect: false,

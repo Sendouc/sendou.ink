@@ -13,13 +13,165 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: components/Breadcrumbs.tsx:16
+#: components/builds/BuildCard.tsx:60
+msgid "Maker of the build has finished in the top 500 of X Rank with this weapon"
+msgstr "Maker of the build has finished in the top 500 of X Rank with this weapon"
+
+#: components/builds/BuildCard.tsx:86
+msgid "{otherBuildCount, plural, one {Show # more build by {username}} other {Show # more builds by {username}}}"
+msgstr "{otherBuildCount, plural, one {Show # more build by {username}} other {Show # more builds by {username}}}"
+
+#: components/common/Breadcrumbs.tsx:16
 msgid "Home"
 msgstr "Home"
 
-#: components/MarkdownTextarea.tsx:13
+#: components/common/MarkdownTextarea.tsx:13
 msgid "Markdown is supported - <0>https://sendou.ink/markdown</0>"
 msgstr "Markdown is supported - <0>https://sendou.ink/markdown</0>"
+
+#: components/layout/TopNav.tsx:17
+msgid "Log in via Discord"
+msgstr "Log in via Discord"
+
+#: components/layout/TopNav.tsx:30
+msgid "Profile"
+msgstr "Profile"
+
+#: components/layout/TopNav.tsx:34
+msgid "Log out"
+msgstr "Log out"
+
+#: components/layout/index.tsx:49
+msgid "An error occurred"
+msgstr "An error occurred"
+
+#: components/plans/DraggableImageAdder.tsx:25
+msgid "Add image"
+msgstr "Add image"
+
+#: components/plans/DraggableToolsSelector.tsx:28
+msgid "Tools"
+msgstr "Tools"
+
+#: components/plans/StageSelector.tsx:13
+msgid "Spawning Grounds"
+msgstr "Spawning Grounds"
+
+#: components/plans/StageSelector.tsx:14
+msgid "Marooner's Bay"
+msgstr "Marooner's Bay"
+
+#: components/plans/StageSelector.tsx:15
+msgid "Lost Outpost"
+msgstr "Lost Outpost"
+
+#: components/plans/StageSelector.tsx:17
+msgid "Salmonid Smokeyard"
+msgstr "Salmonid Smokeyard"
+
+#: components/plans/StageSelector.tsx:20
+msgid "Ruins of Ark Polaris‎‎"
+msgstr "Ruins of Ark Polaris‎‎"
+
+#: components/plans/StageSelector.tsx:52
+msgid "Minimap"
+msgstr "Minimap"
+
+#: components/plans/StageSelector.tsx:55
+msgid "Top-down"
+msgstr "Top-down"
+
+#: components/plans/index.tsx:243
+msgid "Map Planner"
+msgstr "Map Planner"
+
+#: components/plans/index.tsx:252
+msgid "Clear drawings"
+msgstr "Clear drawings"
+
+#: components/plans/index.tsx:256
+msgid "Download as .png"
+msgstr "Download as .png"
+
+#: components/plans/index.tsx:260
+msgid "Download as .json"
+msgstr "Download as .json"
+
+#: components/plans/index.tsx:263
+msgid "Load from .json"
+msgstr "Load from .json"
+
+#: components/top500/Top500Table.tsx:18
+msgid "Name"
+msgstr "Name"
+
+#: components/top500/Top500Table.tsx:21
+msgid "X Power"
+msgstr "X Power"
+
+#: components/top500/Top500Table.tsx:24
+msgid "Weapon"
+msgstr "Weapon"
+
+#: components/u/AvatarWithInfo.tsx:72
+msgid "View all Top 500 results"
+msgstr "View all Top 500 results"
+
+#: components/u/ProfileModal.tsx:79
+msgid "Profile updated"
+msgstr "Profile updated"
+
+#: components/u/ProfileModal.tsx:87
+msgid "Editing profile"
+msgstr "Editing profile"
+
+#: components/u/ProfileModal.tsx:94
+msgid "Custom URL"
+msgstr "Custom URL"
+
+#: components/u/ProfileModal.tsx:108
+msgid "Twitter name"
+msgstr "Twitter name"
+
+#: components/u/ProfileModal.tsx:122
+msgid "Twitch name"
+msgstr "Twitch name"
+
+#: components/u/ProfileModal.tsx:136
+msgid "YouTube channel ID"
+msgstr "YouTube channel ID"
+
+#: components/u/ProfileModal.tsx:146
+msgid "Country"
+msgstr "Country"
+
+#: components/u/ProfileModal.tsx:157
+msgid "Weapon pool"
+msgstr "Weapon pool"
+
+#: components/u/ProfileModal.tsx:169
+msgid "Stick sensitivity"
+msgstr "Stick sensitivity"
+
+#: components/u/ProfileModal.tsx:179
+msgid "Motion sensitivity"
+msgstr "Motion sensitivity"
+
+#: components/u/ProfileModal.tsx:187
+msgid "Bio"
+msgstr "Bio"
+
+#: components/u/ProfileModal.tsx:187
+msgid "# I'm a header\\nI'm **bolded**. Embedding weapon images is easy too: :luna_blaster:"
+msgstr "# I'm a header\\nI'm **bolded**. Embedding weapon images is easy too: :luna_blaster:"
+
+#: components/u/ProfileModal.tsx:191
+msgid "Save"
+msgstr "Save"
+
+#: components/u/ProfileModal.tsx:194
+msgid "Cancel"
+msgstr "Cancel"
 
 #: lib/lists/stages.ts:3
 msgid "The Reef"
@@ -705,134 +857,39 @@ msgstr "Undercover Sorella Brella"
 msgid "Kensa Undercover Brella"
 msgstr "Kensa Undercover Brella"
 
-#: scenes/Layout/components/TopNav.tsx:17
-msgid "Log in via Discord"
-msgstr "Log in via Discord"
+#: pages/builds/[[...slug]].tsx:19
+msgid "Builds"
+msgstr "Builds"
 
-#: scenes/Layout/components/TopNav.tsx:30
-msgid "Profile"
-msgstr "Profile"
+#: pages/player/[id].tsx:42
+#: pages/top500/[[...slug]].tsx:123
+msgid "Top 500 Browser"
+msgstr "Top 500 Browser"
 
-#: scenes/Layout/components/TopNav.tsx:34
-msgid "Log out"
-msgstr "Log out"
+#: pages/top500/[[...slug]].tsx:134
+msgid "SZ"
+msgstr "SZ"
 
-#: scenes/MapPlanner/components/DraggableImageAdder.tsx:25
-msgid "Add image"
-msgstr "Add image"
+#: pages/top500/[[...slug]].tsx:135
+msgid "TC"
+msgstr "TC"
 
-#: scenes/MapPlanner/components/DraggableToolsSelector.tsx:28
-msgid "Tools"
-msgstr "Tools"
+#: pages/top500/[[...slug]].tsx:136
+msgid "RM"
+msgstr "RM"
 
-#: scenes/MapPlanner/components/StageSelector.tsx:13
-msgid "Spawning Grounds"
-msgstr "Spawning Grounds"
+#: pages/top500/[[...slug]].tsx:137
+msgid "CB"
+msgstr "CB"
 
-#: scenes/MapPlanner/components/StageSelector.tsx:14
-msgid "Marooner's Bay"
-msgstr "Marooner's Bay"
+#: pages/u/[identifier].tsx:81
+msgid "Users"
+msgstr "Users"
 
-#: scenes/MapPlanner/components/StageSelector.tsx:15
-msgid "Lost Outpost"
-msgstr "Lost Outpost"
-
-#: scenes/MapPlanner/components/StageSelector.tsx:17
-msgid "Salmonid Smokeyard"
-msgstr "Salmonid Smokeyard"
-
-#: scenes/MapPlanner/components/StageSelector.tsx:20
-msgid "Ruins of Ark Polaris‎‎"
-msgstr "Ruins of Ark Polaris‎‎"
-
-#: scenes/MapPlanner/components/StageSelector.tsx:52
-msgid "Minimap"
-msgstr "Minimap"
-
-#: scenes/MapPlanner/components/StageSelector.tsx:55
-msgid "Top-down"
-msgstr "Top-down"
-
-#: scenes/MapPlanner/index.tsx:243
-msgid "Map Planner"
-msgstr "Map Planner"
-
-#: scenes/MapPlanner/index.tsx:252
-msgid "Clear drawings"
-msgstr "Clear drawings"
-
-#: scenes/MapPlanner/index.tsx:256
-msgid "Download as .png"
-msgstr "Download as .png"
-
-#: scenes/MapPlanner/index.tsx:260
-msgid "Download as .json"
-msgstr "Download as .json"
-
-#: scenes/MapPlanner/index.tsx:263
-msgid "Load from .json"
-msgstr "Load from .json"
-
-#: scenes/Profile/components/ProfileModal.tsx:63
-msgid "Profile updated"
-msgstr "Profile updated"
+#: pages/u/[identifier].tsx:86
+msgid "Edit profile"
+msgstr "Edit profile"
 
 #: scenes/Profile/components/ProfileModal.tsx:63
 #~ msgid "{0}"
 #~ msgstr "{0}"
-
-#: scenes/Profile/components/ProfileModal.tsx:102
-msgid "Editing profile"
-msgstr "Editing profile"
-
-#: scenes/Profile/components/ProfileModal.tsx:109
-msgid "Custom URL"
-msgstr "Custom URL"
-
-#: scenes/Profile/components/ProfileModal.tsx:123
-msgid "Twitter name"
-msgstr "Twitter name"
-
-#: scenes/Profile/components/ProfileModal.tsx:137
-msgid "Twitch name"
-msgstr "Twitch name"
-
-#: scenes/Profile/components/ProfileModal.tsx:151
-msgid "YouTube channel ID"
-msgstr "YouTube channel ID"
-
-#: scenes/Profile/components/ProfileModal.tsx:161
-msgid "Country"
-msgstr "Country"
-
-#: scenes/Profile/components/ProfileModal.tsx:172
-msgid "Weapon pool"
-msgstr "Weapon pool"
-
-#: scenes/Profile/components/ProfileModal.tsx:184
-msgid "Stick sensitivity"
-msgstr "Stick sensitivity"
-
-#: scenes/Profile/components/ProfileModal.tsx:194
-msgid "Motion sensitivity"
-msgstr "Motion sensitivity"
-
-#: scenes/Profile/components/ProfileModal.tsx:202
-msgid "Bio"
-msgstr "Bio"
-
-#: scenes/Profile/components/ProfileModal.tsx:202
-msgid "# I'm a header\\nI'm **bolded**. Embedding weapon images is easy too: :luna_blaster:"
-msgstr "# I'm a header\\nI'm **bolded**. Embedding weapon images is easy too: :luna_blaster:"
-
-#: scenes/Profile/components/ProfileModal.tsx:206
-msgid "Save"
-msgstr "Save"
-
-#: scenes/Profile/components/ProfileModal.tsx:209
-msgid "Cancel"
-msgstr "Cancel"
-
-#: scenes/Profile/index.tsx:17
-msgid "Edit profile"
-msgstr "Edit profile"

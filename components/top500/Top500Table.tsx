@@ -1,4 +1,4 @@
-import { Avatar, Text } from "@chakra-ui/core";
+import { Text } from "@chakra-ui/core";
 import { Trans } from "@lingui/macro";
 import {
   Table,
@@ -8,13 +8,9 @@ import {
   TableHeader,
   TableRow,
 } from "components/common/Table";
+import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
-import {
-  getDiscordAvatarUrl,
-  getFullUsername,
-  getProfilePath,
-  getRankingString,
-} from "lib/strings";
+import { getProfilePath, getRankingString } from "lib/strings";
 import { useMyTheme } from "lib/useMyTheme";
 import Link from "next/link";
 import { GetTop500PlacementsByMonthData } from "prisma/queries/getTop500PlacementsByMonth";
@@ -61,15 +57,7 @@ const Top500Table: React.FC<Props> = ({ placements }) => {
                       })}
                     >
                       <a>
-                        <Avatar
-                          src={getDiscordAvatarUrl({
-                            discordId: user.discordId,
-                            discordAvatar: user.discordAvatar,
-                          })}
-                          size="sm"
-                          name={getFullUsername(user)}
-                          mr="0.5rem"
-                        />
+                        <UserAvatar user={user} isSmall mr="0.5rem" />
                       </a>
                     </Link>
                   )}

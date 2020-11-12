@@ -1,56 +1,32 @@
-// This while is bit of a mess from TS PoV - might be worth while to do it better later
-
 import { Box, Flex } from "@chakra-ui/core";
-import React, { useContext } from "react";
-import { useTranslation } from "react-i18next";
-import MyThemeContext from "../../themeContext";
-import { Ability, Build } from "../../types";
-import { mainOnlyAbilities } from "../../utils/lists";
-import DividingBox from "../common/DividingBox";
-import AbilityIcon from "./AbilityIcon";
+import { t } from "@lingui/macro";
+import { Ability } from "@prisma/client";
+import AbilityIcon from "components/common/AbilityIcon";
+import { mainOnlyAbilities } from "lib/lists/abilities";
+import { useMyTheme } from "lib/useMyTheme";
 
 interface ViewAPProps {
-  build: Build;
+  aps: Record<Ability, number>;
 }
 
-const ViewAP: React.FC<ViewAPProps> = ({ build }) => {
-  const { t } = useTranslation();
-  const { grayWithShade } = useContext(MyThemeContext);
-  const abilityArrays: Ability[][] = [
-    build.headgear,
-    build.clothing,
-    build.shoes,
-  ];
+const ViewAP: React.FC<ViewAPProps> = ({ aps }) => {
+  const { gray } = useMyTheme();
 
-  const abilityToPoints: Partial<Record<Ability, number>> = {};
-  abilityArrays.forEach((arr) =>
-    arr.forEach((ability, index) => {
-      let abilityPoints = index === 0 ? 10 : 3;
-      if (mainOnlyAbilities.indexOf(ability as any) !== -1) abilityPoints = 999;
-      abilityToPoints[ability] = abilityToPoints.hasOwnProperty(ability)
-        ? (abilityToPoints[ability] as any) + abilityPoints
-        : abilityPoints;
-    })
+  const APArrays = Object.entries(aps).reduce(
+    (acc: [number, string[]][], [key, value]) => {
+      const apCount = mainOnlyAbilities.includes(key as any) ? 999 : value;
+
+      const abilityArray = acc.find((el) => el[0] === apCount);
+
+      if (abilityArray) abilityArray[1].push(key);
+      else acc.push([apCount, [key]]);
+
+      return acc;
+    },
+    []
   );
 
-  const pointsToAbilities: Record<string, Ability[]> = {};
-  (Object.keys(abilityToPoints) as Array<keyof typeof abilityToPoints>).forEach(
-    (ability: Ability) => {
-      const points = abilityToPoints[ability];
-
-      pointsToAbilities.hasOwnProperty(points as any)
-        ? pointsToAbilities[points as any].push(ability)
-        : (pointsToAbilities[points as any] = [ability]);
-    }
-  );
-
-  const APArrays = (Object.keys(pointsToAbilities) as Array<
-    keyof typeof pointsToAbilities
-  >)
-    .map((points) => [points, pointsToAbilities[points as any]])
-    .sort((a1, a2) => parseInt(a2[0] as string) - parseInt(a1[0] as string));
-
-  let indexToPrintAPAt = APArrays[0][0] === "999" ? 1 : 0;
+  let indexToPrintAPAt = APArrays[0][0] === 999 ? 1 : 0;
 
   return (
     <Box mt="2">
@@ -63,10 +39,10 @@ const ViewAP: React.FC<ViewAPProps> = ({ build }) => {
             gridRowGap="2em"
             mt={index === 0 ? "0" : "1em"}
           >
-            {arr[0] !== "999" ? (
-              <DividingBox location="right">
+            {arr[0] !== 999 ? (
+              <Box mr={2} pr={1} borderRight="1px solid" borderColor={gray}>
                 <Box
-                  color={grayWithShade}
+                  color={gray}
                   width="32px"
                   minH="45px"
                   letterSpacing="wide"
@@ -75,15 +51,15 @@ const ViewAP: React.FC<ViewAPProps> = ({ build }) => {
                   textAlign="center"
                   pt={indexToPrintAPAt !== index ? "10px" : undefined}
                 >
-                  {arr[0] as string}
+                  {arr[0]}
                   {indexToPrintAPAt === index ? (
                     <>
                       <br />
-                      {t("analyzer;abilityPointShort")}
+                      {t`AP`}
                     </>
                   ) : null}
                 </Box>
-              </DividingBox>
+              </Box>
             ) : (
               <Box width="37px" />
             )}

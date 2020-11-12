@@ -24,6 +24,7 @@ const main = async () => {
     }
   });
 
+  await prisma.build.deleteMany({});
   await prisma.profile.deleteMany({});
   await prisma.user.deleteMany({});
   const testUser = await prisma.user.create({
@@ -108,28 +109,48 @@ const main = async () => {
 
   console.log("X Rank placements created");
 
-  await prisma.build.deleteMany({});
-
-  await prisma.build.create({
-    data: {
-      user: {
-        connect: {
-          id: testUser.id,
+  await Promise.all([
+    prisma.build.create({
+      data: {
+        user: {
+          connect: {
+            id: testUser.id,
+          },
+        },
+        weapon: "Splattershot Jr.",
+        headAbilities: ["SS", "SS", "SS", "SS"],
+        clothingAbilities: ["SS", "SS", "SS", "SS"],
+        shoesAbilities: ["SS", "SS", "SS", "SS"],
+        title: "Amazing test build",
+        description: "Just testing.",
+        top500: true,
+        jpn: false,
+        abilityPoints: {
+          SS: 57,
         },
       },
-      weapon: "Splattershot Jr.",
-      headAbilities: ["SS", "SS", "SS", "SS"],
-      clothingAbilities: ["SS", "SS", "SS", "SS"],
-      shoesAbilities: ["SS", "SS", "SS", "SS"],
-      title: "Amazing test build",
-      description: "Just testing.",
-      top500: true,
-      jpn: false,
-      abilityPoints: {
-        SS: 57,
+    }),
+    prisma.build.create({
+      data: {
+        user: {
+          connect: {
+            id: testUser.id,
+          },
+        },
+        weapon: "Splattershot Jr.",
+        headAbilities: ["QR", "QR", "QR", "QR"],
+        clothingAbilities: ["QR", "QR", "QR", "QR"],
+        shoesAbilities: ["QR", "QR", "QR", "QR"],
+        title: "SECOND test build",
+        description: "Just testing again.",
+        top500: true,
+        jpn: false,
+        abilityPoints: {
+          SS: 57,
+        },
       },
-    },
-  });
+    }),
+  ]);
 
   console.log("Builds created");
 };
