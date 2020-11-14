@@ -146,7 +146,7 @@ const main = async () => {
         top500: true,
         jpn: false,
         abilityPoints: {
-          SS: 57,
+          QR: 57,
         },
       },
     }),
