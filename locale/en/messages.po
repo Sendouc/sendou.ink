@@ -13,13 +13,37 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: components/builds/BuildCard.tsx:60
+#: components/builds/BuildCard.tsx:58
 msgid "Maker of the build has finished in the top 500 of X Rank with this weapon"
 msgstr "Maker of the build has finished in the top 500 of X Rank with this weapon"
 
-#: components/builds/BuildCard.tsx:86
+#: components/builds/BuildCard.tsx:84
 msgid "{otherBuildCount, plural, one {Show # more build by {username}} other {Show # more builds by {username}}}"
 msgstr "{otherBuildCount, plural, one {Show # more build by {username}} other {Show # more builds by {username}}}"
+
+#: components/builds/BuildFilters.tsx:26
+msgid "Has"
+msgstr "Has"
+
+#: components/builds/BuildFilters.tsx:27
+msgid "Doesn't have"
+msgstr "Doesn't have"
+
+#: components/builds/BuildFilters.tsx:34
+msgid "At least"
+msgstr "At least"
+
+#: components/builds/BuildFilters.tsx:35
+msgid "At most"
+msgstr "At most"
+
+#: components/builds/BuildFilters.tsx:49
+msgid "Add filter"
+msgstr "Add filter"
+
+#: components/builds/ViewAP.tsx:26
+msgid "AP"
+msgstr "AP"
 
 #: components/common/Breadcrumbs.tsx:16
 msgid "Home"
@@ -172,6 +196,110 @@ msgstr "Save"
 #: components/u/ProfileModal.tsx:194
 msgid "Cancel"
 msgstr "Cancel"
+
+#: lib/lists/abilities.ts:17
+msgid "Ink Saver (Main)"
+msgstr "Ink Saver (Main)"
+
+#: lib/lists/abilities.ts:18
+msgid "Ink Saver (Sub)"
+msgstr "Ink Saver (Sub)"
+
+#: lib/lists/abilities.ts:19
+msgid "Ink Recovery Up"
+msgstr "Ink Recovery Up"
+
+#: lib/lists/abilities.ts:20
+msgid "Run Speed Up"
+msgstr "Run Speed Up"
+
+#: lib/lists/abilities.ts:21
+msgid "Swim Speed Up"
+msgstr "Swim Speed Up"
+
+#: lib/lists/abilities.ts:22
+msgid "Special Charge Up"
+msgstr "Special Charge Up"
+
+#: lib/lists/abilities.ts:23
+msgid "Special Saver"
+msgstr "Special Saver"
+
+#: lib/lists/abilities.ts:24
+msgid "Special Power Up"
+msgstr "Special Power Up"
+
+#: lib/lists/abilities.ts:25
+msgid "Quick Respawn"
+msgstr "Quick Respawn"
+
+#: lib/lists/abilities.ts:26
+msgid "Quick Super Jump"
+msgstr "Quick Super Jump"
+
+#: lib/lists/abilities.ts:27
+msgid "Sub Power Up"
+msgstr "Sub Power Up"
+
+#: lib/lists/abilities.ts:28
+msgid "Ink Resistance Up"
+msgstr "Ink Resistance Up"
+
+#: lib/lists/abilities.ts:29
+msgid "Bomb Defense Up DX"
+msgstr "Bomb Defense Up DX"
+
+#: lib/lists/abilities.ts:30
+msgid "Main Power Up"
+msgstr "Main Power Up"
+
+#: lib/lists/abilities.ts:31
+msgid "Opening Gambit"
+msgstr "Opening Gambit"
+
+#: lib/lists/abilities.ts:32
+msgid "Last-Ditch Effort"
+msgstr "Last-Ditch Effort"
+
+#: lib/lists/abilities.ts:33
+msgid "Tenacity"
+msgstr "Tenacity"
+
+#: lib/lists/abilities.ts:34
+msgid "Comeback"
+msgstr "Comeback"
+
+#: lib/lists/abilities.ts:35
+msgid "Ninja Squid"
+msgstr "Ninja Squid"
+
+#: lib/lists/abilities.ts:36
+msgid "Haunt"
+msgstr "Haunt"
+
+#: lib/lists/abilities.ts:37
+msgid "Thermal Ink"
+msgstr "Thermal Ink"
+
+#: lib/lists/abilities.ts:38
+msgid "Respawn Punisher"
+msgstr "Respawn Punisher"
+
+#: lib/lists/abilities.ts:39
+msgid "Ability Doubler"
+msgstr "Ability Doubler"
+
+#: lib/lists/abilities.ts:40
+msgid "Stealth Jump"
+msgstr "Stealth Jump"
+
+#: lib/lists/abilities.ts:41
+msgid "Object Shredder"
+msgstr "Object Shredder"
+
+#: lib/lists/abilities.ts:42
+msgid "Drop Roller"
+msgstr "Drop Roller"
 
 #: lib/lists/stages.ts:3
 msgid "The Reef"
@@ -857,9 +985,83 @@ msgstr "Undercover Sorella Brella"
 msgid "Kensa Undercover Brella"
 msgstr "Kensa Undercover Brella"
 
-#: pages/builds/[[...slug]].tsx:19
+#: pages/about.tsx:9
+#: pages/about.tsx:10
+msgid "About"
+msgstr "About"
+
+#: pages/about.tsx:13
+msgid "Feedback"
+msgstr "Feedback"
+
+#: pages/about.tsx:15
+msgid "Noticed a bug? Something could be done better? Thought of a new cool feature you'd like to see on the site? Need help using the site? You can either:"
+msgstr "Noticed a bug? Something could be done better? Thought of a new cool feature you'd like to see on the site? Need help using the site? You can either:"
+
+#: pages/about.tsx:22
+msgid "Create an issue on <0>GitHub</0>"
+msgstr "Create an issue on <0>GitHub</0>"
+
+#: pages/about.tsx:30
+msgid "Post on the #helpdesk or #feedback channel of our <0>Discord</0>"
+msgstr "Post on the #helpdesk or #feedback channel of our <0>Discord</0>"
+
+#: pages/about.tsx:38
+msgid "DM me on <0>Twitter</0> or Discord (Sendou#0043)"
+msgstr "DM me on <0>Twitter</0> or Discord (Sendou#0043)"
+
+#: pages/about.tsx:50
+msgid "Thanks to"
+msgstr "Thanks to"
+
+#: pages/about.tsx:57
+msgid "provided the Top 500 X Rank data"
+msgstr "provided the Top 500 X Rank data"
+
+#: pages/about.tsx:63
+msgid "provided background pictures for the map planner"
+msgstr "provided background pictures for the map planner"
+
+#: pages/about.tsx:69
+msgid "provided the data for tournament browser"
+msgstr "provided the data for tournament browser"
+
+#: pages/about.tsx:75
+msgid "gave plenty of useful feedback"
+msgstr "gave plenty of useful feedback"
+
+#: pages/about.tsx:82
+msgid "art for the site like the inkling on the front page as well as footer pictures"
+msgstr "art for the site like the inkling on the front page as well as footer pictures"
+
+#: pages/about.tsx:91
+#: pages/about.tsx:97
+#: pages/about.tsx:103
+#: pages/about.tsx:109
+#: pages/about.tsx:115
+#: pages/about.tsx:121
+#: pages/about.tsx:127
+#: pages/about.tsx:133
+#: pages/about.tsx:139
+msgid "translation"
+msgstr "translation"
+
+#: pages/builds/[[...slug]].tsx:11
 msgid "Builds"
 msgstr "Builds"
+
+#: pages/links.tsx:16
+#: pages/links.tsx:17
+msgid "Links"
+msgstr "Links"
+
+#: pages/links.tsx:19
+msgid "Guides"
+msgstr "Guides"
+
+#: pages/links.tsx:27
+msgid "Misc"
+msgstr "Misc"
 
 #: pages/player/[id].tsx:42
 #: pages/top500/[[...slug]].tsx:123
