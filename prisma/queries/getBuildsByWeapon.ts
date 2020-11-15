@@ -1,11 +1,8 @@
-import { PrismaClient } from "@prisma/client";
-import { Unwrap } from "lib/types";
+import { PrismaClient, PromiseReturnType } from "@prisma/client";
 
-export type GetBuildsByWeaponData = Unwrap<
-  ReturnType<typeof getBuildsByWeapon>
->;
+export type GetBuildsByWeaponData = PromiseReturnType<typeof getBuildsByWeapon>;
 
-type BuildsByWeapon = Unwrap<ReturnType<typeof getBuildsByWeaponQuery>>;
+type BuildsByWeapon = PromiseReturnType<typeof getBuildsByWeaponQuery>;
 
 const getBuildsByWeaponQuery = async ({
   prisma,

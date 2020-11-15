@@ -23,7 +23,7 @@ export const abilities = [
   { code: "SSU", name: t`Swim Speed Up`, type: "STACKABLE" },
   { code: "SCU", name: t`Special Charge Up`, type: "STACKABLE" },
   { code: "SS", name: t`Special Saver`, type: "STACKABLE" },
-  { code: "RSU", name: t`Special Power Up`, type: "STACKABLE" },
+  { code: "SPU", name: t`Special Power Up`, type: "STACKABLE" },
   { code: "QR", name: t`Quick Respawn`, type: "STACKABLE" },
   { code: "QSJ", name: t`Quick Super Jump`, type: "STACKABLE" },
   { code: "BRU", name: t`Sub Power Up`, type: "STACKABLE" },
