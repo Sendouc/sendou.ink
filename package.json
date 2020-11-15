@@ -11,6 +11,7 @@
     "studio": "npx prisma studio",
     "gen": "npx prisma generate",
     "seed": "ts-node prisma/seed.ts",
+    "mongo": "ts-node prisma/scripts/dataFromMongo.ts",
     "prettier": "prettier --write .",
     "e2e": "cypress open",
     "extract": "lingui extract",

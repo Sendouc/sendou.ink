@@ -37,3 +37,5 @@ prisma/.env
 # lingui
 locale/_build/
 locale/**/*.js
+
+/prisma/scripts/mongo

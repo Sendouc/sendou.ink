@@ -16,7 +16,7 @@ model User {
   discordAvatar String?
   profile       Profile?
   player        Player?
-  Build         Build[]
+  builds        Build[]
 }
 
 model Profile {
