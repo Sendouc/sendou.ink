@@ -27,7 +27,7 @@ interface MarkdownProps {
 }
 
 const Markdown: React.FC<MarkdownProps> = ({ value }) => {
-  const { themeColor } = useMyTheme();
+  const { themeColorHex: themeColor } = useMyTheme();
 
   //https://github.com/mustaphaturhan/chakra-ui-markdown-renderer/blob/master/src/index.js
   const ChakraUIRenderer = () => {

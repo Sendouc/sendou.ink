@@ -7,7 +7,7 @@ import { FaGithub } from "react-icons/fa";
 
 const FooterContent: React.FC = () => {
   const { t } = useTranslation();
-  const { themeColor } = useMyTheme();
+  const { themeColorHex: themeColor } = useMyTheme();
   return (
     <Flex
       pb="50px"

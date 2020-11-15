@@ -10,7 +10,7 @@ import FooterWaves from "./FooterWaves";
 
 const Footer: React.FC = () => {
   const species = useRouter().asPath.charCodeAt(1) % 2 === 0 ? "squid" : "octo";
-  const { themeColor } = useMyTheme();
+  const { themeColorHex: themeColor } = useMyTheme();
   const footerImageSrc = useColorModeValue(
     { octo: footerOctoLight, squid: footerSquidLight },
     { octo: footerOctoDark, squid: footerSquidDark }

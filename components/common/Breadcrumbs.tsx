@@ -17,7 +17,7 @@ interface Props {
 }
 
 const Breadcrumbs: React.FC<Props> = ({ pages }) => {
-  const { themeColor } = useMyTheme();
+  const { themeColorShade } = useMyTheme();
   return (
     <>
       <MyHead title={pages[pages.length - 1].name} />
@@ -26,7 +26,7 @@ const Breadcrumbs: React.FC<Props> = ({ pages }) => {
         mb={8}
         fontWeight="bold"
         separator={
-          <Box as="span" color={themeColor}>
+          <Box as="span" color={themeColorShade}>
             /
           </Box>
         }

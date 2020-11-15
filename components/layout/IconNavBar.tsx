@@ -92,7 +92,12 @@ export const navIcons: {
 
 const IconNavBar = () => {
   const { t } = useTranslation();
-  const { secondaryBgColor, textColor, themeColor, gray } = useMyTheme();
+  const {
+    secondaryBgColor,
+    textColor,
+    themeColorHex: themeColor,
+    gray,
+  } = useMyTheme();
   const pathname = useRouter().pathname;
 
   // FIXME

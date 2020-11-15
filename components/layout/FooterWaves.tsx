@@ -2,7 +2,7 @@ import { useMyTheme } from "lib/useMyTheme";
 import React from "react";
 
 const FooterWaves = () => {
-  const { themeColor } = useMyTheme();
+  const { themeColorHex: themeColor } = useMyTheme();
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 225">
       <path

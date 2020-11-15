@@ -46,7 +46,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
   const [apView, setApView] = useState(false);
   const [showStats, setShowStats] = useState(false);
 
-  const { themeColor, secondaryBgColor, gray } = useMyTheme();
+  const { themeColorShade, secondaryBgColor, gray } = useMyTheme();
 
   const username = build.user.username;
 
@@ -75,15 +75,6 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
               {build.title}
             </Box>
           )}
-          {/* {build.top500 && (
-            <Image
-              src={`/layout/xsearch.png`}
-              height={20}
-              width={20}
-              title={t`Maker of the build has finished in the top 500 of X Rank with this weapon"`}
-            />
-          )}
-          {build.jpn && getEmojiFlag("jp")} */}
           {build.user && (
             <Box
               my={2}
@@ -211,7 +202,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
               <Box
                 mx="auto"
                 fontSize="0.8em"
-                color={themeColor}
+                color={themeColorShade}
                 textAlign="center"
                 onClick={onShowAllByUser}
                 cursor="pointer"

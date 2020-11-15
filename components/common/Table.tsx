@@ -42,7 +42,7 @@ export function TableRow(props: BoxProps) {
 }
 
 export function TableHeader(props: BoxProps) {
-  const { themeColor } = useMyTheme();
+  const { themeColorHex: themeColor } = useMyTheme();
 
   return (
     <>

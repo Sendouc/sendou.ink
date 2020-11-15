@@ -28,14 +28,16 @@
 
 export const theme = {
   light: {
-    themeColor: "#79ff61", // light lime green
+    themeColorShade: "theme.600",
+    themeColorHex: "#79ff61", // light lime green
     bgColor: "#eff0f3",
     secondaryBgColor: "#FFFAFA",
     textColor: "blackAlpha.900",
     gray: "gray.600",
   },
   dark: {
-    themeColor: "#79ff61", // light lime green
+    themeColorShade: "theme.200",
+    themeColorHex: "#79ff61", // light lime green
     bgColor: "#031e3e",
     secondaryBgColor: "#0e2a56",
     textColor: "whiteAlpha.900",
