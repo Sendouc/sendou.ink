@@ -18,10 +18,6 @@ const BuildsPage = () => {
         excludeAlt
         isHeader
       />
-      <Box mt={10}>
-        <BuildFilters filters={state.filters} dispatch={dispatch} />
-      </Box>
-
       {state.weapon && data.length > 0 && (
         <>
           <Box mt={8} pr={3} mb="-5rem">
@@ -40,17 +36,23 @@ const BuildsPage = () => {
           >
             <Flex justifyContent="space-between">
               <Box>
-                {data.length} <Trans>builds</Trans> (+ {hiddenBuildCount}{" "}
-                <Trans>hidden</Trans>)
+                {data.length} <Trans>builds</Trans>{" "}
+                {hiddenBuildCount > 0 && (
+                  <>
+                    (+ {hiddenBuildCount} <Trans>hidden</Trans>)
+                  </>
+                )}
               </Box>
             </Flex>
           </Flex>
         </>
       )}
+      <Box mt={10}>
+        <BuildFilters filters={state.filters} dispatch={dispatch} />
+      </Box>
 
       <Flex
         flexWrap="wrap"
-        pt="2em"
         width="100vw"
         position="relative"
         left="50%"

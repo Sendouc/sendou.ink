@@ -1,14 +1,25 @@
-import { Box, Button, Flex, Select } from "@chakra-ui/core";
-import { t, Trans } from "@lingui/macro";
+import {
+  Box,
+  Grid,
+  IconButton,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  Radio,
+  Select,
+} from "@chakra-ui/core";
+import { Trans } from "@lingui/macro";
 import { Ability } from "@prisma/client";
 import AbilityIcon from "components/common/AbilityIcon";
 import {
-  BuildFilterType,
   UseBuildsByWeaponDispatch,
   UseBuildsByWeaponState,
 } from "hooks/builds";
 import { abilities, isMainAbility } from "lib/lists/abilities";
-import { abilityPoints } from "lib/lists/abilityPoints";
+import { useMyTheme } from "lib/useMyTheme";
+import { FiTrash } from "react-icons/fi";
 
 interface Props {
   filters: UseBuildsByWeaponState["filters"];
@@ -16,97 +27,148 @@ interface Props {
 }
 
 const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
+  const { gray } = useMyTheme();
+
   return (
     <>
-      {filters.map((filter, index) => (
-        <Flex key={filter.key} alignItems="center" justifyContent="center">
-          <Select
-            value={filter.ability}
-            onChange={(e) =>
-              dispatch({
-                type: "SET_FILTER_ABILITY",
-                index,
-                ability: e.target.value as Ability,
-              })
-            }
-            variant="flushed"
-            size="sm"
-            width={48}
-            m={2}
-          >
-            {abilities.map((ability) => (
-              <option key={ability.code} value={ability.code}>
-                {ability.name}
-              </option>
-            ))}
-          </Select>
-          <Box mx={4}>
-            <AbilityIcon ability={filter.ability} size="TINY" />
-          </Box>
-          {isMainAbility(filter.ability) ? (
-            <Select
-              value={filter.type}
-              onChange={(e) =>
-                dispatch({
-                  type: "SET_FILTER_TYPE",
-                  index,
-                  filterType: e.target.value as BuildFilterType,
-                })
-              }
-              variant="flushed"
-              size="sm"
-              width={32}
-              m={2}
-            >
-              <option value="HAS">{t`Has`}</option>
-              <option value="DOES_NOT_HAVE">{t`Doesn't have`}</option>
-            </Select>
-          ) : (
-            <>
-              <Select
-                value={filter.type}
-                onChange={(e) =>
-                  dispatch({
-                    type: "SET_FILTER_TYPE",
-                    index,
-                    filterType: e.target.value as BuildFilterType,
-                  })
-                }
-                variant="flushed"
-                size="sm"
-                width={32}
-                m={2}
-              >
-                <option value="AT_LEAST">{t`At least`}</option>
-                <option value="AT_MOST">{t`At most`}</option>
-              </Select>
-              <Select
-                value={filter.abilityPoints}
-                onChange={(e) =>
-                  dispatch({
-                    type: "SET_FILTER_ABILITY_POINTS",
-                    index,
-                    abilityPoints: Number(e.target.value),
-                  })
-                }
-                variant="flushed"
-                size="sm"
-                width={20}
-                m={2}
-              >
-                {abilityPoints.map((apOption) => (
-                  <option key={apOption} value={apOption}>
-                    {apOption} AP
-                  </option>
-                ))}
-              </Select>
-            </>
-          )}
-        </Flex>
-      ))}
-      <Button onClick={() => dispatch({ type: "ADD_FILTER" })}>
-        <Trans>Add filter</Trans>
-      </Button>
+      <Grid
+        templateColumns="1fr 1fr 2fr 2fr"
+        alignItems="center"
+        justifyContent="center"
+        placeItems="center"
+        maxWidth={24}
+        gridRowGap={4}
+        mx="auto"
+      >
+        {filters.map((filter, index) => (
+          <>
+            <Box mb="-1.2rem" />
+            <Box mb="-1.2rem" />
+            <Box mb="-1.2rem" fontSize="sm" color={gray}>
+              {isMainAbility(filter.ability) ? (
+                <Trans>Included</Trans>
+              ) : (
+                <Trans>Min AP</Trans>
+              )}
+            </Box>
+            <Box mb="-1.2rem" fontSize="sm" color={gray}>
+              {isMainAbility(filter.ability) ? (
+                <Trans>Excluded</Trans>
+              ) : (
+                <Trans>Min AP</Trans>
+              )}
+            </Box>
+            <IconButton
+              icon={<FiTrash />}
+              onClick={() => dispatch({ type: "REMOVE_FILTER", index })}
+              aria-label="Remove filter"
+              variant="ghost"
+              isRound
+            />
+            <Box mx={2}>
+              <AbilityIcon ability={filter.ability} size="TINY" />
+            </Box>
+            {isMainAbility(filter.ability) ? (
+              <>
+                <Radio
+                  isChecked={filter.hasAbility}
+                  onClick={() =>
+                    dispatch({
+                      type: "SET_FILTER_HAS_ABILITY",
+                      index,
+                      hasAbility: true,
+                    })
+                  }
+                  value="HAS_ABILITY"
+                />
+                <Radio
+                  isChecked={!filter.hasAbility}
+                  value="DOES_NOT_HAVE_ABILITY"
+                  onClick={() =>
+                    dispatch({
+                      type: "SET_FILTER_HAS_ABILITY",
+                      index,
+                      hasAbility: false,
+                    })
+                  }
+                />
+              </>
+            ) : (
+              <>
+                <NumberInput
+                  size="sm"
+                  m={2}
+                  width={24}
+                  min={0}
+                  max={57}
+                  value={filter.abilityPoints!.min}
+                  onChange={(_, value) =>
+                    dispatch({
+                      type: "SET_FILTER_ABILITY_POINTS",
+                      abilityPoints: { ...filter.abilityPoints!, min: value },
+                      index,
+                    })
+                  }
+                >
+                  <NumberInputField />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
+
+                <NumberInput
+                  size="sm"
+                  m={2}
+                  width={24}
+                  min={0}
+                  max={57}
+                  value={filter.abilityPoints!.max}
+                  onChange={(_, value) =>
+                    dispatch({
+                      type: "SET_FILTER_ABILITY_POINTS",
+                      abilityPoints: { ...filter.abilityPoints!, max: value },
+                      index,
+                    })
+                  }
+                >
+                  <NumberInputField />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
+              </>
+            )}
+          </>
+        ))}
+      </Grid>
+      <Box as="label" htmlFor="filterAdder" fontSize="sm" ml={2} color={gray}>
+        Add filter
+      </Box>
+      <Select
+        name="filterAdder"
+        onChange={(e) =>
+          dispatch({
+            type: "ADD_FILTER",
+            ability: e.target.value as Ability,
+          })
+        }
+        size="sm"
+        width={48}
+        m={2}
+      >
+        {abilities
+          .filter(
+            (ability) =>
+              !filters.some((filter) => ability.code === filter.ability)
+          )
+          .map((ability) => (
+            <option key={ability.code} value={ability.code}>
+              {ability.name}
+            </option>
+          ))}
+      </Select>
     </>
   );
 };

@@ -1,4 +1,5 @@
 import { Ability } from "@prisma/client";
+import { abilities, isMainAbility } from "lib/lists/abilities";
 import { weaponToCode } from "lib/lists/weaponCodes";
 import { GetBuildsByWeaponData } from "prisma/queries/getBuildsByWeapon";
 import { Dispatch, useReducer } from "react";
@@ -7,10 +8,9 @@ import useSWR from "swr";
 export type BuildFilterType = "AT_LEAST" | "AT_MOST" | "HAS" | "DOES_NOT_HAVE";
 
 interface BuildFilter {
-  type: BuildFilterType;
-  abilityPoints: number;
   ability: Ability;
-  key: number;
+  abilityPoints?: { min: number; max: number };
+  hasAbility?: boolean;
 }
 
 export interface UseBuildsByWeaponState {
@@ -30,25 +30,21 @@ type Action =
     }
   | {
       type: "ADD_FILTER";
+      ability: Ability;
     }
   | {
       type: "REMOVE_FILTER";
       index: number;
     }
   | {
-      type: "SET_FILTER_TYPE";
+      type: "SET_FILTER_HAS_ABILITY";
       index: number;
-      filterType: BuildFilter["type"];
+      hasAbility: boolean;
     }
   | {
       type: "SET_FILTER_ABILITY_POINTS";
       index: number;
-      abilityPoints: number;
-    }
-  | {
-      type: "SET_FILTER_ABILITY";
-      index: number;
-      ability: Ability;
+      abilityPoints: { min: number; max: number };
     };
 
 export type UseBuildsByWeaponDispatch = Dispatch<Action>;
@@ -65,44 +61,36 @@ export function useBuildsByWeapon() {
             expandedUsers: new Set([...oldState.expandedUsers, action.id]),
           };
         case "ADD_FILTER":
+          const newFilter = isMainAbility(action.ability)
+            ? {
+                ability: action.ability,
+                hasAbility: true,
+              }
+            : { ability: action.ability, abilityPoints: { min: 3, max: 57 } };
+
           return {
             ...oldState,
-            filters: [
-              ...oldState.filters,
-              {
-                ability: "ISM",
-                type: "AT_LEAST",
-                abilityPoints: 12,
-                key: new Date().getTime(),
-              },
-            ] as BuildFilter[],
+            filters: [...oldState.filters, newFilter].sort(
+              (a, b) =>
+                abilities.findIndex((ability) => a.ability === ability.code) -
+                abilities.findIndex((ability) => b.ability === ability.code)
+            ),
           };
         case "REMOVE_FILTER":
           return {
             ...oldState,
             filters: oldState.filters.filter((_, i) => i !== action.index),
           };
-        case "SET_FILTER_TYPE":
+        case "SET_FILTER_HAS_ABILITY":
           const filtersTypeCopy = [...oldState.filters];
           filtersTypeCopy[action.index] = {
             ...filtersTypeCopy[action.index],
-            type: action.filterType,
+            hasAbility: action.hasAbility,
           };
 
           return {
             ...oldState,
             filters: filtersTypeCopy,
-          };
-        case "SET_FILTER_ABILITY":
-          const filtersAbilityCopy = [...oldState.filters];
-          filtersAbilityCopy[action.index] = {
-            ...filtersAbilityCopy[action.index],
-            ability: action.ability,
-          };
-
-          return {
-            ...oldState,
-            filters: filtersAbilityCopy,
           };
         case "SET_FILTER_ABILITY_POINTS":
           const filtersAbilityPointsCopy = [...oldState.filters];
@@ -136,18 +124,21 @@ export function useBuildsByWeapon() {
             // @ts-ignore
             const apCount = build.abilityPoints[filter.ability] ?? 0;
 
-            switch (filter.type) {
-              case "HAS":
-                return !!apCount;
-              case "DOES_NOT_HAVE":
-                return !apCount;
-              case "AT_MOST":
-                return apCount <= filter.abilityPoints;
-              case "AT_LEAST":
-                return apCount >= filter.abilityPoints;
-              default:
-                throw Error("Invalid filter type");
+            if (typeof filter.hasAbility === "boolean")
+              return (
+                (filter.hasAbility && apCount > 0) ||
+                (!filter.hasAbility && apCount === 0)
+              );
+
+            if (filter.abilityPoints) {
+              return (
+                apCount >= filter.abilityPoints.min &&
+                apCount <= filter.abilityPoints.max
+              );
             }
+
+            console.error("filter had no 'show' or 'abilityPoints' attributes");
+            return true;
           });
         });
 

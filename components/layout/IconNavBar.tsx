@@ -111,6 +111,7 @@ const IconNavBar = () => {
       py={2}
       justifyContent="center"
       flexWrap="wrap"
+      boxShadow="md"
     >
       {navIcons.map(({ displayName, code, menuItems }) => {
         const codesTogether =
