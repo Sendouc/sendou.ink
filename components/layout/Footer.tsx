@@ -1,4 +1,4 @@
-import { Box, Image, useColorModeValue } from "@chakra-ui/core";
+import { Box, Image, useColorModeValue } from "@chakra-ui/react";
 import { useMyTheme } from "lib/useMyTheme";
 import { useRouter } from "next/dist/client/router";
 import footerOctoDark from "public/layout/b8ing_dark.png";

@@ -1,4 +1,4 @@
-import { Container, Flex } from "@chakra-ui/core";
+import { Container, Flex } from "@chakra-ui/react";
 import { useLocation } from "@reach/router";
 import React, { Suspense, useContext, useEffect } from "react";
 import MyThemeContext from "../../themeContext";

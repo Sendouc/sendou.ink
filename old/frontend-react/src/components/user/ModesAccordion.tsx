@@ -1,20 +1,20 @@
 import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
-  Box,
-  Flex,
-  Grid,
-} from "@chakra-ui/core";
+    Accordion,
+    AccordionButton,
+    AccordionIcon,
+    AccordionItem,
+    AccordionPanel,
+    Box,
+    Flex,
+    Grid
+} from "@chakra-ui/react";
 import { TFunctionResult } from "i18next";
 import React, { useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { modeIconMap } from "../../assets/icons";
 import {
-  GetUsersXRankPlacementsQuery,
-  XRankPlacement,
+    GetUsersXRankPlacementsQuery,
+    XRankPlacement
 } from "../../generated/graphql";
 import useBreakPoints from "../../hooks/useBreakPoints";
 import MyThemeContext from "../../themeContext";

@@ -1,4 +1,4 @@
-import { Box, Textarea } from "@chakra-ui/core";
+import { Box, Textarea } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import MyThemeContext from "../../themeContext";
 import Label from "./Label";

@@ -1,9 +1,9 @@
 import {
-  ChakraProvider,
-  extendTheme,
-  theme as chakraTheme,
-  useColorMode,
-} from "@chakra-ui/core";
+    ChakraProvider,
+    extendTheme,
+    theme as chakraTheme,
+    useColorMode
+} from "@chakra-ui/react";
 import useLocalStorage from "@rehooks/local-storage";
 import React, { useEffect } from "react";
 import { useTheme } from "../../hooks/useTheme";

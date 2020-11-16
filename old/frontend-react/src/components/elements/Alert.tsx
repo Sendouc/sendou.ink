@@ -1,9 +1,9 @@
 import {
-  Alert as ChakraAlert,
-  AlertIcon,
-  AlertProps as ChakraAlertProps,
-  CloseButton,
-} from "@chakra-ui/core";
+    Alert as ChakraAlert,
+    AlertIcon,
+    AlertProps as ChakraAlertProps,
+    CloseButton
+} from "@chakra-ui/react";
 import React from "react";
 
 interface AlertProps {

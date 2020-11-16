@@ -1,13 +1,13 @@
 // This while is bit of a mess from TS PoV - might be worth while to do it better later
 
+import { Box, Flex } from "@chakra-ui/react";
 import React, { useContext } from "react";
-import { Build, Ability } from "../../types";
-import { Box, Flex } from "@chakra-ui/core";
+import { useTranslation } from "react-i18next";
+import MyThemeContext from "../../themeContext";
+import { Ability, Build } from "../../types";
+import { mainOnlyAbilities } from "../../utils/lists";
 import DividingBox from "../common/DividingBox";
 import AbilityIcon from "./AbilityIcon";
-import MyThemeContext from "../../themeContext";
-import { mainOnlyAbilities } from "../../utils/lists";
-import { useTranslation } from "react-i18next";
 
 interface ViewAPProps {
   build: Build;

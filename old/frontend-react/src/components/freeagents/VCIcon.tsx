@@ -1,7 +1,7 @@
+import { Box } from "@chakra-ui/react";
 import React from "react";
-import { Box } from "@chakra-ui/core";
-import { FaMicrophone } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
+import { FaMicrophone } from "react-icons/fa";
 
 interface VCIconProps {
   canVC: "YES" | "USUALLY" | "SOMETIMES" | "NO";

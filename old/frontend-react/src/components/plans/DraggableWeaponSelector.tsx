@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/core";
+import { Box, Flex } from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
 import Draggable from "react-draggable";
 import { useTranslation } from "react-i18next";

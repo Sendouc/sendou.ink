@@ -1,8 +1,8 @@
+import { Box, Flex, FormLabel, Switch } from "@chakra-ui/react";
 import React, { useContext } from "react";
-import { Box, Switch, FormLabel, Flex } from "@chakra-ui/core";
+import { useTranslation } from "react-i18next";
 import MyThemeContext from "../../themeContext";
 import AbilityIcon from "../builds/AbilityIcon";
-import { useTranslation } from "react-i18next";
 
 interface HeadOnlyToggleProps {
   ability: "OG" | "CB";

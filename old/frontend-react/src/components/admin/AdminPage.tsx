@@ -1,10 +1,10 @@
 import { useQuery } from "@apollo/client";
-import { Box, Button, Flex, useToast } from "@chakra-ui/core";
+import { Box, Button, Flex, useToast } from "@chakra-ui/react";
 import { Redirect, RouteComponentProps } from "@reach/router";
 import React, { useState } from "react";
 import {
-  MutationUpdatePlayerIdArgs,
-  useUpdatePlayerIdMutation,
+    MutationUpdatePlayerIdArgs,
+    useUpdatePlayerIdMutation
 } from "../../generated/graphql";
 import { USER } from "../../graphql/queries/user";
 import { UserData } from "../../types";

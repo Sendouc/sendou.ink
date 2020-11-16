@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/core";
+import { Box, Flex } from "@chakra-ui/react";
 import React from "react";
 
 //https://stackoverflow.com/a/19303725

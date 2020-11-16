@@ -1,12 +1,12 @@
 import { useQuery } from "@apollo/client";
 import {
-  Box,
-  Flex,
-  Popover,
-  PopoverArrow,
-  PopoverContent,
-  PopoverTrigger,
-} from "@chakra-ui/core";
+    Box,
+    Flex,
+    Popover,
+    PopoverArrow,
+    PopoverContent,
+    PopoverTrigger
+} from "@chakra-ui/react";
 import { RouteComponentProps } from "@reach/router";
 import React, { useContext, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";

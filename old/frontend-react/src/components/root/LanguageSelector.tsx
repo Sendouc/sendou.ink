@@ -1,11 +1,11 @@
 import {
-  IconButton,
-  Menu,
-  MenuButton,
-  MenuItemOption,
-  MenuList,
-  MenuOptionGroup,
-} from "@chakra-ui/core";
+    IconButton,
+    Menu,
+    MenuButton,
+    MenuItemOption,
+    MenuList,
+    MenuOptionGroup
+} from "@chakra-ui/react";
 import React, { useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { FiGlobe } from "react-icons/fi";

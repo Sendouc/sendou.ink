@@ -1,8 +1,8 @@
+import { Flex, Popover, PopoverContent, PopoverTrigger } from "@chakra-ui/react";
 import React, { useContext } from "react";
-import IconButton from "../elements/IconButton";
-import { FaRegHeart, FaHeart } from "react-icons/fa";
-import { Popover, PopoverTrigger, PopoverContent, Flex } from "@chakra-ui/core";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 import MyThemeContext from "../../themeContext";
+import IconButton from "../elements/IconButton";
 
 interface HeartProps {
   disabled: boolean;

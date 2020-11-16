@@ -9,7 +9,7 @@ import {
   NumberInputStepper,
   Radio,
   Select,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
 import { Ability } from "@prisma/client";
 import AbilityIcon from "components/common/AbilityIcon";
@@ -44,7 +44,7 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
           <>
             <Box mb="-1.2rem" />
             <Box mb="-1.2rem" />
-            <Box mb="-1.2rem" fontSize="sm" color={gray}>
+            <Box mb="-1.2rem" fontSize="sm" color={gray} pr={2}>
               {isMainAbility(filter.ability) ? (
                 <Trans>Included</Trans>
               ) : (
@@ -55,7 +55,7 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
               {isMainAbility(filter.ability) ? (
                 <Trans>Excluded</Trans>
               ) : (
-                <Trans>Min AP</Trans>
+                <Trans>Max AP</Trans>
               )}
             </Box>
             <IconButton
@@ -65,6 +65,7 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
               variant="ghost"
               isRound
             />
+            {/* FIXME: duplicate image bug */}
             <Box mx={2}>
               <AbilityIcon ability={filter.ability} size="TINY" />
             </Box>

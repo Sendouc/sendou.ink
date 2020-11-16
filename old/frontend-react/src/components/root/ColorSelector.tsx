@@ -1,13 +1,13 @@
 import {
-  Box,
-  Flex,
-  Menu,
-  MenuButton,
-  MenuItemOption,
-  MenuList,
-  MenuOptionGroup,
-  useTheme as useChakraTheme,
-} from "@chakra-ui/core";
+    Box,
+    Flex,
+    Menu,
+    MenuButton,
+    MenuItemOption,
+    MenuList,
+    MenuOptionGroup,
+    useTheme as useChakraTheme
+} from "@chakra-ui/react";
 import { writeStorage } from "@rehooks/local-storage";
 import React, { useContext } from "react";
 import { ColorResult } from "react-color";

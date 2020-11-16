@@ -1,14 +1,14 @@
 import { useQuery } from "@apollo/client";
 import {
-  Box,
-  Flex,
-  Image,
-  Menu,
-  MenuButton,
-  MenuGroup,
-  MenuItem,
-  MenuList,
-} from "@chakra-ui/core";
+    Box,
+    Flex,
+    Image,
+    Menu,
+    MenuButton,
+    MenuGroup,
+    MenuItem,
+    MenuList
+} from "@chakra-ui/react";
 import { Link, useLocation } from "@reach/router";
 import React, { Suspense, useContext } from "react";
 import { useTranslation } from "react-i18next";

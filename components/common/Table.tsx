@@ -1,6 +1,6 @@
 // https://github.com/chakra-ui/chakra-ui/issues/135#issuecomment-644878591
 
-import { Box, BoxProps } from "@chakra-ui/core";
+import { Box, BoxProps } from "@chakra-ui/react";
 import { useMyTheme } from "lib/useMyTheme";
 
 /**

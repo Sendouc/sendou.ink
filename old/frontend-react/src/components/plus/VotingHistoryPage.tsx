@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Box, Flex } from "@chakra-ui/core";
+import { Box, Flex } from "@chakra-ui/react";
 import { RouteComponentProps } from "@reach/router";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";

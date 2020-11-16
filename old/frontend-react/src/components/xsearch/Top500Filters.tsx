@@ -1,4 +1,4 @@
-import { Box, Button, Radio, RadioGroup, Stack } from "@chakra-ui/core";
+import { Box, Button, Radio, RadioGroup, Stack } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { GetXRankPlacementsInput, RankedMode } from "../../generated/graphql";

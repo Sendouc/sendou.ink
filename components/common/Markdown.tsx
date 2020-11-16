@@ -8,7 +8,7 @@ import {
   List,
   ListItem,
   Text,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import Emoji from "components/common/Emoji";
 import {
   Table,

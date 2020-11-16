@@ -1,12 +1,12 @@
 import { useQuery } from "@apollo/client";
-import { Box } from "@chakra-ui/core";
+import { Box } from "@chakra-ui/react";
 import { RouteComponentProps } from "@reach/router";
 import React, { useContext } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import {
-  PlusDraftCupsData,
-  PLUS_DRAFT_CUPS,
+    PlusDraftCupsData,
+    PLUS_DRAFT_CUPS
 } from "../../graphql/queries/plusDraftCups";
 import MyThemeContext from "../../themeContext";
 import Error from "../common/Error";

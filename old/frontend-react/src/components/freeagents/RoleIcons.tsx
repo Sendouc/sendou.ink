@@ -1,7 +1,7 @@
+import { Box, Flex } from "@chakra-ui/react";
 import React from "react";
-import { Flex, Box } from "@chakra-ui/core";
-import { FaCrosshairs, FaBriefcaseMedical, FaAnchor } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
+import { FaAnchor, FaBriefcaseMedical, FaCrosshairs } from "react-icons/fa";
 
 interface RoleIconsProps {
   playstyles: ("FRONTLINE" | "MIDLINE" | "BACKLINE")[];

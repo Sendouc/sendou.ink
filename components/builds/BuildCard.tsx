@@ -7,7 +7,7 @@ import {
   PopoverBody,
   PopoverContent,
   PopoverTrigger,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import { Plural, t, Trans } from "@lingui/macro";
 import { Ability } from "@prisma/client";
 import UserAvatar from "components/common/UserAvatar";

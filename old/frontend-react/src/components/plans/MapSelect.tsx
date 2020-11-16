@@ -1,10 +1,10 @@
-import { Flex, FormLabel, Switch } from "@chakra-ui/core";
+import { Flex, FormLabel, Switch } from "@chakra-ui/react";
 import React, { useContext } from "react";
+import { useTranslation } from "react-i18next";
 import MyThemeContext from "../../themeContext";
 import Select from "../elements/Select";
 import ModeButtons from "../xtrends/ModeButtons";
 import { PlannerMapBg } from "./MapPlannerPage";
-import { useTranslation } from "react-i18next";
 
 interface MapSelectProps {
   bg: PlannerMapBg;

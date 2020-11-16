@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/core";
+import { Box } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 
 interface Props {

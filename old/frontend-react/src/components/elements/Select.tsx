@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/core";
+import { Box } from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ReactSelect, { GroupedOptionsType, OptionsType } from "react-select";

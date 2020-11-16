@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Avatar, Box, Button, Flex, Grid } from "@chakra-ui/core";
+import { Avatar, Box, Button, Flex, Grid } from "@chakra-ui/react";
 import { Link, RouteComponentProps } from "@reach/router";
 import React, { useContext, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -8,17 +8,17 @@ import { FaExternalLinkAlt, FaLongArrowAltLeft } from "react-icons/fa";
 import { modeIconMap } from "../../assets/icons";
 import { mapIcons } from "../../assets/imageImports";
 import {
-  SearchForDraftCupData,
-  SearchForDraftCupVars,
-  SEARCH_FOR_DRAFT_CUP,
+    SearchForDraftCupData,
+    SearchForDraftCupVars,
+    SEARCH_FOR_DRAFT_CUP
 } from "../../graphql/queries/searchForDraftCup";
 import MyThemeContext from "../../themeContext";
 import {
-  Ability,
-  ClothingGear,
-  DetailedTeamInfo,
-  HeadGear,
-  ShoesGear,
+    Ability,
+    ClothingGear,
+    DetailedTeamInfo,
+    HeadGear,
+    ShoesGear
 } from "../../types";
 import AbilityIcon from "../builds/AbilityIcon";
 import GearImage from "../builds/GearImage";

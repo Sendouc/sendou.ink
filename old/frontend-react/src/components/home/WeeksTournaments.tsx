@@ -1,12 +1,12 @@
 import { useQuery } from "@apollo/client";
-import { Box, Button, Flex, Heading } from "@chakra-ui/core";
+import { Box, Button, Flex, Heading } from "@chakra-ui/react";
 import { Link } from "@reach/router";
 import React, { useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { FiClock, FiInfo } from "react-icons/fi";
 import {
-  UpcomingEventsData,
-  UPCOMING_EVENTS,
+    UpcomingEventsData,
+    UPCOMING_EVENTS
 } from "../../graphql/queries/upcomingEvents";
 import MyThemeContext from "../../themeContext";
 import { getWeek } from "../../utils/helperFunctions";

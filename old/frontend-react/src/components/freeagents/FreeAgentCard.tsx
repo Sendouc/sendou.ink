@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@apollo/client";
-import { Box, Flex, Heading, IconButton, Image } from "@chakra-ui/core";
+import { Box, Flex, Heading, IconButton, Image } from "@chakra-ui/react";
 import { Link } from "@reach/router";
 import React, { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";

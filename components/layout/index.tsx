@@ -1,4 +1,4 @@
-import { Container, Flex, useToast } from "@chakra-ui/core";
+import { Container, Flex, useToast } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import { getToastOptions } from "lib/getToastOptions";
 import { AppProps } from "next/app";

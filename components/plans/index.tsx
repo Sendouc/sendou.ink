@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Flex } from "@chakra-ui/core";
+import { Button, ButtonGroup, Flex } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import { stages } from "lib/lists/stages";

@@ -1,10 +1,10 @@
+import { Badge, Box, Flex } from "@chakra-ui/react";
 import React, { useContext } from "react";
-import { LineChart, Line, Tooltip } from "recharts";
-import MyThemeContext from "../../themeContext";
-import { months } from "../../utils/lists";
-import { Box, Flex, Badge } from "@chakra-ui/core";
 import { useTranslation } from "react-i18next";
+import { Line, LineChart, Tooltip } from "recharts";
+import MyThemeContext from "../../themeContext";
 import { parseAndGetLocalizedMonthYear } from "../../utils/helperFunctions";
+import { months } from "../../utils/lists";
 
 interface WeaponLineChartProps {
   counts: {

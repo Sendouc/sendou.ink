@@ -1,14 +1,14 @@
+import { Image } from "@chakra-ui/react";
 import React from "react";
-import WeaponImage from "../common/WeaponImage";
-import { weaponCodes, abilityCodes, gearCodes } from "../../utils/lists";
-import AbilityIcon from "../builds/AbilityIcon";
-import GearImage from "../builds/GearImage";
+import cb from "../../assets/cb.png";
+import rm from "../../assets/rm.png";
 import sz from "../../assets/sz.png";
 import tc from "../../assets/tc.png";
-import rm from "../../assets/rm.png";
-import cb from "../../assets/cb.png";
 import tw from "../../assets/tw.png";
-import { Image } from "@chakra-ui/core";
+import { abilityCodes, gearCodes, weaponCodes } from "../../utils/lists";
+import AbilityIcon from "../builds/AbilityIcon";
+import GearImage from "../builds/GearImage";
+import WeaponImage from "../common/WeaponImage";
 
 const modeCodes: Record<string, string> = {
   turf_war: tw,

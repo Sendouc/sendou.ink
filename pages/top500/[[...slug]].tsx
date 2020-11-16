@@ -1,4 +1,4 @@
-import { Radio, RadioGroup, Select, Stack } from "@chakra-ui/core";
+import { Radio, RadioGroup, Select, Stack } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import { RankedMode } from "@prisma/client";
 import Breadcrumbs from "components/common/Breadcrumbs";

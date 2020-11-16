@@ -1,13 +1,13 @@
 import {
-  Box,
-  Flex,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  Text,
-} from "@chakra-ui/core";
+    Box,
+    Flex,
+    NumberDecrementStepper,
+    NumberIncrementStepper,
+    NumberInput,
+    NumberInputField,
+    NumberInputStepper,
+    Text
+} from "@chakra-ui/react";
 import React, { useContext } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import MyThemeContext from "../../themeContext";

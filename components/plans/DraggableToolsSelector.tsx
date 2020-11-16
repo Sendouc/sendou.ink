@@ -1,4 +1,4 @@
-import { Box, Flex, IconButton } from "@chakra-ui/core";
+import { Box, Flex, IconButton } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
 import ColorPicker from "components/common/ColorPicker";
 import { useMyTheme } from "lib/useMyTheme";

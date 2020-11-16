@@ -16,7 +16,7 @@ import {
   ModalOverlay,
   Select,
   useToast,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";

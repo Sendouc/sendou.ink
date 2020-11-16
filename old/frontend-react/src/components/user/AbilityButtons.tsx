@@ -1,10 +1,10 @@
+import { Box, Flex } from "@chakra-ui/react";
 import React from "react";
+import { useTranslation } from "react-i18next";
+import { Ability } from "../../types";
 import { abilitiesGameOrder } from "../../utils/lists";
 import AbilityIcon from "../builds/AbilityIcon";
 import Label from "../elements/Label";
-import { Ability } from "../../types";
-import { Box, Flex } from "@chakra-ui/core";
-import { useTranslation } from "react-i18next";
 
 interface AbilityButtonsProps {
   onClick: (ability: Ability) => void;

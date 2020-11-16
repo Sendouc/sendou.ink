@@ -1,9 +1,9 @@
-import React, { useContext } from "react";
+import { Box, Flex, Heading, Image } from "@chakra-ui/react";
 import { RouteComponentProps } from "@reach/router";
+import React, { useContext } from "react";
 import { Splatoon1Maps } from "../../assets/imageImports";
-import { choose } from "../../utils/helperFunctions";
-import { Image, Flex, Heading, Box } from "@chakra-ui/core";
 import MyThemeContext from "../../themeContext";
+import { choose } from "../../utils/helperFunctions";
 
 const NotFound: React.FC<RouteComponentProps> = () => {
   const { grayWithShade } = useContext(MyThemeContext);

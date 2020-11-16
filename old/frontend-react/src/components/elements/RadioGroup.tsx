@@ -1,10 +1,10 @@
-import React, { useContext } from "react";
 import {
-  RadioGroup as ChakraRadioGroup,
-  Radio,
-  Box,
-  Stack,
-} from "@chakra-ui/core";
+    Box, Radio, RadioGroup as ChakraRadioGroup,
+
+
+    Stack
+} from "@chakra-ui/react";
+import React, { useContext } from "react";
 import MyThemeContext from "../../themeContext";
 
 interface RadioGroupProps {

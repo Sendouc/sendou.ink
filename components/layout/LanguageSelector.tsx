@@ -5,7 +5,7 @@ import {
   MenuItemOption,
   MenuList,
   MenuOptionGroup,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import { useTranslation } from "lib/useMockT";
 import { useMyTheme } from "lib/useMyTheme";
 import React from "react";

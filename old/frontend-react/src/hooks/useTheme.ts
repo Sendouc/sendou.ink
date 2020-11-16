@@ -1,4 +1,4 @@
-import { extendTheme, useColorMode } from "@chakra-ui/core";
+import { extendTheme, useColorMode } from "@chakra-ui/react";
 import useLocalStorage from "@rehooks/local-storage";
 import { ThemeColor } from "../types";
 

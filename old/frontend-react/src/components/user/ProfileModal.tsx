@@ -1,5 +1,5 @@
 import { useMutation } from "@apollo/client";
-import { Box, Button, useToast } from "@chakra-ui/core";
+import { Box, Button, useToast } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { UPDATE_USER } from "../../graphql/mutations/updateUser";

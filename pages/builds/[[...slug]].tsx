@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/core";
+import { Box, Flex } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import BuildCard from "components/builds/BuildCard";
 import BuildFilters from "components/builds/BuildFilters";

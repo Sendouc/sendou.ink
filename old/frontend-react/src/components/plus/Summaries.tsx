@@ -1,21 +1,25 @@
+import {
+    Box,
+
+    Flex, Grid, Heading,
+
+
+
+
+
+    IconButton, Popover,
+
+
+
+    PopoverArrow,
+    PopoverBody, PopoverContent, PopoverTrigger
+} from "@chakra-ui/react";
+import { Link } from "@reach/router";
 import React, { useContext } from "react";
+import { FaBolt } from "react-icons/fa";
+import MyThemeContext from "../../themeContext";
 import UserAvatar from "../common/UserAvatar";
 import { Summary } from "./VotingHistoryPage";
-import {
-  Heading,
-  Box,
-  Grid,
-  Flex,
-  Popover,
-  PopoverTrigger,
-  IconButton,
-  PopoverContent,
-  PopoverArrow,
-  PopoverBody,
-} from "@chakra-ui/core";
-import { Link } from "@reach/router";
-import MyThemeContext from "../../themeContext";
-import { FaBolt } from "react-icons/fa";
 
 const getColor = (score: number) =>
   score < 50 ? { color: "red" } : { color: "green" };

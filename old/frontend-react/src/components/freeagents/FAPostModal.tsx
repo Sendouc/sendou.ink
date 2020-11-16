@@ -1,23 +1,23 @@
 import { useMutation } from "@apollo/client";
 import {
-  Box,
-  Button,
-  Checkbox,
-  CheckboxGroup,
-  Flex,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Radio,
-  RadioGroup,
-  Stack,
-  useToast,
-} from "@chakra-ui/core";
+    Box,
+    Button,
+    Checkbox,
+    CheckboxGroup,
+    Flex,
+    FormControl,
+    FormErrorMessage,
+    FormLabel,
+    Radio,
+    RadioGroup,
+    Stack,
+    useToast
+} from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  AddFreeAgentPostVars,
-  ADD_FREE_AGENT_POST,
+    AddFreeAgentPostVars,
+    ADD_FREE_AGENT_POST
 } from "../../graphql/mutations/addFreeAgentPost";
 import { HIDE_FREE_AGENT_POST } from "../../graphql/mutations/hideFreeAgentPost";
 import { UPDATE_FREE_AGENT_POST } from "../../graphql/mutations/updateFreeAgentPost";

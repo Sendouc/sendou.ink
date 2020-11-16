@@ -1,4 +1,4 @@
-import { Box, Image } from "@chakra-ui/core";
+import { Box, Image } from "@chakra-ui/react";
 import React, { Suspense, useContext, useState } from "react";
 import { footerOcto, footerSquid } from "../../assets/imageImports";
 import MyThemeContext from "../../themeContext";

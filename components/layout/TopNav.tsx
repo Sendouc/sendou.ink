@@ -11,7 +11,7 @@ import {
   MenuItem,
   MenuList,
   useColorMode,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
 import { DiscordIcon } from "lib/assets/icons";
 import useUser from "lib/useUser";

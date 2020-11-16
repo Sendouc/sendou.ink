@@ -5,7 +5,7 @@ import {
   Heading,
   IconButton,
   Link as ChakraLink,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
 import { RankedMode } from "@prisma/client";
 import ModeImage from "components/common/ModeImage";

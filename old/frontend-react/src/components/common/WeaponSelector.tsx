@@ -1,11 +1,11 @@
-import { Box, Flex } from "@chakra-ui/core";
+import { Box, Flex } from "@chakra-ui/react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { components } from "react-select";
 import { Weapon } from "../../types";
 import {
-  weaponSelectOptions,
-  weaponSelectOptionsWithAlts,
+    weaponSelectOptions,
+    weaponSelectOptionsWithAlts
 } from "../../utils/lists";
 import Select from "../elements/Select";
 import WeaponImage from "./WeaponImage";

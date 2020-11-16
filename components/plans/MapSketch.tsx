@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/core";
+import { Box } from "@chakra-ui/react";
 import { SketchField } from "@sendou/react-sketch";
 import { Tool } from ".";
 

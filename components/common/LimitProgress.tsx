@@ -1,4 +1,4 @@
-import { CircularProgress, CircularProgressProps } from "@chakra-ui/core";
+import { CircularProgress, CircularProgressProps } from "@chakra-ui/react";
 
 interface Props {
   currentLength: number;

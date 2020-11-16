@@ -1,4 +1,4 @@
-import { Box, Button, Collapse, Flex, Link } from "@chakra-ui/core";
+import { Box, Button, Collapse, Flex, Link } from "@chakra-ui/react";
 import { RouteComponentProps } from "@reach/router";
 import React, { useContext, useState } from "react";
 import MyThemeContext from "../../themeContext";

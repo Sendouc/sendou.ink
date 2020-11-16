@@ -1,8 +1,8 @@
+import { Box } from "@chakra-ui/react";
 import React from "react";
-import { HeadGear, ClothingGear, ShoesGear } from "../../types";
-import english_internal from "../../utils/english_internal.json";
-import { Box } from "@chakra-ui/core";
 import { useTranslation } from "react-i18next";
+import { ClothingGear, HeadGear, ShoesGear } from "../../types";
+import english_internal from "../../utils/english_internal.json";
 
 interface GearImageProps {
   englishName?: HeadGear | ClothingGear | ShoesGear;

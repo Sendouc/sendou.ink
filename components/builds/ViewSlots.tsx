@@ -1,4 +1,4 @@
-import { Box, BoxProps, Flex } from "@chakra-ui/core";
+import { Box, BoxProps, Flex } from "@chakra-ui/react";
 import AbilityIcon from "components/common/AbilityIcon";
 import { Unpacked } from "lib/types";
 import { GetBuildsByWeaponData } from "prisma/queries/getBuildsByWeapon";

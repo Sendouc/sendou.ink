@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/core";
+import { Box } from "@chakra-ui/react";
 import Image from "next/image";
 
 //https://github.com/loadout-ink/splat2-calc

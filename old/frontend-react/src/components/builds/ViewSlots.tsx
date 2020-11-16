@@ -1,7 +1,7 @@
+import { Box, BoxProps, Flex } from "@chakra-ui/react";
 import React from "react";
-import { Build, Ability } from "../../types";
+import { Ability, Build } from "../../types";
 import AbilityIcon from "./AbilityIcon";
-import { Flex, Box, BoxProps } from "@chakra-ui/core";
 
 interface ViewSlotsProps {
   build: Partial<Build>;

@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/core";
+import { Box, Flex } from "@chakra-ui/react";
 import { DiscordIcon } from "lib/assets/icons";
 import { useTranslation } from "lib/useMockT";
 import { useMyTheme } from "lib/useMyTheme";

@@ -1,4 +1,4 @@
-import { Box, Button, Divider } from "@chakra-ui/core";
+import { Box, Button, Divider } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import { RankedMode } from "@prisma/client";
 import Breadcrumbs from "components/common/Breadcrumbs";

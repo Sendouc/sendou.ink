@@ -1,16 +1,16 @@
 import { useQuery } from "@apollo/client";
-import { Alert, AlertIcon, Box, Grid } from "@chakra-ui/core";
+import { Alert, AlertIcon, Box, Grid } from "@chakra-ui/react";
 import { Link, RouteComponentProps } from "@reach/router";
 import { stringify } from "querystring";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import {
-  ArrayParam,
-  encodeQueryParams,
-  NumberParam,
-  StringParam,
-  useQueryParams,
+    ArrayParam,
+    encodeQueryParams,
+    NumberParam,
+    StringParam,
+    useQueryParams
 } from "use-query-params";
 import { SEARCH_FOR_TOURNAMENTS } from "../../graphql/queries/searchForTournaments";
 import Error from "../common/Error";

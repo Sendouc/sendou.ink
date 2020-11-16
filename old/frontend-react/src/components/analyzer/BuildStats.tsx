@@ -1,12 +1,12 @@
 import {
-  Box,
-  Flex,
-  IconButton,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  Progress,
-} from "@chakra-ui/core";
+    Box,
+    Flex,
+    IconButton,
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+    Progress
+} from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
 import { FaChartLine, FaQuestion } from "react-icons/fa";
 import { Explanation } from "../../hooks/useAbilityEffects";

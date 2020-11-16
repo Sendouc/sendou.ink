@@ -1,4 +1,4 @@
-import { Box, Flex, Image } from "@chakra-ui/core";
+import { Box, Flex, Image } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
 import WeaponImage from "components/common/WeaponImage";
 import { weapons } from "lib/lists/weapons";

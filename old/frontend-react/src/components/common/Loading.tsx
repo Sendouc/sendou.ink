@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Spinner, Box } from "@chakra-ui/core";
+import { Box, Spinner } from "@chakra-ui/react";
+import React, { useContext, useEffect, useState } from "react";
 import MyThemeContext from "../../themeContext";
 
 const Loading: React.FC = () => {

@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Avatar, Box, Button, Flex, Grid } from "@chakra-ui/core";
+import { Avatar, Box, Button, Flex, Grid } from "@chakra-ui/react";
 import { Link, Redirect, RouteComponentProps } from "@reach/router";
 import { stringify } from "querystring";
 import React, { useContext } from "react";
@@ -7,17 +7,17 @@ import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { FaLongArrowAltLeft } from "react-icons/fa";
 import {
-  ArrayParam,
-  encodeQueryParams,
-  StringParam,
-  useQueryParams,
+    ArrayParam,
+    encodeQueryParams,
+    StringParam,
+    useQueryParams
 } from "use-query-params";
 import { modeIconMap } from "../../assets/icons";
 import { mapIcons } from "../../assets/imageImports";
 import {
-  SearchForTournamentByIdData,
-  SearchForTournamentByIdVars,
-  SEARCH_FOR_TOURNAMENT_BY_ID,
+    SearchForTournamentByIdData,
+    SearchForTournamentByIdVars,
+    SEARCH_FOR_TOURNAMENT_BY_ID
 } from "../../graphql/queries/searchForTournamentById";
 import MyThemeContext from "../../themeContext";
 import { Ability, Weapon } from "../../types";

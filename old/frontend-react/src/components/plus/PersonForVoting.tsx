@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Grid } from "@chakra-ui/core";
+import { Box, Button, Flex, Grid } from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
 import MyThemeContext from "../../themeContext";
 import { months } from "../../utils/lists";

@@ -1,4 +1,11 @@
-import { Box, HStack, Image, Radio, RadioGroup, Select } from "@chakra-ui/core";
+import {
+  Box,
+  HStack,
+  Image,
+  Radio,
+  RadioGroup,
+  Select,
+} from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import salmonRunHighTide from "assets/SalmonRunHighTide.svg";

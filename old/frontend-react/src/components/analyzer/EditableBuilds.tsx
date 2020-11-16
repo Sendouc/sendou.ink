@@ -1,19 +1,19 @@
-import { Box, Button, Flex, IconButton } from "@chakra-ui/core";
+import { Box, Button, Flex, IconButton } from "@chakra-ui/react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { FiCopy, FiEdit, FiSquare } from "react-icons/fi";
 import {
-  Ability,
-  AnalyzerBuild,
-  ClothingOnlyAbility,
-  HeadOnlyAbility,
-  ShoesOnlyAbility,
-  StackableAbility,
+    Ability,
+    AnalyzerBuild,
+    ClothingOnlyAbility,
+    HeadOnlyAbility,
+    ShoesOnlyAbility,
+    StackableAbility
 } from "../../types";
 import {
-  clothingOnlyAbilities,
-  headOnlyAbilities,
-  shoesOnlyAbilities,
+    clothingOnlyAbilities,
+    headOnlyAbilities,
+    shoesOnlyAbilities
 } from "../../utils/lists";
 import ViewSlots from "../builds/ViewSlots";
 import AbilityButtons from "../user/AbilityButtons";

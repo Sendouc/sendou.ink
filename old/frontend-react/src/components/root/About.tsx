@@ -1,9 +1,9 @@
-import React, { useContext } from "react";
+import { Heading, Link, List, ListItem } from "@chakra-ui/react";
 import { RouteComponentProps } from "@reach/router";
-import { Heading, Link, List, ListItem } from "@chakra-ui/core";
-import MyThemeContext from "../../themeContext";
+import React, { useContext } from "react";
 import { Helmet } from "react-helmet-async";
-import { useTranslation, Trans } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
+import MyThemeContext from "../../themeContext";
 
 const About: React.FC<RouteComponentProps> = () => {
   const { t } = useTranslation();

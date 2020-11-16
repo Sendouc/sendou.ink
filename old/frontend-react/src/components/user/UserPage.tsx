@@ -1,13 +1,13 @@
 import { useQuery } from "@apollo/client";
 import {
-  Badge,
-  Box,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-} from "@chakra-ui/core";
+    Badge,
+    Box,
+    Tab,
+    TabList,
+    TabPanel,
+    TabPanels,
+    Tabs
+} from "@chakra-ui/react";
 import { Redirect, RouteComponentProps } from "@reach/router";
 import React, { useContext } from "react";
 import { Helmet } from "react-helmet-async";
@@ -17,16 +17,16 @@ import { IconType } from "react-icons/lib/cjs";
 import { useGetUsersXRankPlacementsQuery } from "../../generated/graphql";
 import { SEARCH_FOR_BUILDS } from "../../graphql/queries/searchForBuilds";
 import {
-  SearchForUserData,
-  SearchForUserVars,
-  SEARCH_FOR_USER,
+    SearchForUserData,
+    SearchForUserVars,
+    SEARCH_FOR_USER
 } from "../../graphql/queries/searchForUser";
 import { USER } from "../../graphql/queries/user";
 import MyThemeContext from "../../themeContext";
 import {
-  SearchForBuildsData,
-  SearchForBuildsVars,
-  UserData,
+    SearchForBuildsData,
+    SearchForBuildsVars,
+    UserData
 } from "../../types";
 import { canAddJpnBuildsIds, weapons } from "../../utils/lists";
 import Error from "../common/Error";

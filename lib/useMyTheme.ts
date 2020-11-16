@@ -1,4 +1,4 @@
-import { useColorMode } from "@chakra-ui/core";
+import { useColorMode } from "@chakra-ui/react";
 import { theme } from "theme";
 
 // This hook can be deprecated

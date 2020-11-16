@@ -1,29 +1,29 @@
 import { useMutation } from "@apollo/client";
-import { Box, Button, Flex, useToast } from "@chakra-ui/core";
+import { Box, Button, Flex, useToast } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ADD_BUILD } from "../../graphql/mutations/addBuild";
 import { DELETE_BUILD } from "../../graphql/mutations/deleteBuild";
 import { UPDATE_BUILD } from "../../graphql/mutations/updateBuild";
 import {
-  Ability,
-  Build,
-  ClothingGear,
-  ClothingOnlyAbility,
-  HeadGear,
-  HeadOnlyAbility,
-  ShoesGear,
-  ShoesOnlyAbility,
-  StackableAbility,
-  Weapon,
+    Ability,
+    Build,
+    ClothingGear,
+    ClothingOnlyAbility,
+    HeadGear,
+    HeadOnlyAbility,
+    ShoesGear,
+    ShoesOnlyAbility,
+    StackableAbility,
+    Weapon
 } from "../../types";
 import {
-  clothingOnlyAbilities,
-  clothingSelectOptions,
-  headOnlyAbilities,
-  headSelectOptions,
-  shoesOnlyAbilities,
-  shoesSelectOptions,
+    clothingOnlyAbilities,
+    clothingSelectOptions,
+    headOnlyAbilities,
+    headSelectOptions,
+    shoesOnlyAbilities,
+    shoesSelectOptions
 } from "../../utils/lists";
 import GearImage from "../builds/GearImage";
 import ViewSlots from "../builds/ViewSlots";

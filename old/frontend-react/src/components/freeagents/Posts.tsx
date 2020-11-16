@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Heading } from "@chakra-ui/core";
+import { Box, Button, Grid, Heading } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import InfiniteScroll from "react-infinite-scroller";

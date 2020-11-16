@@ -1,21 +1,21 @@
 import { useQuery } from "@apollo/client";
-import { Box, Button, Collapse, Flex } from "@chakra-ui/core";
+import { Box, Button, Collapse, Flex } from "@chakra-ui/react";
 import { RouteComponentProps } from "@reach/router";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { FaFilter } from "react-icons/fa";
 import {
-  FreeAgentMatchesData,
-  FREE_AGENT_MATCHES,
+    FreeAgentMatchesData,
+    FREE_AGENT_MATCHES
 } from "../../graphql/queries/freeAgentMatches";
 import { FREE_AGENT_POSTS } from "../../graphql/queries/freeAgentPosts";
 import { USER } from "../../graphql/queries/user";
 import {
-  FreeAgentPost,
-  FreeAgentPostsData,
-  UserData,
-  Weapon,
+    FreeAgentPost,
+    FreeAgentPostsData,
+    UserData,
+    Weapon
 } from "../../types";
 import { continents } from "../../utils/lists";
 import Error from "../common/Error";

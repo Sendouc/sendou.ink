@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/core";
+import { Box, Flex } from "@chakra-ui/react";
 import React, { useContext, useEffect } from "react";
 import { MdClose } from "react-icons/md";
 import useOnClickOutside from "use-onclickoutside";

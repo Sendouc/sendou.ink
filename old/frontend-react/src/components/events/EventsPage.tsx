@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Heading } from "@chakra-ui/core";
+import { Box, Button, Flex, Heading } from "@chakra-ui/react";
 import { RouteComponentProps } from "@reach/router";
 import React, { useState } from "react";
 import InTheZoneBanner from "./InTheZoneBanner";

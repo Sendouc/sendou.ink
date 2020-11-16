@@ -1,5 +1,5 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
-import { ChakraProvider } from "@chakra-ui/core";
+import { ChakraProvider } from "@chakra-ui/react";
 import { createHistory, LocationProvider } from "@reach/router";
 import React from "react";
 import ReactDOM from "react-dom";

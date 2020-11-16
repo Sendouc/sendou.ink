@@ -1,12 +1,12 @@
 import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
-  Box,
-  Link,
-} from "@chakra-ui/core";
+    Accordion,
+    AccordionButton,
+    AccordionIcon,
+    AccordionItem,
+    AccordionPanel,
+    Box,
+    Link
+} from "@chakra-ui/react";
 import { RouteComponentProps } from "@reach/router";
 import React, { useContext } from "react";
 import { Helmet } from "react-helmet-async";

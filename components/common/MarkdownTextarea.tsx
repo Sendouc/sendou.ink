@@ -5,7 +5,7 @@ import {
   FormHelperText,
   FormLabel,
   Textarea,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
 import { FieldError } from "react-hook-form";
 import LimitProgress from "./LimitProgress";

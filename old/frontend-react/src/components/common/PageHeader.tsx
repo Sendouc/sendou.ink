@@ -1,6 +1,5 @@
-import React from "react";
-import { Heading } from "@chakra-ui/core";
-import { useContext } from "react";
+import { Heading } from "@chakra-ui/react";
+import React, { useContext } from "react";
 import MyThemeContext from "../../themeContext";
 
 interface PageHeaderProps {

@@ -1,4 +1,4 @@
-import { Box, BoxProps } from "@chakra-ui/core";
+import { Box, BoxProps } from "@chakra-ui/react";
 import { useMyTheme } from "lib/useMyTheme";
 
 const Section: React.FC<BoxProps> = (props) => {

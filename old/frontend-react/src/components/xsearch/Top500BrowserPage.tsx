@@ -1,12 +1,12 @@
 import {
-  Avatar,
-  Box,
-  Button,
-  Flex,
-  Image,
-  Link as ChakraLink,
-  Text,
-} from "@chakra-ui/core";
+    Avatar,
+    Box,
+    Button,
+    Flex,
+    Image,
+    Link as ChakraLink,
+    Text
+} from "@chakra-ui/react";
 import { Link, RouteComponentProps, useLocation } from "@reach/router";
 import React, { useContext, useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -16,10 +16,10 @@ import RM from "../../assets/rm.png";
 import SZ from "../../assets/sz.png";
 import TC from "../../assets/tc.png";
 import {
-  GetXRankPlacementsDocument,
-  GetXRankPlacementsInput,
-  RankedMode,
-  useGetXRankPlacementsQuery,
+    GetXRankPlacementsDocument,
+    GetXRankPlacementsInput,
+    RankedMode,
+    useGetXRankPlacementsQuery
 } from "../../generated/graphql";
 import MyThemeContext from "../../themeContext";
 import { Weapon } from "../../types";
@@ -27,12 +27,12 @@ import Error from "../common/Error";
 import PageHeader from "../common/PageHeader";
 import Pagination from "../common/Pagination";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow
 } from "../common/Table";
 import WeaponImage from "../common/WeaponImage";
 import Top500Filters from "./Top500Filters";

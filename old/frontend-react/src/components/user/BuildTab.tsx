@@ -1,4 +1,4 @@
-import { Box, Button } from "@chakra-ui/core";
+import { Box, Button } from "@chakra-ui/react";
 import useLocalStorage from "@rehooks/local-storage";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";

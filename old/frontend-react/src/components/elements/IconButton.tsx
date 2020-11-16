@@ -1,9 +1,8 @@
-import React from "react";
 import {
-  IconButton as ChakraIconButton,
-  IconButtonProps as ChakraIconButtonProps,
-} from "@chakra-ui/core";
-import { useContext } from "react";
+    IconButton as ChakraIconButton,
+    IconButtonProps as ChakraIconButtonProps
+} from "@chakra-ui/react";
+import React, { useContext } from "react";
 import MyThemeContext from "../../themeContext";
 
 interface IconButtonProps {

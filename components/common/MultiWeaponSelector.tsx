@@ -1,4 +1,4 @@
-import { Select, Tag, TagCloseButton, TagLabel } from "@chakra-ui/core";
+import { Select, Tag, TagCloseButton, TagLabel } from "@chakra-ui/react";
 import { useLingui } from "@lingui/react";
 import { weaponsWithHeroCategorizedLocalized } from "lib/lists/weaponsWithHero";
 import WeaponImage from "./WeaponImage";

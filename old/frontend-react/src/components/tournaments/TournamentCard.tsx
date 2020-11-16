@@ -1,4 +1,4 @@
-import { Box, Flex, Image } from "@chakra-ui/core";
+import { Box, Flex, Image } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import { useTranslation } from "react-i18next";
 import trophy from "../../assets/trophy.png";

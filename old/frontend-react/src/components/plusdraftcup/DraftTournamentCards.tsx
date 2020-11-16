@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Grid, Image } from "@chakra-ui/core";
+import { Box, Button, Flex, Grid, Image } from "@chakra-ui/react";
 import { Link } from "@reach/router";
 import React, { useContext } from "react";
 import { useTranslation } from "react-i18next";

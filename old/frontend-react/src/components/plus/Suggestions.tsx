@@ -1,12 +1,12 @@
 import { useQuery } from "@apollo/client";
-import { Badge, Box, Button, Divider, Flex, Grid } from "@chakra-ui/core";
+import { Badge, Box, Button, Divider, Flex, Grid } from "@chakra-ui/react";
 import { Link } from "@reach/router";
 import React, { useContext, useState } from "react";
 import { PlusInfoData, PLUS_INFO } from "../../graphql/queries/plusInfo";
 import {
-  Suggestion,
-  SUGGESTIONS,
-  SuggestionsData,
+    Suggestion,
+    SUGGESTIONS,
+    SuggestionsData
 } from "../../graphql/queries/suggestions";
 import { USER } from "../../graphql/queries/user";
 import { VOUCHES } from "../../graphql/queries/vouches";

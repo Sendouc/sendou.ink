@@ -1,18 +1,16 @@
-import React, { useContext } from "react";
-import FieldsetWithLegend from "../common/FieldsetWithLegend";
 import {
-  Flex,
-  Box,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverArrow,
-  AvatarGroup,
-  Avatar,
-} from "@chakra-ui/core";
-import UserAvatar from "../common/UserAvatar";
+    Avatar, AvatarGroup, Box, Flex,
+
+    Popover,
+
+
+    PopoverArrow, PopoverContent, PopoverTrigger
+} from "@chakra-ui/react";
+import React, { useContext } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import MyThemeContext from "../../themeContext";
-import { useTranslation, Trans } from "react-i18next";
+import FieldsetWithLegend from "../common/FieldsetWithLegend";
+import UserAvatar from "../common/UserAvatar";
 
 interface MatchesProps {
   matches: {

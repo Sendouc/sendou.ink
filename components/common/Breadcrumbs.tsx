@@ -3,7 +3,7 @@ import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
 import { useMyTheme } from "lib/useMyTheme";
 import NextLink from "next/link";

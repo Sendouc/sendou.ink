@@ -1,4 +1,4 @@
-import { Box, Button } from "@chakra-ui/core";
+import { Box, Button } from "@chakra-ui/react";
 import { RouteComponentProps } from "@reach/router";
 import React from "react";
 import { DiscordIcon } from "../../assets/icons";

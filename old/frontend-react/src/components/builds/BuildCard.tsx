@@ -1,14 +1,14 @@
 import {
-  Box,
-  BoxProps,
-  Flex,
-  IconButton,
-  Image,
-  Popover,
-  PopoverBody,
-  PopoverContent,
-  PopoverTrigger,
-} from "@chakra-ui/core";
+    Box,
+    BoxProps,
+    Flex,
+    IconButton,
+    Image,
+    Popover,
+    PopoverBody,
+    PopoverContent,
+    PopoverTrigger
+} from "@chakra-ui/react";
 import { Link } from "@reach/router";
 import React, { useContext, useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";

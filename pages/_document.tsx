@@ -1,4 +1,4 @@
-import { ColorModeScript } from "@chakra-ui/core";
+import { ColorModeScript } from "@chakra-ui/react";
 import Document, {
   DocumentContext,
   Head,

@@ -1,14 +1,14 @@
-import { Box, Button, Flex } from "@chakra-ui/core";
+import { Box, Button, Flex } from "@chakra-ui/react";
 import { RouteComponentProps } from "@reach/router";
 import { SketchField, Tools } from "@sendou/react-sketch";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import {
-  FaBomb,
-  FaFileDownload,
-  FaFileImage,
-  FaFileUpload,
+    FaBomb,
+    FaFileDownload,
+    FaFileImage,
+    FaFileUpload
 } from "react-icons/fa";
 import useBreakPoints from "../../hooks/useBreakPoints";
 import { Stage, Weapon } from "../../types";

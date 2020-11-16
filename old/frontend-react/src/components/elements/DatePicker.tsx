@@ -1,4 +1,4 @@
-import { Button } from "@chakra-ui/core";
+import { Button } from "@chakra-ui/react";
 import React, { forwardRef } from "react";
 import HackerOneDatePicker from "react-datepicker";
 import "react-datepicker/src/stylesheets/datepicker.scss";

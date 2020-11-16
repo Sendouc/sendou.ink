@@ -1,12 +1,12 @@
-import { Box, Button, Flex, Heading } from "@chakra-ui/core";
+import { Box, Button, Flex, Heading } from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  FaEdit,
-  FaGamepad,
-  FaTwitch,
-  FaTwitter,
-  FaYoutube,
+    FaEdit,
+    FaGamepad,
+    FaTwitch,
+    FaTwitter,
+    FaYoutube
 } from "react-icons/fa";
 import MyThemeContext from "../../themeContext";
 import { User } from "../../types";

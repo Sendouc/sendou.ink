@@ -1,30 +1,34 @@
-import React, { useState, useContext } from "react";
-import Draggable from "react-draggable";
+import {
+    Box,
+    Flex,
+    IconButton,
+    Popover,
+
+
+    PopoverBody, PopoverContent, PopoverTrigger
+} from "@chakra-ui/react";
 import { Tools } from "@sendou/react-sketch";
-import { useHotkeys } from "react-hotkeys-hook";
-import {
-  Box,
-  Flex,
-  IconButton,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverBody,
-} from "@chakra-ui/core";
-import {
-  FaPencilAlt,
-  FaRegSquare,
-  FaRegCircle,
-  FaRegObjectGroup,
-  FaTrashAlt,
-  FaRedo,
-  FaUndo,
-  FaFont,
-} from "react-icons/fa";
-import { AiOutlineLine } from "react-icons/ai";
-import MyThemeContext from "../../themeContext";
+import React, { useContext, useState } from "react";
 import { CirclePicker, ColorResult } from "react-color";
+import Draggable from "react-draggable";
+import { useHotkeys } from "react-hotkeys-hook";
 import { useTranslation } from "react-i18next";
+import { AiOutlineLine } from "react-icons/ai";
+import {
+    FaFont, FaPencilAlt,
+
+
+
+
+    FaRedo, FaRegCircle,
+    FaRegObjectGroup, FaRegSquare,
+
+
+    FaTrashAlt,
+
+    FaUndo
+} from "react-icons/fa";
+import MyThemeContext from "../../themeContext";
 
 interface PlannerColorPickerProps {
   color: string;

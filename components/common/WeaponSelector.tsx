@@ -1,4 +1,4 @@
-import { Select } from "@chakra-ui/core";
+import { Select } from "@chakra-ui/react";
 import { useLingui } from "@lingui/react";
 import { weaponsWithHeroCategorizedLocalized } from "lib/lists/weaponsWithHero";
 

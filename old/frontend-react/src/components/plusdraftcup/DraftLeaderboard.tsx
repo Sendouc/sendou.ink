@@ -1,20 +1,19 @@
-import React, { useContext } from "react";
 import {
-  Tabs,
-  TabList,
-  Tab,
-  TabPanels,
-  TabPanel,
-  Grid,
-  Box,
-  Flex,
-  Image,
-} from "@chakra-ui/core";
-import MyThemeContext from "../../themeContext";
-import UserAvatar from "../common/UserAvatar";
+    Box,
+    Flex, Grid,
+
+
+    Image, Tab, TabList,
+
+
+    TabPanel, TabPanels, Tabs
+} from "@chakra-ui/react";
 import { Link } from "@reach/router";
+import React, { useContext } from "react";
 import { medalEmoji } from "../../assets/imageImports";
 import useBreakPoints from "../../hooks/useBreakPoints";
+import MyThemeContext from "../../themeContext";
+import UserAvatar from "../common/UserAvatar";
 
 interface LeaderboardPlayer {
   discord_user: {

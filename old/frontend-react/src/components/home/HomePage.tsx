@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Heading, Image } from "@chakra-ui/core";
+import { Box, Button, Flex, Heading, Image } from "@chakra-ui/react";
 import { RouteComponentProps } from "@reach/router";
 import React, { useContext } from "react";
 import { Helmet } from "react-helmet-async";

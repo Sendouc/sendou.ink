@@ -1,11 +1,11 @@
 import {
-  Box,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-} from "@chakra-ui/core";
+    Box,
+    NumberDecrementStepper,
+    NumberIncrementStepper,
+    NumberInput,
+    NumberInputField,
+    NumberInputStepper
+} from "@chakra-ui/react";
 import React, { useContext } from "react";
 import MyThemeContext from "../../themeContext";
 import Label from "../elements/Label";

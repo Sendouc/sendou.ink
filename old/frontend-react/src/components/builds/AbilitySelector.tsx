@@ -1,4 +1,4 @@
-import { Box, Button, Flex } from "@chakra-ui/core";
+import { Box, Button, Flex } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FaFilter } from "react-icons/fa";

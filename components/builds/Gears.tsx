@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/core";
+import { Box, Flex } from "@chakra-ui/react";
 import GearImage from "components/common/GearImage";
 import { Unpacked } from "lib/types";
 import { GetBuildsByWeaponData } from "prisma/queries/getBuildsByWeapon";

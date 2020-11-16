@@ -1,12 +1,12 @@
 import {
-  Badge,
-  Box,
-  Button,
-  Flex,
-  FormLabel,
-  Switch,
-  Wrap,
-} from "@chakra-ui/core";
+    Badge,
+    Box,
+    Button,
+    Flex,
+    FormLabel,
+    Switch,
+    Wrap
+} from "@chakra-ui/react";
 import { RouteComponentProps, useLocation } from "@reach/router";
 import React, { useContext, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";

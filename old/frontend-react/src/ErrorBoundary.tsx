@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { Box, Flex, Heading, Image } from "@chakra-ui/core";
+import { Box, Flex, Heading, Image } from "@chakra-ui/react";
 import React from "react";
 import { AiOutlineReload } from "react-icons/ai";
 import errorGirl from "./assets/error_girl.png";

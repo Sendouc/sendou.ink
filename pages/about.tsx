@@ -1,4 +1,4 @@
-import { Heading, Link, List, ListItem } from "@chakra-ui/core";
+import { Heading, Link, List, ListItem } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import MyHead from "components/common/MyHead";

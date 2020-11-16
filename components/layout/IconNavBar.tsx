@@ -6,7 +6,7 @@ import {
   MenuGroup,
   MenuItem,
   MenuList,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import { useTranslation } from "lib/useMockT";
 import { useMyTheme } from "lib/useMyTheme";
 import { useRouter } from "next/dist/client/router";

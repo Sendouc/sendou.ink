@@ -1,11 +1,11 @@
-import { Avatar, Box, Flex, Link as ChakraLink, Text } from "@chakra-ui/core";
+import { Avatar, Box, Flex, Link as ChakraLink, Text } from "@chakra-ui/react";
 import { Link } from "@reach/router";
 import React, { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  GetXRankLeaderboardDocument,
-  useGetXRankLeaderboardQuery,
-  XRankLeaderboardType,
+    GetXRankLeaderboardDocument,
+    useGetXRankLeaderboardQuery,
+    XRankLeaderboardType
 } from "../../generated/graphql";
 import MyThemeContext from "../../themeContext";
 import { getPlacementString } from "../../utils/helperFunctions";
@@ -13,12 +13,12 @@ import Error from "../common/Error";
 import Loading from "../common/Loading";
 import Pagination from "../common/Pagination";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow
 } from "../common/Table";
 
 interface PeakXPowerLeaderboardProps {

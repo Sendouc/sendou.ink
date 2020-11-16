@@ -1,11 +1,11 @@
 import {
-  Box,
-  BoxProps,
-  Input as ChakraInput,
-  InputGroup,
-  InputLeftAddon,
-  InputLeftElement,
-} from "@chakra-ui/core";
+    Box,
+    BoxProps,
+    Input as ChakraInput,
+    InputGroup,
+    InputLeftAddon,
+    InputLeftElement
+} from "@chakra-ui/react";
 import React, { useContext } from "react";
 import { IconType } from "react-icons/lib/cjs";
 import MyThemeContext from "../../themeContext";

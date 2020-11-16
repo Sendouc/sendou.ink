@@ -1,4 +1,4 @@
-import { Button } from "@chakra-ui/core";
+import { Button } from "@chakra-ui/react";
 import { Link } from "@reach/router";
 import React from "react";
 import { RiTShirtAirLine } from "react-icons/ri";

@@ -1,4 +1,4 @@
-import { Avatar, AvatarProps } from "@chakra-ui/core";
+import { Avatar, AvatarProps } from "@chakra-ui/react";
 import React, { useState } from "react";
 
 interface UserAvatarProps {

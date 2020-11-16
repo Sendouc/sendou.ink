@@ -1,25 +1,25 @@
 import {
-  Checkbox,
-  Code,
-  Divider,
-  Heading,
-  Image,
-  Link,
-  List,
-  ListItem,
-  Text,
-} from "@chakra-ui/core";
+    Checkbox,
+    Code,
+    Divider,
+    Heading,
+    Image,
+    Link,
+    List,
+    ListItem,
+    Text
+} from "@chakra-ui/react";
 import React, { useContext } from "react";
 import ReactMarkdown from "react-markdown";
 import reactStringReplace from "react-string-replace";
 import MyThemeContext from "../../themeContext";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow
 } from "../common/Table";
 import Emoji from "./Emoji";
 

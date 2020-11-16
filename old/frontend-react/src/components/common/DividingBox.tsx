@@ -1,5 +1,5 @@
+import { Box } from "@chakra-ui/react";
 import React, { useContext } from "react";
-import { Box } from "@chakra-ui/core";
 import MyThemeContext from "../../themeContext";
 
 interface DividingBoxProps {

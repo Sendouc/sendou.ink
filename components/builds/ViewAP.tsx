@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/core";
+import { Box, Flex } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import { Ability } from "@prisma/client";
 import AbilityIcon from "components/common/AbilityIcon";

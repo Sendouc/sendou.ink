@@ -1,17 +1,17 @@
 import { useQuery } from "@apollo/client";
 import {
-  Box,
-  Button,
-  Flex,
-  Grid,
-  IconButton,
-  Menu,
-  MenuButton,
-  MenuGroup,
-  MenuItem,
-  MenuList,
-  useColorMode,
-} from "@chakra-ui/core";
+    Box,
+    Button,
+    Flex,
+    Grid,
+    IconButton,
+    Menu,
+    MenuButton,
+    MenuGroup,
+    MenuItem,
+    MenuList,
+    useColorMode
+} from "@chakra-ui/react";
 import { Link } from "@reach/router";
 import React, { Suspense, useContext } from "react";
 import { useTranslation } from "react-i18next";

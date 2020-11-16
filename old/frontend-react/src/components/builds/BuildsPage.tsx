@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Box, Button, Flex, FormLabel, Heading, Switch } from "@chakra-ui/core";
+import { Box, Button, Flex, FormLabel, Heading, Switch } from "@chakra-ui/react";
 import { RouteComponentProps } from "@reach/router";
 import useLocalStorage from "@rehooks/local-storage";
 import React, { useContext, useState } from "react";
@@ -13,7 +13,7 @@ import {
   Build,
   SearchForBuildsData,
   SearchForBuildsVars,
-  Weapon,
+  Weapon
 } from "../../types";
 import Error from "../common/Error";
 import Loading from "../common/Loading";

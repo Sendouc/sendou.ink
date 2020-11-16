@@ -1,13 +1,13 @@
 import {
-  Box,
-  Button,
-  Collapse,
-  Flex,
-  Grid,
-  Radio,
-  RadioGroup,
-  Stack,
-} from "@chakra-ui/core";
+    Box,
+    Button,
+    Collapse,
+    Flex,
+    Grid,
+    Radio,
+    RadioGroup,
+    Stack
+} from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FaFilter } from "react-icons/fa";

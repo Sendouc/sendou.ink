@@ -1,7 +1,7 @@
+import { Box, Flex } from "@chakra-ui/react";
 import React from "react";
 import { Build } from "../../types";
 import GearImage from "./GearImage";
-import { Flex, Box } from "@chakra-ui/core";
 
 interface GearsProps {
   build: Build;
