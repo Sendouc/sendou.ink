@@ -1,9 +1,9 @@
-import { PrismaClient } from "@prisma/client";
 import { getMySession } from "lib/getMySession";
 import { profileSchemaBackend } from "lib/validators/profile";
 import { NextApiRequest, NextApiResponse } from "next";
+import DBClient from "prisma/client";
 
-const prisma = new PrismaClient();
+const prisma = DBClient.getInstance().prisma;
 
 const profileHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "PUT") {

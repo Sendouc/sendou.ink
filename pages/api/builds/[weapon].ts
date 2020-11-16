@@ -1,12 +1,9 @@
-import { PrismaClient } from "@prisma/client";
 import { codeToWeapon } from "lib/lists/weaponCodes";
 import { NextApiRequest, NextApiResponse } from "next";
 import {
   getBuildsByWeapon,
   GetBuildsByWeaponData,
 } from "prisma/queries/getBuildsByWeapon";
-
-const prisma = new PrismaClient();
 
 const weaponHandler = async (
   req: NextApiRequest,
@@ -21,10 +18,7 @@ const weaponHandler = async (
 
   if (!weapon) return res.status(400).end();
 
-  const builds = await getBuildsByWeapon({
-    prisma,
-    weapon,
-  });
+  const builds = await getBuildsByWeapon(weapon);
 
   res.status(200).json(builds);
 };

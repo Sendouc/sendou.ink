@@ -1,18 +1,19 @@
 import { Radio, RadioGroup, Select, Stack } from "@chakra-ui/core";
 import { t } from "@lingui/macro";
-import { PrismaClient, RankedMode } from "@prisma/client";
+import { RankedMode } from "@prisma/client";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import Top500Table from "components/top500/Top500Table";
 import { getLocalizedMonthYearString } from "lib/strings";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
+import DBClient from "prisma/client";
 import {
   getTop500PlacementsByMonth,
   GetTop500PlacementsByMonthData,
 } from "prisma/queries/getTop500PlacementsByMonth";
 import { useEffect, useState } from "react";
 
-const prisma = new PrismaClient();
+const prisma = DBClient.getInstance().prisma;
 
 const getMonthOptions = (latestMonth: number, latestYear: number) => {
   const monthChoices = [];
@@ -107,7 +108,6 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   if (isNaN(month) || isNaN(year)) return { notFound: true };
 
   const placements = await getTop500PlacementsByMonth({
-    prisma,
     month,
     year,
     mode: slug[2] as RankedMode,

@@ -129,35 +129,38 @@ export function useBuildsByWeapon() {
     return `/api/builds/${weaponToCode[key]}`;
   });
 
-  return {
-    data: state.filters.length
-      ? data.reduce((acc: GetBuildsByWeaponData, buildArray) => {
-          const filteredArray = buildArray.filter((build) => {
-            return state.filters.every((filter) => {
-              // @ts-ignore
-              const apCount = build.abilityPoints[filter.ability] ?? 0;
+  const buildsToShow = state.filters.length
+    ? data.reduce((acc: GetBuildsByWeaponData, buildArray) => {
+        const filteredArray = buildArray.filter((build) => {
+          return state.filters.every((filter) => {
+            // @ts-ignore
+            const apCount = build.abilityPoints[filter.ability] ?? 0;
 
-              switch (filter.type) {
-                case "HAS":
-                  return !!apCount;
-                case "DOES_NOT_HAVE":
-                  return !apCount;
-                case "AT_MOST":
-                  return apCount <= filter.abilityPoints;
-                case "AT_LEAST":
-                  return apCount >= filter.abilityPoints;
-                default:
-                  throw Error("Invalid filter type");
-              }
-            });
+            switch (filter.type) {
+              case "HAS":
+                return !!apCount;
+              case "DOES_NOT_HAVE":
+                return !apCount;
+              case "AT_MOST":
+                return apCount <= filter.abilityPoints;
+              case "AT_LEAST":
+                return apCount >= filter.abilityPoints;
+              default:
+                throw Error("Invalid filter type");
+            }
           });
+        });
 
-          if (!filteredArray.length) return acc;
+        if (!filteredArray.length) return acc;
 
-          return [...acc, filteredArray];
-        }, [])
-      : data,
+        return [...acc, filteredArray];
+      }, [])
+    : data;
+
+  return {
+    data: buildsToShow,
     state,
     dispatch,
+    hiddenBuildCount: data.length - buildsToShow.length,
   };
 }

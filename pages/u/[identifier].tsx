@@ -1,6 +1,6 @@
 import { Box, Button, Divider } from "@chakra-ui/core";
 import { t, Trans } from "@lingui/macro";
-import { PrismaClient, RankedMode } from "@prisma/client";
+import { RankedMode } from "@prisma/client";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import Markdown from "components/common/Markdown";
 import AvatarWithInfo from "components/u/AvatarWithInfo";
@@ -8,6 +8,7 @@ import ProfileModal from "components/u/ProfileModal";
 import { getFullUsername } from "lib/strings";
 import useUser from "lib/useUser";
 import { GetStaticPaths, GetStaticProps } from "next";
+import DBClient from "prisma/client";
 import { getPlayersTop500Placements } from "prisma/queries/getPlayersTop500Placements";
 import {
   getUserByIdentifier,
@@ -16,7 +17,7 @@ import {
 import { useState } from "react";
 import useSWR from "swr";
 
-const prisma = new PrismaClient();
+const prisma = DBClient.getInstance().prisma;
 
 // FIXME: should try to make it so that /u/Sendou and /u/234234298348 point to the same page
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -40,15 +41,14 @@ interface Props {
 }
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
-  const user = await getUserByIdentifier(prisma, params!.identifier as string);
+  const user = await getUserByIdentifier(params!.identifier as string);
 
   const peakXPowers: Partial<Record<RankedMode, number>> = {};
 
   if (!!user?.player?.switchAccountId) {
-    const placements = await getPlayersTop500Placements({
-      prisma,
-      switchAccountId: user.player.switchAccountId,
-    });
+    const placements = await getPlayersTop500Placements(
+      user.player.switchAccountId
+    );
 
     for (const placement of placements) {
       peakXPowers[placement.mode] = Math.max(

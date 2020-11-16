@@ -1,15 +1,14 @@
-import { PrismaClient } from "@prisma/client";
-import { Unwrap } from "lib/types";
+import { PromiseReturnType } from "@prisma/client";
+import DBClient from "prisma/client";
 
-export type GetUserByIdentifierData = Unwrap<
-  ReturnType<typeof getUserByIdentifier>
+export type GetUserByIdentifierData = PromiseReturnType<
+  typeof getUserByIdentifier
 >;
 
-export const getUserByIdentifier = async (
-  prisma: PrismaClient,
-  identifier: string
-) => {
-  return prisma.user.findFirst({
+const prisma = DBClient.getInstance().prisma;
+
+export const getUserByIdentifier = (identifier: string) =>
+  prisma.user.findFirst({
     where: {
       // this is ok because the values are mutually exclusive: customUrlPath can't contain only numbers etc.
       OR: [
@@ -49,4 +48,3 @@ export const getUserByIdentifier = async (
       },
     },
   });
-};

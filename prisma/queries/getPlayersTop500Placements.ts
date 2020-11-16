@@ -1,17 +1,13 @@
-import { PrismaClient } from "@prisma/client";
-import { Unwrap } from "lib/types";
+import { PromiseReturnType } from "@prisma/client";
+import DBClient from "prisma/client";
 
-export type GetPlayersTop500Placements = Unwrap<
-  ReturnType<typeof getPlayersTop500Placements>
+const prisma = DBClient.getInstance().prisma;
+
+export type GetPlayersTop500Placements = PromiseReturnType<
+  typeof getPlayersTop500Placements
 >;
 
-export const getPlayersTop500Placements = async ({
-  prisma,
-  switchAccountId,
-}: {
-  prisma: PrismaClient;
-  switchAccountId: string;
-}) => {
+export const getPlayersTop500Placements = async (switchAccountId: string) => {
   return prisma.xRankPlacement.findMany({
     where: { switchAccountId },
     orderBy: [{ month: "desc" }, { year: "desc" }],

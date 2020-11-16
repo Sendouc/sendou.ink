@@ -1,24 +1,16 @@
-import { PrismaClient, PromiseReturnType } from "@prisma/client";
+import { PromiseReturnType } from "@prisma/client";
+import DBClient from "prisma/client";
 
 export type GetBuildsByWeaponData = PromiseReturnType<typeof getBuildsByWeapon>;
 
 type BuildsByWeapon = PromiseReturnType<typeof getBuildsByWeaponQuery>;
 
-const getBuildsByWeaponQuery = async ({
-  prisma,
-  weapon,
-}: {
-  prisma: PrismaClient;
-  weapon: string;
-}) => {
-  return prisma.build.findMany({
+const prisma = DBClient.getInstance().prisma;
+
+const getBuildsByWeaponQuery = async (weapon: string) =>
+  prisma.build.findMany({
     where: { weapon },
-    orderBy: [
-      { top500: "desc" },
-      { jpn: "desc" },
-      { userId: "desc" },
-      { updatedAt: "desc" },
-    ],
+    orderBy: [{ top500: "desc" }, { jpn: "desc" }, { updatedAt: "desc" }],
     include: {
       user: {
         select: {
@@ -30,19 +22,20 @@ const getBuildsByWeaponQuery = async ({
       },
     },
   });
-};
 
-export const getBuildsByWeapon = async (args: {
-  prisma: PrismaClient;
-  weapon: string;
-}) => {
-  const builds = await getBuildsByWeaponQuery(args);
+export const getBuildsByWeapon = async (weapon: string) =>
+  getBuildsByWeaponQuery(weapon).then((builds) =>
+    Array.from(
+      builds
+        .reduce((usersBuild, build) => {
+          if (usersBuild.has(build.userId)) {
+            usersBuild.get(build.userId)!.push(build);
+          } else {
+            usersBuild.set(build.userId, [build]);
+          }
 
-  return builds.reduce((acc: BuildsByWeapon[], build, i) => {
-    if (i === 0 || acc[acc.length - 1][0].userId !== build.userId) {
-      acc.push([build]);
-    } else acc[acc.length - 1].push(build);
-
-    return acc;
-  }, []);
-};
+          return usersBuild;
+        }, new Map<number, BuildsByWeapon>())
+        .entries()
+    ).map(([_userId, buildArray]) => buildArray)
+  );

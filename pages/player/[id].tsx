@@ -1,14 +1,14 @@
 import { t } from "@lingui/macro";
-import { PrismaClient } from "@prisma/client";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import PlayerTable from "components/player/PlayerTable";
 import { GetStaticPaths, GetStaticProps } from "next";
+import DBClient from "prisma/client";
 import {
   GetPlayersTop500Placements,
   getPlayersTop500Placements,
 } from "prisma/queries/getPlayersTop500Placements";
 
-const prisma = new PrismaClient();
+const prisma = DBClient.getInstance().prisma;
 
 // FIXME: should probably not prerender all player pages -- where userId is not null
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -24,10 +24,7 @@ interface Props {
 }
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
-  const placements = await getPlayersTop500Placements({
-    prisma,
-    switchAccountId: params!.id as string,
-  });
+  const placements = await getPlayersTop500Placements(params!.id as string);
 
   return {
     props: {

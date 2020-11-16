@@ -1,15 +1,15 @@
 import {
   BuildCreateWithoutUserInput,
-  PrismaClient,
   UserCreateInput,
   XRankPlacementCreateInput,
 } from "@prisma/client";
+import DBClient from "prisma/client";
 import buildsJson from "./mongo/builds.json";
 import placementsJson from "./mongo/placements.json";
 import playersJson from "./mongo/players.json";
 import usersJson from "./mongo/users.json";
 
-const prisma = new PrismaClient();
+const prisma = DBClient.getInstance().prisma;
 
 const twitterToSwitchAccountId = new Map<string, string>();
 

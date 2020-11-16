@@ -30,7 +30,7 @@ const ViewAP: React.FC<ViewAPProps> = ({ aps }) => {
 
   return (
     <Box mt="2">
-      {APArrays.map((arr, index) => {
+      {APArrays.sort((a, b) => b[0] - a[0]).map((arr, index) => {
         return (
           <Flex
             key={arr[0] as any}

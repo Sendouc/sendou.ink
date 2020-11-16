@@ -191,14 +191,13 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
               <ViewSlots build={build} />
             )}
           </Box>
-          {/* Not that visible in light mode */}
           <Box
             display="flex"
             justifyContent="space-between"
             alignItems="center"
             mt="1em"
           >
-            {otherBuildCount && (
+            {otherBuildCount ? (
               <Box
                 mx="auto"
                 fontSize="0.8em"
@@ -214,7 +213,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
                   other={<Trans>Show # more builds by {username}</Trans>}
                 />
               </Box>
-            )}
+            ) : null}
           </Box>
         </Box>
       </Box>

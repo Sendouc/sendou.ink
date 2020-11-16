@@ -1,17 +1,17 @@
-import { PrismaClient, RankedMode } from "@prisma/client";
-import { Unwrap } from "lib/types";
+import { PromiseReturnType, RankedMode } from "@prisma/client";
+import DBClient from "prisma/client";
 
-export type GetTop500PlacementsByMonthData = Unwrap<
-  ReturnType<typeof getTop500PlacementsByMonth>
+export type GetTop500PlacementsByMonthData = PromiseReturnType<
+  typeof getTop500PlacementsByMonth
 >;
 
+const prisma = DBClient.getInstance().prisma;
+
 export const getTop500PlacementsByMonth = async ({
-  prisma,
   month,
   year,
   mode,
 }: {
-  prisma: PrismaClient;
   month: number;
   year: number;
   mode: RankedMode;
