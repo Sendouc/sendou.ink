@@ -16,16 +16,7 @@ const MyInfiniteScroller: React.FC = ({ children }) => {
       loadMore={(page) => setElementsToShow(page * 12)}
       hasMore={elementsToShow < children.length}
     >
-      <Flex
-        flexWrap="wrap"
-        width="100vw"
-        position="relative"
-        left="50%"
-        right="50%"
-        mx="-50vw"
-        justifyContent="center"
-        mt={4}
-      >
+      <Flex flexWrap="wrap" justifyContent="center" mt={4}>
         {children.slice(0, elementsToShow)}
       </Flex>
     </InfiniteScroll>

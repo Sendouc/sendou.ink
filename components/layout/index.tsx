@@ -2,19 +2,10 @@ import { Container, Flex, useToast } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import { getToastOptions } from "lib/getToastOptions";
 import { AppProps } from "next/app";
-import { useRouter } from "next/dist/client/router";
 import { SWRConfig } from "swr";
 import Footer from "./Footer";
 import IconNavBar from "./IconNavBar";
 import TopNav from "./TopNav";
-
-const PAGES_WITH_WIDE_CONTAINER = [
-  "/analyzer",
-  "/xsearch",
-  "/builds",
-  "/plans",
-  "/xleaderboards",
-];
 
 function reviver(key: any, value: any) {
   if (Array.isArray(value)) {
@@ -33,7 +24,6 @@ function reviver(key: any, value: any) {
 
 const Layout = ({ Component, pageProps }: AppProps) => {
   const toast = useToast();
-  const pathname = useRouter().pathname;
 
   return (
     <SWRConfig
@@ -56,11 +46,7 @@ const Layout = ({ Component, pageProps }: AppProps) => {
       <TopNav />
       <IconNavBar />
       <Flex flexDirection="column" minH="100vh" pt="1rem">
-        <Container
-          maxWidth={
-            PAGES_WITH_WIDE_CONTAINER.includes(pathname) ? "120ch" : "70ch"
-          }
-        >
+        <Container maxWidth="100ch">
           <Component {...pageProps} />
         </Container>
         <Footer />
