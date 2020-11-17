@@ -3,6 +3,7 @@ import { t, Trans } from "@lingui/macro";
 import BuildCard from "components/builds/BuildCard";
 import BuildFilters from "components/builds/BuildFilters";
 import Breadcrumbs from "components/common/Breadcrumbs";
+import MyInfiniteScroller from "components/common/MyInfiniteScroller";
 import WeaponImage from "components/common/WeaponImage";
 import WeaponSelector from "components/common/WeaponSelector";
 import { useBuildsByWeapon } from "hooks/builds";
@@ -51,16 +52,7 @@ const BuildsPage = () => {
         <BuildFilters filters={state.filters} dispatch={dispatch} />
       )}
 
-      <Flex
-        flexWrap="wrap"
-        width="100vw"
-        position="relative"
-        left="50%"
-        right="50%"
-        mx="-50vw"
-        justifyContent="center"
-        mt={4}
-      >
+      <MyInfiniteScroller>
         {data.flatMap((buildArray) =>
           state.expandedUsers.has(buildArray[0].userId) ? (
             buildArray.map((build) => (
@@ -78,7 +70,7 @@ const BuildsPage = () => {
             />
           )
         )}
-      </Flex>
+      </MyInfiniteScroller>
     </>
   );
 };
