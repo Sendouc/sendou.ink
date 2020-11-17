@@ -1,4 +1,5 @@
 import { Select } from "@chakra-ui/react";
+import { t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { weaponsWithHeroCategorizedLocalized } from "lib/lists/weaponsWithHero";
 
@@ -21,14 +22,16 @@ const WeaponSelector: React.FC<Props> = ({
   return (
     <>
       <Select
-        value={value}
+        value={value ?? "NO_VALUE"}
         name={name}
         onChange={(e) => onChange(e.target.value)}
         mx={isHeader ? "auto" : undefined}
         maxWidth={80}
         size={isHeader ? "lg" : undefined}
       >
-        <option hidden disabled selected={!value}></option>
+        <option hidden value="NO_VALUE">
+          {t`Choose weapon`}
+        </option>
         {weaponsWithHeroCategorizedLocalized.map((wpnCategory) => (
           <optgroup key={wpnCategory.name} label={i18n._(wpnCategory.name)}>
             {wpnCategory.weapons.map((wpn) => {

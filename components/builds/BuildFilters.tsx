@@ -19,6 +19,7 @@ import {
 } from "hooks/builds";
 import { abilities, isMainAbility } from "lib/lists/abilities";
 import { useMyTheme } from "lib/useMyTheme";
+import { Fragment } from "react";
 import { FiTrash } from "react-icons/fi";
 
 interface Props {
@@ -41,7 +42,7 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
         mx="auto"
       >
         {filters.map((filter, index) => (
-          <>
+          <Fragment key={filter.ability}>
             <Box mb="-1.2rem" />
             <Box mb="-1.2rem" />
             <Box mb="-1.2rem" fontSize="sm" color={gray} pr={2}>
@@ -141,35 +142,37 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
                 </NumberInput>
               </>
             )}
-          </>
+          </Fragment>
         ))}
       </Grid>
-      <Box as="label" htmlFor="filterAdder" fontSize="sm" ml={2} color={gray}>
-        Add filter
+      <Box mt={4}>
+        <Box as="label" htmlFor="filterAdder" fontSize="sm" ml={2} color={gray}>
+          Add filter
+        </Box>
+        <Select
+          name="filterAdder"
+          onChange={(e) =>
+            dispatch({
+              type: "ADD_FILTER",
+              ability: e.target.value as Ability,
+            })
+          }
+          size="sm"
+          width={48}
+          m={2}
+        >
+          {abilities
+            .filter(
+              (ability) =>
+                !filters.some((filter) => ability.code === filter.ability)
+            )
+            .map((ability) => (
+              <option key={ability.code} value={ability.code}>
+                {ability.name}
+              </option>
+            ))}
+        </Select>
       </Box>
-      <Select
-        name="filterAdder"
-        onChange={(e) =>
-          dispatch({
-            type: "ADD_FILTER",
-            ability: e.target.value as Ability,
-          })
-        }
-        size="sm"
-        width={48}
-        m={2}
-      >
-        {abilities
-          .filter(
-            (ability) =>
-              !filters.some((filter) => ability.code === filter.ability)
-          )
-          .map((ability) => (
-            <option key={ability.code} value={ability.code}>
-              {ability.name}
-            </option>
-          ))}
-      </Select>
     </>
   );
 };

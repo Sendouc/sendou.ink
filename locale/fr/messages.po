@@ -17,29 +17,45 @@ msgstr ""
 msgid "Maker of the build has finished in the top 500 of X Rank with this weapon"
 msgstr ""
 
-#: components/builds/BuildCard.tsx:84
+#: components/builds/BuildCard.tsx:83
 msgid "{otherBuildCount, plural, one {Show # more build by {username}} other {Show # more builds by {username}}}"
 msgstr ""
 
-#: components/builds/BuildFilters.tsx:26
-msgid "Has"
+#: components/builds/BuildFilters.tsx:15
+msgid "Included"
 msgstr ""
+
+#: components/builds/BuildFilters.tsx:15
+msgid "Min AP"
+msgstr ""
+
+#: components/builds/BuildFilters.tsx:18
+msgid "Excluded"
+msgstr ""
+
+#: components/builds/BuildFilters.tsx:18
+msgid "Max AP"
+msgstr ""
+
+#: components/builds/BuildFilters.tsx:26
+#~ msgid "Has"
+#~ msgstr ""
 
 #: components/builds/BuildFilters.tsx:27
-msgid "Doesn't have"
-msgstr ""
+#~ msgid "Doesn't have"
+#~ msgstr ""
 
 #: components/builds/BuildFilters.tsx:34
-msgid "At least"
-msgstr ""
+#~ msgid "At least"
+#~ msgstr ""
 
 #: components/builds/BuildFilters.tsx:35
-msgid "At most"
-msgstr ""
+#~ msgid "At most"
+#~ msgstr ""
 
 #: components/builds/BuildFilters.tsx:49
-msgid "Add filter"
-msgstr ""
+#~ msgid "Add filter"
+#~ msgstr ""
 
 #: components/builds/ViewAP.tsx:26
 msgid "AP"
@@ -51,6 +67,10 @@ msgstr ""
 
 #: components/common/MarkdownTextarea.tsx:13
 msgid "Markdown is supported - <0>https://sendou.ink/markdown</0>"
+msgstr ""
+
+#: components/common/WeaponSelector.tsx:10
+msgid "Choose weapon"
 msgstr ""
 
 #: components/layout/TopNav.tsx:17
@@ -137,7 +157,7 @@ msgstr ""
 msgid "Weapon"
 msgstr ""
 
-#: components/u/AvatarWithInfo.tsx:72
+#: components/u/AvatarWithInfo.tsx:71
 msgid "View all Top 500 results"
 msgstr ""
 
@@ -1046,8 +1066,16 @@ msgstr ""
 msgid "translation"
 msgstr ""
 
-#: pages/builds/[[...slug]].tsx:11
+#: pages/builds/[[...slug]].tsx:15
 msgid "Builds"
+msgstr ""
+
+#: pages/builds/[[...slug]].tsx:24
+msgid "builds"
+msgstr ""
+
+#: pages/builds/[[...slug]].tsx:26
+msgid "hidden"
 msgstr ""
 
 #: pages/links.tsx:16
@@ -1063,32 +1091,32 @@ msgstr ""
 msgid "Misc"
 msgstr ""
 
-#: pages/player/[id].tsx:42
-#: pages/top500/[[...slug]].tsx:123
+#: pages/player/[id].tsx:39
+#: pages/top500/[[...slug]].tsx:122
 msgid "Top 500 Browser"
 msgstr ""
 
-#: pages/top500/[[...slug]].tsx:134
+#: pages/top500/[[...slug]].tsx:133
 msgid "SZ"
 msgstr ""
 
-#: pages/top500/[[...slug]].tsx:135
+#: pages/top500/[[...slug]].tsx:134
 msgid "TC"
 msgstr ""
 
-#: pages/top500/[[...slug]].tsx:136
+#: pages/top500/[[...slug]].tsx:135
 msgid "RM"
 msgstr ""
 
-#: pages/top500/[[...slug]].tsx:137
+#: pages/top500/[[...slug]].tsx:136
 msgid "CB"
 msgstr ""
 
-#: pages/u/[identifier].tsx:81
+#: pages/u/[identifier].tsx:78
 msgid "Users"
 msgstr ""
 
-#: pages/u/[identifier].tsx:86
+#: pages/u/[identifier].tsx:83
 msgid "Edit profile"
 msgstr ""
 

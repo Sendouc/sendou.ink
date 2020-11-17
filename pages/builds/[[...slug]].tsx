@@ -7,9 +7,11 @@ import MyInfiniteScroller from "components/common/MyInfiniteScroller";
 import WeaponImage from "components/common/WeaponImage";
 import WeaponSelector from "components/common/WeaponSelector";
 import { useBuildsByWeapon } from "hooks/builds";
+import { useMyTheme } from "lib/useMyTheme";
 
 const BuildsPage = () => {
   const { data, state, dispatch, hiddenBuildCount } = useBuildsByWeapon();
+  const { themeColorHex } = useMyTheme();
   return (
     <>
       <Breadcrumbs pages={[{ name: t`Builds` }]} />
@@ -29,7 +31,7 @@ const BuildsPage = () => {
             p={2}
             mb={8}
             w="100%"
-            bg="linear-gradient(to right, #43c6ac, #f8ffae);"
+            bg={`linear-gradient(to right, ${themeColorHex}, #f8ffae);`}
             rounded="lg"
             fontSize="sm"
             boxShadow="md"
