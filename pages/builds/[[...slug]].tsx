@@ -18,7 +18,7 @@ const BuildsPage = () => {
         excludeAlt
         isHeader
       />
-      {state.weapon && data.length > 0 && (
+      {state.weapon && (data.length > 0 || hiddenBuildCount > 0) && (
         <>
           <Box mt={4} pr={3} mb="-5rem">
             <WeaponImage name={state.weapon} size={128} />
