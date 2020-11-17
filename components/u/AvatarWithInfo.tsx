@@ -41,9 +41,10 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
     const stickSensString = `${stick > 0 ? "+" : ""}${stick} ${t(
       "users;Stick"
     )}`;
-    const motionSensString = !!motion
-      ? ` ${motion > 0 ? "+" : ""}${motion} ${t("users;Motion")}`
-      : "";
+    const motionSensString =
+      typeof motion === "number"
+        ? ` ${motion > 0 ? "+" : ""}${motion} ${t("users;Motion")}`
+        : "";
 
     return `${stickSensString} ${motionSensString}`;
   }
@@ -126,23 +127,22 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
                   ))}
                 </Flex>
               )}
-              {user.profile?.sensStick &&
-                (!!user.profile.sensStick || user.profile.sensStick === 0) && (
-                  <Flex
-                    alignItems="center"
-                    justifyContent="center"
-                    ml="0.7rem"
-                    mt="0.7rem"
-                    color={gray}
-                    w="100%"
-                  >
-                    <Box as={FaGamepad} mr="0.2em" />
-                    {getSensString(
-                      user.profile.sensMotion,
-                      user.profile.sensStick
-                    )}
-                  </Flex>
-                )}
+              {typeof user.profile?.sensStick === "number" && (
+                <Flex
+                  alignItems="center"
+                  justifyContent="center"
+                  ml="0.7rem"
+                  mt="0.7rem"
+                  color={gray}
+                  w="100%"
+                >
+                  <Box as={FaGamepad} mr="0.2em" />
+                  {getSensString(
+                    user.profile.sensMotion,
+                    user.profile.sensStick
+                  )}
+                </Flex>
+              )}
               {Object.keys(peakXPowers).length > 0 && (
                 <Flex mt={6}>
                   {(["SZ", "TC", "RM", "CB"] as RankedMode[]).map((mode, i) => (
