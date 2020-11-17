@@ -109,7 +109,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
               {build.updatedAt.toLocaleDateString()}
             </Box>
             {build.jpn ? (
-              <>{getEmojiFlag("jp")}</>
+              <>{getEmojiFlag("JP")}</>
             ) : build.top500 ? (
               <Image
                 src={`/layout/xsearch.png`}
