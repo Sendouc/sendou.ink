@@ -8,10 +8,10 @@ import {
 } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import salmonRunHighTide from "assets/SalmonRunHighTide.svg";
-import salmonRunLowTide from "assets/SalmonRunLowTide.svg";
-import salmonRunMidTide from "assets/SalmonRunMidTide.svg";
 import ModeImage from "components/common/ModeImage";
+import salmonRunHighTide from "lib/assets/SalmonRunHighTide.svg";
+import salmonRunLowTide from "lib/assets/SalmonRunLowTide.svg";
+import salmonRunMidTide from "lib/assets/SalmonRunMidTide.svg";
 import { stages } from "lib/lists/stages";
 import { PlannerMapBg } from ".";
 
