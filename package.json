@@ -20,7 +20,7 @@
   "dependencies": {
     "@chakra-ui/react": "^1.0.0",
     "@chakra-ui/theme-tools": "^1.0.0",
-    "@emotion/react": "^11.0.0",
+    "@emotion/react": "^11.1.1",
     "@emotion/styled": "^11.0.0",
     "@hookform/resolvers": "^1.0.1",
     "@lingui/react": "^3.2.1",
@@ -35,12 +35,12 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-draggable": "^4.4.3",
-    "react-hook-form": "^6.11.2",
+    "react-hook-form": "^6.11.3",
     "react-hotkeys-hook": "^2.4.0",
     "react-icons": "^3.11.0",
     "react-markdown": "^5.0.2",
     "react-string-replace": "^0.4.4",
-    "swr": "^0.3.8",
+    "swr": "^0.3.9",
     "zod": "^1.11.10"
   },
   "devDependencies": {
