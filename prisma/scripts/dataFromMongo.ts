@@ -1,15 +1,16 @@
 import {
   BuildCreateWithoutUserInput,
+  PlayerCreateInput,
+  PrismaClient,
   UserCreateInput,
   XRankPlacementCreateInput,
 } from "@prisma/client";
-import DBClient from "prisma/client";
 import buildsJson from "./mongo/builds.json";
 import placementsJson from "./mongo/placements.json";
 import playersJson from "./mongo/players.json";
 import usersJson from "./mongo/users.json";
 
-const prisma = DBClient.getInstance().prisma;
+const prisma = new PrismaClient();
 
 const twitterToSwitchAccountId = new Map<string, string>();
 
@@ -19,9 +20,17 @@ for (const player of playersJson) {
 }
 
 const twitterToPlayerName = new Map<string, string>();
+const players: PlayerCreateInput[] = [];
 
 for (const player of playersJson) {
-  if (player.twitter) twitterToPlayerName.set(player.twitter, player.name);
+  if (player.twitter) {
+    twitterToPlayerName.set(player.twitter, player.name);
+  }
+
+  players.push({
+    name: player.name,
+    switchAccountId: player.unique_id,
+  });
 }
 
 const discordIdToBuilds = new Map<string, BuildCreateWithoutUserInput[]>();
@@ -32,7 +41,7 @@ for (const build of buildsJson) {
 
   const newBuild = {
     abilityPoints: buildToAp(build.headgear, build.clothing, build.shoes),
-    jpn: build.jpn ?? false,
+    jpn: build.discord_id === "312082701865713665",
     top500: build.top,
     weapon: build.weapon,
     clothingAbilities: build.clothing,
@@ -83,8 +92,7 @@ const users: UserCreateInput[] = usersJson.map((u) => ({
   },
   player: twitterToSwitchAccountId.has(u.twitter_name)
     ? {
-        create: {
-          name: twitterToPlayerName.get(u.twitter_name)!,
+        connect: {
           switchAccountId: twitterToSwitchAccountId.get(u.twitter_name)!,
         },
       }
@@ -103,15 +111,6 @@ console.log({ "longest bio is": longest });
 
 const placements: XRankPlacementCreateInput[] = [];
 
-// "name": "かち",
-//   "weapon": "Splat Brella",
-//   "rank": 1,
-//   "mode": 4,
-//   "x_power": 2751,
-//   "unique_id": "18202705273199683091",
-//   "month": 8,
-//   "year": 2018
-
 // @ts-ignore
 for (const placement of placementsJson) {
   placements.push({
@@ -119,14 +118,8 @@ for (const placement of placementsJson) {
     mode: ["", "SZ", "TC", "RM", "CB"][placement.mode],
     month: placement.month,
     player: {
-      connectOrCreate: {
-        where: {
-          switchAccountId: placement.unique_id,
-        },
-        create: {
-          name: placement.name,
-          switchAccountId: placement.unique_id,
-        },
+      connect: {
+        switchAccountId: placement.unique_id,
       },
     },
     playerName: placement.name,
@@ -163,6 +156,8 @@ const main = async () => {
   await prisma.xRankPlacement.deleteMany({});
   await prisma.player.deleteMany({});
 
+  await Promise.all(players.map((p) => prisma.player.create({ data: p })));
+  console.log("Created players");
   await Promise.all(users.map((u) => prisma.user.create({ data: u })));
   console.log("Created users");
   await Promise.all(
@@ -171,4 +166,8 @@ const main = async () => {
   console.log("Created placements");
 };
 
-main();
+main()
+  .catch((e) => console.error(e))
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
