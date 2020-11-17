@@ -20,15 +20,15 @@ const BuildsPage = () => {
       />
       {state.weapon && data.length > 0 && (
         <>
-          <Box mt={8} pr={3} mb="-5rem">
+          <Box mt={4} pr={3} mb="-5rem">
             <WeaponImage name={state.weapon} size={128} />
           </Box>
           <Flex
             justifyContent="flex-end"
             p={2}
-            mb={16}
+            mb={8}
             w="100%"
-            bg={`linear-gradient(to right, #43c6ac, #f8ffae);`}
+            bg="linear-gradient(to right, #43c6ac, #f8ffae);"
             rounded="lg"
             fontSize="sm"
             boxShadow="md"
@@ -47,9 +47,9 @@ const BuildsPage = () => {
           </Flex>
         </>
       )}
-      <Box mt={10}>
+      {state.weapon && (
         <BuildFilters filters={state.filters} dispatch={dispatch} />
-      </Box>
+      )}
 
       <Flex
         flexWrap="wrap"
@@ -59,6 +59,7 @@ const BuildsPage = () => {
         right="50%"
         mx="-50vw"
         justifyContent="center"
+        mt={4}
       >
         {data.flatMap((buildArray) =>
           state.expandedUsers.has(buildArray[0].userId) ? (

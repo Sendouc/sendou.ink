@@ -28,6 +28,7 @@ const WeaponSelector: React.FC<Props> = ({
         maxWidth={80}
         size={isHeader ? "lg" : undefined}
       >
+        <option hidden disabled selected={!value}></option>
         {weaponsWithHeroCategorizedLocalized.map((wpnCategory) => (
           <optgroup key={wpnCategory.name} label={i18n._(wpnCategory.name)}>
             {wpnCategory.weapons.map((wpn) => {
