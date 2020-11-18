@@ -1,5 +1,6 @@
 import { Button, Divider, Select } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import { RankedMode } from "@prisma/client";
 import BuildCard from "components/builds/BuildCard";
 import Breadcrumbs from "components/common/Breadcrumbs";
@@ -93,6 +94,8 @@ const ProfilePage = (props: Props) => {
     user?.id
   );
 
+  const { i18n } = useLingui();
+
   // same as router.isFallback
   // FIXME: return spinner
   if (!user) return null;
@@ -132,10 +135,12 @@ const ProfilePage = (props: Props) => {
               maxWidth={80}
               size="lg"
             >
-              <option value="ALL">All weapons ({buildCount})</option>
-              {weaponCounts.map((wpnTuple) => (
-                <option value={wpnTuple[0]}>
-                  {wpnTuple[0]} ({wpnTuple[1]})
+              <option value="ALL">
+                {t`All weapons`} ({buildCount})
+              </option>
+              {weaponCounts.map(([weapon, count]) => (
+                <option key={weapon} value={weapon}>
+                  {i18n._(weapon)} ({count})
                 </option>
               ))}
             </Select>

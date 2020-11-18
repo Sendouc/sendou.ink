@@ -161,7 +161,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
                 </Flex>
               )}
               {!!user.player?.switchAccountId && (
-                <Box mt={2}>
+                <Box mt={2} color={gray}>
                   <NextLink href={`/player/${user.player?.switchAccountId}`}>
                     <ChakraLink>
                       <Trans>View all Top 500 results</Trans>

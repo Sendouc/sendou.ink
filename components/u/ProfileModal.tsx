@@ -289,7 +289,8 @@ const ProfileModal: React.FC<Props> = ({ onClose, user }) => {
                 value={watchBio!}
                 maxLength={PROFILE_CHARACTER_LIMIT}
                 placeholder={i18n._(
-                  t`# I'm a header\nI'm **bolded**. Embedding weapon images is easy too: :luna_blaster:`
+                  t`# I'm a header
+                  I'm **bolded**. Embedding weapon images is easy too: :luna_blaster:`
                 )}
               />
             </ModalBody>
@@ -297,6 +298,7 @@ const ProfileModal: React.FC<Props> = ({ onClose, user }) => {
               <Button
                 mr={3}
                 type="submit"
+                // FIXME:
                 //isLoading={loading}
               >
                 <Trans>Save</Trans>

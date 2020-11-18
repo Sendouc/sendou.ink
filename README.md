@@ -1,30 +1,38 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+[![Discord Server](https://discordapp.com/api/guilds/299182152161951744/embed.png)](https://discord.gg/sendou)
 
-## Getting Started
+Goal of sendou.ink is to provide useful tools and resources for the Splatoon community.
 
-First, run the development server:
+Live version: [https://sendou.ink/](https://sendou.ink/)
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+> :warning: **This is the overhaul branch**: Live version is still on the old version
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Technologies used
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+- React (via Next.JS)
+- TypeScript
+- Node.js
+- PostgreSQL (via Prisma 2)
 
-## Learn More
+## A few highlight features
 
-To learn more about Next.js, take a look at the following resources:
+🦑 Planner tool where you can draw on any map in the game to conveniently make up game plans
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+🦑 Calendar that collects together all the events happening in the community
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+🦑 Users can make an account and submit their builds and browse builds made by others
 
-## Deploy on Vercel
+🦑 It is possible to submit yourself as "free agent". If two FA's like each other they are notified and a new team can be founded
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/import?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+🦑 X Rank Top 500 results can be browsed through far more conveniently than on the official app
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+🦑 Browse through detailed tournament results
+
+🦑 Choose between light and dark mode
+
+## Installation & getting started
+
+TODO
+
+## Contributing
+
+TODO
