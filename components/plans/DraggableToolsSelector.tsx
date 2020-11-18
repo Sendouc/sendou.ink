@@ -16,7 +16,7 @@ import {
   FaTrashAlt,
   FaUndo,
 } from "react-icons/fa";
-import { Tool } from "..";
+import { Tool } from ".";
 
 interface DraggableToolsSelectorProps {
   tool: Tool;
