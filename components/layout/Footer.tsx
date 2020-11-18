@@ -15,7 +15,7 @@ const Footer: React.FC = () => {
   return (
     <Box as="footer" mt="auto">
       <Image
-        src={`layout/${footerImageSrc}.png`}
+        src={`/layout/${footerImageSrc}.png`}
         bg={themeColor}
         w="80px"
         ml="auto"

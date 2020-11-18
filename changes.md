@@ -16,4 +16,6 @@
 
   - Instead displayed is peak ranking in each mode and a link to a new /player/ page with full details
 
+- Builds page now allows advanced filtering
+
 ## More technical details
