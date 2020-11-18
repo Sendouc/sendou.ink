@@ -1,11 +1,20 @@
 import { Box, Flex } from "@chakra-ui/react";
+import { BuildGetPayload } from "@prisma/client";
 import GearImage from "components/common/GearImage";
-import { Unpacked } from "lib/types";
-import { GetBuildsByWeaponData } from "prisma/queries/getBuildsByWeapon";
 import React from "react";
 
+type BuildViewSlots = Partial<
+  BuildGetPayload<{
+    select: {
+      headGear: true;
+      clothingGear: true;
+      shoesGear: true;
+    };
+  }>
+>;
+
 interface GearsProps {
-  build: Unpacked<Unpacked<GetBuildsByWeaponData>>;
+  build: BuildViewSlots;
 }
 
 const Gears: React.FC<GearsProps> = ({ build }) => {

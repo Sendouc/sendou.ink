@@ -1,10 +1,13 @@
-import { Box, Button, Divider } from "@chakra-ui/react";
+import { Button, Divider, Select } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import { RankedMode } from "@prisma/client";
+import BuildCard from "components/builds/BuildCard";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import Markdown from "components/common/Markdown";
+import MyInfiniteScroller from "components/common/MyInfiniteScroller";
 import AvatarWithInfo from "components/u/AvatarWithInfo";
 import ProfileModal from "components/u/ProfileModal";
+import { useBuildsByUser } from "hooks/u";
 import { getFullUsername } from "lib/strings";
 import useUser from "lib/useUser";
 import { GetStaticPaths, GetStaticProps } from "next";
@@ -86,6 +89,9 @@ const ProfilePage = (props: Props) => {
     },
     { initialData: props.user }
   );
+  const { data: builds, weaponCounts, setWeapon, buildCount } = useBuildsByUser(
+    user?.id
+  );
 
   // same as router.isFallback
   // FIXME: return spinner
@@ -108,11 +114,38 @@ const ProfilePage = (props: Props) => {
       {showModal && (
         <ProfileModal onClose={() => setShowModal(false)} user={user} />
       )}
-      <Divider my="2em" />
       {user.profile?.bio && (
-        <Box>
+        <>
+          <Divider my={6} />
           <Markdown value={user.profile.bio} />
-        </Box>
+        </>
+      )}
+      {buildCount > 0 && (
+        <>
+          <Divider my={6} />
+          {buildCount > 6 && (
+            <Select
+              onChange={(e) =>
+                setWeapon(e.target.value === "ALL" ? null : e.target.value)
+              }
+              mx="auto"
+              maxWidth={80}
+              size="lg"
+            >
+              <option value="ALL">All weapons ({buildCount})</option>
+              {weaponCounts.map((wpnTuple) => (
+                <option value={wpnTuple[0]}>
+                  {wpnTuple[0]} ({wpnTuple[1]})
+                </option>
+              ))}
+            </Select>
+          )}
+          <MyInfiniteScroller>
+            {builds.map((build) => (
+              <BuildCard key={build.id} build={build} m={2} />
+            ))}
+          </MyInfiniteScroller>
+        </>
       )}
     </>
   );

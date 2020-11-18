@@ -1,10 +1,19 @@
 import { Box, BoxProps, Flex } from "@chakra-ui/react";
+import { BuildGetPayload } from "@prisma/client";
 import AbilityIcon from "components/common/AbilityIcon";
-import { Unpacked } from "lib/types";
-import { GetBuildsByWeaponData } from "prisma/queries/getBuildsByWeapon";
+
+type BuildViewSlots = Partial<
+  BuildGetPayload<{
+    select: {
+      headAbilities: true;
+      clothingAbilities: true;
+      shoesAbilities: true;
+    };
+  }>
+>;
 
 interface ViewSlotsProps {
-  build: Unpacked<Unpacked<GetBuildsByWeaponData>>;
+  build: BuildViewSlots;
   onAbilityClick?: (gear: "HEAD" | "CLOTHING" | "SHOES", index: number) => void;
 }
 

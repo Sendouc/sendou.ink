@@ -20,6 +20,9 @@ export const getUserByIdentifier = (identifier: string) =>
             customUrlPath: identifier.toLowerCase(),
           },
         },
+        {
+          id: Number(identifier),
+        },
       ],
     },
     select: {

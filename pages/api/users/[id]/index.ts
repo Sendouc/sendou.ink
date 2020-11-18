@@ -12,7 +12,7 @@ const userHandler = async (
     return res.status(405).end();
   }
 
-  const user = await getUserByIdentifier(req.query.identifier as string);
+  const user = await getUserByIdentifier(req.query.id as string);
   if (!user) return res.status(404).end();
   res.status(200).json(user);
 };

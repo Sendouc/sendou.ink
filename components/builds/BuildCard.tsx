@@ -13,7 +13,7 @@ import { Ability } from "@prisma/client";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
 import { getEmojiFlag } from "countries-list";
-import { Unpacked } from "lib/types";
+import { PartialBy, Unpacked } from "lib/types";
 import { useMyTheme } from "lib/useMyTheme";
 import Image from "next/image";
 import Link from "next/link";
@@ -26,7 +26,7 @@ import ViewAP from "./ViewAP";
 import ViewSlots from "./ViewSlots";
 
 interface BuildCardProps {
-  build: Unpacked<Unpacked<GetBuildsByWeaponData>>;
+  build: PartialBy<Unpacked<Unpacked<GetBuildsByWeaponData>>, "user">;
   canModify?: boolean;
   //setBuildBeingEdited?: (build: Build) => void;
   otherBuildCount?: number;
@@ -48,7 +48,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
 
   const { themeColorShade, secondaryBgColor, gray } = useMyTheme();
 
-  const username = build.user.username;
+  const username = build.user?.username;
 
   return (
     <>
@@ -95,6 +95,11 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
                   </Flex>
                 </a>
               </Link>
+            </Box>
+          )}
+          {build.weapon && (
+            <Box>
+              <WeaponImage name={build.weapon} size={64} />
             </Box>
           )}
           <Flex alignItems="center">
