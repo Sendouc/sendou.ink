@@ -9,8 +9,11 @@ import {
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import ModeImage from "components/common/ModeImage";
+// @ts-ignore
 import salmonRunHighTide from "lib/assets/SalmonRunHighTide.svg";
+// @ts-ignore
 import salmonRunLowTide from "lib/assets/SalmonRunLowTide.svg";
+// @ts-ignore
 import salmonRunMidTide from "lib/assets/SalmonRunMidTide.svg";
 import { stages } from "lib/lists/stages";
 import { PlannerMapBg } from ".";
@@ -34,14 +37,12 @@ const StageSelector: React.FC<StageSelectorProps> = ({
   return (
     <Box maxW="20rem" m="3rem auto">
       <Select value={currentBackground.stage} onChange={handleChange}>
-        <option value="Spawning Grounds">{i18n._(t`Spawning Grounds`)}</option>
-        <option value="Marooner's Bay">{i18n._(t`Marooner's Bay`)}</option>
-        <option value="Lost Outpost">{i18n._(t`Lost Outpost`)}</option>
-        <option value="Salmonid Smokeyard">
-          {i18n._(t`Salmonid Smokeyard`)}
-        </option>
+        <option value="Spawning Grounds">{t`Spawning Grounds`}</option>
+        <option value="Marooner's Bay">{t`Marooner's Bay`}</option>
+        <option value="Lost Outpost">{t`Lost Outpost`}</option>
+        <option value="Salmonid Smokeyard">{t`Salmonid Smokeyard`}</option>
         <option value="Ruins of Ark Polaris">
-          {i18n._(t`Ruins of Ark Polaris‎‎`)}
+          {t`Ruins of Ark Polaris‎‎`}
         </option>
         {stages.map((stage) => (
           <option key={stage} value={stage}>

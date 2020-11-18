@@ -1,10 +1,6 @@
 import { Box, Image, useColorModeValue } from "@chakra-ui/react";
 import { useMyTheme } from "lib/useMyTheme";
 import { useRouter } from "next/dist/client/router";
-import footerOctoDark from "public/layout/b8ing_dark.png";
-import footerOctoLight from "public/layout/b8ing_light.png";
-import footerSquidDark from "public/layout/boing_dark.png";
-import footerSquidLight from "public/layout/boing_light.png";
 import FooterContent from "./FooterContent";
 import FooterWaves from "./FooterWaves";
 
@@ -12,14 +8,14 @@ const Footer: React.FC = () => {
   const species = useRouter().asPath.charCodeAt(1) % 2 === 0 ? "squid" : "octo";
   const { themeColorHex: themeColor } = useMyTheme();
   const footerImageSrc = useColorModeValue(
-    { octo: footerOctoLight, squid: footerSquidLight },
-    { octo: footerOctoDark, squid: footerSquidDark }
+    { octo: "b8ing_light", squid: "boing_dark" },
+    { octo: "b8ing_dark", squid: "boing_dark" }
   )[species];
 
   return (
     <Box as="footer" mt="auto">
       <Image
-        src={footerImageSrc}
+        src={`layout/${footerImageSrc}.png`}
         bg={themeColor}
         w="80px"
         ml="auto"
