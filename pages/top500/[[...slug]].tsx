@@ -49,7 +49,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     orderBy: [{ month: "desc" }, { year: "desc" }],
   });
 
-  if (!mostRecentResult) throw Error("No X Rank Placements");
+  if (!mostRecentResult) return { paths: [], fallback: true };
 
   return {
     paths: getMonthOptions(mostRecentResult.month, mostRecentResult.year)
