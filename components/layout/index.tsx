@@ -1,4 +1,4 @@
-import { Container, Flex, useToast } from "@chakra-ui/react";
+import { Box, Container, Flex, useToast } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import { getToastOptions } from "lib/getToastOptions";
 import { AppProps } from "next/app";
@@ -45,6 +45,14 @@ const Layout = ({ Component, pageProps }: AppProps) => {
     >
       <TopNav />
       <IconNavBar />
+      {process.env.NODE_ENV === "production" && (
+        <Box bg="black" p={2} textAlign="center">
+          This is the preview version.{" "}
+          <b style={{ color: "#F08080" }}>Database will be reset</b>. For
+          anything other than testing please go to:{" "}
+          <a href="https://sendou.ink">https://sendou.ink</a>
+        </Box>
+      )}
       <Flex flexDirection="column" minH="100vh" pt="1rem">
         <Container maxWidth="100ch">
           <Component {...pageProps} />
