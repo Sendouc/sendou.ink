@@ -30,7 +30,7 @@ const WeaponSelector: React.FC<Props> = ({
         size={isHeader ? "lg" : undefined}
       >
         <option hidden value="NO_VALUE">
-          {t`Choose weapon`}
+          {t`Select weapon`}
         </option>
         {weaponsWithHeroCategorizedLocalized.map((wpnCategory) => (
           <optgroup key={wpnCategory.name} label={i18n._(wpnCategory.name)}>

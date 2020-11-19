@@ -8,7 +8,7 @@ const profileRootSchema = z.object({
   bio: z.string().max(PROFILE_CHARACTER_LIMIT).optional().nullable(),
   country: z
     .string()
-    .refine((val) => Object.keys(countries).includes(val))
+    .refine((val) => !val || Object.keys(countries).includes(val))
     .optional()
     .nullable(),
   customUrlPath: z

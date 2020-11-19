@@ -34,8 +34,8 @@ const profileHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(400).end();
     }
 
-    if (isDuplicateCustomUrl(argsForDb.customUrlPath, user.id)) {
-      return res.status(400).json({ message: "custom url already in use" });
+    if (await isDuplicateCustomUrl(argsForDb.customUrlPath, user.id)) {
+      return res.status(400).json({ message: "Custom URL already in use" });
     }
 
     await prisma.profile.upsert({
@@ -64,9 +64,11 @@ async function isDuplicateCustomUrl(customUrlPath: string, userId: number) {
     },
   });
 
-  if (profileWithSameCustomUrl && profileWithSameCustomUrl.userId !== userId) {
+  if (!profileWithSameCustomUrl || profileWithSameCustomUrl.userId === userId) {
     return false;
   }
+
+  return true;
 }
 
 export default profileHandler;

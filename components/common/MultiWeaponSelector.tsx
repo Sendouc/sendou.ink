@@ -1,4 +1,5 @@
 import { Select, Tag, TagCloseButton, TagLabel } from "@chakra-ui/react";
+import { t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { weaponsWithHeroCategorizedLocalized } from "lib/lists/weaponsWithHero";
 import WeaponImage from "./WeaponImage";
@@ -19,7 +20,11 @@ const WeaponSelector: React.FC<Props> = ({ name, value, onChange }) => {
           if (!!e.target.value && !value.includes(e.target.value))
             onChange(value.concat(e.target.value));
         }}
+        defaultValue="NO_VALUE"
       >
+        <option hidden value="NO_VALUE">
+          {t`Select weapon`}
+        </option>
         {weaponsWithHeroCategorizedLocalized.map((wpnCategory) => (
           <optgroup key={wpnCategory.name} label={i18n._(wpnCategory.name)}>
             {wpnCategory.weapons.map((wpn) => (
