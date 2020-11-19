@@ -6,7 +6,7 @@ export function useBuildsByUser(userId?: number) {
   const [weapon, setWeapon] = useState<string | null>(null);
 
   const { data = [] } = useSWR<GetBuildsByUserData>(
-    `/api/users/${userId}/builds`
+    userId ? `/api/users/${userId}/builds` : null
   );
 
   const weaponCounts = data.reduce((acc: [string, number][], build) => {

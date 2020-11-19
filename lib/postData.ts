@@ -1,3 +1,6 @@
+import { createStandaloneToast } from "@chakra-ui/react";
+import { t } from "@lingui/macro";
+
 export async function sendData(method = "POST", url = "", data = {}) {
   // Default options are marked with *
   const response = await fetch(url, {
@@ -9,7 +12,18 @@ export async function sendData(method = "POST", url = "", data = {}) {
   });
 
   if (response.status < 200 || response.status > 299) {
-    // FIXME: different messages for different status codes and translated
-    throw Error("Invalid request");
+    const toast = createStandaloneToast();
+
+    toast({
+      duration: null,
+      isClosable: true,
+      position: "top-right",
+      status: "error",
+      description: t`An error occurred`,
+    });
+
+    return false;
   }
+
+  return true;
 }

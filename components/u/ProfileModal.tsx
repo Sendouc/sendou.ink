@@ -86,7 +86,6 @@ const ProfileModal: React.FC<Props> = ({ onClose, user }) => {
       : undefined,
   });
 
-  // FIXME: bio length show
   const watchBio = watch("bio", user.profile?.bio ?? "");
 
   const toast = useToast();
@@ -114,7 +113,8 @@ const ProfileModal: React.FC<Props> = ({ onClose, user }) => {
     }
 
     // FIXME: error handling
-    await sendData("PUT", "/api/me/profile", mutationData);
+    const success = await sendData("PUT", "/api/me/profile", mutationData);
+    if (!success) return;
 
     mutate(`/api/users/${user.id}`);
 

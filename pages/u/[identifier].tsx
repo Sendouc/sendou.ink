@@ -81,13 +81,9 @@ const ProfilePage = (props: Props) => {
 
   const [loggedInUser] = useUser();
   const { data: user } = useSWR<GetUserByIdentifierData>(
-    () => {
-      // no need to load user if it's not the same as currently logged in user
-      const userId = props.user?.id;
-      if (!!userId && userId === loggedInUser?.id) return null;
-
-      return `/api/users/${userId}`;
-    },
+    !!props.user?.id && props.user.id === loggedInUser?.id
+      ? `/api/users/${props.user.id}`
+      : null,
     { initialData: props.user }
   );
   const { data: builds, weaponCounts, setWeapon, buildCount } = useBuildsByUser(

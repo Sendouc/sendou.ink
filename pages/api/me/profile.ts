@@ -34,19 +34,8 @@ const profileHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(400).end();
     }
 
-    if (argsForDb.customUrlPath) {
-      const profileWithSameCustomUrl = await prisma.profile.findOne({
-        where: {
-          customUrlPath: argsForDb.customUrlPath,
-        },
-      });
-
-      if (
-        profileWithSameCustomUrl &&
-        profileWithSameCustomUrl.userId !== user.id
-      ) {
-        return res.status(400).json({ message: "custom url already in use" });
-      }
+    if (isDuplicateCustomUrl(argsForDb.customUrlPath, user.id)) {
+      return res.status(400).json({ message: "custom url already in use" });
     }
 
     await prisma.profile.upsert({
@@ -65,5 +54,19 @@ const profileHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     res.status(405).end();
   }
 };
+
+async function isDuplicateCustomUrl(customUrlPath: string, userId: number) {
+  if (!customUrlPath) return false;
+
+  const profileWithSameCustomUrl = await prisma.profile.findOne({
+    where: {
+      customUrlPath,
+    },
+  });
+
+  if (profileWithSameCustomUrl && profileWithSameCustomUrl.userId !== userId) {
+    return false;
+  }
+}
 
 export default profileHandler;

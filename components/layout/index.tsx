@@ -1,6 +1,5 @@
 import { Box, Container, Flex, useToast } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
-import { getToastOptions } from "lib/getToastOptions";
 import { AppProps } from "next/app";
 import { SWRConfig } from "swr";
 import Footer from "./Footer";
@@ -36,10 +35,14 @@ const Layout = ({ Component, pageProps }: AppProps) => {
           }),
         revalidateOnFocus: false,
         revalidateOnReconnect: false,
-        onError: (error) => {
-          toast(
-            getToastOptions(error.message ?? t`An error occurred`, "error")
-          );
+        onError: () => {
+          toast({
+            duration: null,
+            isClosable: true,
+            position: "top-right",
+            status: "error",
+            description: t`An error occurred`,
+          });
         },
       }}
     >
