@@ -62,16 +62,6 @@ for (const build of buildsJson) {
   }
 }
 
-const customUrls = new Set<string>();
-
-usersJson.forEach((u) => {
-  if (!!u.custom_url) {
-    if (customUrls.has(u.custom_url)) console.log(u.custom_url);
-
-    customUrls.add(u.custom_url);
-  }
-});
-
 const users: UserCreateInput[] = usersJson.map((u) => ({
   discordAvatar: u.avatar,
   discordId: u.discord_id,
@@ -81,7 +71,7 @@ const users: UserCreateInput[] = usersJson.map((u) => ({
     create: {
       bio: u.bio ?? undefined,
       country: u.country ? u.country.toUpperCase() : undefined,
-      //customUrlPath: u.custom_url ?? undefined,
+      customUrlPath: u.custom_url || undefined,
       sensMotion: u.sens?.stick,
       sensStick: u.sens?.motion,
       twitchName: u.twitch_name ?? undefined,
