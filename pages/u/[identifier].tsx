@@ -143,7 +143,7 @@ const ProfilePage = (props: Props) => {
           )}
           <MyInfiniteScroller>
             {builds.map((build) => (
-              <BuildCard key={build.id} build={build} m={2} />
+              <BuildCard key={build.id} build={build} m={2} showWeapon />
             ))}
           </MyInfiniteScroller>
         </>

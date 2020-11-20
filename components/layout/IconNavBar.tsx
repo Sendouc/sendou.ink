@@ -137,6 +137,8 @@ const IconNavBar = () => {
               width={48}
               alt={code}
               priority
+              // FIXME: when chakra-ui adds next/image support
+              // @ts-ignore
               style={{ cursor: "pointer", userSelect: "none" }}
             />
             {menuItems.length > 0 && (

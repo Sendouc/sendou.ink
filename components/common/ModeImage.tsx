@@ -8,19 +8,13 @@ interface ModeImageProps {
   style?: CSSProperties;
 }
 
-const ModeImage: React.FC<ModeImageProps> = ({
-  mode,
-  size,
-  onClick,
-  style,
-}) => {
+const ModeImage: React.FC<ModeImageProps> = ({ mode, size, onClick }) => {
   return (
     <Image
       src={`/modes/${mode}.png`}
       width={size}
       height={size}
       onClick={onClick}
-      style={style}
     />
   );
 };

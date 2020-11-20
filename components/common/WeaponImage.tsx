@@ -6,15 +6,9 @@ interface WeaponImageProps {
   name: string;
   size: 32 | 64 | 128;
   noTitle?: boolean;
-  isInline?: boolean;
 }
 
-const WeaponImage: React.FC<WeaponImageProps> = ({
-  name,
-  size,
-  noTitle,
-  isInline,
-}) => {
+const WeaponImage: React.FC<WeaponImageProps> = ({ name, size, noTitle }) => {
   const { i18n } = useLingui();
 
   return (
@@ -25,7 +19,6 @@ const WeaponImage: React.FC<WeaponImageProps> = ({
         title={noTitle ? undefined : i18n._(name)}
         width={size}
         height={size}
-        style={{ display: isInline ? "inline-block" : undefined }}
       />
     </>
   );

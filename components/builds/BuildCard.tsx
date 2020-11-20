@@ -9,29 +9,28 @@ import {
   PopoverTrigger,
 } from "@chakra-ui/react";
 import { Plural, t, Trans } from "@lingui/macro";
-import { Ability } from "@prisma/client";
+import { Ability, BuildGetPayload } from "@prisma/client";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
 import { getEmojiFlag } from "countries-list";
-import { PartialBy, Unpacked } from "lib/types";
+import { PartialBy } from "lib/types";
 import { useMyTheme } from "lib/useMyTheme";
 import Image from "next/image";
 import Link from "next/link";
-import { GetBuildsByWeaponData } from "prisma/queries/getBuildsByWeapon";
 import { useState } from "react";
 import { FiBarChart2, FiInfo, FiTarget } from "react-icons/fi";
 import Gears from "./Gears";
 import ViewAP from "./ViewAP";
-//import ViewAP from "./ViewAP";
 import ViewSlots from "./ViewSlots";
 
 interface BuildCardProps {
-  build: PartialBy<Unpacked<Unpacked<GetBuildsByWeaponData>>, "user">;
+  // FIXME: don't select unnecessary fields
+  build: PartialBy<BuildGetPayload<{ include: { user: true } }>, "user">;
   canModify?: boolean;
   //setBuildBeingEdited?: (build: Build) => void;
   otherBuildCount?: number;
   onShowAllByUser?: () => void;
-  showWeaponImage?: boolean;
+  showWeapon?: boolean;
 }
 
 const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
@@ -40,7 +39,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
   //setBuildBeingEdited,
   otherBuildCount,
   onShowAllByUser,
-  showWeaponImage,
+  showWeapon,
   ...props
 }) => {
   const [apView, setApView] = useState(false);
@@ -65,11 +64,6 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
         {...props}
       >
         <Box display="flex" flexDirection="column" h="100%">
-          {showWeaponImage && (
-            <Box>
-              <WeaponImage name={build.weapon} size={64} />
-            </Box>
-          )}
           {build.title && (
             <Box fontWeight="semibold" as="h4" lineHeight="tight" mt="0.3em">
               {build.title}
@@ -97,7 +91,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
               </Link>
             </Box>
           )}
-          {build.weapon && (
+          {showWeapon && (
             <Box>
               <WeaponImage name={build.weapon} size={64} />
             </Box>
@@ -196,13 +190,13 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
               <ViewSlots build={build} />
             )}
           </Box>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            mt="1em"
-          >
-            {otherBuildCount ? (
+          {otherBuildCount ? (
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              mt="1em"
+            >
               <Box
                 mx="auto"
                 fontSize="0.8em"
@@ -218,8 +212,8 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
                   other={<Trans>Show # more builds by {username}</Trans>}
                 />
               </Box>
-            ) : null}
-          </Box>
+            </Box>
+          ) : null}
         </Box>
       </Box>
     </>

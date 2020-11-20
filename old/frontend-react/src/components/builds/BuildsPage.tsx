@@ -135,7 +135,6 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
                       defaultToAPView={
                         prefersAPView === null ? false : prefersAPView
                       }
-                      showUser
                       otherBuildCount={
                         usersOtherBuilds[build.discord_user!.discord_id]
                           .length &&
@@ -166,7 +165,6 @@ const BuildsPage: React.FC<RouteComponentProps> = () => {
                           defaultToAPView={
                             prefersAPView === null ? false : prefersAPView
                           }
-                          showUser
                           m="0.5em"
                         />
                       ))

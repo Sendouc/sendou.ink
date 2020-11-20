@@ -45,6 +45,7 @@
     "zod": "^1.11.10"
   },
   "devDependencies": {
+    "@babel/core": "^7.12.3",
     "@lingui/cli": "^3.2.1",
     "@lingui/macro": "^3.2.1",
     "@prisma/cli": "^2.11.0",

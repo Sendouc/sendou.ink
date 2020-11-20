@@ -21,9 +21,11 @@ interface EmojiProps {
 const Emoji: React.FC<EmojiProps> = (props) => {
   const value = props.value.replace(/:/g, "").toLowerCase();
 
+  //FIXME: inline removed : make sure emojis blend in with the text
+
   const keyWeapon = value as keyof typeof codeToWeapon;
   const weaponName = codeToWeapon[keyWeapon];
-  if (!!weaponName) return <WeaponImage name={weaponName} size={32} isInline />;
+  if (!!weaponName) return <WeaponImage name={weaponName} size={32} />;
 
   const keyAbility = value as keyof typeof abilityMarkdownCodes;
   const abilityName = abilityMarkdownCodes[keyAbility];
@@ -35,14 +37,7 @@ const Emoji: React.FC<EmojiProps> = (props) => {
 
   const modeCode = modeCodes[value];
   if (!!modeCode)
-    return (
-      <Image
-        src={`/modes/${modeCode}.png`}
-        style={{ display: "inline-block" }}
-        width={32}
-        height={32}
-      />
-    );
+    return <Image src={`/modes/${modeCode}.png`} width={32} height={32} />;
 
   return <>{props.value}</>;
 };
