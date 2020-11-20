@@ -15,115 +15,10 @@ import { useEffect, useState } from "react";
 
 const prisma = DBClient.getInstance().prisma;
 
-const getMonthOptions = (latestMonth: number, latestYear: number) => {
-  const monthChoices = [];
-  let month = 5;
-  let year = 2018;
-
-  while (true) {
-    // FIXME: set language
-    const monthString = getLocalizedMonthYearString(month, year, "en");
-    monthChoices.push({
-      label: monthString,
-      value: `${month},${year}`,
-      month: `${month}`,
-      year: `${year}`,
-    });
-
-    if (month === latestMonth && year === latestYear) break;
-
-    month++;
-    if (month === 13) {
-      month = 1;
-      year++;
-    }
-  }
-
-  monthChoices.reverse();
-
-  return monthChoices;
-};
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const mostRecentResult = await prisma.xRankPlacement.findFirst({
-    orderBy: [{ month: "desc" }, { year: "desc" }],
-  });
-
-  if (!mostRecentResult) return { paths: [], fallback: true };
-
-  return {
-    paths: getMonthOptions(mostRecentResult.month, mostRecentResult.year)
-      .flatMap(({ month, year }) => [
-        {
-          params: {
-            slug: [month, year, "SZ"],
-          },
-        },
-        {
-          params: {
-            slug: [month, year, "TC"],
-          },
-        },
-        {
-          params: {
-            slug: [month, year, "RM"],
-          },
-        },
-        {
-          params: {
-            slug: [month, year, "CB"],
-          },
-        },
-      ])
-      .concat({
-        params: {
-          slug: [],
-        },
-      }),
-    fallback: false,
-  };
-};
-
 interface Props {
   placements: GetTop500PlacementsByMonthData;
   monthOptions: { label: string; value: string }[];
 }
-
-export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
-  const mostRecentResult = await prisma.xRankPlacement.findFirst({
-    orderBy: [{ month: "desc" }, { year: "desc" }],
-  });
-
-  if (!mostRecentResult) throw Error("No X Rank Placements");
-
-  const slug = params!.slug
-    ? (params!.slug as string[])
-    : [`${mostRecentResult.month}`, `${mostRecentResult.year}`, "SZ"];
-
-  if (slug.length !== 3) return { notFound: true };
-
-  const month = Number(slug[0]);
-  const year = Number(slug[1]);
-
-  if (isNaN(month) || isNaN(year)) return { notFound: true };
-
-  const placements = await getTop500PlacementsByMonth({
-    month,
-    year,
-    mode: slug[2] as RankedMode,
-  });
-
-  return {
-    props: {
-      placements,
-      monthOptions: getMonthOptions(
-        mostRecentResult.month,
-        mostRecentResult.year
-      ),
-    },
-    notFound: !placements.length,
-  };
-};
 
 const XSearchPage = ({ placements, monthOptions }: Props) => {
   const [variables, setVariables] = useState<{
@@ -140,7 +35,7 @@ const XSearchPage = ({ placements, monthOptions }: Props) => {
 
   useEffect(() => {
     router.push(
-      `/top500/${variables.month}/${variables.year}/${variables.mode}`
+      `/xsearch/${variables.year}/${variables.month}/${variables.mode}`
     );
   }, [variables]);
 
@@ -188,5 +83,110 @@ const XSearchPage = ({ placements, monthOptions }: Props) => {
     </>
   );
 };
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const mostRecentResult = await prisma.xRankPlacement.findFirst({
+    orderBy: [{ year: "desc" }, { month: "desc" }],
+  });
+
+  if (!mostRecentResult) return { paths: [], fallback: true };
+
+  return {
+    paths: getMonthOptions(mostRecentResult.month, mostRecentResult.year)
+      .flatMap(({ month, year }) => [
+        {
+          params: {
+            slug: [year, month, "SZ"],
+          },
+        },
+        {
+          params: {
+            slug: [year, month, "TC"],
+          },
+        },
+        {
+          params: {
+            slug: [year, month, "RM"],
+          },
+        },
+        {
+          params: {
+            slug: [year, month, "CB"],
+          },
+        },
+      ])
+      .concat({
+        params: {
+          slug: [],
+        },
+      }),
+    fallback: false,
+  };
+};
+
+export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
+  const mostRecentResult = await prisma.xRankPlacement.findFirst({
+    orderBy: [{ year: "desc" }, { month: "desc" }],
+  });
+
+  if (!mostRecentResult) throw Error("No X Rank Placements");
+
+  const slug = params!.slug
+    ? (params!.slug as string[])
+    : [`${mostRecentResult.year}`, `${mostRecentResult.month}`, "SZ"];
+
+  if (slug.length !== 3) return { notFound: true };
+
+  const year = Number(slug[0]);
+  const month = Number(slug[1]);
+
+  if (isNaN(month) || isNaN(year)) return { notFound: true };
+
+  const placements = await getTop500PlacementsByMonth({
+    month,
+    year,
+    mode: slug[2] as RankedMode,
+  });
+
+  return {
+    props: {
+      placements,
+      monthOptions: getMonthOptions(
+        mostRecentResult.month,
+        mostRecentResult.year
+      ),
+    },
+    notFound: !placements.length,
+  };
+};
+
+function getMonthOptions(latestMonth: number, latestYear: number) {
+  const monthChoices = [];
+  let month = 5;
+  let year = 2018;
+
+  while (true) {
+    // FIXME: set language
+    const monthString = getLocalizedMonthYearString(month, year, "en");
+    monthChoices.push({
+      label: monthString,
+      value: `${month},${year}`,
+      month: `${month}`,
+      year: `${year}`,
+    });
+
+    if (month === latestMonth && year === latestYear) break;
+
+    month++;
+    if (month === 13) {
+      month = 1;
+      year++;
+    }
+  }
+
+  monthChoices.reverse();
+
+  return monthChoices;
+}
 
 export default XSearchPage;
