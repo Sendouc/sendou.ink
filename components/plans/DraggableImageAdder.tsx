@@ -67,9 +67,8 @@ const DraggableImageAdder: React.FC<DraggableImageAdderProps> = ({
               (grizzcoWeaponClass) => {
                 const imgSrc = `/weapons/Grizzco ${grizzcoWeaponClass}.png`;
                 return (
-                  <Box m="3px">
+                  <Box key={grizzcoWeaponClass} m="3px">
                     <Image
-                      key={grizzcoWeaponClass}
                       onClick={() => addImageToSketch(imgSrc)}
                       src={imgSrc}
                       width={32}
@@ -82,9 +81,8 @@ const DraggableImageAdder: React.FC<DraggableImageAdderProps> = ({
             {["TC", "RM", "CB"].map((mode) => {
               const imgSrc = `/modes/${mode}.png`;
               return (
-                <Box m="3px">
+                <Box key={mode} m="3px">
                   <Image
-                    key={mode}
                     onClick={() => addImageToSketch(imgSrc)}
                     src={imgSrc}
                     width={32}
@@ -107,9 +105,8 @@ const DraggableImageAdder: React.FC<DraggableImageAdderProps> = ({
             ].map((boss) => {
               const imgSrc = `/images/salmonRunIcons/${boss}.png`;
               return (
-                <Box margin="3px">
+                <Box key={boss} m="3px">
                   <Image
-                    key={boss}
                     onClick={() => addImageToSketch(imgSrc)}
                     src={imgSrc}
                     width={32}
