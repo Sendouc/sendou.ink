@@ -1,8 +1,9 @@
-import { Box, Flex, Image } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
 import WeaponImage from "components/common/WeaponImage";
 import { weapons } from "lib/lists/weapons";
 import { useMyTheme } from "lib/useMyTheme";
+import Image from "next/image";
 import { useState } from "react";
 import Draggable from "react-draggable";
 
@@ -64,32 +65,32 @@ const DraggableImageAdder: React.FC<DraggableImageAdderProps> = ({
             ))}
             {["Blaster", "Brella", "Charger", "Slosher"].map(
               (grizzcoWeaponClass) => {
-                const imgSrc = `/images/weapons/Grizzco ${grizzcoWeaponClass}.png`;
+                const imgSrc = `/weapons/Grizzco ${grizzcoWeaponClass}.png`;
                 return (
-                  <Image
-                    key={grizzcoWeaponClass}
-                    onClick={() => addImageToSketch(imgSrc)}
-                    src={imgSrc}
-                    w={8}
-                    h={8}
-                    m="3px"
-                    ignoreFallback
-                  />
+                  <Box m="3px">
+                    <Image
+                      key={grizzcoWeaponClass}
+                      onClick={() => addImageToSketch(imgSrc)}
+                      src={imgSrc}
+                      width={32}
+                      height={32}
+                    />
+                  </Box>
                 );
               }
             )}
             {["TC", "RM", "CB"].map((mode) => {
-              const imgSrc = `/images/modeIcons/${mode}.png`;
+              const imgSrc = `/modes/${mode}.png`;
               return (
-                <Image
-                  key={mode}
-                  onClick={() => addImageToSketch(imgSrc)}
-                  src={imgSrc}
-                  w={8}
-                  h={8}
-                  m="3px"
-                  ignoreFallback
-                />
+                <Box m="3px">
+                  <Image
+                    key={mode}
+                    onClick={() => addImageToSketch(imgSrc)}
+                    src={imgSrc}
+                    width={32}
+                    height={32}
+                  />
+                </Box>
               );
             })}
             {[
@@ -106,15 +107,15 @@ const DraggableImageAdder: React.FC<DraggableImageAdderProps> = ({
             ].map((boss) => {
               const imgSrc = `/images/salmonRunIcons/${boss}.png`;
               return (
-                <Image
-                  key={boss}
-                  onClick={() => addImageToSketch(imgSrc)}
-                  src={imgSrc}
-                  w={8}
-                  h={8}
-                  m="3px"
-                  ignoreFallback
-                />
+                <Box margin="3px">
+                  <Image
+                    key={boss}
+                    onClick={() => addImageToSketch(imgSrc)}
+                    src={imgSrc}
+                    width={32}
+                    height={32}
+                  />
+                </Box>
               );
             })}
           </Flex>

@@ -36,8 +36,8 @@ const WeaponSelector: React.FC<Props> = ({
           <optgroup key={wpnCategory.name} label={i18n._(wpnCategory.name)}>
             {wpnCategory.weapons.map((wpn) => {
               if (
-                (excludeAlt && wpn.includes("Hero")) ||
-                wpn.includes("Octo Shot")
+                excludeAlt &&
+                (wpn.includes("Hero") || wpn.includes("Octo Shot"))
               )
                 return null;
               return (
