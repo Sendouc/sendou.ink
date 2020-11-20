@@ -1,4 +1,10 @@
-import { Box, Container, Flex, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Container,
+  Flex,
+  useColorModeValue,
+  useToast,
+} from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import { AppProps } from "next/app";
 import { SWRConfig } from "swr";
@@ -6,30 +12,16 @@ import Footer from "./Footer";
 import IconNavBar from "./IconNavBar";
 import TopNav from "./TopNav";
 
-function reviver(key: any, value: any) {
-  if (Array.isArray(value)) {
-    return value.map((entry) => {
-      if (entry.updatedAt)
-        return { ...entry, updatedAt: new Date(entry.updatedAt) };
-
-      return entry;
-    });
-  }
-
-  if (key === "updatedAt") return new Date(value);
-
-  return value;
-}
-
 const Layout = ({ Component, pageProps }: AppProps) => {
   const toast = useToast();
+  const bannerColor = useColorModeValue("lightblue", "black");
 
   return (
     <SWRConfig
       value={{
         fetcher: (resource, init) =>
           fetch(resource, init).then(async (res) => {
-            let data = await res.text();
+            const data = await res.text();
 
             return JSON.parse(data, reviver);
           }),
@@ -48,10 +40,10 @@ const Layout = ({ Component, pageProps }: AppProps) => {
     >
       <TopNav />
       <IconNavBar />
-      {process.env.NODE_ENV === "production" && (
-        <Box bg="black" p={2} textAlign="center">
+      {process.env.NODE_ENV !== "production" && (
+        <Box bg={bannerColor} p={2} textAlign="center">
           This is the preview version.{" "}
-          <b style={{ color: "#F08080" }}>Database will be reset</b>. For
+          <span style={{ color: "red" }}>Database will be reset</span>. For
           anything other than testing please go to:{" "}
           <a href="https://sendou.ink">https://sendou.ink</a>
         </Box>
@@ -65,5 +57,20 @@ const Layout = ({ Component, pageProps }: AppProps) => {
     </SWRConfig>
   );
 };
+
+function reviver(key: any, value: any) {
+  if (Array.isArray(value)) {
+    return value.map((entry) => {
+      if (entry.updatedAt)
+        return { ...entry, updatedAt: new Date(entry.updatedAt) };
+
+      return entry;
+    });
+  }
+
+  if (key === "updatedAt") return new Date(value);
+
+  return value;
+}
 
 export default Layout;
