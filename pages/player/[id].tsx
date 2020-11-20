@@ -10,9 +10,27 @@ import {
 
 const prisma = DBClient.getInstance().prisma;
 
-// FIXME: should probably not prerender all player pages -- where userId is not null
+const PlayerPage = ({ placements }: Props) => {
+  // FIXME: spinner
+  if (!placements) return null;
+
+  return (
+    <>
+      <Breadcrumbs
+        pages={[
+          { name: t`Top 500 Browser`, link: "/top500" },
+          { name: placements[0].playerName },
+        ]}
+      />
+      <PlayerTable placements={placements} />
+    </>
+  );
+};
+
 export const getStaticPaths: GetStaticPaths = async () => {
-  const players = await prisma.player.findMany({});
+  const players = await prisma.player.findMany({
+    where: { NOT: [{ userId: null }] },
+  });
   return {
     paths: players.map((p) => ({ params: { id: p.switchAccountId } })),
     fallback: true,
@@ -32,23 +50,6 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
     },
     notFound: !placements.length,
   };
-};
-
-const PlayerPage = ({ placements }: Props) => {
-  // FIXME: spinner
-  if (!placements) return null;
-
-  return (
-    <>
-      <Breadcrumbs
-        pages={[
-          { name: t`Top 500 Browser`, link: "/top500" },
-          { name: placements[0].playerName },
-        ]}
-      />
-      <PlayerTable placements={placements} />
-    </>
-  );
 };
 
 export default PlayerPage;

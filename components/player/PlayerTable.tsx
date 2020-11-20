@@ -1,4 +1,5 @@
 import { Text } from "@chakra-ui/react";
+import { Trans } from "@lingui/macro";
 import ModeImage from "components/common/ModeImage";
 import {
   Table,
@@ -28,10 +29,24 @@ const PlayerPage: React.FC<Props> = ({ placements }) => {
         <TableHead>
           <TableRow>
             <TableHeader width={4} />
-            <TableHeader>{t("xsearch;Name")}</TableHeader>
-            <TableHeader>{t("xsearch;X Power")}</TableHeader>
-            <TableHeader>{t("xsearch;Mode")}</TableHeader>
-            <TableHeader>{t("freeagents;Weapon")}</TableHeader>
+            <TableHeader>
+              <Trans>Name</Trans>
+            </TableHeader>
+            <TableHeader>
+              <Trans>X Power</Trans>
+            </TableHeader>
+            <TableHeader>
+              <Trans>Mode</Trans>
+            </TableHeader>
+            <TableHeader>
+              <Trans>Weapon</Trans>
+            </TableHeader>
+            <TableHeader width={4}>
+              <Trans>Month</Trans>
+            </TableHeader>
+            <TableHeader>
+              <Trans>Year</Trans>
+            </TableHeader>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -51,6 +66,8 @@ const PlayerPage: React.FC<Props> = ({ placements }) => {
                 <TableCell>
                   <WeaponImage name={record.weapon} size={32} />
                 </TableCell>
+                <TableCell>{record.month}</TableCell>
+                <TableCell>{record.year}</TableCell>
               </TableRow>
             );
           })}
