@@ -1,2 +1,16 @@
 const withImages = require("next-images");
-module.exports = withImages();
+module.exports = withImages({
+  async rewrites() {
+    return [
+      // check if Next.js project routes match before we attempt proxying
+      {
+        source: "/:path*",
+        destination: "/:path*",
+      },
+      {
+        source: "/:path*",
+        destination: `https://sendou-ink.herokuapp.com/:path*`,
+      },
+    ];
+  },
+});
