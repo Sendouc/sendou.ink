@@ -7,34 +7,12 @@ import {
   MenuItem,
   MenuList,
 } from "@chakra-ui/react";
-import { useTranslation } from "lib/useMockT";
+import { t, Trans } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import { useMyTheme } from "lib/useMyTheme";
 import { useRouter } from "next/dist/client/router";
 import Image from "next/image";
 import Link from "next/link";
-
-// FIXME: " Warning: Text content did not match. Server: ": Nov 6" Client: ": 6 Nov" "
-const getFirstFridayDate = () => {
-  const today = new Date();
-  const month =
-    today.getDate() - ((1 + today.getDay()) % 7) <= 0
-      ? today.getMonth()
-      : today.getMonth() + 1;
-
-  let day = 1;
-  while (day <= 7) {
-    const dateOfVoting = new Date(
-      Date.UTC(today.getFullYear(), month, day, 15, 0, 0)
-    );
-
-    if (dateOfVoting.getDay() === 5) return dateOfVoting;
-
-    day++;
-  }
-
-  console.error("Couldn't resolve first friday of the month for voting");
-  return new Date(2000, 1, 1);
-};
 
 export const navIcons: {
   code: string;
@@ -47,34 +25,34 @@ export const navIcons: {
 }[] = [
   {
     code: "xsearch",
-    displayName: "Top 500",
+    displayName: t`Top 500`,
     menuItems: [
-      { code: "xsearch", displayName: "Browser" },
-      { code: "xtrends", displayName: "Trends" },
-      { code: "xleaderboards", displayName: "Leaderboards" },
+      { code: "xsearch", displayName: t`Browser` },
+      { code: "xtrends", displayName: t`Trends` },
+      { code: "xleaderboards", displayName: t`Leaderboards` },
     ],
   },
   //{ code: "sr", displayName: "Salmon Run", menuItems: [] },
   {
     code: "builds",
-    displayName: "Builds",
+    displayName: t`Builds`,
     menuItems: [
-      { code: "builds", displayName: "Browser" },
-      { code: "analyzer", displayName: "Analyzer" },
+      { code: "builds", displayName: t`Browser` },
+      { code: "analyzer", displayName: t`Analyzer` },
     ],
   },
-  { code: "calendar", displayName: "Calendar", menuItems: [] },
-  { code: "freeagents", displayName: "Free Agents", menuItems: [] },
+  { code: "calendar", displayName: t`Calendar`, menuItems: [] },
+  { code: "freeagents", displayName: t`Free Agents`, menuItems: [] },
   //{ name: "teams", displayName: "Teams" },
-  { code: "plans", displayName: "Map Planner", menuItems: [] },
-  { code: "tournaments", displayName: "Tournaments", menuItems: [] },
+  { code: "plans", displayName: t`Map Planner`, menuItems: [] },
+  { code: "tournaments", displayName: t`Tournaments`, menuItems: [] },
   {
     code: "plus",
-    displayName: "Plus Server",
+    displayName: t`Plus Server`,
     menuItems: [
       {
         code: "plus/voting",
-        displayName: "Voting",
+        displayName: t`Voting`,
         toAppend:
           ": " +
           getFirstFridayDate().toLocaleString("default", {
@@ -82,16 +60,16 @@ export const navIcons: {
             day: "numeric",
           }),
       },
-      { code: "plus", displayName: "Suggested and vouched players" },
-      { code: "plus/history", displayName: "Voting history" },
-      { code: "draft", displayName: "Draft Cup" },
-      { code: "plus/faq", displayName: "FAQ" },
+      { code: "plus", displayName: t`Suggested and vouched players` },
+      { code: "plus/history", displayName: t`Voting history` },
+      { code: "draft", displayName: t`Draft Cup` },
+      { code: "plus/faq", displayName: t`FAQ` },
     ],
   },
 ];
 
 const IconNavBar = () => {
-  const { t } = useTranslation();
+  const { i18n } = useLingui();
   const {
     secondaryBgColor,
     textColor,
@@ -128,7 +106,7 @@ const IconNavBar = () => {
             m="5px 15px"
           >
             <Box color={isActive ? themeColor : gray} fontSize="0.75em">
-              {t(`navigation;${displayName}`)}
+              <Trans id={displayName} />
             </Box>
             {/* FIXME: same width for each */}
             <Image
@@ -164,7 +142,7 @@ const IconNavBar = () => {
               <MenuNavIcon />
             </MenuButton>
             <MenuList bg={secondaryBgColor} color={textColor}>
-              <MenuGroup title={t(`navigation;${displayName}`)}>
+              <MenuGroup title={i18n._(displayName)}>
                 {menuItems.map((item) => (
                   <Link key={item.code} href={"/" + item.code}>
                     <MenuItem
@@ -194,16 +172,7 @@ const IconNavBar = () => {
                         />
                       )}
                       <Box>
-                        {t(
-                          `navigation;${
-                            item.displayName !== "Voting"
-                              ? item.displayName
-                              : isVoting
-                              ? "Voting"
-                              : "Next voting"
-                          }`
-                        )}
-                        {!isVoting && item.toAppend}
+                        <Trans id={item.displayName} />
                       </Box>
                     </MenuItem>
                   </Link>
@@ -216,5 +185,27 @@ const IconNavBar = () => {
     </Flex>
   );
 };
+
+function getFirstFridayDate() {
+  const today = new Date();
+  const month =
+    today.getDate() - ((1 + today.getDay()) % 7) <= 0
+      ? today.getMonth()
+      : today.getMonth() + 1;
+
+  let day = 1;
+  while (day <= 7) {
+    const dateOfVoting = new Date(
+      Date.UTC(today.getFullYear(), month, day, 15, 0, 0)
+    );
+
+    if (dateOfVoting.getDay() === 5) return dateOfVoting;
+
+    day++;
+  }
+
+  console.error("Couldn't resolve first friday of the month for voting");
+  return new Date(2000, 1, 1);
+}
 
 export default IconNavBar;

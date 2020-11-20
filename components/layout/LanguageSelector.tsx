@@ -6,7 +6,7 @@ import {
   MenuList,
   MenuOptionGroup,
 } from "@chakra-ui/react";
-import { useTranslation } from "lib/useMockT";
+import { t } from "@lingui/macro";
 import { useMyTheme } from "lib/useMyTheme";
 import React from "react";
 import { FiGlobe } from "react-icons/fi";
@@ -28,7 +28,6 @@ export const languages = [
 ] as const;
 
 export const LanguageSelector = () => {
-  const { t } = useTranslation();
   const { secondaryBgColor, textColor } = useMyTheme();
 
   return (
@@ -44,7 +43,7 @@ export const LanguageSelector = () => {
       />
       <MenuList bg={secondaryBgColor} color={textColor}>
         <MenuOptionGroup
-          title={t("navigation;Choose language")}
+          title={t`Choose language`}
           // FIXME
           //value={i18n.language}
           value="en"

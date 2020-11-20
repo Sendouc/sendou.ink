@@ -10,6 +10,6 @@ export type GetPlayersTop500Placements = PromiseReturnType<
 export const getPlayersTop500Placements = async (switchAccountId: string) => {
   return prisma.xRankPlacement.findMany({
     where: { switchAccountId },
-    orderBy: [{ month: "desc" }, { year: "desc" }],
+    orderBy: [{ year: "desc" }, { month: "desc" }, { ranking: "asc" }],
   });
 };

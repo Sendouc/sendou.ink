@@ -1,12 +1,11 @@
 import { Box, Flex } from "@chakra-ui/react";
+import { Trans } from "@lingui/macro";
 import { DiscordIcon } from "lib/assets/icons";
-import { useTranslation } from "lib/useMockT";
 import { useMyTheme } from "lib/useMyTheme";
 import Link from "next/link";
 import { FaGithub } from "react-icons/fa";
 
 const FooterContent: React.FC = () => {
-  const { t } = useTranslation();
   const { themeColorHex: themeColor } = useMyTheme();
   return (
     <Flex
@@ -22,9 +21,13 @@ const FooterContent: React.FC = () => {
     >
       <Flex flexDirection="column" fontSize="1.2rem">
         <Box my="1em">
-          <Link href="/about">{t("footer;About")}</Link>
+          <Link href="/about">
+            <Trans>About</Trans>
+          </Link>
         </Box>
-        <Link href="/links">{t("footer;External links")}</Link>
+        <Link href="/links">
+          <Trans>External links</Trans>
+        </Link>
       </Flex>
       <Flex alignItems="center" flexWrap="wrap" justifyContent="center">
         <a href="https://discord.gg/sendou">

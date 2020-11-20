@@ -6,14 +6,13 @@ import {
   IconButton,
   Link as ChakraLink,
 } from "@chakra-ui/react";
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { RankedMode } from "@prisma/client";
 import ModeImage from "components/common/ModeImage";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
 import { getEmojiFlag } from "countries-list";
 import { getFullUsername } from "lib/strings";
-import { useTranslation } from "lib/useMockT";
 import { useMyTheme } from "lib/useMyTheme";
 import NextLink from "next/link";
 import { GetUserByIdentifierData } from "prisma/queries/getUserByIdentifier";
@@ -32,18 +31,15 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
   peakXPowers,
 }) => {
   const { gray } = useMyTheme();
-  const { t } = useTranslation();
 
   function getSensString(
     motion: number | null | undefined,
     stick: number
   ): string {
-    const stickSensString = `${stick > 0 ? "+" : ""}${stick} ${t(
-      "users;Stick"
-    )}`;
+    const stickSensString = `${stick > 0 ? "+" : ""}${stick} ${t`Stick`}`;
     const motionSensString =
       typeof motion === "number"
-        ? ` ${motion > 0 ? "+" : ""}${motion} ${t("users;Motion")}`
+        ? ` ${motion > 0 ? "+" : ""}${motion} ${t`Motion`}`
         : "";
 
     return `${stickSensString} ${motionSensString}`;

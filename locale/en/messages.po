@@ -21,19 +21,19 @@ msgstr "Maker of the build has finished in the top 500 of X Rank with this weapo
 msgid "{otherBuildCount, plural, one {Show # more build by {username}} other {Show # more builds by {username}}}"
 msgstr "{otherBuildCount, plural, one {Show # more build by {username}} other {Show # more builds by {username}}}"
 
-#: components/builds/BuildFilters.tsx:15
+#: components/builds/BuildFilters.tsx:16
 msgid "Included"
 msgstr "Included"
 
-#: components/builds/BuildFilters.tsx:15
+#: components/builds/BuildFilters.tsx:16
 msgid "Min AP"
 msgstr "Min AP"
 
-#: components/builds/BuildFilters.tsx:18
+#: components/builds/BuildFilters.tsx:19
 msgid "Excluded"
 msgstr "Excluded"
 
-#: components/builds/BuildFilters.tsx:18
+#: components/builds/BuildFilters.tsx:19
 msgid "Max AP"
 msgstr "Max AP"
 
@@ -69,9 +69,91 @@ msgstr "Home"
 msgid "Markdown is supported - <0>https://sendou.ink/markdown</0>"
 msgstr "Markdown is supported - <0>https://sendou.ink/markdown</0>"
 
+#: components/common/MultiWeaponSelector.tsx:14
 #: components/common/WeaponSelector.tsx:10
-msgid "Choose weapon"
-msgstr "Choose weapon"
+msgid "Select weapon"
+msgstr "Select weapon"
+
+#: components/common/WeaponSelector.tsx:10
+#~ msgid "Choose weapon"
+#~ msgstr "Choose weapon"
+
+#: components/layout/FooterContent.tsx:13
+#: pages/about.tsx:9
+#: pages/about.tsx:10
+msgid "About"
+msgstr "About"
+
+#: components/layout/FooterContent.tsx:17
+msgid "External links"
+msgstr "External links"
+
+#: components/layout/IconNavBar.tsx:11
+msgid "Top 500"
+msgstr "Top 500"
+
+#: components/layout/IconNavBar.tsx:13
+#: components/layout/IconNavBar.tsx:23
+msgid "Browser"
+msgstr "Browser"
+
+#: components/layout/IconNavBar.tsx:14
+msgid "Trends"
+msgstr "Trends"
+
+#: components/layout/IconNavBar.tsx:15
+msgid "Leaderboards"
+msgstr "Leaderboards"
+
+#: components/layout/IconNavBar.tsx:21
+#: pages/builds/[[...slug]].tsx:15
+msgid "Builds"
+msgstr "Builds"
+
+#: components/layout/IconNavBar.tsx:24
+msgid "Analyzer"
+msgstr "Analyzer"
+
+#: components/layout/IconNavBar.tsx:27
+msgid "Calendar"
+msgstr "Calendar"
+
+#: components/layout/IconNavBar.tsx:28
+msgid "Free Agents"
+msgstr "Free Agents"
+
+#: components/layout/IconNavBar.tsx:30
+#: components/plans/index.tsx:243
+msgid "Map Planner"
+msgstr "Map Planner"
+
+#: components/layout/IconNavBar.tsx:31
+msgid "Tournaments"
+msgstr "Tournaments"
+
+#: components/layout/IconNavBar.tsx:34
+msgid "Plus Server"
+msgstr "Plus Server"
+
+#: components/layout/IconNavBar.tsx:38
+msgid "Voting"
+msgstr "Voting"
+
+#: components/layout/IconNavBar.tsx:45
+msgid "Suggested and vouched players"
+msgstr "Suggested and vouched players"
+
+#: components/layout/IconNavBar.tsx:46
+msgid "Voting history"
+msgstr "Voting history"
+
+#: components/layout/IconNavBar.tsx:47
+msgid "Draft Cup"
+msgstr "Draft Cup"
+
+#: components/layout/IconNavBar.tsx:48
+msgid "FAQ"
+msgstr "FAQ"
 
 #: components/layout/TopNav.tsx:17
 msgid "Log in via Discord"
@@ -85,11 +167,12 @@ msgstr "Profile"
 msgid "Log out"
 msgstr "Log out"
 
-#: components/layout/index.tsx:49
+#: components/layout/index.tsx:32
+#: lib/postData.ts:24
 msgid "An error occurred"
 msgstr "An error occurred"
 
-#: components/plans/DraggableImageAdder.tsx:25
+#: components/plans/DraggableImageAdder.tsx:26
 msgid "Add image"
 msgstr "Add image"
 
@@ -97,37 +180,33 @@ msgstr "Add image"
 msgid "Tools"
 msgstr "Tools"
 
-#: components/plans/StageSelector.tsx:13
+#: components/plans/StageSelector.tsx:16
 msgid "Spawning Grounds"
 msgstr "Spawning Grounds"
 
-#: components/plans/StageSelector.tsx:14
+#: components/plans/StageSelector.tsx:17
 msgid "Marooner's Bay"
 msgstr "Marooner's Bay"
 
-#: components/plans/StageSelector.tsx:15
+#: components/plans/StageSelector.tsx:18
 msgid "Lost Outpost"
 msgstr "Lost Outpost"
 
-#: components/plans/StageSelector.tsx:17
+#: components/plans/StageSelector.tsx:19
 msgid "Salmonid Smokeyard"
 msgstr "Salmonid Smokeyard"
 
-#: components/plans/StageSelector.tsx:20
+#: components/plans/StageSelector.tsx:21
 msgid "Ruins of Ark Polaris‎‎"
 msgstr "Ruins of Ark Polaris‎‎"
 
-#: components/plans/StageSelector.tsx:52
+#: components/plans/StageSelector.tsx:53
 msgid "Minimap"
 msgstr "Minimap"
 
-#: components/plans/StageSelector.tsx:55
+#: components/plans/StageSelector.tsx:56
 msgid "Top-down"
 msgstr "Top-down"
-
-#: components/plans/index.tsx:243
-msgid "Map Planner"
-msgstr "Map Planner"
 
 #: components/plans/index.tsx:252
 msgid "Clear drawings"
@@ -145,23 +224,38 @@ msgstr "Download as .json"
 msgid "Load from .json"
 msgstr "Load from .json"
 
+#: components/player/PlayerTable.tsx:16
 #: components/top500/Top500Table.tsx:18
 msgid "Name"
 msgstr "Name"
 
+#: components/player/PlayerTable.tsx:19
 #: components/top500/Top500Table.tsx:21
 msgid "X Power"
 msgstr "X Power"
 
+#: components/player/PlayerTable.tsx:22
+msgid "Mode"
+msgstr "Mode"
+
+#: components/player/PlayerTable.tsx:25
 #: components/top500/Top500Table.tsx:24
 msgid "Weapon"
 msgstr "Weapon"
+
+#: components/player/PlayerTable.tsx:28
+msgid "Month"
+msgstr "Month"
+
+#: components/player/PlayerTable.tsx:31
+msgid "Year"
+msgstr "Year"
 
 #: components/u/AvatarWithInfo.tsx:71
 msgid "View all Top 500 results"
 msgstr "View all Top 500 results"
 
-#: components/u/ProfileModal.tsx:79
+#: components/u/ProfileModal.tsx:80
 msgid "Profile updated"
 msgstr "Profile updated"
 
@@ -189,31 +283,43 @@ msgstr "YouTube channel ID"
 msgid "Country"
 msgstr "Country"
 
-#: components/u/ProfileModal.tsx:157
+#: components/u/ProfileModal.tsx:151
+msgid "Select country"
+msgstr "Select country"
+
+#: components/u/ProfileModal.tsx:155
 msgid "Weapon pool"
 msgstr "Weapon pool"
 
-#: components/u/ProfileModal.tsx:169
+#: components/u/ProfileModal.tsx:167
 msgid "Stick sensitivity"
 msgstr "Stick sensitivity"
 
-#: components/u/ProfileModal.tsx:179
+#: components/u/ProfileModal.tsx:177
 msgid "Motion sensitivity"
 msgstr "Motion sensitivity"
 
-#: components/u/ProfileModal.tsx:187
+#: components/u/ProfileModal.tsx:185
+msgid ""
+"# I'm a header\n"
+"I'm **bolded**. Embedding weapon images is easy too: :luna_blaster:"
+msgstr ""
+"# I'm a header\n"
+"I'm **bolded**. Embedding weapon images is easy too: :luna_blaster:"
+
+#: components/u/ProfileModal.tsx:185
 msgid "Bio"
 msgstr "Bio"
 
 #: components/u/ProfileModal.tsx:187
-msgid "# I'm a header\\nI'm **bolded**. Embedding weapon images is easy too: :luna_blaster:"
-msgstr "# I'm a header\\nI'm **bolded**. Embedding weapon images is easy too: :luna_blaster:"
+#~ msgid "# I'm a header\\nI'm **bolded**. Embedding weapon images is easy too: :luna_blaster:"
+#~ msgstr "# I'm a header\\nI'm **bolded**. Embedding weapon images is easy too: :luna_blaster:"
 
-#: components/u/ProfileModal.tsx:191
+#: components/u/ProfileModal.tsx:190
 msgid "Save"
 msgstr "Save"
 
-#: components/u/ProfileModal.tsx:194
+#: components/u/ProfileModal.tsx:193
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -1005,11 +1111,6 @@ msgstr "Undercover Sorella Brella"
 msgid "Kensa Undercover Brella"
 msgstr "Kensa Undercover Brella"
 
-#: pages/about.tsx:9
-#: pages/about.tsx:10
-msgid "About"
-msgstr "About"
-
 #: pages/about.tsx:13
 msgid "Feedback"
 msgstr "Feedback"
@@ -1066,10 +1167,6 @@ msgstr "art for the site like the inkling on the front page as well as footer pi
 msgid "translation"
 msgstr "translation"
 
-#: pages/builds/[[...slug]].tsx:15
-msgid "Builds"
-msgstr "Builds"
-
 #: pages/builds/[[...slug]].tsx:24
 msgid "builds"
 msgstr "builds"
@@ -1091,34 +1188,38 @@ msgstr "Guides"
 msgid "Misc"
 msgstr "Misc"
 
-#: pages/player/[id].tsx:39
-#: pages/top500/[[...slug]].tsx:122
+#: pages/player/[id].tsx:22
+#: pages/xsearch/[[...slug]].tsx:32
 msgid "Top 500 Browser"
 msgstr "Top 500 Browser"
 
-#: pages/top500/[[...slug]].tsx:133
-msgid "SZ"
-msgstr "SZ"
-
-#: pages/top500/[[...slug]].tsx:134
-msgid "TC"
-msgstr "TC"
-
-#: pages/top500/[[...slug]].tsx:135
-msgid "RM"
-msgstr "RM"
-
-#: pages/top500/[[...slug]].tsx:136
-msgid "CB"
-msgstr "CB"
-
-#: pages/u/[identifier].tsx:78
+#: pages/u/[identifier].tsx:79
 msgid "Users"
 msgstr "Users"
 
-#: pages/u/[identifier].tsx:83
+#: pages/u/[identifier].tsx:84
 msgid "Edit profile"
 msgstr "Edit profile"
+
+#: pages/u/[identifier].tsx:95
+msgid "All weapons"
+msgstr "All weapons"
+
+#: pages/xsearch/[[...slug]].tsx:43
+msgid "SZ"
+msgstr "SZ"
+
+#: pages/xsearch/[[...slug]].tsx:44
+msgid "TC"
+msgstr "TC"
+
+#: pages/xsearch/[[...slug]].tsx:45
+msgid "RM"
+msgstr "RM"
+
+#: pages/xsearch/[[...slug]].tsx:46
+msgid "CB"
+msgstr "CB"
 
 #: scenes/Profile/components/ProfileModal.tsx:63
 #~ msgid "{0}"

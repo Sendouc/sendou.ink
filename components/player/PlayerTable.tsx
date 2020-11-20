@@ -11,7 +11,6 @@ import {
 } from "components/common/Table";
 import WeaponImage from "components/common/WeaponImage";
 import { getRankingString } from "lib/strings";
-import { useTranslation } from "lib/useMockT";
 import { useMyTheme } from "lib/useMyTheme";
 import { GetPlayersTop500Placements } from "prisma/queries/getPlayersTop500Placements";
 
@@ -20,7 +19,6 @@ interface Props {
 }
 
 const PlayerPage: React.FC<Props> = ({ placements }) => {
-  const { t } = useTranslation();
   const { gray } = useMyTheme();
 
   return (
