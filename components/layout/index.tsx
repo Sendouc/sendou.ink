@@ -40,7 +40,7 @@ const Layout = ({ Component, pageProps }: AppProps) => {
     >
       <TopNav />
       <IconNavBar />
-      {process.env.NODE_ENV !== "production" && (
+      {process.env.NODE_ENV === "production" && (
         <Box bg={bannerColor} p={2} textAlign="center">
           This is the preview version.{" "}
           <span style={{ color: "red" }}>Database will be reset</span>. For
