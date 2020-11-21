@@ -35,11 +35,13 @@ for (const player of playersJson) {
 
 const discordIdToBuilds = new Map<string, BuildCreateWithoutUserInput[]>();
 
+const modes: any[] = [];
+
 // @ts-ignore
 for (const build of buildsJson) {
   const existing = discordIdToBuilds.get(build.discord_id);
 
-  const newBuild = {
+  const newBuild: BuildCreateWithoutUserInput = {
     abilityPoints: buildToAp(build.headgear, build.clothing, build.shoes),
     jpn: build.discord_id === "312082701865713665",
     top500: build.top,
@@ -53,6 +55,7 @@ for (const build of buildsJson) {
     shoesAbilities: build.shoes,
     shoesGear: build.shoesItem,
     title: build.title,
+    modes,
   } as const;
 
   if (existing) {

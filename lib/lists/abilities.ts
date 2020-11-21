@@ -49,3 +49,6 @@ export const isMainAbility = (ability: any) =>
     (abilityObject) =>
       abilityObject.code === ability && abilityObject.type !== "STACKABLE"
   );
+
+export const isAbility = (ability: any) =>
+  abilities.some((abilityObject) => abilityObject.code === ability);

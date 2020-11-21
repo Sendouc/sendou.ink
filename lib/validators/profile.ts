@@ -1,6 +1,7 @@
 import { countries } from "countries-list";
 import { weaponsWithHero } from "lib/lists/weaponsWithHero";
 import * as z from "zod";
+import { hasNoDuplicates } from "./common";
 
 export const PROFILE_CHARACTER_LIMIT = 7000;
 
@@ -27,7 +28,7 @@ const profileRootSchema = z.object({
     .array(z.string())
     .max(5)
     .refine((arr) => arr.every((val) => weaponsWithHero.includes(val as any)))
-    .refine((arr) => new Set(arr).size === arr.length),
+    .refine(hasNoDuplicates),
 });
 
 export const profileSchemaFrontend = profileRootSchema.extend({
