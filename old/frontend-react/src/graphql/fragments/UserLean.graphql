@@ -1,5 +1,0 @@
-fragment UserLean on NewUser {
-  profilePath
-  fullUsername
-  avatarUrl
-}
