@@ -66,7 +66,6 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
               variant="ghost"
               isRound
             />
-            {/* FIXME: duplicate image bug */}
             <Box mx={2} mt={2}>
               <AbilityIcon ability={filter.ability} size="TINY" />
             </Box>

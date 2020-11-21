@@ -3,7 +3,6 @@ import {
   Code,
   Divider,
   Heading,
-  Image,
   Link,
   List,
   ListItem,
@@ -74,7 +73,6 @@ const Markdown: React.FC<MarkdownProps> = ({ value }) => {
           </Link>
         );
       },
-      img: Image,
       linkReference: (props: any) => {
         const { children } = props;
         return (
@@ -83,9 +81,10 @@ const Markdown: React.FC<MarkdownProps> = ({ value }) => {
           </Link>
         );
       },
-      imageReference: Image,
       text: (props: any) => {
         const { children } = props;
+
+        // FIXME: "react-dom.development.js?61bb:67 Warning: validateDOMNesting(...): <div> cannot appear as a descendant of <p>."
         return (
           <Text as="span" fontFamily="'Rubik', sans-serif">
             {reactStringReplace(children, /(:\S+:)/g, (match, i) => (

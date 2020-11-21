@@ -22,11 +22,15 @@ const FooterContent: React.FC = () => {
       <Flex flexDirection="column" fontSize="1.2rem">
         <Box my="1em">
           <Link href="/about">
-            <Trans>About</Trans>
+            <a>
+              <Trans>About</Trans>
+            </a>
           </Link>
         </Box>
         <Link href="/links">
-          <Trans>External links</Trans>
+          <a>
+            <Trans>External links</Trans>
+          </a>
         </Link>
       </Flex>
       <Flex alignItems="center" flexWrap="wrap" justifyContent="center">

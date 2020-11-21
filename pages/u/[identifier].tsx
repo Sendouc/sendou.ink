@@ -11,6 +11,7 @@ import ProfileModal from "components/u/ProfileModal";
 import { useBuildsByUser } from "hooks/u";
 import { getFullUsername } from "lib/strings";
 import useUser from "lib/useUser";
+import { isCustomUrl } from "lib/validators/profile";
 import { GetStaticPaths, GetStaticProps } from "next";
 import DBClient from "prisma/client";
 import { getPlayersTop500Placements } from "prisma/queries/getPlayersTop500Placements";
@@ -23,58 +24,10 @@ import useSWR from "swr";
 
 const prisma = DBClient.getInstance().prisma;
 
-// FIXME: should try to make it so that /u/Sendou and /u/234234298348 point to the same page
-export const getStaticPaths: GetStaticPaths = async () => {
-  const users = await prisma.user.findMany({ include: { profile: true } });
-  return {
-    paths: users.flatMap((u) =>
-      u.profile?.customUrlPath
-        ? [
-            { params: { identifier: u.discordId } },
-            { params: { identifier: u.profile.customUrlPath } },
-          ]
-        : { params: { identifier: u.discordId } }
-    ),
-    fallback: true,
-  };
-};
-
 interface Props {
   user: GetUserByIdentifierData;
   peakXPowers: Partial<Record<RankedMode, number>>;
 }
-
-export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
-  const user = await getUserByIdentifier(params!.identifier as string);
-
-  const peakXPowers: Partial<Record<RankedMode, number>> = {};
-
-  if (!!user?.player?.switchAccountId) {
-    const placements = await getPlayersTop500Placements(
-      user.player.switchAccountId
-    );
-
-    for (const placement of placements) {
-      peakXPowers[placement.mode] = Math.max(
-        peakXPowers[placement.mode] ?? 0,
-        placement.xPower
-      );
-    }
-  }
-
-  // FIXME: redirect
-  //const isCustomUrl = isNaN(Number(params!.identifier))
-
-  return {
-    props: {
-      user,
-      peakXPowers,
-    },
-    revalidate: 1,
-    notFound: !user,
-    //redirect: isCustomUrl ? { destination: "" } : undefined,
-  };
-};
 
 const ProfilePage = (props: Props) => {
   const [showModal, setShowModal] = useState(false);
@@ -151,5 +104,64 @@ const ProfilePage = (props: Props) => {
     </>
   );
 };
+
+// FIXME: should try to make it so that /u/Sendou and /u/234234298348 point to the same page
+export const getStaticPaths: GetStaticPaths = async () => {
+  const users = await prisma.user.findMany({ include: { profile: true } });
+  return {
+    paths: users.flatMap((u) =>
+      u.profile?.customUrlPath
+        ? [
+            { params: { identifier: u.discordId } },
+            { params: { identifier: u.profile.customUrlPath } },
+          ]
+        : { params: { identifier: u.discordId } }
+    ),
+    fallback: true,
+  };
+};
+
+export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
+  const user = await getUserByIdentifier(params!.identifier as string);
+
+  const peakXPowers: Partial<Record<RankedMode, number>> = {};
+
+  if (!!user?.player?.switchAccountId) {
+    const placements = await getPlayersTop500Placements(
+      user.player.switchAccountId
+    );
+
+    for (const placement of placements) {
+      peakXPowers[placement.mode] = Math.max(
+        peakXPowers[placement.mode] ?? 0,
+        placement.xPower
+      );
+    }
+  }
+
+  if (!user) return { notFound: true };
+
+  return {
+    props: {
+      user,
+      peakXPowers,
+    },
+    revalidate: 1,
+    redirect: getRedirect(
+      params!.identifier as string,
+      user?.profile?.customUrlPath
+    ),
+  };
+};
+
+function getRedirect(
+  identifier: string,
+  customUrlPath?: string | null
+): { destination: string } | undefined {
+  if (isCustomUrl(identifier)) return undefined;
+  if (!customUrlPath) return undefined;
+
+  return { destination: `/u/${customUrlPath}` };
+}
 
 export default ProfilePage;

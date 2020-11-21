@@ -12,15 +12,13 @@ const WeaponImage: React.FC<WeaponImageProps> = ({ name, size, noTitle }) => {
   const { i18n } = useLingui();
 
   return (
-    <>
-      <Image
-        src={`/weapons/${name.replace(".", "")}.png`}
-        alt={i18n._(name)}
-        title={noTitle ? undefined : i18n._(name)}
-        width={size}
-        height={size}
-      />
-    </>
+    <Image
+      src={`/weapons/${name.replace(".", "")}.png`}
+      alt={i18n._(name)}
+      title={noTitle ? undefined : i18n._(name)}
+      width={size}
+      height={size}
+    />
   );
 };
 

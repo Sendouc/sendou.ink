@@ -10,7 +10,7 @@ const prisma = DBClient.getInstance().prisma;
 export const getUserByIdentifier = (identifier: string) =>
   prisma.user.findFirst({
     where: {
-      // this is ok because the values are mutually exclusive: customUrlPath can't contain only numbers etc.
+      // this is ok because the values are mutually exclusive
       OR: [
         {
           discordId: identifier,
@@ -21,7 +21,8 @@ export const getUserByIdentifier = (identifier: string) =>
           },
         },
         {
-          id: Number(identifier),
+          // for some reason it doesn't like passing in id: undefined so using this as workaround
+          id: Number(identifier) || -1,
         },
       ],
     },

@@ -15,7 +15,7 @@ const profileRootSchema = z.object({
     .string()
     .max(32)
     .refine(
-      (val) => !val || isNaN(Number(val)),
+      (val) => !val || isCustomUrl(val),
       "Name in the custom URL can't only contain numbers"
     )
     .optional()
@@ -51,3 +51,7 @@ export const profileSchemaBackend = profileRootSchema.extend({
     .optional()
     .nullable(),
 });
+
+export function isCustomUrl(identifier: string) {
+  return isNaN(Number(identifier));
+}

@@ -145,36 +145,38 @@ const IconNavBar = () => {
               <MenuGroup title={i18n._(displayName)}>
                 {menuItems.map((item) => (
                   <Link key={item.code} href={"/" + item.code}>
-                    <MenuItem
-                      disabled={item.displayName === "Voting" && !isVoting}
-                    >
-                      {pathname === "/" + item.code ? (
-                        <Box
-                          h="7px"
-                          w="7px"
-                          mb={1}
-                          bgColor={themeColor}
-                          borderRadius="50%"
-                          lineHeight="0.5rem"
-                          mr="7px"
-                          mt="4px"
-                        />
-                      ) : (
-                        <Box
-                          h="7px"
-                          w="7px"
-                          mb={1}
-                          borderRadius="50%"
-                          lineHeight="0.5rem"
-                          mr="7px"
-                          mt="4px"
-                          opacity={1}
-                        />
-                      )}
-                      <Box>
-                        <Trans id={item.displayName} />
-                      </Box>
-                    </MenuItem>
+                    <a>
+                      <MenuItem
+                        disabled={item.displayName === "Voting" && !isVoting}
+                      >
+                        {pathname === "/" + item.code ? (
+                          <Box
+                            h="7px"
+                            w="7px"
+                            mb={1}
+                            bgColor={themeColor}
+                            borderRadius="50%"
+                            lineHeight="0.5rem"
+                            mr="7px"
+                            mt="4px"
+                          />
+                        ) : (
+                          <Box
+                            h="7px"
+                            w="7px"
+                            mb={1}
+                            borderRadius="50%"
+                            lineHeight="0.5rem"
+                            mr="7px"
+                            mt="4px"
+                            opacity={1}
+                          />
+                        )}
+                        <Box>
+                          <Trans id={item.displayName} />
+                        </Box>
+                      </MenuItem>
+                    </a>
                   </Link>
                 ))}
               </MenuGroup>
