@@ -12,6 +12,49 @@
       ]
     },
     {
+      "tag": "CreateEnum",
+      "enum": "Mode",
+      "values": [
+        "TW",
+        "SZ",
+        "TC",
+        "RM",
+        "CB"
+      ]
+    },
+    {
+      "tag": "CreateEnum",
+      "enum": "Ability",
+      "values": [
+        "CB",
+        "LDE",
+        "OG",
+        "T",
+        "H",
+        "NS",
+        "TI",
+        "RP",
+        "AD",
+        "DR",
+        "SJ",
+        "OS",
+        "BDU",
+        "REC",
+        "RES",
+        "ISM",
+        "ISS",
+        "MPU",
+        "QR",
+        "QSJ",
+        "RSU",
+        "SSU",
+        "SCU",
+        "SPU",
+        "SS",
+        "BRU"
+      ]
+    },
+    {
       "tag": "CreateSource",
       "source": "db"
     },
@@ -132,6 +175,13 @@
       "field": "player",
       "type": "Player",
       "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "User",
+      "field": "builds",
+      "type": "Build",
+      "arity": "List"
     },
     {
       "tag": "CreateModel",
@@ -465,6 +515,38 @@
     {
       "tag": "CreateField",
       "model": "Player",
+      "field": "userId",
+      "type": "Int",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Player",
+          "field": "userId"
+        },
+        "directive": "unique"
+      }
+    },
+    {
+      "tag": "CreateField",
+      "model": "Player",
+      "field": "name",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Player",
+      "field": "placements",
+      "type": "XRankPlacement",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Player",
       "field": "user",
       "type": "User",
       "arity": "Optional"
@@ -509,36 +591,261 @@
       "value": "[id]"
     },
     {
+      "tag": "CreateModel",
+      "model": "Build"
+    },
+    {
       "tag": "CreateField",
-      "model": "Player",
-      "field": "userId",
+      "model": "Build",
+      "field": "id",
       "type": "Int",
-      "arity": "Optional"
+      "arity": "Required"
     },
     {
       "tag": "CreateDirective",
       "location": {
         "path": {
           "tag": "Field",
-          "model": "Player",
-          "field": "userId"
+          "model": "Build",
+          "field": "id"
         },
-        "directive": "unique"
+        "directive": "id"
       }
     },
     {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Build",
+          "field": "id"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Build",
+          "field": "id"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "autoincrement()"
+    },
+    {
       "tag": "CreateField",
-      "model": "Player",
-      "field": "name",
+      "model": "Build",
+      "field": "userId",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Build",
+      "field": "weapon",
       "type": "String",
       "arity": "Required"
     },
     {
       "tag": "CreateField",
-      "model": "Player",
-      "field": "placements",
-      "type": "XRankPlacement",
+      "model": "Build",
+      "field": "title",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Build",
+      "field": "description",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Build",
+      "field": "modes",
+      "type": "Mode",
       "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Build",
+      "field": "headGear",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Build",
+      "field": "headAbilities",
+      "type": "Ability",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Build",
+      "field": "clothingGear",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Build",
+      "field": "clothingAbilities",
+      "type": "Ability",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Build",
+      "field": "shoesGear",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Build",
+      "field": "shoesAbilities",
+      "type": "Ability",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Build",
+      "field": "abilityPoints",
+      "type": "Json",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Build",
+      "field": "top500",
+      "type": "Boolean",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Build",
+      "field": "jpn",
+      "type": "Boolean",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Build",
+      "field": "updatedAt",
+      "type": "DateTime",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Build",
+          "field": "updatedAt"
+        },
+        "directive": "updatedAt"
+      }
+    },
+    {
+      "tag": "CreateField",
+      "model": "Build",
+      "field": "user",
+      "type": "User",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Build",
+          "field": "user"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Build",
+          "field": "user"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[userId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Build",
+          "field": "user"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Model",
+          "model": "Build",
+          "arguments": [
+            {
+              "name": "",
+              "value": "weapon"
+            }
+          ]
+        },
+        "directive": "index"
+      }
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Model",
+          "model": "Build",
+          "arguments": [
+            {
+              "name": "",
+              "value": "userId"
+            }
+          ]
+        },
+        "directive": "index"
+      }
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Model",
+          "model": "Build",
+          "arguments": [
+            {
+              "name": "",
+              "value": "abilityPoints"
+            }
+          ]
+        },
+        "directive": "index"
+      }
     }
   ]
 }

@@ -41,6 +41,14 @@ enum RankedMode {
   CB
 }
 
+enum Mode {
+  TW
+  SZ
+  TC
+  RM
+  CB
+}
+
 model XRankPlacement {
   id              Int        @id @default(autoincrement())
   switchAccountId String
@@ -99,13 +107,14 @@ model Build {
   weapon            String
   title             String?
   description       String?
-  abilityPoints     Json
+  modes             Mode[]
   headGear          String?
   headAbilities     Ability[]
   clothingGear      String?
   clothingAbilities Ability[]
   shoesGear         String?
   shoesAbilities    Ability[]
+  abilityPoints     Json
   top500            Boolean
   jpn               Boolean
   updatedAt         DateTime  @updatedAt
