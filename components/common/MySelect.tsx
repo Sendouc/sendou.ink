@@ -14,20 +14,17 @@ const MySelect: React.FC<Props> = ({
   placeholder,
   children,
   name,
-}) => {
-  console.log({ value });
-  return (
-    <Select
-      value={value ?? ""}
-      onChange={(e) =>
-        setValue(e.target.value !== "" ? undefined : e.target.value)
-      }
-      name={name}
-    >
-      {placeholder && <option value="">{placeholder}</option>}
-      {children}
-    </Select>
-  );
-};
+}) => (
+  <Select
+    value={value ?? ""}
+    onChange={(e) =>
+      setValue(e.target.value === "" ? undefined : e.target.value)
+    }
+    name={name}
+  >
+    {placeholder && <option value="">{placeholder}</option>}
+    {children}
+  </Select>
+);
 
 export default MySelect;

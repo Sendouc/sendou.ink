@@ -7,6 +7,7 @@ import Breadcrumbs from "components/common/Breadcrumbs";
 import Markdown from "components/common/Markdown";
 import MyInfiniteScroller from "components/common/MyInfiniteScroller";
 import AvatarWithInfo from "components/u/AvatarWithInfo";
+import BuildModal from "components/u/BuildModal";
 import ProfileModal from "components/u/ProfileModal";
 import { useBuildsByUser } from "hooks/u";
 import { getFullUsername } from "lib/strings";
@@ -30,7 +31,8 @@ interface Props {
 }
 
 const ProfilePage = (props: Props) => {
-  const [showModal, setShowModal] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showBuildModal, setShowBuildModal] = useState(false);
 
   const [loggedInUser] = useUser();
   const { data: user } = useSWR<GetUserByIdentifierData>(
@@ -51,6 +53,13 @@ const ProfilePage = (props: Props) => {
 
   return (
     <>
+      {showProfileModal && (
+        <ProfileModal onClose={() => setShowProfileModal(false)} user={user} />
+      )}
+      {showBuildModal && (
+        <BuildModal onClose={() => setShowBuildModal(false)} />
+      )}
+
       <Breadcrumbs
         pages={[
           { name: t`Users`, link: "/u" },
@@ -59,12 +68,9 @@ const ProfilePage = (props: Props) => {
       />
       <AvatarWithInfo user={user} peakXPowers={props.peakXPowers} />
       {loggedInUser?.id === user.id && (
-        <Button onClick={() => setShowModal(true)}>
+        <Button onClick={() => setShowProfileModal(true)}>
           <Trans>Edit profile</Trans>
         </Button>
-      )}
-      {showModal && (
-        <ProfileModal onClose={() => setShowModal(false)} user={user} />
       )}
       {user.profile?.bio && (
         <>
@@ -93,6 +99,11 @@ const ProfilePage = (props: Props) => {
                 </option>
               ))}
             </Select>
+          )}
+          {loggedInUser?.id === user.id && (
+            <Button onClick={() => setShowBuildModal(true)}>
+              <Trans>Add build</Trans>
+            </Button>
           )}
           <MyInfiniteScroller>
             {builds.map((build) => (

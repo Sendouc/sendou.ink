@@ -4,10 +4,17 @@ import { weaponsWithHero } from "lib/lists/weaponsWithHero";
 import * as z from "zod";
 import { hasNoDuplicates } from "./common";
 
+export const TITLE_CHARACTER_LIMIT = 100;
+export const DESCRIPTION_CHARACTER_LIMIT = 1000;
+
 export const buildSchema = z.object({
   weapon: z.string().refine((val) => weaponsWithHero.includes(val as any)),
-  title: z.string().max(100).optional().nullable(),
-  description: z.string().max(1000).optional().nullable(),
+  title: z.string().max(TITLE_CHARACTER_LIMIT).optional().nullable(),
+  description: z
+    .string()
+    .max(DESCRIPTION_CHARACTER_LIMIT)
+    .optional()
+    .nullable(),
   modes: z
     .array(z.string())
     .min(1)
