@@ -10,7 +10,7 @@ interface Props {
   onChange: (value: string[]) => void;
 }
 
-const WeaponSelector: React.FC<Props> = ({ name, value, onChange }) => {
+const MultiWeaponSelector: React.FC<Props> = ({ name, value, onChange }) => {
   const { i18n } = useLingui();
   return (
     <>
@@ -20,9 +20,10 @@ const WeaponSelector: React.FC<Props> = ({ name, value, onChange }) => {
           if (!!e.target.value && !value.includes(e.target.value))
             onChange(value.concat(e.target.value));
         }}
-        defaultValue="NO_VALUE"
+        value=""
+        disabled={value.length === 5}
       >
-        <option hidden value="NO_VALUE">
+        <option hidden value="">
           {t`Select weapon`}
         </option>
         {weaponsWithHeroCategorizedLocalized.map((wpnCategory) => (
@@ -59,4 +60,4 @@ const WeaponSelector: React.FC<Props> = ({ name, value, onChange }) => {
   );
 };
 
-export default WeaponSelector;
+export default MultiWeaponSelector;

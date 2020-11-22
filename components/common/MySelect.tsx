@@ -3,32 +3,29 @@ import { Select } from "@chakra-ui/react";
 interface Props {
   value: string;
   setValue: (value?: string) => void;
-  options: {
-    label: string;
-    value: string;
-  }[];
   placeholder?: string;
+  name?: string;
+  children: React.ReactNode;
 }
 
 const MySelect: React.FC<Props> = ({
   value,
   setValue,
-  options,
   placeholder,
+  children,
+  name,
 }) => {
+  console.log({ value });
   return (
     <Select
-      value={value}
+      value={value ?? ""}
       onChange={(e) =>
         setValue(e.target.value !== "" ? undefined : e.target.value)
       }
+      name={name}
     >
       {placeholder && <option value="">{placeholder}</option>}
-      {options.map((option) => (
-        <option key={option.value} value={option.value}>
-          {option.label}
-        </option>
-      ))}
+      {children}
     </Select>
   );
 };

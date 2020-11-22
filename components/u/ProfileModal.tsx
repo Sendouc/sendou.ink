@@ -14,7 +14,6 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Select,
   useToast,
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -230,63 +229,80 @@ const ProfileModal: React.FC<Props> = ({ onClose, user }) => {
                   <MySelect
                     value={value}
                     setValue={onChange}
-                    options={(Object.keys(countries) as Array<
-                      keyof typeof countries
-                    >).map((countryCode) => ({
-                      label: countries[countryCode].name,
-                      value: countryCode,
-                    }))}
                     placeholder={t`Select country`}
-                  />
+                  >
+                    {(Object.keys(countries) as Array<
+                      keyof typeof countries
+                    >).map((countryCode) => (
+                      <option key={countryCode} value={countryCode}>
+                        {countries[countryCode].name}
+                      </option>
+                    ))}
+                  </MySelect>
                 )}
               />
 
-              <FormControl isInvalid={!!errors.weaponPool}>
-                <FormLabel htmlFor="weaponPool" mt={4}>
-                  <Trans>Weapon pool</Trans>
-                </FormLabel>
-                <Controller
-                  name="weaponPool"
-                  control={control}
-                  defaultValue={[]}
-                  render={({ onChange, value, name }) => (
-                    <WeaponSelector
-                      name={name}
-                      value={value}
-                      onChange={onChange}
-                    />
-                  )}
-                />
-                <FormErrorMessage>
-                  {/* Seems to be mistyped */}
-                  {/* @ts-ignore */}
-                  {errors.weaponPool?.message}
-                </FormErrorMessage>
-              </FormControl>
+              <FormLabel htmlFor="weaponPool" mt={4}>
+                <Trans>Weapon pool</Trans>
+              </FormLabel>
+              <Controller
+                name="weaponPool"
+                control={control}
+                defaultValue={[]}
+                render={({ onChange, value, name }) => (
+                  <WeaponSelector
+                    name={name}
+                    value={value}
+                    onChange={onChange}
+                  />
+                )}
+              />
 
               <FormLabel htmlFor="sensStick" mt={4}>
                 <Box as={FaGamepad} display="inline-block" mr={2} mb={1} />
                 <Trans>Stick sensitivity</Trans>
               </FormLabel>
-              <Select ref={register} name="sensStick">
-                {sensOptions.map((sens) => (
-                  <option key={sens} value={sens}>
-                    {sens}
-                  </option>
-                ))}
-              </Select>
+              <Controller
+                name="sensStick"
+                control={control}
+                render={({ onChange, value, name }) => (
+                  <MySelect
+                    placeholder={t`Select stick sensitivity`}
+                    name={name}
+                    value={value}
+                    setValue={onChange}
+                  >
+                    {sensOptions.map((sens) => (
+                      <option key={sens} value={sens}>
+                        {sens}
+                      </option>
+                    ))}
+                  </MySelect>
+                )}
+              />
 
               <FormLabel htmlFor="sensMotion" mt={4}>
                 <Box as={FaGamepad} display="inline-block" mr={2} mb={1} />
                 <Trans>Motion sensitivity</Trans>
               </FormLabel>
-              <Select ref={register} name="sensMotion">
-                {sensOptions.map((sens) => (
-                  <option key={sens} value={sens}>
-                    {sens}
-                  </option>
-                ))}
-              </Select>
+              <Controller
+                name="sensMotion"
+                control={control}
+                render={({ onChange, value, name }) => (
+                  <MySelect
+                    placeholder={t`Select motion sensitivity`}
+                    name={name}
+                    value={value}
+                    setValue={onChange}
+                  >
+                    {sensOptions.map((sens) => (
+                      <option key={sens} value={sens}>
+                        {sens}
+                      </option>
+                    ))}
+                  </MySelect>
+                )}
+              />
 
               <MarkdownTextarea
                 fieldName="bio"
