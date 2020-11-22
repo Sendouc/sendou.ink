@@ -101,7 +101,7 @@ const ProfilePage = (props: Props) => {
             </Select>
           )}
           {loggedInUser?.id === user.id && (
-            <Button onClick={() => setShowBuildModal(true)}>
+            <Button mt={5} onClick={() => setShowBuildModal(true)}>
               <Trans>Add build</Trans>
             </Button>
           )}

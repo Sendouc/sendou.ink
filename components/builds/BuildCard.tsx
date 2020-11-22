@@ -187,7 +187,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
             {apView ? (
               <ViewAP aps={build.abilityPoints as Record<Ability, number>} />
             ) : (
-              <ViewSlots build={build} />
+              <ViewSlots abilities={build} />
             )}
           </Box>
           {otherBuildCount ? (

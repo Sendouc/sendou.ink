@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Checkbox,
   CheckboxGroup,
@@ -34,6 +35,7 @@ import { GetBuildsByUserData } from "prisma/queries/getBuildsByUser";
 import { Fragment } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
+import AbilitiesSelector from "./AbilitiesSelector";
 
 interface Props {
   onClose: () => void;
@@ -47,7 +49,12 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
 
   const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
     resolver: zodResolver(buildSchema),
-    defaultValues: build,
+    defaultValues: {
+      headAbilities: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+      clothingAbilities: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+      shoesAbilities: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+      ...build,
+    },
   });
 
   const watchTitle = watch("title", build?.title ?? "");
@@ -100,6 +107,48 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
                     name="weapon"
                     value={value}
                     onChange={onChange}
+                  />
+                )}
+              />
+
+              {/* yeah....... didn't find an easier way to do this with the library so here we are */}
+              <Controller
+                name="headAbilities"
+                control={control}
+                render={({ onChange: onHeadChange, value: headAbilities }) => (
+                  <Controller
+                    name="clothingAbilities"
+                    control={control}
+                    render={({
+                      onChange: onClothingChange,
+                      value: clothingAbilities,
+                    }) => (
+                      <Controller
+                        name="headAbilities"
+                        control={control}
+                        render={({
+                          onChange: onShoesChange,
+                          value: shoesAbilities,
+                        }) => (
+                          <Box mt={4}>
+                            <AbilitiesSelector
+                              abilities={{
+                                headAbilities,
+                                clothingAbilities,
+                                shoesAbilities,
+                              }}
+                              setAbilities={(newAbilities) => {
+                                onHeadChange(newAbilities.headAbilities);
+                                onClothingChange(
+                                  newAbilities.clothingAbilities
+                                );
+                                onShoesChange(newAbilities.shoesAbilities);
+                              }}
+                            />
+                          </Box>
+                        )}
+                      />
+                    )}
                   />
                 )}
               />

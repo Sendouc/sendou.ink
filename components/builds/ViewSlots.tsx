@@ -1,39 +1,37 @@
 import { Box, BoxProps, Flex } from "@chakra-ui/react";
-import { BuildGetPayload } from "@prisma/client";
+import { Ability as DBAbility } from "@prisma/client";
 import AbilityIcon from "components/common/AbilityIcon";
 
-type BuildViewSlots = Partial<
-  BuildGetPayload<{
-    select: {
-      headAbilities: true;
-      clothingAbilities: true;
-      shoesAbilities: true;
-    };
-  }>
->;
+export type ViewSlotsAbilities = {
+  headAbilities: (DBAbility | "UNKNOWN")[];
+  clothingAbilities: (DBAbility | "UNKNOWN")[];
+  shoesAbilities: (DBAbility | "UNKNOWN")[];
+};
 
 interface ViewSlotsProps {
-  build: BuildViewSlots;
-  onAbilityClick?: (gear: "HEAD" | "CLOTHING" | "SHOES", index: number) => void;
+  abilities: ViewSlotsAbilities;
+  onAbilityClick?: (
+    gear: "headAbilities" | "clothingAbilities" | "shoesAbilities",
+    index: number
+  ) => void;
 }
 
-// FIXME: fix any
-const defaultAbilityRow = ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"] as any[];
-
 const ViewSlots: React.FC<ViewSlotsProps & BoxProps> = ({
-  build,
+  abilities,
   onAbilityClick,
   ...props
 }) => {
   return (
     <Box {...props}>
       <Flex alignItems="center" justifyContent="center">
-        {(build.headAbilities ?? defaultAbilityRow).map((ability, index) => (
+        {abilities.headAbilities.map((ability, index) => (
           <Box
             mx="3px"
             key={index}
             onClick={
-              onAbilityClick ? () => onAbilityClick("HEAD", index) : undefined
+              onAbilityClick
+                ? () => onAbilityClick("headAbilities", index)
+                : undefined
             }
             cursor={onAbilityClick ? "pointer" : undefined}
           >
@@ -46,34 +44,34 @@ const ViewSlots: React.FC<ViewSlotsProps & BoxProps> = ({
         ))}
       </Flex>
       <Flex alignItems="center" justifyContent="center" my="0.5em">
-        {(build.clothingAbilities ?? defaultAbilityRow).map(
-          (ability, index) => (
-            <Box
-              mx="3px"
-              key={index}
-              onClick={
-                onAbilityClick
-                  ? () => onAbilityClick("CLOTHING", index)
-                  : undefined
-              }
-              cursor={onAbilityClick ? "pointer" : undefined}
-            >
-              <AbilityIcon
-                key={index}
-                ability={ability}
-                size={index === 0 ? "MAIN" : "SUB"}
-              />
-            </Box>
-          )
-        )}
-      </Flex>
-      <Flex alignItems="center" justifyContent="center">
-        {(build.shoesAbilities ?? defaultAbilityRow).map((ability, index) => (
+        {abilities.clothingAbilities.map((ability, index) => (
           <Box
             mx="3px"
             key={index}
             onClick={
-              onAbilityClick ? () => onAbilityClick("SHOES", index) : undefined
+              onAbilityClick
+                ? () => onAbilityClick("clothingAbilities", index)
+                : undefined
+            }
+            cursor={onAbilityClick ? "pointer" : undefined}
+          >
+            <AbilityIcon
+              key={index}
+              ability={ability}
+              size={index === 0 ? "MAIN" : "SUB"}
+            />
+          </Box>
+        ))}
+      </Flex>
+      <Flex alignItems="center" justifyContent="center">
+        {abilities.shoesAbilities.map((ability, index) => (
+          <Box
+            mx="3px"
+            key={index}
+            onClick={
+              onAbilityClick
+                ? () => onAbilityClick("shoesAbilities", index)
+                : undefined
             }
             cursor={onAbilityClick ? "pointer" : undefined}
           >
