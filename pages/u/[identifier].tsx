@@ -10,6 +10,7 @@ import AvatarWithInfo from "components/u/AvatarWithInfo";
 import BuildModal from "components/u/BuildModal";
 import ProfileModal from "components/u/ProfileModal";
 import { useBuildsByUser } from "hooks/u";
+import { GANBA_DISCORD_ID } from "lib/constants";
 import { getFullUsername } from "lib/strings";
 import useUser from "lib/useUser";
 import { isCustomUrl } from "lib/validators/profile";
@@ -50,6 +51,13 @@ const ProfilePage = (props: Props) => {
   // same as router.isFallback
   // FIXME: return spinner
   if (!user) return null;
+
+  const canPostBuilds = () => {
+    if (loggedInUser?.id !== user.id) return false;
+    if (buildCount >= 100 && user.discordId !== GANBA_DISCORD_ID) return false;
+
+    return true;
+  };
 
   return (
     <>
@@ -100,7 +108,7 @@ const ProfilePage = (props: Props) => {
               ))}
             </Select>
           )}
-          {loggedInUser?.id === user.id && (
+          {canPostBuilds() && (
             <Button mt={5} onClick={() => setShowBuildModal(true)}>
               <Trans>Add build</Trans>
             </Button>
@@ -116,7 +124,6 @@ const ProfilePage = (props: Props) => {
   );
 };
 
-// FIXME: should try to make it so that /u/Sendou and /u/234234298348 point to the same page
 export const getStaticPaths: GetStaticPaths = async () => {
   const users = await prisma.user.findMany({ include: { profile: true } });
   return {

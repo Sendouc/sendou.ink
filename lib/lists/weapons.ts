@@ -11,7 +11,6 @@ export const weapons = [
   "Aerospray RG",
   "Aerospray PG",
   "Splattershot",
-  "Hero Shot Replica",
   "Tentatek Splattershot",
   "Kensa Splattershot",
   ".52 Gal",
@@ -130,3 +129,16 @@ export const weapons = [
   "Undercover Sorella Brella",
   "Kensa Undercover Brella",
 ] as const;
+
+export const altWeaponToNormal = new Map([
+  ["Hero Shot Replica", "Splattershot"],
+  ["Hero Blaster Replica", "Blaster"],
+  ["Hero Roller Replica", "Splat Roller"],
+  ["Herobrush Replica", "Octobrush"],
+  ["Hero Charger Replica", "Splat Charger"],
+  ["Hero Slosher Replica", "Slosher"],
+  ["Hero Splatling Replica", "Heavy Splatling"],
+  ["Hero Dualie Replicas", "Splat Dualies"],
+  ["Hero Brella Replica", "Splat Brella"],
+  ["Octo Shot Replica", "Tentatek Splattershot"],
+]);

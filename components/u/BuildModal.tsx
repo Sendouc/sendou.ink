@@ -21,11 +21,14 @@ import {
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { t, Trans } from "@lingui/macro";
-import { useLingui } from "@lingui/react";
+import { Ability } from "@prisma/client";
 import MySelect from "components/common/MySelect";
 import WeaponSelector from "components/common/WeaponSelector";
+import { getToastOptions } from "lib/getToastOptions";
 import { gear } from "lib/lists/gear";
+import { sendData } from "lib/postData";
 import { Unpacked } from "lib/types";
+import useUser from "lib/useUser";
 import {
   buildSchema,
   DESCRIPTION_CHARACTER_LIMIT,
@@ -34,6 +37,7 @@ import {
 import { GetBuildsByUserData } from "prisma/queries/getBuildsByUser";
 import { Fragment } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { mutate } from "swr";
 import * as z from "zod";
 import AbilitiesSelector from "./AbilitiesSelector";
 
@@ -45,14 +49,29 @@ interface Props {
 type FormData = z.infer<typeof buildSchema>;
 
 const BuildModal: React.FC<Props> = ({ onClose, build }) => {
-  const { i18n } = useLingui();
+  const [loggedInUser] = useUser();
 
   const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
     resolver: zodResolver(buildSchema),
     defaultValues: {
-      headAbilities: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
-      clothingAbilities: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
-      shoesAbilities: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+      headAbilities: ([
+        "UNKNOWN",
+        "UNKNOWN",
+        "UNKNOWN",
+        "UNKNOWN",
+      ] as unknown) as Ability[],
+      clothingAbilities: ([
+        "UNKNOWN",
+        "UNKNOWN",
+        "UNKNOWN",
+        "UNKNOWN",
+      ] as unknown) as Ability[],
+      shoesAbilities: ([
+        "UNKNOWN",
+        "UNKNOWN",
+        "UNKNOWN",
+        "UNKNOWN",
+      ] as unknown) as Ability[],
       ...build,
     },
   });
@@ -62,24 +81,27 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
 
   const toast = useToast();
 
-  // const onSubmit = async (formData: FormData) => {
+  const onSubmit = async (formData: FormData) => {
+    const mutationData = { ...formData };
 
-  //   for (const [key, value] of Object.entries(mutationData)) {
-  //     if (value === "" || value === undefined) {
-  //       const typedKey = key as keyof Omit<typeof mutationData, "weaponPool">;
-  //       mutationData[typedKey] = null;
-  //     }
-  //   }
+    for (const [key, value] of Object.entries(mutationData)) {
+      if (value === "" || value === undefined) {
+        // @ts-ignore
+        mutationData[key] = null;
+      }
+    }
 
-  //   const success = await sendData("PUT", "/api/me/profile", mutationData);
-  //   if (!success) return;
+    const success = await sendData("POST", "/api/builds", mutationData);
+    if (!success) return;
 
-  //   mutate(`/api/users/${user.id}`);
+    if (!loggedInUser) throw Error("unexpected no logged in user");
+    mutate(`/api/users/${loggedInUser.id}/builds`);
 
-  //   toast(getToastOptions(build ? t`Profile updated` : t`Profile updated`, "success"));
-  //   onClose();
-  // };
-  const onSubmit = async (formData: FormData) => console.log({ formData });
+    toast(
+      getToastOptions(build ? t`Build updated` : t`New build added`, "success")
+    );
+    onClose();
+  };
 
   return (
     <Modal isOpen onClose={onClose} size="xl" closeOnOverlayClick={false}>
@@ -98,60 +120,78 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
               <FormLabel htmlFor="weapon">
                 <Trans>Weapon</Trans>
               </FormLabel>
-              <Controller
-                name="weapon"
-                control={control}
-                defaultValue={null}
-                render={({ onChange, value }) => (
-                  <WeaponSelector
-                    name="weapon"
-                    value={value}
-                    onChange={onChange}
-                  />
-                )}
-              />
+
+              <FormControl isInvalid={!!errors.weapon}>
+                <Controller
+                  name="weapon"
+                  control={control}
+                  defaultValue={null}
+                  render={({ onChange, value }) => (
+                    <WeaponSelector
+                      name="weapon"
+                      value={value}
+                      onChange={onChange}
+                    />
+                  )}
+                />
+                <FormErrorMessage>
+                  {t`Choose a weapon for your build`}
+                </FormErrorMessage>
+              </FormControl>
 
               {/* yeah....... didn't find an easier way to do this with the library so here we are */}
-              <Controller
-                name="headAbilities"
-                control={control}
-                render={({ onChange: onHeadChange, value: headAbilities }) => (
-                  <Controller
-                    name="clothingAbilities"
-                    control={control}
-                    render={({
-                      onChange: onClothingChange,
-                      value: clothingAbilities,
-                    }) => (
-                      <Controller
-                        name="headAbilities"
-                        control={control}
-                        render={({
-                          onChange: onShoesChange,
-                          value: shoesAbilities,
-                        }) => (
-                          <Box mt={4}>
-                            <AbilitiesSelector
-                              abilities={{
-                                headAbilities,
-                                clothingAbilities,
-                                shoesAbilities,
-                              }}
-                              setAbilities={(newAbilities) => {
-                                onHeadChange(newAbilities.headAbilities);
-                                onClothingChange(
-                                  newAbilities.clothingAbilities
-                                );
-                                onShoesChange(newAbilities.shoesAbilities);
-                              }}
-                            />
-                          </Box>
-                        )}
-                      />
-                    )}
-                  />
-                )}
-              />
+              <FormControl
+                isInvalid={
+                  !!errors.headAbilities ||
+                  !!errors.clothingAbilities ||
+                  !!errors.shoesAbilities
+                }
+              >
+                <Controller
+                  name="headAbilities"
+                  control={control}
+                  render={({
+                    onChange: onHeadChange,
+                    value: headAbilities,
+                  }) => (
+                    <Controller
+                      name="clothingAbilities"
+                      control={control}
+                      render={({
+                        onChange: onClothingChange,
+                        value: clothingAbilities,
+                      }) => (
+                        <Controller
+                          name="shoesAbilities"
+                          control={control}
+                          render={({
+                            onChange: onShoesChange,
+                            value: shoesAbilities,
+                          }) => (
+                            <Box mt={4}>
+                              <AbilitiesSelector
+                                abilities={{
+                                  headAbilities,
+                                  clothingAbilities,
+                                  shoesAbilities,
+                                }}
+                                setAbilities={(newAbilities) => {
+                                  onHeadChange(newAbilities.headAbilities);
+                                  onClothingChange(
+                                    newAbilities.clothingAbilities
+                                  );
+                                  onShoesChange(newAbilities.shoesAbilities);
+                                }}
+                              />
+                            </Box>
+                          )}
+                        />
+                      )}
+                    />
+                  )}
+                />
+                <FormErrorMessage mx="auto">{t`Your build is missing some abilities`}</FormErrorMessage>
+              </FormControl>
 
               <FormControl isInvalid={!!errors.title}>
                 <FormLabel htmlFor="title" mt={4}>
@@ -237,7 +277,7 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
                 <Trans>Shoes</Trans>
               </FormLabel>
               <Controller
-                name="headGear"
+                name="shoesGear"
                 control={control}
                 defaultValue=""
                 render={({ onChange, value, name }) => (
@@ -263,14 +303,14 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
                 )}
               />
 
-              <FormControl>
+              <FormControl isInvalid={!!errors.modes}>
                 <FormLabel htmlFor="modes" mt={4}>
                   <Trans>Modes</Trans>
                 </FormLabel>
                 <Controller
-                  name="headGear"
+                  name="modes"
                   control={control}
-                  defaultValue=""
+                  defaultValue={[]}
                   render={({ onChange, value }) => (
                     <CheckboxGroup value={value} onChange={onChange}>
                       <Stack spacing={4} direction="row">
@@ -298,6 +338,10 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
                     Choose at least one mode where you use this build
                   </Trans>
                 </FormHelperText>
+                <FormErrorMessage>
+                  {/* @ts-ignore */}
+                  {t`Select at least one mode`}
+                </FormErrorMessage>
               </FormControl>
             </ModalBody>
             <ModalFooter>

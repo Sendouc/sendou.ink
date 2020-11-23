@@ -28,9 +28,9 @@ const profileHandler = async (req: NextApiRequest, res: NextApiResponse) => {
           : body.twitchName,
     };
 
-    try {
-      profileSchemaBackend.parse(argsForDb);
-    } catch {
+    const parsed = profileSchemaBackend.safeParse(argsForDb);
+
+    if (!parsed.success) {
       return res.status(400).end();
     }
 
@@ -41,10 +41,10 @@ const profileHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     await prisma.profile.upsert({
       create: {
         user: { connect: { id: user.id } },
-        ...argsForDb,
+        ...parsed.data,
       },
       update: {
-        ...argsForDb,
+        ...parsed.data,
       },
       where: { userId: user.id },
     });

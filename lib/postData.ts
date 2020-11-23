@@ -17,9 +17,6 @@ export async function sendData(method = "POST", url = "", data = {}) {
     let description = t`An error occurred`;
     try {
       const error = await response.json();
-
-      console.log({ error });
-
       if (error.message) description = error.message;
     } catch {}
 
