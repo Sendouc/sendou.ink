@@ -110,15 +110,17 @@ export function useBuildsByWeapon() {
     { weapon: "", filters: [], expandedUsers: new Set() as Set<number> }
   );
 
-  const { data = [] } = useSWR<GetBuildsByWeaponData>(() => {
+  const { data } = useSWR<GetBuildsByWeaponData>(() => {
     if (!state.weapon) return null;
 
     const key = state.weapon as keyof typeof weaponToCode;
     return `/api/builds/${weaponToCode[key]}`;
   });
 
+  const buildArrays = data ?? [];
+
   const buildsToShow = state.filters.length
-    ? data.reduce((acc: GetBuildsByWeaponData, buildArray) => {
+    ? buildArrays.reduce((acc: GetBuildsByWeaponData, buildArray) => {
         const filteredArray = buildArray.filter((build) => {
           return state.filters.every((filter) => {
             // @ts-ignore
@@ -146,12 +148,13 @@ export function useBuildsByWeapon() {
 
         return [...acc, filteredArray];
       }, [])
-    : data;
+    : buildArrays;
 
   return {
     data: buildsToShow,
+    isLoading: state.weapon && !data,
     state,
     dispatch,
-    hiddenBuildCount: data.length - buildsToShow.length,
+    hiddenBuildCount: buildArrays.length - buildsToShow.length,
   };
 }

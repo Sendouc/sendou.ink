@@ -2,6 +2,7 @@ import { Box, Flex } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import BuildCard from "components/builds/BuildCard";
 import BuildFilters from "components/builds/BuildFilters";
+import BuildsSkeleton from "components/builds/BuildsSkeleton";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import MyInfiniteScroller from "components/common/MyInfiniteScroller";
 import WeaponImage from "components/common/WeaponImage";
@@ -10,7 +11,13 @@ import { useBuildsByWeapon } from "hooks/builds";
 import { useMyTheme } from "lib/useMyTheme";
 
 const BuildsPage = () => {
-  const { data, state, dispatch, hiddenBuildCount } = useBuildsByWeapon();
+  const {
+    data,
+    isLoading,
+    state,
+    dispatch,
+    hiddenBuildCount,
+  } = useBuildsByWeapon();
   const { themeColorHex } = useMyTheme();
   return (
     <>
@@ -21,38 +28,43 @@ const BuildsPage = () => {
         excludeAlt
         isHeader
       />
-      {state.weapon && (data.length > 0 || hiddenBuildCount > 0) && (
-        <>
-          <Box mt={4} pr={3} mb="-5rem">
+      <>
+        <Box mt={4} pr={3} mb="-5rem">
+          {state.weapon ? (
             <WeaponImage name={state.weapon} size={128} />
-          </Box>
-          <Flex
-            justifyContent="flex-end"
-            p={2}
-            mb={8}
-            w="100%"
-            bg={`linear-gradient(to right, ${themeColorHex}, #f8ffae);`}
-            rounded="lg"
-            fontSize="sm"
-            boxShadow="md"
-            color="black"
-          >
-            <Flex justifyContent="space-between">
-              <Box>
-                {data.length} <Trans>builds</Trans>{" "}
-                {hiddenBuildCount > 0 && (
-                  <>
-                    (+ {hiddenBuildCount} <Trans>hidden</Trans>)
-                  </>
-                )}
-              </Box>
-            </Flex>
+          ) : (
+            <Box w="135px" h="135px" />
+          )}
+        </Box>
+        <Flex
+          justifyContent="flex-end"
+          p={2}
+          mb={8}
+          w="100%"
+          bg={themeColorHex}
+          rounded="lg"
+          fontSize="sm"
+          boxShadow="md"
+          color="black"
+        >
+          <Flex justifyContent="space-between">
+            <Box visibility={data.length === 0 ? "hidden" : undefined}>
+              {data.length} <Trans>builds</Trans>{" "}
+              {hiddenBuildCount > 0 && (
+                <>
+                  (+ {hiddenBuildCount} <Trans>hidden</Trans>)
+                </>
+              )}
+            </Box>
           </Flex>
-        </>
-      )}
+        </Flex>
+      </>
+
       {state.weapon && (
         <BuildFilters filters={state.filters} dispatch={dispatch} />
       )}
+
+      {isLoading && <BuildsSkeleton />}
 
       <MyInfiniteScroller>
         {data.flatMap((buildArray) =>
