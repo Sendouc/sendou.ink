@@ -89,48 +89,39 @@ export const getStaticPaths: GetStaticPaths = async () => {
     orderBy: [{ year: "desc" }, { month: "desc" }],
   });
 
-  if (!mostRecentResult) return { paths: [], fallback: true };
+  if (!mostRecentResult) return { paths: [], fallback: false };
 
   return {
-    paths: ["SZ", "TC", "RM", "CB"].map((mode) => ({
-      params: {
-        slug: ["" + mostRecentResult.year, "" + mostRecentResult.month, mode],
-      },
-    })),
-    fallback: true,
+    paths: getMonthOptions(mostRecentResult.month, mostRecentResult.year)
+      .flatMap(({ month, year }) => [
+        {
+          params: {
+            slug: [year, month, "SZ"],
+          },
+        },
+        {
+          params: {
+            slug: [year, month, "TC"],
+          },
+        },
+        {
+          params: {
+            slug: [year, month, "RM"],
+          },
+        },
+        {
+          params: {
+            slug: [year, month, "CB"],
+          },
+        },
+      ])
+      .concat({
+        params: {
+          slug: [],
+        },
+      }),
+    fallback: false,
   };
-
-  // return {
-  //   paths: getMonthOptions(mostRecentResult.month, mostRecentResult.year)
-  //     .flatMap(({ month, year }) => [
-  //       {
-  //         params: {
-  //           slug: [year, month, "SZ"],
-  //         },
-  //       },
-  //       {
-  //         params: {
-  //           slug: [year, month, "TC"],
-  //         },
-  //       },
-  //       {
-  //         params: {
-  //           slug: [year, month, "RM"],
-  //         },
-  //       },
-  //       {
-  //         params: {
-  //           slug: [year, month, "CB"],
-  //         },
-  //       },
-  //     ])
-  //     .concat({
-  //       params: {
-  //         slug: [],
-  //       },
-  //     }),
-  //   fallback: false,
-  // };
 };
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
