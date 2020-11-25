@@ -1,7 +1,7 @@
-import { PromiseReturnType, RankedMode } from "@prisma/client";
+import { Prisma, RankedMode } from "@prisma/client";
 import DBClient from "prisma/client";
 
-export type GetTop500PlacementsByMonthData = PromiseReturnType<
+export type GetTop500PlacementsByMonthData = Prisma.PromiseReturnType<
   typeof getTop500PlacementsByMonth
 >;
 

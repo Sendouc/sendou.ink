@@ -1,7 +1,7 @@
-import { PromiseReturnType } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import DBClient from "prisma/client";
 
-export type GetUserByIdentifierData = PromiseReturnType<
+export type GetUserByIdentifierData = Prisma.PromiseReturnType<
   typeof getUserByIdentifier
 >;
 

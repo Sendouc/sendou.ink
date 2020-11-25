@@ -1,10 +1,4 @@
-import {
-  BuildCreateWithoutUserInput,
-  PlayerCreateInput,
-  PrismaClient,
-  UserCreateInput,
-  XRankPlacementCreateInput,
-} from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import buildsJson from "./mongo/builds.json";
 import placementsJson from "./mongo/placements.json";
 import playersJson from "./mongo/players.json";
@@ -20,7 +14,7 @@ for (const player of playersJson) {
 }
 
 const twitterToPlayerName = new Map<string, string>();
-const players: PlayerCreateInput[] = [];
+const players: Prisma.PlayerCreateInput[] = [];
 
 for (const player of playersJson) {
   if (player.twitter) {
@@ -41,7 +35,7 @@ const modes: any[] = [];
 for (const build of buildsJson) {
   const existing = discordIdToBuilds.get(build.discord_id);
 
-  const newBuild: BuildCreateWithoutUserInput = {
+  const newBuild: Prisma.BuildCreateWithoutUserInput = {
     abilityPoints: buildToAp(build.headgear, build.clothing, build.shoes),
     jpn: build.discord_id === "312082701865713665",
     top500: build.top,
@@ -65,7 +59,7 @@ for (const build of buildsJson) {
   }
 }
 
-const users: UserCreateInput[] = usersJson.map((u) => ({
+const users: Prisma.UserCreateInput[] = usersJson.map((u) => ({
   discordAvatar: u.avatar,
   discordId: u.discord_id,
   discriminator: u.discriminator,
@@ -102,7 +96,7 @@ const longest = usersJson.reduce(
 
 console.log({ "longest bio is": longest });
 
-const placements: XRankPlacementCreateInput[] = [];
+const placements: Prisma.XRankPlacementCreateInput[] = [];
 
 // @ts-ignore
 for (const placement of placementsJson) {

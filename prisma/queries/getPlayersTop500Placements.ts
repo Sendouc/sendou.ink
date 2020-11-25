@@ -1,9 +1,9 @@
-import { PromiseReturnType } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import DBClient from "prisma/client";
 
 const prisma = DBClient.getInstance().prisma;
 
-export type GetPlayersTop500Placements = PromiseReturnType<
+export type GetPlayersTop500Placements = Prisma.PromiseReturnType<
   typeof getPlayersTop500Placements
 >;
 

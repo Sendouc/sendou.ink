@@ -1,7 +1,7 @@
-import { PromiseReturnType } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import DBClient from "prisma/client";
 
-export type GetBuildsByUserData = PromiseReturnType<typeof getBuildsByUser>;
+export type GetBuildsByUserData = Prisma.PromiseReturnType<typeof getBuildsByUser>;
 
 const prisma = DBClient.getInstance().prisma;
 

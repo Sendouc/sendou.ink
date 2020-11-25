@@ -58,7 +58,7 @@ const profileHandler = async (req: NextApiRequest, res: NextApiResponse) => {
 async function isDuplicateCustomUrl(customUrlPath: string, userId: number) {
   if (!customUrlPath) return false;
 
-  const profileWithSameCustomUrl = await prisma.profile.findOne({
+  const profileWithSameCustomUrl = await prisma.profile.findUnique({
     where: {
       customUrlPath,
     },

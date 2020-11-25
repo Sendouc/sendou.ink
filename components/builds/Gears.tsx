@@ -1,10 +1,10 @@
 import { Box, Flex } from "@chakra-ui/react";
-import { BuildGetPayload } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import GearImage from "components/common/GearImage";
 import React from "react";
 
 type BuildViewSlots = Partial<
-  BuildGetPayload<{
+  Prisma.BuildGetPayload<{
     select: {
       headGear: true;
       clothingGear: true;

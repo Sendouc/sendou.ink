@@ -9,7 +9,7 @@ import {
   PopoverTrigger,
 } from "@chakra-ui/react";
 import { Plural, t, Trans } from "@lingui/macro";
-import { Ability, BuildGetPayload } from "@prisma/client";
+import { Ability, Prisma } from "@prisma/client";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
 import { getEmojiFlag } from "countries-list";
@@ -25,7 +25,7 @@ import ViewSlots from "./ViewSlots";
 
 interface BuildCardProps {
   // FIXME: don't select unnecessary fields
-  build: PartialBy<BuildGetPayload<{ include: { user: true } }>, "user">;
+  build: PartialBy<Prisma.BuildGetPayload<{ include: { user: true } }>, "user">;
   canModify?: boolean;
   //setBuildBeingEdited?: (build: Build) => void;
   otherBuildCount?: number;
