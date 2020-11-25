@@ -45,14 +45,31 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
           <Fragment key={filter.ability}>
             <Box mb="-1.2rem" />
             <Box mb="-1.2rem" />
-            <Box mb="-1.2rem" fontSize="sm" color={gray} pr={2}>
+            <Box
+              mb="-1.2rem"
+              fontSize="sm"
+              color={
+                filter.abilityPoints!.min > filter.abilityPoints!.max
+                  ? "red.500"
+                  : gray
+              }
+              pr={2}
+            >
               {isMainAbility(filter.ability) ? (
                 <Trans>Included</Trans>
               ) : (
                 <Trans>Min AP</Trans>
               )}
             </Box>
-            <Box mb="-1.2rem" fontSize="sm" color={gray}>
+            <Box
+              mb="-1.2rem"
+              fontSize="sm"
+              color={
+                filter.abilityPoints!.min > filter.abilityPoints!.max
+                  ? "red.500"
+                  : gray
+              }
+            >
               {isMainAbility(filter.ability) ? (
                 <Trans>Excluded</Trans>
               ) : (

@@ -47,8 +47,22 @@ const BuildsPage = () => {
           boxShadow="md"
           color="black"
         >
-          <Flex justifyContent="space-between">
-            <Box visibility={data.length === 0 ? "hidden" : undefined}>
+          <Flex
+            justifyContent="space-between"
+            fontSize="xs"
+            textColor="black"
+            textTransform="uppercase"
+            letterSpacing="wider"
+            lineHeight="1rem"
+            fontWeight="medium"
+          >
+            <Box
+              visibility={
+                data.length === 0 && hiddenBuildCount === 0
+                  ? "hidden"
+                  : undefined
+              }
+            >
               {data.length} <Trans>builds</Trans>{" "}
               {hiddenBuildCount > 0 && (
                 <>
