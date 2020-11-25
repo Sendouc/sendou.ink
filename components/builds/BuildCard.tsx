@@ -81,7 +81,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
               overflow="hidden"
               title={`${build.user.username}#${build.user.discriminator}`}
             >
-              <Link href={`/u/${build.user.discordId}`}>
+              <Link href={`/u/${build.user.discordId}`} prefetch={false}>
                 <a>
                   <Flex alignItems="center">
                     <UserAvatar user={build.user} isSmall mr={2} />
