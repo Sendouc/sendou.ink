@@ -2,13 +2,10 @@ import { t } from "@lingui/macro";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import PlayerTable from "components/player/PlayerTable";
 import { GetStaticPaths, GetStaticProps } from "next";
-import DBClient from "prisma/client";
 import {
   GetPlayersTop500Placements,
   getPlayersTop500Placements,
 } from "prisma/queries/getPlayersTop500Placements";
-
-const prisma = DBClient.getInstance().prisma;
 
 const PlayerPage = ({ placements }: Props) => {
   // FIXME: spinner
@@ -28,11 +25,15 @@ const PlayerPage = ({ placements }: Props) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const players = await prisma.player.findMany({
-    where: { NOT: [{ userId: null }] },
-  });
+  // const players = await prisma.player.findMany({
+  //   where: { NOT: [{ userId: null }] },
+  // });
+  // return {
+  //   paths: players.map((p) => ({ params: { id: p.switchAccountId } })),
+  //   fallback: true,
+  // };
   return {
-    paths: players.map((p) => ({ params: { id: p.switchAccountId } })),
+    paths: [],
     fallback: true,
   };
 };

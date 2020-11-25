@@ -125,16 +125,14 @@ const ProfilePage = (props: Props) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const users = await prisma.user.findMany({ include: { profile: true } });
+  const users = await prisma.user.findMany({
+    where: { NOT: [{ profile: { customUrlPath: null } }] },
+    include: { profile: true },
+  });
   return {
-    paths: users.flatMap((u) =>
-      u.profile?.customUrlPath
-        ? [
-            { params: { identifier: u.discordId } },
-            { params: { identifier: u.profile.customUrlPath } },
-          ]
-        : { params: { identifier: u.discordId } }
-    ),
+    paths: users.map((u) => ({
+      params: { identifier: u.profile!.customUrlPath! },
+    })),
     fallback: true,
   };
 };
@@ -142,9 +140,22 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   const user = await getUserByIdentifier(params!.identifier as string);
 
+  if (!user) return { notFound: true };
+  if (
+    user.profile?.customUrlPath &&
+    !isCustomUrl(params!.identifier as string)
+  ) {
+    return {
+      redirect: {
+        destination: `/u/${user.profile.customUrlPath}`,
+        permanent: true,
+      },
+    };
+  }
+
   const peakXPowers: Partial<Record<RankedMode, number>> = {};
 
-  if (!!user?.player?.switchAccountId) {
+  if (!!user.player?.switchAccountId) {
     const placements = await getPlayersTop500Placements(
       user.player.switchAccountId
     );
@@ -157,29 +168,13 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
     }
   }
 
-  if (!user) return { notFound: true };
-
   return {
     props: {
       user,
       peakXPowers,
     },
     revalidate: 1,
-    redirect: getRedirect(
-      params!.identifier as string,
-      user?.profile?.customUrlPath
-    ),
   };
 };
-
-function getRedirect(
-  identifier: string,
-  customUrlPath?: string | null
-): { destination: string } | undefined {
-  if (isCustomUrl(identifier)) return undefined;
-  if (!customUrlPath) return undefined;
-
-  return { destination: `/u/${customUrlPath}` };
-}
 
 export default ProfilePage;
