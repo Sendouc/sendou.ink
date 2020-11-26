@@ -97,7 +97,7 @@ const StageSelector: React.FC<StageSelectorProps> = ({
       ) : (
         <>
           <HStack justifyContent="center" my={4}>
-            {/* FIXME: actual radio button component for Top500 page too */}
+            {/* TODO: actual radio button component for Top500 page too */}
             {(["SZ", "TC", "RM", "CB"] as const).map((mode) => (
               <ModeImage
                 key={mode}

@@ -73,7 +73,7 @@ const ViewAP: React.FC<ViewAPProps> = ({ aps }) => {
                     : undefined
                 }
               >
-                {/* FIXME: center */}
+                {/* TODO: center */}
                 <AbilityIcon ability={ability} size="SUB" />
               </Box>
             ))}

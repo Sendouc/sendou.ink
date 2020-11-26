@@ -24,7 +24,7 @@ interface AvatarWithInfoProps {
   peakXPowers: Partial<Record<RankedMode, number>>;
 }
 
-// FIXME:  show text on how to get your top 500 linked
+// TODO:  show text on how to get your top 500 linked
 
 const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
   user,

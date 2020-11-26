@@ -11,7 +11,7 @@ const sizeMap = {
 } as const;
 
 interface AbilityIconProps {
-  // FIXME: use enum from generated/graphql.tsx
+  // TODO: use enum from generated/graphql.tsx
   ability: string | "EMPTY";
   size: "MAIN" | "SUB" | "TINY" | "SUBTINY";
 }

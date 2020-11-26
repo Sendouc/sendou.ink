@@ -24,7 +24,7 @@ import ViewAP from "./ViewAP";
 import ViewSlots from "./ViewSlots";
 
 interface BuildCardProps {
-  // FIXME: don't select unnecessary fields
+  // TODO: don't select unnecessary fields
   build: PartialBy<Prisma.BuildGetPayload<{ include: { user: true } }>, "user">;
   canModify?: boolean;
   //setBuildBeingEdited?: (build: Build) => void;

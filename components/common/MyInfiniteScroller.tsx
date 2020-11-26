@@ -1,4 +1,4 @@
-// FIXME: this whole file should probably get replaced with something like react-window
+// TODO: this whole file should probably get replaced with something like react-window
 
 import { Flex } from "@chakra-ui/react";
 import { ReactElement, ReactNodeArray, useState } from "react";

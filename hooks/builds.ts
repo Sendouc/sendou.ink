@@ -49,6 +49,8 @@ type Action =
 
 export type UseBuildsByWeaponDispatch = Dispatch<Action>;
 
+// TODO: weapon in the URL
+
 export function useBuildsByWeapon() {
   const [state, dispatch] = useReducer(
     (oldState: UseBuildsByWeaponState, action: Action) => {

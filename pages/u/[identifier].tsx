@@ -49,7 +49,7 @@ const ProfilePage = (props: Props) => {
   const { i18n } = useLingui();
 
   // same as router.isFallback
-  // FIXME: return spinner
+  // TODO: return spinner
   if (!user) return null;
 
   const canPostBuilds = () => {

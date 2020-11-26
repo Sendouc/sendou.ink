@@ -78,7 +78,7 @@ const IconNavBar = () => {
   } = useMyTheme();
   const pathname = useRouter().pathname;
 
-  // FIXME
+  // TODO
   //const isVoting = !!plusInfoData?.plusInfo?.voting_ends;
   const isVoting = false;
 
@@ -108,14 +108,14 @@ const IconNavBar = () => {
             <Box color={isActive ? themeColor : gray} fontSize="0.75em">
               <Trans id={displayName} />
             </Box>
-            {/* FIXME: same width for each */}
+            {/* TODO same width for each */}
             <Image
               src={`/layout/${code}.png`}
               height={48}
               width={48}
               alt={code}
               priority
-              // FIXME: when chakra-ui adds next/image support
+              // TODO when chakra-ui adds next/image support
               // @ts-ignore
               style={{ cursor: "pointer", userSelect: "none" }}
             />

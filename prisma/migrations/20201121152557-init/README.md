@@ -109,7 +109,7 @@ migration ..20201121152557-init
 @@ -1,0 +1,126 @@
 +datasource db {
 +  provider = "postgresql"
-+  // FIXME: should use same .env system as Next.JS
++  // TODO: should use same .env system as Next.JS
 +  url = "***"
 +}
 +

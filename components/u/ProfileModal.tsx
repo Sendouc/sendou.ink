@@ -321,7 +321,7 @@ const ProfileModal: React.FC<Props> = ({ onClose, user }) => {
               <Button
                 mr={3}
                 type="submit"
-                // FIXME:
+                // TODO:
                 //isLoading={loading}
               >
                 <Trans>Save</Trans>

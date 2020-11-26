@@ -84,7 +84,7 @@ const Markdown: React.FC<MarkdownProps> = ({ value }) => {
       text: (props: any) => {
         const { children } = props;
 
-        // FIXME: "react-dom.development.js?61bb:67 Warning: validateDOMNesting(...): <div> cannot appear as a descendant of <p>."
+        // TODO: "react-dom.development.js?61bb:67 Warning: validateDOMNesting(...): <div> cannot appear as a descendant of <p>."
         return (
           <Text as="span" fontFamily="'Rubik', sans-serif">
             {reactStringReplace(children, /(:\S+:)/g, (match, i) => (

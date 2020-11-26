@@ -39,7 +39,7 @@ const XSearchPage = ({ placements, monthOptions }: Props) => {
     );
   }, [variables]);
 
-  //FIXME: layout can be persistent between route changes
+  //TODO: layout can be persistent between route changes
   return (
     <>
       <Breadcrumbs pages={[{ name: t`Top 500 Browser` }]} />
@@ -166,7 +166,7 @@ function getMonthOptions(latestMonth: number, latestYear: number) {
   let year = 2018;
 
   while (true) {
-    // FIXME: set language
+    // TODO set language
     const monthString = getLocalizedMonthYearString(month, year, "en");
     monthChoices.push({
       label: monthString,

@@ -21,7 +21,7 @@ interface EmojiProps {
 const Emoji: React.FC<EmojiProps> = (props) => {
   const value = props.value.replace(/:/g, "").toLowerCase();
 
-  //FIXME: inline removed : make sure emojis blend in with the text
+  //TODO: inline removed : make sure emojis blend in with the text
 
   const keyWeapon = value as keyof typeof codeToWeapon;
   const weaponName = codeToWeapon[keyWeapon];

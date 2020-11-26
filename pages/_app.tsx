@@ -20,7 +20,7 @@ const extendedTheme = extendTheme({
       },
     }),
   },
-  // FIXME:
+  // TODO:
   // 1) round iconButton (closeButton of modal too)
   // 2) table-like lime green input addons
   // 3) input styling

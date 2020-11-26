@@ -8,7 +8,7 @@ import {
 } from "prisma/queries/getPlayersTop500Placements";
 
 const PlayerPage = ({ placements }: Props) => {
-  // FIXME: spinner
+  // TODO: spinner
   if (!placements) return null;
 
   return (
