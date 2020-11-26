@@ -10,6 +10,8 @@ import WeaponSelector from "components/common/WeaponSelector";
 import { useBuildsByWeapon } from "hooks/builds";
 import { useMyTheme } from "lib/useMyTheme";
 
+// TODO: button to add new build
+
 const BuildsPage = () => {
   const {
     data,

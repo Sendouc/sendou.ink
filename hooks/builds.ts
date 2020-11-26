@@ -1,6 +1,8 @@
 import { Ability } from "@prisma/client";
 import { abilities, isMainAbility } from "lib/lists/abilities";
 import { weaponToCode } from "lib/lists/weaponCodes";
+import { weapons } from "lib/lists/weapons";
+import { useRouter } from "next/router";
 import { GetBuildsByWeaponData } from "prisma/queries/getBuildsByWeapon";
 import { Dispatch, useReducer } from "react";
 import useSWR from "swr";
@@ -49,13 +51,17 @@ type Action =
 
 export type UseBuildsByWeaponDispatch = Dispatch<Action>;
 
-// TODO: weapon in the URL
-
 export function useBuildsByWeapon() {
+  const router = useRouter();
   const [state, dispatch] = useReducer(
     (oldState: UseBuildsByWeaponState, action: Action) => {
       switch (action.type) {
         case "SET_WEAPON":
+          router.replace({
+            pathname: "/builds",
+            query: { weapon: action.weapon },
+          });
+
           return { ...oldState, weapon: action.weapon };
         case "EXPAND_USER":
           return {
@@ -109,8 +115,23 @@ export function useBuildsByWeapon() {
           return oldState;
       }
     },
-    { weapon: "", filters: [], expandedUsers: new Set() as Set<number> }
+    {
+      weapon: getInitialWeapon(),
+      filters: [],
+      expandedUsers: new Set() as Set<number>,
+    }
   );
+
+  function getInitialWeapon() {
+    if (
+      typeof router.query.weapon !== "string" ||
+      !weapons.includes(router.query.weapon as any)
+    ) {
+      return "";
+    }
+
+    return router.query.weapon;
+  }
 
   const { data } = useSWR<GetBuildsByWeaponData>(() => {
     if (!state.weapon) return null;
