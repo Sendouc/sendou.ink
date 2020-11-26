@@ -14,6 +14,9 @@ const options: InitOptions = {
       scope: "identify",
     }),
   ],
+  jwt: {
+    secret: process.env.JWT_SECRET!,
+  },
   callbacks: {
     session: async (_, user) => {
       return Promise.resolve(user);

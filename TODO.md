@@ -8,6 +8,8 @@
 - [ ] Localization
   - [ ] Script to parse old translations into new format
   - [ ] Can change translations on the site
+- [ ] Set favicon
+- [ ] Social media preview / SEO stuff
 
 ### Before being able to shut down old site and bot
 
