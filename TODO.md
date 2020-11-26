@@ -10,6 +10,8 @@
 - [ ] Localization
   - [ ] Script to parse old translations into new format
   - [ ] Can change translations on the site
+- [ ] Prisma use native DB types
+- [ ] Frontpage
 - [ ] Set favicon
 - [ ] Social media preview / SEO stuff
 

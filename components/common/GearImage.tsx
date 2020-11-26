@@ -7,6 +7,8 @@ interface GearImageProps {
   mini?: boolean;
 }
 
+// TODO: next/image
+
 const GearImage: React.FC<GearImageProps> = ({ englishName, mini }) => {
   const { i18n } = useLingui();
   const wh = "32px";
