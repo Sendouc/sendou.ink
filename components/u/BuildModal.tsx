@@ -35,7 +35,7 @@ import {
   TITLE_CHARACTER_LIMIT,
 } from "lib/validators/build";
 import { GetBuildsByUserData } from "prisma/queries/getBuildsByUser";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { mutate } from "swr";
 import * as z from "zod";
@@ -49,6 +49,7 @@ interface Props {
 type FormData = z.infer<typeof buildSchema>;
 
 const BuildModal: React.FC<Props> = ({ onClose, build }) => {
+  const [sending, setSending] = useState(false);
   const [loggedInUser] = useUser();
 
   const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
@@ -82,6 +83,7 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
   const toast = useToast();
 
   const onSubmit = async (formData: FormData) => {
+    setSending(true);
     const mutationData = { ...formData };
 
     for (const [key, value] of Object.entries(mutationData)) {
@@ -92,6 +94,7 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
     }
 
     const success = await sendData("POST", "/api/builds", mutationData);
+    setSending(false);
     if (!success) return;
 
     if (!loggedInUser) throw Error("unexpected no logged in user");
@@ -345,12 +348,7 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
               </FormControl>
             </ModalBody>
             <ModalFooter>
-              <Button
-                mr={3}
-                type="submit"
-                // TODO:
-                //isLoading={loading}
-              >
+              <Button mr={3} type="submit" isLoading={sending}>
                 <Trans>Save</Trans>
               </Button>
               <Button onClick={onClose} variant="outline">

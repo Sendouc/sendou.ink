@@ -30,6 +30,7 @@ import {
   PROFILE_CHARACTER_LIMIT,
 } from "lib/validators/profile";
 import { GetUserByIdentifierData } from "prisma/queries/getUserByIdentifier";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { FaGamepad, FaTwitch, FaTwitter, FaYoutube } from "react-icons/fa";
 import { mutate } from "swr";
@@ -73,6 +74,7 @@ interface Props {
 type FormData = z.infer<typeof profileSchemaFrontend>;
 
 const ProfileModal: React.FC<Props> = ({ onClose, user }) => {
+  const [sending, setSending] = useState(false);
   const { i18n } = useLingui();
 
   const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
@@ -91,6 +93,7 @@ const ProfileModal: React.FC<Props> = ({ onClose, user }) => {
   const toast = useToast();
 
   const onSubmit = async (formData: FormData) => {
+    setSending(true);
     const mutationData = {
       ...formData,
       // sens is treated as string on the frontend side of things because
@@ -113,6 +116,7 @@ const ProfileModal: React.FC<Props> = ({ onClose, user }) => {
     }
 
     const success = await sendData("PUT", "/api/me/profile", mutationData);
+    setSending(false);
     if (!success) return;
 
     mutate(`/api/users/${user.id}`);
@@ -318,12 +322,7 @@ const ProfileModal: React.FC<Props> = ({ onClose, user }) => {
               />
             </ModalBody>
             <ModalFooter>
-              <Button
-                mr={3}
-                type="submit"
-                // TODO:
-                //isLoading={loading}
-              >
+              <Button mr={3} type="submit" isLoading={sending}>
                 <Trans>Save</Trans>
               </Button>
               <Button onClick={onClose} variant="outline">

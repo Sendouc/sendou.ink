@@ -1,8 +1,10 @@
 ### Before production
 
-- [ ] Can log in
+- [x] Can log in
 - [ ] Can update builds
 - [ ] Build Analyzer
+  - [ ] Import /analyzer
+  - [ ] Builds link to /analyzer
 - [ ] Script to parse data from Top 500 .json to the DB
 - [ ] Top 500 Leaderboards
 - [ ] Localization
