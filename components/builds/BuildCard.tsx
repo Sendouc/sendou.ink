@@ -18,7 +18,7 @@ import { useMyTheme } from "lib/useMyTheme";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { FiBarChart2, FiInfo, FiTarget } from "react-icons/fi";
+import { FiBarChart2, FiEdit, FiInfo, FiTarget } from "react-icons/fi";
 import Gears from "./Gears";
 import ViewAP from "./ViewAP";
 import ViewSlots from "./ViewSlots";
@@ -26,17 +26,15 @@ import ViewSlots from "./ViewSlots";
 interface BuildCardProps {
   // TODO: don't select unnecessary fields
   build: PartialBy<Prisma.BuildGetPayload<{ include: { user: true } }>, "user">;
-  canModify?: boolean;
-  //setBuildBeingEdited?: (build: Build) => void;
   otherBuildCount?: number;
   onShowAllByUser?: () => void;
+  onEdit?: (build: BuildCardProps["build"]) => void;
   showWeapon?: boolean;
 }
 
 const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
   build,
-  canModify,
-  //setBuildBeingEdited,
+  onEdit,
   otherBuildCount,
   onShowAllByUser,
   showWeapon,
@@ -159,20 +157,17 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
                 </PopoverContent>
               </Popover>
             )}
-            {/* {canModify && (
+            {onEdit && (
               <IconButton
                 variant="ghost"
                 isRound
-                colorScheme={themeColor}
-                onClick={
-                  setBuildBeingEdited && (() => setBuildBeingEdited(build))
-                }
-                aria-label="Show description"
+                onClick={() => onEdit(build)}
+                aria-label="Edit build"
                 fontSize="20px"
                 icon={<FiEdit />}
                 ml="0.5em"
               />
-            )} */}
+            )}
           </Flex>
           <Box mt="1em">
             <Gears build={build} />

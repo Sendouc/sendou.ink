@@ -1,7 +1,7 @@
 ### Before production
 
 - [x] Can log in
-- [ ] Can update builds
+- [x] Can update builds
 - [ ] Build Analyzer
   - [ ] Import /analyzer
   - [ ] Builds link to /analyzer

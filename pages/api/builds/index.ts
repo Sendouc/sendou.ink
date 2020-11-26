@@ -8,11 +8,7 @@ import DBClient from "prisma/client";
 
 const prisma = DBClient.getInstance().prisma;
 
-const buildHandler = async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method !== "POST") {
-    return res.status(405).end();
-  }
-
+const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   const user = await getMySession(req);
   if (!user) return res.status(401).end();
 
@@ -32,23 +28,6 @@ const buildHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       .status(400)
       .json({ message: "You have too many builds posted already" });
   }
-
-  const getAbilityPoints = () => {
-    const result: Partial<Record<Ability, number>> = {};
-
-    const getPointsFromAbilityArray = (ability: Ability, index: number) => {
-      const existingAmount = result[ability] ?? 0;
-      const apsToAdd = index === 0 ? 10 : 3;
-
-      result[ability] = existingAmount + apsToAdd;
-    };
-
-    parsed.data.headAbilities.forEach(getPointsFromAbilityArray);
-    parsed.data.clothingAbilities.forEach(getPointsFromAbilityArray);
-    parsed.data.shoesAbilities.forEach(getPointsFromAbilityArray);
-
-    return result;
-  };
 
   const hasTop500WithTheWeapon = async () => {
     const playerData = await prisma.player.findFirst({
@@ -70,7 +49,11 @@ const buildHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   await prisma.build.create({
     data: {
       ...parsed.data,
-      abilityPoints: getAbilityPoints(),
+      abilityPoints: getAbilityPoints(
+        parsed.data.headAbilities,
+        parsed.data.clothingAbilities,
+        parsed.data.shoesAbilities
+      ),
       jpn: postsJpBuilds,
       top500: await hasTop500WithTheWeapon(),
       user: {
@@ -83,5 +66,80 @@ const buildHandler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   res.status(200).end();
 };
+
+const updateHandler = async (req: NextApiRequest, res: NextApiResponse) => {
+  const user = await getMySession(req);
+  if (!user) return res.status(401).end();
+
+  const parsed = buildSchema.safeParse(req.body);
+
+  if (!parsed.success) {
+    return res.status(400).end();
+  }
+
+  const id = parsed.data.id;
+
+  const existingBuild = await prisma.build.findUnique({
+    where: { id },
+  });
+
+  if (!existingBuild || existingBuild.weapon !== parsed.data.weapon) {
+    return res.status(400).end();
+  }
+
+  if (existingBuild.userId !== user.id) {
+    return res.status(403).end();
+  }
+
+  delete parsed.data.id;
+
+  await prisma.build.update({
+    where: { id },
+    data: {
+      ...parsed.data,
+      abilityPoints: getAbilityPoints(
+        parsed.data.headAbilities,
+        parsed.data.clothingAbilities,
+        parsed.data.shoesAbilities
+      ),
+    },
+  });
+
+  res.status(200).end();
+};
+
+const buildHandler = async (req: NextApiRequest, res: NextApiResponse) => {
+  switch (req.method) {
+    case "POST":
+      await postHandler(req, res);
+      break;
+    case "PUT":
+      await updateHandler(req, res);
+      break;
+    default:
+      return res.status(405).end();
+  }
+};
+
+function getAbilityPoints(
+  headAbilities: Ability[],
+  clothingAbilities: Ability[],
+  shoesAbilities: Ability[]
+) {
+  const result: Partial<Record<Ability, number>> = {};
+
+  const getPointsFromAbilityArray = (ability: Ability, index: number) => {
+    const existingAmount = result[ability] ?? 0;
+    const apsToAdd = index === 0 ? 10 : 3;
+
+    result[ability] = existingAmount + apsToAdd;
+  };
+
+  headAbilities.forEach(getPointsFromAbilityArray);
+  clothingAbilities.forEach(getPointsFromAbilityArray);
+  shoesAbilities.forEach(getPointsFromAbilityArray);
+
+  return result;
+}
 
 export default buildHandler;

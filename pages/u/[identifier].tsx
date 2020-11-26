@@ -1,7 +1,7 @@
 import { Button, Divider, Select } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import { RankedMode } from "@prisma/client";
+import { Build, RankedMode } from "@prisma/client";
 import BuildCard from "components/builds/BuildCard";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import Markdown from "components/common/Markdown";
@@ -33,7 +33,7 @@ interface Props {
 
 const ProfilePage = (props: Props) => {
   const [showProfileModal, setShowProfileModal] = useState(false);
-  const [showBuildModal, setShowBuildModal] = useState(false);
+  const [buildToEdit, setBuildToEdit] = useState<boolean | Build>(false);
 
   const [loggedInUser] = useUser();
   const { data: user } = useSWR<GetUserByIdentifierData>(
@@ -64,8 +64,11 @@ const ProfilePage = (props: Props) => {
       {showProfileModal && (
         <ProfileModal onClose={() => setShowProfileModal(false)} user={user} />
       )}
-      {showBuildModal && (
-        <BuildModal onClose={() => setShowBuildModal(false)} />
+      {buildToEdit && (
+        <BuildModal
+          onClose={() => setBuildToEdit(false)}
+          build={typeof buildToEdit === "boolean" ? undefined : buildToEdit}
+        />
       )}
 
       <Breadcrumbs
@@ -109,13 +112,19 @@ const ProfilePage = (props: Props) => {
             </Select>
           )}
           {canPostBuilds() && (
-            <Button mt={5} onClick={() => setShowBuildModal(true)}>
+            <Button mt={5} onClick={() => setBuildToEdit(true)}>
               <Trans>Add build</Trans>
             </Button>
           )}
           <MyInfiniteScroller>
             {builds.map((build) => (
-              <BuildCard key={build.id} build={build} m={2} showWeapon />
+              <BuildCard
+                key={build.id}
+                build={build}
+                m={2}
+                showWeapon
+                onEdit={(build) => setBuildToEdit(build)}
+              />
             ))}
           </MyInfiniteScroller>
         </>

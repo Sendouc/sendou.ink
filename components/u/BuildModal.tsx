@@ -93,7 +93,11 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
       }
     }
 
-    const success = await sendData("POST", "/api/builds", mutationData);
+    const success = await sendData(
+      build ? "PUT" : "POST",
+      "/api/builds",
+      build ? { ...mutationData, id: build.id } : mutationData
+    );
     setSending(false);
     if (!success) return;
 

@@ -73,6 +73,7 @@ export const buildSchema = z.object({
     .refine((val) => !val || shoesGear.includes(val as any))
     .optional()
     .nullable(),
+  id: z.number().optional(),
 });
 
 function isAbilityArray(arr: any[], type: "HEAD" | "CLOTHING" | "SHOES") {
