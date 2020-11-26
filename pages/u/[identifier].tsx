@@ -31,6 +31,8 @@ interface Props {
   peakXPowers: Partial<Record<RankedMode, number>>;
 }
 
+// TODO: when fallback in production seems like the site will never load till F5
+
 const ProfilePage = (props: Props) => {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [buildToEdit, setBuildToEdit] = useState<boolean | Build>(false);
@@ -123,7 +125,11 @@ const ProfilePage = (props: Props) => {
                 build={build}
                 m={2}
                 showWeapon
-                onEdit={(build) => setBuildToEdit(build)}
+                onEdit={
+                  loggedInUser?.id === user.id
+                    ? (build) => setBuildToEdit(build)
+                    : undefined
+                }
               />
             ))}
           </MyInfiniteScroller>
