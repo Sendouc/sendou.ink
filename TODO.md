@@ -3,7 +3,7 @@
 - [x] Can log in
 - [x] Can update builds
 - [ ] Build Analyzer
-  - [ ] Import /analyzer
+  - [x] Import /analyzer
   - [ ] Builds link to /analyzer
 - [ ] Builds mode icons
 - [ ] Script to parse data from Top 500 .json to the DB

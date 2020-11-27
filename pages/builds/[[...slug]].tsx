@@ -20,7 +20,7 @@ const BuildsPage = () => {
     dispatch,
     hiddenBuildCount,
   } = useBuildsByWeapon();
-  const { themeColorHex } = useMyTheme();
+  const { secondaryBgColor, themeColorShade } = useMyTheme();
   return (
     <>
       <Breadcrumbs pages={[{ name: t`Builds` }]} />
@@ -31,49 +31,49 @@ const BuildsPage = () => {
         isHeader
       />
       <>
-        <Box mt={4} pr={3} mb="-5rem">
-          {state.weapon ? (
-            <WeaponImage name={state.weapon} size={128} />
-          ) : (
-            <Box w="135px" h="135px" />
-          )}
-        </Box>
-        <Flex
-          justifyContent="flex-end"
-          p={2}
-          mb={8}
-          w="100%"
-          bg={themeColorHex}
-          rounded="lg"
-          fontSize="sm"
-          boxShadow="md"
-          color="black"
-        >
-          <Flex
-            justifyContent="space-between"
-            fontSize="xs"
-            textColor="black"
-            textTransform="uppercase"
-            letterSpacing="wider"
-            lineHeight="1rem"
-            fontWeight="medium"
-          >
-            <Box
-              visibility={
-                data.length === 0 && hiddenBuildCount === 0
-                  ? "hidden"
-                  : undefined
-              }
-            >
-              {data.length} <Trans>builds</Trans>{" "}
-              {hiddenBuildCount > 0 && (
-                <>
-                  (+ {hiddenBuildCount} <Trans>hidden</Trans>)
-                </>
-              )}
+        {state.weapon && (
+          <>
+            <Box mt={4} pr={3} mb="-5rem">
+              <WeaponImage name={state.weapon} size={128} />
             </Box>
-          </Flex>
-        </Flex>
+            <Flex
+              justifyContent="flex-end"
+              p={2}
+              mb={8}
+              w="100%"
+              bg={secondaryBgColor}
+              rounded="lg"
+              fontSize="sm"
+              boxShadow="md"
+            >
+              <Flex
+                justifyContent="space-between"
+                fontSize="xs"
+                textColor="black"
+                textTransform="uppercase"
+                letterSpacing="wider"
+                lineHeight="1rem"
+                fontWeight="medium"
+              >
+                <Box
+                  visibility={
+                    data.length === 0 && hiddenBuildCount === 0
+                      ? "hidden"
+                      : undefined
+                  }
+                  color={themeColorShade}
+                >
+                  {data.length} <Trans>builds</Trans>{" "}
+                  {hiddenBuildCount > 0 && (
+                    <>
+                      (+ {hiddenBuildCount} <Trans>hidden</Trans>)
+                    </>
+                  )}
+                </Box>
+              </Flex>
+            </Flex>
+          </>
+        )}
       </>
 
       {state.weapon && (

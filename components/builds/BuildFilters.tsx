@@ -10,7 +10,7 @@ import {
   Radio,
   Select,
 } from "@chakra-ui/react";
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { Ability } from "@prisma/client";
 import AbilityIcon from "components/common/AbilityIcon";
 import {
@@ -49,7 +49,8 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
               mb="-1.2rem"
               fontSize="sm"
               color={
-                filter.abilityPoints!.min > filter.abilityPoints!.max
+                filter.abilityPoints &&
+                filter.abilityPoints.min > filter.abilityPoints.max
                   ? "red.500"
                   : gray
               }
@@ -65,7 +66,8 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
               mb="-1.2rem"
               fontSize="sm"
               color={
-                filter.abilityPoints!.min > filter.abilityPoints!.max
+                filter.abilityPoints &&
+                filter.abilityPoints.min > filter.abilityPoints.max
                   ? "red.500"
                   : gray
               }
@@ -162,11 +164,7 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
         ))}
       </Grid>
       <Box mt={4}>
-        <Box as="label" htmlFor="filterAdder" fontSize="sm" ml={2} color={gray}>
-          Add filter
-        </Box>
         <Select
-          name="filterAdder"
           onChange={(e) =>
             dispatch({
               type: "ADD_FILTER",
@@ -177,6 +175,9 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
           width={48}
           m={2}
         >
+          <option hidden value="NO_VALUE">
+            {t`Filter by ability`}
+          </option>
           {abilities
             .filter(
               (ability) =>
