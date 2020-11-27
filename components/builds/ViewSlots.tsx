@@ -1,11 +1,11 @@
 import { Box, BoxProps, Flex } from "@chakra-ui/react";
-import { Ability as DBAbility } from "@prisma/client";
 import AbilityIcon from "components/common/AbilityIcon";
+import { AbilityOrUnknown } from "lib/types";
 
 export type ViewSlotsAbilities = {
-  headAbilities: (DBAbility | "UNKNOWN")[];
-  clothingAbilities: (DBAbility | "UNKNOWN")[];
-  shoesAbilities: (DBAbility | "UNKNOWN")[];
+  headAbilities: AbilityOrUnknown[];
+  clothingAbilities: AbilityOrUnknown[];
+  shoesAbilities: AbilityOrUnknown[];
 };
 
 interface ViewSlotsProps {

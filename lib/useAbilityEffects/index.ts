@@ -20,8 +20,8 @@ export interface Explanation {
 }
 
 interface useAbilityEffectsArgs {
-  weapon: Weapon;
-  buildsAbilities: ViewSlotsAbilities;
+  weapon: string;
+  abilities: ViewSlotsAbilities;
   bonusAp?: Partial<Record<Ability, boolean>>;
   lde?: number;
 }
@@ -127,8 +127,8 @@ function buildToAP(
 }
 
 export default function useAbilityEffects({
-  weapon,
-  buildsAbilities,
+  weapon: untypedWeapon,
+  abilities: buildsAbilities,
   bonusAp = {},
   lde = 0,
 }: useAbilityEffectsArgs) {
@@ -138,6 +138,8 @@ export default function useAbilityEffects({
     Weapon | SubWeapon | SpecialWeapon,
     any
   > = weaponJson;
+
+  const weapon = untypedWeapon as Weapon;
 
   function calculateISM(amount: number) {
     const ISM = abilityJson["Ink Saver (Main)"];
@@ -1232,7 +1234,7 @@ export default function useAbilityEffects({
 
       toReturn.push({
         title: `${subWeaponTranslated} ${t`Quick Super Jump`} ${t`boost`}`,
-        effect: `${Math.floor(effect[0])}${t`abilityPointShort`}`,
+        effect: `${Math.floor(effect[0])}${t`AP`}`,
         effectFromMax: effect[1],
         ability: "BRU" as Ability,
         ap: amount,

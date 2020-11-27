@@ -22,6 +22,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { t, Trans } from "@lingui/macro";
 import { Ability } from "@prisma/client";
+import ViewSlots from "components/builds/ViewSlots";
 import MySelect from "components/common/MySelect";
 import WeaponSelector from "components/common/WeaponSelector";
 import { getToastOptions } from "lib/getToastOptions";
@@ -176,6 +177,33 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
                             value: shoesAbilities,
                           }) => (
                             <Box mt={4}>
+                              <ViewSlots
+                                abilities={{
+                                  headAbilities,
+                                  clothingAbilities,
+                                  shoesAbilities,
+                                }}
+                                onAbilityClick={(gear, index) => {
+                                  const abilityArrays = {
+                                    headAbilities,
+                                    clothingAbilities,
+                                    shoesAbilities,
+                                  };
+
+                                  const onChange = {
+                                    headAbilities: onHeadChange,
+                                    clothingAbilities: onClothingChange,
+                                    shoesAbilities: onShoesChange,
+                                  };
+
+                                  const newAbilityArray = {
+                                    ...abilityArrays[gear],
+                                  };
+
+                                  newAbilityArray[index] = "UNKNOWN";
+                                  onChange[gear](newAbilityArray);
+                                }}
+                              />
                               <AbilitiesSelector
                                 abilities={{
                                   headAbilities,

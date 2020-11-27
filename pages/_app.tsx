@@ -46,6 +46,11 @@ const extendedTheme = extendTheme({
         colorScheme: "theme",
       },
     },
+    Badge: {
+      defaultProps: {
+        colorScheme: "theme",
+      },
+    },
     Modal: {
       baseStyle: (props) => ({
         dialog: {

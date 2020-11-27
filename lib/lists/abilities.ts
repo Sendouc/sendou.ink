@@ -52,3 +52,12 @@ export const isMainAbility = (ability: any) =>
 
 export const isAbility = (ability: any) =>
   abilities.some((abilityObject) => abilityObject.code === ability);
+
+export const isSlotOnlyAbility = (
+  ability: any,
+  slot: "HEAD" | "CLOTHING" | "SHOES"
+) =>
+  abilities.some(
+    (abilityObject) =>
+      abilityObject.code === ability && abilityObject.type === slot
+  );

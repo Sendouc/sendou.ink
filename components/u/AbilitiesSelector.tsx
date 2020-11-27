@@ -1,5 +1,5 @@
 import { Box, Divider, Flex } from "@chakra-ui/react";
-import ViewSlots, { ViewSlotsAbilities } from "components/builds/ViewSlots";
+import { ViewSlotsAbilities } from "components/builds/ViewSlots";
 import AbilityIcon from "components/common/AbilityIcon";
 import { abilities as allAbilities } from "lib/lists/abilities";
 
@@ -88,12 +88,6 @@ const AbilitiesSelector: React.FC<Props> = ({ abilities, setAbilities }) => {
 
   return (
     <>
-      <ViewSlots
-        abilities={abilities}
-        onAbilityClick={(gear, index) =>
-          setAbilities(getModifiedAbilities("UNKNOWN", gear, index))
-        }
-      />
       <Flex
         flexWrap="wrap"
         justifyContent="center"

@@ -41,6 +41,7 @@
     "react-infinite-scroller": "^1.2.4",
     "react-markdown": "^5.0.3",
     "react-string-replace": "^0.4.4",
+    "recharts": "^1.8.5",
     "swr": "^0.3.9",
     "zod": "^1.11.10"
   },
@@ -53,6 +54,7 @@
     "@types/node": "^14.14.10",
     "@types/react": "^17.0.0",
     "@types/react-infinite-scroller": "^1.2.1",
+    "@types/recharts": "^1.8.16",
     "cypress": "^6.0.0",
     "prettier": "^2.2.0",
     "ts-node": "^9.0.0",
