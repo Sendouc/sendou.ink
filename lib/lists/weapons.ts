@@ -142,3 +142,5 @@ export const altWeaponToNormal = new Map([
   ["Hero Brella Replica", "Splat Brella"],
   ["Octo Shot Replica", "Tentatek Splattershot"],
 ]);
+
+export const isWeapon = (value: any) => weapons.includes(value);

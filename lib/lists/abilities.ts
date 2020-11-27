@@ -61,3 +61,21 @@ export const isSlotOnlyAbility = (
     (abilityObject) =>
       abilityObject.code === ability && abilityObject.type === slot
   );
+
+export function isAbilityArray(
+  arr: any[],
+  type: "HEAD" | "CLOTHING" | "SHOES"
+) {
+  if (arr.length !== 4) return false;
+
+  return arr.every((value, index) => {
+    const ability = abilities.find(
+      (abilityCodeInArray) => value === abilityCodeInArray.code
+    );
+    if (!ability) return false;
+
+    if (index === 0) return ["STACKABLE", type].includes(ability.type);
+
+    return ability.type === "STACKABLE";
+  });
+}

@@ -1,4 +1,5 @@
 // TODO: this whole file should probably get replaced with something like react-window
+// TODO: render less than 12?
 
 import { Flex } from "@chakra-ui/react";
 import { ReactElement, ReactNodeArray, useState } from "react";

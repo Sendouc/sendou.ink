@@ -1,4 +1,4 @@
-import { abilities } from "lib/lists/abilities";
+import { isAbilityArray } from "lib/lists/abilities";
 import { clothingGear, headGear, shoesGear } from "lib/lists/gear";
 import { weaponsWithHero } from "lib/lists/weaponsWithHero";
 import * as z from "zod";
@@ -75,18 +75,3 @@ export const buildSchema = z.object({
     .nullable(),
   id: z.number().optional(),
 });
-
-function isAbilityArray(arr: any[], type: "HEAD" | "CLOTHING" | "SHOES") {
-  if (arr.length !== 4) return false;
-
-  return arr.every((value, index) => {
-    const ability = abilities.find(
-      (abilityCodeInArray) => value === abilityCodeInArray.code
-    );
-    if (!ability) return false;
-
-    if (index === 0) return ["STACKABLE", type].includes(ability.type);
-
-    return ability.type === "STACKABLE";
-  });
-}

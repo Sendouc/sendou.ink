@@ -2,9 +2,10 @@
 
 - [x] Can log in
 - [x] Can update builds
-- [ ] Build Analyzer
+- [x] Build Analyzer
   - [x] Import /analyzer
-  - [ ] Builds link to /analyzer
+  - [x] Builds link to /analyzer
+- [ ] Check that user page fallback / redirect works
 - [ ] Builds mode icons
 - [ ] Script to parse data from Top 500 .json to the DB
 - [ ] Top 500 Leaderboards

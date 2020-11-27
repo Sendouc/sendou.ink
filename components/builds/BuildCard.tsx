@@ -41,7 +41,6 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
   ...props
 }) => {
   const [apView, setApView] = useState(false);
-  const [showStats, setShowStats] = useState(false);
 
   const { themeColorShade, secondaryBgColor, gray } = useMyTheme();
 
@@ -49,9 +48,6 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
 
   return (
     <>
-      {/* {showStats && (
-        <BuildCardStats build={build} closeModal={() => setShowStats(false)} />
-      )} */}
       <Box
         w="300px"
         rounded="lg"
@@ -126,15 +122,22 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
               icon={<FiTarget />}
               mr="0.5em"
             />
-            <IconButton
-              variant="ghost"
-              isRound
-              onClick={() => setShowStats(!showStats)}
-              aria-label="Show build stats view"
-              fontSize="20px"
-              icon={<FiBarChart2 />}
-              mr="0.5em"
-            />
+            <Link
+              href={encodeURI(
+                `/analyzer?weapon=${build.weapon}&head=${build.headAbilities}&clothing=${build.clothingAbilities}&shoes=${build.shoesAbilities}`
+              )}
+            >
+              <a>
+                <IconButton
+                  variant="ghost"
+                  isRound
+                  aria-label="Show build stats view"
+                  fontSize="20px"
+                  icon={<FiBarChart2 />}
+                  mr="0.5em"
+                />
+              </a>
+            </Link>
             {build.description && (
               <Popover placement="top">
                 <PopoverTrigger>

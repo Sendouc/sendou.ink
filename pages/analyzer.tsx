@@ -13,10 +13,13 @@ import EditableBuilds from "components/analyzer/EditableBuilds";
 import { ViewSlotsAbilities } from "components/builds/ViewSlots";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import WeaponSelector from "components/common/WeaponSelector";
+import { isAbilityArray } from "lib/lists/abilities";
+import { isWeapon } from "lib/lists/weapons";
 import { AbilityOrUnknown } from "lib/types";
 import useAbilityEffects from "lib/useAbilityEffects";
 import { useMyTheme } from "lib/useMyTheme";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { FiSettings } from "react-icons/fi";
 
 const CURRENT_PATCH = "5.3.";
@@ -28,7 +31,8 @@ const defaultBuild: ViewSlotsAbilities = {
 };
 
 const BuildAnalyzerPage = () => {
-  const { themeColorShade, gray } = useMyTheme();
+  const router = useRouter();
+  const { gray } = useMyTheme();
   const [build, setBuild] = useState<ViewSlotsAbilities>({
     ...defaultBuild,
   });
@@ -65,36 +69,7 @@ const BuildAnalyzerPage = () => {
     lde: otherLde,
   });
 
-  // function getBuildFromUrl() {
-  //   const buildToReturn: AnalyzerBuild = {
-  //     ...defaultBuild,
-  //     weapon: "Splattershot Jr.",
-  //   };
-  //   const decoded = new URLSearchParams(location.search);
-
-  //   for (const [key, value] of decoded) {
-  //     switch (key) {
-  //       case "weapon":
-  //         buildToReturn.weapon = value;
-  //         break;
-  //       case "headgear":
-  //       case "clothing":
-  //       case "shoes":
-  //         const abilityKey = key as "headgear" | "clothing" | "shoes";
-  //         buildToReturn[abilityKey] = value.split(",") as any;
-  //     }
-  //   }
-
-  //   return buildToReturn;
-  // }
-
-  // useEffect(() => {
-  //   const { weapon, ...buildFromUrl } = getBuildFromUrl();
-
-  //   setWeapon(weapon);
-  //   setBuild(buildFromUrl);
-  //   // eslint-disable-next-line
-  // }, []);
+  useEffect(parseQuery, []);
 
   return (
     <>
@@ -200,6 +175,34 @@ const BuildAnalyzerPage = () => {
       </Wrap>
     </>
   );
+
+  function parseQuery() {
+    const query = router.query;
+
+    const weapon = isWeapon(query.weapon) ? query.weapon : "Splattershot Jr.";
+    const headAbilities =
+      typeof query.head === "string" &&
+      isAbilityArray(query.head.split(","), "HEAD")
+        ? query.head.split(",")
+        : ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"];
+    const clothingAbilities =
+      typeof query.clothing === "string" &&
+      isAbilityArray(query.clothing.split(","), "CLOTHING")
+        ? query.clothing.split(",")
+        : ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"];
+    const shoesAbilities =
+      typeof query.shoes === "string" &&
+      isAbilityArray(query.shoes.split(","), "SHOES")
+        ? query.shoes.split(",")
+        : ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"];
+
+    setWeapon(weapon as string);
+    setBuild({
+      headAbilities: headAbilities as AbilityOrUnknown[],
+      clothingAbilities: clothingAbilities as AbilityOrUnknown[],
+      shoesAbilities: shoesAbilities as AbilityOrUnknown[],
+    });
+  }
 };
 
 export default BuildAnalyzerPage;
