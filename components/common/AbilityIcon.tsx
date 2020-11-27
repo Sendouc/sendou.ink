@@ -14,9 +14,14 @@ interface AbilityIconProps {
   // TODO: use enum from generated/graphql.tsx
   ability: string | "EMPTY";
   size: "MAIN" | "SUB" | "TINY" | "SUBTINY";
+  loading?: "eager";
 }
 
-const AbilityIcon: React.FC<AbilityIconProps> = ({ ability, size }) => {
+const AbilityIcon: React.FC<AbilityIconProps> = ({
+  ability,
+  size,
+  loading,
+}) => {
   const sizeNumber = sizeMap[size];
 
   return (
@@ -41,6 +46,7 @@ const AbilityIcon: React.FC<AbilityIconProps> = ({ ability, size }) => {
         width={sizeNumber}
         height={sizeNumber}
         alt={ability}
+        loading={loading ?? "lazy"}
       />
     </Box>
   );

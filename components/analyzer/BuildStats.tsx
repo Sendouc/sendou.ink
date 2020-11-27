@@ -91,7 +91,7 @@ const BuildStats: React.FC<BuildStatsProps> = ({
         <Flex justifyContent="space-between">
           <Flex fontWeight="bold" mr="1em" mb="0.5em" alignItems="center">
             <Box minW="30px">
-              <AbilityIcon ability={ability} size="TINY" />
+              <AbilityIcon ability={ability} size="TINY" loading="eager" />
             </Box>
             <IconButton
               aria-label="Show chart for the stat"

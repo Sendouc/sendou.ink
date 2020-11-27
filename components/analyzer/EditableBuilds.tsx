@@ -163,7 +163,7 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
       </Flex>
       <Box mt="1em">
         <AbilitiesSelector
-          abilities={showOther ? otherBuild : build}
+          abilities={otherFocused ? otherBuild : build}
           setAbilities={(newAbilities) => setBuild(newAbilities)}
         />
       </Box>

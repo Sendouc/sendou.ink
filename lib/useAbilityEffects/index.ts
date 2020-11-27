@@ -572,7 +572,7 @@ export default function useAbilityEffects({
     return [
       {
         title: t`Points to special`,
-        effect: `${Math.ceil(points / effect[0])}${t`pointShort`} (${parseFloat(
+        effect: `${Math.ceil(points / effect[0])}${t`p`} (${parseFloat(
           (effect[0] * 100).toFixed(2)
         )}% ${t`speed`})`,
         effectFromMax: effect[1],
