@@ -13,7 +13,41 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: components/builds/BuildCard.tsx:58
+#: components/analyzer/EditableBuilds.tsx:30
+msgid "Stop comparing"
+msgstr "Stop comparing"
+
+#: components/analyzer/EditableBuilds.tsx:30
+msgid "Compare"
+msgstr "Compare"
+
+#: components/analyzer/HeadOnlyToggle.tsx:16
+#: components/analyzer/HeadOnlyToggle.tsx:22
+#: components/analyzer/LdeSlider.tsx:29
+#: components/analyzer/StatChart.tsx:11
+#: components/analyzer/StatChart.tsx:16
+#: components/builds/ViewAP.tsx:26
+#: lib/useAbilityEffects/index.ts:823
+msgid "AP"
+msgstr "AP"
+
+#: components/analyzer/LdeSlider.tsx:10
+msgid "Enemy has reached the 30 point mark OR there is 30 seconds or less on the clock OR it is overtime"
+msgstr "Enemy has reached the 30 point mark OR there is 30 seconds or less on the clock OR it is overtime"
+
+#: components/analyzer/LdeSlider.tsx:13
+msgid "Enemy has reached the {pointMark} point mark"
+msgstr "Enemy has reached the {pointMark} point mark"
+
+#: components/analyzer/LdeSlider.tsx:14
+msgid "Enemy has not reached the 50 point mark or there is more than 30 seconds on the clock"
+msgstr "Enemy has not reached the 50 point mark or there is more than 30 seconds on the clock"
+
+#: components/analyzer/LdeSlider.tsx:18
+msgid "Intensity"
+msgstr "Intensity"
+
+#: components/builds/BuildCard.tsx:54
 msgid "Maker of the build has finished in the top 500 of X Rank with this weapon"
 msgstr "Maker of the build has finished in the top 500 of X Rank with this weapon"
 
@@ -21,19 +55,19 @@ msgstr "Maker of the build has finished in the top 500 of X Rank with this weapo
 msgid "{otherBuildCount, plural, one {Show # more build by {username}} other {Show # more builds by {username}}}"
 msgstr "{otherBuildCount, plural, one {Show # more build by {username}} other {Show # more builds by {username}}}"
 
-#: components/builds/BuildFilters.tsx:16
+#: components/builds/BuildFilters.tsx:19
 msgid "Included"
 msgstr "Included"
 
-#: components/builds/BuildFilters.tsx:16
+#: components/builds/BuildFilters.tsx:19
 msgid "Min AP"
 msgstr "Min AP"
 
-#: components/builds/BuildFilters.tsx:19
+#: components/builds/BuildFilters.tsx:25
 msgid "Excluded"
 msgstr "Excluded"
 
-#: components/builds/BuildFilters.tsx:19
+#: components/builds/BuildFilters.tsx:25
 msgid "Max AP"
 msgstr "Max AP"
 
@@ -57,9 +91,9 @@ msgstr "Max AP"
 #~ msgid "Add filter"
 #~ msgstr "Add filter"
 
-#: components/builds/ViewAP.tsx:26
-msgid "AP"
-msgstr "AP"
+#: components/builds/BuildFilters.tsx:75
+msgid "Filter by ability"
+msgstr "Filter by ability"
 
 #: components/common/Breadcrumbs.tsx:16
 msgid "Home"
@@ -106,7 +140,7 @@ msgid "Leaderboards"
 msgstr "Leaderboards"
 
 #: components/layout/IconNavBar.tsx:21
-#: pages/builds/[[...slug]].tsx:15
+#: pages/builds/[[...slug]].tsx:17
 msgid "Builds"
 msgstr "Builds"
 
@@ -244,7 +278,7 @@ msgstr "Mode"
 
 #: components/player/PlayerTable.tsx:25
 #: components/top500/Top500Table.tsx:24
-#: components/u/BuildModal.tsx:54
+#: components/u/BuildModal.tsx:80
 msgid "Weapon"
 msgstr "Weapon"
 
@@ -268,93 +302,161 @@ msgstr "Motion"
 msgid "View all Top 500 results"
 msgstr "View all Top 500 results"
 
-#: components/u/BuildModal.tsx:48
+#: components/u/BuildModal.tsx:67
+msgid "Build updated"
+msgstr "Build updated"
+
+#: components/u/BuildModal.tsx:67
+msgid "New build added"
+msgstr "New build added"
+
+#: components/u/BuildModal.tsx:74
 msgid "Editing build"
 msgstr "Editing build"
 
-#: components/u/BuildModal.tsx:48
+#: components/u/BuildModal.tsx:74
 msgid "Adding a new build"
 msgstr "Adding a new build"
 
-#: components/u/BuildModal.tsx:60
+#: components/u/BuildModal.tsx:86
+msgid "Choose a weapon for your build"
+msgstr "Choose a weapon for your build"
+
+#: components/u/BuildModal.tsx:124
+msgid "Your build is missing some abilities"
+msgstr "Your build is missing some abilities"
+
+#: components/u/BuildModal.tsx:129
 msgid "Title"
 msgstr "Title"
 
-#: components/u/BuildModal.tsx:71
+#: components/u/BuildModal.tsx:140
 msgid "Description"
 msgstr "Description"
 
-#: components/u/BuildModal.tsx:83
+#: components/u/BuildModal.tsx:152
 msgid "Head"
 msgstr "Head"
 
-#: components/u/BuildModal.tsx:85
+#: components/u/BuildModal.tsx:154
 msgid "Select gear (head)"
 msgstr "Select gear (head)"
 
-#: components/u/BuildModal.tsx:96
-#: components/u/ProfileModal.tsx:184
+#: components/u/BuildModal.tsx:164
+msgid "Clothing"
+msgstr "Clothing"
+
+#: components/u/BuildModal.tsx:166
+msgid "Select gear (clothing)"
+msgstr "Select gear (clothing)"
+
+#: components/u/BuildModal.tsx:176
+msgid "Shoes"
+msgstr "Shoes"
+
+#: components/u/BuildModal.tsx:178
+msgid "Select gear (shoes)"
+msgstr "Select gear (shoes)"
+
+#: components/u/BuildModal.tsx:191
+msgid "Modes"
+msgstr "Modes"
+
+#: components/u/BuildModal.tsx:196
+msgid "TW"
+msgstr "TW"
+
+#: components/u/BuildModal.tsx:199
+#: pages/xsearch/[[...slug]].tsx:43
+msgid "SZ"
+msgstr "SZ"
+
+#: components/u/BuildModal.tsx:202
+#: pages/xsearch/[[...slug]].tsx:44
+msgid "TC"
+msgstr "TC"
+
+#: components/u/BuildModal.tsx:205
+#: pages/xsearch/[[...slug]].tsx:45
+msgid "RM"
+msgstr "RM"
+
+#: components/u/BuildModal.tsx:208
+#: pages/xsearch/[[...slug]].tsx:46
+msgid "CB"
+msgstr "CB"
+
+#: components/u/BuildModal.tsx:213
+msgid "Choose at least one mode where you use this build"
+msgstr "Choose at least one mode where you use this build"
+
+#: components/u/BuildModal.tsx:219
+msgid "Select at least one mode"
+msgstr "Select at least one mode"
+
+#: components/u/BuildModal.tsx:225
+#: components/u/ProfileModal.tsx:188
 msgid "Save"
 msgstr "Save"
 
-#: components/u/BuildModal.tsx:99
-#: components/u/ProfileModal.tsx:187
+#: components/u/BuildModal.tsx:228
+#: components/u/ProfileModal.tsx:191
 msgid "Cancel"
 msgstr "Cancel"
 
-#: components/u/ProfileModal.tsx:80
+#: components/u/ProfileModal.tsx:84
 msgid "Profile updated"
 msgstr "Profile updated"
 
-#: components/u/ProfileModal.tsx:87
+#: components/u/ProfileModal.tsx:91
 msgid "Editing profile"
 msgstr "Editing profile"
 
-#: components/u/ProfileModal.tsx:94
+#: components/u/ProfileModal.tsx:98
 msgid "Custom URL"
 msgstr "Custom URL"
 
-#: components/u/ProfileModal.tsx:108
+#: components/u/ProfileModal.tsx:112
 msgid "Twitter name"
 msgstr "Twitter name"
 
-#: components/u/ProfileModal.tsx:122
+#: components/u/ProfileModal.tsx:126
 msgid "Twitch name"
 msgstr "Twitch name"
 
-#: components/u/ProfileModal.tsx:136
+#: components/u/ProfileModal.tsx:140
 msgid "YouTube channel ID"
 msgstr "YouTube channel ID"
 
-#: components/u/ProfileModal.tsx:146
+#: components/u/ProfileModal.tsx:150
 msgid "Country"
 msgstr "Country"
 
-#: components/u/ProfileModal.tsx:148
+#: components/u/ProfileModal.tsx:152
 msgid "Select country"
 msgstr "Select country"
 
-#: components/u/ProfileModal.tsx:155
+#: components/u/ProfileModal.tsx:159
 msgid "Weapon pool"
 msgstr "Weapon pool"
 
-#: components/u/ProfileModal.tsx:161
+#: components/u/ProfileModal.tsx:165
 msgid "Stick sensitivity"
 msgstr "Stick sensitivity"
 
-#: components/u/ProfileModal.tsx:163
+#: components/u/ProfileModal.tsx:167
 msgid "Select stick sensitivity"
 msgstr "Select stick sensitivity"
 
-#: components/u/ProfileModal.tsx:171
+#: components/u/ProfileModal.tsx:175
 msgid "Motion sensitivity"
 msgstr "Motion sensitivity"
 
-#: components/u/ProfileModal.tsx:173
+#: components/u/ProfileModal.tsx:177
 msgid "Select motion sensitivity"
 msgstr "Select motion sensitivity"
 
-#: components/u/ProfileModal.tsx:179
+#: components/u/ProfileModal.tsx:183
 msgid ""
 "# I'm a header\n"
 "I'm **bolded**. Embedding weapon images is easy too: :luna_blaster:"
@@ -362,7 +464,7 @@ msgstr ""
 "# I'm a header\n"
 "I'm **bolded**. Embedding weapon images is easy too: :luna_blaster:"
 
-#: components/u/ProfileModal.tsx:179
+#: components/u/ProfileModal.tsx:183
 msgid "Bio"
 msgstr "Bio"
 
@@ -403,10 +505,14 @@ msgid "Special Power Up"
 msgstr "Special Power Up"
 
 #: lib/lists/abilities.ts:25
+#: lib/useAbilityEffects/index.ts:645
 msgid "Quick Respawn"
 msgstr "Quick Respawn"
 
 #: lib/lists/abilities.ts:26
+#: lib/useAbilityEffects/index.ts:672
+#: lib/useAbilityEffects/index.ts:681
+#: lib/useAbilityEffects/index.ts:822
 msgid "Quick Super Jump"
 msgstr "Quick Super Jump"
 
@@ -3554,6 +3660,380 @@ msgstr "Undercover Sorella Brella"
 msgid "Kensa Undercover Brella"
 msgstr "Kensa Undercover Brella"
 
+#: lib/useAbilityEffects/index.ts:96
+msgid "Full charges per ink tank"
+msgstr "Full charges per ink tank"
+
+#: lib/useAbilityEffects/index.ts:97
+msgid "Shots per ink tank"
+msgstr "Shots per ink tank"
+
+#: lib/useAbilityEffects/index.ts:112
+msgid "Shots per ink tank (autofire mode)"
+msgstr "Shots per ink tank (autofire mode)"
+
+#: lib/useAbilityEffects/index.ts:124
+msgid "Fully charged shots per ink tank"
+msgstr "Fully charged shots per ink tank"
+
+#: lib/useAbilityEffects/index.ts:137
+msgid "Tap shots per ink tank"
+msgstr "Tap shots per ink tank"
+
+#: lib/useAbilityEffects/index.ts:151
+msgid "Swings per ink tank"
+msgstr "Swings per ink tank"
+
+#: lib/useAbilityEffects/index.ts:163
+msgid "Ground swings per ink tank"
+msgstr "Ground swings per ink tank"
+
+#: lib/useAbilityEffects/index.ts:173
+msgid "Jumping swings per ink tank"
+msgstr "Jumping swings per ink tank"
+
+#: lib/useAbilityEffects/index.ts:186
+msgid "Dodge roll ink consumption"
+msgstr "Dodge roll ink consumption"
+
+#: lib/useAbilityEffects/index.ts:187
+#: lib/useAbilityEffects/index.ts:199
+#: lib/useAbilityEffects/index.ts:233
+msgid "of ink tank"
+msgstr "of ink tank"
+
+#: lib/useAbilityEffects/index.ts:198
+msgid "Brella shield launch ink consumption"
+msgstr "Brella shield launch ink consumption"
+
+#: lib/useAbilityEffects/index.ts:232
+msgid "ink consumption"
+msgstr "ink consumption"
+
+#: lib/useAbilityEffects/index.ts:256
+msgid "Ink tank recovery from empty to full (squid form)"
+msgstr "Ink tank recovery from empty to full (squid form)"
+
+#: lib/useAbilityEffects/index.ts:257
+#: lib/useAbilityEffects/index.ts:429
+#: lib/useAbilityEffects/index.ts:516
+#: lib/useAbilityEffects/index.ts:532
+#: lib/useAbilityEffects/index.ts:646
+#: lib/useAbilityEffects/index.ts:673
+#: lib/useAbilityEffects/index.ts:682
+#: lib/useAbilityEffects/index.ts:743
+#: lib/useAbilityEffects/index.ts:757
+#: lib/useAbilityEffects/index.ts:773
+#: lib/useAbilityEffects/index.ts:959
+#: lib/useAbilityEffects/index.ts:968
+#: lib/useAbilityEffects/index.ts:1413
+#: lib/useAbilityEffects/index.ts:1456
+msgid "frames"
+msgstr "frames"
+
+#: lib/useAbilityEffects/index.ts:257
+#: lib/useAbilityEffects/index.ts:429
+#: lib/useAbilityEffects/index.ts:516
+#: lib/useAbilityEffects/index.ts:532
+#: lib/useAbilityEffects/index.ts:646
+#: lib/useAbilityEffects/index.ts:673
+#: lib/useAbilityEffects/index.ts:682
+#: lib/useAbilityEffects/index.ts:743
+#: lib/useAbilityEffects/index.ts:757
+#: lib/useAbilityEffects/index.ts:773
+#: lib/useAbilityEffects/index.ts:959
+#: lib/useAbilityEffects/index.ts:968
+#: lib/useAbilityEffects/index.ts:1413
+#: lib/useAbilityEffects/index.ts:1456
+msgid "seconds"
+msgstr "seconds"
+
+#: lib/useAbilityEffects/index.ts:295
+msgid "Run speed"
+msgstr "Run speed"
+
+#: lib/useAbilityEffects/index.ts:296
+#: lib/useAbilityEffects/index.ts:305
+#: lib/useAbilityEffects/index.ts:336
+#: lib/useAbilityEffects/index.ts:893
+msgid "distance units / frame"
+msgstr "distance units / frame"
+
+#: lib/useAbilityEffects/index.ts:304
+msgid "Run speed (firing)"
+msgstr "Run speed (firing)"
+
+#: lib/useAbilityEffects/index.ts:335
+msgid "Swim speed"
+msgstr "Swim speed"
+
+#: lib/useAbilityEffects/index.ts:356
+msgid "Points to special"
+msgstr "Points to special"
+
+#: lib/useAbilityEffects/index.ts:357
+msgid "p"
+msgstr "p"
+
+#: lib/useAbilityEffects/index.ts:357
+msgid "speed"
+msgstr "speed"
+
+#: lib/useAbilityEffects/index.ts:379
+msgid "Special lost when killed"
+msgstr "Special lost when killed"
+
+#: lib/useAbilityEffects/index.ts:380
+#: lib/useAbilityEffects/index.ts:399
+msgid "of the charge"
+msgstr "of the charge"
+
+#: lib/useAbilityEffects/index.ts:398
+msgid "Special lost when killed mid-Splashdown"
+msgstr "Special lost when killed mid-Splashdown"
+
+#: lib/useAbilityEffects/index.ts:428
+#: lib/useAbilityEffects/index.ts:531
+msgid "duration"
+msgstr "duration"
+
+#: lib/useAbilityEffects/index.ts:434
+msgid "Special Power Up also increases Inkjet's shots' painting and blast radius"
+msgstr "Special Power Up also increases Inkjet's shots' painting and blast radius"
+
+#: lib/useAbilityEffects/index.ts:454
+msgid "reticle size"
+msgstr "reticle size"
+
+#: lib/useAbilityEffects/index.ts:463
+#: lib/useAbilityEffects/index.ts:1265
+#: lib/useAbilityEffects/index.ts:1324
+#: lib/useAbilityEffects/index.ts:1345
+#: lib/useAbilityEffects/index.ts:1366
+msgid "ink coverage"
+msgstr "ink coverage"
+
+#: lib/useAbilityEffects/index.ts:487
+msgid "180dmg hitbox size"
+msgstr "180dmg hitbox size"
+
+#: lib/useAbilityEffects/index.ts:497
+msgid "70dmg hitbox size"
+msgstr "70dmg hitbox size"
+
+#: lib/useAbilityEffects/index.ts:502
+msgid "55dmg hitbox can't be increased with Special Power Up so the total radius of the special doesn't change"
+msgstr "55dmg hitbox can't be increased with Special Power Up so the total radius of the special doesn't change"
+
+#: lib/useAbilityEffects/index.ts:515
+msgid "activation time"
+msgstr "activation time"
+
+#: lib/useAbilityEffects/index.ts:535
+msgid "Amount inked by Ink Storm is not increased only in how long distance the droplets are spread. Special Power Up also increases the distance you can throw the seed."
+msgstr "Amount inked by Ink Storm is not increased only in how long distance the droplets are spread. Special Power Up also increases the distance you can throw the seed."
+
+#: lib/useAbilityEffects/index.ts:549
+#: lib/useAbilityEffects/index.ts:806
+msgid "durability"
+msgstr "durability"
+
+#: lib/useAbilityEffects/index.ts:564
+msgid "55dmg explosion hitbox size"
+msgstr "55dmg explosion hitbox size"
+
+#: lib/useAbilityEffects/index.ts:582
+msgid "bubble size"
+msgstr "bubble size"
+
+#: lib/useAbilityEffects/index.ts:598
+msgid "explosion hitbox"
+msgstr "explosion hitbox"
+
+#: lib/useAbilityEffects/index.ts:616
+msgid "autocharge speed"
+msgstr "autocharge speed"
+
+#: lib/useAbilityEffects/index.ts:645
+#: lib/useAbilityEffects/index.ts:672
+#: lib/useAbilityEffects/index.ts:681
+msgid "time"
+msgstr "time"
+
+#: lib/useAbilityEffects/index.ts:650
+msgid "Quick Respawn activates when enemy kills you twice without you getting a kill in between"
+msgstr "Quick Respawn activates when enemy kills you twice without you getting a kill in between"
+
+#: lib/useAbilityEffects/index.ts:672
+msgid "(on the ground)"
+msgstr "(on the ground)"
+
+#: lib/useAbilityEffects/index.ts:681
+msgid "(in the air)"
+msgstr "(in the air)"
+
+#: lib/useAbilityEffects/index.ts:726
+msgid "range and velocity"
+msgstr "range and velocity"
+
+#: lib/useAbilityEffects/index.ts:742
+msgid "full-power phase duration"
+msgstr "full-power phase duration"
+
+#: lib/useAbilityEffects/index.ts:756
+msgid "mid-phase duration"
+msgstr "mid-phase duration"
+
+#: lib/useAbilityEffects/index.ts:772
+msgid "tracking duration"
+msgstr "tracking duration"
+
+#: lib/useAbilityEffects/index.ts:789
+msgid "tracking range"
+msgstr "tracking range"
+
+#: lib/useAbilityEffects/index.ts:822
+msgid "boost"
+msgstr "boost"
+
+#: lib/useAbilityEffects/index.ts:831
+msgid "When jumping to Sub Power Up boosted beakons QSJ AP bonus is applied on top of any existing QSJ the jumper has. 57AP can't be exceeded. Value shown is the bonus if the user of Beakon has 0AP invested in QSJ."
+msgstr "When jumping to Sub Power Up boosted beakons QSJ AP bonus is applied on top of any existing QSJ the jumper has. 57AP can't be exceeded. Value shown is the bonus if the user of Beakon has 0AP invested in QSJ."
+
+#: lib/useAbilityEffects/index.ts:860
+msgid "Frames before taking damage from enemy ink"
+msgstr "Frames before taking damage from enemy ink"
+
+#: lib/useAbilityEffects/index.ts:869
+msgid "Ink Resistance Up also allows you to jump higher and strafe faster while shooting in enemy ink"
+msgstr "Ink Resistance Up also allows you to jump higher and strafe faster while shooting in enemy ink"
+
+#: lib/useAbilityEffects/index.ts:872
+msgid "Damage taken in enemy ink"
+msgstr "Damage taken in enemy ink"
+
+#: lib/useAbilityEffects/index.ts:873
+msgid "hp / frame"
+msgstr "hp / frame"
+
+#: lib/useAbilityEffects/index.ts:883
+msgid "Limit on the damage enemy ink can deal on you"
+msgstr "Limit on the damage enemy ink can deal on you"
+
+#: lib/useAbilityEffects/index.ts:884
+msgid "hp"
+msgstr "hp"
+
+#: lib/useAbilityEffects/index.ts:892
+msgid "Run speed in enemy ink"
+msgstr "Run speed in enemy ink"
+
+#: lib/useAbilityEffects/index.ts:938
+msgid "Sub Weapon damage (indirect)"
+msgstr "Sub Weapon damage (indirect)"
+
+#: lib/useAbilityEffects/index.ts:945
+msgid "Bomb Defense Up DX also lessens the damage of a direct bomb hit but it will never make a bomb not kill that would have dealt over 100dmg without any of the ability on"
+msgstr "Bomb Defense Up DX also lessens the damage of a direct bomb hit but it will never make a bomb not kill that would have dealt over 100dmg without any of the ability on"
+
+#: lib/useAbilityEffects/index.ts:948
+msgid "Special Weapon damage (indirect)"
+msgstr "Special Weapon damage (indirect)"
+
+#: lib/useAbilityEffects/index.ts:955
+msgid "Tenta Missiles, Inkjet, Splashdown, Baller, Bubble Blower, Booyah Bomb & Ultra Stamp generate damage lessened by Bomb Defense Up DX. OHKO's are unaffected"
+msgstr "Tenta Missiles, Inkjet, Splashdown, Baller, Bubble Blower, Booyah Bomb & Ultra Stamp generate damage lessened by Bomb Defense Up DX. OHKO's are unaffected"
+
+#: lib/useAbilityEffects/index.ts:958
+msgid "Base tracking time (Point Sensor)"
+msgstr "Base tracking time (Point Sensor)"
+
+#: lib/useAbilityEffects/index.ts:967
+msgid "Base tracking time (Ink Mine)"
+msgstr "Base tracking time (Ink Mine)"
+
+#: lib/useAbilityEffects/index.ts:1000
+msgid "damage per shot"
+msgstr "damage per shot"
+
+#: lib/useAbilityEffects/index.ts:1048
+msgid "bullet ink coverage"
+msgstr "bullet ink coverage"
+
+#: lib/useAbilityEffects/index.ts:1070
+msgid "bullet spread (not jumping)"
+msgstr "bullet spread (not jumping)"
+
+#: lib/useAbilityEffects/index.ts:1091
+msgid "bullet spread (in the air)"
+msgstr "bullet spread (in the air)"
+
+#: lib/useAbilityEffects/index.ts:1112
+msgid "range and bullet velocity"
+msgstr "range and bullet velocity"
+
+#: lib/useAbilityEffects/index.ts:1132
+msgid "70dmg hitbox portion of the total explosion hitbox"
+msgstr "70dmg hitbox portion of the total explosion hitbox"
+
+#: lib/useAbilityEffects/index.ts:1156
+msgid "bullet explosion hitbox size"
+msgstr "bullet explosion hitbox size"
+
+#: lib/useAbilityEffects/index.ts:1179
+msgid "bullet explosion paint"
+msgstr "bullet explosion paint"
+
+#: lib/useAbilityEffects/index.ts:1201
+msgid "movement speed holding trigger down"
+msgstr "movement speed holding trigger down"
+
+#: lib/useAbilityEffects/index.ts:1222
+msgid "ink trail width"
+msgstr "ink trail width"
+
+#: lib/useAbilityEffects/index.ts:1244
+msgid "fully charged shot range"
+msgstr "fully charged shot range"
+
+#: lib/useAbilityEffects/index.ts:1287
+#: lib/useAbilityEffects/index.ts:1510
+msgid "damage"
+msgstr "damage"
+
+#: lib/useAbilityEffects/index.ts:1302
+msgid "damage per fully charged shot"
+msgstr "damage per fully charged shot"
+
+#: lib/useAbilityEffects/index.ts:1353
+msgid "Ink coverage bonus is only applied to the circle at the end of the shot"
+msgstr "Ink coverage bonus is only applied to the circle at the end of the shot"
+
+#: lib/useAbilityEffects/index.ts:1373
+msgid "Ink coverage bonus is only applied to the line before the impact"
+msgstr "Ink coverage bonus is only applied to the line before the impact"
+
+#: lib/useAbilityEffects/index.ts:1391
+msgid "damage per shot (fully charged)"
+msgstr "damage per shot (fully charged)"
+
+#: lib/useAbilityEffects/index.ts:1412
+msgid "shield recharge time"
+msgstr "shield recharge time"
+
+#: lib/useAbilityEffects/index.ts:1433
+msgid "shield durability"
+msgstr "shield durability"
+
+#: lib/useAbilityEffects/index.ts:1455
+msgid "full charge shooting duration"
+msgstr "full charge shooting duration"
+
+#: lib/useAbilityEffects/index.ts:1480
+#: lib/useAbilityEffects/index.ts:1495
+msgid "Slosher has weird physics so we haven't fully deciphered this parameter."
+msgstr "Slosher has weird physics so we haven't fully deciphered this parameter."
+
 #: pages/about.tsx:13
 msgid "Feedback"
 msgstr "Feedback"
@@ -3610,11 +4090,43 @@ msgstr "art for the site like the inkling on the front page as well as footer pi
 msgid "translation"
 msgstr "translation"
 
-#: pages/builds/[[...slug]].tsx:24
+#: pages/analyzer.tsx:50
+msgid "Build Analyzer"
+msgstr "Build Analyzer"
+
+#: pages/analyzer.tsx:53
+msgid "Patch {CURRENT_PATCH}"
+msgstr "Patch {CURRENT_PATCH}"
+
+#: pages/analyzer.tsx:56
+msgid "AP = Ability Point = Mains * 10 + Subs * 3"
+msgstr "AP = Ability Point = Mains * 10 + Subs * 3"
+
+#: pages/analyzer.tsx:73
+msgid "Hide settings"
+msgstr "Hide settings"
+
+#: pages/analyzer.tsx:73
+msgid "Show settings"
+msgstr "Show settings"
+
+#: pages/analyzer.tsx:78
+msgid "Hide stats at base value"
+msgstr "Hide stats at base value"
+
+#: pages/analyzer.tsx:84
+msgid "Progress bars show progress to max value"
+msgstr "Progress bars show progress to max value"
+
+#: pages/analyzer.tsx:90
+msgid "Start charts Y axis from zero"
+msgstr "Start charts Y axis from zero"
+
+#: pages/builds/[[...slug]].tsx:29
 msgid "builds"
 msgstr "builds"
 
-#: pages/builds/[[...slug]].tsx:26
+#: pages/builds/[[...slug]].tsx:31
 msgid "hidden"
 msgstr "hidden"
 
@@ -3631,42 +4143,26 @@ msgstr "Guides"
 msgid "Misc"
 msgstr "Misc"
 
-#: pages/player/[id].tsx:22
+#: pages/player/[id].tsx:20
 #: pages/xsearch/[[...slug]].tsx:32
 msgid "Top 500 Browser"
 msgstr "Top 500 Browser"
 
-#: pages/u/[identifier].tsx:49
+#: pages/u/[identifier].tsx:58
 msgid "Users"
 msgstr "Users"
 
-#: pages/u/[identifier].tsx:54
+#: pages/u/[identifier].tsx:63
 msgid "Edit profile"
 msgstr "Edit profile"
 
-#: pages/u/[identifier].tsx:64
+#: pages/u/[identifier].tsx:73
 msgid "All weapons"
 msgstr "All weapons"
 
-#: pages/u/[identifier].tsx:71
+#: pages/u/[identifier].tsx:80
 msgid "Add build"
 msgstr "Add build"
-
-#: pages/xsearch/[[...slug]].tsx:43
-msgid "SZ"
-msgstr "SZ"
-
-#: pages/xsearch/[[...slug]].tsx:44
-msgid "TC"
-msgstr "TC"
-
-#: pages/xsearch/[[...slug]].tsx:45
-msgid "RM"
-msgstr "RM"
-
-#: pages/xsearch/[[...slug]].tsx:46
-msgid "CB"
-msgstr "CB"
 
 #: scenes/Profile/components/ProfileModal.tsx:63
 #~ msgid "{0}"
