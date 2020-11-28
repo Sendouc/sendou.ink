@@ -6,7 +6,7 @@ import {
   RadioGroup,
   Select,
 } from "@chakra-ui/react";
-import { t, Trans } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import ModeImage from "components/common/ModeImage";
 // @ts-ignore
@@ -15,7 +15,7 @@ import salmonRunHighTide from "lib/assets/SalmonRunHighTide.svg";
 import salmonRunLowTide from "lib/assets/SalmonRunLowTide.svg";
 // @ts-ignore
 import salmonRunMidTide from "lib/assets/SalmonRunMidTide.svg";
-import { stages } from "lib/lists/stages";
+import { salmonRunStages, stages } from "lib/lists/stages";
 import { PlannerMapBg } from ".";
 
 interface StageSelectorProps {
@@ -37,14 +37,7 @@ const StageSelector: React.FC<StageSelectorProps> = ({
   return (
     <Box maxW="20rem" m="3rem auto">
       <Select value={currentBackground.stage} onChange={handleChange}>
-        <option value="Spawning Grounds">{t`Spawning Grounds`}</option>
-        <option value="Marooner's Bay">{t`Marooner's Bay`}</option>
-        <option value="Lost Outpost">{t`Lost Outpost`}</option>
-        <option value="Salmonid Smokeyard">{t`Salmonid Smokeyard`}</option>
-        <option value="Ruins of Ark Polaris">
-          {t`Ruins of Ark Polaris‎‎`}
-        </option>
-        {stages.map((stage) => (
+        {salmonRunStages.concat(stages).map((stage) => (
           <option key={stage} value={stage}>
             {i18n._(stage)}
           </option>

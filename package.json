@@ -12,9 +12,10 @@
     "gen": "npx prisma generate",
     "seed": "ts-node prisma/seed.ts",
     "mongo": "ts-node prisma/scripts/dataFromMongo.ts",
+    "top500": "ts-node prisma/scripts/top500jsons.ts",
     "prettier": "prettier --write .",
     "e2e": "cypress open",
-    "extract": "lingui extract",
+    "extract": "lingui extract --clean",
     "compile": "lingui compile"
   },
   "dependencies": {

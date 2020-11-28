@@ -39,3 +39,4 @@ locale/_build/
 locale/**/*.js
 
 /prisma/scripts/mongo
+/prisma/scripts/data

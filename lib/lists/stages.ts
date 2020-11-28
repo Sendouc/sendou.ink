@@ -25,3 +25,11 @@ export const stages = [
   t`Ancho-V Games`,
   t`Skipper Pavilion`,
 ] as const;
+
+export const salmonRunStages = [
+  t`Spawning Grounds`,
+  t`Marooner's Bay`,
+  t`Lost Outpost`,
+  t`Salmonid Smokeyard`,
+  t`Ruins of Ark Polaris`,
+];
