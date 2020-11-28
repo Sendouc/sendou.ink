@@ -32,22 +32,20 @@ const WeaponSelector: React.FC<Props> = ({
         <option hidden value="NO_VALUE">
           {t`Select weapon`}
         </option>
-        {weaponsWithHeroCategorizedLocalized.map((wpnCategory) => (
-          <optgroup key={wpnCategory.name} label={i18n._(wpnCategory.name)}>
-            {wpnCategory.weapons.map((wpn) => {
-              if (
-                excludeAlt &&
-                (wpn.includes("Hero") || wpn.includes("Octo Shot"))
-              )
-                return null;
-              return (
-                <option key={wpn} value={wpn}>
-                  {i18n._(wpn)}
-                </option>
-              );
-            })}
-          </optgroup>
-        ))}
+        {weaponsWithHeroCategorizedLocalized.flatMap((wpnCategory) =>
+          wpnCategory.weapons.map((wpn) => {
+            if (
+              excludeAlt &&
+              (wpn.includes("Hero") || wpn.includes("Octo Shot"))
+            )
+              return null;
+            return (
+              <option key={wpn} value={wpn}>
+                {i18n._(wpn)}
+              </option>
+            );
+          })
+        )}
       </Select>
     </>
   );

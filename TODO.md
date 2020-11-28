@@ -7,6 +7,7 @@
   - [x] Builds link to /analyzer
 - [x] Check that user page fallback / redirect works
 - [x] Builds mode icons
+- [ ] Fix db hitting connection limit
 - [ ] Script to parse data from Top 500 .json to the DB
 - [ ] Top 500 Leaderboards
 - [ ] Localization
