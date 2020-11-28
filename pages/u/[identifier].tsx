@@ -38,12 +38,15 @@ const ProfilePage = (props: Props) => {
   const [buildToEdit, setBuildToEdit] = useState<boolean | Build>(false);
 
   const [loggedInUser] = useUser();
-  const { data: user } = useSWR<GetUserByIdentifierData>(
+  const { data } = useSWR<GetUserByIdentifierData>(
     !!props.user?.id && props.user.id === loggedInUser?.id
       ? `/api/users/${props.user.id}`
       : null,
     { initialData: props.user }
   );
+
+  const user = data ? data : props.user;
+
   const { data: builds, weaponCounts, setWeapon, buildCount } = useBuildsByUser(
     user?.id
   );
