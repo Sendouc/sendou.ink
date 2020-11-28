@@ -196,9 +196,9 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
                                     shoesAbilities: onShoesChange,
                                   };
 
-                                  const newAbilityArray = {
+                                  const newAbilityArray = [
                                     ...abilityArrays[gear],
-                                  };
+                                  ];
 
                                   newAbilityArray[index] = "UNKNOWN";
                                   onChange[gear](newAbilityArray);

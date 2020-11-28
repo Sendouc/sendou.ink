@@ -220,7 +220,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
             <Box>
               <Box>
                 {build.modes.map((mode) => (
-                  <Box as="span" mr={1}>
+                  <Box key={mode} as="span" mr={1}>
                     <ModeImage mode={mode} size={24} />
                   </Box>
                 ))}
