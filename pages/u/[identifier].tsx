@@ -31,8 +31,6 @@ interface Props {
   peakXPowers: Partial<Record<RankedMode, number>>;
 }
 
-// TODO: when fallback in production seems like the site will never load till F5
-
 const ProfilePage = (props: Props) => {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [buildToEdit, setBuildToEdit] = useState<boolean | Build>(false);

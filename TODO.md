@@ -5,8 +5,8 @@
 - [x] Build Analyzer
   - [x] Import /analyzer
   - [x] Builds link to /analyzer
-- [ ] Check that user page fallback / redirect works
-- [ ] Builds mode icons
+- [x] Check that user page fallback / redirect works
+- [x] Builds mode icons
 - [ ] Script to parse data from Top 500 .json to the DB
 - [ ] Top 500 Leaderboards
 - [ ] Localization
@@ -28,5 +28,13 @@
 ### Future
 
 - [ ] Salmon Run Leaderboards
+  - [ ] As a user...
+    - [ ] View leaderboards of different categories
+    - [ ] Submit a new result
+  - [ ] As an admin...
+    - [ ] Submit a new result without the need for approval
+    - [ ] Approve or delete submitted results
+    - [ ] Edit existing result by any user
+    - [ ] Delete existing result of any user
 - [ ] Team pages
 - [ ] Ladder

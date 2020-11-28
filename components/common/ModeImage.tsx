@@ -2,8 +2,8 @@ import Image from "next/image";
 import { CSSProperties } from "react";
 
 interface ModeImageProps {
-  mode: "SZ" | "TC" | "RM" | "CB";
-  size: 32 | 64 | 128;
+  mode: "TW" | "SZ" | "TC" | "RM" | "CB";
+  size: 24 | 32 | 64 | 128;
   onClick?: () => void;
   style?: CSSProperties;
 }

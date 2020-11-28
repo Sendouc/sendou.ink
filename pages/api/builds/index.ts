@@ -8,6 +8,8 @@ import DBClient from "prisma/client";
 
 const prisma = DBClient.getInstance().prisma;
 
+const modes = ["TW", "SZ", "TC", "RM", "CB"];
+
 const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   const user = await getMySession(req);
   if (!user) return res.status(401).end();
@@ -49,6 +51,9 @@ const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   await prisma.build.create({
     data: {
       ...parsed.data,
+      modes: parsed.data.modes.sort(
+        (a, b) => modes.indexOf(a) - modes.indexOf(b)
+      ),
       abilityPoints: getAbilityPoints(
         parsed.data.headAbilities,
         parsed.data.clothingAbilities,
@@ -97,6 +102,9 @@ const updateHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     where: { id },
     data: {
       ...parsed.data,
+      modes: parsed.data.modes.sort(
+        (a, b) => modes.indexOf(a) - modes.indexOf(b)
+      ),
       abilityPoints: getAbilityPoints(
         parsed.data.headAbilities,
         parsed.data.clothingAbilities,

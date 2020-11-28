@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { Plural, t, Trans } from "@lingui/macro";
 import { Ability, Prisma } from "@prisma/client";
+import ModeImage from "components/common/ModeImage";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
 import { getEmojiFlag } from "countries-list";
@@ -138,28 +139,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
                 />
               </a>
             </Link>
-            {build.description && (
-              <Popover placement="top">
-                <PopoverTrigger>
-                  <IconButton
-                    variant="ghost"
-                    isRound
-                    aria-label="Show description"
-                    fontSize="20px"
-                    icon={<FiInfo />}
-                  />
-                </PopoverTrigger>
-                <PopoverContent
-                  zIndex={4}
-                  width="220px"
-                  backgroundColor={secondaryBgColor}
-                >
-                  <PopoverBody textAlign="center" whiteSpace="pre-wrap">
-                    {build.description}
-                  </PopoverBody>
-                </PopoverContent>
-              </Popover>
-            )}
+            <Description />
             {onEdit && (
               <IconButton
                 variant="ghost"
@@ -216,6 +196,42 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
       </Box>
     </>
   );
+
+  function Description() {
+    if (build.modes.length === 0 && !build.description) return null;
+
+    return (
+      <Popover placement="top">
+        <PopoverTrigger>
+          <IconButton
+            variant="ghost"
+            isRound
+            aria-label="Show description"
+            fontSize="20px"
+            icon={<FiInfo />}
+          />
+        </PopoverTrigger>
+        <PopoverContent
+          zIndex={4}
+          width="220px"
+          backgroundColor={secondaryBgColor}
+        >
+          <PopoverBody whiteSpace="pre-wrap">
+            <Box>
+              <Box>
+                {build.modes.map((mode) => (
+                  <Box as="span" mr={1}>
+                    <ModeImage mode={mode} size={24} />
+                  </Box>
+                ))}
+              </Box>
+              {build.description}
+            </Box>
+          </PopoverBody>
+        </PopoverContent>
+      </Popover>
+    );
+  }
 };
 
 export default BuildCard;
