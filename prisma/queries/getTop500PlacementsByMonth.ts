@@ -1,10 +1,9 @@
-import { Prisma, PrismaClient, RankedMode } from "@prisma/client";
+import { Prisma, RankedMode } from "@prisma/client";
+import prisma from "prisma/client";
 
 export type GetTop500PlacementsByMonthData = Prisma.PromiseReturnType<
   typeof getTop500PlacementsByMonth
 >;
-
-const prisma = new PrismaClient();
 
 export const getTop500PlacementsByMonth = async ({
   month,

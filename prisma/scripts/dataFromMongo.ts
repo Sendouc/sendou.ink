@@ -1,10 +1,9 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma } from "@prisma/client";
+import prisma from "prisma/client";
 import buildsJson from "./mongo/builds.json";
 import placementsJson from "./mongo/placements.json";
 import playersJson from "./mongo/players.json";
 import usersJson from "./mongo/users.json";
-
-const prisma = new PrismaClient();
 
 const twitterToSwitchAccountId = new Map<string, string>();
 

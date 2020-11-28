@@ -1,7 +1,7 @@
 import { Button, Divider, Select } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import { Build, PrismaClient, RankedMode } from "@prisma/client";
+import { Build, RankedMode } from "@prisma/client";
 import BuildCard from "components/builds/BuildCard";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import Markdown from "components/common/Markdown";
@@ -15,6 +15,7 @@ import { getFullUsername } from "lib/strings";
 import useUser from "lib/useUser";
 import { isCustomUrl } from "lib/validators/profile";
 import { GetStaticPaths, GetStaticProps } from "next";
+import prisma from "prisma/client";
 import { getPlayersTop500Placements } from "prisma/queries/getPlayersTop500Placements";
 import {
   getUserByIdentifier,
@@ -22,8 +23,6 @@ import {
 } from "prisma/queries/getUserByIdentifier";
 import { useState } from "react";
 import useSWR from "swr";
-
-const prisma = new PrismaClient();
 
 interface Props {
   user: GetUserByIdentifierData;

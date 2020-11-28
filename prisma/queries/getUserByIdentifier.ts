@@ -1,10 +1,9 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma } from "@prisma/client";
+import prisma from "prisma/client";
 
 export type GetUserByIdentifierData = Prisma.PromiseReturnType<
   typeof getUserByIdentifier
 >;
-
-const prisma = new PrismaClient();
 
 export const getUserByIdentifier = (identifier: string) =>
   prisma.user.findFirst({

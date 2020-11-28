@@ -1,18 +1,17 @@
 import { Radio, RadioGroup, Select, Stack } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
-import { PrismaClient, RankedMode } from "@prisma/client";
+import { RankedMode } from "@prisma/client";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import Top500Table from "components/top500/Top500Table";
 import { getLocalizedMonthYearString } from "lib/strings";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
+import prisma from "prisma/client";
 import {
   getTop500PlacementsByMonth,
   GetTop500PlacementsByMonthData,
 } from "prisma/queries/getTop500PlacementsByMonth";
 import { useEffect, useState } from "react";
-
-const prisma = new PrismaClient();
 
 interface Props {
   placements: GetTop500PlacementsByMonthData;

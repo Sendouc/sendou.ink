@@ -1,9 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "prisma/client";
 
 const fs = require("fs");
 const path = require("path");
-
-const prisma = new PrismaClient();
 
 const main = async () => {
   fs.readFile(path.join(__dirname, "/.env"), function (err: any, data: any) {

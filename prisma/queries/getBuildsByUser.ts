@@ -1,10 +1,9 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma } from "@prisma/client";
+import prisma from "prisma/client";
 
 export type GetBuildsByUserData = Prisma.PromiseReturnType<
   typeof getBuildsByUser
 >;
-
-const prisma = new PrismaClient();
 
 export const getBuildsByUser = async (userId: number) =>
   prisma.build.findMany({
