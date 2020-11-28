@@ -1,11 +1,12 @@
-import { Prisma } from "@prisma/client";
-import DBClient from "prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 
-export type GetBuildsByWeaponData = Prisma.PromiseReturnType<typeof getBuildsByWeapon>;
+export type GetBuildsByWeaponData = Prisma.PromiseReturnType<
+  typeof getBuildsByWeapon
+>;
 
 type BuildsByWeapon = Prisma.PromiseReturnType<typeof getBuildsByWeaponQuery>;
 
-const prisma = DBClient.getInstance().prisma;
+const prisma = new PrismaClient();
 
 const getBuildsByWeaponQuery = async (weapon: string) =>
   prisma.build.findMany({

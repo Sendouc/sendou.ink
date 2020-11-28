@@ -1,9 +1,9 @@
+import { PrismaClient } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 import NextAuth, { InitOptions } from "next-auth";
 import Providers from "next-auth/providers";
-import DBClient from "prisma/client";
 
-const prisma = DBClient.getInstance().prisma;
+const prisma = new PrismaClient();
 
 const options: InitOptions = {
   providers: [

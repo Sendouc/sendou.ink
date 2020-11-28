@@ -15,7 +15,7 @@ const PlayerPage = ({ placements }: Props) => {
     <>
       <Breadcrumbs
         pages={[
-          { name: t`Top 500 Browser`, link: "/top500" },
+          { name: t`Top 500 Browser`, link: "/xsearch" },
           { name: placements[0].playerName },
         ]}
       />
