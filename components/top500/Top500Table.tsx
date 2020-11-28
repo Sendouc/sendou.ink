@@ -1,5 +1,6 @@
 import { Text } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
+import MyLink from "components/common/MyLink";
 import {
   Table,
   TableBody,
@@ -62,7 +63,11 @@ const Top500Table: React.FC<Props> = ({ placements }) => {
                     </Link>
                   )}
                 </TableCell>
-                <TableCell>{placement.playerName}</TableCell>
+                <TableCell>
+                  <MyLink href={`/player/${placement.player.switchAccountId}`}>
+                    {placement.playerName}
+                  </MyLink>
+                </TableCell>
                 <TableCell>
                   <Text fontWeight="bold">{placement.xPower}</Text>
                 </TableCell>

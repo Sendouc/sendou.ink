@@ -7,7 +7,7 @@
   - [x] Builds link to /analyzer
 - [x] Check that user page fallback / redirect works
 - [x] Builds mode icons
-- [ ] Fix db hitting connection limit
+- [x] Fix db hitting connection limit
 - [ ] Script to parse data from Top 500 .json to the DB
 - [ ] Top 500 Leaderboards
 - [ ] Localization
@@ -17,6 +17,7 @@
 - [ ] Frontpage
 - [ ] Set favicon
 - [ ] Social media preview / SEO stuff
+- [ ] DB connection limit one last stress test
 
 ### Before being able to shut down old site and bot
 

@@ -1,20 +1,13 @@
-import {
-  Box,
-  Divider,
-  Flex,
-  Heading,
-  IconButton,
-  Link as ChakraLink,
-} from "@chakra-ui/react";
+import { Box, Divider, Flex, Heading, IconButton } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import { RankedMode } from "@prisma/client";
 import ModeImage from "components/common/ModeImage";
+import MyLink from "components/common/MyLink";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
 import { getEmojiFlag } from "countries-list";
 import { getFullUsername } from "lib/strings";
 import { useMyTheme } from "lib/useMyTheme";
-import NextLink from "next/link";
 import { GetUserByIdentifierData } from "prisma/queries/getUserByIdentifier";
 import { Fragment } from "react";
 import { FaGamepad, FaTwitch, FaTwitter, FaYoutube } from "react-icons/fa";
@@ -158,11 +151,9 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
               )}
               {!!user.player?.switchAccountId && (
                 <Box mt={2} color={gray}>
-                  <NextLink href={`/player/${user.player?.switchAccountId}`}>
-                    <ChakraLink>
-                      <Trans>View all Top 500 results</Trans>
-                    </ChakraLink>
-                  </NextLink>
+                  <MyLink href={`/player/${user.player?.switchAccountId}`}>
+                    <Trans>View all Top 500 results</Trans>
+                  </MyLink>
                 </Box>
               )}
             </Flex>
