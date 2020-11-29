@@ -5,15 +5,18 @@ import NextLink from "next/link";
 interface Props {
   children: React.ReactNode;
   href: string;
+  isExternal?: boolean;
 }
 
-const MyLink: React.FC<Props> = ({ children, href }) => {
+const MyLink: React.FC<Props> = ({ children, href, isExternal }) => {
   const { themeColorShade } = useMyTheme();
+
+  if (isExternal) {
+    return <ChakraLink color={themeColorShade}>{children}</ChakraLink>;
+  }
   return (
     <NextLink href={href}>
-      <ChakraLink href={href} color={themeColorShade}>
-        {children}
-      </ChakraLink>
+      <ChakraLink color={themeColorShade}>{children}</ChakraLink>
     </NextLink>
   );
 };

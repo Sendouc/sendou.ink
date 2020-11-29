@@ -8,22 +8,23 @@ import WeaponImage from "components/common/WeaponImage";
 import { getEmojiFlag } from "countries-list";
 import { getFullUsername } from "lib/strings";
 import { useMyTheme } from "lib/useMyTheme";
+import useUser from "lib/useUser";
 import { GetUserByIdentifierData } from "prisma/queries/getUserByIdentifier";
 import { Fragment } from "react";
 import { FaGamepad, FaTwitch, FaTwitter, FaYoutube } from "react-icons/fa";
+import { FiInfo } from "react-icons/fi";
 
 interface AvatarWithInfoProps {
   user: NonNullable<GetUserByIdentifierData>;
   peakXPowers: Partial<Record<RankedMode, number>>;
 }
 
-// TODO:  show text on how to get your top 500 linked
-
 const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
   user,
   peakXPowers,
 }) => {
-  const { gray } = useMyTheme();
+  const [loggedInUser] = useUser();
+  const { gray, themeColorShade } = useMyTheme();
 
   function getSensString(
     motion: number | null | undefined,
@@ -134,9 +135,10 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
               )}
               {Object.keys(peakXPowers).length > 0 && (
                 <Flex mt={4}>
-                  {(["SZ", "TC", "RM", "CB"] as RankedMode[]).map((mode, i) => (
-                    <Fragment key={mode}>
-                      {peakXPowers[mode] && (
+                  {(["SZ", "TC", "RM", "CB"] as RankedMode[])
+                    .filter((mode) => peakXPowers[mode])
+                    .map((mode, i) => (
+                      <Fragment key={mode}>
                         <Flex align="center" justify="center">
                           {i !== 0 && <Divider orientation="vertical" mx={2} />}
                           <ModeImage mode={mode} size={32} />{" "}
@@ -144,9 +146,8 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
                             {peakXPowers[mode]}
                           </Box>
                         </Flex>
-                      )}
-                    </Fragment>
-                  ))}
+                      </Fragment>
+                    ))}
                 </Flex>
               )}
               {!!user.player?.switchAccountId && (
@@ -156,12 +157,32 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
                   </MyLink>
                 </Box>
               )}
+              <Top500HelpText />
             </Flex>
           </Flex>
         </Flex>
       </Flex>
     </>
   );
+
+  function Top500HelpText() {
+    if (Object.keys(peakXPowers).length > 0 || user.id !== loggedInUser?.id)
+      return null;
+
+    return (
+      <Box color={gray} mt={2} textAlign="center">
+        <Box as={FiInfo} mx="auto" color={themeColorShade} />
+        <Trans>
+          If you have finished a month in the Top 500 you can get your peak
+          ranks showing here. Simply{" "}
+          <MyLink isExternal href="https://twitter.com/sendouc">
+            DM Sendou
+          </MyLink>{" "}
+          with your in game name.
+        </Trans>
+      </Box>
+    );
+  }
 };
 
 export default AvatarWithInfo;
