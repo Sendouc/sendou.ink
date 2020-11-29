@@ -1,7 +1,7 @@
 import { Ability } from "@prisma/client";
 import { GANBA_DISCORD_ID } from "lib/constants";
 import { getMySession } from "lib/getMySession";
-import { altWeaponToNormal } from "lib/lists/weapons";
+import { getWeaponNormalized } from "lib/lists/weapons";
 import { buildSchema } from "lib/validators/build";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "prisma/client";
@@ -29,23 +29,6 @@ const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       .json({ message: "You have too many builds posted already" });
   }
 
-  const hasTop500WithTheWeapon = async () => {
-    const playerData = await prisma.player.findFirst({
-      where: { userId: user.id },
-      include: { placements: true },
-    });
-
-    if (!playerData) return false;
-
-    const weaponNormalized = altWeaponToNormal.has(parsed.data.weapon)
-      ? altWeaponToNormal.get(parsed.data.weapon)
-      : parsed.data.weapon;
-
-    return playerData.placements.some(
-      (placement) => placement.weapon === weaponNormalized
-    );
-  };
-
   await prisma.build.create({
     data: {
       ...parsed.data,
@@ -58,7 +41,7 @@ const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
         parsed.data.shoesAbilities
       ),
       jpn: postsJpBuilds,
-      top500: await hasTop500WithTheWeapon(),
+      top500: await hasTop500WithTheWeapon(user.id, parsed.data.weapon),
       user: {
         connect: {
           id: user.id,
@@ -103,6 +86,10 @@ const updateHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       modes: parsed.data.modes.sort(
         (a, b) => modes.indexOf(a) - modes.indexOf(b)
       ),
+      top500:
+        parsed.data.weapon === existingBuild.weapon
+          ? existingBuild.top500
+          : await hasTop500WithTheWeapon(user.id, parsed.data.weapon),
       abilityPoints: getAbilityPoints(
         parsed.data.headAbilities,
         parsed.data.clothingAbilities,
@@ -146,6 +133,19 @@ function getAbilityPoints(
   shoesAbilities.forEach(getPointsFromAbilityArray);
 
   return result;
+}
+
+async function hasTop500WithTheWeapon(userId: number, weapon: string) {
+  const playerData = await prisma.player.findFirst({
+    where: { userId: userId },
+    include: { placements: true },
+  });
+
+  if (!playerData) return false;
+
+  return playerData.placements.some(
+    (placement) => placement.weapon === getWeaponNormalized(weapon)
+  );
 }
 
 export default buildHandler;

@@ -144,3 +144,6 @@ export const altWeaponToNormal = new Map([
 ]);
 
 export const isWeapon = (value: any) => weapons.includes(value);
+
+export const getWeaponNormalized = (weapon: any) =>
+  altWeaponToNormal.has(weapon) ? altWeaponToNormal.get(weapon) : weapon;
