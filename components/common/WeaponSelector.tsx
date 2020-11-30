@@ -11,8 +11,6 @@ interface Props {
   isHeader?: boolean;
 }
 
-// TODO: use old WeaponSelector
-
 const WeaponSelector: React.FC<Props> = ({
   name,
   value,

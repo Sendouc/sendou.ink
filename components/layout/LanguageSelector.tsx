@@ -44,7 +44,6 @@ export const LanguageSelector = () => {
       <MenuList bg={secondaryBgColor} color={textColor}>
         <MenuOptionGroup
           title={t`Choose language`}
-          // TODO
           //value={i18n.language}
           value="en"
         >
@@ -52,7 +51,6 @@ export const LanguageSelector = () => {
             <MenuItemOption
               key={lang.code}
               value={lang.code}
-              // TODO
               //onClick={() => i18n.changeLanguage(lang.code)}
               onClick={() => console.log(lang.code)}
             >

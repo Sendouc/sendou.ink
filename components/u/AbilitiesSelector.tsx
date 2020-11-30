@@ -12,8 +12,6 @@ interface Props {
   setAbilities: (newAbilities: ViewSlotsAbilities) => void;
 }
 
-// TODO: draggable abilities
-
 const AbilitiesSelector: React.FC<Props> = ({ abilities, setAbilities }) => {
   const getModifiedAbilities = (
     newAbility: string,

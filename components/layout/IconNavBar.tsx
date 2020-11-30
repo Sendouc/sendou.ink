@@ -78,7 +78,6 @@ const IconNavBar = () => {
   } = useMyTheme();
   const pathname = useRouter().pathname;
 
-  // TODO
   //const isVoting = !!plusInfoData?.plusInfo?.voting_ends;
   const isVoting = false;
 

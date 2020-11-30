@@ -13,4 +13,22 @@ module.exports = withImages({
       },
     ];
   },
+  // i18n: {
+  //   locales: [
+  //     "de",
+  //     "el",
+  //     "en",
+  //     "es",
+  //     "fr",
+  //     "it",
+  //     "ja",
+  //     "ko",
+  //     "nl",
+  //     "pt",
+  //     "ru",
+  //     "sv",
+  //     "zh",
+  //   ],
+  //   defaultLocale: "en",
+  // },
 });
