@@ -27,6 +27,7 @@ msgstr ""
 #: components/analyzer/StatChart.tsx:11
 #: components/analyzer/StatChart.tsx:16
 #: components/builds/ViewAP.tsx:26
+#: lib/useAbilityEffects/index.ts:823
 msgid "AP"
 msgstr ""
 
@@ -83,7 +84,7 @@ msgid "Markdown is supported - <0>https://sendou.ink/markdown</0>"
 msgstr ""
 
 #: components/common/MultiWeaponSelector.tsx:14
-#: components/common/WeaponSelector.tsx:11
+#: components/common/WeaponSelector.tsx:10
 msgid "Select weapon"
 msgstr ""
 
@@ -115,7 +116,7 @@ msgid "Leaderboards"
 msgstr ""
 
 #: components/layout/IconNavBar.tsx:21
-#: pages/builds/[[...slug]].tsx:17
+#: pages/builds/[[...slug]].tsx:16
 msgid "Builds"
 msgstr ""
 
@@ -192,11 +193,11 @@ msgstr ""
 msgid "Tools"
 msgstr ""
 
-#: components/plans/StageSelector.tsx:46
+#: components/plans/StageSelector.tsx:45
 msgid "Minimap"
 msgstr ""
 
-#: components/plans/StageSelector.tsx:49
+#: components/plans/StageSelector.tsx:48
 msgid "Top-down"
 msgstr ""
 
@@ -244,16 +245,20 @@ msgstr ""
 msgid "Year"
 msgstr ""
 
-#: components/u/AvatarWithInfo.tsx:17
+#: components/u/AvatarWithInfo.tsx:19
 msgid "Stick"
 msgstr ""
 
-#: components/u/AvatarWithInfo.tsx:19
+#: components/u/AvatarWithInfo.tsx:21
 msgid "Motion"
 msgstr ""
 
-#: components/u/AvatarWithInfo.tsx:68
+#: components/u/AvatarWithInfo.tsx:72
 msgid "View all Top 500 results"
+msgstr ""
+
+#: components/u/AvatarWithInfo.tsx:86
+msgid "If you have finished a month in the Top 500 you can get your peak ranks showing here. Simply <0>DM Sendou</0> with your in game name."
 msgstr ""
 
 #: components/u/BuildModal.tsx:67
@@ -420,6 +425,390 @@ msgid ""
 "I'm **bolded**. Embedding weapon images is easy too: :luna_blaster:"
 msgstr ""
 
+#: lib/useAbilityEffects/index.ts:96
+msgid "Full charges per ink tank"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:97
+msgid "Shots per ink tank"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:112
+msgid "Shots per ink tank (autofire mode)"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:124
+msgid "Fully charged shots per ink tank"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:137
+msgid "Tap shots per ink tank"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:151
+msgid "Swings per ink tank"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:163
+msgid "Ground swings per ink tank"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:173
+msgid "Jumping swings per ink tank"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:186
+msgid "Dodge roll ink consumption"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:187
+#: lib/useAbilityEffects/index.ts:199
+#: lib/useAbilityEffects/index.ts:233
+msgid "of ink tank"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:198
+msgid "Brella shield launch ink consumption"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:232
+msgid "ink consumption"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:256
+msgid "Ink tank recovery from empty to full (squid form)"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:257
+#: lib/useAbilityEffects/index.ts:429
+#: lib/useAbilityEffects/index.ts:516
+#: lib/useAbilityEffects/index.ts:532
+#: lib/useAbilityEffects/index.ts:646
+#: lib/useAbilityEffects/index.ts:673
+#: lib/useAbilityEffects/index.ts:682
+#: lib/useAbilityEffects/index.ts:743
+#: lib/useAbilityEffects/index.ts:757
+#: lib/useAbilityEffects/index.ts:773
+#: lib/useAbilityEffects/index.ts:959
+#: lib/useAbilityEffects/index.ts:968
+#: lib/useAbilityEffects/index.ts:1413
+#: lib/useAbilityEffects/index.ts:1456
+msgid "frames"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:257
+#: lib/useAbilityEffects/index.ts:429
+#: lib/useAbilityEffects/index.ts:516
+#: lib/useAbilityEffects/index.ts:532
+#: lib/useAbilityEffects/index.ts:646
+#: lib/useAbilityEffects/index.ts:673
+#: lib/useAbilityEffects/index.ts:682
+#: lib/useAbilityEffects/index.ts:743
+#: lib/useAbilityEffects/index.ts:757
+#: lib/useAbilityEffects/index.ts:773
+#: lib/useAbilityEffects/index.ts:959
+#: lib/useAbilityEffects/index.ts:968
+#: lib/useAbilityEffects/index.ts:1413
+#: lib/useAbilityEffects/index.ts:1456
+msgid "seconds"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:295
+msgid "Run speed"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:296
+#: lib/useAbilityEffects/index.ts:305
+#: lib/useAbilityEffects/index.ts:336
+#: lib/useAbilityEffects/index.ts:893
+msgid "distance units / frame"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:304
+msgid "Run speed (firing)"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:335
+msgid "Swim speed"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:356
+msgid "Points to special"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:357
+msgid "p"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:357
+msgid "speed"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:379
+msgid "Special lost when killed"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:380
+#: lib/useAbilityEffects/index.ts:399
+msgid "of the charge"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:398
+msgid "Special lost when killed mid-Splashdown"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:428
+#: lib/useAbilityEffects/index.ts:531
+msgid "duration"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:434
+msgid "Special Power Up also increases Inkjet's shots' painting and blast radius"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:454
+msgid "reticle size"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:463
+#: lib/useAbilityEffects/index.ts:1265
+#: lib/useAbilityEffects/index.ts:1324
+#: lib/useAbilityEffects/index.ts:1345
+#: lib/useAbilityEffects/index.ts:1366
+msgid "ink coverage"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:487
+msgid "180dmg hitbox size"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:497
+msgid "70dmg hitbox size"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:502
+msgid "55dmg hitbox can't be increased with Special Power Up so the total radius of the special doesn't change"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:515
+msgid "activation time"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:535
+msgid "Amount inked by Ink Storm is not increased only in how long distance the droplets are spread. Special Power Up also increases the distance you can throw the seed."
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:549
+#: lib/useAbilityEffects/index.ts:806
+msgid "durability"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:564
+msgid "55dmg explosion hitbox size"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:582
+msgid "bubble size"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:598
+msgid "explosion hitbox"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:616
+msgid "autocharge speed"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:645
+msgid "Quick Respawn"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:645
+#: lib/useAbilityEffects/index.ts:672
+#: lib/useAbilityEffects/index.ts:681
+msgid "time"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:650
+msgid "Quick Respawn activates when enemy kills you twice without you getting a kill in between"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:672
+#: lib/useAbilityEffects/index.ts:681
+#: lib/useAbilityEffects/index.ts:822
+msgid "Quick Super Jump"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:672
+msgid "(on the ground)"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:681
+msgid "(in the air)"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:726
+msgid "range and velocity"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:742
+msgid "full-power phase duration"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:756
+msgid "mid-phase duration"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:772
+msgid "tracking duration"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:789
+msgid "tracking range"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:822
+msgid "boost"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:831
+msgid "When jumping to Sub Power Up boosted beakons QSJ AP bonus is applied on top of any existing QSJ the jumper has. 57AP can't be exceeded. Value shown is the bonus if the user of Beakon has 0AP invested in QSJ."
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:860
+msgid "Frames before taking damage from enemy ink"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:869
+msgid "Ink Resistance Up also allows you to jump higher and strafe faster while shooting in enemy ink"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:872
+msgid "Damage taken in enemy ink"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:873
+msgid "hp / frame"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:883
+msgid "Limit on the damage enemy ink can deal on you"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:884
+msgid "hp"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:892
+msgid "Run speed in enemy ink"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:938
+msgid "Sub Weapon damage (indirect)"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:945
+msgid "Bomb Defense Up DX also lessens the damage of a direct bomb hit but it will never make a bomb not kill that would have dealt over 100dmg without any of the ability on"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:948
+msgid "Special Weapon damage (indirect)"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:955
+msgid "Tenta Missiles, Inkjet, Splashdown, Baller, Bubble Blower, Booyah Bomb & Ultra Stamp generate damage lessened by Bomb Defense Up DX. OHKO's are unaffected"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:958
+msgid "Base tracking time (Point Sensor)"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:967
+msgid "Base tracking time (Ink Mine)"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:1000
+msgid "damage per shot"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:1048
+msgid "bullet ink coverage"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:1070
+msgid "bullet spread (not jumping)"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:1091
+msgid "bullet spread (in the air)"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:1112
+msgid "range and bullet velocity"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:1132
+msgid "70dmg hitbox portion of the total explosion hitbox"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:1156
+msgid "bullet explosion hitbox size"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:1179
+msgid "bullet explosion paint"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:1201
+msgid "movement speed holding trigger down"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:1222
+msgid "ink trail width"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:1244
+msgid "fully charged shot range"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:1287
+#: lib/useAbilityEffects/index.ts:1510
+msgid "damage"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:1302
+msgid "damage per fully charged shot"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:1353
+msgid "Ink coverage bonus is only applied to the circle at the end of the shot"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:1373
+msgid "Ink coverage bonus is only applied to the line before the impact"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:1391
+msgid "damage per shot (fully charged)"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:1412
+msgid "shield recharge time"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:1433
+msgid "shield durability"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:1455
+msgid "full charge shooting duration"
+msgstr ""
+
+#: lib/useAbilityEffects/index.ts:1480
+#: lib/useAbilityEffects/index.ts:1495
+msgid "Slosher has weird physics so we haven't fully deciphered this parameter."
+msgstr ""
+
 #: pages/about.tsx:13
 msgid "Feedback"
 msgstr ""
@@ -508,11 +897,11 @@ msgstr ""
 msgid "Start charts Y axis from zero"
 msgstr ""
 
-#: pages/builds/[[...slug]].tsx:29
+#: pages/builds/[[...slug]].tsx:28
 msgid "builds"
 msgstr ""
 
-#: pages/builds/[[...slug]].tsx:31
+#: pages/builds/[[...slug]].tsx:30
 msgid "hidden"
 msgstr ""
 

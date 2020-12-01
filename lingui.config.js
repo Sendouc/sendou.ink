@@ -20,11 +20,16 @@ module.exports = {
   catalogs: [
     {
       path: "<rootDir>/locale/{locale}/messages",
-      include: ["./pages/", "./components/", "./scenes/"],
+      include: [
+        "./pages/",
+        "./components/",
+        "./scenes/",
+        "./lib/useAbilityEffects",
+      ],
     },
     {
       path: "<rootDir>/locale/{locale}/game",
-      include: ["./lib/"],
+      include: ["./lib/lists"],
     },
   ],
 };
