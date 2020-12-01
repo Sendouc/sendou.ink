@@ -7,6 +7,8 @@ import {
   MenuOptionGroup,
 } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
+import { activateLocale } from "lib/i18n";
 import { useMyTheme } from "lib/useMyTheme";
 import React from "react";
 import { FiGlobe } from "react-icons/fi";
@@ -28,6 +30,7 @@ export const languages = [
 ] as const;
 
 export const LanguageSelector = () => {
+  const { i18n } = useLingui();
   const { secondaryBgColor, textColor } = useMyTheme();
 
   return (
@@ -44,16 +47,14 @@ export const LanguageSelector = () => {
       <MenuList bg={secondaryBgColor} color={textColor}>
         <MenuOptionGroup
           title={t`Choose language`}
-          //value={i18n.language}
-          value="en"
+          value={i18n.locale}
+          onChange={(newLocale) => {
+            window.localStorage.setItem("locale", newLocale as string);
+            activateLocale(newLocale as string);
+          }}
         >
           {languages.map((lang) => (
-            <MenuItemOption
-              key={lang.code}
-              value={lang.code}
-              //onClick={() => i18n.changeLanguage(lang.code)}
-              onClick={() => console.log(lang.code)}
-            >
+            <MenuItemOption key={lang.code} value={lang.code}>
               {lang.name}
             </MenuItemOption>
           ))}

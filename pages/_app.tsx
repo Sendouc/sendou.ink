@@ -3,7 +3,7 @@ import { mode } from "@chakra-ui/theme-tools";
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import Layout from "components/layout";
-import { activate } from "lib/i18n";
+import { activateLocale } from "lib/i18n";
 import { Provider as NextAuthProvider } from "next-auth/client";
 import GoogleFonts from "next-google-fonts";
 import type { AppProps } from "next/app";
@@ -88,10 +88,16 @@ const extendedTheme = extendTheme({
   },
 });
 
+const setDisplayedLanguage = () => {
+  const browserLanguage = navigator.languages
+    ? navigator.languages[0]
+    : navigator.language || "en";
+  const locale = window.localStorage.getItem("locale") ?? browserLanguage;
+  activateLocale(locale);
+};
+
 const MyApp = (props: AppProps) => {
-  useEffect(() => {
-    activate("en");
-  }, []);
+  useEffect(setDisplayedLanguage, []);
 
   return (
     <>
