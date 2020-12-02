@@ -17,19 +17,19 @@ Live version: [https://sendou.ink/](https://sendou.ink/)
 
 🦑 Planner tool where you can draw on any map in the game to conveniently make up game plans
 
-🦑 Calendar that collects together all the events happening in the community
+🐙 Calendar that collects together all the events happening in the community
 
 🦑 Users can make an account and submit their builds and browse builds made by others
 
-🦑 It is possible to submit yourself as "free agent". If two FA's like each other they are notified and a new team can be founded
+🐙 It is possible to submit yourself as "free agent". If two FA's like each other they are notified and a new team can be founded
 
 🦑 X Rank Top 500 results can be browsed through far more conveniently than on the official app
 
-🦑 X Rank Top 500 leaderboards to compare yourself against other players
+🐙 X Rank Top 500 leaderboards to compare yourself against other players
 
 🦑 Browse through detailed tournament results
 
-🦑 Choose between light and dark mode
+🐙 Choose between light and dark mode
 
 ## Setting up the project locally
 
