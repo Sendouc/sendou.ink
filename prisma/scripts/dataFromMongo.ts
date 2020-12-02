@@ -1,5 +1,7 @@
+// @ts-nocheck
+
 import { Prisma } from "@prisma/client";
-import prisma from "prisma/client";
+import prisma from "../client";
 import buildsJson from "./mongo/builds.json";
 import placementsJson from "./mongo/placements.json";
 import playersJson from "./mongo/players.json";
@@ -26,7 +28,10 @@ for (const player of playersJson) {
   });
 }
 
-const discordIdToBuilds = new Map<string, BuildCreateWithoutUserInput[]>();
+const discordIdToBuilds = new Map<
+  string,
+  Prisma.BuildCreateWithoutUserInput[]
+>();
 
 const modes: any[] = [];
 
