@@ -12,7 +12,11 @@ const MyLink: React.FC<Props> = ({ children, href, isExternal }) => {
   const { themeColorShade } = useMyTheme();
 
   if (isExternal) {
-    return <ChakraLink color={themeColorShade}>{children}</ChakraLink>;
+    return (
+      <ChakraLink href={href} color={themeColorShade}>
+        {children}
+      </ChakraLink>
+    );
   }
   return (
     <NextLink href={href}>

@@ -28,7 +28,6 @@ export const navIcons: {
     displayName: t`Top 500`,
     menuItems: [
       { code: "xsearch", displayName: t`Browser` },
-      { code: "xtrends", displayName: t`Trends` },
       { code: "xleaderboards", displayName: t`Leaderboards` },
     ],
   },

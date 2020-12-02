@@ -99,73 +99,76 @@ msgid "External links"
 msgstr "External links"
 
 #: components/layout/IconNavBar.tsx:11
+#: pages/index.tsx:19
 msgid "Top 500"
 msgstr "Top 500"
 
 #: components/layout/IconNavBar.tsx:13
-#: components/layout/IconNavBar.tsx:23
+#: components/layout/IconNavBar.tsx:22
 msgid "Browser"
 msgstr "Browser"
 
 #: components/layout/IconNavBar.tsx:14
-msgid "Trends"
-msgstr "Trends"
-
-#: components/layout/IconNavBar.tsx:15
 msgid "Leaderboards"
 msgstr "Leaderboards"
 
-#: components/layout/IconNavBar.tsx:21
+#: components/layout/IconNavBar.tsx:20
 #: pages/builds/[[...slug]].tsx:16
+#: pages/index.tsx:24
 msgid "Builds"
 msgstr "Builds"
 
-#: components/layout/IconNavBar.tsx:24
+#: components/layout/IconNavBar.tsx:23
 msgid "Analyzer"
 msgstr "Analyzer"
 
-#: components/layout/IconNavBar.tsx:27
+#: components/layout/IconNavBar.tsx:26
+#: pages/index.tsx:41
 msgid "Calendar"
 msgstr "Calendar"
 
-#: components/layout/IconNavBar.tsx:28
+#: components/layout/IconNavBar.tsx:27
+#: pages/index.tsx:44
 msgid "Free Agents"
 msgstr "Free Agents"
 
-#: components/layout/IconNavBar.tsx:30
+#: components/layout/IconNavBar.tsx:29
 #: components/plans/index.tsx:243
+#: pages/index.tsx:47
 msgid "Map Planner"
 msgstr "Map Planner"
 
-#: components/layout/IconNavBar.tsx:31
+#: components/layout/IconNavBar.tsx:30
+#: pages/index.tsx:50
 msgid "Tournaments"
 msgstr "Tournaments"
 
-#: components/layout/IconNavBar.tsx:34
+#: components/layout/IconNavBar.tsx:33
+#: pages/index.tsx:55
 msgid "Plus Server"
 msgstr "Plus Server"
 
-#: components/layout/IconNavBar.tsx:38
+#: components/layout/IconNavBar.tsx:37
 msgid "Voting"
 msgstr "Voting"
 
-#: components/layout/IconNavBar.tsx:45
+#: components/layout/IconNavBar.tsx:44
 msgid "Suggested and vouched players"
 msgstr "Suggested and vouched players"
 
-#: components/layout/IconNavBar.tsx:46
+#: components/layout/IconNavBar.tsx:45
 msgid "Voting history"
 msgstr "Voting history"
 
-#: components/layout/IconNavBar.tsx:47
+#: components/layout/IconNavBar.tsx:46
 msgid "Draft Cup"
 msgstr "Draft Cup"
 
-#: components/layout/IconNavBar.tsx:48
+#: components/layout/IconNavBar.tsx:47
 msgid "FAQ"
 msgstr "FAQ"
 
-#: components/layout/LanguageSelector.tsx:26
+#: components/layout/LanguageSelector.tsx:29
 msgid "Choose language"
 msgstr "Choose language"
 
@@ -868,6 +871,7 @@ msgid "translation"
 msgstr "translation"
 
 #: pages/analyzer.tsx:50
+#: pages/index.tsx:30
 msgid "Build Analyzer"
 msgstr "Build Analyzer"
 
@@ -906,6 +910,50 @@ msgstr "builds"
 #: pages/builds/[[...slug]].tsx:30
 msgid "hidden"
 msgstr "hidden"
+
+#: pages/index.tsx:20
+msgid "All the Top 500 results and leaderboards derived from them."
+msgstr "All the Top 500 results and leaderboards derived from them."
+
+#: pages/index.tsx:25
+msgid "View builds by some of the best players in the world and submit your own."
+msgstr "View builds by some of the best players in the world and submit your own."
+
+#: pages/index.tsx:31
+msgid "What exactly is the effect of your builds? Guess no more."
+msgstr "What exactly is the effect of your builds? Guess no more."
+
+#: pages/index.tsx:35
+msgid "User Search"
+msgstr "User Search"
+
+#: pages/index.tsx:36
+msgid "You can make your own page. Use this tool to find other users' pages."
+msgstr "You can make your own page. Use this tool to find other users' pages."
+
+#: pages/index.tsx:42
+msgid "All the events happening in the community in one place."
+msgstr "All the events happening in the community in one place."
+
+#: pages/index.tsx:45
+msgid "Find your next teammates."
+msgstr "Find your next teammates."
+
+#: pages/index.tsx:48
+msgid "Make your battle plans by drawing on over 100 maps."
+msgstr "Make your battle plans by drawing on over 100 maps."
+
+#: pages/index.tsx:51
+msgid "Data on tournaments spanning over years gathered by ganbawoomy."
+msgstr "Data on tournaments spanning over years gathered by ganbawoomy."
+
+#: pages/index.tsx:56
+msgid "Information related to +1 and +2. Voting results, suggested players and FAQ."
+msgstr "Information related to +1 and +2. Voting results, suggested players and FAQ."
+
+#: pages/index.tsx:63
+msgid "All art by <0>borzoic</0>"
+msgstr "All art by <0>borzoic</0>"
 
 #: pages/links.tsx:16
 #: pages/links.tsx:17
