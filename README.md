@@ -68,10 +68,10 @@ DISCORD_CLIENT_SECRET=
 JWT_SECRET=
 ```
 
-a) Go to https://discord.com/developers/applications
-b) Select "New Application"
-c) Go to your newly generated application
-d) On the "General Information" tab both "CLIEN ID" and "CLIENT SECRET" can be found.
+a) Go to https://discord.com/developers/applications  
+b) Select "New Application"  
+c) Go to your newly generated application  
+d) On the "General Information" tab both "CLIEN ID" and "CLIENT SECRET" can be found.  
 e) On the "OAuth2" tab add `http://localhost:3000/api/auth/callback/discord` in the list of redirects.
 
 `JWT_SECRET` can be any randomly generated reasonably long string.
