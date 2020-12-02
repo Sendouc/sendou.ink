@@ -102,7 +102,8 @@ const getUsersLanguage = () => {
     : navigator.language;
 
   // Could be either "en" or "en-US" for example - that's why the split
-  if (locales.includes(browserLanguage.split("-")[0])) return browserLanguage;
+  const languageCode = browserLanguage.split("-")[0];
+  if (locales.includes(languageCode)) return languageCode;
 
   return "en";
 };
