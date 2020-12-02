@@ -14,6 +14,7 @@ module.exports = withImages({
     ];
   },
   // i18n: {
+  //  v-- import from lib/locales
   //   locales: [
   //     "de",
   //     "el",

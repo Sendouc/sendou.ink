@@ -6,6 +6,7 @@ import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import Layout from "components/layout";
 import { activateLocale } from "lib/i18n";
+import { locales } from "lib/lists/locales";
 import { Provider as NextAuthProvider } from "next-auth/client";
 import GoogleFonts from "next-google-fonts";
 import type { AppProps } from "next/app";
@@ -90,12 +91,28 @@ const extendedTheme = extendTheme({
   },
 });
 
+const getUsersLanguage = () => {
+  const localeFromLocalStorage = window.localStorage.getItem("locale");
+  if (localeFromLocalStorage) {
+    return localeFromLocalStorage;
+  }
+
+  const browserLanguage = navigator.languages
+    ? navigator.languages[0]
+    : navigator.language;
+
+  // Could be either "en" or "en-US" for example - that's why the split
+  if (locales.includes(browserLanguage.split("-")[0])) return browserLanguage;
+
+  return "en";
+};
+
 const setDisplayedLanguage = () => {
   const browserLanguage = navigator.languages
     ? navigator.languages[0]
     : navigator.language || "en";
   const locale = window.localStorage.getItem("locale") ?? browserLanguage;
-  activateLocale(locale);
+  activateLocale(getUsersLanguage());
 };
 
 const MyApp = (props: AppProps) => {
