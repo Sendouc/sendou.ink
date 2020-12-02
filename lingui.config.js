@@ -1,7 +1,19 @@
-import { locales } from "./lib/lists/locales";
-
 module.exports = {
-  locales,
+  locales: [
+    "de",
+    "en",
+    "es",
+    "fr",
+    "it",
+    "nl",
+    "pt",
+    "sv",
+    "el",
+    "ru",
+    "ja",
+    "ko",
+    "zh",
+  ],
   sourceLocale: "en",
   fallbackLocales: { "en-US": "en" },
   orderBy: "origin",
