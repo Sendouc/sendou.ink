@@ -140,12 +140,11 @@ const ProfilePage = (props: Props) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const users = await prisma.user.findMany({
-    where: { NOT: [{ profile: { customUrlPath: null } }] },
     include: { profile: true },
   });
   return {
     paths: users.map((u) => ({
-      params: { identifier: u.profile!.customUrlPath! },
+      params: { identifier: u.profile?.customUrlPath ?? u.discordId },
     })),
     fallback: true,
   };
