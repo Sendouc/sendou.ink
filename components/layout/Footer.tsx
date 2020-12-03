@@ -8,7 +8,7 @@ const Footer: React.FC = () => {
   const species = useRouter().asPath.charCodeAt(1) % 2 === 0 ? "squid" : "octo";
   const { themeColorHex: themeColor } = useMyTheme();
   const footerImageSrc = useColorModeValue(
-    { octo: "b8ing_light", squid: "boing_dark" },
+    { octo: "b8ing_light", squid: "boing_light" },
     { octo: "b8ing_dark", squid: "boing_dark" }
   )[species];
 
