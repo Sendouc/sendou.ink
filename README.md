@@ -35,12 +35,12 @@ Live version: [https://sendou.ink/](https://sendou.ink/)
 
 ### Access pages that don't need database access
 
-With the following steps you can access a few pages that don't need a database: home page (`/`), build analyzer (`/analyzer`) and map planner (`/plans`)
+With the following steps you can access a few pages that don't need a database. For example: home page (`/`), build analyzer (`/analyzer`) and map planner (`/plans`)
 
 1. Clone the project
 2. Run `npm i` to install dependencies
 3. Run `npm run compile` to compile translation files.
-4. Run `npm run dev` to start the developmen server at http://localhost:3000/
+4. Run `npm run dev` to start the development server at http://localhost:3000/
 
 ### Access rest of the pages
 
