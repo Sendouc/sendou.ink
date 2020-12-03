@@ -109,10 +109,6 @@ const getUsersLanguage = () => {
 };
 
 const setDisplayedLanguage = () => {
-  const browserLanguage = navigator.languages
-    ? navigator.languages[0]
-    : navigator.language || "en";
-  const locale = window.localStorage.getItem("locale") ?? browserLanguage;
   activateLocale(getUsersLanguage());
 };
 

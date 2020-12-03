@@ -7,12 +7,14 @@ import {
 } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import { AppProps } from "next/app";
+import { useState } from "react";
 import { SWRConfig } from "swr";
 import Footer from "./Footer";
 import IconNavBar from "./IconNavBar";
 import TopNav from "./TopNav";
 
 const Layout = ({ Component, pageProps }: AppProps) => {
+  const [errors, setErrors] = useState(new Set<string>());
   const toast = useToast();
   const bannerColor = useColorModeValue("lightblue", "black");
 
@@ -27,13 +29,19 @@ const Layout = ({ Component, pageProps }: AppProps) => {
           }),
         revalidateOnFocus: false,
         revalidateOnReconnect: false,
-        onError: () => {
+        onError: (_, key) => {
+          if (errors.has(key)) return;
+          setErrors(new Set([...errors, key]));
           toast({
             duration: null,
             isClosable: true,
             position: "top-right",
             status: "error",
             description: t`An error occurred`,
+            onCloseComplete: () =>
+              setErrors(
+                new Set(Array.from(errors).filter((error) => error !== key))
+              ),
           });
         },
       }}
