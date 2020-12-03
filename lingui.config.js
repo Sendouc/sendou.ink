@@ -12,7 +12,6 @@ module.exports = {
     "ru",
     "ja",
     "ko",
-    "zh",
   ],
   format: "minimal",
   sourceLocale: "en",

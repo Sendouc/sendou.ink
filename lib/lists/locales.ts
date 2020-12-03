@@ -11,5 +11,4 @@ export const locales = [
   "ru",
   "ja",
   "ko",
-  "zh",
 ];
