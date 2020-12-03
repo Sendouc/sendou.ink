@@ -147,7 +147,7 @@ export const weaponsWithHeroCategorizedLocalized: readonly {
   weapons: readonly string[];
 }[] = [
   {
-    name: t`Shooters`,
+    name: "Shooters",
     weapons: [
       t`Sploosh-o-matic`,
       t`Neo Sploosh-o-matic`,
@@ -189,7 +189,7 @@ export const weaponsWithHeroCategorizedLocalized: readonly {
     ],
   },
   {
-    name: t`Blasters`,
+    name: "Blasters",
     weapons: [
       t`Luna Blaster`,
       t`Luna Blaster Neo`,
@@ -210,7 +210,7 @@ export const weaponsWithHeroCategorizedLocalized: readonly {
     ],
   },
   {
-    name: t`Rollers`,
+    name: "Rollers",
     weapons: [
       t`Carbon Roller`,
       t`Carbon Roller Deco`,
@@ -226,7 +226,7 @@ export const weaponsWithHeroCategorizedLocalized: readonly {
     ],
   },
   {
-    name: t`Brushes`,
+    name: "Brushes",
     weapons: [
       t`Inkbrush`,
       t`Inkbrush Nouveau`,
@@ -238,7 +238,7 @@ export const weaponsWithHeroCategorizedLocalized: readonly {
     ],
   },
   {
-    name: t`Chargers`,
+    name: "Chargers",
     weapons: [
       t`Classic Squiffer`,
       t`New Squiffer`,
@@ -262,7 +262,7 @@ export const weaponsWithHeroCategorizedLocalized: readonly {
     ],
   },
   {
-    name: t`Sloshers`,
+    name: "Sloshers",
     weapons: [
       t`Slosher`,
       t`Hero Slosher Replica`,
@@ -280,7 +280,7 @@ export const weaponsWithHeroCategorizedLocalized: readonly {
     ],
   },
   {
-    name: t`Splatlings`,
+    name: "Splatlings",
     weapons: [
       t`Mini Splatling`,
       t`Zink Mini Splatling`,
@@ -298,7 +298,7 @@ export const weaponsWithHeroCategorizedLocalized: readonly {
     ],
   },
   {
-    name: t`Dualies`,
+    name: "Dualies",
     weapons: [
       t`Dapple Dualies`,
       t`Dapple Dualies Nouveau`,
@@ -317,7 +317,7 @@ export const weaponsWithHeroCategorizedLocalized: readonly {
     ],
   },
   {
-    name: t`Brellas`,
+    name: "Brellas",
     weapons: [
       t`Splat Brella`,
       t`Hero Brella Replica`,

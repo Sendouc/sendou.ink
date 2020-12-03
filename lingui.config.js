@@ -24,8 +24,8 @@ module.exports = {
       include: [
         "./pages/",
         "./components/",
-        "./scenes/",
         "./lib/useAbilityEffects",
+        "./lib/translateThese.ts",
       ],
     },
     {
