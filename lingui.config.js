@@ -14,6 +14,7 @@ module.exports = {
     "ko",
     "zh",
   ],
+  format: "minimal",
   sourceLocale: "en",
   fallbackLocales: { "en-US": "en" },
   orderBy: "origin",

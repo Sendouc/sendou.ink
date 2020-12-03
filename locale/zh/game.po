@@ -314,7 +314,7 @@ msgid "Annaki Beret & Glasses"
 msgstr ""
 
 #: lib/lists/gear.ts:61
-msgid "Annaki Maskt"
+msgid "Annaki Mask"
 msgstr ""
 
 #: lib/lists/gear.ts:62

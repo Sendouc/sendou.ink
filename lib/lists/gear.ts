@@ -47,7 +47,7 @@ export const gear = [
     brand: t`Annaki`,
     clothing: [
       t`Annaki Blue Cuff`,
-      t`Annaki Drive Tee `,
+      t`Annaki Drive Tee`,
       t`Annaki Evolution Tee`,
       t`Annaki Flannel Hoodie`,
       t`Annaki Polpo-Pic Tee`,
@@ -59,8 +59,8 @@ export const gear = [
       t`Red Hula Punk with Tie`,
       t`Rockin' Leather Jacket`,
     ],
-    head: [t`Annaki Beret`, t`Annaki Beret & Glasses`, t`Annaki Maskt`],
-    shoes: [t`Annaki Arachno Boots`, t`Annaki Habaneros`, t`Annaki Tigerst`],
+    head: [t`Annaki Beret`, t`Annaki Beret & Glasses`, t`Annaki Mask`],
+    shoes: [t`Annaki Arachno Boots`, t`Annaki Habaneros`, t`Annaki Tigers`],
   },
   {
     brand: t`Cuttlegear`,
@@ -75,7 +75,7 @@ export const gear = [
       t`Octarian Retro`,
       t`Octo Layered LS`,
       t`Octo Tee`,
-      t`Old-Timey clothing`,
+      t`Old-Timey Clothes`,
       t`Red Cuttlegear LS`,
       t`Sennyu Suit`,
     ],
@@ -102,7 +102,7 @@ export const gear = [
   {
     brand: t`Enperry`,
     clothing: [
-      t`Black Velour Octoking Tee `,
+      t`Black Velour Octoking Tee`,
       t`Grape Hoodie`,
       t`Green Velour Octoking Tee`,
       t`King Jersey`,
@@ -170,7 +170,7 @@ export const gear = [
       t`Knitted Hat`,
       t`Octoglasses`,
     ],
-    shoes: [t`Red FishFry Sandals`, t`Yellow FishFry Sandalst`],
+    shoes: [t`Red FishFry Sandals`, t`Yellow FishFry Sandals`],
   },
   {
     brand: t`Forge`,
@@ -178,7 +178,7 @@ export const gear = [
       t`Aloha Shirt`,
       t`Blue Sailor Suit`,
       t`Brown FA-11 Bomber`,
-      t`Custom Painted F-3 `,
+      t`Custom Painted F-3`,
       t`FA-01 Jacket`,
       t`FA-01 Reversed`,
       t`Forge Inkling Parka`,
@@ -215,7 +215,7 @@ export const gear = [
       t`Studio Headphones`,
       t`Treasure Hunter`,
     ],
-    shoes: [t`Moist Ghillie Bootst`],
+    shoes: [t`Moist Ghillie Boots`],
   },
   {
     brand: t`Grizzco`,
@@ -356,7 +356,7 @@ export const gear = [
       t`White Inky Rider`,
       t`White Urchin Rock Tee`,
     ],
-    head: [t`18K Aviators`, t`SV925 Circle Shadest`],
+    head: [t`18K Aviators`, t`SV925 Circle Shades`],
     shoes: [
       t`Blue Moto Boots`,
       t`Cherry Kicks`,
@@ -514,7 +514,7 @@ export const gear = [
       t`Hivemind Antenna`,
       t`Eye of Justice`,
     ],
-    shoes: [t`Mecha Legs - LBSt`],
+    shoes: [t`Mecha Legs - LBS`],
   },
   {
     brand: t`Takoroka`,
@@ -535,7 +535,7 @@ export const gear = [
       t`Takoroka Windcrusher`,
       t`Tricolor Rugby`,
     ],
-    head: [t`Takoroka Mesh`, t`Takoroka Visort`],
+    head: [t`Takoroka Mesh`, t`Takoroka Visor`],
     shoes: [
       t`Athletic Arrows`,
       t`Blue Power Stripes`,
@@ -623,7 +623,7 @@ export const gear = [
       t`Short Knit Layers`,
       t`Toni K. Baseball Jersey`,
     ],
-    head: [t`Face Visor`, t`Ink-Guard Goggles`, t`Toni Kensa Gogglest`],
+    head: [t`Face Visor`, t`Ink-Guard Goggles`, t`Toni Kensa Goggles`],
     shoes: [
       t`Arrow Pull-Ons`,
       t`Toni Kensa Black Hi-Tops`,
