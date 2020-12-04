@@ -6,6 +6,11 @@ import {
   MenuGroup,
   MenuItem,
   MenuList,
+  Popover,
+  PopoverArrow,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
 } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
@@ -73,7 +78,6 @@ const IconNavBar = () => {
     secondaryBgColor,
     textColor,
     themeColorHex: themeColor,
-    gray,
   } = useMyTheme();
   const pathname = useRouter().pathname;
 
@@ -90,45 +94,13 @@ const IconNavBar = () => {
       boxShadow="md"
     >
       {navIcons.map(({ displayName, code, menuItems }) => {
-        const codesTogether =
-          "/" +
-          code +
-          menuItems.reduce((acc, { code }) => acc + "/" + code, "");
-
-        const isActive = pathname !== "/" && codesTogether.includes(pathname);
-        const MenuNavIcon = () => (
-          <Flex
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-            m="5px 15px"
-          >
-            <Box color={isActive ? themeColor : gray} fontSize="0.75em">
-              <Trans id={displayName} />
-            </Box>
-            {/* TODO same width for each */}
-            <Image
-              src={`/layout/${code}.png`}
-              height={48}
-              width={48}
-              alt={code}
-              priority
-              // TODO when chakra-ui adds next/image support
-              // @ts-ignore
-              style={{ cursor: "pointer", userSelect: "none" }}
-            />
-            {menuItems.length > 0 && (
-              <Box ml="0.1rem" lineHeight="0.5rem">
-                ▾
-              </Box>
-            )}
-          </Flex>
-        );
         if (!menuItems.length) {
           return (
             <Link key={code} href={"/" + code}>
               <a>
-                <MenuNavIcon />
+                <MenuDialog displayName={i18n._(displayName)}>
+                  <MenuNavIcon code={code} />
+                </MenuDialog>
               </a>
             </Link>
           );
@@ -136,9 +108,11 @@ const IconNavBar = () => {
 
         return (
           <Menu key={code}>
-            <MenuButton>
-              <MenuNavIcon />
-            </MenuButton>
+            <MenuDialog displayName={i18n._(displayName)}>
+              <MenuButton>
+                <MenuNavIcon code={code} showDownArrow />
+              </MenuButton>
+            </MenuDialog>
             <MenuList bg={secondaryBgColor} color={textColor}>
               <MenuGroup title={i18n._(displayName)}>
                 {menuItems.map((item) => (
@@ -184,6 +158,67 @@ const IconNavBar = () => {
       })}
     </Flex>
   );
+
+  function MenuNavIcon({
+    code,
+    showDownArrow,
+  }: {
+    code: string;
+    showDownArrow?: boolean;
+  }) {
+    return (
+      <Flex
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        m="5px 15px"
+        mx="-0.2rem"
+      >
+        <Image
+          src={`/layout/${code}.png`}
+          height={48}
+          width={48}
+          alt={code}
+          priority
+          // TODO when chakra-ui adds next/image support
+          // @ts-ignore
+          style={{ cursor: "pointer" }}
+        />
+        {showDownArrow && (
+          <Box ml="0.1rem" lineHeight="0.5rem">
+            ▾
+          </Box>
+        )}
+      </Flex>
+    );
+  }
+
+  function MenuDialog({
+    children,
+    displayName,
+  }: {
+    children: React.ReactNode;
+    displayName: string;
+  }) {
+    return (
+      <Popover trigger="hover" variant="responsive">
+        <PopoverTrigger>
+          <Flex
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            m="5px 15px"
+          >
+            {children}
+          </Flex>
+        </PopoverTrigger>
+        <PopoverContent bg={secondaryBgColor}>
+          <PopoverHeader fontWeight="semibold">{displayName}</PopoverHeader>
+          <PopoverArrow bg={secondaryBgColor} />
+        </PopoverContent>
+      </Popover>
+    );
+  }
 };
 
 function getFirstFridayDate() {

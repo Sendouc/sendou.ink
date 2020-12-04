@@ -1,5 +1,3 @@
-import "./styles.css";
-
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { mode } from "@chakra-ui/theme-tools";
 import { i18n } from "@lingui/core";
@@ -12,6 +10,7 @@ import GoogleFonts from "next-google-fonts";
 import type { AppProps } from "next/app";
 import { useEffect } from "react";
 import { theme } from "theme";
+import "./styles.css";
 
 const extendedTheme = extendTheme({
   styles: {
@@ -73,6 +72,16 @@ const extendedTheme = extendTheme({
           )(props),
         },
       }),
+    },
+    Popover: {
+      variants: {
+        responsive: {
+          popper: {
+            maxWidth: "unset",
+            width: "unset",
+          },
+        },
+      },
     },
   },
   colors: {
