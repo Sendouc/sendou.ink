@@ -1,7 +1,7 @@
 import { Select } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import { weaponsWithHeroCategorizedLocalized } from "lib/lists/weaponsWithHero";
+import { weaponsWithHeroCategorized } from "lib/lists/weaponsWithHero";
 
 interface Props {
   name?: string;
@@ -32,7 +32,7 @@ const WeaponSelector: React.FC<Props> = ({
         <option hidden value="NO_VALUE">
           {t`Select weapon`}
         </option>
-        {weaponsWithHeroCategorizedLocalized.flatMap((wpnCategory) =>
+        {weaponsWithHeroCategorized.flatMap((wpnCategory) =>
           wpnCategory.weapons.map((wpn) => {
             if (
               excludeAlt &&
