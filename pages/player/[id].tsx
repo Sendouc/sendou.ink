@@ -2,6 +2,7 @@ import { t } from "@lingui/macro";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import PlayerTable from "components/player/PlayerTable";
 import { GetStaticPaths, GetStaticProps } from "next";
+import prisma from "prisma/client";
 import {
   GetPlayersTop500Placements,
   getPlayersTop500Placements,
@@ -31,15 +32,11 @@ const PlayerPage = ({ player }: Props) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  // const players = await prisma.player.findMany({
-  //   where: { NOT: [{ userId: null }] },
-  // });
-  // return {
-  //   paths: players.map((p) => ({ params: { id: p.switchAccountId } })),
-  //   fallback: true,
-  // };
+  const players = await prisma.player.findMany({
+    where: { NOT: [{ userId: null }] },
+  });
   return {
-    paths: [],
+    paths: players.map((p) => ({ params: { id: p.switchAccountId } })),
     fallback: true,
   };
 };

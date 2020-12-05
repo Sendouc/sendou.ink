@@ -147,6 +147,7 @@ const ProfilePage = (props: Props) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const users = await prisma.user.findMany({
+    where: { NOT: [{ profile: { customUrlPath: null } }] },
     include: { profile: true },
   });
   return {
