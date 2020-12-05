@@ -160,7 +160,7 @@ export const weaponsWithHeroCategorized: readonly {
       "Aerospray MG",
       "Aerospray RG",
       "Aerospray PG",
-      "Splattersho",
+      "Splattershot",
       "Hero Shot Replica",
       "Tentatek Splattersho",
       "Octo Shot Replica",
