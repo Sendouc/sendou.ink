@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run migrate:up && lingui compile && next build",
+    "build": "lingui compile && next build",
     "start": "next start",
     "migrate:save": "npx prisma migrate save --name init --experimental",
     "migrate:up": "npx prisma migrate up --experimental",
