@@ -1,7 +1,7 @@
 import { Button, Divider, Select } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import { Build, RankedMode } from "@prisma/client";
+import { Build, LeagueType, RankedMode } from "@prisma/client";
 import BuildCard from "components/builds/BuildCard";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import Markdown from "components/common/Markdown";
@@ -27,6 +27,7 @@ import useSWR from "swr";
 interface Props {
   user: GetUserByIdentifierData;
   peakXPowers: Partial<Record<RankedMode, number>>;
+  peakLeaguePowers: Partial<Record<LeagueType, number>>;
 }
 
 const ProfilePage = (props: Props) => {
@@ -60,6 +61,8 @@ const ProfilePage = (props: Props) => {
     return true;
   };
 
+  console.log({ props });
+
   return (
     <>
       {showProfileModal && (
@@ -78,7 +81,11 @@ const ProfilePage = (props: Props) => {
           { name: getFullUsername(user) },
         ]}
       />
-      <AvatarWithInfo user={user} peakXPowers={props.peakXPowers} />
+      <AvatarWithInfo
+        user={user}
+        peakXPowers={props.peakXPowers}
+        peakLeaguePowers={props.peakLeaguePowers}
+      />
       {loggedInUser?.id === user.id && (
         <Button onClick={() => setShowProfileModal(true)}>
           <Trans>Edit profile</Trans>
@@ -167,24 +174,37 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   }
 
   const peakXPowers: Partial<Record<RankedMode, number>> = {};
+  let peakLeaguePowers: Partial<Record<LeagueType, number>> = {};
 
   if (!!user.player?.switchAccountId) {
-    const placements = await getPlayersTop500Placements(
+    const player = await getPlayersTop500Placements(
       user.player.switchAccountId
     );
 
-    for (const placement of placements) {
+    for (const placement of player!.placements) {
       peakXPowers[placement.mode] = Math.max(
         peakXPowers[placement.mode] ?? 0,
         placement.xPower
       );
     }
+
+    peakLeaguePowers = player!.leaguePlacements.reduce(
+      (acc, cur) => {
+        acc[cur.squad.type] = Math.max(
+          acc[cur.squad.type],
+          cur.squad.leaguePower
+        );
+        return acc;
+      },
+      { TWIN: -1, QUAD: -1 }
+    );
   }
 
   return {
     props: {
       user,
       peakXPowers,
+      peakLeaguePowers,
     },
     revalidate: 1,
   };

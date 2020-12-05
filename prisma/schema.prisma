@@ -64,12 +64,45 @@ model XRankPlacement {
   @@unique([switchAccountId, mode, month, year])
 }
 
+enum Region {
+  EU
+  NA
+  JP
+}
+
+enum LeagueType {
+  TWIN
+  QUAD
+}
+
+model LeagueSquad {
+  id          Int                 @id @default(autoincrement())
+  region      Region
+  type        LeagueType
+  leaguePower Float
+  startTime   DateTime
+  members     LeagueSquadMember[]
+
+  @@index([leaguePower, type, region])
+}
+
+model LeagueSquadMember {
+  squadId         Int
+  squad           LeagueSquad @relation(fields: [squadId], references: [id])
+  switchAccountId String
+  player          Player      @relation(fields: [switchAccountId], references: [switchAccountId])
+  weapon          String
+
+  @@unique([squadId, switchAccountId])
+}
+
 model Player {
-  switchAccountId String           @unique
-  userId          Int?             @unique
-  name            String
-  placements      XRankPlacement[]
-  user            User?            @relation(fields: [userId], references: [id])
+  switchAccountId  String              @unique
+  userId           Int?                @unique
+  name             String?
+  placements       XRankPlacement[]
+  user             User?               @relation(fields: [userId], references: [id])
+  leaguePlacements LeagueSquadMember[]
 }
 
 enum Ability {

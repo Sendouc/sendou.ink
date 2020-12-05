@@ -1,6 +1,13 @@
-import { Box, Divider, Flex, Heading, IconButton } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Divider,
+  Flex,
+  Heading,
+  IconButton,
+} from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
-import { RankedMode } from "@prisma/client";
+import { LeagueType, RankedMode } from "@prisma/client";
 import ModeImage from "components/common/ModeImage";
 import MyLink from "components/common/MyLink";
 import UserAvatar from "components/common/UserAvatar";
@@ -17,11 +24,13 @@ import { FiInfo } from "react-icons/fi";
 interface AvatarWithInfoProps {
   user: NonNullable<GetUserByIdentifierData>;
   peakXPowers: Partial<Record<RankedMode, number>>;
+  peakLeaguePowers: Partial<Record<LeagueType, number>>;
 }
 
 const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
   user,
   peakXPowers,
+  peakLeaguePowers,
 }) => {
   const [loggedInUser] = useUser();
   const { gray, themeColorShade } = useMyTheme();
@@ -134,7 +143,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
                 </Flex>
               )}
               {Object.keys(peakXPowers).length > 0 && (
-                <Flex mt={4}>
+                <Flex mt={8}>
                   {(["SZ", "TC", "RM", "CB"] as RankedMode[])
                     .filter((mode) => peakXPowers[mode])
                     .map((mode, i) => (
@@ -150,13 +159,42 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
                     ))}
                 </Flex>
               )}
-              {!!user.player?.switchAccountId && (
-                <Box mt={2} color={gray}>
+
+              {process.env.NODE_ENV === "development" &&
+                Object.keys(peakLeaguePowers).length > 0 && (
+                  <Flex mt={4}>
+                    {(["TWIN", "QUAD"] as LeagueType[])
+                      .filter((type) => peakLeaguePowers[type])
+                      .map((type) => (
+                        <Fragment key={type}>
+                          <Flex align="center" justify="center" mx={2}>
+                            <Box ml={2} color={gray}>
+                              <Box
+                                fontSize="xs"
+                                textColor={themeColorShade}
+                                textTransform="uppercase"
+                                letterSpacing="wider"
+                                lineHeight="1rem"
+                                fontWeight="medium"
+                              >
+                                {type}
+                              </Box>
+                              {peakLeaguePowers[type]}
+                            </Box>
+                          </Flex>
+                        </Fragment>
+                      ))}
+                  </Flex>
+                )}
+              <Box width="100%" textAlign="center" mt={4}>
+                {!!user.player?.switchAccountId && (
                   <MyLink href={`/player/${user.player?.switchAccountId}`}>
-                    <Trans>View all Top 500 results</Trans>
+                    <Button variant="outline">
+                      <Trans>View results</Trans>
+                    </Button>
                   </MyLink>
-                </Box>
-              )}
+                )}
+              </Box>
               <Top500HelpText />
             </Flex>
           </Flex>

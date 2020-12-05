@@ -15,7 +15,7 @@ import { useMyTheme } from "lib/useMyTheme";
 import { GetPlayersTop500Placements } from "prisma/queries/getPlayersTop500Placements";
 
 interface Props {
-  placements: GetPlayersTop500Placements;
+  placements: NonNullable<GetPlayersTop500Placements>["placements"];
 }
 
 const PlayerPage: React.FC<Props> = ({ placements }) => {

@@ -24,6 +24,23 @@
     },
     {
       "tag": "CreateEnum",
+      "enum": "Region",
+      "values": [
+        "EU",
+        "NA",
+        "JP"
+      ]
+    },
+    {
+      "tag": "CreateEnum",
+      "enum": "LeagueType",
+      "values": [
+        "TWIN",
+        "QUAD"
+      ]
+    },
+    {
+      "tag": "CreateEnum",
       "enum": "Ability",
       "values": [
         "CB",
@@ -492,6 +509,237 @@
     },
     {
       "tag": "CreateModel",
+      "model": "LeagueSquad"
+    },
+    {
+      "tag": "CreateField",
+      "model": "LeagueSquad",
+      "field": "id",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "LeagueSquad",
+          "field": "id"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "LeagueSquad",
+          "field": "id"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "LeagueSquad",
+          "field": "id"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "autoincrement()"
+    },
+    {
+      "tag": "CreateField",
+      "model": "LeagueSquad",
+      "field": "region",
+      "type": "Region",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "LeagueSquad",
+      "field": "type",
+      "type": "LeagueType",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "LeagueSquad",
+      "field": "leaguePower",
+      "type": "Float",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "LeagueSquad",
+      "field": "startTime",
+      "type": "DateTime",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "LeagueSquad",
+      "field": "members",
+      "type": "LeagueSquadMember",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Model",
+          "model": "LeagueSquad",
+          "arguments": [
+            {
+              "name": "",
+              "value": "[leaguePower, type, region]"
+            }
+          ]
+        },
+        "directive": "index"
+      }
+    },
+    {
+      "tag": "CreateModel",
+      "model": "LeagueSquadMember"
+    },
+    {
+      "tag": "CreateField",
+      "model": "LeagueSquadMember",
+      "field": "squadId",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "LeagueSquadMember",
+      "field": "squad",
+      "type": "LeagueSquad",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "LeagueSquadMember",
+          "field": "squad"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "LeagueSquadMember",
+          "field": "squad"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[squadId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "LeagueSquadMember",
+          "field": "squad"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "LeagueSquadMember",
+      "field": "switchAccountId",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "LeagueSquadMember",
+      "field": "player",
+      "type": "Player",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "LeagueSquadMember",
+          "field": "player"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "LeagueSquadMember",
+          "field": "player"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[switchAccountId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "LeagueSquadMember",
+          "field": "player"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[switchAccountId]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "LeagueSquadMember",
+      "field": "weapon",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Model",
+          "model": "LeagueSquadMember",
+          "arguments": [
+            {
+              "name": "",
+              "value": "[squadId, switchAccountId]"
+            }
+          ]
+        },
+        "directive": "unique"
+      }
+    },
+    {
+      "tag": "CreateModel",
       "model": "Player"
     },
     {
@@ -535,7 +783,7 @@
       "model": "Player",
       "field": "name",
       "type": "String",
-      "arity": "Required"
+      "arity": "Optional"
     },
     {
       "tag": "CreateField",
@@ -589,6 +837,13 @@
       },
       "argument": "references",
       "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Player",
+      "field": "leaguePlacements",
+      "type": "LeagueSquadMember",
+      "arity": "List"
     },
     {
       "tag": "CreateModel",
