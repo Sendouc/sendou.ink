@@ -29,7 +29,7 @@ const Home = () => {
         </Box>
       </Box>
       <Container>
-        <PageInfoSection location="xsearch" title={t`Top 500`}>
+        <PageInfoSection location="xsearch" title={t`Top 500 Browser`}>
           <Trans>
             All the Top 500 results and leaderboards derived from them.
           </Trans>

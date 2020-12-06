@@ -30,21 +30,16 @@ export const navIcons: {
 }[] = [
   {
     code: "xsearch",
-    displayName: t`Top 500`,
-    menuItems: [
-      { code: "xsearch", displayName: t`Browser` },
-      { code: "xleaderboards", displayName: t`Leaderboards` },
-    ],
+    displayName: t`Top 500 Browser`,
+    menuItems: [],
   },
   //{ code: "sr", displayName: "Salmon Run", menuItems: [] },
   {
     code: "builds",
     displayName: t`Builds`,
-    menuItems: [
-      { code: "builds", displayName: t`Browser` },
-      { code: "analyzer", displayName: t`Analyzer` },
-    ],
+    menuItems: [],
   },
+  { code: "analyzer", displayName: t`Build Analyzer`, menuItems: [] },
   { code: "calendar", displayName: t`Calendar`, menuItems: [] },
   { code: "u", displayName: t`User Search`, menuItems: [] },
   { code: "freeagents", displayName: t`Free Agents`, menuItems: [] },
