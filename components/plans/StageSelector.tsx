@@ -1,5 +1,6 @@
 import {
   Box,
+  Flex,
   HStack,
   Image,
   Radio,
@@ -9,6 +10,7 @@ import {
 import { Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import ModeImage from "components/common/ModeImage";
+import SubText from "components/common/SubText";
 // @ts-ignore
 import salmonRunHighTide from "lib/assets/SalmonRunHighTide.svg";
 // @ts-ignore
@@ -46,45 +48,75 @@ const StageSelector: React.FC<StageSelectorProps> = ({
       {currentBackground.tide ? (
         <>
           <HStack my={4} display="flex" justifyContent="center">
-            <Image
-              w={8}
-              h={8}
-              src={salmonRunLowTide}
-              cursor="pointer"
-              style={{
-                filter:
-                  currentBackground.tide === "low"
-                    ? undefined
-                    : "grayscale(100%)",
-              }}
-              onClick={() => changeTide("low")}
-            />
-            <Image
-              w={8}
-              h={8}
-              src={salmonRunMidTide}
-              cursor="pointer"
-              style={{
-                filter:
-                  currentBackground.tide === "mid"
-                    ? undefined
-                    : "grayscale(100%)",
-              }}
-              onClick={() => changeTide("mid")}
-            />
-            <Image
-              w={8}
-              h={8}
-              src={salmonRunHighTide}
-              cursor="pointer"
-              style={{
-                filter:
-                  currentBackground.tide === "high"
-                    ? undefined
-                    : "grayscale(100%)",
-              }}
-              onClick={() => changeTide("high")}
-            />
+            <Flex flexDir="column" alignItems="center">
+              <Image
+                w={8}
+                h={8}
+                mb={1}
+                src={salmonRunLowTide}
+                cursor="pointer"
+                style={{
+                  filter:
+                    currentBackground.tide === "low"
+                      ? undefined
+                      : "grayscale(100%)",
+                }}
+                onClick={() => changeTide("low")}
+              />
+              {currentBackground.tide === "low" ? (
+                <SubText>
+                  <Trans>Low</Trans>
+                </SubText>
+              ) : (
+                <Box h={4} />
+              )}
+            </Flex>
+            <Flex flexDir="column" alignItems="center">
+              <Image
+                w={8}
+                h={8}
+                mb={1}
+                src={salmonRunMidTide}
+                cursor="pointer"
+                style={{
+                  filter:
+                    currentBackground.tide === "mid"
+                      ? undefined
+                      : "grayscale(100%)",
+                }}
+                onClick={() => changeTide("mid")}
+              />
+              {currentBackground.tide === "mid" ? (
+                <SubText>
+                  <Trans>Mid</Trans>
+                </SubText>
+              ) : (
+                <Box h={4} />
+              )}
+            </Flex>
+            <Flex flexDir="column" alignItems="center">
+              <Image
+                w={8}
+                h={8}
+                mb={1}
+                src={salmonRunHighTide}
+                cursor="pointer"
+                style={{
+                  filter:
+                    currentBackground.tide === "high"
+                      ? undefined
+                      : "grayscale(100%)",
+                }}
+                onClick={() => changeTide("high")}
+              />
+              {currentBackground.tide === "high" ? (
+                <SubText>
+                  <Trans>High</Trans>
+                </SubText>
+              ) : (
+                <Box h={4} />
+              )}
+            </Flex>
           </HStack>
         </>
       ) : (

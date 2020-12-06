@@ -10,6 +10,7 @@ import { t, Trans } from "@lingui/macro";
 import { LeagueType, RankedMode } from "@prisma/client";
 import ModeImage from "components/common/ModeImage";
 import MyLink from "components/common/MyLink";
+import SubText from "components/common/SubText";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
 import { getEmojiFlag } from "countries-list";
@@ -169,16 +170,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
                         <Fragment key={type}>
                           <Flex align="center" justify="center" mx={2}>
                             <Box ml={2} color={gray}>
-                              <Box
-                                fontSize="xs"
-                                textColor={themeColorShade}
-                                textTransform="uppercase"
-                                letterSpacing="wider"
-                                lineHeight="1rem"
-                                fontWeight="medium"
-                              >
-                                {type}
-                              </Box>
+                              <SubText>{type}</SubText>
                               {peakLeaguePowers[type]}
                             </Box>
                           </Flex>
