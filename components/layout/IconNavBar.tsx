@@ -46,6 +46,7 @@ export const navIcons: {
     ],
   },
   { code: "calendar", displayName: t`Calendar`, menuItems: [] },
+  { code: "u", displayName: t`User Search`, menuItems: [] },
   { code: "freeagents", displayName: t`Free Agents`, menuItems: [] },
   //{ name: "teams", displayName: "Teams" },
   { code: "plans", displayName: t`Map Planner`, menuItems: [] },
