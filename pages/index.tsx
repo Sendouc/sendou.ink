@@ -1,5 +1,6 @@
 import { Box, Container, Flex, Heading, useColorMode } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
+import MyHead from "components/common/MyHead";
 import MyLink from "components/common/MyLink";
 import { useMyTheme } from "lib/useMyTheme";
 import Image from "next/image";
@@ -10,6 +11,10 @@ const Home = () => {
   const { colorMode } = useColorMode();
   return (
     <>
+      <MyHead
+        title={`sendou.ink | ${t`Competitive Splatoon Hub`}`}
+        appendSendouInk={false}
+      />
       <Box textAlign="center">
         <Image
           className="rgb"

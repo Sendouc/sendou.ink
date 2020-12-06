@@ -2,10 +2,11 @@ import Head from "next/head";
 
 interface Props {
   title: string;
+  appendSendouInk?: boolean;
 }
 
-const MyHead: React.FC<Props> = ({ title }) => {
-  const pageTitle = `${title} | sendou.ink`;
+const MyHead: React.FC<Props> = ({ title, appendSendouInk = true }) => {
+  const pageTitle = appendSendouInk ? `${title} | sendou.ink` : title;
   return (
     <Head>
       <title>{pageTitle}</title>
