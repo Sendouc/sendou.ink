@@ -123,12 +123,32 @@ const StageSelector: React.FC<StageSelectorProps> = ({
         <>
           <HStack justifyContent="center" my={4}>
             {(["SZ", "TC", "RM", "CB"] as const).map((mode) => (
-              <ModeImage
-                key={mode}
-                onClick={() => changeMode(mode)}
-                mode={mode}
-                size={32}
-              />
+              <Flex flexDir="column" alignItems="center">
+                <Box
+                  style={{
+                    filter:
+                      currentBackground.mode === mode
+                        ? undefined
+                        : "grayscale(100%)",
+                  }}
+                  cursor="pointer"
+                  mb="-6px"
+                >
+                  <ModeImage
+                    key={mode}
+                    onClick={() => changeMode(mode)}
+                    mode={mode}
+                    size={32}
+                  />
+                </Box>
+                {currentBackground.mode === mode ? (
+                  <SubText>
+                    <Trans>{mode}</Trans>
+                  </SubText>
+                ) : (
+                  <Box h={4} />
+                )}
+              </Flex>
             ))}
           </HStack>
           <RadioGroup value={currentBackground.view} onChange={changeView}>
