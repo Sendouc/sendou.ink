@@ -33,7 +33,12 @@ export const navIcons: {
     displayName: t`Top 500 Browser`,
     menuItems: [],
   },
-  //{ code: "sr", displayName: "Salmon Run", menuItems: [] },
+  // {
+  //   code: "leaderboards",
+  //   displayName: t`Leaderboards`,
+  //   menuItems: [],
+  // },
+  // { code: "sr", displayName: "Salmon Run", menuItems: [] },
   {
     code: "builds",
     displayName: t`Builds`,
@@ -43,7 +48,7 @@ export const navIcons: {
   { code: "calendar", displayName: t`Calendar`, menuItems: [] },
   { code: "u", displayName: t`User Search`, menuItems: [] },
   { code: "freeagents", displayName: t`Free Agents`, menuItems: [] },
-  //{ name: "teams", displayName: "Teams" },
+  // { code: "teams", displayName: t`Teams`, menuItems: [] },
   { code: "plans", displayName: t`Map Planner`, menuItems: [] },
   { code: "tournaments", displayName: t`Tournaments`, menuItems: [] },
   {
