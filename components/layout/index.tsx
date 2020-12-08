@@ -1,10 +1,4 @@
-import {
-  Box,
-  Container,
-  Flex,
-  useColorModeValue,
-  useToast,
-} from "@chakra-ui/react";
+import { Container, Flex, useColorModeValue, useToast } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import { AppProps } from "next/app";
 import { useState } from "react";
@@ -48,14 +42,6 @@ const Layout = ({ Component, pageProps }: AppProps) => {
     >
       <TopNav />
       <IconNavBar />
-      {process.env.NODE_ENV === "production" && (
-        <Box bg={bannerColor} p={2} textAlign="center">
-          This is the preview version.{" "}
-          <span style={{ color: "red" }}>Database will be reset</span>. For
-          anything other than testing please go to:{" "}
-          <a href="https://sendou.ink">https://sendou.ink</a>
-        </Box>
-      )}
       <Flex flexDirection="column" minH="100vh" pt="1rem">
         <Container maxWidth="100ch">
           <Component {...pageProps} />

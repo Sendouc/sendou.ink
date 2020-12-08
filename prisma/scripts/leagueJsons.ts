@@ -4,8 +4,7 @@ import path from "path";
 import { getWeaponNormalized } from "../../lib/lists/weapons";
 import prisma from "../client";
 
-//const files = ["P_EU", "P_US", "T_EU", "T_US", "P_JP" /*"T_JP"*/];
-const files = ["T_JP", "P_JP"];
+const files = ["P_EU", "P_US", "T_EU", "T_US", "P_JP", "T_JP"];
 
 async function main() {
   for (const file of files) {
@@ -15,7 +14,7 @@ async function main() {
     );
     const league = JSON.parse(data.toString());
 
-    for (const rotation of league.slice(0, Math.ceil(league.length / 2))) {
+    for (const rotation of league) {
       //Math.ceil(league.length / 2), league.length
       for (const ranking of rotation.rankings) {
         if (ranking.cheater) continue;
