@@ -74,7 +74,7 @@
     },
     {
       "title": "Tier List Maker",
-      "url": "https://tiermaker.com/create/splatoon-2-tier-list",
+      "url": "https://tiermaker.com/categories/splatoon",
       "description": "make a tier list of your own like all the cool kids on Twitter."
     },
     {
@@ -121,6 +121,11 @@
       "title": "Ikaclo",
       "url": "https://www.ikaclo.com/",
       "description": "Japanese gear sharing website. Cool feature is seeing what gear has been released with what abilities."
+    },
+    {
+      "title": "flc's blog",
+      "url": "https://imperious.ink/",
+      "description": "writings about various things related to Splatoon."
     }
   ],
   "discord": [
