@@ -123,7 +123,7 @@ const StageSelector: React.FC<StageSelectorProps> = ({
         <>
           <HStack justifyContent="center" my={4}>
             {(["SZ", "TC", "RM", "CB"] as const).map((mode) => (
-              <Flex flexDir="column" alignItems="center">
+              <Flex key={mode} flexDir="column" alignItems="center">
                 <Box
                   style={{
                     filter:
@@ -135,7 +135,6 @@ const StageSelector: React.FC<StageSelectorProps> = ({
                   mb="-6px"
                 >
                   <ModeImage
-                    key={mode}
                     onClick={() => changeMode(mode)}
                     mode={mode}
                     size={32}
@@ -143,7 +142,7 @@ const StageSelector: React.FC<StageSelectorProps> = ({
                 </Box>
                 {currentBackground.mode === mode ? (
                   <SubText>
-                    <Trans>{mode}</Trans>
+                    <Trans>{i18n._(mode)}</Trans>
                   </SubText>
                 ) : (
                   <Box h={4} />
