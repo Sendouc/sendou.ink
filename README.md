@@ -4,8 +4,6 @@ Goal of sendou.ink is to provide useful tools and resources for the Splatoon com
 
 Live version: [https://sendou.ink/](https://sendou.ink/)
 
-> :warning: **This is the overhaul branch**: Live version is still on the old version
-
 ## Technologies used
 
 - React (via Next.JS)
