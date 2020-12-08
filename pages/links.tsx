@@ -12,7 +12,7 @@ interface Link {
 }
 
 const LinksPage = () => {
-  const { themeColorShade, gray } = useMyTheme();
+  const { themeColorShade } = useMyTheme();
 
   const linkMap = (link: Link) => (
     <Box key={link.title}>

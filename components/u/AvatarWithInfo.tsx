@@ -144,12 +144,12 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
                 </Flex>
               )}
               {Object.keys(peakXPowers).length > 0 && (
-                <Flex mt={8}>
+                <Flex mt={8} w="100%">
                   {(["SZ", "TC", "RM", "CB"] as RankedMode[])
                     .filter((mode) => peakXPowers[mode])
                     .map((mode, i) => (
                       <Fragment key={mode}>
-                        <Flex align="center" justify="center">
+                        <Flex align="center" justify="center" mx="auto">
                           {i !== 0 && <Divider orientation="vertical" mx={2} />}
                           <ModeImage mode={mode} size={32} />{" "}
                           <Box ml={2} color={gray}>
