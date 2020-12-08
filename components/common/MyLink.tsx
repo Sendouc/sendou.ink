@@ -6,9 +6,15 @@ interface Props {
   children: React.ReactNode;
   href: string;
   isExternal?: boolean;
+  prefetch?: boolean;
 }
 
-const MyLink: React.FC<Props> = ({ children, href, isExternal }) => {
+const MyLink: React.FC<Props> = ({
+  children,
+  href,
+  isExternal,
+  prefetch = true,
+}) => {
   const { themeColorShade } = useMyTheme();
 
   if (isExternal) {
@@ -19,7 +25,7 @@ const MyLink: React.FC<Props> = ({ children, href, isExternal }) => {
     );
   }
   return (
-    <NextLink href={href}>
+    <NextLink href={href} prefetch={prefetch}>
       <ChakraLink color={themeColorShade}>{children}</ChakraLink>
     </NextLink>
   );
