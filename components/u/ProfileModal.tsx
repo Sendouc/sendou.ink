@@ -88,7 +88,7 @@ const ProfileModal: React.FC<Props> = ({ onClose, user }) => {
       : undefined,
   });
 
-  const watchBio = watch("bio", user.profile?.bio ?? "");
+  const watchBio = watch("bio", user.profile?.bio);
 
   const toast = useToast();
 
@@ -313,7 +313,7 @@ const ProfileModal: React.FC<Props> = ({ onClose, user }) => {
                 title={i18n._(t`Bio`)}
                 error={errors.bio}
                 register={register}
-                value={watchBio!}
+                value={watchBio ?? ""}
                 maxLength={PROFILE_CHARACTER_LIMIT}
                 placeholder={i18n._(
                   t`# I'm a header

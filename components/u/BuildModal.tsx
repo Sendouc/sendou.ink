@@ -78,8 +78,8 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
     },
   });
 
-  const watchTitle = watch("title", build?.title ?? "");
-  const watchDescription = watch("description", build?.description ?? "");
+  const watchTitle = watch("title", build?.title);
+  const watchDescription = watch("description", build?.description);
 
   const toast = useToast();
 
@@ -234,7 +234,7 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
                 </FormLabel>
                 <Input name="title" ref={register} />
                 <FormHelperText>
-                  {watchTitle!.length}/{TITLE_CHARACTER_LIMIT}
+                  {(watchTitle ?? "").length}/{TITLE_CHARACTER_LIMIT}
                 </FormHelperText>
                 <FormErrorMessage>{errors.title?.message}</FormErrorMessage>
               </FormControl>
@@ -245,7 +245,8 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
                 </FormLabel>
                 <Textarea name="description" ref={register} />
                 <FormHelperText>
-                  {watchDescription!.length}/{DESCRIPTION_CHARACTER_LIMIT}
+                  {(watchDescription ?? "").length}/
+                  {DESCRIPTION_CHARACTER_LIMIT}
                 </FormHelperText>
                 <FormErrorMessage>
                   {errors.description?.message}

@@ -61,8 +61,6 @@ const ProfilePage = (props: Props) => {
     return true;
   };
 
-  console.log({ props });
-
   return (
     <>
       {showProfileModal && (
