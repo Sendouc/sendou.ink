@@ -4,7 +4,19 @@ import path from "path";
 import { getWeaponNormalized } from "../../lib/lists/weapons";
 import prisma from "../client";
 
-const files = ["P_EU", "P_US", "T_EU", "T_US", "P_JP", "T_JP"];
+//const files = ["P_EU", "P_US", "T_EU", "T_US", "P_JP", "T_JP"];
+const files = ["P_EU", "P_US", "T_EU", "T_US"];
+
+// function getArr(file: string) {
+//   const data = fs.readFileSync(
+//     path.resolve(__dirname, `./data/league/${file}.json`)
+//   );
+//   const league = JSON.parse(data.toString());
+
+//   const halfWay = Math.ceil(league.length / 2);
+
+//   return league.slice(0, halfWay);
+// }
 
 async function main() {
   for (const file of files) {
@@ -14,8 +26,9 @@ async function main() {
     );
     const league = JSON.parse(data.toString());
 
+    // const league = getArr("T_JP");
+
     for (const rotation of league) {
-      //Math.ceil(league.length / 2), league.length
       for (const ranking of rotation.rankings) {
         if (ranking.cheater) continue;
         if (ranking.point < 2200) continue;
@@ -26,7 +39,7 @@ async function main() {
             rotation.league_ranking_region.code === "US"
               ? "NA"
               : rotation.league_ranking_region.code,
-          startTime: new Date(rotation.start_time),
+          startTime: new Date(rotation.start_time * 1000),
           type: rotation.league_type.key === "pair" ? "TWIN" : "QUAD",
           members: {
             create: ranking.tag_members.map((member: any) => ({
