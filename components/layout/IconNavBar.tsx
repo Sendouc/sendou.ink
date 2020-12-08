@@ -71,6 +71,7 @@ export const navIcons: {
       { code: "plus/faq", displayName: t`FAQ` },
     ],
   },
+  { code: "links", displayName: t`External links`, menuItems: [] },
 ];
 
 const IconNavBar = () => {

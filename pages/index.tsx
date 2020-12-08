@@ -71,6 +71,12 @@ const Home = () => {
             and FAQ.
           </Trans>
         </PageInfoSection>
+        <PageInfoSection location="links" title={t`External links`}>
+          <Trans>
+            There are a lot of useful Splatoon resouces. This page collects them
+            together.
+          </Trans>
+        </PageInfoSection>
       </Container>
       <Box textAlign="center" mt={24} fontSize="sm" color={gray}>
         <Trans>
