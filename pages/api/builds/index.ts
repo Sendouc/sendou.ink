@@ -69,7 +69,7 @@ const updateHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     where: { id },
   });
 
-  if (!existingBuild || existingBuild.weapon !== parsed.data.weapon) {
+  if (!existingBuild) {
     return res.status(400).end();
   }
 
