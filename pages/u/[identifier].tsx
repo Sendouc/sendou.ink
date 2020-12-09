@@ -1,4 +1,4 @@
-import { Button, Divider, Select } from "@chakra-ui/react";
+import { Button, Divider, HStack, Select } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { Build, LeagueType, RankedMode } from "@prisma/client";
@@ -22,6 +22,8 @@ import {
   GetUserByIdentifierData,
 } from "prisma/queries/getUserByIdentifier";
 import { useState } from "react";
+import { FiEdit } from "react-icons/fi";
+import { RiTShirtLine } from "react-icons/ri";
 import useSWR from "swr";
 
 interface Props {
@@ -84,11 +86,7 @@ const ProfilePage = (props: Props) => {
         peakXPowers={props.peakXPowers}
         peakLeaguePowers={props.peakLeaguePowers}
       />
-      {loggedInUser?.id === user.id && (
-        <Button onClick={() => setShowProfileModal(true)}>
-          <Trans>Edit profile</Trans>
-        </Button>
-      )}
+      <ProfileOwnersButtons />
       {user.profile?.bio && (
         <>
           <Divider my={6} />
@@ -117,11 +115,6 @@ const ProfilePage = (props: Props) => {
               ))}
             </Select>
           )}
-          {canPostBuilds() && (
-            <Button mt={5} onClick={() => setBuildToEdit(true)}>
-              <Trans>Add build</Trans>
-            </Button>
-          )}
           <MyInfiniteScroller>
             {builds.map((build) => (
               <BuildCard
@@ -141,6 +134,33 @@ const ProfilePage = (props: Props) => {
       )}
     </>
   );
+
+  function ProfileOwnersButtons() {
+    if (user && loggedInUser?.id === user.id) {
+      return (
+        <HStack spacing={4}>
+          <Button
+            leftIcon={<FiEdit />}
+            variant="outline"
+            onClick={() => setShowProfileModal(true)}
+          >
+            <Trans>Edit profile</Trans>
+          </Button>
+          {canPostBuilds() && (
+            <Button
+              leftIcon={<RiTShirtLine />}
+              variant="outline"
+              onClick={() => setBuildToEdit(true)}
+            >
+              <Trans>Add build</Trans>
+            </Button>
+          )}
+        </HStack>
+      );
+    }
+
+    return null;
+  }
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {

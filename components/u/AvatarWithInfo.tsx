@@ -21,6 +21,7 @@ import { GetUserByIdentifierData } from "prisma/queries/getUserByIdentifier";
 import { Fragment } from "react";
 import { FaGamepad, FaTwitch, FaTwitter, FaYoutube } from "react-icons/fa";
 import { FiInfo } from "react-icons/fi";
+import { RiTrophyLine } from "react-icons/ri";
 
 interface AvatarWithInfoProps {
   user: NonNullable<GetUserByIdentifierData>;
@@ -181,7 +182,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
               <Box width="100%" textAlign="center" mt={4}>
                 {!!user.player?.switchAccountId && (
                   <MyLink href={`/player/${user.player?.switchAccountId}`}>
-                    <Button variant="outline">
+                    <Button leftIcon={<RiTrophyLine />} variant="outline">
                       <Trans>View results</Trans>
                     </Button>
                   </MyLink>
