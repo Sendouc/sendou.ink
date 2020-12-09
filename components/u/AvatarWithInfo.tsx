@@ -204,11 +204,8 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
         <Box as={FiInfo} mx="auto" color={themeColorShade} />
         <Trans>
           If you have finished a month in the Top 500 you can get your peak
-          ranks showing here. Simply{" "}
-          <MyLink isExternal href="https://twitter.com/sendouc">
-            DM Sendou
-          </MyLink>{" "}
-          with your in game name.
+          ranks showing here. Simply DM Sendou#4059 on Discord with the month,
+          mode and your in-game name.
         </Trans>
       </Box>
     );

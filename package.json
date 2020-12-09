@@ -16,8 +16,8 @@
     "league": "ts-node prisma/scripts/leagueJsons.ts",
     "prettier": "prettier --write .",
     "e2e": "cypress open",
-    "extract": "lingui extract",
-    "extract:clean": "lingui extract --clean",
+    "ex": "lingui extract",
+    "ex:clean": "lingui extract --clean",
     "compile": "lingui compile"
   },
   "dependencies": {
