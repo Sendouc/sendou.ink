@@ -105,7 +105,7 @@ const Markdown: React.FC<MarkdownProps> = ({ value }) => {
         if (depth === 1) styleType = "circle";
         return (
           <List
-            spacing={24}
+            spacing={2}
             as={ordered ? "ol" : "ul"}
             styleType={styleType}
             pl={4}
