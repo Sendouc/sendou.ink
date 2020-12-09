@@ -16,26 +16,6 @@
       "description": "by FLC. Outline of how the author thinks about the game regarding team compositions and player roles."
     },
     {
-      "title": "Advanced Techniques, Tips and Tricks (YouTube)",
-      "url": "https://www.youtube.com/watch?v=VVzxXG446X4",
-      "description": "by Wadsm. Different tricks to keep in mind."
-    },
-    {
-      "title": "The Ultimate Gear Guide (YouTube)",
-      "url": "https://www.youtube.com/watch?v=3Ygwtq03MrM",
-      "description": "by Wadsm. Everything you need to know about gear and abilities."
-    },
-    {
-      "title": "How to become good (YouTube)",
-      "url": "https://www.youtube.com/watch?v=GudFu9yOVe8",
-      "description": "by Wadsm. General tips on how to improve in Splatoon 2."
-    },
-    {
-      "title": "Rainmaker paths (YouTube)",
-      "url": "https://www.youtube.com/watch?v=KrXSbLr9tjo",
-      "description": "by Kiver. Video that goes over every map explaining where the Rainmaker should go."
-    },
-    {
       "title": "Tournament Organizing",
       "url": "https://docs.google.com/document/d/1SO7drZS-fIU2CGQKvb7R5LdvrIwk5o1O-iPh0GJqfSg",
       "description": "by Ink.Jordan. How to run an event of your own."
@@ -44,6 +24,33 @@
       "title": "Chara's Guides",
       "url": "https://docs.google.com/document/d/e/2PACX-1vTsAddC7nWZQ4Aclaj1Y2Qa9YsjG949YOLmb94T1N3mEXp7b-Nb0ZR-ztQiYDu3eIydwZyKpCyFesPg/pub",
       "description": "guides on Brella and Explosher both in video and written formats."
+    }
+  ],
+  "youtube": [
+    {
+      "title": "Advanced Techniques, Tips and Tricks",
+      "url": "https://www.youtube.com/watch?v=VVzxXG446X4",
+      "description": "by Wadsm. Different tricks to keep in mind."
+    },
+    {
+      "title": "The Ultimate Gear Guide",
+      "url": "https://www.youtube.com/watch?v=3Ygwtq03MrM",
+      "description": "by Wadsm. Everything you need to know about gear and abilities."
+    },
+    {
+      "title": "How to become good",
+      "url": "https://www.youtube.com/watch?v=GudFu9yOVe8",
+      "description": "by Wadsm. General tips on how to improve in Splatoon 2."
+    },
+    {
+      "title": "Rainmaker paths",
+      "url": "https://www.youtube.com/watch?v=KrXSbLr9tjo",
+      "description": "by Kiver. Video that goes over every map explaining where the Rainmaker should go."
+    },
+    {
+      "title": "Splatoon Documentary",
+      "url": "https://www.youtube.com/watch?v=79pPjpmzfL4",
+      "description": "by Akshon Esports. Good place to start if you want to learn some history of the scene."
     }
   ],
   "misc": [

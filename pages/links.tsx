@@ -31,11 +31,15 @@ const LinksPage = () => {
         <Trans>Guides</Trans>
       </Heading>
       <Stack spacing={4}>{links.guides.map(linkMap)}</Stack>
-      <Heading size="lg" my="0.5em">
+      <Heading size="lg" mt={8} mb={4}>
+        YouTube
+      </Heading>
+      <Stack spacing={4}>{links.youtube.map(linkMap)}</Stack>
+      <Heading size="lg" mt={8} mb={4}>
         Discord
       </Heading>
       <Stack spacing={4}>{links.discord.map(linkMap)}</Stack>
-      <Heading size="lg" my="0.5em">
+      <Heading size="lg" mt={8} mb={4}>
         <Trans>Misc</Trans>
       </Heading>
       <Stack spacing={4}>{links.misc.map(linkMap)}</Stack>
