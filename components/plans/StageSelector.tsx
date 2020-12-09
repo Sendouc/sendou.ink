@@ -141,9 +141,7 @@ const StageSelector: React.FC<StageSelectorProps> = ({
                   />
                 </Box>
                 {currentBackground.mode === mode ? (
-                  <SubText>
-                    <Trans>{i18n._(mode)}</Trans>
-                  </SubText>
+                  <SubText>{i18n._(mode)}</SubText>
                 ) : (
                   <Box h={4} />
                 )}
