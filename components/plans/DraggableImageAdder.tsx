@@ -54,9 +54,7 @@ const DraggableImageAdder: React.FC<DraggableImageAdderProps> = ({
               <Box
                 key={wpn}
                 onClick={() =>
-                  addImageToSketch(
-                    `/images/weapons/${wpn.replace(".", "")}.png`
-                  )
+                  addImageToSketch(`/weapons/${wpn.replace(".", "")}.png`)
                 }
                 m="3px"
               >
