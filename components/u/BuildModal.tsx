@@ -38,6 +38,7 @@ import {
 import { GetBuildsByUserData } from "prisma/queries/getBuildsByUser";
 import { Fragment, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { FiTrash } from "react-icons/fi";
 import { mutate } from "swr";
 import * as z from "zod";
 import AbilitiesSelector from "./AbilitiesSelector";
@@ -51,6 +52,7 @@ type FormData = z.infer<typeof buildSchema>;
 
 const BuildModal: React.FC<Props> = ({ onClose, build }) => {
   const [sending, setSending] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [loggedInUser] = useUser();
 
   const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
@@ -84,6 +86,10 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
   const toast = useToast();
 
   const onSubmit = async (formData: FormData) => {
+    if (!loggedInUser) {
+      console.error("Unexpected no logged in user");
+      return;
+    }
     setSending(true);
     const mutationData = { ...formData };
 
@@ -102,12 +108,32 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
     setSending(false);
     if (!success) return;
 
-    if (!loggedInUser) throw Error("unexpected no logged in user");
     mutate(`/api/users/${loggedInUser.id}/builds`);
 
     toast(
       getToastOptions(build ? t`Build updated` : t`New build added`, "success")
     );
+    onClose();
+  };
+
+  const onDelete = async () => {
+    if (!loggedInUser) {
+      console.error("Unexpected no logged in user");
+      return;
+    }
+    if (!build) {
+      console.error("Unexpected no build");
+      return;
+    }
+    setDeleting(true);
+
+    const success = await sendData("DELETE", "/api/builds", { id: build.id });
+    setDeleting(false);
+    if (!success) return;
+
+    mutate(`/api/users/${loggedInUser.id}/builds`);
+
+    toast(getToastOptions(t`Build deleted`, "success"));
     onClose();
   };
 
@@ -125,6 +151,20 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
           <ModalCloseButton borderRadius="50%" />
           <form onSubmit={handleSubmit(onSubmit)}>
             <ModalBody pb={6}>
+              {build && (
+                <Button
+                  leftIcon={<FiTrash />}
+                  variant="outline"
+                  color="red.500"
+                  mb={6}
+                  loading={deleting}
+                  onClick={async () => {
+                    if (window.confirm(t`Delete the build?`)) await onDelete();
+                  }}
+                >
+                  <Trans>Delete build</Trans>
+                </Button>
+              )}
               <FormLabel htmlFor="weapon">
                 <Trans>Weapon</Trans>
               </FormLabel>

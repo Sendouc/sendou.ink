@@ -6,7 +6,7 @@ export const getToastOptions = (
 ): UseToastOptions => ({
   description,
   status,
-  duration: 9000,
+  duration: 7000,
   isClosable: true,
   position: "top-right",
 });

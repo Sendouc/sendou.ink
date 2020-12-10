@@ -8,109 +8,126 @@ import prisma from "prisma/client";
 
 const modes = ["TW", "SZ", "TC", "RM", "CB"];
 
-const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const user = await getMySession(req);
-  if (!user) return res.status(401).end();
-
-  const parsed = buildSchema.safeParse(req.body);
-
-  if (!parsed.success) {
-    return res.status(400).end();
-  }
-
-  const postsJpBuilds = user.discordId === GANBA_DISCORD_ID;
-
-  if (
-    !postsJpBuilds &&
-    (await prisma.build.count({ where: { id: user.id } })) >= 100
-  ) {
-    return res
-      .status(400)
-      .json({ message: "You have too many builds posted already" });
-  }
-
-  await prisma.build.create({
-    data: {
-      ...parsed.data,
-      modes: parsed.data.modes.sort(
-        (a, b) => modes.indexOf(a) - modes.indexOf(b)
-      ),
-      abilityPoints: getAbilityPoints(
-        parsed.data.headAbilities,
-        parsed.data.clothingAbilities,
-        parsed.data.shoesAbilities
-      ),
-      jpn: postsJpBuilds,
-      top500: await hasTop500WithTheWeapon(user.id, parsed.data.weapon),
-      user: {
-        connect: {
-          id: user.id,
-        },
-      },
-    },
-  });
-
-  res.status(200).end();
-};
-
-const updateHandler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const user = await getMySession(req);
-  if (!user) return res.status(401).end();
-
-  const parsed = buildSchema.safeParse(req.body);
-
-  if (!parsed.success) {
-    return res.status(400).end();
-  }
-
-  const id = parsed.data.id;
-
-  const existingBuild = await prisma.build.findUnique({
-    where: { id },
-  });
-
-  if (!existingBuild) {
-    return res.status(400).end();
-  }
-
-  if (existingBuild.userId !== user.id) {
-    return res.status(403).end();
-  }
-
-  delete parsed.data.id;
-
-  await prisma.build.update({
-    where: { id },
-    data: {
-      ...parsed.data,
-      modes: parsed.data.modes.sort(
-        (a, b) => modes.indexOf(a) - modes.indexOf(b)
-      ),
-      top500:
-        parsed.data.weapon === existingBuild.weapon
-          ? existingBuild.top500
-          : await hasTop500WithTheWeapon(user.id, parsed.data.weapon),
-      abilityPoints: getAbilityPoints(
-        parsed.data.headAbilities,
-        parsed.data.clothingAbilities,
-        parsed.data.shoesAbilities
-      ),
-    },
-  });
-
-  res.status(200).end();
-};
-
 const buildHandler = async (req: NextApiRequest, res: NextApiResponse) => {
+  const user = await getMySession(req);
+
   switch (req.method) {
     case "POST":
-      await postHandler(req, res);
+      await postHandler();
       break;
     case "PUT":
-      await updateHandler(req, res);
+      await updateHandler();
+      break;
+    case "DELETE":
+      await deleteHandler();
       break;
     default:
       return res.status(405).end();
+  }
+
+  async function postHandler() {
+    if (!user) return res.status(401).end();
+    const parsed = buildSchema.safeParse(req.body);
+
+    if (!parsed.success) {
+      return res.status(400).end();
+    }
+
+    const postsJpBuilds = user.discordId === GANBA_DISCORD_ID;
+
+    if (
+      !postsJpBuilds &&
+      (await prisma.build.count({ where: { id: user.id } })) >= 100
+    ) {
+      return res
+        .status(400)
+        .json({ message: "You have too many builds posted already" });
+    }
+
+    await prisma.build.create({
+      data: {
+        ...parsed.data,
+        modes: parsed.data.modes.sort(
+          (a, b) => modes.indexOf(a) - modes.indexOf(b)
+        ),
+        abilityPoints: getAbilityPoints(
+          parsed.data.headAbilities,
+          parsed.data.clothingAbilities,
+          parsed.data.shoesAbilities
+        ),
+        jpn: postsJpBuilds,
+        top500: await hasTop500WithTheWeapon(user.id, parsed.data.weapon),
+        user: {
+          connect: {
+            id: user.id,
+          },
+        },
+      },
+    });
+
+    res.status(200).end();
+  }
+
+  async function updateHandler() {
+    if (!user) return res.status(401).end();
+
+    const parsed = buildSchema.safeParse(req.body);
+
+    if (!parsed.success) {
+      return res.status(400).end();
+    }
+
+    const id = parsed.data.id;
+
+    const existingBuild = await prisma.build.findUnique({
+      where: { id },
+    });
+
+    if (!existingBuild) {
+      return res.status(400).end();
+    }
+
+    if (existingBuild.userId !== user.id) {
+      return res.status(403).end();
+    }
+
+    delete parsed.data.id;
+
+    await prisma.build.update({
+      where: { id },
+      data: {
+        ...parsed.data,
+        modes: parsed.data.modes.sort(
+          (a, b) => modes.indexOf(a) - modes.indexOf(b)
+        ),
+        top500:
+          parsed.data.weapon === existingBuild.weapon
+            ? existingBuild.top500
+            : await hasTop500WithTheWeapon(user.id, parsed.data.weapon),
+        abilityPoints: getAbilityPoints(
+          parsed.data.headAbilities,
+          parsed.data.clothingAbilities,
+          parsed.data.shoesAbilities
+        ),
+      },
+    });
+
+    res.status(200).end();
+  }
+
+  async function deleteHandler() {
+    if (!user) return res.status(401).end();
+
+    const id = parseInt(req.body.id);
+    if (Number.isNaN(id)) return res.status(400).end();
+
+    const buildToDelete = await prisma.build.findUnique({ where: { id } });
+    if (!buildToDelete) return res.status(400).end();
+    if (buildToDelete.userId !== user.id) return res.status(401).end();
+
+    await prisma.build.delete({ where: { id } });
+
+    res.status(200).end();
   }
 };
 
