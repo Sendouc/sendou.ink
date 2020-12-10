@@ -37,7 +37,13 @@ const UserSearchPage = ({ users }: Props) => {
     if (debouncedFilter.length < 3) {
       router.push(`/u`, undefined, { shallow: true });
     } else {
-      router.push(`/u?filter=${debouncedFilter}`, undefined, { shallow: true });
+      router.push(
+        `/u?filter=${encodeURIComponent(debouncedFilter)}`,
+        undefined,
+        {
+          shallow: true,
+        }
+      );
     }
   }, [debouncedFilter]);
 
