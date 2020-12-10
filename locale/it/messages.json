@@ -59,8 +59,11 @@
   "If you have finished a month in the Top 500 you can get your peak ranks showing here. Simply DM Sendou#4059 on Discord with the month, mode and your in-game name.": "",
   "Build updated": "Build aggiornata",
   "New build added": "",
+  "Build deleted": "",
   "Editing build": "",
   "Adding a new build": "Aggiungi una nuova build",
+  "Delete the build?": "",
+  "Delete build": "",
   "Choose a weapon for your build": "",
   "Your build is missing some abilities": "",
   "Title": "Titolo",
@@ -228,7 +231,8 @@
   "Guides": "Guide",
   "Misc": "Altro",
   "Users": "",
-  "Edit profile": "Modifica Profilo",
   "All weapons": "",
-  "Add build": "Aggiungi Build"
+  "Edit profile": "Modifica Profilo",
+  "Add build": "Aggiungi Build",
+  "Search for users by their Discord tag or Twitter name": ""
 }

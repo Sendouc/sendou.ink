@@ -59,8 +59,11 @@
   "If you have finished a month in the Top 500 you can get your peak ranks showing here. Simply DM Sendou#4059 on Discord with the month, mode and your in-game name.": "",
   "Build updated": "빌드가 업데이트됨",
   "New build added": "",
+  "Build deleted": "",
   "Editing build": "",
   "Adding a new build": "새로운 빌드 추가하기",
+  "Delete the build?": "",
+  "Delete build": "",
   "Choose a weapon for your build": "",
   "Your build is missing some abilities": "",
   "Title": "제목",
@@ -228,7 +231,8 @@
   "Guides": "가이드들",
   "Misc": "기타",
   "Users": "",
-  "Edit profile": "프로필 편집",
   "All weapons": "",
-  "Add build": "빌드 추가"
+  "Edit profile": "프로필 편집",
+  "Add build": "빌드 추가",
+  "Search for users by their Discord tag or Twitter name": ""
 }
