@@ -9,6 +9,8 @@ const FooterContent: React.FC = () => {
   const { themeColorHex: themeColor } = useMyTheme();
   return (
     <Flex
+      mt="-1px"
+      pt={4}
       pb="50px"
       flexShrink={0}
       alignItems="center"
