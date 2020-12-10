@@ -157,7 +157,7 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
                   variant="outline"
                   color="red.500"
                   mb={6}
-                  loading={deleting}
+                  isLoading={deleting}
                   onClick={async () => {
                     if (window.confirm(t`Delete the build?`)) await onDelete();
                   }}
