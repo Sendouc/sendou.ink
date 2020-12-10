@@ -1,6 +1,6 @@
 # Translation
 
-In this folder you will find all the files for localization.
+In this folder you will find all the files for localization. If you are interested in translating DM me on Discord and I'll invite you to a channel where it is coordinated.
 
 ## How to translate?
 
