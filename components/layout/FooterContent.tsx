@@ -2,7 +2,7 @@ import { Box, Flex } from "@chakra-ui/react";
 import { DiscordIcon } from "lib/assets/icons";
 import { useMyTheme } from "lib/useMyTheme";
 import Link from "next/link";
-import { FaGithub } from "react-icons/fa";
+import { FaGithub, FaTwitter } from "react-icons/fa";
 import { FiInfo } from "react-icons/fi";
 
 const FooterContent: React.FC = () => {
@@ -27,6 +27,9 @@ const FooterContent: React.FC = () => {
             <Box as={FiInfo} size="50px" m="1em" />
           </a>
         </Link>
+        <a href="https://twitter.com/sendouink">
+          <Box as={FaTwitter} size="50px" m="1em" />
+        </a>
         <a href="https://discord.gg/sendou">
           <DiscordIcon h="50px" w="50px" m="1em" />
         </a>
