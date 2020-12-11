@@ -31,7 +31,8 @@ const Home = () => {
       <Container>
         <PageInfoSection location="xsearch" title={t`Top 500 Browser`}>
           <Trans>
-            All the Top 500 results and leaderboards derived from them.
+            Conveniently browse Top 500 results. There are also tier lists to
+            see which weapons are reigning in each mode.
           </Trans>
         </PageInfoSection>
         <PageInfoSection location="builds" title={t`Builds`}>
