@@ -16,7 +16,9 @@
   "Home": "Home",
   "Markdown is supported - <0>https://sendou.ink/markdown</0>": "Markdown is supported - <0>https://sendou.ink/markdown</0>",
   "Select weapon": "Select weapon",
-  "Top 500 Browser": "Top 500 Browser",
+  "Top 500": "Top 500",
+  "Browser": "Browser",
+  "Tier Lists": "Tier Lists",
   "Builds": "Builds",
   "Build Analyzer": "Build Analyzer",
   "Calendar": "Calendar",
@@ -216,6 +218,7 @@
   "builds": "builds",
   "hidden": "hidden",
   "Competitive Splatoon Hub": "Competitive Splatoon Hub",
+  "Top 500 Browser": "Top 500 Browser",
   "All the Top 500 results and leaderboards derived from them.": "All the Top 500 results and leaderboards derived from them.",
   "View builds by some of the best players in the world and submit your own.": "View builds by some of the best players in the world and submit your own.",
   "What exactly is the effect of your builds? Guess no more.": "What exactly is the effect of your builds? Guess no more.",
@@ -234,5 +237,7 @@
   "All weapons": "All weapons",
   "Edit profile": "Edit profile",
   "Add build": "Add build",
-  "Search for users by their Discord tag or Twitter name": "Search for users by their Discord tag or Twitter name"
+  "Search for users by their Discord tag or Twitter name": "Search for users by their Discord tag or Twitter name",
+  "Top 500 Tier Lists": "Top 500 Tier Lists",
+  "Here you can find X Rank Top 500 usage tier lists. For example for a weapon to be in the X tier it needs at least 30 placements in that mode that month. Below the weapon count and X Power average are shown.": "Here you can find X Rank Top 500 usage tier lists. For example for a weapon to be in the X tier it needs at least 30 placements in that mode that month. Below the weapon count and X Power average are shown."
 }
