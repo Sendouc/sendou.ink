@@ -13,7 +13,7 @@ const WeaponImage: React.FC<WeaponImageProps> = ({ name, size, noTitle }) => {
 
   return (
     <Image
-      src={`/weapons/${name.replace(".", "")}.png`}
+      src={`/weapons/${name.replace(".", "").trim()}.png`}
       alt={i18n._(name)}
       title={noTitle ? undefined : i18n._(name)}
       width={size}

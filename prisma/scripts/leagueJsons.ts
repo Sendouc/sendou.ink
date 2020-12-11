@@ -43,7 +43,7 @@ async function main() {
           type: rotation.league_type.key === "pair" ? "TWIN" : "QUAD",
           members: {
             create: ranking.tag_members.map((member: any) => ({
-              weapon: getWeaponNormalized(member.weapon[1]),
+              weapon: getWeaponNormalized(member.weapon[1].trim()),
               player: {
                 connectOrCreate: {
                   create: {

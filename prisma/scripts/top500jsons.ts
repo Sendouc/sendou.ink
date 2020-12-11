@@ -23,7 +23,7 @@ const jsonToInput = (
   year,
   ranking: result.rank,
   xPower: result.x_power,
-  weapon: getWeaponNormalized(result.weapon.name),
+  weapon: getWeaponNormalized(result.weapon.name.trim()),
   player: {
     connectOrCreate: {
       create: {
