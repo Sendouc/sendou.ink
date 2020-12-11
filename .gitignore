@@ -40,5 +40,3 @@ locale/**/*.js
 
 /prisma/scripts/mongo
 /prisma/scripts/data
-
-dump.sql
