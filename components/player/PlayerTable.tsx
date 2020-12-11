@@ -12,10 +12,10 @@ import {
 import WeaponImage from "components/common/WeaponImage";
 import { getRankingString } from "lib/strings";
 import { useMyTheme } from "lib/useMyTheme";
-import { GetPlayersTop500Placements } from "prisma/queries/getPlayersTop500Placements";
+import { GetPlayerWithPlacementsData } from "prisma/queries/getPlayerWithPlacements";
 
 interface Props {
-  placements: NonNullable<GetPlayersTop500Placements>["placements"];
+  placements: NonNullable<GetPlayerWithPlacementsData>["placements"];
 }
 
 const PlayerPage: React.FC<Props> = ({ placements }) => {

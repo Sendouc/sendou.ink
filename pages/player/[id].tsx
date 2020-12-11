@@ -4,13 +4,15 @@ import PlayerTable from "components/player/PlayerTable";
 import { GetStaticPaths, GetStaticProps } from "next";
 import prisma from "prisma/client";
 import {
-  GetPlayersTop500Placements,
-  getPlayersTop500Placements,
-} from "prisma/queries/getPlayersTop500Placements";
+  getPlayerWithPlacements,
+  GetPlayerWithPlacementsData,
+} from "prisma/queries/getPlayerWithPlacements";
 
 const PlayerPage = ({ player }: Props) => {
   // TODO: spinner
   if (!player) return null;
+
+  console.log({ player });
 
   return (
     <>
@@ -42,17 +44,17 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 interface Props {
-  player: GetPlayersTop500Placements;
+  player: GetPlayerWithPlacementsData;
 }
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
-  const player = await getPlayersTop500Placements(params!.id as string);
+  const player = await getPlayerWithPlacements(params!.id as string);
 
   if (!player || !player.placements) return { notFound: true };
 
   return {
     props: {
-      player: { ...player, leaguePlacements: null } as any,
+      player: player,
     },
   };
 };
