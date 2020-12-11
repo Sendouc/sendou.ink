@@ -1,11 +1,11 @@
-import { Box } from "@chakra-ui/react";
+import { Box, BoxProps } from "@chakra-ui/react";
 import { useMyTheme } from "lib/useMyTheme";
 
 interface Props {
   children: React.ReactNode;
 }
 
-const SubText: React.FC<Props> = ({ children }) => {
+const SubText: React.FC<Props & BoxProps> = ({ children, ...props }) => {
   const { themeColorShade } = useMyTheme();
   return (
     <Box
@@ -15,6 +15,7 @@ const SubText: React.FC<Props> = ({ children }) => {
       letterSpacing="wider"
       lineHeight="1rem"
       fontWeight="medium"
+      {...props}
     >
       {children}
     </Box>
