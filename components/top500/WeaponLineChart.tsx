@@ -17,6 +17,7 @@ const WeaponLineChart: React.FC<WeaponLineChartProps> = ({
         dataKey="count"
         stroke={themeColorHex}
         strokeWidth={2}
+        dot={false}
       />
     </LineChart>
   );

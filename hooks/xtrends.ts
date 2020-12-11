@@ -1,8 +1,10 @@
+import { RankedMode } from "@prisma/client";
+import { getMonthOptions } from "pages/xsearch/[[...slug]]";
 import { GetXTrendsData } from "prisma/queries/getXTrends";
-import { Dispatch, useReducer } from "react";
+import { Dispatch, useMemo, useReducer } from "react";
 
 interface XTrendsState {
-  mode: "SZ" | "TC" | "RM" | "CB";
+  mode: RankedMode;
   month: number;
   year: number;
 }
@@ -10,7 +12,7 @@ interface XTrendsState {
 type Action =
   | {
       type: "SET_MODE";
-      mode: "SZ" | "TC" | "RM" | "CB";
+      mode: RankedMode;
     }
   | {
       type: "SET_MONTH_YEAR";
@@ -41,6 +43,16 @@ export function useXTrends(trends: GetXTrendsData) {
 
   const weapons = trends[state.year][state.month];
 
+  const monthOptions = useMemo(() => {
+    const latestYear = Math.max(
+      ...Object.keys(trends).map((year) => parseInt(year))
+    );
+    const latestMonth = Math.max(
+      ...Object.keys(trends[latestYear]).map((month) => parseInt(month))
+    );
+    return getMonthOptions(latestMonth, latestYear);
+  }, []);
+
   const weaponData = Object.entries(weapons)
     .reduce(
       (
@@ -67,20 +79,16 @@ export function useXTrends(trends: GetXTrendsData) {
     });
 
   function getDataForChart(weapon: string) {
-    return Object.entries(trends)
-      .sort((a, b) => parseInt(a[0]) - parseInt(b[0]))
-      .reduce((acc: { count: number }[], [year, monthsObject]) => {
-        let month = 1;
-        while (month < 13) {
-          if (monthsObject[month]?.[weapon]?.[state.mode]) {
-            acc.push({
-              count: monthsObject[month]![weapon]![state.mode]!.count,
-            });
-          }
-          month++;
-        }
-        return acc;
-      }, []);
+    const counts = monthOptions.map((monthYear) => {
+      return {
+        count:
+          trends[monthYear.year][monthYear.month][weapon]?.[state.mode]
+            ?.count ?? 0,
+      };
+    });
+
+    counts.reverse();
+    return counts;
   }
 
   return {
@@ -88,5 +96,6 @@ export function useXTrends(trends: GetXTrendsData) {
     dispatch,
     weaponData,
     getDataForChart,
+    monthOptions,
   };
 }

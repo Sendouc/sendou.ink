@@ -9,7 +9,8 @@ import {
 } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import ModeImage from "components/common/ModeImage";
+import { RankedMode } from "@prisma/client";
+import ModeSelector from "components/common/ModeSelector";
 import SubText from "components/common/SubText";
 // @ts-ignore
 import salmonRunHighTide from "lib/assets/SalmonRunHighTide.svg";
@@ -121,33 +122,11 @@ const StageSelector: React.FC<StageSelectorProps> = ({
         </>
       ) : (
         <>
-          <HStack justifyContent="center" my={4}>
-            {(["SZ", "TC", "RM", "CB"] as const).map((mode) => (
-              <Flex key={mode} flexDir="column" alignItems="center">
-                <Box
-                  style={{
-                    filter:
-                      currentBackground.mode === mode
-                        ? undefined
-                        : "grayscale(100%)",
-                  }}
-                  cursor="pointer"
-                  mb="-6px"
-                >
-                  <ModeImage
-                    onClick={() => changeMode(mode)}
-                    mode={mode}
-                    size={32}
-                  />
-                </Box>
-                {currentBackground.mode === mode ? (
-                  <SubText>{i18n._(mode)}</SubText>
-                ) : (
-                  <Box h={4} />
-                )}
-              </Flex>
-            ))}
-          </HStack>
+          <ModeSelector
+            mode={currentBackground.mode as RankedMode}
+            setMode={changeMode}
+            justify="center"
+          />
           <RadioGroup value={currentBackground.view} onChange={changeView}>
             <HStack justifyContent="center" spacing={6}>
               <Radio size="sm" value="M">

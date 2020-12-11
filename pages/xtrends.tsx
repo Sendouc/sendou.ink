@@ -5,10 +5,12 @@ import {
   PopoverArrow,
   PopoverContent,
   PopoverTrigger,
+  Select,
 } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import Breadcrumbs from "components/common/Breadcrumbs";
+import ModeSelector from "components/common/ModeSelector";
 import Section from "components/common/Section";
 import SubText from "components/common/SubText";
 import WeaponImage from "components/common/WeaponImage";
@@ -72,7 +74,13 @@ interface Props {
 
 const XTrendsPage: React.FC<Props> = ({ trends }) => {
   const { gray } = useMyTheme();
-  const { state, dispatch, weaponData, getDataForChart } = useXTrends(trends);
+  const {
+    state,
+    dispatch,
+    weaponData,
+    getDataForChart,
+    monthOptions,
+  } = useXTrends(trends);
 
   return (
     <>
@@ -84,6 +92,31 @@ const XTrendsPage: React.FC<Props> = ({ trends }) => {
           mode that month. Below the weapon count and X Power average are shown.
         </Trans>
       </Box>
+      <Select
+        value={`${state.month},${state.year}`}
+        onChange={(e) => {
+          const [month, year] = e.target.value.split(",");
+
+          dispatch({
+            type: "SET_MONTH_YEAR",
+            month: Number(month),
+            year: Number(year),
+          });
+        }}
+        mt={8}
+        mb={4}
+        maxW={64}
+      >
+        {monthOptions.map((monthYear) => (
+          <option key={monthYear.value} value={monthYear.value}>
+            {monthYear.label}
+          </option>
+        ))}
+      </Select>
+      <ModeSelector
+        mode={state.mode}
+        setMode={(mode) => dispatch({ type: "SET_MODE", mode })}
+      />
       {tiers.map((tier, i) => (
         <Tier
           key={tier.label}

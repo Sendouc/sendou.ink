@@ -158,7 +158,7 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   };
 };
 
-function getMonthOptions(latestMonth: number, latestYear: number) {
+export function getMonthOptions(latestMonth: number, latestYear: number) {
   const monthChoices = [];
   let month = 5;
   let year = 2018;

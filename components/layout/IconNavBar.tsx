@@ -30,8 +30,11 @@ export const navIcons: {
 }[] = [
   {
     code: "xsearch",
-    displayName: t`Top 500 Browser`,
-    menuItems: [],
+    displayName: t`Top 500`,
+    menuItems: [
+      { code: "xsearch", displayName: t`Browser` },
+      { code: "xtrends", displayName: t`Tier Lists` },
+    ],
   },
   // {
   //   code: "leaderboards",
