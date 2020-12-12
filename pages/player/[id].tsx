@@ -1,4 +1,5 @@
-import { t } from "@lingui/macro";
+import { HStack, Radio, RadioGroup } from "@chakra-ui/react";
+import { t, Trans } from "@lingui/macro";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import QuadTable from "components/player/QuadTable";
 import TwinTable from "components/player/TwinTable";
@@ -20,8 +21,6 @@ const PlayerPage = (props: Props) => {
 
   const [tab, setTab] = useState<"XRANK" | "TWIN" | "QUAD">("QUAD");
 
-  console.log({ player });
-
   return (
     <>
       <Breadcrumbs
@@ -30,6 +29,23 @@ const PlayerPage = (props: Props) => {
           { name: getPlayerName() },
         ]}
       />
+
+      <RadioGroup
+        onChange={(value) => setTab(value as "XRANK" | "TWIN" | "QUAD")}
+        value={tab}
+      >
+        <HStack direction="row" my={8} spacing={6} fontWeight="bold">
+          <Radio value="XRANK">
+            <Trans>X Rank Top 500</Trans>
+          </Radio>
+          <Radio value="TWIN">
+            <Trans>League (Twin)</Trans>
+          </Radio>
+          <Radio value="QUAD">
+            <Trans>League (Quad)</Trans>
+          </Radio>
+        </HStack>
+      </RadioGroup>
 
       {tab === "XRANK" && <XRankTable player={player} />}
       {tab === "TWIN" && <TwinTable player={player} />}
