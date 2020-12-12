@@ -18,7 +18,7 @@ interface Props {
   placements: NonNullable<GetPlayerWithPlacementsData>["placements"];
 }
 
-const PlayerPage: React.FC<Props> = ({ placements }) => {
+const XRankTable: React.FC<Props> = ({ placements }) => {
   const { gray } = useMyTheme();
 
   return (
@@ -73,4 +73,4 @@ const PlayerPage: React.FC<Props> = ({ placements }) => {
   );
 };
 
-export default PlayerPage;
+export default XRankTable;

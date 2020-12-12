@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import Breadcrumbs from "components/common/Breadcrumbs";
-import PlayerTable from "components/player/PlayerTable";
 import TwinTable from "components/player/TwinTable";
+import XRankTable from "components/player/XRankTable";
 import { GetStaticPaths, GetStaticProps } from "next";
 import prisma from "prisma/client";
 import {
@@ -28,7 +28,7 @@ const PlayerPage = (props: Props) => {
         ]}
       />
 
-      {tab === "XRANK" && <PlayerTable placements={player.placements} />}
+      {tab === "XRANK" && <XRankTable placements={player.placements} />}
       {tab === "TWIN" && <TwinTable placements={player} />}
     </>
   );
