@@ -112,7 +112,6 @@ function LeagueMates({
                   ? `/u/${mate.player.user.discordId}`
                   : `/player/${mate.player.switchAccountId}`
               }
-              prefetch={false}
             >
               {mate.player.name ?? "???"}
             </MyLink>

@@ -181,7 +181,10 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
                 )}
               <Box width="100%" textAlign="center" mt={4}>
                 {!!user.player?.switchAccountId && (
-                  <MyLink href={`/player/${user.player?.switchAccountId}`}>
+                  <MyLink
+                    href={`/player/${user.player?.switchAccountId}`}
+                    prefetch={true}
+                  >
                     <Button leftIcon={<RiTrophyLine />} variant="outline">
                       <Trans>View results</Trans>
                     </Button>

@@ -117,7 +117,7 @@ function LeagueMate({
   if (!mate.user && !mate.name) return <>{"???"}</>;
   if (mate.user)
     return (
-      <MyLink href={`/u/${mate.user.discordId}`} prefetch={false}>
+      <MyLink href={`/u/${mate.user.discordId}`}>
         <Flex alignItems="center">
           <UserAvatar user={mate.user} size="sm" mr={2} />
           {mate.user.username}
@@ -125,11 +125,7 @@ function LeagueMate({
       </MyLink>
     );
 
-  return (
-    <MyLink href={`/player/${mate.switchAccountId}`} prefetch={false}>
-      {mate.name}
-    </MyLink>
-  );
+  return <MyLink href={`/player/${mate.switchAccountId}`}>{mate.name}</MyLink>;
 }
 
 export default TwinTable;

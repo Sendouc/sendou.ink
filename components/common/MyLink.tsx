@@ -14,7 +14,7 @@ const MyLink: React.FC<Props> = ({
   children,
   href,
   isExternal,
-  prefetch = true,
+  prefetch = false,
   isColored = true,
 }) => {
   const { themeColorShade } = useMyTheme();

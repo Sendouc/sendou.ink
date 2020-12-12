@@ -64,10 +64,7 @@ const Top500Table: React.FC<Props> = ({ placements }) => {
                   )}
                 </TableCell>
                 <TableCell>
-                  <MyLink
-                    href={`/player/${placement.player.switchAccountId}`}
-                    prefetch={false}
-                  >
+                  <MyLink href={`/player/${placement.player.switchAccountId}`}>
                     {placement.playerName}
                   </MyLink>
                 </TableCell>

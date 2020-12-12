@@ -115,7 +115,11 @@ function UserInfo({ user }: { user: Unpacked<GetAllUsersData> }) {
       </Link>
       <Box ml={4}>
         <Box fontWeight="bold">
-          <MyLink href={`/u/${user.discordId}`} isColored={false}>
+          <MyLink
+            href={`/u/${user.discordId}`}
+            isColored={false}
+            prefetch={true}
+          >
             {user.username}#{user.discriminator}
           </MyLink>
           {user.profile?.country ? (
