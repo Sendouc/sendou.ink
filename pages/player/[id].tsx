@@ -5,6 +5,7 @@ import QuadTable from "components/player/QuadTable";
 import TwinTable from "components/player/TwinTable";
 import XRankTable from "components/player/XRankTable";
 import { GetStaticPaths, GetStaticProps } from "next";
+import { useRouter } from "next/router";
 import prisma from "prisma/client";
 import {
   getPlayerWithPlacements,
@@ -19,7 +20,12 @@ interface Props {
 const PlayerPage = (props: Props) => {
   const player = props.player!;
 
-  const [tab, setTab] = useState<"XRANK" | "TWIN" | "QUAD">("QUAD");
+  const router = useRouter();
+  const [tab, setTab] = useState<"XRANK" | "TWIN" | "QUAD">(
+    getInitialTabValue()
+  );
+
+  const tabs = getTabs();
 
   return (
     <>
@@ -31,19 +37,34 @@ const PlayerPage = (props: Props) => {
       />
 
       <RadioGroup
-        onChange={(value) => setTab(value as "XRANK" | "TWIN" | "QUAD")}
+        onChange={(value) => {
+          router.push(
+            `/player/${player.switchAccountId}/?tab=${value}`,
+            undefined,
+            {
+              shallow: true,
+            }
+          );
+          setTab(value as "XRANK" | "TWIN" | "QUAD");
+        }}
         value={tab}
       >
         <HStack direction="row" my={8} spacing={6} fontWeight="bold">
-          <Radio value="XRANK">
-            <Trans>X Rank Top 500</Trans>
-          </Radio>
-          <Radio value="TWIN">
-            <Trans>League (Twin)</Trans>
-          </Radio>
-          <Radio value="QUAD">
-            <Trans>League (Quad)</Trans>
-          </Radio>
+          {tabs.includes("XRANK") && (
+            <Radio value="XRANK">
+              <Trans>X Rank Top 500</Trans>
+            </Radio>
+          )}
+          {tabs.includes("TWIN") && (
+            <Radio value="TWIN">
+              <Trans>League (Twin)</Trans>
+            </Radio>
+          )}
+          {tabs.includes("QUAD") && (
+            <Radio value="QUAD">
+              <Trans>League (Quad)</Trans>
+            </Radio>
+          )}
         </HStack>
       </RadioGroup>
 
@@ -56,7 +77,27 @@ const PlayerPage = (props: Props) => {
   function getPlayerName() {
     if (player?.placements.length) return player.placements[0].playerName;
 
-    return "?";
+    return "???";
+  }
+
+  function getInitialTabValue() {
+    if (
+      !router.query.tab ||
+      typeof router.query.tab !== "string" ||
+      !getTabs().includes(router.query.tab)
+    )
+      return getTabs()[0];
+
+    return router.query.tab as any;
+  }
+
+  function getTabs() {
+    const result = [];
+    if (player.placements.length) result.push("XRANK");
+    if (player.leaguePlacements.TWIN.length) result.push("TWIN");
+    if (player.leaguePlacements.QUAD.length) result.push("QUAD");
+
+    return result;
   }
 };
 
