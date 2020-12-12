@@ -8,9 +8,21 @@ import { locales } from "lib/lists/locales";
 import { Provider as NextAuthProvider } from "next-auth/client";
 import GoogleFonts from "next-google-fonts";
 import type { AppProps } from "next/app";
+import Head from "next/head";
+import { Router } from "next/router";
+import NProgress from "nprogress";
 import { useEffect } from "react";
 import { theme } from "theme";
 import "./styles.css";
+
+NProgress.configure({ showSpinner: false });
+
+Router.events.on("routeChangeStart", (url) => {
+  console.log(`Loading: ${url}`);
+  NProgress.start();
+});
+Router.events.on("routeChangeComplete", () => NProgress.done());
+Router.events.on("routeChangeError", () => NProgress.done());
 
 const extendedTheme = extendTheme({
   styles: {
@@ -126,6 +138,9 @@ const MyApp = (props: AppProps) => {
 
   return (
     <>
+      <Head>
+        <link rel="stylesheet" type="text/css" href="/nprogress.css" />
+      </Head>
       <GoogleFonts
         href={`https://fonts.googleapis.com/css2?family=Rubik&display=swap`}
       />
