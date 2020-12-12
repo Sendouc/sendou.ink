@@ -162,23 +162,22 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
                 </Flex>
               )}
 
-              {process.env.NODE_ENV === "development" &&
-                Object.keys(peakLeaguePowers).length > 0 && (
-                  <Flex mt={4}>
-                    {(["TWIN", "QUAD"] as LeagueType[])
-                      .filter((type) => peakLeaguePowers[type])
-                      .map((type) => (
-                        <Fragment key={type}>
-                          <Flex align="center" justify="center" mx={2}>
-                            <Box ml={2} color={gray}>
-                              <SubText>{type}</SubText>
-                              {peakLeaguePowers[type]}
-                            </Box>
-                          </Flex>
-                        </Fragment>
-                      ))}
-                  </Flex>
-                )}
+              {Object.keys(peakLeaguePowers).length > 0 && (
+                <Flex mt={4}>
+                  {(["TWIN", "QUAD"] as LeagueType[])
+                    .filter((type) => peakLeaguePowers[type])
+                    .map((type) => (
+                      <Fragment key={type}>
+                        <Flex align="center" justify="center" mx={2}>
+                          <Box ml={2} color={gray}>
+                            <SubText>{type}</SubText>
+                            {peakLeaguePowers[type]}
+                          </Box>
+                        </Flex>
+                      </Fragment>
+                    ))}
+                </Flex>
+              )}
               <Box width="100%" textAlign="center" mt={4}>
                 {!!user.player?.switchAccountId && (
                   <MyLink

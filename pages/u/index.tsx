@@ -35,9 +35,9 @@ const UserSearchPage = ({ users }: Props) => {
 
   useEffect(() => {
     if (debouncedFilter.length < 3) {
-      router.push(`/u`, undefined, { shallow: true });
+      router.replace(`/u`, undefined, { shallow: true });
     } else {
-      router.push(
+      router.replace(
         `/u?filter=${encodeURIComponent(debouncedFilter)}`,
         undefined,
         {

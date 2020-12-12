@@ -32,7 +32,7 @@ const XSearchPage = ({ placements, monthOptions }: Props) => {
   const router = useRouter();
 
   useEffect(() => {
-    router.push(
+    router.replace(
       `/xsearch/${variables.year}/${variables.month}/${variables.mode}`
     );
   }, [variables]);

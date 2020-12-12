@@ -38,7 +38,7 @@ const PlayerPage = (props: Props) => {
 
       <RadioGroup
         onChange={(value) => {
-          router.push(
+          router.replace(
             `/player/${player.switchAccountId}/?tab=${value}`,
             undefined,
             {
