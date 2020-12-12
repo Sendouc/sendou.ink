@@ -17,6 +17,7 @@ import { DiscordIcon } from "lib/assets/icons";
 import useUser from "lib/useUser";
 import { signIn, signOut } from "next-auth/client";
 import Link from "next/link";
+import { FaHeart } from "react-icons/fa";
 import { FiMoon, FiSun } from "react-icons/fi";
 import { LanguageSelector } from "./LanguageSelector";
 
@@ -96,6 +97,16 @@ const TopNav = () => {
           isRound
         />
         <LanguageSelector />
+        <a href="https://patreon.com/sendou">
+          <Button
+            size="xs"
+            bg={colorMode === "dark" ? "white" : "black"}
+            leftIcon={<FaHeart />}
+            ml={4}
+          >
+            Sponsor
+          </Button>
+        </a>
       </Flex>
       <Box
         justifySelf="center"
