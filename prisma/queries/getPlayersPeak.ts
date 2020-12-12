@@ -33,14 +33,14 @@ export const getPlayersPeak = async (switchAccountId: string) => {
   }
 
   const peakLeaguePowers = player.leaguePlacements.reduce(
-    (acc: { TWIN?: number; QUAD?: number }, cur) => {
+    (acc: { TWIN: number | null; QUAD: number | null }, cur) => {
       acc[cur.squad.type] = Math.max(
         acc[cur.squad.type] ?? 0,
         cur.squad.leaguePower
       );
       return acc;
     },
-    { TWIN: undefined, QUAD: undefined }
+    { TWIN: null, QUAD: null }
   );
 
   return { peakXPowers, peakLeaguePowers };

@@ -18,7 +18,6 @@ import { getFullUsername } from "lib/strings";
 import { useMyTheme } from "lib/useMyTheme";
 import useUser from "lib/useUser";
 import { GetUserByIdentifierData } from "prisma/queries/getUserByIdentifier";
-import { Fragment } from "react";
 import { FaGamepad, FaTwitch, FaTwitter, FaYoutube } from "react-icons/fa";
 import { FiInfo } from "react-icons/fi";
 import { RiTrophyLine } from "react-icons/ri";
@@ -145,38 +144,42 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
                 </Flex>
               )}
               {Object.keys(peakXPowers).length > 0 && (
-                <Flex mt={8} w="100%">
+                <Flex mt={8}>
                   {(["SZ", "TC", "RM", "CB"] as RankedMode[])
                     .filter((mode) => peakXPowers[mode])
                     .map((mode, i) => (
-                      <Fragment key={mode}>
-                        <Flex align="center" justify="center" mx="auto">
-                          {i !== 0 && <Divider orientation="vertical" mx={2} />}
-                          <ModeImage mode={mode} size={32} />{" "}
-                          <Box ml={2} color={gray}>
-                            {peakXPowers[mode]}
-                          </Box>
-                        </Flex>
-                      </Fragment>
+                      <Flex
+                        key={mode}
+                        align="center"
+                        justify="center"
+                        mx="auto"
+                      >
+                        {i !== 0 && <Divider orientation="vertical" mx={2} />}
+                        <ModeImage mode={mode} size={32} />{" "}
+                        <Box ml={2} color={gray}>
+                          {peakXPowers[mode]}
+                        </Box>
+                      </Flex>
                     ))}
                 </Flex>
               )}
 
               {Object.keys(peakLeaguePowers).length > 0 && (
-                <Flex mt={4}>
-                  {(["TWIN", "QUAD"] as LeagueType[])
-                    .filter((type) => peakLeaguePowers[type])
-                    .map((type) => (
-                      <Fragment key={type}>
-                        <Flex align="center" justify="center" mx={2}>
+                <>
+                  <Box flexBasis="100%" h="0" />
+                  <Flex mt={4}>
+                    {(["TWIN", "QUAD"] as LeagueType[])
+                      .filter((type) => peakLeaguePowers[type])
+                      .map((type) => (
+                        <Flex key={type} align="center" justify="center" mx={2}>
                           <Box ml={2} color={gray}>
                             <SubText>{type}</SubText>
                             {peakLeaguePowers[type]}
                           </Box>
                         </Flex>
-                      </Fragment>
-                    ))}
-                </Flex>
+                      ))}
+                  </Flex>
+                </>
               )}
               <Box width="100%" textAlign="center" mt={4}>
                 {!!user.player?.switchAccountId && (
