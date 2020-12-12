@@ -1,4 +1,4 @@
 #!/bin/sh
 . "$(dirname $0)/_/husky.sh"
 
-npm run prettier:pre-commit && npm run ex:pre-commit
+npm run ex:pre-commit

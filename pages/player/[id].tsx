@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
 import Breadcrumbs from "components/common/Breadcrumbs";
+import QuadTable from "components/player/QuadTable";
 import TwinTable from "components/player/TwinTable";
 import XRankTable from "components/player/XRankTable";
 import { GetStaticPaths, GetStaticProps } from "next";
@@ -17,7 +18,9 @@ interface Props {
 const PlayerPage = (props: Props) => {
   const player = props.player!;
 
-  const [tab, setTab] = useState<"XRANK" | "TWIN" | "QUAD">("XRANK");
+  const [tab, setTab] = useState<"XRANK" | "TWIN" | "QUAD">("QUAD");
+
+  console.log({ player });
 
   return (
     <>
@@ -28,8 +31,9 @@ const PlayerPage = (props: Props) => {
         ]}
       />
 
-      {tab === "XRANK" && <XRankTable placements={player.placements} />}
-      {tab === "TWIN" && <TwinTable placements={player} />}
+      {tab === "XRANK" && <XRankTable player={player} />}
+      {tab === "TWIN" && <TwinTable player={player} />}
+      {tab === "QUAD" && <QuadTable player={player} />}
     </>
   );
 

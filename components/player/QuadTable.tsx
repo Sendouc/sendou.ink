@@ -1,4 +1,4 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { Player } from "@prisma/client";
@@ -11,7 +11,6 @@ import {
   TableHeader,
   TableRow,
 } from "components/common/Table";
-import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
 import { getRankingString } from "lib/strings";
 import { useMyTheme } from "lib/useMyTheme";
@@ -21,7 +20,7 @@ interface Props {
   player: NonNullable<GetPlayerWithPlacementsData>;
 }
 
-const TwinTable: React.FC<Props> = ({ player }) => {
+const QuadTable: React.FC<Props> = ({ player }) => {
   const { i18n } = useLingui();
   const { gray } = useMyTheme();
   return (
@@ -39,15 +38,12 @@ const TwinTable: React.FC<Props> = ({ player }) => {
             <Trans>Weapon</Trans>
           </TableHeader>
           <TableHeader>
-            <Trans>Mate</Trans>
-          </TableHeader>
-          <TableHeader>
-            <Trans>Mate's weapon</Trans>
+            <Trans>Mates</Trans>
           </TableHeader>
         </TableRow>
       </TableHead>
       <TableBody>
-        {player.leaguePlacements.TWIN.map(({ squad }, index) => {
+        {player.leaguePlacements.QUAD.map(({ squad }, index) => {
           return (
             <TableRow key={squad.id}>
               <TableCell color={gray}>{getRankingString(index + 1)}</TableCell>
@@ -73,25 +69,12 @@ const TwinTable: React.FC<Props> = ({ player }) => {
                   size={32}
                 />
               </TableCell>
-              <TableCell fontWeight="bold">
-                <LeagueMate
-                  mate={
-                    squad.members.find(
-                      (member) =>
-                        member.player.switchAccountId !== player.switchAccountId
-                    )!.player
-                  }
-                />
-              </TableCell>
               <TableCell>
-                <WeaponImage
-                  name={
-                    squad.members.find(
-                      (member) =>
-                        member.player.switchAccountId !== player.switchAccountId
-                    )!.weapon
-                  }
-                  size={32}
+                <LeagueMates
+                  mates={squad.members.filter(
+                    (member) =>
+                      member.player.switchAccountId !== player.switchAccountId
+                  )}
                 />
               </TableCell>
             </TableRow>
@@ -102,34 +85,42 @@ const TwinTable: React.FC<Props> = ({ player }) => {
   );
 };
 
-function LeagueMate({
-  mate,
+function LeagueMates({
+  mates,
 }: {
-  mate: Player & {
-    user: {
-      username: string;
-      discriminator: string;
-      discordId: string;
-      discordAvatar: string | null;
-    } | null;
-  };
+  mates: {
+    player: Player & {
+      user: {
+        username: string;
+        discriminator: string;
+        discordId: string;
+        discordAvatar: string | null;
+      } | null;
+    };
+    weapon: string;
+  }[];
 }) {
-  if (!mate.user && !mate.name) return <>{"???"}</>;
-  if (mate.user)
-    return (
-      <MyLink href={`/u/${mate.user.discordId}`} prefetch={false}>
-        <Flex alignItems="center">
-          <UserAvatar user={mate.user} size="sm" mr={2} />
-          {mate.user.username}
-        </Flex>
-      </MyLink>
-    );
-
   return (
-    <MyLink href={`/player/${mate.switchAccountId}`} prefetch={false}>
-      {mate.name}
-    </MyLink>
+    <>
+      {mates.map((mate) => (
+        <Flex align="center" key={mate.player.switchAccountId}>
+          <WeaponImage name={mate.weapon} size={32} />
+          <Box ml={2}>
+            <MyLink
+              href={
+                mate.player.user
+                  ? `/u/${mate.player.user.discordId}`
+                  : `/player/${mate.player.switchAccountId}`
+              }
+              prefetch={false}
+            >
+              {mate.player.name ?? "???"}
+            </MyLink>
+          </Box>
+        </Flex>
+      ))}
+    </>
   );
 }
 
-export default TwinTable;
+export default QuadTable;

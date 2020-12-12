@@ -15,10 +15,10 @@ import { useMyTheme } from "lib/useMyTheme";
 import { GetPlayerWithPlacementsData } from "prisma/queries/getPlayerWithPlacements";
 
 interface Props {
-  placements: NonNullable<GetPlayerWithPlacementsData>["placements"];
+  player: NonNullable<GetPlayerWithPlacementsData>;
 }
 
-const XRankTable: React.FC<Props> = ({ placements }) => {
+const XRankTable: React.FC<Props> = ({ player }) => {
   const { gray } = useMyTheme();
 
   return (
@@ -47,7 +47,7 @@ const XRankTable: React.FC<Props> = ({ placements }) => {
         </TableRow>
       </TableHead>
       <TableBody>
-        {placements.map((record) => {
+        {player.placements.map((record) => {
           return (
             <TableRow key={record.id}>
               <TableCell color={gray}>

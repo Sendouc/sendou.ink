@@ -28,7 +28,6 @@ export const getPlayerWithPlacements = async (switchAccountId: string) => {
   };
 
   function getTopLeaguePlacements() {
-    // TODO: remove duplicates
     const result: { TWIN: LeaguePlacementArray; QUAD: LeaguePlacementArray } = {
       TWIN: [],
       QUAD: [],
@@ -36,7 +35,13 @@ export const getPlayerWithPlacements = async (switchAccountId: string) => {
 
     if (!player) return result;
 
+    const timeScoreSet = new Set<string>();
     for (const placement of player.leaguePlacements) {
+      const identifier =
+        placement.squad.startTime.toString() + placement.squad.leaguePower;
+      if (timeScoreSet.has(identifier)) continue;
+      timeScoreSet.add(identifier);
+
       result[placement.squad.members.length === 2 ? "TWIN" : "QUAD"].push(
         placement
       );
