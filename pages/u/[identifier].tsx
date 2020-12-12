@@ -44,17 +44,13 @@ const ProfilePage = (props: Props) => {
     { initialData: props.user }
   );
 
-  const user = data ? data : props.user;
+  const user = data ? data : props.user!;
 
   const { data: builds, weaponCounts, setWeapon, buildCount } = useBuildsByUser(
     user?.id
   );
 
   const { i18n } = useLingui();
-
-  // same as router.isFallback
-  // TODO: return spinner
-  if (!user) return null;
 
   const canPostBuilds = () => {
     if (loggedInUser?.id !== user.id) return false;
@@ -172,7 +168,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     paths: users.map((u) => ({
       params: { identifier: u.profile?.customUrlPath ?? u.discordId },
     })),
-    fallback: true,
+    fallback: "blocking",
   };
 };
 
