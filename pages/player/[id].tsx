@@ -1,18 +1,23 @@
 import { t } from "@lingui/macro";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import PlayerTable from "components/player/PlayerTable";
+import TwinTable from "components/player/TwinTable";
 import { GetStaticPaths, GetStaticProps } from "next";
 import prisma from "prisma/client";
 import {
   getPlayerWithPlacements,
   GetPlayerWithPlacementsData,
 } from "prisma/queries/getPlayerWithPlacements";
+import { useState } from "react";
 
-const PlayerPage = ({ player }: Props) => {
-  // TODO: spinner
-  if (!player) return null;
+interface Props {
+  player: GetPlayerWithPlacementsData;
+}
 
-  console.log({ player });
+const PlayerPage = (props: Props) => {
+  const player = props.player!;
+
+  const [tab, setTab] = useState<"XRANK" | "TWIN" | "QUAD">("XRANK");
 
   return (
     <>
@@ -22,7 +27,9 @@ const PlayerPage = ({ player }: Props) => {
           { name: getPlayerName() },
         ]}
       />
-      <PlayerTable placements={player.placements} />
+
+      {tab === "XRANK" && <PlayerTable placements={player.placements} />}
+      {tab === "TWIN" && <TwinTable placements={player} />}
     </>
   );
 
@@ -39,18 +46,14 @@ export const getStaticPaths: GetStaticPaths = async () => {
   });
   return {
     paths: players.map((p) => ({ params: { id: p.switchAccountId } })),
-    fallback: true,
+    fallback: "blocking",
   };
 };
-
-interface Props {
-  player: GetPlayerWithPlacementsData;
-}
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   const player = await getPlayerWithPlacements(params!.id as string);
 
-  if (!player || !player.placements) return { notFound: true };
+  if (!player) return { notFound: true };
 
   return {
     props: {

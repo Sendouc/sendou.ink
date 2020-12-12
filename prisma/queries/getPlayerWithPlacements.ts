@@ -28,6 +28,7 @@ export const getPlayerWithPlacements = async (switchAccountId: string) => {
   };
 
   function getTopLeaguePlacements() {
+    // TODO: remove duplicates
     const result: { TWIN: LeaguePlacementArray; QUAD: LeaguePlacementArray } = {
       TWIN: [],
       QUAD: [],
@@ -44,7 +45,7 @@ export const getPlayerWithPlacements = async (switchAccountId: string) => {
     result.TWIN.sort((a, b) => b.squad.leaguePower - a.squad.leaguePower);
     result.QUAD.sort((a, b) => b.squad.leaguePower - a.squad.leaguePower);
 
-    return { TWIN: result.TWIN.slice(0, 10), QUAD: result.QUAD.slice(0, 10) };
+    return { TWIN: result.TWIN.slice(0, 20), QUAD: result.QUAD.slice(0, 10) };
   }
 
   function getPlayer() {
@@ -57,6 +58,7 @@ export const getPlayerWithPlacements = async (switchAccountId: string) => {
               select: {
                 startTime: true,
                 leaguePower: true,
+                id: true,
                 members: {
                   select: {
                     weapon: true,

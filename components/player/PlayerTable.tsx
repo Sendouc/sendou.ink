@@ -22,56 +22,54 @@ const PlayerPage: React.FC<Props> = ({ placements }) => {
   const { gray } = useMyTheme();
 
   return (
-    <>
-      <Table maxW="50rem">
-        <TableHead>
-          <TableRow>
-            <TableHeader width={4} />
-            <TableHeader>
-              <Trans>Name</Trans>
-            </TableHeader>
-            <TableHeader>
-              <Trans>X Power</Trans>
-            </TableHeader>
-            <TableHeader>
-              <Trans>Mode</Trans>
-            </TableHeader>
-            <TableHeader>
-              <Trans>Weapon</Trans>
-            </TableHeader>
-            <TableHeader width={4}>
-              <Trans>Month</Trans>
-            </TableHeader>
-            <TableHeader>
-              <Trans>Year</Trans>
-            </TableHeader>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {placements.map((record) => {
-            return (
-              <TableRow key={record.id}>
-                <TableCell color={gray}>
-                  {getRankingString(record.ranking)}
-                </TableCell>
-                <TableCell>{record.playerName}</TableCell>
-                <TableCell>
-                  <Text fontWeight="bold">{record.xPower}</Text>
-                </TableCell>
-                <TableCell>
-                  <ModeImage mode={record.mode} size={32} />
-                </TableCell>
-                <TableCell>
-                  <WeaponImage name={record.weapon} size={32} />
-                </TableCell>
-                <TableCell>{record.month}</TableCell>
-                <TableCell>{record.year}</TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-    </>
+    <Table maxW="50rem">
+      <TableHead>
+        <TableRow>
+          <TableHeader width={4} />
+          <TableHeader>
+            <Trans>Name</Trans>
+          </TableHeader>
+          <TableHeader>
+            <Trans>X Power</Trans>
+          </TableHeader>
+          <TableHeader>
+            <Trans>Mode</Trans>
+          </TableHeader>
+          <TableHeader>
+            <Trans>Weapon</Trans>
+          </TableHeader>
+          <TableHeader width={4}>
+            <Trans>Month</Trans>
+          </TableHeader>
+          <TableHeader>
+            <Trans>Year</Trans>
+          </TableHeader>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {placements.map((record) => {
+          return (
+            <TableRow key={record.id}>
+              <TableCell color={gray}>
+                {getRankingString(record.ranking)}
+              </TableCell>
+              <TableCell>{record.playerName}</TableCell>
+              <TableCell>
+                <Text fontWeight="bold">{record.xPower}</Text>
+              </TableCell>
+              <TableCell>
+                <ModeImage mode={record.mode} size={32} />
+              </TableCell>
+              <TableCell>
+                <WeaponImage name={record.weapon} size={32} />
+              </TableCell>
+              <TableCell>{record.month}</TableCell>
+              <TableCell>{record.year}</TableCell>
+            </TableRow>
+          );
+        })}
+      </TableBody>
+    </Table>
   );
 };
 
