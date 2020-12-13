@@ -72,7 +72,7 @@ const About = () => {
             >
               Lean
             </Link>{" "}
-            - <Trans>provided the Top 500 X Rank data</Trans>
+            - <Trans>provided the data for Top 500 X Rank and League</Trans>
           </li>
           <li>
             <Link
@@ -82,7 +82,10 @@ const About = () => {
             >
               zorg
             </Link>{" "}
-            - <Trans>provided background pictures for the map planner</Trans>
+            -{" "}
+            <Trans>
+              provided background pictures of 4v4 maps for the map planner
+            </Trans>
           </li>
           <li>
             <Link
@@ -114,8 +117,7 @@ const About = () => {
             </Link>{" "}
             -{" "}
             <Trans>
-              art for the site like the inkling on the front page as well as
-              footer pictures
+              art for the site - front page inkling, icons and footer drawing
             </Trans>
           </li>
           <li>
