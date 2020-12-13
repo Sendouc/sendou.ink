@@ -1,7 +1,7 @@
 import { Box, Container, Flex, Heading, useColorMode } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
-import MyHead from "components/common/MyHead";
 import MyLink from "components/common/MyLink";
+import SEO from "components/common/SEO";
 import { useMyTheme } from "lib/useMyTheme";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,9 +11,11 @@ const Home = () => {
   const { colorMode } = useColorMode();
   return (
     <>
-      <MyHead
-        title={`sendou.ink | ${t`Competitive Splatoon Hub`}`}
-        appendSendouInk={false}
+      <SEO
+        title="sendou.ink"
+        appendTitle={false}
+        description="Competitive Splatoon hub featuring several tools and resources."
+        imageSrc="/seo/home.png"
       />
       <Box textAlign="center">
         <Image
@@ -25,7 +27,7 @@ const Home = () => {
         />
         <Heading size="2xl">Sendou.ink</Heading>
         <Box fontWeight="semibold" letterSpacing="wide" color={gray}>
-          Competitive Splatoon Hub
+          <Trans>Competitive Splatoon Hub</Trans>
         </Box>
       </Box>
       <Container>
