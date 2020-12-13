@@ -19,14 +19,17 @@ const userHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   const userToUpdate = await prisma.user.findUnique({ where: { discordId } });
   if (!userToUpdate) return res.status(400).end();
 
-  const [placements, builds] = await Promise.all([
-    prisma.xRankPlacement.findMany({ where: { switchAccountId } }),
+  const [player, builds] = await Promise.all([
+    prisma.player.findUnique({
+      where: { switchAccountId },
+      include: { placements: true },
+    }),
     prisma.build.findMany({ where: { userId: userToUpdate.id } }),
   ]);
 
-  if (!placements.length) return res.status(400).end();
+  if (!player) return res.status(400).end();
 
-  const top500weapons = placements.reduce((acc, placement) => {
+  const top500weapons = player.placements.reduce((acc, placement) => {
     acc.add(placement.weapon);
     return acc;
   }, new Set<string>());
