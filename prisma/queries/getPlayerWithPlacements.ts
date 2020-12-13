@@ -47,8 +47,16 @@ export const getPlayerWithPlacements = async (switchAccountId: string) => {
       );
     }
 
-    result.TWIN.sort((a, b) => b.squad.leaguePower - a.squad.leaguePower);
-    result.QUAD.sort((a, b) => b.squad.leaguePower - a.squad.leaguePower);
+    result.TWIN.sort((a, b) => {
+      if (a.squad.leaguePower !== b.squad.leaguePower)
+        return b.squad.leaguePower - a.squad.leaguePower;
+      return a.squad.startTime.valueOf() - b.squad.startTime.valueOf();
+    });
+    result.QUAD.sort((a, b) => {
+      if (a.squad.leaguePower !== b.squad.leaguePower)
+        return b.squad.leaguePower - a.squad.leaguePower;
+      return a.squad.startTime.valueOf() - b.squad.startTime.valueOf();
+    });
 
     return { TWIN: result.TWIN.slice(0, 20), QUAD: result.QUAD.slice(0, 10) };
   }
