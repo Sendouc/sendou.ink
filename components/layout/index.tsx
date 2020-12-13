@@ -1,4 +1,4 @@
-import { Container, Flex, useColorModeValue, useToast } from "@chakra-ui/react";
+import { Container, Flex, useToast } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import { AppProps } from "next/app";
 import { useState } from "react";
@@ -10,7 +10,6 @@ import TopNav from "./TopNav";
 const Layout = ({ Component, pageProps }: AppProps) => {
   const [errors, setErrors] = useState(new Set<string>());
   const toast = useToast();
-  const bannerColor = useColorModeValue("lightblue", "black");
 
   return (
     <SWRConfig
