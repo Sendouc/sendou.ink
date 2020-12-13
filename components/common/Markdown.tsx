@@ -20,6 +20,7 @@ import {
 import { useMyTheme } from "lib/useMyTheme";
 import ReactMarkdown from "react-markdown";
 import reactStringReplace from "react-string-replace";
+import MyLink from "./MyLink";
 
 interface MarkdownProps {
   value: string;
@@ -68,9 +69,9 @@ const Markdown: React.FC<MarkdownProps> = ({ value }) => {
       link: (props: any) => {
         const { children } = props;
         return (
-          <Link color={themeColor} {...props}>
+          <MyLink isExternal {...props}>
             {children}
-          </Link>
+          </MyLink>
         );
       },
       linkReference: (props: any) => {
