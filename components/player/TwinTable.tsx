@@ -73,7 +73,7 @@ const TwinTable: React.FC<Props> = ({ player }) => {
                   size={32}
                 />
               </TableCell>
-              <TableCell fontWeight="bold">
+              <TableCell>
                 <LeagueMate
                   mate={
                     squad.members.find(
@@ -114,7 +114,9 @@ function LeagueMate({
     } | null;
   };
 }) {
-  if (!mate.user && !mate.name) return <>{"???"}</>;
+  if (!mate.user && !mate.name) {
+    return <MyLink href={`/player/${mate.switchAccountId}`}>{"???"}</MyLink>;
+  }
   if (mate.user)
     return (
       <MyLink href={`/u/${mate.user.discordId}`}>
