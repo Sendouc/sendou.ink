@@ -11,6 +11,7 @@ import {
 import { Plural, t, Trans } from "@lingui/macro";
 import { Ability, Prisma } from "@prisma/client";
 import ModeImage from "components/common/ModeImage";
+import MyIconButton from "components/common/MyIconButton";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
 import { getEmojiFlag } from "countries-list";
@@ -114,13 +115,12 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
             ) : null}
           </Flex>
           <Flex mt="0.3em">
-            <IconButton
+            <MyIconButton
               variant="ghost"
-              isRound
               onClick={() => setApView(!apView)}
-              aria-label="Set build card view"
-              fontSize="20px"
+              popup={apView ? t`Show abilities` : t`Show ability points`}
               icon={<FiTarget />}
+              fontSize="20px"
               mr="0.5em"
             />
             <Link
@@ -129,10 +129,9 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
               )}
             >
               <a>
-                <IconButton
+                <MyIconButton
                   variant="ghost"
-                  isRound
-                  aria-label="Show build stats view"
+                  popup={t`Show in Build Analyzer`}
                   fontSize="20px"
                   icon={<FiBarChart2 />}
                   mr="0.5em"
@@ -141,13 +140,11 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
             </Link>
             <Description />
             {onEdit && (
-              <IconButton
-                variant="ghost"
-                isRound
+              <MyIconButton
+                popup={t`Edit build`}
                 onClick={() => onEdit(build)}
-                aria-label="Edit build"
-                fontSize="20px"
                 icon={<FiEdit />}
+                fontSize="20px"
                 ml="0.5em"
               />
             )}
@@ -201,7 +198,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
     if (build.modes.length === 0 && !build.description) return null;
 
     return (
-      <Popover placement="top">
+      <Popover placement="top" trigger="hover">
         <PopoverTrigger>
           <IconButton
             variant="ghost"
