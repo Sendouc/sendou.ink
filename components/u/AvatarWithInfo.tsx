@@ -202,16 +202,21 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
   );
 
   function Top500HelpText() {
-    if (Object.keys(peakXPowers).length > 0 || user.id !== loggedInUser?.id)
+    if (
+      Object.keys(peakXPowers).length > 0 ||
+      Object.keys(peakLeaguePowers).length > 0 ||
+      user.id !== loggedInUser?.id
+    )
       return null;
 
     return (
       <Box color={gray} mt={2} textAlign="center">
         <Box as={FiInfo} mx="auto" color={themeColorShade} />
         <Trans>
-          If you have finished a month in the Top 500 you can get your peak
-          ranks showing here. Simply DM Sendou#4059 on Discord with the month,
-          mode and your in-game name.
+          You can get your peak Top 500 and League powers showing here.{" "}
+          <MyLink prefetch href="/linking-info">
+            Read more
+          </MyLink>
         </Trans>
       </Box>
     );
