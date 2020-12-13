@@ -15,7 +15,7 @@ const Home = () => {
         title="sendou.ink"
         appendTitle={false}
         description="Competitive Splatoon hub featuring several tools and resources."
-        imageSrc="/seo/home.png"
+        imageSrc="https://sendou.ink/seo/home.png"
       />
       <Box textAlign="center">
         <Image
