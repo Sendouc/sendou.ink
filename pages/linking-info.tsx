@@ -18,6 +18,16 @@ const LinkingInfoPage = ({}) => {
           Discord
         </MyLink>{" "}
         to set it up.
+        <br />
+        <br />
+        New placements get added monthly. For example if you are waiting on
+        October 2020 placements (both X Rank and League) normally you can expect
+        them to be added sometime in early November 2020. This depends on
+        various factors though. Follow our{" "}
+        <MyLink href="https://twitter.com/sendouink" isExternal>
+          Twitter
+        </MyLink>{" "}
+        for updates.
         <Heading
           fontFamily="'Rubik', sans-serif"
           as="h2"
