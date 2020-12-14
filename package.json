@@ -38,6 +38,7 @@
     "next-auth": "^3.1.0",
     "next-google-fonts": "^1.2.1",
     "next-images": "^1.6.2",
+    "next-seo": "^4.17.0",
     "nprogress": "^0.2.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
