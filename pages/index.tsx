@@ -1,7 +1,6 @@
 import { Box, Container, Flex, Heading, useColorMode } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import MyLink from "components/common/MyLink";
-import SEO from "components/common/SEO";
 import { useMyTheme } from "lib/useMyTheme";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,12 +10,12 @@ const Home = () => {
   const { colorMode } = useColorMode();
   return (
     <>
-      <SEO
+      {/* <SEO
         title="sendou.ink"
         appendTitle={false}
         description="Competitive Splatoon hub featuring several tools and resources."
         imageSrc="https://sendou.ink/seo/home.png"
-      />
+      /> */}
       <Box textAlign="center">
         <Image
           className="rgb"

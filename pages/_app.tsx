@@ -7,6 +7,7 @@ import { activateLocale } from "lib/i18n";
 import { locales } from "lib/lists/locales";
 import { Provider as NextAuthProvider } from "next-auth/client";
 import GoogleFonts from "next-google-fonts";
+import { DefaultSeo } from "next-seo";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { Router } from "next/router";
@@ -142,6 +143,28 @@ const MyApp = (props: AppProps) => {
       </Head>
       <GoogleFonts
         href={`https://fonts.googleapis.com/css2?family=Rubik&display=swap`}
+      />
+      <DefaultSeo
+        title="sendou.ink"
+        description="Competitive Splatoon hub featuring several tools and resources."
+        openGraph={{
+          url: "https://sendou.ink/",
+          title: "sendou.ink",
+          description:
+            "Competitive Splatoon hub featuring several tools and resources.",
+          images: [
+            {
+              url: "https://sendou.ink/seo/home.png",
+              width: 1200,
+              height: 628,
+            },
+          ],
+          site_name: "sendou.ink",
+        }}
+        twitter={{
+          site: "@sendouink",
+          cardType: "summary_large_image",
+        }}
       />
 
       <NextAuthProvider session={props.pageProps.session}>
