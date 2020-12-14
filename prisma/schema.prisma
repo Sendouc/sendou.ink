@@ -9,14 +9,16 @@ generator client {
 }
 
 model User {
-  id            Int      @id @default(autoincrement())
-  username      String
-  discriminator String
-  discordId     String   @unique
-  discordAvatar String?
-  profile       Profile?
-  player        Player?
-  builds        Build[]
+  id               Int               @id @default(autoincrement())
+  username         String
+  discriminator    String
+  discordId        String            @unique
+  discordAvatar    String?
+  profile          Profile?
+  player           Player?
+  builds           Build[]
+  submittedRecords SalmonRunRecord[]
+  salmonRunRecords SalmonRunPlayer[]
 }
 
 model Profile {
@@ -156,4 +158,59 @@ model Build {
   @@index(weapon)
   @@index(userId)
   @@index(abilityPoints)
+}
+
+model SalmonRunRotation {
+  id            Int               @unique
+  startTime     DateTime
+  endTime       DateTime
+  weapons       String[]
+  grizzcoWeapon String?
+  stage         String
+  records       SalmonRunRecord[]
+}
+
+enum SalmonRunRecordCategory {
+  TOTAL
+  TOTAL_NO_NIGHT
+  PRINCESS
+  NT_NORMAL
+  HT_NORMAL
+  LT_NORMAL
+  NT_RUSH
+  HT_RUSH
+  NT_FOG
+  HT_FOG
+  LT_FOG
+  NT_GOLDIE
+  HT_GOLDIE
+  NT_GRILLERS
+  HT_GRILLERS
+  NT_MOTHERSHIP
+  HT_MOTHERSHIP
+  LT_MOTHERSHIP
+  LT_COHOCK
+}
+
+model SalmonRunRecord {
+  id             Int                     @id @default(autoincrement())
+  rotationId     Int
+  submitterId    Int
+  goldenEggCount Int
+  approved       Boolean
+  category       SalmonRunRecordCategory
+  links          String[]
+  createdAt      DateTime                @default(now())
+  rotation       SalmonRunRotation       @relation(fields: [rotationId], references: [id])
+  submitter      User                    @relation(fields: [submitterId], references: [id])
+  players        SalmonRunPlayer[]
+}
+
+model SalmonRunPlayer {
+  recordId Int
+  userId   Int
+  record   SalmonRunRecord @relation(fields: [recordId], references: [id])
+  user     User            @relation(fields: [userId], references: [id])
+
+  @@unique([recordId, userId])
 }
