@@ -26,16 +26,19 @@ CREATE TABLE "SalmonRunRecord" (
 );
 
 -- CreateTable
-CREATE TABLE "SalmonRunPlayer" (
-    "recordId" INTEGER NOT NULL,
-    "userId" INTEGER NOT NULL
+CREATE TABLE "_SalmonRunRecordRoster" (
+    "A" INTEGER NOT NULL,
+    "B" INTEGER NOT NULL
 );
 
 -- CreateIndex
 CREATE UNIQUE INDEX "SalmonRunRotation.id_unique" ON "SalmonRunRotation"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "SalmonRunPlayer.recordId_userId_unique" ON "SalmonRunPlayer"("recordId", "userId");
+CREATE UNIQUE INDEX "_SalmonRunRecordRoster_AB_unique" ON "_SalmonRunRecordRoster"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_SalmonRunRecordRoster_B_index" ON "_SalmonRunRecordRoster"("B");
 
 -- AddForeignKey
 ALTER TABLE "SalmonRunRecord" ADD FOREIGN KEY("rotationId")REFERENCES "SalmonRunRotation"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -44,7 +47,7 @@ ALTER TABLE "SalmonRunRecord" ADD FOREIGN KEY("rotationId")REFERENCES "SalmonRun
 ALTER TABLE "SalmonRunRecord" ADD FOREIGN KEY("submitterId")REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "SalmonRunPlayer" ADD FOREIGN KEY("recordId")REFERENCES "SalmonRunRecord"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_SalmonRunRecordRoster" ADD FOREIGN KEY("A")REFERENCES "SalmonRunRecord"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "SalmonRunPlayer" ADD FOREIGN KEY("userId")REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_SalmonRunRecordRoster" ADD FOREIGN KEY("B")REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

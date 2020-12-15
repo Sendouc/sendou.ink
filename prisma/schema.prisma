@@ -18,7 +18,7 @@ model User {
   player           Player?
   builds           Build[]
   submittedRecords SalmonRunRecord[]
-  salmonRunRecords SalmonRunPlayer[]
+  salmonRunRecords SalmonRunRecord[] @relation("SalmonRunRecordRoster")
 }
 
 model Profile {
@@ -203,14 +203,5 @@ model SalmonRunRecord {
   createdAt      DateTime                @default(now())
   rotation       SalmonRunRotation       @relation(fields: [rotationId], references: [id])
   submitter      User                    @relation(fields: [submitterId], references: [id])
-  players        SalmonRunPlayer[]
-}
-
-model SalmonRunPlayer {
-  recordId Int
-  userId   Int
-  record   SalmonRunRecord @relation(fields: [recordId], references: [id])
-  user     User            @relation(fields: [userId], references: [id])
-
-  @@unique([recordId, userId])
+  roster         User[]                  @relation("SalmonRunRecordRoster")
 }
