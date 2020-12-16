@@ -1,17 +1,27 @@
 import { Select, Tag, TagCloseButton, TagLabel } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import { weaponsWithHero } from "lib/lists/weaponsWithHero";
+import { salmonRunWeapons, weaponsWithHero } from "lib/lists/weaponsWithHero";
 import WeaponImage from "./WeaponImage";
 
 interface Props {
-  name: string;
+  name?: string;
   value: string[];
   onChange: (value: string[]) => void;
+  isSalmonRun?: boolean;
 }
 
-const MultiWeaponSelector: React.FC<Props> = ({ name, value, onChange }) => {
+const MultiWeaponSelector: React.FC<Props> = ({
+  name,
+  value,
+  onChange,
+  isSalmonRun,
+}) => {
   const { i18n } = useLingui();
+
+  const weaponsArray: readonly string[] = isSalmonRun
+    ? salmonRunWeapons
+    : weaponsWithHero;
   return (
     <>
       <Select
@@ -26,7 +36,13 @@ const MultiWeaponSelector: React.FC<Props> = ({ name, value, onChange }) => {
         <option hidden value="">
           {t`Select weapon`}
         </option>
-        {weaponsWithHero.map((wpn) => (
+        {isSalmonRun && (
+          <>
+            <option value="RANDOM">{t`Random`}</option>
+            <option value="RANDOM_GRIZZCO">{t`Random (Grizzco)`}</option>
+          </>
+        )}
+        {weaponsArray.map((wpn) => (
           <option key={wpn} value={wpn}>
             {i18n._(wpn)}
           </option>
