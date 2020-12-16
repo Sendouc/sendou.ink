@@ -15,21 +15,23 @@ const randomToNaturalName = {
   RANDOM_GRIZZCO: t`Random (Grizzco)`,
 } as const;
 
-interface Props {}
+interface Props {
+  rotationId?: number;
+  setRotationId: (id: number | null) => void;
+}
 
-const RotationSelector: React.FC<Props> = ({}) => {
+const RotationSelector: React.FC<Props> = ({ rotationId, setRotationId }) => {
   const { gray } = useMyTheme();
   const { i18n } = useLingui();
   const { data } = useSWR<GetAllSalmonRunRotationsData>("/api/sr/rotations");
 
   const [stage, setStage] = useState("Spawning Grounds");
   const [weapons, setWeapons] = useState<string[]>([]);
-  const [idSelected, setIdSelected] = useState<number | null>(null);
 
   const filteredRotations = getFilteredRotations();
 
-  if (idSelected && data) {
-    const rotation = data.find((rotation) => rotation.id === idSelected)!;
+  if (rotationId && data) {
+    const rotation = data.find((rotation) => rotation.id === rotationId)!;
     return (
       <Box>
         <SubText>
@@ -50,7 +52,7 @@ const RotationSelector: React.FC<Props> = ({}) => {
           <Button
             size="sm"
             variant="outline"
-            onClick={() => setIdSelected(null)}
+            onClick={() => setRotationId(null)}
           >
             <Trans>Change selection</Trans>
           </Button>
@@ -93,7 +95,7 @@ const RotationSelector: React.FC<Props> = ({}) => {
           </FormLabel>
           <Select
             name="rotation"
-            onChange={(e) => setIdSelected(parseInt(e.target.value))}
+            onChange={(e) => setRotationId(parseInt(e.target.value))}
           >
             {filteredRotations.map((rotation) => (
               <option key={rotation.id} value={rotation.id}>
