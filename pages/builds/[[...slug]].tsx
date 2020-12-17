@@ -27,6 +27,7 @@ const BuildsPage = () => {
           value={state.weapon}
           setValue={(weapon) => dispatch({ type: "SET_WEAPON", weapon })}
           menuIsOpen={!state.weapon}
+          autoFocus
         />
       </Box>
       <>
