@@ -71,6 +71,8 @@
   "Stage": "Stage",
   "Weapons": "Weapons",
   "Rotation": "Rotation",
+  "Select rotation": "Select rotation",
+  "No rotations matching with this criteria. Please choose different weapons.": "No rotations matching with this criteria. Please choose different weapons.",
   "Stick": "Stick",
   "Motion": "Motion",
   "View results": "View results",

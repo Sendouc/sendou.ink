@@ -88,15 +88,19 @@ const RotationSelector: React.FC<Props> = ({ rotationId, setRotationId }) => {
           isSalmonRun
         />
       </Box>
-      {filteredRotations && (
+      {filteredRotations && filteredRotations.length > 0 && (
         <Box mt={4}>
           <FormLabel htmlFor="rotation">
             <Trans>Rotation</Trans>
           </FormLabel>
           <Select
             name="rotation"
+            value="NO_VALUE"
             onChange={(e) => setRotationId(parseInt(e.target.value))}
           >
+            <option hidden value="NO_VALUE">
+              {t`Select rotation`}
+            </option>
             {filteredRotations.map((rotation) => (
               <option key={rotation.id} value={rotation.id}>
                 {new Date(rotation.startTime).toLocaleDateString()} -{" "}
@@ -110,6 +114,14 @@ const RotationSelector: React.FC<Props> = ({ rotationId, setRotationId }) => {
               </option>
             ))}
           </Select>
+        </Box>
+      )}
+      {filteredRotations && filteredRotations.length === 0 && (
+        <Box mt={2} color="red.500">
+          <Trans>
+            No rotations matching with this criteria. Please choose different
+            weapons.
+          </Trans>
         </Box>
       )}
     </>
