@@ -19,9 +19,9 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
+import ChakraSelect from "components/common/ChakraSelect";
 import MarkdownTextarea from "components/common/MarkdownTextarea";
 import WeaponSelector from "components/common/MultiWeaponSelector";
-import MySelect from "components/common/MySelect";
 import { countries } from "countries-list";
 import { getToastOptions } from "lib/getToastOptions";
 import { sendData } from "lib/postData";
@@ -230,7 +230,7 @@ const ProfileModal: React.FC<Props> = ({ onClose, user }) => {
                 control={control}
                 defaultValue={""}
                 render={({ onChange, value }) => (
-                  <MySelect
+                  <ChakraSelect
                     value={value}
                     setValue={onChange}
                     placeholder={t`Select country`}
@@ -242,7 +242,7 @@ const ProfileModal: React.FC<Props> = ({ onClose, user }) => {
                         {countries[countryCode].name}
                       </option>
                     ))}
-                  </MySelect>
+                  </ChakraSelect>
                 )}
               />
 
@@ -270,7 +270,7 @@ const ProfileModal: React.FC<Props> = ({ onClose, user }) => {
                 name="sensStick"
                 control={control}
                 render={({ onChange, value, name }) => (
-                  <MySelect
+                  <ChakraSelect
                     placeholder={t`Select stick sensitivity`}
                     name={name}
                     value={value}
@@ -281,7 +281,7 @@ const ProfileModal: React.FC<Props> = ({ onClose, user }) => {
                         {sens}
                       </option>
                     ))}
-                  </MySelect>
+                  </ChakraSelect>
                 )}
               />
 
@@ -293,7 +293,7 @@ const ProfileModal: React.FC<Props> = ({ onClose, user }) => {
                 name="sensMotion"
                 control={control}
                 render={({ onChange, value, name }) => (
-                  <MySelect
+                  <ChakraSelect
                     placeholder={t`Select motion sensitivity`}
                     name={name}
                     value={value}
@@ -304,7 +304,7 @@ const ProfileModal: React.FC<Props> = ({ onClose, user }) => {
                         {sens}
                       </option>
                     ))}
-                  </MySelect>
+                  </ChakraSelect>
                 )}
               />
 

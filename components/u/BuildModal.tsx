@@ -15,7 +15,6 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Select,
   Stack,
   Textarea,
   useToast,
@@ -24,9 +23,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { t, Trans } from "@lingui/macro";
 import { Ability } from "@prisma/client";
 import ViewSlots from "components/builds/ViewSlots";
+import GearSelector from "components/common/GearSelector";
 import WeaponSelector from "components/common/WeaponSelector";
 import { getToastOptions } from "lib/getToastOptions";
-import { gear } from "lib/lists/gear";
 import { sendData } from "lib/postData";
 import { Unpacked } from "lib/types";
 import useUser from "lib/useUser";
@@ -36,7 +35,7 @@ import {
   TITLE_CHARACTER_LIMIT,
 } from "lib/validators/build";
 import { GetBuildsByUserData } from "prisma/queries/getBuildsByUser";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { FiTrash } from "react-icons/fi";
 import { mutate } from "swr";
@@ -297,18 +296,7 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
                 control={control}
                 defaultValue=""
                 render={({ onChange, value, name }) => (
-                  <Select name={name} value={value} setValue={onChange}>
-                    {gear.map(({ brand, head }) => (
-                      <Fragment key={brand}>
-                        <optgroup>{brand}</optgroup>
-                        {head.map((item) => (
-                          <option key={item} value={item}>
-                            {item}
-                          </option>
-                        ))}
-                      </Fragment>
-                    ))}
-                  </Select>
+                  <GearSelector slot="head" value={value} setValue={onChange} />
                 )}
               />
 
@@ -319,19 +307,12 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
                 name="clothingGear"
                 control={control}
                 defaultValue=""
-                render={({ onChange, value, name }) => (
-                  <Select name={name} value={value} setValue={onChange}>
-                    {gear.map(({ brand, clothing }) => (
-                      <Fragment key={brand}>
-                        <optgroup>{brand}</optgroup>
-                        {clothing.map((item) => (
-                          <option key={item} value={item}>
-                            {item}
-                          </option>
-                        ))}
-                      </Fragment>
-                    ))}
-                  </Select>
+                render={({ onChange, value }) => (
+                  <GearSelector
+                    slot="clothing"
+                    value={value}
+                    setValue={onChange}
+                  />
                 )}
               />
 
@@ -343,20 +324,11 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
                 control={control}
                 defaultValue=""
                 render={({ onChange, value, name }) => (
-                  <Select name={name} value={value} setValue={onChange}>
-                    {gear
-                      .filter((brand) => brand.shoes.length > 0)
-                      .map(({ brand, shoes }) => (
-                        <Fragment key={brand}>
-                          <optgroup>{brand}</optgroup>
-                          {shoes.map((item) => (
-                            <option key={item} value={item}>
-                              {item}
-                            </option>
-                          ))}
-                        </Fragment>
-                      ))}
-                  </Select>
+                  <GearSelector
+                    slot="shoes"
+                    value={value}
+                    setValue={onChange}
+                  />
                 )}
               />
 
