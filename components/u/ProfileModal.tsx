@@ -85,7 +85,10 @@ const ProfileModal: React.FC<Props> = ({ onClose, user }) => {
           sensMotion: sensToString(user.profile.sensMotion),
           sensStick: sensToString(user.profile.sensStick),
         }
-      : undefined,
+      : {
+          sensStick: "",
+          sensMotion: "",
+        },
   });
 
   const watchBio = watch("bio", user.profile?.bio);
