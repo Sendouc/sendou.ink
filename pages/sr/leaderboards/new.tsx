@@ -38,7 +38,7 @@ const salmonRunCategoryToNatural = {
   LT_NORMAL: t`Normal (low tide)`,
   NT_RUSH: t`Rush (normal tide)`,
   HT_RUSH: t`Rush (high tide)`,
-  NT_FOG: t`Rush (normal tide)`,
+  NT_FOG: t`Fog (normal tide)`,
   HT_FOG: t`Fog (high tide)`,
   LT_FOG: t`Fog (low tide)`,
   NT_GOLDIE: t`Goldie Seeking (normal tide)`,
@@ -48,7 +48,7 @@ const salmonRunCategoryToNatural = {
   NT_MOTHERSHIP: t`Mothership (normal tide)`,
   HT_MOTHERSHIP: t`Mothership (high tide)`,
   LT_MOTHERSHIP: t`Mothership (low tide)`,
-  LT_COHOCK: t`Cohock Charget`,
+  LT_COHOCK: t`Cohock Charge`,
 } as const;
 
 const AddRecordModal = () => {
