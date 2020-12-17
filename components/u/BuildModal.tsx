@@ -174,7 +174,11 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
                   control={control}
                   defaultValue={null}
                   render={({ onChange, value }) => (
-                    <WeaponSelector value={value} setValue={onChange} />
+                    <WeaponSelector
+                      value={value}
+                      setValue={onChange}
+                      pool="WITH_ALTS"
+                    />
                   )}
                 />
                 <FormErrorMessage>
