@@ -19,8 +19,7 @@
     "e2e": "cypress open",
     "ex": "lingui extract",
     "ex:clean": "lingui extract --clean",
-    "compile": "lingui compile",
-    "postinstall": "husky install"
+    "compile": "lingui compile"
   },
   "dependencies": {
     "@chakra-ui/react": "^1.0.3",
