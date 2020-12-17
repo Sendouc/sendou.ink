@@ -15,7 +15,6 @@ import { getFullUsername } from "lib/strings";
 import useUser from "lib/useUser";
 import { isCustomUrl } from "lib/validators/profile";
 import { GetStaticPaths, GetStaticProps } from "next";
-import prisma from "prisma/client";
 import { getPlayersPeak } from "prisma/queries/getPlayersPeak";
 import {
   getUserByIdentifier,
@@ -160,14 +159,15 @@ const ProfilePage = (props: Props) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const users = await prisma.user.findMany({
-    where: { NOT: [{ profile: { customUrlPath: null } }] },
-    include: { profile: true },
-  });
+  // const users = await prisma.user.findMany({
+  //   where: { NOT: [{ profile: { customUrlPath: null } }] },
+  //   include: { profile: true },
+  // });
   return {
-    paths: users.map((u) => ({
-      params: { identifier: u.profile?.customUrlPath ?? u.discordId },
-    })),
+    // paths: users.map((u) => ({
+    //   params: { identifier: u.profile?.customUrlPath ?? u.discordId },
+    // })),
+    paths: [],
     fallback: "blocking",
   };
 };

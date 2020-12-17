@@ -6,7 +6,6 @@ import TwinTable from "components/player/TwinTable";
 import XRankTable from "components/player/XRankTable";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
-import prisma from "prisma/client";
 import {
   getPlayerWithPlacements,
   GetPlayerWithPlacementsData,
@@ -102,11 +101,12 @@ const PlayerPage = (props: Props) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const players = await prisma.player.findMany({
-    where: { NOT: [{ userId: null }] },
-  });
+  // const players = await prisma.player.findMany({
+  //   where: { NOT: [{ userId: null }] },
+  // });
   return {
-    paths: players.map((p) => ({ params: { id: p.switchAccountId } })),
+    //paths: players.map((p) => ({ params: { id: p.switchAccountId } })),
+    paths: [],
     fallback: "blocking",
   };
 };
