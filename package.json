@@ -16,11 +16,9 @@
     "top500": "ts-node prisma/scripts/top500jsons.ts",
     "league": "ts-node prisma/scripts/leagueJsons.ts",
     "prettier": "prettier --write .",
-    "prettier:pre-commit": "pretty-quick --staged",
     "e2e": "cypress open",
     "ex": "lingui extract",
     "ex:clean": "lingui extract --clean",
-    "ex:pre-commit": "lingui extract $(git diff --name-only --staged) --clean",
     "compile": "lingui compile",
     "postinstall": "husky install"
   },
@@ -68,9 +66,7 @@
     "@types/react-select": "^3.0.28",
     "@types/recharts": "^1.8.18",
     "cypress": "^6.1.0",
-    "husky": "^5.0.4",
     "prettier": "^2.2.1",
-    "pretty-quick": "^3.1.0",
     "ts-node": "^9.1.1",
     "typescript": "^4.1.3"
   },
