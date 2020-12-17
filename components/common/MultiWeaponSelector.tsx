@@ -1,8 +1,7 @@
-import { Select, Tag, TagCloseButton, TagLabel } from "@chakra-ui/react";
-import { t } from "@lingui/macro";
+import { Tag, TagCloseButton, TagLabel } from "@chakra-ui/react";
 import { useLingui } from "@lingui/react";
-import { salmonRunWeapons, weaponsWithHero } from "lib/lists/weaponsWithHero";
 import WeaponImage from "./WeaponImage";
+import WeaponSelector from "./WeaponSelector";
 
 interface Props {
   name?: string;
@@ -12,19 +11,15 @@ interface Props {
 }
 
 const MultiWeaponSelector: React.FC<Props> = ({
-  name,
   value,
   onChange,
   isSalmonRun,
 }) => {
   const { i18n } = useLingui();
 
-  const weaponsArray: readonly string[] = isSalmonRun
-    ? salmonRunWeapons
-    : weaponsWithHero;
   return (
     <>
-      <Select
+      {/* <Select
         name={name}
         onChange={(e) => {
           if (!!e.target.value && !value.includes(e.target.value))
@@ -47,7 +42,19 @@ const MultiWeaponSelector: React.FC<Props> = ({
             {i18n._(wpn)}
           </option>
         ))}
-      </Select>
+      </Select> */}
+      <WeaponSelector
+        value={undefined}
+        setValue={(selectedWeapon) => {
+          if (!!selectedWeapon && !value.includes(selectedWeapon))
+            onChange(value.concat(selectedWeapon));
+        }}
+        pool={isSalmonRun ? "SALMON_RUN" : "WITH_ALTS"}
+        isDisabled={
+          (isSalmonRun && value.length === 4) ||
+          (!isSalmonRun && value.length === 5)
+        }
+      />
       {value.map((wpn) => (
         <Tag
           size="small"

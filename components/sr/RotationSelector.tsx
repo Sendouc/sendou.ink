@@ -82,7 +82,6 @@ const RotationSelector: React.FC<Props> = ({ rotationId, setRotationId }) => {
           <Trans>Weapons</Trans>
         </FormLabel>
         <MultiWeaponSelector
-          name="weapons"
           value={weapons}
           onChange={setWeapons}
           isSalmonRun

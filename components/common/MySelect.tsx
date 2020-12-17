@@ -79,8 +79,6 @@ const MySelect: React.FC<SelectProps> = ({
     return undefined;
   };
 
-  console.log({ borderColor });
-
   return (
     <ReactSelect
       className="basic-single"

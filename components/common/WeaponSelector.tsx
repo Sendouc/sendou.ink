@@ -1,6 +1,9 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { useLingui } from "@lingui/react";
-import { weaponsWithHeroCategorized } from "lib/lists/weaponsWithHero";
+import {
+  salmonRunWeapons,
+  weaponsWithHeroCategorized,
+} from "lib/lists/weaponsWithHero";
 import { components } from "react-select";
 import MySelect from "./MySelect";
 import WeaponImage from "./WeaponImage";
@@ -12,7 +15,8 @@ interface WeaponSelectorProps {
   isClearable?: boolean;
   isMulti?: boolean;
   menuIsOpen?: boolean;
-  showAlts?: boolean;
+  isDisabled?: boolean;
+  pool?: "WITH_ALTS" | "SALMON_RUN";
 }
 
 const WeaponSelector: React.FC<WeaponSelectorProps> = ({
@@ -22,7 +26,8 @@ const WeaponSelector: React.FC<WeaponSelectorProps> = ({
   autoFocus,
   isMulti,
   menuIsOpen,
-  showAlts,
+  isDisabled,
+  pool,
 }) => {
   const { i18n } = useLingui();
   const singleOption = (props: any) => (
@@ -38,27 +43,13 @@ const WeaponSelector: React.FC<WeaponSelectorProps> = ({
 
   return (
     <MySelect
-      options={
-        showAlts
-          ? weaponsWithHeroCategorized.map((category) => ({
-              label: i18n._(category.name),
-              options: category.weapons.map((weapon) => ({
-                value: weapon,
-                label: i18n._(weapon),
-              })),
-            }))
-          : weaponsWithHeroCategorized.map((category) => ({
-              label: i18n._(category.name),
-              options: category.weapons
-                .filter(
-                  (wpn) => !wpn.includes("Hero") && !wpn.includes("Octo Shot")
-                )
-                .map((weapon) => ({
-                  value: weapon,
-                  label: i18n._(weapon),
-                })),
-            }))
-      }
+      options={getWeaponArray().map((category) => ({
+        label: i18n._(category.name),
+        options: category.weapons.map((weapon) => ({
+          value: weapon,
+          label: i18n._(weapon),
+        })),
+      }))}
       value={value ? { value, label: i18n._(value) } : undefined}
       setValue={setValue}
       isClearable={isClearable}
@@ -70,8 +61,25 @@ const WeaponSelector: React.FC<WeaponSelectorProps> = ({
         Option: singleOption,
       }}
       autoFocus={autoFocus}
+      isDisabled={isDisabled}
     />
   );
+
+  function getWeaponArray() {
+    if (pool === "WITH_ALTS") return weaponsWithHeroCategorized;
+    if (pool === "SALMON_RUN")
+      return weaponsWithHeroCategorized.map((category) => ({
+        ...category,
+        weapons: category.weapons.filter((wpn) => salmonRunWeapons.has(wpn)),
+      }));
+
+    return weaponsWithHeroCategorized.map((category) => ({
+      ...category,
+      weapons: category.weapons.filter(
+        (wpn) => !wpn.includes("Hero") && !wpn.includes("Octo Shot")
+      ),
+    }));
+  }
 };
 
 export default WeaponSelector;

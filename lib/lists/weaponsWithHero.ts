@@ -142,7 +142,7 @@ export const weaponsWithHero = [
   "Kensa Undercover Brella",
 ] as const;
 
-export const salmonRunWeapons = [
+export const salmonRunWeapons = new Set([
   "Sploosh-o-matic",
   "Splattershot Jr.",
   "Splash-o-matic",
@@ -193,7 +193,7 @@ export const salmonRunWeapons = [
   "Splat Brella",
   "Tenta Brella",
   "Undercover Brella",
-] as const;
+]);
 
 export const weaponsWithHeroCategorized: readonly {
   name: string;
