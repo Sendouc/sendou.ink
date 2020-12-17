@@ -22,12 +22,13 @@ const BuildsPage = () => {
   return (
     <>
       <Breadcrumbs pages={[{ name: t`Builds` }]} />
-      <WeaponSelector
-        value={state.weapon}
-        onChange={(weapon) => dispatch({ type: "SET_WEAPON", weapon })}
-        excludeAlt
-        isHeader
-      />
+      <Box my={4} maxW={80} mx="auto">
+        <WeaponSelector
+          value={state.weapon}
+          setValue={(weapon) => dispatch({ type: "SET_WEAPON", weapon })}
+          menuIsOpen={!state.weapon}
+        />
+      </Box>
       <>
         {state.weapon && (
           <>

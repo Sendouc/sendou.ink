@@ -15,6 +15,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Select,
   Stack,
   Textarea,
   useToast,
@@ -23,7 +24,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { t, Trans } from "@lingui/macro";
 import { Ability } from "@prisma/client";
 import ViewSlots from "components/builds/ViewSlots";
-import MySelect from "components/common/MySelect";
 import WeaponSelector from "components/common/WeaponSelector";
 import { getToastOptions } from "lib/getToastOptions";
 import { gear } from "lib/lists/gear";
@@ -175,11 +175,7 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
                   control={control}
                   defaultValue={null}
                   render={({ onChange, value }) => (
-                    <WeaponSelector
-                      name="weapon"
-                      value={value}
-                      onChange={onChange}
-                    />
+                    <WeaponSelector value={value} setValue={onChange} />
                   )}
                 />
                 <FormErrorMessage>
@@ -301,12 +297,7 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
                 control={control}
                 defaultValue=""
                 render={({ onChange, value, name }) => (
-                  <MySelect
-                    placeholder={t`Select gear (head)`}
-                    name={name}
-                    value={value}
-                    setValue={onChange}
-                  >
+                  <Select name={name} value={value} setValue={onChange}>
                     {gear.map(({ brand, head }) => (
                       <Fragment key={brand}>
                         <optgroup>{brand}</optgroup>
@@ -317,7 +308,7 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
                         ))}
                       </Fragment>
                     ))}
-                  </MySelect>
+                  </Select>
                 )}
               />
 
@@ -329,12 +320,7 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
                 control={control}
                 defaultValue=""
                 render={({ onChange, value, name }) => (
-                  <MySelect
-                    placeholder={t`Select gear (clothing)`}
-                    name={name}
-                    value={value}
-                    setValue={onChange}
-                  >
+                  <Select name={name} value={value} setValue={onChange}>
                     {gear.map(({ brand, clothing }) => (
                       <Fragment key={brand}>
                         <optgroup>{brand}</optgroup>
@@ -345,7 +331,7 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
                         ))}
                       </Fragment>
                     ))}
-                  </MySelect>
+                  </Select>
                 )}
               />
 
@@ -357,12 +343,7 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
                 control={control}
                 defaultValue=""
                 render={({ onChange, value, name }) => (
-                  <MySelect
-                    placeholder={t`Select gear (shoes)`}
-                    name={name}
-                    value={value}
-                    setValue={onChange}
-                  >
+                  <Select name={name} value={value} setValue={onChange}>
                     {gear
                       .filter((brand) => brand.shoes.length > 0)
                       .map(({ brand, shoes }) => (
@@ -375,7 +356,7 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
                           ))}
                         </Fragment>
                       ))}
-                  </MySelect>
+                  </Select>
                 )}
               />
 

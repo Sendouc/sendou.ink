@@ -1,53 +1,76 @@
-import { Select } from "@chakra-ui/react";
-import { t } from "@lingui/macro";
+import { Box, Flex } from "@chakra-ui/react";
 import { useLingui } from "@lingui/react";
 import { weaponsWithHeroCategorized } from "lib/lists/weaponsWithHero";
+import { components } from "react-select";
+import MySelect from "./MySelect";
+import WeaponImage from "./WeaponImage";
 
-interface Props {
-  name?: string;
-  value: string;
-  onChange: (value: string) => void;
-  excludeAlt?: boolean;
-  isHeader?: boolean;
+interface WeaponSelectorProps {
+  value?: string;
+  setValue: (value: string) => void;
+  autoFocus?: boolean;
+  isClearable?: boolean;
+  isMulti?: boolean;
+  menuIsOpen?: boolean;
+  showAlts?: boolean;
 }
 
-const WeaponSelector: React.FC<Props> = ({
-  name,
+const WeaponSelector: React.FC<WeaponSelectorProps> = ({
   value,
-  onChange,
-  excludeAlt = false,
-  isHeader = false,
+  setValue,
+  isClearable,
+  autoFocus,
+  isMulti,
+  menuIsOpen,
+  showAlts,
 }) => {
   const { i18n } = useLingui();
+  const singleOption = (props: any) => (
+    <components.Option {...props}>
+      <Flex alignItems="center" color={props.isFocused ? "black" : undefined}>
+        <Box mr="0.5em">
+          <WeaponImage size={32} name={props.value} />
+        </Box>
+        {props.label}
+      </Flex>
+    </components.Option>
+  );
+
   return (
-    <>
-      <Select
-        value={value ?? "NO_VALUE"}
-        name={name}
-        onChange={(e) => onChange(e.target.value)}
-        mx={isHeader ? "auto" : undefined}
-        maxWidth={80}
-        size={isHeader ? "lg" : undefined}
-      >
-        <option hidden value="NO_VALUE">
-          {t`Select weapon`}
-        </option>
-        {weaponsWithHeroCategorized.flatMap((wpnCategory) =>
-          wpnCategory.weapons.map((wpn) => {
-            if (
-              excludeAlt &&
-              (wpn.includes("Hero") || wpn.includes("Octo Shot"))
-            )
-              return null;
-            return (
-              <option key={wpn} value={wpn}>
-                {i18n._(wpn)}
-              </option>
-            );
-          })
-        )}
-      </Select>
-    </>
+    <MySelect
+      options={
+        showAlts
+          ? weaponsWithHeroCategorized.map((category) => ({
+              label: i18n._(category.name),
+              options: category.weapons.map((weapon) => ({
+                value: weapon,
+                label: i18n._(weapon),
+              })),
+            }))
+          : weaponsWithHeroCategorized.map((category) => ({
+              label: i18n._(category.name),
+              options: category.weapons
+                .filter(
+                  (wpn) => !wpn.includes("Hero") && !wpn.includes("Octo Shot")
+                )
+                .map((weapon) => ({
+                  value: weapon,
+                  label: i18n._(weapon),
+                })),
+            }))
+      }
+      value={value ? { value, label: i18n._(value) } : undefined}
+      setValue={setValue}
+      isClearable={isClearable}
+      isSearchable
+      isMulti={isMulti}
+      menuIsOpen={menuIsOpen}
+      components={{
+        IndicatorSeparator: () => null,
+        Option: singleOption,
+      }}
+      autoFocus={autoFocus}
+    />
   );
 };
 
