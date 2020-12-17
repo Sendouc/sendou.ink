@@ -45,6 +45,7 @@ const GearSelector: React.FC<WeaponSelectorProps> = ({
         IndicatorSeparator: () => null,
         Option: singleOption,
       }}
+      hideMenuBeforeTyping
     />
   );
 };
