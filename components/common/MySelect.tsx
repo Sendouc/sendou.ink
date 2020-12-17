@@ -1,4 +1,3 @@
-import { useColorMode } from "@chakra-ui/react";
 import { useMyTheme } from "lib/useMyTheme";
 import { useState } from "react";
 import ReactSelect, {
@@ -47,8 +46,13 @@ const MySelect: React.FC<SelectProps> = ({
   menuIsOpen,
   hideMenuBeforeTyping,
 }) => {
-  const { borderColor, themeColorHex, bgColor } = useMyTheme();
-  const { colorMode } = useColorMode();
+  const {
+    borderColor,
+    themeColorHex,
+    bgColor,
+    themeColorOpaque,
+    textColor,
+  } = useMyTheme();
   const [inputValue, setInputValue] = useState("");
 
   const handleChange = (selectedOption: any) => {
@@ -62,12 +66,6 @@ const MySelect: React.FC<SelectProps> = ({
     } else {
       setValue(selectedOption?.value);
     }
-  };
-
-  const getOptionColor = (focused: boolean) => {
-    if (focused) return "black";
-
-    return colorMode === "light" ? "black" : "white";
   };
 
   const menuIsOpenCheck = () => {
@@ -124,12 +122,12 @@ const MySelect: React.FC<SelectProps> = ({
           ...base,
           padding: 5,
           borderRadius: 5,
-          color: colorMode === "light" ? "black" : "white",
+          color: textColor,
           display: "flex",
         }),
         input: (base) => ({
           ...base,
-          color: colorMode === "light" ? "black" : "white",
+          color: textColor,
         }),
         multiValue: (base) => ({
           ...base,
@@ -139,15 +137,15 @@ const MySelect: React.FC<SelectProps> = ({
         option: (styles, { isFocused }) => {
           return {
             ...styles,
-            backgroundColor: isFocused ? themeColorHex : undefined,
-            color: getOptionColor(isFocused),
+            backgroundColor: isFocused ? themeColorOpaque : undefined,
+            color: textColor,
           };
         },
         menu: (styles) => ({ ...styles, zIndex: 999 }),
         control: (base) => ({
           ...base,
           borderColor,
-          height: "2.5rem",
+          minHeight: "2.5rem",
           background: "hsla(0, 0%, 0%, 0)",
         }),
       }}
