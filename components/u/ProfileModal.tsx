@@ -238,13 +238,15 @@ const ProfileModal: React.FC<Props> = ({ onClose, user }) => {
                     setValue={onChange}
                     placeholder={t`Select country`}
                   >
-                    {(Object.keys(countries) as Array<
-                      keyof typeof countries
-                    >).map((countryCode) => (
-                      <option key={countryCode} value={countryCode}>
-                        {countries[countryCode].name}
-                      </option>
-                    ))}
+                    {(Object.keys(countries) as Array<keyof typeof countries>)
+                      .sort((a, b) =>
+                        countries[a].name.localeCompare(countries[b].name)
+                      )
+                      .map((countryCode) => (
+                        <option key={countryCode} value={countryCode}>
+                          {countries[countryCode].name}
+                        </option>
+                      ))}
                   </ChakraSelect>
                 )}
               />
