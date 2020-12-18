@@ -11,13 +11,21 @@ interface WeaponSelectorProps {
   slot: "head" | "clothing" | "shoes";
 }
 
-const GearSelector: React.FC<WeaponSelectorProps> = ({
-  value,
-  setValue,
-  slot,
-}) => {
-  const { i18n } = useLingui();
-  const singleOption = (props: any) => (
+const SingleValue = (props: any) => {
+  return (
+    <components.SingleValue {...props}>
+      <Flex alignItems="center">
+        <Box mr="0.5em" mb="-5px">
+          <GearImage mini englishName={props.data.value} />
+        </Box>
+        {props.data.label}
+      </Flex>
+    </components.SingleValue>
+  );
+};
+
+const Option = (props: any) => {
+  return (
     <components.Option {...props}>
       <Flex alignItems="center">
         <Box mr="0.5em">
@@ -27,6 +35,14 @@ const GearSelector: React.FC<WeaponSelectorProps> = ({
       </Flex>
     </components.Option>
   );
+};
+
+const GearSelector: React.FC<WeaponSelectorProps> = ({
+  value,
+  setValue,
+  slot,
+}) => {
+  const { i18n } = useLingui();
 
   return (
     <MySelect
@@ -43,7 +59,8 @@ const GearSelector: React.FC<WeaponSelectorProps> = ({
       isSearchable
       components={{
         IndicatorSeparator: () => null,
-        Option: singleOption,
+        Option,
+        SingleValue,
       }}
       hideMenuBeforeTyping
     />

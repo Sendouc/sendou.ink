@@ -30,11 +30,21 @@ interface MultiSelectorProps extends SelectorProps {
   maxMultiCount: number;
 }
 
-const WeaponSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = (
-  props
-) => {
-  const { i18n } = useLingui();
-  const singleOption = (props: any) => (
+const SingleValue = (props: any) => {
+  return (
+    <components.SingleValue {...props}>
+      <Flex alignItems="center">
+        <Box mr="0.5em" mb="-5px">
+          <WeaponImage size={32} name={props.data.value} />
+        </Box>
+        {props.data.label}
+      </Flex>
+    </components.SingleValue>
+  );
+};
+
+const Option = (props: any) => {
+  return (
     <components.Option {...props}>
       <Flex alignItems="center">
         <Box mr="0.5em">
@@ -44,6 +54,12 @@ const WeaponSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = (
       </Flex>
     </components.Option>
   );
+};
+
+const WeaponSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = (
+  props
+) => {
+  const { i18n } = useLingui();
 
   const maxMultiCount = props.isMulti ? props.maxMultiCount : Infinity;
 
@@ -64,7 +80,8 @@ const WeaponSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = (
       menuIsOpen={!!props.menuIsOpen}
       components={{
         IndicatorSeparator: () => null,
-        Option: singleOption,
+        Option,
+        SingleValue,
         NoOptionsMessage: () => (
           <Center p={4}>
             {isTooManyItems() ? (
