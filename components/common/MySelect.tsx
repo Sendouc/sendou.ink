@@ -12,14 +12,16 @@ interface SelectProps {
   options?:
     | OptionsType<{
         label: string;
-        value: string;
+        value: any;
+        data?: any;
       }>
     | GroupedOptionsType<{
         label: string;
         value: string;
+        data?: any;
       }>;
   width?: string;
-  value: ValueType<OptionTypeBase, boolean>;
+  value?: ValueType<OptionTypeBase, boolean>;
   setValue: (value: any) => void;
   autoFocus?: boolean;
   components?: Partial<SelectComponents<OptionTypeBase, boolean>>;
@@ -37,13 +39,13 @@ const MySelect: React.FC<SelectProps> = ({
   components,
   value,
   setValue,
-  isClearable,
-  autoFocus,
-  isMulti,
-  isLoading,
-  isDisabled,
-  isSearchable,
-  menuIsOpen,
+  isClearable = false,
+  autoFocus = false,
+  isMulti = false,
+  isLoading = false,
+  isDisabled = false,
+  isSearchable = false,
+  menuIsOpen = false,
   hideMenuBeforeTyping,
 }) => {
   const {

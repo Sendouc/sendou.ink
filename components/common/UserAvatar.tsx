@@ -12,6 +12,7 @@ const UserAvatar: React.FC<Props & AvatarProps> = ({
   isSmall,
   ...props
 }) => {
+  console.log({ user });
   return (
     <Avatar
       name={user.username}

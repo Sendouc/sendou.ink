@@ -1,4 +1,5 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Center, Flex } from "@chakra-ui/react";
+import { Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import {
   salmonRunWeapons,
@@ -44,7 +45,7 @@ const WeaponSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = ({
   const { i18n } = useLingui();
   const singleOption = (props: any) => (
     <components.Option {...props}>
-      <Flex alignItems="center" color={props.isFocused ? "black" : undefined}>
+      <Flex alignItems="center">
         <Box mr="0.5em">
           <WeaponImage size={32} name={props.value} />
         </Box>
@@ -71,6 +72,17 @@ const WeaponSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = ({
       components={{
         IndicatorSeparator: () => null,
         Option: singleOption,
+        NoOptionsMessage: () => (
+          <Center p={4}>
+            <>
+              {isTooManyItems() ? (
+                <Trans>Only {maxMultiCount} weapons allowed</Trans>
+              ) : (
+                <Trans>No results with this filter</Trans>
+              )}
+            </>
+          </Center>
+        ),
       }}
       autoFocus={autoFocus}
       isDisabled={isDisabled}
@@ -93,7 +105,7 @@ const WeaponSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = ({
   }
 
   function getWeaponArray() {
-    if (maxMultiCount && maxMultiCount <= (value ?? []).length) return [];
+    if (isTooManyItems()) return [];
     if (pool === "WITH_ALTS") return weaponsWithHeroCategorized;
     if (pool === "SALMON_RUN")
       return weaponsWithHeroCategorized.map((category) => ({
@@ -107,6 +119,10 @@ const WeaponSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = ({
         (wpn) => !wpn.includes("Hero") && !wpn.includes("Octo Shot")
       ),
     }));
+  }
+
+  function isTooManyItems() {
+    return maxMultiCount && maxMultiCount <= (value ?? []).length;
   }
 };
 

@@ -17,6 +17,7 @@ import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { SalmonRunRecordCategory } from "@prisma/client";
 import Breadcrumbs from "components/common/Breadcrumbs";
+import UserSelector from "components/common/UserSelector";
 import RotationSelector from "components/sr/RotationSelector";
 import Image from "next/image";
 import { useState } from "react";
@@ -54,7 +55,7 @@ const salmonRunCategoryToNatural = {
 const AddRecordModal = () => {
   const { i18n } = useLingui();
   const [sending, setSending] = useState(false);
-  const [form, setForm] = useState<Partial<RecordFormData>>({});
+  const [form, setForm] = useState<Partial<RecordFormData>>({ rotationId: 1 });
 
   return (
     <Container maxWidth="75ch">
@@ -126,6 +127,21 @@ const AddRecordModal = () => {
 
             <FormControl>
               <FormLabel mt={4}>
+                <Trans>Players</Trans>
+              </FormLabel>
+              <UserSelector
+                value={form.userIds ?? []}
+                setValue={(userIds: number[]) => setForm({ ...form, userIds })}
+                isMulti={true}
+                maxMultiCount={3}
+              />
+              <FormHelperText>
+                Add up to three people you played with when you got the result.
+              </FormHelperText>
+            </FormControl>
+
+            <FormControl>
+              <FormLabel mt={4}>
                 <Trans>Links</Trans>
               </FormLabel>
               <FormHelperText mb={4} mt="-10px">
@@ -140,6 +156,9 @@ const AddRecordModal = () => {
                 onChange={(e) => setForm({ ...form, links: e.target.value })}
                 rows={4}
                 resize="none"
+                placeholder={
+                  "https://twitter.com/BrianTheDrumer/status/1338469066797953024\nhttps://www.youtube.com/watch?v=6evFXzxrTfU"
+                }
               />
             </FormControl>
 
