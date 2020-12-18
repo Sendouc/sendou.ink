@@ -125,14 +125,19 @@
       "description": "Splatoon wiki. Useful for looking up random information about the game."
     },
     {
-      "title": "splat_zone jp (YouTube)",
-      "url": "https://www.youtube.com/channel/UCLN8s9Ogn71QcCYIPtb9mtw",
-      "description": "YouTube channel where you can watch top tier Japanese competitive gameplay."
+      "title": "Splatoon Content Creators",
+      "url": "https://docs.google.com/spreadsheets/d/1IPaQOTWEWojBIQPGcPYsdPvQVuP_IWypr0gT2qcuRl0",
+      "description": "gathered by Avrel. You can use this spreadsheet to find content creators that play your weapon or speak your language."
     },
     {
       "title": "Japanese player listing",
       "url": "https://docs.google.com/spreadsheets/d/1ggjZuFrV2BVF6CguM-idLe0JJbjUIwYMTXn3RGBL_kQ",
       "description": "find Japanese top players to follow on Openrec (Japanese streaming website), YouTube and Twitter. Weapons are included so it's easy to find people that play your weapons."
+    },
+    {
+      "title": "splat_zone jp (YouTube)",
+      "url": "https://www.youtube.com/channel/UCLN8s9Ogn71QcCYIPtb9mtw",
+      "description": "YouTube channel where you can watch top tier Japanese competitive gameplay."
     },
     {
       "title": "Ikaclo",
