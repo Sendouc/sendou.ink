@@ -1,6 +1,8 @@
+import { ChevronDownIcon } from "@chakra-ui/icons";
 import { useMyTheme } from "lib/useMyTheme";
 import { useState } from "react";
 import ReactSelect, {
+  components,
   GroupedOptionsType,
   OptionsType,
   OptionTypeBase,
@@ -33,6 +35,15 @@ interface SelectProps {
   menuIsOpen?: boolean;
   hideMenuBeforeTyping?: boolean;
 }
+
+const DropdownIndicator = (props: any) => {
+  const { textColor } = useMyTheme();
+  return (
+    <components.DropdownIndicator {...props}>
+      <ChevronDownIcon fontSize="1.3rem" color={textColor} />
+    </components.DropdownIndicator>
+  );
+};
 
 const MySelect: React.FC<SelectProps> = ({
   options,
@@ -103,6 +114,7 @@ const MySelect: React.FC<SelectProps> = ({
             }
           : {
               IndicatorSeparator: () => null,
+              DropdownIndicator,
               ...components,
             }
       }

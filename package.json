@@ -22,6 +22,7 @@
     "compile": "lingui compile"
   },
   "dependencies": {
+    "@chakra-ui/icons": "^1.0.2",
     "@chakra-ui/react": "^1.0.4",
     "@chakra-ui/theme-tools": "^1.0.2",
     "@emotion/react": "^11.1.2",
