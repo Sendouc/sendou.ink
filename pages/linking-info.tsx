@@ -1,4 +1,5 @@
-import { Alert, Container, Heading } from "@chakra-ui/react";
+import { Alert, Heading } from "@chakra-ui/react";
+import MyContainer from "components/common/MyContainer";
 import MyLink from "components/common/MyLink";
 import Head from "next/head";
 
@@ -8,7 +9,7 @@ const LinkingInfoPage = ({}) => {
       <Head>
         <title>How to link placements | sendou.ink</title>
       </Head>
-      <Container maxWidth="75ch">
+      <MyContainer>
         <Heading fontFamily="'Rubik', sans-serif" as="h1">
           How to link
         </Heading>
@@ -65,7 +66,7 @@ const LinkingInfoPage = ({}) => {
           https://sendou.ink/player/2307813338345724603
         </Alert>
         Note that placements with a power less than 2200 are not included.
-      </Container>
+      </MyContainer>
     </>
   );
 };

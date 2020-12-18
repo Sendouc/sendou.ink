@@ -1,5 +1,6 @@
-import { Container, Flex, useToast } from "@chakra-ui/react";
+import { Flex, useToast } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
+import MyContainer from "components/common/MyContainer";
 import { AppProps } from "next/app";
 import { useState } from "react";
 import { SWRConfig } from "swr";
@@ -42,9 +43,9 @@ const Layout = ({ Component, pageProps }: AppProps) => {
       <TopNav />
       <IconNavBar />
       <Flex flexDirection="column" minH="100vh" pt="1rem">
-        <Container maxWidth="100ch">
+        <MyContainer wide>
           <Component {...pageProps} />
-        </Container>
+        </MyContainer>
         <Footer />
       </Flex>
     </SWRConfig>

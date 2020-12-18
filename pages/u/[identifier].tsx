@@ -5,6 +5,7 @@ import { Build, LeagueType, RankedMode } from "@prisma/client";
 import BuildCard from "components/builds/BuildCard";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import Markdown from "components/common/Markdown";
+import MyContainer from "components/common/MyContainer";
 import MyInfiniteScroller from "components/common/MyInfiniteScroller";
 import AvatarWithInfo from "components/u/AvatarWithInfo";
 import BuildModal from "components/u/BuildModal";
@@ -85,7 +86,9 @@ const ProfilePage = (props: Props) => {
       {user.profile?.bio && (
         <>
           <Divider my={6} />
-          <Markdown value={user.profile.bio} />
+          <MyContainer>
+            <Markdown value={user.profile.bio} />
+          </MyContainer>
         </>
       )}
       {buildCount > 0 && (

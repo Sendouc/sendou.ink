@@ -1,6 +1,5 @@
 import {
   Button,
-  Container,
   Flex,
   FormControl,
   FormHelperText,
@@ -17,6 +16,7 @@ import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { SalmonRunRecordCategory } from "@prisma/client";
 import Breadcrumbs from "components/common/Breadcrumbs";
+import MyContainer from "components/common/MyContainer";
 import UserSelector from "components/common/UserSelector";
 import RotationSelector from "components/sr/RotationSelector";
 import Image from "next/image";
@@ -58,7 +58,7 @@ const AddRecordModal = () => {
   const [form, setForm] = useState<Partial<RecordFormData>>({ rotationId: 1 });
 
   return (
-    <Container maxWidth="75ch">
+    <MyContainer>
       <Breadcrumbs
         pages={[
           { name: t`Salmon Run` },
@@ -168,7 +168,7 @@ const AddRecordModal = () => {
           </>
         )}
       </form>
-    </Container>
+    </MyContainer>
   );
 };
 
