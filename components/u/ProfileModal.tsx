@@ -21,7 +21,7 @@ import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import ChakraSelect from "components/common/ChakraSelect";
 import MarkdownTextarea from "components/common/MarkdownTextarea";
-import WeaponSelector from "components/common/MultiWeaponSelector";
+import WeaponSelector from "components/common/WeaponSelector";
 import { countries } from "countries-list";
 import { getToastOptions } from "lib/getToastOptions";
 import { sendData } from "lib/postData";
@@ -258,9 +258,11 @@ const ProfileModal: React.FC<Props> = ({ onClose, user }) => {
                 defaultValue={[]}
                 render={({ onChange, value, name }) => (
                   <WeaponSelector
-                    name={name}
                     value={value}
-                    onChange={onChange}
+                    setValue={onChange}
+                    isMulti
+                    pool="WITH_ALTS"
+                    maxMultiCount={5}
                   />
                 )}
               />

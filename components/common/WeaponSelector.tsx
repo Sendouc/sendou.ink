@@ -20,20 +20,23 @@ interface SingleSelectorProps extends SelectorProps {
   value?: string;
   setValue: (value: string) => void;
   isMulti: false | undefined;
+  maxMultiCount: undefined;
 }
 
 interface MultiSelectorProps extends SelectorProps {
   value?: string[];
   setValue: (value: string[]) => void;
   isMulti: true;
+  maxMultiCount: number;
 }
 
 const WeaponSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = ({
   value,
   setValue,
-  isClearable,
+  isClearable = false,
   autoFocus,
   isMulti,
+  maxMultiCount,
   menuIsOpen,
   isDisabled,
   pool,
@@ -90,6 +93,7 @@ const WeaponSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = ({
   }
 
   function getWeaponArray() {
+    if (maxMultiCount && maxMultiCount <= (value ?? []).length) return [];
     if (pool === "WITH_ALTS") return weaponsWithHeroCategorized;
     if (pool === "SALMON_RUN")
       return weaponsWithHeroCategorized.map((category) => ({

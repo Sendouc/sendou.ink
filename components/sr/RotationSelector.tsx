@@ -87,6 +87,7 @@ const RotationSelector: React.FC<Props> = ({ rotationId, setRotationId }) => {
           isMulti
           pool="SALMON_RUN"
           isClearable={false}
+          maxMultiCount={4}
         />
       </Box>
       {filteredRotations && filteredRotations.length > 0 && (
