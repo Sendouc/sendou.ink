@@ -1,9 +1,9 @@
 import { Box, Button, FormLabel, Select } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import MultiWeaponSelector from "components/common/MultiWeaponSelector";
 import SubText from "components/common/SubText";
 import WeaponImage from "components/common/WeaponImage";
+import WeaponSelector from "components/common/WeaponSelector";
 import { salmonRunStages } from "lib/lists/stages";
 import { useMyTheme } from "lib/useMyTheme";
 import { GetAllSalmonRunRotationsData } from "prisma/queries/getAllSalmonRunRotations";
@@ -81,10 +81,12 @@ const RotationSelector: React.FC<Props> = ({ rotationId, setRotationId }) => {
         <FormLabel htmlFor="weapons">
           <Trans>Weapons</Trans>
         </FormLabel>
-        <MultiWeaponSelector
+        <WeaponSelector
           value={weapons}
-          onChange={setWeapons}
-          isSalmonRun
+          setValue={setWeapons}
+          isMulti
+          pool="SALMON_RUN"
+          isClearable={false}
         />
       </Box>
       {filteredRotations && filteredRotations.length > 0 && (
@@ -128,7 +130,7 @@ const RotationSelector: React.FC<Props> = ({ rotationId, setRotationId }) => {
 
   function getFilteredRotations() {
     if (!data) return null;
-    if (!stage || weapons.length < 1) return null;
+    if (!stage || weapons.length === 0) return null;
     return data.filter((rotation) => {
       return (
         rotation.stage === stage &&

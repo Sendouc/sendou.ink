@@ -20,7 +20,7 @@ interface SelectProps {
       }>;
   width?: string;
   value: ValueType<OptionTypeBase, boolean>;
-  setValue?: (value: any) => void;
+  setValue: (value: any) => void;
   autoFocus?: boolean;
   components?: Partial<SelectComponents<OptionTypeBase, boolean>>;
   isClearable?: boolean;
@@ -56,9 +56,8 @@ const MySelect: React.FC<SelectProps> = ({
   const [inputValue, setInputValue] = useState("");
 
   const handleChange = (selectedOption: any) => {
-    if (!setValue) return;
     if (!selectedOption) {
-      setValue(null);
+      setValue(isMulti ? [] : null);
       return;
     }
     if (Array.isArray(selectedOption)) {

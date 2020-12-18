@@ -8,18 +8,27 @@ import { components } from "react-select";
 import MySelect from "./MySelect";
 import WeaponImage from "./WeaponImage";
 
-interface WeaponSelectorProps {
-  value?: string;
-  setValue: (value: string) => void;
+interface SelectorProps {
   autoFocus?: boolean;
   isClearable?: boolean;
-  isMulti?: boolean;
   menuIsOpen?: boolean;
   isDisabled?: boolean;
   pool?: "WITH_ALTS" | "SALMON_RUN";
 }
 
-const WeaponSelector: React.FC<WeaponSelectorProps> = ({
+interface SingleSelectorProps extends SelectorProps {
+  value?: string;
+  setValue: (value: string) => void;
+  isMulti: false | undefined;
+}
+
+interface MultiSelectorProps extends SelectorProps {
+  value?: string[];
+  setValue: (value: string[]) => void;
+  isMulti: true;
+}
+
+const WeaponSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = ({
   value,
   setValue,
   isClearable,
@@ -50,7 +59,7 @@ const WeaponSelector: React.FC<WeaponSelectorProps> = ({
           label: i18n._(weapon),
         })),
       }))}
-      value={value ? { value, label: i18n._(value) } : undefined}
+      value={getValue()}
       setValue={setValue}
       isClearable={isClearable}
       isSearchable
@@ -64,6 +73,21 @@ const WeaponSelector: React.FC<WeaponSelectorProps> = ({
       isDisabled={isDisabled}
     />
   );
+
+  function getValue() {
+    if (typeof value === "string") {
+      return { value, label: i18n._(value) };
+    }
+
+    if (Array.isArray(value)) {
+      return value.map((singleValue) => ({
+        value: singleValue,
+        label: i18n._(singleValue),
+      }));
+    }
+
+    return undefined;
+  }
 
   function getWeaponArray() {
     if (pool === "WITH_ALTS") return weaponsWithHeroCategorized;

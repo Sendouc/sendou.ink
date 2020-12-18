@@ -80,67 +80,74 @@ const AddRecordModal = () => {
           }}
         />
 
-        <FormLabel htmlFor="category" mt={4}>
-          <Trans>Category</Trans>
-        </FormLabel>
-        <Select
-          name="category"
-          value={form.category}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              category: e.target.value as SalmonRunRecordCategory,
-            })
-          }
-        >
-          {Object.entries(salmonRunCategoryToNatural).map(([key, value]) => (
-            <option key={key} value={key}>
-              {i18n._(value)}
-            </option>
-          ))}
-        </Select>
+        {form.rotationId && (
+          <>
+            <FormLabel htmlFor="category" mt={4}>
+              <Trans>Category</Trans>
+            </FormLabel>
+            <Select
+              name="category"
+              value={form.category}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  category: e.target.value as SalmonRunRecordCategory,
+                })
+              }
+            >
+              {Object.entries(salmonRunCategoryToNatural).map(
+                ([key, value]) => (
+                  <option key={key} value={key}>
+                    {i18n._(value)}
+                  </option>
+                )
+              )}
+            </Select>
 
-        <FormLabel htmlFor="goldenEggCount" mt={4}>
-          <Flex alignItems="center">
-            <Flex align="center" mr={1}>
-              <Image
-                src="/images/salmonRunIcons/Golden%20Egg.png"
-                width={32}
-                height={32}
+            <FormLabel htmlFor="goldenEggCount" mt={4}>
+              <Flex alignItems="center">
+                <Flex align="center" mr={1}>
+                  <Image
+                    src="/images/salmonRunIcons/Golden%20Egg.png"
+                    width={32}
+                    height={32}
+                  />
+                </Flex>
+                <Trans>Golden Egg Count</Trans>
+              </Flex>
+            </FormLabel>
+            <NumberInput name="goldenEggCount" maxW={48}>
+              <NumberInputField />
+              <NumberInputStepper>
+                <NumberIncrementStepper />
+                <NumberDecrementStepper />
+              </NumberInputStepper>
+            </NumberInput>
+
+            <FormControl>
+              <FormLabel mt={4}>
+                <Trans>Links</Trans>
+              </FormLabel>
+              <FormHelperText mb={4} mt="-10px">
+                <Trans>
+                  Add one to four links to provide context behind the record
+                  (e.g. VoDs on YouTube, screenshots on Twitter). One link per
+                  line.
+                </Trans>
+              </FormHelperText>
+              <Textarea
+                value={form.links}
+                onChange={(e) => setForm({ ...form, links: e.target.value })}
+                rows={4}
+                resize="none"
               />
-            </Flex>
-            <Trans>Golden Egg Count</Trans>
-          </Flex>
-        </FormLabel>
-        <NumberInput name="goldenEggCount" maxW={48}>
-          <NumberInputField />
-          <NumberInputStepper>
-            <NumberIncrementStepper />
-            <NumberDecrementStepper />
-          </NumberInputStepper>
-        </NumberInput>
+            </FormControl>
 
-        <FormControl>
-          <FormLabel mt={4}>
-            <Trans>Links</Trans>
-          </FormLabel>
-          <FormHelperText mb={4} mt="-10px">
-            <Trans>
-              Add one to four links to provide context behind the record (e.g.
-              VoDs on YouTube, screenshots on Twitter). One link per line.
-            </Trans>
-          </FormHelperText>
-          <Textarea
-            value={form.links}
-            onChange={(e) => setForm({ ...form, links: e.target.value })}
-            rows={4}
-            resize="none"
-          />
-        </FormControl>
-
-        <Button mt={6} /*type="submit"*/ isLoading={sending}>
-          <Trans>Submit</Trans>
-        </Button>
+            <Button mt={6} /*type="submit"*/ isLoading={sending}>
+              <Trans>Submit</Trans>
+            </Button>
+          </>
+        )}
       </form>
     </Container>
   );
