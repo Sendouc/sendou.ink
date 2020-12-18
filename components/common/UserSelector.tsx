@@ -62,13 +62,11 @@ const UserSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = ({
         Option: singleOption,
         NoOptionsMessage: () => (
           <Center p={4}>
-            <>
-              {isTooManyItems() ? (
-                <Trans>Only {maxMultiCount} users allowed</Trans>
-              ) : (
-                <Trans>No results with this filter</Trans>
-              )}
-            </>
+            {isTooManyItems() ? (
+              <Trans>Only {maxMultiCount} users allowed</Trans>
+            ) : (
+              <Trans>No results with this filter</Trans>
+            )}
           </Center>
         ),
       }}
