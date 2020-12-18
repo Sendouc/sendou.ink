@@ -178,6 +178,7 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
                       value={value}
                       setValue={onChange}
                       pool="WITH_ALTS"
+                      isMulti={false}
                     />
                   )}
                 />

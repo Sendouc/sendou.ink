@@ -28,53 +28,52 @@ const BuildsPage = () => {
           setValue={(weapon) => dispatch({ type: "SET_WEAPON", weapon })}
           menuIsOpen={!state.weapon}
           autoFocus
+          isMulti={false}
         />
       </Box>
-      <>
-        {state.weapon && (
-          <>
-            <Box mt={4} pr={3} mb="-5rem">
-              <WeaponImage name={state.weapon} size={128} />
-            </Box>
+      {state.weapon && (
+        <>
+          <Box mt={4} pr={3} mb="-5rem">
+            <WeaponImage name={state.weapon} size={128} />
+          </Box>
+          <Flex
+            justifyContent="flex-end"
+            p={2}
+            mb={8}
+            w="100%"
+            bg={secondaryBgColor}
+            rounded="lg"
+            fontSize="sm"
+            boxShadow="md"
+          >
             <Flex
-              justifyContent="flex-end"
-              p={2}
-              mb={8}
-              w="100%"
-              bg={secondaryBgColor}
-              rounded="lg"
-              fontSize="sm"
-              boxShadow="md"
+              justifyContent="space-between"
+              fontSize="xs"
+              textColor="black"
+              textTransform="uppercase"
+              letterSpacing="wider"
+              lineHeight="1rem"
+              fontWeight="medium"
             >
-              <Flex
-                justifyContent="space-between"
-                fontSize="xs"
-                textColor="black"
-                textTransform="uppercase"
-                letterSpacing="wider"
-                lineHeight="1rem"
-                fontWeight="medium"
+              <Box
+                visibility={
+                  data.length === 0 && hiddenBuildCount === 0
+                    ? "hidden"
+                    : undefined
+                }
+                color={themeColorShade}
               >
-                <Box
-                  visibility={
-                    data.length === 0 && hiddenBuildCount === 0
-                      ? "hidden"
-                      : undefined
-                  }
-                  color={themeColorShade}
-                >
-                  {data.length} <Trans>builds</Trans>{" "}
-                  {hiddenBuildCount > 0 && (
-                    <>
-                      (+ {hiddenBuildCount} <Trans>hidden</Trans>)
-                    </>
-                  )}
-                </Box>
-              </Flex>
+                {data.length} <Trans>builds</Trans>{" "}
+                {hiddenBuildCount > 0 && (
+                  <>
+                    (+ {hiddenBuildCount} <Trans>hidden</Trans>)
+                  </>
+                )}
+              </Box>
             </Flex>
-          </>
-        )}
-      </>
+          </Flex>
+        </>
+      )}
 
       {state.weapon && (
         <BuildFilters filters={state.filters} dispatch={dispatch} />

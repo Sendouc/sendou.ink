@@ -20,8 +20,7 @@ interface SelectorProps {
 interface SingleSelectorProps extends SelectorProps {
   value?: string;
   setValue: (value: string) => void;
-  isMulti: false | undefined;
-  maxMultiCount: undefined;
+  isMulti: false;
 }
 
 interface MultiSelectorProps extends SelectorProps {
@@ -31,17 +30,9 @@ interface MultiSelectorProps extends SelectorProps {
   maxMultiCount: number;
 }
 
-const WeaponSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = ({
-  value,
-  setValue,
-  isClearable = false,
-  autoFocus,
-  isMulti,
-  maxMultiCount,
-  menuIsOpen,
-  isDisabled,
-  pool,
-}) => {
+const WeaponSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = (
+  props
+) => {
   const { i18n } = useLingui();
   const singleOption = (props: any) => (
     <components.Option {...props}>
@@ -54,6 +45,8 @@ const WeaponSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = ({
     </components.Option>
   );
 
+  const maxMultiCount = props.isMulti ? props.maxMultiCount : Infinity;
+
   return (
     <MySelect
       options={getWeaponArray().map((category) => ({
@@ -64,36 +57,36 @@ const WeaponSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = ({
         })),
       }))}
       value={getValue()}
-      setValue={setValue}
-      isClearable={isClearable}
+      setValue={props.setValue}
+      isClearable={!!props.isClearable}
       isSearchable
-      isMulti={isMulti}
-      menuIsOpen={menuIsOpen}
+      isMulti={props.isMulti}
+      menuIsOpen={!!props.menuIsOpen}
       components={{
         IndicatorSeparator: () => null,
         Option: singleOption,
         NoOptionsMessage: () => (
           <Center p={4}>
             {isTooManyItems() ? (
-              <Trans>Only {maxMultiCount} weapons allowed</Trans>
+              <Trans>Only {props} weapons allowed</Trans>
             ) : (
               <Trans>No results with this filter</Trans>
             )}
           </Center>
         ),
       }}
-      autoFocus={autoFocus}
-      isDisabled={isDisabled}
+      autoFocus={!!props.autoFocus}
+      isDisabled={!!props.isDisabled}
     />
   );
 
   function getValue() {
-    if (typeof value === "string") {
-      return { value, label: i18n._(value) };
+    if (typeof props.value === "string") {
+      return { value: props.value, label: i18n._(props.value) };
     }
 
-    if (Array.isArray(value)) {
-      return value.map((singleValue) => ({
+    if (Array.isArray(props.value)) {
+      return props.value.map((singleValue) => ({
         value: singleValue,
         label: i18n._(singleValue),
       }));
@@ -104,8 +97,8 @@ const WeaponSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = ({
 
   function getWeaponArray() {
     if (isTooManyItems()) return [];
-    if (pool === "WITH_ALTS") return weaponsWithHeroCategorized;
-    if (pool === "SALMON_RUN")
+    if (props.pool === "WITH_ALTS") return weaponsWithHeroCategorized;
+    if (props.pool === "SALMON_RUN")
       return weaponsWithHeroCategorized.map((category) => ({
         ...category,
         weapons: category.weapons.filter((wpn) => salmonRunWeapons.has(wpn)),
@@ -120,7 +113,7 @@ const WeaponSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = ({
   }
 
   function isTooManyItems() {
-    return maxMultiCount && maxMultiCount <= (value ?? []).length;
+    return maxMultiCount && maxMultiCount <= (props.value ?? []).length;
   }
 };
 

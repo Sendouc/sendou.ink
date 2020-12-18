@@ -75,7 +75,6 @@ const UserSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = ({
   );
 
   function getUsersArray() {
-    console.log({ value, maxMultiCount });
     if (!data) return [];
     if (isTooManyItems()) {
       return [];

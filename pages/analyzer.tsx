@@ -84,7 +84,7 @@ const BuildAnalyzerPage = () => {
       </Flex>
 
       <Box my="1em">
-        <WeaponSelector value={weapon} setValue={setWeapon} />
+        <WeaponSelector value={weapon} setValue={setWeapon} isMulti={false} />
       </Box>
       <Wrap justify="space-between">
         <Box>

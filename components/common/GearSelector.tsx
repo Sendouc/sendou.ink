@@ -19,7 +19,7 @@ const GearSelector: React.FC<WeaponSelectorProps> = ({
   const { i18n } = useLingui();
   const singleOption = (props: any) => (
     <components.Option {...props}>
-      <Flex alignItems="center" color={props.isFocused ? "black" : undefined}>
+      <Flex alignItems="center">
         <Box mr="0.5em">
           <GearImage mini englishName={props.value} />
         </Box>
