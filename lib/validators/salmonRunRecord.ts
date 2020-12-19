@@ -5,8 +5,28 @@ const urlRegex = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9(
 
 export const salmonRunRecordSchema = z.object({
   rotationId: z.number(), // check on db level
-  goldenEggCount: z.number().min(0).max(300),
-  category: z.string(), // check on db level
+  goldenEggCount: z.number().min(10).max(300),
+  category: z.enum([
+    "TOTAL",
+    "TOTAL_NO_NIGHT",
+    "PRINCESS",
+    "NT_NORMAL",
+    "HT_NORMAL",
+    "LT_NORMAL",
+    "NT_RUSH",
+    "HT_RUSH",
+    "NT_FOG",
+    "HT_FOG",
+    "LT_FOG",
+    "NT_GOLDIE",
+    "HT_GOLDIE",
+    "NT_GRILLERS",
+    "HT_GRILLERS",
+    "NT_MOTHERSHIP",
+    "HT_MOTHERSHIP",
+    "LT_MOTHERSHIP",
+    "LT_COHOCK",
+  ]),
   userIds: z.array(z.number()),
   links: z
     .string()

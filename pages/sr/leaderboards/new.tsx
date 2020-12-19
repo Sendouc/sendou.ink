@@ -20,6 +20,8 @@ import Breadcrumbs from "components/common/Breadcrumbs";
 import MyContainer from "components/common/MyContainer";
 import UserSelector from "components/common/UserSelector";
 import RotationSelector from "components/sr/RotationSelector";
+import { sendData } from "lib/postData";
+import useUser from "lib/useUser";
 import { salmonRunRecordSchema } from "lib/validators/salmonRunRecord";
 import Image from "next/image";
 import { useState } from "react";
@@ -53,14 +55,28 @@ type FormData = z.infer<typeof salmonRunRecordSchema>;
 const AddRecordModal = () => {
   const { i18n } = useLingui();
   const [sending, setSending] = useState(false);
+  const [loggedInUser] = useUser();
   const { handleSubmit, errors, register, control, watch } = useForm<FormData>({
     resolver: zodResolver(salmonRunRecordSchema),
   });
 
   const watchRotationId = watch("rotationId", undefined);
 
-  const onSubmit = async (data: FormData) => {
-    console.log("data", data);
+  const onSubmit = async (formData: FormData) => {
+    if (!loggedInUser) {
+      console.error("Unexpected no logged in user");
+      return;
+    }
+    setSending(true);
+    const mutationData = { ...formData };
+
+    const success = await sendData("POST", "/api/sr/records", mutationData);
+    setSending(false);
+    if (!success) return;
+
+    //mutate(`/api/users/${loggedInUser.id}/builds`);
+
+    //redirect()
   };
 
   return (
@@ -76,7 +92,7 @@ const AddRecordModal = () => {
         <Controller
           name="rotationId"
           control={control}
-          defaultValue={undefined}
+          defaultValue={null}
           render={({ value, onChange }) => (
             <RotationSelector rotationId={value} setRotationId={onChange} />
           )}
