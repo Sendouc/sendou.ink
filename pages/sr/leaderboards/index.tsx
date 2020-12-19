@@ -30,7 +30,7 @@ const SalmonRunLeaderboardsPage = ({}) => {
         </a>
       </Link>
       <Box as="pre" mt={2}>
-        {JSON.stringify(data)}
+        {JSON.stringify(data, null, "\t")}
       </Box>
     </>
   );

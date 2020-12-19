@@ -8,6 +8,8 @@ import Footer from "./Footer";
 import IconNavBar from "./IconNavBar";
 import TopNav from "./TopNav";
 
+const DATE_KEYS = ["createdAt", "updatedAt"];
+
 const Layout = ({ Component, pageProps }: AppProps) => {
   const [errors, setErrors] = useState(new Set<string>());
   const toast = useToast();
@@ -62,7 +64,7 @@ function reviver(key: any, value: any) {
     });
   }
 
-  if (key === "updatedAt") return new Date(value);
+  if (DATE_KEYS.includes(key)) return new Date(value);
 
   return value;
 }

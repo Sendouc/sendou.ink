@@ -1,4 +1,4 @@
-import { ADMIN_DISCORD_ID, SALMON_RUN_ADMIN_DISCORD_IDS } from "lib/constants";
+import { SALMON_RUN_ADMIN_DISCORD_IDS } from "lib/constants";
 import { getMySession } from "lib/getMySession";
 import { salmonRunRecordSchema } from "lib/validators/salmonRunRecord";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -8,7 +8,11 @@ import { getAllSalmonRunRecords } from "prisma/queries/getAllSalmonRunRecords";
 const getHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   const user = await getMySession(req);
 
-  const records = await getAllSalmonRunRecords(user?.id);
+  const fetchUnapproved =
+    req.query.unapproved === "true" &&
+    SALMON_RUN_ADMIN_DISCORD_IDS.includes(user!.discordId);
+
+  const records = await getAllSalmonRunRecords(user?.id, fetchUnapproved);
 
   res.status(200).json(records);
 };
@@ -17,10 +21,7 @@ const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   const user = await getMySession(req);
 
   if (!user) return res.status(401).end();
-  if (
-    !SALMON_RUN_ADMIN_DISCORD_IDS.includes(user.discordId) &&
-    user.discordId !== ADMIN_DISCORD_ID
-  ) {
+  if (!SALMON_RUN_ADMIN_DISCORD_IDS.includes(user.discordId)) {
     return res.status(401).end();
   }
 
@@ -35,7 +36,7 @@ const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       category: parsed.data.category,
       links: parsed.data.links.trim().split("\n"),
       approved: false,
-      // approved: SALMON_RUN_ADMIN_DISCORD_IDS.includes(user.discordId) || user.discordId === ADMIN_DISCORD_ID
+      // approved: SALMON_RUN_ADMIN_DISCORD_IDS.includes(user.discordId)
       submitter: {
         connect: { id: user.id },
       },
