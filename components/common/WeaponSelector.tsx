@@ -1,5 +1,5 @@
 import { Box, Center, Flex } from "@chakra-ui/react";
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import {
   salmonRunWeapons,
@@ -69,7 +69,7 @@ const WeaponSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = (
         label: i18n._(category.name),
         options: category.weapons.map((weapon) => ({
           value: weapon,
-          label: i18n._(weapon),
+          label: getLabel(weapon),
         })),
       }))}
       value={getValue()}
@@ -99,27 +99,38 @@ const WeaponSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = (
 
   function getValue() {
     if (typeof props.value === "string") {
-      return { value: props.value, label: i18n._(props.value) };
+      return { value: props.value, label: getLabel(props.value) };
     }
 
     if (Array.isArray(props.value)) {
       return props.value.map((singleValue) => ({
         value: singleValue,
-        label: i18n._(singleValue),
+        label: getLabel(singleValue),
       }));
     }
 
     return undefined;
   }
 
+  function getLabel(value: string) {
+    if (value === "RANDOM") return t`Random`;
+    if (value === "RANDOM_GRIZZCO") return t`Random (Grizzco)`;
+
+    return i18n._(value);
+  }
+
   function getWeaponArray() {
     if (isTooManyItems()) return [];
     if (props.pool === "WITH_ALTS") return weaponsWithHeroCategorized;
     if (props.pool === "SALMON_RUN")
-      return weaponsWithHeroCategorized.map((category) => ({
-        ...category,
-        weapons: category.weapons.filter((wpn) => salmonRunWeapons.has(wpn)),
-      }));
+      return [
+        { name: t`Salmon Run`, weapons: ["RANDOM", "RANDOM_GRIZZCO"] },
+      ].concat(
+        weaponsWithHeroCategorized.map((category) => ({
+          ...category,
+          weapons: category.weapons.filter((wpn) => salmonRunWeapons.has(wpn)),
+        }))
+      );
 
     return weaponsWithHeroCategorized.map((category) => ({
       ...category,

@@ -10,7 +10,7 @@ import { GetAllSalmonRunRotationsData } from "prisma/queries/getAllSalmonRunRota
 import { useState } from "react";
 import useSWR from "swr";
 
-const randomToNaturalName = {
+export const randomToNaturalName = {
   RANDOM: t`Random`,
   RANDOM_GRIZZCO: t`Random (Grizzco)`,
 } as const;
