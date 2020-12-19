@@ -24,8 +24,10 @@ import { sendData } from "lib/postData";
 import useUser from "lib/useUser";
 import { salmonRunRecordSchema } from "lib/validators/salmonRunRecord";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { mutate } from "swr";
 import * as z from "zod";
 
 const salmonRunCategoryToNatural = {
@@ -54,6 +56,7 @@ type FormData = z.infer<typeof salmonRunRecordSchema>;
 
 const AddRecordModal = () => {
   const { i18n } = useLingui();
+  const router = useRouter();
   const [sending, setSending] = useState(false);
   const [loggedInUser] = useUser();
   const { handleSubmit, errors, register, control, watch } = useForm<FormData>({
@@ -74,9 +77,9 @@ const AddRecordModal = () => {
     setSending(false);
     if (!success) return;
 
-    //mutate(`/api/users/${loggedInUser.id}/builds`);
+    mutate("/api/sr/records");
 
-    //redirect()
+    router.push("/sr/leaderboards");
   };
 
   return (
