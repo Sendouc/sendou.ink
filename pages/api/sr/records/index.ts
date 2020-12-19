@@ -35,8 +35,7 @@ const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       goldenEggCount: parsed.data.goldenEggCount,
       category: parsed.data.category,
       links: parsed.data.links.trim().split("\n"),
-      approved: false,
-      // approved: SALMON_RUN_ADMIN_DISCORD_IDS.includes(user.discordId)
+      approved: SALMON_RUN_ADMIN_DISCORD_IDS.includes(user.discordId),
       submitter: {
         connect: { id: user.id },
       },
