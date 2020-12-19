@@ -124,7 +124,15 @@ const SalmonRunAdminPage = ({}) => {
                   </TableCell>
                   <TableCell>
                     <Button
-                      onClick={() => handleClick("DELETE", record.id)}
+                      onClick={() => {
+                        if (
+                          window.confirm(
+                            `Delete record on ${record.rotation.stage} with ${record.goldenEggCount} eggs permanently?`
+                          )
+                        ) {
+                          handleClick("DELETE", record.id);
+                        }
+                      }}
                       colorScheme="red"
                       disabled={sending}
                       size="sm"
