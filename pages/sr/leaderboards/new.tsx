@@ -172,6 +172,8 @@ const AddRecordModal = () => {
               />
               <FormHelperText>
                 Add up to three people you played with when you got the result.
+                Note that only people who have logged in to sendou.ink at least
+                once can be added.
               </FormHelperText>
             </FormControl>
 
