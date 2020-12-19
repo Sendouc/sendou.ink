@@ -12,14 +12,19 @@ import {
 } from "components/common/Table";
 import WeaponImage from "components/common/WeaponImage";
 import { SALMON_RUN_ADMIN_DISCORD_IDS } from "lib/constants";
+import { sendData } from "lib/postData";
 import useUser from "lib/useUser";
 import { useRouter } from "next/router";
 import { GetAllSalmonRunRecordsData } from "prisma/queries/getAllSalmonRunRecords";
-import useSWR from "swr";
+import { useState } from "react";
+import useSWR, { mutate } from "swr";
+import { salmonRunCategoryToNatural } from "./new";
 
 const SalmonRunAdminPage = ({}) => {
   const router = useRouter();
   const [user, loading] = useUser();
+  const [sending, setSending] = useState(false);
+  const [recordsHidden, setRecordsHidden] = useState(new Set<number>());
   const { data } = useSWR<GetAllSalmonRunRecordsData>(
     "/api/sr/records?unapproved=true"
   );
@@ -33,7 +38,23 @@ const SalmonRunAdminPage = ({}) => {
 
   if (loading || !data) return null;
 
-  console.log("admin page data", data);
+  const handleClick = async (type: "DELETE" | "PATCH", id: number) => {
+    if (!user) {
+      console.error("Unexpected no logged in user");
+      return;
+    }
+    setSending(true);
+
+    const success = await sendData(type, `/api/sr/records/${id}`);
+    setSending(false);
+    if (!success) return;
+
+    mutate("/api/sr/records");
+    setRecordsHidden(new Set(Array.from(recordsHidden).concat(id)));
+  };
+
+  const records = data.filter((record) => !recordsHidden.has(record.id));
+
   return (
     <>
       <Breadcrumbs
@@ -43,8 +64,8 @@ const SalmonRunAdminPage = ({}) => {
           { name: "Admin" },
         ]}
       />
-      {data.length === 0 ? (
-        <>no results</>
+      {records.length === 0 ? (
+        <>No results waiting for approval.</>
       ) : (
         <Table>
           <TableHead>
@@ -58,7 +79,7 @@ const SalmonRunAdminPage = ({}) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((record) => {
+            {records.map((record) => {
               return (
                 <TableRow key={record.id}>
                   <TableCell>{record.createdAt.toLocaleString()}</TableCell>
@@ -82,6 +103,8 @@ const SalmonRunAdminPage = ({}) => {
                   <TableCell>
                     {record.goldenEggCount} eggs
                     <br />
+                    {salmonRunCategoryToNatural[record.category]}
+                    <br />
                     {new Date(record.rotation.startTime).toLocaleDateString()}
                     <br />
                     {record.rotation.stage}
@@ -91,10 +114,23 @@ const SalmonRunAdminPage = ({}) => {
                     ))}
                   </TableCell>
                   <TableCell>
-                    <Button>Approve</Button>
+                    <Button
+                      onClick={() => handleClick("PATCH", record.id)}
+                      disabled={sending}
+                      size="sm"
+                    >
+                      Approve
+                    </Button>
                   </TableCell>
                   <TableCell>
-                    <Button colorScheme="red">Delete</Button>
+                    <Button
+                      onClick={() => handleClick("DELETE", record.id)}
+                      colorScheme="red"
+                      disabled={sending}
+                      size="sm"
+                    >
+                      Delete
+                    </Button>
                   </TableCell>
                 </TableRow>
               );

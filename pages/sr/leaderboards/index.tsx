@@ -6,13 +6,12 @@ import Link from "next/link";
 
 const SalmonRunLeaderboardsPage = ({}) => {
   const { data, pendingCount } = useSalmonRunRecords();
-  console.log({ data, pendingCount });
   return (
     <>
       <Breadcrumbs
         pages={[{ name: t`Salmon Run` }, { name: t`Leaderboards` }]}
       />
-      {pendingCount && (
+      {pendingCount > 0 && (
         <Alert status="info" my={4}>
           <AlertIcon />
           <Plural

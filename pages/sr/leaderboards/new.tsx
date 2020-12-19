@@ -30,7 +30,7 @@ import { Controller, useForm } from "react-hook-form";
 import { mutate } from "swr";
 import * as z from "zod";
 
-const salmonRunCategoryToNatural = {
+export const salmonRunCategoryToNatural = {
   TOTAL: t`All waves`,
   TOTAL_NO_NIGHT: t`All waves (no night)`,
   PRINCESS: t`Princess`,

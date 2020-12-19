@@ -65,6 +65,8 @@ const salmonRunRecordsHandler = async (
     case "POST":
       await postHandler(req, res);
       break;
+    default:
+      return res.status(405).end();
   }
 };
 
