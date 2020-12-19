@@ -1,5 +1,6 @@
 import { ADMIN_DISCORD_ID } from "lib/constants";
 import { getMySession } from "lib/getMySession";
+import { getWeaponNormalized } from "lib/lists/weapons";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "prisma/client";
 
@@ -35,7 +36,7 @@ const userHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   }, new Set<string>());
 
   const idsToUpdate = builds.reduce((acc: number[], build) => {
-    if (top500weapons.has(build.weapon)) {
+    if (top500weapons.has(getWeaponNormalized(build.weapon))) {
       acc.push(build.id);
     }
 
