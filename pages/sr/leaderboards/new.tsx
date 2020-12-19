@@ -2,6 +2,7 @@ import {
   Button,
   Flex,
   FormControl,
+  FormErrorMessage,
   FormHelperText,
   FormLabel,
   NumberDecrementStepper,
@@ -12,23 +13,18 @@ import {
   Select,
   Textarea,
 } from "@chakra-ui/react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import { SalmonRunRecordCategory } from "@prisma/client";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import MyContainer from "components/common/MyContainer";
 import UserSelector from "components/common/UserSelector";
 import RotationSelector from "components/sr/RotationSelector";
+import { salmonRunRecordSchema } from "lib/validators/salmonRunRecord";
 import Image from "next/image";
 import { useState } from "react";
-
-interface RecordFormData {
-  rotationId: number;
-  userIds: number[];
-  category: SalmonRunRecordCategory;
-  goldenEggCount: number;
-  links: string;
-}
+import { Controller, useForm } from "react-hook-form";
+import * as z from "zod";
 
 const salmonRunCategoryToNatural = {
   TOTAL: t`All waves`,
@@ -52,10 +48,20 @@ const salmonRunCategoryToNatural = {
   LT_COHOCK: t`Cohock Charge`,
 } as const;
 
+type FormData = z.infer<typeof salmonRunRecordSchema>;
+
 const AddRecordModal = () => {
   const { i18n } = useLingui();
   const [sending, setSending] = useState(false);
-  const [form, setForm] = useState<Partial<RecordFormData>>({ rotationId: 1 });
+  const { handleSubmit, errors, register, control, watch } = useForm<FormData>({
+    resolver: zodResolver(salmonRunRecordSchema),
+  });
+
+  const watchRotationId = watch("rotationId", undefined);
+
+  const onSubmit = async (data: FormData) => {
+    console.log("data", data);
+  };
 
   return (
     <MyContainer>
@@ -66,36 +72,22 @@ const AddRecordModal = () => {
           { name: t`New record` },
         ]}
       />
-      <form /*onSubmit={handleSubmit(onSubmit)}*/>
-        <RotationSelector
-          rotationId={form.rotationId}
-          setRotationId={(rotationId) => {
-            if (!rotationId) {
-              const newForm = { ...form };
-              delete newForm.rotationId;
-              setForm(newForm);
-              return;
-            }
-
-            setForm({ ...form, rotationId });
-          }}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Controller
+          name="rotationId"
+          control={control}
+          defaultValue={undefined}
+          render={({ value, onChange }) => (
+            <RotationSelector rotationId={value} setRotationId={onChange} />
+          )}
         />
 
-        {form.rotationId && (
+        {watchRotationId && (
           <>
             <FormLabel htmlFor="category" mt={4}>
               <Trans>Category</Trans>
             </FormLabel>
-            <Select
-              name="category"
-              value={form.category}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  category: e.target.value as SalmonRunRecordCategory,
-                })
-              }
-            >
+            <Select name="category" ref={register}>
               {Object.entries(salmonRunCategoryToNatural).map(
                 ([key, value]) => (
                   <option key={key} value={key}>
@@ -105,46 +97,70 @@ const AddRecordModal = () => {
               )}
             </Select>
 
-            <FormLabel htmlFor="goldenEggCount" mt={4}>
-              <Flex alignItems="center">
-                <Flex align="center" mr={1}>
-                  <Image
-                    src="/images/salmonRunIcons/Golden%20Egg.png"
-                    width={32}
-                    height={32}
-                  />
+            <FormControl isInvalid={!!errors.goldenEggCount}>
+              <FormLabel htmlFor="goldenEggCount" mt={4}>
+                <Flex alignItems="center">
+                  <Flex align="center" mr={1}>
+                    <Image
+                      src="/images/salmonRunIcons/Golden%20Egg.png"
+                      width={32}
+                      height={32}
+                    />
+                  </Flex>
+                  <Trans>Golden Egg Count</Trans>
                 </Flex>
-                <Trans>Golden Egg Count</Trans>
-              </Flex>
-            </FormLabel>
-            <NumberInput name="goldenEggCount" maxW={48}>
-              <NumberInputField />
-              <NumberInputStepper>
-                <NumberIncrementStepper />
-                <NumberDecrementStepper />
-              </NumberInputStepper>
-            </NumberInput>
+              </FormLabel>
+              <Controller
+                name="goldenEggCount"
+                control={control}
+                defaultValue={0}
+                render={({ value, onChange }) => (
+                  <NumberInput
+                    name="goldenEggCount"
+                    maxW={48}
+                    value={value}
+                    onChange={(_, value) => onChange(value)}
+                  >
+                    <NumberInputField />
+                    <NumberInputStepper>
+                      <NumberIncrementStepper />
+                      <NumberDecrementStepper />
+                    </NumberInputStepper>
+                  </NumberInput>
+                )}
+              />
+              <FormErrorMessage>
+                {errors.goldenEggCount?.message}
+              </FormErrorMessage>
+            </FormControl>
 
             <FormControl>
               <FormLabel mt={4}>
                 <Trans>Players</Trans>
               </FormLabel>
-              <UserSelector
-                value={form.userIds ?? []}
-                setValue={(userIds: number[]) => setForm({ ...form, userIds })}
-                isMulti={true}
-                maxMultiCount={3}
+              <Controller
+                name="userIds"
+                control={control}
+                defaultValue={[]}
+                render={({ value, onChange }) => (
+                  <UserSelector
+                    value={value}
+                    setValue={onChange}
+                    isMulti={true}
+                    maxMultiCount={3}
+                  />
+                )}
               />
               <FormHelperText>
                 Add up to three people you played with when you got the result.
               </FormHelperText>
             </FormControl>
 
-            <FormControl>
+            <FormControl isInvalid={!!errors.links}>
               <FormLabel mt={4}>
                 <Trans>Links</Trans>
               </FormLabel>
-              <FormHelperText mb={4} mt="-10px">
+              <FormHelperText mb={3} mt="-7px">
                 <Trans>
                   Add one to four links to provide context behind the record
                   (e.g. VoDs on YouTube, screenshots on Twitter). One link per
@@ -152,17 +168,20 @@ const AddRecordModal = () => {
                 </Trans>
               </FormHelperText>
               <Textarea
-                value={form.links}
-                onChange={(e) => setForm({ ...form, links: e.target.value })}
+                name="links"
+                ref={register}
                 rows={4}
                 resize="none"
                 placeholder={
                   "https://twitter.com/BrianTheDrumer/status/1338469066797953024\nhttps://www.youtube.com/watch?v=6evFXzxrTfU"
                 }
               />
+              <FormErrorMessage mt="-1px">
+                {errors.links?.message}
+              </FormErrorMessage>
             </FormControl>
 
-            <Button mt={6} /*type="submit"*/ isLoading={sending}>
+            <Button mt={6} type="submit" isLoading={sending}>
               <Trans>Submit</Trans>
             </Button>
           </>
