@@ -1,4 +1,4 @@
-import { Button } from "@chakra-ui/react";
+import { Box, Button } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import MyLink from "components/common/MyLink";
@@ -84,20 +84,20 @@ const SalmonRunAdminPage = ({}) => {
                 <TableRow key={record.id}>
                   <TableCell>{record.createdAt.toLocaleString()}</TableCell>
                   <TableCell>
-                    {record.roster
-                      .map(
-                        (user) =>
-                          `${user.username}#${user.discriminator}${
-                            record.submitterId === user.id ? " (creator)" : ""
-                          }`
-                      )
-                      .join("\n")}
+                    {record.roster.map((user) => (
+                      <Box key={user.id}>
+                        {user.username}#{user.discriminator}
+                        {record.submitterId === user.id ? " (creator)" : ""}
+                      </Box>
+                    ))}
                   </TableCell>
                   <TableCell width={4}>
                     {record.links.map((link) => (
-                      <MyLink key={link} href={link} isExternal>
-                        {getLinkShorted(link)}
-                      </MyLink>
+                      <Box key={link} my={2}>
+                        <MyLink href={link} isExternal>
+                          {getLinkShorted(link)}
+                        </MyLink>
+                      </Box>
                     ))}
                   </TableCell>
                   <TableCell>
