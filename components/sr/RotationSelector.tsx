@@ -40,6 +40,7 @@ const RotationSelector: React.FC<Props> = ({ rotationId, setRotationId }) => {
         <Box my={2} fontWeight="bold">
           #{rotation.id}
         </Box>
+        <Box my={1}>{i18n._(rotation.stage)}</Box>
         <Box my={2} color={gray}>
           {new Date(rotation.startTime).toLocaleDateString()}
         </Box>

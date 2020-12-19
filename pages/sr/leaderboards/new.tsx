@@ -202,6 +202,12 @@ const AddRecordModal = () => {
               </FormErrorMessage>
             </FormControl>
 
+            <button
+              type="submit"
+              disabled
+              style={{ display: "none" }}
+              aria-hidden="true"
+            />
             <Button mt={6} type="submit" isLoading={sending}>
               <Trans>Submit</Trans>
             </Button>
