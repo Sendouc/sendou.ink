@@ -32,7 +32,7 @@ const Breadcrumbs: React.FC<Props> = ({ pages }) => {
         }
       >
         <BreadcrumbItem>
-          <NextLink href="/">
+          <NextLink href="/" passHref>
             <BreadcrumbLink>
               <Trans>Home</Trans>
             </BreadcrumbLink>
@@ -45,7 +45,7 @@ const Breadcrumbs: React.FC<Props> = ({ pages }) => {
             isCurrentPage={i === pages.length - 1}
           >
             {page.link ? (
-              <NextLink href={page.link}>
+              <NextLink href={page.link} passHref>
                 <BreadcrumbLink>{page.name}</BreadcrumbLink>
               </NextLink>
             ) : (
