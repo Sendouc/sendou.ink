@@ -24,9 +24,10 @@ import MyLink from "./MyLink";
 
 interface MarkdownProps {
   value: string;
+  allowAll?: boolean;
 }
 
-const Markdown: React.FC<MarkdownProps> = ({ value }) => {
+const Markdown: React.FC<MarkdownProps> = ({ value, allowAll = false }) => {
   const { themeColorHex: themeColor } = useMyTheme();
 
   //https://github.com/mustaphaturhan/chakra-ui-markdown-renderer/blob/master/src/index.js
@@ -138,10 +139,13 @@ const Markdown: React.FC<MarkdownProps> = ({ value }) => {
       definition: () => null,
       heading: (props: any) => {
         const { children } = props;
+        console.log({ props });
         return (
           <Heading
-            my={4}
-            size="lg"
+            as={`h${props.level}` as any}
+            mt={props.level === 1 ? 8 : 4}
+            mb={props.level === 1 ? 4 : 2}
+            size={props.level === 1 ? "2xl" : "lg"}
             {...getCoreProps(props)}
             fontFamily="'Rubik', sans-serif"
           >
@@ -182,7 +186,7 @@ const Markdown: React.FC<MarkdownProps> = ({ value }) => {
     <ReactMarkdown
       source={value}
       renderers={ChakraUIRenderer()}
-      disallowedTypes={["imageReference", "image"]}
+      disallowedTypes={allowAll ? [] : ["imageReference", "image"]}
     />
   );
 };
