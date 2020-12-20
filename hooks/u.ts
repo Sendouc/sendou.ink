@@ -47,7 +47,7 @@ export function useBuildsByUser(userId?: number, weaponPool?: string[]) {
     }
 
     // 4) sort by creation time
-    return a.updatedAt.getTime() - b.updatedAt.getTime();
+    return b.updatedAt.getTime() - a.updatedAt.getTime();
   });
 
   return {
