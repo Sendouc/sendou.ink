@@ -1,8 +1,9 @@
+import { weaponsWithHero } from "lib/lists/weaponsWithHero";
 import { GetBuildsByUserData } from "prisma/queries/getBuildsByUser";
 import { useState } from "react";
 import useSWR from "swr";
 
-export function useBuildsByUser(userId?: number) {
+export function useBuildsByUser(userId?: number, weaponPool?: string[]) {
   const [weapon, setWeapon] = useState<string | null>(null);
 
   const { data = [] } = useSWR<GetBuildsByUserData>(
@@ -20,8 +21,39 @@ export function useBuildsByUser(userId?: number) {
     return acc;
   }, []);
 
+  const sortedBuilds = data.sort((a, b) => {
+    // 1) sort by the order in weapon pool
+    const pool = weaponPool ?? [];
+    const aPoolIndex = pool.includes(a.weapon)
+      ? pool.indexOf(a.weapon)
+      : Infinity;
+    const bPoolIndex = pool.includes(b.weapon)
+      ? pool.indexOf(b.weapon)
+      : Infinity;
+
+    if (aPoolIndex !== bPoolIndex) return aPoolIndex - bPoolIndex;
+
+    // 2) sort by the order in-game
+    const aInGameOrderIndex = weaponsWithHero.indexOf(a.weapon as any);
+    const bInGameOrderIndex = weaponsWithHero.indexOf(b.weapon as any);
+
+    if (aInGameOrderIndex !== bInGameOrderIndex) {
+      return aInGameOrderIndex - bInGameOrderIndex;
+    }
+
+    // 3) if same weapon but different title sort by title
+    if ((a.title ?? "").localeCompare(b.title ?? "") !== 0) {
+      return (a.title ?? "").localeCompare(b.title ?? "");
+    }
+
+    // 4) sort by creation time
+    return a.updatedAt.getTime() - b.updatedAt.getTime();
+  });
+
   return {
-    data: weapon ? data.filter((build) => build.weapon === weapon) : data,
+    data: weapon
+      ? sortedBuilds.filter((build) => build.weapon === weapon)
+      : sortedBuilds,
     weaponCounts,
     setWeapon,
     buildCount: data.length,

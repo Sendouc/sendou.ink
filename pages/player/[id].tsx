@@ -101,11 +101,7 @@ const PlayerPage = (props: Props) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  // const players = await prisma.player.findMany({
-  //   where: { NOT: [{ userId: null }] },
-  // });
   return {
-    //paths: players.map((p) => ({ params: { id: p.switchAccountId } })),
     paths: [],
     fallback: "blocking",
   };

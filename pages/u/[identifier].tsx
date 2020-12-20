@@ -47,7 +47,8 @@ const ProfilePage = (props: Props) => {
   const user = data ? data : props.user!;
 
   const { data: builds, weaponCounts, setWeapon, buildCount } = useBuildsByUser(
-    user?.id
+    user?.id,
+    props.user?.profile?.weaponPool
   );
 
   const { i18n } = useLingui();
@@ -162,14 +163,7 @@ const ProfilePage = (props: Props) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  // const users = await prisma.user.findMany({
-  //   where: { NOT: [{ profile: { customUrlPath: null } }] },
-  //   include: { profile: true },
-  // });
   return {
-    // paths: users.map((u) => ({
-    //   params: { identifier: u.profile?.customUrlPath ?? u.discordId },
-    // })),
     paths: [],
     fallback: "blocking",
   };
