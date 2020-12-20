@@ -72,7 +72,7 @@ const SalmonRunAdminPage = ({}) => {
             <TableRow>
               <TableHeader>Created</TableHeader>
               <TableHeader>Users</TableHeader>
-              <TableHeader width={4}>Links</TableHeader>
+              <TableHeader>Links</TableHeader>
               <TableHeader>Rotation</TableHeader>
               <TableHeader />
               <TableHeader />
@@ -91,7 +91,7 @@ const SalmonRunAdminPage = ({}) => {
                       </Box>
                     ))}
                   </TableCell>
-                  <TableCell width={4}>
+                  <TableCell>
                     {record.links.map((link) => (
                       <Box key={link} my={2}>
                         <MyLink href={link} isExternal>

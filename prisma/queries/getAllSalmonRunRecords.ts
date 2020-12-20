@@ -24,4 +24,5 @@ export const getAllSalmonRunRecords = async (
           rotation: true,
           roster: true,
         },
+        orderBy: [{ goldenEggCount: "desc" }, { createdAt: "desc" }],
       });
