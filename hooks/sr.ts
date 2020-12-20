@@ -51,9 +51,14 @@ export function useSalmonRunRecords() {
     }
   );
 
+  const userIds = new Set<number>();
+
   const data = (recordsData ?? []).filter((record) => {
     if (record.rotation.stage !== state.stage) return false;
     if (record.category !== state.category) return false;
+    if (record.roster.every((user) => userIds.has(user.id))) return false;
+
+    record.roster.forEach((user) => userIds.add(user.id));
 
     return true;
   });

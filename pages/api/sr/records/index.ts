@@ -21,9 +21,6 @@ const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   const user = await getMySession(req);
 
   if (!user) return res.status(401).end();
-  if (!SALMON_RUN_ADMIN_DISCORD_IDS.includes(user.discordId)) {
-    return res.status(401).end();
-  }
 
   const parsed = salmonRunRecordSchema.safeParse(req.body);
   if (!parsed.success) {

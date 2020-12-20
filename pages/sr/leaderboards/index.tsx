@@ -110,7 +110,7 @@ const SalmonRunLeaderboardsPage = ({}) => {
             <TableHead>
               <TableRow>
                 <TableHeader />
-                <TableHeader>
+                <TableHeader textAlign="center">
                   <Image
                     src="/images/salmonRunIcons/Golden%20Egg.png"
                     width={32}
@@ -118,16 +118,16 @@ const SalmonRunLeaderboardsPage = ({}) => {
                     aria-label="Golden eggs count"
                   />
                 </TableHeader>
-                <TableHeader>
+                <TableHeader textAlign="center">
                   <Trans>Weapons</Trans>
                 </TableHeader>
-                <TableHeader>
+                <TableHeader textAlign="center">
                   <Trans>Players</Trans>
                 </TableHeader>
-                <TableHeader>
+                <TableHeader textAlign="center">
                   <Trans>Rotation Dates</Trans>
                 </TableHeader>
-                <TableHeader>
+                <TableHeader textAlign="center">
                   <Trans>Links</Trans>
                 </TableHeader>
               </TableRow>
@@ -143,11 +143,11 @@ const SalmonRunLeaderboardsPage = ({}) => {
                 return (
                   <TableRow key={record.id}>
                     <TableCell>{getRankingString(placement)}</TableCell>
-                    <TableCell fontWeight="bold">
+                    <TableCell fontWeight="bold" textAlign="center">
                       {record.goldenEggCount}
                     </TableCell>
                     <TableCell>
-                      <Flex flexDir={["column", null, "row"]}>
+                      <Flex flexDir={["column", null, "row"]} justify="center">
                         {record.rotation.weapons.map((wpn) => (
                           <Box key={wpn} mx={1}>
                             <WeaponImage size={32} name={wpn} />
@@ -158,7 +158,12 @@ const SalmonRunLeaderboardsPage = ({}) => {
 
                     <TableCell>
                       {record.roster.map((user) => (
-                        <Flex key={user.id} align="center" my={4}>
+                        <Flex
+                          key={user.id}
+                          align="center"
+                          my={4}
+                          justify="center"
+                        >
                           <UserAvatar isSmall user={user} mr={2} />
                           {user.username}#{user.discriminator}
                         </Flex>
@@ -166,28 +171,32 @@ const SalmonRunLeaderboardsPage = ({}) => {
                     </TableCell>
 
                     <TableCell>
-                      <Box
-                        as="time"
-                        dateTime={
-                          (record.rotation.startTime as unknown) as string
-                        }
-                      >
-                        {new Date(
-                          record.rotation.startTime
-                        ).toLocaleDateString()}
-                      </Box>
-                      <Box>-</Box>
-                      <Box
-                        as="time"
-                        dateTime={
-                          (record.rotation.endTime as unknown) as string
-                        }
-                      >
-                        {new Date(record.rotation.endTime).toLocaleDateString()}
-                      </Box>
+                      <Flex flexDir="column" align="center">
+                        <Box
+                          as="time"
+                          dateTime={
+                            (record.rotation.startTime as unknown) as string
+                          }
+                        >
+                          {new Date(
+                            record.rotation.startTime
+                          ).toLocaleDateString()}
+                        </Box>
+                        <Box>-</Box>
+                        <Box
+                          as="time"
+                          dateTime={
+                            (record.rotation.endTime as unknown) as string
+                          }
+                        >
+                          {new Date(
+                            record.rotation.endTime
+                          ).toLocaleDateString()}
+                        </Box>
+                      </Flex>
                     </TableCell>
 
-                    <TableCell>
+                    <TableCell textAlign="center">
                       {record.links.map((link) => (
                         <IconButton
                           key={link}
