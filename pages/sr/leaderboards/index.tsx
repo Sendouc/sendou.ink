@@ -198,13 +198,14 @@ const SalmonRunLeaderboardsPage = ({}) => {
 
                     <TableCell textAlign="center">
                       {record.links.map((link) => (
-                        <IconButton
-                          key={link}
-                          aria-label={`Link to ${link}`}
-                          icon={<LinkIcon link={link} />}
-                          isRound
-                          variant="ghost"
-                        />
+                        <a key={link} href={link}>
+                          <IconButton
+                            aria-label={`Link to ${link}`}
+                            icon={<LinkIcon link={link} />}
+                            isRound
+                            variant="ghost"
+                          />
+                        </a>
                       ))}
                     </TableCell>
                   </TableRow>
