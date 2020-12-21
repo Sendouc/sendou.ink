@@ -37,6 +37,12 @@ const Home = () => {
             see which weapons are reigning in each mode.
           </Trans>
         </PageInfoSection>
+        <PageInfoSection location="sr" title={t`Salmon Run`}>
+          <Trans>
+            Get into Overfishing and climb up the leaderboards. Guides included
+            to get you started.
+          </Trans>
+        </PageInfoSection>
         <PageInfoSection location="builds" title={t`Builds`}>
           <Trans>
             View builds by some of the best players in the world and submit your
