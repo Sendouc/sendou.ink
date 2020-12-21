@@ -264,7 +264,7 @@ Refer to the “Normal Waves” section for more information. Rush Chums and Gol
 
 Rush Chums and Goldies will target the player surrounded by Glowflies. Glowflies change their targets in accordance with the timer and spawn direction rules. **This applies regardless of possible targeting changes due to deaths.** Therefore, deaths do not necessarily make it safer to move forward (or retreat if you become the new target) as there could be a new target immediately afterwards.
 
-# Rush Mechanics and Killing Chums Early
+## Rush Mechanics and Killing Chums Early
 
 Killing Chums early is an important part of playing Rush at a high level. Doing so prevents Salmonids from reaching the limit of 32 Salmonids on the stage at once (for this wave and at Hazard Level Max only). 6 Chums spawn per second on Rush (still at Hazard Level Max). Every 20th spawn is a Goldie. Therefore, the limit is reached within 5 seconds if Salmonids are not killed early.
 Running eggs efficiently is also important to prevent Snatchers from spawning, as they have a higher priority than Chums (but are much slower and can cause traffic jams on multiple stages).
