@@ -54,14 +54,14 @@ export const navIcons: {
         component: (
           <a href="https://discord.gg/pXHRffE">
             <Flex ml="-9px" justify="center">
-              <Box mr={1}>
+              <Flex mr={1} align="center">
                 <Image
                   className="rounded"
                   src="/layout/overfishing_logo.png"
                   width={20}
                   height={20}
                 />
-              </Box>
+              </Flex>
               Overfishing Discord
             </Flex>
           </a>

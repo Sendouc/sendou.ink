@@ -3,6 +3,7 @@ import {
   Code,
   Divider,
   Heading,
+  Image,
   Link,
   List,
   ListItem,
@@ -139,12 +140,43 @@ const Markdown: React.FC<MarkdownProps> = ({ value, allowAll = false }) => {
       definition: () => null,
       heading: (props: any) => {
         const { children } = props;
+
+        if (props.level === 1) {
+          return (
+            <Heading
+              as="h1"
+              mt={8}
+              mb={4}
+              size="2xl"
+              {...getCoreProps(props)}
+              fontFamily="'Rubik', sans-serif"
+            >
+              {children}
+            </Heading>
+          );
+        }
+
+        if (props.level === 2) {
+          return (
+            <Heading
+              as="h2"
+              mt={4}
+              mb={2}
+              size={"lg"}
+              {...getCoreProps(props)}
+              fontFamily="'Rubik', sans-serif"
+            >
+              {children}
+            </Heading>
+          );
+        }
+
         return (
           <Heading
-            as={`h${props.level}` as any}
-            mt={props.level === 1 ? 8 : 4}
-            mb={props.level === 1 ? 4 : 2}
-            size={props.level === 1 ? "2xl" : "lg"}
+            as="h3"
+            mt={2}
+            mb={1}
+            size="md"
             {...getCoreProps(props)}
             fontFamily="'Rubik', sans-serif"
           >
@@ -179,6 +211,7 @@ const Markdown: React.FC<MarkdownProps> = ({ value, allowAll = false }) => {
         }
         return <TableCell {...getCoreProps(props)}>{children}</TableCell>;
       },
+      image: (props: any) => <Image {...props} my={4} />,
     };
   };
   return (

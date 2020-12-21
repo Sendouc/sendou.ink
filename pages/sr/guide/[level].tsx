@@ -1,5 +1,10 @@
 // import fundamentals from "/lib/data/sr/fundamentals.md";
-import { ListItem, OrderedList, UnorderedList } from "@chakra-ui/react";
+import {
+  Divider,
+  ListItem,
+  OrderedList,
+  UnorderedList,
+} from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import Markdown from "components/common/Markdown";
@@ -41,6 +46,7 @@ const SalmonRunGuidePage: React.FC<Props> = ({ text, sections, level }) => {
           </Fragment>
         ))}
       </OrderedList>
+      <Divider my={8} />
       <Markdown value={text} allowAll />
     </MyContainer>
   );
