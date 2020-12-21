@@ -139,7 +139,6 @@ const Markdown: React.FC<MarkdownProps> = ({ value, allowAll = false }) => {
       definition: () => null,
       heading: (props: any) => {
         const { children } = props;
-        console.log({ props });
         return (
           <Heading
             as={`h${props.level}` as any}

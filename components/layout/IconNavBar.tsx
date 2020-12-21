@@ -41,7 +41,15 @@ export const navIcons: {
   //   displayName: t`Leaderboards`,
   //   menuItems: [],
   // },
-  // { code: "sr", displayName: "Salmon Run", menuItems: [] },
+  {
+    code: "sr",
+    displayName: "Salmon Run",
+    menuItems: [
+      { code: "sr/leaderboards", displayName: t`Leaderboards` },
+      { code: "sr/guide/fundamentals", displayName: t`Guide (Fundamentals)` },
+      { code: "sr/guide/advanced", displayName: t`Guide (Advanced)` },
+    ],
+  },
   {
     code: "builds",
     displayName: t`Builds`,

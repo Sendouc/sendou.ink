@@ -157,7 +157,7 @@ This part is possibly the most important one, more so for normal waves as it giv
 
 As an example, someone who is comfortable with spawn direction changes will know to check around when the timer reaches a specific time and will immediately notice the next bosses that spawn, which is important in the case of Flyfish and Stingers as you can quickly deal with them and collect their eggs.
 
-![Boss Spawn Time Intervals](http://abload.de/img/srtimeintervala3j6p.png)
+![Boss Spawn Time Intervals](https://abload.de/img/srtimeintervala3j6p.png)
 
 This table (from Minaraii) highlights important information such as when bosses can start spawning on a different area of the stage, and how many bosses will spawn before a direction change will occur. Do note that depending on hazard level, the number of bosses, as well as the timing for spawn direction changes are different.
 These rules apply to Rush, Grillers and Cohock Charge but they do not apply to Fog, as every Salmonid spawn is random on that wave type.
@@ -189,7 +189,7 @@ Boss Aggro is an important aspect that extends to other waves like Rush and Gril
 
   Example:
 
-  ![Salmon Learn Drizzlers](http://abload.de/img/salmonlearndrizzlerssoj0y.png)
+  ![Salmon Learn Drizzlers](https://abload.de/img/salmonlearndrizzlerssoj0y.png)
 
   The blue circle around the Drizzler indicates the area in which stepping inside will cause it to stop jumping and start launching torpedoes for 2 cycles. The arrow indicates where it’ll jump next, either after 2 cycles or if the closest player is outside of the blue area. Because the closest player is closest to A, the Drizzler will jump to A.
 
@@ -322,7 +322,7 @@ This wave is more RNG dependent on stages like Lost Outpost and Spawning Grounds
 ## Maps for Opening Gushers
 
 The gusher maps can also be found on [Salmon Learn](https://gungeespla.github.io/salmon_learn/).
-![Gusher Maps](http://abload.de/img/gushermapsvakwy.png)
+![Gusher Maps](https://abload.de/img/gushermapsvakwy.png)
 Weapons with quick access to long range should be the first to open gushers when possible. Without VC, Booyah can be used for low gushers and This Way for high gushers. Opening gushers is a high priority but the task can be slightly delayed in the event that too many far eggs have to be run.
 
 ## Goldie Size
