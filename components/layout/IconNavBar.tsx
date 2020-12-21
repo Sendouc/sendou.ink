@@ -22,11 +22,13 @@ import Link from "next/link";
 export const navIcons: {
   code: string;
   displayName: string;
-  menuItems: {
-    code: string;
-    displayName: string;
-    toAppend?: string;
-  }[];
+  menuItems: (
+    | {
+        code: string;
+        displayName: string;
+      }
+    | { component: React.ReactNode; code: string }
+  )[];
 }[] = [
   {
     code: "xsearch",
@@ -48,6 +50,24 @@ export const navIcons: {
       { code: "sr/leaderboards", displayName: t`Leaderboards` },
       { code: "sr/guide/fundamentals", displayName: t`Guide (Fundamentals)` },
       { code: "sr/guide/advanced", displayName: t`Guide (Advanced)` },
+      {
+        component: (
+          <a href="https://discord.gg/pXHRffE">
+            <Flex ml="-9px" justify="center">
+              <Box mr={1}>
+                <Image
+                  className="rounded"
+                  src="/layout/overfishing_logo.png"
+                  width={20}
+                  height={20}
+                />
+              </Box>
+              Overfishing Discord
+            </Flex>
+          </a>
+        ),
+        code: "overfishing",
+      },
     ],
   },
   {
@@ -69,12 +89,6 @@ export const navIcons: {
       {
         code: "plus/voting",
         displayName: t`Voting`,
-        toAppend:
-          ": " +
-          getFirstFridayDate().toLocaleString("default", {
-            month: "short",
-            day: "numeric",
-          }),
       },
       { code: "plus", displayName: t`Suggested and vouched players` },
       { code: "plus/history", displayName: t`Voting history` },
@@ -128,42 +142,48 @@ const IconNavBar = () => {
             </MenuDialog>
             <MenuList bg={secondaryBgColor} color={textColor}>
               <MenuGroup title={i18n._(displayName)}>
-                {menuItems.map((item) => (
-                  <Link key={item.code} href={"/" + item.code}>
-                    <a>
-                      <MenuItem
-                        disabled={item.displayName === "Voting" && !isVoting}
-                      >
-                        {pathname === "/" + item.code ? (
-                          <Box
-                            h="7px"
-                            w="7px"
-                            mb={1}
-                            bgColor={themeColor}
-                            borderRadius="50%"
-                            lineHeight="0.5rem"
-                            mr="7px"
-                            mt="4px"
-                          />
-                        ) : (
-                          <Box
-                            h="7px"
-                            w="7px"
-                            mb={1}
-                            borderRadius="50%"
-                            lineHeight="0.5rem"
-                            mr="7px"
-                            mt="4px"
-                            opacity={1}
-                          />
-                        )}
-                        <Box>
-                          <Trans id={item.displayName} />
-                        </Box>
-                      </MenuItem>
-                    </a>
-                  </Link>
-                ))}
+                {menuItems.map((item) => {
+                  if ("component" in item)
+                    return (
+                      <MenuItem key={item.code}>{item.component}</MenuItem>
+                    );
+                  return (
+                    <Link key={item.code} href={"/" + item.code}>
+                      <a>
+                        <MenuItem
+                          disabled={item.displayName === "Voting" && !isVoting}
+                        >
+                          {pathname === "/" + item.code ? (
+                            <Box
+                              h="7px"
+                              w="7px"
+                              mb={1}
+                              bgColor={themeColor}
+                              borderRadius="50%"
+                              lineHeight="0.5rem"
+                              mr="7px"
+                              mt="4px"
+                            />
+                          ) : (
+                            <Box
+                              h="7px"
+                              w="7px"
+                              mb={1}
+                              borderRadius="50%"
+                              lineHeight="0.5rem"
+                              mr="7px"
+                              mt="4px"
+                              opacity={1}
+                            />
+                          )}
+                          <Box>
+                            <Trans id={item.displayName} />
+                          </Box>
+                        </MenuItem>
+                      </a>
+                    </Link>
+                  );
+                })}
               </MenuGroup>
             </MenuList>
           </Menu>
@@ -234,26 +254,26 @@ const IconNavBar = () => {
   }
 };
 
-function getFirstFridayDate() {
-  const today = new Date();
-  const month =
-    today.getDate() - ((1 + today.getDay()) % 7) <= 0
-      ? today.getMonth()
-      : today.getMonth() + 1;
+// function getFirstFridayDate() {
+//   const today = new Date();
+//   const month =
+//     today.getDate() - ((1 + today.getDay()) % 7) <= 0
+//       ? today.getMonth()
+//       : today.getMonth() + 1;
 
-  let day = 1;
-  while (day <= 7) {
-    const dateOfVoting = new Date(
-      Date.UTC(today.getFullYear(), month, day, 15, 0, 0)
-    );
+//   let day = 1;
+//   while (day <= 7) {
+//     const dateOfVoting = new Date(
+//       Date.UTC(today.getFullYear(), month, day, 15, 0, 0)
+//     );
 
-    if (dateOfVoting.getDay() === 5) return dateOfVoting;
+//     if (dateOfVoting.getDay() === 5) return dateOfVoting;
 
-    day++;
-  }
+//     day++;
+//   }
 
-  console.error("Couldn't resolve first friday of the month for voting");
-  return new Date(2000, 1, 1);
-}
+//   console.error("Couldn't resolve first friday of the month for voting");
+//   return new Date(2000, 1, 1);
+// }
 
 export default IconNavBar;

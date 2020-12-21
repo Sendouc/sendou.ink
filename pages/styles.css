@@ -63,3 +63,11 @@
     background-position: 0% 82%;
   }
 }
+
+/* 
+For Next.JS image
+*/
+
+.rounded {
+  border-radius: 50%;
+}
