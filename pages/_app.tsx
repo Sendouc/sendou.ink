@@ -65,6 +65,11 @@ const extendedTheme = extendTheme({
         colorScheme: "theme",
       },
     },
+    Checkbox: {
+      defaultProps: {
+        colorScheme: "theme",
+      },
+    },
     Modal: {
       baseStyle: (props) => ({
         dialog: {

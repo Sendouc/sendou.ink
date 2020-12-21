@@ -6,9 +6,23 @@ import { GetAllSalmonRunRecordsData } from "prisma/queries/getAllSalmonRunRecord
 import { useReducer } from "react";
 import useSWR from "swr";
 
+export type WeaponsFilter =
+  | "NORMAL"
+  | "ONE_RANDOM"
+  | "FOUR_RANDOM"
+  | "FOUR_RANDOM_GRIZZCO";
+
+const allWeaponsFilters = [
+  "NORMAL",
+  "ONE_RANDOM",
+  "FOUR_RANDOM",
+  "FOUR_RANDOM_GRIZZCO",
+] as WeaponsFilter[];
+
 interface UseSalmonRunRecordsState {
   stage: string;
   category: SalmonRunRecordCategory;
+  weaponsFilter: WeaponsFilter[];
 }
 
 type Action =
@@ -19,6 +33,10 @@ type Action =
   | {
       type: "SET_CATEGORY";
       category: SalmonRunRecordCategory;
+    }
+  | {
+      type: "SET_WEAPONS_FILTER";
+      filter: WeaponsFilter[];
     };
 
 export function useSalmonRunRecords() {
@@ -43,6 +61,13 @@ export function useSalmonRunRecords() {
           });
 
           return { ...oldState, category: action.category };
+        case "SET_WEAPONS_FILTER":
+          router.replace({
+            pathname: "/sr/leaderboards",
+            query: { ...router.query, filter: action.filter },
+          });
+
+          return { ...oldState, weaponsFilter: action.filter };
         default:
           return oldState;
       }
@@ -50,6 +75,7 @@ export function useSalmonRunRecords() {
     {
       stage: getInitialStage(),
       category: getInitialCategory(),
+      weaponsFilter: getInitialWeaponsFilter(),
     }
   );
 
@@ -59,6 +85,32 @@ export function useSalmonRunRecords() {
     if (record.rotation.stage !== state.stage) return false;
     if (record.category !== state.category) return false;
     if (record.roster.every((user) => userIds.has(user.id))) return false;
+
+    if (
+      record.rotation.weapons[0] === "RANDOM_GRIZZCO" &&
+      !state.weaponsFilter.includes("FOUR_RANDOM_GRIZZCO")
+    ) {
+      return false;
+    }
+
+    const randomCount = record.rotation.weapons.reduce((acc, cur) => {
+      if (cur === "RANDOM") acc++;
+      return acc;
+    }, 0);
+
+    if (
+      randomCount === 0 &&
+      record.rotation.weapons[0] !== "RANDOM_GRIZZCO" &&
+      !state.weaponsFilter.includes("NORMAL")
+    ) {
+      return false;
+    }
+    if (randomCount === 1 && !state.weaponsFilter.includes("ONE_RANDOM")) {
+      return false;
+    }
+    if (randomCount === 4 && !state.weaponsFilter.includes("FOUR_RANDOM")) {
+      return false;
+    }
 
     record.roster.forEach((user) => userIds.add(user.id));
 
@@ -98,5 +150,24 @@ export function useSalmonRunRecords() {
     }
 
     return router.query.category as SalmonRunRecordCategory;
+  }
+
+  function getInitialWeaponsFilter() {
+    if (
+      !Array.isArray(router.query.filter) ||
+      !router.query.filter.every((filter) =>
+        allWeaponsFilters.includes(filter as any)
+      ) ||
+      router.query.filter.length > allWeaponsFilters.length
+    ) {
+      return [
+        "NORMAL",
+        "ONE_RANDOM",
+        "FOUR_RANDOM",
+        "FOUR_RANDOM_GRIZZCO",
+      ] as WeaponsFilter[];
+    }
+
+    return router.query.filter as WeaponsFilter[];
   }
 }

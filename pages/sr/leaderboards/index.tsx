@@ -4,6 +4,8 @@ import {
   Box,
   Button,
   Center,
+  Checkbox,
+  CheckboxGroup,
   Flex,
   IconButton,
   Radio,
@@ -25,7 +27,7 @@ import {
 } from "components/common/Table";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
-import { useSalmonRunRecords } from "hooks/sr";
+import { useSalmonRunRecords, WeaponsFilter } from "hooks/sr";
 import { salmonRunStages } from "lib/lists/stages";
 import { getRankingString } from "lib/strings";
 import Image from "next/image";
@@ -102,6 +104,33 @@ const SalmonRunLeaderboardsPage = ({}) => {
         </RadioGroup>
       </Center>
 
+      <Center my={4}>
+        <CheckboxGroup
+          value={state.weaponsFilter}
+          onChange={(value) =>
+            dispatch({
+              type: "SET_WEAPONS_FILTER",
+              filter: value as WeaponsFilter[],
+            })
+          }
+        >
+          <Stack spacing={5} direction="row">
+            <Checkbox value="NORMAL">
+              <Trans>Normal weapons only</Trans>
+            </Checkbox>
+            <Checkbox value="ONE_RANDOM">
+              <Trans>One random</Trans>
+            </Checkbox>
+            <Checkbox value="FOUR_RANDOM">
+              <Trans>Four random</Trans>
+            </Checkbox>
+            <Checkbox value="FOUR_RANDOM_GRIZZCO">
+              <Trans>Four random (Grizzco weapons only)</Trans>
+            </Checkbox>
+          </Stack>
+        </CheckboxGroup>
+      </Center>
+
       {isLoading ? null : (
         <>
           <Box mt={8}>
@@ -153,8 +182,8 @@ const SalmonRunLeaderboardsPage = ({}) => {
                             flexDir={["column", null, "row"]}
                             justify="center"
                           >
-                            {record.rotation.weapons.map((wpn) => (
-                              <Box key={wpn} mx={1}>
+                            {record.rotation.weapons.map((wpn, i) => (
+                              <Box key={i} mx={1}>
                                 <WeaponImage size={32} name={wpn} />
                               </Box>
                             ))}
