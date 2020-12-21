@@ -102,119 +102,126 @@ const SalmonRunLeaderboardsPage = ({}) => {
         </RadioGroup>
       </Center>
 
-      <Box mt={8}>
-        {data.length === 0 && !isLoading ? (
-          <Trans>No results yet. Submit the first one!</Trans>
-        ) : (
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableHeader />
-                <TableHeader textAlign="center">
-                  <Image
-                    src="/images/salmonRunIcons/Golden%20Egg.png"
-                    width={32}
-                    height={32}
-                    aria-label="Golden eggs count"
-                  />
-                </TableHeader>
-                <TableHeader textAlign="center">
-                  <Trans>Weapons</Trans>
-                </TableHeader>
-                <TableHeader textAlign="center">
-                  <Trans>Players</Trans>
-                </TableHeader>
-                <TableHeader textAlign="center">
-                  <Trans>Rotation Dates</Trans>
-                </TableHeader>
-                <TableHeader textAlign="center">
-                  <Trans>Links</Trans>
-                </TableHeader>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data.map((record, i) => {
-                if (
-                  i !== 0 &&
-                  data[i - 1].goldenEggCount !== record.goldenEggCount
-                ) {
-                  placement = i + 1;
-                }
-                return (
-                  <TableRow key={record.id}>
-                    <TableCell>{getRankingString(placement)}</TableCell>
-                    <TableCell fontWeight="bold" textAlign="center">
-                      {record.goldenEggCount}
-                    </TableCell>
-                    <TableCell>
-                      <Flex flexDir={["column", null, "row"]} justify="center">
-                        {record.rotation.weapons.map((wpn) => (
-                          <Box key={wpn} mx={1}>
-                            <WeaponImage size={32} name={wpn} />
-                          </Box>
-                        ))}
-                      </Flex>
-                    </TableCell>
-
-                    <TableCell>
-                      {record.roster.map((user) => (
-                        <Flex
-                          key={user.id}
-                          align="center"
-                          my={4}
-                          justify="center"
-                        >
-                          <UserAvatar isSmall user={user} mr={2} />
-                          {user.username}#{user.discriminator}
-                        </Flex>
-                      ))}
-                    </TableCell>
-
-                    <TableCell>
-                      <Flex flexDir="column" align="center">
-                        <Box
-                          as="time"
-                          dateTime={
-                            (record.rotation.startTime as unknown) as string
-                          }
-                        >
-                          {new Date(
-                            record.rotation.startTime
-                          ).toLocaleDateString()}
-                        </Box>
-                        <Box>-</Box>
-                        <Box
-                          as="time"
-                          dateTime={
-                            (record.rotation.endTime as unknown) as string
-                          }
-                        >
-                          {new Date(
-                            record.rotation.endTime
-                          ).toLocaleDateString()}
-                        </Box>
-                      </Flex>
-                    </TableCell>
-
-                    <TableCell textAlign="center">
-                      {record.links.map((link) => (
-                        <a key={link} href={link}>
-                          <IconButton
-                            aria-label={`Link to ${link}`}
-                            icon={<LinkIcon link={link} />}
-                            isRound
-                            variant="ghost"
-                          />
-                        </a>
-                      ))}
-                    </TableCell>
+      {isLoading ? null : (
+        <>
+          <Box mt={8}>
+            {data.length === 0 ? (
+              <Trans>No results yet. Submit the first one!</Trans>
+            ) : (
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableHeader />
+                    <TableHeader textAlign="center">
+                      <Image
+                        src="/images/salmonRunIcons/Golden%20Egg.png"
+                        width={32}
+                        height={32}
+                        aria-label="Golden eggs count"
+                      />
+                    </TableHeader>
+                    <TableHeader textAlign="center">
+                      <Trans>Weapons</Trans>
+                    </TableHeader>
+                    <TableHeader textAlign="center">
+                      <Trans>Players</Trans>
+                    </TableHeader>
+                    <TableHeader textAlign="center">
+                      <Trans>Rotation Dates</Trans>
+                    </TableHeader>
+                    <TableHeader textAlign="center">
+                      <Trans>Links</Trans>
+                    </TableHeader>
                   </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        )}
-      </Box>
+                </TableHead>
+                <TableBody>
+                  {data.map((record, i) => {
+                    if (
+                      i !== 0 &&
+                      data[i - 1].goldenEggCount !== record.goldenEggCount
+                    ) {
+                      placement = i + 1;
+                    }
+                    return (
+                      <TableRow key={record.id}>
+                        <TableCell>{getRankingString(placement)}</TableCell>
+                        <TableCell fontWeight="bold" textAlign="center">
+                          {record.goldenEggCount}
+                        </TableCell>
+                        <TableCell>
+                          <Flex
+                            flexDir={["column", null, "row"]}
+                            justify="center"
+                          >
+                            {record.rotation.weapons.map((wpn) => (
+                              <Box key={wpn} mx={1}>
+                                <WeaponImage size={32} name={wpn} />
+                              </Box>
+                            ))}
+                          </Flex>
+                        </TableCell>
+
+                        <TableCell>
+                          {record.roster.map((user) => (
+                            <Flex
+                              key={user.id}
+                              align="center"
+                              my={4}
+                              justify="center"
+                            >
+                              <UserAvatar isSmall user={user} mr={2} />
+                              {user.username}#{user.discriminator}
+                            </Flex>
+                          ))}
+                        </TableCell>
+
+                        <TableCell>
+                          <Flex flexDir="column" align="center">
+                            <Box
+                              as="time"
+                              dateTime={
+                                (record.rotation.startTime as unknown) as string
+                              }
+                            >
+                              {new Date(
+                                record.rotation.startTime
+                              ).toLocaleDateString()}
+                            </Box>
+                            <Box>-</Box>
+                            <Box
+                              as="time"
+                              dateTime={
+                                (record.rotation.endTime as unknown) as string
+                              }
+                            >
+                              {new Date(
+                                record.rotation.endTime
+                              ).toLocaleDateString()}
+                            </Box>
+                          </Flex>
+                        </TableCell>
+
+                        <TableCell textAlign="center">
+                          {record.links.map((link) => (
+                            <a key={link} href={link}>
+                              <IconButton
+                                aria-label={`Link to ${link}`}
+                                icon={<LinkIcon link={link} />}
+                                isRound
+                                variant="ghost"
+                              />
+                            </a>
+                          ))}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            )}
+          </Box>
+        </>
+      )}
     </>
   );
 };
