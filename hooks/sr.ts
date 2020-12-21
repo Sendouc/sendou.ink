@@ -1,5 +1,7 @@
 import { SalmonRunRecordCategory } from "@prisma/client";
+import { salmonRunStages } from "lib/lists/stages";
 import { useRouter } from "next/router";
+import { salmonRunCategoryToNatural } from "pages/sr/leaderboards/new";
 import { GetAllSalmonRunRecordsData } from "prisma/queries/getAllSalmonRunRecords";
 import { useReducer } from "react";
 import useSWR from "swr";
@@ -46,8 +48,8 @@ export function useSalmonRunRecords() {
       }
     },
     {
-      stage: "Spawning Grounds",
-      category: "TOTAL",
+      stage: getInitialStage(),
+      category: getInitialCategory(),
     }
   );
 
@@ -73,4 +75,28 @@ export function useSalmonRunRecords() {
     state,
     dispatch,
   };
+
+  function getInitialStage() {
+    if (
+      typeof router.query.stage !== "string" ||
+      !salmonRunStages.includes(router.query.stage as any)
+    ) {
+      return "Spawning Grounds";
+    }
+
+    return router.query.stage;
+  }
+
+  function getInitialCategory() {
+    if (
+      typeof router.query.category !== "string" ||
+      !Object.keys(salmonRunCategoryToNatural).includes(
+        router.query.category as any
+      )
+    ) {
+      return "TOTAL";
+    }
+
+    return router.query.category as SalmonRunRecordCategory;
+  }
 }
