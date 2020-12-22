@@ -49,11 +49,17 @@ const discordCommandHandler = async (
   const timestamp = req.headers["X-Signature-Timestamp"] as string;
   const body = await getRawBody(req); // rawBody is expected to be a string, not raw bytes
 
-  const isVerified = nacl.sign.detached.verify(
-    Buffer.from(timestamp + body),
-    Buffer.from(signature, "hex"),
-    Buffer.from(PUBLIC_KEY, "hex")
-  );
+  let isVerified;
+
+  try {
+    isVerified = nacl.sign.detached.verify(
+      Buffer.from(timestamp + body),
+      Buffer.from(signature, "hex"),
+      Buffer.from(PUBLIC_KEY, "hex")
+    );
+  } catch {
+    return res.status(401).end("invalid request signature");
+  }
 
   if (!isVerified) {
     return res.status(401).end("invalid request signature");
