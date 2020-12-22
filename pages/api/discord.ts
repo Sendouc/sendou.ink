@@ -1,5 +1,5 @@
-import { buffer } from "micro";
 import { NextApiRequest, NextApiResponse } from "next";
+import getRawBody from "raw-body";
 import nacl from "tweetnacl";
 
 /*
@@ -45,10 +45,9 @@ const discordCommandHandler = async (
   const PUBLIC_KEY =
     "90bc7521c9602f53db2c93c6a00a68d71a4dbb703f8dc91ef66eb2462ad63d93";
 
-  const signature = req.headers["X-Signature-Ed25519"] as string;
-  const timestamp = req.headers["X-Signature-Timestamp"] as string;
-  const buf = await buffer(req);
-  const body = buf.toString();
+  const signature = req.headers["x-signature-ed25519"] as string;
+  const timestamp = req.headers["x-signature-timestamp"] as string;
+  const body = (await getRawBody(req)).toString(); // rawBody is expected to be a string, not raw bytes
 
   let isVerified;
 
