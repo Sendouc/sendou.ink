@@ -1,6 +1,6 @@
-import { verifyKey } from "discord-interactions";
 import { NextApiRequest, NextApiResponse } from "next";
 import getRawBody from "raw-body";
+import nacl from "tweetnacl";
 
 /*
 {
@@ -49,9 +49,14 @@ const discordCommandHandler = async (
   const timestamp = req.headers["X-Signature-Timestamp"] as string;
   const body = await getRawBody(req); // rawBody is expected to be a string, not raw bytes
 
-  const isValidRequest = verifyKey(body, signature, timestamp, PUBLIC_KEY);
-  if (!isValidRequest) {
-    return res.status(401).end("Bad request signature");
+  const isVerified = nacl.sign.detached.verify(
+    Buffer.from(timestamp + body),
+    Buffer.from(signature, "hex"),
+    Buffer.from(PUBLIC_KEY, "hex")
+  );
+
+  if (!isVerified) {
+    return res.status(401).end("invalid request signature");
   }
 
   // if req.json type === 1

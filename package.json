@@ -32,7 +32,6 @@
     "@prisma/client": "^2.13.1",
     "@sendou/react-sketch": "^0.5.2",
     "countries-list": "^2.5.6",
-    "discord-interactions": "^1.4.1",
     "framer-motion": "^3.1.1",
     "next": "^10.0.3",
     "next-auth": "^3.1.0",
@@ -53,6 +52,7 @@
     "react-string-replace": "^0.4.4",
     "recharts": "^1.8.5",
     "swr": "^0.3.11",
+    "tweetnacl": "^1.0.3",
     "zod": "^1.11.11"
   },
   "devDependencies": {
