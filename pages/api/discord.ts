@@ -47,7 +47,7 @@ const discordCommandHandler = async (
 
   const signature = req.headers["X-Signature-Ed25519"] as string;
   const timestamp = req.headers["X-Signature-Timestamp"] as string;
-  const body = await getRawBody(req); // rawBody is expected to be a string, not raw bytes
+  const body = (await getRawBody(req)).toString(); // rawBody is expected to be a string, not raw bytes
 
   let isVerified;
 
