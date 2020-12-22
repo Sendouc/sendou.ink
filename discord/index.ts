@@ -1,51 +1,26 @@
-import {
-  InteractionResponseFlags,
-  InteractionResponseType,
-} from "discord-interactions";
+import infoCommand from "./commands/info";
+import { InteractionInfo, InvocationCommon, RespondData } from "./utils";
 
-type InvocationCommon = {
-  member: {
-    user: {
-      id: number;
-      username: string;
-      avatar: string;
-      discriminator: string;
-      public_flags: number;
-    };
-    roles: string[];
-  };
-};
-
-interface Interaction extends InvocationCommon {
-  data: { name: "ping" };
-}
-
-type ReturnData = {
-  type: InteractionResponseType;
-  data: {
-    content: string;
-  };
-  flags?: InteractionResponseFlags;
-};
-
-const handleCommand = (interaction: Interaction): ReturnData => {
+const handleCommand = async (
+  interaction: InvocationCommon & InteractionInfo,
+  respond: (result: RespondData) => void
+) => {
   switch (interaction.data.name) {
     case "ping":
-      return {
-        type: InteractionResponseType.CHANNEL_MESSAGE,
-        data: {
-          content: "pong",
-        },
-      };
+      respond({ content: "pong" });
+      break;
+    case "info":
+      const discordId =
+        "" + (interaction.data.options[0]?.value ?? interaction.member.user.id);
+      await infoCommand(respond, discordId);
+      break;
     default:
       console.error("not existing command invoced");
-      return {
-        type: InteractionResponseType.CHANNEL_MESSAGE,
-        data: {
-          content: "Sorry but I don't understand this command 😞",
-        },
-        flags: InteractionResponseFlags.EPHEMERAL,
-      };
+      respond({
+        content:
+          "Sorry but I don't understand this command 😞... Contact my maker Sendou#4059 to get it fixed",
+      });
+      break;
   }
 };
 
