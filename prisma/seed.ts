@@ -1,4 +1,4 @@
-import prisma from "prisma/client";
+import prisma from "./client";
 
 const fs = require("fs");
 const path = require("path");
