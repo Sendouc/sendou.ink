@@ -1,6 +1,6 @@
 // all text max 6000 characters
 
-interface EmbedArgs {
+export interface EmbedArgs {
   // max 256 characters
   title: string;
   url: string;

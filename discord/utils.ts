@@ -28,4 +28,4 @@ export type RespondData = {
   embeds?: Embed[];
 };
 
-export type RespondFuction = (result: RespondData) => void;
+export type RespondFuction = (result: RespondData, isEpheremal?: true) => void;

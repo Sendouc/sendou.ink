@@ -1,5 +1,9 @@
 import handleCommand from "discord";
-import { InteractionResponseType, InteractionType } from "discord-interactions";
+import {
+  InteractionResponseFlags,
+  InteractionResponseType,
+  InteractionType,
+} from "discord-interactions";
 import { RespondData } from "discord/utils";
 import { NextApiRequest, NextApiResponse } from "next";
 import getRawBody from "raw-body";
@@ -37,10 +41,11 @@ const discordCommandHandler = async (
   const interaction = JSON.parse(rawBody);
 
   if (interaction && interaction.type === InteractionType.COMMAND) {
-    handleCommand(interaction, (data) =>
+    handleCommand(interaction, (data, isEpheremal) =>
       res.status(200).json({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: getCompleteData(data),
+        flags: isEpheremal ? InteractionResponseFlags.EPHEMERAL : undefined,
       })
     );
   } else {
@@ -55,7 +60,6 @@ function getCompleteData(result: RespondData) {
     ...result,
     // add zero-width space because empty content isn't allowed even with embeds
     content: result.content ? result.content : "\u200b",
-    //flags: InteractionResponseFlags.EPHEMERAL,
   };
 }
 
