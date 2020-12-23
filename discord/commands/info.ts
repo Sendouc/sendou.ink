@@ -1,12 +1,9 @@
 import getEmbed from "discord/embed";
 import { weaponsToEmoji } from "discord/emoji";
-import { RespondData } from "discord/utils";
+import { RespondFuction } from "discord/utils";
 import { getUserByIdentifier } from "prisma/queries/getUserByIdentifier";
 
-const infoCommand = async (
-  respond: (result: RespondData) => void,
-  discordId: string
-) => {
+const infoCommand = async (respond: RespondFuction, discordId: string) => {
   const user = await getUserByIdentifier(discordId);
 
   if (!user) {

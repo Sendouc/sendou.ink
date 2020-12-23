@@ -1,9 +1,5 @@
 import handleCommand from "discord";
-import {
-  InteractionResponseFlags,
-  InteractionResponseType,
-  InteractionType,
-} from "discord-interactions";
+import { InteractionResponseType, InteractionType } from "discord-interactions";
 import { RespondData } from "discord/utils";
 import { NextApiRequest, NextApiResponse } from "next";
 import getRawBody from "raw-body";
@@ -43,7 +39,7 @@ const discordCommandHandler = async (
   if (interaction && interaction.type === InteractionType.COMMAND) {
     handleCommand(interaction, (data) =>
       res.status(200).json({
-        type: InteractionResponseType.CHANNEL_MESSAGE,
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: getCompleteData(data),
       })
     );
@@ -59,7 +55,7 @@ function getCompleteData(result: RespondData) {
     ...result,
     // add zero-width space because empty content isn't allowed even with embeds
     content: result.content ? result.content : "\u200b",
-    flags: InteractionResponseFlags.EPHEMERAL,
+    //flags: InteractionResponseFlags.EPHEMERAL,
   };
 }
 

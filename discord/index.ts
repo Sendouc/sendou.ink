@@ -1,9 +1,9 @@
 import infoCommand from "./commands/info";
-import { InteractionInfo, InvocationCommon, RespondData } from "./utils";
+import { InteractionInfo, InvocationCommon, RespondFuction } from "./utils";
 
 const handleCommand = async (
   interaction: InvocationCommon & InteractionInfo,
-  respond: (result: RespondData) => void
+  respond: RespondFuction
 ) => {
   switch (interaction.data.name) {
     case "ping":

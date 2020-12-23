@@ -27,3 +27,5 @@ export type RespondData = {
   content?: string;
   embeds?: Embed[];
 };
+
+export type RespondFuction = (result: RespondData) => void;
