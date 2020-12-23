@@ -10,8 +10,7 @@ const handleCommand = async (
       respond({ content: "pong" });
       break;
     case "info":
-      const discordId =
-        "" + (interaction.data.options[0]?.value ?? interaction.member.user.id);
+      const discordId = "" + interaction.data.options[0].value;
       await infoCommand(respond, discordId);
       break;
     default:
@@ -20,7 +19,6 @@ const handleCommand = async (
         content:
           "Sorry but I don't understand this command 😞... Contact my maker Sendou#4059 to get it fixed",
       });
-      break;
   }
 };
 

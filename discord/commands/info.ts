@@ -37,7 +37,7 @@ const infoCommand = async (
     ],
   });
 
-  respond({ embeds: [embed] });
+  respond({ content: `Here is ${user.username}'s profile:`, embeds: [embed] });
 };
 
 export default infoCommand;

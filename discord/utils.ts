@@ -14,7 +14,7 @@ export type InvocationCommon = {
 };
 
 export type InfoCommandInteraction = {
-  data: { name: "info"; options: [{ name: "user"; value: number }] | [] };
+  data: { name: "info"; options: [{ name: "user"; value: number }] };
 };
 
 export type InteractionInfo =

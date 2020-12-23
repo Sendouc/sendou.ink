@@ -43,7 +43,7 @@ const discordCommandHandler = async (
   if (interaction && interaction.type === InteractionType.COMMAND) {
     handleCommand(interaction, (data) =>
       res.status(200).json({
-        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        type: InteractionResponseType.CHANNEL_MESSAGE,
         data: getCompleteData(data),
       })
     );
@@ -55,13 +55,10 @@ const discordCommandHandler = async (
 };
 
 function getCompleteData(result: RespondData) {
-  if (result.content)
-    return { ...result, flags: InteractionResponseFlags.EPHEMERAL };
-
-  // add zero-width space because empty content isn't allowed even with embeds
   return {
     ...result,
-    content: "\u200b",
+    // add zero-width space because empty content isn't allowed even with embeds
+    content: result.content ? result.content : "\u200b",
     flags: InteractionResponseFlags.EPHEMERAL,
   };
 }
