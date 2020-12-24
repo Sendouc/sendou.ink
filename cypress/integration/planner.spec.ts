@@ -9,3 +9,5 @@ describe("Map Planner", () => {
     cy.get("canvas");
   });
 });
+
+export {};

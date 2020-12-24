@@ -2,7 +2,7 @@
 
 describe("Profile", () => {
   beforeEach(() => {
-    cy.visit("/u/455039198672453645");
+    cy.visit("/u/tester");
   });
 
   it("loads avatar", () => {
@@ -13,3 +13,5 @@ describe("Profile", () => {
     cy.get("strong");
   });
 });
+
+export {};

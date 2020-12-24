@@ -22,6 +22,8 @@ const main = async () => {
     }
   });
 
+  await prisma.salmonRunRecord.deleteMany({});
+  await prisma.salmonRunRotation.deleteMany({});
   await prisma.build.deleteMany({});
   await prisma.profile.deleteMany({});
   await prisma.user.deleteMany({});
