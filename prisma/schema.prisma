@@ -19,6 +19,7 @@ model User {
   builds           Build[]
   submittedRecords SalmonRunRecord[]
   salmonRunRecords SalmonRunRecord[] @relation("SalmonRunRecordRoster")
+  freeAgentPost    FreeAgentPost?
 }
 
 model Profile {
@@ -204,4 +205,28 @@ model SalmonRunRecord {
   rotation       SalmonRunRotation       @relation(fields: [rotationId], references: [id])
   submitter      User                    @relation(fields: [submitterId], references: [id])
   roster         User[]                  @relation("SalmonRunRecordRoster")
+}
+
+enum VoiceChatStatus {
+  YES
+  NO
+  MAYBE
+}
+
+enum Playstyle {
+  FRONTLINE
+  MIDLINE
+  BACKLINE
+}
+
+model FreeAgentPost {
+  id          Int             @id @default(autoincrement())
+  playstyles  Playstyle[]
+  canVC       VoiceChatStatus
+  content     String
+  updatedAt   DateTime        @updatedAt
+  userId      Int             @unique
+  user        User            @relation(fields: [userId], references: [id])
+  likedPosts  FreeAgentPost[] @relation("LikedPosts", references: [id])
+  likersPosts FreeAgentPost[] @relation("LikedPosts", references: [id])
 }
