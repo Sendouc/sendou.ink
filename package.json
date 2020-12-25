@@ -11,7 +11,7 @@
     "migrate:up": "prisma migrate dev --preview-feature",
     "studio": "npx prisma studio",
     "gen": "npx prisma generate",
-    "seed": "ts-node prisma/seed.ts",
+    "seed": "ts-node prisma/scripts/seed",
     "mongo": "ts-node prisma/scripts/dataFromMongo.ts",
     "top500": "ts-node prisma/scripts/top500jsons.ts",
     "league": "ts-node prisma/scripts/leagueJsons.ts",
