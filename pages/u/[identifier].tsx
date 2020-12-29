@@ -14,14 +14,14 @@ import { useBuildsByUser } from "hooks/u";
 import { GANBA_DISCORD_ID } from "lib/constants";
 import { getFullUsername } from "lib/strings";
 import useUser from "lib/useUser";
-import { isCustomUrl } from "lib/validators/profile";
 import { GetStaticPaths, GetStaticProps } from "next";
+import { useRouter } from "next/router";
 import { getPlayersPeak } from "prisma/queries/getPlayersPeak";
 import {
   getUserByIdentifier,
   GetUserByIdentifierData,
 } from "prisma/queries/getUserByIdentifier";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FiEdit } from "react-icons/fi";
 import { RiTShirtLine } from "react-icons/ri";
 import useSWR from "swr";
@@ -33,6 +33,7 @@ interface Props {
 }
 
 const ProfilePage = (props: Props) => {
+  const router = useRouter();
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [buildToEdit, setBuildToEdit] = useState<boolean | Build>(false);
 
@@ -50,6 +51,14 @@ const ProfilePage = (props: Props) => {
     user?.id,
     props.user?.profile?.weaponPool
   );
+
+  useEffect(() => {
+    if (user.profile?.customUrlPath) {
+      router.replace({
+        pathname: `/u/${user.profile.customUrlPath}`,
+      });
+    }
+  }, []);
 
   const { i18n } = useLingui();
 
@@ -173,17 +182,6 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   const user = await getUserByIdentifier(params!.identifier as string);
 
   if (!user) return { notFound: true };
-  if (
-    user.profile?.customUrlPath &&
-    !isCustomUrl(params!.identifier as string)
-  ) {
-    return {
-      redirect: {
-        destination: `/u/${user.profile.customUrlPath}`,
-        permanent: true,
-      },
-    };
-  }
 
   const peak = user.player?.switchAccountId
     ? await getPlayersPeak(user.player.switchAccountId)
