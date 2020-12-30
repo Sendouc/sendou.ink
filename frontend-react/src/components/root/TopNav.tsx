@@ -101,7 +101,7 @@ const TopNav = () => {
           display={["none", null, "block"]}
         >
           {" "}
-          <Link to="/">sendou.ink </Link>
+          <Link to="/">sendou.ink (old)</Link>
         </Box>
         <Box justifySelf="flex-end">
           <UserItem />

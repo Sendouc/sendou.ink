@@ -170,7 +170,7 @@ const server = new ApolloServer({
       }),
     };
   },
-  validationRules: [depthLimit(4)],
+  validationRules: [depthLimit(10)],
 });
 
 const app = express();
