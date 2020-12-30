@@ -3,12 +3,12 @@ import { CSSProperties } from "react";
 
 interface ModeImageProps {
   mode: "TW" | "SZ" | "TC" | "RM" | "CB";
-  size: 24 | 32 | 64 | 128;
+  size?: 24 | 32 | 64 | 128;
   onClick?: () => void;
   style?: CSSProperties;
 }
 
-const ModeImage: React.FC<ModeImageProps> = ({ mode, size, onClick }) => {
+const ModeImage: React.FC<ModeImageProps> = ({ mode, size = 32, onClick }) => {
   return (
     <Image
       src={`/modes/${mode}.png`}
