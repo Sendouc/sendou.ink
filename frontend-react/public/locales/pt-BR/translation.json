@@ -1235,7 +1235,7 @@
   "plans": {
     "tooNarrowAlert": "Infelizmente essa ferramenta não foi feira para telas estreitas mas você ainda pode tentar",
     "Weapons": "Armas",
-    "Tools": "Ferramentas",
+    "Tools": "Recursos",
     "Pencil (P)": "Pencil (P)",
     "Line (L)": "Linha (L)",
     "Rectangle (R)": "Retângulo (R)",
@@ -1546,7 +1546,7 @@
     "Delete free agent post": "Apagando postagem de jogador sem time",
     "deleteNotif": "Note que se você apagar sua postagem você precisará esperar uma semana antes de postar uma nova.",
     "Confirm deletion": "Confirmar exclusão",
-    "theyAreSynced": "Foto de perfil, nome no Discord, usuário do Twitter, Lista de armas e histórico de Top 500 são automaticamente sincronizados com o seu perfil. Além disso, a postagem automático no Discord não pode ser alterada após a confirmação, então preencha todos esses dados no seu perfil antes de fazer a postagem",
+    "theyAreSynced": "Foto de perfil, nome no Discord, usuário do Twitter, Lista de armas e histórico de Top 500 são automaticamente sincronizados com o seu perfil. Além disso, a postagem automática no Discord não pode ser alterada após a confirmação, então preencha todos esses dados no seu perfil antes de fazer a postagem",
     "Playstyles": "Estilos de jogo",
     "Required field": "Campo obrigatório",
     "Value too long": "Valor muito grande",
