@@ -9,9 +9,12 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  Radio,
+  RadioGroup,
+  Stack,
   Textarea,
 } from "@chakra-ui/react";
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { RankedMode } from "@prisma/client";
 import Breadcrumbs from "components/common/Breadcrumbs";
@@ -21,18 +24,24 @@ import SubText from "components/common/SubText";
 import { stages } from "lib/lists/stages";
 import { useRouter } from "next/router";
 import { ChangeEvent, Fragment, useState } from "react";
+import { FiFilter, FiRotateCw } from "react-icons/fi";
 
 const MapsGeneratorPage = () => {
   const router = useRouter();
   const { i18n } = useLingui();
+
   const [stagesSelected, setStagesSelected] = useState<
     Record<string, RankedMode[]>
   >(getInitialStages());
+  const [generationMode, setGenerationMode] = useState<
+    "EQUAL" | "SZ_EVERY_OTHER"
+  >("EQUAL");
   const [maplist, setMaplist] = useState("");
   const [count, setCount] = useState(9);
+  const [editing, setEditing] = useState(false);
 
   function getInitialStages() {
-    return Object.entries(router.query).reduce(
+    const filtersFromUrl = Object.entries(router.query).reduce(
       (acc: Record<string, RankedMode[]>, cur) => {
         if (stages.includes(cur[0]) && typeof cur[1] === "string") {
           // @ts-ignore
@@ -44,6 +53,13 @@ const MapsGeneratorPage = () => {
       },
       {}
     );
+
+    return Object.keys(filtersFromUrl).length
+      ? filtersFromUrl
+      : stages.reduce((acc: Record<string, RankedMode[]>, cur) => {
+          acc[cur] = ["SZ", "TC", "RM", "CB"];
+          return acc;
+        }, {});
   }
 
   const poolForUrl = (stagesSelectedForUrl: Record<string, string[]>) => {
@@ -99,7 +115,12 @@ const MapsGeneratorPage = () => {
       CB: shuffled(modeStages.CB),
     };
 
-    const modes = (shuffled(["SZ", "TC", "RM", "CB"]) as RankedMode[]).filter(
+    const modesFromGenerationMode =
+      generationMode === "SZ_EVERY_OTHER"
+        ? ["TC", "RM", "CB"]
+        : ["SZ", "TC", "RM", "CB"];
+
+    const modes = (shuffled(modesFromGenerationMode) as RankedMode[]).filter(
       (mode) => modeStages[mode].length > 0
     );
     if (modes.length === 0) {
@@ -108,17 +129,28 @@ const MapsGeneratorPage = () => {
 
     const stagesAlreadyPicked = new Set<string>();
 
+    const isSZFirst = Math.random() > 0.5;
+
     return new Array(count)
       .fill(null)
       .map((_, i) => {
-        modes.push(modes.shift() as RankedMode);
-        const stageArray = modeStages[modes[0]];
+        let modeOfRound: RankedMode = "SZ";
+
+        if (
+          generationMode === "SZ_EVERY_OTHER" &&
+          i % 2 === Number(isSZFirst)
+        ) {
+          modes.push(modes.shift() as RankedMode);
+          modeOfRound = modes[0];
+        }
+
+        const stageArray = modeStages[modeOfRound];
 
         stageArray.push(stageArray.shift() as string);
 
         let shifted = 0;
         while (
-          stagesAlreadyPicked.has(stageArray[0]) ||
+          stagesAlreadyPicked.has(stageArray[0]) &&
           shifted >= stageArray.length
         ) {
           stageArray.push(stageArray.shift() as string);
@@ -127,103 +159,200 @@ const MapsGeneratorPage = () => {
 
         stagesAlreadyPicked.add(stageArray[0]);
 
-        return `${i + 1}) ${modes[0]} on ${stageArray[0]}`;
+        return `${i + 1}) ${modeOfRound} on ${stageArray[0]}`;
       })
       .join("\n");
   };
 
   return (
     <MyContainer>
-      <Breadcrumbs pages={[{ name: "Maps" }]} />
-      <Alert status="info" mb={8}>
-        <AlertIcon />
-        <Trans>
-          Pro tip: bookmark this page after making your map list to save it
-        </Trans>
-      </Alert>
-      <Grid templateColumns="repeat(6, 1fr)" rowGap={4} placeItems="center">
-        <Box />
-        <Box />
-        <SubText>
-          <ModeImage mode="SZ" />
-        </SubText>
-        <SubText>
-          <ModeImage mode="TC" />
-        </SubText>
-        <SubText>
-          <ModeImage mode="RM" />
-        </SubText>
-        <SubText>
-          <ModeImage mode="CB" />
-        </SubText>
-        {stages.map((stage) => (
-          <Fragment key={stage}>
-            <SubText textAlign="center">{i18n._(stage)}</SubText>
+      <Breadcrumbs pages={[{ name: t`Maplist Generator` }]} />
+      {editing ? (
+        <>
+          <Alert status="info" mb={8}>
+            <AlertIcon />
+            <Trans>
+              Pro tip: bookmark this page after making your map list to save it
+            </Trans>
+          </Alert>
+          <Grid templateColumns="repeat(6, 1fr)" rowGap={4} placeItems="center">
+            <Box />
+            <Box />
+            <ModeImage mode="SZ" />
+            <ModeImage mode="TC" />
+            <ModeImage mode="RM" />
+            <ModeImage mode="CB" />
+            {stages.map((stage) => {
+              const buttonIsAdd = (stagesSelected[stage]?.length ?? 0) < 4;
+              return (
+                <Fragment key={stage}>
+                  <SubText textAlign="center">{i18n._(stage)}</SubText>
 
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => {
-                const newStagesSelected = {
-                  ...stagesSelected,
-                  [stage]: ["SZ", "TC", "RM", "CB"] as RankedMode[],
-                };
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    colorScheme={buttonIsAdd ? "theme" : "red"}
+                    onClick={() => {
+                      const newStagesSelected = {
+                        ...stagesSelected,
+                        [stage]: ["SZ", "TC", "RM", "CB"] as RankedMode[],
+                      };
 
-                setStagesSelected(newStagesSelected);
+                      if (!buttonIsAdd) delete newStagesSelected[stage];
 
-                router.replace({
-                  pathname: "/maps",
-                  query: poolForUrl(newStagesSelected),
-                });
-              }}
-            >
-              <Trans>All</Trans>
-            </Button>
-            <Checkbox
-              value="SZ"
-              isChecked={(stagesSelected[stage] ?? []).includes("SZ")}
-              onChange={(e) => handleChange(e, "SZ", stage)}
-            />
-            <Checkbox
-              value="TC"
-              isChecked={(stagesSelected[stage] ?? []).includes("TC")}
-              onChange={(e) => handleChange(e, "TC", stage)}
-            />
-            <Checkbox
-              value="RM"
-              isChecked={(stagesSelected[stage] ?? []).includes("RM")}
-              onChange={(e) => handleChange(e, "RM", stage)}
-            />
-            <Checkbox
-              value="CB"
-              isChecked={(stagesSelected[stage] ?? []).includes("CB")}
-              onChange={(e) => handleChange(e, "CB", stage)}
-            />
-          </Fragment>
-        ))}
-      </Grid>
-      <FormLabel htmlFor="share" mt={4}>
-        <Trans>Share your map pool</Trans>
-      </FormLabel>
-      {window && (
-        <InputGroup size="md">
-          <Input name="share" value={window.location.href} readOnly />
-          <InputRightElement width="4.5rem">
-            <Button h="1.75rem" size="sm">
-              <Trans>Copy</Trans>
-            </Button>
-          </InputRightElement>
-        </InputGroup>
+                      setStagesSelected(newStagesSelected);
+
+                      router.replace({
+                        pathname: "/maps",
+                        query: poolForUrl(newStagesSelected),
+                      });
+                    }}
+                  >
+                    {buttonIsAdd ? <Trans>All</Trans> : <Trans>Clear</Trans>}
+                  </Button>
+                  <Checkbox
+                    value="SZ"
+                    isChecked={(stagesSelected[stage] ?? []).includes("SZ")}
+                    onChange={(e) => handleChange(e, "SZ", stage)}
+                  />
+                  <Checkbox
+                    value="TC"
+                    isChecked={(stagesSelected[stage] ?? []).includes("TC")}
+                    onChange={(e) => handleChange(e, "TC", stage)}
+                  />
+                  <Checkbox
+                    value="RM"
+                    isChecked={(stagesSelected[stage] ?? []).includes("RM")}
+                    onChange={(e) => handleChange(e, "RM", stage)}
+                  />
+                  <Checkbox
+                    value="CB"
+                    isChecked={(stagesSelected[stage] ?? []).includes("CB")}
+                    onChange={(e) => handleChange(e, "CB", stage)}
+                  />
+                </Fragment>
+              );
+            })}
+          </Grid>
+          <FormLabel htmlFor="share" mt={4}>
+            <Trans>Share your map pool</Trans>
+          </FormLabel>
+          {window && (
+            <InputGroup size="md" mb={8}>
+              <Input name="share" value={window.location.href} readOnly />
+              <InputRightElement width="4.5rem">
+                <Button
+                  onClick={() =>
+                    navigator.clipboard.writeText(window.location.href)
+                  }
+                  h="1.75rem"
+                  size="sm"
+                >
+                  <Trans>Copy</Trans>
+                </Button>
+              </InputRightElement>
+            </InputGroup>
+          )}
+        </>
+      ) : (
+        <Grid my={8} templateColumns="repeat(4, 1fr)" rowGap={4} columnGap={4}>
+          <Box textAlign="center">
+            <ModeImage mode="SZ" />
+          </Box>
+          <Box textAlign="center">
+            <ModeImage mode="TC" />
+          </Box>
+          <Box textAlign="center">
+            <ModeImage mode="RM" />
+          </Box>
+          <Box textAlign="center">
+            <ModeImage mode="CB" />
+          </Box>
+          <Box textAlign="center">
+            {Object.entries(stagesSelected).map(([stage, modes]) =>
+              modes.includes("SZ") ? <SubText>{stage}</SubText> : null
+            )}
+          </Box>
+          <Box textAlign="center">
+            {Object.entries(stagesSelected).map(([stage, modes]) =>
+              modes.includes("TC") ? <SubText>{stage}</SubText> : null
+            )}
+          </Box>
+          <Box textAlign="center">
+            {Object.entries(stagesSelected).map(([stage, modes]) =>
+              modes.includes("RM") ? <SubText>{stage}</SubText> : null
+            )}
+          </Box>
+          <Box textAlign="center">
+            {Object.entries(stagesSelected).map(([stage, modes]) =>
+              modes.includes("CB") ? <SubText>{stage}</SubText> : null
+            )}
+          </Box>
+        </Grid>
       )}
-      <Button
-        mt={8}
-        mb={4}
-        size="lg"
-        onClick={() => setMaplist(generateMaps())}
+      <Stack direction="row" spacing={4} mb={4}>
+        <Button
+          leftIcon={<FiRotateCw />}
+          onClick={() => setMaplist(generateMaps())}
+        >
+          <Trans>Generate maps</Trans>
+        </Button>
+        <Button
+          leftIcon={<FiFilter />}
+          variant="outline"
+          onClick={() => setEditing(!editing)}
+        >
+          {editing ? <Trans>Hide maps</Trans> : <Trans>Change map pool</Trans>}
+        </Button>
+      </Stack>
+      <RadioGroup
+        onChange={(value) =>
+          setGenerationMode(value as "EQUAL" | "SZ_EVERY_OTHER")
+        }
+        value={generationMode}
       >
-        <Trans>Generate maps</Trans>
-      </Button>
-      {maplist && <Textarea value={maplist} readOnly rows={count} />}
+        <Stack direction="row" mb={4}>
+          <Radio value="EQUAL">
+            <Trans>All modes equally</Trans>
+          </Radio>
+          <Radio value="SZ_EVERY_OTHER">
+            <Trans>SZ every other</Trans>
+          </Radio>
+        </Stack>
+      </RadioGroup>
+      {maplist && (
+        <>
+          <Textarea value={maplist} readOnly rows={count} />
+          {/* @ts-ignore */}
+          {navigator.share ? (
+            <Button
+              variant="outline"
+              size="sm"
+              mt={2}
+              onClick={() =>
+                navigator.share({
+                  text: `${maplist}\n\nMaplist used: <${window.location.href}>`,
+                })
+              }
+            >
+              Share
+            </Button>
+          ) : (
+            <Button
+              mt={2}
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                navigator.clipboard.writeText(
+                  `${maplist}\n\nMaplist used: <${window.location.href}>`
+                )
+              }
+            >
+              Copy
+            </Button>
+          )}
+        </>
+      )}
     </MyContainer>
   );
 };

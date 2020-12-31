@@ -80,7 +80,20 @@ export const navIcons: {
   { code: "u", displayName: t`User Search`, menuItems: [] },
   { code: "freeagents", displayName: t`Free Agents`, menuItems: [] },
   // { code: "teams", displayName: t`Teams`, menuItems: [] },
-  { code: "plans", displayName: t`Map Planner`, menuItems: [] },
+  {
+    code: "plans",
+    displayName: t`Maps`,
+    menuItems: [
+      {
+        code: "plans",
+        displayName: t`Map Planner`,
+      },
+      {
+        code: "maps",
+        displayName: t`Maplist Generator`,
+      },
+    ],
+  },
   { code: "tournaments", displayName: t`Tournaments`, menuItems: [] },
   {
     code: "plus",
