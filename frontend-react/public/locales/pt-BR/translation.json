@@ -1181,7 +1181,7 @@
     "Builds": "Builds",
     "Build Analyzer": "Analisar Builds",
     "User Search": "Busca de Usuário",
-    "Tournament Results": "Resultados de Torneios",
+    "Tournament Results": "Resultados de Campeonatos",
     "Draft Cup": "Draft Cup",
     "Top 500 Browser": " Top 500",
     "Top 500 Tier Lists": "Top 500 Tier Lists",
@@ -1196,7 +1196,7 @@
     "Browser": "Navegador",
     "Trends": "tendências",
     "Analyzer": "Analisador",
-    "FAQ": "Perguntas frequêntes",
+    "FAQ": "Perguntas frequentes",
     "Voting history": "Histórico de votações",
     "Suggested and vouched players": "Jogadores sugeridos e indicados",
     "Next voting": "Próxima votação",
@@ -1209,7 +1209,13 @@
     "Teal": "Teal",
     "Cyan": "Ciano",
     "Purple": "Roxo",
-    "Pink": "Rosa"
+    "Pink": "Rosa",
+    "Tournaments": "Campeonatos",
+    "Leaderboards": "Tabela de Classificações",
+    "X Rank Leaderboards": "Classificações Rank X",
+    "Voting": "Votação",
+    "paginationNext": "Próxima",
+    "paginationPrevious": "Anterior"
   },
   "home": {
     "Competitive Splatoon Hub": "Centro Competitivo de Splatoon",
@@ -1425,7 +1431,9 @@
     "Slosher has weird physics so we haven't fully deciphered this parameter.": "Slosher tem físicas estranhas então nós não deciframos esse parâmetro completamente.",
     "damage": "dano",
     "pointShort": "p",
-    "Damage taken in enemy ink": "Dano inflingido ao ficar sobre a tinta inimiga"
+    "Damage taken in enemy ink": "Dano inflingido ao ficar sobre a tinta inimiga",
+    "Intensity": "Intensidade",
+    "hp": "hp"
   },
   "users": {
     "Filter by username, Twitter name or Discord ID": "Filtrar por nome de usuário, nome do Twitter ou ID do Discord",
@@ -1475,7 +1483,9 @@
     "Highest power": "Maior power",
     "Number of placements": "Quantidade de classificações",
     "Best placement / power": "Melhor classificação / power",
-    "noPlacementsPrompt": "Se você pegou top 500 ao <1>final</1> de uma temporada do Rank X você pode mostrar ela aqui! Confira se sua conta do twitter está conectada ao seu Discord para mostrar sua classificação no seu perfil do sendou.ink e entre em contato com Sendou#0043 no Discord com o seu nome no jogo. Após isso, seus novos resultados serão adicionados automaticamente sem a necessidade de nenhuma ação, a não ser que você mude seu nome no Twitter."
+    "noPlacementsPrompt": "Se você pegou top 500 ao <1>final</1> de uma temporada do Rank X você pode mostrar ela aqui! Confira se sua conta do twitter está conectada ao seu Discord para mostrar sua classificação no seu perfil do sendou.ink e entre em contato com Sendou#0043 no Discord com o seu nome no jogo. Após isso, seus novos resultados serão adicionados automaticamente sem a necessidade de nenhuma ação, a não ser que você mude seu nome no Twitter.",
+    "noPlacementsPromptNew": "Se você ficou no top 500 ao <1>final</1> de uma temporada no Rank X, isso pode ser mostrado aqui! Apenas entre em contato com Sendou#0043 no Discord informando o seu nome no jogo. Assim que isso for configurado, novos resultados serão adicionados automaticamente.",
+    "Filter builds by title or weapon": "Filtrar builds por título ou arma"
   },
   "tournaments": {
     "Tournament": "Campeonato",
@@ -1552,10 +1562,11 @@
     "Free word": "Texto livre"
   },
   "xleaderboards": {
-    "PEAK_XP":"X Power (Todas as armas)",
-    "UNIQUE_WEAPONS_COUNT":"Colocações no top 500 com armas diferentes",
-    "FOUR_MODE_PEAK_AVERAGE":"Média do máximo X power nos 4 modos",
-    "PLACEMENTS_COUNT":"Colocações no top 500",
-    "Score":"Pontuação"
+    "PEAK_XP": "Power X (todas as armas)",
+    "UNIQUE_WEAPONS_COUNT": "Classificações de top 500 com armas diferentes",
+    "FOUR_MODE_PEAK_AVERAGE": "Maior média de Power X nos 4 modos",
+    "PLACEMENTS_COUNT": "Classificações de Top 500",
+    "Score": "Pontuação"
   }
 }
+
