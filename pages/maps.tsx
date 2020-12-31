@@ -375,39 +375,20 @@ const MapsGeneratorPage = () => {
       </NumberInput>
       {maplist && (
         <>
-          <Textarea value={maplist} readOnly rows={12} />
-          {/* @ts-ignore */}
-          {navigator.share ? (
-            <Button
-              variant="outline"
-              size="sm"
-              mt={2}
-              width={16}
-              onClick={() =>
-                navigator.share({
-                  text: `${maplist}\n\nMaplist used: <${window.location.href}>`,
-                })
-              }
-            >
-              Share
-            </Button>
-          ) : (
-            <Button
-              mt={2}
-              variant="outline"
-              size="sm"
-              width={16}
-              disabled={copied === "LIST"}
-              onClick={() => {
-                navigator.clipboard.writeText(
-                  `${maplist}\n\nMaplist used: <${window.location.href}>`
-                );
-                setCopied("LIST");
-              }}
-            >
-              {copied === "LIST" ? <FiCheck /> : <Trans>Copy</Trans>}
-            </Button>
-          )}
+          <Textarea value={maplist} readOnly rows={9} />
+          <Button
+            mt={2}
+            variant="outline"
+            size="sm"
+            width={16}
+            disabled={copied === "LIST"}
+            onClick={() => {
+              navigator.clipboard.writeText(maplist);
+              setCopied("LIST");
+            }}
+          >
+            {copied === "LIST" ? <FiCheck /> : <Trans>Copy</Trans>}
+          </Button>
         </>
       )}
     </MyContainer>
