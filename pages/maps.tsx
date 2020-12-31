@@ -9,6 +9,11 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
   Radio,
   RadioGroup,
   Stack,
@@ -268,7 +273,13 @@ const MapsGeneratorPage = () => {
           )}
         </>
       ) : (
-        <Grid my={8} templateColumns="repeat(4, 1fr)" rowGap={4} columnGap={4}>
+        <Grid
+          my={8}
+          templateColumns="repeat(4, 1fr)"
+          rowGap={4}
+          columnGap={4}
+          display={["none", null, "grid"]}
+        >
           <Box textAlign="center">
             <ModeImage mode="SZ" />
           </Box>
@@ -341,9 +352,30 @@ const MapsGeneratorPage = () => {
           </Radio>
         </Stack>
       </RadioGroup>
+      <FormLabel htmlFor="count" fontSize="sm">
+        <Trans>Amount of maps to generate</Trans>
+      </FormLabel>
+      <NumberInput
+        name="count"
+        size="sm"
+        value={count}
+        min={1}
+        max={100}
+        onChange={(_, value) => {
+          if (!Number.isNaN(value)) setCount(value);
+        }}
+        mb={4}
+        width={24}
+      >
+        <NumberInputField />
+        <NumberInputStepper>
+          <NumberIncrementStepper />
+          <NumberDecrementStepper />
+        </NumberInputStepper>
+      </NumberInput>
       {maplist && (
         <>
-          <Textarea value={maplist} readOnly rows={count} />
+          <Textarea value={maplist} readOnly rows={12} />
           {/* @ts-ignore */}
           {navigator.share ? (
             <Button
