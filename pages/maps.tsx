@@ -23,8 +23,8 @@ import MyContainer from "components/common/MyContainer";
 import SubText from "components/common/SubText";
 import { stages } from "lib/lists/stages";
 import { useRouter } from "next/router";
-import { ChangeEvent, Fragment, useState } from "react";
-import { FiFilter, FiRotateCw } from "react-icons/fi";
+import { ChangeEvent, Fragment, useEffect, useState } from "react";
+import { FiCheck, FiFilter, FiRotateCw } from "react-icons/fi";
 
 const MapsGeneratorPage = () => {
   const router = useRouter();
@@ -39,6 +39,7 @@ const MapsGeneratorPage = () => {
   const [maplist, setMaplist] = useState("");
   const [count, setCount] = useState(9);
   const [editing, setEditing] = useState(false);
+  const [copied, setCopied] = useState<null | "URL" | "LIST">(null);
 
   function getInitialStages() {
     const filtersFromUrl = Object.entries(router.query).reduce(
@@ -72,6 +73,16 @@ const MapsGeneratorPage = () => {
       {}
     );
   };
+
+  useEffect(() => {
+    if (!copied) return;
+
+    const timer = setTimeout(() => {
+      setCopied(null);
+    }, 750);
+
+    return () => clearTimeout(timer);
+  }, [copied]);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement>,
@@ -137,7 +148,7 @@ const MapsGeneratorPage = () => {
         let modeOfRound: RankedMode = "SZ";
 
         if (
-          generationMode === "SZ_EVERY_OTHER" &&
+          generationMode !== "SZ_EVERY_OTHER" ||
           i % 2 === Number(isSZFirst)
         ) {
           modes.push(modes.shift() as RankedMode);
@@ -151,7 +162,7 @@ const MapsGeneratorPage = () => {
         let shifted = 0;
         while (
           stagesAlreadyPicked.has(stageArray[0]) &&
-          shifted >= stageArray.length
+          shifted < stageArray.length
         ) {
           stageArray.push(stageArray.shift() as string);
           shifted++;
@@ -242,13 +253,15 @@ const MapsGeneratorPage = () => {
               <Input name="share" value={window.location.href} readOnly />
               <InputRightElement width="4.5rem">
                 <Button
-                  onClick={() =>
-                    navigator.clipboard.writeText(window.location.href)
-                  }
+                  onClick={() => {
+                    navigator.clipboard.writeText(window.location.href);
+                    setCopied("URL");
+                  }}
                   h="1.75rem"
                   size="sm"
+                  disabled={copied === "URL"}
                 >
-                  <Trans>Copy</Trans>
+                  {copied === "URL" ? <FiCheck /> : <Trans>Copy</Trans>}
                 </Button>
               </InputRightElement>
             </InputGroup>
@@ -270,22 +283,30 @@ const MapsGeneratorPage = () => {
           </Box>
           <Box textAlign="center">
             {Object.entries(stagesSelected).map(([stage, modes]) =>
-              modes.includes("SZ") ? <SubText>{stage}</SubText> : null
+              modes.includes("SZ") ? (
+                <SubText key={stage}>{stage}</SubText>
+              ) : null
             )}
           </Box>
           <Box textAlign="center">
             {Object.entries(stagesSelected).map(([stage, modes]) =>
-              modes.includes("TC") ? <SubText>{stage}</SubText> : null
+              modes.includes("TC") ? (
+                <SubText key={stage}>{stage}</SubText>
+              ) : null
             )}
           </Box>
           <Box textAlign="center">
             {Object.entries(stagesSelected).map(([stage, modes]) =>
-              modes.includes("RM") ? <SubText>{stage}</SubText> : null
+              modes.includes("RM") ? (
+                <SubText key={stage}>{stage}</SubText>
+              ) : null
             )}
           </Box>
           <Box textAlign="center">
             {Object.entries(stagesSelected).map(([stage, modes]) =>
-              modes.includes("CB") ? <SubText>{stage}</SubText> : null
+              modes.includes("CB") ? (
+                <SubText key={stage}>{stage}</SubText>
+              ) : null
             )}
           </Box>
         </Grid>
@@ -329,6 +350,7 @@ const MapsGeneratorPage = () => {
               variant="outline"
               size="sm"
               mt={2}
+              width={16}
               onClick={() =>
                 navigator.share({
                   text: `${maplist}\n\nMaplist used: <${window.location.href}>`,
@@ -342,13 +364,16 @@ const MapsGeneratorPage = () => {
               mt={2}
               variant="outline"
               size="sm"
-              onClick={() =>
+              width={16}
+              disabled={copied === "LIST"}
+              onClick={() => {
                 navigator.clipboard.writeText(
                   `${maplist}\n\nMaplist used: <${window.location.href}>`
-                )
-              }
+                );
+                setCopied("LIST");
+              }}
             >
-              Copy
+              {copied === "LIST" ? <FiCheck /> : <Trans>Copy</Trans>}
             </Button>
           )}
         </>
