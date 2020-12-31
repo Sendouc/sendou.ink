@@ -191,7 +191,12 @@ const MapsGeneratorPage = () => {
               Pro tip: bookmark this page after making your map list to save it
             </Trans>
           </Alert>
-          <Grid templateColumns="repeat(6, 1fr)" rowGap={4} placeItems="center">
+          <Grid
+            templateColumns="2fr 2fr 1fr 1fr 1fr 1fr"
+            rowGap={4}
+            placeItems="center"
+            mx={["-20px", "0"]}
+          >
             <Box />
             <Box />
             <ModeImage mode="SZ" />
@@ -322,7 +327,7 @@ const MapsGeneratorPage = () => {
           </Box>
         </Grid>
       )}
-      <Stack direction="row" spacing={4} mb={4}>
+      <Stack direction={["column", "row"]} spacing={4} mb={4}>
         <Button
           leftIcon={<FiRotateCw />}
           onClick={() => setMaplist(generateMaps())}
