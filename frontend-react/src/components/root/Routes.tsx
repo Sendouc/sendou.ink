@@ -39,7 +39,7 @@ const Routes: React.FC = () => {
       <Router>
         <ScrollToTop path="/">
           <HomePage path="/" />
-          <AdminPage path="/admin" />
+          <AdminPage path="/oldadmin" />
           <TranslatePage path="/translate" />
           <UserPage path="/u/:id" />
           <UserSearchPage path="/u" />
