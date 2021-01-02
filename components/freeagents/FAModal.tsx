@@ -20,85 +20,70 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import MarkdownTextarea from "components/common/MarkdownTextarea";
+import { getToastOptions } from "lib/getToastOptions";
+import { sendData } from "lib/postData";
+import { Unpacked } from "lib/types";
 import {
   FA_POST_CONTENT_LIMIT,
   freeAgentPostSchema,
 } from "lib/validators/fapost";
+import { GetAllFreeAgentPostsData } from "prisma/queries/getAllFreeAgentPosts";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { mutate } from "swr";
 import * as z from "zod";
 
 interface Props {
   onClose: () => void;
+  post?: Unpacked<GetAllFreeAgentPostsData>;
 }
 
 type FormData = z.infer<typeof freeAgentPostSchema>;
 
-const FAModal: React.FC<Props> = ({ onClose }) => {
+const FAModal: React.FC<Props> = ({ onClose, post }) => {
   const [sending, setSending] = useState(false);
   const { i18n } = useLingui();
 
   const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
     resolver: zodResolver(freeAgentPostSchema),
-    // defaultValues: user?.profile
-    //   ? {
-    //       ...user.profile,
-    //       sensMotion: sensToString(user.profile.sensMotion),
-    //       sensStick: sensToString(user.profile.sensStick),
-    //     }
-    //   : {
-    //       sensStick: "",
-    //       sensMotion: "",
-    //     },
+    defaultValues: post,
   });
 
   const toast = useToast();
 
   const watchContent = watch("content", ""); // TODO: get initial fa content from props
 
-  // const onSubmit = async (formData: FormData) => {
-  //   setSending(true);
-  //   const mutationData = {
-  //     ...formData,
-  //     // sens is treated as string on the frontend side of things because
-  //     // html select uses strings
-  //     sensStick:
-  //       typeof formData.sensStick === "string"
-  //         ? parseFloat(formData.sensStick)
-  //         : null,
-  //     sensMotion:
-  //       typeof formData.sensMotion === "string"
-  //         ? parseFloat(formData.sensMotion)
-  //         : null,
-  //   };
+  const onSubmit = async (formData: FormData) => {
+    setSending(true);
 
-  //   for (const [key, value] of Object.entries(mutationData)) {
-  //     if (value === "" || value === undefined) {
-  //       const typedKey = key as keyof Omit<typeof mutationData, "weaponPool">;
-  //       mutationData[typedKey] = null;
-  //     }
-  //   }
+    const success = await sendData("PUT", "/api/freeagents", formData);
+    setSending(false);
+    if (!success) return;
 
-  //   const success = await sendData("PUT", "/api/me/profile", mutationData);
-  //   setSending(false);
-  //   if (!success) return;
+    mutate("/api/freeagents");
 
-  //   mutate(`/api/users/${user.id}`);
-
-  //   toast(getToastOptions(i18n._(t`Profile updated`), "success"));
-  //   onClose();
-  // };
+    toast(
+      getToastOptions(
+        post ? t`Free agent post updated` : t`Free agent post submitted`,
+        "success"
+      )
+    );
+    onClose();
+  };
 
   return (
     <Modal isOpen onClose={onClose} size="xl" closeOnOverlayClick={false}>
       <ModalOverlay>
         <ModalContent>
           <ModalHeader>
-            <Trans>Editing profile</Trans>
+            {post ? (
+              <Trans>Editing free agent post</Trans>
+            ) : (
+              <Trans>Submitting a new free agent post</Trans>
+            )}
           </ModalHeader>
           <ModalCloseButton borderRadius="50%" />
-          {/* <form onSubmit={handleSubmit(onSubmit)}> */}
-          <form>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <ModalBody pb={6}>
               <FormLabel htmlFor="playstyles">
                 <Trans>Roles</Trans>
