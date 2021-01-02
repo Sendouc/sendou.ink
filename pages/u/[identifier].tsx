@@ -15,13 +15,12 @@ import { GANBA_DISCORD_ID } from "lib/constants";
 import { getFullUsername } from "lib/strings";
 import useUser from "lib/useUser";
 import { GetStaticPaths, GetStaticProps } from "next";
-import { useRouter } from "next/router";
 import { getPlayersPeak } from "prisma/queries/getPlayersPeak";
 import {
   getUserByIdentifier,
   GetUserByIdentifierData,
 } from "prisma/queries/getUserByIdentifier";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FiEdit } from "react-icons/fi";
 import { RiTShirtLine } from "react-icons/ri";
 import useSWR from "swr";
@@ -33,7 +32,6 @@ interface Props {
 }
 
 const ProfilePage = (props: Props) => {
-  const router = useRouter();
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [buildToEdit, setBuildToEdit] = useState<boolean | Build>(false);
 
@@ -51,14 +49,6 @@ const ProfilePage = (props: Props) => {
     user?.id,
     props.user?.profile?.weaponPool
   );
-
-  useEffect(() => {
-    if (user.profile?.customUrlPath) {
-      router.replace({
-        pathname: `/u/${user.profile.customUrlPath}`,
-      });
-    }
-  }, []);
 
   const { i18n } = useLingui();
 
