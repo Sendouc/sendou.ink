@@ -39,6 +39,7 @@ const MarkdownTextarea: React.FC<Props> = ({
         name={fieldName}
         placeholder={placeholder}
         resize="vertical"
+        rows={6}
       />
       <FormHelperText display="flex" alignItems="center">
         <LimitProgress

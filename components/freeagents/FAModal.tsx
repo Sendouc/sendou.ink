@@ -1,30 +1,40 @@
 import {
   Button,
+  Checkbox,
+  CheckboxGroup,
+  FormLabel,
+  HStack,
   Modal,
+  ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Radio,
+  RadioGroup,
+  Stack,
   useToast,
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import { freeAgentPostSchema } from "lib/validators/fapost";
-import { GetUserByIdentifierData } from "prisma/queries/getUserByIdentifier";
+import MarkdownTextarea from "components/common/MarkdownTextarea";
+import {
+  FA_POST_CONTENT_LIMIT,
+  freeAgentPostSchema,
+} from "lib/validators/fapost";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
 
 interface Props {
   onClose: () => void;
-  user: NonNullable<GetUserByIdentifierData>;
 }
 
 type FormData = z.infer<typeof freeAgentPostSchema>;
 
-const FAModal: React.FC<Props> = ({ onClose, user }) => {
+const FAModal: React.FC<Props> = ({ onClose }) => {
   const [sending, setSending] = useState(false);
   const { i18n } = useLingui();
 
@@ -42,9 +52,9 @@ const FAModal: React.FC<Props> = ({ onClose, user }) => {
     //     },
   });
 
-  const watchBio = watch("bio", user.profile?.bio);
-
   const toast = useToast();
+
+  const watchContent = watch("content", ""); // TODO: get initial fa content from props
 
   // const onSubmit = async (formData: FormData) => {
   //   setSending(true);
@@ -89,37 +99,58 @@ const FAModal: React.FC<Props> = ({ onClose, user }) => {
           <ModalCloseButton borderRadius="50%" />
           {/* <form onSubmit={handleSubmit(onSubmit)}> */}
           <form>
-            {/* <ModalBody pb={6}>
-              <FormControl isInvalid={!!errors.customUrlPath}>
-                <FormLabel htmlFor="customUrlPath">
-                  <Trans>Custom URL</Trans>
-                </FormLabel>
-                <InputGroup>
-                  <InputLeftAddon children="https://sendou.ink/u/" />
-                  <Input
-                    name="customUrlPath"
-                    ref={register}
-                    placeholder="sendou"
-                  />
-                </InputGroup>
-                <FormErrorMessage>
-                  {errors.customUrlPath?.message}
-                </FormErrorMessage>
-              </FormControl>
-
-              <MarkdownTextarea
-                fieldName="bio"
-                title={i18n._(t`Bio`)}
-                error={errors.bio}
-                register={register}
-                value={watchBio ?? ""}
-                maxLength={PROFILE_CHARACTER_LIMIT}
-                placeholder={i18n._(
-                  t`# I'm a header
-                  I'm **bolded**. Embedding weapon images is easy too: :luna_blaster:`
+            <ModalBody pb={6}>
+              <FormLabel htmlFor="playstyles">
+                <Trans>Roles</Trans>
+              </FormLabel>
+              <Controller
+                name="playstyles"
+                control={control}
+                defaultValue={[]}
+                render={({ onChange, value }) => (
+                  <CheckboxGroup value={value} onChange={onChange}>
+                    <HStack>
+                      <Checkbox value="FRONTLINE">
+                        <Trans>Frontline</Trans>
+                      </Checkbox>
+                      <Checkbox value="MIDLINE">
+                        <Trans>Support</Trans>
+                      </Checkbox>
+                      <Checkbox value="BACKLINE">
+                        <Trans>Backline</Trans>
+                      </Checkbox>
+                    </HStack>
+                  </CheckboxGroup>
                 )}
               />
-            </ModalBody> */}
+
+              <FormLabel htmlFor="canVC" mt={4}>
+                <Trans>Can you voice chat?</Trans>
+              </FormLabel>
+              <Controller
+                name="canVC"
+                control={control}
+                defaultValue="YES"
+                render={({ onChange, value }) => (
+                  <RadioGroup value={value} onChange={onChange}>
+                    <Stack direction="row">
+                      <Radio value="YES">Yes</Radio>
+                      <Radio value="MAYBE">Sometimes</Radio>
+                      <Radio value="NO">No</Radio>
+                    </Stack>
+                  </RadioGroup>
+                )}
+              />
+
+              <MarkdownTextarea
+                fieldName="content"
+                title={t`Post`}
+                error={errors.content}
+                register={register}
+                value={watchContent ?? ""}
+                maxLength={FA_POST_CONTENT_LIMIT}
+              />
+            </ModalBody>
             <ModalFooter>
               <Button mr={3} type="submit" isLoading={sending}>
                 <Trans>Save</Trans>
