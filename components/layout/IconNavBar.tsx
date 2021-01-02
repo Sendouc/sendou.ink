@@ -148,11 +148,11 @@ const IconNavBar = () => {
 
         return (
           <Menu key={code}>
-            <MenuDialog displayName={i18n._(displayName)}>
+            <Box m="5px 15px">
               <MenuButton>
                 <MenuNavIcon code={code} showDownArrow />
               </MenuButton>
-            </MenuDialog>
+            </Box>
             <MenuList bg={secondaryBgColor} color={textColor}>
               <MenuGroup title={i18n._(displayName)}>
                 {menuItems.map((item) => {
