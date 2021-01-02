@@ -27,7 +27,7 @@
     "@chakra-ui/theme-tools": "^1.0.2",
     "@emotion/react": "^11.1.4",
     "@emotion/styled": "^11.0.0",
-    "@hookform/resolvers": "^1.3.1",
+    "@hookform/resolvers": "1.3.0",
     "@lingui/react": "^3.3.0",
     "@prisma/client": "^2.13.1",
     "@sendou/react-sketch": "^0.5.2",
