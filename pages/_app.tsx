@@ -18,7 +18,13 @@ import "./styles.css";
 
 NProgress.configure({ showSpinner: false });
 
+let previousUrl: string | undefined = undefined;
+
 Router.events.on("routeChangeStart", (url) => {
+  const rootUrl = url.split("?")[0];
+  if (rootUrl === previousUrl) return;
+
+  previousUrl = rootUrl;
   NProgress.start();
 });
 Router.events.on("routeChangeComplete", () => NProgress.done());
