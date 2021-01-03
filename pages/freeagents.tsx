@@ -3,7 +3,7 @@ import { t, Trans } from "@lingui/macro";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import Markdown from "components/common/Markdown";
 import MyContainer from "components/common/MyContainer";
-import SubText from "components/common/SubText";
+import SubTextCollapse from "components/common/SubTextCollapse";
 import UserAvatar from "components/common/UserAvatar";
 import FAModal from "components/freeagents/FAModal";
 import { useFreeAgents } from "hooks/freeagents";
@@ -34,27 +34,17 @@ const FreeAgentCard = ({
 }: {
   post: Unpacked<GetAllFreeAgentPostsData>;
 }) => {
-  const [showBio, setShowBio] = useState(true);
   return (
     <>
       <Box my={8}>
         <UserAvatar size="xl" user={post.user} />
-        <SubText mt={4}>
-          <Trans>Free agent post</Trans>
-        </SubText>
-        <Markdown value={post.content} smallHeaders />
+        <SubTextCollapse title={t`Free agent post`} isOpenByDefault mt={4}>
+          <Markdown value={post.content} smallHeaders />
+        </SubTextCollapse>
         {post.user.profile?.bio && (
-          <Button onClick={() => setShowBio(!showBio)}>
-            {showBio ? <Trans>Hide bio</Trans> : <Trans>Show bio</Trans>}
-          </Button>
-        )}
-        {showBio && post.user.profile?.bio && (
-          <>
-            <SubText mt={4}>
-              <Trans>Bio</Trans>
-            </SubText>
+          <SubTextCollapse title={t`Bio`} mt={4}>
             <Markdown value={post.user.profile.bio} smallHeaders />
-          </>
+          </SubTextCollapse>
         )}
       </Box>
       <Divider />
