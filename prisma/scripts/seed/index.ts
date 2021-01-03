@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import prisma from "../../client";
 import getBuilds from "./build";
+import getFreeAgentPosts from "./freeAgentPost";
 import getUsers from "./user";
 
 const main = async () => {
@@ -33,6 +34,14 @@ const main = async () => {
   );
 
   console.log("Builds created");
+
+  await Promise.all(
+    getFreeAgentPosts(testUser.id).map((data) =>
+      prisma.freeAgentPost.create({ data })
+    )
+  );
+
+  console.log("FA posts created");
 };
 
 function throwIfNotLocalhost() {
@@ -59,6 +68,7 @@ function throwIfNotLocalhost() {
 }
 
 async function deleteExistingRecords() {
+  await prisma.freeAgentPost.deleteMany({});
   await prisma.salmonRunRecord.deleteMany({});
   await prisma.salmonRunRotation.deleteMany({});
   await prisma.build.deleteMany({});

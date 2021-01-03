@@ -2,9 +2,13 @@ import { getMySession } from "lib/getMySession";
 import { freeAgentPostSchema } from "lib/validators/fapost";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "prisma/client";
+import { getAllFreeAgentPosts } from "prisma/queries/getAllFreeAgentPosts";
 
 const freeAgentsHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method) {
+    case "GET":
+      await getHandler(req, res);
+      break;
     case "PUT":
       await putHandler(req, res);
       break;
@@ -43,6 +47,11 @@ async function deleteHandler(req: NextApiRequest, res: NextApiResponse) {
   await prisma.freeAgentPost.delete({ where: { userId: user.id } });
 
   res.status(200).end();
+}
+
+async function getHandler(_: NextApiRequest, res: NextApiResponse) {
+  const freeAgents = await getAllFreeAgentPosts();
+  res.status(200).json(freeAgents);
 }
 
 export default freeAgentsHandler;

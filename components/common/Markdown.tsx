@@ -26,9 +26,14 @@ import MyLink from "./MyLink";
 interface MarkdownProps {
   value: string;
   allowAll?: boolean;
+  smallHeaders?: boolean;
 }
 
-const Markdown: React.FC<MarkdownProps> = ({ value, allowAll = false }) => {
+const Markdown: React.FC<MarkdownProps> = ({
+  value,
+  allowAll = false,
+  smallHeaders = false,
+}) => {
   const { themeColorHex: themeColor } = useMyTheme();
 
   //https://github.com/mustaphaturhan/chakra-ui-markdown-renderer/blob/master/src/index.js
@@ -140,6 +145,21 @@ const Markdown: React.FC<MarkdownProps> = ({ value, allowAll = false }) => {
       definition: () => null,
       heading: (props: any) => {
         const { children } = props;
+
+        if (smallHeaders) {
+          return (
+            <Heading
+              as="h3"
+              mt={2}
+              mb={1}
+              size="md"
+              {...getCoreProps(props)}
+              fontFamily="'Rubik', sans-serif"
+            >
+              {children}
+            </Heading>
+          );
+        }
 
         if (props.level === 1) {
           return (

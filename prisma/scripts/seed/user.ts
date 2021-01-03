@@ -3,9 +3,9 @@ import { Prisma } from "@prisma/client";
 const getUsers = (): Prisma.UserCreateArgs["data"][] => {
   const result = [
     {
-      username: "N-ZAP",
-      discriminator: "6227",
-      discordId: "455039198672453645",
+      username: "Sendou",
+      discriminator: "4059",
+      discordId: "79237403620945920",
       discordAvatar: "f809176af93132c3db5f0a5019e96339",
       profile: {
         create: {
