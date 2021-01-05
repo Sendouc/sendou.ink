@@ -4,6 +4,7 @@ import MyContainer from "components/common/MyContainer";
 import { AppProps } from "next/app";
 import { useState } from "react";
 import { SWRConfig } from "swr";
+import Banner from "./Banner";
 import Footer from "./Footer";
 import IconNavBar from "./IconNavBar";
 import TopNav from "./TopNav";
@@ -44,6 +45,7 @@ const Layout = ({ Component, pageProps }: AppProps) => {
     >
       <TopNav />
       <IconNavBar />
+      <Banner />
       <Flex flexDirection="column" minH="100vh" pt="1rem">
         <MyContainer wide>
           <Component {...pageProps} />
