@@ -24,7 +24,6 @@ export const getAllFreeAgentPosts = async () =>
               weaponPool: true,
               country: true,
               bio: true,
-              twitterName: true,
             },
           },
         },

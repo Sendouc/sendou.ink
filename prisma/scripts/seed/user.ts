@@ -6,7 +6,7 @@ const getUsers = (): Prisma.UserCreateArgs["data"][] => {
       username: "Sendou",
       discriminator: "4059",
       discordId: "79237403620945920",
-      discordAvatar: "f809176af93132c3db5f0a5019e96339",
+      discordAvatar: "59c321a21f73c18eda69359ccabdc38e",
       profile: {
         create: {
           bio: "My cool bio! Supports markdown too: **bolded**",

@@ -16,8 +16,8 @@ const SubTextCollapse: React.FC<Props & BoxProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(isOpenByDefault);
   return (
-    <>
-      <SubText onClick={() => setIsOpen(!isOpen)} {...props} cursor="pointer">
+    <Box {...props}>
+      <SubText onClick={() => setIsOpen(!isOpen)} cursor="pointer" mb={2}>
         <Flex userSelect="none">
           <Box w={4} transform="rotate(0deg)">
             {isOpen ? "▼" : "►"}
@@ -26,7 +26,7 @@ const SubTextCollapse: React.FC<Props & BoxProps> = ({
         </Flex>
       </SubText>
       {isOpen && <>{children}</>}
-    </>
+    </Box>
   );
 };
 
