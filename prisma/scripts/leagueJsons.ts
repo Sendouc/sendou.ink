@@ -4,19 +4,7 @@ import path from "path";
 import { getWeaponNormalized } from "../../lib/lists/weapons";
 import prisma from "../client";
 
-//const files = ["P_EU", "P_US", "T_EU", "T_US", "P_JP", "T_JP"];
-const files = ["P_EU", "P_US", "T_EU", "T_US"];
-
-// function getArr(file: string) {
-//   const data = fs.readFileSync(
-//     path.resolve(__dirname, `./data/league/${file}.json`)
-//   );
-//   const league = JSON.parse(data.toString());
-
-//   const halfWay = Math.ceil(league.length / 2);
-
-//   return league.slice(0, halfWay);
-// }
+const files = ["P_EU", "P_US", "T_EU", "T_US", "P_JP", "T_JP"];
 
 async function main() {
   for (const file of files) {
@@ -25,8 +13,6 @@ async function main() {
       path.resolve(__dirname, `./data/league/${file}.json`)
     );
     const league = JSON.parse(data.toString());
-
-    // const league = getArr("T_JP");
 
     for (const rotation of league) {
       for (const ranking of rotation.rankings) {
