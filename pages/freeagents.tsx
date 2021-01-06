@@ -28,10 +28,16 @@ const FreeAgentsPage = () => {
 
   return (
     <MyContainer>
-      {modalIsOpen && <FAModal onClose={() => setModalIsOpen(false)} />}
+      {modalIsOpen && (
+        <FAModal post={usersPost} onClose={() => setModalIsOpen(false)} />
+      )}
       <Breadcrumbs pages={[{ name: t`Free Agents` }]} />
       <Button onClick={() => setModalIsOpen(true)}>
-        <Trans>New free agent post</Trans>
+        {usersPost ? (
+          <Trans>Edit free agent post</Trans>
+        ) : (
+          <Trans>New free agent post</Trans>
+        )}
       </Button>
       {[...data, ...data, ...data].map((post) => (
         <FreeAgentCard post={post} />
