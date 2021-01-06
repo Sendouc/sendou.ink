@@ -9,7 +9,7 @@ const main = async () => {
   throwIfNotLocalhost();
   await deleteExistingRecords();
 
-  const [testUser] = await Promise.all(
+  const [testUser, ...otherUsers] = await Promise.all(
     getUsers().map((data) =>
       prisma.user.create({
         data,
@@ -35,8 +35,10 @@ const main = async () => {
 
   console.log("Builds created");
 
+  const otherUserIds = otherUsers.map((user) => user.id);
+
   await Promise.all(
-    getFreeAgentPosts(testUser.id).map((data) =>
+    getFreeAgentPosts(testUser.id, otherUserIds).map((data) =>
       prisma.freeAgentPost.create({ data })
     )
   );
@@ -68,6 +70,7 @@ function throwIfNotLocalhost() {
 }
 
 async function deleteExistingRecords() {
+  await prisma.leagueSquadMember.deleteMany();
   await prisma.freeAgentPost.deleteMany({});
   await prisma.salmonRunRecord.deleteMany({});
   await prisma.salmonRunRotation.deleteMany({});

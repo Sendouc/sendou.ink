@@ -29,4 +29,7 @@ export const getAllFreeAgentPosts = async () =>
         },
       },
     },
+    orderBy: {
+      updatedAt: "desc",
+    },
   });

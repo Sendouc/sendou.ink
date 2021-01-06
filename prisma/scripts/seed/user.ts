@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 
 const getUsers = (): Prisma.UserCreateArgs["data"][] => {
-  const result = [
+  const result: Prisma.UserCreateArgs["data"][] = [
     {
       username: "Sendou",
       discriminator: "4059",
@@ -28,7 +28,23 @@ const getUsers = (): Prisma.UserCreateArgs["data"][] => {
     },
   ];
 
+  new Array(10)
+    .fill(null)
+    .map((_, i) => ({
+      discordId: "" + i,
+      discriminator: padWithZero("" + i, 4),
+      username: `User ${i}`,
+    }))
+    .forEach((value) => result.push(value));
+
   return result;
 };
+
+function padWithZero(value: string, targetLength: number) {
+  return new Array(targetLength - value.length)
+    .fill(0)
+    .concat(value.split(""))
+    .join("");
+}
 
 export default getUsers;

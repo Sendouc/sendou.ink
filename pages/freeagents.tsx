@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Flex } from "@chakra-ui/react";
+import { Box, Button, Divider, Flex, IconButton } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import Markdown from "components/common/Markdown";
@@ -11,10 +11,13 @@ import WeaponImage from "components/common/WeaponImage";
 import FAModal from "components/freeagents/FAModal";
 import { countries, getEmojiFlag } from "countries-list";
 import { useFreeAgents } from "hooks/freeagents";
+import { sendData } from "lib/postData";
 import { Unpacked } from "lib/types";
 import { useMyTheme } from "lib/useMyTheme";
+import useUser from "lib/useUser";
 import { GetAllFreeAgentPostsData } from "prisma/queries/getAllFreeAgentPosts";
 import { useState } from "react";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 import {
   RiAnchorLine,
   RiMicFill,
@@ -39,8 +42,8 @@ const FreeAgentsPage = () => {
           <Trans>New free agent post</Trans>
         )}
       </Button>
-      {[...data, ...data, ...data].map((post) => (
-        <FreeAgentCard post={post} />
+      {data.map((post) => (
+        <FreeAgentCard key={post.id} post={post} isLiked={false} />
       ))}
     </MyContainer>
   );
@@ -54,10 +57,18 @@ const playstyleToEmoji = {
 
 const FreeAgentCard = ({
   post,
+  isLiked,
 }: {
   post: Unpacked<GetAllFreeAgentPostsData>;
+  isLiked: boolean;
 }) => {
   const { themeColorShade } = useMyTheme();
+  const [user] = useUser();
+
+  const handleClick = async () => {
+    await sendData("PUT", "/api/freeagents/like", { likedId: post.id });
+  };
+
   return (
     <>
       <Box as="section" my={8}>
@@ -84,7 +95,7 @@ const FreeAgentCard = ({
         {post.user.profile?.weaponPool.length && (
           <Box my={2}>
             {post.user.profile.weaponPool.map((wpn) => (
-              <WeaponImage name={wpn} size={32} />
+              <WeaponImage key={wpn} name={wpn} size={32} />
             ))}
           </Box>
         )}
@@ -92,6 +103,7 @@ const FreeAgentCard = ({
         <Flex mt={4} mb={2}>
           {post.playstyles.map((style) => (
             <Box
+              key={style}
               w={6}
               h={6}
               mx={1}
@@ -133,6 +145,17 @@ const FreeAgentCard = ({
           <SubTextCollapse title={t`Bio`} mt={4}>
             <Markdown value={post.user.profile.bio} smallHeaders />
           </SubTextCollapse>
+        )}
+        {user && post.user.discordId !== user.discordId && false && (
+          <IconButton
+            color="red.500"
+            aria-label="Like"
+            size="lg"
+            isRound
+            variant="ghost"
+            icon={isLiked ? <FaHeart /> : <FaRegHeart />}
+            onClick={handleClick}
+          />
         )}
       </Box>
       <Divider />

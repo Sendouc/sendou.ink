@@ -1,9 +1,10 @@
 import { Prisma } from "@prisma/client";
 
 const getFreeAgentPosts = (
-  testUserId: number
+  testUserId: number,
+  otherUserIds: number[]
 ): Prisma.FreeAgentPostCreateArgs["data"][] => {
-  return [
+  const result: Prisma.FreeAgentPostCreateArgs["data"][] = [
     {
       canVC: "YES",
       content:
@@ -16,6 +17,21 @@ const getFreeAgentPosts = (
       playstyles: ["FRONTLINE", "MIDLINE"],
     },
   ];
+
+  otherUserIds
+    .map((id) => ({
+      canVC: "MAYBE" as const,
+      content: `User with id ${id} ready to be recruited`,
+      playstyles: ["BACKLINE"] as "BACKLINE"[],
+      user: {
+        connect: {
+          id,
+        },
+      },
+    }))
+    .forEach((fa) => result.push(fa));
+
+  return result;
 };
 
 export default getFreeAgentPosts;

@@ -2,6 +2,8 @@ import {
   Button,
   Checkbox,
   CheckboxGroup,
+  FormControl,
+  FormHelperText,
   FormLabel,
   HStack,
   Modal,
@@ -30,6 +32,7 @@ import {
 import { GetAllFreeAgentPostsData } from "prisma/queries/getAllFreeAgentPosts";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { FiTrash } from "react-icons/fi";
 import { mutate } from "swr";
 import * as z from "zod";
 
@@ -42,6 +45,7 @@ type FormData = z.infer<typeof freeAgentPostSchema>;
 
 const FAModal: React.FC<Props> = ({ onClose, post }) => {
   const [sending, setSending] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const { i18n } = useLingui();
 
   const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
@@ -71,6 +75,19 @@ const FAModal: React.FC<Props> = ({ onClose, post }) => {
     onClose();
   };
 
+  const onDelete = async () => {
+    setDeleting(true);
+
+    const success = await sendData("DELETE", "/api/freeagents");
+    setDeleting(false);
+    if (!success) return;
+
+    mutate("/api/freeagents");
+
+    toast(getToastOptions(t`Free agent post deleted`, "success"));
+    onClose();
+  };
+
   return (
     <Modal isOpen onClose={onClose} size="xl" closeOnOverlayClick={false}>
       <ModalOverlay>
@@ -85,6 +102,30 @@ const FAModal: React.FC<Props> = ({ onClose, post }) => {
           <ModalCloseButton borderRadius="50%" />
           <form onSubmit={handleSubmit(onSubmit)}>
             <ModalBody pb={6}>
+              {post && (
+                <>
+                  <Button
+                    leftIcon={<FiTrash />}
+                    variant="outline"
+                    color="red.500"
+                    isLoading={deleting}
+                    onClick={async () => {
+                      if (window.confirm(t`Delete the free agent post?`))
+                        await onDelete();
+                    }}
+                  >
+                    <Trans>Delete free agent post</Trans>
+                  </Button>
+                  <FormControl>
+                    <FormHelperText mb={6}>
+                      <Trans>
+                        Please note deleting your free agent post also deletes
+                        all the likes you have given and received.
+                      </Trans>
+                    </FormHelperText>
+                  </FormControl>
+                </>
+              )}
               <FormLabel htmlFor="playstyles">
                 <Trans>Roles</Trans>
               </FormLabel>

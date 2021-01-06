@@ -14,7 +14,13 @@ const Banner = () => {
 
   return (
     <a href="https://www.twitch.tv/endgametv1">
-      <Box bg={event.bg} p={2} fontWeight="bold" textAlign="center">
+      <Box
+        bg={event.bg}
+        color="white"
+        p={2}
+        fontWeight="bold"
+        textAlign="center"
+      >
         <MyContainer>
           <Image
             w={10}
