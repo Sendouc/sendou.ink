@@ -114,7 +114,7 @@ const SalmonRunLeaderboardsPage = ({}) => {
             })
           }
         >
-          <Stack spacing={5} direction="row">
+          <Stack spacing={5} direction={["column", null, "row"]}>
             <Checkbox value="NORMAL">
               <Trans>Normal weapons only</Trans>
             </Checkbox>
@@ -125,7 +125,7 @@ const SalmonRunLeaderboardsPage = ({}) => {
               <Trans>Four random</Trans>
             </Checkbox>
             <Checkbox value="FOUR_RANDOM_GRIZZCO">
-              <Trans>Four random (Grizzco weapons only)</Trans>
+              <Trans>Grizzco weapons only</Trans>
             </Checkbox>
           </Stack>
         </CheckboxGroup>
