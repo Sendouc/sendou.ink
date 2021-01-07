@@ -236,7 +236,7 @@ const Markdown: React.FC<MarkdownProps> = ({
   };
   return (
     <ReactMarkdown
-      source={value}
+      source={value.replace(/\n/g, "  \n")}
       renderers={ChakraUIRenderer()}
       disallowedTypes={allowAll ? [] : ["imageReference", "image"]}
     />
