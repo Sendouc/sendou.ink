@@ -1,5 +1,5 @@
 import { Flex } from "@chakra-ui/react";
-import { ReactElement, ReactNodeArray, useState } from "react";
+import { useState } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 
 const ON_PAGE = 6;
@@ -22,12 +22,5 @@ const MyInfiniteScroller: React.FC = ({ children }) => {
     </InfiniteScroll>
   );
 };
-
-function getChildrenArray(children: ReactElement): ReactNodeArray {
-  if (Array.isArray(children)) return children;
-  if (Array.isArray(children?.props.children)) return children.props.children;
-
-  throw Error("children for MyInfiniteScroller is not an array");
-}
 
 export default MyInfiniteScroller;
