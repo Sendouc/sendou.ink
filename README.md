@@ -52,7 +52,7 @@ DATABASE_URL=postgresql://sendou@localhost:5432
 
 _You can see [Prisma's guide on how to set up a PostgreSQL database running locally](https://www.prisma.io/dataguide/postgresql/setting-up-a-local-postgresql-database) for more info._
 
-6. Once you have a database running run `psql -d postgres < dump.sql` in the `prisma` folder (assuming your database name is `postgres`). This formats the database with the correct tables and fills it with real data dumped from the production site.
+6. Once you have a database running run `pg_restore -d 'postgresql://sendou@localhost:5432' --jobs 4 dump.sql --clean` (replace the connection string with your own) in the `prisma` folder (assuming your database name is `postgres`). This formats the database with the correct tables and fills it with real data dumped from the production site.
 
 ### Enable logging in
 
