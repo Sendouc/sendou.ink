@@ -1,5 +1,16 @@
-import { Box, Button, Divider, Flex, IconButton } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Center,
+  Divider,
+  Flex,
+  IconButton,
+  Radio,
+  RadioGroup,
+  Stack,
+} from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
+import { Playstyle } from "@prisma/client";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import Markdown from "components/common/Markdown";
 import MyContainer from "components/common/MyContainer";
@@ -26,8 +37,10 @@ import {
 } from "react-icons/ri";
 
 const FreeAgentsPage = () => {
-  const { data, usersPost } = useFreeAgents();
+  const { data, usersPost, playstyleCounts, state, dispatch } = useFreeAgents();
   const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  console.log({ playstyleCounts });
 
   return (
     <MyContainer>
@@ -42,6 +55,38 @@ const FreeAgentsPage = () => {
           <Trans>New free agent post</Trans>
         )}
       </Button>
+      <Center mt={6}>
+        <RadioGroup
+          value={state.playstyle ?? "ALL"}
+          onChange={(value) =>
+            dispatch({
+              type: "SET_PLAYSTYLE",
+              playstyle: value === "ALL" ? undefined : (value as Playstyle),
+            })
+          }
+        >
+          <Stack spacing={4} direction={["column", "row"]}>
+            <Radio value="ALL">
+              <Trans>
+                All (
+                {playstyleCounts.FRONTLINE +
+                  playstyleCounts.MIDLINE +
+                  playstyleCounts.BACKLINE}
+                )
+              </Trans>
+            </Radio>
+            <Radio value="FRONTLINE">
+              <Trans>Frontline ({playstyleCounts.FRONTLINE})</Trans>
+            </Radio>
+            <Radio value="MIDLINE">
+              <Trans>Support ({playstyleCounts.MIDLINE})</Trans>
+            </Radio>
+            <Radio value="BACKLINE">
+              <Trans>Backline ({playstyleCounts.BACKLINE})</Trans>
+            </Radio>
+          </Stack>
+        </RadioGroup>
+      </Center>
       {data.map((post) => (
         <FreeAgentCard key={post.id} post={post} isLiked={false} />
       ))}
