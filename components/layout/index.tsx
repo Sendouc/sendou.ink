@@ -1,7 +1,6 @@
 import { Flex, useToast } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import MyContainer from "components/common/MyContainer";
-import { AppProps } from "next/app";
 import { useState } from "react";
 import { SWRConfig } from "swr";
 import Banner from "./Banner";
@@ -11,7 +10,7 @@ import TopNav from "./TopNav";
 
 const DATE_KEYS = ["createdAt", "updatedAt"];
 
-const Layout = ({ Component, pageProps }: AppProps) => {
+const Layout = ({ children }: { children: React.ReactNode }) => {
   const [errors, setErrors] = useState(new Set<string>());
   const toast = useToast();
 
@@ -47,9 +46,7 @@ const Layout = ({ Component, pageProps }: AppProps) => {
       <IconNavBar />
       <Banner />
       <Flex flexDirection="column" minH="100vh" pt="1rem">
-        <MyContainer wide>
-          <Component {...pageProps} />
-        </MyContainer>
+        <MyContainer wide>{children}</MyContainer>
         <Footer />
       </Flex>
     </SWRConfig>

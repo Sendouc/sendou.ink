@@ -40,8 +40,6 @@ const FreeAgentsPage = () => {
   const { data, usersPost, playstyleCounts, state, dispatch } = useFreeAgents();
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
-  console.log({ playstyleCounts });
-
   return (
     <MyContainer>
       {modalIsOpen && (

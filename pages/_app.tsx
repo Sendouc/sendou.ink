@@ -144,7 +144,7 @@ const setDisplayedLanguage = () => {
   activateLocale(getUsersLanguage());
 };
 
-const MyApp = (props: AppProps) => {
+const MyApp = ({ Component, pageProps }: AppProps) => {
   useEffect(setDisplayedLanguage, []);
 
   return (
@@ -178,10 +178,12 @@ const MyApp = (props: AppProps) => {
         }}
       />
 
-      <NextAuthProvider session={props.pageProps.session}>
+      <NextAuthProvider session={pageProps.session}>
         <ChakraProvider theme={extendedTheme}>
           <I18nProvider i18n={i18n}>
-            <Layout {...props} />
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
           </I18nProvider>
         </ChakraProvider>
       </NextAuthProvider>

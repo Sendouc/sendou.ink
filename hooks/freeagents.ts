@@ -1,4 +1,5 @@
 import { Playstyle } from "@prisma/client";
+import { setSearchParams } from "lib/setSearchParams";
 import useUser from "lib/useUser";
 import { useRouter } from "next/router";
 import { GetAllFreeAgentPostsData } from "prisma/queries/getAllFreeAgentPosts";
@@ -23,10 +24,7 @@ export function useFreeAgents() {
     (oldState: UseFreeAgentsState, action: Action) => {
       switch (action.type) {
         case "SET_PLAYSTYLE":
-          router.replace({
-            pathname: "/freeagents",
-            query: { playstyle: action.playstyle },
-          });
+          setSearchParams("playstyle", action.playstyle);
 
           return { ...oldState, playstyle: action.playstyle };
         default:
