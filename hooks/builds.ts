@@ -104,7 +104,14 @@ export function useBuildsByWeapon() {
           const filtersAbilityPointsCopy = [...oldState.filters];
           filtersAbilityPointsCopy[action.index] = {
             ...filtersAbilityPointsCopy[action.index],
-            abilityPoints: action.abilityPoints,
+            abilityPoints: {
+              max: Number.isNaN(action.abilityPoints.max)
+                ? 0
+                : action.abilityPoints.max,
+              min: Number.isNaN(action.abilityPoints.min)
+                ? 0
+                : action.abilityPoints.min,
+            },
           };
 
           return {
