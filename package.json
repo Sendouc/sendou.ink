@@ -18,7 +18,7 @@
     "prettier": "prettier --write .",
     "e2e": "cypress open",
     "ex": "lingui extract",
-    "ex:clean": "lingui extract --clean",
+    "ex:clean": "NODE_ENV=development lingui extract --clean",
     "compile": "lingui compile"
   },
   "dependencies": {
