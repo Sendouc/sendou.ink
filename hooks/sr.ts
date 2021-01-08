@@ -1,5 +1,6 @@
 import { SalmonRunRecordCategory } from "@prisma/client";
 import { salmonRunStages } from "lib/lists/stages";
+import { setSearchParams } from "lib/setSearchParams";
 import { useRouter } from "next/router";
 import { salmonRunCategoryToNatural } from "pages/sr/leaderboards/new";
 import { GetAllSalmonRunRecordsData } from "prisma/queries/getAllSalmonRunRecords";
@@ -48,24 +49,15 @@ export function useSalmonRunRecords() {
     (oldState: UseSalmonRunRecordsState, action: Action) => {
       switch (action.type) {
         case "SET_STAGE":
-          router.replace({
-            pathname: "/sr/leaderboards",
-            query: { ...router.query, stage: action.stage },
-          });
+          setSearchParams("stage", action.stage);
 
           return { ...oldState, stage: action.stage };
         case "SET_CATEGORY":
-          router.replace({
-            pathname: "/sr/leaderboards",
-            query: { ...router.query, category: action.category },
-          });
+          setSearchParams("category", action.category);
 
           return { ...oldState, category: action.category };
         case "SET_WEAPONS_FILTER":
-          router.replace({
-            pathname: "/sr/leaderboards",
-            query: { ...router.query, filter: action.filter },
-          });
+          setSearchParams("filter", action.filter);
 
           return { ...oldState, weaponsFilter: action.filter };
         default:

@@ -4,6 +4,7 @@ import Breadcrumbs from "components/common/Breadcrumbs";
 import QuadTable from "components/player/QuadTable";
 import TwinTable from "components/player/TwinTable";
 import XRankTable from "components/player/XRankTable";
+import { setSearchParams } from "lib/setSearchParams";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import {
@@ -37,13 +38,7 @@ const PlayerPage = (props: Props) => {
 
       <RadioGroup
         onChange={(value) => {
-          router.replace(
-            `/player/${player.switchAccountId}/?tab=${value}`,
-            undefined,
-            {
-              shallow: true,
-            }
-          );
+          setSearchParams("tab", value as string);
           setTab(value as "XRANK" | "TWIN" | "QUAD");
         }}
         value={tab}

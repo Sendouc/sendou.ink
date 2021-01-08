@@ -2,6 +2,7 @@ import { Ability } from "@prisma/client";
 import { abilities, isMainAbility } from "lib/lists/abilities";
 import { weaponToCode } from "lib/lists/weaponCodes";
 import { weapons } from "lib/lists/weapons";
+import { setSearchParams } from "lib/setSearchParams";
 import { useRouter } from "next/router";
 import { GetBuildsByWeaponData } from "prisma/queries/getBuildsByWeapon";
 import { Dispatch, useReducer } from "react";
@@ -57,10 +58,7 @@ export function useBuildsByWeapon() {
     (oldState: UseBuildsByWeaponState, action: Action) => {
       switch (action.type) {
         case "SET_WEAPON":
-          router.replace({
-            pathname: "/builds",
-            query: { weapon: action.weapon },
-          });
+          setSearchParams("weapon", action.weapon);
 
           return { ...oldState, weapon: action.weapon };
         case "EXPAND_USER":

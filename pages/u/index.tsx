@@ -10,6 +10,7 @@ import Breadcrumbs from "components/common/Breadcrumbs";
 import MyLink from "components/common/MyLink";
 import UserAvatar from "components/common/UserAvatar";
 import { getEmojiFlag } from "countries-list";
+import { setSearchParams } from "lib/setSearchParams";
 import { Unpacked } from "lib/types";
 import { useDebounce } from "lib/useDebounce";
 import { useMyTheme } from "lib/useMyTheme";
@@ -35,15 +36,9 @@ const UserSearchPage = ({ users }: Props) => {
 
   useEffect(() => {
     if (debouncedFilter.length < 3) {
-      router.replace(`/u`, undefined, { shallow: true });
+      setSearchParams("filter", undefined);
     } else {
-      router.replace(
-        `/u?filter=${encodeURIComponent(debouncedFilter)}`,
-        undefined,
-        {
-          shallow: true,
-        }
-      );
+      setSearchParams("filter", encodeURIComponent(debouncedFilter));
     }
   }, [debouncedFilter]);
 
