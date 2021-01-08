@@ -87,7 +87,7 @@ const ProfilePage = (props: Props) => {
         <>
           <Divider my={6} />
           <MyContainer>
-            <Markdown value={user.profile.bio} />
+            <Markdown value={user.profile.bio} smallHeaders />
           </MyContainer>
         </>
       )}

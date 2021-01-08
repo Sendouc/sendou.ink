@@ -48,5 +48,8 @@ export const getUserByIdentifier = (identifier: string) =>
           switchAccountId: true,
         },
       },
+      freeAgentPost: {
+        select: { id: true },
+      },
     },
   });

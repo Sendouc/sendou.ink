@@ -26,8 +26,9 @@ import { sendData } from "lib/postData";
 import { Unpacked } from "lib/types";
 import { useMyTheme } from "lib/useMyTheme";
 import useUser from "lib/useUser";
+import { useRouter } from "next/router";
 import { GetAllFreeAgentPostsData } from "prisma/queries/getAllFreeAgentPosts";
-import { useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import {
   RiAnchorLine,
@@ -37,8 +38,27 @@ import {
 } from "react-icons/ri";
 
 const FreeAgentsPage = () => {
-  const { data, usersPost, playstyleCounts, state, dispatch } = useFreeAgents();
+  const {
+    data,
+    isLoading,
+    usersPost,
+    playstyleCounts,
+    state,
+    dispatch,
+  } = useFreeAgents();
+  const router = useRouter();
+  const postRef = useRef<HTMLDivElement>(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  const idToScrollTo = Number.isNaN(parseInt(router.query.id as any))
+    ? undefined
+    : parseInt(router.query.id as any);
+
+  useEffect(() => {
+    if (!postRef.current) return;
+
+    postRef.current.scrollIntoView();
+  }, [postRef.current]);
 
   return (
     <MyContainer>
@@ -53,40 +73,47 @@ const FreeAgentsPage = () => {
           <Trans>New free agent post</Trans>
         )}
       </Button>
-      <Center mt={6}>
-        <RadioGroup
-          value={state.playstyle ?? "ALL"}
-          onChange={(value) =>
-            dispatch({
-              type: "SET_PLAYSTYLE",
-              playstyle: value === "ALL" ? undefined : (value as Playstyle),
-            })
-          }
-        >
-          <Stack spacing={4} direction={["column", "row"]}>
-            <Radio value="ALL">
-              <Trans>
-                All (
-                {playstyleCounts.FRONTLINE +
-                  playstyleCounts.MIDLINE +
-                  playstyleCounts.BACKLINE}
-                )
-              </Trans>
-            </Radio>
-            <Radio value="FRONTLINE">
-              <Trans>Frontline ({playstyleCounts.FRONTLINE})</Trans>
-            </Radio>
-            <Radio value="MIDLINE">
-              <Trans>Support ({playstyleCounts.MIDLINE})</Trans>
-            </Radio>
-            <Radio value="BACKLINE">
-              <Trans>Backline ({playstyleCounts.BACKLINE})</Trans>
-            </Radio>
-          </Stack>
-        </RadioGroup>
-      </Center>
+      {!isLoading && (
+        <Center mt={6}>
+          <RadioGroup
+            value={state.playstyle ?? "ALL"}
+            onChange={(value) =>
+              dispatch({
+                type: "SET_PLAYSTYLE",
+                playstyle: value === "ALL" ? undefined : (value as Playstyle),
+              })
+            }
+          >
+            <Stack spacing={4} direction={["column", "row"]}>
+              <Radio value="ALL">
+                <Trans>
+                  All (
+                  {playstyleCounts.FRONTLINE +
+                    playstyleCounts.MIDLINE +
+                    playstyleCounts.BACKLINE}
+                  )
+                </Trans>
+              </Radio>
+              <Radio value="FRONTLINE">
+                <Trans>Frontline ({playstyleCounts.FRONTLINE})</Trans>
+              </Radio>
+              <Radio value="MIDLINE">
+                <Trans>Support ({playstyleCounts.MIDLINE})</Trans>
+              </Radio>
+              <Radio value="BACKLINE">
+                <Trans>Backline ({playstyleCounts.BACKLINE})</Trans>
+              </Radio>
+            </Stack>
+          </RadioGroup>
+        </Center>
+      )}
       {data.map((post) => (
-        <FreeAgentCard key={post.id} post={post} isLiked={false} />
+        <FreeAgentCard
+          key={post.id}
+          post={post}
+          isLiked={false}
+          postRef={post.id === idToScrollTo ? postRef : undefined}
+        />
       ))}
     </MyContainer>
   );
@@ -101,9 +128,11 @@ const playstyleToEmoji = {
 const FreeAgentCard = ({
   post,
   isLiked,
+  postRef,
 }: {
   post: Unpacked<GetAllFreeAgentPostsData>;
   isLiked: boolean;
+  postRef?: RefObject<HTMLDivElement>;
 }) => {
   const { themeColorShade } = useMyTheme();
   const [user] = useUser();
@@ -114,7 +143,7 @@ const FreeAgentCard = ({
 
   return (
     <>
-      <Box as="section" my={8}>
+      <Box ref={postRef} as="section" my={8}>
         <Flex alignItems="center" fontWeight="bold" fontSize="1.25rem">
           <UserAvatar user={post.user} mr={3} />
           <MyLink href={`/u/${post.user.discordId}`} isColored={false}>

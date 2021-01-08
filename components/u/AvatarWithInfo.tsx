@@ -20,7 +20,7 @@ import useUser from "lib/useUser";
 import { GetUserByIdentifierData } from "prisma/queries/getUserByIdentifier";
 import { FaGamepad, FaTwitch, FaTwitter, FaYoutube } from "react-icons/fa";
 import { FiInfo } from "react-icons/fi";
-import { RiTrophyLine } from "react-icons/ri";
+import { RiFileTextLine, RiTrophyLine } from "react-icons/ri";
 
 interface AvatarWithInfoProps {
   user: NonNullable<GetUserByIdentifierData>;
@@ -181,18 +181,41 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
                   </Flex>
                 </>
               )}
-              <Box width="100%" textAlign="center" mt={4}>
+              <Flex
+                width="100%"
+                alignItems="center"
+                justifyContent="center"
+                mt={4}
+              >
                 {!!user.player?.switchAccountId && (
                   <MyLink
                     href={`/player/${user.player?.switchAccountId}`}
                     prefetch={true}
                   >
-                    <Button leftIcon={<RiTrophyLine />} variant="outline">
+                    <Button
+                      leftIcon={<RiTrophyLine />}
+                      variant="outline"
+                      mx={2}
+                    >
                       <Trans>View results</Trans>
                     </Button>
                   </MyLink>
                 )}
-              </Box>
+                {!!user.freeAgentPost?.id && (
+                  <MyLink
+                    href={`/freeagents?id=${user.freeAgentPost.id}`}
+                    prefetch={true}
+                  >
+                    <Button
+                      leftIcon={<RiFileTextLine />}
+                      variant="outline"
+                      mx={2}
+                    >
+                      <Trans>View free agent post</Trans>
+                    </Button>
+                  </MyLink>
+                )}
+              </Flex>
               <Top500HelpText />
             </Flex>
           </Flex>
