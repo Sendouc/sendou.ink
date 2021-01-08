@@ -13,7 +13,7 @@ import MyLink from "components/common/MyLink";
 import SubText from "components/common/SubText";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
-import { getEmojiFlag } from "countries-list";
+import { countries, getEmojiFlag } from "countries-list";
 import { getFullUsername } from "lib/strings";
 import { useMyTheme } from "lib/useMyTheme";
 import useUser from "lib/useUser";
@@ -70,12 +70,19 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
             <Heading fontFamily="'Rubik', sans-serif" size="lg">
               {getFullUsername(user)}
             </Heading>
-            {user.profile?.country && (
-              <Box as="span" ml={2}>
-                {getEmojiFlag(user.profile.country)}
-              </Box>
-            )}
           </Flex>
+          {user.profile?.country && (
+            <Box mx="auto" my={1}>
+              <Box as="span" mr={1}>
+                {getEmojiFlag(user.profile.country)}{" "}
+              </Box>
+              {
+                Object.entries(countries).find(
+                  ([key]) => key === user.profile!.country
+                )![1].name
+              }
+            </Box>
+          )}
           <Flex alignItems="center" justifyContent="center">
             <Flex flexWrap="wrap" alignItems="center" justifyContent="center">
               {user.profile?.twitterName && (
