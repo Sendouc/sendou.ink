@@ -36,10 +36,12 @@ import {
   RiPaintLine,
   RiSwordLine,
 } from "react-icons/ri";
+import { mutate } from "swr";
 
 const FreeAgentsPage = () => {
   const {
-    data,
+    postsData,
+    likesData,
     isLoading,
     usersPost,
     playstyleCounts,
@@ -108,11 +110,11 @@ const FreeAgentsPage = () => {
           </RadioGroup>
         </Center>
       )}
-      {data.map((post) => (
+      {postsData.map((post) => (
         <FreeAgentCard
           key={post.id}
           post={post}
-          isLiked={false}
+          isLiked={!!likesData?.likedPostIds.includes(post.id)}
           canLike={
             !!user && post.user.discordId !== user.discordId && !!usersPost
           }
@@ -143,7 +145,15 @@ const FreeAgentCard = ({
   const { themeColorShade } = useMyTheme();
 
   const handleClick = async () => {
-    await sendData("PUT", "/api/freeagents/like", { likedId: post.id });
+    const success = await sendData(
+      isLiked ? "DELETE" : "PUT",
+      "/api/freeagents/like",
+      {
+        postId: post.id,
+      }
+    );
+
+    if (success) mutate("/api/freeagents/like");
   };
 
   return (

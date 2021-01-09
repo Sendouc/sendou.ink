@@ -2,6 +2,7 @@ import { Playstyle } from "@prisma/client";
 import { setSearchParams } from "lib/setSearchParams";
 import useUser from "lib/useUser";
 import { useRouter } from "next/router";
+import { FreeAgentLikeInfo } from "pages/api/freeagents/like";
 import { GetAllFreeAgentPostsData } from "prisma/queries/getAllFreeAgentPosts";
 import { useReducer } from "react";
 import useSWR from "swr";
@@ -19,7 +20,19 @@ type Action = {
 export function useFreeAgents() {
   const router = useRouter();
   const [user] = useUser();
-  const { data } = useSWR<GetAllFreeAgentPostsData>("/api/freeagents");
+
+  const { data: postsData } = useSWR<GetAllFreeAgentPostsData>(
+    "/api/freeagents"
+  );
+
+  const usersPost = postsData?.find(
+    (post) => post.user.discordId === user?.discordId
+  );
+
+  const { data: likesData } = useSWR<FreeAgentLikeInfo>(
+    usersPost ? "/api/freeagents/like" : null
+  );
+
   const [state, dispatch] = useReducer(
     (oldState: UseFreeAgentsState, action: Action) => {
       switch (action.type) {
@@ -48,12 +61,13 @@ export function useFreeAgents() {
   }
 
   return {
-    data: (data ?? []).filter(
+    postsData: (postsData ?? []).filter(
       (post) => !state.playstyle || post.playstyles.includes(state.playstyle)
     ),
-    isLoading: !data,
-    usersPost: data?.find((post) => post.user.discordId === user?.discordId),
-    playstyleCounts: (data ?? []).reduce(
+    likesData,
+    isLoading: !postsData,
+    usersPost,
+    playstyleCounts: (postsData ?? []).reduce(
       (acc, cur) => {
         cur.playstyles.forEach((playstyle) => acc[playstyle]++);
 
