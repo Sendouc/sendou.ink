@@ -46,6 +46,7 @@ const FreeAgentsPage = () => {
     state,
     dispatch,
   } = useFreeAgents();
+  const [user] = useUser();
   const router = useRouter();
   const postRef = useRef<HTMLDivElement>(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -112,6 +113,9 @@ const FreeAgentsPage = () => {
           key={post.id}
           post={post}
           isLiked={false}
+          canLike={
+            !!user && post.user.discordId !== user.discordId && !!usersPost
+          }
           postRef={post.id === idToScrollTo ? postRef : undefined}
         />
       ))}
@@ -128,14 +132,15 @@ const playstyleToEmoji = {
 const FreeAgentCard = ({
   post,
   isLiked,
+  canLike,
   postRef,
 }: {
   post: Unpacked<GetAllFreeAgentPostsData>;
   isLiked: boolean;
+  canLike: boolean;
   postRef?: RefObject<HTMLDivElement>;
 }) => {
   const { themeColorShade } = useMyTheme();
-  const [user] = useUser();
 
   const handleClick = async () => {
     await sendData("PUT", "/api/freeagents/like", { likedId: post.id });
@@ -218,7 +223,7 @@ const FreeAgentCard = ({
             <Markdown value={post.user.profile.bio} smallHeaders />
           </SubTextCollapse>
         )}
-        {user && post.user.discordId !== user.discordId && false && (
+        {canLike && (
           <IconButton
             color="red.500"
             aria-label="Like"

@@ -3,6 +3,7 @@ import {
   Checkbox,
   CheckboxGroup,
   FormControl,
+  FormErrorMessage,
   FormHelperText,
   FormLabel,
   HStack,
@@ -88,6 +89,8 @@ const FAModal: React.FC<Props> = ({ onClose, post }) => {
     onClose();
   };
 
+  console.log("ep", errors.playstyles);
+
   return (
     <Modal isOpen onClose={onClose} size="xl" closeOnOverlayClick={false}>
       <ModalOverlay>
@@ -129,26 +132,33 @@ const FAModal: React.FC<Props> = ({ onClose, post }) => {
               <FormLabel htmlFor="playstyles">
                 <Trans>Roles</Trans>
               </FormLabel>
-              <Controller
-                name="playstyles"
-                control={control}
-                defaultValue={[]}
-                render={({ onChange, value }) => (
-                  <CheckboxGroup value={value} onChange={onChange}>
-                    <HStack>
-                      <Checkbox value="FRONTLINE">
-                        <Trans>Frontline</Trans>
-                      </Checkbox>
-                      <Checkbox value="MIDLINE">
-                        <Trans>Support</Trans>
-                      </Checkbox>
-                      <Checkbox value="BACKLINE">
-                        <Trans>Backline</Trans>
-                      </Checkbox>
-                    </HStack>
-                  </CheckboxGroup>
-                )}
-              />
+
+              <FormControl isInvalid={!!errors.playstyles}>
+                <Controller
+                  name="playstyles"
+                  control={control}
+                  defaultValue={[]}
+                  render={({ onChange, value }) => (
+                    <CheckboxGroup value={value} onChange={onChange}>
+                      <HStack>
+                        <Checkbox value="FRONTLINE">
+                          <Trans>Frontline</Trans>
+                        </Checkbox>
+                        <Checkbox value="MIDLINE">
+                          <Trans>Support</Trans>
+                        </Checkbox>
+                        <Checkbox value="BACKLINE">
+                          <Trans>Backline</Trans>
+                        </Checkbox>
+                      </HStack>
+                    </CheckboxGroup>
+                  )}
+                />
+                {/* @ts-ignore */}
+                <FormErrorMessage>
+                  {errors.playstyles?.message}
+                </FormErrorMessage>
+              </FormControl>
 
               <FormLabel htmlFor="canVC" mt={4}>
                 <Trans>Can you voice chat?</Trans>
