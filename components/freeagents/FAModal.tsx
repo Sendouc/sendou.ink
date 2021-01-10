@@ -89,8 +89,6 @@ const FAModal: React.FC<Props> = ({ onClose, post }) => {
     onClose();
   };
 
-  console.log("ep", errors.playstyles);
-
   return (
     <Modal isOpen onClose={onClose} size="xl" closeOnOverlayClick={false}>
       <ModalOverlay>
