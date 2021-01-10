@@ -5,8 +5,11 @@ export type GetAllFreeAgentPostsData = Prisma.PromiseReturnType<
   typeof getAllFreeAgentPosts
 >;
 
-export const getAllFreeAgentPosts = async () =>
-  prisma.freeAgentPost.findMany({
+export const getAllFreeAgentPosts = async () => {
+  const dateMonthAgo = new Date();
+  dateMonthAgo.setMonth(dateMonthAgo.getMonth() - 1);
+
+  const post = prisma.freeAgentPost.findMany({
     select: {
       id: true,
       canVC: true,
@@ -32,4 +35,10 @@ export const getAllFreeAgentPosts = async () =>
     orderBy: {
       updatedAt: "desc",
     },
+    where: {
+      updatedAt: { gte: dateMonthAgo },
+    },
   });
+
+  return post;
+};

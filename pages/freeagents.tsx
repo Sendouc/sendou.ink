@@ -1,4 +1,6 @@
 import {
+  Alert,
+  AlertIcon,
   Box,
   Button,
   Center,
@@ -8,6 +10,8 @@ import {
   Radio,
   RadioGroup,
   Stack,
+  Wrap,
+  WrapItem,
 } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import { Playstyle } from "@prisma/client";
@@ -44,18 +48,21 @@ const FreeAgentsPage = () => {
     likesData,
     isLoading,
     usersPost,
+    matchedPosts,
     playstyleCounts,
     state,
     dispatch,
   } = useFreeAgents();
   const [user] = useUser();
   const router = useRouter();
+
+  const [postIdToScrollTo, setPostIdToScrollTo] = useState<undefined | number>(
+    undefined
+  );
   const postRef = useRef<HTMLDivElement>(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
-  const idToScrollTo = Number.isNaN(parseInt(router.query.id as any))
-    ? undefined
-    : parseInt(router.query.id as any);
+  console.log("getIdToScrollTo", getIdToScrollTo());
 
   useEffect(() => {
     if (!postRef.current) return;
@@ -110,6 +117,14 @@ const FreeAgentsPage = () => {
           </RadioGroup>
         </Center>
       )}
+      {usersPost && likesData ? (
+        <MatchesInfo
+          matchedPosts={matchedPosts}
+          focusOnMatch={(id) => setPostIdToScrollTo(id)}
+        />
+      ) : (
+        <Box height="6.5rem" />
+      )}
       {postsData.map((post) => (
         <FreeAgentCard
           key={post.id}
@@ -118,10 +133,57 @@ const FreeAgentsPage = () => {
           canLike={
             !!user && post.user.discordId !== user.discordId && !!usersPost
           }
-          postRef={post.id === idToScrollTo ? postRef : undefined}
+          postRef={post.id === getIdToScrollTo() ? postRef : undefined}
         />
       ))}
     </MyContainer>
+  );
+
+  function getIdToScrollTo() {
+    if (postIdToScrollTo) return postIdToScrollTo;
+
+    return Number.isNaN(parseInt(router.query.id as any))
+      ? undefined
+      : parseInt(router.query.id as any);
+  }
+};
+
+const MatchesInfo = ({
+  matchedPosts,
+  focusOnMatch,
+}: {
+  matchedPosts: (Unpacked<GetAllFreeAgentPostsData> | undefined)[];
+  focusOnMatch: (id: number) => void;
+}) => {
+  if (!matchedPosts.length)
+    return (
+      <Alert status="info" my={6}>
+        <AlertIcon />
+        <Trans>
+          Once you match with other free agents they are shown here.
+        </Trans>
+      </Alert>
+    );
+
+  return (
+    <Flex flexDir="column" align="center">
+      <SubText mt={4}>
+        <Trans>Matches</Trans>
+      </SubText>
+      <Wrap mt={4} mb={2}>
+        {matchedPosts.map((post) =>
+          post ? (
+            <WrapItem key={post.id}>
+              <UserAvatar
+                user={post.user}
+                onClick={() => focusOnMatch(post.id)}
+                cursor="pointer"
+              />
+            </WrapItem>
+          ) : null
+        )}
+      </Wrap>
+    </Flex>
   );
 };
 
@@ -239,6 +301,7 @@ const FreeAgentCard = ({
             aria-label="Like"
             size="lg"
             isRound
+            mt={4}
             variant="ghost"
             icon={isLiked ? <FaHeart /> : <FaRegHeart />}
             onClick={handleClick}

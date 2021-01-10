@@ -19,7 +19,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 export type FreeAgentLikeInfo = {
-  likersCount: number;
   likedPostIds: number[];
   matchedPostIds: number[];
 };
@@ -51,7 +50,6 @@ async function getHandler(req: NextApiRequest, res: NextApiResponse) {
   );
 
   res.status(200).json({
-    likersCount: post.likersPosts.length,
     likedPostIds: post.likedPosts.map((post) => post.id),
     matchedPostIds: post.likedPosts
       .filter((post) => likerPostIds.has(post.id))

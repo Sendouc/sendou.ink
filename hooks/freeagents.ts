@@ -60,13 +60,18 @@ export function useFreeAgents() {
     return { playstyle: router.query.playstyle as Playstyle };
   }
 
+  const filteredPostsData = (postsData ?? []).filter(
+    (post) => !state.playstyle || post.playstyles.includes(state.playstyle)
+  );
+
   return {
-    postsData: (postsData ?? []).filter(
-      (post) => !state.playstyle || post.playstyles.includes(state.playstyle)
-    ),
+    postsData: filteredPostsData,
     likesData,
     isLoading: !postsData,
     usersPost,
+    matchedPosts: (likesData?.matchedPostIds ?? []).map((id) =>
+      (filteredPostsData ?? []).find((post) => post.id === id)
+    ),
     playstyleCounts: (postsData ?? []).reduce(
       (acc, cur) => {
         cur.playstyles.forEach((playstyle) => acc[playstyle]++);
