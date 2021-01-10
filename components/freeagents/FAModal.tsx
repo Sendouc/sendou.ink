@@ -152,8 +152,8 @@ const FAModal: React.FC<Props> = ({ onClose, post }) => {
                     </CheckboxGroup>
                   )}
                 />
-                {/* @ts-ignore */}
                 <FormErrorMessage>
+                  {/* @ts-ignore */}
                   {errors.playstyles?.message}
                 </FormErrorMessage>
               </FormControl>
