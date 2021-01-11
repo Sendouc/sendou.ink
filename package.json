@@ -15,6 +15,7 @@
     "mongo": "ts-node prisma/scripts/dataFromMongo.ts",
     "top500": "ts-node prisma/scripts/top500jsons.ts",
     "league": "ts-node prisma/scripts/leagueJsons.ts",
+    "principal": "ts-node prisma/scripts/addPrincipalIds.ts",
     "prettier": "prettier --write .",
     "e2e": "cypress open",
     "ex": "lingui extract",
