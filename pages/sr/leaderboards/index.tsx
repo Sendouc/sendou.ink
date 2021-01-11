@@ -7,7 +7,6 @@ import {
   Checkbox,
   CheckboxGroup,
   Flex,
-  IconButton,
   Radio,
   RadioGroup,
   Select,
@@ -17,6 +16,7 @@ import { Plural, t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { SalmonRunRecordCategory } from "@prisma/client";
 import Breadcrumbs from "components/common/Breadcrumbs";
+import LinkButton from "components/common/LinkButton";
 import {
   Table,
   TableBody,
@@ -32,7 +32,6 @@ import { salmonRunStages } from "lib/lists/stages";
 import { getRankingString } from "lib/strings";
 import Image from "next/image";
 import Link from "next/link";
-import { FiLink, FiTwitter, FiYoutube } from "react-icons/fi";
 import { salmonRunCategoryToNatural } from "./new";
 
 const SalmonRunLeaderboardsPage = ({}) => {
@@ -232,14 +231,7 @@ const SalmonRunLeaderboardsPage = ({}) => {
 
                         <TableCell textAlign="center">
                           {record.links.map((link) => (
-                            <a key={link} href={link}>
-                              <IconButton
-                                aria-label={`Link to ${link}`}
-                                icon={<LinkIcon link={link} />}
-                                isRound
-                                variant="ghost"
-                              />
-                            </a>
+                            <LinkButton key={link} link={link} />
                           ))}
                         </TableCell>
                       </TableRow>
@@ -254,17 +246,5 @@ const SalmonRunLeaderboardsPage = ({}) => {
     </>
   );
 };
-
-function LinkIcon({ link }: { link: string }) {
-  if (link.includes("youtube") || link.includes("youtu.be")) {
-    return <FiYoutube />;
-  }
-
-  if (link.includes("twitter")) {
-    return <FiTwitter />;
-  }
-
-  return <FiLink />;
-}
 
 export default SalmonRunLeaderboardsPage;

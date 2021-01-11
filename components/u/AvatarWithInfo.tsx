@@ -17,10 +17,10 @@ import { countries, getEmojiFlag } from "countries-list";
 import { getFullUsername } from "lib/strings";
 import { useMyTheme } from "lib/useMyTheme";
 import useUser from "lib/useUser";
+import Image from "next/image";
 import { GetUserByIdentifierData } from "prisma/queries/getUserByIdentifier";
 import { FaGamepad, FaTwitch, FaTwitter, FaYoutube } from "react-icons/fa";
 import { FiInfo } from "react-icons/fi";
-import { RiFileTextLine, RiTrophyLine } from "react-icons/ri";
 
 interface AvatarWithInfoProps {
   user: NonNullable<GetUserByIdentifierData>;
@@ -199,12 +199,14 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
                     href={`/player/${user.player?.switchAccountId}`}
                     prefetch={true}
                   >
-                    <Button
-                      leftIcon={<RiTrophyLine />}
-                      variant="outline"
-                      mx={2}
-                    >
-                      <Trans>View results</Trans>
+                    <Button variant="outline" mx={2} size="lg" w={24}>
+                      <Image
+                        src="/layout/xsearch.png"
+                        height={48}
+                        width={48}
+                        alt="SR"
+                        priority
+                      />
                     </Button>
                   </MyLink>
                 )}
@@ -213,12 +215,27 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
                     href={`/freeagents?id=${user.freeAgentPost.id}`}
                     prefetch={true}
                   >
-                    <Button
-                      leftIcon={<RiFileTextLine />}
-                      variant="outline"
-                      mx={2}
-                    >
-                      <Trans>View free agent post</Trans>
+                    <Button variant="outline" mx={2} size="lg" w={24}>
+                      <Image
+                        src="/layout/freeagents.png"
+                        height={48}
+                        width={48}
+                        alt="SR"
+                        priority
+                      />
+                    </Button>
+                  </MyLink>
+                )}
+                {true && (
+                  <MyLink href={`/sr/player/${user.id}`} prefetch={true}>
+                    <Button variant="outline" mx={2} size="lg" w={24}>
+                      <Image
+                        src="/layout/sr.png"
+                        height={48}
+                        width={48}
+                        alt="SR"
+                        priority
+                      />
                     </Button>
                   </MyLink>
                 )}
