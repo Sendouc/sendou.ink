@@ -14,12 +14,15 @@ model User {
   discriminator    String
   discordId        String            @unique
   discordAvatar    String?
+  teamId           Int?
   profile          Profile?
   player           Player?
   builds           Build[]
   submittedRecords SalmonRunRecord[]
   salmonRunRecords SalmonRunRecord[] @relation("SalmonRunRecordRoster")
   freeAgentPost    FreeAgentPost?
+  team             Team?             @relation("TeamRoster")
+  captainedTeam    Team?             @relation("TeamCaptain")
 }
 
 model Profile {
@@ -230,4 +233,17 @@ model FreeAgentPost {
   user        User            @relation(fields: [userId], references: [id])
   likedPosts  FreeAgentPost[] @relation("LikedPosts", references: [id])
   likersPosts FreeAgentPost[] @relation("LikedPosts", references: [id])
+}
+
+model Team {
+  id             Int     @id @default(autoincrement())
+  name           String
+  nameForUrl     String  @unique
+  twitterName    String?
+  bio            String?
+  recruitingPost String?
+  inviteCode     String  @unique
+  captainId      Int     @unique
+  captain        User    @relation("TeamCaptain", fields: [captainId], references: [id])
+  roster         User[]  @relation("TeamRoster")
 }
