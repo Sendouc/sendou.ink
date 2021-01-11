@@ -80,6 +80,12 @@ const MapsGeneratorPage = () => {
   };
 
   useEffect(() => {
+    const maplist = localStorage.getItem("maplist");
+    if (!maplist) return;
+    setMaplist(maplist);
+  }, []);
+
+  useEffect(() => {
     if (!copied) return;
 
     const timer = setTimeout(() => {
@@ -145,7 +151,7 @@ const MapsGeneratorPage = () => {
 
     const stagesAlreadyPicked = new Set<string>();
 
-    const isSZFirst = Math.random() > 0.5;
+    const isSZFirst = false;
 
     return new Array(count)
       .fill(null)
@@ -330,7 +336,11 @@ const MapsGeneratorPage = () => {
       <Stack direction={["column", "row"]} spacing={4} mb={4}>
         <Button
           leftIcon={<FiRotateCw />}
-          onClick={() => setMaplist(generateMaps())}
+          onClick={() => {
+            const maplist = generateMaps();
+            setMaplist(maplist);
+            localStorage.setItem("maplist", maplist);
+          }}
         >
           <Trans>Generate maps</Trans>
         </Button>
