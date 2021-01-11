@@ -5,10 +5,13 @@ import MyLink from "components/common/MyLink";
 import { useMyTheme } from "lib/useMyTheme";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 const Home = () => {
   const { gray } = useMyTheme();
   const { colorMode } = useColorMode();
+  const [rgb, setRgb] = useState(false);
+
   return (
     <>
       {/* <SEO
@@ -19,11 +22,12 @@ const Home = () => {
       /> */}
       <Box textAlign="center">
         <Image
-          className="rgb"
+          className={rgb ? "rgb" : undefined}
           src={`/layout/posterGirl_${colorMode}.png`}
           width={481}
           height={400}
           priority
+          onLoad={() => setRgb(true)}
         />
         <Heading size="2xl">Sendou.ink</Heading>
         <Box fontWeight="semibold" letterSpacing="wide" color={gray}>
