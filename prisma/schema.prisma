@@ -21,7 +21,7 @@ model User {
   submittedRecords SalmonRunRecord[]
   salmonRunRecords SalmonRunRecord[] @relation("SalmonRunRecordRoster")
   freeAgentPost    FreeAgentPost?
-  team             Team?             @relation("TeamRoster")
+  team             Team?             @relation(fields: [teamId], references: [id])
   captainedTeam    Team?             @relation("TeamCaptain")
 }
 
@@ -245,5 +245,5 @@ model Team {
   inviteCode     String  @unique
   captainId      Int     @unique
   captain        User    @relation("TeamCaptain", fields: [captainId], references: [id])
-  roster         User[]  @relation("TeamRoster")
+  roster         User[]
 }

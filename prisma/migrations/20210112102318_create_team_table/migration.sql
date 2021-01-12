@@ -1,6 +1,5 @@
 -- AlterTable
-ALTER TABLE "User" ADD COLUMN     "teamId" INTEGER,
-ADD COLUMN     "teamId" INTEGER;
+ALTER TABLE "User" ADD COLUMN     "teamId" INTEGER;
 
 -- CreateTable
 CREATE TABLE "Team" (
