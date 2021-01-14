@@ -3,10 +3,11 @@ import prisma from "prisma/client";
 
 export type GetTeamData = Prisma.PromiseReturnType<typeof getTeam>;
 
-export const getTeam = async (nameForUrl: string) =>
+export const getTeam = async (where: { nameForUrl: string } | { id: number }) =>
   prisma.team.findUnique({
-    where: { nameForUrl },
+    where,
     select: {
+      id: true,
       bio: true,
       recruitingPost: true,
       twitterName: true,

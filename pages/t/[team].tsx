@@ -10,17 +10,21 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import { getTeam, GetTeamData } from "prisma/queries/getTeam";
 import { useState } from "react";
 import { FiTrash } from "react-icons/fi";
+import useSWR, { mutate } from "swr";
 
 interface Props {
   team: GetTeamData;
 }
 
 const TeamPage: React.FC<Props> = (props) => {
+  const { data } = useSWR<GetTeamData>(`/api/teams/${props.team!.id}`, {
+    initialData: props.team!,
+  });
+  const team = data!;
+
   const [sending, setSending] = useState(false);
   const [user] = useUser();
   const toast = useToast();
-
-  const team = props.team!;
 
   const leaveTeam = async () => {
     if (!window.confirm(t`Leave the team?`)) {
@@ -33,7 +37,7 @@ const TeamPage: React.FC<Props> = (props) => {
     setSending(false);
     if (!success) return;
 
-    //mutate("/api/freeagents");
+    mutate(`/api/teams/${props.team!.id}`);
 
     toast(getToastOptions(t`Left the team`, "success"));
   };
@@ -59,7 +63,12 @@ const TeamPage: React.FC<Props> = (props) => {
           .sort((a, b) => b[1] - a[1])
           .map(([country]) => getEmojiFlag(country))}
       </Box>
-      {user?.id === team.captainId && <TeamManagementModal />}
+      {user?.id === team.captainId && (
+        <TeamManagementModal
+          roster={team.roster.filter((teamMember) => teamMember.id !== user.id)}
+          teamId={team.id}
+        />
+      )}
       {user &&
         user.id !== team.captainId &&
         team.roster.some((teamMember) => user.id === teamMember.id) && (
@@ -85,7 +94,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
-  const team = await getTeam(params!.team as string);
+  const team = await getTeam({ nameForUrl: params!.team as string });
 
   if (!team) return { notFound: true };
 

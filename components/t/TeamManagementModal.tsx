@@ -1,18 +1,54 @@
 import {
+  Box,
   Button,
+  Grid,
   Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  useToast,
 } from "@chakra-ui/react";
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
+import UserAvatar from "components/common/UserAvatar";
+import { getToastOptions } from "lib/getToastOptions";
+import { sendData } from "lib/postData";
+import { GetTeamData } from "prisma/queries/getTeam";
 import { useState } from "react";
-import { FiUsers } from "react-icons/fi";
+import { FiTrash, FiUsers } from "react-icons/fi";
+import { mutate } from "swr";
 
-const TeamManagementModal = ({}) => {
+interface Props {
+  roster: NonNullable<GetTeamData>["roster"];
+  teamId: number;
+}
+
+const TeamManagementModal: React.FC<Props> = ({ roster, teamId }) => {
+  const toast = useToast();
   const [isOpen, setIsOpen] = useState(false);
+  const [sending, setSending] = useState(false);
+
+  const onDelete = async () => {
+    console.log("bye");
+  };
+
+  const kickTeamMember = async (id: number, name: string) => {
+    if (!window.confirm(`Kick ${name}?`)) return;
+
+    setSending(true);
+
+    const success = await sendData("POST", "/api/teams/kick", { id });
+    setSending(false);
+    if (!success) return;
+
+    mutate(`/api/teams/${teamId}`);
+
+    toast(getToastOptions(t`User kicked`, "success"));
+
+    setIsOpen(false);
+  };
+
   return (
     <>
       <Button leftIcon={<FiUsers />} onClick={() => setIsOpen(true)}>
@@ -27,17 +63,53 @@ const TeamManagementModal = ({}) => {
               </ModalHeader>
               <ModalCloseButton borderRadius="50%" />
               <ModalBody pb={6}>
-                {/* <FormControl isInvalid={!!getError() && buttonClicked}>
-                  <FormLabel htmlFor="teamName">
-                    <Trans>Team name</Trans>
-                  </FormLabel>
-                  <Input
-                    name="teamName"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                  <FormErrorMessage>{getError()}</FormErrorMessage>
-                </FormControl> */}
+                <Button
+                  leftIcon={<FiTrash />}
+                  variant="outline"
+                  colorScheme="red"
+                  mb={6}
+                  isDisabled={sending}
+                  onClick={async () => {
+                    if (window.confirm(t`Delete the team?`)) await onDelete();
+                  }}
+                >
+                  <Trans>Delete team</Trans>
+                </Button>
+                <Grid
+                  templateColumns="repeat(4, 1fr)"
+                  gridRowGap={4}
+                  gridColumnGap={2}
+                  placeItems="center"
+                >
+                  {roster.map((user) => (
+                    <>
+                      <UserAvatar user={user} />
+                      <Box>
+                        {user.username}#{user.discriminator}
+                      </Box>
+                      <Button
+                        colorScheme="red"
+                        variant="outline"
+                        isDisabled={sending}
+                        onClick={() =>
+                          kickTeamMember(
+                            user.id,
+                            `${user.username}#${user.discriminator}`
+                          )
+                        }
+                      >
+                        <Trans>Kick</Trans>
+                      </Button>
+                      <Button
+                        colorScheme="red"
+                        variant="outline"
+                        isDisabled={sending}
+                      >
+                        <Trans>Make owner</Trans>
+                      </Button>
+                    </>
+                  ))}
+                </Grid>
               </ModalBody>
             </ModalContent>
           </ModalOverlay>
