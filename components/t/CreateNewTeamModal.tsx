@@ -11,14 +11,15 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  useToast,
 } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
+import { makeNameUrlFriendly } from "lib/makeNameUrlFriendly";
 import { sendData } from "lib/postData";
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 const CreateNewTeamModal = () => {
-  const toast = useToast();
+  const router = useRouter();
 
   const [isOpen, setIsOpen] = useState(false);
   const [sending, setSending] = useState(false);
@@ -37,10 +38,10 @@ const CreateNewTeamModal = () => {
     setSending(true);
 
     const success = await sendData("POST", "/api/teams", { name });
-    setSending(false);
-    if (!success) return;
 
-    setIsOpen(false);
+    if (!success) return setSending(false);
+
+    router.push(`/t/${makeNameUrlFriendly(name)}`);
   };
 
   return (

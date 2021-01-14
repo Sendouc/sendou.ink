@@ -14,6 +14,7 @@ import { t, Trans } from "@lingui/macro";
 import UserAvatar from "components/common/UserAvatar";
 import { getToastOptions } from "lib/getToastOptions";
 import { sendData } from "lib/postData";
+import { useRouter } from "next/router";
 import { GetTeamData } from "prisma/queries/getTeam";
 import { useState } from "react";
 import { FiTrash, FiUsers } from "react-icons/fi";
@@ -25,12 +26,23 @@ interface Props {
 }
 
 const TeamManagementModal: React.FC<Props> = ({ roster, teamId }) => {
+  const router = useRouter();
   const toast = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const [sending, setSending] = useState(false);
 
-  const onDelete = async () => {
-    console.log("bye");
+  const deleteTeam = async () => {
+    if (!window.confirm(t`Delete the team? DELETING IS PERMANENT.`)) return;
+
+    setSending(true);
+
+    const success = await sendData("DELETE", "/api/teams");
+    setSending(false);
+    if (!success) return;
+
+    toast(getToastOptions(t`Team deleted`, "success"));
+
+    router.push("/t");
   };
 
   const kickTeamMember = async (id: number, name: string) => {
@@ -45,6 +57,27 @@ const TeamManagementModal: React.FC<Props> = ({ roster, teamId }) => {
     mutate(`/api/teams/${teamId}`);
 
     toast(getToastOptions(t`User kicked`, "success"));
+
+    setIsOpen(false);
+  };
+
+  const makeOwner = async (id: number, name: string) => {
+    if (
+      !window.confirm(
+        `Transfer the ownership to ${name}? YOU WILL LOSE ACCESS TO FEATURES RELATING TO MANAGING THE TEAM.`
+      )
+    )
+      return;
+
+    setSending(true);
+
+    const success = await sendData("POST", "/api/teams/owner", { id });
+    setSending(false);
+    if (!success) return;
+
+    mutate(`/api/teams/${teamId}`);
+
+    toast(getToastOptions(t`Switched owners`, "success"));
 
     setIsOpen(false);
   };
@@ -69,9 +102,7 @@ const TeamManagementModal: React.FC<Props> = ({ roster, teamId }) => {
                   colorScheme="red"
                   mb={6}
                   isDisabled={sending}
-                  onClick={async () => {
-                    if (window.confirm(t`Delete the team?`)) await onDelete();
-                  }}
+                  onClick={deleteTeam}
                 >
                   <Trans>Delete team</Trans>
                 </Button>
@@ -104,6 +135,12 @@ const TeamManagementModal: React.FC<Props> = ({ roster, teamId }) => {
                         colorScheme="red"
                         variant="outline"
                         isDisabled={sending}
+                        onClick={() =>
+                          makeOwner(
+                            user.id,
+                            `${user.username}#${user.discriminator}`
+                          )
+                        }
                       >
                         <Trans>Make owner</Trans>
                       </Button>

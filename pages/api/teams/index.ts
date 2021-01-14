@@ -1,4 +1,5 @@
 import { getMySession } from "lib/getMySession";
+import { makeNameUrlFriendly } from "lib/makeNameUrlFriendly";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "prisma/client";
 import { v4 as uuidv4 } from "uuid";
@@ -7,6 +8,9 @@ const teamsHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method) {
     case "POST":
       await postHandler(req, res);
+      break;
+    case "DELETE":
+      await deleteHandler(req, res);
       break;
     default:
       res.status(405).end();
@@ -41,7 +45,7 @@ async function postHandler(req: NextApiRequest, res: NextApiResponse) {
     return res.status(400).end();
   }
 
-  const nameForUrl = normalizedTeamName.toLowerCase().replace(/ /g, "-");
+  const nameForUrl = makeNameUrlFriendly(teamName);
 
   const existingTeam = await prisma.team.findUnique({ where: { nameForUrl } });
   if (existingTeam) {
@@ -57,6 +61,18 @@ async function postHandler(req: NextApiRequest, res: NextApiResponse) {
       inviteCode: uuidv4(),
     },
   });
+
+  res.status(200).end();
+}
+
+async function deleteHandler(req: NextApiRequest, res: NextApiResponse) {
+  const user = await getMySession(req);
+  if (!user) return res.status(401).end();
+
+  const team = await prisma.team.findUnique({ where: { captainId: user.id } });
+  if (!team) return res.status(400).end();
+
+  await prisma.team.delete({ where: { id: team.id } });
 
   res.status(200).end();
 }
