@@ -14,6 +14,7 @@ export const getTeam = async (nameForUrl: string) =>
       captainId: true,
       roster: {
         select: {
+          id: true,
           discordId: true,
           discordAvatar: true,
           username: true,

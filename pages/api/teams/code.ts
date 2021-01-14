@@ -3,7 +3,7 @@ import { getMySession } from "lib/getMySession";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "prisma/client";
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+const joinHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method) {
     case "POST":
       await postHandler(req, res);
@@ -50,4 +50,4 @@ async function postHandler(req: NextApiRequest, res: NextApiResponse) {
   res.status(200).end();
 }
 
-export default handler;
+export default joinHandler;

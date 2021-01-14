@@ -43,8 +43,6 @@ const CreateNewTeamModal = () => {
     setIsOpen(false);
   };
 
-  console.log(getError());
-
   return (
     <>
       <Button onClick={() => setIsOpen(true)}>
