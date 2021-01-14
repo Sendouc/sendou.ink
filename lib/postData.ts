@@ -2,7 +2,6 @@ import { createStandaloneToast } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 
 export async function sendData(method = "POST", url = "", data = {}) {
-  // Default options are marked with *
   const response = await fetch(url, {
     method,
     headers: {

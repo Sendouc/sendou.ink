@@ -6,3 +6,5 @@ export const SALMON_RUN_ADMIN_DISCORD_IDS = [
   "116999083796725761", // Marty
   "78546869373906944", // Minaraii
 ];
+
+export const TEAM_ROSTER_LIMIT = 10;
