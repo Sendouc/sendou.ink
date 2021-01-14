@@ -1,8 +1,23 @@
-import { Box, Button, Heading, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Divider,
+  Flex,
+  Heading,
+  useToast,
+  Wrap,
+  WrapItem,
+} from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
+import Markdown from "components/common/Markdown";
 import MyContainer from "components/common/MyContainer";
+import Section from "components/common/Section";
+import SubTextCollapse from "components/common/SubTextCollapse";
+import UserAvatar from "components/common/UserAvatar";
+import WeaponImage from "components/common/WeaponImage";
 import TeamManagementModal from "components/t/TeamManagementModal";
-import { getEmojiFlag } from "countries-list";
+import TeamProfileModal from "components/t/TeamProfileModal";
+import { countries, getEmojiFlag } from "countries-list";
 import { getToastOptions } from "lib/getToastOptions";
 import { sendData } from "lib/postData";
 import useUser from "lib/useUser";
@@ -47,7 +62,7 @@ const TeamPage: React.FC<Props> = (props) => {
       <Heading fontFamily="'Rubik', sans-serif" textAlign="center">
         {team.name}
       </Heading>
-      <Box textAlign="center">
+      {/* <Box textAlign="center">
         {team.roster
           .reduce((acc: [string, number][], cur) => {
             if (!cur.profile?.country) return acc;
@@ -62,12 +77,17 @@ const TeamPage: React.FC<Props> = (props) => {
           }, [])
           .sort((a, b) => b[1] - a[1])
           .map(([country]) => getEmojiFlag(country))}
-      </Box>
+      </Box> */}
       {user?.id === team.captainId && (
-        <TeamManagementModal
-          roster={team.roster.filter((teamMember) => teamMember.id !== user.id)}
-          teamId={team.id}
-        />
+        <>
+          <TeamManagementModal
+            roster={team.roster.filter(
+              (teamMember) => teamMember.id !== user.id
+            )}
+            teamId={team.id}
+          />
+          <TeamProfileModal team={team} />
+        </>
       )}
       {user &&
         user.id !== team.captainId &&
@@ -82,6 +102,58 @@ const TeamPage: React.FC<Props> = (props) => {
             <Trans>Leave team</Trans>
           </Button>
         )}
+      <Divider my={8} />
+      {team.bio && <Markdown value={team.bio} smallHeaders />}
+      {team.recruitingPost && (
+        <SubTextCollapse title={t`Recruiting post`} mt={4}>
+          <Markdown value={team.recruitingPost} smallHeaders />
+        </SubTextCollapse>
+      )}
+      {(team.bio || team.recruitingPost) && <Divider my={8} />}
+      <Wrap justify="center">
+        {team.roster
+          .sort(
+            (a, b) =>
+              Number(a.id === team.captainId) - Number(b.id === team.captainId)
+          )
+          .map((user) => (
+            <WrapItem key={user.id}>
+              <Section textAlign="center">
+                <UserAvatar user={user} />
+                <Box
+                  my={2}
+                  fontWeight="bold"
+                >{`${user.username}#${user.discriminator}`}</Box>
+                {user.profile?.country && (
+                  <Box mx="auto" my={1}>
+                    <Box as="span" mr={1}>
+                      {getEmojiFlag(user.profile.country)}{" "}
+                    </Box>
+                    {
+                      Object.entries(countries).find(
+                        ([key]) => key === user.profile!.country
+                      )![1].name
+                    }
+                  </Box>
+                )}
+                {user.profile?.weaponPool.length && (
+                  <Flex
+                    mt={2}
+                    w="100%"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    {user.profile.weaponPool.map((wpn) => (
+                      <Box mx="0.2em" key={wpn}>
+                        <WeaponImage name={wpn} size={32} />
+                      </Box>
+                    ))}
+                  </Flex>
+                )}
+              </Section>
+            </WrapItem>
+          ))}
+      </Wrap>
     </MyContainer>
   );
 };
