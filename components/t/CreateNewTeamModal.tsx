@@ -47,7 +47,7 @@ const CreateNewTeamModal = () => {
 
   return (
     <>
-      <Button onClick={() => setIsOpen(true)}>
+      <Button onClick={() => setIsOpen(true)} mb={6}>
         <Trans>New team</Trans>
       </Button>
       {isOpen && (

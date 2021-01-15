@@ -106,17 +106,19 @@ const TeamsPage: React.FC<Props> = ({ teams }) => {
             <Flex align="center">
               {team.twitterName && (
                 <MyLink href={`/t/${team.nameForUrl}`} isColored={false}>
-                  <TwitterAvatar twitterName={team.twitterName} />
+                  <TwitterAvatar mr={2} twitterName={team.twitterName} />
                 </MyLink>
               )}
               <MyLink href={`/t/${team.nameForUrl}`} isColored={false}>
-                <Box ml={2} fontSize="2rem" fontWeight="bold">
+                <Box fontSize="2rem" fontWeight="bold">
                   {team.name}
                 </Box>
               </MyLink>
 
               <Box ml={2}>
-                {team.countries.map((country) => getEmojiFlag(country))}
+                {team.countries
+                  .map((country) => getEmojiFlag(country))
+                  .join("  ")}
               </Box>
             </Flex>
             <Box color={gray} fontSize="sm" mt={2}>
