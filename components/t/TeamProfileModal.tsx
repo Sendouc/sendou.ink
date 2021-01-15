@@ -3,6 +3,7 @@ import {
   Button,
   FormControl,
   FormErrorMessage,
+  FormHelperText,
   FormLabel,
   Input,
   InputGroup,
@@ -108,6 +109,11 @@ const TeamProfileModal: React.FC<Props> = ({ team }) => {
                         placeholder="olivesplatoon"
                       />
                     </InputGroup>
+                    <FormHelperText>
+                      <Trans>
+                        Twitter is also used to get the team's avatar.
+                      </Trans>
+                    </FormHelperText>
                     <FormErrorMessage>
                       {errors.twitterName?.message}
                     </FormErrorMessage>

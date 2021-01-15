@@ -17,6 +17,7 @@ import MyContainer from "components/common/MyContainer";
 import MyLink from "components/common/MyLink";
 import Section from "components/common/Section";
 import SubTextCollapse from "components/common/SubTextCollapse";
+import TwitterAvatar from "components/common/TwitterAvatar";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
 import TeamManagementModal from "components/t/TeamManagementModal";
@@ -29,7 +30,6 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import { getTeam, GetTeamData } from "prisma/queries/getTeam";
 import { useEffect, useState } from "react";
 import { FaTwitter } from "react-icons/fa";
-import { FiTrash } from "react-icons/fi";
 import useSWR, { mutate } from "swr";
 
 interface Props {
@@ -68,11 +68,15 @@ const TeamPage: React.FC<Props> = (props) => {
 
   return (
     <MyContainer>
-      <Heading fontFamily="'Rubik', sans-serif" textAlign="center">
-        {team.name}
-      </Heading>
-      {team.twitterName && (
-        <Center>
+      <Flex align="center" justify="center">
+        {team.twitterName && (
+          <TwitterAvatar twitterName={team.twitterName} size="lg" mr={2} />
+        )}
+        <Heading fontFamily="'Rubik', sans-serif" textAlign="center">
+          {team.name}
+        </Heading>
+
+        {team.twitterName && (
           <a href={`https://twitter.com/${team.twitterName}`}>
             <IconButton
               aria-label="Link to Twitter"
@@ -80,10 +84,12 @@ const TeamPage: React.FC<Props> = (props) => {
               color="#1DA1F2"
               isRound
               variant="ghost"
+              size="sm"
+              ml={1}
             />
           </a>
-        </Center>
-      )}
+        )}
+      </Flex>
       {/* <Box textAlign="center">
         {team.roster
           .reduce((acc: [string, number][], cur) => {
@@ -101,7 +107,7 @@ const TeamPage: React.FC<Props> = (props) => {
           .map(([country]) => getEmojiFlag(country))}
       </Box> */}
       {user?.id === team.captainId && (
-        <Center my={2}>
+        <Center my={4}>
           <Stack direction={["column", "row"]} spacing={4}>
             <TeamManagementModal team={team} />
             <TeamProfileModal team={team} />
@@ -111,24 +117,26 @@ const TeamPage: React.FC<Props> = (props) => {
       {user &&
         user.id !== team.captainId &&
         team.roster.some((teamMember) => user.id === teamMember.id) && (
-          <Button
-            leftIcon={<FiTrash />}
-            variant="outline"
-            colorScheme="red"
-            onClick={leaveTeam}
-            isLoading={sending}
-          >
-            <Trans>Leave team</Trans>
-          </Button>
+          <Center my={4}>
+            <Button
+              variant="outline"
+              colorScheme="red"
+              onClick={leaveTeam}
+              isLoading={sending}
+              size="sm"
+            >
+              <Trans>Leave team</Trans>
+            </Button>
+          </Center>
         )}
-      <Divider my={8} />
+      <Divider mt={4} mb={8} />
       {team.bio && <Markdown value={team.bio} smallHeaders />}
       {team.recruitingPost && (
         <SubTextCollapse title={t`Recruiting post`} mt={4}>
           <Markdown value={team.recruitingPost} smallHeaders />
         </SubTextCollapse>
       )}
-      {(team.bio || team.recruitingPost) && <Divider my={8} />}
+      {(team.bio || team.recruitingPost) && <Divider mb={4} mt={8} />}
       <Wrap justify="center" spacing={4}>
         {team.roster
           .sort(
