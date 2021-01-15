@@ -27,6 +27,7 @@ import ModeImage from "components/common/ModeImage";
 import MyContainer from "components/common/MyContainer";
 import SubText from "components/common/SubText";
 import { stages } from "lib/lists/stages";
+import { setManySearchParams } from "lib/setSearchParams";
 import { useRouter } from "next/router";
 import { ChangeEvent, Fragment, useEffect, useState } from "react";
 import { FiCheck, FiFilter, FiRotateCw } from "react-icons/fi";
@@ -69,14 +70,10 @@ const MapsGeneratorPage = () => {
   }
 
   const poolForUrl = (stagesSelectedForUrl: Record<string, string[]>) => {
-    return Object.entries(stagesSelectedForUrl).reduce(
-      (acc: Record<string, string>, cur) => {
-        if (cur[1].length) acc[cur[0]] = cur[1].join(",");
-
-        return acc;
-      },
-      {}
-    );
+    return Object.entries(stagesSelectedForUrl).map(([key, stages]) => ({
+      key,
+      value: stages.join(","),
+    }));
   };
 
   useEffect(() => {
@@ -108,10 +105,7 @@ const MapsGeneratorPage = () => {
     const newStagesSelected = { ...stagesSelected, [stage]: newArray };
 
     setStagesSelected(newStagesSelected);
-    router.replace({
-      pathname: "/maps",
-      query: poolForUrl(newStagesSelected),
-    });
+    setManySearchParams(poolForUrl(newStagesSelected));
   };
 
   const shuffled = (array: string[]) => {
@@ -228,11 +222,7 @@ const MapsGeneratorPage = () => {
                       if (!buttonIsAdd) delete newStagesSelected[stage];
 
                       setStagesSelected(newStagesSelected);
-
-                      router.replace({
-                        pathname: "/maps",
-                        query: poolForUrl(newStagesSelected),
-                      });
+                      setManySearchParams(poolForUrl(newStagesSelected));
                     }}
                   >
                     {buttonIsAdd ? <Trans>All</Trans> : <Trans>Clear</Trans>}
