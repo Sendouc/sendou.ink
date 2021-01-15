@@ -69,10 +69,16 @@ JWT_SECRET=
 a) Go to https://discord.com/developers/applications  
 b) Select "New Application"  
 c) Go to your newly generated application  
-d) On the "General Information" tab both "CLIEN ID" and "CLIENT SECRET" can be found.  
+d) On the "General Information" tab both "CLIENT ID" and "CLIENT SECRET" can be found.  
 e) On the "OAuth2" tab add `http://localhost:3000/api/auth/callback/discord` in the list of redirects.
 
 `JWT_SECRET` can be any randomly generated reasonably long string.
+
+## Using API
+
+If you wish to use the sendou.ink API for your own project like a Discord bot you can use the API endpoints under `https://sendou.ink/api/bot` (https://github.com/Sendouc/sendou.ink/tree/main/pages/api/bot) as long as you keep the load on my backend reasonable.
+
+Using other endpoints isn't advised as I change those as I feel to suit the needs of the website. If the endpoints under `/bot` don't meet your use case feel free to leave an issue.
 
 ## Contributing
 
