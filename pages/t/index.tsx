@@ -149,6 +149,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
     props: {
       teams: teams.sort((a, b) => b.teamXP - a.teamXP),
     },
+    revalidate: 1,
   };
 };
 
