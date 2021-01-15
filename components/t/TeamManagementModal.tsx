@@ -1,7 +1,10 @@
 import {
   Box,
   Button,
+  FormControl,
+  FormLabel,
   Grid,
+  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -16,20 +19,30 @@ import { getToastOptions } from "lib/getToastOptions";
 import { sendData } from "lib/postData";
 import { useRouter } from "next/router";
 import { GetTeamData } from "prisma/queries/getTeam";
-import { useState } from "react";
-import { FiTrash, FiUsers } from "react-icons/fi";
+import { Fragment, useEffect, useState } from "react";
+import { FiCheck, FiTrash, FiUsers } from "react-icons/fi";
 import { mutate } from "swr";
 
 interface Props {
-  roster: NonNullable<GetTeamData>["roster"];
-  teamId: number;
+  team: NonNullable<GetTeamData>;
 }
 
-const TeamManagementModal: React.FC<Props> = ({ roster, teamId }) => {
+const TeamManagementModal: React.FC<Props> = ({ team }) => {
   const router = useRouter();
   const toast = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const [sending, setSending] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (!copied) return;
+
+    const timer = setTimeout(() => {
+      setCopied(false);
+    }, 750);
+
+    return () => clearTimeout(timer);
+  }, [copied]);
 
   const deleteTeam = async () => {
     if (!window.confirm(t`Delete the team? DELETING IS PERMANENT.`)) return;
@@ -54,7 +67,7 @@ const TeamManagementModal: React.FC<Props> = ({ roster, teamId }) => {
     setSending(false);
     if (!success) return;
 
-    mutate(`/api/teams/${teamId}`);
+    mutate(`/api/teams/${team.id}`);
 
     toast(getToastOptions(t`User kicked`, "success"));
 
@@ -75,7 +88,7 @@ const TeamManagementModal: React.FC<Props> = ({ roster, teamId }) => {
     setSending(false);
     if (!success) return;
 
-    mutate(`/api/teams/${teamId}`);
+    mutate(`/api/teams/${team.id}`);
 
     toast(getToastOptions(t`Switched owners`, "success"));
 
@@ -103,17 +116,44 @@ const TeamManagementModal: React.FC<Props> = ({ roster, teamId }) => {
                   mb={6}
                   isDisabled={sending}
                   onClick={deleteTeam}
+                  size="sm"
                 >
                   <Trans>Delete team</Trans>
                 </Button>
+
+                <FormControl>
+                  <FormLabel htmlFor="code">
+                    <Trans>Invite link</Trans>
+                  </FormLabel>
+                  <Input
+                    name="code"
+                    value={`https://sendou.ink/t/join?name=${team.nameForUrl}&code=${team.inviteCode}`}
+                    readOnly
+                  />
+                  <Button
+                    onClick={() => {
+                      navigator.clipboard.writeText(
+                        `https://sendou.ink/t/join?name=${team.nameForUrl}&code=${team.inviteCode}`
+                      );
+                      setCopied(true);
+                    }}
+                    h="1.75rem"
+                    size="sm"
+                    disabled={copied}
+                    mb={8}
+                    mt={4}
+                  >
+                    {copied ? <FiCheck /> : <Trans>Copy</Trans>}
+                  </Button>
+                </FormControl>
                 <Grid
                   templateColumns="repeat(4, 1fr)"
                   gridRowGap={4}
                   gridColumnGap={2}
                   placeItems="center"
                 >
-                  {roster.map((user) => (
-                    <>
+                  {team.roster.map((user) => (
+                    <Fragment key={user.id}>
                       <UserAvatar user={user} />
                       <Box>
                         {user.username}#{user.discriminator}
@@ -128,6 +168,7 @@ const TeamManagementModal: React.FC<Props> = ({ roster, teamId }) => {
                             `${user.username}#${user.discriminator}`
                           )
                         }
+                        size="sm"
                       >
                         <Trans>Kick</Trans>
                       </Button>
@@ -141,10 +182,11 @@ const TeamManagementModal: React.FC<Props> = ({ roster, teamId }) => {
                             `${user.username}#${user.discriminator}`
                           )
                         }
+                        size="sm"
                       >
                         <Trans>Make owner</Trans>
                       </Button>
-                    </>
+                    </Fragment>
                   ))}
                 </Grid>
               </ModalBody>

@@ -2,6 +2,7 @@ import {
   Button,
   FormControl,
   FormErrorMessage,
+  FormHelperText,
   FormLabel,
   Input,
   Modal,
@@ -67,6 +68,12 @@ const CreateNewTeamModal = () => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
+                  <FormHelperText>
+                    <Trans>
+                      Name can't be changed after making the team so choose
+                      wisely.
+                    </Trans>
+                  </FormHelperText>
                   <FormErrorMessage>{getError()}</FormErrorMessage>
                 </FormControl>
               </ModalBody>

@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Center,
   Divider,
   Flex,
   Heading,
@@ -11,6 +12,7 @@ import {
 import { t, Trans } from "@lingui/macro";
 import Markdown from "components/common/Markdown";
 import MyContainer from "components/common/MyContainer";
+import MyLink from "components/common/MyLink";
 import Section from "components/common/Section";
 import SubTextCollapse from "components/common/SubTextCollapse";
 import UserAvatar from "components/common/UserAvatar";
@@ -23,7 +25,7 @@ import { sendData } from "lib/postData";
 import useUser from "lib/useUser";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { getTeam, GetTeamData } from "prisma/queries/getTeam";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FiTrash } from "react-icons/fi";
 import useSWR, { mutate } from "swr";
 
@@ -37,9 +39,15 @@ const TeamPage: React.FC<Props> = (props) => {
   });
   const team = data!;
 
+  console.log("team", team);
+
   const [sending, setSending] = useState(false);
   const [user] = useUser();
   const toast = useToast();
+
+  useEffect(() => {
+    mutate(`/api/teams/${props.team!.id}`);
+  }, []);
 
   const leaveTeam = async () => {
     if (!window.confirm(t`Leave the team?`)) {
@@ -79,15 +87,10 @@ const TeamPage: React.FC<Props> = (props) => {
           .map(([country]) => getEmojiFlag(country))}
       </Box> */}
       {user?.id === team.captainId && (
-        <>
-          <TeamManagementModal
-            roster={team.roster.filter(
-              (teamMember) => teamMember.id !== user.id
-            )}
-            teamId={team.id}
-          />
+        <Center my={2}>
+          <TeamManagementModal team={team} />
           <TeamProfileModal team={team} />
-        </>
+        </Center>
       )}
       {user &&
         user.id !== team.captainId &&
@@ -119,11 +122,15 @@ const TeamPage: React.FC<Props> = (props) => {
           .map((user) => (
             <WrapItem key={user.id}>
               <Section textAlign="center">
-                <UserAvatar user={user} />
-                <Box
-                  my={2}
-                  fontWeight="bold"
-                >{`${user.username}#${user.discriminator}`}</Box>
+                <MyLink href={`/u/${user.discordId}`} isColored={false}>
+                  <UserAvatar user={user} />
+                </MyLink>
+                <Box my={2} fontWeight="bold">
+                  <MyLink
+                    href={`/u/${user.discordId}`}
+                    isColored={false}
+                  >{`${user.username}#${user.discriminator}`}</MyLink>
+                </Box>
                 {user.profile?.country && (
                   <Box mx="auto" my={1}>
                     <Box as="span" mr={1}>
@@ -136,14 +143,14 @@ const TeamPage: React.FC<Props> = (props) => {
                     }
                   </Box>
                 )}
-                {user.profile?.weaponPool.length && (
+                {(user.profile?.weaponPool ?? []).length > 0 && (
                   <Flex
-                    mt={2}
+                    mt={3}
                     w="100%"
                     alignItems="center"
                     justifyContent="center"
                   >
-                    {user.profile.weaponPool.map((wpn) => (
+                    {user.profile!.weaponPool.map((wpn) => (
                       <Box mx="0.2em" key={wpn}>
                         <WeaponImage name={wpn} size={32} />
                       </Box>
