@@ -1,4 +1,4 @@
-import { Select } from "@chakra-ui/react";
+import { Select, SelectProps } from "@chakra-ui/react";
 
 interface Props {
   value: string;
@@ -8,12 +8,13 @@ interface Props {
   children: React.ReactNode;
 }
 
-const ChakraSelect: React.FC<Props> = ({
+const ChakraSelect: React.FC<Props & SelectProps> = ({
   value,
   setValue,
   placeholder,
   children,
   name,
+  ...props
 }) => (
   <Select
     value={value ?? ""}
@@ -21,6 +22,7 @@ const ChakraSelect: React.FC<Props> = ({
       setValue(e.target.value === "" ? undefined : e.target.value)
     }
     name={name}
+    {...props}
   >
     {placeholder && <option value="">{placeholder}</option>}
     {children}

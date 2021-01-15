@@ -198,22 +198,6 @@ const TeamPage: React.FC<Props> = (props) => {
           </PopoverContent>
         </Popover>
       )}
-      {/* <Box textAlign="center">
-        {team.roster
-          .reduce((acc: [string, number][], cur) => {
-            if (!cur.profile?.country) return acc;
-
-            const countryTuple = acc.find(
-              ([country]) => country === cur.profile?.country
-            );
-            if (!countryTuple) acc.push([cur.profile.country, 1]);
-            else countryTuple[1]++;
-
-            return acc;
-          }, [])
-          .sort((a, b) => b[1] - a[1])
-          .map(([country]) => getEmojiFlag(country))}
-      </Box> */}
       {user?.id === team.captainId && (
         <Center my={4}>
           <Stack direction={["column", "row"]} spacing={4}>
