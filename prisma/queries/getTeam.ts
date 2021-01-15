@@ -6,8 +6,8 @@ export type GetTeamData = Prisma.PromiseReturnType<typeof getTeam>;
 export const getTeam = async (
   where: { nameForUrl: string } | { id: number },
   inviteCode: boolean = false
-) =>
-  prisma.team.findUnique({
+) => {
+  const team = await prisma.team.findUnique({
     where,
     select: {
       id: true,
@@ -17,7 +17,7 @@ export const getTeam = async (
       name: true,
       captainId: true,
       nameForUrl: true,
-      inviteCode,
+      inviteCode: true,
       roster: {
         select: {
           id: true,
@@ -52,3 +52,6 @@ export const getTeam = async (
       },
     },
   });
+
+  return inviteCode ? team : { ...team, inviteCode: null };
+};
