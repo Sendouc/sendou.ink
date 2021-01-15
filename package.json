@@ -52,7 +52,7 @@
     "react-simple-maps": "^2.3.0",
     "react-string-replace": "^0.4.4",
     "recharts": "^1.8.5",
-    "swr": "^0.3.11",
+    "swr": "^0.4.0",
     "uuid": "^8.3.2",
     "zod": "^1.11.11"
   },
