@@ -194,7 +194,7 @@ const TeamPage: React.FC<Props> = (props) => {
                     </Box>
                   </Flex>
                 </Flex>
-                {i !== teamXPData.placements.length - 1 && <Divider my={2} />}
+                {i !== teamXPData.placements.length - 1 && <Divider my={6} />}
               </Fragment>
             ))}
           </PopoverContent>
