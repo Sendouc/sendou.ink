@@ -31,11 +31,17 @@ const CreateNewTeamModal = () => {
     if (name.length < 2 || name.length > 32) {
       return t`Team name needs to between 2 and 32 characters long.`;
     }
+
+    if (/[^a-z0-9 ]/i.test(name) || name === "join") {
+      return t`Team name can only contain letters and numbers.`;
+    }
+
     return "";
   };
 
   const onClick = async () => {
     setButtonClicked(true);
+    if (getError()) return;
     setSending(true);
 
     const success = await sendData("POST", "/api/teams", { name });
