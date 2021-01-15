@@ -32,7 +32,7 @@
     "@lingui/react": "^3.4.0",
     "@prisma/client": "^2.14.0",
     "@sendou/react-sketch": "^0.5.2",
-    "countries-list": "^2.5.6",
+    "countries-list": "^2.6.1",
     "framer-motion": "^3.2.1",
     "next": "^10.0.5",
     "next-auth": "^3.1.0",
