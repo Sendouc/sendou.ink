@@ -79,7 +79,7 @@ export const navIcons: {
   { code: "calendar", displayName: t`Calendar`, menuItems: [] },
   { code: "u", displayName: t`User Search`, menuItems: [] },
   { code: "freeagents", displayName: t`Free Agents`, menuItems: [] },
-  // { code: "teams", displayName: t`Teams`, menuItems: [] },
+  { code: "t", displayName: t`Teams`, menuItems: [] },
   {
     code: "plans",
     displayName: t`Maps`,
