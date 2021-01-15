@@ -37,6 +37,7 @@ import Image from "next/image";
 import { getTeam, GetTeamData } from "prisma/queries/getTeam";
 import { Fragment, useEffect, useState } from "react";
 import { FaTwitter } from "react-icons/fa";
+import { FiEdit } from "react-icons/fi";
 import useSWR, { mutate } from "swr";
 
 interface Props {
@@ -106,6 +107,7 @@ const TeamPage: React.FC<Props> = (props) => {
   const team = data!;
 
   const [sending, setSending] = useState(false);
+  const [profileModalIsOpen, setProfileModalIsOpen] = useState(false);
   const [user] = useUser();
   const toast = useToast();
 
@@ -133,6 +135,12 @@ const TeamPage: React.FC<Props> = (props) => {
 
   return (
     <MyContainer>
+      {profileModalIsOpen && (
+        <TeamProfileModal
+          team={team}
+          closeModal={() => setProfileModalIsOpen(false)}
+        />
+      )}
       <Flex align="center" justify="center">
         {team.twitterName && (
           <TwitterAvatar twitterName={team.twitterName} size="lg" mr={2} />
@@ -159,7 +167,7 @@ const TeamPage: React.FC<Props> = (props) => {
       {teamXPData.teamXP !== "2000" && (
         <Popover trigger="hover" variant="responsive">
           <PopoverTrigger>
-            <Center mt={2}>
+            <Center>
               <Image src={`/layout/xsearch.png`} height={24} width={24} />
               <SubText ml={1}>{teamXPData.teamXP}</SubText>
             </Center>
@@ -210,7 +218,13 @@ const TeamPage: React.FC<Props> = (props) => {
         <Center my={4}>
           <Stack direction={["column", "row"]} spacing={4}>
             <TeamManagementModal team={team} />
-            <TeamProfileModal team={team} />
+            <Button
+              leftIcon={<FiEdit />}
+              onClick={() => setProfileModalIsOpen(true)}
+              size="sm"
+            >
+              <Trans>Edit team profile</Trans>
+            </Button>
           </Stack>
         </Center>
       )}
