@@ -57,9 +57,18 @@ const TeamProfileModal: React.FC<Props> = ({ team }) => {
   const watchRecruitingPost = watch("recruitingPost", team.recruitingPost);
 
   const onSubmit = async (formData: FormData) => {
+    const modifiedData: FormData = {};
+
+    for (const [key, value] of Object.entries(formData)) {
+      if (value === "" || value === undefined) {
+        const typedKey = key as keyof typeof modifiedData;
+        modifiedData[typedKey] = null;
+      }
+    }
+
     setSending(true);
 
-    const success = await sendData("PUT", "/api/teams", formData);
+    const success = await sendData("PUT", "/api/teams", modifiedData);
     setSending(false);
     if (!success) return;
 

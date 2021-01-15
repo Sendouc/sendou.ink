@@ -159,7 +159,7 @@ const TeamPage: React.FC<Props> = (props) => {
       {teamXPData.teamXP !== "2000" && (
         <Popover trigger="hover" variant="responsive">
           <PopoverTrigger>
-            <Center>
+            <Center mt={2}>
               <Image src={`/layout/xsearch.png`} height={24} width={24} />
               <SubText ml={1}>{teamXPData.teamXP}</SubText>
             </Center>
@@ -179,7 +179,7 @@ const TeamPage: React.FC<Props> = (props) => {
 
                   <Flex align="center" justify="center">
                     <Image src={`/layout/xsearch.png`} height={24} width={24} />
-                    <Box ml={1} fontSize="sm">
+                    <Box ml={1} fontSize="sm" fontWeight="bold">
                       {placement.xPower}
                     </Box>
                   </Flex>
@@ -229,14 +229,14 @@ const TeamPage: React.FC<Props> = (props) => {
             </Button>
           </Center>
         )}
-      <Divider mt={4} mb={8} />
+      <Divider my={4} />
       {team.bio && <Markdown value={team.bio} smallHeaders />}
       {team.recruitingPost && (
         <SubTextCollapse title={t`Recruiting post`} mt={4}>
           <Markdown value={team.recruitingPost} smallHeaders />
         </SubTextCollapse>
       )}
-      {(team.bio || team.recruitingPost) && <Divider mb={4} mt={8} />}
+      {(team.bio || team.recruitingPost) && <Divider my={4} />}
       <Wrap justify="center" spacing={4}>
         {team.roster
           .sort(
