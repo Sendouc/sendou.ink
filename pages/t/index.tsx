@@ -129,7 +129,9 @@ const TeamsPage: React.FC<Props> = ({ teams }) => {
             {team.teamXP > 2000 && (
               <Flex align="center" mt={2}>
                 <Image src={`/layout/xsearch.png`} height={24} width={24} />
-                <SubText ml={1}>{team.teamXP.toFixed(1)}</SubText>
+                <SubText ml={1}>
+                  {team.teamXP.toFixed(1).replace(".0", "")}
+                </SubText>
               </Flex>
             )}
             {team.recruitingPost && (

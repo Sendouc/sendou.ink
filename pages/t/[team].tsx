@@ -305,6 +305,7 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
     props: {
       team,
     },
+    revalidate: 1,
   };
 };
 
