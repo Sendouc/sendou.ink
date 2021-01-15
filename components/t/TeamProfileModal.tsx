@@ -71,7 +71,7 @@ const TeamProfileModal: React.FC<Props> = ({ team }) => {
 
   return (
     <>
-      <Button leftIcon={<FiEdit />} onClick={() => setIsOpen(true)}>
+      <Button leftIcon={<FiEdit />} onClick={() => setIsOpen(true)} size="sm">
         <Trans>Edit team profile</Trans>
       </Button>
       {isOpen && (

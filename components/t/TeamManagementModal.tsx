@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Flex,
   FormControl,
   FormLabel,
   Grid,
@@ -43,6 +44,18 @@ const TeamManagementModal: React.FC<Props> = ({ team }) => {
 
     return () => clearTimeout(timer);
   }, [copied]);
+
+  const resetCode = async () => {
+    setSending(true);
+
+    const success = await sendData("POST", "/api/teams/code");
+    setSending(false);
+    if (!success) return;
+
+    mutate(`/api/teams/${team.id}`);
+
+    toast(getToastOptions(t`Invite code reseted`, "success"));
+  };
 
   const deleteTeam = async () => {
     if (!window.confirm(t`Delete the team? DELETING IS PERMANENT.`)) return;
@@ -97,7 +110,7 @@ const TeamManagementModal: React.FC<Props> = ({ team }) => {
 
   return (
     <>
-      <Button leftIcon={<FiUsers />} onClick={() => setIsOpen(true)}>
+      <Button leftIcon={<FiUsers />} onClick={() => setIsOpen(true)} size="sm">
         <Trans>Manage team</Trans>
       </Button>
       {isOpen && (
@@ -130,21 +143,36 @@ const TeamManagementModal: React.FC<Props> = ({ team }) => {
                     value={`https://sendou.ink/t/join?name=${team.nameForUrl}&code=${team.inviteCode}`}
                     readOnly
                   />
-                  <Button
-                    onClick={() => {
-                      navigator.clipboard.writeText(
-                        `https://sendou.ink/t/join?name=${team.nameForUrl}&code=${team.inviteCode}`
-                      );
-                      setCopied(true);
-                    }}
-                    h="1.75rem"
-                    size="sm"
-                    disabled={copied}
-                    mb={8}
-                    mt={4}
-                  >
-                    {copied ? <FiCheck /> : <Trans>Copy</Trans>}
-                  </Button>
+                  <Flex justify="space-between">
+                    <Button
+                      onClick={() => {
+                        navigator.clipboard.writeText(
+                          `https://sendou.ink/t/join?name=${team.nameForUrl}&code=${team.inviteCode}`
+                        );
+                        setCopied(true);
+                      }}
+                      h="1.75rem"
+                      size="sm"
+                      isDisabled={sending || copied}
+                      mb={8}
+                      mt={4}
+                    >
+                      {copied ? <FiCheck /> : <Trans>Copy</Trans>}
+                    </Button>
+                    <Button
+                      onClick={resetCode}
+                      h="1.75rem"
+                      size="sm"
+                      isDisabled={sending || copied}
+                      mb={8}
+                      mt={4}
+                      ml={2}
+                      colorScheme="red"
+                      variant="outline"
+                    >
+                      <Trans>Reset</Trans>
+                    </Button>
+                  </Flex>
                 </FormControl>
                 <Grid
                   templateColumns="repeat(4, 1fr)"

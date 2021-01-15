@@ -5,6 +5,8 @@ import {
   Divider,
   Flex,
   Heading,
+  IconButton,
+  Stack,
   useToast,
   Wrap,
   WrapItem,
@@ -26,6 +28,7 @@ import useUser from "lib/useUser";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { getTeam, GetTeamData } from "prisma/queries/getTeam";
 import { useEffect, useState } from "react";
+import { FaTwitter } from "react-icons/fa";
 import { FiTrash } from "react-icons/fi";
 import useSWR, { mutate } from "swr";
 
@@ -38,8 +41,6 @@ const TeamPage: React.FC<Props> = (props) => {
     initialData: props.team!,
   });
   const team = data!;
-
-  console.log("team", team);
 
   const [sending, setSending] = useState(false);
   const [user] = useUser();
@@ -70,6 +71,19 @@ const TeamPage: React.FC<Props> = (props) => {
       <Heading fontFamily="'Rubik', sans-serif" textAlign="center">
         {team.name}
       </Heading>
+      {team.twitterName && (
+        <Center>
+          <a href={`https://twitter.com/${team.twitterName}`}>
+            <IconButton
+              aria-label="Link to Twitter"
+              icon={<FaTwitter />}
+              color="#1DA1F2"
+              isRound
+              variant="ghost"
+            />
+          </a>
+        </Center>
+      )}
       {/* <Box textAlign="center">
         {team.roster
           .reduce((acc: [string, number][], cur) => {
@@ -88,8 +102,10 @@ const TeamPage: React.FC<Props> = (props) => {
       </Box> */}
       {user?.id === team.captainId && (
         <Center my={2}>
-          <TeamManagementModal team={team} />
-          <TeamProfileModal team={team} />
+          <Stack direction={["column", "row"]} spacing={4}>
+            <TeamManagementModal team={team} />
+            <TeamProfileModal team={team} />
+          </Stack>
         </Center>
       )}
       {user &&
@@ -113,17 +129,17 @@ const TeamPage: React.FC<Props> = (props) => {
         </SubTextCollapse>
       )}
       {(team.bio || team.recruitingPost) && <Divider my={8} />}
-      <Wrap justify="center">
+      <Wrap justify="center" spacing={4}>
         {team.roster
           .sort(
             (a, b) =>
-              Number(a.id === team.captainId) - Number(b.id === team.captainId)
+              Number(b.id === team.captainId) - Number(a.id === team.captainId)
           )
           .map((user) => (
             <WrapItem key={user.id}>
-              <Section textAlign="center">
+              <Section textAlign="center" height="14rem" width="14rem">
                 <MyLink href={`/u/${user.discordId}`} isColored={false}>
-                  <UserAvatar user={user} />
+                  <UserAvatar user={user} size="lg" />
                 </MyLink>
                 <Box my={2} fontWeight="bold">
                   <MyLink

@@ -25,7 +25,7 @@ const JoinTeamPage = ({}) => {
         router.push("/404");
       }
 
-      const success = await sendData("POST", "/api/teams/code", { code, name });
+      const success = await sendData("POST", "/api/teams/join", { code, name });
       if (!success) {
         return setJoiningStatus("ERROR");
       }
