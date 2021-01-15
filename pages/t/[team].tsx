@@ -95,7 +95,9 @@ const getTeamXPInfo = (roster: NonNullable<GetTeamData>["roster"]) => {
       (placements.reduce((acc, cur) => acc + cur.xPower, 0) +
         2000 * (4 - placements.length)) /
       4
-    ).toFixed(1),
+    )
+      .toFixed(1)
+      .replace(".0", ""),
   };
 };
 
