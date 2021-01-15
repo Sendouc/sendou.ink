@@ -66,7 +66,9 @@ const TeamsPage: React.FC<Props> = ({ teams }) => {
             <option value="ALL">All ({teams.length})</option>
             {teams
               .flatMap((team) =>
-                team.roster.map((user) => user.profile?.country)
+                Array.from(
+                  new Set(team.roster.map((user) => user.profile?.country))
+                )
               )
               .reduce((acc: [string, number][], cur) => {
                 if (!cur) return acc;
