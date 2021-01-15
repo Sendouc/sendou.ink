@@ -70,6 +70,9 @@ const Home = () => {
         <PageInfoSection location="freeagents" title={t`Free Agents`}>
           <Trans>Find your next teammates.</Trans>
         </PageInfoSection>
+        <PageInfoSection location="t" title={t`Teams`}>
+          <Trans>Make a page for your team.</Trans>
+        </PageInfoSection>
         <PageInfoSection location="plans" title={t`Map Planner`}>
           <Trans>Make your battle plans by drawing on over 100 maps.</Trans>
         </PageInfoSection>
