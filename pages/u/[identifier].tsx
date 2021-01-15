@@ -141,6 +141,7 @@ const ProfilePage = (props: Props) => {
             leftIcon={<FiEdit />}
             variant="outline"
             onClick={() => setShowProfileModal(true)}
+            size="sm"
           >
             <Trans>Edit profile</Trans>
           </Button>
@@ -149,6 +150,7 @@ const ProfilePage = (props: Props) => {
               leftIcon={<RiTShirtLine />}
               variant="outline"
               onClick={() => setBuildToEdit(true)}
+              size="sm"
             >
               <Trans>Add build</Trans>
             </Button>

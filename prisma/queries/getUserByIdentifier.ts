@@ -51,5 +51,12 @@ export const getUserByIdentifier = (identifier: string) =>
       freeAgentPost: {
         select: { id: true },
       },
+      team: {
+        select: { name: true, twitterName: true, nameForUrl: true },
+      },
+      salmonRunRecords: {
+        take: 1,
+        select: { id: true },
+      },
     },
   });

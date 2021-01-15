@@ -11,6 +11,7 @@ import { LeagueType, RankedMode } from "@prisma/client";
 import ModeImage from "components/common/ModeImage";
 import MyLink from "components/common/MyLink";
 import SubText from "components/common/SubText";
+import TwitterAvatar from "components/common/TwitterAvatar";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
 import { countries, getEmojiFlag } from "countries-list";
@@ -83,6 +84,22 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
               }
             </Box>
           )}
+          {user.team && (
+            <Flex align="center" justify="center" my={2}>
+              {user.team.twitterName && (
+                <MyLink href={`/t/${user.team.nameForUrl}`} isColored={false}>
+                  <TwitterAvatar
+                    twitterName={user.team.twitterName}
+                    isSmall
+                    mr={2}
+                  />
+                </MyLink>
+              )}
+              <MyLink href={`/t/${user.team.nameForUrl}`} isColored={false}>
+                <Box fontWeight="bold">{user.team.name}</Box>
+              </MyLink>
+            </Flex>
+          )}
           <Flex alignItems="center" justifyContent="center">
             <Flex flexWrap="wrap" alignItems="center" justifyContent="center">
               {user.profile?.twitterName && (
@@ -122,7 +139,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
               )}
               {user.profile?.weaponPool && user.profile?.weaponPool.length > 0 && (
                 <Flex
-                  mt="0.2rem"
+                  mt={2}
                   w="100%"
                   alignItems="center"
                   justifyContent="center"
@@ -139,7 +156,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
                   alignItems="center"
                   justifyContent="center"
                   ml="0.7rem"
-                  mt={1}
+                  mt={2}
                   color={gray}
                   w="100%"
                 >
@@ -151,7 +168,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
                 </Flex>
               )}
               {Object.keys(peakXPowers).length > 0 && (
-                <Flex mt={8}>
+                <Flex mt={2}>
                   {(["SZ", "TC", "RM", "CB"] as RankedMode[])
                     .filter((mode) => peakXPowers[mode])
                     .map((mode, i) => (
@@ -174,7 +191,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
               {Object.keys(peakLeaguePowers).length > 0 && (
                 <>
                   <Box flexBasis="100%" h="0" />
-                  <Flex mt={4}>
+                  <Flex mt={2}>
                     {(["TWIN", "QUAD"] as LeagueType[])
                       .filter((type) => peakLeaguePowers[type])
                       .map((type) => (
@@ -199,11 +216,11 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
                     href={`/player/${user.player?.switchAccountId}`}
                     prefetch={true}
                   >
-                    <Button variant="outline" mx={2} size="lg" w={24}>
+                    <Button variant="outline" mx={2} size="sm" w={16}>
                       <Image
                         src="/layout/xsearch.png"
-                        height={48}
-                        width={48}
+                        height={30}
+                        width={30}
                         alt="SR"
                         priority
                       />
@@ -215,24 +232,24 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
                     href={`/freeagents?id=${user.freeAgentPost.id}`}
                     prefetch={true}
                   >
-                    <Button variant="outline" mx={2} size="lg" w={24}>
+                    <Button variant="outline" mx={2} size="sm" w={16}>
                       <Image
                         src="/layout/freeagents.png"
-                        height={48}
-                        width={48}
+                        height={30}
+                        width={30}
                         alt="SR"
                         priority
                       />
                     </Button>
                   </MyLink>
                 )}
-                {true && (
+                {user.salmonRunRecords.length > 0 && (
                   <MyLink href={`/sr/player/${user.id}`} prefetch={true}>
-                    <Button variant="outline" mx={2} size="lg" w={24}>
+                    <Button variant="outline" mx={2} size="sm" w={16}>
                       <Image
                         src="/layout/sr.png"
-                        height={48}
-                        width={48}
+                        height={30}
+                        width={30}
                         alt="SR"
                         priority
                       />
