@@ -6,6 +6,10 @@ import {
   Flex,
   Heading,
   IconButton,
+  Popover,
+  PopoverArrow,
+  PopoverContent,
+  PopoverTrigger,
   Stack,
   useToast,
   Wrap,
@@ -16,6 +20,7 @@ import Markdown from "components/common/Markdown";
 import MyContainer from "components/common/MyContainer";
 import MyLink from "components/common/MyLink";
 import Section from "components/common/Section";
+import SubText from "components/common/SubText";
 import SubTextCollapse from "components/common/SubTextCollapse";
 import TwitterAvatar from "components/common/TwitterAvatar";
 import UserAvatar from "components/common/UserAvatar";
@@ -25,10 +30,12 @@ import TeamProfileModal from "components/t/TeamProfileModal";
 import { countries, getEmojiFlag } from "countries-list";
 import { getToastOptions } from "lib/getToastOptions";
 import { sendData } from "lib/postData";
+import { useMyTheme } from "lib/useMyTheme";
 import useUser from "lib/useUser";
 import { GetStaticPaths, GetStaticProps } from "next";
+import Image from "next/image";
 import { getTeam, GetTeamData } from "prisma/queries/getTeam";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { FaTwitter } from "react-icons/fa";
 import useSWR, { mutate } from "swr";
 
@@ -36,7 +43,63 @@ interface Props {
   team: GetTeamData;
 }
 
+const getTeamXPInfo = (roster: NonNullable<GetTeamData>["roster"]) => {
+  const placements = roster.reduce(
+    (
+      acc: {
+        weapon: string;
+        month: number;
+        year: number;
+        mode: "SZ" | "TC" | "RM" | "CB";
+        xPower: number;
+        username: string;
+        discriminator: string;
+        discordAvatar: string | null;
+        discordId: string;
+      }[],
+      cur
+    ) => {
+      const placement = cur.player?.placements[0];
+      if (!placement) return acc;
+
+      if (acc.length < 4)
+        acc.push({
+          ...placement,
+          username: cur.username,
+          discriminator: cur.discriminator,
+          discordAvatar: cur.discordAvatar,
+          discordId: cur.discordId,
+        });
+      else {
+        acc.sort((a, b) => b.xPower - a.xPower);
+
+        if (acc[3].xPower < placement.xPower) {
+          acc[3] = {
+            ...placement,
+            username: cur.username,
+            discriminator: cur.discriminator,
+            discordAvatar: cur.discordAvatar,
+            discordId: cur.discordId,
+          };
+        }
+      }
+      return acc;
+    },
+    []
+  );
+
+  return {
+    placements: placements.sort((a, b) => b.xPower - a.xPower),
+    teamXP: (
+      (placements.reduce((acc, cur) => acc + cur.xPower, 0) +
+        2000 * (4 - placements.length)) /
+      4
+    ).toFixed(1),
+  };
+};
+
 const TeamPage: React.FC<Props> = (props) => {
+  const { secondaryBgColor } = useMyTheme();
   const { data } = useSWR<GetTeamData>(`/api/teams/${props.team!.id}`, {
     initialData: props.team!,
   });
@@ -66,6 +129,8 @@ const TeamPage: React.FC<Props> = (props) => {
     toast(getToastOptions(t`Left the team`, "success"));
   };
 
+  const teamXPData = getTeamXPInfo(team.roster);
+
   return (
     <MyContainer>
       <Flex align="center" justify="center">
@@ -90,6 +155,41 @@ const TeamPage: React.FC<Props> = (props) => {
           </a>
         )}
       </Flex>
+
+      {teamXPData.teamXP !== "2000" && (
+        <Popover trigger="hover" variant="responsive">
+          <PopoverTrigger>
+            <Center>
+              <Image src={`/layout/xsearch.png`} height={24} width={24} />
+              <SubText ml={1}>{teamXPData.teamXP}</SubText>
+            </Center>
+          </PopoverTrigger>
+          <PopoverContent bg={secondaryBgColor} p={6}>
+            <PopoverArrow bg={secondaryBgColor} />
+            {teamXPData.placements.map((placement, i) => (
+              <Fragment key={placement.discordId}>
+                <Flex align="center" justify="center">
+                  <UserAvatar user={placement} isSmall />
+                  <Box ml={1}>
+                    {placement.username}#{placement.discriminator}
+                  </Box>
+                </Flex>
+                <Flex align="center" justify="space-evenly" mt={4}>
+                  <WeaponImage name={placement.weapon} size={32} />
+
+                  <Flex align="center" justify="center">
+                    <Image src={`/layout/xsearch.png`} height={24} width={24} />
+                    <Box ml={1} fontSize="sm">
+                      {placement.xPower}
+                    </Box>
+                  </Flex>
+                </Flex>
+                {i !== teamXPData.placements.length - 1 && <Divider my={2} />}
+              </Fragment>
+            ))}
+          </PopoverContent>
+        </Popover>
+      )}
       {/* <Box textAlign="center">
         {team.roster
           .reduce((acc: [string, number][], cur) => {

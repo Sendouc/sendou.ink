@@ -31,6 +31,23 @@ export const getTeam = async (
               country: true,
             },
           },
+          player: {
+            select: {
+              placements: {
+                orderBy: {
+                  xPower: "desc",
+                },
+                take: 1,
+                select: {
+                  weapon: true,
+                  month: true,
+                  year: true,
+                  mode: true,
+                  xPower: true,
+                },
+              },
+            },
+          },
         },
       },
     },
