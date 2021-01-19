@@ -106,10 +106,12 @@ model Player {
   switchAccountId  String              @unique
   userId           Int?                @unique
   name             String?
-  principalId      String?             @unique
+  principalId      String?
   placements       XRankPlacement[]
   user             User?               @relation(fields: [userId], references: [id])
   leaguePlacements LeagueSquadMember[]
+
+  @@index([principalId])
 }
 
 enum Ability {
