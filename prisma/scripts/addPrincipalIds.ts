@@ -1,26 +1,33 @@
 import prisma from "../client";
-import principalToUnique from "./data/league/principal_to_unique.json";
+import principalToUnique from "./data/league/uuid2pid.json";
 
 const main = async () => {
-  const players = await prisma.player.findMany({});
-
-  console.log("amount", Object.entries(principalToUnique));
+  const players = await prisma.player.findMany({
+    where: { principalId: null },
+  });
 
   const mapped = Object.entries(principalToUnique).reduce((acc, cur) => {
-    acc.set("" + cur[1], cur[0]);
+    acc.set("" + cur[0], cur[1]);
 
     return acc;
   }, new Map<string, string>());
 
-  let notFound = 0;
+  await Promise.allSettled(
+    players
+      .filter((player) => {
+        if (mapped.get(player.switchAccountId)) return true;
 
-  players.forEach((player) => {
-    const found = mapped.get(player.switchAccountId);
+        throw Error(player.switchAccountId);
+      })
+      .map((player) =>
+        prisma.player.update({
+          where: { switchAccountId: player.switchAccountId },
+          data: { principalId: mapped.get(player.switchAccountId) },
+        })
+      )
+  );
 
-    if (!found) notFound++;
-  });
-
-  console.log("notFound", notFound);
+  console.log("all done");
 };
 
 main()
