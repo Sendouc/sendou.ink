@@ -57,11 +57,7 @@ const buildHandler = async (req: NextApiRequest, res: NextApiResponse) => {
         ),
         jpn: postsJpBuilds,
         top500: await hasTop500WithTheWeapon(user.id, parsed.data.weapon),
-        user: {
-          connect: {
-            id: user.id,
-          },
-        },
+        userId: user.id,
       },
     });
 
