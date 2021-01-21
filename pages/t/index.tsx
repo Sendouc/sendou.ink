@@ -4,6 +4,9 @@ import {
   Flex,
   FormControl,
   FormLabel,
+  Input,
+  InputGroup,
+  InputLeftElement,
   Switch,
 } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
@@ -23,6 +26,7 @@ import { GetStaticProps } from "next";
 import Image from "next/image";
 import { getAllTeams, GetAllTeamsData } from "prisma/queries/getAllTeams";
 import { useState } from "react";
+import { FiSearch } from "react-icons/fi";
 
 interface Props {
   teams: GetAllTeamsData;
@@ -33,6 +37,7 @@ const TeamsPage: React.FC<Props> = ({ teams }) => {
   const [user] = useUser();
   const [showOnlyRecruiting, setShowOnlyRecruiting] = useState(false);
   const [countryFilter, setCountryFilter] = useState<string>("ALL");
+  const [nameFilter, setNameFilter] = useState("");
 
   const isInTeam = teams.some((team) =>
     team.roster.some((teamMember) => teamMember.id === user?.id)
@@ -90,6 +95,17 @@ const TeamsPage: React.FC<Props> = ({ teams }) => {
                 </option>
               ))}
           </ChakraSelect>
+          <InputGroup maxW={64} mt={6} mb={6}>
+            <InputLeftElement
+              pointerEvents="none"
+              children={<Box as={FiSearch} color={gray} />}
+            />
+            <Input
+              placeholder="Team Olive"
+              value={nameFilter}
+              onChange={(e) => setNameFilter(e.target.value)}
+            />
+          </InputGroup>
         </Box>
       )}
       {teams
@@ -99,6 +115,9 @@ const TeamsPage: React.FC<Props> = ({ teams }) => {
             return team.roster.some(
               (user) => user.profile?.country === countryFilter
             );
+          }
+          if (nameFilter) {
+            return team.name.toLowerCase().includes(nameFilter.toLowerCase());
           }
 
           return true;
