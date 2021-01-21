@@ -838,7 +838,7 @@ export default function useAbilityEffects({
         )} ${t`seconds`})`,
         effectFromMax: effect[1],
         ability: "SPU" as Ability,
-        info: t`Amount inked by Ink Storm is not increased only in how long distance the droplets are spread. Special Power Up also increases the distance you can throw the seed.`,
+        info: t`Total amount inked by Ink Storm is not increased. Special Power Up also increases the distance you can throw the seed.`,
         ap: amount,
         effectFromMaxActual:
           (effect[0] / getEffect(highMidLow, MAX_AP)[0]) * 100,
