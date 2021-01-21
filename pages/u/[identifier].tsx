@@ -171,22 +171,24 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
-  const user = await getUserByIdentifier(params!.identifier as string);
+  try {
+    const user = await getUserByIdentifier(params!.identifier as string);
 
-  if (!user) return { notFound: true };
+    const peak = user!.player?.switchAccountId
+      ? await getPlayersPeak(user!.player.switchAccountId)
+      : { peakXPowers: {}, peakLeaguePowers: {} };
 
-  const peak = user.player?.switchAccountId
-    ? await getPlayersPeak(user.player.switchAccountId)
-    : { peakXPowers: {}, peakLeaguePowers: {} };
-
-  return {
-    props: {
-      user,
-      peakXPowers: peak.peakXPowers,
-      peakLeaguePowers: peak.peakLeaguePowers,
-    },
-    revalidate: 1,
-  };
+    return {
+      props: {
+        user,
+        peakXPowers: peak.peakXPowers,
+        peakLeaguePowers: peak.peakLeaguePowers,
+      },
+      revalidate: 1,
+    };
+  } catch (e) {
+    return { notFound: true };
+  }
 };
 
 export default ProfilePage;

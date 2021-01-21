@@ -59,4 +59,5 @@ export const getUserByIdentifier = (identifier: string) =>
         select: { id: true },
       },
     },
+    rejectOnNotFound: true,
   });

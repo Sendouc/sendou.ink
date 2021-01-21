@@ -12,9 +12,12 @@ const userHandler = async (
     return res.status(405).end();
   }
 
-  const user = await getUserByIdentifier(req.query.id as string);
-  if (!user) return res.status(404).end();
-  res.status(200).json(user);
+  try {
+    const user = await getUserByIdentifier(req.query.id as string);
+    res.status(200).json(user!);
+  } catch {
+    res.status(404).end();
+  }
 };
 
 export default userHandler;
