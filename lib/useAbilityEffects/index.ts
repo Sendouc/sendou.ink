@@ -486,7 +486,7 @@ export default function useAbilityEffects({
     const shootEffect = getEffect(highMidLowShoot, amount);
     const moveSpeed = buildWeaponData.mMoveSpeed;
 
-    return [
+    const result = [
       {
         title: t`Run speed`,
         effect: `${parseFloat(
@@ -514,6 +514,12 @@ export default function useAbilityEffects({
           ),
       },
     ];
+
+    if (weapon.includes("brush") || weapon.includes("Roller")) {
+      return [result[0]];
+    }
+
+    return result;
   }
 
   function calculateSSU(amount: number) {
