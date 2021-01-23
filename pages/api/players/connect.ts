@@ -7,6 +7,8 @@ const connectHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(405).end();
   }
 
+  console.log("req.body", req.body);
+
   const { token, principalId, discordId } = req.body;
 
   if (
@@ -14,6 +16,8 @@ const connectHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   ) {
     return res.status(400).end();
   }
+
+  console.log("past req body check");
 
   if (token !== process.env.LANISTA_TOKEN) {
     return res.status(401).end();
