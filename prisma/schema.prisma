@@ -9,20 +9,24 @@ generator client {
 }
 
 model User {
-  id               Int               @id @default(autoincrement())
+  id               Int                    @id @default(autoincrement())
   username         String
   discriminator    String
-  discordId        String            @unique
+  discordId        String                 @unique
   discordAvatar    String?
   teamId           Int?
+  ladderTeamId     Int?
   profile          Profile?
   player           Player?
   builds           Build[]
   submittedRecords SalmonRunRecord[]
-  salmonRunRecords SalmonRunRecord[] @relation("SalmonRunRecordRoster")
+  salmonRunRecords SalmonRunRecord[]      @relation("SalmonRunRecordRoster")
   freeAgentPost    FreeAgentPost?
-  team             Team?             @relation(fields: [teamId], references: [id])
-  captainedTeam    Team?             @relation("TeamCaptain")
+  team             Team?                  @relation(fields: [teamId], references: [id])
+  captainedTeam    Team?                  @relation("TeamCaptain")
+  trueSkill        LadderPlayerTrueSkill?
+  ladderTeam       LadderRegisteredTeam?  @relation(fields: [ladderTeamId], references: [id])
+  ladderMatches    LadderMatchPlayer[]
 }
 
 model Profile {
@@ -248,4 +252,49 @@ model Team {
   captainId      Int     @unique
   captain        User    @relation("TeamCaptain", fields: [captainId], references: [id])
   roster         User[]
+}
+
+model LadderPlayerTrueSkill {
+  userId Int   @id
+  mu     Float
+  sigma  Float
+  user   User  @relation(fields: [userId], references: [id])
+}
+
+model LadderRegisteredTeam {
+  id         Int    @id @default(autoincrement())
+  roster     User[]
+  inviteCode String @unique
+  ownerId    Int    @unique
+}
+
+enum Side {
+  ALPHA
+  BRAVO
+}
+
+model LadderMatchPlayer {
+  userId  Int
+  matchId Int
+  team    Side
+  user    User        @relation(fields: [userId], references: [id])
+  match   LadderMatch @relation(fields: [matchId], references: [id])
+
+  @@id([userId, matchId])
+}
+
+model LadderMatch {
+  id              Int                 @id @default(autoincrement())
+  date            DateTime
+  teamAScore      Int?
+  teamBScore      Int?
+  links           Json?
+  maplist         Json
+  detailedStats   Json?
+  resultConfirmed Boolean             @default(false)
+  disputed        Boolean             @default(false)
+  scoreReporterId Int?
+  disputerId      Int?
+  order           Int
+  players         LadderMatchPlayer[]
 }
