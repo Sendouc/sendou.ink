@@ -8,3 +8,4 @@ export const SALMON_RUN_ADMIN_DISCORD_IDS = [
 ];
 
 export const TEAM_ROSTER_LIMIT = 10;
+export const LADDER_ROSTER_LIMIT = 4;
