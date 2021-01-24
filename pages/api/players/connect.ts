@@ -7,8 +7,6 @@ const connectHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(405).end();
   }
 
-  console.log("req.body", req.body);
-
   const { token, principalId, discordId } = req.body;
 
   if (
@@ -16,8 +14,6 @@ const connectHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   ) {
     return res.status(400).end();
   }
-
-  console.log("past req body check");
 
   if (token !== process.env.LANISTA_TOKEN) {
     return res.status(401).end();
@@ -49,7 +45,12 @@ const connectHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   ]);
 
   if (players.length === 0) {
-    return res.status(400).json({ message: "Unexpected no players" });
+    return res
+      .status(400)
+      .json({
+        message:
+          "No players found. Have you reached Top 500 in X Rank or have league results over 2200?",
+      });
   }
 
   if (players.some((player) => player.user)) {
