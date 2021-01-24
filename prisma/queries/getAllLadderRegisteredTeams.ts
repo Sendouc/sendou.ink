@@ -5,8 +5,8 @@ export type GetAllLadderRegisteredTeamsData = Prisma.PromiseReturnType<
   typeof getAllLadderRegisteredTeams
 >;
 
-export const getAllLadderRegisteredTeams = async (userId?: number) => {
-  const teams = await prisma.ladderRegisteredTeam.findMany({
+export const getAllLadderRegisteredTeams = async () =>
+  prisma.ladderRegisteredTeam.findMany({
     include: {
       roster: {
         select: {
@@ -26,9 +26,3 @@ export const getAllLadderRegisteredTeams = async (userId?: number) => {
       },
     },
   });
-
-  return teams.map((team) => ({
-    ...team,
-    inviteCode: team.ownerId === userId ? team.inviteCode : undefined,
-  }));
-};

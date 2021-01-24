@@ -22,9 +22,14 @@ const teamsHandler = async (req: NextApiRequest, res: NextApiResponse) => {
 
 async function getHandler(req: NextApiRequest, res: NextApiResponse) {
   const user = await getMySession(req);
-  const teams = await getAllLadderRegisteredTeams(user?.id);
+  const teams = await getAllLadderRegisteredTeams();
 
-  res.status(200).json(teams);
+  res.status(200).json(
+    teams.map((team) => ({
+      ...team,
+      inviteCode: team.ownerId === user?.id ? team.inviteCode : undefined,
+    }))
+  );
 }
 
 async function postHandler(req: NextApiRequest, res: NextApiResponse) {

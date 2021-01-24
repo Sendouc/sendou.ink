@@ -13,7 +13,6 @@ const PlayPage = () => {
   const { gray } = useMyTheme();
   const { data } = useLadderTeams();
 
-  console.log({ data });
   return (
     <MyContainer>
       <Breadcrumbs pages={[{ name: t`Play` }]} />
