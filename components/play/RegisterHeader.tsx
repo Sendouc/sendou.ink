@@ -4,18 +4,16 @@ import {
   AlertTitle,
   Box,
   Button,
-  HStack,
   Input,
   useToast,
 } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
-import UserAvatar from "components/common/UserAvatar";
 import { useLadderTeams } from "hooks/play";
 import { getToastOptions } from "lib/getToastOptions";
 import { sendData } from "lib/postData";
 import useUser from "lib/useUser";
-import { useState } from "react";
-import { FiTrash } from "react-icons/fi";
+import { useEffect, useState } from "react";
+import { FiCheck, FiTrash } from "react-icons/fi";
 
 interface Props {}
 
@@ -25,6 +23,17 @@ const RegisterHeader: React.FC<Props> = ({}) => {
   const { data, mutate } = useLadderTeams();
 
   const [sending, setSending] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (!copied) return;
+
+    const timer = setTimeout(() => {
+      setCopied(false);
+    }, 750);
+
+    return () => clearTimeout(timer);
+  }, [copied]);
 
   const createNewTeam = async () => {
     setSending(true);
@@ -91,19 +100,35 @@ const RegisterHeader: React.FC<Props> = ({}) => {
           </AlertTitle>
           <AlertDescription>
             {ownTeam.inviteCode && (
-              <Box>
+              <Box mt={2}>
                 <Input
                   name="code"
                   value={`https://sendou.ink/play/join?code=${ownTeam.inviteCode}`}
                   readOnly
                 />
+                <Button
+                  onClick={() => {
+                    navigator.clipboard.writeText(
+                      `https://sendou.ink/play/join?code=${ownTeam.inviteCode}`
+                    );
+                    setCopied(true);
+                  }}
+                  h="1.75rem"
+                  size="sm"
+                  isDisabled={sending || copied}
+                  my={2}
+                  variant="outline"
+                  width={36}
+                >
+                  {copied ? <FiCheck /> : <Trans>Copy invite link</Trans>}
+                </Button>
               </Box>
             )}
-            <HStack my={2} justify="center">
-              {ownTeam.roster.map((member) => (
-                <UserAvatar user={member} />
-              ))}
-            </HStack>
+            <Box fontWeight="bold" mt={2}>
+              {ownTeam.roster
+                .map((member) => `${member.username}#${member.discriminator}`)
+                .join(", ")}
+            </Box>
             <Box mt={4}>
               {ownTeam.ownerId === user.id ? (
                 <Button
