@@ -45,7 +45,7 @@ const PlayPage = () => {
               )
               .find((tuple) => tuple[1] >= 3);
             return (
-              <Box my={4}>
+              <Box key={team.id} my={4}>
                 {teamTuple ? (
                   <Flex fontWeight="bold" align="center">
                     {teamTuple[0].twitterName && (
@@ -56,12 +56,14 @@ const PlayPage = () => {
                       />
                     )}
                     {teamTuple[0].name}
-                    {teamTuple[1] === 3 && <SubText ml={1}>+1</SubText>}
+                    {teamTuple[1] === 3 && team.roster.length >= 4 && (
+                      <SubText ml={1}>+1</SubText>
+                    )}
                   </Flex>
                 ) : (
                   <HStack>
                     {team.roster.map((member) => (
-                      <UserAvatar user={member} size="sm" />
+                      <UserAvatar key={member.id} user={member} size="sm" />
                     ))}
                   </HStack>
                 )}
