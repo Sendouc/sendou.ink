@@ -28,6 +28,7 @@ import MyContainer from "components/common/MyContainer";
 import SubText from "components/common/SubText";
 import { stages } from "lib/lists/stages";
 import { setManySearchParams } from "lib/setSearchParams";
+import { shuffleArray } from "lib/shuffleArray";
 import { useRouter } from "next/router";
 import { ChangeEvent, Fragment, useEffect, useState } from "react";
 import { FiCheck, FiFilter, FiRotateCw } from "react-icons/fi";
@@ -108,13 +109,6 @@ const MapsGeneratorPage = () => {
     setManySearchParams(poolForUrl(newStagesSelected));
   };
 
-  const shuffled = (array: string[]) => {
-    return array
-      .map((a) => ({ sort: Math.random(), value: a }))
-      .sort((a, b) => a.sort - b.sort)
-      .map((a) => a.value);
-  };
-
   const generateMaps = () => {
     let modeStages = Object.entries(stagesSelected).reduce(
       (acc: Record<RankedMode, string[]>, [stage, modes]) => {
@@ -125,10 +119,10 @@ const MapsGeneratorPage = () => {
     );
 
     modeStages = {
-      SZ: shuffled(modeStages.SZ),
-      TC: shuffled(modeStages.TC),
-      RM: shuffled(modeStages.RM),
-      CB: shuffled(modeStages.CB),
+      SZ: shuffleArray(modeStages.SZ),
+      TC: shuffleArray(modeStages.TC),
+      RM: shuffleArray(modeStages.RM),
+      CB: shuffleArray(modeStages.CB),
     };
 
     const modesFromGenerationMode =
@@ -136,9 +130,9 @@ const MapsGeneratorPage = () => {
         ? ["TC", "RM", "CB"]
         : ["SZ", "TC", "RM", "CB"];
 
-    const modes = (shuffled(modesFromGenerationMode) as RankedMode[]).filter(
-      (mode) => modeStages[mode].length > 0
-    );
+    const modes = (shuffleArray(
+      modesFromGenerationMode
+    ) as RankedMode[]).filter((mode) => modeStages[mode].length > 0);
     if (modes.length === 0) {
       return "I can't generate a maplist without any maps in it you know.";
     }

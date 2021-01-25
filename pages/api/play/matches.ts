@@ -1,5 +1,6 @@
 import { getMySession } from "lib/getMySession";
 import { getLadderRounds } from "lib/playFunctions";
+import { shuffleArray } from "lib/shuffleArray";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getAllLadderRegisteredTeamsForMatches } from "prisma/queries/getAllLadderRegisteredTeamsForMatches";
 
@@ -50,12 +51,15 @@ async function postHandler(req: NextApiRequest, res: NextApiResponse) {
   //   )
   // );
 
+  const eighteenMaps = getMaplist();
+
   res.status(200).json(
     matches.flatMap((round, i) =>
       round.map((match) => ({
         data: {
           date: "",
-          maplist: {},
+          maplist:
+            i === 0 ? eighteenMaps.slice(0, 9) : eighteenMaps.slice(9, 18),
           order: i + 1,
           players: {
             create: match.flatMap((team, teamI) =>
@@ -69,6 +73,41 @@ async function postHandler(req: NextApiRequest, res: NextApiResponse) {
       }))
     )
   );
+}
+
+function getMaplist() {
+  const modes = shuffleArray(["SZ", "TC", "RM", "CB"]);
+  const stages = shuffleArray([
+    "The Reef",
+    "Musselforge Fitness",
+    "Starfish Mainstage",
+    "Humpback Pump Track",
+    "Inkblot Art Academy",
+    "Sturgeon Shipyard",
+    "Manta Maria",
+    "Snapper Canal",
+    "Blackbelly Skatepark",
+    "MakoMart",
+    "Shellendorf Institute",
+    "Goby Arena",
+    "Piranha Pit",
+    "Camp Triggerfish",
+    "Wahoo World",
+    "New Albacore Hotel",
+    "Ancho-V Games",
+    "Skipper Pavilion",
+    //"Moray Towers",
+    //"Port Mackerel",
+    //"Walleye Warehouse",
+    //"Arowana Mall",
+    //"Kelp Dome"
+  ]);
+
+  return stages.map((stage) => {
+    const mode = modes.pop();
+    modes.unshift(mode!);
+    return { stage, mode };
+  });
 }
 
 export default matchesHandler;
