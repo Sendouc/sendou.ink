@@ -32,25 +32,25 @@ export const getLadderRounds = (
   const [teamsRoundOne, teamsRoundTwo] = getTeamsForRounds();
 
   // helper variable accessed from generatePairings
-  let bestPairs: TeamsWithRanking[][] | undefined;
+  let bestRound: TeamsWithRanking[][] | undefined;
   // helper variable accessed from generatePairings
-  let bestAverageQuality = Infinity;
+  let bestAverageQuality = -Infinity;
 
   // first round matches actual
   let firstRound: TeamsWithRanking[][] | undefined;
 
   generatePairings(teamsRoundOne, 0);
 
-  firstRound = bestPairs;
+  firstRound = bestRound;
   bestAverageQuality = -Infinity;
 
   generatePairings(teamsRoundTwo, 0);
 
-  if (!firstRound || !bestPairs || firstRound === bestPairs) {
-    throw Error("unexpected falsy firstROund or bestPairs");
+  if (!firstRound || !bestRound || firstRound === bestRound) {
+    throw Error("unexpected falsy firstRound or bestPairs");
   }
 
-  return [firstRound, bestPairs];
+  return [firstRound, bestRound];
 
   // https://stackoverflow.com/a/37449857
   // start is the current position in the list, advancing by 2 each time
@@ -77,7 +77,7 @@ export const getLadderRounds = (
       qualitySum /= items.length / 2;
       if (qualitySum > bestAverageQuality) {
         bestAverageQuality = qualitySum;
-        bestPairs = items
+        bestRound = items
           .map((team, i) => (i % 2 !== 0 ? null : [team, items[i + 1]]))
           .filter((team) => team) as TeamsWithRanking[][];
       }
@@ -128,8 +128,9 @@ export const getLadderRounds = (
   }
 
   function getTeamsForRounds() {
-    if (teamsWithRanking.length % 2 === 0)
+    if (teamsWithRanking.length % 2 === 0) {
       return [teamsWithRanking, teamsWithRanking];
+    }
 
     const firstTeamToSitOut = randomChoiceIndex();
     let secondTeamToSitOut = randomChoiceIndex();

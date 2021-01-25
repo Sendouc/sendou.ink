@@ -46,7 +46,7 @@ const PlayPage = () => {
               .find((tuple) => tuple[1] >= 3);
             return (
               <Box key={team.id} my={4}>
-                {teamTuple ? (
+                {teamTuple && team.roster.length === 4 ? (
                   <Flex fontWeight="bold" align="center">
                     {teamTuple[0].twitterName && (
                       <TwitterAvatar
