@@ -41,7 +41,6 @@ model Profile {
   customUrlPath String?  @unique
   user          User     @relation(fields: [userId], references: [id])
   userId        Int      @unique
-
 }
 
 enum RankedMode {
@@ -114,6 +113,7 @@ model Player {
   placements       XRankPlacement[]
   user             User?               @relation(fields: [userId], references: [id])
   leaguePlacements LeagueSquadMember[]
+  detailedMapInfos DetailedMapPlayer[]
 
   @@index([principalId])
 }
@@ -284,17 +284,56 @@ model LadderMatchPlayer {
 }
 
 model LadderMatch {
-  id              Int                 @id @default(autoincrement())
-  date            DateTime
-  teamAScore      Int?
-  teamBScore      Int?
-  links           Json?
-  maplist         Json
-  detailedStats   Json?
-  resultConfirmed Boolean             @default(false)
-  disputed        Boolean             @default(false)
-  scoreReporterId Int?
-  disputerId      Int?
-  order           Int
-  players         LadderMatchPlayer[]
+  id         Int                 @id @default(autoincrement())
+  teamAScore Int?
+  teamBScore Int?
+  maplist    Json
+  order      Int
+  dayId      Int
+  players    LadderMatchPlayer[]
+  day        LadderDay           @relation(fields: [dayId], references: [id])
+}
+
+model LadderDay {
+  id      Int           @id @default(autoincrement())
+  date    DateTime
+  matches LadderMatch[]
+}
+
+model DetailedMap {
+  id            Int                 @id @default(autoincrement())
+  order         Int
+  stage         String
+  mode          Mode
+  duration      Int
+  winnerScore   Int
+  loserScore    Int
+  date          DateTime?
+  ladderMatchId Int?
+  players       DetailedMapPlayer[]
+}
+
+enum WinnerLoser {
+  WINNER
+  LOSER
+}
+
+model DetailedMapPlayer {
+  detailedMapId Int
+  status        WinnerLoser
+  uniqueId      String
+  name          String
+  weapon        String
+  mainAbilities Ability[]
+  subAbilities  Ability[]
+  kills         Int
+  assists       Int
+  deaths        Int
+  specials      Int
+  paint         Int
+  gear          String[]
+  player        Player      @relation(fields: [uniqueId], references: [switchAccountId])
+  detailedMap   DetailedMap @relation(fields: [detailedMapId], references: [id])
+
+  @@unique([detailedMapId, uniqueId])
 }
