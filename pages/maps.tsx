@@ -106,7 +106,7 @@ const MapsGeneratorPage = () => {
     const newStagesSelected = { ...stagesSelected, [stage]: newArray };
 
     setStagesSelected(newStagesSelected);
-    setManySearchParams(poolForUrl(newStagesSelected));
+    setManySearchParams(poolForUrl(newStagesSelected), true);
   };
 
   const generateMaps = () => {
@@ -216,7 +216,7 @@ const MapsGeneratorPage = () => {
                       if (!buttonIsAdd) delete newStagesSelected[stage];
 
                       setStagesSelected(newStagesSelected);
-                      setManySearchParams(poolForUrl(newStagesSelected));
+                      setManySearchParams(poolForUrl(newStagesSelected), true);
                     }}
                   >
                     {buttonIsAdd ? <Trans>All</Trans> : <Trans>Clear</Trans>}

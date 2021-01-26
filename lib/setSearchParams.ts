@@ -26,10 +26,13 @@ export const setSearchParams = (
 };
 
 export const setManySearchParams = (
-  newParams: { key: string; value: string | string[] | undefined }[]
+  newParams: { key: string; value: string | string[] | undefined }[],
+  setAll?: boolean
 ) => {
   const url = new URL(window.location.href);
-  const params = new URLSearchParams(url.search);
+  const params = setAll
+    ? new URLSearchParams()
+    : new URLSearchParams(url.search);
 
   newParams.forEach(({ key, value }) => {
     if (!value) {
