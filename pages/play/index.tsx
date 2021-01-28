@@ -106,6 +106,9 @@ const PlayPage: React.FC<Props> = ({ ladderDay }) => {
           </Box>
         </>
       )}
+      {ladderDay && ladderDay.matches.length > 0 && (
+        <>{ladderDay.matches.length} matches pending</>
+      )}
     </MyContainer>
   );
 };

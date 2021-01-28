@@ -99,7 +99,7 @@ const RegisterHeader: React.FC<Props> = ({}) => {
             )}
           </AlertTitle>
           <AlertDescription>
-            {ownTeam.inviteCode && (
+            {ownTeam.inviteCode && ownTeam.roster.length < 4 && (
               <Box mt={2}>
                 <Input
                   name="code"
