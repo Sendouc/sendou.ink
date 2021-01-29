@@ -34,6 +34,7 @@ async function main() {
                 connectOrCreate: {
                   create: {
                     switchAccountId: member.unique_id,
+                    principalId: member.principal_id,
                   },
                   where: {
                     switchAccountId: member.unique_id,
