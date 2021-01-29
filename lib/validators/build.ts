@@ -2,39 +2,10 @@ import { isAbilityArray } from "lib/lists/abilities";
 import { clothingGear, headGear, shoesGear } from "lib/lists/gear";
 import { weaponsWithHero } from "lib/lists/weaponsWithHero";
 import * as z from "zod";
-import { hasNoDuplicates } from "./common";
+import { abilityEnum, hasNoDuplicates } from "./common";
 
 export const TITLE_CHARACTER_LIMIT = 100;
 export const DESCRIPTION_CHARACTER_LIMIT = 1000;
-
-const abilityEnum = z.enum([
-  "ISM",
-  "ISS",
-  "REC",
-  "RSU",
-  "SSU",
-  "SCU",
-  "SS",
-  "SPU",
-  "QR",
-  "QSJ",
-  "BRU",
-  "RES",
-  "BDU",
-  "MPU",
-  "OG",
-  "LDE",
-  "T",
-  "CB",
-  "NS",
-  "H",
-  "TI",
-  "RP",
-  "AD",
-  "SJ",
-  "OS",
-  "DR",
-]);
 
 export const buildSchema = z.object({
   weapon: z.string().refine((val) => weaponsWithHero.includes(val as any)),
