@@ -292,6 +292,7 @@ model LadderMatch {
   dayId      Int
   players    LadderMatchPlayer[]
   day        LadderDay           @relation(fields: [dayId], references: [id])
+  details    DetailedMap[]
 }
 
 model LadderDay {
@@ -311,6 +312,7 @@ model DetailedMap {
   date          DateTime?
   ladderMatchId Int?
   players       DetailedMapPlayer[]
+  ladderMatch   LadderMatch?        @relation(fields: [ladderMatchId], references: [id])
 }
 
 enum WinnerLoser {
