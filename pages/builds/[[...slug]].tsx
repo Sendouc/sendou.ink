@@ -1,5 +1,6 @@
 import { Box, Button, Flex } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
+import APStats from "components/builds/APStats";
 import BuildCard from "components/builds/BuildCard";
 import BuildFilters from "components/builds/BuildFilters";
 import BuildsSkeleton from "components/builds/BuildsSkeleton";
@@ -10,11 +11,13 @@ import WeaponImage from "components/common/WeaponImage";
 import WeaponSelector from "components/common/WeaponSelector";
 import { useBuildsByWeapon } from "hooks/builds";
 import { useMyTheme, useUser } from "hooks/common";
-import { RiTShirtLine } from "react-icons/ri";
+import { useState } from "react";
+import { RiBarChart2Fill, RiTShirtLine } from "react-icons/ri";
 
 const BuildsPage = () => {
   const {
     data,
+    stats,
     isLoading,
     state,
     dispatch,
@@ -22,6 +25,8 @@ const BuildsPage = () => {
   } = useBuildsByWeapon();
   const [user] = useUser();
   const { secondaryBgColor, themeColorShade } = useMyTheme();
+  const [showStats, setShowStats] = useState(true);
+
   return (
     <>
       <Breadcrumbs pages={[{ name: t`Builds` }]} />
@@ -36,20 +41,39 @@ const BuildsPage = () => {
       </Box>
       {state.weapon && (
         <>
-          {user && (
-            <MyLink href={`/u/${user.discordId}?build=${state.weapon}`}>
-              <Button size="sm" variant="outline" leftIcon={<RiTShirtLine />}>
-                <Trans>Add build</Trans>
-              </Button>
-            </MyLink>
-          )}
+          <Flex justify="space-between" mt={6}>
+            <Button
+              size="sm"
+              variant="outline"
+              leftIcon={<RiBarChart2Fill />}
+              onClick={() => setShowStats(!showStats)}
+            >
+              {showStats ? (
+                <Trans>Hide Stats</Trans>
+              ) : (
+                <Trans>Show Stats</Trans>
+              )}
+            </Button>
+            {user && (
+              <MyLink href={`/u/${user.discordId}?build=${state.weapon}`}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  leftIcon={<RiTShirtLine />}
+                  onClick={() => setShowStats(false)}
+                >
+                  <Trans>Add build</Trans>
+                </Button>
+              </MyLink>
+            )}
+          </Flex>
           <Box mt={4} pr={3} mb="-5rem">
             <WeaponImage name={state.weapon} size={128} />
           </Box>
           <Flex
             justifyContent="flex-end"
             p={2}
-            mb={8}
+            mb={2}
             w="100%"
             bg={secondaryBgColor}
             rounded="lg"
@@ -88,6 +112,8 @@ const BuildsPage = () => {
       {state.weapon && (
         <BuildFilters filters={state.filters} dispatch={dispatch} />
       )}
+
+      {showStats && <APStats stats={stats} />}
 
       {isLoading && <BuildsSkeleton />}
 

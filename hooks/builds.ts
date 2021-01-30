@@ -205,11 +205,55 @@ export function useBuildsByWeapon() {
     []
   );
 
+  const stats = Object.entries(
+    buildsToShow.reduce(
+      (acc: Record<Ability, Record<number, number>>, buildArr) => {
+        buildArr.forEach(({ abilityPoints }) => {
+          abilities.forEach(({ code }) => {
+            // @ts-ignore
+            const buildAPCount = (abilityPoints[code] as number) ?? 0;
+            let existingApRecord = acc[code][buildAPCount] ?? 0;
+            acc[code][buildAPCount] = ++existingApRecord;
+          });
+        });
+
+        return acc;
+      },
+      getStatsInitialValue()
+    )
+  )
+    .map(([abilityCode, apCounts]) => {
+      return {
+        code: abilityCode,
+        average:
+          Object.entries(apCounts).reduce(
+            (acc, cur) => Number(cur[0]) * cur[1] + acc,
+            0
+          ) / Object.values(apCounts).reduce((acc, cur) => acc + cur, 0),
+        counts: Object.entries(apCounts)
+          .map(([ap, count]) => [Number(ap), count])
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 3),
+      };
+    })
+    .sort((a, b) => b.average - a.average);
+
   return {
     data: buildsToShow,
     isLoading: state.weapon && !data,
+    stats,
     state,
     dispatch,
     hiddenBuildCount: buildArrays.length - buildsToShow.length,
   };
+}
+
+function getStatsInitialValue() {
+  const result: Partial<Record<Ability, Record<number, number>>> = {};
+
+  abilities.forEach(({ code }) => {
+    result[code] = {};
+  });
+
+  return result as Record<Ability, Record<number, number>>;
 }
