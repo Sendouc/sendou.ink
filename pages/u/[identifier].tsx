@@ -15,12 +15,13 @@ import { useBuildsByUser } from "hooks/u";
 import { GANBA_DISCORD_ID } from "lib/constants";
 import { getFullUsername } from "lib/strings";
 import { GetStaticPaths, GetStaticProps } from "next";
+import { useRouter } from "next/router";
 import { getPlayersPeak } from "prisma/queries/getPlayersPeak";
 import {
   getUserByIdentifier,
   GetUserByIdentifierData,
 } from "prisma/queries/getUserByIdentifier";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FiEdit } from "react-icons/fi";
 import { RiTShirtLine } from "react-icons/ri";
 import useSWR from "swr";
@@ -32,6 +33,7 @@ interface Props {
 }
 
 const ProfilePage = (props: Props) => {
+  const router = useRouter();
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [buildToEdit, setBuildToEdit] = useState<boolean | Build>(false);
 
@@ -59,6 +61,12 @@ const ProfilePage = (props: Props) => {
     return true;
   };
 
+  useEffect(() => {
+    if (!router.query.build || !canPostBuilds()) return;
+
+    setBuildToEdit(true);
+  }, [canPostBuilds()]);
+
   return (
     <>
       {showProfileModal && (
@@ -68,6 +76,11 @@ const ProfilePage = (props: Props) => {
         <BuildModal
           onClose={() => setBuildToEdit(false)}
           build={typeof buildToEdit === "boolean" ? undefined : buildToEdit}
+          weaponFromQuery={
+            typeof router.query.build === "string"
+              ? router.query.build
+              : undefined
+          }
         />
       )}
 

@@ -1,14 +1,16 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Button, Flex } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import BuildCard from "components/builds/BuildCard";
 import BuildFilters from "components/builds/BuildFilters";
 import BuildsSkeleton from "components/builds/BuildsSkeleton";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import MyInfiniteScroller from "components/common/MyInfiniteScroller";
+import MyLink from "components/common/MyLink";
 import WeaponImage from "components/common/WeaponImage";
 import WeaponSelector from "components/common/WeaponSelector";
 import { useBuildsByWeapon } from "hooks/builds";
-import { useMyTheme } from "hooks/common";
+import { useMyTheme, useUser } from "hooks/common";
+import { RiTShirtLine } from "react-icons/ri";
 
 const BuildsPage = () => {
   const {
@@ -18,6 +20,7 @@ const BuildsPage = () => {
     dispatch,
     hiddenBuildCount,
   } = useBuildsByWeapon();
+  const [user] = useUser();
   const { secondaryBgColor, themeColorShade } = useMyTheme();
   return (
     <>
@@ -33,6 +36,13 @@ const BuildsPage = () => {
       </Box>
       {state.weapon && (
         <>
+          {user && (
+            <MyLink href={`/u/${user.discordId}?build=${state.weapon}`}>
+              <Button size="sm" variant="outline" leftIcon={<RiTShirtLine />}>
+                <Trans>Add build</Trans>
+              </Button>
+            </MyLink>
+          )}
           <Box mt={4} pr={3} mb="-5rem">
             <WeaponImage name={state.weapon} size={128} />
           </Box>

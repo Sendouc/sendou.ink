@@ -27,6 +27,7 @@ import GearSelector from "components/common/GearSelector";
 import WeaponSelector from "components/common/WeaponSelector";
 import { useUser } from "hooks/common";
 import { getToastOptions } from "lib/getToastOptions";
+import { weapons } from "lib/lists/weapons";
 import { sendData } from "lib/postData";
 import { Unpacked } from "lib/types";
 import {
@@ -45,11 +46,12 @@ import AbilitiesSelector from "./AbilitiesSelector";
 interface Props {
   onClose: () => void;
   build?: Unpacked<NonNullable<GetBuildsByUserData>>;
+  weaponFromQuery?: string;
 }
 
 type FormData = z.infer<typeof buildSchema>;
 
-const BuildModal: React.FC<Props> = ({ onClose, build }) => {
+const BuildModal: React.FC<Props> = ({ onClose, build, weaponFromQuery }) => {
   const [sending, setSending] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [loggedInUser] = useUser();
@@ -75,6 +77,9 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
         "UNKNOWN",
         "UNKNOWN",
       ] as unknown) as Ability[],
+      weapon: weapons.includes(weaponFromQuery as any)
+        ? weaponFromQuery
+        : undefined,
       ...build,
     },
   });
@@ -328,7 +333,7 @@ const BuildModal: React.FC<Props> = ({ onClose, build }) => {
                 name="shoesGear"
                 control={control}
                 defaultValue=""
-                render={({ onChange, value, name }) => (
+                render={({ onChange, value }) => (
                   <GearSelector
                     slot="shoes"
                     value={value}
