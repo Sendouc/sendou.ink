@@ -1,4 +1,4 @@
-import { Ability } from "@prisma/client";
+import { Ability, Mode } from "@prisma/client";
 import { abilities, isMainAbility } from "lib/lists/abilities";
 import { weaponToCode } from "lib/lists/weaponCodes";
 import { weapons } from "lib/lists/weapons";
@@ -19,6 +19,7 @@ interface BuildFilter {
 export interface UseBuildsByWeaponState {
   weapon: string;
   filters: BuildFilter[];
+  modeFilter?: Mode;
   expandedUsers: Set<number>;
 }
 
@@ -48,6 +49,10 @@ type Action =
       type: "SET_FILTER_ABILITY_POINTS";
       index: number;
       abilityPoints: { min: number; max: number };
+    }
+  | {
+      type: "SET_MODE_FILTER";
+      modeFilter?: Mode;
     };
 
 export type UseBuildsByWeaponDispatch = Dispatch<Action>;
@@ -116,6 +121,11 @@ export function useBuildsByWeapon() {
             ...oldState,
             filters: filtersAbilityPointsCopy,
           };
+        case "SET_MODE_FILTER":
+          return {
+            ...oldState,
+            modeFilter: action.modeFilter,
+          };
         default:
           return oldState;
       }
@@ -147,36 +157,53 @@ export function useBuildsByWeapon() {
 
   const buildArrays = data ?? [];
 
-  const buildsToShow = state.filters.length
-    ? buildArrays.reduce((acc: GetBuildsByWeaponData, buildArray) => {
-        const filteredArray = buildArray.filter((build) => {
-          return state.filters.every((filter) => {
-            // @ts-ignore
-            const apCount = build.abilityPoints[filter.ability] ?? 0;
+  const buildsToShow = buildArrays.reduce(
+    (acc: GetBuildsByWeaponData, buildArray) => {
+      const filteredArray = buildArray.filter((build) => {
+        if (state.filters.length) {
+          if (
+            !state.filters.every((filter) => {
+              // @ts-ignore
+              const apCount = build.abilityPoints[filter.ability] ?? 0;
 
-            if (typeof filter.hasAbility === "boolean")
-              return (
-                (filter.hasAbility && apCount > 0) ||
-                (!filter.hasAbility && apCount === 0)
+              if (typeof filter.hasAbility === "boolean")
+                return (
+                  (filter.hasAbility && apCount > 0) ||
+                  (!filter.hasAbility && apCount === 0)
+                );
+
+              if (filter.abilityPoints) {
+                return (
+                  apCount >= filter.abilityPoints.min &&
+                  apCount <= filter.abilityPoints.max
+                );
+              }
+
+              console.error(
+                "filter had no 'show' or 'abilityPoints' attributes"
               );
+              return true;
+            })
+          ) {
+            return false;
+          }
+        }
 
-            if (filter.abilityPoints) {
-              return (
-                apCount >= filter.abilityPoints.min &&
-                apCount <= filter.abilityPoints.max
-              );
-            }
+        if (state.modeFilter) {
+          if (!build.modes.some((mode) => mode === state.modeFilter)) {
+            return false;
+          }
+        }
 
-            console.error("filter had no 'show' or 'abilityPoints' attributes");
-            return true;
-          });
-        });
+        return true;
+      });
 
-        if (!filteredArray.length) return acc;
+      if (!filteredArray.length) return acc;
 
-        return [...acc, filteredArray];
-      }, [])
-    : buildArrays;
+      return [...acc, filteredArray];
+    },
+    []
+  );
 
   return {
     data: buildsToShow,

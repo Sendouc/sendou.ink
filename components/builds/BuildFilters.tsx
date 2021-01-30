@@ -1,5 +1,6 @@
 import {
   Box,
+  Flex,
   Grid,
   IconButton,
   NumberDecrementStepper,
@@ -11,7 +12,7 @@ import {
   Select,
 } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
-import { Ability } from "@prisma/client";
+import { Ability, Mode } from "@prisma/client";
 import AbilityIcon from "components/common/AbilityIcon";
 import {
   UseBuildsByWeaponDispatch,
@@ -19,7 +20,7 @@ import {
 } from "hooks/builds";
 import { abilities, isMainAbility } from "lib/lists/abilities";
 import { useMyTheme } from "lib/useMyTheme";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { FiTrash } from "react-icons/fi";
 
 interface Props {
@@ -28,6 +29,7 @@ interface Props {
 }
 
 const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
+  const [modeValueChanged, setModeValueChanged] = useState(false);
   const { gray } = useMyTheme();
 
   return (
@@ -163,7 +165,7 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
           </Fragment>
         ))}
       </Grid>
-      <Box mt={4}>
+      <Flex mt={4} justify="space-between">
         <Select
           onChange={(e) =>
             dispatch({
@@ -189,7 +191,34 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
               </option>
             ))}
         </Select>
-      </Box>
+        <Select
+          onChange={(e) => {
+            setModeValueChanged(true);
+            dispatch({
+              type: "SET_MODE_FILTER",
+              modeFilter:
+                e.target.value === "ALL" ? undefined : (e.target.value as Mode),
+            });
+          }}
+          size="sm"
+          width={48}
+          m={2}
+        >
+          <option hidden value="NO_VALUE">
+            {t`Filter by mode`}
+          </option>
+          {[t`All modes`, "TW", "SZ", "TC", "RM", "CB"]
+            // let's filter out all modes initially
+            // to avoid confusion as it does nothing different from
+            // having nothing selected at all
+            .filter((_, i) => modeValueChanged || i !== 0)
+            .map((mode, i) => (
+              <option key={mode} value={i === 0 ? "ALL" : mode}>
+                {mode}
+              </option>
+            ))}
+        </Select>
+      </Flex>
     </>
   );
 };
