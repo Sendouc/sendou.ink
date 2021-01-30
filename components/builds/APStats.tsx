@@ -43,7 +43,7 @@ const APStats: React.FC<Props> = ({ stats }) => {
             .filter((stat) => !mainOnlyAbilities.includes(stat.code as any))
             .map((stat) => {
               return (
-                <TableRow>
+                <TableRow key={stat.code}>
                   <TableCell>
                     <AbilityIcon ability={stat.code} size="TINY" />
                   </TableCell>
@@ -53,7 +53,7 @@ const APStats: React.FC<Props> = ({ stats }) => {
                   <TableCell>
                     {stat.counts.map((count) => {
                       return (
-                        <Flex align="center">
+                        <Flex align="center" key={count[0]}>
                           {count[0]} <SubText ml={1}>{count[1]}</SubText>
                         </Flex>
                       );
@@ -81,7 +81,7 @@ const APStats: React.FC<Props> = ({ stats }) => {
             .filter((stat) => mainOnlyAbilities.includes(stat.code as any))
             .map((stat) => {
               return (
-                <TableRow>
+                <TableRow key={stat.code}>
                   <TableCell>
                     <AbilityIcon ability={stat.code} size="TINY" />
                   </TableCell>

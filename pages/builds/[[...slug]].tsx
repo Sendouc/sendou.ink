@@ -25,7 +25,7 @@ const BuildsPage = () => {
   } = useBuildsByWeapon();
   const [user] = useUser();
   const { secondaryBgColor, themeColorShade } = useMyTheme();
-  const [showStats, setShowStats] = useState(true);
+  const [showStats, setShowStats] = useState(false);
 
   return (
     <>
@@ -73,7 +73,7 @@ const BuildsPage = () => {
           <Flex
             justifyContent="flex-end"
             p={2}
-            mb={2}
+            mb={6}
             w="100%"
             bg={secondaryBgColor}
             rounded="lg"
