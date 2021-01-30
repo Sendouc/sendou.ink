@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import AbilityIcon from "components/common/AbilityIcon";
-import { useMyTheme } from "lib/useMyTheme";
+import { useMyTheme } from "hooks/common";
 
 interface LdeSliderProps {
   value: number;

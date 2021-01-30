@@ -1,7 +1,7 @@
 import { Box, Flex, FormLabel, Switch } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import AbilityIcon from "components/common/AbilityIcon";
-import { useMyTheme } from "lib/useMyTheme";
+import { useMyTheme } from "hooks/common";
 import React from "react";
 
 interface HeadOnlyToggleProps {

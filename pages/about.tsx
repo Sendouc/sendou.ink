@@ -2,7 +2,7 @@ import { Heading, Link, List, ListItem } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import MyHead from "components/common/MyHead";
-import { useMyTheme } from "lib/useMyTheme";
+import { useMyTheme } from "hooks/common";
 
 const About = () => {
   const { themeColorShade } = useMyTheme();

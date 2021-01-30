@@ -1,6 +1,6 @@
 import { Playstyle } from "@prisma/client";
+import { useUser } from "hooks/common";
 import { setSearchParams } from "lib/setSearchParams";
-import useUser from "lib/useUser";
 import { useRouter } from "next/router";
 import { FreeAgentLikeInfo } from "pages/api/freeagents/like";
 import { GetAllFreeAgentPostsData } from "prisma/queries/getAllFreeAgentPosts";

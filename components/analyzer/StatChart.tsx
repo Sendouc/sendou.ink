@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
+import { useMyTheme } from "hooks/common";
 import { abilityPoints } from "lib/lists/abilityPoints";
-import { useMyTheme } from "lib/useMyTheme";
 import React from "react";
 import {
   CartesianGrid,

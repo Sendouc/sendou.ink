@@ -18,7 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "components/common/Table";
-import { useMyTheme } from "lib/useMyTheme";
+import { useMyTheme } from "hooks/common";
 import ReactMarkdown from "react-markdown";
 import reactStringReplace from "react-string-replace";
 import MyLink from "./MyLink";

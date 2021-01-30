@@ -2,8 +2,8 @@ import { Box, Flex } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import { Ability } from "@prisma/client";
 import AbilityIcon from "components/common/AbilityIcon";
+import { useMyTheme } from "hooks/common";
 import { mainOnlyAbilities } from "lib/lists/abilities";
-import { useMyTheme } from "lib/useMyTheme";
 
 interface ViewAPProps {
   aps: Record<Ability, number>;

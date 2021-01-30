@@ -1,7 +1,7 @@
 import { Box, Flex, IconButton } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
 import ColorPicker from "components/common/ColorPicker";
-import { useMyTheme } from "lib/useMyTheme";
+import { useMyTheme } from "hooks/common";
 import { useState } from "react";
 import Draggable from "react-draggable";
 import { useHotkeys } from "react-hotkeys-hook";

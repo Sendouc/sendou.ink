@@ -2,8 +2,8 @@ import { Box, Heading, Link, Stack } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import MyHead from "components/common/MyHead";
+import { useMyTheme } from "hooks/common";
 import links from "lib/data/links.json";
-import { useMyTheme } from "lib/useMyTheme";
 
 interface Link {
   title: string;

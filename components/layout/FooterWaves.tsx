@@ -1,4 +1,4 @@
-import { useMyTheme } from "lib/useMyTheme";
+import { useMyTheme } from "hooks/common";
 import React from "react";
 
 const FooterWaves = () => {

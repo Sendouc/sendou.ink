@@ -8,8 +8,8 @@ import {
 } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
+import { useMyTheme } from "hooks/common";
 import { activateLocale } from "lib/i18n";
-import { useMyTheme } from "lib/useMyTheme";
 import React from "react";
 import { FiGlobe } from "react-icons/fi";
 

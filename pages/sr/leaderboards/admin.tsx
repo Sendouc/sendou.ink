@@ -11,9 +11,9 @@ import {
   TableRow,
 } from "components/common/Table";
 import WeaponImage from "components/common/WeaponImage";
+import { useUser } from "hooks/common";
 import { SALMON_RUN_ADMIN_DISCORD_IDS } from "lib/constants";
 import { sendData } from "lib/postData";
-import useUser from "lib/useUser";
 import { useRouter } from "next/router";
 import { GetAllSalmonRunRecordsData } from "prisma/queries/getAllSalmonRunRecords";
 import { useState } from "react";

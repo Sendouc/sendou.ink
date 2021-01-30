@@ -1,5 +1,5 @@
 import { useLingui } from "@lingui/react";
-import englishToInteral from "lib/englishToInternal.json";
+import englishToInteral from "lib/data/englishToInternal.json";
 import Image from "next/image";
 import React from "react";
 

@@ -18,8 +18,8 @@ import {
   UseBuildsByWeaponDispatch,
   UseBuildsByWeaponState,
 } from "hooks/builds";
+import { useMyTheme } from "hooks/common";
 import { abilities, isMainAbility } from "lib/lists/abilities";
-import { useMyTheme } from "lib/useMyTheme";
 import { Fragment, useState } from "react";
 import { FiTrash } from "react-icons/fi";
 

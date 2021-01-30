@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import { useMyTheme } from "lib/useMyTheme";
+import { useMyTheme } from "hooks/common";
 import { useRouter } from "next/dist/client/router";
 import Image from "next/image";
 import Link from "next/link";

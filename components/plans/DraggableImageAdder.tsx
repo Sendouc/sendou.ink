@@ -1,8 +1,8 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
 import WeaponImage from "components/common/WeaponImage";
+import { useMyTheme } from "hooks/common";
 import { weapons } from "lib/lists/weapons";
-import { useMyTheme } from "lib/useMyTheme";
 import Image from "next/image";
 import { useState } from "react";
 import Draggable from "react-draggable";

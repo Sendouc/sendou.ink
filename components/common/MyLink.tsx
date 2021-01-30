@@ -1,5 +1,5 @@
 import { Link as ChakraLink } from "@chakra-ui/react";
-import { useMyTheme } from "lib/useMyTheme";
+import { useMyTheme } from "hooks/common";
 import NextLink from "next/link";
 
 interface Props {

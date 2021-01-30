@@ -1,7 +1,7 @@
 // https://github.com/chakra-ui/chakra-ui/issues/135#issuecomment-644878591
 
 import { Box, BoxProps } from "@chakra-ui/react";
-import { useMyTheme } from "lib/useMyTheme";
+import { useMyTheme } from "hooks/common";
 
 /**
  * Represents tabular data - that is, information presented in a

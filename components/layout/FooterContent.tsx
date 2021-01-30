@@ -1,6 +1,6 @@
 import { Box, Flex } from "@chakra-ui/react";
+import { useMyTheme } from "hooks/common";
 import { DiscordIcon } from "lib/assets/icons";
-import { useMyTheme } from "lib/useMyTheme";
 import Link from "next/link";
 import { FaGithub, FaTwitter } from "react-icons/fa";
 import { FiInfo } from "react-icons/fi";

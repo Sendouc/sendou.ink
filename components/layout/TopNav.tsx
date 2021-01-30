@@ -13,8 +13,8 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
+import { useUser } from "hooks/common";
 import { DiscordIcon } from "lib/assets/icons";
-import useUser from "lib/useUser";
 import { signIn, signOut } from "next-auth/client";
 import Link from "next/link";
 import { FaHeart } from "react-icons/fa";

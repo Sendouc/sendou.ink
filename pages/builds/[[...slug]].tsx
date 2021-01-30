@@ -8,7 +8,7 @@ import MyInfiniteScroller from "components/common/MyInfiniteScroller";
 import WeaponImage from "components/common/WeaponImage";
 import WeaponSelector from "components/common/WeaponSelector";
 import { useBuildsByWeapon } from "hooks/builds";
-import { useMyTheme } from "lib/useMyTheme";
+import { useMyTheme } from "hooks/common";
 
 const BuildsPage = () => {
   const {

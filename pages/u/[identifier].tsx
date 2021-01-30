@@ -10,10 +10,10 @@ import MyInfiniteScroller from "components/common/MyInfiniteScroller";
 import AvatarWithInfo from "components/u/AvatarWithInfo";
 import BuildModal from "components/u/BuildModal";
 import ProfileModal from "components/u/ProfileModal";
+import { useUser } from "hooks/common";
 import { useBuildsByUser } from "hooks/u";
 import { GANBA_DISCORD_ID } from "lib/constants";
 import { getFullUsername } from "lib/strings";
-import useUser from "lib/useUser";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { getPlayersPeak } from "prisma/queries/getPlayersPeak";
 import {

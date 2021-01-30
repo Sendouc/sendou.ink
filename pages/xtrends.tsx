@@ -15,8 +15,8 @@ import Section from "components/common/Section";
 import SubText from "components/common/SubText";
 import WeaponImage from "components/common/WeaponImage";
 import WeaponLineChart from "components/top500/WeaponLineChart";
+import { useMyTheme } from "hooks/common";
 import { useXTrends } from "hooks/xtrends";
-import { useMyTheme } from "lib/useMyTheme";
 import { GetStaticProps } from "next";
 import { getXTrends, GetXTrendsData } from "prisma/queries/getXTrends";
 

@@ -25,10 +25,10 @@ import { Ability } from "@prisma/client";
 import ViewSlots from "components/builds/ViewSlots";
 import GearSelector from "components/common/GearSelector";
 import WeaponSelector from "components/common/WeaponSelector";
+import { useUser } from "hooks/common";
 import { getToastOptions } from "lib/getToastOptions";
 import { sendData } from "lib/postData";
 import { Unpacked } from "lib/types";
-import useUser from "lib/useUser";
 import {
   buildSchema,
   DESCRIPTION_CHARACTER_LIMIT,

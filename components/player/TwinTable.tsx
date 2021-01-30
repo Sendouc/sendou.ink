@@ -13,8 +13,8 @@ import {
 } from "components/common/Table";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
+import { useMyTheme } from "hooks/common";
 import { getRankingString } from "lib/strings";
-import { useMyTheme } from "lib/useMyTheme";
 import { GetPlayerWithPlacementsData } from "prisma/queries/getPlayerWithPlacements";
 
 interface Props {

@@ -5,7 +5,7 @@ import {
   BreadcrumbLink,
 } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
-import { useMyTheme } from "lib/useMyTheme";
+import { useMyTheme } from "hooks/common";
 import NextLink from "next/link";
 import MyHead from "./MyHead";
 

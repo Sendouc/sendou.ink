@@ -1,5 +1,5 @@
 import { Box, Image, useColorModeValue } from "@chakra-ui/react";
-import { useMyTheme } from "lib/useMyTheme";
+import { useMyTheme } from "hooks/common";
 import { useRouter } from "next/dist/client/router";
 import FooterContent from "./FooterContent";
 import FooterWaves from "./FooterWaves";

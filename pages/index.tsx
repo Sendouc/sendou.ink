@@ -2,7 +2,7 @@ import { Box, Flex, Heading, useColorMode } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import MyContainer from "components/common/MyContainer";
 import MyLink from "components/common/MyLink";
-import { useMyTheme } from "lib/useMyTheme";
+import { useMyTheme } from "hooks/common";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";

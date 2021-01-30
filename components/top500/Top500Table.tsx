@@ -11,8 +11,8 @@ import {
 } from "components/common/Table";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
+import { useMyTheme } from "hooks/common";
 import { getProfilePath, getRankingString } from "lib/strings";
-import { useMyTheme } from "lib/useMyTheme";
 import Link from "next/link";
 import { GetTop500PlacementsByMonthData } from "prisma/queries/getTop500PlacementsByMonth";
 

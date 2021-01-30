@@ -1,5 +1,5 @@
 import { Box, BoxProps } from "@chakra-ui/react";
-import { useMyTheme } from "lib/useMyTheme";
+import { useMyTheme } from "hooks/common";
 
 const Section: React.FC<BoxProps> = (props) => {
   const { secondaryBgColor } = useMyTheme();

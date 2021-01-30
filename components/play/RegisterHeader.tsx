@@ -8,10 +8,10 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
+import { useUser } from "hooks/common";
 import { useLadderTeams } from "hooks/play";
 import { getToastOptions } from "lib/getToastOptions";
 import { sendData } from "lib/postData";
-import useUser from "lib/useUser";
 import { useEffect, useState } from "react";
 import { FiCheck, FiTrash } from "react-icons/fi";
 

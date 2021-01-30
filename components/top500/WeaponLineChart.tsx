@@ -1,4 +1,4 @@
-import { useMyTheme } from "lib/useMyTheme";
+import { useMyTheme } from "hooks/common";
 import { Line, LineChart } from "recharts";
 
 interface WeaponLineChartProps {
