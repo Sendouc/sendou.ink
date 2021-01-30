@@ -1,4 +1,4 @@
-import { getMySession } from "lib/getMySession";
+import { getMySession } from "lib/api";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "prisma/client";
 import { v4 as uuidv4 } from "uuid";

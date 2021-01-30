@@ -15,7 +15,7 @@ import TwitterAvatar from "components/common/TwitterAvatar";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
 import { countries, getEmojiFlag } from "countries-list";
-import useUser, { useMyTheme } from "hooks/common";
+import { useMyTheme, useUser } from "hooks/common";
 import { getFullUsername } from "lib/strings";
 import Image from "next/image";
 import { GetUserByIdentifierData } from "prisma/queries/getUserByIdentifier";

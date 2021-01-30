@@ -20,7 +20,7 @@ import SubTextCollapse from "components/common/SubTextCollapse";
 import TwitterAvatar from "components/common/TwitterAvatar";
 import CreateNewTeamModal from "components/t/CreateNewTeamModal";
 import { countries, getEmojiFlag } from "countries-list";
-import useUser, { useMyTheme } from "hooks/common";
+import { useMyTheme, useUser } from "hooks/common";
 import { GetStaticProps } from "next";
 import Image from "next/image";
 import { getAllTeams, GetAllTeamsData } from "prisma/queries/getAllTeams";

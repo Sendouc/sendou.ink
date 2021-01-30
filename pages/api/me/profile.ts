@@ -1,4 +1,4 @@
-import { getMySession } from "lib/getMySession";
+import { getMySession } from "lib/api";
 import { profileSchemaBackend } from "lib/validators/profile";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "prisma/client";

@@ -27,7 +27,7 @@ import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
 import FAModal from "components/freeagents/FAModal";
 import { countries, getEmojiFlag } from "countries-list";
-import useUser, { useMyTheme } from "hooks/common";
+import { useMyTheme, useUser } from "hooks/common";
 import { useFreeAgents } from "hooks/freeagents";
 import { sendData } from "lib/postData";
 import { Unpacked } from "lib/types";

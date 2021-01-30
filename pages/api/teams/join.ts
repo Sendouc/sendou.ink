@@ -1,5 +1,5 @@
+import { getMySession } from "lib/api";
 import { TEAM_ROSTER_LIMIT } from "lib/constants";
-import { getMySession } from "lib/getMySession";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "prisma/client";
 

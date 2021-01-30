@@ -1,4 +1,4 @@
-import { getMySession } from "lib/getMySession";
+import { getMySession } from "lib/api";
 import { makeNameUrlFriendly } from "lib/makeNameUrlFriendly";
 import { teamSchema } from "lib/validators/team";
 import { NextApiRequest, NextApiResponse } from "next";

@@ -1,4 +1,4 @@
-import { getMySession } from "lib/getMySession";
+import { getMySession } from "lib/api";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getTeam, GetTeamData } from "prisma/queries/getTeam";
 

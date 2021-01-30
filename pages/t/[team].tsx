@@ -28,7 +28,7 @@ import WeaponImage from "components/common/WeaponImage";
 import TeamManagementModal from "components/t/TeamManagementModal";
 import TeamProfileModal from "components/t/TeamProfileModal";
 import { countries, getEmojiFlag } from "countries-list";
-import useUser, { useMyTheme } from "hooks/common";
+import { useMyTheme, useUser } from "hooks/common";
 import { getToastOptions } from "lib/getToastOptions";
 import { sendData } from "lib/postData";
 import { GetStaticPaths, GetStaticProps } from "next";

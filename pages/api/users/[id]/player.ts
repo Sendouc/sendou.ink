@@ -1,5 +1,5 @@
+import { getMySession } from "lib/api";
 import { ADMIN_DISCORD_ID } from "lib/constants";
-import { getMySession } from "lib/getMySession";
 import { getWeaponNormalized } from "lib/lists/weapons";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "prisma/client";

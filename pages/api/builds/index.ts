@@ -1,6 +1,6 @@
 import { Ability } from "@prisma/client";
+import { getMySession } from "lib/api";
 import { GANBA_DISCORD_ID } from "lib/constants";
-import { getMySession } from "lib/getMySession";
 import { getWeaponNormalized } from "lib/lists/weapons";
 import { buildSchema } from "lib/validators/build";
 import { NextApiRequest, NextApiResponse } from "next";

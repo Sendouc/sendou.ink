@@ -1,5 +1,5 @@
+import { getMySession } from "lib/api";
 import { SALMON_RUN_ADMIN_DISCORD_IDS } from "lib/constants";
-import { getMySession } from "lib/getMySession";
 import { salmonRunRecordSchema } from "lib/validators/salmonRunRecord";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "prisma/client";
