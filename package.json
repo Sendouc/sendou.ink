@@ -16,8 +16,8 @@
     "compile": "lingui compile"
   },
   "dependencies": {
-    "@chakra-ui/icons": "^1.0.3",
-    "@chakra-ui/react": "^1.1.6",
+    "@chakra-ui/icons": "^1.0.4",
+    "@chakra-ui/react": "^1.2.1",
     "@chakra-ui/theme-tools": "^1.0.3",
     "@emotion/react": "^11.1.4",
     "@emotion/styled": "^11.0.0",
@@ -60,7 +60,7 @@
     "@types/nprogress": "^0.2.0",
     "@types/react": "^17.0.0",
     "@types/react-infinite-scroller": "^1.2.1",
-    "@types/react-select": "^4.0.8",
+    "@types/react-select": "^4.0.10",
     "@types/recharts": "^1.8.19",
     "@types/uuid": "^8.3.0",
     "prettier": "^2.2.1",
