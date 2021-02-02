@@ -23,8 +23,8 @@ interface Props {
 const APStats: React.FC<Props> = ({ stats }) => {
   if (Number.isNaN(stats[0].average)) return null;
   return (
-    <Flex justify="space-evenly" flexWrap="wrap" mt={6}>
-      <Table maxW={64}>
+    <Flex justify="space-evenly" flexWrap="wrap">
+      <Table maxW={64} mt={6}>
         <TableHead>
           <TableRow>
             <TableHeader>
@@ -65,7 +65,7 @@ const APStats: React.FC<Props> = ({ stats }) => {
         </TableBody>
       </Table>
 
-      <Table maxW={64}>
+      <Table maxW={64} mt={6}>
         <TableHead>
           <TableRow>
             <TableHeader>
