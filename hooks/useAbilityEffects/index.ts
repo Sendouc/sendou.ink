@@ -104,6 +104,14 @@ function buildToAP(
     }
   });
 
+  if (build.shoesAbilities[0] === "DR" && bonusAp["DR"]) {
+    for (const ability of ["RSU", "SSU", "RES"]) {
+      const a = ability as Ability;
+      const existing = AP[a] ?? 0;
+      AP[a] = existing + 10;
+    }
+  }
+
   let subWorth = 3;
 
   build.clothingAbilities.forEach((ability, index) => {

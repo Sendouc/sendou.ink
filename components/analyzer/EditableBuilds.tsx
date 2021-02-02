@@ -68,6 +68,11 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
     ? otherBuild.headAbilities[0]
     : "SSU";
 
+  const shoesAbility = build.shoesAbilities ? build.shoesAbilities[0] : "SSU";
+  const otherShoesAbility = otherBuild.shoesAbilities
+    ? otherBuild.shoesAbilities[0]
+    : "SSU";
+
   return (
     <>
       <Button
@@ -80,6 +85,8 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
         }}
         mt="1em"
         mb="2em"
+        size="sm"
+        variant="outline"
       >
         {showOther ? t`Stop comparing` : t`Compare`}
       </Button>
@@ -120,6 +127,18 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
               setValue={(value: number) => setLde(value)}
             />
           )}
+          {shoesAbility === "DR" && (
+            <HeadOnlyToggle
+              ability={shoesAbility}
+              active={bonusAp[shoesAbility] ?? false}
+              setActive={() =>
+                setBonusAp({
+                  ...bonusAp,
+                  [shoesAbility]: !bonusAp[shoesAbility],
+                })
+              }
+            />
+          )}
         </Flex>
         {showOther && (
           <Flex flexDirection="column">
@@ -156,6 +175,18 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
               <LdeSlider
                 value={otherLde}
                 setValue={(value: number) => setOtherLde(value)}
+              />
+            )}
+            {otherShoesAbility === "DR" && (
+              <HeadOnlyToggle
+                ability={otherShoesAbility}
+                active={otherBonusAp[otherShoesAbility] ?? false}
+                setActive={() =>
+                  setOtherBonusAp({
+                    ...otherBonusAp,
+                    [otherShoesAbility]: !otherBonusAp[otherShoesAbility],
+                  })
+                }
               />
             )}
           </Flex>

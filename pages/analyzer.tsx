@@ -117,6 +117,8 @@ const BuildAnalyzerPage = () => {
             leftIcon={<FiSettings />}
             onClick={() => setShowSettings(!showSettings)}
             my="1rem"
+            size="sm"
+            variant="outline"
           >
             {showSettings ? t`Hide settings` : t`Show settings`}
           </Button>
