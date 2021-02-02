@@ -294,7 +294,7 @@ const FreeAgentCard = ({
           </Box>
         )}
 
-        {post.user.profile?.weaponPool.length && (
+        {post.user.profile && post.user.profile?.weaponPool.length > 0 && (
           <Box my={2}>
             {post.user.profile.weaponPool.map((wpn) => (
               <WeaponImage key={wpn} name={wpn} size={32} />
