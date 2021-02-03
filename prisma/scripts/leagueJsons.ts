@@ -9,6 +9,10 @@ const files = ["P_EU", "P_US", "T_EU", "T_US", "P_JP", "T_JP"];
 let oldestDate = new Date("2050");
 
 async function main() {
+  const freshest = await prisma.leagueSquad.findFirst({
+    orderBy: { startTime: "desc" },
+  });
+  if (!freshest) throw Error("that's not fresh");
   for (const file of files) {
     const squadsData: Prisma.LeagueSquadCreateManyInput[] = [];
     const playersData: Prisma.PlayerCreateManyInput[] = [];
@@ -23,6 +27,10 @@ async function main() {
         if (ranking.point < 2200) continue;
 
         const startTime = new Date(rotation.start_time * 1000);
+
+        if (startTime.getTime() <= freshest.startTime.getTime()) {
+          continue;
+        }
 
         if (startTime.getTime() < oldestDate.getTime()) {
           oldestDate = startTime;
@@ -47,7 +55,7 @@ async function main() {
       }
     }
 
-    console.log("oldest = ", oldestDate.getTime());
+    console.log("oldest =", oldestDate.getTime());
 
     await prisma.leagueSquad.createMany({ data: squadsData });
 
@@ -69,6 +77,10 @@ async function main() {
         if (ranking.point < 2200) continue;
 
         const startTime = new Date(rotation.start_time * 1000);
+
+        if (startTime.getTime() <= freshest.startTime.getTime()) {
+          continue;
+        }
 
         const type = rotation.league_type.key === "pair" ? "TWIN" : "QUAD";
         const region =
