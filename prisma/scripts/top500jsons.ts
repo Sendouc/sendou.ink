@@ -1,13 +1,13 @@
 import { Prisma } from "@prisma/client";
 import { getWeaponNormalized } from "../../lib/lists/weapons";
 import prisma from "../client";
-import cb from "./data/december_clam_blitz_2020.json";
-import rm from "./data/december_rainmaker_2020.json";
-import sz from "./data/december_splat_zones_2020.json";
-import tc from "./data/december_tower_control_2020.json";
+import cb from "./data/january_clam_blitz_2021.json";
+import rm from "./data/january_rainmaker_2021.json";
+import sz from "./data/january_splat_zones_2021.json";
+import tc from "./data/january_tower_control_2021.json";
 
-const MONTH = 12;
-const YEAR = 2020;
+const MONTH = 1;
+const YEAR = 2021;
 
 const filterJson = (result: any) => !result.cheater;
 
@@ -16,7 +16,7 @@ const jsonToInput = (
   mode: "SZ" | "TC" | "RM" | "CB",
   month: number,
   year: number
-): Prisma.XRankPlacementCreateInput => ({
+): Prisma.XRankPlacementCreateManyInput => ({
   playerName: result.name,
   mode,
   month,
@@ -24,17 +24,13 @@ const jsonToInput = (
   ranking: result.rank,
   xPower: result.x_power,
   weapon: getWeaponNormalized(result.weapon.name.trim()),
-  player: {
-    connectOrCreate: {
-      create: {
-        name: result.name,
-        switchAccountId: result.unique_id,
-      },
-      where: {
-        switchAccountId: result.unique_id,
-      },
-    },
-  },
+  switchAccountId: result.unique_id,
+});
+
+const jsonToPlayerInput = (result: any): Prisma.PlayerCreateManyInput => ({
+  switchAccountId: result.unique_id,
+  name: result.name,
+  principalId: result.principal_id,
 });
 
 const jsonToWeaponArrMap = (acc: Map<string, string[]>, result: any) => {
@@ -71,6 +67,8 @@ const main = async () => {
     .filter(filterJson)
     .map((json) => jsonToInput(json, "CB", MONTH, YEAR));
 
+  const playersData = [...sz, ...tc, ...rm, ...cb].map(jsonToPlayerInput);
+
   const idsToWeapons = [...sz, ...tc, ...rm, ...cb].reduce(
     jsonToWeaponArrMap,
     new Map()
@@ -87,15 +85,15 @@ const main = async () => {
     idsToUpdate.push(build.id);
   });
 
-  const newPlacements = [
-    ...inputSZ,
-    ...inputTC,
-    ...inputRM,
-    ...inputCB,
-  ].map((input) => prisma.xRankPlacement.create({ data: input }));
+  await prisma.player.createMany({ data: playersData, skipDuplicates: true });
 
-  await prisma.$transaction([...newPlacements]);
+  console.log("players created");
+
+  await prisma.xRankPlacement.createMany({
+    data: [...inputSZ, ...inputTC, ...inputRM, ...inputCB],
+  });
   console.log("new placements submitted");
+
   await prisma.build.updateMany({
     where: {
       id: {
