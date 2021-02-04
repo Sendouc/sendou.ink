@@ -1,10 +1,11 @@
-import { Box, Flex, HStack } from "@chakra-ui/react";
+import { Box, Center, Flex, Grid, Heading } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import Breadcrumbs from "components/common/Breadcrumbs";
+import ModeImage from "components/common/ModeImage";
 import MyContainer from "components/common/MyContainer";
 import SubText from "components/common/SubText";
-import TwitterAvatar from "components/common/TwitterAvatar";
-import UserAvatar from "components/common/UserAvatar";
+import LadderTeam from "components/play/LadderTeam";
+import MatchUp from "components/play/MatchUp";
 import RegisterHeader from "components/play/RegisterHeader";
 import { useMyTheme } from "hooks/common";
 import { useLadderTeams } from "hooks/play";
@@ -14,6 +15,7 @@ import { GetStaticProps } from "next";
 import prisma from "prisma/client";
 import { getAllLadderRegisteredTeamsForMatches } from "prisma/queries/getAllLadderRegisteredTeamsForMatches";
 import { getLadderDay, GetLadderDayData } from "prisma/queries/getLadderDay";
+import { Fragment } from "react";
 
 interface Props {
   ladderDay: GetLadderDayData;
@@ -23,91 +25,79 @@ const PlayPage: React.FC<Props> = ({ ladderDay }) => {
   const { gray } = useMyTheme();
   const { data } = useLadderTeams(!ladderDay);
 
-  console.log({ ladderDay });
-
   return (
     <MyContainer>
       <Breadcrumbs pages={[{ name: t`Play` }]} />
-      <Box fontSize="lg" fontWeight="bold">
-        {ladderDay ? (
-          <>Next event: {new Date(ladderDay.date).toLocaleString()}</>
-        ) : (
-          <>
-            <Trans>
-              Next ladder date is not confirmed. Follow this page for updates!
-            </Trans>
-          </>
-        )}
-      </Box>
+      {!ladderDay?.matches.length && (
+        <Box fontSize="lg" fontWeight="bold">
+          {ladderDay ? (
+            <>Next event: {new Date(ladderDay.date).toLocaleString()}</>
+          ) : (
+            <>
+              <Trans>
+                Next ladder date is not confirmed. Follow this page for updates!
+              </Trans>
+            </>
+          )}
+        </Box>
+      )}
       {ladderDay && ladderDay.matches.length === 0 && (
         <>
           <RegisterHeader />
           <Box mt={4}>
             {data
               ?.sort((a, b) => b.roster.length - a.roster.length)
-              .map((team) => {
-                const teamTuple = team.roster
-                  .filter((member) => member.team)
-                  .map((member) => member.team)
-                  .reduce(
-                    (
-                      acc: [
-                        {
-                          name: string;
-                          twitterName: string;
-                          nameForUrl: string;
-                        },
-                        number
-                      ][],
-                      cur
-                    ) => {
-                      const tuple = acc.find(
-                        ([{ name }]) => name === cur!.name
-                      );
-                      if (tuple) tuple[1]++;
-
-                      acc.push([{ ...(cur as any) }, 1]);
-                      return acc;
-                    },
-                    []
-                  )
-                  .find((tuple) => tuple[1] >= 3);
-                return (
-                  <Box key={team.id} my={4}>
-                    {teamTuple && team.roster.length === 4 ? (
-                      <Flex fontWeight="bold" align="center">
-                        {teamTuple[0].twitterName && (
-                          <TwitterAvatar
-                            twitterName={teamTuple[0].twitterName}
-                            size="sm"
-                            mr={1}
-                          />
-                        )}
-                        {teamTuple[0].name}
-                        {teamTuple[1] === 3 && team.roster.length >= 4 && (
-                          <SubText ml={1}>+1</SubText>
-                        )}
-                      </Flex>
-                    ) : (
-                      <HStack>
-                        {team.roster.map((member) => (
-                          <UserAvatar key={member.id} user={member} size="sm" />
-                        ))}
-                      </HStack>
-                    )}
-                    <Box color={gray} fontSize="sm" mt={2}>
-                      {team.roster
-                        .map((user) => `${user.username}#${user.discriminator}`)
-                        .join(", ")}
-                    </Box>
-                  </Box>
-                );
-              })}
+              .map((team) => (
+                <LadderTeam key={team.id} roster={team.roster} my={2} />
+              ))}
           </Box>
         </>
       )}
       {ladderDay && ladderDay.matches.length > 0 && (
-        <>{ladderDay.matches.length} matches pending</>
+        <>
+          {[1, 2].map((round) => (
+            <Fragment key={round}>
+              <Heading size="md" fontFamily="'Rubik', sans-serif">
+                Round {round}
+              </Heading>
+              <SubText mt={4}>Maplist</SubText>
+              {(ladderDay.matches.find((match) => match.order === round)!
+                .maplist as any[]).map(({ stage, mode }, i) => {
+                return (
+                  <Flex
+                    key={stage + mode}
+                    align="center"
+                    color={gray}
+                    fontSize="sm"
+                    my={2}
+                  >
+                    {i + 1}){" "}
+                    <Center mx={1}>
+                      <ModeImage mode={mode} size={24} />
+                    </Center>{" "}
+                    {stage}
+                  </Flex>
+                );
+              })}
+              <Grid
+                templateColumns="3fr 1fr 3fr"
+                placeItems="center"
+                rowGap={4}
+                mt={8}
+                mb={8}
+              >
+                {ladderDay.matches
+                  .filter((match) => match.order === round)
+                  .map((match) => (
+                    <MatchUp
+                      key={match.players[0].user.discordId}
+                      matchUp={match}
+                    />
+                  ))}
+              </Grid>
+            </Fragment>
+          ))}
+        </>
       )}
     </MyContainer>
   );

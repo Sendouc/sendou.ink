@@ -18,12 +18,21 @@ export const getLadderDay = async () => {
           teamBScore: true,
           players: {
             select: {
+              team: true,
               user: {
                 select: {
-                  username: true,
+                  id: true,
                   discordAvatar: true,
-                  discriminator: true,
                   discordId: true,
+                  discriminator: true,
+                  username: true,
+                  team: {
+                    select: {
+                      name: true,
+                      nameForUrl: true,
+                      twitterName: true,
+                    },
+                  },
                 },
               },
             },
