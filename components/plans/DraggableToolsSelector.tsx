@@ -2,6 +2,7 @@ import { Box, Flex, IconButton } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
 import ColorPicker from "components/common/ColorPicker";
 import { useMyTheme } from "hooks/common";
+import { Tool } from "pages/plans";
 import { useState } from "react";
 import Draggable from "react-draggable";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -16,7 +17,6 @@ import {
   FaTrashAlt,
   FaUndo,
 } from "react-icons/fa";
-import { Tool } from ".";
 
 interface DraggableToolsSelectorProps {
   tool: Tool;

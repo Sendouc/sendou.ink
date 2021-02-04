@@ -19,7 +19,7 @@ import salmonRunLowTide from "lib/assets/SalmonRunLowTide.svg";
 // @ts-ignore
 import salmonRunMidTide from "lib/assets/SalmonRunMidTide.svg";
 import { salmonRunStages, stages } from "lib/lists/stages";
-import { PlannerMapBg } from ".";
+import { PlannerMapBg } from "pages/plans";
 
 interface StageSelectorProps {
   handleChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
@@ -40,11 +40,14 @@ const StageSelector: React.FC<StageSelectorProps> = ({
   return (
     <Box maxW="20rem" m="3rem auto">
       <Select value={currentBackground.stage} onChange={handleChange}>
-        {salmonRunStages.concat(stages).map((stage) => (
-          <option key={stage} value={stage}>
-            {i18n._(stage)}
-          </option>
-        ))}
+        {salmonRunStages
+          .concat(stages)
+          .sort((a, b) => a.localeCompare(b))
+          .map((stage) => (
+            <option key={stage} value={stage}>
+              {i18n._(stage)}
+            </option>
+          ))}
       </Select>
       {currentBackground.tide ? (
         <>
