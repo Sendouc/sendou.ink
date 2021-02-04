@@ -138,9 +138,13 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
     const eighteenMaps = getMaplist();
 
     const dateWeekFromNow = new Date(ladderDay.date);
-    dateWeekFromNow.setHours(168);
+    dateWeekFromNow.setHours(
+      ladderDay.date.getFullYear(),
+      ladderDay.date.getMonth(),
+      ladderDay.date.getDate() + 7
+    );
 
-    const createPosts = matches.flatMap((round, i) =>
+    const createMatches = matches.flatMap((round, i) =>
       round.map((match) =>
         prisma.ladderMatch.create({
           data: {
@@ -167,7 +171,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
 
     // TODO: is this ok?
     await prisma.$transaction([
-      ...createPosts,
+      ...createMatches,
       createLadderDay,
       deleteLadderRegisteredTeams,
     ] as any);
