@@ -4,6 +4,7 @@ import {
   Center,
   Divider,
   Flex,
+  Grid,
   Heading,
   IconButton,
   Popover,
@@ -12,22 +13,17 @@ import {
   PopoverTrigger,
   Stack,
   useToast,
-  Wrap,
-  WrapItem,
 } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import Markdown from "components/common/Markdown";
-import MyContainer from "components/common/MyContainer";
-import MyLink from "components/common/MyLink";
-import Section from "components/common/Section";
 import SubText from "components/common/SubText";
 import SubTextCollapse from "components/common/SubTextCollapse";
 import TwitterAvatar from "components/common/TwitterAvatar";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
+import RosterPlayerBar from "components/t/RosterPlayerBar";
 import TeamManagementModal from "components/t/TeamManagementModal";
 import TeamProfileModal from "components/t/TeamProfileModal";
-import { countries, getEmojiFlag } from "countries-list";
 import { useMyTheme, useUser } from "hooks/common";
 import { getToastOptions } from "lib/getToastOptions";
 import { sendData } from "lib/postData";
@@ -101,7 +97,7 @@ const getTeamXPInfo = (roster: NonNullable<GetTeamData>["roster"]) => {
 };
 
 const TeamPage: React.FC<Props> = (props) => {
-  const { secondaryBgColor } = useMyTheme();
+  const { secondaryBgColor, themeColorHex } = useMyTheme();
   const { data } = useSWR<GetTeamData>(`/api/teams/${props.team!.id}`, {
     initialData: props.team!,
   });
@@ -135,7 +131,7 @@ const TeamPage: React.FC<Props> = (props) => {
   const teamXPData = getTeamXPInfo(team.roster);
 
   return (
-    <MyContainer>
+    <>
       {profileModalIsOpen && (
         <TeamProfileModal
           team={team}
@@ -228,63 +224,42 @@ const TeamPage: React.FC<Props> = (props) => {
             </Button>
           </Center>
         )}
-      <Divider my={4} />
-      {team.bio && <Markdown value={team.bio} smallHeaders />}
-      {team.recruitingPost && (
-        <SubTextCollapse title={t`Recruiting post`} mt={4}>
-          <Markdown value={team.recruitingPost} smallHeaders />
-        </SubTextCollapse>
-      )}
-      {(team.bio || team.recruitingPost) && <Divider my={4} />}
-      <Wrap justify="center" spacing={4}>
+      <Grid
+        templateColumns={["0.3fr 3fr", "0.3fr 2fr 3fr"]}
+        gridRowGap={4}
+        gridColumnGap={2}
+        maxW="35rem"
+        mx="auto"
+        mt={4}
+        mb={6}
+      >
         {team.roster
           .sort(
             (a, b) =>
               Number(b.id === team.captainId) - Number(a.id === team.captainId)
           )
           .map((user) => (
-            <WrapItem key={user.id}>
-              <Section textAlign="center" height="14rem" width="14rem">
-                <MyLink href={`/u/${user.discordId}`} isColored={false}>
-                  <UserAvatar user={user} size="lg" />
-                </MyLink>
-                <Box my={2} fontWeight="bold">
-                  <MyLink
-                    href={`/u/${user.discordId}`}
-                    isColored={false}
-                  >{`${user.username}#${user.discriminator}`}</MyLink>
-                </Box>
-                {user.profile?.country && (
-                  <Box mx="auto" my={1}>
-                    <Box as="span" mr={1}>
-                      {getEmojiFlag(user.profile.country)}{" "}
-                    </Box>
-                    {
-                      Object.entries(countries).find(
-                        ([key]) => key === user.profile!.country
-                      )![1].name
-                    }
-                  </Box>
-                )}
-                {(user.profile?.weaponPool ?? []).length > 0 && (
-                  <Flex
-                    mt={3}
-                    w="100%"
-                    alignItems="center"
-                    justifyContent="center"
-                  >
-                    {user.profile!.weaponPool.map((wpn) => (
-                      <Box mx="0.2em" key={wpn}>
-                        <WeaponImage name={wpn} size={32} />
-                      </Box>
-                    ))}
-                  </Flex>
-                )}
-              </Section>
-            </WrapItem>
+            <RosterPlayerBar key={user.id} user={user} />
           ))}
-      </Wrap>
-    </MyContainer>
+      </Grid>
+
+      <Divider my={4} maxW="75ch" mx="auto" />
+      {team.bio && (
+        <Box maxW="75ch" mx="auto">
+          <Markdown value={team.bio} smallHeaders />
+        </Box>
+      )}
+      {team.recruitingPost && (
+        <SubTextCollapse
+          title={t`Recruiting post`}
+          mt={4}
+          maxW="75ch"
+          mx="auto"
+        >
+          <Markdown value={team.recruitingPost} smallHeaders />
+        </SubTextCollapse>
+      )}
+    </>
   );
 };
 
