@@ -159,7 +159,6 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
     });
     const deleteLadderRegisteredTeams = prisma.ladderRegisteredTeam.deleteMany();
 
-    // TODO: is this ok?
     await prisma.$transaction([
       ...createMatches,
       createLadderDay,
