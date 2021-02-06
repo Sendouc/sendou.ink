@@ -169,7 +169,11 @@ async function postHandler(req: NextApiRequest, res: NextApiResponse) {
       })
     );
 
-    // await prisma.$transaction([updateLadderMatch, ...updateWinners, ...updateLosers] as any);
+    await prisma.$transaction([
+      updateLadderMatch,
+      ...updateWinners,
+      ...updateLosers,
+    ] as any);
     res.status(200).end();
   } catch (e) {
     if (e instanceof z.ZodError) {
