@@ -87,7 +87,7 @@ async function postHandler(req: NextApiRequest, res: NextApiResponse) {
                   detailedMap.losers.players,
                 ].map((player, i) => ({
                   status: i === 0 ? "WINNER" : "LOSER",
-                  uniqueId: player.unique_id,
+                  principalId: player.principal_id,
                   name: player.name,
                   weapon: player.weapon,
                   mainAbilities: player.main_abilities,

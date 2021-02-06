@@ -3,7 +3,7 @@ import * as z from "zod";
 import { abilityEnum } from "./common";
 
 const playerSchema = z.object({
-  unique_id: z.string(),
+  principal_id: z.string(),
   name: z.string().min(1).max(10),
   weapon: z.string().refine((val) => weapons.includes(val as any)),
   main_abilities: z.array(abilityEnum),
