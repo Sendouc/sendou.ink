@@ -29,7 +29,7 @@ export const detailedMapSchema = z.array(
     winners: teamInfoSchema,
     losers: teamInfoSchema,
     date: z.string().refine((val) => {
-      const d = new Date(val);
+      const d = new Date(Number(val));
       const timestamp = d.getTime();
       if (Number.isNaN(timestamp)) {
         return false;
