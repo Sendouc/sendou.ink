@@ -18,7 +18,7 @@ const playerSchema = z.object({
 
 const teamInfoSchema = z.object({
   score: z.number().int().min(0).max(100),
-  players: playerSchema,
+  players: z.array(playerSchema),
 });
 
 export const detailedMapSchema = z.array(
