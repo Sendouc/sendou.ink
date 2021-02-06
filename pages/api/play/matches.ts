@@ -76,6 +76,7 @@ async function postHandler(req: NextApiRequest, res: NextApiResponse) {
         details: {
           create: parsed.map((detailedMap, i) => {
             return {
+              date: detailedMap.date,
               duration: detailedMap.duration,
               loserScore: detailedMap.losers.score,
               mode: detailedMap.mode,
