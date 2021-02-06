@@ -85,20 +85,22 @@ async function postHandler(req: NextApiRequest, res: NextApiResponse) {
                 create: [
                   detailedMap.winners.players,
                   detailedMap.losers.players,
-                ].map((player, i) => ({
-                  status: i === 0 ? "WINNER" : "LOSER",
-                  principalId: player.principal_id,
-                  name: player.name,
-                  weapon: player.weapon,
-                  mainAbilities: player.main_abilities,
-                  subAbilities: player.sub_abilities.flat(),
-                  kills: player.kills,
-                  assists: player.assists,
-                  deaths: player.deaths,
-                  specials: player.specials,
-                  paint: player.paint,
-                  gear: player.gear,
-                })),
+                ].flatMap((players, i) =>
+                  players.map((player) => ({
+                    status: i === 0 ? "WINNER" : "LOSER",
+                    principalId: player.principal_id,
+                    name: player.name,
+                    weapon: player.weapon,
+                    mainAbilities: player.main_abilities,
+                    subAbilities: player.sub_abilities.flat(),
+                    kills: player.kills,
+                    assists: player.assists,
+                    deaths: player.deaths,
+                    specials: player.specials,
+                    paint: player.paint,
+                    gear: player.gear,
+                  }))
+                ),
               },
             };
           }),
