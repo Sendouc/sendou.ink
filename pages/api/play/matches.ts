@@ -149,10 +149,10 @@ async function postHandler(req: NextApiRequest, res: NextApiResponse) {
           : new Rating(),
       }));
 
-    const [ratedWinners, ratedLosers] = rate(
+    const [ratedWinners, ratedLosers] = rate([
       winningTeam.map((user) => user.rating),
-      losingTeam.map((user) => user.rating)
-    );
+      losingTeam.map((user) => user.rating),
+    ]);
 
     const updateWinners = ratedWinners.map(({ mu, sigma }, i) =>
       prisma.ladderPlayerTrueSkill.upsert({
