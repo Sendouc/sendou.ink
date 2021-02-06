@@ -2,6 +2,7 @@ import { detailedMapSchema } from "lib/validators/detailedMap";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "prisma/client";
 import { rate, Rating } from "ts-trueskill";
+import * as z from "zod";
 
 const matchesHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method) {
@@ -171,6 +172,9 @@ async function postHandler(req: NextApiRequest, res: NextApiResponse) {
     // await prisma.$transaction([updateLadderMatch, ...updateWinners, ...updateLosers] as any);
     res.status(200).end();
   } catch (e) {
+    if (e instanceof z.ZodError) {
+      return res.status(400).json(JSON.stringify(e.errors, null, 2));
+    }
     res.status(400).json({ message: e.message });
   }
 }
