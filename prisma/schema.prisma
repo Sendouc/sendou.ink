@@ -114,7 +114,6 @@ model Player {
   placements       XRankPlacement[]
   user             User?               @relation(fields: [userId], references: [id])
   leaguePlacements LeagueSquadMember[]
-  detailedMapInfos DetailedMapPlayer[]
 
   @@index([principalId])
 }
@@ -324,7 +323,7 @@ enum WinnerLoser {
 model DetailedMapPlayer {
   detailedMapId Int
   status        WinnerLoser
-  uniqueId      String
+  principalId   String
   name          String
   weapon        String
   mainAbilities Ability[]
@@ -335,8 +334,7 @@ model DetailedMapPlayer {
   specials      Int
   paint         Int
   gear          String[]
-  player        Player      @relation(fields: [uniqueId], references: [switchAccountId])
   detailedMap   DetailedMap @relation(fields: [detailedMapId], references: [id])
 
-  @@unique([detailedMapId, uniqueId])
+  @@unique([detailedMapId, principalId])
 }
