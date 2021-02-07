@@ -29,7 +29,7 @@ const CreateNewTeamModal = () => {
 
   const getError = () => {
     if (name.length < 2 || name.length > 32) {
-      return t`Team name needs to between 2 and 32 characters long.`;
+      return t`Team name needs to be between 2 and 32 characters long.`;
     }
 
     if (/[^a-z0-9 ]/i.test(name) || name === "join") {
