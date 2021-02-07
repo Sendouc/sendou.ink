@@ -27,7 +27,10 @@ const connectHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (!user) {
     return res
       .status(400)
-      .json({ message: "Please log-in to sendou.ink first" });
+      .json({
+        message:
+          "Please log-in to sendou.ink first. After logging in use the !sendoulink command.",
+      });
   }
 
   if (user.player) {
@@ -45,12 +48,10 @@ const connectHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   ]);
 
   if (players.length === 0) {
-    return res
-      .status(400)
-      .json({
-        message:
-          "No players found. Have you reached Top 500 in X Rank or have league results over 2200?",
-      });
+    return res.status(400).json({
+      message:
+        "No players found. Have you reached Top 500 in X Rank or have league results over 2200?",
+    });
   }
 
   if (players.some((player) => player.user)) {
