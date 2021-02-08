@@ -1,6 +1,7 @@
-import { HStack, Radio, RadioGroup } from "@chakra-ui/react";
+import { Box, HStack, Radio, RadioGroup } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import Breadcrumbs from "components/common/Breadcrumbs";
+import MyLink from "components/common/MyLink";
 import QuadTable from "components/player/QuadTable";
 import TwinTable from "components/player/TwinTable";
 import XRankTable from "components/player/XRankTable";
@@ -35,6 +36,14 @@ const PlayerPage = (props: Props) => {
           { name: getPlayerName() },
         ]}
       />
+
+      {player.user?.discordId && (
+        <Box>
+          <MyLink href={`/u/${player.user.discordId}`}>
+            <Trans>User page</Trans>
+          </MyLink>
+        </Box>
+      )}
 
       <RadioGroup
         onChange={(value) => {

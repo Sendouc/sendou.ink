@@ -93,6 +93,11 @@ export const getPlayerWithPlacements = async (switchAccountId: string) => {
             },
           },
         },
+        user: {
+          select: {
+            discordId: true,
+          },
+        },
         placements: true,
       },
     });
