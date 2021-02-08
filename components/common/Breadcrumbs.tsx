@@ -22,7 +22,6 @@ const Breadcrumbs: React.FC<Props> = ({ pages }) => {
     <>
       <MyHead title={pages[pages.length - 1].name} />
       <Breadcrumb
-        mt={2}
         mb={8}
         fontWeight="bold"
         separator={

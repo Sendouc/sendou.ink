@@ -128,10 +128,10 @@ const IconNavBar = () => {
     <Flex
       as="nav"
       bg={secondaryBgColor}
-      py={2}
       justifyContent="center"
       flexWrap="wrap"
-      boxShadow="md"
+      boxShadow="lg"
+      rounded="md"
     >
       {navIcons.map(({ displayName, code, menuItems }) => {
         if (!menuItems.length) {

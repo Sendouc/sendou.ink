@@ -110,7 +110,12 @@ const TeamManagementModal: React.FC<Props> = ({ team }) => {
 
   return (
     <>
-      <Button leftIcon={<FiUsers />} onClick={() => setIsOpen(true)} size="sm">
+      <Button
+        leftIcon={<FiUsers />}
+        onClick={() => setIsOpen(true)}
+        size="sm"
+        variant="outline"
+      >
         <Trans>Manage team</Trans>
       </Button>
       {isOpen && (

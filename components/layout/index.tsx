@@ -1,6 +1,7 @@
 import { Flex, useToast } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import MyContainer from "components/common/MyContainer";
+import { useMyTheme } from "hooks/common";
 import { useState } from "react";
 import { SWRConfig } from "swr";
 import Banner from "./Banner";
@@ -10,9 +11,18 @@ import TopNav from "./TopNav";
 
 const DATE_KEYS = ["createdAt", "updatedAt"];
 
+const WIDE = ["analyzer", "plans", "builds", "u/"];
+
 const Layout = ({ children }: { children: React.ReactNode }) => {
+  const { secondaryBgColor } = useMyTheme();
   const [errors, setErrors] = useState(new Set<string>());
   const toast = useToast();
+
+  const isWide =
+    window &&
+    WIDE.some((widePage) =>
+      window.location.pathname.startsWith("/" + widePage)
+    );
 
   return (
     <SWRConfig
@@ -42,11 +52,23 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         },
       }}
     >
-      <TopNav />
-      <IconNavBar />
-      <Banner />
-      <Flex flexDirection="column" minH="100vh" pt="1rem">
-        <MyContainer wide>{children}</MyContainer>
+      <MyContainer p={0}>
+        <TopNav />
+        <IconNavBar />
+        <Banner />
+      </MyContainer>
+      <Flex flexDirection="column" minH="100vh" pt={4}>
+        <MyContainer
+          wide={isWide}
+          bg={secondaryBgColor}
+          rounded="md"
+          py={5}
+          px={8}
+          boxShadow="lg"
+          minH="48rem"
+        >
+          {children}
+        </MyContainer>
         <Footer />
       </Flex>
     </SWRConfig>

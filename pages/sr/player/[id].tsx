@@ -4,7 +4,6 @@ import Breadcrumbs from "components/common/Breadcrumbs";
 import LinkButton from "components/common/LinkButton";
 import MyContainer from "components/common/MyContainer";
 import MyLink from "components/common/MyLink";
-import Section from "components/common/Section";
 import SubText from "components/common/SubText";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
@@ -61,7 +60,7 @@ const SalmonRunPlayerPage = (props: Props) => {
                   {/* @ts-ignore */}
                   {salmonRunCategoryToNatural[category]}
                 </Heading>
-                <Wrap spacing={4} mt={4}>
+                <Wrap spacing={8} mt={4}>
                   {salmonRunStages
                     .filter((stage) =>
                       user.salmonRunRecords.some(
@@ -80,7 +79,7 @@ const SalmonRunPlayerPage = (props: Props) => {
                     )
                     .map((record) => (
                       <WrapItem key={record.id}>
-                        <Section>
+                        <Box>
                           <SubText mb={2} mt={2}>
                             {record.rotation.stage}
                           </SubText>
@@ -133,7 +132,7 @@ const SalmonRunPlayerPage = (props: Props) => {
                               <LinkButton link={link} />
                             ))}
                           </Flex>
-                        </Section>
+                        </Box>
                       </WrapItem>
                     ))}
                 </Wrap>

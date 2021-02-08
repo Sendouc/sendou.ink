@@ -11,7 +11,6 @@ import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import ModeSelector from "components/common/ModeSelector";
-import Section from "components/common/Section";
 import SubText from "components/common/SubText";
 import WeaponImage from "components/common/WeaponImage";
 import WeaponLineChart from "components/top500/WeaponLineChart";
@@ -159,7 +158,7 @@ function Tier({
   if (!weapons.length) return null;
 
   return (
-    <Section key={tier.criteria} display="flex" my={4}>
+    <Flex key={tier.criteria} my={4}>
       <Flex
         flexDir="column"
         w="80px"
@@ -209,7 +208,7 @@ function Tier({
           </Popover>
         ))}
       </Flex>
-    </Section>
+    </Flex>
   );
 }
 

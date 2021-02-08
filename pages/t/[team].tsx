@@ -196,13 +196,14 @@ const TeamPage: React.FC<Props> = (props) => {
         </Popover>
       )}
       {user?.id === team.captainId && (
-        <Center my={4}>
+        <Center mt={6} mb={8}>
           <Stack direction={["column", "row"]} spacing={4}>
             <TeamManagementModal team={team} />
             <Button
               leftIcon={<FiEdit />}
               onClick={() => setProfileModalIsOpen(true)}
               size="sm"
+              variant="outline"
             >
               <Trans>Edit team profile</Trans>
             </Button>
