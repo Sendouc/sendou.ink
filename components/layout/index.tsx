@@ -65,7 +65,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           py={5}
           px={8}
           boxShadow="lg"
-          minH="48rem"
+          minH="24rem"
         >
           {children}
         </MyContainer>

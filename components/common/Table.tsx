@@ -30,12 +30,12 @@ export function TableHead(props: BoxProps) {
  * HTML element.
  */
 export function TableRow(props: BoxProps) {
-  const { secondaryBgColor } = useMyTheme();
+  const { bgColor } = useMyTheme();
   return (
     <Box
       as="tr"
       {...props}
-      _even={{ backgroundColor: secondaryBgColor }}
+      _even={{ backgroundColor: bgColor }}
       borderRadius="5px"
     />
   );

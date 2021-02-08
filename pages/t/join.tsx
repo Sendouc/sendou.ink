@@ -1,6 +1,5 @@
 import { t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import MyContainer from "components/common/MyContainer";
 import { sendData } from "lib/postData";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -37,7 +36,7 @@ const JoinTeamPage = ({}) => {
     joinTeam();
   }, []);
 
-  return <MyContainer>{i18n._(statusMessage[joiningStatus])}</MyContainer>;
+  return <>{i18n._(statusMessage[joiningStatus])}</>;
 };
 
 export default JoinTeamPage;

@@ -8,7 +8,6 @@ import {
 import { t } from "@lingui/macro";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import Markdown from "components/common/Markdown";
-import MyContainer from "components/common/MyContainer";
 import SubText from "components/common/SubText";
 import fs from "fs";
 import { GetStaticPaths, GetStaticProps } from "next";
@@ -23,7 +22,7 @@ interface Props {
 
 const SalmonRunGuidePage: React.FC<Props> = ({ text, sections, level }) => {
   return (
-    <MyContainer>
+    <>
       <Breadcrumbs
         pages={[
           { name: t`Salmon Run` },
@@ -48,7 +47,7 @@ const SalmonRunGuidePage: React.FC<Props> = ({ text, sections, level }) => {
       </OrderedList>
       <Divider my={8} />
       <Markdown value={text} allowAll />
-    </MyContainer>
+    </>
   );
 };
 

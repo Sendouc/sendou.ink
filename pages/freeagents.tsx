@@ -19,7 +19,6 @@ import { t, Trans } from "@lingui/macro";
 import { Playstyle } from "@prisma/client";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import Markdown from "components/common/Markdown";
-import MyContainer from "components/common/MyContainer";
 import MyLink from "components/common/MyLink";
 import SubText from "components/common/SubText";
 import SubTextCollapse from "components/common/SubTextCollapse";
@@ -88,7 +87,7 @@ const FreeAgentsPage = () => {
   };
 
   return (
-    <MyContainer>
+    <>
       {modalIsOpen && (
         <FAModal post={usersPost} onClose={() => setModalIsOpen(false)} />
       )}
@@ -175,9 +174,7 @@ const FreeAgentsPage = () => {
           matchedPosts={matchedPosts}
           focusOnMatch={(id) => setPostIdToScrollTo(id)}
         />
-      ) : (
-        <Box height="6.5rem" />
-      )}
+      ) : null}
       {postsData.map((post) => (
         <FreeAgentCard
           key={post.id}
@@ -189,7 +186,7 @@ const FreeAgentsPage = () => {
           postRef={post.id === getIdToScrollTo() ? postRef : undefined}
         />
       ))}
-    </MyContainer>
+    </>
   );
 
   function getIdToScrollTo() {

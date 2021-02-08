@@ -2,7 +2,6 @@ import { Box, Flex, Heading, Wrap, WrapItem } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import LinkButton from "components/common/LinkButton";
-import MyContainer from "components/common/MyContainer";
 import MyLink from "components/common/MyLink";
 import SubText from "components/common/SubText";
 import UserAvatar from "components/common/UserAvatar";
@@ -26,7 +25,7 @@ const SalmonRunPlayerPage = (props: Props) => {
   const user = props.user!;
 
   return (
-    <MyContainer>
+    <>
       <Breadcrumbs
         pages={[
           { name: t`Salmon Run` },
@@ -140,7 +139,7 @@ const SalmonRunPlayerPage = (props: Props) => {
             );
           })}
       </Box>
-    </MyContainer>
+    </>
   );
 };
 

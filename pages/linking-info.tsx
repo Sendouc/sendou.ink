@@ -1,5 +1,4 @@
 import { Heading } from "@chakra-ui/react";
-import MyContainer from "components/common/MyContainer";
 import MyLink from "components/common/MyLink";
 import Head from "next/head";
 
@@ -9,7 +8,7 @@ const LinkingInfoPage = ({}) => {
       <Head>
         <title>How to link placements | sendou.ink</title>
       </Head>
-      <MyContainer>
+      <>
         <Heading fontFamily="'Rubik', sans-serif" as="h1">
           How to link
         </Heading>
@@ -25,7 +24,7 @@ const LinkingInfoPage = ({}) => {
         Simply DM the bot with <code>!register</code> command and follow
         instructions. If you have problems using Lanista you can DM{" "}
         <b>Lean#3146</b> directly.
-      </MyContainer>
+      </>
     </>
   );
 };

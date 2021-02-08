@@ -2,7 +2,6 @@ import { Box, Center, Flex, Grid, Heading } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import ModeImage from "components/common/ModeImage";
-import MyContainer from "components/common/MyContainer";
 import SubText from "components/common/SubText";
 import LadderTeam from "components/play/LadderTeam";
 import MatchUp from "components/play/MatchUp";
@@ -26,7 +25,7 @@ const PlayPage: React.FC<Props> = ({ ladderDay }) => {
   const { data } = useLadderTeams(!ladderDay);
 
   return (
-    <MyContainer>
+    <>
       <Breadcrumbs pages={[{ name: t`Play` }]} />
       {!ladderDay?.matches.length && (
         <Box fontSize="lg" fontWeight="bold">
@@ -99,7 +98,7 @@ const PlayPage: React.FC<Props> = ({ ladderDay }) => {
           ))}
         </>
       )}
-    </MyContainer>
+    </>
   );
 };
 

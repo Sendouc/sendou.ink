@@ -24,7 +24,6 @@ import { useLingui } from "@lingui/react";
 import { RankedMode } from "@prisma/client";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import ModeImage from "components/common/ModeImage";
-import MyContainer from "components/common/MyContainer";
 import SubText from "components/common/SubText";
 import { stages } from "lib/lists/stages";
 import { setManySearchParams } from "lib/setSearchParams";
@@ -175,7 +174,7 @@ const MapsGeneratorPage = () => {
   };
 
   return (
-    <MyContainer>
+    <>
       <Breadcrumbs pages={[{ name: t`Maplist Generator` }]} />
       {editing ? (
         <>
@@ -390,7 +389,7 @@ const MapsGeneratorPage = () => {
           </Button>
         </>
       )}
-    </MyContainer>
+    </>
   );
 };
 

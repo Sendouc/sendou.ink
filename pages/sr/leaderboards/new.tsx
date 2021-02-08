@@ -17,7 +17,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import Breadcrumbs from "components/common/Breadcrumbs";
-import MyContainer from "components/common/MyContainer";
 import UserSelector from "components/common/UserSelector";
 import RotationSelector from "components/sr/RotationSelector";
 import { useUser } from "hooks/common";
@@ -83,7 +82,7 @@ const AddRecordModal = () => {
   };
 
   return (
-    <MyContainer>
+    <>
       <Breadcrumbs
         pages={[
           { name: t`Salmon Run` },
@@ -214,7 +213,7 @@ const AddRecordModal = () => {
           </>
         )}
       </form>
-    </MyContainer>
+    </>
   );
 };
 

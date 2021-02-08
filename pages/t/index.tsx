@@ -13,7 +13,6 @@ import { t, Trans } from "@lingui/macro";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import ChakraSelect from "components/common/ChakraSelect";
 import Markdown from "components/common/Markdown";
-import MyContainer from "components/common/MyContainer";
 import MyLink from "components/common/MyLink";
 import SubText from "components/common/SubText";
 import SubTextCollapse from "components/common/SubTextCollapse";
@@ -43,7 +42,7 @@ const TeamsPage: React.FC<Props> = ({ teams }) => {
   );
 
   return (
-    <MyContainer>
+    <>
       <Breadcrumbs pages={[{ name: t`Teams` }]} />
       {!isInTeam && <CreateNewTeamModal />}
       {teams.length > 0 && (
@@ -162,7 +161,7 @@ const TeamsPage: React.FC<Props> = ({ teams }) => {
             {i + 1 !== arr.length && <Divider my={6} />}
           </Box>
         ))}
-    </MyContainer>
+    </>
   );
 };
 

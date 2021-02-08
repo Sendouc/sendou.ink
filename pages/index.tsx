@@ -1,6 +1,5 @@
 import { Box, Flex, Heading, useColorMode } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
-import MyContainer from "components/common/MyContainer";
 import MyLink from "components/common/MyLink";
 import { useMyTheme } from "hooks/common";
 import Image from "next/image";
@@ -34,7 +33,7 @@ const Home = () => {
           <Trans>Competitive Splatoon Hub</Trans>
         </Box>
       </Box>
-      <MyContainer>
+      <>
         <PageInfoSection location="xsearch" title={t`Top 500 Browser`}>
           <Trans>
             Conveniently browse Top 500 results. There are also tier lists to
@@ -79,7 +78,7 @@ const Home = () => {
             together.
           </Trans>
         </PageInfoSection>
-      </MyContainer>
+      </>
       <Box textAlign="center" mt={24} fontSize="sm" color={gray}>
         <Trans>
           All art by{" "}
