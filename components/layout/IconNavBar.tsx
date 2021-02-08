@@ -76,7 +76,7 @@ export const navIcons: {
     menuItems: [],
   },
   { code: "analyzer", displayName: t`Build Analyzer`, menuItems: [] },
-  { code: "calendar", displayName: t`Calendar`, menuItems: [] },
+  // { code: "calendar", displayName: t`Calendar`, menuItems: [] },
   { code: "u", displayName: t`User Search`, menuItems: [] },
   { code: "freeagents", displayName: t`Free Agents`, menuItems: [] },
   { code: "t", displayName: t`Teams`, menuItems: [] },
@@ -94,21 +94,21 @@ export const navIcons: {
       },
     ],
   },
-  { code: "tournaments", displayName: t`Tournaments`, menuItems: [] },
-  {
-    code: "plus",
-    displayName: t`Plus Server`,
-    menuItems: [
-      {
-        code: "plus/voting",
-        displayName: t`Voting`,
-      },
-      { code: "plus", displayName: t`Suggested and vouched players` },
-      { code: "plus/history", displayName: t`Voting history` },
-      { code: "draft", displayName: t`Draft Cup` },
-      { code: "plus/faq", displayName: t`FAQ` },
-    ],
-  },
+  // { code: "tournaments", displayName: t`Tournaments`, menuItems: [] },
+  // {
+  //   code: "plus",
+  //   displayName: t`Plus Server`,
+  //   menuItems: [
+  //     {
+  //       code: "plus/voting",
+  //       displayName: t`Voting`,
+  //     },
+  //     { code: "plus", displayName: t`Suggested and vouched players` },
+  //     { code: "plus/history", displayName: t`Voting history` },
+  //     { code: "draft", displayName: t`Draft Cup` },
+  //     { code: "plus/faq", displayName: t`FAQ` },
+  //   ],
+  // },
   { code: "links", displayName: t`External links`, menuItems: [] },
 ];
 

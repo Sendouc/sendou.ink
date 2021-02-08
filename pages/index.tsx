@@ -64,9 +64,6 @@ const Home = () => {
             pages.
           </Trans>
         </PageInfoSection>
-        <PageInfoSection location="calendar" title={t`Calendar`}>
-          <Trans>All the events happening in the community in one place.</Trans>
-        </PageInfoSection>
         <PageInfoSection location="freeagents" title={t`Free Agents`}>
           <Trans>Find your next teammates.</Trans>
         </PageInfoSection>
@@ -75,17 +72,6 @@ const Home = () => {
         </PageInfoSection>
         <PageInfoSection location="plans" title={t`Map Planner`}>
           <Trans>Make your battle plans by drawing on over 100 maps.</Trans>
-        </PageInfoSection>
-        <PageInfoSection location="tournaments" title={t`Tournaments`}>
-          <Trans>
-            Data on tournaments spanning over years gathered by ganbawoomy.
-          </Trans>
-        </PageInfoSection>
-        <PageInfoSection location="plus" title={t`Plus Server`}>
-          <Trans>
-            Information related to +1 and +2. Voting results, suggested players
-            and FAQ.
-          </Trans>
         </PageInfoSection>
         <PageInfoSection location="links" title={t`External links`}>
           <Trans>
