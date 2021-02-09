@@ -63,7 +63,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           bg={secondaryBgColor}
           rounded="md"
           py={5}
-          px={8}
+          px={7}
           boxShadow="lg"
           minH="24rem"
         >
