@@ -38,7 +38,7 @@ const HeadOnlyToggle: React.FC<HeadOnlyToggleProps> = ({
       </Box>
       {active && ability === "OG" && (
         <Box color={themeColorShade} fontWeight="bold">
-          +15{t`AP`}{" "}
+          +30{t`AP`}{" "}
           {["SSU", "RSU", "RES"].map((ability) => (
             <Box as="span" mx="0.2em" key={ability}>
               <AbilityIcon ability={ability as any} size="SUBTINY" />

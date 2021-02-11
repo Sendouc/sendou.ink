@@ -80,7 +80,7 @@ function buildToAP(
         for (const ability of ["SSU", "RSU", "RES"]) {
           const a = ability as Ability;
           const existing = AP[a] ?? 0;
-          AP[a] = existing + 15;
+          AP[a] = existing + 30;
         }
       }
       if (ability === "CB" && bonusAp["CB"]) {
