@@ -210,6 +210,16 @@ const About = () => {
             </Link>{" "}
             - <Trans>translation</Trans> (한국어)
           </li>
+          <li>
+            <Link
+              isExternal
+              color={themeColorShade}
+              href="https://twitter.com/Shachar700"
+            >
+              Shahar
+            </Link>{" "}
+            - <Trans>translation</Trans> (עִבְרִית)
+          </li>
         </ul>
       </div>
     </>

@@ -11,8 +11,8 @@
     "gen": "npx prisma generate",
     "mongo": "ts-node prisma/scripts/dataFromMongo.ts",
     "top500": "ts-node prisma/scripts/top500jsons.ts",
-    "league": "NODE_OPTIONS=--max-old-space-size=8192 ts-node prisma/scripts/leagueJsons.ts",
-    "ex:clean": "NODE_ENV=development lingui extract --clean",
+    "league": "cross-env NODE_OPTIONS=--max-old-space-size=8192 ts-node prisma/scripts/leagueJsons.ts",
+    "ex:clean": "cross-env NODE_ENV=development lingui extract --clean",
     "compile": "lingui compile"
   },
   "dependencies": {
@@ -62,6 +62,7 @@
     "@types/react-select": "^4.0.13",
     "@types/recharts": "^1.8.19",
     "@types/uuid": "^8.3.0",
+    "cross-env": "^7.0.3",
     "prettier": "^2.2.1",
     "prisma": "^2.16.1",
     "ts-node": "^9.1.1",
