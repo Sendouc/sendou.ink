@@ -28,7 +28,7 @@
     "countries-list": "^2.6.1",
     "framer-motion": "^3.3.0",
     "next": "^10.0.6",
-    "next-auth": "^3.2.1",
+    "next-auth": "^3.3.0",
     "next-google-fonts": "^1.2.1",
     "next-images": "^1.7.0",
     "next-seo": "^4.19.0",
