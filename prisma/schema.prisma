@@ -10,24 +10,32 @@ generator client {
 }
 
 model User {
-  id               Int                    @id @default(autoincrement())
-  username         String
-  discriminator    String
-  discordId        String                 @unique
-  discordAvatar    String?
-  teamId           Int?
-  ladderTeamId     Int?
-  profile          Profile?
-  player           Player?
-  builds           Build[]
-  submittedRecords SalmonRunRecord[]
-  salmonRunRecords SalmonRunRecord[]      @relation("SalmonRunRecordRoster")
-  freeAgentPost    FreeAgentPost?
-  team             Team?                  @relation(fields: [teamId], references: [id])
-  captainedTeam    Team?                  @relation("TeamCaptain")
-  trueSkill        LadderPlayerTrueSkill?
-  ladderTeam       LadderRegisteredTeam?  @relation(fields: [ladderTeamId], references: [id])
-  ladderMatches    LadderMatchPlayer[]
+  id                      Int                    @id @default(autoincrement())
+  username                String
+  discriminator           String
+  discordId               String                 @unique
+  discordAvatar           String?
+  teamId                  Int?
+  ladderTeamId            Int?
+  patreonTier             Int?
+  profile                 Profile?
+  player                  Player?
+  builds                  Build[]
+  submittedRecords        SalmonRunRecord[]
+  salmonRunRecords        SalmonRunRecord[]      @relation("SalmonRunRecordRoster")
+  freeAgentPost           FreeAgentPost?
+  team                    Team?                  @relation(fields: [teamId], references: [id])
+  captainedTeam           Team?                  @relation("TeamCaptain")
+  trueSkill               LadderPlayerTrueSkill?
+  ladderTeam              LadderRegisteredTeam?  @relation(fields: [ladderTeamId], references: [id])
+  ladderMatches           LadderMatchPlayer[]
+  plusStatus              PlusStatus?
+  vouched                 PlusStatus?            @relation("Voucher")
+  plusSuggestionsMade     PlusSuggestion[]
+  plusSuggestionsReceived PlusSuggestion[]       @relation("Suggester")
+  votesMade               PlusBallot[]
+  votesReceived           PlusBallot[]           @relation("Voter")
+  votingSummaries         PlusVotingSummary[]
 }
 
 model Profile {
@@ -337,4 +345,63 @@ model DetailedMapPlayer {
   detailedMap   DetailedMap @relation(fields: [detailedMapId], references: [id])
 
   @@unique([detailedMapId, principalId])
+}
+
+enum PlusRegion {
+  EU
+  NA
+}
+
+model PlusStatus {
+  userId             Int        @unique
+  voucherId          Int?       @unique
+  membershipTier     Int?
+  vouchTier          Int?
+  canVouchFor        Int?
+  canVouchAgainAfter DateTime?
+  region             PlusRegion
+  nameForVoting      String?
+  user               User       @relation(fields: [userId], references: [id])
+  voucher            User?      @relation("Voucher", fields: [voucherId], references: [id])
+}
+
+model PlusSuggestion {
+  suggestedId    Int
+  suggesterId    Int
+  region         PlusRegion
+  tier           Int
+  description    String
+  isResuggestion Boolean    @default(false)
+  createdAt      DateTime   @default(now())
+  suggestedUser  User       @relation(fields: [suggestedId], references: [id])
+  suggesterUser  User       @relation("Suggester", fields: [suggesterId], references: [id])
+
+  @@unique([tier, suggestedId, suggesterId])
+}
+
+model PlusBallot {
+  votedId   Int
+  voterId   Int
+  score     Int
+  tier      Int
+  isStale   Boolean @default(false)
+  votedUser User    @relation(fields: [votedId], references: [id])
+  voterUser User    @relation("Voter", fields: [voterId], references: [id])
+
+  @@unique([votedId, voterId])
+}
+
+model PlusVotingSummary {
+  userId       Int
+  tier         Int
+  month        Int
+  year         Int
+  wasVouched   Boolean
+  wasSuggested Boolean
+  scoreTotal   Float
+  countsEU     Int[]
+  countsNA     Int[]
+  user         User    @relation(fields: [userId], references: [id])
+
+  @@unique([userId, tier, month, year])
 }
