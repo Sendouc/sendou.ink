@@ -23,6 +23,14 @@ type Action =
 export type XTrendsDispatch = Dispatch<Action>;
 
 export function useXTrends(trends: GetXTrendsData) {
+  const getLatestYear = () =>
+    parseInt(Object.keys(trends).sort((a, b) => parseInt(b) - parseInt(a))[0]);
+  const getLatestMonth = () =>
+    parseInt(
+      Object.keys(trends[getLatestYear()]).sort(
+        (a, b) => parseInt(b) - parseInt(a)
+      )[0]
+    );
   const [state, dispatch] = useReducer(
     (oldState: XTrendsState, action: Action) => {
       switch (action.type) {
@@ -35,8 +43,8 @@ export function useXTrends(trends: GetXTrendsData) {
       }
     },
     {
-      month: 11,
-      year: 2020,
+      year: getLatestYear(),
+      month: getLatestMonth(),
       mode: "SZ",
     }
   );
