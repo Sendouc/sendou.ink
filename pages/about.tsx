@@ -218,7 +218,7 @@ const About = () => {
             >
               Shahar
             </Link>{" "}
-            - <Trans>translation</Trans> (עִבְרִית)
+            - <Trans>translation</Trans> (עברית)
           </li>
         </ul>
       </div>
