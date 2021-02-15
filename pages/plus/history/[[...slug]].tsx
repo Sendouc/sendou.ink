@@ -32,8 +32,6 @@ export const getStaticProps: GetStaticProps<PlusVotingHistoryPageProps> = async 
     month,
   });
 
-  console.log({ summaries });
-
   if (!summaries.length) return { notFound: true };
 
   return {
