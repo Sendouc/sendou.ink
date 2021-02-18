@@ -15,7 +15,8 @@
     "ex:clean": "cross-env NODE_ENV=development lingui extract --clean",
     "compile": "lingui compile",
     "restore": "pg_restore -d 'postgresql://sendou@localhost:5432/postgres' --jobs 4 dumped.sql --clean",
-    "seed": "prisma db seed --preview-feature"
+    "seed": "prisma db seed --preview-feature",
+    "cy:open": "cypress open"
   },
   "dependencies": {
     "@chakra-ui/icons": "^1.0.5",
@@ -66,6 +67,7 @@
     "@types/recharts": "^1.8.19",
     "@types/uuid": "^8.3.0",
     "cross-env": "^7.0.3",
+    "cypress": "^6.4.0",
     "prettier": "^2.2.1",
     "prisma": "^2.16.1",
     "ts-node": "^9.1.1",

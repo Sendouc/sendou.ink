@@ -6,7 +6,7 @@ export const getPlusStatusesData = (): Prisma.PlusStatusCreateManyInput[] => {
       userId: 1,
       region: "EU",
       membershipTier: 1,
-      canVouchAgainAfter: new Date("2020-1-1"),
+      canVouchAgainAfter: new Date(Date.UTC(2020, 1, 1)),
     },
     {
       userId: 2,

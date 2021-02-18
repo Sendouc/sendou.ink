@@ -20,12 +20,18 @@ export const getStaticProps: GetStaticProps<PlusVotingHistoryPageProps> = async 
       return slug;
     }
 
+    if (slug.length > 0) {
+      return [];
+    }
+
     const mostRecent = await plusService.getMostRecentVotingWithResultsMonth();
 
     return ["1", mostRecent.year, mostRecent.month];
   };
 
   const [tier, year, month] = (await getSlug()).map((param) => Number(param));
+  if (!tier) return { notFound: true };
+
   const summaries = await plusService.getVotingSummariesByMonthAndTier({
     tier: tier as any,
     year,
