@@ -95,20 +95,20 @@ export const navIcons: {
     ],
   },
   // { code: "tournaments", displayName: t`Tournaments`, menuItems: [] },
-  // {
-  //   code: "plus",
-  //   displayName: t`Plus Server`,
-  //   menuItems: [
-  //     {
-  //       code: "plus/voting",
-  //       displayName: t`Voting`,
-  //     },
-  //     { code: "plus", displayName: t`Suggested and vouched players` },
-  //     { code: "plus/history", displayName: t`Voting history` },
-  //     { code: "draft", displayName: t`Draft Cup` },
-  //     { code: "plus/faq", displayName: t`FAQ` },
-  //   ],
-  // },
+  {
+    code: "plus",
+    displayName: t`Plus Server`,
+    menuItems: [
+      // {
+      //   code: "plus/voting",
+      //   displayName: t`Voting`,
+      // },
+      // { code: "plus", displayName: t`Suggested and vouched players` },
+      { code: "plus/history", displayName: t`Voting history` },
+      // { code: "draft", displayName: t`Draft Cup` },
+      // { code: "plus/faq", displayName: t`FAQ` },
+    ],
+  },
   { code: "links", displayName: t`External links`, menuItems: [] },
 ];
 
