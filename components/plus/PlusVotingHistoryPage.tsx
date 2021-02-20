@@ -11,7 +11,7 @@ import {
 } from "components/common/Table";
 import UserAvatar from "components/common/UserAvatar";
 import { FiCheck } from "react-icons/fi";
-import { formatUsername } from "utils/strings";
+import { getFullUsername } from "lib/strings";
 import { GetVotingSummariesByMonthAndTierData } from "../../services/plusService";
 
 export interface PlusVotingHistoryPageProps {
@@ -62,7 +62,7 @@ const PlusVotingHistoryPage: React.FC<PlusVotingHistoryPageProps> = ({
                 <TableCell>
                   <UserAvatar user={summary.user} />
                 </TableCell>
-                <TableCell>{formatUsername(summary.user)}</TableCell>
+                <TableCell>{getFullUsername(summary.user)}</TableCell>
                 <TableCell
                   color={summary.percentage >= 50 ? "green.500" : "red.500"}
                 >

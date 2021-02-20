@@ -1,7 +1,7 @@
 import { PlusRegion, Prisma } from "@prisma/client";
 import prisma from "prisma/client";
-import { getPercentageFromCounts } from "utils/plus";
-import { userBasicSelection } from "utils/prisma";
+import { getPercentageFromCounts } from "lib/plus";
+import { userBasicSelection } from "lib/prisma";
 
 export type GetVotingSummariesByMonthAndTierData = Prisma.PromiseReturnType<
   typeof getVotingSummariesByMonthAndTier
