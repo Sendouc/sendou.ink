@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import prisma from "../client";
 import summaries from "./mongo/summarypeople.json";
+import usersMongo from "./mongo/users.json";
 
 const discordIdToUserId = new Map<string, number>();
 
@@ -29,7 +30,42 @@ const main = async () => {
     });
   });
 
+  const plusStatusToInsert: Prisma.PlusStatusCreateManyInput[] = [];
+
+  const tierToInt = (tier: any) => {
+    if (tier === "ONE") return 1;
+    if (tier === "TWO") return 2;
+
+    return undefined;
+  };
+
+  usersMongo.forEach((user) => {
+    if (!user.plus || !user.plus.plus_region) {
+      return;
+    }
+    if (!discordIdToUserId.get(user.discord_id)) {
+      console.log("wtf");
+      return;
+    }
+    plusStatusToInsert.push({
+      // @ts-ignore
+      userId: discordIdToUserId.get(user.discord_id),
+      region: user.plus.plus_region,
+      canVouchAgainAfter: user.plus.can_vouch_again_after
+        ? new Date(user.plus.can_vouch_again_after["$date"])
+        : null,
+      canVouchFor: tierToInt(user.plus.can_vouch),
+      membershipTier: tierToInt(user.plus.membership_status),
+      vouchTier: tierToInt(user.plus.vouch_status),
+      voucherId: discordIdToUserId.get(user.plus.voucher_discord_id),
+    });
+  });
+
+  console.log({ plusStatusToInsert });
+
+  await prisma.plusStatus.deleteMany({});
   await prisma.plusVotingSummary.deleteMany({});
+  await prisma.plusStatus.createMany({ data: plusStatusToInsert });
   await prisma.plusVotingSummary.createMany({ data: summariesToInsert });
   console.log("done");
 };
