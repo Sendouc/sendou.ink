@@ -15,7 +15,7 @@
   "Show ability points": "הראה ניקוד יכולות",
   "Show in Build Analyzer": "הראה בתוך מנתח ערכה",
   "Edit build": "ערוך ערכה",
-  "{otherBuildCount, plural, one {Show # more build by {username}} other {Show # more builds by {username}}}": "{otherBuildCount, plural, one {{username} הראה עוד # ערכות של} other {{username}} הראה עוד # ערכות של}}",
+  "{otherBuildCount, plural, one {Show # more build by {username}} other {Show # more builds by {username}}}": "{otherBuildCount, plural, one {{username} הראה עוד # ערכות של} other {{username} הראה עוד # ערכות של}}",
   "Included": "כולל",
   "Min AP": "מינימום נ.י ",
   "Excluded": "לא כולל",
