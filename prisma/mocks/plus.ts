@@ -49,6 +49,10 @@ export const getPlusStatusesData = (): Prisma.PlusStatusCreateManyInput[] => {
       region: "EU",
       membershipTier: 2,
     },
+    {
+      userId: 10,
+      region: "NA",
+    },
   ];
 };
 
@@ -85,8 +89,8 @@ export const getPlusVotingSummaryData = (): Prisma.PlusVotingSummaryCreateManyIn
       wasSuggested: false,
       wasVouched: false,
       year: 2020,
-      countsEU: [3, 0, 0, 0],
-      countsNA: [0, 2, 0, 0],
+      countsEU: [0, 3, 0, 0],
+      countsNA: [2, 0, 0, 0],
     },
     {
       userId: 3,
@@ -107,8 +111,8 @@ export const getPlusVotingSummaryData = (): Prisma.PlusVotingSummaryCreateManyIn
       wasSuggested: false,
       wasVouched: false,
       year: 2020,
-      countsEU: [1, 0, 1, 1],
-      countsNA: [0, 2, 0, 0],
+      countsEU: [0, 1, 2, 0],
+      countsNA: [2, 0, 0, 0],
     },
     {
       userId: 5,
@@ -129,8 +133,8 @@ export const getPlusVotingSummaryData = (): Prisma.PlusVotingSummaryCreateManyIn
       wasSuggested: false,
       wasVouched: true,
       year: 2020,
-      countsEU: [3, 0, 0, 0],
-      countsNA: [0, 2, 0, 0],
+      countsEU: [0, 3, 0, 0],
+      countsNA: [2, 0, 0, 0],
     },
     {
       userId: 7,
@@ -152,8 +156,8 @@ export const getPlusVotingSummaryData = (): Prisma.PlusVotingSummaryCreateManyIn
       wasSuggested: false,
       wasVouched: false,
       year: 2020,
-      countsEU: [0, 0, 0, 2],
-      countsNA: [0, 0, 2, 0],
+      countsEU: [0, 0, 2, 0],
+      countsNA: [0, 0, 0, 2],
     },
 
     {
@@ -197,8 +201,8 @@ export const getPlusVotingSummaryData = (): Prisma.PlusVotingSummaryCreateManyIn
       wasSuggested: true,
       wasVouched: false,
       year: 2020,
-      countsEU: [0, 0, 0, 2],
-      countsNA: [0, 0, 2, 0],
+      countsEU: [0, 0, 2, 0],
+      countsNA: [0, 0, 0, 2],
     },
   ];
 };

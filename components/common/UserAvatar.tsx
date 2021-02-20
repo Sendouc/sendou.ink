@@ -11,15 +11,16 @@ const UserAvatar: React.FC<Props & AvatarProps> = ({
   user,
   isSmall,
   ...props
-}) => (
-  <Avatar
-    name={user.username}
-    src={`https://cdn.discordapp.com/avatars/${user.discordId}/${
-      user.discordAvatar
-    }.jpg${isSmall ? "?size=40" : ""}`}
-    size={isSmall ? "sm" : undefined}
-    {...props}
-  />
-);
+}) =>
+  user.discordAvatar ? (
+    <Avatar
+      name={user.username}
+      src={`https://cdn.discordapp.com/avatars/${user.discordId}/${
+        user.discordAvatar
+      }.jpg${isSmall ? "?size=40" : ""}`}
+      size={isSmall ? "sm" : undefined}
+      {...props}
+    />
+  ) : null;
 
 export default UserAvatar;

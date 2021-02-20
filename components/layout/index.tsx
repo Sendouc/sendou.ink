@@ -11,7 +11,14 @@ import TopNav from "./TopNav";
 
 const DATE_KEYS = ["createdAt", "updatedAt"];
 
-const WIDE = ["analyzer", "plans", "builds", "u/", "sr/leaderboards"];
+const WIDE = [
+  "analyzer",
+  "plans",
+  "builds",
+  "u/",
+  "sr/leaderboards",
+  "plus/history",
+];
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const { secondaryBgColor } = useMyTheme();

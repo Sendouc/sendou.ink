@@ -12,4 +12,8 @@ context("Actions", () => {
     cy.visit("/plus/history/1/2000/1", { failOnStatusCode: false });
     cy.contains("Not Found");
   });
+
+  it("correctly calculates voting percentage", () => {
+    getPercentageFromCounts;
+  });
 });
