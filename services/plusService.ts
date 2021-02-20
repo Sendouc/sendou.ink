@@ -42,18 +42,19 @@ const getVotingSummariesByMonthAndTier = async ({
       // they received -2 or +2 from the opposite region. Sometimes user can still have wrong
       // region after this func has ran but this is ok.
       const fixUserRegionIfNeeded = () => {
+        const region = summary.user.plusStatus?.region ?? "NA";
         if (
-          summary.user.plusStatus!.region === "NA" &&
+          region === "NA" &&
           (summary.countsEU[0] !== 0 || summary.countsEU[3] !== 0)
         )
           return "EU";
         if (
-          summary.user.plusStatus!.region === "EU" &&
+          region === "EU" &&
           (summary.countsNA[0] !== 0 || summary.countsNA[3] !== 0)
         )
           return "NA";
 
-        return summary.user.plusStatus!.region;
+        return region;
       };
 
       return {
