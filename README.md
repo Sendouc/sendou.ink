@@ -4,6 +4,8 @@ Goal of sendou.ink is to provide useful tools and resources for the Splatoon com
 
 Live version: [https://sendou.ink/](https://sendou.ink/)
 
+Development status on [Trello](https://trello.com/b/z9gCYsPy/sendouink)
+
 ## Technologies used
 
 - React (via Next.JS)
@@ -11,7 +13,9 @@ Live version: [https://sendou.ink/](https://sendou.ink/)
 - Node.js
 - PostgreSQL (via Prisma 2)
 
-## A few highlight features
+## A few of the features
+
+🐙 Choose between light and dark mode
 
 🦑 Planner tool where you can draw on any map in the game to conveniently make up game plans
 
@@ -25,9 +29,13 @@ Live version: [https://sendou.ink/](https://sendou.ink/)
 
 🐙 X Rank Top 500 leaderboards to compare yourself against other players
 
-🦑 Browse through detailed tournament results
+🦑 Form your own team, recruit players and make a profile
 
-🐙 Choose between light and dark mode
+🐙 Build analyzer that reveals way more detailed information about builds than the game does
+
+🦑 Salmon Run leaderboards featuring some of the best records
+
+🐙 The most comprehensive link collection in the community
 
 ## Setting up the project locally
 
@@ -83,8 +91,4 @@ Using other endpoints isn't advised as I change those as I feel to suit the need
 
 ## Contributing
 
-Check out the [list of existing issues I haven't assigned for myself](https://github.com/Sendouc/sendou.ink/issues?q=is%3Aopen+is%3Aissue+no%3Aassignee) to find issues I could accept help with. Before you start working on one please leave a comment.
-
-Is there a bug or a new feature that isn't an issue yet? Feel free to leave one.
-
-Please always leave a comment or create an issue before working on anything.
+If you are interested in contributing come say hello on the Discord server's #development channel! For any feature requests or bug reports Discord has a #feedback channel you can use.
