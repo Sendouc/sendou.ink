@@ -1,8 +1,8 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import PlusVotingHistoryPage, {
   PlusVotingHistoryPageProps,
-} from "scenes/plus/PlusVotingHistoryPage";
-import plusService from "scenes/plus/plusService";
+} from "components/plus/PlusVotingHistoryPage";
+import plusService from "services/plusService";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   return {

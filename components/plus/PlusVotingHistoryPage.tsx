@@ -12,7 +12,7 @@ import {
 import UserAvatar from "components/common/UserAvatar";
 import { FiCheck } from "react-icons/fi";
 import { formatUsername } from "utils/strings";
-import { GetVotingSummariesByMonthAndTierData } from "./plusService";
+import { GetVotingSummariesByMonthAndTierData } from "../../services/plusService";
 
 export interface PlusVotingHistoryPageProps {
   summaries: GetVotingSummariesByMonthAndTierData;
