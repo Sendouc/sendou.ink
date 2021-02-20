@@ -1,7 +1,7 @@
-import { PlusRegion, Prisma } from "@prisma/client";
-import prisma from "prisma/client";
+import { Prisma } from "@prisma/client";
 import { getPercentageFromCounts } from "lib/plus";
 import { userBasicSelection } from "lib/prisma";
+import prisma from "prisma/client";
 
 export type VotingSummariesByMonthAndTier = Prisma.PromiseReturnType<
   typeof getVotingSummariesByMonthAndTier
@@ -98,8 +98,35 @@ const getDistinctSummaryMonths = () => {
   });
 };
 
+const addSuggestion = async ({
+  data,
+  userId,
+}: {
+  data: Prisma.PlusSuggestionUncheckedCreateInput;
+  userId: number;
+}) => {
+  const existingSuggestion = await prisma.plusSuggestion.findUnique({
+    where: { tier_suggestedId_suggesterId: data },
+  });
+
+  // every user can only send one new suggestion per month
+  if (!existingSuggestion) {
+    const usersSuggestion = await prisma.plusSuggestion.findFirst({
+      where: { isResuggestion: false, suggesterId: userId },
+    });
+    if (usersSuggestion) {
+      throw Error("Already made a new suggestion");
+    }
+  }
+
+  return prisma.plusSuggestion.create({
+    data: { ...data, isResuggestion: !!existingSuggestion },
+  });
+};
+
 export default {
   getVotingSummariesByMonthAndTier,
   getMostRecentVotingWithResultsMonth,
   getDistinctSummaryMonths,
+  addSuggestion,
 };
