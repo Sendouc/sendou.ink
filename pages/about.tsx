@@ -2,6 +2,7 @@ import { Heading, Link, List, ListItem } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import Breadcrumbs from "components/common/Breadcrumbs";
 import MyHead from "components/common/MyHead";
+import MyLink from "components/common/MyLink";
 import { useMyTheme } from "hooks/common";
 
 const About = () => {
@@ -11,7 +12,16 @@ const About = () => {
       <MyHead title={t`About`} />
       <Breadcrumbs pages={[{ name: t`About` }]} />
       <div style={{ marginTop: "1em" }}>
-        <Heading size="lg" mb="0.5em" fontFamily="'Rubik', sans-serif">
+        This site was made by{" "}
+        <MyLink isExternal href="https://sendou.cc/">
+          Sendou
+        </MyLink>{" "}
+        with help from the people below. You can check out{" "}
+        <MyLink isExternal href="https://trello.com/b/z9gCYsPy/sendouink">
+          Trello
+        </MyLink>{" "}
+        to see what is happening with development.
+        <Heading size="lg" mb="0.5em" fontFamily="'Rubik', sans-serif" mt="1em">
           <Trans>Feedback</Trans>
         </Heading>
         <Trans>
