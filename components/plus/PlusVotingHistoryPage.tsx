@@ -11,18 +11,43 @@ import {
 } from "components/common/Table";
 import UserAvatar from "components/common/UserAvatar";
 import { FiCheck } from "react-icons/fi";
-import { getFullUsername } from "lib/strings";
-import { GetVotingSummariesByMonthAndTierData } from "../../services/plusService";
+import { getFullUsername, getLocalizedMonthYearString } from "lib/strings";
+import {
+  VotingSummariesByMonthAndTier,
+  DistinctSummaryMonths,
+} from "../../services/plusService";
+import { Select } from "@chakra-ui/select";
+import { useRouter } from "next/router";
 
 export interface PlusVotingHistoryPageProps {
-  summaries: GetVotingSummariesByMonthAndTierData;
+  summaries: VotingSummariesByMonthAndTier;
+  monthsWithData: DistinctSummaryMonths;
 }
 
 const PlusVotingHistoryPage: React.FC<PlusVotingHistoryPageProps> = ({
   summaries,
+  monthsWithData,
 }) => {
+  const router = useRouter();
   return (
     <>
+      <Select
+        onChange={(e) => {
+          router.replace(`/plus/history/${e.target.value}`);
+        }}
+        maxW={64}
+        mt={4}
+        mb={8}
+      >
+        {monthsWithData.map(({ month, year, tier }) => (
+          <option
+            key={`${month}${year}${tier}`}
+            value={`${tier}/${year}/${month}`}
+          >
+            +{tier} - {getLocalizedMonthYearString(month, year, "en")}
+          </option>
+        ))}
+      </Select>
       <Table>
         <TableHead>
           <TableRow>

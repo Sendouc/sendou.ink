@@ -32,16 +32,19 @@ export const getStaticProps: GetStaticProps<PlusVotingHistoryPageProps> = async 
   const [tier, year, month] = (await getSlug()).map((param) => Number(param));
   if (!tier) return { notFound: true };
 
-  const summaries = await plusService.getVotingSummariesByMonthAndTier({
-    tier: tier as any,
-    year,
-    month,
-  });
+  const [summaries, monthsWithData] = await Promise.all([
+    plusService.getVotingSummariesByMonthAndTier({
+      tier: tier as any,
+      year,
+      month,
+    }),
+    plusService.getDistinctSummaryMonths(),
+  ]);
 
   if (!summaries.length) return { notFound: true };
 
   return {
-    props: { summaries },
+    props: { summaries, monthsWithData },
   };
 };
 

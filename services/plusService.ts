@@ -3,7 +3,7 @@ import prisma from "prisma/client";
 import { getPercentageFromCounts } from "lib/plus";
 import { userBasicSelection } from "lib/prisma";
 
-export type GetVotingSummariesByMonthAndTierData = Prisma.PromiseReturnType<
+export type VotingSummariesByMonthAndTier = Prisma.PromiseReturnType<
   typeof getVotingSummariesByMonthAndTier
 >;
 
@@ -85,7 +85,20 @@ const getMostRecentVotingWithResultsMonth = async () => {
   return { year: mostRecent.year, month: mostRecent.month };
 };
 
+export type DistinctSummaryMonths = Prisma.PromiseReturnType<
+  typeof getDistinctSummaryMonths
+>;
+
+const getDistinctSummaryMonths = () => {
+  return prisma.plusVotingSummary.findMany({
+    distinct: ["month", "year", "tier"],
+    select: { month: true, year: true, tier: true },
+    orderBy: [{ year: "desc" }, { month: "desc" }, { tier: "asc" }],
+  });
+};
+
 export default {
   getVotingSummariesByMonthAndTier,
   getMostRecentVotingWithResultsMonth,
+  getDistinctSummaryMonths,
 };
