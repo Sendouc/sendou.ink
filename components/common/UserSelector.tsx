@@ -71,6 +71,7 @@ const UserSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = ({
         ),
       }}
       hideMenuBeforeTyping
+      isClearable={!isMulti}
     />
   );
 
