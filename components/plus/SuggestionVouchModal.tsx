@@ -28,7 +28,7 @@ import UserSelector from "components/common/UserSelector";
 interface Props {
   canVouch: boolean;
   canSuggest: boolean;
-  userPlusTier: number;
+  userPlusMembershipTier?: number;
 }
 
 type FormData = z.infer<typeof suggestionSchema>;
@@ -36,7 +36,7 @@ type FormData = z.infer<typeof suggestionSchema>;
 const SuggestionVouchModal: React.FC<Props> = ({
   canVouch,
   canSuggest,
-  userPlusTier,
+  userPlusMembershipTier,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const sending = false; //usemutation hook
@@ -54,6 +54,8 @@ const SuggestionVouchModal: React.FC<Props> = ({
 
     return t`Add new suggestion`;
   };
+
+  if (!userPlusMembershipTier) return null;
 
   return (
     <>
@@ -87,8 +89,12 @@ const SuggestionVouchModal: React.FC<Props> = ({
                         value={value}
                         onChange={(e) => onChange(Number(e.target.value))}
                       >
-                        {userPlusTier === 1 && <option value="1">+1</option>}
-                        {userPlusTier <= 2 && <option value="2">+2</option>}
+                        {userPlusMembershipTier === 1 && (
+                          <option value="1">+1</option>
+                        )}
+                        {userPlusMembershipTier <= 2 && (
+                          <option value="2">+2</option>
+                        )}
                         {false && <option value="3">+3</option>}
                       </Select>
                     )}
@@ -108,6 +114,19 @@ const SuggestionVouchModal: React.FC<Props> = ({
                       />
                     )}
                   />
+                  <FormControl>
+                    <FormLabel mt={4}>
+                      <Trans>Region</Trans>
+                    </FormLabel>
+                    <Select name="region" ref={register}>
+                      <option value="NA">NA</option>
+                      <option value="EU">EU</option>
+                    </Select>
+                    <FormHelperText>
+                      If the player isn't from either region then choose the one
+                      they play most commonly with.
+                    </FormHelperText>
+                  </FormControl>
                   <FormControl isInvalid={!!errors.description}>
                     <FormLabel htmlFor="description" mt={4}>
                       <Trans>Description</Trans>

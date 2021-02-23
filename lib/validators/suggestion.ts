@@ -6,4 +6,5 @@ export const suggestionSchema = z.object({
   description: z.string().max(SUGGESTION_DESCRIPTION_LIMIT),
   suggestedUserId: z.number().int(),
   tier: z.number().int().min(1).max(3),
+  region: z.enum(["NA", "EU"]),
 });

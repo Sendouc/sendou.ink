@@ -11,7 +11,7 @@ const PlusHomePage: React.FC<PlusHomePageProps> = () => {
       <SuggestionVouchModal
         canSuggest={true}
         canVouch={false}
-        userPlusTier={1}
+        userPlusMembershipTier={1}
       />
       <Box>No suggestions yet for this month</Box>
     </>
