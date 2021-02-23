@@ -15,7 +15,7 @@ import { getFullUsername, getLocalizedMonthYearString } from "lib/strings";
 import {
   VotingSummariesByMonthAndTier,
   DistinctSummaryMonths,
-} from "../../services/plusService";
+} from "../../services/plus";
 import { Select } from "@chakra-ui/select";
 import { useRouter } from "next/router";
 
