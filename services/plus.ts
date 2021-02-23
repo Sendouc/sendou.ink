@@ -108,9 +108,9 @@ const addSuggestion = async ({
   userId: number;
 }) => {
   const parsedData = { ...suggestionSchema.parse(data), suggesterId: userId };
-  const [suggestions, plusStatus] = await Promise.all([
+  const [suggestions, plusStatuses] = await Promise.all([
     prisma.plusSuggestion.findMany({}),
-    prisma.plusStatus.findUnique({ where: { userId } }),
+    prisma.plusStatus.findMany({}),
   ]);
   const existingSuggestion = suggestions.find(
     ({ tier, suggestedId }) =>
@@ -128,21 +128,47 @@ const addSuggestion = async ({
     }
   }
 
+  const suggesterPlusStatus = plusStatuses.find(
+    (status) => status.userId === userId
+  );
+
   if (
-    !plusStatus ||
-    !plusStatus.membershipTier ||
-    plusStatus.membershipTier > parsedData.tier
+    !suggesterPlusStatus ||
+    !suggesterPlusStatus.membershipTier ||
+    suggesterPlusStatus.membershipTier > parsedData.tier
   ) {
     throw new UserError(
       "not a member of high enough tier to suggest for this tier"
     );
   }
 
+  if (suggestedUserAlreadyHasAccess()) {
+    throw new UserError("suggested user already has access");
+  }
+
   // TODO voting has started
 
-  return prisma.plusSuggestion.create({
-    data: { ...parsedData, isResuggestion: !!existingSuggestion },
-  });
+  return prisma.$transaction([
+    prisma.plusSuggestion.create({
+      data: { ...parsedData, isResuggestion: !!existingSuggestion },
+    }),
+    prisma.plusStatus.upsert({
+      where: { userId: parsedData.suggestedId },
+      create: { region: parsedData.region, userId: parsedData.suggestedId },
+      update: {},
+    }),
+  ]);
+
+  function suggestedUserAlreadyHasAccess() {
+    const suggestedPlusStatus = plusStatuses.find(
+      (status) => status.userId === parsedData.suggestedId
+    );
+    return Boolean(
+      suggestedPlusStatus &&
+        ((suggestedPlusStatus.membershipTier ?? 999) <= parsedData.tier ||
+          (suggestedPlusStatus.vouchTier ?? 999) <= parsedData.tier)
+    );
+  }
 };
 
 export default {

@@ -24,6 +24,7 @@ import {
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import UserSelector from "components/common/UserSelector";
+import useMutation from "hooks/useMutation";
 
 interface Props {
   canVouch: boolean;
@@ -39,9 +40,14 @@ const SuggestionVouchModal: React.FC<Props> = ({
   userPlusMembershipTier,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const sending = false; //usemutation hook
   const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
     resolver: zodResolver(suggestionSchema),
+  });
+  const { onSubmit, sending } = useMutation({
+    onClose: () => setIsOpen(false),
+    route: "plus/suggestions",
+    mutationKey: "",
+    successText: t`New suggestion submitted`,
   });
 
   const watchDescription = watch("description", "");
@@ -75,7 +81,7 @@ const SuggestionVouchModal: React.FC<Props> = ({
                 <Trans>Adding a new suggestion or vouch</Trans>
               </ModalHeader>
               <ModalCloseButton borderRadius="50%" />
-              <form>
+              <form onSubmit={handleSubmit(onSubmit)}>
                 <ModalBody pb={2}>
                   <FormLabel>
                     <Trans>Tier</Trans>
@@ -99,21 +105,28 @@ const SuggestionVouchModal: React.FC<Props> = ({
                       </Select>
                     )}
                   />
-                  <FormLabel mt={4}>
-                    <Trans>User</Trans>
-                  </FormLabel>
-                  <Controller
-                    name="suggestedUserId"
-                    control={control}
-                    render={({ value, onChange }) => (
-                      <UserSelector
-                        value={value}
-                        setValue={onChange}
-                        isMulti={false}
-                        maxMultiCount={undefined}
-                      />
-                    )}
-                  />
+
+                  <FormControl isInvalid={!!errors.suggestedId}>
+                    <FormLabel mt={4}>
+                      <Trans>User</Trans>
+                    </FormLabel>
+                    <Controller
+                      name="suggestedId"
+                      control={control}
+                      render={({ value, onChange }) => (
+                        <UserSelector
+                          value={value}
+                          setValue={onChange}
+                          isMulti={false}
+                          maxMultiCount={undefined}
+                        />
+                      )}
+                    />
+                    <FormErrorMessage>
+                      {errors.suggestedId?.message}
+                    </FormErrorMessage>
+                  </FormControl>
+
                   <FormControl>
                     <FormLabel mt={4}>
                       <Trans>Region</Trans>
@@ -127,6 +140,7 @@ const SuggestionVouchModal: React.FC<Props> = ({
                       they play most commonly with.
                     </FormHelperText>
                   </FormControl>
+
                   <FormControl isInvalid={!!errors.description}>
                     <FormLabel htmlFor="description" mt={4}>
                       <Trans>Description</Trans>
