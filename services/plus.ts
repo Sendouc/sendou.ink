@@ -1,6 +1,8 @@
 import { Prisma } from "@prisma/client";
+import { UserError } from "lib/errors";
 import { getPercentageFromCounts } from "lib/plus";
 import { userBasicSelection } from "lib/prisma";
+import { suggestionSchema } from "lib/validators/suggestion";
 import prisma from "prisma/client";
 
 export type VotingSummariesByMonthAndTier = Prisma.PromiseReturnType<
@@ -102,25 +104,44 @@ const addSuggestion = async ({
   data,
   userId,
 }: {
-  data: Prisma.PlusSuggestionUncheckedCreateInput;
+  data: unknown;
   userId: number;
 }) => {
-  const existingSuggestion = await prisma.plusSuggestion.findUnique({
-    where: { tier_suggestedId_suggesterId: data },
-  });
+  const parsedData = { ...suggestionSchema.parse(data), suggesterId: userId };
+  const [suggestions, plusStatus] = await Promise.all([
+    prisma.plusSuggestion.findMany({}),
+    prisma.plusStatus.findUnique({ where: { userId } }),
+  ]);
+  const existingSuggestion = suggestions.find(
+    ({ tier, suggestedId }) =>
+      tier === parsedData.tier && suggestedId === parsedData.suggestedId
+  );
 
   // every user can only send one new suggestion per month
   if (!existingSuggestion) {
-    const usersSuggestion = await prisma.plusSuggestion.findFirst({
-      where: { isResuggestion: false, suggesterId: userId },
-    });
+    const usersSuggestion = suggestions.find(
+      ({ isResuggestion, suggesterId }) =>
+        isResuggestion === false && suggesterId === userId
+    );
     if (usersSuggestion) {
-      throw Error("Already made a new suggestion");
+      throw new UserError("already made a new suggestion");
     }
   }
 
+  if (
+    !plusStatus ||
+    !plusStatus.membershipTier ||
+    plusStatus.membershipTier > parsedData.tier
+  ) {
+    throw new UserError(
+      "not a member of high enough tier to suggest for this tier"
+    );
+  }
+
+  // TODO voting has started
+
   return prisma.plusSuggestion.create({
-    data: { ...data, isResuggestion: !!existingSuggestion },
+    data: { ...parsedData, isResuggestion: !!existingSuggestion },
   });
 };
 
