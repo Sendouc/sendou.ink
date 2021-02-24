@@ -11,6 +11,9 @@ const suggestionsHandler = async (
   const user = await getMySession(req);
 
   switch (req.method) {
+    case "GET":
+      await getHandler(req, res);
+      break;
     case "POST":
       await postHandler(req, res);
       break;
@@ -29,6 +32,7 @@ const suggestionsHandler = async (
       } else if (e instanceof UserError) {
         res.status(400).json({ message: e.message });
       } else {
+        console.error(e.message);
         res.status(500).end();
       }
 
@@ -36,6 +40,15 @@ const suggestionsHandler = async (
     }
 
     res.status(200).end();
+  }
+
+  async function getHandler(_req: NextApiRequest, res: NextApiResponse) {
+    try {
+      res.status(200).json(await plusService.getSuggestions());
+    } catch (e) {
+      console.error(e.message);
+      res.status(500).end();
+    }
   }
 };
 

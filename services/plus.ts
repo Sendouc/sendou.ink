@@ -5,6 +5,37 @@ import { userBasicSelection } from "lib/prisma";
 import { suggestionSchema } from "lib/validators/suggestion";
 import prisma from "prisma/client";
 
+export type PlusStatus = Prisma.PromiseReturnType<typeof getPlusStatus>;
+
+const getPlusStatus = async (userId: number) => {
+  return prisma.plusStatus.findUnique({
+    where: { userId },
+    select: {
+      canVouchAgainAfter: true,
+      vouchTier: true,
+      canVouchFor: true,
+      membershipTier: true,
+      region: true,
+      voucher: { select: userBasicSelection },
+    },
+  });
+};
+
+export type Suggestions = Prisma.PromiseReturnType<typeof getSuggestions>;
+
+const getSuggestions = async () => {
+  return prisma.plusSuggestion.findMany({
+    select: {
+      createdAt: true,
+      description: true,
+      isResuggestion: true,
+      tier: true,
+      suggestedUser: { select: userBasicSelection },
+      suggesterUser: { select: userBasicSelection },
+    },
+  });
+};
+
 export type VotingSummariesByMonthAndTier = Prisma.PromiseReturnType<
   typeof getVotingSummariesByMonthAndTier
 >;
@@ -172,6 +203,8 @@ const addSuggestion = async ({
 };
 
 export default {
+  getPlusStatus,
+  getSuggestions,
   getVotingSummariesByMonthAndTier,
   getMostRecentVotingWithResultsMonth,
   getDistinctSummaryMonths,

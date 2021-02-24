@@ -46,7 +46,7 @@ const SuggestionVouchModal: React.FC<Props> = ({
   const { onSubmit, sending } = useMutation({
     onClose: () => setIsOpen(false),
     route: "plus/suggestions",
-    mutationKey: "",
+    mutationKey: "plus/suggestions",
     successText: t`New suggestion submitted`,
   });
 

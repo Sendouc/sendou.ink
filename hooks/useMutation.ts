@@ -39,7 +39,7 @@ const useMutation = ({
     setSending(false);
     if (!success) return;
 
-    mutate(mutationKey);
+    mutate("/api/" + mutationKey);
 
     toast(getToastOptions(successText, "success"));
     onClose();
