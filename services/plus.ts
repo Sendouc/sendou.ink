@@ -8,7 +8,7 @@ import prisma from "prisma/client";
 export type PlusStatus = Prisma.PromiseReturnType<typeof getPlusStatus>;
 
 const getPlusStatus = async (userId: number) => {
-  return prisma.plusStatus.findUnique({
+  const status = await prisma.plusStatus.findUnique({
     where: { userId },
     select: {
       canVouchAgainAfter: true,
@@ -19,6 +19,8 @@ const getPlusStatus = async (userId: number) => {
       voucher: { select: userBasicSelection },
     },
   });
+
+  return { status: status ?? null };
 };
 
 export type Suggestions = Prisma.PromiseReturnType<typeof getSuggestions>;

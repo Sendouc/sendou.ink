@@ -43,6 +43,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         revalidateOnFocus: false,
         revalidateOnReconnect: false,
         onError: (_, key) => {
+          console.error(key + ": " + _);
           if (errors.has(key)) return;
           setErrors(new Set([...errors, key]));
           toast({

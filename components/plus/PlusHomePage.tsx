@@ -5,6 +5,7 @@ import { Trans } from "@lingui/macro";
 import MyLink from "components/common/MyLink";
 import SubText from "components/common/SubText";
 import UserAvatar from "components/common/UserAvatar";
+import { useUser } from "hooks/common";
 import { usePlus } from "hooks/plus";
 import { getFullUsername } from "lib/strings";
 import { Fragment } from "react";
@@ -13,6 +14,7 @@ import SuggestionVouchModal from "./SuggestionVouchModal";
 export interface PlusHomePageProps {}
 
 const PlusHomePage: React.FC<PlusHomePageProps> = () => {
+  const [user] = useUser();
   const {
     plusStatusData,
     suggestionsData,
@@ -73,6 +75,19 @@ const PlusHomePage: React.FC<PlusHomePageProps> = () => {
       ) : (
         <>
           {suggestionsData.map((suggestion, i) => {
+            const canSuggest = () => {
+              if (!plusStatusData?.membershipTier) return false;
+              if (plusStatusData.membershipTier > suggestion.tier) return false;
+              if (suggestion.suggesterUser.id === user?.id) return false;
+              if (
+                suggestion.resuggestions?.some(
+                  (suggestion) => suggestion.suggesterUser.id === user?.id
+                )
+              )
+                return false;
+
+              return true;
+            };
             return (
               <Fragment key={suggestion.suggestedUser.id}>
                 <Box as="section" my={8}>
@@ -119,6 +134,7 @@ const PlusHomePage: React.FC<PlusHomePageProps> = () => {
                       </Box>
                     );
                   })}
+                  {canSuggest() && <Button>Add comment</Button>}
                 </Box>
                 {i < suggestionsData.length - 1 && <Divider />}
               </Fragment>

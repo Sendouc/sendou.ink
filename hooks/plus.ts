@@ -10,7 +10,9 @@ export function usePlus() {
     number | undefined
   >(undefined);
 
-  const { data: plusStatusData } = useSWR<PlusStatus>("/api/plus");
+  const { data: plusStatusData } = useSWR<PlusStatus>(
+    user ? "/api/plus" : null
+  );
   const { data: suggestionsData } = useSWR<Suggestions>(
     "/api/plus/suggestions"
   );
@@ -32,7 +34,7 @@ export function usePlus() {
     );
 
   return {
-    plusStatusData,
+    plusStatusData: plusStatusData?.status,
     suggestionsData: suggestions
       .filter((suggestion) => {
         if (suggestion.isResuggestion) return false;
