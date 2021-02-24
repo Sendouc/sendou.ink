@@ -9,6 +9,9 @@ module.exports = withImages({
       },
     ];
   },
+  experimental: {
+    optimizeFonts: true,
+  },
   // i18n: {
   //  v-- import from lib/locales
   //   locales: [

@@ -6,7 +6,6 @@ import Layout from "components/layout";
 import { activateLocale } from "lib/i18n";
 import { locales } from "lib/lists/locales";
 import { Provider as NextAuthProvider } from "next-auth/client";
-import GoogleFonts from "next-google-fonts";
 import { DefaultSeo } from "next-seo";
 import type { AppProps } from "next/app";
 import Head from "next/head";
@@ -152,9 +151,6 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       <Head>
         <link rel="stylesheet" type="text/css" href="/nprogress.css" />
       </Head>
-      <GoogleFonts
-        href={`https://fonts.googleapis.com/css2?family=Rubik&display=swap`}
-      />
       <DefaultSeo
         title="sendou.ink"
         description="Competitive Splatoon hub featuring several tools and resources."
