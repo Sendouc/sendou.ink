@@ -40,7 +40,7 @@ interface Props {
 }
 
 const getTeamXPInfo = (roster: NonNullable<GetTeamData>["roster"]) => {
-  const placements = roster.reduce(
+  const placements = roster!.reduce(
     (
       acc: {
         weapon: string;
@@ -212,7 +212,7 @@ const TeamPage: React.FC<Props> = (props) => {
       )}
       {user &&
         user.id !== team.captainId &&
-        team.roster.some((teamMember) => user.id === teamMember.id) && (
+        team.roster!.some((teamMember) => user.id === teamMember.id) && (
           <Center my={4}>
             <Button
               variant="outline"
@@ -234,8 +234,8 @@ const TeamPage: React.FC<Props> = (props) => {
         mt={4}
         mb={6}
       >
-        {team.roster
-          .sort(
+        {team
+          .roster!.sort(
             (a, b) =>
               Number(b.id === team.captainId) - Number(a.id === team.captainId)
           )
