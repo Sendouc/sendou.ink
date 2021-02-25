@@ -14,10 +14,46 @@ context("Plus Voting History", () => {
 });
 
 context("Plus Home Page", () => {
-  beforeEach(() => {
-    cy.login("sendou");
+  it("can filter through suggestions not logged in", () => {
     cy.visit("/plus");
+    cy.contains("yooo so cracked").dataCy("plus-three-radio").click();
+
+    cy.contains("yooo so cracked").should("not.exist");
   });
 
-  it.only("correctly calculates voting percentage", () => {});
+  it("can submit new suggestion and persists with reload", () => {
+    cy.login("sendou");
+    cy.visit("/plus");
+    cy.dataCy("suggestion-button")
+      .click()
+      .get(".select__value-container")
+      .type("NZAP{enter}")
+      .dataCy("region-select")
+      .select("EU")
+      .dataCy("description-textarea")
+      .type("always trust in nzap")
+      .dataCy("submit-button")
+      .click();
+
+    cy.contains("always trust in nzap")
+      .reload()
+      .contains("always trust in nzap")
+      .dataCy("suggestion-button")
+      .should("not.exist");
+  });
+
+  it("can add comment to suggestion and toast shows", () => {
+    cy.login("sendou");
+    cy.visit("/plus");
+    cy.dataCy("comment-button")
+      .click()
+      .dataCy("comment-textarea")
+      .type("yes agreed")
+      .dataCy("submit-button")
+      .click();
+
+    cy.contains("Comment added");
+    cy.contains('"yes agreed" - Sendou#4059');
+    cy.dataCy("comment-button").should("not.exist");
+  });
 });

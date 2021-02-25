@@ -30,7 +30,7 @@ const PlusHomePage: React.FC<PlusHomePageProps> = () => {
     <>
       {plusStatusData && plusStatusData.membershipTier && (
         <SuggestionVouchModal
-          canSuggest={!ownSuggestion}
+          canSuggest={!suggestionsLoading && !ownSuggestion}
           canVouch={!!plusStatusData.canVouchFor}
           userPlusMembershipTier={plusStatusData.membershipTier}
         />
@@ -63,7 +63,7 @@ const PlusHomePage: React.FC<PlusHomePageProps> = () => {
                 <SubText mr={2}>+2</SubText> ({suggestionCounts.TWO})
               </Flex>
             </Radio>
-            <Radio value="THREE">
+            <Radio value="THREE" data-cy="plus-three-radio">
               <Flex align="center">
                 <SubText mr={2}>+3</SubText> ({suggestionCounts.THREE})
               </Flex>

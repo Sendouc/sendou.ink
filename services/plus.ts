@@ -1,8 +1,8 @@
-import { PlusSuggestion, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { UserError } from "lib/errors";
 import { getPercentageFromCounts } from "lib/plus";
 import { userBasicSelection } from "lib/prisma";
-import { suggestionSchema } from "lib/validators/suggestion";
+import { suggestionFullSchema } from "lib/validators/suggestion";
 import prisma from "prisma/client";
 
 export type PlusStatus = Prisma.PromiseReturnType<typeof getPlusStatus>;
@@ -178,7 +178,10 @@ const addSuggestion = async ({
   data: unknown;
   userId: number;
 }) => {
-  const parsedData = { ...suggestionSchema.parse(data), suggesterId: userId };
+  const parsedData = {
+    ...suggestionFullSchema.parse(data),
+    suggesterId: userId,
+  };
   const [suggestions, plusStatuses] = await Promise.all([
     prisma.plusSuggestion.findMany({}),
     prisma.plusStatus.findMany({}),
@@ -202,6 +205,8 @@ const addSuggestion = async ({
   const suggesterPlusStatus = plusStatuses.find(
     (status) => status.userId === userId
   );
+
+  console.log({ suggesterPlusStatus, parsedData });
 
   if (
     !suggesterPlusStatus ||

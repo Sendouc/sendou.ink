@@ -8,12 +8,12 @@ import { useUser } from "./common";
 const useMutation = ({
   route,
   mutationKey,
-  onClose,
+  onSuccess,
   successText,
 }: {
   route: string;
   mutationKey: string;
-  onClose?: () => void;
+  onSuccess?: () => void;
   successText: string;
 }) => {
   const toast = useToast();
@@ -42,7 +42,7 @@ const useMutation = ({
     mutate("/api/" + mutationKey);
 
     toast(getToastOptions(successText, "success"));
-    onClose?.();
+    onSuccess?.();
   };
 
   return { onSubmit, sending };

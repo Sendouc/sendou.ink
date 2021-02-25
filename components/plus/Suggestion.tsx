@@ -16,7 +16,7 @@ import useMutation from "hooks/useMutation";
 import { getFullUsername } from "lib/strings";
 import { Unpacked } from "lib/types";
 import {
-  suggestionSchema,
+  resuggestionSchema,
   SUGGESTION_DESCRIPTION_LIMIT,
 } from "lib/validators/suggestion";
 import { useState } from "react";
@@ -24,7 +24,7 @@ import { useForm } from "react-hook-form";
 import { Suggestions } from "services/plus";
 import * as z from "zod";
 
-type FormData = z.infer<typeof suggestionSchema>;
+type FormData = z.infer<typeof resuggestionSchema>;
 
 const Suggestion = ({
   suggestion,
@@ -34,19 +34,14 @@ const Suggestion = ({
   canSuggest: boolean;
 }) => {
   const [showTextarea, setShowTextarea] = useState(false);
-  const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
-    resolver: zodResolver(suggestionSchema),
-    defaultValues: {
-      // region doesn't matter as it is not updated after the first suggestion
-      region: "NA",
-      tier: suggestion.tier,
-      suggestedId: suggestion.suggestedUser.id,
-    },
+  const { handleSubmit, errors, register, watch } = useForm<FormData>({
+    resolver: zodResolver(resuggestionSchema),
   });
   const { onSubmit, sending } = useMutation({
     route: "plus/suggestions",
     mutationKey: "plus/suggestions",
     successText: "Comment added",
+    onSuccess: () => setShowTextarea(false),
   });
 
   const watchDescription = watch("description", "");
@@ -92,23 +87,44 @@ const Suggestion = ({
             size="sm"
             onClick={() => setShowTextarea(!showTextarea)}
             mt={4}
+            data-cy="comment-button"
           >
             Add comment
           </Button>
         )}
         {showTextarea && (
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form
+            onSubmit={handleSubmit((values) =>
+              onSubmit({
+                ...values,
+                // region doesn't matter as it is not updated after the first suggestion
+                region: "NA",
+                tier: suggestion.tier,
+                suggestedId: suggestion.suggestedUser.id,
+              })
+            )}
+          >
             <FormControl isInvalid={!!errors.description}>
               <FormLabel htmlFor="description" mt={4}>
                 Comment to suggestion
               </FormLabel>
-              <Textarea name="description" ref={register} />
+              <Textarea
+                name="description"
+                ref={register}
+                data-cy="comment-textarea"
+              />
               <FormHelperText mb={4}>
                 {(watchDescription ?? "").length}/{SUGGESTION_DESCRIPTION_LIMIT}
               </FormHelperText>
               <FormErrorMessage>{errors.description?.message}</FormErrorMessage>
             </FormControl>
-            <Button size="sm" mr={3} type="submit" isLoading={sending}>
+            <Button
+              size="sm"
+              mr={3}
+              type="submit"
+              isLoading={sending}
+              data-cy="submit-button"
+            >
               <Trans>Save</Trans>
             </Button>
             <Button

@@ -17,7 +17,7 @@ import {
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
-  suggestionSchema,
+  suggestionFullSchema,
   SUGGESTION_DESCRIPTION_LIMIT,
 } from "lib/validators/suggestion";
 import * as z from "zod";
@@ -31,7 +31,7 @@ interface Props {
   userPlusMembershipTier?: number;
 }
 
-type FormData = z.infer<typeof suggestionSchema>;
+type FormData = z.infer<typeof suggestionFullSchema>;
 
 const SuggestionVouchModal: React.FC<Props> = ({
   canVouch,
@@ -40,10 +40,10 @@ const SuggestionVouchModal: React.FC<Props> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
-    resolver: zodResolver(suggestionSchema),
+    resolver: zodResolver(suggestionFullSchema),
   });
   const { onSubmit, sending } = useMutation({
-    onClose: () => setIsOpen(false),
+    onSuccess: () => setIsOpen(false),
     route: "plus/suggestions",
     mutationKey: "plus/suggestions",
     successText: "New suggestion submitted",
@@ -64,7 +64,12 @@ const SuggestionVouchModal: React.FC<Props> = ({
 
   return (
     <>
-      <Button size="sm" mb={4} onClick={() => setIsOpen(true)}>
+      <Button
+        size="sm"
+        mb={4}
+        onClick={() => setIsOpen(true)}
+        data-cy="suggestion-button"
+      >
         {getButtonText()}
       </Button>
       {isOpen && (
@@ -84,7 +89,7 @@ const SuggestionVouchModal: React.FC<Props> = ({
                   <Controller
                     name="tier"
                     control={control}
-                    defaultValue={1}
+                    defaultValue={userPlusMembershipTier}
                     render={({ value, onChange }) => (
                       <Select
                         value={value}
@@ -122,7 +127,11 @@ const SuggestionVouchModal: React.FC<Props> = ({
 
                   <FormControl>
                     <FormLabel mt={4}>Region</FormLabel>
-                    <Select name="region" ref={register}>
+                    <Select
+                      name="region"
+                      ref={register}
+                      data-cy="region-select"
+                    >
                       <option value="NA">NA</option>
                       <option value="EU">EU</option>
                     </Select>
@@ -136,7 +145,11 @@ const SuggestionVouchModal: React.FC<Props> = ({
                     <FormLabel htmlFor="description" mt={4}>
                       Description
                     </FormLabel>
-                    <Textarea name="description" ref={register} />
+                    <Textarea
+                      name="description"
+                      ref={register}
+                      data-cy="description-textarea"
+                    />
                     <FormHelperText>
                       {(watchDescription ?? "").length}/
                       {SUGGESTION_DESCRIPTION_LIMIT}
@@ -147,7 +160,12 @@ const SuggestionVouchModal: React.FC<Props> = ({
                   </FormControl>
                 </ModalBody>
                 <ModalFooter>
-                  <Button mr={3} type="submit" isLoading={sending}>
+                  <Button
+                    mr={3}
+                    type="submit"
+                    isLoading={sending}
+                    data-cy="submit-button"
+                  >
                     Save
                   </Button>
                   <Button onClick={() => setIsOpen(false)} variant="outline">

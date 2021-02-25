@@ -11,3 +11,7 @@ Cypress.Commands.add("login", (user: "sendou" | "nzap") => {
     cy.intercept("/api/auth/session", u);
   });
 });
+
+beforeEach(() => {
+  cy.exec("npm run seed");
+});

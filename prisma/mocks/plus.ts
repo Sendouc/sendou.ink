@@ -72,7 +72,7 @@ export const getPlusSuggestionsData = (): Prisma.PlusSuggestionCreateManyInput[]
       description: "yooo so cracked",
       region: "NA",
       tier: 2,
-      suggestedId: 11,
+      suggestedId: 10,
       suggesterId: 1,
     },
   ];
