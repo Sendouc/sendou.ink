@@ -53,6 +53,16 @@ export const getPlusStatusesData = (): Prisma.PlusStatusCreateManyInput[] => {
       userId: 10,
       region: "NA",
     },
+    {
+      userId: 11,
+      region: "EU",
+      membershipTier: 1,
+    },
+    {
+      userId: 12,
+      region: "EU",
+      membershipTier: 2,
+    },
   ];
 };
 
@@ -62,7 +72,7 @@ export const getPlusSuggestionsData = (): Prisma.PlusSuggestionCreateManyInput[]
       description: "yooo so cracked",
       region: "NA",
       tier: 2,
-      suggestedId: 10,
+      suggestedId: 11,
       suggesterId: 1,
     },
   ];
