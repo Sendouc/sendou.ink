@@ -60,7 +60,7 @@ const Suggestion = ({
         </MyLink>
       </Flex>
       <Box>
-        <Box fontSize="sm" color={gray}>
+        <Box fontSize="sm" color={gray} mt={1}>
           {new Date(suggestion.createdAt).toLocaleString()}
         </Box>
         <SubText mt={2}>+{suggestion.tier}</SubText>

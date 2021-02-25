@@ -37,7 +37,7 @@ const getRawSuggestions = async () =>
       suggestedUser: { select: userBasicSelection },
       suggesterUser: { select: userBasicSelection },
     },
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: "asc" },
   });
 
 const getSuggestions = async () => {
