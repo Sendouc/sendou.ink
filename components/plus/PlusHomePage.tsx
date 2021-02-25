@@ -1,21 +1,19 @@
-import { Button } from "@chakra-ui/button";
 import { Box, Center, Divider, Flex, Stack } from "@chakra-ui/layout";
 import { Radio, RadioGroup } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
-import MyLink from "components/common/MyLink";
 import SubText from "components/common/SubText";
-import UserAvatar from "components/common/UserAvatar";
 import { useUser } from "hooks/common";
 import { usePlus } from "hooks/plus";
-import useMutation from "hooks/useMutation";
-import { getFullUsername } from "lib/strings";
 import { Fragment } from "react";
+import { Suggestions } from "services/plus";
 import Suggestion from "./Suggestion";
 import SuggestionVouchModal from "./SuggestionVouchModal";
 
-export interface PlusHomePageProps {}
+export interface PlusHomePageProps {
+  suggestions: Suggestions;
+}
 
-const PlusHomePage: React.FC<PlusHomePageProps> = () => {
+const PlusHomePage: React.FC<PlusHomePageProps> = ({ suggestions }) => {
   const [user] = useUser();
   const {
     plusStatusData,
@@ -24,7 +22,7 @@ const PlusHomePage: React.FC<PlusHomePageProps> = () => {
     suggestionsLoading,
     suggestionCounts,
     setSuggestionsFilter,
-  } = usePlus();
+  } = usePlus(suggestions);
 
   return (
     <>

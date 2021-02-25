@@ -3,7 +3,7 @@ import { PlusStatus, Suggestions } from "services/plus";
 import useSWR from "swr";
 import { useUser } from "./common";
 
-export function usePlus() {
+export function usePlus(initialData: Suggestions) {
   const [user] = useUser();
   const [suggestionsFilter, setSuggestionsFilter] = useState<
     number | undefined
@@ -13,7 +13,8 @@ export function usePlus() {
     user ? "/api/plus" : null
   );
   const { data: suggestionsData } = useSWR<Suggestions>(
-    "/api/plus/suggestions"
+    "/api/plus/suggestions",
+    { initialData }
   );
 
   const suggestions = suggestionsData ?? [];

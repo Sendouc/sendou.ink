@@ -12,6 +12,7 @@ import { Trans } from "@lingui/macro";
 import MyLink from "components/common/MyLink";
 import SubText from "components/common/SubText";
 import UserAvatar from "components/common/UserAvatar";
+import { useMyTheme } from "hooks/common";
 import useMutation from "hooks/useMutation";
 import { getFullUsername } from "lib/strings";
 import { Unpacked } from "lib/types";
@@ -33,6 +34,7 @@ const Suggestion = ({
   suggestion: Unpacked<Suggestions>;
   canSuggest: boolean;
 }) => {
+  const { gray } = useMyTheme();
   const [showTextarea, setShowTextarea] = useState(false);
   const { handleSubmit, errors, register, watch } = useForm<FormData>({
     resolver: zodResolver(resuggestionSchema),
@@ -57,7 +59,10 @@ const Suggestion = ({
           {getFullUsername(suggestion.suggestedUser)}
         </MyLink>
       </Flex>
-      <Box ml={2}>
+      <Box>
+        <Box fontSize="sm" color={gray}>
+          {new Date(suggestion.createdAt).toLocaleString()}
+        </Box>
         <SubText mt={2}>+{suggestion.tier}</SubText>
         <Box mt={4} fontSize="sm">
           "{suggestion.description}" -{" "}

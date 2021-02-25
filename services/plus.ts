@@ -37,6 +37,7 @@ const getRawSuggestions = async () =>
       suggestedUser: { select: userBasicSelection },
       suggesterUser: { select: userBasicSelection },
     },
+    orderBy: { createdAt: "desc" },
   });
 
 const getSuggestions = async () => {
@@ -205,8 +206,6 @@ const addSuggestion = async ({
   const suggesterPlusStatus = plusStatuses.find(
     (status) => status.userId === userId
   );
-
-  console.log({ suggesterPlusStatus, parsedData });
 
   if (
     !suggesterPlusStatus ||

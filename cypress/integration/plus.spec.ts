@@ -16,9 +16,12 @@ context("Plus Voting History", () => {
 context("Plus Home Page", () => {
   it("can filter through suggestions not logged in", () => {
     cy.visit("/plus");
-    cy.contains("yooo so cracked").dataCy("plus-three-radio").click();
+    cy.get("section")
+      .contains("yooo so cracked")
+      .dataCy("plus-three-radio")
+      .click();
 
-    cy.contains("yooo so cracked").should("not.exist");
+    cy.get("section").contains("yooo so cracked").should("not.exist");
   });
 
   it("can submit new suggestion and persists with reload", () => {

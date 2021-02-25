@@ -17,6 +17,7 @@
     "restore": "pg_restore -d 'postgresql://sendou@localhost:5432/postgres' --jobs 4 dumped.sql --clean",
     "seed": "prisma db seed --preview-feature",
     "cy:open": "cypress open",
+    "cy:run": "cypress run",
     "cy:clearcache": "cypress cache clear",
     "cy:install": "cypress install"
   },
