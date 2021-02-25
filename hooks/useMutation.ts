@@ -13,7 +13,7 @@ const useMutation = ({
 }: {
   route: string;
   mutationKey: string;
-  onClose: () => void;
+  onClose?: () => void;
   successText: string;
 }) => {
   const toast = useToast();
@@ -42,7 +42,7 @@ const useMutation = ({
     mutate("/api/" + mutationKey);
 
     toast(getToastOptions(successText, "success"));
-    onClose();
+    onClose?.();
   };
 
   return { onSubmit, sending };

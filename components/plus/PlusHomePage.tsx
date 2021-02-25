@@ -7,8 +7,10 @@ import SubText from "components/common/SubText";
 import UserAvatar from "components/common/UserAvatar";
 import { useUser } from "hooks/common";
 import { usePlus } from "hooks/plus";
+import useMutation from "hooks/useMutation";
 import { getFullUsername } from "lib/strings";
 import { Fragment } from "react";
+import Suggestion from "./Suggestion";
 import SuggestionVouchModal from "./SuggestionVouchModal";
 
 export interface PlusHomePageProps {}
@@ -23,6 +25,7 @@ const PlusHomePage: React.FC<PlusHomePageProps> = () => {
     suggestionCounts,
     setSuggestionsFilter,
   } = usePlus();
+
   return (
     <>
       {plusStatusData && plusStatusData.membershipTier && (
@@ -90,52 +93,7 @@ const PlusHomePage: React.FC<PlusHomePageProps> = () => {
             };
             return (
               <Fragment key={suggestion.suggestedUser.id}>
-                <Box as="section" my={8}>
-                  <Flex
-                    alignItems="center"
-                    fontWeight="bold"
-                    fontSize="1.25rem"
-                  >
-                    <UserAvatar user={suggestion.suggestedUser} mr={3} />
-                    <MyLink
-                      href={`/u/${suggestion.suggestedUser.discordId}`}
-                      isColored={false}
-                    >
-                      {getFullUsername(suggestion.suggestedUser)}
-                    </MyLink>
-                  </Flex>
-                  <SubText ml={2} mt={2}>
-                    +{suggestion.tier}
-                  </SubText>
-                  <Box ml={2} mt={4} fontSize="sm">
-                    "{suggestion.description}" -{" "}
-                    <MyLink
-                      href={`/u/${suggestion.suggesterUser.discordId}`}
-                      isColored={false}
-                    >
-                      {getFullUsername(suggestion.suggesterUser)}
-                    </MyLink>
-                  </Box>
-                  {suggestion.resuggestions?.map((resuggestion) => {
-                    return (
-                      <Box
-                        key={resuggestion.suggesterUser.id}
-                        ml={2}
-                        mt={4}
-                        fontSize="sm"
-                      >
-                        "{resuggestion.description}" -{" "}
-                        <MyLink
-                          href={`/u/${resuggestion.suggesterUser.discordId}`}
-                          isColored={false}
-                        >
-                          {getFullUsername(resuggestion.suggesterUser)}
-                        </MyLink>
-                      </Box>
-                    );
-                  })}
-                  {canSuggest() && <Button>Add comment</Button>}
-                </Box>
+                <Suggestion suggestion={suggestion} canSuggest={canSuggest()} />
                 {i < suggestionsData.length - 1 && <Divider />}
               </Fragment>
             );

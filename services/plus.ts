@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { PlusSuggestion, Prisma } from "@prisma/client";
 import { UserError } from "lib/errors";
 import { getPercentageFromCounts } from "lib/plus";
 import { userBasicSelection } from "lib/prisma";
@@ -25,8 +25,10 @@ const getPlusStatus = async (userId: number) => {
 
 export type Suggestions = Prisma.PromiseReturnType<typeof getSuggestions>;
 
-const getSuggestions = async () => {
-  return prisma.plusSuggestion.findMany({
+type RawSuggestion = Prisma.PromiseReturnType<typeof getRawSuggestions>;
+
+const getRawSuggestions = async () =>
+  prisma.plusSuggestion.findMany({
     select: {
       createdAt: true,
       description: true,
@@ -36,6 +38,42 @@ const getSuggestions = async () => {
       suggesterUser: { select: userBasicSelection },
     },
   });
+
+const getSuggestions = async () => {
+  const suggestions = await prisma.plusSuggestion.findMany({
+    select: {
+      createdAt: true,
+      description: true,
+      isResuggestion: true,
+      tier: true,
+      suggestedUser: { select: userBasicSelection },
+      suggesterUser: { select: userBasicSelection },
+    },
+  });
+
+  const suggestionDescriptions = suggestions
+    .filter((suggestion) => suggestion.isResuggestion)
+    .reduce(
+      (descriptions: Partial<Record<string, RawSuggestion>>, suggestion) => {
+        const key = suggestion.suggestedUser.id + "_" + suggestion.tier;
+        if (!descriptions[key]) descriptions[key] = [];
+
+        descriptions[key]!.push(suggestion);
+
+        return descriptions;
+      },
+      {}
+    );
+
+  return suggestions
+    .filter((suggestion) => !suggestion.isResuggestion)
+    .map((suggestion) => ({
+      ...suggestion,
+      resuggestions:
+        suggestionDescriptions[
+          suggestion.suggestedUser.id + "_" + suggestion.tier
+        ],
+    }));
 };
 
 export type VotingSummariesByMonthAndTier = Prisma.PromiseReturnType<

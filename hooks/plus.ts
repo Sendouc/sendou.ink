@@ -1,4 +1,3 @@
-import { Unpacked } from "lib/types";
 import { useState } from "react";
 import { PlusStatus, Suggestions } from "services/plus";
 import useSWR from "swr";
@@ -19,34 +18,12 @@ export function usePlus() {
 
   const suggestions = suggestionsData ?? [];
 
-  const suggestionDescriptions = suggestions
-    .filter((suggestion) => suggestion.isResuggestion)
-    .reduce(
-      (descriptions: Partial<Record<string, Suggestions>>, suggestion) => {
-        const key = suggestion.suggestedUser.id + "_" + suggestion.tier;
-        if (!descriptions[key]) descriptions[key] = [];
-
-        descriptions[key]!.push(suggestion);
-
-        return descriptions;
-      },
-      {}
-    );
-
   return {
     plusStatusData: plusStatusData?.status,
-    suggestionsData: suggestions
-      .filter((suggestion) => {
-        if (suggestion.isResuggestion) return false;
-        return !suggestionsFilter || suggestion.tier === suggestionsFilter;
-      })
-      .map((suggestion) => ({
-        ...suggestion,
-        resuggestions:
-          suggestionDescriptions[
-            suggestion.suggestedUser.id + "_" + suggestion.tier
-          ],
-      })),
+    suggestionsData: suggestions.filter(
+      (suggestion) =>
+        !suggestionsFilter || suggestion.tier === suggestionsFilter
+    ),
     suggestionsLoading: !suggestionsData,
     suggestionCounts: suggestions.reduce(
       (counts, suggestion) => {

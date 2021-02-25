@@ -14,7 +14,6 @@ import {
   FormErrorMessage,
   Select,
 } from "@chakra-ui/react";
-import { Trans, t } from "@lingui/macro";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -47,7 +46,7 @@ const SuggestionVouchModal: React.FC<Props> = ({
     onClose: () => setIsOpen(false),
     route: "plus/suggestions",
     mutationKey: "plus/suggestions",
-    successText: t`New suggestion submitted`,
+    successText: "New suggestion submitted",
   });
 
   const watchDescription = watch("description", "");
@@ -55,10 +54,10 @@ const SuggestionVouchModal: React.FC<Props> = ({
   if (!canVouch && !canSuggest) return null;
 
   const getButtonText = () => {
-    if (canSuggest && canVouch) return t`Add new suggestion or vouch`;
-    if (canVouch) return t`Vouch`;
+    if (canSuggest && canVouch) return "Add new suggestion or vouch";
+    if (canVouch) return "Vouch";
 
-    return t`Add new suggestion`;
+    return "Add new suggestion";
   };
 
   if (!userPlusMembershipTier) return null;
@@ -77,15 +76,11 @@ const SuggestionVouchModal: React.FC<Props> = ({
         >
           <ModalOverlay>
             <ModalContent>
-              <ModalHeader>
-                <Trans>Adding a new suggestion or vouch</Trans>
-              </ModalHeader>
+              <ModalHeader>Adding a new suggestion or vouch</ModalHeader>
               <ModalCloseButton borderRadius="50%" />
               <form onSubmit={handleSubmit(onSubmit)}>
                 <ModalBody pb={2}>
-                  <FormLabel>
-                    <Trans>Tier</Trans>
-                  </FormLabel>
+                  <FormLabel>Tier</FormLabel>
                   <Controller
                     name="tier"
                     control={control}
@@ -107,9 +102,7 @@ const SuggestionVouchModal: React.FC<Props> = ({
                   />
 
                   <FormControl isInvalid={!!errors.suggestedId}>
-                    <FormLabel mt={4}>
-                      <Trans>User</Trans>
-                    </FormLabel>
+                    <FormLabel mt={4}>User</FormLabel>
                     <Controller
                       name="suggestedId"
                       control={control}
@@ -128,9 +121,7 @@ const SuggestionVouchModal: React.FC<Props> = ({
                   </FormControl>
 
                   <FormControl>
-                    <FormLabel mt={4}>
-                      <Trans>Region</Trans>
-                    </FormLabel>
+                    <FormLabel mt={4}>Region</FormLabel>
                     <Select name="region" ref={register}>
                       <option value="NA">NA</option>
                       <option value="EU">EU</option>
@@ -143,7 +134,7 @@ const SuggestionVouchModal: React.FC<Props> = ({
 
                   <FormControl isInvalid={!!errors.description}>
                     <FormLabel htmlFor="description" mt={4}>
-                      <Trans>Description</Trans>
+                      Description
                     </FormLabel>
                     <Textarea name="description" ref={register} />
                     <FormHelperText>
@@ -157,10 +148,10 @@ const SuggestionVouchModal: React.FC<Props> = ({
                 </ModalBody>
                 <ModalFooter>
                   <Button mr={3} type="submit" isLoading={sending}>
-                    <Trans>Save</Trans>
+                    Save
                   </Button>
                   <Button onClick={() => setIsOpen(false)} variant="outline">
-                    <Trans>Cancel</Trans>
+                    Cancel
                   </Button>
                 </ModalFooter>
               </form>
