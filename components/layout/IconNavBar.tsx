@@ -103,7 +103,7 @@ export const navIcons: {
       //   code: "plus/voting",
       //   displayName: t`Voting`,
       // },
-      // { code: "plus", displayName: t`Suggested and vouched players` },
+      { code: "plus", displayName: t`Suggested and vouched players` },
       { code: "plus/history", displayName: t`Voting history` },
       // { code: "draft", displayName: t`Draft Cup` },
       // { code: "plus/faq", displayName: t`FAQ` },
