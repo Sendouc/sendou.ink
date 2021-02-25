@@ -185,7 +185,7 @@ const TeamManagementModal: React.FC<Props> = ({ team }) => {
                   gridColumnGap={2}
                   placeItems="center"
                 >
-                  {team.roster.map((user) => (
+                  {team.roster?.map((user) => (
                     <Fragment key={user.id}>
                       <UserAvatar user={user} />
                       <Box>
