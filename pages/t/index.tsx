@@ -26,7 +26,11 @@ import { getAllTeams, GetAllTeamsData } from "prisma/queries/getAllTeams";
 import { useState } from "react";
 import { FiSearch } from "react-icons/fi";
 
-const TeamsPage = ({ teams }: { teams: GetAllTeamsData }) => {
+interface Props {
+  teams: GetAllTeamsData;
+}
+
+const TeamsPage = ({ teams }: Props) => {
   const { gray } = useMyTheme();
   const [user] = useUser();
   const [showOnlyRecruiting, setShowOnlyRecruiting] = useState(false);

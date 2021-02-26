@@ -7,9 +7,8 @@ import {
   PopoverTrigger,
   Select,
 } from "@chakra-ui/react";
-import { t, Trans } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import Breadcrumbs from "components/common/Breadcrumbs";
 import ModeSelector from "components/common/ModeSelector";
 import SubText from "components/common/SubText";
 import WeaponImage from "components/common/WeaponImage";
