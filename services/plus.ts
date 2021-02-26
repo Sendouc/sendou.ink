@@ -37,20 +37,11 @@ const getRawSuggestions = async () =>
       suggestedUser: { select: userBasicSelection },
       suggesterUser: { select: userBasicSelection },
     },
-    orderBy: { createdAt: "asc" },
+    orderBy: { createdAt: "desc" },
   });
 
 const getSuggestions = async () => {
-  const suggestions = await prisma.plusSuggestion.findMany({
-    select: {
-      createdAt: true,
-      description: true,
-      isResuggestion: true,
-      tier: true,
-      suggestedUser: { select: userBasicSelection },
-      suggesterUser: { select: userBasicSelection },
-    },
-  });
+  const suggestions = await getRawSuggestions();
 
   const suggestionDescriptions = suggestions
     .filter((suggestion) => suggestion.isResuggestion)
