@@ -11,8 +11,8 @@ import { t, Trans } from "@lingui/macro";
 import BuildStats from "components/analyzer/BuildStats";
 import EditableBuilds from "components/analyzer/EditableBuilds";
 import { ViewSlotsAbilities } from "components/builds/ViewSlots";
-import Breadcrumbs from "components/common/Breadcrumbs";
 import WeaponSelector from "components/common/WeaponSelector";
+import HeaderBanner from "components/layout/HeaderBanner";
 import { useMyTheme } from "hooks/common";
 import useAbilityEffects from "hooks/useAbilityEffects";
 import { isAbilityArray } from "lib/lists/abilities";
@@ -73,7 +73,6 @@ const BuildAnalyzerPage = () => {
 
   return (
     <>
-      <Breadcrumbs pages={[{ name: t`Build Analyzer` }]} />
       <Flex justifyContent="space-between">
         <Badge>
           <Trans>Patch {CURRENT_PATCH}</Trans>
@@ -206,5 +205,13 @@ const BuildAnalyzerPage = () => {
     });
   }
 };
+
+BuildAnalyzerPage.header = (
+  <HeaderBanner
+    icon="analyzer"
+    title="Build Analyzer"
+    subtitle="Discover what your builds are actually doing"
+  />
+);
 
 export default BuildAnalyzerPage;

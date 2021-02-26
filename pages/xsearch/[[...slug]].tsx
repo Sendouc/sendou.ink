@@ -1,7 +1,7 @@
 import { Radio, RadioGroup, Select, Stack } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import { RankedMode } from "@prisma/client";
-import Breadcrumbs from "components/common/Breadcrumbs";
+import HeaderBanner from "components/layout/HeaderBanner";
 import Top500Table from "components/top500/Top500Table";
 import { getLocalizedMonthYearString } from "lib/strings";
 import { GetStaticPaths, GetStaticProps } from "next";
@@ -40,7 +40,6 @@ const XSearchPage = ({ placements, monthOptions }: Props) => {
   //TODO: layout can be persistent between route changes
   return (
     <>
-      <Breadcrumbs pages={[{ name: t`Top 500 Browser` }]} />
       <Select
         value={`${variables.month},${variables.year}`}
         onChange={(e) => {
@@ -52,7 +51,6 @@ const XSearchPage = ({ placements, monthOptions }: Props) => {
             year: Number(year),
           });
         }}
-        mt={8}
         mb={4}
         maxW={64}
       >
@@ -186,5 +184,13 @@ export function getMonthOptions(latestMonth: number, latestYear: number) {
 
   return monthChoices;
 }
+
+XSearchPage.header = (
+  <HeaderBanner
+    icon="xsearch"
+    title="Top 500 Browser"
+    subtitle="History of X Rank"
+  />
+);
 
 export default XSearchPage;

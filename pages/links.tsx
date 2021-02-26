@@ -1,7 +1,7 @@
 import { Box, Heading, Link, Stack } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
-import Breadcrumbs from "components/common/Breadcrumbs";
 import MyHead from "components/common/MyHead";
+import HeaderBanner from "components/layout/HeaderBanner";
 import { useMyTheme } from "hooks/common";
 import links from "lib/data/links.json";
 
@@ -26,8 +26,7 @@ const LinksPage = () => {
   return (
     <>
       <MyHead title={t`Links`} />
-      <Breadcrumbs pages={[{ name: t`Links` }]} />
-      <Heading size="lg" my="0.5em" mt="1em">
+      <Heading size="lg" mb="0.5em">
         <Trans>Guides</Trans>
       </Heading>
       <Stack spacing={4}>{links.guides.map(linkMap)}</Stack>
@@ -46,5 +45,13 @@ const LinksPage = () => {
     </>
   );
 };
+
+LinksPage.header = (
+  <HeaderBanner
+    icon="links"
+    title="Links"
+    subtitle="All the useful resources around the community in one place"
+  />
+);
 
 export default LinksPage;

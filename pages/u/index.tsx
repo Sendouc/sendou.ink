@@ -5,10 +5,10 @@ import {
   InputGroup,
   InputLeftElement,
 } from "@chakra-ui/react";
-import { t, Trans } from "@lingui/macro";
-import Breadcrumbs from "components/common/Breadcrumbs";
+import { t } from "@lingui/macro";
 import MyLink from "components/common/MyLink";
 import UserAvatar from "components/common/UserAvatar";
+import HeaderBanner from "components/layout/HeaderBanner";
 import { getEmojiFlag } from "countries-list";
 import { useDebounce, useMyTheme } from "hooks/common";
 import { setSearchParams } from "lib/setSearchParams";
@@ -65,10 +65,6 @@ const UserSearchPage = ({ users }: Props) => {
       <Head>
         <meta name="robots" content="noindex" />
       </Head>
-      <Breadcrumbs pages={[{ name: t`Users` }]} />
-      <Box color={gray} fontSize="sm" mb={4}>
-        <Trans>Search for users by their Discord tag or Twitter name</Trans>
-      </Box>
       <InputGroup size="lg" maxW={80} mt={4} mb={6}>
         <InputLeftElement
           pointerEvents="none"
@@ -144,5 +140,13 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
 
   return { props: { users: await getAllUsers() }, revalidate: 3600 };
 };
+
+UserSearchPage.header = (
+  <HeaderBanner
+    icon="u"
+    title="Users"
+    subtitle="Find an user's page by their username or Twitter"
+  />
+);
 
 export default UserSearchPage;

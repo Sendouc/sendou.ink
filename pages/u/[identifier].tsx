@@ -3,7 +3,6 @@ import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { Build, LeagueType, RankedMode } from "@prisma/client";
 import BuildCard from "components/builds/BuildCard";
-import Breadcrumbs from "components/common/Breadcrumbs";
 import Markdown from "components/common/Markdown";
 import MyContainer from "components/common/MyContainer";
 import MyInfiniteScroller from "components/common/MyInfiniteScroller";
@@ -13,7 +12,6 @@ import ProfileModal from "components/u/ProfileModal";
 import { useUser } from "hooks/common";
 import { useBuildsByUser } from "hooks/u";
 import { GANBA_DISCORD_ID } from "lib/constants";
-import { getFullUsername } from "lib/strings";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import { getPlayersPeak } from "prisma/queries/getPlayersPeak";
@@ -84,12 +82,6 @@ const ProfilePage = (props: Props) => {
         />
       )}
 
-      <Breadcrumbs
-        pages={[
-          { name: t`Users`, link: "/u" },
-          { name: getFullUsername(user) },
-        ]}
-      />
       <AvatarWithInfo
         user={user}
         peakXPowers={props.peakXPowers}

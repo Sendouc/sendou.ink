@@ -13,6 +13,7 @@ import Breadcrumbs from "components/common/Breadcrumbs";
 import ModeSelector from "components/common/ModeSelector";
 import SubText from "components/common/SubText";
 import WeaponImage from "components/common/WeaponImage";
+import HeaderBanner from "components/layout/HeaderBanner";
 import WeaponLineChart from "components/top500/WeaponLineChart";
 import { useMyTheme } from "hooks/common";
 import { useXTrends } from "hooks/xtrends";
@@ -71,7 +72,7 @@ interface Props {
   trends: GetXTrendsData;
 }
 
-const XTrendsPage: React.FC<Props> = ({ trends }) => {
+const XTrendsPage = ({ trends }: { trends: GetXTrendsData }) => {
   const { gray } = useMyTheme();
   const {
     state,
@@ -83,7 +84,6 @@ const XTrendsPage: React.FC<Props> = ({ trends }) => {
 
   return (
     <>
-      <Breadcrumbs pages={[{ name: t`Top 500 Tier Lists` }]} />
       <Box color={gray} fontSize="sm" mb={8}>
         <Trans>
           Here you can find X Rank Top 500 usage tier lists. For example for a
@@ -217,5 +217,13 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
 
   return { props: { trends } };
 };
+
+XTrendsPage.header = (
+  <HeaderBanner
+    icon="xsearch"
+    title="Top 500 Trends"
+    subtitle="What's popular in X Rank now and before"
+  />
+);
 
 export default XTrendsPage;

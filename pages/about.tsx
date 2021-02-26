@@ -1,6 +1,5 @@
 import { Heading, Link, List, ListItem } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
-import Breadcrumbs from "components/common/Breadcrumbs";
 import MyHead from "components/common/MyHead";
 import MyLink from "components/common/MyLink";
 import { useMyTheme } from "hooks/common";
@@ -10,8 +9,7 @@ const About = () => {
   return (
     <>
       <MyHead title={t`About`} />
-      <Breadcrumbs pages={[{ name: t`About` }]} />
-      <div style={{ marginTop: "1em" }}>
+      <div style={{ marginBottom: "1em" }}>
         This site was made by{" "}
         <MyLink isExternal href="https://sendou.cc/">
           Sendou

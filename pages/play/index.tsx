@@ -1,6 +1,5 @@
 import { Box, Center, Flex, Grid, Heading } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
-import Breadcrumbs from "components/common/Breadcrumbs";
 import ModeImage from "components/common/ModeImage";
 import SubText from "components/common/SubText";
 import LadderTeam from "components/play/LadderTeam";
@@ -26,7 +25,6 @@ const PlayPage: React.FC<Props> = ({ ladderDay }) => {
 
   return (
     <>
-      <Breadcrumbs pages={[{ name: t`Play` }]} />
       {!ladderDay?.matches.length && (
         <Box fontSize="lg" fontWeight="bold">
           {ladderDay ? (

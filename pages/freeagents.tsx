@@ -17,7 +17,6 @@ import {
 } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import { Playstyle } from "@prisma/client";
-import Breadcrumbs from "components/common/Breadcrumbs";
 import Markdown from "components/common/Markdown";
 import MyLink from "components/common/MyLink";
 import SubText from "components/common/SubText";
@@ -25,6 +24,7 @@ import SubTextCollapse from "components/common/SubTextCollapse";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
 import FAModal from "components/freeagents/FAModal";
+import HeaderBanner from "components/layout/HeaderBanner";
 import { countries, getEmojiFlag } from "countries-list";
 import { useMyTheme, useUser } from "hooks/common";
 import { useFreeAgents } from "hooks/freeagents";
@@ -91,8 +91,7 @@ const FreeAgentsPage = () => {
       {modalIsOpen && (
         <FAModal post={usersPost} onClose={() => setModalIsOpen(false)} />
       )}
-      <Breadcrumbs pages={[{ name: t`Free Agents` }]} />
-      <Button onClick={() => setModalIsOpen(true)}>
+      <Button size="sm" onClick={() => setModalIsOpen(true)}>
         {usersPost ? (
           <Trans>Edit free agent post</Trans>
         ) : (
@@ -362,5 +361,13 @@ const FreeAgentCard = ({
     </>
   );
 };
+
+FreeAgentsPage.header = (
+  <HeaderBanner
+    icon="freeagents"
+    title="Free Agents"
+    subtitle="Meet your next teammates"
+  />
+);
 
 export default FreeAgentsPage;

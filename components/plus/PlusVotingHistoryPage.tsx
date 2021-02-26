@@ -24,10 +24,10 @@ export interface PlusVotingHistoryPageProps {
   monthsWithData: DistinctSummaryMonths;
 }
 
-const PlusVotingHistoryPage: React.FC<PlusVotingHistoryPageProps> = ({
+const PlusVotingHistoryPage = ({
   summaries,
   monthsWithData,
-}) => {
+}: PlusVotingHistoryPageProps) => {
   const router = useRouter();
   return (
     <>
@@ -36,7 +36,6 @@ const PlusVotingHistoryPage: React.FC<PlusVotingHistoryPageProps> = ({
           router.replace(`/plus/history/${e.target.value}`);
         }}
         maxW={64}
-        mt={4}
         mb={8}
       >
         {monthsWithData.map(({ month, year, tier }) => (

@@ -1,14 +1,14 @@
 import { Box, Button, Flex } from "@chakra-ui/react";
-import { t, Trans } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import APStats from "components/builds/APStats";
 import BuildCard from "components/builds/BuildCard";
 import BuildFilters from "components/builds/BuildFilters";
 import BuildsSkeleton from "components/builds/BuildsSkeleton";
-import Breadcrumbs from "components/common/Breadcrumbs";
 import MyInfiniteScroller from "components/common/MyInfiniteScroller";
 import MyLink from "components/common/MyLink";
 import WeaponImage from "components/common/WeaponImage";
 import WeaponSelector from "components/common/WeaponSelector";
+import HeaderBanner from "components/layout/HeaderBanner";
 import { useBuildsByWeapon } from "hooks/builds";
 import { useMyTheme, useUser } from "hooks/common";
 import { useState } from "react";
@@ -29,8 +29,7 @@ const BuildsPage = () => {
 
   return (
     <>
-      <Breadcrumbs pages={[{ name: t`Builds` }]} />
-      <Box my={4} maxW={80} mx="auto">
+      <Box mb={4} maxW={80} mx="auto">
         <WeaponSelector
           value={state.weapon}
           setValue={(weapon) => dispatch({ type: "SET_WEAPON", weapon })}
@@ -139,5 +138,13 @@ const BuildsPage = () => {
     </>
   );
 };
+
+BuildsPage.header = (
+  <HeaderBanner
+    icon="builds"
+    title="Builds"
+    subtitle="Find what people are running on that weapon you picked up"
+  />
+);
 
 export default BuildsPage;

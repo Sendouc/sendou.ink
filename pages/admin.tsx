@@ -1,5 +1,4 @@
 import { Box, Button, Flex, Heading, Input, useToast } from "@chakra-ui/react";
-import Breadcrumbs from "components/common/Breadcrumbs";
 import SubText from "components/common/SubText";
 import { useUser } from "hooks/common";
 import { ADMIN_DISCORD_ID } from "lib/constants";
@@ -20,9 +19,8 @@ const AdminPage = () => {
 
   return (
     <>
-      <Breadcrumbs pages={[{ name: "Admin" }]} />
       <Heading>Update player ID</Heading>
-      <Flex my="1em">
+      <Flex mb="1em">
         <Box mr="1em">
           <SubText>Switch account ID</SubText>
           <Input

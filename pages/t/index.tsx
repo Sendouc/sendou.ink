@@ -10,13 +10,13 @@ import {
   Switch,
 } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
-import Breadcrumbs from "components/common/Breadcrumbs";
 import ChakraSelect from "components/common/ChakraSelect";
 import Markdown from "components/common/Markdown";
 import MyLink from "components/common/MyLink";
 import SubText from "components/common/SubText";
 import SubTextCollapse from "components/common/SubTextCollapse";
 import TwitterAvatar from "components/common/TwitterAvatar";
+import HeaderBanner from "components/layout/HeaderBanner";
 import CreateNewTeamModal from "components/t/CreateNewTeamModal";
 import { countries, getEmojiFlag } from "countries-list";
 import { useMyTheme, useUser } from "hooks/common";
@@ -26,11 +26,7 @@ import { getAllTeams, GetAllTeamsData } from "prisma/queries/getAllTeams";
 import { useState } from "react";
 import { FiSearch } from "react-icons/fi";
 
-interface Props {
-  teams: GetAllTeamsData;
-}
-
-const TeamsPage: React.FC<Props> = ({ teams }) => {
+const TeamsPage = ({ teams }: { teams: GetAllTeamsData }) => {
   const { gray } = useMyTheme();
   const [user] = useUser();
   const [showOnlyRecruiting, setShowOnlyRecruiting] = useState(false);
@@ -43,7 +39,6 @@ const TeamsPage: React.FC<Props> = ({ teams }) => {
 
   return (
     <>
-      <Breadcrumbs pages={[{ name: t`Teams` }]} />
       {!isInTeam && <CreateNewTeamModal />}
       {teams.length > 0 && (
         <Box mb={8}>
@@ -175,5 +170,13 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
     revalidate: 1,
   };
 };
+
+TeamsPage.header = (
+  <HeaderBanner
+    icon="t"
+    title="Teams"
+    subtitle="Because Splatoon is a team game after all"
+  />
+);
 
 export default TeamsPage;

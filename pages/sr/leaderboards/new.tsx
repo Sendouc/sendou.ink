@@ -16,8 +16,8 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import Breadcrumbs from "components/common/Breadcrumbs";
 import UserSelector from "components/common/UserSelector";
+import HeaderBanner from "components/layout/HeaderBanner";
 import RotationSelector from "components/sr/RotationSelector";
 import { useUser } from "hooks/common";
 import { sendData } from "lib/postData";
@@ -83,13 +83,6 @@ const AddRecordModal = () => {
 
   return (
     <>
-      <Breadcrumbs
-        pages={[
-          { name: t`Salmon Run` },
-          { name: t`Leaderboards`, link: "/sr/leaderboards" },
-          { name: t`New record` },
-        ]}
-      />
       <form onSubmit={handleSubmit(onSubmit)}>
         <Controller
           name="rotationId"
@@ -216,5 +209,13 @@ const AddRecordModal = () => {
     </>
   );
 };
+
+AddRecordModal.header = (
+  <HeaderBanner
+    icon="sr"
+    title="Salmon Run"
+    subtitle="Overfishing leaderboards"
+  />
+);
 
 export default AddRecordModal;

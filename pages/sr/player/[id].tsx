@@ -1,6 +1,5 @@
 import { Box, Flex, Heading, Wrap, WrapItem } from "@chakra-ui/react";
-import { t, Trans } from "@lingui/macro";
-import Breadcrumbs from "components/common/Breadcrumbs";
+import { Trans } from "@lingui/macro";
 import LinkButton from "components/common/LinkButton";
 import MyLink from "components/common/MyLink";
 import SubText from "components/common/SubText";
@@ -26,12 +25,6 @@ const SalmonRunPlayerPage = (props: Props) => {
 
   return (
     <>
-      <Breadcrumbs
-        pages={[
-          { name: t`Salmon Run` },
-          { name: `${user.username}#${user.discriminator}` },
-        ]}
-      />
       <Flex align="center">
         <UserAvatar user={user} size="xl" mr={4} />
         <Box>

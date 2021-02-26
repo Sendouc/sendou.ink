@@ -19,12 +19,12 @@ import {
   Stack,
   Textarea,
 } from "@chakra-ui/react";
-import { t, Trans } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { RankedMode } from "@prisma/client";
-import Breadcrumbs from "components/common/Breadcrumbs";
 import ModeImage from "components/common/ModeImage";
 import SubText from "components/common/SubText";
+import HeaderBanner from "components/layout/HeaderBanner";
 import { stages } from "lib/lists/stages";
 import { setManySearchParams } from "lib/setSearchParams";
 import { shuffleArray } from "lib/shuffleArray";
@@ -175,7 +175,6 @@ const MapsGeneratorPage = () => {
 
   return (
     <>
-      <Breadcrumbs pages={[{ name: t`Maplist Generator` }]} />
       {editing ? (
         <>
           <Alert status="info" mb={8}>
@@ -268,7 +267,7 @@ const MapsGeneratorPage = () => {
         </>
       ) : (
         <Grid
-          my={8}
+          mb={8}
           templateColumns="repeat(4, 1fr)"
           rowGap={4}
           columnGap={4}
@@ -392,5 +391,13 @@ const MapsGeneratorPage = () => {
     </>
   );
 };
+
+MapsGeneratorPage.header = (
+  <HeaderBanner
+    icon="plans"
+    title="Maplist Generator"
+    subtitle="Get a list of maps to play in a scrim"
+  />
+);
 
 export default MapsGeneratorPage;

@@ -15,7 +15,6 @@ import {
 import { Plural, t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { SalmonRunRecordCategory } from "@prisma/client";
-import Breadcrumbs from "components/common/Breadcrumbs";
 import LinkButton from "components/common/LinkButton";
 import {
   Table,
@@ -27,6 +26,7 @@ import {
 } from "components/common/Table";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
+import HeaderBanner from "components/layout/HeaderBanner";
 import { useSalmonRunRecords, WeaponsFilter } from "hooks/sr";
 import { salmonRunStages } from "lib/lists/stages";
 import { getRankingString } from "lib/strings";
@@ -48,11 +48,8 @@ const SalmonRunLeaderboardsPage = ({}) => {
 
   return (
     <>
-      <Breadcrumbs
-        pages={[{ name: t`Salmon Run` }, { name: t`Leaderboards` }]}
-      />
       {pendingCount > 0 && (
-        <Alert status="info" my={4}>
+        <Alert status="info" mb={4}>
           <AlertIcon />
           <Plural
             value={pendingCount}
@@ -63,7 +60,7 @@ const SalmonRunLeaderboardsPage = ({}) => {
       )}
       <Link href="/sr/leaderboards/new">
         <a>
-          <Button variant="outline">
+          <Button size="sm">
             <Trans>Submit result</Trans>
           </Button>
         </a>
@@ -246,5 +243,13 @@ const SalmonRunLeaderboardsPage = ({}) => {
     </>
   );
 };
+
+SalmonRunLeaderboardsPage.header = (
+  <HeaderBanner
+    icon="sr"
+    title="Salmon Run"
+    subtitle="Overfishing leaderboards"
+  />
+);
 
 export default SalmonRunLeaderboardsPage;

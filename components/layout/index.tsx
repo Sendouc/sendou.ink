@@ -20,7 +20,13 @@ const WIDE = [
   "plus/history",
 ];
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
+const Layout = ({
+  children,
+  header,
+}: {
+  header: React.ReactNode;
+  children: React.ReactNode;
+}) => {
   const { secondaryBgColor } = useMyTheme();
   const [errors, setErrors] = useState(new Set<string>());
   const toast = useToast();
@@ -64,6 +70,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         <TopNav />
         <IconNavBar />
         <Banner />
+        {header}
       </MyContainer>
       <Flex flexDirection="column" minH="100vh" pt={4}>
         <MyContainer

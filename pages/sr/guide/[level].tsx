@@ -1,14 +1,12 @@
-// import fundamentals from "/lib/data/sr/fundamentals.md";
 import {
   Divider,
   ListItem,
   OrderedList,
   UnorderedList,
 } from "@chakra-ui/react";
-import { t } from "@lingui/macro";
-import Breadcrumbs from "components/common/Breadcrumbs";
 import Markdown from "components/common/Markdown";
 import SubText from "components/common/SubText";
+import HeaderBanner from "components/layout/HeaderBanner";
 import fs from "fs";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { join } from "path";
@@ -17,19 +15,11 @@ import { Fragment } from "react";
 interface Props {
   text: string;
   sections: { name: string; parts: string[] }[];
-  level: string;
 }
 
-const SalmonRunGuidePage: React.FC<Props> = ({ text, sections, level }) => {
+const SalmonRunGuidePage = ({ text, sections }: Props) => {
   return (
     <>
-      <Breadcrumbs
-        pages={[
-          { name: t`Salmon Run` },
-          { name: t`Guide` },
-          { name: level.charAt(0).toUpperCase() + level.slice(1) },
-        ]}
-      />
       <SubText>Contents</SubText>
       <OrderedList>
         {sections.map((section) => (
@@ -67,7 +57,6 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   return {
     props: {
       text,
-      level: params!.level as string,
       sections: text
         .split("\n")
         .reduce((acc: { name: string; parts: string[] }[], line) => {
@@ -93,5 +82,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
     fallback: false,
   };
 };
+
+SalmonRunGuidePage.header = (
+  <HeaderBanner icon="sr" title="Salmon Run" subtitle="Learn how to overfish" />
+);
 
 export default SalmonRunGuidePage;

@@ -13,7 +13,7 @@ export interface PlusHomePageProps {
   suggestions: Suggestions;
 }
 
-const PlusHomePage: React.FC<PlusHomePageProps> = ({ suggestions }) => {
+const PlusHomePage = ({ suggestions }: PlusHomePageProps) => {
   const [user] = useUser();
   const {
     plusStatusData,
@@ -33,7 +33,7 @@ const PlusHomePage: React.FC<PlusHomePageProps> = ({ suggestions }) => {
           userPlusMembershipTier={plusStatusData.membershipTier}
         />
       )}
-      <Center mt={6}>
+      <Center mt={2}>
         <RadioGroup
           defaultValue="ALL"
           onChange={(value) => {

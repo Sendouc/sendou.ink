@@ -1,6 +1,4 @@
 import { Box, Button } from "@chakra-ui/react";
-import { t } from "@lingui/macro";
-import Breadcrumbs from "components/common/Breadcrumbs";
 import MyLink from "components/common/MyLink";
 import {
   Table,
@@ -57,13 +55,6 @@ const SalmonRunAdminPage = ({}) => {
 
   return (
     <>
-      <Breadcrumbs
-        pages={[
-          { name: t`Salmon Run` },
-          { name: t`Leaderboards`, link: "/sr/leaderboards" },
-          { name: "Admin" },
-        ]}
-      />
       {records.length === 0 ? (
         <>No results waiting for approval.</>
       ) : (

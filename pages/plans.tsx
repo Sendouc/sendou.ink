@@ -1,11 +1,10 @@
 import { Button, ButtonGroup, Flex } from "@chakra-ui/react";
-import { t, Trans } from "@lingui/macro";
-import Breadcrumbs from "components/common/Breadcrumbs";
+import { Trans } from "@lingui/macro";
+import HeaderBanner from "components/layout/HeaderBanner";
 import DraggableImageAdder from "components/plans/DraggableImageAdder";
 import DraggableToolsSelector from "components/plans/DraggableToolsSelector";
 import StageSelector from "components/plans/StageSelector";
 import { stages } from "lib/lists/stages";
-import { NextPage } from "next";
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -127,7 +126,7 @@ const defaultValue = {
   },
 };
 
-const MapPlannerPage: NextPage = () => {
+const MapPlannerPage = () => {
   const fileInput = useRef<HTMLInputElement | null>(null);
   const sketch = useRef<any>(null);
   const [tool, setTool] = useState<Tool>("pencil");
@@ -277,7 +276,6 @@ const MapPlannerPage: NextPage = () => {
 
   return (
     <>
-      <Breadcrumbs pages={[{ name: t`Map Planner` }]} />
       <DraggableToolsSelector
         tool={tool}
         setTool={setTool}
@@ -300,7 +298,7 @@ const MapPlannerPage: NextPage = () => {
         onSketchChange={onSketchChange}
         tool={tool}
       />
-      <Flex my={2} justifyContent="space-between">
+      <Flex mt={4} mb={2} justifyContent="space-between">
         <Button
           onClick={() => {
             sketch.current.clear();
@@ -373,5 +371,13 @@ const MapPlannerPage: NextPage = () => {
     </>
   );
 };
+
+MapPlannerPage.header = (
+  <HeaderBanner
+    icon="plans"
+    title="Map Planner"
+    subtitle="Draw on 200 different maps and make your plans"
+  />
+);
 
 export default MapPlannerPage;

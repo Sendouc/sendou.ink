@@ -177,7 +177,10 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       <NextAuthProvider session={pageProps.session}>
         <ChakraProvider theme={extendedTheme}>
           <I18nProvider i18n={i18n}>
-            <Layout>
+            <Layout
+              // @ts-expect-error
+              header={Component.header}
+            >
               <Component {...pageProps} />
             </Layout>
           </I18nProvider>
