@@ -22,7 +22,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { FiSettings } from "react-icons/fi";
 
-const CURRENT_PATCH = "5.3.";
+const CURRENT_PATCH = "5.4.";
 
 const defaultBuild: ViewSlotsAbilities = {
   headAbilities: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
