@@ -18,6 +18,7 @@ import {
 } from "../../services/plus";
 import { Select } from "@chakra-ui/select";
 import { useRouter } from "next/router";
+import { chakra } from "@chakra-ui/system";
 
 export interface PlusVotingHistoryPageProps {
   summaries: VotingSummariesByMonthAndTier;
@@ -37,6 +38,7 @@ const PlusVotingHistoryPage = ({
         }}
         maxW={64}
         mb={8}
+        data-cy="tier-selector"
       >
         {monthsWithData.map(({ month, year, tier }) => (
           <option
@@ -93,10 +95,32 @@ const PlusVotingHistoryPage = ({
                   {summary.percentage}%
                 </TableCell>
                 <TableCell>
-                  {getCount("NA", summary.countsNA).join("/")}
+                  {getCount("NA", summary.countsNA).map((count, i, arr) => (
+                    <>
+                      <chakra.span
+                        color={
+                          i + 1 <= arr.length / 2 ? "red.500" : "green.500"
+                        }
+                      >
+                        {count}
+                      </chakra.span>
+                      {i !== arr.length - 1 && <>/</>}
+                    </>
+                  ))}
                 </TableCell>
                 <TableCell>
-                  {getCount("EU", summary.countsEU).join("/")}
+                  {getCount("EU", summary.countsNA).map((count, i, arr) => (
+                    <>
+                      <chakra.span
+                        color={
+                          i + 1 <= arr.length / 2 ? "red.500" : "green.500"
+                        }
+                      >
+                        {count}
+                      </chakra.span>
+                      {i !== arr.length - 1 && <>/</>}
+                    </>
+                  ))}
                 </TableCell>
                 <TableCell>{summary.regionForVoting}</TableCell>
                 <TableCell>

@@ -10,7 +10,13 @@ context("Plus Voting History", () => {
     cy.contains("Not Found");
   });
 
-  it("correctly calculates voting percentage", () => {});
+  it("can view voting history", () => {
+    cy.visit("/plus/history");
+    cy.dataCy("tier-selector").select("+2 - January 2020");
+
+    cy.contains("58.3%");
+    cy.contains("8.3%");
+  });
 });
 
 context("Plus Home Page", () => {
@@ -76,7 +82,7 @@ context("Plus Home Page", () => {
     cy.contains("Vouched NZAP#6227");
   });
 
-  it.only("can't vouch if canVouchAgainAfter set", () => {
+  it("can't vouch if canVouchAgainAfter set", () => {
     cy.login("nzap");
     cy.visit("/plus");
 
