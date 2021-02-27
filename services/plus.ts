@@ -3,13 +3,13 @@ import { UserError } from "lib/errors";
 import { getPercentageFromCounts } from "lib/plus";
 import { userBasicSelection } from "lib/prisma";
 import { suggestionFullSchema } from "lib/validators/suggestion";
+import { vouchSchema } from "lib/validators/vouch";
 import prisma from "prisma/client";
 
-export type PlusStatus = Prisma.PromiseReturnType<typeof getPlusStatus>;
+export type PlusStatuses = Prisma.PromiseReturnType<typeof getPlusStatuses>;
 
-const getPlusStatus = async (userId: number) => {
-  const status = await prisma.plusStatus.findUnique({
-    where: { userId },
+const getPlusStatuses = async () => {
+  return prisma.plusStatus.findMany({
     select: {
       canVouchAgainAfter: true,
       vouchTier: true,
@@ -17,10 +17,9 @@ const getPlusStatus = async (userId: number) => {
       membershipTier: true,
       region: true,
       voucher: { select: userBasicSelection },
+      user: { select: userBasicSelection },
     },
   });
-
-  return { status: status ?? null };
 };
 
 export type Suggestions = Prisma.PromiseReturnType<typeof getSuggestions>;
@@ -237,11 +236,62 @@ const addSuggestion = async ({
   }
 };
 
+const addVouch = async ({
+  data,
+  userId,
+}: {
+  data: unknown;
+  userId: number;
+}) => {
+  const parsedData = vouchSchema.parse(data);
+  const plusStatuses = await prisma.plusStatus.findMany({});
+
+  const suggesterPlusStatus = plusStatuses.find(
+    (status) => status.userId === userId
+  );
+
+  if ((suggesterPlusStatus?.canVouchFor ?? Infinity) > parsedData.tier) {
+    throw new UserError(
+      "not a member of high enough tier to vouch for this tier"
+    );
+  }
+
+  if (vouchedUserAlreadyHasAccess()) {
+    throw new UserError("vouched user already has access");
+  }
+
+  // TODO voting has started
+
+  return prisma.$transaction([
+    prisma.plusStatus.upsert({
+      where: { userId: parsedData.vouchedId },
+      create: { region: parsedData.region, userId: parsedData.vouchedId },
+      update: { voucherId: userId, vouchTier: parsedData.tier },
+    }),
+    prisma.plusStatus.update({
+      where: { userId },
+      data: { canVouchFor: null },
+    }),
+  ]);
+
+  function vouchedUserAlreadyHasAccess() {
+    const suggestedPlusStatus = plusStatuses.find(
+      (status) => status.userId === parsedData.vouchedId
+    );
+    return Boolean(
+      suggestedPlusStatus &&
+        ((suggestedPlusStatus.membershipTier ?? 999) <= parsedData.tier ||
+          (suggestedPlusStatus.vouchTier ?? 999) <= parsedData.tier)
+    );
+  }
+};
+
 export default {
-  getPlusStatus,
+  getPlusStatuses,
   getSuggestions,
   getVotingSummariesByMonthAndTier,
   getMostRecentVotingWithResultsMonth,
   getDistinctSummaryMonths,
   addSuggestion,
+  addVouch,
 };

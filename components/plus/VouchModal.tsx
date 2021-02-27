@@ -9,68 +9,46 @@ import {
   ModalFooter,
   FormControl,
   FormLabel,
-  Textarea,
   FormHelperText,
   FormErrorMessage,
   Select,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import {
-  suggestionFullSchema,
-  SUGGESTION_DESCRIPTION_LIMIT,
-} from "lib/validators/suggestion";
+import { vouchSchema } from "lib/validators/vouch";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import UserSelector from "components/common/UserSelector";
 import useMutation from "hooks/useMutation";
 
 interface Props {
-  canVouch: boolean;
-  canSuggest: boolean;
-  userPlusMembershipTier?: number;
+  canVouchFor: number;
 }
 
-type FormData = z.infer<typeof suggestionFullSchema>;
+type FormData = z.infer<typeof vouchSchema>;
 
-const SuggestionVouchModal: React.FC<Props> = ({
-  canVouch,
-  canSuggest,
-  userPlusMembershipTier,
-}) => {
+const VouchModal: React.FC<Props> = ({ canVouchFor }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
-    resolver: zodResolver(suggestionFullSchema),
+  const { handleSubmit, errors, register, control } = useForm<FormData>({
+    resolver: zodResolver(vouchSchema),
   });
   const { onSubmit, sending } = useMutation({
     onSuccess: () => setIsOpen(false),
-    route: "plus/suggestions",
-    mutationKey: "plus/suggestions",
-    successText: "New suggestion submitted",
+    route: "plus/vouch",
+    mutationKey: "plus",
+    successText: "Successfully vouched",
   });
-
-  const watchDescription = watch("description", "");
-
-  if (!canVouch && !canSuggest) return null;
-
-  const getButtonText = () => {
-    if (canSuggest && canVouch) return "Add new suggestion or vouch";
-    if (canVouch) return "Vouch";
-
-    return "Add new suggestion";
-  };
-
-  if (!userPlusMembershipTier) return null;
 
   return (
     <>
       <Button
         size="sm"
         mb={4}
+        ml={2}
         onClick={() => setIsOpen(true)}
-        data-cy="suggestion-button"
+        data-cy="vouch-button"
       >
-        {getButtonText()}
+        Vouch
       </Button>
       {isOpen && (
         <Modal
@@ -81,7 +59,7 @@ const SuggestionVouchModal: React.FC<Props> = ({
         >
           <ModalOverlay>
             <ModalContent>
-              <ModalHeader>Adding a new suggestion or vouch</ModalHeader>
+              <ModalHeader>Vouching</ModalHeader>
               <ModalCloseButton borderRadius="50%" />
               <form onSubmit={handleSubmit(onSubmit)}>
                 <ModalBody pb={2}>
@@ -89,27 +67,23 @@ const SuggestionVouchModal: React.FC<Props> = ({
                   <Controller
                     name="tier"
                     control={control}
-                    defaultValue={userPlusMembershipTier}
+                    defaultValue={canVouchFor}
                     render={({ value, onChange }) => (
                       <Select
                         value={value}
                         onChange={(e) => onChange(Number(e.target.value))}
                       >
-                        {userPlusMembershipTier === 1 && (
-                          <option value="1">+1</option>
-                        )}
-                        {userPlusMembershipTier <= 2 && (
-                          <option value="2">+2</option>
-                        )}
+                        {canVouchFor === 1 && <option value="1">+1</option>}
+                        {canVouchFor <= 2 && <option value="2">+2</option>}
                         {false && <option value="3">+3</option>}
                       </Select>
                     )}
                   />
 
-                  <FormControl isInvalid={!!errors.suggestedId}>
+                  <FormControl isInvalid={!!errors.vouchedId}>
                     <FormLabel mt={4}>User</FormLabel>
                     <Controller
-                      name="suggestedId"
+                      name="vouchedId"
                       control={control}
                       render={({ value, onChange }) => (
                         <UserSelector
@@ -121,7 +95,7 @@ const SuggestionVouchModal: React.FC<Props> = ({
                       )}
                     />
                     <FormErrorMessage>
-                      {errors.suggestedId?.message}
+                      {errors.vouchedId?.message}
                     </FormErrorMessage>
                   </FormControl>
 
@@ -139,24 +113,6 @@ const SuggestionVouchModal: React.FC<Props> = ({
                       If the player isn't from either region then choose the one
                       they play most commonly with.
                     </FormHelperText>
-                  </FormControl>
-
-                  <FormControl isInvalid={!!errors.description}>
-                    <FormLabel htmlFor="description" mt={4}>
-                      Description
-                    </FormLabel>
-                    <Textarea
-                      name="description"
-                      ref={register}
-                      data-cy="description-textarea"
-                    />
-                    <FormHelperText>
-                      {(watchDescription ?? "").length}/
-                      {SUGGESTION_DESCRIPTION_LIMIT}
-                    </FormHelperText>
-                    <FormErrorMessage>
-                      {errors.description?.message}
-                    </FormErrorMessage>
                   </FormControl>
                 </ModalBody>
                 <ModalFooter>
@@ -181,4 +137,4 @@ const SuggestionVouchModal: React.FC<Props> = ({
   );
 };
 
-export default SuggestionVouchModal;
+export default VouchModal;

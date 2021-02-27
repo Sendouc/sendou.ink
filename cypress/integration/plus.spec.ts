@@ -59,4 +59,28 @@ context("Plus Home Page", () => {
     cy.contains('"yes agreed" - Sendou#4059');
     cy.dataCy("comment-button").should("not.exist");
   });
+
+  it("can add vouch", () => {
+    cy.login("sendou");
+    cy.visit("/plus");
+    cy.dataCy("vouch-button")
+      .click()
+      .get(".select__value-container")
+      .type("NZAP{enter}")
+      .dataCy("region-select")
+      .select("EU")
+      .dataCy("submit-button")
+      .click();
+
+    cy.dataCy("vouch-button").should("not.exist");
+    cy.contains("Vouched NZAP#6227");
+  });
+
+  it.only("can't vouch if canVouchAgainAfter set", () => {
+    cy.login("nzap");
+    cy.visit("/plus");
+
+    cy.dataCy("vouch-button").should("not.exist");
+    cy.contains("Can vouch again after:");
+  });
 });

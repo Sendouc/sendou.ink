@@ -1,31 +1,42 @@
 import { useState } from "react";
-import { PlusStatus, Suggestions } from "services/plus";
+import { PlusStatuses, Suggestions } from "services/plus";
 import useSWR from "swr";
 import { useUser } from "./common";
 
-export function usePlus(initialData: Suggestions) {
+export function usePlus({
+  suggestions: suggestionsInitial,
+  statuses: statusesInitial,
+}: {
+  suggestions: Suggestions;
+  statuses: PlusStatuses;
+}) {
   const [user] = useUser();
   const [suggestionsFilter, setSuggestionsFilter] = useState<
     number | undefined
   >(undefined);
 
-  const { data: plusStatusData } = useSWR<PlusStatus>(
-    user ? "/api/plus" : null
+  const { data: plusStatusData } = useSWR<PlusStatuses>(
+    user ? "/api/plus" : null,
+    { initialData: statusesInitial }
   );
   const { data: suggestionsData } = useSWR<Suggestions>(
     "/api/plus/suggestions",
-    { initialData }
+    { initialData: suggestionsInitial }
   );
 
   const suggestions = suggestionsData ?? [];
 
   return {
-    plusStatusData: plusStatusData?.status,
+    plusStatusData: plusStatusData?.find(
+      (status) => status.user.id === user?.id
+    ),
+    vouchedPlusStatusData: plusStatusData?.find(
+      (status) => status.voucher?.id === user?.id
+    ),
     suggestionsData: suggestions.filter(
       (suggestion) =>
         !suggestionsFilter || suggestion.tier === suggestionsFilter
     ),
-    suggestionsLoading: !suggestionsData,
     suggestionCounts: suggestions.reduce(
       (counts, suggestion) => {
         const tierString = [null, "ONE", "TWO", "THREE"][

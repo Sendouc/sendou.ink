@@ -1,38 +1,93 @@
 import { Box, Center, Divider, Flex, Stack } from "@chakra-ui/layout";
-import { Radio, RadioGroup } from "@chakra-ui/react";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+  chakra,
+  Radio,
+  RadioGroup,
+} from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
 import SubText from "components/common/SubText";
 import { useUser } from "hooks/common";
 import { usePlus } from "hooks/plus";
+import { getFullUsername } from "lib/strings";
 import { Fragment } from "react";
-import { Suggestions } from "services/plus";
+import { PlusStatuses, Suggestions } from "services/plus";
 import Suggestion from "./Suggestion";
-import SuggestionVouchModal from "./SuggestionVouchModal";
+import SuggestionModal from "./SuggestionModal";
+import VouchModal from "./VouchModal";
 
 export interface PlusHomePageProps {
   suggestions: Suggestions;
+  statuses: PlusStatuses;
 }
 
-const PlusHomePage = ({ suggestions }: PlusHomePageProps) => {
+const PlusHomePage = ({ suggestions, statuses }: PlusHomePageProps) => {
   const [user] = useUser();
   const {
     plusStatusData,
     suggestionsData,
     ownSuggestion,
-    suggestionsLoading,
     suggestionCounts,
     setSuggestionsFilter,
-  } = usePlus(suggestions);
+    vouchedPlusStatusData,
+  } = usePlus({ suggestions, statuses });
 
   return (
     <>
-      {plusStatusData && plusStatusData.membershipTier && (
-        <SuggestionVouchModal
-          canSuggest={!suggestionsLoading && !ownSuggestion}
-          canVouch={!!plusStatusData.canVouchFor}
+      {plusStatusData && plusStatusData.membershipTier && !ownSuggestion && (
+        <SuggestionModal
           userPlusMembershipTier={plusStatusData.membershipTier}
         />
       )}
+      {plusStatusData &&
+        plusStatusData.canVouchFor &&
+        !plusStatusData.canVouchAgainAfter && (
+          <VouchModal canVouchFor={plusStatusData.canVouchFor} />
+        )}
+      {plusStatusData &&
+        (plusStatusData.canVouchAgainAfter ||
+          plusStatusData.voucher ||
+          vouchedPlusStatusData) && (
+          <Alert
+            status="success"
+            variant="subtle"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            textAlign="center"
+            mt={2}
+            mb={6}
+            rounded="lg"
+          >
+            <AlertDescription maxWidth="sm">
+              <AlertTitle mb={1} fontSize="lg">
+                Vouching status
+              </AlertTitle>
+              {plusStatusData?.canVouchAgainAfter && (
+                <chakra.div>
+                  Can vouch again after:{" "}
+                  {new Date(
+                    plusStatusData.canVouchAgainAfter
+                  ).toLocaleDateString()}
+                </chakra.div>
+              )}
+              {plusStatusData?.voucher && (
+                <chakra.div>
+                  Vouched for <b>+{plusStatusData.vouchTier}</b> by{" "}
+                  {getFullUsername(plusStatusData.voucher)}
+                </chakra.div>
+              )}
+              {vouchedPlusStatusData && (
+                <chakra.div>
+                  Vouched {getFullUsername(vouchedPlusStatusData.user)} to{" "}
+                  <b>+{vouchedPlusStatusData.vouchTier}</b>
+                </chakra.div>
+              )}
+            </AlertDescription>
+          </Alert>
+        )}
       <Center mt={2}>
         <RadioGroup
           defaultValue="ALL"
@@ -69,9 +124,8 @@ const PlusHomePage = ({ suggestions }: PlusHomePageProps) => {
           </Stack>
         </RadioGroup>
       </Center>
-      {!suggestionsLoading &&
-      suggestionCounts.ONE + suggestionCounts.TWO + suggestionCounts.THREE ===
-        0 ? (
+      {suggestionCounts.ONE + suggestionCounts.TWO + suggestionCounts.THREE ===
+      0 ? (
         <Box mt={4}>No suggestions yet for this month</Box>
       ) : (
         <>

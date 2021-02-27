@@ -57,11 +57,14 @@ export const getPlusStatusesData = (): Prisma.PlusStatusCreateManyInput[] => {
       userId: 11,
       region: "EU",
       membershipTier: 1,
+      canVouchFor: 1,
     },
     {
       userId: 12,
       region: "EU",
       membershipTier: 2,
+      canVouchAgainAfter: new Date(Date.UTC(2030, 1, 1)),
+      canVouchFor: 2,
     },
   ];
 };

@@ -4,10 +4,16 @@ import { GetStaticProps } from "next";
 import plusService from "services/plus";
 
 export const getStaticProps: GetStaticProps<PlusHomePageProps> = async () => {
-  const suggestions = await plusService.getSuggestions();
+  const [suggestions, statuses] = await Promise.all([
+    plusService.getSuggestions(),
+    plusService.getPlusStatuses(),
+  ]);
 
   return {
-    props: { suggestions: JSON.parse(JSON.stringify(suggestions)) },
+    props: {
+      suggestions: JSON.parse(JSON.stringify(suggestions)),
+      statuses: JSON.parse(JSON.stringify(statuses)),
+    },
     revalidate: 60,
   };
 };
