@@ -13,6 +13,7 @@ const HeaderBanner = ({
   subtitle: string;
 }) => {
   const { secondaryBgColor, gray } = useMyTheme();
+  const isTASL = icon === "tasl_main";
   return (
     <Flex
       bg={secondaryBgColor}
@@ -23,11 +24,11 @@ const HeaderBanner = ({
       mb={2}
       h={12}
     >
-      <chakra.div mt="-1rem">
+      <chakra.div mt={isTASL ? "-0.5rem" : "-1rem"}>
         <Image
           src={`/layout/${icon}.png`}
-          height={80}
-          width={80}
+          height={isTASL ? 60 : 80}
+          width={isTASL ? 60 : 80}
           alt={`${icon} logo`}
           priority={true}
         />
