@@ -109,7 +109,7 @@ const PlusVotingHistoryPage = ({
                   ))}
                 </TableCell>
                 <TableCell>
-                  {getCount("EU", summary.countsNA).map((count, i, arr) => (
+                  {getCount("EU", summary.countsEU).map((count, i, arr) => (
                     <>
                       <chakra.span
                         color={
