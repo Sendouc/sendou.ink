@@ -1,6 +1,5 @@
 import Image from "next/image";
-import { Flex } from "@chakra-ui/layout";
-import { chakra } from "@chakra-ui/system";
+import { Box, Flex } from "@chakra-ui/layout";
 import { useMyTheme } from "hooks/common";
 
 const HeaderBanner = ({
@@ -24,7 +23,7 @@ const HeaderBanner = ({
       mb={2}
       h={12}
     >
-      <chakra.div mt={isTASL ? "-0.5rem" : "-1rem"}>
+      <Box mt={isTASL ? "-0.5rem" : "-1rem"}>
         <Image
           src={`/layout/${icon}.png`}
           height={isTASL ? 60 : 80}
@@ -32,13 +31,21 @@ const HeaderBanner = ({
           alt={`${icon} logo`}
           priority={true}
         />
-      </chakra.div>
-      <chakra.span fontSize="lg" mr={2} mb={6} mt={3} ml={2} fontWeight="bold">
+      </Box>
+      <Box
+        as="span"
+        fontSize="lg"
+        mr={2}
+        mb={6}
+        mt={3}
+        ml={2}
+        fontWeight="bold"
+      >
         {title}
-      </chakra.span>
-      <chakra.span mt="16px" fontSize="sm" color={gray}>
+      </Box>
+      <Box as="span" mt="16px" fontSize="sm" color={gray}>
         {subtitle}
-      </chakra.span>
+      </Box>
     </Flex>
   );
 };

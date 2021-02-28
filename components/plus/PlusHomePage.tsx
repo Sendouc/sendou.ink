@@ -3,7 +3,6 @@ import {
   Alert,
   AlertDescription,
   AlertTitle,
-  chakra,
   Radio,
   RadioGroup,
 } from "@chakra-ui/react";
@@ -66,24 +65,24 @@ const PlusHomePage = ({ suggestions, statuses }: PlusHomePageProps) => {
                 Vouching status
               </AlertTitle>
               {plusStatusData?.canVouchAgainAfter && (
-                <chakra.div>
+                <Box>
                   Can vouch again after:{" "}
                   {new Date(
                     plusStatusData.canVouchAgainAfter
                   ).toLocaleDateString()}
-                </chakra.div>
+                </Box>
               )}
               {plusStatusData?.voucher && (
-                <chakra.div>
+                <Box>
                   Vouched for <b>+{plusStatusData.vouchTier}</b> by{" "}
                   {getFullUsername(plusStatusData.voucher)}
-                </chakra.div>
+                </Box>
               )}
               {vouchedPlusStatusData && (
-                <chakra.div>
+                <Box>
                   Vouched {getFullUsername(vouchedPlusStatusData.user)} to{" "}
                   <b>+{vouchedPlusStatusData.vouchTier}</b>
-                </chakra.div>
+                </Box>
               )}
             </AlertDescription>
           </Alert>

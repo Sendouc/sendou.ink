@@ -18,7 +18,6 @@ import {
 } from "../../services/plus";
 import { Select } from "@chakra-ui/select";
 import { useRouter } from "next/router";
-import { chakra } from "@chakra-ui/system";
 
 export interface PlusVotingHistoryPageProps {
   summaries: VotingSummariesByMonthAndTier;
@@ -97,13 +96,14 @@ const PlusVotingHistoryPage = ({
                 <TableCell>
                   {getCount("NA", summary.countsNA).map((count, i, arr) => (
                     <>
-                      <chakra.span
+                      <Box
+                        as="span"
                         color={
                           i + 1 <= arr.length / 2 ? "red.500" : "green.500"
                         }
                       >
                         {count}
-                      </chakra.span>
+                      </Box>
                       {i !== arr.length - 1 && <>/</>}
                     </>
                   ))}
@@ -111,13 +111,14 @@ const PlusVotingHistoryPage = ({
                 <TableCell>
                   {getCount("EU", summary.countsEU).map((count, i, arr) => (
                     <>
-                      <chakra.span
+                      <Box
+                        as="span"
                         color={
                           i + 1 <= arr.length / 2 ? "red.500" : "green.500"
                         }
                       >
                         {count}
-                      </chakra.span>
+                      </Box>
                       {i !== arr.length - 1 && <>/</>}
                     </>
                   ))}
