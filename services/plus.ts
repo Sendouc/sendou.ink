@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { UserError } from "lib/errors";
-import { getPercentageFromCounts } from "lib/plus";
+import { getPercentageFromCounts, getVotingRange } from "lib/plus";
 import { userBasicSelection } from "lib/prisma";
 import { suggestionFullSchema } from "lib/validators/suggestion";
 import { vouchSchema } from "lib/validators/vouch";
@@ -211,7 +211,9 @@ const addSuggestion = async ({
     throw new UserError("suggested user already has access");
   }
 
-  // TODO voting has started
+  if (getVotingRange().isHappening) {
+    throw new UserError("voting has already started");
+  }
 
   return prisma.$transaction([
     prisma.plusSuggestion.create({
@@ -260,7 +262,9 @@ const addVouch = async ({
     throw new UserError("vouched user already has access");
   }
 
-  // TODO voting has started
+  if (getVotingRange().isHappening) {
+    throw new UserError("voting has already started");
+  }
 
   return prisma.$transaction([
     prisma.plusStatus.upsert({

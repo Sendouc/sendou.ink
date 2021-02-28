@@ -22,3 +22,29 @@ export const getPercentageFromCounts = (
     ((sameSum / sameVoterCount + otherSum / otherVoterCount + 3) / 6) * 100
   );
 };
+
+export const getVotingRange = () => {
+  const startDate = new Date();
+
+  startDate.setUTCHours(10, 0, 0, 0);
+
+  startDate.setDate(1);
+
+  // Get the first Friday in the month
+  while (startDate.getDay() !== 5) {
+    startDate.setDate(startDate.getDate() + 1);
+  }
+
+  // Get the second Friday
+  startDate.setDate(startDate.getDate() + 7);
+
+  // Get the ending time on Monday
+  const endDate = new Date(startDate);
+  endDate.setDate(endDate.getDate() + 3);
+
+  const isHappening =
+    new Date().getTime() > startDate.getTime() &&
+    new Date().getTime() < endDate.getTime();
+
+  return { startDate, endDate, isHappening };
+};
