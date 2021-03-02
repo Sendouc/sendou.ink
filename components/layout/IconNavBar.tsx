@@ -15,6 +15,7 @@ import {
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { useMyTheme } from "hooks/common";
+import { getVotingRange } from "lib/plus";
 import { useRouter } from "next/dist/client/router";
 import Image from "next/image";
 import Link from "next/link";
@@ -98,16 +99,7 @@ export const navIcons: {
   {
     code: "plus",
     displayName: t`Plus Server`,
-    menuItems: [
-      // {
-      //   code: "plus/voting",
-      //   displayName: t`Voting`,
-      // },
-      { code: "plus", displayName: t`Suggested and vouched players` },
-      { code: "plus/history", displayName: t`Voting history` },
-      // { code: "draft", displayName: t`Draft Cup` },
-      // { code: "plus/faq", displayName: t`FAQ` },
-    ],
+    menuItems: [],
   },
   { code: "links", displayName: t`External links`, menuItems: [] },
 ];
@@ -121,8 +113,7 @@ const IconNavBar = () => {
   } = useMyTheme();
   const pathname = useRouter().pathname;
 
-  //const isVoting = !!plusInfoData?.plusInfo?.voting_ends;
-  const isVoting = false;
+  console.log(getVotingRange().isHappening);
 
   return (
     <Flex
@@ -163,9 +154,7 @@ const IconNavBar = () => {
                   return (
                     <Link key={item.code} href={"/" + item.code}>
                       <a>
-                        <MenuItem
-                          disabled={item.displayName === "Voting" && !isVoting}
-                        >
+                        <MenuItem>
                           {pathname === "/" + item.code ? (
                             <Box
                               h="7px"
@@ -266,27 +255,5 @@ const IconNavBar = () => {
     );
   }
 };
-
-// function getFirstFridayDate() {
-//   const today = new Date();
-//   const month =
-//     today.getDate() - ((1 + today.getDay()) % 7) <= 0
-//       ? today.getMonth()
-//       : today.getMonth() + 1;
-
-//   let day = 1;
-//   while (day <= 7) {
-//     const dateOfVoting = new Date(
-//       Date.UTC(today.getFullYear(), month, day, 15, 0, 0)
-//     );
-
-//     if (dateOfVoting.getDay() === 5) return dateOfVoting;
-
-//     day++;
-//   }
-
-//   console.error("Couldn't resolve first friday of the month for voting");
-//   return new Date(2000, 1, 1);
-// }
 
 export default IconNavBar;

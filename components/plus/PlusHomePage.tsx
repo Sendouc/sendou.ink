@@ -15,6 +15,7 @@ import { Fragment } from "react";
 import { PlusStatuses, Suggestions } from "services/plus";
 import Suggestion from "./Suggestion";
 import SuggestionModal from "./SuggestionModal";
+import VotingInfoHeader from "./VotingInfoHeader";
 import VouchModal from "./VouchModal";
 
 export interface PlusHomePageProps {
@@ -35,6 +36,9 @@ const PlusHomePage = ({ suggestions, statuses }: PlusHomePageProps) => {
 
   return (
     <>
+      <Box fontSize="sm" mb={4}>
+        <VotingInfoHeader isMember={!!plusStatusData?.membershipTier} />
+      </Box>
       {plusStatusData && plusStatusData.membershipTier && !ownSuggestion && (
         <SuggestionModal
           userPlusMembershipTier={plusStatusData.membershipTier}

@@ -23,20 +23,28 @@ export const getPercentageFromCounts = (
   );
 };
 
-export const getVotingRange = () => {
-  const startDate = new Date();
+const getSecondFridayDate = (nextMonth?: boolean) => {
+  const result = new Date();
 
-  startDate.setUTCHours(10, 0, 0, 0);
+  if (nextMonth) result.setMonth(result.getMonth() + 1);
 
-  startDate.setDate(1);
+  result.setUTCHours(10, 0, 0, 0);
+
+  result.setDate(1);
 
   // Get the first Friday in the month
-  while (startDate.getDay() !== 5) {
-    startDate.setDate(startDate.getDate() + 1);
+  while (result.getDay() !== 5) {
+    result.setDate(result.getDate() + 1);
   }
 
   // Get the second Friday
-  startDate.setDate(startDate.getDate() + 7);
+  result.setDate(result.getDate() + 7);
+
+  return result;
+};
+
+export const getVotingRange = () => {
+  const startDate = getSecondFridayDate();
 
   // Get the ending time on Monday
   const endDate = new Date(startDate);
@@ -46,5 +54,10 @@ export const getVotingRange = () => {
     new Date().getTime() > startDate.getTime() &&
     new Date().getTime() < endDate.getTime();
 
-  return { startDate, endDate, isHappening };
+  const nextVotingDate =
+    startDate.getTime() > new Date().getTime()
+      ? startDate
+      : getSecondFridayDate(true);
+
+  return { startDate, endDate, isHappening, nextVotingDate };
 };

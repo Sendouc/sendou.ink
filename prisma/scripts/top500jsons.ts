@@ -1,12 +1,12 @@
 import { Prisma } from "@prisma/client";
 import { getWeaponNormalized } from "../../lib/lists/weapons";
 import prisma from "../client";
-import cb from "./data/january_clam_blitz_2021.json";
-import rm from "./data/january_rainmaker_2021.json";
-import sz from "./data/january_splat_zones_2021.json";
-import tc from "./data/january_tower_control_2021.json";
+import cb from "./data/february_clam_blitz_2021.json";
+import rm from "./data/february_rainmaker_2021.json";
+import sz from "./data/february_splat_zones_2021.json";
+import tc from "./data/february_tower_control_2021.json";
 
-const MONTH = 1;
+const MONTH = 2;
 const YEAR = 2021;
 
 const filterJson = (result: any) => !result.cheater;
