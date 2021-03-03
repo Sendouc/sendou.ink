@@ -1,29 +1,29 @@
 import {
   Button,
+  FormControl,
+  FormErrorMessage,
+  FormHelperText,
+  FormLabel,
   Modal,
+  ModalBody,
   ModalCloseButton,
+  ModalContent,
+  ModalFooter,
   ModalHeader,
   ModalOverlay,
-  ModalContent,
-  ModalBody,
-  ModalFooter,
-  FormControl,
-  FormLabel,
-  Textarea,
-  FormHelperText,
-  FormErrorMessage,
   Select,
+  Textarea,
 } from "@chakra-ui/react";
-import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import UserSelector from "components/common/UserSelector";
+import useMutation from "hooks/useMutation";
 import {
   suggestionFullSchema,
   SUGGESTION_DESCRIPTION_LIMIT,
 } from "lib/validators/suggestion";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import UserSelector from "components/common/UserSelector";
-import useMutation from "hooks/useMutation";
 
 interface Props {
   userPlusMembershipTier: number;
@@ -84,7 +84,7 @@ const SuggestionModal: React.FC<Props> = ({ userPlusMembershipTier }) => {
                         {userPlusMembershipTier <= 2 && (
                           <option value="2">+2</option>
                         )}
-                        {false && <option value="3">+3</option>}
+                        <option value="3">+3</option>
                       </Select>
                     )}
                   />

@@ -1,25 +1,25 @@
 import {
   Button,
+  FormControl,
+  FormErrorMessage,
+  FormHelperText,
+  FormLabel,
   Modal,
+  ModalBody,
   ModalCloseButton,
+  ModalContent,
+  ModalFooter,
   ModalHeader,
   ModalOverlay,
-  ModalContent,
-  ModalBody,
-  ModalFooter,
-  FormControl,
-  FormLabel,
-  FormHelperText,
-  FormErrorMessage,
   Select,
 } from "@chakra-ui/react";
-import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { vouchSchema } from "lib/validators/vouch";
-import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import UserSelector from "components/common/UserSelector";
 import useMutation from "hooks/useMutation";
+import { vouchSchema } from "lib/validators/vouch";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import * as z from "zod";
 
 interface Props {
   canVouchFor: number;
@@ -75,7 +75,7 @@ const VouchModal: React.FC<Props> = ({ canVouchFor }) => {
                       >
                         {canVouchFor === 1 && <option value="1">+1</option>}
                         {canVouchFor <= 2 && <option value="2">+2</option>}
-                        {false && <option value="3">+3</option>}
+                        <option value="3">+3</option>
                       </Select>
                     )}
                   />
