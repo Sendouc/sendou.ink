@@ -12,6 +12,7 @@
     "mongo": "ts-node prisma/scripts/dataFromMongo.ts",
     "top500": "ts-node prisma/scripts/top500jsons.ts",
     "league": "cross-env NODE_OPTIONS=--max-old-space-size=8192 ts-node prisma/scripts/leagueJsons.ts",
+    "plus": "cross-env ts-node prisma/scripts/plusThree.ts",
     "ex:clean": "cross-env NODE_ENV=development lingui extract --clean",
     "compile": "lingui compile",
     "restore": "pg_restore -d 'postgresql://sendou@localhost:5432/postgres' --jobs 4 dumped.sql --clean",
