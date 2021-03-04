@@ -1,23 +1,24 @@
 import { Box } from "@chakra-ui/layout";
+import { Select } from "@chakra-ui/select";
 import { Trans } from "@lingui/macro";
 import { PlusRegion } from "@prisma/client";
+import MyLink from "components/common/MyLink";
 import {
   Table,
-  TableHead,
   TableBody,
-  TableRow,
-  TableHeader,
   TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "components/common/Table";
 import UserAvatar from "components/common/UserAvatar";
-import { FiCheck } from "react-icons/fi";
 import { getFullUsername, getLocalizedMonthYearString } from "lib/strings";
-import {
-  VotingSummariesByMonthAndTier,
-  DistinctSummaryMonths,
-} from "../../services/plus";
-import { Select } from "@chakra-ui/select";
 import { useRouter } from "next/router";
+import { FiCheck } from "react-icons/fi";
+import {
+  DistinctSummaryMonths,
+  VotingSummariesByMonthAndTier,
+} from "../../services/plus";
 
 export interface PlusVotingHistoryPageProps {
   summaries: VotingSummariesByMonthAndTier;
@@ -85,9 +86,18 @@ const PlusVotingHistoryPage = ({
             return (
               <TableRow key={summary.user.id}>
                 <TableCell>
-                  <UserAvatar user={summary.user} />
+                  <MyLink href={`/u/${summary.user.discordId}`}>
+                    <UserAvatar user={summary.user} />
+                  </MyLink>
                 </TableCell>
-                <TableCell>{getFullUsername(summary.user)}</TableCell>
+                <TableCell>
+                  <MyLink
+                    href={`/u/${summary.user.discordId}`}
+                    isColored={false}
+                  >
+                    {getFullUsername(summary.user)}
+                  </MyLink>
+                </TableCell>
                 <TableCell
                   color={summary.percentage >= 50 ? "green.500" : "red.500"}
                 >
