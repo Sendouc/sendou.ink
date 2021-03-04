@@ -2,6 +2,7 @@ import { Box } from "@chakra-ui/layout";
 import { Select } from "@chakra-ui/select";
 import { Trans } from "@lingui/macro";
 import { PlusRegion } from "@prisma/client";
+import MyHead from "components/common/MyHead";
 import MyLink from "components/common/MyLink";
 import {
   Table,
@@ -32,6 +33,7 @@ const PlusVotingHistoryPage = ({
   const router = useRouter();
   return (
     <>
+      <MyHead title="Voting History" />
       <Select
         onChange={(e) => {
           router.replace(`/plus/history/${e.target.value}`);

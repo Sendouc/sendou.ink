@@ -7,6 +7,7 @@ import {
   RadioGroup,
 } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
+import MyHead from "components/common/MyHead";
 import SubText from "components/common/SubText";
 import { useUser } from "hooks/common";
 import { usePlus } from "hooks/plus";
@@ -36,6 +37,7 @@ const PlusHomePage = ({ suggestions, statuses }: PlusHomePageProps) => {
 
   return (
     <>
+      <MyHead title="Plus Server" />
       <Box fontSize="sm" mb={4}>
         <VotingInfoHeader isMember={!!plusStatusData?.membershipTier} />
       </Box>
