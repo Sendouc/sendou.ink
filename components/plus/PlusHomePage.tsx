@@ -147,7 +147,9 @@ const PlusHomePage = ({ suggestions, statuses }: PlusHomePageProps) => {
               return true;
             };
             return (
-              <Fragment key={suggestion.suggestedUser.id}>
+              <Fragment
+                key={suggestion.suggestedUser.id + "-" + suggestion.tier}
+              >
                 <Suggestion suggestion={suggestion} canSuggest={canSuggest()} />
                 {i < suggestionsData.length - 1 && <Divider />}
               </Fragment>
