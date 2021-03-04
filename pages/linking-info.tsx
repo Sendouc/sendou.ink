@@ -24,6 +24,10 @@ const LinkingInfoPage = ({}) => {
         Simply DM the bot with <code>!register</code> command and follow
         instructions. If you have problems using Lanista you can DM{" "}
         <b>Lean#3146</b> directly.
+        <br />
+        <br />
+        If you have already used the !register command in the past and just need
+        to link now then use the <code>!sendoulink</code> command.
       </>
     </>
   );
