@@ -14,7 +14,7 @@
     "league": "cross-env NODE_OPTIONS=--max-old-space-size=8192 ts-node prisma/scripts/leagueJsons.ts",
     "ex:clean": "cross-env NODE_ENV=development lingui extract --clean",
     "compile": "lingui compile",
-    "restore": "pg_restore -d 'postgresql://sendou@localhost:5432/postgres' --jobs 4 dumped.sql --clean",
+    "restore": "pg_restore -d 'postgresql://sendou@localhost:5432/dev' --jobs 4 dumped.sql --clean",
     "seed": "prisma db seed --preview-feature",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
