@@ -6,6 +6,7 @@ import {
   FormHelperText,
   FormLabel,
   Textarea,
+  useToast,
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Trans } from "@lingui/macro";
@@ -14,10 +15,11 @@ import MyLink from "components/common/MyLink";
 import SubText from "components/common/SubText";
 import UserAvatar from "components/common/UserAvatar";
 import { useMyTheme } from "hooks/common";
-import useMutation from "hooks/useMutation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { getToastOptions } from "utils/getToastOptions";
 import { getFullUsername } from "utils/strings";
+import { trpc } from "utils/trpc";
 import { Unpacked } from "utils/types";
 import {
   resuggestionSchema,
@@ -34,16 +36,23 @@ const Suggestion = ({
   suggestion: Unpacked<Suggestions>;
   canSuggest: boolean;
 }) => {
+  const toast = useToast();
   const { gray } = useMyTheme();
   const [showTextarea, setShowTextarea] = useState(false);
   const { handleSubmit, errors, register, watch } = useForm<FormData>({
     resolver: zodResolver(resuggestionSchema),
   });
-  const { onSubmit, sending } = useMutation({
-    route: "plus/suggestions",
-    mutationKey: "plus/suggestions",
-    successText: "Comment added",
-    onSuccess: () => setShowTextarea(false),
+
+  const { mutate, status } = trpc.useMutation("plus.suggestion", {
+    onSuccess() {
+      toast(getToastOptions("Comment added", "success"));
+      // TODO:
+      trpc.queryClient.invalidateQueries(["plus.suggestions"]);
+      setShowTextarea(false);
+    },
+    onError(error) {
+      toast(getToastOptions(error.message, "error"));
+    },
   });
 
   const watchDescription = watch("description", "");
@@ -100,7 +109,7 @@ const Suggestion = ({
         {showTextarea && (
           <form
             onSubmit={handleSubmit((values) =>
-              onSubmit({
+              mutate({
                 ...values,
                 // region doesn't matter as it is not updated after the first suggestion
                 region: "NA",
@@ -127,7 +136,7 @@ const Suggestion = ({
               size="sm"
               mr={3}
               type="submit"
-              isLoading={sending}
+              isLoading={status === "loading"}
               data-cy="submit-button"
             >
               <Trans>Save</Trans>

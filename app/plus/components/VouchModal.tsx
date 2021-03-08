@@ -12,12 +12,14 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
+  useToast,
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import UserSelector from "components/common/UserSelector";
-import useMutation from "hooks/useMutation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { getToastOptions } from "utils/getToastOptions";
+import { trpc } from "utils/trpc";
 import { vouchSchema } from "utils/validators/vouch";
 import * as z from "zod";
 
@@ -28,15 +30,22 @@ interface Props {
 type FormData = z.infer<typeof vouchSchema>;
 
 const VouchModal: React.FC<Props> = ({ canVouchFor }) => {
+  const toast = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const { handleSubmit, errors, register, control } = useForm<FormData>({
     resolver: zodResolver(vouchSchema),
   });
-  const { onSubmit, sending } = useMutation({
-    onSuccess: () => setIsOpen(false),
-    route: "plus/vouch",
-    mutationKey: "plus",
-    successText: "Successfully vouched",
+
+  const { mutate, status } = trpc.useMutation("plus.vouch", {
+    onSuccess() {
+      toast(getToastOptions("Successfully vouched", "success"));
+      // TODO:
+      trpc.queryClient.invalidateQueries(["plus.statuses"]);
+      setIsOpen(false);
+    },
+    onError(error) {
+      toast(getToastOptions(error.message, "error"));
+    },
   });
 
   return (
@@ -61,7 +70,7 @@ const VouchModal: React.FC<Props> = ({ canVouchFor }) => {
             <ModalContent>
               <ModalHeader>Vouching</ModalHeader>
               <ModalCloseButton borderRadius="50%" />
-              <form onSubmit={handleSubmit(onSubmit)}>
+              <form onSubmit={handleSubmit((data) => mutate(data))}>
                 <ModalBody pb={2}>
                   <FormLabel>Tier</FormLabel>
                   <Controller
@@ -119,7 +128,7 @@ const VouchModal: React.FC<Props> = ({ canVouchFor }) => {
                   <Button
                     mr={3}
                     type="submit"
-                    isLoading={sending}
+                    isLoading={status === "loading"}
                     data-cy="submit-button"
                   >
                     Save

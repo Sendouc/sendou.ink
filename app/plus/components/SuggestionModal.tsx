@@ -13,12 +13,14 @@ import {
   ModalOverlay,
   Select,
   Textarea,
+  useToast,
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import UserSelector from "components/common/UserSelector";
-import useMutation from "hooks/useMutation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { getToastOptions } from "utils/getToastOptions";
+import { trpc } from "utils/trpc";
 import {
   suggestionFullSchema,
   SUGGESTION_DESCRIPTION_LIMIT,
@@ -32,15 +34,22 @@ interface Props {
 type FormData = z.infer<typeof suggestionFullSchema>;
 
 const SuggestionModal: React.FC<Props> = ({ userPlusMembershipTier }) => {
+  const toast = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
     resolver: zodResolver(suggestionFullSchema),
   });
-  const { onSubmit, sending } = useMutation({
-    onSuccess: () => setIsOpen(false),
-    route: "plus/suggestions",
-    mutationKey: "plus/suggestions",
-    successText: "New suggestion submitted",
+
+  const { mutate, status } = trpc.useMutation("plus.suggestion", {
+    onSuccess() {
+      toast(getToastOptions("New suggestion submitted", "success"));
+      // TODO:
+      trpc.queryClient.invalidateQueries(["plus.suggestions"]);
+      setIsOpen(false);
+    },
+    onError(error) {
+      toast(getToastOptions(error.message, "error"));
+    },
   });
 
   const watchDescription = watch("description", "");
@@ -66,7 +75,7 @@ const SuggestionModal: React.FC<Props> = ({ userPlusMembershipTier }) => {
             <ModalContent>
               <ModalHeader>Adding a new suggestion</ModalHeader>
               <ModalCloseButton borderRadius="50%" />
-              <form onSubmit={handleSubmit(onSubmit)}>
+              <form onSubmit={handleSubmit((data) => mutate(data))}>
                 <ModalBody pb={2}>
                   <FormLabel>Tier</FormLabel>
                   <Controller
@@ -146,7 +155,7 @@ const SuggestionModal: React.FC<Props> = ({ userPlusMembershipTier }) => {
                   <Button
                     mr={3}
                     type="submit"
-                    isLoading={sending}
+                    isLoading={status === "loading"}
                     data-cy="submit-button"
                   >
                     Save

@@ -240,20 +240,19 @@ const addSuggestion = async ({
 };
 
 const addVouch = async ({
-  data,
+  input,
   userId,
 }: {
-  data: unknown;
+  input: z.infer<typeof vouchSchema>;
   userId: number;
 }) => {
-  const parsedData = vouchSchema.parse(data);
   const plusStatuses = await prisma.plusStatus.findMany({});
 
   const suggesterPlusStatus = plusStatuses.find(
     (status) => status.userId === userId
   );
 
-  if ((suggesterPlusStatus?.canVouchFor ?? Infinity) > parsedData.tier) {
+  if ((suggesterPlusStatus?.canVouchFor ?? Infinity) > input.tier) {
     httpError.badRequest(
       "not a member of high enough tier to vouch for this tier"
     );
@@ -269,9 +268,9 @@ const addVouch = async ({
 
   return prisma.$transaction([
     prisma.plusStatus.upsert({
-      where: { userId: parsedData.vouchedId },
-      create: { region: parsedData.region, userId: parsedData.vouchedId },
-      update: { voucherId: userId, vouchTier: parsedData.tier },
+      where: { userId: input.vouchedId },
+      create: { region: input.region, userId: input.vouchedId },
+      update: { voucherId: userId, vouchTier: input.tier },
     }),
     prisma.plusStatus.update({
       where: { userId },
@@ -281,12 +280,12 @@ const addVouch = async ({
 
   function vouchedUserAlreadyHasAccess() {
     const suggestedPlusStatus = plusStatuses.find(
-      (status) => status.userId === parsedData.vouchedId
+      (status) => status.userId === input.vouchedId
     );
     return Boolean(
       suggestedPlusStatus &&
-        ((suggestedPlusStatus.membershipTier ?? 999) <= parsedData.tier ||
-          (suggestedPlusStatus.vouchTier ?? 999) <= parsedData.tier)
+        ((suggestedPlusStatus.membershipTier ?? 999) <= input.tier ||
+          (suggestedPlusStatus.vouchTier ?? 999) <= input.tier)
     );
   }
 };
