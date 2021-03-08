@@ -18,7 +18,6 @@ import { useMyTheme } from "hooks/common";
 import { useRouter } from "next/dist/client/router";
 import Image from "next/image";
 import Link from "next/link";
-import { getVotingRange } from "utils/plus";
 
 export const navIcons: {
   code: string;
@@ -112,8 +111,6 @@ const IconNavBar = () => {
     themeColorHex: themeColor,
   } = useMyTheme();
   const pathname = useRouter().pathname;
-
-  console.log(getVotingRange().isHappening);
 
   return (
     <Flex
