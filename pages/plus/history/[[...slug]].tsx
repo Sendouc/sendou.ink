@@ -1,9 +1,9 @@
-import { GetStaticPaths, GetStaticProps } from "next";
 import PlusVotingHistoryPage, {
   PlusVotingHistoryPageProps,
-} from "components/plus/PlusVotingHistoryPage";
-import plusService from "services/plus";
+} from "app/plus/components/PlusVotingHistoryPage";
+import plusService from "app/plus/service";
 import HeaderBanner from "components/layout/HeaderBanner";
+import { GetStaticPaths, GetStaticProps } from "next";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   return {

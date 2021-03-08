@@ -1,9 +1,9 @@
+import { PlusStatuses, Suggestions } from "app/plus/service";
 import { useState } from "react";
-import { PlusStatuses, Suggestions } from "services/plus";
 import useSWR from "swr";
-import { useUser } from "./common";
+import { useUser } from "../../../hooks/common";
 
-export function usePlus({
+export function usePlusHomePage({
   suggestions: suggestionsInitial,
   statuses: statusesInitial,
 }: {

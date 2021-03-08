@@ -1,5 +1,5 @@
+import plusService from "app/plus/service";
 import { NextApiRequest, NextApiResponse } from "next";
-import plusService from "services/plus";
 
 const plusHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method) {

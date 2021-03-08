@@ -11,7 +11,7 @@ const createContext = ({
   return {};
 };
 
-function createRouter() {
+export function createRouter() {
   return trpc.router<Context>();
 }
 // Important: only use this export with SSR/SSG

@@ -7,12 +7,12 @@ import {
   RadioGroup,
 } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
+import { usePlusHomePage } from "app/plus/hooks/usePlusHomePage";
+import { PlusStatuses, Suggestions } from "app/plus/service";
 import MyHead from "components/common/MyHead";
 import SubText from "components/common/SubText";
 import { useUser } from "hooks/common";
-import { usePlus } from "hooks/plus";
 import { Fragment } from "react";
-import { PlusStatuses, Suggestions } from "services/plus";
 import { getFullUsername } from "utils/strings";
 import Suggestion from "./Suggestion";
 import SuggestionModal from "./SuggestionModal";
@@ -33,7 +33,7 @@ const PlusHomePage = ({ suggestions, statuses }: PlusHomePageProps) => {
     suggestionCounts,
     setSuggestionsFilter,
     vouchedPlusStatusData,
-  } = usePlus({ suggestions, statuses });
+  } = usePlusHomePage({ suggestions, statuses });
 
   return (
     <>
