@@ -8,8 +8,8 @@ export function usePlusHomePage() {
     number | undefined
   >(undefined);
 
-  const { data: suggestionsData } = trpc.useQuery(["plusSuggestions"]);
-  const { data: plusStatusData } = trpc.useQuery(["plusStatuses"]);
+  const { data: suggestionsData } = trpc.useQuery(["plus.suggestions"]);
+  const { data: plusStatusData } = trpc.useQuery(["plus.statuses"]);
 
   const suggestions = suggestionsData ?? [];
 

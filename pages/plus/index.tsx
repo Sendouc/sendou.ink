@@ -7,8 +7,8 @@ export const getStaticProps = async () => {
   const ssr = trpc.ssr(appRouter, {});
 
   await Promise.all([
-    ssr.prefetchQuery("plusSuggestions"),
-    ssr.prefetchQuery("plusStatuses"),
+    ssr.prefetchQuery("plus.suggestions"),
+    ssr.prefetchQuery("plus.statuses"),
   ]);
 
   return {
