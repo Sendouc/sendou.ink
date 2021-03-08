@@ -46,7 +46,7 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
     .readFileSync(
       join(
         process.cwd(),
-        "lib",
+        "utils",
         "data",
         "sr",
         `${(params!.level as string).toLowerCase()}.md`

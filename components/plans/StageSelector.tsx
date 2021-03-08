@@ -12,13 +12,13 @@ import { useLingui } from "@lingui/react";
 import { RankedMode } from "@prisma/client";
 import ModeSelector from "components/common/ModeSelector";
 import SubText from "components/common/SubText";
-// @ts-ignore
-import salmonRunHighTide from "lib/assets/SalmonRunHighTide.svg";
-// @ts-ignore
-import salmonRunLowTide from "lib/assets/SalmonRunLowTide.svg";
-// @ts-ignore
-import salmonRunMidTide from "lib/assets/SalmonRunMidTide.svg";
 import { PlannerMapBg } from "pages/plans";
+// @ts-ignore
+import salmonRunHighTide from "utils/assets/SalmonRunHighTide.svg";
+// @ts-ignore
+import salmonRunLowTide from "utils/assets/SalmonRunLowTide.svg";
+// @ts-ignore
+import salmonRunMidTide from "utils/assets/SalmonRunMidTide.svg";
 import { salmonRunStages, stages } from "utils/lists/stages";
 
 interface StageSelectorProps {
