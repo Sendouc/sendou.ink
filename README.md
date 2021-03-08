@@ -4,8 +4,6 @@ Goal of sendou.ink is to provide useful tools and resources for the Splatoon com
 
 Live version: [https://sendou.ink/](https://sendou.ink/)
 
-Development status on [Trello](https://trello.com/b/z9gCYsPy/sendouink)
-
 ## Technologies used
 
 - React (via Next.JS)
@@ -85,12 +83,10 @@ e) On the "OAuth2" tab add `http://localhost:3000/api/auth/callback/discord` in 
 
 ## Using API
 
-If you wish to use the sendou.ink API for your own project you can refer to the API endpoints here: https://github.com/Sendouc/sendou.ink/tree/main/pages/api
+If you wish to use the sendou.ink API for your own project like a Discord bot you can use the API endpoints under `https://sendou.ink/api/bot` (https://github.com/Sendouc/sendou.ink/tree/main/pages/api/bot) as long as you keep the load on my backend reasonable.
 
-However it should be noted I develop the API for my own purposes and due to that there is always a possibility that the endpoints will change or be removed without a warning.
-
-If you end up using them I'm just asking you keep the load reasonable (use caching if your project is even a bit busy).
+Using other endpoints isn't advised as I change those as I feel to suit the needs of the website. If the endpoints under `/bot` don't meet your use case feel free to leave an issue.
 
 ## Contributing
 
-If you are interested in contributing come say hello on the Discord server's #development channel! For any feature requests or bug reports Discord has a #feedback channel you can use.
+If you are interested in contributing come say hello on Discord! For any feature requests or bug reports you can either leave an issue or use the #feedback channel on Discord.
