@@ -87,6 +87,25 @@ const ProfilePage = (props: Props) => {
         peakXPowers={props.peakXPowers}
         peakLeaguePowers={props.peakLeaguePowers}
       />
+      {/* <Flex
+        flexDir="column"
+        align="center"
+        bg="black"
+        rounded="lg"
+        width={64}
+        m="auto"
+      >
+        <SubText pt={4} mx="auto">
+          Badges
+        </SubText>
+        <Image
+          objectFit="cover"
+          objectPosition="100% 0%"
+          w={24}
+          h={24}
+          src="https://cdn.discordapp.com/attachments/664195413422899250/818604825389563943/unnamed_9_0.gif"
+        />
+      </Flex> */}
       <ProfileOwnersButtons />
       {user.profile?.bio && (
         <>
