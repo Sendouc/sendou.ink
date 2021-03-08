@@ -10,9 +10,12 @@ import Head from "next/head";
 import { Router } from "next/router";
 import NProgress from "nprogress";
 import { useEffect } from "react";
+import { QueryClientProvider } from "react-query";
+import { Hydrate } from "react-query/hydration";
 import { theme } from "theme";
 import { activateLocale } from "utils/i18n";
 import { locales } from "utils/lists/locales";
+import { trpc } from "utils/trpc";
 import "./styles.css";
 
 NProgress.configure({ showSpinner: false });
@@ -181,7 +184,13 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
               // @ts-expect-error
               header={Component.header}
             >
-              <Component {...pageProps} />
+              <QueryClientProvider client={trpc.queryClient}>
+                <Hydrate
+                  state={trpc.useDehydratedState(pageProps.dehydratedState)}
+                >
+                  <Component {...pageProps} />
+                </Hydrate>
+              </QueryClientProvider>
             </Layout>
           </I18nProvider>
         </ChakraProvider>
