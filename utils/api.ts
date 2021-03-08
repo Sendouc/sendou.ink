@@ -1,4 +1,5 @@
 import { User } from "@prisma/client";
+import { httpError } from "@trpc/server";
 import { NextApiRequest } from "next";
 import { getSession } from "next-auth/client";
 
@@ -12,4 +13,10 @@ export const getMySession = (req: NextApiRequest): Promise<User | null> => {
 
   // @ts-expect-error
   return getSession({ req });
+};
+
+export const throwIfNotLoggedIn = (user: User | null) => {
+  if (!user) throw httpError.unauthorized();
+
+  return user;
 };

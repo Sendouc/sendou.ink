@@ -1,4 +1,5 @@
 import { createRouter } from "pages/api/trpc/[trpc]";
+import { throwIfNotLoggedIn } from "utils/api";
 import { suggestionFullSchema } from "utils/validators/suggestion";
 import service from "./service";
 
@@ -15,8 +16,9 @@ const plusApi = createRouter()
   })
   .mutation("suggestion", {
     input: suggestionFullSchema,
-    resolve({ input }) {
-      return service.getPlusStatuses();
+    resolve({ input, ctx }) {
+      const user = throwIfNotLoggedIn(ctx.user);
+      return service.addSuggestion({ input, userId: user.id });
     },
   });
 

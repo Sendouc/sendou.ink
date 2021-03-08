@@ -1,10 +1,11 @@
 import { Prisma } from "@prisma/client";
+import { httpError } from "@trpc/server";
 import prisma from "prisma/client";
-import { UserError } from "utils/errors";
 import { getPercentageFromCounts, getVotingRange } from "utils/plus";
 import { userBasicSelection } from "utils/prisma";
 import { suggestionFullSchema } from "utils/validators/suggestion";
 import { vouchSchema } from "utils/validators/vouch";
+import * as z from "zod";
 
 export type PlusStatuses = Prisma.PromiseReturnType<typeof getPlusStatuses>;
 
@@ -163,23 +164,19 @@ const getDistinctSummaryMonths = () => {
 };
 
 const addSuggestion = async ({
-  data,
+  input,
   userId,
 }: {
-  data: unknown;
+  input: z.infer<typeof suggestionFullSchema>;
   userId: number;
 }) => {
-  const parsedData = {
-    ...suggestionFullSchema.parse(data),
-    suggesterId: userId,
-  };
   const [suggestions, plusStatuses] = await Promise.all([
     prisma.plusSuggestion.findMany({}),
     prisma.plusStatus.findMany({}),
   ]);
   const existingSuggestion = suggestions.find(
     ({ tier, suggestedId }) =>
-      tier === parsedData.tier && suggestedId === parsedData.suggestedId
+      tier === input.tier && suggestedId === input.suggestedId
   );
 
   // every user can only send one new suggestion per month
@@ -189,7 +186,7 @@ const addSuggestion = async ({
         isResuggestion === false && suggesterId === userId
     );
     if (usersSuggestion) {
-      throw new UserError("already made a new suggestion");
+      httpError.badRequest("already made a new suggestion");
     }
   }
 
@@ -200,40 +197,44 @@ const addSuggestion = async ({
   if (
     !suggesterPlusStatus ||
     !suggesterPlusStatus.membershipTier ||
-    suggesterPlusStatus.membershipTier > parsedData.tier
+    suggesterPlusStatus.membershipTier > input.tier
   ) {
-    throw new UserError(
+    httpError.badRequest(
       "not a member of high enough tier to suggest for this tier"
     );
   }
 
   if (suggestedUserAlreadyHasAccess()) {
-    throw new UserError("suggested user already has access");
+    throw httpError.badRequest("suggested user already has access");
   }
 
   if (getVotingRange().isHappening) {
-    throw new UserError("voting has already started");
+    httpError.badRequest("voting has already started");
   }
 
   return prisma.$transaction([
     prisma.plusSuggestion.create({
-      data: { ...parsedData, isResuggestion: !!existingSuggestion },
+      data: {
+        ...input,
+        suggesterId: userId,
+        isResuggestion: !!existingSuggestion,
+      },
     }),
     prisma.plusStatus.upsert({
-      where: { userId: parsedData.suggestedId },
-      create: { region: parsedData.region, userId: parsedData.suggestedId },
+      where: { userId: input.suggestedId },
+      create: { region: input.region, userId: input.suggestedId },
       update: {},
     }),
   ]);
 
   function suggestedUserAlreadyHasAccess() {
     const suggestedPlusStatus = plusStatuses.find(
-      (status) => status.userId === parsedData.suggestedId
+      (status) => status.userId === input.suggestedId
     );
     return Boolean(
       suggestedPlusStatus &&
-        ((suggestedPlusStatus.membershipTier ?? 999) <= parsedData.tier ||
-          (suggestedPlusStatus.vouchTier ?? 999) <= parsedData.tier)
+        ((suggestedPlusStatus.membershipTier ?? 999) <= input.tier ||
+          (suggestedPlusStatus.vouchTier ?? 999) <= input.tier)
     );
   }
 };
@@ -253,17 +254,17 @@ const addVouch = async ({
   );
 
   if ((suggesterPlusStatus?.canVouchFor ?? Infinity) > parsedData.tier) {
-    throw new UserError(
+    httpError.badRequest(
       "not a member of high enough tier to vouch for this tier"
     );
   }
 
   if (vouchedUserAlreadyHasAccess()) {
-    throw new UserError("vouched user already has access");
+    httpError.badRequest("vouched user already has access");
   }
 
   if (getVotingRange().isHappening) {
-    throw new UserError("voting has already started");
+    httpError.badRequest("voting has already started");
   }
 
   return prisma.$transaction([

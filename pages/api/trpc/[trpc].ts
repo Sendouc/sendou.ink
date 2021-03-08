@@ -1,16 +1,17 @@
 import * as trpc from "@trpc/server";
-import { inferProcedureOutput } from "@trpc/server";
+import { inferAsyncReturnType, inferProcedureOutput } from "@trpc/server";
 import * as trpcNext from "@trpc/server/dist/adapters/next";
 import plusApi from "app/plus/api";
 import superjson from "superjson";
+import { getMySession } from "utils/api";
+import { trpc as trcpReactQuery } from "utils/trpc";
 
-export type Context = {};
-const createContext = async ({
-  req,
-  res,
-}: trpcNext.CreateNextContextOptions) => {
-  return {};
+const createContext = async ({ req }: trpcNext.CreateNextContextOptions) => {
+  const user = await getMySession(req);
+  return { user };
 };
+
+type Context = inferAsyncReturnType<typeof createContext>;
 
 export function createRouter() {
   return trpc.router<Context>();
@@ -30,7 +31,8 @@ export type inferQueryOutput<
   TRouteKey extends keyof AppRouter["_def"]["queries"]
 > = inferProcedureOutput<AppRouter["_def"]["queries"][TRouteKey]>;
 
-// export API handler
+export const ssr = trcpReactQuery.ssr(appRouter, { user: null });
+
 export default trpcNext.createNextApiHandler({
   router: appRouter,
   createContext,
