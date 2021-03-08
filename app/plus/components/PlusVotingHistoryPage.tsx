@@ -2,6 +2,10 @@ import { Box } from "@chakra-ui/layout";
 import { Select } from "@chakra-ui/select";
 import { Trans } from "@lingui/macro";
 import { PlusRegion } from "@prisma/client";
+import {
+  DistinctSummaryMonths,
+  VotingSummariesByMonthAndTier,
+} from "app/plus/service";
 import MyHead from "components/common/MyHead";
 import MyLink from "components/common/MyLink";
 import {
@@ -14,12 +18,9 @@ import {
 } from "components/common/Table";
 import UserAvatar from "components/common/UserAvatar";
 import { useRouter } from "next/router";
+import { Fragment } from "react";
 import { FiCheck } from "react-icons/fi";
 import { getFullUsername, getLocalizedMonthYearString } from "utils/strings";
-import {
-  DistinctSummaryMonths,
-  VotingSummariesByMonthAndTier,
-} from "../../services/plus";
 
 export interface PlusVotingHistoryPageProps {
   summaries: VotingSummariesByMonthAndTier;
@@ -107,7 +108,7 @@ const PlusVotingHistoryPage = ({
                 </TableCell>
                 <TableCell>
                   {getCount("NA", summary.countsNA).map((count, i, arr) => (
-                    <>
+                    <Fragment key={i}>
                       <Box
                         as="span"
                         color={
@@ -117,12 +118,12 @@ const PlusVotingHistoryPage = ({
                         {count}
                       </Box>
                       {i !== arr.length - 1 && <>/</>}
-                    </>
+                    </Fragment>
                   ))}
                 </TableCell>
                 <TableCell>
                   {getCount("EU", summary.countsEU).map((count, i, arr) => (
-                    <>
+                    <Fragment key={i}>
                       <Box
                         as="span"
                         color={
@@ -132,7 +133,7 @@ const PlusVotingHistoryPage = ({
                         {count}
                       </Box>
                       {i !== arr.length - 1 && <>/</>}
-                    </>
+                    </Fragment>
                   ))}
                 </TableCell>
                 <TableCell>{summary.regionForVoting}</TableCell>
