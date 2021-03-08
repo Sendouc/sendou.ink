@@ -53,6 +53,7 @@
     "react-select": "^4.2.1",
     "react-string-replace": "^0.4.4",
     "recharts": "^2.0.8",
+    "superjson": "^1.7.2",
     "swr": "^0.4.2",
     "ts-trueskill": "^3.2.0",
     "uuid": "^8.3.2",

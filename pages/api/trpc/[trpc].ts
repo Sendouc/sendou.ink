@@ -1,6 +1,7 @@
 import * as trpc from "@trpc/server";
 import * as trpcNext from "@trpc/server/dist/adapters/next";
-import * as z from "zod";
+import plusApi from "app/plus/api";
+import superjson from "superjson";
 
 // The app's context - is generated for each incoming request
 export type Context = {};
@@ -15,22 +16,7 @@ export function createRouter() {
   return trpc.router<Context>();
 }
 // Important: only use this export with SSR/SSG
-export const appRouter = createRouter()
-  // Create procedure at path 'hello'
-  .query("hello", {
-    // using zod schema to validate and infer input values
-    input: z
-      .object({
-        text: z.string().optional(),
-      })
-      .optional(),
-    resolve({ input }) {
-      // the `input` here is parsed by the parser passed in `input` the type inferred
-      return {
-        greeting: `hello ${input?.text ?? "world"}`,
-      };
-    },
-  });
+export const appRouter = createRouter().merge("plus", plusApi);
 
 // Exporting type _type_ AppRouter only exposes types that can be used for inference
 // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-8.html#type-only-imports-and-export
@@ -40,4 +26,5 @@ export type AppRouter = typeof appRouter;
 export default trpcNext.createNextApiHandler({
   router: appRouter,
   createContext,
+  transformer: superjson,
 });

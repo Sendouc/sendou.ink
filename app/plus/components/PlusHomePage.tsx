@@ -8,7 +8,6 @@ import {
 } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
 import { usePlusHomePage } from "app/plus/hooks/usePlusHomePage";
-import { PlusStatuses, Suggestions } from "app/plus/service";
 import MyHead from "components/common/MyHead";
 import SubText from "components/common/SubText";
 import { useUser } from "hooks/common";
@@ -19,12 +18,7 @@ import SuggestionModal from "./SuggestionModal";
 import VotingInfoHeader from "./VotingInfoHeader";
 import VouchModal from "./VouchModal";
 
-export interface PlusHomePageProps {
-  suggestions: Suggestions;
-  statuses: PlusStatuses;
-}
-
-const PlusHomePage = ({ suggestions, statuses }: PlusHomePageProps) => {
+const PlusHomePage = () => {
   const [user] = useUser();
   const {
     plusStatusData,
@@ -33,7 +27,7 @@ const PlusHomePage = ({ suggestions, statuses }: PlusHomePageProps) => {
     suggestionCounts,
     setSuggestionsFilter,
     vouchedPlusStatusData,
-  } = usePlusHomePage({ suggestions, statuses });
+  } = usePlusHomePage();
 
   return (
     <>
@@ -73,9 +67,7 @@ const PlusHomePage = ({ suggestions, statuses }: PlusHomePageProps) => {
               {plusStatusData?.canVouchAgainAfter && (
                 <Box>
                   Can vouch again after:{" "}
-                  {new Date(
-                    plusStatusData.canVouchAgainAfter
-                  ).toLocaleDateString()}
+                  {plusStatusData.canVouchAgainAfter.toLocaleDateString()}
                 </Box>
               )}
               {plusStatusData?.voucher && (

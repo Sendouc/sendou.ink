@@ -1,28 +1,15 @@
-import { PlusStatuses, Suggestions } from "app/plus/service";
 import { useState } from "react";
-import useSWR from "swr";
+import { trpc } from "utils/trpc";
 import { useUser } from "../../../hooks/common";
 
-export function usePlusHomePage({
-  suggestions: suggestionsInitial,
-  statuses: statusesInitial,
-}: {
-  suggestions: Suggestions;
-  statuses: PlusStatuses;
-}) {
+export function usePlusHomePage() {
   const [user] = useUser();
   const [suggestionsFilter, setSuggestionsFilter] = useState<
     number | undefined
   >(undefined);
 
-  const { data: plusStatusData } = useSWR<PlusStatuses>(
-    user ? "/api/plus" : null,
-    { initialData: statusesInitial }
-  );
-  const { data: suggestionsData } = useSWR<Suggestions>(
-    "/api/plus/suggestions",
-    { initialData: suggestionsInitial }
-  );
+  const { data: suggestionsData } = trpc.useQuery(["plusSuggestions"]);
+  const { data: plusStatusData } = trpc.useQuery(["plusStatuses"]);
 
   const suggestions = suggestionsData ?? [];
 

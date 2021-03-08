@@ -1,20 +1,19 @@
-import PlusHomePage, {
-  PlusHomePageProps,
-} from "app/plus/components/PlusHomePage";
-import plusService from "app/plus/service";
+import PlusHomePage from "app/plus/components/PlusHomePage";
 import HeaderBanner from "components/layout/HeaderBanner";
-import { GetStaticProps } from "next";
+import { appRouter } from "pages/api/trpc/[trpc]";
+import { trpc } from "utils/trpc";
 
-export const getStaticProps: GetStaticProps<PlusHomePageProps> = async () => {
-  const [suggestions, statuses] = await Promise.all([
-    plusService.getSuggestions(),
-    plusService.getPlusStatuses(),
+export const getStaticProps = async () => {
+  const ssr = trpc.ssr(appRouter, {});
+
+  await Promise.all([
+    ssr.prefetchQuery("plusSuggestions"),
+    ssr.prefetchQuery("plusStatuses"),
   ]);
 
   return {
     props: {
-      suggestions: JSON.parse(JSON.stringify(suggestions)),
-      statuses: JSON.parse(JSON.stringify(statuses)),
+      dehydratedState: trpc.dehydrate(),
     },
     revalidate: 60,
   };
