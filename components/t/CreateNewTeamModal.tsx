@@ -14,10 +14,10 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
-import { makeNameUrlFriendly } from "lib/makeNameUrlFriendly";
-import { sendData } from "lib/postData";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { makeNameUrlFriendly } from "utils/makeNameUrlFriendly";
+import { sendData } from "utils/postData";
 
 const CreateNewTeamModal = () => {
   const router = useRouter();

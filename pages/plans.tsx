@@ -4,7 +4,6 @@ import HeaderBanner from "components/layout/HeaderBanner";
 import DraggableImageAdder from "components/plans/DraggableImageAdder";
 import DraggableToolsSelector from "components/plans/DraggableToolsSelector";
 import StageSelector from "components/plans/StageSelector";
-import { stages } from "lib/lists/stages";
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -13,6 +12,7 @@ import {
   FaFileImage,
   FaFileUpload,
 } from "react-icons/fa";
+import { stages } from "utils/lists/stages";
 
 const MapSketch = dynamic(() => import("components/plans/MapSketch"), {
   ssr: false,

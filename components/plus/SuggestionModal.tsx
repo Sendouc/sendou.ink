@@ -17,12 +17,12 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import UserSelector from "components/common/UserSelector";
 import useMutation from "hooks/useMutation";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import {
   suggestionFullSchema,
   SUGGESTION_DESCRIPTION_LIMIT,
-} from "lib/validators/suggestion";
-import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+} from "utils/validators/suggestion";
 import * as z from "zod";
 
 interface Props {

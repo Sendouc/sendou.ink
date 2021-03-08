@@ -1,7 +1,7 @@
-import { weaponsWithHero } from "lib/lists/weaponsWithHero";
 import { GetBuildsByUserData } from "prisma/queries/getBuildsByUser";
 import { useState } from "react";
 import useSWR from "swr";
+import { weaponsWithHero } from "utils/lists/weaponsWithHero";
 
 export function useBuildsByUser(userId?: number, weaponPool?: string[]) {
   const [weapon, setWeapon] = useState<string | null>(null);

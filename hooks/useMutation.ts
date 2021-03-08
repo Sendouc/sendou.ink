@@ -1,8 +1,8 @@
 import { useToast } from "@chakra-ui/react";
-import { getToastOptions } from "lib/getToastOptions";
-import { sendData } from "lib/postData";
 import { useState } from "react";
 import { mutate } from "swr";
+import { getToastOptions } from "utils/getToastOptions";
+import { sendData } from "utils/postData";
 import { useUser } from "./common";
 
 const useMutation = ({

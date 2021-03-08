@@ -16,11 +16,11 @@ import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
 import { countries, getEmojiFlag } from "countries-list";
 import { useMyTheme, useUser } from "hooks/common";
-import { getFullUsername } from "lib/strings";
 import Image from "next/image";
 import { GetUserByIdentifierData } from "prisma/queries/getUserByIdentifier";
 import { FaGamepad, FaTwitch, FaTwitter, FaYoutube } from "react-icons/fa";
 import { FiInfo } from "react-icons/fi";
+import { getFullUsername } from "utils/strings";
 
 interface AvatarWithInfoProps {
   user: NonNullable<GetUserByIdentifierData>;

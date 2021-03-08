@@ -1,6 +1,5 @@
 import { t } from "@lingui/macro";
 import { useMyTheme } from "hooks/common";
-import { abilityPoints } from "lib/lists/abilityPoints";
 import React from "react";
 import {
   CartesianGrid,
@@ -12,6 +11,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { abilityPoints } from "utils/lists/abilityPoints";
 
 interface StatChartProps {
   title: string;

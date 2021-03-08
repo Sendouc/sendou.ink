@@ -1,4 +1,4 @@
-import { weapons } from "lib/lists/weapons";
+import { weapons } from "utils/lists/weapons";
 import * as z from "zod";
 import { abilityEnum } from "./common";
 

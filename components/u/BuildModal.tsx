@@ -26,20 +26,20 @@ import ViewSlots from "components/builds/ViewSlots";
 import GearSelector from "components/common/GearSelector";
 import WeaponSelector from "components/common/WeaponSelector";
 import { useUser } from "hooks/common";
-import { getToastOptions } from "lib/getToastOptions";
-import { weapons } from "lib/lists/weapons";
-import { sendData } from "lib/postData";
-import { Unpacked } from "lib/types";
-import {
-  buildSchema,
-  DESCRIPTION_CHARACTER_LIMIT,
-  TITLE_CHARACTER_LIMIT,
-} from "lib/validators/build";
 import { GetBuildsByUserData } from "prisma/queries/getBuildsByUser";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { FiTrash } from "react-icons/fi";
 import { mutate } from "swr";
+import { getToastOptions } from "utils/getToastOptions";
+import { weapons } from "utils/lists/weapons";
+import { sendData } from "utils/postData";
+import { Unpacked } from "utils/types";
+import {
+  buildSchema,
+  DESCRIPTION_CHARACTER_LIMIT,
+  TITLE_CHARACTER_LIMIT,
+} from "utils/validators/build";
 import * as z from "zod";
 import AbilitiesSelector from "./AbilitiesSelector";
 

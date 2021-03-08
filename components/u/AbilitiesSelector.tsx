@@ -1,7 +1,7 @@
 import { Box, Divider, Flex } from "@chakra-ui/react";
 import { ViewSlotsAbilities } from "components/builds/ViewSlots";
 import AbilityIcon from "components/common/AbilityIcon";
-import { abilities as allAbilities } from "lib/lists/abilities";
+import { abilities as allAbilities } from "utils/lists/abilities";
 
 type ArrayElement<A> = A extends readonly (infer T)[] ? T : never;
 

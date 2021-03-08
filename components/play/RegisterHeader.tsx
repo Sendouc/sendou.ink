@@ -10,10 +10,10 @@ import {
 import { t, Trans } from "@lingui/macro";
 import { useUser } from "hooks/common";
 import { useLadderTeams } from "hooks/play";
-import { getToastOptions } from "lib/getToastOptions";
-import { sendData } from "lib/postData";
 import { useEffect, useState } from "react";
 import { FiCheck, FiTrash } from "react-icons/fi";
+import { getToastOptions } from "utils/getToastOptions";
+import { sendData } from "utils/postData";
 
 interface Props {}
 

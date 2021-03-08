@@ -14,11 +14,11 @@ import {
 } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
 import { useUser } from "hooks/common";
-import { DiscordIcon } from "lib/assets/icons";
 import { signIn, signOut } from "next-auth/client";
 import Link from "next/link";
 import { FaHeart } from "react-icons/fa";
 import { FiMoon, FiSun } from "react-icons/fi";
+import { DiscordIcon } from "utils/assets/icons";
 import { LanguageSelector } from "./LanguageSelector";
 
 const TopNav = () => {

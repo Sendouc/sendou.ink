@@ -1,6 +1,6 @@
-import { isAbilityArray } from "lib/lists/abilities";
-import { clothingGear, headGear, shoesGear } from "lib/lists/gear";
-import { weaponsWithHero } from "lib/lists/weaponsWithHero";
+import { isAbilityArray } from "utils/lists/abilities";
+import { clothingGear, headGear, shoesGear } from "utils/lists/gear";
+import { weaponsWithHero } from "utils/lists/weaponsWithHero";
 import * as z from "zod";
 import { abilityEnum, hasNoDuplicates } from "./common";
 

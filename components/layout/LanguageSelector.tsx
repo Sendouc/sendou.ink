@@ -9,9 +9,9 @@ import {
 import { t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { useMyTheme } from "hooks/common";
-import { activateLocale } from "lib/i18n";
 import React from "react";
 import { FiGlobe } from "react-icons/fi";
+import { activateLocale } from "utils/i18n";
 
 export const languages = [
   { code: "de", name: "Deutsch" },

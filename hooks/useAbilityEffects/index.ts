@@ -2,10 +2,10 @@ import { t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { Ability } from "@prisma/client";
 import { ViewSlotsAbilities } from "components/builds/ViewSlots";
-import abilityJson from "lib/data/abilityData.json";
-import weaponJson from "lib/data/weaponData.json";
-import { weapons } from "lib/lists/weapons";
 import { useEffect, useState } from "react";
+import abilityJson from "utils/data/abilityData.json";
+import weaponJson from "utils/data/weaponData.json";
+import { weapons } from "utils/lists/weapons";
 import { getEffect } from "./getAbilityEffect";
 
 export interface Explanation {

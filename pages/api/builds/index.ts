@@ -1,10 +1,10 @@
 import { Ability } from "@prisma/client";
-import { getMySession } from "lib/api";
-import { GANBA_DISCORD_ID } from "lib/constants";
-import { getWeaponNormalized } from "lib/lists/weapons";
-import { buildSchema } from "lib/validators/build";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "prisma/client";
+import { getMySession } from "utils/api";
+import { GANBA_DISCORD_ID } from "utils/constants";
+import { getWeaponNormalized } from "utils/lists/weapons";
+import { buildSchema } from "utils/validators/build";
 
 const modes = ["TW", "SZ", "TC", "RM", "CB"];
 

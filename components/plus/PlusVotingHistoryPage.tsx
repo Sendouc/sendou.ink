@@ -13,9 +13,9 @@ import {
   TableRow,
 } from "components/common/Table";
 import UserAvatar from "components/common/UserAvatar";
-import { getFullUsername, getLocalizedMonthYearString } from "lib/strings";
 import { useRouter } from "next/router";
 import { FiCheck } from "react-icons/fi";
+import { getFullUsername, getLocalizedMonthYearString } from "utils/strings";
 import {
   DistinctSummaryMonths,
   VotingSummariesByMonthAndTier,

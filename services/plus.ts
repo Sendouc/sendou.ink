@@ -1,10 +1,10 @@
 import { Prisma } from "@prisma/client";
-import { UserError } from "lib/errors";
-import { getPercentageFromCounts, getVotingRange } from "lib/plus";
-import { userBasicSelection } from "lib/prisma";
-import { suggestionFullSchema } from "lib/validators/suggestion";
-import { vouchSchema } from "lib/validators/vouch";
 import prisma from "prisma/client";
+import { UserError } from "utils/errors";
+import { getPercentageFromCounts, getVotingRange } from "utils/plus";
+import { userBasicSelection } from "utils/prisma";
+import { suggestionFullSchema } from "utils/validators/suggestion";
+import { vouchSchema } from "utils/validators/vouch";
 
 export type PlusStatuses = Prisma.PromiseReturnType<typeof getPlusStatuses>;
 

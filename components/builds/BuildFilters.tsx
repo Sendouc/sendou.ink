@@ -19,9 +19,9 @@ import {
   UseBuildsByWeaponState,
 } from "hooks/builds";
 import { useMyTheme } from "hooks/common";
-import { abilities, isMainAbility } from "lib/lists/abilities";
 import { Fragment, useState } from "react";
 import { FiTrash } from "react-icons/fi";
+import { abilities, isMainAbility } from "utils/lists/abilities";
 
 interface Props {
   filters: UseBuildsByWeaponState["filters"];

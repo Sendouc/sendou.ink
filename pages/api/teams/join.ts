@@ -1,7 +1,7 @@
-import { getMySession } from "lib/api";
-import { TEAM_ROSTER_LIMIT } from "lib/constants";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "prisma/client";
+import { getMySession } from "utils/api";
+import { TEAM_ROSTER_LIMIT } from "utils/constants";
 
 const joinHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method) {

@@ -1,10 +1,10 @@
 import { Box, Button, Flex, Heading, Input, useToast } from "@chakra-ui/react";
 import SubText from "components/common/SubText";
 import { useUser } from "hooks/common";
-import { ADMIN_DISCORD_ID } from "lib/constants";
-import { getToastOptions } from "lib/getToastOptions";
-import { sendData } from "lib/postData";
 import { useState } from "react";
+import { ADMIN_DISCORD_ID } from "utils/constants";
+import { getToastOptions } from "utils/getToastOptions";
+import { sendData } from "utils/postData";
 
 const AdminPage = () => {
   const toast = useToast();

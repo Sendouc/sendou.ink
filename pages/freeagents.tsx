@@ -28,8 +28,6 @@ import HeaderBanner from "components/layout/HeaderBanner";
 import { countries, getEmojiFlag } from "countries-list";
 import { useMyTheme, useUser } from "hooks/common";
 import { useFreeAgents } from "hooks/freeagents";
-import { sendData } from "lib/postData";
-import { Unpacked } from "lib/types";
 import { useRouter } from "next/router";
 import { GetAllFreeAgentPostsData } from "prisma/queries/getAllFreeAgentPosts";
 import { RefObject, useEffect, useRef, useState } from "react";
@@ -41,6 +39,8 @@ import {
   RiSwordLine,
 } from "react-icons/ri";
 import { mutate } from "swr";
+import { sendData } from "utils/postData";
+import { Unpacked } from "utils/types";
 
 const FreeAgentsPage = () => {
   const {

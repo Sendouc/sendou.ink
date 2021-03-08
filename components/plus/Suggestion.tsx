@@ -14,15 +14,15 @@ import SubText from "components/common/SubText";
 import UserAvatar from "components/common/UserAvatar";
 import { useMyTheme } from "hooks/common";
 import useMutation from "hooks/useMutation";
-import { getFullUsername } from "lib/strings";
-import { Unpacked } from "lib/types";
-import {
-  resuggestionSchema,
-  SUGGESTION_DESCRIPTION_LIMIT,
-} from "lib/validators/suggestion";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Suggestions } from "services/plus";
+import { getFullUsername } from "utils/strings";
+import { Unpacked } from "utils/types";
+import {
+  resuggestionSchema,
+  SUGGESTION_DESCRIPTION_LIMIT,
+} from "utils/validators/suggestion";
 import * as z from "zod";
 
 type FormData = z.infer<typeof resuggestionSchema>;

@@ -1,6 +1,6 @@
-import { getWeaponNormalized } from "lib/lists/weapons";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "prisma/client";
+import { getWeaponNormalized } from "utils/lists/weapons";
 
 const connectHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== "POST") {
@@ -25,12 +25,10 @@ const connectHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   });
 
   if (!user) {
-    return res
-      .status(400)
-      .json({
-        message:
-          "Please log-in to sendou.ink first. After logging in use the !sendoulink command.",
-      });
+    return res.status(400).json({
+      message:
+        "Please log-in to sendou.ink first. After logging in use the !sendoulink command.",
+    });
   }
 
   if (user.player) {

@@ -1,10 +1,10 @@
 import AbilityIcon from "components/common/AbilityIcon";
 import GearImage from "components/common/GearImage";
 import WeaponImage from "components/common/WeaponImage";
-import { abilityMarkdownCodes } from "lib/lists/abilityMarkdownCodes";
-import { gearMarkdownCodes } from "lib/lists/gearMarkdownCodes";
-import { codeToWeapon } from "lib/lists/weaponCodes";
 import Image from "next/image";
+import { abilityMarkdownCodes } from "utils/lists/abilityMarkdownCodes";
+import { gearMarkdownCodes } from "utils/lists/gearMarkdownCodes";
+import { codeToWeapon } from "utils/lists/weaponCodes";
 
 const modeCodes: Record<string, string> = {
   turf_war: "TW",

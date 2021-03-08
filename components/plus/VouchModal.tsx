@@ -16,9 +16,9 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import UserSelector from "components/common/UserSelector";
 import useMutation from "hooks/useMutation";
-import { vouchSchema } from "lib/validators/vouch";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { vouchSchema } from "utils/validators/vouch";
 import * as z from "zod";
 
 interface Props {

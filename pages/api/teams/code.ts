@@ -1,6 +1,6 @@
-import { getMySession } from "lib/api";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "prisma/client";
+import { getMySession } from "utils/api";
 import { v4 as uuidv4 } from "uuid";
 
 const codeHandler = async (req: NextApiRequest, res: NextApiResponse) => {

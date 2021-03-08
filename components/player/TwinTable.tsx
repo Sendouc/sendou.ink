@@ -14,8 +14,8 @@ import {
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
 import { useMyTheme } from "hooks/common";
-import { getRankingString } from "lib/strings";
 import { GetPlayerWithPlacementsData } from "prisma/queries/getPlayerWithPlacements";
+import { getRankingString } from "utils/strings";
 
 interface Props {
   player: NonNullable<GetPlayerWithPlacementsData>;

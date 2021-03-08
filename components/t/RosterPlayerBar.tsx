@@ -4,8 +4,8 @@ import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
 import { getEmojiFlag } from "countries-list";
 import { useMyTheme } from "hooks/common";
-import { Unpacked } from "lib/types";
 import { GetTeamData } from "prisma/queries/getTeam";
+import { Unpacked } from "utils/types";
 
 interface Props {
   user: Unpacked<NonNullable<NonNullable<GetTeamData>["roster"]>>;

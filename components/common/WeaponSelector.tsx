@@ -1,11 +1,11 @@
 import { Box, Center, Flex } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
+import { components } from "react-select";
 import {
   salmonRunWeapons,
   weaponsWithHeroCategorized,
-} from "lib/lists/weaponsWithHero";
-import { components } from "react-select";
+} from "utils/lists/weaponsWithHero";
 import MySelect from "./MySelect";
 import WeaponImage from "./WeaponImage";
 

@@ -1,6 +1,6 @@
-import { getMySession } from "lib/api";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "prisma/client";
+import { getMySession } from "utils/api";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method) {

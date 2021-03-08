@@ -3,10 +3,10 @@ import Emoji from "components/common/Emoji";
 import MyHead from "components/common/MyHead";
 import MyLink from "components/common/MyLink";
 import WeaponImage from "components/common/WeaponImage";
-import { abilityMarkdownCodes } from "lib/lists/abilityMarkdownCodes";
-import { gearMarkdownCodes } from "lib/lists/gearMarkdownCodes";
-import { codeToWeapon } from "lib/lists/weaponCodes";
 import { useState } from "react";
+import { abilityMarkdownCodes } from "utils/lists/abilityMarkdownCodes";
+import { gearMarkdownCodes } from "utils/lists/gearMarkdownCodes";
+import { codeToWeapon } from "utils/lists/weaponCodes";
 
 const MarkdownHelpPage = () => {
   const [showWeapons, setShowWeapons] = useState(false);

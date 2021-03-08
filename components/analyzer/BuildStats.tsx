@@ -13,9 +13,9 @@ import { ViewSlotsAbilities } from "components/builds/ViewSlots";
 import AbilityIcon from "components/common/AbilityIcon";
 import { useMyTheme } from "hooks/common";
 import { Explanation } from "hooks/useAbilityEffects";
-import { isMainAbility } from "lib/lists/abilities";
 import { useState } from "react";
 import { FaChartLine, FaQuestion } from "react-icons/fa";
+import { isMainAbility } from "utils/lists/abilities";
 import StatChart from "./StatChart";
 
 interface BuildStatsProps {

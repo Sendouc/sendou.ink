@@ -20,13 +20,13 @@ import UserSelector from "components/common/UserSelector";
 import HeaderBanner from "components/layout/HeaderBanner";
 import RotationSelector from "components/sr/RotationSelector";
 import { useUser } from "hooks/common";
-import { sendData } from "lib/postData";
-import { salmonRunRecordSchema } from "lib/validators/salmonRunRecord";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { mutate } from "swr";
+import { sendData } from "utils/postData";
+import { salmonRunRecordSchema } from "utils/validators/salmonRunRecord";
 import * as z from "zod";
 
 export const salmonRunCategoryToNatural = {

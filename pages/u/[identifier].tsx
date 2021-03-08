@@ -11,7 +11,6 @@ import BuildModal from "components/u/BuildModal";
 import ProfileModal from "components/u/ProfileModal";
 import { useUser } from "hooks/common";
 import { useBuildsByUser } from "hooks/u";
-import { GANBA_DISCORD_ID } from "lib/constants";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import { getPlayersPeak } from "prisma/queries/getPlayersPeak";
@@ -23,6 +22,7 @@ import { useEffect, useState } from "react";
 import { FiEdit } from "react-icons/fi";
 import { RiTShirtLine } from "react-icons/ri";
 import useSWR from "swr";
+import { GANBA_DISCORD_ID } from "utils/constants";
 
 interface Props {
   user: GetUserByIdentifierData;

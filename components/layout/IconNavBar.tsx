@@ -15,10 +15,10 @@ import {
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { useMyTheme } from "hooks/common";
-import { getVotingRange } from "lib/plus";
 import { useRouter } from "next/dist/client/router";
 import Image from "next/image";
 import Link from "next/link";
+import { getVotingRange } from "utils/plus";
 
 export const navIcons: {
   code: string;

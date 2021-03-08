@@ -25,12 +25,12 @@ import { RankedMode } from "@prisma/client";
 import ModeImage from "components/common/ModeImage";
 import SubText from "components/common/SubText";
 import HeaderBanner from "components/layout/HeaderBanner";
-import { stages } from "lib/lists/stages";
-import { setManySearchParams } from "lib/setSearchParams";
-import { shuffleArray } from "lib/shuffleArray";
 import { useRouter } from "next/router";
 import { ChangeEvent, Fragment, useEffect, useState } from "react";
 import { FiCheck, FiFilter, FiRotateCw } from "react-icons/fi";
+import { stages } from "utils/lists/stages";
+import { setManySearchParams } from "utils/setSearchParams";
+import { shuffleArray } from "utils/shuffleArray";
 
 const MapsGeneratorPage = () => {
   const router = useRouter();

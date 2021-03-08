@@ -1,7 +1,7 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { useLingui } from "@lingui/react";
-import { gear } from "lib/lists/gear";
 import { components } from "react-select";
+import { gear } from "utils/lists/gear";
 import GearImage from "./GearImage";
 import MySelect from "./MySelect";
 

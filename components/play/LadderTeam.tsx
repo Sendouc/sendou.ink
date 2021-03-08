@@ -3,8 +3,8 @@ import SubText from "components/common/SubText";
 import TwitterAvatar from "components/common/TwitterAvatar";
 import UserAvatar from "components/common/UserAvatar";
 import { useMyTheme } from "hooks/common";
-import { Unpacked } from "lib/types";
 import { GetAllLadderRegisteredTeamsData } from "prisma/queries/getAllLadderRegisteredTeams";
+import { Unpacked } from "utils/types";
 
 interface Props {
   roster: Unpacked<GetAllLadderRegisteredTeamsData>["roster"];

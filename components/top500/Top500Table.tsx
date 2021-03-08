@@ -12,9 +12,9 @@ import {
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
 import { useMyTheme } from "hooks/common";
-import { getProfilePath, getRankingString } from "lib/strings";
 import Link from "next/link";
 import { GetTop500PlacementsByMonthData } from "prisma/queries/getTop500PlacementsByMonth";
+import { getProfilePath, getRankingString } from "utils/strings";
 
 interface Props {
   placements: GetTop500PlacementsByMonthData;

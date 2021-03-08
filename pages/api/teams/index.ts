@@ -1,8 +1,8 @@
-import { getMySession } from "lib/api";
-import { makeNameUrlFriendly } from "lib/makeNameUrlFriendly";
-import { teamSchema } from "lib/validators/team";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "prisma/client";
+import { getMySession } from "utils/api";
+import { makeNameUrlFriendly } from "utils/makeNameUrlFriendly";
+import { teamSchema } from "utils/validators/team";
 import { v4 as uuidv4 } from "uuid";
 
 const teamsHandler = async (req: NextApiRequest, res: NextApiResponse) => {

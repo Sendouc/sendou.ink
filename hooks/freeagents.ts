@@ -1,11 +1,11 @@
 import { Playstyle } from "@prisma/client";
 import { useUser } from "hooks/common";
-import { setSearchParams } from "lib/setSearchParams";
 import { useRouter } from "next/router";
 import { FreeAgentLikeInfo } from "pages/api/freeagents/like";
 import { GetAllFreeAgentPostsData } from "prisma/queries/getAllFreeAgentPosts";
 import { useReducer } from "react";
 import useSWR from "swr";
+import { setSearchParams } from "utils/setSearchParams";
 
 interface UseFreeAgentsState {
   playstyle?: Playstyle;

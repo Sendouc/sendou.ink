@@ -23,18 +23,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import MarkdownTextarea from "components/common/MarkdownTextarea";
-import { getToastOptions } from "lib/getToastOptions";
-import { sendData } from "lib/postData";
-import { Unpacked } from "lib/types";
-import {
-  FA_POST_CONTENT_LIMIT,
-  freeAgentPostSchema,
-} from "lib/validators/fapost";
 import { GetAllFreeAgentPostsData } from "prisma/queries/getAllFreeAgentPosts";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { FiTrash } from "react-icons/fi";
 import { mutate } from "swr";
+import { getToastOptions } from "utils/getToastOptions";
+import { sendData } from "utils/postData";
+import { Unpacked } from "utils/types";
+import {
+  FA_POST_CONTENT_LIMIT,
+  freeAgentPostSchema,
+} from "utils/validators/fapost";
 import * as z from "zod";
 
 interface Props {

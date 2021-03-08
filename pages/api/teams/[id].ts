@@ -1,6 +1,6 @@
-import { getMySession } from "lib/api";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getTeam, GetTeamData } from "prisma/queries/getTeam";
+import { getMySession } from "utils/api";
 
 const teamByIdHandler = async (
   req: NextApiRequest,

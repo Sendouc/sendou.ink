@@ -1,5 +1,5 @@
 import { Box, Center, Flex, Grid, Heading } from "@chakra-ui/react";
-import { t, Trans } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import ModeImage from "components/common/ModeImage";
 import SubText from "components/common/SubText";
 import LadderTeam from "components/play/LadderTeam";
@@ -7,13 +7,13 @@ import MatchUp from "components/play/MatchUp";
 import RegisterHeader from "components/play/RegisterHeader";
 import { useMyTheme } from "hooks/common";
 import { useLadderTeams } from "hooks/play";
-import { getLadderRounds } from "lib/playFunctions";
-import { shuffleArray } from "lib/shuffleArray";
 import { GetStaticProps } from "next";
 import prisma from "prisma/client";
 import { getAllLadderRegisteredTeamsForMatches } from "prisma/queries/getAllLadderRegisteredTeamsForMatches";
 import { getLadderDay, GetLadderDayData } from "prisma/queries/getLadderDay";
 import { Fragment } from "react";
+import { getLadderRounds } from "utils/playFunctions";
+import { shuffleArray } from "utils/shuffleArray";
 
 interface Props {
   ladderDay: GetLadderDayData;

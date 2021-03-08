@@ -25,8 +25,6 @@ import RosterPlayerBar from "components/t/RosterPlayerBar";
 import TeamManagementModal from "components/t/TeamManagementModal";
 import TeamProfileModal from "components/t/TeamProfileModal";
 import { useMyTheme, useUser } from "hooks/common";
-import { getToastOptions } from "lib/getToastOptions";
-import { sendData } from "lib/postData";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Image from "next/image";
 import { getTeam, GetTeamData } from "prisma/queries/getTeam";
@@ -34,6 +32,8 @@ import { Fragment, useEffect, useState } from "react";
 import { FaTwitter } from "react-icons/fa";
 import { FiEdit } from "react-icons/fi";
 import useSWR, { mutate } from "swr";
+import { getToastOptions } from "utils/getToastOptions";
+import { sendData } from "utils/postData";
 
 interface Props {
   team: GetTeamData;

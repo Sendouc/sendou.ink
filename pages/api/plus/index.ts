@@ -1,4 +1,3 @@
-import { getMySession } from "lib/api";
 import { NextApiRequest, NextApiResponse } from "next";
 import plusService from "services/plus";
 

@@ -1,9 +1,9 @@
-import { getMySession } from "lib/api";
-import { SALMON_RUN_ADMIN_DISCORD_IDS } from "lib/constants";
-import { salmonRunRecordSchema } from "lib/validators/salmonRunRecord";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "prisma/client";
 import { getAllSalmonRunRecords } from "prisma/queries/getAllSalmonRunRecords";
+import { getMySession } from "utils/api";
+import { SALMON_RUN_ADMIN_DISCORD_IDS } from "utils/constants";
+import { salmonRunRecordSchema } from "utils/validators/salmonRunRecord";
 
 const getHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   const user = await getMySession(req);

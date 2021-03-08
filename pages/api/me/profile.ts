@@ -1,7 +1,7 @@
-import { getMySession } from "lib/api";
-import { profileSchemaBackend } from "lib/validators/profile";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "prisma/client";
+import { getMySession } from "utils/api";
+import { profileSchemaBackend } from "utils/validators/profile";
 
 const profileHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "PUT") {

@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "components/common/Table";
-import { mainOnlyAbilities } from "lib/lists/abilities";
+import { mainOnlyAbilities } from "utils/lists/abilities";
 
 interface Props {
   stats: {

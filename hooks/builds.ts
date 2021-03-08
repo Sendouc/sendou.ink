@@ -1,12 +1,12 @@
 import { Ability, Mode } from "@prisma/client";
-import { abilities, isMainAbility } from "lib/lists/abilities";
-import { weaponToCode } from "lib/lists/weaponCodes";
-import { weapons } from "lib/lists/weapons";
-import { setSearchParams } from "lib/setSearchParams";
 import { useRouter } from "next/router";
 import { GetBuildsByWeaponData } from "prisma/queries/getBuildsByWeapon";
 import { Dispatch, useReducer } from "react";
 import useSWR from "swr";
+import { abilities, isMainAbility } from "utils/lists/abilities";
+import { weaponToCode } from "utils/lists/weaponCodes";
+import { weapons } from "utils/lists/weapons";
+import { setSearchParams } from "utils/setSearchParams";
 
 export type BuildFilterType = "AT_LEAST" | "AT_MOST" | "HAS" | "DOES_NOT_HAVE";
 

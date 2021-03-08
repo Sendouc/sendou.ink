@@ -3,7 +3,6 @@ import { t } from "@lingui/macro";
 import { RankedMode } from "@prisma/client";
 import HeaderBanner from "components/layout/HeaderBanner";
 import Top500Table from "components/top500/Top500Table";
-import { getLocalizedMonthYearString } from "lib/strings";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import prisma from "prisma/client";
@@ -12,6 +11,7 @@ import {
   GetTop500PlacementsByMonthData,
 } from "prisma/queries/getTop500PlacementsByMonth";
 import { useEffect, useState } from "react";
+import { getLocalizedMonthYearString } from "utils/strings";
 
 interface Props {
   placements: GetTop500PlacementsByMonthData;

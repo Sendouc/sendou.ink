@@ -1,9 +1,9 @@
-import { codeToWeapon } from "lib/lists/weaponCodes";
 import { NextApiRequest, NextApiResponse } from "next";
 import {
   getBuildsByWeapon,
   GetBuildsByWeaponData,
 } from "prisma/queries/getBuildsByWeapon";
+import { codeToWeapon } from "utils/lists/weaponCodes";
 
 const weaponHandler = async (
   req: NextApiRequest,

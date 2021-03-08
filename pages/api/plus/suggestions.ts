@@ -1,7 +1,7 @@
-import { getMySession } from "lib/api";
-import { UserError } from "lib/errors";
 import { NextApiRequest, NextApiResponse } from "next";
 import plusService from "services/plus";
+import { getMySession } from "utils/api";
+import { UserError } from "utils/errors";
 import { ZodError } from "zod";
 
 const suggestionsHandler = async (

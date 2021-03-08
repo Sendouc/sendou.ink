@@ -1,7 +1,7 @@
-import { getMySession } from "lib/api";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "prisma/client";
 import { getAllLadderRegisteredTeams } from "prisma/queries/getAllLadderRegisteredTeams";
+import { getMySession } from "utils/api";
 import { v4 as uuidv4 } from "uuid";
 
 const teamsHandler = async (req: NextApiRequest, res: NextApiResponse) => {

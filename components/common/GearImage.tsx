@@ -1,7 +1,7 @@
 import { useLingui } from "@lingui/react";
-import englishToInteral from "lib/data/englishToInternal.json";
 import Image from "next/image";
 import React from "react";
+import englishToInteral from "utils/data/englishToInternal.json";
 
 interface GearImageProps {
   englishName: string;

@@ -1,6 +1,6 @@
 import { Box, BoxProps, Flex } from "@chakra-ui/react";
 import AbilityIcon from "components/common/AbilityIcon";
-import { AbilityOrUnknown } from "lib/types";
+import { AbilityOrUnknown } from "utils/types";
 
 export type ViewSlotsAbilities = {
   headAbilities: AbilityOrUnknown[];

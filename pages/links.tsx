@@ -3,7 +3,7 @@ import { t, Trans } from "@lingui/macro";
 import MyHead from "components/common/MyHead";
 import HeaderBanner from "components/layout/HeaderBanner";
 import { useMyTheme } from "hooks/common";
-import links from "lib/data/links.json";
+import links from "utils/data/links.json";
 
 interface Link {
   title: string;

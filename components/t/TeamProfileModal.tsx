@@ -21,18 +21,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import MarkdownTextarea from "components/common/MarkdownTextarea";
-import { getToastOptions } from "lib/getToastOptions";
-import { sendData } from "lib/postData";
-import {
-  teamSchema,
-  TEAM_BIO_CHARACTER_LIMIT,
-  TEAM_RECRUITING_POST_CHARACTER_LIMIT,
-} from "lib/validators/team";
 import { GetTeamData } from "prisma/queries/getTeam";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaTwitter } from "react-icons/fa";
 import { mutate } from "swr";
+import { getToastOptions } from "utils/getToastOptions";
+import { sendData } from "utils/postData";
+import {
+  teamSchema,
+  TEAM_BIO_CHARACTER_LIMIT,
+  TEAM_RECRUITING_POST_CHARACTER_LIMIT,
+} from "utils/validators/team";
 import * as z from "zod";
 
 interface Props {

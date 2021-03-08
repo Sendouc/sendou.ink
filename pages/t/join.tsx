@@ -1,8 +1,8 @@
 import { t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import { sendData } from "lib/postData";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { sendData } from "utils/postData";
 
 const statusMessage = {
   LOADING: t`Please wait...`,

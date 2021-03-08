@@ -5,10 +5,10 @@ import SubText from "components/common/SubText";
 import WeaponImage from "components/common/WeaponImage";
 import WeaponSelector from "components/common/WeaponSelector";
 import { useMyTheme } from "hooks/common";
-import { salmonRunStages } from "lib/lists/stages";
 import { GetAllSalmonRunRotationsData } from "prisma/queries/getAllSalmonRunRotations";
 import { useState } from "react";
 import useSWR from "swr";
+import { salmonRunStages } from "utils/lists/stages";
 
 export const randomToNaturalName = {
   RANDOM: t`Random`,

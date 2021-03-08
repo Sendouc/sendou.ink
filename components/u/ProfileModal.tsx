@@ -23,17 +23,17 @@ import ChakraSelect from "components/common/ChakraSelect";
 import MarkdownTextarea from "components/common/MarkdownTextarea";
 import WeaponSelector from "components/common/WeaponSelector";
 import { countries } from "countries-list";
-import { getToastOptions } from "lib/getToastOptions";
-import { sendData } from "lib/postData";
-import {
-  profileSchemaFrontend,
-  PROFILE_CHARACTER_LIMIT,
-} from "lib/validators/profile";
 import { GetUserByIdentifierData } from "prisma/queries/getUserByIdentifier";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { FaGamepad, FaTwitch, FaTwitter, FaYoutube } from "react-icons/fa";
 import { mutate } from "swr";
+import { getToastOptions } from "utils/getToastOptions";
+import { sendData } from "utils/postData";
+import {
+  profileSchemaFrontend,
+  PROFILE_CHARACTER_LIMIT,
+} from "utils/validators/profile";
 import * as z from "zod";
 
 const sensOptions = [

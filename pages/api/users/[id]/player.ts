@@ -1,8 +1,8 @@
-import { getMySession } from "lib/api";
-import { ADMIN_DISCORD_ID } from "lib/constants";
-import { getWeaponNormalized } from "lib/lists/weapons";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "prisma/client";
+import { getMySession } from "utils/api";
+import { ADMIN_DISCORD_ID } from "utils/constants";
+import { getWeaponNormalized } from "utils/lists/weapons";
 
 const userHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== "PATCH") {

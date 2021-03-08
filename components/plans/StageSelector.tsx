@@ -18,8 +18,8 @@ import salmonRunHighTide from "lib/assets/SalmonRunHighTide.svg";
 import salmonRunLowTide from "lib/assets/SalmonRunLowTide.svg";
 // @ts-ignore
 import salmonRunMidTide from "lib/assets/SalmonRunMidTide.svg";
-import { salmonRunStages, stages } from "lib/lists/stages";
 import { PlannerMapBg } from "pages/plans";
+import { salmonRunStages, stages } from "utils/lists/stages";
 
 interface StageSelectorProps {
   handleChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;

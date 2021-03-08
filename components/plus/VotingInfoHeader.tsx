@@ -1,5 +1,5 @@
 import MyLink from "components/common/MyLink";
-import { getVotingRange } from "lib/plus";
+import { getVotingRange } from "utils/plus";
 
 const VotingInfoHeader = ({ isMember }: { isMember: boolean }) => {
   const { isHappening, endDate, nextVotingDate } = getVotingRange();

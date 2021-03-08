@@ -1,7 +1,7 @@
-import { detailedMapSchema } from "lib/validators/detailedMap";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "prisma/client";
 import { rate, Rating } from "ts-trueskill";
+import { detailedMapSchema } from "utils/validators/detailedMap";
 import * as z from "zod";
 
 const matchesHandler = async (req: NextApiRequest, res: NextApiResponse) => {

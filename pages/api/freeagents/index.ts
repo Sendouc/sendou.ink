@@ -1,8 +1,8 @@
-import { getMySession } from "lib/api";
-import { freeAgentPostSchema } from "lib/validators/fapost";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "prisma/client";
 import { getAllFreeAgentPosts } from "prisma/queries/getAllFreeAgentPosts";
+import { getMySession } from "utils/api";
+import { freeAgentPostSchema } from "utils/validators/fapost";
 
 const freeAgentsHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method) {

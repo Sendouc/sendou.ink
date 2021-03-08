@@ -5,14 +5,11 @@ import {
   InputGroup,
   InputLeftElement,
 } from "@chakra-ui/react";
-import { t } from "@lingui/macro";
 import MyLink from "components/common/MyLink";
 import UserAvatar from "components/common/UserAvatar";
 import HeaderBanner from "components/layout/HeaderBanner";
 import { getEmojiFlag } from "countries-list";
 import { useDebounce, useMyTheme } from "hooks/common";
-import { setSearchParams } from "lib/setSearchParams";
-import { Unpacked } from "lib/types";
 import { GetStaticProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
@@ -21,6 +18,8 @@ import { getAllUsers, GetAllUsersData } from "prisma/queries/getAllUsers";
 import { useEffect, useMemo, useState } from "react";
 import { FaTwitter } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
+import { setSearchParams } from "utils/setSearchParams";
+import { Unpacked } from "utils/types";
 
 interface Props {
   users: GetAllUsersData;

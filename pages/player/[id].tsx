@@ -1,10 +1,9 @@
 import { Box, HStack, Radio, RadioGroup } from "@chakra-ui/react";
-import { t, Trans } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import MyLink from "components/common/MyLink";
 import QuadTable from "components/player/QuadTable";
 import TwinTable from "components/player/TwinTable";
 import XRankTable from "components/player/XRankTable";
-import { setSearchParams } from "lib/setSearchParams";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import {
@@ -12,6 +11,7 @@ import {
   GetPlayerWithPlacementsData,
 } from "prisma/queries/getPlayerWithPlacements";
 import { useState } from "react";
+import { setSearchParams } from "utils/setSearchParams";
 
 interface Props {
   player: GetPlayerWithPlacementsData;

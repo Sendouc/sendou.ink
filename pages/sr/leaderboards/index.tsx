@@ -12,7 +12,7 @@ import {
   Select,
   Stack,
 } from "@chakra-ui/react";
-import { Plural, t, Trans } from "@lingui/macro";
+import { Plural, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { SalmonRunRecordCategory } from "@prisma/client";
 import LinkButton from "components/common/LinkButton";
@@ -28,10 +28,10 @@ import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
 import HeaderBanner from "components/layout/HeaderBanner";
 import { useSalmonRunRecords, WeaponsFilter } from "hooks/sr";
-import { salmonRunStages } from "lib/lists/stages";
-import { getRankingString } from "lib/strings";
 import Image from "next/image";
 import Link from "next/link";
+import { salmonRunStages } from "utils/lists/stages";
+import { getRankingString } from "utils/strings";
 import { salmonRunCategoryToNatural } from "./new";
 
 const SalmonRunLeaderboardsPage = ({}) => {

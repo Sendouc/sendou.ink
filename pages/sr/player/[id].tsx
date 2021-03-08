@@ -6,7 +6,6 @@ import SubText from "components/common/SubText";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
 import { useMyTheme } from "hooks/common";
-import { salmonRunStages } from "lib/lists/stages";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Image from "next/image";
 import { salmonRunCategoryToNatural } from "pages/sr/leaderboards/new";
@@ -14,6 +13,7 @@ import {
   getUsersSalmonRunRecords,
   GetUsersSalmonRunRecordsData,
 } from "prisma/queries/getUsersSalmonRunRecords";
+import { salmonRunStages } from "utils/lists/stages";
 
 interface Props {
   user: GetUsersSalmonRunRecordsData;

@@ -15,12 +15,12 @@ import WeaponSelector from "components/common/WeaponSelector";
 import HeaderBanner from "components/layout/HeaderBanner";
 import { useMyTheme } from "hooks/common";
 import useAbilityEffects from "hooks/useAbilityEffects";
-import { isAbilityArray } from "lib/lists/abilities";
-import { isWeapon } from "lib/lists/weapons";
-import { AbilityOrUnknown } from "lib/types";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { FiSettings } from "react-icons/fi";
+import { isAbilityArray } from "utils/lists/abilities";
+import { isWeapon } from "utils/lists/weapons";
+import { AbilityOrUnknown } from "utils/types";
 
 const CURRENT_PATCH = "5.4.";
 

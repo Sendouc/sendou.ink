@@ -1,11 +1,11 @@
 import { SalmonRunRecordCategory } from "@prisma/client";
-import { salmonRunStages } from "lib/lists/stages";
-import { setSearchParams } from "lib/setSearchParams";
 import { useRouter } from "next/router";
 import { salmonRunCategoryToNatural } from "pages/sr/leaderboards/new";
 import { GetAllSalmonRunRecordsData } from "prisma/queries/getAllSalmonRunRecords";
 import { useReducer } from "react";
 import useSWR from "swr";
+import { salmonRunStages } from "utils/lists/stages";
+import { setSearchParams } from "utils/setSearchParams";
 
 export type WeaponsFilter =
   | "NORMAL"

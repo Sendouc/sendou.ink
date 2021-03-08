@@ -2,8 +2,8 @@ import { Box, Button, Flex, IconButton } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import ViewSlots, { ViewSlotsAbilities } from "components/builds/ViewSlots";
 import AbilitiesSelector from "components/u/AbilitiesSelector";
-import { AbilityOrUnknown } from "lib/types";
 import { FiCopy, FiEdit, FiSquare } from "react-icons/fi";
+import { AbilityOrUnknown } from "utils/types";
 import HeadOnlyToggle from "./HeadOnlyToggle";
 import LdeSlider from "./LdeSlider";
 

@@ -1,5 +1,5 @@
 import { countries } from "countries-list";
-import { weaponsWithHero } from "lib/lists/weaponsWithHero";
+import { weaponsWithHero } from "utils/lists/weaponsWithHero";
 import * as z from "zod";
 import { hasNoDuplicates } from "./common";
 

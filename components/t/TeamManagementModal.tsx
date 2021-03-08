@@ -16,13 +16,13 @@ import {
 } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import UserAvatar from "components/common/UserAvatar";
-import { getToastOptions } from "lib/getToastOptions";
-import { sendData } from "lib/postData";
 import { useRouter } from "next/router";
 import { GetTeamData } from "prisma/queries/getTeam";
 import { Fragment, useEffect, useState } from "react";
 import { FiCheck, FiTrash, FiUsers } from "react-icons/fi";
 import { mutate } from "swr";
+import { getToastOptions } from "utils/getToastOptions";
+import { sendData } from "utils/postData";
 
 interface Props {
   team: NonNullable<GetTeamData>;

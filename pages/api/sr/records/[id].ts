@@ -1,7 +1,7 @@
-import { getMySession } from "lib/api";
-import { SALMON_RUN_ADMIN_DISCORD_IDS } from "lib/constants";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "prisma/client";
+import { getMySession } from "utils/api";
+import { SALMON_RUN_ADMIN_DISCORD_IDS } from "utils/constants";
 
 const salmonRunRecordIdHandler = async (
   req: NextApiRequest,

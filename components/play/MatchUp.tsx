@@ -1,6 +1,6 @@
 import { Box } from "@chakra-ui/react";
-import { Unpacked } from "lib/types";
 import { GetLadderDayData } from "prisma/queries/getLadderDay";
+import { Unpacked } from "utils/types";
 import LadderTeam from "./LadderTeam";
 
 interface Props {
