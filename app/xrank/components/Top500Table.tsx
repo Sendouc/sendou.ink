@@ -13,11 +13,11 @@ import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
 import { useMyTheme } from "hooks/common";
 import Link from "next/link";
-import { GetTop500PlacementsByMonthData } from "prisma/queries/getTop500PlacementsByMonth";
 import { getProfilePath, getRankingString } from "utils/strings";
+import { Top500PlacementsByMonth } from "../service";
 
 interface Props {
-  placements: GetTop500PlacementsByMonthData;
+  placements: Top500PlacementsByMonth;
 }
 
 const Top500Table: React.FC<Props> = ({ placements }) => {
