@@ -16,13 +16,7 @@ const RosterPlayerBar: React.FC<Props> = ({ user }) => {
   return (
     <>
       <MyLink href={`/u/${user.discordId}`}>
-        <UserAvatar
-          user={user}
-          size="lg"
-          borderRadius={0}
-          w={[8, null, 12]}
-          h={[8, null, 12]}
-        />
+        <UserAvatar user={user} size="lg" w={[8, null, 12]} h={[8, null, 12]} />
       </MyLink>
       <Flex
         bg={secondaryBgColor}

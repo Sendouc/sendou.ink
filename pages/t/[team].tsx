@@ -244,7 +244,9 @@ const TeamPage: React.FC<Props> = (props) => {
           ))}
       </Grid>
 
-      <Divider my={4} maxW="75ch" mx="auto" />
+      {(team.bio || team.recruitingPost) && (
+        <Divider my={4} maxW="75ch" mx="auto" />
+      )}
       {team.bio && (
         <Box maxW="75ch" mx="auto">
           <Markdown value={team.bio} smallHeaders />
