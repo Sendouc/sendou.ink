@@ -12,7 +12,7 @@ module.exports = {
     "ru",
     "ja",
     "ko",
-    "he"
+    "he",
   ],
   format: "minimal",
   sourceLocale: "en",
@@ -24,13 +24,13 @@ module.exports = {
       include: [
         "./pages/",
         "./components/",
-        "./lib/useAbilityEffects",
-        "./lib/translateThese.ts",
+        "./utils/useAbilityEffects",
+        "./utils/translateThese.ts",
       ],
     },
     {
       path: "<rootDir>/locale/{locale}/game",
-      include: ["./lib/lists"],
+      include: ["./utils/lists"],
     },
   ],
 };
