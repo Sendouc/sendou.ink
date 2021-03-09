@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "lingui compile && next build",
+    "build": "lingui compile && npm run prebuild && next build",
     "start": "next start",
     "migrate": "prisma migrate deploy --preview-feature",
     "migrate:save": "prisma migrate dev --create-only --preview-feature",
     "gen": "npx prisma generate",
+    "prebuild": "ts-node prisma/scripts/preBuild.ts",
     "mongo": "ts-node prisma/scripts/dataFromMongo.ts",
     "top500": "ts-node prisma/scripts/top500jsons.ts",
     "league": "cross-env NODE_OPTIONS=--max-old-space-size=8192 ts-node prisma/scripts/leagueJsons.ts",

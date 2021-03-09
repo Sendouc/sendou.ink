@@ -42,3 +42,5 @@ locale/**/*.js
 /prisma/scripts/mongo
 /prisma/scripts/data
 dumped.sql
+
+/utils/data/patrons.json
