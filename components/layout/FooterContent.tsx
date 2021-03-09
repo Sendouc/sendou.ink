@@ -43,7 +43,7 @@ const FooterContent: React.FC = () => {
       </Flex>
       <Box p={3} textAlign="center">
         <Box fontWeight="bold">
-          <Trans>Thanks to the patrons for their support ♥</Trans>
+          <Trans>Thanks to the patrons for their support ❤</Trans>
         </Box>
         <Flex flexWrap="wrap" justify="center" align="center" mt={2}>
           {patrons.map((patron) => (
