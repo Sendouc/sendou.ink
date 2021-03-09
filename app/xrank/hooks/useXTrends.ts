@@ -1,6 +1,6 @@
 import { RankedMode } from "@prisma/client";
+import { XTrends } from "app/xrank/service";
 import { getMonthOptions } from "pages/xsearch/[[...slug]]";
-import { GetXTrendsData } from "prisma/queries/getXTrends";
 import { Dispatch, useMemo, useReducer } from "react";
 
 interface XTrendsState {
@@ -22,7 +22,7 @@ type Action =
 
 export type XTrendsDispatch = Dispatch<Action>;
 
-export function useXTrends(trends: GetXTrendsData) {
+export function useXTrends(trends: XTrends) {
   const getLatestYear = () =>
     parseInt(Object.keys(trends).sort((a, b) => parseInt(b) - parseInt(a))[0]);
   const getLatestMonth = () =>
