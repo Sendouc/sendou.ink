@@ -23,6 +23,7 @@ import { FiEdit } from "react-icons/fi";
 import { RiTShirtLine } from "react-icons/ri";
 import useSWR from "swr";
 import { GANBA_DISCORD_ID } from "utils/constants";
+import { isCustomUrl } from "utils/validators/profile";
 
 interface Props {
   user: GetUserByIdentifierData;
@@ -64,6 +65,12 @@ const ProfilePage = (props: Props) => {
 
     setBuildToEdit(true);
   }, [canPostBuilds()]);
+
+  useEffect(() => {
+    const identifier = window.location.pathname.split("/")[2];
+    if (isCustomUrl(identifier) || !user.profile?.customUrlPath) return;
+    history.replaceState({}, "", `/u/${user.profile.customUrlPath}`);
+  }, []);
 
   return (
     <>
