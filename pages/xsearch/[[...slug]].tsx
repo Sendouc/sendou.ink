@@ -1,89 +1,13 @@
-import { Radio, RadioGroup, Select, Stack } from "@chakra-ui/react";
-import { t } from "@lingui/macro";
 import { RankedMode } from "@prisma/client";
-import HeaderBanner from "components/layout/HeaderBanner";
-import Top500Table from "components/top500/Top500Table";
+import XSearchPage, {
+  XSearchPageProps,
+} from "app/xrank/components/XSearchPage";
+import xRankService from "app/xrank/service";
 import { GetStaticPaths, GetStaticProps } from "next";
-import { useRouter } from "next/router";
-import prisma from "prisma/client";
-import {
-  getTop500PlacementsByMonth,
-  GetTop500PlacementsByMonthData,
-} from "prisma/queries/getTop500PlacementsByMonth";
-import { useEffect, useState } from "react";
 import { getLocalizedMonthYearString } from "utils/strings";
 
-interface Props {
-  placements: GetTop500PlacementsByMonthData;
-  monthOptions: { label: string; value: string }[];
-}
-
-const XSearchPage = ({ placements, monthOptions }: Props) => {
-  const [variables, setVariables] = useState<{
-    month: number;
-    year: number;
-    mode: RankedMode;
-  }>({
-    month: Number(monthOptions[0].value.split(",")[0]),
-    year: Number(monthOptions[0].value.split(",")[1]),
-    mode: "SZ" as RankedMode,
-  });
-
-  const router = useRouter();
-
-  useEffect(() => {
-    router.replace(
-      `/xsearch/${variables.year}/${variables.month}/${variables.mode}`
-    );
-  }, [variables]);
-
-  //TODO: layout can be persistent between route changes
-  return (
-    <>
-      <Select
-        value={`${variables.month},${variables.year}`}
-        onChange={(e) => {
-          const [month, year] = e.target.value.split(",");
-
-          setVariables({
-            ...variables,
-            month: Number(month),
-            year: Number(year),
-          });
-        }}
-        mb={4}
-        maxW={64}
-      >
-        {monthOptions.map((monthYear) => (
-          <option key={monthYear.value} value={monthYear.value}>
-            {monthYear.label}
-          </option>
-        ))}
-      </Select>
-      <RadioGroup
-        value={variables.mode}
-        onChange={(value) =>
-          setVariables({ ...variables, mode: value as RankedMode })
-        }
-        mt={4}
-        mb={8}
-      >
-        <Stack direction="row">
-          <Radio value="SZ">{t`SZ`}</Radio>
-          <Radio value="TC">{t`TC`}</Radio>
-          <Radio value="RM">{t`RM`}</Radio>
-          <Radio value="CB">{t`CB`}</Radio>
-        </Stack>
-      </RadioGroup>
-      <Top500Table placements={placements} />
-    </>
-  );
-};
-
 export const getStaticPaths: GetStaticPaths = async () => {
-  const mostRecentResult = await prisma.xRankPlacement.findFirst({
-    orderBy: [{ year: "desc" }, { month: "desc" }],
-  });
+  const mostRecentResult = await xRankService.getMostRecentResult();
 
   if (!mostRecentResult) return { paths: [], fallback: false };
 
@@ -120,10 +44,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
-  const mostRecentResult = await prisma.xRankPlacement.findFirst({
-    orderBy: [{ year: "desc" }, { month: "desc" }],
-  });
+export const getStaticProps: GetStaticProps<XSearchPageProps> = async ({
+  params,
+}) => {
+  const mostRecentResult = await xRankService.getMostRecentResult();
 
   if (!mostRecentResult) throw Error("No X Rank Placements");
 
@@ -138,7 +62,7 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
 
   if (isNaN(month) || isNaN(year)) return { notFound: true };
 
-  const placements = await getTop500PlacementsByMonth({
+  const placements = await xRankService.getTop500PlacementsByMonth({
     month,
     year,
     mode: slug[2] as RankedMode,
@@ -184,13 +108,5 @@ export function getMonthOptions(latestMonth: number, latestYear: number) {
 
   return monthChoices;
 }
-
-XSearchPage.header = (
-  <HeaderBanner
-    icon="xsearch"
-    title="Top 500 Browser"
-    subtitle="History of X Rank"
-  />
-);
 
 export default XSearchPage;
