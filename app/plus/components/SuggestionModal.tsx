@@ -43,8 +43,7 @@ const SuggestionModal: React.FC<Props> = ({ userPlusMembershipTier }) => {
   const { mutate, status } = trpc.useMutation("plus.suggestion", {
     onSuccess() {
       toast(getToastOptions("New suggestion submitted", "success"));
-      // TODO:
-      trpc.queryClient.invalidateQueries(["plus.suggestions"]);
+      trpc.invalidateQuery(["plus.suggestions"]);
       setIsOpen(false);
     },
     onError(error) {

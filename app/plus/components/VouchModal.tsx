@@ -39,8 +39,7 @@ const VouchModal: React.FC<Props> = ({ canVouchFor }) => {
   const { mutate, status } = trpc.useMutation("plus.vouch", {
     onSuccess() {
       toast(getToastOptions("Successfully vouched", "success"));
-      // TODO:
-      trpc.queryClient.invalidateQueries(["plus.statuses"]);
+      trpc.invalidateQuery(["plus.statuses"]);
       setIsOpen(false);
     },
     onError(error) {
