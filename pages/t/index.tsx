@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import ChakraSelect from "components/common/ChakraSelect";
+import Flag from "components/common/Flag";
 import Markdown from "components/common/Markdown";
 import MyLink from "components/common/MyLink";
 import SubText from "components/common/SubText";
@@ -18,7 +19,7 @@ import SubTextCollapse from "components/common/SubTextCollapse";
 import TwitterAvatar from "components/common/TwitterAvatar";
 import HeaderBanner from "components/layout/HeaderBanner";
 import CreateNewTeamModal from "components/t/CreateNewTeamModal";
-import { countries, getEmojiFlag } from "countries-list";
+import { countries } from "countries-list";
 import { useMyTheme, useUser } from "hooks/common";
 import { GetStaticProps } from "next";
 import Image from "next/image";
@@ -133,11 +134,13 @@ const TeamsPage = ({ teams }: Props) => {
                 </Box>
               </MyLink>
 
-              <Box ml={2}>
-                {team.countries
-                  .map((country) => getEmojiFlag(country))
-                  .join("  ")}
-              </Box>
+              <Flex ml={2}>
+                {team.countries.map((country) => (
+                  <Box mr={1}>
+                    <Flag key={country} countryCode={country} />
+                  </Box>
+                ))}
+              </Flex>
             </Flex>
             <Box color={gray} fontSize="sm" mt={2}>
               {team.roster

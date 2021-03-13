@@ -10,11 +10,11 @@ import {
 } from "@chakra-ui/react";
 import { Plural, t, Trans } from "@lingui/macro";
 import { Ability, Prisma } from "@prisma/client";
+import Flag from "components/common/Flag";
 import ModeImage from "components/common/ModeImage";
 import MyIconButton from "components/common/MyIconButton";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
-import { getEmojiFlag } from "countries-list";
 import { useMyTheme } from "hooks/common";
 import Image from "next/image";
 import Link from "next/link";
@@ -103,7 +103,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
               {build.updatedAt.toLocaleDateString()}
             </Box>
             {build.jpn ? (
-              <>{getEmojiFlag("JP")}</>
+              <Flag countryCode="JP" />
             ) : build.top500 ? (
               <Image
                 src={`/layout/xsearch.png`}

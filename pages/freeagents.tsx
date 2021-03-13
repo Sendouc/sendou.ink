@@ -17,6 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import { Playstyle } from "@prisma/client";
+import Flag from "components/common/Flag";
 import Markdown from "components/common/Markdown";
 import MyLink from "components/common/MyLink";
 import SubText from "components/common/SubText";
@@ -25,7 +26,7 @@ import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
 import FAModal from "components/freeagents/FAModal";
 import HeaderBanner from "components/layout/HeaderBanner";
-import { countries, getEmojiFlag } from "countries-list";
+import { countries } from "countries-list";
 import { useMyTheme, useUser } from "hooks/common";
 import { useFreeAgents } from "hooks/freeagents";
 import { useRouter } from "next/router";
@@ -278,16 +279,16 @@ const FreeAgentCard = ({
         </Flex>
 
         {post.user.profile?.country && (
-          <Box ml={2} my={2}>
-            <Box as="span" mr={2}>
-              {getEmojiFlag(post.user.profile.country)}{" "}
+          <Flex align="center" ml={2} my={2}>
+            <Box as="span" mr={1} mt={1}>
+              <Flag countryCode={post.user.profile.country} />{" "}
             </Box>
             {
               Object.entries(countries).find(
                 ([key]) => key === post.user.profile?.country
               )![1].name
             }
-          </Box>
+          </Flex>
         )}
 
         {post.user.profile && post.user.profile?.weaponPool.length > 0 && (

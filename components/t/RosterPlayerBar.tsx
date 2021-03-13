@@ -1,8 +1,8 @@
 import { Box, Center, Flex } from "@chakra-ui/react";
+import Flag from "components/common/Flag";
 import MyLink from "components/common/MyLink";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
-import { getEmojiFlag } from "countries-list";
 import { useMyTheme } from "hooks/common";
 import { GetTeamData } from "prisma/queries/getTeam";
 import { Unpacked } from "utils/types";
@@ -45,8 +45,10 @@ const RosterPlayerBar: React.FC<Props> = ({ user }) => {
           fontWeight="medium"
           fontSize="sm"
         >
-          {user.username}#{user.discriminator}{" "}
-          {user.profile?.country ? getEmojiFlag(user.profile.country) : ""}
+          <Box mr={1}>
+            {user.username}#{user.discriminator}
+          </Box>{" "}
+          {user.profile?.country && <Flag countryCode={user.profile.country} />}
         </Flex>
       </MyLink>
       <Box display={["block", "none"]} />

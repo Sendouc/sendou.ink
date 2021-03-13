@@ -8,13 +8,14 @@ import {
 } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import { LeagueType, RankedMode } from "@prisma/client";
+import Flag from "components/common/Flag";
 import ModeImage from "components/common/ModeImage";
 import MyLink from "components/common/MyLink";
 import SubText from "components/common/SubText";
 import TwitterAvatar from "components/common/TwitterAvatar";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
-import { countries, getEmojiFlag } from "countries-list";
+import { countries } from "countries-list";
 import { useMyTheme, useUser } from "hooks/common";
 import Image from "next/image";
 import { GetUserByIdentifierData } from "prisma/queries/getUserByIdentifier";
@@ -72,16 +73,16 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
             </Heading>
           </Flex>
           {user.profile?.country && (
-            <Box mx="auto" my={1}>
-              <Box as="span" mr={1}>
-                {getEmojiFlag(user.profile.country)}{" "}
+            <Flex align="center" mx="auto" my={1}>
+              <Box as="span" mr={1} mt={1}>
+                <Flag countryCode={user.profile.country} />{" "}
               </Box>
               {
                 Object.entries(countries).find(
                   ([key]) => key === user.profile!.country
                 )![1].name
               }
-            </Box>
+            </Flex>
           )}
           {user.team && (
             <Flex align="center" justify="center" my={2}>

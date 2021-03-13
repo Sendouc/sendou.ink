@@ -12,6 +12,9 @@ module.exports = withImages({
   experimental: {
     optimizeFonts: true,
   },
+  images: {
+    domains: ["www.countryflags.io"],
+  },
   // i18n: {
   //  v-- import from lib/locales
   //   locales: [

@@ -5,10 +5,10 @@ import {
   InputGroup,
   InputLeftElement,
 } from "@chakra-ui/react";
+import Flag from "components/common/Flag";
 import MyLink from "components/common/MyLink";
 import UserAvatar from "components/common/UserAvatar";
 import HeaderBanner from "components/layout/HeaderBanner";
-import { getEmojiFlag } from "countries-list";
 import { useDebounce, useMyTheme } from "hooks/common";
 import { GetStaticProps } from "next";
 import Head from "next/head";
@@ -96,14 +96,14 @@ const UserSearchPage = ({ users }: Props) => {
 
 function UserInfo({ user }: { user: Unpacked<GetAllUsersData> }) {
   return (
-    <Flex my={6} align="center">
+    <Flex my={3} align="center">
       <Link href={`/u/${user.discordId}`}>
         <a>
           <UserAvatar isSmall user={user} />
         </a>
       </Link>
       <Box ml={4}>
-        <Box fontWeight="bold">
+        <Flex align="center" fontWeight="bold">
           <MyLink
             href={`/u/${user.discordId}`}
             isColored={false}
@@ -112,11 +112,11 @@ function UserInfo({ user }: { user: Unpacked<GetAllUsersData> }) {
             {user.username}#{user.discriminator}
           </MyLink>
           {user.profile?.country ? (
-            <Box as="span" ml={2}>
-              {getEmojiFlag(user.profile.country)}
+            <Box ml={2} mt={2}>
+              <Flag countryCode={user.profile.country} />
             </Box>
           ) : null}
-        </Box>
+        </Flex>
         {user.profile?.twitterName && (
           <Flex align="center" fontSize="sm" mt={1}>
             <Box as={FaTwitter} color="#00acee" mr={1} />
