@@ -31,7 +31,7 @@ const HeaderBanner = ({
           priority
         />
       </Box>
-      <Flex align="center" mb={5}>
+      <Flex align="center" mb={6}>
         <Box mx={2} fontWeight="bold" fontSize={["1.25rem", null, "1rem"]}>
           {title}
         </Box>
