@@ -119,7 +119,6 @@ const IconNavBar = () => {
       justifyContent="center"
       flexWrap="wrap"
       boxShadow="lg"
-      rounded="md"
     >
       {navIcons.map(({ displayName, code, menuItems }) => {
         if (!menuItems.length) {

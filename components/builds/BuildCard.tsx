@@ -55,6 +55,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
         rounded="lg"
         overflow="hidden"
         boxShadow="md"
+        bg={secondaryBgColor}
         p="20px"
         {...props}
       >

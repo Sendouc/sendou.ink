@@ -1,6 +1,6 @@
-import Image from "next/image";
 import { Box, Flex } from "@chakra-ui/layout";
 import { useMyTheme } from "hooks/common";
+import Image from "next/image";
 
 const HeaderBanner = ({
   icon,
@@ -12,40 +12,38 @@ const HeaderBanner = ({
   subtitle: string;
 }) => {
   const { secondaryBgColor, gray } = useMyTheme();
-  const isTASL = icon === "tasl_main";
   return (
     <Flex
       bg={secondaryBgColor}
       flexWrap="wrap"
       boxShadow="lg"
-      rounded="md"
-      mt={6}
+      justify={["flex-start", null, "center"]}
+      mt={4}
       mb={2}
       h={12}
     >
-      <Box mt={isTASL ? "-0.5rem" : "-1rem"}>
+      <Box mt="-1rem" ml={[3, null, 0]}>
         <Image
           src={`/layout/${icon}.png`}
-          height={isTASL ? 60 : 80}
-          width={isTASL ? 60 : 80}
+          height={80}
+          width={80}
           alt={`${icon} logo`}
-          priority={true}
+          priority
         />
       </Box>
-      <Box
-        as="span"
-        fontSize="lg"
-        mr={2}
-        mb={6}
-        mt={3}
-        ml={2}
-        fontWeight="bold"
-      >
-        {title}
-      </Box>
-      <Box as="span" mt="16px" fontSize="sm" color={gray}>
-        {subtitle}
-      </Box>
+      <Flex align="center" mb={5}>
+        <Box mx={2} fontWeight="bold" fontSize={["1.25rem", null, "1rem"]}>
+          {title}
+        </Box>
+        <Box
+          mt="1px"
+          display={["none", null, "block"]}
+          fontSize="sm"
+          color={gray}
+        >
+          {subtitle}
+        </Box>
+      </Flex>
     </Flex>
   );
 };
