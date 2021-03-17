@@ -15,6 +15,12 @@ const plusApi = createRouter()
       return service.getPlusStatuses();
     },
   })
+  .query("ballots", {
+    resolve({ ctx }) {
+      const user = throwIfNotLoggedIn(ctx.user);
+      return service.getBallots(user.id);
+    },
+  })
   .mutation("suggestion", {
     input: suggestionFullSchema,
     resolve({ input, ctx }) {

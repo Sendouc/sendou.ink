@@ -163,6 +163,11 @@ const getDistinctSummaryMonths = () => {
   });
 };
 
+const getBallots = (userId: number) => {
+  if (!getVotingRange().isHappening) return null;
+  return prisma.plusBallot.findMany({ where: { voterUser: { id: userId } } });
+};
+
 const addSuggestion = async ({
   input,
   userId,
@@ -296,6 +301,7 @@ export default {
   getVotingSummariesByMonthAndTier,
   getMostRecentVotingWithResultsMonth,
   getDistinctSummaryMonths,
+  getBallots,
   addSuggestion,
   addVouch,
 };
