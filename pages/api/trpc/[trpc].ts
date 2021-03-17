@@ -1,6 +1,6 @@
 import * as trpc from "@trpc/server";
 import { inferAsyncReturnType, inferProcedureOutput } from "@trpc/server";
-import * as trpcNext from "@trpc/server/dist/adapters/next";
+import * as trpcNext from "@trpc/server/adapters/next";
 import plusApi from "app/plus/api";
 import superjson from "superjson";
 import { getMySession } from "utils/api";
