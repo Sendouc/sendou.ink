@@ -1,9 +1,11 @@
-import { Prisma } from "@prisma/client";
+import { PlusRegion, Prisma } from "@prisma/client";
 import { httpError } from "@trpc/server";
 import prisma from "prisma/client";
 import { getPercentageFromCounts, getVotingRange } from "utils/plus";
 import { userBasicSelection } from "utils/prisma";
+import { shuffleArray } from "utils/shuffleArray";
 import { suggestionFullSchema } from "utils/validators/suggestion";
+import { votesSchema } from "utils/validators/votes";
 import { vouchSchema } from "utils/validators/vouch";
 import * as z from "zod";
 
@@ -163,9 +165,100 @@ const getDistinctSummaryMonths = () => {
   });
 };
 
-const getBallots = (userId: number) => {
+const getUsersForVoting = async (userId: number) => {
   if (!getVotingRange().isHappening) return null;
-  return prisma.plusBallot.findMany({ where: { voterUser: { id: userId } } });
+  const plusStatus = await prisma.plusStatus.findUnique({ where: { userId } });
+
+  if (!plusStatus?.membershipTier) return null;
+
+  const [plusStatuses, suggestions] = await Promise.all([
+    prisma.plusStatus.findMany({
+      where: {
+        OR: [
+          { membershipTier: plusStatus.membershipTier },
+          { membershipTier: plusStatus.membershipTier },
+        ],
+      },
+      include: { user: { include: { profile: true } } },
+    }),
+    prisma.plusSuggestion.findMany({
+      where: { tier: plusStatus.membershipTier },
+      include: {
+        suggestedUser: { include: { profile: true, plusStatus: true } },
+        suggesterUser: true,
+      },
+      orderBy: { createdAt: "asc" },
+    }),
+  ]);
+
+  const result: {
+    userId: number;
+    username: string;
+    discriminator: string;
+    discordAvatar: string | null;
+    discordId: string;
+    region: PlusRegion;
+    bio?: string | null;
+    suggestions?: {
+      description: string;
+      suggesterUser: {
+        id: number;
+        username: string;
+        discriminator: string;
+      };
+    }[];
+  }[] = [];
+
+  for (const status of plusStatuses) {
+    result.push({
+      userId: status.user.id,
+      username: status.user.username,
+      discriminator: status.user.discriminator,
+      discordAvatar: status.user.discordAvatar,
+      bio: status.user.profile?.bio,
+      discordId: status.user.discordId,
+      region: status.region,
+    });
+  }
+
+  for (const suggestion of suggestions) {
+    const user = result.find(
+      ({ userId }) => userId === suggestion.suggestedUser.id
+    );
+    if (user) {
+      user.suggestions?.push({
+        description: suggestion.description,
+        suggesterUser: {
+          id: suggestion.suggesterUser.id,
+          username: suggestion.suggesterUser.username,
+          discriminator: suggestion.suggestedUser.discriminator,
+        },
+      });
+      continue;
+    }
+
+    result.push({
+      userId: suggestion.suggestedUser.id,
+      username: suggestion.suggestedUser.username,
+      discriminator: suggestion.suggestedUser.discriminator,
+      discordAvatar: suggestion.suggestedUser.discordAvatar,
+      bio: suggestion.suggestedUser.profile?.bio,
+      discordId: suggestion.suggestedUser.discordId,
+      region: suggestion.suggestedUser.plusStatus?.region!,
+      suggestions: [
+        {
+          description: suggestion.description,
+          suggesterUser: {
+            id: suggestion.suggesterUser.id,
+            username: suggestion.suggesterUser.username,
+            discriminator: suggestion.suggestedUser.discriminator,
+          },
+        },
+      ],
+    });
+  }
+
+  return shuffleArray(result).sort((a, b) => a.region.localeCompare(b.region));
 };
 
 const addSuggestion = async ({
@@ -295,13 +388,95 @@ const addVouch = async ({
   }
 };
 
+const addVotes = async ({
+  input,
+  userId,
+}: {
+  input: z.infer<typeof votesSchema>;
+  userId: number;
+}) => {
+  const [plusStatuses, suggestions] = await Promise.all([
+    prisma.plusStatus.findMany({}),
+    prisma.plusSuggestion.findMany({ where: { isResuggestion: false } }),
+  ]);
+
+  const usersPlusStatus = plusStatuses.find(
+    (status) => status.userId === userId
+  );
+
+  const usersMembership = usersPlusStatus?.membershipTier;
+
+  if (!usersPlusStatus || !usersMembership)
+    throw httpError.badRequest("not a member");
+
+  const allowedUsers = new Map<number, "EU" | "NA">();
+
+  for (const status of plusStatuses) {
+    if (
+      status.membershipTier !== usersMembership &&
+      status.vouchTier !== usersMembership
+    ) {
+      continue;
+    }
+
+    allowedUsers.set(status.userId, status.region);
+  }
+
+  for (const suggestion of suggestions) {
+    if (suggestion.tier !== usersMembership) {
+      continue;
+    }
+
+    const status = plusStatuses.find(
+      (status) => status.userId === suggestion.suggestedId
+    );
+    if (!status)
+      throw httpError.badRequest("unexpected no status for suggested user");
+
+    allowedUsers.set(suggestion.suggestedId, status.region);
+  }
+
+  if (input.length !== allowedUsers.size) {
+    throw httpError.badRequest("didn't vote on every user exactly once");
+  }
+
+  if (
+    input.some((vote) => {
+      const region = allowedUsers.get(vote.userId);
+      if (!region) return false;
+
+      if (region === usersPlusStatus.region) {
+        if (![-2, -1, 1, 2].includes(vote.score)) return false;
+      } else {
+        if (![-1, 1].includes(vote.score)) return false;
+      }
+
+      return true;
+    })
+  ) {
+    throw httpError.badRequest("invalid vote provided");
+  }
+
+  return prisma.plusBallot.createMany({
+    data: input.map((vote) => {
+      return {
+        score: vote.score,
+        tier: usersMembership,
+        voterId: userId,
+        votedId: vote.userId,
+      };
+    }),
+  });
+};
+
 export default {
   getPlusStatuses,
   getSuggestions,
   getVotingSummariesByMonthAndTier,
   getMostRecentVotingWithResultsMonth,
   getDistinctSummaryMonths,
-  getBallots,
+  getUsersForVoting,
   addSuggestion,
   addVouch,
+  addVotes,
 };

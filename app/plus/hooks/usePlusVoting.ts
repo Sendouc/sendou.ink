@@ -1,39 +1,46 @@
 import { useUser } from "hooks/common";
-import { getVotingRange } from "utils/plus";
+import { useState } from "react";
 import { trpc } from "utils/trpc";
+import { Unpacked } from "utils/types";
+import { votesSchema } from "utils/validators/votes";
+import * as z from "zod";
 
 export default function usePlusVoting() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [votes, setVotes] = useState<z.infer<typeof votesSchema>>([]);
+
   const [user] = useUser();
   const { data: ballotsData, isLoading: isLoadingBallots } = trpc.useQuery([
-    "plus.ballots",
+    "plus.usersForVoting",
   ]);
   const { data: statusesData, isLoading: isLoadingStatuses } = trpc.useQuery([
     "plus.statuses",
   ]);
-  const {
-    data: suggestionsData,
-    isLoading: isLoadingSuggestions,
-  } = trpc.useQuery(["plus.suggestions"]);
 
   const ownPlusStatus = statusesData?.find(
     (status) => status.user.id === user?.id
   );
 
-  const votingTier = ownPlusStatus?.membershipTier;
-
   return {
-    ballotsData: ballotsData?.filter((ballot) => !ballot.isStale),
-    staleBallots: ballotsData?.filter((ballot) => ballot.isStale),
-    shouldRedirect:
-      (statusesData && !votingTier) || !getVotingRange().isHappening,
-    usersToVoteOn: statusesData?.filter(
-      (user) =>
-        (user.membershipTier && user.membershipTier === votingTier) ||
-        (user.vouchTier && user.vouchTier === votingTier)
-    ),
-    suggestedUsersToVoteOn: suggestionsData?.filter(
-      (suggestion) => suggestion.tier === votingTier
-    ),
-    isLoading: isLoadingBallots || isLoadingStatuses || isLoadingSuggestions,
+    isLoading: isLoadingBallots || isLoadingStatuses,
+    shouldRedirect: !isLoadingBallots && !ballotsData,
+    plusStatus: ownPlusStatus,
+    currentUser: ballotsData?.[currentIndex],
+    previousUser:
+      currentIndex > 0 && ballotsData
+        ? { ...ballotsData[currentIndex - 1], ...votes[votes.length - 1] }
+        : undefined,
+    progress: ballotsData
+      ? ((currentIndex + 1) / ballotsData.length) * 100
+      : undefined,
+    handleVote: (vote: Unpacked<z.infer<typeof votesSchema>>) => {
+      setVotes([...votes, vote]);
+      setCurrentIndex(currentIndex + 1);
+      (<HTMLElement>document.activeElement).blur();
+    },
+    goBack: () => {
+      setVotes(votes.slice(0, votes.length - 1));
+      setCurrentIndex(currentIndex - 1);
+    },
   };
 }
