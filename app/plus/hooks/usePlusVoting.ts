@@ -48,9 +48,16 @@ export default function usePlusVoting() {
       ? (currentIndex / usersForVoting.length) * 100
       : undefined,
     handleVote: (vote: Unpacked<z.infer<typeof votesSchema>>) => {
+      const nextIndex = currentIndex + 1;
       setVotes([...votes, vote]);
-      setCurrentIndex(currentIndex + 1);
+      setCurrentIndex(nextIndex);
       (<HTMLElement>document.activeElement).blur();
+
+      // preload next avatar
+      const next = usersForVoting?.[nextIndex + 1];
+      if (next) {
+        new Image().src = `https://cdn.discordapp.com/avatars/${next.discordId}/${next.discordAvatar}.jpg`;
+      }
     },
     goBack: () => {
       setVotes(votes.slice(0, votes.length - 1));

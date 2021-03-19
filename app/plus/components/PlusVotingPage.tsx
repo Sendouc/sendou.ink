@@ -46,7 +46,7 @@ export default function PlusVotingPage() {
       <Progress value={progress} size="xs" colorScheme="pink" mb={6} />
       {previousUser ? (
         <Box textAlign="center" mb={6}>
-          <UserAvatar user={previousUser} isSmall />
+          <UserAvatar user={previousUser} size="sm" />
           <Box my={2} fontSize="sm">
             {getFullUsername(previousUser)}
           </Box>
