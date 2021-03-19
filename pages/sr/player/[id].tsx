@@ -20,7 +20,7 @@ interface Props {
 }
 
 const SalmonRunPlayerPage = (props: Props) => {
-  const { gray } = useMyTheme();
+  const { gray, secondaryBgColor } = useMyTheme();
   const user = props.user!;
 
   return (
@@ -71,7 +71,7 @@ const SalmonRunPlayerPage = (props: Props) => {
                     )
                     .map((record) => (
                       <WrapItem key={record.id}>
-                        <Box>
+                        <Box bg={secondaryBgColor} rounded="lg" p={3}>
                           <SubText mb={2} mt={2}>
                             {record.rotation.stage}
                           </SubText>

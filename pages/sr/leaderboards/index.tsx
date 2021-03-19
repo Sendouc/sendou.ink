@@ -16,6 +16,7 @@ import { Plural, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { SalmonRunRecordCategory } from "@prisma/client";
 import LinkButton from "components/common/LinkButton";
+import MyLink from "components/common/MyLink";
 import {
   Table,
   TableBody,
@@ -194,8 +195,13 @@ const SalmonRunLeaderboardsPage = ({}) => {
                               my={4}
                               justify="center"
                             >
-                              <UserAvatar isSmall user={user} mr={2} />
-                              {user.username}#{user.discriminator}
+                              <MyLink
+                                href={`/u/${user.discordId}`}
+                                isColored={false}
+                              >
+                                <UserAvatar isSmall user={user} mr={2} />
+                                {user.username}#{user.discriminator}
+                              </MyLink>
                             </Flex>
                           ))}
                         </TableCell>
