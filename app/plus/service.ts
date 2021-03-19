@@ -261,6 +261,14 @@ const getUsersForVoting = async (userId: number) => {
   return shuffleArray(result).sort((a, b) => a.region.localeCompare(b.region));
 };
 
+const hasVoted = async (userId: number) => {
+  return Boolean(
+    await prisma.plusBallot.count({
+      where: { voterId: userId, isStale: false },
+    })
+  );
+};
+
 const addSuggestion = async ({
   input,
   userId,
@@ -443,15 +451,15 @@ const addVotes = async ({
   if (
     input.some((vote) => {
       const region = allowedUsers.get(vote.userId);
-      if (!region) return false;
+      if (!region) return true;
 
       if (region === usersPlusStatus.region) {
-        if (![-2, -1, 1, 2].includes(vote.score)) return false;
+        if (![-2, -1, 1, 2].includes(vote.score)) return true;
       } else {
-        if (![-1, 1].includes(vote.score)) return false;
+        if (![-1, 1].includes(vote.score)) return true;
       }
 
-      return true;
+      return false;
     })
   ) {
     throw httpError.badRequest("invalid vote provided");
@@ -479,4 +487,5 @@ export default {
   addSuggestion,
   addVouch,
   addVotes,
+  hasVoted,
 };
