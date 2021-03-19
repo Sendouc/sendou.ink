@@ -269,6 +269,42 @@ const hasVoted = async (userId: number) => {
   );
 };
 
+const votingProgress = async () => {
+  const [ballots, statuses] = await Promise.all([
+    prisma.plusBallot.findMany({
+      where: { isStale: false },
+      distinct: ["voterId"],
+    }),
+    prisma.plusStatus.findMany({ where: { NOT: { membershipTier: null } } }),
+  ]);
+
+  const result = {
+    1: {
+      voted: 0,
+      totalVoterCount: 0,
+    },
+    2: {
+      voted: 0,
+      totalVoterCount: 0,
+    },
+    3: {
+      voted: 0,
+      totalVoterCount: 0,
+    },
+  };
+
+  for (const status of statuses) {
+    const key = status.membershipTier as keyof typeof result;
+    result[key].totalVoterCount++;
+
+    if (ballots.some((ballot) => ballot.voterId === status.userId)) {
+      result[key].voted++;
+    }
+  }
+
+  return result;
+};
+
 const addSuggestion = async ({
   input,
   userId,
@@ -486,6 +522,7 @@ export default {
   getMostRecentVotingWithResultsMonth,
   getDistinctSummaryMonths,
   getUsersForVoting,
+  votingProgress,
   addSuggestion,
   addVouch,
   addVotes,

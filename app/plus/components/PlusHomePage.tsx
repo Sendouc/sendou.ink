@@ -3,6 +3,7 @@ import {
   Alert,
   AlertDescription,
   AlertTitle,
+  Progress,
   Radio,
   RadioGroup,
 } from "@chakra-ui/react";
@@ -28,11 +29,52 @@ const PlusHomePage = () => {
     suggestionCounts,
     setSuggestionsFilter,
     vouchedPlusStatusData,
+    votingProgress,
   } = usePlusHomePage();
 
   return (
     <>
       <MyHead title="Plus Server" />
+      {votingProgress && (
+        <Box textAlign="center">
+          <SubText>
+            +1 ({votingProgress[1].voted}/{votingProgress[1].totalVoterCount})
+          </SubText>
+          <Progress
+            value={
+              (votingProgress[1].voted / votingProgress[1].totalVoterCount) *
+              100
+            }
+            size="xs"
+            colorScheme="pink"
+            mb={6}
+          />
+          <SubText>
+            +2 ({votingProgress[2].voted}/{votingProgress[2].totalVoterCount})
+          </SubText>
+          <Progress
+            value={
+              (votingProgress[2].voted / votingProgress[2].totalVoterCount) *
+              100
+            }
+            size="xs"
+            colorScheme="blue"
+            mb={6}
+          />
+          <SubText>
+            +3 ({votingProgress[3].voted}/{votingProgress[3].totalVoterCount})
+          </SubText>
+          <Progress
+            value={
+              (votingProgress[3].voted / votingProgress[3].totalVoterCount) *
+              100
+            }
+            size="xs"
+            colorScheme="yellow"
+            mb={6}
+          />
+        </Box>
+      )}
       <Box fontSize="sm" mb={4}>
         <VotingInfoHeader isMember={!!plusStatusData?.membershipTier} />
       </Box>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getVotingRange } from "utils/plus";
 import { trpc } from "utils/trpc";
 import { useUser } from "../../../hooks/common";
 
@@ -8,8 +9,13 @@ export function usePlusHomePage() {
     number | undefined
   >(undefined);
 
-  const { data: suggestionsData } = trpc.useQuery(["plus.suggestions"]);
+  const { data: suggestionsData } = trpc.useQuery(["plus.suggestions"], {
+    enabled: !getVotingRange().isHappening,
+  });
   const { data: plusStatusData } = trpc.useQuery(["plus.statuses"]);
+  const { data: votingProgress } = trpc.useQuery(["plus.votingProgress"], {
+    enabled: getVotingRange().isHappening,
+  });
 
   const suggestions = suggestionsData ?? [];
 
@@ -39,5 +45,6 @@ export function usePlusHomePage() {
       (suggestion) => suggestion.suggesterUser.id === user?.id
     ),
     setSuggestionsFilter,
+    votingProgress,
   };
 }

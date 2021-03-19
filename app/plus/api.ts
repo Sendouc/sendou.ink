@@ -28,6 +28,11 @@ const plusApi = createRouter()
       return service.hasVoted(user.id);
     },
   })
+  .query("votingProgress", {
+    resolve() {
+      return service.votingProgress();
+    },
+  })
   .mutation("suggestion", {
     input: suggestionFullSchema,
     resolve({ input, ctx }) {

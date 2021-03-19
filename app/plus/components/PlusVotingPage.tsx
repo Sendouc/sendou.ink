@@ -12,6 +12,8 @@ import { getFullUsername } from "utils/strings";
 import usePlusVoting from "../hooks/usePlusVoting";
 import { PlusVotingButton } from "./PlusVotingButton";
 
+const progressBarColor = ["theme", "pink", "blue", "yellow"];
+
 export default function PlusVotingPage() {
   const router = useRouter();
   const {
@@ -32,7 +34,7 @@ export default function PlusVotingPage() {
     if (shouldRedirect) router.push("/404");
   }, [shouldRedirect]);
 
-  if (isLoading || !plusStatus) return null;
+  if (isLoading || !plusStatus?.membershipTier) return null;
 
   if (hasVoted)
     return (
@@ -45,7 +47,12 @@ export default function PlusVotingPage() {
 
   return (
     <>
-      <Progress value={progress} size="xs" colorScheme="pink" mb={6} />
+      <Progress
+        value={progress}
+        size="xs"
+        colorScheme={progressBarColor[plusStatus.membershipTier]}
+        mb={6}
+      />
       {previousUser ? (
         <Box textAlign="center" mb={6}>
           <UserAvatar user={previousUser} size="sm" />

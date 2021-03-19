@@ -27,6 +27,7 @@ export default function usePlusVoting() {
     onSuccess() {
       toast(getToastOptions("Successfully voted", "success"));
       trpc.invalidateQuery(["plus.hasVoted"]);
+      trpc.invalidateQuery(["plus.votingProgress"]);
     },
     onError(error) {
       toast(getToastOptions(error.message, "error"));
