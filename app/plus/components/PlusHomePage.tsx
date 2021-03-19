@@ -12,6 +12,7 @@ import MyHead from "components/common/MyHead";
 import SubText from "components/common/SubText";
 import { useUser } from "hooks/common";
 import { Fragment } from "react";
+import { getVotingRange } from "utils/plus";
 import { getFullUsername } from "utils/strings";
 import Suggestion from "./Suggestion";
 import SuggestionModal from "./SuggestionModal";
@@ -35,16 +36,22 @@ const PlusHomePage = () => {
       <Box fontSize="sm" mb={4}>
         <VotingInfoHeader isMember={!!plusStatusData?.membershipTier} />
       </Box>
-      {plusStatusData && plusStatusData.membershipTier && !ownSuggestion && (
-        <SuggestionModal
-          userPlusMembershipTier={plusStatusData.membershipTier}
-        />
+      {!getVotingRange().isHappening && (
+        <>
+          {plusStatusData &&
+            plusStatusData.membershipTier &&
+            !ownSuggestion && (
+              <SuggestionModal
+                userPlusMembershipTier={plusStatusData.membershipTier}
+              />
+            )}
+          {plusStatusData &&
+            plusStatusData.canVouchFor &&
+            !plusStatusData.canVouchAgainAfter && (
+              <VouchModal canVouchFor={plusStatusData.canVouchFor} />
+            )}
+        </>
       )}
-      {plusStatusData &&
-        plusStatusData.canVouchFor &&
-        !plusStatusData.canVouchAgainAfter && (
-          <VouchModal canVouchFor={plusStatusData.canVouchFor} />
-        )}
       {plusStatusData &&
         (plusStatusData.canVouchAgainAfter ||
           plusStatusData.voucher ||

@@ -18,6 +18,7 @@ import { useMyTheme } from "hooks/common";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { getToastOptions } from "utils/getToastOptions";
+import { getVotingRange } from "utils/plus";
 import { getFullUsername } from "utils/strings";
 import { trpc } from "utils/trpc";
 import { Unpacked } from "utils/types";
@@ -95,7 +96,7 @@ const Suggestion = ({
             </Box>
           );
         })}
-        {canSuggest && !showTextarea && (
+        {canSuggest && !showTextarea && !getVotingRange().isHappening && (
           <Button
             variant="outline"
             size="sm"
