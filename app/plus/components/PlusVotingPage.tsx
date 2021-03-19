@@ -34,7 +34,7 @@ export default function PlusVotingPage() {
 
   if (hasVoted)
     return (
-      <Alert status="success" variant="subtle">
+      <Alert status="success" variant="subtle" rounded="lg">
         <AlertIcon />
         Votes succesfully recorded. Voting ends{" "}
         {getVotingRange().endDate.toLocaleString()}.

@@ -59,6 +59,5 @@ export const getVotingRange = () => {
       ? startDate
       : getThirdFridayDate(true);
 
-  //return { startDate, endDate, isHappening, nextVotingDate };
-  return { startDate, endDate, isHappening: true, nextVotingDate };
+  return { startDate, endDate, isHappening, nextVotingDate };
 };
