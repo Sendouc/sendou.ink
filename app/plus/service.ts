@@ -176,7 +176,7 @@ const getUsersForVoting = async (userId: number) => {
       where: {
         OR: [
           { membershipTier: plusStatus.membershipTier },
-          { membershipTier: plusStatus.membershipTier },
+          { vouchTier: plusStatus.membershipTier },
         ],
       },
       include: { user: { include: { profile: true } } },
