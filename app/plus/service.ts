@@ -403,6 +403,8 @@ const addVotes = async ({
   input: z.infer<typeof votesSchema>;
   userId: number;
 }) => {
+  if (!getVotingRange().isHappening)
+    throw httpError.badRequest("voting is not happening right now");
   const [plusStatuses, suggestions] = await Promise.all([
     prisma.plusStatus.findMany({}),
     prisma.plusSuggestion.findMany({ where: { isResuggestion: false } }),
