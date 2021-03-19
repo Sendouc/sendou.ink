@@ -1,6 +1,6 @@
 import { Alert, AlertIcon } from "@chakra-ui/alert";
 import { Button } from "@chakra-ui/button";
-import { Box, HStack } from "@chakra-ui/layout";
+import { Box, Flex, Heading, HStack } from "@chakra-ui/layout";
 import { Progress } from "@chakra-ui/progress";
 import Markdown from "components/common/Markdown";
 import SubText from "components/common/SubText";
@@ -42,7 +42,8 @@ export default function PlusVotingPage() {
     );
 
   return (
-    <Box>
+    <>
+      <Progress value={progress} size="xs" colorScheme="pink" mb={6} />
       {previousUser ? (
         <Box textAlign="center" mb={6}>
           <UserAvatar user={previousUser} isSmall />
@@ -62,23 +63,12 @@ export default function PlusVotingPage() {
           </Button>
         </Box>
       ) : (
-        <Box textAlign="center" mb={14} visibility="hidden">
-          <Box my={2} fontSize="sm">
-            asd
-          </Box>
-          <Button
-            borderRadius="50%"
-            height={10}
-            width={10}
-            variant="outline"
-            colorScheme="theme"
-            onClick={goBack}
-          >
-            {2}
-          </Button>
-        </Box>
+        <Flex align="center" justify="center" height="6.8rem">
+          <Heading fontFamily="'Rubik', sans-serif">
+            +{plusStatus.membershipTier} Voting
+          </Heading>
+        </Flex>
       )}
-      <Progress value={progress} size="xs" colorScheme="pink" />
       {currentUser && (
         <>
           <Box mt={6} textAlign="center">
@@ -144,6 +134,6 @@ export default function PlusVotingPage() {
           <Button isLoading={status === "loading"}>Submit</Button>
         </Box>
       )}
-    </Box>
+    </>
   );
 }
