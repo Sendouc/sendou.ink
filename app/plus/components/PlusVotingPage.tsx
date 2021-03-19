@@ -5,6 +5,7 @@ import { Progress } from "@chakra-ui/progress";
 import Markdown from "components/common/Markdown";
 import SubText from "components/common/SubText";
 import UserAvatar from "components/common/UserAvatar";
+import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { getVotingRange } from "utils/plus";
 import { getFullUsername } from "utils/strings";
@@ -12,6 +13,7 @@ import usePlusVoting from "../hooks/usePlusVoting";
 import { PlusVotingButton } from "./PlusVotingButton";
 
 export default function PlusVotingPage() {
+  const router = useRouter();
   const {
     isLoading,
     shouldRedirect,
@@ -27,7 +29,7 @@ export default function PlusVotingPage() {
   } = usePlusVoting();
 
   useEffect(() => {
-    //redirect!!
+    if (shouldRedirect) router.push("/404");
   }, [shouldRedirect]);
 
   if (isLoading || !plusStatus) return null;
