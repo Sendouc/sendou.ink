@@ -76,7 +76,7 @@ const Markdown: React.FC<MarkdownProps> = ({
       link: (props: any) => {
         const { children } = props;
         return (
-          <MyLink isExternal {...props}>
+          <MyLink isExternal {...props} toNewWindow>
             {children}
           </MyLink>
         );

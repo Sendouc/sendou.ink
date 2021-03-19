@@ -8,6 +8,7 @@ interface Props {
   isExternal?: boolean;
   prefetch?: boolean;
   isColored?: boolean;
+  toNewWindow?: boolean;
 }
 
 const MyLink: React.FC<Props> = ({
@@ -16,12 +17,17 @@ const MyLink: React.FC<Props> = ({
   isExternal,
   prefetch = false,
   isColored = true,
+  toNewWindow,
 }) => {
   const { themeColorShade } = useMyTheme();
 
   if (isExternal) {
     return (
-      <ChakraLink href={href} color={isColored ? themeColorShade : undefined}>
+      <ChakraLink
+        href={href}
+        color={isColored ? themeColorShade : undefined}
+        target={toNewWindow ? "_blank" : undefined}
+      >
         {children}
       </ChakraLink>
     );
