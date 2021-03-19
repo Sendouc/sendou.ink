@@ -292,7 +292,7 @@ const addSuggestion = async ({
         isResuggestion === false && suggesterId === userId
     );
     if (usersSuggestion) {
-      httpError.badRequest("already made a new suggestion");
+      throw httpError.badRequest("already made a new suggestion");
     }
   }
 
@@ -305,7 +305,7 @@ const addSuggestion = async ({
     !suggesterPlusStatus.membershipTier ||
     suggesterPlusStatus.membershipTier > input.tier
   ) {
-    httpError.badRequest(
+    throw httpError.badRequest(
       "not a member of high enough tier to suggest for this tier"
     );
   }
@@ -315,7 +315,7 @@ const addSuggestion = async ({
   }
 
   if (getVotingRange().isHappening) {
-    httpError.badRequest("voting has already started");
+    throw httpError.badRequest("voting has already started");
   }
 
   return prisma.$transaction([
@@ -359,17 +359,17 @@ const addVouch = async ({
   );
 
   if ((suggesterPlusStatus?.canVouchFor ?? Infinity) > input.tier) {
-    httpError.badRequest(
+    throw httpError.badRequest(
       "not a member of high enough tier to vouch for this tier"
     );
   }
 
   if (vouchedUserAlreadyHasAccess()) {
-    httpError.badRequest("vouched user already has access");
+    throw httpError.badRequest("vouched user already has access");
   }
 
   if (getVotingRange().isHappening) {
-    httpError.badRequest("voting has already started");
+    throw httpError.badRequest("voting has already started");
   }
 
   return prisma.$transaction([
