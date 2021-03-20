@@ -73,7 +73,6 @@ export const getPlusSuggestionsData = (): Prisma.PlusSuggestionCreateManyInput[]
   return [
     {
       description: "yooo so cracked",
-      region: "NA",
       tier: 2,
       suggestedId: 10,
       suggesterId: 1,
@@ -86,7 +85,6 @@ export const getPlusVotingSummaryData = (): Prisma.PlusVotingSummaryCreateManyIn
     {
       userId: 1,
       month: 1,
-      scoreTotal: -1,
       tier: 1,
       wasSuggested: false,
       wasVouched: false,
@@ -97,7 +95,6 @@ export const getPlusVotingSummaryData = (): Prisma.PlusVotingSummaryCreateManyIn
     {
       userId: 2,
       month: 1,
-      scoreTotal: -1,
       tier: 1,
       wasSuggested: false,
       wasVouched: false,
@@ -108,7 +105,6 @@ export const getPlusVotingSummaryData = (): Prisma.PlusVotingSummaryCreateManyIn
     {
       userId: 3,
       month: 1,
-      scoreTotal: -1,
       tier: 1,
       wasSuggested: false,
       wasVouched: false,
@@ -119,7 +115,6 @@ export const getPlusVotingSummaryData = (): Prisma.PlusVotingSummaryCreateManyIn
     {
       userId: 4,
       month: 1,
-      scoreTotal: -1,
       tier: 1,
       wasSuggested: false,
       wasVouched: false,
@@ -130,7 +125,6 @@ export const getPlusVotingSummaryData = (): Prisma.PlusVotingSummaryCreateManyIn
     {
       userId: 5,
       month: 1,
-      scoreTotal: -1,
       tier: 1,
       wasSuggested: false,
       wasVouched: false,
@@ -141,7 +135,6 @@ export const getPlusVotingSummaryData = (): Prisma.PlusVotingSummaryCreateManyIn
     {
       userId: 6,
       month: 1,
-      scoreTotal: -1,
       tier: 1,
       wasSuggested: false,
       wasVouched: true,
@@ -152,7 +145,6 @@ export const getPlusVotingSummaryData = (): Prisma.PlusVotingSummaryCreateManyIn
     {
       userId: 7,
       month: 1,
-      scoreTotal: -1,
       tier: 1,
       wasSuggested: false,
       wasVouched: true,
@@ -164,7 +156,6 @@ export const getPlusVotingSummaryData = (): Prisma.PlusVotingSummaryCreateManyIn
     {
       userId: 6,
       month: 1,
-      scoreTotal: -1,
       tier: 2,
       wasSuggested: false,
       wasVouched: false,
@@ -176,7 +167,6 @@ export const getPlusVotingSummaryData = (): Prisma.PlusVotingSummaryCreateManyIn
     {
       userId: 7,
       month: 1,
-      scoreTotal: -1,
       tier: 2,
       wasSuggested: false,
       wasVouched: false,
@@ -187,7 +177,6 @@ export const getPlusVotingSummaryData = (): Prisma.PlusVotingSummaryCreateManyIn
     {
       userId: 8,
       month: 1,
-      scoreTotal: -1,
       tier: 2,
       wasSuggested: false,
       wasVouched: false,
@@ -198,7 +187,6 @@ export const getPlusVotingSummaryData = (): Prisma.PlusVotingSummaryCreateManyIn
     {
       userId: 9,
       month: 1,
-      scoreTotal: -1,
       tier: 2,
       wasSuggested: false,
       wasVouched: false,
@@ -209,7 +197,6 @@ export const getPlusVotingSummaryData = (): Prisma.PlusVotingSummaryCreateManyIn
     {
       userId: 10,
       month: 1,
-      scoreTotal: -1,
       tier: 2,
       wasSuggested: true,
       wasVouched: false,

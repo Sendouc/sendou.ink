@@ -18,6 +18,7 @@ model User {
   teamId                  Int?
   ladderTeamId            Int?
   patreonTier             Int?
+  canPostEvents           Boolean                @default(false)
   profile                 Profile?
   player                  Player?
   builds                  Build[]
@@ -36,6 +37,8 @@ model User {
   votesMade               PlusBallot[]
   votesReceived           PlusBallot[]           @relation("Voter")
   votingSummaries         PlusVotingSummary[]
+  feedback                Feedback[]
+  calendarEvents          CalendarEvent[]
 }
 
 model Profile {
@@ -368,13 +371,12 @@ model PlusStatus {
 model PlusSuggestion {
   suggestedId    Int
   suggesterId    Int
-  region         PlusRegion
   tier           Int
   description    String
-  isResuggestion Boolean    @default(false)
-  createdAt      DateTime   @default(now())
-  suggestedUser  User       @relation(fields: [suggestedId], references: [id])
-  suggesterUser  User       @relation("Suggester", fields: [suggesterId], references: [id])
+  isResuggestion Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  suggestedUser  User     @relation(fields: [suggestedId], references: [id])
+  suggesterUser  User     @relation("Suggester", fields: [suggesterId], references: [id])
 
   @@unique([tier, suggestedId, suggesterId])
 }
@@ -388,7 +390,7 @@ model PlusBallot {
   votedUser User    @relation(fields: [votedId], references: [id])
   voterUser User    @relation("Voter", fields: [voterId], references: [id])
 
-  @@unique([votedId, voterId])
+  @@unique([votedId, voterId, isStale])
 }
 
 model PlusVotingSummary {
@@ -398,10 +400,50 @@ model PlusVotingSummary {
   year         Int
   wasVouched   Boolean
   wasSuggested Boolean
-  scoreTotal   Float
   countsEU     Int[]
   countsNA     Int[]
   user         User    @relation(fields: [userId], references: [id])
 
   @@unique([userId, tier, month, year])
+}
+
+enum FeedbackEmoji {
+  STARSTRUCK
+  SMILE
+  CONFUSED
+  SOB
+}
+
+model Feedback {
+  id     Int            @id @default(autoincrement())
+  text   String
+  emoji  FeedbackEmoji?
+  mobile Boolean        @default(false)
+  userId Int?
+  user   User?          @relation(fields: [userId], references: [id])
+}
+
+enum TournamentFormat {
+  SE
+  DE
+  GROUPS2SE
+  GROUPS2DE
+  SWISS2SE
+  SWISS2DE
+  SWISS
+  OTHER
+}
+
+model CalendarEvent {
+  id               Int               @id @default(autoincrement())
+  name             String
+  date             DateTime
+  description      String
+  eventUrl         String
+  discordInviteUrl String?
+  tags             String[]
+  isTournament     Boolean           @default(true)
+  format           TournamentFormat?
+  posterId         Int
+  poster           User              @relation(fields: [posterId], references: [id])
 }

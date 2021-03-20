@@ -557,7 +557,13 @@ const editVote = async ({
   }
 
   return prisma.plusBallot.update({
-    where: { votedId_voterId: { votedId: input.userId, voterId: userId } },
+    where: {
+      votedId_voterId_isStale: {
+        votedId: input.userId,
+        voterId: userId,
+        isStale: false,
+      },
+    },
     data: { score: input.score },
   });
 };
