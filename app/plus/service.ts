@@ -5,7 +5,7 @@ import { getPercentageFromCounts, getVotingRange } from "utils/plus";
 import { userBasicSelection } from "utils/prisma";
 import { shuffleArray } from "utils/shuffleArray";
 import { suggestionFullSchema } from "utils/validators/suggestion";
-import { votesSchema } from "utils/validators/votes";
+import { voteSchema, votesSchema } from "utils/validators/votes";
 import { vouchSchema } from "utils/validators/vouch";
 import * as z from "zod";
 
@@ -261,12 +261,22 @@ const getUsersForVoting = async (userId: number) => {
   return shuffleArray(result).sort((a, b) => a.region.localeCompare(b.region));
 };
 
-const hasVoted = async (userId: number) => {
-  return Boolean(
-    await prisma.plusBallot.count({
-      where: { voterId: userId, isStale: false },
-    })
-  );
+const votedUserScores = async (userId: number) => {
+  const ballots = await prisma.plusBallot.findMany({
+    where: { isStale: false, voterId: userId },
+  });
+
+  if (ballots.length === 0) {
+    return undefined;
+  }
+
+  const result = new Map<number, number>();
+
+  for (const ballot of ballots) {
+    result.set(ballot.votedId, ballot.score);
+  }
+
+  return result;
 };
 
 const votingProgress = async () => {
@@ -439,8 +449,10 @@ const addVotes = async ({
   input: z.infer<typeof votesSchema>;
   userId: number;
 }) => {
-  if (!getVotingRange().isHappening)
+  if (!getVotingRange().isHappening) {
     throw httpError.badRequest("voting is not happening right now");
+  }
+
   const [plusStatuses, suggestions] = await Promise.all([
     prisma.plusStatus.findMany({}),
     prisma.plusSuggestion.findMany({ where: { isResuggestion: false } }),
@@ -515,6 +527,41 @@ const addVotes = async ({
   });
 };
 
+const editVote = async ({
+  input,
+  userId,
+}: {
+  input: z.infer<typeof voteSchema>;
+  userId: number;
+}) => {
+  if (!getVotingRange().isHappening) {
+    throw httpError.badRequest("voting is not happening right now");
+  }
+
+  const statuses = await prisma.plusStatus.findMany({
+    where: { userId: { in: [userId, input.userId] } },
+  });
+
+  if (
+    statuses[0].region !== statuses[1].region &&
+    ![-1, 1].includes(input.score)
+  ) {
+    throw httpError.badRequest("invalid score");
+  }
+
+  if (
+    statuses[0].region === statuses[1].region &&
+    ![-2, -1, 1, 2].includes(input.score)
+  ) {
+    throw httpError.badRequest("invalid score");
+  }
+
+  return prisma.plusBallot.update({
+    where: { votedId_voterId: { votedId: input.userId, voterId: userId } },
+    data: { score: input.score },
+  });
+};
+
 export default {
   getPlusStatuses,
   getSuggestions,
@@ -526,5 +573,6 @@ export default {
   addSuggestion,
   addVouch,
   addVotes,
-  hasVoted,
+  editVote,
+  votedUserScores,
 };

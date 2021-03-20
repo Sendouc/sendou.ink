@@ -14,27 +14,54 @@ export default function usePlusVoting() {
   const toast = useToast();
   const [user] = useUser();
 
-  const { data: hasVoted, isLoading: hasVotedIsLoading } = trpc.useQuery([
-    "plus.hasVoted",
-  ]);
+  const {
+    data: votedUserScores,
+    isLoading: hasVotedIsLoading,
+  } = trpc.useQuery(["plus.votedUserScores"]);
   const { data: usersForVoting, isLoading: isLoadingBallots } = trpc.useQuery([
     "plus.usersForVoting",
   ]);
   const { data: statuses, isLoading: isLoadingStatuses } = trpc.useQuery([
     "plus.statuses",
   ]);
-  const { mutate, status } = trpc.useMutation("plus.vote", {
-    onSuccess() {
-      toast(getToastOptions("Successfully voted", "success"));
-      trpc.invalidateQuery(["plus.hasVoted"]);
-      trpc.invalidateQuery(["plus.votingProgress"]);
-    },
-    onError(error) {
-      toast(getToastOptions(error.message, "error"));
-    },
-  });
+
+  const { mutate: mutateVote, status: voteStatus } = trpc.useMutation(
+    "plus.vote",
+    {
+      onSuccess() {
+        toast(getToastOptions("Successfully voted", "success"));
+        trpc.invalidateQuery(["plus.votedUserScores"]);
+        trpc.invalidateQuery(["plus.votingProgress"]);
+      },
+      onError(error) {
+        toast(getToastOptions(error.message, "error"));
+      },
+    }
+  );
+  const { mutate: editVoteMutate, status: editVoteStatus } = trpc.useMutation(
+    "plus.editVote",
+    {
+      onSuccess() {
+        toast(getToastOptions("Successfully edited vote", "success"));
+        trpc.invalidateQuery(["plus.votedUserScores"]);
+      },
+      onError(error) {
+        toast(getToastOptions(error.message, "error"));
+      },
+    }
+  );
 
   const ownPlusStatus = statuses?.find((status) => status.user.id === user?.id);
+
+  const getVotedUsers = () => {
+    if (!votedUserScores || !usersForVoting) return undefined;
+
+    return usersForVoting
+      .map((u) => {
+        return { ...u, score: votedUserScores.get(u.userId)! };
+      })
+      .sort((a, b) => a.username.localeCompare(b.username));
+  };
 
   return {
     isLoading: isLoadingBallots || isLoadingStatuses || hasVotedIsLoading,
@@ -64,8 +91,9 @@ export default function usePlusVoting() {
       setVotes(votes.slice(0, votes.length - 1));
       setCurrentIndex(currentIndex - 1);
     },
-    submit: () => mutate(votes),
-    status,
-    hasVoted,
+    submit: () => mutateVote(votes),
+    voteStatus,
+    votedUsers: getVotedUsers(),
+    editVote: editVoteMutate,
   };
 }

@@ -1,15 +1,16 @@
 import { Alert, AlertIcon } from "@chakra-ui/alert";
 import { Button } from "@chakra-ui/button";
-import { Box, Flex, Heading, HStack } from "@chakra-ui/layout";
+import { Box, Flex, Grid, Heading, HStack } from "@chakra-ui/layout";
 import { Progress } from "@chakra-ui/progress";
 import Markdown from "components/common/Markdown";
 import SubText from "components/common/SubText";
 import UserAvatar from "components/common/UserAvatar";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { Fragment, useEffect } from "react";
 import { getVotingRange } from "utils/plus";
 import { getFullUsername } from "utils/strings";
 import usePlusVoting from "../hooks/usePlusVoting";
+import { ChangeVoteButtons } from "./ChangeVoteButtons";
 import { PlusVotingButton } from "./PlusVotingButton";
 
 const progressBarColor = ["theme", "pink", "blue", "yellow"];
@@ -26,8 +27,9 @@ export default function PlusVotingPage() {
     previousUser,
     goBack,
     submit,
-    status,
-    hasVoted,
+    voteStatus,
+    votedUsers,
+    editVote,
   } = usePlusVoting();
 
   useEffect(() => {
@@ -36,13 +38,41 @@ export default function PlusVotingPage() {
 
   if (isLoading || !plusStatus?.membershipTier) return null;
 
-  if (hasVoted)
+  if (votedUsers)
     return (
-      <Alert status="success" variant="subtle" rounded="lg">
-        <AlertIcon />
-        Votes succesfully recorded. Voting ends{" "}
-        {getVotingRange().endDate.toLocaleString()}.
-      </Alert>
+      <>
+        <Alert status="success" variant="subtle" rounded="lg">
+          <AlertIcon />
+          Votes succesfully recorded. Voting ends{" "}
+          {getVotingRange().endDate.toLocaleString()}.
+        </Alert>
+        <Grid
+          mt={6}
+          justify="center"
+          templateColumns="2fr 1fr 1fr 1fr"
+          gridRowGap="0.75rem"
+          mx="auto"
+          maxW="500px"
+        >
+          {votedUsers.map((votedUser) => {
+            return (
+              <Fragment key={votedUser.userId}>
+                <Flex align="center">
+                  <UserAvatar user={votedUser} size="sm" mr={4} />{" "}
+                  {getFullUsername(votedUser)}
+                </Flex>
+                <ChangeVoteButtons
+                  score={votedUser.score}
+                  isSameRegion={votedUser.region === plusStatus.region}
+                  editVote={(score) =>
+                    editVote({ userId: votedUser.userId, score })
+                  }
+                />
+              </Fragment>
+            );
+          })}
+        </Grid>
+      </>
     );
 
   return (
@@ -140,7 +170,7 @@ export default function PlusVotingPage() {
       {previousUser && !currentUser && (
         <Box onClick={submit} mt={6} textAlign="center">
           {" "}
-          <Button isLoading={status === "loading"}>Submit</Button>
+          <Button isLoading={voteStatus === "loading"}>Submit</Button>
         </Box>
       )}
     </>

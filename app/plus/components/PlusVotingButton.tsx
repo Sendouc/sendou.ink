@@ -3,9 +3,11 @@ import { Button } from "@chakra-ui/button";
 export function PlusVotingButton({
   number,
   onClick,
+  disabled,
 }: {
-  number: -2 | -1 | 1 | 2;
+  number: number;
   onClick: () => void;
+  disabled?: boolean;
 }) {
   return (
     <Button
@@ -15,6 +17,7 @@ export function PlusVotingButton({
       variant="outline"
       colorScheme={number < 0 ? "red" : "theme"}
       onClick={onClick}
+      disabled={disabled}
     >
       {number > 0 ? "+" : ""}
       {number}

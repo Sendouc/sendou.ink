@@ -1,7 +1,7 @@
 import { createRouter } from "pages/api/trpc/[trpc]";
 import { throwIfNotLoggedIn } from "utils/api";
 import { suggestionFullSchema } from "utils/validators/suggestion";
-import { votesSchema } from "utils/validators/votes";
+import { voteSchema, votesSchema } from "utils/validators/votes";
 import { vouchSchema } from "utils/validators/vouch";
 import service from "./service";
 
@@ -22,10 +22,10 @@ const plusApi = createRouter()
       return service.getUsersForVoting(user.id);
     },
   })
-  .query("hasVoted", {
+  .query("votedUserScores", {
     resolve({ ctx }) {
       const user = throwIfNotLoggedIn(ctx.user);
-      return service.hasVoted(user.id);
+      return service.votedUserScores(user.id);
     },
   })
   .query("votingProgress", {
@@ -52,6 +52,13 @@ const plusApi = createRouter()
     resolve({ input, ctx }) {
       const user = throwIfNotLoggedIn(ctx.user);
       return service.addVotes({ input, userId: user.id });
+    },
+  })
+  .mutation("editVote", {
+    input: voteSchema,
+    resolve({ input, ctx }) {
+      const user = throwIfNotLoggedIn(ctx.user);
+      return service.editVote({ input, userId: user.id });
     },
   });
 export default plusApi;
