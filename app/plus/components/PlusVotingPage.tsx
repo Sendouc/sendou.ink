@@ -49,8 +49,9 @@ export default function PlusVotingPage() {
         <Grid
           mt={6}
           justify="center"
-          templateColumns="2fr 1fr 1fr 1fr"
-          gridRowGap="0.75rem"
+          templateColumns={["1fr 1fr", "2fr 0.75fr 1fr 1fr"]}
+          gridRowGap={5}
+          gridColumnGap="0.5rem"
           mx="auto"
           maxW="500px"
         >

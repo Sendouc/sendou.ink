@@ -1,4 +1,5 @@
 import { Button, IconButton } from "@chakra-ui/button";
+import { Flex } from "@chakra-ui/layout";
 import { useState } from "react";
 import { FiEdit } from "react-icons/fi";
 import { PlusVotingButton } from "./PlusVotingButton";
@@ -30,11 +31,14 @@ export function ChangeVoteButtons({
 
   return (
     <>
-      <PlusVotingButton
-        number={currentScore}
-        onClick={() => setCurrentScore(getNextScore())}
-        disabled={!editing}
-      />
+      <Flex align="center">
+        <PlusVotingButton
+          number={currentScore}
+          onClick={() => setCurrentScore(getNextScore())}
+          disabled={!editing}
+          isSmall
+        />
+      </Flex>
       {editing ? (
         <Button
           size="sm"
@@ -51,9 +55,6 @@ export function ChangeVoteButtons({
         <IconButton
           aria-label="Edit vote"
           icon={<FiEdit />}
-          borderRadius="50%"
-          width={8}
-          height={8}
           colorScheme="gray"
           variant="ghost"
           onClick={() => setEditing(!editing)}
