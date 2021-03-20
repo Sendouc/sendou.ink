@@ -35,6 +35,9 @@ const PlusHomePage = () => {
   return (
     <>
       <MyHead title="Plus Server" />
+      <Box fontSize="sm" mb={4}>
+        <VotingInfoHeader isMember={!!plusStatusData?.membershipTier} />
+      </Box>
       {votingProgress && (
         <Box textAlign="center">
           <SubText>
@@ -75,9 +78,6 @@ const PlusHomePage = () => {
           />
         </Box>
       )}
-      <Box fontSize="sm" mb={4}>
-        <VotingInfoHeader isMember={!!plusStatusData?.membershipTier} />
-      </Box>
       {!getVotingRange().isHappening && (
         <>
           {plusStatusData &&
