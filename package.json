@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "lingui compile && npm run prebuild && npm run migrate && next build",
+    "build": "lingui compile && npm run prebuild && next build",
     "build:analyze": "lingui compile && npm run prebuild && ANALYZE=true next build",
     "start": "next start",
     "migrate": "prisma migrate deploy --preview-feature",
