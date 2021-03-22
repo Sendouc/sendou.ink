@@ -21,7 +21,6 @@ import {
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { t, Trans } from "@lingui/macro";
-import { useLingui } from "@lingui/react";
 import MarkdownTextarea from "components/common/MarkdownTextarea";
 import { GetAllFreeAgentPostsData } from "prisma/queries/getAllFreeAgentPosts";
 import { useState } from "react";
@@ -47,7 +46,6 @@ type FormData = z.infer<typeof freeAgentPostSchema>;
 const FAModal: React.FC<Props> = ({ onClose, post }) => {
   const [sending, setSending] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const { i18n } = useLingui();
 
   const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
     resolver: zodResolver(freeAgentPostSchema),
