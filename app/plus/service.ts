@@ -428,6 +428,9 @@ const addVouch = async ({
       where: { userId },
       data: { canVouchFor: null },
     }),
+    prisma.plusSuggestion.deleteMany({
+      where: { suggestedId: input.vouchedId, tier: input.tier },
+    }),
   ]);
 
   function vouchedUserAlreadyHasAccess() {
