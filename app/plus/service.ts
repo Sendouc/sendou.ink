@@ -398,11 +398,34 @@ const addVouch = async ({
   input: z.infer<typeof vouchSchema>;
   userId: number;
 }) => {
-  const plusStatuses = await prisma.plusStatus.findMany({});
+  const [plusStatuses, summaries] = await Promise.all([
+    prisma.plusStatus.findMany({}),
+    prisma.plusVotingSummary.findMany({
+      where: { wasSuggested: false },
+      orderBy: [{ year: "desc" }, { month: "desc" }],
+      take: 500,
+    }),
+  ]);
 
   const suggesterPlusStatus = plusStatuses.find(
     (status) => status.userId === userId
   );
+
+  for (const summary of summaries) {
+    if (
+      summary.year !== summaries[0].year ||
+      summary.month !== summaries[0].month
+    ) {
+      break;
+    }
+
+    if (summary.userId === input.vouchedId && summary.tier === input.tier) {
+      // can't vouch if they were just kicked
+      throw httpError.badRequest(
+        "can't vouch the user because they were kicked last month"
+      );
+    }
+  }
 
   if ((suggesterPlusStatus?.canVouchFor ?? Infinity) > input.tier) {
     throw httpError.badRequest(
