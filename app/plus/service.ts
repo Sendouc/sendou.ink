@@ -688,9 +688,10 @@ const endVoting = async (userId: number) => {
         ) >= 50;
 
       if (passedVoting) {
-        if (alreadyMember.has(summary.userId)) continue;
-        members[tier].push(summary.userId);
-        alreadyMember.add(summary.userId);
+        if (!alreadyMember.has(summary.userId)) {
+          members[tier].push(summary.userId);
+          alreadyMember.add(summary.userId);
+        }
       } else {
         // get put to a lower tier only if not suggestion or vouch
         if (
