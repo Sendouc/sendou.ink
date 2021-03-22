@@ -367,7 +367,9 @@ const addSuggestion = async ({
   return prisma.$transaction([
     prisma.plusSuggestion.create({
       data: {
-        ...input,
+        tier: input.tier,
+        description: input.description,
+        suggestedId: input.suggestedId,
         suggesterId: userId,
         isResuggestion: !!existingSuggestion,
       },
