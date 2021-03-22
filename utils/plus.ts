@@ -18,8 +18,11 @@ export const getPercentageFromCounts = (
   const otherSum = otherRegionArr[1] * -1 + otherRegionArr[2] * 1;
   const otherVoterCount = otherRegionArr.reduce((acc, cur) => acc + cur, 0);
 
-  return (
-    ((sameSum / sameVoterCount + otherSum / otherVoterCount + 3) / 6) * 100
+  return parseFloat(
+    (
+      ((sameSum / sameVoterCount + otherSum / otherVoterCount + 3) / 6) *
+      100
+    ).toFixed(1)
   );
 };
 

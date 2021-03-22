@@ -11,7 +11,7 @@ import { vouchSchema } from "utils/validators/vouch";
 import * as z from "zod";
 
 // null, +1, +2, +3
-const VOUCH_CRITERIA = [-1, 90, 80, 80] as const;
+const VOUCH_CRITERIA = [-1, 90, 85, 80] as const;
 
 export type PlusStatuses = Prisma.PromiseReturnType<typeof getPlusStatuses>;
 
@@ -138,11 +138,7 @@ const getVotingSummariesByMonthAndTier = async ({
         ),
       };
     })
-    .sort((a, b) => b.percentage - a.percentage)
-    .map((summary) => ({
-      ...summary,
-      percentage: parseFloat(summary.percentage.toFixed(1)),
-    }));
+    .sort((a, b) => b.percentage - a.percentage);
 };
 
 const getMostRecentVotingWithResultsMonth = async () => {
@@ -699,8 +695,9 @@ const endVoting = async (userId: number) => {
 
   await Promise.all([
     prisma.plusBallot.deleteMany({ where: { isStale: true } }),
-    prisma.plusStatus.updateMany({ data: { canVouchFor: null } }),
-    prisma.plusStatus.updateMany({ data: { vouchTier: null } }),
+    prisma.plusStatus.updateMany({
+      data: { canVouchFor: null },
+    }),
   ]);
 
   const now = new Date();
@@ -749,7 +746,7 @@ const endVoting = async (userId: number) => {
       data: { canVouchFor: 3 },
     }),
     prisma.plusStatus.updateMany({
-      where: { userId: { in: canVouch[3] } },
+      where: { userId: { in: vouchRevoked } },
       data: {
         canVouchAgainAfter: new Date(now.getFullYear(), now.getMonth() + 5, 1),
       },
