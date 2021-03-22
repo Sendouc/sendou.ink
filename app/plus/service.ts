@@ -446,7 +446,12 @@ const addVouch = async ({
   return prisma.$transaction([
     prisma.plusStatus.upsert({
       where: { userId: input.vouchedId },
-      create: { region: input.region, userId: input.vouchedId },
+      create: {
+        region: input.region,
+        userId: input.vouchedId,
+        voucherId: userId,
+        vouchTier: input.tier,
+      },
       update: { voucherId: userId, vouchTier: input.tier },
     }),
     prisma.plusStatus.update({
