@@ -60,5 +60,11 @@ const plusApi = createRouter()
       const user = throwIfNotLoggedIn(ctx.user);
       return service.editVote({ input, userId: user.id });
     },
+  })
+  .mutation("endVoting", {
+    resolve({ ctx }) {
+      const user = throwIfNotLoggedIn(ctx.user);
+      return service.endVoting(user.id);
+    },
   });
 export default plusApi;
