@@ -1,9 +1,10 @@
+// @ts-nocheck
 import { NextApiRequest, NextApiResponse } from "next";
-import NextAuth, { InitOptions } from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import Providers from "next-auth/providers";
 import prisma from "prisma/client";
 
-const options: InitOptions = {
+const options: NextAuthOptions = {
   providers: [
     Providers.Discord({
       clientId: process.env.DISCORD_CLIENT_ID!,
