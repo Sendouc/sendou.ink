@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "lingui compile && npm run prebuild && next build",
+    "build:analyze": "lingui compile && npm run prebuild && ANALYZE=true next build",
     "start": "next start",
     "migrate": "prisma migrate deploy --preview-feature",
     "migrate:save": "prisma migrate dev --create-only --preview-feature",
@@ -29,6 +30,7 @@
     "@emotion/styled": "^11.1.5",
     "@hookform/resolvers": "1.3.0",
     "@lingui/react": "^3.7.2",
+    "@next/bundle-analyzer": "^10.0.9",
     "@prisma/client": "^2.19.0",
     "@sendou/react-sketch": "^0.5.2",
     "@trpc/client": "^4.0.0",
