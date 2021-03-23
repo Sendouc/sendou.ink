@@ -1,4 +1,3 @@
-import { ChevronDownIcon } from "@chakra-ui/icons";
 import { useMyTheme } from "hooks/common";
 import { useState } from "react";
 import ReactSelect, {
@@ -40,7 +39,16 @@ const DropdownIndicator = (props: any) => {
   const { textColor } = useMyTheme();
   return (
     <components.DropdownIndicator {...props}>
-      <ChevronDownIcon fontSize="1.3rem" color={textColor} />
+      <svg
+        viewBox="0 0 24 24"
+        focusable="false"
+        className="chakra-icon css-rcci7d"
+      >
+        <path
+          fill="currentColor"
+          d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+        ></path>
+      </svg>
     </components.DropdownIndicator>
   );
 };
