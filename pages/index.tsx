@@ -57,7 +57,7 @@ const Home = () => {
             What exactly is the effect of your builds? Guess no more.
           </Trans>
         </PageInfoSection>
-        <PageInfoSection location="u" title={t`Calendar`}>
+        <PageInfoSection location="calendar" title={t`Calendar`}>
           <Trans>View all the upcoming events in the community.</Trans>
         </PageInfoSection>
         <PageInfoSection location="u" title={t`User Search`}>
