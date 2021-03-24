@@ -95,22 +95,25 @@ const ProfilePage = (props: Props) => {
         peakLeaguePowers={props.peakLeaguePowers}
       />
       {/* <Flex
-        flexDir="column"
         align="center"
         bg="black"
         rounded="lg"
-        width={64}
+        width={48}
         m="auto"
+        mt={2}
+        overflow="hidden"
       >
-        <SubText pt={4} mx="auto">
+        <SubText textAlign="center" transform="rotate(-90deg)">
           Badges
         </SubText>
         <Image
-          objectFit="cover"
-          objectPosition="100% 0%"
+          objectFit="scale-down"
+          objectPosition="50% 10%"
+          mt="-8px"
+          marginBottom="-5px"
           w={24}
-          h={24}
-          src="https://cdn.discordapp.com/attachments/664195413422899250/818604825389563943/unnamed_9_0.gif"
+          h={20}
+          src="https://cdn.discordapp.com/attachments/664195413422899250/818926340551213086/itz_0.gif"
         />
       </Flex> */}
       <ProfileOwnersButtons />
