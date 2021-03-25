@@ -746,7 +746,9 @@ const endVoting = async (userId: number) => {
         ...Array.from(summariesByTier[3].values()),
       ],
     }),
-    prisma.plusStatus.updateMany({ data: { vouchTier: null } }),
+    prisma.plusStatus.updateMany({
+      data: { vouchTier: null, voucherId: null },
+    }),
     prisma.plusStatus.updateMany({
       where: { canVouchAgainAfter: { lt: new Date() } },
       data: { canVouchAgainAfter: null },
