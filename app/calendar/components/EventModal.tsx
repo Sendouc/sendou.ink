@@ -6,7 +6,6 @@ import {
   FormLabel,
 } from "@chakra-ui/form-control";
 import { Input } from "@chakra-ui/input";
-import { Stack } from "@chakra-ui/layout";
 import {
   Modal,
   ModalBody,
@@ -16,7 +15,6 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/modal";
-import { Radio, RadioGroup } from "@chakra-ui/radio";
 import { Select } from "@chakra-ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { t, Trans } from "@lingui/macro";
@@ -86,10 +84,10 @@ export function EventModal({
                     if (window.confirm(t`Delete the event?`)) await onDelete();
                   }}
                 >
-                  <Trans>Delete build</Trans>
+                  <Trans>Delete event</Trans>
                 </Button>
               )}
-              <FormLabel htmlFor="isTournament">
+              {/* <FormLabel htmlFor="isTournament">
                 <Trans>Type</Trans>
               </FormLabel>
 
@@ -102,9 +100,9 @@ export function EventModal({
                     <Trans>Other</Trans>
                   </Radio>
                 </Stack>
-              </RadioGroup>
+              </RadioGroup> */}
 
-              <FormLabel htmlFor="name" mt={4}>
+              <FormLabel htmlFor="name">
                 <Trans>Name</Trans>
               </FormLabel>
 

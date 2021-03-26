@@ -16,7 +16,18 @@ export const eventSchema = z.object({
     return true;
   }),
   eventUrl: z.string().url(),
-  discordInviteUrl: z.string().url().optional().nullable(),
+  discordInviteUrl: z
+    .string()
+    .url()
+    .refine(
+      (val) =>
+        val.startsWith("https://discord.io/") ||
+        val.startsWith("https://discord.gg/"),
+      {
+        message:
+          "Has to start with 'https://discord.gg/' or 'https://discord.io/'",
+      }
+    ),
   tags: z.array(
     z.enum([
       "SZ",
