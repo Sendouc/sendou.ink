@@ -6,7 +6,7 @@ import {
   FormLabel,
 } from "@chakra-ui/form-control";
 import { Input } from "@chakra-ui/input";
-import { Flex, Stack } from "@chakra-ui/layout";
+import { Stack } from "@chakra-ui/layout";
 import {
   Modal,
   ModalBody,
@@ -21,7 +21,9 @@ import { Select } from "@chakra-ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
+import DatePicker from "components/common/DatePicker";
 import MarkdownTextarea from "components/common/MarkdownTextarea";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { FiTrash } from "react-icons/fi";
 import { eventSchema, EVENT_DESCRIPTION_LIMIT } from "utils/validators/event";
@@ -38,34 +40,16 @@ export function EventModal({
   onClose: () => void;
   event: boolean;
 }) {
+  const [value, setValue] = useState("");
   const { i18n } = useLingui();
   const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
     resolver: zodResolver(eventSchema),
-    // defaultValues: {
-    //   headAbilities: ([
-    //     "UNKNOWN",
-    //     "UNKNOWN",
-    //     "UNKNOWN",
-    //     "UNKNOWN",
-    //   ] as unknown) as Ability[],
-    //   clothingAbilities: ([
-    //     "UNKNOWN",
-    //     "UNKNOWN",
-    //     "UNKNOWN",
-    //     "UNKNOWN",
-    //   ] as unknown) as Ability[],
-    //   shoesAbilities: ([
-    //     "UNKNOWN",
-    //     "UNKNOWN",
-    //     "UNKNOWN",
-    //     "UNKNOWN",
-    //   ] as unknown) as Ability[],
-    //   weapon: weapons.includes(weaponFromQuery as any)
-    //     ? weaponFromQuery
-    //     : undefined,
-    //   ...build,
-    // },
+    defaultValues: {
+      isTournament: true,
+    },
   });
+
+  console.log("value", value);
 
   const watchDescription = watch("description", /*team.bio*/ "");
 
@@ -125,7 +109,7 @@ export function EventModal({
               </FormLabel>
 
               <FormControl isInvalid={!!errors.name}>
-                <Input name="name" ref={register} />
+                <Input name="name" ref={register} placeholder="In The Zone X" />
                 <FormErrorMessage>{errors.name}</FormErrorMessage>
               </FormControl>
 
@@ -134,10 +118,14 @@ export function EventModal({
               </FormLabel>
 
               <FormControl isInvalid={!!errors.date}>
-                <Flex>
-                  <Input ref={register} type="date" mr={2} />
-                  <Input ref={register} type="time" ml={2} />
-                </Flex>
+                <Controller
+                  name="date"
+                  control={control}
+                  defaultValue={new Date()}
+                  render={({ onChange, value }) => {
+                    return <DatePicker date={value} onChange={onChange} />;
+                  }}
+                />
                 <FormHelperText>
                   <Trans>Input the time in your local time zone:</Trans>{" "}
                   {Intl.DateTimeFormat().resolvedOptions().timeZone}
@@ -150,7 +138,11 @@ export function EventModal({
               </FormLabel>
 
               <FormControl isInvalid={!!errors.discordInviteUrl}>
-                <Input name="discordInviteUrl" ref={register} />
+                <Input
+                  name="discordInviteUrl"
+                  ref={register}
+                  placeholder="https://discord.gg/9KJKn29D"
+                />
                 <FormErrorMessage>{errors.discordInviteUrl}</FormErrorMessage>
               </FormControl>
 
@@ -159,7 +151,11 @@ export function EventModal({
               </FormLabel>
 
               <FormControl isInvalid={!!errors.eventUrl}>
-                <Input name="eventUrl" ref={register} />
+                <Input
+                  name="eventUrl"
+                  ref={register}
+                  placeholder="https://challonge.com/tournaments/signup/Javco7YsUX"
+                />
                 <FormErrorMessage>{errors.eventUrl}</FormErrorMessage>
               </FormControl>
 
@@ -183,8 +179,8 @@ export function EventModal({
                 value={watchDescription ?? ""}
                 maxLength={EVENT_DESCRIPTION_LIMIT}
                 placeholder={i18n._(
-                  t`# I'm a header
-                  I'm **bolded**. Embedding weapon images is easy too: :luna_blaster:`
+                  t`# Header
+                  All the relevant info about tournament goes here. We can even use **bolding**.`
                 )}
               />
 

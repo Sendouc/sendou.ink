@@ -76,6 +76,6 @@ export const EVENT_FORMATS = [
   { code: "GROUPS2DE", name: t`Groups to Double Elimination` },
   { code: "SWISS2SE", name: t`Swiss to Single Elimination` },
   { code: "SWISS2DE", name: t`Swiss to Double Elimination` },
-  { code: "SWISS", name: t`SWISS` },
+  { code: "SWISS", name: t`Swiss` },
   { code: "OTHER", name: t`Other` },
 ] as const;

@@ -9,15 +9,29 @@ export const eventSchema = z.object({
     const now = new Date();
     if (now.getTime() < val.getTime()) return false;
 
-    now.setMonth(now.getMonth() + 3);
+    now.setMonth(now.getMonth() + 12);
 
     if (now.getTime() < val.getTime()) return false;
 
     return true;
   }),
   eventUrl: z.string().url(),
-  discordInviteUrl: z.string().optional().nullable(),
-  tags: z.array(z.enum(["SZ_ONLY"])),
+  discordInviteUrl: z.string().url().optional().nullable(),
+  tags: z.array(
+    z.enum([
+      "SZ",
+      "TW",
+      "SPECIAL",
+      "ART",
+      "MONEY",
+      "REGION",
+      "LOW",
+      "COUNT",
+      "MULTIPLE",
+      "S1",
+      "LAN",
+    ])
+  ),
   isTournament: z.boolean(),
   format: z.array(
     z.enum([
