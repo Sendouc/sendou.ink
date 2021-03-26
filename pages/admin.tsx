@@ -20,8 +20,7 @@ const AdminPage = () => {
   const handleEndVoting = () => {
     if (!window.confirm("End voting?")) return;
 
-    // @ts-ignore
-    endVoting.mutate();
+    endVoting.mutate(null);
   };
 
   if (!user || user.discordId !== ADMIN_DISCORD_ID) return null;

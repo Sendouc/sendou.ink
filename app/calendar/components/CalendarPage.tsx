@@ -6,7 +6,6 @@ import { EventModal } from "./EventModal";
 export default function CalendarPage() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
-  return null;
   return (
     <div>
       <Button size="sm" onClick={() => setModalIsOpen(true)}>
