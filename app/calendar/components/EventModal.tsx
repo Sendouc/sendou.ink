@@ -16,14 +16,15 @@ import {
   ModalOverlay,
 } from "@chakra-ui/modal";
 import { Select } from "@chakra-ui/select";
+import { useToast } from "@chakra-ui/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import DatePicker from "components/common/DatePicker";
 import MarkdownTextarea from "components/common/MarkdownTextarea";
-import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { FiTrash } from "react-icons/fi";
+import { getToastOptions } from "utils/getToastOptions";
+import { trpc } from "utils/trpc";
 import { eventSchema, EVENT_DESCRIPTION_LIMIT } from "utils/validators/event";
 import * as z from "zod";
 import { EVENT_FORMATS } from "../utils";
@@ -38,26 +39,35 @@ export function EventModal({
   onClose: () => void;
   event: boolean;
 }) {
-  const [value, setValue] = useState("");
+  const toast = useToast();
   const { i18n } = useLingui();
   const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
     resolver: zodResolver(eventSchema),
-    defaultValues: {
-      isTournament: true,
+  });
+  const addEvent = trpc.useMutation("calendar.addEvent", {
+    onSuccess() {
+      toast(getToastOptions(t`Event added`, "success"));
+      //trpc.invalidateQuery(["plus.suggestions"]);
+      onClose();
+    },
+    onError(error) {
+      console.log({ error });
+      toast(getToastOptions(error.message, "error"));
     },
   });
 
-  console.log("value", value);
-
   const watchDescription = watch("description", /*team.bio*/ "");
 
-  const onSubmit = (values: any) => {
-    console.log(values);
+  const onSubmit = async (values: FormData) => {
+    console.log("jaa");
+    addEvent.mutate(values);
   };
 
   const onDelete = async () => {
     console.log("delete");
   };
+
+  console.log({ errors });
 
   return (
     <Modal isOpen onClose={onClose} size="xl" closeOnOverlayClick={false}>
@@ -116,19 +126,25 @@ export function EventModal({
               </FormLabel>
 
               <FormControl isInvalid={!!errors.date}>
-                <Controller
+                {/* <Controller
                   name="date"
                   control={control}
                   defaultValue={new Date()}
                   render={({ onChange, value }) => {
                     return <DatePicker date={value} onChange={onChange} />;
                   }}
+                /> */}
+                <Input
+                  type="datetime-local"
+                  name="date"
+                  ref={register}
+                  min={new Date().toISOString()}
                 />
                 <FormHelperText>
                   <Trans>Input the time in your local time zone:</Trans>{" "}
                   {Intl.DateTimeFormat().resolvedOptions().timeZone}
                 </FormHelperText>
-                <FormErrorMessage>{errors.date}</FormErrorMessage>
+                <FormErrorMessage>{errors.date?.message}</FormErrorMessage>
               </FormControl>
 
               <FormLabel htmlFor="discordInviteUrl" mt={4}>
@@ -141,7 +157,9 @@ export function EventModal({
                   ref={register}
                   placeholder="https://discord.gg/9KJKn29D"
                 />
-                <FormErrorMessage>{errors.discordInviteUrl}</FormErrorMessage>
+                <FormErrorMessage>
+                  {errors.discordInviteUrl?.message}
+                </FormErrorMessage>
               </FormControl>
 
               <FormLabel htmlFor="eventUrl" mt={4}>
@@ -154,7 +172,7 @@ export function EventModal({
                   ref={register}
                   placeholder="https://challonge.com/tournaments/signup/Javco7YsUX"
                 />
-                <FormErrorMessage>{errors.eventUrl}</FormErrorMessage>
+                <FormErrorMessage>{errors.eventUrl?.message}</FormErrorMessage>
               </FormControl>
 
               <FormLabel htmlFor="format" mt={4}>
@@ -189,14 +207,18 @@ export function EventModal({
                 name="tags"
                 control={control}
                 defaultValue={[]}
-                render={({ onChange, value, name }) => (
+                render={({ onChange, value }) => (
                   <TagsSelector value={value} setValue={onChange} />
                 )}
               />
             </ModalBody>
 
             <ModalFooter>
-              <Button mr={3} type="submit" /*isLoading={sending}*/>
+              <Button
+                mr={3}
+                type="submit"
+                isLoading={addEvent.status === "loading"}
+              >
                 <Trans>Save</Trans>
               </Button>
               <Button onClick={onClose} variant="outline">

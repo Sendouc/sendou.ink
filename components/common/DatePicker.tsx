@@ -10,23 +10,25 @@ export default function DatePicker({
 }) {
   const dateString = `${date.getFullYear()}-${
     date.getMonth() < 10 ? "0" : ""
-  }${date.getMonth()}-${date.getDate()}`;
-  const timeString = `${date.getHours()}:${date.getMinutes()}`;
+  }${date.getMonth()}-${date.getDate() < 10 ? "0" : ""}${date.getDate()}`;
+
+  const timeString = `${
+    date.getHours() < 10 ? "0" : ""
+  }${date.getHours()}:${date.getMinutes()}`;
+
+  console.log({ dateString });
+  console.log({ timeString });
   return (
     <Flex>
       <Input
         value={dateString}
-        onChange={(e: any) =>
-          onChange(new Date(`${e.target.value} ${timeString}`))
-        }
+        onChange={(e) => onChange(new Date(`${e.target.value} ${timeString}`))}
         type="date"
         mr={2}
       />
       <Input
         value={timeString}
-        onChange={(e: any) =>
-          onChange(new Date(`${dateString} ${e.target.value}`))
-        }
+        onChange={(e) => onChange(new Date(`${dateString} ${e.target.value}`))}
         type="time"
         ml={2}
       />
