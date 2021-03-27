@@ -35,9 +35,11 @@ type FormData = z.infer<typeof eventSchema>;
 export function EventModal({
   onClose,
   event,
+  refetchQuery,
 }: {
   onClose: () => void;
   event: boolean;
+  refetchQuery: () => void;
 }) {
   const toast = useToast();
   const { i18n } = useLingui();
@@ -47,7 +49,7 @@ export function EventModal({
   const addEvent = trpc.useMutation("calendar.addEvent", {
     onSuccess() {
       toast(getToastOptions(t`Event added`, "success"));
-      //trpc.invalidateQuery(["plus.suggestions"]);
+      refetchQuery();
       onClose();
     },
     onError(error) {
