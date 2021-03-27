@@ -1,9 +1,15 @@
+import { Prisma } from "@prisma/client";
 import prisma from "prisma/client";
 import { eventSchema } from "utils/validators/event";
 import * as z from "zod";
 
+export type Events = Prisma.PromiseReturnType<typeof events>;
+
 const events = () => {
-  return prisma.calendarEvent.findMany({ where: { date: { gt: new Date() } } });
+  return prisma.calendarEvent.findMany({
+    where: { date: { gt: new Date() } },
+    include: { poster: true },
+  });
 };
 
 const addEvent = async ({
