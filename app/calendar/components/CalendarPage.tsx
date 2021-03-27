@@ -20,6 +20,8 @@ export default function CalendarPage() {
   let lastPrintedWeek: number | null = null;
   const thisWeekNumber = getWeekNumber(new Date());
 
+  return null;
+
   return (
     <>
       <div>
