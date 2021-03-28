@@ -6,7 +6,7 @@ import {
   getPlusSuggestionsData,
   getPlusStatusesData,
 } from "./mocks/plus";
-import { getUsersData } from "./mocks/user";
+import userFactory from "../utils/factories/user"
 
 async function main() {
   throwIfNotLocalhost();
@@ -56,12 +56,24 @@ async function dropAllData() {
 }
 
 async function seedNewData() {
-  await prisma.user.createMany({ data: getUsersData() });
+  await seedUsers();
   await prisma.plusStatus.createMany({ data: getPlusStatusesData() });
   await prisma.plusSuggestion.createMany({ data: getPlusSuggestionsData() });
   await prisma.plusVotingSummary.createMany({
     data: getPlusVotingSummaryData(),
   });
+}
+
+async function seedUsers() {
+  let randomUsers = [...Array(10)].map((_, _i) => {
+    return userFactory.build();
+  })
+
+  await prisma.user.createMany({data: [
+    ...randomUsers,
+    userFactory.build({username: "Sendou", patreonTier: 1}),
+    userFactory.build({username: "NZAP"})
+  ]})
 }
 
 main()
