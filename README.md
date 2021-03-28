@@ -44,7 +44,7 @@ With the following steps you can access a few pages that don't need a database. 
 1. Clone the project
 2. Run `npm i` to install dependencies
 3. Run `npm run compile` to compile translation files.
-4. Run `npm run dev` to start the development server at http://localhost:3000/
+4. Run `npm run dev` to start the development server at http://localhost:3000/. (To stop the server at any time, type `Ctrl+C`.)
 
 If you do not intend to perform any additional setup steps, you will also need to create an empty list of patrons in `utils/data/patrons.json`:
 
@@ -91,6 +91,8 @@ For `JWT_SECRET`, use a long, cryptographically random string. You can use `node
 ```
 node -e "require('crypto').randomBytes(64, function(ex, buf) { console.log(buf.toString('base64')) })"
 ```
+
+Make sure to restart your server after setting these new values (`Ctrl+C` + `npm run dev`).
 
 ## Using API
 
