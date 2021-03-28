@@ -10,7 +10,7 @@ const MyContainer: React.FC<Props & ContainerProps> = ({
   wide = false,
   ...props
 }) => (
-  <Container maxW={wide ? "100ch" : "75ch"} {...props}>
+  <Container maxW={wide ? "64rem" : "48rem"} {...props}>
     {children}
   </Container>
 );
