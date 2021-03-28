@@ -65,13 +65,14 @@ DATABASE_URL=postgresql://sendou@localhost:5432
 _You can see [Prisma's guide on how to set up a PostgreSQL database running locally](https://www.prisma.io/dataguide/postgresql/setting-up-a-local-postgresql-database) for more info._
 
 6. Use `npm run migrate` to get the database formatted with the right tables.
-7. There should be a seeding script but this doesn't exist yet. If anyone is interested in contributing this is probably a good starting point (see issue #197).
+7. Run `npm run prebuild` to generate a few necessary JSON configuration files.
+8. There should be a seeding script but this doesn't exist yet. If anyone is interested in contributing this is probably a good starting point (see issue #197).
 
 ### Enable logging in
 
 In addition to the steps above the steps below enable logging in.
 
-7. Create a file called `.env.local` in the root folder. In it you need following variables:
+9. Create a file called `.env.local` in the root folder. In it you need following variables:
 
 ```
 DISCORD_CLIENT_ID=
