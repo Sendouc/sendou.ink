@@ -75,9 +75,10 @@ In addition to the steps above the steps below enable logging in.
 9. Create a file called `.env.local` in the root folder. In it you need following variables:
 
 ```
-DISCORD_CLIENT_ID=
-DISCORD_CLIENT_SECRET=
-JWT_SECRET=
+DATABASE_URL="<the same DATABASE_URL you set up before>"
+DISCORD_CLIENT_ID="<your Discord client ID>"
+DISCORD_CLIENT_SECRET="<your Discord client secret>"
+JWT_SECRET="<a long, cryptographically random string>"
 ```
 
 a) Go to https://discord.com/developers/applications  
@@ -86,7 +87,10 @@ c) Go to your newly generated application
 d) On the "General Information" tab both "CLIENT ID" and "CLIENT SECRET" can be found.  
 e) On the "OAuth2" tab add `http://localhost:3000/api/auth/callback/discord` in the list of redirects.
 
-`JWT_SECRET` can be any randomly generated reasonably long string.
+For `JWT_SECRET`, use a long, cryptographically random string. You can use `node` to generate such a string as follows:
+```
+node -e "require('crypto').randomBytes(64, function(ex, buf) { console.log(buf.toString('base64')) })"
+```
 
 ## Using API
 
