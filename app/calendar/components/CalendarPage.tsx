@@ -20,8 +20,6 @@ export default function CalendarPage() {
   let lastPrintedWeek: number | null = null;
   const thisWeekNumber = getWeekNumber(new Date());
 
-  return null;
-
   return (
     <>
       <div>
@@ -65,7 +63,10 @@ export default function CalendarPage() {
           </Fragment>
         );
       })}
-      <Box color={gray}>All events listed in your local time:</Box>
+      <Box color={gray}>
+        All events listed in your local time:{" "}
+        {Intl.DateTimeFormat().resolvedOptions().timeZone}
+      </Box>
     </>
   );
 }

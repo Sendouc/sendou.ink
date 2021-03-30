@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 
-export const tags = [
+export const TAGS = [
   {
     code: "SZ",
     name: t`SZ Only`,
