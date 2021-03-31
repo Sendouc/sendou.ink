@@ -101,4 +101,8 @@ Using other endpoints isn't advised as I change those as I feel to suit the need
 
 ## Contributing
 
-If you are interested in contributing come say hello on Discord! For any feature requests or bug reports you can either leave an issue or use the #feedback channel on Discord.
+Any kind of contributions are most welcome! If you notice a problem with the website or have a feature request then you can submit an issue for it if one doesn't already exist.
+
+I label [issues that should be the most approachable to contribute towards with the help wanted label](https://github.com/Sendouc/sendou.ink/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22). That doesn't mean you couldn't work on other issues just ask if you need extra help with them. If you want to work on something that isn't an issue yet then just make one first so we can discuss it before you start.
+
+If you have any questions you can either make an issue with the label question or ask it on the [Discord server](https://discord.gg/sendou) (there is a channel called `#💻-development` for this purpose).
