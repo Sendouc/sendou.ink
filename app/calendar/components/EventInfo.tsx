@@ -17,12 +17,7 @@ interface EventInfoProps {
 }
 
 const TournamentInfo = ({ event }: EventInfoProps) => {
-  const {
-    secondaryBgColor,
-    themeColorHex,
-    gray,
-    themeColorShade,
-  } = useMyTheme();
+  const { secondaryBgColor, gray, themeColorShade } = useMyTheme();
   const [expanded, setExpanded] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const poster = event.poster;
@@ -46,7 +41,7 @@ const TournamentInfo = ({ event }: EventInfoProps) => {
           <Heading fontFamily="'Rubik', sans-serif" size="lg">
             {event.name}
           </Heading>
-          <Flex flexWrap="wrap" justifyContent="center" mt={1}>
+          <Flex flexWrap="wrap" justifyContent="center" mt={3} mb={2}>
             {event.tags.map((tag) => {
               const tagInfo = TAGS.find((tagObj) => tagObj.code === tag)!;
               return (
