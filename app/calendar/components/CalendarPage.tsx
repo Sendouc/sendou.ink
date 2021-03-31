@@ -17,6 +17,8 @@ export default function CalendarPage() {
 
   let lastPrintedDate: [number, number, Date] | null = null;
 
+  if (process.env.NODE_ENV === "production") return null;
+
   return (
     <>
       <div>
@@ -34,13 +36,13 @@ export default function CalendarPage() {
       <Input
         value={filter}
         onChange={(e) => setFilter(e.target.value)}
-        m="3rem 0 2rem"
+        mt={8}
       />
       {(events.data ?? []).map((event) => {
         const printDateHeader =
           !lastPrintedDate ||
-          (lastPrintedDate[0] !== event.date.getDate() &&
-            lastPrintedDate[1] !== event.date.getMonth());
+          lastPrintedDate[0] !== event.date.getDate() ||
+          lastPrintedDate[1] !== event.date.getMonth();
 
         if (printDateHeader) {
           lastPrintedDate = [

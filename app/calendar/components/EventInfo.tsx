@@ -116,6 +116,7 @@ const TournamentInfo = ({ event }: EventInfoProps) => {
             size="sm"
             onClick={() => setExpanded(!expanded)}
             variant="outline"
+            data-cy={`info-button-id-${event.id}`}
           >
             {expanded ? <Trans>Hide info</Trans> : <Trans>View info</Trans>}
           </Button>

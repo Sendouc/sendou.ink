@@ -56,7 +56,12 @@ async function seedUsers() {
     data: [
       ...randomUsers,
       userFactory.build({ username: "NZAP", id: 333 }),
-      userFactory.build({ username: "Sendou", patreonTier: 1, id: 999 }),
+      userFactory.build({
+        username: "Sendou",
+        patreonTier: 1,
+        id: 999,
+        discordId: "79237403620945920",
+      }),
     ],
   });
 }
@@ -70,10 +75,16 @@ async function seedEvents() {
     data: [
       ...randomEvents,
       calendarEventFactory.build({
+        name: "Should Not Show",
+        posterId: 999,
+        date: new Date(new Date().getTime() - 143200000),
+      }),
+      calendarEventFactory.build({
         name: "In The Zone Ultimate",
         posterId: 999,
         format: "DE",
         tags: ["SZ"],
+        description: "Ultimate zoning",
       }),
       calendarEventFactory.build({
         name: "Low Ink All Year",
