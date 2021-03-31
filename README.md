@@ -66,7 +66,7 @@ _You can see [Prisma's guide on how to set up a PostgreSQL database running loca
 
 6. Use `npm run migrate` to get the database formatted with the right tables.
 7. Run `npm run prebuild` to generate a few necessary JSON configuration files.
-8. There should be a seeding script but this doesn't exist yet. If anyone is interested in contributing this is probably a good starting point (see issue #197).
+8. Seed some example data in the database by running `npm run seed`. (This seed data is incomplete – see issue #197 if you would like to improve the seed data!)
 
 ### Enable logging in
 

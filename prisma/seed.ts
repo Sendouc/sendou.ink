@@ -6,29 +6,11 @@ import {
   getPlusSuggestionsData,
   getPlusStatusesData,
 } from "./mocks/plus";
-import { getUsersData } from "./mocks/user";
+import userFactory from "./factories/user"
 
 async function main() {
   throwIfNotLocalhost();
-
-  await prisma.profile.deleteMany({});
-  await prisma.build.deleteMany({});
-  await prisma.salmonRunRecord.deleteMany({});
-  await prisma.freeAgentPost.deleteMany({});
-  await prisma.team.deleteMany({});
-  await prisma.ladderPlayerTrueSkill.deleteMany({});
-  await prisma.ladderMatchPlayer.deleteMany({});
-  await prisma.plusVotingSummary.deleteMany({});
-  await prisma.plusSuggestion.deleteMany({});
-  await prisma.plusStatus.deleteMany({});
-  await prisma.user.deleteMany({});
-
-  await prisma.user.createMany({ data: getUsersData() });
-  await prisma.plusStatus.createMany({ data: getPlusStatusesData() });
-  await prisma.plusSuggestion.createMany({ data: getPlusSuggestionsData() });
-  await prisma.plusVotingSummary.createMany({
-    data: getPlusVotingSummaryData(),
-  });
+  await seedNewData();
 }
 
 function throwIfNotLocalhost() {
@@ -52,6 +34,27 @@ function throwIfNotLocalhost() {
       }
     }
   );
+}
+
+async function seedNewData() {
+  await seedUsers();
+  await prisma.plusStatus.createMany({ data: getPlusStatusesData() });
+  await prisma.plusSuggestion.createMany({ data: getPlusSuggestionsData() });
+  await prisma.plusVotingSummary.createMany({
+    data: getPlusVotingSummaryData(),
+  });
+}
+
+async function seedUsers() {
+  const randomUsers = [...Array(10)].map((_, _i) => {
+    return userFactory.build();
+  })
+
+  await prisma.user.createMany({data: [
+    ...randomUsers,
+    userFactory.build({username: "Sendou", patreonTier: 1}),
+    userFactory.build({username: "NZAP"})
+  ]})
 }
 
 main()
