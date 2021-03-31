@@ -10,7 +10,7 @@ export default Factory.define<User>(({ sequence, onCreate }) => {
   return {
     id: sequence,
     discordId: sequence.toString().padStart(17, '0'),
-    discordAvatar: "???",
+    discordAvatar: null,
     discriminator: sequence.toString().padStart(4, '0'),
     username: `User${sequence}`,
     patreonTier: 0,
