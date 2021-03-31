@@ -75,7 +75,6 @@ In addition to the steps above the steps below enable logging in.
 9. Create a file called `.env.local` in the root folder. In it you need following variables:
 
 ```
-DATABASE_URL="<the same DATABASE_URL you set up before>"
 DISCORD_CLIENT_ID="<your Discord client ID>"
 DISCORD_CLIENT_SECRET="<your Discord client secret>"
 JWT_SECRET="<a long, cryptographically random string>"
