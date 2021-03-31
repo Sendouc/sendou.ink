@@ -10,7 +10,6 @@ import userFactory from "../utils/factories/user"
 
 async function main() {
   throwIfNotLocalhost();
-  await dropAllData();
   await seedNewData();
 }
 
@@ -35,24 +34,6 @@ function throwIfNotLocalhost() {
       }
     }
   );
-}
-
-async function dropAllData() {
-  // TODO: Programatically clear/truncate all tables, rather than listing each model individually
-  // That way, we won't need to update this method each time we add a new model
-  await Promise.all([
-    prisma.profile.deleteMany({}),
-    prisma.build.deleteMany({}),
-    prisma.salmonRunRecord.deleteMany({}),
-    prisma.freeAgentPost.deleteMany({}),
-    prisma.team.deleteMany({}),
-    prisma.ladderPlayerTrueSkill.deleteMany({}),
-    prisma.ladderMatchPlayer.deleteMany({}),
-    prisma.plusVotingSummary.deleteMany({}),
-    prisma.plusSuggestion.deleteMany({}),
-    prisma.plusStatus.deleteMany({}),
-    prisma.user.deleteMany({})
-  ])
 }
 
 async function seedNewData() {
