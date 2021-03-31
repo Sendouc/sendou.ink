@@ -10,6 +10,7 @@ import userFactory from "./factories/user"
 
 async function main() {
   throwIfNotLocalhost();
+  await dropAllData();
   await seedNewData();
 }
 
@@ -36,25 +37,40 @@ function throwIfNotLocalhost() {
   );
 }
 
+async function dropAllData() {
+  // TODO: Programatically clear/truncate all tables, rather than listing each model individually
+  // That way, we won't need to update this method each time we add a new model
+  await prisma.profile.deleteMany({});
+  await prisma.build.deleteMany({});
+  await prisma.salmonRunRecord.deleteMany({});
+  await prisma.freeAgentPost.deleteMany({});
+  await prisma.team.deleteMany({});
+  await prisma.ladderPlayerTrueSkill.deleteMany({});
+  await prisma.ladderMatchPlayer.deleteMany({});
+  await prisma.plusVotingSummary.deleteMany({});
+  await prisma.plusSuggestion.deleteMany({});
+  await prisma.plusStatus.deleteMany({});
+  await prisma.user.deleteMany({});
+}
+
 async function seedNewData() {
-  await seedUsers();
+  const randomUsers = [...Array(10)].map((_, _i) => {
+    return userFactory.build();
+  })
+  const sendouUser = userFactory.build({username: "Sendou", patreonTier: 1});
+  const nzapUser = userFactory.build({username: "NZAP"});
+
+  await prisma.user.createMany({data: [
+    ...randomUsers,
+    sendouUser,
+    nzapUser
+  ]})
+
   await prisma.plusStatus.createMany({ data: getPlusStatusesData() });
   await prisma.plusSuggestion.createMany({ data: getPlusSuggestionsData() });
   await prisma.plusVotingSummary.createMany({
     data: getPlusVotingSummaryData(),
   });
-}
-
-async function seedUsers() {
-  const randomUsers = [...Array(10)].map((_, _i) => {
-    return userFactory.build();
-  })
-
-  await prisma.user.createMany({data: [
-    ...randomUsers,
-    userFactory.build({username: "Sendou", patreonTier: 1}),
-    userFactory.build({username: "NZAP"})
-  ]})
 }
 
 main()
