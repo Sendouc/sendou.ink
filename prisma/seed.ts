@@ -65,7 +65,7 @@ async function seedNewData() {
 }
 
 async function seedUsers() {
-  let randomUsers = [...Array(10)].map((_, _i) => {
+  const randomUsers = [...Array(10)].map((_, _i) => {
     return userFactory.build();
   })
 
