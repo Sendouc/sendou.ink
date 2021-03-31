@@ -1,6 +1,6 @@
 import { Factory } from "fishery";
 import { User } from "@prisma/client";
-import prisma from "../../prisma/client";
+import prisma from "../client";
 
 export default Factory.define<User>(({ sequence, onCreate }) => {
   onCreate(user => {

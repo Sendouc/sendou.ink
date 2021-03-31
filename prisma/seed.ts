@@ -6,7 +6,7 @@ import {
   getPlusSuggestionsData,
   getPlusStatusesData,
 } from "./mocks/plus";
-import userFactory from "../utils/factories/user"
+import userFactory from "./factories/user"
 
 async function main() {
   throwIfNotLocalhost();
