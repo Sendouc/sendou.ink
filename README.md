@@ -44,7 +44,13 @@ With the following steps you can access a few pages that don't need a database. 
 1. Clone the project
 2. Run `npm i` to install dependencies
 3. Run `npm run compile` to compile translation files.
-4. Run `npm run dev` to start the development server at http://localhost:3000/
+4. Run `npm run dev` to start the development server at http://localhost:3000/. (To stop the server at any time, type `Ctrl+C`.)
+
+If you do not intend to perform any additional setup steps, you will also need to create an empty list of patrons in `utils/data/patrons.json`:
+
+```
+[]
+```
 
 ### Access rest of the pages
 
@@ -59,18 +65,19 @@ DATABASE_URL=postgresql://sendou@localhost:5432
 _You can see [Prisma's guide on how to set up a PostgreSQL database running locally](https://www.prisma.io/dataguide/postgresql/setting-up-a-local-postgresql-database) for more info._
 
 6. Use `npm run migrate` to get the database formatted with the right tables.
-7. There should be a seeding script but this doesn't exist yet. If anyone is interested in contributing this is probably a good starting point (see issue #197).
+7. Run `npm run prebuild` to generate a few necessary JSON configuration files.
+8. Seed some example data in the database by running `npm run seed`. (This seed data is incomplete – see issue #197 if you would like to improve the seed data!)
 
 ### Enable logging in
 
 In addition to the steps above the steps below enable logging in.
 
-7. Create a file called `.env.local` in the root folder. In it you need following variables:
+9. Create a file called `.env.local` in the root folder. In it you need following variables:
 
 ```
-DISCORD_CLIENT_ID=
-DISCORD_CLIENT_SECRET=
-JWT_SECRET=
+DISCORD_CLIENT_ID="<your Discord client ID>"
+DISCORD_CLIENT_SECRET="<your Discord client secret>"
+JWT_SECRET="<a long, cryptographically random string>"
 ```
 
 a) Go to https://discord.com/developers/applications  
@@ -79,7 +86,12 @@ c) Go to your newly generated application
 d) On the "General Information" tab both "CLIENT ID" and "CLIENT SECRET" can be found.  
 e) On the "OAuth2" tab add `http://localhost:3000/api/auth/callback/discord` in the list of redirects.
 
-`JWT_SECRET` can be any randomly generated reasonably long string.
+For `JWT_SECRET`, use a long, cryptographically random string. You can use `node` to generate such a string as follows:
+```
+node -e "require('crypto').randomBytes(64, function(ex, buf) { console.log(buf.toString('base64')) })"
+```
+
+Make sure to restart your server after setting these new values (`Ctrl+C` + `npm run dev`).
 
 ## Using API
 
@@ -89,4 +101,8 @@ Using other endpoints isn't advised as I change those as I feel to suit the need
 
 ## Contributing
 
-If you are interested in contributing come say hello on Discord! For any feature requests or bug reports you can either leave an issue or use the #feedback channel on Discord.
+Any kind of contributions are most welcome! If you notice a problem with the website or have a feature request then you can submit an issue for it if one doesn't already exist.
+
+I label [issues that should be the most approachable to contribute towards with the help wanted label](https://github.com/Sendouc/sendou.ink/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22). That doesn't mean you couldn't work on other issues just ask if you need extra help with them. If you want to work on something that isn't an issue yet then just make one first so we can discuss it before you start.
+
+If you have any questions you can either make an issue with the label question or ask it on the [Discord server](https://discord.gg/sendou) (there is a channel called `#💻-development` for this purpose).

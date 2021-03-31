@@ -44,3 +44,7 @@ locale/**/*.js
 dumped.sql
 
 /utils/data/patrons.json
+
+# cypress
+cypress/videos/*
+cypress/screenshots/*
