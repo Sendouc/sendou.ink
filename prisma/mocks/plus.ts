@@ -46,16 +46,6 @@ export const getPlusStatusesData = (): Prisma.PlusStatusCreateManyInput[] => {
       userId: 10,
     },
     {
-      userId: 11,
-      canVouchFor: 1,
-    },
-    {
-      userId: 12,
-      membershipTier: 2,
-      canVouchAgainAfter: new Date(Date.UTC(2030, 1, 1)),
-      canVouchFor: 2,
-    },
-    {
       userId: 333,
       region: PlusRegion.EU,
       membershipTier: 2,
