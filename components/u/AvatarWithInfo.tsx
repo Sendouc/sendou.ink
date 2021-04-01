@@ -134,7 +134,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
                         href={`https://youtube.com/channel/${user.profile.youtubeId}`}
                     >
                       <IconButton
-                          aria-label="Link to Twitch"
+                          aria-label="Link to Youtube"
                           icon={<FaYoutube />}
                           color="#FF0000"
                           isRound
