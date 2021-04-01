@@ -44,7 +44,7 @@ const MapsGeneratorPage = () => {
     "EQUAL" | "SZ_EVERY_OTHER" | "CUSTOM_ORDER"
   >("EQUAL");
   const [maplist, setMaplist] = useState("");
-  const [modes, setModes] = useState([]);
+  const [modes, setModes] = useState<{ label: string; value: number; data?: string; }[]>([]);
   const [count, setCount] = useState(9);
   const [editing, setEditing] = useState(false);
   const [copied, setCopied] = useState<null | "URL" | "LIST">(null);
@@ -130,20 +130,18 @@ const MapsGeneratorPage = () => {
     const modesFromGenerationMode =
       generationMode === "SZ_EVERY_OTHER"
         ? ["TC", "RM", "CB"]
-        : ["SZ", "TC", "RM", "CB"];
+        : generationMode === "EQUAL" ? ["SZ", "TC", "RM", "CB"] : transformModesToStringArray();
+    console.log('gen modes:', modesFromGenerationMode);
 
-    const modes = (shuffleArray(
-      modesFromGenerationMode
-    ) as RankedMode[]).filter((mode) => modeStages[mode].length > 0);
+    const filteredModes = (modesFromGenerationMode as RankedMode[]).filter((mode) => modeStages[mode].length > 0);
+    const modes = generationMode === "CUSTOM_ORDER" ? filteredModes : (shuffleArray(filteredModes));
     if (modes.length === 0) {
       return "I can't generate a maplist without any maps in it you know.";
     }
-      console.log('modes:', modes);
-
+    console.log('modes:', modes);
     const stagesAlreadyPicked = new Set<string>();
 
     const isSZFirst = false;
-    console.log('generationMode:', generationMode);
     return new Array(count)
       .fill(null)
       .map((_, i) => {
@@ -153,8 +151,8 @@ const MapsGeneratorPage = () => {
           generationMode !== "SZ_EVERY_OTHER" ||
           i % 2 === Number(isSZFirst)
         ) {
-          modes.push(modes.shift() as RankedMode);
           modeOfRound = modes[0];
+          modes.push(modes.shift() as RankedMode);
         }
 
         const stageArray = modeStages[modeOfRound];
@@ -408,6 +406,19 @@ const MapsGeneratorPage = () => {
       )}
     </>
   );
+
+  function getModeValues(value: { label: string; value: number; data?: string; }[]) {
+    setModes(value);
+  }
+
+  function transformModesToStringArray() {
+    return modes.map(function (mode) {
+      if (mode.data)
+        return mode.data;
+      else
+        return '';
+    });
+  }
 };
 
 MapsGeneratorPage.header = (
@@ -417,10 +428,5 @@ MapsGeneratorPage.header = (
     subtitle="Get a list of maps to play in a scrim"
   />
 );
-
-function getModeValues(value: []) {
-  console.log('in maps');
-  console.log('value:', value);
-}
 
 export default MapsGeneratorPage;

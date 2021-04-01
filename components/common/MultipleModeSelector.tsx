@@ -24,7 +24,7 @@ interface SelectProps {
       }>;
   width?: string;
   value?: ValueType<OptionTypeBase, boolean>;
-  setValue?: (value: any) => void;
+  setValue: (value: any) => void;
   autoFocus?: boolean;
   components?: Partial<SelectComponents<OptionTypeBase, boolean>>;
   isClearable?: boolean;
@@ -71,16 +71,13 @@ const MultipleModeSelector: React.FC<SelectProps> = ({
       setSel([]);
       return;
     }
-    console.log('selectedOption', selectedOption)
     const newSelectedOption = selectedOption.map((opt: { label: string, data: string}) => ({
       label: opt.label,
       data: opt.data,
       value: Math.random()
     }));
     setSel(newSelectedOption);
-    if (setValue) {
-      setValue(newSelectedOption);
-    }
+    setValue(newSelectedOption);
   };
 
   const menuIsOpenCheck = () => {
