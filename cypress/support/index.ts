@@ -14,5 +14,5 @@ Cypress.Commands.add("login", (user: "sendou" | "nzap") => {
 
 beforeEach(() => {
   // TODO: use database transactions, instead of dropping and recreating the database with each individual test
-  cy.exec("npm run migrate:reset -- --force");
+  cy.exec("npm run seed");
 });
