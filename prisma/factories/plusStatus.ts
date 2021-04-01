@@ -1,7 +1,6 @@
 import { Factory } from "fishery";
 import { PlusStatus, PlusRegion } from "@prisma/client";
 import prisma from "../client";
-import userFactory from './user';
 import _ from "lodash";
 
 export default Factory.define<PlusStatus>(({ params, onCreate }) => {
@@ -10,7 +9,7 @@ export default Factory.define<PlusStatus>(({ params, onCreate }) => {
   });
 
   return {
-    userId: userFactory.build().id,
+    userId: 1, // TODO: automatically build a User object, if necessary
     membershipTier: 1,
     region: _.sample(Object.values(PlusRegion))!,
     voucherId: null,

@@ -1,7 +1,6 @@
 import { Factory } from "fishery";
 import { PlusVotingSummary } from "@prisma/client";
 import prisma from "../client";
-import userFactory from './user';
 
 export default Factory.define<PlusVotingSummary>(({ params, onCreate }) => {
   onCreate(plusVotingSummary => {
@@ -9,7 +8,7 @@ export default Factory.define<PlusVotingSummary>(({ params, onCreate }) => {
   });
 
   return {
-    userId: userFactory.build().id,
+    userId: 1, // TODO: automatically build a User object, if necessary
     month: 1,
     tier: 1,
     year: 2020,

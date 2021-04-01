@@ -1,7 +1,6 @@
 import { Factory } from "fishery";
 import { PlusSuggestion } from "@prisma/client";
 import prisma from "../client";
-import userFactory from './user';
 
 export default Factory.define<PlusSuggestion>(({ params, onCreate }) => {
   onCreate(plusSuggestion => {
@@ -9,8 +8,8 @@ export default Factory.define<PlusSuggestion>(({ params, onCreate }) => {
   });
 
   return {
-    suggestedId: userFactory.build().id,
-    suggesterId: userFactory.build().id,
+    suggestedId: 1, // TODO: automatically build a User object, if necessary
+    suggesterId: 2, // TODO: automatically build a User object, if necessary
     tier: 1,
     description: "yooo so cracked",
     isResuggestion: false,
