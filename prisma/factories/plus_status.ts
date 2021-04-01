@@ -12,7 +12,7 @@ export default Factory.define<PlusStatus>(({ params, onCreate }) => {
   return {
     userId: userFactory.build().id,
     membershipTier: 1,
-    region: _.sample([PlusRegion.EU, PlusRegion.NA]) || PlusRegion.NA,
+    region: _.sample(Object.values(PlusRegion))!,
     voucherId: null,
     vouchTier: null,
     canVouchFor: null,
