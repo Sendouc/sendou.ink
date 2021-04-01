@@ -12,8 +12,8 @@ import prisma from "prisma/client";
 import { getAllLadderRegisteredTeamsForMatches } from "prisma/queries/getAllLadderRegisteredTeamsForMatches";
 import { getLadderDay, GetLadderDayData } from "prisma/queries/getLadderDay";
 import { Fragment } from "react";
+import { shuffleArray } from "utils/arrays";
 import { getLadderRounds } from "utils/playFunctions";
-import { shuffleArray } from "utils/shuffleArray";
 
 interface Props {
   ladderDay: GetLadderDayData;

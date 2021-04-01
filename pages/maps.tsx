@@ -28,9 +28,9 @@ import HeaderBanner from "components/layout/HeaderBanner";
 import { useRouter } from "next/router";
 import { ChangeEvent, Fragment, useEffect, useState } from "react";
 import { FiCheck, FiFilter, FiRotateCw } from "react-icons/fi";
+import { shuffleArray } from "utils/arrays";
 import { stages } from "utils/lists/stages";
 import { setManySearchParams } from "utils/setSearchParams";
-import { shuffleArray } from "utils/shuffleArray";
 
 const MapsGeneratorPage = () => {
   const router = useRouter();
