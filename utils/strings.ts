@@ -13,6 +13,9 @@ export const getLocalizedMonthYearString = (
   });
 };
 
+/**
+ * Return medal emoji for top 3, otherwise returns the number as string.
+ */
 export const getRankingString = (ranking: number) => {
   switch (ranking) {
     case 1:
@@ -27,8 +30,18 @@ export const getRankingString = (ranking: number) => {
   }
 };
 
+export function makeNameUrlFriendly(name: string) {
+  return name.trim().replace(/\s\s+/g, " ").toLowerCase().replace(/ /g, "-");
+}
+
 // User attributes - should be virtuals in future if support gets added to Prisma
 
+/**
+ * Takes user object and returns the formatted username morphing it with the Discord discriminator.
+ * @example
+ * // returns "Sendou#0043"
+ * getFullUsername({username: "Sendou", discriminator: "0043"})
+ */
 export const getFullUsername = ({
   username,
   discriminator,
