@@ -125,20 +125,18 @@ const MapsGeneratorPage = () => {
       RM: shuffleArray(modeStages.RM),
       CB: shuffleArray(modeStages.CB),
     };
-    console.log('modeStages:', modeStages);
 
     const modesFromGenerationMode =
       generationMode === "SZ_EVERY_OTHER"
         ? ["TC", "RM", "CB"]
         : generationMode === "EQUAL" ? ["SZ", "TC", "RM", "CB"] : transformModesToStringArray();
-    console.log('gen modes:', modesFromGenerationMode);
 
     const filteredModes = (modesFromGenerationMode as RankedMode[]).filter((mode) => modeStages[mode].length > 0);
     const modes = generationMode === "CUSTOM_ORDER" ? filteredModes : (shuffleArray(filteredModes));
     if (modes.length === 0) {
-      return "I can't generate a maplist without any maps in it you know.";
+      return generationMode === "CUSTOM_ORDER" ? "I can't generate a maplist without any mode you know."
+          : "I can't generate a maplist without any maps in it you know.";
     }
-    console.log('modes:', modes);
     const stagesAlreadyPicked = new Set<string>();
 
     const isSZFirst = false;
@@ -352,20 +350,21 @@ const MapsGeneratorPage = () => {
           <Radio value="CUSTOM_ORDER">
             <Trans>Custom order</Trans>
           </Radio>
-          <MultipleModeSelector
-              options={[
-                {label: 'Splat Zones', value: 'SZ', data: 'SZ'},
-                {label: 'Tower Control', value: 'TC', data: 'TC'},
-                {label: 'Rainmaker', value: 'RM', data: 'RM'},
-                {label: 'Clam Blitz', value: 'CB', data: 'CB'}
-                ]}
-              isDisabled={generationMode !== 'CUSTOM_ORDER'}
-              isClearable
-              setValue={getModeValues}
-          />
         </Stack>
       </RadioGroup>
-      <FormLabel htmlFor="count" fontSize="sm">
+      <MultipleModeSelector
+          options={[
+            {label: 'Splat Zones', value: 'SZ', data: 'SZ'},
+            {label: 'Tower Control', value: 'TC', data: 'TC'},
+            {label: 'Rainmaker', value: 'RM', data: 'RM'},
+            {label: 'Clam Blitz', value: 'CB', data: 'CB'}
+          ]}
+          isDisabled={generationMode !== 'CUSTOM_ORDER'}
+          isClearable
+          setValue={getModeValues}
+          width={'90%'}
+      />
+      <FormLabel htmlFor="count" fontSize="sm" mt={4}>
         <Trans>Amount of maps to generate</Trans>
       </FormLabel>
       <NumberInput
