@@ -19,6 +19,7 @@
     "compile": "lingui compile",
     "restore": "pg_restore -d 'postgresql://sendou@localhost:5432/dev' --jobs 4 dumped.sql --clean",
     "seed": "prisma db seed --preview-feature",
+    "prettier:format": "prettier --write .",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
     "cy:clearcache": "cypress cache clear",
