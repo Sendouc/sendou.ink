@@ -1,16 +1,17 @@
 import fs from "fs";
 import path from "path";
 import prisma from "./client";
-import calendarEventFactory from "./factories/calendarEvent";
-import userFactory from "./factories/user";
 import {
-  getPlusStatusesData,
-  getPlusSuggestionsData,
   getPlusVotingSummaryData,
+  getPlusSuggestionsData,
+  getPlusStatusesData,
 } from "./mocks/plus";
+import userFactory from "./factories/user"
+import calendarEventFactory from "./factories/calendarEvent"
 
 async function main() {
   throwIfNotLocalhost();
+  await dropAllData();
   await seedNewData();
 }
 
@@ -35,6 +36,23 @@ function throwIfNotLocalhost() {
       }
     }
   );
+}
+
+async function dropAllData() {
+  // TODO: Programatically clear/truncate all tables, rather than listing each model individually
+  // That way, we won't need to update this method each time we add a new model
+  await prisma.profile.deleteMany({});
+  await prisma.build.deleteMany({});
+  await prisma.salmonRunRecord.deleteMany({});
+  await prisma.freeAgentPost.deleteMany({});
+  await prisma.team.deleteMany({});
+  await prisma.ladderPlayerTrueSkill.deleteMany({});
+  await prisma.ladderMatchPlayer.deleteMany({});
+  await prisma.plusVotingSummary.deleteMany({});
+  await prisma.plusSuggestion.deleteMany({});
+  await prisma.plusStatus.deleteMany({});
+  await prisma.calendarEvent.deleteMany({});
+  await prisma.user.deleteMany({});
 }
 
 async function seedNewData() {
