@@ -102,41 +102,47 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
           )}
           <Flex alignItems="center" justifyContent="center">
             <Flex flexWrap="wrap" alignItems="center" justifyContent="center">
-              {user.profile?.twitterName && (
-                <a href={`https://twitter.com/${user.profile.twitterName}`}>
-                  <IconButton
-                    aria-label="Link to Twitter"
-                    icon={<FaTwitter />}
-                    color="#1DA1F2"
-                    isRound
-                    variant="ghost"
-                  />
-                </a>
-              )}
-              {user.profile?.twitchName && (
-                <a href={`https://www.twitch.tv/${user.profile.twitchName}`}>
-                  <IconButton
-                    aria-label="Link to Twitch"
-                    icon={<FaTwitch />}
-                    color="#6441A4"
-                    isRound
-                    variant="ghost"
-                  />
-                </a>
-              )}
-              {user.profile?.youtubeId && (
-                <a
-                  href={`https://youtube.com/channel/${user.profile.youtubeId}`}
-                >
-                  <IconButton
-                    aria-label="Link to Twitch"
-                    icon={<FaYoutube />}
-                    color="#FF0000"
-                    isRound
-                    variant="ghost"
-                  />
-                </a>
-              )}
+              <Flex
+                  w="100%"
+                  alignItems="center"
+                  justifyContent="center"
+              >
+                {user.profile?.twitterName && (
+                    <a href={`https://twitter.com/${user.profile.twitterName}`}>
+                      <IconButton
+                          aria-label="Link to Twitter"
+                          icon={<FaTwitter />}
+                          color="#1DA1F2"
+                          isRound
+                          variant="ghost"
+                      />
+                    </a>
+                )}
+                {user.profile?.twitchName && (
+                    <a href={`https://www.twitch.tv/${user.profile.twitchName}`}>
+                      <IconButton
+                          aria-label="Link to Twitch"
+                          icon={<FaTwitch />}
+                          color="#6441A4"
+                          isRound
+                          variant="ghost"
+                      />
+                    </a>
+                )}
+                {user.profile?.youtubeId && (
+                    <a
+                        href={`https://youtube.com/channel/${user.profile.youtubeId}`}
+                    >
+                      <IconButton
+                          aria-label="Link to Youtube"
+                          icon={<FaYoutube />}
+                          color="#FF0000"
+                          isRound
+                          variant="ghost"
+                      />
+                    </a>
+                )}
+              </Flex>
               {user.profile?.weaponPool && user.profile?.weaponPool.length > 0 && (
                 <Flex
                   mt={2}
