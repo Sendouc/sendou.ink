@@ -31,6 +31,7 @@ import { FiCheck, FiFilter, FiRotateCw } from "react-icons/fi";
 import { stages } from "utils/lists/stages";
 import { setManySearchParams } from "utils/setSearchParams";
 import { shuffleArray } from "utils/shuffleArray";
+import MultipleModeSelector from "../components/common/MultipleModeSelector";
 
 const MapsGeneratorPage = () => {
   const router = useRouter();
@@ -40,9 +41,10 @@ const MapsGeneratorPage = () => {
     Record<string, RankedMode[]>
   >(getInitialStages());
   const [generationMode, setGenerationMode] = useState<
-    "EQUAL" | "SZ_EVERY_OTHER"
+    "EQUAL" | "SZ_EVERY_OTHER" | "CUSTOM_ORDER"
   >("EQUAL");
   const [maplist, setMaplist] = useState("");
+  const [modes, setModes] = useState([]);
   const [count, setCount] = useState(9);
   const [editing, setEditing] = useState(false);
   const [copied, setCopied] = useState<null | "URL" | "LIST">(null);
@@ -123,6 +125,7 @@ const MapsGeneratorPage = () => {
       RM: shuffleArray(modeStages.RM),
       CB: shuffleArray(modeStages.CB),
     };
+    console.log('modeStages:', modeStages);
 
     const modesFromGenerationMode =
       generationMode === "SZ_EVERY_OTHER"
@@ -135,11 +138,12 @@ const MapsGeneratorPage = () => {
     if (modes.length === 0) {
       return "I can't generate a maplist without any maps in it you know.";
     }
+      console.log('modes:', modes);
 
     const stagesAlreadyPicked = new Set<string>();
 
     const isSZFirst = false;
-
+    console.log('generationMode:', generationMode);
     return new Array(count)
       .fill(null)
       .map((_, i) => {
@@ -336,7 +340,7 @@ const MapsGeneratorPage = () => {
       </Stack>
       <RadioGroup
         onChange={(value) =>
-          setGenerationMode(value as "EQUAL" | "SZ_EVERY_OTHER")
+          setGenerationMode(value as "EQUAL" | "SZ_EVERY_OTHER" | "CUSTOM_ORDER")
         }
         value={generationMode}
       >
@@ -347,6 +351,20 @@ const MapsGeneratorPage = () => {
           <Radio value="SZ_EVERY_OTHER">
             <Trans>SZ every other</Trans>
           </Radio>
+          <Radio value="CUSTOM_ORDER">
+            <Trans>Custom order</Trans>
+          </Radio>
+          <MultipleModeSelector
+              options={[
+                {label: 'Splat Zones', value: 'SZ', data: 'SZ'},
+                {label: 'Tower Control', value: 'TC', data: 'TC'},
+                {label: 'Rainmaker', value: 'RM', data: 'RM'},
+                {label: 'Clam Blitz', value: 'CB', data: 'CB'}
+                ]}
+              isDisabled={generationMode !== 'CUSTOM_ORDER'}
+              isClearable
+              setValue={getModeValues}
+          />
         </Stack>
       </RadioGroup>
       <FormLabel htmlFor="count" fontSize="sm">
@@ -399,5 +417,10 @@ MapsGeneratorPage.header = (
     subtitle="Get a list of maps to play in a scrim"
   />
 );
+
+function getModeValues(value: []) {
+  console.log('in maps');
+  console.log('value:', value);
+}
 
 export default MapsGeneratorPage;
