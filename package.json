@@ -79,6 +79,7 @@
     "cross-env": "^7.0.3",
     "cypress": "^6.8.0",
     "fishery": "^1.2.0",
+    "lodash": "^4.17.21",
     "prettier": "^2.2.1",
     "prisma": "^2.20.1",
     "ts-node": "^9.1.1",
