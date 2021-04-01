@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { PlusRegion, Prisma } from "@prisma/client";
 import plusStatusFactory from "../factories/plusStatus";
 import plusSuggestionFactory from "../factories/plusSuggestion";
 import plusVotingSummaryFactory from "../factories/plusVotingSummary";
@@ -47,7 +47,6 @@ export const getPlusStatusesData = (): Prisma.PlusStatusCreateManyInput[] => {
     },
     {
       userId: 11,
-      membershipTier: 1,
       canVouchFor: 1,
     },
     {
@@ -56,6 +55,18 @@ export const getPlusStatusesData = (): Prisma.PlusStatusCreateManyInput[] => {
       canVouchAgainAfter: new Date(Date.UTC(2030, 1, 1)),
       canVouchFor: 2,
     },
+    {
+      userId: 333,
+      region: PlusRegion.EU,
+      membershipTier: 2,
+      canVouchAgainAfter: new Date(Date.UTC(2030, 1, 1)),
+      canVouchFor: 2,
+    },
+    {
+      userId: 999,
+      region: PlusRegion.EU,
+      canVouchFor: 1,
+    }
   ].map((params) => {
     return plusStatusFactory.build(params);
   });

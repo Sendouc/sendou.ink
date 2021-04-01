@@ -2,7 +2,7 @@ import { Flex } from "@chakra-ui/react";
 import { useLingui } from "@lingui/react";
 import MySelect from "components/common/MySelect";
 import { components } from "react-select";
-import { tags } from "../utils";
+import { TAGS } from "../utils";
 
 interface TagsSelectorProps {
   value?: string[];
@@ -30,7 +30,7 @@ const TagsSelector: React.FC<TagsSelectorProps> = (props) => {
 
   return (
     <MySelect
-      options={tags.map((tag) => ({
+      options={TAGS.map((tag) => ({
         label: i18n._(tag.name),
         value: tag.code,
       }))}
