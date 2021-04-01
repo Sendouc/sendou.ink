@@ -1,6 +1,6 @@
 import { PlusStatus } from "@prisma/client";
 import { Factory } from "fishery";
-import { randomElement } from "utils/arrays";
+import { randomElement } from "../../utils/arrays";
 import prisma from "../client";
 
 export default Factory.define<PlusStatus>(({ params, onCreate }) => {
@@ -10,7 +10,7 @@ export default Factory.define<PlusStatus>(({ params, onCreate }) => {
 
   return {
     userId: 1, // TODO: automatically build a User object, if necessary
-    membershipTier: 1,
+    membershipTier: null,
     region: randomElement(["EU", "NA"]),
     voucherId: null,
     vouchTier: null,

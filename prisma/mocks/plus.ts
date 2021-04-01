@@ -56,7 +56,8 @@ export const getPlusStatusesData = (): Prisma.PlusStatusCreateManyInput[] => {
       userId: 999,
       region: PlusRegion.EU,
       canVouchFor: 1,
-    }
+      membershipTier: 1,
+    },
   ].map((params) => {
     return plusStatusFactory.build(params);
   });
@@ -69,7 +70,7 @@ export const getPlusSuggestionsData = (): Prisma.PlusSuggestionCreateManyInput[]
       tier: 2,
       suggestedId: 10,
       suggesterId: 1,
-    })
+    }),
   ];
 };
 
