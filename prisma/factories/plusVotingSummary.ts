@@ -3,7 +3,7 @@ import { PlusVotingSummary } from "@prisma/client";
 import prisma from "../client";
 
 export default Factory.define<PlusVotingSummary>(({ params, onCreate }) => {
-  onCreate(plusVotingSummary => {
+  onCreate((plusVotingSummary) => {
     return prisma.plusVotingSummary.create({ data: plusVotingSummary });
   });
 
@@ -15,6 +15,6 @@ export default Factory.define<PlusVotingSummary>(({ params, onCreate }) => {
     wasVouched: false,
     wasSuggested: false,
     countsEU: [0, 0, 0, 3],
-    countsNA: [0, 0, 2, 0]
+    countsNA: [0, 0, 2, 0],
   };
 });

@@ -3,7 +3,7 @@ import { PlusSuggestion } from "@prisma/client";
 import prisma from "../client";
 
 export default Factory.define<PlusSuggestion>(({ params, onCreate }) => {
-  onCreate(plusSuggestion => {
+  onCreate((plusSuggestion) => {
     return prisma.plusSuggestion.create({ data: plusSuggestion });
   });
 
@@ -13,6 +13,6 @@ export default Factory.define<PlusSuggestion>(({ params, onCreate }) => {
     tier: 1,
     description: "yooo so cracked",
     isResuggestion: false,
-    createdAt: new Date()
+    createdAt: new Date(),
   };
 });

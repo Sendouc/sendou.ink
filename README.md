@@ -87,6 +87,7 @@ d) On the "General Information" tab both "CLIENT ID" and "CLIENT SECRET" can be 
 e) On the "OAuth2" tab add `http://localhost:3000/api/auth/callback/discord` in the list of redirects.
 
 For `JWT_SECRET`, use a long, cryptographically random string. You can use `node` to generate such a string as follows:
+
 ```
 node -e "require('crypto').randomBytes(64, function(ex, buf) { console.log(buf.toString('base64')) })"
 ```
