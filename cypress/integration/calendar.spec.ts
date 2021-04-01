@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 /// <reference path="../support/index.d.ts" />
 
-context.only("Event Calendar", () => {
+context("Event Calendar", () => {
   beforeEach(() => {
     cy.visit("/calendar");
   });
@@ -10,7 +10,7 @@ context.only("Event Calendar", () => {
     cy.contains("58.3%").should("not.exist");
   });
 
-  it.only("tournament info renders as expected", () => {
+  it("tournament info renders as expected", () => {
     cy.contains("In The Zone Ultimate");
     cy.contains("SZ Only");
 
