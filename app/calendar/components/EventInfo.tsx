@@ -1,4 +1,16 @@
-import { Badge, Box, Button, Flex, Grid, Heading } from "@chakra-ui/react";
+import {
+  Badge,
+  Box,
+  Button,
+  Flex,
+  Grid,
+  Heading,
+  Popover,
+  PopoverArrow,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
+} from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
 import Markdown from "components/common/Markdown";
 import MyLink from "components/common/MyLink";
@@ -41,16 +53,33 @@ const TournamentInfo = ({ event }: EventInfoProps) => {
           <Heading fontFamily="'Rubik', sans-serif" size="lg">
             {event.name}
           </Heading>
-          <Flex flexWrap="wrap" justifyContent="center" mt={3} mb={2}>
-            {event.tags.map((tag) => {
-              const tagInfo = TAGS.find((tagObj) => tagObj.code === tag)!;
-              return (
-                <Badge mx={1} bg={tagInfo.color} color="black" key={tag}>
-                  {tagInfo.name}
-                </Badge>
-              );
-            })}
-          </Flex>
+          {event.tags.length > 0 && (
+            <Flex flexWrap="wrap" justifyContent="center" mt={3} mb={2}>
+              {event.tags.map((tag) => {
+                const tagInfo = TAGS.find((tagObj) => tagObj.code === tag)!;
+                return (
+                  <Popover
+                    key={tag}
+                    trigger="hover"
+                    variant="responsive"
+                    placement="top"
+                  >
+                    <PopoverTrigger>
+                      <Badge mx={1} bg={tagInfo.color} color="black">
+                        {tagInfo.name}
+                      </Badge>
+                    </PopoverTrigger>
+                    <PopoverContent bg={secondaryBgColor}>
+                      <PopoverHeader fontWeight="semibold">
+                        {tagInfo.description}
+                      </PopoverHeader>
+                      <PopoverArrow bg={secondaryBgColor} />
+                    </PopoverContent>
+                  </Popover>
+                );
+              })}
+            </Flex>
+          )}
           <Grid
             templateColumns="2fr 4fr 2fr"
             placeItems="center flex-start"
@@ -106,11 +135,22 @@ const TournamentInfo = ({ event }: EventInfoProps) => {
           gridColumnGap="1rem"
           maxW={canEdit ? "32rem" : "24rem"}
           mx="auto"
+          mt={4}
         >
-          {/* TODO */}
-          <Button leftIcon={<DiscordIcon />} size="sm" variant="outline">
-            Join Discord
-          </Button>
+          {event.discordInviteUrl ? (
+            <MyLink href={event.discordInviteUrl} isExternal>
+              <Button
+                leftIcon={<DiscordIcon />}
+                size="sm"
+                variant="outline"
+                width="100%"
+              >
+                Join Discord
+              </Button>
+            </MyLink>
+          ) : (
+            <div />
+          )}
           <Button
             leftIcon={<FiInfo />}
             size="sm"

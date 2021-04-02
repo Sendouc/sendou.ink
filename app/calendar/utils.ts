@@ -40,7 +40,7 @@ export const TAGS = [
   {
     code: "LOW",
     name: t`Skill cap`,
-    description: t`Limited who can play in this tournament based on skill.`,
+    description: t`Who can play in this tournament is limited by skill.`,
     color: "#BBDEFB",
   },
   {
@@ -66,6 +66,12 @@ export const TAGS = [
     name: t`LAN`,
     description: t`This tournament is played locally.`,
     color: "#263238",
+  },
+  {
+    code: "QUALIFIER",
+    name: t`Qualifier`,
+    description: t`This tournament is a qualifier for another event.`,
+    color: "#FFC0CB",
   },
 ] as const;
 
