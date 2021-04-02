@@ -16,13 +16,14 @@ import Markdown from "components/common/Markdown";
 import MyLink from "components/common/MyLink";
 import UserAvatar from "components/common/UserAvatar";
 import { useMyTheme, useUser } from "hooks/common";
+import Image from "next/image";
 import React, { useState } from "react";
 import { FiClock, FiEdit, FiExternalLink, FiInfo } from "react-icons/fi";
 import { DiscordIcon } from "utils/assets/icons";
 import { ADMIN_ID } from "utils/constants";
 import { Unpacked } from "utils/types";
 import { Events } from "../service";
-import { EVENT_FORMATS, TAGS } from "../utils";
+import { eventImage, EVENT_FORMATS, TAGS } from "../utils";
 
 interface EventInfoProps {
   event: Unpacked<Events>;
@@ -37,6 +38,8 @@ const TournamentInfo = ({ event, edit }: EventInfoProps) => {
   const [user] = useUser();
 
   const canEdit = user?.id === poster.id || user?.id === ADMIN_ID;
+
+  const imgSrc = eventImage(event.name);
 
   return (
     <Box
@@ -53,6 +56,7 @@ const TournamentInfo = ({ event, edit }: EventInfoProps) => {
     >
       <Box textAlign="center">
         <Box>
+          {imgSrc && <Image src={imgSrc} width={36} height={36} />}
           <Heading fontFamily="'Rubik', sans-serif" size="lg">
             {event.name}
           </Heading>
