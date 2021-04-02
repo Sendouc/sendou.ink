@@ -86,16 +86,21 @@ export const EVENT_FORMATS = [
   { code: "OTHER", name: t`Other` },
 ] as const;
 
-const nameToImage = ["tasl"] as const;
+const nameToImage = [
+  { code: "tasl", name: "tasl" },
+  { code: "lowink", name: "low ink" },
+  { code: "lobstercrossfire", name: "lobster crossfire" },
+  { code: "swimorsink", name: "swim or sink" },
+] as const;
 
 /**
  * Returns event logo image path based on the event name or undefined if no image saved for the event.
  */
 export const eventImage = (eventName: string) => {
   const eventNameLower = eventName.toLowerCase();
-  for (const name of nameToImage) {
+  for (const { name, code } of nameToImage) {
     if (eventNameLower.startsWith(name)) {
-      return `/events/${name}.png`;
+      return `/events/${code}.png`;
     }
   }
 

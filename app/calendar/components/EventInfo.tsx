@@ -164,7 +164,6 @@ const TournamentInfo = ({ event, edit }: EventInfoProps) => {
             leftIcon={<FiInfo />}
             size="sm"
             onClick={() => setExpanded(!expanded)}
-            variant="outline"
             data-cy={`info-button-${event.name
               .toLowerCase()
               .replace(/ /g, "-")}`}
