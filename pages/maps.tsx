@@ -144,7 +144,7 @@ const MapsGeneratorPage = () => {
         : shuffleArray(filteredModes);
     if (modes.length === 0) {
       return generationMode === "CUSTOM_ORDER"
-        ? "I can't generate a maplist without any mode you know."
+        ? "I can't generate a maplist without any modes you know."
         : "I can't generate a maplist without any maps in it you know.";
     }
     const stagesAlreadyPicked = new Set<string>();
