@@ -5,11 +5,12 @@ import { ADMIN_ID } from "utils/constants";
 import { userBasicSelection } from "utils/prisma";
 import { eventSchema } from "utils/validators/event";
 import * as z from "zod";
+import { TAGS } from "./utils";
 
 export type Events = Prisma.PromiseReturnType<typeof events>;
 
-const events = () => {
-  return prisma.calendarEvent.findMany({
+const events = async () => {
+  const result = await prisma.calendarEvent.findMany({
     select: {
       date: true,
       description: true,
@@ -26,6 +27,15 @@ const events = () => {
     where: { date: { gt: new Date() } },
     orderBy: { date: "asc" },
   });
+
+  return result.map((e) => ({
+    ...e,
+    tags: e.tags.sort(
+      (a, b) =>
+        TAGS.findIndex((t) => t.code === a) -
+        TAGS.findIndex((t) => t.code === b)
+    ),
+  }));
 };
 
 const addEvent = async ({
