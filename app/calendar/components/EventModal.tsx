@@ -6,6 +6,7 @@ import {
   FormLabel,
 } from "@chakra-ui/form-control";
 import { Input } from "@chakra-ui/input";
+import { Box } from "@chakra-ui/layout";
 import {
   Modal,
   ModalBody,
@@ -21,6 +22,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import MarkdownTextarea from "components/common/MarkdownTextarea";
+import { useMyTheme } from "hooks/common";
 import { Controller, useForm } from "react-hook-form";
 import { FiTrash } from "react-icons/fi";
 import { getToastOptions } from "utils/getToastOptions";
@@ -41,6 +43,7 @@ export function EventModal({
   event?: { id: number } & FormData;
   refetchQuery: () => void;
 }) {
+  const { gray } = useMyTheme();
   const toast = useToast();
   const { i18n } = useLingui();
   const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
@@ -125,6 +128,13 @@ export function EventModal({
                   <Trans>Delete event</Trans>
                 </Button>
               )}
+
+              <Box fontSize="sm" color={gray} mb={4}>
+                <Trans>
+                  Add upcoming Splatoon events you are hosting to the calendar.
+                </Trans>
+              </Box>
+
               {/* <FormLabel htmlFor="isTournament">
                 <Trans>Type</Trans>
               </FormLabel>

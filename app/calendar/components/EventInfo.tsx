@@ -84,14 +84,15 @@ const TournamentInfo = ({ event, edit }: EventInfoProps) => {
             </Flex>
           )}
           <Grid
-            templateColumns="2fr 4fr 2fr"
+            templateColumns={["1fr", "2fr 4fr 2fr"]}
             placeItems="center flex-start"
+            gridRowGap="0.5rem"
             maxW="32rem"
             mx="auto"
             mt={1}
             mb={3}
           >
-            <Flex placeItems="center" ml="auto">
+            <Flex placeItems="center" ml={[null, "auto"]} mx={["auto", null]}>
               <Box
                 as={FiClock}
                 mr="0.5em"
@@ -117,7 +118,7 @@ const TournamentInfo = ({ event, edit }: EventInfoProps) => {
                 {new URL(event.eventUrl).host}
               </MyLink>
             </Flex>
-            <Flex placeItems="center" mr="auto">
+            <Flex placeItems="center" mr={[null, "auto"]} mx={["auto", null]}>
               <UserAvatar
                 user={event.poster}
                 size="sm"
@@ -134,9 +135,10 @@ const TournamentInfo = ({ event, edit }: EventInfoProps) => {
         </Box>
 
         <Grid
-          templateColumns={canEdit ? "1fr 1fr 1fr" : "1fr 1fr"}
+          templateColumns={["1fr", canEdit ? "1fr 1fr 1fr" : "1fr 1fr"]}
+          gridRowGap="1rem"
           gridColumnGap="1rem"
-          maxW={canEdit ? "32rem" : "24rem"}
+          maxW={["12rem", canEdit ? "32rem" : "24rem"]}
           mx="auto"
           mt={4}
         >

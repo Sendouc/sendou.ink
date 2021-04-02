@@ -1,10 +1,11 @@
 import { Button } from "@chakra-ui/button";
-import { Input } from "@chakra-ui/input";
+import { Input, InputGroup, InputLeftElement } from "@chakra-ui/input";
 import { Box } from "@chakra-ui/layout";
 import { t, Trans } from "@lingui/macro";
 import SubText from "components/common/SubText";
 import { useMyTheme } from "hooks/common";
 import { Fragment, useState } from "react";
+import { FiSearch } from "react-icons/fi";
 import { trpc } from "utils/trpc";
 import EventInfo from "./EventInfo";
 import { EventModal, FormData } from "./EventModal";
@@ -39,60 +40,67 @@ export default function CalendarPage() {
           />
         )}
       </div>
-      <Input
-        value={filter}
-        onChange={(e) => setFilter(e.target.value)}
-        mt={8}
-      />
-      {(events.data ?? []).map((event) => {
-        const printDateHeader =
-          !lastPrintedDate ||
-          lastPrintedDate[0] !== event.date.getDate() ||
-          lastPrintedDate[1] !== event.date.getMonth();
+      <InputGroup mt={8} maxW="24rem" mx="auto">
+        <InputLeftElement
+          pointerEvents="none"
+          children={<FiSearch color={gray} />}
+        />
+        <Input value={filter} onChange={(e) => setFilter(e.target.value)} />
+      </InputGroup>
+      {(events.data ?? [])
+        .filter((event) =>
+          event.name.toLowerCase().includes(filter.toLowerCase().trim())
+        )
+        .map((event) => {
+          const printDateHeader =
+            !lastPrintedDate ||
+            lastPrintedDate[0] !== event.date.getDate() ||
+            lastPrintedDate[1] !== event.date.getMonth();
 
-        if (printDateHeader) {
-          lastPrintedDate = [
-            event.date.getDate(),
-            event.date.getMonth(),
-            event.date,
-          ];
-        }
+          if (printDateHeader) {
+            lastPrintedDate = [
+              event.date.getDate(),
+              event.date.getMonth(),
+              event.date,
+            ];
+          }
 
-        const differenceInDays = Math.floor(
-          (lastPrintedDate![2].getTime() - new Date().getTime()) /
-            (1000 * 60 * 60 * 24)
-        );
+          const differenceInDays = Math.floor(
+            (lastPrintedDate![2].getTime() - new Date().getTime()) /
+              (1000 * 60 * 60 * 24)
+          );
 
-        return (
-          <Fragment key={event.id}>
-            {printDateHeader && (
-              <Box my={10}>
-                <SubText>
-                  {event.date.toLocaleDateString()} {getTime(differenceInDays)}
-                </SubText>
-              </Box>
-            )}
-            <div>
-              <EventInfo
-                event={event}
-                edit={() =>
-                  setEventToEdit({
-                    ...event,
-                    date: event.date.toISOString(),
-                    // TODO: remove this if later other event types than tournament are allowed
-                    // currently in the validator we accept the properties as if you can only submit
-                    // tournaments but database is prepared to accept other kind of events
-                    // this makes TS freak out a bit
-                    discordInviteUrl: event.discordInviteUrl!,
-                    tags: event.tags as any,
-                    format: event.format as any,
-                  })
-                }
-              />
-            </div>
-          </Fragment>
-        );
-      })}
+          return (
+            <Fragment key={event.id}>
+              {printDateHeader && (
+                <Box my={10}>
+                  <SubText>
+                    {event.date.toLocaleDateString()}{" "}
+                    {getTime(differenceInDays)}
+                  </SubText>
+                </Box>
+              )}
+              <div>
+                <EventInfo
+                  event={event}
+                  edit={() =>
+                    setEventToEdit({
+                      ...event,
+                      date: event.date.toISOString(),
+                      // TODO: remove this if later other event types than tournament are allowed
+                      // currently in the validator we accept the properties as if you can only submit
+                      // tournaments but database is prepared to accept other kind of events
+                      // this makes TS freak out a bit
+                      discordInviteUrl: event.discordInviteUrl!,
+                      tags: event.tags as any,
+                      format: event.format as any,
+                    })
+                  }
+                />
+              </div>
+            </Fragment>
+          );
+        })}
       <Box color={gray}>
         All events listed in your local time:{" "}
         {Intl.DateTimeFormat().resolvedOptions().timeZone}
