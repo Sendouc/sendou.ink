@@ -365,7 +365,7 @@ const MapsGeneratorPage = () => {
           </Radio>
         </Stack>
       </RadioGroup>
-      <MultipleModeSelector
+      {generationMode === "CUSTOM_ORDER" && <MultipleModeSelector
         options={[
           { label: "Splat Zones", value: "SZ", data: "SZ" },
           { label: "Tower Control", value: "TC", data: "TC" },
@@ -375,7 +375,7 @@ const MapsGeneratorPage = () => {
         isDisabled={generationMode !== "CUSTOM_ORDER"}
         setValue={getModeValues}
         width={"90%"}
-      />
+      />}
       <FormLabel htmlFor="count" fontSize="sm" mt={4}>
         <Trans>Amount of maps to generate</Trans>
       </FormLabel>
