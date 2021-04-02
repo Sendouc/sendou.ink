@@ -30,13 +30,16 @@ context("Plus Home Page", () => {
     cy.get("section").contains("yooo so cracked").should("not.exist");
   });
 
-  it("can submit new suggestion and persists with reload", () => {
+  // skipped because
+  // https://github.com/Sendouc/sendou.ink/issues/349
+  // https://github.com/Sendouc/sendou.ink/issues/350
+  it.skip("can submit new suggestion and persists with reload", () => {
     cy.login("sendou");
     cy.visit("/plus");
     cy.dataCy("suggestion-button")
       .click()
       .get(".select__value-container")
-      .type("NZAP{enter}")
+      .type("NZAP{enter}{enter}")
       .dataCy("region-select")
       .select("EU")
       .dataCy("description-textarea")

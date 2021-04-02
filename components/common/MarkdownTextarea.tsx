@@ -18,6 +18,7 @@ interface Props {
   maxLength: number;
   register: any;
   placeholder?: string;
+  dataCy?: string;
 }
 
 const MarkdownTextarea: React.FC<Props> = ({
@@ -28,6 +29,7 @@ const MarkdownTextarea: React.FC<Props> = ({
   maxLength,
   register,
   placeholder,
+  dataCy,
 }) => {
   return (
     <FormControl isInvalid={!!error}>
@@ -40,6 +42,7 @@ const MarkdownTextarea: React.FC<Props> = ({
         placeholder={placeholder}
         resize="vertical"
         rows={6}
+        data-cy={dataCy}
       />
       <FormHelperText display="flex" alignItems="center">
         <LimitProgress

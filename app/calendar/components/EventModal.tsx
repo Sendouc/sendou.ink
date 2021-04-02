@@ -55,7 +55,6 @@ export function EventModal({
       onClose();
     },
     onError(error) {
-      console.log({ error });
       toast(getToastOptions(error.message, "error"));
     },
   });
@@ -66,7 +65,6 @@ export function EventModal({
       onClose();
     },
     onError(error) {
-      console.log({ error });
       toast(getToastOptions(error.message, "error"));
     },
   });
@@ -77,7 +75,6 @@ export function EventModal({
       onClose();
     },
     onError(error) {
-      console.log({ error });
       toast(getToastOptions(error.message, "error"));
     },
   });
@@ -85,13 +82,18 @@ export function EventModal({
   const watchDescription = watch("description", event?.description ?? "");
 
   const onSubmit = async (values: FormData) => {
-    console.log({ values });
     event
       ? editEvent.mutate({ event: values, eventId: event.id })
       : addEvent.mutate(values);
   };
 
   const onDelete = (eventId: number) => deleteEvent.mutate({ eventId });
+
+  const defaultDate = new Date();
+  defaultDate.setHours(defaultDate.getHours() + 1, 0);
+  const defaultIsoDateTime = new Date(
+    defaultDate.getTime() - defaultDate.getTimezoneOffset() * 60000
+  ).toISOString();
 
   return (
     <Modal isOpen onClose={onClose} size="xl" closeOnOverlayClick={false}>
@@ -118,6 +120,7 @@ export function EventModal({
                     if (window.confirm(t`Delete the event?`))
                       onDelete(event.id);
                   }}
+                  data-cy="delete-button"
                 >
                   <Trans>Delete event</Trans>
                 </Button>
@@ -142,7 +145,12 @@ export function EventModal({
               </FormLabel>
 
               <FormControl isInvalid={!!errors.name}>
-                <Input name="name" ref={register} placeholder="In The Zone X" />
+                <Input
+                  name="name"
+                  ref={register}
+                  placeholder="In The Zone X"
+                  data-cy="name-input"
+                />
                 <FormErrorMessage>{errors.name}</FormErrorMessage>
               </FormControl>
 
@@ -154,13 +162,13 @@ export function EventModal({
                 <Controller
                   name="date"
                   control={control}
-                  defaultValue={new Date().toISOString()}
+                  defaultValue={defaultIsoDateTime}
                   render={({ onChange, value }) => (
                     <Input
                       type="datetime-local"
                       value={value.substring(0, 16)}
                       onChange={onChange}
-                      min={new Date().toISOString()}
+                      min={defaultIsoDateTime}
                     />
                   )}
                 />
@@ -180,6 +188,7 @@ export function EventModal({
                   name="discordInviteUrl"
                   ref={register}
                   placeholder="https://discord.gg/9KJKn29D"
+                  data-cy="discord-invite-url-input"
                 />
                 <FormErrorMessage>
                   {errors.discordInviteUrl?.message}
@@ -195,6 +204,7 @@ export function EventModal({
                   name="eventUrl"
                   ref={register}
                   placeholder="https://challonge.com/tournaments/signup/Javco7YsUX"
+                  data-cy="registration-url-input"
                 />
                 <FormErrorMessage>{errors.eventUrl?.message}</FormErrorMessage>
               </FormControl>
@@ -222,6 +232,7 @@ export function EventModal({
                   t`# Header
                   All the relevant info about tournament goes here. We can even use **bolding**.`
                 )}
+                dataCy="description-markdown"
               />
 
               <FormLabel htmlFor="tags" mt={4}>
@@ -245,6 +256,7 @@ export function EventModal({
                   addEvent.status === "loading" ||
                   editEvent.status === "loading"
                 }
+                data-cy="save-button"
               >
                 <Trans>Save</Trans>
               </Button>

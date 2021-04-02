@@ -24,7 +24,11 @@ export default function CalendarPage() {
   return (
     <>
       <div>
-        <Button size="sm" onClick={() => setEventToEdit(true)}>
+        <Button
+          size="sm"
+          onClick={() => setEventToEdit(true)}
+          data-cy="add-event-button"
+        >
           <Trans>Add event</Trans>
         </Button>
         {eventToEdit && (

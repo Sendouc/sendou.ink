@@ -47,6 +47,9 @@ const TournamentInfo = ({ event, edit }: EventInfoProps) => {
       bg={secondaryBgColor}
       p="20px"
       my={5}
+      data-cy={`event-info-section-${event.name
+        .toLowerCase()
+        .replace(/ /g, "-")}`}
     >
       <Box textAlign="center">
         <Box>
@@ -156,7 +159,9 @@ const TournamentInfo = ({ event, edit }: EventInfoProps) => {
             size="sm"
             onClick={() => setExpanded(!expanded)}
             variant="outline"
-            data-cy={`info-button-id-${event.id}`}
+            data-cy={`info-button-${event.name
+              .toLowerCase()
+              .replace(/ /g, "-")}`}
           >
             {expanded ? <Trans>Hide info</Trans> : <Trans>View info</Trans>}
           </Button>
@@ -166,6 +171,9 @@ const TournamentInfo = ({ event, edit }: EventInfoProps) => {
               size="sm"
               onClick={edit}
               variant="outline"
+              data-cy={`edit-button-${event.name
+                .toLowerCase()
+                .replace(/ /g, "-")}`}
             >
               Edit event
             </Button>
