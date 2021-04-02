@@ -132,6 +132,7 @@ export function EventModal({
               <Box fontSize="sm" color={gray} mb={4}>
                 <Trans>
                   Add upcoming Splatoon events you are hosting to the calendar.
+                  For now please use Chrome browser when submitting an event.
                 </Trans>
               </Box>
 

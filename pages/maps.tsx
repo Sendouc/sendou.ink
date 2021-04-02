@@ -365,17 +365,19 @@ const MapsGeneratorPage = () => {
           </Radio>
         </Stack>
       </RadioGroup>
-      {generationMode === "CUSTOM_ORDER" && <MultipleModeSelector
-        options={[
-          { label: "Splat Zones", value: "SZ", data: "SZ" },
-          { label: "Tower Control", value: "TC", data: "TC" },
-          { label: "Rainmaker", value: "RM", data: "RM" },
-          { label: "Clam Blitz", value: "CB", data: "CB" },
-        ]}
-        isDisabled={generationMode !== "CUSTOM_ORDER"}
-        setValue={getModeValues}
-        width={"90%"}
-      />}
+      {generationMode === "CUSTOM_ORDER" && (
+        <MultipleModeSelector
+          options={[
+            { label: "Splat Zones", value: "SZ", data: "SZ" },
+            { label: "Tower Control", value: "TC", data: "TC" },
+            { label: "Rainmaker", value: "RM", data: "RM" },
+            { label: "Clam Blitz", value: "CB", data: "CB" },
+          ]}
+          isDisabled={generationMode !== "CUSTOM_ORDER"}
+          setValue={getModeValues}
+          width={"90%"}
+        />
+      )}
       <FormLabel htmlFor="count" fontSize="sm" mt={4}>
         <Trans>Amount of maps to generate</Trans>
       </FormLabel>
@@ -425,7 +427,7 @@ const MapsGeneratorPage = () => {
   }
 
   function transformModesToStringArray() {
-    return modes.map(mode => {
+    return modes.map((mode) => {
       if (mode.data) return mode.data;
       else return "";
     });
