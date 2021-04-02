@@ -28,7 +28,7 @@
   "No results with this filter": "אין תוצאות עם סינון זה",
   "Random": "אקראי",
   "Random (Grizzco)": "אקראי (גריזקו)",
-  "Only {props} weapons allowed": "מותר {props} רק נשקי",
+  "Only {maxMultiCount} weapons allowed": "מותר {maxMultiCount} רק נשקי",
   "Salmon Run": "סלמון רן",
   "Free agent post updated": "הודעת סוכן חופשי מעודכנת",
   "Free agent post submitted": "הודעת סוכן חופשי הוגשה",

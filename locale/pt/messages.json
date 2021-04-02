@@ -28,7 +28,7 @@
   "No results with this filter": "Não há resultados com esse fitro",
   "Random": "aleatório",
   "Random (Grizzco)": "aleatório (Grizzco)",
-  "Only {props} weapons allowed": "Escolha apenas {props} armas",
+  "Only {maxMultiCount} weapons allowed": "Escolha apenas {maxMultiCount} armas",
   "Salmon Run": "",
   "Free agent post updated": "",
   "Free agent post submitted": "",
