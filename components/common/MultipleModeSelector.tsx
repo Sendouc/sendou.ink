@@ -9,6 +9,8 @@ import ReactSelect, {
   ValueType,
 } from "react-select";
 import { SelectComponents } from "react-select/src/components";
+import {Box, Flex} from "@chakra-ui/react";
+import ModeImage from "./ModeImage";
 
 interface SelectProps {
   options?:
@@ -25,7 +27,6 @@ interface SelectProps {
   width?: string;
   value?: ValueType<OptionTypeBase, boolean>;
   setValue: (value: any) => void;
-  autoFocus?: boolean;
   components?: Partial<SelectComponents<OptionTypeBase, boolean>>;
   isDisabled?: boolean;
   menuIsOpen?: boolean;
@@ -41,11 +42,23 @@ const DropdownIndicator = (props: any) => {
   );
 };
 
+const Option = (props: any) => {
+  return (
+      <components.Option {...props}>
+        <Flex alignItems="center">
+          <Box mr="0.5em">
+            <ModeImage size={24} mode={props.value} />
+          </Box>
+          {props.label}
+        </Flex>
+      </components.Option>
+  );
+};
+
 const MultipleModeSelector: React.FC<SelectProps> = ({
   options,
   components,
   setValue,
-  autoFocus = false,
   isDisabled = false,
   menuIsOpen = false,
   hideMenuBeforeTyping,
@@ -102,11 +115,13 @@ const MultipleModeSelector: React.FC<SelectProps> = ({
           ? {
               IndicatorSeparator: () => null,
               DropdownIndicator: () => null,
+              Option,
               ...components,
             }
           : {
               IndicatorSeparator: () => null,
               DropdownIndicator,
+              Option,
               ...components,
             }
       }
@@ -121,7 +136,6 @@ const MultipleModeSelector: React.FC<SelectProps> = ({
           neutral5: bgColor,
         },
       })}
-      autoFocus={autoFocus}
       styles={{
         singleValue: (base) => ({
           ...base,

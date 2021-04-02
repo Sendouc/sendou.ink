@@ -32,7 +32,6 @@ import { shuffleArray } from "utils/arrays";
 import { stages } from "utils/lists/stages";
 import { setManySearchParams } from "utils/setSearchParams";
 import MultipleModeSelector from "../components/common/MultipleModeSelector";
-import MySelect from "../components/common/MySelect";
 
 const MapsGeneratorPage = () => {
   const router = useRouter();
@@ -136,11 +135,12 @@ const MapsGeneratorPage = () => {
     const modes = generationMode === "CUSTOM_ORDER" ? filteredModes : (shuffleArray(filteredModes));
     if (modes.length === 0) {
       return generationMode === "CUSTOM_ORDER" ? "I can't generate a maplist without any mode you know."
-          : "I can't generate a maplist without any maps in it you know.";
+        : "I can't generate a maplist without any maps in it you know.";
     }
     const stagesAlreadyPicked = new Set<string>();
 
     const isSZFirst = false;
+
     return new Array(count)
       .fill(null)
       .map((_, i) => {
