@@ -258,7 +258,7 @@ const ProfileModal: React.FC<Props> = ({ onClose, user }) => {
                 name="weaponPool"
                 control={control}
                 defaultValue={[]}
-                render={({ onChange, value, name }) => (
+                render={({ onChange, value }) => (
                   <WeaponSelector
                     value={value}
                     setValue={onChange}

@@ -34,7 +34,7 @@ const TagsSelector: React.FC<TagsSelectorProps> = (props) => {
         label: i18n._(tag.name),
         value: tag.code,
       }))}
-      //value={getValue()}
+      value={props.value?.map((value) => ({ value, label: getLabel(value) }))}
       setValue={props.setValue}
       isClearable
       isMulti
@@ -45,6 +45,11 @@ const TagsSelector: React.FC<TagsSelectorProps> = (props) => {
       }}
     />
   );
+
+  function getLabel(value: string) {
+    const tag = TAGS.find(({ code }) => code === value);
+    return tag?.name;
+  }
 };
 
 export default TagsSelector;

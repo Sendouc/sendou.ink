@@ -7,12 +7,14 @@ import { useMyTheme } from "hooks/common";
 import { Fragment, useState } from "react";
 import { trpc } from "utils/trpc";
 import EventInfo from "./EventInfo";
-import { EventModal } from "./EventModal";
+import { EventModal, FormData } from "./EventModal";
 
 export default function CalendarPage() {
   const { gray } = useMyTheme();
   const events = trpc.useQuery(["calendar.events"], { enabled: false });
-  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [eventToEdit, setEventToEdit] = useState<
+    boolean | (FormData & { id: number })
+  >(false);
   const [filter, setFilter] = useState("");
 
   let lastPrintedDate: [number, number, Date] | null = null;
@@ -22,13 +24,13 @@ export default function CalendarPage() {
   return (
     <>
       <div>
-        <Button size="sm" onClick={() => setModalIsOpen(true)}>
+        <Button size="sm" onClick={() => setEventToEdit(true)}>
           <Trans>Add event</Trans>
         </Button>
-        {modalIsOpen && (
+        {eventToEdit && (
           <EventModal
-            onClose={() => setModalIsOpen(false)}
-            event={false}
+            onClose={() => setEventToEdit(false)}
+            event={typeof eventToEdit === "boolean" ? undefined : eventToEdit}
             refetchQuery={events.refetch}
           />
         )}
@@ -67,7 +69,22 @@ export default function CalendarPage() {
               </Box>
             )}
             <div>
-              <EventInfo event={event} />
+              <EventInfo
+                event={event}
+                edit={() =>
+                  setEventToEdit({
+                    ...event,
+                    date: event.date.toISOString(),
+                    // TODO: remove this if later other event types than tournament are allowed
+                    // currently in the validator we accept the properties as if you can only submit
+                    // tournaments but database is prepared to accept other kind of events
+                    // this makes TS freak out a bit
+                    discordInviteUrl: event.discordInviteUrl!,
+                    tags: event.tags as any,
+                    format: event.format as any,
+                  })
+                }
+              />
             </div>
           </Fragment>
         );

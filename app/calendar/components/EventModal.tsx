@@ -30,7 +30,7 @@ import * as z from "zod";
 import { EVENT_FORMATS } from "../utils";
 import TagsSelector from "./TagsSelector";
 
-type FormData = z.infer<typeof eventSchema>;
+export type FormData = z.infer<typeof eventSchema>;
 
 export function EventModal({
   onClose,
@@ -38,14 +38,16 @@ export function EventModal({
   refetchQuery,
 }: {
   onClose: () => void;
-  event: boolean;
+  event?: { id: number } & FormData;
   refetchQuery: () => void;
 }) {
   const toast = useToast();
   const { i18n } = useLingui();
   const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
     resolver: zodResolver(eventSchema),
+    defaultValues: event,
   });
+
   const addEvent = trpc.useMutation("calendar.addEvent", {
     onSuccess() {
       toast(getToastOptions(t`Event added`, "success"));
@@ -57,19 +59,39 @@ export function EventModal({
       toast(getToastOptions(error.message, "error"));
     },
   });
+  const editEvent = trpc.useMutation("calendar.editEvent", {
+    onSuccess() {
+      toast(getToastOptions(t`Event updated`, "success"));
+      refetchQuery();
+      onClose();
+    },
+    onError(error) {
+      console.log({ error });
+      toast(getToastOptions(error.message, "error"));
+    },
+  });
+  const deleteEvent = trpc.useMutation("calendar.deleteEvent", {
+    onSuccess() {
+      toast(getToastOptions(t`Event deleted`, "success"));
+      refetchQuery();
+      onClose();
+    },
+    onError(error) {
+      console.log({ error });
+      toast(getToastOptions(error.message, "error"));
+    },
+  });
 
-  const watchDescription = watch("description", /*team.bio*/ "");
+  const watchDescription = watch("description", event?.description ?? "");
 
   const onSubmit = async (values: FormData) => {
-    console.log("jaa");
-    addEvent.mutate(values);
+    console.log({ values });
+    event
+      ? editEvent.mutate({ event: values, eventId: event.id })
+      : addEvent.mutate(values);
   };
 
-  const onDelete = async () => {
-    console.log("delete");
-  };
-
-  console.log({ errors });
+  const onDelete = (eventId: number) => deleteEvent.mutate({ eventId });
 
   return (
     <Modal isOpen onClose={onClose} size="xl" closeOnOverlayClick={false}>
@@ -91,9 +113,10 @@ export function EventModal({
                   variant="outline"
                   color="red.500"
                   mb={6}
-                  //isLoading={deleting}
+                  isLoading={deleteEvent.status === "loading"}
                   onClick={async () => {
-                    if (window.confirm(t`Delete the event?`)) await onDelete();
+                    if (window.confirm(t`Delete the event?`))
+                      onDelete(event.id);
                   }}
                 >
                   <Trans>Delete event</Trans>
@@ -128,19 +151,18 @@ export function EventModal({
               </FormLabel>
 
               <FormControl isInvalid={!!errors.date}>
-                {/* <Controller
+                <Controller
                   name="date"
                   control={control}
-                  defaultValue={new Date()}
-                  render={({ onChange, value }) => {
-                    return <DatePicker date={value} onChange={onChange} />;
-                  }}
-                /> */}
-                <Input
-                  type="datetime-local"
-                  name="date"
-                  ref={register}
-                  min={new Date().toISOString()}
+                  defaultValue={new Date().toISOString()}
+                  render={({ onChange, value }) => (
+                    <Input
+                      type="datetime-local"
+                      value={value.substring(0, 16)}
+                      onChange={onChange}
+                      min={new Date().toISOString()}
+                    />
+                  )}
                 />
                 <FormHelperText>
                   <Trans>Input the time in your local time zone:</Trans>{" "}
@@ -219,7 +241,10 @@ export function EventModal({
               <Button
                 mr={3}
                 type="submit"
-                isLoading={addEvent.status === "loading"}
+                isLoading={
+                  addEvent.status === "loading" ||
+                  editEvent.status === "loading"
+                }
               >
                 <Trans>Save</Trans>
               </Button>

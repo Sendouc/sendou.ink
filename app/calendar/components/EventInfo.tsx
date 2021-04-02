@@ -26,12 +26,12 @@ import { EVENT_FORMATS, TAGS } from "../utils";
 
 interface EventInfoProps {
   event: Unpacked<Events>;
+  edit: () => void;
 }
 
-const TournamentInfo = ({ event }: EventInfoProps) => {
+const TournamentInfo = ({ event, edit }: EventInfoProps) => {
   const { secondaryBgColor, gray, themeColorShade } = useMyTheme();
   const [expanded, setExpanded] = useState(false);
-  const [showModal, setShowModal] = useState(false);
   const poster = event.poster;
 
   const [user] = useUser();
@@ -164,7 +164,7 @@ const TournamentInfo = ({ event }: EventInfoProps) => {
             <Button
               leftIcon={<FiEdit />}
               size="sm"
-              onClick={() => setShowModal(true)}
+              onClick={edit}
               variant="outline"
             >
               Edit event
