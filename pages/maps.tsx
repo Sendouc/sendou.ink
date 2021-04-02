@@ -44,7 +44,9 @@ const MapsGeneratorPage = () => {
     "EQUAL" | "SZ_EVERY_OTHER" | "CUSTOM_ORDER"
   >("EQUAL");
   const [maplist, setMaplist] = useState("");
-  const [modes, setModes] = useState<{ label: string; value: number; data?: string; }[]>([]);
+  const [modes, setModes] = useState<
+    { label: string; value: number; data?: string }[]
+  >([]);
   const [count, setCount] = useState(9);
   const [editing, setEditing] = useState(false);
   const [copied, setCopied] = useState<null | "URL" | "LIST">(null);
@@ -129,12 +131,20 @@ const MapsGeneratorPage = () => {
     const modesFromGenerationMode =
       generationMode === "SZ_EVERY_OTHER"
         ? ["TC", "RM", "CB"]
-        : generationMode === "EQUAL" ? ["SZ", "TC", "RM", "CB"] : transformModesToStringArray();
+        : generationMode === "EQUAL"
+        ? ["SZ", "TC", "RM", "CB"]
+        : transformModesToStringArray();
 
-    const filteredModes = (modesFromGenerationMode as RankedMode[]).filter((mode) => modeStages[mode].length > 0);
-    const modes = generationMode === "CUSTOM_ORDER" ? filteredModes : (shuffleArray(filteredModes));
+    const filteredModes = (modesFromGenerationMode as RankedMode[]).filter(
+      (mode) => modeStages[mode].length > 0
+    );
+    const modes =
+      generationMode === "CUSTOM_ORDER"
+        ? filteredModes
+        : shuffleArray(filteredModes);
     if (modes.length === 0) {
-      return generationMode === "CUSTOM_ORDER" ? "I can't generate a maplist without any mode you know."
+      return generationMode === "CUSTOM_ORDER"
+        ? "I can't generate a maplist without any mode you know."
         : "I can't generate a maplist without any maps in it you know.";
     }
     const stagesAlreadyPicked = new Set<string>();
@@ -337,7 +347,9 @@ const MapsGeneratorPage = () => {
       </Stack>
       <RadioGroup
         onChange={(value) =>
-          setGenerationMode(value as "EQUAL" | "SZ_EVERY_OTHER" | "CUSTOM_ORDER")
+          setGenerationMode(
+            value as "EQUAL" | "SZ_EVERY_OTHER" | "CUSTOM_ORDER"
+          )
         }
         value={generationMode}
       >
@@ -354,15 +366,15 @@ const MapsGeneratorPage = () => {
         </Stack>
       </RadioGroup>
       <MultipleModeSelector
-          options={[
-            {label: 'Splat Zones', value: 'SZ', data: 'SZ'},
-            {label: 'Tower Control', value: 'TC', data: 'TC'},
-            {label: 'Rainmaker', value: 'RM', data: 'RM'},
-            {label: 'Clam Blitz', value: 'CB', data: 'CB'}
-          ]}
-          isDisabled={generationMode !== 'CUSTOM_ORDER'}
-          setValue={getModeValues}
-          width={'90%'}
+        options={[
+          { label: "Splat Zones", value: "SZ", data: "SZ" },
+          { label: "Tower Control", value: "TC", data: "TC" },
+          { label: "Rainmaker", value: "RM", data: "RM" },
+          { label: "Clam Blitz", value: "CB", data: "CB" },
+        ]}
+        isDisabled={generationMode !== "CUSTOM_ORDER"}
+        setValue={getModeValues}
+        width={"90%"}
       />
       <FormLabel htmlFor="count" fontSize="sm" mt={4}>
         <Trans>Amount of maps to generate</Trans>
@@ -406,16 +418,16 @@ const MapsGeneratorPage = () => {
     </>
   );
 
-  function getModeValues(value: { label: string; value: number; data?: string; }[]) {
+  function getModeValues(
+    value: { label: string; value: number; data?: string }[]
+  ) {
     setModes(value);
   }
 
   function transformModesToStringArray() {
     return modes.map(function (mode) {
-      if (mode.data)
-        return mode.data;
-      else
-        return '';
+      if (mode.data) return mode.data;
+      else return "";
     });
   }
 };

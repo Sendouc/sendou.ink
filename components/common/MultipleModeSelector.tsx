@@ -9,7 +9,7 @@ import ReactSelect, {
   ValueType,
 } from "react-select";
 import { SelectComponents } from "react-select/src/components";
-import {Box, Flex} from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import ModeImage from "./ModeImage";
 
 interface SelectProps {
@@ -44,14 +44,14 @@ const DropdownIndicator = (props: any) => {
 
 const Option = (props: any) => {
   return (
-      <components.Option {...props}>
-        <Flex alignItems="center">
-          <Box mr="0.5em">
-            <ModeImage size={24} mode={props.value} />
-          </Box>
-          {props.label}
-        </Flex>
-      </components.Option>
+    <components.Option {...props}>
+      <Flex alignItems="center">
+        <Box mr="0.5em">
+          <ModeImage size={24} mode={props.value} />
+        </Box>
+        {props.label}
+      </Flex>
+    </components.Option>
   );
 };
 
@@ -78,11 +78,13 @@ const MultipleModeSelector: React.FC<SelectProps> = ({
       setSel([]);
       return;
     }
-    const newSelectedOption = selectedOption.map((opt: { label: string, data: string}) => ({
-      label: opt.label,
-      data: opt.data,
-      value: Math.random()
-    }));
+    const newSelectedOption = selectedOption.map(
+      (opt: { label: string; data: string }) => ({
+        label: opt.label,
+        data: opt.data,
+        value: Math.random(),
+      })
+    );
     setSel(newSelectedOption);
     setValue(newSelectedOption);
   };
