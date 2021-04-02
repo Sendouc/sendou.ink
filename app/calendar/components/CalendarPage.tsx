@@ -1,7 +1,7 @@
 import { Button } from "@chakra-ui/button";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/input";
 import { Box } from "@chakra-ui/layout";
-import { t, Trans } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import SubText from "components/common/SubText";
 import { useMyTheme } from "hooks/common";
 import { Fragment, useState } from "react";
@@ -63,10 +63,11 @@ export default function CalendarPage() {
             ];
           }
 
-          const differenceInDays = Math.floor(
-            (lastPrintedDate![2].getTime() - new Date().getTime()) /
-              (1000 * 60 * 60 * 24)
-          );
+          const now = new Date();
+
+          const isToday =
+            lastPrintedDate![2].getDate() === now.getDate() &&
+            lastPrintedDate![2].getMonth() === now.getMonth();
 
           return (
             <Fragment key={event.id}>
@@ -74,7 +75,7 @@ export default function CalendarPage() {
                 <Box my={10}>
                   <SubText>
                     {event.date.toLocaleDateString()}{" "}
-                    {getTime(differenceInDays)}
+                    {isToday && <Trans>(Today)</Trans>}
                   </SubText>
                 </Box>
               )}
@@ -105,11 +106,4 @@ export default function CalendarPage() {
       </Box>
     </>
   );
-}
-
-function getTime(days: number) {
-  if (days < 1) return t`(Today)`;
-  if (days === 1) return t`(Tomorrow)`;
-
-  return "";
 }
