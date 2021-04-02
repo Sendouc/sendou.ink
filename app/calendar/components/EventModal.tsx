@@ -21,6 +21,7 @@ import { useToast } from "@chakra-ui/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
+import DatePicker from "components/common/DatePicker";
 import MarkdownTextarea from "components/common/MarkdownTextarea";
 import { useMyTheme } from "hooks/common";
 import { Controller, useForm } from "react-hook-form";
@@ -94,9 +95,6 @@ export function EventModal({
 
   const defaultDate = new Date();
   defaultDate.setHours(defaultDate.getHours() + 1, 0);
-  const defaultIsoDateTime = new Date(
-    defaultDate.getTime() - defaultDate.getTimezoneOffset() * 60000
-  ).toISOString();
 
   return (
     <Modal isOpen onClose={onClose} size="xl" closeOnOverlayClick={false}>
@@ -132,7 +130,6 @@ export function EventModal({
               <Box fontSize="sm" color={gray} mb={4}>
                 <Trans>
                   Add upcoming Splatoon events you are hosting to the calendar.
-                  For now please use Chrome browser when submitting an event.
                 </Trans>
               </Box>
 
@@ -173,13 +170,17 @@ export function EventModal({
                 <Controller
                   name="date"
                   control={control}
-                  defaultValue={defaultIsoDateTime}
+                  defaultValue={defaultDate.toISOString()}
                   render={({ onChange, value }) => (
-                    <Input
-                      type="datetime-local"
-                      value={value.substring(0, 16)}
-                      onChange={onChange}
-                      min={defaultIsoDateTime}
+                    // <Input
+                    //   type="datetime-local"
+                    //   value={value.substring(0, 16)}
+                    //   onChange={onChange}
+                    //   min={defaultIsoDateTime}
+                    // />
+                    <DatePicker
+                      selectedDate={new Date(value)}
+                      onChange={(d) => onChange(d.toString())}
                     />
                   )}
                 />
