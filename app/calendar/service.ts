@@ -57,7 +57,7 @@ const editEvent = async ({
   const existingEvent = await prisma.calendarEvent.findFirst({
     where: { AND: [{ id: eventId }, { posterId: userId }] },
   });
-  if (!existingEvent || userId === ADMIN_ID) {
+  if (!existingEvent && userId !== ADMIN_ID) {
     throw httpError.badRequest("no event to edit");
   }
 
@@ -81,7 +81,7 @@ const deleteEvent = async ({
   const existingEvent = await prisma.calendarEvent.findFirst({
     where: { AND: [{ id: eventId }, { posterId: userId }] },
   });
-  if (!existingEvent || userId === ADMIN_ID) {
+  if (!existingEvent && userId !== ADMIN_ID) {
     throw httpError.badRequest("no event to delete");
   }
 
