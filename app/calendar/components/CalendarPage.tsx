@@ -74,7 +74,12 @@ export default function CalendarPage() {
               {printDateHeader && (
                 <Box my={10}>
                   <SubText>
-                    {event.date.toLocaleDateString()}{" "}
+                    {/* TODO */}
+                    {event.date.toLocaleDateString("en", {
+                      month: "long",
+                      day: "numeric",
+                      weekday: "long",
+                    })}{" "}
                     {isToday && <Trans>(Today)</Trans>}
                   </SubText>
                 </Box>
