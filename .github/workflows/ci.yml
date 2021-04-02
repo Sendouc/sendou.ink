@@ -20,9 +20,15 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     steps:
-      - name: Checkout
+      - name: Check out code
         uses: actions/checkout@25a956c84d5dd820d28caab9f86b8d183aeeff3d # v2
-      - name: Write .env files for Postgres
+      - name: Install Node
+        uses: actions/setup-node@5c355be17065acf11598c7a9bb47112fbcf2bbdc # v2
+        with:
+          node-version: '14'
+      - name: Install dependencies
+        run: npm install
+      - name: Write .env file for Prisma
         run: echo "DATABASE_URL=postgresql://sendou_ink:password@localhost:${{ job.services.postgres.ports[5432] }}" > prisma/.env
       - name: Prep the database
         run: npm run migrate && npm run prebuild
