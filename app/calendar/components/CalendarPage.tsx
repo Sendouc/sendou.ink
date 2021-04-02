@@ -20,8 +20,6 @@ export default function CalendarPage() {
 
   let lastPrintedDate: [number, number, Date] | null = null;
 
-  if (process.env.NODE_ENV === "production") return null;
-
   return (
     <>
       <div>

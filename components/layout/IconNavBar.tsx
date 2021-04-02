@@ -76,7 +76,7 @@ export const navIcons: {
     menuItems: [],
   },
   { code: "analyzer", displayName: t`Build Analyzer`, menuItems: [] },
-  // { code: "calendar", displayName: t`Calendar`, menuItems: [] },
+  { code: "calendar", displayName: t`Calendar`, menuItems: [] },
   { code: "u", displayName: t`User Search`, menuItems: [] },
   { code: "freeagents", displayName: t`Free Agents`, menuItems: [] },
   { code: "t", displayName: t`Teams`, menuItems: [] },
