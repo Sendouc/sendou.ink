@@ -85,7 +85,7 @@ const WeaponSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = (
         NoOptionsMessage: () => (
           <Center p={4}>
             {isTooManyItems() ? (
-              <Trans>Only {props} weapons allowed</Trans>
+              <Trans>Only {maxMultiCount} weapons allowed</Trans>
             ) : (
               <Trans>No results with this filter</Trans>
             )}

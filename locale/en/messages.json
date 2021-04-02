@@ -28,7 +28,7 @@
   "No results with this filter": "No results with this filter",
   "Random": "Random",
   "Random (Grizzco)": "Random (Grizzco)",
-  "Only {props} weapons allowed": "Only {props} weapons allowed",
+  "Only {maxMultiCount} weapons allowed": "Only {maxMultiCount} weapons allowed",
   "Salmon Run": "Salmon Run",
   "Free agent post updated": "Free agent post updated",
   "Free agent post submitted": "Free agent post submitted",
