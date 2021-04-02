@@ -62,7 +62,7 @@ context("Plus Home Page", () => {
       .click();
 
     cy.contains("Comment added");
-    cy.contains('"yes agreed" - Sendou#4059');
+    cy.contains('"yes agreed" - Sendou#0012');
     cy.dataCy("comment-button").should("not.exist");
   });
 
@@ -79,7 +79,7 @@ context("Plus Home Page", () => {
       .click();
 
     cy.dataCy("vouch-button").should("not.exist");
-    cy.contains("Vouched NZAP#6227");
+    cy.contains("Vouched NZAP#0011");
   });
 
   it("can't vouch if canVouchAgainAfter set", () => {

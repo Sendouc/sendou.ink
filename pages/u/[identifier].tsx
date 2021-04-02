@@ -117,7 +117,7 @@ const ProfilePage = (props: Props) => {
         />
       </Flex> */}
       <ProfileOwnersButtons />
-      {user.profile?.bio && (
+      {user.profile?.bio && user.profile?.bio.trim().length > 0 && (
         <>
           <Divider my={6} />
           <MyContainer>

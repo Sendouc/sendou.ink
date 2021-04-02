@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import fs from "fs";
 import path from "path";
-import { getWeaponNormalized } from "../../lib/lists/weapons";
+import { getWeaponNormalized } from "../../utils/lists/weapons";
 import prisma from "../client";
 
 const files = ["P_EU", "P_US", "T_EU", "T_US", "P_JP", "T_JP"];

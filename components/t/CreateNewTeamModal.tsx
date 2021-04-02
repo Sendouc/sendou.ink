@@ -16,8 +16,8 @@ import {
 import { t, Trans } from "@lingui/macro";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { makeNameUrlFriendly } from "utils/makeNameUrlFriendly";
 import { sendData } from "utils/postData";
+import { makeNameUrlFriendly } from "utils/strings";
 
 const CreateNewTeamModal = () => {
   const router = useRouter();

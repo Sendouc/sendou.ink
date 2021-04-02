@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "prisma/client";
 import { getMySession } from "utils/api";
-import { makeNameUrlFriendly } from "utils/makeNameUrlFriendly";
+import { makeNameUrlFriendly } from "utils/strings";
 import { teamSchema } from "utils/validators/team";
 import { v4 as uuidv4 } from "uuid";
 

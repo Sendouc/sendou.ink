@@ -15,12 +15,9 @@ export default function CalendarPage() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [filter, setFilter] = useState("");
 
-  console.log("events", events.data);
+  let lastPrintedDate: [number, number, Date] | null = null;
 
-  let lastPrintedWeek: number | null = null;
-  const thisWeekNumber = getWeekNumber(new Date());
-
-  return null;
+  if (process.env.NODE_ENV === "production") return null;
 
   return (
     <>
@@ -39,23 +36,33 @@ export default function CalendarPage() {
       <Input
         value={filter}
         onChange={(e) => setFilter(e.target.value)}
-        m="3rem 0 2rem"
+        mt={8}
       />
       {(events.data ?? []).map((event) => {
-        const weekNumber = getWeekNumber(event.date);
-        const printWeekHeader = weekNumber !== lastPrintedWeek;
+        const printDateHeader =
+          !lastPrintedDate ||
+          lastPrintedDate[0] !== event.date.getDate() ||
+          lastPrintedDate[1] !== event.date.getMonth();
 
-        if (printWeekHeader) {
-          lastPrintedWeek = weekNumber;
+        if (printDateHeader) {
+          lastPrintedDate = [
+            event.date.getDate(),
+            event.date.getMonth(),
+            event.date,
+          ];
         }
+
+        const differenceInDays = Math.floor(
+          (lastPrintedDate![2].getTime() - new Date().getTime()) /
+            (1000 * 60 * 60 * 24)
+        );
 
         return (
           <Fragment key={event.id}>
-            {printWeekHeader && (
+            {printDateHeader && (
               <Box my={10}>
                 <SubText>
-                  Week {weekNumber}{" "}
-                  {thisWeekNumber === weekNumber && <>({t`This week`})</>}
+                  {event.date.toLocaleDateString()} {getTime(differenceInDays)}
                 </SubText>
               </Box>
             )}
@@ -65,23 +72,17 @@ export default function CalendarPage() {
           </Fragment>
         );
       })}
-      <Box color={gray}>All events listed in your local time:</Box>
+      <Box color={gray}>
+        All events listed in your local time:{" "}
+        {Intl.DateTimeFormat().resolvedOptions().timeZone}
+      </Box>
     </>
   );
 }
 
-function getWeekNumber(d: Date) {
-  // Copy date so don't modify original
-  d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-  // Set to nearest Thursday: current date + 4 - current day number
-  // Make Sunday's day number 7
-  d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
-  // Get first day of year
-  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-  // Calculate full weeks to nearest Thursday
-  const weekNo = Math.ceil(
-    ((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7
-  );
-  // Return array of year and week number
-  return weekNo;
+function getTime(days: number) {
+  if (days < 1) return t`(Today)`;
+  if (days === 1) return t`(Tomorrow)`;
+
+  return "";
 }

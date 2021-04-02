@@ -1,26 +1,23 @@
-import { Box, Button, Flex, Grid, Heading } from "@chakra-ui/react";
+import { Badge, Box, Button, Flex, Grid, Heading } from "@chakra-ui/react";
+import { Trans } from "@lingui/macro";
 import Markdown from "components/common/Markdown";
 import MyLink from "components/common/MyLink";
 import UserAvatar from "components/common/UserAvatar";
 import { useMyTheme, useUser } from "hooks/common";
 import React, { useState } from "react";
-import { FaDiscord } from "react-icons/fa";
-import { FiClock, FiEdit, FiInfo } from "react-icons/fi";
+import { FiClock, FiEdit, FiExternalLink, FiInfo } from "react-icons/fi";
+import { DiscordIcon } from "utils/assets/icons";
 import { ADMIN_ID } from "utils/constants";
 import { Unpacked } from "utils/types";
 import { Events } from "../service";
+import { EVENT_FORMATS, TAGS } from "../utils";
 
 interface EventInfoProps {
   event: Unpacked<Events>;
 }
 
 const TournamentInfo = ({ event }: EventInfoProps) => {
-  const {
-    secondaryBgColor,
-    themeColorHex,
-    gray,
-    themeColorShade,
-  } = useMyTheme();
+  const { secondaryBgColor, gray, themeColorShade } = useMyTheme();
   const [expanded, setExpanded] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const poster = event.poster;
@@ -44,39 +41,64 @@ const TournamentInfo = ({ event }: EventInfoProps) => {
           <Heading fontFamily="'Rubik', sans-serif" size="lg">
             {event.name}
           </Heading>
-          <Flex
-            alignItems="center"
-            justifyContent="center"
-            color={gray}
-            mt="0.5rem"
-          >
-            <Box as={FiClock} mr="0.5em" color={themeColorShade} />
-            {/* TODO */}
-            {event.date.toLocaleString("en", {
-              weekday: "long",
-              month: "long",
-              day: "numeric",
-              hour: "numeric",
-              minute: "numeric",
+          <Flex flexWrap="wrap" justifyContent="center" mt={3} mb={2}>
+            {event.tags.map((tag) => {
+              const tagInfo = TAGS.find((tagObj) => tagObj.code === tag)!;
+              return (
+                <Badge mx={1} bg={tagInfo.color} color="black" key={tag}>
+                  {tagInfo.name}
+                </Badge>
+              );
             })}
           </Flex>
-
-          <Flex
-            alignItems="center"
-            justifyContent="center"
-            color={gray}
-            mt="1.1rem"
-            mb="0.5rem"
+          <Grid
+            templateColumns="2fr 4fr 2fr"
+            placeItems="center flex-start"
+            maxW="32rem"
+            mx="auto"
+            mt={1}
+            mb={3}
           >
-            <Box mr="0.5em">
-              <UserAvatar user={event.poster} size="sm" />
-            </Box>{" "}
-            <MyLink href={`/u/${poster.discordId}`} isColored={false}>
+            <Flex placeItems="center" ml="auto">
+              <Box
+                as={FiClock}
+                mr="0.5em"
+                color={themeColorShade}
+                justifySelf="flex-end"
+              />
+              {/* TODO */}
               <Box>
-                {poster.username}#{poster.discriminator}
+                {event.date.toLocaleString("en", {
+                  hour: "numeric",
+                  minute: "numeric",
+                })}
               </Box>
-            </MyLink>
-          </Flex>
+            </Flex>
+            <Flex placeItems="center" mx="auto">
+              <Box
+                as={FiExternalLink}
+                mr="0.5em"
+                color={themeColorShade}
+                justifySelf="flex-end"
+              />
+              <MyLink href={event.eventUrl} isExternal>
+                {new URL(event.eventUrl).host}
+              </MyLink>
+            </Flex>
+            <Flex placeItems="center" mr="auto">
+              <UserAvatar
+                user={event.poster}
+                size="sm"
+                justifySelf="flex-end"
+                mr={2}
+              />
+              <MyLink href={`/u/${poster.discordId}`} isColored={false}>
+                <Box>
+                  {poster.username}#{poster.discriminator}
+                </Box>
+              </MyLink>
+            </Flex>
+          </Grid>
         </Box>
 
         <Grid
@@ -84,10 +106,9 @@ const TournamentInfo = ({ event }: EventInfoProps) => {
           gridColumnGap="1rem"
           maxW={canEdit ? "32rem" : "24rem"}
           mx="auto"
-          mt={6}
         >
           {/* TODO */}
-          <Button leftIcon={<FaDiscord />} size="sm" variant="outline">
+          <Button leftIcon={<DiscordIcon />} size="sm" variant="outline">
             Join Discord
           </Button>
           <Button
@@ -95,8 +116,9 @@ const TournamentInfo = ({ event }: EventInfoProps) => {
             size="sm"
             onClick={() => setExpanded(!expanded)}
             variant="outline"
+            data-cy={`info-button-id-${event.id}`}
           >
-            View info
+            {expanded ? <Trans>Hide info</Trans> : <Trans>View info</Trans>}
           </Button>
           {canEdit && (
             <Button
@@ -112,7 +134,10 @@ const TournamentInfo = ({ event }: EventInfoProps) => {
       </Box>
       {expanded && (
         <Box mt="1rem" mx="0.5rem">
-          <Markdown value={event.description} />
+          <Box color={gray} fontSize="small" mb={2}>
+            {EVENT_FORMATS.find((format) => format.code === event.format)!.name}
+          </Box>
+          <Markdown smallHeaders value={event.description} />
         </Box>
       )}
     </Box>

@@ -1,10 +1,10 @@
 import { PlusRegion, Prisma } from "@prisma/client";
 import { httpError } from "@trpc/server";
 import prisma from "prisma/client";
+import { shuffleArray } from "utils/arrays";
 import { ADMIN_ID } from "utils/constants";
 import { getPercentageFromCounts, getVotingRange } from "utils/plus";
 import { userBasicSelection } from "utils/prisma";
-import { shuffleArray } from "utils/shuffleArray";
 import { suggestionFullSchema } from "utils/validators/suggestion";
 import { voteSchema, votesSchema } from "utils/validators/votes";
 import { vouchSchema } from "utils/validators/vouch";

@@ -9,6 +9,7 @@ const events = () => {
   return prisma.calendarEvent.findMany({
     where: { date: { gt: new Date() } },
     include: { poster: true },
+    orderBy: { date: "asc" },
   });
 };
 

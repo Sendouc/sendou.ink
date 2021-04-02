@@ -3,7 +3,7 @@ import path from "path";
 import prisma from "../client";
 
 // Include Prisma's .env file as well, so we can fetch the DATABASE_URL
-require('dotenv').config({path: 'prisma/.env'});
+require("dotenv").config({ path: "prisma/.env" });
 
 const main = async () => {
   const patrons = await prisma.user.findMany({

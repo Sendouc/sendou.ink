@@ -1,0 +1,4 @@
+.next/
+
+prisma/scripts/data
+prisma/scripts/mongo
