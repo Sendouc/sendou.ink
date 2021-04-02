@@ -425,7 +425,7 @@ const MapsGeneratorPage = () => {
   }
 
   function transformModesToStringArray() {
-    return modes.map(function (mode) {
+    return modes.map(mode => {
       if (mode.data) return mode.data;
       else return "";
     });
