@@ -31,7 +31,6 @@ import { FiCheck, FiFilter, FiRotateCw } from "react-icons/fi";
 import { shuffleArray } from "utils/arrays";
 import { stages } from "utils/lists/stages";
 import { setManySearchParams } from "utils/setSearchParams";
-import { shuffleArray } from "utils/shuffleArray";
 import MultipleModeSelector from "../components/common/MultipleModeSelector";
 import MySelect from "../components/common/MySelect";
 
