@@ -71,11 +71,11 @@ const MultipleModeSelector: React.FC<SelectProps> = ({
     textColor,
   } = useMyTheme();
   const [inputValue, setInputValue] = useState("");
-  const [sel, setSel] = useState([]);
+  const [selectedModes, setSelectedModes] = useState([]);
 
   const handleChange = (selectedOption: any) => {
     if (!selectedOption) {
-      setSel([]);
+      setSelectedModes([]);
       return;
     }
     const newSelectedOption = selectedOption.map(
@@ -85,7 +85,7 @@ const MultipleModeSelector: React.FC<SelectProps> = ({
         value: Math.random(),
       })
     );
-    setSel(newSelectedOption);
+    setSelectedModes(newSelectedOption);
     setValue(newSelectedOption);
   };
 
@@ -102,7 +102,7 @@ const MultipleModeSelector: React.FC<SelectProps> = ({
     <ReactSelect
       className="basic-single"
       classNamePrefix="select"
-      value={sel}
+      value={selectedModes}
       inputValue={inputValue}
       onInputChange={(newValue) => setInputValue(newValue)}
       menuIsOpen={menuIsOpenCheck()}
