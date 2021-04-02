@@ -32,6 +32,7 @@ import { stages } from "utils/lists/stages";
 import { setManySearchParams } from "utils/setSearchParams";
 import { shuffleArray } from "utils/shuffleArray";
 import MultipleModeSelector from "../components/common/MultipleModeSelector";
+import MySelect from "../components/common/MySelect";
 
 const MapsGeneratorPage = () => {
   const router = useRouter();
@@ -360,7 +361,6 @@ const MapsGeneratorPage = () => {
             {label: 'Clam Blitz', value: 'CB', data: 'CB'}
           ]}
           isDisabled={generationMode !== 'CUSTOM_ORDER'}
-          isClearable
           setValue={getModeValues}
           width={'90%'}
       />

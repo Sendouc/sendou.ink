@@ -27,11 +27,7 @@ interface SelectProps {
   setValue: (value: any) => void;
   autoFocus?: boolean;
   components?: Partial<SelectComponents<OptionTypeBase, boolean>>;
-  isClearable?: boolean;
-  isMulti?: boolean;
-  isLoading?: boolean;
   isDisabled?: boolean;
-  isSearchable?: boolean;
   menuIsOpen?: boolean;
   hideMenuBeforeTyping?: boolean;
 }
@@ -48,12 +44,10 @@ const DropdownIndicator = (props: any) => {
 const MultipleModeSelector: React.FC<SelectProps> = ({
   options,
   components,
-  isClearable = false,
+  setValue,
   autoFocus = false,
-  isLoading = false,
   isDisabled = false,
-  isSearchable = false,
-  menuIsOpen = false, setValue,
+  menuIsOpen = false,
   hideMenuBeforeTyping,
 }) => {
   const {
@@ -99,11 +93,9 @@ const MultipleModeSelector: React.FC<SelectProps> = ({
       menuIsOpen={menuIsOpenCheck()}
       onChange={handleChange}
       placeholder={null}
-      isSearchable={!!isSearchable}
       isMulti={true}
-      isLoading={isLoading}
       isDisabled={isDisabled}
-      isClearable={isClearable}
+      isClearable={true}
       options={options}
       components={
         hideMenuBeforeTyping
