@@ -25,6 +25,7 @@ import { RankedMode } from "@prisma/client";
 import ModeImage from "components/common/ModeImage";
 import SubText from "components/common/SubText";
 import HeaderBanner from "components/layout/HeaderBanner";
+import MultipleModeSelector from "components/common/MultipleModeSelector";
 import { useRouter } from "next/router";
 import { ChangeEvent, Fragment, useEffect, useState } from "react";
 import { FiCheck, FiFilter, FiRotateCw } from "react-icons/fi";
@@ -40,9 +41,12 @@ const MapsGeneratorPage = () => {
     Record<string, RankedMode[]>
   >(getInitialStages());
   const [generationMode, setGenerationMode] = useState<
-    "EQUAL" | "SZ_EVERY_OTHER"
+    "EQUAL" | "SZ_EVERY_OTHER" | "CUSTOM_ORDER"
   >("EQUAL");
   const [maplist, setMaplist] = useState("");
+  const [modes, setModes] = useState<
+    { label: string; value: number; data?: string }[]
+  >([]);
   const [count, setCount] = useState(9);
   const [editing, setEditing] = useState(false);
   const [copied, setCopied] = useState<null | "URL" | "LIST">(null);
@@ -127,15 +131,22 @@ const MapsGeneratorPage = () => {
     const modesFromGenerationMode =
       generationMode === "SZ_EVERY_OTHER"
         ? ["TC", "RM", "CB"]
-        : ["SZ", "TC", "RM", "CB"];
+        : generationMode === "EQUAL"
+        ? ["SZ", "TC", "RM", "CB"]
+        : transformModesToStringArray();
 
-    const modes = (shuffleArray(
-      modesFromGenerationMode
-    ) as RankedMode[]).filter((mode) => modeStages[mode].length > 0);
+    const filteredModes = (modesFromGenerationMode as RankedMode[]).filter(
+      (mode) => modeStages[mode].length > 0
+    );
+    const modes =
+      generationMode === "CUSTOM_ORDER"
+        ? filteredModes
+        : shuffleArray(filteredModes);
     if (modes.length === 0) {
-      return "I can't generate a maplist without any maps in it you know.";
+      return generationMode === "CUSTOM_ORDER"
+        ? "I can't generate a maplist without any modes you know."
+        : "I can't generate a maplist without any maps in it you know.";
     }
-
     const stagesAlreadyPicked = new Set<string>();
 
     const isSZFirst = false;
@@ -149,8 +160,8 @@ const MapsGeneratorPage = () => {
           generationMode !== "SZ_EVERY_OTHER" ||
           i % 2 === Number(isSZFirst)
         ) {
-          modes.push(modes.shift() as RankedMode);
           modeOfRound = modes[0];
+          modes.push(modes.shift() as RankedMode);
         }
 
         const stageArray = modeStages[modeOfRound];
@@ -336,7 +347,9 @@ const MapsGeneratorPage = () => {
       </Stack>
       <RadioGroup
         onChange={(value) =>
-          setGenerationMode(value as "EQUAL" | "SZ_EVERY_OTHER")
+          setGenerationMode(
+            value as "EQUAL" | "SZ_EVERY_OTHER" | "CUSTOM_ORDER"
+          )
         }
         value={generationMode}
       >
@@ -347,9 +360,23 @@ const MapsGeneratorPage = () => {
           <Radio value="SZ_EVERY_OTHER">
             <Trans>SZ every other</Trans>
           </Radio>
+          <Radio value="CUSTOM_ORDER">
+            <Trans>Custom order</Trans>
+          </Radio>
         </Stack>
       </RadioGroup>
-      <FormLabel htmlFor="count" fontSize="sm">
+      {generationMode === "CUSTOM_ORDER" && <MultipleModeSelector
+        options={[
+          { label: "Splat Zones", value: "SZ", data: "SZ" },
+          { label: "Tower Control", value: "TC", data: "TC" },
+          { label: "Rainmaker", value: "RM", data: "RM" },
+          { label: "Clam Blitz", value: "CB", data: "CB" },
+        ]}
+        isDisabled={generationMode !== "CUSTOM_ORDER"}
+        setValue={getModeValues}
+        width={"90%"}
+      />}
+      <FormLabel htmlFor="count" fontSize="sm" mt={4}>
         <Trans>Amount of maps to generate</Trans>
       </FormLabel>
       <NumberInput
@@ -390,6 +417,19 @@ const MapsGeneratorPage = () => {
       )}
     </>
   );
+
+  function getModeValues(
+    value: { label: string; value: number; data?: string }[]
+  ) {
+    setModes(value);
+  }
+
+  function transformModesToStringArray() {
+    return modes.map(mode => {
+      if (mode.data) return mode.data;
+      else return "";
+    });
+  }
 };
 
 MapsGeneratorPage.header = (
