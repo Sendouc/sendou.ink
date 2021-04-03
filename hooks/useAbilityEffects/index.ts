@@ -395,14 +395,14 @@ export default function useAbilityEffects({
     const low = ISS[lowKey];
     const highMidLow = [high, mid, low];
     const effect = getEffect(highMidLow, amount);
-    const tank = weapon.includes("Jr.") ? 1.1 : 1;
+    const tank = weapon.includes("Jr.") ? 0.9 : 1;
 
     let percentage = parseFloat(
-      (((effect[0] * inkConsumption) / tank) * 100).toFixed(2)
+      (effect[0] * inkConsumption * tank * 100).toFixed(2)
     );
 
     const morePrecisePercentage = parseFloat(
-      (((effect[0] * inkConsumption) / tank) * 100).toFixed(5)
+      (effect[0] * inkConsumption * tank * 100).toFixed(5)
     );
 
     if (percentage === 50 && morePrecisePercentage > 50) {
