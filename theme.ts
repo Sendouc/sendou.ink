@@ -7,7 +7,7 @@ export const theme = {
     secondaryBgColor: "#FFFAFA",
     textColor: "blackAlpha.900",
     gray: "gray.600",
-    borderColor: "#2e466c",
+    borderColor: "#e2e8f0",
   },
   dark: {
     themeColorShade: "theme.200",
