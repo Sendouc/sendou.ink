@@ -104,7 +104,7 @@ const TournamentInfo = ({ event, edit }: EventInfoProps) => {
                 justifySelf="flex-end"
               />
               {/* TODO */}
-              <Box>
+              <Box as="time" dateTime={event.date.toISOString()}>
                 {event.date.toLocaleString("en", {
                   hour: "numeric",
                   minute: "numeric",
