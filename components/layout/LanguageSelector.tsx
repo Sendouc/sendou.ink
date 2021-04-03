@@ -26,7 +26,7 @@ export const languages = [
   { code: "ru", name: "Русский" },
   { code: "ja", name: "日本語" },
   { code: "ko", name: "한국어" },
-  { code: "zh", name: "繁體中文" },
+  //{ code: "zh", name: "繁體中文" },
   { code: "he", name: "עברית" },
 ] as const;
 
