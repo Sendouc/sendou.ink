@@ -10,6 +10,7 @@ import { TAGS } from "./utils";
 export type Events = Prisma.PromiseReturnType<typeof events>;
 
 const events = async () => {
+  const dateSixHoursAgo = new Date(new Date().getTime() - 21600000);
   const result = await prisma.calendarEvent.findMany({
     select: {
       date: true,
@@ -24,7 +25,7 @@ const events = async () => {
         select: userBasicSelection,
       },
     },
-    where: { date: { gt: new Date() } },
+    where: { date: { gt: dateSixHoursAgo } },
     orderBy: { date: "asc" },
   });
 
