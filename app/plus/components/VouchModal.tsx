@@ -35,11 +35,11 @@ const VouchModal: React.FC<Props> = ({ canVouchFor }) => {
   const { handleSubmit, errors, register, control } = useForm<FormData>({
     resolver: zodResolver(vouchSchema),
   });
-
+  const utils = trpc.useQueryUtils();
   const { mutate, status } = trpc.useMutation("plus.vouch", {
     onSuccess() {
       toast(getToastOptions("Successfully vouched", "success"));
-      trpc.invalidateQuery(["plus.statuses"]);
+      utils.invalidateQuery(["plus.statuses"]);
       setIsOpen(false);
     },
     onError(error) {
@@ -50,11 +50,11 @@ const VouchModal: React.FC<Props> = ({ canVouchFor }) => {
   return (
     <>
       <Button
-        size="sm"
+        size='sm'
         mb={4}
         ml={2}
         onClick={() => setIsOpen(true)}
-        data-cy="vouch-button"
+        data-cy='vouch-button'
       >
         Vouch
       </Button>
@@ -62,18 +62,18 @@ const VouchModal: React.FC<Props> = ({ canVouchFor }) => {
         <Modal
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
-          size="xl"
+          size='xl'
           closeOnOverlayClick={false}
         >
           <ModalOverlay>
             <ModalContent>
               <ModalHeader>Vouching</ModalHeader>
-              <ModalCloseButton borderRadius="50%" />
+              <ModalCloseButton borderRadius='50%' />
               <form onSubmit={handleSubmit((data) => mutate(data))}>
                 <ModalBody pb={2}>
                   <FormLabel>Tier</FormLabel>
                   <Controller
-                    name="tier"
+                    name='tier'
                     control={control}
                     defaultValue={canVouchFor}
                     render={({ value, onChange }) => (
@@ -81,9 +81,9 @@ const VouchModal: React.FC<Props> = ({ canVouchFor }) => {
                         value={value}
                         onChange={(e) => onChange(Number(e.target.value))}
                       >
-                        {canVouchFor === 1 && <option value="1">+1</option>}
-                        {canVouchFor <= 2 && <option value="2">+2</option>}
-                        <option value="3">+3</option>
+                        {canVouchFor === 1 && <option value='1'>+1</option>}
+                        {canVouchFor <= 2 && <option value='2'>+2</option>}
+                        <option value='3'>+3</option>
                       </Select>
                     )}
                   />
@@ -91,7 +91,7 @@ const VouchModal: React.FC<Props> = ({ canVouchFor }) => {
                   <FormControl isInvalid={!!errors.vouchedId}>
                     <FormLabel mt={4}>User</FormLabel>
                     <Controller
-                      name="vouchedId"
+                      name='vouchedId'
                       control={control}
                       render={({ value, onChange }) => (
                         <UserSelector
@@ -110,12 +110,12 @@ const VouchModal: React.FC<Props> = ({ canVouchFor }) => {
                   <FormControl>
                     <FormLabel mt={4}>Region</FormLabel>
                     <Select
-                      name="region"
+                      name='region'
                       ref={register}
-                      data-cy="region-select"
+                      data-cy='region-select'
                     >
-                      <option value="NA">NA</option>
-                      <option value="EU">EU</option>
+                      <option value='NA'>NA</option>
+                      <option value='EU'>EU</option>
                     </Select>
                     <FormHelperText>
                       If the player isn't from either region then choose the one
@@ -126,13 +126,13 @@ const VouchModal: React.FC<Props> = ({ canVouchFor }) => {
                 <ModalFooter>
                   <Button
                     mr={3}
-                    type="submit"
+                    type='submit'
                     isLoading={status === "loading"}
-                    data-cy="submit-button"
+                    data-cy='submit-button'
                   >
                     Save
                   </Button>
-                  <Button onClick={() => setIsOpen(false)} variant="outline">
+                  <Button onClick={() => setIsOpen(false)} variant='outline'>
                     Cancel
                   </Button>
                 </ModalFooter>

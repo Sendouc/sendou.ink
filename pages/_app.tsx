@@ -12,14 +12,14 @@ import Head from "next/head";
 import { Router } from "next/router";
 import NProgress from "nprogress";
 import type { AppRouter } from "pages/api/trpc/[trpc]";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Hydrate } from "react-query/hydration";
 import superjson from "superjson";
 import { theme } from "theme";
 import { activateLocale } from "utils/i18n";
 import { locales } from "utils/lists/locales";
-//import { trpc } from "utils/trpc";
+import { trpc } from "utils/trpc";
 import "./styles.css";
 
 NProgress.configure({ showSpinner: false });
@@ -87,7 +87,7 @@ const extendedTheme = extendTheme({
         dialog: {
           bg: mode(
             theme.light.secondaryBgColor,
-            theme.dark.secondaryBgColor
+            theme.dark.secondaryBgColor,
           )(props),
         },
       }),
@@ -97,7 +97,7 @@ const extendedTheme = extendTheme({
         list: {
           bg: mode(
             theme.light.secondaryBgColor,
-            theme.dark.secondaryBgColor
+            theme.dark.secondaryBgColor,
           )(props),
         },
       }),
@@ -151,37 +151,17 @@ const setDisplayedLanguage = () => {
 };
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
-  const trpcRef = useRef<any>();
   useEffect(setDisplayedLanguage, []);
-
-  if (!trpcRef.current) {
-    const client = createTRPCClient<AppRouter>({
-      url: "/api/trpc",
-      transformer: superjson,
-    });
-
-    trpcRef.current = createReactQueryHooks({
-      client,
-      queryClient: new QueryClient({
-        defaultOptions: {
-          queries: {
-            // queries never go stale to save some work
-            // on our poor database
-            staleTime: Infinity,
-          },
-        },
-      }),
-    });
-  }
+  const [queryClient] = useState(() => new QueryClient());
 
   return (
     <>
       <Head>
-        <link rel="stylesheet" type="text/css" href="/nprogress.css" />
+        <link rel='stylesheet' type='text/css' href='/nprogress.css' />
       </Head>
       <DefaultSeo
-        title="sendou.ink"
-        description="Competitive Splatoon hub featuring several tools and resources."
+        title='sendou.ink'
+        description='Competitive Splatoon hub featuring several tools and resources.'
         openGraph={{
           url: "https://sendou.ink/",
           title: "sendou.ink",
@@ -209,11 +189,9 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
               // @ts-expect-error
               header={Component.header}
             >
-              <QueryClientProvider client={trpcRef.current.queryClient}>
+              <QueryClientProvider client={queryClient}>
                 <Hydrate
-                  state={trpcRef.current.useDehydratedState(
-                    pageProps.dehydratedState
-                  )}
+                  state={trpc.useDehydratedState(pageProps.dehydratedState)}
                 >
                   <Component {...pageProps} />
                 </Hydrate>

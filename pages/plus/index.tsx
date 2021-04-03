@@ -11,7 +11,7 @@ export const getStaticProps = async () => {
 
   return {
     props: {
-      dehydratedState: trpc.dehydrate(),
+      dehydratedState: ssr.dehydrate(),
     },
     revalidate: 60,
   };
@@ -20,9 +20,9 @@ export const getStaticProps = async () => {
 // @ts-expect-error
 PlusHomePage.header = (
   <HeaderBanner
-    icon="plus"
-    title="Plus Server"
-    subtitle="View all the suggested players for this month"
+    icon='plus'
+    title='Plus Server'
+    subtitle='View all the suggested players for this month'
   />
 );
 

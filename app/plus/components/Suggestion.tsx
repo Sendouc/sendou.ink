@@ -43,12 +43,13 @@ const Suggestion = ({
   const { handleSubmit, errors, register, watch } = useForm<FormData>({
     resolver: zodResolver(resuggestionSchema),
   });
+  const utils = trpc.useQueryUtils();
 
   const { mutate, status } = trpc.useMutation("plus.suggestion", {
     onSuccess() {
       toast(getToastOptions("Comment added", "success"));
       // TODO:
-      trpc.queryClient.invalidateQueries(["plus.suggestions"]);
+      utils.invalidateQuery(["plus.suggestions"]);
       setShowTextarea(false);
     },
     onError(error) {
@@ -59,8 +60,8 @@ const Suggestion = ({
   const watchDescription = watch("description", "");
 
   return (
-    <Box as="section" my={8}>
-      <Flex alignItems="center" fontWeight="bold" fontSize="1.25rem">
+    <Box as='section' my={8}>
+      <Flex alignItems='center' fontWeight='bold' fontSize='1.25rem'>
         <UserAvatar user={suggestion.suggestedUser} mr={3} />
         <MyLink
           href={`/u/${suggestion.suggestedUser.discordId}`}
@@ -70,11 +71,11 @@ const Suggestion = ({
         </MyLink>
       </Flex>
       <Box>
-        <Box fontSize="sm" color={gray} mt={2}>
+        <Box fontSize='sm' color={gray} mt={2}>
           {new Date(suggestion.createdAt).toLocaleString()}
         </Box>
         <SubText mt={2}>+{suggestion.tier}</SubText>
-        <Box mt={4} fontSize="sm">
+        <Box mt={4} fontSize='sm'>
           "{suggestion.description}" -{" "}
           <MyLink
             href={`/u/${suggestion.suggesterUser.discordId}`}
@@ -85,7 +86,7 @@ const Suggestion = ({
         </Box>
         {suggestion.resuggestions?.map((resuggestion) => {
           return (
-            <Box key={resuggestion.suggesterUser.id} mt={4} fontSize="sm">
+            <Box key={resuggestion.suggesterUser.id} mt={4} fontSize='sm'>
               "{resuggestion.description}" -{" "}
               <MyLink
                 href={`/u/${resuggestion.suggesterUser.discordId}`}
@@ -98,11 +99,11 @@ const Suggestion = ({
         })}
         {canSuggest && !showTextarea && !getVotingRange().isHappening && (
           <Button
-            variant="outline"
-            size="sm"
+            variant='outline'
+            size='sm'
             onClick={() => setShowTextarea(!showTextarea)}
             mt={4}
-            data-cy="comment-button"
+            data-cy='comment-button'
           >
             Add comment
           </Button>
@@ -116,17 +117,17 @@ const Suggestion = ({
                 region: "NA",
                 tier: suggestion.tier,
                 suggestedId: suggestion.suggestedUser.id,
-              })
+              }),
             )}
           >
             <FormControl isInvalid={!!errors.description}>
-              <FormLabel htmlFor="description" mt={4}>
+              <FormLabel htmlFor='description' mt={4}>
                 Comment to suggestion
               </FormLabel>
               <Textarea
-                name="description"
+                name='description'
                 ref={register}
-                data-cy="comment-textarea"
+                data-cy='comment-textarea'
               />
               <FormHelperText mb={4}>
                 {(watchDescription ?? "").length}/{SUGGESTION_DESCRIPTION_LIMIT}
@@ -134,18 +135,18 @@ const Suggestion = ({
               <FormErrorMessage>{errors.description?.message}</FormErrorMessage>
             </FormControl>
             <Button
-              size="sm"
+              size='sm'
               mr={3}
-              type="submit"
+              type='submit'
               isLoading={status === "loading"}
-              data-cy="submit-button"
+              data-cy='submit-button'
             >
               <Trans>Save</Trans>
             </Button>
             <Button
-              size="sm"
+              size='sm'
               onClick={() => setShowTextarea(false)}
-              variant="outline"
+              variant='outline'
             >
               <Trans>Cancel</Trans>
             </Button>
