@@ -44,6 +44,6 @@ jobs:
         with:
           name: cypress-outputs
           path: |
-            cypress/screenshots
-            cypress/videos
+            cypress/screenshots/*
+            cypress/videos/*
           retention-days: 30
