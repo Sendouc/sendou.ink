@@ -11,18 +11,17 @@ interface WeaponImageProps {
 
 const WeaponImage: React.FC<WeaponImageProps> = ({ name, size, noTitle }) => {
   const { i18n } = useLingui();
-  const imageSrc = name
-    ? `/weapons/${name.replace(".", "").trim()}.png`
-    : "/placeholder.png";
-  return (
-    <Image
-      src={imageSrc}
-      alt={i18n._(name)}
-      title={getTitle()}
-      width={size}
-      height={size}
-    />
-  );
+  if (name)
+    return (
+      <Image
+        src={`/weapons/${name.replace(".", "").trim()}.png`}
+        alt={i18n._(name)}
+        title={getTitle()}
+        width={size}
+        height={size}
+      />
+    );
+  else return <></>;
 
   function getTitle() {
     if (noTitle) return undefined;
