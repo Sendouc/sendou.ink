@@ -40,8 +40,10 @@ jobs:
           start: npm run dev
       - name: Save Cypress artifacts
         uses: actions/upload-artifact@ea3d524381d563437a7d64af63f3d75ca55521c4 # v2
+        if: failure()
         with:
           name: cypress-outputs
           path: |
             cypress/screenshots
             cypress/videos
+          retention-days: 30
