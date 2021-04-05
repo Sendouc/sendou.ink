@@ -15,7 +15,7 @@ const MarkdownHelpPage = () => {
   return (
     <>
       <MyHead title="Markdown help" />
-      <Heading size="lg" mb="0.5em" fontFamily="'Rubik', sans-serif">
+      <Heading size="lg" mb="0.5em">
         Markdown help
       </Heading>
       <Box>

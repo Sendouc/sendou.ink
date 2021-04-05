@@ -104,9 +104,7 @@ export default function PlusVotingPage() {
         </Box>
       ) : (
         <Flex align="center" justify="center" height="6.8rem">
-          <Heading fontFamily="'Rubik', sans-serif">
-            +{plusStatus.membershipTier} Voting
-          </Heading>
+          <Heading>+{plusStatus.membershipTier} Voting</Heading>
         </Flex>
       )}
       {currentUser && (

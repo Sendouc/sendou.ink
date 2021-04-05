@@ -148,14 +148,7 @@ const Markdown: React.FC<MarkdownProps> = ({
 
         if (smallHeaders) {
           return (
-            <Heading
-              as="h3"
-              mt={2}
-              mb={1}
-              size="md"
-              {...getCoreProps(props)}
-              fontFamily="'Rubik', sans-serif"
-            >
+            <Heading as="h3" mt={2} mb={1} size="md" {...getCoreProps(props)}>
               {children}
             </Heading>
           );
@@ -163,14 +156,7 @@ const Markdown: React.FC<MarkdownProps> = ({
 
         if (props.level === 1) {
           return (
-            <Heading
-              as="h1"
-              mt={8}
-              mb={4}
-              size="2xl"
-              {...getCoreProps(props)}
-              fontFamily="'Rubik', sans-serif"
-            >
+            <Heading as="h1" mt={8} mb={4} size="2xl" {...getCoreProps(props)}>
               {children}
             </Heading>
           );
@@ -178,28 +164,14 @@ const Markdown: React.FC<MarkdownProps> = ({
 
         if (props.level === 2) {
           return (
-            <Heading
-              as="h2"
-              mt={4}
-              mb={2}
-              size={"lg"}
-              {...getCoreProps(props)}
-              fontFamily="'Rubik', sans-serif"
-            >
+            <Heading as="h2" mt={4} mb={2} size={"lg"} {...getCoreProps(props)}>
               {children}
             </Heading>
           );
         }
 
         return (
-          <Heading
-            as="h3"
-            mt={2}
-            mb={1}
-            size="md"
-            {...getCoreProps(props)}
-            fontFamily="'Rubik', sans-serif"
-          >
+          <Heading as="h3" mt={2} mb={1} size="md" {...getCoreProps(props)}>
             {children}
           </Heading>
         );
