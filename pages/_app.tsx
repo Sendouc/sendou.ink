@@ -84,8 +84,8 @@ const extendedTheme = extendTheme({
     },
     Heading: {
       baseStyle: {
-        fontFamily: "Rubik, sans-serif"
-      }
+        fontFamily: "'Rubik', sans-serif",
+      },
     },
     Modal: {
       baseStyle: (props) => ({

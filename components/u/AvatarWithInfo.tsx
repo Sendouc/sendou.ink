@@ -68,9 +68,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
         />
         <Flex flexDirection="column" justifyContent="center" mb="0.5rem">
           <Flex alignItems="center" justifyContent="center" my="0.2rem">
-            <Heading fontFamily="'Rubik', sans-serif" size="lg">
-              {getFullUsername(user)}
-            </Heading>
+            <Heading size="lg">{getFullUsername(user)}</Heading>
           </Flex>
           {user.profile?.country && (
             <Flex align="center" mx="auto" my={1}>

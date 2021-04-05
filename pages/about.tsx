@@ -19,7 +19,7 @@ const About = () => {
           Trello
         </MyLink>{" "}
         to see what is happening with development.
-        <Heading size="lg" mb="0.5em" fontFamily="'Rubik', sans-serif" mt="1em">
+        <Heading size="lg" mb="0.5em" mt="1em">
           <Trans>Feedback</Trans>
         </Heading>
         <Trans>
@@ -68,7 +68,7 @@ const About = () => {
         </List>
       </div>
       <div style={{ marginTop: "1em" }}>
-        <Heading size="lg" mb="0.5em" fontFamily="'Rubik', sans-serif">
+        <Heading size="lg" mb="0.5em">
           <Trans>Thanks to</Trans>
         </Heading>
         <ul style={{ marginLeft: "1.2em", marginTop: "0.5em" }}>

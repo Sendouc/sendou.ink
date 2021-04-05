@@ -54,9 +54,7 @@ const PlayPage: React.FC<Props> = ({ ladderDay }) => {
         <>
           {[1, 2].map((round) => (
             <Fragment key={round}>
-              <Heading size="md" fontFamily="'Rubik', sans-serif">
-                Round {round}
-              </Heading>
+              <Heading size="md">Round {round}</Heading>
               <SubText mt={4}>Maplist</SubText>
               {(ladderDay.matches.find((match) => match.order === round)!
                 .maplist as any[]).map(({ stage, mode }, i) => {
