@@ -8,8 +8,8 @@ i18n.loadLocaleData("en", { plurals: en });
  */
 export async function activateLocale(locale: string) {
   const [{ messages }, { messages: gameMessages }] = await Promise.all([
-    import(`locale/${locale}/messages.json`),
-    import(`locale/${locale}/game.json`),
+    import(`locale/${locale}/messages.js`),
+    import(`locale/${locale}/game.js`),
   ]);
   i18n.load(locale, { ...messages, ...gameMessages });
   i18n.activate(locale);
