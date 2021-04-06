@@ -87,7 +87,7 @@ const extendedTheme = extendTheme({
         dialog: {
           bg: mode(
             theme.light.secondaryBgColor,
-            theme.dark.secondaryBgColor,
+            theme.dark.secondaryBgColor
           )(props),
         },
       }),
@@ -97,7 +97,7 @@ const extendedTheme = extendTheme({
         list: {
           bg: mode(
             theme.light.secondaryBgColor,
-            theme.dark.secondaryBgColor,
+            theme.dark.secondaryBgColor
           )(props),
         },
       }),
@@ -157,11 +157,11 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
     <>
       <Head>
-        <link rel='stylesheet' type='text/css' href='/nprogress.css' />
+        <link rel="stylesheet" type="text/css" href="/nprogress.css" />
       </Head>
       <DefaultSeo
-        title='sendou.ink'
-        description='Competitive Splatoon hub featuring several tools and resources.'
+        title="sendou.ink"
+        description="Competitive Splatoon hub featuring several tools and resources."
         openGraph={{
           url: "https://sendou.ink/",
           title: "sendou.ink",

@@ -36,7 +36,7 @@ export default function usePlusVoting() {
       onError(error) {
         toast(getToastOptions(error.message, "error"));
       },
-    },
+    }
   );
   const { mutate: editVoteMutate, status: editVoteStatus } = trpc.useMutation(
     "plus.editVote",
@@ -48,7 +48,7 @@ export default function usePlusVoting() {
       onError(error) {
         toast(getToastOptions(error.message, "error"));
       },
-    },
+    }
   );
 
   const ownPlusStatus = statuses?.find((status) => status.user.id === user?.id);
