@@ -24,14 +24,14 @@ export default function usePlusVoting() {
   const { data: statuses, isLoading: isLoadingStatuses } = trpc.useQuery([
     "plus.statuses",
   ]);
-
+  const utils = trpc.useQueryUtils();
   const { mutate: mutateVote, status: voteStatus } = trpc.useMutation(
     "plus.vote",
     {
       onSuccess() {
         toast(getToastOptions("Successfully voted", "success"));
-        trpc.invalidateQuery(["plus.votedUserScores"]);
-        trpc.invalidateQuery(["plus.votingProgress"]);
+        utils.invalidateQuery(["plus.votedUserScores"]);
+        utils.invalidateQuery(["plus.votingProgress"]);
       },
       onError(error) {
         toast(getToastOptions(error.message, "error"));
@@ -43,7 +43,7 @@ export default function usePlusVoting() {
     {
       onSuccess() {
         toast(getToastOptions("Successfully edited vote", "success"));
-        trpc.invalidateQuery(["plus.votedUserScores"]);
+        utils.invalidateQuery(["plus.votedUserScores"]);
       },
       onError(error) {
         toast(getToastOptions(error.message, "error"));

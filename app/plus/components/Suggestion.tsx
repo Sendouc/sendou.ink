@@ -43,12 +43,13 @@ const Suggestion = ({
   const { handleSubmit, errors, register, watch } = useForm<FormData>({
     resolver: zodResolver(resuggestionSchema),
   });
+  const utils = trpc.useQueryUtils();
 
   const { mutate, status } = trpc.useMutation("plus.suggestion", {
     onSuccess() {
       toast(getToastOptions("Comment added", "success"));
       // TODO:
-      trpc.queryClient.invalidateQueries(["plus.suggestions"]);
+      utils.invalidateQuery(["plus.suggestions"]);
       setShowTextarea(false);
     },
     onError(error) {

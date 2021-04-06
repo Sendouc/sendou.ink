@@ -1,7 +1,6 @@
 import PlusHomePage from "app/plus/components/PlusHomePage";
 import HeaderBanner from "components/layout/HeaderBanner";
 import { ssr } from "pages/api/trpc/[trpc]";
-import { trpc } from "utils/trpc";
 
 export const getStaticProps = async () => {
   await Promise.all([
@@ -11,7 +10,7 @@ export const getStaticProps = async () => {
 
   return {
     props: {
-      dehydratedState: trpc.dehydrate(),
+      dehydratedState: ssr.dehydrate(),
     },
     revalidate: 60,
   };

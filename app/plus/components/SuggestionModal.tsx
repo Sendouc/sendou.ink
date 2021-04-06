@@ -39,11 +39,11 @@ const SuggestionModal: React.FC<Props> = ({ userPlusMembershipTier }) => {
   const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
     resolver: zodResolver(suggestionFullSchema),
   });
-
+  const utils = trpc.useQueryUtils();
   const { mutate, status } = trpc.useMutation("plus.suggestion", {
     onSuccess() {
       toast(getToastOptions("New suggestion submitted", "success"));
-      trpc.invalidateQuery(["plus.suggestions"]);
+      utils.invalidateQuery(["plus.suggestions"]);
       setIsOpen(false);
     },
     onError(error) {
