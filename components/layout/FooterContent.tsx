@@ -53,9 +53,7 @@ const FooterContent: React.FC = () => {
               isColored={false}
             >
               <Box
-                fontSize={
-                  ["0", "0.9rem", "1rem", "1.25rem"][patron.patreonTier]
-                }
+                fontSize={["0", "0.9rem", "1rem", "1.1rem"][patron.patreonTier]}
                 mx={1}
               >
                 {getFullUsername(patron)}
