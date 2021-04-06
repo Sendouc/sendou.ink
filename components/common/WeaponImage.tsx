@@ -12,6 +12,8 @@ interface WeaponImageProps {
 const WeaponImage: React.FC<WeaponImageProps> = ({ name, size, noTitle }) => {
   const { i18n } = useLingui();
 
+  if (!name) return <></>;
+
   return (
     <Image
       src={`/weapons/${name.replace(".", "").trim()}.png`}
