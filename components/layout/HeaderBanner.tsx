@@ -23,13 +23,7 @@ const HeaderBanner = ({
       h={12}
     >
       <Box mt="-1rem" ml={[3, null, 0]}>
-        <Image
-          src={`/layout/${icon}.png`}
-          height={80}
-          width={80}
-          alt={`${icon} logo`}
-          priority
-        />
+        <Image src={`/layout/${icon}.png`} height={80} width={80} priority />
       </Box>
       <Flex align="center" mb={6}>
         <Box mx={2} fontWeight="bold" fontSize={["1.25rem", null, "1rem"]}>

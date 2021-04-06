@@ -209,7 +209,6 @@ const IconNavBar = () => {
           src={`/layout/${code}.png`}
           height={48}
           width={48}
-          alt={code}
           priority
           // TODO when chakra-ui adds next/image support
           // @ts-ignore
