@@ -142,9 +142,7 @@ const TeamPage: React.FC<Props> = (props) => {
         {team.twitterName && (
           <TwitterAvatar twitterName={team.twitterName} size="lg" mr={2} />
         )}
-        <Heading fontFamily="'Rubik', sans-serif" textAlign="center">
-          {team.name}
-        </Heading>
+        <Heading textAlign="center">{team.name}</Heading>
 
         {team.twitterName && (
           <a href={`https://twitter.com/${team.twitterName}`}>

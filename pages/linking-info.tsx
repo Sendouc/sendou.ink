@@ -9,9 +9,7 @@ const LinkingInfoPage = ({}) => {
         <title>How to link placements | sendou.ink</title>
       </Head>
       <>
-        <Heading fontFamily="'Rubik', sans-serif" as="h1">
-          How to link
-        </Heading>
+        <Heading as="h1">How to link</Heading>
         This page explains how you can get your Top 500 and/or League placements
         linked to your sendou.ink user. You need to DM the bot{" "}
         <b>Lanista#5266</b> on{" "}

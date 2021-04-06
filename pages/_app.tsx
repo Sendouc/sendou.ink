@@ -82,6 +82,11 @@ const extendedTheme = extendTheme({
         colorScheme: "theme",
       },
     },
+    Heading: {
+      baseStyle: {
+        fontFamily: "'Rubik', sans-serif",
+      },
+    },
     Modal: {
       baseStyle: (props) => ({
         dialog: {
