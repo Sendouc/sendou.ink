@@ -34,6 +34,7 @@ import { FiEdit } from "react-icons/fi";
 import useSWR, { mutate } from "swr";
 import { getToastOptions } from "utils/getToastOptions";
 import { sendData } from "utils/postData";
+import MyHead from "../../components/common/MyHead";
 
 interface Props {
   team: GetTeamData;
@@ -132,6 +133,7 @@ const TeamPage: React.FC<Props> = (props) => {
 
   return (
     <>
+      <MyHead title={team.name ? team.name : ""} />
       {profileModalIsOpen && (
         <TeamProfileModal
           team={team}
