@@ -2,7 +2,6 @@ import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { mode } from "@chakra-ui/theme-tools";
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
-import { createReactQueryHooks, createTRPCClient } from "@trpc/react";
 import Layout from "components/layout";
 import "focus-visible/dist/focus-visible";
 import { Provider as NextAuthProvider } from "next-auth/client";
@@ -11,11 +10,9 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import { Router } from "next/router";
 import NProgress from "nprogress";
-import type { AppRouter } from "pages/api/trpc/[trpc]";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Hydrate } from "react-query/hydration";
-import superjson from "superjson";
 import { theme } from "theme";
 import { activateLocale } from "utils/i18n";
 import { locales } from "utils/lists/locales";
@@ -152,7 +149,18 @@ const setDisplayedLanguage = () => {
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   useEffect(setDisplayedLanguage, []);
-  const [queryClient] = useState(() => new QueryClient());
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            // queries never go stale to save some work
+            // on our poor database
+            staleTime: Infinity,
+          },
+        },
+      })
+  );
 
   return (
     <>
