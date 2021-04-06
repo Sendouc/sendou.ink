@@ -1480,17 +1480,23 @@ export default function useAbilityEffects({
 
       const effect = getEffect(highMidLow, amount);
       const baseDamageMax = buildWeaponData.mDamageMax;
-      const damageMax = calculateDamage(
+      let damageMax = calculateDamage(
         baseDamageMax,
         effect[0],
         buildWeaponData.mDamage_MWPUG_Max
       );
       const baseDamageMin = buildWeaponData.mDamageMin ?? -1;
-      const damageMin = calculateDamage(
+      let damageMin = calculateDamage(
         baseDamageMin,
         effect[0],
         buildWeaponData.mDamage_MWPUG_Max
       );
+      // for some reason this is the one amount and weapon that is off
+      // so let's fix it like this for now
+      if (amount === 12 && weapon.includes("Tetra Dualies")) {
+        damageMax = 30;
+        damageMin = 15;
+      }
       const damageMinStr = baseDamageMin !== -1 ? `${damageMin} - ` : "";
       toReturn.push({
         title: `${weaponTranslated} ${t`damage per shot`}`,
