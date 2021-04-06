@@ -1,5 +1,5 @@
 import { Button, ButtonGroup, Flex } from "@chakra-ui/react";
-import { Trans } from "@lingui/macro";
+import {t, Trans} from "@lingui/macro";
 import HeaderBanner from "components/layout/HeaderBanner";
 import DraggableImageAdder from "components/plans/DraggableImageAdder";
 import DraggableToolsSelector from "components/plans/DraggableToolsSelector";
@@ -13,6 +13,7 @@ import {
   FaFileUpload,
 } from "react-icons/fa";
 import { stages } from "utils/lists/stages";
+import MyHead from "../components/common/MyHead";
 
 const MapSketch = dynamic(() => import("components/plans/MapSketch"), {
   ssr: false,
@@ -276,6 +277,7 @@ const MapPlannerPage = () => {
 
   return (
     <>
+      <MyHead title={t`Map Planner`} />
       <DraggableToolsSelector
         tool={tool}
         setTool={setTool}

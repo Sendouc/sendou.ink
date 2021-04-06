@@ -21,6 +21,7 @@ import { FiSettings } from "react-icons/fi";
 import { isAbilityArray } from "utils/lists/abilities";
 import { isWeapon } from "utils/lists/weapons";
 import { AbilityOrUnknown } from "utils/types";
+import MyHead from "../components/common/MyHead";
 
 const CURRENT_PATCH = "5.4.";
 
@@ -73,6 +74,7 @@ const BuildAnalyzerPage = () => {
 
   return (
     <>
+      <MyHead title={t`Build Analyzer`} />
       <Flex justifyContent="space-between">
         <Badge>
           <Trans>Patch {CURRENT_PATCH}</Trans>

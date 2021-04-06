@@ -1,11 +1,12 @@
 import { Box, Select } from "@chakra-ui/react";
-import { Trans } from "@lingui/macro";
+import {t, Trans} from "@lingui/macro";
 import ModeSelector from "components/common/ModeSelector";
 import HeaderBanner from "components/layout/HeaderBanner";
 import { useMyTheme } from "hooks/common";
 import { useXTrends } from "../hooks/useXTrends";
 import { XTrends } from "../service";
 import TrendTier from "./TrendTier";
+import MyHead from "../../../components/common/MyHead";
 
 const tiers = [
   {
@@ -71,6 +72,7 @@ const XTrendsPage = ({ trends }: XTrendsPageProps) => {
 
   return (
     <>
+      <MyHead title="Top 500 Trends" />
       <Box color={gray} fontSize="sm" mb={8}>
         <Trans>
           Here you can find X Rank Top 500 usage tier lists. For example for a

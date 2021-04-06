@@ -20,6 +20,8 @@ import { FaTwitter } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
 import { setSearchParams } from "utils/setSearchParams";
 import { Unpacked } from "utils/types";
+import {t} from "@lingui/macro";
+import MyHead from "../../components/common/MyHead";
 
 interface Props {
   users: GetAllUsersData;
@@ -61,6 +63,7 @@ const UserSearchPage = ({ users }: Props) => {
 
   return (
     <>
+      <MyHead title={t`User Search`} />
       <Head>
         <meta name="robots" content="noindex" />
       </Head>

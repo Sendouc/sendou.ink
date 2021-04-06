@@ -26,6 +26,7 @@ import Image from "next/image";
 import { getAllTeams, GetAllTeamsData } from "prisma/queries/getAllTeams";
 import { useState } from "react";
 import { FiSearch } from "react-icons/fi";
+import MyHead from "../../components/common/MyHead";
 
 interface Props {
   teams: GetAllTeamsData;
@@ -44,6 +45,7 @@ const TeamsPage = ({ teams }: Props) => {
 
   return (
     <>
+      <MyHead title={t`Teams`} />
       {!isInTeam && <CreateNewTeamModal />}
       {teams.length > 0 && (
         <Box mb={8}>
