@@ -76,7 +76,7 @@
     "@types/react": "^17.0.3",
     "@types/react-datepicker": "^3.1.8",
     "@types/react-infinite-scroller": "^1.2.1",
-    "@types/react-select": "^4.0.13",
+    "@types/react-select": "^4.0.14",
     "@types/recharts": "^1.8.19",
     "@types/uuid": "^8.3.0",
     "cross-env": "^7.0.3",
