@@ -48,7 +48,7 @@ const SalmonRunPlayerPage = (props: Props) => {
           .map((category) => {
             return (
               <Box key={category} mt={4}>
-                <Heading as="h2" size="md" fontFamily="'Rubik', sans-serif">
+                <Heading as="h2" size="md">
                   {/* @ts-ignore */}
                   {salmonRunCategoryToNatural[category]}
                 </Heading>

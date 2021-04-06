@@ -14,61 +14,10 @@ const About = () => {
         <MyLink isExternal href="https://sendou.cc/">
           Sendou
         </MyLink>{" "}
-        with help from the people below. You can check out{" "}
-        <MyLink isExternal href="https://trello.com/b/z9gCYsPy/sendouink">
-          Trello
-        </MyLink>{" "}
-        to see what is happening with development.
-        <Heading size="lg" mb="0.5em" fontFamily="'Rubik', sans-serif" mt="1em">
-          <Trans>Feedback</Trans>
-        </Heading>
-        <Trans>
-          Noticed a bug? Something could be done better? Thought of a new cool
-          feature you'd like to see on the site? Need help using the site? You
-          can either:
-        </Trans>
-        <List styleType="decimal" m="1em">
-          <ListItem>
-            <Trans>
-              Create an issue on{" "}
-              <Link
-                href="https://github.com/Sendouc/sendou.ink/issues"
-                isExternal
-                color={themeColorShade}
-              >
-                GitHub
-              </Link>
-            </Trans>
-          </ListItem>
-          <ListItem>
-            <Trans>
-              Post on the #helpdesk or #feedback channel of our{" "}
-              <Link
-                href="https://discord.gg/sendou"
-                isExternal
-                color={themeColorShade}
-              >
-                Discord
-              </Link>
-            </Trans>
-          </ListItem>
-          <ListItem>
-            <Trans>
-              DM me on{" "}
-              <Link
-                href="https://twitter.com/sendouc"
-                isExternal
-                color={themeColorShade}
-              >
-                Twitter
-              </Link>{" "}
-              or Discord (Sendou#0043)
-            </Trans>
-          </ListItem>
-        </List>
+        with help from the people below.
       </div>
       <div style={{ marginTop: "1em" }}>
-        <Heading size="lg" mb="0.5em" fontFamily="'Rubik', sans-serif">
+        <Heading size="lg" mb="0.5em">
           <Trans>Thanks to</Trans>
         </Heading>
         <ul style={{ marginLeft: "1.2em", marginTop: "0.5em" }}>
@@ -126,6 +75,42 @@ const About = () => {
             -{" "}
             <Trans>
               art for the site - front page inkling, icons and footer drawing
+            </Trans>
+          </li>
+          <li>
+            <Link
+              isExternal
+              color={themeColorShade}
+              href="https://twitter.com/BigDoubleCookie"
+            >
+              DoubleCookies
+            </Link>{" "}
+            -{" "}
+            <Trans>
+              <MyLink
+                isExternal
+                href="https://github.com/Sendouc/sendou.ink/pulls?q=is%3Apr+is%3Amerged+author%3ADoubleCookies+"
+              >
+                <Trans>Contributions to the codebase</Trans>
+              </MyLink>
+            </Trans>
+          </li>
+          <li>
+            <Link
+              isExternal
+              color={themeColorShade}
+              href="https://twitter.com/rofreg"
+            >
+              Ryan Laughlin
+            </Link>{" "}
+            -{" "}
+            <Trans>
+              <MyLink
+                isExternal
+                href="https://github.com/Sendouc/sendou.ink/pulls?q=is%3Apr+is%3Aclosed+author%3Arofreg+"
+              >
+                <Trans>Contributions to the codebase</Trans>
+              </MyLink>
             </Trans>
           </li>
           <li>
@@ -230,6 +215,53 @@ const About = () => {
           </li>
         </ul>
       </div>
+      <Heading size="lg" mb="0.5em" mt="1em">
+        <Trans>Feedback</Trans>
+      </Heading>
+      <Trans>
+        Noticed a bug? Something could be done better? Thought of a new cool
+        feature you'd like to see on the site? Need help using the site? You can
+        either:
+      </Trans>
+      <List styleType="decimal" m="1em">
+        <ListItem>
+          <Trans>
+            Create an issue on{" "}
+            <Link
+              href="https://github.com/Sendouc/sendou.ink/issues"
+              isExternal
+              color={themeColorShade}
+            >
+              GitHub
+            </Link>
+          </Trans>
+        </ListItem>
+        <ListItem>
+          <Trans>
+            Post on the #helpdesk or #feedback channel of our{" "}
+            <Link
+              href="https://discord.gg/sendou"
+              isExternal
+              color={themeColorShade}
+            >
+              Discord
+            </Link>
+          </Trans>
+        </ListItem>
+        <ListItem>
+          <Trans>
+            DM me on{" "}
+            <Link
+              href="https://twitter.com/sendouc"
+              isExternal
+              color={themeColorShade}
+            >
+              Twitter
+            </Link>{" "}
+            or Discord (Sendou#0043)
+          </Trans>
+        </ListItem>
+      </List>
     </>
   );
 };

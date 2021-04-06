@@ -57,9 +57,7 @@ const TournamentInfo = ({ event, edit }: EventInfoProps) => {
       <Box textAlign="center">
         <Box>
           {imgSrc && <Image src={imgSrc} width={36} height={36} />}
-          <Heading fontFamily="'Rubik', sans-serif" size="lg">
-            {event.name}
-          </Heading>
+          <Heading size="lg">{event.name}</Heading>
           {event.tags.length > 0 && (
             <Flex flexWrap="wrap" justifyContent="center" mt={3} mb={2}>
               {event.tags.map((tag) => {

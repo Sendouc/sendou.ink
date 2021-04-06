@@ -20,10 +20,6 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          <link
-            href="https://fonts.googleapis.com/css2?family=Rubik&display=swap"
-            rel="stylesheet"
-          ></link>
           {/* Global Site Tag (gtag.js) - Google Analytics */}
           {process.env.NODE_ENV === "production" && (
             <>
