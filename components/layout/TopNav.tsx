@@ -110,7 +110,6 @@ const TopNav = () => {
       </Flex>
       <Box
         justifySelf="center"
-        fontFamily="'Rubik', sans-serif"
         color="gray.600"
         fontWeight="bold"
         letterSpacing={1}

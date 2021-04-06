@@ -1,10 +1,12 @@
+import "./styles.css";
+import "focus-visible/dist/focus-visible";
+
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { mode } from "@chakra-ui/theme-tools";
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { createReactQueryHooks, createTRPCClient } from "@trpc/react";
 import Layout from "components/layout";
-import "focus-visible/dist/focus-visible";
 import { Provider as NextAuthProvider } from "next-auth/client";
 import { DefaultSeo } from "next-seo";
 import type { AppProps } from "next/app";
@@ -20,7 +22,6 @@ import { theme } from "theme";
 import { activateLocale } from "utils/i18n";
 import { locales } from "utils/lists/locales";
 //import { trpc } from "utils/trpc";
-import "./styles.css";
 
 NProgress.configure({ showSpinner: false });
 
@@ -40,7 +41,6 @@ const extendedTheme = extendTheme({
   styles: {
     global: (props) => ({
       body: {
-        fontFamily: "'Rubik', sans-serif",
         color: mode(theme.light.textColor, theme.dark.textColor)(props),
         bg: mode(theme.light.bgColor, theme.dark.bgColor)(props),
       },
@@ -80,11 +80,6 @@ const extendedTheme = extendTheme({
     Checkbox: {
       defaultProps: {
         colorScheme: "theme",
-      },
-    },
-    Heading: {
-      baseStyle: {
-        fontFamily: "'Rubik', sans-serif",
       },
     },
     Modal: {

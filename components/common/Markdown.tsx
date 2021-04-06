@@ -94,7 +94,7 @@ const Markdown: React.FC<MarkdownProps> = ({
 
         // TODO: "react-dom.development.js?61bb:67 Warning: validateDOMNesting(...): <div> cannot appear as a descendant of <p>."
         return (
-          <Text as="span" fontFamily="'Rubik', sans-serif">
+          <Text as="span">
             {reactStringReplace(children, /(:\S+:)/g, (match, i) => (
               <Emoji key={i} value={match} />
             ))}
