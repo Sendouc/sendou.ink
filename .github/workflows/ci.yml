@@ -5,8 +5,47 @@ jobs:
   cypress-run:
     name: Cypress tests
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: password
+          POSTGRES_USER: sendou_ink
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
-      - name: Checkout
+      - name: Check out code
         uses: actions/checkout@25a956c84d5dd820d28caab9f86b8d183aeeff3d # v2
-      - name: Cypress run
+      - name: Install Node
+        uses: actions/setup-node@5c355be17065acf11598c7a9bb47112fbcf2bbdc # v2
+        with:
+          node-version: "14"
+      - name: Install dependencies
+        run: npm install
+      - name: Write .env file for Prisma
+        run: echo "DATABASE_URL=postgresql://sendou_ink:password@localhost:${{ job.services.postgres.ports[5432] }}" > prisma/.env
+      - name: Prep the database
+        run: npm run migrate
+      - name: Prep other resources
+        run: npm run compile && npm run prebuild
+      - name: Run prettier
+        run: npm run prettier:check
+      - name: Run Cypress
         uses: cypress-io/github-action@9eab5368cd2520a946489cd3f937583ff5a30443 # v2
+        with:
+          start: npm run dev
+      - name: Save Cypress artifacts
+        uses: actions/upload-artifact@ea3d524381d563437a7d64af63f3d75ca55521c4 # v2
+        if: failure()
+        with:
+          name: cypress-outputs
+          path: |
+            cypress/screenshots/*
+            cypress/videos/*
+          retention-days: 30
