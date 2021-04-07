@@ -1,5 +1,5 @@
 import { Box, Button, Flex } from "@chakra-ui/react";
-import {t, Trans} from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import APStats from "components/builds/APStats";
 import BuildCard from "components/builds/BuildCard";
 import BuildFilters from "components/builds/BuildFilters";

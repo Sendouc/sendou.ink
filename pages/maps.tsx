@@ -19,7 +19,7 @@ import {
   Stack,
   Textarea,
 } from "@chakra-ui/react";
-import {t, Trans} from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { RankedMode } from "@prisma/client";
 import ModeImage from "components/common/ModeImage";

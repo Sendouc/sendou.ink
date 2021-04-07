@@ -1,5 +1,5 @@
 import { Button, ButtonGroup, Flex } from "@chakra-ui/react";
-import {t, Trans} from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import HeaderBanner from "components/layout/HeaderBanner";
 import DraggableImageAdder from "components/plans/DraggableImageAdder";
 import DraggableToolsSelector from "components/plans/DraggableToolsSelector";

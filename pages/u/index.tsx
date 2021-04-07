@@ -20,7 +20,7 @@ import { FaTwitter } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
 import { setSearchParams } from "utils/setSearchParams";
 import { Unpacked } from "utils/types";
-import {t} from "@lingui/macro";
+import { t } from "@lingui/macro";
 import MyHead from "../../components/common/MyHead";
 
 interface Props {

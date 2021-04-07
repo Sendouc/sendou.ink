@@ -1,7 +1,7 @@
 import { Button } from "@chakra-ui/button";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/input";
 import { Box } from "@chakra-ui/layout";
-import {t, Trans} from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import SubText from "components/common/SubText";
 import { useMyTheme } from "hooks/common";
 import { Fragment, useState } from "react";

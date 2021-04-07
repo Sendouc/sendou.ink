@@ -1,5 +1,6 @@
 import { Box, Button, Flex, Heading } from "@chakra-ui/react";
 import { useState } from "react";
+import MyHead from "../components/common/MyHead";
 
 //https://stackoverflow.com/a/19303725
 function seededRandom(seed: number) {
@@ -54,6 +55,7 @@ const EventsPage = () => {
   const [runningNumber, setRunningNumber] = useState(20);
   return (
     <>
+      <MyHead title="In The Zone" />
       <Box>
         <Heading size="lg" textAlign="center">
           In The Zone

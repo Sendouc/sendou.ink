@@ -1,5 +1,5 @@
 import { Box, Select } from "@chakra-ui/react";
-import {t, Trans} from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import ModeSelector from "components/common/ModeSelector";
 import HeaderBanner from "components/layout/HeaderBanner";
 import { useMyTheme } from "hooks/common";

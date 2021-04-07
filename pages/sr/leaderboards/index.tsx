@@ -12,7 +12,7 @@ import {
   Select,
   Stack,
 } from "@chakra-ui/react";
-import {Plural, t, Trans} from "@lingui/macro";
+import { Plural, t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { SalmonRunRecordCategory } from "@prisma/client";
 import LinkButton from "components/common/LinkButton";
