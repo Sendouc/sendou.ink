@@ -33,7 +33,7 @@ jobs:
       - name: Prep the database
         run: npm run migrate
       - name: Prep other resources
-        run: npm run build
+        run: npm run compile && npm run prebuild
       - name: Run prettier
         run: npm run prettier:check
       - name: Run Cypress
