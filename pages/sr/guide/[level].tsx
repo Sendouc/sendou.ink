@@ -11,6 +11,7 @@ import fs from "fs";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { join } from "path";
 import { Fragment } from "react";
+import MyHead from "../../../components/common/MyHead";
 
 interface Props {
   text: string;
@@ -20,6 +21,7 @@ interface Props {
 const SalmonRunGuidePage = ({ text, sections }: Props) => {
   return (
     <>
+      <MyHead title="Salmon Run Guide" />
       <SubText>Contents</SubText>
       <OrderedList>
         {sections.map((section) => (

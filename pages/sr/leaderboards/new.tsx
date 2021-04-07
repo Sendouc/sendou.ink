@@ -28,6 +28,7 @@ import { mutate } from "swr";
 import { sendData } from "utils/postData";
 import { salmonRunRecordSchema } from "utils/validators/salmonRunRecord";
 import * as z from "zod";
+import MyHead from "../../../components/common/MyHead";
 
 export const salmonRunCategoryToNatural = {
   TOTAL: t`All waves`,
@@ -83,6 +84,7 @@ const AddRecordModal = () => {
 
   return (
     <>
+      <MyHead title={t`Salmon Run Records`} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <Controller
           name="rotationId"

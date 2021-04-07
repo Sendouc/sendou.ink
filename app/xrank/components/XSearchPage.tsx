@@ -6,6 +6,7 @@ import HeaderBanner from "components/layout/HeaderBanner";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Top500PlacementsByMonth } from "../service";
+import MyHead from "../../../components/common/MyHead";
 
 export interface XSearchPageProps {
   placements: Top500PlacementsByMonth;
@@ -34,6 +35,7 @@ const XSearchPage = ({ placements, monthOptions }: XSearchPageProps) => {
   //TODO: layout can be persistent between route changes
   return (
     <>
+      <MyHead title={t`Top 500 Browser`} />
       <Select
         value={`${variables.month},${variables.year}`}
         onChange={(e) => {

@@ -1,5 +1,5 @@
 import { Box, HStack, Radio, RadioGroup } from "@chakra-ui/react";
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import MyLink from "components/common/MyLink";
 import QuadTable from "components/player/QuadTable";
 import TwinTable from "components/player/TwinTable";
@@ -12,6 +12,7 @@ import {
 } from "prisma/queries/getPlayerWithPlacements";
 import { useState } from "react";
 import { setSearchParams } from "utils/setSearchParams";
+import MyHead from "../../components/common/MyHead";
 
 interface Props {
   player: GetPlayerWithPlacementsData;
@@ -29,6 +30,7 @@ const PlayerPage = (props: Props) => {
 
   return (
     <>
+      <MyHead title="Results" />
       {player.user?.discordId && (
         <Box>
           <MyLink href={`/u/${player.user.discordId}`}>

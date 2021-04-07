@@ -19,7 +19,7 @@ import {
   Stack,
   Textarea,
 } from "@chakra-ui/react";
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { RankedMode } from "@prisma/client";
 import ModeImage from "components/common/ModeImage";
@@ -32,6 +32,7 @@ import { FiCheck, FiFilter, FiRotateCw } from "react-icons/fi";
 import { shuffleArray } from "utils/arrays";
 import { stages } from "utils/lists/stages";
 import { setManySearchParams } from "utils/setSearchParams";
+import MyHead from "../components/common/MyHead";
 
 const MapsGeneratorPage = () => {
   const router = useRouter();
@@ -186,6 +187,7 @@ const MapsGeneratorPage = () => {
 
   return (
     <>
+      <MyHead title={t`Maplist Generator`} />
       {editing ? (
         <>
           <Alert status="info" mb={8}>
