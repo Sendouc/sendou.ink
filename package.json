@@ -29,7 +29,7 @@
   "dependencies": {
     "@chakra-ui/icons": "^1.0.8",
     "@chakra-ui/react": "^1.4.2",
-    "@chakra-ui/theme-tools": "^1.1.2",
+    "@chakra-ui/theme-tools": "^1.1.3",
     "@emotion/react": "^11.1.5",
     "@emotion/styled": "^11.1.5",
     "@hookform/resolvers": "1.3.0",
