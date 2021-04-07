@@ -31,7 +31,9 @@ jobs:
       - name: Write .env file for Prisma
         run: echo "DATABASE_URL=postgresql://sendou_ink:password@localhost:${{ job.services.postgres.ports[5432] }}" > prisma/.env
       - name: Prep the database
-        run: npm run migrate && npm run prebuild
+        run: npm run migrate
+      - name: Prep other resources
+        run: npm run build
       - name: Run prettier
         run: npm run prettier:check
       - name: Run Cypress
