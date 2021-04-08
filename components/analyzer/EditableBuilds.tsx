@@ -2,7 +2,7 @@ import { Box, Button, Flex, IconButton } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import ViewSlots, { ViewSlotsAbilities } from "components/builds/ViewSlots";
 import AbilitiesSelector from "components/u/AbilitiesSelector";
-import { FiCopy, FiEdit, FiSquare } from "react-icons/fi";
+import { FiCopy, FiEdit, FiSquare, FiRotateCw } from "react-icons/fi";
 import { AbilityOrUnknown } from "utils/types";
 import HeadOnlyToggle from "./HeadOnlyToggle";
 import LdeSlider from "./LdeSlider";
@@ -29,6 +29,7 @@ interface EditableBuildsProps {
   otherLde: number;
   setLde: React.Dispatch<React.SetStateAction<number>>;
   setOtherLde: React.Dispatch<React.SetStateAction<number>>;
+  resetBuild: () => void;
 }
 
 const EditableBuilds: React.FC<EditableBuildsProps> = ({
@@ -47,6 +48,7 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
   otherLde,
   setLde,
   setOtherLde,
+  resetBuild,
 }) => {
   const buildToEdit = otherFocused ? otherBuild : build;
   const handleChange = (value: Object) =>
@@ -89,6 +91,17 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
         variant="outline"
       >
         {showOther ? t`Stop comparing` : t`Compare`}
+      </Button>
+      <Button
+        leftIcon={<FiRotateCw />}
+        onClick={() => resetBuild()}
+        ml="8px"
+        mt="1em"
+        mb="2em"
+        size="sm"
+        variant="outline"
+      >
+        Reset
       </Button>
       <Flex justifyContent="space-evenly" flexWrap="wrap" mb="1em">
         <Flex flexDirection="column">

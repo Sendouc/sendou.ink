@@ -109,6 +109,7 @@ const BuildAnalyzerPage = () => {
                 setLde={setLde}
                 otherLde={otherLde}
                 setOtherLde={setOtherLde}
+                resetBuild={resetBuild}
               />
             )}
           </Box>
@@ -205,6 +206,11 @@ const BuildAnalyzerPage = () => {
       clothingAbilities: clothingAbilities as AbilityOrUnknown[],
       shoesAbilities: shoesAbilities as AbilityOrUnknown[],
     });
+  }
+
+  function resetBuild() {
+    setBuild({ ...defaultBuild });
+    setOtherBuild({ ...defaultBuild });
   }
 };
 
