@@ -5,19 +5,15 @@ import {
   AlertTitle,
   Box,
   Button,
-  Center,
-  Radio,
-  RadioGroup,
-  Stack,
 } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
-import { Playstyle } from "@prisma/client";
 import { useFreeAgents } from "app/freeAgents/hooks";
 import { useUser } from "hooks/common";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { mutate } from "swr";
 import { sendData } from "utils/postData";
+import FAFilters from "./FAFilters";
 import FAModal from "./FAModal";
 import FreeAgentSection from "./FreeAgentSection";
 import MatchesInfo from "./MatchesInfo";
@@ -29,7 +25,6 @@ const FreeAgentsPage = () => {
     isLoading,
     usersPost,
     matchedPosts,
-    playstyleCounts,
     state,
     dispatch,
   } = useFreeAgents();
@@ -114,40 +109,7 @@ const FreeAgentsPage = () => {
             </AlertDescription>
           </Alert>
         )}
-      {!isLoading && (
-        <Center mt={6}>
-          <RadioGroup
-            value={state.playstyle ?? "ALL"}
-            onChange={(value) =>
-              dispatch({
-                type: "SET_PLAYSTYLE",
-                playstyle: value === "ALL" ? undefined : (value as Playstyle),
-              })
-            }
-          >
-            <Stack spacing={4} direction={["column", "row"]}>
-              <Radio value="ALL">
-                <Trans>
-                  All (
-                  {playstyleCounts.FRONTLINE +
-                    playstyleCounts.MIDLINE +
-                    playstyleCounts.BACKLINE}
-                  )
-                </Trans>
-              </Radio>
-              <Radio value="FRONTLINE">
-                <Trans>Frontline ({playstyleCounts.FRONTLINE})</Trans>
-              </Radio>
-              <Radio value="MIDLINE">
-                <Trans>Support ({playstyleCounts.MIDLINE})</Trans>
-              </Radio>
-              <Radio value="BACKLINE">
-                <Trans>Backline ({playstyleCounts.BACKLINE})</Trans>
-              </Radio>
-            </Stack>
-          </RadioGroup>
-        </Center>
-      )}
+      {!isLoading && <FAFilters state={state} dispatch={dispatch} />}
       {usersPost && likesData ? (
         <MatchesInfo
           matchedPosts={matchedPosts}

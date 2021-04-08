@@ -1,19 +1,27 @@
 import { Playstyle } from "@prisma/client";
 import { useUser } from "hooks/common";
 import { useRouter } from "next/router";
-import { useReducer } from "react";
+import { Dispatch, useReducer } from "react";
 import { setSearchParams } from "utils/setSearchParams";
 import { trpc } from "utils/trpc";
 
-interface UseFreeAgentsState {
+export interface UseFreeAgentsState {
   playstyle?: Playstyle;
   weapon?: string;
+  xpFilter?: number;
 }
 
-type Action = {
-  type: "SET_PLAYSTYLE";
-  playstyle?: Playstyle;
-};
+type Action =
+  | {
+      type: "SET_PLAYSTYLE";
+      playstyle?: Playstyle;
+    }
+  | {
+      type: "SET_XP_FILTER";
+      value: number;
+    };
+
+export type UseFreeAgentsDispatch = Dispatch<Action>;
 
 export function useFreeAgents() {
   const router = useRouter();
@@ -40,6 +48,8 @@ export function useFreeAgents() {
           setSearchParams("playstyle", action.playstyle);
 
           return { ...oldState, playstyle: action.playstyle };
+        case "SET_XP_FILTER":
+          return { ...oldState, xpFilter: action.value };
         default:
           return oldState;
       }
@@ -71,14 +81,6 @@ export function useFreeAgents() {
     usersPost,
     matchedPosts: (likesData?.matchedPostIds ?? []).map((id) =>
       (filteredPostsData ?? []).find((post) => post.id === id)
-    ),
-    playstyleCounts: (postsData ?? []).reduce(
-      (acc, cur) => {
-        cur.playstyles.forEach((playstyle) => acc[playstyle]++);
-
-        return acc;
-      },
-      { FRONTLINE: 0, MIDLINE: 0, BACKLINE: 0 }
     ),
     state,
     dispatch,

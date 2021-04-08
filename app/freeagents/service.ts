@@ -30,6 +30,24 @@ const posts = async () => {
               bio: true,
             },
           },
+          plusStatus: {
+            select: {
+              membershipTier: true,
+            },
+          },
+          player: {
+            select: {
+              placements: {
+                orderBy: {
+                  xPower: "desc",
+                },
+                take: 1,
+                select: {
+                  xPower: true,
+                },
+              },
+            },
+          },
         },
       },
     },
