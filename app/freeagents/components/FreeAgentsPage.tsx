@@ -6,41 +6,21 @@ import {
   Box,
   Button,
   Center,
-  Divider,
-  Flex,
-  IconButton,
   Radio,
   RadioGroup,
   Stack,
-  Wrap,
-  WrapItem,
 } from "@chakra-ui/react";
-import { t, Trans } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import { Playstyle } from "@prisma/client";
 import { useFreeAgents } from "app/freeAgents/hooks";
-import Flag from "components/common/Flag";
-import Markdown from "components/common/Markdown";
-import MyLink from "components/common/MyLink";
-import SubText from "components/common/SubText";
-import SubTextCollapse from "components/common/SubTextCollapse";
-import UserAvatar from "components/common/UserAvatar";
-import WeaponImage from "components/common/WeaponImage";
-import { countries } from "countries-list";
-import { useMyTheme, useUser } from "hooks/common";
+import { useUser } from "hooks/common";
 import { useRouter } from "next/router";
-import { RefObject, useEffect, useRef, useState } from "react";
-import { FaHeart, FaRegHeart } from "react-icons/fa";
-import {
-  RiAnchorLine,
-  RiMicFill,
-  RiPaintLine,
-  RiSwordLine,
-} from "react-icons/ri";
+import { useEffect, useRef, useState } from "react";
 import { mutate } from "swr";
 import { sendData } from "utils/postData";
-import { Unpacked } from "utils/types";
-import { PostsData } from "../service";
 import FAModal from "./FAModal";
+import FreeAgentSection from "./FreeAgentSection";
+import MatchesInfo from "./MatchesInfo";
 
 const FreeAgentsPage = () => {
   const {
@@ -175,7 +155,7 @@ const FreeAgentsPage = () => {
         />
       ) : null}
       {postsData.map((post) => (
-        <FreeAgentCard
+        <FreeAgentSection
           key={post.id}
           post={post}
           isLiked={!!likesData?.likedPostIds.includes(post.id)}
@@ -195,171 +175,6 @@ const FreeAgentsPage = () => {
       ? undefined
       : parseInt(router.query.id as any);
   }
-};
-
-const MatchesInfo = ({
-  matchedPosts,
-  focusOnMatch,
-}: {
-  matchedPosts: (Unpacked<PostsData> | undefined)[];
-  focusOnMatch: (id: number) => void;
-}) => {
-  if (!matchedPosts.length)
-    return (
-      <Alert status="info" my={6}>
-        <AlertIcon />
-        <Trans>
-          Once you match with other free agents they are shown here.
-        </Trans>
-      </Alert>
-    );
-
-  return (
-    <Flex flexDir="column" align="center">
-      <SubText mt={4}>
-        <Trans>Matches</Trans>
-      </SubText>
-      <Wrap mt={4} mb={2}>
-        {matchedPosts.map((post) =>
-          post ? (
-            <WrapItem key={post.id}>
-              <UserAvatar
-                user={post.user}
-                onClick={() => focusOnMatch(post.id)}
-                cursor="pointer"
-              />
-            </WrapItem>
-          ) : null
-        )}
-      </Wrap>
-    </Flex>
-  );
-};
-
-const playstyleToEmoji = {
-  FRONTLINE: RiSwordLine,
-  MIDLINE: RiPaintLine,
-  BACKLINE: RiAnchorLine,
-} as const;
-
-const FreeAgentCard = ({
-  post,
-  isLiked,
-  canLike,
-  postRef,
-}: {
-  post: Unpacked<PostsData>;
-  isLiked: boolean;
-  canLike: boolean;
-  postRef?: RefObject<HTMLDivElement>;
-}) => {
-  const { themeColorShade } = useMyTheme();
-
-  const handleClick = async () => {
-    const success = await sendData(
-      isLiked ? "DELETE" : "PUT",
-      "/api/freeagents/like",
-      {
-        postId: post.id,
-      }
-    );
-
-    if (success) mutate("/api/freeagents/like");
-  };
-
-  return (
-    <>
-      <Box ref={postRef} as="section" my={8}>
-        <Flex alignItems="center" fontWeight="bold" fontSize="1.25rem">
-          <UserAvatar user={post.user} mr={3} />
-          <MyLink href={`/u/${post.user.discordId}`} isColored={false}>
-            {post.user.username}#{post.user.discriminator}
-          </MyLink>
-        </Flex>
-
-        {post.user.profile?.country && (
-          <Flex align="center" ml={2} my={2}>
-            <Box as="span" mr={1} mt={1}>
-              <Flag countryCode={post.user.profile.country} />{" "}
-            </Box>
-            {
-              Object.entries(countries).find(
-                ([key]) => key === post.user.profile?.country
-              )![1].name
-            }
-          </Flex>
-        )}
-
-        {post.user.profile && post.user.profile?.weaponPool.length > 0 && (
-          <Box my={2}>
-            {post.user.profile.weaponPool.map((wpn) => (
-              <WeaponImage key={wpn} name={wpn} size={32} />
-            ))}
-          </Box>
-        )}
-
-        <Flex mt={4} mb={2}>
-          {post.playstyles.map((style) => (
-            <Box
-              key={style}
-              w={6}
-              h={6}
-              mx={1}
-              color={themeColorShade}
-              as={playstyleToEmoji[style]}
-            />
-          ))}
-        </Flex>
-
-        {post.canVC !== "NO" && (
-          <Flex alignItems="center" my={4}>
-            <Box
-              w={6}
-              h={6}
-              mx={1}
-              mr={2}
-              color={themeColorShade}
-              as={RiMicFill}
-            />
-            <SubText>
-              {post.canVC === "YES" ? (
-                <Trans>Can VC</Trans>
-              ) : (
-                <Trans>Can VC sometimes</Trans>
-              )}
-            </SubText>
-          </Flex>
-        )}
-
-        <SubTextCollapse
-          title={t`Free agent post`}
-          isOpenByDefault
-          mt={4}
-          my={6}
-        >
-          <Markdown value={post.content} smallHeaders />
-        </SubTextCollapse>
-        {post.user.profile?.bio && (
-          <SubTextCollapse title={t`Bio`} mt={4}>
-            <Markdown value={post.user.profile.bio} smallHeaders />
-          </SubTextCollapse>
-        )}
-        {canLike && (
-          <IconButton
-            color="red.500"
-            aria-label="Like"
-            size="lg"
-            isRound
-            mt={4}
-            variant="ghost"
-            icon={isLiked ? <FaHeart /> : <FaRegHeart />}
-            onClick={handleClick}
-          />
-        )}
-      </Box>
-      <Divider />
-    </>
-  );
 };
 
 export default FreeAgentsPage;
