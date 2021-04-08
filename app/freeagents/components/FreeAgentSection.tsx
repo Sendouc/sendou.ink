@@ -1,4 +1,4 @@
-import { Box, Divider, Flex, IconButton } from "@chakra-ui/react";
+import { Box, Divider, Flex, IconButton, useToast } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import Flag from "components/common/Flag";
 import Markdown from "components/common/Markdown";
@@ -17,8 +17,8 @@ import {
   RiPaintLine,
   RiSwordLine,
 } from "react-icons/ri";
-import { mutate } from "swr";
-import { sendData } from "utils/postData";
+import { getToastOptions } from "utils/getToastOptions";
+import { trpc } from "utils/trpc";
 import { Unpacked } from "utils/types";
 import { PostsData } from "../service";
 
@@ -41,17 +41,29 @@ const FreeAgentSection = ({
 }) => {
   const { themeColorShade } = useMyTheme();
 
-  const handleClick = async () => {
-    const success = await sendData(
-      isLiked ? "DELETE" : "PUT",
-      "/api/freeagents/like",
-      {
-        postId: post.id,
-      }
-    );
+  const toast = useToast();
+  const utils = trpc.useQueryUtils();
+  const addLikeMutation = trpc.useMutation("freeAgents.addLike", {
+    onSuccess() {
+      utils.invalidateQuery(["freeAgents.likes"]);
+    },
+    onError(error) {
+      toast(getToastOptions(error.message, "error"));
+    },
+  });
+  const deleteLikeMutation = trpc.useMutation("freeAgents.deleteLike", {
+    onSuccess() {
+      utils.invalidateQuery(["freeAgents.likes"]);
+    },
+    onError(error) {
+      toast(getToastOptions(error.message, "error"));
+    },
+  });
 
-    if (success) mutate("/api/freeagents/like");
-  };
+  const handleClick = () =>
+    isLiked
+      ? deleteLikeMutation.mutate({ postId: post.id })
+      : addLikeMutation.mutate({ postId: post.id });
 
   return (
     <>
@@ -139,6 +151,7 @@ const FreeAgentSection = ({
             mt={4}
             variant="ghost"
             icon={isLiked ? <FaHeart /> : <FaRegHeart />}
+            disabled={addLikeMutation.isLoading || deleteLikeMutation.isLoading}
             onClick={handleClick}
           />
         )}
