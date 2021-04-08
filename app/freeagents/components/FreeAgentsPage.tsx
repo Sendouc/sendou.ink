@@ -17,7 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import { Playstyle } from "@prisma/client";
-import { useFreeAgents } from "app/freeagents/hooks";
+import { useFreeAgents } from "app/freeAgents/hooks";
 import Flag from "components/common/Flag";
 import Markdown from "components/common/Markdown";
 import MyLink from "components/common/MyLink";
@@ -28,7 +28,6 @@ import WeaponImage from "components/common/WeaponImage";
 import { countries } from "countries-list";
 import { useMyTheme, useUser } from "hooks/common";
 import { useRouter } from "next/router";
-import { GetAllFreeAgentPostsData } from "prisma/queries/getAllFreeAgentPosts";
 import { RefObject, useEffect, useRef, useState } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import {
@@ -40,6 +39,7 @@ import {
 import { mutate } from "swr";
 import { sendData } from "utils/postData";
 import { Unpacked } from "utils/types";
+import { PostsData } from "../service";
 import FAModal from "./FAModal";
 
 const FreeAgentsPage = () => {
@@ -201,7 +201,7 @@ const MatchesInfo = ({
   matchedPosts,
   focusOnMatch,
 }: {
-  matchedPosts: (Unpacked<GetAllFreeAgentPostsData> | undefined)[];
+  matchedPosts: (Unpacked<PostsData> | undefined)[];
   focusOnMatch: (id: number) => void;
 }) => {
   if (!matchedPosts.length)
@@ -248,7 +248,7 @@ const FreeAgentCard = ({
   canLike,
   postRef,
 }: {
-  post: Unpacked<GetAllFreeAgentPostsData>;
+  post: Unpacked<PostsData>;
   isLiked: boolean;
   canLike: boolean;
   postRef?: RefObject<HTMLDivElement>;

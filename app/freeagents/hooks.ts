@@ -1,11 +1,9 @@
 import { Playstyle } from "@prisma/client";
 import { useUser } from "hooks/common";
 import { useRouter } from "next/router";
-import { FreeAgentLikeInfo } from "pages/api/freeagents/like";
-import { GetAllFreeAgentPostsData } from "prisma/queries/getAllFreeAgentPosts";
 import { useReducer } from "react";
-import useSWR from "swr";
 import { setSearchParams } from "utils/setSearchParams";
+import { trpc } from "utils/trpc";
 
 interface UseFreeAgentsState {
   playstyle?: Playstyle;
@@ -21,17 +19,19 @@ export function useFreeAgents() {
   const router = useRouter();
   const [user] = useUser();
 
-  const { data: postsData } = useSWR<GetAllFreeAgentPostsData>(
-    "/api/freeagents"
+  const { data: postsData } = trpc.useQuery(
+    ["freeAgents.posts"] /*{
+    enabled: false,
+  }*/
   );
 
   const usersPost = postsData?.find(
     (post) => post.user.discordId === user?.discordId
   );
 
-  const { data: likesData } = useSWR<FreeAgentLikeInfo>(
-    usersPost ? "/api/freeagents/like" : null
-  );
+  const { data: likesData } = trpc.useQuery(["freeAgents.likes"], {
+    enabled: !!usersPost,
+  });
 
   const [state, dispatch] = useReducer(
     (oldState: UseFreeAgentsState, action: Action) => {
