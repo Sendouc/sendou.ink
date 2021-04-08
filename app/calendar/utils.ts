@@ -95,6 +95,7 @@ const nameToImage = [
   { code: "rr", name: "reef rushdown" },
   { code: "tg", name: "testing grounds" },
   { code: "ut", name: "unnamed tournament" },
+  { code: "kotc", name: "king of the castle" },
 ] as const;
 
 /**
