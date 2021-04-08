@@ -49,7 +49,7 @@ const FAModal: React.FC<Props> = ({ onClose, post }) => {
     defaultValues: post,
   });
 
-  const upsertPost = trpc.useMutation("freeAgents.upsertPost", {
+  const upsertPostMutation = trpc.useMutation("freeAgents.upsertPost", {
     onSuccess() {
       toast(
         getToastOptions(
@@ -66,7 +66,7 @@ const FAModal: React.FC<Props> = ({ onClose, post }) => {
     },
   });
 
-  const deletePost = trpc.useMutation("freeAgents.deletePost", {
+  const deletePostMutation = trpc.useMutation("freeAgents.deletePost", {
     onSuccess() {
       toast(getToastOptions(t`Free agent post deleted`, "success"));
       //refetchQuery();
@@ -94,7 +94,9 @@ const FAModal: React.FC<Props> = ({ onClose, post }) => {
             )}
           </ModalHeader>
           <ModalCloseButton borderRadius="50%" />
-          <form onSubmit={handleSubmit((data) => upsertPost.mutate(data))}>
+          <form
+            onSubmit={handleSubmit((data) => upsertPostMutation.mutate(data))}
+          >
             <ModalBody pb={6}>
               {post && (
                 <>
@@ -102,10 +104,10 @@ const FAModal: React.FC<Props> = ({ onClose, post }) => {
                     leftIcon={<FiTrash />}
                     variant="outline"
                     color="red.500"
-                    isLoading={deletePost.status === "loading"}
+                    isLoading={deletePostMutation.isLoading}
                     onClick={async () => {
                       if (window.confirm(t`Delete the free agent post?`)) {
-                        deletePost.mutate(null);
+                        deletePostMutation.mutate(null);
                       }
                     }}
                   >
@@ -180,13 +182,21 @@ const FAModal: React.FC<Props> = ({ onClose, post }) => {
               />
             </ModalBody>
             <ModalFooter>
-              <Button mr={3} type="submit" isLoading={upsertPost.isLoading}>
+              <Button
+                mr={3}
+                type="submit"
+                isLoading={
+                  upsertPostMutation.isLoading || deletePostMutation.isLoading
+                }
+              >
                 <Trans>Save</Trans>
               </Button>
               <Button
                 onClick={onClose}
                 variant="outline"
-                isDisabled={upsertPost.isLoading}
+                isDisabled={
+                  upsertPostMutation.isLoading || deletePostMutation.isLoading
+                }
               >
                 <Trans>Cancel</Trans>
               </Button>
