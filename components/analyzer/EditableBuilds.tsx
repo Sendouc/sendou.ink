@@ -95,7 +95,7 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
       <Button
         leftIcon={<FiRotateCw />}
         onClick={() => resetBuild()}
-        ml="8px"
+        ml="1em"
         mt="1em"
         mb="2em"
         size="sm"
