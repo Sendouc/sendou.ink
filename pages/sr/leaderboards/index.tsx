@@ -12,7 +12,7 @@ import {
   Select,
   Stack,
 } from "@chakra-ui/react";
-import { Plural, Trans } from "@lingui/macro";
+import { Plural, t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { SalmonRunRecordCategory } from "@prisma/client";
 import LinkButton from "components/common/LinkButton";
@@ -34,6 +34,7 @@ import Link from "next/link";
 import { salmonRunStages } from "utils/lists/stages";
 import { getRankingString } from "utils/strings";
 import { salmonRunCategoryToNatural } from "./new";
+import MyHead from "../../../components/common/MyHead";
 
 const SalmonRunLeaderboardsPage = ({}) => {
   const { i18n } = useLingui();
@@ -49,6 +50,7 @@ const SalmonRunLeaderboardsPage = ({}) => {
 
   return (
     <>
+      <MyHead title={t`Salmon Run Records`} />
       {pendingCount > 0 && (
         <Alert status="info" mb={4}>
           <AlertIcon />

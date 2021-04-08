@@ -24,6 +24,7 @@ import { RiTShirtLine } from "react-icons/ri";
 import useSWR from "swr";
 import { GANBA_DISCORD_ID } from "utils/constants";
 import { isCustomUrl } from "utils/validators/profile";
+import MyHead from "../../components/common/MyHead";
 
 interface Props {
   user: GetUserByIdentifierData;
@@ -74,6 +75,7 @@ const ProfilePage = (props: Props) => {
 
   return (
     <>
+      <MyHead title={user.username} />
       {showProfileModal && (
         <ProfileModal onClose={() => setShowProfileModal(false)} user={user} />
       )}

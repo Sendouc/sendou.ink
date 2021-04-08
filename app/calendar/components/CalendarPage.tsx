@@ -1,7 +1,7 @@
 import { Button } from "@chakra-ui/button";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/input";
 import { Box } from "@chakra-ui/layout";
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import SubText from "components/common/SubText";
 import { useMyTheme } from "hooks/common";
 import { Fragment, useState } from "react";
@@ -9,6 +9,7 @@ import { FiSearch } from "react-icons/fi";
 import { trpc } from "utils/trpc";
 import EventInfo from "./EventInfo";
 import { EventModal, FormData } from "./EventModal";
+import MyHead from "../../../components/common/MyHead";
 
 export default function CalendarPage() {
   const { gray } = useMyTheme();
@@ -22,6 +23,7 @@ export default function CalendarPage() {
 
   return (
     <>
+      <MyHead title={t`Calendar`} />
       <div>
         <Button
           size="sm"

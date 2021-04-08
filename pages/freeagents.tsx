@@ -1,4 +1,4 @@
-import FreeAgentsPage from "app/freeAgents/components/FreeAgentsPage";
+import FreeAgentsPage from "app/freeagents/components/FreeAgentsPage";
 import HeaderBanner from "components/layout/HeaderBanner";
 
 // @ts-expect-error

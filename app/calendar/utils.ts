@@ -92,6 +92,10 @@ const nameToImage = [
   { code: "lobstercrossfire", name: "lobster crossfire" },
   { code: "swimorsink", name: "swim or sink" },
   { code: "idtga", name: "it's dangerous to go alone" },
+  { code: "rr", name: "reef rushdown" },
+  { code: "tg", name: "testing grounds" },
+  { code: "ut", name: "unnamed tournament" },
+  { code: "kotc", name: "king of the castle" },
 ] as const;
 
 /**
