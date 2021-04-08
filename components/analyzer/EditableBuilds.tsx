@@ -30,6 +30,7 @@ interface EditableBuildsProps {
   setLde: React.Dispatch<React.SetStateAction<number>>;
   setOtherLde: React.Dispatch<React.SetStateAction<number>>;
   resetBuild: () => void;
+  resetOtherBuild: () => void;
 }
 
 const EditableBuilds: React.FC<EditableBuildsProps> = ({
@@ -49,6 +50,7 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
   setLde,
   setOtherLde,
   resetBuild,
+  resetOtherBuild,
 }) => {
   const buildToEdit = otherFocused ? otherBuild : build;
   const handleChange = (value: Object) =>
@@ -92,30 +94,28 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
       >
         {showOther ? t`Stop comparing` : t`Compare`}
       </Button>
-      <Button
-        leftIcon={<FiRotateCw />}
-        onClick={() => resetBuild()}
-        ml="1em"
-        mt="1em"
-        mb="2em"
-        size="sm"
-        variant="outline"
-      >
-        Reset
-      </Button>
       <Flex justifyContent="space-evenly" flexWrap="wrap" mb="1em">
         <Flex flexDirection="column">
-          {showOther && (
+          <Flex justifyContent="center">
+            {showOther && (
+              <IconButton
+                aria-label="Edit orange build"
+                disabled={!otherFocused}
+                colorScheme="orange"
+                onClick={() => changeFocus()}
+                icon={<FiEdit />}
+                isRound
+              />
+            )}
             <IconButton
-              aria-label="Edit orange build"
-              disabled={!otherFocused}
-              colorScheme="orange"
-              onClick={() => changeFocus()}
-              icon={<FiEdit />}
+              aria-label={showOther ? "Reset orange build" : "Reset build"}
+              colorScheme="gray"
+              onClick={() => resetBuild()}
+              icon={<FiRotateCw />}
+              ml="1em"
               isRound
-              mx="auto"
             />
-          )}
+          </Flex>
           <ViewSlots
             abilities={build}
             onAbilityClick={!otherFocused ? handleClickBuildAbility : undefined}
@@ -155,15 +155,24 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
         </Flex>
         {showOther && (
           <Flex flexDirection="column">
-            <IconButton
-              aria-label="Edit blue build"
-              disabled={otherFocused}
-              colorScheme="blue"
-              onClick={() => changeFocus()}
-              icon={<FiEdit />}
-              isRound
-              mx="auto"
-            />
+            <Flex justifyContent="center">
+              <IconButton
+                aria-label="Edit blue build"
+                disabled={otherFocused}
+                colorScheme="blue"
+                onClick={() => changeFocus()}
+                icon={<FiEdit />}
+                isRound
+              />
+              <IconButton
+                aria-label={"Reset blue build"}
+                colorScheme="gray"
+                onClick={() => resetOtherBuild()}
+                icon={<FiRotateCw />}
+                ml="1em"
+                isRound
+              />
+            </Flex>
             <ViewSlots
               abilities={otherBuild}
               onAbilityClick={

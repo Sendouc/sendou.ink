@@ -110,6 +110,7 @@ const BuildAnalyzerPage = () => {
                 otherLde={otherLde}
                 setOtherLde={setOtherLde}
                 resetBuild={resetBuild}
+                resetOtherBuild={resetOtherBuild}
               />
             )}
           </Box>
@@ -210,6 +211,9 @@ const BuildAnalyzerPage = () => {
 
   function resetBuild() {
     setBuild({ ...defaultBuild });
+  }
+
+  function resetOtherBuild() {
     setOtherBuild({ ...defaultBuild });
   }
 };
