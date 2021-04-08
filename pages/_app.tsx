@@ -1,4 +1,5 @@
 import "./styles.css";
+import "./react-datapicker.css";
 import "focus-visible/dist/focus-visible";
 
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
