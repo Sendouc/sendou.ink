@@ -19,6 +19,7 @@
     "compile": "lingui compile",
     "restore": "pg_restore -d 'postgresql://sendou@localhost:5432/dev' --jobs 4 dumped.sql --clean",
     "seed": "prisma db seed --preview-feature",
+    "prettier:check": "prettier --check .",
     "prettier:format": "prettier --write .",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
@@ -26,13 +27,13 @@
     "cy:install": "cypress install"
   },
   "dependencies": {
-    "@chakra-ui/icons": "^1.0.8",
-    "@chakra-ui/react": "^1.4.2",
-    "@chakra-ui/theme-tools": "^1.1.2",
+    "@chakra-ui/icons": "^1.0.9",
+    "@chakra-ui/react": "^1.5.0",
+    "@chakra-ui/theme-tools": "^1.1.3",
     "@emotion/react": "^11.1.5",
     "@emotion/styled": "^11.1.5",
     "@hookform/resolvers": "1.3.0",
-    "@lingui/react": "^3.8.2",
+    "@lingui/react": "^3.8.3",
     "@next/bundle-analyzer": "^10.1.3",
     "@prisma/client": "^2.20.1",
     "@sendou/react-sketch": "^0.5.2",
@@ -41,8 +42,8 @@
     "@trpc/server": "5.0.0",
     "countries-list": "^2.6.1",
     "focus-visible": "^5.2.0",
-    "framer-motion": "^4.1.2",
-    "next": "^10.1.2",
+    "framer-motion": "^4.1.3",
+    "next": "^10.1.3",
     "next-auth": "^3.14.0",
     "next-images": "^1.7.0",
     "next-seo": "^4.23.0",
@@ -81,12 +82,12 @@
     "@types/recharts": "^1.8.19",
     "@types/uuid": "^8.3.0",
     "cross-env": "^7.0.3",
-    "cypress": "^7.0.0",
+    "cypress": "^7.0.1",
     "fishery": "^1.2.0",
     "prettier": "^2.2.1",
     "prisma": "^2.20.1",
     "ts-node": "^9.1.1",
-    "typescript": "^4.2.3"
+    "typescript": "^4.2.4"
   },
   "license": "MIT"
 }

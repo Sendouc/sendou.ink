@@ -42,6 +42,7 @@ import {
 import { mutate } from "swr";
 import { sendData } from "utils/postData";
 import { Unpacked } from "utils/types";
+import MyHead from "../components/common/MyHead";
 
 const FreeAgentsPage = () => {
   const {
@@ -89,6 +90,7 @@ const FreeAgentsPage = () => {
 
   return (
     <>
+      <MyHead title={t`Free Agents`} />
       {modalIsOpen && (
         <FAModal post={usersPost} onClose={() => setModalIsOpen(false)} />
       )}

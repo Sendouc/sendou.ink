@@ -1,5 +1,5 @@
 import { Box, Button, Flex } from "@chakra-ui/react";
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import APStats from "components/builds/APStats";
 import BuildCard from "components/builds/BuildCard";
 import BuildFilters from "components/builds/BuildFilters";
@@ -13,6 +13,7 @@ import { useBuildsByWeapon } from "hooks/builds";
 import { useMyTheme, useUser } from "hooks/common";
 import { useState } from "react";
 import { RiBarChart2Fill, RiTShirtLine } from "react-icons/ri";
+import MyHead from "../../components/common/MyHead";
 
 const BuildsPage = () => {
   const {
@@ -29,6 +30,7 @@ const BuildsPage = () => {
 
   return (
     <>
+      <MyHead title={t`Builds`} />
       <Box mb={4} maxW={80} mx="auto">
         <WeaponSelector
           value={state.weapon}
