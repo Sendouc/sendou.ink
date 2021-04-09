@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
 import { Playstyle } from "@prisma/client";
+import WeaponSelector from "components/common/WeaponSelector";
 import { UseFreeAgentsDispatch, UseFreeAgentsState } from "../hooks";
 
 export default function FAFilters({
@@ -43,6 +44,14 @@ export default function FAFilters({
           }
         />
       </FormControl>
+      <Box>
+        <WeaponSelector
+          value={state.weapon}
+          isClearable
+          setValue={(value) => dispatch({ type: "SET_WEAPON", value })}
+          isMulti={false}
+        />
+      </Box>
       <Center mt={6}>
         <RadioGroup
           value={state.playstyle ?? "ALL"}

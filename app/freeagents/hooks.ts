@@ -24,6 +24,10 @@ type Action =
   | {
       type: "SET_PLUS_SERVER_VALUE";
       value: boolean;
+    }
+  | {
+      type: "SET_WEAPON";
+      value?: string;
     };
 
 export type UseFreeAgentsDispatch = Dispatch<Action>;
@@ -57,6 +61,8 @@ export function useFreeAgents() {
           return { ...oldState, xp: action.value };
         case "SET_PLUS_SERVER_VALUE":
           return { ...oldState, plusServer: action.value };
+        case "SET_WEAPON":
+          return { ...oldState, weapon: action.value };
         default:
           return oldState;
       }
@@ -91,6 +97,13 @@ export function useFreeAgents() {
     }
 
     if (state.plusServer && !post.user.plusStatus?.membershipTier) {
+      return false;
+    }
+
+    if (
+      state.weapon &&
+      !post.user.profile?.weaponPool.some((wpn) => wpn === state.weapon)
+    ) {
       return false;
     }
 

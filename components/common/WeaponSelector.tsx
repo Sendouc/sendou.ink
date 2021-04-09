@@ -20,6 +20,7 @@ interface SelectorProps {
 interface SingleSelectorProps extends SelectorProps {
   value?: string;
   setValue: (value: string) => void;
+  isClearable?: true;
   isMulti: false;
 }
 
