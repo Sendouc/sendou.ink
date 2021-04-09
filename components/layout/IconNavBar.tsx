@@ -242,7 +242,7 @@ const IconNavBar = () => {
             {children}
           </Flex>
         </PopoverTrigger>
-        <PopoverContent bg={secondaryBgColor} w="unset">
+        <PopoverContent bg={secondaryBgColor}>
           <PopoverHeader fontWeight="semibold">{displayName}</PopoverHeader>
           <PopoverArrow bg={secondaryBgColor} />
         </PopoverContent>

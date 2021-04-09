@@ -102,7 +102,7 @@ const extendedTheme = extendTheme({
     Popover: {
       variants: {
         responsive: {
-          popper: {
+          content: {
             maxWidth: "unset",
             width: "unset",
           },
