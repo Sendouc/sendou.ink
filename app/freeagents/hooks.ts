@@ -8,7 +8,7 @@ import { trpc } from "utils/trpc";
 export interface UseFreeAgentsState {
   playstyle?: Playstyle;
   weapon?: string;
-  xpFilter?: number;
+  xp: boolean;
 }
 
 type Action =
@@ -17,8 +17,8 @@ type Action =
       playstyle?: Playstyle;
     }
   | {
-      type: "SET_XP_FILTER";
-      value: number;
+      type: "SET_XP_VALUE";
+      value: boolean;
     };
 
 export type UseFreeAgentsDispatch = Dispatch<Action>;
@@ -48,8 +48,8 @@ export function useFreeAgents() {
           setSearchParams("playstyle", action.playstyle);
 
           return { ...oldState, playstyle: action.playstyle };
-        case "SET_XP_FILTER":
-          return { ...oldState, xpFilter: action.value };
+        case "SET_XP_VALUE":
+          return { ...oldState, xp: action.value };
         default:
           return oldState;
       }
@@ -64,15 +64,23 @@ export function useFreeAgents() {
         router.query.playstyle as any
       )
     ) {
-      return {};
+      return { xp: false };
     }
 
-    return { playstyle: router.query.playstyle as Playstyle };
+    return { playstyle: router.query.playstyle as Playstyle, xp: false };
   }
 
-  const filteredPostsData = (postsData ?? []).filter(
-    (post) => !state.playstyle || post.playstyles.includes(state.playstyle)
-  );
+  const filteredPostsData = (postsData ?? []).filter((post) => {
+    if (state.playstyle && !post.playstyles.includes(state.playstyle)) {
+      return false;
+    }
+
+    if (state.xp && !post.user.player?.placements[0]?.xPower) {
+      return false;
+    }
+
+    return true;
+  });
 
   return {
     postsData: filteredPostsData,

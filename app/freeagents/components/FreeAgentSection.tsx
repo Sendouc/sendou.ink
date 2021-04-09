@@ -9,6 +9,7 @@ import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
 import { countries } from "countries-list";
 import { useMyTheme } from "hooks/common";
+import Image from "next/image";
 import { RefObject } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import {
@@ -32,11 +33,13 @@ const FreeAgentSection = ({
   post,
   isLiked,
   canLike,
+  showXp,
   postRef,
 }: {
   post: Unpacked<PostsData>;
   isLiked: boolean;
   canLike: boolean;
+  showXp: boolean;
   postRef?: RefObject<HTMLDivElement>;
 }) => {
   const { themeColorShade } = useMyTheme();
@@ -74,6 +77,13 @@ const FreeAgentSection = ({
             {post.user.username}#{post.user.discriminator}
           </MyLink>
         </Flex>
+
+        {showXp ? (
+          <Flex my={2} ml={1} align="center" fontSize="sm" fontWeight="bold">
+            <Image src="/layout/xsearch.png" height={24} width={24} />
+            <Box ml={1}>{post.user.player?.placements[0]?.xPower}</Box>
+          </Flex>
+        ) : null}
 
         {post.user.profile?.country && (
           <Flex align="center" ml={2} my={2}>

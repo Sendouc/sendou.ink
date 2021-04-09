@@ -125,6 +125,7 @@ const FreeAgentsPage = () => {
             !!user && post.user.discordId !== user.discordId && !!usersPost
           }
           postRef={post.id === getIdToScrollTo() ? postRef : undefined}
+          showXp={state.xp}
         />
       ))}
     </>
