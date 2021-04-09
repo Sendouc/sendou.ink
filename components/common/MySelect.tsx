@@ -45,6 +45,14 @@ const DropdownIndicator = (props: any) => {
   );
 };
 
+const customFilterOption = (option: any, rawInput: string) => {
+  const words = rawInput.split(" ");
+  return words.reduce(
+    (acc, cur) => acc && option.label.toLowerCase().includes(cur.toLowerCase()),
+    true
+  );
+};
+
 const MySelect: React.FC<SelectProps> = ({
   options,
   components,
@@ -105,6 +113,7 @@ const MySelect: React.FC<SelectProps> = ({
       isDisabled={isDisabled}
       isClearable={isClearable}
       options={options}
+      filterOption={customFilterOption}
       components={
         hideMenuBeforeTyping
           ? {
