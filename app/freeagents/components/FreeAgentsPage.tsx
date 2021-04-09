@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
 import { useFreeAgents } from "app/freeAgents/hooks";
-import { useUser } from "hooks/common";
+import { useMyTheme, useUser } from "hooks/common";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { mutate } from "swr";
@@ -25,6 +25,7 @@ const FreeAgentsPage = () => {
     isLoading,
     usersPost,
     matchedPosts,
+    allPostsCount,
     state,
     dispatch,
   } = useFreeAgents();
@@ -34,6 +35,7 @@ const FreeAgentsPage = () => {
   const [postIdToScrollTo, setPostIdToScrollTo] = useState<undefined | number>(
     undefined
   );
+  const { gray } = useMyTheme();
   const [sending, setSending] = useState(false);
   const postRef = useRef<HTMLDivElement>(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -116,6 +118,9 @@ const FreeAgentsPage = () => {
           focusOnMatch={(id) => setPostIdToScrollTo(id)}
         />
       ) : null}
+      <Box fontSize="small" color={gray}>
+        Showing {postsData.length} posts out of {allPostsCount}
+      </Box>
       {postsData.map((post) => (
         <FreeAgentSection
           key={post.id}
@@ -126,6 +131,7 @@ const FreeAgentsPage = () => {
           }
           postRef={post.id === getIdToScrollTo() ? postRef : undefined}
           showXp={state.xp}
+          showPlusServerMembership={state.plusServer}
         />
       ))}
     </>

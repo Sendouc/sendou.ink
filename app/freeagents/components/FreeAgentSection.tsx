@@ -34,12 +34,14 @@ const FreeAgentSection = ({
   isLiked,
   canLike,
   showXp,
+  showPlusServerMembership,
   postRef,
 }: {
   post: Unpacked<PostsData>;
   isLiked: boolean;
   canLike: boolean;
   showXp: boolean;
+  showPlusServerMembership: boolean;
   postRef?: RefObject<HTMLDivElement>;
 }) => {
   const { themeColorShade } = useMyTheme();
@@ -82,6 +84,13 @@ const FreeAgentSection = ({
           <Flex my={2} ml={1} align="center" fontSize="sm" fontWeight="bold">
             <Image src="/layout/xsearch.png" height={24} width={24} />
             <Box ml={1}>{post.user.player?.placements[0]?.xPower}</Box>
+          </Flex>
+        ) : null}
+
+        {showPlusServerMembership ? (
+          <Flex my={2} ml={1} align="center" fontSize="sm" fontWeight="bold">
+            <Image src="/layout/plus.png" height={24} width={24} />
+            <Box ml={1}>+{post.user.plusStatus?.membershipTier}</Box>
           </Flex>
         ) : null}
 

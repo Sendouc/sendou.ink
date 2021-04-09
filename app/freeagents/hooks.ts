@@ -9,6 +9,7 @@ export interface UseFreeAgentsState {
   playstyle?: Playstyle;
   weapon?: string;
   xp: boolean;
+  plusServer: boolean;
 }
 
 type Action =
@@ -18,6 +19,10 @@ type Action =
     }
   | {
       type: "SET_XP_VALUE";
+      value: boolean;
+    }
+  | {
+      type: "SET_PLUS_SERVER_VALUE";
       value: boolean;
     };
 
@@ -50,6 +55,8 @@ export function useFreeAgents() {
           return { ...oldState, playstyle: action.playstyle };
         case "SET_XP_VALUE":
           return { ...oldState, xp: action.value };
+        case "SET_PLUS_SERVER_VALUE":
+          return { ...oldState, plusServer: action.value };
         default:
           return oldState;
       }
@@ -64,10 +71,14 @@ export function useFreeAgents() {
         router.query.playstyle as any
       )
     ) {
-      return { xp: false };
+      return { xp: false, plusServer: false };
     }
 
-    return { playstyle: router.query.playstyle as Playstyle, xp: false };
+    return {
+      playstyle: router.query.playstyle as Playstyle,
+      xp: false,
+      plusServer: false,
+    };
   }
 
   const filteredPostsData = (postsData ?? []).filter((post) => {
@@ -79,11 +90,16 @@ export function useFreeAgents() {
       return false;
     }
 
+    if (state.plusServer && !post.user.plusStatus?.membershipTier) {
+      return false;
+    }
+
     return true;
   });
 
   return {
     postsData: filteredPostsData,
+    allPostsCount: (postsData ?? []).length,
     likesData,
     isLoading: !postsData,
     usersPost,

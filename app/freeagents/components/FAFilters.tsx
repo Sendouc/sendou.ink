@@ -32,6 +32,17 @@ export default function FAFilters({
           }
         />
       </FormControl>
+      <FormControl display="flex" alignItems="center">
+        <FormLabel htmlFor="plus-server" mb="0">
+          Show Plus Server members only
+        </FormLabel>
+        <Switch
+          id="plus-server"
+          onChange={(e) =>
+            dispatch({ type: "SET_PLUS_SERVER_VALUE", value: e.target.checked })
+          }
+        />
+      </FormControl>
       <Center mt={6}>
         <RadioGroup
           value={state.playstyle ?? "ALL"}
