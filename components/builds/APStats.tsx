@@ -1,3 +1,4 @@
+import { Ability } from ".prisma/client";
 import { Flex } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
 import AbilityIcon from "components/common/AbilityIcon";
@@ -14,7 +15,7 @@ import { mainOnlyAbilities } from "utils/lists/abilities";
 
 interface Props {
   stats: {
-    code: string;
+    code: Ability;
     average: number;
     counts: number[][];
   }[];

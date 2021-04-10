@@ -224,7 +224,7 @@ export function useBuildsByWeapon() {
   )
     .map(([abilityCode, apCounts]) => {
       return {
-        code: abilityCode,
+        code: abilityCode as Ability,
         average:
           Object.entries(apCounts).reduce(
             (acc, cur) => Number(cur[0]) * cur[1] + acc,
