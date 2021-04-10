@@ -1,8 +1,8 @@
+import service from "app/freeagents/service";
 import { createRouter } from "pages/api/trpc/[trpc]";
 import { throwIfNotLoggedIn } from "utils/api";
 import { freeAgentPostSchema } from "utils/validators/fapost";
 import * as z from "zod";
-import service from "./service";
 
 const freeAgentsApi = createRouter()
   .query("posts", {
