@@ -1,13 +1,17 @@
 import { Playstyle } from "@prisma/client";
+import { countries } from "countries-list";
 import { useUser } from "hooks/common";
 import { useRouter } from "next/router";
-import { Dispatch, useReducer } from "react";
+import { Dispatch, useMemo, useReducer } from "react";
 import { setSearchParams } from "utils/setSearchParams";
 import { trpc } from "utils/trpc";
+
+type Region = "EUROPE" | "AMERICAS" | "ASIA";
 
 export interface UseFreeAgentsState {
   playstyle?: Playstyle;
   weapon?: string;
+  region?: Region;
   xp: boolean;
   plusServer: boolean;
 }
@@ -28,6 +32,10 @@ type Action =
   | {
       type: "SET_WEAPON";
       value?: string;
+    }
+  | {
+      type: "SET_REGION";
+      value?: Region;
     };
 
 export type UseFreeAgentsDispatch = Dispatch<Action>;
@@ -63,6 +71,8 @@ export function useFreeAgents() {
           return { ...oldState, plusServer: action.value };
         case "SET_WEAPON":
           return { ...oldState, weapon: action.value };
+        case "SET_REGION":
+          return { ...oldState, region: action.value };
         default:
           return oldState;
       }
@@ -87,6 +97,23 @@ export function useFreeAgents() {
     };
   }
 
+  const continentCodeToRegion = new Map<string, Region>([
+    ["AF", "EUROPE"],
+    ["AN", "EUROPE"],
+    ["AS", "ASIA"],
+    ["EU", "EUROPE"],
+    ["NA", "AMERICAS"],
+    ["OC", "ASIA"],
+    ["SA", "AMERICAS"],
+  ]);
+
+  const countryCodeToRegion = useMemo(() => {
+    return Object.entries(countries).reduce((acc, cur) => {
+      acc.set(cur[0], continentCodeToRegion.get(cur[1].continent)!);
+      return acc;
+    }, new Map<string, Region>());
+  }, []);
+
   const filteredPostsData = (postsData ?? []).filter((post) => {
     if (state.playstyle && !post.playstyles.includes(state.playstyle)) {
       return false;
@@ -105,6 +132,13 @@ export function useFreeAgents() {
       !post.user.profile?.weaponPool.some((wpn) => wpn === state.weapon)
     ) {
       return false;
+    }
+
+    if (state.region && !post.user.profile?.country) return false;
+    if (state.region && post.user.profile?.country) {
+      return (
+        countryCodeToRegion.get(post.user.profile.country) === state.region
+      );
     }
 
     return true;

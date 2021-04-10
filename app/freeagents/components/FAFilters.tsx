@@ -10,8 +10,24 @@ import {
 } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
 import { Playstyle } from "@prisma/client";
+import MySelect from "components/common/MySelect";
 import WeaponSelector from "components/common/WeaponSelector";
 import { UseFreeAgentsDispatch, UseFreeAgentsState } from "../hooks";
+
+const regionOptions = [
+  {
+    label: "Americas",
+    value: "AMERICAS",
+  },
+  {
+    label: "Europe",
+    value: "EUROPE",
+  },
+  {
+    label: "Asia/Oceania",
+    value: "ASIA",
+  },
+] as const;
 
 export default function FAFilters({
   state,
@@ -46,10 +62,19 @@ export default function FAFilters({
       </FormControl>
       <Box>
         <WeaponSelector
-          value={state.weapon}
-          isClearable
-          setValue={(value) => dispatch({ type: "SET_WEAPON", value })}
           isMulti={false}
+          isClearable
+          value={state.weapon}
+          setValue={(value) => dispatch({ type: "SET_WEAPON", value })}
+        />
+      </Box>
+      <Box>
+        <MySelect
+          isMulti={false}
+          isClearable
+          value={regionOptions.find((option) => state.region === option.value)}
+          options={regionOptions}
+          setValue={(value) => dispatch({ type: "SET_REGION", value })}
         />
       </Box>
       <Center mt={6}>

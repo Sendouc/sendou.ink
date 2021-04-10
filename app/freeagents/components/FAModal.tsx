@@ -21,6 +21,7 @@ import {
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { t, Trans } from "@lingui/macro";
+import { PostsData } from "app/freeagents/service";
 import MarkdownTextarea from "components/common/MarkdownTextarea";
 import { Controller, useForm } from "react-hook-form";
 import { FiTrash } from "react-icons/fi";
@@ -32,7 +33,6 @@ import {
   freeAgentPostSchema,
 } from "utils/validators/fapost";
 import * as z from "zod";
-import { PostsData } from "../service";
 
 interface Props {
   onClose: () => void;

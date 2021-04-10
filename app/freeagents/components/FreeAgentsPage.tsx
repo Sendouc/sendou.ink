@@ -7,7 +7,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
-import { useFreeAgents } from "app/freeAgents/hooks";
+import { useFreeAgents } from "app/freeagents/hooks";
 import { useMyTheme, useUser } from "hooks/common";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
