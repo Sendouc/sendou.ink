@@ -36,12 +36,13 @@ import * as z from "zod";
 
 interface Props {
   onClose: () => void;
+  refetchQuery: () => void;
   post?: Unpacked<PostsData>;
 }
 
 type FormData = z.infer<typeof freeAgentPostSchema>;
 
-const FAModal: React.FC<Props> = ({ onClose, post }) => {
+const FAModal = ({ onClose, post, refetchQuery }: Props) => {
   const utils = trpc.useQueryUtils();
 
   const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
@@ -57,7 +58,7 @@ const FAModal: React.FC<Props> = ({ onClose, post }) => {
           "success"
         )
       );
-      //refetchQuery();
+      refetchQuery();
       utils.invalidateQuery(["freeAgents.posts"]);
       onClose();
     },
@@ -69,7 +70,7 @@ const FAModal: React.FC<Props> = ({ onClose, post }) => {
   const deletePostMutation = trpc.useMutation("freeAgents.deletePost", {
     onSuccess() {
       toast(getToastOptions(t`Free agent post deleted`, "success"));
-      //refetchQuery();
+      refetchQuery();
       utils.invalidateQuery(["freeAgents.posts"]);
       onClose();
     },

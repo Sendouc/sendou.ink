@@ -22,6 +22,7 @@ import MatchesInfo from "./MatchesInfo";
 const FreeAgentsPage = () => {
   const {
     postsData,
+    refetchPosts,
     likesData,
     isLoading,
     usersPost,
@@ -67,7 +68,11 @@ const FreeAgentsPage = () => {
   return (
     <>
       {modalIsOpen && (
-        <FAModal post={usersPost} onClose={() => setModalIsOpen(false)} />
+        <FAModal
+          post={usersPost}
+          onClose={() => setModalIsOpen(false)}
+          refetchQuery={refetchPosts}
+        />
       )}
       {user && (
         <Button size="sm" onClick={() => setModalIsOpen(true)}>

@@ -51,13 +51,11 @@ export function useFreeAgents() {
   const router = useRouter();
   const [user] = useUser();
 
-  const { data: postsData } = trpc.useQuery(
-    ["freeAgents.posts"] /*{
+  const posts = trpc.useQuery(["freeAgents.posts"], {
     enabled: false,
-  }*/
-  );
+  });
 
-  const usersPost = postsData?.find(
+  const usersPost = posts.data?.find(
     (post) => post.user.discordId === user?.discordId
   );
 
@@ -144,7 +142,7 @@ export function useFreeAgents() {
     }, new Map<string, FreeAgentRegion>());
   }, []);
 
-  const filteredPostsData = (postsData ?? []).filter((post) => {
+  const filteredPostsData = (posts.data ?? []).filter((post) => {
     if (state.playstyle && !post.playstyles.includes(state.playstyle)) {
       return false;
     }
@@ -176,9 +174,10 @@ export function useFreeAgents() {
 
   return {
     postsData: filteredPostsData,
-    allPostsCount: (postsData ?? []).length,
+    refetchPosts: posts.refetch,
+    allPostsCount: (posts.data ?? []).length,
     likesData,
-    isLoading: !postsData,
+    isLoading: !posts.data,
     usersPost,
     matchedPosts: (likesData?.matchedPostIds ?? []).map((id) =>
       (filteredPostsData ?? []).find((post) => post.id === id)
