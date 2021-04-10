@@ -43,19 +43,21 @@ const navIcons: {
     | { component: React.ReactNode; code: string }
   )[];
 }[] = [
-  {
-    code: "xsearch",
-    displayName: t`Top 500`,
-    menuItems: [
-      { code: "xsearch", displayName: t`Browser` },
-      { code: "xtrends", displayName: t`Tier Lists` },
-    ],
-  },
+  // {
+  //   code: "xsearch",
+  //   displayName: t`Top 500`,
+  //   menuItems: [
+  //     { code: "xsearch", displayName: t`Browser` },
+  //     { code: "xtrends", displayName: t`Tier Lists` },
+  //   ],
+  // },
   // {
   //   code: "leaderboards",
   //   displayName: t`Leaderboards`,
   //   menuItems: [],
   // },
+  { code: "xsearch", displayName: t`Browser`, menuItems: [] },
+  { code: "xsearch", displayName: t`Tier Lists`, menuItems: [] },
   {
     code: "sr",
     displayName: "Salmon Run",
@@ -93,20 +95,22 @@ const navIcons: {
   { code: "u", displayName: t`Users`, menuItems: [] },
   { code: "freeagents", displayName: t`Free Agents`, menuItems: [] },
   { code: "t", displayName: t`Teams`, menuItems: [] },
-  {
-    code: "plans",
-    displayName: t`Maps`,
-    menuItems: [
-      {
-        code: "plans",
-        displayName: t`Map Planner`,
-      },
-      {
-        code: "maps",
-        displayName: t`Maplist Generator`,
-      },
-    ],
-  },
+  { code: "plans", displayName: t`Plans`, menuItems: [] },
+  { code: "plans", displayName: t`Map Lists`, menuItems: [] },
+  // {
+  //   code: "plans",
+  //   displayName: t`Maps`,
+  //   menuItems: [
+  //     {
+  //       code: "plans",
+  //       displayName: t`Map Planner`,
+  //     },
+  //     {
+  //       code: "maps",
+  //       displayName: t`Maplist Generator`,
+  //     },
+  //   ],
+  // },
   // { code: "tournaments", displayName: t`Tournaments`, menuItems: [] },
   {
     code: "plus",
