@@ -192,10 +192,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       <NextAuthProvider session={pageProps.session}>
         <ChakraProvider theme={extendedTheme}>
           <I18nProvider i18n={i18n}>
-            <Layout
-              // @ts-expect-error
-              header={Component.header}
-            >
+            <Layout>
               <QueryClientProvider client={queryClient}>
                 <Hydrate
                   state={trpc.useDehydratedState(pageProps.dehydratedState)}
