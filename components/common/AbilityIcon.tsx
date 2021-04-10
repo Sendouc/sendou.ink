@@ -1,5 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import Image from "next/image";
+import { abilities } from "utils/lists/abilities";
 
 //https://github.com/loadout-ink/splat2-calc
 
@@ -10,10 +11,12 @@ const sizeMap = {
   SUBTINY: 20,
 } as const;
 
+type AbilityMap = typeof abilities[number];
+type AbilityCode = AbilityMap["code"];
+
 interface AbilityIconProps {
-  // TODO: use enum from generated/graphql.tsx
-  ability: string | "EMPTY";
-  size: "MAIN" | "SUB" | "TINY" | "SUBTINY";
+  ability: AbilityCode | "UNKNOWN";
+  size: keyof typeof sizeMap;
   loading?: "eager";
 }
 
@@ -23,6 +26,7 @@ const AbilityIcon: React.FC<AbilityIconProps> = ({
   loading,
 }) => {
   const sizeNumber = sizeMap[size];
+  const abilityName = abilities.find((a) => a.code === ability)?.name;
 
   return (
     <Box
@@ -45,8 +49,9 @@ const AbilityIcon: React.FC<AbilityIconProps> = ({
         src={`/abilityIcons/${ability}.png`}
         width={sizeNumber}
         height={sizeNumber}
-        alt={ability}
+        alt={abilityName}
         loading={loading ?? "lazy"}
+        title={abilityName}
       />
     </Box>
   );
