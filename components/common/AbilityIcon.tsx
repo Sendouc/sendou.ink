@@ -1,3 +1,4 @@
+import { Ability } from ".prisma/client";
 import { Box } from "@chakra-ui/react";
 import Image from "next/image";
 import { abilities } from "utils/lists/abilities";
@@ -11,11 +12,8 @@ const sizeMap = {
   SUBTINY: 20,
 } as const;
 
-type AbilityMap = typeof abilities[number];
-type AbilityCode = AbilityMap["code"];
-
 interface AbilityIconProps {
-  ability: AbilityCode | "UNKNOWN";
+  ability: Ability | "UNKNOWN";
   size: keyof typeof sizeMap;
   loading?: "eager";
 }
