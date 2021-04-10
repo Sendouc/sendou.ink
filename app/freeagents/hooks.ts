@@ -36,9 +36,14 @@ type Action =
   | {
       type: "SET_REGION";
       value?: Region;
+    }
+  | {
+      type: "RESET_FILTERS";
     };
 
 export type UseFreeAgentsDispatch = Dispatch<Action>;
+
+const defaultState: UseFreeAgentsState = { xp: false, plusServer: false };
 
 export function useFreeAgents() {
   const router = useRouter();
@@ -73,6 +78,8 @@ export function useFreeAgents() {
           return { ...oldState, weapon: action.value };
         case "SET_REGION":
           return { ...oldState, region: action.value };
+        case "RESET_FILTERS":
+          return defaultState;
         default:
           return oldState;
       }
@@ -87,7 +94,7 @@ export function useFreeAgents() {
         router.query.playstyle as any
       )
     ) {
-      return { xp: false, plusServer: false };
+      return defaultState;
     }
 
     return {

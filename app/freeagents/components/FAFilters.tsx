@@ -44,6 +44,7 @@ export default function FAFilters({
         </FormLabel>
         <Switch
           id="xp"
+          isChecked={state.xp}
           onChange={(e) =>
             dispatch({ type: "SET_XP_VALUE", value: e.target.checked })
           }
@@ -55,6 +56,7 @@ export default function FAFilters({
         </FormLabel>
         <Switch
           id="plus-server"
+          isChecked={state.plusServer}
           onChange={(e) =>
             dispatch({ type: "SET_PLUS_SERVER_VALUE", value: e.target.checked })
           }

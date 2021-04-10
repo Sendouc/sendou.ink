@@ -5,6 +5,7 @@ import {
   AlertTitle,
   Box,
   Button,
+  Flex,
 } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
 import { useFreeAgents } from "app/freeagents/hooks";
@@ -118,9 +119,22 @@ const FreeAgentsPage = () => {
           focusOnMatch={(id) => setPostIdToScrollTo(id)}
         />
       ) : null}
-      <Box fontSize="small" color={gray}>
-        Showing {postsData.length} posts out of {allPostsCount}
-      </Box>
+      {allPostsCount > 0 && (
+        <Flex align="center" fontSize="small" color={gray}>
+          Showing {postsData.length} posts out of {allPostsCount}{" "}
+          <Button
+            onClick={() => dispatch({ type: "RESET_FILTERS" })}
+            visibility={
+              postsData.length === allPostsCount ? "hidden" : "visible"
+            }
+            ml={2}
+            size="sm"
+            variant="ghost"
+          >
+            Reset filters
+          </Button>
+        </Flex>
+      )}
       {postsData.map((post) => (
         <FreeAgentSection
           key={post.id}
