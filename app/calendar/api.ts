@@ -4,7 +4,7 @@ import { eventSchema } from "utils/validators/event";
 import * as z from "zod";
 import service from "./service";
 
-const plusApi = createRouter()
+const calendarApi = createRouter()
   .query("events", {
     resolve() {
       return service.events();
@@ -38,4 +38,4 @@ const plusApi = createRouter()
       });
     },
   });
-export default plusApi;
+export default calendarApi;

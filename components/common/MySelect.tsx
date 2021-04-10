@@ -22,6 +22,7 @@ interface SelectProps {
         value: string;
         data?: any;
       }>;
+  name?: string;
   width?: string;
   value?: ValueType<OptionTypeBase, boolean>;
   setValue: (value: any) => void;
@@ -58,6 +59,7 @@ const MySelect: React.FC<SelectProps> = ({
   components,
   value,
   setValue,
+  name,
   isClearable = false,
   autoFocus = false,
   isMulti = false,
@@ -97,10 +99,13 @@ const MySelect: React.FC<SelectProps> = ({
     return undefined;
   };
 
+  console.log("value", value);
+
   return (
     <ReactSelect
       className="basic-single"
       classNamePrefix="select"
+      name={name}
       value={value}
       inputValue={inputValue}
       onInputChange={(newValue) => setInputValue(newValue)}

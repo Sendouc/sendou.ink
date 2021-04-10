@@ -52,7 +52,7 @@ export function EventModal({
     defaultValues: event,
   });
 
-  const addEvent = trpc.useMutation("calendar.addEvent", {
+  const addEventMutation = trpc.useMutation("calendar.addEvent", {
     onSuccess() {
       toast(getToastOptions(t`Event added`, "success"));
       refetchQuery();
@@ -62,7 +62,7 @@ export function EventModal({
       toast(getToastOptions(error.message, "error"));
     },
   });
-  const editEvent = trpc.useMutation("calendar.editEvent", {
+  const editEventMutation = trpc.useMutation("calendar.editEvent", {
     onSuccess() {
       toast(getToastOptions(t`Event updated`, "success"));
       refetchQuery();
@@ -72,7 +72,7 @@ export function EventModal({
       toast(getToastOptions(error.message, "error"));
     },
   });
-  const deleteEvent = trpc.useMutation("calendar.deleteEvent", {
+  const deleteEventMutation = trpc.useMutation("calendar.deleteEvent", {
     onSuccess() {
       toast(getToastOptions(t`Event deleted`, "success"));
       refetchQuery();
@@ -87,11 +87,11 @@ export function EventModal({
 
   const onSubmit = async (values: FormData) => {
     event
-      ? editEvent.mutate({ event: values, eventId: event.id })
-      : addEvent.mutate(values);
+      ? editEventMutation.mutate({ event: values, eventId: event.id })
+      : addEventMutation.mutate(values);
   };
 
-  const onDelete = (eventId: number) => deleteEvent.mutate({ eventId });
+  const onDelete = (eventId: number) => deleteEventMutation.mutate({ eventId });
 
   const defaultDate = new Date();
   defaultDate.setHours(defaultDate.getHours() + 1, 0);
@@ -116,7 +116,7 @@ export function EventModal({
                   variant="outline"
                   color="red.500"
                   mb={6}
-                  isLoading={deleteEvent.status === "loading"}
+                  isLoading={deleteEventMutation.isLoading}
                   onClick={async () => {
                     if (window.confirm(t`Delete the event?`))
                       onDelete(event.id);
@@ -265,14 +265,19 @@ export function EventModal({
                 mr={3}
                 type="submit"
                 isLoading={
-                  addEvent.status === "loading" ||
-                  editEvent.status === "loading"
+                  addEventMutation.isLoading || editEventMutation.isLoading
                 }
                 data-cy="save-button"
               >
                 <Trans>Save</Trans>
               </Button>
-              <Button onClick={onClose} variant="outline">
+              <Button
+                onClick={onClose}
+                variant="outline"
+                isDisabled={
+                  addEventMutation.isLoading || editEventMutation.isLoading
+                }
+              >
                 <Trans>Cancel</Trans>
               </Button>
             </ModalFooter>
