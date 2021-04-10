@@ -1,3 +1,5 @@
+import { weapons } from "./lists/weapons";
+
 export const getLocalizedMonthYearString = (
   month: number,
   year: number,
@@ -57,3 +59,20 @@ export const getProfilePath = ({
   discordId: string;
   customUrlPath: string | null | undefined;
 }) => (customUrlPath ? `/u/${customUrlPath}` : `/u/${discordId}`);
+
+export const getBooleanFromString = (value: unknown) => {
+  if (typeof value !== "string") return undefined;
+
+  if (value === "true") return true;
+  if (value === "false") return false;
+
+  return undefined;
+};
+
+export const getWeaponFromString = (value: unknown) => {
+  if (typeof value !== "string") return undefined;
+
+  if (weapons.includes(value as any)) return value;
+
+  return undefined;
+};

@@ -109,7 +109,7 @@ export default function FAFilters({
             onChange={(value) =>
               dispatch({
                 type: "SET_PLAYSTYLE",
-                playstyle: value === "ALL" ? undefined : (value as Playstyle),
+                value: value === "ALL" ? undefined : (value as Playstyle),
               })
             }
           >

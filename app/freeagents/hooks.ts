@@ -3,15 +3,17 @@ import { countries } from "countries-list";
 import { useUser } from "hooks/common";
 import { useRouter } from "next/router";
 import { Dispatch, useMemo, useReducer } from "react";
-import { setSearchParams } from "utils/setSearchParams";
+import { setManySearchParams, setSearchParams } from "utils/setSearchParams";
+import { getBooleanFromString, getWeaponFromString } from "utils/strings";
 import { trpc } from "utils/trpc";
+import { isFreeAgentPlaystyle, isFreeAgentRegion } from "utils/typeGuards";
 
-type Region = "EUROPE" | "AMERICAS" | "ASIA";
+export type FreeAgentRegion = "EUROPE" | "AMERICAS" | "ASIA";
 
 export interface UseFreeAgentsState {
   playstyle?: Playstyle;
   weapon?: string;
-  region?: Region;
+  region?: FreeAgentRegion;
   xp: boolean;
   plusServer: boolean;
 }
@@ -19,7 +21,7 @@ export interface UseFreeAgentsState {
 type Action =
   | {
       type: "SET_PLAYSTYLE";
-      playstyle?: Playstyle;
+      value?: Playstyle;
     }
   | {
       type: "SET_XP_VALUE";
@@ -35,7 +37,7 @@ type Action =
     }
   | {
       type: "SET_REGION";
-      value?: Region;
+      value?: FreeAgentRegion;
     }
   | {
       type: "RESET_FILTERS";
@@ -67,18 +69,28 @@ export function useFreeAgents() {
     (oldState: UseFreeAgentsState, action: Action) => {
       switch (action.type) {
         case "SET_PLAYSTYLE":
-          setSearchParams("playstyle", action.playstyle);
+          setSearchParams("playstyle", action.value);
 
-          return { ...oldState, playstyle: action.playstyle };
+          return { ...oldState, playstyle: action.value };
         case "SET_XP_VALUE":
+          setSearchParams("xp", "" + action.value);
+
           return { ...oldState, xp: action.value };
         case "SET_PLUS_SERVER_VALUE":
+          setSearchParams("plusServer", "" + action.value);
+
           return { ...oldState, plusServer: action.value };
         case "SET_WEAPON":
+          setSearchParams("weapon", action.value);
+
           return { ...oldState, weapon: action.value };
         case "SET_REGION":
+          setSearchParams("region", action.value);
+
           return { ...oldState, region: action.value };
         case "RESET_FILTERS":
+          setManySearchParams([], true);
+
           return defaultState;
         default:
           return oldState;
@@ -88,23 +100,34 @@ export function useFreeAgents() {
   );
 
   function getInitialState() {
-    if (
-      typeof router.query.playstyle !== "string" ||
-      !["FRONTLINE", "MIDLINE", "BACKLINE"].includes(
-        router.query.playstyle as any
-      )
-    ) {
-      return defaultState;
+    const result: UseFreeAgentsState = { ...defaultState };
+    if (isFreeAgentPlaystyle(router.query.playstyle)) {
+      result.playstyle = router.query.playstyle;
     }
 
-    return {
-      playstyle: router.query.playstyle as Playstyle,
-      xp: false,
-      plusServer: false,
-    };
+    const xp = getBooleanFromString(router.query.xp);
+    if (xp !== undefined) {
+      result.xp = xp;
+    }
+
+    const plusServer = getBooleanFromString(router.query.plusServer);
+    if (plusServer !== undefined) {
+      result.plusServer = plusServer;
+    }
+
+    const weapon = getWeaponFromString(router.query.weapon);
+    if (weapon) {
+      result.weapon = weapon;
+    }
+
+    if (isFreeAgentRegion(router.query.region)) {
+      result.region = router.query.region;
+    }
+
+    return result;
   }
 
-  const continentCodeToRegion = new Map<string, Region>([
+  const continentCodeToRegion = new Map<string, FreeAgentRegion>([
     ["AF", "EUROPE"],
     ["AN", "EUROPE"],
     ["AS", "ASIA"],
@@ -118,7 +141,7 @@ export function useFreeAgents() {
     return Object.entries(countries).reduce((acc, cur) => {
       acc.set(cur[0], continentCodeToRegion.get(cur[1].continent)!);
       return acc;
-    }, new Map<string, Region>());
+    }, new Map<string, FreeAgentRegion>());
   }, []);
 
   const filteredPostsData = (postsData ?? []).filter((post) => {
