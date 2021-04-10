@@ -18,7 +18,7 @@ interface SelectorProps {
 }
 
 interface SingleSelectorProps extends SelectorProps {
-  value?: string;
+  value?: string | null;
   setValue: (value: string) => void;
   isClearable?: true;
   isMulti: false;
@@ -66,6 +66,7 @@ const WeaponSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = (
 
   return (
     <MySelect
+      name="weapon"
       options={getWeaponArray().map((category) => ({
         label: i18n._(category.name),
         options: category.weapons.map((weapon) => ({

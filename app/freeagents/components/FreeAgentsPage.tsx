@@ -69,13 +69,15 @@ const FreeAgentsPage = () => {
       {modalIsOpen && (
         <FAModal post={usersPost} onClose={() => setModalIsOpen(false)} />
       )}
-      <Button size="sm" onClick={() => setModalIsOpen(true)}>
-        {usersPost ? (
-          <Trans>Edit free agent post</Trans>
-        ) : (
-          <Trans>New free agent post</Trans>
-        )}
-      </Button>
+      {user && (
+        <Button size="sm" onClick={() => setModalIsOpen(true)}>
+          {usersPost ? (
+            <Trans>Edit free agent post</Trans>
+          ) : (
+            <Trans>New free agent post</Trans>
+          )}
+        </Button>
+      )}
       {usersPost &&
         usersPost.updatedAt.getTime() < dateThreeWeeksAgo.getTime() && (
           <Alert
@@ -112,15 +114,16 @@ const FreeAgentsPage = () => {
             </AlertDescription>
           </Alert>
         )}
-      {!isLoading && <FAFilters state={state} dispatch={dispatch} />}
+
       {usersPost && likesData ? (
         <MatchesInfo
           matchedPosts={matchedPosts}
           focusOnMatch={(id) => setPostIdToScrollTo(id)}
         />
       ) : null}
+      {!isLoading && <FAFilters state={state} dispatch={dispatch} />}
       {allPostsCount > 0 && (
-        <Flex align="center" fontSize="small" color={gray}>
+        <Flex align="center" fontSize="small" color={gray} mt={4}>
           Showing {postsData.length} posts out of {allPostsCount}{" "}
           <Button
             onClick={() => dispatch({ type: "RESET_FILTERS" })}
