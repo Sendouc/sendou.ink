@@ -3,7 +3,6 @@ import { t } from "@lingui/macro";
 import { RankedMode } from "@prisma/client";
 import Top500Table from "app/xrank/components/Top500Table";
 import Page from "components/common/Page";
-import HeaderBanner from "components/layout/HeaderBanner";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import MyHead from "../../../components/common/MyHead";
@@ -85,13 +84,5 @@ const XSearchPage = ({ placements, monthOptions }: XSearchPageProps) => {
     </>
   );
 };
-
-XSearchPage.header = (
-  <HeaderBanner
-    icon="xsearch"
-    title="Top 500 Browser"
-    subtitle="History of X Rank"
-  />
-);
 
 export default XSearchPage;

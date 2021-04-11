@@ -1,6 +1,7 @@
 import { Text } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
 import MyLink from "components/common/MyLink";
+import NewTable from "components/common/NewTable";
 import {
   Table,
   TableBody,
@@ -22,6 +23,30 @@ interface Props {
 
 const Top500Table: React.FC<Props> = ({ placements }) => {
   const { gray } = useMyTheme();
+
+  return (
+    <NewTable
+      headers={[
+        { name: "", dataKey: "ranking" },
+        { name: "name", dataKey: "name" },
+        { name: "x power", dataKey: "xPower" },
+        { name: "weapon", dataKey: "weapon" },
+      ]}
+      data={placements.map((placement) => {
+        return {
+          id: placement.ranking,
+          name: (
+            <MyLink href={`/player/${placement.player.switchAccountId}`}>
+              {placement.playerName}
+            </MyLink>
+          ),
+          ranking: getRankingString(placement.ranking),
+          xPower: placement.xPower,
+          weapon: placement.weapon,
+        };
+      })}
+    />
+  );
 
   return (
     <>
