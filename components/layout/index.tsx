@@ -9,6 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import MyContainer from "components/common/MyContainer";
+import MyLink from "components/common/MyLink";
 import { useMyTheme } from "hooks/common";
 import Image from "next/image";
 import Link from "next/link";
@@ -164,7 +165,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <IconNavBar /> */}
       <Banner />
       <Flex>
-        <Box ml={2} width="18rem">
+        <Box ml={2} width="12rem" top={0} position="sticky">
           <Box
             justifySelf="center"
             color="gray.600"
@@ -194,27 +195,28 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             <LanguageSelector />
           </Flex>
           {navIcons.map((icon) => (
-            <Flex
-              key={icon.code}
-              width="100%"
-              rounded="lg"
-              p={2}
-              fontSize="sm"
-              fontWeight="bold"
-              align="center"
-              whiteSpace="nowrap"
-              _hover={{
-                bg: secondaryBgColor,
-              }}
-            >
-              <Image
-                src={`/layout/${icon.code}.png`}
-                height={32}
-                width={32}
-                priority
-              />
-              <Box ml={2}>{icon.displayName}</Box>
-            </Flex>
+            <MyLink key={icon.code} href={"/" + icon.code} isColored={false}>
+              <Flex
+                width="100%"
+                rounded="lg"
+                p={2}
+                fontSize="sm"
+                fontWeight="bold"
+                align="center"
+                whiteSpace="nowrap"
+                _hover={{
+                  bg: secondaryBgColor,
+                }}
+              >
+                <Image
+                  src={`/layout/${icon.code}.png`}
+                  height={32}
+                  width={32}
+                  priority
+                />
+                <Box ml={2}>{icon.displayName}</Box>
+              </Flex>
+            </MyLink>
           ))}
 
           <Center mt={6}>
