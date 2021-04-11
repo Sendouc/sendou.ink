@@ -8,7 +8,6 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
-import MyContainer from "components/common/MyContainer";
 import MyLink from "components/common/MyLink";
 import { useMyTheme } from "hooks/common";
 import Image from "next/image";
@@ -165,19 +164,19 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <IconNavBar /> */}
       <Banner />
       <Flex>
-        <Box ml={2} width="12rem" top={0} position="sticky">
-          <Box
+        <Box m={4} width="12rem" top={0} position="sticky">
+          <Flex
             justifySelf="center"
             color="gray.600"
             fontWeight="bold"
             letterSpacing={1}
-            textAlign="center"
+            justify="center"
+            align="flex-start"
             mb={1}
-            mt={2}
           >
             {" "}
             <Link href="/">sendou.ink</Link>
-          </Box>
+          </Flex>
           <Flex justifyContent="space-evenly" mb={2}>
             <IconButton
               data-cy="color-mode-toggle"
@@ -231,12 +230,14 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             </a>
           </Center>
         </Box>
-        <Flex flexDirection="column" minH="100vh" flexGrow={1} pt={4}>
-          <MyContainer wide={isWide} mt={2}>
-            {children}
-          </MyContainer>
+        {/* <Flex flexDirection="column" minH="100vh" flexGrow={1} pt={4}>
+          <MyContainer wide={isWide}>{children}</MyContainer>
         </Flex>
-        <Box width="12rem">Sidebar2</Box>
+        <Box width="12rem" mr={4} mt={4}>
+          <Button size="sm">New event</Button>
+          <Input mt={2} />
+        </Box> */}
+        {children}
       </Flex>
       <Footer />
     </SWRConfig>
