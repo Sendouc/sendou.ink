@@ -9,7 +9,6 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/table";
-import { useMyTheme } from "hooks/common";
 import React from "react";
 
 export default function NewTable({
@@ -24,7 +23,6 @@ export default function NewTable({
   }[];
   data: (Record<string, React.ReactNode> & { id: number })[];
 }) {
-  const { gray } = useMyTheme();
   return (
     <Box
       border="1px solid"

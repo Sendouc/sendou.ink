@@ -1,5 +1,5 @@
-import { Select } from "@chakra-ui/react";
-import ModeSelector from "components/common/ModeSelector";
+import { RankedMode } from ".prisma/client";
+import { Radio, RadioGroup, Select, Stack } from "@chakra-ui/react";
 import Page from "components/common/Page";
 import MyHead from "../../../components/common/MyHead";
 import { useXTrends } from "../hooks/useXTrends";
@@ -95,10 +95,21 @@ const XTrendsPage = ({ trends }: XTrendsPageProps) => {
                 </option>
               ))}
             </Select>
-            <ModeSelector
-              mode={state.mode}
-              setMode={(mode) => dispatch({ type: "SET_MODE", mode })}
-            />
+            <RadioGroup
+              value={state.mode}
+              onChange={(value) =>
+                dispatch({ type: "SET_MODE", mode: value as RankedMode })
+              }
+              mt={4}
+              mb={8}
+            >
+              <Stack direction="column">
+                <Radio value="SZ">Splat Zones</Radio>
+                <Radio value="TC">Tower Control</Radio>
+                <Radio value="RM">Rainmaker</Radio>
+                <Radio value="CB">Clam Blitz</Radio>
+              </Stack>
+            </RadioGroup>
           </>
         }
       >
