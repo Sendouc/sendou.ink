@@ -69,7 +69,7 @@ const XSearchPage = ({ placements, monthOptions }: XSearchPageProps) => {
               mt={4}
               mb={8}
             >
-              <Stack direction="column">
+              <Stack direction={["row", null, "column"]}>
                 <Radio value="SZ">Splat Zones</Radio>
                 <Radio value="TC">Tower Control</Radio>
                 <Radio value="RM">Rainmaker</Radio>

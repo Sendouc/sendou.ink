@@ -14,7 +14,7 @@ export default function Page({
 }) {
   return (
     <Flex flexGrow={1} flexDir={["column-reverse", null, "row"]}>
-      <Flex flexDirection="column" minH="100vh" mx={4} mt="23px" width="100%">
+      <Flex flexDirection="column" minH="100vh" mt="23px" width="100%">
         <MyContainer wide={isWide}>{children}</MyContainer>
       </Flex>
 

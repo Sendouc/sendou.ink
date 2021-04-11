@@ -12,7 +12,7 @@ export default function RightSidebar({
       mx={4}
       mt="23px"
       top={4}
-      position="sticky"
+      position={["inherit", null, "sticky"]}
       alignSelf="flex-start"
     >
       {children}

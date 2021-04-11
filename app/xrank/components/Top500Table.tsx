@@ -27,7 +27,7 @@ const Top500Table: React.FC<Props> = ({ placements }) => {
   return (
     <NewTable
       headers={[
-        { name: "", dataKey: "ranking" },
+        { name: "rank", dataKey: "ranking" },
         { name: "name", dataKey: "name" },
         { name: "x power", dataKey: "xPower" },
         { name: "weapon", dataKey: "weapon" },
@@ -36,13 +36,16 @@ const Top500Table: React.FC<Props> = ({ placements }) => {
         return {
           id: placement.ranking,
           name: (
-            <MyLink href={`/player/${placement.player.switchAccountId}`}>
+            <MyLink
+              href={`/player/${placement.player.switchAccountId}`}
+              isColored={false}
+            >
               {placement.playerName}
             </MyLink>
           ),
           ranking: getRankingString(placement.ranking),
           xPower: placement.xPower,
-          weapon: placement.weapon,
+          weapon: <WeaponImage size={32} name={placement.weapon} />,
         };
       })}
     />
