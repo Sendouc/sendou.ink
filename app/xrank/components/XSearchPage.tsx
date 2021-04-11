@@ -2,11 +2,12 @@ import { Radio, RadioGroup, Select, Stack } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import { RankedMode } from "@prisma/client";
 import Top500Table from "app/xrank/components/Top500Table";
+import Page from "components/common/Page";
 import HeaderBanner from "components/layout/HeaderBanner";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Top500PlacementsByMonth } from "../service";
 import MyHead from "../../../components/common/MyHead";
+import { Top500PlacementsByMonth } from "../service";
 
 export interface XSearchPageProps {
   placements: Top500PlacementsByMonth;
@@ -36,42 +37,51 @@ const XSearchPage = ({ placements, monthOptions }: XSearchPageProps) => {
   return (
     <>
       <MyHead title={t`Top 500 Browser`} />
-      <Select
-        value={`${variables.month},${variables.year}`}
-        onChange={(e) => {
-          const [month, year] = e.target.value.split(",");
+      <Page
+        sidebar={
+          <>
+            <Select
+              value={`${variables.month},${variables.year}`}
+              onChange={(e) => {
+                const [month, year] = e.target.value.split(",");
 
-          setVariables({
-            ...variables,
-            month: Number(month),
-            year: Number(year),
-          });
-        }}
-        mb={4}
-        maxW={64}
-      >
-        {monthOptions.map((monthYear) => (
-          <option key={monthYear.value} value={monthYear.value}>
-            {monthYear.label}
-          </option>
-        ))}
-      </Select>
-      <RadioGroup
-        value={variables.mode}
-        onChange={(value) =>
-          setVariables({ ...variables, mode: value as RankedMode })
+                setVariables({
+                  ...variables,
+                  month: Number(month),
+                  year: Number(year),
+                });
+              }}
+              mb={4}
+              maxW={64}
+              size="sm"
+              rounded="lg"
+            >
+              {monthOptions.map((monthYear) => (
+                <option key={monthYear.value} value={monthYear.value}>
+                  {monthYear.label}
+                </option>
+              ))}
+            </Select>
+            <RadioGroup
+              value={variables.mode}
+              onChange={(value) =>
+                setVariables({ ...variables, mode: value as RankedMode })
+              }
+              mt={4}
+              mb={8}
+            >
+              <Stack direction="column">
+                <Radio value="SZ">Splat Zones</Radio>
+                <Radio value="TC">Tower Control</Radio>
+                <Radio value="RM">Rainmaker</Radio>
+                <Radio value="CB">Clam Blitz</Radio>
+              </Stack>
+            </RadioGroup>
+          </>
         }
-        mt={4}
-        mb={8}
       >
-        <Stack direction="row">
-          <Radio value="SZ">{t`SZ`}</Radio>
-          <Radio value="TC">{t`TC`}</Radio>
-          <Radio value="RM">{t`RM`}</Radio>
-          <Radio value="CB">{t`CB`}</Radio>
-        </Stack>
-      </RadioGroup>
-      <Top500Table placements={placements} />
+        <Top500Table placements={placements} />
+      </Page>
     </>
   );
 };

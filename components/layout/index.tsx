@@ -170,6 +170,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           top={4}
           position="sticky"
           alignSelf="flex-start"
+          display={["none", null, "block"]}
         >
           <Flex
             justifySelf="center"

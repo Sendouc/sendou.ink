@@ -1,12 +1,10 @@
-import { Box, Select } from "@chakra-ui/react";
-import { Trans } from "@lingui/macro";
+import { Select } from "@chakra-ui/react";
 import ModeSelector from "components/common/ModeSelector";
-import HeaderBanner from "components/layout/HeaderBanner";
-import { useMyTheme } from "hooks/common";
+import Page from "components/common/Page";
+import MyHead from "../../../components/common/MyHead";
 import { useXTrends } from "../hooks/useXTrends";
 import { XTrends } from "../service";
 import TrendTier from "./TrendTier";
-import MyHead from "../../../components/common/MyHead";
 
 const tiers = [
   {
@@ -61,7 +59,6 @@ export interface XTrendsPageProps {
 }
 
 const XTrendsPage = ({ trends }: XTrendsPageProps) => {
-  const { gray } = useMyTheme();
   const {
     state,
     dispatch,
@@ -73,65 +70,67 @@ const XTrendsPage = ({ trends }: XTrendsPageProps) => {
   return (
     <>
       <MyHead title="Top 500 Trends" />
-      <Box color={gray} fontSize="sm" mb={8}>
-        <Trans>
-          Here you can find X Rank Top 500 usage tier lists. For example for a
-          weapon to be in the X tier it needs at least 30 placements in that
-          mode that month. Below the weapon count and X Power average are shown.
-        </Trans>
-      </Box>
-      <Select
-        value={`${state.month},${state.year}`}
-        onChange={(e) => {
-          const [month, year] = e.target.value.split(",");
+      <Page
+        sidebar={
+          <>
+            <Select
+              size="sm"
+              rounded="lg"
+              value={`${state.month},${state.year}`}
+              onChange={(e) => {
+                const [month, year] = e.target.value.split(",");
 
-          dispatch({
-            type: "SET_MONTH_YEAR",
-            month: Number(month),
-            year: Number(year),
-          });
-        }}
-        mt={8}
-        mb={4}
-        maxW={64}
+                dispatch({
+                  type: "SET_MONTH_YEAR",
+                  month: Number(month),
+                  year: Number(year),
+                });
+              }}
+              mb={4}
+              maxW={64}
+            >
+              {monthOptions.map((monthYear) => (
+                <option key={monthYear.value} value={monthYear.value}>
+                  {monthYear.label}
+                </option>
+              ))}
+            </Select>
+            <ModeSelector
+              mode={state.mode}
+              setMode={(mode) => dispatch({ type: "SET_MODE", mode })}
+            />
+          </>
+        }
       >
-        {monthOptions.map((monthYear) => (
-          <option key={monthYear.value} value={monthYear.value}>
-            {monthYear.label}
-          </option>
-        ))}
-      </Select>
-      <ModeSelector
-        mode={state.mode}
-        setMode={(mode) => dispatch({ type: "SET_MODE", mode })}
-      />
-      {tiers.map((tier, i) => (
-        <TrendTier
-          key={tier.label}
-          tier={tier}
-          weapons={weaponData.filter((weapon) => {
-            const targetCount = 500 * (tier.criteria / 100);
-            const previousTargetCount =
-              i === 0 ? Infinity : 500 * (tiers[i - 1].criteria / 100);
+        {/* <Box color={gray} fontSize="sm" mb={8}>
+          <Trans>
+            Here you can find X Rank Top 500 usage tier lists. For example for a
+            weapon to be in the X tier it needs at least 30 placements in that
+            mode that month. Below the weapon count and X Power average are
+            shown.
+          </Trans>
+        </Box> */}
+        {tiers.map((tier, i) => (
+          <TrendTier
+            key={tier.label}
+            tier={tier}
+            weapons={weaponData.filter((weapon) => {
+              const targetCount = 500 * (tier.criteria / 100);
+              const previousTargetCount =
+                i === 0 ? Infinity : 500 * (tiers[i - 1].criteria / 100);
 
-            return (
-              weapon.count >= targetCount && weapon.count < previousTargetCount
-            );
-          })}
-          getDataForChart={getDataForChart}
-          mode={state.mode}
-        />
-      ))}
+              return (
+                weapon.count >= targetCount &&
+                weapon.count < previousTargetCount
+              );
+            })}
+            getDataForChart={getDataForChart}
+            mode={state.mode}
+          />
+        ))}
+      </Page>
     </>
   );
 };
-
-XTrendsPage.header = (
-  <HeaderBanner
-    icon="xsearch"
-    title="Top 500 Trends"
-    subtitle="What's popular in X Rank now and before"
-  />
-);
 
 export default XTrendsPage;

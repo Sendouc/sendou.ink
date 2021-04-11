@@ -1,17 +1,24 @@
 import { Flex } from "@chakra-ui/layout";
 import React from "react";
 import MyContainer from "./MyContainer";
+import RightSidebar from "./RightSidebar";
 
 export default function Page({
   children,
   isWide = false,
+  sidebar,
 }: {
   children: React.ReactNode;
   isWide?: boolean;
+  sidebar?: React.ReactNode;
 }) {
   return (
-    <Flex flexDirection="column" minH="100vh" flexGrow={1} mx={4} mt="23px">
-      <MyContainer wide={isWide}>{children}</MyContainer>
+    <Flex flexGrow={1} flexDir={["column-reverse", null, "row"]}>
+      <Flex flexDirection="column" minH="100vh" mx={4} mt="23px" width="100%">
+        <MyContainer wide={isWide}>{children}</MyContainer>
+      </Flex>
+
+      {sidebar && <RightSidebar>{sidebar}</RightSidebar>}
     </Flex>
   );
 }
