@@ -11,10 +11,7 @@ export default function Page({
 }) {
   return (
     <Flex flexDirection="column" minH="100vh" flexGrow={1} mx={4} mt="23px">
-      <MyContainer wide={isWide}>
-        {children}
-        {children}
-      </MyContainer>
+      <MyContainer wide={isWide}>{children}</MyContainer>
     </Flex>
   );
 }

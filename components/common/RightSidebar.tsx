@@ -7,7 +7,14 @@ export default function RightSidebar({
   children: React.ReactNode;
 }) {
   return (
-    <Box width="12rem" mx={4} mt="23px">
+    <Box
+      width="12rem"
+      mx={4}
+      mt="23px"
+      top={4}
+      position="sticky"
+      alignSelf="flex-start"
+    >
       {children}
     </Box>
   );

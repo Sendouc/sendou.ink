@@ -164,7 +164,13 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <IconNavBar /> */}
       <Banner />
       <Flex>
-        <Box m={4} width="12rem" top={0} position="sticky">
+        <Box
+          m={4}
+          width="12rem"
+          top={4}
+          position="sticky"
+          alignSelf="flex-start"
+        >
           <Flex
             justifySelf="center"
             color="gray.600"
