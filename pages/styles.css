@@ -78,3 +78,7 @@ For Next.JS image
 .rounded {
   border-radius: 50%;
 }
+
+a.nounderline {
+  text-decoration: none !important;
+}

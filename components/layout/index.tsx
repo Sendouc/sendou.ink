@@ -201,7 +201,12 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             <LanguageSelector />
           </Flex>
           {navIcons.map((icon) => (
-            <MyLink key={icon.code} href={"/" + icon.code} isColored={false}>
+            <MyLink
+              key={icon.code}
+              href={"/" + icon.code}
+              isColored={false}
+              noUnderline
+            >
               <Flex
                 width="100%"
                 rounded="lg"
