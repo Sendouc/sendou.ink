@@ -168,6 +168,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           m={4}
           width="12rem"
           top={4}
+          height="100vh"
           position="sticky"
           alignSelf="flex-start"
           display={["none", null, "block"]}
