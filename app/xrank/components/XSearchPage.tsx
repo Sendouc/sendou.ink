@@ -1,7 +1,8 @@
-import { Radio, RadioGroup, Select, Stack } from "@chakra-ui/react";
+import { Flex, Select } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import { RankedMode } from "@prisma/client";
 import Top500Table from "app/xrank/components/Top500Table";
+import ModeSelector from "components/common/ModeSelector";
 import Page from "components/common/Page";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -36,49 +37,38 @@ const XSearchPage = ({ placements, monthOptions }: XSearchPageProps) => {
   return (
     <>
       <MyHead title={t`Top 500 Browser`} />
-      <Page
-        sidebar={
-          <>
-            <Select
-              value={`${variables.month},${variables.year}`}
-              onChange={(e) => {
-                const [month, year] = e.target.value.split(",");
+      <Page>
+        <Flex flexDir={["column", null, "row"]} justify="space-between">
+          <Select
+            value={`${variables.month},${variables.year}`}
+            onChange={(e) => {
+              const [month, year] = e.target.value.split(",");
 
-                setVariables({
-                  ...variables,
-                  month: Number(month),
-                  year: Number(year),
-                });
-              }}
-              mb={4}
-              maxW={64}
-              size="sm"
-              rounded="lg"
-            >
-              {monthOptions.map((monthYear) => (
-                <option key={monthYear.value} value={monthYear.value}>
-                  {monthYear.label}
-                </option>
-              ))}
-            </Select>
-            <RadioGroup
-              value={variables.mode}
-              onChange={(value) =>
-                setVariables({ ...variables, mode: value as RankedMode })
-              }
-              mt={4}
-              mb={8}
-            >
-              <Stack direction={["row", null, "column"]}>
-                <Radio value="SZ">Splat Zones</Radio>
-                <Radio value="TC">Tower Control</Radio>
-                <Radio value="RM">Rainmaker</Radio>
-                <Radio value="CB">Clam Blitz</Radio>
-              </Stack>
-            </RadioGroup>
-          </>
-        }
-      >
+              setVariables({
+                ...variables,
+                month: Number(month),
+                year: Number(year),
+              });
+            }}
+            mb={4}
+            maxW={64}
+            size="sm"
+            rounded="lg"
+            mx={["auto", null, "0"]}
+          >
+            {monthOptions.map((monthYear) => (
+              <option key={monthYear.value} value={monthYear.value}>
+                {monthYear.label}
+              </option>
+            ))}
+          </Select>
+          <ModeSelector
+            mode={variables.mode}
+            setMode={(mode) => setVariables({ ...variables, mode })}
+            mx={["auto", null, "0"]}
+            mb={[4, null, 0]}
+          />
+        </Flex>
         <Top500Table placements={placements} />
       </Page>
     </>

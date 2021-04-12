@@ -8,6 +8,7 @@ export default function RightSidebar({
 }) {
   return (
     <Box
+      display={["none", null, null, "block"]}
       width="12rem"
       mx={4}
       mt="23px"

@@ -18,7 +18,7 @@ export default function Page({
         <MyContainer wide={isWide}>{children}</MyContainer>
       </Flex>
 
-      {sidebar && <RightSidebar>{sidebar}</RightSidebar>}
+      <RightSidebar>{sidebar}</RightSidebar>
     </Flex>
   );
 }
