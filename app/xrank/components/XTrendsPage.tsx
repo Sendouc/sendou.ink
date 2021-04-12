@@ -1,5 +1,6 @@
-import { RankedMode } from ".prisma/client";
-import { Radio, RadioGroup, Select, Stack } from "@chakra-ui/react";
+import { Flex, Select } from "@chakra-ui/react";
+import ModeSelector from "components/common/ModeSelector";
+import OutlinedBox from "components/common/OutlinedBox";
 import Page from "components/common/Page";
 import MyHead from "../../../components/common/MyHead";
 import { useXTrends } from "../hooks/useXTrends";
@@ -70,49 +71,7 @@ const XTrendsPage = ({ trends }: XTrendsPageProps) => {
   return (
     <>
       <MyHead title="Top 500 Trends" />
-      <Page
-        sidebar={
-          <>
-            <Select
-              size="sm"
-              rounded="lg"
-              value={`${state.month},${state.year}`}
-              onChange={(e) => {
-                const [month, year] = e.target.value.split(",");
-
-                dispatch({
-                  type: "SET_MONTH_YEAR",
-                  month: Number(month),
-                  year: Number(year),
-                });
-              }}
-              mb={4}
-              maxW={64}
-            >
-              {monthOptions.map((monthYear) => (
-                <option key={monthYear.value} value={monthYear.value}>
-                  {monthYear.label}
-                </option>
-              ))}
-            </Select>
-            <RadioGroup
-              value={state.mode}
-              onChange={(value) =>
-                dispatch({ type: "SET_MODE", mode: value as RankedMode })
-              }
-              mt={4}
-              mb={8}
-            >
-              <Stack direction="column">
-                <Radio value="SZ">Splat Zones</Radio>
-                <Radio value="TC">Tower Control</Radio>
-                <Radio value="RM">Rainmaker</Radio>
-                <Radio value="CB">Clam Blitz</Radio>
-              </Stack>
-            </RadioGroup>
-          </>
-        }
-      >
+      <Page>
         {/* <Box color={gray} fontSize="sm" mb={8}>
           <Trans>
             Here you can find X Rank Top 500 usage tier lists. For example for a
@@ -121,23 +80,55 @@ const XTrendsPage = ({ trends }: XTrendsPageProps) => {
             shown.
           </Trans>
         </Box> */}
-        {tiers.map((tier, i) => (
-          <TrendTier
-            key={tier.label}
-            tier={tier}
-            weapons={weaponData.filter((weapon) => {
-              const targetCount = 500 * (tier.criteria / 100);
-              const previousTargetCount =
-                i === 0 ? Infinity : 500 * (tiers[i - 1].criteria / 100);
+        <Flex flexDir={["column", null, "row"]} justify="space-between">
+          <Select
+            value={`${state.month},${state.year}`}
+            onChange={(e) => {
+              const [month, year] = e.target.value.split(",");
 
-              return (
-                weapon.count >= targetCount &&
-                weapon.count < previousTargetCount
-              );
-            })}
-            getDataForChart={getDataForChart}
+              dispatch({
+                type: "SET_MONTH_YEAR",
+                month: Number(month),
+                year: Number(year),
+              });
+            }}
+            mb={4}
+            maxW={64}
+            size="sm"
+            rounded="lg"
+            mx={["auto", null, "0"]}
+          >
+            {monthOptions.map((monthYear) => (
+              <option key={monthYear.value} value={monthYear.value}>
+                {monthYear.label}
+              </option>
+            ))}
+          </Select>
+          <ModeSelector
             mode={state.mode}
+            setMode={(mode) => dispatch({ type: "SET_MODE", mode })}
+            mx={["auto", null, "0"]}
+            mb={[4, null, 0]}
           />
+        </Flex>
+        {tiers.map((tier, i) => (
+          <OutlinedBox key={tier.label} mb={4}>
+            <TrendTier
+              tier={tier}
+              weapons={weaponData.filter((weapon) => {
+                const targetCount = 500 * (tier.criteria / 100);
+                const previousTargetCount =
+                  i === 0 ? Infinity : 500 * (tiers[i - 1].criteria / 100);
+
+                return (
+                  weapon.count >= targetCount &&
+                  weapon.count < previousTargetCount
+                );
+              })}
+              getDataForChart={getDataForChart}
+              mode={state.mode}
+            />
+          </OutlinedBox>
         ))}
       </Page>
     </>

@@ -11,6 +11,7 @@ import {
   Tr,
 } from "@chakra-ui/table";
 import React, { Fragment } from "react";
+import OutlinedBox from "./OutlinedBox";
 
 export default function NewTable({
   caption,
@@ -33,7 +34,6 @@ export default function NewTable({
           return (
             <Grid
               key={row.id}
-              as="section"
               border="1px solid"
               borderColor="whiteAlpha.300"
               rounded="lg"
@@ -70,13 +70,7 @@ export default function NewTable({
   }
 
   return (
-    <Box
-      border="1px solid"
-      borderColor="whiteAlpha.300"
-      rounded="lg"
-      px={4}
-      py={2}
-    >
+    <OutlinedBox>
       <Table variant="simple">
         {caption && <TableCaption placement="top">{caption}</TableCaption>}
         <Thead>
@@ -105,6 +99,6 @@ export default function NewTable({
           </Tr>
         </Tfoot>
       </Table>
-    </Box>
+    </OutlinedBox>
   );
 }

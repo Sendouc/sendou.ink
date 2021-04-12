@@ -121,7 +121,7 @@ const navIcons: {
 ];
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  const { gray, secondaryBgColor } = useMyTheme();
+  const { secondaryBgColor } = useMyTheme();
   const { colorMode, toggleColorMode } = useColorMode();
   const router = useRouter();
   const [errors, setErrors] = useState(new Set<string>());

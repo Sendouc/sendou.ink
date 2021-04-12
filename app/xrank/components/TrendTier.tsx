@@ -33,7 +33,7 @@ const TrendTier = ({
   if (!weapons.length) return null;
 
   return (
-    <Flex key={tier.criteria} mb={4}>
+    <Flex key={tier.criteria}>
       <Flex
         flexDir="column"
         w="80px"
