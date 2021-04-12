@@ -96,6 +96,7 @@ const nameToImage = [
   { code: "tg", name: "testing grounds" },
   { code: "ut", name: "unnamed tournament" },
   { code: "kotc", name: "king of the castle" },
+  { code: "zones", name: "area cup +" },
 ] as const;
 
 /**
@@ -103,6 +104,9 @@ const nameToImage = [
  */
 export const eventImage = (eventName: string) => {
   const eventNameLower = eventName.toLowerCase();
+  if (eventNameLower.startsWith("plus server")) {
+    return `/layout/plus.png`;
+  }
   for (const { name, code } of nameToImage) {
     if (eventNameLower.startsWith(name)) {
       return `/events/${code}.png`;
