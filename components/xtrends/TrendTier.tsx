@@ -1,13 +1,5 @@
-import {
-  Box,
-  Flex,
-  Popover,
-  PopoverArrow,
-  PopoverContent,
-  PopoverTrigger,
-} from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { useLingui } from "@lingui/react";
-import WeaponLineChart from "app/xrank/components/WeaponLineChart";
 import OutlinedBox from "components/common/OutlinedBox";
 import SubText from "components/common/SubText";
 import WeaponImage from "components/common/WeaponImage";
@@ -61,34 +53,18 @@ const TrendTier = ({
           py="1em"
         >
           {weapons.map((weapon) => (
-            <Popover key={weapon.name} placement="top-start" isLazy>
-              <PopoverTrigger>
-                <Flex m={4} cursor="pointer" flexDir="column" align="center">
-                  <WeaponImage name={weapon.name} size={64} />
-                  <SubText mt={2}>
-                    {weapon.count} / {weapon.xPowerAverage.toFixed(1)}
-                  </SubText>
-                </Flex>
-              </PopoverTrigger>
-              <PopoverContent zIndex={4} p="0.5em" bg={secondaryBgColor}>
-                <PopoverArrow bg={secondaryBgColor} />
-                <Flex flexDir="column" alignItems="center">
-                  <Box
-                    as="span"
-                    fontWeight="bolder"
-                    fontSize="1.2em"
-                    mb="0.5em"
-                    textAlign="center"
-                  >
-                    {i18n._(weapon.name)}
-                    <SubText>{i18n._(mode)}</SubText>
-                  </Box>
-                  <WeaponLineChart
-                    getDataForChart={() => getDataForChart(weapon.name)}
-                  />
-                </Flex>
-              </PopoverContent>
-            </Popover>
+            <Flex
+              key={weapon.name}
+              m={4}
+              cursor="pointer"
+              flexDir="column"
+              align="center"
+            >
+              <WeaponImage name={weapon.name} size={64} />
+              <SubText mt={2}>
+                {weapon.count} / {weapon.xPowerAverage.toFixed(1)}
+              </SubText>
+            </Flex>
           ))}
         </Flex>
       </Flex>
