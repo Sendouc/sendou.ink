@@ -133,12 +133,7 @@ const RotationSelector: React.FC<Props> = ({ rotationId, setRotationId }) => {
   function getFilteredRotations() {
     if (!data) return null;
     if (!stage || weapons.length === 0) return null;
-    return data.filter((rotation) => {
-      return (
-        rotation.stage === stage &&
-        weapons.every((wpn) => rotation.weapons.includes(wpn))
-      );
-    });
+    return data;
   }
 };
 
