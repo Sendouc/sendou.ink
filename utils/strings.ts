@@ -76,3 +76,7 @@ export const getWeaponFromString = (value: unknown) => {
 
   return undefined;
 };
+
+//
+// Ramda
+//
