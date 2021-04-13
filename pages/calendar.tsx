@@ -1,17 +1,13 @@
-import { Button } from "@chakra-ui/button";
-import { Input, InputGroup, InputLeftElement } from "@chakra-ui/input";
 import { Box } from "@chakra-ui/layout";
 import { t, Trans } from "@lingui/macro";
 import EventInfo from "components/calendar/EventInfo";
-import { EventModal, FormData } from "components/calendar/EventModal";
+import { FormData } from "components/calendar/EventModal";
 import MyHead from "components/common/MyHead";
 import Page from "components/common/Page";
-import RightSidebar from "components/common/RightSidebar";
 import SubText from "components/common/SubText";
 import { useMyTheme } from "hooks/common";
 import { ssr } from "pages/api/trpc/[trpc]";
 import { Fragment, useState } from "react";
-import { FiSearch } from "react-icons/fi";
 import { trpc } from "utils/trpc";
 
 const CalendarPage = () => {
@@ -93,7 +89,7 @@ const CalendarPage = () => {
           {Intl.DateTimeFormat().resolvedOptions().timeZone}
         </Box>
       </Page>
-      <RightSidebar>
+      {/* <RightSidebar>
         <div>
           <Button
             size="sm"
@@ -117,7 +113,7 @@ const CalendarPage = () => {
           />
           <Input value={filter} onChange={(e) => setFilter(e.target.value)} />
         </InputGroup>
-      </RightSidebar>
+      </RightSidebar> */}
     </>
   );
 };
