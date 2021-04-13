@@ -21,6 +21,7 @@ import { useToast } from "@chakra-ui/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
+import { EVENT_FORMATS } from "app/calendar/utils";
 import DatePicker from "components/common/DatePicker";
 import MarkdownTextarea from "components/common/MarkdownTextarea";
 import { useMyTheme } from "hooks/common";
@@ -30,7 +31,6 @@ import { getToastOptions } from "utils/getToastOptions";
 import { trpc } from "utils/trpc";
 import { eventSchema, EVENT_DESCRIPTION_LIMIT } from "utils/validators/event";
 import * as z from "zod";
-import { EVENT_FORMATS } from "../utils";
 import TagsSelector from "./TagsSelector";
 
 export type FormData = z.infer<typeof eventSchema>;

@@ -12,8 +12,11 @@ import {
   PopoverTrigger,
 } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
+import { Events } from "app/calendar/service";
+import { eventImage, EVENT_FORMATS, TAGS } from "app/calendar/utils";
 import Markdown from "components/common/Markdown";
 import MyLink from "components/common/MyLink";
+import OutlinedBox from "components/common/OutlinedBox";
 import UserAvatar from "components/common/UserAvatar";
 import { useMyTheme, useUser } from "hooks/common";
 import Image from "next/image";
@@ -22,8 +25,6 @@ import { FiClock, FiEdit, FiExternalLink, FiInfo } from "react-icons/fi";
 import { DiscordIcon } from "utils/assets/icons";
 import { ADMIN_ID } from "utils/constants";
 import { Unpacked } from "utils/types";
-import { Events } from "../service";
-import { eventImage, EVENT_FORMATS, TAGS } from "../utils";
 
 interface EventInfoProps {
   event: Unpacked<Events>;
@@ -42,14 +43,9 @@ const TournamentInfo = ({ event, edit }: EventInfoProps) => {
   const imgSrc = eventImage(event.name);
 
   return (
-    <Box
-      as="section"
-      rounded="lg"
-      overflow="hidden"
-      boxShadow="md"
-      bg={secondaryBgColor}
-      p="20px"
-      my={5}
+    <OutlinedBox
+      my={4}
+      py={4}
       data-cy={`event-info-section-${event.name
         .toLowerCase()
         .replace(/ /g, "-")}`}
@@ -191,7 +187,7 @@ const TournamentInfo = ({ event, edit }: EventInfoProps) => {
           <Markdown smallHeaders value={event.description} />
         </Box>
       )}
-    </Box>
+    </OutlinedBox>
   );
 };
 
