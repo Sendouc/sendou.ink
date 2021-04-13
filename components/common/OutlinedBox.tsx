@@ -13,7 +13,6 @@ export default function OutlinedBox({
       px={4}
       py={2}
       alignItems="center"
-      justify="center"
       {...props}
     >
       {children}

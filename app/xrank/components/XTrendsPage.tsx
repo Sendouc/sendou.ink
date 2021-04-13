@@ -1,6 +1,5 @@
 import { Flex, Select } from "@chakra-ui/react";
 import ModeSelector from "components/common/ModeSelector";
-import OutlinedBox from "components/common/OutlinedBox";
 import Page from "components/common/Page";
 import MyHead from "../../../components/common/MyHead";
 import { useXTrends } from "../hooks/useXTrends";
@@ -112,23 +111,22 @@ const XTrendsPage = ({ trends }: XTrendsPageProps) => {
           />
         </Flex>
         {tiers.map((tier, i) => (
-          <OutlinedBox key={tier.label} mb={4}>
-            <TrendTier
-              tier={tier}
-              weapons={weaponData.filter((weapon) => {
-                const targetCount = 500 * (tier.criteria / 100);
-                const previousTargetCount =
-                  i === 0 ? Infinity : 500 * (tiers[i - 1].criteria / 100);
+          <TrendTier
+            key={tier.label}
+            tier={tier}
+            weapons={weaponData.filter((weapon) => {
+              const targetCount = 500 * (tier.criteria / 100);
+              const previousTargetCount =
+                i === 0 ? Infinity : 500 * (tiers[i - 1].criteria / 100);
 
-                return (
-                  weapon.count >= targetCount &&
-                  weapon.count < previousTargetCount
-                );
-              })}
-              getDataForChart={getDataForChart}
-              mode={state.mode}
-            />
-          </OutlinedBox>
+              return (
+                weapon.count >= targetCount &&
+                weapon.count < previousTargetCount
+              );
+            })}
+            getDataForChart={getDataForChart}
+            mode={state.mode}
+          />
         ))}
       </Page>
     </>

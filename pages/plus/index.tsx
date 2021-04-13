@@ -1,5 +1,4 @@
 import PlusHomePage from "app/plus/components/PlusHomePage";
-import HeaderBanner from "components/layout/HeaderBanner";
 import { ssr } from "pages/api/trpc/[trpc]";
 
 export const getStaticProps = async () => {
@@ -15,14 +14,5 @@ export const getStaticProps = async () => {
     revalidate: 60,
   };
 };
-
-// @ts-expect-error
-PlusHomePage.header = (
-  <HeaderBanner
-    icon="plus"
-    title="Plus Server"
-    subtitle="View all the suggested players for this month"
-  />
-);
 
 export default PlusHomePage;
