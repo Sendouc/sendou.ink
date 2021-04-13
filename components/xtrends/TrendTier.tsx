@@ -1,5 +1,4 @@
 import { Box, Flex } from "@chakra-ui/react";
-import { useLingui } from "@lingui/react";
 import OutlinedBox from "components/common/OutlinedBox";
 import SubText from "components/common/SubText";
 import WeaponImage from "components/common/WeaponImage";
@@ -8,8 +7,6 @@ import { useMyTheme } from "hooks/common";
 const TrendTier = ({
   tier,
   weapons,
-  getDataForChart,
-  mode,
 }: {
   tier: { label: string; criteria: number; color: string };
   weapons: {
@@ -17,11 +14,8 @@ const TrendTier = ({
     count: number;
     xPowerAverage: number;
   }[];
-  mode: string;
-  getDataForChart: (weapon: string) => { count: number }[];
 }) => {
-  const { i18n } = useLingui();
-  const { gray, secondaryBgColor } = useMyTheme();
+  const { gray } = useMyTheme();
 
   if (!weapons.length) return null;
 

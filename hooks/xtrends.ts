@@ -86,24 +86,10 @@ export function useXTrends(trends: XTrends) {
       return b.xPowerAverage - a.xPowerAverage;
     });
 
-  function getDataForChart(weapon: string) {
-    const counts = monthOptions.map((monthYear) => {
-      return {
-        count:
-          trends[monthYear.year][monthYear.month][weapon]?.[state.mode]
-            ?.count ?? 0,
-      };
-    });
-
-    counts.reverse();
-    return counts;
-  }
-
   return {
     state,
     dispatch,
     weaponData,
-    getDataForChart,
     monthOptions,
   };
 }
