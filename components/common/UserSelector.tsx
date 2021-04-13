@@ -21,14 +21,11 @@ interface MultiSelectorProps {
 }
 
 const customFilterOption = (option: any, rawInput: string) => {
-  console.log("option.data.data", option.data.data);
   return (
     option.label.toLowerCase().includes(rawInput.toLowerCase()) ||
-    (option.data.data.profile &&
-      option.data.data.profile.twitterName &&
-      option.data.data.profile.twitterName
-        .toLowerCase()
-        .includes(rawInput.toLowerCase()))
+    option.data.data.profile?.twitterName
+      ?.toLowerCase()
+      .includes(rawInput.toLowerCase())
   );
 };
 
@@ -104,7 +101,6 @@ const UserSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = ({
   }
 
   function createLabel(user: any) {
-    console.log("user!11", user);
     let label = `${user.username}#${user.discriminator}`;
     if (user.profile && user.profile.twitterName)
       label += ` (${user.profile.twitterName})`;

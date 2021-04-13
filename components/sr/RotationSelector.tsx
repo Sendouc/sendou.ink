@@ -135,8 +135,8 @@ const RotationSelector: React.FC<Props> = ({ rotationId, setRotationId }) => {
     if (!stage || weapons.length === 0) return null;
     return data.filter((rotation) => {
       return (
-          rotation.stage === stage &&
-          weapons.every((wpn) => rotation.weapons.includes(wpn))
+        rotation.stage === stage &&
+        weapons.every((wpn) => rotation.weapons.includes(wpn))
       );
     });
   }
