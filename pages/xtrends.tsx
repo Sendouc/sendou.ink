@@ -1,11 +1,13 @@
-import { Flex, Select } from "@chakra-ui/react";
+import { RankedMode } from ".prisma/client";
+import { Box, Flex } from "@chakra-ui/react";
 import xRankService, { XTrends } from "app/xrank/service";
 import ModeSelector from "components/common/ModeSelector";
 import MyHead from "components/common/MyHead";
 import Page from "components/common/Page";
 import TrendTier from "components/xtrends/TrendTier";
-import { useXTrends } from "hooks/xtrends";
+import { useMyTheme } from "hooks/common";
 import { GetStaticProps } from "next";
+import { useState } from "react";
 import { xTrendsTiers } from "utils/constants";
 
 export interface XTrendsPageProps {
@@ -13,39 +15,17 @@ export interface XTrendsPageProps {
 }
 
 const XTrendsPage = ({ trends }: XTrendsPageProps) => {
-  const { state, dispatch, weaponData, monthOptions } = useXTrends(trends);
+  const { gray } = useMyTheme();
+  const [mode, setMode] = useState<RankedMode>("SZ");
 
   return (
     <>
       <MyHead title="Top 500 Trends" />
       <Page>
         <Flex flexDir={["column", null, "row"]} justify="space-between">
-          <Select
-            value={`${state.month},${state.year}`}
-            onChange={(e) => {
-              const [month, year] = e.target.value.split(",");
-
-              dispatch({
-                type: "SET_MONTH_YEAR",
-                month: Number(month),
-                year: Number(year),
-              });
-            }}
-            mb={4}
-            maxW={64}
-            size="sm"
-            rounded="lg"
-            mx={["auto", null, "0"]}
-          >
-            {monthOptions.map((monthYear) => (
-              <option key={monthYear.value} value={monthYear.value}>
-                {monthYear.label}
-              </option>
-            ))}
-          </Select>
           <ModeSelector
-            mode={state.mode}
-            setMode={(mode) => dispatch({ type: "SET_MODE", mode })}
+            mode={mode}
+            setMode={setMode}
             mx={["auto", null, "0"]}
             mb={[4, null, 0]}
           />
@@ -54,10 +34,12 @@ const XTrendsPage = ({ trends }: XTrendsPageProps) => {
           <TrendTier
             key={tier.label}
             tier={tier}
-            weapons={weaponData.filter((weapon) => {
-              const targetCount = 500 * (tier.criteria / 100);
+            data={trends[mode].filter((weapon, _, arr) => {
+              const targetCount = 1500 * (tier.criteria / 100);
               const previousTargetCount =
-                i === 0 ? Infinity : 500 * (xTrendsTiers[i - 1].criteria / 100);
+                i === 0
+                  ? Infinity
+                  : 1500 * (xTrendsTiers[i - 1].criteria / 100);
 
               return (
                 weapon.count >= targetCount &&
@@ -66,6 +48,11 @@ const XTrendsPage = ({ trends }: XTrendsPageProps) => {
             })}
           />
         ))}
+        <Box color={gray} fontSize="sm">
+          Weapons are ordered based on their appearance in the Top 500 of X Rank
+          in the last three months. Average X Power per weapon is also shown.
+          Progress icon describes the change with the latest month.
+        </Box>
       </Page>
     </>
   );
@@ -74,7 +61,7 @@ const XTrendsPage = ({ trends }: XTrendsPageProps) => {
 export default XTrendsPage;
 
 export const getStaticProps: GetStaticProps<XTrendsPageProps> = async () => {
-  const trends = await xRankService.getXTrends();
+  const trends = await xRankService.getXTrendsNew();
 
   return { props: { trends } };
 };

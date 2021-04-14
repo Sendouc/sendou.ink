@@ -1,23 +1,21 @@
 import { Box, Flex } from "@chakra-ui/react";
+import { XTrends } from "app/xrank/service";
 import OutlinedBox from "components/common/OutlinedBox";
 import SubText from "components/common/SubText";
 import WeaponImage from "components/common/WeaponImage";
 import { useMyTheme } from "hooks/common";
+import { IoChevronDownOutline, IoChevronUpOutline } from "react-icons/io5";
 
 const TrendTier = ({
   tier,
-  weapons,
+  data,
 }: {
   tier: { label: string; criteria: number; color: string };
-  weapons: {
-    name: string;
-    count: number;
-    xPowerAverage: number;
-  }[];
+  data: XTrends["SZ"];
 }) => {
   const { gray } = useMyTheme();
 
-  if (!weapons.length) return null;
+  if (!data.length) return null;
 
   return (
     <OutlinedBox key={tier.label} mb={4}>
@@ -46,17 +44,40 @@ const TrendTier = ({
           alignItems="center"
           py="1em"
         >
-          {weapons.map((weapon) => (
+          {data.map((weaponObj) => (
             <Flex
-              key={weapon.name}
+              key={weaponObj.weapon}
               m={4}
               cursor="pointer"
               flexDir="column"
               align="center"
             >
-              <WeaponImage name={weapon.name} size={64} />
-              <SubText mt={2}>
-                {weapon.count} / {weapon.xPowerAverage.toFixed(1)}
+              <WeaponImage name={weaponObj.weapon} size={64} />
+              <SubText display="flex" alignItems="center" mt={2}>
+                {weaponObj.count} / {weaponObj.averageXp} /{" "}
+                {
+                  {
+                    UP: (
+                      <Box
+                        fontSize="lg"
+                        color="green.500"
+                        as={IoChevronUpOutline}
+                      />
+                    ),
+                    SAME: (
+                      <Box fontSize="3xl" color="gray.500" mb={1}>
+                        -
+                      </Box>
+                    ),
+                    DOWN: (
+                      <Box
+                        fontSize="lg"
+                        color="red.500"
+                        as={IoChevronDownOutline}
+                      />
+                    ),
+                  }[weaponObj.progress]
+                }
               </SubText>
             </Flex>
           ))}

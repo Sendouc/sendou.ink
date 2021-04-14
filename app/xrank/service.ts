@@ -1,53 +1,87 @@
 import { Prisma, RankedMode } from "@prisma/client";
 import prisma from "prisma/client";
+import { truncuateFloat } from "utils/numbers";
+import { Unpacked } from "utils/types";
 
-export type XTrends = Prisma.PromiseReturnType<typeof getXTrends>;
+export type XTrends = Record<
+  RankedMode,
+  {
+    weapon: string;
+    count: number;
+    percentage: number;
+    averageXp: number;
+    progress: "UP" | "DOWN" | "SAME";
+  }[]
+>;
 
-const getXTrends = async () => {
+const getXTrends = async (): Promise<XTrends> => {
   const placements = await prisma.xRankPlacement.findMany({
-    select: { mode: true, month: true, year: true, weapon: true, xPower: true },
+    orderBy: [{ year: "desc" }, { month: "desc" }],
+    // amount of placements in top 500 * amount of months we want * amount of modes
+    take: 500 * 4 * 4,
   });
 
-  const result: {
-    [year: string]: {
-      [month: string]: {
-        [weapon: string]: {
-          SZ?: { xPowerAverage: number; count: number };
-          TC?: { xPowerAverage: number; count: number };
-          RM?: { xPowerAverage: number; count: number };
-          CB?: { xPowerAverage: number; count: number };
-        };
-      };
-    };
-  } = {};
+  const referenceMonths = placements.slice(0, 500 * 4 * 3);
+  const lastThreeMonths = placements.slice(500 * 4);
 
-  placements.forEach((placement) => {
-    if (!result[placement.year]) result[placement.year] = {};
-    if (!result[placement.year][placement.month]) {
-      result[placement.year][placement.month] = {};
-    }
-    if (!result[placement.year][placement.month][placement.weapon]) {
-      result[placement.year][placement.month][placement.weapon] = {};
+  const weaponXPowersGrouped = (
+    acc: Record<RankedMode, Record<string, number[]>>,
+    placement: Unpacked<typeof placements>
+  ) => {
+    if (!acc[placement.mode][placement.weapon]) {
+      acc[placement.mode][placement.weapon] = [];
     }
 
-    const weaponObj = result[placement.year][placement.month][placement.weapon][
-      placement.mode
-    ] ?? { xPowerAverage: 0, count: 0 };
+    acc[placement.mode][placement.weapon].push(placement.xPower);
 
-    const previousAverage = weaponObj.xPowerAverage;
-    const previousCount = weaponObj.count;
+    return acc;
+  };
 
-    weaponObj.xPowerAverage =
-      (previousAverage * previousCount + placement.xPower) /
-      (previousCount + 1);
-    weaponObj.count++;
-
-    result[placement.year][placement.month][placement.weapon][
-      placement.mode
-    ] = weaponObj;
+  const referenceWeaponsCounts = referenceMonths.reduce(weaponXPowersGrouped, {
+    SZ: {},
+    TC: {},
+    RM: {},
+    CB: {},
   });
+  const lastThreeMonthsWeaponCounts = lastThreeMonths.reduce(
+    weaponXPowersGrouped,
+    {
+      SZ: {},
+      TC: {},
+      RM: {},
+      CB: {},
+    }
+  );
 
-  return result;
+  return (["SZ", "TC", "RM", "CB"] as const).reduce(
+    (acc: XTrends, mode: RankedMode) => {
+      acc[mode] = Object.entries(lastThreeMonthsWeaponCounts[mode])
+        .map(([weapon, xPowers]) => {
+          const previousCount =
+            referenceWeaponsCounts[mode][weapon]?.length ?? 0;
+          return {
+            weapon,
+            count: xPowers.length,
+            percentage: truncuateFloat(
+              (xPowers.length / (lastThreeMonths.length / 4)) * 100
+            ),
+            averageXp: truncuateFloat(
+              xPowers.reduce((a, b) => a + b) / xPowers.length
+            ),
+            progress:
+              previousCount === xPowers.length
+                ? ("SAME" as const)
+                : previousCount > xPowers.length
+                ? ("DOWN" as const)
+                : ("UP" as const),
+          };
+        })
+        .sort((a, b) => b.count - a.count);
+
+      return acc;
+    },
+    { SZ: [], TC: [], RM: [], CB: [] }
+  );
 };
 
 export type Top500PlacementsByMonth = Prisma.PromiseReturnType<
@@ -99,4 +133,9 @@ const getMostRecentResult = () => {
   });
 };
 
-export default { getXTrends, getTop500PlacementsByMonth, getMostRecentResult };
+export default {
+  getXTrends,
+  getXTrendsNew: getXTrends,
+  getTop500PlacementsByMonth,
+  getMostRecentResult,
+};
