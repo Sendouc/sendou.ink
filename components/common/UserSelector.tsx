@@ -20,6 +20,15 @@ interface MultiSelectorProps {
   maxMultiCount: number;
 }
 
+const customFilterOption = (option: any, rawInput: string) => {
+  return (
+    option.label.toLowerCase().includes(rawInput.toLowerCase()) ||
+    option.data.data.profile?.twitterName
+      ?.toLowerCase()
+      .includes(rawInput.toLowerCase())
+  );
+};
+
 const UserSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = ({
   value,
   setValue,
@@ -35,7 +44,7 @@ const UserSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = ({
           <Box mr="0.5em">
             <UserAvatar user={props.data.data} />
           </Box>
-          {props.label}
+          {createLabel(props.data.data)}
         </Flex>
       </components.Option>
     );
@@ -72,6 +81,7 @@ const UserSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = ({
       }}
       hideMenuBeforeTyping
       isClearable={!isMulti}
+      customFilterOption={customFilterOption}
     />
   );
 
@@ -88,6 +98,13 @@ const UserSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = ({
     return (
       maxMultiCount && Array.isArray(value) && maxMultiCount <= value.length
     );
+  }
+
+  function createLabel(user: any) {
+    let label = `${user.username}#${user.discriminator}`;
+    if (user.profile && user.profile.twitterName)
+      label += ` (${user.profile.twitterName})`;
+    return label;
   }
 };
 

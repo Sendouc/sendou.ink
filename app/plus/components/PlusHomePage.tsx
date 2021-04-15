@@ -1,11 +1,11 @@
-import { Box, Center, Divider, Flex, Stack } from "@chakra-ui/layout";
+import { Box, Center, Divider, Flex, Heading, Stack } from "@chakra-ui/layout";
 import {
   Alert,
   AlertDescription,
   AlertTitle,
   Progress,
   Radio,
-  RadioGroup,
+  RadioGroup
 } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
 import { usePlusHomePage } from "app/plus/hooks/usePlusHomePage";
@@ -31,6 +31,18 @@ const PlusHomePage = () => {
     vouchedPlusStatusData,
     votingProgress,
   } = usePlusHomePage();
+
+  if (!plusStatusData?.membershipTier) {
+    return <Box>
+      <Box fontSize="sm" mb={4}>
+      <VotingInfoHeader isMember={!!plusStatusData?.membershipTier} />
+      </Box>
+      <Heading size="md">Suggested players this month:</Heading>
+      <Flex flexWrap="wrap">
+        {suggestionsData.sort((a,b) => a.createdAt.getTime() - b.createdAt.getTime()).map(suggestion => <Box key={suggestion.tier + "+" + suggestion.suggestedUser.id} m={1}>{getFullUsername(suggestion.suggestedUser)} (+{suggestion.tier})</Box>)}
+      </Flex>
+    </Box>
+  }
 
   return (
     <>
