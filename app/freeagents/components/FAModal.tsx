@@ -124,11 +124,11 @@ const FAModal = ({ onClose, post, refetchQuery }: Props) => {
                   </FormControl>
                 </>
               )}
-              <FormLabel htmlFor="playstyles">
-                <Trans>Roles</Trans>
-              </FormLabel>
 
               <FormControl isInvalid={!!errors.playstyles}>
+                <FormLabel htmlFor="playstyles">
+                  <Trans>Roles</Trans>
+                </FormLabel>
                 <Controller
                   name="playstyles"
                   control={control}
@@ -155,23 +155,25 @@ const FAModal = ({ onClose, post, refetchQuery }: Props) => {
                 </FormErrorMessage>
               </FormControl>
 
-              <FormLabel htmlFor="canVC" mt={4}>
-                <Trans>Can you voice chat?</Trans>
-              </FormLabel>
-              <Controller
-                name="canVC"
-                control={control}
-                defaultValue="YES"
-                render={({ onChange, value }) => (
-                  <RadioGroup value={value} onChange={onChange}>
-                    <Stack direction="row">
-                      <Radio value="YES">Yes</Radio>
-                      <Radio value="MAYBE">Sometimes</Radio>
-                      <Radio value="NO">No</Radio>
-                    </Stack>
-                  </RadioGroup>
-                )}
-              />
+              <FormControl>
+                <FormLabel htmlFor="canVC" mt={4}>
+                  <Trans>Can you voice chat?</Trans>
+                </FormLabel>
+                <Controller
+                  name="canVC"
+                  control={control}
+                  defaultValue="YES"
+                  render={({ onChange, value }) => (
+                    <RadioGroup value={value} onChange={onChange}>
+                      <Stack direction="row">
+                        <Radio value="YES">Yes</Radio>
+                        <Radio value="MAYBE">Sometimes</Radio>
+                        <Radio value="NO">No</Radio>
+                      </Stack>
+                    </RadioGroup>
+                  )}
+                />
+              </FormControl>
 
               <MarkdownTextarea
                 fieldName="content"

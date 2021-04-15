@@ -4,6 +4,7 @@ import {
   Box,
   Button,
   Checkbox,
+  FormControl,
   FormLabel,
   Grid,
   Input,
@@ -256,27 +257,29 @@ const MapsGeneratorPage = () => {
               );
             })}
           </Grid>
-          <FormLabel htmlFor="share" mt={4}>
-            <Trans>Share your map pool</Trans>
-          </FormLabel>
-          {window && (
-            <InputGroup size="md" mb={8}>
-              <Input name="share" value={window.location.href} readOnly />
-              <InputRightElement width="4.5rem">
-                <Button
-                  onClick={() => {
-                    navigator.clipboard.writeText(window.location.href);
-                    setCopied("URL");
-                  }}
-                  h="1.75rem"
-                  size="sm"
-                  disabled={copied === "URL"}
-                >
-                  {copied === "URL" ? <FiCheck /> : <Trans>Copy</Trans>}
-                </Button>
-              </InputRightElement>
-            </InputGroup>
-          )}
+          <FormControl>
+            <FormLabel htmlFor="share" mt={4}>
+              <Trans>Share your map pool</Trans>
+            </FormLabel>
+            {window && (
+              <InputGroup size="md" mb={8}>
+                <Input name="share" value={window.location.href} readOnly />
+                <InputRightElement width="4.5rem">
+                  <Button
+                    onClick={() => {
+                      navigator.clipboard.writeText(window.location.href);
+                      setCopied("URL");
+                    }}
+                    h="1.75rem"
+                    size="sm"
+                    disabled={copied === "URL"}
+                  >
+                    {copied === "URL" ? <FiCheck /> : <Trans>Copy</Trans>}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+            )}
+          </FormControl>
         </>
       ) : (
         <Grid
@@ -380,27 +383,29 @@ const MapsGeneratorPage = () => {
           width={"90%"}
         />
       )}
-      <FormLabel htmlFor="count" fontSize="sm" mt={4}>
-        <Trans>Amount of maps to generate</Trans>
-      </FormLabel>
-      <NumberInput
-        name="count"
-        size="sm"
-        value={count}
-        min={1}
-        max={100}
-        onChange={(_, value) => {
-          if (!Number.isNaN(value)) setCount(value);
-        }}
-        mb={4}
-        width={24}
-      >
-        <NumberInputField />
-        <NumberInputStepper>
-          <NumberIncrementStepper />
-          <NumberDecrementStepper />
-        </NumberInputStepper>
-      </NumberInput>
+      <FormControl>
+        <FormLabel htmlFor="count" fontSize="sm" mt={4}>
+          <Trans>Amount of maps to generate</Trans>
+        </FormLabel>
+        <NumberInput
+          name="count"
+          size="sm"
+          value={count}
+          min={1}
+          max={100}
+          onChange={(_, value) => {
+            if (!Number.isNaN(value)) setCount(value);
+          }}
+          mb={4}
+          width={24}
+        >
+          <NumberInputField />
+          <NumberInputStepper>
+            <NumberIncrementStepper />
+            <NumberDecrementStepper />
+          </NumberInputStepper>
+        </NumberInput>
+      </FormControl>
       {maplist && (
         <>
           <Textarea value={maplist} readOnly rows={9} />

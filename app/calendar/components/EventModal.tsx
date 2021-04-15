@@ -148,11 +148,10 @@ export function EventModal({
                 </Stack>
               </RadioGroup> */}
 
-              <FormLabel htmlFor="name">
-                <Trans>Name</Trans>
-              </FormLabel>
-
               <FormControl isInvalid={!!errors.name}>
+                <FormLabel htmlFor="name">
+                  <Trans>Name</Trans>
+                </FormLabel>
                 <Input
                   name="name"
                   ref={register}
@@ -162,11 +161,10 @@ export function EventModal({
                 <FormErrorMessage>{errors.name}</FormErrorMessage>
               </FormControl>
 
-              <FormLabel htmlFor="date" mt={4}>
-                <Trans>Date</Trans>
-              </FormLabel>
-
               <FormControl isInvalid={!!errors.date}>
+                <FormLabel htmlFor="date" mt={4}>
+                  <Trans>Date</Trans>
+                </FormLabel>
                 <Controller
                   name="date"
                   control={control}
@@ -191,11 +189,10 @@ export function EventModal({
                 <FormErrorMessage>{errors.date?.message}</FormErrorMessage>
               </FormControl>
 
-              <FormLabel htmlFor="discordInviteUrl" mt={4}>
-                <Trans>Discord invite URL</Trans>
-              </FormLabel>
-
               <FormControl isInvalid={!!errors.discordInviteUrl}>
+                <FormLabel htmlFor="discordInviteUrl" mt={4}>
+                  <Trans>Discord invite URL</Trans>
+                </FormLabel>
                 <Input
                   name="discordInviteUrl"
                   ref={register}
@@ -207,11 +204,10 @@ export function EventModal({
                 </FormErrorMessage>
               </FormControl>
 
-              <FormLabel htmlFor="eventUrl" mt={4}>
-                <Trans>Registration URL</Trans>
-              </FormLabel>
-
               <FormControl isInvalid={!!errors.eventUrl}>
+                <FormLabel htmlFor="eventUrl" mt={4}>
+                  <Trans>Registration URL</Trans>
+                </FormLabel>
                 <Input
                   name="eventUrl"
                   ref={register}
@@ -221,17 +217,19 @@ export function EventModal({
                 <FormErrorMessage>{errors.eventUrl?.message}</FormErrorMessage>
               </FormControl>
 
-              <FormLabel htmlFor="format" mt={4}>
-                <Trans>Format</Trans>
-              </FormLabel>
+              <FormControl>
+                <FormLabel htmlFor="format" mt={4}>
+                  <Trans>Format</Trans>
+                </FormLabel>
 
-              <Select name="format" ref={register}>
-                {EVENT_FORMATS.map((format) => (
-                  <option key={format.code} value={format.code}>
-                    {format.name}
-                  </option>
-                ))}
-              </Select>
+                <Select name="format" ref={register}>
+                  {EVENT_FORMATS.map((format) => (
+                    <option key={format.code} value={format.code}>
+                      {format.name}
+                    </option>
+                  ))}
+                </Select>
+              </FormControl>
 
               <MarkdownTextarea
                 fieldName="description"
@@ -247,17 +245,19 @@ export function EventModal({
                 dataCy="description-markdown"
               />
 
-              <FormLabel htmlFor="tags" mt={4}>
-                <Trans>Tags</Trans>
-              </FormLabel>
-              <Controller
-                name="tags"
-                control={control}
-                defaultValue={[]}
-                render={({ onChange, value }) => (
-                  <TagsSelector value={value} setValue={onChange} />
-                )}
-              />
+              <FormControl>
+                <FormLabel htmlFor="tags" mt={4}>
+                  <Trans>Tags</Trans>
+                </FormLabel>
+                <Controller
+                  name="tags"
+                  control={control}
+                  defaultValue={[]}
+                  render={({ onChange, value }) => (
+                    <TagsSelector value={value} setValue={onChange} />
+                  )}
+                />
+              </FormControl>
             </ModalBody>
 
             <ModalFooter>
