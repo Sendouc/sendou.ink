@@ -34,7 +34,7 @@ export const UserItem = () => {
           }}
         >
           <>
-            <UserAvatar user={user} size="sm" mr={1} />
+            <UserAvatar user={user} size="sm" />
             <Box ml={2}>My Page</Box>
           </>
         </Flex>
