@@ -78,6 +78,11 @@ const extendedTheme = extendTheme({
         colorScheme: "theme",
       },
     },
+    Switch: {
+      defaultProps: {
+        colorScheme: "theme",
+      },
+    },
     Modal: {
       baseStyle: (props) => ({
         dialog: {
