@@ -23,9 +23,8 @@ import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { RankedMode } from "@prisma/client";
 import ModeImage from "components/common/ModeImage";
-import SubText from "components/common/SubText";
-import HeaderBanner from "components/layout/HeaderBanner";
 import MultipleModeSelector from "components/common/MultipleModeSelector";
+import SubText from "components/common/SubText";
 import { useRouter } from "next/router";
 import { ChangeEvent, Fragment, useEffect, useState } from "react";
 import { FiCheck, FiFilter, FiRotateCw } from "react-icons/fi";
@@ -435,13 +434,5 @@ const MapsGeneratorPage = () => {
     });
   }
 };
-
-MapsGeneratorPage.header = (
-  <HeaderBanner
-    icon="plans"
-    title="Maplist Generator"
-    subtitle="Get a list of maps to play in a scrim"
-  />
-);
 
 export default MapsGeneratorPage;

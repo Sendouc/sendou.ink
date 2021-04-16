@@ -12,7 +12,6 @@ import BuildStats from "components/analyzer/BuildStats";
 import EditableBuilds from "components/analyzer/EditableBuilds";
 import { ViewSlotsAbilities } from "components/builds/ViewSlots";
 import WeaponSelector from "components/common/WeaponSelector";
-import HeaderBanner from "components/layout/HeaderBanner";
 import { useMyTheme } from "hooks/common";
 import useAbilityEffects from "hooks/useAbilityEffects";
 import { useRouter } from "next/router";
@@ -217,13 +216,5 @@ const BuildAnalyzerPage = () => {
     setOtherBuild({ ...defaultBuild });
   }
 };
-
-BuildAnalyzerPage.header = (
-  <HeaderBanner
-    icon="analyzer"
-    title="Build Analyzer"
-    subtitle="Discover what your builds are actually doing"
-  />
-);
 
 export default BuildAnalyzerPage;

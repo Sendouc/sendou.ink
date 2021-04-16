@@ -8,7 +8,6 @@ import MyInfiniteScroller from "components/common/MyInfiniteScroller";
 import MyLink from "components/common/MyLink";
 import WeaponImage from "components/common/WeaponImage";
 import WeaponSelector from "components/common/WeaponSelector";
-import HeaderBanner from "components/layout/HeaderBanner";
 import { useBuildsByWeapon } from "hooks/builds";
 import { useMyTheme, useUser } from "hooks/common";
 import { useState } from "react";
@@ -140,13 +139,5 @@ const BuildsPage = () => {
     </>
   );
 };
-
-BuildsPage.header = (
-  <HeaderBanner
-    icon="builds"
-    title="Builds"
-    subtitle="Find what people are running on that weapon you picked up"
-  />
-);
 
 export default BuildsPage;

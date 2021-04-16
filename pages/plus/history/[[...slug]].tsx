@@ -2,7 +2,6 @@ import PlusVotingHistoryPage, {
   PlusVotingHistoryPageProps,
 } from "app/plus/components/PlusVotingHistoryPage";
 import plusService from "app/plus/service";
-import HeaderBanner from "components/layout/HeaderBanner";
 import { GetStaticPaths, GetStaticProps } from "next";
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -48,14 +47,5 @@ export const getStaticProps: GetStaticProps<PlusVotingHistoryPageProps> = async 
     props: { summaries, monthsWithData },
   };
 };
-
-// @ts-expect-error
-PlusVotingHistoryPage.header = (
-  <HeaderBanner
-    icon="plus"
-    title="Voting History"
-    subtitle="+1, +2 and +3 voting history since early 2020"
-  />
-);
 
 export default PlusVotingHistoryPage;

@@ -108,7 +108,7 @@ const EventInfo = ({ event, edit }: EventInfoProps) => {
             templateColumns={["1fr", canEdit ? "1fr 1fr" : "1fr"]}
             gridRowGap="1rem"
             gridColumnGap="1rem"
-            maxW={["12rem", canEdit ? "24rem" : "18rem"]}
+            maxW={["12rem", canEdit ? "24rem" : "12rem"]}
             mx="auto"
             mt={4}
           >
