@@ -1,5 +1,4 @@
 import { Badge, Box, Button, Flex, Grid, Heading } from "@chakra-ui/react";
-import { Trans } from "@lingui/macro";
 import { Events } from "app/calendar/service";
 import { eventImage, EVENT_FORMATS, TAGS } from "app/calendar/utils";
 import Markdown from "components/common/Markdown";
@@ -8,8 +7,8 @@ import OutlinedBox from "components/common/OutlinedBox";
 import UserAvatar from "components/common/UserAvatar";
 import { useMyTheme, useUser } from "hooks/common";
 import Image from "next/image";
-import React, { useState } from "react";
-import { FiClock, FiEdit, FiExternalLink, FiInfo } from "react-icons/fi";
+import React from "react";
+import { FiClock, FiEdit, FiExternalLink } from "react-icons/fi";
 import { DiscordIcon } from "utils/assets/icons";
 import { ADMIN_ID } from "utils/constants";
 import { Unpacked } from "utils/types";
@@ -19,9 +18,8 @@ interface EventInfoProps {
   edit: () => void;
 }
 
-const TournamentInfo = ({ event, edit }: EventInfoProps) => {
-  const { secondaryBgColor, gray, themeColorShade } = useMyTheme();
-  const [expanded, setExpanded] = useState(false);
+const EventInfo = ({ event, edit }: EventInfoProps) => {
+  const { gray, themeColorShade } = useMyTheme();
   const poster = event.poster;
 
   const [user] = useUser();
@@ -38,7 +36,7 @@ const TournamentInfo = ({ event, edit }: EventInfoProps) => {
         .toLowerCase()
         .replace(/ /g, "-")}`}
     >
-      <Box>
+      <Box width="100%">
         <Box textAlign="center">
           <Box>
             {imgSrc && <Image src={imgSrc} width={36} height={36} />}
@@ -48,7 +46,7 @@ const TournamentInfo = ({ event, edit }: EventInfoProps) => {
                 {event.tags.map((tag) => {
                   const tagInfo = TAGS.find((tagObj) => tagObj.code === tag)!;
                   return (
-                    <Badge mx={1} bg={tagInfo.color} color="black">
+                    <Badge key={tag} mx={1} bg={tagInfo.color} color="black">
                       {tagInfo.name}
                     </Badge>
                   );
@@ -107,10 +105,10 @@ const TournamentInfo = ({ event, edit }: EventInfoProps) => {
           </Box>
 
           <Grid
-            templateColumns={["1fr", canEdit ? "1fr 1fr 1fr" : "1fr 1fr"]}
+            templateColumns={["1fr", canEdit ? "1fr 1fr" : "1fr"]}
             gridRowGap="1rem"
             gridColumnGap="1rem"
-            maxW={["12rem", canEdit ? "32rem" : "24rem"]}
+            maxW={["12rem", canEdit ? "24rem" : "18rem"]}
             mx="auto"
             mt={4}
           >
@@ -128,16 +126,6 @@ const TournamentInfo = ({ event, edit }: EventInfoProps) => {
             ) : (
               <div />
             )}
-            <Button
-              leftIcon={<FiInfo />}
-              size="sm"
-              onClick={() => setExpanded(!expanded)}
-              data-cy={`info-button-${event.name
-                .toLowerCase()
-                .replace(/ /g, "-")}`}
-            >
-              {expanded ? <Trans>Hide info</Trans> : <Trans>View info</Trans>}
-            </Button>
             {canEdit && (
               <Button
                 leftIcon={<FiEdit />}
@@ -153,20 +141,15 @@ const TournamentInfo = ({ event, edit }: EventInfoProps) => {
             )}
           </Grid>
         </Box>
-        {expanded && (
-          <Box mt="1rem" mx="0.5rem">
-            <Box color={gray} fontSize="small" mb={2}>
-              {
-                EVENT_FORMATS.find((format) => format.code === event.format)!
-                  .name
-              }
-            </Box>
-            <Markdown smallHeaders value={event.description} />
+        <Box mt={8} mx="0.5rem" wordBreak="break-word">
+          <Box color={gray} fontSize="small" mb={2}>
+            {EVENT_FORMATS.find((format) => format.code === event.format)!.name}
           </Box>
-        )}
+          <Markdown smallHeaders value={event.description} />
+        </Box>
       </Box>
     </OutlinedBox>
   );
 };
 
-export default TournamentInfo;
+export default EventInfo;

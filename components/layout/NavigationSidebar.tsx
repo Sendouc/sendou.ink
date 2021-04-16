@@ -19,6 +19,7 @@ const NavigationSidebar = () => {
     >
       {navItems.map(({ code, name }) => (
         <Box
+          key={code}
           borderLeft="4px solid"
           borderColor={navItem?.code === code ? themeColorHex : bgColor}
           pl={2}
