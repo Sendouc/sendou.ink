@@ -1,11 +1,10 @@
 import { Prisma } from "@prisma/client";
 import { httpError } from "@trpc/server";
 import prisma from "prisma/client";
-import { ADMIN_ID } from "utils/constants";
+import { ADMIN_ID, TAGS } from "utils/constants";
 import { userBasicSelection } from "utils/prisma";
 import { eventSchema } from "utils/validators/event";
 import * as z from "zod";
-import { TAGS } from "./utils";
 
 export type Events = Prisma.PromiseReturnType<typeof events>;
 

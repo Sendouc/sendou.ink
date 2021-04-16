@@ -1,7 +1,7 @@
 import * as trpc from "@trpc/server";
 import { inferAsyncReturnType, inferProcedureOutput } from "@trpc/server";
 import * as trpcNext from "@trpc/server/adapters/next";
-import calendarApi from "app/calendar/api";
+import calendarApi from "api/calendar";
 import freeAgentsApi from "app/freeagents/api";
 import plusApi from "app/plus/api";
 import superjson from "superjson";

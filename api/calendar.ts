@@ -1,8 +1,8 @@
 import { createRouter } from "pages/api/trpc/[trpc]";
+import service from "services/calendar";
 import { throwIfNotLoggedIn } from "utils/api";
 import { eventSchema } from "utils/validators/event";
 import * as z from "zod";
-import service from "./service";
 
 const calendarApi = createRouter()
   .query("events", {
@@ -21,7 +21,6 @@ const calendarApi = createRouter()
     input: z.object({ event: eventSchema, eventId: z.number() }),
     resolve({ ctx, input }) {
       const user = throwIfNotLoggedIn(ctx.user);
-      console.log("input", input);
       return service.editEvent({
         ...input,
         userId: user.id,

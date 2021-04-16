@@ -1,6 +1,4 @@
 import { Badge, Box, Button, Flex, Grid, Heading } from "@chakra-ui/react";
-import { Events } from "app/calendar/service";
-import { eventImage, EVENT_FORMATS, TAGS } from "app/calendar/utils";
 import Markdown from "components/common/Markdown";
 import MyLink from "components/common/MyLink";
 import OutlinedBox from "components/common/OutlinedBox";
@@ -9,9 +7,40 @@ import { useMyTheme, useUser } from "hooks/common";
 import Image from "next/image";
 import React from "react";
 import { FiClock, FiEdit, FiExternalLink } from "react-icons/fi";
+import { Events } from "services/calendar";
 import { DiscordIcon } from "utils/assets/icons";
-import { ADMIN_ID } from "utils/constants";
+import { ADMIN_ID, EVENT_FORMATS, TAGS } from "utils/constants";
 import { Unpacked } from "utils/types";
+
+const nameToImage = [
+  { code: "tasl", name: "tasl" },
+  { code: "lowink", name: "low ink" },
+  { code: "lobstercrossfire", name: "lobster crossfire" },
+  { code: "swimorsink", name: "swim or sink" },
+  { code: "idtga", name: "it's dangerous to go alone" },
+  { code: "rr", name: "reef rushdown" },
+  { code: "tg", name: "testing grounds" },
+  { code: "ut", name: "unnamed tournament" },
+  { code: "kotc", name: "king of the castle" },
+  { code: "zones", name: "area cup +" },
+] as const;
+
+/**
+ * Returns event logo image path based on the event name or undefined if no image saved for the event.
+ */
+export const eventImage = (eventName: string) => {
+  const eventNameLower = eventName.toLowerCase();
+  if (eventNameLower.startsWith("plus server")) {
+    return `/layout/plus.png`;
+  }
+  for (const { name, code } of nameToImage) {
+    if (eventNameLower.startsWith(name)) {
+      return `/events/${code}.png`;
+    }
+  }
+
+  return undefined;
+};
 
 interface EventInfoProps {
   event: Unpacked<Events>;
