@@ -18,7 +18,7 @@ import {
   RiPaintLine,
   RiSwordLine,
 } from "react-icons/ri";
-import { getToastOptions } from "utils/getToastOptions";
+import { getToastOptions } from "utils/objects";
 import { trpc } from "utils/trpc";
 import { Unpacked } from "utils/types";
 import { PostsData } from "../service";

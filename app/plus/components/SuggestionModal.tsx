@@ -19,7 +19,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import UserSelector from "components/common/UserSelector";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { getToastOptions } from "utils/getToastOptions";
+import { getToastOptions } from "utils/objects";
 import { trpc } from "utils/trpc";
 import {
   suggestionFullSchema,

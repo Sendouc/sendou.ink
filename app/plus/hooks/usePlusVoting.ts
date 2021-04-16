@@ -1,7 +1,7 @@
 import { useToast } from "@chakra-ui/toast";
 import { useUser } from "hooks/common";
 import { useState } from "react";
-import { getToastOptions } from "utils/getToastOptions";
+import { getToastOptions } from "utils/objects";
 import { trpc } from "utils/trpc";
 import { Unpacked } from "utils/types";
 import { votesSchema } from "utils/validators/votes";

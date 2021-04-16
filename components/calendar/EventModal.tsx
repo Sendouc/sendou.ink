@@ -27,7 +27,7 @@ import MarkdownTextarea from "components/common/MarkdownTextarea";
 import { useMyTheme } from "hooks/common";
 import { Controller, useForm } from "react-hook-form";
 import { FiTrash } from "react-icons/fi";
-import { getToastOptions } from "utils/getToastOptions";
+import { getToastOptions } from "utils/objects";
 import { trpc } from "utils/trpc";
 import { eventSchema, EVENT_DESCRIPTION_LIMIT } from "utils/validators/event";
 import * as z from "zod";

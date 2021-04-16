@@ -17,7 +17,7 @@ import UserAvatar from "components/common/UserAvatar";
 import { useMyTheme } from "hooks/common";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { getToastOptions } from "utils/getToastOptions";
+import { getToastOptions } from "utils/objects";
 import { getVotingRange } from "utils/plus";
 import { getFullUsername } from "utils/strings";
 import { trpc } from "utils/trpc";
