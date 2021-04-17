@@ -1,88 +1,36 @@
 import { Box, Flex, Heading, useColorMode } from "@chakra-ui/react";
-import { t, Trans } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import MyLink from "components/common/MyLink";
+import Page from "components/common/Page";
 import { useMyTheme } from "hooks/common";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { navItems } from "utils/constants";
 
-const Home = () => {
-  const { gray } = useMyTheme();
+const HomePage = () => {
+  const { bgColor, secondaryBgColor } = useMyTheme();
   const { colorMode } = useColorMode();
-  const [rgb, setRgb] = useState(false);
 
   return (
-    <>
-      {/* <SEO
-        title="sendou.ink"
-        appendTitle={false}
-        description="Competitive Splatoon hub featuring several tools and resources."
-        imageSrc="https://sendou.ink/seo/home.png"
-      /> */}
-      <Box textAlign="center">
+    <Page>
+      <Flex align="center">
         <Image
-          className={rgb ? "rgb" : undefined}
+          className="rgb"
           src={`/layout/posterGirl_${colorMode}.png`}
           width={481}
           height={400}
           priority
-          onLoad={() => setRgb(true)}
         />
-        <Heading size="2xl">Sendou.ink</Heading>
-        <Box fontWeight="semibold" letterSpacing="wide" color={gray}>
-          <Trans>Competitive Splatoon Hub</Trans>
-        </Box>
-      </Box>
-      <>
-        <PageInfoSection location="xsearch" title={t`Top 500 Browser`}>
-          <Trans>
-            Conveniently browse Top 500 results. There are also tier lists to
-            see which weapons are reigning in each mode.
-          </Trans>
-        </PageInfoSection>
-        <PageInfoSection location="sr" title={t`Salmon Run`}>
-          <Trans>
-            Get into Overfishing and climb up the leaderboards. Guides included
-            to get you started.
-          </Trans>
-        </PageInfoSection>
-        <PageInfoSection location="builds" title={t`Builds`}>
-          <Trans>
-            View builds by some of the best players in the world and submit your
-            own.
-          </Trans>
-        </PageInfoSection>
-        <PageInfoSection location="analyzer" title={t`Build Analyzer`}>
-          <Trans>
-            What exactly is the effect of your builds? Guess no more.
-          </Trans>
-        </PageInfoSection>
-        <PageInfoSection location="calendar" title={t`Calendar`}>
-          <Trans>View all the upcoming events in the community.</Trans>
-        </PageInfoSection>
-        <PageInfoSection location="u" title={t`User Search`}>
-          <Trans>
-            You can make your own page. Use this tool to find other users'
-            pages.
-          </Trans>
-        </PageInfoSection>
-        <PageInfoSection location="freeagents" title={t`Free Agents`}>
-          <Trans>Find your next teammates.</Trans>
-        </PageInfoSection>
-        <PageInfoSection location="t" title={t`Teams`}>
-          <Trans>Make a page for your team.</Trans>
-        </PageInfoSection>
-        <PageInfoSection location="plans" title={t`Map Planner`}>
-          <Trans>Make your battle plans by drawing on over 100 maps.</Trans>
-        </PageInfoSection>
-        <PageInfoSection location="links" title={t`External links`}>
-          <Trans>
-            There are a lot of useful Splatoon resouces. This page collects them
-            together.
-          </Trans>
-        </PageInfoSection>
-      </>
-      <Box textAlign="center" mt={24} fontSize="sm" color={gray}>
+        <Image
+          className="rgb mirrored"
+          src={`/layout/posterGirl_${colorMode}.png`}
+          width={481}
+          height={400}
+          priority
+        />
+      </Flex>
+
+      <Box fontSize="sm" textAlign="right">
         <Trans>
           All art by{" "}
           <MyLink href="https://twitter.com/borzoic_" isExternal>
@@ -90,7 +38,44 @@ const Home = () => {
           </MyLink>
         </Trans>
       </Box>
-    </>
+      <Flex mt={2} flexWrap="wrap" alignItems="center" justifyContent="center">
+        {navItems.map(({ code, name }) => {
+          return (
+            <MyLink key={code} href={"/" + code} isColored={false} noUnderline>
+              <Flex
+                width="9rem"
+                rounded="lg"
+                p={1}
+                m={2}
+                fontSize="sm"
+                fontWeight="bold"
+                align="center"
+                whiteSpace="nowrap"
+                bg={secondaryBgColor}
+                border="2px solid"
+                borderColor={secondaryBgColor}
+                _hover={{
+                  bg: bgColor,
+                }}
+              >
+                <Image
+                  src={`/layout/${code}.png`}
+                  height={32}
+                  width={32}
+                  priority
+                />
+                <Box ml={2}>{name}</Box>
+              </Flex>
+            </MyLink>
+          );
+        })}
+      </Flex>
+      <Box textAlign="center" mt={6}>
+        The goal of sendou.ink is to provide useful tools and resources for
+        Splatoon players. It's an open source project by Sendou and
+        contributors. Explore what you can do by visiting the pages above.
+      </Box>
+    </Page>
   );
 
   function PageInfoSection({
@@ -120,4 +105,4 @@ const Home = () => {
   }
 };
 
-export default Home;
+export default HomePage;

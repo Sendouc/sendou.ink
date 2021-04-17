@@ -71,6 +71,11 @@ body {
   }
 }
 
+.mirrored {
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}
+
 /* 
 For Next.JS image
 */

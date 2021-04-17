@@ -11,6 +11,9 @@ const NavigationSidebar = () => {
   const navItem = useActiveNavItem();
   const { bgColor, secondaryBgColor, themeColorHex } = useMyTheme();
 
+  if (router.pathname === "/")
+    return <Box width="12rem" display={["none", null, "block"]} />;
+
   return (
     <Box
       width="12rem"
