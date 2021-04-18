@@ -131,7 +131,8 @@ const BuildsPage = () => {
               onShowAllByUser={() =>
                 dispatch({ type: "EXPAND_USER", id: buildArray[0].userId })
               }
-              m={2}
+              my={2}
+              mx={[0, 2]}
             />
           )
         )}

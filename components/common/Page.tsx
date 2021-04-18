@@ -4,7 +4,7 @@ import MyContainer from "./MyContainer";
 
 export default function Page({
   children,
-  isWide = false,
+  isWide = true,
 }: {
   children: React.ReactNode;
   isWide?: boolean;
