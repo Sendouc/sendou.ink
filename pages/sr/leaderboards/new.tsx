@@ -96,18 +96,20 @@ const AddRecordModal = () => {
 
         {watchRotationId && (
           <>
-            <FormLabel htmlFor="category" mt={4}>
-              <Trans>Category</Trans>
-            </FormLabel>
-            <Select name="category" ref={register}>
-              {Object.entries(salmonRunCategoryToNatural).map(
-                ([key, value]) => (
-                  <option key={key} value={key}>
-                    {i18n._(value)}
-                  </option>
-                )
-              )}
-            </Select>
+            <FormControl>
+              <FormLabel htmlFor="category" mt={4}>
+                <Trans>Category</Trans>
+              </FormLabel>
+              <Select name="category" ref={register}>
+                {Object.entries(salmonRunCategoryToNatural).map(
+                  ([key, value]) => (
+                    <option key={key} value={key}>
+                      {i18n._(value)}
+                    </option>
+                  )
+                )}
+              </Select>
+            </FormControl>
 
             <FormControl isInvalid={!!errors.goldenEggCount}>
               <FormLabel htmlFor="goldenEggCount" mt={4}>

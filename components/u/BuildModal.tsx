@@ -298,49 +298,59 @@ const BuildModal: React.FC<Props> = ({ onClose, build, weaponFromQuery }) => {
                 </FormErrorMessage>
               </FormControl>
 
-              <FormLabel htmlFor="headGear" mt={4}>
-                <Trans>Head</Trans>
-              </FormLabel>
-              <Controller
-                name="headGear"
-                control={control}
-                defaultValue=""
-                render={({ onChange, value, name }) => (
-                  <GearSelector slot="head" value={value} setValue={onChange} />
-                )}
-              />
+              <FormControl>
+                <FormLabel htmlFor="headGear" mt={4}>
+                  <Trans>Head</Trans>
+                </FormLabel>
+                <Controller
+                  name="headGear"
+                  control={control}
+                  defaultValue=""
+                  render={({ onChange, value, name }) => (
+                    <GearSelector
+                      slot="head"
+                      value={value}
+                      setValue={onChange}
+                    />
+                  )}
+                />
+              </FormControl>
 
-              <FormLabel htmlFor="clothingGear" mt={4}>
-                <Trans>Clothing</Trans>
-              </FormLabel>
-              <Controller
-                name="clothingGear"
-                control={control}
-                defaultValue=""
-                render={({ onChange, value }) => (
-                  <GearSelector
-                    slot="clothing"
-                    value={value}
-                    setValue={onChange}
-                  />
-                )}
-              />
+              <FormControl>
+                <FormLabel htmlFor="clothingGear" mt={4}>
+                  <Trans>Clothing</Trans>
+                </FormLabel>
+                <Controller
+                  name="clothingGear"
+                  control={control}
+                  defaultValue=""
+                  render={({ onChange, value }) => (
+                    <GearSelector
+                      slot="clothing"
+                      value={value}
+                      setValue={onChange}
+                    />
+                  )}
+                />
+              </FormControl>
 
-              <FormLabel htmlFor="shoesGear" mt={4}>
-                <Trans>Shoes</Trans>
-              </FormLabel>
-              <Controller
-                name="shoesGear"
-                control={control}
-                defaultValue=""
-                render={({ onChange, value }) => (
-                  <GearSelector
-                    slot="shoes"
-                    value={value}
-                    setValue={onChange}
-                  />
-                )}
-              />
+              <FormControl>
+                <FormLabel htmlFor="shoesGear" mt={4}>
+                  <Trans>Shoes</Trans>
+                </FormLabel>
+                <Controller
+                  name="shoesGear"
+                  control={control}
+                  defaultValue=""
+                  render={({ onChange, value }) => (
+                    <GearSelector
+                      slot="shoes"
+                      value={value}
+                      setValue={onChange}
+                    />
+                  )}
+                />
+              </FormControl>
 
               <FormControl isInvalid={!!errors.modes}>
                 <FormLabel htmlFor="modes" mt={4}>
