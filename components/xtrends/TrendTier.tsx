@@ -45,13 +45,7 @@ const TrendTier = ({
           py="1em"
         >
           {data.map((weaponObj) => (
-            <Flex
-              key={weaponObj.weapon}
-              m={4}
-              cursor="pointer"
-              flexDir="column"
-              align="center"
-            >
+            <Flex key={weaponObj.weapon} m={4} flexDir="column" align="center">
               <WeaponImage name={weaponObj.weapon} size={64} />
               <SubText display="flex" alignItems="center" mt={2}>
                 {weaponObj.count} / {weaponObj.averageXp} /{" "}
