@@ -153,11 +153,12 @@ const FreeAgentSection = ({
           isOpenByDefault
           mt={4}
           my={6}
+          wordBreak="break-word"
         >
           <Markdown value={post.content} smallHeaders />
         </SubTextCollapse>
         {post.user.profile?.bio && (
-          <SubTextCollapse title={t`Bio`} mt={4}>
+          <SubTextCollapse title={t`Bio`} mt={4} wordBreak="break-word">
             <Markdown value={post.user.profile.bio} smallHeaders />
           </SubTextCollapse>
         )}
