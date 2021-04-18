@@ -17,12 +17,13 @@ const NavigationSidebar = () => {
   return (
     <Box
       width="12rem"
+      flexShrink={0}
       top={4}
-      my={3}
+      my={2}
       height="100vh"
       position="sticky"
       alignSelf="flex-start"
-      display={["none", null, "block"]}
+      display={["none", null, null, "block"]}
     >
       {navItems.map(({ code, name }) => {
         const isActive =
