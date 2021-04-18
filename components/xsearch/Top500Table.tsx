@@ -14,8 +14,8 @@ import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
 import { useMyTheme } from "hooks/common";
 import Link from "next/link";
+import { Top500PlacementsByMonth } from "services/xsearch";
 import { getProfilePath, getRankingString } from "utils/strings";
-import { Top500PlacementsByMonth } from "../service";
 
 interface Props {
   placements: Top500PlacementsByMonth;
