@@ -1,12 +1,12 @@
 import { RankedMode } from ".prisma/client";
 import { Box, Flex } from "@chakra-ui/react";
-import xRankService, { XTrends } from "app/xrank/service";
 import ModeSelector from "components/common/ModeSelector";
 import MyHead from "components/common/MyHead";
 import TrendTier from "components/xtrends/TrendTier";
 import { useMyTheme } from "hooks/common";
 import { GetStaticProps } from "next";
 import { useState } from "react";
+import xRankService, { XTrends } from "services/xtrends";
 import { xTrendsTiers } from "utils/constants";
 
 export interface XTrendsPageProps {
@@ -55,7 +55,7 @@ const XTrendsPage = ({ trends }: XTrendsPageProps) => {
 export default XTrendsPage;
 
 export const getStaticProps: GetStaticProps<XTrendsPageProps> = async () => {
-  const trends = await xRankService.getXTrendsNew();
+  const trends = await xRankService.getXTrends();
 
   return { props: { trends } };
 };
