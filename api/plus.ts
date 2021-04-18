@@ -1,9 +1,9 @@
 import { createRouter } from "pages/api/trpc/[trpc]";
+import service from "services/plus";
 import { throwIfNotLoggedIn } from "utils/api";
 import { suggestionFullSchema } from "utils/validators/suggestion";
 import { voteSchema, votesSchema } from "utils/validators/votes";
 import { vouchSchema } from "utils/validators/vouch";
-import service from "./service";
 
 const plusApi = createRouter()
   .query("suggestions", {

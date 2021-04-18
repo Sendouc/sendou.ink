@@ -1,5 +1,5 @@
 import { Playstyle } from ".prisma/client";
-import { FreeAgentRegion } from "app/freeagents/hooks";
+import { FreeAgentRegion } from "hooks/freeagents";
 
 export function isFreeAgentPlaystyle(value: unknown): value is Playstyle {
   return (

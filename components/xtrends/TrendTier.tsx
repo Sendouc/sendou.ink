@@ -1,10 +1,10 @@
 import { Box, Flex } from "@chakra-ui/react";
-import { XTrends } from "app/xrank/service";
 import OutlinedBox from "components/common/OutlinedBox";
 import SubText from "components/common/SubText";
 import WeaponImage from "components/common/WeaponImage";
 import { useMyTheme } from "hooks/common";
 import { IoChevronDownOutline, IoChevronUpOutline } from "react-icons/io5";
+import { XTrends } from "services/xtrends";
 
 const TrendTier = ({
   tier,

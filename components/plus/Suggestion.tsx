@@ -10,13 +10,13 @@ import {
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Trans } from "@lingui/macro";
-import { Suggestions } from "app/plus/service";
 import MyLink from "components/common/MyLink";
 import SubText from "components/common/SubText";
 import UserAvatar from "components/common/UserAvatar";
 import { useMyTheme } from "hooks/common";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { Suggestions } from "services/plus";
 import { getToastOptions } from "utils/objects";
 import { getVotingRange } from "utils/plus";
 import { getFullUsername } from "utils/strings";

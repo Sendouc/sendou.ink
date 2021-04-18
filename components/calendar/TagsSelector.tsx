@@ -1,8 +1,8 @@
 import { Flex } from "@chakra-ui/react";
 import { useLingui } from "@lingui/react";
-import { TAGS } from "app/calendar/utils";
 import MySelect from "components/common/MySelect";
 import { components } from "react-select";
+import { TAGS } from "utils/constants";
 
 interface TagsSelectorProps {
   value?: string[];
