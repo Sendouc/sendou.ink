@@ -135,9 +135,9 @@ const ProfilePage = (props: Props) => {
               onChange={(e) =>
                 setWeapon(e.target.value === "ALL" ? null : e.target.value)
               }
-              mx="auto"
-              maxWidth={80}
-              size="lg"
+              maxWidth={64}
+              size="sm"
+              rounded="lg"
             >
               <option value="ALL">
                 {t`All weapons`} ({buildCount})
