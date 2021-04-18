@@ -1,5 +1,6 @@
-import { Flex, useColorMode, useToast } from "@chakra-ui/react";
+import { Box, Flex, useColorMode, useToast } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
+import Page from "components/common/Page";
 import { useMyTheme } from "hooks/common";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -62,7 +63,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <TopNav />
       <Flex>
         <NavigationSidebar />
-        {children}
+        <Page>{children}</Page>
+        <Box display={["none", null, null, "block"]} width="12rem" mx={4} />
       </Flex>
       <Footer />
     </SWRConfig>
