@@ -21,10 +21,10 @@ import {
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { t, Trans } from "@lingui/macro";
-import { PostsData } from "app/freeagents/service";
 import MarkdownTextarea from "components/common/MarkdownTextarea";
 import { Controller, useForm } from "react-hook-form";
 import { FiTrash } from "react-icons/fi";
+import { PostsData } from "services/freeagents";
 import { getToastOptions } from "utils/objects";
 import { trpc } from "utils/trpc";
 import { Unpacked } from "utils/types";

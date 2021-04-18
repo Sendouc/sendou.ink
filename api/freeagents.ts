@@ -1,5 +1,5 @@
-import service from "app/freeagents/service";
 import { createRouter } from "pages/api/trpc/[trpc]";
+import service from "services/freeagents";
 import { throwIfNotLoggedIn } from "utils/api";
 import { freeAgentPostSchema } from "utils/validators/fapost";
 import * as z from "zod";

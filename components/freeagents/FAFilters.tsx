@@ -13,7 +13,7 @@ import { Trans } from "@lingui/macro";
 import { Playstyle } from "@prisma/client";
 import MySelect from "components/common/MySelect";
 import WeaponSelector from "components/common/WeaponSelector";
-import { UseFreeAgentsDispatch, UseFreeAgentsState } from "../hooks";
+import { UseFreeAgentsDispatch, UseFreeAgentsState } from "hooks/freeagents";
 
 const regionOptions = [
   {

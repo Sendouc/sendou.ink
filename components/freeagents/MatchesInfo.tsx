@@ -2,8 +2,8 @@ import { Alert, AlertIcon, Flex, Wrap, WrapItem } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
 import SubText from "components/common/SubText";
 import UserAvatar from "components/common/UserAvatar";
+import { PostsData } from "services/freeagents";
 import { Unpacked } from "utils/types";
-import { PostsData } from "../service";
 
 const MatchesInfo = ({
   matchedPosts,
