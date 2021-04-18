@@ -17,6 +17,7 @@ export default function NewTable({
   caption,
   headers,
   data,
+  smallAtPx,
 }: {
   caption?: string;
   headers: {
@@ -24,8 +25,11 @@ export default function NewTable({
     dataKey: string;
   }[];
   data: (Record<string, React.ReactNode> & { id: number })[];
+  smallAtPx?: string;
 }) {
-  const [isSmall] = useMediaQuery("(max-width: 600px)");
+  const [isSmall] = useMediaQuery(
+    smallAtPx ? `(max-width: ${smallAtPx}px)` : "(max-width: 600px)"
+  );
 
   if (isSmall) {
     return (
@@ -71,7 +75,7 @@ export default function NewTable({
 
   return (
     <OutlinedBox>
-      <Table variant="simple">
+      <Table variant="simple" fontSize="sm">
         {caption && <TableCaption placement="top">{caption}</TableCaption>}
         <Thead>
           <Tr>
