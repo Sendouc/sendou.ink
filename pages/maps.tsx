@@ -43,12 +43,12 @@ const MapsGeneratorPage = () => {
   >(getInitialStages());
   const [generationMode, setGenerationMode] = useState<
     "EQUAL" | "SZ_EVERY_OTHER" | "CUSTOM_ORDER"
-  >("EQUAL");
+  >("SZ_EVERY_OTHER");
   const [maplist, setMaplist] = useState("");
   const [modes, setModes] = useState<
     { label: string; value: number; data?: string }[]
   >([]);
-  const [count, setCount] = useState(9);
+  const [count, setCount] = useState(25);
   const [editing, setEditing] = useState(false);
   const [copied, setCopied] = useState<null | "URL" | "LIST">(null);
 
@@ -358,11 +358,11 @@ const MapsGeneratorPage = () => {
         value={generationMode}
       >
         <Stack direction="row" mb={4}>
-          <Radio value="EQUAL">
-            <Trans>All modes equally</Trans>
-          </Radio>
           <Radio value="SZ_EVERY_OTHER">
             <Trans>SZ every other</Trans>
+          </Radio>
+          <Radio value="EQUAL">
+            <Trans>All modes equally</Trans>
           </Radio>
           <Radio value="CUSTOM_ORDER">
             <Trans>Custom order</Trans>

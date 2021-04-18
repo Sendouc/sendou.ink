@@ -15,7 +15,7 @@ export default function Page({
         flexGrow={1}
         flexDirection="column"
         minH="100vh"
-        mt="23px"
+        mt={5}
         width="100%"
       >
         <MyContainer wide={isWide}>{children}</MyContainer>

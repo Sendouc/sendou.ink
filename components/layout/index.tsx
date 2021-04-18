@@ -1,7 +1,6 @@
-import { Box, Flex, useColorMode, useToast } from "@chakra-ui/react";
+import { Box, Flex, useToast } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import Page from "components/common/Page";
-import { useMyTheme } from "hooks/common";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { SWRConfig } from "swr";
@@ -21,8 +20,6 @@ const WIDE = [
 ];
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  const { secondaryBgColor } = useMyTheme();
-  const { colorMode, toggleColorMode } = useColorMode();
   const router = useRouter();
   const [errors, setErrors] = useState(new Set<string>());
   const toast = useToast();
