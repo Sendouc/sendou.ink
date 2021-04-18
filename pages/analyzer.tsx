@@ -1,12 +1,4 @@
-import {
-  Badge,
-  Box,
-  Button,
-  Flex,
-  FormLabel,
-  Switch,
-  Wrap,
-} from "@chakra-ui/react";
+import { Badge, Box, Button, FormLabel, Switch, Wrap } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import BuildStats from "components/analyzer/BuildStats";
 import EditableBuilds from "components/analyzer/EditableBuilds";
@@ -74,14 +66,9 @@ const BuildAnalyzerPage = () => {
   return (
     <>
       <MyHead title={t`Build Analyzer`} />
-      <Flex justifyContent="space-between">
-        <Badge>
-          <Trans>Patch {CURRENT_PATCH}</Trans>
-        </Badge>
-        <Box color={gray} fontSize="0.75em">
-          <Trans>AP = Ability Point = Mains * 10 + Subs * 3</Trans>
-        </Box>
-      </Flex>
+      <Badge>
+        <Trans>Patch {CURRENT_PATCH}</Trans>
+      </Badge>
 
       <Box my={4} maxW={80} mx="auto">
         <WeaponSelector value={weapon} setValue={setWeapon} isMulti={false} />
