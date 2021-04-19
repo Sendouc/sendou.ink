@@ -1,12 +1,15 @@
+import { Button } from "@chakra-ui/button";
+import { Input, InputGroup, InputLeftElement } from "@chakra-ui/input";
 import { Box } from "@chakra-ui/layout";
 import { t, Trans } from "@lingui/macro";
 import EventInfo from "components/calendar/EventInfo";
-import { FormData } from "components/calendar/EventModal";
+import { EventModal, FormData } from "components/calendar/EventModal";
 import MyHead from "components/common/MyHead";
 import SubText from "components/common/SubText";
 import { useMyTheme } from "hooks/common";
 import { ssr } from "pages/api/trpc/[trpc]";
 import { Fragment, useState } from "react";
+import { FiSearch } from "react-icons/fi";
 import { trpc } from "utils/trpc";
 
 const CalendarPage = () => {
@@ -22,6 +25,29 @@ const CalendarPage = () => {
   return (
     <>
       <MyHead title={t`Calendar`} />
+      {eventToEdit && (
+        <EventModal
+          onClose={() => setEventToEdit(false)}
+          event={typeof eventToEdit === "boolean" ? undefined : eventToEdit}
+          refetchQuery={events.refetch}
+        />
+      )}
+      <div>
+        <Button
+          size="sm"
+          onClick={() => setEventToEdit(true)}
+          data-cy="add-event-button"
+        >
+          <Trans>Add event</Trans>
+        </Button>
+      </div>
+      <InputGroup my={8} maxW="24rem" mx="auto">
+        <InputLeftElement
+          pointerEvents="none"
+          children={<FiSearch color={gray} />}
+        />
+        <Input value={filter} onChange={(e) => setFilter(e.target.value)} />
+      </InputGroup>
       {(events.data ?? [])
         .filter((event) =>
           event.name.toLowerCase().includes(filter.toLowerCase().trim())
@@ -95,13 +121,6 @@ const CalendarPage = () => {
           >
             <Trans>Add event</Trans>
           </Button>
-          {eventToEdit && (
-            <EventModal
-              onClose={() => setEventToEdit(false)}
-              event={typeof eventToEdit === "boolean" ? undefined : eventToEdit}
-              refetchQuery={events.refetch}
-            />
-          )}
         </div>
         <InputGroup mt={8} maxW="24rem" mx="auto">
           <InputLeftElement

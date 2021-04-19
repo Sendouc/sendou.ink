@@ -121,7 +121,7 @@ const SalmonRunPlayerPage = (props: Props) => {
                           )}
                           <Flex mt={2}>
                             {record.links.map((link) => (
-                              <LinkButton link={link} />
+                              <LinkButton key={link} link={link} />
                             ))}
                           </Flex>
                         </Box>

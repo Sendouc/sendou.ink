@@ -58,7 +58,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       }}
     >
       <TopNav />
-      <Flex>
+      <Flex overflowX="auto">
         <NavigationSidebar />
         <Page isWide={isWide}>{children}</Page>
         <Box

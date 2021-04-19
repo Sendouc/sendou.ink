@@ -20,7 +20,7 @@ const NavigationSidebar = () => {
       flexShrink={0}
       top={4}
       my={2}
-      height="100vh"
+      height="100%"
       position="sticky"
       alignSelf="flex-start"
       display={["none", null, null, "block"]}
