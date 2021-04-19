@@ -64,7 +64,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         <Box
           display={["none", null, null, "block"]}
           width={isWide ? undefined : "12rem"}
-          mx={4}
         />
       </Flex>
       <Footer />
