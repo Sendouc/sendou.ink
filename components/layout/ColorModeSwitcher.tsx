@@ -1,7 +1,7 @@
 import { IconButton, useColorMode } from "@chakra-ui/react";
 import { FiMoon, FiSun } from "react-icons/fi";
 
-const ColorModeSwitcher = () => {
+const ColorModeSwitcher = ({ isMobile }: { isMobile?: boolean }) => {
   const { colorMode, toggleColorMode } = useColorMode();
   return (
     <IconButton
@@ -16,9 +16,10 @@ const ColorModeSwitcher = () => {
           ? { bg: "white", color: "black" }
           : { bg: "black", color: "white" }
       }
-      borderRadius="0"
-      size="sm"
+      borderRadius={isMobile ? "50%" : "0"}
+      size={isMobile ? "lg" : "sm"}
       mx={2}
+      display={isMobile ? "flex" : ["none", null, null, "flex"]}
     />
   );
 };

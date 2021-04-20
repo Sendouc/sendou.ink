@@ -1,7 +1,7 @@
 import { IconButton, useColorMode } from "@chakra-ui/react";
 import { FiGlobe } from "react-icons/fi";
 
-const LanguageSwitcher = () => {
+const LanguageSwitcher = ({ isMobile }: { isMobile?: boolean }) => {
   const { colorMode, toggleColorMode } = useColorMode();
 
   return (
@@ -17,8 +17,9 @@ const LanguageSwitcher = () => {
           ? { bg: "white", color: "black" }
           : { bg: "black", color: "white" }
       }
-      borderRadius="0"
-      size="sm"
+      borderRadius={isMobile ? "50%" : "0"}
+      size={isMobile ? "lg" : "sm"}
+      display={isMobile ? "flex" : ["none", null, null, "flex"]}
     />
   );
 };

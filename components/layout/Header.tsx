@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Flex,
+  IconButton,
   useColorMode,
   useMediaQuery,
 } from "@chakra-ui/react";
@@ -9,11 +10,11 @@ import { useActiveNavItem, useMyTheme, useUser } from "hooks/common";
 import { signIn, signOut } from "next-auth/client";
 import Image from "next/image";
 import Link from "next/link";
-import { FiLogIn, FiLogOut } from "react-icons/fi";
+import { FiLogIn, FiLogOut, FiMenu } from "react-icons/fi";
 import ColorModeSwitcher from "./ColorModeSwitcher";
 import LanguageSwitcher from "./LanguageSwitcher";
 
-const Header = () => {
+const Header = ({ openNav }: { openNav: () => void }) => {
   const [isSmall] = useMediaQuery("(max-width: 400px)");
   const [user] = useUser();
   const { secondaryBgColor } = useMyTheme();
@@ -34,6 +35,21 @@ const Header = () => {
     >
       <Flex justify="space-between" align="center" width="6rem" px={2}>
         <ColorModeSwitcher /> <LanguageSwitcher />
+        <IconButton
+          aria-label="Open menu"
+          variant="ghost"
+          color="current"
+          onClick={openNav}
+          icon={<FiMenu />}
+          _hover={
+            colorMode === "dark"
+              ? { bg: "white", color: "black" }
+              : { bg: "black", color: "white" }
+          }
+          borderRadius="0"
+          size="sm"
+          display={["flex", null, null, "none"]}
+        />
       </Flex>
       <Flex justify="center" align="center" fontSize="sm" color="white.300">
         <Link href="/">{isSmall ? "s.ink" : "sendou.ink"}</Link>{" "}

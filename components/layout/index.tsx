@@ -5,6 +5,7 @@ import { useState } from "react";
 import { SWRConfig } from "swr";
 import Footer from "./Footer";
 import Header from "./Header";
+import MobileNav from "./MobileNav";
 import Nav from "./Nav";
 
 const DATE_KEYS = ["createdAt", "updatedAt"];
@@ -19,13 +20,10 @@ const WIDE = [
 ];
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
+  const [navIsOpen, setNavIsOpen] = useState(false);
   const router = useRouter();
   const [errors, setErrors] = useState(new Set<string>());
   const toast = useToast();
-
-  const isWide = WIDE.some((widePage) =>
-    router.pathname.startsWith("/" + widePage)
-  );
 
   return (
     <SWRConfig
@@ -56,8 +54,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         },
       }}
     >
-      <Header />
+      <Header openNav={() => setNavIsOpen(true)} />
       <Nav />
+      <MobileNav isOpen={navIsOpen} onClose={() => setNavIsOpen(false)} />
       <main>{children}</main>
       <Footer />
     </SWRConfig>
