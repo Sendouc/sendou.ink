@@ -13,6 +13,8 @@ main {
 }
 nav {
   grid-row-start: 2;
+  position: sticky;
+  top: 0;
 }
 aside {
   grid-column-start: 3;
