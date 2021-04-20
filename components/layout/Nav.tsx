@@ -6,21 +6,17 @@ import { useRouter } from "next/router";
 import { navItems } from "utils/constants";
 import UserItem from "./UserItem";
 
-const NavigationSidebar = () => {
+const Nav = () => {
   const router = useRouter();
   const navItem = useActiveNavItem();
   const { bgColor, secondaryBgColor, themeColorHex } = useMyTheme();
 
-  if (router.pathname === "/")
-    return <Box width="12rem" display={["none", null, "block"]} />;
+  if (router.pathname === "/") return null;
 
   return (
     <Box
-      width="12rem"
+      as="nav"
       flexShrink={0}
-      top={4}
-      my={2}
-      height="100%"
       position="sticky"
       alignSelf="flex-start"
       display={["none", null, null, "block"]}
@@ -65,4 +61,4 @@ const NavigationSidebar = () => {
   );
 };
 
-export default NavigationSidebar;
+export default Nav;

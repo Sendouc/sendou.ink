@@ -1,8 +1,41 @@
-html,
 body {
   margin: 0;
-  padding: 0;
+}
+header, footer {
+  grid-column-end: span 3;
+}
+main {
+  grid-column-start: 2;
+}
+nav {
+  grid-row-start: 2;
+}
+aside {
+  grid-column-start: 3;
+}
+header {
   width: 100%;
+}
+
+#__next {
+  display: grid;
+  row-gap: 1.5rem;
+  column-gap: 1.5rem;
+  grid-template-rows: 37px 1fr 100px;
+  grid-template-columns: 175px 1fr 175px;
+  min-height: 100vh;
+}
+
+@media (max-width: 1200px) { 
+  #__next {
+    grid-template-columns: 175px 1fr 0px;
+  }
+}
+
+@media (max-width: 991px) { 
+  #__next {
+    grid-template-columns: 0px 1fr 0px;
+  }
 }
 
 .rgb {

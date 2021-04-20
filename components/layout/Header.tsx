@@ -13,7 +13,7 @@ import { FiLogIn, FiLogOut } from "react-icons/fi";
 import ColorModeSwitcher from "./ColorModeSwitcher";
 import LanguageSwitcher from "./LanguageSwitcher";
 
-const TopNav = () => {
+const Header = () => {
   const [isSmall] = useMediaQuery("(max-width: 400px)");
   const [user] = useUser();
   const { secondaryBgColor } = useMyTheme();
@@ -21,12 +21,14 @@ const TopNav = () => {
   const activeNavItem = useActiveNavItem();
 
   return (
-    <Flex
+    <Box
+      display="flex"
+      as="header"
       justifySelf="center"
       fontWeight="bold"
       letterSpacing={1}
-      justify="space-between"
-      align="center"
+      justifyContent="space-between"
+      alignItems="center"
       mb={1}
       bg={secondaryBgColor}
     >
@@ -68,8 +70,8 @@ const TopNav = () => {
       >
         {user ? "Log out" : "Log in"}
       </Button>
-    </Flex>
+    </Box>
   );
 };
 
-export default TopNav;
+export default Header;

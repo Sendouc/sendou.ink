@@ -1,12 +1,11 @@
-import { Box, Flex, useToast } from "@chakra-ui/react";
+import { useToast } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
-import Page from "components/common/Page";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { SWRConfig } from "swr";
 import Footer from "./Footer";
-import NavigationSidebar from "./NavigationSidebar";
-import TopNav from "./TopNav";
+import Header from "./Header";
+import Nav from "./Nav";
 
 const DATE_KEYS = ["createdAt", "updatedAt"];
 
@@ -57,15 +56,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         },
       }}
     >
-      <TopNav />
-      <Flex overflowX="auto">
-        <NavigationSidebar />
-        <Page isWide={isWide}>{children}</Page>
-        <Box
-          display={["none", null, null, "block"]}
-          width={isWide ? undefined : "12rem"}
-        />
-      </Flex>
+      <Header />
+      <Nav />
+      <main>{children}</main>
       <Footer />
     </SWRConfig>
   );
