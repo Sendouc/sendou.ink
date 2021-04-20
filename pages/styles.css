@@ -6,7 +6,7 @@ header, footer {
 }
 main {
   grid-column-start: 2;
-  min-width: 48rem;
+  min-width: minmax(100%, 48rem);
   max-width: 64rem;
   margin-inline-end: auto;
   margin-inline-start: auto;
