@@ -4,7 +4,6 @@ import { useLingui } from "@lingui/react";
 import { Build, LeagueType, RankedMode } from "@prisma/client";
 import BuildCard from "components/builds/BuildCard";
 import Markdown from "components/common/Markdown";
-import MyContainer from "components/common/MyContainer";
 import MyInfiniteScroller from "components/common/MyInfiniteScroller";
 import AvatarWithInfo from "components/u/AvatarWithInfo";
 import BuildModal from "components/u/BuildModal";
@@ -122,9 +121,7 @@ const ProfilePage = (props: Props) => {
       {user.profile?.bio && user.profile?.bio.trim().length > 0 && (
         <>
           <Divider my={6} />
-          <MyContainer>
-            <Markdown value={user.profile.bio} smallHeaders />
-          </MyContainer>
+          <Markdown value={user.profile.bio} smallHeaders />
         </>
       )}
       {buildCount > 0 && (
