@@ -28,7 +28,7 @@ export const navItems: {
   name: string;
 }[] = [
   { code: "xsearch", name: "Browser" },
-  { code: "leaderboards", name: "Tier List" },
+  { code: "xtrends", name: "Tier List" },
   {
     code: "sr",
     name: "Salmon Run",
@@ -43,7 +43,7 @@ export const navItems: {
   { code: "freeagents", name: "Free Agents" },
   { code: "t", name: "Teams" },
   { code: "plans", name: "Plans" },
-  { code: "tournaments", name: "Map Lists" },
+  { code: "maps", name: "Map Lists" },
   {
     code: "plus",
     name: "Plus Server",
