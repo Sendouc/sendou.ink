@@ -14,6 +14,7 @@ const teamsFreeAgentsHandler = async (
 
   const freeAgents = await prisma.freeAgentPost.findMany({
     select: {
+      id: true,
       canVC: true,
       content: true,
       playstyles: true,
