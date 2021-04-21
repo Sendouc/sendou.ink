@@ -52,6 +52,7 @@ model Profile {
   customUrlPath String?  @unique
   user          User     @relation(fields: [userId], references: [id])
   userId        Int      @unique
+  updatedAt     DateTime @updatedAt
 }
 
 enum RankedMode {

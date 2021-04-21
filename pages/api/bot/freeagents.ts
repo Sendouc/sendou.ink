@@ -14,6 +14,7 @@ const teamsFreeAgentsHandler = async (
 
   const freeAgents = await prisma.freeAgentPost.findMany({
     select: {
+      id: true,
       canVC: true,
       content: true,
       playstyles: true,
@@ -24,7 +25,7 @@ const teamsFreeAgentsHandler = async (
           discordAvatar: true,
           username: true,
           discriminator: true,
-          profile: { select: { country: true, weaponPool: true } },
+          profile: { select: { country: true, weaponPool: true, updatedAt: true } },
         },
       },
     },

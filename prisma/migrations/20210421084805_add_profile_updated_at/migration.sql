@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Profile" ADD COLUMN "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT NOW();
+ALTER TABLE "Profile" ALTER COLUMN "updatedAt" DROP DEFAULT;
