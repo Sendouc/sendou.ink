@@ -1,9 +1,9 @@
 import * as trpc from "@trpc/server";
 import { inferAsyncReturnType, inferProcedureOutput } from "@trpc/server";
 import * as trpcNext from "@trpc/server/adapters/next";
-import calendarApi from "api-routes/calendar";
-import freeAgentsApi from "api-routes/freeagents";
-import plusApi from "api-routes/plus";
+import calendarApi from "routers/calendar";
+import freeAgentsApi from "routers/freeagents";
+import plusApi from "routers/plus";
 import superjson from "superjson";
 import { getMySession } from "utils/api";
 import { trpc as trcpReactQuery } from "utils/trpc";
