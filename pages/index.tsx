@@ -49,8 +49,12 @@ const HomePage = () => {
         <MyLink isExternal href="https://sendou.cc/">
           Sendou
         </MyLink>{" "}
-        and <MyLink href="/about">contributors</MyLink>. Explore what you can do
-        by visiting the pages above.
+        and <MyLink href="/about">contributors</MyLink>. To explore what you can
+        do on the site you can check out a{" "}
+        <MyLink isExternal href="https://www.youtube.com/watch?v=kQbvez9QnHc">
+          tour video made by Chara
+        </MyLink>
+        .
       </Box>
     </>
   );
