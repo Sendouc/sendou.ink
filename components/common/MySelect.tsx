@@ -93,8 +93,6 @@ const MySelect: React.FC<SelectProps> = ({
     return undefined;
   };
 
-  console.log("value", value);
-
   return (
     <ReactSelect
       className="basic-single"

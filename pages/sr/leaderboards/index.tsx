@@ -27,14 +27,13 @@ import {
 } from "components/common/Table";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
-import HeaderBanner from "components/layout/HeaderBanner";
 import { useSalmonRunRecords, WeaponsFilter } from "hooks/sr";
 import Image from "next/image";
 import Link from "next/link";
 import { salmonRunStages } from "utils/lists/stages";
 import { getRankingString } from "utils/strings";
-import { salmonRunCategoryToNatural } from "./new";
 import MyHead from "../../../components/common/MyHead";
+import { salmonRunCategoryToNatural } from "./new";
 
 const SalmonRunLeaderboardsPage = ({}) => {
   const { i18n } = useLingui();
@@ -251,13 +250,5 @@ const SalmonRunLeaderboardsPage = ({}) => {
     </>
   );
 };
-
-SalmonRunLeaderboardsPage.header = (
-  <HeaderBanner
-    icon="sr"
-    title="Salmon Run"
-    subtitle="Overfishing leaderboards"
-  />
-);
 
 export default SalmonRunLeaderboardsPage;

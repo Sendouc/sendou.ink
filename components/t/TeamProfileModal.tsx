@@ -26,7 +26,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaTwitter } from "react-icons/fa";
 import { mutate } from "swr";
-import { getToastOptions } from "utils/getToastOptions";
+import { getToastOptions } from "utils/objects";
 import { sendData } from "utils/postData";
 import {
   teamSchema,

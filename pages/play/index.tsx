@@ -13,7 +13,7 @@ import { getAllLadderRegisteredTeamsForMatches } from "prisma/queries/getAllLadd
 import { getLadderDay, GetLadderDayData } from "prisma/queries/getLadderDay";
 import { Fragment } from "react";
 import { shuffleArray } from "utils/arrays";
-import { getLadderRounds } from "utils/playFunctions";
+import { getLadderRounds } from "utils/play";
 
 interface Props {
   ladderDay: GetLadderDayData;

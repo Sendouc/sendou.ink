@@ -31,8 +31,8 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { FiTrash } from "react-icons/fi";
 import { mutate } from "swr";
-import { getToastOptions } from "utils/getToastOptions";
 import { weapons } from "utils/lists/weapons";
+import { getToastOptions } from "utils/objects";
 import { sendData } from "utils/postData";
 import { Unpacked } from "utils/types";
 import {

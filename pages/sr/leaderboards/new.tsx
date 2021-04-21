@@ -17,7 +17,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import UserSelector from "components/common/UserSelector";
-import HeaderBanner from "components/layout/HeaderBanner";
 import RotationSelector from "components/sr/RotationSelector";
 import { useUser } from "hooks/common";
 import Image from "next/image";
@@ -213,13 +212,5 @@ const AddRecordModal = () => {
     </>
   );
 };
-
-AddRecordModal.header = (
-  <HeaderBanner
-    icon="sr"
-    title="Salmon Run"
-    subtitle="Overfishing leaderboards"
-  />
-);
 
 export default AddRecordModal;

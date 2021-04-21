@@ -28,7 +28,7 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { FaGamepad, FaTwitch, FaTwitter, FaYoutube } from "react-icons/fa";
 import { mutate } from "swr";
-import { getToastOptions } from "utils/getToastOptions";
+import { getToastOptions } from "utils/objects";
 import { sendData } from "utils/postData";
 import {
   profileSchemaFrontend,

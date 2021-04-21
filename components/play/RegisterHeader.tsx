@@ -12,7 +12,7 @@ import { useUser } from "hooks/common";
 import { useLadderTeams } from "hooks/play";
 import { useEffect, useState } from "react";
 import { FiCheck, FiTrash } from "react-icons/fi";
-import { getToastOptions } from "utils/getToastOptions";
+import { getToastOptions } from "utils/objects";
 import { sendData } from "utils/postData";
 
 interface Props {}

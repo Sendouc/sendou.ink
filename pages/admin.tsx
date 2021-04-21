@@ -3,7 +3,7 @@ import SubText from "components/common/SubText";
 import { useUser } from "hooks/common";
 import { useState } from "react";
 import { ADMIN_DISCORD_ID } from "utils/constants";
-import { getToastOptions } from "utils/getToastOptions";
+import { getToastOptions } from "utils/objects";
 import { sendData } from "utils/postData";
 import { trpc } from "utils/trpc";
 

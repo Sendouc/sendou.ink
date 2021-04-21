@@ -1,6 +1,5 @@
 import { Button, ButtonGroup, Flex } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
-import HeaderBanner from "components/layout/HeaderBanner";
 import DraggableImageAdder from "components/plans/DraggableImageAdder";
 import DraggableToolsSelector from "components/plans/DraggableToolsSelector";
 import StageSelector from "components/plans/StageSelector";
@@ -373,13 +372,5 @@ const MapPlannerPage = () => {
     </>
   );
 };
-
-MapPlannerPage.header = (
-  <HeaderBanner
-    icon="plans"
-    title="Map Planner"
-    subtitle="Draw on 200 different maps and make your plans"
-  />
-);
 
 export default MapPlannerPage;

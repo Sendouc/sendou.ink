@@ -6,7 +6,6 @@ import {
 } from "@chakra-ui/react";
 import Markdown from "components/common/Markdown";
 import SubText from "components/common/SubText";
-import HeaderBanner from "components/layout/HeaderBanner";
 import fs from "fs";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { join } from "path";
@@ -84,9 +83,5 @@ export const getStaticPaths: GetStaticPaths = async () => {
     fallback: false,
   };
 };
-
-SalmonRunGuidePage.header = (
-  <HeaderBanner icon="sr" title="Salmon Run" subtitle="Learn how to overfish" />
-);
 
 export default SalmonRunGuidePage;
