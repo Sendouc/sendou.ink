@@ -22,7 +22,8 @@ const nameToImage = [
   { code: "tg", name: "testing grounds" },
   { code: "ut", name: "unnamed tournament" },
   { code: "kotc", name: "king of the castle" },
-  { code: "zones", name: "area cup +" },
+  { code: "zones", name: "area cup" },
+  { code: "cb", name: "cloudburst" },
 ] as const;
 
 /**
