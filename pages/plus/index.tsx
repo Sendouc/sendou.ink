@@ -13,6 +13,7 @@ import SubText from "components/common/SubText";
 import Suggestion from "components/plus/Suggestion";
 import SuggestionModal from "components/plus/SuggestionModal";
 import VotingInfoHeader from "components/plus/VotingInfoHeader";
+import VouchesList from "components/plus/VouchesList";
 import VouchModal from "components/plus/VouchModal";
 import { useUser } from "hooks/common";
 import { usePlusHomePage } from "hooks/plus";
@@ -25,6 +26,7 @@ const PlusHomePage = () => {
   const [user] = useUser();
   const {
     plusStatusData,
+    vouchStatuses,
     suggestionsData,
     ownSuggestion,
     suggestionCounts,
@@ -194,6 +196,13 @@ const PlusHomePage = () => {
           </Stack>
         </RadioGroup>
       </Center>
+      {!getVotingRange().isHappening &&
+        vouchStatuses &&
+        vouchStatuses.length > 0 && (
+          <Box mt={4}>
+            <VouchesList vouches={vouchStatuses} />
+          </Box>
+        )}
       {suggestionCounts.ONE + suggestionCounts.TWO + suggestionCounts.THREE ===
       0 ? (
         <Box mt={4}>No suggestions yet for this month</Box>

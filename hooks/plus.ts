@@ -28,6 +28,9 @@ export function usePlusHomePage() {
     plusStatusData: plusStatusData?.find(
       (status) => status.user.id === user?.id
     ),
+    vouchStatuses: plusStatusData
+      ?.filter((status) => status.voucher)
+      .sort((a, b) => a.vouchTier! - b.vouchTier!),
     vouchedPlusStatusData: plusStatusData?.find(
       (status) => status.voucher?.id === user?.id
     ),
