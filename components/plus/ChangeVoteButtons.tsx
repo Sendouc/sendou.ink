@@ -8,10 +8,12 @@ export function ChangeVoteButtons({
   score,
   isSameRegion,
   editVote,
+  isLoadingMutation,
 }: {
   score: number;
   isSameRegion: boolean;
   editVote: (score: number) => void;
+  isLoadingMutation: boolean;
 }) {
   const [editing, setEditing] = useState(false);
   const [currentScore, setCurrentScore] = useState(score);
@@ -48,6 +50,7 @@ export function ChangeVoteButtons({
             editVote(currentScore);
             setEditing(false);
           }}
+          disabled={isLoadingMutation}
         >
           Save
         </Button>

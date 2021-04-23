@@ -88,18 +88,18 @@ export default function usePlusVoting() {
       },
     }
   );
-  const { mutate: editVoteMutate, status: editVoteStatus } = trpc.useMutation(
-    "plus.editVote",
-    {
-      onSuccess() {
-        toast(getToastOptions("Successfully edited vote", "success"));
-        utils.invalidateQuery(["plus.votedUserScores"]);
-      },
-      onError(error) {
-        toast(getToastOptions(error.message, "error"));
-      },
-    }
-  );
+  const {
+    mutate: editVoteMutate,
+    isLoading: isLoadingEditVote,
+  } = trpc.useMutation("plus.editVote", {
+    onSuccess() {
+      toast(getToastOptions("Successfully edited vote", "success"));
+      utils.invalidateQuery(["plus.votedUserScores"]);
+    },
+    onError(error) {
+      toast(getToastOptions(error.message, "error"));
+    },
+  });
 
   const ownPlusStatus = statuses?.find((status) => status.user.id === user?.id);
 
@@ -145,5 +145,6 @@ export default function usePlusVoting() {
     voteStatus,
     votedUsers: getVotedUsers(),
     editVote: editVoteMutate,
+    isLoadingEditVote,
   };
 }

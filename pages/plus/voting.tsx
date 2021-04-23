@@ -30,6 +30,7 @@ export default function PlusVotingPage() {
     voteStatus,
     votedUsers,
     editVote,
+    isLoadingEditVote,
   } = usePlusVoting();
 
   useEffect(() => {
@@ -68,6 +69,7 @@ export default function PlusVotingPage() {
                   editVote={(score) =>
                     editVote({ userId: votedUser.userId, score })
                   }
+                  isLoadingMutation={isLoadingEditVote}
                 />
               </Fragment>
             );
