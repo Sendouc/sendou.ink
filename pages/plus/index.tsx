@@ -42,7 +42,7 @@ const PlusHomePage = () => {
           <VotingInfoHeader isMember={!!plusStatusData?.membershipTier} />
         </Box>
         <Heading size="md">Suggested players this month:</Heading>
-        <Flex flexWrap="wrap">
+        <Flex flexWrap="wrap" data-cy="alt-suggestions-container">
           {suggestionsData
             .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
             .map((suggestion) => (
