@@ -13,10 +13,6 @@ context("Event Calendar", () => {
     cy.contains("In The Zone Ultimate");
     cy.contains("SZ Only");
 
-    cy.dataCy("event-info-section-in-the-zone-ultimate")
-      .contains("Ultimate zoning")
-      .should("not.exist");
-    cy.dataCy("info-button-in-the-zone-ultimate").click();
     cy.dataCy("event-info-section-in-the-zone-ultimate").contains(
       "Ultimate zoning"
     );
@@ -46,7 +42,6 @@ context("Event Calendar", () => {
     cy.login("sendou");
     cy.visit("/calendar");
 
-    cy.dataCy("info-button-in-the-zone-ultimate").click();
     cy.dataCy("event-info-section-in-the-zone-ultimate").contains(
       "Ultimate zoning"
     );
