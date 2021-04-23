@@ -1,13 +1,13 @@
 import fs from "fs";
 import path from "path";
 import prisma from "./client";
-import {
-  getPlusVotingSummaryData,
-  getPlusSuggestionsData,
-  getPlusStatusesData,
-} from "./mocks/plus";
-import userFactory from "./factories/user";
 import calendarEventFactory from "./factories/calendarEvent";
+import userFactory from "./factories/user";
+import {
+  getPlusStatusesData,
+  getPlusSuggestionsData,
+  getPlusVotingSummaryData,
+} from "./mocks/plus";
 
 async function main() {
   throwIfNotLocalhost();
@@ -52,6 +52,7 @@ async function dropAllData() {
   await prisma.plusSuggestion.deleteMany({});
   await prisma.plusStatus.deleteMany({});
   await prisma.calendarEvent.deleteMany({});
+  await prisma.plusBallot.deleteMany({});
   await prisma.user.deleteMany({});
 }
 
