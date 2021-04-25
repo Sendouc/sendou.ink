@@ -59,6 +59,7 @@ async function dropAllData() {
 async function seedNewData() {
   await seedUsers();
   await seedEvents();
+  await seedLadderData();
   await prisma.plusStatus.createMany({ data: getPlusStatusesData() });
   await prisma.plusSuggestion.createMany({ data: getPlusSuggestionsData() });
   await prisma.plusVotingSummary.createMany({
@@ -111,6 +112,27 @@ async function seedEvents() {
         format: "SWISS2SE",
         tags: ["LOW", "MULTIPLE", "ART"],
       }),
+    ],
+  });
+}
+
+async function seedLadderData() {
+  const twentyFourHoursFromNow = new Date(
+    new Date().getTime() + 24 * 60 * 60 * 1000
+  );
+  twentyFourHoursFromNow.setHours(12);
+  twentyFourHoursFromNow.setMinutes(0);
+  twentyFourHoursFromNow.setSeconds(0);
+  await prisma.ladderDay.createMany({
+    data: [
+      {
+        id: 1,
+        date: new Date(twentyFourHoursFromNow.getTime() - 24 * 60 * 60 * 1000),
+      },
+      {
+        id: 2,
+        date: twentyFourHoursFromNow,
+      },
     ],
   });
 }

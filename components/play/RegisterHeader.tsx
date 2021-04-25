@@ -90,6 +90,7 @@ const RegisterHeader: React.FC<Props> = ({}) => {
           textAlign="center"
           p={6}
           mt={4}
+          rounded="lg"
         >
           <AlertTitle mb={1} fontSize="lg">
             {ownTeam.roster.length >= 4 ? (
@@ -116,7 +117,7 @@ const RegisterHeader: React.FC<Props> = ({}) => {
                   h="1.75rem"
                   size="sm"
                   isDisabled={sending || copied}
-                  my={2}
+                  my={4}
                   variant="outline"
                   width={36}
                 >
