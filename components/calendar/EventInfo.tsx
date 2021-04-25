@@ -24,6 +24,7 @@ const nameToImage = [
   { code: "kotc", name: "king of the castle" },
   { code: "zones", name: "area cup" },
   { code: "cb", name: "cloudburst" },
+  { code: "forecast", name: "forecast" },
 ] as const;
 
 /**
