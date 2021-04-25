@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import prisma from "./client";
 import calendarEventFactory from "./factories/calendarEvent";
+import ladderRegisteredTeamFactory from "./factories/ladderRegisteredTeam";
 import userFactory from "./factories/user";
 import {
   getPlusStatusesData,
@@ -120,9 +121,7 @@ async function seedLadderData() {
   const twentyFourHoursFromNow = new Date(
     new Date().getTime() + 24 * 60 * 60 * 1000
   );
-  twentyFourHoursFromNow.setHours(12);
-  twentyFourHoursFromNow.setMinutes(0);
-  twentyFourHoursFromNow.setSeconds(0);
+  twentyFourHoursFromNow.setHours(12, 0, 0);
   await prisma.ladderDay.createMany({
     data: [
       {
@@ -135,6 +134,23 @@ async function seedLadderData() {
       },
     ],
   });
+
+  await prisma.ladderRegisteredTeam.createMany({
+    data: [...Array(2)].map((_, _i) => {
+      return ladderRegisteredTeamFactory.build();
+    }),
+  });
+
+  await Promise.all([
+    prisma.user.updateMany({
+      where: { id: { in: [1, 2, 3, 4] } },
+      data: { ladderTeamId: 1 },
+    }),
+    prisma.user.updateMany({
+      where: { id: { in: [5, 6, 7] } },
+      data: { ladderTeamId: 2 },
+    }),
+  ]);
 }
 
 main()
