@@ -1,5 +1,4 @@
 import { Box, Center, Flex, Grid, Heading } from "@chakra-ui/react";
-import { Trans } from "@lingui/macro";
 import ModeImage from "components/common/ModeImage";
 import SubText from "components/common/SubText";
 import LadderTeam from "components/play/LadderTeam";
@@ -10,13 +9,13 @@ import { useLadderTeams } from "hooks/play";
 import { GetStaticProps } from "next";
 import prisma from "prisma/client";
 import { getAllLadderRegisteredTeamsForMatches } from "prisma/queries/getAllLadderRegisteredTeamsForMatches";
-import { getLadderDay, GetLadderDayData } from "prisma/queries/getLadderDay";
 import { Fragment } from "react";
+import playService, { NextLadderDay } from "services/play";
 import { shuffleArray } from "utils/arrays";
 import { getLadderRounds } from "utils/play";
 
 interface Props {
-  ladderDay: GetLadderDayData;
+  ladderDay: NextLadderDay;
 }
 
 const PlayPage: React.FC<Props> = ({ ladderDay }) => {
@@ -26,14 +25,15 @@ const PlayPage: React.FC<Props> = ({ ladderDay }) => {
   return (
     <>
       {!ladderDay?.matches.length && (
-        <Box fontSize="lg" fontWeight="bold">
+        <Box fontWeight="bold">
           {ladderDay ? (
-            <>Next event: {new Date(ladderDay.date).toLocaleString()}</>
+            <Heading size="md" as="h2">
+              Next ladder event takes place at{" "}
+              {new Date(ladderDay.date).toLocaleString()}
+            </Heading>
           ) : (
             <>
-              <Trans>
-                Next ladder date is not confirmed. Follow this page for updates!
-              </Trans>
+              Next ladder date is not confirmed. Follow this page for updates!
             </>
           )}
         </Box>
@@ -42,6 +42,9 @@ const PlayPage: React.FC<Props> = ({ ladderDay }) => {
         <>
           <RegisterHeader />
           <Box mt={4}>
+            <Heading size="sm" as="h3">
+              Registered teams
+            </Heading>
             {data
               ?.sort((a, b) => b.roster.length - a.roster.length)
               .map((team) => (
@@ -99,9 +102,9 @@ const PlayPage: React.FC<Props> = ({ ladderDay }) => {
 };
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
-  const ladderDay = await getLadderDay();
+  const ladderDay = await playService.nextLadderDay();
 
-  let ladderDayAfterGeneration: GetLadderDayData | undefined;
+  let ladderDayAfterGeneration: NextLadderDay | undefined;
   if (
     ladderDay &&
     !ladderDay.matches.length &&
@@ -160,7 +163,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
       deleteLadderRegisteredTeams,
     ] as any);
 
-    ladderDayAfterGeneration = await getLadderDay();
+    ladderDayAfterGeneration = await playService.nextLadderDay();
   }
 
   return {

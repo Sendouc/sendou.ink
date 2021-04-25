@@ -1,3 +1,4 @@
+import { Prisma } from ".prisma/client";
 import prisma from "prisma/client";
 
 const allRegisteredTeams = async () =>
@@ -35,12 +36,11 @@ const allLadderRegisteredTeamsForMatches = async () =>
     },
   });
 
-const nextLadderDay = async () => {
-  const d = new Date();
-  d.setHours(d.getHours() - 6);
+export type NextLadderDay = Prisma.PromiseReturnType<typeof nextLadderDay>;
 
+const nextLadderDay = async () => {
   return prisma.ladderDay.findFirst({
-    where: { date: { gte: d } },
+    where: { date: { gte: new Date() } },
     include: {
       matches: {
         select: {
