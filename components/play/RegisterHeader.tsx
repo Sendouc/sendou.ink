@@ -79,7 +79,7 @@ const RegisterHeader: React.FC<Props> = ({}) => {
   const ownTeamFullyRegisted = !!ownTeam && ownTeam.roster.length >= 4;
 
   return (
-    <Box>
+    <Box my={6}>
       {ownTeam ? (
         <Alert
           status={ownTeamFullyRegisted ? "success" : "warning"}
@@ -89,7 +89,7 @@ const RegisterHeader: React.FC<Props> = ({}) => {
           justifyContent="center"
           textAlign="center"
           p={6}
-          mt={4}
+          rounded="lg"
         >
           <AlertTitle mb={1} fontSize="lg">
             {ownTeam.roster.length >= 4 ? (
@@ -116,7 +116,7 @@ const RegisterHeader: React.FC<Props> = ({}) => {
                   h="1.75rem"
                   size="sm"
                   isDisabled={sending || copied}
-                  my={2}
+                  my={4}
                   variant="outline"
                   width={36}
                 >
@@ -156,12 +156,7 @@ const RegisterHeader: React.FC<Props> = ({}) => {
           </AlertDescription>
         </Alert>
       ) : (
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={createNewTeam}
-          isLoading={sending}
-        >
+        <Button onClick={createNewTeam} isLoading={sending}>
           <Trans>Register new team</Trans>
         </Button>
       )}
