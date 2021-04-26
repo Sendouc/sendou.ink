@@ -24,7 +24,7 @@ export const appRouter = createRouter()
   .merge("plus.", plusApi)
   .merge("calendar.", calendarApi)
   .merge("freeAgents.", freeAgentsApi)
-  .merge("play", playApi);
+  .merge("play.", playApi);
 
 // Exporting type _type_ AppRouter only exposes types that can be used for inference
 // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-8.html#type-only-imports-and-export

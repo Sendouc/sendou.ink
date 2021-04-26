@@ -1,66 +1,76 @@
-import { Box, Center, Flex, Grid, Heading } from "@chakra-ui/react";
+import {
+  Center,
+  Flex,
+  Grid,
+  Heading,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+} from "@chakra-ui/react";
 import ModeImage from "components/common/ModeImage";
 import SubText from "components/common/SubText";
-import LadderTeam from "components/play/LadderTeam";
 import MatchUp from "components/play/MatchUp";
-import RegisterHeader from "components/play/RegisterHeader";
+import RegisterTab from "components/play/RegisterTab";
 import { useMyTheme } from "hooks/common";
 import { useLadderTeams } from "hooks/play";
 import { GetStaticProps } from "next";
 import prisma from "prisma/client";
 import { getAllLadderRegisteredTeamsForMatches } from "prisma/queries/getAllLadderRegisteredTeamsForMatches";
 import { Fragment } from "react";
-import playService, { NextLadderDay } from "services/play";
+import playService, { NextLadderDay, PreviousLadderDay } from "services/play";
 import { shuffleArray } from "utils/arrays";
 import { getLadderRounds } from "utils/play";
 
 interface Props {
   ladderDay: NextLadderDay;
+  previousLadderDay: PreviousLadderDay;
 }
 
-const PlayPage: React.FC<Props> = ({ ladderDay }) => {
+const PlayPage: React.FC<Props> = ({ ladderDay, previousLadderDay }) => {
   const { gray } = useMyTheme();
   const { data } = useLadderTeams(!ladderDay);
 
+  console.log({ previousLadderDay });
+
   return (
     <>
-      {!ladderDay?.matches.length && (
-        <Box fontWeight="bold">
-          {ladderDay ? (
-            <Heading size="md" as="h2">
-              Next ladder event takes place at{" "}
-              {new Date(ladderDay.date).toLocaleString()}
-            </Heading>
-          ) : (
-            <>
-              Next ladder date is not confirmed. Follow this page for updates!
-            </>
-          )}
-        </Box>
-      )}
-      {ladderDay && ladderDay.matches.length === 0 && (
+      <Tabs>
+        <TabList mb="1em">
+          <Tab>Register</Tab>
+          <Tab>Active Matches</Tab>
+          <Tab>Match History</Tab>
+          <Tab disabled>Leaderboards</Tab>
+          <Tab>FAQ</Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel p={1}>
+            <RegisterTab />
+          </TabPanel>
+          <TabPanel p={1}>
+            <p>two!</p>
+          </TabPanel>
+          <TabPanel p={1}>
+            <p>three!</p>
+          </TabPanel>
+          <TabPanel p={1}>
+            <p>four!</p>
+          </TabPanel>
+          <TabPanel p={1}>
+            <p>five!</p>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+      {previousLadderDay && previousLadderDay.matches.length > 0 && (
         <>
-          <RegisterHeader />
-          <Box mt={4}>
-            <Heading size="sm" as="h3">
-              Registered teams
-            </Heading>
-            {data
-              ?.sort((a, b) => b.roster.length - a.roster.length)
-              .map((team) => (
-                <LadderTeam key={team.id} roster={team.roster} my={2} />
-              ))}
-          </Box>
-        </>
-      )}
-      {ladderDay && ladderDay.matches.length > 0 && (
-        <>
-          {[1, 2].map((round) => (
+          {[1].map((round) => (
             <Fragment key={round}>
               <Heading size="md">Round {round}</Heading>
               <SubText mt={4}>Maplist</SubText>
-              {(ladderDay.matches.find((match) => match.order === round)!
-                .maplist as any[]).map(({ stage, mode }, i) => {
+              {(previousLadderDay.matches.find(
+                (match) => match.order === round
+              )!.maplist as any[]).map(({ stage, mode }, i) => {
                 return (
                   <Flex
                     key={stage + mode}
@@ -84,7 +94,7 @@ const PlayPage: React.FC<Props> = ({ ladderDay }) => {
                 mt={8}
                 mb={8}
               >
-                {ladderDay.matches
+                {previousLadderDay.matches
                   .filter((match) => match.order === round)
                   .map((match) => (
                     <MatchUp
@@ -102,7 +112,10 @@ const PlayPage: React.FC<Props> = ({ ladderDay }) => {
 };
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
-  const ladderDay = await playService.nextLadderDay();
+  const [ladderDay, previousLadderDay] = await Promise.all([
+    playService.nextLadderDay(),
+    playService.previousLadderDay(),
+  ]);
 
   let ladderDayAfterGeneration: NextLadderDay | undefined;
   if (
@@ -116,7 +129,10 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
 
     if (teams.length < 4) {
       return {
-        props: { ladderDay: JSON.parse(JSON.stringify(ladderDay)) },
+        props: {
+          ladderDay: JSON.parse(JSON.stringify(ladderDay)),
+          previousLadderDay,
+        },
         revalidate: 30,
       }; // FIX
     }
@@ -171,6 +187,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
       ladderDay: JSON.parse(
         JSON.stringify(ladderDayAfterGeneration ?? ladderDay)
       ),
+      previousLadderDay,
     },
     revalidate: 30,
   };

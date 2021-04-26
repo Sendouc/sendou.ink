@@ -152,98 +152,146 @@ async function seedLadderData() {
     }),
   ]);
 
-  await prisma.ladderMatch.createMany({
-    data: [
-      {
-        id: 1,
-        dayId: 1,
-        maplist: [
-          {
-            stage: "The Reef",
-            mode: "SZ",
-          },
-          {
-            stage: "Musselforge Fitness",
-            mode: "CB",
-          },
-          {
-            stage: "Starfish Mainstage",
-            mode: "SZ",
-          },
-          {
-            stage: "Humpback Pump Track",
-            mode: "TC",
-          },
-          {
-            stage: "Inkblot Art Academy",
-            mode: "SZ",
-          },
-          {
-            stage: "Sturgeon Shipyard",
-            mode: "RM",
-          },
-          {
-            stage: "Manta Maria",
-            mode: "SZ",
-          },
-          {
-            stage: "Snapper Canal",
-            mode: "CB",
-          },
-          {
-            stage: "Blackbelly Skatepark",
-            mode: "SZ",
-          },
-        ],
-        order: 1,
-        teamAScore: 5,
-        teamBScore: 0,
-      },
-      {
-        id: 2,
-        dayId: 1,
-        maplist: [
-          {
-            stage: "MakoMart",
-            mode: "SZ",
-          },
-          {
-            stage: "Shellendorf Institute",
-            mode: "TC",
-          },
-          {
-            stage: "Goby Arena",
-            mode: "SZ",
-          },
-          {
-            stage: "Piranha Pit",
-            mode: "CB",
-          },
-          {
-            stage: "Camp Triggerfish",
-            mode: "SZ",
-          },
-          {
-            stage: "Wahoo World",
-            mode: "RM",
-          },
-          {
-            stage: "New Albacore Hotel",
-            mode: "SZ",
-          },
-          {
-            stage: "Ancho-V Games",
-            mode: "TC",
-          },
-          {
-            stage: "Skipper Pavilion",
-            mode: "SZ",
-          },
-        ],
-        order: 2,
-      },
-    ],
+  await prisma.ladderMatch.create({
+    data: {
+      id: 1,
+      dayId: 1,
+      maplist: [
+        {
+          stage: "The Reef",
+          mode: "SZ",
+        },
+        {
+          stage: "Musselforge Fitness",
+          mode: "CB",
+        },
+        {
+          stage: "Starfish Mainstage",
+          mode: "SZ",
+        },
+        {
+          stage: "Humpback Pump Track",
+          mode: "TC",
+        },
+        {
+          stage: "Inkblot Art Academy",
+          mode: "SZ",
+        },
+        {
+          stage: "Sturgeon Shipyard",
+          mode: "RM",
+        },
+        {
+          stage: "Manta Maria",
+          mode: "SZ",
+        },
+        {
+          stage: "Snapper Canal",
+          mode: "CB",
+        },
+        {
+          stage: "Blackbelly Skatepark",
+          mode: "SZ",
+        },
+      ],
+      order: 1,
+      teamAScore: 5,
+      teamBScore: 0,
+    },
   });
+
+  // await prisma.ladderMatch.createMany({
+  //   data: [
+  //     {
+  //       id: 1,
+  //       dayId: 1,
+  //       maplist: [
+  //         {
+  //           stage: "The Reef",
+  //           mode: "SZ",
+  //         },
+  //         {
+  //           stage: "Musselforge Fitness",
+  //           mode: "CB",
+  //         },
+  //         {
+  //           stage: "Starfish Mainstage",
+  //           mode: "SZ",
+  //         },
+  //         {
+  //           stage: "Humpback Pump Track",
+  //           mode: "TC",
+  //         },
+  //         {
+  //           stage: "Inkblot Art Academy",
+  //           mode: "SZ",
+  //         },
+  //         {
+  //           stage: "Sturgeon Shipyard",
+  //           mode: "RM",
+  //         },
+  //         {
+  //           stage: "Manta Maria",
+  //           mode: "SZ",
+  //         },
+  //         {
+  //           stage: "Snapper Canal",
+  //           mode: "CB",
+  //         },
+  //         {
+  //           stage: "Blackbelly Skatepark",
+  //           mode: "SZ",
+  //         },
+  //       ],
+  //       order: 1,
+  //       teamAScore: 5,
+  //       teamBScore: 0,
+  //     },
+  //     {
+  //       id: 2,
+  //       dayId: 1,
+  //       maplist: [
+  //         {
+  //           stage: "MakoMart",
+  //           mode: "SZ",
+  //         },
+  //         {
+  //           stage: "Shellendorf Institute",
+  //           mode: "TC",
+  //         },
+  //         {
+  //           stage: "Goby Arena",
+  //           mode: "SZ",
+  //         },
+  //         {
+  //           stage: "Piranha Pit",
+  //           mode: "CB",
+  //         },
+  //         {
+  //           stage: "Camp Triggerfish",
+  //           mode: "SZ",
+  //         },
+  //         {
+  //           stage: "Wahoo World",
+  //           mode: "RM",
+  //         },
+  //         {
+  //           stage: "New Albacore Hotel",
+  //           mode: "SZ",
+  //         },
+  //         {
+  //           stage: "Ancho-V Games",
+  //           mode: "TC",
+  //         },
+  //         {
+  //           stage: "Skipper Pavilion",
+  //           mode: "SZ",
+  //         },
+  //       ],
+  //       order: 2,
+  //     },
+  //   ],
+  // });
 
   await prisma.ladderMatchPlayer.createMany({
     data: [

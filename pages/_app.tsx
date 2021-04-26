@@ -83,6 +83,11 @@ const extendedTheme = extendTheme({
         colorScheme: "theme",
       },
     },
+    Tabs: {
+      defaultProps: {
+        colorScheme: "theme",
+      },
+    },
     Modal: {
       baseStyle: (props) => ({
         dialog: {
