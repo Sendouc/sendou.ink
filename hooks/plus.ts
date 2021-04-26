@@ -26,17 +26,17 @@ export function usePlusHomePage() {
 
   return {
     plusStatusData: plusStatusData?.find(
-      (status) => status.user.id === user?.id
+      (status) => status.user.id === user?.id,
     ),
     vouchStatuses: plusStatusData
       ?.filter((status) => status.voucher)
       .sort((a, b) => a.vouchTier! - b.vouchTier!),
     vouchedPlusStatusData: plusStatusData?.find(
-      (status) => status.voucher?.id === user?.id
+      (status) => status.voucher?.id === user?.id,
     ),
     suggestionsData: suggestions.filter(
       (suggestion) =>
-        !suggestionsFilter || suggestion.tier === suggestionsFilter
+        !suggestionsFilter || suggestion.tier === suggestionsFilter,
     ),
     suggestionCounts: suggestions.reduce(
       (counts, suggestion) => {
@@ -47,10 +47,10 @@ export function usePlusHomePage() {
 
         return counts;
       },
-      { ONE: 0, TWO: 0, THREE: 0 }
+      { ONE: 0, TWO: 0, THREE: 0 },
     ),
     ownSuggestion: suggestions.find(
-      (suggestion) => suggestion.suggesterUser.id === user?.id
+      (suggestion) => suggestion.suggesterUser.id === user?.id,
     ),
     setSuggestionsFilter,
     votingProgress,
@@ -74,7 +74,7 @@ export default function usePlusVoting() {
   const { data: statuses, isLoading: isLoadingStatuses } = trpc.useQuery([
     "plus.statuses",
   ]);
-  const utils = trpc.useQueryUtils();
+  const utils = trpc.useContext();
   const { mutate: mutateVote, status: voteStatus } = trpc.useMutation(
     "plus.vote",
     {
@@ -86,7 +86,7 @@ export default function usePlusVoting() {
       onError(error) {
         toast(getToastOptions(error.message, "error"));
       },
-    }
+    },
   );
   const {
     mutate: editVoteMutate,

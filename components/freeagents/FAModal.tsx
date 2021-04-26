@@ -43,7 +43,7 @@ interface Props {
 type FormData = z.infer<typeof freeAgentPostSchema>;
 
 const FAModal = ({ onClose, post, refetchQuery }: Props) => {
-  const utils = trpc.useQueryUtils();
+  const utils = trpc.useContext();
 
   const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
     resolver: zodResolver(freeAgentPostSchema),
@@ -55,8 +55,8 @@ const FAModal = ({ onClose, post, refetchQuery }: Props) => {
       toast(
         getToastOptions(
           post ? t`Free agent post updated` : t`Free agent post submitted`,
-          "success"
-        )
+          "success",
+        ),
       );
       refetchQuery();
       utils.invalidateQuery(["freeAgents.posts"]);
@@ -84,7 +84,7 @@ const FAModal = ({ onClose, post, refetchQuery }: Props) => {
   const watchContent = watch("content", ""); // TODO: get initial fa content from props
 
   return (
-    <Modal isOpen onClose={onClose} size="xl" closeOnOverlayClick={false}>
+    <Modal isOpen onClose={onClose} size='xl' closeOnOverlayClick={false}>
       <ModalOverlay>
         <ModalContent>
           <ModalHeader>
@@ -94,7 +94,7 @@ const FAModal = ({ onClose, post, refetchQuery }: Props) => {
               <Trans>Submitting a new free agent post</Trans>
             )}
           </ModalHeader>
-          <ModalCloseButton borderRadius="50%" />
+          <ModalCloseButton borderRadius='50%' />
           <form
             onSubmit={handleSubmit((data) => upsertPostMutation.mutate(data))}
           >
@@ -103,8 +103,8 @@ const FAModal = ({ onClose, post, refetchQuery }: Props) => {
                 <>
                   <Button
                     leftIcon={<FiTrash />}
-                    variant="outline"
-                    color="red.500"
+                    variant='outline'
+                    color='red.500'
                     isLoading={deletePostMutation.isLoading}
                     onClick={async () => {
                       if (window.confirm(t`Delete the free agent post?`)) {
@@ -126,23 +126,23 @@ const FAModal = ({ onClose, post, refetchQuery }: Props) => {
               )}
 
               <FormControl isInvalid={!!errors.playstyles}>
-                <FormLabel htmlFor="playstyles">
+                <FormLabel htmlFor='playstyles'>
                   <Trans>Roles</Trans>
                 </FormLabel>
                 <Controller
-                  name="playstyles"
+                  name='playstyles'
                   control={control}
                   defaultValue={[]}
                   render={({ onChange, value }) => (
                     <CheckboxGroup value={value} onChange={onChange}>
                       <HStack>
-                        <Checkbox value="FRONTLINE">
+                        <Checkbox value='FRONTLINE'>
                           <Trans>Frontline</Trans>
                         </Checkbox>
-                        <Checkbox value="MIDLINE">
+                        <Checkbox value='MIDLINE'>
                           <Trans>Support</Trans>
                         </Checkbox>
-                        <Checkbox value="BACKLINE">
+                        <Checkbox value='BACKLINE'>
                           <Trans>Backline</Trans>
                         </Checkbox>
                       </HStack>
@@ -156,19 +156,19 @@ const FAModal = ({ onClose, post, refetchQuery }: Props) => {
               </FormControl>
 
               <FormControl>
-                <FormLabel htmlFor="canVC" mt={4}>
+                <FormLabel htmlFor='canVC' mt={4}>
                   <Trans>Can you voice chat?</Trans>
                 </FormLabel>
                 <Controller
-                  name="canVC"
+                  name='canVC'
                   control={control}
-                  defaultValue="YES"
+                  defaultValue='YES'
                   render={({ onChange, value }) => (
                     <RadioGroup value={value} onChange={onChange}>
-                      <Stack direction="row">
-                        <Radio value="YES">Yes</Radio>
-                        <Radio value="MAYBE">Sometimes</Radio>
-                        <Radio value="NO">No</Radio>
+                      <Stack direction='row'>
+                        <Radio value='YES'>Yes</Radio>
+                        <Radio value='MAYBE'>Sometimes</Radio>
+                        <Radio value='NO'>No</Radio>
                       </Stack>
                     </RadioGroup>
                   )}
@@ -176,7 +176,7 @@ const FAModal = ({ onClose, post, refetchQuery }: Props) => {
               </FormControl>
 
               <MarkdownTextarea
-                fieldName="content"
+                fieldName='content'
                 title={t`Post`}
                 error={errors.content}
                 register={register}
@@ -187,7 +187,7 @@ const FAModal = ({ onClose, post, refetchQuery }: Props) => {
             <ModalFooter>
               <Button
                 mr={3}
-                type="submit"
+                type='submit'
                 isLoading={
                   upsertPostMutation.isLoading || deletePostMutation.isLoading
                 }
@@ -196,7 +196,7 @@ const FAModal = ({ onClose, post, refetchQuery }: Props) => {
               </Button>
               <Button
                 onClick={onClose}
-                variant="outline"
+                variant='outline'
                 isDisabled={
                   upsertPostMutation.isLoading || deletePostMutation.isLoading
                 }

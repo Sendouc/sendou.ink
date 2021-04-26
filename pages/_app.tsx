@@ -2,21 +2,20 @@ import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { mode } from "@chakra-ui/theme-tools";
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
+import { withTRPC } from "@trpc/next";
 import Layout from "components/layout";
 import "focus-visible/dist/focus-visible";
 import { Provider as NextAuthProvider } from "next-auth/client";
 import { DefaultSeo } from "next-seo";
-import type { AppProps } from "next/app";
+import { AppType } from "next/dist/next-server/lib/utils";
 import Head from "next/head";
 import { Router } from "next/router";
 import NProgress from "nprogress";
 import { useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { Hydrate } from "react-query/hydration";
 import { theme } from "theme";
 import { activateLocale } from "utils/i18n";
 import { locales } from "utils/lists/locales";
-import { trpc } from "utils/trpc";
 import "./styles.css";
 
 NProgress.configure({ showSpinner: false });
@@ -93,7 +92,7 @@ const extendedTheme = extendTheme({
         dialog: {
           bg: mode(
             theme.light.secondaryBgColor,
-            theme.dark.secondaryBgColor
+            theme.dark.secondaryBgColor,
           )(props),
         },
       }),
@@ -103,7 +102,7 @@ const extendedTheme = extendTheme({
         list: {
           bg: mode(
             theme.light.secondaryBgColor,
-            theme.dark.secondaryBgColor
+            theme.dark.secondaryBgColor,
           )(props),
         },
       }),
@@ -156,7 +155,7 @@ const setDisplayedLanguage = () => {
   activateLocale(getUsersLanguage());
 };
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
+const MyApp: AppType = ({ Component, pageProps }) => {
   useEffect(setDisplayedLanguage, []);
   const [queryClient] = useState(
     () =>
@@ -168,17 +167,17 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
             staleTime: Infinity,
           },
         },
-      })
+      }),
   );
 
   return (
     <>
       <Head>
-        <link rel="stylesheet" type="text/css" href="/nprogress.css" />
+        <link rel='stylesheet' type='text/css' href='/nprogress.css' />
       </Head>
       <DefaultSeo
-        title="sendou.ink"
-        description="Competitive Splatoon hub featuring several tools and resources."
+        title='sendou.ink'
+        description='Competitive Splatoon hub featuring several tools and resources.'
         openGraph={{
           url: "https://sendou.ink/",
           title: "sendou.ink",
@@ -203,13 +202,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         <ChakraProvider theme={extendedTheme}>
           <I18nProvider i18n={i18n}>
             <Layout>
-              <QueryClientProvider client={queryClient}>
-                <Hydrate
-                  state={trpc.useDehydratedState(pageProps.dehydratedState)}
-                >
-                  <Component {...pageProps} />
-                </Hydrate>
-              </QueryClientProvider>
+              <Component {...pageProps} />
             </Layout>
           </I18nProvider>
         </ChakraProvider>
@@ -218,4 +211,8 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   );
 };
 
-export default MyApp;
+export default withTRPC(() => {
+  return {
+    url: "/api/trpc",
+  };
+})(MyApp);

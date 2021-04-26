@@ -47,7 +47,7 @@ const FreeAgentSection = ({
   const { themeColorShade } = useMyTheme();
 
   const toast = useToast();
-  const utils = trpc.useQueryUtils();
+  const utils = trpc.useContext();
   const addLikeMutation = trpc.useMutation("freeAgents.addLike", {
     onSuccess() {
       utils.invalidateQuery(["freeAgents.likes"]);
@@ -72,8 +72,8 @@ const FreeAgentSection = ({
 
   return (
     <>
-      <Box ref={postRef} as="section" my={8}>
-        <Flex alignItems="center" fontWeight="bold" fontSize="1.25rem">
+      <Box ref={postRef} as='section' my={8}>
+        <Flex alignItems='center' fontWeight='bold' fontSize='1.25rem'>
           <UserAvatar user={post.user} mr={3} />
           <MyLink href={`/u/${post.user.discordId}`} isColored={false}>
             {post.user.username}#{post.user.discriminator}
@@ -81,27 +81,27 @@ const FreeAgentSection = ({
         </Flex>
 
         {showXp ? (
-          <Flex my={2} ml={1} align="center" fontSize="sm" fontWeight="bold">
-            <Image src="/layout/xsearch.png" height={24} width={24} />
+          <Flex my={2} ml={1} align='center' fontSize='sm' fontWeight='bold'>
+            <Image src='/layout/xsearch.png' height={24} width={24} />
             <Box ml={1}>{post.user.player?.placements[0]?.xPower}</Box>
           </Flex>
         ) : null}
 
         {showPlusServerMembership ? (
-          <Flex my={2} ml={1} align="center" fontSize="sm" fontWeight="bold">
-            <Image src="/layout/plus.png" height={24} width={24} />
+          <Flex my={2} ml={1} align='center' fontSize='sm' fontWeight='bold'>
+            <Image src='/layout/plus.png' height={24} width={24} />
             <Box ml={1}>+{post.user.plusStatus?.membershipTier}</Box>
           </Flex>
         ) : null}
 
         {post.user.profile?.country && (
-          <Flex align="center" ml={2} my={2}>
-            <Box as="span" mr={1} mt={1}>
+          <Flex align='center' ml={2} my={2}>
+            <Box as='span' mr={1} mt={1}>
               <Flag countryCode={post.user.profile.country} />{" "}
             </Box>
             {
               Object.entries(countries).find(
-                ([key]) => key === post.user.profile?.country
+                ([key]) => key === post.user.profile?.country,
               )![1].name
             }
           </Flex>
@@ -129,7 +129,7 @@ const FreeAgentSection = ({
         </Flex>
 
         {post.canVC !== "NO" && (
-          <Flex alignItems="center" my={4}>
+          <Flex alignItems='center' my={4}>
             <Box
               w={6}
               h={6}
@@ -153,23 +153,23 @@ const FreeAgentSection = ({
           isOpenByDefault
           mt={4}
           my={6}
-          wordBreak="break-word"
+          wordBreak='break-word'
         >
           <Markdown value={post.content} smallHeaders />
         </SubTextCollapse>
         {post.user.profile?.bio && (
-          <SubTextCollapse title={t`Bio`} mt={4} wordBreak="break-word">
+          <SubTextCollapse title={t`Bio`} mt={4} wordBreak='break-word'>
             <Markdown value={post.user.profile.bio} smallHeaders />
           </SubTextCollapse>
         )}
         {canLike && (
           <IconButton
-            color="red.500"
-            aria-label="Like"
-            size="lg"
+            color='red.500'
+            aria-label='Like'
+            size='lg'
             isRound
             mt={4}
-            variant="ghost"
+            variant='ghost'
             icon={isLiked ? <FaHeart /> : <FaRegHeart />}
             disabled={addLikeMutation.isLoading || deleteLikeMutation.isLoading}
             onClick={handleClick}
