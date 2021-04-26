@@ -1,5 +1,6 @@
 import { Box, Heading } from "@chakra-ui/layout";
-import { Spinner } from "@chakra-ui/spinner";
+import MyError from "components/common/MyError";
+import MySpinner from "components/common/MySpinner";
 import { trpc } from "utils/trpc";
 import LadderTeam from "./LadderTeam";
 import RegisterHeader from "./RegisterHeader";
@@ -8,9 +9,9 @@ const RegisterTab = () => {
   const registeredTeamsQuery = trpc.useQuery(["play.allRegisteredTeams"]);
   const nextLadderDayQuery = trpc.useQuery(["play.nextLadderDay"]);
 
-  if (nextLadderDayQuery.isLoading) return <Spinner />;
+  if (nextLadderDayQuery.isLoading) return <MySpinner />;
   if (nextLadderDayQuery.error)
-    return <Box>{nextLadderDayQuery.error.message}</Box>;
+    return <MyError message={nextLadderDayQuery.error.message} />;
 
   const nextLadderDay = nextLadderDayQuery.data!;
 

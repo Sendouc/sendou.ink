@@ -11,5 +11,10 @@ const playApi = createRouter()
     resolve() {
       return service.nextLadderDay();
     },
+  })
+  .query("previousLadderDay", {
+    resolve() {
+      return service.previousLadderDay();
+    },
   });
 export default playApi;
