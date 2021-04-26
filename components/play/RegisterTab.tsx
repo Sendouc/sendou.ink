@@ -20,10 +20,10 @@ const RegisterTab = () => {
       {!nextLadderDay?.matches.length && (
         <Box fontWeight="bold">
           {nextLadderDay ? (
-            <Heading size="md" as="h2">
+            <>
               Next ladder event takes place at{" "}
               {new Date(nextLadderDay.date).toLocaleString()}
-            </Heading>
+            </>
           ) : (
             <>
               Next ladder date is not confirmed. Follow this page for updates!

@@ -1,10 +1,11 @@
-import { Center, Flex, Grid, Heading } from "@chakra-ui/layout";
+import { Box, Center, Flex, Grid, Heading } from "@chakra-ui/layout";
 import ModeImage from "components/common/ModeImage";
 import MyError from "components/common/MyError";
 import MySpinner from "components/common/MySpinner";
 import SubText from "components/common/SubText";
 import { useMyTheme } from "hooks/common";
 import { Fragment } from "react";
+import { hoursToMilliseconds } from "utils/numbers";
 import { trpc } from "utils/trpc";
 import MatchUp from "./MatchUp";
 
@@ -25,6 +26,13 @@ const ActiveMatchesTab = () => {
           {[1].map((round) => (
             <Fragment key={round}>
               <Heading size="md">Round {round}</Heading>
+              <Box fontSize="sm" fontWeight="bold">
+                {new Date(
+                  new Date(previousLadderDay.date).getTime() +
+                    hoursToMilliseconds(round - 1)
+                ).toLocaleString()}{" "}
+                ({Intl.DateTimeFormat().resolvedOptions().timeZone})
+              </Box>
               <SubText mt={4}>Maplist</SubText>
               {(previousLadderDay.matches.find(
                 (match) => match.order === round

@@ -84,6 +84,7 @@ const previousLadderDay = async () => {
     where: { date: { lt: new Date() } },
     orderBy: { date: "desc" },
     select: {
+      date: true,
       matches: {
         select: {
           order: true,
