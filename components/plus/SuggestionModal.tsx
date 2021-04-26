@@ -56,10 +56,10 @@ const SuggestionModal: React.FC<Props> = ({ userPlusMembershipTier }) => {
   return (
     <>
       <Button
-        size='sm'
+        size="sm"
         mb={4}
         onClick={() => setIsOpen(true)}
-        data-cy='suggestion-button'
+        data-cy="suggestion-button"
       >
         Add new suggestion
       </Button>
@@ -67,18 +67,18 @@ const SuggestionModal: React.FC<Props> = ({ userPlusMembershipTier }) => {
         <Modal
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
-          size='xl'
+          size="xl"
           closeOnOverlayClick={false}
         >
           <ModalOverlay>
             <ModalContent>
               <ModalHeader>Adding a new suggestion</ModalHeader>
-              <ModalCloseButton borderRadius='50%' />
+              <ModalCloseButton borderRadius="50%" />
               <form onSubmit={handleSubmit((data) => mutate(data))}>
                 <ModalBody pb={2}>
                   <FormLabel>Tier</FormLabel>
                   <Controller
-                    name='tier'
+                    name="tier"
                     control={control}
                     defaultValue={userPlusMembershipTier}
                     render={({ value, onChange }) => (
@@ -87,12 +87,12 @@ const SuggestionModal: React.FC<Props> = ({ userPlusMembershipTier }) => {
                         onChange={(e) => onChange(Number(e.target.value))}
                       >
                         {userPlusMembershipTier === 1 && (
-                          <option value='1'>+1</option>
+                          <option value="1">+1</option>
                         )}
                         {userPlusMembershipTier <= 2 && (
-                          <option value='2'>+2</option>
+                          <option value="2">+2</option>
                         )}
-                        <option value='3'>+3</option>
+                        <option value="3">+3</option>
                       </Select>
                     )}
                   />
@@ -100,7 +100,7 @@ const SuggestionModal: React.FC<Props> = ({ userPlusMembershipTier }) => {
                   <FormControl isInvalid={!!errors.suggestedId}>
                     <FormLabel mt={4}>User</FormLabel>
                     <Controller
-                      name='suggestedId'
+                      name="suggestedId"
                       control={control}
                       render={({ value, onChange }) => (
                         <UserSelector
@@ -119,12 +119,12 @@ const SuggestionModal: React.FC<Props> = ({ userPlusMembershipTier }) => {
                   <FormControl>
                     <FormLabel mt={4}>Region</FormLabel>
                     <Select
-                      name='region'
+                      name="region"
                       ref={register}
-                      data-cy='region-select'
+                      data-cy="region-select"
                     >
-                      <option value='NA'>NA</option>
-                      <option value='EU'>EU</option>
+                      <option value="NA">NA</option>
+                      <option value="EU">EU</option>
                     </Select>
                     <FormHelperText>
                       If the player isn't from either region then choose the one
@@ -133,13 +133,13 @@ const SuggestionModal: React.FC<Props> = ({ userPlusMembershipTier }) => {
                   </FormControl>
 
                   <FormControl isInvalid={!!errors.description}>
-                    <FormLabel htmlFor='description' mt={4}>
+                    <FormLabel htmlFor="description" mt={4}>
                       Description
                     </FormLabel>
                     <Textarea
-                      name='description'
+                      name="description"
                       ref={register}
-                      data-cy='description-textarea'
+                      data-cy="description-textarea"
                     />
                     <FormHelperText>
                       {(watchDescription ?? "").length}/
@@ -153,13 +153,13 @@ const SuggestionModal: React.FC<Props> = ({ userPlusMembershipTier }) => {
                 <ModalFooter>
                   <Button
                     mr={3}
-                    type='submit'
+                    type="submit"
                     isLoading={status === "loading"}
-                    data-cy='submit-button'
+                    data-cy="submit-button"
                   >
                     Save
                   </Button>
-                  <Button onClick={() => setIsOpen(false)} variant='outline'>
+                  <Button onClick={() => setIsOpen(false)} variant="outline">
                     Cancel
                   </Button>
                 </ModalFooter>
