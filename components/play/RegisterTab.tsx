@@ -9,6 +9,17 @@ const RegisterTab = () => {
   const registeredTeamsQuery = trpc.useQuery(["play.allRegisteredTeams"]);
   const nextLadderDayQuery = trpc.useQuery(["play.nextLadderDay"]);
 
+  if (process.env.NODE_ENV === "production") {
+    return (
+      <Box fontWeight="bold">
+        <>
+          First ladder test date is planned for 8th May. Follow Sendou's Twitter
+          for updates!
+        </>
+      </Box>
+    );
+  }
+
   if (nextLadderDayQuery.isLoading) return <MySpinner />;
   if (nextLadderDayQuery.error)
     return <MyError message={nextLadderDayQuery.error.message} />;

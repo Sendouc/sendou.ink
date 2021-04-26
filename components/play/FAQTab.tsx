@@ -125,6 +125,15 @@ const questionsAndAnswers = [
     ),
   },
   {
+    q: "Who hosts?",
+    a: (
+      <>
+        If you can't agree which team should host then the team who is on the
+        left side chooses a player in their team to host the room.
+      </>
+    ),
+  },
+  {
     q: "How do I report the score?",
     a: (
       <>

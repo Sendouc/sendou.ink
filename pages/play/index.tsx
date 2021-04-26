@@ -14,6 +14,7 @@ const PlayPage = () => {
           </Tab>
           <Tab isDisabled>Match History</Tab>
           <Tab isDisabled>Leaderboards</Tab>
+          <Tab isDisabled>Stats</Tab>
           <Tab>FAQ</Tab>
         </TabList>
         <TabPanels>
@@ -28,6 +29,9 @@ const PlayPage = () => {
           </TabPanel>
           <TabPanel p={1}>
             <p>four!</p>
+          </TabPanel>
+          <TabPanel p={1}>
+            <p>Stats!</p>
           </TabPanel>
           <TabPanel p={1}>
             <FAQTab />
