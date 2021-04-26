@@ -1,5 +1,6 @@
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import ActiveMatchesTab from "components/play/ActiveMatchesTab";
+import FAQTab from "components/play/FAQTab";
 import RegisterTab from "components/play/RegisterTab";
 
 const PlayPage = () => {
@@ -27,7 +28,7 @@ const PlayPage = () => {
             <p>four!</p>
           </TabPanel>
           <TabPanel p={1}>
-            <p>five!</p>
+            <FAQTab />
           </TabPanel>
         </TabPanels>
       </Tabs>
