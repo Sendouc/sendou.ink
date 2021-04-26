@@ -2,11 +2,32 @@ import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import ActiveMatchesTab from "components/play/ActiveMatchesTab";
 import FAQTab from "components/play/FAQTab";
 import RegisterTab from "components/play/RegisterTab";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import { setSearchParams } from "utils/setSearchParams";
+
+const TAB_MAX_INDEX = 5;
 
 const PlayPage = () => {
+  const router = useRouter();
+  const [tabIndex, setTabIndex] = useState(() => {
+    const tab = Number(router.query.tab);
+
+    if (Number.isNaN(tab) || tab < 0 || tab > TAB_MAX_INDEX) {
+      return 0;
+    }
+
+    return tab;
+  });
+
+  const handleTabIndexChange = (index: number) => {
+    setSearchParams("tab", "" + index);
+    setTabIndex(index);
+  };
+
   return (
     <>
-      <Tabs>
+      <Tabs index={tabIndex} onChange={handleTabIndexChange}>
         <TabList mb="1em">
           <Tab>Register</Tab>
           <Tab isDisabled={process.env.NODE_ENV === "production"}>
