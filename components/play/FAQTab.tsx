@@ -21,13 +21,13 @@ const questionsAndAnswers = [
     q: "What is the schedule?",
     a: (
       <>
-        During the beta testing phase follow my Twitter for updates. Afterwards
-        the plan is that every week there would be 5 dates to play. You can
-        choose when to play - there is no commitment. <br />
+        During the beta testing phase follow Sendou's Twitter for updates. You
+        can choose when to play - there is no commitment. <br />
         <br />
-        Monday, Wednesday Americas friendly times (8PM ET). Tuesday, Thursday
-        Europe friendly times (8PM CET). Sunday for a time that works for both
-        regions (9PM CET).
+        The plan after the beta testing phase is to have 5 event dates a week
+        when you can play: Monday and Wednesday Americas friendly times (8PM
+        ET). Tuesday and Thursday Europe friendly times (8PM CET). Sunday for a
+        time that is aimed for both regions (9PM CET).
       </>
     ),
   },
@@ -109,17 +109,33 @@ const questionsAndAnswers = [
     ),
   },
   {
+    q: "DC rules?",
+    a: (
+      <>
+        One DC replay per team per set is allowed. If DC happens before the game
+        started (counted from players being able to move) room should be remade
+        without DC replays being used. DC replay is only granted if it was less
+        than 2 minutes 30 seconds into the match AND the team's score without DC
+        didn't pass the 50 point mark AND the team with the DC stopped playing
+        without delay.
+        <br />
+        <br /> If host DC's during game the hosting team has to use their DC
+        replay if they have any left otherwise they lose the map.
+      </>
+    ),
+  },
+  {
     q: "How do I report the score?",
     a: (
       <>
-        You report the score by DM'ing the bot Lanista#5266. She can be found on
-        our{" "}
+        You report the score by DM'ing the bot Lanista#5266. The bot can be
+        found on our{" "}
         <MyLink isExternal href="https://discord.gg/sendou">
           Discord
         </MyLink>
         . If you have not registed your Nintendo account with Lanista you have
         to use the <code>!register</code> command before. After that reporting
-        the score is done with the <code>!commandhere</code> command. <br />
+        the score is done with the <code>!sendoureport</code> command. <br />
         <br />
         If you have problems please contact Lean#3146 on Discord.
       </>

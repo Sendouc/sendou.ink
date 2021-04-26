@@ -9,9 +9,11 @@ const PlayPage = () => {
       <Tabs>
         <TabList mb="1em">
           <Tab>Register</Tab>
-          <Tab>Active Matches</Tab>
-          <Tab>Match History</Tab>
-          <Tab disabled>Leaderboards</Tab>
+          <Tab isDisabled={process.env.NODE_ENV === "production"}>
+            Active Matches
+          </Tab>
+          <Tab isDisabled>Match History</Tab>
+          <Tab isDisabled>Leaderboards</Tab>
           <Tab>FAQ</Tab>
         </TabList>
         <TabPanels>
