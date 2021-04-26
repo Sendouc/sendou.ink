@@ -28,7 +28,7 @@ const PlayPage = () => {
   return (
     <>
       <Tabs index={tabIndex} onChange={handleTabIndexChange}>
-        <TabList mb="1em">
+        <TabList mb="1em" flexDir={["column", null, "row"]}>
           <Tab>Register</Tab>
           <Tab isDisabled={process.env.NODE_ENV === "production"}>
             Active Matches
