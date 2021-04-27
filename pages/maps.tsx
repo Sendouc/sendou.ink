@@ -79,27 +79,23 @@ const MapsGeneratorPage = () => {
   }
 
   function getInitialMode() {
-    const filtersFromUrl = Object.entries(router.query).filter(
+    const modeFromUrl = Object.entries(router.query).filter(
       (item) => item[0] === "mode"
     );
-    console.log("mode item:", filtersFromUrl[0]);
-    if (filtersFromUrl[0] && filtersFromUrl[0][1] === "CUSTOM_ORDER") {
-      return "CUSTOM_ORDER";
+    if (modeFromUrl[0] && (modeFromUrl[0][1] === "CUSTOM_ORDER"
+        || modeFromUrl[0][1] === "EQUAL"
+        || modeFromUrl[0][1] === "SZ_EVERY_OTHER")) {
+      return modeFromUrl[0][1];
     }
-    if (filtersFromUrl[0] && filtersFromUrl[0][1] === "EQUAL") {
-      return "EQUAL";
-    } else {
-      return "SZ_EVERY_OTHER";
-    }
+    return "SZ_EVERY_OTHER";
   }
 
   function getInitialCount() {
-    const filtersFromUrl = Object.entries(router.query).filter(
+    const countFromUrl = Object.entries(router.query).filter(
       (item) => item[0] === "count"
     );
-    console.log("count item:", filtersFromUrl[0]);
-    if (filtersFromUrl[0] && filtersFromUrl[0][1]) {
-      return Number(filtersFromUrl[0][1]);
+    if (countFromUrl[0] && countFromUrl[0][1]) {
+      return Number(countFromUrl[0][1]);
     } else {
       return 25;
     }
@@ -110,7 +106,6 @@ const MapsGeneratorPage = () => {
     const result = params.map((item) => {
       return { key: item[0], value: item[1] };
     });
-    console.log("result", result);
     return result;
   }
 
