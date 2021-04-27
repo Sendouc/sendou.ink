@@ -43,14 +43,18 @@ const MapsGeneratorPage = () => {
   >(getInitialStages());
   const [generationMode, setGenerationMode] = useState<
     "EQUAL" | "SZ_EVERY_OTHER" | "CUSTOM_ORDER"
-  >("SZ_EVERY_OTHER");
+  >(getInitialMode());
   const [maplist, setMaplist] = useState("");
   const [modes, setModes] = useState<
     { label: string; value: number; data?: string }[]
   >([]);
-  const [count, setCount] = useState(25);
+  const [count, setCount] = useState(getInitialCount());
   const [editing, setEditing] = useState(false);
   const [copied, setCopied] = useState<null | "URL" | "LIST">(null);
+
+  const [urlParams, setUrlParams] = useState<
+    { key: string; value: string | string[] | undefined }[]
+  >(getInitialUrlParams());
 
   function getInitialStages() {
     const filtersFromUrl = Object.entries(router.query).reduce(
@@ -72,6 +76,67 @@ const MapsGeneratorPage = () => {
           acc[cur] = ["SZ", "TC", "RM", "CB"];
           return acc;
         }, {});
+  }
+
+  function getInitialMode() {
+    const filtersFromUrl = Object.entries(router.query).filter(
+      (item) => item[0] === "mode"
+    );
+    console.log("mode item:", filtersFromUrl[0]);
+    if (filtersFromUrl[0] && filtersFromUrl[0][1] === "CUSTOM_ORDER") {
+      return "CUSTOM_ORDER";
+    }
+    if (filtersFromUrl[0] && filtersFromUrl[0][1] === "EQUAL") {
+      return "EQUAL";
+    } else {
+      return "SZ_EVERY_OTHER";
+    }
+  }
+
+  function getInitialCount() {
+    const filtersFromUrl = Object.entries(router.query).filter(
+      (item) => item[0] === "count"
+    );
+    console.log("count item:", filtersFromUrl[0]);
+    if (filtersFromUrl[0] && filtersFromUrl[0][1]) {
+      return Number(filtersFromUrl[0][1]);
+    } else {
+      return 25;
+    }
+  }
+
+  function getInitialUrlParams() {
+    const params = Object.entries(router.query);
+    const result = params.map((item) => {
+      return { key: item[0], value: item[1] };
+    });
+    console.log("result", result);
+    return result;
+  }
+
+  function updateUrlParams(key: string, value: string | string[] | undefined) {
+    let paramFound = false;
+    urlParams.forEach((item) => {
+      if (item.key === key) {
+        item.value = value;
+        paramFound = true;
+      }
+    });
+    if (!paramFound) {
+      urlParams.push({ key, value });
+    }
+    setManySearchParams(urlParams, true);
+  }
+
+  function updateUrlParamsFromArray(
+    items: { key: string; value: string | string[] | undefined }[]
+  ) {
+    const params = urlParams.filter(
+      (item) => item.key === "mode" || item.key === "count"
+    );
+    const paramsWithMaps = params.concat(items);
+    setUrlParams(paramsWithMaps);
+    setManySearchParams(paramsWithMaps, true);
   }
 
   const poolForUrl = (stagesSelectedForUrl: Record<string, string[]>) => {
@@ -110,7 +175,7 @@ const MapsGeneratorPage = () => {
     const newStagesSelected = { ...stagesSelected, [stage]: newArray };
 
     setStagesSelected(newStagesSelected);
-    setManySearchParams(poolForUrl(newStagesSelected), true);
+    updateUrlParamsFromArray(poolForUrl(newStagesSelected));
   };
 
   const generateMaps = () => {
@@ -227,7 +292,7 @@ const MapsGeneratorPage = () => {
                       if (!buttonIsAdd) delete newStagesSelected[stage];
 
                       setStagesSelected(newStagesSelected);
-                      setManySearchParams(poolForUrl(newStagesSelected), true);
+                      updateUrlParamsFromArray(poolForUrl(newStagesSelected));
                     }}
                   >
                     {buttonIsAdd ? <Trans>All</Trans> : <Trans>Clear</Trans>}
@@ -350,12 +415,14 @@ const MapsGeneratorPage = () => {
         </Button>
       </Stack>
       <RadioGroup
-        onChange={(value) =>
+        onChange={(value) => {
           setGenerationMode(
             value as "EQUAL" | "SZ_EVERY_OTHER" | "CUSTOM_ORDER"
-          )
-        }
+          );
+          updateUrlParams("mode", value);
+        }}
         value={generationMode}
+        defaultValue={getInitialMode()}
       >
         <Stack direction="row" mb={4}>
           <Radio value="SZ_EVERY_OTHER">
@@ -393,7 +460,10 @@ const MapsGeneratorPage = () => {
           min={1}
           max={100}
           onChange={(_, value) => {
-            if (!Number.isNaN(value)) setCount(value);
+            if (!Number.isNaN(value)) {
+              setCount(value);
+              updateUrlParams("count", String(value));
+            }
           }}
           mb={4}
           width={24}
