@@ -20,7 +20,7 @@ const MobileNav = ({
 }) => {
   const { bgColor } = useMyTheme();
   return (
-    <Drawer isOpen={isOpen} onClose={onClose} size="full">
+    <Drawer isOpen={isOpen} onClose={onClose} size="full" placement="left">
       <DrawerOverlay>
         <DrawerContent bg={bgColor}>
           <DrawerBody>
