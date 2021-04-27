@@ -58,6 +58,7 @@ const NavButtons = ({ onButtonClick }: { onButtonClick?: () => void }) => {
             _hover={{
               bg: bgColor,
             }}
+            onClick={onButtonClick}
           >
             <UserAvatar user={user} size="sm" />
             <Box ml={2}>My Page</Box>
