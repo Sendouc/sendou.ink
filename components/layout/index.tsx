@@ -1,13 +1,12 @@
-import { Flex, useToast } from "@chakra-ui/react";
+import { useToast } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
-import MyContainer from "components/common/MyContainer";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { SWRConfig } from "swr";
-import Banner from "./Banner";
 import Footer from "./Footer";
-import IconNavBar from "./IconNavBar";
-import TopNav from "./TopNav";
+import Header from "./Header";
+import MobileNav from "./MobileNav";
+import Nav from "./Nav";
 
 const DATE_KEYS = ["createdAt", "updatedAt"];
 
@@ -20,20 +19,11 @@ const WIDE = [
   "plus/history",
 ];
 
-const Layout = ({
-  children,
-  header,
-}: {
-  header: React.ReactNode;
-  children: React.ReactNode;
-}) => {
+const Layout = ({ children }: { children: React.ReactNode }) => {
+  const [navIsOpen, setNavIsOpen] = useState(false);
   const router = useRouter();
   const [errors, setErrors] = useState(new Set<string>());
   const toast = useToast();
-
-  const isWide = WIDE.some((widePage) =>
-    router.pathname.startsWith("/" + widePage)
-  );
 
   return (
     <SWRConfig
@@ -64,16 +54,11 @@ const Layout = ({
         },
       }}
     >
-      <TopNav />
-      <IconNavBar />
-      <Banner />
-      {header}
-      <Flex flexDirection="column" minH="100vh" pt={4}>
-        <MyContainer wide={isWide} mt={2}>
-          {children}
-        </MyContainer>
-        <Footer />
-      </Flex>
+      <Header openNav={() => setNavIsOpen(true)} />
+      <Nav />
+      <MobileNav isOpen={navIsOpen} onClose={() => setNavIsOpen(false)} />
+      <main>{children}</main>
+      <Footer />
     </SWRConfig>
   );
 };

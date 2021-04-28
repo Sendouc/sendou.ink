@@ -1,7 +1,6 @@
 import { Box, Heading, Link, Stack } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import MyHead from "components/common/MyHead";
-import HeaderBanner from "components/layout/HeaderBanner";
 import { useMyTheme } from "hooks/common";
 import links from "utils/data/links.json";
 
@@ -45,13 +44,5 @@ const LinksPage = () => {
     </>
   );
 };
-
-LinksPage.header = (
-  <HeaderBanner
-    icon="links"
-    title="Links"
-    subtitle="All the useful resources around the community in one place"
-  />
-);
 
 export default LinksPage;

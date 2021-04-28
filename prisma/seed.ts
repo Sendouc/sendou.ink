@@ -1,13 +1,14 @@
 import fs from "fs";
 import path from "path";
 import prisma from "./client";
-import {
-  getPlusVotingSummaryData,
-  getPlusSuggestionsData,
-  getPlusStatusesData,
-} from "./mocks/plus";
-import userFactory from "./factories/user";
 import calendarEventFactory from "./factories/calendarEvent";
+import ladderRegisteredTeamFactory from "./factories/ladderRegisteredTeam";
+import userFactory from "./factories/user";
+import {
+  getPlusStatusesData,
+  getPlusSuggestionsData,
+  getPlusVotingSummaryData,
+} from "./mocks/plus";
 
 async function main() {
   throwIfNotLocalhost();
@@ -52,12 +53,14 @@ async function dropAllData() {
   await prisma.plusSuggestion.deleteMany({});
   await prisma.plusStatus.deleteMany({});
   await prisma.calendarEvent.deleteMany({});
+  await prisma.plusBallot.deleteMany({});
   await prisma.user.deleteMany({});
 }
 
 async function seedNewData() {
   await seedUsers();
   await seedEvents();
+  await seedLadderData();
   await prisma.plusStatus.createMany({ data: getPlusStatusesData() });
   await prisma.plusSuggestion.createMany({ data: getPlusSuggestionsData() });
   await prisma.plusVotingSummary.createMany({
@@ -110,6 +113,228 @@ async function seedEvents() {
         format: "SWISS2SE",
         tags: ["LOW", "MULTIPLE", "ART"],
       }),
+    ],
+  });
+}
+
+async function seedLadderData() {
+  const twentyFourHoursFromNow = new Date(
+    new Date().getTime() + 24 * 60 * 60 * 1000
+  );
+  twentyFourHoursFromNow.setHours(12, 0, 0);
+  await prisma.ladderDay.createMany({
+    data: [
+      {
+        id: 1,
+        date: new Date(twentyFourHoursFromNow.getTime() - 24 * 60 * 60 * 1000),
+      },
+      {
+        id: 2,
+        date: twentyFourHoursFromNow,
+      },
+    ],
+  });
+
+  await prisma.ladderRegisteredTeam.createMany({
+    data: [...Array(2)].map((_, _i) => {
+      return ladderRegisteredTeamFactory.build();
+    }),
+  });
+
+  await Promise.all([
+    prisma.user.updateMany({
+      where: { id: { in: [1, 2, 3, 4] } },
+      data: { ladderTeamId: 1 },
+    }),
+    prisma.user.updateMany({
+      where: { id: { in: [5, 6, 7] } },
+      data: { ladderTeamId: 2 },
+    }),
+  ]);
+
+  await prisma.ladderMatch.create({
+    data: {
+      id: 1,
+      dayId: 1,
+      maplist: [
+        {
+          stage: "The Reef",
+          mode: "SZ",
+        },
+        {
+          stage: "Musselforge Fitness",
+          mode: "CB",
+        },
+        {
+          stage: "Starfish Mainstage",
+          mode: "SZ",
+        },
+        {
+          stage: "Humpback Pump Track",
+          mode: "TC",
+        },
+        {
+          stage: "Inkblot Art Academy",
+          mode: "SZ",
+        },
+        {
+          stage: "Sturgeon Shipyard",
+          mode: "RM",
+        },
+        {
+          stage: "Manta Maria",
+          mode: "SZ",
+        },
+        {
+          stage: "Snapper Canal",
+          mode: "CB",
+        },
+        {
+          stage: "Blackbelly Skatepark",
+          mode: "SZ",
+        },
+      ],
+      order: 1,
+      teamAScore: 5,
+      teamBScore: 0,
+    },
+  });
+
+  // await prisma.ladderMatch.createMany({
+  //   data: [
+  //     {
+  //       id: 1,
+  //       dayId: 1,
+  //       maplist: [
+  //         {
+  //           stage: "The Reef",
+  //           mode: "SZ",
+  //         },
+  //         {
+  //           stage: "Musselforge Fitness",
+  //           mode: "CB",
+  //         },
+  //         {
+  //           stage: "Starfish Mainstage",
+  //           mode: "SZ",
+  //         },
+  //         {
+  //           stage: "Humpback Pump Track",
+  //           mode: "TC",
+  //         },
+  //         {
+  //           stage: "Inkblot Art Academy",
+  //           mode: "SZ",
+  //         },
+  //         {
+  //           stage: "Sturgeon Shipyard",
+  //           mode: "RM",
+  //         },
+  //         {
+  //           stage: "Manta Maria",
+  //           mode: "SZ",
+  //         },
+  //         {
+  //           stage: "Snapper Canal",
+  //           mode: "CB",
+  //         },
+  //         {
+  //           stage: "Blackbelly Skatepark",
+  //           mode: "SZ",
+  //         },
+  //       ],
+  //       order: 1,
+  //       teamAScore: 5,
+  //       teamBScore: 0,
+  //     },
+  //     {
+  //       id: 2,
+  //       dayId: 1,
+  //       maplist: [
+  //         {
+  //           stage: "MakoMart",
+  //           mode: "SZ",
+  //         },
+  //         {
+  //           stage: "Shellendorf Institute",
+  //           mode: "TC",
+  //         },
+  //         {
+  //           stage: "Goby Arena",
+  //           mode: "SZ",
+  //         },
+  //         {
+  //           stage: "Piranha Pit",
+  //           mode: "CB",
+  //         },
+  //         {
+  //           stage: "Camp Triggerfish",
+  //           mode: "SZ",
+  //         },
+  //         {
+  //           stage: "Wahoo World",
+  //           mode: "RM",
+  //         },
+  //         {
+  //           stage: "New Albacore Hotel",
+  //           mode: "SZ",
+  //         },
+  //         {
+  //           stage: "Ancho-V Games",
+  //           mode: "TC",
+  //         },
+  //         {
+  //           stage: "Skipper Pavilion",
+  //           mode: "SZ",
+  //         },
+  //       ],
+  //       order: 2,
+  //     },
+  //   ],
+  // });
+
+  await prisma.ladderMatchPlayer.createMany({
+    data: [
+      {
+        matchId: 1,
+        team: "ALPHA",
+        userId: 1,
+      },
+      {
+        matchId: 1,
+        team: "ALPHA",
+        userId: 2,
+      },
+      {
+        matchId: 1,
+        team: "ALPHA",
+        userId: 3,
+      },
+      {
+        matchId: 1,
+        team: "ALPHA",
+        userId: 4,
+      },
+      {
+        matchId: 1,
+        team: "BRAVO",
+        userId: 5,
+      },
+      {
+        matchId: 1,
+        team: "BRAVO",
+        userId: 6,
+      },
+      {
+        matchId: 1,
+        team: "BRAVO",
+        userId: 7,
+      },
+      {
+        matchId: 1,
+        team: "BRAVO",
+        userId: 8,
+      },
     ],
   });
 }

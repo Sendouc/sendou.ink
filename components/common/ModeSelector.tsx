@@ -1,48 +1,38 @@
-import { Box, Flex, HStack, StackProps } from "@chakra-ui/react";
-import { useLingui } from "@lingui/react";
+import { Radio, RadioGroup, RadioGroupProps, Stack } from "@chakra-ui/react";
 import { RankedMode } from "@prisma/client";
-import ModeImage from "./ModeImage";
-import SubText from "./SubText";
+import ModeImage from "components/common/ModeImage";
 
 interface Props {
   mode: RankedMode;
   setMode: (mode: RankedMode) => void;
 }
 
-const ALL_MODES = ["SZ", "TC", "RM", "CB"] as const;
-
-const ModeSelector: React.FC<Props & StackProps> = ({
+const ModeSelector = ({
   mode,
   setMode,
   ...props
-}) => {
-  const { i18n } = useLingui();
-
+}: Props & Omit<RadioGroupProps, "children">) => {
   return (
-    <HStack my={4} {...props}>
-      {ALL_MODES.map((modeInArr) => (
-        <Flex key={modeInArr} flexDir="column" alignItems="center">
-          <Box
-            style={{
-              filter: mode === modeInArr ? undefined : "grayscale(100%)",
-            }}
-            cursor="pointer"
-            mb="-6px"
-          >
-            <ModeImage
-              onClick={() => setMode(modeInArr)}
-              mode={modeInArr}
-              size={32}
-            />
-          </Box>
-          {mode === modeInArr ? (
-            <SubText>{i18n._(mode)}</SubText>
-          ) : (
-            <Box h={4} />
-          )}
-        </Flex>
-      ))}
-    </HStack>
+    <RadioGroup
+      value={mode}
+      onChange={(value) => setMode(value as RankedMode)}
+      {...props}
+    >
+      <Stack direction="row" spacing={4} align="center">
+        <Radio value="SZ">
+          <ModeImage mode="SZ" size={32} />
+        </Radio>
+        <Radio value="TC">
+          <ModeImage mode="TC" size={32} />
+        </Radio>
+        <Radio value="RM">
+          <ModeImage mode="RM" size={32} />
+        </Radio>
+        <Radio value="CB">
+          <ModeImage mode="CB" size={32} />
+        </Radio>
+      </Stack>
+    </RadioGroup>
   );
 };
 

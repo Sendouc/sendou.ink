@@ -6,23 +6,22 @@ import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { mode } from "@chakra-ui/theme-tools";
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
-import { createReactQueryHooks, createTRPCClient } from "@trpc/react";
 import Layout from "components/layout";
+import "focus-visible/dist/focus-visible";
 import { Provider as NextAuthProvider } from "next-auth/client";
 import { DefaultSeo } from "next-seo";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { Router } from "next/router";
 import NProgress from "nprogress";
-import type { AppRouter } from "pages/api/trpc/[trpc]";
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Hydrate } from "react-query/hydration";
-import superjson from "superjson";
 import { theme } from "theme";
 import { activateLocale } from "utils/i18n";
 import { locales } from "utils/lists/locales";
-//import { trpc } from "utils/trpc";
+import { trpc } from "utils/trpc";
+import "./styles.css";
 
 NProgress.configure({ showSpinner: false });
 
@@ -83,6 +82,16 @@ const extendedTheme = extendTheme({
         colorScheme: "theme",
       },
     },
+    Switch: {
+      defaultProps: {
+        colorScheme: "theme",
+      },
+    },
+    Tabs: {
+      defaultProps: {
+        colorScheme: "theme",
+      },
+    },
     Modal: {
       baseStyle: (props) => ({
         dialog: {
@@ -106,7 +115,7 @@ const extendedTheme = extendTheme({
     Popover: {
       variants: {
         responsive: {
-          popper: {
+          content: {
             maxWidth: "unset",
             width: "unset",
           },
@@ -152,18 +161,10 @@ const setDisplayedLanguage = () => {
 };
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
-  const trpcRef = useRef<any>();
   useEffect(setDisplayedLanguage, []);
-
-  if (!trpcRef.current) {
-    const client = createTRPCClient<AppRouter>({
-      url: "/api/trpc",
-      transformer: superjson,
-    });
-
-    trpcRef.current = createReactQueryHooks({
-      client,
-      queryClient: new QueryClient({
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
         defaultOptions: {
           queries: {
             // queries never go stale to save some work
@@ -171,9 +172,8 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
             staleTime: Infinity,
           },
         },
-      }),
-    });
-  }
+      })
+  );
 
   return (
     <>
@@ -206,15 +206,10 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       <NextAuthProvider session={pageProps.session}>
         <ChakraProvider theme={extendedTheme}>
           <I18nProvider i18n={i18n}>
-            <Layout
-              // @ts-expect-error
-              header={Component.header}
-            >
-              <QueryClientProvider client={trpcRef.current.queryClient}>
+            <Layout>
+              <QueryClientProvider client={queryClient}>
                 <Hydrate
-                  state={trpcRef.current.useDehydratedState(
-                    pageProps.dehydratedState
-                  )}
+                  state={trpc.useDehydratedState(pageProps.dehydratedState)}
                 >
                   <Component {...pageProps} />
                 </Hydrate>

@@ -5,10 +5,10 @@ import {
   InputGroup,
   InputLeftElement,
 } from "@chakra-ui/react";
+import { t } from "@lingui/macro";
 import Flag from "components/common/Flag";
 import MyLink from "components/common/MyLink";
 import UserAvatar from "components/common/UserAvatar";
-import HeaderBanner from "components/layout/HeaderBanner";
 import { useDebounce, useMyTheme } from "hooks/common";
 import { GetStaticProps } from "next";
 import Head from "next/head";
@@ -20,6 +20,7 @@ import { FaTwitter } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
 import { setSearchParams } from "utils/setSearchParams";
 import { Unpacked } from "utils/types";
+import MyHead from "../../components/common/MyHead";
 
 interface Props {
   users: GetAllUsersData;
@@ -61,6 +62,7 @@ const UserSearchPage = ({ users }: Props) => {
 
   return (
     <>
+      <MyHead title={t`User Search`} />
       <Head>
         <meta name="robots" content="noindex" />
       </Head>
@@ -139,13 +141,5 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
 
   return { props: { users: await getAllUsers() }, revalidate: 3600 };
 };
-
-UserSearchPage.header = (
-  <HeaderBanner
-    icon="u"
-    title="Users"
-    subtitle="Find an user's page by their username or Twitter"
-  />
-);
 
 export default UserSearchPage;

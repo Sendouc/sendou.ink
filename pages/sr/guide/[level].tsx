@@ -6,11 +6,11 @@ import {
 } from "@chakra-ui/react";
 import Markdown from "components/common/Markdown";
 import SubText from "components/common/SubText";
-import HeaderBanner from "components/layout/HeaderBanner";
 import fs from "fs";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { join } from "path";
 import { Fragment } from "react";
+import MyHead from "../../../components/common/MyHead";
 
 interface Props {
   text: string;
@@ -20,6 +20,7 @@ interface Props {
 const SalmonRunGuidePage = ({ text, sections }: Props) => {
   return (
     <>
+      <MyHead title="Salmon Run Guide" />
       <SubText>Contents</SubText>
       <OrderedList>
         {sections.map((section) => (
@@ -82,9 +83,5 @@ export const getStaticPaths: GetStaticPaths = async () => {
     fallback: false,
   };
 };
-
-SalmonRunGuidePage.header = (
-  <HeaderBanner icon="sr" title="Salmon Run" subtitle="Learn how to overfish" />
-);
 
 export default SalmonRunGuidePage;

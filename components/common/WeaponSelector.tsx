@@ -18,8 +18,9 @@ interface SelectorProps {
 }
 
 interface SingleSelectorProps extends SelectorProps {
-  value?: string;
+  value?: string | null;
   setValue: (value: string) => void;
+  isClearable?: true;
   isMulti: false;
 }
 
@@ -56,6 +57,14 @@ const Option = (props: any) => {
   );
 };
 
+const customFilterOption = (option: any, rawInput: string) => {
+  const words = rawInput.split(" ");
+  return words.reduce(
+    (acc, cur) => acc && option.label.toLowerCase().includes(cur.toLowerCase()),
+    true
+  );
+};
+
 const WeaponSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = (
   props
 ) => {
@@ -65,6 +74,7 @@ const WeaponSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = (
 
   return (
     <MySelect
+      name="weapon"
       options={getWeaponArray().map((category) => ({
         label: i18n._(category.name),
         options: category.weapons.map((weapon) => ({
@@ -94,6 +104,7 @@ const WeaponSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = (
       }}
       autoFocus={!!props.autoFocus}
       isDisabled={!!props.isDisabled}
+      customFilterOption={customFilterOption}
     />
   );
 

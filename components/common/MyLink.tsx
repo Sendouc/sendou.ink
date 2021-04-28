@@ -9,6 +9,7 @@ interface Props {
   prefetch?: boolean;
   isColored?: boolean;
   toNewWindow?: boolean;
+  noUnderline?: boolean;
 }
 
 const MyLink: React.FC<Props> = ({
@@ -18,6 +19,7 @@ const MyLink: React.FC<Props> = ({
   prefetch = false,
   isColored = true,
   toNewWindow,
+  noUnderline,
 }) => {
   const { themeColorShade } = useMyTheme();
 
@@ -34,7 +36,10 @@ const MyLink: React.FC<Props> = ({
   }
   return (
     <NextLink href={href} prefetch={prefetch ? undefined : false} passHref>
-      <ChakraLink color={isColored ? themeColorShade : undefined}>
+      <ChakraLink
+        className={noUnderline ? "nounderline" : undefined}
+        color={isColored ? themeColorShade : undefined}
+      >
         {children}
       </ChakraLink>
     </NextLink>

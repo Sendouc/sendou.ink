@@ -22,13 +22,11 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { t, Trans } from "@lingui/macro";
 import MarkdownTextarea from "components/common/MarkdownTextarea";
-import { GetAllFreeAgentPostsData } from "prisma/queries/getAllFreeAgentPosts";
-import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { FiTrash } from "react-icons/fi";
-import { mutate } from "swr";
-import { getToastOptions } from "utils/getToastOptions";
-import { sendData } from "utils/postData";
+import { PostsData } from "services/freeagents";
+import { getToastOptions } from "utils/objects";
+import { trpc } from "utils/trpc";
 import { Unpacked } from "utils/types";
 import {
   FA_POST_CONTENT_LIMIT,
@@ -38,54 +36,52 @@ import * as z from "zod";
 
 interface Props {
   onClose: () => void;
-  post?: Unpacked<GetAllFreeAgentPostsData>;
+  refetchQuery: () => void;
+  post?: Unpacked<PostsData>;
 }
 
 type FormData = z.infer<typeof freeAgentPostSchema>;
 
-const FAModal: React.FC<Props> = ({ onClose, post }) => {
-  const [sending, setSending] = useState(false);
-  const [deleting, setDeleting] = useState(false);
+const FAModal = ({ onClose, post, refetchQuery }: Props) => {
+  const utils = trpc.useQueryUtils();
 
   const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
     resolver: zodResolver(freeAgentPostSchema),
     defaultValues: post,
   });
 
+  const upsertPostMutation = trpc.useMutation("freeAgents.upsertPost", {
+    onSuccess() {
+      toast(
+        getToastOptions(
+          post ? t`Free agent post updated` : t`Free agent post submitted`,
+          "success"
+        )
+      );
+      refetchQuery();
+      utils.invalidateQuery(["freeAgents.posts"]);
+      onClose();
+    },
+    onError(error) {
+      toast(getToastOptions(error.message, "error"));
+    },
+  });
+
+  const deletePostMutation = trpc.useMutation("freeAgents.deletePost", {
+    onSuccess() {
+      toast(getToastOptions(t`Free agent post deleted`, "success"));
+      refetchQuery();
+      utils.invalidateQuery(["freeAgents.posts"]);
+      onClose();
+    },
+    onError(error) {
+      toast(getToastOptions(error.message, "error"));
+    },
+  });
+
   const toast = useToast();
 
   const watchContent = watch("content", ""); // TODO: get initial fa content from props
-
-  const onSubmit = async (formData: FormData) => {
-    setSending(true);
-
-    const success = await sendData("PUT", "/api/freeagents", formData);
-    setSending(false);
-    if (!success) return;
-
-    mutate("/api/freeagents");
-
-    toast(
-      getToastOptions(
-        post ? t`Free agent post updated` : t`Free agent post submitted`,
-        "success"
-      )
-    );
-    onClose();
-  };
-
-  const onDelete = async () => {
-    setDeleting(true);
-
-    const success = await sendData("DELETE", "/api/freeagents");
-    setDeleting(false);
-    if (!success) return;
-
-    mutate("/api/freeagents");
-
-    toast(getToastOptions(t`Free agent post deleted`, "success"));
-    onClose();
-  };
 
   return (
     <Modal isOpen onClose={onClose} size="xl" closeOnOverlayClick={false}>
@@ -99,7 +95,9 @@ const FAModal: React.FC<Props> = ({ onClose, post }) => {
             )}
           </ModalHeader>
           <ModalCloseButton borderRadius="50%" />
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form
+            onSubmit={handleSubmit((data) => upsertPostMutation.mutate(data))}
+          >
             <ModalBody pb={6}>
               {post && (
                 <>
@@ -107,10 +105,11 @@ const FAModal: React.FC<Props> = ({ onClose, post }) => {
                     leftIcon={<FiTrash />}
                     variant="outline"
                     color="red.500"
-                    isLoading={deleting}
+                    isLoading={deletePostMutation.isLoading}
                     onClick={async () => {
-                      if (window.confirm(t`Delete the free agent post?`))
-                        await onDelete();
+                      if (window.confirm(t`Delete the free agent post?`)) {
+                        deletePostMutation.mutate(null);
+                      }
                     }}
                   >
                     <Trans>Delete free agent post</Trans>
@@ -125,11 +124,11 @@ const FAModal: React.FC<Props> = ({ onClose, post }) => {
                   </FormControl>
                 </>
               )}
-              <FormLabel htmlFor="playstyles">
-                <Trans>Roles</Trans>
-              </FormLabel>
 
               <FormControl isInvalid={!!errors.playstyles}>
+                <FormLabel htmlFor="playstyles">
+                  <Trans>Roles</Trans>
+                </FormLabel>
                 <Controller
                   name="playstyles"
                   control={control}
@@ -156,23 +155,25 @@ const FAModal: React.FC<Props> = ({ onClose, post }) => {
                 </FormErrorMessage>
               </FormControl>
 
-              <FormLabel htmlFor="canVC" mt={4}>
-                <Trans>Can you voice chat?</Trans>
-              </FormLabel>
-              <Controller
-                name="canVC"
-                control={control}
-                defaultValue="YES"
-                render={({ onChange, value }) => (
-                  <RadioGroup value={value} onChange={onChange}>
-                    <Stack direction="row">
-                      <Radio value="YES">Yes</Radio>
-                      <Radio value="MAYBE">Sometimes</Radio>
-                      <Radio value="NO">No</Radio>
-                    </Stack>
-                  </RadioGroup>
-                )}
-              />
+              <FormControl>
+                <FormLabel htmlFor="canVC" mt={4}>
+                  <Trans>Can you voice chat?</Trans>
+                </FormLabel>
+                <Controller
+                  name="canVC"
+                  control={control}
+                  defaultValue="YES"
+                  render={({ onChange, value }) => (
+                    <RadioGroup value={value} onChange={onChange}>
+                      <Stack direction="row">
+                        <Radio value="YES">Yes</Radio>
+                        <Radio value="MAYBE">Sometimes</Radio>
+                        <Radio value="NO">No</Radio>
+                      </Stack>
+                    </RadioGroup>
+                  )}
+                />
+              </FormControl>
 
               <MarkdownTextarea
                 fieldName="content"
@@ -184,10 +185,22 @@ const FAModal: React.FC<Props> = ({ onClose, post }) => {
               />
             </ModalBody>
             <ModalFooter>
-              <Button mr={3} type="submit" isLoading={sending}>
+              <Button
+                mr={3}
+                type="submit"
+                isLoading={
+                  upsertPostMutation.isLoading || deletePostMutation.isLoading
+                }
+              >
                 <Trans>Save</Trans>
               </Button>
-              <Button onClick={onClose} variant="outline">
+              <Button
+                onClick={onClose}
+                variant="outline"
+                isDisabled={
+                  upsertPostMutation.isLoading || deletePostMutation.isLoading
+                }
+              >
                 <Trans>Cancel</Trans>
               </Button>
             </ModalFooter>

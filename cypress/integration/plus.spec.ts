@@ -20,14 +20,11 @@ context("Plus Voting History", () => {
 });
 
 context("Plus Home Page", () => {
-  it("can filter through suggestions not logged in", () => {
+  it("sees alternative view of suggestions not logged in", () => {
     cy.visit("/plus");
-    cy.get("section")
-      .contains("yooo so cracked")
-      .dataCy("plus-three-radio")
-      .click();
+    cy.dataCy("plus-three-radio").should("not.exist");
 
-    cy.get("section").contains("yooo so cracked").should("not.exist");
+    cy.dataCy("alt-suggestions-container").contains("User10#0010 (+2)");
   });
 
   // skipped because

@@ -1,10 +1,10 @@
 import { Box } from "@chakra-ui/react";
-import { GetLadderDayData } from "prisma/queries/getLadderDay";
+import { PreviousLadderDay } from "services/play";
 import { Unpacked } from "utils/types";
 import LadderTeam from "./LadderTeam";
 
 interface Props {
-  matchUp: Unpacked<NonNullable<GetLadderDayData>["matches"]>;
+  matchUp: Unpacked<NonNullable<PreviousLadderDay>["matches"]>;
 }
 
 const MatchUp: React.FC<Props> = ({ matchUp }) => {

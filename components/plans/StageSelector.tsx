@@ -128,7 +128,9 @@ const StageSelector: React.FC<StageSelectorProps> = ({
           <ModeSelector
             mode={currentBackground.mode as RankedMode}
             setMode={changeMode}
-            justify="center"
+            mt={2}
+            display="flex"
+            justifyContent="center"
           />
           <RadioGroup value={currentBackground.view} onChange={changeView}>
             <HStack justifyContent="center" spacing={6}>

@@ -1,6 +1,5 @@
 import { Button, ButtonGroup, Flex } from "@chakra-ui/react";
-import { Trans } from "@lingui/macro";
-import HeaderBanner from "components/layout/HeaderBanner";
+import { t, Trans } from "@lingui/macro";
 import DraggableImageAdder from "components/plans/DraggableImageAdder";
 import DraggableToolsSelector from "components/plans/DraggableToolsSelector";
 import StageSelector from "components/plans/StageSelector";
@@ -13,6 +12,7 @@ import {
   FaFileUpload,
 } from "react-icons/fa";
 import { stages } from "utils/lists/stages";
+import MyHead from "../components/common/MyHead";
 
 const MapSketch = dynamic(() => import("components/plans/MapSketch"), {
   ssr: false,
@@ -276,6 +276,7 @@ const MapPlannerPage = () => {
 
   return (
     <>
+      <MyHead title={t`Map Planner`} />
       <DraggableToolsSelector
         tool={tool}
         setTool={setTool}
@@ -371,13 +372,5 @@ const MapPlannerPage = () => {
     </>
   );
 };
-
-MapPlannerPage.header = (
-  <HeaderBanner
-    icon="plans"
-    title="Map Planner"
-    subtitle="Draw on 200 different maps and make your plans"
-  />
-);
 
 export default MapPlannerPage;

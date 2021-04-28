@@ -4,6 +4,7 @@ import {
   Box,
   Button,
   Checkbox,
+  FormControl,
   FormLabel,
   Grid,
   Input,
@@ -19,19 +20,19 @@ import {
   Stack,
   Textarea,
 } from "@chakra-ui/react";
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { RankedMode } from "@prisma/client";
 import ModeImage from "components/common/ModeImage";
-import SubText from "components/common/SubText";
-import HeaderBanner from "components/layout/HeaderBanner";
 import MultipleModeSelector from "components/common/MultipleModeSelector";
+import SubText from "components/common/SubText";
 import { useRouter } from "next/router";
 import { ChangeEvent, Fragment, useEffect, useState } from "react";
 import { FiCheck, FiFilter, FiRotateCw } from "react-icons/fi";
 import { shuffleArray } from "utils/arrays";
 import { stages } from "utils/lists/stages";
 import { setManySearchParams } from "utils/setSearchParams";
+import MyHead from "../components/common/MyHead";
 
 const MapsGeneratorPage = () => {
   const router = useRouter();
@@ -42,12 +43,12 @@ const MapsGeneratorPage = () => {
   >(getInitialStages());
   const [generationMode, setGenerationMode] = useState<
     "EQUAL" | "SZ_EVERY_OTHER" | "CUSTOM_ORDER"
-  >("EQUAL");
+  >("SZ_EVERY_OTHER");
   const [maplist, setMaplist] = useState("");
   const [modes, setModes] = useState<
     { label: string; value: number; data?: string }[]
   >([]);
-  const [count, setCount] = useState(9);
+  const [count, setCount] = useState(25);
   const [editing, setEditing] = useState(false);
   const [copied, setCopied] = useState<null | "URL" | "LIST">(null);
 
@@ -186,6 +187,7 @@ const MapsGeneratorPage = () => {
 
   return (
     <>
+      <MyHead title={t`Maplist Generator`} />
       {editing ? (
         <>
           <Alert status="info" mb={8}>
@@ -254,27 +256,29 @@ const MapsGeneratorPage = () => {
               );
             })}
           </Grid>
-          <FormLabel htmlFor="share" mt={4}>
-            <Trans>Share your map pool</Trans>
-          </FormLabel>
-          {window && (
-            <InputGroup size="md" mb={8}>
-              <Input name="share" value={window.location.href} readOnly />
-              <InputRightElement width="4.5rem">
-                <Button
-                  onClick={() => {
-                    navigator.clipboard.writeText(window.location.href);
-                    setCopied("URL");
-                  }}
-                  h="1.75rem"
-                  size="sm"
-                  disabled={copied === "URL"}
-                >
-                  {copied === "URL" ? <FiCheck /> : <Trans>Copy</Trans>}
-                </Button>
-              </InputRightElement>
-            </InputGroup>
-          )}
+          <FormControl>
+            <FormLabel htmlFor="share" mt={4}>
+              <Trans>Share your map pool</Trans>
+            </FormLabel>
+            {window && (
+              <InputGroup size="md" mb={8}>
+                <Input name="share" value={window.location.href} readOnly />
+                <InputRightElement width="4.5rem">
+                  <Button
+                    onClick={() => {
+                      navigator.clipboard.writeText(window.location.href);
+                      setCopied("URL");
+                    }}
+                    h="1.75rem"
+                    size="sm"
+                    disabled={copied === "URL"}
+                  >
+                    {copied === "URL" ? <FiCheck /> : <Trans>Copy</Trans>}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+            )}
+          </FormControl>
         </>
       ) : (
         <Grid
@@ -354,11 +358,11 @@ const MapsGeneratorPage = () => {
         value={generationMode}
       >
         <Stack direction="row" mb={4}>
-          <Radio value="EQUAL">
-            <Trans>All modes equally</Trans>
-          </Radio>
           <Radio value="SZ_EVERY_OTHER">
             <Trans>SZ every other</Trans>
+          </Radio>
+          <Radio value="EQUAL">
+            <Trans>All modes equally</Trans>
           </Radio>
           <Radio value="CUSTOM_ORDER">
             <Trans>Custom order</Trans>
@@ -378,27 +382,29 @@ const MapsGeneratorPage = () => {
           width={"90%"}
         />
       )}
-      <FormLabel htmlFor="count" fontSize="sm" mt={4}>
-        <Trans>Amount of maps to generate</Trans>
-      </FormLabel>
-      <NumberInput
-        name="count"
-        size="sm"
-        value={count}
-        min={1}
-        max={100}
-        onChange={(_, value) => {
-          if (!Number.isNaN(value)) setCount(value);
-        }}
-        mb={4}
-        width={24}
-      >
-        <NumberInputField />
-        <NumberInputStepper>
-          <NumberIncrementStepper />
-          <NumberDecrementStepper />
-        </NumberInputStepper>
-      </NumberInput>
+      <FormControl>
+        <FormLabel htmlFor="count" fontSize="sm" mt={4}>
+          <Trans>Amount of maps to generate</Trans>
+        </FormLabel>
+        <NumberInput
+          name="count"
+          size="sm"
+          value={count}
+          min={1}
+          max={100}
+          onChange={(_, value) => {
+            if (!Number.isNaN(value)) setCount(value);
+          }}
+          mb={4}
+          width={24}
+        >
+          <NumberInputField />
+          <NumberInputStepper>
+            <NumberIncrementStepper />
+            <NumberDecrementStepper />
+          </NumberInputStepper>
+        </NumberInput>
+      </FormControl>
       {maplist && (
         <>
           <Textarea value={maplist} readOnly rows={9} />
@@ -433,13 +439,5 @@ const MapsGeneratorPage = () => {
     });
   }
 };
-
-MapsGeneratorPage.header = (
-  <HeaderBanner
-    icon="plans"
-    title="Maplist Generator"
-    subtitle="Get a list of maps to play in a scrim"
-  />
-);
 
 export default MapsGeneratorPage;

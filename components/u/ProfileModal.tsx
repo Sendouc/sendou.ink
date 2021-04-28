@@ -28,7 +28,7 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { FaGamepad, FaTwitch, FaTwitter, FaYoutube } from "react-icons/fa";
 import { mutate } from "swr";
-import { getToastOptions } from "utils/getToastOptions";
+import { getToastOptions } from "utils/objects";
 import { sendData } from "utils/postData";
 import {
   profileSchemaFrontend,
@@ -225,95 +225,103 @@ const ProfileModal: React.FC<Props> = ({ onClose, user }) => {
                 <FormErrorMessage>{errors.youtubeId?.message}</FormErrorMessage>
               </FormControl>
 
-              <FormLabel htmlFor="country" mt={4}>
-                <Trans>Country</Trans>
-              </FormLabel>
-              <Controller
-                name="country"
-                control={control}
-                defaultValue={""}
-                render={({ onChange, value }) => (
-                  <ChakraSelect
-                    value={value}
-                    setValue={onChange}
-                    placeholder={t`Select country`}
-                  >
-                    {(Object.keys(countries) as Array<keyof typeof countries>)
-                      .sort((a, b) =>
-                        countries[a].name.localeCompare(countries[b].name)
-                      )
-                      .map((countryCode) => (
-                        <option key={countryCode} value={countryCode}>
-                          {countries[countryCode].name}
+              <FormControl>
+                <FormLabel htmlFor="country" mt={4}>
+                  <Trans>Country</Trans>
+                </FormLabel>
+                <Controller
+                  name="country"
+                  control={control}
+                  defaultValue={""}
+                  render={({ onChange, value }) => (
+                    <ChakraSelect
+                      value={value}
+                      setValue={onChange}
+                      placeholder={t`Select country`}
+                    >
+                      {(Object.keys(countries) as Array<keyof typeof countries>)
+                        .sort((a, b) =>
+                          countries[a].name.localeCompare(countries[b].name)
+                        )
+                        .map((countryCode) => (
+                          <option key={countryCode} value={countryCode}>
+                            {countries[countryCode].name}
+                          </option>
+                        ))}
+                    </ChakraSelect>
+                  )}
+                />
+              </FormControl>
+
+              <FormControl>
+                <FormLabel htmlFor="weaponPool" mt={4}>
+                  <Trans>Weapon pool</Trans>
+                </FormLabel>
+                <Controller
+                  name="weaponPool"
+                  control={control}
+                  defaultValue={[]}
+                  render={({ onChange, value }) => (
+                    <WeaponSelector
+                      value={value}
+                      setValue={onChange}
+                      isMulti
+                      pool="WITH_ALTS"
+                      maxMultiCount={5}
+                    />
+                  )}
+                />
+              </FormControl>
+
+              <FormControl>
+                <FormLabel htmlFor="sensStick" mt={4}>
+                  <Box as={FaGamepad} display="inline-block" mr={2} mb={1} />
+                  <Trans>Stick sensitivity</Trans>
+                </FormLabel>
+                <Controller
+                  name="sensStick"
+                  control={control}
+                  render={({ onChange, value, name }) => (
+                    <ChakraSelect
+                      placeholder={t`Select stick sensitivity`}
+                      name={name}
+                      value={value}
+                      setValue={onChange}
+                    >
+                      {sensOptions.map((sens) => (
+                        <option key={sens} value={sens}>
+                          {sens}
                         </option>
                       ))}
-                  </ChakraSelect>
-                )}
-              />
+                    </ChakraSelect>
+                  )}
+                />
+              </FormControl>
 
-              <FormLabel htmlFor="weaponPool" mt={4}>
-                <Trans>Weapon pool</Trans>
-              </FormLabel>
-              <Controller
-                name="weaponPool"
-                control={control}
-                defaultValue={[]}
-                render={({ onChange, value }) => (
-                  <WeaponSelector
-                    value={value}
-                    setValue={onChange}
-                    isMulti
-                    pool="WITH_ALTS"
-                    maxMultiCount={5}
-                  />
-                )}
-              />
-
-              <FormLabel htmlFor="sensStick" mt={4}>
-                <Box as={FaGamepad} display="inline-block" mr={2} mb={1} />
-                <Trans>Stick sensitivity</Trans>
-              </FormLabel>
-              <Controller
-                name="sensStick"
-                control={control}
-                render={({ onChange, value, name }) => (
-                  <ChakraSelect
-                    placeholder={t`Select stick sensitivity`}
-                    name={name}
-                    value={value}
-                    setValue={onChange}
-                  >
-                    {sensOptions.map((sens) => (
-                      <option key={sens} value={sens}>
-                        {sens}
-                      </option>
-                    ))}
-                  </ChakraSelect>
-                )}
-              />
-
-              <FormLabel htmlFor="sensMotion" mt={4}>
-                <Box as={FaGamepad} display="inline-block" mr={2} mb={1} />
-                <Trans>Motion sensitivity</Trans>
-              </FormLabel>
-              <Controller
-                name="sensMotion"
-                control={control}
-                render={({ onChange, value, name }) => (
-                  <ChakraSelect
-                    placeholder={t`Select motion sensitivity`}
-                    name={name}
-                    value={value}
-                    setValue={onChange}
-                  >
-                    {sensOptions.map((sens) => (
-                      <option key={sens} value={sens}>
-                        {sens}
-                      </option>
-                    ))}
-                  </ChakraSelect>
-                )}
-              />
+              <FormControl>
+                <FormLabel htmlFor="sensMotion" mt={4}>
+                  <Box as={FaGamepad} display="inline-block" mr={2} mb={1} />
+                  <Trans>Motion sensitivity</Trans>
+                </FormLabel>
+                <Controller
+                  name="sensMotion"
+                  control={control}
+                  render={({ onChange, value, name }) => (
+                    <ChakraSelect
+                      placeholder={t`Select motion sensitivity`}
+                      name={name}
+                      value={value}
+                      setValue={onChange}
+                    >
+                      {sensOptions.map((sens) => (
+                        <option key={sens} value={sens}>
+                          {sens}
+                        </option>
+                      ))}
+                    </ChakraSelect>
+                  )}
+                />
+              </FormControl>
 
               <MarkdownTextarea
                 fieldName="bio"

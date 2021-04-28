@@ -21,7 +21,7 @@ import { GetTeamData } from "prisma/queries/getTeam";
 import { Fragment, useEffect, useState } from "react";
 import { FiCheck, FiTrash, FiUsers } from "react-icons/fi";
 import { mutate } from "swr";
-import { getToastOptions } from "utils/getToastOptions";
+import { getToastOptions } from "utils/objects";
 import { sendData } from "utils/postData";
 
 interface Props {

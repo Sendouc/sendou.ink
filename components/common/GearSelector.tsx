@@ -37,6 +37,14 @@ const Option = (props: any) => {
   );
 };
 
+const customFilterOption = (option: any, rawInput: string) => {
+  const words = rawInput.split(" ");
+  return words.reduce(
+    (acc, cur) => acc && option.label.toLowerCase().includes(cur.toLowerCase()),
+    true
+  );
+};
+
 const GearSelector: React.FC<WeaponSelectorProps> = ({
   value,
   setValue,
@@ -63,6 +71,7 @@ const GearSelector: React.FC<WeaponSelectorProps> = ({
         SingleValue,
       }}
       hideMenuBeforeTyping
+      customFilterOption={customFilterOption}
     />
   );
 };

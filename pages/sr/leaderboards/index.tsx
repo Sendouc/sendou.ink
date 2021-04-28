@@ -12,7 +12,7 @@ import {
   Select,
   Stack,
 } from "@chakra-ui/react";
-import { Plural, Trans } from "@lingui/macro";
+import { Plural, t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { SalmonRunRecordCategory } from "@prisma/client";
 import LinkButton from "components/common/LinkButton";
@@ -27,12 +27,12 @@ import {
 } from "components/common/Table";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
-import HeaderBanner from "components/layout/HeaderBanner";
 import { useSalmonRunRecords, WeaponsFilter } from "hooks/sr";
 import Image from "next/image";
 import Link from "next/link";
 import { salmonRunStages } from "utils/lists/stages";
 import { getRankingString } from "utils/strings";
+import MyHead from "../../../components/common/MyHead";
 import { salmonRunCategoryToNatural } from "./new";
 
 const SalmonRunLeaderboardsPage = ({}) => {
@@ -49,6 +49,7 @@ const SalmonRunLeaderboardsPage = ({}) => {
 
   return (
     <>
+      <MyHead title={t`Salmon Run Records`} />
       {pendingCount > 0 && (
         <Alert status="info" mb={4}>
           <AlertIcon />
@@ -249,13 +250,5 @@ const SalmonRunLeaderboardsPage = ({}) => {
     </>
   );
 };
-
-SalmonRunLeaderboardsPage.header = (
-  <HeaderBanner
-    icon="sr"
-    title="Salmon Run"
-    subtitle="Overfishing leaderboards"
-  />
-);
 
 export default SalmonRunLeaderboardsPage;

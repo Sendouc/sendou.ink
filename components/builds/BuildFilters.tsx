@@ -165,7 +165,12 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
           </Fragment>
         ))}
       </Grid>
-      <Flex mt={4} justify="space-between">
+      <Flex
+        mt={4}
+        justify="space-between"
+        align="center"
+        flexDir={["column", "row"]}
+      >
         <Select
           onChange={(e) =>
             dispatch({

@@ -1,5 +1,5 @@
 import { Box, Button, Flex } from "@chakra-ui/react";
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import APStats from "components/builds/APStats";
 import BuildCard from "components/builds/BuildCard";
 import BuildFilters from "components/builds/BuildFilters";
@@ -8,11 +8,11 @@ import MyInfiniteScroller from "components/common/MyInfiniteScroller";
 import MyLink from "components/common/MyLink";
 import WeaponImage from "components/common/WeaponImage";
 import WeaponSelector from "components/common/WeaponSelector";
-import HeaderBanner from "components/layout/HeaderBanner";
 import { useBuildsByWeapon } from "hooks/builds";
 import { useMyTheme, useUser } from "hooks/common";
 import { useState } from "react";
 import { RiBarChart2Fill, RiTShirtLine } from "react-icons/ri";
+import MyHead from "../../components/common/MyHead";
 
 const BuildsPage = () => {
   const {
@@ -29,6 +29,7 @@ const BuildsPage = () => {
 
   return (
     <>
+      <MyHead title={t`Builds`} />
       <Box mb={4} maxW={80} mx="auto">
         <WeaponSelector
           value={state.weapon}
@@ -130,7 +131,8 @@ const BuildsPage = () => {
               onShowAllByUser={() =>
                 dispatch({ type: "EXPAND_USER", id: buildArray[0].userId })
               }
-              m={2}
+              my={2}
+              mx={[0, 2]}
             />
           )
         )}
@@ -138,13 +140,5 @@ const BuildsPage = () => {
     </>
   );
 };
-
-BuildsPage.header = (
-  <HeaderBanner
-    icon="builds"
-    title="Builds"
-    subtitle="Find what people are running on that weapon you picked up"
-  />
-);
 
 export default BuildsPage;

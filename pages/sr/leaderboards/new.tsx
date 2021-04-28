@@ -17,7 +17,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import UserSelector from "components/common/UserSelector";
-import HeaderBanner from "components/layout/HeaderBanner";
 import RotationSelector from "components/sr/RotationSelector";
 import { useUser } from "hooks/common";
 import Image from "next/image";
@@ -28,6 +27,7 @@ import { mutate } from "swr";
 import { sendData } from "utils/postData";
 import { salmonRunRecordSchema } from "utils/validators/salmonRunRecord";
 import * as z from "zod";
+import MyHead from "../../../components/common/MyHead";
 
 export const salmonRunCategoryToNatural = {
   TOTAL: t`All waves`,
@@ -83,6 +83,7 @@ const AddRecordModal = () => {
 
   return (
     <>
+      <MyHead title={t`Salmon Run Records`} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <Controller
           name="rotationId"
@@ -95,18 +96,20 @@ const AddRecordModal = () => {
 
         {watchRotationId && (
           <>
-            <FormLabel htmlFor="category" mt={4}>
-              <Trans>Category</Trans>
-            </FormLabel>
-            <Select name="category" ref={register}>
-              {Object.entries(salmonRunCategoryToNatural).map(
-                ([key, value]) => (
-                  <option key={key} value={key}>
-                    {i18n._(value)}
-                  </option>
-                )
-              )}
-            </Select>
+            <FormControl>
+              <FormLabel htmlFor="category" mt={4}>
+                <Trans>Category</Trans>
+              </FormLabel>
+              <Select name="category" ref={register}>
+                {Object.entries(salmonRunCategoryToNatural).map(
+                  ([key, value]) => (
+                    <option key={key} value={key}>
+                      {i18n._(value)}
+                    </option>
+                  )
+                )}
+              </Select>
+            </FormControl>
 
             <FormControl isInvalid={!!errors.goldenEggCount}>
               <FormLabel htmlFor="goldenEggCount" mt={4}>
@@ -209,13 +212,5 @@ const AddRecordModal = () => {
     </>
   );
 };
-
-AddRecordModal.header = (
-  <HeaderBanner
-    icon="sr"
-    title="Salmon Run"
-    subtitle="Overfishing leaderboards"
-  />
-);
 
 export default AddRecordModal;

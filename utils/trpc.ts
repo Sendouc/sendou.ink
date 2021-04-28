@@ -1,22 +1,16 @@
 import { createReactQueryHooks, createTRPCClient } from "@trpc/react";
-import type { AppRouter } from "pages/api/trpc/[trpc]";
-import { QueryClient } from "react-query";
 import superjson from "superjson";
+// Type-only import:
+// https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-8.html#type-only-imports-and-export
+import type { AppRouter } from "../pages/api/trpc/[trpc]";
 
+// create helper methods for queries, mutations, and subscriptionos
 export const client = createTRPCClient<AppRouter>({
   url: "/api/trpc",
   transformer: superjson,
 });
 
+// create react query hooks for trpc
 export const trpc = createReactQueryHooks({
   client,
-  queryClient: new QueryClient({
-    defaultOptions: {
-      queries: {
-        // queries never go stale to save some work
-        // on our poor database
-        staleTime: Infinity,
-      },
-    },
-  }),
 });

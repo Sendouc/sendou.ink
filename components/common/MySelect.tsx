@@ -22,6 +22,7 @@ interface SelectProps {
         value: string;
         data?: any;
       }>;
+  name?: string;
   width?: string;
   value?: ValueType<OptionTypeBase, boolean>;
   setValue: (value: any) => void;
@@ -34,6 +35,7 @@ interface SelectProps {
   isSearchable?: boolean;
   menuIsOpen?: boolean;
   hideMenuBeforeTyping?: boolean;
+  customFilterOption?: (option: any, rawInput: string) => boolean;
 }
 
 const DropdownIndicator = (props: any) => {
@@ -50,6 +52,7 @@ const MySelect: React.FC<SelectProps> = ({
   components,
   value,
   setValue,
+  name,
   isClearable = false,
   autoFocus = false,
   isMulti = false,
@@ -58,6 +61,7 @@ const MySelect: React.FC<SelectProps> = ({
   isSearchable = false,
   menuIsOpen = false,
   hideMenuBeforeTyping,
+  customFilterOption,
 }) => {
   const {
     borderColor,
@@ -93,6 +97,7 @@ const MySelect: React.FC<SelectProps> = ({
     <ReactSelect
       className="basic-single"
       classNamePrefix="select"
+      name={name}
       value={value}
       inputValue={inputValue}
       onInputChange={(newValue) => setInputValue(newValue)}
@@ -105,6 +110,7 @@ const MySelect: React.FC<SelectProps> = ({
       isDisabled={isDisabled}
       isClearable={isClearable}
       options={options}
+      filterOption={customFilterOption}
       components={
         hideMenuBeforeTyping
           ? {

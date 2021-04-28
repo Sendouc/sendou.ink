@@ -21,6 +21,7 @@ import {
 import { useMyTheme } from "hooks/common";
 import ReactMarkdown from "react-markdown";
 import reactStringReplace from "react-string-replace";
+import gfm from "remark-gfm";
 import MyLink from "./MyLink";
 
 interface MarkdownProps {
@@ -211,6 +212,7 @@ const Markdown: React.FC<MarkdownProps> = ({
       source={value.replace(/\n/g, "  \n")}
       renderers={ChakraUIRenderer()}
       disallowedTypes={allowAll ? [] : ["imageReference", "image"]}
+      plugins={[gfm]}
     />
   );
 };

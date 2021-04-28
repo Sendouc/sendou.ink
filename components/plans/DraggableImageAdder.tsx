@@ -35,7 +35,7 @@ const DraggableImageAdder: React.FC<DraggableImageAdderProps> = ({
         bg={bgColor}
         textAlign="center"
         width="119px"
-        ml="950px"
+        ml="850px"
       >
         <strong style={{ cursor: "move" }}>
           <div
