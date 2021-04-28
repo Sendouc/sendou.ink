@@ -13,7 +13,7 @@ const DatePicker = ({ selectedDate, onChange, isClearable = false }: Props) => {
   const { colorMode } = useColorMode();
   return (
     <Box color="black">
-      <div className={colorMode == "light" ? "light-theme" : "dark-theme"}>
+      <div className={colorMode}>
         <ReactDatePicker
           selected={selectedDate}
           onChange={onChange}
