@@ -82,9 +82,12 @@ const MapsGeneratorPage = () => {
     const modeFromUrl = Object.entries(router.query).filter(
       (item) => item[0] === "mode"
     );
-    if (modeFromUrl[0] && (modeFromUrl[0][1] === "CUSTOM_ORDER"
-        || modeFromUrl[0][1] === "EQUAL"
-        || modeFromUrl[0][1] === "SZ_EVERY_OTHER")) {
+    if (
+      modeFromUrl[0] &&
+      (modeFromUrl[0][1] === "CUSTOM_ORDER" ||
+        modeFromUrl[0][1] === "EQUAL" ||
+        modeFromUrl[0][1] === "SZ_EVERY_OTHER")
+    ) {
       return modeFromUrl[0][1];
     }
     return "SZ_EVERY_OTHER";
@@ -103,11 +106,20 @@ const MapsGeneratorPage = () => {
 
   function getInitialMapModes() {
     const countFromUrl = Object.entries(router.query).filter(
-        (item) => item[0] === "modes"
+      (item) => item[0] === "modes"
     );
-    if (countFromUrl[0] && countFromUrl[0][1] && typeof countFromUrl[0][1] === "string" && countFromUrl[0][1].length > 0) {
-      const modesArray = countFromUrl[0][1].split(',');
-      return modesArray.map((mode, index) => ({label: getFullModeName(mode), data: mode, value: index + 0.5}));
+    if (
+      countFromUrl[0] &&
+      countFromUrl[0][1] &&
+      typeof countFromUrl[0][1] === "string" &&
+      countFromUrl[0][1].length > 0
+    ) {
+      const modesArray = countFromUrl[0][1].split(",");
+      return modesArray.map((mode, index) => ({
+        label: getFullModeName(mode),
+        data: mode,
+        value: index + 0.5,
+      }));
     } else {
       return [];
     }
@@ -115,10 +127,18 @@ const MapsGeneratorPage = () => {
 
   function getFullModeName(mode: string) {
     switch (mode) {
-      case "SZ": {return "Splat Zones";}
-      case "TC": {return "Tower Control";}
-      case "RM": {return "Rainmaker";}
-      case "CB": {return "Clam Blitz";}
+      case "SZ": {
+        return "Splat Zones";
+      }
+      case "TC": {
+        return "Tower Control";
+      }
+      case "RM": {
+        return "Rainmaker";
+      }
+      case "CB": {
+        return "Clam Blitz";
+      }
     }
     return "";
   }
@@ -126,7 +146,7 @@ const MapsGeneratorPage = () => {
   function getInitialUrlParams() {
     const params = Object.entries(router.query);
     return params.map((item) => {
-      return {key: item[0], value: item[1]};
+      return { key: item[0], value: item[1] };
     });
   }
 
@@ -149,7 +169,8 @@ const MapsGeneratorPage = () => {
     items: { key: string; value: string | string[] | undefined }[]
   ) {
     const params = urlParams.filter(
-      (item) => item.key === "mode" || item.key === "modes" || item.key === "count"
+      (item) =>
+        item.key === "mode" || item.key === "modes" || item.key === "count"
     );
     const paramsWithMaps = params.concat(items);
     setUrlParams(paramsWithMaps);
@@ -522,7 +543,7 @@ const MapsGeneratorPage = () => {
       if (mode.data) return mode.data;
       else return "";
     });
-    updateUrlParams("modes", modeArray.join(','));
+    updateUrlParams("modes", modeArray.join(","));
   }
 
   function transformModesToStringArray() {

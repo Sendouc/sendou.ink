@@ -67,7 +67,7 @@ const MultipleModeSelector: React.FC<SelectProps> = ({
   isDisabled = false,
   menuIsOpen = false,
   hideMenuBeforeTyping,
-  defaultValue
+  defaultValue,
 }) => {
   const {
     borderColor,
