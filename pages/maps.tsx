@@ -105,8 +105,7 @@ const MapsGeneratorPage = () => {
     const countFromUrl = Object.entries(router.query).filter(
         (item) => item[0] === "modes"
     );
-    console.log('modes', countFromUrl[0]);
-    if (countFromUrl[0] && countFromUrl[0][1] && countFromUrl[0][1].length > 0 && typeof countFromUrl[0][1] === "string") {
+    if (countFromUrl[0] && countFromUrl[0][1] && typeof countFromUrl[0][1] === "string" && countFromUrl[0][1].length > 0) {
       const modesArray = countFromUrl[0][1].split(',');
       return modesArray.map((mode, index) => ({label: getFullModeName(mode), data: mode, value: index + 0.5}));
     } else {
@@ -518,7 +517,6 @@ const MapsGeneratorPage = () => {
   function getModeValues(
     value: { label: string; value: number; data?: string }[]
   ) {
-    console.log('value', value);
     setModes(value);
     const modeArray = value.map((mode) => {
       if (mode.data) return mode.data;
