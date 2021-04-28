@@ -38,6 +38,9 @@ const MapsGeneratorPage = () => {
   const router = useRouter();
   const { i18n } = useLingui();
 
+  const defaultGenerationMode = "SZ_EVERY_OTHER";
+  const defaultCount = 25;
+
   const [stagesSelected, setStagesSelected] = useState<
     Record<string, RankedMode[]>
   >(getInitialStages());
@@ -90,7 +93,7 @@ const MapsGeneratorPage = () => {
     ) {
       return modeFromUrl[0][1];
     }
-    return "SZ_EVERY_OTHER";
+    return defaultGenerationMode;
   }
 
   function getInitialCount() {
@@ -100,7 +103,7 @@ const MapsGeneratorPage = () => {
     if (countFromUrl[0] && countFromUrl[0][1]) {
       return Number(countFromUrl[0][1]);
     } else {
-      return 25;
+      return defaultCount;
     }
   }
 
