@@ -43,11 +43,11 @@ const MapsGeneratorPage = () => {
   >(getInitialStages());
   const [generationMode, setGenerationMode] = useState<
     "EQUAL" | "SZ_EVERY_OTHER" | "CUSTOM_ORDER"
-  >(getInitialMode());
+  >(getInitialGenerationMode());
   const [maplist, setMaplist] = useState("");
   const [modes, setModes] = useState<
     { label: string; value: number; data?: string }[]
-  >([]);
+  >(getInitialMapModes());
   const [count, setCount] = useState(getInitialCount());
   const [editing, setEditing] = useState(false);
   const [copied, setCopied] = useState<null | "URL" | "LIST">(null);
@@ -78,7 +78,7 @@ const MapsGeneratorPage = () => {
         }, {});
   }
 
-  function getInitialMode() {
+  function getInitialGenerationMode() {
     const modeFromUrl = Object.entries(router.query).filter(
       (item) => item[0] === "mode"
     );
@@ -101,12 +101,34 @@ const MapsGeneratorPage = () => {
     }
   }
 
+  function getInitialMapModes() {
+    const countFromUrl = Object.entries(router.query).filter(
+        (item) => item[0] === "modes"
+    );
+    console.log('modes', countFromUrl[0]);
+    if (countFromUrl[0] && countFromUrl[0][1] && countFromUrl[0][1].length > 0 && typeof countFromUrl[0][1] === "string") {
+      const modesArray = countFromUrl[0][1].split(',');
+      return modesArray.map((mode, index) => ({label: getFullModeName(mode), data: mode, value: index + 0.5}));
+    } else {
+      return [];
+    }
+  }
+
+  function getFullModeName(mode: string) {
+    switch (mode) {
+      case "SZ": {return "Splat Zones";}
+      case "TC": {return "Tower Control";}
+      case "RM": {return "Rainmaker";}
+      case "CB": {return "Clam Blitz";}
+    }
+    return "";
+  }
+
   function getInitialUrlParams() {
     const params = Object.entries(router.query);
-    const result = params.map((item) => {
-      return { key: item[0], value: item[1] };
+    return params.map((item) => {
+      return {key: item[0], value: item[1]};
     });
-    return result;
   }
 
   function updateUrlParams(key: string, value: string | string[] | undefined) {
@@ -120,6 +142,7 @@ const MapsGeneratorPage = () => {
     if (!paramFound) {
       urlParams.push({ key, value });
     }
+    setUrlParams(urlParams);
     setManySearchParams(urlParams, true);
   }
 
@@ -127,7 +150,7 @@ const MapsGeneratorPage = () => {
     items: { key: string; value: string | string[] | undefined }[]
   ) {
     const params = urlParams.filter(
-      (item) => item.key === "mode" || item.key === "count"
+      (item) => item.key === "mode" || item.key === "modes" || item.key === "count"
     );
     const paramsWithMaps = params.concat(items);
     setUrlParams(paramsWithMaps);
@@ -417,7 +440,7 @@ const MapsGeneratorPage = () => {
           updateUrlParams("mode", value);
         }}
         value={generationMode}
-        defaultValue={getInitialMode()}
+        defaultValue={getInitialGenerationMode()}
       >
         <Stack direction="row" mb={4}>
           <Radio value="SZ_EVERY_OTHER">
@@ -440,7 +463,8 @@ const MapsGeneratorPage = () => {
             { label: "Clam Blitz", value: "CB", data: "CB" },
           ]}
           isDisabled={generationMode !== "CUSTOM_ORDER"}
-          setValue={getModeValues}
+          updateMapsModes={getModeValues}
+          defaultValue={modes}
           width={"90%"}
         />
       )}
@@ -494,7 +518,13 @@ const MapsGeneratorPage = () => {
   function getModeValues(
     value: { label: string; value: number; data?: string }[]
   ) {
+    console.log('value', value);
     setModes(value);
+    const modeArray = value.map((mode) => {
+      if (mode.data) return mode.data;
+      else return "";
+    });
+    updateUrlParams("modes", modeArray.join(','));
   }
 
   function transformModesToStringArray() {
