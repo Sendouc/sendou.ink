@@ -197,7 +197,7 @@ const About = () => {
             <Link
               isExternal
               color={themeColorShade}
-              href="https://twitter.com/V_CH3RRY"
+              href="https://twitter.com/TehVilly"
             >
               Villy / 앤드류
             </Link>{" "}
