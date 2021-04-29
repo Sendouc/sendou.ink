@@ -12,16 +12,14 @@ interface Props {
 const DatePicker = ({ selectedDate, onChange, isClearable = false }: Props) => {
   const { colorMode } = useColorMode();
   return (
-    <Box color="black">
-      <div className={colorMode + "-datepicker"}>
-        <ReactDatePicker
-          selected={selectedDate}
-          onChange={onChange}
-          isClearable={isClearable}
-          showTimeSelect
-          dateFormat="MMMM d, yyyy h:mm aa"
-        />
-      </div>
+    <Box className={colorMode + "-datepicker"}>
+      <ReactDatePicker
+        selected={selectedDate}
+        onChange={onChange}
+        isClearable={isClearable}
+        showTimeSelect
+        dateFormat="MMMM d, yyyy h:mm aa"
+      />
     </Box>
   );
 };
