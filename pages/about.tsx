@@ -81,9 +81,9 @@ const About = () => {
             <Link
               isExternal
               color={themeColorShade}
-              href="https://twitter.com/BigDoubleCookie"
+              href="https://twitter.com/DblCookies"
             >
-              DoubleCookies
+              DblCookies
             </Link>{" "}
             -{" "}
             <Trans>
