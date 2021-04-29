@@ -29,6 +29,7 @@ export const navItems: {
 }[] = [
   { code: "xsearch", name: "Browser" },
   { code: "xtrends", name: "Tier List" },
+  { code: "leaderboards", name: "Leaderboards" },
   {
     code: "sr",
     name: "Salmon Run",
