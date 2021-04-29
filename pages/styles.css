@@ -148,7 +148,6 @@ For React Datepicker
   padding-inline-start: var(--chakra-space-4);
   -webkit-padding-end: var(--chakra-space-2);
   padding-inline-end: var(--chakra-space-2);
-  height: var(--chakra-sizes-10);
   border-radius: var(--chakra-radii-md);
   border: 1px solid;
   border-color: var(--light-gray);
