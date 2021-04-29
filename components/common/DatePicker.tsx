@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import { Box, useColorMode } from "@chakra-ui/react";
 import React from "react";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -10,8 +10,9 @@ interface Props {
 }
 
 const DatePicker = ({ selectedDate, onChange, isClearable = false }: Props) => {
+  const { colorMode } = useColorMode();
   return (
-    <Box color="black">
+    <Box className={colorMode + "-datepicker"}>
       <ReactDatePicker
         selected={selectedDate}
         onChange={onChange}
