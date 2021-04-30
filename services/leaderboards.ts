@@ -1,4 +1,4 @@
-import { LeagueType, Prisma, Region } from ".prisma/client";
+import { LeagueType, Prisma, RankedMode, Region } from ".prisma/client";
 import prisma from "prisma/client";
 import { userBasicSelection } from "utils/prisma";
 
@@ -34,7 +34,7 @@ const peakByWeapon = (weapon: string) => {
 
 export type Peak = Prisma.PromiseReturnType<typeof peak>;
 
-const peak = () => {
+const peak = (mode?: RankedMode) => {
   return prisma.xRankPlacement.findMany({
     distinct: ["switchAccountId"],
     orderBy: [
@@ -61,6 +61,7 @@ const peak = () => {
         },
       },
     },
+    where: { mode },
     take: 100,
   });
 };

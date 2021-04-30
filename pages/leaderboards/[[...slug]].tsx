@@ -1,4 +1,4 @@
-import { LeagueType, Region } from ".prisma/client";
+import { LeagueType, RankedMode, Region } from ".prisma/client";
 import { Select } from "@chakra-ui/select";
 import LeaderboardTable from "components/leaderboards/LeaderboardTable";
 import { GetStaticPaths, GetStaticProps } from "next";
@@ -46,6 +46,10 @@ export const LeaderboardsPage = (props: LeaderboardsPageProps) => {
         <option value="LEAGUE-QUAD-NA">Quad league (NA)</option>
         <option value="LEAGUE-QUAD-JP">Quad league (JP)</option>
         <option value="ALL">X Power - All</option>
+        <option value="SZ">X Power - SZ</option>
+        <option value="TC">X Power - TC</option>
+        <option value="RM">X Power - RM</option>
+        <option value="CB">X Power - CB</option>
         {weapons.map((wpn) => {
           return (
             <option key={wpn} value={wpn}>
@@ -78,6 +82,15 @@ export const getStaticProps: GetStaticProps<LeaderboardsPageProps> = async ({
       props: {
         type: "XPOWER_PEAK",
         placements: await leaderboardsService.peak(),
+      },
+    };
+  }
+
+  if (/^(SZ|TC|RM|CB)$/.test(slug[0])) {
+    return {
+      props: {
+        type: "XPOWER_PEAK",
+        placements: await leaderboardsService.peak(slug[0] as RankedMode),
       },
     };
   }
