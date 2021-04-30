@@ -37,9 +37,13 @@ export type Peak = Prisma.PromiseReturnType<typeof peak>;
 const peak = () => {
   return prisma.xRankPlacement.findMany({
     distinct: ["switchAccountId"],
-    orderBy: {
-      xPower: "desc",
-    },
+    orderBy: [
+      {
+        xPower: "desc",
+      },
+      { year: "asc" },
+      { month: "asc" },
+    ],
     select: {
       id: true,
       mode: true,
@@ -65,9 +69,12 @@ export type PeakLeague = Prisma.PromiseReturnType<typeof peakLeague>;
 
 const peakLeague = ({ region, type }: { region: Region; type: LeagueType }) => {
   return prisma.leagueSquad.findMany({
-    orderBy: {
-      leaguePower: "desc",
-    },
+    orderBy: [
+      {
+        leaguePower: "desc",
+      },
+      { startTime: "asc" },
+    ],
     select: {
       id: true,
       leaguePower: true,

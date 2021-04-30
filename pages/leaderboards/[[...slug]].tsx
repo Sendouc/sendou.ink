@@ -23,12 +23,10 @@ export type LeaderboardsPageProps =
 export const LeaderboardsPage = (props: LeaderboardsPageProps) => {
   const router = useRouter();
 
-  console.log(router.asPath);
-
   const dropdownValue =
     router.asPath.replace("/leaderboards", "").length === 0
       ? "ALL"
-      : router.asPath.split("/")[2];
+      : decodeURI(router.asPath.split("/")[2]);
 
   return (
     <>
@@ -102,8 +100,8 @@ export const getStaticProps: GetStaticProps<LeaderboardsPageProps> = async ({
     };
   }
 
-  // weapon leaderboard
-  // TODO validate weapon
+  if (!weapons.includes(slug[0] as any)) return { notFound: true };
+
   return {
     props: {
       type: "XPOWER_PEAK",
