@@ -34,7 +34,7 @@ export default function NewTable({
   if (isSmall) {
     return (
       <>
-        {data.map((row) => {
+        {data.map((row, i) => {
           return (
             <Grid
               key={row.id}
@@ -45,6 +45,7 @@ export default function NewTable({
               py={2}
               mb={4}
               templateColumns="1fr 2fr"
+              autoRows="1fr"
               gridRowGap={1}
               alignItems="center"
             >
@@ -85,7 +86,7 @@ export default function NewTable({
           </Tr>
         </Thead>
         <Tbody>
-          {data.map((row) => {
+          {data.map((row, i) => {
             return (
               <Tr key={row.id}>
                 {headers.map(({ dataKey }) => {
