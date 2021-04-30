@@ -1,5 +1,6 @@
 import { LeagueType, RankedMode, Region } from ".prisma/client";
 import { Select } from "@chakra-ui/select";
+import MyHead from "components/common/MyHead";
 import LeaderboardTable from "components/leaderboards/LeaderboardTable";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
@@ -30,6 +31,7 @@ export const LeaderboardsPage = (props: LeaderboardsPageProps) => {
 
   return (
     <>
+      <MyHead title="Leaderboards" />
       <Select
         maxW={64}
         mx="auto"
