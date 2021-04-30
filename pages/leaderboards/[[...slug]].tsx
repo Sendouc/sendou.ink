@@ -1,31 +1,52 @@
-import { Flex } from "@chakra-ui/layout";
+import { LeagueType, Region } from ".prisma/client";
 import { Select } from "@chakra-ui/select";
-import ModeImage from "components/common/ModeImage";
-import MyLink from "components/common/MyLink";
-import NewTable from "components/common/NewTable";
-import UserAvatar from "components/common/UserAvatar";
-import WeaponImage from "components/common/WeaponImage";
+import LeaderboardTable from "components/leaderboards/LeaderboardTable";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
-import leaderboardsService, { Peak, PeakByWeapon } from "services/leaderboards";
+import leaderboardsService, {
+  Peak,
+  PeakByWeapon,
+  PeakLeague,
+} from "services/leaderboards";
 import { weapons } from "utils/lists/weapons";
 
-interface Props {
-  placements: Peak | PeakByWeapon;
-}
+export type LeaderboardsPageProps =
+  | {
+      placements: Peak | PeakByWeapon;
+      type: "XPOWER_PEAK";
+    }
+  | {
+      placements: PeakLeague;
+      type: "LEAGUE";
+    };
 
-export const LeaderboardsPage = ({ placements }: Props) => {
+export const LeaderboardsPage = (props: LeaderboardsPageProps) => {
   const router = useRouter();
+
+  console.log(router.asPath);
+
+  const dropdownValue =
+    router.asPath.replace("/leaderboards", "").length === 0
+      ? "ALL"
+      : router.asPath.split("/")[2];
+
   return (
     <>
       <Select
         maxW={64}
         mx="auto"
         mb={6}
+        value={dropdownValue}
         onChange={(e) => {
           router.push(leaderboardTypeToHref(e.target.value));
         }}
       >
+        <option value="LEAGUE-TWIN-EU">Twin league (EU)</option>
+        <option value="LEAGUE-TWIN-NA">Twin league (NA)</option>
+        <option value="LEAGUE-TWIN-JP">Twin league (JP)</option>
+        <option value="LEAGUE-QUAD-EU">Quad league (EU)</option>
+        <option value="LEAGUE-QUAD-NA">Quad league (NA)</option>
+        <option value="LEAGUE-QUAD-JP">Quad league (JP)</option>
         <option value="ALL">X Power - All</option>
         {weapons.map((wpn) => {
           return (
@@ -35,39 +56,7 @@ export const LeaderboardsPage = ({ placements }: Props) => {
           );
         })}
       </Select>
-      <NewTable
-        headers={[
-          { name: "name", dataKey: "name" },
-          { name: "x power", dataKey: "xPower" },
-          { name: "weapon", dataKey: "weapon" },
-          { name: "mode", dataKey: "mode" },
-          { name: "month", dataKey: "month" },
-        ]}
-        data={placements.map((placement) => {
-          return {
-            id: placement.id,
-            name: (
-              <Flex align="center">
-                {placement.player.user ? (
-                  <MyLink href={`/u/${placement.player.user.discordId}`}>
-                    <UserAvatar user={placement.player.user} size="xs" mr={1} />
-                  </MyLink>
-                ) : null}
-                <MyLink
-                  href={`/player/${placement.switchAccountId}`}
-                  isColored={false}
-                >
-                  {placement.playerName}
-                </MyLink>
-              </Flex>
-            ),
-            xPower: placement.xPower,
-            weapon: <WeaponImage name={placement.weapon} size={32} />,
-            mode: <ModeImage mode={placement.mode} size={32} />,
-            month: `${placement.month}/${placement.year}`,
-          };
-        })}
-      />
+      <LeaderboardTable {...props} />
     </>
   );
 };
@@ -76,15 +65,49 @@ export const getStaticPaths: GetStaticPaths = async () => {
   return { paths: [], fallback: "blocking" };
 };
 
-export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
-  const getLeaderboard = slugToLeaderboardFunc(params?.slug);
-  if (!getLeaderboard) return { notFound: true };
+export const getStaticProps: GetStaticProps<LeaderboardsPageProps> = async ({
+  params,
+}) => {
+  const slug = params?.slug;
+  if (
+    typeof slug === "string" ||
+    (typeof slug === "object" && slug.length !== 1)
+  )
+    return { notFound: true };
 
-  const placements = await getLeaderboard();
+  if (!slug) {
+    return {
+      props: {
+        type: "XPOWER_PEAK",
+        placements: await leaderboardsService.peak(),
+      },
+    };
+  }
 
+  if (/^(LEAGUE)-(TWIN|QUAD)-(EU|NA|JP)$/.test(slug[0])) {
+    const [, type, region] = slug[0].split("-");
+
+    return {
+      props: {
+        type: "LEAGUE",
+        placements: JSON.parse(
+          JSON.stringify(
+            await leaderboardsService.peakLeague({
+              type: type as LeagueType,
+              region: region as Region,
+            })
+          )
+        ),
+      },
+    };
+  }
+
+  // weapon leaderboard
+  // TODO validate weapon
   return {
     props: {
-      placements,
+      type: "XPOWER_PEAK",
+      placements: await leaderboardsService.peakByWeapon(slug[0]),
     },
   };
 };
@@ -96,15 +119,6 @@ function leaderboardTypeToHref(value: string) {
     default:
       return `/leaderboards/${value}`;
   }
-}
-
-function slugToLeaderboardFunc(slug: string | string[] | undefined) {
-  if (typeof slug === "string") return undefined;
-  if (typeof slug === "object" && slug.length !== 1) return undefined;
-  if (!slug) return leaderboardsService.peak;
-
-  // weapon leaderboard
-  return () => leaderboardsService.peakByWeapon(slug[0]);
 }
 
 export default LeaderboardsPage;

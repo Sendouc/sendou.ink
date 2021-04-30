@@ -1,4 +1,4 @@
-import { Prisma } from ".prisma/client";
+import { LeagueType, Prisma, Region } from ".prisma/client";
 import prisma from "prisma/client";
 import { userBasicSelection } from "utils/prisma";
 
@@ -61,7 +61,39 @@ const peak = () => {
   });
 };
 
+export type PeakLeague = Prisma.PromiseReturnType<typeof peakLeague>;
+
+const peakLeague = ({ region, type }: { region: Region; type: LeagueType }) => {
+  return prisma.leagueSquad.findMany({
+    orderBy: {
+      leaguePower: "desc",
+    },
+    select: {
+      id: true,
+      leaguePower: true,
+      startTime: true,
+      members: {
+        select: {
+          switchAccountId: true,
+          weapon: true,
+          player: {
+            select: {
+              name: true,
+              user: {
+                select: userBasicSelection,
+              },
+            },
+          },
+        },
+      },
+    },
+    where: { region, type },
+    take: 100,
+  });
+};
+
 export default {
   peak,
   peakByWeapon,
+  peakLeague,
 };
