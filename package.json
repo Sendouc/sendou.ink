@@ -14,6 +14,7 @@
     "prebuild": "ts-node prisma/scripts/preBuild.ts",
     "mongo": "ts-node prisma/scripts/dataFromMongo.ts",
     "top500": "ts-node prisma/scripts/top500jsons.ts",
+    "isJP": "ts-node prisma/scripts/isJP.ts",
     "league": "cross-env NODE_OPTIONS=--max-old-space-size=8192 ts-node prisma/scripts/leagueJsons.ts",
     "ex:clean": "cross-env NODE_ENV=development lingui extract --clean && npm run prettier:format",
     "compile": "lingui compile",
