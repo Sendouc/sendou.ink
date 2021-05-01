@@ -105,7 +105,35 @@ const main = async () => {
     },
   });
   console.log("builds updated:", idsToUpdate.length);
+
+  const playerNamesToUpdate = await prisma.player.findMany({
+    where: { name: null, placements: { some: { NOT: { weapon: "" } } } },
+    include: { placements: true },
+  });
+
+  for (const player of playerNamesToUpdate) {
+    await prisma.player.update({
+      where: { switchAccountId: player.switchAccountId },
+      data: {
+        name: player.placements[0].playerName,
+        isJP: isNameJapanese(player.placements[0].playerName) && !player.userId,
+      },
+    });
+    console.log("updated name for:", player.placements[0].playerName);
+  }
 };
+
+function isNameJapanese(name: string) {
+  const jpCharaRegex = /[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf]/;
+
+  let ratio = 0;
+  for (const character of name.split("")) {
+    if (jpCharaRegex.test(character)) ratio++;
+    else ratio--;
+  }
+
+  return ratio > 0;
+}
 
 main()
   .catch((e) => console.error(e))

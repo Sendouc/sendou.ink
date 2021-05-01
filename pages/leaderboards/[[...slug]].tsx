@@ -8,12 +8,13 @@ import leaderboardsService, {
   Peak,
   PeakByWeapon,
   PeakLeague,
+  PeakWestern,
 } from "services/leaderboards";
 import { weapons } from "utils/lists/weapons";
 
 export type LeaderboardsPageProps =
   | {
-      placements: Peak | PeakByWeapon;
+      placements: Peak | PeakByWeapon | PeakWestern;
       type: "XPOWER_PEAK";
     }
   | {
@@ -26,7 +27,7 @@ export const LeaderboardsPage = (props: LeaderboardsPageProps) => {
 
   const dropdownValue =
     router.asPath.replace("/leaderboards", "").length === 0
-      ? "ALL"
+      ? "WESTERN"
       : decodeURI(router.asPath.split("/")[2]);
 
   return (
@@ -48,6 +49,7 @@ export const LeaderboardsPage = (props: LeaderboardsPageProps) => {
         <option value="LEAGUE-QUAD-NA">Quad league (NA)</option>
         <option value="LEAGUE-QUAD-JP">Quad league (JP)</option>
         <option value="ALL">X Power - All</option>
+        <option value="WESTERN">X Power - JP excluded</option>
         <option value="SZ">X Power - SZ</option>
         <option value="TC">X Power - TC</option>
         <option value="RM">X Power - RM</option>
@@ -80,6 +82,15 @@ export const getStaticProps: GetStaticProps<LeaderboardsPageProps> = async ({
     return { notFound: true };
 
   if (!slug) {
+    return {
+      props: {
+        type: "XPOWER_PEAK",
+        placements: await leaderboardsService.peakWestern(),
+      },
+    };
+  }
+
+  if (slug[0] === "ALL") {
     return {
       props: {
         type: "XPOWER_PEAK",
@@ -127,7 +138,7 @@ export const getStaticProps: GetStaticProps<LeaderboardsPageProps> = async ({
 
 function leaderboardTypeToHref(value: string) {
   switch (value) {
-    case "ALL":
+    case "WESTERN":
       return "/leaderboards";
     default:
       return `/leaderboards/${value}`;
