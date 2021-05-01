@@ -66,6 +66,44 @@ const peak = (mode?: RankedMode) => {
   });
 };
 
+export type PeakWestern = Prisma.PromiseReturnType<typeof peakWestern>;
+
+const peakWestern = () => {
+  return prisma.xRankPlacement.findMany({
+    distinct: ["switchAccountId"],
+    orderBy: [
+      {
+        xPower: "desc",
+      },
+      { year: "asc" },
+      { month: "asc" },
+    ],
+    select: {
+      id: true,
+      mode: true,
+      month: true,
+      playerName: true,
+      switchAccountId: true,
+      xPower: true,
+      year: true,
+      weapon: true,
+      player: {
+        select: {
+          user: {
+            select: userBasicSelection,
+          },
+        },
+      },
+    },
+    where: {
+      player: {
+        isJP: false,
+      },
+    },
+    take: 250,
+  });
+};
+
 export type PeakLeague = Prisma.PromiseReturnType<typeof peakLeague>;
 
 const peakLeague = ({ region, type }: { region: Region; type: LeagueType }) => {
@@ -102,6 +140,7 @@ const peakLeague = ({ region, type }: { region: Region; type: LeagueType }) => {
 
 export default {
   peak,
+  peakWestern,
   peakByWeapon,
   peakLeague,
 };
