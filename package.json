@@ -64,7 +64,7 @@
     "remark-gfm": "^1.0.0",
     "superjson": "^1.7.3",
     "swr": "^0.5.5",
-    "ts-trueskill": "^3.2.0",
+    "ts-trueskill": "^3.2.2",
     "uuid": "^8.3.2",
     "zod": "^1.11.13"
   },
@@ -73,7 +73,7 @@
     "@lingui/cli": "^3.8.3",
     "@lingui/macro": "^3.8.3",
     "@types/next-auth": "^3.13.0",
-    "@types/node": "^14.14.37",
+    "@types/node": "^15.0.1",
     "@types/nprogress": "^0.2.0",
     "@types/react": "^17.0.3",
     "@types/react-datepicker": "^3.1.8",
