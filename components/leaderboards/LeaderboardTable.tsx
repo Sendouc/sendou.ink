@@ -85,6 +85,7 @@ const LeaderboardTable = (props: LeaderboardsPageProps) => {
     case "XPOWER_PEAK":
       return (
         <NewTable
+          leaderboardKey="xPower"
           headers={[
             { name: "name", dataKey: "name" },
             { name: "x power", dataKey: "xPower" },
