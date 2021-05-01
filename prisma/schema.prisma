@@ -17,7 +17,6 @@ model User {
   teamId                  Int?
   ladderTeamId            Int?
   patreonTier             Int?
-  canPostEvents           Boolean                @default(false)
   profile                 Profile?
   player                  Player?
   builds                  Build[]
@@ -36,7 +35,6 @@ model User {
   votesMade               PlusBallot[]
   votesReceived           PlusBallot[]           @relation("Voter")
   votingSummaries         PlusVotingSummary[]
-  feedback                Feedback[]
   calendarEvents          CalendarEvent[]
 }
 
@@ -49,6 +47,7 @@ model Profile {
   sensStick     Float?
   bio           String?
   weaponPool    String[]
+  updatedAt     DateTime @default(now()) @updatedAt
   customUrlPath String?  @unique
   user          User     @relation(fields: [userId], references: [id])
   userId        Int      @unique
@@ -121,6 +120,7 @@ model Player {
   userId           Int?                @unique
   name             String?
   principalId      String?
+  isJP             Boolean             @default(false)
   placements       XRankPlacement[]
   user             User?               @relation(fields: [userId], references: [id])
   leaguePlacements LeagueSquadMember[]
@@ -404,22 +404,6 @@ model PlusVotingSummary {
   user         User    @relation(fields: [userId], references: [id])
 
   @@unique([userId, tier, month, year])
-}
-
-enum FeedbackEmoji {
-  STARSTRUCK
-  SMILE
-  CONFUSED
-  SOB
-}
-
-model Feedback {
-  id     Int            @id @default(autoincrement())
-  text   String
-  emoji  FeedbackEmoji?
-  mobile Boolean        @default(false)
-  userId Int?
-  user   User?          @relation(fields: [userId], references: [id])
 }
 
 enum TournamentFormat {
