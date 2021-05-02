@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@chakra-ui/icons": "^1.0.9",
-    "@chakra-ui/react": "^1.5.0",
+    "@chakra-ui/react": "^1.6.0",
     "@chakra-ui/theme-tools": "^1.1.3",
     "@emotion/react": "^11.1.5",
     "@emotion/styled": "^11.3.0",
@@ -67,14 +67,14 @@
     "swr": "^0.5.5",
     "ts-trueskill": "^3.2.2",
     "uuid": "^8.3.2",
-    "zod": "^1.11.13"
+    "zod": "^1.11.17"
   },
   "devDependencies": {
     "@babel/core": "^7.13.15",
     "@lingui/cli": "^3.8.3",
     "@lingui/macro": "^3.8.3",
     "@types/next-auth": "^3.13.0",
-    "@types/node": "^14.14.37",
+    "@types/node": "^15.0.1",
     "@types/nprogress": "^0.2.0",
     "@types/react": "^17.0.3",
     "@types/react-datepicker": "^3.1.8",
