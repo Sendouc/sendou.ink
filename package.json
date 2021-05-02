@@ -74,7 +74,7 @@
     "@lingui/cli": "^3.8.3",
     "@lingui/macro": "^3.8.3",
     "@types/next-auth": "^3.13.0",
-    "@types/node": "^14.14.37",
+    "@types/node": "^15.0.1",
     "@types/nprogress": "^0.2.0",
     "@types/react": "^17.0.3",
     "@types/react-datepicker": "^3.1.8",
