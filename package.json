@@ -67,7 +67,7 @@
     "swr": "^0.5.5",
     "ts-trueskill": "^3.2.2",
     "uuid": "^8.3.2",
-    "zod": "^1.11.13"
+    "zod": "^1.11.17"
   },
   "devDependencies": {
     "@babel/core": "^7.13.15",
