@@ -146,7 +146,7 @@ export const TAGS = [
   },
   {
     code: "COUNT",
-    name: "Entry limi",
+    name: "Entry limit",
     description: "Only limited amount of teams can register.",
     color: "#1565C0",
   },
