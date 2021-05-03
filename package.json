@@ -45,7 +45,7 @@
     "focus-visible": "^5.2.0",
     "framer-motion": "^4.1.11",
     "next": "^10.2.0",
-    "next-auth": "^3.14.0",
+    "next-auth": "^3.19.5",
     "next-images": "^1.7.0",
     "next-seo": "^4.24.0",
     "nprogress": "^0.2.0",
