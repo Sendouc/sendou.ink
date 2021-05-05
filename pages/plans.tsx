@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Divider, Flex } from "@chakra-ui/react";
+import { Box, Button, ButtonGroup, Divider, Flex } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import DraggableToolsSelector from "components/plans/DraggableToolsSelector";
 import ImageAdder from "components/plans/ImageAdder";
@@ -277,98 +277,100 @@ const MapPlannerPage = () => {
   return (
     <>
       <MyHead title={t`Map Planner`} />
-      <DraggableToolsSelector
-        tool={tool}
-        setTool={setTool}
-        redo={redo}
-        redoIsDisabled={!canRedo}
-        undo={undo}
-        undoIsDisabled={!canUndo}
-        removeSelected={removeSelected}
-        addText={addTextToSketch}
-        color={color}
-        setColor={setColor}
-      />
-      <MapSketch
-        sketch={sketch}
-        controlledValue={controlledValue}
-        color={color}
-        onSketchChange={onSketchChange}
-        tool={tool}
-      />
+      <Box w="72rem">
+        <DraggableToolsSelector
+          tool={tool}
+          setTool={setTool}
+          redo={redo}
+          redoIsDisabled={!canRedo}
+          undo={undo}
+          undoIsDisabled={!canUndo}
+          removeSelected={removeSelected}
+          addText={addTextToSketch}
+          color={color}
+          setColor={setColor}
+        />
+        <MapSketch
+          sketch={sketch}
+          controlledValue={controlledValue}
+          color={color}
+          onSketchChange={onSketchChange}
+          tool={tool}
+        />
 
-      <ImageAdder addImageToSketch={addImageToSketch} />
-      <Divider w="72rem" mx="3" my={4} />
-      <Flex mt={6} mb={2} justifyContent="space-between">
-        <Button
-          onClick={() => {
-            sketch.current.clear();
-            setBg({ ...bg });
-          }}
-          leftIcon={<FaBomb />}
-          colorScheme="red"
-          size="sm"
-          variant="outline"
-        >
-          <Trans>Clear drawings</Trans>
-        </Button>
-        <ButtonGroup variant="outline" size="sm" isAttached>
+        <ImageAdder addImageToSketch={addImageToSketch} />
+        <Divider mx="3" my={4} />
+        <Flex mt={6} mb={2} justifyContent="space-between">
           <Button
-            onClick={() => download(sketch.current.toDataURL(), "png")}
-            leftIcon={<FaFileImage />}
+            onClick={() => {
+              sketch.current.clear();
+              setBg({ ...bg });
+            }}
+            leftIcon={<FaBomb />}
+            colorScheme="red"
+            size="sm"
+            variant="outline"
           >
-            <Trans>Download as .png</Trans>
+            <Trans>Clear drawings</Trans>
           </Button>
-          <Button
-            onClick={() =>
-              download(
-                "data:text/json;charset=utf-8," +
-                  encodeURIComponent(JSON.stringify(sketch.current.toJSON())),
-                "json"
-              )
+          <ButtonGroup variant="outline" size="sm" isAttached>
+            <Button
+              onClick={() => download(sketch.current.toDataURL(), "png")}
+              leftIcon={<FaFileImage />}
+            >
+              <Trans>Download as .png</Trans>
+            </Button>
+            <Button
+              onClick={() =>
+                download(
+                  "data:text/json;charset=utf-8," +
+                    encodeURIComponent(JSON.stringify(sketch.current.toJSON())),
+                  "json"
+                )
+              }
+              leftIcon={<FaFileDownload />}
+            >
+              <Trans>Download as .json</Trans>
+            </Button>
+            <Button onClick={() => handleUpload()} leftIcon={<FaFileUpload />}>
+              <Trans>Load from .json</Trans>
+            </Button>
+          </ButtonGroup>
+        </Flex>
+        <StageSelector
+          handleChange={(e) => {
+            const newStage = e.target.value;
+            if (newStage === "") {
+              return;
             }
-            leftIcon={<FaFileDownload />}
-          >
-            <Trans>Download as .json</Trans>
-          </Button>
-          <Button onClick={() => handleUpload()} leftIcon={<FaFileUpload />}>
-            <Trans>Load from .json</Trans>
-          </Button>
-        </ButtonGroup>
-      </Flex>
-      <StageSelector
-        handleChange={(e) => {
-          const newStage = e.target.value;
-          if (newStage === "") {
-            return;
-          }
-          const newIsSalmonRunStage = !stages.includes(newStage as any);
-          const oldIsSalmonRunStage = !stages.includes(bg.stage as any);
+            const newIsSalmonRunStage = !stages.includes(newStage as any);
+            const oldIsSalmonRunStage = !stages.includes(bg.stage as any);
 
-          if (newIsSalmonRunStage === oldIsSalmonRunStage) {
-            setBg({ ...bg, stage: e.target.value });
-            return;
-          }
+            if (newIsSalmonRunStage === oldIsSalmonRunStage) {
+              setBg({ ...bg, stage: e.target.value });
+              return;
+            }
 
-          if (newIsSalmonRunStage) {
-            setBg({ stage: e.target.value, tide: "mid" });
-            return;
-          }
+            if (newIsSalmonRunStage) {
+              setBg({ stage: e.target.value, tide: "mid" });
+              return;
+            }
 
-          setBg({ stage: e.target.value, mode: "SZ", view: "M" });
-        }}
-        currentBackground={bg}
-        changeMode={(mode) => setBg({ ...bg, mode })}
-        changeTide={(tide: "low" | "mid" | "high") => setBg({ ...bg, tide })}
-        changeView={(view: "M" | "R") => setBg({ ...bg, view })}
-      />
-      <input
-        type="file"
-        accept=".json"
-        ref={fileInput}
-        style={{ display: "none" }}
-        onChange={() => setBg({ ...bg })}
-      />
+            setBg({ stage: e.target.value, mode: "SZ", view: "M" });
+          }}
+          currentBackground={bg}
+          changeMode={(mode) => setBg({ ...bg, mode })}
+          changeTide={(tide: "low" | "mid" | "high") => setBg({ ...bg, tide })}
+          changeView={(view: "M" | "R") => setBg({ ...bg, view })}
+        />
+        <input
+          type="file"
+          accept=".json"
+          ref={fileInput}
+          style={{ display: "none" }}
+          onChange={() => setBg({ ...bg })}
+        />
+      </Box>
     </>
   );
 };

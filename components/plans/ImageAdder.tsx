@@ -43,7 +43,7 @@ const SPECIAL_WEAPON_CODES = [
 
 const ImageAdder = ({ addImageToSketch }: ImageAdderProps) => {
   return (
-    <Flex flexWrap="wrap" w="72rem" mt={4} mx="3" justify="center">
+    <Flex flexWrap="wrap" mt={4} mx="4" justify="center">
       {weapons.map((wpn) => (
         <Box
           key={wpn}
