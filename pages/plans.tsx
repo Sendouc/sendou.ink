@@ -1,7 +1,7 @@
-import { Button, ButtonGroup, Flex } from "@chakra-ui/react";
+import { Button, ButtonGroup, Divider, Flex } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
-import DraggableImageAdder from "components/plans/DraggableImageAdder";
 import DraggableToolsSelector from "components/plans/DraggableToolsSelector";
+import ImageAdder from "components/plans/ImageAdder";
 import StageSelector from "components/plans/StageSelector";
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
@@ -287,10 +287,7 @@ const MapPlannerPage = () => {
         removeSelected={removeSelected}
         addText={addTextToSketch}
         color={color}
-        setColor={(newColor) => setColor(newColor)}
-      />
-      <DraggableImageAdder
-        addImageToSketch={(imgSrc) => addImageToSketch(imgSrc)}
+        setColor={setColor}
       />
       <MapSketch
         sketch={sketch}
@@ -299,7 +296,10 @@ const MapPlannerPage = () => {
         onSketchChange={onSketchChange}
         tool={tool}
       />
-      <Flex mt={4} mb={2} justifyContent="space-between">
+
+      <ImageAdder addImageToSketch={addImageToSketch} />
+      <Divider w="72rem" mx="3" my={4} />
+      <Flex mt={6} mb={2} justifyContent="space-between">
         <Button
           onClick={() => {
             sketch.current.clear();
