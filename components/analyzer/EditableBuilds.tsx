@@ -2,7 +2,7 @@ import { Box, Button, Flex, IconButton } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import ViewSlots, { ViewSlotsAbilities } from "components/builds/ViewSlots";
 import AbilitiesSelector from "components/u/AbilitiesSelector";
-import { FiCopy, FiEdit, FiSquare, FiRotateCw } from "react-icons/fi";
+import { FiCopy, FiEdit, FiRotateCw, FiSquare } from "react-icons/fi";
 import { AbilityOrUnknown } from "utils/types";
 import HeadOnlyToggle from "./HeadOnlyToggle";
 import LdeSlider from "./LdeSlider";
@@ -77,6 +77,14 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
     ? otherBuild.shoesAbilities[0]
     : "SSU";
 
+  const isBuildEmpty = (build: Omit<ViewSlotsAbilities, "weapon">) => {
+    return [
+      ...build.headAbilities,
+      ...build.clothingAbilities,
+      ...build.shoesAbilities,
+    ].every((ability) => ability === "UNKNOWN");
+  };
+
   return (
     <>
       <Button
@@ -102,7 +110,7 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
                 aria-label="Edit orange build"
                 disabled={!otherFocused}
                 colorScheme="orange"
-                onClick={() => changeFocus()}
+                onClick={changeFocus}
                 icon={<FiEdit />}
                 isRound
               />
@@ -110,7 +118,8 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
             <IconButton
               aria-label={showOther ? "Reset orange build" : "Reset build"}
               colorScheme="gray"
-              onClick={() => resetBuild()}
+              onClick={resetBuild}
+              visibility={isBuildEmpty(build) ? "hidden" : "visible"}
               icon={<FiRotateCw />}
               ml="1em"
               isRound
@@ -160,15 +169,16 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
                 aria-label="Edit blue build"
                 disabled={otherFocused}
                 colorScheme="blue"
-                onClick={() => changeFocus()}
+                onClick={changeFocus}
                 icon={<FiEdit />}
                 isRound
               />
               <IconButton
-                aria-label={"Reset blue build"}
+                aria-label="Reset blue build"
                 colorScheme="gray"
-                onClick={() => resetOtherBuild()}
+                onClick={resetOtherBuild}
                 icon={<FiRotateCw />}
+                visibility={isBuildEmpty(otherBuild) ? "hidden" : "visible"}
                 ml="1em"
                 isRound
               />
