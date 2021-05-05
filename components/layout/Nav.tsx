@@ -22,8 +22,7 @@ const Nav = () => {
       display={["none", null, null, "block"]}
     >
       {navItems.map(({ code, name }) => {
-        const isActive =
-          code === "u" ? router.pathname === "/u" : navItem?.code === code;
+        const isActive = navItem?.code === code;
         return (
           <Box
             key={code}
