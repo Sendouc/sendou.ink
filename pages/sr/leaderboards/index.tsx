@@ -51,10 +51,10 @@ const SalmonRunLeaderboardsPage = ({}) => {
     <>
       <MyHead title={t`Salmon Run Records`} />
       <Flex justify="space-evenly" mb={6}>
-        <MyLink prefetch href="/guide/fundamentals">
+        <MyLink prefetch href="/sr/guide/fundamentals">
           Guide (Fundamentals)
         </MyLink>
-        <MyLink prefetch href="/guide/advanced">
+        <MyLink prefetch href="/sr/guide/advanced">
           Guide (Advanced)
         </MyLink>
         <MyLink isExternal href="https://discord.gg/pXHRffE">
