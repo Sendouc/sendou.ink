@@ -50,6 +50,17 @@ const SalmonRunLeaderboardsPage = ({}) => {
   return (
     <>
       <MyHead title={t`Salmon Run Records`} />
+      <Flex justify="space-evenly" mb={6}>
+        <MyLink prefetch href="/guide/fundamentals">
+          Guide (Fundamentals)
+        </MyLink>
+        <MyLink prefetch href="/guide/advanced">
+          Guide (Advanced)
+        </MyLink>
+        <MyLink isExternal href="https://discord.gg/pXHRffE">
+          Overfishing Discord Server
+        </MyLink>
+      </Flex>
       {pendingCount > 0 && (
         <Alert status="info" mb={4}>
           <AlertIcon />
