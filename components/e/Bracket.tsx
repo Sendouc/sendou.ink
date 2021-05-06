@@ -1,4 +1,5 @@
 import styles from "./Bracket.module.scss";
+import ColumnHeaders from "./ColumnHeaders";
 import Match from "./Match";
 
 const Bracket = ({
@@ -17,6 +18,7 @@ const Bracket = ({
 }) => {
   return (
     <div className={[styles.theme, styles["theme-dark-trendy"]].join(" ")}>
+      <ColumnHeaders />
       <div className={[styles.bracket, styles["disable-image"]].join(" ")}>
         <div className={styles.column}>
           <Match
