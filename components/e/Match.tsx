@@ -3,7 +3,7 @@ import styles from "./Bracket.module.scss";
 interface EventTeam {
   seed: number;
   name: string;
-  score: number;
+  score?: number;
 }
 
 const Match = ({
@@ -11,8 +11,8 @@ const Match = ({
   bottomTeam,
   isConcluded = false,
 }: {
-  topTeam: EventTeam;
-  bottomTeam: EventTeam;
+  topTeam?: EventTeam;
+  bottomTeam?: EventTeam;
   isConcluded?: boolean;
 }) => {
   return (
@@ -20,7 +20,9 @@ const Match = ({
       className={[
         styles.match,
         styles[
-          !isConcluded
+          !isConcluded ||
+          typeof topTeam?.score !== "number" ||
+          typeof bottomTeam?.score !== "number"
             ? "no-winner"
             : topTeam.score > bottomTeam.score
             ? "winner-top"
@@ -28,17 +30,37 @@ const Match = ({
         ],
       ].join(" ")}
     >
-      <div className={[styles.team, styles["match-top"]].join(" ")}>
-        <span className={styles.image}></span>
-        <span className={styles.seed}>{topTeam.seed}</span>
-        <span className={styles.name}>{topTeam.name}</span>
-        <span className={styles.score}>{topTeam.score}</span>
+      <div
+        className={[
+          styles.team,
+          styles["match-top"],
+          typeof topTeam?.score !== "number" ? styles["disable-score"] : "",
+        ].join(" ")}
+      >
+        {topTeam ? (
+          <>
+            <span className={styles.image}></span>
+            <span className={styles.seed}>{topTeam.seed}</span>
+            <span className={styles.name}>{topTeam.name}</span>
+            <span className={styles.score}>{topTeam.score}</span>
+          </>
+        ) : null}
       </div>
-      <div className={[styles.team, styles["match-bottom"]].join(" ")}>
-        <span className={styles.image}></span>
-        <span className={styles.seed}>{bottomTeam.seed}</span>
-        <span className={styles.name}>{bottomTeam.name}</span>
-        <span className={styles.score}>{bottomTeam.score}</span>
+      <div
+        className={[
+          styles.team,
+          styles["match-bottom"],
+          typeof bottomTeam?.score !== "number" ? styles["disable-score"] : "",
+        ].join(" ")}
+      >
+        {bottomTeam ? (
+          <>
+            <span className={styles.image}></span>
+            <span className={styles.seed}>{bottomTeam.seed}</span>
+            <span className={styles.name}>{bottomTeam.name}</span>
+            <span className={styles.score}>{bottomTeam.score}</span>
+          </>
+        ) : null}
       </div>
       <div className={styles["match-lines"]}>
         <div className={[styles.line, styles.one].join(" ")}></div>

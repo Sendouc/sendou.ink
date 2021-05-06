@@ -55,16 +55,12 @@ const Bracket = ({
 
           <Match
             topTeam={{ seed: 2, name: "FreeZe", score: 1 }}
-            bottomTeam={{ seed: 3, name: "JFG", score: 2 }}
-            isConcluded
+            bottomTeam={{ seed: 3, name: "JFG", score: 1 }}
           />
         </div>
 
         <div className={styles.column}>
-          <Match
-            topTeam={{ seed: 5, name: "Team Olive", score: 1 }}
-            bottomTeam={{ seed: 3, name: "JFG", score: 1 }}
-          />
+          <Match topTeam={{ seed: 5, name: "Team Olive" }} />
         </div>
       </div>
     </div>
