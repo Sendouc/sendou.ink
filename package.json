@@ -64,6 +64,7 @@
     "react-string-replace": "^0.4.4",
     "recharts": "^2.0.9",
     "remark-gfm": "^1.0.0",
+    "sass": "^1.32.12",
     "superjson": "^1.7.3",
     "swr": "^0.5.5",
     "ts-trueskill": "^3.2.2",
