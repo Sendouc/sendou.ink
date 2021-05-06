@@ -9,16 +9,22 @@ interface EventTeam {
 const Match = ({
   topTeam,
   bottomTeam,
+  isConcluded = false,
 }: {
   topTeam: EventTeam;
   bottomTeam: EventTeam;
+  isConcluded?: boolean;
 }) => {
   return (
     <div
       className={[
         styles.match,
         styles[
-          topTeam.score < bottomTeam.score ? "winner-bottom" : "winner-top"
+          !isConcluded
+            ? "no-winner"
+            : topTeam.score > bottomTeam.score
+            ? "winner-top"
+            : "winner-bottom"
         ],
       ].join(" ")}
     >

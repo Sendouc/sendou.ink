@@ -157,6 +157,12 @@ $dark-score-winner-color-override: #79ff61;
 		z-index: 1;
 		.score { color: $dark-score-winner-color-override; }
 	}
+  .no-winner .match-top,
+  .no-winner .match-bottom { 
+		background: #0e2a56;
+		color: $dark-winning-team-color;
+		z-index: 1;
+	}
 	.match {
 		.team .name { text-transform: uppercase; font-size: 14px; letter-spacing: 0.5px; }
 		.seed { display: none; }
