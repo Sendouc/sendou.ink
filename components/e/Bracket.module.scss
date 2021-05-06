@@ -98,6 +98,9 @@ $border-radius: 2px; // border radiuses for matches
 .column:nth-child(3) { .match-lines .line.two {	height: ($match-height + $match-spacing) * 2 + $border-size * 3; } }
 .column:nth-child(4) { .match-lines .line.two {	height: ($match-height + $match-spacing) * 3 + $border-size * 4; } }
 .column:nth-child(5) { .match-lines .line.two {	height: ($match-height + $match-spacing) * 4 + $border-size * 5; } }
+.column:nth-child(6) { .match-lines .line.two {	height: ($match-height + $match-spacing) * 5 + $border-size * 6; } }
+.column:nth-child(7) { .match-lines .line.two {	height: ($match-height + $match-spacing) * 6 + $border-size * 7; } }
+.column:nth-child(8) { .match-lines .line.two {	height: ($match-height + $match-spacing) * 7 + $border-size * 8; } }
 
 // Themes 
 
@@ -112,42 +115,7 @@ $light-losing-team-color: #708392;
 // If you want these colors to be different, this will override the main border color.
 $light-line-color-override: null; // For the connecting lines, so they don't match above border-main color.
 $light-seed-color-override: #9fafbf; 
-$light-score-color-override: #9fafbf; 
-
-.theme-light {
-	// Coloring
-	background: $light-background;
-	border-color: darken($light-background,5%); 
-
-	.match-lines .line { 
-		background: $light-border-main; 
-		background: $light-line-color-override;
-	}
-
-	.team { 
-		background: $light-losing-team-background;
-		border-color: $light-border-alt;
-		color: $light-losing-team-color;
-	}
-	.winner-top .match-top,
-	.winner-bottom .match-bottom { 
-		background: $light-winning-team-background;
-		color: $light-winning-team-color;
-		border-color: $light-border-main;
-		z-index: 1;
-	}
-	.match {
-		.seed { color: $light-seed-color-override; }
-		.score { color: $light-score-color-override; }
-	}
-	
-	
-	// Sizing
-	.match {
-		.seed { font-size: 12px; min-width: 10px; }
-		.score { font-size: 14px;  }
-	}
-}
+$light-score-color-override: #9fafbf;
 
 // Dark Theme
 $dark-background: #0e1217;
@@ -162,42 +130,6 @@ $dark-line-color-override: #2e466c; // For the connecting lines, so they don't m
 $dark-seed-color-override: null; 
 $dark-score-color-override: null; 
 $dark-score-winner-color-override: #79ff61;
-
-.theme-dark {
-	
-	// Coloring
-	border-color: darken($dark-background,5%); 
-
-	.match-lines .line { 
-		background: $dark-border-main; 
-		background: $dark-line-color-override;
-	}
-
-	.team { 
-		background: $dark-losing-team-background;
-		border-color: $dark-border-alt;
-		color: $dark-losing-team-color;
-	}
-	.winner-top .match-top,
-	.winner-bottom .match-bottom { 
-		background: $dark-winning-team-background;
-		color: $dark-winning-team-color;
-		border-color: $dark-border-main;
-		z-index: 1;
-		.score { color: $dark-score-winner-color-override; }
-	}
-	.match {
-		.seed { color: $dark-seed-color-override; }
-		.score { color: $dark-score-color-override; }
-	}
-	
-	
-	// Sizing
-	.match {
-		.seed { font-size: 12px; min-width: 10px; }
-		.score { font-size: 14px;  }
-	}
-}
 
 // Note: this theme is kinda hacky / improvised compared to the other themes, but it gives an idea of what a more branded look can do using the above template as a starting point.
 
