@@ -22,7 +22,7 @@ const Bracket = ({
   return (
     <div className={[styles.theme, styles["theme-dark-trendy"]].join(" ")}>
       <ColumnHeaders />
-      <div className={[styles.bracket, styles["disable-image"]].join(" ")}>
+      <div className={styles.bracket}>
         <div className={styles.column}>
           <Match
             topTeam={{ seed: 1, name: "NSTC", score: 2 }}
@@ -34,7 +34,13 @@ const Bracket = ({
 
           <Match
             topTeam={{ seed: 4, name: "FTWin!", score: 1 }}
-            bottomTeam={{ seed: 5, name: "Team Olive", score: 2 }}
+            bottomTeam={{
+              seed: 5,
+              name: "Team Olive",
+              score: 2,
+              imageSrc:
+                "https://cdn.wikimg.net/en/splatoonwiki/images/thumb/e/e0/Team_Olive.png/200px-Team_Olive.png",
+            }}
             teamHovered={teamHovered}
             setTeamHovered={setTeamHovered}
             isConcluded
@@ -60,7 +66,13 @@ const Bracket = ({
         <div className={styles.column}>
           <Match
             topTeam={{ seed: 1, name: "NSTC", score: 1 }}
-            bottomTeam={{ seed: 5, name: "Team Olive", score: 2 }}
+            bottomTeam={{
+              seed: 5,
+              name: "Team Olive",
+              score: 2,
+              imageSrc:
+                "https://cdn.wikimg.net/en/splatoonwiki/images/thumb/e/e0/Team_Olive.png/200px-Team_Olive.png",
+            }}
             teamHovered={teamHovered}
             setTeamHovered={setTeamHovered}
             isConcluded
@@ -76,7 +88,12 @@ const Bracket = ({
 
         <div className={styles.column}>
           <Match
-            topTeam={{ seed: 5, name: "Team Olive" }}
+            topTeam={{
+              seed: 5,
+              name: "Team Olive",
+              imageSrc:
+                "https://cdn.wikimg.net/en/splatoonwiki/images/thumb/e/e0/Team_Olive.png/200px-Team_Olive.png",
+            }}
             teamHovered={teamHovered}
             setTeamHovered={setTeamHovered}
           />

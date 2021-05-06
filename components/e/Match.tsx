@@ -4,6 +4,7 @@ interface EventTeam {
   seed: number;
   name: string;
   score?: number;
+  imageSrc?: string;
 }
 
 const Match = ({
@@ -46,7 +47,14 @@ const Match = ({
       >
         {topTeam ? (
           <>
-            <span className={styles.image}></span>
+            {topTeam.imageSrc ? (
+              <span className={styles.image}>
+                <img
+                  style={{ width: "24px", height: "24px", borderRadius: "50%" }}
+                  src={topTeam.imageSrc}
+                />
+              </span>
+            ) : null}
             <span className={styles.seed}>{topTeam.seed}</span>
             <span className={styles.name}>{topTeam.name}</span>
             <span className={styles.score}>{topTeam.score}</span>
@@ -59,16 +67,29 @@ const Match = ({
           styles.team,
           styles["match-bottom"],
           typeof bottomTeam?.score !== "number" ? styles["disable-score"] : "",
-          teamHovered === bottomTeam?.name ? styles.hovered : "",
         ].join(" ")}
         onMouseEnter={() => setTeamHovered(bottomTeam?.name)}
         onMouseLeave={() => setTeamHovered(undefined)}
       >
         {bottomTeam ? (
           <>
-            <span className={styles.image}></span>
+            {bottomTeam.imageSrc ? (
+              <span className={styles.image}>
+                <img
+                  style={{ width: "24px", height: "24px", borderRadius: "50%" }}
+                  src={bottomTeam.imageSrc}
+                />
+              </span>
+            ) : null}
             <span className={styles.seed}>{bottomTeam.seed}</span>
-            <span className={styles.name}>{bottomTeam.name}</span>
+            <span
+              className={[
+                styles.name,
+                teamHovered === bottomTeam?.name ? styles.hovered : "",
+              ].join(" ")}
+            >
+              {bottomTeam.name}
+            </span>
             <span className={styles.score}>{bottomTeam.score}</span>
           </>
         ) : null}
