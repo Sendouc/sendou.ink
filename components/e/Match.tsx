@@ -9,10 +9,14 @@ interface EventTeam {
 const Match = ({
   topTeam,
   bottomTeam,
+  teamHovered,
+  setTeamHovered,
   isConcluded = false,
 }: {
   topTeam?: EventTeam;
   bottomTeam?: EventTeam;
+  teamHovered?: string;
+  setTeamHovered: (val: string | undefined) => void;
   isConcluded?: boolean;
 }) => {
   return (
@@ -35,7 +39,10 @@ const Match = ({
           styles.team,
           styles["match-top"],
           typeof topTeam?.score !== "number" ? styles["disable-score"] : "",
+          teamHovered === topTeam?.name ? styles.hovered : "",
         ].join(" ")}
+        onMouseEnter={() => setTeamHovered(topTeam?.name)}
+        onMouseLeave={() => setTeamHovered(undefined)}
       >
         {topTeam ? (
           <>
@@ -47,11 +54,15 @@ const Match = ({
         ) : null}
       </div>
       <div
+        id={""}
         className={[
           styles.team,
           styles["match-bottom"],
           typeof bottomTeam?.score !== "number" ? styles["disable-score"] : "",
+          teamHovered === bottomTeam?.name ? styles.hovered : "",
         ].join(" ")}
+        onMouseEnter={() => setTeamHovered(bottomTeam?.name)}
+        onMouseLeave={() => setTeamHovered(undefined)}
       >
         {bottomTeam ? (
           <>
