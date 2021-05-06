@@ -158,10 +158,10 @@ $dark-losing-team-background: #182026;
 $dark-winning-team-color: #e3e8ef;
 $dark-losing-team-color: #6b798c;
 // If you want these colors to be different, this will override the main border color.
-$dark-line-color-override: null; // For the connecting lines, so they don't match above border-main color.
+$dark-line-color-override: #2e466c; // For the connecting lines, so they don't match above border-main color.
 $dark-seed-color-override: null; 
 $dark-score-color-override: null; 
-$dark-score-winner-color-override: #03d9ce;
+$dark-score-winner-color-override: #79ff61;
 
 .theme-dark {
 	
@@ -204,9 +204,6 @@ $dark-score-winner-color-override: #03d9ce;
 .theme-dark-trendy {
 	
 	// Coloring
-	background: #2b5876;
-	background: -webkit-linear-gradient(to right, #171721, #122b29);
-	background: linear-gradient(to right, #171721, #122b29);
 	border-color: darken($dark-background,5%); 
 
 	.match-lines .line { 
@@ -215,7 +212,7 @@ $dark-score-winner-color-override: #03d9ce;
 	}
 
 	.team { 
-		background: transparentize(#323641,.6);
+		background: transparentize(#0e2a56,.6);
 		color: $dark-losing-team-color;
 		border: 2px solid transparent; 
 		&:first-child { margin-bottom: 2px; }
@@ -223,7 +220,7 @@ $dark-score-winner-color-override: #03d9ce;
 	}
 	.winner-top .match-top,
 	.winner-bottom .match-bottom { 
-		background: #323641;
+		background: #0e2a56;
 		color: $dark-winning-team-color;
 		z-index: 1;
 		.score { color: $dark-score-winner-color-override; }
@@ -237,7 +234,7 @@ $dark-score-winner-color-override: #03d9ce;
 	}
 	.match-lines {
 		opacity: 0.75;
-		.line { background: $dark-score-winner-color-override; }
+		.line { background: $dark-line-color-override; }
 		right: ($match-spacing/2) * -1;
 		&.alt { left: ($match-spacing) * -1; }
 	}
@@ -271,33 +268,6 @@ $dark-score-winner-color-override: #03d9ce;
 	.match-top { border-bottom: 0px !important; }
 	.match-bottom { border-top: 0px !important; }
 	.team:first-child { margin-bottom: 0px; }
-}
-
-
-// Theme Switcher
-.theme-switcher { 
-	position: absolute;
-	top: 20px;
-	right: 20px;
-	padding: 24px; 
-	border: 1px solid darken(#e1e8ef,10%); 
-	background: #e1e8ef;
-	
-	h2 { 
-		color: #6b798c;
-		text-transform: uppercase; 
-		font-size: 12px; 
-		margin: 0 0 12px 0; 
-	}
-	button { 
-		line-height: 1em; 
-		font-size: 14px;
-		font-weight: 500;
-		padding: 10px 16px;
-		border-radius: 2px;
-		border: 1px solid #ccc;
-		cursor: pointer;
-	}
 }
 
 .theme-light .theme-switcher #theme-light,

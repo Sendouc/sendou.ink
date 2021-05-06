@@ -2,9 +2,9 @@ import styles from "./Bracket.module.scss";
 
 const Bracket = () => {
   return (
-    <div className={[styles.theme, styles["theme-dark"]].join(" ")}>
+    <div className={[styles.theme, styles["theme-dark-trendy"]].join(" ")}>
       <div className={[styles.bracket, styles["disable-image"]].join(" ")}>
-        <div className={[styles.column, styles.one].join(" ")}>
+        <div className={styles.column}>
           <div className={[styles.match, styles["winner-top"]].join(" ")}>
             <div className={[styles.team, styles["match-top"]].join(" ")}>
               <span className={styles.image}></span>
@@ -94,7 +94,7 @@ const Bracket = () => {
           </div>
         </div>
 
-        <div className={[styles.column, styles.two].join(" ")}>
+        <div className={styles.column}>
           <div className={[styles.match, styles["winner-bottom"]].join(" ")}>
             <div className={[styles.team, styles["match-top"]].join(" ")}>
               <span className={styles.image}></span>
@@ -140,7 +140,7 @@ const Bracket = () => {
           </div>
         </div>
 
-        <div className={[styles.column, styles.three].join(" ")}>
+        <div className={styles.column}>
           <div className={[styles.match, styles["winner-top"]].join(" ")}>
             <div className={[styles.team, styles["match-top"]].join(" ")}>
               <span className={styles.image}></span>

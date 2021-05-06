@@ -11,7 +11,7 @@ const Nav = () => {
   const navItem = useActiveNavItem();
   const { bgColor, secondaryBgColor, themeColorHex } = useMyTheme();
 
-  if (router.pathname === "/") return null;
+  if (router.pathname === "/" || router.pathname === "/test") return null;
 
   return (
     <Box
