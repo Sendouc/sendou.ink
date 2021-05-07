@@ -22,53 +22,43 @@ const Bracket = ({
 }) => {
   const [teamHovered, setTeamHovered] = useState<string | undefined>(undefined);
 
-  const matchUps = getMatchUps(teams);
-  console.log("matchUps", matchUps);
+  const rounds = getMatchUps(teams);
 
   return (
     <div className={[styles.theme, styles["theme-dark-trendy"]].join(" ")}>
       <ColumnHeaders />
       <div className={styles.bracket}>
-        <div className={styles.column}>
-          {matchUps.map((matchUp) => {
-            return (
-              <Match
-                key={matchUp.topTeam?.seed}
-                topTeam={matchUp.topTeam}
-                bottomTeam={matchUp.bottomTeam}
-                teamHovered={teamHovered}
-                setTeamHovered={setTeamHovered}
-                isFirstRound
-              />
-            );
-          })}
-        </div>
-
-        <div className={styles.column}>
-          <Match
-            teamHovered={teamHovered}
-            setTeamHovered={setTeamHovered}
-            isConcluded
-          />
-
-          <Match teamHovered={teamHovered} setTeamHovered={setTeamHovered} />
-          <Match teamHovered={teamHovered} setTeamHovered={setTeamHovered} />
-          <Match teamHovered={teamHovered} setTeamHovered={setTeamHovered} />
-        </div>
-
-        <div className={styles.column}>
-          <Match teamHovered={teamHovered} setTeamHovered={setTeamHovered} />
-          <Match teamHovered={teamHovered} setTeamHovered={setTeamHovered} />
-        </div>
-        <div className={styles.column}>
-          <Match teamHovered={teamHovered} setTeamHovered={setTeamHovered} />
-        </div>
+        {rounds.map((round, roundIndex) => {
+          return (
+            <div className={styles.column}>
+              {round.map((matchUp) => {
+                return (
+                  <Match
+                    key={matchUp.topTeam?.seed}
+                    topTeam={matchUp.topTeam}
+                    bottomTeam={matchUp.bottomTeam}
+                    teamHovered={teamHovered}
+                    setTeamHovered={setTeamHovered}
+                    isFirstRound={roundIndex === 0}
+                  />
+                );
+              })}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
 };
 
-function getMatchUps(teams: string[]) {
+type TeamObject = {
+  name: string;
+  seed: number;
+};
+
+function getMatchUps(
+  teams: string[]
+): { topTeam?: TeamObject; bottomTeam?: TeamObject }[][] {
   const participantsCount = teams.length;
   const rounds = Math.ceil(Math.log(participantsCount) / Math.log(2));
 
@@ -98,12 +88,34 @@ function getMatchUps(teams: string[]) {
     matches = roundMatches;
   }
 
-  return matches.map(([topTeam, bottomTeam]) => ({
+  const firstRound = matches.map(([topTeam, bottomTeam]) => ({
     topTeam: topTeam ? { name: teams[topTeam - 1], seed: topTeam } : undefined,
     bottomTeam: bottomTeam
       ? { name: teams[bottomTeam - 1], seed: bottomTeam }
       : undefined,
   }));
+
+  const result = [firstRound];
+
+  while (true) {
+    console.assert(
+      result[result.length - 1].length % 2 === 0,
+      `expected rounds to be dividable by 2 but they were: ${
+        result[result.length - 1].length
+      }`
+    );
+    const roundsCount = result[result.length - 1].length / 2;
+
+    result.push(
+      new Array(roundsCount)
+        .fill(null)
+        .map((_) => ({ topTeam: undefined, bottomTeam: undefined }))
+    );
+
+    if (roundsCount === 1) break;
+  }
+
+  return result;
 }
 
 function changeIntoBye(seed: number, participantsCount: number) {

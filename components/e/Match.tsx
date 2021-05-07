@@ -14,6 +14,7 @@ const Match = ({
   setTeamHovered,
   isConcluded = false,
   isFirstRound = false,
+  noAncestors = false,
 }: {
   topTeam?: EventTeam;
   bottomTeam?: EventTeam;
@@ -21,6 +22,7 @@ const Match = ({
   setTeamHovered: (val: string | undefined) => void;
   isConcluded?: boolean;
   isFirstRound?: boolean;
+  noAncestors?: boolean;
 }) => {
   return (
     <div
@@ -101,9 +103,11 @@ const Match = ({
         <div className={[styles.line, styles.one].join(" ")}></div>
         <div className={[styles.line, styles.two].join(" ")}></div>
       </div>
-      <div className={[styles.alt, styles["match-lines"]].join(" ")}>
-        <div className={[styles.line, styles.one].join(" ")}></div>
-      </div>
+      {noAncestors ? null : (
+        <div className={[styles.alt, styles["match-lines"]].join(" ")}>
+          <div className={[styles.line, styles.one].join(" ")}></div>
+        </div>
+      )}
     </div>
   );
 };

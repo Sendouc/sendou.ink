@@ -47,6 +47,9 @@ $border-radius: 2px; // border radiuses for matches
 .hidden {
   visibility: hidden;
 }
+.no-display {
+  display: none;
+}
 
 .match {
   position: relative;
