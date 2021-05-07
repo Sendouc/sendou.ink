@@ -133,7 +133,6 @@ function changeIntoBye(seed: number, participantsCount: number) {
   return seed <= participantsCount ? seed : undefined;
 }
 
-// TODO: send to losers if necessary
 function advanceTeamsBasedOnByes(bracket: Bracket): Bracket {
   if (bracket.length < 2) return bracket;
 
