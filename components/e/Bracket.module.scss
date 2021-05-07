@@ -32,7 +32,8 @@ $border-radius: 2px; // border radiuses for matches
 .round-info {
   display: flex;
   justify-content: space-between;
-  width: $match-width;
+  max-width: $match-width;
+  min-width: $match-width;
   margin: $match-spacing / 2 $match-spacing * 2 $match-spacing / 2 0;
   font-size: 14px;
   background: transparentize(#0e2a56, 0.6);
@@ -208,6 +209,8 @@ $dark-score-winner-color-override: #79ff61;
 .theme-dark-trendy {
   // Coloring
   border-color: darken($dark-background, 5%);
+
+  overflow-y: scroll;
 
   .match-lines .line {
     background: $dark-border-main;
