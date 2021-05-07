@@ -40,6 +40,7 @@ const Bracket = ({
                     teamHovered={teamHovered}
                     setTeamHovered={setTeamHovered}
                     isFirstRound={roundIndex === 0}
+                    noAncestors={matchUp.noAncestors}
                   />
                 );
               })}
@@ -56,9 +57,14 @@ type TeamObject = {
   seed: number;
 };
 
-function getMatchUps(
-  teams: string[]
-): { topTeam?: TeamObject; bottomTeam?: TeamObject }[][] {
+type Bracket = {
+  topTeam?: TeamObject;
+  bottomTeam?: TeamObject;
+  matchNumber?: number;
+  noAncestors?: boolean;
+}[][];
+
+function getMatchUps(teams: string[]): Bracket {
   const participantsCount = teams.length;
   const rounds = Math.ceil(Math.log(participantsCount) / Math.log(2));
 
@@ -88,7 +94,10 @@ function getMatchUps(
     matches = roundMatches;
   }
 
+  let matchNumber = 1;
+
   const firstRound = matches.map(([topTeam, bottomTeam]) => ({
+    matchNumber: topTeam && bottomTeam ? matchNumber++ : undefined,
     topTeam: topTeam ? { name: teams[topTeam - 1], seed: topTeam } : undefined,
     bottomTeam: bottomTeam
       ? { name: teams[bottomTeam - 1], seed: bottomTeam }
@@ -107,19 +116,62 @@ function getMatchUps(
     const roundsCount = result[result.length - 1].length / 2;
 
     result.push(
-      new Array(roundsCount)
-        .fill(null)
-        .map((_) => ({ topTeam: undefined, bottomTeam: undefined }))
+      new Array(roundsCount).fill(null).map((_) => ({
+        matchNumber: matchNumber++,
+        topTeam: undefined,
+        bottomTeam: undefined,
+      }))
     );
 
     if (roundsCount === 1) break;
   }
 
-  return result;
+  return advanceTeamsBasedOnByes(result);
 }
 
 function changeIntoBye(seed: number, participantsCount: number) {
   return seed <= participantsCount ? seed : undefined;
+}
+
+// TODO: send to losers if necessary
+function advanceTeamsBasedOnByes(bracket: Bracket): Bracket {
+  if (bracket.length < 2) return bracket;
+
+  const result = [...bracket];
+  const firstRound = [...bracket[0]];
+
+  for (const round of result[1]) {
+    const topTeamRound = firstRound.shift();
+    const bottomTeamRound = firstRound.shift();
+    if (!topTeamRound || !bottomTeamRound) {
+      throw Error("unexpected no topTeamRound or no bottomTeamRound");
+    }
+
+    let topHadBye = false;
+    let bottomHadBye = false;
+
+    if (topTeamRound.topTeam && !topTeamRound.bottomTeam) {
+      topHadBye = true;
+      round.topTeam = topTeamRound.topTeam;
+    } else if (!topTeamRound.topTeam && topTeamRound.bottomTeam) {
+      topHadBye = true;
+      round.topTeam = topTeamRound.bottomTeam;
+    }
+
+    if (bottomTeamRound.topTeam && !bottomTeamRound.bottomTeam) {
+      bottomHadBye = true;
+      round.bottomTeam = bottomTeamRound.topTeam;
+    } else if (!bottomTeamRound.topTeam && bottomTeamRound.bottomTeam) {
+      bottomHadBye = true;
+      round.bottomTeam = bottomTeamRound.bottomTeam;
+    }
+
+    if (topHadBye && bottomHadBye) {
+      round.noAncestors = true;
+    }
+  }
+
+  return result;
 }
 
 export default Bracket;

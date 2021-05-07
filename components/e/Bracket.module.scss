@@ -210,7 +210,7 @@ $dark-score-winner-color-override: #79ff61;
   // Coloring
   border-color: darken($dark-background, 5%);
 
-  overflow-y: scroll;
+  overflow-y: auto;
 
   .match-lines .line {
     background: $dark-border-main;
