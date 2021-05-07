@@ -44,6 +44,10 @@ $border-radius: 2px; // border radiuses for matches
   }
 }
 
+.hidden {
+  visibility: hidden;
+}
+
 .match {
   position: relative;
   display: flex;

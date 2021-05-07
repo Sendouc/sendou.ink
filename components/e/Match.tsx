@@ -13,12 +13,14 @@ const Match = ({
   teamHovered,
   setTeamHovered,
   isConcluded = false,
+  isFirstRound = false,
 }: {
   topTeam?: EventTeam;
   bottomTeam?: EventTeam;
   teamHovered?: string;
   setTeamHovered: (val: string | undefined) => void;
   isConcluded?: boolean;
+  isFirstRound?: boolean;
 }) => {
   return (
     <div
@@ -33,6 +35,7 @@ const Match = ({
             ? "winner-top"
             : "winner-bottom"
         ],
+        isFirstRound && (!topTeam || !bottomTeam) ? styles.hidden : "",
       ].join(" ")}
     >
       <div

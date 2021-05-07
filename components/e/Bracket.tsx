@@ -8,99 +8,106 @@ const Bracket = ({
     "NSTC",
     "Radiance",
     "FTWIN!",
-    "Team olive",
+    "Team Olive",
     "Freeze",
     "Kraken Paradise",
     "JFG",
     "Chimera",
+    "Creme Fresh",
+    "Team Paradise",
+    "Extermination",
   ],
 }: {
   teams?: string[];
 }) => {
   const [teamHovered, setTeamHovered] = useState<string | undefined>(undefined);
 
+  const matchUps = getMatchUps(teams);
+  console.log("matchUps", matchUps);
+
   return (
     <div className={[styles.theme, styles["theme-dark-trendy"]].join(" ")}>
       <ColumnHeaders />
       <div className={styles.bracket}>
         <div className={styles.column}>
-          <Match
-            topTeam={{ seed: 1, name: "NSTC", score: 2 }}
-            bottomTeam={{ seed: 8, name: "Radiance", score: 1 }}
-            teamHovered={teamHovered}
-            setTeamHovered={setTeamHovered}
-            isConcluded
-          />
-
-          <Match
-            topTeam={{ seed: 4, name: "FTWin!", score: 1 }}
-            bottomTeam={{
-              seed: 5,
-              name: "Team Olive",
-              score: 2,
-              imageSrc:
-                "https://cdn.wikimg.net/en/splatoonwiki/images/thumb/e/e0/Team_Olive.png/200px-Team_Olive.png",
-            }}
-            teamHovered={teamHovered}
-            setTeamHovered={setTeamHovered}
-            isConcluded
-          />
-
-          <Match
-            topTeam={{ seed: 2, name: "FreeZe", score: 2 }}
-            bottomTeam={{ seed: 7, name: "Kraken Paradise", score: 0 }}
-            teamHovered={teamHovered}
-            setTeamHovered={setTeamHovered}
-            isConcluded
-          />
-
-          <Match
-            topTeam={{ seed: 3, name: "JFG", score: 2 }}
-            bottomTeam={{ seed: 6, name: "Chimera", score: 1 }}
-            teamHovered={teamHovered}
-            setTeamHovered={setTeamHovered}
-            isConcluded
-          />
+          {matchUps.map((matchUp) => {
+            return (
+              <Match
+                key={matchUp.topTeam?.seed}
+                topTeam={matchUp.topTeam}
+                bottomTeam={matchUp.bottomTeam}
+                teamHovered={teamHovered}
+                setTeamHovered={setTeamHovered}
+                isFirstRound
+              />
+            );
+          })}
         </div>
 
         <div className={styles.column}>
           <Match
-            topTeam={{ seed: 1, name: "NSTC", score: 1 }}
-            bottomTeam={{
-              seed: 5,
-              name: "Team Olive",
-              score: 2,
-              imageSrc:
-                "https://cdn.wikimg.net/en/splatoonwiki/images/thumb/e/e0/Team_Olive.png/200px-Team_Olive.png",
-            }}
             teamHovered={teamHovered}
             setTeamHovered={setTeamHovered}
             isConcluded
           />
 
-          <Match
-            topTeam={{ seed: 2, name: "FreeZe", score: 1 }}
-            bottomTeam={{ seed: 3, name: "JFG", score: 1 }}
-            teamHovered={teamHovered}
-            setTeamHovered={setTeamHovered}
-          />
+          <Match teamHovered={teamHovered} setTeamHovered={setTeamHovered} />
+          <Match teamHovered={teamHovered} setTeamHovered={setTeamHovered} />
+          <Match teamHovered={teamHovered} setTeamHovered={setTeamHovered} />
         </div>
 
         <div className={styles.column}>
-          <Match
-            topTeam={{
-              seed: 5,
-              name: "Team Olive",
-              imageSrc:
-                "https://cdn.wikimg.net/en/splatoonwiki/images/thumb/e/e0/Team_Olive.png/200px-Team_Olive.png",
-            }}
-            teamHovered={teamHovered}
-            setTeamHovered={setTeamHovered}
-          />
+          <Match teamHovered={teamHovered} setTeamHovered={setTeamHovered} />
+          <Match teamHovered={teamHovered} setTeamHovered={setTeamHovered} />
+        </div>
+        <div className={styles.column}>
+          <Match teamHovered={teamHovered} setTeamHovered={setTeamHovered} />
         </div>
       </div>
     </div>
   );
 };
+
+function getMatchUps(teams: string[]) {
+  const participantsCount = teams.length;
+  const rounds = Math.ceil(Math.log(participantsCount) / Math.log(2));
+
+  if (participantsCount < 2) {
+    return [];
+  }
+
+  let matches: (number | undefined)[][] = [[1, 2]];
+
+  for (var round = 1; round < rounds; round++) {
+    const roundMatches = [];
+    const sum = Math.pow(2, round + 1) + 1;
+
+    for (var i = 0; i < matches.length; i++) {
+      const team = matches[i][0];
+      const team2 = matches[i][1];
+      if (!team || !team2) {
+        throw Error("invalid match");
+      }
+      let home = changeIntoBye(team, participantsCount);
+      let away = changeIntoBye(sum - team, participantsCount);
+      roundMatches.push([home, away]);
+      home = changeIntoBye(sum - team2, participantsCount);
+      away = changeIntoBye(team2, participantsCount);
+      roundMatches.push([home, away]);
+    }
+    matches = roundMatches;
+  }
+
+  return matches.map(([topTeam, bottomTeam]) => ({
+    topTeam: topTeam ? { name: teams[topTeam - 1], seed: topTeam } : undefined,
+    bottomTeam: bottomTeam
+      ? { name: teams[bottomTeam - 1], seed: bottomTeam }
+      : undefined,
+  }));
+}
+
+function changeIntoBye(seed: number, participantsCount: number) {
+  return seed <= participantsCount ? seed : undefined;
+}
 
 export default Bracket;
