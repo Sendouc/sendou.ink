@@ -54,6 +54,9 @@ const stageToCode = new Map<string, string>([
 ]);
 
 const plannerMapBgToImage = (bg: PlannerMapBg) => {
+  if (!bg.tide && !bg.mode) {
+    return `images/plannerMaps/${bg.stage}.png`;
+  }
   if (!bg.tide)
     return `images/plannerMaps/${bg.view} ${stageToCode.get(bg.stage)} ${
       bg.mode
@@ -339,24 +342,30 @@ const MapPlannerPage = () => {
         </Flex>
         <StageSelector
           handleChange={(e) => {
-            const newStage = e.target.value;
-            if (newStage === "") {
+            const stage = e.target.value;
+            if (stage === "") {
               return;
             }
-            const newIsSalmonRunStage = !stages.includes(newStage as any);
+
+            if (stage === "Blank") {
+              setBg({ stage });
+              return;
+            }
+
+            const newIsSalmonRunStage = !stages.includes(stage as any);
             const oldIsSalmonRunStage = !stages.includes(bg.stage as any);
 
             if (newIsSalmonRunStage === oldIsSalmonRunStage) {
-              setBg({ ...bg, stage: e.target.value });
+              setBg({ ...bg, stage });
               return;
             }
 
             if (newIsSalmonRunStage) {
-              setBg({ stage: e.target.value, tide: "mid" });
+              setBg({ stage, tide: "mid" });
               return;
             }
 
-            setBg({ stage: e.target.value, mode: "SZ", view: "M" });
+            setBg({ stage, mode: "SZ", view: "M" });
           }}
           currentBackground={bg}
           changeMode={(mode) => setBg({ ...bg, mode })}

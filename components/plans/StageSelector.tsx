@@ -43,13 +43,15 @@ const StageSelector: React.FC<StageSelectorProps> = ({
         {salmonRunStages
           .concat(stages)
           .sort((a, b) => a.localeCompare(b))
+          .concat(["Blank"])
           .map((stage) => (
             <option key={stage} value={stage}>
               {i18n._(stage)}
             </option>
           ))}
       </Select>
-      {currentBackground.tide ? (
+      {!currentBackground.tide &&
+      !currentBackground.mode ? null : currentBackground.tide ? (
         <>
           <HStack my={4} display="flex" justifyContent="center">
             <Flex flexDir="column" alignItems="center">
