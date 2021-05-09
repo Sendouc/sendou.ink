@@ -160,7 +160,23 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
             mt="1em"
           >
             {apView ? (
-              <ViewAP aps={build.abilityPoints as Record<Ability, number>} />
+              <ViewAP
+                aps={build.abilityPoints as Record<Ability, number>}
+                extraAps={
+                  build.clothingAbilities[0] === "AD"
+                    ? build.clothingAbilities
+                        .slice(1)
+                        .reduce(
+                          (acc: Partial<Record<Ability, number>>, ability) => {
+                            if (ability in acc) acc[ability]! += 3;
+                            else acc[ability] = 3;
+                            return acc;
+                          },
+                          {}
+                        )
+                    : undefined
+                }
+              />
             ) : (
               <ViewSlots abilities={build} />
             )}

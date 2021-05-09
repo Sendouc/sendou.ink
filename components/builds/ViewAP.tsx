@@ -7,14 +7,24 @@ import { mainOnlyAbilities } from "utils/lists/abilities";
 
 interface ViewAPProps {
   aps: Record<Ability, number>;
+  // Extra ability points that are not saved in DB
+  // used with ability doubler. Forgot to take it in account
+  // for create build backend code so we do this instead.
+  extraAps?: Partial<Record<Ability, number>>;
 }
 
-const ViewAP: React.FC<ViewAPProps> = ({ aps }) => {
+const ViewAP: React.FC<ViewAPProps> = ({ aps, extraAps }) => {
   const { gray } = useMyTheme();
 
-  const APArrays = Object.entries(aps).reduce(
-    (acc: [number, string[]][], [key, value]) => {
-      const apCount = mainOnlyAbilities.includes(key as any) ? 999 : value;
+  const APArrays = Object.entries(aps)
+    .filter(([ability]) => ability !== "AD")
+    .reduce((acc: [number, string[]][], [key, value]) => {
+      let apCount = mainOnlyAbilities.includes(key as any) ? 999 : value;
+
+      if (extraAps && key in extraAps) {
+        const typedKey = key as keyof typeof extraAps;
+        apCount += extraAps[typedKey]!;
+      }
 
       const abilityArray = acc.find((el) => el[0] === apCount);
 
@@ -22,9 +32,7 @@ const ViewAP: React.FC<ViewAPProps> = ({ aps }) => {
       else acc.push([apCount, [key]]);
 
       return acc;
-    },
-    []
-  );
+    }, []);
 
   let indexToPrintAPAt = APArrays[0][0] === 999 ? 1 : 0;
 
