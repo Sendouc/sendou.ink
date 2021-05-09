@@ -41,7 +41,16 @@ const getFirstRoundSeeds = (
   return matches;
 };
 
-export const matchesSingleElim = (teams: string[]): EliminationMatch[][] => {
+export const matchesSingleElim = ({
+  teams,
+  matchResults,
+}: {
+  teams: string[];
+  matchResults: Record<
+    number,
+    { topScore: number; bottomScore: number; finished?: true }
+  >;
+}): EliminationMatch[][] => {
   const firstRoundSeeds = getFirstRoundSeeds(teams.length);
   const amountOfRounds = firstRoundSeeds.length;
   const result: EliminationMatch[][] = [];
@@ -67,7 +76,7 @@ export const matchesSingleElim = (teams: string[]): EliminationMatch[][] => {
                   i % 2 === 0 ? "bottom" : "top",
                 ]
               : undefined,
-          id: ++matchId,
+          id: matchId++,
         })
       );
 
@@ -120,6 +129,17 @@ export const matchesSingleElim = (teams: string[]): EliminationMatch[][] => {
 
   for (const match of result[1]) {
     if (match.topTeam && match.bottomTeam) match.noAncestors = true;
+  }
+
+  // Advance matches based on results
+
+  for (const round of result) {
+    for (const match of round) {
+      if (match.id in matchResults) {
+        const matchResult = matchResults[match.id];
+        match.setScore(matchResult);
+      }
+    }
   }
 
   return result;

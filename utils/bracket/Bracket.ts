@@ -14,9 +14,18 @@ class Bracket {
 export class SingleEliminationBracket extends Bracket {
   rounds: EliminationMatch[][];
 
-  constructor({ teams }: { teams: string[] }) {
+  constructor({
+    teams,
+    matchResults,
+  }: {
+    teams: string[];
+    matchResults: Record<
+      number,
+      { topScore: number; bottomScore: number; finished?: true }
+    >;
+  }) {
     super({ teams });
-    this.rounds = matchesSingleElim(teams);
+    this.rounds = matchesSingleElim({ teams, matchResults });
   }
 }
 
@@ -38,6 +47,7 @@ export class Match {
     score: number;
     seed: number;
   };
+  finished?: boolean;
 
   constructor(id: number) {
     this.id = id;
@@ -52,6 +62,34 @@ export class Match {
   }) {
     if (topTeam) this.topTeam = { ...topTeam, score: 0 };
     if (bottomTeam) this.bottomTeam = { ...bottomTeam, score: 0 };
+  }
+
+  setScore({
+    topScore,
+    bottomScore,
+    finished,
+  }: {
+    topScore: number;
+    bottomScore: number;
+    finished?: true;
+  }) {
+    if (topScore) {
+      if (!this.topTeam) {
+        throw Error("unexpected score but no corresponding top team");
+      }
+      this.topTeam.score = topScore;
+    }
+
+    if (bottomScore) {
+      if (!this.bottomTeam) {
+        throw Error("unexpected score but no corresponding bottom team");
+      }
+      this.bottomTeam.score = bottomScore;
+    }
+
+    if (finished) {
+      this.finished = finished;
+    }
   }
 }
 
@@ -78,5 +116,32 @@ export class EliminationMatch extends Match {
   }) {
     super(id);
     this.winnerDestination = winnerDestination;
+  }
+
+  setScore({
+    topScore,
+    bottomScore,
+    finished,
+  }: {
+    topScore: number;
+    bottomScore: number;
+    finished?: true;
+  }) {
+    super.setScore({ topScore, bottomScore, finished });
+    if (finished) {
+      const winner = topScore > bottomScore ? this.topTeam : this.bottomTeam;
+      const loser = topScore > bottomScore ? this.bottomTeam : this.topTeam;
+      if (this.winnerDestination && winner) {
+        this.winnerDestination[0][
+          this.winnerDestination[1] === "top" ? "topTeam" : "bottomTeam"
+        ] = { ...winner, score: 0 };
+      }
+
+      if (this.loserDestination && loser) {
+        this.loserDestination[0][
+          this.loserDestination[1] === "top" ? "topTeam" : "bottomTeam"
+        ] = { ...loser, score: 0 };
+      }
+    }
   }
 }

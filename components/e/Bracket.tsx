@@ -23,7 +23,13 @@ const Bracket = ({
 }) => {
   const [teamHovered, setTeamHovered] = useState<string | undefined>(undefined);
 
-  const bracket = new SingleEliminationBracket({ teams });
+  const bracket = new SingleEliminationBracket({
+    teams,
+    matchResults: {
+      14: { bottomScore: 2, topScore: 1, finished: true },
+      5: { bottomScore: 2, topScore: 1, finished: true },
+    },
+  });
 
   return (
     <div className={[styles.theme, styles["theme-dark-trendy"]].join(" ")}>
@@ -31,7 +37,7 @@ const Bracket = ({
       <div className={styles.bracket}>
         {bracket.rounds.map((round, roundIndex) => {
           return (
-            <div className={styles.column}>
+            <div key={round[0].id} className={styles.column}>
               {round.map((match) => {
                 return (
                   <Match
@@ -41,6 +47,7 @@ const Bracket = ({
                     teamHovered={teamHovered}
                     setTeamHovered={setTeamHovered}
                     isFirstRound={roundIndex === 0}
+                    isConcluded={match.finished}
                     noAncestors={match.noAncestors}
                   />
                 );
