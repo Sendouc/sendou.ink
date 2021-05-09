@@ -76,7 +76,11 @@ const getXTrends = async (): Promise<XTrends> => {
                 : ("UP" as const),
           };
         })
-        .sort((a, b) => b.count - a.count);
+        .sort((a, b) => {
+          if (a.count !== b.count) return b.count - a.count;
+
+          return b.averageXp - a.averageXp;
+        });
 
       return acc;
     },
