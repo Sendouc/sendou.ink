@@ -40,9 +40,11 @@ const profileHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       create: {
         user: { connect: { id: user.id } },
         ...parsed.data,
+        customUrlPath: parsed.data.customUrlPath?.trim(),
       },
       update: {
         ...parsed.data,
+        customUrlPath: parsed.data.customUrlPath?.trim(),
       },
       where: { userId: user.id },
     });
