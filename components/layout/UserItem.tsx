@@ -3,7 +3,7 @@ import MyLink from "components/common/MyLink";
 import UserAvatar from "components/common/UserAvatar";
 import { useMyTheme, useUser } from "hooks/common";
 
-export const UserItem = () => {
+export const UserItem = ({ expanded }: { expanded: boolean }) => {
   const { secondaryBgColor, bgColor } = useMyTheme();
   const [user] = useUser();
 
@@ -26,7 +26,7 @@ export const UserItem = () => {
         >
           <>
             <UserAvatar user={user} size="sm" />
-            <Box ml={2}>My Page</Box>
+            {expanded && <Box ml={2}>My Page</Box>}
           </>
         </Flex>
       </MyLink>
