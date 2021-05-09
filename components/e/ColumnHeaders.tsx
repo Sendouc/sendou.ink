@@ -1,5 +1,17 @@
 import styles from "./Bracket.module.scss";
 
+const topBracketSecondLastRoundName = {
+  WINNERS: "WINNERS SEMIS",
+  LOSERS: "LOSERS SEMIS",
+  SE: "SEMIFINALS",
+};
+
+const topBracketLastRoundName = {
+  WINNERS: "WINNERS FINALS",
+  LOSERS: "LOSERS FINALS",
+  SE: "FINALS",
+};
+
 const ColumnHeaders = ({
   roundsCount,
   bracket,
@@ -11,8 +23,9 @@ const ColumnHeaders = ({
     return new Array(roundsCount).fill(null).map((_, i) => {
       const roundNumber = i + 1;
 
-      if (roundNumber === roundsCount - 1) return "WINNERS SEMIS";
-      if (roundNumber === roundsCount) return "WINNERS FINALS";
+      if (roundNumber === roundsCount - 1)
+        return topBracketSecondLastRoundName[bracket];
+      if (roundNumber === roundsCount) return topBracketLastRoundName[bracket];
 
       return `ROUND ${roundNumber}`;
     });

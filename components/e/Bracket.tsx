@@ -27,7 +27,7 @@ const Bracket = ({
 
   return (
     <div className={[styles.theme, styles["theme-dark-trendy"]].join(" ")}>
-      <ColumnHeaders roundsCount={bracket.rounds.length} bracket="WINNERS" />
+      <ColumnHeaders roundsCount={bracket.rounds.length} bracket="SE" />
       <div className={styles.bracket}>
         {bracket.rounds.map((round, roundIndex) => {
           return (

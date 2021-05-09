@@ -61,6 +61,10 @@ export class EliminationMatch extends Match {
    */
   winnerDestination?: [EliminationMatch, "top" | "bottom"];
   /**
+   * Match winning team will go to. If none then the loser is eliminated from the tournament.
+   */
+  loserDestination?: [EliminationMatch, "top" | "bottom"] | undefined;
+  /**
    * true if match is in round 2 and both teams had a bye in round 1. Affects rendering.
    */
   noAncestors?: true;
