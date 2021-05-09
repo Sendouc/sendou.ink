@@ -44,7 +44,7 @@ const Match = ({
         className={[
           styles.team,
           styles["match-top"],
-          typeof topTeam?.score !== "number" ? styles["disable-score"] : "",
+          !topTeam || !bottomTeam ? styles["disable-score"] : "",
           teamHovered === topTeam?.name ? styles.hovered : "",
         ].join(" ")}
         onMouseEnter={() => setTeamHovered(topTeam?.name)}
@@ -71,7 +71,7 @@ const Match = ({
         className={[
           styles.team,
           styles["match-bottom"],
-          typeof bottomTeam?.score !== "number" ? styles["disable-score"] : "",
+          !topTeam || !bottomTeam ? styles["disable-score"] : "",
         ].join(" ")}
         onMouseEnter={() => setTeamHovered(bottomTeam?.name)}
         onMouseLeave={() => setTeamHovered(undefined)}
