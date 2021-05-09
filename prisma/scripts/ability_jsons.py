@@ -4,6 +4,8 @@ import urllib.request, json
 import os
 import glob
 
+FILE_PATH = "/Users/sendou/Documents/Programming/sendou-ink/prisma/scripts/data/leanny.github.io/data/Parameter/latest/WeaponBullet/"
+
 with open("lang_dict_EUen.json") as f:
     lang_dict = json.load(f)
     lang_dict["BombPointSensor"] = "Point Sensor"
@@ -35,7 +37,7 @@ script_dir = os.path.dirname(__file__)
 ability_dict = {}
 
 for code in ability_jsons:
-    rel_path = f"leanny.github.io/data/Parameter/latest/Player/Player_Spec_{code}.json"
+    rel_path = f"data/leanny.github.io/data/Parameter/latest/Player/Player_Spec_{code}.json"
     abs_file_path = os.path.join(script_dir, rel_path)
     with open(abs_file_path) as f:
         data = json.loads(f.read())
@@ -43,7 +45,7 @@ for code in ability_jsons:
 
 weapon_dict = {}
 
-rel_path = f"leanny.github.io/data/Mush/latest/WeaponInfo_Main.json"
+rel_path = f"data/leanny.github.io/data/Mush/latest/WeaponInfo_Main.json"
 abs_file_path = os.path.join(script_dir, rel_path)
 with open(abs_file_path) as f:
     data = json.loads(f.read())
@@ -52,7 +54,7 @@ with open(abs_file_path) as f:
         weapon_obj["Special"] = lang_dict[weapon_obj["Special"]]
         weapon_dict[lang_dict[weapon_obj["Name"]].strip()] = weapon_obj
 
-rel_path = f"leanny.github.io/data/Mush/latest/WeaponInfo_Sub.json"
+rel_path = f"data/leanny.github.io/data/Mush/latest/WeaponInfo_Sub.json"
 abs_file_path = os.path.join(script_dir, rel_path)
 with open(abs_file_path) as f:
     data = json.loads(f.read())
@@ -102,13 +104,13 @@ def what_to_append(weapon_internal):
     return ""
 
 
-rel_path = "leanny.github.io/data/Parameter/latest/WeaponBullet/*.json"
+rel_path = "data/leanny.github.io/data/Parameter/latest/WeaponBullet/*.json"
 abs_file_path = os.path.join(script_dir, rel_path)
 for filepath in glob.iglob(abs_file_path):  # iterate through .json files
     with open(filepath) as f:
         weapon_internal = (
             filepath.replace(
-                "leanny.github.io/data/Parameter/latest/WeaponBullet\\", ""
+                FILE_PATH, ""
             ).replace(".json", "")
             # .replace("_2", "")
         )
@@ -139,7 +141,8 @@ for filepath in glob.iglob(abs_file_path):  # iterate through .json files
 
         did_thing = False
         for english_weapon, wDict in weapon_dict.items():
-            if weapon_internal in wDict["Name"].replace("_", ""):
+            normalized = wDict["Name"].replace("_", "", 1).replace("_01", "").replace("_00", "").replace("_02", "").replace("_H", "").replace("_", "")
+            if weapon_internal == normalized or f"Shooter{weapon_internal}" == normalized or f"Timer{weapon_internal}" == normalized:
                 weapon_dict[english_weapon] = {**wDict, **data}
                 did_thing = True
 
@@ -155,8 +158,8 @@ for filepath in glob.iglob(abs_file_path):  # iterate through .json files
                 raise ValueError(weapon_internal)
 
 
-with open("ability_jsons_output/ability_data.json", "w") as fp:
+with open("output/ability_data.json", "w") as fp:
     json.dump(ability_dict, fp)
 
-with open("ability_jsons_output/weapon_data.json", "w") as fp:
+with open("output/weapon_data.json", "w") as fp:
     json.dump(weapon_dict, fp)
