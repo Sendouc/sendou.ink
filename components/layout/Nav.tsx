@@ -20,7 +20,7 @@ const Nav = () => {
 
   return (
     <Box
-      width={expanded ? "175px" : "80px"}
+      width={expanded ? "175px" : "60px"}
       as="nav"
       flexShrink={0}
       position="sticky"
