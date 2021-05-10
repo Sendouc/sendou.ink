@@ -35,7 +35,7 @@
     "@next/bundle-analyzer": "^10.2.0",
     "@prisma/client": "^2.22.1",
     "@sendou/react-sketch": "^0.5.2",
-    "@trpc/client": "5.0.0",
+    "@trpc/client": "6.1.1",
     "@trpc/react": "5.0.0",
     "@trpc/server": "5.0.0",
     "countries-list": "^2.6.1",
