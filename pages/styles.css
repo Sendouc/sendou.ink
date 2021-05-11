@@ -29,19 +29,25 @@ header {
   row-gap: 1.5rem;
   column-gap: 1.5rem;
   grid-template-rows: 37px 1fr 100px;
-  grid-template-columns: auto 1fr 175px;
+  grid-template-columns: auto 1fr;
   min-height: 100vh;
+}
+
+@media (max-width: 1365px) {
+  nav {
+    margin-right: 0 !important;
+  }
 }
 
 @media (max-width: 1200px) {
   #__next {
-    grid-template-columns: auto 1fr 0px;
+    grid-template-columns: auto 1fr;
   }
 }
 
 @media (max-width: 991px) {
   #__next {
-    grid-template-columns: 0px 1fr 0px;
+    grid-template-columns: 0px 1fr;
   }
 }
 

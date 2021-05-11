@@ -21,6 +21,7 @@ const Nav = () => {
   return (
     <Box
       width={expanded ? "175px" : "60px"}
+      marginRight={expanded ? "-175px" : "-60px"}
       as="nav"
       flexShrink={0}
       position="sticky"
