@@ -221,7 +221,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
                         src="/layout/xsearch.png"
                         height={30}
                         width={30}
-                        alt="SR"
+                        alt="XSearch"
                         priority
                       />
                     </Button>
@@ -237,7 +237,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
                         src="/layout/freeagents.png"
                         height={30}
                         width={30}
-                        alt="SR"
+                        alt="Free Agents"
                         priority
                       />
                     </Button>
