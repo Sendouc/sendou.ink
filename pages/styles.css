@@ -177,13 +177,13 @@ For React Datepicker
   outline: none;
 }
 
-.stickyNavigation {
+.scrollableNavigation {
   max-height: calc(100vh - 1rem);
   overflow-y: auto;
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
 
-.stickyNavigation::-webkit-scrollbar {
+.scrollableNavigation::-webkit-scrollbar {
   display: none;
 }
