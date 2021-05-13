@@ -27,6 +27,7 @@ const Nav = () => {
       position="sticky"
       alignSelf="flex-start"
       display={["none", null, null, "block"]}
+      className="stickyNavigation"
     >
       {navItems.map(({ code, name }) => {
         const isActive = navItem?.code === code;

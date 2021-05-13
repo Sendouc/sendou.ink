@@ -176,3 +176,14 @@ For React Datepicker
   color: var(--text);
   outline: none;
 }
+
+.stickyNavigation {
+  max-height: calc(100vh - 1rem);
+  overflow-y: auto;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.stickyNavigation::-webkit-scrollbar {
+  display: none;
+}
