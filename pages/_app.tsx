@@ -7,12 +7,12 @@ import Layout from "components/layout";
 import "focus-visible/dist/focus-visible";
 import { Provider as NextAuthProvider } from "next-auth/client";
 import { DefaultSeo } from "next-seo";
-import { AppType } from "next/dist/next-server/lib/utils";
+import type { AppProps } from "next/app";
 import Head from "next/head";
 import { Router } from "next/router";
 import NProgress from "nprogress";
 import { useEffect, useState } from "react";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient } from "react-query";
 import { theme } from "theme";
 import { activateLocale } from "utils/i18n";
 import { locales } from "utils/lists/locales";
@@ -155,7 +155,7 @@ const setDisplayedLanguage = () => {
   activateLocale(getUsersLanguage());
 };
 
-const MyApp: AppType = ({ Component, pageProps }) => {
+const MyApp = ({ Component, pageProps }: AppProps) => {
   useEffect(setDisplayedLanguage, []);
   const [queryClient] = useState(
     () =>
