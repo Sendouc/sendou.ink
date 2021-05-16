@@ -81,9 +81,9 @@ const About = () => {
             <Link
               isExternal
               color={themeColorShade}
-              href="https://twitter.com/BigDoubleCookie"
+              href="https://twitter.com/DblCookies"
             >
-              DoubleCookies
+              DblCookies
             </Link>{" "}
             -{" "}
             <Trans>
@@ -197,7 +197,7 @@ const About = () => {
             <Link
               isExternal
               color={themeColorShade}
-              href="https://twitter.com/V_CH3RRY"
+              href="https://twitter.com/TehVilly"
             >
               Villy / 앤드류
             </Link>{" "}

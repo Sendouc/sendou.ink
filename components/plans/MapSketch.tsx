@@ -18,7 +18,7 @@ const MapSketch: React.FC<MapSketchProps> = ({
   tool,
 }) => {
   return (
-    <Box ml="3rem">
+    <Box ml="2.5rem">
       <SketchField
         name="sketch"
         className="canvas-area"

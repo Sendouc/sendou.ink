@@ -29,19 +29,25 @@ header {
   row-gap: 1.5rem;
   column-gap: 1.5rem;
   grid-template-rows: 37px 1fr 100px;
-  grid-template-columns: 175px 1fr 175px;
+  grid-template-columns: auto 1fr;
   min-height: 100vh;
+}
+
+@media (max-width: 1365px) {
+  nav {
+    margin-right: 0 !important;
+  }
 }
 
 @media (max-width: 1200px) {
   #__next {
-    grid-template-columns: 175px 1fr 0px;
+    grid-template-columns: auto 1fr;
   }
 }
 
 @media (max-width: 991px) {
   #__next {
-    grid-template-columns: 0px 1fr 0px;
+    grid-template-columns: 0px 1fr;
   }
 }
 
@@ -121,4 +127,63 @@ For Next.JS image
 
 a.nounderline {
   text-decoration: none !important;
+}
+
+/*
+For React Datepicker
+ */
+.light-datepicker {
+  --light-gray: var(--chakra-colors-gray-200);
+  --gray: var(--chakra-colors-gray-300);
+  --blue600: var(--chakra-colors-blue-500);
+  --text: var(--chakra-colors-black);
+}
+.dark-datepicker {
+  --light-gray: var(--chakra-colors-whiteAlpha-300);
+  --gray: var(--chakra-colors-whiteAlpha-400);
+  --blue600: var(--chakra-colors-blue-300);
+  --text: #edf2f7; /* default color slightly differs from chakra-colors-gray-100 */
+}
+
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.react-datepicker__input-container {
+  -webkit-padding-start: var(--chakra-space-4);
+  padding-inline-start: var(--chakra-space-4);
+  -webkit-padding-end: var(--chakra-space-2);
+  padding-inline-end: var(--chakra-space-2);
+  border-radius: var(--chakra-radii-md);
+  border: 1px solid;
+  border-color: var(--light-gray);
+}
+
+.react-datepicker__input-container:hover {
+  border-color: var(--gray);
+}
+
+.react-datepicker__input-container:focus-within {
+  z-index: 1;
+  border-color: var(--blue600);
+  box-shadow: 0 0 0 1px var(--blue600);
+}
+
+.react-datepicker__input-container > input {
+  background-color: transparent;
+  width: 100%;
+  height: var(--chakra-sizes-10);
+  color: var(--text);
+  outline: none;
+}
+
+.scrollableNavigation {
+  max-height: calc(100vh - 1rem);
+  overflow-y: auto;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollableNavigation::-webkit-scrollbar {
+  display: none;
 }

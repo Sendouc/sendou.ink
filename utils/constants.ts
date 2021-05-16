@@ -29,6 +29,7 @@ export const navItems: {
 }[] = [
   { code: "xsearch", name: "Browser" },
   { code: "xtrends", name: "Tier List" },
+  { code: "leaderboards", name: "Leaderboards" },
   {
     code: "sr",
     name: "Salmon Run",
@@ -145,7 +146,7 @@ export const TAGS = [
   },
   {
     code: "COUNT",
-    name: "Entry limi",
+    name: "Entry limit",
     description: "Only limited amount of teams can register.",
     color: "#1565C0",
   },

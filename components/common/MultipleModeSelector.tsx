@@ -26,7 +26,12 @@ interface SelectProps {
       }>;
   width?: string;
   value?: ValueType<OptionTypeBase, boolean>;
-  setValue: (value: any) => void;
+  updateMapsModes: (value: any) => void;
+  defaultValue?: OptionsType<{
+    label: string;
+    value: any;
+    data?: any;
+  }>;
   components?: Partial<SelectComponents<OptionTypeBase, boolean>>;
   isDisabled?: boolean;
   menuIsOpen?: boolean;
@@ -58,10 +63,11 @@ const Option = (props: any) => {
 const MultipleModeSelector: React.FC<SelectProps> = ({
   options,
   components,
-  setValue,
+  updateMapsModes,
   isDisabled = false,
   menuIsOpen = false,
   hideMenuBeforeTyping,
+  defaultValue,
 }) => {
   const {
     borderColor,
@@ -71,7 +77,7 @@ const MultipleModeSelector: React.FC<SelectProps> = ({
     textColor,
   } = useMyTheme();
   const [inputValue, setInputValue] = useState("");
-  const [selectedModes, setSelectedModes] = useState([]);
+  const [selectedModes, setSelectedModes] = useState(defaultValue);
 
   const handleChange = (selectedOption: any) => {
     if (!selectedOption) {
@@ -86,7 +92,7 @@ const MultipleModeSelector: React.FC<SelectProps> = ({
       })
     );
     setSelectedModes(newSelectedOption);
-    setValue(newSelectedOption);
+    updateMapsModes(newSelectedOption);
   };
 
   const menuIsOpenCheck = () => {

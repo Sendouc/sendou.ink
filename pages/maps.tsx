@@ -38,19 +38,26 @@ const MapsGeneratorPage = () => {
   const router = useRouter();
   const { i18n } = useLingui();
 
+  const defaultGenerationMode = "SZ_EVERY_OTHER";
+  const defaultCount = 25;
+
   const [stagesSelected, setStagesSelected] = useState<
     Record<string, RankedMode[]>
   >(getInitialStages());
   const [generationMode, setGenerationMode] = useState<
     "EQUAL" | "SZ_EVERY_OTHER" | "CUSTOM_ORDER"
-  >("SZ_EVERY_OTHER");
+  >(getInitialGenerationMode());
   const [maplist, setMaplist] = useState("");
   const [modes, setModes] = useState<
     { label: string; value: number; data?: string }[]
-  >([]);
-  const [count, setCount] = useState(25);
+  >(getInitialMapModes());
+  const [count, setCount] = useState(getInitialCount());
   const [editing, setEditing] = useState(false);
   const [copied, setCopied] = useState<null | "URL" | "LIST">(null);
+
+  const [urlParams, setUrlParams] = useState<
+    { key: string; value: string | string[] | undefined }[]
+  >(getInitialUrlParams());
 
   function getInitialStages() {
     const filtersFromUrl = Object.entries(router.query).reduce(
@@ -72,6 +79,105 @@ const MapsGeneratorPage = () => {
           acc[cur] = ["SZ", "TC", "RM", "CB"];
           return acc;
         }, {});
+  }
+
+  function getInitialGenerationMode() {
+    const modeFromUrl = Object.entries(router.query).filter(
+      (item) => item[0] === "mode"
+    );
+    if (
+      modeFromUrl[0] &&
+      (modeFromUrl[0][1] === "CUSTOM_ORDER" ||
+        modeFromUrl[0][1] === "EQUAL" ||
+        modeFromUrl[0][1] === "SZ_EVERY_OTHER")
+    ) {
+      return modeFromUrl[0][1];
+    }
+    return defaultGenerationMode;
+  }
+
+  function getInitialCount() {
+    const countFromUrl = Object.entries(router.query).filter(
+      (item) => item[0] === "count"
+    );
+    if (countFromUrl[0] && countFromUrl[0][1]) {
+      return Number(countFromUrl[0][1]);
+    } else {
+      return defaultCount;
+    }
+  }
+
+  function getInitialMapModes() {
+    const countFromUrl = Object.entries(router.query).filter(
+      (item) => item[0] === "modes"
+    );
+    if (
+      countFromUrl[0] &&
+      countFromUrl[0][1] &&
+      typeof countFromUrl[0][1] === "string" &&
+      countFromUrl[0][1].length > 0
+    ) {
+      const modesArray = countFromUrl[0][1].split(",");
+      return modesArray.map((mode, index) => ({
+        label: getFullModeName(mode),
+        data: mode,
+        value: index + 0.5,
+      }));
+    } else {
+      return [];
+    }
+  }
+
+  function getFullModeName(mode: string) {
+    switch (mode) {
+      case "SZ": {
+        return "Splat Zones";
+      }
+      case "TC": {
+        return "Tower Control";
+      }
+      case "RM": {
+        return "Rainmaker";
+      }
+      case "CB": {
+        return "Clam Blitz";
+      }
+    }
+    return "";
+  }
+
+  function getInitialUrlParams() {
+    const params = Object.entries(router.query);
+    return params.map((item) => {
+      return { key: item[0], value: item[1] };
+    });
+  }
+
+  function updateUrlParams(key: string, value: string | string[] | undefined) {
+    let paramFound = false;
+    urlParams.forEach((item) => {
+      if (item.key === key) {
+        item.value = value;
+        paramFound = true;
+      }
+    });
+    if (!paramFound) {
+      urlParams.push({ key, value });
+    }
+    setUrlParams(urlParams);
+    setManySearchParams(urlParams, true);
+  }
+
+  function updateUrlParamsFromArray(
+    items: { key: string; value: string | string[] | undefined }[]
+  ) {
+    const params = urlParams.filter(
+      (item) =>
+        item.key === "mode" || item.key === "modes" || item.key === "count"
+    );
+    const paramsWithMaps = params.concat(items);
+    setUrlParams(paramsWithMaps);
+    setManySearchParams(paramsWithMaps, true);
   }
 
   const poolForUrl = (stagesSelectedForUrl: Record<string, string[]>) => {
@@ -110,7 +216,7 @@ const MapsGeneratorPage = () => {
     const newStagesSelected = { ...stagesSelected, [stage]: newArray };
 
     setStagesSelected(newStagesSelected);
-    setManySearchParams(poolForUrl(newStagesSelected), true);
+    updateUrlParamsFromArray(poolForUrl(newStagesSelected));
   };
 
   const generateMaps = () => {
@@ -227,7 +333,7 @@ const MapsGeneratorPage = () => {
                       if (!buttonIsAdd) delete newStagesSelected[stage];
 
                       setStagesSelected(newStagesSelected);
-                      setManySearchParams(poolForUrl(newStagesSelected), true);
+                      updateUrlParamsFromArray(poolForUrl(newStagesSelected));
                     }}
                   >
                     {buttonIsAdd ? <Trans>All</Trans> : <Trans>Clear</Trans>}
@@ -350,12 +456,14 @@ const MapsGeneratorPage = () => {
         </Button>
       </Stack>
       <RadioGroup
-        onChange={(value) =>
+        onChange={(value) => {
           setGenerationMode(
             value as "EQUAL" | "SZ_EVERY_OTHER" | "CUSTOM_ORDER"
-          )
-        }
+          );
+          updateUrlParams("mode", value);
+        }}
         value={generationMode}
+        defaultValue={getInitialGenerationMode()}
       >
         <Stack direction="row" mb={4}>
           <Radio value="SZ_EVERY_OTHER">
@@ -378,7 +486,8 @@ const MapsGeneratorPage = () => {
             { label: "Clam Blitz", value: "CB", data: "CB" },
           ]}
           isDisabled={generationMode !== "CUSTOM_ORDER"}
-          setValue={getModeValues}
+          updateMapsModes={getModeValues}
+          defaultValue={modes}
           width={"90%"}
         />
       )}
@@ -393,7 +502,10 @@ const MapsGeneratorPage = () => {
           min={1}
           max={100}
           onChange={(_, value) => {
-            if (!Number.isNaN(value)) setCount(value);
+            if (!Number.isNaN(value)) {
+              setCount(value);
+              updateUrlParams("count", String(value));
+            }
           }}
           mb={4}
           width={24}
@@ -430,6 +542,11 @@ const MapsGeneratorPage = () => {
     value: { label: string; value: number; data?: string }[]
   ) {
     setModes(value);
+    const modeArray = value.map((mode) => {
+      if (mode.data) return mode.data;
+      else return "";
+    });
+    updateUrlParams("modes", modeArray.join(","));
   }
 
   function transformModesToStringArray() {

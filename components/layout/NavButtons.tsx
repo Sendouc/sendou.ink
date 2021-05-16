@@ -14,7 +14,7 @@ const NavButtons = ({ onButtonClick }: { onButtonClick?: () => void }) => {
         return (
           <MyLink key={code} href={"/" + code} isColored={false} noUnderline>
             <Flex
-              width="9rem"
+              width="9.5rem"
               rounded="lg"
               p={1}
               m={2}
@@ -58,6 +58,7 @@ const NavButtons = ({ onButtonClick }: { onButtonClick?: () => void }) => {
             _hover={{
               bg: bgColor,
             }}
+            onClick={onButtonClick}
           >
             <UserAvatar user={user} size="sm" />
             <Box ml={2}>My Page</Box>

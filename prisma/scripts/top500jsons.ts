@@ -1,12 +1,12 @@
 import { Prisma } from "@prisma/client";
 import { getWeaponNormalized } from "../../utils/lists/weapons";
 import prisma from "../client";
-import cb from "./data/march_clam_blitz_2021.json";
-import rm from "./data/march_rainmaker_2021.json";
-import sz from "./data/march_splat_zones_2021.json";
-import tc from "./data/march_tower_control_2021.json";
+import cb from "./data/april_clam_blitz_2021.json";
+import rm from "./data/april_rainmaker_2021.json";
+import sz from "./data/april_splat_zones_2021.json";
+import tc from "./data/april_tower_control_2021.json";
 
-const MONTH = 3;
+const MONTH = 4;
 const YEAR = 2021;
 
 const filterJson = (result: any) => !result.cheater;
@@ -105,7 +105,35 @@ const main = async () => {
     },
   });
   console.log("builds updated:", idsToUpdate.length);
+
+  const playerNamesToUpdate = await prisma.player.findMany({
+    where: { name: null, placements: { some: { NOT: { weapon: "" } } } },
+    include: { placements: true },
+  });
+
+  for (const player of playerNamesToUpdate) {
+    await prisma.player.update({
+      where: { switchAccountId: player.switchAccountId },
+      data: {
+        name: player.placements[0].playerName,
+        isJP: isNameJapanese(player.placements[0].playerName) && !player.userId,
+      },
+    });
+    console.log("updated name for:", player.placements[0].playerName);
+  }
 };
+
+function isNameJapanese(name: string) {
+  const jpCharaRegex = /[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf]/;
+
+  let ratio = 0;
+  for (const character of name.split("")) {
+    if (jpCharaRegex.test(character)) ratio++;
+    else ratio--;
+  }
+
+  return ratio > 0;
+}
 
 main()
   .catch((e) => console.error(e))

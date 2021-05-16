@@ -80,35 +80,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
   if (!mostRecentResult) return { paths: [], fallback: false };
 
   return {
-    paths: getMonthOptions(mostRecentResult.month, mostRecentResult.year)
-      .flatMap(({ month, year }) => [
-        {
-          params: {
-            slug: [year, month, "SZ"],
-          },
-        },
-        {
-          params: {
-            slug: [year, month, "TC"],
-          },
-        },
-        {
-          params: {
-            slug: [year, month, "RM"],
-          },
-        },
-        {
-          params: {
-            slug: [year, month, "CB"],
-          },
-        },
-      ])
-      .concat({
-        params: {
-          slug: [],
-        },
-      }),
-    fallback: false,
+    paths: [],
+    fallback: "blocking",
   };
 };
 

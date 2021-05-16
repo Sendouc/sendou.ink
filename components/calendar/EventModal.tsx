@@ -158,7 +158,7 @@ export function EventModal({
                   placeholder="In The Zone X"
                   data-cy="name-input"
                 />
-                <FormErrorMessage>{errors.name}</FormErrorMessage>
+                <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
               </FormControl>
 
               <FormControl isInvalid={!!errors.date}>

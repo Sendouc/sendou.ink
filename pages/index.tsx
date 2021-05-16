@@ -2,13 +2,12 @@ import { Box, Flex, Heading, useColorMode } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
 import MyLink from "components/common/MyLink";
 import NavButtons from "components/layout/NavButtons";
-import { useMyTheme, useUser } from "hooks/common";
+import { useMyTheme } from "hooks/common";
 import Image from "next/image";
 
 const HomePage = () => {
-  const { bgColor, secondaryBgColor, gray } = useMyTheme();
+  const { gray } = useMyTheme();
   const { colorMode } = useColorMode();
-  const [user] = useUser();
 
   return (
     <>

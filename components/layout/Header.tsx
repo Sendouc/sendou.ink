@@ -6,11 +6,12 @@ import {
   useColorMode,
   useMediaQuery,
 } from "@chakra-ui/react";
+import MyLink from "components/common/MyLink";
 import { useActiveNavItem, useMyTheme, useUser } from "hooks/common";
 import { signIn, signOut } from "next-auth/client";
 import Image from "next/image";
 import Link from "next/link";
-import { FiLogIn, FiLogOut, FiMenu } from "react-icons/fi";
+import { FiHeart, FiLogIn, FiLogOut, FiMenu } from "react-icons/fi";
 import ColorModeSwitcher from "./ColorModeSwitcher";
 import LanguageSwitcher from "./LanguageSwitcher";
 
@@ -33,7 +34,7 @@ const Header = ({ openNav }: { openNav: () => void }) => {
       mb={1}
       bg={secondaryBgColor}
     >
-      <Flex justify="space-between" align="center" width="6rem" px={2}>
+      <Flex align="center" width={["6rem", null, null, "13rem"]} px={2}>
         <ColorModeSwitcher /> <LanguageSwitcher />
         <IconButton
           aria-label="Open menu"
@@ -66,26 +67,49 @@ const Header = ({ openNav }: { openNav: () => void }) => {
           </>
         )}
       </Flex>
-      <Button
-        width="6rem"
-        data-cy="color-mode-toggle"
-        aria-label="Log in"
-        variant="ghost"
-        color="current"
-        onClick={() => (user ? signOut() : signIn("discord"))}
-        leftIcon={user ? <FiLogOut /> : <FiLogIn />}
-        _hover={
-          colorMode === "dark"
-            ? { bg: "white", color: "black" }
-            : { bg: "black", color: "white" }
-        }
-        borderRadius="0"
-        size="xs"
-        px={2}
-        height="30px"
-      >
-        {user ? "Log out" : "Log in"}
-      </Button>
+      <Box>
+        <MyLink isExternal isColored={false} href="https://patreon.com/sendou">
+          <Button
+            variant="ghost"
+            color="current"
+            leftIcon={<FiHeart />}
+            _hover={
+              colorMode === "dark"
+                ? { bg: "white", color: "black" }
+                : { bg: "black", color: "white" }
+            }
+            borderRadius="0"
+            size="xs"
+            px={2}
+            height="30px"
+            mr="0.5rem"
+            display={["none", null, null, "inline-block"]}
+          >
+            Sponsor
+          </Button>
+        </MyLink>
+        <Button
+          width="6rem"
+          data-cy="color-mode-toggle"
+          aria-label="Log in"
+          variant="ghost"
+          color="current"
+          onClick={() => (user ? signOut() : signIn("discord"))}
+          leftIcon={user ? <FiLogOut /> : <FiLogIn />}
+          _hover={
+            colorMode === "dark"
+              ? { bg: "white", color: "black" }
+              : { bg: "black", color: "white" }
+          }
+          borderRadius="0"
+          size="xs"
+          px={2}
+          height="30px"
+          ml="0.5rem"
+        >
+          {user ? "Log out" : "Log in"}
+        </Button>
+      </Box>
     </Box>
   );
 };

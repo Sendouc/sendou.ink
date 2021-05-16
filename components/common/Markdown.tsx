@@ -48,7 +48,7 @@ const Markdown: React.FC<MarkdownProps> = ({
     return {
       paragraph: (props: any) => {
         const { children } = props;
-        return <Text mb={2}>{children}</Text>;
+        return <Text as="div" mb={2}>{children}</Text>;
       },
       emphasis: (props: any) => {
         const { children } = props;

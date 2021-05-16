@@ -10,8 +10,15 @@ type BuildsByWeapon = Prisma.PromiseReturnType<typeof getBuildsByWeaponQuery>;
 const getBuildsByWeaponQuery = async (weapon: string) =>
   prisma.build.findMany({
     where: { weapon },
-    orderBy: [{ top500: "desc" }, { jpn: "desc" }, { updatedAt: "desc" }],
-    include: { user: true },
+    orderBy: [
+      { top500: "desc" },
+      { jpn: "desc" },
+      { user: { plusStatus: { membershipTier: "asc" } } },
+      { updatedAt: "desc" },
+    ],
+    include: {
+      user: { include: { plusStatus: { select: { membershipTier: true } } } },
+    },
   });
 
 export const getBuildsByWeapon = async (weapon: string) =>

@@ -25,7 +25,9 @@ const teamsFreeAgentsHandler = async (
           discordAvatar: true,
           username: true,
           discriminator: true,
-          profile: { select: { country: true, weaponPool: true } },
+          profile: {
+            select: { country: true, weaponPool: true, updatedAt: true },
+          },
         },
       },
     },
