@@ -38,8 +38,6 @@ export type inferQueryOutput<
   TRouteKey extends keyof AppRouter["_def"]["queries"]
 > = inferProcedureOutput<AppRouter["_def"]["queries"][TRouteKey]>;
 
-export const ssr = trcpReactQuery.ssr(appRouter, { user: null });
-
 export default trpcNext.createNextApiHandler({
   router: appRouter,
   createContext,

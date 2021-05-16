@@ -8,6 +8,7 @@ import {
   RadioGroup,
 } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
+import { createSSGHelpers } from "@trpc/react/ssg";
 import MyHead from "components/common/MyHead";
 import SubText from "components/common/SubText";
 import Suggestion from "components/plus/Suggestion";
@@ -17,8 +18,9 @@ import VouchesList from "components/plus/VouchesList";
 import VouchModal from "components/plus/VouchModal";
 import { useUser } from "hooks/common";
 import { usePlusHomePage } from "hooks/plus";
-import { ssr } from "pages/api/trpc/[trpc]";
+import { appRouter } from "pages/api/trpc/[trpc]";
 import { Fragment } from "react";
+import superjson from "superjson";
 import { getVotingRange } from "utils/plus";
 import { getFullUsername } from "utils/strings";
 
@@ -238,14 +240,19 @@ const PlusHomePage = () => {
 };
 
 export const getStaticProps = async () => {
+  const ssg = createSSGHelpers({
+    router: appRouter,
+    transformer: superjson,
+    ctx: { user: null },
+  });
   await Promise.all([
-    ssr.prefetchQuery("plus.suggestions"),
-    ssr.prefetchQuery("plus.statuses"),
+    ssg.prefetchQuery("plus.suggestions"),
+    ssg.prefetchQuery("plus.statuses"),
   ]);
 
   return {
     props: {
-      dehydratedState: ssr.dehydrate(),
+      dehydratedState: ssg.dehydrate(),
     },
     revalidate: 60,
   };
