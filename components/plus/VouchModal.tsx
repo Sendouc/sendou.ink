@@ -35,7 +35,7 @@ const VouchModal: React.FC<Props> = ({ canVouchFor }) => {
   const { handleSubmit, errors, register, control } = useForm<FormData>({
     resolver: zodResolver(vouchSchema),
   });
-  const utils = trpc.useQueryUtils();
+  const utils = trpc.useContext();
   const { mutate, status } = trpc.useMutation("plus.vouch", {
     onSuccess() {
       toast(getToastOptions("Successfully vouched", "success"));

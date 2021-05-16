@@ -74,7 +74,7 @@ export default function usePlusVoting() {
   const { data: statuses, isLoading: isLoadingStatuses } = trpc.useQuery([
     "plus.statuses",
   ]);
-  const utils = trpc.useQueryUtils();
+  const utils = trpc.useContext();
   const { mutate: mutateVote, status: voteStatus } = trpc.useMutation(
     "plus.vote",
     {

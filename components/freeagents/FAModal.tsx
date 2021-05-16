@@ -43,7 +43,7 @@ interface Props {
 type FormData = z.infer<typeof freeAgentPostSchema>;
 
 const FAModal = ({ onClose, post, refetchQuery }: Props) => {
-  const utils = trpc.useQueryUtils();
+  const utils = trpc.useContext();
 
   const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
     resolver: zodResolver(freeAgentPostSchema),
