@@ -35,10 +35,9 @@
     "@next/bundle-analyzer": "^10.2.0",
     "@prisma/client": "^2.22.1",
     "@sendou/react-sketch": "^0.5.2",
-    "@trpc/client": "6.1.1",
-    "@trpc/next": "^6.1.1",
-    "@trpc/react": "6.1.1",
-    "@trpc/server": "6.1.1",
+    "@trpc/client": "5.0.0",
+    "@trpc/react": "5.0.0",
+    "@trpc/server": "5.0.0",
     "countries-list": "^2.6.1",
     "focus-visible": "^5.2.0",
     "framer-motion": "^4.1.11",
@@ -69,7 +68,7 @@
     "zod": "^1.11.17"
   },
   "devDependencies": {
-    "@babel/core": "^7.14.0",
+    "@babel/core": "^7.14.2",
     "@lingui/cli": "^3.8.3",
     "@lingui/macro": "^3.8.3",
     "@types/node": "^15.0.2",
