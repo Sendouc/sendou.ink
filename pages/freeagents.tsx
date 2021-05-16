@@ -8,7 +8,6 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
-import { createSSGHelpers } from "@trpc/react/ssg";
 import FAFilters from "components/freeagents/FAFilters";
 import FAModal from "components/freeagents/FAModal";
 import FreeAgentSection from "components/freeagents/FreeAgentSection";
@@ -16,11 +15,10 @@ import MatchesInfo from "components/freeagents/MatchesInfo";
 import { useMyTheme, useUser } from "hooks/common";
 import { useFreeAgents } from "hooks/freeagents";
 import { useRouter } from "next/router";
-import { appRouter } from "pages/api/trpc/[trpc]";
 import { useEffect, useRef, useState } from "react";
-import superjson from "superjson";
 import { mutate } from "swr";
 import { sendData } from "utils/postData";
+import { ssr } from "./api/trpc/[trpc]";
 
 const FreeAgentsPage = () => {
   const {
@@ -37,8 +35,9 @@ const FreeAgentsPage = () => {
   const [user] = useUser();
   const router = useRouter();
 
-  const [postIdToScrollTo, setPostIdToScrollTo] =
-    useState<undefined | number>(undefined);
+  const [postIdToScrollTo, setPostIdToScrollTo] = useState<undefined | number>(
+    undefined
+  );
   const { gray } = useMyTheme();
   const [sending, setSending] = useState(false);
   const postRef = useRef<HTMLDivElement>(null);
@@ -171,16 +170,11 @@ const FreeAgentsPage = () => {
 };
 
 export const getStaticProps = async () => {
-  const ssg = createSSGHelpers({
-    router: appRouter,
-    transformer: superjson,
-    ctx: { user: null },
-  });
-  await ssg.prefetchQuery("freeAgents.posts");
+  await ssr.prefetchQuery("freeAgents.posts");
 
   return {
     props: {
-      dehydratedState: ssg.dehydrate(),
+      dehydratedState: ssr.dehydrate(),
     },
     revalidate: 60,
   };

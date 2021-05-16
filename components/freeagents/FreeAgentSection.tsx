@@ -47,7 +47,7 @@ const FreeAgentSection = ({
   const { themeColorShade } = useMyTheme();
 
   const toast = useToast();
-  const utils = trpc.useContext();
+  const utils = trpc.useQueryUtils();
   const addLikeMutation = trpc.useMutation("freeAgents.addLike", {
     onSuccess() {
       utils.invalidateQuery(["freeAgents.likes"]);

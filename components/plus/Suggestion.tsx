@@ -43,7 +43,7 @@ const Suggestion = ({
   const { handleSubmit, errors, register, watch } = useForm<FormData>({
     resolver: zodResolver(resuggestionSchema),
   });
-  const utils = trpc.useContext();
+  const utils = trpc.useQueryUtils();
 
   const { mutate, status } = trpc.useMutation("plus.suggestion", {
     onSuccess() {

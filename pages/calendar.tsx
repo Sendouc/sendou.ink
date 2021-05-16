@@ -2,23 +2,22 @@ import { Button } from "@chakra-ui/button";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/input";
 import { Box } from "@chakra-ui/layout";
 import { t, Trans } from "@lingui/macro";
-import { createSSGHelpers } from "@trpc/react/ssg";
 import EventInfo from "components/calendar/EventInfo";
 import { EventModal, FormData } from "components/calendar/EventModal";
 import MyHead from "components/common/MyHead";
 import SubText from "components/common/SubText";
 import { useMyTheme } from "hooks/common";
-import { appRouter } from "pages/api/trpc/[trpc]";
+import { ssr } from "pages/api/trpc/[trpc]";
 import { Fragment, useState } from "react";
 import { FiSearch } from "react-icons/fi";
-import superjson from "superjson";
 import { trpc } from "utils/trpc";
 
 const CalendarPage = () => {
   const { gray } = useMyTheme();
   const events = trpc.useQuery(["calendar.events"], { enabled: false });
-  const [eventToEdit, setEventToEdit] =
-    useState<boolean | (FormData & { id: number })>(false);
+  const [eventToEdit, setEventToEdit] = useState<
+    boolean | (FormData & { id: number })
+  >(false);
   const [filter, setFilter] = useState("");
 
   let lastPrintedDate: [number, number, Date] | null = null;
@@ -136,16 +135,11 @@ const CalendarPage = () => {
 };
 
 export const getStaticProps = async () => {
-  const ssg = createSSGHelpers({
-    router: appRouter,
-    transformer: superjson,
-    ctx: { user: null },
-  });
-  await ssg.prefetchQuery("calendar.events");
+  await ssr.prefetchQuery("calendar.events");
 
   return {
     props: {
-      dehydratedState: ssg.dehydrate(),
+      dehydratedState: ssr.dehydrate(),
     },
     revalidate: 60,
   };

@@ -2,7 +2,6 @@ import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { mode } from "@chakra-ui/theme-tools";
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
-import { withTRPC } from "@trpc/next";
 import Layout from "components/layout";
 import "focus-visible/dist/focus-visible";
 import { Provider as NextAuthProvider } from "next-auth/client";
@@ -12,10 +11,12 @@ import Head from "next/head";
 import { Router } from "next/router";
 import NProgress from "nprogress";
 import { useEffect, useState } from "react";
-import { QueryClient } from "react-query";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { Hydrate } from "react-query/hydration";
 import { theme } from "theme";
 import { activateLocale } from "utils/i18n";
 import { locales } from "utils/lists/locales";
+import { trpc } from "utils/trpc";
 import "./styles.css";
 
 NProgress.configure({ showSpinner: false });
@@ -202,7 +203,13 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         <ChakraProvider theme={extendedTheme}>
           <I18nProvider i18n={i18n}>
             <Layout>
-              <Component {...pageProps} />
+              <QueryClientProvider client={queryClient}>
+                <Hydrate
+                  state={trpc.useDehydratedState(pageProps.dehydratedState)}
+                >
+                  <Component {...pageProps} />
+                </Hydrate>
+              </QueryClientProvider>
             </Layout>
           </I18nProvider>
         </ChakraProvider>
@@ -211,8 +218,4 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   );
 };
 
-export default withTRPC(() => {
-  return {
-    url: "/api/trpc",
-  };
-})(MyApp);
+export default MyApp;
