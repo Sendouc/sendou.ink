@@ -8,6 +8,7 @@ import {
 } from "utils/lists/weaponsWithHero";
 import MySelect from "./MySelect";
 import WeaponImage from "./WeaponImage";
+import weaponJson from "utils/data/weaponData.json";
 
 interface SelectorProps {
   autoFocus?: boolean;
@@ -60,10 +61,33 @@ const Option = (props: any) => {
 const customFilterOption = (option: any, rawInput: string) => {
   const words = rawInput.split(" ");
   return words.reduce(
-    (acc, cur) => acc && option.label.toLowerCase().includes(cur.toLowerCase()),
+    (acc, cur) => acc && (option.label.toLowerCase().includes(cur.toLowerCase()) ||
+        option.data.data.sub.toLowerCase() === rawInput.toLowerCase() ||
+        option.data.data.special.toLowerCase() === rawInput.toLowerCase()),
     true
   );
 };
+
+type WeaponData = {
+  name: string;
+  sub: string;
+  special: string;
+};
+
+function initWeaponData() {
+  const weaponData: Record<any, any> = weaponJson;
+  const weaponsArray: WeaponData[] = [];
+
+  for (const [key, value] of Object.entries(weaponData)) {
+    if (value.Special && value.Sub) {
+      weaponsArray.push({name: key, special: value.Special, sub: value.Sub});
+    }
+  }
+  console.log('weaponsArray', weaponsArray);
+  return weaponsArray;
+}
+
+const weaponData = initWeaponData();
 
 const WeaponSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = (
   props
@@ -80,6 +104,7 @@ const WeaponSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = (
         options: category.weapons.map((weapon) => ({
           value: weapon,
           label: getLabel(weapon),
+          data: weaponData.find(obj => {return obj.name === weapon})
         })),
       }))}
       value={getValue()}
