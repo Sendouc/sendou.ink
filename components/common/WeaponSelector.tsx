@@ -62,8 +62,8 @@ const customFilterOption = (option: any, rawInput: string) => {
   const words = rawInput.split(" ");
   return words.reduce(
     (acc, cur) => acc && (option.label.toLowerCase().includes(cur.toLowerCase()) ||
-        option.data.data.sub.toLowerCase() === rawInput.toLowerCase() ||
-        option.data.data.special.toLowerCase() === rawInput.toLowerCase()),
+        option.data?.data?.sub.toLowerCase() === rawInput.toLowerCase() ||
+        option.data?.data?.special.toLowerCase() === rawInput.toLowerCase()),
     true
   );
 };
