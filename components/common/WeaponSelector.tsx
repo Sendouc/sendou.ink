@@ -83,7 +83,6 @@ function initWeaponData() {
       weaponsArray.push({name: key, special: value.Special, sub: value.Sub});
     }
   }
-  console.log('weaponsArray', weaponsArray);
   return weaponsArray;
 }
 
