@@ -21,11 +21,13 @@ const LinkingInfoPage = ({}) => {
         <br />
         Simply DM the bot with <code>!register</code> command and follow
         instructions. If you have problems using Lanista you can DM{" "}
-        <b>Lean#3146</b> directly.
+        <b>Lean#3146</b> directly. If you have already used the !register
+        command in the past and just need to link now then use the{" "}
+        <code>!sendoulink</code> command.
         <br />
         <br />
-        If you have already used the !register command in the past and just need
-        to link now then use the <code>!sendoulink</code> command.
+        Please note the results update <b>once a month</b> and league results
+        below league power of 2200 are not included.
       </>
     </>
   );
