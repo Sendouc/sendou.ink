@@ -66,7 +66,7 @@ const UserSearchPage = ({ users }: Props) => {
       <Head>
         <meta name="robots" content="noindex" />
       </Head>
-      <InputGroup size="lg" maxW={80} mt={4} mb={6}>
+      <InputGroup size="lg" maxW={80} mt={4} mb={6} mx="auto">
         <InputLeftElement
           pointerEvents="none"
           children={<Box as={FiSearch} color={gray} />}
