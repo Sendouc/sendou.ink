@@ -38,7 +38,7 @@ const StageSelector: React.FC<StageSelectorProps> = ({
 }) => {
   const { i18n } = useLingui();
   return (
-    <Box maxW="20rem" m="3rem auto">
+    <Box maxW="20rem" m="0 auto 2rem auto">
       <Select value={currentBackground.stage} onChange={handleChange}>
         {salmonRunStages
           .concat(stages)

@@ -293,6 +293,39 @@ const MapPlannerPage = () => {
           color={color}
           setColor={setColor}
         />
+
+        <StageSelector
+          handleChange={(e) => {
+            const stage = e.target.value;
+            if (stage === "") {
+              return;
+            }
+
+            if (stage === "Blank") {
+              setBg({ stage });
+              return;
+            }
+
+            const newIsSalmonRunStage = !stages.includes(stage as any);
+            const oldIsSalmonRunStage = !stages.includes(bg.stage as any);
+
+            if (newIsSalmonRunStage === oldIsSalmonRunStage) {
+              setBg({ ...bg, stage });
+              return;
+            }
+
+            if (newIsSalmonRunStage) {
+              setBg({ stage, tide: "mid" });
+              return;
+            }
+
+            setBg({ stage, mode: "SZ", view: "M" });
+          }}
+          currentBackground={bg}
+          changeMode={(mode) => setBg({ ...bg, mode })}
+          changeTide={(tide: "low" | "mid" | "high") => setBg({ ...bg, tide })}
+          changeView={(view: "M" | "R") => setBg({ ...bg, view })}
+        />
         <MapSketch
           sketch={sketch}
           controlledValue={controlledValue}
@@ -301,8 +334,6 @@ const MapPlannerPage = () => {
           tool={tool}
         />
 
-        <ImageAdder addImageToSketch={addImageToSketch} />
-        <Divider mx="3" my={4} />
         <Flex mt={6} mb={2} justifyContent="space-between">
           <Button
             onClick={() => {
@@ -340,38 +371,9 @@ const MapPlannerPage = () => {
             </Button>
           </ButtonGroup>
         </Flex>
-        <StageSelector
-          handleChange={(e) => {
-            const stage = e.target.value;
-            if (stage === "") {
-              return;
-            }
 
-            if (stage === "Blank") {
-              setBg({ stage });
-              return;
-            }
-
-            const newIsSalmonRunStage = !stages.includes(stage as any);
-            const oldIsSalmonRunStage = !stages.includes(bg.stage as any);
-
-            if (newIsSalmonRunStage === oldIsSalmonRunStage) {
-              setBg({ ...bg, stage });
-              return;
-            }
-
-            if (newIsSalmonRunStage) {
-              setBg({ stage, tide: "mid" });
-              return;
-            }
-
-            setBg({ stage, mode: "SZ", view: "M" });
-          }}
-          currentBackground={bg}
-          changeMode={(mode) => setBg({ ...bg, mode })}
-          changeTide={(tide: "low" | "mid" | "high") => setBg({ ...bg, tide })}
-          changeView={(view: "M" | "R") => setBg({ ...bg, view })}
-        />
+        <Divider mx="3" my={6} />
+        <ImageAdder addImageToSketch={addImageToSketch} />
         <input
           type="file"
           accept=".json"
