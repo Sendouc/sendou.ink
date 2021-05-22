@@ -44,7 +44,7 @@ const NavButtons = ({ onButtonClick }: { onButtonClick?: () => void }) => {
       {user && (
         <MyLink href={"/u/" + user.discordId} isColored={false} noUnderline>
           <Flex
-            width="9rem"
+            width="9.5rem"
             rounded="lg"
             p={1}
             m={2}
