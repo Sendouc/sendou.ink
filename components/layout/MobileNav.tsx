@@ -26,8 +26,8 @@ const MobileNav = ({
     <Drawer isOpen={isOpen} onClose={onClose} size="full" placement="left">
       <DrawerOverlay>
         <DrawerContent bg={bgColor}>
-          <DrawerBody>
-            <Flex mb={4} align="center" justifyContent="space-between">
+          <DrawerBody pb={16}>
+            <Flex align="center" justifyContent="space-between">
               <Flex align="center">
                 <ColorModeSwitcher isMobile />
                 <LanguageSwitcher isMobile />
