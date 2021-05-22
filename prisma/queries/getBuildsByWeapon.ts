@@ -1,5 +1,6 @@
 import { Prisma } from "@prisma/client";
 import prisma from "prisma/client";
+import { altWeaponToNormal } from "utils/lists/weapons";
 
 export type GetBuildsByWeaponData = Prisma.PromiseReturnType<
   typeof getBuildsByWeapon
@@ -7,9 +8,16 @@ export type GetBuildsByWeaponData = Prisma.PromiseReturnType<
 
 type BuildsByWeapon = Prisma.PromiseReturnType<typeof getBuildsByWeaponQuery>;
 
-const getBuildsByWeaponQuery = async (weapon: string) =>
-  prisma.build.findMany({
-    where: { weapon },
+const getBuildsByWeaponQuery = async (weapon: string) => {
+  const normalWeaponToAlt = new Map(
+    Array.from(altWeaponToNormal, (entry) => [entry[1], entry[0]])
+  );
+
+  const where = normalWeaponToAlt.has(weapon)
+    ? { OR: [{ weapon }, { weapon: normalWeaponToAlt.get(weapon) }] }
+    : { weapon };
+  return prisma.build.findMany({
+    where,
     orderBy: [
       { top500: "desc" },
       { jpn: "desc" },
@@ -20,6 +28,7 @@ const getBuildsByWeaponQuery = async (weapon: string) =>
       user: { include: { plusStatus: { select: { membershipTier: true } } } },
     },
   });
+};
 
 export const getBuildsByWeapon = async (weapon: string) =>
   getBuildsByWeaponQuery(weapon).then((builds) =>
