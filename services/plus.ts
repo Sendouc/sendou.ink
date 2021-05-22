@@ -575,6 +575,11 @@ const editVote = async ({
     where: { userId: { in: [userId, input.userId] } },
   });
 
+  // deal with special case of user adjusting vote about themselves
+  if (statuses.length === 1) {
+    statuses[1] = statuses[0];
+  }
+
   if (
     statuses[0].region !== statuses[1].region &&
     ![-1, 1].includes(input.score)
