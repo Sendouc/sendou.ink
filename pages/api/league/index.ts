@@ -62,7 +62,7 @@ async function POST(req: NextApiRequest, res: NextApiResponse) {
     return res.status(500).send(e.message);
   }
 
-  res.status(200);
+  res.status(200).end();
 }
 
 export default (req: NextApiRequest, res: NextApiResponse) =>
