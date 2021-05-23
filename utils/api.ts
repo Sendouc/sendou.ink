@@ -1,6 +1,6 @@
 import { User } from "@prisma/client";
 import { httpError } from "@trpc/server";
-import { NextApiRequest } from "next";
+import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/client";
 
 export const getMySession = (req: NextApiRequest): Promise<User | null> => {
@@ -19,4 +19,22 @@ export const throwIfNotLoggedIn = (user: User | null) => {
   if (!user) throw httpError.unauthorized();
 
   return user;
+};
+
+export const createHandler = (
+  req: NextApiRequest,
+  res: NextApiResponse,
+  handlers: Partial<
+    Record<
+      "GET" | "POST",
+      (req: NextApiRequest, res: NextApiResponse) => Promise<void>
+    >
+  >
+) => {
+  if (Object.keys(handlers).includes(req.method as any)) {
+    const key = req.method as keyof typeof handlers;
+    return handlers[key]!(req, res);
+  }
+
+  return res.status(405).end();
 };
