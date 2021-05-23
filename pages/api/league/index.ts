@@ -43,7 +43,7 @@ async function POST(req: NextApiRequest, res: NextApiResponse) {
               z.object({
                 unique_id: z.string(),
                 principal_id: z.string(),
-                weapon: z.string(),
+                weapon: z.tuple([z.string(), z.string()]),
               })
             ),
           })

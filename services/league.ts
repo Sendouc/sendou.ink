@@ -28,7 +28,7 @@ const createResults = async (
       tag_members: {
         unique_id: string;
         principal_id: string;
-        weapon: string;
+        weapon: [string, string];
       }[];
     }[];
   }[]
