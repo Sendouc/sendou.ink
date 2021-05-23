@@ -22,6 +22,13 @@ async function GET(req: NextApiRequest, res: NextApiResponse) {
 }
 
 async function POST(req: NextApiRequest, res: NextApiResponse) {
+  if (
+    !req.body ||
+    typeof req.body !== "object" ||
+    req.body.token !== process.env.LANISTA_TOKEN
+  ) {
+    return res.status(401).end();
+  }
   const parsed = z
     .array(
       z.object({
@@ -43,7 +50,7 @@ async function POST(req: NextApiRequest, res: NextApiResponse) {
         ),
       })
     )
-    .safeParse(req.body);
+    .safeParse(req.body.data);
 
   if (!parsed.success) {
     return res.status(400).send(parsed.error.message);
