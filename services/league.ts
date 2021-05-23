@@ -34,6 +34,13 @@ const createResults = async (
   }[]
 ) => {
   const freshest = await prisma.leagueSquad.findFirst({
+    where: {
+      type: data[0].league_type.key === "pair" ? "TWIN" : "QUAD",
+      region:
+        data[0].league_ranking_region.code === "US"
+          ? "NA"
+          : data[0].league_ranking_region.code,
+    },
     orderBy: { startTime: "desc" },
   });
   if (!freshest) throw Error("that's not fresh");
