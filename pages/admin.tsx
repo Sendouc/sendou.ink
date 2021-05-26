@@ -15,7 +15,10 @@ const AdminPage = () => {
     switchAccountId: "",
     discordId: "",
   });
-  const endVoting = trpc.useMutation("plus.endVoting");
+  const endVoting = trpc.useMutation("plus.endVoting", {
+    onSuccess: () => console.log("success"),
+    onError: (e) => console.error(e.message),
+  });
 
   const handleEndVoting = () => {
     if (!window.confirm("End voting?")) return;
