@@ -14,21 +14,76 @@ import {
 import { t, Trans } from "@lingui/macro";
 import { Ability, Mode } from "@prisma/client";
 import AbilityIcon from "components/common/AbilityIcon";
-import {
-  UseBuildsByWeaponDispatch,
-  UseBuildsByWeaponState,
-} from "hooks/builds";
+import { UseBuildsByWeaponDispatch, UseBuildsByWeaponState, } from "hooks/builds";
 import { useMyTheme } from "hooks/common";
 import { Fragment, useState } from "react";
 import { FiTrash } from "react-icons/fi";
 import { abilities, isMainAbility } from "utils/lists/abilities";
+import { components } from "react-select";
+import ModeImage from "../common/ModeImage";
+import MySelect from "../common/MySelect";
 
 interface Props {
   filters: UseBuildsByWeaponState["filters"];
   dispatch: UseBuildsByWeaponDispatch;
 }
 
+const modeOptions = [
+  {
+    label: "All modes",
+    value: "ALL",
+  },
+  {
+    label: "Splat Zones",
+    value: "SZ",
+  },
+  {
+    label: "Tower Control",
+    value: "TC",
+  },
+  {
+    label: "Rainmaker",
+    value: "RM",
+  },
+  {
+    label: "Clam Blitz",
+    value: "CB",
+  },
+  {
+    label: "Turf War",
+    value: "TW",
+  },
+] as const;
+
+const ModeOption = (props: any) => {
+  return (
+      <components.Option {...props}>
+        <Flex alignItems="center">
+          <Box mr="0.5em">
+            {props.value !== "ALL" ? <ModeImage size={24} mode={props.value} /> : <></>}
+          </Box>
+          {props.label}
+        </Flex>
+      </components.Option>
+  );
+};
+
+const ModeSingleValue = (props: any) => {
+  console.log('props', props);
+  return (
+      <components.SingleValue {...props}>
+        <Box mr="0.5em">
+          {props.data.value !== "ALL" ? <ModeImage size={24} mode={props.data.value} /> : <></>}
+        </Box>
+        <Flex alignItems="center">{props.data.label}</Flex>
+      </components.SingleValue>
+  );
+};
+
 const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
+  const [mode, setMode] = useState<
+      { label: string; value: string;}
+      >(modeOptions[0]);
   const [modeValueChanged, setModeValueChanged] = useState(false);
   const { gray } = useMyTheme();
 
@@ -196,33 +251,30 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
               </option>
             ))}
         </Select>
-        <Select
-          onChange={(e) => {
-            setModeValueChanged(true);
-            dispatch({
-              type: "SET_MODE_FILTER",
-              modeFilter:
-                e.target.value === "ALL" ? undefined : (e.target.value as Mode),
-            });
-          }}
-          size="sm"
-          width={48}
-          m={2}
-        >
-          <option hidden value="NO_VALUE">
-            {t`Filter by mode`}
-          </option>
-          {[t`All modes`, "TW", "SZ", "TC", "RM", "CB"]
-            // let's filter out all modes initially
-            // to avoid confusion as it does nothing different from
-            // having nothing selected at all
-            .filter((_, i) => modeValueChanged || i !== 0)
-            .map((mode, i) => (
-              <option key={mode} value={i === 0 ? "ALL" : mode}>
-                {mode}
-              </option>
-            ))}
-        </Select>
+        <Box minW={250}>
+          <MySelect
+            name="filter by mode"
+            isMulti={false}
+            value={mode}
+            options={modeOptions}
+            setValue={(value) => {
+              setModeValueChanged(true);
+              const mode = modeOptions.find((option) => option.value === value);
+              if (mode)
+                setMode(mode);
+              dispatch({
+                type: "SET_MODE_FILTER",
+                modeFilter:
+                  value === "ALL" ? undefined : (value as Mode),
+              });
+            }}
+            components={{
+              IndicatorSeparator: () => null,
+              Option: ModeOption,
+              SingleValue: ModeSingleValue,
+            }}
+          />
+        </Box>
       </Flex>
     </>
   );
