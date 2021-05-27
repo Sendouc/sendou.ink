@@ -48,7 +48,11 @@ const Markdown: React.FC<MarkdownProps> = ({
     return {
       paragraph: (props: any) => {
         const { children } = props;
-        return <Text as="div" mb={2}>{children}</Text>;
+        return (
+          <Text as="div" mb={2}>
+            {children}
+          </Text>
+        );
       },
       emphasis: (props: any) => {
         const { children } = props;
@@ -93,7 +97,6 @@ const Markdown: React.FC<MarkdownProps> = ({
       text: (props: any) => {
         const { children } = props;
 
-        // TODO: "react-dom.development.js?61bb:67 Warning: validateDOMNesting(...): <div> cannot appear as a descendant of <p>."
         return (
           <Text as="span">
             {reactStringReplace(children, /(:\S+:)/g, (match, i) => (
