@@ -94,13 +94,13 @@ const AbilityOption = (props: any) => {
 const ModeSingleValue = (props: any) => {
   return (
     <components.SingleValue {...props}>
-      <Box>
-        {props.data.value !== "ALL" ? (
+      {props.data.value !== "ALL" ? (
+        <Box mr="0.5em">
           <ModeImage size={24} mode={props.data.value} />
-        ) : (
-          <></>
-        )}
-      </Box>
+        </Box>
+      ) : (
+        <></>
+      )}
       {props.data.label}
     </components.SingleValue>
   );
