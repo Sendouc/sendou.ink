@@ -22,8 +22,8 @@ import React, { Fragment, useState } from "react";
 import { FiTrash } from "react-icons/fi";
 import { abilities, isMainAbility } from "utils/lists/abilities";
 import { components } from "react-select";
-import ModeImage from "../common/ModeImage";
-import MySelect from "../common/MySelect";
+import ModeImage from "components/common/ModeImage";
+import MySelect from "components/common/MySelect";
 
 interface Props {
   filters: UseBuildsByWeaponState["filters"];
