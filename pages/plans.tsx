@@ -13,6 +13,7 @@ import {
 } from "react-icons/fa";
 import { stages } from "utils/lists/stages";
 import MyHead from "../components/common/MyHead";
+import DropZone from "react-dropzone";
 
 const MapSketch = dynamic(() => import("components/plans/MapSketch"), {
   ssr: false,
@@ -157,6 +158,27 @@ const MapPlannerPage = () => {
       paintFirst: "stroke",
     });
     setTool("select");
+  };
+
+  const onBackgroundImageDrop = (accepted: any[] /*, rejected*/) => {
+    if (accepted && accepted.length > 0) {
+      let reader = new FileReader();
+      let { stretched, stretchedX, stretchedY, originX, originY } =
+        controlledValue;
+      reader.addEventListener(
+        "load",
+        () =>
+          sketch.current.setBackgroundFromDataUrl(reader.result, {
+            stretched: stretched,
+            stretchedX: stretchedX,
+            stretchedY: stretchedY,
+            originX: originX,
+            originY: originY,
+          }),
+        false
+      );
+      reader.readAsDataURL(accepted[0]);
+    }
   };
 
   const undo = () => {
@@ -334,7 +356,7 @@ const MapPlannerPage = () => {
           tool={tool}
         />
 
-        <Flex mt={6} mb={2} justifyContent="space-between">
+        <Flex mt={6} mb={2} justifyContent="space-between" alignItems="center">
           <Button
             onClick={() => {
               sketch.current.clear();
@@ -347,6 +369,27 @@ const MapPlannerPage = () => {
           >
             <Trans>Clear drawings</Trans>
           </Button>
+          <DropZone
+            accept="image/*"
+            multiple={false}
+            onDrop={onBackgroundImageDrop}
+          >
+            {({ getRootProps, getInputProps }) => (
+              <section
+                style={{
+                  border: "1px dotted white",
+                  padding: "0.5rem",
+                  borderRadius: "10px",
+                  fontSize: "0.8rem",
+                }}
+              >
+                <div {...getRootProps()}>
+                  <input {...getInputProps()} />
+                  <p>Drag 'n' drop or click to use custom background image</p>
+                </div>
+              </section>
+            )}
+          </DropZone>
           <ButtonGroup variant="outline" size="sm" isAttached>
             <Button
               onClick={() => download(sketch.current.toDataURL(), "png")}
