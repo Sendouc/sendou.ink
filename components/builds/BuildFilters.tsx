@@ -9,14 +9,13 @@ import {
   NumberInputField,
   NumberInputStepper,
   Radio,
-  Select,
 } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import { Ability, Mode } from "@prisma/client";
 import AbilityIcon from "components/common/AbilityIcon";
 import { UseBuildsByWeaponDispatch, UseBuildsByWeaponState, } from "hooks/builds";
 import { useMyTheme } from "hooks/common";
-import { Fragment, useState } from "react";
+import React, { Fragment, useState } from "react";
 import { FiTrash } from "react-icons/fi";
 import { abilities, isMainAbility } from "utils/lists/abilities";
 import { components } from "react-select";
@@ -55,6 +54,10 @@ const modeOptions = [
   },
 ] as const;
 
+const abilitiesOptions = abilities.map((item) => {
+  return {label: item.name, value: item.code};
+});
+
 const ModeOption = (props: any) => {
   return (
       <components.Option {...props}>
@@ -68,8 +71,20 @@ const ModeOption = (props: any) => {
   );
 };
 
+const AbilityOption = (props: any) => {
+  return (
+    <components.Option {...props}>
+      <Flex alignItems="center">
+        <Box mr="0.5em">
+          <AbilityIcon ability={props.value} size={"SUBTINY"} />
+        </Box>
+        {props.label}
+      </Flex>
+    </components.Option>
+  );
+};
+
 const ModeSingleValue = (props: any) => {
-  console.log('props', props);
   return (
       <components.SingleValue {...props}>
         <Box mr="0.5em">
@@ -226,32 +241,26 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
         align="center"
         flexDir={["column", "row"]}
       >
-        <Select
-          onChange={(e) =>
-            dispatch({
-              type: "ADD_FILTER",
-              ability: e.target.value as Ability,
-            })
-          }
-          size="sm"
-          width={48}
-          m={2}
-        >
-          <option hidden value="NO_VALUE">
-            {t`Filter by ability`}
-          </option>
-          {abilities
-            .filter(
-              (ability) =>
-                !filters.some((filter) => ability.code === filter.ability)
-            )
-            .map((ability) => (
-              <option key={ability.code} value={ability.code}>
-                {ability.name}
-              </option>
-            ))}
-        </Select>
-        <Box minW={250}>
+        <Box minW={250} m="2">
+          <MySelect
+            name="filter by ability"
+            isMulti={false}
+            value={{label: "Filter by ability", value: "DEFAULT"}}
+            options={abilitiesOptions.filter((option) => {
+              return !filters.find((filterElement) => filterElement.ability === option.value);
+            })}
+            setValue={(value) => {
+              dispatch({
+                type: "ADD_FILTER",
+                ability: value as Ability,
+              })
+            }}
+            components={{
+              Option: AbilityOption
+            }}
+          />
+        </Box>
+        <Box minW={250} m="2">
           <MySelect
             name="filter by mode"
             isMulti={false}
@@ -269,7 +278,6 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
               });
             }}
             components={{
-              IndicatorSeparator: () => null,
               Option: ModeOption,
               SingleValue: ModeSingleValue,
             }}
