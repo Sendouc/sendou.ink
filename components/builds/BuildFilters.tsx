@@ -18,7 +18,7 @@ import {
   UseBuildsByWeaponState,
 } from "hooks/builds";
 import { useMyTheme } from "hooks/common";
-import React, { Fragment, useState } from "react";
+import { Fragment, useState } from "react";
 import { FiTrash } from "react-icons/fi";
 import { abilities, isMainAbility } from "utils/lists/abilities";
 import { components } from "react-select";
@@ -83,7 +83,7 @@ const AbilityOption = (props: any) => {
     <components.Option {...props}>
       <Flex alignItems="center">
         <Box mr="0.5em">
-          <AbilityIcon ability={props.value} size={"SUBTINY"} />
+          <AbilityIcon ability={props.value} size="SUBTINY" />
         </Box>
         {props.label}
       </Flex>
@@ -94,14 +94,14 @@ const AbilityOption = (props: any) => {
 const ModeSingleValue = (props: any) => {
   return (
     <components.SingleValue {...props}>
-      <Box mr="0.5em">
+      <Box>
         {props.data.value !== "ALL" ? (
           <ModeImage size={24} mode={props.data.value} />
         ) : (
           <></>
         )}
       </Box>
-      <Flex alignItems="center">{props.data.label}</Flex>
+      {props.data.label}
     </components.SingleValue>
   );
 };
@@ -110,7 +110,6 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
   const [mode, setMode] = useState<{ label: string; value: string }>(
     modeOptions[0]
   );
-  const [modeValueChanged, setModeValueChanged] = useState(false);
   const { gray } = useMyTheme();
 
   return (
@@ -280,7 +279,6 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
             value={mode}
             options={modeOptions}
             setValue={(value) => {
-              setModeValueChanged(true);
               const mode = modeOptions.find((option) => option.value === value);
               if (mode) setMode(mode);
               dispatch({
