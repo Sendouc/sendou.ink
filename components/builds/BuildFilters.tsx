@@ -13,7 +13,10 @@ import {
 import { t, Trans } from "@lingui/macro";
 import { Ability, Mode } from "@prisma/client";
 import AbilityIcon from "components/common/AbilityIcon";
-import { UseBuildsByWeaponDispatch, UseBuildsByWeaponState, } from "hooks/builds";
+import {
+  UseBuildsByWeaponDispatch,
+  UseBuildsByWeaponState,
+} from "hooks/builds";
 import { useMyTheme } from "hooks/common";
 import React, { Fragment, useState } from "react";
 import { FiTrash } from "react-icons/fi";
@@ -55,19 +58,23 @@ const modeOptions = [
 ] as const;
 
 const abilitiesOptions = abilities.map((item) => {
-  return {label: item.name, value: item.code};
+  return { label: item.name, value: item.code };
 });
 
 const ModeOption = (props: any) => {
   return (
-      <components.Option {...props}>
-        <Flex alignItems="center">
-          <Box mr="0.5em">
-            {props.value !== "ALL" ? <ModeImage size={24} mode={props.value} /> : <></>}
-          </Box>
-          {props.label}
-        </Flex>
-      </components.Option>
+    <components.Option {...props}>
+      <Flex alignItems="center">
+        <Box mr="0.5em">
+          {props.value !== "ALL" ? (
+            <ModeImage size={24} mode={props.value} />
+          ) : (
+            <></>
+          )}
+        </Box>
+        {props.label}
+      </Flex>
+    </components.Option>
   );
 };
 
@@ -86,19 +93,23 @@ const AbilityOption = (props: any) => {
 
 const ModeSingleValue = (props: any) => {
   return (
-      <components.SingleValue {...props}>
-        <Box mr="0.5em">
-          {props.data.value !== "ALL" ? <ModeImage size={24} mode={props.data.value} /> : <></>}
-        </Box>
-        <Flex alignItems="center">{props.data.label}</Flex>
-      </components.SingleValue>
+    <components.SingleValue {...props}>
+      <Box mr="0.5em">
+        {props.data.value !== "ALL" ? (
+          <ModeImage size={24} mode={props.data.value} />
+        ) : (
+          <></>
+        )}
+      </Box>
+      <Flex alignItems="center">{props.data.label}</Flex>
+    </components.SingleValue>
   );
 };
 
 const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
-  const [mode, setMode] = useState<
-      { label: string; value: string;}
-      >(modeOptions[0]);
+  const [mode, setMode] = useState<{ label: string; value: string }>(
+    modeOptions[0]
+  );
   const [modeValueChanged, setModeValueChanged] = useState(false);
   const { gray } = useMyTheme();
 
@@ -245,18 +256,20 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
           <MySelect
             name="filter by ability"
             isMulti={false}
-            value={{label: "Filter by ability", value: "DEFAULT"}}
+            value={{ label: "Filter by ability", value: "DEFAULT" }}
             options={abilitiesOptions.filter((option) => {
-              return !filters.find((filterElement) => filterElement.ability === option.value);
+              return !filters.find(
+                (filterElement) => filterElement.ability === option.value
+              );
             })}
             setValue={(value) => {
               dispatch({
                 type: "ADD_FILTER",
                 ability: value as Ability,
-              })
+              });
             }}
             components={{
-              Option: AbilityOption
+              Option: AbilityOption,
             }}
           />
         </Box>
@@ -269,12 +282,10 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
             setValue={(value) => {
               setModeValueChanged(true);
               const mode = modeOptions.find((option) => option.value === value);
-              if (mode)
-                setMode(mode);
+              if (mode) setMode(mode);
               dispatch({
                 type: "SET_MODE_FILTER",
-                modeFilter:
-                  value === "ALL" ? undefined : (value as Mode),
+                modeFilter: value === "ALL" ? undefined : (value as Mode),
               });
             }}
             components={{
