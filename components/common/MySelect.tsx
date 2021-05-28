@@ -36,6 +36,7 @@ interface SelectProps {
   menuIsOpen?: boolean;
   hideMenuBeforeTyping?: boolean;
   customFilterOption?: (option: any, rawInput: string) => boolean;
+  styles?: any;
 }
 
 const DropdownIndicator = (props: any) => {
@@ -62,6 +63,7 @@ const MySelect: React.FC<SelectProps> = ({
   menuIsOpen = false,
   hideMenuBeforeTyping,
   customFilterOption,
+  styles
 }) => {
   const {
     borderColor,
@@ -71,6 +73,39 @@ const MySelect: React.FC<SelectProps> = ({
     textColor,
   } = useMyTheme();
   const [inputValue, setInputValue] = useState("");
+
+  const defaultStyles = {
+    singleValue: (base: any) => ({
+      ...base,
+      padding: 5,
+      borderRadius: 5,
+      color: textColor,
+      display: "flex",
+    }),
+    input: (base: any) => ({
+      ...base,
+      color: textColor,
+    }),
+    multiValue: (base: any) => ({
+      ...base,
+      background: themeColorHex,
+      color: "black",
+    }),
+    option: (styles: any, {isFocused}: any) => {
+      return {
+        ...styles,
+        backgroundColor: isFocused ? themeColorOpaque : undefined,
+        color: textColor,
+      };
+    },
+    menu: (styles: any) => ({...styles, zIndex: 999}),
+    control: (base: any) => ({
+      ...base,
+      borderColor,
+      minHeight: "2.5rem",
+      background: "hsla(0, 0%, 0%, 0)",
+    }),
+  };
 
   const handleChange = (selectedOption: any) => {
     if (!selectedOption) {
@@ -136,38 +171,7 @@ const MySelect: React.FC<SelectProps> = ({
         },
       })}
       autoFocus={autoFocus}
-      styles={{
-        singleValue: (base) => ({
-          ...base,
-          padding: 5,
-          borderRadius: 5,
-          color: textColor,
-          display: "flex",
-        }),
-        input: (base) => ({
-          ...base,
-          color: textColor,
-        }),
-        multiValue: (base) => ({
-          ...base,
-          background: themeColorHex,
-          color: "black",
-        }),
-        option: (styles, { isFocused }) => {
-          return {
-            ...styles,
-            backgroundColor: isFocused ? themeColorOpaque : undefined,
-            color: textColor,
-          };
-        },
-        menu: (styles) => ({ ...styles, zIndex: 999 }),
-        control: (base) => ({
-          ...base,
-          borderColor,
-          minHeight: "2.5rem",
-          background: "hsla(0, 0%, 0%, 0)",
-        }),
-      }}
+      styles={ styles ? styles : defaultStyles}
     />
   );
 };

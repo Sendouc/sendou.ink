@@ -24,6 +24,7 @@ import { abilities, isMainAbility } from "utils/lists/abilities";
 import { components } from "react-select";
 import ModeImage from "components/common/ModeImage";
 import MySelect from "components/common/MySelect";
+import defaultStyles from "utils/selectStyles";
 
 interface Props {
   filters: UseBuildsByWeaponState["filters"];
@@ -67,7 +68,7 @@ const ModeOption = (props: any) => {
       <Flex alignItems="center">
         <Box mr="0.5em">
           {props.value !== "ALL" ? (
-            <ModeImage size={24} mode={props.value} />
+            <ModeImage size={20} mode={props.value} />
           ) : (
             <></>
           )}
@@ -96,7 +97,7 @@ const ModeSingleValue = (props: any) => {
     <components.SingleValue {...props}>
       {props.data.value !== "ALL" ? (
         <Box mr="0.5em">
-          <ModeImage size={24} mode={props.data.value} />
+          <ModeImage size={20} mode={props.data.value} />
         </Box>
       ) : (
         <></>
@@ -110,7 +111,44 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
   const [mode, setMode] = useState<{ label: string; value: string }>(
     modeOptions[0]
   );
-  const { gray } = useMyTheme();
+
+  const {
+    borderColor,
+    themeColorOpaque,
+    textColor,
+    gray
+  } = useMyTheme();
+
+  const selectStyles = {
+    ...defaultStyles,
+    singleValue: (base: any) => ({
+      ...base,
+      padding: 0,
+      borderRadius: 5,
+      color: textColor,
+      fontSize: '0.875rem',
+      display: "flex",
+    }),
+    option: (styles: any, {isFocused}: any) => {
+      return {
+        ...styles,
+        backgroundColor: isFocused ? themeColorOpaque : undefined,
+        fontSize: '0.875rem',
+        color: textColor,
+      };
+    },
+    control: (base: any) => ({
+      ...base,
+      borderColor,
+      minHeight: 32,
+      height: 32,
+      background: "hsla(0, 0%, 0%, 0)",
+    }),
+    dropdownIndicator: (base: any) => ({
+      ...base,
+      padding: 4
+    }),
+  };
 
   return (
     <>
@@ -251,7 +289,7 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
         align="center"
         flexDir={["column", "row"]}
       >
-        <Box minW={250} m="2">
+        <Box minW={200} m="2">
           <MySelect
             name="filter by ability"
             isMulti={false}
@@ -270,9 +308,10 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
             components={{
               Option: AbilityOption,
             }}
+            styles={selectStyles}
           />
         </Box>
-        <Box minW={250} m="2">
+        <Box minW={200} m="2">
           <MySelect
             name="filter by mode"
             isMulti={false}
@@ -290,6 +329,7 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
               Option: ModeOption,
               SingleValue: ModeSingleValue,
             }}
+            styles={selectStyles}
           />
         </Box>
       </Flex>
