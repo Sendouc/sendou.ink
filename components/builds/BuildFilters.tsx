@@ -9,7 +9,6 @@ import {
   NumberInputField,
   NumberInputStepper,
   Radio,
-  Select,
 } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import { Ability, Mode } from "@prisma/client";
@@ -22,15 +21,135 @@ import { useMyTheme } from "hooks/common";
 import { Fragment, useState } from "react";
 import { FiTrash } from "react-icons/fi";
 import { abilities, isMainAbility } from "utils/lists/abilities";
+import { components } from "react-select";
+import ModeImage from "components/common/ModeImage";
+import MySelect from "components/common/MySelect";
+import defaultStyles from "utils/selectStyles";
 
 interface Props {
   filters: UseBuildsByWeaponState["filters"];
   dispatch: UseBuildsByWeaponDispatch;
 }
 
+const modeOptions = [
+  {
+    label: "All modes",
+    value: "ALL",
+  },
+  {
+    label: "Splat Zones",
+    value: "SZ",
+  },
+  {
+    label: "Tower Control",
+    value: "TC",
+  },
+  {
+    label: "Rainmaker",
+    value: "RM",
+  },
+  {
+    label: "Clam Blitz",
+    value: "CB",
+  },
+  {
+    label: "Turf War",
+    value: "TW",
+  },
+] as const;
+
+const abilitiesOptions = abilities.map((item) => {
+  return { label: item.name, value: item.code };
+});
+
+const ModeOption = (props: any) => {
+  return (
+    <components.Option {...props}>
+      <Flex alignItems="center">
+        <Box mr="0.5em">
+          {props.value !== "ALL" ? (
+            <ModeImage size={20} mode={props.value} />
+          ) : (
+            <></>
+          )}
+        </Box>
+        {props.label}
+      </Flex>
+    </components.Option>
+  );
+};
+
+const AbilityOption = (props: any) => {
+  return (
+    <components.Option {...props}>
+      <Flex alignItems="center">
+        <Box mr="0.5em">
+          <AbilityIcon ability={props.value} size="SUBTINY" />
+        </Box>
+        {props.label}
+      </Flex>
+    </components.Option>
+  );
+};
+
+const ModeSingleValue = (props: any) => {
+  return (
+    <components.SingleValue {...props}>
+      {props.data.value !== "ALL" ? (
+        <Box mr="0.5em">
+          <ModeImage size={20} mode={props.data.value} />
+        </Box>
+      ) : (
+        <></>
+      )}
+      {props.data.label}
+    </components.SingleValue>
+  );
+};
+
 const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
-  const [modeValueChanged, setModeValueChanged] = useState(false);
-  const { gray } = useMyTheme();
+  const [mode, setMode] = useState<{ label: string; value: string }>(
+    modeOptions[0]
+  );
+
+  const {
+    borderColor,
+    themeColorOpaque,
+    textColor,
+    gray
+  } = useMyTheme();
+
+  const selectDefaultStyles = defaultStyles();
+  const selectStyles = {
+    ...selectDefaultStyles,
+    singleValue: (base: any) => ({
+      ...base,
+      padding: 0,
+      borderRadius: 5,
+      color: textColor,
+      fontSize: '0.875rem',
+      display: "flex",
+    }),
+    option: (styles: any, {isFocused}: any) => {
+      return {
+        ...styles,
+        backgroundColor: isFocused ? themeColorOpaque : undefined,
+        fontSize: '0.875rem',
+        color: textColor,
+      };
+    },
+    control: (base: any) => ({
+      ...base,
+      borderColor,
+      minHeight: 32,
+      height: 32,
+      background: "hsla(0, 0%, 0%, 0)",
+    }),
+    dropdownIndicator: (base: any) => ({
+      ...base,
+      padding: 4
+    }),
+  };
 
   return (
     <>
@@ -171,58 +290,49 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
         align="center"
         flexDir={["column", "row"]}
       >
-        <Select
-          onChange={(e) =>
-            dispatch({
-              type: "ADD_FILTER",
-              ability: e.target.value as Ability,
-            })
-          }
-          size="sm"
-          width={48}
-          m={2}
-        >
-          <option hidden value="NO_VALUE">
-            {t`Filter by ability`}
-          </option>
-          {abilities
-            .filter(
-              (ability) =>
-                !filters.some((filter) => ability.code === filter.ability)
-            )
-            .map((ability) => (
-              <option key={ability.code} value={ability.code}>
-                {ability.name}
-              </option>
-            ))}
-        </Select>
-        <Select
-          onChange={(e) => {
-            setModeValueChanged(true);
-            dispatch({
-              type: "SET_MODE_FILTER",
-              modeFilter:
-                e.target.value === "ALL" ? undefined : (e.target.value as Mode),
-            });
-          }}
-          size="sm"
-          width={48}
-          m={2}
-        >
-          <option hidden value="NO_VALUE">
-            {t`Filter by mode`}
-          </option>
-          {[t`All modes`, "TW", "SZ", "TC", "RM", "CB"]
-            // let's filter out all modes initially
-            // to avoid confusion as it does nothing different from
-            // having nothing selected at all
-            .filter((_, i) => modeValueChanged || i !== 0)
-            .map((mode, i) => (
-              <option key={mode} value={i === 0 ? "ALL" : mode}>
-                {mode}
-              </option>
-            ))}
-        </Select>
+        <Box minW={200} m="2">
+          <MySelect
+            name="filter by ability"
+            isMulti={false}
+            value={{ label: "Filter by ability", value: "DEFAULT" }}
+            options={abilitiesOptions.filter((option) => {
+              return !filters.find(
+                (filterElement) => filterElement.ability === option.value
+              );
+            })}
+            setValue={(value) => {
+              dispatch({
+                type: "ADD_FILTER",
+                ability: value as Ability,
+              });
+            }}
+            components={{
+              Option: AbilityOption,
+            }}
+            styles={selectStyles}
+          />
+        </Box>
+        <Box minW={200} m="2">
+          <MySelect
+            name="filter by mode"
+            isMulti={false}
+            value={mode}
+            options={modeOptions}
+            setValue={(value) => {
+              const mode = modeOptions.find((option) => option.value === value);
+              if (mode) setMode(mode);
+              dispatch({
+                type: "SET_MODE_FILTER",
+                modeFilter: value === "ALL" ? undefined : (value as Mode),
+              });
+            }}
+            components={{
+              Option: ModeOption,
+              SingleValue: ModeSingleValue,
+            }}
+            styles={selectStyles}
+          />
+        </Box>
       </Flex>
     </>
   );

@@ -3,7 +3,7 @@ import { CSSProperties } from "react";
 
 interface ModeImageProps {
   mode: "TW" | "SZ" | "TC" | "RM" | "CB";
-  size?: 24 | 32 | 64 | 128;
+  size?: 20 | 24 | 32 | 64 | 128;
   onClick?: () => void;
   style?: CSSProperties;
 }
