@@ -9,6 +9,7 @@ import ReactSelect, {
   ValueType,
 } from "react-select";
 import { SelectComponents } from "react-select/src/components";
+import defaultStyles from "utils/selectStyles";
 
 interface SelectProps {
   options?:
@@ -66,46 +67,11 @@ const MySelect: React.FC<SelectProps> = ({
   styles
 }) => {
   const {
-    borderColor,
     themeColorHex,
     bgColor,
-    themeColorOpaque,
-    textColor,
   } = useMyTheme();
   const [inputValue, setInputValue] = useState("");
-
-  const defaultStyles = {
-    singleValue: (base: any) => ({
-      ...base,
-      padding: 5,
-      borderRadius: 5,
-      color: textColor,
-      display: "flex",
-    }),
-    input: (base: any) => ({
-      ...base,
-      color: textColor,
-    }),
-    multiValue: (base: any) => ({
-      ...base,
-      background: themeColorHex,
-      color: "black",
-    }),
-    option: (styles: any, {isFocused}: any) => {
-      return {
-        ...styles,
-        backgroundColor: isFocused ? themeColorOpaque : undefined,
-        color: textColor,
-      };
-    },
-    menu: (styles: any) => ({...styles, zIndex: 999}),
-    control: (base: any) => ({
-      ...base,
-      borderColor,
-      minHeight: "2.5rem",
-      background: "hsla(0, 0%, 0%, 0)",
-    }),
-  };
+  const selectDefaultStyles = defaultStyles();
 
   const handleChange = (selectedOption: any) => {
     if (!selectedOption) {
@@ -171,7 +137,7 @@ const MySelect: React.FC<SelectProps> = ({
         },
       })}
       autoFocus={autoFocus}
-      styles={ styles ? styles : defaultStyles}
+      styles={ styles ? styles : selectDefaultStyles}
     />
   );
 };

@@ -119,8 +119,9 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
     gray
   } = useMyTheme();
 
+  const selectDefaultStyles = defaultStyles();
   const selectStyles = {
-    ...defaultStyles,
+    ...selectDefaultStyles,
     singleValue: (base: any) => ({
       ...base,
       padding: 0,
