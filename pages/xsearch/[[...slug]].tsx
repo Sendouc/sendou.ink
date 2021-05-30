@@ -75,10 +75,6 @@ const XSearchPage = ({ placements, monthOptions }: XSearchPageProps) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const mostRecentResult = await xRankService.getMostRecentResult();
-
-  if (!mostRecentResult) return { paths: [], fallback: false };
-
   return {
     paths: [],
     fallback: "blocking",
