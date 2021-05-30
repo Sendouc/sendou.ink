@@ -1,6 +1,7 @@
 import { Box, Flex, Heading, useColorMode } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
 import MyLink from "components/common/MyLink";
+import Video from "components/common/Video";
 import NavButtons from "components/layout/NavButtons";
 import { useMyTheme } from "hooks/common";
 import Image from "next/image";

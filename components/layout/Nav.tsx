@@ -29,7 +29,7 @@ const Nav = () => {
       display={["none", null, null, "block"]}
       className="scrollableNavigation"
     >
-      {navItems.map(({ code, name }) => {
+      {navItems.map(({ code, name, imageSrc }) => {
         const isActive = navItem?.code === code;
         return (
           <Box
@@ -52,7 +52,8 @@ const Nav = () => {
                 }}
               >
                 <Image
-                  src={`/layout/${code}.png`}
+                  src={`/layout/${imageSrc ?? code}.png`}
+                  className={code === "splatoon3" ? "rounded" : undefined}
                   height={32}
                   width={32}
                   priority

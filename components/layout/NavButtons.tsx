@@ -10,7 +10,7 @@ const NavButtons = ({ onButtonClick }: { onButtonClick?: () => void }) => {
   const [user] = useUser();
   return (
     <Flex mt={2} flexWrap="wrap" alignItems="center" justifyContent="center">
-      {navItems.map(({ code, name }) => {
+      {navItems.map(({ imageSrc, code, name }) => {
         return (
           <MyLink key={code} href={"/" + code} isColored={false} noUnderline>
             <Flex
@@ -31,7 +31,8 @@ const NavButtons = ({ onButtonClick }: { onButtonClick?: () => void }) => {
               onClick={onButtonClick}
             >
               <Image
-                src={`/layout/${code}.png`}
+                src={`/layout/${imageSrc ?? code}.png`}
+                className={code === "splatoon3" ? "rounded" : undefined}
                 height={32}
                 width={32}
                 priority

@@ -26,7 +26,9 @@ export const LADDER_ROSTER_LIMIT = 4;
 export const navItems: {
   code: string;
   name: string;
+  imageSrc?: string;
 }[] = [
+  { code: "splatoon3", name: "Splatoon 3", imageSrc: "splat" },
   { code: "xsearch", name: "Browser" },
   { code: "xtrends", name: "Tier List" },
   { code: "leaderboards", name: "Leaderboards" },
