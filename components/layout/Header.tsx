@@ -58,7 +58,12 @@ const Header = ({ openNav }: { openNav: () => void }) => {
           <>
             <Box mx={1}>-</Box>{" "}
             <Image
-              src={`/layout/${activeNavItem.code}.png`}
+              src={`/layout/${
+                activeNavItem.imageSrc ?? activeNavItem.code
+              }.png`}
+              className={
+                activeNavItem.code === "splatoon3" ? "rounded" : undefined
+              }
               height={24}
               width={24}
               priority

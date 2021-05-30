@@ -4,6 +4,7 @@ import MyLink from "components/common/MyLink";
 import Video from "components/common/Video";
 import type { GetStaticPaths, GetStaticProps } from "next";
 import Image from "next/image";
+import { capitalizeFirstLetter } from "utils/strings";
 import * as z from "zod";
 
 const pages = {
@@ -61,7 +62,11 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
 const Splatoon3Page = ({ page }: Props) => {
   return (
     <>
-      <MyHead title="Splatoon 3" />
+      <MyHead
+        title={`Splatoon 3 ${
+          page === "main" ? "" : capitalizeFirstLetter(page)
+        }`}
+      />
       <Box display="flex" alignItems="center" justifyContent="center">
         <Image
           src="/splatoon3/logo.png"
