@@ -29,7 +29,7 @@ export const getPercentageFromCounts = (
 const getThirdFridayDate = (nextMonth?: boolean) => {
   const result = new Date();
 
-  if (nextMonth) result.setMonth(result.getMonth() + 1);
+  if (nextMonth) result.setMonth(result.getMonth() + 1, 1);
 
   result.setUTCHours(10, 0, 0, 0);
 
