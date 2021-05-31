@@ -6,7 +6,7 @@ import EventInfo from "components/calendar/EventInfo";
 import { EventModal, FormData } from "components/calendar/EventModal";
 import MyHead from "components/common/MyHead";
 import SubText from "components/common/SubText";
-import { useMyTheme } from "hooks/common";
+import { useMyTheme, useUser } from "hooks/common";
 import { ssr } from "pages/api/trpc/[trpc]";
 import { Fragment, useState } from "react";
 import { FiSearch } from "react-icons/fi";
@@ -15,10 +15,10 @@ import { trpc } from "utils/trpc";
 const CalendarPage = () => {
   const { gray } = useMyTheme();
   const events = trpc.useQuery(["calendar.events"], { enabled: false });
-  const [eventToEdit, setEventToEdit] = useState<
-    boolean | (FormData & { id: number })
-  >(false);
+  const [eventToEdit, setEventToEdit] =
+    useState<boolean | (FormData & { id: number })>(false);
   const [filter, setFilter] = useState("");
+  const [user] = useUser();
 
   let lastPrintedDate: [number, number, Date] | null = null;
 
@@ -32,15 +32,17 @@ const CalendarPage = () => {
           refetchQuery={events.refetch}
         />
       )}
-      <div>
-        <Button
-          size="sm"
-          onClick={() => setEventToEdit(true)}
-          data-cy="add-event-button"
-        >
-          <Trans>Add event</Trans>
-        </Button>
-      </div>
+      {user && (
+        <div>
+          <Button
+            size="sm"
+            onClick={() => setEventToEdit(true)}
+            data-cy="add-event-button"
+          >
+            <Trans>Add event</Trans>
+          </Button>
+        </div>
+      )}
       <InputGroup my={8} maxW="24rem" mx="auto">
         <InputLeftElement
           pointerEvents="none"
@@ -112,24 +114,6 @@ const CalendarPage = () => {
         All events listed in your local time:{" "}
         {Intl.DateTimeFormat().resolvedOptions().timeZone}
       </Box>
-      {/* <RightSidebar>
-        <div>
-          <Button
-            size="sm"
-            onClick={() => setEventToEdit(true)}
-            data-cy="add-event-button"
-          >
-            <Trans>Add event</Trans>
-          </Button>
-        </div>
-        <InputGroup mt={8} maxW="24rem" mx="auto">
-          <InputLeftElement
-            pointerEvents="none"
-            children={<FiSearch color={gray} />}
-          />
-          <Input value={filter} onChange={(e) => setFilter(e.target.value)} />
-        </InputGroup>
-      </RightSidebar> */}
     </>
   );
 };
