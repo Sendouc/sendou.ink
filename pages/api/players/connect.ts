@@ -95,8 +95,11 @@ const connectHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   } else {
     res.status(409).json({
       message: `Many options to link. Please contact Sendou#4059 with the one you want to connect: ${players
-        .map((player) => `https://sendou.ink/player/${player.switchAccountId}`)
-        .join(" ")}`,
+        .map(
+          (player, i) =>
+            `${i + 1}) https://sendou.ink/player/${player.switchAccountId}`
+        )
+        .join(" ")} .`,
     });
   }
 };
