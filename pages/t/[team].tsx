@@ -98,7 +98,7 @@ const getTeamXPInfo = (roster: NonNullable<GetTeamData>["roster"]) => {
 };
 
 const TeamPage: React.FC<Props> = (props) => {
-  const { secondaryBgColor, themeColorHex } = useMyTheme();
+  const { secondaryBgColor } = useMyTheme();
   const { data } = useSWR<GetTeamData>(`/api/teams/${props.team!.id}`, {
     initialData: props.team!,
   });

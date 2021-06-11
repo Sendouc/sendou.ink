@@ -45,7 +45,7 @@ const TeamsPage = ({ teams }: Props) => {
   return (
     <>
       <MyHead title={t`Teams`} />
-      {!isInTeam && <CreateNewTeamModal />}
+      {!isInTeam && user && <CreateNewTeamModal />}
       {teams.length > 0 && (
         <Box mb={8}>
           <FormControl display="flex" alignItems="center">
@@ -137,8 +137,8 @@ const TeamsPage = ({ teams }: Props) => {
 
               <Flex ml={2}>
                 {team.countries.map((country) => (
-                  <Box mr={1}>
-                    <Flag key={country} countryCode={country} />
+                  <Box key={country} mr={1}>
+                    <Flag countryCode={country} />
                   </Box>
                 ))}
               </Flex>
