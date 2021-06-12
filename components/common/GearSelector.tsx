@@ -40,7 +40,8 @@ const Option = (props: any) => {
 const customFilterOption = (option: any, rawInput: string) => {
   const words = rawInput.split(" ");
   return words.reduce(
-    (acc, cur) => acc && option.label.toLowerCase().includes(cur.toLowerCase()),
+    (acc, cur) => acc && (option.label.toLowerCase().includes(cur.toLowerCase())
+      || option.data?.data?.toLowerCase() == rawInput.toLocaleLowerCase()),
     true
   );
 };
@@ -59,6 +60,7 @@ const GearSelector: React.FC<WeaponSelectorProps> = ({
         options: category[slot].map((gear) => ({
           value: gear,
           label: i18n._(gear),
+          data: i18n._(category.brand)
         })),
       }))}
       value={value ? { value, label: i18n._(value) } : undefined}
