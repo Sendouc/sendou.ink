@@ -47,6 +47,7 @@ export const navItems: {
   { code: "t", name: "Teams" },
   { code: "plans", name: "Plans" },
   { code: "maps", name: "Map Lists" },
+  { code: "team-splitter", name: "Team Splitter" },
   {
     code: "plus",
     name: "Plus Server",
