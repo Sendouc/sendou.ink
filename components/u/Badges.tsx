@@ -21,7 +21,7 @@ const Badges = ({
 
   // PATREON
 
-  if (patreonTier === 1) {
+  if (patreonTier === 2) {
     badges.push({
       src: "patreon.gif",
       description: "Supporter of sendou.ink on Patreon",
@@ -29,7 +29,7 @@ const Badges = ({
     });
   }
 
-  if ((patreonTier ?? -1) >= 2) {
+  if ((patreonTier ?? -1) >= 3) {
     badges.push({
       src: "patreonplus.gif",
       description: "Supporter+ of sendou.ink on Patreon",
@@ -107,12 +107,13 @@ const Badges = ({
         align="center"
         justify="center"
         bg="black"
+        color="white"
         rounded="lg"
         maxW={48}
         mx="auto"
         my={3}
       >
-        {badges.flatMap((badge, i) => {
+        {badges.flatMap((badge) => {
           if (showInfo)
             return (
               <>
@@ -120,7 +121,6 @@ const Badges = ({
                   <Image w={10} h={10} m={4} src={`/badges/${badge.src}`} />{" "}
                   <Text fontSize="sm">{badge.description}</Text>
                 </Flex>
-                {i !== badges.length - 1 ? <Divider /> : null}
               </>
             );
           return new Array(badge.count).fill(null).map((_, i) => {
