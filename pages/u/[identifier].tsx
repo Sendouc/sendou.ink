@@ -6,6 +6,7 @@ import BuildCard from "components/builds/BuildCard";
 import Markdown from "components/common/Markdown";
 import MyInfiniteScroller from "components/common/MyInfiniteScroller";
 import AvatarWithInfo from "components/u/AvatarWithInfo";
+import Badges from "components/u/Badges";
 import BuildModal from "components/u/BuildModal";
 import ProfileModal from "components/u/ProfileModal";
 import { useUser } from "hooks/common";
@@ -46,10 +47,12 @@ const ProfilePage = (props: Props) => {
 
   const user = data ? data : props.user!;
 
-  const { data: builds, weaponCounts, setWeapon, buildCount } = useBuildsByUser(
-    user?.id,
-    props.user?.profile?.weaponPool
-  );
+  const {
+    data: builds,
+    weaponCounts,
+    setWeapon,
+    buildCount,
+  } = useBuildsByUser(user?.id, props.user?.profile?.weaponPool);
 
   const { i18n } = useLingui();
 
@@ -95,28 +98,15 @@ const ProfilePage = (props: Props) => {
         peakXPowers={props.peakXPowers}
         peakLeaguePowers={props.peakLeaguePowers}
       />
-      {/* <Flex
-        align="center"
-        bg="black"
-        rounded="lg"
-        width={48}
-        m="auto"
-        mt={2}
-        overflow="hidden"
-      >
-        <SubText textAlign="center" transform="rotate(-90deg)">
-          Badges
-        </SubText>
-        <Image
-          objectFit="scale-down"
-          objectPosition="50% 10%"
-          mt="-8px"
-          marginBottom="-5px"
-          w={24}
-          h={20}
-          src="https://cdn.discordapp.com/attachments/664195413422899250/818926340551213086/itz_0.gif"
-        />
-      </Flex> */}
+      <Badges
+        userId={props.user.id}
+        patreonTier={user.patreonTier}
+        peakXP={
+          Object.values(props.peakXPowers).sort(
+            (a, b) => (b ?? -1) - (a ?? -1)
+          )[0]
+        }
+      />
       <ProfileOwnersButtons />
       {user.profile?.bio && user.profile?.bio.trim().length > 0 && (
         <>

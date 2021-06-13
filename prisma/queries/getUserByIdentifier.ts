@@ -30,6 +30,7 @@ export const getUserByIdentifier = (identifier: string) =>
       discordAvatar: true,
       username: true,
       discriminator: true,
+      patreonTier: true,
       profile: {
         select: {
           bio: true,
