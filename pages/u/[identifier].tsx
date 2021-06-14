@@ -36,14 +36,20 @@ const ProfilePage = (props: Props) => {
   const router = useRouter();
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [buildToEdit, setBuildToEdit] = useState<boolean | Build>(false);
+  const [userId, setUserId] = useState<number | undefined>(undefined);
+
+  const apiUrl = () => {
+    if (userId || (!!props.user?.id && props.user.id === loggedInUser?.id)) {
+      return `/api/users/${userId}`;
+    }
+
+    return null;
+  };
 
   const [loggedInUser] = useUser();
-  const { data } = useSWR<GetUserByIdentifierData>(
-    !!props.user?.id && props.user.id === loggedInUser?.id
-      ? `/api/users/${props.user.id}`
-      : null,
-    { initialData: props.user }
-  );
+  const { data } = useSWR<GetUserByIdentifierData>(apiUrl(), {
+    initialData: props.user,
+  });
 
   const user = data ? data : props.user!;
 
@@ -74,6 +80,10 @@ const ProfilePage = (props: Props) => {
     if (isCustomUrl(identifier) || !user.profile?.customUrlPath) return;
     history.replaceState({}, "", `/u/${user.profile.customUrlPath}`);
   }, []);
+
+  useEffect(() => {
+    setUserId(props.user.id);
+  }, [props.user.id]);
 
   return (
     <>
