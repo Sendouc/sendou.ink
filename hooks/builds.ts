@@ -6,7 +6,6 @@ import useSWR from "swr";
 import { abilities, isMainAbility } from "utils/lists/abilities";
 import { weaponToCode } from "utils/lists/weaponCodes";
 import { weapons } from "utils/lists/weapons";
-import { setSearchParams } from "utils/setSearchParams";
 
 export type BuildFilterType = "AT_LEAST" | "AT_MOST" | "HAS" | "DOES_NOT_HAVE";
 
@@ -63,7 +62,11 @@ export function useBuildsByWeapon() {
     (oldState: UseBuildsByWeaponState, action: Action) => {
       switch (action.type) {
         case "SET_WEAPON":
-          setSearchParams("weapon", action.weapon);
+          router.replace(
+            `?weapon=${encodeURIComponent(action.weapon)}`,
+            undefined,
+            { shallow: true }
+          );
 
           return { ...oldState, weapon: action.weapon };
         case "EXPAND_USER":
