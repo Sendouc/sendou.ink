@@ -18,11 +18,7 @@
     "ex:clean": "cross-env NODE_ENV=development lingui extract --clean && npm run prettier:format",
     "seed": "prisma db seed --preview-feature",
     "prettier:check": "prettier --check .",
-    "prettier:format": "prettier --write .",
-    "cy:open": "cypress open",
-    "cy:run": "cypress run",
-    "cy:clearcache": "cypress cache clear",
-    "cy:install": "cypress install"
+    "prettier:format": "prettier --write ."
   },
   "dependencies": {
     "@chakra-ui/icons": "^1.0.13",
@@ -81,7 +77,6 @@
     "@types/react-select": "^4.0.15",
     "@types/uuid": "^8.3.0",
     "cross-env": "^7.0.3",
-    "cypress": "^7.5.0",
     "fishery": "^1.3.1",
     "prettier": "^2.3.1",
     "prisma": "^2.24.1",
