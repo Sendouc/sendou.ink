@@ -183,7 +183,7 @@
   "art for the site - front page inkling, icons and footer drawing": "искусство для сайта - надпись на первой странице, значки и рисунок нижнего колонтитула",
   "<0>Contributions to the codebase</0>": "",
   "translation": "перевод",
-  "Patch {CURRENT_PATCH}": "Патч {ТЕКУЩИЙ_ПАТЧ} ",
+  "Patch {CURRENT_PATCH}": "Патч {CURRENT_PATCH} ",
   "AP = Ability Point = Mains * 10 + Subs * 3": "ОС = Очки Свойства",
   "Hide settings": "Скрыть настройки",
   "Show settings": "Показать настройки",
