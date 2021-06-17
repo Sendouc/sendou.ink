@@ -72,10 +72,8 @@ const About = () => {
             >
               borzoic
             </Link>{" "}
-            -{" "}
-            <Trans>
-              art for the site - front page inkling, icons and footer drawing
-            </Trans>
+            - art for the site - front page inkling, icons, footer drawing and
+            badges
           </li>
           <li>
             <Link
