@@ -66,11 +66,9 @@ const Markdown: React.FC<MarkdownProps> = ({
         const { language, value } = props;
         const className = language && `language-${language}`;
         return (
-          <pre {...getCoreProps(props)}>
-            <Code p={2} className={className || undefined}>
-              {value}
-            </Code>
-          </pre>
+          <Code p={2} className={className || undefined} {...getCoreProps(props)}>
+            {value}
+          </Code>
         );
       },
       delete: (props: any) => {
