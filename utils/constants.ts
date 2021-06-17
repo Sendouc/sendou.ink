@@ -177,6 +177,12 @@ export const TAGS = [
     description: "This tournament is a qualifier for another event.",
     color: "#FFC0CB",
   },
+  {
+    code: "BADGE",
+    name: "Badge prize",
+    description: "Winner of this event gets a sendou.ink badge.",
+    color: "#ffff4d",
+  },
 ] as const;
 
 export const EVENT_FORMATS = [
