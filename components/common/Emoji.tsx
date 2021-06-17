@@ -5,7 +5,7 @@ import Image from "next/image";
 import { abilityMarkdownCodes } from "utils/lists/abilityMarkdownCodes";
 import { gearMarkdownCodes } from "utils/lists/gearMarkdownCodes";
 import { codeToWeapon } from "utils/lists/weaponCodes";
-import { subSpecialWeaponMarkdownCodes } from "../../utils/lists/subSpecialWeaponMarkdownCodes";
+import { subSpecialWeaponMarkdownCodes } from "utils/lists/subSpecialWeaponMarkdownCodes";
 
 const modeCodes: Record<string, string> = {
   turf_war: "TW",
