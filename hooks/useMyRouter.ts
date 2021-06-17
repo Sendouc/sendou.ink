@@ -1,33 +1,36 @@
 import { NextRouter, useRouter } from "next/router";
-import { URLSearchParams } from "url";
+import type { URLSearchParams as URLSearchParamsType } from "url";
+import * as z from "zod";
 
-type SearchParamsTuple = [
-  key: string,
-  value:
-    | string
-    | string[]
-    | number
-    | number[]
-    | boolean
-    | boolean[]
-    | null
-    | undefined
-];
+type SearchParamsType =
+  | string
+  | string[]
+  | number
+  | number[]
+  | boolean
+  | boolean[]
+  | null
+  | undefined;
+
+type SearchParamsTuple = [key: string, value: SearchParamsType];
 
 export const adjustedSearchParams = (
   url: string,
-  newParams: SearchParamsTuple[]
+  newParams: SearchParamsTuple[],
+  clearOthers: boolean
 ): URLSearchParams => {
-  const result = new URL(url).searchParams;
+  const result = clearOthers
+    ? new URLSearchParams()
+    : new URL(url).searchParams;
 
   for (const [key, value] of newParams) {
+    result.delete(key);
+
     if (!value && typeof value !== "boolean") {
-      result.delete(key);
       continue;
     }
 
     if (Array.isArray(value)) {
-      result.delete(key);
       for (const element of value) {
         result.append(key, String(element));
       }
@@ -50,11 +53,13 @@ const isSearchParamsTuple = (
 
 const setRouterSearchParams = (
   router: NextRouter,
-  newParams: SearchParamsTuple | SearchParamsTuple[]
+  newParams: SearchParamsTuple | SearchParamsTuple[],
+  clearOthers: boolean
 ) => {
   const newSearchParams = adjustedSearchParams(
     window.location.href,
-    isSearchParamsTuple(newParams) ? [newParams] : newParams
+    isSearchParamsTuple(newParams) ? [newParams] : newParams,
+    clearOthers
   );
 
   router.replace(
@@ -71,14 +76,19 @@ const resetSearchParams = (router: NextRouter) =>
 
 export const useMyRouter = (): NextRouter & {
   resetSearchParams: () => void;
-  setSearchParams: (newParams: SearchParamsTuple | SearchParamsTuple[]) => void;
+  setSearchParams: (
+    newParams: SearchParamsTuple | SearchParamsTuple[],
+    clearOthers?: boolean
+  ) => void;
 } => {
   const router = useRouter();
 
   return {
     ...router,
     resetSearchParams: () => resetSearchParams(router),
-    setSearchParams: (newParams: SearchParamsTuple | SearchParamsTuple[]) =>
-      setRouterSearchParams(router, newParams),
+    setSearchParams: (
+      newParams: SearchParamsTuple | SearchParamsTuple[],
+      clearOthers?: boolean
+    ) => setRouterSearchParams(router, newParams, clearOthers ?? false),
   };
 };
