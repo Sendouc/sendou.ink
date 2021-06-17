@@ -110,6 +110,7 @@ const ProfilePage = (props: Props) => {
       />
       <Badges
         userId={props.user.id}
+        userDiscordId={props.user.discordId}
         patreonTier={user.patreonTier}
         peakXP={
           Object.values(props.peakXPowers).sort(

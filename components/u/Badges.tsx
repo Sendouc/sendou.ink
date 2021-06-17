@@ -1,15 +1,17 @@
 import { Button } from "@chakra-ui/button";
 import { Image } from "@chakra-ui/image";
 import { Divider, Flex, Text } from "@chakra-ui/layout";
-import { useState } from "react";
-import { wonITZCount } from "utils/constants";
+import { Fragment, useState } from "react";
+import { wonITZCount, wonTournamentCount } from "utils/constants";
 
 const Badges = ({
   userId,
+  userDiscordId,
   patreonTier,
   peakXP = -1,
 }: {
   userId: number;
+  userDiscordId: string;
   patreonTier: number | null;
   peakXP?: number;
 }) => {
@@ -97,6 +99,21 @@ const Badges = ({
     });
   }
 
+  // Triton-Cup
+
+  if (
+    wonTournamentCount({ tournament: "TRITON", discordId: userDiscordId }) > 0
+  ) {
+    badges.push({
+      src: "triton.gif",
+      description: "Awarded for winning Triton-Cup",
+      count: wonTournamentCount({
+        tournament: "TRITON",
+        discordId: userDiscordId,
+      }),
+    });
+  }
+
   if (badges.length === 0) return null;
 
   return (
@@ -116,12 +133,12 @@ const Badges = ({
         {badges.flatMap((badge) => {
           if (showInfo)
             return (
-              <>
-                <Flex key={badge.src} justify="center" align="center" my={2}>
+              <Fragment key={badge.src}>
+                <Flex justify="center" align="center" my={2}>
                   <Image w={10} h={10} m={4} src={`/badges/${badge.src}`} />{" "}
                   <Text fontSize="sm">{badge.description}</Text>
                 </Flex>
-              </>
+              </Fragment>
             );
           return new Array(badge.count).fill(null).map((_, i) => {
             return (

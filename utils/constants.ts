@@ -341,3 +341,30 @@ export const wonITZCount = (
 
   return result;
 };
+
+const TRITON_CUP_WINNERS =
+  "277760673436401664,317021572470669312,347127232839417856,149504203654430720,207150814735761408,304337232808902668,403962004739588096,381129695980290050";
+
+export const wonTournamentCount = ({
+  tournament,
+  discordId,
+}: {
+  tournament: "TRITON";
+  discordId: string;
+}) => {
+  let winnersString = "";
+  switch (tournament) {
+    case "TRITON":
+      winnersString = TRITON_CUP_WINNERS;
+      break;
+    default:
+      console.error(`Invalid tournament: ${tournament}`);
+  }
+
+  return winnersString
+    .split(",")
+    .reduce(
+      (count, winnersId) => (winnersId === discordId ? count + 1 : count),
+      0
+    );
+};
