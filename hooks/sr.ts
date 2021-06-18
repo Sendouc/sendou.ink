@@ -1,11 +1,10 @@
 import { SalmonRunRecordCategory } from "@prisma/client";
-import { useRouter } from "next/router";
 import { salmonRunCategoryToNatural } from "pages/sr/leaderboards/new";
 import { GetAllSalmonRunRecordsData } from "prisma/queries/getAllSalmonRunRecords";
 import { useReducer } from "react";
 import useSWR from "swr";
 import { salmonRunStages } from "utils/lists/stages";
-import { setSearchParams } from "utils/setSearchParams";
+import { useMyRouter } from "./useMyRouter";
 
 export type WeaponsFilter =
   | "NORMAL"
@@ -41,23 +40,22 @@ type Action =
     };
 
 export function useSalmonRunRecords() {
-  const router = useRouter();
-  const { data: recordsData } = useSWR<GetAllSalmonRunRecordsData>(
-    "/api/sr/records"
-  );
+  const router = useMyRouter();
+  const { data: recordsData } =
+    useSWR<GetAllSalmonRunRecordsData>("/api/sr/records");
   const [state, dispatch] = useReducer(
     (oldState: UseSalmonRunRecordsState, action: Action) => {
       switch (action.type) {
         case "SET_STAGE":
-          setSearchParams("stage", action.stage);
+          router.setSearchParams(["stage", action.stage]);
 
           return { ...oldState, stage: action.stage };
         case "SET_CATEGORY":
-          setSearchParams("category", action.category);
+          router.setSearchParams(["category", action.category]);
 
           return { ...oldState, category: action.category };
         case "SET_WEAPONS_FILTER":
-          setSearchParams("filter", action.filter);
+          router.setSearchParams(["filter", action.filter]);
 
           return { ...oldState, weaponsFilter: action.filter };
         default:

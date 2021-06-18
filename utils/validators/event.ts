@@ -46,6 +46,7 @@ export const eventSchema = z.object({
       "S1",
       "LAN",
       "QUALIFIER",
+      "BADGE",
     ])
   ),
   //isTournament: z.boolean(),

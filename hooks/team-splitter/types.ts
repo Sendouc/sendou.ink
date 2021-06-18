@@ -1,4 +1,4 @@
-interface Player {
+export interface Player {
   id: number;
   name: string;
   winCount: number;
@@ -6,14 +6,14 @@ interface Player {
   sittingOutCount: number;
 }
 
-type Match = {
+export type Match = {
   alpha: string[];
   bravo: string[];
   spectators: string[];
   winner?: "alpha" | "bravo";
 };
 
-interface State {
+export interface State {
   players: Player[];
   matches: Match[];
   amountOfRoundsWithSameTeams: number;
@@ -21,9 +21,7 @@ interface State {
   noPlacingToSameTeam: [playerOneId?: number, playerTwoId?: number];
 }
 
-// TODO: names must be unique
-
-type Action =
+export type Action =
   | {
       type: "SET_PLAYER";
       name: string;

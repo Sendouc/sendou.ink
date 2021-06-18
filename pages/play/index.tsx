@@ -4,7 +4,6 @@ import FAQTab from "components/play/FAQTab";
 import RegisterTab from "components/play/RegisterTab";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { setSearchParams } from "utils/setSearchParams";
 
 const TAB_MAX_INDEX = 5;
 
@@ -21,7 +20,7 @@ const PlayPage = () => {
   });
 
   const handleTabIndexChange = (index: number) => {
-    setSearchParams("tab", "" + index);
+    router.replace(`?tab=${index}`, undefined, { shallow: true });
     setTabIndex(index);
   };
 

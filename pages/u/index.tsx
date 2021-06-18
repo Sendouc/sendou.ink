@@ -18,7 +18,6 @@ import { getAllUsers, GetAllUsersData } from "prisma/queries/getAllUsers";
 import { useEffect, useMemo, useState } from "react";
 import { FaTwitter } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
-import { setSearchParams } from "utils/setSearchParams";
 import { Unpacked } from "utils/types";
 import MyHead from "../../components/common/MyHead";
 
@@ -35,9 +34,13 @@ const UserSearchPage = ({ users }: Props) => {
 
   useEffect(() => {
     if (debouncedFilter.length < 3) {
-      setSearchParams("filter", undefined);
+      router.replace("/u", undefined, { shallow: true });
     } else {
-      setSearchParams("filter", encodeURIComponent(debouncedFilter));
+      router.replace(
+        `?filter=${encodeURIComponent(debouncedFilter)}`,
+        undefined,
+        { shallow: true }
+      );
     }
   }, [debouncedFilter]);
 

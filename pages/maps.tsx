@@ -26,16 +26,15 @@ import { RankedMode } from "@prisma/client";
 import ModeImage from "components/common/ModeImage";
 import MultipleModeSelector from "components/common/MultipleModeSelector";
 import SubText from "components/common/SubText";
-import { useRouter } from "next/router";
+import { useMyRouter } from "hooks/useMyRouter";
 import { ChangeEvent, Fragment, useEffect, useState } from "react";
 import { FiCheck, FiFilter, FiRotateCw } from "react-icons/fi";
 import { shuffleArray } from "utils/arrays";
 import { stages } from "utils/lists/stages";
-import { setManySearchParams } from "utils/setSearchParams";
 import MyHead from "../components/common/MyHead";
 
 const MapsGeneratorPage = () => {
-  const router = useRouter();
+  const router = useMyRouter();
   const { i18n } = useLingui();
 
   const defaultGenerationMode = "SZ_EVERY_OTHER";
@@ -165,7 +164,13 @@ const MapsGeneratorPage = () => {
       urlParams.push({ key, value });
     }
     setUrlParams(urlParams);
-    setManySearchParams(urlParams, true);
+    router.setSearchParams(
+      urlParams.map(
+        ({ key, value }) =>
+          [key, value] as [string, string | string[] | undefined]
+      ),
+      true
+    );
   }
 
   function updateUrlParamsFromArray(
@@ -177,7 +182,14 @@ const MapsGeneratorPage = () => {
     );
     const paramsWithMaps = params.concat(items);
     setUrlParams(paramsWithMaps);
-    setManySearchParams(paramsWithMaps, true);
+    console.log(paramsWithMaps);
+    router.setSearchParams(
+      paramsWithMaps.map(
+        ({ key, value }) =>
+          [key, value] as [string, string | string[] | undefined]
+      ),
+      true
+    );
   }
 
   const poolForUrl = (stagesSelectedForUrl: Record<string, string[]>) => {

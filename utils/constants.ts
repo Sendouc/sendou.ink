@@ -177,6 +177,12 @@ export const TAGS = [
     description: "This tournament is a qualifier for another event.",
     color: "#FFC0CB",
   },
+  {
+    code: "BADGE",
+    name: "Badge prize",
+    description: "Winner of this event gets a sendou.ink badge.",
+    color: "#ffff4d",
+  },
 ] as const;
 
 export const EVENT_FORMATS = [
@@ -334,4 +340,31 @@ export const wonITZCount = (
   }
 
   return result;
+};
+
+const TRITON_CUP_WINNERS =
+  "277760673436401664,317021572470669312,347127232839417856,149504203654430720,207150814735761408,304337232808902668,403962004739588096,381129695980290050,158163424004538369,330044344738381834,526883393485406208,340583035542175744,105390854063034368,151192098962407424,109804061900992512,115572122482507782";
+
+export const wonTournamentCount = ({
+  tournament,
+  discordId,
+}: {
+  tournament: "TRITON";
+  discordId: string;
+}) => {
+  let winnersString = "";
+  switch (tournament) {
+    case "TRITON":
+      winnersString = TRITON_CUP_WINNERS;
+      break;
+    default:
+      console.error(`Invalid tournament: ${tournament}`);
+  }
+
+  return winnersString
+    .split(",")
+    .reduce(
+      (count, winnersId) => (winnersId === discordId ? count + 1 : count),
+      0
+    );
 };

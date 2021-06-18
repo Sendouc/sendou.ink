@@ -73,11 +73,17 @@ const EventInfo = ({ event, edit }: EventInfoProps) => {
             {imgSrc && <Image src={imgSrc} width={36} height={36} />}
             <Heading size="lg">{event.name}</Heading>
             {event.tags.length > 0 && (
-              <Flex flexWrap="wrap" justifyContent="center" mt={3} mb={2}>
+              <Flex flexWrap="wrap" justifyContent="center" my={2}>
                 {event.tags.map((tag) => {
                   const tagInfo = TAGS.find((tagObj) => tagObj.code === tag)!;
                   return (
-                    <Badge key={tag} mx={1} bg={tagInfo.color} color="black">
+                    <Badge
+                      key={tag}
+                      mx={1}
+                      my={1}
+                      bg={tagInfo.color}
+                      color="black"
+                    >
                       {tagInfo.name}
                     </Badge>
                   );

@@ -11,7 +11,6 @@ import {
   GetPlayerWithPlacementsData,
 } from "prisma/queries/getPlayerWithPlacements";
 import { useState } from "react";
-import { setSearchParams } from "utils/setSearchParams";
 import MyHead from "../../components/common/MyHead";
 
 interface Props {
@@ -41,7 +40,7 @@ const PlayerPage = (props: Props) => {
 
       <RadioGroup
         onChange={(value) => {
-          setSearchParams("tab", value as string);
+          router.replace(`?tab=${value}`, undefined, { shallow: true });
           setTab(value as "XRANK" | "TWIN" | "QUAD");
         }}
         value={tab}

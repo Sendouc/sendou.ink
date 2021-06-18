@@ -1,5 +1,6 @@
 import { useEffect, useReducer } from "react";
 import { createNewMatch, teamsShouldChange, errorWithPlayers } from "./helpers";
+import { State, Action } from "./types";
 
 const DEFAULT_AMOUNT_OF_ROUNDS_WITH_SAME_TEAMS = 2;
 

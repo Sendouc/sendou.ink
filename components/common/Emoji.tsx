@@ -5,6 +5,7 @@ import Image from "next/image";
 import { abilityMarkdownCodes } from "utils/lists/abilityMarkdownCodes";
 import { gearMarkdownCodes } from "utils/lists/gearMarkdownCodes";
 import { codeToWeapon } from "utils/lists/weaponCodes";
+import { subSpecialWeaponMarkdownCodes } from "utils/lists/subSpecialWeaponMarkdownCodes";
 
 const modeCodes: Record<string, string> = {
   turf_war: "TW",
@@ -34,6 +35,10 @@ const Emoji: React.FC<EmojiProps> = (props) => {
   const keyGear = value as keyof typeof gearMarkdownCodes;
   const gearName = gearMarkdownCodes[keyGear];
   if (!!gearName) return <GearImage englishName={gearName} mini />;
+
+  const keySubSpecial = value as keyof typeof subSpecialWeaponMarkdownCodes;
+  const subSpecialWeapon = subSpecialWeaponMarkdownCodes[keySubSpecial];
+  if (!!subSpecialWeapon) return <Image src={`/subs-specials/${subSpecialWeapon}.png`} width={32} height={32} />;
 
   const modeCode = modeCodes[value];
   if (!!modeCode)

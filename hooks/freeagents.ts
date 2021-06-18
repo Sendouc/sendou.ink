@@ -1,12 +1,11 @@
 import { Playstyle } from "@prisma/client";
 import { countries } from "countries-list";
 import { useUser } from "hooks/common";
-import { useRouter } from "next/router";
 import { Dispatch, useMemo, useReducer } from "react";
-import { setManySearchParams, setSearchParams } from "utils/setSearchParams";
 import { getBooleanFromString, getWeaponFromString } from "utils/strings";
 import { trpc } from "utils/trpc";
 import { isFreeAgentPlaystyle, isFreeAgentRegion } from "utils/typeGuards";
+import { useMyRouter } from "./useMyRouter";
 
 export type FreeAgentRegion = "EUROPE" | "AMERICAS" | "ASIA";
 
@@ -48,7 +47,7 @@ export type UseFreeAgentsDispatch = Dispatch<Action>;
 const defaultState: UseFreeAgentsState = { xp: false, plusServer: false };
 
 export function useFreeAgents() {
-  const router = useRouter();
+  const router = useMyRouter();
   const [user] = useUser();
 
   const posts = trpc.useQuery(["freeAgents.posts"], {
@@ -67,27 +66,27 @@ export function useFreeAgents() {
     (oldState: UseFreeAgentsState, action: Action) => {
       switch (action.type) {
         case "SET_PLAYSTYLE":
-          setSearchParams("playstyle", action.value);
+          router.setSearchParams(["playstyle", action.value]);
 
           return { ...oldState, playstyle: action.value };
         case "SET_XP_VALUE":
-          setSearchParams("xp", "" + action.value);
+          router.setSearchParams(["xp", action.value]);
 
           return { ...oldState, xp: action.value };
         case "SET_PLUS_SERVER_VALUE":
-          setSearchParams("plusServer", "" + action.value);
+          router.setSearchParams(["plusServer", action.value]);
 
           return { ...oldState, plusServer: action.value };
         case "SET_WEAPON":
-          setSearchParams("weapon", action.value);
+          router.setSearchParams(["weapon", action.value]);
 
           return { ...oldState, weapon: action.value };
         case "SET_REGION":
-          setSearchParams("region", action.value);
+          router.setSearchParams(["region", action.value]);
 
           return { ...oldState, region: action.value };
         case "RESET_FILTERS":
-          setManySearchParams([], true);
+          router.resetSearchParams();
 
           return defaultState;
         default:

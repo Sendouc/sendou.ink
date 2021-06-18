@@ -1,4 +1,5 @@
 import { shuffleArray } from "utils/arrays";
+import { Player, Match } from "./types";
 
 const choosePlayersToSitOut = (
   players: Player[]
