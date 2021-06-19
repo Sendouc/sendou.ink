@@ -142,7 +142,8 @@ const PlusHomePage = () => {
               {plusStatusData?.canVouchAgainAfter && (
                 <Box>
                   Can vouch again after:{" "}
-                  {plusStatusData.canVouchAgainAfter.toLocaleDateString()}
+                  {plusStatusData.canVouchAgainAfter.toLocaleDateString()}{" "}
+                  (resets after voting)
                 </Box>
               )}
               {plusStatusData?.voucher && (
