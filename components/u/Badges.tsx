@@ -99,16 +99,33 @@ const Badges = ({
     });
   }
 
-  // Triton-Cup
+  // Other tournaments
 
   if (
-    wonTournamentCount({ tournament: "TRITON", discordId: userDiscordId }) > 0
+    wonTournamentCount({
+      tournament: "MONDAY_AFTERPARTY",
+      discordId: userDiscordId,
+    }) > 0
+  ) {
+    badges.push({
+      src: "monday.gif",
+      description: "Awarded for winning Monday Afterparty",
+      count: wonTournamentCount({
+        tournament: "MONDAY_AFTERPARTY",
+        discordId: userDiscordId,
+      }),
+    });
+  }
+
+  if (
+    wonTournamentCount({ tournament: "TRITON_CUP", discordId: userDiscordId }) >
+    0
   ) {
     badges.push({
       src: "triton.gif",
       description: "Awarded for winning Triton-Cup",
       count: wonTournamentCount({
-        tournament: "TRITON",
+        tournament: "TRITON_CUP",
         discordId: userDiscordId,
       }),
     });
