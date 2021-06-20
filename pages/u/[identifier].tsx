@@ -179,7 +179,7 @@ const ProfilePage = (props: Props) => {
           >
             <Trans>Edit profile</Trans>
           </Button>
-          {canPostBuilds() && (
+          {canPostBuilds && (
             <Button
               leftIcon={<RiTShirtLine />}
               variant="outline"

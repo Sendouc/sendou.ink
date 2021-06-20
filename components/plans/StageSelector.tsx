@@ -1,25 +1,16 @@
-import {
-  Box,
-  Flex,
-  HStack,
-  Image,
-  Radio,
-  RadioGroup,
-  Select,
-} from "@chakra-ui/react";
+import { Box, Flex, HStack, Radio, RadioGroup, Select } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { RankedMode } from "@prisma/client";
 import ModeSelector from "components/common/ModeSelector";
 import SubText from "components/common/SubText";
 import { PlannerMapBg } from "pages/plans";
-// @ts-ignore
+import NextImage from "next/image";
 import salmonRunHighTide from "utils/assets/SalmonRunHighTide.svg";
-// @ts-ignore
 import salmonRunLowTide from "utils/assets/SalmonRunLowTide.svg";
-// @ts-ignore
 import salmonRunMidTide from "utils/assets/SalmonRunMidTide.svg";
 import { salmonRunStages, stages } from "utils/lists/stages";
+import styles from "./StageSelector.module.css";
 
 interface StageSelectorProps {
   handleChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
@@ -55,18 +46,11 @@ const StageSelector: React.FC<StageSelectorProps> = ({
         <>
           <HStack my={4} display="flex" justifyContent="center">
             <Flex flexDir="column" alignItems="center">
-              <Image
-                w={8}
-                h={8}
-                mb={1}
+              <NextImage
+                className={styles["sr-icon"]}
+                width={32}
+                height={32}
                 src={salmonRunLowTide}
-                cursor="pointer"
-                style={{
-                  filter:
-                    currentBackground.tide === "low"
-                      ? undefined
-                      : "grayscale(100%)",
-                }}
                 alt="Salmon Run low tide"
                 onClick={() => changeTide("low")}
               />
@@ -79,18 +63,11 @@ const StageSelector: React.FC<StageSelectorProps> = ({
               )}
             </Flex>
             <Flex flexDir="column" alignItems="center">
-              <Image
-                w={8}
-                h={8}
-                mb={1}
+              <NextImage
+                className={styles["sr-icon"]}
+                width={32}
+                height={32}
                 src={salmonRunMidTide}
-                cursor="pointer"
-                style={{
-                  filter:
-                    currentBackground.tide === "mid"
-                      ? undefined
-                      : "grayscale(100%)",
-                }}
                 alt="Salmon Run mid-tide"
                 onClick={() => changeTide("mid")}
               />
@@ -103,18 +80,11 @@ const StageSelector: React.FC<StageSelectorProps> = ({
               )}
             </Flex>
             <Flex flexDir="column" alignItems="center">
-              <Image
-                w={8}
-                h={8}
-                mb={1}
+              <NextImage
+                className={styles["sr-icon"]}
+                width={32}
+                height={32}
                 src={salmonRunHighTide}
-                cursor="pointer"
-                style={{
-                  filter:
-                    currentBackground.tide === "high"
-                      ? undefined
-                      : "grayscale(100%)",
-                }}
                 alt="Salmon Run high tide"
                 onClick={() => changeTide("high")}
               />
