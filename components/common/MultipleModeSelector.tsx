@@ -70,10 +70,7 @@ const MultipleModeSelector: React.FC<SelectProps> = ({
   hideMenuBeforeTyping,
   defaultValue,
 }) => {
-  const {
-    themeColorHex,
-    bgColor,
-  } = useMyTheme();
+  const { themeColorHex, bgColor } = useMyTheme();
   const [inputValue, setInputValue] = useState("");
   const [selectedModes, setSelectedModes] = useState(defaultValue);
   const selectDefaultStyles = defaultStyles();

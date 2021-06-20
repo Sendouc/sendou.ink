@@ -15,14 +15,8 @@ import { RiBarChart2Fill, RiTShirtLine } from "react-icons/ri";
 import MyHead from "../../components/common/MyHead";
 
 const BuildsPage = () => {
-  const {
-    data,
-    stats,
-    isLoading,
-    state,
-    dispatch,
-    hiddenBuildCount,
-  } = useBuildsByWeapon();
+  const { data, stats, isLoading, state, dispatch, hiddenBuildCount } =
+    useBuildsByWeapon();
   const [user] = useUser();
   const { secondaryBgColor, themeColorShade } = useMyTheme();
   const [showStats, setShowStats] = useState(false);

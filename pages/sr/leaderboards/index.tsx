@@ -37,13 +37,8 @@ import { salmonRunCategoryToNatural } from "./new";
 
 const SalmonRunLeaderboardsPage = ({}) => {
   const { i18n } = useLingui();
-  const {
-    data,
-    isLoading,
-    pendingCount,
-    state,
-    dispatch,
-  } = useSalmonRunRecords();
+  const { data, isLoading, pendingCount, state, dispatch } =
+    useSalmonRunRecords();
 
   let placement = 1;
 
@@ -223,7 +218,7 @@ const SalmonRunLeaderboardsPage = ({}) => {
                             <Box
                               as="time"
                               dateTime={
-                                (record.rotation.startTime as unknown) as string
+                                record.rotation.startTime as unknown as string
                               }
                             >
                               {new Date(
@@ -234,7 +229,7 @@ const SalmonRunLeaderboardsPage = ({}) => {
                             <Box
                               as="time"
                               dateTime={
-                                (record.rotation.endTime as unknown) as string
+                                record.rotation.endTime as unknown as string
                               }
                             >
                               {new Date(

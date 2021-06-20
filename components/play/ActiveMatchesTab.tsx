@@ -34,9 +34,11 @@ const ActiveMatchesTab = () => {
                 ({Intl.DateTimeFormat().resolvedOptions().timeZone})
               </Box>
               <SubText mt={4}>Maplist</SubText>
-              {(previousLadderDay.matches.find(
-                (match) => match.order === round
-              )!.maplist as any[]).map(({ stage, mode }, i) => {
+              {(
+                previousLadderDay.matches.find(
+                  (match) => match.order === round
+                )!.maplist as any[]
+              ).map(({ stage, mode }, i) => {
                 return (
                   <Flex
                     key={stage + mode}

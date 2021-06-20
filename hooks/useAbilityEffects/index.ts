@@ -142,10 +142,8 @@ export default function useAbilityEffects({
 }: useAbilityEffectsArgs) {
   const { i18n } = useLingui();
   const [explanations, setExplanations] = useState<Explanation[]>([]);
-  const weaponData: Record<
-    Weapon | SubWeapon | SpecialWeapon,
-    any
-  > = weaponJson;
+  const weaponData: Record<Weapon | SubWeapon | SpecialWeapon, any> =
+    weaponJson;
 
   const weapon = untypedWeapon as Weapon;
 
@@ -483,7 +481,8 @@ export default function useAbilityEffects({
 
     const moveEffect = getEffect(highMidLow, amount);
 
-    const highShootKey = `MoveVelRt_Human_Shot${grade}_High` as keyof typeof RSU;
+    const highShootKey =
+      `MoveVelRt_Human_Shot${grade}_High` as keyof typeof RSU;
     const midShootKey = `MoveVelRt_Human_Shot${grade}_Mid` as keyof typeof RSU;
     const lowShootKey = `MoveVelRt_Human_Shot${grade}_Low` as keyof typeof RSU;
     const highShoot = RSU[highShootKey];

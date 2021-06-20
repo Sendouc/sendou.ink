@@ -63,88 +63,90 @@ export const getPlusStatusesData = (): Prisma.PlusStatusCreateManyInput[] => {
   });
 };
 
-export const getPlusSuggestionsData = (): Prisma.PlusSuggestionCreateManyInput[] => {
-  return [
-    plusSuggestionFactory.build({
-      description: "yooo so cracked",
-      tier: 2,
-      suggestedId: 10,
-      suggesterId: 1,
-    }),
-  ];
-};
+export const getPlusSuggestionsData =
+  (): Prisma.PlusSuggestionCreateManyInput[] => {
+    return [
+      plusSuggestionFactory.build({
+        description: "yooo so cracked",
+        tier: 2,
+        suggestedId: 10,
+        suggesterId: 1,
+      }),
+    ];
+  };
 
-export const getPlusVotingSummaryData = (): Prisma.PlusVotingSummaryCreateManyInput[] => {
-  return [
-    {
-      userId: 1,
-      countsEU: [0, 0, 0, 3],
-      countsNA: [0, 0, 2, 0],
-    },
-    {
-      userId: 2,
-      countsEU: [0, 3, 0, 0],
-      countsNA: [2, 0, 0, 0],
-    },
-    {
-      userId: 3,
-      countsEU: [1, 1, 1, 0],
-      countsNA: [0, 1, 1, 0],
-    },
-    {
-      userId: 4,
-      countsEU: [0, 1, 2, 0],
-      countsNA: [2, 0, 0, 0],
-    },
-    {
-      userId: 5,
-      countsEU: [1, 0, 1, 1],
-      countsNA: [0, 2, 0, 0],
-    },
-    {
-      userId: 6,
-      wasVouched: true,
-      countsEU: [0, 3, 0, 0],
-      countsNA: [2, 0, 0, 0],
-    },
-    {
-      userId: 7,
-      wasVouched: true,
-      countsEU: [0, 0, 0, 3],
-      countsNA: [0, 0, 2, 0],
-    },
-    // +2
-    {
-      userId: 6,
-      tier: 2,
-      countsEU: [0, 0, 2, 0],
-      countsNA: [0, 0, 0, 2],
-    },
-    {
-      userId: 7,
-      tier: 2,
-      countsEU: [0, 1, 0, 1],
-      countsNA: [0, 1, 1, 0],
-    },
-    {
-      userId: 8,
-      tier: 2,
-      countsEU: [0, 2, 0, 0],
-      countsNA: [0, 0, 2, 0],
-    },
-    {
-      userId: 9,
-      tier: 2,
-      countsEU: [1, 1, 0, 0],
-      countsNA: [0, 2, 0, 0],
-    },
-    {
-      userId: 10,
-      tier: 2,
-      countsEU: [0, 0, 2, 0],
-      countsNA: [0, 0, 0, 2],
-    },
-  ].map((params) => {
-    return plusVotingSummaryFactory.build(params);
-  });
-};
+export const getPlusVotingSummaryData =
+  (): Prisma.PlusVotingSummaryCreateManyInput[] => {
+    return [
+      {
+        userId: 1,
+        countsEU: [0, 0, 0, 3],
+        countsNA: [0, 0, 2, 0],
+      },
+      {
+        userId: 2,
+        countsEU: [0, 3, 0, 0],
+        countsNA: [2, 0, 0, 0],
+      },
+      {
+        userId: 3,
+        countsEU: [1, 1, 1, 0],
+        countsNA: [0, 1, 1, 0],
+      },
+      {
+        userId: 4,
+        countsEU: [0, 1, 2, 0],
+        countsNA: [2, 0, 0, 0],
+      },
+      {
+        userId: 5,
+        countsEU: [1, 0, 1, 1],
+        countsNA: [0, 2, 0, 0],
+      },
+      {
+        userId: 6,
+        wasVouched: true,
+        countsEU: [0, 3, 0, 0],
+        countsNA: [2, 0, 0, 0],
+      },
+      {
+        userId: 7,
+        wasVouched: true,
+        countsEU: [0, 0, 0, 3],
+        countsNA: [0, 0, 2, 0],
+      },
+      // +2
+      {
+        userId: 6,
+        tier: 2,
+        countsEU: [0, 0, 2, 0],
+        countsNA: [0, 0, 0, 2],
+      },
+      {
+        userId: 7,
+        tier: 2,
+        countsEU: [0, 1, 0, 1],
+        countsNA: [0, 1, 1, 0],
+      },
+      {
+        userId: 8,
+        tier: 2,
+        countsEU: [0, 2, 0, 0],
+        countsNA: [0, 0, 2, 0],
+      },
+      {
+        userId: 9,
+        tier: 2,
+        countsEU: [1, 1, 0, 0],
+        countsNA: [0, 2, 0, 0],
+      },
+      {
+        userId: 10,
+        tier: 2,
+        countsEU: [0, 0, 2, 0],
+        countsNA: [0, 0, 0, 2],
+      },
+    ].map((params) => {
+      return plusVotingSummaryFactory.build(params);
+    });
+  };

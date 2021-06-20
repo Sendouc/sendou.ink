@@ -64,10 +64,9 @@ export default function usePlusVoting() {
   const toast = useToast();
   const [user] = useUser();
 
-  const {
-    data: votedUserScores,
-    isLoading: hasVotedIsLoading,
-  } = trpc.useQuery(["plus.votedUserScores"]);
+  const { data: votedUserScores, isLoading: hasVotedIsLoading } = trpc.useQuery(
+    ["plus.votedUserScores"]
+  );
   const { data: usersForVoting, isLoading: isLoadingBallots } = trpc.useQuery([
     "plus.usersForVoting",
   ]);
@@ -88,18 +87,16 @@ export default function usePlusVoting() {
       },
     }
   );
-  const {
-    mutate: editVoteMutate,
-    isLoading: isLoadingEditVote,
-  } = trpc.useMutation("plus.editVote", {
-    onSuccess() {
-      toast(getToastOptions("Successfully edited vote", "success"));
-      utils.invalidateQuery(["plus.votedUserScores"]);
-    },
-    onError(error) {
-      toast(getToastOptions(error.message, "error"));
-    },
-  });
+  const { mutate: editVoteMutate, isLoading: isLoadingEditVote } =
+    trpc.useMutation("plus.editVote", {
+      onSuccess() {
+        toast(getToastOptions("Successfully edited vote", "success"));
+        utils.invalidateQuery(["plus.votedUserScores"]);
+      },
+      onError(error) {
+        toast(getToastOptions(error.message, "error"));
+      },
+    });
 
   const ownPlusStatus = statuses?.find((status) => status.user.id === user?.id);
 

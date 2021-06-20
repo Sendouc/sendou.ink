@@ -59,24 +59,24 @@ const BuildModal: React.FC<Props> = ({ onClose, build, weaponFromQuery }) => {
   const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
     resolver: zodResolver(buildSchema),
     defaultValues: {
-      headAbilities: ([
+      headAbilities: [
         "UNKNOWN",
         "UNKNOWN",
         "UNKNOWN",
         "UNKNOWN",
-      ] as unknown) as Ability[],
-      clothingAbilities: ([
+      ] as unknown as Ability[],
+      clothingAbilities: [
         "UNKNOWN",
         "UNKNOWN",
         "UNKNOWN",
         "UNKNOWN",
-      ] as unknown) as Ability[],
-      shoesAbilities: ([
+      ] as unknown as Ability[],
+      shoesAbilities: [
         "UNKNOWN",
         "UNKNOWN",
         "UNKNOWN",
         "UNKNOWN",
-      ] as unknown) as Ability[],
+      ] as unknown as Ability[],
       weapon: weapons.includes(weaponFromQuery as any)
         ? weaponFromQuery
         : undefined,

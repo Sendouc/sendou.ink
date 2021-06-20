@@ -11,7 +11,8 @@ export const getPlayerWithPlacements = async (switchAccountId: string) => {
   if (!player) return null;
 
   type PlayerWithPlacements = Prisma.PromiseReturnType<typeof getPlayer>;
-  type LeaguePlacementArray = NonNullable<PlayerWithPlacements>["leaguePlacements"];
+  type LeaguePlacementArray =
+    NonNullable<PlayerWithPlacements>["leaguePlacements"];
 
   return {
     ...player,

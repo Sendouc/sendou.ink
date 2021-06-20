@@ -35,10 +35,9 @@ export const useUser = (): [PrismaUser | undefined | null, boolean] => {
 };
 
 export const useActiveNavItem = () => {
-  const [navItem, setNavItem] =
-    useState<undefined | { code: string; name: string; imageSrc?: string }>(
-      undefined
-    );
+  const [navItem, setNavItem] = useState<
+    undefined | { code: string; name: string; imageSrc?: string }
+  >(undefined);
   const router = useRouter();
   const firstPath = router.pathname.split("/")[1];
 

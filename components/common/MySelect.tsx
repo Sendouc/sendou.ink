@@ -64,12 +64,9 @@ const MySelect: React.FC<SelectProps> = ({
   menuIsOpen = false,
   hideMenuBeforeTyping,
   customFilterOption,
-  styles
+  styles,
 }) => {
-  const {
-    themeColorHex,
-    bgColor,
-  } = useMyTheme();
+  const { themeColorHex, bgColor } = useMyTheme();
   const [inputValue, setInputValue] = useState("");
   const selectDefaultStyles = defaultStyles();
 
@@ -137,7 +134,7 @@ const MySelect: React.FC<SelectProps> = ({
         },
       })}
       autoFocus={autoFocus}
-      styles={ styles ? styles : selectDefaultStyles}
+      styles={styles ? styles : selectDefaultStyles}
     />
   );
 };
