@@ -37,7 +37,7 @@ const UserSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = ({
 }) => {
   const { data } = useSWR<GetAllUsersLeanData>("/api/users");
 
-  const singleOption = (props: any) => {
+  const singleOption = function UserSelectorSingleOption(props: any) {
     return (
       <components.Option {...props}>
         <Flex alignItems="center">
@@ -69,15 +69,17 @@ const UserSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = ({
       components={{
         IndicatorSeparator: () => null,
         Option: singleOption,
-        NoOptionsMessage: () => (
-          <Center p={4}>
-            {isTooManyItems() ? (
-              <Trans>Only {maxMultiCount} users allowed</Trans>
-            ) : (
-              <Trans>No results with this filter</Trans>
-            )}
-          </Center>
-        ),
+        NoOptionsMessage: function UserSelectorNoOptionsMessage() {
+          return (
+            <Center p={4}>
+              {isTooManyItems() ? (
+                <Trans>Only {maxMultiCount} users allowed</Trans>
+              ) : (
+                <Trans>No results with this filter</Trans>
+              )}
+            </Center>
+          );
+        },
       }}
       hideMenuBeforeTyping
       isClearable={!isMulti}

@@ -3,11 +3,9 @@ import { mode } from "@chakra-ui/theme-tools";
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import Layout from "components/layout";
-import "focus-visible/dist/focus-visible";
 import { Provider as NextAuthProvider } from "next-auth/client";
 import { DefaultSeo } from "next-seo";
 import type { AppProps } from "next/app";
-import Head from "next/head";
 import { Router } from "next/router";
 import NProgress from "nprogress";
 import { useEffect, useState } from "react";
@@ -173,9 +171,6 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 
   return (
     <>
-      <Head>
-        <link rel="stylesheet" type="text/css" href="/nprogress.css" />
-      </Head>
       <DefaultSeo
         title="sendou.ink"
         description="Competitive Splatoon hub featuring several tools and resources."

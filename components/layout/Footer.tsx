@@ -24,6 +24,7 @@ const Footer: React.FC = () => {
         mt="5rem"
         userSelect="none"
         loading="lazy"
+        alt=""
       />
       <FooterWaves />
       <FooterContent />

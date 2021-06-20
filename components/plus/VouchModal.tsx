@@ -118,8 +118,8 @@ const VouchModal: React.FC<Props> = ({ canVouchFor }) => {
                       <option value="EU">EU</option>
                     </Select>
                     <FormHelperText>
-                      If the player isn't from either region then choose the one
-                      they play most commonly with.
+                      If the player isn&apos;t from either region then choose
+                      the one they play most commonly with.
                     </FormHelperText>
                   </FormControl>
                 </ModalBody>

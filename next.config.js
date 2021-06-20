@@ -20,6 +20,9 @@ module.exports = withBundleAnalyzer(
     images: {
       domains: ["www.countryflags.io"],
     },
+    eslint: {
+      dirs: ["pages", "components", "services", "hooks", "utils"],
+    },
     // i18n: {
     //  v-- import from lib/locales
     //   locales: [

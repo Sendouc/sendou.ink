@@ -1,7 +1,7 @@
 import { Button } from "@chakra-ui/button";
 import { Image as ChakraImage } from "@chakra-ui/image";
 import { Flex, Text } from "@chakra-ui/layout";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { wonITZCount, wonTournamentCount } from "utils/constants";
 
 interface BadgesProps {
@@ -150,7 +150,12 @@ const usersBadges = ({
   return result;
 };
 
-const Badges = (props: {
+const Badges = ({
+  userId,
+  userDiscordId,
+  patreonTier,
+  peakXP,
+}: {
   userId: number;
   userDiscordId: string;
   patreonTier: number | null;
@@ -159,7 +164,10 @@ const Badges = (props: {
   const [showInfo, setShowInfo] = useState(false);
   const [imgsLoaded, setImgsLoaded] = useState(false);
 
-  const badges = usersBadges(props);
+  const badges = useMemo(
+    () => usersBadges({ userId, userDiscordId, patreonTier, peakXP }),
+    [userId, userDiscordId, patreonTier, peakXP]
+  );
 
   useEffect(() => {
     const loadImage = (imageUrl: string) => {
@@ -174,7 +182,7 @@ const Badges = (props: {
     Promise.all(badges.map((badge) => loadImage("/badges/" + badge.src)))
       .then(() => setImgsLoaded(true))
       .catch((err) => console.error("Failed to load images", err));
-  }, []);
+  }, [badges]);
 
   if (badges.length === 0) return null;
 

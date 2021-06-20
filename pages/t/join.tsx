@@ -34,7 +34,7 @@ const JoinTeamPage = ({}) => {
     };
 
     joinTeam();
-  }, []);
+  }, [router]);
 
   return <>{i18n._(statusMessage[joiningStatus])}</>;
 };

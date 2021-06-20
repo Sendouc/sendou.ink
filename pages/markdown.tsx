@@ -31,10 +31,10 @@ const MarkdownHelpPage = () => {
           >
             GitHub provides.
           </MyLink>{" "}
-          Big thing we don't support is embedding images but mostly everything
-          else works. Be mindful of some Markdown quirks such as needing to use
-          double space after a line and before a linebreak for it to display
-          normally.
+          Big thing we don&apos;t support is embedding images but mostly
+          everything else works. Be mindful of some Markdown quirks such as
+          needing to use double space after a line and before a linebreak for it
+          to display normally.
         </p>
         <p style={{ marginTop: "1em" }}>
           We also support certain special emoji. Below listed are the groups and
@@ -82,7 +82,7 @@ const MarkdownHelpPage = () => {
             <Collapse in={showWeapons} animateOpacity>
               <Flex flexDir="column">
                 {Object.keys(codeToWeapon).map((code) => (
-                  <Box>:{code}:</Box>
+                  <Box key={code}>:{code}:</Box>
                 ))}
               </Flex>
             </Collapse>
@@ -92,25 +92,26 @@ const MarkdownHelpPage = () => {
           <b>Sub and Special weapons emoji</b>
           <Flex flexDir="column">
             <Box>
-              :baller: -{">"}{" "}
-              <Emoji value="baller" />
+              :baller: -{">"} <Emoji value="baller" />
             </Box>
             <Box>
               :ink_armor: -{">"} <Emoji value="ink_armor" />
             </Box>
             <Box>
-              :autobomb: -{">"}{" "}
-              <Emoji value="autobomb" />
+              :autobomb: -{">"} <Emoji value="autobomb" />
             </Box>
             <Box w="250px" mt="0.5em">
-              <Button onClick={() => setShowSubSpecialWeapons(!showSubSpecialWeapons)} size="sm">
+              <Button
+                onClick={() => setShowSubSpecialWeapons(!showSubSpecialWeapons)}
+                size="sm"
+              >
                 {showSubSpecialWeapons ? "Hide" : "Show all"}
               </Button>
             </Box>
             <Collapse in={showSubSpecialWeapons} animateOpacity>
               <Flex flexDir="column">
                 {Object.keys(subSpecialWeaponMarkdownCodes).map((code) => (
-                  <Box>:{code}:</Box>
+                  <Box key={code}>:{code}:</Box>
                 ))}
               </Flex>
             </Collapse>
@@ -139,7 +140,7 @@ const MarkdownHelpPage = () => {
             <Collapse in={showAbilities} animateOpacity>
               <Flex flexDir="column">
                 {Object.keys(abilityMarkdownCodes).map((code) => (
-                  <Box>:{code}:</Box>
+                  <Box key={code}>:{code}:</Box>
                 ))}
               </Flex>
             </Collapse>
@@ -159,17 +160,14 @@ const MarkdownHelpPage = () => {
               <Emoji value=":black_norimaki_750s:" />
             </Box>
             <Box w="250px" mt="0.5em">
-              <Button
-                onClick={() => setShowGear(!showGear)}
-                size="sm"
-              >
+              <Button onClick={() => setShowGear(!showGear)} size="sm">
                 {showGear ? "Hide" : "Show all"}
               </Button>
             </Box>
             <Collapse in={showGear} animateOpacity>
               <Flex flexDir="column">
                 {Object.keys(gearMarkdownCodes).map((code) => (
-                  <Box>:{code}:</Box>
+                  <Box key={code}>:{code}:</Box>
                 ))}
               </Flex>
             </Collapse>

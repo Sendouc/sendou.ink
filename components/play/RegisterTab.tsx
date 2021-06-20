@@ -13,8 +13,8 @@ const RegisterTab = () => {
     return (
       <Box fontWeight="bold">
         <>
-          First ladder test date is planned for 8th May. Follow Sendou's Twitter
-          for updates!
+          First ladder test date is planned for 8th May. Follow Sendou&apos;s
+          Twitter for updates!
         </>
       </Box>
     );

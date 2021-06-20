@@ -44,10 +44,11 @@ const NotFound = () => {
         w="500px"
         h="auto"
         my={4}
+        alt=""
       />
       <Heading>404 - Not Found</Heading>
       <Box color={gray}>
-        ...just like {mapObject.name} can't be found in Splatoon 2
+        ...just like {mapObject.name} can&apos;t be found in Splatoon 2
       </Box>
     </Flex>
   );

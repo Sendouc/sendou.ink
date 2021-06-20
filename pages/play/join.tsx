@@ -40,6 +40,7 @@ const JoinLadderTeamPage = ({}) => {
     };
 
     joinTeam();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return <>{i18n._(statusMessage[joiningStatus])}</>;

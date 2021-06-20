@@ -76,7 +76,7 @@ const CreateNewTeamModal = () => {
                   />
                   <FormHelperText>
                     <Trans>
-                      Name can't be changed after making the team so choose
+                      Name can&apos;t be changed after making the team so choose
                       wisely.
                     </Trans>
                   </FormHelperText>

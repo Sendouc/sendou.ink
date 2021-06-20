@@ -119,6 +119,7 @@ const AddRecordModal = () => {
                       src="/images/salmonRunIcons/Golden%20Egg.png"
                       width={32}
                       height={32}
+                      alt=""
                     />
                   </Flex>
                   <Trans>Golden Egg Count</Trans>

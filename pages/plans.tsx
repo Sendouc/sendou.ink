@@ -385,7 +385,10 @@ const MapPlannerPage = () => {
               >
                 <div {...getRootProps()}>
                   <input {...getInputProps()} />
-                  <p>Drag 'n' drop or click to use custom background image</p>
+                  <p>
+                    Drag &apos;n&apos; drop or click to use custom background
+                    image
+                  </p>
                 </div>
               </section>
             )}

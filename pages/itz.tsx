@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { Box, Button, Flex, Heading } from "@chakra-ui/react";
 import { useState } from "react";
 import MyHead from "../components/common/MyHead";
@@ -40,6 +42,7 @@ const InTheZoneBanner: React.FC<InTheZoneBannerProps> = ({ runningNumber }) => {
       color="black"
     >
       <img
+        // eslint-disable-line @next/next/no-img-element
         src="https://abload.de/img/itz_main_logog7jls.png"
         style={{ width: "128px" }}
         alt="In The Zone logo"

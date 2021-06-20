@@ -111,6 +111,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
                 height={24}
                 width={24}
                 title={t`Maker of the build has finished in the top 500 of X Rank with this weapon`}
+                alt={t`Maker of the build has finished in the top 500 of X Rank with this weapon`}
               />
             ) : null}
           </Flex>

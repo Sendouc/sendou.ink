@@ -82,14 +82,24 @@ const FreeAgentSection = ({
 
         {showXp ? (
           <Flex my={2} ml={1} align="center" fontSize="sm" fontWeight="bold">
-            <Image src="/layout/xsearch.png" height={24} width={24} />
+            <Image
+              src="/layout/xsearch.png"
+              height={24}
+              width={24}
+              alt="X Power icon"
+            />
             <Box ml={1}>{post.user.player?.placements[0]?.xPower}</Box>
           </Flex>
         ) : null}
 
         {showPlusServerMembership ? (
           <Flex my={2} ml={1} align="center" fontSize="sm" fontWeight="bold">
-            <Image src="/layout/plus.png" height={24} width={24} />
+            <Image
+              src="/layout/plus.png"
+              height={24}
+              width={24}
+              alt="Plus Server icon"
+            />
             <Box ml={1}>+{post.user.plusStatus?.membershipTier}</Box>
           </Flex>
         ) : null}

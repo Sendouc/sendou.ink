@@ -21,8 +21,8 @@ const questionsAndAnswers = [
     q: "What is the schedule?",
     a: (
       <>
-        During the beta testing phase follow Sendou's Twitter for updates. You
-        can choose when to play - there is no commitment. <br />
+        During the beta testing phase follow Sendou&apos;s Twitter for updates.
+        You can choose when to play - there is no commitment. <br />
         <br />
         The plan after the beta testing phase is to have 5 event dates a week
         when you can play: Monday and Wednesday Americas friendly times (8PM
@@ -42,13 +42,12 @@ const questionsAndAnswers = [
     ),
   },
   {
-    q:
-      "Can I switch who I play with between the event dates? Can I sign up without a team?",
+    q: "Can I switch who I play with between the event dates? Can I sign up without a team?",
     a: (
       <>
         You can play with a different set of people each time you play the
         ladder if you want. However you need to find people to play with before
-        signing up (so it doesn't work like solo queue in that sense).
+        signing up (so it doesn&apos;t work like solo queue in that sense).
       </>
     ),
   },
@@ -96,15 +95,15 @@ const questionsAndAnswers = [
     q: "Why are players ranked and not teams? What does this mean in practice?",
     a: (
       <>
-        In Splatoon teams are pretty volatile. It's common for people to play
-        with a lot of different people. Even in one team there is typically a
-        big difference in level depending on who from the roster is playing.
+        In Splatoon teams are pretty volatile. It&apos;s common for people to
+        play with a lot of different people. Even in one team there is typically
+        a big difference in level depending on who from the roster is playing.
         Ranking players lets us have more accurate rankings in these conditions.
         <br />
         <br />
-        If you always play with the same people the ranking system won't be able
-        to make a difference between your scores. The difference only comes if
-        you play with different people also.
+        If you always play with the same people the ranking system won&apos;t be
+        able to make a difference between your scores. The difference only comes
+        if you play with different people also.
       </>
     ),
   },
@@ -115,12 +114,12 @@ const questionsAndAnswers = [
         One DC replay per team per set is allowed. If DC happens before the game
         started (counted from players being able to move) room should be remade
         without DC replays being used. DC replay is only granted if it was less
-        than 2 minutes 30 seconds into the match AND the team's score without DC
-        didn't pass the 50 point mark AND the team with the DC stopped playing
-        without delay.
+        than 2 minutes 30 seconds into the match AND the team&apos;s score
+        without DC didn&apos;t pass the 50 point mark AND the team with the DC
+        stopped playing without delay.
         <br />
-        <br /> If host DC's during game the hosting team has to use their DC
-        replay if they have any left otherwise they lose the map.
+        <br /> If host DC&apos;s during game the hosting team has to use their
+        DC replay if they have any left otherwise they lose the map.
       </>
     ),
   },
@@ -128,8 +127,8 @@ const questionsAndAnswers = [
     q: "Who hosts?",
     a: (
       <>
-        If you can't agree which team should host then the team who is on the
-        left side chooses a player in their team to host the room.
+        If you can&apos;t agree which team should host then the team who is on
+        the left side chooses a player in their team to host the room.
       </>
     ),
   },
@@ -137,7 +136,7 @@ const questionsAndAnswers = [
     q: "How do I report the score?",
     a: (
       <>
-        You report the score by DM'ing the bot Lanista#5266. The bot can be
+        You report the score by DM&apos;ing the bot Lanista#5266. The bot can be
         found on our{" "}
         <MyLink isExternal href="https://discord.gg/sendou">
           Discord

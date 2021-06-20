@@ -61,7 +61,9 @@ const Option = (props: any) => {
 const customFilterOption = (option: any, rawInput: string) => {
   const words = rawInput.split(" ");
   return words.reduce(
-    (acc, cur) => acc && (option.label.toLowerCase().includes(cur.toLowerCase()) ||
+    (acc, cur) =>
+      acc &&
+      (option.label.toLowerCase().includes(cur.toLowerCase()) ||
         option.data?.data?.sub.toLowerCase() === rawInput.toLowerCase() ||
         option.data?.data?.special.toLowerCase() === rawInput.toLowerCase()),
     true
@@ -80,7 +82,7 @@ function initWeaponData() {
 
   for (const [key, value] of Object.entries(weaponData)) {
     if (value.Special && value.Sub) {
-      weaponsArray.push({name: key, special: value.Special, sub: value.Sub});
+      weaponsArray.push({ name: key, special: value.Special, sub: value.Sub });
     }
   }
   return weaponsArray;
@@ -103,7 +105,9 @@ const WeaponSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = (
         options: category.weapons.map((weapon) => ({
           value: weapon,
           label: getLabel(weapon),
-          data: weaponData.find(obj => {return obj.name === weapon})
+          data: weaponData.find((obj) => {
+            return obj.name === weapon;
+          }),
         })),
       }))}
       value={getValue()}
@@ -116,15 +120,17 @@ const WeaponSelector: React.FC<SingleSelectorProps | MultiSelectorProps> = (
         IndicatorSeparator: () => null,
         Option,
         SingleValue,
-        NoOptionsMessage: () => (
-          <Center p={4}>
-            {isTooManyItems() ? (
-              <Trans>Only {maxMultiCount} weapons allowed</Trans>
-            ) : (
-              <Trans>No results with this filter</Trans>
-            )}
-          </Center>
-        ),
+        NoOptionsMessage: function NoOptionsMessage() {
+          return (
+            <Center p={4}>
+              {isTooManyItems() ? (
+                <Trans>Only {maxMultiCount} weapons allowed</Trans>
+              ) : (
+                <Trans>No results with this filter</Trans>
+              )}
+            </Center>
+          );
+        },
       }}
       autoFocus={!!props.autoFocus}
       isDisabled={!!props.isDisabled}

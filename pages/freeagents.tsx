@@ -44,10 +44,13 @@ const FreeAgentsPage = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   useEffect(() => {
-    if (!postRef.current) return;
+    if (!postRef.current) {
+      console.error("no postRef");
+      return;
+    }
 
     postRef.current.scrollIntoView();
-  }, [postRef.current]);
+  }, []);
 
   const dateThreeWeeksAgo = new Date();
   dateThreeWeeksAgo.setDate(dateThreeWeeksAgo.getDate() - 7 * 3);
@@ -102,9 +105,9 @@ const FreeAgentsPage = () => {
             </AlertTitle>
             <AlertDescription maxWidth="sm">
               <Trans>
-                Free agent posts that haven't been updated in over a month will
-                be hidden. Please press the button below if you are still a free
-                agent.
+                Free agent posts that haven&apos;t been updated in over a month
+                will be hidden. Please press the button below if you are still a
+                free agent.
               </Trans>
 
               <Box>
@@ -114,7 +117,7 @@ const FreeAgentsPage = () => {
                   onClick={onPostRefresh}
                   isLoading={sending}
                 >
-                  <Trans>I'm still a free agent</Trans>
+                  <Trans>I&apos;m still a free agent</Trans>
                 </Button>
               </Box>
             </AlertDescription>

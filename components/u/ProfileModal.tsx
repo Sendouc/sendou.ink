@@ -143,7 +143,7 @@ const ProfileModal: React.FC<Props> = ({ onClose, user }) => {
                   <Trans>Custom URL</Trans>
                 </FormLabel>
                 <InputGroup>
-                  <InputLeftAddon children="https://sendou.ink/u/" />
+                  <InputLeftAddon>https://sendou.ink/u/</InputLeftAddon>
                   <Input
                     name="customUrlPath"
                     ref={register}
@@ -167,7 +167,7 @@ const ProfileModal: React.FC<Props> = ({ onClose, user }) => {
                   <Trans>Twitter name</Trans>
                 </FormLabel>
                 <InputGroup>
-                  <InputLeftAddon children="https://twitter.com/" />
+                  <InputLeftAddon>https://twitter.com/</InputLeftAddon>
                   <Input
                     name="twitterName"
                     ref={register}
@@ -191,7 +191,7 @@ const ProfileModal: React.FC<Props> = ({ onClose, user }) => {
                   <Trans>Twitch name</Trans>
                 </FormLabel>
                 <InputGroup>
-                  <InputLeftAddon children="https://twitch.tv/" />
+                  <InputLeftAddon>https://twitch.tv/</InputLeftAddon>
                   <Input
                     name="twitchName"
                     ref={register}
@@ -215,7 +215,7 @@ const ProfileModal: React.FC<Props> = ({ onClose, user }) => {
                   <Trans>YouTube channel ID</Trans>
                 </FormLabel>
                 <InputGroup>
-                  <InputLeftAddon children="https://youtube.com/channel/" />
+                  <InputLeftAddon>https://youtube.com/channel/</InputLeftAddon>
                   <Input
                     name="youtubeId"
                     ref={register}

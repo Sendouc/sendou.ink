@@ -111,7 +111,7 @@ const TeamPage: React.FC<Props> = (props) => {
 
   useEffect(() => {
     mutate(`/api/teams/${props.team!.id}`);
-  }, []);
+  }, [props.team]);
 
   const leaveTeam = async () => {
     if (!window.confirm(t`Leave the team?`)) {
@@ -165,7 +165,12 @@ const TeamPage: React.FC<Props> = (props) => {
         <Popover trigger="hover" variant="responsive">
           <PopoverTrigger>
             <Center>
-              <Image src={`/layout/xsearch.png`} height={24} width={24} />
+              <Image
+                src={`/layout/xsearch.png`}
+                height={24}
+                width={24}
+                alt="X Power icon"
+              />
               <SubText ml={1}>{teamXPData.teamXP}</SubText>
             </Center>
           </PopoverTrigger>
@@ -183,7 +188,12 @@ const TeamPage: React.FC<Props> = (props) => {
                   <WeaponImage name={placement.weapon} size={32} />
 
                   <Flex align="center" justify="center">
-                    <Image src={`/layout/xsearch.png`} height={24} width={24} />
+                    <Image
+                      src={`/layout/xsearch.png`}
+                      height={24}
+                      width={24}
+                      alt="X Power logo"
+                    />
                     <Box ml={1} fontSize="sm" fontWeight="bold">
                       {placement.xPower}
                     </Box>

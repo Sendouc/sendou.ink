@@ -218,8 +218,8 @@ const About = () => {
       </Heading>
       <Trans>
         Noticed a bug? Something could be done better? Thought of a new cool
-        feature you'd like to see on the site? Need help using the site? You can
-        either:
+        feature you&apos;d like to see on the site? Need help using the site?
+        You can either:
       </Trans>
       <List styleType="decimal" m="1em">
         <ListItem>

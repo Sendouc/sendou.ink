@@ -15,6 +15,7 @@ const ModeImage: React.FC<ModeImageProps> = ({ mode, size = 32, onClick }) => {
       width={size}
       height={size}
       onClick={onClick}
+      alt={`Mode (${mode})`}
     />
   );
 };

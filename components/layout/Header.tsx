@@ -67,6 +67,7 @@ const Header = ({ openNav }: { openNav: () => void }) => {
               height={24}
               width={24}
               priority
+              alt={`${activeNavItem.name} icon`}
             />
             <Box ml={1}>{activeNavItem.name}</Box>
           </>

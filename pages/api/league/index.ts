@@ -65,5 +65,7 @@ async function POST(req: NextApiRequest, res: NextApiResponse) {
   res.status(200).end();
 }
 
-export default (req: NextApiRequest, res: NextApiResponse) =>
+const leagueHandler = (req: NextApiRequest, res: NextApiResponse) =>
   createHandler(req, res, { GET, POST });
+
+export default leagueHandler;

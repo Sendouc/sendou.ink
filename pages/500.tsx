@@ -7,7 +7,7 @@ const Custom500Page = () => {
   const { gray } = useMyTheme();
   return (
     <Flex flexDirection="column" justifyContent="center" alignItems="center">
-      <Image src={`/layout/errorGirl.png`} width={584} height={487} />
+      <Image src={`/layout/errorGirl.png`} width={584} height={487} alt="" />
       <Heading>500 - Server-side error occurred</Heading>
       <Box color={gray}>
         For assistance please visit our{" "}

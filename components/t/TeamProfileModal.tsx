@@ -100,7 +100,7 @@ const TeamProfileModal: React.FC<Props> = ({ team, closeModal }) => {
                   <Trans>Twitter name</Trans>
                 </FormLabel>
                 <InputGroup>
-                  <InputLeftAddon children="https://twitter.com/" />
+                  <InputLeftAddon>https://twitter.com/</InputLeftAddon>
                   <Input
                     name="twitterName"
                     ref={register}
@@ -108,7 +108,9 @@ const TeamProfileModal: React.FC<Props> = ({ team, closeModal }) => {
                   />
                 </InputGroup>
                 <FormHelperText>
-                  <Trans>Twitter is also used to get the team's avatar.</Trans>
+                  <Trans>
+                    Twitter is also used to get the team&apos;s avatar.
+                  </Trans>
                 </FormHelperText>
                 <FormErrorMessage>
                   {errors.twitterName?.message}

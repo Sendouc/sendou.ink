@@ -35,7 +35,7 @@ export default function PlusVotingPage() {
 
   useEffect(() => {
     if (shouldRedirect) router.push("/404");
-  }, [shouldRedirect]);
+  }, [shouldRedirect, router]);
 
   if (isLoading || !plusStatus?.membershipTier) return null;
 
@@ -153,7 +153,7 @@ export default function PlusVotingPage() {
               {currentUser.suggestions.map((suggestion) => {
                 return (
                   <Box key={suggestion.suggesterUser.id} mt={4} fontSize="sm">
-                    "{suggestion.description}" -{" "}
+                    &quot;{suggestion.description}&quot; -{" "}
                     {getFullUsername(suggestion.suggesterUser)}
                   </Box>
                 );

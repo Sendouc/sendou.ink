@@ -15,8 +15,9 @@ import { trpc } from "utils/trpc";
 const CalendarPage = () => {
   const { gray } = useMyTheme();
   const events = trpc.useQuery(["calendar.events"], { enabled: false });
-  const [eventToEdit, setEventToEdit] =
-    useState<boolean | (FormData & { id: number })>(false);
+  const [eventToEdit, setEventToEdit] = useState<
+    boolean | (FormData & { id: number })
+  >(false);
   const [filter, setFilter] = useState("");
   const [user] = useUser();
 
@@ -44,10 +45,9 @@ const CalendarPage = () => {
         </div>
       )}
       <InputGroup my={8} maxW="24rem" mx="auto">
-        <InputLeftElement
-          pointerEvents="none"
-          children={<FiSearch color={gray} />}
-        />
+        <InputLeftElement pointerEvents="none">
+          <FiSearch color={gray} />
+        </InputLeftElement>
         <Input value={filter} onChange={(e) => setFilter(e.target.value)} />
       </InputGroup>
       {(events.data ?? [])

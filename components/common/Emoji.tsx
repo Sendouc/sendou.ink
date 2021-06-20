@@ -38,11 +38,26 @@ const Emoji: React.FC<EmojiProps> = (props) => {
 
   const keySubSpecial = value as keyof typeof subSpecialWeaponMarkdownCodes;
   const subSpecialWeapon = subSpecialWeaponMarkdownCodes[keySubSpecial];
-  if (!!subSpecialWeapon) return <Image src={`/subs-specials/${subSpecialWeapon}.png`} width={32} height={32} />;
+  if (!!subSpecialWeapon)
+    return (
+      <Image
+        src={`/subs-specials/${subSpecialWeapon}.png`}
+        width={32}
+        height={32}
+        alt={`Sub or special weapon with code ${subSpecialWeapon}`}
+      />
+    );
 
   const modeCode = modeCodes[value];
   if (!!modeCode)
-    return <Image src={`/modes/${modeCode}.png`} width={32} height={32} />;
+    return (
+      <Image
+        src={`/modes/${modeCode}.png`}
+        width={32}
+        height={32}
+        alt={`Mode ${modeCode}`}
+      />
+    );
 
   return <>{props.value}</>;
 };

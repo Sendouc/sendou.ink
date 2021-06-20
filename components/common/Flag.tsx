@@ -6,6 +6,7 @@ export default function Flag({ countryCode }: { countryCode: string }) {
       width={16}
       height={16}
       src={`https://www.countryflags.io/${countryCode}/flat/16.png`}
+      alt={`Flag with country code ${countryCode}`}
     />
   );
 }

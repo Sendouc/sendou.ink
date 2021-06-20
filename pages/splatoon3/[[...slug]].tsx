@@ -174,10 +174,11 @@ function Main() {
         parts of the game that affect the multiplayer.
         <br />
         <br />
-        There is still so much we don't know about the game but this page will
-        update as we learn more. In terms of missing pages that will be added
-        later "Sub weapons" is missing since have only seen a glimpse of Splat
-        Bomb. "Modes" is missing since we have only seen Turf War so far.
+        There is still so much we don&apos;t know about the game but this page
+        will update as we learn more. In terms of missing pages that will be
+        added later &quot;Sub weapons&quot; is missing since have only seen a
+        glimpse of Splat Bomb. &quot;Modes&quot; is missing since we have only
+        seen Turf War so far.
       </Box>
       <Heading size="lg" as="h3" mt={4}>
         Timeline
@@ -201,7 +202,8 @@ function Main() {
             isExternal
             href="https://japanesenintendo.wordpress.com/2019/07/17/splatoon-producer-says-splatoon-3-development-hasnt-started-yet/"
           >
-            Splatoon 3 producer says Splatoon 3 development hasn't started yet
+            Splatoon 3 producer says Splatoon 3 development hasn&apos;t started
+            yet
           </MyLink>
         </ListItem>
       </UnorderedList>
@@ -219,8 +221,8 @@ function Mechanics() {
         Spawning into a match is redesigned. At the start of the match players
         can launch to the stage from a spawner drone in the sky. Landing spot is
         freely selectable within the range. You can also see where your mates
-        are aiming to land. It's currently unclear how exactly respawning will
-        work but it seems likely it will use similar mechanic. In the first
+        are aiming to land. It&apos;s currently unclear how exactly respawning
+        will work but it seems likely it will use similar mechanic. In the first
         trailer the old type of respawn pad can be seen covered up that could be
         hinting towards that. Maybe the point where you launch from could also
         change under some circumstances mimicking the common shooter mechanic of
@@ -271,7 +273,12 @@ function Stages() {
         Middle of the map consists of grates and a tall but narrow pillar.
       </Box>
       <Box mb={4}>
-        <Image src="/splatoon3/stage1.jpeg" width={852} height={480} />
+        <Image
+          src="/splatoon3/stage1.jpeg"
+          width={852}
+          height={480}
+          alt="Image of Splatoon 3's first stage that was revealed. Desert themed."
+        />
       </Box>
       <Video
         clipName="trailer1"
@@ -293,19 +300,34 @@ function Weapons() {
         with the Charger class.
       </Box>
       <Box my={4}>
-        <Image src="/splatoon3/bow.jpeg" width={852} height={480} />
+        <Image
+          src="/splatoon3/bow.jpeg"
+          width={852}
+          height={480}
+          alt="Splatoon 3 Unnamed Bow weapon"
+        />
       </Box>
       <Heading size="lg" as="h3" mt={6}>
         Splattershot
       </Heading>
       <Box my={4}>
-        <Image src="/splatoon3/splattershot.jpeg" width={852} height={480} />
+        <Image
+          src="/splatoon3/splattershot.jpeg"
+          width={852}
+          height={480}
+          alt="Splatoon 3 Splattershot"
+        />
       </Box>
       <Heading size="lg" as="h3" mt={6}>
         Sloshing Machine
       </Heading>
       <Box my={4}>
-        <Image src="/splatoon3/machine.jpeg" width={852} height={480} />
+        <Image
+          src="/splatoon3/machine.jpeg"
+          width={852}
+          height={480}
+          alt="Splatoon 3 Sloshing Machine"
+        />
       </Box>
       <Heading size="lg" as="h3" mt={6}>
         .96 Gal
@@ -314,35 +336,60 @@ function Weapons() {
         .96 Gal has a different design to make it distinct from .52 Gal.
       </Box>
       <Box my={4}>
-        <Image src="/splatoon3/96.jpg" width={852} height={480} />
+        <Image
+          src="/splatoon3/96.jpg"
+          width={852}
+          height={480}
+          alt="Splatoon 3 .96 Gal"
+        />
       </Box>
       <Heading size="lg" as="h3" mt={6}>
         Blaster & Range Blaster
       </Heading>
       <Box as="p" my={4} mb={6}>
-        Range Blaster has been completely redesigned so it's easier to tell it
-        apart from normal Blaster.
+        Range Blaster has been completely redesigned so it&apos;s easier to tell
+        it apart from normal Blaster.
       </Box>
       <Box my={4}>
-        <Image src="/splatoon3/blasters.jpeg" width={852} height={480} />
+        <Image
+          src="/splatoon3/blasters.jpeg"
+          width={852}
+          height={480}
+          alt="Splatoon 3 Range Blaster and Blaster"
+        />
       </Box>
       <Heading size="lg" as="h3" mt={6}>
         Dynamo Roller
       </Heading>
       <Box my={4}>
-        <Image src="/splatoon3/dynamo.jpeg" width={852} height={480} />
+        <Image
+          src="/splatoon3/dynamo.jpeg"
+          width={852}
+          height={480}
+          alt="Splatoon 3 Dynamo Roller"
+        />
       </Box>
       <Heading size="lg" as="h3" mt={6}>
         E-liter
       </Heading>
       <Box my={4}>
-        <Image src="/splatoon3/eliter.png" width={852} height={480} />
+        <Image
+          src="/splatoon3/eliter.png"
+          width={852}
+          height={480}
+          alt="Splatoon 3 E-Liter"
+        />
       </Box>
       <Heading size="lg" as="h3" mt={6}>
         Hydra Splatling
       </Heading>
       <Box my={4}>
-        <Image src="/splatoon3/hydra.png" width={852} height={480} />
+        <Image
+          src="/splatoon3/hydra.png"
+          width={852}
+          height={480}
+          alt="Splatoon 3 Hydra Splatling"
+        />
       </Box>
     </>
   );
@@ -360,7 +407,12 @@ function Specials() {
         spam it like in Splatoon 1.
       </Box>
       <Box my={4}>
-        <Image src="/splatoon3/inkzooka.jpeg" width={852} height={480} />
+        <Image
+          src="/splatoon3/inkzooka.jpeg"
+          width={852}
+          height={480}
+          alt="Inkzooka special shooting"
+        />
       </Box>
       <Heading size="lg" as="h3" mt={4}>
         Unnamed Robo-Crab special
@@ -369,7 +421,12 @@ function Specials() {
         Shown balling up in the first trailer. Some kind of turret?
       </Box>
       <Box my={4}>
-        <Image src="/splatoon3/crab.jpeg" width={852} height={480} />
+        <Image
+          src="/splatoon3/crab.jpeg"
+          width={852}
+          height={480}
+          alt="Unnamed Robo-Crap special"
+        />
       </Box>
       <Heading size="lg" as="h3" mt={4}>
         Unnamed beam special
@@ -378,7 +435,12 @@ function Specials() {
         The beams go through walls like Stingray.
       </Box>
       <Box my={4}>
-        <Image src="/splatoon3/beams.jpeg" width={852} height={480} />
+        <Image
+          src="/splatoon3/beams.jpeg"
+          width={852}
+          height={480}
+          alt="Beams going through walls barely missing a player."
+        />
       </Box>
       <Heading size="lg" as="h3" mt={4}>
         Tenta Missiles -like special
@@ -388,7 +450,12 @@ function Specials() {
         similar to it.
       </Box>
       <Box my={4}>
-        <Image src="/splatoon3/missiles.png" width={400} height={200} />
+        <Image
+          src="/splatoon3/missiles.png"
+          width={400}
+          height={200}
+          alt="Missiles flying in the air over a big skeleton head."
+        />
       </Box>
     </>
   );

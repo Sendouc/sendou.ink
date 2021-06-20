@@ -70,7 +70,7 @@ const EventInfo = ({ event, edit }: EventInfoProps) => {
       <Box width="100%">
         <Box textAlign="center">
           <Box>
-            {imgSrc && <Image src={imgSrc} width={36} height={36} />}
+            {imgSrc && <Image src={imgSrc} width={36} height={36} alt="" />}
             <Heading size="lg">{event.name}</Heading>
             {event.tags.length > 0 && (
               <Flex flexWrap="wrap" justifyContent="center" my={2}>

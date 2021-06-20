@@ -46,7 +46,7 @@ const Markdown: React.FC<MarkdownProps> = ({
     }
 
     return {
-      paragraph: (props: any) => {
+      paragraph: function MarkdownParagraph(props: any) {
         const { children } = props;
         return (
           <Text as="div" mb={2}>
@@ -54,31 +54,34 @@ const Markdown: React.FC<MarkdownProps> = ({
           </Text>
         );
       },
-      emphasis: (props: any) => {
+      emphasis: function MarkdownEmphasis(props: any) {
         const { children } = props;
         return <Text as="em">{children}</Text>;
       },
-      blockquote: (props: any) => {
+      blockquote: function MarkdownBlockquote(props: any) {
         const { children } = props;
         return <Code p={2}>{children}</Code>;
       },
-      code: (props: any) => {
+      code: function MarkdownCode(props: any) {
         const { language, value } = props;
         const className = language && `language-${language}`;
         return (
-          <pre {...getCoreProps(props)} style={{overflowX: 'scroll', maxWidth: '95%'}}>
+          <pre
+            {...getCoreProps(props)}
+            style={{ overflowX: "scroll", maxWidth: "95%" }}
+          >
             <Code p={2} className={className || undefined}>
               {value}
             </Code>
           </pre>
         );
       },
-      delete: (props: any) => {
+      delete: function MarkdownDelete(props: any) {
         const { children } = props;
         return <Text as="del">{children}</Text>;
       },
       thematicBreak: Divider,
-      link: (props: any) => {
+      link: function MarkdownLink(props: any) {
         const { children } = props;
         return (
           <MyLink isExternal {...props} toNewWindow>
@@ -86,7 +89,7 @@ const Markdown: React.FC<MarkdownProps> = ({
           </MyLink>
         );
       },
-      linkReference: (props: any) => {
+      linkReference: function MarkdownLinkReference(props: any) {
         const { children } = props;
         return (
           <Link color={themeColor} {...props}>
@@ -94,7 +97,7 @@ const Markdown: React.FC<MarkdownProps> = ({
           </Link>
         );
       },
-      text: (props: any) => {
+      text: function MarkdownText(props: any) {
         const { children } = props;
 
         return (
@@ -105,7 +108,7 @@ const Markdown: React.FC<MarkdownProps> = ({
           </Text>
         );
       },
-      list: (props: any) => {
+      list: function MarkdownList(props: any) {
         const { start, ordered, children, depth } = props;
         const attrs = getCoreProps(props);
         if (start !== null && start !== 1 && start !== undefined) {
@@ -127,7 +130,7 @@ const Markdown: React.FC<MarkdownProps> = ({
           </List>
         );
       },
-      listItem: (props: any) => {
+      listItem: function MarkdownListItem(props: any) {
         const { children, checked } = props;
         let checkbox = null;
         if (checked !== null && checked !== undefined) {
@@ -146,8 +149,10 @@ const Markdown: React.FC<MarkdownProps> = ({
           </ListItem>
         );
       },
-      definition: () => null,
-      heading: (props: any) => {
+      definition: function MarkdownDefinition() {
+        return null;
+      },
+      heading: function MarkdownHeading(props: any) {
         const { children } = props;
 
         if (smallHeaders) {
@@ -180,34 +185,36 @@ const Markdown: React.FC<MarkdownProps> = ({
           </Heading>
         );
       },
-      inlineCode: (props: any) => {
+      inlineCode: function MarkdownInlineCode(props: any) {
         const { children } = props;
         return <Code {...getCoreProps(props)}>{children}</Code>;
       },
-      table: (props: any) => {
+      table: function MarkdownTable(props: any) {
         const { children } = props;
         return <Table {...getCoreProps(props)}>{children}</Table>;
       },
-      tableHead: (props: any) => {
+      tableHead: function MarkdownTableHead(props: any) {
         const { children } = props;
         return <TableHead {...getCoreProps(props)}>{children}</TableHead>;
       },
-      tableBody: (props: any) => {
+      tableBody: function MarkdownTableBody(props: any) {
         const { children } = props;
         return <TableBody {...getCoreProps(props)}>{children}</TableBody>;
       },
-      tableRow: (props: any) => {
+      tableRow: function MarkdownTableRow(props: any) {
         const { children } = props;
         return <TableRow {...getCoreProps(props)}>{children}</TableRow>;
       },
-      tableCell: (props: any) => {
+      tableCell: function MarkdownTableCell(props: any) {
         const { children, isHeader } = props;
         if (isHeader) {
           return <TableHeader {...getCoreProps(props)}>{children}</TableHeader>;
         }
         return <TableCell {...getCoreProps(props)}>{children}</TableCell>;
       },
-      image: (props: any) => <Image {...props} my={4} />,
+      image: function MarkdownImage(props: any) {
+        return <Image {...props} my={4} alt="" />;
+      },
     };
   };
   return (

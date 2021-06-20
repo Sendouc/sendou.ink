@@ -42,7 +42,7 @@ const TwinTable: React.FC<Props> = ({ player }) => {
             <Trans>Mate</Trans>
           </TableHeader>
           <TableHeader>
-            <Trans>Mate's weapon</Trans>
+            <Trans>Mate&apos;s weapon</Trans>
           </TableHeader>
         </TableRow>
       </TableHead>

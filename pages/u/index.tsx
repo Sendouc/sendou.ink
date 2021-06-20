@@ -42,7 +42,7 @@ const UserSearchPage = ({ users }: Props) => {
         { shallow: true }
       );
     }
-  }, [debouncedFilter]);
+  }, [debouncedFilter, router]);
 
   const filteredUsers = useMemo(() => {
     if (debouncedFilter.length < 3) return [];
@@ -61,7 +61,7 @@ const UserSearchPage = ({ users }: Props) => {
 
       return false;
     });
-  }, [debouncedFilter]);
+  }, [debouncedFilter, users]);
 
   return (
     <>
@@ -70,10 +70,9 @@ const UserSearchPage = ({ users }: Props) => {
         <meta name="robots" content="noindex" />
       </Head>
       <InputGroup size="lg" maxW={80} mt={4} mb={6} mx="auto">
-        <InputLeftElement
-          pointerEvents="none"
-          children={<Box as={FiSearch} color={gray} />}
-        />
+        <InputLeftElement pointerEvents="none">
+          <Box as={FiSearch} color={gray} />
+        </InputLeftElement>
         <Input
           placeholder="Sendou#4059"
           value={filter}

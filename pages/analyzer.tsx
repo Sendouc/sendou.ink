@@ -4,7 +4,6 @@ import BuildStats from "components/analyzer/BuildStats";
 import EditableBuilds from "components/analyzer/EditableBuilds";
 import { ViewSlotsAbilities } from "components/builds/ViewSlots";
 import WeaponSelector from "components/common/WeaponSelector";
-import { useMyTheme } from "hooks/common";
 import useAbilityEffects from "hooks/useAbilityEffects";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -24,7 +23,6 @@ const defaultBuild: ViewSlotsAbilities = {
 
 const BuildAnalyzerPage = () => {
   const router = useRouter();
-  const { gray } = useMyTheme();
   const [build, setBuild] = useState<ViewSlotsAbilities>({
     ...defaultBuild,
   });
@@ -61,7 +59,7 @@ const BuildAnalyzerPage = () => {
     lde: otherLde,
   });
 
-  useEffect(parseQuery, []);
+  useEffect(parseQuery, [router.query]);
 
   return (
     <>

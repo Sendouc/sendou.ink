@@ -53,6 +53,7 @@ const MarkdownTextarea: React.FC<Props> = ({
         <Box>
           <Trans>
             Markdown is supported -{" "}
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
             <a href="/markdown" target="_blank" rel="noreferrer noopener">
               https://sendou.ink/markdown
             </a>

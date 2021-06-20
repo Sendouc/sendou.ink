@@ -64,6 +64,7 @@ const ImageAdder = ({ addImageToSketch }: ImageAdderProps) => {
               src={imgSrc}
               width={32}
               height={32}
+              alt={`Salmon Run Weapon ${grizzcoWeaponClass}`}
             />
           </Box>
         );
@@ -77,6 +78,7 @@ const ImageAdder = ({ addImageToSketch }: ImageAdderProps) => {
               src={imgSrc}
               width={32}
               height={32}
+              alt={`Sub weapon with code ${code}`}
             />
           </Box>
         );
@@ -90,6 +92,7 @@ const ImageAdder = ({ addImageToSketch }: ImageAdderProps) => {
               src={imgSrc}
               width={32}
               height={32}
+              alt={`Special weapon with code ${code}`}
             />
           </Box>
         );
@@ -103,6 +106,7 @@ const ImageAdder = ({ addImageToSketch }: ImageAdderProps) => {
               src={imgSrc}
               width={32}
               height={32}
+              alt={`Ranked mode (${mode})`}
             />
           </Box>
         );
@@ -127,6 +131,7 @@ const ImageAdder = ({ addImageToSketch }: ImageAdderProps) => {
               src={imgSrc}
               width={32}
               height={32}
+              alt={`Salmon Run Boss ${boss}`}
             />
           </Box>
         );

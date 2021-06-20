@@ -67,6 +67,7 @@ const StageSelector: React.FC<StageSelectorProps> = ({
                       ? undefined
                       : "grayscale(100%)",
                 }}
+                alt="Salmon Run low tide"
                 onClick={() => changeTide("low")}
               />
               {currentBackground.tide === "low" ? (
@@ -90,6 +91,7 @@ const StageSelector: React.FC<StageSelectorProps> = ({
                       ? undefined
                       : "grayscale(100%)",
                 }}
+                alt="Salmon Run mid-tide"
                 onClick={() => changeTide("mid")}
               />
               {currentBackground.tide === "mid" ? (
@@ -113,6 +115,7 @@ const StageSelector: React.FC<StageSelectorProps> = ({
                       ? undefined
                       : "grayscale(100%)",
                 }}
+                alt="Salmon Run high tide"
                 onClick={() => changeTide("high")}
               />
               {currentBackground.tide === "high" ? (

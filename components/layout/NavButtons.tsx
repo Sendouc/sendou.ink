@@ -36,6 +36,7 @@ const NavButtons = ({ onButtonClick }: { onButtonClick?: () => void }) => {
                 height={32}
                 width={32}
                 priority
+                alt={`${name} icon`}
               />
               <Box ml={2}>{name}</Box>
             </Flex>

@@ -27,6 +27,7 @@ const HomePage = () => {
           width={481}
           height={400}
           priority
+          alt=""
         />
       </Flex>
 
@@ -41,7 +42,7 @@ const HomePage = () => {
       <NavButtons />
       <Box textAlign="center" mt={6}>
         The goal of sendou.ink is to provide useful tools and resources for
-        Splatoon players. It's an{" "}
+        Splatoon players. It&apos;s an{" "}
         <MyLink isExternal href="https://github.com/Sendouc/sendou.ink">
           open source project
         </MyLink>{" "}

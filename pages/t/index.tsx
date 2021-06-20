@@ -95,10 +95,9 @@ const TeamsPage = ({ teams }: Props) => {
               ))}
           </ChakraSelect>
           <InputGroup maxW={64} mt={6} mb={6}>
-            <InputLeftElement
-              pointerEvents="none"
-              children={<Box as={FiSearch} color={gray} />}
-            />
+            <InputLeftElement pointerEvents="none">
+              <Box as={FiSearch} color={gray} />
+            </InputLeftElement>
             <Input
               placeholder="Team Olive"
               value={nameFilter}
@@ -150,7 +149,12 @@ const TeamsPage = ({ teams }: Props) => {
             </Box>
             {team.teamXP > 2000 && (
               <Flex align="center" mt={2}>
-                <Image src={`/layout/xsearch.png`} height={24} width={24} />
+                <Image
+                  src={`/layout/xsearch.png`}
+                  height={24}
+                  width={24}
+                  alt="X Power icon"
+                />
                 <SubText ml={1}>
                   {team.teamXP.toFixed(1).replace(".0", "")}
                 </SubText>

@@ -62,24 +62,24 @@ const ProfilePage = (props: Props) => {
 
   const { i18n } = useLingui();
 
-  const canPostBuilds = () => {
+  const canPostBuilds = (() => {
     if (loggedInUser?.id !== user.id) return false;
     if (buildCount >= 100 && user.discordId !== GANBA_DISCORD_ID) return false;
 
     return true;
-  };
+  })();
 
   useEffect(() => {
-    if (!router.query.build || !canPostBuilds()) return;
+    if (!router.query.build || !canPostBuilds) return;
 
     setBuildToEdit(true);
-  }, [canPostBuilds()]);
+  }, [router, canPostBuilds]);
 
   useEffect(() => {
     const identifier = window.location.pathname.split("/")[2];
     if (isCustomUrl(identifier) || !user.profile?.customUrlPath) return;
     history.replaceState({}, "", `/u/${user.profile.customUrlPath}`);
-  }, []);
+  }, [user.profile?.customUrlPath]);
 
   useEffect(() => {
     setUserId(props.user.id);

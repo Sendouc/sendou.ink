@@ -76,7 +76,7 @@ const Suggestion = ({
         </Box>
         <SubText mt={2}>+{suggestion.tier}</SubText>
         <Box mt={4} fontSize="sm">
-          "{suggestion.description}" -{" "}
+          &quot;{suggestion.description}&quot; -{" "}
           <MyLink
             href={`/u/${suggestion.suggesterUser.discordId}`}
             isColored={false}
@@ -87,7 +87,7 @@ const Suggestion = ({
         {suggestion.resuggestions?.map((resuggestion) => {
           return (
             <Box key={resuggestion.suggesterUser.id} mt={4} fontSize="sm">
-              "{resuggestion.description}" -{" "}
+              &quot;{resuggestion.description}&quot; -{" "}
               <MyLink
                 href={`/u/${resuggestion.suggesterUser.discordId}`}
                 isColored={false}

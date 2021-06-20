@@ -32,7 +32,7 @@ const XSearchPage = ({ placements, monthOptions }: XSearchPageProps) => {
     router.replace(
       `/xsearch/${variables.year}/${variables.month}/${variables.mode}`
     );
-  }, [variables]);
+  }, [variables, router]);
 
   //TODO: layout can be persistent between route changes
   return (
