@@ -47,7 +47,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
         ? ` ${motion > 0 ? "+" : ""}${motion} ${t`Motion`}`
         : "";
 
-    return `${stickSensString} ${motionSensString}`;
+    return `${motionSensString} ${stickSensString}`;
   }
 
   return (
