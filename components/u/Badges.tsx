@@ -103,6 +103,22 @@ const usersBadges = ({
 
   if (
     wonTournamentCount({
+      tournament: "LOBSTER_CROSSFIRE",
+      discordId: userDiscordId,
+    }) > 0
+  ) {
+    result.push({
+      src: "lobster.gif",
+      description: "Awarded for winning Lobster Crossfire",
+      count: wonTournamentCount({
+        tournament: "LOBSTER_CROSSFIRE",
+        discordId: userDiscordId,
+      }),
+    });
+  }
+
+  if (
+    wonTournamentCount({
       tournament: "MONDAY_AFTERPARTY",
       discordId: userDiscordId,
     }) > 0
