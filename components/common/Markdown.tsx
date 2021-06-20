@@ -66,7 +66,7 @@ const Markdown: React.FC<MarkdownProps> = ({
         const { language, value } = props;
         const className = language && `language-${language}`;
         return (
-          <pre {...getCoreProps(props)}>
+          <pre {...getCoreProps(props)} style={{overflowX: 'scroll', maxWidth: '95%'}}>
             <Code p={2} className={className || undefined}>
               {value}
             </Code>
