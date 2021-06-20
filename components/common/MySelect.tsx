@@ -9,7 +9,7 @@ import ReactSelect, {
   ValueType,
 } from "react-select";
 import { SelectComponents } from "react-select/src/components";
-import defaultStyles from "utils/selectStyles";
+import useSelectStyles from "hooks/useSelectStyles";
 
 interface SelectProps {
   options?:
@@ -68,7 +68,7 @@ const MySelect: React.FC<SelectProps> = ({
 }) => {
   const { themeColorHex, bgColor } = useMyTheme();
   const [inputValue, setInputValue] = useState("");
-  const selectDefaultStyles = defaultStyles();
+  const selectDefaultStyles = useSelectStyles();
 
   const handleChange = (selectedOption: any) => {
     if (!selectedOption) {

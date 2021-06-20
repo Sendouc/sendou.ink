@@ -88,6 +88,8 @@ const getXTrends = async (): Promise<XTrends> => {
   );
 };
 
-export default {
+const xTrendsService = {
   getXTrends,
 };
+
+export default xTrendsService;

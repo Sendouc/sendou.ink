@@ -98,9 +98,11 @@ const deleteEvent = async ({
   return prisma.calendarEvent.delete({ where: { id: eventId } });
 };
 
-export default {
+const calendarService = {
   events,
   addEvent,
   editEvent,
   deleteEvent,
 };
+
+export default calendarService;

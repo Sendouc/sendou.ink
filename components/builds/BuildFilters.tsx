@@ -24,7 +24,7 @@ import { abilities, isMainAbility } from "utils/lists/abilities";
 import { components } from "react-select";
 import ModeImage from "components/common/ModeImage";
 import MySelect from "components/common/MySelect";
-import defaultStyles from "utils/selectStyles";
+import useSelectStyles from "hooks/useSelectStyles";
 
 interface Props {
   filters: UseBuildsByWeaponState["filters"];
@@ -114,7 +114,7 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
 
   const { borderColor, themeColorOpaque, textColor, gray } = useMyTheme();
 
-  const selectDefaultStyles = defaultStyles();
+  const selectDefaultStyles = useSelectStyles();
   const selectStyles = {
     ...selectDefaultStyles,
     singleValue: (base: any) => ({

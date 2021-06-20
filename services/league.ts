@@ -136,7 +136,9 @@ const createResults = async (
   await prisma.leagueSquadMember.createMany({ data: leagueMembersData });
 };
 
-export default {
+const leagueService = {
   latestResult,
   createResults,
 };
+
+export default leagueService;

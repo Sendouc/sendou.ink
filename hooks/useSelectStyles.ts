@@ -1,6 +1,6 @@
-import { useMyTheme } from "../hooks/common";
+import { useMyTheme } from "./common";
 
-const defaultStyles = () => {
+const useSelectStyles = () => {
   const { borderColor, themeColorHex, themeColorOpaque, textColor } =
     useMyTheme();
 
@@ -38,4 +38,4 @@ const defaultStyles = () => {
   };
 };
 
-export default defaultStyles;
+export default useSelectStyles;

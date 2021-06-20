@@ -50,7 +50,9 @@ const getMostRecentResult = () => {
   });
 };
 
-export default {
+const xSearchService = {
   getTop500PlacementsByMonth,
   getMostRecentResult,
 };
+
+export default xSearchService;

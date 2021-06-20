@@ -118,9 +118,11 @@ const previousLadderDay = async () => {
   });
 };
 
-export default {
+const playService = {
   allRegisteredTeams,
   allLadderRegisteredTeamsForMatches,
   nextLadderDay,
   previousLadderDay,
 };
+
+export default playService;

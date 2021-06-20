@@ -138,9 +138,11 @@ const peakLeague = ({ region, type }: { region: Region; type: LeagueType }) => {
   });
 };
 
-export default {
+const leaderboardsService = {
   peak,
   peakWestern,
   peakByWeapon,
   peakLeague,
 };
+
+export default leaderboardsService;

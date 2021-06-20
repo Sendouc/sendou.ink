@@ -122,7 +122,7 @@ const deleteLike = ({ userId, postId }: { userId: number; postId: number }) => {
   });
 };
 
-export default {
+const freeAgentsService = {
   posts,
   upsertPost,
   deletePost,
@@ -130,3 +130,5 @@ export default {
   addLike,
   deleteLike,
 };
+
+export default freeAgentsService;

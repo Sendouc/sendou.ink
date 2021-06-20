@@ -795,7 +795,7 @@ const endVoting = async (userId: number) => {
   ]);
 };
 
-export default {
+const plusService = {
   getPlusStatuses,
   getSuggestions,
   getVotingSummariesByMonthAndTier,
@@ -810,3 +810,5 @@ export default {
   votedUserScores,
   endVoting,
 };
+
+export default plusService;

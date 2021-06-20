@@ -7,6 +7,16 @@ import { trpc } from "utils/trpc";
 import { isFreeAgentPlaystyle, isFreeAgentRegion } from "utils/typeGuards";
 import { useMyRouter } from "./useMyRouter";
 
+const continentCodeToRegion = new Map<string, FreeAgentRegion>([
+  ["AF", "EUROPE"],
+  ["AN", "EUROPE"],
+  ["AS", "ASIA"],
+  ["EU", "EUROPE"],
+  ["NA", "AMERICAS"],
+  ["OC", "ASIA"],
+  ["SA", "AMERICAS"],
+]);
+
 export type FreeAgentRegion = "EUROPE" | "AMERICAS" | "ASIA";
 
 export interface UseFreeAgentsState {
@@ -123,16 +133,6 @@ export function useFreeAgents() {
 
     return result;
   }
-
-  const continentCodeToRegion = new Map<string, FreeAgentRegion>([
-    ["AF", "EUROPE"],
-    ["AN", "EUROPE"],
-    ["AS", "ASIA"],
-    ["EU", "EUROPE"],
-    ["NA", "AMERICAS"],
-    ["OC", "ASIA"],
-    ["SA", "AMERICAS"],
-  ]);
 
   const countryCodeToRegion = useMemo(() => {
     return Object.entries(countries).reduce((acc, cur) => {
