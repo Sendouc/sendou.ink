@@ -5,9 +5,6 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 
 module.exports = withBundleAnalyzer(
   withImages({
-    future: {
-      webpack5: true,
-    },
     async redirects() {
       return [
         {
