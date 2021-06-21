@@ -35,7 +35,8 @@ export default function PlusVotingPage() {
 
   useEffect(() => {
     if (shouldRedirect) router.push("/404");
-  }, [shouldRedirect, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shouldRedirect]);
 
   if (isLoading || !plusStatus?.membershipTier) return null;
 

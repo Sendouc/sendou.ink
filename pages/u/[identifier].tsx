@@ -73,7 +73,7 @@ const ProfilePage = (props: Props) => {
     if (!router.query.build || !canPostBuilds) return;
 
     setBuildToEdit(true);
-  }, [router, canPostBuilds]);
+  }, [router.query.build, canPostBuilds]);
 
   useEffect(() => {
     const identifier = window.location.pathname.split("/")[2];

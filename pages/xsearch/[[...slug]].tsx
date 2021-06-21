@@ -32,7 +32,8 @@ const XSearchPage = ({ placements, monthOptions }: XSearchPageProps) => {
     router.replace(
       `/xsearch/${variables.year}/${variables.month}/${variables.mode}`
     );
-  }, [variables, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [variables]);
 
   //TODO: layout can be persistent between route changes
   return (

@@ -42,7 +42,8 @@ const UserSearchPage = ({ users }: Props) => {
         { shallow: true }
       );
     }
-  }, [debouncedFilter, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedFilter]);
 
   const filteredUsers = useMemo(() => {
     if (debouncedFilter.length < 3) return [];
