@@ -44,4 +44,7 @@ export const ssg = createSSGHelpers({ router: appRouter, ctx: { user: null } });
 export default trpcNext.createNextApiHandler({
   router: appRouter,
   createContext,
+  batching: {
+    enabled: true,
+  },
 });
