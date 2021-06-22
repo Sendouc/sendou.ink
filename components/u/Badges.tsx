@@ -2,7 +2,7 @@ import { Button } from "@chakra-ui/button";
 import { Image as ChakraImage } from "@chakra-ui/image";
 import { Flex, Text } from "@chakra-ui/layout";
 import { Fragment, useEffect, useMemo, useState } from "react";
-import { wonITZCount, wonTournamentCount } from "utils/constants";
+import { wonITZCount } from "utils/constants";
 
 interface BadgesProps {
   userId: number;
@@ -10,6 +10,42 @@ interface BadgesProps {
   patreonTier: number | null;
   peakXP?: number;
 }
+
+const regularTournamentWinners: {
+  badgeName: string;
+  name: string;
+  winnerDiscordIds: string;
+}[] = [
+  {
+    badgeName: "pair",
+    name: "League Rush (Pair)",
+    winnerDiscordIds:
+      "453753483427053568,398818695608270849,776911543216111648,393908122525368331",
+  },
+  {
+    badgeName: "quad",
+    name: "League Rush (Quad)",
+    winnerDiscordIds: "",
+  },
+  {
+    badgeName: "lobster",
+    name: "Lobster Crossfire",
+    winnerDiscordIds:
+      "105390854063034368,109804061900992512,151192098962407424,260602342309756940,266716798945067010,244246880442122250,431923570063441922,114889120379043843",
+  },
+  {
+    badgeName: "monday",
+    name: "Monday Afterparty",
+    winnerDiscordIds:
+      "189021480527331328,397097842411569152,274245305363464192,245195310593212417,427319047785545759,186543007850299393,125301875863060480,328641373655924739,274245305363464192,143918846535925761,147036636608331779,260602342309756940,105390854063034368,189125119937871872,516036546370207764,164734950686326784,133616977968103424,323496682920738817,353199183345352704,207150814735761408,273503438124613632,381129695980290050,344096615033995266,265816182374924298,427221050330316814,724313854536056862,161173517163954176,441232639358402560,108951379095072768,160778600834924544,377510502139691018,338470854339854346,182892865695907840,331170488602591242,310359084387794946,331170488602591242,164734950686326784,133616977968103424,353199183345352704,323496682920738817,675752882682724352,403598012888252426,250689440056475648,410342922253500416,164748705713356800,619566583970529314,448493571419537428,250689440056475648,784695580920119297,393411373289177098,350225756082798593,274693882221166597,436528474807730176,108951379095072768,441232639358402560,477555922026102818,412203683024076800,92909500100513792,99931397451419648,81154649993785344,439066642920505344",
+  },
+  {
+    badgeName: "triton",
+    name: "Triton-Cup",
+    winnerDiscordIds:
+      "277760673436401664,317021572470669312,347127232839417856,149504203654430720,207150814735761408,304337232808902668,403962004739588096,381129695980290050,158163424004538369,330044344738381834,526883393485406208,340583035542175744,105390854063034368,151192098962407424,109804061900992512,115572122482507782,377510502139691018,265816182374924298,323496682920738817,182892865695907840",
+  },
+];
 
 const usersBadges = ({
   userId,
@@ -101,81 +137,20 @@ const usersBadges = ({
 
   // Other tournaments
 
-  if (
-    wonTournamentCount({
-      tournament: "LEAGUE_RUSH_PAIR",
-      discordId: userDiscordId,
-    }) > 0
-  ) {
-    result.push({
-      src: "pair.gif",
-      description: "Awarded for winning League Rush (Pair)",
-      count: wonTournamentCount({
-        tournament: "LEAGUE_RUSH_PAIR",
-        discordId: userDiscordId,
-      }),
-    });
-  }
+  for (const tournament of regularTournamentWinners) {
+    const count = tournament.winnerDiscordIds
+      .split(",")
+      .reduce(
+        (count, winnersId) => (winnersId === userDiscordId ? count + 1 : count),
+        0
+      );
 
-  if (
-    wonTournamentCount({
-      tournament: "LEAGUE_RUSH_QUAD",
-      discordId: userDiscordId,
-    }) > 0
-  ) {
-    result.push({
-      src: "quad.gif",
-      description: "Awarded for winning League Rush (Quad)",
-      count: wonTournamentCount({
-        tournament: "LEAGUE_RUSH_QUAD",
-        discordId: userDiscordId,
-      }),
-    });
-  }
+    if (count === 0) continue;
 
-  if (
-    wonTournamentCount({
-      tournament: "LOBSTER_CROSSFIRE",
-      discordId: userDiscordId,
-    }) > 0
-  ) {
     result.push({
-      src: "lobster.gif",
-      description: "Awarded for winning Lobster Crossfire",
-      count: wonTournamentCount({
-        tournament: "LOBSTER_CROSSFIRE",
-        discordId: userDiscordId,
-      }),
-    });
-  }
-
-  if (
-    wonTournamentCount({
-      tournament: "MONDAY_AFTERPARTY",
-      discordId: userDiscordId,
-    }) > 0
-  ) {
-    result.push({
-      src: "monday.gif",
-      description: "Awarded for winning Monday Afterparty",
-      count: wonTournamentCount({
-        tournament: "MONDAY_AFTERPARTY",
-        discordId: userDiscordId,
-      }),
-    });
-  }
-
-  if (
-    wonTournamentCount({ tournament: "TRITON_CUP", discordId: userDiscordId }) >
-    0
-  ) {
-    result.push({
-      src: "triton.gif",
-      description: "Awarded for winning Triton-Cup",
-      count: wonTournamentCount({
-        tournament: "TRITON_CUP",
-        discordId: userDiscordId,
-      }),
+      src: `${tournament.badgeName}.gif`,
+      description: `Awarded for winning ${tournament.name}`,
+      count,
     });
   }
 
