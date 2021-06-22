@@ -119,7 +119,7 @@ const CalendarPage = () => {
 };
 
 export const getStaticProps = async () => {
-  await ssg.prefetchQuery("calendar.events");
+  await ssg.fetchQuery("calendar.events");
 
   return {
     props: {

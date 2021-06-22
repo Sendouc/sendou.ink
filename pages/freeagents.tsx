@@ -173,7 +173,7 @@ const FreeAgentsPage = () => {
 };
 
 export const getStaticProps = async () => {
-  await ssg.prefetchQuery("freeAgents.posts");
+  await ssg.fetchQuery("freeAgents.posts");
 
   return {
     props: {
