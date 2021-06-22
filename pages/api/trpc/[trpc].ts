@@ -7,6 +7,7 @@ import playApi from "routers/play";
 import plusApi from "routers/plus";
 import superjson from "superjson";
 import { getMySession } from "utils/api";
+import { createSSGHelpers } from "@trpc/react/ssg";
 import { trpc as trcpReactQuery } from "utils/trpc";
 
 const createContext = async ({ req }: trpcNext.CreateNextContextOptions) => {
@@ -21,6 +22,7 @@ export function createRouter() {
 }
 // Important: only use this export with SSR/SSG
 export const appRouter = createRouter()
+  .transformer(superjson)
   .merge("plus.", plusApi)
   .merge("calendar.", calendarApi)
   .merge("freeAgents.", freeAgentsApi)
@@ -38,10 +40,9 @@ export type inferQueryOutput<
   TRouteKey extends keyof AppRouter["_def"]["queries"]
 > = inferProcedureOutput<AppRouter["_def"]["queries"][TRouteKey]>;
 
-export const ssr = trcpReactQuery.ssr(appRouter, { user: null });
+export const ssr = createSSGHelpers({ router: appRouter, ctx: { user: null } });
 
 export default trpcNext.createNextApiHandler({
   router: appRouter,
   createContext,
-  transformer: superjson,
 });

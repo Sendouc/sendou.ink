@@ -15,7 +15,10 @@ import { theme } from "theme";
 import { activateLocale } from "utils/i18n";
 import { locales } from "utils/lists/locales";
 import { trpc } from "utils/trpc";
+import { withTRPC } from "@trpc/next";
 import "./styles.css";
+import { httpBatchLink } from "@trpc/client/links/httpBatchLink";
+import superjson from "superjson";
 
 NProgress.configure({ showSpinner: false });
 
@@ -91,7 +94,7 @@ const extendedTheme = extendTheme({
         dialog: {
           bg: mode(
             theme.light.secondaryBgColor,
-            theme.dark.secondaryBgColor
+            theme.dark.secondaryBgColor,
           )(props),
         },
       }),
@@ -101,7 +104,7 @@ const extendedTheme = extendTheme({
         list: {
           bg: mode(
             theme.light.secondaryBgColor,
-            theme.dark.secondaryBgColor
+            theme.dark.secondaryBgColor,
           )(props),
         },
       }),
@@ -166,14 +169,14 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
             staleTime: Infinity,
           },
         },
-      })
+      }),
   );
 
   return (
     <>
       <DefaultSeo
-        title="sendou.ink"
-        description="Competitive Splatoon hub featuring several tools and resources."
+        title='sendou.ink'
+        description='Competitive Splatoon hub featuring several tools and resources.'
         openGraph={{
           url: "https://sendou.ink/",
           title: "sendou.ink",
@@ -198,13 +201,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         <ChakraProvider theme={extendedTheme}>
           <I18nProvider i18n={i18n}>
             <Layout>
-              <QueryClientProvider client={queryClient}>
-                <Hydrate
-                  state={trpc.useDehydratedState(pageProps.dehydratedState)}
-                >
-                  <Component {...pageProps} />
-                </Hydrate>
-              </QueryClientProvider>
+              <Component {...pageProps} />
             </Layout>
           </I18nProvider>
         </ChakraProvider>
@@ -212,5 +209,16 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
     </>
   );
 };
-
-export default MyApp;
+export default withTRPC({
+  config() {
+    return {
+      transformer: superjson,
+      links: [
+        httpBatchLink({
+          url: "/api/trpc",
+        }),
+      ],
+    };
+  },
+  ssr: false,
+})(MyApp);
