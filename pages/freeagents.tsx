@@ -18,7 +18,7 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { mutate } from "swr";
 import { sendData } from "utils/postData";
-import { ssr } from "./api/trpc/[trpc]";
+import { ssg } from "./api/trpc/[trpc]";
 
 const FreeAgentsPage = () => {
   const {
@@ -36,7 +36,7 @@ const FreeAgentsPage = () => {
   const router = useRouter();
 
   const [postIdToScrollTo, setPostIdToScrollTo] = useState<undefined | number>(
-    undefined
+    undefined,
   );
   const { gray } = useMyTheme();
   const [sending, setSending] = useState(false);
@@ -79,7 +79,7 @@ const FreeAgentsPage = () => {
         />
       )}
       {user && (
-        <Button size="sm" onClick={() => setModalIsOpen(true)}>
+        <Button size='sm' onClick={() => setModalIsOpen(true)}>
           {usersPost ? (
             <Trans>Edit free agent post</Trans>
           ) : (
@@ -90,20 +90,20 @@ const FreeAgentsPage = () => {
       {usersPost &&
         usersPost.updatedAt.getTime() < dateThreeWeeksAgo.getTime() && (
           <Alert
-            status="warning"
-            variant="subtle"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-            textAlign="center"
-            mx="auto"
+            status='warning'
+            variant='subtle'
+            flexDirection='column'
+            alignItems='center'
+            justifyContent='center'
+            textAlign='center'
+            mx='auto'
             mt={6}
           >
-            <AlertIcon boxSize="40px" mr={0} />
-            <AlertTitle mt={4} mb={1} fontSize="lg">
+            <AlertIcon boxSize='40px' mr={0} />
+            <AlertTitle mt={4} mb={1} fontSize='lg'>
               <Trans>Your free agent post is about to expire</Trans>
             </AlertTitle>
-            <AlertDescription maxWidth="sm">
+            <AlertDescription maxWidth='sm'>
               <Trans>
                 Free agent posts that haven&apos;t been updated in over a month
                 will be hidden. Please press the button below if you are still a
@@ -113,7 +113,7 @@ const FreeAgentsPage = () => {
               <Box>
                 <Button
                   mt={4}
-                  variant="outline"
+                  variant='outline'
                   onClick={onPostRefresh}
                   isLoading={sending}
                 >
@@ -132,7 +132,7 @@ const FreeAgentsPage = () => {
       ) : null}
       {!isLoading && <FAFilters state={state} dispatch={dispatch} />}
       {allPostsCount > 0 && (
-        <Flex align="center" fontSize="small" color={gray} mt={4}>
+        <Flex align='center' fontSize='small' color={gray} mt={4}>
           Showing {postsData.length} posts out of {allPostsCount}{" "}
           <Button
             onClick={() => dispatch({ type: "RESET_FILTERS" })}
@@ -140,8 +140,8 @@ const FreeAgentsPage = () => {
               postsData.length === allPostsCount ? "hidden" : "visible"
             }
             ml={2}
-            size="sm"
-            variant="ghost"
+            size='sm'
+            variant='ghost'
           >
             Reset filters
           </Button>
@@ -173,11 +173,11 @@ const FreeAgentsPage = () => {
 };
 
 export const getStaticProps = async () => {
-  await ssr.prefetchQuery("freeAgents.posts");
+  await ssg.prefetchQuery("freeAgents.posts");
 
   return {
     props: {
-      dehydratedState: ssr.dehydrate(),
+      dehydratedState: ssg.dehydrate(),
     },
     revalidate: 60,
   };

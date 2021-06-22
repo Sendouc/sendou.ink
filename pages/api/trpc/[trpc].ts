@@ -39,7 +39,7 @@ export type inferQueryOutput<
   TRouteKey extends keyof AppRouter["_def"]["queries"]
 > = inferProcedureOutput<AppRouter["_def"]["queries"][TRouteKey]>;
 
-export const ssr = createSSGHelpers({ router: appRouter, ctx: { user: null } });
+export const ssg = createSSGHelpers({ router: appRouter, ctx: { user: null } });
 
 export default trpcNext.createNextApiHandler({
   router: appRouter,

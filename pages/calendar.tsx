@@ -7,7 +7,7 @@ import { EventModal, FormData } from "components/calendar/EventModal";
 import MyHead from "components/common/MyHead";
 import SubText from "components/common/SubText";
 import { useMyTheme, useUser } from "hooks/common";
-import { ssr } from "pages/api/trpc/[trpc]";
+import { ssg } from "pages/api/trpc/[trpc]";
 import { Fragment, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { trpc } from "utils/trpc";
@@ -36,23 +36,23 @@ const CalendarPage = () => {
       {user && (
         <div>
           <Button
-            size="sm"
+            size='sm'
             onClick={() => setEventToEdit(true)}
-            data-cy="add-event-button"
+            data-cy='add-event-button'
           >
             <Trans>Add event</Trans>
           </Button>
         </div>
       )}
-      <InputGroup my={8} maxW="24rem" mx="auto">
-        <InputLeftElement pointerEvents="none">
+      <InputGroup my={8} maxW='24rem' mx='auto'>
+        <InputLeftElement pointerEvents='none'>
           <FiSearch color={gray} />
         </InputLeftElement>
         <Input value={filter} onChange={(e) => setFilter(e.target.value)} />
       </InputGroup>
       {(events.data ?? [])
         .filter((event) =>
-          event.name.toLowerCase().includes(filter.toLowerCase().trim())
+          event.name.toLowerCase().includes(filter.toLowerCase().trim()),
         )
         .map((event, i) => {
           const printDateHeader =
@@ -119,11 +119,11 @@ const CalendarPage = () => {
 };
 
 export const getStaticProps = async () => {
-  await ssr.prefetchQuery("calendar.events");
+  await ssg.prefetchQuery("calendar.events");
 
   return {
     props: {
-      dehydratedState: ssr.dehydrate(),
+      dehydratedState: ssg.dehydrate(),
     },
     revalidate: 60,
   };
