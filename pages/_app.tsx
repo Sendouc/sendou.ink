@@ -159,18 +159,6 @@ const setDisplayedLanguage = () => {
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   useEffect(setDisplayedLanguage, []);
-  const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            // queries never go stale to save some work
-            // on our poor database
-            staleTime: Infinity,
-          },
-        },
-      }),
-  );
 
   return (
     <>
@@ -218,6 +206,13 @@ export default withTRPC({
           url: "/api/trpc",
         }),
       ],
+      queryClientConfig: {
+        defaultOptions: {
+          queries: {
+            staleTime: Infinity,
+          },
+        },
+      },
     };
   },
   ssr: false,

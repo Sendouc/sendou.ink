@@ -8,7 +8,6 @@ import plusApi from "routers/plus";
 import superjson from "superjson";
 import { getMySession } from "utils/api";
 import { createSSGHelpers } from "@trpc/react/ssg";
-import { trpc as trcpReactQuery } from "utils/trpc";
 
 const createContext = async ({ req }: trpcNext.CreateNextContextOptions) => {
   const user = await getMySession(req);
