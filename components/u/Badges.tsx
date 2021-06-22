@@ -103,6 +103,38 @@ const usersBadges = ({
 
   if (
     wonTournamentCount({
+      tournament: "LEAGUE_RUSH_PAIR",
+      discordId: userDiscordId,
+    }) > 0
+  ) {
+    result.push({
+      src: "pair.gif",
+      description: "Awarded for winning League Rush (Pair)",
+      count: wonTournamentCount({
+        tournament: "LEAGUE_RUSH_PAIR",
+        discordId: userDiscordId,
+      }),
+    });
+  }
+
+  if (
+    wonTournamentCount({
+      tournament: "LEAGUE_RUSH_QUAD",
+      discordId: userDiscordId,
+    }) > 0
+  ) {
+    result.push({
+      src: "quad.gif",
+      description: "Awarded for winning League Rush (Quad)",
+      count: wonTournamentCount({
+        tournament: "LEAGUE_RUSH_QUAD",
+        discordId: userDiscordId,
+      }),
+    });
+  }
+
+  if (
+    wonTournamentCount({
       tournament: "LOBSTER_CROSSFIRE",
       discordId: userDiscordId,
     }) > 0

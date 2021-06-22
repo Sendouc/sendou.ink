@@ -351,11 +351,21 @@ const MONDAY_AFTERPARTY_WINNERS =
 const LOBSTER_CROSSFIRE =
   "105390854063034368,109804061900992512,151192098962407424,260602342309756940,266716798945067010,244246880442122250,431923570063441922,114889120379043843";
 
+const LEAGUE_RUSH_PAIR =
+  "453753483427053568,398818695608270849,776911543216111648,393908122525368331";
+
+const LEAGUE_RUSH_QUAD = "";
+
 export const wonTournamentCount = ({
   tournament,
   discordId,
 }: {
-  tournament: "TRITON_CUP" | "MONDAY_AFTERPARTY" | "LOBSTER_CROSSFIRE";
+  tournament:
+    | "TRITON_CUP"
+    | "MONDAY_AFTERPARTY"
+    | "LOBSTER_CROSSFIRE"
+    | "LEAGUE_RUSH_PAIR"
+    | "LEAGUE_RUSH_QUAD";
   discordId: string;
 }) => {
   let winnersString = "";
@@ -368,6 +378,12 @@ export const wonTournamentCount = ({
       break;
     case "LOBSTER_CROSSFIRE":
       winnersString = LOBSTER_CROSSFIRE;
+      break;
+    case "LEAGUE_RUSH_PAIR":
+      winnersString = LEAGUE_RUSH_PAIR;
+      break;
+    case "LEAGUE_RUSH_QUAD":
+      winnersString = LEAGUE_RUSH_QUAD;
       break;
     default:
       console.error(`Invalid tournament: ${tournament}`);
