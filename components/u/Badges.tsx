@@ -25,7 +25,8 @@ const regularTournamentWinners: {
   {
     badgeName: "quad",
     name: "League Rush (Quad)",
-    winnerDiscordIds: "",
+    winnerDiscordIds:
+      "105390854063034368,151192098962407424,147036636608331779,260602342309756940,115572122482507782,109804061900992512,169184589200359424",
   },
   {
     badgeName: "lobster",
