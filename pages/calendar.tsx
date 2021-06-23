@@ -36,23 +36,23 @@ const CalendarPage = () => {
       {user && (
         <div>
           <Button
-            size='sm'
+            size="sm"
             onClick={() => setEventToEdit(true)}
-            data-cy='add-event-button'
+            data-cy="add-event-button"
           >
             <Trans>Add event</Trans>
           </Button>
         </div>
       )}
-      <InputGroup my={8} maxW='24rem' mx='auto'>
-        <InputLeftElement pointerEvents='none'>
+      <InputGroup my={8} maxW="24rem" mx="auto">
+        <InputLeftElement pointerEvents="none">
           <FiSearch color={gray} />
         </InputLeftElement>
         <Input value={filter} onChange={(e) => setFilter(e.target.value)} />
       </InputGroup>
       {(events.data ?? [])
         .filter((event) =>
-          event.name.toLowerCase().includes(filter.toLowerCase().trim()),
+          event.name.toLowerCase().includes(filter.toLowerCase().trim())
         )
         .map((event, i) => {
           const printDateHeader =

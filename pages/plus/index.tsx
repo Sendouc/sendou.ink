@@ -38,11 +38,11 @@ const PlusHomePage = () => {
   if (!plusStatusData?.membershipTier) {
     return (
       <Box>
-        <Box fontSize='sm' mb={4}>
+        <Box fontSize="sm" mb={4}>
           <VotingInfoHeader isMember={!!plusStatusData?.membershipTier} />
         </Box>
-        <Heading size='md'>Suggested players this month:</Heading>
-        <Flex flexWrap='wrap' data-cy='alt-suggestions-container'>
+        <Heading size="md">Suggested players this month:</Heading>
+        <Flex flexWrap="wrap" data-cy="alt-suggestions-container">
           {suggestionsData
             .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
             .map((suggestion) => (
@@ -60,12 +60,12 @@ const PlusHomePage = () => {
 
   return (
     <>
-      <MyHead title='Plus Server' />
-      <Box fontSize='sm' mb={4}>
+      <MyHead title="Plus Server" />
+      <Box fontSize="sm" mb={4}>
         <VotingInfoHeader isMember={!!plusStatusData?.membershipTier} />
       </Box>
       {votingProgress && (
-        <Box textAlign='center'>
+        <Box textAlign="center">
           <SubText>
             +1 ({votingProgress[1].voted}/{votingProgress[1].totalVoterCount})
           </SubText>
@@ -74,8 +74,8 @@ const PlusHomePage = () => {
               (votingProgress[1].voted / votingProgress[1].totalVoterCount) *
               100
             }
-            size='xs'
-            colorScheme='pink'
+            size="xs"
+            colorScheme="pink"
             mb={6}
           />
           <SubText>
@@ -86,8 +86,8 @@ const PlusHomePage = () => {
               (votingProgress[2].voted / votingProgress[2].totalVoterCount) *
               100
             }
-            size='xs'
-            colorScheme='blue'
+            size="xs"
+            colorScheme="blue"
             mb={6}
           />
           <SubText>
@@ -98,8 +98,8 @@ const PlusHomePage = () => {
               (votingProgress[3].voted / votingProgress[3].totalVoterCount) *
               100
             }
-            size='xs'
-            colorScheme='yellow'
+            size="xs"
+            colorScheme="yellow"
             mb={6}
           />
         </Box>
@@ -125,18 +125,18 @@ const PlusHomePage = () => {
           plusStatusData.voucher ||
           vouchedPlusStatusData) && (
           <Alert
-            status='success'
-            variant='subtle'
-            flexDirection='column'
-            alignItems='center'
-            justifyContent='center'
-            textAlign='center'
+            status="success"
+            variant="subtle"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            textAlign="center"
             mt={2}
             mb={6}
-            rounded='lg'
+            rounded="lg"
           >
-            <AlertDescription maxWidth='sm'>
-              <AlertTitle mb={1} fontSize='lg'>
+            <AlertDescription maxWidth="sm">
+              <AlertTitle mb={1} fontSize="lg">
                 Vouching status
               </AlertTitle>
               {plusStatusData?.canVouchAgainAfter && (
@@ -163,14 +163,14 @@ const PlusHomePage = () => {
         )}
       <Center mt={2}>
         <RadioGroup
-          defaultValue='ALL'
+          defaultValue="ALL"
           onChange={(value) => {
             const tier = [null, "ONE", "TWO", "THREE"].indexOf(value as any);
             setSuggestionsFilter(tier === -1 ? undefined : tier);
           }}
         >
           <Stack spacing={4} direction={["column", "row"]}>
-            <Radio value='ALL'>
+            <Radio value="ALL">
               <Trans>
                 All (
                 {suggestionCounts.ONE +
@@ -179,18 +179,18 @@ const PlusHomePage = () => {
                 )
               </Trans>
             </Radio>
-            <Radio value='ONE'>
-              <Flex align='center'>
+            <Radio value="ONE">
+              <Flex align="center">
                 <SubText mr={2}>+1</SubText> ({suggestionCounts.ONE})
               </Flex>
             </Radio>
-            <Radio value='TWO'>
-              <Flex align='center'>
+            <Radio value="TWO">
+              <Flex align="center">
                 <SubText mr={2}>+2</SubText> ({suggestionCounts.TWO})
               </Flex>
             </Radio>
-            <Radio value='THREE' data-cy='plus-three-radio'>
-              <Flex align='center'>
+            <Radio value="THREE" data-cy="plus-three-radio">
+              <Flex align="center">
                 <SubText mr={2}>+3</SubText> ({suggestionCounts.THREE})
               </Flex>
             </Radio>
@@ -216,7 +216,7 @@ const PlusHomePage = () => {
               if (suggestion.suggesterUser.id === user?.id) return false;
               if (
                 suggestion.resuggestions?.some(
-                  (suggestion) => suggestion.suggesterUser.id === user?.id,
+                  (suggestion) => suggestion.suggesterUser.id === user?.id
                 )
               )
                 return false;
