@@ -17,6 +17,12 @@ const regularTournamentWinners: {
   winnerDiscordIds: string;
 }[] = [
   {
+    badgeName: "girls",
+    name: "Girls Duo Cup",
+    winnerDiscordIds:
+      "266716798945067010,277576057912033281,315610730294411264,222416939291639808,266716798945067010,277576057912033281,315610730294411264,222416939291639808",
+  },
+  {
     badgeName: "pair",
     name: "League Rush (Pair)",
     winnerDiscordIds:
