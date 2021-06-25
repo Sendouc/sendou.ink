@@ -3,6 +3,8 @@
 import { Image } from "@chakra-ui/image";
 import { Input } from "@chakra-ui/input";
 import { Box } from "@chakra-ui/layout";
+import { useColorModeValue } from "@chakra-ui/react";
+import { useMyTheme } from "hooks/common";
 import { useState } from "react";
 
 interface HSL {
@@ -353,22 +355,48 @@ export function getFilters(hex: string) {
 }
 
 const DemoPage = () => {
+  const borderColor = useColorModeValue("black", "white");
   const [hex, setHex] = useState("#FFC0CB");
+  const [hex2, setHex2] = useState("#FFEA61");
   return (
-    <Box>
-      <Box position="relative">
-        <Image
-          src="/layout/demo_girl_bg.png"
-          maxW={80}
-          position="absolute"
-          top="0"
-          left="0"
-          filter={getFilters(hex)}
+    <>
+      <Box>
+        <Box position="relative">
+          <Image
+            src="/layout/new_girl_bg.png"
+            maxW={80}
+            position="absolute"
+            top="0"
+            left="0"
+            filter={getFilters(hex)}
+          />
+          <Image src="/layout/new_girl.png" maxW={80} position="absolute" />
+        </Box>
+        <Input
+          mt="30rem"
+          value={hex}
+          onChange={(e) => setHex(e.target.value)}
         />
-        <Image src="/layout/demo_girl.png" maxW={80} position="absolute" />
       </Box>
-      <Input mt="30rem" value={hex} onChange={(e) => setHex(e.target.value)} />
-    </Box>
+      <Box mt={4}>
+        <Box position="relative">
+          <Image
+            src="/layout/new_boy_bg.png"
+            maxW={80}
+            position="absolute"
+            top="0"
+            left="0"
+            filter={getFilters(hex2)}
+          />
+          <Image src="/layout/new_boy.png" maxW={80} position="absolute" />
+        </Box>
+        <Input
+          mt="30rem"
+          value={hex2}
+          onChange={(e) => setHex2(e.target.value)}
+        />
+      </Box>
+    </>
   );
 };
 
