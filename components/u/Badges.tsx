@@ -1,15 +1,7 @@
 import { Button } from "@chakra-ui/button";
-import { Image as ChakraImage } from "@chakra-ui/image";
-import { Flex, Text } from "@chakra-ui/layout";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { wonITZCount } from "utils/constants";
-
-interface BadgesProps {
-  userId: number;
-  userDiscordId: string;
-  patreonTier: number | null;
-  peakXP?: number;
-}
+import BadgeContainer from "./BadgeContainer";
 
 const regularTournamentWinners: {
   badgeName: string;
@@ -54,11 +46,20 @@ const regularTournamentWinners: {
   },
 ];
 
+interface BadgesProps {
+  userId: number;
+  userDiscordId: string;
+  patreonTier: number | null;
+  peakXP?: number;
+  presentationMode: boolean;
+}
+
 const usersBadges = ({
   userId,
   userDiscordId,
   patreonTier,
   peakXP = -1,
+  presentationMode,
 }: BadgesProps) => {
   const result: { src: string; description: string; count: number }[] = [];
 
@@ -66,7 +67,7 @@ const usersBadges = ({
 
   // PATREON
 
-  if (patreonTier === 2) {
+  if (patreonTier === 2 || presentationMode) {
     result.push({
       src: "patreon.gif",
       description: "Supporter of sendou.ink on Patreon",
@@ -74,7 +75,7 @@ const usersBadges = ({
     });
   }
 
-  if ((patreonTier ?? -1) >= 3) {
+  if ((patreonTier ?? -1) >= 3 || presentationMode) {
     result.push({
       src: "patreonplus.gif",
       description: "Supporter+ of sendou.ink on Patreon",
@@ -116,29 +117,57 @@ const usersBadges = ({
     });
   }
 
+  if (presentationMode) {
+    result.push({
+      src: "xp30.gif",
+      description: "Peak X Power of 3000 or better",
+      count: 1,
+    });
+    result.push({
+      src: "xp29.gif",
+      description: "Peak X Power of 2900 or better",
+      count: 1,
+    });
+    result.push({
+      src: "xp28.gif",
+      description: "Peak X Power of 2800 or better",
+      count: 1,
+    });
+    result.push({
+      src: "xp27.gif",
+      description: "Peak X Power of 2700 or better",
+      count: 1,
+    });
+    result.push({
+      src: "xp26.gif",
+      description: "Peak X Power of 2600 or better",
+      count: 1,
+    });
+  }
+
   // ITZ
 
-  if (itz1To9 > 0) {
+  if (itz1To9 > 0 || presentationMode) {
     result.push({
       src: "itz_red.gif",
       description: "Awarded for winning In The Zone 1-9",
-      count: itz1To9,
+      count: presentationMode ? 1 : itz1To9,
     });
   }
 
-  if (itz10to19 > 0) {
+  if (itz10to19 > 0 || presentationMode) {
     result.push({
       src: "itz_orange.gif",
       description: "Awarded for winning In The Zone 10-19",
-      count: itz10to19,
+      count: presentationMode ? 1 : itz10to19,
     });
   }
 
-  if (itz20To29 > 0) {
+  if (itz20To29 > 0 || presentationMode) {
     result.push({
       src: "itz_blue.gif",
       description: "Awarded for winning In The Zone 20-29",
-      count: itz20To29,
+      count: presentationMode ? 1 : itz20To29,
     });
   }
 
@@ -152,12 +181,12 @@ const usersBadges = ({
         0
       );
 
-    if (count === 0) continue;
+    if (count === 0 && !presentationMode) continue;
 
     result.push({
       src: `${tournament.badgeName}.gif`,
       description: `Awarded for winning ${tournament.name}`,
-      count,
+      count: presentationMode ? 1 : count,
     });
   }
 
@@ -169,18 +198,27 @@ const Badges = ({
   userDiscordId,
   patreonTier,
   peakXP,
+  presentationMode = false,
 }: {
   userId: number;
   userDiscordId: string;
   patreonTier: number | null;
   peakXP?: number;
+  presentationMode?: boolean;
 }) => {
   const [showInfo, setShowInfo] = useState(false);
   const [imgsLoaded, setImgsLoaded] = useState(false);
 
   const badges = useMemo(
-    () => usersBadges({ userId, userDiscordId, patreonTier, peakXP }),
-    [userId, userDiscordId, patreonTier, peakXP]
+    () =>
+      usersBadges({
+        userId,
+        userDiscordId,
+        patreonTier,
+        peakXP,
+        presentationMode,
+      }),
+    [userId, userDiscordId, patreonTier, peakXP, presentationMode]
   );
 
   useEffect(() => {
@@ -202,47 +240,11 @@ const Badges = ({
 
   return (
     <>
-      <Flex
-        flexDir={showInfo ? "column" : "row"}
-        flexWrap="wrap"
-        align="center"
-        justify="center"
-        bg="black"
-        color="white"
-        rounded="lg"
-        maxW={48}
-        mx="auto"
-        my={3}
-      >
-        {imgsLoaded &&
-          badges.flatMap((badge) => {
-            if (showInfo)
-              return (
-                <Fragment key={badge.src}>
-                  <Flex justify="center" align="center" my={2}>
-                    <ChakraImage
-                      w={10}
-                      h={10}
-                      m={4}
-                      src={`/badges/${badge.src}`}
-                    />{" "}
-                    <Text fontSize="sm">{badge.description}</Text>
-                  </Flex>
-                </Fragment>
-              );
-            return new Array(badge.count).fill(null).map((_, i) => {
-              return (
-                <ChakraImage
-                  key={`${badge.src}-${i}`}
-                  w={10}
-                  h={10}
-                  m={1}
-                  src={`/badges/${badge.src}`}
-                />
-              );
-            });
-          })}
-      </Flex>
+      <BadgeContainer
+        badges={badges}
+        showBadges={imgsLoaded}
+        showInfo={showInfo}
+      />
       <Button
         my={3}
         mx="auto"

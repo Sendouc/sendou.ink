@@ -4,7 +4,7 @@ import MyLink from "components/common/MyLink";
 import { useMyTheme } from "hooks/common";
 import { ReactNode } from "react";
 import { FaGithub, FaPatreon, FaTwitter } from "react-icons/fa";
-import { FiInfo } from "react-icons/fi";
+import { FiHelpCircle, FiInfo } from "react-icons/fi";
 import { DiscordIcon } from "utils/assets/icons";
 import patrons from "utils/data/patrons.json";
 import { getFullUsername } from "utils/strings";
@@ -23,6 +23,9 @@ const FooterContent: React.FC = () => {
       >
         <ExternalLink icon={FiInfo} href="/about">
           About
+        </ExternalLink>
+        <ExternalLink icon={FiHelpCircle} href="/faq">
+          FAQ
         </ExternalLink>
       </Flex>
       <Flex
