@@ -1,4 +1,9 @@
-import { Box, Image } from "@chakra-ui/react";
+import {
+  Box,
+  Image,
+  useColorMode,
+  useColorModePreference,
+} from "@chakra-ui/react";
 import { useState } from "react";
 
 interface HSL {
@@ -377,6 +382,8 @@ const BeautifulDrawingOfBorzoic = ({
   colorIndex: number;
   setColorIndex: (newIndex: number) => void;
 }) => {
+  const { colorMode } = useColorMode();
+
   return (
     <Box
       position="relative"
@@ -398,8 +405,14 @@ const BeautifulDrawingOfBorzoic = ({
         top="0"
         left="0"
         filter={getFilters(COLOR_OPTIONS[colorIndex][type === "girl" ? 0 : 1])}
+        alt=""
       />
-      <Image src={`/layout/new_${type}.png`} maxW={80} position="absolute" />
+      <Image
+        src={`/layout/new_${type}_${colorMode}.png`}
+        maxW={80}
+        position="absolute"
+        alt=""
+      />
     </Box>
   );
 };
