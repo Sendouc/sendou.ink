@@ -26,8 +26,10 @@ const LinkingInfoPage = ({}) => {
         <code>!sendoulink</code> command.
         <br />
         <br />
-        Please note the results update <b>once a month</b> and league results
-        below league power of 2200 are not included.
+        Top 500 results update <b>once a month</b> and league results update{" "}
+        <b>daily</b>. For Top 500 results you need to finish the month in the
+        Top 500 for it to count. League results below league power of 2200 are
+        not included.
       </>
     </>
   );

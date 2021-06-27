@@ -10,15 +10,28 @@ import { Box } from "@chakra-ui/layout";
 import MyLink from "components/common/MyLink";
 import Badges from "components/u/Badges";
 
-/*
-//     //"Moray Towers",
-//     //"Port Mackerel",
-//     //"Walleye Warehouse",
-//     //"Arowana Mall",
-//     //"Kelp Dome"
- */
-
 const questionsAndAnswers = [
+  {
+    q: "How do I update my avatar?",
+    a: (
+      <>
+        After updating it on Discord you can get it updated without delay by
+        logging out and logging back in (on sendou.ink - not Discord).
+        Additionally if you want to have your avatar automatically update make
+        sure you are on Sendou's Discord server. This way your avatar will be
+        automatically updated periodically.
+      </>
+    ),
+  },
+  {
+    q: "How can I link my Top 500/league results?",
+    a: (
+      <>
+        Check out{" "}
+        <MyLink href="/linking-info">https://sendou.ink/linking-info</MyLink>
+      </>
+    ),
+  },
   {
     q: "What badges are there? Who made them?",
     a: (
@@ -34,6 +47,29 @@ const questionsAndAnswers = [
           patreonTier={-1}
           presentationMode
         />
+      </>
+    ),
+  },
+  {
+    q: "Can my tournament have a badge as a prize?",
+    a: (
+      <>
+        Yes commission{" "}
+        <MyLink href="https://twitter.com/borzoic_/" isExternal>
+          borzoic
+        </MyLink>{" "}
+        to make the logo's 3D model. Prize is 10-30€ depending on the
+        complexity. Afterwards contact Sendou for info on how to get it showing
+        on the site.
+      </>
+    ),
+  },
+  {
+    q: "How do I add an image for my tournament to show on the calendar?",
+    a: (
+      <>
+        DM Sendou with your tournament's logo. Logo has to be a square (e.g.
+        500x500 dimensions).
       </>
     ),
   },
