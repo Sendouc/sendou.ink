@@ -18,8 +18,8 @@ const questionsAndAnswers = [
         After updating it on Discord you can get it updated without delay by
         logging out and logging back in (on sendou.ink - not Discord).
         Additionally if you want to have your avatar automatically update make
-        sure you are on Sendou's Discord server. This way your avatar will be
-        automatically updated periodically.
+        sure you are on Sendou&apos;s Discord server. This way your avatar will
+        be automatically updated periodically.
       </>
     ),
   },
@@ -58,7 +58,7 @@ const questionsAndAnswers = [
         <MyLink href="https://twitter.com/borzoic_/" isExternal>
           borzoic
         </MyLink>{" "}
-        to make the logo's 3D model. Prize is 10-30€ depending on the
+        to make the logo&apos;s 3D model. Prize is 10-30€ depending on the
         complexity. Afterwards contact Sendou for info on how to get it showing
         on the site.
       </>
@@ -68,8 +68,8 @@ const questionsAndAnswers = [
     q: "How do I add an image for my tournament to show on the calendar?",
     a: (
       <>
-        DM Sendou with your tournament's logo. Logo has to be a square (e.g.
-        500x500 dimensions).
+        DM Sendou with your tournament&apos;s logo. Logo has to be a square
+        (e.g. 500x500 dimensions).
       </>
     ),
   },
