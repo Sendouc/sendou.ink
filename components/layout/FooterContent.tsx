@@ -2,8 +2,8 @@ import { Box, Flex } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
 import MyLink from "components/common/MyLink";
 import { useMyTheme } from "hooks/common";
-import Link from "next/link";
-import { FaGithub, FaTwitter } from "react-icons/fa";
+import { ReactNode } from "react";
+import { FaGithub, FaPatreon, FaTwitter } from "react-icons/fa";
 import { FiInfo } from "react-icons/fi";
 import { DiscordIcon } from "utils/assets/icons";
 import patrons from "utils/data/patrons.json";
@@ -14,32 +14,53 @@ const FooterContent: React.FC = () => {
   return (
     <Box bg={themeColor} color="black">
       <Flex
-        mt="-1px"
-        pt={4}
-        pb="50px"
-        flexShrink={0}
+        flexDir={["column", null, "row"]}
         alignItems="center"
-        fontWeight="bold"
-        letterSpacing="1px"
         flexWrap="wrap"
-        justifyContent="space-evenly"
+        justifyContent="center"
+        fontWeight="bold"
+        py={2}
       >
-        <Flex alignItems="center" flexWrap="wrap" justifyContent="center">
-          <Link href="/about">
-            <a>
-              <Box as={FiInfo} size="50px" m="1em" />
-            </a>
-          </Link>
-          <a href="https://twitter.com/sendouink">
-            <Box as={FaTwitter} size="50px" m="1em" />
-          </a>
-          <a href="https://discord.gg/sendou">
-            <DiscordIcon h="50px" w="50px" m="1em" />
-          </a>
-          <a href="https://github.com/Sendouc/sendou.ink">
-            <Box as={FaGithub} size="50px" m="1em" />
-          </a>
-        </Flex>
+        <ExternalLink icon={FiInfo} href="/about">
+          About
+        </ExternalLink>
+      </Flex>
+      <Flex
+        flexDir={["column", null, "row"]}
+        alignItems="center"
+        flexWrap="wrap"
+        justifyContent="center"
+        fontWeight="bold"
+        py={2}
+      >
+        <ExternalLink
+          icon={FaGithub}
+          href="https://github.com/Sendouc/sendou.ink"
+          isExternal
+        >
+          View source code on Github
+        </ExternalLink>
+        <ExternalLink
+          icon={FaTwitter}
+          href="https://twitter.com/sendouink"
+          isExternal
+        >
+          Follow @sendouink on Twitter
+        </ExternalLink>
+        <ExternalLink
+          icon={DiscordIcon}
+          href="https://discord.gg/sendou"
+          isExternal
+        >
+          Chat on Discord
+        </ExternalLink>
+        <ExternalLink
+          icon={FaPatreon}
+          href="https://www.patreon.com/sendou"
+          isExternal
+        >
+          Sponsor on Patreon
+        </ExternalLink>
       </Flex>
       <Box p={3} textAlign="center">
         <Box fontWeight="bold">
@@ -65,5 +86,33 @@ const FooterContent: React.FC = () => {
     </Box>
   );
 };
+
+function ExternalLink({
+  children,
+  icon,
+  href,
+  isExternal,
+}: {
+  children: ReactNode;
+  icon: any;
+  href: string;
+  isExternal?: boolean;
+}) {
+  return (
+    <MyLink
+      href={href}
+      isExternal={isExternal}
+      chakraLinkProps={{
+        display: "flex",
+        alignItems: "center",
+        mx: 2,
+        my: 2,
+        color: "black",
+      }}
+    >
+      <Box as={icon} display="inline" mr={1} size="20px" /> {children}
+    </MyLink>
+  );
+}
 
 export default FooterContent;

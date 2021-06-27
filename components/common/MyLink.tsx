@@ -1,4 +1,4 @@
-import { Link as ChakraLink } from "@chakra-ui/react";
+import { Link as ChakraLink, LinkProps } from "@chakra-ui/react";
 import { useMyTheme } from "hooks/common";
 import NextLink from "next/link";
 
@@ -10,6 +10,7 @@ interface Props {
   isColored?: boolean;
   toNewWindow?: boolean;
   noUnderline?: boolean;
+  chakraLinkProps?: LinkProps;
 }
 
 const MyLink: React.FC<Props> = ({
@@ -20,6 +21,7 @@ const MyLink: React.FC<Props> = ({
   isColored = true,
   toNewWindow,
   noUnderline,
+  chakraLinkProps = {},
 }) => {
   const { themeColorShade } = useMyTheme();
 
@@ -29,6 +31,7 @@ const MyLink: React.FC<Props> = ({
         href={href}
         color={isColored ? themeColorShade : undefined}
         target={toNewWindow ? "_blank" : undefined}
+        {...chakraLinkProps}
       >
         {children}
       </ChakraLink>
@@ -39,6 +42,7 @@ const MyLink: React.FC<Props> = ({
       <ChakraLink
         className={noUnderline ? "nounderline" : undefined}
         color={isColored ? themeColorShade : undefined}
+        {...chakraLinkProps}
       >
         {children}
       </ChakraLink>
