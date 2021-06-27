@@ -51,14 +51,14 @@ const questionsAndAnswers = [
     ),
   },
   {
-    q: "Can my tournament have a badge as a prize?",
+    q: "Can my tournament have a badge as a price?",
     a: (
       <>
         Yes commission{" "}
         <MyLink href="https://twitter.com/borzoic_/" isExternal>
           borzoic
         </MyLink>{" "}
-        to make the logo&apos;s 3D model. Prize is 10-30€ depending on the
+        to make the logo&apos;s 3D model. Price is 10-30€ depending on the
         complexity. Afterwards contact Sendou for info on how to get it showing
         on the site.
       </>
@@ -79,7 +79,7 @@ const FAQPage = () => {
   return (
     <>
       <MyHead title="FAQ" />
-      <Accordion>
+      <Accordion allowToggle>
         {questionsAndAnswers.map(({ q, a }) => (
           <AccordionItem key={q}>
             <h2>
