@@ -25,7 +25,7 @@ const getInitialState = (ignoreLocalStorage: boolean = false): State => {
     })),
     matches: [],
     amountOfRoundsWithSameTeams: DEFAULT_AMOUNT_OF_ROUNDS_WITH_SAME_TEAMS,
-    errorWithPlayers: "",
+    errorWithPlayers: "Please enter at least 8 player names",
     noPlacingToSameTeam: [],
   };
 };
