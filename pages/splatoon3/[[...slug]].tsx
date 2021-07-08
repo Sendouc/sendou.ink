@@ -186,6 +186,15 @@ function Main() {
       <UnorderedList listStyleType="none" ml="0">
         <ListItem my={2}>
           <Box as="span" fontSize="sm" fontWeight="bold" mr="2">
+            July 6, 2021
+          </Box>
+          First bit of gameplay without UI is shown in the{" "}
+          <MyLink isExternal href="https://youtu.be/4mHq6Y7JSmg?t=90">
+            Nintendo Switch OLED reveal trailer
+          </MyLink>{" "}
+        </ListItem>
+        <ListItem my={2}>
+          <Box as="span" fontSize="sm" fontWeight="bold" mr="2">
             February 18, 2021
           </Box>
           Splatoon 3 is revealed in Nintendo Direct and{" "}
@@ -296,8 +305,10 @@ function Weapons() {
         Unnamed Bow weapon
       </Heading>
       <Box as="p" my={4} mb={6}>
-        New weapon class. Shoots 3 arrows at once. Closes comparison seems to be
-        with the Charger class.
+        New weapon class. Shoots 3 arrows at once. Closest comparison seems to
+        be with the Charger class. In the Nintendo Switch OLED reveal trailer
+        the bow can be seen having two shooting mode. Vertical when jumping and
+        horizontal when on the ground.
       </Box>
       <Box my={4}>
         <Image
