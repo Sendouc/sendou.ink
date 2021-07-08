@@ -2,16 +2,13 @@ import { PlusRegion, Prisma } from "@prisma/client";
 import { httpError } from "@trpc/server";
 import prisma from "prisma/client";
 import { shuffleArray } from "utils/arrays";
-import { ADMIN_ID } from "utils/constants";
+import { ADMIN_ID, VOUCH_CRITERIA } from "utils/constants";
 import { getPercentageFromCounts, getVotingRange } from "utils/plus";
 import { userBasicSelection } from "utils/prisma";
 import { suggestionFullSchema } from "utils/validators/suggestion";
 import { voteSchema, votesSchema } from "utils/validators/votes";
 import { vouchSchema } from "utils/validators/vouch";
 import * as z from "zod";
-
-// null, +1, +2, +3
-const VOUCH_CRITERIA = [-1, 90, 85, 80] as const;
 
 export type PlusStatuses = Prisma.PromiseReturnType<typeof getPlusStatuses>;
 

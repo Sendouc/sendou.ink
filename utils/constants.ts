@@ -341,3 +341,6 @@ export const wonITZCount = (
 
   return result;
 };
+
+/** Vouch criteria for null, +1, +2 and +3 */
+export const VOUCH_CRITERIA = [-1, 90, 85, 80] as const;

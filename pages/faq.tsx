@@ -9,6 +9,7 @@ import {
 import { Box } from "@chakra-ui/layout";
 import MyLink from "components/common/MyLink";
 import Badges from "components/u/Badges";
+import { VOUCH_CRITERIA } from "utils/constants";
 
 const questionsAndAnswers = [
   {
@@ -70,6 +71,35 @@ const questionsAndAnswers = [
       <>
         DM Sendou with your tournament&apos;s logo. Logo has to be a square
         (e.g. 500x500 dimensions).
+      </>
+    ),
+  },
+  {
+    q: "What is the Plus Server?",
+    a: (
+      <>
+        Plus Server is a Discord server for high level western players to look
+        for players to play with and against. It is divided into three different
+        tiers of which +1 is the highest. You get access when a member of the
+        server suggests you and you pass the monthly voting.
+        <br />
+        <br /> In the voting you get percentage based on your result. 0% would
+        mean everyone gave you the worst possible score while 100% would be the
+        opposite. 50% is required to pass the voting. If a member gets a score
+        below 50% they get demoted a tier or in the case of +3 kicked.
+        <br />
+        <br /> Members are divided into two regions for voting: NA and EU. For
+        players living outside of these regions when joining they choose the
+        region they most commonly play with. Every member of the server can vote
+        on others of the same tier (members, suggested players and vouched
+        players). +1 or -1 is the score given to those of the opposite region
+        and -2, -1, +1 or +2 to those of the same region.
+        <br />
+        <br /> Alternative way to get in is if an existing member with a good
+        voting result in the last voting vouches you. In that case you get
+        access immediately. Percentages required to gain vouch rights are{" "}
+        {VOUCH_CRITERIA[1]}% (+1 members), {VOUCH_CRITERIA[2]}% (+2 members),{" "}
+        {VOUCH_CRITERIA[3]}% (+3 members),
       </>
     ),
   },
