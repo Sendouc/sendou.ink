@@ -1,10 +1,6 @@
-import {
-  Box,
-  Image,
-  useColorMode,
-  useColorModePreference,
-} from "@chakra-ui/react";
-import { useState } from "react";
+import { Image as ChakraImage, useColorMode } from "@chakra-ui/react";
+import randomColor from "randomcolor";
+import { useEffect, useState } from "react";
 
 interface HSL {
   h: number;
@@ -352,68 +348,56 @@ function getFilters(hex: string) {
   return result.filter;
 }
 
-// https://leanny.github.io/colors
-const COLOR_OPTIONS: [alphaColorHex: string, bravoColorHex: string][] = [
-  ["#2922b5", "#5eb604"],
-  ["#3b362", "#b1008d"],
-  ["#25b100", "#571db1"],
-  ["#7b0393", "#43ba05"],
-  ["#cae6e", "#f75900"],
-  ["#d9c100", "#7ac9"],
-  ["#ce8003", "#9208b2"],
-  ["#dea801", "#4717a9"],
-  ["#bbc905", "#830b9c"],
-  ["#7edc", "#e1a307"],
-  ["#d60e6e", "#311aa8"],
-  ["#cf0466", "#17a80d"],
-  ["#cb0856", "#199b8"],
-  ["#de0b64", "#bfd002"],
-  ["#4a14aa", "#fb5c03"],
-  ["#5f0fb4", "#8b672"],
-  ["#dea801", "#4717a9"],
-];
-
-const BeautifulDrawingOfBorzoic = ({
-  type,
-  colorIndex,
-  setColorIndex,
-}: {
-  type: "girl" | "boy";
-  colorIndex: number;
-  setColorIndex: (newIndex: number) => void;
-}) => {
+const BeautifulDrawingOfBorzoic = ({ type }: { type: "girl" | "boy" }) => {
+  const [hexCode, setHexCode] = useState(randomColor());
   const { colorMode } = useColorMode();
+  const [drawingImgSrc, setDrawingImgSrc] = useState(
+    `/layout/new_${type}_${colorMode}.png`
+  );
+  const [drawingLoaded, setDrawingLoaded] = useState(false);
+
+  const handleColorChange = () => setHexCode(randomColor());
+
+  useEffect(() => {
+    const loadImage = (imageUrl: string): Promise<string> => {
+      return new Promise((resolve, reject) => {
+        const loadImg = new Image();
+        loadImg.src = imageUrl;
+        loadImg.onload = () => setTimeout(() => resolve(imageUrl));
+        loadImg.onerror = (err) => reject(err);
+      });
+    };
+
+    loadImage(`/layout/new_${type}_${colorMode}.png`)
+      .then((src) => setDrawingImgSrc(src))
+      .catch((err) => console.error("Failed to load images", err));
+  }, [type, colorMode]);
 
   return (
-    <Box
-      position="relative"
-      onClick={() =>
-        setColorIndex(
-          colorIndex === COLOR_OPTIONS.length - 1 ? 0 : colorIndex + 1
-        )
-      }
-      onMouseEnter={() =>
-        setColorIndex(
-          colorIndex === COLOR_OPTIONS.length - 1 ? 0 : colorIndex + 1
-        )
-      }
-    >
-      <Image
+    <>
+      <ChakraImage
         src={`/layout/new_${type}_bg.png`}
-        maxW={80}
-        position="absolute"
-        top="0"
-        left="0"
-        filter={getFilters(COLOR_OPTIONS[colorIndex][type === "girl" ? 0 : 1])}
+        filter={getFilters(hexCode)}
+        height={["150px", "240px", "300px", "360px"]}
+        gridColumn={type === "girl" ? "2 / 3" : "1 / 2"}
+        justifySelf={type === "girl" ? "flex-start" : "flex-end"}
+        gridRow="1"
         alt=""
+        visibility={drawingLoaded ? "visible" : "hidden"}
       />
-      <Image
-        src={`/layout/new_${type}_${colorMode}.png`}
-        maxW={80}
-        position="absolute"
+      <ChakraImage
+        onClick={handleColorChange}
+        onMouseEnter={handleColorChange}
+        src={drawingImgSrc}
+        height={["150px", "240px", "300px", "360px"]}
+        gridColumn={type === "girl" ? "2 / 3" : "1 / 2"}
+        justifySelf={type === "girl" ? "flex-start" : "flex-end"}
+        gridRow="1"
+        zIndex="10"
         alt=""
+        onLoad={() => setDrawingLoaded(true)}
       />
-    </Box>
+    </>
   );
 };
 

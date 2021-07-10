@@ -30,7 +30,7 @@ header {
   display: grid;
   row-gap: 1.5rem;
   column-gap: 1.5rem;
-  grid-template-rows: 37px 1fr 100px;
+  grid-template-rows: 50px 1fr 100px;
   grid-template-columns: auto 1fr;
   min-height: 100vh;
 }
