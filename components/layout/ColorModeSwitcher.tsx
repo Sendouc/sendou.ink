@@ -18,6 +18,7 @@ const ColorModeSwitcher = ({ isMobile }: { isMobile?: boolean }) => {
       }
       borderRadius={isMobile ? "50%" : "0"}
       size={isMobile ? "lg" : "sm"}
+      height="50px"
       mx={2}
       display={isMobile ? "flex" : ["none", null, null, "flex"]}
     />

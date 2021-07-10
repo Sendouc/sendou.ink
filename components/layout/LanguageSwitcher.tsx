@@ -52,6 +52,7 @@ export const LanguageSwitcher = ({ isMobile }: { isMobile?: boolean }) => {
         }
         borderRadius={isMobile ? "50%" : "0"}
         size={isMobile ? "lg" : "sm"}
+        height="50px"
         display={isMobile ? "flex" : ["none", null, null, "flex"]}
       />
       <MenuList bg={secondaryBgColor} color={textColor}>

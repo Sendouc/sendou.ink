@@ -48,11 +48,10 @@ const Header = ({ openNav }: { openNav: () => void }) => {
               : { bg: "black", color: "white" }
           }
           borderRadius="0"
-          size="sm"
           display={["flex", null, null, "none"]}
         />
       </Flex>
-      <Flex justify="center" align="center" fontSize="sm" color="white.300">
+      <Flex justify="center" align="center" color="white.300">
         <Link href="/">{isSmall ? "s.ink" : "sendou.ink"}</Link>{" "}
         {activeNavItem && (
           <>
@@ -87,7 +86,7 @@ const Header = ({ openNav }: { openNav: () => void }) => {
             borderRadius="0"
             size="xs"
             px={2}
-            height="30px"
+            height="50px"
             mr="0.5rem"
             display={["none", null, null, "inline-block"]}
           >
@@ -110,7 +109,7 @@ const Header = ({ openNav }: { openNav: () => void }) => {
           borderRadius="0"
           size="xs"
           px={2}
-          height="30px"
+          height="50px"
           ml="0.5rem"
         >
           {user ? "Log out" : "Log in"}
