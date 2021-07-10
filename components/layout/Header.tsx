@@ -63,8 +63,8 @@ const Header = ({ openNav }: { openNav: () => void }) => {
               className={
                 activeNavItem.code === "splatoon3" ? "rounded" : undefined
               }
-              height={24}
-              width={24}
+              height={36}
+              width={36}
               priority
               alt={`${activeNavItem.name} icon`}
             />
