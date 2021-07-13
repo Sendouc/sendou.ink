@@ -9,6 +9,12 @@ const regularTournamentWinners: {
   winnerDiscordIds: string;
 }[] = [
   {
+    badgeName: "zones",
+    name: "Dapple SZ Speedladder",
+    winnerDiscordIds:
+      "393411373289177098,300073469503340546,554124226915860507,417489824589676548,403345464138661888,343375632819814400,726389792237027370,570288931321413653,716227192060641281",
+  },
+  {
     badgeName: "girls",
     name: "Girls Duo Cup",
     winnerDiscordIds:
