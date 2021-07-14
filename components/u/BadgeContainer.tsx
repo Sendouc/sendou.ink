@@ -55,8 +55,9 @@ const BadgeContainer = ({
               />
               <Text
                 fontSize="sm"
-                style={{marginLeft: -5, marginTop: -25, paddingRight: 5, fontSize: '0.7rem', fontWeight: 'bold' }}>
-                {"x" + badge.count}
+                style={{marginLeft: -5, marginTop: -25, paddingRight: 5, fontSize: '0.7rem', fontWeight: 'bold' }}
+              >
+                {`x${badge.count}`}
               </Text>
             </Fragment>
           )
