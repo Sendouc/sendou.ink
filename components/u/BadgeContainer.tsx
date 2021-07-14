@@ -56,6 +56,7 @@ const BadgeContainer = ({
               <Text
                 fontSize="sm"
                 style={{marginLeft: -5, marginTop: -25, paddingRight: 5, fontSize: '0.7rem', fontWeight: 'bold' }}
+                visibility={badge.count === 1 ? "hidden" : "visible"}
               >
                 {`x${badge.count}`}
               </Text>
