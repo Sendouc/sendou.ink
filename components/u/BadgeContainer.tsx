@@ -44,17 +44,24 @@ const BadgeContainer = ({
                 </Flex>
               </Fragment>
             );
-          return new Array(badge.count).fill(null).map((_, i) => {
-            return (
+          return (
+            <Fragment key={badge.src}>
               <ChakraImage
-                key={`${badge.src}-${i}`}
+                key={`${badge.src}`}
                 w={10}
                 h={10}
                 m={1}
                 src={`/badges/${badge.src}`}
               />
-            );
-          });
+              <Text
+                fontSize="sm"
+                style={{marginLeft: -5, marginTop: -25, paddingRight: 5, fontSize: '0.7rem', fontWeight: 'bold' }}
+                visibility={badge.count === 1 ? "hidden" : "visible"}
+              >
+                {`x${badge.count}`}
+              </Text>
+            </Fragment>
+          )
         })}
     </Flex>
   );
