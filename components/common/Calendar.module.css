@@ -1,8 +1,8 @@
 .container {
-  display: "inline-block";
+  display: inline-block;
   text-align: center;
   overflow-y: scroll;
-  min-width: 525px;
+  width: 75vw;
 }
 
 /* Month header */

@@ -33,9 +33,9 @@ const isToday = (date: Date) => {
 type MonthYear = { month: number; year: number };
 
 const Square = ({ children }: { children?: ReactNode }) => {
-  const { gray, secondaryBgColor } = useMyTheme();
+  const { gray } = useMyTheme();
   return (
-    <Box color={gray} fontSize="small" fontWeight="bold">
+    <Box color={gray} fontSize="small" fontWeight="bold" minW="125px">
       {children}
     </Box>
   );
