@@ -34,6 +34,13 @@ const CalendarPage = () => {
       ?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const eventsInFuture = Boolean(
+    events.data?.some(
+      (event) =>
+        event.date.getMonth() + 1 > month || event.date.getFullYear() > year
+    )
+  );
+
   const calendarDateContents = useMemo(() => {
     return (events.data ?? []).reduce(
       (result: Record<string, ReactNode[]>, event) => {
@@ -116,6 +123,7 @@ const CalendarPage = () => {
               : { month: month - 1, year }
           )
         }
+        showNextButton={eventsInFuture}
         dateContents={calendarDateContents}
       />
       {(events.data ?? [])

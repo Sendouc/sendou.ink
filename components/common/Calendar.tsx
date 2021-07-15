@@ -46,12 +46,14 @@ const Calendar = ({
   min,
   handleBackClick,
   handleNextClick,
+  showNextButton,
   dateContents,
 }: {
   current: MonthYear;
   min: MonthYear;
   handleBackClick: () => void;
   handleNextClick: () => void;
+  showNextButton: boolean;
   dateContents: Record<string, ReactNode>;
 }) => {
   const { themeColorHex } = useMyTheme();
@@ -61,7 +63,7 @@ const Calendar = ({
       <div className={styles.month}>
         <ul>
           <IconButton
-            aria-label="Switch language"
+            aria-label="Go back a month"
             variant="ghost"
             color="current"
             icon={<FiChevronLeft />}
@@ -76,7 +78,7 @@ const Calendar = ({
             }
           />
           <IconButton
-            aria-label="Switch language"
+            aria-label="Go forward a month"
             variant="ghost"
             color="current"
             icon={<FiChevronRight />}
@@ -84,6 +86,7 @@ const Calendar = ({
             float="right"
             size="lg"
             onClick={handleNextClick}
+            visibility={showNextButton ? "visible" : "hidden"}
           />
           <li>
             {currentDate.toLocaleDateString("en", { month: "long" })}
