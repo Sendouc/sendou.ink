@@ -1,6 +1,7 @@
 import { Button } from "@chakra-ui/button";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/input";
 import { Box } from "@chakra-ui/layout";
+import { Popover, PopoverContent, PopoverTrigger } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import EventInfo from "components/calendar/EventInfo";
 import { EventModal, FormData } from "components/calendar/EventModal";
@@ -14,7 +15,7 @@ import { FiSearch } from "react-icons/fi";
 import { trpc } from "utils/trpc";
 
 const CalendarPage = () => {
-  const { gray } = useMyTheme();
+  const { gray, secondaryBgColor } = useMyTheme();
   const events = trpc.useQuery(["calendar.events"], { enabled: false });
   const [eventToEdit, setEventToEdit] = useState<
     boolean | (FormData & { id: number })
@@ -28,6 +29,12 @@ const CalendarPage = () => {
 
   let lastPrintedDate: [number, number, Date] | null = null;
 
+  const scrollToEvent = (id: number) => {
+    document
+      .getElementById(`event-${id}`)
+      ?.scrollIntoView({ behavior: "smooth" });
+  };
+
   const calendarDateContents = useMemo(() => {
     return (events.data ?? []).reduce(
       (result: Record<string, ReactNode[]>, event) => {
@@ -35,23 +42,33 @@ const CalendarPage = () => {
           event.date.getMonth() + 1
         }-${event.date.getFullYear()}`;
         const node = (
-          <Button
-            display="block"
-            mx="auto"
-            size="xs"
-            variant="ghost"
-            whiteSpace="nowrap"
-            textOverflow="ellipsis"
-            maxW="150px"
-            overflow="hidden"
-            onClick={() => {
-              document
-                .getElementById(`event-${event.id}`)
-                ?.scrollIntoView({ behavior: "smooth" });
-            }}
-          >
-            {event.name}
-          </Button>
+          <Popover trigger="hover" placement="top-start">
+            <PopoverTrigger>
+              <Button
+                display="block"
+                mx="auto"
+                size="xs"
+                variant="ghost"
+                whiteSpace="nowrap"
+                textOverflow="ellipsis"
+                maxW="150px"
+                overflow="hidden"
+                onClick={() => {
+                  scrollToEvent(event.id);
+                }}
+              >
+                {event.name}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent
+              zIndex={4}
+              p="0.5em"
+              bg={secondaryBgColor}
+              border="0"
+            >
+              {event.name} - {event.date.toLocaleString("en")}
+            </PopoverContent>
+          </Popover>
         );
         if (result[key]) result[key].push(node);
         else result[key] = [node];
