@@ -20,7 +20,6 @@ const CalendarPage = () => {
   const [eventToEdit, setEventToEdit] = useState<
     boolean | (FormData & { id: number })
   >(false);
-  const [filter, setFilter] = useState("");
   const [{ month, year }, setMonthYear] = useState({
     month: new Date().getMonth() + 1,
     year: new Date().getFullYear(),
@@ -119,16 +118,7 @@ const CalendarPage = () => {
         }
         dateContents={calendarDateContents}
       />
-      <InputGroup my={8} maxW="24rem" mx="auto">
-        <InputLeftElement pointerEvents="none">
-          <FiSearch color={gray} />
-        </InputLeftElement>
-        <Input value={filter} onChange={(e) => setFilter(e.target.value)} />
-      </InputGroup>
       {(events.data ?? [])
-        .filter((event) =>
-          event.name.toLowerCase().includes(filter.toLowerCase().trim())
-        )
         .filter(
           (event) =>
             event.date.getMonth() + 1 === month &&
