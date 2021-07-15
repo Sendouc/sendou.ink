@@ -4,11 +4,12 @@ import { Box } from "@chakra-ui/layout";
 import { t, Trans } from "@lingui/macro";
 import EventInfo from "components/calendar/EventInfo";
 import { EventModal, FormData } from "components/calendar/EventModal";
+import Calendar from "components/common/Calendar";
 import MyHead from "components/common/MyHead";
 import SubText from "components/common/SubText";
 import { useMyTheme, useUser } from "hooks/common";
 import { ssr } from "pages/api/trpc/[trpc]";
-import { Fragment, useState } from "react";
+import { Fragment, ReactNode, useMemo, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { trpc } from "utils/trpc";
 
@@ -19,9 +20,47 @@ const CalendarPage = () => {
     boolean | (FormData & { id: number })
   >(false);
   const [filter, setFilter] = useState("");
+  const [{ month, year }, setMonthYear] = useState({
+    month: new Date().getMonth() + 1,
+    year: new Date().getFullYear(),
+  });
   const [user] = useUser();
 
   let lastPrintedDate: [number, number, Date] | null = null;
+
+  const calendarDateContents = useMemo(() => {
+    return (events.data ?? []).reduce(
+      (result: Record<string, ReactNode[]>, event) => {
+        const key = `${event.date.getDate()}-${
+          event.date.getMonth() + 1
+        }-${event.date.getFullYear()}`;
+        const node = (
+          <Button
+            display="block"
+            mx="auto"
+            size="xs"
+            variant="ghost"
+            whiteSpace="nowrap"
+            textOverflow="ellipsis"
+            maxW="150px"
+            overflow="hidden"
+            onClick={() => {
+              document
+                .getElementById(`event-${event.id}`)
+                ?.scrollIntoView({ behavior: "smooth" });
+            }}
+          >
+            {event.name}
+          </Button>
+        );
+        if (result[key]) result[key].push(node);
+        else result[key] = [node];
+
+        return result;
+      },
+      {}
+    );
+  }, []);
 
   return (
     <>
@@ -34,7 +73,7 @@ const CalendarPage = () => {
         />
       )}
       {user && (
-        <div>
+        <Box mb={6}>
           <Button
             size="sm"
             onClick={() => setEventToEdit(true)}
@@ -42,8 +81,27 @@ const CalendarPage = () => {
           >
             <Trans>Add event</Trans>
           </Button>
-        </div>
+        </Box>
       )}
+      <Calendar
+        current={{ month, year }}
+        min={{ month: 7, year: 2021 }}
+        handleNextClick={() =>
+          setMonthYear(
+            month === 12
+              ? { month: 1, year: year + 1 }
+              : { month: month + 1, year }
+          )
+        }
+        handleBackClick={() =>
+          setMonthYear(
+            month === 1
+              ? { month: 12, year: year - 1 }
+              : { month: month - 1, year }
+          )
+        }
+        dateContents={calendarDateContents}
+      />
       <InputGroup my={8} maxW="24rem" mx="auto">
         <InputLeftElement pointerEvents="none">
           <FiSearch color={gray} />
@@ -53,6 +111,11 @@ const CalendarPage = () => {
       {(events.data ?? [])
         .filter((event) =>
           event.name.toLowerCase().includes(filter.toLowerCase().trim())
+        )
+        .filter(
+          (event) =>
+            event.date.getMonth() + 1 === month &&
+            event.date.getFullYear() === year
         )
         .map((event, i) => {
           const printDateHeader =

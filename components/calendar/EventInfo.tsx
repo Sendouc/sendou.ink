@@ -63,6 +63,7 @@ const EventInfo = ({ event, edit }: EventInfoProps) => {
     <OutlinedBox
       my={4}
       py={4}
+      id={`event-${event.id}`}
       data-cy={`event-info-section-${event.name
         .toLowerCase()
         .replace(/ /g, "-")}`}

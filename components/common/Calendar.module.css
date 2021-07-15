@@ -1,0 +1,27 @@
+.container {
+  display: "inline-block";
+  text-align: center;
+  overflow-y: scroll;
+  min-width: 525px;
+}
+
+/* Month header */
+.month {
+  width: 100%;
+  text-align: center;
+}
+
+/* Month list */
+.month ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.month ul li {
+  color: white;
+  font-size: 20px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  list-style-type: none;
+}
