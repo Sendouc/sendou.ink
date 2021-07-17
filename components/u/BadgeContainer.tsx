@@ -29,7 +29,8 @@ const BadgeContainer = ({
       my={3}
     >
       {showBadges &&
-        badges.flatMap((badge) => {
+        badges.flatMap((badge, i) => {
+          const isLast = i === badges.length - 1;
           if (showInfo)
             return (
               <Fragment key={badge.src}>
@@ -54,14 +55,17 @@ const BadgeContainer = ({
                 src={`/badges/${badge.src}`}
               />
               <Text
-                fontSize="sm"
-                style={{marginLeft: -5, marginTop: -25, paddingRight: 5, fontSize: '0.7rem', fontWeight: 'bold' }}
+                ml={-5}
+                mt={-25}
+                pr={!isLast ? 5 : 0}
+                fontSize="0.7rem"
+                fontWeight="bold"
                 visibility={badge.count === 1 ? "hidden" : "visible"}
               >
                 {`x${badge.count}`}
               </Text>
             </Fragment>
-          )
+          );
         })}
     </Flex>
   );
