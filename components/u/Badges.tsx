@@ -3,14 +3,16 @@ import { useEffect, useMemo, useState } from "react";
 import { wonITZCount } from "utils/constants";
 import BadgeContainer from "./BadgeContainer";
 
-const regularTournamentWinners: {
+export const regularTournamentBadges: {
   badgeName: string;
   name: string;
+  altNames?: string[];
   winnerDiscordIds: string;
 }[] = [
   {
     badgeName: "zones",
     name: "Dapple SZ Speedladder",
+    altNames: ["Dapple SZ Ladder"],
     winnerDiscordIds:
       "393411373289177098,300073469503340546,554124226915860507,417489824589676548,403345464138661888,343375632819814400,726389792237027370,570288931321413653,716227192060641281",
   },
@@ -23,12 +25,14 @@ const regularTournamentWinners: {
   {
     badgeName: "pair",
     name: "League Rush (Pair)",
+    altNames: ["League Rush!!"],
     winnerDiscordIds:
       "453753483427053568,398818695608270849,776911543216111648,393908122525368331",
   },
   {
     badgeName: "quad",
     name: "League Rush (Quad)",
+    altNames: ["League Rush!!"],
     winnerDiscordIds:
       "105390854063034368,151192098962407424,147036636608331779,260602342309756940,115572122482507782,109804061900992512,169184589200359424",
   },
@@ -197,7 +201,7 @@ const usersBadges = ({
 
   // Other tournaments
 
-  for (const tournament of regularTournamentWinners) {
+  for (const tournament of regularTournamentBadges) {
     const count = tournament.winnerDiscordIds
       .split(",")
       .reduce(
