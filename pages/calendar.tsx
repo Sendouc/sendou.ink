@@ -152,6 +152,13 @@ const CalendarPage = () => {
             lastPrintedDate![2].getDate() === now.getDate() &&
             lastPrintedDate![2].getMonth() === now.getMonth();
 
+          const timeUntilDateInDays = ((date: Date) => {
+            const now = new Date();
+            const diff = date.getTime() - now.getTime();
+            const day = Math.floor(diff / (1000 * 3600 * 24));
+            return day;
+          })(lastPrintedDate![2]);
+
           return (
             <Fragment key={event.id}>
               {printDateHeader && (
@@ -164,6 +171,9 @@ const CalendarPage = () => {
                       weekday: "long",
                     })}{" "}
                     {isToday && <Trans>(Today)</Trans>}
+                    {timeUntilDateInDays > 1 && (
+                      <>(In {timeUntilDateInDays} days)</>
+                    )}
                   </SubText>
                 </Box>
               )}
