@@ -1,8 +1,10 @@
 import { Box } from "@chakra-ui/layout";
+import { Flex } from "@chakra-ui/react";
 import { Select } from "@chakra-ui/select";
 import { PlusRegion } from "@prisma/client";
 import MyHead from "components/common/MyHead";
 import NewTable from "components/common/NewTable";
+import UserAvatar from "components/common/UserAvatar";
 import { useMyTheme } from "hooks/common";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
@@ -66,7 +68,8 @@ const PlusVotingHistoryPage = ({
           return {
             id: summary.user.id,
             name: (
-              <Box>
+              <Flex align="center">
+                <UserAvatar user={summary.user} size="xs" mr={2} />
                 {getFullUsername(summary.user)}{" "}
                 {summary.wasSuggested && (
                   <Box as="span" fontWeight="bold" color="theme.500">
@@ -78,7 +81,7 @@ const PlusVotingHistoryPage = ({
                     (V)
                   </Box>
                 )}
-              </Box>
+              </Flex>
             ),
             percentage: (
               <Box color={summary.percentage >= 50 ? "green.500" : "red.500"}>
