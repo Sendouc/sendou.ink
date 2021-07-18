@@ -53,7 +53,7 @@ const CalendarPage = () => {
           event.date.getMonth() + 1
         }-${event.date.getFullYear()}`;
         const node = (
-          <>
+          <Fragment key={event.id}>
             <Button
               display="block"
               mx="auto"
@@ -75,7 +75,7 @@ const CalendarPage = () => {
               </Badge>
               {event.name}
             </Button>
-          </>
+          </Fragment>
         );
         if (result[key]) result[key].push(node);
         else result[key] = [node];
