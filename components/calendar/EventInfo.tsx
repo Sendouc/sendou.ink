@@ -3,6 +3,8 @@ import Markdown from "components/common/Markdown";
 import MyLink from "components/common/MyLink";
 import OutlinedBox from "components/common/OutlinedBox";
 import UserAvatar from "components/common/UserAvatar";
+import BadgeContainer from "components/u/BadgeContainer";
+import { regularTournamentBadges } from "components/u/Badges";
 import { useMyTheme, useUser } from "hooks/common";
 import Image from "next/image";
 import React from "react";
@@ -59,10 +61,19 @@ const EventInfo = ({ event, edit }: EventInfoProps) => {
 
   const imgSrc = eventImage(event.name);
 
+  const badges = regularTournamentBadges.filter(
+    (badgeObj) =>
+      event.name.toUpperCase().includes(badgeObj.name.toUpperCase()) ||
+      badgeObj.altNames?.some((altName) =>
+        event.name.toUpperCase().includes(altName.toUpperCase())
+      )
+  );
+
   return (
     <OutlinedBox
       my={4}
       py={4}
+      id={`event-${event.id}`}
       data-cy={`event-info-section-${event.name
         .toLowerCase()
         .replace(/ /g, "-")}`}
@@ -73,22 +84,36 @@ const EventInfo = ({ event, edit }: EventInfoProps) => {
             {imgSrc && <Image src={imgSrc} width={36} height={36} alt="" />}
             <Heading size="lg">{event.name}</Heading>
             {event.tags.length > 0 && (
-              <Flex flexWrap="wrap" justifyContent="center" my={2}>
-                {event.tags.map((tag) => {
-                  const tagInfo = TAGS.find((tagObj) => tagObj.code === tag)!;
-                  return (
-                    <Badge
-                      key={tag}
-                      mx={1}
-                      my={1}
-                      bg={tagInfo.color}
-                      color="black"
-                    >
-                      {tagInfo.name}
-                    </Badge>
-                  );
-                })}
-              </Flex>
+              <>
+                <Flex flexWrap="wrap" justifyContent="center" my={2}>
+                  {event.tags.map((tag) => {
+                    const tagInfo = TAGS.find((tagObj) => tagObj.code === tag)!;
+                    return (
+                      <Badge
+                        key={tag}
+                        mx={1}
+                        my={1}
+                        bg={tagInfo.color}
+                        color="black"
+                      >
+                        {tagInfo.name}
+                      </Badge>
+                    );
+                  })}
+                </Flex>
+                {event.tags.some((tag) => tag === "BADGE") &&
+                badges.length > 0 ? (
+                  <BadgeContainer
+                    showInfo={false}
+                    showBadges={true}
+                    badges={badges.map((badge) => ({
+                      src: `${badge.badgeName}.gif`,
+                      description: "",
+                      count: 1,
+                    }))}
+                  />
+                ) : null}
+              </>
             )}
             <Grid
               templateColumns={["1fr", "2fr 4fr 2fr"]}

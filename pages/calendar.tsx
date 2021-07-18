@@ -1,27 +1,90 @@
 import { Button } from "@chakra-ui/button";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/input";
 import { Box } from "@chakra-ui/layout";
+import {
+  Badge,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import EventInfo from "components/calendar/EventInfo";
 import { EventModal, FormData } from "components/calendar/EventModal";
+import Calendar from "components/common/Calendar";
 import MyHead from "components/common/MyHead";
 import SubText from "components/common/SubText";
 import { useMyTheme, useUser } from "hooks/common";
 import { ssr } from "pages/api/trpc/[trpc]";
-import { Fragment, useState } from "react";
+import { Fragment, ReactNode, useMemo, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { trpc } from "utils/trpc";
 
 const CalendarPage = () => {
-  const { gray } = useMyTheme();
+  const { gray, secondaryBgColor } = useMyTheme();
   const events = trpc.useQuery(["calendar.events"], { enabled: false });
   const [eventToEdit, setEventToEdit] = useState<
     boolean | (FormData & { id: number })
   >(false);
-  const [filter, setFilter] = useState("");
+  const [{ month, year }, setMonthYear] = useState({
+    month: new Date().getMonth() + 1,
+    year: new Date().getFullYear(),
+  });
   const [user] = useUser();
 
   let lastPrintedDate: [number, number, Date] | null = null;
+
+  const scrollToEvent = (id: number) => {
+    document
+      .getElementById(`event-${id}`)
+      ?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const eventsInFuture = Boolean(
+    events.data?.some(
+      (event) =>
+        event.date.getMonth() + 1 > month || event.date.getFullYear() > year
+    )
+  );
+
+  const calendarDateContents = useMemo(() => {
+    return (events.data ?? []).reduce(
+      (result: Record<string, ReactNode[]>, event) => {
+        const key = `${event.date.getDate()}-${
+          event.date.getMonth() + 1
+        }-${event.date.getFullYear()}`;
+        const node = (
+          <>
+            <Button
+              display="block"
+              mx="auto"
+              size="xs"
+              variant="ghost"
+              textOverflow="ellipsis"
+              maxW="150px"
+              width="100%"
+              height="2rem"
+              mt="0.25rem"
+              mb="0.5rem"
+              overflow="hidden"
+              onClick={() => {
+                scrollToEvent(event.id);
+              }}
+            >
+              <Badge display="block" size="xs" colorScheme="gray" mb="0.25rem">
+                {event.date.toLocaleTimeString("en", { hour: "numeric" })}
+              </Badge>
+              {event.name}
+            </Button>
+          </>
+        );
+        if (result[key]) result[key].push(node);
+        else result[key] = [node];
+
+        return result;
+      },
+      {}
+    );
+  }, []);
 
   return (
     <>
@@ -34,7 +97,7 @@ const CalendarPage = () => {
         />
       )}
       {user && (
-        <div>
+        <Box mb={6}>
           <Button
             size="sm"
             onClick={() => setEventToEdit(true)}
@@ -42,17 +105,33 @@ const CalendarPage = () => {
           >
             <Trans>Add event</Trans>
           </Button>
-        </div>
+        </Box>
       )}
-      <InputGroup my={8} maxW="24rem" mx="auto">
-        <InputLeftElement pointerEvents="none">
-          <FiSearch color={gray} />
-        </InputLeftElement>
-        <Input value={filter} onChange={(e) => setFilter(e.target.value)} />
-      </InputGroup>
+      <Calendar
+        current={{ month, year }}
+        min={{ month: 7, year: 2021 }}
+        handleNextClick={() =>
+          setMonthYear(
+            month === 12
+              ? { month: 1, year: year + 1 }
+              : { month: month + 1, year }
+          )
+        }
+        handleBackClick={() =>
+          setMonthYear(
+            month === 1
+              ? { month: 12, year: year - 1 }
+              : { month: month - 1, year }
+          )
+        }
+        showNextButton={eventsInFuture}
+        dateContents={calendarDateContents}
+      />
       {(events.data ?? [])
-        .filter((event) =>
-          event.name.toLowerCase().includes(filter.toLowerCase().trim())
+        .filter(
+          (event) =>
+            event.date.getMonth() + 1 === month &&
+            event.date.getFullYear() === year
         )
         .map((event, i) => {
           const printDateHeader =
@@ -74,6 +153,13 @@ const CalendarPage = () => {
             lastPrintedDate![2].getDate() === now.getDate() &&
             lastPrintedDate![2].getMonth() === now.getMonth();
 
+          const timeUntilDateInDays = ((date: Date) => {
+            const now = new Date();
+            const diff = date.getTime() - now.getTime();
+            const day = Math.floor(diff / (1000 * 3600 * 24));
+            return day;
+          })(lastPrintedDate![2]);
+
           return (
             <Fragment key={event.id}>
               {printDateHeader && (
@@ -86,6 +172,9 @@ const CalendarPage = () => {
                       weekday: "long",
                     })}{" "}
                     {isToday && <Trans>(Today)</Trans>}
+                    {timeUntilDateInDays > 1 && (
+                      <>(In {timeUntilDateInDays} days)</>
+                    )}
                   </SubText>
                 </Box>
               )}
