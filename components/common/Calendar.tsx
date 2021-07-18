@@ -1,4 +1,4 @@
-import { Box, Flex, Grid, IconButton } from "@chakra-ui/react";
+import { Box, Flex, Grid, IconButton, useMediaQuery } from "@chakra-ui/react";
 import { useMyTheme } from "hooks/common";
 import { ReactNode } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
@@ -56,14 +56,15 @@ const Calendar = ({
   dateContents: Record<string, ReactNode>;
 }) => {
   const { themeColorHex } = useMyTheme();
+  const [noSideNav] = useMediaQuery("(max-width: 991px)");
   const currentDate = new Date(current.year, current.month - 1, 1);
 
   return (
     <Box
       display="inline-block"
       textAlign="center"
-      overflowY="scroll"
-      width="75vw"
+      overflowX="auto"
+      width={noSideNav ? "100vw" : "calc(100vw - 250px)"}
     >
       <Flex justify="space-between">
         <IconButton
@@ -100,9 +101,10 @@ const Calendar = ({
       </Flex>
 
       <Grid
-        templateColumns="repeat(7, 1fr)"
+        templateColumns="repeat(7, 125px)"
         gridAutoRows="1fr"
         gridRowGap="0.5rem"
+        gridColumnGap="0.25rem"
         mt="1rem"
       >
         <Square>Mo</Square>
