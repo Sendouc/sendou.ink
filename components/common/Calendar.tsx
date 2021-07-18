@@ -1,8 +1,7 @@
-import { Box, Grid, IconButton } from "@chakra-ui/react";
+import { Box, Flex, Grid, IconButton } from "@chakra-ui/react";
 import { useMyTheme } from "hooks/common";
 import { ReactNode } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
-import styles from "./Calendar.module.css";
 
 const daysInMonth = (month: number, year: number): number[] => {
   const monthZeroIndex = month - 1;
@@ -58,43 +57,47 @@ const Calendar = ({
 }) => {
   const { themeColorHex } = useMyTheme();
   const currentDate = new Date(current.year, current.month - 1, 1);
+
   return (
-    <div className={styles.container}>
-      <div className={styles.month}>
-        <ul>
-          <IconButton
-            aria-label="Go back a month"
-            variant="ghost"
-            color="current"
-            icon={<FiChevronLeft />}
-            borderRadius="50%"
-            float="left"
-            size="lg"
-            onClick={handleBackClick}
-            visibility={
-              current.month === min.month && current.year === min.year
-                ? "hidden"
-                : "visible"
-            }
-          />
-          <IconButton
-            aria-label="Go forward a month"
-            variant="ghost"
-            color="current"
-            icon={<FiChevronRight />}
-            borderRadius="50%"
-            float="right"
-            size="lg"
-            onClick={handleNextClick}
-            visibility={showNextButton ? "visible" : "hidden"}
-          />
-          <li>
-            {currentDate.toLocaleDateString("en", { month: "long" })}
-            <br />
-            <b>{current.year}</b>
-          </li>
-        </ul>
-      </div>
+    <Box
+      display="inline-block"
+      textAlign="center"
+      overflowY="scroll"
+      width="75vw"
+    >
+      <Flex justify="space-between">
+        <IconButton
+          aria-label="Go back a month"
+          variant="ghost"
+          color="current"
+          icon={<FiChevronLeft />}
+          borderRadius="50%"
+          float="left"
+          size="lg"
+          onClick={handleBackClick}
+          visibility={
+            current.month === min.month && current.year === min.year
+              ? "hidden"
+              : "visible"
+          }
+        />
+        <Box>
+          {currentDate.toLocaleDateString("en", { month: "long" })}
+          <br />
+          <b>{current.year}</b>
+        </Box>
+        <IconButton
+          aria-label="Go forward a month"
+          variant="ghost"
+          color="current"
+          icon={<FiChevronRight />}
+          borderRadius="50%"
+          float="right"
+          size="lg"
+          onClick={handleNextClick}
+          visibility={showNextButton ? "visible" : "hidden"}
+        />
+      </Flex>
 
       <Grid
         templateColumns="repeat(7, 1fr)"
@@ -129,7 +132,7 @@ const Calendar = ({
           </Square>
         ))}
       </Grid>
-    </div>
+    </Box>
   );
 };
 
