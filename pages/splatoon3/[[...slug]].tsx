@@ -186,6 +186,18 @@ function Main() {
       <UnorderedList listStyleType="none" ml="0">
         <ListItem my={2}>
           <Box as="span" fontSize="sm" fontWeight="bold" mr="2">
+            July 15, 2021
+          </Box>
+          First official art shown on{" "}
+          <MyLink
+            isExternal
+            href="https://twitter.com/SplatoonJP/status/1415495154111242246"
+          >
+            Twitter
+          </MyLink>{" "}
+        </ListItem>
+        <ListItem my={2}>
+          <Box as="span" fontSize="sm" fontWeight="bold" mr="2">
             July 6, 2021
           </Box>
           First bit of gameplay without UI is shown in the{" "}
