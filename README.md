@@ -46,10 +46,6 @@ With the following steps you can access a few pages that don't need a database. 
 3. Run `npm run compile` to compile translation files.
 4. Run `npm run dev` to start the development server at http://localhost:3000/. (To stop the server at any time, type `Ctrl+C`.)
 
-```
-[]
-```
-
 ### Access rest of the pages
 
 In addition to the steps above the steps below enable access to rest of the pages.
