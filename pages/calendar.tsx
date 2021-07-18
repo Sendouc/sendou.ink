@@ -1,7 +1,12 @@
 import { Button } from "@chakra-ui/button";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/input";
 import { Box } from "@chakra-ui/layout";
-import { Popover, PopoverContent, PopoverTrigger } from "@chakra-ui/react";
+import {
+  Badge,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import EventInfo from "components/calendar/EventInfo";
 import { EventModal, FormData } from "components/calendar/EventModal";
@@ -48,20 +53,29 @@ const CalendarPage = () => {
           event.date.getMonth() + 1
         }-${event.date.getFullYear()}`;
         const node = (
-          <Button
-            display="block"
-            mx="auto"
-            size="xs"
-            variant="ghost"
-            textOverflow="ellipsis"
-            maxW="150px"
-            overflow="hidden"
-            onClick={() => {
-              scrollToEvent(event.id);
-            }}
-          >
-            {event.name}
-          </Button>
+          <>
+            <Button
+              display="block"
+              mx="auto"
+              size="xs"
+              variant="ghost"
+              textOverflow="ellipsis"
+              maxW="150px"
+              width="100%"
+              height="2rem"
+              mt="0.25rem"
+              mb="0.5rem"
+              overflow="hidden"
+              onClick={() => {
+                scrollToEvent(event.id);
+              }}
+            >
+              <Badge display="block" size="xs" colorScheme="gray" mb="0.25rem">
+                {event.date.toLocaleTimeString("en", { hour: "numeric" })}
+              </Badge>
+              {event.name}
+            </Button>
+          </>
         );
         if (result[key]) result[key].push(node);
         else result[key] = [node];
