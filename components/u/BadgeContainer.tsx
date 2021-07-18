@@ -65,7 +65,7 @@ const BadgeContainer = ({
                   fontWeight: "bold",
                   color: themeColorHex,
                 }}
-                visibility={badge.count === 1 ? "hidden" : "visible"}
+                display={badge.count === 1 ? "none" : "block"}
               >
                 {`x${badge.count}`}
               </Text>
