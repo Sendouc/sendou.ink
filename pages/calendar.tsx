@@ -48,33 +48,20 @@ const CalendarPage = () => {
           event.date.getMonth() + 1
         }-${event.date.getFullYear()}`;
         const node = (
-          <Popover trigger="hover" placement="top-start">
-            <PopoverTrigger>
-              <Button
-                display="block"
-                mx="auto"
-                size="xs"
-                variant="ghost"
-                whiteSpace="nowrap"
-                textOverflow="ellipsis"
-                maxW="150px"
-                overflow="hidden"
-                onClick={() => {
-                  scrollToEvent(event.id);
-                }}
-              >
-                {event.name}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent
-              zIndex={4}
-              p="0.5em"
-              bg={secondaryBgColor}
-              border="0"
-            >
-              {event.name} - {event.date.toLocaleString("en")}
-            </PopoverContent>
-          </Popover>
+          <Button
+            display="block"
+            mx="auto"
+            size="xs"
+            variant="ghost"
+            textOverflow="ellipsis"
+            maxW="150px"
+            overflow="hidden"
+            onClick={() => {
+              scrollToEvent(event.id);
+            }}
+          >
+            {event.name}
+          </Button>
         );
         if (result[key]) result[key].push(node);
         else result[key] = [node];

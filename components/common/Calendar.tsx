@@ -34,7 +34,7 @@ type MonthYear = { month: number; year: number };
 const Square = ({ children }: { children?: ReactNode }) => {
   const { gray } = useMyTheme();
   return (
-    <Box color={gray} fontSize="small" fontWeight="bold" minW="125px">
+    <Box color={gray} fontSize="small" fontWeight="bold">
       {children}
     </Box>
   );
@@ -66,7 +66,7 @@ const Calendar = ({
       overflowX="auto"
       width={noSideNav ? "100vw" : "calc(100vw - 250px)"}
     >
-      <Flex justify="space-between">
+      <Flex justify="space-evenly">
         <IconButton
           aria-label="Go back a month"
           variant="ghost"
@@ -101,7 +101,7 @@ const Calendar = ({
       </Flex>
 
       <Grid
-        templateColumns="repeat(7, 125px)"
+        templateColumns="repeat(7, max(14%, 125px))"
         gridAutoRows="1fr"
         gridRowGap="0.5rem"
         gridColumnGap="0.25rem"
