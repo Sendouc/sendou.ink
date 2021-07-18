@@ -43,5 +43,3 @@ locale/**/*.js
 /prisma/scripts/data
 /prisma/scripts/output
 dumped.sql
-
-/utils/data/patrons.json
