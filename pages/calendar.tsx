@@ -84,7 +84,7 @@ const CalendarPage = () => {
       },
       {}
     );
-  }, []);
+  }, [events.data]);
 
   return (
     <>
