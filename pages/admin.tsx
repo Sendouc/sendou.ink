@@ -5,7 +5,6 @@ import { useState } from "react";
 import { ADMIN_DISCORD_ID } from "utils/constants";
 import { getToastOptions } from "utils/objects";
 import { sendData } from "utils/postData";
-import { trpc } from "utils/trpc";
 
 const AdminPage = () => {
   const toast = useToast();
@@ -15,16 +14,6 @@ const AdminPage = () => {
     switchAccountId: "",
     discordId: "",
   });
-  const endVoting = trpc.useMutation("plus.endVoting", {
-    onSuccess: () => console.log("success"),
-    onError: (e) => console.error(e.message),
-  });
-
-  const handleEndVoting = () => {
-    if (!window.confirm("End voting?")) return;
-
-    endVoting.mutate(null);
-  };
 
   if (!user || user.discordId !== ADMIN_DISCORD_ID) return null;
 
@@ -59,13 +48,6 @@ const AdminPage = () => {
       </Flex>
       <Button isLoading={sending} onClick={updateUser}>
         Submit
-      </Button>
-      <Heading my={4}>End voting</Heading>
-      <Button
-        isLoading={endVoting.status === "loading"}
-        onClick={handleEndVoting}
-      >
-        End
       </Button>
     </>
   );

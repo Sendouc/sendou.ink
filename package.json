@@ -13,6 +13,7 @@
     "migrate:reset": "prisma migrate reset",
     "gen": "npx prisma generate",
     "prebuild": "ts-node prisma/scripts/preBuild.ts",
+    "results": "ts-node prisma/scripts/endPlusVoting.ts",
     "mongo": "ts-node prisma/scripts/dataFromMongo.ts",
     "top500": "ts-node prisma/scripts/top500jsons.ts",
     "league": "cross-env NODE_OPTIONS=--max-old-space-size=8192 ts-node prisma/scripts/leagueJsons.ts",
