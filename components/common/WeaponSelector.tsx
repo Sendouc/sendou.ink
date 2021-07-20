@@ -6,9 +6,10 @@ import {
   salmonRunWeapons,
   weaponsWithHeroCategorized,
 } from "utils/lists/weaponsWithHero";
+import { weaponsAliases } from "utils/lists/weaponsAliases";
+import weaponJson from "utils/data/weaponData.json";
 import MySelect from "./MySelect";
 import WeaponImage from "./WeaponImage";
-import weaponJson from "utils/data/weaponData.json";
 
 interface SelectorProps {
   autoFocus?: boolean;
@@ -63,17 +64,32 @@ const customFilterOption = (option: any, rawInput: string) => {
   return words.reduce(
     (acc, cur) =>
       acc &&
-      (option.label.toLowerCase().includes(cur.toLowerCase()) ||
-        option.data?.data?.sub.toLowerCase() === rawInput.toLowerCase() ||
-        option.data?.data?.special.toLowerCase() === rawInput.toLowerCase()),
+      (option.label.toLowerCase().includes(cur.toLowerCase()) || filterWeaponsByString(rawInput, option.data?.data)),
     true
   );
 };
+
+function filterWeaponsByString(rawInput: string, weaponData: WeaponData): boolean {
+  if (!weaponData)
+    return false;
+  if (weaponData?.sub.toLowerCase() === rawInput.toLowerCase())
+    return true;
+  if (weaponData?.special.toLowerCase() === rawInput.toLowerCase())
+    return true;
+  if (weaponData?.aliases) {
+    for (const alias of weaponData.aliases) {
+      if (alias?.toLowerCase().includes(rawInput))
+        return true;
+    }
+  }
+  return false;
+}
 
 type WeaponData = {
   name: string;
   sub: string;
   special: string;
+  aliases: typeof weaponsAliases[keyof typeof weaponsAliases];
 };
 
 function initWeaponData() {
@@ -82,7 +98,10 @@ function initWeaponData() {
 
   for (const [key, value] of Object.entries(weaponData)) {
     if (value.Special && value.Sub) {
-      weaponsArray.push({ name: key, special: value.Special, sub: value.Sub });
+      const typedKey = key as keyof typeof weaponsAliases;
+      const aliases = weaponsAliases[typedKey];
+
+      weaponsArray.push({ name: key, special: value.Special, sub: value.Sub, aliases });
     }
   }
   return weaponsArray;
