@@ -64,13 +64,26 @@ const customFilterOption = (option: any, rawInput: string) => {
   return words.reduce(
     (acc, cur) =>
       acc &&
-      (option.label.toLowerCase().includes(cur.toLowerCase()) ||
-        option.data?.data?.sub.toLowerCase() === rawInput.toLowerCase() ||
-        option.data?.data?.special.toLowerCase() === rawInput.toLowerCase() ||
-        option.data?.data?.aliases.includes(rawInput.toLowerCase())),
+      (option.label.toLowerCase().includes(cur.toLowerCase()) || filterWeaponsByString(rawInput, option.data?.data)),
     true
   );
 };
+
+function filterWeaponsByString(rawInput: string, weaponData: WeaponData): boolean {
+  if (!weaponData)
+    return false;
+  if (weaponData?.sub.toLowerCase() === rawInput.toLowerCase())
+    return true;
+  if (weaponData?.special.toLowerCase() === rawInput.toLowerCase())
+    return true;
+  if (weaponData?.aliases) {
+    for (const alias of weaponData.aliases) {
+      if (alias?.toLowerCase().includes(rawInput))
+        return true;
+    }
+  }
+  return false;
+}
 
 type WeaponData = {
   name: string;
