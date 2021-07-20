@@ -6,6 +6,7 @@ import {
   salmonRunWeapons,
   weaponsWithHeroCategorized,
 } from "utils/lists/weaponsWithHero";
+import { weaponsAliases } from "utils/lists/weaponsAliases";
 import MySelect from "./MySelect";
 import WeaponImage from "./WeaponImage";
 import weaponJson from "utils/data/weaponData.json";
@@ -65,7 +66,8 @@ const customFilterOption = (option: any, rawInput: string) => {
       acc &&
       (option.label.toLowerCase().includes(cur.toLowerCase()) ||
         option.data?.data?.sub.toLowerCase() === rawInput.toLowerCase() ||
-        option.data?.data?.special.toLowerCase() === rawInput.toLowerCase()),
+        option.data?.data?.special.toLowerCase() === rawInput.toLowerCase() ||
+        option.data?.data?.aliases.includes(rawInput.toLowerCase())),
     true
   );
 };
@@ -74,6 +76,7 @@ type WeaponData = {
   name: string;
   sub: string;
   special: string;
+  aliases: typeof weaponsAliases[keyof typeof weaponsAliases];
 };
 
 function initWeaponData() {
@@ -82,7 +85,13 @@ function initWeaponData() {
 
   for (const [key, value] of Object.entries(weaponData)) {
     if (value.Special && value.Sub) {
-      weaponsArray.push({ name: key, special: value.Special, sub: value.Sub });
+      const typedKey = key as keyof typeof weaponsAliases;
+      const aliases = weaponsAliases[typedKey];
+      if (!aliases) {
+        console.log('empty aliases for ' + typedKey);
+      }
+
+      weaponsArray.push({ name: key, special: value.Special, sub: value.Sub, aliases });
     }
   }
   return weaponsArray;
