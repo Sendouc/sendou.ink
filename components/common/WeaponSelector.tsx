@@ -7,9 +7,9 @@ import {
   weaponsWithHeroCategorized,
 } from "utils/lists/weaponsWithHero";
 import { weaponsAliases } from "utils/lists/weaponsAliases";
+import weaponJson from "utils/data/weaponData.json";
 import MySelect from "./MySelect";
 import WeaponImage from "./WeaponImage";
-import weaponJson from "utils/data/weaponData.json";
 
 interface SelectorProps {
   autoFocus?: boolean;
