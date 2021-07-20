@@ -100,9 +100,6 @@ function initWeaponData() {
     if (value.Special && value.Sub) {
       const typedKey = key as keyof typeof weaponsAliases;
       const aliases = weaponsAliases[typedKey];
-      if (!aliases) {
-        console.log('empty aliases for ' + typedKey);
-      }
 
       weaponsArray.push({ name: key, special: value.Special, sub: value.Sub, aliases });
     }
