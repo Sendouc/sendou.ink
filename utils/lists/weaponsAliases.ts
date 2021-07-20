@@ -132,7 +132,7 @@ export const weaponsAliases = {
   "Tenta Brella": ["tent", "vent", "vtent", "tentbrella", "vtentbrella"],
   "Tenta Camo Brella": ["tentcamo", "camo", "camotent", "camobrella", "tentcamobrella", "tcb"],
   "Tenta Sorella Brella": ["tentsorella", "tsorella", "sorellatent", "tsorellabrella", "tentsorellabrella", "tsb"],
-  "Tentatek Splattershot": ["ttek", "ttekshot", "tshot", "ttshot", "ttsplatshot", "ttsplattershot", "ttss"],
+  "Tentatek Splattershot": ["ttek", "ttekshot", "tshot", "ttshot", "ttsplatshot", "ttsplattershot", "ttss", "ttk"],
   "Tri-Slosher": ["tri", "trislosh", "vtri", "vtrislosh", "vtrislosher"],
   "Tri-Slosher Nouveau": ["trin", "trisloshn", "trinouveau", "trisloshnouveau", "tsn"],
   "Undercover Brella": ["undercover", "ubrella", "vundercover", "vundercoverbrella"],
