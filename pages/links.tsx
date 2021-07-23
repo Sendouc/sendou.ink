@@ -1,7 +1,7 @@
 import { Box, Heading, Link, Stack } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import MyHead from "components/common/MyHead";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 import links from "utils/data/links.json";
 
 interface Link {
@@ -11,11 +11,9 @@ interface Link {
 }
 
 const LinksPage = () => {
-  const { themeColorShade } = useMyTheme();
-
   const linkMap = (link: Link) => (
     <Box key={link.title}>
-      <Link href={link.url} color={themeColorShade}>
+      <Link href={link.url} color={CSSVariables.themeColor}>
         <b>{link.title}</b>
       </Link>{" "}
       - <Box as="span">{link.description}</Box>

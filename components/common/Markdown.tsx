@@ -18,7 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "components/common/Table";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 import ReactMarkdown from "react-markdown";
 import reactStringReplace from "react-string-replace";
 import gfm from "remark-gfm";
@@ -35,8 +35,6 @@ const Markdown: React.FC<MarkdownProps> = ({
   allowAll = false,
   smallHeaders = false,
 }) => {
-  const { themeColorHex: themeColor } = useMyTheme();
-
   //https://github.com/mustaphaturhan/chakra-ui-markdown-renderer/blob/master/src/index.js
   const ChakraUIRenderer = () => {
     function getCoreProps(props: any) {
@@ -92,7 +90,7 @@ const Markdown: React.FC<MarkdownProps> = ({
       linkReference: function MarkdownLinkReference(props: any) {
         const { children } = props;
         return (
-          <Link color={themeColor} {...props}>
+          <Link color={CSSVariables.themeColor} {...props}>
             {children}
           </Link>
         );

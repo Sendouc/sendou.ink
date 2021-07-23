@@ -7,18 +7,18 @@ import {
   useMediaQuery,
 } from "@chakra-ui/react";
 import MyLink from "components/common/MyLink";
-import { useActiveNavItem, useMyTheme, useUser } from "hooks/common";
+import { useActiveNavItem, useUser } from "hooks/common";
 import { signIn, signOut } from "next-auth/client";
 import Image from "next/image";
 import Link from "next/link";
 import { FiHeart, FiLogIn, FiLogOut, FiMenu } from "react-icons/fi";
+import { CSSVariables } from "utils/CSSVariables";
 import ColorModeSwitcher from "./ColorModeSwitcher";
 import LanguageSwitcher from "./LanguageSwitcher";
 
 const Header = ({ openNav }: { openNav: () => void }) => {
   const [isSmall] = useMediaQuery("(max-width: 400px)");
   const [user] = useUser();
-  const { secondaryBgColor } = useMyTheme();
   const { colorMode } = useColorMode();
   const activeNavItem = useActiveNavItem();
 
@@ -32,7 +32,7 @@ const Header = ({ openNav }: { openNav: () => void }) => {
       justifyContent="space-between"
       alignItems="center"
       mb={1}
-      bg={secondaryBgColor}
+      bg={CSSVariables.secondaryBgColor}
     >
       <Flex align="center" width={["6rem", null, null, "13rem"]} px={2}>
         <ColorModeSwitcher /> <LanguageSwitcher />

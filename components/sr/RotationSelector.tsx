@@ -4,7 +4,7 @@ import { useLingui } from "@lingui/react";
 import SubText from "components/common/SubText";
 import WeaponImage from "components/common/WeaponImage";
 import WeaponSelector from "components/common/WeaponSelector";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 import { GetAllSalmonRunRotationsData } from "prisma/queries/getAllSalmonRunRotations";
 import { useState } from "react";
 import useSWR from "swr";
@@ -21,7 +21,6 @@ interface Props {
 }
 
 const RotationSelector: React.FC<Props> = ({ rotationId, setRotationId }) => {
-  const { gray } = useMyTheme();
   const { i18n } = useLingui();
   const { data } = useSWR<GetAllSalmonRunRotationsData>("/api/sr/rotations");
 
@@ -41,7 +40,7 @@ const RotationSelector: React.FC<Props> = ({ rotationId, setRotationId }) => {
           #{rotation.id}
         </Box>
         <Box my={1}>{i18n._(rotation.stage)}</Box>
-        <Box my={2} color={gray}>
+        <Box my={2} color={CSSVariables.themeGray}>
           {new Date(rotation.startTime).toLocaleDateString()}
         </Box>
         {rotation.weapons.map((wpn, i) => (

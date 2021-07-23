@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "components/common/Table";
 import WeaponImage from "components/common/WeaponImage";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 import { GetPlayerWithPlacementsData } from "prisma/queries/getPlayerWithPlacements";
 import { getRankingString } from "utils/strings";
 
@@ -19,8 +19,6 @@ interface Props {
 }
 
 const XRankTable: React.FC<Props> = ({ player }) => {
-  const { gray } = useMyTheme();
-
   return (
     <Table maxW="50rem">
       <TableHead>
@@ -50,7 +48,7 @@ const XRankTable: React.FC<Props> = ({ player }) => {
         {player.placements.map((record) => {
           return (
             <TableRow key={record.id}>
-              <TableCell color={gray}>
+              <TableCell color={CSSVariables.themeGray}>
                 {getRankingString(record.ranking)}
               </TableCell>
               <TableCell>{record.playerName}</TableCell>

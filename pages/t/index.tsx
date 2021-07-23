@@ -19,12 +19,13 @@ import SubTextCollapse from "components/common/SubTextCollapse";
 import TwitterAvatar from "components/common/TwitterAvatar";
 import CreateNewTeamModal from "components/t/CreateNewTeamModal";
 import { countries } from "countries-list";
-import { useMyTheme, useUser } from "hooks/common";
+import { useUser } from "hooks/common";
 import { GetStaticProps } from "next";
 import Image from "next/image";
 import { getAllTeams, GetAllTeamsData } from "prisma/queries/getAllTeams";
 import { useState } from "react";
 import { FiSearch } from "react-icons/fi";
+import { CSSVariables } from "utils/CSSVariables";
 import MyHead from "../../components/common/MyHead";
 
 interface Props {
@@ -32,7 +33,6 @@ interface Props {
 }
 
 const TeamsPage = ({ teams }: Props) => {
-  const { gray } = useMyTheme();
   const [user] = useUser();
   const [showOnlyRecruiting, setShowOnlyRecruiting] = useState(false);
   const [countryFilter, setCountryFilter] = useState<string>("ALL");
@@ -96,7 +96,7 @@ const TeamsPage = ({ teams }: Props) => {
           </ChakraSelect>
           <InputGroup maxW={64} mt={6} mb={6}>
             <InputLeftElement pointerEvents="none">
-              <Box as={FiSearch} color={gray} />
+              <Box as={FiSearch} color={CSSVariables.themeGray} />
             </InputLeftElement>
             <Input
               placeholder="Team Olive"
@@ -142,7 +142,7 @@ const TeamsPage = ({ teams }: Props) => {
                 ))}
               </Flex>
             </Flex>
-            <Box color={gray} fontSize="sm" mt={2}>
+            <Box color={CSSVariables.themeGray} fontSize="sm" mt={2}>
               {team.roster
                 .map((user) => `${user.username}#${user.discriminator}`)
                 .join(", ")}

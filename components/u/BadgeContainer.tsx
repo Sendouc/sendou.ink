@@ -1,6 +1,6 @@
 import { Image as ChakraImage } from "@chakra-ui/image";
 import { Flex, Text } from "@chakra-ui/react";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 import { Fragment } from "react";
 
 const BadgeContainer = ({
@@ -16,7 +16,6 @@ const BadgeContainer = ({
     count: number;
   }[];
 }) => {
-  const { themeColorHex } = useMyTheme();
   return (
     <Flex
       flexDir={showInfo ? "column" : "row"}
@@ -63,7 +62,7 @@ const BadgeContainer = ({
                   paddingRight: isLast ? 0 : 5,
                   fontSize: "0.7rem",
                   fontWeight: "bold",
-                  color: themeColorHex,
+                  color: CSSVariables.themeColor,
                 }}
                 display={badge.count === 1 ? "none" : "block"}
               >

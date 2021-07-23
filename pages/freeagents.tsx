@@ -12,11 +12,12 @@ import FAFilters from "components/freeagents/FAFilters";
 import FAModal from "components/freeagents/FAModal";
 import FreeAgentSection from "components/freeagents/FreeAgentSection";
 import MatchesInfo from "components/freeagents/MatchesInfo";
-import { useMyTheme, useUser } from "hooks/common";
+import { useUser } from "hooks/common";
 import { useFreeAgents } from "hooks/freeagents";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { mutate } from "swr";
+import { CSSVariables } from "utils/CSSVariables";
 import { sendData } from "utils/postData";
 import { ssr } from "./api/trpc/[trpc]";
 
@@ -38,7 +39,6 @@ const FreeAgentsPage = () => {
   const [postIdToScrollTo, setPostIdToScrollTo] = useState<undefined | number>(
     undefined
   );
-  const { gray } = useMyTheme();
   const [sending, setSending] = useState(false);
   const postRef = useRef<HTMLDivElement>(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -132,7 +132,12 @@ const FreeAgentsPage = () => {
       ) : null}
       {!isLoading && <FAFilters state={state} dispatch={dispatch} />}
       {allPostsCount > 0 && (
-        <Flex align="center" fontSize="small" color={gray} mt={4}>
+        <Flex
+          align="center"
+          fontSize="small"
+          color={CSSVariables.themeGray}
+          mt={4}
+        >
           Showing {postsData.length} posts out of {allPostsCount}{" "}
           <Button
             onClick={() => dispatch({ type: "RESET_FILTERS" })}

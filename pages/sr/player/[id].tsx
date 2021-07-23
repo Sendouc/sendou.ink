@@ -5,7 +5,7 @@ import MyLink from "components/common/MyLink";
 import SubText from "components/common/SubText";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Image from "next/image";
 import { salmonRunCategoryToNatural } from "pages/sr/leaderboards/new";
@@ -20,7 +20,6 @@ interface Props {
 }
 
 const SalmonRunPlayerPage = (props: Props) => {
-  const { gray, secondaryBgColor } = useMyTheme();
   const user = props.user!;
 
   return (
@@ -71,11 +70,19 @@ const SalmonRunPlayerPage = (props: Props) => {
                     )
                     .map((record) => (
                       <WrapItem key={record.id}>
-                        <Box bg={secondaryBgColor} rounded="lg" p={3}>
+                        <Box
+                          bg={CSSVariables.secondaryBgColor}
+                          rounded="lg"
+                          p={3}
+                        >
                           <SubText mb={2} mt={2}>
                             {record.rotation.stage}
                           </SubText>
-                          <Box color={gray} fontSize="sm" my={2}>
+                          <Box
+                            color={CSSVariables.themeGray}
+                            fontSize="sm"
+                            my={2}
+                          >
                             {new Date(
                               record.rotation.startTime
                             ).toLocaleDateString()}{" "}

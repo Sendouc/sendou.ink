@@ -1,7 +1,7 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { Trans } from "@lingui/macro";
 import MyLink from "components/common/MyLink";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 import { ReactNode } from "react";
 import { FaGithub, FaPatreon, FaTwitter } from "react-icons/fa";
 import { FiHelpCircle, FiInfo } from "react-icons/fi";
@@ -10,9 +10,8 @@ import patrons from "utils/data/patrons.json";
 import { getFullUsername } from "utils/strings";
 
 const FooterContent: React.FC = () => {
-  const { themeColorHex: themeColor } = useMyTheme();
   return (
-    <Box bg={themeColor} color="black">
+    <Box bg={CSSVariables.themeColor} color="black">
       <Flex
         flexDir={["column", null, "row"]}
         alignItems="center"
@@ -70,7 +69,14 @@ const FooterContent: React.FC = () => {
           <Trans>Thanks to the patrons for their support ❤</Trans>
         </Box>
         <Flex flexWrap="wrap" justify="center" align="center" mt={2}>
-          {patrons.map((patron) => (
+          {(
+            patrons as {
+              username: string;
+              discriminator: string;
+              patreonTier: number;
+              discordId: string;
+            }[]
+          ).map((patron) => (
             <MyLink
               key={patron.discordId}
               href={`/u/${patron.discordId}`}

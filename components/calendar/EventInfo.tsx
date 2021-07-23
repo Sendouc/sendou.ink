@@ -5,13 +5,14 @@ import OutlinedBox from "components/common/OutlinedBox";
 import UserAvatar from "components/common/UserAvatar";
 import BadgeContainer from "components/u/BadgeContainer";
 import { regularTournamentBadges } from "components/u/Badges";
-import { useMyTheme, useUser } from "hooks/common";
+import { useUser } from "hooks/common";
 import Image from "next/image";
 import React from "react";
 import { FiClock, FiEdit, FiExternalLink } from "react-icons/fi";
 import { Events } from "services/calendar";
 import { DiscordIcon } from "utils/assets/icons";
 import { ADMIN_ID, EVENT_FORMATS, TAGS } from "utils/constants";
+import { CSSVariables } from "utils/CSSVariables";
 import { Unpacked } from "utils/types";
 
 const nameToImage = [
@@ -52,7 +53,6 @@ interface EventInfoProps {
 }
 
 const EventInfo = ({ event, edit }: EventInfoProps) => {
-  const { gray, themeColorShade } = useMyTheme();
   const poster = event.poster;
 
   const [user] = useUser();
@@ -128,7 +128,7 @@ const EventInfo = ({ event, edit }: EventInfoProps) => {
                 <Box
                   as={FiClock}
                   mr="0.5em"
-                  color={themeColorShade}
+                  color={CSSVariables.themeColor}
                   justifySelf="flex-end"
                 />
                 {/* TODO */}
@@ -143,7 +143,7 @@ const EventInfo = ({ event, edit }: EventInfoProps) => {
                 <Box
                   as={FiExternalLink}
                   mr="0.5em"
-                  color={themeColorShade}
+                  color={CSSVariables.themeColor}
                   justifySelf="flex-end"
                 />
                 <MyLink href={event.eventUrl} isExternal>
@@ -204,7 +204,7 @@ const EventInfo = ({ event, edit }: EventInfoProps) => {
           </Grid>
         </Box>
         <Box mt={8} mx="0.5rem" wordBreak="break-word">
-          <Box color={gray} fontSize="small" mb={2}>
+          <Box color={CSSVariables.themeGray} fontSize="small" mb={2}>
             {EVENT_FORMATS.find((format) => format.code === event.format)!.name}
           </Box>
           <Markdown smallHeaders value={event.description} />

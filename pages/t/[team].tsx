@@ -24,7 +24,7 @@ import WeaponImage from "components/common/WeaponImage";
 import RosterPlayerBar from "components/t/RosterPlayerBar";
 import TeamManagementModal from "components/t/TeamManagementModal";
 import TeamProfileModal from "components/t/TeamProfileModal";
-import { useMyTheme, useUser } from "hooks/common";
+import { useUser } from "hooks/common";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Image from "next/image";
 import { getTeam, GetTeamData } from "prisma/queries/getTeam";
@@ -32,6 +32,7 @@ import { Fragment, useEffect, useState } from "react";
 import { FaTwitter } from "react-icons/fa";
 import { FiEdit } from "react-icons/fi";
 import useSWR, { mutate } from "swr";
+import { CSSVariables } from "utils/CSSVariables";
 import { getToastOptions } from "utils/objects";
 import { sendData } from "utils/postData";
 import MyHead from "../../components/common/MyHead";
@@ -98,7 +99,6 @@ const getTeamXPInfo = (roster: NonNullable<GetTeamData>["roster"]) => {
 };
 
 const TeamPage: React.FC<Props> = (props) => {
-  const { secondaryBgColor } = useMyTheme();
   const { data } = useSWR<GetTeamData>(`/api/teams/${props.team!.id}`, {
     initialData: props.team!,
   });
@@ -174,8 +174,8 @@ const TeamPage: React.FC<Props> = (props) => {
               <SubText ml={1}>{teamXPData.teamXP}</SubText>
             </Center>
           </PopoverTrigger>
-          <PopoverContent bg={secondaryBgColor} p={6}>
-            <PopoverArrow bg={secondaryBgColor} />
+          <PopoverContent bg={CSSVariables.secondaryBgColor} p={6}>
+            <PopoverArrow bg={CSSVariables.secondaryBgColor} />
             {teamXPData.placements.map((placement, i) => (
               <Fragment key={placement.discordId}>
                 <Flex align="center" justify="center">

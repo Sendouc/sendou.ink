@@ -11,10 +11,10 @@ import {
 import { Ability } from "@prisma/client";
 import { ViewSlotsAbilities } from "components/builds/ViewSlots";
 import AbilityIcon from "components/common/AbilityIcon";
-import { useMyTheme } from "hooks/common";
 import { Explanation } from "hooks/useAbilityEffects";
 import { useState } from "react";
 import { FaChartLine, FaQuestion } from "react-icons/fa";
+import { CSSVariables } from "utils/CSSVariables";
 import { isMainAbility } from "utils/lists/abilities";
 import StatChart from "./StatChart";
 
@@ -83,7 +83,6 @@ const BuildStats: React.FC<BuildStatsProps> = ({
     toggleChart,
     progressBarValue = 0,
   }) => {
-    const { themeColorShade, secondaryBgColor } = useMyTheme();
     const { colorMode } = useColorMode();
 
     return (
@@ -107,7 +106,7 @@ const BuildStats: React.FC<BuildStatsProps> = ({
                 <PopoverTrigger>
                   <Box>
                     <Box
-                      color={themeColorShade}
+                      color={CSSVariables.themeColor}
                       ml="0.2em"
                       as={FaQuestion}
                       mb="0.2em"
@@ -117,7 +116,7 @@ const BuildStats: React.FC<BuildStatsProps> = ({
                 <PopoverContent
                   zIndex={4}
                   p="0.5em"
-                  bg={secondaryBgColor}
+                  bg={CSSVariables.secondaryBgColor}
                   border="0"
                 >
                   {info}

@@ -11,7 +11,7 @@ import NProgress from "nprogress";
 import { useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Hydrate } from "react-query/hydration";
-import { theme } from "theme";
+import { CSSVariables } from "utils/CSSVariables";
 import { activateLocale } from "utils/i18n";
 import { locales } from "utils/lists/locales";
 import { trpc } from "utils/trpc";
@@ -32,14 +32,6 @@ Router.events.on("routeChangeComplete", () => NProgress.done());
 Router.events.on("routeChangeError", () => NProgress.done());
 
 const extendedTheme = extendTheme({
-  styles: {
-    global: (props) => ({
-      body: {
-        color: mode(theme.light.textColor, theme.dark.textColor)(props),
-        bg: mode(theme.light.bgColor, theme.dark.bgColor)(props),
-      },
-    }),
-  },
   // TODO:
   // 1) round iconButton (closeButton of modal too)
   // 2) table-like lime green input addons
@@ -50,6 +42,14 @@ const extendedTheme = extendTheme({
   // 7) disable dark mode <-> light mode transformation time
   // 8) divider color (light)
   // 9) link color
+  styles: {
+    global: {
+      body: {
+        color: CSSVariables.textColor,
+        bg: CSSVariables.bgColor,
+      },
+    },
+  },
   components: {
     Button: {
       defaultProps: {
@@ -87,24 +87,18 @@ const extendedTheme = extendTheme({
       },
     },
     Modal: {
-      baseStyle: (props) => ({
+      baseStyle: {
         dialog: {
-          bg: mode(
-            theme.light.secondaryBgColor,
-            theme.dark.secondaryBgColor
-          )(props),
+          bg: CSSVariables.secondaryBgColor,
         },
-      }),
+      },
     },
     Menu: {
-      baseStyle: (props) => ({
+      baseStyle: {
         list: {
-          bg: mode(
-            theme.light.secondaryBgColor,
-            theme.dark.secondaryBgColor
-          )(props),
+          bg: CSSVariables.secondaryBgColor,
         },
-      }),
+      },
     },
     Popover: {
       variants: {

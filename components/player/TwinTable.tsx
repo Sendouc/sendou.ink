@@ -13,7 +13,7 @@ import {
 } from "components/common/Table";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 import { GetPlayerWithPlacementsData } from "prisma/queries/getPlayerWithPlacements";
 import { getRankingString } from "utils/strings";
 
@@ -23,7 +23,6 @@ interface Props {
 
 const TwinTable: React.FC<Props> = ({ player }) => {
   const { i18n } = useLingui();
-  const { gray } = useMyTheme();
   return (
     <Table maxW="50rem">
       <TableHead>
@@ -50,7 +49,9 @@ const TwinTable: React.FC<Props> = ({ player }) => {
         {player.leaguePlacements.TWIN.map(({ squad }, index) => {
           return (
             <TableRow key={squad.id}>
-              <TableCell color={gray}>{getRankingString(index + 1)}</TableCell>
+              <TableCell color={CSSVariables.themeGray}>
+                {getRankingString(index + 1)}
+              </TableCell>
               <TableCell>
                 {new Date(squad.startTime).toLocaleString(i18n.locale, {
                   month: "numeric",

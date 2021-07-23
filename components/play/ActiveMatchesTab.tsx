@@ -3,14 +3,13 @@ import ModeImage from "components/common/ModeImage";
 import MyError from "components/common/MyError";
 import MySpinner from "components/common/MySpinner";
 import SubText from "components/common/SubText";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 import { Fragment } from "react";
 import { hoursToMilliseconds } from "utils/numbers";
 import { trpc } from "utils/trpc";
 import MatchUp from "./MatchUp";
 
 const ActiveMatchesTab = () => {
-  const { gray } = useMyTheme();
   const previousLadderDayQuery = trpc.useQuery(["play.previousLadderDay"]);
 
   if (previousLadderDayQuery.isLoading) return <MySpinner />;
@@ -43,7 +42,7 @@ const ActiveMatchesTab = () => {
                   <Flex
                     key={stage + mode}
                     align="center"
-                    color={gray}
+                    color={CSSVariables.themeGray}
                     fontSize="sm"
                     my={2}
                   >

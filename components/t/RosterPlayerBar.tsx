@@ -3,7 +3,7 @@ import Flag from "components/common/Flag";
 import MyLink from "components/common/MyLink";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 import { GetTeamData } from "prisma/queries/getTeam";
 import { Unpacked } from "utils/types";
 
@@ -12,14 +12,13 @@ interface Props {
 }
 
 const RosterPlayerBar: React.FC<Props> = ({ user }) => {
-  const { secondaryBgColor, themeColorHex } = useMyTheme();
   return (
     <>
       <MyLink href={`/u/${user.discordId}`}>
         <UserAvatar user={user} size="lg" w={[8, null, 12]} h={[8, null, 12]} />
       </MyLink>
       <Flex
-        bg={secondaryBgColor}
+        bg={CSSVariables.secondaryBgColor}
         h={[8, null, 12]}
         align="center"
         justify="center"
@@ -35,7 +34,7 @@ const RosterPlayerBar: React.FC<Props> = ({ user }) => {
       <MyLink href={`/u/${user.discordId}`}>
         <Flex
           h={[8, null, 12]}
-          bg={themeColorHex}
+          bg={CSSVariables.themeColor}
           align="center"
           justify="center"
           textColor="black"
@@ -53,7 +52,7 @@ const RosterPlayerBar: React.FC<Props> = ({ user }) => {
       </MyLink>
       <Box display={["block", "none"]} />
       <Flex
-        bg={secondaryBgColor}
+        bg={CSSVariables.secondaryBgColor}
         h={8}
         align="center"
         justify="center"

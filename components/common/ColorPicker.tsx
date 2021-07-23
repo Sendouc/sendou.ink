@@ -6,7 +6,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@chakra-ui/popover";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 import { CirclePicker } from "react-color";
 
 interface Props {
@@ -15,7 +15,6 @@ interface Props {
 }
 
 const ColorPicker: React.FC<Props> = ({ color, setColor }) => {
-  const { secondaryBgColor } = useMyTheme();
   return (
     <>
       <Popover>
@@ -23,8 +22,8 @@ const ColorPicker: React.FC<Props> = ({ color, setColor }) => {
           <Box w="25px" h="25px" borderRadius="50%" bg={color} />
         </PopoverTrigger>
         <PopoverContent width="16.5rem">
-          <PopoverArrow bg={secondaryBgColor} />
-          <PopoverBody bg={secondaryBgColor} rounded="lg">
+          <PopoverArrow bg={CSSVariables.secondaryBgColor} />
+          <PopoverBody bg={CSSVariables.secondaryBgColor} rounded="lg">
             <CirclePicker
               width="16.5rem"
               color={color}

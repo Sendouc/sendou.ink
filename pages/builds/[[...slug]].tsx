@@ -9,16 +9,16 @@ import MyLink from "components/common/MyLink";
 import WeaponImage from "components/common/WeaponImage";
 import WeaponSelector from "components/common/WeaponSelector";
 import { useBuildsByWeapon } from "hooks/builds";
-import { useMyTheme, useUser } from "hooks/common";
+import { useUser } from "hooks/common";
 import { useState } from "react";
 import { RiBarChart2Fill, RiTShirtLine } from "react-icons/ri";
+import { CSSVariables } from "utils/CSSVariables";
 import MyHead from "../../components/common/MyHead";
 
 const BuildsPage = () => {
   const { data, stats, isLoading, state, dispatch, hiddenBuildCount } =
     useBuildsByWeapon();
   const [user] = useUser();
-  const { secondaryBgColor, themeColorShade } = useMyTheme();
   const [showStats, setShowStats] = useState(false);
 
   return (
@@ -69,7 +69,7 @@ const BuildsPage = () => {
             p={2}
             mb={6}
             w="100%"
-            bg={secondaryBgColor}
+            bg={CSSVariables.secondaryBgColor}
             rounded="lg"
             fontSize="sm"
             boxShadow="md"
@@ -89,7 +89,7 @@ const BuildsPage = () => {
                     ? "hidden"
                     : undefined
                 }
-                color={themeColorShade}
+                color={CSSVariables.themeColor}
               >
                 {data.length} <Trans>builds</Trans>{" "}
                 {hiddenBuildCount > 0 && (

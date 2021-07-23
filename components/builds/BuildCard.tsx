@@ -15,7 +15,7 @@ import ModeImage from "components/common/ModeImage";
 import MyIconButton from "components/common/MyIconButton";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -44,8 +44,6 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
 }) => {
   const [apView, setApView] = useState(false);
 
-  const { themeColorShade, secondaryBgColor, gray } = useMyTheme();
-
   const username = build.user?.username;
 
   return (
@@ -55,7 +53,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
         rounded="lg"
         overflow="hidden"
         boxShadow="md"
-        bg={secondaryBgColor}
+        bg={CSSVariables.secondaryBgColor}
         p="20px"
         {...props}
       >
@@ -69,7 +67,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
             <Box
               my={2}
               textOverflow="ellipsis"
-              color={gray}
+              color={CSSVariables.themeGray}
               fontWeight="semibold"
               letterSpacing="wide"
               fontSize="sm"
@@ -94,7 +92,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
           )}
           <Flex alignItems="center">
             <Box
-              color={gray}
+              color={CSSVariables.themeGray}
               fontWeight="semibold"
               letterSpacing="wide"
               fontSize="xs"
@@ -192,7 +190,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
               <Box
                 mx="auto"
                 fontSize="0.8em"
-                color={themeColorShade}
+                color={CSSVariables.themeColor}
                 textAlign="center"
                 onClick={onShowAllByUser}
                 cursor="pointer"
@@ -228,7 +226,7 @@ const BuildCard: React.FC<BuildCardProps & BoxProps> = ({
         <PopoverContent
           zIndex={4}
           width="220px"
-          backgroundColor={secondaryBgColor}
+          backgroundColor={CSSVariables.secondaryBgColor}
         >
           <PopoverBody whiteSpace="pre-wrap">
             <Box>

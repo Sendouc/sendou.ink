@@ -1,16 +1,15 @@
 import { Box, BoxProps } from "@chakra-ui/react";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 
 interface Props {
   children: React.ReactNode;
 }
 
 const SubText: React.FC<Props & BoxProps> = ({ children, ...props }) => {
-  const { themeColorShade } = useMyTheme();
   return (
     <Box
       fontSize="xs"
-      textColor={themeColorShade}
+      textColor={CSSVariables.themeColor}
       textTransform="uppercase"
       letterSpacing="wider"
       lineHeight="1rem"

@@ -3,7 +3,7 @@ import { Box, Flex } from "@chakra-ui/react";
 import ModeSelector from "components/common/ModeSelector";
 import MyHead from "components/common/MyHead";
 import TrendTier from "components/xtrends/TrendTier";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 import { GetStaticProps } from "next";
 import { useState } from "react";
 import xRankService, { XTrends } from "services/xtrends";
@@ -14,7 +14,6 @@ export interface XTrendsPageProps {
 }
 
 const XTrendsPage = ({ trends }: XTrendsPageProps) => {
-  const { gray } = useMyTheme();
   const [mode, setMode] = useState<RankedMode>("SZ");
 
   return (
@@ -43,7 +42,7 @@ const XTrendsPage = ({ trends }: XTrendsPageProps) => {
           })}
         />
       ))}
-      <Box color={gray} fontSize="sm">
+      <Box color={CSSVariables.themeGray} fontSize="sm">
         Weapons are ordered based on their appearance in the Top 500 of X Rank
         in the last three months. Average X Power per weapon is also shown.
         Progress icon describes the change with the latest month.

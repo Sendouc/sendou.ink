@@ -2,10 +2,9 @@ import { Heading, Link, List, ListItem } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import MyHead from "components/common/MyHead";
 import MyLink from "components/common/MyLink";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 
 const About = () => {
-  const { themeColorShade } = useMyTheme();
   return (
     <>
       <MyHead title={t`About`} />
@@ -24,7 +23,7 @@ const About = () => {
           <li>
             <Link
               isExternal
-              color={themeColorShade}
+              color={CSSVariables.themeColor}
               href="https://twitter.com/LeanYoshi"
             >
               Lean
@@ -34,7 +33,7 @@ const About = () => {
           <li>
             <Link
               isExternal
-              color={themeColorShade}
+              color={CSSVariables.themeColor}
               href="https://twitter.com/zorg_z0rg_z0r8"
             >
               zorg
@@ -47,7 +46,7 @@ const About = () => {
           <li>
             <Link
               isExternal
-              color={themeColorShade}
+              color={CSSVariables.themeColor}
               href="https://twitter.com/ganbawoomy"
             >
               ganbawoomy
@@ -57,7 +56,7 @@ const About = () => {
           <li>
             <Link
               isExternal
-              color={themeColorShade}
+              color={CSSVariables.themeColor}
               href="https://twitter.com/noaim_brn"
             >
               NoAim™bUrn
@@ -67,7 +66,7 @@ const About = () => {
           <li>
             <Link
               isExternal
-              color={themeColorShade}
+              color={CSSVariables.themeColor}
               href="https://twitter.com/borzoic_"
             >
               borzoic
@@ -78,7 +77,7 @@ const About = () => {
           <li>
             <Link
               isExternal
-              color={themeColorShade}
+              color={CSSVariables.themeColor}
               href="https://twitter.com/DblCookies"
             >
               DblCookies
@@ -96,7 +95,7 @@ const About = () => {
           <li>
             <Link
               isExternal
-              color={themeColorShade}
+              color={CSSVariables.themeColor}
               href="https://twitter.com/rofreg"
             >
               Ryan Laughlin
@@ -114,7 +113,7 @@ const About = () => {
           <li>
             <Link
               isExternal
-              color={themeColorShade}
+              color={CSSVariables.themeColor}
               href="https://twitter.com/Yuza_i"
             >
               yuza
@@ -124,7 +123,7 @@ const About = () => {
           <li>
             <Link
               isExternal
-              color={themeColorShade}
+              color={CSSVariables.themeColor}
               href="https://twitter.com/spookyporo"
             >
               naga
@@ -134,7 +133,7 @@ const About = () => {
           <li>
             <Link
               isExternal
-              color={themeColorShade}
+              color={CSSVariables.themeColor}
               href="https://twitter.com/Grey_spl"
             >
               Grey
@@ -144,7 +143,7 @@ const About = () => {
           <li>
             <Link
               isExternal
-              color={themeColorShade}
+              color={CSSVariables.themeColor}
               href="https://twitter.com/DatPretto"
             >
               Pretto
@@ -154,7 +153,7 @@ const About = () => {
           <li>
             <Link
               isExternal
-              color={themeColorShade}
+              color={CSSVariables.themeColor}
               href="https://twitter.com/VoltoMatte"
             >
               Volto
@@ -164,7 +163,7 @@ const About = () => {
           <li>
             <Link
               isExternal
-              color={themeColorShade}
+              color={CSSVariables.themeColor}
               href="https://twitter.com/Guigas_Jr"
             >
               Guigas
@@ -174,7 +173,7 @@ const About = () => {
           <li>
             <Link
               isExternal
-              color={themeColorShade}
+              color={CSSVariables.themeColor}
               href="https://twitter.com/Walavouchey"
             >
               Walavouchey
@@ -184,7 +183,7 @@ const About = () => {
           <li>
             <Link
               isExternal
-              color={themeColorShade}
+              color={CSSVariables.themeColor}
               href="https://twitter.com/sp9rK_spl"
             >
               sp9rK
@@ -194,7 +193,7 @@ const About = () => {
           <li>
             <Link
               isExternal
-              color={themeColorShade}
+              color={CSSVariables.themeColor}
               href="https://twitter.com/TehVilly"
             >
               Villy / 앤드류
@@ -204,7 +203,7 @@ const About = () => {
           <li>
             <Link
               isExternal
-              color={themeColorShade}
+              color={CSSVariables.themeColor}
               href="https://twitter.com/Shachar700"
             >
               Shahar
@@ -228,7 +227,7 @@ const About = () => {
             <Link
               href="https://github.com/Sendouc/sendou.ink/issues"
               isExternal
-              color={themeColorShade}
+              color={CSSVariables.themeColor}
             >
               GitHub
             </Link>
@@ -240,7 +239,7 @@ const About = () => {
             <Link
               href="https://discord.gg/sendou"
               isExternal
-              color={themeColorShade}
+              color={CSSVariables.themeColor}
             >
               Discord
             </Link>
@@ -252,7 +251,7 @@ const About = () => {
             <Link
               href="https://twitter.com/sendouc"
               isExternal
-              color={themeColorShade}
+              color={CSSVariables.themeColor}
             >
               Twitter
             </Link>{" "}

@@ -8,7 +8,7 @@ import {
   DrawerOverlay,
 } from "@chakra-ui/modal";
 import MyLink from "components/common/MyLink";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 import { FiHeart } from "react-icons/fi";
 import ColorModeSwitcher from "./ColorModeSwitcher";
 import LanguageSwitcher from "./LanguageSwitcher";
@@ -21,11 +21,10 @@ const MobileNav = ({
   isOpen: boolean;
   onClose: () => void;
 }) => {
-  const { bgColor } = useMyTheme();
   return (
     <Drawer isOpen={isOpen} onClose={onClose} size="full" placement="left">
       <DrawerOverlay>
-        <DrawerContent bg={bgColor}>
+        <DrawerContent bg={CSSVariables.bgColor}>
           <DrawerBody pb={16}>
             <Flex align="center" justifyContent="space-between">
               <Flex align="center">

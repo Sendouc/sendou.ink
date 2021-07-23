@@ -1,12 +1,12 @@
 import { Box, Flex } from "@chakra-ui/layout";
 import MyLink from "components/common/MyLink";
 import UserAvatar from "components/common/UserAvatar";
-import { useMyTheme, useUser } from "hooks/common";
+import { useUser } from "hooks/common";
 import Image from "next/image";
 import { navItems } from "utils/constants";
+import { CSSVariables } from "utils/CSSVariables";
 
 const NavButtons = ({ onButtonClick }: { onButtonClick?: () => void }) => {
-  const { bgColor, secondaryBgColor } = useMyTheme();
   const [user] = useUser();
   return (
     <Flex mt={2} flexWrap="wrap" alignItems="center" justifyContent="center">
@@ -22,11 +22,11 @@ const NavButtons = ({ onButtonClick }: { onButtonClick?: () => void }) => {
               fontWeight="bold"
               align="center"
               whiteSpace="nowrap"
-              bg={secondaryBgColor}
+              bg={CSSVariables.secondaryBgColor}
               border="2px solid"
-              borderColor={secondaryBgColor}
+              borderColor={CSSVariables.secondaryBgColor}
               _hover={{
-                bg: bgColor,
+                bg: CSSVariables.bgColor,
               }}
               onClick={onButtonClick}
             >
@@ -54,11 +54,11 @@ const NavButtons = ({ onButtonClick }: { onButtonClick?: () => void }) => {
             fontWeight="bold"
             align="center"
             whiteSpace="nowrap"
-            bg={secondaryBgColor}
+            bg={CSSVariables.secondaryBgColor}
             border="2px solid"
-            borderColor={secondaryBgColor}
+            borderColor={CSSVariables.secondaryBgColor}
             _hover={{
-              bg: bgColor,
+              bg: CSSVariables.bgColor,
             }}
             onClick={onButtonClick}
           >

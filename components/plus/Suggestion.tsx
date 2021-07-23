@@ -13,7 +13,7 @@ import { Trans } from "@lingui/macro";
 import MyLink from "components/common/MyLink";
 import SubText from "components/common/SubText";
 import UserAvatar from "components/common/UserAvatar";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Suggestions } from "services/plus";
@@ -38,7 +38,6 @@ const Suggestion = ({
   canSuggest: boolean;
 }) => {
   const toast = useToast();
-  const { gray } = useMyTheme();
   const [showTextarea, setShowTextarea] = useState(false);
   const { handleSubmit, errors, register, watch } = useForm<FormData>({
     resolver: zodResolver(resuggestionSchema),
@@ -71,7 +70,7 @@ const Suggestion = ({
         </MyLink>
       </Flex>
       <Box>
-        <Box fontSize="sm" color={gray} mt={2}>
+        <Box fontSize="sm" color={CSSVariables.themeGray} mt={2}>
           {new Date(suggestion.createdAt).toLocaleString()}
         </Box>
         <SubText mt={2}>+{suggestion.tier}</SubText>

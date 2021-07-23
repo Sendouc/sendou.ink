@@ -1,26 +1,19 @@
 import { Button } from "@chakra-ui/button";
-import { Input, InputGroup, InputLeftElement } from "@chakra-ui/input";
 import { Box } from "@chakra-ui/layout";
-import {
-  Badge,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@chakra-ui/react";
+import { Badge } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import EventInfo from "components/calendar/EventInfo";
 import { EventModal, FormData } from "components/calendar/EventModal";
 import Calendar from "components/common/Calendar";
 import MyHead from "components/common/MyHead";
 import SubText from "components/common/SubText";
-import { useMyTheme, useUser } from "hooks/common";
+import { useUser } from "hooks/common";
 import { ssr } from "pages/api/trpc/[trpc]";
 import { Fragment, ReactNode, useMemo, useState } from "react";
-import { FiSearch } from "react-icons/fi";
+import { CSSVariables } from "utils/CSSVariables";
 import { trpc } from "utils/trpc";
 
 const CalendarPage = () => {
-  const { gray, secondaryBgColor } = useMyTheme();
   const events = trpc.useQuery(["calendar.events"], { enabled: false });
   const [eventToEdit, setEventToEdit] = useState<
     boolean | (FormData & { id: number })
@@ -199,7 +192,7 @@ const CalendarPage = () => {
             </Fragment>
           );
         })}
-      <Box color={gray} mt={10}>
+      <Box color={CSSVariables.themeGray} mt={10}>
         All events listed in your local time:{" "}
         {Intl.DateTimeFormat().resolvedOptions().timeZone}
       </Box>

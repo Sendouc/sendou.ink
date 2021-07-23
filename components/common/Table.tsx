@@ -1,7 +1,7 @@
 // https://github.com/chakra-ui/chakra-ui/issues/135#issuecomment-644878591
 
 import { Box, BoxProps } from "@chakra-ui/react";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 
 /**
  * Represents tabular data - that is, information presented in a
@@ -30,27 +30,24 @@ export function TableHead(props: BoxProps) {
  * HTML element.
  */
 export function TableRow(props: BoxProps) {
-  const { bgColor } = useMyTheme();
   return (
     <Box
       as="tr"
       {...props}
-      _even={{ backgroundColor: bgColor }}
+      _even={{ backgroundColor: CSSVariables.bgColor }}
       borderRadius="5px"
     />
   );
 }
 
 export function TableHeader(props: BoxProps) {
-  const { themeColorHex: themeColor } = useMyTheme();
-
   return (
     <>
       <Box
         as="th"
         px="4"
         py="3"
-        backgroundColor={themeColor}
+        backgroundColor={CSSVariables.themeColor}
         textAlign="left"
         fontSize="xs"
         textColor="black"

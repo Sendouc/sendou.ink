@@ -8,7 +8,7 @@ import SubTextCollapse from "components/common/SubTextCollapse";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
 import { countries } from "countries-list";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 import Image from "next/image";
 import { RefObject } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
@@ -44,8 +44,6 @@ const FreeAgentSection = ({
   showPlusServerMembership: boolean;
   postRef?: RefObject<HTMLDivElement>;
 }) => {
-  const { themeColorShade } = useMyTheme();
-
   const toast = useToast();
   const utils = trpc.useQueryUtils();
   const addLikeMutation = trpc.useMutation("freeAgents.addLike", {
@@ -132,7 +130,7 @@ const FreeAgentSection = ({
               w={6}
               h={6}
               mx={1}
-              color={themeColorShade}
+              color={CSSVariables.themeColor}
               as={playstyleToEmoji[style]}
             />
           ))}
@@ -145,7 +143,7 @@ const FreeAgentSection = ({
               h={6}
               mx={1}
               mr={2}
-              color={themeColorShade}
+              color={CSSVariables.themeColor}
               as={RiMicFill}
             />
             <SubText>

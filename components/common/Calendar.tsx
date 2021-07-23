@@ -1,5 +1,5 @@
 import { Box, Flex, Grid, IconButton, useMediaQuery } from "@chakra-ui/react";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 import { ReactNode } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
@@ -32,9 +32,8 @@ const isToday = (date: Date) => {
 type MonthYear = { month: number; year: number };
 
 const Square = ({ children }: { children?: ReactNode }) => {
-  const { gray } = useMyTheme();
   return (
-    <Box color={gray} fontSize="small" fontWeight="bold">
+    <Box color={CSSVariables.themeGray} fontSize="small" fontWeight="bold">
       {children}
     </Box>
   );
@@ -55,7 +54,6 @@ const Calendar = ({
   showNextButton: boolean;
   dateContents: Record<string, ReactNode>;
 }) => {
-  const { themeColorHex } = useMyTheme();
   const [noSideNav] = useMediaQuery("(max-width: 991px)");
   const currentDate = new Date(current.year, current.month - 1, 1);
 
@@ -124,7 +122,7 @@ const Calendar = ({
               display="inline-block"
               boxShadow={
                 isToday(new Date(current.year, current.month - 1, day))
-                  ? `inset 0px -2px 0px 0px ${themeColorHex}`
+                  ? `inset 0px -2px 0px 0px ${CSSVariables.themeColor}`
                   : undefined
               }
             >

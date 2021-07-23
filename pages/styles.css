@@ -1,8 +1,31 @@
 @import "/nprogress.css";
 
+body.chakra-ui-light {
+  --theme-color: #79ff61;
+  --theme-color-opaque: hsla(111, 100%, 69%, 0.1);
+  --theme-gray: var(--chakra-colors-gray-600);
+  --bg-color: #eff0f3;
+  --secondary-bg-color: #fffafa;
+  --text-color: var(--chakra-colors-blackAlpha-900);
+  --border-color: #e2e8f0;
+}
+
+body.chakra-ui-dark {
+  --theme-color: #79ff61;
+  --theme-color-opaque: hsla(111, 100%, 69%, 0.1);
+  --theme-gray: var(--chakra-colors-gray-300);
+  --bg-color: #031e3e;
+  --secondary-bg-color: #0e2a56;
+  --text-color: var(--chakra-colors-whiteAlpha-900);
+  --border-color: #2e466c;
+}
+
 body {
   margin: 0;
+  color: var(--text-color);
+  background-color: var(--bg-color);
 }
+
 header,
 footer {
   grid-column-end: span 3;

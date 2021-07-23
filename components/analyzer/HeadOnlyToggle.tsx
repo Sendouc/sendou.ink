@@ -1,7 +1,7 @@
 import { Box, Flex, FormLabel, Switch } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import AbilityIcon from "components/common/AbilityIcon";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 import React from "react";
 
 interface HeadOnlyToggleProps {
@@ -15,7 +15,6 @@ const HeadOnlyToggle: React.FC<HeadOnlyToggleProps> = ({
   active,
   setActive,
 }) => {
-  const { themeColorShade } = useMyTheme();
   return (
     <Flex
       justifyContent="center"
@@ -26,7 +25,7 @@ const HeadOnlyToggle: React.FC<HeadOnlyToggleProps> = ({
       <Box>
         <Switch
           id="show-all"
-          color={themeColorShade}
+          color={CSSVariables.themeColor}
           isChecked={active}
           onChange={() => setActive()}
           mr="0.5em"
@@ -37,7 +36,7 @@ const HeadOnlyToggle: React.FC<HeadOnlyToggleProps> = ({
         </FormLabel>
       </Box>
       {active && ability === "OG" && (
-        <Box color={themeColorShade} fontWeight="bold">
+        <Box color={CSSVariables.themeColor} fontWeight="bold">
           +30{t`AP`}{" "}
           {["SSU", "RSU", "RES"].map((ability) => (
             <Box as="span" mx="0.2em" key={ability}>
@@ -47,7 +46,7 @@ const HeadOnlyToggle: React.FC<HeadOnlyToggleProps> = ({
         </Box>
       )}
       {active && ability === "CB" && (
-        <Box color={themeColorShade} fontWeight="bold">
+        <Box color={CSSVariables.themeColor} fontWeight="bold">
           +10{t`AP`}{" "}
           {["ISM", "ISS", "REC", "RSU", "SSU", "SCU"].map((ability) => (
             <Box as="span" mx="0.2em" key={ability}>
@@ -57,7 +56,7 @@ const HeadOnlyToggle: React.FC<HeadOnlyToggleProps> = ({
         </Box>
       )}
       {active && ability === "DR" && (
-        <Box color={themeColorShade} fontWeight="bold">
+        <Box color={CSSVariables.themeColor} fontWeight="bold">
           +10{t`AP`}{" "}
           {["RSU", "SSU", "RES"].map((ability) => (
             <Box as="span" mx="0.2em" key={ability}>

@@ -5,7 +5,7 @@ import { PlusRegion } from "@prisma/client";
 import MyHead from "components/common/MyHead";
 import NewTable from "components/common/NewTable";
 import UserAvatar from "components/common/UserAvatar";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
@@ -24,7 +24,6 @@ const PlusVotingHistoryPage = ({
   summaries,
   monthsWithData,
 }: PlusVotingHistoryPageProps) => {
-  const { gray } = useMyTheme();
   const router = useRouter();
 
   return (
@@ -115,7 +114,7 @@ const PlusVotingHistoryPage = ({
         })}
       />
 
-      <Box mt={6} fontSize="sm" color={gray}>
+      <Box mt={6} fontSize="sm" color={CSSVariables.themeGray}>
         <Box as="span" fontWeight="bold" color="theme.500">
           (S)
         </Box>{" "}

@@ -1,16 +1,16 @@
 import { Box, Flex } from "@chakra-ui/layout";
 import MyLink from "components/common/MyLink";
 import UserAvatar from "components/common/UserAvatar";
-import { useMyTheme, useUser } from "hooks/common";
+import { useUser } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 
 export const UserItem = ({ expanded }: { expanded: boolean }) => {
-  const { secondaryBgColor, bgColor } = useMyTheme();
   const [user] = useUser();
 
   if (!user) return null;
 
   return (
-    <Box borderLeft="4px solid" borderColor={bgColor} pl={2}>
+    <Box borderLeft="4px solid" borderColor={CSSVariables.bgColor} pl={2}>
       <MyLink href={"/u/" + user.discordId} isColored={false} noUnderline>
         <Flex
           width="100%"
@@ -21,7 +21,7 @@ export const UserItem = ({ expanded }: { expanded: boolean }) => {
           align="center"
           whiteSpace="nowrap"
           _hover={{
-            bg: secondaryBgColor,
+            bg: CSSVariables.secondaryBgColor,
           }}
         >
           <>

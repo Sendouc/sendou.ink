@@ -1,17 +1,17 @@
 import { Box, Flex, IconButton } from "@chakra-ui/react";
 import MyLink from "components/common/MyLink";
-import { useActiveNavItem, useMyTheme } from "hooks/common";
+import { useActiveNavItem } from "hooks/common";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { FiArrowLeft, FiArrowRight } from "react-icons/fi";
 import { navItems } from "utils/constants";
+import { CSSVariables } from "utils/CSSVariables";
 import UserItem from "./UserItem";
 
 const Nav = () => {
   const router = useRouter();
   const navItem = useActiveNavItem();
-  const { bgColor, secondaryBgColor, themeColorHex } = useMyTheme();
   const [expanded, setExpanded] = useState(() =>
     JSON.parse(window.localStorage.getItem("nav-expanded") ?? "true")
   );
@@ -35,7 +35,9 @@ const Nav = () => {
           <Box
             key={code}
             borderLeft="4px solid"
-            borderColor={isActive ? themeColorHex : bgColor}
+            borderColor={
+              isActive ? CSSVariables.themeColor : CSSVariables.bgColor
+            }
             pl={2}
           >
             <MyLink href={"/" + code} isColored={false} noUnderline>
@@ -48,7 +50,7 @@ const Nav = () => {
                 align="center"
                 whiteSpace="nowrap"
                 _hover={{
-                  bg: secondaryBgColor,
+                  bg: CSSVariables.secondaryBgColor,
                 }}
               >
                 <Image

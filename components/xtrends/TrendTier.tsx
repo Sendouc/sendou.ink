@@ -2,7 +2,7 @@ import { Box, Flex } from "@chakra-ui/react";
 import OutlinedBox from "components/common/OutlinedBox";
 import SubText from "components/common/SubText";
 import WeaponImage from "components/common/WeaponImage";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 import { IoChevronDownOutline, IoChevronUpOutline } from "react-icons/io5";
 import { XTrends } from "services/xtrends";
 
@@ -13,8 +13,6 @@ const TrendTier = ({
   tier: { label: string; criteria: number; color: string };
   data: XTrends["SZ"];
 }) => {
-  const { gray } = useMyTheme();
-
   if (!data.length) return null;
 
   return (
@@ -33,7 +31,7 @@ const TrendTier = ({
           <Box fontSize="2em" fontWeight="bolder">
             {tier.label}
           </Box>
-          <Box color={gray}>
+          <Box color={CSSVariables.themeGray}>
             {tier.criteria === 0.002 ? ">0%" : `${tier.criteria}%`}
           </Box>
         </Flex>

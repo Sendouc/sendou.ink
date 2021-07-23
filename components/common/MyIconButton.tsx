@@ -7,7 +7,7 @@ import {
   PopoverHeader,
   PopoverTrigger,
 } from "@chakra-ui/react";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 
 interface Props {
   onClick?: () => void;
@@ -21,7 +21,6 @@ const MyIconButton: React.FC<Props & Omit<IconButtonProps, "aria-label">> = ({
   popup,
   ...props
 }) => {
-  const { secondaryBgColor } = useMyTheme();
   return (
     <Popover trigger="hover" variant="responsive">
       <PopoverTrigger>
@@ -34,9 +33,9 @@ const MyIconButton: React.FC<Props & Omit<IconButtonProps, "aria-label">> = ({
           {...props}
         />
       </PopoverTrigger>
-      <PopoverContent bg={secondaryBgColor}>
+      <PopoverContent bg={CSSVariables.secondaryBgColor}>
         <PopoverHeader fontWeight="semibold">{popup}</PopoverHeader>
-        <PopoverArrow bg={secondaryBgColor} />
+        <PopoverArrow bg={CSSVariables.secondaryBgColor} />
       </PopoverContent>
     </Popover>
   );

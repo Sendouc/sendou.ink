@@ -1,5 +1,5 @@
 import { ChevronDownIcon } from "@chakra-ui/icons";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 import { useState } from "react";
 import ReactSelect, {
   components,
@@ -40,10 +40,9 @@ interface SelectProps {
 }
 
 const DropdownIndicator = (props: any) => {
-  const { textColor } = useMyTheme();
   return (
     <components.DropdownIndicator {...props}>
-      <ChevronDownIcon fontSize="1.3rem" color={textColor} />
+      <ChevronDownIcon fontSize="1.3rem" color={CSSVariables.textColor} />
     </components.DropdownIndicator>
   );
 };
@@ -70,7 +69,6 @@ const MultipleModeSelector: React.FC<SelectProps> = ({
   hideMenuBeforeTyping,
   defaultValue,
 }) => {
-  const { themeColorHex, bgColor } = useMyTheme();
   const [inputValue, setInputValue] = useState("");
   const [selectedModes, setSelectedModes] = useState(defaultValue);
   const selectDefaultStyles = useSelectStyles();
@@ -134,10 +132,10 @@ const MultipleModeSelector: React.FC<SelectProps> = ({
         borderRadius: 5,
         colors: {
           ...theme.colors,
-          primary25: `${themeColorHex}`,
-          primary: themeColorHex,
-          neutral0: bgColor,
-          neutral5: bgColor,
+          primary25: `${CSSVariables.themeColor}`,
+          primary: CSSVariables.themeColor,
+          neutral0: CSSVariables.bgColor,
+          neutral5: CSSVariables.bgColor,
         },
       })}
       styles={selectDefaultStyles}

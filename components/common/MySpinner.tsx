@@ -1,9 +1,8 @@
 import { Spinner } from "@chakra-ui/spinner";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 
 const MySpinner = () => {
-  const { themeColorShade } = useMyTheme();
-  return <Spinner color={themeColorShade} thickness="3px" />;
+  return <Spinner color={CSSVariables.themeColor} thickness="3px" />;
 };
 
 export default MySpinner;

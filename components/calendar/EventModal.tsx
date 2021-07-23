@@ -23,7 +23,7 @@ import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import DatePicker from "components/common/DatePicker";
 import MarkdownTextarea from "components/common/MarkdownTextarea";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 import { Controller, useForm } from "react-hook-form";
 import { FiTrash } from "react-icons/fi";
 import { EVENT_FORMATS } from "utils/constants";
@@ -44,7 +44,6 @@ export function EventModal({
   event?: { id: number } & FormData;
   refetchQuery: () => void;
 }) {
-  const { gray } = useMyTheme();
   const toast = useToast();
   const { i18n } = useLingui();
   const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
@@ -127,7 +126,7 @@ export function EventModal({
                 </Button>
               )}
 
-              <Box fontSize="sm" color={gray} mb={4}>
+              <Box fontSize="sm" color={CSSVariables.themeGray} mb={4}>
                 <Trans>
                   Add upcoming Splatoon events you are hosting to the calendar.
                 </Trans>

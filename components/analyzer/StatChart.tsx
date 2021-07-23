@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 import React from "react";
 import {
   CartesianGrid,
@@ -28,8 +28,6 @@ const StatChart: React.FC<StatChartProps> = ({
   getEffect,
   startChartsAtZero,
 }) => {
-  const { themeColorHex, secondaryBgColor } = useMyTheme();
-
   const getData = () =>
     abilityPoints.map((ap) => ({ name: `${ap}AP`, [title]: getEffect(ap) }));
 
@@ -93,7 +91,7 @@ const StatChart: React.FC<StatChartProps> = ({
         />
         <Tooltip
           contentStyle={{
-            background: secondaryBgColor,
+            background: CSSVariables.secondaryBgColor,
             borderRadius: "5px",
             border: 0,
           }}
@@ -102,7 +100,7 @@ const StatChart: React.FC<StatChartProps> = ({
         <Line
           type="monotone"
           dataKey={title}
-          stroke={themeColorHex}
+          stroke={CSSVariables.themeColor}
           dot={<CustomizedDot />}
           isAnimationActive={false}
         />

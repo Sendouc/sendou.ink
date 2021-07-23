@@ -9,7 +9,7 @@ import { t } from "@lingui/macro";
 import Flag from "components/common/Flag";
 import MyLink from "components/common/MyLink";
 import UserAvatar from "components/common/UserAvatar";
-import { useDebounce, useMyTheme } from "hooks/common";
+import { useDebounce } from "hooks/common";
 import { GetStaticProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
@@ -18,6 +18,7 @@ import { getAllUsers, GetAllUsersData } from "prisma/queries/getAllUsers";
 import { useEffect, useMemo, useState } from "react";
 import { FaTwitter } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
+import { CSSVariables } from "utils/CSSVariables";
 import { Unpacked } from "utils/types";
 import MyHead from "../../components/common/MyHead";
 
@@ -27,7 +28,6 @@ interface Props {
 
 const UserSearchPage = ({ users }: Props) => {
   const router = useRouter();
-  const { gray } = useMyTheme();
 
   const [filter, setFilter] = useState(getInitialFilterValue());
   const debouncedFilter = useDebounce(filter);
@@ -72,7 +72,7 @@ const UserSearchPage = ({ users }: Props) => {
       </Head>
       <InputGroup size="lg" maxW={80} mt={4} mb={6} mx="auto">
         <InputLeftElement pointerEvents="none">
-          <Box as={FiSearch} color={gray} />
+          <Box as={FiSearch} color={CSSVariables.themeGray} />
         </InputLeftElement>
         <Input
           placeholder="Sendou#4059"

@@ -2,7 +2,7 @@ import { Box, Flex } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import { Ability } from "@prisma/client";
 import AbilityIcon from "components/common/AbilityIcon";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 import { mainOnlyAbilities } from "utils/lists/abilities";
 
 interface ViewAPProps {
@@ -14,8 +14,6 @@ interface ViewAPProps {
 }
 
 const ViewAP: React.FC<ViewAPProps> = ({ aps, extraAps }) => {
-  const { gray } = useMyTheme();
-
   const APArrays = Object.entries(aps)
     .filter(([ability]) => ability !== "AD")
     .reduce((acc: [number, string[]][], [key, value]) => {
@@ -48,9 +46,14 @@ const ViewAP: React.FC<ViewAPProps> = ({ aps, extraAps }) => {
             mt={index === 0 ? "0" : "1em"}
           >
             {arr[0] !== 999 ? (
-              <Box mr={2} pr={1} borderRight="1px solid" borderColor={gray}>
+              <Box
+                mr={2}
+                pr={1}
+                borderRight="1px solid"
+                borderColor={CSSVariables.themeGray}
+              >
                 <Box
-                  color={gray}
+                  color={CSSVariables.themeGray}
                   width="32px"
                   minH="45px"
                   letterSpacing="wide"

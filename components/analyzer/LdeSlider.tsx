@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import AbilityIcon from "components/common/AbilityIcon";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 
 interface LdeSliderProps {
   value: number;
@@ -18,7 +18,6 @@ interface LdeSliderProps {
 }
 
 const LdeSlider: React.FC<LdeSliderProps> = ({ value, setValue }) => {
-  const { themeColorShade, gray } = useMyTheme();
   const bonusAp = Math.floor((24 / 21) * value);
 
   const getLdeEffect = () => {
@@ -39,7 +38,7 @@ const LdeSlider: React.FC<LdeSliderProps> = ({ value, setValue }) => {
     >
       <Text
         fontSize="sm"
-        color={gray}
+        color={CSSVariables.themeGray}
         textTransform="uppercase"
         letterSpacing="wider"
         lineHeight="1rem"
@@ -63,7 +62,7 @@ const LdeSlider: React.FC<LdeSliderProps> = ({ value, setValue }) => {
         </NumberInputStepper>
       </NumberInput>
       {value > 0 && (
-        <Box color={themeColorShade} fontWeight="bold" mt="1em">
+        <Box color={CSSVariables.themeColor} fontWeight="bold" mt="1em">
           +{bonusAp}
           {t`AP`}{" "}
           {["ISM", "ISS", "REC"].map((ability) => (
@@ -74,7 +73,7 @@ const LdeSlider: React.FC<LdeSliderProps> = ({ value, setValue }) => {
         </Box>
       )}
       <Box
-        color={gray}
+        color={CSSVariables.themeGray}
         fontSize="0.75em"
         maxW="200px"
         mt="1em"

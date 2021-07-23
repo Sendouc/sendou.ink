@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 import React from "react";
 import { FiGlobe } from "react-icons/fi";
 import { activateLocale } from "utils/i18n";
@@ -34,7 +34,6 @@ export const languages = [
 export const LanguageSwitcher = ({ isMobile }: { isMobile?: boolean }) => {
   const { colorMode } = useColorMode();
   const { i18n } = useLingui();
-  const { secondaryBgColor, textColor } = useMyTheme();
 
   return (
     <Menu>
@@ -55,7 +54,10 @@ export const LanguageSwitcher = ({ isMobile }: { isMobile?: boolean }) => {
         height="50px"
         display={isMobile ? "flex" : ["none", null, null, "flex"]}
       />
-      <MenuList bg={secondaryBgColor} color={textColor}>
+      <MenuList
+        bg={CSSVariables.secondaryBgColor}
+        color={CSSVariables.textColor}
+      >
         <MenuOptionGroup
           title={t`Choose language`}
           value={i18n.locale}

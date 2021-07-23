@@ -16,11 +16,12 @@ import TwitterAvatar from "components/common/TwitterAvatar";
 import UserAvatar from "components/common/UserAvatar";
 import WeaponImage from "components/common/WeaponImage";
 import { countries } from "countries-list";
-import { useMyTheme, useUser } from "hooks/common";
+import { useUser } from "hooks/common";
 import Image from "next/image";
 import { GetUserByIdentifierData } from "prisma/queries/getUserByIdentifier";
 import { FaGamepad, FaTwitch, FaTwitter, FaYoutube } from "react-icons/fa";
 import { FiInfo } from "react-icons/fi";
+import { CSSVariables } from "utils/CSSVariables";
 import { getFullUsername } from "utils/strings";
 
 interface AvatarWithInfoProps {
@@ -35,7 +36,6 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
   peakLeaguePowers,
 }) => {
   const [loggedInUser] = useUser();
-  const { gray, themeColorShade } = useMyTheme();
 
   function getSensString(
     motion: number | null | undefined,
@@ -157,7 +157,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
                   justifyContent="center"
                   ml="0.7rem"
                   mt={2}
-                  color={gray}
+                  color={CSSVariables.themeGray}
                   w="100%"
                 >
                   <Box as={FaGamepad} mr="0.2em" />
@@ -180,7 +180,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
                       >
                         {i !== 0 && <Divider orientation="vertical" mx={2} />}
                         <ModeImage mode={mode} size={32} />{" "}
-                        <Box ml={2} color={gray}>
+                        <Box ml={2} color={CSSVariables.themeGray}>
                           {peakXPowers[mode]}
                         </Box>
                       </Flex>
@@ -196,7 +196,7 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
                       .filter((type) => peakLeaguePowers[type])
                       .map((type) => (
                         <Flex key={type} align="center" justify="center" mx={2}>
-                          <Box ml={2} color={gray}>
+                          <Box ml={2} color={CSSVariables.themeGray}>
                             <SubText>{type}</SubText>
                             {peakLeaguePowers[type]}
                           </Box>
@@ -274,8 +274,8 @@ const AvatarWithInfo: React.FC<AvatarWithInfoProps> = ({
       return null;
 
     return (
-      <Box color={gray} mt={2} textAlign="center">
-        <Box as={FiInfo} mx="auto" color={themeColorShade} />
+      <Box color={CSSVariables.themeGray} mt={2} textAlign="center">
+        <Box as={FiInfo} mx="auto" color={CSSVariables.themeColor} />
         <Trans>
           You can get your peak Top 500 and League powers showing here.{" "}
           <MyLink prefetch href="/linking-info">

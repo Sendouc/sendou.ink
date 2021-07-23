@@ -2,7 +2,7 @@ import { Box, BoxProps, Flex, HStack } from "@chakra-ui/react";
 import SubText from "components/common/SubText";
 import TwitterAvatar from "components/common/TwitterAvatar";
 import UserAvatar from "components/common/UserAvatar";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 import { GetAllLadderRegisteredTeamsData } from "prisma/queries/getAllLadderRegisteredTeams";
 import { Unpacked } from "utils/types";
 
@@ -11,7 +11,6 @@ interface Props {
 }
 
 const LadderTeam: React.FC<Props & BoxProps> = ({ roster, ...props }) => {
-  const { gray } = useMyTheme();
   const teamTuple = roster
     .filter((member) => member.team)
     .map((member) => member.team)
@@ -60,7 +59,7 @@ const LadderTeam: React.FC<Props & BoxProps> = ({ roster, ...props }) => {
           ))}
         </HStack>
       )}
-      <Box color={gray} fontSize="sm" mt={2}>
+      <Box color={CSSVariables.themeGray} fontSize="sm" mt={2}>
         {roster
           .map((user) => `${user.username}#${user.discriminator}`)
           .join(", ")}

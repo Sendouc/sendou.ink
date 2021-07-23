@@ -17,7 +17,7 @@ import {
   UseBuildsByWeaponDispatch,
   UseBuildsByWeaponState,
 } from "hooks/builds";
-import { useMyTheme } from "hooks/common";
+import { CSSVariables } from "utils/CSSVariables";
 import { Fragment, useState } from "react";
 import { FiTrash } from "react-icons/fi";
 import { abilities, isMainAbility } from "utils/lists/abilities";
@@ -112,8 +112,6 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
     modeOptions[0]
   );
 
-  const { borderColor, themeColorOpaque, textColor, gray } = useMyTheme();
-
   const selectDefaultStyles = useSelectStyles();
   const selectStyles = {
     ...selectDefaultStyles,
@@ -121,21 +119,21 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
       ...base,
       padding: 0,
       borderRadius: 5,
-      color: textColor,
+      color: CSSVariables.textColor,
       fontSize: "0.875rem",
       display: "flex",
     }),
     option: (styles: any, { isFocused }: any) => {
       return {
         ...styles,
-        backgroundColor: isFocused ? themeColorOpaque : undefined,
+        backgroundColor: isFocused ? CSSVariables.themeColorOpaque : undefined,
         fontSize: "0.875rem",
-        color: textColor,
+        color: CSSVariables.textColor,
       };
     },
     control: (base: any) => ({
       ...base,
-      borderColor,
+      borderColor: CSSVariables.borderColor,
       minHeight: 32,
       height: 32,
       background: "hsla(0, 0%, 0%, 0)",
@@ -168,7 +166,7 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
                 filter.abilityPoints &&
                 filter.abilityPoints.min > filter.abilityPoints.max
                   ? "red.500"
-                  : gray
+                  : CSSVariables.themeGray
               }
               pr={2}
             >
@@ -185,7 +183,7 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
                 filter.abilityPoints &&
                 filter.abilityPoints.min > filter.abilityPoints.max
                   ? "red.500"
-                  : gray
+                  : CSSVariables.themeGray
               }
             >
               {isMainAbility(filter.ability) ? (
