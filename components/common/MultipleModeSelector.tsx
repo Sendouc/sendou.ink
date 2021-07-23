@@ -11,7 +11,7 @@ import ReactSelect, {
 import { SelectComponents } from "react-select/src/components";
 import { Box, Flex } from "@chakra-ui/react";
 import ModeImage from "./ModeImage";
-import useSelectStyles from "hooks/useSelectStyles";
+import { selectDefaultStyles } from "./MySelect";
 
 interface SelectProps {
   options?:
@@ -71,7 +71,6 @@ const MultipleModeSelector: React.FC<SelectProps> = ({
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [selectedModes, setSelectedModes] = useState(defaultValue);
-  const selectDefaultStyles = useSelectStyles();
 
   const handleChange = (selectedOption: any) => {
     if (!selectedOption) {

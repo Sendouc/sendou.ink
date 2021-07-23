@@ -23,8 +23,7 @@ import { FiTrash } from "react-icons/fi";
 import { abilities, isMainAbility } from "utils/lists/abilities";
 import { components } from "react-select";
 import ModeImage from "components/common/ModeImage";
-import MySelect from "components/common/MySelect";
-import useSelectStyles from "hooks/useSelectStyles";
+import MySelect, { selectDefaultStyles } from "components/common/MySelect";
 
 interface Props {
   filters: UseBuildsByWeaponState["filters"];
@@ -112,7 +111,6 @@ const BuildFilters: React.FC<Props> = ({ filters, dispatch }) => {
     modeOptions[0]
   );
 
-  const selectDefaultStyles = useSelectStyles();
   const selectStyles = {
     ...selectDefaultStyles,
     singleValue: (base: any) => ({
