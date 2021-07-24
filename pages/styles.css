@@ -1,43 +1,32 @@
 @import "/nprogress.css";
 
-/* Define values for light mode */
 body.chakra-ui-light {
-  --base-theme-color: #79ff61;
-  --base-theme-color-opaque: hsla(111, 100%, 69%, 0.1);
-  --base-theme-gray: var(--chakra-colors-gray-600);
-  --base-bg-color: #eff0f3;
-  --base-secondary-bg-color: #fffafa;
-  --base-text-color: var(--chakra-colors-blackAlpha-900);
-  --base-border-color: #e2e8f0;
+  --theme-color: var(--custom-theme-color, #1bb300);
+  --theme-color-opaque: var(
+    --custom-theme-color-opaque,
+    hsla(111, 100%, 69%, 0.1) ;
+  );
+  --theme-gray: var(--custom-theme-gray, var(--chakra-colors-gray-600));
+  --bg-color: var(--custom-bg-color, #eff0f3);
+  --secondary-bg-color: var(--custom-secondary-bg-color, #fffafa);
+  --text-color: var(--custom-text-color, var(--chakra-colors-blackAlpha-900));
+  --border-color: var(--custom-border-color, #e2e8f0);
 }
 
-/* Define values for dark mode */
 body.chakra-ui-dark {
-  --base-theme-color: #79ff61;
-  --base-theme-color-opaque: hsla(111, 100%, 69%, 0.1);
-  --base-theme-gray: var(--chakra-colors-gray-300);
-  --base-bg-color: #031e3e;
-  --base-secondary-bg-color: #0e2a56;
-  --base-text-color: var(--chakra-colors-whiteAlpha-900);
-  --base-border-color: #2e466c;
+  --theme-color: var(--custom-theme-color, #79ff61);
+  --theme-color-opaque: var(
+    --custom-theme-color-opaque,
+    hsla(111, 100%, 69%, 0.1) ;
+  );
+  --theme-gray: var(--custom-theme-gray, var(--chakra-colors-gray-300));
+  --bg-color: var(--custom-bg-color, #031e3e);
+  --secondary-bg-color: var(--custom-secondary-bg-color, #0e2a56);
+  --text-color: var(--custom-text-color, var(--chakra-colors-whiteAlpha-900));
+  --border-color: var(--custom-border-color, #2e466c);
 }
 
 body {
-  /* Use custom values if they are, otherwise use default base values */
-  --theme-color: var(--custom-theme-color, var(--base-theme-color));
-  --theme-color-opaque: var(
-    --custom-theme-color-opaque,
-    var(--base-theme-color-opaque)
-  );
-  --theme-gray: var(--custom-theme-gray, var(--base-theme-gray));
-  --bg-color: var(--custom-bg-color, var(--base-bg-color));
-  --secondary-bg-color: var(
-    --custom-secondary-bg-color,
-    var(--base-secondary-bg-color)
-  );
-  --text-color: var(--custom-text-color, var(--base-text-color));
-  --border-color: var(--custom-border-color, var(var(--base-border-color)));
-
   margin: 0;
   color: var(--text-color);
   background-color: var(--bg-color);
