@@ -1,17 +1,7 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Button, Flex } from "@chakra-ui/react";
 import { useDebounce } from "hooks/common";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CSSVariables } from "utils/CSSVariables";
-
-/*
-  --theme-color: #79ff61;
-  --theme-color-opaque: hsla(111, 100%, 69%, 0.1);
-  --theme-gray: var(--chakra-colors-gray-300);
-  --bg-color: #031e3e;
-  --secondary-bg-color: #0e2a56;
-  --text-color: var(--chakra-colors-whiteAlpha-900);
-  --border-color: #2e466c;
-*/
 
 const themeValues: { name: string; displayName: string }[] = [
   {
@@ -37,13 +27,13 @@ const themeValues: { name: string; displayName: string }[] = [
 ];
 
 const ProfileColorSelectors = () => {
-  const [currentColors, setCurrentColors] = useState<Record<string, string>>(
-    {}
-  );
+  const [currentColors, setCurrentColors] = useState<
+    Record<string, string | undefined>
+  >({});
 
   const debouncedCurrentColors = useDebounce(currentColors);
 
-  useEffect(() => {
+  const defaultColors = useMemo(() => {
     const bodyStyles = getComputedStyle(
       document.getElementsByTagName("body")[0]
     );
@@ -55,52 +45,79 @@ const ProfileColorSelectors = () => {
         .getPropertyValue(`--custom-${themeValue.name}`)
         .trim();
       if (!value) {
-        value = bodyStyles.getPropertyValue(`--base-${themeValue.name}`).trim();
+        value = bodyStyles.getPropertyValue(`--${themeValue.name}`).trim();
       }
       result[themeValue.name] = value;
     }
 
-    setCurrentColors(result);
+    return result;
   }, []);
 
   useEffect(() => {
     const body = document.getElementsByTagName("body")[0];
 
     for (const [key, value] of Object.entries(debouncedCurrentColors)) {
-      body.style.setProperty(`--custom-${key}`, value);
+      body.style.setProperty(`--custom-${key}`, value ?? "");
     }
   }, [debouncedCurrentColors]);
 
   return (
-    <Flex flexWrap="wrap" justify="space-evenly">
-      {themeValues.map((value) => {
-        return (
-          <Box key={value.name}>
-            <Box
-              as="label"
-              fontSize="sm"
-              fontWeight="bold"
-              color={CSSVariables.themeGray}
-              display="block"
-              htmlFor={`${value.name}-input`}
-            >
-              {value.displayName}
-            </Box>
-            <input
-              id={`${value.name}-input`}
-              value={debouncedCurrentColors[value.name] || "#000000"}
-              type="color"
-              onChange={(e) =>
-                setCurrentColors((c) => ({
-                  ...c,
-                  [value.name]: e.target.value,
-                }))
-              }
-            />
-          </Box>
-        );
-      })}
-    </Flex>
+    <>
+      <Flex flexWrap="wrap" justify="space-evenly" mt={4}>
+        {themeValues.map((value) => {
+          return (
+            <Flex key={value.name} flexDir="column" align="center">
+              <Box
+                as="label"
+                fontSize="sm"
+                mb={2}
+                fontWeight="bold"
+                color={CSSVariables.themeGray}
+                display="block"
+                htmlFor={`${value.name}-input`}
+              >
+                {value.displayName}
+              </Box>
+              <input
+                id={`${value.name}-input`}
+                value={
+                  debouncedCurrentColors[value.name] ??
+                  defaultColors[value.name]
+                }
+                type="color"
+                onChange={(e) =>
+                  setCurrentColors((c) => ({
+                    ...c,
+                    [value.name]: e.target.value,
+                  }))
+                }
+              />
+              <Button
+                onClick={() =>
+                  setCurrentColors((c) => ({
+                    ...c,
+                    [value.name]: undefined,
+                  }))
+                }
+                size="xs"
+                colorScheme="red"
+                mt={3}
+              >
+                Reset
+              </Button>
+            </Flex>
+          );
+        })}
+      </Flex>
+      <Flex justify="center" mt={4}>
+        <Button size="sm" variant="outline" mr={2}>
+          Save
+        </Button>
+        <Button size="sm" variant="outline" ml={2} colorScheme="red">
+          Cancel
+        </Button>
+      </Flex>
+    </>
   );
 };
 
