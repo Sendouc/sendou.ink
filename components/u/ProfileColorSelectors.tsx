@@ -34,10 +34,6 @@ const themeValues: { name: string; displayName: string }[] = [
     name: "text-color",
     displayName: "Text",
   },
-  {
-    name: "border-color",
-    displayName: "Border",
-  },
 ];
 
 const ProfileColorSelectors = () => {
