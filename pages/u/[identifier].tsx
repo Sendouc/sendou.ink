@@ -8,6 +8,7 @@ import MyInfiniteScroller from "components/common/MyInfiniteScroller";
 import AvatarWithInfo from "components/u/AvatarWithInfo";
 import Badges from "components/u/Badges";
 import BuildModal from "components/u/BuildModal";
+import ProfileColorSelectors from "components/u/ProfileColorSelectors";
 import ProfileModal from "components/u/ProfileModal";
 import { useUser } from "hooks/common";
 import { useBuildsByUser } from "hooks/u";
@@ -119,6 +120,7 @@ const ProfilePage = (props: Props) => {
         }
       />
       <ProfileOwnersButtons />
+      <ProfileColorSelectors />
       {user.profile?.bio && user.profile?.bio.trim().length > 0 && (
         <>
           <Divider my={6} />

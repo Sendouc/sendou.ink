@@ -50,7 +50,6 @@ export function TableHeader(props: BoxProps) {
         backgroundColor={CSSVariables.themeColor}
         textAlign="left"
         fontSize="xs"
-        textColor="black"
         textTransform="uppercase"
         letterSpacing="wider"
         lineHeight="1rem"

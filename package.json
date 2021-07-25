@@ -8,6 +8,7 @@
     "build": "lingui compile && npm run prebuild && next build",
     "build:analyze": "lingui compile && npm run prebuild && ANALYZE=true next build",
     "start": "next start",
+    "compile": "lingui compile",
     "migrate": "prisma migrate deploy --preview-feature",
     "migrate:save": "prisma migrate dev --create-only --preview-feature",
     "migrate:reset": "prisma migrate reset",

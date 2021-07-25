@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { navItems } from "utils/constants";
 
 // https://usehooks.com/useDebounce/
-export function useDebounce(value: string, delay: number = 500) {
+export function useDebounce<T>(value: T, delay: number = 500) {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
   useEffect(() => {

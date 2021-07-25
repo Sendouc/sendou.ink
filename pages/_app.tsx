@@ -113,16 +113,26 @@ const extendedTheme = extendTheme({
   },
   colors: {
     theme: {
-      50: "#e4ffdf",
-      100: "#bbffb0",
-      200: "#92ff7f",
-      300: "#68ff4d",
-      400: "#3fff1d",
-      500: "#27e606",
-      600: "#1bb300",
-      700: "#108000",
-      800: "#054d00",
-      900: "#001b00",
+      50: CSSVariables.themeColor,
+      100: CSSVariables.themeColor,
+      200: CSSVariables.themeColor,
+      300: CSSVariables.themeColor,
+      400: CSSVariables.themeColor,
+      500: CSSVariables.themeColor,
+      600: CSSVariables.themeColor,
+      700: CSSVariables.themeColor,
+      800: CSSVariables.themeColor,
+      900: CSSVariables.themeColor,
+      // 50: "#e4ffdf",
+      // 100: "#bbffb0",
+      // 200: "#92ff7f",
+      // 300: "#68ff4d",
+      // 400: "#3fff1d",
+      // 500: "#27e606",
+      // 600: "#1bb300",
+      // 700: "#108000",
+      // 800: "#054d00",
+      // 900: "#001b00",
     },
   },
 });
@@ -189,7 +199,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       />
 
       <NextAuthProvider session={pageProps.session}>
-        <ChakraProvider theme={extendedTheme}>
+        <ChakraProvider theme={extendedTheme} cssVarsRoot="body">
           <I18nProvider i18n={i18n}>
             <Layout>
               <QueryClientProvider client={queryClient}>
