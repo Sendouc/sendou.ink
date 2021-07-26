@@ -26,7 +26,7 @@ const themeValues: { name: string; displayName: string }[] = [
   },
 ];
 
-const ProfileColorSelectors = () => {
+const ProfileColorSelectors = ({ hide }: { hide: () => void }) => {
   const [currentColors, setCurrentColors] = useState<
     Record<string, string | undefined>
   >({});
@@ -69,7 +69,7 @@ const ProfileColorSelectors = () => {
       <Flex flexWrap="wrap" justify="space-evenly" mt={4}>
         {themeValues.map((value) => {
           return (
-            <Flex key={value.name} flexDir="column" align="center">
+            <Flex key={value.name} flexDir="column" align="center" mb={4}>
               <Box
                 as="label"
                 fontSize="sm"
@@ -112,11 +112,17 @@ const ProfileColorSelectors = () => {
           );
         })}
       </Flex>
-      <Flex justify="center" mt={4}>
+      <Flex justify="center">
         <Button size="sm" variant="outline" mr={2}>
           Save
         </Button>
-        <Button size="sm" variant="outline" ml={2} colorScheme="red">
+        <Button
+          size="sm"
+          variant="outline"
+          ml={2}
+          colorScheme="red"
+          onClick={hide}
+        >
           Cancel
         </Button>
       </Flex>

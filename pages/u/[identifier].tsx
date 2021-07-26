@@ -1,5 +1,5 @@
-import { Button, Divider, HStack, Select } from "@chakra-ui/react";
-import { t, Trans } from "@lingui/macro";
+import { Divider, Select } from "@chakra-ui/react";
+import { t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { Build, LeagueType, RankedMode } from "@prisma/client";
 import BuildCard from "components/builds/BuildCard";
@@ -10,6 +10,7 @@ import Badges from "components/u/Badges";
 import BuildModal from "components/u/BuildModal";
 import ProfileColorSelectors from "components/u/ProfileColorSelectors";
 import ProfileModal from "components/u/ProfileModal";
+import ProfileOwnersButtons from "components/u/ProfileOwnersButton";
 import { useUser } from "hooks/common";
 import { useBuildsByUser } from "hooks/u";
 import { GetStaticPaths, GetStaticProps } from "next";
@@ -20,10 +21,8 @@ import {
   GetUserByIdentifierData,
 } from "prisma/queries/getUserByIdentifier";
 import { useEffect, useState } from "react";
-import { FiEdit } from "react-icons/fi";
-import { RiTShirtLine } from "react-icons/ri";
 import useSWR from "swr";
-import { GANBA_DISCORD_ID } from "utils/constants";
+import { ADMIN_DISCORD_ID, GANBA_DISCORD_ID } from "utils/constants";
 import { isCustomUrl } from "utils/validators/profile";
 import MyHead from "../../components/common/MyHead";
 
@@ -37,6 +36,7 @@ const ProfilePage = (props: Props) => {
   const router = useRouter();
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [buildToEdit, setBuildToEdit] = useState<boolean | Build>(false);
+  const [showColorSelectors, setShowColorSelectors] = useState(false);
   const [userId, setUserId] = useState<number | undefined>(undefined);
 
   const apiUrl = () => {
@@ -66,6 +66,16 @@ const ProfilePage = (props: Props) => {
   const canPostBuilds = (() => {
     if (loggedInUser?.id !== user.id) return false;
     if (buildCount >= 100 && user.discordId !== GANBA_DISCORD_ID) return false;
+
+    return true;
+  })();
+
+  const canEditProfileColors = (() => {
+    if (loggedInUser?.id !== user.id) return false;
+
+    if (user.discordId === ADMIN_DISCORD_ID) return true;
+
+    if (user.patreonTier ?? -1 < 2) return false;
 
     return true;
   })();
@@ -119,8 +129,19 @@ const ProfilePage = (props: Props) => {
           )[0]
         }
       />
-      <ProfileOwnersButtons />
-      <ProfileColorSelectors />
+      {loggedInUser?.id === user.id ? (
+        <ProfileOwnersButtons
+          canEditProfileColors={canEditProfileColors}
+          canPostBuilds={canPostBuilds}
+          showColorEditorsButton={!showColorSelectors}
+          setBuildToEdit={setBuildToEdit}
+          setShowColorSelectors={setShowColorSelectors}
+          setShowProfileModal={setShowProfileModal}
+        />
+      ) : null}
+      {showColorSelectors ? (
+        <ProfileColorSelectors hide={() => setShowColorSelectors(false)} />
+      ) : null}
       {user.profile?.bio && user.profile?.bio.trim().length > 0 && (
         <>
           <Divider my={6} />
@@ -168,35 +189,6 @@ const ProfilePage = (props: Props) => {
       )}
     </>
   );
-
-  function ProfileOwnersButtons() {
-    if (user && loggedInUser?.id === user.id) {
-      return (
-        <HStack spacing={4}>
-          <Button
-            leftIcon={<FiEdit />}
-            variant="outline"
-            onClick={() => setShowProfileModal(true)}
-            size="sm"
-          >
-            <Trans>Edit profile</Trans>
-          </Button>
-          {canPostBuilds && (
-            <Button
-              leftIcon={<RiTShirtLine />}
-              variant="outline"
-              onClick={() => setBuildToEdit(true)}
-              size="sm"
-            >
-              <Trans>Add build</Trans>
-            </Button>
-          )}
-        </HStack>
-      );
-    }
-
-    return null;
-  }
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
