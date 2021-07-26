@@ -58,6 +58,9 @@ const ProfileColorSelectors = () => {
 
     for (const [key, value] of Object.entries(debouncedCurrentColors)) {
       body.style.setProperty(`--custom-${key}`, value ?? "");
+      if (key === "theme-color") {
+        body.style.setProperty(`--custom-${key}-opaque`, `${value}${20}` ?? "");
+      }
     }
   }, [debouncedCurrentColors]);
 

@@ -113,7 +113,7 @@ const extendedTheme = extendTheme({
   },
   colors: {
     theme: {
-      50: CSSVariables.themeColor,
+      50: CSSVariables.themeColorOpaque,
       100: CSSVariables.themeColor,
       200: CSSVariables.themeColor,
       300: CSSVariables.themeColor,
@@ -123,16 +123,6 @@ const extendedTheme = extendTheme({
       700: CSSVariables.themeColor,
       800: CSSVariables.themeColor,
       900: CSSVariables.themeColor,
-      // 50: "#e4ffdf",
-      // 100: "#bbffb0",
-      // 200: "#92ff7f",
-      // 300: "#68ff4d",
-      // 400: "#3fff1d",
-      // 500: "#27e606",
-      // 600: "#1bb300",
-      // 700: "#108000",
-      // 800: "#054d00",
-      // 900: "#001b00",
     },
   },
 });

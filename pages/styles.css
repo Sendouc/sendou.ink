@@ -2,10 +2,7 @@
 
 body {
   --theme-color: var(--custom-theme-color, #79ff61);
-  --theme-color-opaque: var(
-    --custom-theme-color-opaque,
-    hsla(111, 100%, 69%, 0.1) ;
-  );
+  --theme-color-opaque: var(--custom-theme-color-opaque, #79ff6120;);
   --theme-gray: var(--custom-theme-gray, var(--chakra-colors-gray-300));
   --bg-color: var(--custom-bg-color, #031e3e);
   --secondary-bg-color: var(--custom-secondary-bg-color, #0e2a56);
@@ -19,10 +16,7 @@ body {
 
 body.chakra-ui-light {
   --theme-color: var(--custom-theme-color, #1bb300);
-  --theme-color-opaque: var(
-    --custom-theme-color-opaque,
-    hsla(111, 100%, 69%, 0.1) ;
-  );
+  --theme-color-opaque: var(--custom-theme-color-opaque, #1bb30020);
   --theme-gray: var(--custom-theme-gray, var(--chakra-colors-gray-600));
   --bg-color: var(--custom-bg-color, #eff0f3);
   --secondary-bg-color: var(--custom-secondary-bg-color, #fffafa);
@@ -51,10 +45,6 @@ aside {
 }
 header {
   width: 100%;
-}
-
-.chakra-button:hover {
-  background-color: initial !important;
 }
 
 #__next {
