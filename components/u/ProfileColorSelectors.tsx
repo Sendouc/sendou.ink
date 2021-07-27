@@ -1,7 +1,8 @@
 import { Box, Button, Flex } from "@chakra-ui/react";
 import { useDebounce } from "hooks/common";
-import { useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { CSSVariables } from "utils/CSSVariables";
+import { sendData } from "utils/postData";
 
 const themeValues: { name: string; displayName: string }[] = [
   {
@@ -64,8 +65,17 @@ const ProfileColorSelectors = ({ hide }: { hide: () => void }) => {
     }
   }, [debouncedCurrentColors]);
 
+  const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const success = await sendData("POST", "/api/me/colors", {
+      colors: currentColors,
+    });
+
+    if (success) hide();
+  };
+
   return (
-    <>
+    <form onSubmit={onSubmitHandler}>
       <Flex flexWrap="wrap" justify="space-evenly" mt={4}>
         {themeValues.map((value) => {
           return (
@@ -113,7 +123,7 @@ const ProfileColorSelectors = ({ hide }: { hide: () => void }) => {
         })}
       </Flex>
       <Flex justify="center">
-        <Button size="sm" variant="outline" mr={2}>
+        <Button type="submit" size="sm" variant="outline" mr={2}>
           Save
         </Button>
         <Button
@@ -126,7 +136,7 @@ const ProfileColorSelectors = ({ hide }: { hide: () => void }) => {
           Cancel
         </Button>
       </Flex>
-    </>
+    </form>
   );
 };
 
