@@ -131,9 +131,8 @@ const ProfilePage = (props: Props) => {
       />
       {loggedInUser?.id === user.id ? (
         <ProfileOwnersButtons
-          canEditProfileColors={canEditProfileColors}
+          isColorEditorsButtonClickable={!canEditProfileColors}
           canPostBuilds={canPostBuilds}
-          showColorEditorsButton={!showColorSelectors}
           setBuildToEdit={setBuildToEdit}
           setShowColorSelectors={setShowColorSelectors}
           setShowProfileModal={setShowProfileModal}

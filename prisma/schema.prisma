@@ -5,7 +5,7 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["orderByRelation"]
 }
 
@@ -50,6 +50,7 @@ model Profile {
   weaponPool    String[]
   updatedAt     DateTime @default(now()) @updatedAt
   customUrlPath String?  @unique
+  colors        Json?
   user          User     @relation(fields: [userId], references: [id])
   userId        Int      @unique
 }
