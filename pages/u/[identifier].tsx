@@ -22,7 +22,11 @@ import {
 } from "prisma/queries/getUserByIdentifier";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
-import { ADMIN_DISCORD_ID, GANBA_DISCORD_ID } from "utils/constants";
+import {
+  ADMIN_DISCORD_ID,
+  BORZOIC_DISCORD_ID,
+  GANBA_DISCORD_ID,
+} from "utils/constants";
 import { isCustomUrl } from "utils/validators/profile";
 import MyHead from "../../components/common/MyHead";
 
@@ -73,7 +77,9 @@ const ProfilePage = (props: Props) => {
   const canEditProfileColors = (() => {
     if (loggedInUser?.id !== user.id) return false;
 
-    if (user.discordId === ADMIN_DISCORD_ID) return true;
+    if ([ADMIN_DISCORD_ID, BORZOIC_DISCORD_ID].includes(user.discordId)) {
+      return true;
+    }
 
     if (user.patreonTier ?? -1 < 2) return false;
 
