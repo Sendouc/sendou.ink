@@ -75,8 +75,6 @@ const ProfilePage = (props: Props) => {
   })();
 
   const canEditProfileColors = (() => {
-    if (loggedInUser?.id !== user.id) return false;
-
     if ([ADMIN_DISCORD_ID, BORZOIC_DISCORD_ID].includes(user.discordId)) {
       return true;
     }
@@ -101,6 +99,18 @@ const ProfilePage = (props: Props) => {
   useEffect(() => {
     setUserId(props.user.id);
   }, [props.user.id]);
+
+  useEffect(() => {
+    const colors = user.profile?.colors;
+    if (!colors) return;
+    if (!canEditProfileColors) return;
+
+    const body = document.getElementsByTagName("body")[0];
+
+    for (const [key, value] of Object.entries(colors)) {
+      body.style.setProperty(`--custom-${key}`, value);
+    }
+  }, []);
 
   return (
     <>
@@ -145,7 +155,12 @@ const ProfilePage = (props: Props) => {
         />
       ) : null}
       {showColorSelectors ? (
-        <ProfileColorSelectors hide={() => setShowColorSelectors(false)} />
+        <ProfileColorSelectors
+          hide={() => setShowColorSelectors(false)}
+          previousColors={
+            (user.profile?.colors as Record<string, string>) ?? undefined
+          }
+        />
       ) : null}
       {user.profile?.bio && user.profile?.bio.trim().length > 0 && (
         <>

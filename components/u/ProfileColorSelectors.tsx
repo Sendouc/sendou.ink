@@ -27,10 +27,16 @@ const themeValues: { name: string; displayName: string }[] = [
   },
 ];
 
-const ProfileColorSelectors = ({ hide }: { hide: () => void }) => {
+const ProfileColorSelectors = ({
+  hide,
+  previousColors,
+}: {
+  hide: () => void;
+  previousColors?: Record<string, string>;
+}) => {
   const [currentColors, setCurrentColors] = useState<
     Record<string, string | undefined>
-  >({});
+  >(previousColors ?? {});
 
   const debouncedCurrentColors = useDebounce(currentColors);
 
@@ -41,10 +47,7 @@ const ProfileColorSelectors = ({ hide }: { hide: () => void }) => {
 
     const result: Record<string, string> = {};
     for (const themeValue of themeValues) {
-      // TODO: source this otherwise
-      let value = bodyStyles
-        .getPropertyValue(`--custom-${themeValue.name}`)
-        .trim();
+      let value = previousColors?.[themeValue.name];
       if (!value) {
         value = bodyStyles.getPropertyValue(`--${themeValue.name}`).trim();
       }
@@ -71,7 +74,9 @@ const ProfileColorSelectors = ({ hide }: { hide: () => void }) => {
       colors: currentColors,
     });
 
-    if (success) hide();
+    if (success) {
+      hide();
+    }
   };
 
   return (

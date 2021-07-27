@@ -42,6 +42,7 @@ export const getUserByIdentifier = (identifier: string) =>
           twitterName: true,
           weaponPool: true,
           youtubeId: true,
+          colors: true,
         },
       },
       player: {
