@@ -79,9 +79,9 @@ const ProfilePage = (props: Props) => {
       return true;
     }
 
-    if (user.patreonTier ?? -1 < 2) return false;
+    if ((user.patreonTier ?? -1) >= 2) return true;
 
-    return true;
+    return false;
   })();
 
   useEffect(() => {
