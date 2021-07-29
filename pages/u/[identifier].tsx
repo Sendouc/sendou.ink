@@ -52,7 +52,7 @@ const ProfilePage = (props: Props) => {
   };
 
   const [loggedInUser] = useUser();
-  const { data } = useSWR<GetUserByIdentifierData>(apiUrl(), {
+  const { data, mutate } = useSWR<GetUserByIdentifierData>(apiUrl(), {
     initialData: props.user,
   });
 
@@ -166,6 +166,7 @@ const ProfilePage = (props: Props) => {
           previousColors={
             (user.profile?.colors as Record<string, string>) ?? undefined
           }
+          mutateUser={mutate}
         />
       ) : null}
       {user.profile?.bio && user.profile?.bio.trim().length > 0 && (

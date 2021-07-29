@@ -28,9 +28,11 @@ const themeValues: { name: string; displayName: string }[] = [
 
 const ProfileColorSelectors = ({
   hide,
+  mutateUser,
   previousColors,
 }: {
   hide: () => void;
+  mutateUser: () => void;
   previousColors?: Record<string, string>;
 }) => {
   const [currentColors, setCurrentColors] = useState<
@@ -43,7 +45,10 @@ const ProfileColorSelectors = ({
     data: { colors: currentColors },
     successToastMsg: "Colors updated",
     url: "/api/me/colors",
-    afterSuccess: hide,
+    afterSuccess: () => {
+      hide();
+      mutateUser();
+    },
   });
 
   const defaultColors = useMemo(() => {
