@@ -11,7 +11,7 @@ import { getFullUsername } from "utils/strings";
 
 const FooterContent: React.FC = () => {
   return (
-    <Box bg={CSSVariables.themeColor} color="black">
+    <Box bg={CSSVariables.themeColor} color={CSSVariables.bgColor}>
       <Flex
         flexDir={["column", null, "row"]}
         alignItems="center"
@@ -116,7 +116,7 @@ function ExternalLink({
         alignItems: "center",
         mx: 2,
         my: 2,
-        color: "black",
+        color: CSSVariables.bgColor,
       }}
     >
       <Box as={icon} display="inline" mr={1} size="20px" /> {children}

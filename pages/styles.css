@@ -1,29 +1,27 @@
 @import "/nprogress.css";
 
-body.chakra-ui-light {
-  --theme-color: #79ff61;
-  --theme-color-opaque: hsla(111, 100%, 69%, 0.1);
-  --theme-gray: var(--chakra-colors-gray-600);
-  --bg-color: #eff0f3;
-  --secondary-bg-color: #fffafa;
-  --text-color: var(--chakra-colors-blackAlpha-900);
-  --border-color: #e2e8f0;
-}
-
-body.chakra-ui-dark {
-  --theme-color: #79ff61;
-  --theme-color-opaque: hsla(111, 100%, 69%, 0.1);
-  --theme-gray: var(--chakra-colors-gray-300);
-  --bg-color: #031e3e;
-  --secondary-bg-color: #0e2a56;
-  --text-color: var(--chakra-colors-whiteAlpha-900);
-  --border-color: #2e466c;
-}
-
 body {
+  --theme-color: var(--custom-theme-color, #79ff61);
+  --theme-color-opaque: var(--custom-theme-color-opaque, #79ff6120;);
+  --theme-gray: var(--custom-theme-gray, var(--chakra-colors-gray-300));
+  --bg-color: var(--custom-bg-color, #031e3e);
+  --secondary-bg-color: var(--custom-secondary-bg-color, #0e2a56);
+  --text-color: var(--custom-text-color, #f5f5f5);
+  --border-color: var(--custom-border-color, #2e466c);
+
   margin: 0;
   color: var(--text-color);
   background-color: var(--bg-color);
+}
+
+body.chakra-ui-light {
+  --theme-color: var(--custom-theme-color, #1bb300);
+  --theme-color-opaque: var(--custom-theme-color-opaque, #1bb30020);
+  --theme-gray: var(--custom-theme-gray, var(--chakra-colors-gray-600));
+  --bg-color: var(--custom-bg-color, #eff0f3);
+  --secondary-bg-color: var(--custom-secondary-bg-color, #fffafa);
+  --text-color: var(--custom-text-color, var(--chakra-colors-blackAlpha-900));
+  --border-color: var(--custom-border-color, #e2e8f0);
 }
 
 header,
@@ -73,72 +71,6 @@ header {
 @media (max-width: 991px) {
   #__next {
     grid-template-columns: 0px 1fr;
-  }
-}
-
-.rgb {
-  background: linear-gradient(
-    124deg,
-    #ff2400,
-    #e81d1d,
-    #e8b71d,
-    #e3e81d,
-    #1de840,
-    #1ddde8,
-    #2b1de8,
-    #dd00f3,
-    #dd00f3
-  );
-
-  -webkit-animation: rainbow 18s ease infinite;
-  -z-animation: rainbow 18s ease infinite;
-  -o-animation: rainbow 18s ease infinite;
-  animation: rainbow 18s ease infinite;
-  background-size: 1800% 1800%;
-}
-
-@-webkit-keyframes rainbow {
-  0% {
-    background-position: 0% 82%;
-  }
-  50% {
-    background-position: 100% 19%;
-  }
-  100% {
-    background-position: 0% 82%;
-  }
-}
-@-moz-keyframes rainbow {
-  0% {
-    background-position: 0% 82%;
-  }
-  50% {
-    background-position: 100% 19%;
-  }
-  100% {
-    background-position: 0% 82%;
-  }
-}
-@-o-keyframes rainbow {
-  0% {
-    background-position: 0% 82%;
-  }
-  50% {
-    background-position: 100% 19%;
-  }
-  100% {
-    background-position: 0% 82%;
-  }
-}
-@keyframes rainbow {
-  0% {
-    background-position: 0% 82%;
-  }
-  50% {
-    background-position: 100% 19%;
-  }
-  100% {
-    background-position: 0% 82%;
   }
 }
 

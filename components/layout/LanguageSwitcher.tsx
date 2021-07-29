@@ -46,8 +46,8 @@ export const LanguageSwitcher = ({ isMobile }: { isMobile?: boolean }) => {
         icon={<FiGlobe />}
         _hover={
           colorMode === "dark"
-            ? { bg: "white", color: "black" }
-            : { bg: "black", color: "white" }
+            ? { bg: "white !important", color: "black" }
+            : { bg: "black !important", color: "white" }
         }
         borderRadius={isMobile ? "50%" : "0"}
         size={isMobile ? "lg" : "sm"}

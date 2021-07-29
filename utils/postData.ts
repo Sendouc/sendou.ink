@@ -16,7 +16,10 @@ export async function sendData(method = "POST", url = "", data = {}) {
     let description = t`An error occurred`;
     try {
       const error = await response.json();
-      if (error.message) description = error.message;
+      if (error.message) {
+        description = error.message;
+        console.error(error.message);
+      }
     } catch {}
 
     toast({

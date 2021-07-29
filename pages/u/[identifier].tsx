@@ -1,5 +1,5 @@
-import { Button, Divider, HStack, Select } from "@chakra-ui/react";
-import { t, Trans } from "@lingui/macro";
+import { Divider, Select } from "@chakra-ui/react";
+import { t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { Build, LeagueType, RankedMode } from "@prisma/client";
 import BuildCard from "components/builds/BuildCard";
@@ -8,7 +8,9 @@ import MyInfiniteScroller from "components/common/MyInfiniteScroller";
 import AvatarWithInfo from "components/u/AvatarWithInfo";
 import Badges from "components/u/Badges";
 import BuildModal from "components/u/BuildModal";
+import ProfileColorSelectors from "components/u/ProfileColorSelectors";
 import ProfileModal from "components/u/ProfileModal";
+import ProfileOwnersButtons from "components/u/ProfileOwnersButton";
 import { useUser } from "hooks/common";
 import { useBuildsByUser } from "hooks/u";
 import { GetStaticPaths, GetStaticProps } from "next";
@@ -19,10 +21,12 @@ import {
   GetUserByIdentifierData,
 } from "prisma/queries/getUserByIdentifier";
 import { useEffect, useState } from "react";
-import { FiEdit } from "react-icons/fi";
-import { RiTShirtLine } from "react-icons/ri";
 import useSWR from "swr";
-import { GANBA_DISCORD_ID } from "utils/constants";
+import {
+  ADMIN_DISCORD_ID,
+  BORZOIC_DISCORD_ID,
+  GANBA_DISCORD_ID,
+} from "utils/constants";
 import { isCustomUrl } from "utils/validators/profile";
 import MyHead from "../../components/common/MyHead";
 
@@ -36,6 +40,7 @@ const ProfilePage = (props: Props) => {
   const router = useRouter();
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [buildToEdit, setBuildToEdit] = useState<boolean | Build>(false);
+  const [showColorSelectors, setShowColorSelectors] = useState(false);
   const [userId, setUserId] = useState<number | undefined>(undefined);
 
   const apiUrl = () => {
@@ -47,7 +52,7 @@ const ProfilePage = (props: Props) => {
   };
 
   const [loggedInUser] = useUser();
-  const { data } = useSWR<GetUserByIdentifierData>(apiUrl(), {
+  const { data, mutate } = useSWR<GetUserByIdentifierData>(apiUrl(), {
     initialData: props.user,
   });
 
@@ -69,6 +74,16 @@ const ProfilePage = (props: Props) => {
     return true;
   })();
 
+  const canEditProfileColors = (() => {
+    if ([ADMIN_DISCORD_ID, BORZOIC_DISCORD_ID].includes(user.discordId)) {
+      return true;
+    }
+
+    if (user.patreonTier ?? -1 < 2) return false;
+
+    return true;
+  })();
+
   useEffect(() => {
     if (!router.query.build || !canPostBuilds) return;
 
@@ -84,6 +99,24 @@ const ProfilePage = (props: Props) => {
   useEffect(() => {
     setUserId(props.user.id);
   }, [props.user.id]);
+
+  useEffect(() => {
+    const colors = user.profile?.colors;
+    if (!colors) return;
+    if (!canEditProfileColors) return;
+
+    const body = document.getElementsByTagName("body")[0];
+
+    for (const [key, value] of Object.entries(colors)) {
+      body.style.setProperty(`--custom-${key}`, value);
+    }
+
+    return () => {
+      for (const key of Object.keys(colors)) {
+        body.style.removeProperty(`--custom-${key}`);
+      }
+    };
+  }, []);
 
   return (
     <>
@@ -118,7 +151,24 @@ const ProfilePage = (props: Props) => {
           )[0]
         }
       />
-      <ProfileOwnersButtons />
+      {loggedInUser?.id === user.id ? (
+        <ProfileOwnersButtons
+          isColorEditorsButtonClickable={canEditProfileColors}
+          canPostBuilds={canPostBuilds}
+          setBuildToEdit={setBuildToEdit}
+          setShowColorSelectors={setShowColorSelectors}
+          setShowProfileModal={setShowProfileModal}
+        />
+      ) : null}
+      {showColorSelectors ? (
+        <ProfileColorSelectors
+          hide={() => setShowColorSelectors(false)}
+          previousColors={
+            (user.profile?.colors as Record<string, string>) ?? undefined
+          }
+          mutateUser={mutate}
+        />
+      ) : null}
       {user.profile?.bio && user.profile?.bio.trim().length > 0 && (
         <>
           <Divider my={6} />
@@ -166,35 +216,6 @@ const ProfilePage = (props: Props) => {
       )}
     </>
   );
-
-  function ProfileOwnersButtons() {
-    if (user && loggedInUser?.id === user.id) {
-      return (
-        <HStack spacing={4}>
-          <Button
-            leftIcon={<FiEdit />}
-            variant="outline"
-            onClick={() => setShowProfileModal(true)}
-            size="sm"
-          >
-            <Trans>Edit profile</Trans>
-          </Button>
-          {canPostBuilds && (
-            <Button
-              leftIcon={<RiTShirtLine />}
-              variant="outline"
-              onClick={() => setBuildToEdit(true)}
-              size="sm"
-            >
-              <Trans>Add build</Trans>
-            </Button>
-          )}
-        </HStack>
-      );
-    }
-
-    return null;
-  }
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {

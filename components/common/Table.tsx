@@ -48,9 +48,9 @@ export function TableHeader(props: BoxProps) {
         px="4"
         py="3"
         backgroundColor={CSSVariables.themeColor}
+        color={CSSVariables.secondaryBgColor}
         textAlign="left"
         fontSize="xs"
-        textColor="black"
         textTransform="uppercase"
         letterSpacing="wider"
         lineHeight="1rem"

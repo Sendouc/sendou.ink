@@ -44,8 +44,8 @@ const Header = ({ openNav }: { openNav: () => void }) => {
           icon={<FiMenu />}
           _hover={
             colorMode === "dark"
-              ? { bg: "white", color: "black" }
-              : { bg: "black", color: "white" }
+              ? { bg: "white !important", color: "black" }
+              : { bg: "black !important", color: "white" }
           }
           borderRadius="0"
           display={["flex", null, null, "none"]}
@@ -80,8 +80,8 @@ const Header = ({ openNav }: { openNav: () => void }) => {
             leftIcon={<FiHeart />}
             _hover={
               colorMode === "dark"
-                ? { bg: "white", color: "black" }
-                : { bg: "black", color: "white" }
+                ? { bg: "white !important", color: "black" }
+                : { bg: "black !important", color: "white" }
             }
             borderRadius="0"
             size="xs"
@@ -103,8 +103,8 @@ const Header = ({ openNav }: { openNav: () => void }) => {
           leftIcon={user ? <FiLogOut /> : <FiLogIn />}
           _hover={
             colorMode === "dark"
-              ? { bg: "white", color: "black" }
-              : { bg: "black", color: "white" }
+              ? { bg: "white !important", color: "black" }
+              : { bg: "black !important", color: "white" }
           }
           borderRadius="0"
           size="xs"
