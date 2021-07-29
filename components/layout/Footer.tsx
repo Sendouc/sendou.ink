@@ -1,12 +1,25 @@
 import { Box, Image } from "@chakra-ui/react";
 import { useRouter } from "next/dist/client/router";
+import { useLayoutEffect } from "react";
+import { useState } from "react";
 import { getFilters } from "utils/getFilters";
 import FooterContent from "./FooterContent";
 import FooterWaves from "./FooterWaves";
 
 const Footer: React.FC = () => {
+  const [bgColor, setBgColor] = useState(() =>
+    getComputedStyle(document.body).getPropertyValue("--theme-color").trim()
+  );
   const imgBase =
     useRouter().asPath.charCodeAt(1) % 2 === 0 ? "boing" : "b8ing";
+
+  useLayoutEffect(() => {
+    const customColor = getComputedStyle(document.body)
+      .getPropertyValue("--custom-theme-color")
+      .trim();
+
+    if (customColor) setBgColor(customColor);
+  }, []);
 
   return (
     <Box as="footer" mt="auto" display="grid" gridTemplateColumns="1fr">
@@ -20,14 +33,7 @@ const Footer: React.FC = () => {
         userSelect="none"
         loading="lazy"
         alt=""
-        filter={getFilters(
-          getComputedStyle(document.body)
-            .getPropertyValue("--custom-theme-color")
-            .trim() ||
-            getComputedStyle(document.body)
-              .getPropertyValue("--theme-color")
-              .trim()
-        )}
+        filter={getFilters(bgColor)}
         gridRow="1"
         gridColumn="1 / 2"
         zIndex="1"
