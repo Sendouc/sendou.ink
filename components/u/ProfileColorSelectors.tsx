@@ -66,7 +66,7 @@ const ProfileColorSelectors = ({
     }
 
     return result;
-  }, []);
+  }, [previousColors]);
 
   useEffect(() => {
     const body = document.getElementsByTagName("body")[0];

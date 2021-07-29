@@ -78,7 +78,7 @@ const ProfileOwnersButtons = ({
               <MyLink href="https://www.patreon.com/sendou" isExternal>
                 patrons
               </MyLink>{" "}
-              of tier "Supporter" ($5 dollar tier)
+              of tier &quot;Supporter&quot; ($5 dollar tier)
             </PopoverBody>
           </PopoverContent>
         </Popover>
