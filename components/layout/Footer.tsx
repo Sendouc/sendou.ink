@@ -1,6 +1,5 @@
 import { Box, Image } from "@chakra-ui/react";
 import { useRouter } from "next/dist/client/router";
-import { CSSVariables } from "utils/CSSVariables";
 import { getFilters } from "utils/getFilters";
 import FooterContent from "./FooterContent";
 import FooterWaves from "./FooterWaves";
