@@ -1,8 +1,7 @@
 import { Box, Button, Flex } from "@chakra-ui/react";
-import { useDebounce } from "hooks/common";
+import { useDebounce, useMutation } from "hooks/common";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { CSSVariables } from "utils/CSSVariables";
-import { sendData } from "utils/postData";
 
 const themeValues: { name: string; displayName: string }[] = [
   {
@@ -40,6 +39,13 @@ const ProfileColorSelectors = ({
 
   const debouncedCurrentColors = useDebounce(currentColors);
 
+  const { mutate, isMutating } = useMutation({
+    data: { colors: currentColors },
+    successToastMsg: "Colors updated",
+    url: "/api/me/colors",
+    afterSuccess: hide,
+  });
+
   const defaultColors = useMemo(() => {
     const bodyStyles = getComputedStyle(
       document.getElementsByTagName("body")[0]
@@ -70,13 +76,7 @@ const ProfileColorSelectors = ({
 
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const success = await sendData("POST", "/api/me/colors", {
-      colors: currentColors,
-    });
-
-    if (success) {
-      hide();
-    }
+    mutate();
   };
 
   return (
@@ -128,7 +128,13 @@ const ProfileColorSelectors = ({
         })}
       </Flex>
       <Flex justify="center">
-        <Button type="submit" size="sm" variant="outline" mr={2}>
+        <Button
+          type="submit"
+          size="sm"
+          variant="outline"
+          isLoading={isMutating}
+          mr={2}
+        >
           Save
         </Button>
         <Button
