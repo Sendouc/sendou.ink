@@ -110,6 +110,12 @@ const ProfilePage = (props: Props) => {
     for (const [key, value] of Object.entries(colors)) {
       body.style.setProperty(`--custom-${key}`, value);
     }
+
+    return () => {
+      for (const key of Object.keys(colors)) {
+        body.style.removeProperty(`--custom-${key}`);
+      }
+    };
   }, []);
 
   return (
