@@ -10,7 +10,7 @@ import Badges from "components/u/Badges";
 import BuildModal from "components/u/BuildModal";
 import ProfileColorSelectors from "components/u/ProfileColorSelectors";
 import ProfileModal from "components/u/ProfileModal";
-import ProfileOwnersButtons from "components/u/ProfileOwnersButton";
+import ProfileOwnersButtons from "components/u/ProfileOwnersButtons";
 import { useUser } from "hooks/common";
 import { useBuildsByUser } from "hooks/u";
 import { GetStaticPaths, GetStaticProps } from "next";

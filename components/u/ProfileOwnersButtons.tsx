@@ -21,7 +21,7 @@ const ProfileOwnersButtons = ({
 }) => {
   return (
     <>
-      <HStack spacing={4}>
+      <HStack spacing={4} mt={4}>
         <Button
           leftIcon={<FiEdit />}
           variant="outline"
