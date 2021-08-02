@@ -52,13 +52,15 @@ const ProfileOwnersButtons = ({
           </Button>
         ) : null}
       </HStack>
-      <Box mt={4} fontSize="xs" color={CSSVariables.themeGray}>
-        Editing profile colors is available for{" "}
-        <MyLink href="https://www.patreon.com/sendou" isExternal>
-          patrons
-        </MyLink>{" "}
-        of tier &quot;Supporter&quot; ($5 dollar tier)
-      </Box>
+      {!isColorEditorsButtonClickable ? (
+        <Box mt={4} fontSize="xs" color={CSSVariables.themeGray}>
+          Editing profile colors is available for{" "}
+          <MyLink href="https://www.patreon.com/sendou" isExternal>
+            patrons
+          </MyLink>{" "}
+          of tier &quot;Supporter&quot; ($5 dollar tier)
+        </Box>
+      ) : null}
     </>
   );
 };

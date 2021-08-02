@@ -1,4 +1,3 @@
-import { Button } from "@chakra-ui/button";
 import { useEffect, useMemo, useState } from "react";
 import { wonITZCount } from "utils/constants";
 import BadgeContainer from "./BadgeContainer";
@@ -227,14 +226,15 @@ const Badges = ({
   patreonTier,
   peakXP,
   presentationMode = false,
+  showInfo,
 }: {
   userId: number;
   userDiscordId: string;
   patreonTier: number | null;
   peakXP?: number;
   presentationMode?: boolean;
+  showInfo?: boolean;
 }) => {
-  const [showInfo, setShowInfo] = useState(false);
   const [imgsLoaded, setImgsLoaded] = useState(false);
 
   const badges = useMemo(
@@ -267,23 +267,11 @@ const Badges = ({
   if (badges.length === 0) return null;
 
   return (
-    <>
-      <BadgeContainer
-        badges={badges}
-        showBadges={imgsLoaded}
-        showInfo={showInfo}
-      />
-      <Button
-        my={3}
-        mx="auto"
-        size="xs"
-        display="block"
-        variant="ghost"
-        onClick={() => setShowInfo(!showInfo)}
-      >
-        {showInfo ? "Hide info" : "Show info"}
-      </Button>
-    </>
+    <BadgeContainer
+      badges={badges}
+      showBadges={imgsLoaded}
+      showInfo={showInfo}
+    />
   );
 };
 

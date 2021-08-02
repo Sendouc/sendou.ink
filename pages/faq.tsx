@@ -47,6 +47,7 @@ const questionsAndAnswers = [
           userDiscordId="-1"
           patreonTier={-1}
           presentationMode
+          showInfo
         />
       </>
     ),
