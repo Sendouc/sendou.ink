@@ -1,13 +1,24 @@
 import { Prisma } from "@prisma/client";
+import fs from "fs/promises";
+import path from "path";
 import { getWeaponNormalized } from "../../utils/lists/weapons";
 import prisma from "../client";
-import cb from "./data/may_clam_blitz_2021.json";
-import rm from "./data/may_rainmaker_2021.json";
-import sz from "./data/may_splat_zones_2021.json";
-import tc from "./data/may_tower_control_2021.json";
 
-const MONTH = 5;
-const YEAR = 2021;
+const MONTHS = [
+  "",
+  "january",
+  "february",
+  "march",
+  "april",
+  "may",
+  "june",
+  "july",
+  "august",
+  "september",
+  "october",
+  "november",
+  "december",
+] as const;
 
 const filterJson = (result: any) => !result.cheater;
 
@@ -51,21 +62,73 @@ const main = async () => {
     include: { user: { include: { player: true } } },
   });
 
+  const files = await fs.readdir(path.join(__dirname, "data"));
+
+  if (files.length !== 4) throw Error("not 4");
+
+  let sz: any = null;
+  let tc: any = null;
+  let rm: any = null;
+  let cb: any = null;
+
+  let month = -1;
+  let year = -1;
+
+  for (const file of files) {
+    const fileParts = file.replace(".json", "").split("_");
+    year = Number(fileParts[fileParts.length - 1]);
+    // @ts-expect-error
+    month = MONTHS.indexOf(fileParts[0]);
+
+    let previousMonth = new Date().getMonth();
+    let previousYear = new Date().getFullYear();
+    if (previousMonth === 0) {
+      previousMonth = 12;
+      previousYear = previousYear - 1;
+    }
+    if (month !== previousMonth) {
+      throw Error("month mismatch");
+    }
+    if (year !== previousYear) {
+      throw Error("year mismatch");
+    }
+
+    const contents = JSON.parse(
+      await fs.readFile(path.join(__dirname, "data", file), "utf8")
+    );
+
+    if (file.includes("splat_zones")) {
+      sz = contents;
+    } else if (file.includes("tower_control")) {
+      tc = contents;
+    } else if (file.includes("rainmaker")) {
+      rm = contents;
+    } else if (file.includes("clam_blitz")) {
+      cb = contents;
+    } else {
+      throw Error("unknown file");
+    }
+  }
+
+  if ([sz, tc, rm, cb].some((x) => x === null)) {
+    throw Error("null mode");
+  }
+
   const inputSZ = sz
     .filter(filterJson)
-    .map((json) => jsonToInput(json, "SZ", MONTH, YEAR));
+    .map((json: any) => jsonToInput(json, "SZ", month, year));
 
   const inputTC = tc
     .filter(filterJson)
-    .map((json) => jsonToInput(json, "TC", MONTH, YEAR));
+    .map((json: any) => jsonToInput(json, "TC", month, year));
 
   const inputRM = rm
     .filter(filterJson)
-    .map((json) => jsonToInput(json, "RM", MONTH, YEAR));
+    .map((json: any) => jsonToInput(json, "RM", month, year));
 
   const inputCB = cb
     .filter(filterJson)
-    .map((json) => jsonToInput(json, "CB", MONTH, YEAR));
+    .map((json: any) => jsonToInput(json, "CB", month, year));
 
   const playersData = [...sz, ...tc, ...rm, ...cb].map(jsonToPlayerInput);
 
