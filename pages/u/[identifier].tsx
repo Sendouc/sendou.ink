@@ -116,7 +116,7 @@ const ProfilePage = (props: Props) => {
         body.style.removeProperty(`--custom-${key}`);
       }
     };
-  }, [canEditProfileColors]);
+  }, [canEditProfileColors, user.profile?.colors]);
 
   return (
     <>
