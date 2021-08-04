@@ -51,7 +51,7 @@ const BadgeContainer = ({
                 key={badge.src}
                 background="black"
                 borderRadius="5px"
-                m={2}
+                m={3}
                 onMouseEnter={() => setBadgeInfoShown(`${badge.description}`)}
                 onClick={() => setBadgeInfoShown(`${badge.description}`)}
               >
@@ -65,7 +65,7 @@ const BadgeContainer = ({
                 <Text
                   style={{
                     marginTop: -58,
-                    marginLeft: 41,
+                    marginLeft: 40,
                     fontSize: "0.7rem",
                     fontWeight: "bold",
                     color: CSSVariables.themeColor,
@@ -75,6 +75,9 @@ const BadgeContainer = ({
                   background="black"
                   borderRadius="50%"
                   padding={1}
+                  width="23px"
+                  height="23px"
+                  textAlign="center"
                 >
                   {`x${badge.count}`}
                 </Text>
