@@ -13,6 +13,7 @@ const BadgeContainer = ({
   badges: {
     src: string;
     description: string;
+    hueRotateAngle?: number;
     count: number;
   }[];
 }) => {
@@ -39,6 +40,11 @@ const BadgeContainer = ({
                       h={10}
                       m={1}
                       src={`/badges/${badge.src}`}
+                      filter={
+                        typeof badge.hueRotateAngle === "number"
+                          ? `hue-rotate(${badge.hueRotateAngle}deg)`
+                          : undefined
+                      }
                     />
                   </Box>{" "}
                   <Text ml={4} fontSize="sm" color={CSSVariables.textColor}>
@@ -61,6 +67,11 @@ const BadgeContainer = ({
                   h={10}
                   m={1}
                   src={`/badges/${badge.src}`}
+                  filter={
+                    typeof badge.hueRotateAngle === "number"
+                      ? `hue-rotate(${badge.hueRotateAngle}deg)`
+                      : undefined
+                  }
                 />
                 <Text
                   style={{

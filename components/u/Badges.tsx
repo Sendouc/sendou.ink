@@ -6,6 +6,7 @@ export const regularTournamentBadges: {
   badgeName: string;
   name: string;
   altNames?: string[];
+  hueRotateAngle?: number;
   winnerDiscordIds: string;
 }[] = [
   {
@@ -14,6 +15,12 @@ export const regularTournamentBadges: {
     altNames: ["Dapple SZ Ladder"],
     winnerDiscordIds:
       "393411373289177098,300073469503340546,554124226915860507,417489824589676548,403345464138661888,343375632819814400,726389792237027370,570288931321413653,716227192060641281,381129695980290050,448493571419537428,207150814735761408,339041223736164354",
+  },
+  {
+    badgeName: "ebtv",
+    name: "tbd",
+    winnerDiscordIds: "335179210878353409",
+    hueRotateAngle: -76,
   },
   {
     badgeName: "girls",
@@ -94,7 +101,12 @@ const usersBadges = ({
   peakXP = -1,
   presentationMode,
 }: BadgesProps) => {
-  const result: { src: string; description: string; count: number }[] = [];
+  const result: {
+    src: string;
+    description: string;
+    count: number;
+    hueRotateAngle?: number;
+  }[] = [];
 
   const [itz1To9, itz10to19, itz20To29] = wonITZCount(userId);
 
@@ -220,6 +232,7 @@ const usersBadges = ({
       src: `${tournament.badgeName}.gif`,
       description: `Awarded for winning ${tournament.name}`,
       count: presentationMode ? 1 : count,
+      hueRotateAngle: tournament.hueRotateAngle,
     });
   }
 

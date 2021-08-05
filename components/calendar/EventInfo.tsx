@@ -110,6 +110,7 @@ const EventInfo = ({ event, edit }: EventInfoProps) => {
                       src: `${badge.badgeName}.gif`,
                       description: "",
                       count: 1,
+                      hueRotateAngle: badge.hueRotateAngle,
                     }))}
                   />
                 ) : null}
