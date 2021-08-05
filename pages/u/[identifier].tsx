@@ -162,7 +162,16 @@ const ProfilePage = (props: Props) => {
       ) : null}
       {showColorSelectors ? (
         <ProfileColorSelectors
-          hide={() => setShowColorSelectors(false)}
+          hide={() => {
+            setShowColorSelectors(false);
+            const body = document.getElementsByTagName("body")[0];
+
+            for (const [key, value] of Object.entries(
+              user.profile?.colors ?? {}
+            )) {
+              body.style.setProperty(`--custom-${key}`, value);
+            }
+          }}
           previousColors={
             (user.profile?.colors as Record<string, string>) ?? undefined
           }
