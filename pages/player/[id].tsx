@@ -1,5 +1,5 @@
 import { Box, HStack, Radio, RadioGroup } from "@chakra-ui/react";
-import { t, Trans } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import MyLink from "components/common/MyLink";
 import QuadTable from "components/player/QuadTable";
 import TwinTable from "components/player/TwinTable";
@@ -69,12 +69,6 @@ const PlayerPage = (props: Props) => {
       {tab === "QUAD" && <QuadTable player={player} />}
     </>
   );
-
-  function getPlayerName() {
-    if (player?.placements.length) return player.placements[0].playerName;
-
-    return "???";
-  }
 
   function getInitialTabValue() {
     if (

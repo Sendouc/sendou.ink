@@ -10,7 +10,7 @@ import {
   NumberInputStepper,
   Radio,
 } from "@chakra-ui/react";
-import { t, Trans } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import { Ability, Mode } from "@prisma/client";
 import AbilityIcon from "components/common/AbilityIcon";
 import {

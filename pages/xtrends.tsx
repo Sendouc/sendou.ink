@@ -31,7 +31,7 @@ const XTrendsPage = ({ trends }: XTrendsPageProps) => {
         <TrendTier
           key={tier.label}
           tier={tier}
-          data={trends[mode].filter((weapon, _, arr) => {
+          data={trends[mode].filter((weapon) => {
             const targetCount = 1500 * (tier.criteria / 100);
             const previousTargetCount =
               i === 0 ? Infinity : 1500 * (xTrendsTiers[i - 1].criteria / 100);

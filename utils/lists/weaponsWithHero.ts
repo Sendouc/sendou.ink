@@ -387,6 +387,7 @@ export const weaponsWithHeroCategorized: readonly {
 
 // done like this so that the strings get translated but
 // components receive the names in English as well
+// @ts-expect-error
 const weaponsWithHeroCategorizedLocalized = [
   t`Sploosh-o-matic`,
   t`Neo Sploosh-o-matic`,

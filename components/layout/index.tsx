@@ -1,6 +1,5 @@
 import { useToast } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import { SWRConfig } from "swr";
 import Footer from "./Footer";
@@ -10,18 +9,8 @@ import Nav from "./Nav";
 
 const DATE_KEYS = ["createdAt", "updatedAt"];
 
-const WIDE = [
-  "analyzer",
-  "plans",
-  "builds",
-  "u/",
-  "sr/leaderboards",
-  "plus/history",
-];
-
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [navIsOpen, setNavIsOpen] = useState(false);
-  const router = useRouter();
   const [errors, setErrors] = useState(new Set<string>());
   const toast = useToast();
 

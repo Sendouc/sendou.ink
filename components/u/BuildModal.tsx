@@ -306,7 +306,7 @@ const BuildModal: React.FC<Props> = ({ onClose, build, weaponFromQuery }) => {
                   name="headGear"
                   control={control}
                   defaultValue=""
-                  render={({ onChange, value, name }) => (
+                  render={({ onChange, value }) => (
                     <GearSelector
                       slot="head"
                       value={value}

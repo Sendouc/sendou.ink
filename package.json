@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "test": "jest",
     "dev": "next dev",
     "build": "lingui compile && npm run prebuild && next build",
     "build:analyze": "lingui compile && npm run prebuild && ANALYZE=true next build",
+    "typecheck": "tsc --noEmit",
     "start": "next start",
     "compile": "lingui compile",
     "migrate": "npx prisma migrate deploy",
@@ -71,7 +71,6 @@
     "@babel/core": "^7.14.6",
     "@lingui/cli": "^3.8.3",
     "@lingui/macro": "^3.8.3",
-    "@types/jest": "^26.0.23",
     "@types/node": "^15.12.4",
     "@types/nprogress": "^0.2.0",
     "@types/randomcolor": "^0.5.5",
@@ -86,7 +85,6 @@
     "eslint-config-next": "^11.0.0",
     "prettier": "^2.3.1",
     "prisma": "^2.25.0",
-    "ts-jest": "^27.0.3",
     "ts-node": "^10.0.0",
     "typescript": "^4.3.4"
   },

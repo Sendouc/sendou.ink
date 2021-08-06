@@ -1,6 +1,4 @@
 import { NextRouter, useRouter } from "next/router";
-import type { URLSearchParams as URLSearchParamsType } from "url";
-import * as z from "zod";
 
 type SearchParamsType =
   | string

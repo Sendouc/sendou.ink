@@ -1,4 +1,4 @@
-import { Box, Button, Grid } from "@chakra-ui/react";
+import { Box, Grid } from "@chakra-ui/react";
 import MyLink from "components/common/MyLink";
 import BeautifulDrawingOfBorzoic from "components/layout/BeautifulDrawingByBorzoic";
 import NavButtons from "components/layout/NavButtons";
