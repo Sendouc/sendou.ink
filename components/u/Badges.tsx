@@ -175,6 +175,7 @@ const usersBadges = ({
       src: "xp29.gif",
       description: "Peak X Power of 2900 or better",
       count: 1,
+      hueRotateAngle: -120,
     });
     result.push({
       src: "xp28.gif",
@@ -185,11 +186,13 @@ const usersBadges = ({
       src: "xp27.gif",
       description: "Peak X Power of 2700 or better",
       count: 1,
+      hueRotateAngle: 160,
     });
     result.push({
       src: "xp26.gif",
       description: "Peak X Power of 2600 or better",
       count: 1,
+      hueRotateAngle: 100,
     });
   }
 
