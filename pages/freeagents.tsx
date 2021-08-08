@@ -19,9 +19,16 @@ import { useEffect, useRef, useState } from "react";
 import { mutate } from "swr";
 import { CSSVariables } from "utils/CSSVariables";
 import { sendData } from "utils/postData";
-import { ssr } from "./api/trpc/[trpc]";
+import freeAgentsService from "services/freeagents";
+import { GetStaticProps } from "next";
+import { serializeDataForGetStaticProps } from "utils/objects";
+import { FreeAgentsGet } from "./api/free-agents";
 
-const FreeAgentsPage = () => {
+interface Props {
+  postsInitialData: FreeAgentsGet;
+}
+
+const FreeAgentsPage = ({ postsInitialData }: Props) => {
   const {
     postsData,
     refetchPosts,
@@ -32,7 +39,7 @@ const FreeAgentsPage = () => {
     allPostsCount,
     state,
     dispatch,
-  } = useFreeAgents();
+  } = useFreeAgents(postsInitialData);
   const [user] = useUser();
   const router = useRouter();
 
@@ -88,7 +95,8 @@ const FreeAgentsPage = () => {
         </Button>
       )}
       {usersPost &&
-        usersPost.updatedAt.getTime() < dateThreeWeeksAgo.getTime() && (
+        new Date(usersPost.updatedAt).getTime() <
+          dateThreeWeeksAgo.getTime() && (
           <Alert
             status="warning"
             variant="subtle"
@@ -177,12 +185,12 @@ const FreeAgentsPage = () => {
   }
 };
 
-export const getStaticProps = async () => {
-  await ssr.prefetchQuery("freeAgents.posts");
+export const getStaticProps: GetStaticProps = async () => {
+  const posts = await freeAgentsService.posts();
 
   return {
     props: {
-      dehydratedState: ssr.dehydrate(),
+      postsInitialData: serializeDataForGetStaticProps(posts),
     },
     revalidate: 60,
   };

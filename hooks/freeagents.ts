@@ -1,7 +1,9 @@
 import { Playstyle } from "@prisma/client";
 import { countries } from "countries-list";
 import { useUser } from "hooks/common";
+import { FreeAgentsGet } from "pages/api/free-agents";
 import { Dispatch, useMemo, useReducer } from "react";
+import useSWR from "swr";
 import { getBooleanFromString, getWeaponFromString } from "utils/strings";
 import { trpc } from "utils/trpc";
 import { isFreeAgentPlaystyle, isFreeAgentRegion } from "utils/typeGuards";
@@ -56,12 +58,12 @@ export type UseFreeAgentsDispatch = Dispatch<Action>;
 
 const defaultState: UseFreeAgentsState = { xp: false, plusServer: false };
 
-export function useFreeAgents() {
+export function useFreeAgents(postsInitialData: FreeAgentsGet) {
   const router = useMyRouter();
   const [user] = useUser();
 
-  const posts = trpc.useQuery(["freeAgents.posts"], {
-    enabled: false,
+  const posts = useSWR<FreeAgentsGet>("/api/free-agents", {
+    initialData: postsInitialData,
   });
 
   const usersPost = posts.data?.find(
@@ -173,7 +175,7 @@ export function useFreeAgents() {
 
   return {
     postsData: filteredPostsData,
-    refetchPosts: posts.refetch,
+    refetchPosts: posts.mutate,
     allPostsCount: (posts.data ?? []).length,
     likesData,
     isLoading: !posts.data,

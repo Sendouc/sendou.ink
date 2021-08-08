@@ -22,9 +22,9 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { t, Trans } from "@lingui/macro";
 import MarkdownTextarea from "components/common/MarkdownTextarea";
+import { FreeAgentsGet } from "pages/api/free-agents";
 import { Controller, useForm } from "react-hook-form";
 import { FiTrash } from "react-icons/fi";
-import { PostsData } from "services/freeagents";
 import { getToastOptions } from "utils/objects";
 import { trpc } from "utils/trpc";
 import { Unpacked } from "utils/types";
@@ -37,14 +37,12 @@ import * as z from "zod";
 interface Props {
   onClose: () => void;
   refetchQuery: () => void;
-  post?: Unpacked<PostsData>;
+  post?: Unpacked<FreeAgentsGet>;
 }
 
 type FormData = z.infer<typeof freeAgentPostSchema>;
 
 const FAModal = ({ onClose, post, refetchQuery }: Props) => {
-  const utils = trpc.useQueryUtils();
-
   const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
     resolver: zodResolver(freeAgentPostSchema),
     defaultValues: post,
@@ -59,7 +57,6 @@ const FAModal = ({ onClose, post, refetchQuery }: Props) => {
         )
       );
       refetchQuery();
-      utils.invalidateQuery(["freeAgents.posts"]);
       onClose();
     },
     onError(error) {
@@ -71,7 +68,6 @@ const FAModal = ({ onClose, post, refetchQuery }: Props) => {
     onSuccess() {
       toast(getToastOptions(t`Free agent post deleted`, "success"));
       refetchQuery();
-      utils.invalidateQuery(["freeAgents.posts"]);
       onClose();
     },
     onError(error) {

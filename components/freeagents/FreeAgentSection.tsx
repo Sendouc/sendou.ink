@@ -18,10 +18,10 @@ import {
   RiPaintLine,
   RiSwordLine,
 } from "react-icons/ri";
-import { PostsData } from "services/freeagents";
 import { getToastOptions } from "utils/objects";
 import { trpc } from "utils/trpc";
 import { Unpacked } from "utils/types";
+import { FreeAgentsGet } from "pages/api/free-agents";
 
 const playstyleToEmoji = {
   FRONTLINE: RiSwordLine,
@@ -37,7 +37,7 @@ const FreeAgentSection = ({
   showPlusServerMembership,
   postRef,
 }: {
-  post: Unpacked<PostsData>;
+  post: Unpacked<FreeAgentsGet>;
   isLiked: boolean;
   canLike: boolean;
   showXp: boolean;
