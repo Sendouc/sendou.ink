@@ -2,10 +2,10 @@ import { Playstyle } from "@prisma/client";
 import { countries } from "countries-list";
 import { useUser } from "hooks/common";
 import { FreeAgentsGet } from "pages/api/free-agents";
+import { LikesGet } from "pages/api/free-agents/likes";
 import { Dispatch, useMemo, useReducer } from "react";
 import useSWR from "swr";
 import { getBooleanFromString, getWeaponFromString } from "utils/strings";
-import { trpc } from "utils/trpc";
 import { isFreeAgentPlaystyle, isFreeAgentRegion } from "utils/typeGuards";
 import { useMyRouter } from "./useMyRouter";
 
@@ -70,9 +70,7 @@ export function useFreeAgents(postsInitialData: FreeAgentsGet) {
     (post) => post.user.discordId === user?.discordId
   );
 
-  const { data: likesData } = trpc.useQuery(["freeAgents.likes"], {
-    enabled: !!usersPost,
-  });
+  const likes = useSWR<LikesGet>(usersPost ? "/api/free-agents/likes" : null);
 
   const [state, dispatch] = useReducer(
     (oldState: UseFreeAgentsState, action: Action) => {
@@ -177,10 +175,10 @@ export function useFreeAgents(postsInitialData: FreeAgentsGet) {
     postsData: filteredPostsData,
     refetchPosts: posts.mutate,
     allPostsCount: (posts.data ?? []).length,
-    likesData,
+    likesData: likes.data,
     isLoading: !posts.data,
     usersPost,
-    matchedPosts: (likesData?.matchedPostIds ?? []).map((id) =>
+    matchedPosts: (likes.data?.matchedPostIds ?? []).map((id) =>
       (filteredPostsData ?? []).find((post) => post.id === id)
     ),
     state,

@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma, User } from "@prisma/client";
 import { httpError } from "@trpc/server";
 import prisma from "prisma/client";
 import { freeAgentPostSchema } from "utils/validators/fapost";
@@ -78,9 +78,11 @@ const deletePost = async (userId: number) => {
   return prisma.freeAgentPost.delete({ where: { userId } });
 };
 
-const likes = async (userId: number) => {
+export type LikesData = Prisma.PromiseReturnType<typeof likes>;
+
+const likes = async ({ user }: { user: User }) => {
   const post = await prisma.freeAgentPost.findUnique({
-    where: { userId },
+    where: { userId: user.id },
     include: {
       likedPosts: { select: { id: true } },
       likersPosts: { select: { id: true, updatedAt: true } },

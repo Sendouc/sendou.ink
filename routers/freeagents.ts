@@ -5,12 +5,6 @@ import { freeAgentPostSchema } from "utils/validators/fapost";
 import * as z from "zod";
 
 const freeAgentsApi = createRouter()
-  .query("likes", {
-    resolve({ ctx }) {
-      const user = throwIfNotLoggedIn(ctx.user);
-      return service.likes(user.id);
-    },
-  })
   .mutation("upsertPost", {
     input: freeAgentPostSchema,
     resolve({ ctx, input }) {

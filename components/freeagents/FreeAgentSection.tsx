@@ -22,6 +22,7 @@ import { getToastOptions } from "utils/objects";
 import { trpc } from "utils/trpc";
 import { Unpacked } from "utils/types";
 import { FreeAgentsGet } from "pages/api/free-agents";
+import { mutate } from "swr";
 
 const playstyleToEmoji = {
   FRONTLINE: RiSwordLine,
@@ -45,10 +46,9 @@ const FreeAgentSection = ({
   postRef?: RefObject<HTMLDivElement>;
 }) => {
   const toast = useToast();
-  const utils = trpc.useQueryUtils();
   const addLikeMutation = trpc.useMutation("freeAgents.addLike", {
     onSuccess() {
-      utils.invalidateQuery(["freeAgents.likes"]);
+      mutate("/api/free-agents/likes");
     },
     onError(error) {
       toast(getToastOptions(error.message, "error"));
@@ -56,7 +56,7 @@ const FreeAgentSection = ({
   });
   const deleteLikeMutation = trpc.useMutation("freeAgents.deleteLike", {
     onSuccess() {
-      utils.invalidateQuery(["freeAgents.likes"]);
+      mutate("/api/free-agents/likes");
     },
     onError(error) {
       toast(getToastOptions(error.message, "error"));
