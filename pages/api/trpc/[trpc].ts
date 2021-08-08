@@ -1,7 +1,6 @@
 import * as trpc from "@trpc/server";
 import { inferAsyncReturnType, inferProcedureOutput } from "@trpc/server";
 import * as trpcNext from "@trpc/server/adapters/next";
-import calendarApi from "routers/calendar";
 import freeAgentsApi from "routers/freeagents";
 import plusApi from "routers/plus";
 import superjson from "superjson";
@@ -21,7 +20,6 @@ export function createRouter() {
 // Important: only use this export with SSR/SSG
 export const appRouter = createRouter()
   .merge("plus.", plusApi)
-  .merge("calendar.", calendarApi)
   .merge("freeAgents.", freeAgentsApi);
 
 // Exporting type _type_ AppRouter only exposes types that can be used for inference
