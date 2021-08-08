@@ -442,28 +442,28 @@ const MapsGeneratorPage = () => {
               <Box textAlign="center">
                 {Object.entries(stagesSelected).map(([stage, modes]) =>
                   modes.includes("SZ") ? (
-                    <SubText key={stage}>{stage}</SubText>
+                    <SubText key={stage}>{t({id: stage})}</SubText>
                   ) : null
                 )}
               </Box>
               <Box textAlign="center">
                 {Object.entries(stagesSelected).map(([stage, modes]) =>
                   modes.includes("TC") ? (
-                    <SubText key={stage}>{stage}</SubText>
+                    <SubText key={stage}>{t({id: stage})}</SubText>
                   ) : null
                 )}
               </Box>
               <Box textAlign="center">
                 {Object.entries(stagesSelected).map(([stage, modes]) =>
                   modes.includes("RM") ? (
-                    <SubText key={stage}>{stage}</SubText>
+                    <SubText key={stage}>{t({id: stage})}</SubText>
                   ) : null
                 )}
               </Box>
               <Box textAlign="center">
                 {Object.entries(stagesSelected).map(([stage, modes]) =>
                   modes.includes("CB") ? (
-                    <SubText key={stage}>{stage}</SubText>
+                    <SubText key={stage}>{t({id: stage})}</SubText>
                   ) : null
                 )}
               </Box>
@@ -472,19 +472,19 @@ const MapsGeneratorPage = () => {
             <NewTable
               size="sm"
               headers={[
-                { name: "Stage name", dataKey: "stage" },
-                { name: "Splat Zones", dataKey: "SZ" },
-                { name: "Tower Control", dataKey: "TC" },
-                { name: "Rainmaker", dataKey: "RM" },
-                { name: "Clam Blitz", dataKey: "CB" }
+                { name: t`Stage name`, dataKey: "stage" },
+                { name: t`Splat Zones`, dataKey: RankedMode.SZ },
+                { name: t`Tower Control`, dataKey: RankedMode.TC },
+                { name: t`Rainmaker`, dataKey: RankedMode.RM },
+                { name: t`Clam Blitz`, dataKey: RankedMode.CB }
               ]}
               data={Object.entries(stagesSelected).map(([stage, modes], index) => (modes.length > 0 ? {
                 id: index,
-                stage,
-                SZ: modes.includes("SZ") ? <FaCheck color={CSSVariables.themeColor} style={{ margin: "auto" }} /> : null,
-                TC: modes.includes("TC") ? <FaCheck color={CSSVariables.themeColor} style={{ margin: "auto" }} /> : null,
-                RM: modes.includes("RM") ? <FaCheck color={CSSVariables.themeColor} style={{ margin: "auto" }} /> : null,
-                CB: modes.includes("CB") ? <FaCheck color={CSSVariables.themeColor} style={{ margin: "auto" }} /> : null
+                stage: t({id: stage}),
+                ...(Object.values(RankedMode).reduce((map, mode) => {
+                  map[mode] = (modes.includes(mode) ? <FaCheck color={CSSVariables.themeColor} style={{ margin: "auto" }} /> : null);
+                  return map;
+                }, ({} as {[mode in RankedMode]: JSX.Element | null}))),
               } : null))}
             />
           )}
