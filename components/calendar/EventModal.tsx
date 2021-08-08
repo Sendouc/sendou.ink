@@ -17,7 +17,6 @@ import {
   ModalOverlay,
 } from "@chakra-ui/modal";
 import { Select } from "@chakra-ui/select";
-import { useToast } from "@chakra-ui/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
@@ -48,7 +47,6 @@ export function EventModal({
   event?: { id: number } & FormData;
   refetchQuery: () => void;
 }) {
-  const toast = useToast();
   const { i18n } = useLingui();
   const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
     resolver: zodResolver(eventSchema),
