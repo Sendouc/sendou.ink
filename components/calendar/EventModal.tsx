@@ -27,11 +27,15 @@ import { CSSVariables } from "utils/CSSVariables";
 import { Controller, useForm } from "react-hook-form";
 import { FiTrash } from "react-icons/fi";
 import { EVENT_FORMATS } from "utils/constants";
-import { getToastOptions } from "utils/objects";
-import { trpc } from "utils/trpc";
 import { eventSchema, EVENT_DESCRIPTION_LIMIT } from "utils/validators/event";
 import * as z from "zod";
 import TagsSelector from "./TagsSelector";
+import { useMutation } from "hooks/common";
+import {
+  CalendarDeleteInput,
+  CalendarPostInput,
+  CalendarPutInput,
+} from "pages/api/calendar";
 
 export type FormData = z.infer<typeof eventSchema>;
 
@@ -51,34 +55,31 @@ export function EventModal({
     defaultValues: event,
   });
 
-  const addEventMutation = trpc.useMutation("calendar.addEvent", {
-    onSuccess() {
-      toast(getToastOptions(t`Event added`, "success"));
+  const addEventMutation = useMutation<CalendarPostInput>({
+    url: "/api/calendar",
+    method: "POST",
+    successToastMsg: t`Event added`,
+    afterSuccess: () => {
       refetchQuery();
       onClose();
-    },
-    onError(error) {
-      toast(getToastOptions(error.message, "error"));
     },
   });
-  const editEventMutation = trpc.useMutation("calendar.editEvent", {
-    onSuccess() {
-      toast(getToastOptions(t`Event updated`, "success"));
+  const updateEventMutation = useMutation<CalendarPutInput>({
+    url: "/api/calendar",
+    method: "PUT",
+    successToastMsg: t`Event updated`,
+    afterSuccess: () => {
       refetchQuery();
       onClose();
-    },
-    onError(error) {
-      toast(getToastOptions(error.message, "error"));
     },
   });
-  const deleteEventMutation = trpc.useMutation("calendar.deleteEvent", {
-    onSuccess() {
-      toast(getToastOptions(t`Event deleted`, "success"));
+  const deleteEventMutation = useMutation<CalendarDeleteInput>({
+    url: "/api/calendar",
+    method: "DELETE",
+    successToastMsg: t`Event deleted`,
+    afterSuccess: () => {
       refetchQuery();
       onClose();
-    },
-    onError(error) {
-      toast(getToastOptions(error.message, "error"));
     },
   });
 
@@ -86,7 +87,7 @@ export function EventModal({
 
   const onSubmit = async (values: FormData) => {
     event
-      ? editEventMutation.mutate({ event: values, eventId: event.id })
+      ? updateEventMutation.mutate({ event: values, eventId: event.id })
       : addEventMutation.mutate(values);
   };
 
@@ -115,7 +116,7 @@ export function EventModal({
                   variant="outline"
                   color="red.500"
                   mb={6}
-                  isLoading={deleteEventMutation.isLoading}
+                  isLoading={deleteEventMutation.isMutating}
                   onClick={async () => {
                     if (window.confirm(t`Delete the event?`))
                       onDelete(event.id);
@@ -264,7 +265,7 @@ export function EventModal({
                 mr={3}
                 type="submit"
                 isLoading={
-                  addEventMutation.isLoading || editEventMutation.isLoading
+                  addEventMutation.isMutating || updateEventMutation.isMutating
                 }
                 data-cy="save-button"
               >
@@ -274,7 +275,7 @@ export function EventModal({
                 onClick={onClose}
                 variant="outline"
                 isDisabled={
-                  addEventMutation.isLoading || editEventMutation.isLoading
+                  addEventMutation.isMutating || updateEventMutation.isMutating
                 }
               >
                 <Trans>Cancel</Trans>

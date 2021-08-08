@@ -41,7 +41,7 @@ export const useActiveNavItem = () => {
   return navItem;
 };
 
-export const useMutation = ({
+export const useMutation = <T>({
   url,
   method = "POST",
   data,
@@ -50,20 +50,20 @@ export const useMutation = ({
 }: {
   url: string;
   method?: "POST" | "DELETE" | "PUT";
-  data: Object;
+  data?: T;
   successToastMsg: string;
   afterSuccess?: () => void;
 }) => {
   const toast = useToast();
   const [isMutating, setIsMutating] = useState(false);
-  const mutate = async () => {
+  const mutate = async (parameterData?: T) => {
     setIsMutating(true);
     const response = await fetch(url, {
       method,
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(parameterData ?? data),
     });
     setIsMutating(false);
 

@@ -1,4 +1,5 @@
 import { UseToastOptions } from "@chakra-ui/react";
+import { Serialized } from "./types";
 
 export const getToastOptions = (
   description: NonNullable<UseToastOptions["description"]>,
@@ -10,3 +11,6 @@ export const getToastOptions = (
   isClosable: true,
   position: "top-right",
 });
+
+export const serializeDataForGetStaticProps = <T>(data: T): Serialized<T> =>
+  JSON.parse(JSON.stringify(data));

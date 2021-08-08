@@ -6,8 +6,6 @@ const choosePlayersToSitOut = (
 ): [playingRoster: Player[], spectators: Player[]] => {
   if (players.length === 8) return [players, []];
 
-  console.log("players", players);
-
   const playersCopySorted = [...players].sort(
     (a, b) => a.sittingOutCount - b.sittingOutCount
   );

@@ -7,9 +7,9 @@ import BadgeContainer from "components/u/BadgeContainer";
 import { regularTournamentBadges } from "components/u/Badges";
 import { useUser } from "hooks/common";
 import Image from "next/image";
+import { CalendarGet } from "pages/api/calendar";
 import React from "react";
 import { FiClock, FiEdit, FiExternalLink } from "react-icons/fi";
-import { Events } from "services/calendar";
 import { DiscordIcon } from "utils/assets/icons";
 import { ADMIN_ID, EVENT_FORMATS, TAGS } from "utils/constants";
 import { CSSVariables } from "utils/CSSVariables";
@@ -48,7 +48,7 @@ export const eventImage = (eventName: string) => {
 };
 
 interface EventInfoProps {
-  event: Unpacked<Events>;
+  event: Unpacked<CalendarGet>;
   edit: () => void;
 }
 
@@ -133,8 +133,8 @@ const EventInfo = ({ event, edit }: EventInfoProps) => {
                   justifySelf="flex-end"
                 />
                 {/* TODO */}
-                <Box as="time" dateTime={event.date.toISOString()}>
-                  {event.date.toLocaleString("en", {
+                <Box as="time" dateTime={new Date(event.date).toISOString()}>
+                  {new Date(event.date).toLocaleString("en", {
                     hour: "numeric",
                     minute: "numeric",
                   })}

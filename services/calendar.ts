@@ -1,6 +1,6 @@
-import { Prisma } from "@prisma/client";
-import { httpError } from "@trpc/server";
+import { Prisma, User } from "@prisma/client";
 import prisma from "prisma/client";
+import { UserInputError } from "utils/api";
 import { ADMIN_ID, TAGS } from "utils/constants";
 import { userBasicSelection } from "utils/prisma";
 import { eventSchema } from "utils/validators/event";
@@ -40,35 +40,35 @@ const events = async () => {
 
 const addEvent = async ({
   input,
-  userId,
+  user,
 }: {
   input: z.infer<typeof eventSchema>;
-  userId: number;
+  user: User;
 }) => {
   return prisma.calendarEvent.create({
     data: {
       ...input,
       isTournament: true,
       date: new Date(input.date),
-      posterId: userId,
+      posterId: user.id,
     },
   });
 };
 
 const editEvent = async ({
   event,
-  userId,
   eventId,
+  user,
 }: {
   event: z.infer<typeof eventSchema>;
   eventId: number;
-  userId: number;
+  user: User;
 }) => {
   const existingEvent = await prisma.calendarEvent.findFirst({
-    where: { AND: [{ id: eventId }, { posterId: userId }] },
+    where: { AND: [{ id: eventId }, { posterId: user.id }] },
   });
-  if (!existingEvent && userId !== ADMIN_ID) {
-    throw httpError.badRequest("no event to edit");
+  if (!existingEvent && user.id !== ADMIN_ID) {
+    throw new UserInputError("no event to edit");
   }
 
   return prisma.calendarEvent.update({
@@ -82,17 +82,17 @@ const editEvent = async ({
 };
 
 const deleteEvent = async ({
-  userId,
+  user,
   eventId,
 }: {
   eventId: number;
-  userId: number;
+  user: User;
 }) => {
   const existingEvent = await prisma.calendarEvent.findFirst({
-    where: { AND: [{ id: eventId }, { posterId: userId }] },
+    where: { AND: [{ id: eventId }, { posterId: user.id }] },
   });
-  if (!existingEvent && userId !== ADMIN_ID) {
-    throw httpError.badRequest("no event to delete");
+  if (!existingEvent && user.id !== ADMIN_ID) {
+    throw new UserInputError("no event to delete");
   }
 
   return prisma.calendarEvent.delete({ where: { id: eventId } });

@@ -8,13 +8,22 @@ import Calendar from "components/common/Calendar";
 import MyHead from "components/common/MyHead";
 import SubText from "components/common/SubText";
 import { useUser } from "hooks/common";
-import { ssr } from "pages/api/trpc/[trpc]";
+import { GetStaticProps } from "next";
 import { Fragment, ReactNode, useMemo, useState } from "react";
+import calendarService from "services/calendar";
+import useSWR from "swr";
 import { CSSVariables } from "utils/CSSVariables";
-import { trpc } from "utils/trpc";
+import { serializeDataForGetStaticProps } from "utils/objects";
+import { CalendarGet } from "./api/calendar";
 
-const CalendarPage = () => {
-  const events = trpc.useQuery(["calendar.events"], { enabled: false });
+interface Props {
+  eventsInitialData: CalendarGet;
+}
+
+const CalendarPage = ({ eventsInitialData }: Props) => {
+  const events = useSWR<CalendarGet>("/api/calendar", {
+    initialData: eventsInitialData,
+  });
   const [eventToEdit, setEventToEdit] = useState<
     boolean | (FormData & { id: number })
   >(false);
@@ -33,18 +42,19 @@ const CalendarPage = () => {
   };
 
   const eventsInFuture = Boolean(
-    events.data?.some(
-      (event) =>
-        event.date.getMonth() + 1 > month || event.date.getFullYear() > year
-    )
+    events.data?.some((event) => {
+      const eventDate = new Date(event.date);
+      return eventDate.getMonth() + 1 > month || eventDate.getFullYear() > year;
+    })
   );
 
   const calendarDateContents = useMemo(() => {
     return (events.data ?? []).reduce(
       (result: Record<string, ReactNode[]>, event) => {
-        const key = `${event.date.getDate()}-${
-          event.date.getMonth() + 1
-        }-${event.date.getFullYear()}`;
+        const eventDate = new Date(event.date);
+        const key = `${eventDate.getDate()}-${
+          eventDate.getMonth() + 1
+        }-${eventDate.getFullYear()}`;
         const node = (
           <Fragment key={event.id}>
             <Button
@@ -64,7 +74,7 @@ const CalendarPage = () => {
               }}
             >
               <Badge display="block" size="xs" colorScheme="gray" mb="0.25rem">
-                {event.date.toLocaleTimeString("en", { hour: "numeric" })}
+                {eventDate.toLocaleTimeString("en", { hour: "numeric" })}
               </Badge>
               {event.name}
             </Button>
@@ -86,7 +96,7 @@ const CalendarPage = () => {
         <EventModal
           onClose={() => setEventToEdit(false)}
           event={typeof eventToEdit === "boolean" ? undefined : eventToEdit}
-          refetchQuery={events.refetch}
+          refetchQuery={events.mutate}
         />
       )}
       {user && (
@@ -123,20 +133,21 @@ const CalendarPage = () => {
       {(events.data ?? [])
         .filter(
           (event) =>
-            event.date.getMonth() + 1 === month &&
-            event.date.getFullYear() === year
+            new Date(event.date).getMonth() + 1 === month &&
+            new Date(event.date).getFullYear() === year
         )
         .map((event, i) => {
+          const eventDate = new Date(event.date);
           const printDateHeader =
             !lastPrintedDate ||
-            lastPrintedDate[0] !== event.date.getDate() ||
-            lastPrintedDate[1] !== event.date.getMonth();
+            lastPrintedDate[0] !== eventDate.getDate() ||
+            lastPrintedDate[1] !== eventDate.getMonth();
 
           if (printDateHeader) {
             lastPrintedDate = [
-              event.date.getDate(),
-              event.date.getMonth(),
-              event.date,
+              eventDate.getDate(),
+              eventDate.getMonth(),
+              eventDate,
             ];
           }
 
@@ -159,7 +170,7 @@ const CalendarPage = () => {
                 <Box mt={i === 0 ? 0 : 10}>
                   <SubText>
                     {/* TODO */}
-                    {event.date.toLocaleDateString("en", {
+                    {new Date(event.date).toLocaleDateString("en", {
                       month: "long",
                       day: "numeric",
                       weekday: "long",
@@ -177,7 +188,7 @@ const CalendarPage = () => {
                   edit={() =>
                     setEventToEdit({
                       ...event,
-                      date: event.date.toISOString(),
+                      date: new Date(event.date).toISOString(),
                       // TODO: remove this if later other event types than tournament are allowed
                       // currently in the validator we accept the properties as if you can only submit
                       // tournaments but database is prepared to accept other kind of events
@@ -200,12 +211,12 @@ const CalendarPage = () => {
   );
 };
 
-export const getStaticProps = async () => {
-  await ssr.prefetchQuery("calendar.events");
+export const getStaticProps: GetStaticProps<Props> = async () => {
+  const eventsInitialData = await calendarService.events();
 
   return {
     props: {
-      dehydratedState: ssr.dehydrate(),
+      eventsInitialData: serializeDataForGetStaticProps(eventsInitialData),
     },
     revalidate: 60,
   };

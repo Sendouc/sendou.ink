@@ -26,8 +26,8 @@ export const createHandler = (
   res: NextApiResponse,
   handlers: Partial<
     Record<
-      "GET" | "POST",
-      (req: NextApiRequest, res: NextApiResponse) => Promise<void>
+      "GET" | "POST" | "PUT" | "DELETE",
+      (req: NextApiRequest, res: NextApiResponse) => Promise<any>
     >
   >
 ) => {
@@ -38,3 +38,10 @@ export const createHandler = (
 
   return res.status(405).end();
 };
+
+export class UserInputError extends Error {
+  constructor(msg: string) {
+    super(msg);
+    Object.setPrototypeOf(this, UserInputError.prototype);
+  }
+}
