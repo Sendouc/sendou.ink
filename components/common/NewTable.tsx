@@ -20,15 +20,17 @@ export default function NewTable({
   data,
   smallAtPx,
   leaderboardKey,
+  size
 }: {
   caption?: string;
   headers: {
     name: string;
     dataKey: string;
   }[];
-  data: (Record<string, React.ReactNode> & { id: number })[];
+  data: ((Record<string, React.ReactNode> & { id: number }) | null)[];
   smallAtPx?: string;
   leaderboardKey?: string;
+  size?: "sm" | "md" | "lg"
 }) {
   const [isSmall] = useMediaQuery(
     smallAtPx ? `(max-width: ${smallAtPx}px)` : "(max-width: 600px)"
@@ -41,6 +43,10 @@ export default function NewTable({
     return (
       <>
         {data.map((row, i) => {
+          if (row === null) {
+            return;
+          }
+
           if (leaderboardKey) {
             if (row[leaderboardKey] !== lastValue) rankToUse = i + 1;
             lastValue = row[leaderboardKey];
@@ -102,7 +108,7 @@ export default function NewTable({
 
   return (
     <OutlinedBox>
-      <Table variant="simple" fontSize="sm">
+      <Table variant="simple" fontSize="sm" size={size ? size : 'md'}>
         {caption && <TableCaption placement="top">{caption}</TableCaption>}
         <Thead>
           <Tr>
@@ -114,6 +120,10 @@ export default function NewTable({
         </Thead>
         <Tbody>
           {data.map((row, i) => {
+            if (row === null) {
+              return;
+            }
+
             if (leaderboardKey) {
               if (row[leaderboardKey] !== lastValue) rankToUse = i + 1;
               lastValue = row[leaderboardKey];

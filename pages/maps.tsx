@@ -18,7 +18,7 @@ import {
   Radio,
   RadioGroup,
   Stack,
-  Textarea,
+  Textarea, useMediaQuery,
 } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
@@ -29,9 +29,14 @@ import SubText from "components/common/SubText";
 import { useMyRouter } from "hooks/useMyRouter";
 import { ChangeEvent, Fragment, useEffect, useState } from "react";
 import { FiCheck, FiFilter, FiRotateCw } from "react-icons/fi";
+import { BsTable } from 'react-icons/bs';
+import { FaListUl, FaCheck } from 'react-icons/fa';
 import { shuffleArray } from "utils/arrays";
 import { stages } from "utils/lists/stages";
 import MyHead from "../components/common/MyHead";
+import { Flex } from '@chakra-ui/layout';
+import NewTable from "../components/common/NewTable";
+import {CSSVariables} from "../utils/CSSVariables";
 
 const MapsGeneratorPage = () => {
   const router = useMyRouter();
@@ -53,6 +58,8 @@ const MapsGeneratorPage = () => {
   const [count, setCount] = useState(getInitialCount());
   const [editing, setEditing] = useState(false);
   const [copied, setCopied] = useState<null | "URL" | "LIST">(null);
+  const [displayType, setDisplayType] = useState<"TABLE" | "LIST">("LIST");
+  const [isMobile] = useMediaQuery("(max-width: 48em)");
 
   const [urlParams, setUrlParams] = useState<
     { key: string; value: string | string[] | undefined }[]
@@ -398,57 +405,92 @@ const MapsGeneratorPage = () => {
             )}
           </FormControl>
         </>
-      ) : (
-        <Grid
-          mb={8}
-          templateColumns="repeat(4, 1fr)"
-          rowGap={4}
-          columnGap={4}
-          display={["none", null, "grid"]}
-        >
-          <Box textAlign="center">
-            <ModeImage mode="SZ" />
-          </Box>
-          <Box textAlign="center">
-            <ModeImage mode="TC" />
-          </Box>
-          <Box textAlign="center">
-            <ModeImage mode="RM" />
-          </Box>
-          <Box textAlign="center">
-            <ModeImage mode="CB" />
-          </Box>
-          <Box textAlign="center">
-            {Object.entries(stagesSelected).map(([stage, modes]) =>
-              modes.includes("SZ") ? (
-                <SubText key={stage}>{stage}</SubText>
-              ) : null
-            )}
-          </Box>
-          <Box textAlign="center">
-            {Object.entries(stagesSelected).map(([stage, modes]) =>
-              modes.includes("TC") ? (
-                <SubText key={stage}>{stage}</SubText>
-              ) : null
-            )}
-          </Box>
-          <Box textAlign="center">
-            {Object.entries(stagesSelected).map(([stage, modes]) =>
-              modes.includes("RM") ? (
-                <SubText key={stage}>{stage}</SubText>
-              ) : null
-            )}
-          </Box>
-          <Box textAlign="center">
-            {Object.entries(stagesSelected).map(([stage, modes]) =>
-              modes.includes("CB") ? (
-                <SubText key={stage}>{stage}</SubText>
-              ) : null
-            )}
-          </Box>
-        </Grid>
+      ) : (!isMobile &&
+        <>
+          <Flex flexDir="row-reverse" mb={4}>
+            <RadioGroup value={displayType} onChange={(value) => setDisplayType(value as "TABLE" | "LIST")}>
+              <Stack direction="row" spacing={4} align="center">
+                <Radio value="TABLE">
+                  <BsTable size={24} />
+                </Radio>
+                <Radio value="LIST">
+                  <FaListUl size={24} />
+                </Radio>
+              </Stack>
+            </RadioGroup>
+          </Flex>
+          {displayType === "LIST" ? (
+            <Grid
+              mb={8}
+              templateColumns="repeat(4, 1fr)"
+              rowGap={4}
+              columnGap={4}
+              display="grid"
+            >
+              <Box textAlign="center">
+                <ModeImage mode="SZ" />
+              </Box>
+              <Box textAlign="center">
+                <ModeImage mode="TC" />
+              </Box>
+              <Box textAlign="center">
+                <ModeImage mode="RM" />
+              </Box>
+              <Box textAlign="center">
+                <ModeImage mode="CB" />
+              </Box>
+              <Box textAlign="center">
+                {Object.entries(stagesSelected).map(([stage, modes]) =>
+                  modes.includes("SZ") ? (
+                    <SubText key={stage}>{stage}</SubText>
+                  ) : null
+                )}
+              </Box>
+              <Box textAlign="center">
+                {Object.entries(stagesSelected).map(([stage, modes]) =>
+                  modes.includes("TC") ? (
+                    <SubText key={stage}>{stage}</SubText>
+                  ) : null
+                )}
+              </Box>
+              <Box textAlign="center">
+                {Object.entries(stagesSelected).map(([stage, modes]) =>
+                  modes.includes("RM") ? (
+                    <SubText key={stage}>{stage}</SubText>
+                  ) : null
+                )}
+              </Box>
+              <Box textAlign="center">
+                {Object.entries(stagesSelected).map(([stage, modes]) =>
+                  modes.includes("CB") ? (
+                    <SubText key={stage}>{stage}</SubText>
+                  ) : null
+                )}
+              </Box>
+            </Grid>
+          ) : (
+            <NewTable
+              size="sm"
+              headers={[
+                { name: "Stage name", dataKey: "stage" },
+                { name: "Splat Zones", dataKey: "SZ" },
+                { name: "Tower Control", dataKey: "TC" },
+                { name: "Rainmaker", dataKey: "RM" },
+                { name: "Clam Blitz", dataKey: "CB" }
+              ]}
+              data={Object.entries(stagesSelected).map(([stage, modes], index) => (modes.length > 0 ? {
+                id: index,
+                stage,
+                SZ: modes.includes("SZ") ? <FaCheck color={CSSVariables.themeColor} style={{ margin: "auto" }} /> : null,
+                TC: modes.includes("TC") ? <FaCheck color={CSSVariables.themeColor} style={{ margin: "auto" }} /> : null,
+                RM: modes.includes("RM") ? <FaCheck color={CSSVariables.themeColor} style={{ margin: "auto" }} /> : null,
+                CB: modes.includes("CB") ? <FaCheck color={CSSVariables.themeColor} style={{ margin: "auto" }} /> : null
+              } : null))}
+            />
+          )}
+        </>
       )}
-      <Stack direction={["column", "row"]} spacing={4} mb={4}>
+      <Stack direction={["column", "row"]} spacing={4} mb={4} mt={4}>
         <Button
           leftIcon={<FiRotateCw />}
           onClick={() => {
