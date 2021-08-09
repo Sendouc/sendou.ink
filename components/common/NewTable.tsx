@@ -14,6 +14,8 @@ import React, { Fragment } from "react";
 import { getRankingString } from "utils/strings";
 import OutlinedBox from "./OutlinedBox";
 
+type TableRow = Record<string, React.ReactNode> & { id: number };
+
 export default function NewTable({
   caption,
   headers,
@@ -27,7 +29,7 @@ export default function NewTable({
     name: string;
     dataKey: string;
   }[];
-  data: ((Record<string, React.ReactNode> & { id: number }) | null)[];
+  data: (TableRow | null)[];
   smallAtPx?: string;
   leaderboardKey?: string;
   size?: "sm" | "md" | "lg"
@@ -36,17 +38,15 @@ export default function NewTable({
     smallAtPx ? `(max-width: ${smallAtPx}px)` : "(max-width: 600px)"
   );
 
+  const nonNullData = data.filter((row): row is TableRow => row !== null);
+
   let lastValue: any = null;
   let rankToUse: number = 1;
 
   if (isSmall) {
     return (
       <>
-        {data.map((row, i) => {
-          if (row === null) {
-            return;
-          }
-
+        {nonNullData.map((row, i) => {
           if (leaderboardKey) {
             if (row[leaderboardKey] !== lastValue) rankToUse = i + 1;
             lastValue = row[leaderboardKey];
@@ -119,11 +119,7 @@ export default function NewTable({
           </Tr>
         </Thead>
         <Tbody>
-          {data.map((row, i) => {
-            if (row === null) {
-              return;
-            }
-
+          {nonNullData.map((row, i) => {
             if (leaderboardKey) {
               if (row[leaderboardKey] !== lastValue) rankToUse = i + 1;
               lastValue = row[leaderboardKey];
