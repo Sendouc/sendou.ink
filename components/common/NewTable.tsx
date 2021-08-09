@@ -108,7 +108,7 @@ export default function NewTable({
 
   return (
     <OutlinedBox>
-      <Table variant="simple" fontSize="sm" size={size ? size : "md"}>
+      <Table variant="simple" fontSize="sm" size={size ?? "md"}>
         {caption && <TableCaption placement="top">{caption}</TableCaption>}
         <Thead>
           <Tr>
