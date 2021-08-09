@@ -22,7 +22,7 @@ export default function NewTable({
   data,
   smallAtPx,
   leaderboardKey,
-  size
+  size,
 }: {
   caption?: string;
   headers: {
@@ -32,7 +32,7 @@ export default function NewTable({
   data: (TableRow | null)[];
   smallAtPx?: string;
   leaderboardKey?: string;
-  size?: "sm" | "md" | "lg"
+  size?: "sm" | "md" | "lg";
 }) {
   const [isSmall] = useMediaQuery(
     smallAtPx ? `(max-width: ${smallAtPx}px)` : "(max-width: 600px)"
@@ -108,7 +108,7 @@ export default function NewTable({
 
   return (
     <OutlinedBox>
-      <Table variant="simple" fontSize="sm" size={size ? size : 'md'}>
+      <Table variant="simple" fontSize="sm" size={size ? size : "md"}>
         {caption && <TableCaption placement="top">{caption}</TableCaption>}
         <Thead>
           <Tr>

@@ -18,7 +18,8 @@ import {
   Radio,
   RadioGroup,
   Stack,
-  Textarea, useMediaQuery,
+  Textarea,
+  useMediaQuery,
 } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
@@ -29,14 +30,14 @@ import SubText from "components/common/SubText";
 import { useMyRouter } from "hooks/useMyRouter";
 import { ChangeEvent, Fragment, useEffect, useState } from "react";
 import { FiCheck, FiFilter, FiRotateCw } from "react-icons/fi";
-import { BsTable } from 'react-icons/bs';
-import { FaListUl, FaCheck } from 'react-icons/fa';
+import { BsTable } from "react-icons/bs";
+import { FaListUl, FaCheck } from "react-icons/fa";
 import { shuffleArray } from "utils/arrays";
 import { stages } from "utils/lists/stages";
 import MyHead from "../components/common/MyHead";
-import { Flex } from '@chakra-ui/layout';
+import { Flex } from "@chakra-ui/layout";
 import NewTable from "../components/common/NewTable";
-import {CSSVariables} from "../utils/CSSVariables";
+import { CSSVariables } from "../utils/CSSVariables";
 
 const MapsGeneratorPage = () => {
   const router = useMyRouter();
@@ -405,90 +406,105 @@ const MapsGeneratorPage = () => {
             )}
           </FormControl>
         </>
-      ) : (!isMobile &&
-        <>
-          <Flex flexDir="row-reverse" mb={4}>
-            <RadioGroup value={displayType} onChange={(value) => setDisplayType(value as "TABLE" | "LIST")}>
-              <Stack direction="row" spacing={4} align="center">
-                <Radio value="TABLE">
-                  <BsTable size={24} />
-                </Radio>
-                <Radio value="LIST">
-                  <FaListUl size={24} />
-                </Radio>
-              </Stack>
-            </RadioGroup>
-          </Flex>
-          {displayType === "LIST" ? (
-            <Grid
-              mb={8}
-              templateColumns="repeat(4, 1fr)"
-              rowGap={4}
-              columnGap={4}
-              display="grid"
-            >
-              <Box textAlign="center">
-                <ModeImage mode="SZ" />
-              </Box>
-              <Box textAlign="center">
-                <ModeImage mode="TC" />
-              </Box>
-              <Box textAlign="center">
-                <ModeImage mode="RM" />
-              </Box>
-              <Box textAlign="center">
-                <ModeImage mode="CB" />
-              </Box>
-              <Box textAlign="center">
-                {Object.entries(stagesSelected).map(([stage, modes]) =>
-                  modes.includes("SZ") ? (
-                    <SubText key={stage}>{t({id: stage})}</SubText>
-                  ) : null
+      ) : (
+        !isMobile && (
+          <>
+            <Flex flexDir="row-reverse" mb={4}>
+              <RadioGroup
+                value={displayType}
+                onChange={(value) => setDisplayType(value as "TABLE" | "LIST")}
+              >
+                <Stack direction="row" spacing={4} align="center">
+                  <Radio value="TABLE">
+                    <BsTable size={24} />
+                  </Radio>
+                  <Radio value="LIST">
+                    <FaListUl size={24} />
+                  </Radio>
+                </Stack>
+              </RadioGroup>
+            </Flex>
+            {displayType === "LIST" ? (
+              <Grid
+                mb={8}
+                templateColumns="repeat(4, 1fr)"
+                rowGap={4}
+                columnGap={4}
+                display="grid"
+              >
+                <Box textAlign="center">
+                  <ModeImage mode="SZ" />
+                </Box>
+                <Box textAlign="center">
+                  <ModeImage mode="TC" />
+                </Box>
+                <Box textAlign="center">
+                  <ModeImage mode="RM" />
+                </Box>
+                <Box textAlign="center">
+                  <ModeImage mode="CB" />
+                </Box>
+                <Box textAlign="center">
+                  {Object.entries(stagesSelected).map(([stage, modes]) =>
+                    modes.includes("SZ") ? (
+                      <SubText key={stage}>{t({ id: stage })}</SubText>
+                    ) : null
+                  )}
+                </Box>
+                <Box textAlign="center">
+                  {Object.entries(stagesSelected).map(([stage, modes]) =>
+                    modes.includes("TC") ? (
+                      <SubText key={stage}>{t({ id: stage })}</SubText>
+                    ) : null
+                  )}
+                </Box>
+                <Box textAlign="center">
+                  {Object.entries(stagesSelected).map(([stage, modes]) =>
+                    modes.includes("RM") ? (
+                      <SubText key={stage}>{t({ id: stage })}</SubText>
+                    ) : null
+                  )}
+                </Box>
+                <Box textAlign="center">
+                  {Object.entries(stagesSelected).map(([stage, modes]) =>
+                    modes.includes("CB") ? (
+                      <SubText key={stage}>{t({ id: stage })}</SubText>
+                    ) : null
+                  )}
+                </Box>
+              </Grid>
+            ) : (
+              <NewTable
+                size="sm"
+                headers={[
+                  { name: t`Stage name`, dataKey: "stage" },
+                  { name: t`Splat Zones`, dataKey: RankedMode.SZ },
+                  { name: t`Tower Control`, dataKey: RankedMode.TC },
+                  { name: t`Rainmaker`, dataKey: RankedMode.RM },
+                  { name: t`Clam Blitz`, dataKey: RankedMode.CB },
+                ]}
+                data={Object.entries(stagesSelected).map(
+                  ([stage, modes], index) =>
+                    modes.length > 0
+                      ? {
+                          id: index,
+                          stage: t({ id: stage }),
+                          ...Object.values(RankedMode).reduce((map, mode) => {
+                            map[mode] = modes.includes(mode) ? (
+                              <FaCheck
+                                color={CSSVariables.themeColor}
+                                style={{ margin: "auto" }}
+                              />
+                            ) : null;
+                            return map;
+                          }, {} as { [mode in RankedMode]: JSX.Element | null }),
+                        }
+                      : null
                 )}
-              </Box>
-              <Box textAlign="center">
-                {Object.entries(stagesSelected).map(([stage, modes]) =>
-                  modes.includes("TC") ? (
-                    <SubText key={stage}>{t({id: stage})}</SubText>
-                  ) : null
-                )}
-              </Box>
-              <Box textAlign="center">
-                {Object.entries(stagesSelected).map(([stage, modes]) =>
-                  modes.includes("RM") ? (
-                    <SubText key={stage}>{t({id: stage})}</SubText>
-                  ) : null
-                )}
-              </Box>
-              <Box textAlign="center">
-                {Object.entries(stagesSelected).map(([stage, modes]) =>
-                  modes.includes("CB") ? (
-                    <SubText key={stage}>{t({id: stage})}</SubText>
-                  ) : null
-                )}
-              </Box>
-            </Grid>
-          ) : (
-            <NewTable
-              size="sm"
-              headers={[
-                { name: t`Stage name`, dataKey: "stage" },
-                { name: t`Splat Zones`, dataKey: RankedMode.SZ },
-                { name: t`Tower Control`, dataKey: RankedMode.TC },
-                { name: t`Rainmaker`, dataKey: RankedMode.RM },
-                { name: t`Clam Blitz`, dataKey: RankedMode.CB }
-              ]}
-              data={Object.entries(stagesSelected).map(([stage, modes], index) => (modes.length > 0 ? {
-                id: index,
-                stage: t({id: stage}),
-                ...(Object.values(RankedMode).reduce((map, mode) => {
-                  map[mode] = (modes.includes(mode) ? <FaCheck color={CSSVariables.themeColor} style={{ margin: "auto" }} /> : null);
-                  return map;
-                }, ({} as {[mode in RankedMode]: JSX.Element | null}))),
-              } : null))}
-            />
-          )}
-        </>
+              />
+            )}
+          </>
+        )
       )}
       <Stack direction={["column", "row"]} spacing={4} mb={4} mt={4}>
         <Button
