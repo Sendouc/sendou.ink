@@ -14,7 +14,7 @@ import React, { Fragment } from "react";
 import { getRankingString } from "utils/strings";
 import OutlinedBox from "./OutlinedBox";
 
-type TableRow = Record<string, React.ReactNode> & { id: number };
+export type TableRow = Record<string, React.ReactNode> & { id: number };
 
 export default function NewTable({
   caption,

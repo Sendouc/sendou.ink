@@ -5,7 +5,32 @@ import SubText from "../common/SubText";
 import { t } from "@lingui/macro";
 import { FaCheck } from "react-icons/fa";
 import { CSSVariables } from "../../utils/CSSVariables";
-import NewTable from "../common/NewTable";
+import NewTable, { TableRow } from "../common/NewTable";
+
+function getModeCells(
+  enabledModes: RankedMode[]
+): { [mode in RankedMode]: JSX.Element | null } {
+  return Object.values(RankedMode).reduce((map, mode) => {
+    map[mode] = enabledModes.includes(mode) ? (
+      <FaCheck color={CSSVariables.themeColor} style={{ margin: "auto" }} />
+    ) : null;
+    return map;
+  }, {} as { [mode in RankedMode]: JSX.Element | null });
+}
+
+function getTableData(
+  stagesSelected: Record<string, RankedMode[]>
+): (TableRow | null)[] {
+  return Object.entries(stagesSelected).map(([stage, modes], index) =>
+    modes.length > 0
+      ? {
+          id: index,
+          stage: t({ id: stage }),
+          ...getModeCells(modes),
+        }
+      : null
+  );
+}
 
 export function MapPoolDisplay({
   stagesSelected,
@@ -73,23 +98,7 @@ export function MapPoolDisplay({
         { name: t`Rainmaker`, dataKey: RankedMode.RM },
         { name: t`Clam Blitz`, dataKey: RankedMode.CB },
       ]}
-      data={Object.entries(stagesSelected).map(([stage, modes], index) =>
-        modes.length > 0
-          ? {
-              id: index,
-              stage: t({ id: stage }),
-              ...Object.values(RankedMode).reduce((map, mode) => {
-                map[mode] = modes.includes(mode) ? (
-                  <FaCheck
-                    color={CSSVariables.themeColor}
-                    style={{ margin: "auto" }}
-                  />
-                ) : null;
-                return map;
-              }, {} as { [mode in RankedMode]: JSX.Element | null }),
-            }
-          : null
-      )}
+      data={getTableData(stagesSelected)}
     />
   );
 }
