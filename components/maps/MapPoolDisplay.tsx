@@ -32,6 +32,29 @@ function getTableData(
   );
 }
 
+function getGridModeCells(
+  stagesSelected: Record<string, RankedMode[]>
+): JSX.Element[] {
+  return Object.values(RankedMode).map((mode) => {
+    return (
+      <div key={mode}>
+        <Box textAlign="center">
+          <ModeImage mode={mode} />
+        </Box>
+        <Box textAlign="center">
+          {Object.entries(stagesSelected).map(([stage, modes]) =>
+            modes.includes(mode) ? (
+              <SubText key={stage} mb={1}>
+                {t({ id: stage })}
+              </SubText>
+            ) : null
+          )}
+        </Box>
+      </div>
+    );
+  });
+}
+
 export function MapPoolDisplay({
   stagesSelected,
 }: {
@@ -42,51 +65,12 @@ export function MapPoolDisplay({
   return isMobile ? (
     <Grid
       mb={8}
-      templateColumns="repeat(4, 1fr)"
+      templateColumns={{ base: "repeat(2, 1fr)", sm: "repeat(4, 1fr)" }}
       rowGap={4}
       columnGap={4}
       display="grid"
     >
-      <Box textAlign="center">
-        <ModeImage mode="SZ" />
-      </Box>
-      <Box textAlign="center">
-        <ModeImage mode="TC" />
-      </Box>
-      <Box textAlign="center">
-        <ModeImage mode="RM" />
-      </Box>
-      <Box textAlign="center">
-        <ModeImage mode="CB" />
-      </Box>
-      <Box textAlign="center">
-        {Object.entries(stagesSelected).map(([stage, modes]) =>
-          modes.includes("SZ") ? (
-            <SubText key={stage}>{t({ id: stage })}</SubText>
-          ) : null
-        )}
-      </Box>
-      <Box textAlign="center">
-        {Object.entries(stagesSelected).map(([stage, modes]) =>
-          modes.includes("TC") ? (
-            <SubText key={stage}>{t({ id: stage })}</SubText>
-          ) : null
-        )}
-      </Box>
-      <Box textAlign="center">
-        {Object.entries(stagesSelected).map(([stage, modes]) =>
-          modes.includes("RM") ? (
-            <SubText key={stage}>{t({ id: stage })}</SubText>
-          ) : null
-        )}
-      </Box>
-      <Box textAlign="center">
-        {Object.entries(stagesSelected).map(([stage, modes]) =>
-          modes.includes("CB") ? (
-            <SubText key={stage}>{t({ id: stage })}</SubText>
-          ) : null
-        )}
-      </Box>
+      {getGridModeCells(stagesSelected)}
     </Grid>
   ) : (
     <NewTable
