@@ -32,6 +32,7 @@ import { FiCheck, FiFilter, FiRotateCw } from "react-icons/fi";
 import { shuffleArray } from "utils/arrays";
 import { stages } from "utils/lists/stages";
 import MyHead from "../components/common/MyHead";
+import { MapPoolDisplay } from "../components/maps/MapPoolDisplay";
 
 const MapsGeneratorPage = () => {
   const router = useMyRouter();
@@ -399,56 +400,9 @@ const MapsGeneratorPage = () => {
           </FormControl>
         </>
       ) : (
-        <Grid
-          mb={8}
-          templateColumns="repeat(4, 1fr)"
-          rowGap={4}
-          columnGap={4}
-          display={["none", null, "grid"]}
-        >
-          <Box textAlign="center">
-            <ModeImage mode="SZ" />
-          </Box>
-          <Box textAlign="center">
-            <ModeImage mode="TC" />
-          </Box>
-          <Box textAlign="center">
-            <ModeImage mode="RM" />
-          </Box>
-          <Box textAlign="center">
-            <ModeImage mode="CB" />
-          </Box>
-          <Box textAlign="center">
-            {Object.entries(stagesSelected).map(([stage, modes]) =>
-              modes.includes("SZ") ? (
-                <SubText key={stage}>{stage}</SubText>
-              ) : null
-            )}
-          </Box>
-          <Box textAlign="center">
-            {Object.entries(stagesSelected).map(([stage, modes]) =>
-              modes.includes("TC") ? (
-                <SubText key={stage}>{stage}</SubText>
-              ) : null
-            )}
-          </Box>
-          <Box textAlign="center">
-            {Object.entries(stagesSelected).map(([stage, modes]) =>
-              modes.includes("RM") ? (
-                <SubText key={stage}>{stage}</SubText>
-              ) : null
-            )}
-          </Box>
-          <Box textAlign="center">
-            {Object.entries(stagesSelected).map(([stage, modes]) =>
-              modes.includes("CB") ? (
-                <SubText key={stage}>{stage}</SubText>
-              ) : null
-            )}
-          </Box>
-        </Grid>
+        <MapPoolDisplay stagesSelected={stagesSelected} />
       )}
-      <Stack direction={["column", "row"]} spacing={4} mb={4}>
+      <Stack direction={["column", "row"]} spacing={4} mb={4} mt={4}>
         <Button
           leftIcon={<FiRotateCw />}
           onClick={() => {

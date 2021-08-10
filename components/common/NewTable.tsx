@@ -14,25 +14,31 @@ import React, { Fragment } from "react";
 import { getRankingString } from "utils/strings";
 import OutlinedBox from "./OutlinedBox";
 
+export type TableRow = Record<string, React.ReactNode> & { id: number };
+
 export default function NewTable({
   caption,
   headers,
   data,
   smallAtPx,
   leaderboardKey,
+  size,
 }: {
   caption?: string;
   headers: {
     name: string;
     dataKey: string;
   }[];
-  data: (Record<string, React.ReactNode> & { id: number })[];
+  data: (TableRow | null)[];
   smallAtPx?: string;
   leaderboardKey?: string;
+  size?: "sm" | "md" | "lg";
 }) {
   const [isSmall] = useMediaQuery(
     smallAtPx ? `(max-width: ${smallAtPx}px)` : "(max-width: 600px)"
   );
+
+  const nonNullData = data.filter((row): row is TableRow => row !== null);
 
   let lastValue: any = null;
   let rankToUse: number = 1;
@@ -40,7 +46,7 @@ export default function NewTable({
   if (isSmall) {
     return (
       <>
-        {data.map((row, i) => {
+        {nonNullData.map((row, i) => {
           if (leaderboardKey) {
             if (row[leaderboardKey] !== lastValue) rankToUse = i + 1;
             lastValue = row[leaderboardKey];
@@ -102,7 +108,7 @@ export default function NewTable({
 
   return (
     <OutlinedBox>
-      <Table variant="simple" fontSize="sm">
+      <Table variant="simple" fontSize="sm" size={size ?? "md"}>
         {caption && <TableCaption placement="top">{caption}</TableCaption>}
         <Thead>
           <Tr>
@@ -113,7 +119,7 @@ export default function NewTable({
           </Tr>
         </Thead>
         <Tbody>
-          {data.map((row, i) => {
+          {nonNullData.map((row, i) => {
             if (leaderboardKey) {
               if (row[leaderboardKey] !== lastValue) rankToUse = i + 1;
               lastValue = row[leaderboardKey];
