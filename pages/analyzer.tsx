@@ -8,6 +8,7 @@ import useAbilityEffects from "hooks/useAbilityEffects";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { FiSettings } from "react-icons/fi";
+import { CSSVariables } from "utils/CSSVariables";
 import { isAbilityArray } from "utils/lists/abilities";
 import { isWeapon } from "utils/lists/weapons";
 import { AbilityOrUnknown } from "utils/types";
@@ -64,7 +65,7 @@ const BuildAnalyzerPage = () => {
   return (
     <>
       <MyHead title={t`Build Analyzer`} />
-      <Badge>
+      <Badge color={CSSVariables.textColor}>
         <Trans>Patch {CURRENT_PATCH}</Trans>
       </Badge>
 
