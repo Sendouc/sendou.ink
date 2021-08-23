@@ -112,7 +112,10 @@ const CalendarPage = ({ eventsInitialData }: Props) => {
       )}
       <Calendar
         current={{ month, year }}
-        min={{ month: 7, year: 2021 }}
+        min={{
+          month: new Date().getMonth() + 1,
+          year: new Date().getFullYear(),
+        }}
         handleNextClick={() =>
           setMonthYear(
             month === 12
