@@ -5,6 +5,7 @@ import {
   FormErrorMessage,
   FormHelperText,
   FormLabel,
+  Text,
   Textarea,
   useToast,
 } from "@chakra-ui/react";
@@ -13,7 +14,6 @@ import { Trans } from "@lingui/macro";
 import MyLink from "components/common/MyLink";
 import SubText from "components/common/SubText";
 import UserAvatar from "components/common/UserAvatar";
-import { CSSVariables } from "utils/CSSVariables";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Suggestions } from "services/plus";
@@ -70,29 +70,28 @@ const Suggestion = ({
         </MyLink>
       </Flex>
       <Box>
-        <Box fontSize="sm" color={CSSVariables.themeGray} mt={2}>
-          {new Date(suggestion.createdAt).toLocaleString()}
-        </Box>
-        <SubText mt={2}>+{suggestion.tier}</SubText>
+        <SubText mt={4}>+{suggestion.tier}</SubText>
         <Box mt={4} fontSize="sm">
           &quot;{suggestion.description}&quot; -{" "}
-          <MyLink
-            href={`/u/${suggestion.suggesterUser.discordId}`}
-            isColored={false}
-          >
+          <MyLink href={`/u/${suggestion.suggesterUser.discordId}`}>
             {getFullUsername(suggestion.suggesterUser)}
           </MyLink>
+          <Text as="i" fontSize="xs">
+            {" "}
+            ({new Date(suggestion.createdAt).toLocaleString("en")})
+          </Text>
         </Box>
         {suggestion.resuggestions?.map((resuggestion) => {
           return (
             <Box key={resuggestion.suggesterUser.id} mt={4} fontSize="sm">
               &quot;{resuggestion.description}&quot; -{" "}
-              <MyLink
-                href={`/u/${resuggestion.suggesterUser.discordId}`}
-                isColored={false}
-              >
+              <MyLink href={`/u/${resuggestion.suggesterUser.discordId}`}>
                 {getFullUsername(resuggestion.suggesterUser)}
               </MyLink>
+              <Text as="i" fontSize="xs">
+                {" "}
+                ({new Date(resuggestion.createdAt).toLocaleString("en")})
+              </Text>
             </Box>
           );
         })}

@@ -63,10 +63,9 @@ const getSuggestions = async () => {
     .filter((suggestion) => !suggestion.isResuggestion)
     .map((suggestion) => ({
       ...suggestion,
-      resuggestions:
-        suggestionDescriptions[
-          suggestion.suggestedUser.id + "_" + suggestion.tier
-        ],
+      resuggestions: suggestionDescriptions[
+        suggestion.suggestedUser.id + "_" + suggestion.tier
+      ]?.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime()),
     }));
 };
 
