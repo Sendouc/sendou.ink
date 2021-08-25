@@ -77,7 +77,7 @@ const BadgeContainer = ({
                   style={{
                     marginTop: -58,
                     marginLeft: 40,
-                    fontSize: "0.7rem",
+                    fontSize: badge.count > 9 ? "0.5rem" : "0.7rem",
                     fontWeight: "bold",
                     color: CSSVariables.themeColor,
                   }}
