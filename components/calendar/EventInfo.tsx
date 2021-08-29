@@ -28,6 +28,7 @@ const nameToImage = [
   { code: "zones", name: "area cup" },
   { code: "cb", name: "cloudburst" },
   { code: "forecast", name: "forecast" },
+  { code: "superjump", name: "superjump" },
 ] as const;
 
 /**
