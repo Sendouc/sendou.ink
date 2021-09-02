@@ -601,8 +601,8 @@ export default function useAbilityEffects({
   function calculateSS(amountBeforeRP: number) {
     const respawnPunishAPMultiplier =
       buildsAbilities.clothingAbilities[0] === "RP" ? 0.7 : 1;
-    const respawnPunishEffectMultiplier =
-      buildsAbilities.clothingAbilities[0] === "RP" ? 0.775 : 1;
+    const respawnPunishEffectSubtract =
+      buildsAbilities.clothingAbilities[0] === "RP" ? 0.225 : 0;
     const amount = Math.floor(amountBeforeRP * respawnPunishAPMultiplier);
 
     const SS = abilityJson["Special Saver"];
@@ -613,7 +613,7 @@ export default function useAbilityEffects({
     const highMidLow = [high, mid, low];
 
     const [specialLostBeforeRP, effectFromMax] = getEffect(highMidLow, amount);
-    const specialLost = specialLostBeforeRP * respawnPunishEffectMultiplier;
+    const specialLost = specialLostBeforeRP - respawnPunishEffectSubtract;
 
     const toReturn = [];
 
@@ -637,7 +637,7 @@ export default function useAbilityEffects({
       const highMidLow = [high, mid, low];
 
       const [specialLostBeforeRP] = getEffect(highMidLow, amount);
-      const specialLost = specialLostBeforeRP * respawnPunishEffectMultiplier;
+      const specialLost = specialLostBeforeRP - respawnPunishEffectSubtract;
 
       const lost = specialLost > 1 ? 1 : specialLost;
       const effectAtZero = getEffect(highMidLow, 0);
