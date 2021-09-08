@@ -70,7 +70,7 @@
   "devDependencies": {
     "@babel/core": "^7.15.0",
     "@lingui/cli": "^3.8.3",
-    "@lingui/macro": "^3.8.3",
+    "@lingui/macro": "^3.11.1",
     "@types/node": "^16.7.1",
     "@types/nprogress": "^0.2.0",
     "@types/randomcolor": "^0.5.6",
