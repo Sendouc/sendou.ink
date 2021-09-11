@@ -29,6 +29,10 @@ const nameToImage = [
   { code: "cb", name: "cloudburst" },
   { code: "forecast", name: "forecast" },
   { code: "superjump", name: "superjump" },
+  { code: "squidjunction", name: "squid junction" },
+  { code: "paddlingpool", name: "paddling pool" },
+  { code: "squidjunction", name: "squid junction" },
+  { code: "triton-cup", name: "triton" },
 ] as const;
 
 /**
