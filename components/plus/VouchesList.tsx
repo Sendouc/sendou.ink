@@ -1,11 +1,11 @@
 import { Button } from "@chakra-ui/button";
 import { Box, Grid } from "@chakra-ui/layout";
 import MyLink from "components/common/MyLink";
+import { PlusStatusesGet } from "pages/api/plus";
 import { Fragment, useState } from "react";
-import { PlusStatuses } from "services/plus";
 import { getFullUsername } from "utils/strings";
 
-const VouchesList = ({ vouches }: { vouches: PlusStatuses }) => {
+const VouchesList = ({ vouches }: { vouches: PlusStatusesGet }) => {
   const [show, setShow] = useState(false);
 
   return (

@@ -7,13 +7,10 @@ import { DefaultSeo } from "next-seo";
 import type { AppProps } from "next/app";
 import { Router } from "next/router";
 import NProgress from "nprogress";
-import { useEffect, useState } from "react";
-import { QueryClient, QueryClientProvider } from "react-query";
-import { Hydrate } from "react-query/hydration";
+import { useEffect } from "react";
 import { CSSVariables } from "utils/CSSVariables";
 import { activateLocale } from "utils/i18n";
 import { locales } from "utils/lists/locales";
-import { trpc } from "utils/trpc";
 import "./styles.css";
 
 NProgress.configure({ showSpinner: false });
@@ -149,18 +146,6 @@ const setDisplayedLanguage = () => {
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   useEffect(setDisplayedLanguage, []);
-  const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            // queries never go stale to save some work
-            // on our poor database
-            staleTime: Infinity,
-          },
-        },
-      })
-  );
 
   return (
     <>
@@ -191,13 +176,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         <ChakraProvider theme={extendedTheme} cssVarsRoot="body">
           <I18nProvider i18n={i18n}>
             <Layout>
-              <QueryClientProvider client={queryClient}>
-                <Hydrate
-                  state={trpc.useDehydratedState(pageProps.dehydratedState)}
-                >
-                  <Component {...pageProps} />
-                </Hydrate>
-              </QueryClientProvider>
+              <Component {...pageProps} />
             </Layout>
           </I18nProvider>
         </ChakraProvider>

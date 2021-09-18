@@ -7,20 +7,19 @@ import {
   FormLabel,
   Text,
   Textarea,
-  useToast,
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Trans } from "@lingui/macro";
 import MyLink from "components/common/MyLink";
 import SubText from "components/common/SubText";
 import UserAvatar from "components/common/UserAvatar";
+import { useMutation } from "hooks/common";
+import type { SuggestionsGet } from "pages/api/plus/suggestions";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Suggestions } from "services/plus";
-import { getToastOptions } from "utils/objects";
+import { mutate } from "swr";
 import { getVotingRange } from "utils/plus";
 import { getFullUsername } from "utils/strings";
-import { trpc } from "utils/trpc";
 import { Unpacked } from "utils/types";
 import {
   resuggestionSchema,
@@ -28,31 +27,27 @@ import {
 } from "utils/validators/suggestion";
 import * as z from "zod";
 
-type FormData = z.infer<typeof resuggestionSchema>;
+type SuggestionsData = z.infer<typeof resuggestionSchema>;
 
 const Suggestion = ({
   suggestion,
   canSuggest,
 }: {
-  suggestion: Unpacked<Suggestions>;
+  suggestion: Unpacked<SuggestionsGet>;
   canSuggest: boolean;
 }) => {
-  const toast = useToast();
   const [showTextarea, setShowTextarea] = useState(false);
-  const { handleSubmit, errors, register, watch } = useForm<FormData>({
+  const { handleSubmit, errors, register, watch } = useForm<SuggestionsData>({
     resolver: zodResolver(resuggestionSchema),
   });
-  const utils = trpc.useQueryUtils();
 
-  const { mutate, status } = trpc.useMutation("plus.suggestion", {
-    onSuccess() {
-      toast(getToastOptions("Comment added", "success"));
-      // TODO:
-      utils.invalidateQuery(["plus.suggestions"]);
+  const suggestionMutation = useMutation<SuggestionsData>({
+    url: "/api/plus/suggestions",
+    method: "POST",
+    successToastMsg: "Comment added",
+    afterSuccess: () => {
+      mutate("/api/plus/suggestions");
       setShowTextarea(false);
-    },
-    onError(error) {
-      toast(getToastOptions(error.message, "error"));
     },
   });
 
@@ -109,10 +104,10 @@ const Suggestion = ({
         {showTextarea && (
           <form
             onSubmit={handleSubmit((values) =>
-              mutate({
+              suggestionMutation.mutate({
                 ...values,
-                // region doesn't matter as it is not updated after the first suggestion
-                region: "NA",
+                // @ts-expect-error region doesn't matter as it is not updated after the first suggestion
+                region: "NA" as const,
                 tier: suggestion.tier,
                 suggestedId: suggestion.suggestedUser.id,
               })
@@ -136,7 +131,7 @@ const Suggestion = ({
               size="sm"
               mr={3}
               type="submit"
-              isLoading={status === "loading"}
+              isLoading={suggestionMutation.isMutating}
               data-cy="submit-button"
             >
               <Trans>Save</Trans>

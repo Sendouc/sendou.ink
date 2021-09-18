@@ -49,7 +49,7 @@ export const useMutation = <T>({
   afterSuccess,
 }: {
   url: string;
-  method?: "POST" | "DELETE" | "PUT";
+  method?: "POST" | "DELETE" | "PATCH" | "PUT";
   data?: T;
   successToastMsg?: string;
   afterSuccess?: () => void;

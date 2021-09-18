@@ -1,5 +1,4 @@
 import { Prisma, User } from "@prisma/client";
-import { httpError } from "@trpc/server";
 import prisma from "prisma/client";
 import { freeAgentPostSchema } from "utils/validators/fapost";
 import * as z from "zod";
@@ -93,7 +92,7 @@ const likes = async ({ user }: { user: User }) => {
   dateMonthAgo.setMonth(dateMonthAgo.getMonth() - 1);
 
   if (!post || post.updatedAt.getTime() < dateMonthAgo.getTime()) {
-    throw httpError.badRequest("no post");
+    throw new Error("no post");
   }
 
   const likerPostIds = new Set(

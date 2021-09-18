@@ -1,43 +1,39 @@
-import { useToast } from "@chakra-ui/toast";
-import { useUser } from "hooks/common";
+import { useMutation, useUser } from "hooks/common";
+import { PlusStatusesGet } from "pages/api/plus";
+import type { SuggestionsGet } from "pages/api/plus/suggestions";
+import { UsersForVotingGet } from "pages/api/plus/users-for-voting";
+import { VotesGet } from "pages/api/plus/votes";
 import { useState } from "react";
-import { getToastOptions } from "utils/objects";
-import { getVotingRange } from "utils/plus";
-import { trpc } from "utils/trpc";
-import { Unpacked } from "utils/types";
-import { votesSchema } from "utils/validators/votes";
+import { PlusStatuses } from "services/plus";
+import useSWR from "swr";
+import { Serialized, Unpacked } from "utils/types";
+import { voteSchema, votesSchema } from "utils/validators/votes";
 import * as z from "zod";
 
-export function usePlusHomePage() {
-  const [user] = useUser();
+export function usePlusHomePage(statuses: Serialized<PlusStatuses>) {
+  const [user, userIsLoading] = useUser();
   const [suggestionsFilter, setSuggestionsFilter] = useState<
     number | undefined
   >(undefined);
 
-  const { data: suggestionsData } = trpc.useQuery(["plus.suggestions"], {
-    enabled: !getVotingRange().isHappening,
-  });
-  const { data: plusStatusData } = trpc.useQuery(["plus.statuses"]);
-  const { data: votingProgress } = trpc.useQuery(["plus.votingProgress"], {
-    enabled: getVotingRange().isHappening,
-  });
+  const suggestionsQuery = useSWR<SuggestionsGet>("/api/plus/suggestions");
 
-  const suggestions = suggestionsData ?? [];
+  const suggestions = suggestionsQuery.data ?? [];
 
   return {
-    plusStatusData: plusStatusData?.find(
-      (status) => status.user.id === user?.id
-    ),
-    vouchStatuses: plusStatusData
+    plusStatusData: statuses?.find((status) => status.user.id === user?.id),
+    plusStatusDataLoading: userIsLoading,
+    vouchStatuses: statuses
       ?.filter((status) => status.voucher)
       .sort((a, b) => a.vouchTier! - b.vouchTier!),
-    vouchedPlusStatusData: plusStatusData?.find(
+    vouchedPlusStatusData: statuses?.find(
       (status) => status.voucher?.id === user?.id
     ),
     suggestionsData: suggestions.filter(
       (suggestion) =>
         !suggestionsFilter || suggestion.tier === suggestionsFilter
     ),
+    suggestionsLoading: !suggestionsQuery.data,
     suggestionCounts: suggestions.reduce(
       (counts, suggestion) => {
         const tierString = [null, "ONE", "TWO", "THREE"][
@@ -53,74 +49,76 @@ export function usePlusHomePage() {
       (suggestion) => suggestion.suggesterUser.id === user?.id
     ),
     setSuggestionsFilter,
-    votingProgress,
   };
 }
+
+type VoteInput = z.infer<typeof votesSchema>;
+type EditVoteInput = z.infer<typeof voteSchema>;
 
 export default function usePlusVoting() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [votes, setVotes] = useState<z.infer<typeof votesSchema>>([]);
 
-  const toast = useToast();
   const [user] = useUser();
 
-  const { data: votedUserScores, isLoading: hasVotedIsLoading } = trpc.useQuery(
-    ["plus.votedUserScores"]
+  const votedUserScores = useSWR<VotesGet>("/api/plus/votes");
+  const usersForVoting = useSWR<UsersForVotingGet>(
+    "/api/plus/users-for-voting"
   );
-  const { data: usersForVoting, isLoading: isLoadingBallots } = trpc.useQuery([
-    "plus.usersForVoting",
-  ]);
-  const { data: statuses, isLoading: isLoadingStatuses } = trpc.useQuery([
-    "plus.statuses",
-  ]);
-  const utils = trpc.useQueryUtils();
-  const { mutate: mutateVote, status: voteStatus } = trpc.useMutation(
-    "plus.vote",
-    {
-      onSuccess() {
-        toast(getToastOptions("Successfully voted", "success"));
-        utils.invalidateQuery(["plus.votedUserScores"]);
-        utils.invalidateQuery(["plus.votingProgress"]);
-      },
-      onError(error) {
-        toast(getToastOptions(error.message, "error"));
-      },
-    }
-  );
-  const { mutate: editVoteMutate, isLoading: isLoadingEditVote } =
-    trpc.useMutation("plus.editVote", {
-      onSuccess() {
-        toast(getToastOptions("Successfully edited vote", "success"));
-        utils.invalidateQuery(["plus.votedUserScores"]);
-      },
-      onError(error) {
-        toast(getToastOptions(error.message, "error"));
-      },
-    });
+  const statuses = useSWR<PlusStatusesGet>("/api/plus");
+  const voteMutation = useMutation<VoteInput>({
+    url: "/api/plus/votes",
+    method: "POST",
+    successToastMsg: "Successfully voted",
+    afterSuccess: () => {
+      votedUserScores.mutate();
+    },
+  });
 
-  const ownPlusStatus = statuses?.find((status) => status.user.id === user?.id);
+  const editVoteMutation = useMutation<EditVoteInput>({
+    url: "/api/plus/votes",
+    method: "PATCH",
+    successToastMsg: "Successfully edited vote",
+    afterSuccess: () => {
+      votedUserScores.mutate();
+    },
+  });
+
+  const ownPlusStatus = statuses.data?.find(
+    (status) => status.user.id === user?.id
+  );
 
   const getVotedUsers = () => {
-    if (!votedUserScores || !usersForVoting) return undefined;
+    if (
+      !usersForVoting.data ||
+      Object.keys(votedUserScores.data ?? {}).length === 0 ||
+      usersForVoting.data.length === 0
+    )
+      return undefined;
 
-    return usersForVoting
+    return usersForVoting.data
       .map((u) => {
-        return { ...u, score: votedUserScores.get(u.userId)! };
+        return { ...u, score: votedUserScores.data?.[u.userId]! };
       })
       .sort((a, b) => a.username.localeCompare(b.username));
   };
 
   return {
-    isLoading: isLoadingBallots || isLoadingStatuses || hasVotedIsLoading,
-    shouldRedirect: !isLoadingBallots && !usersForVoting,
+    isLoading: !usersForVoting.data || !statuses.data || !votedUserScores.data,
+    shouldRedirect: !usersForVoting.data && !usersForVoting,
     plusStatus: ownPlusStatus,
-    currentUser: usersForVoting?.[currentIndex],
+    currentUser: usersForVoting.data?.[currentIndex],
     previousUser:
-      currentIndex > 0 && usersForVoting
-        ? { ...usersForVoting[currentIndex - 1], ...votes[votes.length - 1] }
+      currentIndex > 0 &&
+      usersForVoting &&
+      (usersForVoting.data ?? []).length > 0
+        ? {
+            ...usersForVoting.data![currentIndex - 1],
+            ...votes[votes.length - 1],
+          }
         : undefined,
     progress: usersForVoting
-      ? (currentIndex / usersForVoting.length) * 100
+      ? (currentIndex / (usersForVoting.data?.length ?? 0)) * 100
       : undefined,
     handleVote: (vote: Unpacked<z.infer<typeof votesSchema>>) => {
       const nextIndex = currentIndex + 1;
@@ -129,7 +127,7 @@ export default function usePlusVoting() {
       (<HTMLElement>document.activeElement).blur();
 
       // preload next avatar
-      const next = usersForVoting?.[nextIndex + 1];
+      const next = usersForVoting.data?.[nextIndex + 1];
       if (next) {
         new Image().src = `https://cdn.discordapp.com/avatars/${next.discordId}/${next.discordAvatar}.jpg`;
       }
@@ -138,10 +136,10 @@ export default function usePlusVoting() {
       setVotes(votes.slice(0, votes.length - 1));
       setCurrentIndex(currentIndex - 1);
     },
-    submit: () => mutateVote(votes),
-    voteStatus,
+    submit: () => voteMutation.mutate(votes),
+    voteMutating: voteMutation.isMutating,
     votedUsers: getVotedUsers(),
-    editVote: editVoteMutate,
-    isLoadingEditVote,
+    editVote: editVoteMutation.mutate,
+    isLoadingEditVote: editVoteMutation.isMutating,
   };
 }

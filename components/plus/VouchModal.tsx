@@ -12,14 +12,12 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
-  useToast,
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import UserSelector from "components/common/UserSelector";
+import { useMutation } from "hooks/common";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { getToastOptions } from "utils/objects";
-import { trpc } from "utils/trpc";
 import { vouchSchema } from "utils/validators/vouch";
 import * as z from "zod";
 
@@ -27,23 +25,19 @@ interface Props {
   canVouchFor: number;
 }
 
-type FormData = z.infer<typeof vouchSchema>;
+type VouchData = z.infer<typeof vouchSchema>;
 
 const VouchModal: React.FC<Props> = ({ canVouchFor }) => {
-  const toast = useToast();
   const [isOpen, setIsOpen] = useState(false);
-  const { handleSubmit, errors, register, control } = useForm<FormData>({
+  const { handleSubmit, errors, register, control } = useForm<VouchData>({
     resolver: zodResolver(vouchSchema),
   });
-  const utils = trpc.useQueryUtils();
-  const { mutate, status } = trpc.useMutation("plus.vouch", {
-    onSuccess() {
-      toast(getToastOptions("Successfully vouched", "success"));
-      utils.invalidateQuery(["plus.statuses"]);
+  const vouchMutation = useMutation<VouchData>({
+    url: "/api/plus/vouches",
+    method: "POST",
+    successToastMsg: "Successfully vouched",
+    afterSuccess: () => {
       setIsOpen(false);
-    },
-    onError(error) {
-      toast(getToastOptions(error.message, "error"));
     },
   });
 
@@ -69,7 +63,9 @@ const VouchModal: React.FC<Props> = ({ canVouchFor }) => {
             <ModalContent>
               <ModalHeader>Vouching</ModalHeader>
               <ModalCloseButton borderRadius="50%" />
-              <form onSubmit={handleSubmit((data) => mutate(data))}>
+              <form
+                onSubmit={handleSubmit((data) => vouchMutation.mutate(data))}
+              >
                 <ModalBody pb={2}>
                   <FormLabel>Tier</FormLabel>
                   <Controller
@@ -127,7 +123,7 @@ const VouchModal: React.FC<Props> = ({ canVouchFor }) => {
                   <Button
                     mr={3}
                     type="submit"
-                    isLoading={status === "loading"}
+                    isLoading={vouchMutation.isMutating}
                     data-cy="submit-button"
                   >
                     Save

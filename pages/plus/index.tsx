@@ -17,24 +17,34 @@ import VouchesList from "components/plus/VouchesList";
 import VouchModal from "components/plus/VouchModal";
 import { useUser } from "hooks/common";
 import { usePlusHomePage } from "hooks/plus";
-import { ssr } from "pages/api/trpc/[trpc]";
 import { Fragment } from "react";
 import { getVotingRange } from "utils/plus";
 import { getFullUsername } from "utils/strings";
+import plusService, { PlusStatuses, VotingProgress } from "services/plus";
+import { Serialized } from "utils/types";
+import { serializeDataForGetStaticProps } from "utils/objects";
 
-const PlusHomePage = () => {
+const PlusHomePage = ({
+  statuses,
+  votingProgress,
+}: {
+  statuses: Serialized<PlusStatuses>;
+  votingProgress: VotingProgress;
+}) => {
   const [user] = useUser();
   const {
     plusStatusData,
+    plusStatusDataLoading,
     vouchStatuses,
     suggestionsData,
+    suggestionsLoading,
     ownSuggestion,
     suggestionCounts,
     setSuggestionsFilter,
     vouchedPlusStatusData,
-    votingProgress,
-  } = usePlusHomePage();
+  } = usePlusHomePage(statuses);
 
+  if (plusStatusDataLoading) return null;
   if (!plusStatusData?.membershipTier) {
     return (
       <Box>
@@ -44,7 +54,11 @@ const PlusHomePage = () => {
         <Heading size="md">Suggested players this month:</Heading>
         <Flex flexWrap="wrap" data-cy="alt-suggestions-container">
           {suggestionsData
-            .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
+            .sort(
+              (a, b) =>
+                new Date(a.createdAt).getTime() -
+                new Date(b.createdAt).getTime()
+            )
             .map((suggestion) => (
               <Box
                 key={suggestion.tier + "+" + suggestion.suggestedUser.id}
@@ -142,7 +156,10 @@ const PlusHomePage = () => {
               {plusStatusData?.canVouchAgainAfter && (
                 <Box>
                   Can vouch again after:{" "}
-                  {plusStatusData.canVouchAgainAfter.toLocaleDateString()}{" "}
+                  {new Date(
+                    // @ts-expect-error TODO: make Serialized<T> handle null union
+                    plusStatusData.canVouchAgainAfter
+                  ).toLocaleDateString()}{" "}
                   (resets after voting)
                 </Box>
               )}
@@ -205,7 +222,7 @@ const PlusHomePage = () => {
           </Box>
         )}
       {suggestionCounts.ONE + suggestionCounts.TWO + suggestionCounts.THREE ===
-      0 ? (
+        0 && !suggestionsLoading ? (
         <Box mt={4}>No suggestions yet for this month</Box>
       ) : (
         <>
@@ -239,14 +256,14 @@ const PlusHomePage = () => {
 };
 
 export const getStaticProps = async () => {
-  await Promise.all([
-    ssr.prefetchQuery("plus.suggestions"),
-    ssr.prefetchQuery("plus.statuses"),
+  const [statuses, votingProgress] = await Promise.all([
+    plusService.getPlusStatuses(),
+    getVotingRange().isHappening ? plusService.votingProgress() : null,
   ]);
-
   return {
     props: {
-      dehydratedState: ssr.dehydrate(),
+      statuses: serializeDataForGetStaticProps(statuses),
+      votingProgress: serializeDataForGetStaticProps(votingProgress),
     },
     revalidate: 60,
   };

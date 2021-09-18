@@ -1,5 +1,4 @@
 import { User } from "@prisma/client";
-import { httpError } from "@trpc/server";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/client";
 
@@ -15,18 +14,12 @@ export const getMySession = (req: NextApiRequest): Promise<User | null> => {
   return getSession({ req });
 };
 
-export const throwIfNotLoggedIn = (user: User | null) => {
-  if (!user) throw httpError.unauthorized();
-
-  return user;
-};
-
 export const createHandler = (
   req: NextApiRequest,
   res: NextApiResponse,
   handlers: Partial<
     Record<
-      "GET" | "POST" | "PUT" | "DELETE",
+      "GET" | "POST" | "PUT" | "PATCH" | "DELETE",
       (req: NextApiRequest, res: NextApiResponse) => Promise<any>
     >
   >

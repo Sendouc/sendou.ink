@@ -1,5 +1,4 @@
 import { PlusRegion, Prisma } from "@prisma/client";
-import { httpError } from "@trpc/server";
 import prisma from "prisma/client";
 import { shuffleArray } from "utils/arrays";
 import { getPercentageFromCounts, getVotingRange } from "utils/plus";
@@ -160,11 +159,15 @@ const getDistinctSummaryMonths = () => {
   });
 };
 
+export type GetUsersForVoting = Prisma.PromiseReturnType<
+  typeof getUsersForVoting
+>;
+
 const getUsersForVoting = async (userId: number) => {
-  if (!getVotingRange().isHappening) return null;
+  if (!getVotingRange().isHappening) return [];
   const plusStatus = await prisma.plusStatus.findUnique({ where: { userId } });
 
-  if (!plusStatus?.membershipTier) return null;
+  if (!plusStatus?.membershipTier) return [];
 
   const [plusStatuses, suggestions] = await Promise.all([
     prisma.plusStatus.findMany({
@@ -256,23 +259,23 @@ const getUsersForVoting = async (userId: number) => {
   return shuffleArray(result).sort((a, b) => a.region.localeCompare(b.region));
 };
 
+export type VotedUserScores = Prisma.PromiseReturnType<typeof votedUserScores>;
+
 const votedUserScores = async (userId: number) => {
   const ballots = await prisma.plusBallot.findMany({
     where: { isStale: false, voterId: userId },
   });
 
-  if (ballots.length === 0) {
-    return undefined;
-  }
-
-  const result = new Map<number, number>();
+  const result: Record<number, number> = {};
 
   for (const ballot of ballots) {
-    result.set(ballot.votedId, ballot.score);
+    result[ballot.votedId] = ballot.score;
   }
 
   return result;
 };
+
+export type VotingProgress = Prisma.PromiseReturnType<typeof votingProgress>;
 
 const votingProgress = async () => {
   const [ballots, statuses] = await Promise.all([
@@ -333,7 +336,7 @@ const addSuggestion = async ({
         isResuggestion === false && suggesterId === userId
     );
     if (usersSuggestion) {
-      throw httpError.badRequest("already made a new suggestion");
+      throw new Error("already made a new suggestion");
     }
   }
 
@@ -346,17 +349,17 @@ const addSuggestion = async ({
     !suggesterPlusStatus.membershipTier ||
     suggesterPlusStatus.membershipTier > input.tier
   ) {
-    throw httpError.badRequest(
+    throw new Error(
       "not a member of high enough tier to suggest for this tier"
     );
   }
 
   if (suggestedUserAlreadyHasAccess()) {
-    throw httpError.badRequest("suggested user already has access");
+    throw new Error("suggested user already has access");
   }
 
   if (getVotingRange().isHappening) {
-    throw httpError.badRequest("voting has already started");
+    throw new Error("voting has already started");
   }
 
   return prisma.$transaction([
@@ -418,24 +421,22 @@ const addVouch = async ({
 
     if (summary.userId === input.vouchedId && summary.tier === input.tier) {
       // can't vouch if they were just kicked
-      throw httpError.badRequest(
+      throw new Error(
         "can't vouch the user because they were kicked last month"
       );
     }
   }
 
   if ((suggesterPlusStatus?.canVouchFor ?? Infinity) > input.tier) {
-    throw httpError.badRequest(
-      "not a member of high enough tier to vouch for this tier"
-    );
+    throw new Error("not a member of high enough tier to vouch for this tier");
   }
 
   if (vouchedUserAlreadyHasAccess()) {
-    throw httpError.badRequest("vouched user already has access");
+    throw new Error("vouched user already has access");
   }
 
   if (getVotingRange().isHappening) {
-    throw httpError.badRequest("voting has already started");
+    throw new Error("voting has already started");
   }
 
   return prisma.$transaction([
@@ -478,7 +479,7 @@ const addVotes = async ({
   userId: number;
 }) => {
   if (!getVotingRange().isHappening) {
-    throw httpError.badRequest("voting is not happening right now");
+    throw new Error("voting is not happening right now");
   }
 
   const [plusStatuses, suggestions] = await Promise.all([
@@ -492,8 +493,7 @@ const addVotes = async ({
 
   const usersMembership = usersPlusStatus?.membershipTier;
 
-  if (!usersPlusStatus || !usersMembership)
-    throw httpError.badRequest("not a member");
+  if (!usersPlusStatus || !usersMembership) throw new Error("not a member");
 
   const allowedUsers = new Map<number, "EU" | "NA">();
 
@@ -516,14 +516,13 @@ const addVotes = async ({
     const status = plusStatuses.find(
       (status) => status.userId === suggestion.suggestedId
     );
-    if (!status)
-      throw httpError.badRequest("unexpected no status for suggested user");
+    if (!status) throw new Error("unexpected no status for suggested user");
 
     allowedUsers.set(suggestion.suggestedId, status.region);
   }
 
   if (input.length !== allowedUsers.size) {
-    throw httpError.badRequest("didn't vote on every user exactly once");
+    throw new Error("didn't vote on every user exactly once");
   }
 
   if (
@@ -540,7 +539,7 @@ const addVotes = async ({
       return false;
     })
   ) {
-    throw httpError.badRequest("invalid vote provided");
+    throw new Error("invalid vote provided");
   }
 
   return prisma.plusBallot.createMany({
@@ -563,7 +562,7 @@ const editVote = async ({
   userId: number;
 }) => {
   if (!getVotingRange().isHappening) {
-    throw httpError.badRequest("voting is not happening right now");
+    throw new Error("voting is not happening right now");
   }
 
   const statuses = await prisma.plusStatus.findMany({
@@ -579,14 +578,14 @@ const editVote = async ({
     statuses[0].region !== statuses[1].region &&
     ![-1, 1].includes(input.score)
   ) {
-    throw httpError.badRequest("invalid score");
+    throw new Error("invalid score");
   }
 
   if (
     statuses[0].region === statuses[1].region &&
     ![-2, -1, 1, 2].includes(input.score)
   ) {
-    throw httpError.badRequest("invalid score");
+    throw new Error("invalid score");
   }
 
   return prisma.plusBallot.update({

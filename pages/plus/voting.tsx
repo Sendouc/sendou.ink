@@ -27,7 +27,7 @@ export default function PlusVotingPage() {
     previousUser,
     goBack,
     submit,
-    voteStatus,
+    voteMutating,
     votedUsers,
     editVote,
     isLoadingEditVote,
@@ -172,7 +172,7 @@ export default function PlusVotingPage() {
       {previousUser && !currentUser && (
         <Box onClick={submit} mt={6} textAlign="center">
           {" "}
-          <Button isLoading={voteStatus === "loading"}>Submit</Button>
+          <Button isLoading={voteMutating}>Submit</Button>
         </Box>
       )}
     </>

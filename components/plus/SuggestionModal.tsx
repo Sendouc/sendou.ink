@@ -13,14 +13,13 @@ import {
   ModalOverlay,
   Select,
   Textarea,
-  useToast,
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import UserSelector from "components/common/UserSelector";
+import { useMutation } from "hooks/common";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { getToastOptions } from "utils/objects";
-import { trpc } from "utils/trpc";
+import { mutate } from "swr";
 import {
   suggestionFullSchema,
   SUGGESTION_DESCRIPTION_LIMIT,
@@ -31,23 +30,22 @@ interface Props {
   userPlusMembershipTier: number;
 }
 
-type FormData = z.infer<typeof suggestionFullSchema>;
+type SuggestionsData = z.infer<typeof suggestionFullSchema>;
 
 const SuggestionModal: React.FC<Props> = ({ userPlusMembershipTier }) => {
-  const toast = useToast();
   const [isOpen, setIsOpen] = useState(false);
-  const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
-    resolver: zodResolver(suggestionFullSchema),
-  });
-  const utils = trpc.useQueryUtils();
-  const { mutate, status } = trpc.useMutation("plus.suggestion", {
-    onSuccess() {
-      toast(getToastOptions("New suggestion submitted", "success"));
-      utils.invalidateQuery(["plus.suggestions"]);
+  const { handleSubmit, errors, register, watch, control } =
+    useForm<SuggestionsData>({
+      resolver: zodResolver(suggestionFullSchema),
+    });
+
+  const suggestionMutation = useMutation<SuggestionsData>({
+    url: "/api/plus/suggestions",
+    method: "POST",
+    successToastMsg: "New suggestion submitted",
+    afterSuccess: () => {
+      mutate("/api/plus/suggestions");
       setIsOpen(false);
-    },
-    onError(error) {
-      toast(getToastOptions(error.message, "error"));
     },
   });
 
@@ -74,7 +72,11 @@ const SuggestionModal: React.FC<Props> = ({ userPlusMembershipTier }) => {
             <ModalContent>
               <ModalHeader>Adding a new suggestion</ModalHeader>
               <ModalCloseButton borderRadius="50%" />
-              <form onSubmit={handleSubmit((data) => mutate(data))}>
+              <form
+                onSubmit={handleSubmit((data) =>
+                  suggestionMutation.mutate(data)
+                )}
+              >
                 <ModalBody pb={2}>
                   <FormLabel>Tier</FormLabel>
                   <Controller
@@ -154,7 +156,7 @@ const SuggestionModal: React.FC<Props> = ({ userPlusMembershipTier }) => {
                   <Button
                     mr={3}
                     type="submit"
-                    isLoading={status === "loading"}
+                    isLoading={suggestionMutation.isMutating}
                     data-cy="submit-button"
                   >
                     Save
