@@ -53,7 +53,7 @@ const ProfilePage = (props: Props) => {
 
   const [loggedInUser] = useUser();
   const { data, mutate } = useSWR<GetUserByIdentifierData>(apiUrl(), {
-    initialData: props.user,
+    fallbackData: props.user,
   });
 
   const user = data ? data : props.user!;

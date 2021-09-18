@@ -31,7 +31,7 @@ import { getTeam, GetTeamData } from "prisma/queries/getTeam";
 import { Fragment, useEffect, useState } from "react";
 import { FaTwitter } from "react-icons/fa";
 import { FiEdit } from "react-icons/fi";
-import useSWR, { mutate } from "swr";
+import useSWR, { useSWRConfig } from "swr";
 import { CSSVariables } from "utils/CSSVariables";
 import { getToastOptions } from "utils/objects";
 import { sendData } from "utils/postData";
@@ -100,7 +100,7 @@ const getTeamXPInfo = (roster: NonNullable<GetTeamData>["roster"]) => {
 
 const TeamPage: React.FC<Props> = (props) => {
   const { data } = useSWR<GetTeamData>(`/api/teams/${props.team!.id}`, {
-    initialData: props.team!,
+    fallbackData: props.team!,
   });
   const team = data!;
 
@@ -108,6 +108,7 @@ const TeamPage: React.FC<Props> = (props) => {
   const [profileModalIsOpen, setProfileModalIsOpen] = useState(false);
   const [user] = useUser();
   const toast = useToast();
+  const { mutate } = useSWRConfig();
 
   useEffect(() => {
     mutate(`/api/teams/${props.team!.id}`);

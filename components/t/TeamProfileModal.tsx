@@ -25,7 +25,7 @@ import { GetTeamData } from "prisma/queries/getTeam";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaTwitter } from "react-icons/fa";
-import { mutate } from "swr";
+import { useSWRConfig } from "swr";
 import { getToastOptions } from "utils/objects";
 import { sendData } from "utils/postData";
 import {
@@ -45,6 +45,7 @@ type FormData = z.infer<typeof teamSchema>;
 const TeamProfileModal: React.FC<Props> = ({ team, closeModal }) => {
   const { i18n } = useLingui();
   const toast = useToast();
+  const { mutate } = useSWRConfig();
   const [sending, setSending] = useState(false);
 
   const { handleSubmit, errors, register, watch } = useForm<FormData>({

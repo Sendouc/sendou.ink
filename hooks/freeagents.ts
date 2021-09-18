@@ -63,7 +63,7 @@ export function useFreeAgents(postsInitialData: FreeAgentsGet) {
   const [user] = useUser();
 
   const posts = useSWR<FreeAgentsGet>("/api/free-agents", {
-    initialData: postsInitialData,
+    fallbackData: postsInitialData,
   });
 
   const usersPost = posts.data?.find(

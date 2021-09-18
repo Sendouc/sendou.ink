@@ -20,7 +20,7 @@ import { useRouter } from "next/router";
 import { GetTeamData } from "prisma/queries/getTeam";
 import { Fragment, useEffect, useState } from "react";
 import { FiCheck, FiTrash, FiUsers } from "react-icons/fi";
-import { mutate } from "swr";
+import { useSWRConfig } from "swr";
 import { getToastOptions } from "utils/objects";
 import { sendData } from "utils/postData";
 
@@ -31,6 +31,7 @@ interface Props {
 const TeamManagementModal: React.FC<Props> = ({ team }) => {
   const router = useRouter();
   const toast = useToast();
+  const { mutate } = useSWRConfig();
   const [isOpen, setIsOpen] = useState(false);
   const [sending, setSending] = useState(false);
   const [copied, setCopied] = useState(false);

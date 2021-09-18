@@ -20,8 +20,8 @@ import {
 } from "react-icons/ri";
 import { Unpacked } from "utils/types";
 import { FreeAgentsGet } from "pages/api/free-agents";
-import { mutate } from "swr";
 import { useMutation } from "hooks/common";
+import { useSWRConfig } from "swr";
 
 const playstyleToEmoji = {
   FRONTLINE: RiSwordLine,
@@ -44,6 +44,7 @@ const FreeAgentSection = ({
   showPlusServerMembership: boolean;
   postRef?: RefObject<HTMLDivElement>;
 }) => {
+  const { mutate } = useSWRConfig();
   const addLikeMutation = useMutation<{ postId: number }>({
     url: "/api/free-agents/likes",
     method: "POST",

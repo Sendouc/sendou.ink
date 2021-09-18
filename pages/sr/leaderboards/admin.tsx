@@ -13,7 +13,7 @@ import { useUser } from "hooks/common";
 import { useRouter } from "next/router";
 import { GetAllSalmonRunRecordsData } from "prisma/queries/getAllSalmonRunRecords";
 import { useState } from "react";
-import useSWR, { mutate } from "swr";
+import useSWR from "swr";
 import { SALMON_RUN_ADMIN_DISCORD_IDS } from "utils/constants";
 import { sendData } from "utils/postData";
 import { salmonRunCategoryToNatural } from "./new";

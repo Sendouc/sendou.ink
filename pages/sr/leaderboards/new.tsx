@@ -23,7 +23,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { mutate } from "swr";
+import { useSWRConfig } from "swr";
 import { sendData } from "utils/postData";
 import { salmonRunRecordSchema } from "utils/validators/salmonRunRecord";
 import * as z from "zod";
@@ -56,6 +56,7 @@ type FormData = z.infer<typeof salmonRunRecordSchema>;
 const AddRecordModal = () => {
   const { i18n } = useLingui();
   const router = useRouter();
+  const { mutate } = useSWRConfig();
   const [sending, setSending] = useState(false);
   const [loggedInUser] = useUser();
   const { handleSubmit, errors, register, control, watch } = useForm<FormData>({

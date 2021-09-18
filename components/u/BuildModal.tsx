@@ -30,7 +30,7 @@ import { GetBuildsByUserData } from "prisma/queries/getBuildsByUser";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { FiTrash } from "react-icons/fi";
-import { mutate } from "swr";
+import { useSWRConfig } from "swr";
 import { weapons } from "utils/lists/weapons";
 import { getToastOptions } from "utils/objects";
 import { sendData } from "utils/postData";
@@ -55,6 +55,7 @@ const BuildModal: React.FC<Props> = ({ onClose, build, weaponFromQuery }) => {
   const [sending, setSending] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [loggedInUser] = useUser();
+  const { mutate } = useSWRConfig();
 
   const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
     resolver: zodResolver(buildSchema),

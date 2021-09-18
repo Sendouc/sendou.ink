@@ -27,7 +27,7 @@ import { GetUserByIdentifierData } from "prisma/queries/getUserByIdentifier";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { FaGamepad, FaTwitch, FaTwitter, FaYoutube } from "react-icons/fa";
-import { mutate } from "swr";
+import { useSWRConfig } from "swr";
 import { getToastOptions } from "utils/objects";
 import { sendData } from "utils/postData";
 import {
@@ -76,6 +76,7 @@ type FormData = z.infer<typeof profileSchemaFrontend>;
 const ProfileModal: React.FC<Props> = ({ onClose, user }) => {
   const [sending, setSending] = useState(false);
   const { i18n } = useLingui();
+  const { mutate } = useSWRConfig();
 
   const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
     resolver: zodResolver(profileSchemaFrontend),

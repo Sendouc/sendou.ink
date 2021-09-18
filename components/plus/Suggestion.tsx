@@ -17,7 +17,7 @@ import { useMutation } from "hooks/common";
 import type { SuggestionsGet } from "pages/api/plus/suggestions";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { mutate } from "swr";
+import { useSWRConfig } from "swr";
 import { getVotingRange } from "utils/plus";
 import { getFullUsername } from "utils/strings";
 import { Unpacked } from "utils/types";
@@ -40,6 +40,7 @@ const Suggestion = ({
   const { handleSubmit, errors, register, watch } = useForm<SuggestionsData>({
     resolver: zodResolver(resuggestionSchema),
   });
+  const { mutate } = useSWRConfig();
 
   const suggestionMutation = useMutation<SuggestionsData>({
     url: "/api/plus/suggestions",

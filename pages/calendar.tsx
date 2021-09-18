@@ -22,7 +22,7 @@ interface Props {
 
 const CalendarPage = ({ eventsInitialData }: Props) => {
   const events = useSWR<CalendarGet>("/api/calendar", {
-    initialData: eventsInitialData,
+    fallbackData: eventsInitialData,
   });
   const [eventToEdit, setEventToEdit] = useState<
     boolean | (FormData & { id: number })

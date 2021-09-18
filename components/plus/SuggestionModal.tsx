@@ -19,7 +19,7 @@ import UserSelector from "components/common/UserSelector";
 import { useMutation } from "hooks/common";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { mutate } from "swr";
+import { useSWRConfig } from "swr";
 import {
   suggestionFullSchema,
   SUGGESTION_DESCRIPTION_LIMIT,
@@ -38,6 +38,7 @@ const SuggestionModal: React.FC<Props> = ({ userPlusMembershipTier }) => {
     useForm<SuggestionsData>({
       resolver: zodResolver(suggestionFullSchema),
     });
+  const { mutate } = useSWRConfig();
 
   const suggestionMutation = useMutation<SuggestionsData>({
     url: "/api/plus/suggestions",
