@@ -51,7 +51,7 @@ export const useMutation = <T>({
   url: string;
   method?: "POST" | "DELETE" | "PUT";
   data?: T;
-  successToastMsg: string;
+  successToastMsg?: string;
   afterSuccess?: () => void;
 }) => {
   const toast = useToast();
@@ -85,7 +85,9 @@ export const useMutation = <T>({
         description,
       });
     } else {
-      toast(getToastOptions(successToastMsg, "success"));
+      if (successToastMsg) {
+        toast(getToastOptions(successToastMsg, "success"));
+      }
       afterSuccess?.();
     }
   };

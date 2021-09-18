@@ -1,7 +1,6 @@
 import * as trpc from "@trpc/server";
 import { inferAsyncReturnType, inferProcedureOutput } from "@trpc/server";
 import * as trpcNext from "@trpc/server/adapters/next";
-import freeAgentsApi from "routers/freeagents";
 import plusApi from "routers/plus";
 import superjson from "superjson";
 import { getMySession } from "utils/api";
@@ -18,9 +17,7 @@ export function createRouter() {
   return trpc.router<Context>();
 }
 // Important: only use this export with SSR/SSG
-export const appRouter = createRouter()
-  .merge("plus.", plusApi)
-  .merge("freeAgents.", freeAgentsApi);
+export const appRouter = createRouter().merge("plus.", plusApi);
 
 // Exporting type _type_ AppRouter only exposes types that can be used for inference
 // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-8.html#type-only-imports-and-export

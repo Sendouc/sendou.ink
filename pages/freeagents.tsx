@@ -12,21 +12,23 @@ import FAFilters from "components/freeagents/FAFilters";
 import FAModal from "components/freeagents/FAModal";
 import FreeAgentSection from "components/freeagents/FreeAgentSection";
 import MatchesInfo from "components/freeagents/MatchesInfo";
-import { useUser } from "hooks/common";
+import { useMutation, useUser } from "hooks/common";
 import { useFreeAgents } from "hooks/freeagents";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import { mutate } from "swr";
 import { CSSVariables } from "utils/CSSVariables";
-import { sendData } from "utils/postData";
 import freeAgentsService from "services/freeagents";
 import { GetStaticProps } from "next";
 import { serializeDataForGetStaticProps } from "utils/objects";
 import { FreeAgentsGet } from "./api/free-agents";
+import * as z from "zod";
+import { freeAgentPostSchema } from "utils/validators/fapost";
 
 interface Props {
   postsInitialData: FreeAgentsGet;
 }
+
+type FreeAgentPostSchemaInput = z.infer<typeof freeAgentPostSchema>;
 
 const FreeAgentsPage = ({ postsInitialData }: Props) => {
   const {
@@ -46,13 +48,20 @@ const FreeAgentsPage = ({ postsInitialData }: Props) => {
   const [postIdToScrollTo, setPostIdToScrollTo] = useState<undefined | number>(
     undefined
   );
-  const [sending, setSending] = useState(false);
   const postRef = useRef<HTMLDivElement>(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
+  const refreshPostMutation = useMutation<FreeAgentPostSchemaInput>({
+    url: "/api/free-agents",
+    method: "POST",
+    successToastMsg: "Free agent post refreshed",
+    afterSuccess: () => {
+      refetchPosts();
+    },
+  });
+
   useEffect(() => {
     if (!postRef.current) {
-      console.error("no postRef");
       return;
     }
 
@@ -62,18 +71,11 @@ const FreeAgentsPage = ({ postsInitialData }: Props) => {
   const dateThreeWeeksAgo = new Date();
   dateThreeWeeksAgo.setDate(dateThreeWeeksAgo.getDate() - 7 * 3);
 
-  const onPostRefresh = async () => {
-    setSending(true);
+  const usersPostForRefresh = () => {
+    if (!usersPost) return;
+    const { id, user, updatedAt, ...result } = usersPost;
 
-    const success = await sendData("PUT", "/api/freeagents", {
-      canVC: usersPost!.canVC,
-      playstyles: usersPost!.playstyles,
-      content: usersPost!.content,
-    });
-    setSending(false);
-    if (!success) return;
-
-    mutate("/api/freeagents");
+    return result;
   };
 
   return (
@@ -122,8 +124,10 @@ const FreeAgentsPage = ({ postsInitialData }: Props) => {
                 <Button
                   mt={4}
                   variant="outline"
-                  onClick={onPostRefresh}
-                  isLoading={sending}
+                  onClick={() =>
+                    refreshPostMutation.mutate(usersPostForRefresh())
+                  }
+                  isLoading={refreshPostMutation.isMutating}
                 >
                   <Trans>I&apos;m still a free agent</Trans>
                 </Button>

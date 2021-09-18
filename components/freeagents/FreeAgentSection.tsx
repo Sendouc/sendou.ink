@@ -1,4 +1,4 @@
-import { Box, Divider, Flex, IconButton, useToast } from "@chakra-ui/react";
+import { Box, Divider, Flex, IconButton } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import Flag from "components/common/Flag";
 import Markdown from "components/common/Markdown";
@@ -18,11 +18,10 @@ import {
   RiPaintLine,
   RiSwordLine,
 } from "react-icons/ri";
-import { getToastOptions } from "utils/objects";
-import { trpc } from "utils/trpc";
 import { Unpacked } from "utils/types";
 import { FreeAgentsGet } from "pages/api/free-agents";
 import { mutate } from "swr";
+import { useMutation } from "hooks/common";
 
 const playstyleToEmoji = {
   FRONTLINE: RiSwordLine,
@@ -45,21 +44,18 @@ const FreeAgentSection = ({
   showPlusServerMembership: boolean;
   postRef?: RefObject<HTMLDivElement>;
 }) => {
-  const toast = useToast();
-  const addLikeMutation = trpc.useMutation("freeAgents.addLike", {
-    onSuccess() {
+  const addLikeMutation = useMutation<{ postId: number }>({
+    url: "/api/free-agents/likes",
+    method: "POST",
+    afterSuccess: () => {
       mutate("/api/free-agents/likes");
-    },
-    onError(error) {
-      toast(getToastOptions(error.message, "error"));
     },
   });
-  const deleteLikeMutation = trpc.useMutation("freeAgents.deleteLike", {
-    onSuccess() {
+  const deleteLikeMutation = useMutation<{ postId: number }>({
+    url: "/api/free-agents/likes",
+    method: "DELETE",
+    afterSuccess: () => {
       mutate("/api/free-agents/likes");
-    },
-    onError(error) {
-      toast(getToastOptions(error.message, "error"));
     },
   });
 
@@ -179,7 +175,9 @@ const FreeAgentSection = ({
             mt={4}
             variant="ghost"
             icon={isLiked ? <FaHeart /> : <FaRegHeart />}
-            disabled={addLikeMutation.isLoading || deleteLikeMutation.isLoading}
+            disabled={
+              addLikeMutation.isMutating || deleteLikeMutation.isMutating
+            }
             onClick={handleClick}
           />
         )}

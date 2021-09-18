@@ -17,16 +17,14 @@ import {
   Radio,
   RadioGroup,
   Stack,
-  useToast,
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { t, Trans } from "@lingui/macro";
 import MarkdownTextarea from "components/common/MarkdownTextarea";
+import { useMutation } from "hooks/common";
 import { FreeAgentsGet } from "pages/api/free-agents";
 import { Controller, useForm } from "react-hook-form";
 import { FiTrash } from "react-icons/fi";
-import { getToastOptions } from "utils/objects";
-import { trpc } from "utils/trpc";
 import { Unpacked } from "utils/types";
 import {
   FA_POST_CONTENT_LIMIT,
@@ -40,42 +38,36 @@ interface Props {
   post?: Unpacked<FreeAgentsGet>;
 }
 
-type FormData = z.infer<typeof freeAgentPostSchema>;
+type FreeAgentPostSchemaInput = z.infer<typeof freeAgentPostSchema>;
 
 const FAModal = ({ onClose, post, refetchQuery }: Props) => {
-  const { handleSubmit, errors, register, watch, control } = useForm<FormData>({
-    resolver: zodResolver(freeAgentPostSchema),
-    defaultValues: post,
-  });
+  const { handleSubmit, errors, register, watch, control } =
+    useForm<FreeAgentPostSchemaInput>({
+      resolver: zodResolver(freeAgentPostSchema),
+      defaultValues: post,
+    });
 
-  const upsertPostMutation = trpc.useMutation("freeAgents.upsertPost", {
-    onSuccess() {
-      toast(
-        getToastOptions(
-          post ? t`Free agent post updated` : t`Free agent post submitted`,
-          "success"
-        )
-      );
+  const upsertFreeAgentPostMutation = useMutation<FreeAgentPostSchemaInput>({
+    url: "/api/free-agents",
+    method: "POST",
+    successToastMsg: post
+      ? t`Free agent post updated`
+      : t`Free agent post submitted`,
+    afterSuccess: () => {
       refetchQuery();
       onClose();
     },
-    onError(error) {
-      toast(getToastOptions(error.message, "error"));
-    },
   });
 
-  const deletePostMutation = trpc.useMutation("freeAgents.deletePost", {
-    onSuccess() {
-      toast(getToastOptions(t`Free agent post deleted`, "success"));
+  const deleteFreeAgentPostMutation = useMutation<FreeAgentPostSchemaInput>({
+    url: "/api/free-agents",
+    method: "DELETE",
+    successToastMsg: t`Free agent post deleted`,
+    afterSuccess: () => {
       refetchQuery();
       onClose();
     },
-    onError(error) {
-      toast(getToastOptions(error.message, "error"));
-    },
   });
-
-  const toast = useToast();
 
   const watchContent = watch("content", ""); // TODO: get initial fa content from props
 
@@ -92,7 +84,9 @@ const FAModal = ({ onClose, post, refetchQuery }: Props) => {
           </ModalHeader>
           <ModalCloseButton borderRadius="50%" />
           <form
-            onSubmit={handleSubmit((data) => upsertPostMutation.mutate(data))}
+            onSubmit={handleSubmit((data) =>
+              upsertFreeAgentPostMutation.mutate(data)
+            )}
           >
             <ModalBody pb={6}>
               {post && (
@@ -101,10 +95,10 @@ const FAModal = ({ onClose, post, refetchQuery }: Props) => {
                     leftIcon={<FiTrash />}
                     variant="outline"
                     color="red.500"
-                    isLoading={deletePostMutation.isLoading}
+                    isLoading={deleteFreeAgentPostMutation.isMutating}
                     onClick={async () => {
                       if (window.confirm(t`Delete the free agent post?`)) {
-                        deletePostMutation.mutate(null);
+                        deleteFreeAgentPostMutation.mutate();
                       }
                     }}
                   >
@@ -185,7 +179,8 @@ const FAModal = ({ onClose, post, refetchQuery }: Props) => {
                 mr={3}
                 type="submit"
                 isLoading={
-                  upsertPostMutation.isLoading || deletePostMutation.isLoading
+                  upsertFreeAgentPostMutation.isMutating ||
+                  deleteFreeAgentPostMutation.isMutating
                 }
               >
                 <Trans>Save</Trans>
@@ -194,7 +189,8 @@ const FAModal = ({ onClose, post, refetchQuery }: Props) => {
                 onClick={onClose}
                 variant="outline"
                 isDisabled={
-                  upsertPostMutation.isLoading || deletePostMutation.isLoading
+                  upsertFreeAgentPostMutation.isMutating ||
+                  deleteFreeAgentPostMutation.isMutating
                 }
               >
                 <Trans>Cancel</Trans>
