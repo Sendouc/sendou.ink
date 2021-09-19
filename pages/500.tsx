@@ -1,20 +1,19 @@
-import { Box, Flex, Heading } from "@chakra-ui/layout";
 import MyLink from "components/common/MyLink";
-import { CSSVariables } from "utils/CSSVariables";
 import Image from "next/image";
+import Heading from "components/elements/Heading";
 
 const Custom500Page = () => {
   return (
-    <Flex flexDirection="column" justifyContent="center" alignItems="center">
+    <div className="flex-col align-center justify-center">
       <Image src={`/layout/errorGirl.png`} width={584} height={487} alt="" />
       <Heading>500 - Server-side error occurred</Heading>
-      <Box color={CSSVariables.themeGray}>
+      <div className="text-gray">
         For assistance please visit our{" "}
         <MyLink href="https://discord.gg/sendou" isExternal>
           Discord
         </MyLink>
-      </Box>
-    </Flex>
+      </div>
+    </div>
   );
 };
 

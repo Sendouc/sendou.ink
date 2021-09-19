@@ -42,6 +42,11 @@
   display: flex;
 }
 
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
 .justify-center {
   justify-content: center;
 }
