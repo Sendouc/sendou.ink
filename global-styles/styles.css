@@ -1,5 +1,10 @@
 @import "/nprogress.css";
 
+:root {
+  font-style: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
 body {
   --theme-color: var(--custom-theme-color, #79ff61);
   --theme-color-opaque: var(--custom-theme-color-opaque, #79ff6120;);

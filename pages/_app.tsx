@@ -11,7 +11,9 @@ import { useEffect } from "react";
 import { CSSVariables } from "utils/CSSVariables";
 import { activateLocale } from "utils/i18n";
 import { locales } from "utils/lists/locales";
-import "./styles.css";
+import "global-styles/variables.css";
+import "global-styles/styles.css";
+import "global-styles/utils.css";
 
 NProgress.configure({ showSpinner: false });
 
