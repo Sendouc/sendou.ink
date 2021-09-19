@@ -1,0 +1,14 @@
+.container {
+  display: inline-block;
+  z-index: 2;
+  border-radius: 50%;
+  background: #000;
+  border: 2px solid #888;
+  border-right: 0px;
+  border-bottom: 0px;
+  background-size: 100%;
+  box-shadow: 0 0 0 1px #000;
+  user-select: none;
+  width: var(--ability-size);
+  height: var(--ability-size);
+}

@@ -1,7 +1,7 @@
 import { Ability } from ".prisma/client";
-import { Box } from "@chakra-ui/react";
 import Image from "next/image";
 import { abilities } from "utils/lists/abilities";
+import styles from "./AbilityIcon.module.css";
 
 //https://github.com/loadout-ink/splat2-calc
 
@@ -27,21 +27,13 @@ const AbilityIcon: React.FC<AbilityIconProps> = ({
   const abilityName = abilities.find((a) => a.code === ability)?.name;
 
   return (
-    <Box
-      style={{
-        zIndex: 2,
-        borderRadius: "50%",
-        background: "#000",
-        border: "2px solid #888",
-        borderRight: "0px",
-        borderBottom: "0px",
-        backgroundSize: "100%",
-        boxShadow: "0 0 0 1px #000",
-        userSelect: "none",
-        display: "inline-block",
-        width: sizeNumber,
-        height: sizeNumber,
-      }}
+    <div
+      className={styles.container}
+      style={
+        {
+          "--ability-size": `${sizeNumber}px`,
+        } as any
+      }
     >
       <Image
         src={`/abilityIcons/${ability}.png`}
@@ -51,7 +43,7 @@ const AbilityIcon: React.FC<AbilityIconProps> = ({
         loading={loading ?? "lazy"}
         title={abilityName}
       />
-    </Box>
+    </div>
   );
 };
 
