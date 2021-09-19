@@ -1,8 +1,9 @@
-import { Box, Heading, Link, Stack } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import MyHead from "components/common/MyHead";
-import { CSSVariables } from "utils/CSSVariables";
+import MyLink from "components/common/MyLink";
+import Heading from "components/elements/Heading";
 import links from "utils/data/links.json";
+import styles from "./links.module.css";
 
 interface Link {
   title: string;
@@ -12,33 +13,29 @@ interface Link {
 
 const LinksPage = () => {
   const linkMap = (link: Link) => (
-    <Box key={link.title}>
-      <Link href={link.url} color={CSSVariables.themeColor}>
+    <div key={link.title} className="my-4">
+      <MyLink href={link.url} isExternal>
         <b>{link.title}</b>
-      </Link>{" "}
-      - <Box as="span">{link.description}</Box>
-    </Box>
+      </MyLink>{" "}
+      - <span>{link.description}</span>
+    </div>
   );
 
   return (
     <>
       <MyHead title={t`Links`} />
-      <Heading size="lg" mb="0.5em">
+      <Heading className={styles.heading}>
         <Trans>Guides</Trans>
       </Heading>
-      <Stack spacing={4}>{links.guides.map(linkMap)}</Stack>
-      <Heading size="lg" mt={8} mb={4}>
-        YouTube
-      </Heading>
-      <Stack spacing={4}>{links.youtube.map(linkMap)}</Stack>
-      <Heading size="lg" mt={8} mb={4}>
-        Discord
-      </Heading>
-      <Stack spacing={4}>{links.discord.map(linkMap)}</Stack>
-      <Heading size="lg" mt={8} mb={4}>
+      {links.guides.map(linkMap)}
+      <Heading className={styles.heading}>YouTube</Heading>
+      {links.youtube.map(linkMap)}
+      <Heading className={styles.heading}>Discord</Heading>
+      {links.discord.map(linkMap)}
+      <Heading className={styles.heading}>
         <Trans>Misc</Trans>
       </Heading>
-      <Stack spacing={4}>{links.misc.map(linkMap)}</Stack>
+      {links.misc.map(linkMap)}
     </>
   );
 };
