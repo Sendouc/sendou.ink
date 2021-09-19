@@ -13,7 +13,7 @@ import { useUser } from "hooks/common";
 import { useRouter } from "next/router";
 import { GetAllSalmonRunRecordsData } from "prisma/queries/getAllSalmonRunRecords";
 import { useState } from "react";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 import { SALMON_RUN_ADMIN_DISCORD_IDS } from "utils/constants";
 import { sendData } from "utils/postData";
 import { salmonRunCategoryToNatural } from "./new";
@@ -26,6 +26,7 @@ const SalmonRunAdminPage = ({}) => {
   const { data } = useSWR<GetAllSalmonRunRecordsData>(
     "/api/sr/records?unapproved=true"
   );
+  const { mutate } = useSWRConfig();
 
   if (
     !loading &&
