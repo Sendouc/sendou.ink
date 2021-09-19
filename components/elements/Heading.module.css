@@ -1,0 +1,5 @@
+.heading {
+  font-size: var(--fontSizes-4xl);
+  line-height: 1.2;
+  font-weight: var(--fontWeights-bold);
+}
