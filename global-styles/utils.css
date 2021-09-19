@@ -1,7 +1,39 @@
+/*
+* COLORS
+*/
+
 .text-gray {
   color: var(--theme-gray);
 }
 
+/*
+* SPACING
+*/
+
+.ml-1 {
+  margin-left: var(--space-1);
+}
+
 .mt-4 {
   margin-top: var(--space-4);
+}
+
+.mx-1 {
+  margin: 0 var(--space-1);
+}
+
+/*
+* FLEX
+*/
+
+.flex {
+  display: flex;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.align-center {
+  align-items: center;
 }

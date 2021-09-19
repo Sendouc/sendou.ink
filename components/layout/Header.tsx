@@ -1,7 +1,5 @@
 import {
-  Box,
   Button,
-  Flex,
   IconButton,
   useColorMode,
   useMediaQuery,
@@ -12,9 +10,9 @@ import { signIn, signOut } from "next-auth/client";
 import Image from "next/image";
 import Link from "next/link";
 import { FiHeart, FiLogIn, FiLogOut, FiMenu } from "react-icons/fi";
-import { CSSVariables } from "utils/CSSVariables";
 import ColorModeSwitcher from "./ColorModeSwitcher";
 import LanguageSwitcher from "./LanguageSwitcher";
+import styles from "./Header.module.css";
 
 const Header = ({ openNav }: { openNav: () => void }) => {
   const [isSmall] = useMediaQuery("(max-width: 400px)");
@@ -23,18 +21,8 @@ const Header = ({ openNav }: { openNav: () => void }) => {
   const activeNavItem = useActiveNavItem();
 
   return (
-    <Box
-      display="flex"
-      as="header"
-      justifySelf="center"
-      fontWeight="bold"
-      letterSpacing={1}
-      justifyContent="space-between"
-      alignItems="center"
-      mb={1}
-      bg={CSSVariables.secondaryBgColor}
-    >
-      <Flex align="center" width={["6rem", null, null, "13rem"]} px={2}>
+    <header className={styles.container}>
+      <div className={styles.leftIconsContainer}>
         <ColorModeSwitcher /> <LanguageSwitcher />
         <IconButton
           aria-label="Open menu"
@@ -50,12 +38,12 @@ const Header = ({ openNav }: { openNav: () => void }) => {
           borderRadius="0"
           display={["flex", null, null, "none"]}
         />
-      </Flex>
-      <Flex justify="center" align="center" color="white.300">
+      </div>
+      <div className="flex justify-center align-center">
         <Link href="/">{isSmall ? "s.ink" : "sendou.ink"}</Link>{" "}
         {activeNavItem && (
           <>
-            <Box mx={1}>-</Box>{" "}
+            <div className="mx-1">-</div>{" "}
             <Image
               src={`/layout/${
                 activeNavItem.imageSrc ?? activeNavItem.code
@@ -68,11 +56,11 @@ const Header = ({ openNav }: { openNav: () => void }) => {
               priority
               alt={`${activeNavItem.name} icon`}
             />
-            <Box ml={1}>{activeNavItem.name}</Box>
+            <div className="ml-1">{activeNavItem.name}</div>
           </>
         )}
-      </Flex>
-      <Box>
+      </div>
+      <div>
         <MyLink isExternal isColored={false} href="https://patreon.com/sendou">
           <Button
             variant="ghost"
@@ -114,8 +102,8 @@ const Header = ({ openNav }: { openNav: () => void }) => {
         >
           {user ? "Log out" : "Log in"}
         </Button>
-      </Box>
-    </Box>
+      </div>
+    </header>
   );
 };
 
