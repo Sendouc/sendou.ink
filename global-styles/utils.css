@@ -14,6 +14,10 @@
   margin-left: var(--space-1);
 }
 
+.ml-6 {
+  margin-left: var(--space-6);
+}
+
 .mt-4 {
   margin-top: var(--space-4);
 }
