@@ -87,11 +87,11 @@ const BuildStats: React.FC<BuildStatsProps> = ({
 
     return (
       <>
-        <Flex justifyContent="space-between">
+        <div className="flex justify-space-between">
           <Flex fontWeight="bold" mr="1em" mb="0.5em" alignItems="center">
-            <Box minW="30px">
+            <div>
               <AbilityIcon ability={ability} size="TINY" loading="eager" />
-            </Box>
+            </div>
             <IconButton
               aria-label="Show chart for the stat"
               mx="0.5rem"
@@ -131,7 +131,7 @@ const BuildStats: React.FC<BuildStatsProps> = ({
           >
             {effect}
           </Box>
-        </Flex>
+        </div>
         <Progress
           colorScheme="orange"
           height={otherEffect ? "16px" : "32px"}
@@ -146,8 +146,8 @@ const BuildStats: React.FC<BuildStatsProps> = ({
               value={otherProgressBarValue}
               bg={colorMode === "dark" ? "#464b64" : `blue.100`}
             />
-            <Flex justifyContent="space-between">
-              <Box />
+            <div className="flex justify-space-between">
+              <div />
               <Box
                 fontWeight="bold"
                 color={`blue.${colorMode === "dark" ? "200" : "500"}`}
@@ -155,7 +155,7 @@ const BuildStats: React.FC<BuildStatsProps> = ({
               >
                 {otherEffect}
               </Box>
-            </Flex>
+            </div>
           </>
         )}
         {getEffect && chartExpanded && (
