@@ -25,9 +25,8 @@
 }
 
 .button:focus {
-  z-index: 1;
-  border-color: var(--theme-color-secondary);
-  box-shadow: var(--theme-color-secondary) 0px 0px 0px 2px;
+  outline: 2px solid var(--theme-color-secondary);
+  outline-offset: 2px;
 }
 
 .button:hover {
