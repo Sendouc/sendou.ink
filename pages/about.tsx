@@ -1,87 +1,60 @@
-import { Heading, Link, List, ListItem } from "@chakra-ui/react";
+import MyHeading from "components/elements/Heading";
 import { t, Trans } from "@lingui/macro";
 import MyHead from "components/common/MyHead";
 import MyLink from "components/common/MyLink";
-import { CSSVariables } from "utils/CSSVariables";
 
 const About = () => {
   return (
     <>
       <MyHead title={t`About`} />
-      <div style={{ marginBottom: "1em" }}>
-        This site was made by{" "}
-        <MyLink isExternal href="https://sendou.cc/">
-          Sendou
-        </MyLink>{" "}
-        with help from the people below.
-      </div>
-      <div style={{ marginTop: "1em" }}>
-        <Heading size="lg" mb="0.5em">
+      This site was made by{" "}
+      <MyLink isExternal href="https://sendou.cc/">
+        Sendou
+      </MyLink>{" "}
+      with help from the people below.
+      <section className="mt-4">
+        <MyHeading className="mb-2" size="3xl">
           <Trans>Thanks to</Trans>
-        </Heading>
-        <ul style={{ marginLeft: "1.2em", marginTop: "0.5em" }}>
+        </MyHeading>
+        <ul className="ml-6">
           <li>
-            <Link
-              isExternal
-              color={CSSVariables.themeColor}
-              href="https://twitter.com/LeanYoshi"
-            >
+            <MyLink isExternal href="https://twitter.com/LeanYoshi">
               Lean
-            </Link>{" "}
+            </MyLink>{" "}
             - <Trans>provided the data for Top 500 X Rank and League</Trans>
           </li>
           <li>
-            <Link
-              isExternal
-              color={CSSVariables.themeColor}
-              href="https://twitter.com/zorg_z0rg_z0r8"
-            >
+            <MyLink isExternal href="https://twitter.com/zorg_z0rg_z0r8">
               zorg
-            </Link>{" "}
+            </MyLink>{" "}
             -{" "}
             <Trans>
               provided background pictures of 4v4 maps for the map planner
             </Trans>
           </li>
           <li>
-            <Link
-              isExternal
-              color={CSSVariables.themeColor}
-              href="https://twitter.com/ganbawoomy"
-            >
+            <MyLink isExternal href="https://twitter.com/ganbawoomy">
               ganbawoomy
-            </Link>{" "}
+            </MyLink>{" "}
             - <Trans>provided the data for tournament browser</Trans>
           </li>
           <li>
-            <Link
-              isExternal
-              color={CSSVariables.themeColor}
-              href="https://twitter.com/noaim_brn"
-            >
+            <MyLink isExternal href="https://twitter.com/noaim_brn">
               NoAim™bUrn
-            </Link>{" "}
+            </MyLink>{" "}
             - <Trans>gave plenty of useful feedback</Trans>
           </li>
           <li>
-            <Link
-              isExternal
-              color={CSSVariables.themeColor}
-              href="https://twitter.com/borzoic_"
-            >
+            <MyLink isExternal href="https://twitter.com/borzoic_">
               borzoic
-            </Link>{" "}
+            </MyLink>{" "}
             - art for the site - front page inkling, icons, footer drawing and
             badges
           </li>
           <li>
-            <Link
-              isExternal
-              color={CSSVariables.themeColor}
-              href="https://twitter.com/DblCookies"
-            >
+            <MyLink isExternal href="https://twitter.com/DblCookies">
               DblCookies
-            </Link>{" "}
+            </MyLink>{" "}
             -{" "}
             <Trans>
               <MyLink
@@ -93,17 +66,14 @@ const About = () => {
             </Trans>
           </li>
           <li>
-            <Link
-              isExternal
-              color={CSSVariables.themeColor}
-              href="https://twitter.com/rofreg"
-            >
+            <MyLink isExternal href="https://twitter.com/rofreg">
               Ryan Laughlin
-            </Link>{" "}
+            </MyLink>{" "}
             -{" "}
             <Trans>
               <MyLink
                 isExternal
+                isColored={false}
                 href="https://github.com/Sendouc/sendou.ink/pulls?q=is%3Apr+is%3Aclosed+author%3Arofreg+"
               >
                 <Trans>Contributions to the codebase</Trans>
@@ -111,154 +81,111 @@ const About = () => {
             </Trans>
           </li>
           <li>
-            <Link
+            <MyLink
               isExternal
-              color={CSSVariables.themeColor}
+              isColored={false}
               href="https://twitter.com/Yuza_i"
             >
               yuza
-            </Link>{" "}
+            </MyLink>{" "}
             - <Trans>translation</Trans> (Deutsch)
           </li>
           <li>
-            <Link
-              isExternal
-              color={CSSVariables.themeColor}
-              href="https://twitter.com/spookyporo"
-            >
+            <MyLink isExternal href="https://twitter.com/spookyporo">
               naga
-            </Link>{" "}
+            </MyLink>{" "}
             - <Trans>translation</Trans> (Español (España))
           </li>
           <li>
-            <Link
-              isExternal
-              color={CSSVariables.themeColor}
-              href="https://twitter.com/Grey_spl"
-            >
+            <MyLink isExternal href="https://twitter.com/Grey_spl">
               Grey
-            </Link>{" "}
+            </MyLink>{" "}
             - <Trans>translation</Trans> (Français)
           </li>
           <li>
-            <Link
-              isExternal
-              color={CSSVariables.themeColor}
-              href="https://twitter.com/DatPretto"
-            >
+            <MyLink isExternal href="https://twitter.com/DatPretto">
               Pretto
-            </Link>{" "}
+            </MyLink>{" "}
             - <Trans>translation</Trans> (Italiano)
           </li>
           <li>
-            <Link
-              isExternal
-              color={CSSVariables.themeColor}
-              href="https://twitter.com/VoltoMatte"
-            >
+            <MyLink isExternal href="https://twitter.com/VoltoMatte">
               Volto
-            </Link>{" "}
+            </MyLink>{" "}
             - <Trans>translation</Trans> (Italiano)
           </li>
           <li>
-            <Link
-              isExternal
-              color={CSSVariables.themeColor}
-              href="https://twitter.com/Guigas_Jr"
-            >
+            <MyLink isExternal href="https://twitter.com/Guigas_Jr">
               Guigas
-            </Link>{" "}
+            </MyLink>{" "}
             - <Trans>translation</Trans> (Português)
           </li>
           <li>
-            <Link
-              isExternal
-              color={CSSVariables.themeColor}
-              href="https://twitter.com/Walavouchey"
-            >
+            <MyLink isExternal href="https://twitter.com/Walavouchey">
               Walavouchey
-            </Link>{" "}
+            </MyLink>{" "}
             - <Trans>translation</Trans> (Svenska)
           </li>
           <li>
-            <Link
-              isExternal
-              color={CSSVariables.themeColor}
-              href="https://twitter.com/sp9rK_spl"
-            >
+            <MyLink isExternal href="https://twitter.com/sp9rK_spl">
               sp9rK
-            </Link>{" "}
+            </MyLink>{" "}
             - <Trans>translation</Trans> (Ελληνικά)
           </li>
           <li>
-            <Link
-              isExternal
-              color={CSSVariables.themeColor}
-              href="https://twitter.com/TehVilly"
-            >
+            <MyLink isExternal href="https://twitter.com/TehVilly">
               Villy / 앤드류
-            </Link>{" "}
+            </MyLink>{" "}
             - <Trans>translation</Trans> (한국어)
           </li>
           <li>
-            <Link
-              isExternal
-              color={CSSVariables.themeColor}
-              href="https://twitter.com/Shachar700"
-            >
+            <MyLink isExternal href="https://twitter.com/Shachar700">
               Shahar
-            </Link>{" "}
+            </MyLink>{" "}
             - <Trans>translation</Trans> (עברית)
           </li>
         </ul>
-      </div>
-      <Heading size="lg" mb="0.5em" mt="1em">
-        <Trans>Feedback</Trans>
-      </Heading>
-      <Trans>
-        Noticed a bug? Something could be done better? Thought of a new cool
-        feature you&apos;d like to see on the site? Need help using the site?
-        You can either:
-      </Trans>
-      <List styleType="decimal" m="1em">
-        <ListItem>
-          <Trans>
-            Create an issue on{" "}
-            <Link
-              href="https://github.com/Sendouc/sendou.ink/issues"
-              isExternal
-              color={CSSVariables.themeColor}
-            >
-              GitHub
-            </Link>
-          </Trans>
-        </ListItem>
-        <ListItem>
-          <Trans>
-            Post on the #helpdesk or #feedback channel of our{" "}
-            <Link
-              href="https://discord.gg/sendou"
-              isExternal
-              color={CSSVariables.themeColor}
-            >
-              Discord
-            </Link>
-          </Trans>
-        </ListItem>
-        <ListItem>
-          <Trans>
-            DM me on{" "}
-            <Link
-              href="https://twitter.com/sendouc"
-              isExternal
-              color={CSSVariables.themeColor}
-            >
-              Twitter
-            </Link>{" "}
-            or Discord (Sendou#0043)
-          </Trans>
-        </ListItem>
-      </List>
+      </section>
+      <section className="mt-4">
+        <MyHeading className="mb-2" size="3xl">
+          <Trans>Feedback</Trans>
+        </MyHeading>
+        <Trans>
+          Noticed a bug? Something could be done better? Thought of a new cool
+          feature you&apos;d like to see on the site? Need help using the site?
+          You can either:
+        </Trans>
+        <ol className="mt-4 ml-6">
+          <li>
+            <Trans>
+              Create an issue on{" "}
+              <MyLink
+                href="https://github.com/Sendouc/sendou.ink/issues"
+                isExternal
+              >
+                GitHub
+              </MyLink>
+            </Trans>
+          </li>
+          <li>
+            <Trans>
+              Post on the #helpdesk or #feedback channel of our{" "}
+              <MyLink href="https://discord.gg/sendou" isExternal>
+                Discord
+              </MyLink>
+            </Trans>
+          </li>
+          <li>
+            <Trans>
+              DM me on{" "}
+              <MyLink href="https://twitter.com/sendouc" isExternal>
+                Twitter
+              </MyLink>{" "}
+              or Discord (Sendou#0043)
+            </Trans>
+          </li>
+        </ol>
+      </section>
     </>
   );
 };

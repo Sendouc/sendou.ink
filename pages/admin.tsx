@@ -1,15 +1,16 @@
-import { Box, Button, Flex, Heading, Input, useToast } from "@chakra-ui/react";
+import Button from "components/elements/Button";
+import Input from "components/elements/Input";
 import SubText from "components/common/SubText";
 import { useUser } from "hooks/common";
 import { useState } from "react";
 import { ADMIN_DISCORD_ID } from "utils/constants";
-import { getToastOptions } from "utils/objects";
 import { sendData } from "utils/postData";
+import Heading from "components/elements/Heading";
 
 const AdminPage = () => {
-  const toast = useToast();
   const [user] = useUser();
   const [sending, setSending] = useState(false);
+  const [successMsg, setSuccessMsg] = useState("");
   const [{ switchAccountId, discordId }, setUpdatePlayerIdForms] = useState({
     switchAccountId: "",
     discordId: "",
@@ -20,8 +21,8 @@ const AdminPage = () => {
   return (
     <>
       <Heading>Update player ID</Heading>
-      <Flex mb="1em">
-        <Box mr="1em">
+      <div className="flex my-4">
+        <div className="mr-4">
           <SubText>Switch account ID</SubText>
           <Input
             value={switchAccountId}
@@ -32,8 +33,8 @@ const AdminPage = () => {
               })
             }
           />
-        </Box>
-        <Box>
+        </div>
+        <div>
           <SubText>Discord ID</SubText>
           <Input
             value={discordId}
@@ -44,8 +45,9 @@ const AdminPage = () => {
               })
             }
           />
-        </Box>
-      </Flex>
+        </div>
+      </div>
+      <div>{successMsg}</div>
       <Button isLoading={sending} onClick={updateUser}>
         Submit
       </Button>
@@ -63,7 +65,7 @@ const AdminPage = () => {
     setSending(false);
     if (!success) return;
 
-    toast(getToastOptions("User updated", "success"));
+    setSuccessMsg("User updated");
   }
 };
 

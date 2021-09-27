@@ -1,5 +1,6 @@
-import { Box, Flex, Heading, Image } from "@chakra-ui/react";
-import { CSSVariables } from "utils/CSSVariables";
+import NextImage from "next/image";
+import Heading from "components/elements/Heading";
+import styles from "./404.module.css";
 
 const splatoonOneMaps = [
   {
@@ -36,20 +37,19 @@ const NotFound = () => {
   const mapObject =
     splatoonOneMaps[Math.floor(Math.random() * splatoonOneMaps.length)];
   return (
-    <Flex flexDirection="column" justifyContent="center" alignItems="center">
-      <Image
-        src={`/splatoon1Maps/${mapObject.image}.png`}
-        borderRadius="5px"
-        w="500px"
-        h="auto"
-        my={4}
+    <div className={styles.container}>
+      <NextImage
+        className={styles.image}
+        src={`/splatoon-1-maps/${mapObject.image}.png`}
+        width={533}
+        height={300}
         alt=""
       />
-      <Heading>404 - Not Found</Heading>
-      <Box color={CSSVariables.themeGray}>
+      <Heading className="mt-4">404 - Not Found</Heading>
+      <div className="text-gray">
         ...just like {mapObject.name} can&apos;t be found in Splatoon 2
-      </Box>
-    </Flex>
+      </div>
+    </div>
   );
 };
 

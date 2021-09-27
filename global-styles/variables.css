@@ -1,0 +1,158 @@
+:root {
+  --fontSizes-xs: 0.75rem;
+  --fontSizes-sm: 0.875rem;
+  --fontSizes-md: 1rem;
+  --fontSizes-lg: 1.125rem;
+  --fontSizes-xl: 1.25rem;
+  --fontSizes-2xl: 1.5rem;
+  --fontSizes-3xl: 1.875rem;
+  --fontSizes-4xl: 2.25rem;
+  --fontSizes-5xl: 3rem;
+  --fontSizes-6xl: 3.75rem;
+  --fontSizes-7xl: 4.5rem;
+  --fontSizes-8xl: 6rem;
+  --fontSizes-9xl: 8rem;
+  --fontWeights-hairline: 100;
+  --fontWeights-thin: 200;
+  --fontWeights-light: 300;
+  --fontWeights-normal: 400;
+  --fontWeights-medium: 500;
+  --fontWeights-semibold: 600;
+  --fontWeights-bold: 700;
+  --fontWeights-extrabold: 800;
+  --fontWeights-black: 900;
+  --radii-none: 0;
+  --radii-sm: 0.125rem;
+  --radii-base: 0.25rem;
+  --radii-md: 0.375rem;
+  --radii-lg: 0.5rem;
+  --radii-xl: 0.75rem;
+  --radii-2xl: 1rem;
+  --radii-3xl: 1.5rem;
+  --radii-full: 9999px;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-7: 1.75rem;
+  --space-8: 2rem;
+  --space-9: 2.25rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-14: 3.5rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-28: 7rem;
+  --space-32: 8rem;
+  --space-36: 9rem;
+  --space-40: 10rem;
+  --space-44: 11rem;
+  --space-48: 12rem;
+  --space-52: 13rem;
+  --space-56: 14rem;
+  --space-60: 15rem;
+  --space-64: 16rem;
+  --space-72: 18rem;
+  --space-80: 20rem;
+  --space-96: 24rem;
+  --space-px: 1px;
+  --space-0\.5: 0.125rem;
+  --space-1\.5: 0.375rem;
+  --space-2\.5: 0.625rem;
+  --space-3\.5: 0.875rem;
+  --shadows-xs: 0 0 0 1px rgba(0, 0, 0, 0.05);
+  --shadows-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadows-base: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+    0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadows-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadows-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadows-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadows-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --shadows-outline: 0 0 0 3px rgba(66, 153, 225, 0.6);
+  --shadows-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+  --shadows-none: none;
+  --shadows-dark-lg: rgba(0, 0, 0, 0.1) 0 0 0 1px,
+    rgba(0, 0, 0, 0.2) 0 5px 10px, rgba(0, 0, 0, 0.4) 0 15px 40px;
+  --sizes-1: 0.25rem;
+  --sizes-2: 0.5rem;
+  --sizes-3: 0.75rem;
+  --sizes-4: 1rem;
+  --sizes-5: 1.25rem;
+  --sizes-6: 1.5rem;
+  --sizes-7: 1.75rem;
+  --sizes-8: 2rem;
+  --sizes-9: 2.25rem;
+  --sizes-10: 2.5rem;
+  --sizes-12: 3rem;
+  --sizes-14: 3.5rem;
+  --sizes-16: 4rem;
+  --sizes-20: 5rem;
+  --sizes-24: 6rem;
+  --sizes-28: 7rem;
+  --sizes-32: 8rem;
+  --sizes-36: 9rem;
+  --sizes-40: 10rem;
+  --sizes-44: 11rem;
+  --sizes-48: 12rem;
+  --sizes-52: 13rem;
+  --sizes-56: 14rem;
+  --sizes-60: 15rem;
+  --sizes-64: 16rem;
+  --sizes-72: 18rem;
+  --sizes-80: 20rem;
+  --sizes-96: 24rem;
+  --sizes-px: 1px;
+  --sizes-full: 100%;
+  --sizes-3xs: 14rem;
+  --sizes-2xs: 16rem;
+  --sizes-xs: 20rem;
+  --sizes-sm: 24rem;
+  --sizes-md: 28rem;
+  --sizes-lg: 32rem;
+  --sizes-xl: 36rem;
+  --sizes-2xl: 42rem;
+  --sizes-3xl: 48rem;
+  --sizes-4xl: 56rem;
+  --sizes-5xl: 64rem;
+  --sizes-6xl: 72rem;
+  --sizes-7xl: 80rem;
+  --sizes-8xl: 90rem;
+  --media-sm: 640px;
+  --media-md: 768px;
+  --media-lg: 1024px;
+  --media-xl: 1280px;
+  --transition-property-common: background-color, border-color, color, fill,
+    stroke, opacity, box-shadow, transform;
+  --transition-duration-normal: 300ms;
+  --disabled-opacity: 0.4;
+}
+
+body {
+  --theme-color: var(--custom-theme-color, #79ff61);
+  --theme-color-lighter: var(--custom-theme-color, rgb(171, 255, 156));
+  --theme-color-secondary: var(--custom-theme-color, rgb(236, 255, 144));
+  --theme-color-opaque: var(--custom-theme-color-opaque, #79ff6120;);
+  --theme-gray: var(--custom-theme-gray, #606060);
+  --bg-color: var(--custom-bg-color, #031e3e);
+  --secondary-bg-color: var(--custom-secondary-bg-color, #0e2a56);
+  --text-color: var(--custom-text-color, #f5f5f5);
+  --border-color: var(--custom-border-color, #2e466c);
+}
+
+body.chakra-ui-light {
+  --theme-color: var(--custom-theme-color, #1bb300);
+  --theme-color-lighter: var(--custom-theme-color, tomato);
+  --theme-color-secondary: var(--custom-theme-color, tomato);
+  --theme-color-opaque: var(--custom-theme-color-opaque, #1bb30020);
+  --theme-gray: var(--custom-theme-gray, #4a5568);
+  --bg-color: var(--custom-bg-color, #eff0f3);
+  --secondary-bg-color: var(--custom-secondary-bg-color, #fffafa);
+  --text-color: var(--custom-text-color, rgba(0, 0, 0, 0.92));
+  --border-color: var(--custom-border-color, #e2e8f0);
+}

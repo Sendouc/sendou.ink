@@ -1,0 +1,68 @@
+/*
+* COLORS
+*/
+
+.text-gray {
+  color: var(--theme-gray);
+}
+
+/*
+* SPACING
+*/
+
+.ml-1 {
+  margin-left: var(--space-1);
+}
+
+.ml-6 {
+  margin-left: var(--space-6);
+}
+
+.mr-4 {
+  margin-right: var(--space-4);
+}
+
+.mt-4 {
+  margin-top: var(--space-4);
+}
+
+.mt-8 {
+  margin-top: var(--space-8);
+}
+
+.mb-2 {
+  margin-bottom: var(--space-2);
+}
+
+.mx-1 {
+  margin: 0 var(--space-1);
+}
+
+.my-4 {
+  margin: var(--space-4) 0;
+}
+
+/*
+* FLEX
+*/
+
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-space-between {
+  justify-content: space-between;
+}
+
+.align-center {
+  align-items: center;
+}
