@@ -1,5 +1,5 @@
 .heading {
   font-size: var(--heading-size);
-  line-height: 1.2;
   font-weight: var(--fontWeights-bold);
+  line-height: 1.2;
 }

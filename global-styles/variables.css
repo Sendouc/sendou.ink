@@ -77,8 +77,8 @@
   --shadows-outline: 0 0 0 3px rgba(66, 153, 225, 0.6);
   --shadows-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
   --shadows-none: none;
-  --shadows-dark-lg: rgba(0, 0, 0, 0.1) 0px 0px 0px 1px,
-    rgba(0, 0, 0, 0.2) 0px 5px 10px, rgba(0, 0, 0, 0.4) 0px 15px 40px;
+  --shadows-dark-lg: rgba(0, 0, 0, 0.1) 0 0 0 1px,
+    rgba(0, 0, 0, 0.2) 0 5px 10px, rgba(0, 0, 0, 0.4) 0 15px 40px;
   --sizes-1: 0.25rem;
   --sizes-2: 0.5rem;
   --sizes-3: 0.75rem;

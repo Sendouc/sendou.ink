@@ -1,14 +1,14 @@
 @import "/nprogress.css";
 
 :root {
-  font-style: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
+  font-style: -apple-system, blinkmacsystemfont, "Segoe UI", helvetica, arial,
     sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
 body {
   margin: 0;
-  color: var(--text-color);
   background-color: var(--bg-color);
+  color: var(--text-color);
 }
 
 header,
@@ -16,16 +16,16 @@ footer {
   grid-column-end: span 3;
 }
 main {
-  grid-column-start: 2;
   width: 100%;
   max-width: 64rem;
+  grid-column-start: 2;
   margin-inline-end: auto;
   margin-inline-start: auto;
 }
 nav {
-  grid-row-start: 2;
   position: sticky;
   top: 0;
+  grid-row-start: 2;
 }
 aside {
   grid-column-start: 3;
@@ -36,11 +36,11 @@ header {
 
 #__next {
   display: grid;
-  row-gap: 1.5rem;
-  column-gap: 1.5rem;
-  grid-template-rows: 50px 1fr 100px;
-  grid-template-columns: auto 1fr;
   min-height: 100vh;
+  column-gap: 1.5rem;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: 50px 1fr 100px;
+  row-gap: 1.5rem;
 }
 
 @media (max-width: 1365px) {
@@ -57,7 +57,7 @@ header {
 
 @media (max-width: 991px) {
   #__next {
-    grid-template-columns: 0px 1fr;
+    grid-template-columns: 0 1fr;
   }
 }
 
@@ -94,13 +94,13 @@ For React Datepicker
 }
 
 .react-datepicker__input-container {
-  -webkit-padding-start: var(--chakra-space-4);
-  padding-inline-start: var(--chakra-space-4);
-  -webkit-padding-end: var(--chakra-space-2);
-  padding-inline-end: var(--chakra-space-2);
-  border-radius: var(--chakra-radii-md);
   border: 1px solid;
   border-color: var(--light-gray);
+  border-radius: var(--chakra-radii-md);
+  -webkit-padding-end: var(--chakra-space-2);
+  padding-inline-end: var(--chakra-space-2);
+  padding-inline-start: var(--chakra-space-4);
+  -webkit-padding-start: var(--chakra-space-4);
 }
 
 .react-datepicker__input-container:hover {
@@ -114,17 +114,17 @@ For React Datepicker
 }
 
 .react-datepicker__input-container > input {
-  background-color: transparent;
   width: 100%;
   height: var(--chakra-sizes-10);
+  background-color: transparent;
   color: var(--text);
   outline: none;
 }
 
 .scrollableNavigation {
   max-height: calc(100vh - 1rem);
-  overflow-y: auto;
   -ms-overflow-style: none; /* IE and Edge */
+  overflow-y: auto;
   scrollbar-width: none; /* Firefox */
 }
 

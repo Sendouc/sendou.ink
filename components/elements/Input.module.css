@@ -1,26 +1,26 @@
 .input {
-  width: 100%;
-  min-width: 0px;
-  outline: 2px solid transparent;
-  outline-offset: 2px;
   position: relative;
-  appearance: none;
-  transition-property: var(--transition-property-common);
-  transition-duration: var(--transition-duration-normal);
-  font-size: var(--fontSizes-md);
-  padding-inline-start: var(--space-4);
-  padding-inline-end: var(--space-4);
+  width: 100%;
+  min-width: 0;
   height: var(--sizes-10);
-  border-radius: var(--radii-md);
   border: 1px solid;
   border-color: inherit;
+  appearance: none;
   background: inherit;
+  border-radius: var(--radii-md);
+  font-size: var(--fontSizes-md);
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  padding-inline-end: var(--space-4);
+  padding-inline-start: var(--space-4);
+  transition-duration: var(--transition-duration-normal);
+  transition-property: var(--transition-property-common);
 }
 
 .input:focus {
   z-index: 1;
   border-color: var(--theme-color-secondary);
-  box-shadow: var(--theme-color-secondary) 0px 0px 0px 1px;
+  box-shadow: var(--theme-color-secondary) 0 0 0 1px;
 }
 
 .input:hover {

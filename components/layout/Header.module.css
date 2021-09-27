@@ -1,16 +1,16 @@
 .container {
   display: flex;
-  justify-self: center;
-  font-weight: bold;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: var(--space-1);
   background-color: var(--secondary-bg-color);
+  font-weight: bold;
+  justify-self: center;
 }
 
 .leftIconsContainer {
-  width: 6rem;
   display: flex;
+  width: 6rem;
   align-items: center;
   padding: 0 var(--space-2);
 
