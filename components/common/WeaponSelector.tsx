@@ -64,22 +64,23 @@ const customFilterOption = (option: any, rawInput: string) => {
   return words.reduce(
     (acc, cur) =>
       acc &&
-      (option.label.toLowerCase().includes(cur.toLowerCase()) || filterWeaponsByString(rawInput, option.data?.data)),
+      (option.label.toLowerCase().includes(cur.toLowerCase()) ||
+        filterWeaponsByString(rawInput, option.data?.data)),
     true
   );
 };
 
-function filterWeaponsByString(rawInput: string, weaponData: WeaponData): boolean {
-  if (!weaponData)
-    return false;
-  if (weaponData?.sub.toLowerCase() === rawInput.toLowerCase())
-    return true;
-  if (weaponData?.special.toLowerCase() === rawInput.toLowerCase())
-    return true;
+function filterWeaponsByString(
+  rawInput: string,
+  weaponData: WeaponData
+): boolean {
+  const inputNormalized = rawInput.toLowerCase();
+  if (!weaponData) return false;
+  if (weaponData?.sub.toLowerCase() === inputNormalized) return true;
+  if (weaponData?.special.toLowerCase() === inputNormalized) return true;
   if (weaponData?.aliases) {
     for (const alias of weaponData.aliases) {
-      if (alias?.toLowerCase().includes(rawInput))
-        return true;
+      if (alias?.toLowerCase().includes(inputNormalized)) return true;
     }
   }
   return false;
@@ -101,7 +102,12 @@ function initWeaponData() {
       const typedKey = key as keyof typeof weaponsAliases;
       const aliases = weaponsAliases[typedKey];
 
-      weaponsArray.push({ name: key, special: value.Special, sub: value.Sub, aliases });
+      weaponsArray.push({
+        name: key,
+        special: value.Special,
+        sub: value.Sub,
+        aliases,
+      });
     }
   }
   return weaponsArray;
