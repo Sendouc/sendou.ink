@@ -238,6 +238,7 @@ export const weaponsAliases = {
     "kaulies",
     "kaulie",
     "ksd",
+    "kdualies",
   ],
   "Kensa Splat Roller": ["kensaroller", "kroller", "kroll", "ksr"],
   "Kensa Splatterscope": ["kensascope", "ksscope", "kscope", "kss"],
