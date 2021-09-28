@@ -78,6 +78,10 @@ const EditableBuilds: React.FC<EditableBuildsProps> = ({
     : "SSU";
 
   const isBuildEmpty = (build: Omit<ViewSlotsAbilities, "weapon">) => {
+    // If build is incomplete or malformed, return true.
+    if (build.headAbilities.length !== 4 || build.clothingAbilities.length !== 4 || build.shoesAbilities.length !== 4) {
+      return true
+    }
     return [
       ...build.headAbilities,
       ...build.clothingAbilities,

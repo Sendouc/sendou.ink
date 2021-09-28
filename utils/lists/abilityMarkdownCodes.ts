@@ -25,4 +25,5 @@ export const abilityMarkdownCodes = {
   sj: "SJ",
   os: "OS",
   dr: "DR",
+  unknown: "UNKNOWN",
 } as const;

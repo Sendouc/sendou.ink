@@ -42,6 +42,7 @@ export const abilities = [
   { code: "SJ", name: t`Stealth Jump`, type: "SHOES" },
   { code: "OS", name: t`Object Shredder`, type: "SHOES" },
   { code: "DR", name: t`Drop Roller`, type: "SHOES" },
+  { code: "UNKNOWN", name: t`Not set`, type: "STACKABLE" },
 ] as const;
 
 export const isMainAbility = (ability: any) =>

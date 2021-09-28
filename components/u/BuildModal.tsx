@@ -196,8 +196,8 @@ const BuildModal: React.FC<Props> = ({ onClose, build, weaponFromQuery }) => {
               {/* yeah....... didn't find an easier way to do this with the library so here we are */}
               <FormControl
                 isInvalid={
-                  !!errors.headAbilities ||
-                  !!errors.clothingAbilities ||
+                  !!errors.headAbilities &&
+                  !!errors.clothingAbilities &&
                   !!errors.shoesAbilities
                 }
               >

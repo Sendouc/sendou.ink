@@ -1,4 +1,4 @@
-import { Badge, Box, Button, FormLabel, Switch, Wrap } from "@chakra-ui/react";
+import { Badge, Box, Button, FormLabel, Link, Switch, Wrap } from "@chakra-ui/react";
 import { t, Trans } from "@lingui/macro";
 import BuildStats from "components/analyzer/BuildStats";
 import EditableBuilds from "components/analyzer/EditableBuilds";
@@ -6,7 +6,8 @@ import { ViewSlotsAbilities } from "components/builds/ViewSlots";
 import WeaponSelector from "components/common/WeaponSelector";
 import useAbilityEffects from "hooks/useAbilityEffects";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { FaRedo } from "react-icons/fa";
 import { FiSettings } from "react-icons/fi";
 import { CSSVariables } from "utils/CSSVariables";
 import { isAbilityArray } from "utils/lists/abilities";
@@ -149,6 +150,22 @@ const BuildAnalyzerPage = () => {
                   {t`Start charts Y axis from zero`}
                 </FormLabel>
               </Box>
+              <Link
+              href={encodeURI(
+                `/analyzer?weapon=${weapon}&head=${build.headAbilities}&clothing=${build.clothingAbilities}&shoes=${build.shoesAbilities}`
+              )}
+              >
+                <a>
+                  <Button
+                    leftIcon={<FaRedo />}
+                    my="1rem"
+                    size="sm"
+                    variant="outline"
+                  >
+                    {t`Show in Build Analyzer`}
+                  </Button>
+                </a>
+              </Link>
             </Box>
           )}
           <Box m="1rem" w={["95%", null, "30rem"]}>

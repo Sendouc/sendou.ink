@@ -111,7 +111,7 @@ const AbilitiesSelector: React.FC<Props> = ({ abilities, setAbilities }) => {
       <Divider maxWidth={64} my={4} mx="auto" />
       <Flex flexWrap="wrap" justifyContent="center" maxW="350px" mx="auto">
         {allAbilities
-          .filter((ability) => ability.type === "STACKABLE")
+          .filter((ability) => ability.type === "STACKABLE" && ability.code !== "UNKNOWN")
           .map((ability) => (
             <Box
               m="0.3em"

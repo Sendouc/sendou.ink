@@ -29,4 +29,5 @@ export const abilityEnum = z.enum([
   "SJ",
   "OS",
   "DR",
+  "UNKNOWN"
 ]);
