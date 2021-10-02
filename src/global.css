@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap');
+
+:root {
+	--theme: #feff68;
+	--theme-2: #4dfa73;
+	--theme-3: #d765ff;
+	--theme-4: #64f3fc;
+	--theme-5: #ef453b;
+	--twitch: #6441a5;
+	--youtube: #c4302b;
+	--twitter: #1da1f2;
+	--bg: #2d306f;
+	--bg-dark: #202251;
+	--bg-light: #404386;
+	--text: rgba(255, 255, 255, 0.95);
+	--text-secondary: rgba(204, 204, 204, 0.65);
+}
+
+body {
+	background-color: var(--bg);
+	color: var(--text);
+	font-family: 'PT Sans', sans-serif;
+	margin: 0;
+}
