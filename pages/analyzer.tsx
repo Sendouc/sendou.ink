@@ -14,7 +14,7 @@ import { isWeapon } from "utils/lists/weapons";
 import { AbilityOrUnknown } from "utils/types";
 import MyHead from "../components/common/MyHead";
 
-const CURRENT_PATCH = "5.4.";
+const CURRENT_PATCH = "5.5.";
 
 const defaultBuild: ViewSlotsAbilities = {
   headAbilities: ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
