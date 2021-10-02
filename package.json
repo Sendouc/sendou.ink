@@ -1,6 +1,6 @@
 {
-  "name": "my-app",
-  "version": "0.0.1",
+  "name": "sendou.ink",
+  "version": "3.0.0",
   "scripts": {
     "dev": "svelte-kit dev",
     "build": "svelte-kit build",

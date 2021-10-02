@@ -14,11 +14,37 @@
 	--bg-light: #404386;
 	--text: rgba(255, 255, 255, 0.95);
 	--text-secondary: rgba(204, 204, 204, 0.65);
+	--shadow: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+
+	--sizes-sub-heading: 18px;
+	--sizes-heading: 24px;
+
+	--space-0-5: 0.125rem;
+	--space-1: 0.25rem;
+	--space-1-5: 0.375rem;
+	--space-2: 0.5rem;
+	--space-2-5: 0.625rem;
+	--space-3: 0.75rem;
+	--space-3-5: 0.875rem;
+	--space-4: 1rem;
+	--space-5: 1.25rem;
+	--space-6: 1.5rem;
+	--space-7: 1.75rem;
+	--space-8: 2rem;
 }
 
 body {
 	background-color: var(--bg);
 	color: var(--text);
 	font-family: 'PT Sans', sans-serif;
+	margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
 	margin: 0;
 }

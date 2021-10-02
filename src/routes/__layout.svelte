@@ -3,14 +3,14 @@
 	import '../global.css';
 </script>
 
+<nav>
+	<picture>
+		<source srcset="/img/logo.webp" type="image/webp" />
+		<img src="/img/logo.png" alt="sendou.ink logo" />
+	</picture>
+</nav>
+<RainbowLine />
 <main>
-	<nav>
-		<picture>
-			<source srcset="img/logo.webp" type="image/webp" />
-			<img src="img/logo.png" alt="sendou.ink logo" />
-		</picture>
-	</nav>
-	<RainbowLine />
 	<slot />
 </main>
 
@@ -22,5 +22,9 @@
 
 	img {
 		height: 2rem;
+	}
+
+	main {
+		margin: 1rem;
 	}
 </style>
