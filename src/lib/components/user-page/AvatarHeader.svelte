@@ -53,4 +53,10 @@
 		height: 7rem;
 		filter: var(--shadow);
 	}
+
+	@media only screen and (min-width: 500px) {
+		.pfp {
+			height: 10rem;
+		}
+	}
 </style>

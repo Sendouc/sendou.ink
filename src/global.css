@@ -33,6 +33,12 @@
 	--space-8: 2rem;
 }
 
+@media only screen and (min-width: 500px) {
+	:root {
+		--sizes-heading: 30px;
+	}
+}
+
 body {
 	background-color: var(--bg);
 	color: var(--text);
