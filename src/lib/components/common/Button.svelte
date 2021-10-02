@@ -13,15 +13,21 @@
 		border: var(--border) solid;
 		border-color: var(--theme);
 		border-radius: var(--rounded);
-		padding: var(--space-2) var(--space-4);
+		padding: var(--space-1) var(--space-3);
 		font-weight: bold;
 		cursor: pointer;
 		transition: all 0.3s;
-		font-size: var(--sizes-body-large);
+		/* TODO: looks kinda squiggly maybe? */
+		outline-offset: 3px;
+		outline: 2px solid transparent;
 	}
 
 	button:hover {
 		background-color: var(--theme);
 		color: var(--black);
+	}
+
+	button:focus {
+		outline-color: inherit;
 	}
 </style>

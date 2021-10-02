@@ -46,6 +46,7 @@
 		border-radius: 50%;
 		height: 2.5rem;
 		margin-right: var(--space-2);
+		filter: var(--shadow);
 	}
 
 	.pfp {
