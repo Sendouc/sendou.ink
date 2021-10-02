@@ -1,9 +1,0 @@
-.heading {
-  margin-top: var(--space-8);
-  margin-bottom: var(--space-3);
-  font-size: var(--fontSizes-3xl);
-}
-
-.heading:first-of-type {
-  margin-top: 0;
-}
