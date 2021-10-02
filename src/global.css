@@ -6,6 +6,7 @@
 	--theme-3: #d765ff;
 	--theme-4: #64f3fc;
 	--theme-5: #ef453b;
+	--black: #000000de;
 	--twitch: #6441a5;
 	--youtube: #c4302b;
 	--twitter: #1da1f2;
@@ -16,6 +17,11 @@
 	--text-secondary: rgba(204, 204, 204, 0.65);
 	--shadow: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
 
+	--border: 3px;
+
+	--rounded: 20px;
+
+	--sizes-body-large: 16px;
 	--sizes-sub-heading: 18px;
 	--sizes-heading: 24px;
 

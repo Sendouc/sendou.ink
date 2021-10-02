@@ -25,6 +25,8 @@
 	}
 
 	main {
-		margin: 1rem;
+		padding: 1rem;
+		margin: 0 auto;
+		max-width: 64rem;
 	}
 </style>
