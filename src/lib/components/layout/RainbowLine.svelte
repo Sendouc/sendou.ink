@@ -10,7 +10,7 @@
 	.container {
 		display: grid;
 		grid-template-columns: 1fr 2fr 2fr 2fr 1fr;
-		height: 6px;
+		height: calc(var(--border) * 2);
 	}
 
 	.first {

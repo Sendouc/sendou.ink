@@ -10,7 +10,6 @@
 
 <style>
 	.container {
-		margin-top: var(--space-6);
 		display: flex;
 		justify-content: space-evenly;
 	}
