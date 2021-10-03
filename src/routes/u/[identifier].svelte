@@ -5,7 +5,9 @@
 	import { defaultTitle } from '$lib/utils';
 </script>
 
-<title>{defaultTitle('Sendou#0043')}</title>
+<svelte:head>
+	<title>{defaultTitle('Sendou#0043')}</title>
+</svelte:head>
 
 <div class="container">
 	<AvatarHeader />
