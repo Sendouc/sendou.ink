@@ -1,5 +1,6 @@
 <script>
 	import AvatarHeader from '$lib/components/user-page/AvatarHeader.svelte';
+	import Badges from '$lib/components/user-page/Badges.svelte';
 	import Bio from '$lib/components/user-page/Bio.svelte';
 	import ProfileOwnersButtons from '$lib/components/user-page/ProfileOwnersButtons.svelte';
 	import WeaponPool from '$lib/components/user-page/WeaponPool.svelte';
@@ -14,6 +15,7 @@
 	<AvatarHeader />
 	<ProfileOwnersButtons />
 	<WeaponPool />
+	<Badges />
 	<Bio />
 </div>
 
