@@ -16,8 +16,7 @@
 		padding: var(--space-1) var(--space-3);
 		font-weight: bold;
 		cursor: pointer;
-		transition: all 0.3s;
-		/* TODO: looks kinda squiggly maybe? */
+		transition: background-color 0.3s;
 		outline-offset: 3px;
 		outline: 2px solid transparent;
 	}
@@ -25,6 +24,7 @@
 	button:hover {
 		background-color: var(--theme);
 		color: var(--black);
+		outline: none;
 	}
 
 	button:focus {
