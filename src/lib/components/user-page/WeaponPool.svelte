@@ -24,12 +24,12 @@
 		display: flex;
 		justify-content: center;
 		gap: var(--space-2);
-		margin-top: var(--space-4);
 	}
 
 	.weapons-container > img {
 		width: 15%;
 		max-width: 75px;
 		filter: var(--shadow);
+		margin-top: var(--space-6);
 	}
 </style>

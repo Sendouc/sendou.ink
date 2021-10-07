@@ -24,6 +24,6 @@
 	}
 
 	.bio > div {
-		margin: 0 var(--space-1-5);
+		margin: var(--space-6) var(--space-1-5);
 	}
 </style>
