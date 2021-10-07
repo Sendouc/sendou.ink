@@ -2,6 +2,7 @@
 	import AvatarHeader from '$lib/components/user-page/AvatarHeader.svelte';
 	import Badges from '$lib/components/user-page/Badges.svelte';
 	import Bio from '$lib/components/user-page/Bio.svelte';
+	import PeakPowers from '$lib/components/user-page/PeakPowers.svelte';
 	import ProfileOwnersButtons from '$lib/components/user-page/ProfileOwnersButtons.svelte';
 	import WeaponPool from '$lib/components/user-page/WeaponPool.svelte';
 	import { defaultTitle } from '$lib/utils';
@@ -16,6 +17,7 @@
 	<ProfileOwnersButtons />
 	<WeaponPool />
 	<Badges />
+	<PeakPowers />
 	<Bio />
 </div>
 

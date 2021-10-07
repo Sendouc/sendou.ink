@@ -52,6 +52,7 @@
 	<div class="container">
 		<div class="badges-container">
 			<div>
+				<!-- TODO: Make focusable and make hover state -->
 				<video id="big-badge" autoplay muted loop playsinline>
 					<source src={`/video/badges/${badges[0].name}.webm`} type="video/webm" />
 					<source src={`/video/badges/${badges[0].name}.mp4`} type="video/mp4" />
@@ -69,6 +70,7 @@
 			</div>
 		</div>
 	</div>
+	<!-- TODO: layout shift when two lines -->
 	{#key badges[0].description}
 		<div in:fly={{ y: -20, delay: 100 }} class="desc">{badges[0].description}</div>
 	{/key}
@@ -83,13 +85,11 @@
 	.badges-container {
 		display: flex;
 		align-items: center;
-		justify-content: content;
 		gap: 1rem;
 		background-color: #000;
 		border-radius: var(--rounded);
 		padding: var(--space-1-5);
-		margin-top: var(--space-6);
-		padding-left: var(--space-6);
+		padding-left: var(--space-5);
 		max-width: 17rem;
 	}
 

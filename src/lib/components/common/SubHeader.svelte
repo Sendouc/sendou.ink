@@ -6,5 +6,6 @@
 		font-size: var(--sizes-sub-heading);
 		border-bottom: var(--border) solid var(--theme);
 		padding-bottom: var(--space-2);
+		margin-bottom: var(--space-6);
 	}
 </style>
