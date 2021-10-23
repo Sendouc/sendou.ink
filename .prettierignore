@@ -1,8 +1,0 @@
-.next/
-
-prisma/scripts/data
-prisma/scripts/mongo
-
-# Ignore JSON files generated via script
-utils/data/patrons.json
-locale/*/*.js
