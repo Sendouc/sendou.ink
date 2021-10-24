@@ -53,7 +53,7 @@ CREATE UNIQUE INDEX "Organization_nameForUrl_key" ON "Organization"("nameForUrl"
 CREATE UNIQUE INDEX "Organization_ownerId_key" ON "Organization"("ownerId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Tournament_nameForUrl_key" ON "Tournament"("nameForUrl");
+CREATE UNIQUE INDEX "Tournament_nameForUrl_organizerId_key" ON "Tournament"("nameForUrl", "organizerId");
 
 -- AddForeignKey
 ALTER TABLE "Organization" ADD CONSTRAINT "Organization_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -42,7 +42,7 @@ model Tournament {
   id               Int          @id @default(autoincrement())
   name             String
   /// Name in lower case to show in URL
-  nameForUrl       String       @unique
+  nameForUrl       String
   desription       String?
   startTime        DateTime
   checkInTime      DateTime
@@ -52,4 +52,7 @@ model Tournament {
   bannerTextColor  String
   organizerId      Int
   organizer        Organization @relation(fields: [organizerId], references: [id])
+
+  // There might be duplicate nameForUrl's but inside an organization they're unique
+  @@unique([nameForUrl, organizerId])
 }
