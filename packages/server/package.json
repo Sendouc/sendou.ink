@@ -5,7 +5,8 @@
     "dev": "tsm src/index.ts",
     "migration:create": "npx prisma migrate dev --create-only --schema ./src/prisma/schema.prisma",
     "migration:apply:dev": "npx prisma migrate dev --schema ./src/prisma/schema.prisma",
-    "migration:apply:prod": "npx prisma migrate deploy --schema ./src/prisma/schema.prisma"
+    "migration:apply:prod": "npx prisma migrate deploy --schema ./src/prisma/schema.prisma",
+    "seed": "npx prisma migrate reset --schema ./src/prisma/schema.prisma"
   },
   "dependencies": {
     "@prisma/client": "^3.3.0",
@@ -24,5 +25,8 @@
     "tsm": "^2.1.2",
     "typescript": "^4.4.4"
   },
-  "type": "module"
+  "type": "module",
+  "prisma": {
+    "seed": "node --loader ts-node/esm src/prisma/seed.ts"
+  }
 }
