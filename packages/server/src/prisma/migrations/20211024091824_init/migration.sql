@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE "User" (
-    "id" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
     "discordId" TEXT NOT NULL,
     "discordName" TEXT NOT NULL,
     "discordDiscriminator" TEXT NOT NULL,

@@ -1,9 +1,16 @@
 {
   "compilerOptions": {
+    "target": "ES6",
+    "module": "ESNext",
     "sourceMap": true,
     "outDir": "dist",
     "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedParameters": true,
+    "noUnusedLocals": true,
     "lib": ["esnext"],
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "baseUrl": "./src/"
   }
 }

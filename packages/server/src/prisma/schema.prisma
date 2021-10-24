@@ -11,16 +11,16 @@ datasource db {
 }
 
 model User {
-  id                    String           @id
-  discordId             String          @unique
-  discordName           String
-  discordDiscriminator  String
-  discordAvatar         String?
-  discordRefreshToken   String
-  twitch                String?
-  twitter               String?
-  youtubeId             String?
-  youtubeName           String?
-  createdAt             DateTime         @default(now())
-  updatedAt             DateTime         @updatedAt
+  id                   Int      @id @default(autoincrement())
+  discordId            String   @unique
+  discordName          String
+  discordDiscriminator String
+  discordAvatar        String?
+  discordRefreshToken  String
+  twitch               String?
+  twitter              String?
+  youtubeId            String?
+  youtubeName          String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 }
