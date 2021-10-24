@@ -11,8 +11,8 @@ datasource db {
 }
 
 model User {
-  id                   Int      @id @default(autoincrement())
-  discordId            String   @unique
+  id                   Int           @id @default(autoincrement())
+  discordId            String        @unique
   discordName          String
   discordDiscriminator String
   discordAvatar        String?
@@ -21,6 +21,35 @@ model User {
   twitter              String?
   youtubeId            String?
   youtubeName          String?
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+  ownedOrganization    Organization?
+}
+
+model Organization {
+  id            Int          @id @default(autoincrement())
+  name          String
+  /// Name in lower case to show in URL
+  nameForUrl    String       @unique
+  ownerId       Int          @unique
+  owner         User         @relation(fields: [ownerId], references: [id])
+  discordInvite String
+  twitter       String?
+  tournaments   Tournament[]
+}
+
+model Tournament {
+  id               Int          @id @default(autoincrement())
+  name             String
+  /// Name in lower case to show in URL
+  nameForUrl       String       @unique
+  desription       String?
+  startTime        DateTime
+  checkInTime      DateTime
+  /// CSS for tournament banner's background value
+  bannerBackground String
+  /// CSS for tournament banner's color value
+  bannerTextColor  String
+  organizerId      Int
+  organizer        Organization @relation(fields: [organizerId], references: [id])
 }
