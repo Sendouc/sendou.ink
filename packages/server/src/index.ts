@@ -12,6 +12,8 @@ const app = new App();
 
 const PORT = 3001;
 
+validateEnvVars();
+
 passport.use(
   new DiscordStrategy(
     {
@@ -65,3 +67,22 @@ app
   .listen(PORT, () =>
     console.log(`Server ready at: https://localhost:${PORT}`)
   );
+
+function validateEnvVars() {
+  const logInEnvVars = [
+    "DISCORD_CLIENT_ID",
+    "DISCORD_CLIENT_SECRET",
+    "DISCORD_CALLBACK_URL",
+  ].filter((envVar) => !process.env[envVar]);
+
+  if (logInEnvVars.length === 0) return;
+
+  if (process.env.NODE_ENV === "development") {
+    console.warn(
+      "Missing env vars for testing logging in:",
+      logInEnvVars.join(", ")
+    );
+  } else {
+    throw new Error("Missing env vars for logging in");
+  }
+}
