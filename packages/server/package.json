@@ -17,6 +17,7 @@
     "passport-discord": "^0.1.4"
   },
   "devDependencies": {
+    "@tinyhttp/cors": "^2.0.0",
     "@types/node": "^16.11.4",
     "@types/passport": "^1.0.7",
     "@types/passport-discord": "^0.1.5",

@@ -3,6 +3,7 @@ config();
 
 import { App } from "@tinyhttp/app";
 import { logger } from "@tinyhttp/logger";
+import { cors } from "@tinyhttp/cors";
 import passport from "passport";
 import { Strategy as DiscordStrategy } from "passport-discord";
 import routes from "./routes/index";
@@ -53,6 +54,7 @@ passport.deserializeUser(async (id, done) => {
 
 app
   .use(logger())
+  .use(cors())
   // @ts-expect-error - Mismatch of types but seems to work fine
   .use(passport.initialize())
   .get("/auth/discord", passport.authenticate("discord"))
