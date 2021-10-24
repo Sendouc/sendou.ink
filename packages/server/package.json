@@ -2,11 +2,11 @@
   "name": "server.sendou.ink",
   "version": "1.0.0",
   "scripts": {
-    "dev": "tsm src/index.ts",
-    "migration:create": "npx prisma migrate dev --create-only --schema ./src/prisma/schema.prisma",
-    "migration:apply:dev": "npx prisma migrate dev --schema ./src/prisma/schema.prisma",
-    "migration:apply:prod": "npx prisma migrate deploy --schema ./src/prisma/schema.prisma",
-    "seed": "npx prisma migrate reset --schema ./src/prisma/schema.prisma"
+    "dev": "tsm index.ts",
+    "migration:create": "npx prisma migrate dev --create-only",
+    "migration:apply:dev": "npx prisma migrate dev",
+    "migration:apply:prod": "npx prisma migrate deploy",
+    "seed": "npx prisma migrate reset"
   },
   "dependencies": {
     "@prisma/client": "^3.3.0",
@@ -28,6 +28,6 @@
   },
   "type": "module",
   "prisma": {
-    "seed": "node --loader ts-node/esm src/prisma/seed.ts"
+    "seed": "node --loader ts-node/esm prisma/seed.ts"
   }
 }

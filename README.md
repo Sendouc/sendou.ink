@@ -5,7 +5,7 @@
 ### Server
 
 ```
-src/
+server/
 ├── index.ts/               entry point
 ├── routes/                 route mapping to controllers
 ├── middleware/             middlewares that are called before controllers

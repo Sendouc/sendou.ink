@@ -11,6 +11,6 @@
     "lib": ["esnext"],
     "esModuleInterop": true,
     "moduleResolution": "node",
-    "baseUrl": "./src/"
+    "baseUrl": "."
   }
 }
