@@ -13,11 +13,11 @@ const _Header = styled.header`
   align-items: center;
   padding: 1rem;
 
-  & > :first-child {
+  & > :first-of-type {
     justify-self: flex-start;
   }
 
-  & > :last-child {
+  & > :last-of-type {
     justify-self: flex-end;
   }
 `;

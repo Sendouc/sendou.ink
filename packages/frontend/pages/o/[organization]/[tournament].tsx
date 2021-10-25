@@ -7,6 +7,5 @@ export default function TournamentPage() {
   const { data, error } = useSWR(
     `/tournaments/${router.query.organization}/${router.query.tournament}`
   );
-  console.log("error", error);
   return <InfoBanner />;
 }
