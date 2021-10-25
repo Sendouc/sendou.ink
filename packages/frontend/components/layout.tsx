@@ -1,28 +1,58 @@
 import styled from "@emotion/styled";
 import { ReactNode } from "react";
+import { HiChevronDown, HiSearch } from "react-icons/hi";
+import { TextInput } from "./common/TextInput";
+import NextImage from "next/image";
+import logo from "../assets/img/logo.png";
+import { Avatar } from "./common/Avatar";
+import { Button } from "./common/Button";
 
-const _Button = styled.button`
-  padding: 32px;
-  background-color: hotpink;
-  font-size: 24px;
-  border-radius: 4px;
-  color: black;
-  font-weight: bold;
-  &:hover {
-    color: white;
+const _Header = styled.header`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  padding: 1rem;
+
+  & > :first-child {
+    justify-self: flex-start;
+  }
+
+  & > :last-child {
+    justify-self: flex-end;
   }
 `;
 
-const Container = styled.div`
-  background-color: var(--bg);
+const _RightContainer = styled.div`
+  display: flex;
+  gap: 1rem;
+`;
+
+const _LogoContainer = styled.div`
+  background-color: var(--colors-bg-lighter);
+  display: grid;
+  place-items: center;
+  padding: 0.25rem;
+  border-radius: 16px;
 `;
 
 export function Layout({ children }: { children: ReactNode }) {
   return (
-    <Container>
-      <header className="font-bold p-4">sendou.ink</header>
-      <_Button>hello</_Button>
+    <>
+      <_Header>
+        <_LogoContainer>
+          <NextImage src={logo} width={30} height={30} />
+        </_LogoContainer>
+        <TextInput
+          placeholder="Search for anything"
+          icon={<HiSearch />}
+          size="md"
+        />
+        <_RightContainer>
+          <Button icon={<HiChevronDown />}>Create new...</Button>
+          <Avatar src="https://cdn.discordapp.com/avatars/79237403620945920/fcfd65a3bea598905abb9ca25296816b.png?size=80" />
+        </_RightContainer>
+      </_Header>
       <main>{children}</main>
-    </Container>
+    </>
   );
 }

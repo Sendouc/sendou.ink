@@ -22,6 +22,7 @@ export default function App(props: AppProps) {
       <MantineProvider
         theme={{
           colorScheme: "dark",
+          primaryColor: "violet",
         }}
       >
         <NormalizeCSS />

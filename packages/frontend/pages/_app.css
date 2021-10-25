@@ -1,6 +1,8 @@
 :root {
-  --colors-bg: #2d306f;
-  --colors-text: rgba(255, 255, 255, 0.85);
+  --colors-bg: hsl(237.3, 42.3%, 30.6%);
+  --colors-bg-lighter: hsl(237.3, 42.3%, 35.6%);
+  --colors-text: rgba(255, 255, 255, 0.95);
+  --colors-text-lighter: rgba(255, 255, 255, 0.55);
 }
 
 *,
