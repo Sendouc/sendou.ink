@@ -17,108 +17,6 @@ const infos = [
   },
 ];
 
-const _Container = styled.div`
-  width: min(48rem, 100%);
-  padding: 1.5rem;
-  margin: 0 auto;
-  background: linear-gradient(to bottom, #9796f0, #fbc7d4);
-  border-radius: var(--radii-rounded);
-  color: hsl(231, 9%, 16%);
-`;
-
-const _TopRow = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 1rem;
-`;
-
-const _DateName = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-`;
-
-const _MonthDate = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  line-height: 1.25;
-`;
-
-const _Month = styled.div`
-  font-size: var(--fonts-xs);
-`;
-
-const _Date = styled.div`
-  font-size: var(--fonts-lg);
-  font-weight: bold;
-`;
-
-const _TournamentName = styled.div`
-  padding-left: 1rem;
-  border-color: var(--colors-text);
-  border-left: 1px solid;
-  font-size: var(--fonts-xl);
-  font-weight: bold;
-`;
-
-const _BottomRow = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 1rem;
-
-  @media only screen and (min-width: 600px) {
-    flex-direction: row;
-    align-items: flex-end;
-  }
-`;
-
-const _Infos = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  margin-top: 2rem;
-  gap: 1rem;
-
-  @media only screen and (min-width: 500px) {
-    gap: 2rem;
-  }
-`;
-
-const _IconButtons = styled.div`
-  display: flex;
-  gap: 1rem;
-`;
-
-const _InfoContainer = styled.div`
-  font-size: var(--fonts-xs);
-
-  > label {
-    font-weight: bold;
-  }
-`;
-
-const _IconButton = styled.a`
-  display: inline-flex;
-  width: 2.25rem;
-  height: 2.25rem;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5rem;
-  border: 1px solid;
-  border-color: var(--text-transparent);
-  border-radius: 50%;
-  color: inherit;
-  transition: background-color 0.3s;
-  :hover {
-    background-color: var(--text-transparent);
-  }
-  > svg {
-    height: 1.75rem;
-  }
-`;
-
 export function InfoBanner() {
   const { data } = useTournamentData();
 
@@ -127,36 +25,129 @@ export function InfoBanner() {
   if (!data) return null;
 
   return (
-    <_Container>
-      <_TopRow>
-        <_DateName>
-          <_MonthDate>
-            <_Month>APR</_Month>
-            <_Date>23</_Date>
-          </_MonthDate>
-          <_TournamentName>{data.name}</_TournamentName>
-        </_DateName>
-        <_IconButtons>
+    <S.Container>
+      <S.TopRow>
+        <S.DateName>
+          <S.MonthDate>
+            <S.Month>APR</S.Month>
+            <S.Date>23</S.Date>
+          </S.MonthDate>
+          <S.TournamentName>{data.name}</S.TournamentName>
+        </S.DateName>
+        <S.IconButtons>
           {data.organizer.twitter && (
-            <_IconButton href={data.organizer.twitter}>
+            <S.IconButton href={data.organizer.twitter}>
               <FaTwitter />
-            </_IconButton>
+            </S.IconButton>
           )}
-          <_IconButton href={data.organizer.discordInvite}>
+          <S.IconButton href={data.organizer.discordInvite}>
             <FaDiscord />
-          </_IconButton>
-        </_IconButtons>
-      </_TopRow>
-      <_BottomRow>
-        <_Infos>
+          </S.IconButton>
+        </S.IconButtons>
+      </S.TopRow>
+      <S.BottomRow>
+        <S.Infos>
           {infos.map((info) => (
-            <_InfoContainer>
+            <S.InfoContainer key={info.title}>
               <label>{info.title}</label>
               <div>{info.value}</div>
-            </_InfoContainer>
+            </S.InfoContainer>
           ))}
-        </_Infos>
-      </_BottomRow>
-    </_Container>
+        </S.Infos>
+      </S.BottomRow>
+    </S.Container>
   );
 }
+
+const S = {
+  Container: styled.div`
+    width: min(48rem, 100%);
+    padding: 1.5rem;
+    margin: 0 auto;
+    background: linear-gradient(to bottom, #9796f0, #fbc7d4);
+    border-radius: var(--radii-rounded);
+    color: hsl(231, 9%, 16%);
+  `,
+  TopRow: styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+  `,
+  DateName: styled.div`
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  `,
+  MonthDate: styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1.25;
+  `,
+  Month: styled.div`
+    font-size: var(--fonts-xs);
+  `,
+  Date: styled.div`
+    font-size: var(--fonts-lg);
+    font-weight: bold;
+  `,
+  TournamentName: styled.div`
+    padding-left: 1rem;
+    border-color: var(--colors-text);
+    border-left: 1px solid;
+    font-size: var(--fonts-xl);
+    font-weight: bold;
+  `,
+  BottomRow: styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1rem;
+
+    @media only screen and (min-width: 600px) {
+      flex-direction: row;
+      align-items: flex-end;
+    }
+  `,
+  Infos: styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+    gap: 1rem;
+
+    @media only screen and (min-width: 500px) {
+      gap: 2rem;
+    }
+  `,
+  IconButtons: styled.div`
+    display: flex;
+    gap: 1rem;
+  `,
+  InfoContainer: styled.div`
+    font-size: var(--fonts-xs);
+
+    > label {
+      font-weight: bold;
+    }
+  `,
+  IconButton: styled.a`
+    display: inline-flex;
+    width: 2.25rem;
+    height: 2.25rem;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    border: 1px solid;
+    border-color: var(--text-transparent);
+    border-radius: 50%;
+    color: inherit;
+    transition: background-color 0.3s;
+    :hover {
+      background-color: var(--text-transparent);
+    }
+    > svg {
+      height: 1.75rem;
+    }
+  `,
+};
