@@ -5,7 +5,9 @@ import { InfoBanner } from "../../../components/tournament/InfoBanner";
 export default function TournamentPage() {
   const router = useRouter();
   const { data, error } = useSWR(
-    `/tournaments/${router.query.organization}/${router.query.tournament}`
+    router.query.organization && router.query.tournament
+      ? `/tournaments/${router.query.organization}/${router.query.tournament}`
+      : null
   );
   return <InfoBanner />;
 }

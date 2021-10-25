@@ -54,7 +54,7 @@ passport.deserializeUser(async (id, done) => {
 
 app
   .use(logger())
-  .use(cors())
+  .use(cors({ origin: process.env.FRONTEND_URL }))
   // @ts-expect-error - Mismatch of types but seems to work fine
   .use(passport.initialize())
   .get("/auth/discord", passport.authenticate("discord"))
@@ -71,6 +71,10 @@ app
   );
 
 function validateEnvVars() {
+  if (!process.env.FRONTEND_URL) {
+    throw new Error("Missing env var for setting cors");
+  }
+
   const logInEnvVars = [
     "DISCORD_CLIENT_ID",
     "DISCORD_CLIENT_SECRET",
