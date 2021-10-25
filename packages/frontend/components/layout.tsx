@@ -35,6 +35,10 @@ const _LogoContainer = styled.div`
   border-radius: 16px;
 `;
 
+const _Main = styled.main`
+  padding-top: 1rem;
+`;
+
 export function Layout({ children }: { children: ReactNode }) {
   return (
     <>
@@ -52,7 +56,7 @@ export function Layout({ children }: { children: ReactNode }) {
           <Avatar src="https://cdn.discordapp.com/avatars/79237403620945920/fcfd65a3bea598905abb9ca25296816b.png?size=80" />
         </_RightContainer>
       </_Header>
-      <main>{children}</main>
+      <_Main>{children}</_Main>
     </>
   );
 }

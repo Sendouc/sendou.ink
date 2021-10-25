@@ -7,7 +7,7 @@ const useStyles = createStyles(() => ({
     backgroundColor: "var(--colors-bg-lighter)",
     color: "var(--colors-text)",
     fontWeight: 500,
-    fontSize: "0.9rem",
+    fontSize: "var(--fonts-sm)",
     "::placeholder": {
       color: "var(--colors-text-lighter)",
     },

@@ -1,5 +1,6 @@
 import { useRouter } from "next/dist/client/router";
 import useSWR from "swr";
+import { InfoBanner } from "../../../components/tournament/InfoBanner";
 
 export default function TournamentPage() {
   const router = useRouter();
@@ -7,5 +8,5 @@ export default function TournamentPage() {
     `/tournaments/${router.query.organization}/${router.query.tournament}`
   );
   console.log("error", error);
-  return <pre>{JSON.stringify(data, null, 2)}</pre>;
+  return <InfoBanner />;
 }
