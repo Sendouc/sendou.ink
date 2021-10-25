@@ -1,5 +1,5 @@
 {
-  "name": "server.sendou.ink",
+  "name": "@sendou.ink/server",
   "version": "1.0.0",
   "scripts": {
     "dev": "tsm index.ts",
