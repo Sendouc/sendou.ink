@@ -1,6 +1,6 @@
 export interface GetTournamentByOrganizationAndName {
   name: string;
-  desription: string | null;
+  description: string | null;
   startTime: Date;
   checkInTime: Date;
   bannerBackground: string;

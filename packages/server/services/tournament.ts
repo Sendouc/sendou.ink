@@ -13,7 +13,7 @@ export async function findTournamentByNameForUrl({
     },
     select: {
       name: true,
-      desription: true,
+      description: true,
       startTime: true,
       checkInTime: true,
       bannerBackground: true,

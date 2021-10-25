@@ -46,7 +46,7 @@ async function tournaments(organizationId: number) {
       name: "In The Zone X",
       nameForUrl: "in-the-zone-x",
       organizerId: organizationId,
-      desription: "In The Zone eXtreme",
+      description: "In The Zone eXtreme",
     },
   });
 }
