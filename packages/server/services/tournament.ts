@@ -11,8 +11,21 @@ export async function findTournamentByNameForUrl({
     where: {
       nameForUrl: tournamentNameForUrl.toLowerCase(),
     },
-    include: {
-      organizer: true,
+    select: {
+      name: true,
+      desription: true,
+      startTime: true,
+      checkInTime: true,
+      bannerBackground: true,
+      bannerTextColor: true,
+      organizer: {
+        select: {
+          name: true,
+          discordInvite: true,
+          twitter: true,
+          nameForUrl: true,
+        },
+      },
     },
   });
 

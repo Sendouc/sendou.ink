@@ -1,8 +1,10 @@
 {
   "name": "sendou.ink",
   "version": "1.0.0",
+  "private": true,
   "workspaces": [
     "packages/server",
-    "packages/frontend"
+    "packages/frontend",
+    "packages/api"
   ]
 }

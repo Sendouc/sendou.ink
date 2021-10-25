@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import { ReactNode } from "react";
 import { FaDiscord, FaTwitter } from "react-icons/fa";
+import { useTournamentData } from "../../hooks/data/useTournamentData";
 
 const infos = [
   {
@@ -91,37 +91,6 @@ const _IconButtons = styled.div`
   gap: 1rem;
 `;
 
-export function InfoBanner() {
-  return (
-    <_Container>
-      <_TopRow>
-        <_DateName>
-          <_MonthDate>
-            <_Month>APR</_Month>
-            <_Date>23</_Date>
-          </_MonthDate>
-          <_TournamentName>In The Zone 23</_TournamentName>
-        </_DateName>
-        <_IconButtons>
-          <IconButton href="https://twitter.com/sendouc">
-            <FaTwitter />
-          </IconButton>
-          <IconButton href="https://discord.gg/sendou">
-            <FaDiscord />
-          </IconButton>
-        </_IconButtons>
-      </_TopRow>
-      <_BottomRow>
-        <_Infos>
-          {infos.map((info) => (
-            <Info key={info.title} info={info} />
-          ))}
-        </_Infos>
-      </_BottomRow>
-    </_Container>
-  );
-}
-
 const _InfoContainer = styled.div`
   font-size: var(--fonts-xs);
 
@@ -129,15 +98,6 @@ const _InfoContainer = styled.div`
     font-weight: bold;
   }
 `;
-
-function Info(props: { info: { title: string; value: string } }) {
-  return (
-    <_InfoContainer>
-      <label>{props.info.title}</label>
-      <div>{props.info.value}</div>
-    </_InfoContainer>
-  );
-}
 
 const _IconButton = styled.a`
   display: inline-flex;
@@ -159,6 +119,44 @@ const _IconButton = styled.a`
   }
 `;
 
-function IconButton(props: { children: ReactNode; href: string }) {
-  return <_IconButton href={props.href}>{props.children}</_IconButton>;
+export function InfoBanner() {
+  const { data } = useTournamentData();
+
+  // TODO: handle loading
+  // TODO: handle error in parent
+  if (!data) return null;
+
+  return (
+    <_Container>
+      <_TopRow>
+        <_DateName>
+          <_MonthDate>
+            <_Month>APR</_Month>
+            <_Date>23</_Date>
+          </_MonthDate>
+          <_TournamentName>{data.name}</_TournamentName>
+        </_DateName>
+        <_IconButtons>
+          {data.organizer.twitter && (
+            <_IconButton href={data.organizer.twitter}>
+              <FaTwitter />
+            </_IconButton>
+          )}
+          <_IconButton href={data.organizer.discordInvite}>
+            <FaDiscord />
+          </_IconButton>
+        </_IconButtons>
+      </_TopRow>
+      <_BottomRow>
+        <_Infos>
+          {infos.map((info) => (
+            <_InfoContainer>
+              <label>{info.title}</label>
+              <div>{info.value}</div>
+            </_InfoContainer>
+          ))}
+        </_Infos>
+      </_BottomRow>
+    </_Container>
+  );
 }
