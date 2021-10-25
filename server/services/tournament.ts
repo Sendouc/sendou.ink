@@ -29,8 +29,27 @@ export async function findTournamentByNameForUrl({
     },
   });
 
-  return tournaments.find(
+  const result = tournaments.find(
     (tournament) =>
       tournament.organizer.nameForUrl === organizationNameForUrl.toLowerCase()
   );
+
+  if (!result) return result;
+
+  result.organizer.twitter = twitterToUrl(result.organizer.twitter);
+  result.organizer.discordInvite = discordInviteToUrl(
+    result.organizer.discordInvite
+  );
+
+  return result;
+}
+
+function twitterToUrl(twitter: string | null) {
+  if (!twitter) return twitter;
+
+  return `https://twitter.com/${twitter}`;
+}
+
+function discordInviteToUrl(discordInvite: string) {
+  return `https://discord.com/invite/${discordInvite}`;
 }
