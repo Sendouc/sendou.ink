@@ -3,6 +3,8 @@
   --colors-bg-lighter: hsl(237.3, 42.3%, 35.6%);
   --colors-text: rgba(255, 255, 255, 0.95);
   --colors-text-lighter: rgba(255, 255, 255, 0.55);
+  --colors-theme: rgba(103, 65, 217, 255);
+  --colors-theme-transparent: rgba(103, 65, 217, 0.4);
   --radii-rounded: 16px;
   --fonts-xl: 1.5rem;
   --fonts-lg: 1.2rem;

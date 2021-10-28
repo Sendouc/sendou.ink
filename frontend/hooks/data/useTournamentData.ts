@@ -5,6 +5,7 @@ import { useRouter } from "next/dist/client/router";
 export function useTournamentData() {
   const router = useRouter();
   const { organization, tournament } = router.query;
+  // TODO: date to string
   const result = useSWR<GetTournamentByOrganizationAndName>(
     typeof organization === "string" && typeof tournament === "string"
       ? `/tournaments/${organization}/${tournament}`
