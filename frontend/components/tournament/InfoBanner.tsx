@@ -143,11 +143,12 @@ const S = {
     border-radius: 50%;
     color: inherit;
     transition: background-color 0.3s;
-    :hover {
-      background-color: var(--text-transparent);
-    }
     > svg {
       height: 1.75rem;
+    }
+
+    :active {
+      transform: translateY(1px);
     }
   `,
 };
