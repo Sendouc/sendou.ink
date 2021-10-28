@@ -8,14 +8,22 @@ import { Avatar } from "./common/Avatar";
 import { Button } from "./common/Button";
 
 const navItems = [
-  "builds",
-  "gear",
-  "analyzer",
-  "calendar",
-  "battle",
-  "leaderboards",
-  "planner",
-  "links",
+  {
+    title: "builds",
+    items: ["browse", "gear", "analyzer"],
+  },
+  {
+    title: "play",
+    items: ["calendar", "battle", "Rankings"],
+  },
+  {
+    title: "tools",
+    items: ["planner", "rotations", "top 500"],
+  },
+  {
+    title: "misc",
+    items: ["badges", "links"],
+  },
 ];
 
 export function Layout({ children }: { children: ReactNode }) {
@@ -38,10 +46,15 @@ export function Layout({ children }: { children: ReactNode }) {
       <S.Nav>
         <S.NavItems>
           {navItems.map((navItem) => (
-            <a key={navItem} href="/">
-              <img src={`/img/nav-icons/${navItem}.png`} />
-              {navItem}
-            </a>
+            <S.NavItemColumn>
+              <S.NavGroupTitle>{navItem.title}</S.NavGroupTitle>
+              {navItem.items.map((item) => (
+                <a key={item} href="/">
+                  <img src={`/img/nav-icons/${item.replace(" ", "")}.png`} />
+                  {item}
+                </a>
+              ))}
+            </S.NavItemColumn>
           ))}
         </S.NavItems>
       </S.Nav>
@@ -82,9 +95,14 @@ const S = {
   NavItems: styled.div`
     display: flex;
     justify-content: center;
-    gap: 2rem;
+    gap: 3rem;
     grid-template-columns: repeat(4, 100px);
     padding: 1rem 0;
+  `,
+  NavItemColumn: styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 
     > a {
       display: flex;
@@ -100,8 +118,14 @@ const S = {
     // + if not using next image do some adjusting of the image size, format etc.
     > a > img {
       width: 1.75rem;
-      margin-right: 0.2rem;
+      margin-right: 0.5rem;
     }
+  `,
+  NavGroupTitle: styled.div`
+    text-transform: uppercase;
+    font-weight: bold;
+    color: var(--colors-text-lighter);
+    font-size: 0.75rem;
   `,
   Main: styled.main`
     padding-top: 2rem;
