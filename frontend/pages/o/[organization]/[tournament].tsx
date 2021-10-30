@@ -1,13 +1,12 @@
 import { InfoBanner } from "components/tournament/InfoBanner";
 import { Tab } from "components/common/Tab";
-import { stitchesStyled } from "stitches.config";
+import { styled } from "stitches.config";
 
 const tabs = [
   { name: "Overview", id: "info" },
   { name: "Map Pool", id: "map-pool" },
   { name: "Bracket", id: "bracket" },
   { name: "Teams (23)", id: "teams" },
-  { name: "Matches", id: "matches" },
   { name: "Streams (4)", id: "streams" },
 ];
 
@@ -34,7 +33,7 @@ export default function TournamentPage() {
   );
 }
 
-const S_Container = stitchesStyled("div", {
+const S_Container = styled("div", {
   display: "flex",
   flexDirection: "column",
   alignItems: "center",

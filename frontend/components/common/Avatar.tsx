@@ -1,4 +1,4 @@
-import { stitchesStyled } from "stitches.config";
+import { styled } from "stitches.config";
 
 export function Avatar({ src }: { src: string }) {
   return (
@@ -8,7 +8,7 @@ export function Avatar({ src }: { src: string }) {
   );
 }
 
-const S_Container = stitchesStyled("div", {
+const S_Container = styled("div", {
   "-webkit-tap-highlight-color": "transparent",
   position: "relative",
   userSelect: "none",
@@ -19,7 +19,7 @@ const S_Container = stitchesStyled("div", {
   borderRadius: "16px",
 });
 
-const S_Avatar = stitchesStyled("img", {
+const S_Avatar = styled("img", {
   objectFit: "cover",
   width: "100%",
   height: "100%",

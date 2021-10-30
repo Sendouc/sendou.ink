@@ -1,5 +1,5 @@
 import { FaDiscord, FaTwitter } from "react-icons/fa";
-import { stitchesStyled } from "stitches.config";
+import { styled } from "stitches.config";
 import { useTournamentData } from "../../hooks/data/useTournamentData";
 
 const infos = [
@@ -67,7 +67,7 @@ export function InfoBanner() {
   );
 }
 
-const S_Container = stitchesStyled("div", {
+const S_Container = styled("div", {
   width: "min(48rem, 100%)",
   padding: "$6",
   background: "var(--background)",
@@ -75,36 +75,36 @@ const S_Container = stitchesStyled("div", {
   color: "var(--text)",
 });
 
-const S_TopRow = stitchesStyled("div", {
+const S_TopRow = styled("div", {
   display: "flex",
   flexWrap: "wrap",
   justifyContent: "space-between",
   gap: "$4",
 });
 
-const S_DateName = stitchesStyled("div", {
+const S_DateName = styled("div", {
   display: "flex",
   alignItems: "center",
   gap: "$4",
 });
 
-const S_MonthDate = stitchesStyled("div", {
+const S_MonthDate = styled("div", {
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
   lineHeight: 1.25,
 });
 
-const S_Month = stitchesStyled("div", {
+const S_Month = styled("div", {
   fontSize: "$xs",
 });
 
-const S_Date = stitchesStyled("div", {
+const S_Date = styled("div", {
   fontSize: "$lg",
   fontWeight: "$bold",
 });
 
-const S_TournamentName = stitchesStyled("div", {
+const S_TournamentName = styled("div", {
   paddingLeft: "$4",
   borderColor: "var(--text)",
   borderLeft: "1px solid",
@@ -112,7 +112,7 @@ const S_TournamentName = stitchesStyled("div", {
   fontWeight: "$extraBold",
 });
 
-const S_BottomRow = stitchesStyled("div", {
+const S_BottomRow = styled("div", {
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",
@@ -124,7 +124,7 @@ const S_BottomRow = stitchesStyled("div", {
   },
 });
 
-const S_Infos = stitchesStyled("div", {
+const S_Infos = styled("div", {
   display: "flex",
   flexWrap: "wrap",
   marginTop: "$8",
@@ -135,20 +135,20 @@ const S_Infos = stitchesStyled("div", {
   },
 });
 
-const S_IconButtons = stitchesStyled("div", {
+const S_IconButtons = styled("div", {
   display: "flex",
   gap: "$4",
 });
 
-const S_InfoContainer = stitchesStyled("div", {
+const S_InfoContainer = styled("div", {
   fontSize: "$xs",
 });
 
-const S_InfoLabel = stitchesStyled("label", {
+const S_InfoLabel = styled("label", {
   fontWeight: "$extraBold",
 });
 
-const S_IconButton = stitchesStyled("a", {
+const S_IconButton = styled("a", {
   display: "inline-flex",
   width: "2.25rem",
   height: "2.25rem",
@@ -160,10 +160,6 @@ const S_IconButton = stitchesStyled("a", {
   borderRadius: "50%",
   color: "inherit",
   transition: "background-color 0.3s",
-
-  "> svg": {
-    height: "1.75rem",
-  },
 
   "&:active": {
     transform: "translateY(1px)",

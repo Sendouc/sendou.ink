@@ -1,8 +1,8 @@
+import "normalize.css";
 import "./_app.css";
 
 import { AppProps } from "next/app";
 import Head from "next/head";
-import { MantineProvider, NormalizeCSS } from "@mantine/core";
 import { SWRConfig } from "swr";
 import { Layout } from "../components/layout";
 import { globalCss } from "stitches.config";
@@ -36,27 +36,18 @@ export default function App(props: AppProps) {
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
       </Head>
-
-      <MantineProvider
-        theme={{
-          colorScheme: "dark",
-          primaryColor: "violet",
+      <SWRConfig
+        value={{
+          fetcher: (resource, init) =>
+            fetch(process.env.NEXT_PUBLIC_BACKEND_URL + resource, init).then(
+              (res) => res.json()
+            ),
         }}
       >
-        <NormalizeCSS />
-        <SWRConfig
-          value={{
-            fetcher: (resource, init) =>
-              fetch(process.env.NEXT_PUBLIC_BACKEND_URL + resource, init).then(
-                (res) => res.json()
-              ),
-          }}
-        >
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
-        </SWRConfig>
-      </MantineProvider>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </SWRConfig>
     </>
   );
 }

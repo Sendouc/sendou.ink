@@ -1,9 +1,21 @@
-import Document from "next/document";
-import { createGetInitialProps } from "@mantine/next";
+import NextDocument, { Html, Head, Main, NextScript } from "next/document";
+import { getCssText } from "stitches.config";
 
-const getInitialProps = createGetInitialProps();
-
-// TODO: https://stitches.dev/blog/using-nextjs-with-stitches
-export default class _Document extends Document {
-  static getInitialProps = getInitialProps;
+export default class Document extends NextDocument {
+  render() {
+    return (
+      <Html lang="en">
+        <Head>
+          <style
+            id="stitches"
+            dangerouslySetInnerHTML={{ __html: getCssText() }}
+          />
+        </Head>
+        <body>
+          <Main />
+          <NextScript />
+        </body>
+      </Html>
+    );
+  }
 }
