@@ -1,6 +1,7 @@
 import { InfoBanner } from "components/tournament/InfoBanner";
 import { Tab } from "components/common/Tab";
 import { styled } from "stitches.config";
+import { MapPoolTab } from "components/tournament/MapPoolTab";
 
 const tabs = [
   { name: "Overview", id: "info" },
@@ -22,7 +23,9 @@ export default function TournamentPage() {
         </Tab.List>
         <Tab.Panels>
           <Tab.Panel>Content 1</Tab.Panel>
-          <Tab.Panel>Content 2</Tab.Panel>
+          <Tab.Panel>
+            <MapPoolTab />
+          </Tab.Panel>
           <Tab.Panel>Content 3</Tab.Panel>
           <Tab.Panel>Content 4</Tab.Panel>
           <Tab.Panel>Content 5</Tab.Panel>

@@ -51,7 +51,7 @@ const stageList = [
   "Kelp Dome",
   "Snapper Canal",
   "Blackbelly Skatepark",
-  "MakoMar",
+  "MakoMart",
   "Walleye Warehouse",
   "Shellendorf Institute",
   "Arowana Mall",
