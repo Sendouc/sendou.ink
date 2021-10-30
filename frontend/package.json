@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@emotion/styled": "^11.3.0",
+    "@headlessui/react": "^1.4.1",
     "@mantine/core": "^3.0.5",
     "@mantine/hooks": "^3.0.5",
     "@mantine/next": "^3.0.5",

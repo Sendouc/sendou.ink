@@ -1,7 +1,6 @@
 import styled from "@emotion/styled";
-import { useState } from "react";
-import { InfoBanner } from "../../../components/tournament/InfoBanner";
-import Tabs from "../../../components/common/Tabs";
+import { InfoBanner } from "components/tournament/InfoBanner";
+import { Tab } from "components/common/Tab";
 
 const tabs = [
   { name: "Overview", id: "info" },
@@ -13,21 +12,24 @@ const tabs = [
 ];
 
 export default function TournamentPage() {
-  const [activeTab, setActiveTab] = useState("info");
   return (
     <S.Container>
       <InfoBanner />
-      <Tabs.Container tabsCount={tabs.length}>
-        {tabs.map((tab) => (
-          <Tabs.Tab
-            key={tab.id}
-            active={activeTab === tab.id}
-            onClick={() => setActiveTab(tab.id)}
-          >
-            {tab.name}
-          </Tabs.Tab>
-        ))}
-      </Tabs.Container>
+      <Tab.Group>
+        <Tab.List tabsCount={tabs.length}>
+          {tabs.map((tab) => (
+            <Tab key={tab.id}>{tab.name}</Tab>
+          ))}
+        </Tab.List>
+        <Tab.Panels>
+          <Tab.Panel>Content 1</Tab.Panel>
+          <Tab.Panel>Content 2</Tab.Panel>
+          <Tab.Panel>Content 3</Tab.Panel>
+          <Tab.Panel>Content 4</Tab.Panel>
+          <Tab.Panel>Content 5</Tab.Panel>
+          <Tab.Panel>Content 6</Tab.Panel>
+        </Tab.Panels>
+      </Tab.Group>
     </S.Container>
   );
 }
