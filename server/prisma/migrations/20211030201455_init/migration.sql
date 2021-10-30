@@ -1,3 +1,6 @@
+-- CreateEnum
+CREATE TYPE "Mode" AS ENUM ('TW', 'SZ', 'TC', 'RM', 'CB');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
@@ -37,10 +40,25 @@ CREATE TABLE "Tournament" (
     "startTime" TIMESTAMP(3) NOT NULL,
     "checkInTime" TIMESTAMP(3) NOT NULL,
     "bannerBackground" TEXT NOT NULL,
-    "bannerTextColor" TEXT NOT NULL,
+    "bannerTextHSLArgs" TEXT NOT NULL,
     "organizerId" INTEGER NOT NULL,
 
     CONSTRAINT "Tournament_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Stage" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "mode" "Mode" NOT NULL,
+
+    CONSTRAINT "Stage_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "_StageToTournament" (
+    "A" INTEGER NOT NULL,
+    "B" INTEGER NOT NULL
 );
 
 -- CreateIndex
@@ -55,8 +73,20 @@ CREATE UNIQUE INDEX "Organization_ownerId_key" ON "Organization"("ownerId");
 -- CreateIndex
 CREATE UNIQUE INDEX "Tournament_nameForUrl_organizerId_key" ON "Tournament"("nameForUrl", "organizerId");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "_StageToTournament_AB_unique" ON "_StageToTournament"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_StageToTournament_B_index" ON "_StageToTournament"("B");
+
 -- AddForeignKey
 ALTER TABLE "Organization" ADD CONSTRAINT "Organization_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Tournament" ADD CONSTRAINT "Tournament_organizerId_fkey" FOREIGN KEY ("organizerId") REFERENCES "Organization"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_StageToTournament" ADD FOREIGN KEY ("A") REFERENCES "Stage"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_StageToTournament" ADD FOREIGN KEY ("B") REFERENCES "Tournament"("id") ON DELETE CASCADE ON UPDATE CASCADE;

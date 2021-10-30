@@ -29,8 +29,8 @@ export function InfoBanner() {
       style={
         {
           "--background": data.bannerBackground,
-          "--text": `hsl(${data.bannerTextColor})`,
-          "--text-transparent": `hsla(${data.bannerTextColor}, 0.2)`,
+          "--text": `hsl(${data.bannerTextHSLArgs})`,
+          "--text-transparent": `hsla(${data.bannerTextHSLArgs}, 0.2)`,
         } as any
       }
     >

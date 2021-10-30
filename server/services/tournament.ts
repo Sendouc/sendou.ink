@@ -17,13 +17,19 @@ export async function findTournamentByNameForUrl({
       startTime: true,
       checkInTime: true,
       bannerBackground: true,
-      bannerTextColor: true,
+      bannerTextHSLArgs: true,
       organizer: {
         select: {
           name: true,
           discordInvite: true,
           twitter: true,
           nameForUrl: true,
+        },
+      },
+      mapPool: {
+        select: {
+          mode: true,
+          name: true,
         },
       },
     },
