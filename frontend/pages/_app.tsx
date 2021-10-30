@@ -5,9 +5,27 @@ import Head from "next/head";
 import { MantineProvider, NormalizeCSS } from "@mantine/core";
 import { SWRConfig } from "swr";
 import { Layout } from "../components/layout";
+import { globalCss } from "stitches.config";
+
+const globalStyles = globalCss({
+  "*": { boxSizing: "border-box" },
+  "*::before": { boxSizing: "border-box" },
+  "*::after": { boxSizing: "border-box" },
+  body: {
+    backgroundColor: "$bg",
+    color: "$text",
+    fontFamily:
+      '-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"',
+    lineHeight: 1.55,
+    "-webkit-font-smoothing": "antialiased",
+    "-moz-osx-font-smoothing": "antialiased",
+  },
+});
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;
+
+  globalStyles();
 
   return (
     <>
