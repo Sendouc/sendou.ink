@@ -1,5 +1,5 @@
-import styled from "@emotion/styled";
 import { FaDiscord, FaTwitter } from "react-icons/fa";
+import { stitchesStyled } from "stitches.config";
 import { useTournamentData } from "../../hooks/data/useTournamentData";
 
 const infos = [
@@ -25,130 +25,147 @@ export function InfoBanner() {
   if (!data) return null;
 
   return (
-    <S.Container>
-      <S.TopRow>
-        <S.DateName>
-          <S.MonthDate>
-            <S.Month>APR</S.Month>
-            <S.Date>23</S.Date>
-          </S.MonthDate>
-          <S.TournamentName>{data.name}</S.TournamentName>
-        </S.DateName>
-        <S.IconButtons>
+    <S_Container
+      style={
+        {
+          "--background": data.bannerBackground,
+          "--text": `hsl(${data.bannerTextColor})`,
+          "--text-transparent": `hsla(${data.bannerTextColor}, 0.2)`,
+        } as any
+      }
+    >
+      <S_TopRow>
+        <S_DateName>
+          <S_MonthDate>
+            <S_Month>APR</S_Month>
+            <S_Date>23</S_Date>
+          </S_MonthDate>
+          <S_TournamentName>{data.name}</S_TournamentName>
+        </S_DateName>
+        <S_IconButtons>
           {data.organizer.twitter && (
-            <S.IconButton href={data.organizer.twitter}>
+            <S_IconButton href={data.organizer.twitter}>
               <FaTwitter />
-            </S.IconButton>
+            </S_IconButton>
           )}
-          <S.IconButton href={data.organizer.discordInvite}>
+          <S_IconButton href={data.organizer.discordInvite}>
             <FaDiscord />
-          </S.IconButton>
-        </S.IconButtons>
-      </S.TopRow>
-      <S.BottomRow>
-        <S.Infos>
+          </S_IconButton>
+        </S_IconButtons>
+      </S_TopRow>
+      <S_BottomRow>
+        <S_Infos>
           {infos.map((info) => (
-            <S.InfoContainer key={info.title}>
-              <label>{info.title}</label>
+            <S_InfoContainer key={info.title}>
+              <S_InfoLabel>{info.title}</S_InfoLabel>
               <div>{info.value}</div>
-            </S.InfoContainer>
+            </S_InfoContainer>
           ))}
-        </S.Infos>
-      </S.BottomRow>
-    </S.Container>
+        </S_Infos>
+      </S_BottomRow>
+    </S_Container>
   );
 }
 
-const S = {
-  Container: styled.div`
-    width: min(48rem, 100%);
-    padding: 1.5rem;
-    margin: 0 auto;
-    background: linear-gradient(to bottom, #9796f0, #fbc7d4);
-    border-radius: var(--radii-rounded);
-    color: hsl(231, 9%, 16%);
-  `,
-  TopRow: styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 1rem;
-  `,
-  DateName: styled.div`
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  `,
-  MonthDate: styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    line-height: 1.25;
-  `,
-  Month: styled.div`
-    font-size: var(--fonts-xs);
-  `,
-  Date: styled.div`
-    font-size: var(--fonts-lg);
-    font-weight: bold;
-  `,
-  TournamentName: styled.div`
-    padding-left: 1rem;
-    border-color: var(--colors-text);
-    border-left: 1px solid;
-    font-size: var(--fonts-xl);
-    font-weight: bold;
-  `,
-  BottomRow: styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 1rem;
+const S_Container = stitchesStyled("div", {
+  width: "min(48rem, 100%)",
+  padding: "$6",
+  background: "var(--background)",
+  borderRadius: "$rounded",
+  color: "var(--text)",
+});
 
-    @media only screen and (min-width: 600px) {
-      flex-direction: row;
-      align-items: flex-end;
-    }
-  `,
-  Infos: styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    margin-top: 2rem;
-    gap: 1rem;
+const S_TopRow = stitchesStyled("div", {
+  display: "flex",
+  flexWrap: "wrap",
+  justifyContent: "space-between",
+  gap: "$4",
+});
 
-    @media only screen and (min-width: 500px) {
-      gap: 2rem;
-    }
-  `,
-  IconButtons: styled.div`
-    display: flex;
-    gap: 1rem;
-  `,
-  InfoContainer: styled.div`
-    font-size: var(--fonts-xs);
+const S_DateName = stitchesStyled("div", {
+  display: "flex",
+  alignItems: "center",
+  gap: "$4",
+});
 
-    > label {
-      font-weight: bold;
-    }
-  `,
-  IconButton: styled.a`
-    display: inline-flex;
-    width: 2.25rem;
-    height: 2.25rem;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5rem;
-    border: 1px solid;
-    border-color: var(--text-transparent);
-    border-radius: 50%;
-    color: inherit;
-    transition: background-color 0.3s;
-    > svg {
-      height: 1.75rem;
-    }
+const S_MonthDate = stitchesStyled("div", {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  lineHeight: 1.25,
+});
 
-    :active {
-      transform: translateY(1px);
-    }
-  `,
-};
+const S_Month = stitchesStyled("div", {
+  fontSize: "$xs",
+});
+
+const S_Date = stitchesStyled("div", {
+  fontSize: "$lg",
+  fontWeight: "$bold",
+});
+
+const S_TournamentName = stitchesStyled("div", {
+  paddingLeft: "$4",
+  borderColor: "var(--text)",
+  borderLeft: "1px solid",
+  fontSize: "$xl",
+  fontWeight: "$extraBold",
+});
+
+const S_BottomRow = stitchesStyled("div", {
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
+  gap: "$4",
+
+  "@sm": {
+    flexDirection: "row",
+    alignItems: "flex-end",
+  },
+});
+
+const S_Infos = stitchesStyled("div", {
+  display: "flex",
+  flexWrap: "wrap",
+  marginTop: "$8",
+  gap: "$4",
+
+  "@xs": {
+    gap: "$8",
+  },
+});
+
+const S_IconButtons = stitchesStyled("div", {
+  display: "flex",
+  gap: "$4",
+});
+
+const S_InfoContainer = stitchesStyled("div", {
+  fontSize: "$xs",
+});
+
+const S_InfoLabel = stitchesStyled("label", {
+  fontWeight: "$extraBold",
+});
+
+const S_IconButton = stitchesStyled("a", {
+  display: "inline-flex",
+  width: "2.25rem",
+  height: "2.25rem",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: "0.5rem",
+  border: "1px solid",
+  borderColor: "var(--text-transparent)",
+  borderRadius: "50%",
+  color: "inherit",
+  transition: "background-color 0.3s",
+
+  "> svg": {
+    height: "1.75rem",
+  },
+
+  "&:active": {
+    transform: "translateY(1px)",
+  },
+});

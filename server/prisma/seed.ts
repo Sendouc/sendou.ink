@@ -40,7 +40,8 @@ async function tournaments(organizationId: number) {
   return prisma.tournament.create({
     data: {
       bannerBackground: "linear-gradient(to bottom, #9796f0, #fbc7d4)",
-      bannerTextColor: "hsla(231, 9%, 16%, 0.2)",
+      // TODO: rename to something more descriptive
+      bannerTextColor: "231, 9%, 16%",
       checkInTime: new Date(2025, 11, 17, 11),
       startTime: new Date(2025, 11, 17, 12),
       name: "In The Zone X",

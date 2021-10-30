@@ -1,6 +1,6 @@
-import styled from "@emotion/styled";
 import { InfoBanner } from "components/tournament/InfoBanner";
 import { Tab } from "components/common/Tab";
+import { stitchesStyled } from "stitches.config";
 
 const tabs = [
   { name: "Overview", id: "info" },
@@ -13,7 +13,7 @@ const tabs = [
 
 export default function TournamentPage() {
   return (
-    <S.Container>
+    <S_Container>
       <InfoBanner />
       <Tab.Group>
         <Tab.List tabsCount={tabs.length}>
@@ -30,14 +30,13 @@ export default function TournamentPage() {
           <Tab.Panel>Content 6</Tab.Panel>
         </Tab.Panels>
       </Tab.Group>
-    </S.Container>
+    </S_Container>
   );
 }
 
-const S = {
-  Container: styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-  `,
-};
+const S_Container = stitchesStyled("div", {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: "$8",
+});

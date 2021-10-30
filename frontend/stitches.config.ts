@@ -31,6 +31,7 @@ export const {
       xxs: "0.7rem",
     },
     fontWeights: {
+      extraBold: 700,
       bold: 600,
       semiBold: 500,
       body: 400,
