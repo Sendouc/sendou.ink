@@ -46,13 +46,13 @@ const container = css({
   justifyContent: "center",
   placeItems: "center",
   gap: "$10",
-  gridTemplateColumns: "repeat(var(--tabs-count), 85px)",
+  gridTemplateColumns: "repeat(var(--tabs-count), 100px)",
 });
 
 const tab = css({
   all: "unset",
-  fontSize: "$sm",
   cursor: "pointer",
+  borderRadius: "$rounded",
 
   "&::after": {
     display: "block",
@@ -65,6 +65,11 @@ const tab = css({
 
   "&:hover::after": {
     borderColor: "$themeTransparent",
+  },
+
+  "&:focus-visible": {
+    outline: "2px solid $themeTransparent",
+    outlineOffset: "7px",
   },
 
   variants: {
