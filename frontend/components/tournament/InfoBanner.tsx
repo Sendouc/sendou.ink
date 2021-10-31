@@ -2,21 +2,6 @@ import { FaDiscord, FaTwitter } from "react-icons/fa";
 import { styled } from "stitches.config";
 import { useTournamentData } from "../../hooks/data/useTournamentData";
 
-const infos = [
-  {
-    title: "Starting time",
-    value: "Saturday, 18:00",
-  },
-  {
-    title: "Format",
-    value: "Double Elimination",
-  },
-  {
-    title: "Organizer",
-    value: "Sendou#0043",
-  },
-];
-
 export function InfoBanner() {
   const { data } = useTournamentData();
 
@@ -37,8 +22,8 @@ export function InfoBanner() {
       <S_TopRow>
         <S_DateName>
           <S_MonthDate>
-            <S_Month>APR</S_Month>
-            <S_Date>23</S_Date>
+            <S_Month>{shortMonthName(data.startTime)}</S_Month>
+            <S_Date>{dayNumber(data.startTime)}</S_Date>
           </S_MonthDate>
           <S_TournamentName>{data.name}</S_TournamentName>
         </S_DateName>
@@ -55,16 +40,37 @@ export function InfoBanner() {
       </S_TopRow>
       <S_BottomRow>
         <S_Infos>
-          {infos.map((info) => (
-            <S_InfoContainer key={info.title}>
-              <S_InfoLabel>{info.title}</S_InfoLabel>
-              <div>{info.value}</div>
-            </S_InfoContainer>
-          ))}
+          <S_InfoContainer>
+            <S_InfoLabel>Starting time</S_InfoLabel>
+            <div>{weekdayAndStartTime(data.startTime)}</div>
+          </S_InfoContainer>
+          <S_InfoContainer>
+            <S_InfoLabel>Format</S_InfoLabel>
+            <div>Double Elimination</div>
+          </S_InfoContainer>
+          <S_InfoContainer>
+            <S_InfoLabel>Organizer</S_InfoLabel>
+            <div>{data.organizer.name}</div>
+          </S_InfoContainer>
         </S_Infos>
       </S_BottomRow>
     </S_Container>
   );
+}
+
+function weekdayAndStartTime(date: string) {
+  return new Date(date).toLocaleString("en-US", {
+    weekday: "long",
+    hour: "numeric",
+  });
+}
+
+function shortMonthName(date: string) {
+  return new Date(date).toLocaleString("en-US", { month: "short" });
+}
+
+function dayNumber(date: string) {
+  return new Date(date).toLocaleString("en-US", { day: "numeric" });
 }
 
 const S_Container = styled("div", {
@@ -97,6 +103,7 @@ const S_MonthDate = styled("div", {
 
 const S_Month = styled("div", {
   fontSize: "$xs",
+  textTransform: "uppercase",
 });
 
 const S_Date = styled("div", {
