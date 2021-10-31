@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test": "jest"
   },
   "dependencies": {
     "@headlessui/react": "^1.4.1",
@@ -17,6 +18,8 @@
     "swr": "^1.0.1"
   },
   "devDependencies": {
-    "@types/react": "^17.0.33"
+    "@types/jest": "^27.0.2",
+    "@types/react": "^17.0.33",
+    "jest": "^27.3.1"
   }
 }

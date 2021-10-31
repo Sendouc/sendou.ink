@@ -44,7 +44,9 @@ export function MapPoolTab() {
   );
 }
 
-function modesPerStage(mapPool: GetTournamentByOrganizationAndName["mapPool"]) {
+export function modesPerStage(
+  mapPool: GetTournamentByOrganizationAndName["mapPool"]
+) {
   return mapPool.reduce((acc: Record<string, Mode[]>, { name, mode }) => {
     if (!acc[name]) {
       acc[name] = [];
