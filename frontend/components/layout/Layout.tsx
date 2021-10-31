@@ -38,8 +38,10 @@ export function Layout({ children }: { children: ReactNode }) {
               <S_NavGroupTitle>{navItem.title}</S_NavGroupTitle>
               {navItem.items.map((item) => (
                 <S_NavLink key={item} href="/">
-                  <S_NavLinkImage
+                  <NextImage
                     src={`/img/nav-icons/${item.replace(" ", "")}.png`}
+                    width={32}
+                    height={32}
                   />
                   {item}
                 </S_NavLink>
@@ -127,6 +129,7 @@ const S_NavItemColumn = styled("div", {
 const S_NavLink = styled("a", {
   display: "flex",
   alignItems: "center",
+  gap: "$2",
   color: "$text",
   textDecoration: "none",
   fontSize: "$sm",
@@ -137,13 +140,6 @@ const S_NavLink = styled("a", {
   "&:hover": {
     transform: "translateX(2px)",
   },
-});
-
-// TODO: figure out whether to server items from asset or public and migrate all images there
-// + if not using next image do some adjusting of the image size, format etc.
-const S_NavLinkImage = styled("img", {
-  width: "1.75rem",
-  marginRight: "$2",
 });
 
 const S_NavGroupTitle = styled("div", {

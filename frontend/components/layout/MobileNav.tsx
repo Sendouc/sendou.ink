@@ -3,6 +3,7 @@ import { styled } from "stitches.config";
 import { navItems } from "utils/constants";
 import NextLink from "next/link";
 import { Fragment } from "react";
+import NextImage from "next/image";
 
 export function MobileNav({ isExpanded }: { isExpanded: boolean }) {
   return (
@@ -30,8 +31,10 @@ export function MobileNav({ isExpanded }: { isExpanded: boolean }) {
                           : undefined
                       }
                     >
-                      <S_NavLinkImage
+                      <NextImage
                         src={`/img/nav-icons/${item.replace(" ", "")}.png`}
+                        width={38}
+                        height={38}
                       />
                       <div>{item}</div>
                     </S_NavLink>
@@ -90,11 +93,6 @@ const S_LinksContainer = styled("div", {
   gridAutoRows: "4rem",
 });
 
-const S_NavLinkImage = styled("img", {
-  width: "2.5rem",
-  marginRight: "$3",
-});
-
 const S_GroupTitle = styled("div", {
   textTransform: "uppercase",
   alignSelf: "flex-end",
@@ -110,6 +108,7 @@ const S_GroupTitle = styled("div", {
 const S_NavLink = styled("div", {
   display: "flex",
   alignItems: "center",
+  gap: "$2",
   textTransform: "capitalize",
   borderTop: "3px solid $bgLighter",
   fontWeight: "$bold",

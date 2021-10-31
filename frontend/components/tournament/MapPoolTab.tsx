@@ -1,4 +1,5 @@
 import { styled } from "stitches.config";
+import NextImage from "next/image";
 import { useTournamentData } from "hooks/data/useTournamentData";
 import { stages, modesShort } from "@sendou-ink/shared/constants";
 import type { Mode } from "@sendou-ink/api/common";
@@ -22,17 +23,24 @@ export function MapPoolTab() {
             alt={stage}
             src={`/img/stages/${stage.replaceAll(" ", "-").toLowerCase()}.png`}
             filter={modesPerStage(data.mapPool)[stage] ? undefined : "bw"}
+            width={256}
+            height={144}
           />
           {modesPerStage(data.mapPool)[stage] && (
             <S_ModeImagesContainer>
               {modesShort.map((mode) => {
-                if (!modesPerStage(data.mapPool)[stage]?.includes(mode as Mode))
+                if (
+                  !modesPerStage(data.mapPool)[stage]?.includes(mode as Mode)
+                ) {
                   return null;
+                }
                 return (
-                  <S_ModeImage
+                  <NextImage
                     key={mode}
                     src={`/img/modes/${mode}.png`}
                     alt={mode}
+                    width={28}
+                    height={28}
                   />
                 );
               })}
@@ -64,15 +72,12 @@ const S_InfoSquare = styled("div", {
   fontSize: "$xl",
   backgroundImage: `url(/svg/background-pattern.svg)`,
   backgroundColor: "$bgLighter",
-
-  "@xs": {
-    borderRadius: "$rounded",
-  },
+  borderRadius: "$rounded",
 });
 
 const S_Container = styled("div", {
   display: "grid",
-  gridTemplateColumns: "1fr",
+  gridTemplateColumns: "repeat(2, 1fr)",
   gap: "1rem",
 
   "@xs": {
@@ -92,12 +97,8 @@ const S_StageImageContainer = styled("div", {
   position: "relative",
 });
 
-const S_StageImage = styled("img", {
-  width: "100%",
-
-  "@xs": {
-    borderRadius: "$rounded",
-  },
+const S_StageImage = styled(NextImage, {
+  borderRadius: "$rounded",
 
   variants: {
     filter: {
@@ -115,9 +116,6 @@ const S_ModeImagesContainer = styled("div", {
   top: 0,
   left: 0,
   borderRadius: "$rounded 0 $rounded 0",
-});
-
-const S_ModeImage = styled("img", {
-  width: "2.5rem",
   padding: "$1",
+  gap: "$2",
 });
