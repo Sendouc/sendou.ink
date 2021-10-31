@@ -41,6 +41,7 @@ export const {
       "0.5": "0.125rem",
       "1": "0.25rem",
       "2": "0.5rem",
+      // TODO: fix vars with . "invalid property"
       "2.5": "0.625rem",
       "3": "0.75rem",
       "3.5": "0.875rem",

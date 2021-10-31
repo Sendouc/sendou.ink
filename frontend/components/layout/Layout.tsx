@@ -1,41 +1,36 @@
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import NextImage from "next/image";
-import logo from "../assets/img/logo.png";
-import { Avatar } from "./common/Avatar";
+import NextLink from "next/link";
+import logo from "assets/img/logo.png";
+import { Avatar } from "components/common/Avatar";
 import { styled } from "stitches.config";
-import { SearchInput } from "./common/SearchInput";
-
-const navItems = [
-  {
-    title: "builds",
-    items: ["browse", "gear", "analyzer"],
-  },
-  {
-    title: "play",
-    items: ["calendar", "battle", "Rankings"],
-  },
-  {
-    title: "tools",
-    items: ["planner", "rotations", "top 500"],
-  },
-  {
-    title: "misc",
-    items: ["badges", "links"],
-  },
-];
+import { SearchInput } from "components/common/SearchInput";
+import { HamburgerButton } from "./HamburgerButton";
+import { navItems } from "utils/constants";
+import { MobileNav } from "./MobileNav";
 
 export function Layout({ children }: { children: ReactNode }) {
+  const [menuExpanded, setMenuExpanded] = useState(false);
   return (
     <>
       <S_Header>
-        <S_LogoContainer>
-          <NextImage src={logo} width={30} height={30} />
-        </S_LogoContainer>
-        <SearchInput />
+        <NextLink href="/">
+          <S_LogoContainer>
+            <NextImage src={logo} />
+          </S_LogoContainer>
+        </NextLink>
+        <S_SearchContainer>
+          <SearchInput />
+        </S_SearchContainer>
         <S_RightContainer>
+          <HamburgerButton
+            isExpanded={menuExpanded}
+            onClick={() => setMenuExpanded((expanded) => !expanded)}
+          />
           <Avatar src="https://cdn.discordapp.com/avatars/79237403620945920/fcfd65a3bea598905abb9ca25296816b.png?size=80" />
         </S_RightContainer>
       </S_Header>
+      <MobileNav isExpanded={menuExpanded} />
       <S_Nav>
         <S_NavItems>
           {navItems.map((navItem) => (
@@ -59,10 +54,19 @@ export function Layout({ children }: { children: ReactNode }) {
 }
 
 const S_Header = styled("header", {
+  position: "relative",
   display: "grid",
-  gridTemplateColumns: "repeat(3, 1fr)",
+  gridTemplateColumns: "repeat(2, 1fr)",
   alignItems: "center",
   padding: "$4",
+  "--item-size": "3rem",
+  zIndex: 10,
+  backgroundColor: "$bg",
+
+  "@sm": {
+    gridTemplateColumns: "repeat(3, 1fr)",
+    "--item-size": "38px",
+  },
 });
 
 const S_LogoContainer = styled("div", {
@@ -73,6 +77,18 @@ const S_LogoContainer = styled("div", {
   padding: "$1",
   borderRadius: "$rounded",
   justifySelf: "flex-start",
+  cursor: "pointer",
+  width: "var(--item-size)",
+  minWidth: "var(--item-size)",
+  height: "var(--item-size)",
+});
+
+const S_SearchContainer = styled("div", {
+  display: "none",
+
+  "@sm": {
+    display: "block",
+  },
 });
 
 const S_RightContainer = styled("div", {
@@ -82,10 +98,14 @@ const S_RightContainer = styled("div", {
 });
 
 const S_Nav = styled("nav", {
-  display: "flex",
+  display: "none",
   justifyContent: "center",
   backgroundColor: "$bgLighter",
   backgroundImage: `url(/svg/background-pattern.svg)`,
+
+  "@sm": {
+    display: "flex",
+  },
 });
 
 const S_NavItems = styled("div", {

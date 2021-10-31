@@ -12,10 +12,10 @@ const S_Container = styled("div", {
   position: "relative",
   userSelect: "none",
   overflow: "hidden",
-  width: "38px",
-  minWidth: "38px",
-  height: "38px",
-  borderRadius: "16px",
+  width: "var(--item-size)",
+  minWidth: "var(--item-size)",
+  height: "var(--item-size)",
+  borderRadius: "$rounded",
 });
 
 const S_Avatar = styled("img", {
