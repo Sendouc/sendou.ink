@@ -9,7 +9,6 @@ export function Avatar({ src }: { src: string }) {
 }
 
 const S_Container = styled("div", {
-  "-webkit-tap-highlight-color": "transparent",
   position: "relative",
   userSelect: "none",
   overflow: "hidden",
