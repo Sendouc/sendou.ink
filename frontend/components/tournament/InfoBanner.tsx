@@ -74,11 +74,15 @@ function dayNumber(date: string) {
 }
 
 const S_Container = styled("div", {
-  width: "min(48rem, 100%)",
+  width: "100%",
   padding: "$6",
   background: "var(--background)",
-  borderRadius: "$rounded",
   color: "var(--text)",
+
+  "@md": {
+    borderRadius: "$rounded",
+    width: "48rem",
+  },
 });
 
 const S_TopRow = styled("div", {

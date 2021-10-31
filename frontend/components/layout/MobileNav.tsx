@@ -18,10 +18,18 @@ export function MobileNav({ isExpanded }: { isExpanded: boolean }) {
           return (
             <Fragment key={navItem.title}>
               <S_GroupTitle>{navItem.title}</S_GroupTitle>
-              {navItem.items.map((item) => {
+              {navItem.items.map((item, i, arr) => {
                 return (
                   <NextLink key={item} href="/">
-                    <S_NavLink>
+                    <S_NavLink
+                      type={
+                        i === 0
+                          ? "first"
+                          : i + 1 === arr.length
+                          ? "last"
+                          : undefined
+                      }
+                    >
                       <S_NavLinkImage
                         src={`/img/nav-icons/${item.replace(" ", "")}.png`}
                       />
@@ -50,6 +58,8 @@ const S_Container = styled("nav", {
   zIndex: 5,
   overflowY: "auto",
   paddingBottom: "$6",
+  // TODO: same for Safari
+  overscrollBehavior: "contain",
 
   "@sm": {
     display: "none",
@@ -78,7 +88,6 @@ const S_LinksContainer = styled("div", {
   justifyContent: "center",
   gridAutoColumns: "1fr",
   gridAutoRows: "4rem",
-  paddingX: "$24",
 });
 
 const S_NavLinkImage = styled("img", {
@@ -95,6 +104,7 @@ const S_GroupTitle = styled("div", {
   marginBottom: "$1",
   backgroundColor: "$bg",
   fontWeight: "$bold",
+  borderRadius: "$rounded",
 });
 
 const S_NavLink = styled("div", {
@@ -106,8 +116,20 @@ const S_NavLink = styled("div", {
   backgroundColor: "$bg",
   paddingX: "$2",
   fontSize: "$sm",
+  marginX: "$12",
 
-  "&:last-child": {
-    borderBottom: "3px solid $bgLighter",
+  "@xs": {
+    marginX: "$24",
+  },
+
+  variants: {
+    type: {
+      first: {
+        borderRadius: "$rounded $rounded 0 0",
+      },
+      last: {
+        borderRadius: "0 0 $rounded $rounded",
+      },
+    },
   },
 });

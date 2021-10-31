@@ -1,4 +1,4 @@
-import { styled } from "@stitches/react";
+import { styled } from "stitches.config";
 import { useTournamentData } from "hooks/data/useTournamentData";
 import { stages, modesShort } from "@sendou-ink/shared/constants";
 import type { Mode } from "@sendou-ink/api/common";
@@ -64,13 +64,24 @@ const S_InfoSquare = styled("div", {
   fontSize: "$xl",
   backgroundImage: `url(/svg/background-pattern.svg)`,
   backgroundColor: "$bgLighter",
-  borderRadius: "$rounded",
+
+  "@xs": {
+    borderRadius: "$rounded",
+  },
 });
 
 const S_Container = styled("div", {
   display: "grid",
-  gridTemplateColumns: "repeat(4, 1fr)",
+  gridTemplateColumns: "1fr",
   gap: "1rem",
+
+  "@xs": {
+    gridTemplateColumns: "repeat(2, 1fr)",
+  },
+
+  "@sm": {
+    gridTemplateColumns: "repeat(4, minmax(1px, 200px))",
+  },
 });
 
 const S_EmphasizedText = styled("span", {
@@ -82,8 +93,11 @@ const S_StageImageContainer = styled("div", {
 });
 
 const S_StageImage = styled("img", {
-  width: "14rem",
-  borderRadius: "$rounded",
+  width: "100%",
+
+  "@xs": {
+    borderRadius: "$rounded",
+  },
 
   variants: {
     filter: {
