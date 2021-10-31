@@ -5,6 +5,7 @@
   "workspaces": [
     "server",
     "frontend",
-    "api"
+    "api",
+    "shared"
   ]
 }

@@ -1,5 +1,6 @@
 import pkg from "@prisma/client";
 const { PrismaClient } = pkg;
+import { stages as stageList } from "@sendou-ink/shared/constants";
 const prisma = new PrismaClient();
 
 async function main() {
@@ -37,32 +38,6 @@ async function organizations(userId: number) {
     },
   });
 }
-
-const stageList = [
-  "The Reef",
-  "Musselforge Fitness",
-  "Starfish Mainstage",
-  "Humpback Pump Track",
-  "Inkblot Art Academy",
-  "Sturgeon Shipyard",
-  "Moray Towers",
-  "Port Mackerel",
-  "Manta Maria",
-  "Kelp Dome",
-  "Snapper Canal",
-  "Blackbelly Skatepark",
-  "MakoMart",
-  "Walleye Warehouse",
-  "Shellendorf Institute",
-  "Arowana Mall",
-  "Goby Arena",
-  "Piranha Pit",
-  "Camp Triggerfish",
-  "Wahoo World",
-  "New Albacore Hotel",
-  "Ancho-V Games",
-  "Skipper Pavilion",
-] as const;
 
 const modesList = ["TW", "SZ", "TC", "RM", "CB"] as const;
 

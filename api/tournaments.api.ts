@@ -1,4 +1,4 @@
-type Mode = "TW" | "SZ" | "TC" | "RM" | "CB";
+import type { Mode } from "./common";
 
 export interface GetTournamentByOrganizationAndName {
   name: string;

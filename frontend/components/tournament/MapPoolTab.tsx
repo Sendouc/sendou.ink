@@ -1,34 +1,8 @@
 import { styled } from "@stitches/react";
 import { useTournamentData } from "hooks/data/useTournamentData";
-
-// TODO: shared package
-const stageList = [
-  "The Reef",
-  "Musselforge Fitness",
-  "Starfish Mainstage",
-  "Humpback Pump Track",
-  "Inkblot Art Academy",
-  "Sturgeon Shipyard",
-  "Moray Towers",
-  "Port Mackerel",
-  "Manta Maria",
-  "Kelp Dome",
-  "Snapper Canal",
-  "Blackbelly Skatepark",
-  "MakoMart",
-  "Walleye Warehouse",
-  "Shellendorf Institute",
-  "Arowana Mall",
-  "Goby Arena",
-  "Piranha Pit",
-  "Camp Triggerfish",
-  "Wahoo World",
-  "New Albacore Hotel",
-  "Ancho-V Games",
-  "Skipper Pavilion",
-] as const;
-
-const modes = ["TW", "SZ", "TC", "RM", "CB"];
+import { stages, modesShort } from "@sendou-ink/shared/constants";
+import type { Mode } from "@sendou-ink/api/common";
+import { GetTournamentByOrganizationAndName } from "@sendou-ink/api";
 
 export function MapPoolTab() {
   const { data } = useTournamentData();
@@ -37,35 +11,23 @@ export function MapPoolTab() {
   // TODO: handle error in parent
   if (!data) return null;
 
-  // TODO: modes from type
-  const modesPerStage = data.mapPool.reduce(
-    (acc: Record<string, string[]>, { name, mode }) => {
-      if (!acc[name]) {
-        acc[name] = [];
-      }
-
-      acc[name].push(mode);
-      return acc;
-    },
-    {}
-  );
-
   return (
     <S_Container>
       <S_InfoSquare>
         <S_EmphasizedText>{data.mapPool.length} maps</S_EmphasizedText>
       </S_InfoSquare>
-      {stageList.map((stage) => (
+      {stages.map((stage) => (
         <S_StageImageContainer key={stage}>
           <S_StageImage
             alt={stage}
             src={`/img/stages/${stage.replaceAll(" ", "-").toLowerCase()}.png`}
-            filter={modesPerStage[stage] ? undefined : "bw"}
+            filter={modesPerStage(data.mapPool)[stage] ? undefined : "bw"}
           />
-          {modesPerStage[stage] && (
+          {modesPerStage(data.mapPool)[stage] && (
             <S_ModeImagesContainer>
-              {modes.map((mode) => {
-                if (!modesPerStage[stage]?.includes(mode)) return null;
+              {modesShort.map((mode) => {
+                if (!modesPerStage(data.mapPool)[stage]?.includes(mode as Mode))
+                  return null;
                 return (
                   <S_ModeImage
                     key={mode}
@@ -80,6 +42,17 @@ export function MapPoolTab() {
       ))}
     </S_Container>
   );
+}
+
+function modesPerStage(mapPool: GetTournamentByOrganizationAndName["mapPool"]) {
+  return mapPool.reduce((acc: Record<string, Mode[]>, { name, mode }) => {
+    if (!acc[name]) {
+      acc[name] = [];
+    }
+
+    acc[name].push(mode);
+    return acc;
+  }, {});
 }
 
 const S_InfoSquare = styled("div", {
