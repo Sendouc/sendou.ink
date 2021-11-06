@@ -10,14 +10,10 @@ export function Select({
   selected: string;
 }) {
   return (
-    <S_Select onChange={onChange}>
+    <S_Select value={selected} onChange={onChange}>
       {values.map((value) => {
         return (
-          <option
-            key={value.id}
-            value={value.id}
-            selected={value.id === selected}
-          >
+          <option key={value.id} value={value.id}>
             {value.name}
           </option>
         );
