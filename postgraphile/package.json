@@ -8,10 +8,19 @@
   },
   "devDependencies": {
     "dotenv": "^10.0.0",
+    "jest": "^27.3.1",
+    "pg": "^8.7.1",
     "ts-node-dev": "^1.1.8"
   },
   "scripts": {
     "dev": "ts-node-dev index.ts",
-    "migrate": "node migrations/index.mjs"
+    "migrate": "node migrations/index.mjs",
+    "migrate:reset": "node delete-migrations.js && npm run migrate",
+    "test": "jest"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "__tests__/helpers.js"
+    ]
   }
 }

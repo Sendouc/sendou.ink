@@ -12,6 +12,9 @@ begin
 end;
 $$ language plpgsql;
 
+-- ACCOUNT
+
+-- no checks because this data is not provided by user but with the log in event
 create table sendou_ink.account (
   id                    serial primary key,
   discord_username      text not null,
@@ -44,6 +47,45 @@ comment on function sendou_ink.account_discord_full_username(sendou_ink.account)
 
 create trigger account_updated_at before update
   on sendou_ink.account
+  for each row
+  execute procedure sendou_ink_private.set_updated_at();
+
+-- ORGANIZATION
+
+create table sendou_ink.organization (
+  identifier            text primary key 
+                          check (char_length(identifier) > 1 
+                            AND char_length(identifier) < 51
+                            AND identifier ~ '^[a-z0-9-]+$'),
+  name                  text not null,
+  owner_id              integer not null references sendou_ink.account(id),
+  discord_invite_code   text not null,
+  twitter               text,
+  created_at            timestamp default now(),
+  updated_at            timestamp default now()
+);
+
+create trigger organization_updated_at before update
+  on sendou_ink.organization
+  for each row
+  execute procedure sendou_ink_private.set_updated_at();
+
+-- TOURNAMENT
+
+create table sendou_ink.tournament (
+  identifier            text primary key,
+  name                  text not null,
+  description           text,
+  start_time            timestamp,
+  check_in_time         timestamp,
+  banner_background     text,
+  banner_text_hsl_args  text,
+  created_at            timestamp default now(),
+  updated_at            timestamp default now()
+);
+
+create trigger tournament_updated_at before update
+  on sendou_ink.tournament
   for each row
   execute procedure sendou_ink_private.set_updated_at();
 
