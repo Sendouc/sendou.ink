@@ -1,5 +1,11 @@
 [![Discord Server](https://discordapp.com/api/guilds/299182152161951744/embed.png)](https://discord.gg/sendou)
 
+# Notice
+
+Currently I'm doing a lot of work on the `rewrite` branch and most issues don't apply. It's too early to contribute on that but you can still take a look if you are interested.
+
+---
+
 Goal of sendou.ink is to provide useful tools and resources for the Splatoon community.
 
 Live version: [https://sendou.ink/](https://sendou.ink/)
