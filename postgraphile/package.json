@@ -14,8 +14,9 @@
   },
   "scripts": {
     "dev": "ts-node-dev index.ts",
+    "delete-migrations": "node scripts/delete-migrations.js",
     "migrate": "node migrations/index.mjs",
-    "migrate:reset": "node delete-migrations.js && npm run migrate",
+    "migrate:reset": "npm run delete-migrations && npm run migrate",
     "test": "jest"
   },
   "jest": {

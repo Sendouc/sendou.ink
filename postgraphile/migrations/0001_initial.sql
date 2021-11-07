@@ -54,16 +54,19 @@ create trigger account_updated_at before update
 
 create table sendou_ink.organization (
   identifier            text primary key 
-                          check (char_length(identifier) > 1 
-                            AND char_length(identifier) < 51
-                            AND identifier ~ '^[a-z0-9-]+$'),
-  name                  text not null,
-  owner_id              integer not null references sendou_ink.account(id),
-  discord_invite_code   text not null,
-  twitter               text,
+                          check (identifier ~ '^[a-z0-9-]{2,50}$'),
+  name                  text not null
+                          check (char_length(name) < 51),
+  discord_invite_code   text not null
+                          check (char_length(discord_invite_code) < 51),
+  twitter               text 
+                          check (twitter ~ '^[a-zA-Z0-9_]{4,15}$'),
   created_at            timestamp default now(),
-  updated_at            timestamp default now()
+  updated_at            timestamp default now(),
+  owner_id              integer not null references sendou_ink.account(id)
 );
+
+create index organization_owner_id on sendou_ink.organization (owner_id);
 
 create trigger organization_updated_at before update
   on sendou_ink.organization
@@ -73,16 +76,26 @@ create trigger organization_updated_at before update
 -- TOURNAMENT
 
 create table sendou_ink.tournament (
-  identifier            text primary key,
-  name                  text not null,
-  description           text,
-  start_time            timestamp,
-  check_in_time         timestamp,
-  banner_background     text,
-  banner_text_hsl_args  text,
-  created_at            timestamp default now(),
-  updated_at            timestamp default now()
+  identifier                 text primary key
+                               check (identifier ~ '^[a-z0-9-]{2,50}$'),
+  name                       text not null
+                               check (char_length(name) < 51),
+  description                text
+                               check (char_length(description) < 5000),
+  start_time                 timestamp not null
+                              check (start_time > now()),
+  check_in_time              timestamp,
+  -- TODO check
+  banner_background          text not null,
+  banner_text_hsl_args       text not null
+                              check (banner_text_hsl_args ~ '^[0-9]{1,3} [0-9]{1,3}% [0-9]{1,3}%$'),
+  created_at                 timestamp default now(),
+  updated_at                 timestamp default now(),
+  organization_identifier    text not null references sendou_ink.organization(identifier),
+  CHECK (check_in_time < start_time)
 );
+
+create index tournament_organization_identifier on sendou_ink.tournament (organization_identifier);
 
 create trigger tournament_updated_at before update
   on sendou_ink.tournament
@@ -92,4 +105,10 @@ create trigger tournament_updated_at before update
 -- seed for dev
 
 insert into sendou_ink.account (discord_username, discord_discriminator, discord_avatar, twitch, twitter, youtube_id, youtube_name)
-values ('Sendou', '0043', 'fcfd65a3bea598905abb9ca25296816b', 'Sendou', 'Sendouc', 'UCWbJLXByvsfQvTcR4HLPs5Q', 'Sendou')
+values ('Sendou', '0043', 'fcfd65a3bea598905abb9ca25296816b', 'Sendou', 'Sendouc', 'UCWbJLXByvsfQvTcR4HLPs5Q', 'Sendou');
+
+insert into sendou_ink.organization (identifier, name, discord_invite_code, twitter, owner_id)
+values ('sendous', 'Sendou´s tournaments', 'sendou', 'sendouc', 1);
+
+insert into sendou_ink.tournament (identifier, name, description, start_time, banner_background, banner_text_hsl_args, organization_identifier)
+values ('in-the-zone-x', 'In The Zone X', 'In The Zone eXtremeeeee', '2022-06-22 20:00:00', 'linear-gradient(to bottom, #9796f0, #fbc7d4)', '31 9% 16%', 'sendous');

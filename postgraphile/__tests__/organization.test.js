@@ -6,8 +6,8 @@ describe("checks identifier", () => {
       try {
         await pgClient.query(
           `
-         insert into sendou_ink.organization z(identifier, owner_id, name, discord_invite_code)
-         values ('in-the-zone-å', 1, 'Sendou', '')
+         insert into sendou_ink.organization (identifier, owner_id, name, discord_invite_code)
+         values ('in-the-zone-å', 1, 'Sendou', '');
         `
         );
         throw new Error("query should not pass");
@@ -22,7 +22,7 @@ describe("checks identifier", () => {
         await pgClient.query(
           `
          insert into sendou_ink.organization (identifier, owner_id, name, discord_invite_code)
-         values ('i', 1, 'Sendou', '')
+         values ('i', 1, 'Sendou', '');
         `
         );
         throw new Error("query should not pass");
@@ -31,7 +31,7 @@ describe("checks identifier", () => {
       }
     }));
 
-  test("accepts valid identifier", () =>
+  test("accepts normal valid", () =>
     withRootDb(async (pgClient) => {
       const {
         rows: [organization],
@@ -39,10 +39,26 @@ describe("checks identifier", () => {
         `
          insert into sendou_ink.organization (identifier, owner_id, name, discord_invite_code)
          values ('in-the-zone', 1, 'Sendou', '')
-         returning *
+         returning *;
         `
       );
 
       expect(organization.identifier).toBe("in-the-zone");
+    }));
+
+  test("accepts long", () =>
+    withRootDb(async (pgClient) => {
+      const identifier = new Array(50).fill("a").join("");
+      const {
+        rows: [organization],
+      } = await pgClient.query(
+        `
+         insert into sendou_ink.organization (identifier, owner_id, name, discord_invite_code)
+         values ('${identifier}', 1, 'Sendou', '')
+         returning *;
+        `
+      );
+
+      expect(organization.identifier).toBe(identifier);
     }));
 });
