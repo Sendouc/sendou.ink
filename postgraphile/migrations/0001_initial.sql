@@ -66,6 +66,14 @@ create table sendou_ink.organization (
   owner_id              integer not null references sendou_ink.account(id)
 );
 
+create function sendou_ink.organization_twitter_url(organization sendou_ink.organization) returns text as $$
+  select 'https://twitter.com/' || organization.twitter
+$$ language sql stable;
+
+create function sendou_ink.organization_discord_invite_url(organization sendou_ink.organization) returns text as $$
+  select 'https://discord.com/invite/' || organization.discord_invite_code
+$$ language sql stable;
+
 create index organization_owner_id on sendou_ink.organization (owner_id);
 
 create trigger organization_updated_at before update
@@ -95,12 +103,43 @@ create table sendou_ink.tournament (
   CHECK (check_in_time < start_time)
 );
 
-create index tournament_organization_identifier on sendou_ink.tournament (organization_identifier);
+-- create function sendou_ink.tournament_text_color(tournament sendou_ink.tournament) returns text as $$
+--   select 'hsl(' || tournament.banner_text_hsl_args || ')'
+-- $$ language sql stable;
+
+create index tournament_organization_identifier on sendou_ink.tournament(organization_identifier);
 
 create trigger tournament_updated_at before update
   on sendou_ink.tournament
   for each row
   execute procedure sendou_ink_private.set_updated_at();
+
+create table sendou_ink.mode_enum (
+  name text primary key
+);
+comment on table sendou_ink.mode_enum is E'@enum';
+insert into sendou_ink.mode_enum (name) values
+  ('TW'),
+  ('SZ'),
+  ('TC'),
+  ('RM'),
+  ('CB');
+
+create table sendou_ink.map_mode (
+  id          serial primary key,
+  stage       text not null,
+  game_mode   text not null references sendou_ink.mode_enum(name),
+  unique (stage, game_mode)
+);
+
+create table sendou_ink.map_pool (
+  tournament_identifier   text not null references sendou_ink.tournament(identifier),
+  map_mode_id             integer not null references sendou_ink.map_mode(id),
+  unique (tournament_identifier, map_mode_id)
+);
+
+create index map_pool_tournament_identifier on sendou_ink.map_pool(tournament_identifier);
+create index map_pool_map_mode_id on sendou_ink.map_pool(map_mode_id);
 
 -- seed for dev
 
