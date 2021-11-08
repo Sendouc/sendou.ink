@@ -7,7 +7,9 @@
     "postgres-migrations": "^5.3.0"
   },
   "devDependencies": {
+    "@types/faker": "^5.5.9",
     "dotenv": "^10.0.0",
+    "faker": "^5.5.3",
     "jest": "^27.3.1",
     "pg": "^8.7.1",
     "ts-node-dev": "^1.1.8"
