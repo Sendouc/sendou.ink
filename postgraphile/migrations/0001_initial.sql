@@ -140,14 +140,3 @@ create table sendou_ink.map_pool (
 
 create index map_pool_tournament_identifier on sendou_ink.map_pool(tournament_identifier);
 create index map_pool_map_mode_id on sendou_ink.map_pool(map_mode_id);
-
--- seed for dev
-
-insert into sendou_ink.account (discord_username, discord_discriminator, discord_avatar, twitch, twitter, youtube_id, youtube_name)
-values ('Sendou', '0043', 'fcfd65a3bea598905abb9ca25296816b', 'Sendou', 'Sendouc', 'UCWbJLXByvsfQvTcR4HLPs5Q', 'Sendou');
-
-insert into sendou_ink.organization (identifier, name, discord_invite_code, twitter, owner_id)
-values ('sendous', 'Sendou´s tournaments', 'sendou', 'sendouc', 1);
-
-insert into sendou_ink.tournament (identifier, name, description, start_time, banner_background, banner_text_hsl_args, organization_identifier)
-values ('in-the-zone-x', 'In The Zone X', 'In The Zone eXtremeeeee', '2022-06-22 20:00:00', 'linear-gradient(to bottom, #9796f0, #fbc7d4)', '31 9% 16%', 'sendous');

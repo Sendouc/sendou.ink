@@ -16,7 +16,8 @@
     "dev": "ts-node-dev index.ts",
     "delete-migrations": "node scripts/delete-migrations.js",
     "migrate": "node migrations/index.mjs",
-    "migrate:reset": "npm run delete-migrations && npm run migrate",
+    "seed": "node scripts/seed.js",
+    "migrate:reset": "npm run delete-migrations && npm run migrate && npm run seed",
     "test": "jest"
   },
   "jest": {
