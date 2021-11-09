@@ -3,7 +3,6 @@ import "./_app.css";
 
 import { AppProps } from "next/app";
 import Head from "next/head";
-import { SWRConfig } from "swr";
 import { Layout } from "components/layout/Layout";
 import { globalCss } from "stitches.config";
 import { Provider, createClient } from "urql";
@@ -42,18 +41,9 @@ export default function App(props: AppProps) {
         />
       </Head>
       <Provider value={client}>
-        <SWRConfig
-          value={{
-            fetcher: (resource, init) =>
-              fetch(process.env.NEXT_PUBLIC_BACKEND_URL + resource, init).then(
-                (res) => res.json()
-              ),
-          }}
-        >
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
-        </SWRConfig>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
       </Provider>
     </>
   );

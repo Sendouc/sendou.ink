@@ -27,17 +27,6 @@ You might be able to skip steps 2-4 and use a few pages but most pages need a se
 
 ## .env
 
-### /server
-
-| Name                  | Description                                                                                                 | Required |
-| --------------------- | ----------------------------------------------------------------------------------------------------------- | -------- |
-| DATABASE_URL          | Database connection string. For example mine is currently `postgresql://sendou@localhost:5432/sendou_ink_3` | Yes      |
-| DISCORD_CLIENT_ID     | Used for auth. Make an application on [Discord](https://discord.com/developers/applications)                | No       |
-| DISCORD_CLIENT_SECRET | See above.                                                                                                  | No       |
-| DISCORD_CALLBACK_URL  | See above.                                                                                                  | No       |
-| FRONTEND_URL          | Where frontend is located. Cell                                                                             | Yes      |
-| NODE_ENV              | `development` when developing, `production` in production                                                   | Yes      |
-
 ### /frontend
 
 | Name                    | Description               | Required |
@@ -61,23 +50,6 @@ frontend/
 ├── components/          react components
 ├── hooks/               react hooks including data fetching logic
 └── utils/               frontend specific utility methods, constants etc.
-```
-
-### /server
-
-This folder contains backend specific code.
-
-```
-server/
-├── index.ts/               entry point
-├── routes/                 route handling logic (controllers)
-├── middleware/             middlewares that are called before controllers
-├── services/               methods that talk to the database
-├── core/                   business logic
-└── prisma/
-    ├── migrations/         migrations
-    ├── schema.prisma       database models
-    └── seed.ts             seeding script
 ```
 
 ### /shared
