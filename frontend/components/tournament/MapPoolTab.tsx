@@ -3,35 +3,37 @@ import NextImage from "next/image";
 import { useTournamentData } from "hooks/data/useTournamentData";
 import { stages, modesShort } from "@sendou-ink/shared/constants";
 import type { Mode } from "@sendou-ink/api/common";
-import { GetTournamentByOrganizationAndName } from "@sendou-ink/api";
+import { ModeEnum } from "generated/graphql";
 
 export function MapPoolTab() {
   const { data } = useTournamentData();
+  const mapPool =
+    data?.tournamentByIdentifier?.mapPoolsByTournamentIdentifier.nodes.map(
+      (node) => node.mapModeByMapModeId
+    );
 
   // TODO: handle loading
   // TODO: handle error in parent
-  if (!data) return null;
+  if (!mapPool) return null;
 
   return (
     <S_Container>
       <S_InfoSquare>
-        <S_EmphasizedText>{data.mapPool.length} maps</S_EmphasizedText>
+        <S_EmphasizedText>{mapPool.length} maps</S_EmphasizedText>
       </S_InfoSquare>
       {stages.map((stage) => (
         <S_StageImageContainer key={stage}>
           <S_StageImage
             alt={stage}
             src={`/img/stages/${stage.replaceAll(" ", "-").toLowerCase()}.png`}
-            filter={modesPerStage(data.mapPool)[stage] ? undefined : "bw"}
+            filter={modesPerStage(mapPool)[stage] ? undefined : "bw"}
             width={256}
             height={144}
           />
-          {modesPerStage(data.mapPool)[stage] && (
+          {modesPerStage(mapPool)[stage] && (
             <S_ModeImagesContainer>
               {modesShort.map((mode) => {
-                if (
-                  !modesPerStage(data.mapPool)[stage]?.includes(mode as Mode)
-                ) {
+                if (!modesPerStage(mapPool)[stage]?.includes(mode as Mode)) {
                   return null;
                 }
                 return (
@@ -53,14 +55,17 @@ export function MapPoolTab() {
 }
 
 export function modesPerStage(
-  mapPool: GetTournamentByOrganizationAndName["mapPool"]
+  mapPool: {
+    stage: string;
+    gameMode: ModeEnum;
+  }[]
 ) {
-  return mapPool.reduce((acc: Record<string, Mode[]>, { name, mode }) => {
-    if (!acc[name]) {
-      acc[name] = [];
+  return mapPool.reduce((acc: Record<string, Mode[]>, { stage, gameMode }) => {
+    if (!acc[stage]) {
+      acc[stage] = [];
     }
 
-    acc[name].push(mode);
+    acc[stage].push(gameMode);
     return acc;
   }, {});
 }

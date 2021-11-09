@@ -93,9 +93,9 @@ create table sendou_ink.tournament (
   CHECK (check_in_time < start_time)
 );
 
--- create function sendou_ink.tournament_text_color(tournament sendou_ink.tournament) returns text as $$
---   select 'hsl(' || tournament.banner_text_hsl_args || ')'
--- $$ language sql stable;
+create function sendou_ink.tournament_text_color(tournament sendou_ink.tournament) returns text as $$
+  select 'hsl(' || tournament.banner_text_hsl_args || ')'
+$$ language sql stable;
 
 create index tournament_organization_identifier on sendou_ink.tournament(organization_identifier);
 

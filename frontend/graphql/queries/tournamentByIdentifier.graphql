@@ -1,0 +1,36 @@
+query TournamentByIdentifier($identifier: String!) {
+  tournamentByIdentifier(identifier: $identifier) {
+    name
+    startTime
+    checkInTime
+    bannerBackground
+    description
+    textColor
+    organizationByOrganizationIdentifier {
+      name
+      discordInviteUrl
+      twitterUrl
+    }
+    tournamentTeamsByTournamentIdentifier {
+      nodes {
+        name
+        tournamentTeamRostersByTournamentTeamId {
+          nodes {
+            captain,
+            accountByMemberId {
+              discordFullUsername
+            }
+          }
+        }
+      }
+    }
+    mapPoolsByTournamentIdentifier {
+      nodes {
+        mapModeByMapModeId {
+          stage
+          gameMode
+        }
+      }
+    }
+  }
+}

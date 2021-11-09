@@ -4,45 +4,53 @@ import { useTournamentData } from "../../hooks/data/useTournamentData";
 
 export function InfoBanner() {
   const { data } = useTournamentData();
+  const tournament = data?.tournamentByIdentifier;
 
   // TODO: handle loading
   // TODO: handle error in parent
-  if (!data) return null;
+  if (!tournament) return null;
 
   return (
     <S_Container
       style={
         {
-          "--background": data.bannerBackground,
-          "--text": `hsl(${data.bannerTextHSLArgs})`,
-          "--text-transparent": `hsla(${data.bannerTextHSLArgs}, 0.2)`,
+          "--background": tournament.bannerBackground,
+          "--text": tournament.textColor,
         } as any
       }
     >
       <S_TopRow>
         <S_DateName>
           <S_MonthDate>
-            <S_Month>{shortMonthName(data.startTime)}</S_Month>
-            <S_Date>{dayNumber(data.startTime)}</S_Date>
+            <S_Month>{shortMonthName(tournament.startTime)}</S_Month>
+            <S_Date>{dayNumber(tournament.startTime)}</S_Date>
           </S_MonthDate>
-          <S_TournamentName>{data.name}</S_TournamentName>
+          <S_TournamentName>{tournament.name}</S_TournamentName>
         </S_DateName>
         <S_IconButtons>
-          {data.organizer.twitter && (
-            <S_IconButton href={data.organizer.twitter}>
+          {tournament.organizationByOrganizationIdentifier.twitterUrl && (
+            <S_IconButton
+              href={tournament.organizationByOrganizationIdentifier.twitterUrl}
+            >
               <FaTwitter />
             </S_IconButton>
           )}
-          <S_IconButton href={data.organizer.discordInvite}>
-            <FaDiscord />
-          </S_IconButton>
+          {tournament.organizationByOrganizationIdentifier.discordInviteUrl && (
+            <S_IconButton
+              href={
+                tournament.organizationByOrganizationIdentifier.discordInviteUrl
+              }
+            >
+              <FaDiscord />
+            </S_IconButton>
+          )}
         </S_IconButtons>
       </S_TopRow>
       <S_BottomRow>
         <S_Infos>
           <S_InfoContainer>
             <S_InfoLabel>Starting time</S_InfoLabel>
-            <div>{weekdayAndStartTime(data.startTime)}</div>
+            <div>{weekdayAndStartTime(tournament.startTime)}</div>
           </S_InfoContainer>
           <S_InfoContainer>
             <S_InfoLabel>Format</S_InfoLabel>
@@ -50,7 +58,7 @@ export function InfoBanner() {
           </S_InfoContainer>
           <S_InfoContainer>
             <S_InfoLabel>Organizer</S_InfoLabel>
-            <div>{data.organizer.name}</div>
+            <div>{tournament.organizationByOrganizationIdentifier.name}</div>
           </S_InfoContainer>
         </S_Infos>
       </S_BottomRow>

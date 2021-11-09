@@ -50,10 +50,13 @@ async function main() {
 
     for (const stage of stages) {
       for (const mode of modesShort) {
-        await client.query(`
+        await client.query(
+          `
           insert into sendou_ink.map_mode (stage, game_mode)
-          values ('${stage}', '${mode}');
-        `);
+          values ($1, $2);
+        `,
+          [stage, mode]
+        );
       }
     }
 
@@ -71,10 +74,13 @@ async function mapPool(client) {
   );
 
   for (const id of ids) {
-    await client.query(`
+    await client.query(
+      `
       insert into sendou_ink.map_pool (tournament_identifier, map_mode_id)
-      values ('in-the-zone-x', '${id}');
-    `);
+      values ('in-the-zone-x', $1);
+    `,
+      [id]
+    );
   }
 }
 
@@ -90,10 +96,13 @@ async function fakeUsers(client) {
       .map(() => faker.datatype.number(9))
       .join("");
 
-    await client.query(`
+    await client.query(
+      `
       insert into sendou_ink.account (discord_username, discord_discriminator, discord_id)
-      values ('${name}', '${discordDiscriminator}', '${discordId}');
-    `);
+      values ($1, $2, $3);
+    `,
+      [name, discordDiscriminator, discordId]
+    );
   }
 }
 
@@ -101,7 +110,7 @@ async function fakeTournamentTeams(client) {
   const randomIds = faker.helpers.shuffle(
     Array(201)
       .fill(null)
-      .map((_, i) => i)
+      .map((_, i) => i + 1)
   );
 
   for (let index = 0; index < 24; index++) {
@@ -110,25 +119,32 @@ async function fakeTournamentTeams(client) {
 
     const {
       rows: [tournamentTeam],
-    } = await client.query(`
+    } = await client.query(
+      `
       insert into sendou_ink.tournament_team (name, tournament_identifier)
-      values ('${name}', 'in-the-zone-x')
+      values ($1, 'in-the-zone-x')
       returning *;
-    `);
+    `,
+      [name]
+    );
 
-    await client.query(`
+    await client.query(
+      `
       insert into sendou_ink.tournament_team_roster (member_id, tournament_team_id, captain)
-      values ('${captainId}', '${tournamentTeam.id}', true)
-      returning *;
-    `);
+      values ($1, $2, true);
+    `,
+      [captainId, tournamentTeam.id]
+    );
 
     for (let index = 0; index < faker.datatype.number(6); index++) {
       const memberId = randomIds.pop();
-      await client.query(`
-      insert into sendou_ink.tournament_team_roster (member_id, tournament_team_id)
-      values ('${memberId}', '${tournamentTeam.id}')
-      returning *;
-    `);
+      await client.query(
+        `
+        insert into sendou_ink.tournament_team_roster (member_id, tournament_team_id)
+        values ($1, $2);
+    `,
+        [memberId, tournamentTeam.id]
+      );
     }
   }
 }

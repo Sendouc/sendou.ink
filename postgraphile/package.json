@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "dependencies": {
     "fastify": "^3.22.1",
+    "fastify-cors": "^6.0.2",
     "postgraphile": "^4.12.5",
     "postgres-migrations": "^5.3.0"
   },

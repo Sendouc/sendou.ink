@@ -2,6 +2,7 @@ import { config } from "dotenv";
 config();
 
 import Fastify, { FastifyReply, FastifyRequest } from "fastify";
+import cors from "fastify-cors";
 import {
   postgraphile,
   PostGraphileResponseFastify3,
@@ -11,10 +12,22 @@ import {
 
 const PORT = 4000;
 
+function NonNullRelationsPlugin(builder) {
+  builder.hook("GraphQLObjectType:fields:field", (field, build, context) => {
+    if (!context.scope.isPgForwardRelationField) {
+      return field;
+    }
+    return {
+      ...field,
+      type: new build.graphql.GraphQLNonNull(field.type),
+    };
+  });
+}
+
 // PostGraphile options; see https://www.graphile.org/postgraphile/usage-library/#api-postgraphilepgconfig-schemaname-options
 const options: PostGraphileOptions = {
   // pluginHook,
-  // appendPlugins: [MySubscriptionPlugin],
+  appendPlugins: [NonNullRelationsPlugin],
   // pgSettings(req) {
   //   // Adding this to ensure that all servers pass through the request in a
   //   // good enough way that we can extract headers.
@@ -72,6 +85,8 @@ const middleware = postgraphile(process.env.DATABASE_URL, "sendou_ink", {
 /******************************************************************************/
 
 const fastify = Fastify({ logger: true });
+
+fastify.register(cors);
 
 /**
  * Converts a PostGraphile route handler into a Fastify request handler.
