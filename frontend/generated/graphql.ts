@@ -18,7 +18,7 @@ export type Scalars = {
    * A point in time as described by the [ISO
    * 8601](https://en.wikipedia.org/wiki/ISO_8601) standard. May or may not include a timezone.
    */
-  Datetime: any;
+  Datetime: Date;
   /** A universally unique identifier as defined by [RFC 4122](https://tools.ietf.org/html/rfc4122). */
   UUID: any;
 };
@@ -2253,7 +2253,7 @@ export type TournamentByIdentifierQueryVariables = Exact<{
 }>;
 
 
-export type TournamentByIdentifierQuery = { __typename?: 'Query', tournamentByIdentifier?: { __typename?: 'Tournament', name: string, startTime: any, checkInTime?: any | null | undefined, bannerBackground: string, description?: string | null | undefined, textColor?: string | null | undefined, organizationByOrganizationIdentifier: { __typename?: 'Organization', name: string, discordInviteUrl?: string | null | undefined, twitterUrl?: string | null | undefined }, tournamentTeamsByTournamentIdentifier: { __typename?: 'TournamentTeamsConnection', nodes: Array<{ __typename?: 'TournamentTeam', name: string, tournamentTeamRostersByTournamentTeamId: { __typename?: 'TournamentTeamRostersConnection', nodes: Array<{ __typename?: 'TournamentTeamRoster', captain: boolean, accountByMemberId: { __typename?: 'Account', discordFullUsername?: string | null | undefined } }> } }> }, mapPoolsByTournamentIdentifier: { __typename?: 'MapPoolsConnection', nodes: Array<{ __typename?: 'MapPool', mapModeByMapModeId: { __typename?: 'MapMode', stage: string, gameMode: ModeEnum } }> } } | null | undefined };
+export type TournamentByIdentifierQuery = { __typename?: 'Query', tournamentByIdentifier?: { __typename?: 'Tournament', name: string, startTime: Date, checkInTime?: Date | null | undefined, bannerBackground: string, description?: string | null | undefined, textColor?: string | null | undefined, organizationByOrganizationIdentifier: { __typename?: 'Organization', name: string, discordInviteUrl?: string | null | undefined, twitterUrl?: string | null | undefined }, tournamentTeamsByTournamentIdentifier: { __typename?: 'TournamentTeamsConnection', nodes: Array<{ __typename?: 'TournamentTeam', name: string, tournamentTeamRostersByTournamentTeamId: { __typename?: 'TournamentTeamRostersConnection', nodes: Array<{ __typename?: 'TournamentTeamRoster', captain: boolean, accountByMemberId: { __typename?: 'Account', discordFullUsername?: string | null | undefined } }> } }> }, mapPoolsByTournamentIdentifier: { __typename?: 'MapPoolsConnection', nodes: Array<{ __typename?: 'MapPool', mapModeByMapModeId: { __typename?: 'MapMode', stage: string, gameMode: ModeEnum } }> } } | null | undefined };
 
 
 export const TournamentByIdentifierDocument = gql`

@@ -1,7 +1,15 @@
 overwrite: true
 schema: "http://localhost:4000/graphql"
 documents: "**/*.graphql"
+config:
+  scalars:
+    Datetime: Date
 generates:
+  generated/introspection.json:
+    plugins:
+      - "introspection"
+    config:
+      minify: true
   generated/graphql.ts:
     plugins:
       - "typescript"

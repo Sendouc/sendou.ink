@@ -5,7 +5,9 @@ import { AppProps } from "next/app";
 import Head from "next/head";
 import { Layout } from "components/layout/Layout";
 import { globalCss } from "stitches.config";
-import { Provider, createClient } from "urql";
+import { Provider, createClient, fetchExchange } from "urql";
+import customScalarsExchange from "urql-custom-scalars-exchange";
+import schema from "generated/introspection.json";
 
 const globalStyles = globalCss({
   "*": { boxSizing: "border-box" },
@@ -24,6 +26,17 @@ const globalStyles = globalCss({
 
 const client = createClient({
   url: "http://localhost:4000/graphql",
+  exchanges: [
+    customScalarsExchange({
+      schema: schema as any,
+      scalars: {
+        Datetime(value) {
+          return new Date(value);
+        },
+      },
+    }),
+    fetchExchange,
+  ],
 });
 
 export default function App(props: AppProps) {

@@ -6,8 +6,6 @@ export function InfoBanner() {
   const { data } = useTournamentData();
   const tournament = data?.tournamentByIdentifier;
 
-  // TODO: handle loading
-  // TODO: handle error in parent
   if (!tournament) return null;
 
   return (
@@ -66,19 +64,19 @@ export function InfoBanner() {
   );
 }
 
-function weekdayAndStartTime(date: string) {
-  return new Date(date).toLocaleString("en-US", {
+function weekdayAndStartTime(date: Date) {
+  return date.toLocaleString("en-US", {
     weekday: "long",
     hour: "numeric",
   });
 }
 
-function shortMonthName(date: string) {
-  return new Date(date).toLocaleString("en-US", { month: "short" });
+function shortMonthName(date: Date) {
+  return date.toLocaleString("en-US", { month: "short" });
 }
 
-function dayNumber(date: string) {
-  return new Date(date).toLocaleString("en-US", { day: "numeric" });
+function dayNumber(date: Date) {
+  return date.toLocaleString("en-US", { day: "numeric" });
 }
 
 const S_Container = styled("div", {
