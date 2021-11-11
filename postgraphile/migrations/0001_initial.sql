@@ -78,7 +78,7 @@ create table sendou_ink.tournament (
                                check (identifier ~ '^[a-z0-9-]{2,50}$'),
   name                       text not null
                                check (char_length(name) < 51),
-  description                text
+  description                text not null
                                check (char_length(description) < 5000),
   start_time                 timestamp not null
                               check (start_time > now()),

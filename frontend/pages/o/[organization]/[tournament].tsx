@@ -2,11 +2,12 @@ import { InfoBanner } from "components/tournament/InfoBanner";
 import { Tab } from "components/common/Tab";
 import { styled } from "stitches.config";
 import { MapPoolTab } from "components/tournament/MapPoolTab";
+import { OverviewTab } from "components/tournament/OverviewTab";
 import { Select } from "components/common/Select";
 import { useState } from "react";
 
 const tabs = [
-  { name: "Overview", id: "info", component: null },
+  { name: "Overview", id: "info", component: <OverviewTab /> },
   { name: "Map Pool", id: "map-pool", component: <MapPoolTab /> },
   { name: "Bracket", id: "bracket", component: null },
   { name: "Teams (23)", id: "teams", component: null },

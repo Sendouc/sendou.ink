@@ -1577,7 +1577,7 @@ export type Tournament = Node & {
   bannerTextHslArgs: Scalars['String'];
   checkInTime?: Maybe<Scalars['Datetime']>;
   createdAt?: Maybe<Scalars['Datetime']>;
-  description?: Maybe<Scalars['String']>;
+  description: Scalars['String'];
   identifier: Scalars['String'];
   /** Reads and enables pagination through a set of `MapPool`. */
   mapPoolsByTournamentIdentifier: MapPoolsConnection;
@@ -1649,7 +1649,7 @@ export type TournamentInput = {
   bannerTextHslArgs: Scalars['String'];
   checkInTime?: Maybe<Scalars['Datetime']>;
   createdAt?: Maybe<Scalars['Datetime']>;
-  description?: Maybe<Scalars['String']>;
+  description: Scalars['String'];
   identifier: Scalars['String'];
   name: Scalars['String'];
   organizationIdentifier: Scalars['String'];
@@ -2253,7 +2253,7 @@ export type TournamentByIdentifierQueryVariables = Exact<{
 }>;
 
 
-export type TournamentByIdentifierQuery = { __typename?: 'Query', tournamentByIdentifier?: { __typename?: 'Tournament', name: string, startTime: Date, checkInTime?: Date | null | undefined, bannerBackground: string, description?: string | null | undefined, textColor?: string | null | undefined, organizationByOrganizationIdentifier: { __typename?: 'Organization', name: string, discordInviteUrl?: string | null | undefined, twitterUrl?: string | null | undefined }, tournamentTeamsByTournamentIdentifier: { __typename?: 'TournamentTeamsConnection', nodes: Array<{ __typename?: 'TournamentTeam', name: string, tournamentTeamRostersByTournamentTeamId: { __typename?: 'TournamentTeamRostersConnection', nodes: Array<{ __typename?: 'TournamentTeamRoster', captain: boolean, accountByMemberId: { __typename?: 'Account', discordFullUsername?: string | null | undefined } }> } }> }, mapPoolsByTournamentIdentifier: { __typename?: 'MapPoolsConnection', nodes: Array<{ __typename?: 'MapPool', mapModeByMapModeId: { __typename?: 'MapMode', stage: string, gameMode: ModeEnum } }> } } | null | undefined };
+export type TournamentByIdentifierQuery = { __typename?: 'Query', tournamentByIdentifier?: { __typename?: 'Tournament', name: string, startTime: Date, checkInTime?: Date | null | undefined, bannerBackground: string, description: string, textColor?: string | null | undefined, organizationByOrganizationIdentifier: { __typename?: 'Organization', name: string, discordInviteUrl?: string | null | undefined, twitterUrl?: string | null | undefined }, tournamentTeamsByTournamentIdentifier: { __typename?: 'TournamentTeamsConnection', nodes: Array<{ __typename?: 'TournamentTeam', name: string, tournamentTeamRostersByTournamentTeamId: { __typename?: 'TournamentTeamRostersConnection', nodes: Array<{ __typename?: 'TournamentTeamRoster', captain: boolean, accountByMemberId: { __typename?: 'Account', discordFullUsername?: string | null | undefined } }> } }> }, mapPoolsByTournamentIdentifier: { __typename?: 'MapPoolsConnection', nodes: Array<{ __typename?: 'MapPool', mapModeByMapModeId: { __typename?: 'MapMode', stage: string, gameMode: ModeEnum } }> } } | null | undefined };
 
 
 export const TournamentByIdentifierDocument = gql`
