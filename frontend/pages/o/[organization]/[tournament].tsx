@@ -5,11 +5,12 @@ import { MapPoolTab } from "components/tournament/MapPoolTab";
 import { OverviewTab } from "components/tournament/OverviewTab";
 import { Select } from "components/common/Select";
 import { useState } from "react";
+import { BracketTab } from "components/tournament/BracketTab";
 
 const tabs = [
   { name: "Overview", id: "info", component: <OverviewTab /> },
   { name: "Map Pool", id: "map-pool", component: <MapPoolTab /> },
-  { name: "Bracket", id: "bracket", component: null },
+  { name: "Bracket", id: "bracket", component: <BracketTab /> },
   { name: "Teams (23)", id: "teams", component: null },
   { name: "Streams (4)", id: "streams", component: null },
 ];
