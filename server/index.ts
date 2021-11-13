@@ -1,5 +1,6 @@
 import { EventEmitter } from "events";
 import express from "express";
+import cors from "cors";
 import * as trpc from "@trpc/server";
 import { z } from "zod";
 import * as trpcExpress from "@trpc/server/adapters/express/dist/trpc-server-adapters-express.cjs";
@@ -120,6 +121,8 @@ export type AppRouter = typeof appRouter;
 async function main() {
   // express implementation
   const app = express();
+
+  app.use(cors());
 
   app.use((req, _res, next) => {
     // request logger

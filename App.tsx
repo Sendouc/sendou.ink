@@ -1,11 +1,14 @@
 import { Router } from "solid-app-router";
 import type { Component } from "solid-js";
-import Layout from "./scenes/layout";
+import { Routes } from "./Routes";
+import { Layout } from "./scenes/layout/components/Layout";
 
 const App: Component = () => {
   return (
     <Router>
-      <Layout>routes here</Layout>
+      <Layout>
+        <Routes />
+      </Layout>
     </Router>
   );
 };
