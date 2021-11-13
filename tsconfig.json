@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
     "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "node",

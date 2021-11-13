@@ -1,7 +1,6 @@
 {
-  "name": "vite-template-solid",
+  "name": "sendou.ink",
   "version": "0.0.0",
-  "description": "",
   "scripts": {
     "start": "vite",
     "dev": "vite",
