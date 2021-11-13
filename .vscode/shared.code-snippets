@@ -1,7 +1,0 @@
-{
-  "Styled component (Stitches)": {
-    "prefix": "st",
-    "body": ["const S_$1 = styled(\"$2\", {", "  $0", "});"],
-    "scope": "typescriptreact"
-  }
-}
