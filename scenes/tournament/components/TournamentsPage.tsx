@@ -1,15 +1,12 @@
 import { Outlet } from "solid-app-router";
-import { useTournamentData } from "./TournamentsPage.data";
+import { InfoBanner } from "./InfoBanner";
+import s from "../styles/TournamentPage.module.css";
 
 export default function TournamentsPage() {
-  const tournament = useTournamentData();
-
   return (
-    <>
-      response: "<pre>{JSON.stringify(tournament(), null, 2)}</pre>"
-      <p>
-        <Outlet />
-      </p>
-    </>
+    <div class={s.container}>
+      <InfoBanner />
+      <Outlet />
+    </div>
   );
 }

@@ -10,7 +10,7 @@ export function Routes() {
   return (
     <SolidAppRoutes>
       <Route
-        path="/to/:identifier"
+        path="/to/:organization/:tournament"
         element={<TournamentsPage />}
         // TODO: fix type error
         data={TournamentData as any}

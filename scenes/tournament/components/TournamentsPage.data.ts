@@ -5,15 +5,19 @@ import { InferQueryOutput, trpcClient } from "../../../utils/trpc-client";
 export default function TournamentData({
   params,
 }: {
-  params: { identifier: string };
+  params: { organization: string; tournament: string };
 }) {
   const [user] = createResource(
-    () => params.identifier,
-    (identifier: string) => trpcClient.query("tournament.get", identifier)
+    () => [params.organization, params.tournament],
+    ([organization, tournament]) =>
+      trpcClient.query("tournament.get", {
+        organization,
+        tournament,
+      })
   );
 
   return user;
 }
 
-export const useTournamentData = () =>
-  useData<() => InferQueryOutput<"tournament.get">>();
+export const useTournamentData = (delta?: number) =>
+  useData<() => InferQueryOutput<"tournament.get">>(delta);

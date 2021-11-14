@@ -3,10 +3,13 @@ import { createRouter } from "../../utils/trpc-server";
 import { findTournamentByNameForUrl } from "./tournament-service";
 
 export const tournament = createRouter().query("get", {
-  input: z.string(),
+  input: z.object({
+    organization: z.string(),
+    tournament: z.string(),
+  }),
   resolve: ({ input }) =>
     findTournamentByNameForUrl({
-      organizationNameForUrl: "sendou",
-      tournamentNameForUrl: input,
+      organizationNameForUrl: input.organization,
+      tournamentNameForUrl: input.tournament,
     }),
 });
