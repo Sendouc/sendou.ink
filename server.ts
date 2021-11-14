@@ -1,7 +1,7 @@
 import * as trpcExpress from "@trpc/server/adapters/express/dist/trpc-server-adapters-express.cjs";
 import cors from "cors";
 import express from "express";
-import { tournament as tournamentRouter } from "./scenes/tournament/tournament-router";
+import { tournament as tournamentRouter } from "./scenes/tournament/router";
 import { createContext, createRouter } from "./utils/trpc-server";
 
 export const appRouter = createRouter().merge("tournament.", tournamentRouter);

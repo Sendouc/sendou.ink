@@ -1,13 +1,13 @@
 import { Link } from "solid-app-router";
 import { For } from "solid-js";
-import s from "../layout.module.css";
+import s from "../styles/MobileNav.module.css";
 import { navItems } from "../utils";
 import { SearchInput } from "./SearchInput";
 
 export function MobileNav(p: { isExpanded: boolean }) {
   return (
     <div
-      class={s.mobileNavContainer}
+      class={s.container}
       aria-hidden={p.isExpanded ? "false" : "true"}
       data-expanded={String(p.isExpanded)}
     >

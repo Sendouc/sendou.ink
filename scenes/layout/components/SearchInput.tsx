@@ -1,5 +1,5 @@
 import { SearchIcon } from "../../../components/icons/Search";
-import s from "../layout.module.css";
+import s from "../styles/SearchInput.module.css";
 
 export function SearchInput() {
   return (

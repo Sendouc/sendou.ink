@@ -1,0 +1,116 @@
+.header {
+  --item-size: 3rem;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding: var(--s-4);
+  z-index: 10;
+  background-color: var(--bg);
+}
+
+.logoContainer {
+  background-color: var(--bg-lighter);
+  background-image: url(/svg/background-pattern.svg);
+  display: grid;
+  place-items: center;
+  padding: var(--s-1);
+  border-radius: var(--rounded);
+  justify-self: flex-start;
+  cursor: pointer;
+  width: var(--item-size);
+  min-width: var(--item-size);
+  height: var(--item-size);
+  min-height: var(--item-size);
+}
+
+.logo {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.avatar {
+  border-radius: var(--rounded);
+  width: var(--item-size);
+  min-width: var(--item-size);
+  height: var(--item-size);
+}
+
+.searchContainer {
+  display: none;
+}
+
+.rightContainer {
+  display: flex;
+  gap: var(--s-4);
+  justify-self: flex-end;
+}
+
+.nav {
+  display: none;
+  justify-content: center;
+  background-color: var(--bg-lighter);
+  background-image: url(/svg/background-pattern.svg);
+}
+
+.navItems {
+  background-color: var(--bg-lighter);
+  display: inline-flex;
+  justify-content: center;
+  gap: var(--s-12);
+  grid-template-columns: repeat(4, 100px);
+  padding: var(--s-4) var(--s-8);
+}
+
+.navItemColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  color: var(--text);
+  text-decoration: none;
+  font-size: var(--fonts-sm);
+  font-weight: var(--bold);
+  text-transform: capitalize;
+  transition: 0.2s transform;
+}
+
+.navLink:hover {
+  transform: translateX(2px);
+}
+
+.navGroupTitle {
+  text-transform: uppercase;
+  font-weight: var(--bold);
+  color: var(--text-lighter);
+  font-size: var(--fonts-xxs);
+}
+
+.navIcon {
+  width: 2rem;
+  height: 2rem;
+}
+
+.main {
+  padding-top: var(--s-8);
+}
+
+@media screen and (min-width: 640px) {
+  .header {
+    --item-size: 38px;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .searchContainer {
+    display: block;
+  }
+
+  .nav {
+    display: flex;
+  }
+}

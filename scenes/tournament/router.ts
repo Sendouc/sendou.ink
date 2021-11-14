@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { createRouter } from "../../utils/trpc-server";
-import { findTournamentByNameForUrl } from "./tournament-service";
+import { findTournamentByNameForUrl } from "./service";
 
 export const tournament = createRouter().query("get", {
   input: z.object({

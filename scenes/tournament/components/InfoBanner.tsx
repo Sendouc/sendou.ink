@@ -1,8 +1,8 @@
 import { Show } from "solid-js";
 import { DiscordIcon } from "../../../components/icons/Discord";
 import { TwitterIcon } from "../../../components/icons/Twitter";
-import { useTournamentData } from "./TournamentsPage.data";
-import s from "./InfoBanner.module.css";
+import { useTournamentData } from "../TournamentPage.data";
+import s from "../styles/InfoBanner.module.css";
 
 export function InfoBanner() {
   const tournament = useTournamentData();

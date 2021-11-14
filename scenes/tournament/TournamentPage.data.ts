@@ -1,6 +1,6 @@
 import { useData } from "solid-app-router";
 import { createResource } from "solid-js";
-import { InferQueryOutput, trpcClient } from "../../../utils/trpc-client";
+import { InferQueryOutput, trpcClient } from "../../utils/trpc-client";
 
 export default function TournamentData({
   params,

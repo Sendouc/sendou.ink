@@ -1,4 +1,4 @@
-import styles from "../layout.module.css";
+import s from "../styles/HamburgerButton.module.css";
 
 export function HamburgerButton(p: {
   onClick: () => void;
@@ -8,7 +8,7 @@ export function HamburgerButton(p: {
 
   return (
     <button
-      class={styles.transformingBurger}
+      class={s.transformingBurger}
       aria-label="Toggle menu visibility"
       aria-expanded={expandedString()}
       onClick={p.onClick}
@@ -21,7 +21,7 @@ export function HamburgerButton(p: {
         xmlns="http://www.w3.org/2000/svg"
       >
         <rect
-          class={styles.topLine}
+          class={s.topLine}
           x="6"
           y="9"
           width="20"
@@ -31,7 +31,7 @@ export function HamburgerButton(p: {
           data-expanded={expandedString()}
         ></rect>
         <rect
-          class={styles.middleLine}
+          class={s.middleLine}
           x="6"
           y="15"
           width="20"
@@ -41,7 +41,7 @@ export function HamburgerButton(p: {
           data-expanded={expandedString()}
         ></rect>
         <rect
-          class={styles.bottomLine}
+          class={s.bottomLine}
           x="6"
           y="21"
           width="20"

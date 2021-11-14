@@ -1,6 +1,6 @@
 import { Link } from "solid-app-router";
 import { createSignal, For, JSXElement } from "solid-js";
-import s from "../layout.module.css";
+import s from "../styles/Layout.module.css";
 import { navItems } from "../utils";
 import { HamburgerButton } from "./HamburgerButton";
 import { MobileNav } from "./MobileNav";
@@ -8,6 +8,11 @@ import { SearchInput } from "./SearchInput";
 
 export function Layout(p: { children: JSXElement }) {
   const [menuExpanded, setMenuExpanded] = createSignal(false);
+
+  function toggleMenu() {
+    setMenuExpanded((expanded) => !expanded);
+  }
+
   return (
     <>
       <header class={s.header}>
@@ -20,10 +25,7 @@ export function Layout(p: { children: JSXElement }) {
           <SearchInput />
         </div>
         <div class={s.rightContainer}>
-          <HamburgerButton
-            isExpanded={menuExpanded()}
-            onClick={() => setMenuExpanded((expanded) => !expanded)}
-          />
+          <HamburgerButton isExpanded={menuExpanded()} onClick={toggleMenu} />
           <img
             class={s.avatar}
             src="https://cdn.discordapp.com/avatars/79237403620945920/fcfd65a3bea598905abb9ca25296816b.png?size=80"

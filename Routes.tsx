@@ -1,9 +1,9 @@
 import { Routes as SolidAppRoutes, Route } from "solid-app-router";
 import { lazy } from "solid-js";
-import TournamentData from "./scenes/tournament/components/TournamentsPage.data";
+import TournamentData from "./scenes/tournament/TournamentPage.data";
 
 const TournamentsPage = lazy(
-  () => import("./scenes/tournament/components/TournamentsPage")
+  () => import("./scenes/tournament/components/TournamentPage")
 );
 
 export function Routes() {
