@@ -1,11 +1,12 @@
-import { Outlet, useData } from "solid-app-router";
+import { Outlet } from "solid-app-router";
+import { useTournamentData } from "./TournamentsPage.data";
 
 export default function TournamentsPage() {
-  const user = useData<() => string>();
+  const tournament = useTournamentData();
 
   return (
     <>
-      response: "{user()}"
+      response: "<pre>{JSON.stringify(tournament(), null, 2)}</pre>"
       <p>
         <Outlet />
       </p>

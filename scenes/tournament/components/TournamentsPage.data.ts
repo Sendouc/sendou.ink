@@ -1,19 +1,19 @@
 import { useData } from "solid-app-router";
 import { createResource } from "solid-js";
-import { trpcClient } from "../../../utils/trpc";
+import { InferQueryOutput, trpcClient } from "../../../utils/trpc-client";
 
-function fetchHello(input: string) {
-  return trpcClient.query("hello", input);
-}
-
-export default function HelloData({
+export default function TournamentData({
   params,
 }: {
   params: { identifier: string };
 }) {
-  const [user] = createResource(() => params.identifier, fetchHello);
+  const [user] = createResource(
+    () => params.identifier,
+    (identifier: string) => trpcClient.query("tournament.get", identifier)
+  );
 
   return user;
 }
 
-export const useHelloData = () => useData<() => string>();
+export const useTournamentData = () =>
+  useData<() => InferQueryOutput<"tournament.get">>();
