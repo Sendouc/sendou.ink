@@ -14,18 +14,6 @@
   gap: 1rem;
 }
 
-@media screen and (min-width: 480px) {
-  .container {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-@media screen and (min-width: 640px) {
-  .container {
-    grid-template-columns: repeat(4, minmax(1px, 200px));
-  }
-}
-
 .emphasizedText {
   font-weight: var(--bold);
 }
@@ -59,4 +47,16 @@
   gap: var(--s-2);
   border-start-start-radius: var(--rounded);
   border-end-end-radius: var(--rounded);
+}
+
+@media screen and (min-width: 480px) {
+  .container {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media screen and (min-width: 640px) {
+  .container {
+    grid-template-columns: repeat(4, minmax(1px, 200px));
+  }
 }

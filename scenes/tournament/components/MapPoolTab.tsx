@@ -28,20 +28,21 @@ export function MapPoolTab() {
                 />
                 {modesPerStage(mapPool)[stage] && (
                   <div class={s.modeImagesContainer}>
-                    {modesShort.map((mode) => {
-                      if (
-                        !modesPerStage(mapPool)[stage]?.includes(mode as Mode)
-                      ) {
-                        return null;
-                      }
-                      return (
-                        <img
-                          class={s.modeImage}
-                          src={`/img/modes/${mode}.webp`}
-                          alt={mode}
-                        />
-                      );
-                    })}
+                    <For each={modesShort}>
+                      {(mode) => (
+                        <Show
+                          when={modesPerStage(mapPool)[stage]?.includes(
+                            mode as Mode
+                          )}
+                        >
+                          <img
+                            class={s.modeImage}
+                            src={`/img/modes/${mode}.webp`}
+                            alt={mode}
+                          />
+                        </Show>
+                      )}
+                    </For>
                   </div>
                 )}
               </div>
