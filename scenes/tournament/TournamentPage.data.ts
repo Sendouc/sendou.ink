@@ -1,6 +1,7 @@
 import { useData } from "solid-app-router";
 import { createResource } from "solid-js";
 import { InferQueryOutput, trpcClient } from "../../utils/trpc-client";
+import type { UseDataResult } from "../../utils/types";
 
 export default function TournamentData({
   params,
@@ -20,4 +21,4 @@ export default function TournamentData({
 }
 
 export const useTournamentData = (delta?: number) =>
-  useData<() => InferQueryOutput<"tournament.get">>(delta);
+  useData<UseDataResult<InferQueryOutput<"tournament.get">>>(delta);

@@ -32,6 +32,26 @@ export async function findTournamentByNameForUrl({
           name: true,
         },
       },
+      teams: {
+        select: {
+          checkedIn: true,
+          id: true,
+          name: true,
+          members: {
+            select: {
+              captain: true,
+              member: {
+                select: {
+                  discordAvatar: true,
+                  discordName: true,
+                  discordId: true,
+                  discordDiscriminator: true,
+                },
+              },
+            },
+          },
+        },
+      },
     },
   });
 

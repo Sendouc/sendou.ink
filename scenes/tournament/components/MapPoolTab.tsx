@@ -8,7 +8,7 @@ export function MapPoolTab() {
   const tournament = useTournamentData(1);
 
   return (
-    <Show when={tournament?.()}>
+    <Show when={tournament()}>
       {({ mapPool }) => (
         <div class={s.container}>
           <div class={s.infoSquare}>

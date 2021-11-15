@@ -2,16 +2,25 @@ import pkg from "@prisma/client";
 import { stages as stagesList } from "../utils/constants";
 const { PrismaClient } = pkg;
 const prisma = new PrismaClient();
+import fetch from "node-fetch";
+import shuffle from "just-shuffle";
+import faker from "faker";
 
 async function main() {
-  const user = await users();
-  const organization = await organizations(user.id);
+  const userCreated = await user();
+  await users();
+  const organization = await organizations(userCreated.id);
   const tournament = await tournaments(organization.id);
+  const usersCreated = await prisma.user.findMany({});
+  await tournamentTeams(
+    tournament.id,
+    usersCreated.map((u) => u.id)
+  );
   await stages();
   await tournamentAddMaps(tournament.id);
 }
 
-async function users() {
+async function user() {
   return prisma.user.create({
     data: {
       discordDiscriminator: "4059",
@@ -25,6 +34,56 @@ async function users() {
       twitter: "sendouc",
     },
   });
+}
+
+async function users() {
+  const fetched = (await (
+    await fetch("https://sendou.ink/api/users")
+  ).json()) as {
+    id: number;
+    username: string;
+    discriminator: string;
+    discordAvatar?: string;
+    discordId: string;
+    profile?: { twitterName?: string };
+  }[];
+
+  return prisma.user.createMany({
+    data: fetched
+      .filter((u) => u.discordId !== "79237403620945920")
+      .map((u) => ({
+        discordDiscriminator: u.discriminator,
+        discordId: u.discordId,
+        discordAvatar: u.discordAvatar,
+        discordRefreshToken: "none",
+        discordName: u.username,
+        twitter: u.profile?.twitterName,
+      })),
+    skipDuplicates: true,
+  });
+}
+
+async function tournamentTeams(tournamentId: number, users: number[]) {
+  const randomIds = shuffle(users);
+  for (let index = 0; index < 24; index++) {
+    const team = await prisma.tournamentTeam.create({
+      data: {
+        name: faker.address.cityName(),
+        tournamentId,
+      },
+    });
+
+    for (let index = 0; index < faker.datatype.number(6) + 1; index++) {
+      const memberId = randomIds.pop()!;
+      await prisma.tournamentTeamMember.create({
+        data: {
+          memberId,
+          teamId: team.id,
+          captain: index === 0,
+        },
+      });
+    }
+  }
 }
 
 async function organizations(userId: number) {

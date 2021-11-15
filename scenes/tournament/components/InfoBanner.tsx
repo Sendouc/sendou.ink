@@ -10,7 +10,7 @@ export function InfoBanner() {
   // TODO: skeleton
   return (
     <>
-      <Show when={tournament?.()} fallback={null}>
+      <Show when={tournament()} fallback={null}>
         {(tournament) => (
           <div
             class={s.container}

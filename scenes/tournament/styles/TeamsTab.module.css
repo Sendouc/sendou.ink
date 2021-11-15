@@ -1,0 +1,44 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-10);
+}
+
+.teamsContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  row-gap: var(--s-10);
+}
+
+.teamName {
+  display: flex;
+  align-items: center;
+  font-weight: var(--extra-bold);
+  font-size: var(--fonts-lg);
+}
+
+.membersContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  border-inline-start: 2px solid var(--theme);
+  padding-inline-start: var(--s-3);
+}
+
+.member {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.orderNumber {
+  color: var(--theme-secondary);
+  font-weight: bold;
+  font-size: var(--fonts-sm);
+}
+
+.teamListTitle {
+  margin-block-end: var(--s-8);
+  text-align: center;
+  margin-block-start: 0;
+}

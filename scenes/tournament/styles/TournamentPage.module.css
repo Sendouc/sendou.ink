@@ -10,7 +10,7 @@
   place-items: center;
   gap: var(--s-10);
   grid-template-columns: repeat(2, 100px);
-  padding-block: var(--s-6);
+  padding-block: var(--s-8);
 }
 
 .navLink {

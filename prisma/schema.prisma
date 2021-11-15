@@ -8,8 +8,8 @@ datasource db {
 }
 
 model User {
-  id                   Int           @id @default(autoincrement())
-  discordId            String        @unique
+  id                   Int                    @id @default(autoincrement())
+  discordId            String                 @unique
   discordName          String
   discordDiscriminator String
   discordAvatar        String?
@@ -18,9 +18,10 @@ model User {
   twitter              String?
   youtubeId            String?
   youtubeName          String?
-  createdAt            DateTime      @default(now())
-  updatedAt            DateTime      @updatedAt
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
   ownedOrganization    Organization?
+  tournamentTeams      TournamentTeamMember[]
 }
 
 model Organization {
@@ -36,7 +37,7 @@ model Organization {
 }
 
 model Tournament {
-  id                Int          @id @default(autoincrement())
+  id                Int              @id @default(autoincrement())
   name              String
   /// Name in lower case to show in URL
   nameForUrl        String
@@ -49,7 +50,9 @@ model Tournament {
   bannerTextHSLArgs String
   mapPool           Stage[]
   organizerId       Int
-  organizer         Organization @relation(fields: [organizerId], references: [id])
+  organizer         Organization     @relation(fields: [organizerId], references: [id])
+  teams             TournamentTeam[]
+
   // There might be duplicate nameForUrl's but inside an organization they're unique
   @@unique([nameForUrl, organizerId])
 }
@@ -67,4 +70,28 @@ model Stage {
   name               String
   mode               Mode
   tournamentMapPools Tournament[]
+}
+
+// TODO: how to check on database level only one player per team?
+
+model TournamentTeam {
+  id           Int                    @id @default(autoincrement())
+  name         String
+  checkedIn    Boolean                @default(false)
+  tournamentId Int
+  tournament   Tournament             @relation(fields: [tournamentId], references: [id])
+  inviteCode   String                 @default(uuid())
+  members      TournamentTeamMember[]
+
+  @@unique([name, tournamentId])
+}
+
+model TournamentTeamMember {
+  memberId Int
+  teamId   Int
+  captain  Boolean        @default(false)
+  team     TournamentTeam @relation(fields: [teamId], references: [id])
+  member   User           @relation(fields: [memberId], references: [id])
+
+  @@unique([memberId, teamId])
 }

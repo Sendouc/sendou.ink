@@ -56,6 +56,24 @@ CREATE TABLE "Stage" (
 );
 
 -- CreateTable
+CREATE TABLE "TournamentTeam" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "checkedIn" BOOLEAN NOT NULL DEFAULT false,
+    "tournamentId" INTEGER NOT NULL,
+    "inviteCode" TEXT NOT NULL,
+
+    CONSTRAINT "TournamentTeam_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "TournamentTeamMember" (
+    "memberId" INTEGER NOT NULL,
+    "teamId" INTEGER NOT NULL,
+    "captain" BOOLEAN NOT NULL DEFAULT false
+);
+
+-- CreateTable
 CREATE TABLE "_StageToTournament" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL
@@ -74,6 +92,12 @@ CREATE UNIQUE INDEX "Organization_ownerId_key" ON "Organization"("ownerId");
 CREATE UNIQUE INDEX "Tournament_nameForUrl_organizerId_key" ON "Tournament"("nameForUrl", "organizerId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "TournamentTeam_name_tournamentId_key" ON "TournamentTeam"("name", "tournamentId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "TournamentTeamMember_memberId_teamId_key" ON "TournamentTeamMember"("memberId", "teamId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "_StageToTournament_AB_unique" ON "_StageToTournament"("A", "B");
 
 -- CreateIndex
@@ -84,6 +108,15 @@ ALTER TABLE "Organization" ADD CONSTRAINT "Organization_ownerId_fkey" FOREIGN KE
 
 -- AddForeignKey
 ALTER TABLE "Tournament" ADD CONSTRAINT "Tournament_organizerId_fkey" FOREIGN KEY ("organizerId") REFERENCES "Organization"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TournamentTeam" ADD CONSTRAINT "TournamentTeam_tournamentId_fkey" FOREIGN KEY ("tournamentId") REFERENCES "Tournament"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TournamentTeamMember" ADD CONSTRAINT "TournamentTeamMember_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "TournamentTeam"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TournamentTeamMember" ADD CONSTRAINT "TournamentTeamMember_memberId_fkey" FOREIGN KEY ("memberId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_StageToTournament" ADD FOREIGN KEY ("A") REFERENCES "Stage"("id") ON DELETE CASCADE ON UPDATE CASCADE;

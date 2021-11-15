@@ -3,8 +3,9 @@
   --bg-lighter: hsl(237.3, 42.3%, 35.6%);
   --text: rgba(255, 255, 255, 0.95);
   --text-lighter: rgba(255, 255, 255, 0.55);
-  --theme: rgba(103, 65, 217);
-  --theme-transparent: rgba(103, 65, 217, 0.4);
+  --theme: hsl(255, 66.7%, 55.3%);
+  --theme-transparent: hsla(255, 66.7%, 55.3%, 0.4);
+  --theme-secondary: hsl(85, 66.7%, 55.3%);
 
   --rounded: 16px;
 
