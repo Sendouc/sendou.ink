@@ -3,7 +3,7 @@ import type { inferProcedureOutput } from "@trpc/server";
 import type { AppRouter } from "../server";
 
 export const trpcClient = createTRPCClient<AppRouter>({
-  url: "http://localhost:2021/trpc",
+  url: `${import.meta.env.VITE_BACKEND_URL}/trpc`,
 });
 
 export type InferQueryOutput<
