@@ -3,6 +3,8 @@ config();
 
 import cors from "cors";
 import express from "express";
+import session from "express-session";
+import cookieParser from "cookie-parser";
 import passport from "passport";
 import { Strategy as DiscordStrategy } from "passport-discord";
 import { tournament as tournamentRouter } from "./scenes/tournament/router";
@@ -13,20 +15,9 @@ import { upsertUser } from "./scenes/layout/service";
 const PORT = 3001;
 
 export const appRouter = createRouter().merge("tournament.", tournamentRouter);
-
 export type AppRouter = typeof appRouter;
 
 async function main() {
-  const app = express();
-
-  app.use(cors());
-
-  app.use((req, _res, next) => {
-    console.log("⬅️ ", req.method, req.path, req.body ?? req.query);
-
-    next();
-  });
-
   passport.use(
     new DiscordStrategy(
       {
@@ -36,7 +27,7 @@ async function main() {
         scope: ["identify", "connections"],
       },
       function (_accessToken, refreshToken, loggedInUser, cb) {
-        upsertUser({ loggedInUser, refreshToken: refreshToken })
+        upsertUser({ loggedInUser, refreshToken })
           .then((user) => {
             return cb(null, {
               id: user.id,
@@ -50,12 +41,41 @@ async function main() {
   );
 
   passport.serializeUser(function (user, done) {
-    console.log("user", user);
     done(null, user);
   });
 
   passport.deserializeUser(function (user, done) {
-    done(null, user as any);
+    // @ts-expect-error it is guaranteed it's of a certain shape without an extra check
+    done(null, user);
+  });
+
+  const app = express();
+
+  app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
+
+  app.use(cookieParser());
+  app.use(
+    session({
+      secret: process.env.COOKIE_SECRET!,
+      resave: true,
+      saveUninitialized: true,
+    })
+  );
+  app.use(passport.initialize());
+  app.use(passport.session());
+  app.post("/auth/discord", passport.authenticate("discord"));
+  app.get(
+    "/auth/discord/callback",
+    passport.authenticate("discord", {
+      failureRedirect: "/login",
+      successRedirect: process.env.FRONTEND_URL,
+    })
+  );
+
+  app.use((req, _res, next) => {
+    console.log("⬅️ ", req.method, req.path, req.body ?? req.query);
+
+    next();
   });
 
   app.use(
@@ -63,15 +83,6 @@ async function main() {
     trpcExpress.createExpressMiddleware({
       router: appRouter,
       createContext,
-    })
-  );
-
-  app.use(passport.initialize());
-  app.get("/auth/discord", passport.authenticate("discord")).get(
-    "/auth/discord/callback",
-    passport.authenticate("discord", {
-      failureRedirect: "/login",
-      successRedirect: "http://localhost:3000/",
     })
   );
 

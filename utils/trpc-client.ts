@@ -4,6 +4,7 @@ import type { AppRouter } from "../server";
 
 export const trpcClient = createTRPCClient<AppRouter>({
   url: `${import.meta.env.VITE_BACKEND_URL}/trpc`,
+  fetch: (input, init) => fetch(input, { ...init, credentials: "include" }),
 });
 
 export type InferQueryOutput<

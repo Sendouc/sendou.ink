@@ -6,11 +6,14 @@ export const createContext = ({
   res,
 }: trpcExpress.CreateExpressContextOptions) => {
   const getUser = () => {
-    if (req.headers.authorization !== "secret") {
-      return null;
+    console.log("req.user", req.user);
+    if (req.user !== "secret") {
+      return;
     }
-    return {
-      name: "alex",
+    return req.user as {
+      id: number;
+      discordId: string;
+      discordAvatar?: string;
     };
   };
 
