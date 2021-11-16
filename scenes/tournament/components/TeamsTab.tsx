@@ -66,10 +66,12 @@ function TeamsList(p: {
               <div class={s.teamName}>{team.name}</div>
               <div class={s.membersContainer}>
                 <For each={team.members}>
-                  {({ member, captain }, i) => (
+                  {(data, i) => (
                     <div class={s.member}>
-                      <div class={s.orderNumber}>{captain ? "C" : i()}</div>
-                      <AvatarWithName {...member} />
+                      <div class={s.orderNumber}>
+                        {data.captain ? "C" : i()}
+                      </div>
+                      <AvatarWithName {...data.member} />
                     </div>
                   )}
                 </For>

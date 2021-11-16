@@ -21,6 +21,8 @@ export async function upsertUser({
       discordName: loggedInUser.username,
       discordDiscriminator: loggedInUser.discriminator,
       discordAvatar: loggedInUser.avatar,
+      discordRefreshToken: refreshToken,
+      ...parseConnections(loggedInUser.connections),
     },
     where: {
       discordId: loggedInUser.id,
