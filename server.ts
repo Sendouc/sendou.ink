@@ -8,13 +8,16 @@ import cookieParser from "cookie-parser";
 import passport from "passport";
 import { Strategy as DiscordStrategy } from "passport-discord";
 import { tournament as tournamentRouter } from "./scenes/tournament/router";
+import { layout as layoutRouter } from "./scenes/layout/router";
 import { createContext, createRouter } from "./utils/trpc-server";
 import * as trpcExpress from "@trpc/server/adapters/express/dist/trpc-server-adapters-express.cjs";
 import { upsertUser } from "./scenes/layout/service";
 
 const PORT = 3001;
 
-export const appRouter = createRouter().merge("tournament.", tournamentRouter);
+export const appRouter = createRouter()
+  .merge("tournament.", tournamentRouter)
+  .merge("layout.", layoutRouter);
 export type AppRouter = typeof appRouter;
 
 async function main() {

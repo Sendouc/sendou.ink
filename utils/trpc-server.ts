@@ -6,8 +6,7 @@ export const createContext = ({
   res,
 }: trpcExpress.CreateExpressContextOptions) => {
   const getUser = () => {
-    console.log("req.user", req.user);
-    if (req.user !== "secret") {
+    if (!req.user) {
       return;
     }
     return req.user as {

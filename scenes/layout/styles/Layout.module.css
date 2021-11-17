@@ -29,39 +29,6 @@
   max-height: 100%;
 }
 
-.logInButton {
-  text-decoration: none;
-  font-weight: var(--bold);
-  font-size: var(--fonts-xs);
-  display: flex;
-  height: var(--item-size);
-  align-items: center;
-  justify-content: center;
-  padding: 0.5rem;
-  border: 2px solid;
-  border-color: var(--bg-lighter);
-  background-color: transparent;
-  border-radius: var(--rounded);
-  color: inherit;
-  cursor: pointer;
-  gap: var(--s-2);
-}
-
-.logInButton > svg {
-  width: 1rem;
-}
-
-.logInButton:active {
-  transform: translateY(1px);
-}
-
-.avatar {
-  border-radius: var(--rounded);
-  width: var(--item-size);
-  min-width: var(--item-size);
-  height: var(--item-size);
-}
-
 .searchContainer {
   display: none;
 }

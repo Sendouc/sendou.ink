@@ -1,11 +1,11 @@
 import { Link } from "solid-app-router";
 import { createSignal, For, JSXElement } from "solid-js";
-import { DiscordIcon } from "../../../components/icons/Discord";
 import s from "../styles/Layout.module.css";
 import { navItems } from "../utils";
 import { HamburgerButton } from "./HamburgerButton";
 import { MobileNav } from "./MobileNav";
 import { SearchInput } from "./SearchInput";
+import { UserItem } from "./UserItem";
 
 export function Layout(p: { children: JSXElement }) {
   const [menuExpanded, setMenuExpanded] = createSignal(false);
@@ -27,18 +27,7 @@ export function Layout(p: { children: JSXElement }) {
         </div>
         <div class={s.rightContainer}>
           <HamburgerButton isExpanded={menuExpanded()} onClick={toggleMenu} />
-          {/* <img
-            class={s.avatar}
-            src="https://cdn.discordapp.com/avatars/79237403620945920/fcfd65a3bea598905abb9ca25296816b.png?size=80"
-          /> */}
-          <form
-            action={`${import.meta.env.VITE_BACKEND_URL}/auth/discord`}
-            method="post"
-          >
-            <button type="submit" class={s.logInButton}>
-              <DiscordIcon /> Log in
-            </button>
-          </form>
+          <UserItem />
         </div>
       </header>
       <MobileNav isExpanded={menuExpanded()} />
