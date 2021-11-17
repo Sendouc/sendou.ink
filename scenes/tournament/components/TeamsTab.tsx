@@ -4,30 +4,23 @@ import s from "../styles/TeamsTab.module.css";
 import { AvatarWithName } from "../../../components/AvatarWithName";
 import type { InferQueryOutput } from "../../../utils/trpc-client";
 
+const sortCaptainFirst = (a: { captain: boolean }, b: { captain: boolean }) => {
+  return Number(b.captain) - Number(a.captain);
+};
+
+const sortTeamsFullFirst = (a: { members: any[] }, b: { members: any[] }) => {
+  const aSortValue = a.members.length >= 4 ? 1 : 0;
+  const bSortValue = b.members.length >= 4 ? 1 : 0;
+
+  return bSortValue - aSortValue;
+};
+
 export function TeamsTab() {
   const tournament = useTournamentData(1);
 
-  const sortCaptainFirst = (
-    a: { captain: boolean },
-    b: { captain: boolean }
-  ) => {
-    return Number(b.captain) - Number(a.captain);
-  };
-
-  const completeTeams = createMemo(() =>
+  const sortedTeams = createMemo(() =>
     tournament()
-      ?.teams.filter((team) => team.members.length >= 4)
-      .map((team) => {
-        return {
-          ...team,
-          members: team.members.sort(sortCaptainFirst),
-        };
-      })
-  );
-
-  const inCompleteTeams = createMemo(() =>
-    tournament()
-      ?.teams.filter((team) => team.members.length < 4)
+      ?.teams.sort(sortTeamsFullFirst)
       .map((team) => {
         return {
           ...team,
@@ -38,27 +31,18 @@ export function TeamsTab() {
 
   return (
     <div class={s.container}>
-      <Show when={completeTeams()}>
-        {(teams) => <TeamsList teams={teams} title="Full teams" />}
-      </Show>
-      <Show when={inCompleteTeams()}>
-        {(teams) => <TeamsList teams={teams} title="Incomplete teams" />}
-      </Show>
+      <Show when={sortedTeams()}>{(teams) => <TeamsList teams={teams} />}</Show>
     </div>
   );
 }
 
 function TeamsList(p: {
   teams: NonNullable<InferQueryOutput<"tournament.get">>["teams"];
-  title: string;
 }) {
   if (!p.teams.length) return null;
 
   return (
     <div>
-      <h2 class={s.teamListTitle}>
-        {p.title} ({p.teams.length})
-      </h2>
       <div class={s.teamsContainer}>
         <For each={p.teams}>
           {(team) => (
@@ -69,7 +53,7 @@ function TeamsList(p: {
                   {(data, i) => (
                     <div class={s.member}>
                       <div class={s.orderNumber}>
-                        {data.captain ? "C" : i()}
+                        {data.captain ? "C" : i() + 1}
                       </div>
                       <AvatarWithName {...data.member} />
                     </div>

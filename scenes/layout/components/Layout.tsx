@@ -26,8 +26,8 @@ export function Layout(p: { children: JSXElement }) {
           <SearchInput />
         </div>
         <div class={s.rightContainer}>
-          <HamburgerButton isExpanded={menuExpanded()} onClick={toggleMenu} />
           <UserItem />
+          <HamburgerButton isExpanded={menuExpanded()} onClick={toggleMenu} />
         </div>
       </header>
       <MobileNav isExpanded={menuExpanded()} />

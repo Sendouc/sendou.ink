@@ -20,5 +20,6 @@ export default function TournamentData({
   return user;
 }
 
-export const useTournamentData = (delta?: number) =>
-  useData<UseDataResult<InferQueryOutput<"tournament.get">>>(delta);
+export function useTournamentData(delta?: number) {
+  return useData<UseDataResult<InferQueryOutput<"tournament.get">>>(delta);
+}
