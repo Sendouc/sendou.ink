@@ -1,14 +1,10 @@
-import { createResource, Show } from "solid-js";
+import { Show } from "solid-js";
 import { DiscordIcon } from "../../../components/icons/Discord";
-import { trpcClient } from "../../../utils/trpc-client";
+import { useUser } from "../../../utils/UserContext";
 import s from "../styles/UserItem.module.css";
 
-const fetchLoggedInUser = async () => {
-  return trpcClient.query("layout.getLoggedInUser");
-};
-
 export function UserItem() {
-  const [user] = createResource(fetchLoggedInUser);
+  const user = useUser();
 
   return (
     <Show
