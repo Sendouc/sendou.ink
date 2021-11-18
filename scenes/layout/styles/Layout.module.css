@@ -5,7 +5,7 @@
   grid-template-columns: 1fr 2fr;
   align-items: center;
   padding: var(--s-4);
-  z-index: 10;
+  z-index: 501;
   background-color: var(--bg);
 }
 

@@ -80,6 +80,7 @@ async function tournamentTeams(tournamentId: number, users: number[]) {
           memberId,
           teamId: team.id,
           captain: index === 0,
+          tournamentId,
         },
       });
     }

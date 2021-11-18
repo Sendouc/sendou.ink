@@ -70,7 +70,15 @@ CREATE TABLE "TournamentTeam" (
 CREATE TABLE "TournamentTeamMember" (
     "memberId" INTEGER NOT NULL,
     "teamId" INTEGER NOT NULL,
+    "tournamentId" INTEGER NOT NULL,
     "captain" BOOLEAN NOT NULL DEFAULT false
+);
+
+-- CreateTable
+CREATE TABLE "TrustRelationships" (
+    "trustGiverId" INTEGER NOT NULL,
+    "trustReceiverId" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- CreateTable
@@ -95,7 +103,10 @@ CREATE UNIQUE INDEX "Tournament_nameForUrl_organizerId_key" ON "Tournament"("nam
 CREATE UNIQUE INDEX "TournamentTeam_name_tournamentId_key" ON "TournamentTeam"("name", "tournamentId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "TournamentTeamMember_memberId_teamId_key" ON "TournamentTeamMember"("memberId", "teamId");
+CREATE UNIQUE INDEX "TournamentTeamMember_memberId_tournamentId_key" ON "TournamentTeamMember"("memberId", "tournamentId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "TrustRelationships_trustGiverId_trustReceiverId_key" ON "TrustRelationships"("trustGiverId", "trustReceiverId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_StageToTournament_AB_unique" ON "_StageToTournament"("A", "B");
@@ -117,6 +128,12 @@ ALTER TABLE "TournamentTeamMember" ADD CONSTRAINT "TournamentTeamMember_teamId_f
 
 -- AddForeignKey
 ALTER TABLE "TournamentTeamMember" ADD CONSTRAINT "TournamentTeamMember_memberId_fkey" FOREIGN KEY ("memberId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TrustRelationships" ADD CONSTRAINT "TrustRelationships_trustGiverId_fkey" FOREIGN KEY ("trustGiverId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TrustRelationships" ADD CONSTRAINT "TrustRelationships_trustReceiverId_fkey" FOREIGN KEY ("trustReceiverId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_StageToTournament" ADD FOREIGN KEY ("A") REFERENCES "Stage"("id") ON DELETE CASCADE ON UPDATE CASCADE;

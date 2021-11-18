@@ -3,6 +3,7 @@ import { InfoBanner } from "./InfoBanner";
 import s from "../styles/TournamentPage.module.css";
 import { useTournamentData } from "../TournamentPage.data";
 import { Show } from "solid-js";
+import { ActionSection } from "./ActionSection";
 
 export default function TournamentsPage() {
   const tournament = useTournamentData();
@@ -10,6 +11,7 @@ export default function TournamentsPage() {
   return (
     <div class={s.container}>
       <InfoBanner />
+      <ActionSection />
       <Show when={tournament()}>
         {(tournament) => (
           <div style={{ "--tabs-count": 5 }} class={s.linksContainer}>

@@ -20,6 +20,8 @@ model User {
   youtubeName          String?
   createdAt            DateTime               @default(now())
   updatedAt            DateTime               @updatedAt
+  trustedUsers         TrustRelationships[]   @relation("trustGiver")
+  trustingUsers        TrustRelationships[]   @relation("trustReceiver")
   ownedOrganization    Organization?
   tournamentTeams      TournamentTeamMember[]
 }
@@ -72,8 +74,6 @@ model Stage {
   tournamentMapPools Tournament[]
 }
 
-// TODO: how to check on database level only one player per team?
-
 model TournamentTeam {
   id           Int                    @id @default(autoincrement())
   name         String
@@ -87,11 +87,25 @@ model TournamentTeam {
 }
 
 model TournamentTeamMember {
-  memberId Int
-  teamId   Int
-  captain  Boolean        @default(false)
-  team     TournamentTeam @relation(fields: [teamId], references: [id])
-  member   User           @relation(fields: [memberId], references: [id])
+  memberId     Int
+  teamId       Int
+  tournamentId Int
+  captain      Boolean        @default(false)
+  team         TournamentTeam @relation(fields: [teamId], references: [id])
+  member       User           @relation(fields: [memberId], references: [id])
 
-  @@unique([memberId, teamId])
+  @@unique([memberId, tournamentId])
+}
+
+// Trust relationship is defined as user allowing another user
+// to add them to a tournament team
+// / LFG group without them having to click a link.
+model TrustRelationships {
+  trustGiverId    Int
+  trustReceiverId Int
+  trustGiver      User     @relation("trustGiver", fields: [trustGiverId], references: [id])
+  trustReceiver   User     @relation("trustReceiver", fields: [trustReceiverId], references: [id])
+  createdAt       DateTime @default(now())
+
+  @@unique([trustGiverId, trustReceiverId])
 }

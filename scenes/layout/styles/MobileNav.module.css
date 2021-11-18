@@ -7,7 +7,7 @@
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   background-image: url(/svg/background-pattern.svg);
   background-color: var(--bg-lighter);
-  z-index: 5;
+  z-index: 500;
   overflow-y: auto;
   padding-bottom: var(--s-6);
   /* TODO: same for Safari */
