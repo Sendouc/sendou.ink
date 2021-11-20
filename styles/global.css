@@ -4,6 +4,7 @@
   --border: hsl(237.3, 42.3%, 45.6%);
   --text: rgba(255, 255, 255, 0.95);
   --text-lighter: rgba(255, 255, 255, 0.55);
+  --theme-error: rgb(219, 70, 65);
   --theme: hsl(255, 66.7%, 55.3%);
   --theme-transparent: hsla(255, 66.7%, 55.3%, 0.4);
   --theme-secondary: hsl(85, 66.7%, 55.3%);
@@ -76,4 +77,71 @@ body {
 
 *:focus:not(:focus-visible) {
   outline: none !important;
+}
+
+button {
+  display: inline-flex;
+  appearance: none;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  width: auto;
+  line-height: 1.2;
+  border-radius: var(--rounded-sm);
+  font-weight: var(--bold);
+  padding-inline: var(--s-2-5);
+  padding-block: var(--s-1-5);
+  font-size: var(--fonts-sm);
+  background: var(--theme);
+  color: var(--text);
+  border: 2px solid var(--theme);
+  outline-offset: 2px;
+  cursor: pointer;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--theme);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+button.outlined {
+  background-color: transparent;
+}
+
+input {
+  height: 1rem;
+  padding: var(--s-4) var(--s-3);
+  background-color: var(--bg-lighter);
+  border-radius: var(--rounded);
+  outline: none;
+  border: none;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+input:focus-within {
+  outline: 2px solid var(--theme);
+  border-color: transparent;
+}
+
+input::placeholder {
+  color: var(--text-lighter);
+  letter-spacing: 0.5px;
+  font-weight: var(--semi-bold);
+}
+
+input.error {
+  outline: 2px solid var(--theme-error);
+  border-color: transparent;
+}
+
+label {
+  display: block;
+  font-size: var(--fonts-xs);
+  font-weight: var(--bold);
+  color: var(--text-lighter);
+  margin-block-end: var(--s-1);
 }

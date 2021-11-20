@@ -31,6 +31,7 @@
 
 .content {
   margin-block-start: var(--s-4);
+  width: min(24rem, 100%);
 }
 
 .buttonsContainer {

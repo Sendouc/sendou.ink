@@ -47,7 +47,7 @@ export function InfoBanner() {
             <div class={s.bottomRow}>
               <div class={s.infos}>
                 <div class={s.infoContainer}>
-                  <label class={s.infoLabel}>Starting time</label>
+                  <div class={s.infoLabel}>Starting time</div>
                   <div>{weekdayAndStartTime(tournament.startTime)}</div>
                 </div>
                 <div class={s.infoContainer}>
