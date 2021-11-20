@@ -9,15 +9,17 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  cursor: pointer;
 }
 
-.container:hover {
+.container:hover,
+.container:focus {
   background-color: var(--bg-lighter);
-  cursor: pointer;
 }
 
 .active {
   background-color: var(--bg-lighter);
+  cursor: auto;
 }
 
 .header {

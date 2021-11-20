@@ -79,3 +79,27 @@ function twitterToUrl(twitter: string | null) {
 function discordInviteToUrl(discordInvite: string) {
   return `https://discord.com/invite/${discordInvite}`;
 }
+
+export function createTournamentTeam({
+  userId,
+  name,
+  tournamentId,
+}: {
+  userId: number;
+  name: string;
+  tournamentId: number;
+}) {
+  return prisma.tournamentTeam.create({
+    data: {
+      name: name.trim(),
+      tournamentId,
+      members: {
+        create: {
+          memberId: userId,
+          tournamentId,
+          captain: true,
+        },
+      },
+    },
+  });
+}
