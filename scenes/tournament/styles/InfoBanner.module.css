@@ -2,8 +2,8 @@
   width: 100%;
   padding: var(--s-6);
   background: var(--background);
-  color: var(--text);
   border-radius: var(--rounded);
+  color: var(--text);
 }
 
 .topRow {
@@ -37,11 +37,11 @@
 }
 
 .tournamentName {
-  padding-inline-start: var(--s-4);
   border-color: var(--text);
   border-inline-start: 1px solid;
   font-size: var(--fonts-xl);
   font-weight: var(--extra-bold);
+  padding-inline-start: var(--s-4);
 }
 
 .bottomRow {
@@ -54,8 +54,8 @@
 .infos {
   display: flex;
   flex-wrap: wrap;
-  margin-block-start: var(--s-8);
   gap: var(--s-4);
+  margin-block-start: var(--s-8);
 }
 
 .iconButtons {
@@ -73,15 +73,15 @@
 
 .iconButton {
   display: inline-flex;
-  inline-size: 2.25rem;
-  block-size: 2.25rem;
   align-items: center;
   justify-content: center;
   padding: 0.5rem;
   border: 1px solid;
   border-color: var(--text-transparent);
+  block-size: 2.25rem;
   border-radius: 50%;
   color: inherit;
+  inline-size: 2.25rem;
   transition: background-color 0.3s;
 }
 

@@ -1,17 +1,17 @@
 .infoSquare {
   display: grid;
-  place-items: center;
-  font-weight: var(--semi-bold);
-  font-size: var(--fonts-xl);
-  background-image: url(/svg/background-pattern.svg);
   background-color: var(--bg-lighter);
+  background-image: url("/svg/background-pattern.svg");
   border-radius: var(--rounded);
+  font-size: var(--fonts-xl);
+  font-weight: var(--semi-bold);
+  place-items: center;
 }
 
 .container {
   display: grid;
-  grid-template-columns: 1fr 1fr;
   gap: 1rem;
+  grid-template-columns: 1fr 1fr;
 }
 
 .emphasizedText {
@@ -38,15 +38,15 @@
 }
 
 .modeImagesContainer {
-  display: flex;
   position: absolute;
+  display: flex;
+  padding: var(--s-1);
   backdrop-filter: blur(5px) grayscale(25%);
+  border-end-end-radius: var(--rounded);
+  border-start-start-radius: var(--rounded);
+  gap: var(--s-2);
   inset-block-start: 0;
   inset-inline-start: 0;
-  padding: var(--s-1);
-  gap: var(--s-2);
-  border-start-start-radius: var(--rounded);
-  border-end-end-radius: var(--rounded);
 }
 
 @media screen and (min-width: 480px) {

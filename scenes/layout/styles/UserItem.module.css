@@ -1,7 +1,4 @@
 .logInButton {
-  text-decoration: none;
-  font-weight: var(--bold);
-  font-size: var(--fonts-xs);
   display: flex;
   height: var(--item-size);
   align-items: center;
@@ -13,7 +10,10 @@
   border-radius: var(--rounded);
   color: inherit;
   cursor: pointer;
+  font-size: var(--fonts-xs);
+  font-weight: var(--bold);
   gap: var(--s-2);
+  text-decoration: none;
 }
 
 .logInButton > svg {
@@ -25,8 +25,8 @@
 }
 
 .avatar {
-  border-radius: var(--rounded);
   width: var(--item-size);
   min-width: var(--item-size);
   height: var(--item-size);
+  border-radius: var(--rounded);
 }

@@ -7,16 +7,16 @@
 .linksContainer {
   display: grid;
   justify-content: center;
-  place-items: center;
   gap: var(--s-10);
   grid-template-columns: repeat(2, 100px);
   padding-block: var(--s-8);
+  place-items: center;
 }
 
 .navLink {
   all: unset;
-  cursor: pointer;
   border-radius: var(--rounded);
+  cursor: pointer;
   font-size: var(--fonts-sm);
 }
 
@@ -24,9 +24,9 @@
   display: block;
   width: 1.25rem;
   height: 3px;
+  border-color: transparent;
   border-bottom: 3px solid;
   content: "";
-  border-color: transparent;
 }
 
 .navLink:hover::after {

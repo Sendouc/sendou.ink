@@ -15,18 +15,18 @@
 .searchInput {
   width: 12rem;
   height: 2rem;
+  flex-grow: 1;
   border: none;
   background-color: var(--bg-lighter);
+  color: var(---text);
   font-size: var(--fonts-sm);
   outline: none;
-  color: var(---text);
-  flex-grow: 1;
 }
 
 .searchInput::placeholder {
   color: var(--text-lighter);
-  letter-spacing: 0.5px;
   font-weight: var(--semi-bold);
+  letter-spacing: 0.5px;
 }
 
 .searchInputIcon {

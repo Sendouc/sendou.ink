@@ -1,27 +1,28 @@
 .header {
   --item-size: 3rem;
+
   position: relative;
+  z-index: 501;
   display: grid;
-  grid-template-columns: 1fr 2fr;
   align-items: center;
   padding: var(--s-4);
-  z-index: 501;
   background-color: var(--bg);
+  grid-template-columns: 1fr 2fr;
 }
 
 .logoContainer {
-  background-color: var(--bg-lighter);
-  background-image: url(/svg/background-pattern.svg);
   display: grid;
-  place-items: center;
-  padding: var(--s-1);
-  border-radius: var(--rounded);
-  justify-self: flex-start;
-  cursor: pointer;
   width: var(--item-size);
   min-width: var(--item-size);
   height: var(--item-size);
   min-height: var(--item-size);
+  padding: var(--s-1);
+  background-color: var(--bg-lighter);
+  background-image: url("/svg/background-pattern.svg");
+  border-radius: var(--rounded);
+  cursor: pointer;
+  justify-self: flex-start;
+  place-items: center;
 }
 
 .logo {
@@ -43,16 +44,16 @@
   display: none;
   justify-content: center;
   background-color: var(--bg-lighter);
-  background-image: url(/svg/background-pattern.svg);
+  background-image: url("/svg/background-pattern.svg");
 }
 
 .navItems {
-  background-color: var(--bg-lighter);
   display: inline-flex;
   justify-content: center;
+  padding: var(--s-4) var(--s-8);
+  background-color: var(--bg-lighter);
   gap: var(--s-12);
   grid-template-columns: repeat(4, 100px);
-  padding: var(--s-4) var(--s-8);
 }
 
 .navItemColumn {
@@ -64,11 +65,11 @@
 .navLink {
   display: flex;
   align-items: center;
-  gap: var(--s-2);
   color: var(--text);
-  text-decoration: none;
   font-size: var(--fonts-sm);
   font-weight: var(--bold);
+  gap: var(--s-2);
+  text-decoration: none;
   text-transform: capitalize;
   transition: 0.2s transform;
 }
@@ -78,10 +79,10 @@
 }
 
 .navGroupTitle {
-  text-transform: uppercase;
-  font-weight: var(--bold);
   color: var(--text-lighter);
   font-size: var(--fonts-xxs);
+  font-weight: var(--bold);
+  text-transform: uppercase;
 }
 
 .navIcon {
@@ -96,6 +97,7 @@
 @media screen and (min-width: 640px) {
   .header {
     --item-size: 38px;
+
     grid-template-columns: 1fr 1fr 1fr;
   }
 

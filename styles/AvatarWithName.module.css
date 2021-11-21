@@ -1,21 +1,21 @@
 .container {
   display: flex;
   align-items: center;
-  gap: var(--s-3);
   font-weight: var(--semi-bold);
+  gap: var(--s-3);
 }
 
 .avatar {
-  border-radius: var(--rounded);
   block-size: 2.5rem;
+  border-radius: var(--rounded);
+  filter: none;
   inline-size: 2.5rem;
   text-indent: -10000px;
-  filter: none;
 }
 
 .placeholder {
-  border-radius: var(--rounded);
+  background-image: url("/svg/background-pattern.svg");
   block-size: 2.5rem;
+  border-radius: var(--rounded);
   inline-size: 2.5rem;
-  background-image: url(/svg/background-pattern.svg);
 }

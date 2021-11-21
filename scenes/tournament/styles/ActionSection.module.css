@@ -1,15 +1,15 @@
 .container {
-  background-color: var(--theme);
-  padding: var(--s-4);
-  width: 100%;
-  border-radius: var(--rounded);
-  margin-block-start: var(--s-4);
-  transition: background-color 0.2s;
   z-index: 50;
   display: flex;
+  width: 100%;
   flex-direction: column;
   align-items: center;
+  padding: var(--s-4);
+  background-color: var(--theme);
+  border-radius: var(--rounded);
   cursor: pointer;
+  margin-block-start: var(--s-4);
+  transition: background-color 0.2s;
 }
 
 .container:hover,
@@ -23,15 +23,15 @@
 }
 
 .header {
-  list-style: none;
-  font-weight: var(--bold);
   font-size: var(--fonts-lg);
+  font-weight: var(--bold);
+  list-style: none;
   user-select: none;
 }
 
 .content {
-  margin-block-start: var(--s-4);
   width: min(24rem, 100%);
+  margin-block-start: var(--s-4);
 }
 
 .buttonsContainer {
@@ -43,12 +43,12 @@
 .searchInput {
   width: 12rem;
   height: 2rem;
+  flex-grow: 1;
   border: none;
   background-color: var(--bg-lighter);
+  color: var(---text);
   font-size: var(--fonts-sm);
   outline: none;
-  color: var(---text);
-  flex-grow: 1;
 }
 
 @media screen and (min-width: 768px) {
