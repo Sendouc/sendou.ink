@@ -20,6 +20,7 @@ export const tournament = createRouter()
       name: z.string(),
       tournamentId: z.number(),
     }),
+    // TODO: auth middleware
     resolve: ({ input, ctx }) =>
       createTournamentTeam({
         userId: ctx.user!.id,

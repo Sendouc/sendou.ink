@@ -69,16 +69,16 @@ export function InfoBanner() {
 }
 
 function weekdayAndStartTime(date: Date) {
-  return new Date(date).toLocaleString("en-US", {
+  return date.toLocaleString("en-US", {
     weekday: "long",
     hour: "numeric",
   });
 }
 
 function shortMonthName(date: Date) {
-  return new Date(date).toLocaleString("en-US", { month: "short" });
+  return date.toLocaleString("en-US", { month: "short" });
 }
 
 function dayNumber(date: Date) {
-  return new Date(date).toLocaleString("en-US", { day: "numeric" });
+  return date.toLocaleString("en-US", { day: "numeric" });
 }

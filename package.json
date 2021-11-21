@@ -29,6 +29,7 @@
     "passport-discord": "^0.1.4",
     "solid-app-router": "^0.1.12",
     "solid-js": "^1.2.5",
+    "superjson": "^1.8.0",
     "zod": "^3.11.6"
   },
   "devDependencies": {

@@ -1,5 +1,6 @@
 import * as trpc from "@trpc/server";
 import * as trpcExpress from "@trpc/server/adapters/express/dist/trpc-server-adapters-express.cjs";
+import superjson from "superjson";
 
 export const createContext = ({
   req,
@@ -25,5 +26,5 @@ export const createContext = ({
 type Context = trpc.inferAsyncReturnType<typeof createContext>;
 
 export function createRouter() {
-  return trpc.router<Context>();
+  return trpc.router<Context>().transformer(superjson);
 }

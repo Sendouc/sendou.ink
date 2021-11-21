@@ -24,8 +24,7 @@
   display: block;
   width: 1.25rem;
   height: 3px;
-  border-color: transparent;
-  border-bottom: 3px solid;
+  border-bottom: 3px solid transparent;
   content: "";
 }
 
