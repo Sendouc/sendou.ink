@@ -1,12 +1,12 @@
-import { NavLink, Outlet } from "solid-app-router";
+import { NavLink, Outlet, useData } from "solid-app-router";
 import { InfoBanner } from "./InfoBanner";
 import s from "../styles/TournamentPage.module.css";
-import { useTournamentData } from "../TournamentPage.data";
+import type { ITournamentData } from "../TournamentPage.data";
 import { Show } from "solid-js";
 import { ActionSection } from "./ActionSection";
 
 export default function TournamentsPage() {
-  const tournament = useTournamentData();
+  const [tournament] = useData<ITournamentData>();
 
   return (
     <div class={s.container}>

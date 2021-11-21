@@ -1,11 +1,12 @@
 import { Show } from "solid-js";
 import { DiscordIcon } from "../../../components/icons/Discord";
 import { TwitterIcon } from "../../../components/icons/Twitter";
-import { useTournamentData } from "../TournamentPage.data";
+import type { ITournamentData } from "../TournamentPage.data";
 import s from "../styles/InfoBanner.module.css";
+import { useData } from "solid-app-router";
 
 export function InfoBanner() {
-  const tournament = useTournamentData();
+  const [tournament] = useData<ITournamentData>();
 
   // TODO: skeleton
   return (

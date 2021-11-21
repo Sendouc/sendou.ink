@@ -3,6 +3,7 @@ import { DiscordIcon } from "../../../components/icons/Discord";
 import { useUser } from "../../../utils/UserContext";
 import s from "../styles/UserItem.module.css";
 
+// TODO: redirect to same page on login
 export function UserItem() {
   const user = useUser();
 

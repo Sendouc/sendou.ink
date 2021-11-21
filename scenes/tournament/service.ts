@@ -12,6 +12,7 @@ export async function findTournamentByNameForUrl({
       nameForUrl: tournamentNameForUrl.toLowerCase(),
     },
     select: {
+      id: true,
       name: true,
       description: true,
       startTime: true,
@@ -42,6 +43,7 @@ export async function findTournamentByNameForUrl({
               captain: true,
               member: {
                 select: {
+                  id: true,
                   discordAvatar: true,
                   discordName: true,
                   discordId: true,

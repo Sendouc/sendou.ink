@@ -1,11 +1,12 @@
 import { For, Show } from "solid-js";
 import { modesShort, stages } from "../../../utils/constants";
-import { useTournamentData } from "../TournamentPage.data";
+import type { ITournamentData } from "../TournamentPage.data";
 import s from "../styles/MapPoolTab.module.css";
 import type { Mode } from ".prisma/client";
+import { useData } from "solid-app-router";
 
 export function MapPoolTab() {
-  const tournament = useTournamentData(1);
+  const [tournament] = useData<ITournamentData>(1);
 
   return (
     <Show when={tournament()}>

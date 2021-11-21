@@ -14,6 +14,7 @@ export function Layout(p: { children: JSXElement }) {
     setMenuExpanded((expanded) => !expanded);
   }
 
+  // TODO: why logo wide?
   return (
     <>
       <header class={s.header}>
