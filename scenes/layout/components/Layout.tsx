@@ -14,15 +14,14 @@ export function Layout(p: { children: JSXElement }) {
     setMenuExpanded((expanded) => !expanded);
   }
 
-  // TODO: why logo wide?
   return (
     <>
       <header class={s.header}>
-        <Link href="/">
-          <div class={s.logoContainer}>
+        <div class={s.logoContainer}>
+          <Link href="/">
             <img class={s.logo} src="/img/layout/logo.webp" />
-          </div>
-        </Link>
+          </Link>
+        </div>
         <div class={s.searchContainer}>
           <SearchInput />
         </div>
