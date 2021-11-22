@@ -30,7 +30,10 @@ export function Layout(p: { children: JSXElement }) {
           <HamburgerButton isExpanded={menuExpanded()} onClick={toggleMenu} />
         </div>
       </header>
-      <MobileNav isExpanded={menuExpanded()} />
+      <MobileNav
+        isExpanded={menuExpanded()}
+        closeMenu={() => setMenuExpanded(false)}
+      />
       <nav class={s.nav}>
         <div class={s.navItems}>
           <For each={navItems}>
@@ -39,7 +42,11 @@ export function Layout(p: { children: JSXElement }) {
                 <div class={s.navGroupTitle}>{navGroup.title}</div>
                 <For each={navGroup.items}>
                   {(navItem) => (
-                    <Link class={s.navLink} href="/">
+                    <Link
+                      class={s.navLink}
+                      href={navItem}
+                      data-cy={`nav-link-${navItem}`}
+                    >
                       <img
                         src={`/img/layout/${navItem.replace(" ", "")}.webp`}
                         class={s.navIcon}

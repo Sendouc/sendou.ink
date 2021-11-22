@@ -12,6 +12,7 @@ export function HamburgerButton(p: {
       aria-label="Toggle menu visibility"
       aria-expanded={expandedString()}
       onClick={p.onClick}
+      data-cy="hamburger-button"
     >
       <svg
         width="32"

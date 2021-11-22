@@ -11,9 +11,10 @@
     "migration:apply:dev": "npx prisma migrate dev",
     "migration:apply:prod": "npx prisma migrate deploy",
     "seed": "npx prisma db seed",
-    "seed:reset": "npx prisma migrate reset",
+    "seed:reset": "npx prisma migrate reset --force",
     "lint:styles": "stylelint \"**/*.css\"",
-    "cy:open": "npx cypress open"
+    "cy:open": "npx cypress open",
+    "cy:run": "npx cypress run"
   },
   "license": "MIT",
   "dependencies": {

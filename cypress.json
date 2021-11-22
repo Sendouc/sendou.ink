@@ -1,3 +1,4 @@
 {
-  "pluginsFile": "cypress/plugins/index.cjs"
+  "pluginsFile": "cypress/plugins/index.cjs",
+  "baseUrl": "http://localhost:3000"
 }

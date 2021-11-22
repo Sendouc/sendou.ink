@@ -15,8 +15,9 @@ export function UserItem() {
           <form
             action={`${import.meta.env.VITE_BACKEND_URL}/auth/discord`}
             method="post"
+            data-cy="log-in-form"
           >
-            <button type="submit" class={s.logInButton}>
+            <button type="submit" class={s.logInButton} data-cy="log-in-button">
               <DiscordIcon /> Log in
             </button>
           </form>

@@ -4,7 +4,7 @@ import s from "../styles/MobileNav.module.css";
 import { navItems } from "../utils";
 import { SearchInput } from "./SearchInput";
 
-export function MobileNav(p: { isExpanded: boolean }) {
+export function MobileNav(p: { isExpanded: boolean; closeMenu: () => void }) {
   return (
     <div
       class={s.container}
@@ -23,7 +23,9 @@ export function MobileNav(p: { isExpanded: boolean }) {
                 {(navItem, i) => (
                   <Link
                     class={s.mobileNavLink}
-                    href="/"
+                    href={navItem}
+                    onClick={p.closeMenu}
+                    data-cy={`mobile-nav-link-${navItem}`}
                     data-order={
                       i() === 0
                         ? "first"

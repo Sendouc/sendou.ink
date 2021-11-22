@@ -23,6 +23,7 @@ export function Routes() {
         <Route path="/streams" element={() => <>streams</>} />
         <Route path="/*all" element={() => <>overview</>} />
       </Route>
+      <Route path="/links" element={() => <div>links page</div>} />
       <Route path="/" element={() => <>home!</>} />
       <Route path="/*all" element={() => <>Not found</>} />
     </SolidAppRoutes>

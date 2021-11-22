@@ -72,6 +72,7 @@ export function ActionSection() {
           {/* @ts-expect-error */}
           <form use:_formSubmit={fn}>
             <label for="team-name">Team name</label>
+            {/* TODO: auto focus when opening ActionSection */}
             <input
               name="team-name"
               id="team-name"
