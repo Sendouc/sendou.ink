@@ -12,7 +12,8 @@
     "migration:apply:prod": "npx prisma migrate deploy",
     "seed": "npx prisma db seed",
     "seed:reset": "npx prisma migrate reset",
-    "lint:styles": "stylelint \"**/*.css\""
+    "lint:styles": "stylelint \"**/*.css\"",
+    "cy:open": "npx cypress open"
   },
   "license": "MIT",
   "dependencies": {
@@ -42,9 +43,8 @@
     "@types/passport": "^1.0.7",
     "@types/passport-discord": "^0.1.5",
     "concurrently": "^6.4.0",
+    "cypress": "^9.0.0",
     "faker": "^5.5.3",
-    "just-shuffle": "^4.0.1",
-    "node-fetch": "^3.1.0",
     "prisma": "^3.5.0",
     "stylelint": "^14.1.0",
     "stylelint-config-idiomatic-order": "^8.1.0",

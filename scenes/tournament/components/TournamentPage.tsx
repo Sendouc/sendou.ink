@@ -14,6 +14,7 @@ export default function TournamentsPage() {
       <ActionSection />
       <Show when={tournament()}>
         {(tournament) => (
+          // TODO: don't scroll to top on click
           <div style={{ "--tabs-count": 5 }} class={s.linksContainer}>
             <NavLink class={s.navLink} href="overview">
               Overview

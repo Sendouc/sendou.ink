@@ -2,9 +2,12 @@ import pkg from "@prisma/client";
 import { stages as stagesList } from "../utils/constants";
 const { PrismaClient } = pkg;
 const prisma = new PrismaClient();
-import fetch from "node-fetch";
-import shuffle from "just-shuffle";
 import faker from "faker";
+
+faker.seed(5800);
+
+const randomOneDigitNumber = (includeZero?: boolean) =>
+  faker.datatype.number(10) + (includeZero ? 0 : 1);
 
 async function main() {
   const userCreated = await user();
@@ -36,35 +39,52 @@ async function user() {
   });
 }
 
-async function users() {
-  const fetched = (await (
-    await fetch("https://sendou.ink/api/users")
-  ).json()) as {
-    id: number;
-    username: string;
-    discriminator: string;
-    discordAvatar?: string;
-    discordId: string;
-    profile?: { twitterName?: string };
-  }[];
+// async function usersFromSendouInk() {
+//   const fetched = (await (
+//     await fetch("https://sendou.ink/api/users")
+//   ).json()) as {
+//     id: number;
+//     username: string;
+//     discriminator: string;
+//     discordAvatar?: string;
+//     discordId: string;
+//     profile?: { twitterName?: string };
+//   }[];
 
+//   return prisma.user.createMany({
+//     data: fetched
+//       .filter((u) => u.discordId !== "79237403620945920")
+//       .map((u) => ({
+//         discordDiscriminator: u.discriminator,
+//         discordId: u.discordId,
+//         discordAvatar: u.discordAvatar,
+//         discordRefreshToken: "none",
+//         discordName: u.username,
+//         twitter: u.profile?.twitterName,
+//       })),
+//     skipDuplicates: true,
+//   });
+// }
+
+async function users() {
   return prisma.user.createMany({
-    data: fetched
-      .filter((u) => u.discordId !== "79237403620945920")
-      .map((u) => ({
-        discordDiscriminator: u.discriminator,
-        discordId: u.discordId,
-        discordAvatar: u.discordAvatar,
-        discordRefreshToken: "none",
-        discordName: u.username,
-        twitter: u.profile?.twitterName,
-      })),
-    skipDuplicates: true,
+    data: new Array(100).fill(null).map(() => ({
+      discordId: new Array(17)
+        .fill(null)
+        .map((_, i) => String(randomOneDigitNumber(i !== 0)))
+        .join(""),
+      discordDiscriminator: new Array(4)
+        .fill(null)
+        .map(() => String(randomOneDigitNumber(true)))
+        .join(""),
+      discordName: faker.internet.userName(),
+      discordRefreshToken: "none",
+    })),
   });
 }
 
 async function tournamentTeams(tournamentId: number, users: number[]) {
-  const randomIds = shuffle(users);
+  const randomIds = faker.helpers.shuffle(users);
   for (let index = 0; index < 24; index++) {
     const team = await prisma.tournamentTeam.create({
       data: {
