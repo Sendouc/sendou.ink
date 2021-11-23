@@ -1,11 +1,11 @@
 import { Routes as SolidAppRoutes, Route } from "solid-app-router";
 import { lazy } from "solid-js";
-import { MapPoolTab } from "./scenes/tournament/components/MapPoolTab";
-import { TeamsTab } from "./scenes/tournament/components/TeamsTab";
-import TournamentData from "./scenes/tournament/TournamentPage.data";
+import { MapPoolTab } from "./old/scenes/tournament/components/MapPoolTab";
+import { TeamsTab } from "./old/scenes/tournament/components/TeamsTab";
+import TournamentData from "./old/scenes/tournament/TournamentPage.data";
 
 const TournamentsPage = lazy(
-  () => import("./scenes/tournament/components/TournamentPage")
+  () => import("./old/scenes/tournament/components/TournamentPage")
 );
 
 export function Routes() {

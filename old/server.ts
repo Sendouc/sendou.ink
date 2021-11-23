@@ -7,11 +7,11 @@ import session from "express-session";
 import cookieParser from "cookie-parser";
 import passport from "passport";
 import { Strategy as DiscordStrategy } from "passport-discord";
-import { tournament as tournamentRouter } from "./scenes/tournament/router";
-import { layout as layoutRouter } from "./scenes/layout/router";
-import { createContext, createRouter } from "./utils/trpc-server";
+import { tournament as tournamentRouter } from "./old/scenes/tournament/router";
+import { layout as layoutRouter } from "./old/scenes/layout/router";
+import { createContext, createRouter } from "./old/utils/trpc-server";
 import * as trpcExpress from "@trpc/server/adapters/express/dist/trpc-server-adapters-express.cjs";
-import { upsertUser } from "./scenes/layout/service";
+import { upsertUser } from "./old/scenes/layout/service";
 
 const PORT = 3001;
 

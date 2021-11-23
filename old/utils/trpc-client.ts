@@ -1,6 +1,6 @@
 import { createTRPCClient } from "@trpc/client";
 import type { inferProcedureOutput } from "@trpc/server";
-import type { AppRouter } from "../server";
+import type { AppRouter } from "../../server";
 import superjson from "superjson";
 
 // TODO: transformer superjson

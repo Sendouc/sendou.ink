@@ -1,4 +1,4 @@
-import prisma from "../../prisma/client";
+import prisma from "../../../prisma/client";
 import type { Strategy as DiscordStrategy } from "passport-discord";
 
 export async function upsertUser({
