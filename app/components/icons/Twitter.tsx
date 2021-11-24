@@ -1,10 +1,10 @@
-export function TwitterIcon(p: { class?: string }) {
+export function TwitterIcon({ className }: { className?: string }) {
   return (
     <svg
-      class={p.class}
+      className={className}
       stroke="currentColor"
       fill="currentColor"
-      stroke-width="0"
+      strokeWidth="0"
       version="1.1"
       viewBox="0 0 16 16"
       xmlns="http://www.w3.org/2000/svg"

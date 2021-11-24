@@ -1,17 +1,16 @@
-import s from "../styles/HamburgerButton.module.css";
+import classNames from "classnames";
 
-export function HamburgerButton(p: {
+export function HamburgerButton({
+  onClick,
+  expanded,
+}: {
   onClick: () => void;
-  isExpanded: boolean;
+  expanded: boolean;
 }) {
-  const expandedString = () => (p.isExpanded ? "true" : "false");
-
   return (
     <button
-      class={s.transformingBurger}
-      aria-label="Toggle menu visibility"
-      aria-expanded={expandedString()}
-      onClick={p.onClick}
+      className="layout__burger"
+      onClick={onClick}
       data-cy="hamburger-button"
     >
       <svg
@@ -22,34 +21,37 @@ export function HamburgerButton(p: {
         xmlns="http://www.w3.org/2000/svg"
       >
         <rect
-          class={s.topLine}
+          className={classNames("layout__burger__top-line", {
+            expanded,
+          })}
           x="6"
           y="9"
           width="20"
           height="2"
           rx="1"
           fill="currentColor"
-          data-expanded={expandedString()}
         ></rect>
         <rect
-          class={s.middleLine}
+          className={classNames("layout__burger__middle-line", {
+            expanded,
+          })}
           x="6"
           y="15"
           width="20"
           height="2"
           rx="1"
           fill="currentColor"
-          data-expanded={expandedString()}
         ></rect>
         <rect
-          class={s.bottomLine}
+          className={classNames("layout__burger__bottom-line", {
+            expanded,
+          })}
           x="6"
           y="21"
           width="20"
           height="2"
           rx="1"
           fill="currentColor"
-          data-expanded={expandedString()}
         ></rect>
       </svg>
     </button>

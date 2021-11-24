@@ -1,10 +1,10 @@
-export function DiscordIcon(p: { class?: string }) {
+export function DiscordIcon({ className }: { className?: string }) {
   return (
     <svg
-      class={p.class}
+      className={className}
       stroke="currentColor"
       fill="currentColor"
-      stroke-width="0"
+      strokeWidth="0"
       viewBox="0 0 640 512"
       xmlns="http://www.w3.org/2000/svg"
     >
