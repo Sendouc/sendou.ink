@@ -16,3 +16,5 @@ export const navItems = [
     items: ["badges", "links"],
   },
 ];
+
+export const makeTitle = (endOfTitle: string) => `sendou.ink | ${endOfTitle}`;
