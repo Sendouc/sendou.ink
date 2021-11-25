@@ -21,8 +21,8 @@
   },
   "dependencies": {
     "@prisma/client": "^3.5.0",
-    "@remix-run/express": "^1.0.4",
-    "@remix-run/react": "^1.0.4",
+    "@remix-run/express": "^1.0.5",
+    "@remix-run/react": "^1.0.5",
     "classnames": "^2.3.1",
     "compression": "^1.7.4",
     "cross-env": "^7.0.3",
@@ -30,18 +30,18 @@
     "morgan": "^1.10.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "remix": "^1.0.4",
+    "remix": "^1.0.5",
     "tiny-invariant": "^1.2.0"
   },
   "devDependencies": {
-    "@remix-run/dev": "^1.0.4",
-    "@types/react": "^17.0.24",
-    "@types/react-dom": "^17.0.9",
+    "@remix-run/dev": "^1.0.5",
+    "@types/react": "^17.0.37",
+    "@types/react-dom": "^17.0.11",
     "concurrently": "^6.4.0",
     "faker": "^5.5.3",
     "prisma": "^3.5.0",
     "ts-node": "^10.4.0",
-    "typescript": "^4.1.2"
+    "typescript": "^4.5.2"
   },
   "engines": {
     "node": ">=14"
