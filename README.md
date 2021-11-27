@@ -1,3 +1,5 @@
+Note: This is the WIP Splatoon 3 version of the site. To see the current live version checkout the [main branch](https://github.com/Sendouc/sendou.ink/tree/main)
+
 ## Running locally
 
 Prerequisites: [Node.js 16.13](https://nodejs.org/en/)
