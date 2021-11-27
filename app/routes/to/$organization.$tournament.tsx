@@ -51,10 +51,8 @@ export default function TournamentPage() {
   const data = useLoaderData<FindTournamentByNameForUrlI>();
 
   return (
-    // <div className={s.container}>
     <div className="tournament__container">
       <InfoBanner />
-      {/* <ActionSection /> */}
       <div
         style={{ "--tabs-count": 5 } as Record<string, number>}
         className="tournament__links-container"
