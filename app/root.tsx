@@ -26,7 +26,6 @@ export const links: LinksFunction = () => {
 
 export const loader: LoaderFunction = ({ context }) => {
   const { user } = context;
-  console.log({ user });
 
   return user ?? null;
 };
