@@ -3,6 +3,7 @@ import express from "express";
 import compression from "compression";
 import morgan from "morgan";
 import { createRequestHandler } from "@remix-run/express";
+import { setUpAuth } from "./auth";
 
 const MODE = process.env.NODE_ENV;
 const BUILD_DIR = path.join(process.cwd(), "server/build");
@@ -17,14 +18,32 @@ app.use(express.static("public", { maxAge: "1h" }));
 app.use(express.static("public/build", { immutable: true, maxAge: "1y" }));
 
 app.use(morgan("tiny"));
+
+try {
+  setUpAuth(app);
+} catch (err) {
+  console.error(err);
+}
+
+function userToContext(req: Express.Request) {
+  return { user: req.user };
+}
+
 app.all(
   "*",
   MODE === "production"
-    ? createRequestHandler({ build: require("./build") })
+    ? createRequestHandler({
+        build: require("./build"),
+        getLoadContext: userToContext,
+      })
     : (req, res, next) => {
         purgeRequireCache();
         const build = require("./build");
-        return createRequestHandler({ build, mode: MODE })(req, res, next);
+        return createRequestHandler({
+          build,
+          mode: MODE,
+          getLoadContext: userToContext,
+        })(req, res, next);
       }
 );
 

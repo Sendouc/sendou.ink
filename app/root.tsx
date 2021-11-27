@@ -7,8 +7,9 @@ import {
   Scripts,
   ScrollRestoration,
   useCatch,
+  useLoaderData,
 } from "remix";
-import type { LinksFunction } from "remix";
+import type { LinksFunction, LoaderFunction } from "remix";
 
 import normalizeStylesUrl from "~/styles/normalize.css";
 import globalStylesUrl from "~/styles/global.css";
@@ -23,12 +24,33 @@ export const links: LinksFunction = () => {
   ];
 };
 
+export const loader: LoaderFunction = ({ context }) => {
+  const { user } = context;
+  console.log({ user });
+
+  return user ?? null;
+};
+
+type LoggedInUser = {
+  id: number;
+  discordId: string;
+  discordAvatar: string;
+} | null;
+
+const UserContext = React.createContext<LoggedInUser>(null);
+
+export const useUserContext = () => React.useContext<LoggedInUser>(UserContext);
+
 export default function App() {
+  const data = useLoaderData();
+
   return (
     <Document>
-      <Layout>
-        <Outlet />
-      </Layout>
+      <UserContext.Provider value={data}>
+        <Layout>
+          <Outlet />
+        </Layout>
+      </UserContext.Provider>
     </Document>
   );
 }

@@ -1,19 +1,20 @@
+import { useUserContext } from "~/root";
 import { DiscordIcon } from "../icons/Discord";
 
 // TODO: redirect to same page on login
 export function UserItem() {
-  const user = null;
+  const user = useUserContext();
 
   if (user)
     return (
       <img
         className="layout__avatar"
-        src={`https://cdn.discordapp.com/avatars/discordId/discordAvatar.png?size=80`}
+        src={`https://cdn.discordapp.com/avatars/${user.discordId}/${user.discordAvatar}.png?size=80`}
       />
     );
 
   return (
-    <form action="/" method="post" data-cy="log-in-form">
+    <form action="/auth/discord" method="post" data-cy="log-in-form">
       <button
         type="submit"
         className="layout__log-in-button"
