@@ -15,7 +15,7 @@
     "migration:apply:prod": "npx prisma migrate deploy",
     "seed": "npx prisma db seed",
     "seed:reset": "npx prisma migrate reset --force",
-    "lint:styles": "stylelint \"**/*.css\"",
+    "lint:styles": "stylelint \"app/styles/**/*.css\"",
     "cy:open": "npx cypress open",
     "cy:run": "npx cypress run"
   },
@@ -40,6 +40,11 @@
     "concurrently": "^6.4.0",
     "faker": "^5.5.3",
     "prisma": "^3.5.0",
+    "stylelint": "^14.1.0",
+    "stylelint-config-idiomatic-order": "^8.1.0",
+    "stylelint-config-prettier": "^9.0.3",
+    "stylelint-config-standard": "^24.0.0",
+    "stylelint-order": "^5.0.0",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.2"
   },

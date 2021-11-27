@@ -90,6 +90,7 @@
 .info-banner__bottom-row {
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: space-between;
   gap: var(--s-4);
 }
@@ -118,18 +119,32 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.5rem;
+  padding: var(--s-2);
   border: 1px solid;
   border-color: var(--text-transparent);
   block-size: 2.25rem;
   border-radius: 50%;
   color: inherit;
   inline-size: 2.25rem;
-  transition: background-color 0.3s;
 }
 
 .info-banner__icon-button:active {
   transform: translateY(1px);
+}
+
+.info-banner__action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid;
+  border-color: var(--text-transparent);
+  border-radius: var(--rounded);
+  color: inherit;
+  font-size: var(--fonts-sm);
+  font-weight: var(--bold);
+  padding-block: var(--s-2);
+  padding-inline: var(--s-4);
+  text-decoration: none;
 }
 
 @media screen and (min-width: 480px) {

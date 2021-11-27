@@ -1,6 +1,12 @@
 // TODO: 404 page that shows other tournaments by the organization
 
-import { MetaFunction, LoaderFunction, LinksFunction, NavLink } from "remix";
+import {
+  MetaFunction,
+  LoaderFunction,
+  LinksFunction,
+  NavLink,
+  Link,
+} from "remix";
 import { useLoaderData, Outlet } from "remix";
 import invariant from "tiny-invariant";
 import { DiscordIcon } from "~/components/icons/Discord";
@@ -141,6 +147,9 @@ export function InfoBanner() {
               <div>{data.organizer.name}</div>
             </div>
           </div>
+          <Link to="register" className="info-banner__action-button">
+            Register
+          </Link>
         </div>
       </div>
     </>

@@ -13,7 +13,7 @@
       }
     ],
     "selector-class-pattern": [
-      "[a-zA-Z]+"
+      "[a-z-_]+"
     ]
   }
 }
