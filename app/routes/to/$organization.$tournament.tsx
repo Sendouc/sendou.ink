@@ -15,7 +15,7 @@ import { makeTitle } from "~/utils";
 import {
   findTournamentByNameForUrl,
   FindTournamentByNameForUrlI,
-} from "../../services/tournament";
+} from "~/services/tournament";
 import tournamentStylesUrl from "../../styles/tournament.css";
 
 export const links: LinksFunction = () => {

@@ -1,9 +1,9 @@
 import stylesUrl from "~/styles/map-pool.css";
 import type { Mode } from ".prisma/client";
 import classNames from "classnames";
-import { modesShort, stages } from "~/utils";
+import { modesShort, stages } from "~/constants";
 import { LinksFunction, useMatches } from "remix";
-import { FindTournamentByNameForUrlI } from "../../../services/tournament";
+import { FindTournamentByNameForUrlI } from "~/services/tournament";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: stylesUrl }];
