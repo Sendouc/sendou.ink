@@ -15,7 +15,7 @@ import globalStylesUrl from "~/styles/global.css";
 import layoutStylesUrl from "~/styles/layout.css";
 import { Layout } from "./components/Layout";
 
-export let links: LinksFunction = () => {
+export const links: LinksFunction = () => {
   return [
     { rel: "stylesheet", href: normalizeStylesUrl },
     { rel: "stylesheet", href: globalStylesUrl },
@@ -60,7 +60,7 @@ function Document({
 }
 
 export function CatchBoundary() {
-  let caught = useCatch();
+  const caught = useCatch();
 
   let message;
   switch (caught.status) {

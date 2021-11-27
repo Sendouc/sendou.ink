@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { navItems } from "../../utils";
 import { HamburgerButton } from "./HamburgerButton";
 import { MobileNav } from "./MobileNav";
 import { SearchInput } from "./SearchInput";
 import { UserItem } from "./UserItem";
 import { Link } from "remix";
+import { navItems } from "~/constants";
 
 export function Layout({ children }: { children: React.ReactElement }) {
   const [menuExpanded, setMenuExpanded] = useState(false);
