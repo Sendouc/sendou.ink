@@ -1,5 +1,5 @@
 import { useMatches, LinksFunction } from "remix";
-import { FindTournamentByNameForUrlI } from "../../../../services/tournament";
+import { FindTournamentByNameForUrlI } from "../../../services/tournament";
 import stylesUrl from "~/styles/teams.css";
 import { Fragment } from "react";
 

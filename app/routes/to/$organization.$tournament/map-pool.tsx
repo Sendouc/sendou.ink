@@ -3,7 +3,7 @@ import type { Mode } from ".prisma/client";
 import classNames from "classnames";
 import { modesShort, stages } from "~/utils";
 import { LinksFunction, useMatches } from "remix";
-import { FindTournamentByNameForUrlI } from "../../../../services/tournament";
+import { FindTournamentByNameForUrlI } from "../../../services/tournament";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: stylesUrl }];

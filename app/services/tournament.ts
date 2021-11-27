@@ -1,7 +1,7 @@
 import { Prisma } from ".prisma/client";
 import { json } from "remix";
 import { Serialized } from "~/utils";
-import prisma from "../prisma/client";
+import prisma from "../../prisma/client";
 
 export type FindTournamentByNameForUrlI = Serialized<
   Prisma.PromiseReturnType<typeof findTournamentByNameForUrl>
