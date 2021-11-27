@@ -6,7 +6,7 @@ import { UserItem } from "./UserItem";
 import { Link } from "remix";
 import { navItems } from "~/constants";
 
-export function Layout({ children }: { children: React.ReactElement }) {
+export function Layout({ children }: { children: React.ReactNode }) {
   const [menuExpanded, setMenuExpanded] = useState(false);
 
   return (

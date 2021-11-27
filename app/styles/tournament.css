@@ -147,6 +147,10 @@
   text-decoration: none;
 }
 
+.info-banner__action-button:active {
+  transform: translateY(1px);
+}
+
 @media screen and (min-width: 480px) {
   .tournament__links-container {
     grid-template-columns: repeat(3, 100px);

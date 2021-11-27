@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { Fragment } from "react";
 import { Link } from "remix";
-import { navItems } from "../../utils";
+import { navItems } from "~/constants";
 import { SearchInput } from "./SearchInput";
 
 export function MobileNav({
