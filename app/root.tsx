@@ -33,20 +33,12 @@ export const loader: LoaderFunction = ({ context }) => {
 
 export let unstable_shouldReload = () => false;
 
-const UserContext = React.createContext<LoggedInUser>(null);
-
-export const useUserContext = () => React.useContext<LoggedInUser>(UserContext);
-
 export default function App() {
-  const data = useLoaderData();
-
   return (
     <Document>
-      <UserContext.Provider value={data}>
-        <Layout>
-          <Outlet />
-        </Layout>
-      </UserContext.Provider>
+      <Layout>
+        <Outlet />
+      </Layout>
     </Document>
   );
 }

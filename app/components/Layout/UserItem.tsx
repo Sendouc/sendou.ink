@@ -1,9 +1,9 @@
-import { useUserContext } from "~/root";
+import { useUser } from "~/utils";
 import { DiscordIcon } from "../icons/Discord";
 
 // TODO: redirect to same page on login
 export function UserItem() {
-  const user = useUserContext();
+  const user = useUser();
 
   if (user)
     return (

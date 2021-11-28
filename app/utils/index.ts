@@ -1,4 +1,4 @@
-import { json } from "remix";
+import { json, useMatches } from "remix";
 
 export const makeTitle = (endOfTitle: string) => `sendou.ink | ${endOfTitle}`;
 
@@ -17,6 +17,12 @@ export type LoggedInUser = {
   discordId: string;
   discordAvatar: string;
 } | null;
+
+export const useUser = () => {
+  const [root] = useMatches();
+
+  return root.data as LoggedInUser;
+};
 
 export type Serialized<T> = {
   [P in keyof T]: T[P] extends Date ? string : Serialized<T[P]>;
