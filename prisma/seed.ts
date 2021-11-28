@@ -1,6 +1,5 @@
-import pkg from "@prisma/client";
-import { stages as stagesList } from "../old/utils/constants";
-const { PrismaClient } = pkg;
+import { PrismaClient } from "@prisma/client";
+import { stages as stagesList } from "../app/constants";
 const prisma = new PrismaClient();
 import faker from "faker";
 
