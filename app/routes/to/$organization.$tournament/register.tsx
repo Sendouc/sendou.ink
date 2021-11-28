@@ -5,6 +5,10 @@ import {
   LinksFunction,
   ActionFunction,
   useMatches,
+  useTransition,
+  useNavigate,
+  useLocation,
+  useActionData,
 } from "remix";
 import invariant from "tiny-invariant";
 import {
@@ -12,6 +16,8 @@ import {
   FindTournamentByNameForUrlI,
 } from "~/services/tournament";
 import { requireUser } from "~/utils";
+import { Prisma } from ".prisma/client";
+import ErrorMessage from "~/components/ErrorMessage";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -20,10 +26,20 @@ export const links: LinksFunction = () => {
 const TEAM_NAME_MIN_LENGTH = 2;
 const TEAM_NAME_MAX_LENGTH = 40;
 
-export const action: ActionFunction = async ({ request, context }) => {
+type ActionData = {
+  fieldErrors?: { teamName?: string | undefined };
+  fields?: {
+    teamName: string;
+  };
+};
+
+export const action: ActionFunction = async ({
+  request,
+  context,
+}): Promise<Response | ActionData> => {
   const formData = await request.formData();
-  const teamName = formData.get("team-name");
-  const tournamentId = Number(formData.get("tournament-id"));
+  const teamName = formData.get("teamName");
+  const tournamentId = Number(formData.get("tournamentId"));
   invariant(typeof teamName === "string", "Invalid type for team name.");
   invariant(
     typeof tournamentId === "number",
@@ -43,11 +59,23 @@ export const action: ActionFunction = async ({ request, context }) => {
 
   // TODO: validate can register for tournament
 
-  await createTournamentTeam({
-    teamName,
-    tournamentId,
-    userId: user.id,
-  });
+  try {
+    await createTournamentTeam({
+      teamName,
+      tournamentId,
+      userId: user.id,
+    });
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === "P2002" && e.message.includes("`name`")) {
+        return {
+          fieldErrors: { teamName: "Team name already taken." },
+          fields: { teamName },
+        };
+      }
+    }
+    throw e;
+  }
 
   // TODO: redirect to add players to page
   return redirect("/");
@@ -56,7 +84,11 @@ export const action: ActionFunction = async ({ request, context }) => {
 // TODO: redirect if not logged in
 
 export default function RegisterPage() {
+  const actionData = useActionData<ActionData | undefined>();
+  const transition = useTransition();
   const [, parentRoute] = useMatches();
+  const navigate = useNavigate();
+  const location = useLocation();
   const { id } = parentRoute.data as FindTournamentByNameForUrlI;
 
   return (
@@ -64,22 +96,33 @@ export default function RegisterPage() {
       <h2 className="tournament__register__header">Register now</h2>
       <div className="tournament__register__content">
         <Form method="post">
-          <label htmlFor="team-name">Team name</label>
-          <input type="hidden" name="tournament-id" value={id} />
-          <input
-            name="team-name"
-            id="team-name"
-            required
-            minLength={TEAM_NAME_MIN_LENGTH}
-            maxLength={TEAM_NAME_MAX_LENGTH}
-          />
-          {/* <ErrorMessage error={errors["team-name"]} /> */}
-          <div className="tournament__register__buttons-container">
-            <button type="submit">Submit</button>
-            <button className="outlined" type="button">
-              Cancel
-            </button>
-          </div>
+          <fieldset disabled={transition.state !== "idle"}>
+            <label htmlFor="teamName">Team name</label>
+            <input type="hidden" name="tournamentId" value={id} />
+            <input
+              name="teamName"
+              id="teamName"
+              defaultValue={actionData?.fields?.teamName}
+              required
+              minLength={TEAM_NAME_MIN_LENGTH}
+              maxLength={TEAM_NAME_MAX_LENGTH}
+            />
+            <ErrorMessage errorMsg={actionData?.fieldErrors?.teamName} />
+            <div className="tournament__register__buttons-container">
+              <button
+                className="outlined"
+                type="button"
+                onClick={() =>
+                  navigate(location.pathname.replace("/register", ""))
+                }
+              >
+                Cancel
+              </button>
+              <button type="submit">
+                {transition.state === "idle" ? "Submit" : "Submitting..."}
+              </button>
+            </div>
+          </fieldset>
         </Form>
       </div>
     </div>

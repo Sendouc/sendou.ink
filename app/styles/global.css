@@ -133,10 +133,26 @@ input:not(.plain).error {
   outline: 2px solid var(--theme-error);
 }
 
+input:user-invalid {
+  border-color: transparent;
+  outline: 2px solid var(--theme-error);
+}
+
 label {
   display: block;
   color: var(--text-lighter);
   font-size: var(--fonts-xs);
   font-weight: var(--bold);
   margin-block-end: var(--s-1);
+}
+
+fieldset {
+  all: unset;
+}
+
+.form-validation-error {
+  color: var(--theme-error);
+  font-size: var(--fonts-xs);
+  font-weight: var(--bold);
+  margin-block-start: var(--s-1);
 }

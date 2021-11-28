@@ -1,5 +1,5 @@
-import prisma from "../../prisma/client";
 import type { Strategy as DiscordStrategy } from "passport-discord";
+import { db } from "../utils/db.server";
 
 export async function upsertUser({
   loggedInUser,
@@ -8,7 +8,7 @@ export async function upsertUser({
   loggedInUser: DiscordStrategy.Profile;
   refreshToken: string;
 }) {
-  return prisma.user.upsert({
+  return db.user.upsert({
     create: {
       discordId: loggedInUser.id,
       discordName: loggedInUser.username,

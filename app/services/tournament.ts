@@ -1,7 +1,7 @@
 import { Prisma } from ".prisma/client";
 import { json } from "remix";
 import { Serialized } from "~/utils";
-import prisma from "../../prisma/client";
+import { db } from "~/utils/db.server";
 
 export type FindTournamentByNameForUrlI = Serialized<
   Prisma.PromiseReturnType<typeof findTournamentByNameForUrl>
@@ -14,7 +14,7 @@ export async function findTournamentByNameForUrl({
   organizationNameForUrl: string;
   tournamentNameForUrl: string;
 }) {
-  const tournaments = await prisma.tournament.findMany({
+  const tournaments = await db.tournament.findMany({
     where: {
       nameForUrl: tournamentNameForUrl.toLowerCase(),
     },
@@ -98,7 +98,7 @@ export function createTournamentTeam({
   teamName: string;
   tournamentId: number;
 }) {
-  return prisma.tournamentTeam.create({
+  return db.tournamentTeam.create({
     data: {
       name: teamName.trim(),
       tournamentId,
