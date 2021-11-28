@@ -91,16 +91,16 @@ function discordInviteToUrl(discordInvite: string) {
 
 export function createTournamentTeam({
   userId,
-  name,
+  teamName,
   tournamentId,
 }: {
   userId: number;
-  name: string;
+  teamName: string;
   tournamentId: number;
 }) {
   return prisma.tournamentTeam.create({
     data: {
-      name: name.trim(),
+      name: teamName.trim(),
       tournamentId,
       members: {
         create: {

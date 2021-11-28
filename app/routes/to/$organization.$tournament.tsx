@@ -7,7 +7,7 @@ import {
   NavLink,
   Link,
 } from "remix";
-import { useLoaderData, Outlet } from "remix";
+import { useLoaderData, Outlet, useLocation } from "remix";
 import invariant from "tiny-invariant";
 import { DiscordIcon } from "~/components/icons/Discord";
 import { TwitterIcon } from "~/components/icons/Twitter";
@@ -49,30 +49,35 @@ export const meta: MetaFunction = (props) => {
 
 export default function TournamentPage() {
   const data = useLoaderData<FindTournamentByNameForUrlI>();
+  const location = useLocation();
+
+  const displayNavLinks = !location.pathname.endsWith("register");
 
   return (
     <div className="tournament__container">
       <InfoBanner />
-      <div
-        style={{ "--tabs-count": 5 } as Record<string, number>}
-        className="tournament__links-container"
-      >
-        <NavLink className="tournament__nav-link" to="overview">
-          Overview
-        </NavLink>
-        <NavLink className="tournament__nav-link" to="map-pool">
-          Map Pool
-        </NavLink>
-        <NavLink className="tournament__nav-link" to="bracket">
-          Bracket
-        </NavLink>
-        <NavLink className="tournament__nav-link" to="teams">
-          Teams ({data.teams.length})
-        </NavLink>
-        <NavLink className="tournament__nav-link" to="streams">
-          Streams (4)
-        </NavLink>
-      </div>
+      {displayNavLinks && (
+        <div
+          style={{ "--tabs-count": 5 } as Record<string, number>}
+          className="tournament__links-container"
+        >
+          <NavLink className="tournament__nav-link" to="overview">
+            Overview
+          </NavLink>
+          <NavLink className="tournament__nav-link" to="map-pool">
+            Map Pool
+          </NavLink>
+          <NavLink className="tournament__nav-link" to="bracket">
+            Bracket
+          </NavLink>
+          <NavLink className="tournament__nav-link" to="teams">
+            Teams ({data.teams.length})
+          </NavLink>
+          <NavLink className="tournament__nav-link" to="streams">
+            Streams (4)
+          </NavLink>
+        </div>
+      )}
       <Outlet />
     </div>
   );

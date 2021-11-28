@@ -1,0 +1,22 @@
+.tournament__register__container {
+  padding-block-start: var(--s-4);
+}
+
+.tournament__register__header {
+  margin-top: 0;
+  font-size: var(--fonts-lg);
+  font-weight: var(--bold);
+  list-style: none;
+  user-select: none;
+}
+
+.tournament__register__content {
+  width: min(24rem, 100%);
+  margin-block-start: var(--s-4);
+}
+
+.tournament__register__buttons-container {
+  display: flex;
+  gap: var(--s-2);
+  margin-block-start: var(--s-6);
+}

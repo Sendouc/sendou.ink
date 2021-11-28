@@ -15,6 +15,7 @@ import normalizeStylesUrl from "~/styles/normalize.css";
 import globalStylesUrl from "~/styles/global.css";
 import layoutStylesUrl from "~/styles/layout.css";
 import { Layout } from "./components/Layout";
+import type { LoggedInUser } from "./utils";
 
 export const links: LinksFunction = () => {
   return [
@@ -30,11 +31,7 @@ export const loader: LoaderFunction = ({ context }) => {
   return user ?? null;
 };
 
-type LoggedInUser = {
-  id: number;
-  discordId: string;
-  discordAvatar: string;
-} | null;
+export let unstable_shouldReload = () => false;
 
 const UserContext = React.createContext<LoggedInUser>(null);
 

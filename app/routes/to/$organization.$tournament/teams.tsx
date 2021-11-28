@@ -1,10 +1,10 @@
 import { useMatches, LinksFunction } from "remix";
 import type { FindTournamentByNameForUrlI } from "~/services/tournament";
-import stylesUrl from "~/styles/teams.css";
+import styles from "~/styles/tournament-teams.css";
 import { Fragment } from "react";
 
 export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: stylesUrl }];
+  return [{ rel: "stylesheet", href: styles }];
 };
 
 export default function TeamsTab() {
