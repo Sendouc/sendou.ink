@@ -3,22 +3,37 @@ import { stages as stagesList } from "../app/constants";
 const prisma = new PrismaClient();
 import faker from "faker";
 
-faker.seed(5800);
+const FAKER_SEED = 5800;
 
 const randomOneDigitNumber = (includeZero?: boolean) =>
   faker.datatype.number(10) + (includeZero ? 0 : 1);
 
 async function main() {
+  faker.seed(FAKER_SEED);
   const userCreated = await user();
+
+  faker.seed(FAKER_SEED);
   await users();
+
+  faker.seed(FAKER_SEED);
   const organization = await organizations(userCreated.id);
+
+  faker.seed(FAKER_SEED);
   const tournament = await tournaments(organization.id);
+
+  faker.seed(FAKER_SEED);
   const usersCreated = await prisma.user.findMany({});
+
+  faker.seed(FAKER_SEED);
   await tournamentTeams(
     tournament.id,
     usersCreated.map((u) => u.id)
   );
+
+  faker.seed(FAKER_SEED);
   await stages();
+
+  faker.seed(FAKER_SEED);
   await tournamentAddMaps(tournament.id);
 }
 

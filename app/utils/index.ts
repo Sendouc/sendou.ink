@@ -1,6 +1,7 @@
 import { json, useMatches } from "remix";
 
-export const makeTitle = (endOfTitle: string) => `sendou.ink | ${endOfTitle}`;
+export const makeTitle = (endOfTitle?: string) =>
+  endOfTitle ? `sendou.ink | ${endOfTitle}` : "sendou.ink";
 
 /** Get logged in user from context. Throws with 401 error if no user found. */
 export const requireUser = (ctx: any) => {

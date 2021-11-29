@@ -26,6 +26,14 @@ try {
 }
 
 function userToContext(req: Express.Request) {
+  if (process.env.NODE_ENV === "development") {
+    // @ts-expect-error
+    const mockedUser = req.headers["mock-auth"];
+    if (mockedUser) {
+      console.log(mockedUser);
+      return { user: JSON.parse(mockedUser) };
+    }
+  }
   return { user: req.user };
 }
 

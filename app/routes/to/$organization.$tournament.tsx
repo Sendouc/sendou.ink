@@ -42,10 +42,10 @@ export const loader: LoaderFunction = ({ params, context }) => {
 };
 
 export const meta: MetaFunction = (props) => {
-  const data = props.data as FindTournamentByNameForUrlI;
+  const data = props.data as FindTournamentByNameForUrlI | undefined;
 
   return {
-    title: makeTitle(data.name),
+    title: makeTitle(data?.name),
     //description: data.description ?? undefined,
   };
 };
@@ -218,7 +218,11 @@ function InfoBannerActionButton() {
   }
 
   return (
-    <Link to="register" className="info-banner__action-button">
+    <Link
+      to="register"
+      className="info-banner__action-button"
+      data-cy="register-button"
+    >
       Register
     </Link>
   );

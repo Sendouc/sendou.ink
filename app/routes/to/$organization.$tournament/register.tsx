@@ -134,6 +134,7 @@ export default function RegisterPage() {
               required
               minLength={TEAM_NAME_MIN_LENGTH}
               maxLength={TEAM_NAME_MAX_LENGTH}
+              data-cy="team-name-input"
             />
             <ErrorMessage errorMsg={actionData?.fieldErrors?.teamName} />
             <div className="tournament__register__buttons-container">
@@ -146,7 +147,7 @@ export default function RegisterPage() {
               >
                 Cancel
               </button>
-              <button type="submit">
+              <button type="submit" data-cy="register-submit-button">
                 {transition.state === "idle" ? "Submit" : "Submitting..."}
               </button>
             </div>
