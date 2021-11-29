@@ -21,4 +21,16 @@ describe("Before tournament starts", () => {
     cy.getCy("register-submit-button").click();
     cy.url().should("include", "manage-roster");
   });
+
+  it("Can view details of the tournament", () => {
+    cy.visit("/to/sendou/in-the-zone-x");
+    cy.contains("Log in to register");
+
+    cy.getCy("map-pool-nav-link").click();
+    cy.contains("23 maps");
+    cy.get('[alt="Starfish Mainstage"]').should(
+      "have.css",
+      "filter: grayscale(100%);"
+    );
+  });
 });

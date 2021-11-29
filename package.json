@@ -14,7 +14,7 @@
     "migration:apply:dev": "npx prisma migrate dev",
     "migration:apply:prod": "npx prisma migrate deploy",
     "seed": "npx prisma db seed",
-    "seed:reset": "npx prisma migrate reset --force",
+    "seed:reset": "npx prisma migrate reset --force --skip-generate",
     "lint:styles": "stylelint \"app/styles/**/*.css\"",
     "cy:open": "npx cypress open",
     "cy:run": "npx cypress run"

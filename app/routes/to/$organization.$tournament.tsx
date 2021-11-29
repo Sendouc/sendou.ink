@@ -69,13 +69,21 @@ export default function TournamentPage() {
           <NavLink className="tournament__nav-link" to="overview">
             Overview
           </NavLink>
-          <NavLink className="tournament__nav-link" to="map-pool">
+          <NavLink
+            className="tournament__nav-link"
+            to="map-pool"
+            data-cy="map-pool-nav-link"
+          >
             Map Pool
           </NavLink>
           <NavLink className="tournament__nav-link" to="bracket">
             Bracket
           </NavLink>
-          <NavLink className="tournament__nav-link" to="teams">
+          <NavLink
+            className="tournament__nav-link"
+            to="teams"
+            data-cy="teams-nav-link"
+          >
             Teams ({data.teams.length})
           </NavLink>
           <NavLink className="tournament__nav-link" to="streams">

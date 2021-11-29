@@ -9,6 +9,7 @@
     "target": "ES2019",
     "strict": true,
     "types": ["cypress"],
+    "baseUrl": ".",
     "paths": {
       "~/*": ["./app/*"]
     },

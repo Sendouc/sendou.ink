@@ -30,7 +30,6 @@ function userToContext(req: Express.Request) {
     // @ts-expect-error
     const mockedUser = req.headers["mock-auth"];
     if (mockedUser) {
-      console.log(mockedUser);
       return { user: JSON.parse(mockedUser) };
     }
   }

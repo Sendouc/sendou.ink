@@ -9,6 +9,12 @@ const randomOneDigitNumber = (includeZero?: boolean) =>
   faker.datatype.number(10) + (includeZero ? 0 : 1);
 
 async function main() {
+  if (!process.env.DATABASE_URL?.includes("localhost")) {
+    throw Error(
+      "Trying to seed a database not in localhost or DATABASE_URL env var is not set"
+    );
+  }
+
   faker.seed(FAKER_SEED);
   const userCreated = await user();
 
