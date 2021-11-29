@@ -13,6 +13,7 @@ import {
 } from "remix";
 import invariant from "tiny-invariant";
 import ErrorMessage from "~/components/ErrorMessage";
+import { TeamRoster } from "~/components/tournament/TeamRoster";
 import {
   createTournamentTeam,
   FindTournamentByNameForUrlI,
@@ -91,8 +92,6 @@ export default function RegisterPage() {
   const location = useLocation();
   const user = useUser();
 
-  console.log("tournamentData", tournamentData);
-
   // TODO: redirect if tournament has concluded
 
   if (!user) {
@@ -170,7 +169,8 @@ function AddPlayersPage() {
   if (!ownTeam) return null;
 
   return (
-    <>
+    <div className="tournament__invite-players">
+      <TeamRoster team={ownTeam} />
       <div className="tournament__invite-players__actions-container">
         <div>
           <label>Add players you previously played with</label>
@@ -196,6 +196,6 @@ function AddPlayersPage() {
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 }

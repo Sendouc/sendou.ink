@@ -36,5 +36,13 @@ export type Serialized<T> = {
   [P in keyof T]: T[P] extends Date ? string : Serialized<T[P]>;
 };
 
+export type Unpacked<T> = T extends (infer U)[]
+  ? U
+  : T extends (...args: any[]) => infer U
+  ? U
+  : T extends Promise<infer U>
+  ? U
+  : T;
+
 // TODO:
 // export type InferredSerializedAPI<T> = Serialized<Prisma.PromiseReturnType<T>>;

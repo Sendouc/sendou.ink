@@ -21,6 +21,13 @@
   margin-block-start: var(--s-6);
 }
 
+.tournament__invite-players {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-10);
+  margin-block-start: var(--s-4);
+}
+
 .tournament__invite-players__actions-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
