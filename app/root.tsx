@@ -7,21 +7,19 @@ import {
   Scripts,
   ScrollRestoration,
   useCatch,
-  useLoaderData,
 } from "remix";
 import type { LinksFunction, LoaderFunction } from "remix";
 
-import normalizeStylesUrl from "~/styles/normalize.css";
-import globalStylesUrl from "~/styles/global.css";
-import layoutStylesUrl from "~/styles/layout.css";
+import resetStyles from "~/styles/normalize.css";
+import globalStyles from "~/styles/global.css";
+import layoutStyles from "~/styles/layout.css";
 import { Layout } from "./components/Layout";
-import type { LoggedInUser } from "./utils";
 
 export const links: LinksFunction = () => {
   return [
-    { rel: "stylesheet", href: normalizeStylesUrl },
-    { rel: "stylesheet", href: globalStylesUrl },
-    { rel: "stylesheet", href: layoutStylesUrl },
+    { rel: "stylesheet", href: resetStyles },
+    { rel: "stylesheet", href: globalStyles },
+    { rel: "stylesheet", href: layoutStyles },
   ];
 };
 
