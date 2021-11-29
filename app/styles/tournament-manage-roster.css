@@ -6,17 +6,26 @@
   width: 100%;
 }
 
-.tournament__manage-roster__actions-container {
+.tournament__manage-roster__actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
   width: 100%;
 }
 
-.tournament__manage-roster__input {
-  width: min(100%, 45rem);
-  height: 10rem;
+.tournament__manage-roster__actions__section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.tournament__manage-roster__input__copy-button {
-  margin-block-start: var(--s-2);
+.tournament__manage-roster__input {
+  width: min(100%, 20rem);
+}
+
+.tournament__manage-roster__select {
+  width: min(100%, 10rem);
+}
+
+.tournament__manage-roster__input__button {
+  margin-block-start: var(--s-4);
 }

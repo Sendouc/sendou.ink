@@ -35,18 +35,24 @@ export default function ManageRosterPage() {
     <div className="tournament__manage-roster">
       {ownTeam.members.length < 4 && (
         <Alert type="warning">
-          You need at least 4 players in your roster (max 6)
+          You need at least 4 players in your roster to play (max 6)
         </Alert>
       )}
       <TeamRoster team={ownTeam} />
-      <div className="tournament__manage-roster__actions-container">
-        <div>
+      <div className="tournament__manage-roster__actions">
+        <div className="tournament__manage-roster__actions__section">
           <label>Add players you previously played with</label>
-          <select>
+          <select className="tournament__manage-roster__select">
             <option>Sendou#0043</option>
           </select>
+          <button
+            className="tournament__manage-roster__input__button"
+            onClick={() => navigator.clipboard.writeText(urlWithInviteCode)}
+          >
+            Add to roster
+          </button>
         </div>
-        <div>
+        <div className="tournament__manage-roster__actions__section">
           <label htmlFor="inviteCodeInput">
             Share this URL to invite players to your team
           </label>
@@ -57,7 +63,7 @@ export default function ManageRosterPage() {
             value={urlWithInviteCode}
           />
           <button
-            className="tournament__manage-roster__input__copy-button"
+            className="tournament__manage-roster__input__button"
             onClick={() => navigator.clipboard.writeText(urlWithInviteCode)}
           >
             Copy to clipboard

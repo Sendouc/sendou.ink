@@ -77,7 +77,7 @@ body {
 }
 
 button {
-  display: inline-flex;
+  display: flex;
   width: auto;
   align-items: center;
   justify-content: center;
@@ -150,6 +150,28 @@ label {
 
 fieldset {
   all: unset;
+}
+
+select {
+  all: unset;
+  padding-block: 3.5px;
+  padding-inline: var(--s-3);
+  border: 1px solid var(--border);
+  width: 90%;
+
+  /* TODO: Get color from CSS var */
+  background-image: url('data:image/svg+xml;utf8,<svg width="1rem" color="rgb(255 255 255 / 55%)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>');
+  background-position-x: 95%;
+  background-position-y: 50%;
+  background-repeat: no-repeat;
+  border-radius: var(--rounded);
+  cursor: pointer;
+  font-weight: 500;
+}
+
+select::selection {
+  font-weight: bold;
+  overflow: hidden;
 }
 
 .form-validation-error {
