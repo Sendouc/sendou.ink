@@ -11,7 +11,7 @@ import { useLoaderData, Outlet, useLocation } from "remix";
 import invariant from "tiny-invariant";
 import { DiscordIcon } from "~/components/icons/Discord";
 import { TwitterIcon } from "~/components/icons/Twitter";
-import { getUser, makeTitle, requireUser } from "~/utils";
+import { getUser, makeTitle, useUser } from "~/utils";
 import {
   findTournamentByNameForUrl,
   FindTournamentByNameForUrlI,
@@ -119,6 +119,7 @@ export function InfoBanner() {
           </div>
           <div className="info-banner__icon-buttons-container">
             {data.organizer.twitter && (
+              // TODO: broken on Safari
               <a
                 className="info-banner__icon-button"
                 href={data.organizer.twitter}
@@ -153,9 +154,7 @@ export function InfoBanner() {
               <div>{data.organizer.name}</div>
             </div>
           </div>
-          <Link to="register" className="info-banner__action-button">
-            Register
-          </Link>
+          <InfoBannerActionButton />
         </div>
       </div>
     </>
@@ -176,4 +175,43 @@ function shortMonthName(date: string) {
 
 function dayNumber(date: string) {
   return new Date(date).toLocaleString("en-US", { day: "numeric" });
+}
+
+function InfoBannerActionButton() {
+  const data = useLoaderData<FindTournamentByNameForUrlI>();
+  const user = useUser();
+  const now = new Date();
+
+  // TODO: special case - tournament has started but can manage roster
+  const tournamentHasConcluded = new Date(data.startTime) < now;
+  if (tournamentHasConcluded) return null;
+
+  if (!user)
+    return (
+      <Link to="register" className="info-banner__action-button">
+        Log in to register
+      </Link>
+    );
+
+  const isAlreadyInATeamButNotCaptain = data.teams
+    .flatMap((team) => team.members)
+    .filter(({ captain }) => !captain)
+    .some(({ member }) => member.id === user.id);
+  if (isAlreadyInATeamButNotCaptain) return null;
+
+  // TODO: check-in closes 10 minutes before? how is it set + add to logic
+  const checkInIsOpen =
+    new Date(data.checkInTime) < now && new Date(data.startTime) > now;
+  if (checkInIsOpen) return <button>Check-in</button>;
+
+  const alreadyRegistered = data.teams
+    .flatMap((team) => team.members)
+    .some(({ member }) => member.id === user.id);
+  const linkText = alreadyRegistered ? "Manage roster" : "Register";
+
+  return (
+    <Link to="register" className="info-banner__action-button">
+      {linkText}
+    </Link>
+  );
 }

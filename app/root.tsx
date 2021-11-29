@@ -10,7 +10,7 @@ import {
 } from "remix";
 import type { LinksFunction, LoaderFunction } from "remix";
 
-import resetStyles from "~/styles/normalize.css";
+import resetStyles from "~/styles/reset.css";
 import globalStyles from "~/styles/global.css";
 import layoutStyles from "~/styles/layout.css";
 import { Layout } from "./components/Layout";

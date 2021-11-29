@@ -119,6 +119,7 @@ input:not(.plain) {
 
 input:not(.plain):focus-within {
   border-color: transparent;
+  /* TODO: rectangle on Safari */
   outline: 2px solid var(--theme);
 }
 
