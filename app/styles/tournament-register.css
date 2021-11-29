@@ -20,25 +20,3 @@
   gap: var(--s-2);
   margin-block-start: var(--s-6);
 }
-
-.tournament__invite-players {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-10);
-  margin-block-start: var(--s-4);
-}
-
-.tournament__invite-players__actions-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  width: 100%;
-}
-
-.tournament__invite-players__input {
-  width: min(100%, 45rem);
-  height: 10rem;
-}
-
-.tournament__invite-players__input__copy-button {
-  margin-block-start: var(--s-2);
-}

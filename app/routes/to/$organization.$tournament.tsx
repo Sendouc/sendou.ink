@@ -54,7 +54,9 @@ export default function TournamentPage() {
   const data = useLoaderData<FindTournamentByNameForUrlI>();
   const location = useLocation();
 
-  const displayNavLinks = !location.pathname.endsWith("register");
+  const displayNavLinks =
+    !location.pathname.endsWith("register") &&
+    !location.pathname.endsWith("manage-roster");
 
   return (
     <div className="tournament__container">
@@ -207,11 +209,17 @@ function InfoBannerActionButton() {
   const alreadyRegistered = data.teams
     .flatMap((team) => team.members)
     .some(({ member }) => member.id === user.id);
-  const linkText = alreadyRegistered ? "Manage roster" : "Register";
+  if (alreadyRegistered) {
+    return (
+      <Link to="manage-roster" className="info-banner__action-button">
+        Manage roster
+      </Link>
+    );
+  }
 
   return (
     <Link to="register" className="info-banner__action-button">
-      {linkText}
+      Register
     </Link>
   );
 }

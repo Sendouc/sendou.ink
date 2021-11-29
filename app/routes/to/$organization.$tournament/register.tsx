@@ -13,7 +13,6 @@ import {
 } from "remix";
 import invariant from "tiny-invariant";
 import ErrorMessage from "~/components/ErrorMessage";
-import { TeamRoster } from "~/components/tournament/TeamRoster";
 import {
   createTournamentTeam,
   FindTournamentByNameForUrlI,
@@ -38,6 +37,7 @@ type ActionData = {
 export const action: ActionFunction = async ({
   request,
   context,
+  params,
 }): Promise<Response | ActionData> => {
   const formData = await request.formData();
   const teamName = formData.get("teamName");
@@ -59,7 +59,7 @@ export const action: ActionFunction = async ({
 
   const user = requireUser(context);
 
-  // TODO: validate can register for tournament
+  // TODO: validate can register for tournament i.e. reg is open
 
   try {
     await createTournamentTeam({
@@ -79,8 +79,18 @@ export const action: ActionFunction = async ({
     throw e;
   }
 
-  // TODO: redirect to add players to page
-  return redirect("/");
+  invariant(
+    typeof params.organization === "string",
+    "Unexpected undefined params organization."
+  );
+  invariant(
+    typeof params.tournament === "string",
+    "Unexpected undefined params tournament."
+  );
+
+  return redirect(
+    `/to/${params.organization}/${params.tournament}/manage-roster`
+  );
 };
 
 export default function RegisterPage() {
@@ -102,7 +112,8 @@ export default function RegisterPage() {
     roster.members.some(({ member }) => member.id === user.id)
   );
 
-  if (isAlreadyInTeam) return <AddPlayersPage />;
+  // TODO: handle redirect
+  if (isAlreadyInTeam) return null;
 
   return (
     <div className="tournament__register__container">
@@ -141,60 +152,6 @@ export default function RegisterPage() {
             </div>
           </fieldset>
         </Form>
-      </div>
-    </div>
-  );
-}
-
-function AddPlayersPage() {
-  const [, parentRoute] = useMatches();
-  const tournamentData = parentRoute.data as FindTournamentByNameForUrlI;
-  const [urlWithInviteCode, setUrlWithInviteCode] = React.useState("");
-
-  const ownTeam = tournamentData.teams.find(({ inviteCode }) =>
-    Boolean(inviteCode)
-  );
-
-  React.useEffect(() => {
-    if (ownTeam) {
-      setUrlWithInviteCode(
-        `${window.location.href.replace("/register", "")}?join=${
-          ownTeam.inviteCode
-        }`
-      );
-    }
-  }, []);
-
-  // TODO: if not a captain of a team -> redirect
-  if (!ownTeam) return null;
-
-  return (
-    <div className="tournament__invite-players">
-      <TeamRoster team={ownTeam} />
-      <div className="tournament__invite-players__actions-container">
-        <div>
-          <label>Add players you previously played with</label>
-          <select>
-            <option>Sendou#0043</option>
-          </select>
-        </div>
-        <div>
-          <label htmlFor="inviteCodeInput">
-            Share this URL to invite players to your team
-          </label>
-          <input
-            id="inviteCodeInput"
-            className="tournament__invite-players__input"
-            disabled
-            value={urlWithInviteCode}
-          />
-          <button
-            className="tournament__invite-players__input__copy-button"
-            onClick={() => navigator.clipboard.writeText(urlWithInviteCode)}
-          >
-            Copy to clipboard
-          </button>
-        </div>
       </div>
     </div>
   );
