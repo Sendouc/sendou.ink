@@ -10,9 +10,11 @@ export type FindTournamentByNameForUrlI = Serialized<
 export async function findTournamentByNameForUrl({
   organizationNameForUrl,
   tournamentNameForUrl,
+  userId,
 }: {
   organizationNameForUrl: string;
   tournamentNameForUrl: string;
+  userId?: number;
 }) {
   const tournaments = await db.tournament.findMany({
     where: {
@@ -45,6 +47,7 @@ export async function findTournamentByNameForUrl({
           checkedIn: true,
           id: true,
           name: true,
+          inviteCode: true,
           members: {
             select: {
               captain: true,
@@ -64,12 +67,25 @@ export async function findTournamentByNameForUrl({
     },
   });
 
-  const result = tournaments.find(
+  let result = tournaments.find(
     (tournament) =>
       tournament.organizer.nameForUrl === organizationNameForUrl.toLowerCase()
   );
 
   if (!result) throw json("Not Found", { status: 404 });
+
+  result = {
+    ...result,
+    teams: result.teams.map((team) => ({
+      ...team,
+      // Censor invite code if not captain of the team
+      inviteCode: team.members
+        .filter(({ captain }) => captain)
+        .some(({ member }) => member.id === userId)
+        ? team.inviteCode
+        : "",
+    })),
+  };
 
   result.organizer.twitter = twitterToUrl(result.organizer.twitter);
   result.organizer.discordInvite = discordInviteToUrl(
@@ -87,6 +103,13 @@ function twitterToUrl(twitter: string | null) {
 
 function discordInviteToUrl(discordInvite: string) {
   return `https://discord.com/invite/${discordInvite}`;
+}
+
+function censorInviteCodeIfNotCaptain(
+  inviteCode: string,
+  members: { member: { id: number }; captain: boolean }[]
+) {
+  return inviteCode;
 }
 
 export function createTournamentTeam({

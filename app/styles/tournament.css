@@ -1,7 +1,9 @@
 .tournament__container {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 0 auto;
 }
 
 .tournament__links-container {
@@ -173,7 +175,7 @@
 }
 
 @media screen and (min-width: 768px) {
-  .info-banner {
+  .tournament__container {
     width: 48rem;
   }
 }

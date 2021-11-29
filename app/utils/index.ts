@@ -2,6 +2,7 @@ import { json, useMatches } from "remix";
 
 export const makeTitle = (endOfTitle: string) => `sendou.ink | ${endOfTitle}`;
 
+/** Get logged in user from context. Throws with 401 error if no user found. */
 export const requireUser = (ctx: any) => {
   const user = ctx.user;
 
@@ -10,6 +11,13 @@ export const requireUser = (ctx: any) => {
   }
 
   return user as NonNullable<LoggedInUser>;
+};
+
+/** Get logged in user from context. Doesn't throw. */
+export const getUser = (ctx: any) => {
+  const user = ctx.user;
+
+  return user as LoggedInUser;
 };
 
 export type LoggedInUser = {

@@ -1,23 +1,24 @@
-import styles from "~/styles/tournament-register.css";
+import { Prisma } from ".prisma/client";
+import * as React from "react";
 import {
-  Form,
-  redirect,
-  LinksFunction,
   ActionFunction,
-  useMatches,
-  useTransition,
-  useNavigate,
-  useLocation,
+  Form,
+  LinksFunction,
+  redirect,
   useActionData,
+  useLocation,
+  useMatches,
+  useNavigate,
+  useTransition,
 } from "remix";
 import invariant from "tiny-invariant";
+import ErrorMessage from "~/components/ErrorMessage";
 import {
   createTournamentTeam,
   FindTournamentByNameForUrlI,
 } from "~/services/tournament";
-import { requireUser } from "~/utils";
-import { Prisma } from ".prisma/client";
-import ErrorMessage from "~/components/ErrorMessage";
+import styles from "~/styles/tournament-register.css";
+import { requireUser, useUser } from "~/utils";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -81,15 +82,28 @@ export const action: ActionFunction = async ({
   return redirect("/");
 };
 
-// TODO: redirect if not logged in
-
 export default function RegisterPage() {
   const actionData = useActionData<ActionData | undefined>();
   const transition = useTransition();
   const [, parentRoute] = useMatches();
+  const tournamentData = parentRoute.data as FindTournamentByNameForUrlI;
   const navigate = useNavigate();
   const location = useLocation();
-  const { id } = parentRoute.data as FindTournamentByNameForUrlI;
+  const user = useUser();
+
+  console.log("tournamentData", tournamentData);
+
+  // TODO: redirect if tournament has concluded
+
+  if (!user) {
+    return <div>pls log in lul</div>;
+  }
+
+  const isAlreadyInTeam = tournamentData.teams.some((roster) =>
+    roster.members.some(({ member }) => member.id === user.id)
+  );
+
+  if (isAlreadyInTeam) return <AddPlayersPage />;
 
   return (
     <div className="tournament__register__container">
@@ -98,7 +112,11 @@ export default function RegisterPage() {
         <Form method="post">
           <fieldset disabled={transition.state !== "idle"}>
             <label htmlFor="teamName">Team name</label>
-            <input type="hidden" name="tournamentId" value={id} />
+            <input
+              type="hidden"
+              name="tournamentId"
+              value={tournamentData.id}
+            />
             <input
               name="teamName"
               id="teamName"
@@ -126,5 +144,58 @@ export default function RegisterPage() {
         </Form>
       </div>
     </div>
+  );
+}
+
+function AddPlayersPage() {
+  const [, parentRoute] = useMatches();
+  const tournamentData = parentRoute.data as FindTournamentByNameForUrlI;
+  const [urlWithInviteCode, setUrlWithInviteCode] = React.useState("");
+
+  const ownTeam = tournamentData.teams.find(({ inviteCode }) =>
+    Boolean(inviteCode)
+  );
+
+  React.useEffect(() => {
+    if (ownTeam) {
+      setUrlWithInviteCode(
+        `${window.location.href.replace("/register", "")}?join=${
+          ownTeam.inviteCode
+        }`
+      );
+    }
+  }, []);
+
+  // TODO: if not a captain of a team -> redirect
+  if (!ownTeam) return null;
+
+  return (
+    <>
+      <div className="tournament__invite-players__actions-container">
+        <div>
+          <label>Add players you previously played with</label>
+          <select>
+            <option>Sendou#0043</option>
+          </select>
+        </div>
+        <div>
+          <label htmlFor="inviteCodeInput">
+            Share this URL to invite players to your team
+          </label>
+          <input
+            id="inviteCodeInput"
+            className="tournament__invite-players__input"
+            disabled
+            value={urlWithInviteCode}
+          />
+          <button
+            className="tournament__invite-players__input__copy-button"
+            onClick={() => navigator.clipboard.writeText(urlWithInviteCode)}
+          >
+            Copy to clipboard
+          </button>
+        </div>
+      </div>
+    </>
   );
 }

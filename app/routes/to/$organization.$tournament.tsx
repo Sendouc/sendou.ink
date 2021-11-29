@@ -11,7 +11,7 @@ import { useLoaderData, Outlet, useLocation } from "remix";
 import invariant from "tiny-invariant";
 import { DiscordIcon } from "~/components/icons/Discord";
 import { TwitterIcon } from "~/components/icons/Twitter";
-import { makeTitle } from "~/utils";
+import { getUser, makeTitle, requireUser } from "~/utils";
 import {
   findTournamentByNameForUrl,
   FindTournamentByNameForUrlI,
@@ -22,7 +22,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: tournamentStylesUrl }];
 };
 
-export const loader: LoaderFunction = ({ params }) => {
+export const loader: LoaderFunction = ({ params, context }) => {
   invariant(
     typeof params.organization === "string",
     "Expected params.organization to be string"
@@ -32,9 +32,12 @@ export const loader: LoaderFunction = ({ params }) => {
     "Expected params.tournament to be string"
   );
 
+  const user = getUser(context);
+
   return findTournamentByNameForUrl({
     organizationNameForUrl: params.organization,
     tournamentNameForUrl: params.tournament,
+    userId: user?.id,
   });
 };
 
