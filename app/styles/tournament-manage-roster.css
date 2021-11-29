@@ -1,8 +1,9 @@
 .tournament__manage-roster {
   display: flex;
   flex-direction: column;
-  gap: var(--s-10);
+  gap: var(--s-8);
   margin-block-start: var(--s-4);
+  width: 100%;
 }
 
 .tournament__manage-roster__actions-container {

@@ -5,6 +5,7 @@
   --text: rgb(255 255 255 / 95%);
   --text-lighter: rgb(255 255 255 / 55%);
   --theme-error: rgb(219 70 65);
+  --theme-warning: #f5f587;
   --theme: hsl(255deg 66.7% 55.3%);
   --theme-transparent: hsl(255deg 66.7% 55.3% / 40%);
   --theme-secondary: hsl(85deg 66.7% 55.3%);
@@ -156,4 +157,24 @@ fieldset {
   font-size: var(--fonts-xs);
   font-weight: var(--bold);
   margin-block-start: var(--s-1);
+}
+
+.alert {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  border-radius: var(--rounded);
+  padding: var(--s-2-5);
+  background: url("/svg/background-pattern.svg");
+  background-color: var(--bg-lighter);
+  font-weight: var(--bold);
+  font-size: var(--fonts-sm);
+}
+
+.alert > svg {
+  width: 1.5rem;
+}
+
+.alert[data-type="warning"] > svg {
+  fill: var(--theme-warning);
 }

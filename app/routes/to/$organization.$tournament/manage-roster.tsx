@@ -1,5 +1,6 @@
 import * as React from "react";
-import { useMatches, LinksFunction } from "remix";
+import { LinksFunction, useMatches } from "remix";
+import { Alert } from "~/components/Alert";
 import { TeamRoster } from "~/components/tournament/TeamRoster";
 import { FindTournamentByNameForUrlI } from "~/services/tournament";
 import styles from "~/styles/tournament-manage-roster.css";
@@ -32,6 +33,11 @@ export default function ManageRosterPage() {
 
   return (
     <div className="tournament__manage-roster">
+      {ownTeam.members.length < 4 && (
+        <Alert type="warning">
+          You need at least 4 players in your roster (max 6)
+        </Alert>
+      )}
       <TeamRoster team={ownTeam} />
       <div className="tournament__manage-roster__actions-container">
         <div>
