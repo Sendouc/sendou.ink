@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id                   Int                    @id @default(autoincrement())
+  id                   String                 @id @default(uuid())
   discordId            String                 @unique
   discordName          String
   discordDiscriminator String
@@ -27,11 +27,11 @@ model User {
 }
 
 model Organization {
-  id            Int          @id @default(autoincrement())
+  id            String       @id @default(uuid())
   name          String
   /// Name in lower case to show in URL
   nameForUrl    String       @unique
-  ownerId       Int          @unique
+  ownerId       String       @unique
   owner         User         @relation(fields: [ownerId], references: [id])
   discordInvite String
   twitter       String?
@@ -39,7 +39,7 @@ model Organization {
 }
 
 model Tournament {
-  id                Int              @id @default(autoincrement())
+  id                String           @id @default(uuid())
   name              String
   /// Name in lower case to show in URL
   nameForUrl        String
@@ -51,7 +51,7 @@ model Tournament {
   /// CSS for tournament banner's color value
   bannerTextHSLArgs String
   mapPool           Stage[]
-  organizerId       Int
+  organizerId       String
   organizer         Organization     @relation(fields: [organizerId], references: [id])
   teams             TournamentTeam[]
 
@@ -75,10 +75,10 @@ model Stage {
 }
 
 model TournamentTeam {
-  id           Int                    @id @default(autoincrement())
+  id           String                 @id @default(uuid())
   name         String
   checkedIn    Boolean                @default(false)
-  tournamentId Int
+  tournamentId String
   tournament   Tournament             @relation(fields: [tournamentId], references: [id])
   inviteCode   String                 @default(uuid())
   members      TournamentTeamMember[]
@@ -87,9 +87,9 @@ model TournamentTeam {
 }
 
 model TournamentTeamMember {
-  memberId     Int
-  teamId       Int
-  tournamentId Int
+  memberId     String
+  teamId       String
+  tournamentId String
   captain      Boolean        @default(false)
   team         TournamentTeam @relation(fields: [teamId], references: [id])
   member       User           @relation(fields: [memberId], references: [id])
@@ -101,8 +101,8 @@ model TournamentTeamMember {
 // to add them to a tournament team
 // / LFG group without them having to click a link.
 model TrustRelationships {
-  trustGiverId    Int
-  trustReceiverId Int
+  trustGiverId    String
+  trustReceiverId String
   trustGiver      User     @relation("trustGiver", fields: [trustGiverId], references: [id])
   trustReceiver   User     @relation("trustReceiver", fields: [trustReceiverId], references: [id])
   createdAt       DateTime @default(now())

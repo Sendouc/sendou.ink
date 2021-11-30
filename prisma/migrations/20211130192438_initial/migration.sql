@@ -3,7 +3,7 @@ CREATE TYPE "Mode" AS ENUM ('TW', 'SZ', 'TC', 'RM', 'CB');
 
 -- CreateTable
 CREATE TABLE "User" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "discordId" TEXT NOT NULL,
     "discordName" TEXT NOT NULL,
     "discordDiscriminator" TEXT NOT NULL,
@@ -21,10 +21,10 @@ CREATE TABLE "User" (
 
 -- CreateTable
 CREATE TABLE "Organization" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "nameForUrl" TEXT NOT NULL,
-    "ownerId" INTEGER NOT NULL,
+    "ownerId" TEXT NOT NULL,
     "discordInvite" TEXT NOT NULL,
     "twitter" TEXT,
 
@@ -33,7 +33,7 @@ CREATE TABLE "Organization" (
 
 -- CreateTable
 CREATE TABLE "Tournament" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "nameForUrl" TEXT NOT NULL,
     "description" TEXT,
@@ -41,7 +41,7 @@ CREATE TABLE "Tournament" (
     "checkInTime" TIMESTAMP(3) NOT NULL,
     "bannerBackground" TEXT NOT NULL,
     "bannerTextHSLArgs" TEXT NOT NULL,
-    "organizerId" INTEGER NOT NULL,
+    "organizerId" TEXT NOT NULL,
 
     CONSTRAINT "Tournament_pkey" PRIMARY KEY ("id")
 );
@@ -57,10 +57,10 @@ CREATE TABLE "Stage" (
 
 -- CreateTable
 CREATE TABLE "TournamentTeam" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "checkedIn" BOOLEAN NOT NULL DEFAULT false,
-    "tournamentId" INTEGER NOT NULL,
+    "tournamentId" TEXT NOT NULL,
     "inviteCode" TEXT NOT NULL,
 
     CONSTRAINT "TournamentTeam_pkey" PRIMARY KEY ("id")
@@ -68,23 +68,23 @@ CREATE TABLE "TournamentTeam" (
 
 -- CreateTable
 CREATE TABLE "TournamentTeamMember" (
-    "memberId" INTEGER NOT NULL,
-    "teamId" INTEGER NOT NULL,
-    "tournamentId" INTEGER NOT NULL,
+    "memberId" TEXT NOT NULL,
+    "teamId" TEXT NOT NULL,
+    "tournamentId" TEXT NOT NULL,
     "captain" BOOLEAN NOT NULL DEFAULT false
 );
 
 -- CreateTable
 CREATE TABLE "TrustRelationships" (
-    "trustGiverId" INTEGER NOT NULL,
-    "trustReceiverId" INTEGER NOT NULL,
+    "trustGiverId" TEXT NOT NULL,
+    "trustReceiverId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- CreateTable
 CREATE TABLE "_StageToTournament" (
     "A" INTEGER NOT NULL,
-    "B" INTEGER NOT NULL
+    "B" TEXT NOT NULL
 );
 
 -- CreateIndex

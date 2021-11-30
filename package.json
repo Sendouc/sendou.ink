@@ -16,6 +16,7 @@
     "seed": "npx prisma db seed",
     "seed:reset": "npx prisma migrate reset --force --skip-generate",
     "lint:styles": "stylelint \"app/styles/**/*.css\"",
+    "typecheck": "tsc --noEmit",
     "cy:open": "npx cypress open",
     "cy:run": "npx cypress run"
   },

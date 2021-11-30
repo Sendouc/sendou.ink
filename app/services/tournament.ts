@@ -14,7 +14,7 @@ export async function findTournamentByNameForUrl({
 }: {
   organizationNameForUrl: string;
   tournamentNameForUrl: string;
-  userId?: number;
+  userId?: string;
 }) {
   const tournaments = await db.tournament.findMany({
     where: {
@@ -117,9 +117,9 @@ export function createTournamentTeam({
   teamName,
   tournamentId,
 }: {
-  userId: number;
+  userId: string;
   teamName: string;
-  tournamentId: number;
+  tournamentId: string;
 }) {
   return db.tournamentTeam.create({
     data: {

@@ -22,7 +22,7 @@ export const getUser = (ctx: any) => {
 };
 
 export type LoggedInUser = {
-  id: number;
+  id: string;
   discordId: string;
   discordAvatar: string;
 } | null;

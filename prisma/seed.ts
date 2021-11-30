@@ -103,7 +103,7 @@ async function users() {
   });
 }
 
-async function tournamentTeams(tournamentId: number, users: number[]) {
+async function tournamentTeams(tournamentId: string, users: string[]) {
   const randomIds = faker.helpers.shuffle(users);
   for (let index = 0; index < 24; index++) {
     const team = await prisma.tournamentTeam.create({
@@ -127,7 +127,7 @@ async function tournamentTeams(tournamentId: number, users: number[]) {
   }
 }
 
-async function organizations(userId: number) {
+async function organizations(userId: string) {
   return prisma.organization.create({
     data: {
       name: "Sendou's Tournaments",
@@ -141,7 +141,7 @@ async function organizations(userId: number) {
 
 const modesList = ["TW", "SZ", "TC", "RM", "CB"] as const;
 
-async function tournaments(organizationId: number) {
+async function tournaments(organizationId: string) {
   return prisma.tournament.create({
     data: {
       bannerBackground: "linear-gradient(to bottom, #9796f0, #fbc7d4)",
@@ -157,7 +157,7 @@ async function tournaments(organizationId: number) {
 }
 
 // TODO: why this can't be done while creating?
-async function tournamentAddMaps(id: number) {
+async function tournamentAddMaps(id: string) {
   const ids = Array.from(
     new Set(
       new Array(24)

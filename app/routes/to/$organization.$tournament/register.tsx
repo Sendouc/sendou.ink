@@ -41,10 +41,10 @@ export const action: ActionFunction = async ({
 }): Promise<Response | ActionData> => {
   const formData = await request.formData();
   const teamName = formData.get("teamName");
-  const tournamentId = Number(formData.get("tournamentId"));
+  const tournamentId = formData.get("tournamentId");
   invariant(typeof teamName === "string", "Invalid type for team name.");
   invariant(
-    typeof tournamentId === "number",
+    typeof tournamentId === "string",
     "Invalid type for tournament id."
   );
 

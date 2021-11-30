@@ -10,7 +10,7 @@ export default function TeamsTab() {
 
   const sortedTeams = teams
     // TODO: user id here
-    .sort(sortOwnTeamsAndFullTeamsFirst(-1))
+    .sort(sortOwnTeamsAndFullTeamsFirst(""))
     .map((team) => {
       return {
         ...team,
@@ -31,10 +31,10 @@ function sortCaptainFirst(a: { captain: boolean }, b: { captain: boolean }) {
   return Number(b.captain) - Number(a.captain);
 }
 
-function sortOwnTeamsAndFullTeamsFirst(userId?: number) {
+function sortOwnTeamsAndFullTeamsFirst(userId?: string) {
   return function (
-    a: { members: { member: { id: number } }[] },
-    b: { members: { member: { id: number } }[] }
+    a: { members: { member: { id: string } }[] },
+    b: { members: { member: { id: string } }[] }
   ) {
     if (userId) {
       const aSortValue = Number(
