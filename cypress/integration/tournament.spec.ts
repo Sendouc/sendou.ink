@@ -1,5 +1,5 @@
 describe("Before tournament starts", () => {
-  before(() => {
+  beforeEach(() => {
     cy.seed();
     cy.intercept(
       "GET",
@@ -12,12 +12,12 @@ describe("Before tournament starts", () => {
     cy.visit("/to/sendou/in-the-zone-x");
     cy.title().should("include", "In The Zone X");
     cy.getCy("register-button").click();
-    cy.getCy("team-name-input").type("Anaheim");
+    cy.getCy("team-name-input").type("Team Olive");
     cy.getCy("register-submit-button").click();
     cy.contains("Team name already taken");
 
     cy.wait("@tournaments");
-    cy.getCy("team-name-input").clear().type("Team Olive");
+    cy.getCy("team-name-input").clear().type("Team Olive V2");
     cy.getCy("register-submit-button").click();
     cy.url().should("include", "manage-roster");
   });

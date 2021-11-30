@@ -8,6 +8,8 @@
     "resolveJsonModule": true,
     "target": "ES2019",
     "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "types": ["cypress"],
     "paths": {
       "~/*": ["./app/*"]

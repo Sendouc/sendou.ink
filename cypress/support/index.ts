@@ -1,5 +1,9 @@
-import { ADMIN_UUID } from "../../prisma/seed";
-import { LoggedInUser } from "~/utils";
+import {
+  ADMIN_TEST_AVATAR,
+  ADMIN_TEST_DISCORD_ID,
+  ADMIN_TEST_UUID,
+} from "../../app/constants";
+import type { LoggedInUser } from "~/utils";
 
 export {};
 
@@ -21,15 +25,15 @@ Cypress.Commands.add("getCy", (value: string) => {
 });
 
 Cypress.Commands.add("seed", () => {
-  cy.exec("npm run seed:reset");
+  cy.request("POST", "seed");
 });
 
 Cypress.Commands.add("logIn", (user: MockUser) => {
   const mockUsers: Record<string, LoggedInUser> = {
     sendou: {
-      id: ADMIN_UUID,
-      discordId: "79237403620945920",
-      discordAvatar: "fcfd65a3bea598905abb9ca25296816b",
+      id: ADMIN_TEST_UUID,
+      discordId: ADMIN_TEST_DISCORD_ID,
+      discordAvatar: ADMIN_TEST_AVATAR,
     },
   } as const;
 

@@ -1,59 +1,64 @@
 import { PrismaClient } from "@prisma/client";
-import { stages as stagesList } from "../app/constants";
+import {
+  ADMIN_TEST_AVATAR,
+  ADMIN_TEST_DISCORD_ID,
+  ADMIN_TEST_UUID,
+  stages as stagesList,
+} from "../app/constants";
 import { readFile } from "fs/promises";
 import path from "path";
 import crypto from "crypto";
 const prisma = new PrismaClient();
 
-export const ADMIN_UUID = "846e12eb-d373-4002-a0c3-e23077e1c88c";
-export const ADMIN_DISCORD_ID = "79237403620945920";
-export const ADMIN_AVATAR = "fcfd65a3bea598905abb9ca25296816b";
+export async function seed() {
+  try {
+    //
+    // make sure we won't override production database
+    //
+    if (!process.env.DATABASE_URL?.includes("localhost")) {
+      throw Error(
+        "Trying to seed a database not in localhost or DATABASE_URL env var is not set"
+      );
+    }
 
-async function main() {
-  //
-  // make sure we won't override production database
-  //
-  if (!process.env.DATABASE_URL?.includes("localhost")) {
-    throw Error(
-      "Trying to seed a database not in localhost or DATABASE_URL env var is not set"
-    );
+    //
+    // wipe database
+    //
+    await prisma.tournamentTeamMember.deleteMany();
+    await prisma.tournamentTeam.deleteMany();
+    await prisma.tournament.deleteMany();
+    await prisma.organization.deleteMany();
+    await prisma.user.deleteMany();
+    await prisma.stage.deleteMany();
+
+    //
+    // create mock data
+    //
+    const adminUserCreated = await adminUser();
+    const userIds = new Array(500).fill(null).map(() => crypto.randomUUID());
+    await users(userIds);
+    const organization = await organizations(adminUserCreated.id);
+    const tournament = await tournaments(organization.id);
+    await tournamentTeams(tournament.id, userIds);
+    const stageIds = await stages();
+    await tournamentAddMaps(tournament.id, stageIds);
+  } finally {
+    await prisma.$disconnect();
   }
-
-  //
-  // wipe database
-  //
-  await prisma.tournamentTeamMember.deleteMany();
-  await prisma.tournamentTeam.deleteMany();
-  await prisma.tournament.deleteMany();
-  await prisma.organization.deleteMany();
-  await prisma.user.deleteMany();
-  await prisma.stage.deleteMany();
-
-  //
-  // create mock data
-  //
-  const adminUserCreated = await adminUser();
-  const userIds = new Array(500).fill(null).map(() => crypto.randomUUID());
-  await users(userIds);
-  const organization = await organizations(adminUserCreated.id);
-  const tournament = await tournaments(organization.id);
-  await tournamentTeams(tournament.id, userIds);
-  const stageIds = await stages();
-  await tournamentAddMaps(tournament.id, stageIds);
 }
 
 async function adminUser() {
   return prisma.user.create({
     data: {
-      id: ADMIN_UUID,
+      id: ADMIN_TEST_UUID,
       discordDiscriminator: "4059",
-      discordId: ADMIN_DISCORD_ID,
+      discordId: ADMIN_TEST_DISCORD_ID,
       discordName: "Sendou",
       discordRefreshToken: "none",
       twitch: "Sendou",
       youtubeId: "UCWbJLXByvsfQvTcR4HLPs5Q",
       youtubeName: "Sendou",
-      discordAvatar: ADMIN_AVATAR,
+      discordAvatar: ADMIN_TEST_AVATAR,
       twitter: "sendouc",
     },
   });
@@ -195,12 +200,3 @@ async function stages() {
 
   return result;
 }
-
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });

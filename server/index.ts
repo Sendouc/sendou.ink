@@ -4,6 +4,7 @@ import compression from "compression";
 import morgan from "morgan";
 import { createRequestHandler } from "@remix-run/express";
 import { setUpAuth } from "./auth";
+import { seed } from "../prisma/seed";
 
 const MODE = process.env.NODE_ENV;
 const BUILD_DIR = path.join(process.cwd(), "server/build");
@@ -34,6 +35,14 @@ function userToContext(req: Express.Request) {
     }
   }
   return { user: req.user };
+}
+
+if (process.env.NODE_ENV === "development") {
+  app.post("/seed", async (_req, res) => {
+    await seed();
+
+    res.status(200).end();
+  });
 }
 
 app.all(
