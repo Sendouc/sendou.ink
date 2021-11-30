@@ -156,19 +156,14 @@ async function tournaments(organizationId: number) {
   });
 }
 
-function getRandomInt(maxInclusive: number) {
-  let result = -1;
-
-  while (result < 24) {
-    result = Math.floor(Math.random() * maxInclusive) + 1;
-  }
-  return result;
-}
-
 // TODO: why this can't be done while creating?
 async function tournamentAddMaps(id: number) {
   const ids = Array.from(
-    new Set(new Array(24).fill(null).map(() => ({ id: getRandomInt(115) })))
+    new Set(
+      new Array(24)
+        .fill(null)
+        .map(() => ({ id: faker.datatype.number({ min: 1, max: 115 }) }))
+    )
   );
 
   return prisma.tournament.update({
