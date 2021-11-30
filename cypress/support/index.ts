@@ -1,3 +1,6 @@
+import { ADMIN_UUID } from "../../prisma/seed";
+import { LoggedInUser } from "~/utils";
+
 export {};
 
 type MockUser = "sendou";
@@ -22,9 +25,9 @@ Cypress.Commands.add("seed", () => {
 });
 
 Cypress.Commands.add("logIn", (user: MockUser) => {
-  const mockUsers = {
+  const mockUsers: Record<string, LoggedInUser> = {
     sendou: {
-      id: 1,
+      id: ADMIN_UUID,
       discordId: "79237403620945920",
       discordAvatar: "fcfd65a3bea598905abb9ca25296816b",
     },

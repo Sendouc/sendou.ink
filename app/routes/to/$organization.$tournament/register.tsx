@@ -24,7 +24,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-const TEAM_NAME_MIN_LENGTH = 2;
+const TEAM_NAME_MIN_LENGTH = 1;
 const TEAM_NAME_MAX_LENGTH = 40;
 
 type ActionData = {
