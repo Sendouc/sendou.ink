@@ -19,7 +19,7 @@ describe("Before tournament starts", () => {
     cy.wait("@tournaments");
     cy.getCy("team-name-input").clear().type("Team Olive V2");
     cy.getCy("register-submit-button").click();
-    cy.url().should("include", "manage-roster");
+    cy.contains("You need at least 4 players in your roster to play (max 6)");
   });
 
   it("Can view details of the tournament", () => {
