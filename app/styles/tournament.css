@@ -87,6 +87,8 @@
   font-size: var(--fonts-xl);
   font-weight: var(--extra-bold);
   padding-inline-start: var(--s-4);
+  text-decoration: none;
+  color: var(--text);
 }
 
 .info-banner__bottom-row {

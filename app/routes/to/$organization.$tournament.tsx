@@ -98,6 +98,12 @@ export default function TournamentPage() {
 
 export function InfoBanner() {
   const data = useLoaderData<FindTournamentByNameForUrlI>();
+  const location = useLocation();
+
+  const urlToTournamentFrontPage = location.pathname
+    .split("/")
+    .slice(0, 4)
+    .join("/");
 
   return (
     <>
@@ -115,17 +121,23 @@ export function InfoBanner() {
       >
         <div className="info-banner__top-row">
           <div className="info-banner__top-row__date-name">
-            <div className="info-banner__top-row__month-date">
+            <time
+              dateTime={dateYYYYMMDD(data.startTime)}
+              className="info-banner__top-row__month-date"
+            >
               <div className="info-banner__top-row__month-date__month">
                 {shortMonthName(data.startTime)}
               </div>
               <div className="info-banner__top-row__month-date__date">
                 {dayNumber(data.startTime)}
               </div>
-            </div>
-            <div className="info-banner__top-row__tournament-name">
+            </time>
+            <Link
+              to={urlToTournamentFrontPage}
+              className="info-banner__top-row__tournament-name"
+            >
               {data.name}
-            </div>
+            </Link>
           </div>
           <div className="info-banner__icon-buttons-container">
             {data.organizer.twitter && (
@@ -151,7 +163,9 @@ export function InfoBanner() {
               <div className="info-banner__bottom-row__info-label">
                 Starting time
               </div>
-              <div>{weekdayAndStartTime(data.startTime)}</div>
+              <time dateTime={data.startTime}>
+                {weekdayAndStartTime(data.startTime)}
+              </time>
             </div>
             <div className="info-banner__bottom-row__info-container">
               <div className="info-banner__bottom-row__info-label">Format</div>
@@ -185,6 +199,10 @@ function shortMonthName(date: string) {
 
 function dayNumber(date: string) {
   return new Date(date).toLocaleString("en-US", { day: "numeric" });
+}
+
+function dateYYYYMMDD(date: string) {
+  return new Date(date).toISOString().split("T")[0];
 }
 
 function InfoBannerActionButton() {
