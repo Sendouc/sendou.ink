@@ -12,8 +12,6 @@
         "ignorePseudoClasses": ["global"]
       }
     ],
-    "selector-class-pattern": [
-      "[a-z-_]+"
-    ]
+    "selector-class-pattern": ["[a-z-_]+"]
   }
 }

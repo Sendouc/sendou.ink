@@ -16,6 +16,7 @@
     "seed": "npx prisma db seed",
     "seed:reset": "npx prisma migrate reset --force --skip-generate",
     "lint:styles": "stylelint \"app/styles/**/*.css\"",
+    "prettier": "prettier --check .",
     "typecheck": "tsc --noEmit",
     "cy:open": "npx cypress open",
     "cy:run": "npx cypress run"
@@ -51,6 +52,7 @@
     "@types/react-dom": "^17.0.11",
     "concurrently": "^6.4.0",
     "cypress": "^9.1.0",
+    "prettier": "2.5.0",
     "prisma": "^3.6.0",
     "stylelint": "^14.1.0",
     "stylelint-config-idiomatic-order": "^8.1.0",
