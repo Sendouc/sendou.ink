@@ -58,37 +58,43 @@ export default function TournamentPage() {
     !location.pathname.endsWith("register") &&
     !location.pathname.endsWith("manage-roster");
 
+  const navLinks = (() => {
+    const result: { code: string; text: string }[] = [
+      { code: "overview", text: "Overview" },
+      { code: "map-pool", text: "Map Pool" },
+      { code: "teams", text: `Teams (${data.teams.length})` },
+    ];
+    const tournamentIsHappening = false;
+    const tournamentIsOver = false;
+
+    if (tournamentIsHappening) {
+      result.push({ code: "bracket", text: "Bracket" });
+      if (!tournamentIsOver) {
+        result.push({ code: "streams", text: "Streams (4)" });
+      }
+    }
+
+    return result;
+  })();
+
   return (
     <div className="tournament__container">
       <InfoBanner />
       {displayNavLinks && (
         <div
-          style={{ "--tabs-count": 5 } as Record<string, number>}
+          style={{ "--tabs-count": navLinks.length } as any}
           className="tournament__links-container"
         >
-          <NavLink className="tournament__nav-link" to="overview">
-            Overview
-          </NavLink>
-          <NavLink
-            className="tournament__nav-link"
-            to="map-pool"
-            data-cy="map-pool-nav-link"
-          >
-            Map Pool
-          </NavLink>
-          <NavLink className="tournament__nav-link" to="bracket">
-            Bracket
-          </NavLink>
-          <NavLink
-            className="tournament__nav-link"
-            to="teams"
-            data-cy="teams-nav-link"
-          >
-            Teams ({data.teams.length})
-          </NavLink>
-          <NavLink className="tournament__nav-link" to="streams">
-            Streams (4)
-          </NavLink>
+          {navLinks.map(({ code, text }) => (
+            <NavLink
+              key={code}
+              className="tournament__nav-link"
+              to={code}
+              data-cy={`${code}-nav-link`}
+            >
+              {text}
+            </NavLink>
+          ))}
         </div>
       )}
       <Outlet />
