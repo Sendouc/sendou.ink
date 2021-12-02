@@ -13,6 +13,7 @@ export default function ManageRosterPage() {
   const [, parentRoute] = useMatches();
   const tournamentData = parentRoute.data as FindTournamentByNameForUrlI;
   const [urlWithInviteCode, setUrlWithInviteCode] = React.useState("");
+  const [showCopied, setShowCopied] = React.useState(false);
 
   const ownTeam = tournamentData.teams.find(({ inviteCode }) =>
     Boolean(inviteCode)
@@ -21,12 +22,19 @@ export default function ManageRosterPage() {
   React.useEffect(() => {
     if (ownTeam) {
       setUrlWithInviteCode(
-        `${window.location.href.replace("/register", "")}?join=${
+        `${window.location.href.replace("/manage-roster", "")}?join=${
           ownTeam.inviteCode
         }`
       );
     }
   }, []);
+
+  React.useEffect(() => {
+    if (!showCopied) return;
+    const timeout = setTimeout(() => setShowCopied(false), 3000);
+
+    return () => clearTimeout(timeout);
+  }, [showCopied]);
 
   // TODO: if not a captain of a team -> redirect
   if (!ownTeam) return null;
@@ -47,7 +55,7 @@ export default function ManageRosterPage() {
           </select>
           <button
             className="tournament__manage-roster__input__button"
-            onClick={() => navigator.clipboard.writeText(urlWithInviteCode)}
+            onClick={() => console.log("todo: handle add")}
           >
             Add to roster
           </button>
@@ -64,9 +72,12 @@ export default function ManageRosterPage() {
           />
           <button
             className="tournament__manage-roster__input__button"
-            onClick={() => navigator.clipboard.writeText(urlWithInviteCode)}
+            onClick={() => {
+              navigator.clipboard.writeText(urlWithInviteCode);
+              setShowCopied(true);
+            }}
           >
-            Copy to clipboard
+            {showCopied ? "Copied!" : "Copy to clipboard"}
           </button>
         </div>
       </div>
