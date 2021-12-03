@@ -27,10 +27,10 @@ describe("Before tournament starts", () => {
     cy.contains("Log in to register");
 
     cy.getCy("map-pool-nav-link").click();
-    cy.contains("23 maps");
-    cy.get('[alt="Starfish Mainstage"]').should(
-      "have.css",
-      "filter: grayscale(100%);"
+    cy.contains("24 maps");
+    cy.get('[alt="Moray Towers"]').should(
+      "have.class",
+      "map-pool__stage-image-disabled"
     );
   });
 });
