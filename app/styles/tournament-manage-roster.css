@@ -1,15 +1,15 @@
 .tournament__manage-roster {
   display: flex;
+  width: 100%;
   flex-direction: column;
   gap: var(--s-8);
   margin-block-start: var(--s-4);
-  width: 100%;
 }
 
 .tournament__manage-roster__actions {
   display: grid;
-  grid-template-columns: 1fr 1fr;
   width: 100%;
+  grid-template-columns: 1fr 1fr;
 }
 
 .tournament__manage-roster__actions__section {

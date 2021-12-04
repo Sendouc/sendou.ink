@@ -1,6 +1,6 @@
 .tournament__container {
-  width: 100%;
   display: flex;
+  width: 100%;
   flex-direction: column;
   align-items: center;
   margin: 0 auto;
@@ -84,11 +84,11 @@
 .info-banner__top-row__tournament-name {
   border-color: var(--text);
   border-inline-start: 1px solid;
+  color: var(--text);
   font-size: var(--fonts-xl);
   font-weight: var(--extra-bold);
   padding-inline-start: var(--s-4);
   text-decoration: none;
-  color: var(--text);
 }
 
 .info-banner__bottom-row {
@@ -137,6 +137,7 @@
 }
 
 .info-banner__action-button {
+  all: unset;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -144,6 +145,7 @@
   border-color: var(--text-transparent);
   border-radius: var(--rounded);
   color: inherit;
+  cursor: pointer;
   font-size: var(--fonts-sm);
   font-weight: var(--bold);
   padding-block: var(--s-2);

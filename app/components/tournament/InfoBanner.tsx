@@ -122,12 +122,13 @@ function InfoBannerActionButton() {
   const tournamentHasConcluded = new Date(data.startTime) < now;
   if (tournamentHasConcluded) return null;
 
-  if (!user)
+  if (!user) {
     return (
-      <Link to="register" className="info-banner__action-button">
-        Log in to register
-      </Link>
+      <form action="/auth/discord" method="post">
+        <button className="info-banner__action-button">Log in to join</button>
+      </form>
     );
+  }
 
   const isAlreadyInATeamButNotCaptain = data.teams
     .flatMap((team) => team.members)

@@ -1,0 +1,10 @@
+.tournament__join-team {
+  padding-block-start: var(--s-4);
+}
+
+.tournament__join-team__buttons {
+  display: flex;
+  justify-content: center;
+  gap: var(--s-2);
+  padding-block-start: var(--s-4);
+}

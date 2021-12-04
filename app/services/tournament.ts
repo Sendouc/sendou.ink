@@ -105,11 +105,58 @@ function discordInviteToUrl(discordInvite: string) {
   return `https://discord.com/invite/${discordInvite}`;
 }
 
-function censorInviteCodeIfNotCaptain(
-  inviteCode: string,
-  members: { member: { id: number }; captain: boolean }[]
-) {
-  return inviteCode;
+export async function findTournamentWithInviteCodes({
+  organizationNameForUrl,
+  tournamentNameForUrl,
+}: {
+  organizationNameForUrl: string;
+  tournamentNameForUrl: string;
+}) {
+  const tournaments = await db.tournament.findMany({
+    where: {
+      nameForUrl: tournamentNameForUrl.toLowerCase(),
+    },
+    select: {
+      startTime: true,
+      organizer: {
+        select: {
+          nameForUrl: true,
+        },
+      },
+      mapPool: {
+        select: {
+          mode: true,
+          name: true,
+        },
+      },
+      teams: {
+        select: {
+          name: true,
+          inviteCode: true,
+          members: {
+            select: {
+              captain: true,
+              member: {
+                select: {
+                  discordName: true,
+                  id: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const result = tournaments.find(
+    (tournament) =>
+      tournament.organizer.nameForUrl === organizationNameForUrl.toLowerCase()
+  );
+
+  if (!result) throw json("Not Found", { status: 404 });
+
+  return result;
 }
 
 export function createTournamentTeam({

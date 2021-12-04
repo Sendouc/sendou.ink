@@ -54,9 +54,9 @@ export default function TournamentPage() {
   const data = useLoaderData<FindTournamentByNameForUrlI>();
   const location = useLocation();
 
-  const displayNavLinks =
-    !location.pathname.endsWith("register") &&
-    !location.pathname.endsWith("manage-roster");
+  const displayNavLinks = ["register", "manage-roster", "join-team"].every(
+    (urlPart) => !location.pathname.endsWith(urlPart)
+  );
 
   const navLinks = (() => {
     const result: { code: string; text: string }[] = [
@@ -91,6 +91,7 @@ export default function TournamentPage() {
               className="tournament__nav-link"
               to={code}
               data-cy={`${code}-nav-link`}
+              prefetch="intent"
             >
               {text}
             </NavLink>

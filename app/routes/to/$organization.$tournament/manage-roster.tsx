@@ -22,7 +22,7 @@ export default function ManageRosterPage() {
   React.useEffect(() => {
     if (ownTeam) {
       setUrlWithInviteCode(
-        `${window.location.href.replace("/manage-roster", "")}?join=${
+        `${window.location.href.replace("manage-roster", "join-team")}?code=${
           ownTeam.inviteCode
         }`
       );

@@ -118,8 +118,14 @@ input:not(.plain) {
   outline: none;
 }
 
+input:user-invalid {
+  border-color: transparent;
+  outline: 2px solid var(--theme-error);
+}
+
 input:not(.plain):focus-within {
   border-color: transparent;
+
   /* TODO: rectangle on Safari */
   outline: 2px solid var(--theme);
 }
@@ -131,11 +137,6 @@ input:not(.plain)::placeholder {
 }
 
 input:not(.plain).error {
-  border-color: transparent;
-  outline: 2px solid var(--theme-error);
-}
-
-input:user-invalid {
   border-color: transparent;
   outline: 2px solid var(--theme-error);
 }
@@ -154,10 +155,8 @@ fieldset {
 
 select {
   all: unset;
-  padding-block: 3.5px;
-  padding-inline: var(--s-3);
-  border: 1px solid var(--border);
   width: 90%;
+  border: 1px solid var(--border);
 
   /* TODO: Get color from CSS var */
   background-image: url('data:image/svg+xml;utf8,<svg width="1rem" color="rgb(255 255 255 / 55%)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>');
@@ -167,11 +166,13 @@ select {
   border-radius: var(--rounded);
   cursor: pointer;
   font-weight: 500;
+  padding-block: 3.5px;
+  padding-inline: var(--s-3);
 }
 
 select::selection {
-  font-weight: bold;
   overflow: hidden;
+  font-weight: bold;
 }
 
 .form-validation-error {
@@ -184,13 +185,13 @@ select::selection {
 .alert {
   display: flex;
   align-items: center;
-  gap: var(--s-2);
-  border-radius: var(--rounded);
   padding: var(--s-2-5);
   background: url("/svg/background-pattern.svg");
   background-color: var(--bg-lighter);
-  font-weight: var(--bold);
+  border-radius: var(--rounded);
   font-size: var(--fonts-sm);
+  font-weight: var(--bold);
+  gap: var(--s-2);
 }
 
 .alert > svg {
