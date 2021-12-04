@@ -6,14 +6,35 @@ import {
   useNavigate,
   useMatches,
 } from "remix";
-import type { LoaderFunction, LinksFunction } from "remix";
-import { findTournamentWithInviteCodes } from "~/services/tournament";
+import type { LoaderFunction, LinksFunction, ActionFunction } from "remix";
+import {
+  FindTournamentByNameForUrlI,
+  findTournamentWithInviteCodes,
+  joinTeam,
+} from "~/services/tournament";
 import styles from "~/styles/tournament-join-team.css";
 import invariant from "tiny-invariant";
-import { getUser } from "~/utils";
+import { getUser, requireUser } from "~/utils";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
+};
+
+export const action: ActionFunction = async ({ request, context, params }) => {
+  const formData = await request.formData();
+  const inviteCode = formData.get("inviteCode");
+  const tournamentId = formData.get("tournamentId");
+  invariant(typeof inviteCode === "string", "Invalid type for inviteCode.");
+  invariant(
+    typeof tournamentId === "string",
+    "Invalid type for tournament id."
+  );
+
+  const user = requireUser(context);
+
+  await joinTeam({ inviteCode, userId: user.id, tournamentId: tournamentId });
+
+  return redirect(`/to/${params.organization}/${params.tournament}/teams`);
 };
 
 const INVITE_CODE_LENGTH = 36;
@@ -24,7 +45,7 @@ type ResponseObject =
   | { status: "LOG_IN" }
   | { status: "ALREADY_JOINED"; teamName: string }
   | { status: "INVALID" }
-  | { status: "OK"; teamName: string; inviterName: string };
+  | { status: "OK"; teamName: string; inviterName: string; inviteCode: string };
 
 const typedJson = (args: ResponseObject) => json(args);
 
@@ -87,6 +108,7 @@ export const loader: LoaderFunction = async ({ request, params, context }) => {
   return typedJson({
     status: "OK",
     teamName: teamInvitedTo.name,
+    inviteCode,
     inviterName: teamInvitedTo.members.find(({ captain }) => captain)!.member
       .discordName,
   });
@@ -105,6 +127,7 @@ export default function JoinTeamPage() {
 function Contents({ data }: { data: ResponseObject }) {
   const navigate = useNavigate();
   const [, parentRoute] = useMatches();
+  const parentRouteData = parentRoute.data as FindTournamentByNameForUrlI;
 
   switch (data.status) {
     case "NO_CODE":
@@ -140,6 +163,12 @@ function Contents({ data }: { data: ResponseObject }) {
           {data.inviterName} invited you to join {data.teamName} for this
           tournament. Accept invite?
           <Form method="post">
+            <input
+              type="hidden"
+              name="tournamentId"
+              value={parentRouteData.id}
+            />
+            <input type="hidden" name="inviteCode" value={data.inviteCode} />
             <div className="tournament__join-team__buttons">
               <button type="submit">Join</button>
               <button

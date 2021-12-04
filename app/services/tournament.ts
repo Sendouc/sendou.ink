@@ -1,5 +1,9 @@
 import { Prisma } from ".prisma/client";
 import { json } from "remix";
+import {
+  TOURNAMENT_TEAM_ROSTER_MAX_SIZE,
+  TOURNAMENT_TEAM_ROSTER_MIN_SIZE,
+} from "~/constants";
 import { Serialized } from "~/utils";
 import { db } from "~/utils/db.server";
 
@@ -86,6 +90,31 @@ export async function findTournamentByNameForUrl({
         : "",
     })),
   };
+
+  if (userId) {
+    result.teams.sort((teamA, teamB) => {
+      // show team the user is member of first
+      let aSortValue = Number(
+        teamB.members.some(({ member }) => member.id === userId)
+      );
+      let bSortValue = Number(
+        teamA.members.some(({ member }) => member.id === userId)
+      );
+      if (aSortValue !== bSortValue) return aSortValue - bSortValue;
+
+      // TODO: show stronger teams first
+
+      // otherwise let's show full teams first
+      aSortValue = Number(
+        teamB.members.length >= TOURNAMENT_TEAM_ROSTER_MIN_SIZE
+      );
+      bSortValue = Number(
+        teamA.members.length >= TOURNAMENT_TEAM_ROSTER_MIN_SIZE
+      );
+      console.log({ aSortValue, bSortValue });
+      return aSortValue - bSortValue;
+    });
+  }
 
   result.organizer.twitter = twitterToUrl(result.organizer.twitter);
   result.organizer.discordInvite = discordInviteToUrl(
@@ -179,6 +208,39 @@ export function createTournamentTeam({
           captain: true,
         },
       },
+    },
+  });
+}
+
+export async function joinTeam({
+  tournamentId,
+  inviteCode,
+  userId,
+}: {
+  tournamentId: string;
+  inviteCode: string;
+  userId: string;
+}) {
+  const tournament = await db.tournament.findUnique({
+    where: { id: tournamentId },
+    include: { teams: { include: { members: true } } },
+  });
+
+  if (!tournament) throw json("Invalid tournament id", { status: 400 });
+
+  const tournamentTeamToJoin = tournament.teams.find(
+    (team) => team.inviteCode === inviteCode
+  );
+  if (!tournamentTeamToJoin) throw json("Invalid invite code", { status: 400 });
+  if (tournamentTeamToJoin.members.length >= TOURNAMENT_TEAM_ROSTER_MAX_SIZE) {
+    throw json("Team is already full", { status: 400 });
+  }
+
+  return db.tournamentTeamMember.create({
+    data: {
+      tournamentId,
+      teamId: tournamentTeamToJoin.id,
+      memberId: userId,
     },
   });
 }

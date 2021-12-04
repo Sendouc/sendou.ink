@@ -48,3 +48,6 @@ export const navItems = [
 export const ADMIN_TEST_UUID = "846e12eb-d373-4002-a0c3-e23077e1c88c";
 export const ADMIN_TEST_DISCORD_ID = "79237403620945920";
 export const ADMIN_TEST_AVATAR = "fcfd65a3bea598905abb9ca25296816b";
+
+export const TOURNAMENT_TEAM_ROSTER_MIN_SIZE = 4;
+export const TOURNAMENT_TEAM_ROSTER_MAX_SIZE = 6;
