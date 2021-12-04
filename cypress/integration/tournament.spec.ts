@@ -19,12 +19,12 @@ describe("Before tournament starts", () => {
     cy.wait("@tournaments");
     cy.getCy("team-name-input").clear().type("Team Olive V2");
     cy.getCy("register-submit-button").click();
-    cy.contains("You need at least 4 players in your roster to play (max 6)");
+    cy.getCy("team-size-alert");
   });
 
   it("Can view details of the tournament", () => {
     cy.visit("/to/sendou/in-the-zone-x");
-    cy.contains("Log in to register");
+    cy.getCy("log-in-to-join-button");
 
     cy.getCy("map-pool-nav-link").click();
     cy.contains("24 maps");

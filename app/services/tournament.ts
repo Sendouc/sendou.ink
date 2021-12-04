@@ -111,7 +111,6 @@ export async function findTournamentByNameForUrl({
       bSortValue = Number(
         teamA.members.length >= TOURNAMENT_TEAM_ROSTER_MIN_SIZE
       );
-      console.log({ aSortValue, bSortValue });
       return aSortValue - bSortValue;
     });
   }

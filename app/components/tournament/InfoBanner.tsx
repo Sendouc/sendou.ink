@@ -125,7 +125,12 @@ function InfoBannerActionButton() {
   if (!user) {
     return (
       <form action="/auth/discord" method="post">
-        <button className="info-banner__action-button">Log in to join</button>
+        <button
+          className="info-banner__action-button"
+          data-cy="log-in-to-join-button"
+        >
+          Log in to join
+        </button>
       </form>
     );
   }

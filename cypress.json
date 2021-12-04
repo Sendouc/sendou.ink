@@ -1,5 +1,6 @@
 {
   "pluginsFile": "cypress/plugins/index.cjs",
   "baseUrl": "http://localhost:3000",
-  "watchForFileChanges": false
+  "watchForFileChanges": false,
+  "experimentalSourceRewriting": true
 }

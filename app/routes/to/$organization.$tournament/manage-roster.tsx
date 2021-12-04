@@ -46,7 +46,7 @@ export default function ManageRosterPage() {
   return (
     <div className="tournament__manage-roster">
       {ownTeam.members.length < 4 && (
-        <Alert type="warning">
+        <Alert type="warning" data-cy="team-size-alert">
           You need at least {TOURNAMENT_TEAM_ROSTER_MIN_SIZE} players in your
           roster to play (max {TOURNAMENT_TEAM_ROSTER_MAX_SIZE})
         </Alert>

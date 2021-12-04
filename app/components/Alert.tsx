@@ -1,16 +1,14 @@
 import { AlertIcon } from "./icons/Alert";
 
-export function Alert({
-  children,
-  type,
-}: {
+export function Alert(props: {
   children: React.ReactNode;
   type: "warning";
+  "data-cy"?: string;
 }) {
   return (
-    <div data-type={type} className="alert">
+    <div data-type={props.type} className="alert" data-cy={props["data-cy"]}>
       <AlertIcon />
-      {children}
+      {props.children}
     </div>
   );
 }
