@@ -31,6 +31,7 @@ export async function seed() {
     await prisma.tournamentTeam.deleteMany();
     await prisma.tournament.deleteMany();
     await prisma.organization.deleteMany();
+    await prisma.trustRelationships.deleteMany();
     await prisma.user.deleteMany();
     await prisma.stage.deleteMany();
 

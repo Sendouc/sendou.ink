@@ -6,10 +6,17 @@
   margin-block-start: var(--s-4);
 }
 
+.tournament__manage-roster__roster-container {
+  margin: 0 auto;
+}
+
 .tournament__manage-roster__actions {
-  display: grid;
+  display: flex;
   width: 100%;
-  grid-template-columns: 1fr 1fr;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: var(--s-14);
+  row-gap: var(--s-8);
 }
 
 .tournament__manage-roster__actions__section {

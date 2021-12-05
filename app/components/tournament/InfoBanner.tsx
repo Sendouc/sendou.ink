@@ -151,7 +151,11 @@ function InfoBannerActionButton() {
     .some(({ member }) => member.id === user.id);
   if (alreadyRegistered) {
     return (
-      <Link to="manage-roster" className="info-banner__action-button">
+      <Link
+        to="manage-roster"
+        className="info-banner__action-button"
+        prefetch="intent"
+      >
         Manage roster
       </Link>
     );

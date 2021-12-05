@@ -167,7 +167,7 @@
   display: grid;
   column-gap: var(--s-6);
   grid-template-columns: 1fr;
-  row-gap: var(--s-10);
+  row-gap: var(--s-4);
 }
 
 .teams-tab__team-name {

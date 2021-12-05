@@ -38,7 +38,7 @@ export const loader: LoaderFunction = async ({ params, context }) => {
   );
 
   const user = requireUser(context);
-  const [ownTeam, trustingUsers] = await Promise.all([
+  let [ownTeam, trustingUsers] = await Promise.all([
     ownTeamWithInviteCode({
       organizationNameForUrl: params.organization,
       tournamentNameForUrl: params.tournament,
@@ -46,6 +46,10 @@ export const loader: LoaderFunction = async ({ params, context }) => {
     }),
     getTrustingUsers(user.id),
   ]);
+
+  trustingUsers = trustingUsers.filter(({ trustGiver }) => {
+    return !ownTeam.members.some(({ member }) => member.id === trustGiver.id);
+  });
 
   return typedJson({ ownTeam, trustingUsers });
 };
@@ -76,22 +80,10 @@ export default function ManageRosterPage() {
           roster to play (max {TOURNAMENT_TEAM_ROSTER_MAX_SIZE})
         </Alert>
       )}
-      <TeamRoster team={ownTeam} />
+      <div className="tournament__manage-roster__roster-container">
+        <TeamRoster team={ownTeam} />
+      </div>
       <div className="tournament__manage-roster__actions">
-        <div className="tournament__manage-roster__actions__section">
-          <label>Add players you previously played with</label>
-          <select className="tournament__manage-roster__select">
-            {trustingUsers.map(({ trustGiver }) => (
-              <option key={trustGiver.id}>{trustGiver.discordName}</option>
-            ))}
-          </select>
-          <button
-            className="tournament__manage-roster__input__button"
-            onClick={() => console.log("todo: handle add")}
-          >
-            Add to roster
-          </button>
-        </div>
         <div className="tournament__manage-roster__actions__section">
           <label htmlFor="inviteCodeInput">
             Share this URL to invite players to your team
@@ -112,6 +104,22 @@ export default function ManageRosterPage() {
             {showCopied ? "Copied!" : "Copy to clipboard"}
           </button>
         </div>
+        {trustingUsers.length > 0 && (
+          <div className="tournament__manage-roster__actions__section">
+            <label>Add players you previously played with</label>
+            <select className="tournament__manage-roster__select">
+              {trustingUsers.map(({ trustGiver }) => (
+                <option key={trustGiver.id}>{trustGiver.discordName}</option>
+              ))}
+            </select>
+            <button
+              className="tournament__manage-roster__input__button"
+              onClick={() => console.log("todo: handle add")}
+            >
+              Add to roster
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
