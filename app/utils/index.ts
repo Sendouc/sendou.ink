@@ -1,4 +1,5 @@
 import { json, useMatches } from "remix";
+import invariant from "tiny-invariant";
 
 export const makeTitle = (endOfTitle?: string) =>
   endOfTitle ? `sendou.ink | ${endOfTitle}` : "sendou.ink";
@@ -19,6 +20,28 @@ export const getUser = (ctx: any) => {
   const user = ctx.user;
 
   return user as LoggedInUser;
+};
+
+/** Get fields from `request.formData()`. Throw an error if the formData doesn't contain a requested field.  */
+export const formDataFromRequest = async <T extends string>({
+  request,
+  fields,
+}: {
+  request: Request;
+  fields: T[];
+}): Promise<Record<T, string>> => {
+  const formData = await request.formData();
+  let result: Partial<Record<T, string>> = {};
+
+  for (const field of fields) {
+    const value = formData.get(field);
+
+    invariant(typeof value === "string", `Expected ${field} to be string`);
+
+    result[field] = value;
+  }
+
+  return result as Record<T, string>;
 };
 
 export type LoggedInUser = {

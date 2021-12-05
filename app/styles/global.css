@@ -164,6 +164,7 @@ fieldset {
   all: inherit;
 }
 
+/* TODO: bug: white on white on Edge */
 select {
   all: unset;
   width: 90%;

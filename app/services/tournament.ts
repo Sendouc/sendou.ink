@@ -143,6 +143,7 @@ export async function ownTeamWithInviteCode({
       },
       teams: {
         select: {
+          id: true,
           name: true,
           inviteCode: true,
           members: {
@@ -257,7 +258,7 @@ export function createTournamentTeam({
   });
 }
 
-export async function joinTeam({
+export async function joinTeamViaInviteCode({
   tournamentId,
   inviteCode,
   userId,
@@ -273,6 +274,8 @@ export async function joinTeam({
 
   if (!tournament) throw new Response("Invalid tournament id", { status: 400 });
 
+  // TODO: 400 if tournament already started / concluded (depending on if tournament allows mid-event roster additions)
+
   const tournamentTeamToJoin = tournament.teams.find(
     (team) => team.inviteCode === inviteCode
   );
@@ -287,6 +290,45 @@ export async function joinTeam({
       tournamentId,
       teamId: tournamentTeamToJoin.id,
       memberId: userId,
+    },
+  });
+}
+
+export async function putPlayerToTeam({
+  teamId,
+  captainId,
+  newPlayerId,
+}: {
+  teamId: string;
+  captainId: string;
+  newPlayerId: string;
+}) {
+  const tournamentTeam = await db.tournamentTeam.findUnique({
+    where: { id: teamId },
+    include: { tournament: true, members: true },
+  });
+
+  if (!tournamentTeam) throw new Response("Invalid team id", { status: 400 });
+
+  // TODO: 400 if tournament already started / concluded (depending on if tournament allows mid-event roster additions)
+
+  if (tournamentTeam.members.length >= TOURNAMENT_TEAM_ROSTER_MAX_SIZE) {
+    throw new Response("Team is already full", { status: 400 });
+  }
+
+  if (
+    !tournamentTeam.members.some(
+      ({ memberId, captain }) => captain && memberId === captainId
+    )
+  ) {
+    throw new Response("Not captain of the team", { status: 401 });
+  }
+
+  return db.tournamentTeamMember.create({
+    data: {
+      tournamentId: tournamentTeam.tournament.id,
+      teamId,
+      memberId: newPlayerId,
     },
   });
 }

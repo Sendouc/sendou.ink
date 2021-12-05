@@ -1,7 +1,20 @@
+import { Prisma } from ".prisma/client";
 import * as React from "react";
-import { LinksFunction, useLoaderData, json, useLocation } from "remix";
-import type { LoaderFunction } from "remix";
+import {
+  ActionFunction,
+  json,
+  LinksFunction,
+  LoaderFunction,
+  useActionData,
+  useLoaderData,
+  useLocation,
+  useTransition,
+} from "remix";
+import invariant from "tiny-invariant";
 import { Alert } from "~/components/Alert";
+import { Button } from "~/components/Button";
+import ErrorMessage from "~/components/ErrorMessage";
+import { MyForm } from "~/components/MyForm";
 import { TeamRoster } from "~/components/tournament/TeamRoster";
 import {
   TOURNAMENT_TEAM_ROSTER_MAX_SIZE,
@@ -10,14 +23,49 @@ import {
 import {
   ownTeamWithInviteCode,
   OwnTeamWithInviteCodeI,
+  putPlayerToTeam,
 } from "~/services/tournament";
-import styles from "~/styles/tournament-manage-roster.css";
-import { requireUser, useBaseURL } from "~/utils";
 import { getTrustingUsers, GetTrustingUsersI } from "~/services/user";
-import invariant from "tiny-invariant";
+import styles from "~/styles/tournament-manage-roster.css";
+import { formDataFromRequest, requireUser, useBaseURL } from "~/utils";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
+};
+
+type ActionData = {
+  fieldErrors?: { userId?: string | undefined };
+  fields?: {
+    userId: string;
+  };
+};
+
+export const action: ActionFunction = async ({
+  request,
+  context,
+}): Promise<Response | ActionData> => {
+  const { userId, teamId } = await formDataFromRequest({
+    request,
+    fields: ["userId", "teamId"],
+  });
+
+  const user = requireUser(context);
+
+  try {
+    await putPlayerToTeam({ teamId, captainId: user.id, newPlayerId: userId });
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === "P2002" && e.message.includes("`tournamentId`")) {
+        return {
+          fieldErrors: { userId: "This player is already in a team." },
+          fields: { userId },
+        };
+      }
+    }
+    throw e;
+  }
+
+  return new Response("Added player to team", { status: 200 });
 };
 
 type Data = {
@@ -54,11 +102,14 @@ export const loader: LoaderFunction = async ({ params, context }) => {
   return typedJson({ ownTeam, trustingUsers });
 };
 
+// TODO: should not 404 but redirect instead - catchBoundary?
 export default function ManageRosterPage() {
+  const actionData = useActionData<ActionData | undefined>();
   const [showCopied, setShowCopied] = React.useState(false);
   const { ownTeam, trustingUsers } = useLoaderData<Data>();
   const baseURL = useBaseURL();
   const location = useLocation();
+  const transition = useTransition();
 
   React.useEffect(() => {
     if (!showCopied) return;
@@ -75,6 +126,7 @@ export default function ManageRosterPage() {
   return (
     <div className="tournament__manage-roster">
       {ownTeam.members.length < 4 && (
+        // TODO: show alert when team is full
         <Alert type="warning" data-cy="team-size-alert">
           You need at least {TOURNAMENT_TEAM_ROSTER_MIN_SIZE} players in your
           roster to play (max {TOURNAMENT_TEAM_ROSTER_MAX_SIZE})
@@ -100,24 +152,39 @@ export default function ManageRosterPage() {
               navigator.clipboard.writeText(urlWithInviteCode);
               setShowCopied(true);
             }}
+            type="button"
           >
             {showCopied ? "Copied!" : "Copy to clipboard"}
           </button>
         </div>
         {trustingUsers.length > 0 && (
           <div className="tournament__manage-roster__actions__section">
-            <label>Add players you previously played with</label>
-            <select className="tournament__manage-roster__select">
-              {trustingUsers.map(({ trustGiver }) => (
-                <option key={trustGiver.id}>{trustGiver.discordName}</option>
-              ))}
-            </select>
-            <button
-              className="tournament__manage-roster__input__button"
-              onClick={() => console.log("todo: handle add")}
-            >
-              Add to roster
-            </button>
+            <MyForm hiddenFields={{ teamId: ownTeam.id }}>
+              <label htmlFor="userId">
+                Add players you previously played with
+              </label>
+              <select
+                className="tournament__manage-roster__select"
+                name="userId"
+                id="userId"
+                defaultValue={actionData?.fields?.userId}
+              >
+                {trustingUsers.map(({ trustGiver }) => (
+                  <option key={trustGiver.id} value={trustGiver.id}>
+                    {trustGiver.discordName}
+                  </option>
+                ))}
+              </select>
+              <ErrorMessage errorMsg={actionData?.fieldErrors?.userId} />
+              <Button
+                className="tournament__manage-roster__input__button"
+                type="submit"
+                loadingText="Adding..."
+                loading={transition.state !== "idle"}
+              >
+                Add to roster
+              </Button>
+            </MyForm>
           </div>
         )}
       </div>

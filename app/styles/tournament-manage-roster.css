@@ -22,7 +22,8 @@
 .tournament__manage-roster__actions__section {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
+  width: 18rem;
 }
 
 .tournament__manage-roster__input {

@@ -13,7 +13,7 @@ import { MyForm } from "~/components/MyForm";
 import {
   FindTournamentByNameForUrlI,
   findTournamentWithInviteCodes,
-  joinTeam,
+  joinTeamViaInviteCode,
 } from "~/services/tournament";
 import styles from "~/styles/tournament-join-team.css";
 import { getUser, requireUser } from "~/utils";
@@ -34,7 +34,11 @@ export const action: ActionFunction = async ({ request, context, params }) => {
 
   const user = requireUser(context);
 
-  await joinTeam({ inviteCode, userId: user.id, tournamentId: tournamentId });
+  await joinTeamViaInviteCode({
+    inviteCode,
+    userId: user.id,
+    tournamentId: tournamentId,
+  });
 
   return redirect(`/to/${params.organization}/${params.tournament}/teams`);
 };
@@ -129,8 +133,8 @@ export default function JoinTeamPage() {
 function Contents({ data }: { data: Data }) {
   const navigate = useNavigate();
   const [, parentRoute] = useMatches();
-  const transition = useTransition();
   const parentRouteData = parentRoute.data as FindTournamentByNameForUrlI;
+  const transition = useTransition();
 
   switch (data.status) {
     case "NO_CODE":
