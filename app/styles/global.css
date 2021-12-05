@@ -155,7 +155,7 @@ label {
 }
 
 fieldset {
-  all: unset;
+  all: inherit;
 }
 
 select {

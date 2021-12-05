@@ -1,7 +1,6 @@
 import { Prisma } from ".prisma/client";
 import {
   ActionFunction,
-  Form,
   LinksFunction,
   redirect,
   useActionData,
@@ -13,6 +12,7 @@ import {
 import invariant from "tiny-invariant";
 import { Button } from "~/components/Button";
 import ErrorMessage from "~/components/ErrorMessage";
+import { MyForm } from "~/components/MyForm";
 import {
   createTournamentTeam,
   FindTournamentByNameForUrlI,
@@ -119,47 +119,40 @@ export default function RegisterPage() {
     <div className="tournament__register__container">
       <h2 className="tournament__register__header">Register now</h2>
       <div className="tournament__register__content">
-        <Form method="post">
-          <fieldset disabled={transition.state !== "idle"}>
-            <label htmlFor="teamName">Team name</label>
-            <input
-              type="hidden"
-              name="tournamentId"
-              value={tournamentData.id}
-            />
-            <input
-              name="teamName"
-              id="teamName"
-              defaultValue={actionData?.fields?.teamName}
-              required
-              minLength={TEAM_NAME_MIN_LENGTH}
-              maxLength={TEAM_NAME_MAX_LENGTH}
-              data-cy="team-name-input"
-            />
-            <ErrorMessage errorMsg={actionData?.fieldErrors?.teamName} />
-            <div className="tournament__register__buttons-container">
+        <MyForm hiddenFields={{ tournamentId: tournamentData.id }}>
+          <label htmlFor="teamName">Team name</label>
+          <input
+            name="teamName"
+            id="teamName"
+            defaultValue={actionData?.fields?.teamName}
+            required
+            minLength={TEAM_NAME_MIN_LENGTH}
+            maxLength={TEAM_NAME_MAX_LENGTH}
+            data-cy="team-name-input"
+          />
+          <ErrorMessage errorMsg={actionData?.fieldErrors?.teamName} />
+          <div className="tournament__register__buttons-container">
+            <Button
+              type="submit"
+              data-cy="register-submit-button"
+              loading={transition.state !== "idle"}
+              loadingText="Submitting..."
+            >
+              Submit
+            </Button>
+            {transition.state === "idle" && (
               <Button
-                type="submit"
-                data-cy="register-submit-button"
-                loading={transition.state !== "idle"}
-                loadingText="Submitting..."
+                variant="outlined"
+                type="button"
+                onClick={() =>
+                  navigate(location.pathname.replace("/register", ""))
+                }
               >
-                Submit
+                Cancel
               </Button>
-              {transition.state === "idle" && (
-                <Button
-                  variant="outlined"
-                  type="button"
-                  onClick={() =>
-                    navigate(location.pathname.replace("/register", ""))
-                  }
-                >
-                  Cancel
-                </Button>
-              )}
-            </div>
-          </fieldset>
-        </Form>
+            )}
+          </div>
+        </MyForm>
       </div>
     </div>
   );

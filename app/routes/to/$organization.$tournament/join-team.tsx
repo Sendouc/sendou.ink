@@ -1,22 +1,22 @@
+import type { ActionFunction, LinksFunction, LoaderFunction } from "remix";
 import {
   json,
-  useLoaderData,
   redirect,
-  Form,
-  useNavigate,
+  useLoaderData,
   useMatches,
+  useNavigate,
   useTransition,
 } from "remix";
-import type { LoaderFunction, LinksFunction, ActionFunction } from "remix";
+import invariant from "tiny-invariant";
+import { Button } from "~/components/Button";
+import { MyForm } from "~/components/MyForm";
 import {
   FindTournamentByNameForUrlI,
   findTournamentWithInviteCodes,
   joinTeam,
 } from "~/services/tournament";
 import styles from "~/styles/tournament-join-team.css";
-import invariant from "tiny-invariant";
 import { getUser, requireUser } from "~/utils";
-import { Button } from "~/components/Button";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -165,13 +165,12 @@ function Contents({ data }: { data: ResponseObject }) {
         <div>
           {data.inviterName} invited you to join {data.teamName} for this
           tournament. Accept invite?
-          <Form method="post">
-            <input
-              type="hidden"
-              name="tournamentId"
-              value={parentRouteData.id}
-            />
-            <input type="hidden" name="inviteCode" value={data.inviteCode} />
+          <MyForm
+            hiddenFields={{
+              tournamentId: parentRouteData.id,
+              inviteCode: data.inviteCode,
+            }}
+          >
             <div className="tournament__join-team__buttons">
               <Button
                 type="submit"
@@ -190,7 +189,7 @@ function Contents({ data }: { data: ResponseObject }) {
                 </Button>
               )}
             </div>
-          </Form>
+          </MyForm>
         </div>
       );
     default:
