@@ -11,6 +11,7 @@ import {
   useTransition,
 } from "remix";
 import invariant from "tiny-invariant";
+import { Button } from "~/components/Button";
 import ErrorMessage from "~/components/ErrorMessage";
 import {
   createTournamentTeam,
@@ -137,18 +138,25 @@ export default function RegisterPage() {
             />
             <ErrorMessage errorMsg={actionData?.fieldErrors?.teamName} />
             <div className="tournament__register__buttons-container">
-              <button
-                className="outlined"
-                type="button"
-                onClick={() =>
-                  navigate(location.pathname.replace("/register", ""))
-                }
+              <Button
+                type="submit"
+                data-cy="register-submit-button"
+                loading={transition.state !== "idle"}
+                loadingText="Submitting..."
               >
-                Cancel
-              </button>
-              <button type="submit" data-cy="register-submit-button">
-                {transition.state === "idle" ? "Submit" : "Submitting..."}
-              </button>
+                Submit
+              </Button>
+              {transition.state === "idle" && (
+                <Button
+                  variant="outlined"
+                  type="button"
+                  onClick={() =>
+                    navigate(location.pathname.replace("/register", ""))
+                  }
+                >
+                  Cancel
+                </Button>
+              )}
             </div>
           </fieldset>
         </Form>

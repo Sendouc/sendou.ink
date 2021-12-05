@@ -5,6 +5,7 @@ import {
   Form,
   useNavigate,
   useMatches,
+  useTransition,
 } from "remix";
 import type { LoaderFunction, LinksFunction, ActionFunction } from "remix";
 import {
@@ -15,6 +16,7 @@ import {
 import styles from "~/styles/tournament-join-team.css";
 import invariant from "tiny-invariant";
 import { getUser, requireUser } from "~/utils";
+import { Button } from "~/components/Button";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -127,6 +129,7 @@ export default function JoinTeamPage() {
 function Contents({ data }: { data: ResponseObject }) {
   const navigate = useNavigate();
   const [, parentRoute] = useMatches();
+  const transition = useTransition();
   const parentRouteData = parentRoute.data as FindTournamentByNameForUrlI;
 
   switch (data.status) {
@@ -170,14 +173,22 @@ function Contents({ data }: { data: ResponseObject }) {
             />
             <input type="hidden" name="inviteCode" value={data.inviteCode} />
             <div className="tournament__join-team__buttons">
-              <button type="submit">Join</button>
-              <button
-                className="outlined"
-                type="button"
-                onClick={() => navigate(parentRoute.pathname)}
+              <Button
+                type="submit"
+                loadingText="Joining..."
+                loading={transition.state !== "idle"}
               >
-                Don't join
-              </button>
+                Join
+              </Button>
+              {transition.state === "idle" && (
+                <Button
+                  variant="outlined"
+                  type="button"
+                  onClick={() => navigate(parentRoute.pathname)}
+                >
+                  Don't join
+                </Button>
+              )}
             </div>
           </Form>
         </div>
