@@ -30,7 +30,13 @@ export type LoggedInUser = {
 export const useUser = () => {
   const [root] = useMatches();
 
-  return root.data as LoggedInUser;
+  return root.data.user as LoggedInUser;
+};
+
+export const useBaseURL = () => {
+  const [root] = useMatches();
+
+  return root.data.baseURL as string;
 };
 
 export type Serialized<T> = {

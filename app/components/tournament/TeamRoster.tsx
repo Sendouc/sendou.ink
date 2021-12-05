@@ -1,10 +1,18 @@
-import type { FindTournamentByNameForUrlI } from "~/services/tournament";
-import { Unpacked } from "~/utils";
-
 export function TeamRoster({
   team,
 }: {
-  team: Unpacked<FindTournamentByNameForUrlI["teams"]>;
+  team: {
+    name: string;
+    members: {
+      captain: boolean;
+      member: {
+        id: string;
+        discordAvatar: string | null;
+        discordId: string;
+        discordName: string;
+      };
+    }[];
+  };
 }) {
   return (
     <div className="teams-tab__team-container">

@@ -1,5 +1,4 @@
 import { Prisma } from ".prisma/client";
-import { json } from "remix";
 import {
   TOURNAMENT_TEAM_ROSTER_MAX_SIZE,
   TOURNAMENT_TEAM_ROSTER_MIN_SIZE,
@@ -51,7 +50,6 @@ export async function findTournamentByNameForUrl({
           checkedIn: true,
           id: true,
           name: true,
-          inviteCode: true,
           members: {
             select: {
               captain: true,
@@ -76,20 +74,7 @@ export async function findTournamentByNameForUrl({
       tournament.organizer.nameForUrl === organizationNameForUrl.toLowerCase()
   );
 
-  if (!result) throw json("Not Found", { status: 404 });
-
-  result = {
-    ...result,
-    teams: result.teams.map((team) => ({
-      ...team,
-      // Censor invite code if not captain of the team
-      inviteCode: team.members
-        .filter(({ captain }) => captain)
-        .some(({ member }) => member.id === userId)
-        ? team.inviteCode
-        : "",
-    })),
-  };
+  if (!result) throw new Response("No tournament found", { status: 404 });
 
   if (userId) {
     result.teams.sort((teamA, teamB) => {
@@ -131,6 +116,67 @@ function twitterToUrl(twitter: string | null) {
 
 function discordInviteToUrl(discordInvite: string) {
   return `https://discord.com/invite/${discordInvite}`;
+}
+
+export type OwnTeamWithInviteCodeI = Serialized<
+  Prisma.PromiseReturnType<typeof ownTeamWithInviteCode>
+>;
+
+export async function ownTeamWithInviteCode({
+  organizationNameForUrl,
+  tournamentNameForUrl,
+  userId,
+}: {
+  organizationNameForUrl: string;
+  tournamentNameForUrl: string;
+  userId?: string;
+}) {
+  const tournaments = await db.tournament.findMany({
+    where: {
+      nameForUrl: tournamentNameForUrl.toLowerCase(),
+    },
+    select: {
+      organizer: {
+        select: {
+          nameForUrl: true,
+        },
+      },
+      teams: {
+        select: {
+          name: true,
+          inviteCode: true,
+          members: {
+            select: {
+              captain: true,
+              member: {
+                select: {
+                  id: true,
+                  discordAvatar: true,
+                  discordName: true,
+                  discordId: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const tournament = tournaments.find(
+    (tournament) =>
+      tournament.organizer.nameForUrl === organizationNameForUrl.toLowerCase()
+  );
+
+  if (!tournament) throw new Response("No tournament found", { status: 404 });
+
+  const ownTeam = tournament.teams.find((team) =>
+    team.members.some(({ captain, member }) => captain && member.id === userId)
+  );
+
+  if (!ownTeam) throw new Response("No own team found", { status: 404 });
+
+  return ownTeam;
 }
 
 export async function findTournamentWithInviteCodes({
@@ -182,7 +228,7 @@ export async function findTournamentWithInviteCodes({
       tournament.organizer.nameForUrl === organizationNameForUrl.toLowerCase()
   );
 
-  if (!result) throw json("Not Found", { status: 404 });
+  if (!result) throw new Response("No tournament found", { status: 404 });
 
   return result;
 }
@@ -225,14 +271,15 @@ export async function joinTeam({
     include: { teams: { include: { members: true } } },
   });
 
-  if (!tournament) throw json("Invalid tournament id", { status: 400 });
+  if (!tournament) throw new Response("Invalid tournament id", { status: 400 });
 
   const tournamentTeamToJoin = tournament.teams.find(
     (team) => team.inviteCode === inviteCode
   );
-  if (!tournamentTeamToJoin) throw json("Invalid invite code", { status: 400 });
+  if (!tournamentTeamToJoin)
+    throw new Response("Invalid invite code", { status: 400 });
   if (tournamentTeamToJoin.members.length >= TOURNAMENT_TEAM_ROSTER_MAX_SIZE) {
-    throw json("Team is already full", { status: 400 });
+    throw new Response("Team is already full", { status: 400 });
   }
 
   return db.tournamentTeamMember.create({

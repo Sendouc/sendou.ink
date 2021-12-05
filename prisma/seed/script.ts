@@ -38,12 +38,13 @@ export async function seed() {
     // create mock data
     //
     const adminUserCreated = await adminUser();
-    await nzapUser();
+    const nzapUserCreated = await nzapUser();
     const userIds = new Array(500).fill(null).map(() => crypto.randomUUID());
     await users(userIds);
     const organization = await organizations(adminUserCreated.id);
     const tournament = await tournaments(organization.id);
     await tournamentTeams(tournament.id, userIds);
+    await trustRelationship(nzapUserCreated.id, adminUserCreated.id);
     const stageIds = await stages();
     await tournamentAddMaps(tournament.id, stageIds);
   } finally {
@@ -150,6 +151,18 @@ async function tournamentTeams(tournamentId: string, userIds: string[]) {
       });
     }
   }
+}
+
+async function trustRelationship(
+  trustGiverId: string,
+  trustReceiverId: string
+) {
+  return prisma.trustRelationships.create({
+    data: {
+      trustGiverId,
+      trustReceiverId,
+    },
+  });
 }
 
 async function organizations(userId: string) {

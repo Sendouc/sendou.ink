@@ -41,7 +41,7 @@ export const action: ActionFunction = async ({ request, context, params }) => {
 
 const INVITE_CODE_LENGTH = 36;
 
-type ResponseObject =
+type Data =
   | { status: "NO_CODE" }
   | { status: "TOO_SHORT" }
   | { status: "LOG_IN" }
@@ -49,7 +49,7 @@ type ResponseObject =
   | { status: "INVALID" }
   | { status: "OK"; teamName: string; inviterName: string; inviteCode: string };
 
-const typedJson = (args: ResponseObject) => json(args);
+const typedJson = (args: Data) => json(args);
 
 export const loader: LoaderFunction = async ({ request, params, context }) => {
   invariant(
@@ -117,7 +117,7 @@ export const loader: LoaderFunction = async ({ request, params, context }) => {
 };
 
 export default function JoinTeamPage() {
-  const data = useLoaderData<ResponseObject>();
+  const data = useLoaderData<Data>();
 
   return (
     <div className="tournament__join-team">
@@ -126,7 +126,7 @@ export default function JoinTeamPage() {
   );
 }
 
-function Contents({ data }: { data: ResponseObject }) {
+function Contents({ data }: { data: Data }) {
   const navigate = useNavigate();
   const [, parentRoute] = useMatches();
   const transition = useTransition();

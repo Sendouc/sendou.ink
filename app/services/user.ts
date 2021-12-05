@@ -1,4 +1,6 @@
+import type { Prisma } from ".prisma/client";
 import type { Strategy as DiscordStrategy } from "passport-discord";
+import type { Serialized } from "~/utils";
 import { db } from "../utils/db.server";
 
 export async function upsertUser({
@@ -59,4 +61,22 @@ function parseConnections(
   }
 
   return result;
+}
+
+export type GetTrustingUsersI = Serialized<
+  Prisma.PromiseReturnType<typeof getTrustingUsers>
+>;
+
+export function getTrustingUsers(userId: string) {
+  return db.trustRelationships.findMany({
+    where: { trustReceiverId: userId },
+    select: {
+      trustGiver: {
+        select: {
+          id: true,
+          discordName: true,
+        },
+      },
+    },
+  });
 }

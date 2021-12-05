@@ -25,8 +25,9 @@ export const links: LinksFunction = () => {
 
 export const loader: LoaderFunction = ({ context }) => {
   const { user } = context;
+  const baseURL = process.env.BASE_URL ?? "http://localhost:3000";
 
-  return user ?? null;
+  return { user: user ?? null, baseURL };
 };
 
 export let unstable_shouldReload = () => false;

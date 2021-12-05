@@ -1,37 +1,60 @@
 import * as React from "react";
-import { LinksFunction, useMatches } from "remix";
+import { LinksFunction, useLoaderData, json, useLocation } from "remix";
+import type { LoaderFunction } from "remix";
 import { Alert } from "~/components/Alert";
 import { TeamRoster } from "~/components/tournament/TeamRoster";
 import {
   TOURNAMENT_TEAM_ROSTER_MAX_SIZE,
   TOURNAMENT_TEAM_ROSTER_MIN_SIZE,
 } from "~/constants";
-import { FindTournamentByNameForUrlI } from "~/services/tournament";
+import {
+  ownTeamWithInviteCode,
+  OwnTeamWithInviteCodeI,
+} from "~/services/tournament";
 import styles from "~/styles/tournament-manage-roster.css";
+import { requireUser, useBaseURL } from "~/utils";
+import { getTrustingUsers, GetTrustingUsersI } from "~/services/user";
+import invariant from "tiny-invariant";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export default function ManageRosterPage() {
-  const [, parentRoute] = useMatches();
-  const tournamentData = parentRoute.data as FindTournamentByNameForUrlI;
-  const [urlWithInviteCode, setUrlWithInviteCode] = React.useState("");
-  const [showCopied, setShowCopied] = React.useState(false);
+type Data = {
+  ownTeam: OwnTeamWithInviteCodeI;
+  trustingUsers: GetTrustingUsersI;
+};
 
-  const ownTeam = tournamentData.teams.find(({ inviteCode }) =>
-    Boolean(inviteCode)
+const typedJson = (args: Data) => json(args);
+
+export const loader: LoaderFunction = async ({ params, context }) => {
+  invariant(
+    typeof params.organization === "string",
+    "Expected params.organization to be string"
+  );
+  invariant(
+    typeof params.tournament === "string",
+    "Expected params.tournament to be string"
   );
 
-  React.useEffect(() => {
-    if (ownTeam) {
-      setUrlWithInviteCode(
-        `${window.location.href.replace("manage-roster", "join-team")}?code=${
-          ownTeam.inviteCode
-        }`
-      );
-    }
-  }, []);
+  const user = requireUser(context);
+  const [ownTeam, trustingUsers] = await Promise.all([
+    ownTeamWithInviteCode({
+      organizationNameForUrl: params.organization,
+      tournamentNameForUrl: params.tournament,
+      userId: user.id,
+    }),
+    getTrustingUsers(user.id),
+  ]);
+
+  return typedJson({ ownTeam, trustingUsers });
+};
+
+export default function ManageRosterPage() {
+  const [showCopied, setShowCopied] = React.useState(false);
+  const { ownTeam, trustingUsers } = useLoaderData<Data>();
+  const baseURL = useBaseURL();
+  const location = useLocation();
 
   React.useEffect(() => {
     if (!showCopied) return;
@@ -40,8 +63,10 @@ export default function ManageRosterPage() {
     return () => clearTimeout(timeout);
   }, [showCopied]);
 
-  // TODO: if not a captain of a team -> redirect
-  if (!ownTeam) return null;
+  const urlWithInviteCode = `${baseURL}${location.pathname.replace(
+    "manage-roster",
+    "join-team"
+  )}?code=${ownTeam.inviteCode}`;
 
   return (
     <div className="tournament__manage-roster">
@@ -56,7 +81,9 @@ export default function ManageRosterPage() {
         <div className="tournament__manage-roster__actions__section">
           <label>Add players you previously played with</label>
           <select className="tournament__manage-roster__select">
-            <option>Sendou#0043</option>
+            {trustingUsers.map(({ trustGiver }) => (
+              <option key={trustGiver.id}>{trustGiver.discordName}</option>
+            ))}
           </select>
           <button
             className="tournament__manage-roster__input__button"
