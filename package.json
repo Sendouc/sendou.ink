@@ -67,6 +67,6 @@
   },
   "sideEffects": false,
   "prisma": {
-    "seed": "node --experimental-specifier-resolution=node --loader ts-node/esm prisma/seed.ts"
+    "seed": "node --experimental-specifier-resolution=node --loader ts-node/esm prisma/seed"
   }
 }

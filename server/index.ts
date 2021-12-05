@@ -4,7 +4,7 @@ import compression from "compression";
 import morgan from "morgan";
 import { createRequestHandler } from "@remix-run/express";
 import { setUpAuth } from "./auth";
-import { seed } from "../prisma/seed";
+import { seed } from "../prisma/seed/script";
 
 const MODE = process.env.NODE_ENV;
 const BUILD_DIR = path.join(process.cwd(), "server/build");

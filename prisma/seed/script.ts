@@ -4,7 +4,7 @@ import {
   ADMIN_TEST_DISCORD_ID,
   ADMIN_TEST_UUID,
   stages as stagesList,
-} from "../app/constants";
+} from "../../app/constants";
 import { readFile } from "fs/promises";
 import path from "path";
 import crypto from "crypto";
