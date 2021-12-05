@@ -121,6 +121,7 @@ input:not(.plain) {
   border-radius: var(--rounded);
   color: var(--text);
   outline: none;
+  accent-color: var(--theme);
 }
 
 input:user-invalid {
@@ -144,6 +145,11 @@ input:not(.plain)::placeholder {
 input:not(.plain).error {
   border-color: transparent;
   outline: 2px solid var(--theme-error);
+}
+
+input[type="checkbox"] {
+  height: 16px;
+  width: 16px;
 }
 
 label {
