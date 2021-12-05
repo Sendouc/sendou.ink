@@ -3,6 +3,9 @@ import {
   ADMIN_TEST_AVATAR,
   ADMIN_TEST_DISCORD_ID,
   ADMIN_TEST_UUID,
+  NZAP_TEST_AVATAR,
+  NZAP_TEST_DISCORD_ID,
+  NZAP_TEST_UUID,
   stages as stagesList,
 } from "../../app/constants";
 import { readFile } from "fs/promises";
@@ -35,6 +38,7 @@ export async function seed() {
     // create mock data
     //
     const adminUserCreated = await adminUser();
+    await nzapUser();
     const userIds = new Array(500).fill(null).map(() => crypto.randomUUID());
     await users(userIds);
     const organization = await organizations(adminUserCreated.id);
@@ -60,6 +64,19 @@ async function adminUser() {
       youtubeName: "Sendou",
       discordAvatar: ADMIN_TEST_AVATAR,
       twitter: "sendouc",
+    },
+  });
+}
+
+async function nzapUser() {
+  return prisma.user.create({
+    data: {
+      id: NZAP_TEST_UUID,
+      discordDiscriminator: "6227",
+      discordId: NZAP_TEST_DISCORD_ID,
+      discordName: "N-ZAP",
+      discordRefreshToken: "none",
+      discordAvatar: NZAP_TEST_AVATAR,
     },
   });
 }
