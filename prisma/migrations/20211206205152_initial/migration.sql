@@ -36,7 +36,7 @@ CREATE TABLE "Tournament" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "nameForUrl" TEXT NOT NULL,
-    "description" TEXT,
+    "description" TEXT NOT NULL,
     "startTime" TIMESTAMP(3) NOT NULL,
     "checkInStartTime" TIMESTAMP(3) NOT NULL,
     "bannerBackground" TEXT NOT NULL,

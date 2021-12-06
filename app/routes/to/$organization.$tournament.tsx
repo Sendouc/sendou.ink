@@ -61,7 +61,7 @@ export default function TournamentPage() {
 
   const navLinks = (() => {
     const result: { code: string; text: string }[] = [
-      { code: "overview", text: "Overview" },
+      { code: "", text: "Overview" },
       { code: "map-pool", text: "Map Pool" },
       { code: "teams", text: `Teams (${data.teams.length})` },
     ];
@@ -106,6 +106,7 @@ export default function TournamentPage() {
               to={code}
               data-cy={`${code}-nav-link`}
               prefetch="intent"
+              end
             >
               {text}
             </NavLink>

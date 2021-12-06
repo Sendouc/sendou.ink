@@ -43,7 +43,7 @@ model Tournament {
   name              String
   /// Name in lower case to show in URL
   nameForUrl        String
-  description       String?
+  description       String
   startTime         DateTime
   checkInStartTime  DateTime
   /// CSS for tournament banner's background value
