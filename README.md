@@ -52,6 +52,7 @@ Prerequisites: [Node.js 16.13](https://nodejs.org/en/)
 - [ ] Routine to calculate Trueskill
 - [ ] Markdown support for tournament description
 - [ ] Can make a new tournament as org admin
+- [ ] Can delete team before checking in / tournament start
 - [ ] Rules tab with a good default, highlight overrides
 - [ ] Friend code to add that is easily editable even before tournament starts
 - [ ] Admin can see how long each match has been in progress (with descriptive colors)

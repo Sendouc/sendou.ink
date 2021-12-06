@@ -17,6 +17,7 @@ import {
   FindTournamentByNameForUrlI,
 } from "~/services/tournament";
 import { getUser, makeTitle } from "~/utils";
+import { useUser } from "~/utils/hooks";
 import tournamentStylesUrl from "../../styles/tournament.css";
 
 export const links: LinksFunction = () => {
@@ -54,6 +55,7 @@ export const meta: MetaFunction = (props) => {
 export default function TournamentPage() {
   const data = useLoaderData<FindTournamentByNameForUrlI>();
   const location = useLocation();
+  const user = useUser();
 
   const displayNavLinks = ["register", "manage-roster", "join-team"].every(
     (urlPart) => !location.pathname.endsWith(urlPart)
@@ -73,6 +75,12 @@ export default function TournamentPage() {
       if (!tournamentIsOver) {
         result.push({ code: "streams", text: "Streams (4)" });
       }
+    }
+
+    const isAdmin = data.organizer.ownerId === user?.id;
+
+    if (isAdmin) {
+      result.push({ code: "admin", text: "Admin" });
     }
 
     return result;

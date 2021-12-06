@@ -172,7 +172,7 @@ export async function seed(variation?: "check-in") {
         },
       });
 
-      for (let memberI = 0; memberI < (mockTeamI % 6) + 2; memberI++) {
+      for (let memberI = 0; memberI < (mockTeamI % 5) + 2; memberI++) {
         const memberId = userIdsCopy.shift()!;
         await prisma.tournamentTeamMember.create({
           data: {

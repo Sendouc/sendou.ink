@@ -5,6 +5,7 @@ export function ActionSectionWrapper({
   children: React.ReactNode;
   icon: "warning" | "info" | "success" | "error";
 }) {
+  // todo: flex-dir: column on mobile
   return (
     <section
       className="tournament__action-section"

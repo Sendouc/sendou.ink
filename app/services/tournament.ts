@@ -38,6 +38,7 @@ export async function findTournamentByNameForUrl({
           discordInvite: true,
           twitter: true,
           nameForUrl: true,
+          ownerId: true,
         },
       },
       mapPool: {
@@ -51,6 +52,7 @@ export async function findTournamentByNameForUrl({
           checkedInTime: true,
           id: true,
           name: true,
+          createdAt: true,
           members: {
             select: {
               captain: true,
