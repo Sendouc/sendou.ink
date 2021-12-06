@@ -285,13 +285,33 @@ export async function joinTeamViaInviteCode({
     throw new Response("Team is already full", { status: 400 });
   }
 
-  return db.tournamentTeamMember.create({
-    data: {
-      tournamentId,
-      teamId: tournamentTeamToJoin.id,
-      memberId: userId,
-    },
-  });
+  const trustReceiverId = tournamentTeamToJoin.members.find(
+    ({ captain }) => captain
+  )!.memberId;
+
+  return Promise.all([
+    db.tournamentTeamMember.create({
+      data: {
+        tournamentId,
+        teamId: tournamentTeamToJoin.id,
+        memberId: userId,
+      },
+    }),
+    // TODO: this could also be put to queue and scheduled for later
+    db.trustRelationships.upsert({
+      where: {
+        trustGiverId_trustReceiverId: {
+          trustGiverId: userId,
+          trustReceiverId,
+        },
+      },
+      create: {
+        trustGiverId: userId,
+        trustReceiverId,
+      },
+      update: {},
+    }),
+  ]);
 }
 
 export async function putPlayerToTeam({
