@@ -24,6 +24,7 @@ Prerequisites: [Node.js 16.13](https://nodejs.org/en/)
 
 - [x] Captain can remove players from roster
 - [ ] Add info about architecture to README
+- [ ] Make description mandatory + overview tab
 - [ ] Captain can check in
 - [ ] Admin can check teams in (and out)
 - [ ] Admin can drop people out (show on bracket somehow that they dropped)
@@ -49,6 +50,7 @@ Prerequisites: [Node.js 16.13](https://nodejs.org/en/)
 - [ ] Detailed match reports from Lanista
 - [ ] Stats
 - [ ] Routine to calculate Trueskill
+- [ ] Markdown support for tournament description
 - [ ] Can make a new tournament as org admin
 - [ ] Rules tab with a good default, highlight overrides
 - [ ] Friend code to add that is easily editable even before tournament starts

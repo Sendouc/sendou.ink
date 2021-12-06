@@ -15,10 +15,7 @@ import { Button } from "~/components/Button";
 import ErrorMessage from "~/components/ErrorMessage";
 import { MyForm } from "~/components/MyForm";
 import { TeamRoster } from "~/components/tournament/TeamRoster";
-import {
-  TOURNAMENT_TEAM_ROSTER_MAX_SIZE,
-  TOURNAMENT_TEAM_ROSTER_MIN_SIZE,
-} from "~/constants";
+import { TOURNAMENT_TEAM_ROSTER_MAX_SIZE } from "~/constants";
 import {
   ownTeamWithInviteCode,
   OwnTeamWithInviteCodeI,
@@ -145,13 +142,6 @@ export default function ManageRosterPage() {
 
   return (
     <div className="tournament__manage-roster">
-      {ownTeam.members.length < TOURNAMENT_TEAM_ROSTER_MIN_SIZE && (
-        // TODO: show alert when team is full
-        <Alert type="warning" data-cy="team-size-alert">
-          You need at least {TOURNAMENT_TEAM_ROSTER_MIN_SIZE} players in your
-          roster to play (max {TOURNAMENT_TEAM_ROSTER_MAX_SIZE})
-        </Alert>
-      )}
       {ownTeam.members.length >= TOURNAMENT_TEAM_ROSTER_MAX_SIZE && (
         // TODO: show alert when team is full
         <Alert type="info" data-cy="team-size-alert">

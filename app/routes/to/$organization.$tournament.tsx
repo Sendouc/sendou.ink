@@ -10,6 +10,7 @@ import {
   useLocation,
 } from "remix";
 import invariant from "tiny-invariant";
+import { ActionSection } from "~/components/tournament/ActionSection";
 import { InfoBanner } from "~/components/tournament/InfoBanner";
 import {
   findTournamentByNameForUrl,
@@ -78,8 +79,21 @@ export default function TournamentPage() {
   })();
 
   return (
-    <div className="tournament__container">
+    <div
+      className="tournament__container"
+      style={
+        {
+          "--tournaments-background": data.bannerBackground,
+          // TODO: do this on backend
+          "--tournaments-text": `hsl(${data.bannerTextHSLArgs})`,
+          // TODO: and this
+          "--tournaments-text-transparent": `hsla(${data.bannerTextHSLArgs}, 0.3)`,
+        } as Record<string, string>
+      }
+    >
       <InfoBanner />
+      <ActionSection tournament={data} />
+      <div className="tournament__container__spacer" />
       {displayNavLinks && (
         <div
           style={{ "--tabs-count": navLinks.length } as any}

@@ -3,7 +3,6 @@
   width: 100%;
   flex-direction: column;
   gap: var(--s-8);
-  margin-block-start: var(--s-4);
 }
 
 .tournament__manage-roster__roster-container {

@@ -6,12 +6,41 @@
   margin: 0 auto;
 }
 
+.tournament__container__spacer {
+  margin-bottom: var(--s-5);
+}
+
+.tournament__action-section {
+  width: 100%;
+  padding: var(--s-1-5);
+  margin-top: var(--s-3);
+  background: var(--tournaments-background);
+  border-radius: var(--rounded);
+}
+
+.tournament__action-section__content {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  padding: var(--s-2);
+  background-color: var(--bg-lighter);
+  border-radius: var(--rounded);
+  font-size: var(--fonts-sm);
+  font-weight: var(--semi-bold);
+  gap: var(--s-1-5);
+}
+
+.tournament__action-section__content > svg {
+  width: 1.5rem;
+  fill: var(--action-section-icon-color);
+}
+
 .tournament__links-container {
   display: grid;
   justify-content: center;
   gap: var(--s-10);
   grid-template-columns: repeat(2, 100px);
-  padding-block: var(--s-8);
+  padding-block-end: var(--s-8);
   place-items: center;
 }
 
@@ -46,9 +75,9 @@
 .info-banner {
   width: 100%;
   padding: var(--s-6);
-  background: var(--background);
+  background: var(--tournaments-background);
   border-radius: var(--rounded);
-  color: var(--text);
+  color: var(--tournaments-text);
 }
 
 .info-banner__top-row {
@@ -82,9 +111,9 @@
 }
 
 .info-banner__top-row__tournament-name {
-  border-color: var(--text);
+  border-color: var(--tournaments-text);
   border-inline-start: 1px solid;
-  color: var(--text);
+  color: var(--tournaments-text);
   font-size: var(--fonts-xl);
   font-weight: var(--extra-bold);
   padding-inline-start: var(--s-4);
@@ -125,7 +154,7 @@
   justify-content: center;
   padding: var(--s-2);
   border: 1px solid;
-  border-color: var(--text-transparent);
+  border-color: var(--tournaments-text-transparent);
   block-size: 2.25rem;
   border-radius: 50%;
   color: inherit;
@@ -142,7 +171,7 @@
   align-items: center;
   justify-content: center;
   border: 1px solid;
-  border-color: var(--text-transparent);
+  border-color: var(--tournaments-text-transparent);
   border-radius: var(--rounded);
   color: inherit;
   cursor: pointer;

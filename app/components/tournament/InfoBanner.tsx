@@ -15,18 +15,7 @@ export function InfoBanner() {
 
   return (
     <>
-      <div
-        className="info-banner"
-        style={
-          {
-            "--background": data.bannerBackground,
-            // TODO: do this on backend
-            "--text": `hsl(${data.bannerTextHSLArgs})`,
-            // TODO: and this
-            "--text-transparent": `hsla(${data.bannerTextHSLArgs}, 0.3)`,
-          } as Record<string, string>
-        }
-      >
+      <div className="info-banner">
         <div className="info-banner__top-row">
           <div className="info-banner__top-row__date-name">
             <time
