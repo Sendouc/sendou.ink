@@ -92,7 +92,7 @@ export default function TournamentPage() {
       }
     >
       <InfoBanner />
-      <ActionSection tournament={data} />
+      <ActionSection />
       <div className="tournament__container__spacer" />
       {displayNavLinks && (
         <div

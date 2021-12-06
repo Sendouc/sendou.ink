@@ -38,7 +38,7 @@ CREATE TABLE "Tournament" (
     "nameForUrl" TEXT NOT NULL,
     "description" TEXT,
     "startTime" TIMESTAMP(3) NOT NULL,
-    "checkInTime" TIMESTAMP(3) NOT NULL,
+    "checkInStartTime" TIMESTAMP(3) NOT NULL,
     "bannerBackground" TEXT NOT NULL,
     "bannerTextHSLArgs" TEXT NOT NULL,
     "organizerId" TEXT NOT NULL,
@@ -59,9 +59,12 @@ CREATE TABLE "Stage" (
 CREATE TABLE "TournamentTeam" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "checkedIn" BOOLEAN NOT NULL DEFAULT false,
     "tournamentId" TEXT NOT NULL,
+    "canHost" BOOLEAN NOT NULL DEFAULT true,
+    "friendCode" TEXT,
     "inviteCode" TEXT NOT NULL,
+    "checkedInTime" TIMESTAMP(3),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "TournamentTeam_pkey" PRIMARY KEY ("id")
 );

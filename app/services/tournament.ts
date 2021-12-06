@@ -29,7 +29,7 @@ export async function findTournamentByNameForUrl({
       name: true,
       description: true,
       startTime: true,
-      checkInTime: true,
+      checkInStartTime: true,
       bannerBackground: true,
       bannerTextHSLArgs: true,
       organizer: {
@@ -48,7 +48,7 @@ export async function findTournamentByNameForUrl({
       },
       teams: {
         select: {
-          checkedIn: true,
+          checkedInTime: true,
           id: true,
           name: true,
           members: {
@@ -147,7 +147,7 @@ export async function ownTeamWithInviteCode({
           id: true,
           name: true,
           inviteCode: true,
-          checkedIn: true,
+          checkedInTime: true,
           members: {
             select: {
               captain: true,
@@ -374,7 +374,7 @@ export async function removePlayerFromTeam({
   });
 
   if (!tournamentTeam) throw new Response("Invalid team id", { status: 400 });
-  if (tournamentTeam.checkedIn) {
+  if (tournamentTeam.checkedInTime) {
     throw new Response("Can't remove players after checking in", {
       status: 400,
     });
@@ -410,7 +410,7 @@ export async function checkIn({
   });
 
   if (!tournamentTeam) throw new Response("Invalid team id", { status: 400 });
-  if (tournamentTeam.checkedIn)
+  if (tournamentTeam.checkedInTime)
     throw new Response("Already checked in", { status: 400 });
   if (
     !tournamentTeam.members.some(
@@ -433,8 +433,7 @@ export async function checkIn({
       id: teamId,
     },
     data: {
-      // TODO: make this into timestamp
-      checkedIn: true,
+      checkedInTime: new Date(),
     },
   });
 }

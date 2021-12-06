@@ -40,7 +40,7 @@ export function ActionSectionBeforeStartContent({
     return () => clearTimeout(timeout);
   }, []);
 
-  if (ownTeam.checkedIn) {
+  if (ownTeam.checkedInTime) {
     return (
       <ActionSectionWrapper icon="success">
         <SuccessIcon /> Your team is succesfully checked in!
@@ -48,7 +48,7 @@ export function ActionSectionBeforeStartContent({
     );
   }
 
-  const checkInHasStarted = new Date(tournament.checkInTime) < new Date();
+  const checkInHasStarted = new Date(tournament.checkInStartTime) < new Date();
   const teamHasEnoughMembers =
     ownTeam.members.length >= TOURNAMENT_TEAM_ROSTER_MIN_SIZE;
 
@@ -62,7 +62,7 @@ export function ActionSectionBeforeStartContent({
 
   const differenceInMinutesBetweenCheckInAndStart = Math.floor(
     (new Date(tournament.startTime).getTime() -
-      new Date(tournament.checkInTime).getTime()) /
+      new Date(tournament.checkInStartTime).getTime()) /
       (1000 * 60)
   );
 

@@ -148,7 +148,7 @@ export default function ManageRosterPage() {
         </Alert>
       )}
       <div className="tournament__manage-roster__roster-container">
-        <TeamRoster team={ownTeam} deleteMode={!ownTeam.checkedIn} />
+        <TeamRoster team={ownTeam} deleteMode={!ownTeam.checkedInTime} />
       </div>
       {ownTeam.members.length < TOURNAMENT_TEAM_ROSTER_MAX_SIZE && (
         <div className="tournament__manage-roster__actions">

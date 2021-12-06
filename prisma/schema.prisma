@@ -45,7 +45,7 @@ model Tournament {
   nameForUrl        String
   description       String?
   startTime         DateTime
-  checkInTime       DateTime
+  checkInStartTime  DateTime
   /// CSS for tournament banner's background value
   bannerBackground  String
   /// CSS for tournament banner's color value
@@ -75,13 +75,16 @@ model Stage {
 }
 
 model TournamentTeam {
-  id           String                 @id @default(uuid())
-  name         String
-  checkedIn    Boolean                @default(false)
-  tournamentId String
-  tournament   Tournament             @relation(fields: [tournamentId], references: [id])
-  inviteCode   String                 @default(uuid())
-  members      TournamentTeamMember[]
+  id            String                 @id @default(uuid())
+  name          String
+  tournamentId  String
+  canHost       Boolean                @default(true)
+  friendCode    String?
+  inviteCode    String                 @default(uuid())
+  checkedInTime DateTime?
+  createdAt     DateTime               @default(now())
+  tournament    Tournament             @relation(fields: [tournamentId], references: [id])
+  members       TournamentTeamMember[]
 
   @@unique([name, tournamentId])
 }

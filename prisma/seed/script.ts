@@ -223,7 +223,7 @@ export async function seed(variation?: "check-in") {
       data: {
         bannerBackground: "linear-gradient(to bottom, #9796f0, #fbc7d4)",
         bannerTextHSLArgs: "231, 9%, 16%",
-        checkInTime:
+        checkInStartTime:
           variation === "check-in" ? lastFullHour : new Date(2025, 11, 17, 11),
         startTime:
           variation === "check-in"
