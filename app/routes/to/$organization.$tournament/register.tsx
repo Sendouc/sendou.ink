@@ -18,7 +18,8 @@ import {
   FindTournamentByNameForUrlI,
 } from "~/services/tournament";
 import styles from "~/styles/tournament-register.css";
-import { requireUser, useUser } from "~/utils";
+import { useUser } from "~/utils/hooks";
+import { requireUser } from "~/utils";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];

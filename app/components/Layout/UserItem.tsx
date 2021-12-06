@@ -1,4 +1,4 @@
-import { useUser } from "~/utils";
+import { useUser } from "~/utils/hooks";
 import { DiscordIcon } from "../icons/Discord";
 
 // TODO: redirect to same page on login

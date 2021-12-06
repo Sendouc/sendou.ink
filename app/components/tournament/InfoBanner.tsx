@@ -2,7 +2,7 @@ import { Link, useLoaderData, useLocation } from "remix";
 import { DiscordIcon } from "~/components/icons/Discord";
 import { TwitterIcon } from "~/components/icons/Twitter";
 import { FindTournamentByNameForUrlI } from "~/services/tournament";
-import { useUser } from "~/utils";
+import { useUser } from "~/utils/hooks";
 
 export function InfoBanner() {
   const data = useLoaderData<FindTournamentByNameForUrlI>();

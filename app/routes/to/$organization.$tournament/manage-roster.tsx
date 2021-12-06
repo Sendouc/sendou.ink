@@ -27,12 +27,8 @@ import {
 } from "~/services/tournament";
 import { getTrustingUsers, GetTrustingUsersI } from "~/services/user";
 import styles from "~/styles/tournament-manage-roster.css";
-import {
-  formDataFromRequest,
-  requireUser,
-  useBaseURL,
-  useIsSubmitting,
-} from "~/utils";
+import { useBaseURL, useIsSubmitting } from "~/utils/hooks";
+import { formDataFromRequest, requireUser } from "~/utils";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];

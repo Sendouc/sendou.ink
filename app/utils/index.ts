@@ -1,4 +1,4 @@
-import { json, useMatches, useTransition } from "remix";
+import { json } from "remix";
 import invariant from "tiny-invariant";
 
 export const makeTitle = (endOfTitle?: string) =>
@@ -49,26 +49,6 @@ export type LoggedInUser = {
   discordId: string;
   discordAvatar: string;
 } | null;
-
-export const useUser = () => {
-  const [root] = useMatches();
-
-  return root.data.user as LoggedInUser;
-};
-
-export const useBaseURL = () => {
-  const [root] = useMatches();
-
-  return root.data.baseURL as string;
-};
-
-export const useIsSubmitting = (method: "POST" | "DELETE") => {
-  const transition = useTransition();
-
-  return (
-    transition.state !== "idle" && transition.submission?.method === method
-  );
-};
 
 export type Serialized<T> = {
   [P in keyof T]: T[P] extends Date ? string : Serialized<T[P]>;
