@@ -3,7 +3,7 @@ export function ActionSectionWrapper({
   icon,
 }: {
   children: React.ReactNode;
-  icon: "warning" | "info" | "success";
+  icon: "warning" | "info" | "success" | "error";
 }) {
   return (
     <section

@@ -7,6 +7,7 @@
   --theme-error: rgb(219 70 65);
   --theme-warning: #f5f587;
   --theme-info: #a3a6ff;
+  --theme-success: #a3ffae;
   --theme: hsl(255deg 66.7% 55.3%);
   --theme-transparent: hsl(255deg 66.7% 55.3% / 40%);
   --theme-secondary: hsl(85deg 66.7% 55.3%);

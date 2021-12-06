@@ -1,4 +1,4 @@
-import { Form, FormProps, useTransition } from "remix";
+import { Form, FormProps, useFetcher, useTransition } from "remix";
 
 interface MyFormProps extends FormProps {
   hiddenFields?: Record<string, string>;
@@ -6,15 +6,19 @@ interface MyFormProps extends FormProps {
 
 /**
  * Wrapper around Remix's Form that has default method of "post",
- * creates <input type="hidden"> elements for each key/value pair in hiddenFields
+ * creates <input type="hidden"> elements for each key/value pair in hiddenFields,
+ * automatically uses fetcher.Form when action is provided
  * and disables the form when it's submitting.
  */
 export function MyForm(props: MyFormProps) {
   const { hiddenFields, children, ...rest } = props;
+  const fetcher = useFetcher();
+
+  const FormComponent = rest.action ? fetcher.Form : Form;
 
   const transition = useTransition();
   return (
-    <Form method="post" {...rest}>
+    <FormComponent method="post" {...rest}>
       <fieldset disabled={transition.state !== "idle"}>
         {hiddenFields &&
           Object.entries(hiddenFields).map(([key, value]) => (
@@ -22,6 +26,6 @@ export function MyForm(props: MyFormProps) {
           ))}
         {children}
       </fieldset>
-    </Form>
+    </FormComponent>
   );
 }

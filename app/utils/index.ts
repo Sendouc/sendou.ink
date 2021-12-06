@@ -4,6 +4,7 @@ import invariant from "tiny-invariant";
 export const makeTitle = (endOfTitle?: string) =>
   endOfTitle ? `sendou.ink | ${endOfTitle}` : "sendou.ink";
 
+// TODO: make context into object to make typoing harder
 /** Get logged in user from context. Throws with 401 error if no user found. */
 export const requireUser = (ctx: any) => {
   const user = ctx.user;

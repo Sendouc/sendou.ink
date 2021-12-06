@@ -143,13 +143,12 @@ export default function ManageRosterPage() {
   return (
     <div className="tournament__manage-roster">
       {ownTeam.members.length >= TOURNAMENT_TEAM_ROSTER_MAX_SIZE && (
-        // TODO: show alert when team is full
         <Alert type="info" data-cy="team-size-alert">
           Your team is full - more players can't be added
         </Alert>
       )}
       <div className="tournament__manage-roster__roster-container">
-        <TeamRoster team={ownTeam} deleteMode />
+        <TeamRoster team={ownTeam} deleteMode={!ownTeam.checkedIn} />
       </div>
       {ownTeam.members.length < TOURNAMENT_TEAM_ROSTER_MAX_SIZE && (
         <div className="tournament__manage-roster__actions">

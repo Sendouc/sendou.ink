@@ -35,43 +35,46 @@ export function TeamRoster({
     <div className="teams-tab__team-container">
       <div className="teams-tab__team-name">{team.name}</div>
       <div className="teams-tab__members-container">
-        {team.members.map(({ member, captain }, i) => (
-          <div key={member.id} className="teams-tab__member">
-            <div className="teams-tab__member__order-number">
-              {captain ? "C" : i + 1}
-            </div>
-            <div className="teams-tab__member__container">
-              <div className="teams-tab__member__placeholder">
-                {member.discordAvatar && (
-                  <img
-                    alt=""
-                    className="teams-tab__member__avatar"
-                    loading="lazy"
-                    src={`https://cdn.discordapp.com/avatars/${member.discordId}/${member.discordAvatar}.png?size=80`}
-                  />
-                )}
+        {team.members
+          .sort((a, b) => Number(b.captain) - Number(a.captain))
+          .map(({ member, captain }, i) => (
+            <div key={member.id} className="teams-tab__member">
+              <div className="teams-tab__member__order-number">
+                {captain ? "C" : i + 1}
               </div>
-              <div className="teams-tab__member__container__name-button">
-                <div>{member.discordName}</div>
-                {showDeleteButtons(member.id) && (
-                  <MyForm
-                    method="delete"
-                    hiddenFields={{ userId: member.id, teamId: team.id }}
-                  >
-                    <Button
-                      variant="destructive"
-                      tiny
-                      loadingText="Removing..."
-                      loading={isSubmitting}
+              <div className="teams-tab__member__container">
+                <div className="teams-tab__member__placeholder">
+                  {member.discordAvatar && (
+                    <img
+                      alt=""
+                      className="teams-tab__member__avatar"
+                      loading="lazy"
+                      src={`https://cdn.discordapp.com/avatars/${member.discordId}/${member.discordAvatar}.png?size=80`}
+                    />
+                  )}
+                </div>
+                <div className="teams-tab__member__container__name-button">
+                  <div>{member.discordName}</div>
+                  {showDeleteButtons(member.id) && (
+                    /* TODO: all buttons say Removing... */
+                    <MyForm
+                      method="delete"
+                      hiddenFields={{ userId: member.id, teamId: team.id }}
                     >
-                      Remove
-                    </Button>
-                  </MyForm>
-                )}
+                      <Button
+                        variant="destructive"
+                        tiny
+                        loadingText="Removing..."
+                        loading={isSubmitting}
+                      >
+                        Remove
+                      </Button>
+                    </MyForm>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   );

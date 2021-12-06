@@ -30,6 +30,10 @@
   gap: var(--s-1-5);
 }
 
+.tournament__action-section__button-container {
+  margin-inline-start: auto;
+}
+
 .tournament__action-section__content > svg {
   width: 1.5rem;
   fill: var(--action-section-icon-color);

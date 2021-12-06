@@ -1,5 +1,6 @@
 import { Prisma } from ".prisma/client";
 import {
+  TOURNAMENT_CHECK_IN_CLOSING_MINUTES_FROM_START,
   TOURNAMENT_TEAM_ROSTER_MAX_SIZE,
   TOURNAMENT_TEAM_ROSTER_MIN_SIZE,
 } from "~/constants";
@@ -146,6 +147,7 @@ export async function ownTeamWithInviteCode({
           id: true,
           name: true,
           inviteCode: true,
+          checkedIn: true,
           members: {
             select: {
               captain: true,
@@ -372,9 +374,8 @@ export async function removePlayerFromTeam({
   });
 
   if (!tournamentTeam) throw new Response("Invalid team id", { status: 400 });
-  // TODO: should use "started" attribute instead
-  if (tournamentTeam.tournament.startTime < new Date()) {
-    throw new Response("Can't remove players when tournament is ongoing", {
+  if (tournamentTeam.checkedIn) {
+    throw new Response("Can't remove players after checking in", {
       status: 400,
     });
   }
@@ -392,6 +393,48 @@ export async function removePlayerFromTeam({
         memberId: playerId,
         tournamentId: tournamentTeam.tournament.id,
       },
+    },
+  });
+}
+
+export async function checkIn({
+  teamId,
+  userId,
+}: {
+  teamId: string;
+  userId: string;
+}) {
+  const tournamentTeam = await db.tournamentTeam.findUnique({
+    where: { id: teamId },
+    include: { tournament: true, members: true },
+  });
+
+  if (!tournamentTeam) throw new Response("Invalid team id", { status: 400 });
+  if (tournamentTeam.checkedIn)
+    throw new Response("Already checked in", { status: 400 });
+  if (
+    !tournamentTeam.members.some(
+      ({ memberId, captain }) => captain && memberId === userId
+    )
+  ) {
+    throw new Response("Not captain of the team", { status: 401 });
+  }
+  // cut them some slack so UI never shows you can check in when you can't
+  const checkInCutOff = TOURNAMENT_CHECK_IN_CLOSING_MINUTES_FROM_START - 2;
+  if (
+    tournamentTeam.tournament.startTime.getTime() - checkInCutOff * 60000 <
+    new Date().getTime()
+  ) {
+    throw new Response("Check in time has passed", { status: 400 });
+  }
+
+  return db.tournamentTeam.update({
+    where: {
+      id: teamId,
+    },
+    data: {
+      // TODO: make this into timestamp
+      checkedIn: true,
     },
   });
 }
