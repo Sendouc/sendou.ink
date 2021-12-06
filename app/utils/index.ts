@@ -1,4 +1,4 @@
-import { json, useMatches } from "remix";
+import { json, useMatches, useTransition } from "remix";
 import invariant from "tiny-invariant";
 
 export const makeTitle = (endOfTitle?: string) =>
@@ -60,6 +60,14 @@ export const useBaseURL = () => {
   const [root] = useMatches();
 
   return root.data.baseURL as string;
+};
+
+export const useIsSubmitting = (method: "POST" | "DELETE") => {
+  const transition = useTransition();
+
+  return (
+    transition.state !== "idle" && transition.submission?.method === method
+  );
 };
 
 export type Serialized<T> = {

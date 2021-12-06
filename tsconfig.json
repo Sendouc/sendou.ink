@@ -10,6 +10,7 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
     "types": ["cypress"],
     "paths": {
       "~/*": ["./app/*"]

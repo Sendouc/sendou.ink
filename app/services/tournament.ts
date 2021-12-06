@@ -352,3 +352,46 @@ export async function putPlayerToTeam({
     },
   });
 }
+
+export async function removePlayerFromTeam({
+  teamId,
+  captainId,
+  playerId,
+}: {
+  teamId: string;
+  captainId: string;
+  playerId: string;
+}) {
+  if (captainId === playerId) {
+    throw new Response("Can't remove captain", { status: 400 });
+  }
+
+  const tournamentTeam = await db.tournamentTeam.findUnique({
+    where: { id: teamId },
+    include: { tournament: true, members: true },
+  });
+
+  if (!tournamentTeam) throw new Response("Invalid team id", { status: 400 });
+  // TODO: should use "started" attribute instead
+  if (tournamentTeam.tournament.startTime < new Date()) {
+    throw new Response("Can't remove players when tournament is ongoing", {
+      status: 400,
+    });
+  }
+  if (
+    !tournamentTeam.members.some(
+      ({ memberId, captain }) => captain && memberId === captainId
+    )
+  ) {
+    throw new Response("Not captain of the team", { status: 401 });
+  }
+
+  return db.tournamentTeamMember.delete({
+    where: {
+      memberId_tournamentId: {
+        memberId: playerId,
+        tournamentId: tournamentTeam.tournament.id,
+      },
+    },
+  });
+}

@@ -8,7 +8,6 @@ import {
   useActionData,
   useLoaderData,
   useLocation,
-  useTransition,
 } from "remix";
 import invariant from "tiny-invariant";
 import { Alert } from "~/components/Alert";
@@ -24,10 +23,16 @@ import {
   ownTeamWithInviteCode,
   OwnTeamWithInviteCodeI,
   putPlayerToTeam,
+  removePlayerFromTeam,
 } from "~/services/tournament";
 import { getTrustingUsers, GetTrustingUsersI } from "~/services/user";
 import styles from "~/styles/tournament-manage-roster.css";
-import { formDataFromRequest, requireUser, useBaseURL } from "~/utils";
+import {
+  formDataFromRequest,
+  requireUser,
+  useBaseURL,
+  useIsSubmitting,
+} from "~/utils";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -51,21 +56,40 @@ export const action: ActionFunction = async ({
 
   const user = requireUser(context);
 
-  try {
-    await putPlayerToTeam({ teamId, captainId: user.id, newPlayerId: userId });
-  } catch (e) {
-    if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      if (e.code === "P2002" && e.message.includes("`tournamentId`")) {
-        return {
-          fieldErrors: { userId: "This player is already in a team." },
-          fields: { userId },
-        };
+  switch (request.method) {
+    case "POST":
+      try {
+        await putPlayerToTeam({
+          teamId,
+          captainId: user.id,
+          newPlayerId: userId,
+        });
+      } catch (e) {
+        if (e instanceof Prisma.PrismaClientKnownRequestError) {
+          if (e.code === "P2002" && e.message.includes("`tournamentId`")) {
+            return {
+              fieldErrors: { userId: "This player is already in a team." },
+              fields: { userId },
+            };
+          }
+        }
+        throw e;
       }
-    }
-    throw e;
-  }
 
-  return new Response("Added player to team", { status: 200 });
+      return new Response("Added player to team", { status: 200 });
+    case "DELETE":
+      await removePlayerFromTeam({
+        captainId: user.id,
+        playerId: userId,
+        teamId,
+      });
+      return new Response("Player deleted from team", { status: 200 });
+    default:
+      return new Response(undefined, {
+        status: 405,
+        headers: { Allow: "POST, DELETE" },
+      });
+  }
 };
 
 type Data = {
@@ -109,7 +133,7 @@ export default function ManageRosterPage() {
   const { ownTeam, trustingUsers } = useLoaderData<Data>();
   const baseURL = useBaseURL();
   const location = useLocation();
-  const transition = useTransition();
+  const isSubmitting = useIsSubmitting("POST");
 
   React.useEffect(() => {
     if (!showCopied) return;
@@ -139,7 +163,7 @@ export default function ManageRosterPage() {
         </Alert>
       )}
       <div className="tournament__manage-roster__roster-container">
-        <TeamRoster team={ownTeam} />
+        <TeamRoster team={ownTeam} deleteMode />
       </div>
       {ownTeam.members.length < TOURNAMENT_TEAM_ROSTER_MAX_SIZE && (
         <div className="tournament__manage-roster__actions">
@@ -187,7 +211,7 @@ export default function ManageRosterPage() {
                   className="tournament__manage-roster__input__button"
                   type="submit"
                   loadingText="Adding..."
-                  loading={transition.state !== "idle"}
+                  loading={isSubmitting}
                 >
                   Add to roster
                 </Button>

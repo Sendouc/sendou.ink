@@ -22,10 +22,10 @@ Prerequisites: [Node.js 16.13](https://nodejs.org/en/)
 
 ### MVP
 
-- [ ] Should resolve to tournament if only one match even if wrong org name
-- [ ] Captain can remove players from roster
+- [x] Captain can remove players from roster
+- [ ] Add info about architecture to README
 - [ ] Captain can check in
-- [ ] Admin can check teams in
+- [ ] Admin can check teams in (and out)
 - [ ] Admin can drop people out (show on bracket somehow that they dropped)
 - [ ] Admin can randomize and rerandomize maps
 - [ ] Admin can change seeding 
@@ -50,8 +50,11 @@ Prerequisites: [Node.js 16.13](https://nodejs.org/en/)
 - [ ] Stats
 - [ ] Routine to calculate Trueskill
 - [ ] Can make a new tournament as org admin
+- [ ] Rules tab with a good default, highlight overrides
 - [ ] Friend code to add that is easily editable even before tournament starts
 - [ ] Admin can see how long each match has been in progress (with descriptive colors)
+- [ ] Can make a team and if enough overlap shows automatically for a tournament
+  - Show both names if different or just the one if it's the same
 - [ ] Groups -> Many brackets
 - [ ] Generate picture for sharing about team's matches and placement in the tournament
 - [ ] Generate picture to share info about the top 3 etc.

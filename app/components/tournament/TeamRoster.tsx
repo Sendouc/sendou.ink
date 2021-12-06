@@ -1,7 +1,13 @@
+import { useIsSubmitting, useUser } from "~/utils";
+import { Button } from "../Button";
+import { MyForm } from "../MyForm";
+
 export function TeamRoster({
   team,
+  deleteMode: deleteMode,
 }: {
   team: {
+    id: string;
     name: string;
     members: {
       captain: boolean;
@@ -13,7 +19,18 @@ export function TeamRoster({
       };
     }[];
   };
+  deleteMode?: boolean;
 }) {
+  const user = useUser();
+  const isSubmitting = useIsSubmitting("DELETE");
+
+  const showDeleteButtons = (userToDeleteId: string) => {
+    // TODO:
+    const tournamentHasStarted = false;
+
+    return !tournamentHasStarted && deleteMode && userToDeleteId !== user?.id;
+  };
+
   return (
     <div className="teams-tab__team-container">
       <div className="teams-tab__team-name">{team.name}</div>
@@ -34,7 +51,24 @@ export function TeamRoster({
                   />
                 )}
               </div>
-              <div>{member.discordName}</div>
+              <div className="teams-tab__member__container__name-button">
+                <div>{member.discordName}</div>
+                {showDeleteButtons(member.id) && (
+                  <MyForm
+                    method="delete"
+                    hiddenFields={{ userId: member.id, teamId: team.id }}
+                  >
+                    <Button
+                      variant="destructive"
+                      tiny
+                      loadingText="Removing..."
+                      loading={isSubmitting}
+                    >
+                      Remove
+                    </Button>
+                  </MyForm>
+                )}
+              </div>
             </div>
           </div>
         ))}

@@ -109,6 +109,19 @@ button.outlined {
   background-color: transparent;
 }
 
+button.tiny {
+  font-size: var(--fonts-xs);
+  padding-block: var(--s-1);
+  padding-inline: var(--s-2);
+}
+
+button.destructive {
+  border-color: var(--theme-error);
+  background-color: transparent;
+  color: var(--theme-error);
+  outline-color: var(--theme-error);
+}
+
 button.loading {
   cursor: not-allowed;
   opacity: 0.6;

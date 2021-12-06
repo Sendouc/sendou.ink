@@ -204,6 +204,12 @@
   gap: var(--s-3);
 }
 
+.teams-tab__member__container__name-button {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
 .teams-tab__member__avatar {
   block-size: 2.5rem;
   border-radius: var(--rounded);
