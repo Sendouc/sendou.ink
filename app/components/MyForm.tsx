@@ -2,6 +2,7 @@ import { Form, FormProps, useFetcher, useTransition } from "remix";
 
 interface MyFormProps extends FormProps {
   hiddenFields?: Record<string, string>;
+  fetcher?: ReturnType<typeof useFetcher>;
 }
 
 /**
@@ -11,10 +12,9 @@ interface MyFormProps extends FormProps {
  * and disables the form when it's submitting.
  */
 export function MyForm(props: MyFormProps) {
-  const { hiddenFields, children, ...rest } = props;
-  const fetcher = useFetcher();
+  const { hiddenFields, children, fetcher, ...rest } = props;
 
-  const FormComponent = rest.action ? fetcher.Form : Form;
+  const FormComponent = fetcher ? fetcher.Form : Form;
 
   const transition = useTransition();
   return (

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useLoaderData, useLocation } from "remix";
+import { useFetcher, useLoaderData, useLocation } from "remix";
 import {
   checkInClosesDate,
   TOURNAMENT_TEAM_ROSTER_MIN_SIZE,
@@ -18,6 +18,7 @@ export function ActionSectionBeforeStartContent({
 }: {
   ownTeam: Unpacked<FindTournamentByNameForUrlI["teams"]>;
 }) {
+  const fetcher = useFetcher();
   const tournament = useLoaderData<FindTournamentByNameForUrlI>();
   const location = useLocation();
 
@@ -43,7 +44,7 @@ export function ActionSectionBeforeStartContent({
   if (ownTeam.checkedInTime) {
     return (
       <ActionSectionWrapper icon="success">
-        <SuccessIcon /> Your team is succesfully checked in!
+        <SuccessIcon /> Your team is checked in!
       </ActionSectionWrapper>
     );
   }
@@ -110,8 +111,14 @@ export function ActionSectionBeforeStartContent({
             ownTeam.id
           }/check-in`}
           className="tournament__action-section__button-container"
+          fetcher={fetcher}
         >
-          <Button variant="outlined" loadingText="Checking-in..." type="submit">
+          <Button
+            variant="outlined"
+            loadingText="Checking-in..."
+            type="submit"
+            loading={fetcher.state !== "idle"}
+          >
             Check-in
           </Button>
         </MyForm>
