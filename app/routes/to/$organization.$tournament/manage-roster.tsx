@@ -125,69 +125,77 @@ export default function ManageRosterPage() {
 
   return (
     <div className="tournament__manage-roster">
-      {ownTeam.members.length < 4 && (
+      {ownTeam.members.length < TOURNAMENT_TEAM_ROSTER_MIN_SIZE && (
         // TODO: show alert when team is full
         <Alert type="warning" data-cy="team-size-alert">
           You need at least {TOURNAMENT_TEAM_ROSTER_MIN_SIZE} players in your
           roster to play (max {TOURNAMENT_TEAM_ROSTER_MAX_SIZE})
         </Alert>
       )}
+      {ownTeam.members.length >= TOURNAMENT_TEAM_ROSTER_MAX_SIZE && (
+        // TODO: show alert when team is full
+        <Alert type="info" data-cy="team-size-alert">
+          Your team is full - more players can't be added
+        </Alert>
+      )}
       <div className="tournament__manage-roster__roster-container">
         <TeamRoster team={ownTeam} />
       </div>
-      <div className="tournament__manage-roster__actions">
-        <div className="tournament__manage-roster__actions__section">
-          <label htmlFor="inviteCodeInput">
-            Share this URL to invite players to your team
-          </label>
-          <input
-            id="inviteCodeInput"
-            className="tournament__manage-roster__input"
-            disabled
-            value={urlWithInviteCode}
-          />
-          <button
-            className="tournament__manage-roster__input__button"
-            onClick={() => {
-              navigator.clipboard.writeText(urlWithInviteCode);
-              setShowCopied(true);
-            }}
-            type="button"
-          >
-            {showCopied ? "Copied!" : "Copy to clipboard"}
-          </button>
-        </div>
-        {trustingUsers.length > 0 && (
+      {ownTeam.members.length < TOURNAMENT_TEAM_ROSTER_MAX_SIZE && (
+        <div className="tournament__manage-roster__actions">
           <div className="tournament__manage-roster__actions__section">
-            <MyForm hiddenFields={{ teamId: ownTeam.id }}>
-              <label htmlFor="userId">
-                Add players you previously played with
-              </label>
-              <select
-                className="tournament__manage-roster__select"
-                name="userId"
-                id="userId"
-                defaultValue={actionData?.fields?.userId}
-              >
-                {trustingUsers.map(({ trustGiver }) => (
-                  <option key={trustGiver.id} value={trustGiver.id}>
-                    {trustGiver.discordName}
-                  </option>
-                ))}
-              </select>
-              <ErrorMessage errorMsg={actionData?.fieldErrors?.userId} />
-              <Button
-                className="tournament__manage-roster__input__button"
-                type="submit"
-                loadingText="Adding..."
-                loading={transition.state !== "idle"}
-              >
-                Add to roster
-              </Button>
-            </MyForm>
+            <label htmlFor="inviteCodeInput">
+              Share this URL to invite players to your team
+            </label>
+            <input
+              id="inviteCodeInput"
+              className="tournament__manage-roster__input"
+              disabled
+              value={urlWithInviteCode}
+            />
+            <button
+              className="tournament__manage-roster__input__button"
+              onClick={() => {
+                navigator.clipboard.writeText(urlWithInviteCode);
+                setShowCopied(true);
+              }}
+              type="button"
+            >
+              {showCopied ? "Copied!" : "Copy to clipboard"}
+            </button>
           </div>
-        )}
-      </div>
+          {trustingUsers.length > 0 && (
+            <div className="tournament__manage-roster__actions__section">
+              <MyForm hiddenFields={{ teamId: ownTeam.id }}>
+                <label htmlFor="userId">
+                  Add players you previously played with
+                </label>
+                <select
+                  className="tournament__manage-roster__select"
+                  name="userId"
+                  id="userId"
+                  defaultValue={actionData?.fields?.userId}
+                >
+                  {trustingUsers.map(({ trustGiver }) => (
+                    <option key={trustGiver.id} value={trustGiver.id}>
+                      {trustGiver.discordName}
+                    </option>
+                  ))}
+                </select>
+                <ErrorMessage errorMsg={actionData?.fieldErrors?.userId} />
+                <Button
+                  className="tournament__manage-roster__input__button"
+                  type="submit"
+                  loadingText="Adding..."
+                  loading={transition.state !== "idle"}
+                >
+                  Add to roster
+                </Button>
+              </MyForm>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
