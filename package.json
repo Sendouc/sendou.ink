@@ -13,7 +13,7 @@
     "migration:create": "npx prisma migrate dev --create-only",
     "migration:apply:dev": "npx prisma migrate dev",
     "migration:apply:prod": "npx prisma migrate deploy",
-    "seed": "npx prisma db seed",
+    "seed": "node --experimental-specifier-resolution=node --loader ts-node/esm prisma/seed",
     "seed:reset": "npx prisma migrate reset --force --skip-generate",
     "lint:styles": "stylelint \"app/styles/**/*.css\"",
     "prettier": "prettier --check .",

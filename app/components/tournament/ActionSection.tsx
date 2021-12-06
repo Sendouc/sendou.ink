@@ -3,6 +3,7 @@ import type { FindTournamentByNameForUrlI } from "~/services/tournament";
 import { useUser } from "~/utils/hooks";
 import { ActionSectionBeforeStartContent } from "./ActionSectionBeforeStartContent";
 
+// TODO: warning when not registered but check in is open
 export function ActionSection() {
   const tournament = useLoaderData<FindTournamentByNameForUrlI>();
   const user = useUser();

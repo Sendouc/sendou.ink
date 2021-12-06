@@ -130,11 +130,6 @@ function InfoBannerActionButton() {
     .some(({ member }) => member.id === user.id);
   if (isAlreadyInATeamButNotCaptain) return null;
 
-  // TODO: check-in closes 10 minutes before? how is it set + add to logic
-  const checkInIsOpen =
-    new Date(data.checkInTime) < now && new Date(data.startTime) > now;
-  if (checkInIsOpen) return <button>Check-in</button>;
-
   const alreadyRegistered = data.teams
     .flatMap((team) => team.members)
     .some(({ member }) => member.id === user.id);

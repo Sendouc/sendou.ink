@@ -13,7 +13,7 @@ import path from "path";
 import crypto from "crypto";
 const prisma = new PrismaClient();
 
-export async function seed() {
+export async function seed(variation?: "check-in") {
   try {
     //
     // make sure we won't override production database
@@ -44,190 +44,235 @@ export async function seed() {
     await users(userIds);
     const organization = await organizations(adminUserCreated.id);
     const tournament = await tournaments(organization.id);
-    await tournamentTeams(tournament.id, userIds);
+    await tournamentTeams(tournament.id, userIds, adminUserCreated.id);
     await trustRelationship(nzapUserCreated.id, adminUserCreated.id);
     const stageIds = await stages();
     await tournamentAddMaps(tournament.id, stageIds);
   } finally {
     await prisma.$disconnect();
   }
-}
 
-async function adminUser() {
-  return prisma.user.create({
-    data: {
-      id: ADMIN_TEST_UUID,
-      discordDiscriminator: "4059",
-      discordId: ADMIN_TEST_DISCORD_ID,
-      discordName: "Sendou",
-      discordRefreshToken: "none",
-      twitch: "Sendou",
-      youtubeId: "UCWbJLXByvsfQvTcR4HLPs5Q",
-      youtubeName: "Sendou",
-      discordAvatar: ADMIN_TEST_AVATAR,
-      twitter: "sendouc",
-    },
-  });
-}
-
-async function nzapUser() {
-  return prisma.user.create({
-    data: {
-      id: NZAP_TEST_UUID,
-      discordDiscriminator: "6227",
-      discordId: NZAP_TEST_DISCORD_ID,
-      discordName: "N-ZAP",
-      discordRefreshToken: "none",
-      discordAvatar: NZAP_TEST_AVATAR,
-    },
-  });
-}
-
-async function users(ids: string[]) {
-  const usersFromSendouInk = await readFile(
-    path.resolve("prisma", "seed", "users.json"),
-    "utf8"
-  );
-
-  return prisma.user.createMany({
-    data: JSON.parse(usersFromSendouInk)
-      .slice(0, 200)
-      .map((user: any, i: number) => ({
-        id: ids[i],
-        discordId: user.discordId,
-        discordDiscriminator: user.discriminator,
-        discordName: user.username,
-        discordRefreshToken: "none",
-        twitter: user.profile?.twitterName,
-      })),
-  });
-}
-
-const mockTeams = [
-  "Team Olive",
-  "Chimera",
-  "Team Paradise",
-  "Team Blue",
-  "🛏️",
-  "Name Subject to Change",
-  "FTWin!",
-  "Starbust",
-  "Jackpot",
-  "Crème Fresh",
-  "Squids Next Door",
-  "Get Kraken",
-  "Kougeki",
-  "Last Minute",
-  "Squidding Good",
-  "Alliance Rogue",
-  "Second Wind",
-  "Kelp Domers",
-  "Arctic Moon",
-  "sink gang",
-  "Good Morning",
-  "Kings",
-  "NIS",
-  "Woomy Zoomy Boomy",
-];
-
-async function tournamentTeams(tournamentId: string, userIds: string[]) {
-  const userIdsCopy = [...userIds];
-  for (const [mockTeamI, mockTeam] of mockTeams.entries()) {
-    const team = await prisma.tournamentTeam.create({
+  async function adminUser() {
+    return prisma.user.create({
       data: {
-        name: mockTeam,
-        tournamentId,
+        id: ADMIN_TEST_UUID,
+        discordDiscriminator: "4059",
+        discordId: ADMIN_TEST_DISCORD_ID,
+        discordName: "Sendou",
+        discordRefreshToken: "none",
+        twitch: "Sendou",
+        youtubeId: "UCWbJLXByvsfQvTcR4HLPs5Q",
+        youtubeName: "Sendou",
+        discordAvatar: ADMIN_TEST_AVATAR,
+        twitter: "sendouc",
       },
     });
+  }
 
-    for (let memberI = 0; memberI < (mockTeamI % 6) + 2; memberI++) {
-      const memberId = userIdsCopy.shift()!;
-      await prisma.tournamentTeamMember.create({
+  async function nzapUser() {
+    return prisma.user.create({
+      data: {
+        id: NZAP_TEST_UUID,
+        discordDiscriminator: "6227",
+        discordId: NZAP_TEST_DISCORD_ID,
+        discordName: "N-ZAP",
+        discordRefreshToken: "none",
+        discordAvatar: NZAP_TEST_AVATAR,
+      },
+    });
+  }
+
+  async function users(ids: string[]) {
+    const usersFromSendouInk = await readFile(
+      path.resolve("prisma", "seed", "users.json"),
+      "utf8"
+    );
+
+    return prisma.user.createMany({
+      data: JSON.parse(usersFromSendouInk)
+        .slice(0, 200)
+        .map((user: any, i: number) => ({
+          id: ids[i],
+          discordId: user.discordId,
+          discordDiscriminator: user.discriminator,
+          discordName: user.username,
+          discordRefreshToken: "none",
+          twitter: user.profile?.twitterName,
+        })),
+    });
+  }
+
+  async function tournamentTeams(
+    tournamentId: string,
+    userIds: string[],
+    loggedInUserId: string
+  ) {
+    const userIdsCopy = [...userIds];
+    const mockTeams = [
+      "Team Olive",
+      "Chimera",
+      "Team Paradise",
+      "Team Blue",
+      "🛏️",
+      "Name Subject to Change",
+      "FTWin!",
+      "Starbust",
+      "Jackpot",
+      "Crème Fresh",
+      "Squids Next Door",
+      "Get Kraken",
+      "Kougeki",
+      "Last Minute",
+      "Squidding Good",
+      "Alliance Rogue",
+      "Second Wind",
+      "Kelp Domers",
+      "Arctic Moon",
+      "sink gang",
+      "Good Morning",
+      "Kings",
+      "NIS",
+      "Woomy Zoomy Boomy",
+    ];
+
+    if (variation === "check-in") {
+      const team = await prisma.tournamentTeam.create({
         data: {
-          memberId,
-          teamId: team.id,
-          captain: memberI === 0,
+          name: "Kraken Paradise",
           tournamentId,
         },
       });
-    }
-  }
-}
 
-async function trustRelationship(
-  trustGiverId: string,
-  trustReceiverId: string
-) {
-  return prisma.trustRelationships.create({
-    data: {
-      trustGiverId,
-      trustReceiverId,
-    },
-  });
-}
-
-async function organizations(userId: string) {
-  return prisma.organization.create({
-    data: {
-      name: "Sendou's Tournaments",
-      discordInvite: "sendou",
-      nameForUrl: "sendou",
-      twitter: "sendouc",
-      ownerId: userId,
-    },
-  });
-}
-
-const modesList = ["TW", "SZ", "TC", "RM", "CB"] as const;
-
-async function tournaments(organizationId: string) {
-  return prisma.tournament.create({
-    data: {
-      bannerBackground: "linear-gradient(to bottom, #9796f0, #fbc7d4)",
-      bannerTextHSLArgs: "231, 9%, 16%",
-      checkInTime: new Date(2025, 11, 17, 11),
-      startTime: new Date(2025, 11, 17, 12),
-      name: "In The Zone X",
-      nameForUrl: "in-the-zone-x",
-      organizerId: organizationId,
-      description: "In The Zone eXtreme",
-    },
-  });
-}
-
-const mapIds = [
-  6, 13, 16, 17, 20, 23, 26, 39, 41, 43, 49, 51, 61, 63, 75, 78, 79, 83, 84, 94,
-  95, 98, 99, 101,
-];
-
-// TODO: why this can't be done while creating?
-async function tournamentAddMaps(id: string, stageIds: number[]) {
-  const mapIdObjects = mapIds.map((id) => ({ id: stageIds[id] }));
-
-  return prisma.tournament.update({
-    where: { id },
-    data: {
-      mapPool: {
-        connect: mapIdObjects,
-      },
-    },
-  });
-}
-
-async function stages() {
-  const result = [];
-  for (const mapName of stagesList) {
-    for (const modeName of modesList) {
-      const created = await prisma.stage.create({
+      await prisma.tournamentTeamMember.create({
         data: {
-          name: mapName,
-          mode: modeName,
+          memberId: loggedInUserId,
+          teamId: team.id,
+          captain: true,
+          tournamentId,
         },
       });
 
-      result.push(created.id);
+      for (let memberI = 0; memberI < 3; memberI++) {
+        const memberId = userIdsCopy.shift()!;
+        await prisma.tournamentTeamMember.create({
+          data: {
+            memberId,
+            teamId: team.id,
+            tournamentId,
+          },
+        });
+      }
+    }
+
+    for (const [mockTeamI, mockTeam] of mockTeams.entries()) {
+      const team = await prisma.tournamentTeam.create({
+        data: {
+          name: mockTeam,
+          tournamentId,
+        },
+      });
+
+      for (let memberI = 0; memberI < (mockTeamI % 6) + 2; memberI++) {
+        const memberId = userIdsCopy.shift()!;
+        await prisma.tournamentTeamMember.create({
+          data: {
+            memberId,
+            teamId: team.id,
+            captain: memberI === 0,
+            tournamentId,
+          },
+        });
+      }
     }
   }
 
-  return result;
+  async function trustRelationship(
+    trustGiverId: string,
+    trustReceiverId: string
+  ) {
+    return prisma.trustRelationships.create({
+      data: {
+        trustGiverId,
+        trustReceiverId,
+      },
+    });
+  }
+
+  async function organizations(userId: string) {
+    return prisma.organization.create({
+      data: {
+        name: "Sendou's Tournaments",
+        discordInvite: "sendou",
+        nameForUrl: "sendou",
+        twitter: "sendouc",
+        ownerId: userId,
+      },
+    });
+  }
+
+  async function tournaments(organizationId: string) {
+    const lastFullHour = new Date();
+    lastFullHour.setMinutes(0);
+    lastFullHour.setSeconds(0);
+    lastFullHour.setMilliseconds(0);
+
+    const oneAfterNextFullHour = new Date(lastFullHour);
+    oneAfterNextFullHour.setHours(lastFullHour.getHours() + 2);
+
+    return prisma.tournament.create({
+      data: {
+        bannerBackground: "linear-gradient(to bottom, #9796f0, #fbc7d4)",
+        bannerTextHSLArgs: "231, 9%, 16%",
+        checkInTime:
+          variation === "check-in" ? lastFullHour : new Date(2025, 11, 17, 11),
+        startTime:
+          variation === "check-in"
+            ? oneAfterNextFullHour
+            : new Date(2025, 11, 17, 12),
+        name: "In The Zone X",
+        nameForUrl: "in-the-zone-x",
+        organizerId: organizationId,
+        description: "In The Zone eXtreme",
+      },
+    });
+  }
+
+  // TODO: why this can't be done while creating?
+  async function tournamentAddMaps(id: string, stageIds: number[]) {
+    const mapIds = [
+      6, 13, 16, 17, 20, 23, 26, 39, 41, 43, 49, 51, 61, 63, 75, 78, 79, 83, 84,
+      94, 95, 98, 99, 101,
+    ];
+
+    const mapIdObjects = mapIds.map((id) => ({ id: stageIds[id] }));
+
+    return prisma.tournament.update({
+      where: { id },
+      data: {
+        mapPool: {
+          connect: mapIdObjects,
+        },
+      },
+    });
+  }
+
+  async function stages() {
+    const modesList = ["TW", "SZ", "TC", "RM", "CB"] as const;
+    const result = [];
+
+    for (const mapName of stagesList) {
+      for (const modeName of modesList) {
+        const created = await prisma.stage.create({
+          data: {
+            name: mapName,
+            mode: modeName,
+          },
+        });
+
+        result.push(created.id);
+      }
+    }
+
+    return result;
+  }
 }
