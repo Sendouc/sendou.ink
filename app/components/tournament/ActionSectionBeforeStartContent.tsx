@@ -107,9 +107,7 @@ export function ActionSectionBeforeStartContent({
           </>
         )}
         <MyForm
-          action={`${location.pathname.split("/").slice(0, 4).join("/")}/api/${
-            ownTeam.id
-          }/check-in`}
+          action={`/api/tournament/${ownTeam.id}/check-in`}
           className="tournament__action-section__button-container"
           fetcher={fetcher}
         >

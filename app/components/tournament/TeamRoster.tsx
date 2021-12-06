@@ -1,4 +1,5 @@
-import { useIsSubmitting, useUser } from "~/utils/hooks";
+import { useFetcher } from "remix";
+import { useUser } from "~/utils/hooks";
 import { Button } from "../Button";
 import { MyForm } from "../MyForm";
 
@@ -22,7 +23,6 @@ export function TeamRoster({
   deleteMode?: boolean;
 }) {
   const user = useUser();
-  const isSubmitting = useIsSubmitting("DELETE");
 
   const showDeleteButtons = (userToDeleteId: string) => {
     // TODO:
@@ -56,20 +56,10 @@ export function TeamRoster({
                 <div className="teams-tab__member__container__name-button">
                   <div>{member.discordName}</div>
                   {showDeleteButtons(member.id) && (
-                    /* TODO: all buttons say Removing... */
-                    <MyForm
-                      method="delete"
-                      hiddenFields={{ userId: member.id, teamId: team.id }}
-                    >
-                      <Button
-                        variant="destructive"
-                        tiny
-                        loadingText="Removing..."
-                        loading={isSubmitting}
-                      >
-                        Remove
-                      </Button>
-                    </MyForm>
+                    <DeleteFromRosterButton
+                      playerId={member.id}
+                      teamId={team.id}
+                    />
                   )}
                 </div>
               </div>
@@ -77,5 +67,31 @@ export function TeamRoster({
           ))}
       </div>
     </div>
+  );
+}
+
+function DeleteFromRosterButton({
+  playerId,
+  teamId,
+}: {
+  playerId: string;
+  teamId: string;
+}) {
+  const fetcher = useFetcher();
+  return (
+    <MyForm
+      action={`/api/tournament/${teamId}/remove-player/${playerId}`}
+      method="delete"
+      fetcher={fetcher}
+    >
+      <Button
+        variant="destructive"
+        tiny
+        loadingText="Removing..."
+        loading={fetcher.state !== "idle"}
+      >
+        Remove
+      </Button>
+    </MyForm>
   );
 }
