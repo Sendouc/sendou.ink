@@ -116,8 +116,25 @@ button.tiny {
   padding-inline: var(--s-2);
 }
 
+button.minimal {
+  padding: 0;
+  border: none;
+  background-color: transparent;
+
+  /* TODO: fix bad default */
+  color: var(--theme-success);
+}
+
 button.destructive {
   border-color: var(--theme-error);
+  background-color: transparent;
+  color: var(--theme-error);
+  outline-color: var(--theme-error);
+}
+
+button.minimal-destructive {
+  padding: 0;
+  border: none;
   background-color: transparent;
   color: var(--theme-error);
   outline-color: var(--theme-error);

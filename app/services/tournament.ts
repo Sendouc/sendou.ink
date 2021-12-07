@@ -4,6 +4,7 @@ import {
   TOURNAMENT_TEAM_ROSTER_MAX_SIZE,
   TOURNAMENT_TEAM_ROSTER_MIN_SIZE,
 } from "~/constants";
+import { isTournamentAdmin } from "~/core/tournament/permissions";
 import { Serialized } from "~/utils";
 import { db } from "~/utils/db.server";
 
@@ -408,13 +409,16 @@ export async function checkIn({
 }) {
   const tournamentTeam = await db.tournamentTeam.findUnique({
     where: { id: teamId },
-    include: { tournament: true, members: true },
+    include: { tournament: { include: { organizer: true } }, members: true },
   });
 
   if (!tournamentTeam) throw new Response("Invalid team id", { status: 400 });
-  if (tournamentTeam.checkedInTime)
-    throw new Response("Already checked in", { status: 400 });
+
   if (
+    !isTournamentAdmin({
+      userId,
+      organization: tournamentTeam.tournament.organizer,
+    }) &&
     !tournamentTeam.members.some(
       ({ memberId, captain }) => captain && memberId === userId
     )
@@ -424,11 +428,17 @@ export async function checkIn({
   // cut them some slack so UI never shows you can check in when you can't
   const checkInCutOff = TOURNAMENT_CHECK_IN_CLOSING_MINUTES_FROM_START - 2;
   if (
+    !isTournamentAdmin({
+      userId,
+      organization: tournamentTeam.tournament.organizer,
+    }) &&
     tournamentTeam.tournament.startTime.getTime() - checkInCutOff * 60000 <
-    new Date().getTime()
+      new Date().getTime()
   ) {
     throw new Response("Check in time has passed", { status: 400 });
   }
+
+  // TODO: fail if tournament has started
 
   return db.tournamentTeam.update({
     where: {
@@ -436,6 +446,39 @@ export async function checkIn({
     },
     data: {
       checkedInTime: new Date(),
+    },
+  });
+}
+
+export async function checkOut({
+  teamId,
+  userId,
+}: {
+  teamId: string;
+  userId: string;
+}) {
+  const tournamentTeam = await db.tournamentTeam.findUnique({
+    where: { id: teamId },
+    include: { tournament: { include: { organizer: true } }, members: true },
+  });
+  if (!tournamentTeam) throw new Response("Invalid team id", { status: 400 });
+  if (
+    !isTournamentAdmin({
+      organization: tournamentTeam.tournament.organizer,
+      userId,
+    })
+  ) {
+    throw new Response("Not tournament admin", { status: 401 });
+  }
+
+  // TODO: fail if tournament has started
+
+  return db.tournamentTeam.update({
+    where: {
+      id: teamId,
+    },
+    data: {
+      checkedInTime: null,
     },
   });
 }

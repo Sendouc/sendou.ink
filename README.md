@@ -24,10 +24,12 @@ Prerequisites: [Node.js 16.13](https://nodejs.org/en/)
 
 - [x] Captain can remove players from roster
 - [ ] Add info about architecture to README
+- [ ] Move away from MyForm
 - [x] Make description mandatory + overview tab
 - [x] Captain can check in
-- [ ] Admin can check teams in (and out)
+- [x] Admin can check teams in / out
 - [ ] Admin can drop people out (show on bracket somehow that they dropped)
+- [ ] Admin can change team captain
 - [ ] Admin can randomize and rerandomize maps
 - [ ] Admin can change seeding 
 - [ ] Admin can start the tournament

@@ -2,6 +2,7 @@
   display: flex;
   justify-content: space-evenly;
   gap: var(--s-6);
+  margin-block-end: var(--s-8);
 }
 
 .tournament__admin__alert {
@@ -15,7 +16,7 @@
   width: 100%;
   column-gap: var(--s-1);
   font-size: var(--fonts-sm);
-  grid-template-columns: 1fr 3fr 2fr 2fr 1fr;
+  grid-template-columns: 1fr 3fr 3fr 1fr;
   margin-block-start: var(--s-4);
   row-gap: var(--s-1-5);
 }

@@ -105,11 +105,6 @@ function dateYYYYMMDD(date: string) {
 function InfoBannerActionButton() {
   const data = useLoaderData<FindTournamentByNameForUrlI>();
   const user = useUser();
-  const now = new Date();
-
-  // TODO: special case - tournament has started but can manage roster
-  const tournamentHasConcluded = new Date(data.startTime) < now;
-  if (tournamentHasConcluded) return null;
 
   if (!user) {
     return (

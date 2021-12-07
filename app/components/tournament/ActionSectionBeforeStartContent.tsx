@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useFetcher, useLoaderData, useLocation } from "remix";
+import { useFetcher, useLoaderData } from "remix";
 import {
   checkInClosesDate,
   TOURNAMENT_TEAM_ROSTER_MIN_SIZE,
@@ -20,7 +20,6 @@ export function ActionSectionBeforeStartContent({
 }) {
   const fetcher = useFetcher();
   const tournament = useLoaderData<FindTournamentByNameForUrlI>();
-  const location = useLocation();
 
   const timeInMinutesBeforeCheckInCloses = () => {
     return Math.floor(
@@ -113,7 +112,7 @@ export function ActionSectionBeforeStartContent({
         >
           <Button
             variant="outlined"
-            loadingText="Checking-in..."
+            loadingText="Checking in..."
             type="submit"
             loading={fetcher.state !== "idle"}
           >
