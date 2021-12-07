@@ -52,7 +52,11 @@ export type LoggedInUser = {
 } | null;
 
 export type Serialized<T> = {
-  [P in keyof T]: T[P] extends Date ? string : Serialized<T[P]>;
+  [P in keyof T]: T[P] extends Date
+    ? string
+    : T[P] extends Date | null
+    ? string
+    : Serialized<T[P]>;
 };
 
 export type Unpacked<T> = T extends (infer U)[]
