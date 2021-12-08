@@ -76,7 +76,11 @@ export function ActionSectionBeforeStartContent({
     );
   }
 
-  if (checkInHasStarted && !teamHasEnoughMembers) {
+  if (
+    checkInHasStarted &&
+    !teamHasEnoughMembers &&
+    minutesTillCheckInCloses > 0
+  ) {
     return (
       <ActionSectionWrapper icon="warning">
         <AlertIcon /> You need at least 4 players in your roster to play.
@@ -125,7 +129,7 @@ export function ActionSectionBeforeStartContent({
 
   return (
     <ActionSectionWrapper icon="error">
-      <ErrorIcon /> Check-in has closed
+      <ErrorIcon /> Check-in has closed. Your team is not checked in
     </ActionSectionWrapper>
   );
 }
