@@ -11,14 +11,19 @@
 }
 
 /* TODO: overflow-x scroll */
-.tournament__admin__teams-container {
+.tournament__admin__teams-list-row {
   display: grid;
   width: 100%;
   column-gap: var(--s-1);
   font-size: var(--fonts-sm);
   grid-template-columns: 1fr 3fr 3fr 1fr;
+  list-style: none;
   margin-block-start: var(--s-4);
   row-gap: var(--s-1-5);
+}
+
+.tournament__admin__teams-list-row.sortable {
+  cursor: grab;
 }
 
 .tournament__admin__teams-container__header {
