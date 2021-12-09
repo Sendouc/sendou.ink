@@ -29,7 +29,7 @@ model User {
 model Organization {
   id            String       @id @default(uuid())
   name          String
-  /// Name in lower case to show in URL
+  // Name in lower case to show in URL
   nameForUrl    String       @unique
   ownerId       String       @unique
   owner         User         @relation(fields: [ownerId], references: [id])
@@ -41,15 +41,19 @@ model Organization {
 model Tournament {
   id                String           @id @default(uuid())
   name              String
-  /// Name in lower case to show in URL
+  // Name in lower case to show in URL
   nameForUrl        String
   description       String
   startTime         DateTime
   checkInStartTime  DateTime
-  /// CSS for tournament banner's background value
+  // CSS for tournament banner's background value
   bannerBackground  String
-  /// CSS for tournament banner's color value
+  // CSS for tournament banner's color value
   bannerTextHSLArgs String
+  // Team ID's in an array in the order of the seed. 0 index is 1st seed, 1 index is 2nd seed etc. 
+  // Any team not in the list will be at the bottom in the order of their createdAt time stamp
+  // (older teams first)
+  seeds             String[]
   mapPool           Stage[]
   organizerId       String
   organizer         Organization     @relation(fields: [organizerId], references: [id])

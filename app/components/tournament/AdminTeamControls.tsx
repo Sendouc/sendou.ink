@@ -25,6 +25,9 @@ import { checkInHasStarted } from "~/core/tournament/utils";
 import type { FindTournamentByNameForUrlI } from "~/services/tournament";
 import type { Unpacked } from "~/utils";
 
+// TODO: https://docs.dndkit.com/presets/sortable#drag-overlay
+// TODO: cursor flickers when going down the list
+// TODO: grabbing cursor
 export function AdminTeamControls() {
   const [, parentRoute] = useMatches();
   const { teams, checkInStartTime } =

@@ -41,6 +41,7 @@ CREATE TABLE "Tournament" (
     "checkInStartTime" TIMESTAMP(3) NOT NULL,
     "bannerBackground" TEXT NOT NULL,
     "bannerTextHSLArgs" TEXT NOT NULL,
+    "seeds" TEXT[],
     "organizerId" TEXT NOT NULL,
 
     CONSTRAINT "Tournament_pkey" PRIMARY KEY ("id")
