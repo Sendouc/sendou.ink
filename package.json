@@ -19,7 +19,8 @@
     "prettier": "prettier --check .",
     "typecheck": "tsc --noEmit",
     "cy:open": "npx cypress open",
-    "cy:run": "npx cypress run"
+    "cy:run": "npx cypress run",
+    "test:unit": "tsm node_modules/uvu/bin.js -i cypress"
   },
   "dependencies": {
     "@dnd-kit/core": "^4.0.3",
@@ -62,7 +63,9 @@
     "stylelint-config-standard": "^24.0.0",
     "stylelint-order": "^5.0.0",
     "ts-node": "^10.4.0",
-    "typescript": "^4.5.2"
+    "tsm": "^2.2.1",
+    "typescript": "^4.5.2",
+    "uvu": "^0.5.2"
   },
   "engines": {
     "node": ">=14"
