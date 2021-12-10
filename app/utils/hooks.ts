@@ -22,6 +22,7 @@ export const useIsSubmitting = (method: "POST" | "DELETE") => {
   );
 };
 
+// TODO: fix causes memory leak
 /** @link https://stackoverflow.com/a/64983274 */
 export const useTimeoutState = <T>(
   defaultState: T
