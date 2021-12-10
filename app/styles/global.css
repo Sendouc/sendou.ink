@@ -196,6 +196,11 @@ fieldset {
   all: inherit;
 }
 
+article {
+  padding-inline: var(--s-3);
+  white-space: pre-line;
+}
+
 /* TODO: bug: white on white on Edge */
 select {
   all: unset;
