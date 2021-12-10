@@ -36,15 +36,15 @@
   row-gap: var(--s-1-5);
 }
 
-.tournament__admin__teams-list-row.sortable {
+.tournament__admin__teams-list-row.sortable:not(.disabled) {
   cursor: grab;
 }
 
-.tournament__admin__teams-list-row.sortable:hover {
+.tournament__admin__teams-list-row.sortable:hover:not(.disabled) {
   background-color: var(--bg-lighter);
 }
 
-.tournament__admin__teams-list-row.sortable:active {
+.tournament__admin__teams-list-row.sortable:active:not(.disabled) {
   cursor: grabbing !important;
 }
 

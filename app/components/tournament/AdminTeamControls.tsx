@@ -27,8 +27,9 @@ import type { Unpacked } from "~/utils";
 import { useTimeoutState } from "~/utils/hooks";
 
 // TODO: https://docs.dndkit.com/presets/sortable#drag-overlay
-// TODO: user can change seed order while submitting which breaks the UI
+// TODO: what if returns error? check other APIs too
 export function AdminTeamControls() {
+  const seedsFetcher = useFetcher();
   const [, parentRoute] = useMatches();
   const { id, teams, checkInStartTime } =
     parentRoute.data as FindTournamentByNameForUrlI;
@@ -46,8 +47,12 @@ export function AdminTeamControls() {
 
   return (
     <>
-      <SeedAlert tournamentId={id} teamOrder={teamOrder} />
-      <ul className="tournament__admin__teams-container">
+      <SeedAlert
+        fetcher={seedsFetcher}
+        tournamentId={id}
+        teamOrder={teamOrder}
+      />
+      <ul>
         <li className="tournament__admin__teams-list-row">
           <div className="tournament__admin__teams-container__header">Seed</div>
           <div className="tournament__admin__teams-container__header">Name</div>
@@ -63,6 +68,7 @@ export function AdminTeamControls() {
           id="team-seed-sorter"
           sensors={sensors}
           collisionDetection={closestCenter}
+          onDragStart={() => null}
           onDragEnd={(event) => {
             const { active, over } = event;
 
@@ -82,7 +88,12 @@ export function AdminTeamControls() {
             strategy={verticalListSortingStrategy}
           >
             {teamsSorted.map((team, i) => (
-              <SortableRow key={team.id} team={team} seed={i + 1} />
+              <SortableRow
+                key={team.id}
+                team={team}
+                seed={i + 1}
+                disabled={seedsFetcher.state !== "idle"}
+              />
             ))}
           </SortableContext>
         </DndContext>
@@ -94,11 +105,12 @@ export function AdminTeamControls() {
 function SeedAlert({
   tournamentId,
   teamOrder,
+  fetcher,
 }: {
   tournamentId: string;
   teamOrder: string[];
+  fetcher: ReturnType<typeof useFetcher>;
 }) {
-  const fetcher = useFetcher();
   const [teamOrderInDb, setTeamOrderInDb] = React.useState(teamOrder);
   const [showSuccess, setShowSuccess] = useTimeoutState(false);
 
@@ -150,15 +162,17 @@ function SeedAlert({
 function SortableRow({
   team,
   seed,
+  disabled,
 }: {
   team: Unpacked<FindTournamentByNameForUrlI["teams"]>;
   seed: number;
+  disabled: boolean;
 }) {
   const [, parentRoute] = useMatches();
   const { checkInStartTime } = parentRoute.data as FindTournamentByNameForUrlI;
 
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: team.id });
+    useSortable({ id: team.id, disabled });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -167,7 +181,9 @@ function SortableRow({
 
   return (
     <li
-      className="tournament__admin__teams-list-row sortable"
+      className={classNames("tournament__admin__teams-list-row", "sortable", {
+        disabled,
+      })}
       ref={setNodeRef}
       style={style}
       {...attributes}
