@@ -18,14 +18,13 @@ import { TeamRoster } from "~/components/tournament/TeamRoster";
 import { TOURNAMENT_TEAM_ROSTER_MAX_SIZE } from "~/constants";
 import {
   ownTeamWithInviteCode,
-  OwnTeamWithInviteCodeI,
   putPlayerToTeam,
   removePlayerFromTeam,
 } from "~/services/tournament";
 import { getTrustingUsers, GetTrustingUsersI } from "~/services/user";
 import styles from "~/styles/tournament-manage-roster.css";
-import { useBaseURL, useIsSubmitting } from "~/utils/hooks";
 import { formDataFromRequest, requireUser } from "~/utils";
+import { useBaseURL, useIsSubmitting } from "~/utils/hooks";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -86,7 +85,7 @@ export const action: ActionFunction = async ({
 };
 
 type Data = {
-  ownTeam: OwnTeamWithInviteCodeI;
+  ownTeam: Prisma.PromiseReturnType<typeof ownTeamWithInviteCode>;
   trustingUsers: GetTrustingUsersI;
 };
 
@@ -122,18 +121,10 @@ export const loader: LoaderFunction = async ({ params, context }) => {
 // TODO: should not 404 but redirect instead - catchBoundary?
 export default function ManageRosterPage() {
   const actionData = useActionData<ActionData | undefined>();
-  const [showCopied, setShowCopied] = React.useState(false);
   const { ownTeam, trustingUsers } = useLoaderData<Data>();
   const baseURL = useBaseURL();
   const location = useLocation();
   const isSubmitting = useIsSubmitting("POST");
-
-  React.useEffect(() => {
-    if (!showCopied) return;
-    const timeout = setTimeout(() => setShowCopied(false), 3000);
-
-    return () => clearTimeout(timeout);
-  }, [showCopied]);
 
   const urlWithInviteCode = `${baseURL}${location.pathname.replace(
     "manage-roster",
@@ -162,16 +153,7 @@ export default function ManageRosterPage() {
               disabled
               value={urlWithInviteCode}
             />
-            <button
-              className="tournament__manage-roster__input__button"
-              onClick={() => {
-                navigator.clipboard.writeText(urlWithInviteCode);
-                setShowCopied(true);
-              }}
-              type="button"
-            >
-              {showCopied ? "Copied!" : "Copy to clipboard"}
-            </button>
+            <CopyToClipboardButton urlWithInviteCode={urlWithInviteCode} />
           </div>
           {trustingUsers.length > 0 && (
             <div className="tournament__manage-roster__actions__section">
@@ -206,5 +188,33 @@ export default function ManageRosterPage() {
         </div>
       )}
     </div>
+  );
+}
+
+function CopyToClipboardButton({
+  urlWithInviteCode,
+}: {
+  urlWithInviteCode: string;
+}) {
+  const [showCopied, setShowCopied] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!showCopied) return;
+    const timeout = setTimeout(() => setShowCopied(false), 3000);
+
+    return () => clearTimeout(timeout);
+  }, [showCopied]);
+
+  return (
+    <button
+      className="tournament__manage-roster__input__button"
+      onClick={() => {
+        navigator.clipboard.writeText(urlWithInviteCode);
+        setShowCopied(true);
+      }}
+      type="button"
+    >
+      {showCopied ? "Copied!" : "Copy to clipboard"}
+    </button>
   );
 }
