@@ -2,9 +2,9 @@ import { Prisma } from ".prisma/client";
 import {
   TOURNAMENT_CHECK_IN_CLOSING_MINUTES_FROM_START,
   TOURNAMENT_TEAM_ROSTER_MAX_SIZE,
-  TOURNAMENT_TEAM_ROSTER_MIN_SIZE,
 } from "~/constants";
 import { isTournamentAdmin } from "~/core/tournament/permissions";
+import { sortTeamsBySeed } from "~/core/tournament/utils";
 import { Serialized } from "~/utils";
 import { db } from "~/utils/db.server";
 
@@ -15,11 +15,9 @@ export type FindTournamentByNameForUrlI = Serialized<
 export async function findTournamentByNameForUrl({
   organizationNameForUrl,
   tournamentNameForUrl,
-  userId,
 }: {
   organizationNameForUrl: string;
   tournamentNameForUrl: string;
-  userId?: string;
 }) {
   const tournaments = await db.tournament.findMany({
     where: {
@@ -33,6 +31,7 @@ export async function findTournamentByNameForUrl({
       checkInStartTime: true,
       bannerBackground: true,
       bannerTextHSLArgs: true,
+      seeds: true,
       organizer: {
         select: {
           name: true,
@@ -80,29 +79,7 @@ export async function findTournamentByNameForUrl({
 
   if (!result) throw new Response("No tournament found", { status: 404 });
 
-  if (userId) {
-    result.teams.sort((teamA, teamB) => {
-      // show team the user is member of first
-      let aSortValue = Number(
-        teamB.members.some(({ member }) => member.id === userId)
-      );
-      let bSortValue = Number(
-        teamA.members.some(({ member }) => member.id === userId)
-      );
-      if (aSortValue !== bSortValue) return aSortValue - bSortValue;
-
-      // TODO: show stronger teams first
-
-      // otherwise let's show full teams first
-      aSortValue = Number(
-        teamB.members.length >= TOURNAMENT_TEAM_ROSTER_MIN_SIZE
-      );
-      bSortValue = Number(
-        teamA.members.length >= TOURNAMENT_TEAM_ROSTER_MIN_SIZE
-      );
-      return aSortValue - bSortValue;
-    });
-  }
+  result.teams.sort(sortTeamsBySeed(result.seeds));
 
   result.organizer.twitter = twitterToUrl(result.organizer.twitter);
   result.organizer.discordInvite = discordInviteToUrl(
@@ -479,6 +456,41 @@ export async function checkOut({
     },
     data: {
       checkedInTime: null,
+    },
+  });
+}
+
+export async function updateSeeds({
+  tournamentId,
+  userId,
+  newSeeds,
+}: {
+  tournamentId: string;
+  userId: string;
+  newSeeds: string[];
+}) {
+  const tournament = await db.tournament.findUnique({
+    where: { id: tournamentId },
+    include: { organizer: true },
+  });
+  if (!tournament) throw new Response("Invalid tournament id", { status: 400 });
+  if (
+    !isTournamentAdmin({
+      organization: tournament.organizer,
+      userId,
+    })
+  ) {
+    throw new Response("Not tournament admin", { status: 401 });
+  }
+
+  // TODO: fail if tournament has started
+
+  return db.tournament.update({
+    where: {
+      id: tournamentId,
+    },
+    data: {
+      seeds: newSeeds,
     },
   });
 }

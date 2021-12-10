@@ -249,3 +249,7 @@ select::selection {
 .alert[data-type="info"] > svg {
   fill: var(--theme-info);
 }
+
+.alert[data-type="success"] > svg {
+  fill: var(--theme-success);
+}

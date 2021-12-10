@@ -110,7 +110,7 @@ export function ActionSectionBeforeStartContent({
           </>
         )}
         <MyForm
-          action={`/api/tournament/${ownTeam.id}/check-in`}
+          action={`/api/tournamentTeam/${ownTeam.id}/check-in`}
           className="tournament__action-section__button-container"
           fetcher={fetcher}
         >

@@ -5,9 +5,21 @@
   margin-block-end: var(--s-8);
 }
 
-.tournament__admin__alert {
+.tournament__admin__form {
   width: 100%;
   margin-block-start: var(--s-4);
+}
+
+.tournament__admin__alert {
+  width: 100%;
+}
+
+.tournament__admin__alert__button {
+  margin-inline-start: auto;
+}
+
+.tournament__admin__alert__button.hidden {
+  visibility: hidden;
 }
 
 /* TODO: overflow-x scroll */

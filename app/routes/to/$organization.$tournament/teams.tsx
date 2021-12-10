@@ -2,6 +2,7 @@ import { useMatches } from "remix";
 import type { FindTournamentByNameForUrlI } from "~/services/tournament";
 import { TeamRoster } from "~/components/tournament/TeamRoster";
 
+// TODO: own team first
 export default function TeamsTab() {
   const [, parentRoute] = useMatches();
   const { teams } = parentRoute.data as FindTournamentByNameForUrlI;

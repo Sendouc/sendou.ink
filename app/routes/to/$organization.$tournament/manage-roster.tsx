@@ -24,7 +24,7 @@ import {
 import { getTrustingUsers, GetTrustingUsersI } from "~/services/user";
 import styles from "~/styles/tournament-manage-roster.css";
 import { formDataFromRequest, requireUser } from "~/utils";
-import { useBaseURL, useIsSubmitting } from "~/utils/hooks";
+import { useBaseURL, useIsSubmitting, useTimeoutState } from "~/utils/hooks";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -196,21 +196,14 @@ function CopyToClipboardButton({
 }: {
   urlWithInviteCode: string;
 }) {
-  const [showCopied, setShowCopied] = React.useState(false);
-
-  React.useEffect(() => {
-    if (!showCopied) return;
-    const timeout = setTimeout(() => setShowCopied(false), 3000);
-
-    return () => clearTimeout(timeout);
-  }, [showCopied]);
+  const [showCopied, setShowCopied] = useTimeoutState(false);
 
   return (
     <button
       className="tournament__manage-roster__input__button"
       onClick={() => {
         navigator.clipboard.writeText(urlWithInviteCode);
-        setShowCopied(true);
+        setShowCopied(true, { timeout: 3000 });
       }}
       type="button"
     >

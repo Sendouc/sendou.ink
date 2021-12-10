@@ -24,13 +24,15 @@ import { TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
 import { checkInHasStarted } from "~/core/tournament/utils";
 import type { FindTournamentByNameForUrlI } from "~/services/tournament";
 import type { Unpacked } from "~/utils";
+import { useTimeoutState } from "~/utils/hooks";
 
 // TODO: https://docs.dndkit.com/presets/sortable#drag-overlay
 // TODO: cursor flickers when going down the list
 // TODO: grabbing cursor
+// TODO: user can change seed order while submitting which breaks the UI
 export function AdminTeamControls() {
   const [, parentRoute] = useMatches();
-  const { teams, checkInStartTime } =
+  const { id, teams, checkInStartTime } =
     parentRoute.data as FindTournamentByNameForUrlI;
   const [teamOrder, setTeamOrder] = React.useState(teams.map((t) => t.id));
   const sensors = useSensors(
@@ -46,9 +48,7 @@ export function AdminTeamControls() {
 
   return (
     <>
-      <Alert type="info" className="tournament__admin__alert">
-        Drag teams to adjust their seeding
-      </Alert>
+      <SeedAlert tournamentId={id} teamOrder={teamOrder} />
       <ul className="tournament__admin__teams-container">
         <li className="tournament__admin__teams-list-row">
           <div className="tournament__admin__teams-container__header">Seed</div>
@@ -90,6 +90,62 @@ export function AdminTeamControls() {
         </DndContext>
       </ul>
     </>
+  );
+}
+
+function SeedAlert({
+  tournamentId,
+  teamOrder,
+}: {
+  tournamentId: string;
+  teamOrder: string[];
+}) {
+  const fetcher = useFetcher();
+  const [teamOrderInDb, setTeamOrderInDb] = React.useState(teamOrder);
+  const [showSuccess, setShowSuccess] = useTimeoutState(false);
+
+  React.useEffect(() => {
+    // TODO: what if error?
+    if (fetcher.state !== "loading") return;
+
+    setTeamOrderInDb(teamOrder);
+    setShowSuccess(true, { timeout: 3000 });
+  }, [fetcher.state]);
+
+  const teamOrderChanged = teamOrder.some((id, i) => id !== teamOrderInDb[i]);
+
+  return (
+    <fetcher.Form
+      action={`/api/tournament/${tournamentId}/seeds`}
+      method="post"
+      className="tournament__admin__form"
+    >
+      <input type="hidden" name="seeds" value={JSON.stringify(teamOrder)} />
+      <Alert
+        type={teamOrderChanged ? "warning" : showSuccess ? "success" : "info"}
+        className="tournament__admin__alert"
+        rightAction={
+          <Button
+            className={classNames("tournament__admin__alert__button", {
+              hidden: !teamOrderChanged,
+            })}
+            type="submit"
+            loadingText="Saving..."
+            loading={fetcher.state !== "idle"}
+          >
+            Save seeds
+          </Button>
+        }
+      >
+        {teamOrderChanged ? (
+          <>You have unchanged changes to seeding</>
+        ) : showSuccess ? (
+          <>Seeds saved successfully!</>
+        ) : (
+          <>Drag teams to adjust their seeding</>
+        )}
+      </Alert>
+    </fetcher.Form>
   );
 }
 
@@ -155,7 +211,7 @@ function CheckOutButton({ teamId }: { teamId: string }) {
   const fetcher = useFetcher();
   return (
     <MyForm
-      action={`/api/tournament/${teamId}/check-out`}
+      action={`/api/tournamentTeam/${teamId}/check-out`}
       className="tournament__action-section__button-container"
       fetcher={fetcher}
     >
@@ -176,7 +232,7 @@ function CheckInButton({ teamId }: { teamId: string }) {
   const fetcher = useFetcher();
   return (
     <MyForm
-      action={`/api/tournament/${teamId}/check-in`}
+      action={`/api/tournamentTeam/${teamId}/check-in`}
       className="tournament__action-section__button-container"
       fetcher={fetcher}
     >

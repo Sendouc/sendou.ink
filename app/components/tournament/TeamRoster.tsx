@@ -80,7 +80,7 @@ function DeleteFromRosterButton({
   const fetcher = useFetcher();
   return (
     <MyForm
-      action={`/api/tournament/${teamId}/remove-player/${playerId}`}
+      action={`/api/tournamentTeam/${teamId}/remove-player/${playerId}`}
       method="delete"
       fetcher={fetcher}
     >

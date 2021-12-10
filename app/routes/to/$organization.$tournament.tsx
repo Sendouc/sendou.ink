@@ -16,7 +16,7 @@ import {
   findTournamentByNameForUrl,
   FindTournamentByNameForUrlI,
 } from "~/services/tournament";
-import { getUser, makeTitle } from "~/utils";
+import { makeTitle } from "~/utils";
 import { useUser } from "~/utils/hooks";
 import tournamentStylesUrl from "../../styles/tournament.css";
 
@@ -24,7 +24,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: tournamentStylesUrl }];
 };
 
-export const loader: LoaderFunction = ({ params, context }) => {
+export const loader: LoaderFunction = ({ params }) => {
   invariant(
     typeof params.organization === "string",
     "Expected params.organization to be string"
@@ -34,12 +34,9 @@ export const loader: LoaderFunction = ({ params, context }) => {
     "Expected params.tournament to be string"
   );
 
-  const user = getUser(context);
-
   return findTournamentByNameForUrl({
     organizationNameForUrl: params.organization,
     tournamentNameForUrl: params.tournament,
-    userId: user?.id,
   });
 };
 
