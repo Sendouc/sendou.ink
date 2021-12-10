@@ -26,16 +26,26 @@
 .tournament__admin__teams-list-row {
   display: grid;
   width: 100%;
+  align-items: center;
+  padding: var(--s-3);
+  border-radius: var(--rounded);
   column-gap: var(--s-1);
   font-size: var(--fonts-sm);
   grid-template-columns: 1fr 3fr 3fr 1fr;
   list-style: none;
-  margin-block-start: var(--s-4);
   row-gap: var(--s-1-5);
 }
 
 .tournament__admin__teams-list-row.sortable {
   cursor: grab;
+}
+
+.tournament__admin__teams-list-row.sortable:hover {
+  background-color: var(--bg-lighter);
+}
+
+.tournament__admin__teams-list-row.sortable:active {
+  cursor: grabbing !important;
 }
 
 .tournament__admin__teams-container__header {

@@ -27,8 +27,6 @@ import type { Unpacked } from "~/utils";
 import { useTimeoutState } from "~/utils/hooks";
 
 // TODO: https://docs.dndkit.com/presets/sortable#drag-overlay
-// TODO: cursor flickers when going down the list
-// TODO: grabbing cursor
 // TODO: user can change seed order while submitting which breaks the UI
 export function AdminTeamControls() {
   const [, parentRoute] = useMatches();
