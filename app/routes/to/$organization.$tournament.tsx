@@ -89,10 +89,8 @@ export default function TournamentPage() {
       style={
         {
           "--tournaments-background": data.bannerBackground,
-          // TODO: do this on backend
-          "--tournaments-text": `hsl(${data.bannerTextHSLArgs})`,
-          // TODO: and this
-          "--tournaments-text-transparent": `hsla(${data.bannerTextHSLArgs}, 0.3)`,
+          "--tournaments-text": data.CSSProperties.text,
+          "--tournaments-text-transparent": data.CSSProperties.textTransparent,
         } as Record<string, string>
       }
     >

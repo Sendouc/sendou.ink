@@ -5,8 +5,12 @@ import {
 } from "~/constants";
 import { isTournamentAdmin } from "~/core/tournament/permissions";
 import { sortTeamsBySeed } from "~/core/tournament/utils";
-import { Serialized } from "~/utils";
+import { Serialized, Unpacked } from "~/utils";
 import { db } from "~/utils/db.server";
+import {
+  PrismaTournamentsByNameForUrl,
+  tournamentsByNameForUrl,
+} from "./tournament.prisma";
 
 export type FindTournamentByNameForUrlI = Serialized<
   Prisma.PromiseReturnType<typeof findTournamentByNameForUrl>
@@ -19,60 +23,9 @@ export async function findTournamentByNameForUrl({
   organizationNameForUrl: string;
   tournamentNameForUrl: string;
 }) {
-  const tournaments = await db.tournament.findMany({
-    where: {
-      nameForUrl: tournamentNameForUrl.toLowerCase(),
-    },
-    select: {
-      id: true,
-      name: true,
-      description: true,
-      startTime: true,
-      checkInStartTime: true,
-      bannerBackground: true,
-      bannerTextHSLArgs: true,
-      seeds: true,
-      organizer: {
-        select: {
-          name: true,
-          discordInvite: true,
-          twitter: true,
-          nameForUrl: true,
-          ownerId: true,
-        },
-      },
-      mapPool: {
-        select: {
-          mode: true,
-          name: true,
-        },
-      },
-      teams: {
-        select: {
-          checkedInTime: true,
-          id: true,
-          name: true,
-          createdAt: true,
-          members: {
-            select: {
-              captain: true,
-              member: {
-                select: {
-                  id: true,
-                  discordAvatar: true,
-                  discordName: true,
-                  discordId: true,
-                  discordDiscriminator: true,
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  });
+  const tournaments = await tournamentsByNameForUrl(tournamentNameForUrl);
 
-  let result = tournaments.find(
+  const result = tournaments.find(
     (tournament) =>
       tournament.organizer.nameForUrl === organizationNameForUrl.toLowerCase()
   );
@@ -85,8 +38,9 @@ export async function findTournamentByNameForUrl({
   result.organizer.discordInvite = discordInviteToUrl(
     result.organizer.discordInvite
   );
+  const resultWithCSSProperties = addCSSProperties(result);
 
-  return result;
+  return resultWithCSSProperties;
 }
 
 function twitterToUrl(twitter: string | null) {
@@ -97,6 +51,18 @@ function twitterToUrl(twitter: string | null) {
 
 function discordInviteToUrl(discordInvite: string) {
   return `https://discord.com/invite/${discordInvite}`;
+}
+
+function addCSSProperties(tournament: Unpacked<PrismaTournamentsByNameForUrl>) {
+  const { bannerTextHSLArgs, ...rest } = tournament;
+
+  return {
+    ...rest,
+    CSSProperties: {
+      text: `hsl(${bannerTextHSLArgs})`,
+      textTransparent: `hsla(${bannerTextHSLArgs}, 0.3)`,
+    },
+  };
 }
 
 export type OwnTeamWithInviteCodeI = Serialized<

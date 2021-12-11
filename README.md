@@ -54,6 +54,7 @@ You can give a variation as a flag to the seeding script changing what exactly i
 - [x] Make description mandatory + overview tab
 - [x] Captain can check in
 - [x] Admin can check teams in / out
+- [ ] Migrate to *.prisma.ts
 - [ ] Admin can drop people out (show on bracket somehow that they dropped)
 - [ ] Admin can change team captain
 - [ ] Admin can randomize and rerandomize maps
