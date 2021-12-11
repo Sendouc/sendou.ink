@@ -62,7 +62,6 @@ export function AdminTeamControls() {
             Roster size
           </div>
         </li>
-        {/* TODO: order by seed */}
         <DndContext
           id="team-seed-sorter"
           sensors={sensors}

@@ -238,7 +238,6 @@ export async function seed(variation?: "check-in") {
     });
   }
 
-  // TODO: why this can't be done while creating?
   async function tournamentAddMaps(id: string, stageIds: number[]) {
     const mapIds = [
       6, 13, 16, 17, 20, 23, 26, 39, 41, 43, 49, 51, 61, 63, 75, 78, 79, 83, 84,
