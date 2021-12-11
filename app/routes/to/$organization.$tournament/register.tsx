@@ -1,6 +1,7 @@
 import { Prisma } from ".prisma/client";
 import {
   ActionFunction,
+  Form,
   LinksFunction,
   redirect,
   useActionData,
@@ -12,7 +13,6 @@ import {
 import invariant from "tiny-invariant";
 import { Button } from "~/components/Button";
 import ErrorMessage from "~/components/ErrorMessage";
-import { MyForm } from "~/components/MyForm";
 import {
   createTournamentTeam,
   FindTournamentByNameForUrlI,
@@ -120,7 +120,8 @@ export default function RegisterPage() {
     <div className="tournament__register__container">
       <h2 className="tournament__register__header">Register now</h2>
       <div className="tournament__register__content">
-        <MyForm hiddenFields={{ tournamentId: tournamentData.id }}>
+        <Form method="post">
+          <input type="hidden" name="tournamentId" value={tournamentData.id} />
           <label htmlFor="teamName">Team name</label>
           <input
             name="teamName"
@@ -153,7 +154,7 @@ export default function RegisterPage() {
               </Button>
             )}
           </div>
-        </MyForm>
+        </Form>
       </div>
     </div>
   );

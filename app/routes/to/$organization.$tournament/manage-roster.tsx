@@ -1,7 +1,7 @@
 import { Prisma } from ".prisma/client";
-import * as React from "react";
 import {
   ActionFunction,
+  Form,
   json,
   LinksFunction,
   LoaderFunction,
@@ -13,7 +13,6 @@ import invariant from "tiny-invariant";
 import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
 import ErrorMessage from "~/components/ErrorMessage";
-import { MyForm } from "~/components/MyForm";
 import { TeamRoster } from "~/components/tournament/TeamRoster";
 import { TOURNAMENT_TEAM_ROSTER_MAX_SIZE } from "~/constants";
 import {
@@ -157,7 +156,8 @@ export default function ManageRosterPage() {
           </div>
           {trustingUsers.length > 0 && (
             <div className="tournament__manage-roster__actions__section">
-              <MyForm hiddenFields={{ teamId: ownTeam.id }}>
+              <Form method="post">
+                <input type="hidden" name="teamId" value={ownTeam.id} />
                 <label htmlFor="userId">
                   Add players you previously played with
                 </label>
@@ -182,7 +182,7 @@ export default function ManageRosterPage() {
                 >
                   Add to roster
                 </Button>
-              </MyForm>
+              </Form>
             </div>
           )}
         </div>

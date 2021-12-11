@@ -19,7 +19,6 @@ import * as React from "react";
 import { useFetcher, useMatches } from "remix";
 import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
-import { MyForm } from "~/components/MyForm";
 import { TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
 import { checkInHasStarted } from "~/core/tournament/utils";
 import type { FindTournamentByNameForUrlI } from "~/services/tournament";
@@ -27,7 +26,7 @@ import type { Unpacked } from "~/utils";
 import { useTimeoutState } from "~/utils/hooks";
 
 // TODO: https://docs.dndkit.com/presets/sortable#drag-overlay
-// TODO: what if returns error? check other APIs too
+// TODO: what if returns error? check other APIs too -> add Cypress test
 export function AdminTeamControls() {
   const seedsFetcher = useFetcher();
   const [, parentRoute] = useMatches();
@@ -224,10 +223,10 @@ function SortableRow({
 function CheckOutButton({ teamId }: { teamId: string }) {
   const fetcher = useFetcher();
   return (
-    <MyForm
+    <fetcher.Form
+      method="post"
       action={`/api/tournamentTeam/${teamId}/check-out`}
       className="tournament__action-section__button-container"
-      fetcher={fetcher}
     >
       <Button
         tiny
@@ -238,17 +237,17 @@ function CheckOutButton({ teamId }: { teamId: string }) {
       >
         Check-out
       </Button>
-    </MyForm>
+    </fetcher.Form>
   );
 }
 
 function CheckInButton({ teamId }: { teamId: string }) {
   const fetcher = useFetcher();
   return (
-    <MyForm
+    <fetcher.Form
+      method="post"
       action={`/api/tournamentTeam/${teamId}/check-in`}
       className="tournament__action-section__button-container"
-      fetcher={fetcher}
     >
       <Button
         tiny
@@ -259,6 +258,6 @@ function CheckInButton({ teamId }: { teamId: string }) {
       >
         Check-in
       </Button>
-    </MyForm>
+    </fetcher.Form>
   );
 }

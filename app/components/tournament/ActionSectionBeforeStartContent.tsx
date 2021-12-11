@@ -10,7 +10,6 @@ import { Button } from "../Button";
 import { AlertIcon } from "../icons/Alert";
 import { ErrorIcon } from "../icons/Error";
 import { SuccessIcon } from "../icons/Success";
-import { MyForm } from "../MyForm";
 import { ActionSectionWrapper } from "./ActionSectionWrapper";
 
 export function ActionSectionBeforeStartContent({
@@ -109,10 +108,10 @@ export function ActionSectionBeforeStartContent({
             <AlertIcon /> Check-in closes in less than a minute
           </>
         )}
-        <MyForm
+        <fetcher.Form
+          method="post"
           action={`/api/tournamentTeam/${ownTeam.id}/check-in`}
           className="tournament__action-section__button-container"
-          fetcher={fetcher}
         >
           <Button
             variant="outlined"
@@ -122,7 +121,7 @@ export function ActionSectionBeforeStartContent({
           >
             Check-in
           </Button>
-        </MyForm>
+        </fetcher.Form>
       </ActionSectionWrapper>
     );
   }

@@ -50,7 +50,7 @@ You can give a variation as a flag to the seeding script changing what exactly i
 
 - [x] Captain can remove players from roster
 - [x] Add info about architecture to README
-- [ ] Move away from MyForm
+- [x] Move away from MyForm
 - [x] Make description mandatory + overview tab
 - [x] Captain can check in
 - [x] Admin can check teams in / out

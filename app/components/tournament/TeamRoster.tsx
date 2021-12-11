@@ -1,7 +1,6 @@
 import { useFetcher } from "remix";
 import { useUser } from "~/utils/hooks";
 import { Button } from "../Button";
-import { MyForm } from "../MyForm";
 
 export function TeamRoster({
   team,
@@ -79,10 +78,9 @@ function DeleteFromRosterButton({
 }) {
   const fetcher = useFetcher();
   return (
-    <MyForm
-      action={`/api/tournamentTeam/${teamId}/remove-player/${playerId}`}
+    <fetcher.Form
       method="delete"
-      fetcher={fetcher}
+      action={`/api/tournamentTeam/${teamId}/remove-player/${playerId}`}
     >
       <Button
         variant="destructive"
@@ -92,6 +90,6 @@ function DeleteFromRosterButton({
       >
         Remove
       </Button>
-    </MyForm>
+    </fetcher.Form>
   );
 }
