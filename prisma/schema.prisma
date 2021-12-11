@@ -50,7 +50,7 @@ model Tournament {
   bannerBackground  String
   // CSS for tournament banner's color value
   bannerTextHSLArgs String
-  // Team ID's in an array in the order of the seed. 0 index is 1st seed, 1 index is 2nd seed etc. 
+  // Team ID's in an array in the order of the seed. 0 index is 1st seed, 1 index is 2nd seed etc.
   // Any team not in the list will be at the bottom in the order of their createdAt time stamp
   // (older teams first)
   seeds             String[]
@@ -72,23 +72,25 @@ enum Mode {
 }
 
 model Stage {
-  id                 Int          @id @default(autoincrement())
+  id                 Int                    @id @default(autoincrement())
   name               String
   mode               Mode
   tournamentMapPools Tournament[]
+  tournamentRounds   TournamentRoundStage[]
 }
 
 model TournamentTeam {
-  id            String                 @id @default(uuid())
+  id            String                       @id @default(uuid())
   name          String
   tournamentId  String
-  canHost       Boolean                @default(true)
+  canHost       Boolean                      @default(true)
   friendCode    String?
-  inviteCode    String                 @default(uuid())
+  inviteCode    String                       @default(uuid())
   checkedInTime DateTime?
-  createdAt     DateTime               @default(now())
-  tournament    Tournament             @relation(fields: [tournamentId], references: [id])
+  createdAt     DateTime                     @default(now())
+  tournament    Tournament                   @relation(fields: [tournamentId], references: [id])
   members       TournamentTeamMember[]
+  matches       TournamentMatchParticipant[]
 
   @@unique([name, tournamentId])
 }
@@ -115,4 +117,71 @@ model TrustRelationships {
   createdAt       DateTime @default(now())
 
   @@unique([trustGiverId, trustReceiverId])
+}
+
+model TournamentBracket {
+  id     String            @id @default(uuid())
+  rounds TournamentRound[]
+}
+
+model TournamentRound {
+  id        String                 @id @default(uuid())
+  // position of the round 1 for Round 1, 2 for Round 2, -1 for Losers Round 1 etc.
+  position  Int
+  bracketId String
+  bracket   TournamentBracket      @relation(fields: [bracketId], references: [id])
+  matches   TournamentMatch[]
+  stages    TournamentRoundStage[]
+}
+
+model TournamentRoundStage {
+  // position of the match 1 for Game 1, 2 for Game 2 etc.
+  position Int
+  roundId  String
+  stageId  Int
+  round    TournamentRound @relation(fields: [roundId], references: [id])
+  stage    Stage           @relation(fields: [stageId], references: [id])
+
+  @@unique([position, roundId])
+}
+
+model TournamentMatch {
+  id                       String                       @id @default(uuid())
+  roundId                  String
+  // for SE/DE destination based on the result - if no winner destination then winner has won the tournament, if no loser destination loser is eliminated
+  winnerDestinationMatchId String?
+  loserDestinationMatchId  String?
+  winnerDestinationMatch   TournamentMatch?             @relation("winnerDestinationMatch", fields: [winnerDestinationMatchId], references: [id])
+  loserDestinationMatch    TournamentMatch?             @relation("loserDestinationMatch", fields: [loserDestinationMatchId], references: [id])
+  round                    TournamentRound              @relation(fields: [roundId], references: [id])
+  participants             TournamentMatchParticipant[]
+  results                  TournamentMatchGameResult[]
+  winnerSourceMatches      TournamentMatch[]            @relation("winnerDestinationMatch")
+  loserSourceMatches       TournamentMatch[]            @relation("loserDestinationMatch")
+}
+
+enum TeamOrder {
+  UPPER
+  LOWER
+}
+
+model TournamentMatchParticipant {
+  order   TeamOrder
+  teamId  String
+  matchId String
+  team    TournamentTeam  @relation(fields: [teamId], references: [id])
+  match   TournamentMatch @relation(fields: [matchId], references: [id])
+
+  @@unique([teamId, matchId])
+}
+
+model TournamentMatchGameResult {
+  matchId    String
+  position   Int
+  winner     TeamOrder
+  reporterId String
+  createdAt  DateTime        @default(now())
+  match      TournamentMatch @relation(fields: [matchId], references: [id])
+
+  @@unique([matchId, position])
 }
