@@ -12,6 +12,32 @@ Prerequisites: [Node.js 16.13](https://nodejs.org/en/)
 
 3. Run `npm run dev` to run both the server and frontend.
 
+## File structure
+
+```
+sendou.ink/
+├── app/
+│   ├── components/ -- Components shared between many routes
+│   ├── core/ -- Core business logic
+│   ├── routes/ -- Routes see: https://remix.run/docs/en/v1/guides/routing
+│   │   └── api/ -- API routes that don't belong to any one page / situations when one route has many APIs
+│   ├── services/ -- Functions that handle all the interactions with the DB but also can throw HTTP errors
+│   ├── styles/ -- All .css files of the project for styling
+│   └── constants.ts -- Global constants of the projects
+├── cypress/ -- see: https://docs.cypress.io/guides/core-concepts/writing-and-organizing-tests#Folder-structure
+├── prisma/ -- Prisma related files
+│   ├── migrations/ -- Database migrations via Prisma Migrate
+│   ├── seed/ -- Seeding logic for tests and development
+│   ├── client.ts -- Global import of the Prisma object
+│   └── schema.prisma -- Database table schema
+├── public/ -- Images, built assets etc. static files to be served as is
+└── server/ -- Express.js server-side logic that is not handled in Remix e.g. auth
+```
+
+## Seeding script variations
+
+You can give a variation as a flag to the seeding script changing what exactly is put in the database. For example `npm run seed -- -v=check-in` seeds the database with a variation where check-in is in progress.
+
 ## Commands
 
 ### Convert .png to .webp
@@ -23,7 +49,7 @@ Prerequisites: [Node.js 16.13](https://nodejs.org/en/)
 ### MVP
 
 - [x] Captain can remove players from roster
-- [ ] Add info about architecture to README
+- [x] Add info about architecture to README
 - [ ] Move away from MyForm
 - [x] Make description mandatory + overview tab
 - [x] Captain can check in
@@ -31,7 +57,7 @@ Prerequisites: [Node.js 16.13](https://nodejs.org/en/)
 - [ ] Admin can drop people out (show on bracket somehow that they dropped)
 - [ ] Admin can change team captain
 - [ ] Admin can randomize and rerandomize maps
-- [ ] Admin can change seeding 
+- [x] Admin can change seeding 
 - [ ] Admin can start the tournament
 - [ ] Table design to support arbitrary brackets
 - [ ] Generate SE bracket from seeds
