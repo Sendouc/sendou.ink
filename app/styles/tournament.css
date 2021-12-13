@@ -88,6 +88,7 @@
 .tournament__nav-link__admin-text {
   color: var(--theme-secondary);
   font-size: var(--fonts-xxs);
+  font-weight: 400 !important;
 }
 
 .info-banner {
