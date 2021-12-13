@@ -7,17 +7,22 @@ export interface Match {
   upperTeam?: TeamIdentifier;
   lowerTeam?: TeamIdentifier;
   winner?: TeamIdentifier;
+  /** Match that leads to this match */
   match1?: Match;
+  /** Match that leads to this match */
   match2?: Match;
 }
 
-interface Bracket {
+export interface Bracket {
   winners: Match[];
   losers: Match[];
+  participantCount: number;
+  participantsWithByesCount: number;
 }
 
-/** @link https://stackoverflow.com/a/59615574 */
-export function createEliminationBracket(
+/** Singe/Double Elimination bracket algorithm that handles byes
+ * @link https://stackoverflow.com/a/59615574 */
+export function eliminationBracket(
   participantCount: number,
   type: "SE" | "DE"
 ) {
@@ -30,9 +35,16 @@ export function createEliminationBracket(
   const matchesWQueue: Match[] = [];
   const matchesLQueue: Match[] = [];
   const backfillQ: Match[] = [];
+
+  invariant(
+    powerOf2(participants.length),
+    "Unexpected participants length not power of two"
+  );
   const bracket: Bracket = {
     winners: [],
     losers: [],
+    participantCount,
+    participantsWithByesCount: participants.length,
   };
 
   const bracketSize = participants.length;
@@ -47,7 +59,6 @@ export function createEliminationBracket(
 
   // First round
   for (let i = 1; i <= bracketSize / 2; i++) {
-    // TODO: respect seed
     const upperTeam = participants.pop();
     const lowerTeam = participants.pop();
     invariant(
@@ -57,6 +68,10 @@ export function createEliminationBracket(
     invariant(
       typeof lowerTeam !== "undefined",
       "Unexpected team1 is undefined in first round"
+    );
+    invariant(
+      !(upperTeam === "BYE" && lowerTeam === "BYE"),
+      "Unexpected both teams in the first round are BYEs"
     );
     const firstRoundMatch = createMatch({
       upperTeam,

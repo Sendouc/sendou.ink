@@ -1,7 +1,7 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 import {
-  createEliminationBracket,
+  eliminationBracket,
   fillParticipantsWithNullTillPowerOfTwo,
   Match,
   TeamIdentifier,
@@ -15,25 +15,25 @@ const FillParticipantsWithNull = suite(
 );
 
 AmountOfTeams("Generates right amount of rounds (16 participants - SE)", () => {
-  const bracket16 = createEliminationBracket(16, "SE");
+  const bracket16 = eliminationBracket(16, "SE");
   assert.equal(removeMatchesWithByes(bracket16.winners).length, 15);
   assert.equal(removeMatchesWithByes(bracket16.losers).length, 0);
 });
 
 AmountOfTeams("Generates right amount of rounds (16 participants - DE)", () => {
-  const bracket16 = createEliminationBracket(16, "DE");
+  const bracket16 = eliminationBracket(16, "DE");
   assert.equal(removeMatchesWithByes(bracket16.winners).length, 16); // not incl reset
   assert.equal(removeMatchesWithByes(bracket16.losers).length, 14);
 });
 
 AmountOfTeams("Generates right amount of rounds (15 participants - DE)", () => {
-  const bracket15 = createEliminationBracket(15, "DE");
+  const bracket15 = eliminationBracket(15, "DE");
   assert.equal(removeMatchesWithByes(bracket15.winners).length, 15); // not incl reset
   assert.equal(removeMatchesWithByes(bracket15.losers).length, 14); // one bye
 });
 
 AmountOfTeams("Generates right amount of rounds (17 participants - DE)", () => {
-  const bracket17 = createEliminationBracket(17, "DE");
+  const bracket17 = eliminationBracket(17, "DE");
   assert.equal(removeMatchesWithByes(bracket17.winners).length, 17); // not incl reset
   assert.equal(removeMatchesWithByes(bracket17.losers).length, 30);
 
@@ -42,24 +42,24 @@ AmountOfTeams("Generates right amount of rounds (17 participants - DE)", () => {
 });
 
 AmountOfTeams("Same amount of rounds as next power of two", () => {
-  const bracket17 = createEliminationBracket(17, "DE");
-  const bracket32 = createEliminationBracket(32, "DE");
+  const bracket17 = eliminationBracket(17, "DE");
+  const bracket32 = eliminationBracket(32, "DE");
   assert.equal(bracket17.winners.length, bracket32.winners.length); // not incl reset
   assert.equal(bracket17.losers.length, bracket32.losers.length);
 });
 
 Byes("Right amount of byes", () => {
-  const bracket17 = createEliminationBracket(17, "DE");
+  const bracket17 = eliminationBracket(17, "DE");
   assert.equal(countOpponentsWithByes(bracket17.winners), 15);
 });
 
 Byes("Correct team has bye", () => {
-  const bracket15 = createEliminationBracket(15, "DE");
+  const bracket15 = eliminationBracket(15, "DE");
   assert.equal(teamWithBye(bracket15.winners), 1);
 });
 
 Seeds("First and second seed are spread apart", () => {
-  const bracket16 = createEliminationBracket(16, "DE");
+  const bracket16 = eliminationBracket(16, "DE");
   assert.ok(
     [bracket16.winners[0].upperTeam, bracket16.winners[0].lowerTeam].includes(
       1
