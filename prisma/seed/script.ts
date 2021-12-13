@@ -165,14 +165,16 @@ export async function seed(variation?: "check-in") {
     }
 
     for (const [mockTeamI, mockTeam] of mockTeams.entries()) {
+      const memberCount = (mockTeamI % 5) + 2;
       const team = await prisma.tournamentTeam.create({
         data: {
           name: mockTeam,
           tournamentId,
+          checkedInTime: memberCount >= 4 ? new Date() : undefined,
         },
       });
 
-      for (let memberI = 0; memberI < (mockTeamI % 5) + 2; memberI++) {
+      for (let memberI = 0; memberI < memberCount; memberI++) {
         const memberId = userIdsCopy.shift()!;
         await prisma.tournamentTeamMember.create({
           data: {

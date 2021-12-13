@@ -1,3 +1,4 @@
+import invariant from "tiny-invariant";
 import { Bracket } from "./bracket";
 
 export function checkInHasStarted(checkInStartTime: string) {
@@ -25,6 +26,98 @@ export function sortTeamsBySeed(seeds: string[]) {
 
     // finally, consider the seeds
     return aSeed - bSeed;
+  };
+}
+
+export function roundNamesWithDefaultBestOf(bracket: Bracket): {
+  winners: {
+    name: string;
+    bestOf: number;
+  }[];
+  losers: {
+    name: string;
+    bestOf: number;
+  }[];
+} {
+  const { winners: winnersRoundNames, losers: losersRoundNames } =
+    roundNames(bracket);
+  const { winners: winnersDefaultBestOf, losers: losersDefaultBestOf } =
+    roundDefaultBestOf(bracket);
+
+  invariant(
+    winnersRoundNames.length === winnersDefaultBestOf.length,
+    "Unexpected different length with winnersRoundNames and winnersDefaultBestOf"
+  );
+  invariant(
+    losersRoundNames.length === losersDefaultBestOf.length,
+    "Unexpected different length with losersRoundNames and losersDefaultBestOf"
+  );
+
+  return {
+    winners: winnersRoundNames.map((roundName, i) => {
+      const bestOf = winnersDefaultBestOf[i];
+      return {
+        name: roundName,
+        bestOf,
+      };
+    }),
+    losers: losersRoundNames.map((roundName, i) => {
+      const bestOf = losersDefaultBestOf[i];
+      return {
+        name: roundName,
+        bestOf,
+      };
+    }),
+  };
+}
+
+const WINNERS_DEFAULT = 5;
+const WINNERS_FIRST_TWO_DEFAULT = 3;
+const GRAND_FINALS_DEFAULT = 7;
+const LOSERS_DEFAULT = 3;
+const LOSERS_FINALS_DEFAULT = 5;
+
+function roundDefaultBestOf(bracket: Bracket): {
+  winners: number[];
+  losers: number[];
+} {
+  const { winners: winnersRoundCount, losers: losersRoundCount } =
+    countRounds(bracket);
+
+  return {
+    winners: new Array(winnersRoundCount).fill(null).map((_, i) => {
+      if (i === 0) return WINNERS_FIRST_TWO_DEFAULT;
+      if (i === 1) return WINNERS_FIRST_TWO_DEFAULT;
+      if (i === winnersRoundCount - 1) return GRAND_FINALS_DEFAULT;
+      return WINNERS_DEFAULT;
+    }),
+    losers: new Array(losersRoundCount)
+      .fill(null)
+      .map((_, i) =>
+        i === losersRoundCount - 1 ? LOSERS_FINALS_DEFAULT : LOSERS_DEFAULT
+      ),
+  };
+}
+
+function roundNames(bracket: Bracket): {
+  winners: string[];
+  losers: string[];
+} {
+  const { winners: winnersRoundCount, losers: losersRoundCount } =
+    countRounds(bracket);
+
+  return {
+    winners: new Array(winnersRoundCount).fill(null).map((_, i) => {
+      if (i === winnersRoundCount - 3) return "Winners' Semifinals";
+      if (i === winnersRoundCount - 2) return "Winners' Finals";
+      if (i === winnersRoundCount - 1) return "Grand Finals";
+      return `Winners' Round ${i + 1}`;
+    }),
+    losers: new Array(losersRoundCount)
+      .fill(null)
+      .map((_, i) =>
+        i === losersRoundCount - 1 ? "Losers' Finals" : `Losers' Round ${i + 1}`
+      ),
   };
 }
 
