@@ -34,6 +34,11 @@ export function tournamentsByNameForUrl(tournamentNameForUrl: string) {
           name: true,
         },
       },
+      brackets: {
+        select: {
+          type: true,
+        },
+      },
       teams: {
         select: {
           checkedInTime: true,

@@ -1,6 +1,7 @@
 import { Link, useLoaderData, useLocation } from "remix";
 import { DiscordIcon } from "~/components/icons/Discord";
 import { TwitterIcon } from "~/components/icons/Twitter";
+import { resolveTournamentFormatString } from "~/core/tournament/utils";
 import { FindTournamentByNameForUrlI } from "~/services/tournament";
 import { useUser } from "~/utils/hooks";
 
@@ -66,7 +67,7 @@ export function InfoBanner() {
             </div>
             <div className="info-banner__bottom-row__info-container">
               <div className="info-banner__bottom-row__info-label">Format</div>
-              <div>Double Elimination</div>
+              <div>{resolveTournamentFormatString(data.brackets)}</div>
             </div>
             <div className="info-banner__bottom-row__info-container">
               <div className="info-banner__bottom-row__info-label">

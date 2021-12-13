@@ -1,3 +1,4 @@
+import { BracketType } from ".prisma/client";
 import invariant from "tiny-invariant";
 import { Bracket } from "./bracket";
 
@@ -169,4 +170,14 @@ export function countRounds(bracket: Bracket): {
   }
 
   return { winners, losers };
+}
+
+/** Resolve collection of brackets to string that can be shown to user */
+export function resolveTournamentFormatString(
+  brackets: { type: BracketType }[]
+) {
+  invariant(brackets.length > 0, "Unexpected no brackets");
+  return brackets[0].type === "DE"
+    ? "Double Elimination"
+    : "Single Elimination";
 }

@@ -39,7 +39,7 @@ model Organization {
 }
 
 model Tournament {
-  id                String           @id @default(uuid())
+  id                String              @id @default(uuid())
   name              String
   // Name in lower case to show in URL
   nameForUrl        String
@@ -56,8 +56,9 @@ model Tournament {
   seeds             String[]
   mapPool           Stage[]
   organizerId       String
-  organizer         Organization     @relation(fields: [organizerId], references: [id])
+  organizer         Organization        @relation(fields: [organizerId], references: [id])
   teams             TournamentTeam[]
+  brackets          TournamentBracket[]
 
   // There might be duplicate nameForUrl's but inside an organization they're unique
   @@unique([nameForUrl, organizerId])
@@ -119,9 +120,17 @@ model TrustRelationships {
   @@unique([trustGiverId, trustReceiverId])
 }
 
+enum BracketType {
+  SE
+  DE
+}
+
 model TournamentBracket {
-  id     String            @id @default(uuid())
-  rounds TournamentRound[]
+  id           String            @id @default(uuid())
+  tournamentId String
+  type         BracketType
+  rounds       TournamentRound[]
+  tournament   Tournament        @relation(fields: [tournamentId], references: [id])
 }
 
 model TournamentRound {

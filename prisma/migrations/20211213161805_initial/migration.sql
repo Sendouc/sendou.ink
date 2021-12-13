@@ -2,6 +2,9 @@
 CREATE TYPE "Mode" AS ENUM ('TW', 'SZ', 'TC', 'RM', 'CB');
 
 -- CreateEnum
+CREATE TYPE "BracketType" AS ENUM ('SE', 'DE');
+
+-- CreateEnum
 CREATE TYPE "TeamOrder" AS ENUM ('UPPER', 'LOWER');
 
 -- CreateTable
@@ -91,6 +94,8 @@ CREATE TABLE "TrustRelationships" (
 -- CreateTable
 CREATE TABLE "TournamentBracket" (
     "id" TEXT NOT NULL,
+    "tournamentId" TEXT NOT NULL,
+    "type" "BracketType" NOT NULL,
 
     CONSTRAINT "TournamentBracket_pkey" PRIMARY KEY ("id")
 );
@@ -199,6 +204,9 @@ ALTER TABLE "TrustRelationships" ADD CONSTRAINT "TrustRelationships_trustGiverId
 
 -- AddForeignKey
 ALTER TABLE "TrustRelationships" ADD CONSTRAINT "TrustRelationships_trustReceiverId_fkey" FOREIGN KEY ("trustReceiverId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TournamentBracket" ADD CONSTRAINT "TournamentBracket_tournamentId_fkey" FOREIGN KEY ("tournamentId") REFERENCES "Tournament"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "TournamentRound" ADD CONSTRAINT "TournamentRound_bracketId_fkey" FOREIGN KEY ("bracketId") REFERENCES "TournamentBracket"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
