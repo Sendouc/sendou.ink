@@ -1,5 +1,6 @@
 // TODO: 404 page that shows other tournaments by the organization
 
+import classNames from "classnames";
 import {
   LinksFunction,
   LoaderFunction,
@@ -12,6 +13,7 @@ import {
 import invariant from "tiny-invariant";
 import { ActionSection } from "~/components/tournament/ActionSection";
 import { InfoBanner } from "~/components/tournament/InfoBanner";
+import { isTournamentAdmin } from "~/core/tournament/permissions";
 import {
   findTournamentByNameForUrl,
   FindTournamentByNameForUrlI,
@@ -59,7 +61,7 @@ export default function TournamentPage() {
   );
 
   const navLinks = (() => {
-    const result: { code: string; text: string }[] = [
+    const result: { adminOnly?: boolean; code: string; text: string }[] = [
       { code: "", text: "Overview" },
       { code: "map-pool", text: "Map Pool" },
       { code: "teams", text: `Teams (${data.teams.length})` },
@@ -74,10 +76,10 @@ export default function TournamentPage() {
       }
     }
 
-    const isAdmin = data.organizer.ownerId === user?.id;
-
-    if (isAdmin) {
-      result.push({ code: "admin", text: "Admin" });
+    if (isTournamentAdmin({ userId: user?.id, organization: data.organizer })) {
+      result.push({ code: "seeds", text: "Seeds", adminOnly: true });
+      result.push({ code: "edit", text: "Edit", adminOnly: true });
+      result.push({ code: "start", text: "Start", adminOnly: true });
     }
 
     return result;
@@ -97,23 +99,38 @@ export default function TournamentPage() {
       <InfoBanner />
       <ActionSection />
       <div className="tournament__container__spacer" />
+      {/* TODO: add scrolling icon */}
       {displayNavLinks && (
-        <div
-          style={{ "--tabs-count": navLinks.length } as any}
-          className="tournament__links-container"
-        >
-          {navLinks.map(({ code, text }) => (
-            <NavLink
-              key={code}
-              className="tournament__nav-link"
-              to={code}
-              data-cy={`${code}-nav-link`}
-              prefetch="intent"
-              end
-            >
-              {text}
-            </NavLink>
-          ))}
+        <div className="tournament__links-overflower">
+          <div
+            style={{ "--tabs-count": navLinks.length } as any}
+            className="tournament__links-container"
+          >
+            {navLinks.map(({ code, text, adminOnly }) => (
+              <NavLink
+                key={code}
+                className="tournament__nav-link"
+                to={code}
+                data-cy={`${code}-nav-link`}
+                prefetch="intent"
+                end
+              >
+                {isTournamentAdmin({
+                  userId: user?.id,
+                  organization: data.organizer,
+                }) && (
+                  <div
+                    className={classNames("tournament__nav-link__admin-text", {
+                      "visibility-hidden": !adminOnly,
+                    })}
+                  >
+                    ADMIN
+                  </div>
+                )}
+                <span>{text}</span>
+              </NavLink>
+            ))}
+          </div>
         </div>
       )}
       <Outlet />

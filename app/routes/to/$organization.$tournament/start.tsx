@@ -3,7 +3,7 @@ import { eliminationBracket } from "~/core/tournament/bracket";
 import { roundNamesWithDefaultBestOf } from "~/core/tournament/utils";
 import type { FindTournamentByNameForUrlI } from "~/services/tournament";
 
-export default function StartTournamentPage() {
+export default function StartBracketTab() {
   const [, parentRoute] = useMatches();
   const { teams } = parentRoute.data as FindTournamentByNameForUrlI;
 

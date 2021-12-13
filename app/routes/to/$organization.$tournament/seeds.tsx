@@ -17,6 +17,7 @@ import { CSS } from "@dnd-kit/utilities";
 import classNames from "classnames";
 import * as React from "react";
 import { useFetcher, useMatches } from "remix";
+import type { LinksFunction } from "remix";
 import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
 import { TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
@@ -24,6 +25,11 @@ import { checkInHasStarted } from "~/core/tournament/utils";
 import type { FindTournamentByNameForUrlI } from "~/services/tournament";
 import type { Unpacked } from "~/utils";
 import { useTimeoutState } from "~/utils/hooks";
+import seedsStylesUrl from "~/styles/tournament-seeds.css";
+
+export const links: LinksFunction = () => {
+  return [{ rel: "stylesheet", href: seedsStylesUrl }];
+};
 
 // TODO: https://docs.dndkit.com/presets/sortable#drag-overlay
 // TODO: what if returns error? check other APIs too -> add Cypress test
@@ -52,13 +58,13 @@ export default function AdminDefaultTab() {
         teamOrder={teamOrder}
       />
       <ul>
-        <li className="tournament__admin__teams-list-row">
-          <div className="tournament__admin__teams-container__header">Seed</div>
-          <div className="tournament__admin__teams-container__header">Name</div>
-          <div className="tournament__admin__teams-container__header">
+        <li className="tournament__seeds__teams-list-row">
+          <div className="tournament__seeds__teams-container__header">Seed</div>
+          <div className="tournament__seeds__teams-container__header">Name</div>
+          <div className="tournament__seeds__teams-container__header">
             {checkInHasStarted(checkInStartTime) ? "" : "Registered at"}
           </div>
-          <div className="tournament__admin__teams-container__header">
+          <div className="tournament__seeds__teams-container__header">
             Roster size
           </div>
         </li>
@@ -126,15 +132,15 @@ function SeedAlert({
     <fetcher.Form
       action={`/api/tournament/${tournamentId}/seeds`}
       method="post"
-      className="tournament__admin__form"
+      className="tournament__seeds__form"
     >
       <input type="hidden" name="seeds" value={JSON.stringify(teamOrder)} />
       <Alert
         type={teamOrderChanged ? "warning" : showSuccess ? "success" : "info"}
-        className="tournament__admin__alert"
+        className="tournament__seeds__alert"
         rightAction={
           <Button
-            className={classNames("tournament__admin__alert__button", {
+            className={classNames("tournament__seeds__alert__button", {
               hidden: !teamOrderChanged,
             })}
             type="submit"
@@ -179,7 +185,7 @@ function SortableRow({
 
   return (
     <li
-      className={classNames("tournament__admin__teams-list-row", "sortable", {
+      className={classNames("tournament__seeds__teams-list-row", "sortable", {
         disabled,
       })}
       ref={setNodeRef}
@@ -207,9 +213,9 @@ function SortableRow({
       </div>
       <div
         className={classNames({
-          tournament__admin__ok:
+          tournament__seeds__ok:
             team.members.length >= TOURNAMENT_TEAM_ROSTER_MIN_SIZE,
-          tournament__admin__problem:
+          tournament__seeds__problem:
             team.members.length < TOURNAMENT_TEAM_ROSTER_MIN_SIZE,
         })}
       >

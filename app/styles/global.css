@@ -258,3 +258,9 @@ select::selection {
 .alert[data-type="success"] > svg {
   fill: var(--theme-success);
 }
+
+/* Utility classes */
+
+.visibility-hidden {
+  visibility: hidden;
+}

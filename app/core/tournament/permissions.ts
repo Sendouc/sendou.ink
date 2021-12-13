@@ -1,11 +1,9 @@
-import type { Organization } from ".prisma/client";
-
 export const isTournamentAdmin = ({
   userId,
   organization,
 }: {
-  userId: string;
-  organization: Organization;
+  userId?: string;
+  organization: { ownerId: string };
 }) => {
   return organization.ownerId === userId;
 };
