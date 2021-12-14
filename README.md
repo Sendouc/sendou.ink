@@ -61,8 +61,8 @@ You can give a variation as a flag to the seeding script changing what exactly i
 - [x] Admin can change seeding 
 - [ ] Admin can start the tournament
 - [ ] Table design to support arbitrary brackets
-- [ ] Generate SE bracket from seeds
-- [ ] Generate DE bracket from seeds
+- [x] Generate SE bracket from seeds
+- [x] Generate DE bracket from seeds
 - [ ] Can add players to roster mid-tournament (but not remove)
 - [ ] Admin can report score
 - [ ] Action panel for captain during tournament

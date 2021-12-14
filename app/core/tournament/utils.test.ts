@@ -1,10 +1,8 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
-import { eliminationBracket } from "./bracket";
-import { countRounds, sortTeamsBySeed } from "./utils";
+import { sortTeamsBySeed } from "./utils";
 
 const SortTeams = suite("sortTeamsBySeed()");
-const CountBracketRounds = suite("countRounds()");
 
 SortTeams("Sorts teams by seed", () => {
   const seeds = ["3", "2", "1"];
@@ -73,26 +71,4 @@ SortTeams("Sorting works with empty arrays", () => {
   assert.equal(teamsToSeed.sort(sortTeamsBySeed(seeds)), []);
 });
 
-CountBracketRounds("Counts bracket (DE - 38)", () => {
-  const bracket = eliminationBracket(38, "DE");
-  const count = countRounds(bracket);
-
-  assert.equal(count, { winners: 7, losers: 9 });
-});
-
-CountBracketRounds("Counts bracket (DE - 10)", () => {
-  const bracket = eliminationBracket(10, "DE");
-  const count = countRounds(bracket);
-
-  assert.equal(count, { winners: 5, losers: 5 });
-});
-
-CountBracketRounds("Counts bracket (DE - 16)", () => {
-  const bracket = eliminationBracket(16, "DE");
-  const count = countRounds(bracket);
-
-  assert.equal(count, { winners: 5, losers: 6 });
-});
-
 SortTeams.run();
-CountBracketRounds.run();

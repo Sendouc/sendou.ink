@@ -1,4 +1,163 @@
+import { BracketType, Stage } from ".prisma/client";
 import invariant from "tiny-invariant";
+
+export function generateMaplistForTournament(
+  rounds: EliminationBracket<
+    {
+      bestOf: number;
+    }[]
+  >
+): EliminationBracket<
+  {
+    mapList: Stage[][];
+  }[]
+> {
+  return {
+    winners: rounds.winners.map((round) => ({ mapList: [] })),
+    losers: rounds.losers.map((round) => ({ mapList: [] })),
+  };
+}
+
+export function roundNamesWithDefaultBestOf(
+  bracket: Bracket
+): EliminationBracket<
+  {
+    name: string;
+    bestOf: number;
+  }[]
+> {
+  const { winners: winnersRoundNames, losers: losersRoundNames } =
+    roundNames(bracket);
+  const { winners: winnersDefaultBestOf, losers: losersDefaultBestOf } =
+    roundDefaultBestOf(bracket);
+
+  invariant(
+    winnersRoundNames.length === winnersDefaultBestOf.length,
+    "Unexpected different length with winnersRoundNames and winnersDefaultBestOf"
+  );
+  invariant(
+    losersRoundNames.length === losersDefaultBestOf.length,
+    "Unexpected different length with losersRoundNames and losersDefaultBestOf"
+  );
+
+  return {
+    winners: winnersRoundNames.map((roundName, i) => {
+      const bestOf = winnersDefaultBestOf[i];
+      return {
+        name: roundName,
+        bestOf,
+      };
+    }),
+    losers: losersRoundNames.map((roundName, i) => {
+      const bestOf = losersDefaultBestOf[i];
+      return {
+        name: roundName,
+        bestOf,
+      };
+    }),
+  };
+}
+
+const WINNERS_DEFAULT = 5;
+const WINNERS_FIRST_TWO_DEFAULT = 3;
+const GRAND_FINALS_DEFAULT = 7;
+const LOSERS_DEFAULT = 3;
+const LOSERS_FINALS_DEFAULT = 5;
+
+function roundDefaultBestOf(bracket: Bracket): EliminationBracket<number[]> {
+  const { winners: winnersRoundCount, losers: losersRoundCount } =
+    countRounds(bracket);
+
+  return {
+    winners: new Array(winnersRoundCount).fill(null).map((_, i) => {
+      if (i === 0) return WINNERS_FIRST_TWO_DEFAULT;
+      if (i === 1) return WINNERS_FIRST_TWO_DEFAULT;
+      if (i === winnersRoundCount - 1) return GRAND_FINALS_DEFAULT;
+      return WINNERS_DEFAULT;
+    }),
+    losers: new Array(losersRoundCount)
+      .fill(null)
+      .map((_, i) =>
+        i === losersRoundCount - 1 ? LOSERS_FINALS_DEFAULT : LOSERS_DEFAULT
+      ),
+  };
+}
+
+function roundNames(bracket: Bracket): EliminationBracket<string[]> {
+  const { winners: winnersRoundCount, losers: losersRoundCount } =
+    countRounds(bracket);
+
+  return {
+    winners: new Array(winnersRoundCount).fill(null).map((_, i) => {
+      if (i === winnersRoundCount - 3) return "Winners' Semifinals";
+      if (i === winnersRoundCount - 2) return "Winners' Finals";
+      if (i === winnersRoundCount - 1) return "Grand Finals";
+      return `Winners' Round ${i + 1}`;
+    }),
+    losers: new Array(losersRoundCount)
+      .fill(null)
+      .map((_, i) =>
+        i === losersRoundCount - 1 ? "Losers' Finals" : `Losers' Round ${i + 1}`
+      ),
+  };
+}
+
+export function countRounds(bracket: Bracket): EliminationBracket<number> {
+  let winners = 1;
+
+  for (let i = bracket.participantsWithByesCount; i > 1; i /= 2) {
+    winners++;
+  }
+
+  const losersMatchIds = new Set(bracket.losers.map((match) => match.id));
+  let losers = 0;
+  let losersMatch = bracket.losers[bracket.losers.length - 1];
+
+  while (true) {
+    losers++;
+    const match1 = losersMatch.match1;
+    const match2 = losersMatch.match2;
+    if (match1 && losersMatchIds.has(match1.id)) {
+      losersMatch = match1;
+      continue;
+    } else if (match2 && losersMatchIds.has(match2.id)) {
+      losersMatch = match2;
+      continue;
+    }
+
+    break;
+  }
+
+  let matchesWithByes = 0;
+  let matchesWithOpponent = 0;
+
+  for (const match of bracket.winners) {
+    if (!match.upperTeam) break;
+    if (match.upperTeam === "BYE" || match.lowerTeam === "BYE") {
+      matchesWithByes++;
+      continue;
+    }
+
+    matchesWithOpponent++;
+  }
+
+  // First round of losers is not played if certain amount of byes
+  if (matchesWithByes && matchesWithByes >= matchesWithOpponent) {
+    losers--;
+  }
+
+  return { winners, losers };
+}
+
+/** Resolve collection of brackets to string that can be shown to user */
+export function resolveTournamentFormatString(
+  brackets: { type: BracketType }[]
+) {
+  invariant(brackets.length > 0, "Unexpected no brackets");
+  return brackets[0].type === "DE"
+    ? "Double Elimination"
+    : "Single Elimination";
+}
 
 export type TeamIdentifier = number | "BYE";
 
@@ -20,198 +179,7 @@ export interface Bracket {
   participantsWithByesCount: number;
 }
 
-/** Singe/Double Elimination bracket algorithm that handles byes
- * @link https://stackoverflow.com/a/59615574 */
-export function eliminationBracket(
-  participantCount: number,
-  type: "SE" | "DE"
-) {
-  let participants: TeamIdentifier[] = new Array(participantCount)
-    .fill(null)
-    .map((_, i) => i + 1);
-
-  fillParticipantsWithNullTillPowerOfTwo(participants);
-
-  const matchesWQueue: Match[] = [];
-  const matchesLQueue: Match[] = [];
-  const backfillQ: Match[] = [];
-
-  invariant(
-    powerOf2(participants.length),
-    "Unexpected participants length not power of two"
-  );
-  const bracket: Bracket = {
-    winners: [],
-    losers: [],
-    participantCount,
-    participantsWithByesCount: participants.length,
-  };
-
-  const bracketSize = participants.length;
-  const seedList = seeds(bracketSize);
-  const seedTuples: [TeamIdentifier, number][] = participants.map((p, i) => [
-    p,
-    i + 1,
-  ]);
-  participants = seedTuples
-    .sort(([_a, ai], [_b, bi]) => seedList.indexOf(ai) - seedList.indexOf(bi))
-    .map(([p]) => p);
-
-  // First round
-  for (let i = 1; i <= bracketSize / 2; i++) {
-    const upperTeam = participants.pop();
-    const lowerTeam = participants.pop();
-    invariant(
-      typeof upperTeam !== "undefined",
-      "Unexpected team1 is undefined in first round"
-    );
-    invariant(
-      typeof lowerTeam !== "undefined",
-      "Unexpected team1 is undefined in first round"
-    );
-    invariant(
-      !(upperTeam === "BYE" && lowerTeam === "BYE"),
-      "Unexpected both teams in the first round are BYEs"
-    );
-    const firstRoundMatch = createMatch({
-      upperTeam,
-      lowerTeam,
-    });
-
-    matchesWQueue.push(firstRoundMatch);
-    matchesLQueue.push(firstRoundMatch);
-    bracket.winners.push(firstRoundMatch);
-  }
-
-  // Generate winners bracket matches
-  while (matchesWQueue.length > 1) {
-    const match1 = matchesWQueue.shift();
-    const match2 = matchesWQueue.shift();
-    invariant(match1, "Unexpected no match1 in winners bracket");
-    invariant(match2, "Unexpected no match2 in winners bracket");
-
-    const winnersBracketMatch = createMatch({
-      match1,
-      match2,
-    });
-
-    matchesWQueue.push(winnersBracketMatch);
-    bracket.winners.push(winnersBracketMatch);
-    // add match to backfill for Lower Queue
-    backfillQ.push(winnersBracketMatch);
-  }
-
-  if (type === "SE") return bracket;
-
-  let roundSwitch = bracketSize / 2;
-  let switcher = false;
-  let counter = 0;
-  let switchedCounter = 0;
-
-  // Generate losers bracket matches
-  while (matchesLQueue.length > 0 && backfillQ.length > 0) {
-    let match1: Match | undefined;
-    let match2: Match | undefined;
-
-    if (switcher) {
-      match1 = matchesLQueue.shift();
-      match2 = backfillQ.shift();
-      switchedCounter += 2;
-      if (switchedCounter === roundSwitch) {
-        // switch back
-        roundSwitch /= 2;
-        switcher = false;
-        // reset counters
-        switchedCounter = 0;
-      }
-    } else {
-      match1 = matchesLQueue.shift();
-      match2 = matchesLQueue.shift();
-      counter += 2;
-      if (counter === roundSwitch) {
-        switcher = true;
-        counter = 0;
-      }
-    }
-
-    invariant(match1, "Unexpected no match1 in losers bracket");
-    invariant(match2, "Unexpected no match2 in losers bracket");
-
-    const losersMatch = createMatch({
-      match1,
-      match2,
-    });
-
-    matchesLQueue.push(losersMatch);
-    bracket.losers.push(losersMatch);
-  }
-
-  const match1 = matchesWQueue.shift();
-  const match2 = matchesLQueue.shift();
-
-  invariant(match1, "Unexpected no match1 in final match");
-  invariant(match2, "Unexpected no match2 in final match");
-
-  // Add final match
-  bracket.winners.push(
-    createMatch({
-      match1,
-      match2,
-    })
-  );
-
-  return bracket;
-}
-
-export function fillParticipantsWithNullTillPowerOfTwo(
-  participants: TeamIdentifier[]
-) {
-  while (!powerOf2(participants.length)) {
-    participants.push("BYE");
-  }
-}
-
-/** @link https://stackoverflow.com/a/30924333 */
-function powerOf2(v: number) {
-  return v && !(v & (v - 1));
-}
-
-function seeds(numberOfTeamsWithByes: number) {
-  const result: number[] = [];
-
-  const limit = getBaseLog(2, numberOfTeamsWithByes) + 1;
-  invariant(Number.isInteger(limit), "Unexpected limit is not an integer");
-
-  branch(1, 1, limit);
-
-  /** @link https://stackoverflow.com/a/41647548 */
-  function branch(seed: number, level: number, limit: number) {
-    const levelSum = Math.pow(2, level) + 1;
-
-    if (limit === level + 1) {
-      result.push(seed);
-      result.push(levelSum - seed);
-      return;
-    } else if (seed % 2 === 1) {
-      branch(seed, level + 1, limit);
-      branch(levelSum - seed, level + 1, limit);
-    } else {
-      branch(levelSum - seed, level + 1, limit);
-      branch(seed, level + 1, limit);
-    }
-  }
-
-  return result;
-}
-
-function getBaseLog(x: number, y: number) {
-  return Math.log(y) / Math.log(x);
-}
-
-function createMatch(args: Omit<Match, "id">): Match {
-  return {
-    // TODO: crypto.uuid
-    id: Math.random().toString(),
-    ...args,
-  };
-}
+export type EliminationBracket<T> = {
+  winners: T;
+  losers: T;
+};
