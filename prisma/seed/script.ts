@@ -11,6 +11,7 @@ import {
 import { readFile } from "fs/promises";
 import path from "path";
 import crypto from "crypto";
+import shuffle from "just-shuffle";
 const prisma = new PrismaClient();
 
 export async function seed(variation?: "check-in") {
@@ -29,6 +30,7 @@ export async function seed(variation?: "check-in") {
     //
     await prisma.tournamentTeamMember.deleteMany();
     await prisma.tournamentTeam.deleteMany();
+    await prisma.tournamentBracket.deleteMany({});
     await prisma.tournament.deleteMany();
     await prisma.organization.deleteMany();
     await prisma.trustRelationships.deleteMany();
@@ -46,8 +48,8 @@ export async function seed(variation?: "check-in") {
     const tournament = await tournaments(organization.id);
     await tournamentTeams(tournament.id, userIds, adminUserCreated.id);
     await trustRelationship(nzapUserCreated.id, adminUserCreated.id);
-    const stageIds = await stages();
-    await tournamentAddMaps(tournament.id, stageIds);
+    await stages();
+    await tournamentAddMaps(tournament.id);
   } finally {
     await prisma.$disconnect();
   }
@@ -245,19 +247,59 @@ export async function seed(variation?: "check-in") {
     });
   }
 
-  async function tournamentAddMaps(id: string, stageIds: number[]) {
-    const mapIds = [
-      6, 13, 16, 17, 20, 23, 26, 39, 41, 43, 49, 51, 61, 63, 75, 78, 79, 83, 84,
-      94, 95, 98, 99, 101,
-    ];
+  async function tournamentAddMaps(id: string) {
+    const stages = await prisma.stage.findMany({});
 
-    const mapIdObjects = mapIds.map((id) => ({ id: stageIds[id] }));
+    const mapsIncluded: string[] = [];
+    const modesIncluded = {
+      SZ: 0,
+      TC: 0,
+      RM: 0,
+      CB: 0,
+    };
+    const connect: { id: number }[] = [];
+
+    for (const stage of shuffle(stages)) {
+      if (
+        modesIncluded.SZ === 8 &&
+        modesIncluded.TC === 6 &&
+        modesIncluded.RM === 6 &&
+        modesIncluded.CB === 6
+      ) {
+        break;
+      }
+      if (stage.mode === "TW") continue;
+      if (modesIncluded.SZ === 8 && stage.mode === "SZ") {
+        continue;
+      }
+      if (modesIncluded.TC === 6 && stage.mode === "TC") {
+        continue;
+      }
+      if (modesIncluded.RM === 6 && stage.mode === "RM") {
+        continue;
+      }
+      if (modesIncluded.CB === 6 && stage.mode === "CB") {
+        continue;
+      }
+      if (
+        mapsIncluded.reduce(
+          (acc, cur) => acc + (cur === stage.name ? 1 : 0),
+          0
+        ) >= 2
+      ) {
+        continue;
+      }
+
+      connect.push({ id: stage.id });
+      modesIncluded[stage.mode]++;
+      mapsIncluded.push(stage.name);
+    }
 
     return prisma.tournament.update({
       where: { id },
       data: {
         mapPool: {
-          connect: mapIdObjects,
+          connect,
         },
       },
     });
