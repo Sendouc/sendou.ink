@@ -1,7 +1,7 @@
 import { Link, useLoaderData, useLocation } from "remix";
 import { DiscordIcon } from "~/components/icons/Discord";
 import { TwitterIcon } from "~/components/icons/Twitter";
-import { resolveTournamentFormatString } from "~/core/tournament/utils";
+import { resolveTournamentFormatString } from "~/core/tournament/bracket";
 import { FindTournamentByNameForUrlI } from "~/services/tournament";
 import { useUser } from "~/utils/hooks";
 

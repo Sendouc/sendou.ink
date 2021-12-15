@@ -1,58 +1,47 @@
-import { BracketType, Stage } from ".prisma/client";
+import type { BracketType, Stage } from ".prisma/client";
 import invariant from "tiny-invariant";
+import { generateMapListMapForRounds } from "../mapList";
+import type { Bracket } from "./algorithms";
 
-export function generateMaplistForTournament(
-  rounds: EliminationBracket<
-    {
-      bestOf: number;
-    }[]
-  >
-): EliminationBracket<
-  {
-    mapList: Stage[][];
-  }[]
-> {
-  return {
-    winners: rounds.winners.map((round) => ({ mapList: [] })),
-    losers: rounds.losers.map((round) => ({ mapList: [] })),
-  };
-}
-
-export function roundNamesWithDefaultBestOf(
-  bracket: Bracket
-): EliminationBracket<
+export function participantCountToRoundsInfo({
+  bracket,
+  mapPool,
+}: {
+  bracket: Bracket;
+  mapPool: Stage[];
+}): EliminationBracket<
   {
     name: string;
     bestOf: number;
+    mapList: Stage[];
   }[]
 > {
-  const { winners: winnersRoundNames, losers: losersRoundNames } =
-    roundNames(bracket);
-  const { winners: winnersDefaultBestOf, losers: losersDefaultBestOf } =
-    roundDefaultBestOf(bracket);
+  const roundNames = getRoundNames(bracket);
+  const roundsDefaultBestOf = getRoundsDefaultBestOf(bracket);
+  const mapList = generateMapListMapForRounds({
+    mapPool,
+    rounds: roundsDefaultBestOf,
+  });
 
-  invariant(
-    winnersRoundNames.length === winnersDefaultBestOf.length,
-    "Unexpected different length with winnersRoundNames and winnersDefaultBestOf"
-  );
-  invariant(
-    losersRoundNames.length === losersDefaultBestOf.length,
-    "Unexpected different length with losersRoundNames and losersDefaultBestOf"
-  );
+  // TODO: invariants
 
   return {
-    winners: winnersRoundNames.map((roundName, i) => {
-      const bestOf = winnersDefaultBestOf[i];
+    winners: roundNames.winners.map((roundName, i) => {
+      const bestOf = roundsDefaultBestOf.winners[i];
+      const maps = mapList.winners[i];
       return {
         name: roundName,
         bestOf,
+        mapList: maps,
       };
     }),
-    losers: losersRoundNames.map((roundName, i) => {
-      const bestOf = losersDefaultBestOf[i];
+    losers: roundNames.losers.map((roundName, i) => {
+      const bestOf = roundsDefaultBestOf.losers[i];
+      const maps = mapList.losers[i];
       return {
         name: roundName,
         bestOf,
+        mapList: maps,
       };
     }),
   };
@@ -64,7 +53,9 @@ const GRAND_FINALS_DEFAULT = 7;
 const LOSERS_DEFAULT = 3;
 const LOSERS_FINALS_DEFAULT = 5;
 
-function roundDefaultBestOf(bracket: Bracket): EliminationBracket<number[]> {
+function getRoundsDefaultBestOf(
+  bracket: Bracket
+): EliminationBracket<number[]> {
   const { winners: winnersRoundCount, losers: losersRoundCount } =
     countRounds(bracket);
 
@@ -83,7 +74,7 @@ function roundDefaultBestOf(bracket: Bracket): EliminationBracket<number[]> {
   };
 }
 
-function roundNames(bracket: Bracket): EliminationBracket<string[]> {
+function getRoundNames(bracket: Bracket): EliminationBracket<string[]> {
   const { winners: winnersRoundCount, losers: losersRoundCount } =
     countRounds(bracket);
 
@@ -157,26 +148,6 @@ export function resolveTournamentFormatString(
   return brackets[0].type === "DE"
     ? "Double Elimination"
     : "Single Elimination";
-}
-
-export type TeamIdentifier = number | "BYE";
-
-export interface Match {
-  id: string;
-  upperTeam?: TeamIdentifier;
-  lowerTeam?: TeamIdentifier;
-  winner?: TeamIdentifier;
-  /** Match that leads to this match */
-  match1?: Match;
-  /** Match that leads to this match */
-  match2?: Match;
-}
-
-export interface Bracket {
-  winners: Match[];
-  losers: Match[];
-  participantCount: number;
-  participantsWithByesCount: number;
 }
 
 export type EliminationBracket<T> = {

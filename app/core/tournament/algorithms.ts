@@ -1,5 +1,4 @@
 import invariant from "tiny-invariant";
-import type { Bracket, Match, TeamIdentifier } from "./bracket";
 
 /** Singe/Double Elimination bracket algorithm that handles byes
  * @link https://stackoverflow.com/a/59615574 */
@@ -195,4 +194,24 @@ function createMatch(args: Omit<Match, "id">): Match {
     id: Math.random().toString(),
     ...args,
   };
+}
+
+export type TeamIdentifier = number | "BYE";
+
+export interface Match {
+  id: string;
+  upperTeam?: TeamIdentifier;
+  lowerTeam?: TeamIdentifier;
+  winner?: TeamIdentifier;
+  /** Match that leads to this match */
+  match1?: Match;
+  /** Match that leads to this match */
+  match2?: Match;
+}
+
+export interface Bracket {
+  winners: Match[];
+  losers: Match[];
+  participantCount: number;
+  participantsWithByesCount: number;
 }

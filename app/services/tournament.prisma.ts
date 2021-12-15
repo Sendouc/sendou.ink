@@ -30,6 +30,7 @@ export function tournamentsByNameForUrl(tournamentNameForUrl: string) {
       },
       mapPool: {
         select: {
+          id: true,
           mode: true,
           name: true,
         },
