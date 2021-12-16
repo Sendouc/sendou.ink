@@ -1,4 +1,5 @@
 import { Mode, Stage } from ".prisma/client";
+import clone from "just-clone";
 import invariant from "tiny-invariant";
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
@@ -17,11 +18,10 @@ const mapPool: Stage[] = ["a", "b", "c", "d", "e", "f", "g"].map((name, i) => {
 });
 const bracket = eliminationBracket(100, "DE");
 const rounds = getRoundsDefaultBestOf(bracket);
+const mapList = generateMapListForRounds({ mapPool, rounds });
 
 MapListForRounds("No mode is repeated in the same round", () => {
-  const bracket = generateMapListForRounds({ mapPool, rounds });
-
-  for (const side of [bracket.winners, bracket.losers]) {
+  for (const side of [mapList.winners, mapList.losers]) {
     for (const round of side) {
       for (const [i, stage] of round.entries()) {
         if (i === 0) continue;
@@ -30,6 +30,21 @@ MapListForRounds("No mode is repeated in the same round", () => {
       }
     }
   }
+});
+
+MapListForRounds("Should have all the map and mode combos", () => {
+  let mapPoolToEmpty = clone(mapPool);
+  for (const side of [mapList.winners, mapList.losers]) {
+    for (const round of side) {
+      for (const stage of round) {
+        mapPoolToEmpty = mapPoolToEmpty.filter(
+          (obj) => obj.name !== stage.name && obj.mode !== stage.mode
+        );
+      }
+    }
+  }
+
+  assert.equal(mapPoolToEmpty.length, 0);
 });
 
 MapListForRounds.run();

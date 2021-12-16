@@ -11,6 +11,7 @@ export function generateMapListForRounds({
   mapPool: Stage[];
   rounds: EliminationBracket<BestOf[]>;
 }): EliminationBracket<Stage[][]> {
+  const mapGenerator = getMapGenerator();
   const modes = mapPool.reduce((acc: [Mode, number][], cur) => {
     if (cur.mode === "SZ") return acc;
     if (acc.some(([mode]) => mode === cur.mode)) {
@@ -34,11 +35,14 @@ export function generateMapListForRounds({
 
   function roundsMapList(bestOf: BestOf): Stage[] {
     const modes = resolveModes(bestOf);
+    const maps = resolveMaps(modes);
 
     return new Array(bestOf).fill(null).map((_, i) => {
       const mode = modes[i];
+      const name = maps[i];
       invariant(mode, "mode undefined");
-      return { id: -1, name: "The Reef", mode };
+      invariant(name, "name undefined");
+      return { id: resolveId({ mode, name }), name, mode };
     });
   }
 
@@ -113,5 +117,76 @@ export function generateMapListForRounds({
     if (modesLeft[0][0] !== previous) return;
 
     currentModes = clone(modes);
+  }
+
+  interface MapPoolMap {
+    name: string;
+    desirability: number;
+    modes: Mode[];
+  }
+
+  function resolveMaps(modes: Mode[]) {
+    let result: string[] = [];
+    for (const mode of modes) {
+      mapGenerator.next();
+      const nextMap = mapGenerator.next({
+        mode,
+        stagesAlreadyIncludedThisRound: result,
+      }).value;
+      invariant(typeof nextMap === "string", "nextMap is not string");
+      result.push(nextMap);
+    }
+
+    return result;
+  }
+
+  function* getMapGenerator(): Generator<
+    string | null,
+    undefined,
+    { mode: Mode; stagesAlreadyIncludedThisRound: string[] }
+  > {
+    let stages = mapPool.reduce((acc: MapPoolMap[], cur) => {
+      const match = acc.find((a) => a.name === cur.name);
+      if (!match) {
+        acc.push({
+          desirability: 1,
+          name: cur.name,
+          modes: [cur.mode],
+        });
+      } else {
+        match.modes.push(cur.mode);
+        match.desirability++;
+      }
+
+      return acc;
+    }, []);
+
+    while (true) {
+      const { mode, stagesAlreadyIncludedThisRound } = yield null;
+      stages = shuffle(stages);
+      stages.sort((a, b) => b.desirability - a.desirability);
+      let stage = stages.find(
+        (mapPoolMap) =>
+          mapPoolMap.modes.includes(mode) &&
+          !stagesAlreadyIncludedThisRound.includes(mapPoolMap.name)
+      );
+
+      // TODO: handle this smarter
+      if (!stage) {
+        stage = stages.find((mapPoolMap) => mapPoolMap.modes.includes(mode));
+      }
+      invariant(stage, "stage is undefined");
+      stage.desirability--;
+
+      yield stage.name;
+    }
+  }
+
+  function resolveId({ mode, name }: { mode: Mode; name: string }): number {
+    const mapPoolObject = mapPool.find(
+      (stage) => stage.mode === mode && stage.name === name
+    );
+    invariant(mapPoolObject, "mapPoolObject is undefined");
+    return mapPoolObject.id;
   }
 }
