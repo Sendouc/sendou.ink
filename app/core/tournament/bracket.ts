@@ -1,6 +1,6 @@
 import type { BracketType, Stage } from ".prisma/client";
 import invariant from "tiny-invariant";
-import { generateMapListMapForRounds } from "../mapList";
+import { generateMapListForRounds } from "./mapList";
 import type { Bracket } from "./algorithms";
 
 export function participantCountToRoundsInfo({
@@ -18,7 +18,7 @@ export function participantCountToRoundsInfo({
 > {
   const roundNames = getRoundNames(bracket);
   const roundsDefaultBestOf = getRoundsDefaultBestOf(bracket);
-  const mapList = generateMapListMapForRounds({
+  const mapList = generateMapListForRounds({
     mapPool,
     rounds: roundsDefaultBestOf,
   });
@@ -29,6 +29,8 @@ export function participantCountToRoundsInfo({
     winners: roundNames.winners.map((roundName, i) => {
       const bestOf = roundsDefaultBestOf.winners[i];
       const maps = mapList.winners[i];
+      invariant(bestOf, "bestOf undefined in winners");
+      invariant(maps, "maps undefined in winners");
       return {
         name: roundName,
         bestOf,
@@ -38,6 +40,8 @@ export function participantCountToRoundsInfo({
     losers: roundNames.losers.map((roundName, i) => {
       const bestOf = roundsDefaultBestOf.losers[i];
       const maps = mapList.losers[i];
+      invariant(bestOf, "bestOf undefined in losers");
+      invariant(maps, "bestOf undefined in losers");
       return {
         name: roundName,
         bestOf,
@@ -53,9 +57,11 @@ const GRAND_FINALS_DEFAULT = 7;
 const LOSERS_DEFAULT = 3;
 const LOSERS_FINALS_DEFAULT = 5;
 
-function getRoundsDefaultBestOf(
+export type BestOf = 3 | 5 | 7 | 9;
+
+export function getRoundsDefaultBestOf(
   bracket: Bracket
-): EliminationBracket<number[]> {
+): EliminationBracket<BestOf[]> {
   const { winners: winnersRoundCount, losers: losersRoundCount } =
     countRounds(bracket);
 
@@ -106,8 +112,8 @@ export function countRounds(bracket: Bracket): EliminationBracket<number> {
 
   while (true) {
     losers++;
-    const match1 = losersMatch.match1;
-    const match2 = losersMatch.match2;
+    const match1 = losersMatch?.match1;
+    const match2 = losersMatch?.match2;
     if (match1 && losersMatchIds.has(match1.id)) {
       losersMatch = match1;
       continue;
@@ -144,7 +150,7 @@ export function countRounds(bracket: Bracket): EliminationBracket<number> {
 export function resolveTournamentFormatString(
   brackets: { type: BracketType }[]
 ) {
-  invariant(brackets.length > 0, "Unexpected no brackets");
+  invariant(brackets[0], "no brackets");
   return brackets[0].type === "DE"
     ? "Double Elimination"
     : "Single Elimination";
