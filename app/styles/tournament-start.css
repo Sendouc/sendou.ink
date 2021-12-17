@@ -67,6 +67,13 @@
   gap: var(--s-2);
 }
 
+.tournament__start__round-card-buttons-container {
+  display: flex;
+  justify-content: center;
+  gap: var(--s-4);
+  padding-block-start: var(--s-4);
+}
+
 .tournament__start__mode-image {
   width: attr(width);
 }

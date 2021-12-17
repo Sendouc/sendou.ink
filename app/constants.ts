@@ -1,3 +1,5 @@
+import { Mode } from ".prisma/client";
+
 export const stages = [
   "The Reef",
   "Musselforge Fitness",
@@ -24,7 +26,14 @@ export const stages = [
   "Skipper Pavilion",
 ];
 
-export const modesShort = ["TW", "SZ", "TC", "RM", "CB"];
+export const modesShort: Mode[] = ["TW", "SZ", "TC", "RM", "CB"];
+export const modesShortToLong: Record<Mode, string> = {
+  TW: "Turf War",
+  SZ: "Splat Zones",
+  TC: "Tower Control",
+  RM: "Rainmaker",
+  CB: "Clam Blitz",
+};
 
 export const navItems = [
   {

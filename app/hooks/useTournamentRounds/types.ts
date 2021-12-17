@@ -11,6 +11,8 @@ export type UseTournamentRoundsState = EliminationBracket<
     bestOf: BestOf;
     name: string;
     mapList: Stage[];
+    newMapList?: Stage[];
+    editing?: boolean;
   }[]
 >;
 
@@ -21,6 +23,27 @@ export interface UseTournamentRoundsArgs {
 
 export type UseTournamentRoundsAction =
   | MyReducerAction<"REGENERATE_MAP_LIST">
+  | MyReducerAction<
+      "START_EDITING_ROUND",
+      { side: EliminationBracketSide; index: number }
+    >
+  | MyReducerAction<
+      "EDIT_STAGE",
+      {
+        side: EliminationBracketSide;
+        index: number;
+        stageNumber: number;
+        newStage: Stage;
+      }
+    >
+  | MyReducerAction<
+      "SAVE_ROUND",
+      { side: EliminationBracketSide; index: number }
+    >
+  | MyReducerAction<
+      "CANCEL_EDITING_ROUND",
+      { side: EliminationBracketSide; index: number }
+    >
   | MyReducerAction<
       "SET_ROUND_BEST_OF",
       { newBestOf: BestOf; side: EliminationBracketSide; index: number }
