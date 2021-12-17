@@ -1,9 +1,26 @@
 .tournament__start__title {
+  padding-block-end: var(--s-2);
+  padding-inline-start: var(--s-1-5);
   text-transform: capitalize;
 }
 
 .tournament__start__container {
+  display: flex;
   width: 100%;
+  flex-direction: column;
+  gap: var(--s-6);
+}
+
+.tournament__start__buttons-container {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s-1-5);
+}
+
+.tournament__start__round-collections-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
 }
 
 .tournament__start__rounds-container {

@@ -10,6 +10,8 @@ export function useTournamentRounds(args: UseTournamentRoundsArgs) {
   return React.useReducer(
     (oldState: UseTournamentRoundsState, action: UseTournamentRoundsAction) => {
       switch (action.type) {
+        case "REGENERATE_MAP_LIST":
+          return regenMapList(oldState);
         case "SET_ROUND_BEST_OF":
           const newState = { ...oldState };
           newState[action.data.side][action.data.index].bestOf =

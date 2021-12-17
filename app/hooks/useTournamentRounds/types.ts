@@ -19,10 +19,12 @@ export interface UseTournamentRoundsArgs {
   mapPool: Stage[];
 }
 
-export type UseTournamentRoundsAction = MyReducerAction<
-  "SET_ROUND_BEST_OF",
-  { newBestOf: BestOf; side: EliminationBracketSide; index: number }
->;
+export type UseTournamentRoundsAction =
+  | MyReducerAction<"REGENERATE_MAP_LIST">
+  | MyReducerAction<
+      "SET_ROUND_BEST_OF",
+      { newBestOf: BestOf; side: EliminationBracketSide; index: number }
+    >;
 
 // export type Action =
 //   | {

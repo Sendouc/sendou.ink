@@ -2,6 +2,7 @@ import classNames from "classnames";
 import type { LinksFunction, LoaderFunction } from "remix";
 import { json, useLoaderData } from "remix";
 import invariant from "tiny-invariant";
+import { Button } from "~/components/Button";
 import { eliminationBracket } from "~/core/tournament/algorithms";
 import {
   EliminationBracketSide,
@@ -16,9 +17,7 @@ import type {
 import { findTournamentByNameForUrl } from "~/services/tournament";
 import startBracketTabStylesUrl from "~/styles/tournament-start.css";
 
-// 3) can regen maps via button
 // 4) can change any invidual map via dropdown (no regen)
-// 5) Blackbelly TC repeats Losers Round 3 and 4 -> add test & fix? (use real maps as test data)
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: startBracketTabStylesUrl }];
@@ -46,8 +45,8 @@ export const loader: LoaderFunction = async ({ params }) => {
     0
   );
 
-  // TODO: and also below don't show losers if SE
-  const bracket = eliminationBracket(teamCount, "DE");
+  // TODO: handle many brackets
+  const bracket = eliminationBracket(teamCount, tournament.brackets[0].type);
   const initialState = participantCountToRoundsInfo({
     bracket,
     mapPool: tournament.mapPool,
@@ -63,16 +62,40 @@ export default function StartBracketTab() {
 
   return (
     <div className="tournament__start__container">
-      <RoundsCollection
-        side="winners"
-        rounds={rounds.winners}
-        dispatch={dispatch}
-      />
-      <RoundsCollection
-        side="losers"
-        rounds={rounds.losers}
-        dispatch={dispatch}
-      />
+      <ActionButtons dispatch={dispatch} />
+      <div className="tournament__start__round-collections-container">
+        <RoundsCollection
+          side="winners"
+          rounds={rounds.winners}
+          dispatch={dispatch}
+        />
+        {args.initialState.losers.length > 0 && (
+          <RoundsCollection
+            side="losers"
+            rounds={rounds.losers}
+            dispatch={dispatch}
+          />
+        )}
+      </div>
+      <ActionButtons dispatch={dispatch} />
+    </div>
+  );
+}
+
+function ActionButtons({
+  dispatch,
+}: {
+  dispatch: React.Dispatch<UseTournamentRoundsAction>;
+}) {
+  return (
+    <div className="tournament__start__buttons-container">
+      <Button>Preview bracket</Button>
+      <Button
+        variant="outlined"
+        onClick={() => dispatch({ type: "REGENERATE_MAP_LIST" })}
+      >
+        Regenerate all maps
+      </Button>
     </div>
   );
 }
@@ -87,7 +110,7 @@ function RoundsCollection({
   dispatch: React.Dispatch<UseTournamentRoundsAction>;
 }) {
   return (
-    <>
+    <div>
       <h2 className="tournament__start__title">{side}</h2>
       <div className="tournament__start__rounds-container">
         {rounds.map((round, roundIndex) => {
@@ -136,6 +159,6 @@ function RoundsCollection({
           );
         })}
       </div>
-    </>
+    </div>
   );
 }
