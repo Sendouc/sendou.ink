@@ -12,7 +12,7 @@ export function participantCountToRoundsInfo({
 }): EliminationBracket<
   {
     name: string;
-    bestOf: number;
+    bestOf: BestOf;
     mapList: Stage[];
   }[]
 > {
@@ -160,3 +160,5 @@ export type EliminationBracket<T> = {
   winners: T;
   losers: T;
 };
+
+export type EliminationBracketSide = "winners" | "losers";

@@ -1,3 +1,7 @@
+.tournament__start__title {
+  text-transform: capitalize;
+}
+
 .tournament__start__container {
   width: 100%;
 }
@@ -14,10 +18,23 @@
   border-radius: var(--rounded);
 }
 
+.tournament__start__best-of-buttons-container {
+  display: flex;
+  gap: var(--s-4);
+}
+
 .tournament__start__best-of {
-  color: var(--theme-secondary);
+  padding: 0;
+  border-color: transparent;
+  background-color: transparent;
+  color: var(--text-lighter);
   font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
+}
+
+.tournament__start__best-of.active {
+  color: var(--theme-secondary);
+  font-weight: var(--bold);
 }
 
 .tournament__start__rounds-list {
@@ -34,5 +51,5 @@
 }
 
 .tournament__start__mode-image {
-  width: 1.75rem;
+  width: attr(width);
 }

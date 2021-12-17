@@ -66,5 +66,10 @@ export type Unpacked<T> = T extends (infer U)[]
   ? U
   : T;
 
+export type MyReducerAction<K extends string, T extends {}> = {
+  type: K;
+  data: T;
+};
+
 // TODO:
 // export type InferredSerializedAPI<T> = Serialized<Prisma.PromiseReturnType<T>>;

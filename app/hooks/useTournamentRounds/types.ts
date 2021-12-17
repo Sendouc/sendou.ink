@@ -1,15 +1,28 @@
 import type { Stage } from ".prisma/client";
-import type { EliminationBracket } from "~/core/tournament/bracket";
+import type {
+  BestOf,
+  EliminationBracket,
+  EliminationBracketSide,
+} from "~/core/tournament/bracket";
+import { MyReducerAction } from "~/utils";
 
 export type UseTournamentRoundsState = EliminationBracket<
   {
-    bestOf: number;
+    bestOf: BestOf;
     name: string;
     mapList: Stage[];
   }[]
 >;
 
-export type UseTournamentRoundsAction = { type: "TODO" };
+export interface UseTournamentRoundsArgs {
+  initialState: UseTournamentRoundsState;
+  mapPool: Stage[];
+}
+
+export type UseTournamentRoundsAction = MyReducerAction<
+  "SET_ROUND_BEST_OF",
+  { newBestOf: BestOf; side: EliminationBracketSide; index: number }
+>;
 
 // export type Action =
 //   | {
