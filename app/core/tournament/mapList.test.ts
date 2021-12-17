@@ -83,4 +83,34 @@ MapListForRounds("Should not repeat map in adjacent rounds", () => {
   }
 });
 
+MapListForRounds(
+  "Should generate a map list even if only one map/mode combo (SZ)",
+  () => {
+    const mapListOfRepeatingNature = generateMapListForRounds({
+      mapPool: [{ id: 1, mode: "SZ", name: "The Reef" }],
+      rounds,
+    });
+
+    assert.equal(
+      mapListOfRepeatingNature.winners.length,
+      mapList.winners.length
+    );
+  }
+);
+
+MapListForRounds(
+  "Should generate a map list even if only one map/mode combo (TC)",
+  () => {
+    const mapListOfRepeatingNature = generateMapListForRounds({
+      mapPool: [{ id: 1, mode: "TC", name: "The Reef" }],
+      rounds,
+    });
+
+    assert.equal(
+      mapListOfRepeatingNature.winners.length,
+      mapList.winners.length
+    );
+  }
+);
+
 MapListForRounds.run();

@@ -27,6 +27,7 @@ export function generateMapListForRounds({
   }, []);
   let currentModes = clone(modes);
   const hasSZ = mapPool.some((stage) => stage.mode === "SZ");
+  const onlySZ = mapPool.every((stage) => stage.mode === "SZ");
   const allModesLength = modes.length + Number(hasSZ);
   let stagesOfPreviousRound: string[] = [];
 
@@ -45,7 +46,9 @@ export function generateMapListForRounds({
   };
 
   function roundsMapList(bestOf: BestOf): Stage[] {
-    const modes = resolveModes(bestOf);
+    const modes = onlySZ
+      ? new Array(bestOf).fill(null).map(() => "SZ" as Mode)
+      : resolveModes(bestOf);
     const maps = resolveMaps(modes);
 
     return new Array(bestOf).fill(null).map((_, i) => {
@@ -110,7 +113,6 @@ export function generateMapListForRounds({
 
       const nextModeTuple = currentModes[0];
       invariant(nextModeTuple, "nextModeTuple undefined");
-      invariant(previous !== nextModeTuple[0], "Repeating mode");
 
       resultWithNoNull.push(nextModeTuple[0]);
       nextModeTuple[1]--;
