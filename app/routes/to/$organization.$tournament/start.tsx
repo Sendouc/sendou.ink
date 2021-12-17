@@ -20,8 +20,6 @@ import { findTournamentByNameForUrl } from "~/services/tournament";
 import startBracketTabStylesUrl from "~/styles/tournament-start.css";
 
 // TODO: some warning if trying to continue and some round card is editing
-// TODO: add round numbers
-// 4) can change any invidual map via dropdown (no regen)
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: startBracketTabStylesUrl }];

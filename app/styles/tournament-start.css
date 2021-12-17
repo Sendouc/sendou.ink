@@ -57,14 +57,24 @@
 .tournament__start__rounds-list {
   padding-top: var(--s-2);
   padding-left: 0;
+  counter-reset: section;
   font-size: var(--fonts-sm);
 }
 
 .tournament__start__map-row {
   display: flex;
   align-items: center;
-  padding-bottom: var(--s-1);
+  padding-bottom: var(--s-1-5);
   gap: var(--s-2);
+}
+
+.tournament__start__map-row::before {
+  color: var(--text-lighter);
+  content: counter(section) ".";
+  counter-increment: section;
+  font-size: var(--fonts-xxs);
+  font-weight: var(--bold);
+  padding-inline: var(--s-1);
 }
 
 .tournament__start__round-card-buttons-container {
