@@ -201,12 +201,12 @@ article {
   white-space: pre-line;
 }
 
-/* TODO: bug: white on white on Edge */
 select {
   all: unset;
   width: 90%;
   border: 1px solid var(--border);
 
+  background: var(--select-background, var(--bg-lighter));
   /* TODO: Get color from CSS var */
   background-image: url('data:image/svg+xml;utf8,<svg width="1rem" color="rgb(255 255 255 / 55%)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>');
   background-position-x: 95%;
