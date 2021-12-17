@@ -132,13 +132,18 @@ export function eliminationBracket(
   invariant(match1, "Unexpected no match1 in final match");
   invariant(match2, "Unexpected no match2 in final match");
 
-  // Add final match
-  bracket.winners.push(
-    createMatch({
-      match1,
-      match2,
-    })
-  );
+  // Add final match and bracket reset
+  const grandFinals = createMatch({
+    match1,
+    match2,
+  });
+  bracket.winners.push(grandFinals);
+
+  const bracketReset = createMatch({
+    match1: grandFinals,
+    match2: grandFinals,
+  });
+  bracket.winners.push(bracketReset);
 
   return bracket;
 }

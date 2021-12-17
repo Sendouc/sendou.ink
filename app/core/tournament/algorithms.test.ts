@@ -1,9 +1,10 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
-import type { Match, TeamIdentifier } from "./bracket";
 import {
   eliminationBracket,
   fillParticipantsWithNullTillPowerOfTwo,
+  Match,
+  TeamIdentifier,
 } from "./algorithms";
 
 const AmountOfTeams = suite("Amount of teams");
@@ -21,29 +22,29 @@ AmountOfTeams("Generates right amount of rounds (16 participants - SE)", () => {
 
 AmountOfTeams("Generates right amount of rounds (16 participants - DE)", () => {
   const bracket16 = eliminationBracket(16, "DE");
-  assert.equal(removeMatchesWithByes(bracket16.winners).length, 16); // not incl reset
+  assert.equal(removeMatchesWithByes(bracket16.winners).length, 17);
   assert.equal(removeMatchesWithByes(bracket16.losers).length, 14);
 });
 
 AmountOfTeams("Generates right amount of rounds (15 participants - DE)", () => {
   const bracket15 = eliminationBracket(15, "DE");
-  assert.equal(removeMatchesWithByes(bracket15.winners).length, 15); // not incl reset
+  assert.equal(removeMatchesWithByes(bracket15.winners).length, 16);
   assert.equal(removeMatchesWithByes(bracket15.losers).length, 14); // one bye
 });
 
 AmountOfTeams("Generates right amount of rounds (17 participants - DE)", () => {
   const bracket17 = eliminationBracket(17, "DE");
-  assert.equal(removeMatchesWithByes(bracket17.winners).length, 17); // not incl reset
+  assert.equal(removeMatchesWithByes(bracket17.winners).length, 18);
   assert.equal(removeMatchesWithByes(bracket17.losers).length, 30);
 
-  assert.equal(removeMatchesWithByes(bracket17.winners).length, 17); // not incl reset
+  assert.equal(removeMatchesWithByes(bracket17.winners).length, 18);
   assert.equal(removeMatchesWithByes(bracket17.losers).length, 30);
 });
 
 AmountOfTeams("Same amount of rounds as next power of two", () => {
   const bracket17 = eliminationBracket(17, "DE");
   const bracket32 = eliminationBracket(32, "DE");
-  assert.equal(bracket17.winners.length, bracket32.winners.length); // not incl reset
+  assert.equal(bracket17.winners.length, bracket32.winners.length);
   assert.equal(bracket17.losers.length, bracket32.losers.length);
 });
 

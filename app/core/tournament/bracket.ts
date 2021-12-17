@@ -54,6 +54,7 @@ export function participantCountToRoundsInfo({
 const WINNERS_DEFAULT = 5;
 const WINNERS_FIRST_TWO_DEFAULT = 3;
 const GRAND_FINALS_DEFAULT = 7;
+const GRAND_FINALS_RESET_DEFAULT = 7;
 const LOSERS_DEFAULT = 3;
 const LOSERS_FINALS_DEFAULT = 5;
 
@@ -67,9 +68,13 @@ export function getRoundsDefaultBestOf(
 
   return {
     winners: new Array(winnersRoundCount).fill(null).map((_, i) => {
+      const isSE = losersRoundCount === 0;
       if (i === 0) return WINNERS_FIRST_TWO_DEFAULT;
       if (i === 1) return WINNERS_FIRST_TWO_DEFAULT;
-      if (i === winnersRoundCount - 1) return GRAND_FINALS_DEFAULT;
+      if (i === winnersRoundCount - 2 + Number(isSE)) {
+        return GRAND_FINALS_DEFAULT;
+      }
+      if (i === winnersRoundCount - 1) return GRAND_FINALS_RESET_DEFAULT;
       return WINNERS_DEFAULT;
     }),
     losers: new Array(losersRoundCount)
@@ -80,15 +85,19 @@ export function getRoundsDefaultBestOf(
   };
 }
 
-function getRoundNames(bracket: Bracket): EliminationBracket<string[]> {
+export function getRoundNames(bracket: Bracket): EliminationBracket<string[]> {
   const { winners: winnersRoundCount, losers: losersRoundCount } =
     countRounds(bracket);
 
   return {
     winners: new Array(winnersRoundCount).fill(null).map((_, i) => {
-      if (i === winnersRoundCount - 3) return "Winners' Semifinals";
-      if (i === winnersRoundCount - 2) return "Winners' Finals";
-      if (i === winnersRoundCount - 1) return "Grand Finals";
+      const isSE = bracket.losers.length === 0;
+      if (i === winnersRoundCount - 4 + Number(isSE)) {
+        return "Winners' Semifinals";
+      }
+      if (i === winnersRoundCount - 3 + Number(isSE)) return "Winners' Finals";
+      if (i === winnersRoundCount - 2 + Number(isSE)) return "Grand Finals";
+      if (!isSE && i === winnersRoundCount - 1) return "Bracket Reset";
       return `Winners' Round ${i + 1}`;
     }),
     losers: new Array(losersRoundCount)
@@ -100,7 +109,7 @@ function getRoundNames(bracket: Bracket): EliminationBracket<string[]> {
 }
 
 export function countRounds(bracket: Bracket): EliminationBracket<number> {
-  let winners = 1;
+  let winners = 2;
 
   for (let i = bracket.participantsWithByesCount; i > 1; i /= 2) {
     winners++;
