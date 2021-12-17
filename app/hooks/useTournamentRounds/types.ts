@@ -1,11 +1,5 @@
-import type { BracketType, Stage } from ".prisma/client";
+import type { Stage } from ".prisma/client";
 import type { EliminationBracket } from "~/core/tournament/bracket";
-
-export interface UseTournamentsArgs {
-  teams: { checkedInTime: string | null }[];
-  type: BracketType;
-  mapPool: Stage[];
-}
 
 export type UseTournamentRoundsState = EliminationBracket<
   {

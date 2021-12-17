@@ -1,8 +1,11 @@
-import { useMatches } from "remix";
-import type { LinksFunction } from "remix";
+import type { LinksFunction, LoaderFunction } from "remix";
+import { json, useLoaderData } from "remix";
+import invariant from "tiny-invariant";
+import { eliminationBracket } from "~/core/tournament/algorithms";
+import { participantCountToRoundsInfo } from "~/core/tournament/bracket";
 import { useTournamentRounds } from "~/hooks/useTournamentRounds";
 import type { UseTournamentRoundsState } from "~/hooks/useTournamentRounds/types";
-import type { FindTournamentByNameForUrlI } from "~/services/tournament";
+import { findTournamentByNameForUrl } from "~/services/tournament";
 import startBracketTabStylesUrl from "~/styles/tournament-start.css";
 
 // 2) can change best of -> regens maps
@@ -14,19 +17,45 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: startBracketTabStylesUrl }];
 };
 
-// TODO: handle warning if check-in has not concluded
-export default function StartBracketTab() {
-  const [, parentRoute] = useMatches();
-  const { teams, mapPool } = parentRoute.data as FindTournamentByNameForUrlI;
-  const [rounds, dispatch] = useTournamentRounds({
-    mapPool,
-    teams,
-    // TODO: and also below don't show losers if SE
-    type: "DE",
+const typedJson = (args: UseTournamentRoundsState) => json(args);
+
+export const loader: LoaderFunction = async ({ params }) => {
+  invariant(
+    typeof params.organization === "string",
+    "Expected params.organization to be string"
+  );
+  invariant(
+    typeof params.tournament === "string",
+    "Expected params.tournament to be string"
+  );
+
+  const tournament = await findTournamentByNameForUrl({
+    organizationNameForUrl: params.organization,
+    tournamentNameForUrl: params.tournament,
   });
 
+  const teamCount = tournament.teams.reduce(
+    (acc, cur) => acc + (cur.checkedInTime ? 1 : 0),
+    0
+  );
+
+  // TODO: and also below don't show losers if SE
+  const bracket = eliminationBracket(teamCount, "DE");
+  const result = participantCountToRoundsInfo({
+    bracket,
+    mapPool: tournament.mapPool,
+  });
+
+  return typedJson(result);
+};
+
+// TODO: handle warning if check-in has not concluded
+export default function StartBracketTab() {
+  const initialState = useLoaderData<UseTournamentRoundsState>();
+  const [rounds, dispatch] = useTournamentRounds(initialState);
+
   return (
-    <div style={{ width: "100%" }}>
+    <div className="tournament__start__container">
       <RoundsCollection side="Winners" rounds={rounds.winners} />
       <RoundsCollection side="Losers" rounds={rounds.losers} />
     </div>
