@@ -28,10 +28,20 @@ export function generateMapListForRounds({
   let currentModes = clone(modes);
   const hasSZ = mapPool.some((stage) => stage.mode === "SZ");
   const allModesLength = modes.length + Number(hasSZ);
+  let stagesOfPreviousRound: string[] = [];
 
   return {
-    winners: rounds.winners.map((round) => roundsMapList(round)),
-    losers: rounds.losers.map((round) => roundsMapList(round)),
+    winners: rounds.winners.map((round) => {
+      const mapList = roundsMapList(round);
+      stagesOfPreviousRound = mapList.map((s) => s.name);
+      return mapList;
+    }),
+    losers: rounds.losers.map((round, i) => {
+      if (i === 0) stagesOfPreviousRound = [];
+      const mapList = roundsMapList(round);
+      stagesOfPreviousRound = mapList.map((s) => s.name);
+      return mapList;
+    }),
   };
 
   function roundsMapList(bestOf: BestOf): Stage[] {
@@ -179,7 +189,8 @@ export function generateMapListForRounds({
       let stage = stages.find(
         (mapPoolMap) =>
           mapPoolMap.modes.includes(mode) &&
-          !stagesAlreadyIncludedThisRound.includes(mapPoolMap.name)
+          !stagesAlreadyIncludedThisRound.includes(mapPoolMap.name) &&
+          !stagesOfPreviousRound.includes(mapPoolMap.name)
       );
 
       // TODO: handle this fallback behavior smarter
