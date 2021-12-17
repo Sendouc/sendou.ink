@@ -16,7 +16,6 @@ import type {
 import { findTournamentByNameForUrl } from "~/services/tournament";
 import startBracketTabStylesUrl from "~/styles/tournament-start.css";
 
-// 1) jank
 // 3) can regen maps via button
 // 4) can change any invidual map via dropdown (no regen)
 // 5) Blackbelly TC repeats Losers Round 3 and 4 -> add test & fix? (use real maps as test data)
@@ -126,6 +125,7 @@ function RoundsCollection({
                         src={`/img/modes/${stage.mode}.webp`}
                         className="tournament__start__mode-image"
                         width="30"
+                        height="30"
                       />{" "}
                       <span>{stage.name}</span>
                     </li>
