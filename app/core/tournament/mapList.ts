@@ -27,6 +27,7 @@ export function generateMapListForRounds({
   }, []);
   let currentModes = clone(modes);
   const hasSZ = mapPool.some((stage) => stage.mode === "SZ");
+  const allModesLength = modes.length + Number(hasSZ);
 
   return {
     winners: rounds.winners.map((round) => roundsMapList(round)),
@@ -81,8 +82,18 @@ export function generateMapListForRounds({
       resetCurrentModesIfWouldHaveToRepeatMode(previous);
       currentModes = shuffle(currentModes);
       currentModes.sort((a, b) => {
-        if (previous && previous === a[0]) return 1;
-        if (previous && previous === b[0]) return -1;
+        // Don't repeat a mode before all the modes have appeared in a round
+        const modesOfTheRound = Array.from(new Set(resultWithNoNull));
+        if (modesOfTheRound.length < allModesLength) {
+          if (
+            modesOfTheRound.includes(a[0]) &&
+            modesOfTheRound.includes(b[0])
+          ) {
+            return 0;
+          }
+          if (modesOfTheRound.includes(b[0])) return -1;
+          if (modesOfTheRound.includes(a[0])) return 1;
+        }
 
         return b[1] - a[1];
       });
@@ -171,7 +182,7 @@ export function generateMapListForRounds({
           !stagesAlreadyIncludedThisRound.includes(mapPoolMap.name)
       );
 
-      // TODO: handle this smarter
+      // TODO: handle this fallback behavior smarter
       if (!stage) {
         stage = stages.find((mapPoolMap) => mapPoolMap.modes.includes(mode));
       }
