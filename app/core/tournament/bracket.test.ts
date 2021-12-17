@@ -27,6 +27,13 @@ CountBracketRounds("Counts bracket (DE - 16)", () => {
   assert.equal(count, { winners: 6, losers: 6 });
 });
 
+CountBracketRounds("Counts bracket (SE - 16)", () => {
+  const bracket = eliminationBracket(16, "SE");
+  const count = countRounds(bracket);
+
+  assert.equal(count, { winners: 5, losers: 0 });
+});
+
 RoundNames("No bracket reset round for SE", () => {
   const bracketSE = getRoundNames(eliminationBracket(16, "SE"));
   const bracketDE = getRoundNames(eliminationBracket(16, "DE"));

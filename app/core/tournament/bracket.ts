@@ -109,11 +109,14 @@ export function getRoundNames(bracket: Bracket): EliminationBracket<string[]> {
 }
 
 export function countRounds(bracket: Bracket): EliminationBracket<number> {
-  let winners = 2;
+  const isDE = bracket.losers.length > 0;
+  let winners = 1 + Number(isDE);
 
   for (let i = bracket.participantsWithByesCount; i > 1; i /= 2) {
     winners++;
   }
+
+  if (!isDE) return { winners, losers: 0 };
 
   const losersMatchIds = new Set(bracket.losers.map((match) => match.id));
   let losers = 0;
