@@ -20,6 +20,7 @@ import { findTournamentByNameForUrl } from "~/services/tournament";
 import startBracketTabStylesUrl from "~/styles/tournament-start.css";
 
 // TODO: some warning if trying to continue and some round card is editing
+// TODO: error if not admin AND keep the links available
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: startBracketTabStylesUrl }];

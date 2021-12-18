@@ -33,7 +33,8 @@ export const links: LinksFunction = () => {
 
 // TODO: https://docs.dndkit.com/presets/sortable#drag-overlay
 // TODO: what if returns error? check other APIs too -> add Cypress test
-export default function AdminDefaultTab() {
+// TODO: error if not admin
+export default function SeedsTab() {
   const seedsFetcher = useFetcher();
   const [, parentRoute] = useMatches();
   const { id, teams, checkInStartTime } =
