@@ -57,7 +57,7 @@ You can give a variation as a flag to the seeding script changing what exactly i
 - [ ] Migrate to \*.prisma.ts
 - [ ] Admin can drop people out (show on bracket somehow that they dropped)
 - [ ] Admin can change team captain
-- [ ] Admin can randomize and rerandomize maps
+- [x] Admin can randomize and rerandomize maps
 - [x] Admin can change seeding
 - [ ] Admin can start the tournament
 - [ ] Table design to support arbitrary brackets
