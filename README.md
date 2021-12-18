@@ -54,11 +54,11 @@ You can give a variation as a flag to the seeding script changing what exactly i
 - [x] Make description mandatory + overview tab
 - [x] Captain can check in
 - [x] Admin can check teams in / out
-- [ ] Migrate to *.prisma.ts
+- [ ] Migrate to \*.prisma.ts
 - [ ] Admin can drop people out (show on bracket somehow that they dropped)
 - [ ] Admin can change team captain
 - [ ] Admin can randomize and rerandomize maps
-- [x] Admin can change seeding 
+- [x] Admin can change seeding
 - [ ] Admin can start the tournament
 - [ ] Table design to support arbitrary brackets
 - [x] Generate SE bracket from seeds
@@ -94,4 +94,3 @@ You can give a variation as a flag to the seeding script changing what exactly i
 - [ ] Each team has DC count, admin can mark DC's, show to opponent the team's DC counter
 - [ ] League mode (LUTI etc.)
 - [ ] Can indicate doesn't want to host, site resolves who should host
-

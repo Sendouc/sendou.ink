@@ -16,7 +16,7 @@
     "seed": "node --experimental-specifier-resolution=node --loader ts-node/esm prisma/seed",
     "seed:reset": "npx prisma migrate reset --force --skip-generate",
     "lint:styles": "stylelint \"app/styles/**/*.css\"",
-    "prettier": "prettier --check .",
+    "prettier:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
     "cy:open": "npx cypress open",
     "cy:run": "npx cypress run",
