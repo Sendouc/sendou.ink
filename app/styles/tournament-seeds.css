@@ -33,7 +33,12 @@
 }
 
 .tournament__seeds__teams-list-row.sortable:hover:not(.disabled) {
+  background-color: var(--bg-lighter-transparent);
+}
+
+.tournament__seeds__teams-list-row.active {
   background-color: var(--bg-lighter);
+  cursor: grabbing;
 }
 
 .tournament__seeds__teams-list-row.sortable:active:not(.disabled) {

@@ -1,6 +1,7 @@
 import {
   closestCenter,
   DndContext,
+  DragOverlay,
   KeyboardSensor,
   PointerSensor,
   useSensor,
@@ -10,28 +11,27 @@ import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
-  useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import classNames from "classnames";
 import * as React from "react";
-import { useFetcher, useMatches } from "remix";
 import type { LinksFunction } from "remix";
+import { useFetcher, useMatches } from "remix";
+import invariant from "tiny-invariant";
 import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
+import { Draggable } from "~/components/Draggable";
 import { TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
 import { checkInHasStarted } from "~/core/tournament/utils";
 import type { FindTournamentByNameForUrlI } from "~/services/tournament";
+import seedsStylesUrl from "~/styles/tournament-seeds.css";
 import type { Unpacked } from "~/utils";
 import { useTimeoutState } from "~/utils/hooks";
-import seedsStylesUrl from "~/styles/tournament-seeds.css";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: seedsStylesUrl }];
 };
 
-// TODO: https://docs.dndkit.com/presets/sortable#drag-overlay
 // TODO: what if returns error? check other APIs too -> add Cypress test
 // TODO: error if not admin
 export default function SeedsTab() {
@@ -40,6 +40,9 @@ export default function SeedsTab() {
   const { id, teams, checkInStartTime } =
     parentRoute.data as FindTournamentByNameForUrlI;
   const [teamOrder, setTeamOrder] = React.useState(teams.map((t) => t.id));
+  const [activeTeam, setActiveTeam] = React.useState<Unpacked<
+    FindTournamentByNameForUrlI["teams"]
+  > | null>(null);
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -73,11 +76,18 @@ export default function SeedsTab() {
           id="team-seed-sorter"
           sensors={sensors}
           collisionDetection={closestCenter}
-          onDragStart={() => null}
+          onDragStart={(event) => {
+            const newActiveTeam = teamsSorted.find(
+              (t) => t.id === event.active.id
+            );
+            invariant(newActiveTeam, "newActiveTeam is undefined");
+            setActiveTeam(newActiveTeam);
+          }}
           onDragEnd={(event) => {
             const { active, over } = event;
 
             if (!over) return;
+            setActiveTeam(null);
             if (active.id !== over.id) {
               setTeamOrder((teamIds) => {
                 const oldIndex = teamIds.indexOf(active.id);
@@ -93,14 +103,31 @@ export default function SeedsTab() {
             strategy={verticalListSortingStrategy}
           >
             {teamsSorted.map((team, i) => (
-              <SortableRow
+              <Draggable
                 key={team.id}
-                team={team}
-                seed={i + 1}
+                id={team.id}
                 disabled={seedsFetcher.state !== "idle"}
-              />
+                liClassName={classNames(
+                  "tournament__seeds__teams-list-row",
+                  "sortable",
+                  {
+                    disabled: seedsFetcher.state !== "idle",
+                    "visibility-hidden": activeTeam?.id === team.id,
+                  }
+                )}
+              >
+                <RowContents team={team} seed={i + 1} />
+              </Draggable>
             ))}
           </SortableContext>
+
+          <DragOverlay>
+            {activeTeam && (
+              <li className="tournament__seeds__teams-list-row active">
+                <RowContents team={activeTeam} />
+              </li>
+            )}
+          </DragOverlay>
         </DndContext>
       </ul>
     </>
@@ -164,36 +191,18 @@ function SeedAlert({
   );
 }
 
-function SortableRow({
+function RowContents({
   team,
   seed,
-  disabled,
 }: {
   team: Unpacked<FindTournamentByNameForUrlI["teams"]>;
-  seed: number;
-  disabled: boolean;
+  seed?: number;
 }) {
   const [, parentRoute] = useMatches();
   const { checkInStartTime } = parentRoute.data as FindTournamentByNameForUrlI;
 
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: team.id, disabled });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
   return (
-    <li
-      className={classNames("tournament__seeds__teams-list-row", "sortable", {
-        disabled,
-      })}
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
-    >
+    <>
       <div>{seed}</div>
       <div>{team.name}</div>
       <div>
@@ -222,7 +231,7 @@ function SortableRow({
       >
         {team.members.length}
       </div>
-    </li>
+    </>
   );
 }
 

@@ -1,6 +1,7 @@
 :root {
   --bg: hsl(237.3deg 42.3% 30.6%);
   --bg-lighter: hsl(237.3deg 42.3% 35.6%);
+  --bg-lighter-transparent: hsla(237.3deg 42.3% 35.6% / 50%);
   --border: hsl(237.3deg 42.3% 45.6%);
   --text: rgb(255 255 255 / 95%);
   --text-lighter: rgb(255 255 255 / 55%);
