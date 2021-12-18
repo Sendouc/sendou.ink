@@ -3,6 +3,7 @@ import classNames from "classnames";
 import type { LinksFunction, LoaderFunction } from "remix";
 import { json, useLoaderData } from "remix";
 import invariant from "tiny-invariant";
+import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
 import { modesShort, modesShortToLong } from "~/constants";
 import { eliminationBracket } from "~/core/tournament/algorithms";
@@ -19,7 +20,6 @@ import type {
 import { findTournamentByNameForUrl } from "~/services/tournament";
 import startBracketTabStylesUrl from "~/styles/tournament-start.css";
 
-// TODO: some warning if trying to continue and some round card is editing
 // TODO: error if not admin AND keep the links available
 
 export const links: LinksFunction = () => {
@@ -61,45 +61,78 @@ export const loader: LoaderFunction = async ({ params }) => {
 // TODO: handle warning if check-in has not concluded
 export default function StartBracketTab() {
   const args = useLoaderData<UseTournamentRoundsArgs>();
-  const [rounds, dispatch] = useTournamentRounds(args);
+  const [{ bracket, showAlert, actionButtonsDisabled }, dispatch] =
+    useTournamentRounds(args);
 
   return (
     <div className="tournament__start__container">
-      <ActionButtons dispatch={dispatch} />
+      <ActionButtons
+        dispatch={dispatch}
+        disabled={actionButtonsDisabled}
+        showAlert={showAlert}
+        position="top"
+      />
       <div className="tournament__start__round-collections-container">
         <RoundsCollection
           side="winners"
           dispatch={dispatch}
-          rounds={rounds.winners}
+          rounds={bracket.winners}
         />
         {args.initialState.losers.length > 0 && (
           <RoundsCollection
             side="losers"
             dispatch={dispatch}
-            rounds={rounds.losers}
+            rounds={bracket.losers}
           />
         )}
       </div>
-      <ActionButtons dispatch={dispatch} />
+      <ActionButtons
+        dispatch={dispatch}
+        disabled={actionButtonsDisabled}
+        showAlert={showAlert}
+        position="bottom"
+      />
     </div>
   );
 }
 
 function ActionButtons({
   dispatch,
+  disabled,
+  showAlert,
+  position,
 }: {
   dispatch: React.Dispatch<UseTournamentRoundsAction>;
+  disabled?: boolean;
+  showAlert: boolean;
+  position: "top" | "bottom";
 }) {
   return (
-    <div className="tournament__start__buttons-container">
-      <Button>Preview bracket</Button>
-      <Button
-        variant="outlined"
-        onClick={() => dispatch({ type: "REGENERATE_MAP_LIST" })}
-      >
-        Regenerate all maps
-      </Button>
-    </div>
+    <>
+      {position === "bottom" && showAlert && (
+        <Alert type="warning">
+          Save or cancel the round being edited to continue or regenerate maps
+        </Alert>
+      )}
+      <div className="tournament__start__action-buttons__container">
+        <Button>Preview bracket</Button>
+        <Button
+          variant="outlined"
+          onClick={() =>
+            disabled
+              ? dispatch({ type: "SHOW_ALERT" })
+              : dispatch({ type: "REGENERATE_MAP_LIST" })
+          }
+        >
+          Regenerate all maps
+        </Button>
+      </div>
+      {position === "top" && showAlert && (
+        <Alert type="warning">
+          Save or cancel the round being edited to continue or regenerate maps
+        </Alert>
+      )}
+    </>
   );
 }
 
@@ -110,7 +143,7 @@ function RoundsCollection({
 }: {
   side: EliminationBracketSide;
   dispatch: React.Dispatch<UseTournamentRoundsAction>;
-  rounds: UseTournamentRoundsState["winners"];
+  rounds: UseTournamentRoundsState["bracket"]["winners"];
 }) {
   const { mapPool } = useLoaderData<UseTournamentRoundsArgs>();
 
@@ -205,7 +238,7 @@ function RoundsCollection({
                   );
                 })}
               </ol>
-              <div className="tournament__start__round-card-buttons-container">
+              <div className="tournament__start__round-card-buttons__container">
                 {round.editing ? (
                   <>
                     <Button

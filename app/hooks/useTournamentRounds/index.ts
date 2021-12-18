@@ -14,39 +14,41 @@ export function useTournamentRounds(args: UseTournamentRoundsArgs) {
       switch (action.type) {
         case "START_EDITING_ROUND": {
           const newState = clone(oldState);
-          newState[action.data.side] = newState[action.data.side].map(
-            (round, i) =>
-              i === action.data.index
-                ? { ...round, editing: true, newMapList: [...round.mapList] }
-                : round
+          newState.bracket[action.data.side] = newState.bracket[
+            action.data.side
+          ].map((round, i) =>
+            i === action.data.index
+              ? { ...round, editing: true, newMapList: [...round.mapList] }
+              : round
           );
 
-          return newState;
+          return calculateRoundsBeingEditedAndAdjustState(newState);
         }
         case "CANCEL_EDITING_ROUND": {
           const newState = clone(oldState);
-          newState[action.data.side] = newState[action.data.side].map(
-            (round, i) =>
-              i === action.data.index ? { ...round, editing: false } : round
+          newState.bracket[action.data.side] = newState.bracket[
+            action.data.side
+          ].map((round, i) =>
+            i === action.data.index ? { ...round, editing: false } : round
           );
 
-          return newState;
+          return calculateRoundsBeingEditedAndAdjustState(newState);
         }
         case "SAVE_ROUND": {
           const newState = clone(oldState);
-          newState[action.data.side] = newState[action.data.side].map(
-            (round, i) => {
-              if (i !== action.data.index) return round;
-              invariant(round.newMapList, "round.newMapList is undefined");
-              return { ...round, editing: false, mapList: round.newMapList };
-            }
-          );
+          newState.bracket[action.data.side] = newState.bracket[
+            action.data.side
+          ].map((round, i) => {
+            if (i !== action.data.index) return round;
+            invariant(round.newMapList, "round.newMapList is undefined");
+            return { ...round, editing: false, mapList: round.newMapList };
+          });
 
-          return newState;
+          return calculateRoundsBeingEditedAndAdjustState(newState);
         }
         case "EDIT_STAGE": {
           const newState = clone(oldState);
-          const roundToEdit = newState[action.data.side].find(
+          const roundToEdit = newState.bracket[action.data.side].find(
             (_, i) => i === action.data.index
           );
           invariant(
@@ -64,43 +66,70 @@ export function useTournamentRounds(args: UseTournamentRoundsArgs) {
           return newState;
         }
         case "REGENERATE_MAP_LIST": {
-          return regenMapList(oldState);
+          return regenMapList({ oldState });
         }
         case "SET_ROUND_BEST_OF": {
           const newState = clone(oldState);
-          newState[action.data.side][action.data.index].bestOf =
+          newState.bracket[action.data.side][action.data.index].bestOf =
             action.data.newBestOf;
 
-          return regenMapList(newState);
+          return regenMapList({ oldState, newState });
+        }
+        case "SHOW_ALERT": {
+          return { ...oldState, showAlert: true };
         }
         default: {
           return oldState;
         }
       }
     },
-    args.initialState
+    { bracket: args.initialState, showAlert: false }
   );
 
-  function regenMapList(
-    state: UseTournamentRoundsState
-  ): UseTournamentRoundsState {
+  function regenMapList({
+    oldState,
+    newState: _newState,
+  }: {
+    oldState: UseTournamentRoundsState;
+    newState?: UseTournamentRoundsState;
+  }): UseTournamentRoundsState {
+    const newState = _newState ?? oldState;
     const newMapLists = generateMapListForRounds({
       mapPool: args.mapPool,
       rounds: {
-        winners: state.winners.map((r) => r.bestOf),
-        losers: state.losers.map((r) => r.bestOf),
+        winners: newState.bracket.winners.map((r) => r.bestOf),
+        losers: newState.bracket.losers.map((r) => r.bestOf),
       },
     });
 
     return {
-      winners: state.winners.map((round, i) => ({
-        ...round,
-        mapList: newMapLists.winners[i],
-      })),
-      losers: state.losers.map((round, i) => ({
-        ...round,
-        mapList: newMapLists.losers[i],
-      })),
+      showAlert: oldState.showAlert,
+      bracket: {
+        winners: newState.bracket.winners.map((round, i) => ({
+          ...round,
+          mapList: newMapLists.winners[i],
+        })),
+        losers: newState.bracket.losers.map((round, i) => ({
+          ...round,
+          mapList: newMapLists.losers[i],
+        })),
+      },
+    };
+  }
+
+  function calculateRoundsBeingEditedAndAdjustState(
+    newState: UseTournamentRoundsState
+  ): UseTournamentRoundsState {
+    const beingEditedCount = [newState.bracket.winners, newState.bracket.losers]
+      .flat()
+      .reduce((acc, cur) => {
+        return acc + (cur.editing ? 1 : 0);
+      }, 0);
+
+    return {
+      ...newState,
+      showAlert: beingEditedCount === 0 ? false : newState.showAlert,
+      actionButtonsDisabled: beingEditedCount > 0 ? true : false,
     };
   }
 }

@@ -11,10 +11,16 @@
   gap: var(--s-6);
 }
 
-.tournament__start__buttons-container {
+.tournament__start__action-buttons__container {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: var(--s-1-5);
+}
+
+.tournament__start__action-buttons__info {
+  color: var(--theme-error);
+  font-size: var(--fonts-xs);
 }
 
 .tournament__start__round-collections-container {
@@ -77,7 +83,7 @@
   padding-inline: var(--s-1);
 }
 
-.tournament__start__round-card-buttons-container {
+.tournament__start__round-card-buttons__container {
   display: flex;
   justify-content: center;
   gap: var(--s-4);
