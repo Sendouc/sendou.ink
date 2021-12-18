@@ -6,11 +6,7 @@ import {
 import { isTournamentAdmin } from "~/core/tournament/permissions";
 import { sortTeamsBySeed } from "~/core/tournament/utils";
 import { Serialized, Unpacked } from "~/utils";
-import { db } from "~/utils/db.server";
-import {
-  PrismaTournamentsByNameForUrl,
-  tournamentsByNameForUrl,
-} from "./tournament.prisma";
+import * as db from "./tournament.prisma";
 
 export type FindTournamentByNameForUrlI = Serialized<
   Prisma.PromiseReturnType<typeof findTournamentByNameForUrl>
@@ -23,7 +19,7 @@ export async function findTournamentByNameForUrl({
   organizationNameForUrl: string;
   tournamentNameForUrl: string;
 }) {
-  const tournaments = await tournamentsByNameForUrl(tournamentNameForUrl);
+  const tournaments = await db.tournaments(tournamentNameForUrl);
 
   const result = tournaments.find(
     (tournament) =>
@@ -53,7 +49,7 @@ function discordInviteToUrl(discordInvite: string) {
   return `https://discord.com/invite/${discordInvite}`;
 }
 
-function addCSSProperties(tournament: Unpacked<PrismaTournamentsByNameForUrl>) {
+function addCSSProperties(tournament: Unpacked<db.PrismaTournaments>) {
   const { bannerTextHSLArgs, ...rest } = tournament;
 
   return {
@@ -78,39 +74,7 @@ export async function ownTeamWithInviteCode({
   tournamentNameForUrl: string;
   userId?: string;
 }) {
-  const tournaments = await db.tournament.findMany({
-    where: {
-      nameForUrl: tournamentNameForUrl.toLowerCase(),
-    },
-    select: {
-      organizer: {
-        select: {
-          nameForUrl: true,
-        },
-      },
-      teams: {
-        select: {
-          id: true,
-          name: true,
-          inviteCode: true,
-          checkedInTime: true,
-          members: {
-            select: {
-              captain: true,
-              member: {
-                select: {
-                  id: true,
-                  discordAvatar: true,
-                  discordName: true,
-                  discordId: true,
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  });
+  const tournaments = await db.tournamentsWithInviteCodes(tournamentNameForUrl);
 
   const tournament = tournaments.find(
     (tournament) =>
@@ -135,42 +99,7 @@ export async function findTournamentWithInviteCodes({
   organizationNameForUrl: string;
   tournamentNameForUrl: string;
 }) {
-  const tournaments = await db.tournament.findMany({
-    where: {
-      nameForUrl: tournamentNameForUrl.toLowerCase(),
-    },
-    select: {
-      startTime: true,
-      organizer: {
-        select: {
-          nameForUrl: true,
-        },
-      },
-      mapPool: {
-        select: {
-          mode: true,
-          name: true,
-        },
-      },
-      teams: {
-        select: {
-          name: true,
-          inviteCode: true,
-          members: {
-            select: {
-              captain: true,
-              member: {
-                select: {
-                  discordName: true,
-                  id: true,
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  });
+  const tournaments = await db.tournamentsWithInviteCodes(tournamentNameForUrl);
 
   const result = tournaments.find(
     (tournament) =>
@@ -182,29 +111,7 @@ export async function findTournamentWithInviteCodes({
   return result;
 }
 
-export function createTournamentTeam({
-  userId,
-  teamName,
-  tournamentId,
-}: {
-  userId: string;
-  teamName: string;
-  tournamentId: string;
-}) {
-  return db.tournamentTeam.create({
-    data: {
-      name: teamName.trim(),
-      tournamentId,
-      members: {
-        create: {
-          memberId: userId,
-          tournamentId,
-          captain: true,
-        },
-      },
-    },
-  });
-}
+export const createTournamentTeam = db.createTournamentTeam;
 
 export async function joinTeamViaInviteCode({
   tournamentId,
@@ -215,10 +122,7 @@ export async function joinTeamViaInviteCode({
   inviteCode: string;
   userId: string;
 }) {
-  const tournament = await db.tournament.findUnique({
-    where: { id: tournamentId },
-    include: { teams: { include: { members: true } } },
-  });
+  const tournament = await db.tournamentById(tournamentId);
 
   if (!tournament) throw new Response("Invalid tournament id", { status: 400 });
 
@@ -238,27 +142,13 @@ export async function joinTeamViaInviteCode({
   )!.memberId;
 
   return Promise.all([
-    db.tournamentTeamMember.create({
-      data: {
-        tournamentId,
-        teamId: tournamentTeamToJoin.id,
-        memberId: userId,
-      },
+    db.createTournamentTeamMember({
+      teamId: tournamentTeamToJoin.id,
+      userId,
+      tournamentId,
     }),
     // TODO: this could also be put to queue and scheduled for later
-    db.trustRelationships.upsert({
-      where: {
-        trustGiverId_trustReceiverId: {
-          trustGiverId: userId,
-          trustReceiverId,
-        },
-      },
-      create: {
-        trustGiverId: userId,
-        trustReceiverId,
-      },
-      update: {},
-    }),
+    db.upsertTrustRelationship({ trustReceiverId, trustGiverId: userId }),
   ]);
 }
 
@@ -271,10 +161,7 @@ export async function putPlayerToTeam({
   captainId: string;
   newPlayerId: string;
 }) {
-  const tournamentTeam = await db.tournamentTeam.findUnique({
-    where: { id: teamId },
-    include: { tournament: true, members: true },
-  });
+  const tournamentTeam = await db.tournamentTeamById(teamId);
 
   if (!tournamentTeam) throw new Response("Invalid team id", { status: 400 });
 
@@ -292,12 +179,10 @@ export async function putPlayerToTeam({
     throw new Response("Not captain of the team", { status: 401 });
   }
 
-  return db.tournamentTeamMember.create({
-    data: {
-      tournamentId: tournamentTeam.tournament.id,
-      teamId,
-      memberId: newPlayerId,
-    },
+  return db.createTournamentTeamMember({
+    tournamentId: tournamentTeam.tournament.id,
+    teamId,
+    userId: newPlayerId,
   });
 }
 
@@ -314,10 +199,7 @@ export async function removePlayerFromTeam({
     throw new Response("Can't remove captain", { status: 400 });
   }
 
-  const tournamentTeam = await db.tournamentTeam.findUnique({
-    where: { id: teamId },
-    include: { tournament: true, members: true },
-  });
+  const tournamentTeam = await db.tournamentTeamById(teamId);
 
   if (!tournamentTeam) throw new Response("Invalid team id", { status: 400 });
   if (tournamentTeam.checkedInTime) {
@@ -333,13 +215,9 @@ export async function removePlayerFromTeam({
     throw new Response("Not captain of the team", { status: 401 });
   }
 
-  return db.tournamentTeamMember.delete({
-    where: {
-      memberId_tournamentId: {
-        memberId: playerId,
-        tournamentId: tournamentTeam.tournament.id,
-      },
-    },
+  return db.deleteTournamentTeamMember({
+    memberId: playerId,
+    tournamentId: tournamentTeam.tournament.id,
   });
 }
 
@@ -350,10 +228,7 @@ export async function checkIn({
   teamId: string;
   userId: string;
 }) {
-  const tournamentTeam = await db.tournamentTeam.findUnique({
-    where: { id: teamId },
-    include: { tournament: { include: { organizer: true } }, members: true },
-  });
+  const tournamentTeam = await db.tournamentTeamById(teamId);
 
   if (!tournamentTeam) throw new Response("Invalid team id", { status: 400 });
 
@@ -383,14 +258,7 @@ export async function checkIn({
 
   // TODO: fail if tournament has started
 
-  return db.tournamentTeam.update({
-    where: {
-      id: teamId,
-    },
-    data: {
-      checkedInTime: new Date(),
-    },
-  });
+  return db.updateTeamCheckIn(teamId);
 }
 
 export async function checkOut({
@@ -400,10 +268,7 @@ export async function checkOut({
   teamId: string;
   userId: string;
 }) {
-  const tournamentTeam = await db.tournamentTeam.findUnique({
-    where: { id: teamId },
-    include: { tournament: { include: { organizer: true } }, members: true },
-  });
+  const tournamentTeam = await db.tournamentTeamById(teamId);
   if (!tournamentTeam) throw new Response("Invalid team id", { status: 400 });
   if (
     !isTournamentAdmin({
@@ -416,14 +281,7 @@ export async function checkOut({
 
   // TODO: fail if tournament has started
 
-  return db.tournamentTeam.update({
-    where: {
-      id: teamId,
-    },
-    data: {
-      checkedInTime: null,
-    },
-  });
+  return db.updateTeamCheckOut(teamId);
 }
 
 export async function updateSeeds({
@@ -435,10 +293,7 @@ export async function updateSeeds({
   userId: string;
   newSeeds: string[];
 }) {
-  const tournament = await db.tournament.findUnique({
-    where: { id: tournamentId },
-    include: { organizer: true },
-  });
+  const tournament = await db.tournamentById(tournamentId);
   if (!tournament) throw new Response("Invalid tournament id", { status: 400 });
   if (
     !isTournamentAdmin({
@@ -450,13 +305,5 @@ export async function updateSeeds({
   }
 
   // TODO: fail if tournament has started
-
-  return db.tournament.update({
-    where: {
-      id: tournamentId,
-    },
-    data: {
-      seeds: newSeeds,
-    },
-  });
+  return db.updateTournamentSeeds({ tournamentId, seeds: newSeeds });
 }
