@@ -20,7 +20,8 @@ import {
   putPlayerToTeam,
   removePlayerFromTeam,
 } from "~/services/tournament";
-import { getTrustingUsers, GetTrustingUsersI } from "~/services/user";
+import { getTrustingUsers } from "~/services/user";
+import type { FindManyByTrustReceiverId } from "~/models/TrustRelationship";
 import styles from "~/styles/tournament-manage-roster.css";
 import { formDataFromRequest, requireUser } from "~/utils";
 import { useBaseURL, useIsSubmitting, useTimeoutState } from "~/utils/hooks";
@@ -85,7 +86,7 @@ export const action: ActionFunction = async ({
 
 type Data = {
   ownTeam: Prisma.PromiseReturnType<typeof ownTeamWithInviteCode>;
-  trustingUsers: GetTrustingUsersI;
+  trustingUsers: FindManyByTrustReceiverId;
 };
 
 const typedJson = (args: Data) => json(args);

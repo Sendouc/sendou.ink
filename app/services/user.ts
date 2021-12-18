@@ -1,7 +1,6 @@
-import type { Prisma } from ".prisma/client";
 import type { Strategy as DiscordStrategy } from "passport-discord";
-import type { Serialized } from "~/utils";
-import { db } from "../utils/db.server";
+import * as TrustRelationship from "~/models/TrustRelationship";
+import * as User from "~/models/User";
 
 export async function upsertUser({
   loggedInUser,
@@ -10,73 +9,45 @@ export async function upsertUser({
   loggedInUser: DiscordStrategy.Profile;
   refreshToken: string;
 }) {
-  return db.user.upsert({
-    create: {
-      discordId: loggedInUser.id,
-      discordName: loggedInUser.username,
-      discordDiscriminator: loggedInUser.discriminator,
-      discordAvatar: loggedInUser.avatar,
-      discordRefreshToken: refreshToken,
-      ...parseConnections(loggedInUser.connections),
-    },
-    update: {
-      discordName: loggedInUser.username,
-      discordDiscriminator: loggedInUser.discriminator,
-      discordAvatar: loggedInUser.avatar,
-      discordRefreshToken: refreshToken,
-      ...parseConnections(loggedInUser.connections),
-    },
-    where: {
-      discordId: loggedInUser.id,
-    },
+  return User.upsert({
+    discordId: loggedInUser.id,
+    discordName: loggedInUser.username,
+    discordDiscriminator: loggedInUser.discriminator,
+    discordAvatar: loggedInUser.avatar,
+    discordRefreshToken: refreshToken,
+    connections: parseConnections(),
   });
-}
 
-function parseConnections(
-  connections: DiscordStrategy.ConnectionInfo[] | undefined
-) {
-  if (!connections) return null;
+  function parseConnections() {
+    if (!loggedInUser.connections) return null;
 
-  const result: {
-    twitch?: string;
-    twitter?: string;
-    youtubeId?: string;
-    youtubeName?: string;
-  } = {};
+    const result: {
+      twitch?: string;
+      twitter?: string;
+      youtubeId?: string;
+      youtubeName?: string;
+    } = {};
 
-  for (const connection of connections) {
-    if (connection.visibility !== 1 || !connection.verified) continue;
+    for (const connection of loggedInUser.connections) {
+      if (connection.visibility !== 1 || !connection.verified) continue;
 
-    switch (connection.type) {
-      case "twitch":
-        result.twitch = connection.name;
-        break;
-      case "twitter":
-        result.twitter = connection.name;
-        break;
-      case "youtube":
-        result.youtubeId = connection.id;
-        result.youtubeName = connection.name;
+      switch (connection.type) {
+        case "twitch":
+          result.twitch = connection.name;
+          break;
+        case "twitter":
+          result.twitter = connection.name;
+          break;
+        case "youtube":
+          result.youtubeId = connection.id;
+          result.youtubeName = connection.name;
+      }
     }
+
+    return result;
   }
-
-  return result;
 }
-
-export type GetTrustingUsersI = Serialized<
-  Prisma.PromiseReturnType<typeof getTrustingUsers>
->;
 
 export function getTrustingUsers(userId: string) {
-  return db.trustRelationships.findMany({
-    where: { trustReceiverId: userId },
-    select: {
-      trustGiver: {
-        select: {
-          id: true,
-          discordName: true,
-        },
-      },
-    },
-  });
+  return TrustRelationship.findManyByTrustReceiverId(userId);
 }

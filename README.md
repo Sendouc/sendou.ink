@@ -19,10 +19,13 @@ sendou.ink/
 ├── app/
 │   ├── components/ -- Components shared between many routes
 │   ├── core/ -- Core business logic
+│   ├── hooks/ -- React hooks
+│   ├── models/ -- Calls to database
 │   ├── routes/ -- Routes see: https://remix.run/docs/en/v1/guides/routing
 │   │   └── api/ -- API routes that don't belong to any one page / situations when one route has many APIs
-│   ├── services/ -- Functions that handle all the interactions with the DB but also can throw HTTP errors
+│   ├── services/ -- Functions that loaders etc. call that typically work with multiple models
 │   ├── styles/ -- All .css files of the project for styling
+│   ├── utils/ -- Random helper functions used in many places
 │   └── constants.ts -- Global constants of the projects
 ├── cypress/ -- see: https://docs.cypress.io/guides/core-concepts/writing-and-organizing-tests#Folder-structure
 ├── prisma/ -- Prisma related files
@@ -54,7 +57,7 @@ You can give a variation as a flag to the seeding script changing what exactly i
 - [x] Make description mandatory + overview tab
 - [x] Captain can check in
 - [x] Admin can check teams in / out
-- [ ] Migrate to \*.prisma.ts
+- [x] Migrate to \*.prisma.ts
 - [ ] Admin can drop people out (show on bracket somehow that they dropped)
 - [ ] Admin can change team captain
 - [x] Admin can randomize and rerandomize maps
