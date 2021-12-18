@@ -4,7 +4,7 @@ import session from "express-session";
 import cookieParser from "cookie-parser";
 import passport from "passport";
 import { Strategy as DiscordStrategy } from "passport-discord";
-import { upsertUser } from "../app/services/user";
+import { db } from "../app/utils/db.server";
 
 export function setUpAuth(app: Express): void {
   invariant(
@@ -30,7 +30,27 @@ export function setUpAuth(app: Express): void {
         scope: ["identify", "connections"],
       },
       function (_accessToken, refreshToken, loggedInUser, cb) {
-        upsertUser({ loggedInUser, refreshToken })
+        db.user
+          .upsert({
+            create: {
+              discordId: loggedInUser.id,
+              discordName: loggedInUser.username,
+              discordDiscriminator: loggedInUser.discriminator,
+              discordAvatar: loggedInUser.avatar,
+              discordRefreshToken: refreshToken,
+              ...parseConnections(),
+            },
+            update: {
+              discordName: loggedInUser.username,
+              discordDiscriminator: loggedInUser.discriminator,
+              discordAvatar: loggedInUser.avatar,
+              discordRefreshToken: refreshToken,
+              ...parseConnections(),
+            },
+            where: {
+              discordId: loggedInUser.id,
+            },
+          })
           .then((user) => {
             return cb(null, {
               id: user.id,
@@ -39,6 +59,35 @@ export function setUpAuth(app: Express): void {
             });
           })
           .catch((err) => cb(err));
+
+        function parseConnections() {
+          if (!loggedInUser.connections) return null;
+
+          const result: {
+            twitch?: string;
+            twitter?: string;
+            youtubeId?: string;
+            youtubeName?: string;
+          } = {};
+
+          for (const connection of loggedInUser.connections) {
+            if (connection.visibility !== 1 || !connection.verified) continue;
+
+            switch (connection.type) {
+              case "twitch":
+                result.twitch = connection.name;
+                break;
+              case "twitter":
+                result.twitter = connection.name;
+                break;
+              case "youtube":
+                result.youtubeId = connection.id;
+                result.youtubeName = connection.name;
+            }
+          }
+
+          return result;
+        }
       }
     )
   );
