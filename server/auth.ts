@@ -6,6 +6,12 @@ import passport from "passport";
 import { Strategy as DiscordStrategy } from "passport-discord";
 import { db } from "../app/utils/db.server";
 
+declare module "express-session" {
+  export interface SessionData {
+    returnTo?: string;
+  }
+}
+
 export function setUpAuth(app: Express): void {
   invariant(
     process.env.DISCORD_CLIENT_ID,
@@ -111,13 +117,30 @@ export function setUpAuth(app: Express): void {
   );
   app.use(passport.initialize());
   app.use(passport.session());
-  app.post("/auth/discord", passport.authenticate("discord"));
-  app.get(
-    "/auth/discord/callback",
-    passport.authenticate("discord", {
+
+  app.post("/auth/discord", (req, res) => {
+    const returnTo = req.query.origin ?? req.header("Referer");
+    if (returnTo) {
+      invariant(typeof returnTo === "string", "returnTo is not string");
+      req.session.returnTo = returnTo;
+    }
+    return passport.authenticate("discord")(req, res);
+  });
+  app.get("/auth/discord/callback", (req, res) => {
+    const returnTo = req.session.returnTo ?? process.env.FRONT_PAGE_URL;
+    if (req.session.returnTo) {
+      delete req.session.returnTo;
+    }
+    return passport.authenticate("discord", {
       failureRedirect: "/login",
-      // TODO: fix for prod + redirect to same page
-      successRedirect: "http://localhost:3000",
-    })
-  );
+      successRedirect: returnTo,
+    })(req, res);
+  });
+
+  app.use(function (req, _res, next) {
+    if (req.session.returnTo) {
+      delete req.session.returnTo;
+    }
+    next();
+  });
 }

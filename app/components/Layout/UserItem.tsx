@@ -1,9 +1,11 @@
+import { useLocation } from "react-router";
+import { getLogInUrl } from "~/utils";
 import { useUser } from "~/utils/hooks";
 import { DiscordIcon } from "../icons/Discord";
 
-// TODO: redirect to same page on login
 export function UserItem() {
   const user = useUser();
+  const location = useLocation();
 
   if (user)
     return (
@@ -14,7 +16,7 @@ export function UserItem() {
     );
 
   return (
-    <form action="/auth/discord" method="post" data-cy="log-in-form">
+    <form action={getLogInUrl(location)} method="post" data-cy="log-in-form">
       <button
         type="submit"
         className="layout__log-in-button"

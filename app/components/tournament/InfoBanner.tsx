@@ -3,6 +3,7 @@ import { DiscordIcon } from "~/components/icons/Discord";
 import { TwitterIcon } from "~/components/icons/Twitter";
 import { resolveTournamentFormatString } from "~/core/tournament/bracket";
 import { FindTournamentByNameForUrlI } from "~/services/tournament";
+import { getLogInUrl } from "~/utils";
 import { useUser } from "~/utils/hooks";
 
 export function InfoBanner() {
@@ -106,10 +107,11 @@ function dateYYYYMMDD(date: string) {
 function InfoBannerActionButton() {
   const data = useLoaderData<FindTournamentByNameForUrlI>();
   const user = useUser();
+  const location = useLocation();
 
   if (!user) {
     return (
-      <form action="/auth/discord" method="post">
+      <form action={getLogInUrl(location)} method="post">
         <button
           className="info-banner__action-button"
           data-cy="log-in-to-join-button"

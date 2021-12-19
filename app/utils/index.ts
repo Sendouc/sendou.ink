@@ -1,5 +1,6 @@
 import { json } from "remix";
 import invariant from "tiny-invariant";
+import { useLocation } from "remix";
 
 export const makeTitle = (endOfTitle?: string) =>
   endOfTitle ? `sendou.ink | ${endOfTitle}` : "sendou.ink";
@@ -20,6 +21,11 @@ export const getUser = (ctx: any) => {
   const user = ctx.user;
 
   return user as LoggedInUser;
+};
+
+/** Get link to log in with query param set as current page */
+export const getLogInUrl = (location: ReturnType<typeof useLocation>) => {
+  return `/auth/discord?origin=${encodeURIComponent(location.pathname)}`;
 };
 
 /** Get fields from `request.formData()`. Throw an error if the formData doesn't contain a requested field.  */
