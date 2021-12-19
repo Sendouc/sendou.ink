@@ -2,11 +2,12 @@ import { json } from "remix";
 import invariant from "tiny-invariant";
 import { useLocation } from "remix";
 
-export const makeTitle = (endOfTitle?: string) =>
-  endOfTitle ? `sendou.ink | ${endOfTitle}` : "sendou.ink";
+export function makeTitle(endOfTitle?: string) {
+  return endOfTitle ? `sendou.ink | ${endOfTitle}` : "sendou.ink";
+}
 
 /** Get logged in user from context. Throws with 401 error if no user found. */
-export const requireUser = (ctx: any) => {
+export function requireUser(ctx: any) {
   const user = ctx.user;
 
   if (!user) {
@@ -14,28 +15,28 @@ export const requireUser = (ctx: any) => {
   }
 
   return user as NonNullable<LoggedInUser>;
-};
+}
 
 /** Get logged in user from context. Doesn't throw. */
-export const getUser = (ctx: any) => {
+export function getUser(ctx: any) {
   const user = ctx.user;
 
   return user as LoggedInUser;
-};
+}
 
 /** Get link to log in with query param set as current page */
-export const getLogInUrl = (location: ReturnType<typeof useLocation>) => {
+export function getLogInUrl(location: ReturnType<typeof useLocation>) {
   return `/auth/discord?origin=${encodeURIComponent(location.pathname)}`;
-};
+}
 
 /** Get fields from `request.formData()`. Throw an error if the formData doesn't contain a requested field.  */
-export const formDataFromRequest = async <T extends string>({
+export async function formDataFromRequest<T extends string>({
   request,
   fields,
 }: {
   request: Request;
   fields: T[];
-}): Promise<Record<T, string>> => {
+}): Promise<Record<T, string>> {
   const formData = await request.formData();
   let result: Partial<Record<T, string>> = {};
 
@@ -48,7 +49,7 @@ export const formDataFromRequest = async <T extends string>({
   }
 
   return result as Record<T, string>;
-};
+}
 
 export type LoggedInUser = {
   id: string;
