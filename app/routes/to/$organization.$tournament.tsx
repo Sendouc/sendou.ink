@@ -1,6 +1,5 @@
 // TODO: 404 page that shows other tournaments by the organization
 
-import classNames from "classnames";
 import {
   LinksFunction,
   LoaderFunction,
@@ -8,7 +7,6 @@ import {
   NavLink,
   Outlet,
   useLoaderData,
-  useLocation,
 } from "remix";
 import invariant from "tiny-invariant";
 import { ActionSection } from "~/components/tournament/ActionSection";
@@ -53,15 +51,10 @@ export const meta: MetaFunction = (props) => {
 
 export default function TournamentPage() {
   const data = useLoaderData<FindTournamentByNameForUrlI>();
-  const location = useLocation();
   const user = useUser();
 
-  const displayNavLinks = ["register", "manage-roster", "join-team"].every(
-    (urlPart) => !location.pathname.endsWith(urlPart)
-  );
-
   const navLinks = (() => {
-    const result: { adminOnly?: boolean; code: string; text: string }[] = [
+    const result: { code: string; text: string }[] = [
       { code: "", text: "Overview" },
       { code: "map-pool", text: "Map Pool" },
       { code: "teams", text: `Teams (${data.teams.length})` },
@@ -76,10 +69,11 @@ export default function TournamentPage() {
       }
     }
 
+    // TODO: maybe some visual effect for admin only tabs?
     if (isTournamentAdmin({ userId: user?.id, organization: data.organizer })) {
-      result.push({ code: "seeds", text: "Seeds", adminOnly: true });
-      result.push({ code: "edit", text: "Edit", adminOnly: true });
-      result.push({ code: "start", text: "Start", adminOnly: true });
+      result.push({ code: "seeds", text: "Seeds" });
+      result.push({ code: "edit", text: "Edit" });
+      result.push({ code: "start", text: "Start" });
     }
 
     return result;
@@ -93,44 +87,37 @@ export default function TournamentPage() {
           "--tournaments-background": data.bannerBackground,
           "--tournaments-text": data.CSSProperties.text,
           "--tournaments-text-transparent": data.CSSProperties.textTransparent,
+          // todo: could make a TS helper type for this that checks for leading --
         } as Record<string, string>
       }
     >
       <InfoBanner />
-      <ActionSection />
       <div className="tournament__container__spacer" />
-      {/* TODO: add scrolling icon */}
       <div className="tournament__links-overflower">
-        <div
-          style={{ "--tabs-count": navLinks.length } as any}
-          className="tournament__links-container"
-        >
-          {navLinks.map(({ code, text, adminOnly }) => (
-            <NavLink
-              key={code}
-              className="tournament__nav-link"
-              to={code}
-              data-cy={`${code}-nav-link`}
-              prefetch="intent"
-              end
-            >
-              {isTournamentAdmin({
-                userId: user?.id,
-                organization: data.organizer,
-              }) && (
-                <div
-                  className={classNames("tournament__nav-link__admin-text", {
-                    "visibility-hidden": !adminOnly,
-                  })}
-                >
-                  ADMIN
-                </div>
-              )}
-              <span>{text}</span>
-            </NavLink>
-          ))}
+        <div className="tournament__links-border">
+          <div
+            style={{ "--tabs-count": navLinks.length } as any}
+            className="tournament__links-container"
+          >
+            {navLinks.map(({ code, text }) => (
+              // TODO: on mobile keep the active link in center
+              <NavLink
+                key={code}
+                className="tournament__nav-link"
+                to={code}
+                data-cy={`${code}-nav-link`}
+                prefetch="intent"
+                end
+              >
+                <span>{text}</span>
+              </NavLink>
+            ))}
+          </div>
         </div>
       </div>
+      <div className="tournament__container__spacer" />
+      <ActionSection />
+      <div className="tournament__outlet-container"></div>
       <Outlet />
     </div>
   );

@@ -7,13 +7,12 @@
 }
 
 .tournament__container__spacer {
-  margin-bottom: var(--s-6);
+  margin-bottom: var(--s-3);
 }
 
 .tournament__action-section {
   width: 100%;
   padding: var(--s-1-5);
-  margin-top: var(--s-3);
   background: var(--tournaments-background);
   border-radius: var(--rounded);
 }
@@ -44,51 +43,51 @@
   overflow-x: auto;
 }
 
+.tournament__links-border {
+  display: inline-block;
+  min-width: 100%;
+  padding: var(--s-1-5);
+  background: var(--tournaments-background);
+  border-radius: var(--rounded);
+}
+
 .tournament__links-container {
   display: grid;
-  gap: var(--s-1);
+  border-radius: var(--rounded);
   grid-template-columns: repeat(var(--tabs-count), minmax(100px, 1fr));
-  padding-block-end: var(--s-8);
-  padding-inline-end: var(--s-4);
   place-items: center;
 }
 
 .tournament__nav-link {
   all: unset;
-  border-radius: var(--rounded);
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  background-color: var(--bg-lighter);
+  color: var(--text);
   cursor: pointer;
   font-size: var(--fonts-sm);
+  padding-block: var(--s-1-5);
 }
 
-.tournament__nav-link::after {
-  display: block;
-  width: 1.25rem;
-  height: 3px;
-  border-bottom: 3px solid transparent;
-  content: "";
-}
-
-.tournament__nav-link:hover::after {
-  border-color: var(--theme-transparent);
+.tournament__nav-link:first-of-type {
+  border-bottom-left-radius: var(--rounded);
+  border-top-left-radius: var(--rounded);
 }
 
 .tournament__nav-link:last-of-type {
-  padding-inline-end: var(--s-6);
+  border-bottom-right-radius: var(--rounded);
+  border-top-right-radius: var(--rounded);
+}
+
+.tournament__nav-link:hover {
+  font-weight: var(--bold);
 }
 
 .tournament__nav-link.active {
-  font-weight: bold;
-}
-
-.tournament__nav-link.active::after {
-  width: 1.25rem;
-  border-color: var(--theme);
-}
-
-.tournament__nav-link__admin-text {
-  color: var(--theme-secondary);
-  font-size: var(--fonts-xxs);
-  font-weight: var(--bold) !important;
+  background-color: transparent;
+  color: var(--tournaments-text);
+  font-weight: var(--bold);
 }
 
 .info-banner {
@@ -205,6 +204,11 @@
   transform: translateY(1px);
 }
 
+.tournament__outlet-container {
+  padding-block-start: var(--s-8);
+}
+
+/* separate .css file..? */
 .teams-tab {
   display: flex;
   flex-direction: column;

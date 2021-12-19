@@ -1,13 +1,5 @@
 import * as React from "react";
-import {
-  Links,
-  LiveReload,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-  useCatch,
-} from "remix";
+import { Links, LiveReload, Meta, Outlet, Scripts, useCatch } from "remix";
 import type { LinksFunction, LoaderFunction } from "remix";
 
 import resetStyles from "~/styles/reset.css";
@@ -61,7 +53,6 @@ function Document({
       </head>
       <body>
         {children}
-        <ScrollRestoration />
         <Scripts />
         {process.env.NODE_ENV === "development" && <LiveReload />}
       </body>

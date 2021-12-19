@@ -59,6 +59,7 @@ export const loader: LoaderFunction = async ({ params }) => {
   return typedJson({ initialState, mapPool: tournament.mapPool });
 };
 
+// TODO: component that shows a table of map, counts in the map pool, which rounds
 // TODO: handle warning if check-in has not concluded
 export default function StartBracketTab() {
   const args = useLoaderData<UseTournamentRoundsArgs>();
@@ -268,6 +269,7 @@ function RoundsCollection({
                     </Button>
                   </>
                 ) : (
+                  // TODO: should be at the bottom always
                   <Button
                     variant="minimal"
                     tiny

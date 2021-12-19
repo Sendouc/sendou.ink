@@ -118,7 +118,7 @@ export default function RegisterPage() {
   if (isAlreadyInTeam) return null;
 
   return (
-    <div className="tournament__register__container">
+    <div>
       <h2 className="tournament__register__header">Register now</h2>
       <div className="tournament__register__content">
         <Form method="post">

@@ -265,6 +265,7 @@ select::selection {
 }
 
 .four-zero-one__status-header {
+  /* TODO: css var */
   font-size: xx-large;
 }
 

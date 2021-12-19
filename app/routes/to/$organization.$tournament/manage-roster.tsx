@@ -214,4 +214,5 @@ function CopyToClipboardButton({
   );
 }
 
+// TODO: handle 404 (logged in but not registered)
 export const CatchBoundary = Catcher;
