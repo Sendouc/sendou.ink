@@ -133,7 +133,6 @@ function InfoBannerActionButton() {
     .some(({ member }) => member.id === user.id);
   if (alreadyRegistered) {
     return (
-      // TODO: no indicator when tabbing
       <Link
         to="manage-roster"
         className="info-banner__action-button"

@@ -84,6 +84,10 @@
   font-weight: var(--bold);
 }
 
+.tournament__nav-link:focus-visible {
+  background-color: var(--bg-lighter-transparent);
+}
+
 .tournament__nav-link.active {
   background-color: transparent;
   color: var(--tournaments-text);
@@ -183,6 +187,10 @@
   transform: translateY(1px);
 }
 
+.info-banner__icon-button:focus-visible {
+  outline: 2px solid var(--tournaments-text-transparent);
+}
+
 .info-banner__action-button {
   all: unset;
   display: inline-flex;
@@ -202,6 +210,10 @@
 
 .info-banner__action-button:active {
   transform: translateY(1px);
+}
+
+.info-banner__action-button:focus-visible {
+  outline: 2px solid var(--tournaments-text-transparent);
 }
 
 .tournament__outlet-container {
