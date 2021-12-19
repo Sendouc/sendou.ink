@@ -20,6 +20,7 @@ import {
 import styles from "~/styles/tournament-register.css";
 import { useUser } from "~/utils/hooks";
 import { requireUser } from "~/utils";
+import { Catcher } from "~/components/Catcher";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -159,3 +160,5 @@ export default function RegisterPage() {
     </div>
   );
 }
+
+export const CatchBoundary = Catcher;

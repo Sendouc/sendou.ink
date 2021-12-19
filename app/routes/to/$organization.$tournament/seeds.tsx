@@ -20,6 +20,7 @@ import { useFetcher, useMatches } from "remix";
 import invariant from "tiny-invariant";
 import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
+import { Catcher } from "~/components/Catcher";
 import { Draggable } from "~/components/Draggable";
 import { TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
 import { checkInHasStarted } from "~/core/tournament/utils";
@@ -276,3 +277,5 @@ function CheckInButton({ teamId }: { teamId: string }) {
     </fetcher.Form>
   );
 }
+
+export const CatchBoundary = Catcher;

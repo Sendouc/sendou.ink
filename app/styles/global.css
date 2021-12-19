@@ -260,6 +260,28 @@ select::selection {
   fill: var(--theme-success);
 }
 
+.four-zero-one__container {
+  text-align: center;
+}
+
+.four-zero-one__status-header {
+  font-size: xx-large;
+}
+
+.four-zero-one__link {
+  color: var(--theme-secondary);
+}
+
+.four-zero-one__paragraph {
+  display: flex;
+  justify-content: center;
+  gap: var(--s-1);
+}
+
+.four-zero-one__log-in-button {
+  font-size: var(--fonts-md);
+}
+
 /* Utility classes */
 
 .visibility-hidden {

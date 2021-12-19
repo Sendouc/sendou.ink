@@ -25,6 +25,7 @@ import type { FindManyByTrustReceiverId } from "~/models/TrustRelationship";
 import styles from "~/styles/tournament-manage-roster.css";
 import { formDataFromRequest, requireUser } from "~/utils";
 import { useBaseURL, useIsSubmitting, useTimeoutState } from "~/utils/hooks";
+import { Catcher } from "~/components/Catcher";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -212,3 +213,5 @@ function CopyToClipboardButton({
     </button>
   );
 }
+
+export const CatchBoundary = Catcher;

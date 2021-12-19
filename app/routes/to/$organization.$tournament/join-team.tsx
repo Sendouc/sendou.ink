@@ -9,6 +9,7 @@ import {
 } from "remix";
 import invariant from "tiny-invariant";
 import { Button } from "~/components/Button";
+import { Catcher } from "~/components/Catcher";
 import {
   FindTournamentByNameForUrlI,
   findTournamentWithInviteCodes,
@@ -203,3 +204,5 @@ function Contents({ data }: { data: Data }) {
       );
   }
 }
+
+export const CatchBoundary = Catcher;

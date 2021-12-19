@@ -5,6 +5,7 @@ import { json, useLoaderData } from "remix";
 import invariant from "tiny-invariant";
 import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
+import { Catcher } from "~/components/Catcher";
 import { modesShort, modesShortToLong } from "~/constants";
 import { eliminationBracket } from "~/core/tournament/algorithms";
 import {
@@ -299,3 +300,5 @@ function RoundsCollection({
       }, {});
   }
 }
+
+export const CatchBoundary = Catcher;

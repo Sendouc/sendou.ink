@@ -100,39 +100,37 @@ export default function TournamentPage() {
       <ActionSection />
       <div className="tournament__container__spacer" />
       {/* TODO: add scrolling icon */}
-      {displayNavLinks && (
-        <div className="tournament__links-overflower">
-          <div
-            style={{ "--tabs-count": navLinks.length } as any}
-            className="tournament__links-container"
-          >
-            {navLinks.map(({ code, text, adminOnly }) => (
-              <NavLink
-                key={code}
-                className="tournament__nav-link"
-                to={code}
-                data-cy={`${code}-nav-link`}
-                prefetch="intent"
-                end
-              >
-                {isTournamentAdmin({
-                  userId: user?.id,
-                  organization: data.organizer,
-                }) && (
-                  <div
-                    className={classNames("tournament__nav-link__admin-text", {
-                      "visibility-hidden": !adminOnly,
-                    })}
-                  >
-                    ADMIN
-                  </div>
-                )}
-                <span>{text}</span>
-              </NavLink>
-            ))}
-          </div>
+      <div className="tournament__links-overflower">
+        <div
+          style={{ "--tabs-count": navLinks.length } as any}
+          className="tournament__links-container"
+        >
+          {navLinks.map(({ code, text, adminOnly }) => (
+            <NavLink
+              key={code}
+              className="tournament__nav-link"
+              to={code}
+              data-cy={`${code}-nav-link`}
+              prefetch="intent"
+              end
+            >
+              {isTournamentAdmin({
+                userId: user?.id,
+                organization: data.organizer,
+              }) && (
+                <div
+                  className={classNames("tournament__nav-link__admin-text", {
+                    "visibility-hidden": !adminOnly,
+                  })}
+                >
+                  ADMIN
+                </div>
+              )}
+              <span>{text}</span>
+            </NavLink>
+          ))}
         </div>
-      )}
+      </div>
       <Outlet />
     </div>
   );
