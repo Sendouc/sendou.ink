@@ -6,6 +6,7 @@ import {
   useMatches,
   useNavigate,
   useTransition,
+  useLocation,
 } from "remix";
 import invariant from "tiny-invariant";
 import { Button } from "~/components/Button";
@@ -16,7 +17,7 @@ import {
   joinTeamViaInviteCode,
 } from "~/services/tournament";
 import styles from "~/styles/tournament-join-team.css";
-import { getUser, requireUser } from "~/utils";
+import { getLogInUrl, getUser, requireUser } from "~/utils";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -131,6 +132,7 @@ export default function JoinTeamPage() {
 }
 
 function Contents({ data }: { data: Data }) {
+  const location = useLocation();
   const navigate = useNavigate();
   const [, parentRoute] = useMatches();
   const parentRouteData = parentRoute.data as FindTournamentByNameForUrlI;
@@ -159,7 +161,17 @@ function Contents({ data }: { data: Data }) {
         </>
       );
     case "LOG_IN":
-      return <>Please log in to join this team.</>;
+      return (
+        <form action={getLogInUrl(location)} method="post">
+          <p className="button-text-paragraph">
+            Please{" "}
+            <Button type="submit" variant="minimal">
+              log in
+            </Button>{" "}
+            to join this team.
+          </p>
+        </form>
+      );
     case "ALREADY_JOINED":
       return (
         <>You are already a member of {data.teamName} for this tournament.</>

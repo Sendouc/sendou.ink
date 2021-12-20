@@ -24,13 +24,9 @@ export function Catcher() {
             </p>
           ) : (
             <form action={getLogInUrl(location)} method="post">
-              <p className="four-zero-one__paragraph">
+              <p className="button-text-paragraph">
                 You should try{" "}
-                <Button
-                  className="four-zero-one__log-in-button"
-                  type="submit"
-                  variant="minimal"
-                >
+                <Button type="submit" variant="minimal">
                   logging in
                 </Button>
               </p>

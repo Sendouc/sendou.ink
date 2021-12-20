@@ -273,13 +273,13 @@ select::selection {
   color: var(--theme-secondary);
 }
 
-.four-zero-one__paragraph {
+.button-text-paragraph {
   display: flex;
   justify-content: center;
   gap: var(--s-1);
 }
 
-.four-zero-one__log-in-button {
+.button-text-paragraph > button {
   font-size: var(--fonts-md);
 }
 
