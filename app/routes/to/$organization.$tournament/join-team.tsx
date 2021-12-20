@@ -124,7 +124,7 @@ export default function JoinTeamPage() {
   const data = useLoaderData<Data>();
 
   return (
-    <div className="tournament__join-team">
+    <div>
       <Contents data={data} />
     </div>
   );
@@ -164,6 +164,7 @@ function Contents({ data }: { data: Data }) {
       return (
         <>You are already a member of {data.teamName} for this tournament.</>
       );
+    // TODO: when logging in invite code disappears
     case "OK":
       return (
         <div>
