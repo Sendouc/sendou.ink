@@ -1,4 +1,4 @@
-import { useLocation } from "react-router";
+import { useLocation } from "remix";
 import { getLogInUrl } from "~/utils";
 import { useUser } from "~/utils/hooks";
 import { DiscordIcon } from "../icons/Discord";

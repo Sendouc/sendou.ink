@@ -26,7 +26,9 @@ export function getUser(ctx: any) {
 
 /** Get link to log in with query param set as current page */
 export function getLogInUrl(location: ReturnType<typeof useLocation>) {
-  return `/auth/discord?origin=${encodeURIComponent(location.pathname)}`;
+  return `/auth/discord?origin=${encodeURIComponent(
+    location.pathname + location.search
+  )}`;
 }
 
 /** Get fields from `request.formData()`. Throw an error if the formData doesn't contain a requested field.  */
