@@ -1,4 +1,5 @@
 import invariant from "tiny-invariant";
+import { v4 as uuidv4 } from "uuid";
 
 /** Singe/Double Elimination bracket algorithm that handles byes
  * @link https://stackoverflow.com/a/59615574 */
@@ -195,8 +196,7 @@ function getBaseLog(x: number, y: number) {
 
 function createMatch(args: Omit<Match, "id">): Match {
   return {
-    // TODO: crypto.uuid
-    id: Math.random().toString(),
+    id: uuidv4(),
     ...args,
   };
 }
