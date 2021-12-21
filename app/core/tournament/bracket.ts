@@ -1,7 +1,10 @@
-import type { BracketType, Stage } from ".prisma/client";
+import type { BracketType, Stage, TeamOrder } from ".prisma/client";
 import invariant from "tiny-invariant";
 import { generateMapListForRounds } from "./mapList";
-import type { Bracket } from "./algorithms";
+import { Bracket, eliminationBracket } from "./algorithms";
+import type { UseTournamentRoundsState } from "../../hooks/useTournamentRounds/types";
+import { FindTournamentByNameForUrlI } from "../../services/tournament";
+import { TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "../../constants";
 
 export function participantCountToRoundsInfo({
   bracket,
@@ -120,12 +123,12 @@ export function countRounds(bracket: Bracket): EliminationBracket<number> {
 
   const losersMatchIds = new Set(bracket.losers.map((match) => match.id));
   let losers = 0;
-  let losersMatch = bracket.losers[bracket.losers.length - 1];
+  let losersMatch = bracket.losers[0];
 
   while (true) {
     losers++;
-    const match1 = losersMatch?.match1;
-    const match2 = losersMatch?.match2;
+    const match1 = losersMatch?.winnerDestinationMatch;
+    const match2 = losersMatch?.winnerDestinationMatch;
     if (match1 && losersMatchIds.has(match1.id)) {
       losersMatch = match1;
       continue;
@@ -166,6 +169,63 @@ export function resolveTournamentFormatString(
   return brackets[0].type === "DE"
     ? "Double Elimination"
     : "Single Elimination";
+}
+
+export function countParticipants(teams: FindTournamentByNameForUrlI["teams"]) {
+  return teams.reduce((acc, team) => {
+    if (!team.checkedInTime) return acc;
+    invariant(
+      team.members.length < TOURNAMENT_TEAM_ROSTER_MIN_SIZE,
+      `Team with id ${team.id} has too small roster: ${team.members.length}`
+    );
+
+    return acc + 1;
+  }, 0);
+}
+
+interface TournamentRoundForDB {
+  position: number;
+  stages: {
+    position: number;
+    stageId: number;
+  }[];
+  matches: {
+    id: string;
+    winnerDestinationMatchId?: string;
+    loserDestinationMatchId?: string;
+    participants: {
+      teamId: string;
+      order: TeamOrder;
+    };
+  }[];
+}
+export function tournamentRoundsForDB({
+  mapList,
+  participantCount,
+  bracketType,
+}: {
+  mapList: UseTournamentRoundsState["bracket"];
+  participantCount: number;
+  bracketType: BracketType;
+}): TournamentRoundForDB[] {
+  const rounds = eliminationBracket(participantCount, bracketType);
+  const result: TournamentRoundForDB[] = [];
+
+  for (const [i, side] of [rounds.winners, rounds.losers].entries()) {
+    const isWinners = i === 0;
+    for (const [roundI, round] of side.entries()) {
+      const position = isWinners ? roundI + 1 : -(roundI + 1);
+
+      const stagesRaw = mapList[isWinners ? "winners" : "losers"][roundI];
+      invariant(stagesRaw, "stagesRaw is undefined");
+      const stages = stagesRaw.mapList.map((stage, i) => ({
+        position: i + 1,
+        stageId: stage.id,
+      }));
+    }
+  }
+
+  return result;
 }
 
 export type EliminationBracket<T> = {

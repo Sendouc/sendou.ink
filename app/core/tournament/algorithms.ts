@@ -74,8 +74,6 @@ export function eliminationBracket(
     invariant(match2, "Unexpected no match2 in winners bracket");
 
     const winnersBracketMatch = createMatch({
-      match1,
-      match2,
       side: "winners",
     });
 
@@ -125,8 +123,6 @@ export function eliminationBracket(
     invariant(match2, "Unexpected no match2 in losers bracket");
 
     const losersMatch = createMatch({
-      match1,
-      match2,
       side: "losers",
     });
 
@@ -153,8 +149,6 @@ export function eliminationBracket(
 
   // Add final match and bracket reset
   const grandFinals = createMatch({
-    match1,
-    match2,
     side: "winners",
   });
 
@@ -164,8 +158,6 @@ export function eliminationBracket(
   bracket.winners.push(grandFinals);
 
   const bracketReset = createMatch({
-    match1: grandFinals,
-    match2: grandFinals,
     side: "winners",
   });
 
@@ -236,10 +228,6 @@ export interface Match {
   upperTeam?: TeamIdentifier;
   lowerTeam?: TeamIdentifier;
   winner?: TeamIdentifier;
-  /** Match that leads to this match */
-  match1?: Match;
-  /** Match that leads to this match */
-  match2?: Match;
   loserDestinationMatch?: Match;
   winnerDestinationMatch?: Match;
   side: EliminationBracketSide;

@@ -113,12 +113,16 @@ BracketPaths("Following losers", () => {
 
   let latest: Match = bracket16.winners[0];
   let rounds = 0;
+  let countWinnerDestNoLoserDest = 0;
   let roundIds = new Set();
   while (latest) {
     rounds++;
     roundIds.add(latest.id);
     if (!latest.winnerDestinationMatch && !latest.loserDestinationMatch) {
       break;
+    }
+    if (latest.winnerDestinationMatch && !latest.loserDestinationMatch) {
+      countWinnerDestNoLoserDest++;
     }
     latest = (latest.loserDestinationMatch ?? latest.winnerDestinationMatch)!;
   }
@@ -127,6 +131,7 @@ BracketPaths("Following losers", () => {
   assert.equal(roundIds.size, rounds);
 
   assert.equal(rounds, count.losers + 3); // 3 rounds of winners: first round, grand finals & bracket reset
+  assert.equal(countWinnerDestNoLoserDest, count.losers);
 });
 
 FillParticipantsWithNull("17", () => {
