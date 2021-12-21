@@ -10,6 +10,7 @@ import * as Tournament from "~/models/Tournament";
 import * as TournamentTeam from "~/models/TournamentTeam";
 import * as TournamentTeamMember from "~/models/TournamentTeamMember";
 import * as TrustRelationship from "~/models/TrustRelationship";
+import type { UseTournamentRoundsState } from "~/hooks/useTournamentRounds/types";
 
 export type FindTournamentByNameForUrlI = Serialized<
   Prisma.PromiseReturnType<typeof findTournamentByNameForUrl>
@@ -22,12 +23,10 @@ export async function findTournamentByNameForUrl({
   organizationNameForUrl: string;
   tournamentNameForUrl: string;
 }) {
-  const tournaments = await Tournament.findByNameForUrl(tournamentNameForUrl);
-
-  const result = tournaments.find(
-    (tournament) =>
-      tournament.organizer.nameForUrl === organizationNameForUrl.toLowerCase()
-  );
+  const result = await Tournament.findByNameForUrl({
+    tournamentNameForUrl,
+    organizationNameForUrl,
+  });
 
   if (!result) throw new Response("No tournament found", { status: 404 });
 
@@ -52,7 +51,9 @@ function discordInviteToUrl(discordInvite: string) {
   return `https://discord.com/invite/${discordInvite}`;
 }
 
-function addCSSProperties(tournament: Unpacked<Tournament.FindByNameForUrl>) {
+function addCSSProperties(
+  tournament: Unpacked<NonNullable<Tournament.FindByNameForUrl>>
+) {
   const { bannerTextHSLArgs, ...rest } = tournament;
 
   return {
@@ -119,6 +120,23 @@ export async function findTournamentWithInviteCodes({
 }
 
 export const createTournamentTeam = TournamentTeam.create;
+
+export async function createTournamentRounds({
+  organizationNameForUrl,
+  tournamentNameForUrl,
+  mapPool,
+}: {
+  organizationNameForUrl: string;
+  tournamentNameForUrl: string;
+  mapPool: UseTournamentRoundsState["bracket"];
+}) {
+  const tournament = await Tournament.findByNameForUrl({
+    organizationNameForUrl,
+    tournamentNameForUrl,
+  });
+
+  if (!tournament) throw new Response("No tournament found", { status: 404 });
+}
 
 export async function joinTeamViaInviteCode({
   tournamentId,

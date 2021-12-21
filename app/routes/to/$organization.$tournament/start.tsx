@@ -1,7 +1,7 @@
 import type { Mode, Stage } from ".prisma/client";
 import classNames from "classnames";
-import type { LinksFunction, LoaderFunction } from "remix";
-import { json, useLoaderData } from "remix";
+import type { ActionFunction, LinksFunction, LoaderFunction } from "remix";
+import { Form, json, redirect, useLoaderData } from "remix";
 import invariant from "tiny-invariant";
 import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
@@ -18,13 +18,39 @@ import type {
   UseTournamentRoundsArgs,
   UseTournamentRoundsState,
 } from "~/hooks/useTournamentRounds/types";
-import { findTournamentByNameForUrl } from "~/services/tournament";
+import {
+  createTournamentRounds,
+  findTournamentByNameForUrl,
+} from "~/services/tournament";
 import startBracketTabStylesUrl from "~/styles/tournament-start.css";
 
 // TODO: error if not admin AND keep the links available
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: startBracketTabStylesUrl }];
+};
+
+export const action: ActionFunction = async ({ request, params }) => {
+  const mapPoolString = (await request.formData()).get("map-pool");
+  invariant(typeof mapPoolString === "string", "Type of map pool not string");
+  const mapPool = JSON.parse(
+    mapPoolString
+  ) as UseTournamentRoundsState["bracket"];
+
+  const organizationNameForUrl = params.organization;
+  const tournamentNameForUrl = params.tournament;
+  invariant(organizationNameForUrl, "organizationNameForUrl is undefined");
+  invariant(tournamentNameForUrl, "tournamentNameForUrl is undefined");
+
+  await createTournamentRounds({
+    mapPool,
+    organizationNameForUrl,
+    tournamentNameForUrl,
+  });
+
+  return redirect(
+    `/to/${organizationNameForUrl}/${tournamentNameForUrl}/bracket`
+  );
 };
 
 const typedJson = (args: UseTournamentRoundsArgs) => json(args);
@@ -67,34 +93,42 @@ export default function StartBracketTab() {
     useTournamentRounds(args);
 
   return (
-    <div className="tournament__start__container">
-      <ActionButtons
-        dispatch={dispatch}
-        disabled={actionButtonsDisabled}
-        showAlert={showAlert}
-        position="top"
+    <Form method="post" className="width-100">
+      <input type="hidden" name="map-pool" value={JSON.stringify(bracket)} />
+      <input
+        type="hidden"
+        name="tournament-id"
+        value={JSON.stringify(bracket)}
       />
-      <div className="tournament__start__round-collections-container">
-        <RoundsCollection
-          side="winners"
+      <div className="tournament__start__container">
+        <ActionButtons
           dispatch={dispatch}
-          rounds={bracket.winners}
+          disabled={actionButtonsDisabled}
+          showAlert={showAlert}
+          position="top"
         />
-        {args.initialState.losers.length > 0 && (
+        <div className="tournament__start__round-collections-container">
           <RoundsCollection
-            side="losers"
+            side="winners"
             dispatch={dispatch}
-            rounds={bracket.losers}
+            rounds={bracket.winners}
           />
-        )}
+          {args.initialState.losers.length > 0 && (
+            <RoundsCollection
+              side="losers"
+              dispatch={dispatch}
+              rounds={bracket.losers}
+            />
+          )}
+        </div>
+        <ActionButtons
+          dispatch={dispatch}
+          disabled={actionButtonsDisabled}
+          showAlert={showAlert}
+          position="bottom"
+        />
       </div>
-      <ActionButtons
-        dispatch={dispatch}
-        disabled={actionButtonsDisabled}
-        showAlert={showAlert}
-        position="bottom"
-      />
-    </div>
+    </Form>
   );
 }
 
@@ -112,14 +146,20 @@ function ActionButtons({
   return (
     <>
       {position === "bottom" && showAlert && (
-        <Alert type="warning">
-          Save or cancel the round being edited to continue or regenerate maps
-        </Alert>
+        <Alert type="warning">Save or cancel the round being edited</Alert>
       )}
       <div className="tournament__start__action-buttons__container">
-        <Button>Preview bracket</Button>
+        <Button
+          type={disabled ? "button" : "submit"}
+          onClick={
+            disabled ? () => dispatch({ type: "SHOW_ALERT" }) : undefined
+          }
+        >
+          Start bracket
+        </Button>
         <Button
           variant="outlined"
+          type="button"
           onClick={() =>
             disabled
               ? dispatch({ type: "SHOW_ALERT" })
@@ -130,9 +170,7 @@ function ActionButtons({
         </Button>
       </div>
       {position === "top" && showAlert && (
-        <Alert type="warning">
-          Save or cancel the round being edited to continue or regenerate maps
-        </Alert>
+        <Alert type="warning">Save or cancel the round being edited</Alert>
       )}
     </>
   );

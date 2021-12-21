@@ -12,8 +12,14 @@ export function findById(id: string) {
 export type FindByNameForUrl = Prisma.PromiseReturnType<
   typeof findByNameForUrl
 >;
-export function findByNameForUrl(tournamentNameForUrl: string) {
-  return db.tournament.findMany({
+export async function findByNameForUrl({
+  tournamentNameForUrl,
+  organizationNameForUrl,
+}: {
+  tournamentNameForUrl: string;
+  organizationNameForUrl: string;
+}) {
+  const tournaments = await db.tournament.findMany({
     where: {
       nameForUrl: tournamentNameForUrl.toLowerCase(),
     },
@@ -71,12 +77,18 @@ export function findByNameForUrl(tournamentNameForUrl: string) {
       },
     },
   });
+
+  return tournaments.find(
+    (tournament) =>
+      tournament.organizer.nameForUrl === organizationNameForUrl.toLowerCase()
+  );
 }
 
 export type FindByNameForUrlWithInviteCodes = Prisma.PromiseReturnType<
   typeof findByNameForUrlWithInviteCodes
 >;
 
+// TODO: merge with above and don't repeat .find() logic
 export function findByNameForUrlWithInviteCodes(tournamentNameForUrl: string) {
   return db.tournament.findMany({
     where: {
