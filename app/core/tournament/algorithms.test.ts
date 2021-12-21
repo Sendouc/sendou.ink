@@ -6,10 +6,12 @@ import {
   Match,
   TeamIdentifier,
 } from "./algorithms";
+import { countRounds } from "./bracket";
 
 const AmountOfTeams = suite("Amount of teams");
 const Byes = suite("Byes");
 const Seeds = suite("Seeds");
+const BracketPaths = suite("Bracket path");
 const FillParticipantsWithNull = suite(
   "fillParticipantsWithNullTillPowerOfTwo()"
 );
@@ -81,6 +83,52 @@ Seeds("First and second seed are spread apart", () => {
   );
 });
 
+BracketPaths("Following winners", () => {
+  const bracket16 = eliminationBracket(16, "DE");
+  const count = countRounds(bracket16);
+
+  let latest: Match = bracket16.winners[0];
+  let rounds = 0;
+  let roundIds = new Set();
+  while (latest) {
+    rounds++;
+    roundIds.add(latest.id);
+    if (!latest.winnerDestinationMatch) {
+      break;
+    }
+    assert.equal(latest.side, "winners");
+    assert.ok(latest.loserDestinationMatch);
+    latest = latest.winnerDestinationMatch;
+  }
+
+  // no duplicate rounds
+  assert.equal(roundIds.size, rounds);
+
+  assert.equal(rounds, count.winners);
+});
+
+BracketPaths("Following losers", () => {
+  const bracket16 = eliminationBracket(16, "DE");
+  const count = countRounds(bracket16);
+
+  let latest: Match = bracket16.winners[0];
+  let rounds = 0;
+  let roundIds = new Set();
+  while (latest) {
+    rounds++;
+    roundIds.add(latest.id);
+    if (!latest.winnerDestinationMatch && !latest.loserDestinationMatch) {
+      break;
+    }
+    latest = (latest.loserDestinationMatch ?? latest.winnerDestinationMatch)!;
+  }
+
+  // no duplicate rounds
+  assert.equal(roundIds.size, rounds);
+
+  assert.equal(rounds, count.losers + 3); // 3 rounds of winners: first round, grand finals & bracket reset
+});
+
 FillParticipantsWithNull("17", () => {
   const participants: TeamIdentifier[] = new Array(17)
     .fill(null)
@@ -120,4 +168,5 @@ function teamWithBye(matches: Match[]) {
 AmountOfTeams.run();
 Byes.run();
 Seeds.run();
+BracketPaths.run();
 FillParticipantsWithNull.run();

@@ -1,5 +1,6 @@
 import invariant from "tiny-invariant";
 import { v4 as uuidv4 } from "uuid";
+import type { EliminationBracketSide } from "./bracket";
 
 /** Singe/Double Elimination bracket algorithm that handles byes
  * @link https://stackoverflow.com/a/59615574 */
@@ -57,6 +58,7 @@ export function eliminationBracket(
     const firstRoundMatch = createMatch({
       upperTeam,
       lowerTeam,
+      side: "winners",
     });
 
     matchesWQueue.push(firstRoundMatch);
@@ -74,7 +76,11 @@ export function eliminationBracket(
     const winnersBracketMatch = createMatch({
       match1,
       match2,
+      side: "winners",
     });
+
+    match1.winnerDestinationMatch = winnersBracketMatch;
+    match2.winnerDestinationMatch = winnersBracketMatch;
 
     matchesWQueue.push(winnersBracketMatch);
     bracket.winners.push(winnersBracketMatch);
@@ -121,7 +127,19 @@ export function eliminationBracket(
     const losersMatch = createMatch({
       match1,
       match2,
+      side: "losers",
     });
+
+    match1[
+      match1.side === "winners"
+        ? "loserDestinationMatch"
+        : "winnerDestinationMatch"
+    ] = losersMatch;
+    match2[
+      match2.side === "winners"
+        ? "loserDestinationMatch"
+        : "winnerDestinationMatch"
+    ] = losersMatch;
 
     matchesLQueue.push(losersMatch);
     bracket.losers.push(losersMatch);
@@ -137,13 +155,23 @@ export function eliminationBracket(
   const grandFinals = createMatch({
     match1,
     match2,
+    side: "winners",
   });
+
+  match1.winnerDestinationMatch = grandFinals;
+  match2.winnerDestinationMatch = grandFinals;
+
   bracket.winners.push(grandFinals);
 
   const bracketReset = createMatch({
     match1: grandFinals,
     match2: grandFinals,
+    side: "winners",
   });
+
+  grandFinals.winnerDestinationMatch = bracketReset;
+  grandFinals.loserDestinationMatch = bracketReset;
+
   bracket.winners.push(bracketReset);
 
   return bracket;
@@ -212,6 +240,9 @@ export interface Match {
   match1?: Match;
   /** Match that leads to this match */
   match2?: Match;
+  loserDestinationMatch?: Match;
+  winnerDestinationMatch?: Match;
+  side: EliminationBracketSide;
 }
 
 export interface Bracket {
