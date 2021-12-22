@@ -6,12 +6,21 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   tiny?: boolean;
   loading?: boolean;
   loadingText?: string;
+  icon?: React.ReactNode;
   "data-cy"?: string;
 }
 
 export function Button(props: ButtonProps) {
-  const { variant, loading, children, loadingText, tiny, className, ...rest } =
-    props;
+  const {
+    variant,
+    loading,
+    children,
+    loadingText,
+    tiny,
+    className,
+    icon,
+    ...rest
+  } = props;
   return (
     <button
       className={classNames(className, {
@@ -25,6 +34,7 @@ export function Button(props: ButtonProps) {
       disabled={loading}
       {...rest}
     >
+      {icon}
       {loading && loadingText ? loadingText : children}
     </button>
   );

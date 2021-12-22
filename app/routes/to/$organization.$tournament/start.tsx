@@ -14,6 +14,7 @@ import invariant from "tiny-invariant";
 import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
+import { RefreshIcon } from "~/components/icons/Refresh";
 import { modesShort, modesShortToLong } from "~/constants";
 import { eliminationBracket } from "~/core/tournament/algorithms";
 import {
@@ -192,6 +193,7 @@ function ActionButtons({
               ? dispatch({ type: "SHOW_ALERT" })
               : dispatch({ type: "REGENERATE_MAP_LIST" })
           }
+          icon={<RefreshIcon />}
         >
           Regenerate all maps
         </Button>

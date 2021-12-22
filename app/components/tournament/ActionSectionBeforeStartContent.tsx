@@ -10,6 +10,7 @@ import type { FindTournamentByNameForUrlI } from "~/services/tournament";
 import { Unpacked } from "~/utils";
 import { Button } from "../Button";
 import { AlertIcon } from "../icons/Alert";
+import { CheckmarkIcon } from "../icons/Checkmark";
 import { ErrorIcon } from "../icons/Error";
 import { SuccessIcon } from "../icons/Success";
 import { ActionSectionWrapper } from "./ActionSectionWrapper";
@@ -120,6 +121,7 @@ export function ActionSectionBeforeStartContent({
             loadingText="Checking in..."
             type="submit"
             loading={fetcher.state !== "idle"}
+            icon={<CheckmarkIcon />}
           >
             Check-in
           </Button>
