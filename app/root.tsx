@@ -72,6 +72,7 @@ export function CatchBoundary() {
   );
 }
 
+// TODO.... maybe we can render the same exact thing with added dialog you can close?
 export function ErrorBoundary({ error }: { error: Error }) {
   console.error(error);
   return (

@@ -5,7 +5,7 @@ import * as React from "react";
 export const useUser = () => {
   const [root] = useMatches();
 
-  return root.data.user as LoggedInUser;
+  return root.data?.user as LoggedInUser;
 };
 
 export const useBaseURL = () => {

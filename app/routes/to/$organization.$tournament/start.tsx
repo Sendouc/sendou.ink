@@ -2,11 +2,14 @@ import type { Mode, Stage } from ".prisma/client";
 import classNames from "classnames";
 import {
   ActionFunction,
+  Form,
+  json,
   LinksFunction,
   LoaderFunction,
+  redirect,
+  useLoaderData,
   useMatches,
 } from "remix";
-import { Form, json, redirect, useLoaderData } from "remix";
 import invariant from "tiny-invariant";
 import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
@@ -14,8 +17,9 @@ import { Catcher } from "~/components/Catcher";
 import { modesShort, modesShortToLong } from "~/constants";
 import { eliminationBracket } from "~/core/tournament/algorithms";
 import {
-  EliminationBracket,
   EliminationBracketSide,
+  MapListIds,
+  MapListIdsSchema,
   participantCountToRoundsInfo,
 } from "~/core/tournament/bracket";
 import { useTournamentRounds } from "~/hooks/useTournamentRounds";
@@ -44,8 +48,7 @@ export const action: ActionFunction = async ({ request, params, context }) => {
   const bracketId = formData.get("bracket-id");
   invariant(typeof mapListString === "string", "Type of map list not string");
   invariant(typeof bracketId === "string", "Type of bracket id not string");
-  // TODO: could use Zod here
-  const mapList = JSON.parse(mapListString) as EliminationBracket<Stage[][]>;
+  const mapList = MapListIdsSchema.parse(JSON.parse(mapListString));
 
   const organizationNameForUrl = params.organization;
   const tournamentNameForUrl = params.tournament;
@@ -111,15 +114,17 @@ export default function StartBracketTab() {
   // TODO: dropdown to select this
   const bracketId = brackets[0].id;
 
+  const mapListForInput: MapListIds = {
+    losers: bracket.winners.map((round) => round.mapList),
+    winners: bracket.winners.map((round) => round.mapList),
+  };
+
   return (
     <Form method="post" className="width-100">
       <input
         type="hidden"
         name="map-list"
-        value={JSON.stringify({
-          losers: bracket.winners.map((round) => round.mapList),
-          winners: bracket.winners.map((round) => round.mapList),
-        })}
+        value={JSON.stringify(mapListForInput)}
       />
       <input type="hidden" name="bracket-id" value={bracketId} />
       <div className="tournament__start__container">

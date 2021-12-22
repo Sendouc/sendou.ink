@@ -1,6 +1,7 @@
 import type { BracketType, Stage, TeamOrder } from ".prisma/client";
-import { v4 as uuidv4 } from "uuid";
 import invariant from "tiny-invariant";
+import { v4 as uuidv4 } from "uuid";
+import { z } from "zod";
 import { TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "../../constants";
 import { FindTournamentByNameForUrlI } from "../../services/tournament";
 import { Bracket, eliminationBracket, Match } from "./algorithms";
@@ -183,6 +184,12 @@ export function countParticipants(teams: FindTournamentByNameForUrlI["teams"]) {
   }, 0);
 }
 
+export type MapListIds = z.infer<typeof MapListIdsSchema>;
+export const MapListIdsSchema = z.object({
+  winners: z.array(z.array(z.object({ id: z.number() }))),
+  losers: z.array(z.array(z.object({ id: z.number() }))),
+});
+
 export interface TournamentRoundForDB {
   id: string;
   position: number;
@@ -205,7 +212,7 @@ export function tournamentRoundsForDB({
   bracketType,
   participantsSeeded,
 }: {
-  mapList: EliminationBracket<Stage[][]>;
+  mapList: MapListIds;
   bracketType: BracketType;
   participantsSeeded: { id: string }[];
 }): TournamentRoundForDB[] {
@@ -221,7 +228,6 @@ export function tournamentRoundsForDB({
     const isWinners = sideI === 0;
     for (const [roundI, round] of side.entries()) {
       const position = isWinners ? roundI + 1 : -(roundI + 1);
-
       const stagesRaw = mapList[isWinners ? "winners" : "losers"][roundI];
       invariant(stagesRaw, "stagesRaw is undefined");
       const stages = stagesRaw.map((stage, i) => ({

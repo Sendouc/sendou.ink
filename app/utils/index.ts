@@ -53,6 +53,10 @@ export async function formDataFromRequest<T extends string>({
   return result as Record<T, string>;
 }
 
+/** @link https://stackoverflow.com/a/69413184 */
+// @ts-expect-error
+export const assertType = <A, B extends A>() => {};
+
 export type LoggedInUser = {
   id: string;
   discordId: string;

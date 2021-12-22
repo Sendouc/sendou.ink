@@ -24,16 +24,22 @@ export const stages = [
   "New Albacore Hotel",
   "Ancho-V Games",
   "Skipper Pavilion",
-];
+] as const;
 
-export const modesShort: Mode[] = ["TW", "SZ", "TC", "RM", "CB"];
+export const modesShort: readonly Mode[] = [
+  "TW",
+  "SZ",
+  "TC",
+  "RM",
+  "CB",
+] as const;
 export const modesShortToLong: Record<Mode, string> = {
   TW: "Turf War",
   SZ: "Splat Zones",
   TC: "Tower Control",
   RM: "Rainmaker",
   CB: "Clam Blitz",
-};
+} as const;
 
 export const navItems = [
   {
@@ -52,7 +58,7 @@ export const navItems = [
     title: "misc",
     items: ["badges", "links"],
   },
-];
+] as const;
 
 export const DISCORD_URL = "https://discord.gg/sendou";
 

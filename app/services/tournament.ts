@@ -1,12 +1,9 @@
-import type { Prisma, Stage } from ".prisma/client";
+import type { Prisma } from ".prisma/client";
 import {
   TOURNAMENT_CHECK_IN_CLOSING_MINUTES_FROM_START,
   TOURNAMENT_TEAM_ROSTER_MAX_SIZE,
 } from "~/constants";
-import {
-  EliminationBracket,
-  tournamentRoundsForDB,
-} from "~/core/tournament/bracket";
+import { MapListIds, tournamentRoundsForDB } from "~/core/tournament/bracket";
 import { isTournamentAdmin } from "~/core/tournament/permissions";
 import { sortTeamsBySeed } from "~/core/tournament/utils";
 import * as Tournament from "~/models/Tournament";
@@ -134,7 +131,7 @@ export async function createTournamentRounds({
 }: {
   organizationNameForUrl: string;
   tournamentNameForUrl: string;
-  mapList: EliminationBracket<Stage[][]>;
+  mapList: MapListIds;
   userId: string;
   bracketId: string;
 }) {
@@ -156,9 +153,9 @@ export async function createTournamentRounds({
     throw new Response("Invalid bracket id provided", { status: 400 });
   }
 
-  const participantsSeeded = tournament.teams.sort(
-    sortTeamsBySeed(tournament.seeds)
-  );
+  const participantsSeeded = tournament.teams
+    .filter((team) => team.checkedInTime)
+    .sort(sortTeamsBySeed(tournament.seeds));
 
   const rounds = tournamentRoundsForDB({
     mapList,
@@ -176,13 +173,17 @@ export async function createTournamentRounds({
     }),
     db.tournamentRoundStage.createMany({
       data: rounds.flatMap((round) => {
-        return round.stages.map((stage) => ({ ...stage, roundId: round.id }));
+        return round.stages.map(({ position, stageId }) => ({
+          position,
+          stageId,
+          roundId: round.id,
+        }));
       }),
     }),
     db.tournamentMatch.createMany({
       data: rounds.flatMap((round) => {
         return round.matches.map((match) => ({
-          ...match,
+          id: match.id,
           roundId: round.id,
         }));
       }),
