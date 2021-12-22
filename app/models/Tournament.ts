@@ -52,6 +52,11 @@ export async function findByNameForUrl({
         select: {
           id: true,
           type: true,
+          rounds: {
+            select: {
+              position: true,
+            },
+          },
         },
       },
       teams: {

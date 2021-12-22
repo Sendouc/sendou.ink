@@ -12,6 +12,7 @@ import invariant from "tiny-invariant";
 import { ActionSection } from "~/components/tournament/ActionSection";
 import { InfoBanner } from "~/components/tournament/InfoBanner";
 import { isTournamentAdmin } from "~/core/tournament/permissions";
+import { tournamentHasStarted } from "~/core/tournament/utils";
 import {
   findTournamentByNameForUrl,
   FindTournamentByNameForUrlI,
@@ -59,21 +60,26 @@ export default function TournamentPage() {
       { code: "map-pool", text: "Map Pool" },
       { code: "teams", text: `Teams (${data.teams.length})` },
     ];
-    const tournamentIsHappening = false;
     const tournamentIsOver = false;
 
-    if (tournamentIsHappening) {
+    if (tournamentHasStarted(data.brackets)) {
       result.push({ code: "bracket", text: "Bracket" });
       if (!tournamentIsOver) {
         result.push({ code: "streams", text: "Streams (4)" });
       }
     }
 
+    const thereIsABracketToStart = data.brackets.some(
+      (bracket) => !Boolean(bracket.rounds)
+    );
+
     // TODO: maybe some visual effect for admin only tabs?
     if (isTournamentAdmin({ userId: user?.id, organization: data.organizer })) {
-      result.push({ code: "seeds", text: "Seeds" });
+      if (!tournamentHasStarted(data.brackets)) {
+        result.push({ code: "seeds", text: "Seeds" });
+      }
       result.push({ code: "edit", text: "Edit" });
-      result.push({ code: "start", text: "Start" });
+      if (thereIsABracketToStart) result.push({ code: "start", text: "Start" });
     }
 
     return result;

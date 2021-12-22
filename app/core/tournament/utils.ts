@@ -25,3 +25,13 @@ export function sortTeamsBySeed(seeds: string[]) {
     return aSeed - bSeed;
   };
 }
+
+export function tournamentHasStarted(
+  brackets: {
+    rounds?: {
+      position: number;
+    }[];
+  }[]
+) {
+  return Boolean(brackets[0].rounds);
+}
