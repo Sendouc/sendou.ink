@@ -116,6 +116,12 @@ button.outlined {
   color: var(--theme);
 }
 
+button.outlined-success {
+  border-color: var(--theme-success);
+  background-color: transparent;
+  color: var(--theme-success);
+}
+
 button.tiny {
   font-size: var(--fonts-xs);
   padding-block: var(--s-1);

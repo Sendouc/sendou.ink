@@ -2,7 +2,12 @@ import classNames from "classnames";
 import * as React from "react";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "outlined" | "destructive" | "minimal" | "minimal-destructive";
+  variant?:
+    | "outlined"
+    | "outlined-success"
+    | "destructive"
+    | "minimal"
+    | "minimal-destructive";
   tiny?: boolean;
   loading?: boolean;
   loadingText?: string;
@@ -25,6 +30,7 @@ export function Button(props: ButtonProps) {
     <button
       className={classNames(className, {
         outlined: variant === "outlined",
+        "outlined-success": variant === "outlined-success",
         destructive: variant === "destructive",
         "minimal-destructive": variant === "minimal-destructive",
         minimal: variant === "minimal",

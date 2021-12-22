@@ -117,7 +117,7 @@ export function ActionSectionBeforeStartContent({
           className="tournament__action-section__button-container"
         >
           <Button
-            variant="outlined"
+            variant="outlined-success"
             loadingText="Checking in..."
             type="submit"
             loading={fetcher.state !== "idle"}
