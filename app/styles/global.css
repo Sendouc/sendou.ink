@@ -3,15 +3,18 @@
   --bg-lighter: hsl(237.3deg 42.3% 35.6%);
   --bg-lighter-transparent: hsla(237.3deg 42.3% 35.6% / 50%);
   --border: hsl(237.3deg 42.3% 45.6%);
+  --button-text: rgba(0, 0, 0, 0.85);
   --text: rgb(255 255 255 / 95%);
   --text-lighter: rgb(255 255 255 / 55%);
   --theme-error: rgb(219 70 65);
   --theme-warning: #f5f587;
   --theme-info: #a3a6ff;
   --theme-success: #a3ffae;
-  --theme: hsl(255deg 66.7% 55.3%);
-  --theme-transparent: hsl(255deg 66.7% 55.3% / 40%);
+  --theme: hsl(255deg 66.7% 75%);
+  --theme-transparent: hsl(255deg 66.7% 75% / 40%);
   --theme-secondary: hsl(85deg 66.7% 55.3%);
+  /* background-pattern.svg not using this currently */
+  --theme-pattern: #6741d9;
   --rounded: 16px;
   --rounded-sm: 10px;
   --fonts-xl: 1.5rem;
@@ -88,7 +91,7 @@ button {
   appearance: none;
   background: var(--theme);
   border-radius: var(--rounded-sm);
-  color: var(--text);
+  color: var(--button-text);
   cursor: pointer;
   font-size: var(--fonts-sm);
   font-weight: var(--bold);
@@ -109,6 +112,7 @@ button:active {
 
 button.outlined {
   background-color: transparent;
+  color: var(--theme);
 }
 
 button.tiny {
