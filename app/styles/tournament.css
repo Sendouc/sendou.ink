@@ -67,7 +67,12 @@
   color: var(--text);
   cursor: pointer;
   font-size: var(--fonts-sm);
+  gap: var(--s-1);
   padding-block: var(--s-1-5);
+}
+
+.tournament__nav-link > svg {
+  width: 1rem;
 }
 
 .tournament__nav-link:first-of-type {

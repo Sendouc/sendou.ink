@@ -9,6 +9,7 @@ import {
   useLoaderData,
 } from "remix";
 import invariant from "tiny-invariant";
+import { AdminIcon } from "~/components/icons/Admin";
 import { ActionSection } from "~/components/tournament/ActionSection";
 import { InfoBanner } from "~/components/tournament/InfoBanner";
 import { isTournamentAdmin } from "~/core/tournament/permissions";
@@ -55,7 +56,7 @@ export default function TournamentPage() {
   const user = useUser();
 
   const navLinks = (() => {
-    const result: { code: string; text: string }[] = [
+    const result: { code: string; text: string; icon?: React.ReactNode }[] = [
       { code: "", text: "Overview" },
       { code: "map-pool", text: "Map Pool" },
       { code: "teams", text: `Teams (${data.teams.length})` },
@@ -70,16 +71,16 @@ export default function TournamentPage() {
     }
 
     const thereIsABracketToStart = data.brackets.some(
-      (bracket) => !Boolean(bracket.rounds)
+      (bracket) => bracket.rounds.length === 0
     );
 
-    // TODO: maybe some visual effect for admin only tabs?
     if (isTournamentAdmin({ userId: user?.id, organization: data.organizer })) {
       if (!tournamentHasStarted(data.brackets)) {
-        result.push({ code: "seeds", text: "Seeds" });
+        result.push({ code: "seeds", text: "Seeds", icon: <AdminIcon /> });
       }
-      result.push({ code: "edit", text: "Edit" });
-      if (thereIsABracketToStart) result.push({ code: "start", text: "Start" });
+      result.push({ code: "edit", text: "Edit", icon: <AdminIcon /> });
+      if (thereIsABracketToStart)
+        result.push({ code: "start", text: "Start", icon: <AdminIcon /> });
     }
 
     return result;
@@ -105,7 +106,7 @@ export default function TournamentPage() {
             style={{ "--tabs-count": navLinks.length } as any}
             className="tournament__links-container"
           >
-            {navLinks.map(({ code, text }) => (
+            {navLinks.map(({ code, text, icon }) => (
               // TODO: on mobile keep the active link in center
               <NavLink
                 key={code}
@@ -115,7 +116,7 @@ export default function TournamentPage() {
                 prefetch="intent"
                 end
               >
-                <span>{text}</span>
+                {icon} {text}
               </NavLink>
             ))}
           </div>

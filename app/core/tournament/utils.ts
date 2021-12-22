@@ -28,10 +28,10 @@ export function sortTeamsBySeed(seeds: string[]) {
 
 export function tournamentHasStarted(
   brackets: {
-    rounds?: {
+    rounds: {
       position: number;
     }[];
   }[]
 ) {
-  return Boolean(brackets[0].rounds);
+  return brackets[0].rounds.length > 0;
 }

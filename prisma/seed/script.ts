@@ -29,6 +29,11 @@ export async function seed(variation?: "check-in") {
     // wipe database
     //
     await prisma.tournamentTeamMember.deleteMany();
+    await prisma.tournamentMatchParticipant.deleteMany();
+    await prisma.tournamentMatchGameResult.deleteMany();
+    await prisma.tournamentMatch.deleteMany();
+    await prisma.tournamentRoundStage.deleteMany();
+    await prisma.tournamentRound.deleteMany();
     await prisma.tournamentTeam.deleteMany();
     await prisma.tournamentBracket.deleteMany({});
     await prisma.tournament.deleteMany();
