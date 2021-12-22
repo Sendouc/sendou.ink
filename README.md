@@ -79,6 +79,7 @@ You can give a variation as a flag to the seeding script changing what exactly i
 
 ### After MVP
 
+- [ ] ESLint (button type="button"...)
 - [ ] Detailed match reports from Lanista
 - [ ] Stats
 - [ ] Routine to calculate Trueskill

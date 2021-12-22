@@ -267,7 +267,7 @@ function CheckInButton({ teamId }: { teamId: string }) {
     >
       <Button
         tiny
-        variant="minimal"
+        variant="minimal-success"
         loading={fetcher.state !== "idle"}
         loadingText="Checking in"
         type="submit"

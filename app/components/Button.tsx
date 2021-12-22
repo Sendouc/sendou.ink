@@ -7,6 +7,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     | "outlined-success"
     | "destructive"
     | "minimal"
+    | "minimal-success"
     | "minimal-destructive";
   tiny?: boolean;
   loading?: boolean;
@@ -32,8 +33,9 @@ export function Button(props: ButtonProps) {
         outlined: variant === "outlined",
         "outlined-success": variant === "outlined-success",
         destructive: variant === "destructive",
-        "minimal-destructive": variant === "minimal-destructive",
         minimal: variant === "minimal",
+        "minimal-success": variant === "minimal-success",
+        "minimal-destructive": variant === "minimal-destructive",
         loading: loading,
         tiny,
       })}

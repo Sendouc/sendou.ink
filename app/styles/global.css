@@ -132,8 +132,13 @@ button.minimal {
   padding: 0;
   border: none;
   background-color: transparent;
+  color: var(--theme);
+}
 
-  /* TODO: fix bad default */
+button.minimal-success {
+  padding: 0;
+  border: none;
+  background-color: transparent;
   color: var(--theme-success);
 }
 

@@ -312,7 +312,8 @@ function RoundsCollection({
                 {round.editing ? (
                   <>
                     <Button
-                      variant="minimal"
+                      type="button"
+                      variant="minimal-success"
                       tiny
                       onClick={() =>
                         dispatch({
@@ -324,6 +325,7 @@ function RoundsCollection({
                       Save
                     </Button>
                     <Button
+                      type="button"
                       variant="minimal-destructive"
                       tiny
                       onClick={() =>
@@ -339,6 +341,7 @@ function RoundsCollection({
                 ) : (
                   // TODO: should be at the bottom always
                   <Button
+                    type="button"
                     variant="minimal"
                     tiny
                     onClick={() =>
