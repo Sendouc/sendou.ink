@@ -1,6 +1,11 @@
 import type { Mode, Stage } from ".prisma/client";
 import classNames from "classnames";
-import type { ActionFunction, LinksFunction, LoaderFunction } from "remix";
+import {
+  ActionFunction,
+  LinksFunction,
+  LoaderFunction,
+  useMatches,
+} from "remix";
 import { Form, json, redirect, useLoaderData } from "remix";
 import invariant from "tiny-invariant";
 import { Alert } from "~/components/Alert";
@@ -9,6 +14,7 @@ import { Catcher } from "~/components/Catcher";
 import { modesShort, modesShortToLong } from "~/constants";
 import { eliminationBracket } from "~/core/tournament/algorithms";
 import {
+  EliminationBracket,
   EliminationBracketSide,
   participantCountToRoundsInfo,
 } from "~/core/tournament/bracket";
@@ -21,6 +27,7 @@ import type {
 import {
   createTournamentRounds,
   findTournamentByNameForUrl,
+  FindTournamentByNameForUrlI,
 } from "~/services/tournament";
 import startBracketTabStylesUrl from "~/styles/tournament-start.css";
 import { requireUser } from "~/utils";
@@ -32,11 +39,13 @@ export const links: LinksFunction = () => {
 };
 
 export const action: ActionFunction = async ({ request, params, context }) => {
-  const mapListString = (await request.formData()).get("map-list");
+  const formData = await request.formData();
+  const mapListString = formData.get("map-list");
+  const bracketId = formData.get("bracket-id");
   invariant(typeof mapListString === "string", "Type of map list not string");
-  const mapList = JSON.parse(
-    mapListString
-  ) as UseTournamentRoundsState["bracket"];
+  invariant(typeof bracketId === "string", "Type of bracket id not string");
+  // TODO: could use Zod here
+  const mapList = JSON.parse(mapListString) as EliminationBracket<Stage[][]>;
 
   const organizationNameForUrl = params.organization;
   const tournamentNameForUrl = params.tournament;
@@ -50,9 +59,8 @@ export const action: ActionFunction = async ({ request, params, context }) => {
     organizationNameForUrl,
     tournamentNameForUrl,
     userId: user.id,
+    bracketId,
   });
-
-  return null;
 
   return redirect(
     `/to/${organizationNameForUrl}/${tournamentNameForUrl}/bracket`
@@ -94,18 +102,26 @@ export const loader: LoaderFunction = async ({ params }) => {
 // TODO: component that shows a table of map, counts in the map pool, which rounds
 // TODO: handle warning if check-in has not concluded
 export default function StartBracketTab() {
+  const [, parentRoute] = useMatches();
+  const { brackets } = parentRoute.data as FindTournamentByNameForUrlI;
   const args = useLoaderData<UseTournamentRoundsArgs>();
   const [{ bracket, showAlert, actionButtonsDisabled }, dispatch] =
     useTournamentRounds(args);
 
+  // TODO: dropdown to select this
+  const bracketId = brackets[0].id;
+
   return (
     <Form method="post" className="width-100">
-      <input type="hidden" name="map-list" value={JSON.stringify(bracket)} />
       <input
         type="hidden"
-        name="tournament-id"
-        value={JSON.stringify(bracket)}
+        name="map-list"
+        value={JSON.stringify({
+          losers: bracket.winners.map((round) => round.mapList),
+          winners: bracket.winners.map((round) => round.mapList),
+        })}
       />
+      <input type="hidden" name="bracket-id" value={bracketId} />
       <div className="tournament__start__container">
         <ActionButtons
           dispatch={dispatch}

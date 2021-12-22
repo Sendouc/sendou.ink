@@ -1,4 +1,5 @@
 import type { BracketType, Stage, TeamOrder } from ".prisma/client";
+import { v4 as uuidv4 } from "uuid";
 import invariant from "tiny-invariant";
 import { TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "../../constants";
 import { FindTournamentByNameForUrlI } from "../../services/tournament";
@@ -182,7 +183,8 @@ export function countParticipants(teams: FindTournamentByNameForUrlI["teams"]) {
   }, 0);
 }
 
-interface TournamentRoundForDB {
+export interface TournamentRoundForDB {
+  id: string;
   position: number;
   stages: {
     position: number;
@@ -256,6 +258,7 @@ export function tournamentRoundsForDB({
       });
 
       result.push({
+        id: uuidv4(),
         position,
         stages,
         matches,

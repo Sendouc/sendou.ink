@@ -3,7 +3,7 @@
   --bg-lighter: hsl(237.3deg 42.3% 35.6%);
   --bg-lighter-transparent: hsla(237.3deg 42.3% 35.6% / 50%);
   --border: hsl(237.3deg 42.3% 45.6%);
-  --button-text: rgba(0, 0, 0, 0.85);
+  --button-text: rgb(0 0 0 / 85%);
   --text: rgb(255 255 255 / 95%);
   --text-lighter: rgb(255 255 255 / 55%);
   --theme-error: rgb(219 70 65);
@@ -13,6 +13,7 @@
   --theme: hsl(255deg 66.7% 75%);
   --theme-transparent: hsl(255deg 66.7% 75% / 40%);
   --theme-secondary: hsl(85deg 66.7% 55.3%);
+
   /* background-pattern.svg not using this currently */
   --theme-pattern: #6741d9;
   --rounded: 16px;

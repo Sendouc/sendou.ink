@@ -1,16 +1,20 @@
-import { Prisma } from ".prisma/client";
+import type { Prisma, Stage } from ".prisma/client";
 import {
   TOURNAMENT_CHECK_IN_CLOSING_MINUTES_FROM_START,
   TOURNAMENT_TEAM_ROSTER_MAX_SIZE,
 } from "~/constants";
+import {
+  EliminationBracket,
+  tournamentRoundsForDB,
+} from "~/core/tournament/bracket";
 import { isTournamentAdmin } from "~/core/tournament/permissions";
 import { sortTeamsBySeed } from "~/core/tournament/utils";
-import type { UseTournamentRoundsState } from "~/hooks/useTournamentRounds/types";
 import * as Tournament from "~/models/Tournament";
 import * as TournamentTeam from "~/models/TournamentTeam";
 import * as TournamentTeamMember from "~/models/TournamentTeamMember";
 import * as TrustRelationship from "~/models/TrustRelationship";
 import { Serialized, Unpacked } from "~/utils";
+import { db } from "~/utils/db.server";
 
 export type FindTournamentByNameForUrlI = Serialized<
   Prisma.PromiseReturnType<typeof findTournamentByNameForUrl>
@@ -126,11 +130,13 @@ export async function createTournamentRounds({
   tournamentNameForUrl,
   mapList,
   userId,
+  bracketId,
 }: {
   organizationNameForUrl: string;
   tournamentNameForUrl: string;
-  mapList: UseTournamentRoundsState["bracket"];
+  mapList: EliminationBracket<Stage[][]>;
   userId: string;
+  bracketId: string;
 }) {
   const tournament = await Tournament.findByNameForUrl({
     organizationNameForUrl,
@@ -141,6 +147,61 @@ export async function createTournamentRounds({
   if (!isTournamentAdmin({ organization: tournament.organizer, userId })) {
     throw new Response("Not tournament admin", { status: 401 });
   }
+
+  const bracket = tournament.brackets.find(
+    (bracket) => bracket.id === bracketId
+  );
+  // TODO: OR rounds i.e. bracket was already started
+  if (!bracket) {
+    throw new Response("Invalid bracket id provided", { status: 400 });
+  }
+
+  const participantsSeeded = tournament.teams.sort(
+    sortTeamsBySeed(tournament.seeds)
+  );
+
+  const rounds = tournamentRoundsForDB({
+    mapList,
+    bracketType: bracket.type,
+    participantsSeeded,
+  });
+
+  return db.$transaction([
+    db.tournamentRound.createMany({
+      data: rounds.map((round) => ({
+        bracketId: bracket.id,
+        id: round.id,
+        position: round.position,
+      })),
+    }),
+    db.tournamentRoundStage.createMany({
+      data: rounds.flatMap((round) => {
+        return round.stages.map((stage) => ({ ...stage, roundId: round.id }));
+      }),
+    }),
+    db.tournamentMatch.createMany({
+      data: rounds.flatMap((round) => {
+        return round.matches.map((match) => ({
+          ...match,
+          roundId: round.id,
+        }));
+      }),
+    }),
+    db.tournamentMatchParticipant.createMany({
+      data: rounds.flatMap((round) => {
+        return round.matches.flatMap((match) => {
+          return match.participants.flatMap((participant) => {
+            if (participant.team === "BYE") return [];
+            return {
+              teamId: participant.team.id,
+              matchId: match.id,
+              order: participant.order,
+            };
+          });
+        });
+      }),
+    }),
+  ]);
 }
 
 export async function joinTeamViaInviteCode({

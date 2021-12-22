@@ -216,7 +216,7 @@
   outline: 2px solid var(--tournaments-text-transparent);
 }
 
-.tournament__outlet-container {
+.tournament__outlet-spacer {
   padding-block-start: var(--s-8);
 }
 

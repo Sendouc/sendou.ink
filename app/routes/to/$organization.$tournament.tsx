@@ -117,7 +117,8 @@ export default function TournamentPage() {
       </div>
       <div className="tournament__container__spacer" />
       <ActionSection />
-      <div className="tournament__outlet-container"></div>
+      <div className="tournament__outlet-spacer" />
+      {/* TODO: pass context instead of useMatches */}
       <Outlet />
     </div>
   );

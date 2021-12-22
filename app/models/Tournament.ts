@@ -50,6 +50,7 @@ export async function findByNameForUrl({
       },
       brackets: {
         select: {
+          id: true,
           type: true,
         },
       },
