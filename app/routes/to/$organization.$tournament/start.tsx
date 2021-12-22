@@ -23,6 +23,7 @@ import {
   findTournamentByNameForUrl,
 } from "~/services/tournament";
 import startBracketTabStylesUrl from "~/styles/tournament-start.css";
+import { requireUser } from "~/utils";
 
 // TODO: error if not admin AND keep the links available
 
@@ -30,11 +31,11 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: startBracketTabStylesUrl }];
 };
 
-export const action: ActionFunction = async ({ request, params }) => {
-  const mapPoolString = (await request.formData()).get("map-pool");
-  invariant(typeof mapPoolString === "string", "Type of map pool not string");
-  const mapPool = JSON.parse(
-    mapPoolString
+export const action: ActionFunction = async ({ request, params, context }) => {
+  const mapListString = (await request.formData()).get("map-list");
+  invariant(typeof mapListString === "string", "Type of map list not string");
+  const mapList = JSON.parse(
+    mapListString
   ) as UseTournamentRoundsState["bracket"];
 
   const organizationNameForUrl = params.organization;
@@ -42,11 +43,16 @@ export const action: ActionFunction = async ({ request, params }) => {
   invariant(organizationNameForUrl, "organizationNameForUrl is undefined");
   invariant(tournamentNameForUrl, "tournamentNameForUrl is undefined");
 
+  const user = requireUser(context);
+
   await createTournamentRounds({
-    mapPool,
+    mapList,
     organizationNameForUrl,
     tournamentNameForUrl,
+    userId: user.id,
   });
+
+  return null;
 
   return redirect(
     `/to/${organizationNameForUrl}/${tournamentNameForUrl}/bracket`
@@ -94,7 +100,7 @@ export default function StartBracketTab() {
 
   return (
     <Form method="post" className="width-100">
-      <input type="hidden" name="map-pool" value={JSON.stringify(bracket)} />
+      <input type="hidden" name="map-list" value={JSON.stringify(bracket)} />
       <input
         type="hidden"
         name="tournament-id"
@@ -200,6 +206,7 @@ function RoundsCollection({
                 {([3, 5, 7, 9] as const).map((bestOf) => (
                   <button
                     key={bestOf}
+                    type="button"
                     className={classNames("tournament__start__best-of", {
                       active: round.bestOf === bestOf,
                     })}

@@ -1,10 +1,9 @@
 import type { BracketType, Stage, TeamOrder } from ".prisma/client";
 import invariant from "tiny-invariant";
-import { generateMapListForRounds } from "./mapList";
-import { Bracket, eliminationBracket } from "./algorithms";
-import type { UseTournamentRoundsState } from "../../hooks/useTournamentRounds/types";
-import { FindTournamentByNameForUrlI } from "../../services/tournament";
 import { TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "../../constants";
+import { FindTournamentByNameForUrlI } from "../../services/tournament";
+import { Bracket, eliminationBracket, Match } from "./algorithms";
+import { generateMapListForRounds } from "./mapList";
 
 export function participantCountToRoundsInfo({
   bracket,
@@ -194,38 +193,113 @@ interface TournamentRoundForDB {
     winnerDestinationMatchId?: string;
     loserDestinationMatchId?: string;
     participants: {
-      teamId: string;
+      team: { id: string } | "BYE";
       order: TeamOrder;
-    };
+    }[];
   }[];
 }
 export function tournamentRoundsForDB({
   mapList,
-  participantCount,
   bracketType,
+  participantsSeeded,
 }: {
-  mapList: UseTournamentRoundsState["bracket"];
-  participantCount: number;
+  mapList: EliminationBracket<Stage[][]>;
   bracketType: BracketType;
+  participantsSeeded: { id: string }[];
 }): TournamentRoundForDB[] {
-  const rounds = eliminationBracket(participantCount, bracketType);
+  const bracket = eliminationBracket(participantsSeeded.length, bracketType);
   const result: TournamentRoundForDB[] = [];
 
-  for (const [i, side] of [rounds.winners, rounds.losers].entries()) {
-    const isWinners = i === 0;
+  const groupedRounds = groupMatchesByRound(bracket);
+
+  for (const [sideI, side] of [
+    groupedRounds.winners,
+    groupedRounds.losers,
+  ].entries()) {
+    const isWinners = sideI === 0;
     for (const [roundI, round] of side.entries()) {
       const position = isWinners ? roundI + 1 : -(roundI + 1);
 
       const stagesRaw = mapList[isWinners ? "winners" : "losers"][roundI];
       invariant(stagesRaw, "stagesRaw is undefined");
-      const stages = stagesRaw.mapList.map((stage, i) => ({
+      const stages = stagesRaw.map((stage, i) => ({
         position: i + 1,
         stageId: stage.id,
       }));
+
+      const matches = round.map((match) => {
+        return {
+          id: match.id,
+          winnerDestinationMatchId: match.winnerDestinationMatch?.id,
+          loserDestinationMatchId: match.loserDestinationMatch?.id,
+          participants: [match.upperTeam, match.lowerTeam].flatMap(
+            (team, i) => {
+              if (!team) return [];
+              const teamOrBye =
+                team === "BYE"
+                  ? team
+                  : { id: participantsSeeded[team - 1]?.id };
+              invariant(
+                typeof teamOrBye === "string" || teamOrBye?.id,
+                `teamId is undefined - participantsSeeded: ${participantsSeeded.join(
+                  ","
+                )}; team: ${team}`
+              );
+
+              return {
+                team: teamOrBye,
+                order: i === 0 ? "UPPER" : ("LOWER" as TeamOrder),
+              };
+            }
+          ),
+        };
+      });
+
+      result.push({
+        position,
+        stages,
+        matches,
+      });
     }
   }
 
   return result;
+}
+
+function groupMatchesByRound(bracket: Bracket): EliminationBracket<Match[][]> {
+  const { winners, losers } = countRounds(bracket);
+
+  const result: EliminationBracket<Match[][]> = {
+    winners: new Array(winners).fill(null).map(() => []),
+    losers: new Array(losers).fill(null).map(() => []),
+  };
+  const matchesIncluded = new Set<string>();
+  for (const match of bracket.winners) {
+    // first round match
+    if (match.upperTeam && match.lowerTeam) {
+      search(match, "winners", 1);
+      search(match.loserDestinationMatch, "losers", 1);
+    }
+  }
+
+  invariant(
+    matchesIncluded.size === bracket.winners.length + bracket.losers.length,
+    `matchesIncluded: ${matchesIncluded.size}; winners: ${bracket.winners.length}; losers: ${bracket.losers.length}`
+  );
+  return result;
+
+  function search(
+    match: Match | undefined,
+    side: EliminationBracketSide,
+    depth: number
+  ) {
+    if (!match) return;
+    if (matchesIncluded.has(match.id)) return;
+
+    search(match.winnerDestinationMatch, side, depth + 1);
+    matchesIncluded.add(match.id);
+    result[side][depth - 1]?.push(match);
+  }
 }
 
 export type EliminationBracket<T> = {

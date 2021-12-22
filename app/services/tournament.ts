@@ -5,12 +5,12 @@ import {
 } from "~/constants";
 import { isTournamentAdmin } from "~/core/tournament/permissions";
 import { sortTeamsBySeed } from "~/core/tournament/utils";
-import { Serialized, Unpacked } from "~/utils";
+import type { UseTournamentRoundsState } from "~/hooks/useTournamentRounds/types";
 import * as Tournament from "~/models/Tournament";
 import * as TournamentTeam from "~/models/TournamentTeam";
 import * as TournamentTeamMember from "~/models/TournamentTeamMember";
 import * as TrustRelationship from "~/models/TrustRelationship";
-import type { UseTournamentRoundsState } from "~/hooks/useTournamentRounds/types";
+import { Serialized, Unpacked } from "~/utils";
 
 export type FindTournamentByNameForUrlI = Serialized<
   Prisma.PromiseReturnType<typeof findTournamentByNameForUrl>
@@ -124,11 +124,13 @@ export const createTournamentTeam = TournamentTeam.create;
 export async function createTournamentRounds({
   organizationNameForUrl,
   tournamentNameForUrl,
-  mapPool,
+  mapList,
+  userId,
 }: {
   organizationNameForUrl: string;
   tournamentNameForUrl: string;
-  mapPool: UseTournamentRoundsState["bracket"];
+  mapList: UseTournamentRoundsState["bracket"];
+  userId: string;
 }) {
   const tournament = await Tournament.findByNameForUrl({
     organizationNameForUrl,
@@ -136,6 +138,9 @@ export async function createTournamentRounds({
   });
 
   if (!tournament) throw new Response("No tournament found", { status: 404 });
+  if (!isTournamentAdmin({ organization: tournament.organizer, userId })) {
+    throw new Response("Not tournament admin", { status: 401 });
+  }
 }
 
 export async function joinTeamViaInviteCode({
