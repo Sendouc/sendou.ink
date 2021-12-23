@@ -19,9 +19,7 @@ export const loader: LoaderFunction = async ({ params }) => {
   return typedJson(bracket);
 };
 
-// TODO: top seed is at the bottom of the tournament
 // TODO: bottom bracket lines are wrong
-// TODO: match numbers are off
 // TODO: make bracket a bit smaller
 export default function BracketTabWrapper() {
   const data = useLoaderData<BracketModified>();

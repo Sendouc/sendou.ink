@@ -18,6 +18,7 @@ export function findById(bracketId: string) {
           matches: {
             select: {
               id: true,
+              position: true,
               participants: {
                 select: {
                   team: {

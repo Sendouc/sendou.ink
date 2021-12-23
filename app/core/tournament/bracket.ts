@@ -206,6 +206,7 @@ export interface TournamentRoundForDB {
   }[];
   matches: {
     id: string;
+    number: number;
     winnerDestinationMatchId?: string;
     loserDestinationMatchId?: string;
     participants: {
@@ -245,6 +246,7 @@ export function tournamentRoundsForDB({
       const matches = round.map((match) => {
         return {
           id: match.id,
+          number: match.number,
           winnerDestinationMatchId: match.winnerDestinationMatch?.id,
           loserDestinationMatchId: match.loserDestinationMatch?.id,
           participants: [match.upperTeam, match.lowerTeam].flatMap(

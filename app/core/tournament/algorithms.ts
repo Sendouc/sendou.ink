@@ -17,6 +17,7 @@ export function eliminationBracket(
   const matchesWQueue: Match[] = [];
   const matchesLQueue: Match[] = [];
   const backfillQ: Match[] = [];
+  let matchNumber = 1;
 
   invariant(
     powerOf2(participants.length),
@@ -36,7 +37,7 @@ export function eliminationBracket(
     i + 1,
   ]);
   participants = seedTuples
-    .sort(([_a, ai], [_b, bi]) => seedList.indexOf(ai) - seedList.indexOf(bi))
+    .sort(([_a, ai], [_b, bi]) => seedList.indexOf(bi) - seedList.indexOf(ai))
     .map(([p]) => p);
 
   // First round
@@ -167,6 +168,14 @@ export function eliminationBracket(
   bracket.winners.push(bracketReset);
 
   return bracket;
+
+  function createMatch(args: Omit<Match, "id" | "number">): Match {
+    return {
+      id: uuidv4(),
+      number: matchNumber++,
+      ...args,
+    };
+  }
 }
 
 export function fillParticipantsWithNullTillPowerOfTwo(
@@ -214,17 +223,11 @@ function getBaseLog(x: number, y: number) {
   return Math.log(y) / Math.log(x);
 }
 
-function createMatch(args: Omit<Match, "id">): Match {
-  return {
-    id: uuidv4(),
-    ...args,
-  };
-}
-
 export type TeamIdentifier = number | "BYE";
 
 export interface Match {
   id: string;
+  number: number;
   upperTeam?: TeamIdentifier;
   lowerTeam?: TeamIdentifier;
   winner?: TeamIdentifier;

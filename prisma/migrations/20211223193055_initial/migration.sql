@@ -120,6 +120,7 @@ CREATE TABLE "TournamentRoundStage" (
 CREATE TABLE "TournamentMatch" (
     "id" TEXT NOT NULL,
     "roundId" TEXT NOT NULL,
+    "position" INTEGER NOT NULL,
     "winnerDestinationMatchId" TEXT,
     "loserDestinationMatchId" TEXT,
 

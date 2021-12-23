@@ -93,7 +93,9 @@ export function Match({
 }) {
   return (
     <div className="tournament-bracket__elim__match">
-      <div className="tournament-bracket__elim__roundNumber">1</div>
+      <div className="tournament-bracket__elim__roundNumber">
+        {match.number}
+      </div>
       <div
         className={classNames(
           "tournament-bracket__elim__team",

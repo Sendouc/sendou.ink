@@ -157,6 +157,7 @@ model TournamentRoundStage {
 model TournamentMatch {
   id                       String                       @id @default(uuid())
   roundId                  String
+  position                 Int
   // for SE/DE destination based on the result - if no winner destination then winner has won the tournament, if no loser destination loser is eliminated
   winnerDestinationMatchId String?
   loserDestinationMatchId  String?

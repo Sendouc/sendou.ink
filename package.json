@@ -9,6 +9,7 @@
     "dev:server": "cross-env NODE_ENV=development node --experimental-specifier-resolution=node --loader ts-node/esm server/index.ts",
     "dev": "concurrently \"npm run dev:remix\" \"npm run dev:server\"",
     "postinstall": "remix setup node",
+    "gen": "npx prisma generate",
     "start": "cross-env NODE_ENV=production node server/index.js",
     "migration:create": "npx prisma migrate dev --create-only",
     "migration:apply:dev": "npx prisma migrate dev",

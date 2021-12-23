@@ -135,6 +135,7 @@ type BracketModifiedSide = {
   bestOf: number;
   matches: {
     id: string;
+    number: number;
     score?: [upperTeamScore: number, lowerTeamScore: number];
     participants?: [upperTeamName: string | null, lowerTeamName: string | null];
   }[];
@@ -198,6 +199,7 @@ function modifyRounds(
               ]
             : undefined;
         return {
+          number: match.position,
           id: match.id,
           score,
           participants,
@@ -272,6 +274,7 @@ export async function createTournamentRounds({
       data: rounds.flatMap((round) => {
         return round.matches.map((match) => ({
           id: match.id,
+          position: match.number,
           roundId: round.id,
         }));
       }),
