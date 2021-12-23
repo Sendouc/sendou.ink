@@ -12,7 +12,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   tiny?: boolean;
   loading?: boolean;
   loadingText?: string;
-  icon?: React.ReactNode;
+  icon?: JSX.Element;
   "data-cy"?: string;
 }
 
@@ -42,7 +42,7 @@ export function Button(props: ButtonProps) {
       disabled={loading}
       {...rest}
     >
-      {icon}
+      {icon && React.cloneElement(icon, { className: "button-icon" })}
       {loading && loadingText ? loadingText : children}
     </button>
   );

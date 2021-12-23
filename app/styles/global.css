@@ -162,7 +162,7 @@ button.loading {
   opacity: 0.6;
 }
 
-button > svg {
+button > .button-icon {
   width: 1.25rem;
   margin-inline-end: var(--s-1-5);
 }
