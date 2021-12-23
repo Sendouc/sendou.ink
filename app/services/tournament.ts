@@ -3,13 +3,18 @@ import {
   TOURNAMENT_CHECK_IN_CLOSING_MINUTES_FROM_START,
   TOURNAMENT_TEAM_ROSTER_MAX_SIZE,
 } from "~/constants";
-import { MapListIds, tournamentRoundsForDB } from "~/core/tournament/bracket";
+import {
+  EliminationBracket,
+  MapListIds,
+  tournamentRoundsForDB,
+} from "~/core/tournament/bracket";
 import { isTournamentAdmin } from "~/core/tournament/permissions";
 import { sortTeamsBySeed } from "~/core/tournament/utils";
 import * as Tournament from "~/models/Tournament";
 import * as TournamentTeam from "~/models/TournamentTeam";
 import * as TournamentTeamMember from "~/models/TournamentTeamMember";
 import * as TrustRelationship from "~/models/TrustRelationship";
+import * as TournamentBracket from "~/models/TournamentBracket";
 import { Serialized, Unpacked } from "~/utils";
 import { db } from "~/utils/db.server";
 
@@ -120,6 +125,71 @@ export async function findTournamentWithInviteCodes({
   return result;
 }
 
+export type BracketModified = EliminationBracket<BracketModifiedSide>;
+type BracketModifiedSide = {
+  bestOf: number;
+  matches: {
+    score?: [upperTeamScore: number, lowerTeamScore: number];
+    participants?: [upperTeamName: string | null, lowerTeamName: string | null];
+  }[];
+}[];
+
+export async function bracketById(bracketId: string): Promise<BracketModified> {
+  const bracket = await TournamentBracket.findById(bracketId);
+
+  if (!bracket) throw new Response("No bracket found", { status: 404 });
+
+  return {
+    winners: modifyRounds(
+      bracket.rounds
+        .filter((round) => round.position > 0)
+        .sort((a, b) => a.position - b.position)
+    ),
+    losers: modifyRounds(
+      bracket.rounds
+        .filter((round) => round.position < 0)
+        .sort((a, b) => b.position - a.position)
+    ),
+  };
+}
+
+function modifyRounds(
+  rounds: NonNullable<TournamentBracket.FindById>["rounds"]
+): BracketModifiedSide {
+  return rounds.map((round) => {
+    return {
+      bestOf: round._count.stages,
+      matches: round.matches.map((match) => {
+        const score =
+          match.results.length > 0
+            ? match.results.reduce(
+                (scores: [number, number], result) => {
+                  if (result.winner === "UPPER") scores[0]++;
+                  else scores[1]++;
+
+                  return scores;
+                },
+                [0, 0]
+              )
+            : undefined;
+        const participants: [string | null, string | null] | undefined =
+          match.participants.length > 0
+            ? [
+                match.participants.find((p) => p.order === "UPPER")?.team
+                  .name ?? null,
+                match.participants.find((p) => p.order === "LOWER")?.team
+                  .name ?? null,
+              ]
+            : undefined;
+        return {
+          score,
+          participants,
+        };
+      }),
+    };
+  });
+}
+
 export const createTournamentTeam = TournamentTeam.create;
 
 export async function createTournamentRounds({
@@ -163,6 +233,7 @@ export async function createTournamentRounds({
     participantsSeeded,
   });
 
+  // TODO: use models
   return db.$transaction([
     db.tournamentRound.createMany({
       data: rounds.map((round) => ({

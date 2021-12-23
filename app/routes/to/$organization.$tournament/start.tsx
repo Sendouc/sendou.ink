@@ -9,6 +9,7 @@ import {
   redirect,
   useLoaderData,
   useMatches,
+  useTransition,
 } from "remix";
 import invariant from "tiny-invariant";
 import { Alert } from "~/components/Alert";
@@ -67,7 +68,7 @@ export const action: ActionFunction = async ({ request, params, context }) => {
   });
 
   return redirect(
-    `/to/${organizationNameForUrl}/${tournamentNameForUrl}/bracket`
+    `/to/${organizationNameForUrl}/${tournamentNameForUrl}/bracket/${bracketId}`
   );
 };
 
@@ -116,7 +117,7 @@ export default function StartBracketTab() {
   const bracketId = brackets[0].id;
 
   const mapListForInput: MapListIds = {
-    losers: bracket.winners.map((round) => round.mapList),
+    losers: bracket.losers.map((round) => round.mapList),
     winners: bracket.winners.map((round) => round.mapList),
   };
 
@@ -171,6 +172,7 @@ function ActionButtons({
   showAlert: boolean;
   position: "top" | "bottom";
 }) {
+  const transition = useTransition();
   return (
     <>
       {position === "bottom" && showAlert && (
@@ -182,6 +184,8 @@ function ActionButtons({
           onClick={
             disabled ? () => dispatch({ type: "SHOW_ALERT" }) : undefined
           }
+          loadingText="Starting..."
+          loading={transition.state !== "idle"}
         >
           Start bracket
         </Button>
