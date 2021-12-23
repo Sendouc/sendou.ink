@@ -19,7 +19,6 @@ export const loader: LoaderFunction = async ({ params }) => {
   return typedJson(bracket);
 };
 
-// TODO: bottom bracket lines are wrong
 // TODO: make bracket a bit smaller
 export default function BracketTabWrapper() {
   const data = useLoaderData<BracketModified>();

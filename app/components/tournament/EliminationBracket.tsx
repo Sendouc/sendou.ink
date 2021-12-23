@@ -28,16 +28,24 @@ export function EliminationBracket({
           />
         ))}
         {bracketSide.map((round, i) => {
+          const nextRound: Unpacked<BracketModified["winners"]> | undefined =
+            bracketSide[i + 1];
+          const amountOfMatchesBetweenRoundsEqual =
+            round.matches.length === nextRound?.matches.length;
+          const drawStraightLines =
+            round.matches.length === 1 || amountOfMatchesBetweenRoundsEqual;
           return (
             <div
               key={round.id}
               className="tournament-bracket__elim__column"
               style={
                 {
-                  "--brackets-bottom-border-length":
-                    round.matches.length === 1 ? 0 : undefined,
-                  "--brackets-column-matches":
-                    round.matches.length === 1 ? 0 : round.matches.length,
+                  "--brackets-bottom-border-length": drawStraightLines
+                    ? 0
+                    : undefined,
+                  "--brackets-column-matches": drawStraightLines
+                    ? 0
+                    : round.matches.length,
                 } as any
               }
             >
@@ -48,7 +56,11 @@ export function EliminationBracket({
               </div>
               <div className="tournament-bracket__elim__lines">
                 {i !== bracketSide.length - 1 &&
-                  new Array(Math.ceil(round.matches.length / 2))
+                  new Array(
+                    amountOfMatchesBetweenRoundsEqual
+                      ? round.matches.length
+                      : Math.ceil(round.matches.length / 2)
+                  )
                     .fill(null)
                     .map((_, i) => <div key={i} />)}
               </div>
