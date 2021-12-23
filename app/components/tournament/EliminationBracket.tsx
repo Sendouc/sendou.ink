@@ -1,126 +1,96 @@
 import classNames from "classnames";
+import type { BracketModified } from "~/services/tournament";
+import { Unpacked } from "~/utils";
 
-const rounds = [
-  {
-    title: "Round 1",
-    bestOf: 3,
-    status: "DONE",
-  },
-  {
-    title: "Round 2",
-    bestOf: 5,
-    status: "INPROGRESS",
-  },
-  {
-    title: "Semifinals",
-    bestOf: 5,
-    status: "UPCOMING",
-  },
-  {
-    title: "Finals",
-    bestOf: 7,
-    status: "UPCOMING",
-  },
-] as const;
-
-export function EliminationBracket() {
+export function EliminationBracket({
+  bracketSide,
+}: {
+  bracketSide: BracketModified["winners"];
+}) {
   return (
     <div
       className="tournament-bracket__elim__container"
       style={
         {
-          "--brackets-columns": rounds.length,
-          "--brackets-matches": 4,
+          "--brackets-columns": bracketSide.length,
+          "--brackets-max-matches": bracketSide[0].matches.length,
         } as any
       }
     >
       <div className="tournament-bracket__elim__bracket">
-        {rounds.map((round, i) => (
+        {bracketSide.map((round, i) => (
           <RoundInfo
-            key={round.title}
-            round={round}
-            isLast={i === rounds.length - 1}
+            key={round.id}
+            title={round.name}
+            isLast={i === bracketSide.length - 1}
+            bestOf={round.bestOf}
+            status="UPCOMING"
           />
         ))}
-        <div
-          className="tournament-bracket__elim__column"
-          style={{ "--brackets-column-matches": 4 } as any}
-        >
-          <div className="tournament-bracket__elim__matches">
-            <Match />
-            <Match />
-            <Match />
-            <Match />
-          </div>
-          <div className="tournament-bracket__elim__lines">
-            <div />
-            <div />
-          </div>
-        </div>
-        <div
-          className="tournament-bracket__elim__column"
-          style={{ "--brackets-column-matches": 2 } as any}
-        >
-          <div className="tournament-bracket__elim__matches">
-            <Match />
-            <Match />
-          </div>
-          <div className="tournament-bracket__elim__lines">
-            <div />
-          </div>
-        </div>
-        <div
-          className="tournament-bracket__elim__column"
-          style={
-            {
-              "--brackets-column-matches": 0,
-              "--brackets-bottom-border-length": 0,
-            } as any
-          }
-        >
-          <div className="tournament-bracket__elim__matches">
-            <Match />
-          </div>
-          <div className="tournament-bracket__elim__lines">
-            <div />
-          </div>
-        </div>
-        <div className="tournament-bracket__elim__matches">
-          <Match />
-        </div>
+        {bracketSide.map((round, i) => {
+          return (
+            <div
+              key={round.id}
+              className="tournament-bracket__elim__column"
+              style={
+                {
+                  "--brackets-bottom-border-length":
+                    round.matches.length === 1 ? 0 : undefined,
+                  "--brackets-column-matches":
+                    round.matches.length === 1 ? 0 : round.matches.length,
+                } as any
+              }
+            >
+              <div className="tournament-bracket__elim__matches">
+                {round.matches.map((match) => {
+                  return <Match key={match.id} match={match} />;
+                })}
+              </div>
+              <div className="tournament-bracket__elim__lines">
+                {i !== bracketSide.length - 1 &&
+                  new Array(Math.ceil(round.matches.length / 2))
+                    .fill(null)
+                    .map((_, i) => <div key={i} />)}
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
 }
 
-function RoundInfo(props: {
-  round: {
-    title: string;
-    bestOf: number;
-    status: "DONE" | "INPROGRESS" | "UPCOMING";
-  };
+function RoundInfo({
+  title,
+  bestOf,
+  status,
+  isLast,
+}: {
+  title: string;
+  bestOf: number;
+  status: "DONE" | "INPROGRESS" | "UPCOMING";
   isLast?: boolean;
 }) {
   return (
     <div
       className={classNames("tournament-bracket__elim__roundInfo", {
-        highlighted: props.round.status === "INPROGRESS",
-        last: props.isLast,
+        highlighted: status === "INPROGRESS",
+        last: isLast,
       })}
     >
-      <div className="tournament-bracket__elim__roundTitle">
-        {props.round.title}
-      </div>
-      {props.round.status !== "DONE" && (
-        <div className="tournament-bracket__elim__bestOf">
-          Bo{props.round.bestOf}
-        </div>
+      <div className="tournament-bracket__elim__roundTitle">{title}</div>
+      {status !== "DONE" && (
+        <div className="tournament-bracket__elim__bestOf">Bo{bestOf}</div>
       )}
     </div>
   );
 }
 
-export function Match() {
+export function Match({
+  match,
+}: {
+  match: Unpacked<Unpacked<BracketModified["winners"]>["matches"]>;
+}) {
   return (
     <div className="tournament-bracket__elim__match">
       <div className="tournament-bracket__elim__roundNumber">1</div>
@@ -130,7 +100,14 @@ export function Match() {
           "tournament-bracket__elim__teamOne"
         )}
       >
-        Team Olive <span className="tournament-bracket__elim__score">1</span>
+        {match.participants?.[0]}{" "}
+        <span
+          className={classNames("tournament-bracket__elim__score", {
+            "visibility-hidden": typeof match.score?.[0] !== "number",
+          })}
+        >
+          {match.score?.[0] ?? 0}
+        </span>
       </div>
       <div
         className={classNames(
@@ -138,7 +115,14 @@ export function Match() {
           "tournament-bracket__elim__teamTwo"
         )}
       >
-        Chimera <span className="tournament-bracket__elim__score">1</span>
+        {match.participants?.[1]}{" "}
+        <span
+          className={classNames("tournament-bracket__elim__score", {
+            "visibility-hidden": typeof match.score?.[0] !== "number",
+          })}
+        >
+          {match.score?.[1] ?? 0}
+        </span>
       </div>
     </div>
   );

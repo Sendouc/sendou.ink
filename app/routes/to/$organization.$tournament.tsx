@@ -64,6 +64,7 @@ export default function TournamentPage() {
     const tournamentIsOver = false;
 
     if (tournamentHasStarted(data.brackets)) {
+      // TODO: link broken
       result.push({ code: "bracket", text: "Bracket" });
       if (!tournamentIsOver) {
         result.push({ code: "streams", text: "Streams (4)" });

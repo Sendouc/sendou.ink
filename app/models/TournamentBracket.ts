@@ -8,6 +8,7 @@ export function findById(bracketId: string) {
     select: {
       rounds: {
         select: {
+          id: true,
           position: true,
           _count: {
             select: {
@@ -16,6 +17,7 @@ export function findById(bracketId: string) {
           },
           matches: {
             select: {
+              id: true,
               participants: {
                 select: {
                   team: {

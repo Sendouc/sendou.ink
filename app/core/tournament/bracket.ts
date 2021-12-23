@@ -89,26 +89,33 @@ export function getRoundsDefaultBestOf(
   };
 }
 
+export function winnersRoundNames(count: number, isSE: boolean) {
+  return new Array(count).fill(null).map((_, i) => {
+    if (i === count - 4 + Number(isSE)) {
+      return "Winners' Semifinals";
+    }
+    if (i === count - 3 + Number(isSE)) return "Winners' Finals";
+    if (i === count - 2 + Number(isSE)) return "Grand Finals";
+    if (!isSE && i === count - 1) return "Bracket Reset";
+    return `Winners' Round ${i + 1}`;
+  });
+}
+
+export function losersRoundNames(count: number) {
+  return new Array(count)
+    .fill(null)
+    .map((_, i) =>
+      i === count - 1 ? "Losers' Finals" : `Losers' Round ${i + 1}`
+    );
+}
+
 export function getRoundNames(bracket: Bracket): EliminationBracket<string[]> {
   const { winners: winnersRoundCount, losers: losersRoundCount } =
     countRounds(bracket);
 
   return {
-    winners: new Array(winnersRoundCount).fill(null).map((_, i) => {
-      const isSE = bracket.losers.length === 0;
-      if (i === winnersRoundCount - 4 + Number(isSE)) {
-        return "Winners' Semifinals";
-      }
-      if (i === winnersRoundCount - 3 + Number(isSE)) return "Winners' Finals";
-      if (i === winnersRoundCount - 2 + Number(isSE)) return "Grand Finals";
-      if (!isSE && i === winnersRoundCount - 1) return "Bracket Reset";
-      return `Winners' Round ${i + 1}`;
-    }),
-    losers: new Array(losersRoundCount)
-      .fill(null)
-      .map((_, i) =>
-        i === losersRoundCount - 1 ? "Losers' Finals" : `Losers' Round ${i + 1}`
-      ),
+    winners: winnersRoundNames(winnersRoundCount, losersRoundCount === 0),
+    losers: losersRoundNames(losersRoundCount),
   };
 }
 

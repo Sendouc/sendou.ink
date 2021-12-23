@@ -5,16 +5,19 @@ import {
 } from "~/constants";
 import {
   EliminationBracket,
+  EliminationBracketSide,
+  losersRoundNames,
   MapListIds,
   tournamentRoundsForDB,
+  winnersRoundNames,
 } from "~/core/tournament/bracket";
 import { isTournamentAdmin } from "~/core/tournament/permissions";
 import { sortTeamsBySeed } from "~/core/tournament/utils";
 import * as Tournament from "~/models/Tournament";
+import * as TournamentBracket from "~/models/TournamentBracket";
 import * as TournamentTeam from "~/models/TournamentTeam";
 import * as TournamentTeamMember from "~/models/TournamentTeamMember";
 import * as TrustRelationship from "~/models/TrustRelationship";
-import * as TournamentBracket from "~/models/TournamentBracket";
 import { Serialized, Unpacked } from "~/utils";
 import { db } from "~/utils/db.server";
 
@@ -127,8 +130,11 @@ export async function findTournamentWithInviteCodes({
 
 export type BracketModified = EliminationBracket<BracketModifiedSide>;
 type BracketModifiedSide = {
+  id: string;
+  name: string;
   bestOf: number;
   matches: {
+    id: string;
     score?: [upperTeamScore: number, lowerTeamScore: number];
     participants?: [upperTeamName: string | null, lowerTeamName: string | null];
   }[];
@@ -139,29 +145,39 @@ export async function bracketById(bracketId: string): Promise<BracketModified> {
 
   if (!bracket) throw new Response("No bracket found", { status: 404 });
 
+  const winnersRounds = bracket.rounds
+    .filter((round) => round.position > 0)
+    .sort((a, b) => a.position - b.position);
+
+  const losersRounds = bracket.rounds
+    .filter((round) => round.position < 0)
+    .sort((a, b) => b.position - a.position);
+
+  console.log("losersRounds.length", losersRounds.length);
+
   return {
-    winners: modifyRounds(
-      bracket.rounds
-        .filter((round) => round.position > 0)
-        .sort((a, b) => a.position - b.position)
-    ),
-    losers: modifyRounds(
-      bracket.rounds
-        .filter((round) => round.position < 0)
-        .sort((a, b) => b.position - a.position)
-    ),
+    winners: modifyRounds(winnersRounds, "winners", losersRounds.length === 0),
+    losers: modifyRounds(losersRounds, "losers", false),
   };
 }
 
 function modifyRounds(
-  rounds: NonNullable<TournamentBracket.FindById>["rounds"]
+  rounds: NonNullable<TournamentBracket.FindById>["rounds"],
+  side: EliminationBracketSide,
+  isSE: boolean
 ): BracketModifiedSide {
-  return rounds.map((round) => {
+  const roundNames =
+    side === "winners"
+      ? winnersRoundNames(rounds.length, isSE)
+      : losersRoundNames(rounds.length);
+  return rounds.map((round, i) => {
     return {
+      id: round.id,
+      name: roundNames[i],
       bestOf: round._count.stages,
       matches: round.matches.map((match) => {
         const score =
-          match.results.length > 0
+          match.participants.length === 2
             ? match.results.reduce(
                 (scores: [number, number], result) => {
                   if (result.winner === "UPPER") scores[0]++;
@@ -182,6 +198,7 @@ function modifyRounds(
               ]
             : undefined;
         return {
+          id: match.id,
           score,
           participants,
         };
