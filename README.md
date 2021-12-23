@@ -62,7 +62,7 @@ You can give a variation as a flag to the seeding script changing what exactly i
 - [ ] Admin can change team captain
 - [x] Admin can randomize and rerandomize maps
 - [x] Admin can change seeding
-- [ ] Admin can start the tournament
+- [x] Admin can start the tournament
 - [ ] Table design to support arbitrary brackets
 - [x] Generate SE bracket from seeds
 - [x] Generate DE bracket from seeds

@@ -8,6 +8,7 @@ import type {
   UseTournamentRoundsState,
 } from "./types";
 
+// TODO: could save this to local storage but need to handle amount of rounds changing
 export function useTournamentRounds(args: UseTournamentRoundsArgs) {
   return React.useReducer(
     (oldState: UseTournamentRoundsState, action: UseTournamentRoundsAction) => {
