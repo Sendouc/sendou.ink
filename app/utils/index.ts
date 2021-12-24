@@ -1,6 +1,7 @@
 import { json } from "remix";
 import invariant from "tiny-invariant";
 import { useLocation } from "remix";
+import type { CSSProperties } from "react";
 
 export function makeTitle(endOfTitle?: string) {
   return endOfTitle ? `sendou.ink | ${endOfTitle}` : "sendou.ink";
@@ -89,5 +90,14 @@ export type MyReducerAction<
     }
   : { type: K };
 
-// TODO:
-// export type InferredSerializedAPI<T> = Serialized<Prisma.PromiseReturnType<T>>;
+export interface MyCSSProperties extends CSSProperties {
+  "--tournaments-bg"?: string;
+  "--tournaments-text"?: string;
+  "--tournaments-text-transparent"?: string;
+  "--action-section-icon-color"?: string;
+  "--brackets-columns"?: number;
+  "--brackets-max-matches"?: number;
+  "--brackets-bottom-border-length"?: number;
+  "--brackets-column-matches"?: number;
+  "--tabs-count"?: number;
+}

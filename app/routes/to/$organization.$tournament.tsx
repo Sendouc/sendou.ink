@@ -19,6 +19,7 @@ import {
   FindTournamentByNameForUrlI,
 } from "~/services/tournament";
 import { makeTitle } from "~/utils";
+import type { MyCSSProperties } from "~/utils";
 import { useUser } from "~/utils/hooks";
 import tournamentStylesUrl from "../../styles/tournament.css";
 
@@ -86,24 +87,25 @@ export default function TournamentPage() {
     return result;
   })();
 
+  const tournamentContainerStyle: MyCSSProperties = {
+    "--tournaments-bg": data.bannerBackground,
+    "--tournaments-text": data.CSSProperties.text,
+    "--tournaments-text-transparent": data.CSSProperties.textTransparent,
+    // todo: could make a TS helper type for this that checks for leading --
+  };
+
+  const linksContainerStyle: MyCSSProperties = {
+    "--tabs-count": navLinks.length,
+  };
+
   return (
-    <div
-      className="tournament__container"
-      style={
-        {
-          "--tournaments-bg": data.bannerBackground,
-          "--tournaments-text": data.CSSProperties.text,
-          "--tournaments-text-transparent": data.CSSProperties.textTransparent,
-          // todo: could make a TS helper type for this that checks for leading --
-        } as Record<string, string>
-      }
-    >
+    <div className="tournament__container" style={tournamentContainerStyle}>
       <InfoBanner />
       <div className="tournament__container__spacer" />
       <div className="tournament__links-overflower">
         <div className="tournament__links-border">
           <div
-            style={{ "--tabs-count": navLinks.length } as any}
+            style={linksContainerStyle}
             className="tournament__links-container"
           >
             {navLinks.map(({ code, text, icon }) => (

@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import invariant from "tiny-invariant";
 import type { BracketModified } from "~/services/tournament";
-import { Unpacked } from "~/utils";
+import { MyCSSProperties, Unpacked } from "~/utils";
 
 export function EliminationBracket({
   bracketSide,
@@ -10,16 +10,12 @@ export function EliminationBracket({
   bracketSide: BracketModified["winners"];
   ownTeamName?: string;
 }) {
+  const style: MyCSSProperties = {
+    "--brackets-columns": bracketSide.length,
+    "--brackets-max-matches": bracketSide[0].matches.length,
+  };
   return (
-    <div
-      className="tournament-bracket__elim__container"
-      style={
-        {
-          "--brackets-columns": bracketSide.length,
-          "--brackets-max-matches": bracketSide[0].matches.length,
-        } as any
-      }
-    >
+    <div className="tournament-bracket__elim__container" style={style}>
       <div className="tournament-bracket__elim__bracket">
         {bracketSide.map((round, i) => (
           <RoundInfo
@@ -68,20 +64,20 @@ export function EliminationBracket({
               if (matchOne.participants?.includes(null)) return "bottom-only";
               return "top-only";
             });
+
+          const style: MyCSSProperties = {
+            "--brackets-bottom-border-length": drawStraightLines
+              ? 0
+              : undefined,
+            "--brackets-column-matches": drawStraightLines
+              ? 0
+              : round.matches.length,
+          };
           return (
             <div
               key={round.id}
               className="tournament-bracket__elim__column"
-              style={
-                {
-                  "--brackets-bottom-border-length": drawStraightLines
-                    ? 0
-                    : undefined,
-                  "--brackets-column-matches": drawStraightLines
-                    ? 0
-                    : round.matches.length,
-                } as any
-              }
+              style={style}
             >
               <div className="tournament-bracket__elim__matches">
                 {round.matches.map((match) => {
