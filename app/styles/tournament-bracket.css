@@ -82,6 +82,13 @@
   place-self: flex-start;
 }
 
+.tournament-bracket__elim__team.own {
+  /* TODO: refactor this to tournaments-bg */
+  background: var(--tournaments-background);
+  color: var(--tournaments-text);
+  font-weight: var(--bold);
+}
+
 .tournament-bracket__elim__teamOne {
   border-radius: var(--rounded) var(--rounded) 0 0;
   grid-area: team-one;

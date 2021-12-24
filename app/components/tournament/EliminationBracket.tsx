@@ -5,8 +5,10 @@ import { Unpacked } from "~/utils";
 
 export function EliminationBracket({
   bracketSide,
+  ownTeamName,
 }: {
   bracketSide: BracketModified["winners"];
+  ownTeamName?: string;
 }) {
   return (
     <div
@@ -91,6 +93,7 @@ export function EliminationBracket({
                       }
                       key={match.id}
                       match={match}
+                      ownTeamName={ownTeamName}
                     />
                   );
                 })}
@@ -138,9 +141,11 @@ function RoundInfo({
 export function Match({
   match,
   hidden,
+  ownTeamName,
 }: {
   match: Unpacked<Unpacked<BracketModified["winners"]>["matches"]>;
   hidden?: boolean;
+  ownTeamName?: string;
 }) {
   return (
     <div className={classNames("tournament-bracket__elim__match", { hidden })}>
@@ -150,7 +155,10 @@ export function Match({
       <div
         className={classNames(
           "tournament-bracket__elim__team",
-          "tournament-bracket__elim__teamOne"
+          "tournament-bracket__elim__teamOne",
+          {
+            own: ownTeamName && ownTeamName === match.participants?.[0],
+          }
         )}
       >
         {match.participants?.[0]}{" "}
@@ -165,7 +173,10 @@ export function Match({
       <div
         className={classNames(
           "tournament-bracket__elim__team",
-          "tournament-bracket__elim__teamTwo"
+          "tournament-bracket__elim__teamTwo",
+          {
+            own: ownTeamName && ownTeamName === match.participants?.[1],
+          }
         )}
       >
         {match.participants?.[1]}{" "}
