@@ -170,9 +170,12 @@ export function eliminationBracket(
   return bracket;
 
   function createMatch(args: Omit<Match, "id" | "number">): Match {
+    const number = [args.lowerTeam, args.upperTeam].includes("BYE")
+      ? 0
+      : matchNumber++;
     return {
       id: uuidv4(),
-      number: matchNumber++,
+      number,
       ...args,
     };
   }
