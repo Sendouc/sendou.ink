@@ -1,4 +1,5 @@
 import classNames from "classnames";
+import invariant from "tiny-invariant";
 import type { BracketModified } from "~/services/tournament";
 import { Unpacked } from "~/utils";
 
@@ -27,13 +28,44 @@ export function EliminationBracket({
             status="UPCOMING"
           />
         ))}
-        {bracketSide.map((round, i) => {
+        {bracketSide.map((round, roundI) => {
           const nextRound: Unpacked<BracketModified["winners"]> | undefined =
-            bracketSide[i + 1];
+            bracketSide[roundI + 1];
           const amountOfMatchesBetweenRoundsEqual =
             round.matches.length === nextRound?.matches.length;
           const drawStraightLines =
             round.matches.length === 1 || amountOfMatchesBetweenRoundsEqual;
+          const theKindOfLinesToDraw: (
+            | undefined
+            | "no-line"
+            | "bottom-only"
+            | "top-only"
+          )[] = new Array(
+            amountOfMatchesBetweenRoundsEqual
+              ? round.matches.length
+              : Math.ceil(round.matches.length / 2)
+          )
+            .fill(null)
+            .map((_, lineI) => {
+              // lines   0   1   2   3
+              // rounds 0 1 2 3 4 5 6 7
+              if (roundI !== 0 || round.name.includes("Losers")) {
+                return undefined;
+              }
+              const matchOne = round.matches[lineI * 2];
+              const matchTwo = round.matches[lineI * 2 + 1];
+              invariant(matchOne, "matchOne is undefined");
+              invariant(matchTwo, "matchTwo is undefined");
+
+              if (
+                matchOne.participants?.includes(null) &&
+                matchTwo.participants?.includes(null)
+              ) {
+                return "no-line";
+              }
+              if (matchOne.participants?.includes(null)) return "bottom-only";
+              return "top-only";
+            });
           return (
             <div
               key={round.id}
@@ -51,18 +83,23 @@ export function EliminationBracket({
             >
               <div className="tournament-bracket__elim__matches">
                 {round.matches.map((match) => {
-                  return <Match key={match.id} match={match} />;
+                  // TODO: handle losers
+                  return (
+                    <Match
+                      hidden={
+                        roundI === 0 && match.participants?.includes(null)
+                      }
+                      key={match.id}
+                      match={match}
+                    />
+                  );
                 })}
               </div>
               <div className="tournament-bracket__elim__lines">
-                {i !== bracketSide.length - 1 &&
-                  new Array(
-                    amountOfMatchesBetweenRoundsEqual
-                      ? round.matches.length
-                      : Math.ceil(round.matches.length / 2)
-                  )
-                    .fill(null)
-                    .map((_, i) => <div key={i} />)}
+                {roundI !== bracketSide.length - 1 &&
+                  theKindOfLinesToDraw.map((className, i) => (
+                    <div className={className} key={i} />
+                  ))}
               </div>
             </div>
           );
@@ -100,11 +137,13 @@ function RoundInfo({
 
 export function Match({
   match,
+  hidden,
 }: {
   match: Unpacked<Unpacked<BracketModified["winners"]>["matches"]>;
+  hidden?: boolean;
 }) {
   return (
-    <div className="tournament-bracket__elim__match">
+    <div className={classNames("tournament-bracket__elim__match", { hidden })}>
       <div className="tournament-bracket__elim__roundNumber">
         {match.number}
       </div>

@@ -63,6 +63,10 @@
   row-gap: 2px;
 }
 
+.tournament-bracket__elim__match.hidden {
+  visibility: hidden;
+}
+
 .tournament-bracket__elim__roundNumber {
   font-size: var(--fonts-xs);
   grid-area: round-number;
@@ -111,6 +115,7 @@
 }
 
 .tournament-bracket__elim__lines > div {
+  position: relative;
   width: calc(var(--brackets-match-height) / 4);
   height: calc(
     2px + var(--brackets-match-height) *
@@ -121,4 +126,20 @@
     var(--theme-transparent);
   border-inline-end: 2px solid var(--theme-transparent);
   border-radius: 0 var(--rounded) var(--rounded) 0;
+}
+
+.tournament-bracket__elim__lines > .bottom-only {
+  border-top: none;
+  border-radius: 0 0 var(--rounded) 0;
+}
+
+.bottom-only::after {
+  position: absolute;
+  top: 25%;
+  right: -4px;
+  width: 3px;
+  height: 60%;
+  background: var(--bg);
+  content: "";
+  transform: translate(-50%, -50%);
 }
