@@ -83,8 +83,7 @@
 }
 
 .tournament-bracket__elim__team.own {
-  /* TODO: refactor this to tournaments-bg */
-  background: var(--tournaments-background);
+  background: var(--tournaments-bg);
   color: var(--tournaments-text);
   font-weight: var(--bold);
 }

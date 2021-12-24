@@ -13,7 +13,7 @@
 .tournament__action-section {
   width: 100%;
   padding: var(--s-1-5);
-  background: var(--tournaments-background);
+  background: var(--tournaments-bg);
   border-radius: var(--rounded);
 }
 
@@ -47,7 +47,7 @@
   display: inline-block;
   min-width: 100%;
   padding: var(--s-1-5);
-  background: var(--tournaments-background);
+  background: var(--tournaments-bg);
   border-radius: var(--rounded);
 }
 
@@ -102,7 +102,7 @@
 .info-banner {
   width: 100%;
   padding: var(--s-6);
-  background: var(--tournaments-background);
+  background: var(--tournaments-bg);
   border-radius: var(--rounded);
   color: var(--tournaments-text);
 }
