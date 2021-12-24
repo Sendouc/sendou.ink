@@ -1,4 +1,4 @@
-import { Stage } from ".prisma/client";
+import { Stage, TeamOrder } from ".prisma/client";
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 import { eliminationBracket } from "./algorithms";
@@ -88,14 +88,13 @@ TournamentRoundsForDB("Generates rounds correctly", () => {
 
     for (const match of round.matches) {
       for (const participant of match.participants) {
-        if (round.position !== 1) {
-          throw new Error("Participant found not first round");
+        if (round.position !== 1 && round.position !== 2) {
+          throw new Error("Participant found not first two rounds");
         }
         if (typeof participant.team === "string") {
           uniqueParticipants.add(participant.team);
           continue;
         }
-        assert.not.ok(uniqueParticipants.has(participant.team.id));
         uniqueParticipants.add(participant.team.id);
       }
     }
@@ -104,6 +103,34 @@ TournamentRoundsForDB("Generates rounds correctly", () => {
   assert.equal(max, roundsCounted.winners);
   assert.equal(min, -roundsCounted.losers);
   assert.equal(uniqueParticipants.size, TEAM_COUNT + 1); // + BYE
+});
+
+TournamentRoundsForDB.only("Advances bye to right spot", () => {
+  const TEAM_COUNT = 7;
+  const bracketForDb = tournamentRoundsForDB({
+    mapList,
+    bracketType: "SE",
+    participantsSeeded: new Array(TEAM_COUNT)
+      .fill(null)
+      .map((_, i) => i + 1)
+      .map(String)
+      .map((id) => ({ id })),
+  });
+
+  let roundTwoParticipants = 0;
+  let teamOrder: TeamOrder | null = null;
+  for (const round of bracketForDb) {
+    if (round.position !== 2) continue;
+    for (const match of round.matches) {
+      for (const participant of match.participants) {
+        roundTwoParticipants++;
+        teamOrder = participant.order;
+      }
+    }
+  }
+
+  assert.equal(roundTwoParticipants, 1);
+  assert.equal(teamOrder, "UPPER");
 });
 
 CountBracketRounds.run();

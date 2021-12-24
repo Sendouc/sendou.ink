@@ -230,7 +230,8 @@ export async function seed(variation?: "check-in") {
 
     return prisma.tournament.create({
       data: {
-        bannerBackground: "linear-gradient(to bottom, #9796f0, #fbc7d4)",
+        bannerBackground:
+          "radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%)",
         bannerTextHSLArgs: "231, 9%, 16%",
         checkInStartTime:
           variation === "check-in" ? lastFullHour : new Date(2025, 11, 17, 11),

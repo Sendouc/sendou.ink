@@ -1,4 +1,5 @@
 import type { BracketType, Stage, TeamOrder } from ".prisma/client";
+import clone from "just-clone";
 import invariant from "tiny-invariant";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
@@ -227,7 +228,7 @@ export function tournamentRoundsForDB({
   const bracket = eliminationBracket(participantsSeeded.length, bracketType);
   const result: TournamentRoundForDB[] = [];
 
-  const groupedRounds = groupMatchesByRound(bracket);
+  const groupedRounds = advanceByes(groupMatchesByRound(bracket));
 
   for (const [sideI, side] of [
     groupedRounds.winners,
@@ -318,6 +319,90 @@ function groupMatchesByRound(bracket: Bracket): EliminationBracket<Match[][]> {
     matchesIncluded.add(match.id);
     result[side][depth - 1]?.push(match);
   }
+}
+
+function advanceByes(
+  rounds_: EliminationBracket<Match[][]>
+): EliminationBracket<Match[][]> {
+  const result = clone(rounds_);
+
+  const teamsForSecondRound = new Map<
+    number,
+    ["upperTeam" | "lowerTeam", number]
+  >();
+  for (const round of result.winners[0]) {
+    const winnerDestinationMatch = round.winnerDestinationMatch;
+    invariant(winnerDestinationMatch, "winnerDestinationmatch is undefined");
+
+    if (
+      round.upperTeam &&
+      round.upperTeam !== "BYE" &&
+      round.lowerTeam === "BYE"
+    ) {
+      teamsForSecondRound.set(winnerDestinationMatch.number, [
+        resolveSide(round, winnerDestinationMatch, result),
+        round.upperTeam,
+      ]);
+    } else if (
+      round.lowerTeam &&
+      round.lowerTeam !== "BYE" &&
+      round.upperTeam === "BYE"
+    ) {
+      teamsForSecondRound.set(winnerDestinationMatch.number, [
+        resolveSide(round, winnerDestinationMatch, result),
+        round.lowerTeam,
+      ]);
+    }
+  }
+
+  for (const [i, round] of result.winners[1].entries()) {
+    const teamForSecondRound = teamsForSecondRound.get(round.number);
+    if (!teamForSecondRound) continue;
+
+    const [key, teamNumber] = teamForSecondRound;
+    result.winners[1][i] = { ...result.winners[1][i], [key]: teamNumber };
+  }
+
+  return result;
+}
+
+function resolveSide(
+  currentMatch: Match,
+  destinationMatch: Match,
+  rounds: EliminationBracket<Match[][]>
+): "upperTeam" | "lowerTeam" {
+  const matchNumbers = getWinnerDestinationMatchIdToMatchNumbers(rounds).get(
+    destinationMatch.id
+  );
+  console.log(matchNumbers);
+  const otherNumber = matchNumbers?.find((num) => num !== currentMatch.number);
+  invariant(
+    otherNumber,
+    `no otherNumber; matchNumbers length is not 2 was: ${matchNumbers?.length}`
+  );
+
+  if (otherNumber > currentMatch.number) return "upperTeam";
+  return "lowerTeam";
+}
+
+function getWinnerDestinationMatchIdToMatchNumbers(
+  rounds: EliminationBracket<Match[][]>
+): Map<string, number[]> {
+  return rounds.winners[0].reduce((map, round) => {
+    invariant(
+      round.winnerDestinationMatch,
+      "round.winnerDestinationMatch is undefined"
+    );
+    if (!map.has(round.winnerDestinationMatch.id)) {
+      return map.set(round.winnerDestinationMatch.id, [round.number]);
+    }
+
+    const arr = map.get(round.winnerDestinationMatch.id);
+    invariant(arr, "arr is undefined");
+    arr.push(round.number);
+
+    return map;
+  }, new Map<string, number[]>());
 }
 
 export type EliminationBracket<T> = {

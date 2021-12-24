@@ -80,6 +80,7 @@ You can give a variation as a flag to the seeding script changing what exactly i
 ### After MVP
 
 - [ ] ESLint (button type="button"...)
+- [ ] Subs list: (new tab before tournament starts -> remove sub automatically if they join a team)
 - [ ] Detailed match reports from Lanista
 - [ ] Stats
 - [ ] Routine to calculate Trueskill

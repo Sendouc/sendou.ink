@@ -64,6 +64,7 @@ MapListForRounds(
   }
 );
 
+// TODO: flaky
 MapListForRounds("Should not repeat map in adjacent rounds", () => {
   for (const side of [mapList.winners, mapList.losers]) {
     let maps: string[] = [];
