@@ -57,7 +57,7 @@ export function ActionSectionBeforeStartContent({
 
   if (!checkInHasStarted && !teamHasEnoughMembers) {
     return (
-      <ActionSectionWrapper icon="warning">
+      <ActionSectionWrapper icon="warning" data-cy="team-size-alert">
         <AlertIcon /> You need at least 4 players in your roster to play
       </ActionSectionWrapper>
     );

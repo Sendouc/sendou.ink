@@ -140,7 +140,7 @@ export default function ManageRosterPage() {
   return (
     <div className="tournament__manage-roster">
       {ownTeam.members.length >= TOURNAMENT_TEAM_ROSTER_MAX_SIZE && (
-        <Alert type="info" data-cy="team-size-alert">
+        <Alert type="info">
           Your team is full - more players can't be added
         </Alert>
       )}

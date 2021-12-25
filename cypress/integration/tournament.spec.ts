@@ -27,7 +27,7 @@ describe("Before tournament starts", () => {
     cy.getCy("log-in-to-join-button");
 
     cy.getCy("map-pool-nav-link").click();
-    cy.contains("24 maps");
+    cy.contains("26 maps");
     cy.get('[alt="Moray Towers"]').should(
       "have.class",
       "map-pool__stage-image-disabled"
