@@ -32,28 +32,6 @@ export function getLogInUrl(location: ReturnType<typeof useLocation>) {
   )}`;
 }
 
-/** Get fields from `request.formData()`. Throw an error if the formData doesn't contain a requested field.  */
-export async function formDataFromRequest<T extends string>({
-  request,
-  fields,
-}: {
-  request: Request;
-  fields: T[];
-}): Promise<Record<T, string>> {
-  const formData = await request.formData();
-  let result: Partial<Record<T, string>> = {};
-
-  for (const field of fields) {
-    const value = formData.get(field);
-
-    invariant(typeof value === "string", `Expected ${field} to be string`);
-
-    result[field] = value;
-  }
-
-  return result as Record<T, string>;
-}
-
 /** @link https://stackoverflow.com/a/69413184 */
 // @ts-expect-error
 export const assertType = <A, B extends A>() => {};

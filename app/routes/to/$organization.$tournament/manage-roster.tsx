@@ -23,7 +23,7 @@ import {
 import { getTrustingUsers } from "~/services/user";
 import type { FindManyByTrustReceiverId } from "~/models/TrustRelationship";
 import styles from "~/styles/tournament-manage-roster.css";
-import { formDataFromRequest, requireUser } from "~/utils";
+import { requireUser } from "~/utils";
 import { useBaseURL, useIsSubmitting, useTimeoutState } from "~/utils/hooks";
 import { Catcher } from "~/components/Catcher";
 
@@ -42,10 +42,9 @@ export const action: ActionFunction = async ({
   request,
   context,
 }): Promise<Response | ActionData> => {
-  const { userId, teamId } = await formDataFromRequest({
-    request,
-    fields: ["userId", "teamId"],
-  });
+  const data = Object.fromEntries(await request.formData());
+  invariant(typeof data.userId === "string", "Invalid type for userId");
+  invariant(typeof data.teamId === "string", "Invalid type for teamId");
 
   const user = requireUser(context);
 
@@ -53,16 +52,16 @@ export const action: ActionFunction = async ({
     case "POST":
       try {
         await putPlayerToTeam({
-          teamId,
+          teamId: data.teamId,
           captainId: user.id,
-          newPlayerId: userId,
+          newPlayerId: data.userId,
         });
       } catch (e) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
           if (e.code === "P2002" && e.message.includes("`tournamentId`")) {
             return {
               fieldErrors: { userId: "This player is already in a team." },
-              fields: { userId },
+              fields: { userId: data.userId },
             };
           }
         }
@@ -73,8 +72,8 @@ export const action: ActionFunction = async ({
     case "DELETE":
       await removePlayerFromTeam({
         captainId: user.id,
-        playerId: userId,
-        teamId,
+        playerId: data.userId,
+        teamId: data.teamId,
       });
       return new Response("Player deleted from team", { status: 200 });
     default:
