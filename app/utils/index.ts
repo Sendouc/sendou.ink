@@ -1,7 +1,5 @@
-import { json } from "remix";
-import invariant from "tiny-invariant";
-import { useLocation } from "remix";
 import type { CSSProperties } from "react";
+import { json, useLocation } from "remix";
 
 export function makeTitle(endOfTitle?: string) {
   return endOfTitle ? `sendou.ink | ${endOfTitle}` : "sendou.ink";

@@ -31,6 +31,11 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
+export enum ManageRosterAction {
+  ADD_PLAYER = "ADD_PLAYER",
+  DELETE_PLAYER = "DELETE_PLAYER",
+}
+
 type ActionData = {
   fieldErrors?: { userId?: string | undefined };
   fields?: {
@@ -45,11 +50,12 @@ export const action: ActionFunction = async ({
   const data = Object.fromEntries(await request.formData());
   invariant(typeof data.userId === "string", "Invalid type for userId");
   invariant(typeof data.teamId === "string", "Invalid type for teamId");
+  invariant(typeof data._action === "string", "Invalid type for _action");
 
   const user = requireUser(context);
 
-  switch (request.method) {
-    case "POST":
+  switch (data._action) {
+    case ManageRosterAction.ADD_PLAYER: {
       try {
         await putPlayerToTeam({
           teamId: data.teamId,
@@ -69,18 +75,21 @@ export const action: ActionFunction = async ({
       }
 
       return new Response("Added player to team", { status: 200 });
-    case "DELETE":
+    }
+    case ManageRosterAction.DELETE_PLAYER: {
       await removePlayerFromTeam({
         captainId: user.id,
         playerId: data.userId,
         teamId: data.teamId,
       });
       return new Response("Player deleted from team", { status: 200 });
-    default:
+    }
+    default: {
       return new Response(undefined, {
         status: 405,
         headers: { Allow: "POST, DELETE" },
       });
+    }
   }
 };
 
@@ -158,6 +167,11 @@ export default function ManageRosterPage() {
           {trustingUsers.length > 0 && (
             <div className="tournament__manage-roster__actions__section">
               <Form method="post">
+                <input
+                  type="hidden"
+                  name="_action"
+                  value={ManageRosterAction.ADD_PLAYER}
+                />
                 <input type="hidden" name="teamId" value={ownTeam.id} />
                 <label htmlFor="userId">
                   Add players you previously played with
@@ -178,7 +192,6 @@ export default function ManageRosterPage() {
                 <Button
                   className="tournament__manage-roster__input__button"
                   type="submit"
-                  loadingText="Adding..."
                   loading={isSubmitting}
                 >
                   Add to roster

@@ -1,4 +1,5 @@
-import { useFetcher } from "remix";
+import { Form, useTransition } from "remix";
+import { ManageRosterAction } from "~/routes/to/$organization.$tournament/manage-roster";
 import { useUser } from "~/utils/hooks";
 import { Button } from "../Button";
 
@@ -76,20 +77,19 @@ function DeleteFromRosterButton({
   playerId: string;
   teamId: string;
 }) {
-  const fetcher = useFetcher();
+  const transition = useTransition();
   return (
-    <fetcher.Form
-      method="delete"
-      action={`/api/tournamentTeam/${teamId}/remove-player/${playerId}`}
-    >
-      <Button
-        variant="destructive"
-        tiny
-        loadingText="Removing..."
-        loading={fetcher.state !== "idle"}
-      >
+    <Form method="post">
+      <input
+        type="hidden"
+        name="_action"
+        value={ManageRosterAction.DELETE_PLAYER}
+      />
+      <input type="hidden" name="teamId" value={teamId} />
+      <input type="hidden" name="userId" value={playerId} />
+      <Button variant="destructive" tiny loading={transition.state !== "idle"}>
         Remove
       </Button>
-    </fetcher.Form>
+    </Form>
   );
 }
