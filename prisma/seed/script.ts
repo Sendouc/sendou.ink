@@ -11,7 +11,6 @@ import {
 import { readFile } from "fs/promises";
 import path from "path";
 import crypto from "crypto";
-import shuffle from "just-shuffle";
 const prisma = new PrismaClient();
 
 export async function seed(variation?: "check-in") {
@@ -265,7 +264,7 @@ export async function seed(variation?: "check-in") {
     };
     const connect: { id: number }[] = [];
 
-    for (const stage of shuffle(stages)) {
+    for (const stage of stages.sort((a, b) => a.name.localeCompare(b.name))) {
       if (
         modesIncluded.SZ === 8 &&
         modesIncluded.TC === 6 &&
