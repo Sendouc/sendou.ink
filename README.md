@@ -22,7 +22,6 @@ sendou.ink/
 │   ├── hooks/ -- React hooks
 │   ├── models/ -- Calls to database
 │   ├── routes/ -- Routes see: https://remix.run/docs/en/v1/guides/routing
-│   │   └── api/ -- API routes that don't belong to any one page / situations when one route has many APIs
 │   ├── services/ -- Functions that loaders etc. call that typically work with multiple models
 │   ├── styles/ -- All .css files of the project for styling
 │   ├── utils/ -- Random helper functions used in many places

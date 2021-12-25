@@ -19,7 +19,6 @@ import {
   ActionFunction,
   Form,
   LinksFunction,
-  useFetcher,
   useMatches,
   useTransition,
 } from "remix";
@@ -31,6 +30,8 @@ import { Draggable } from "~/components/Draggable";
 import { TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
 import { checkInHasStarted } from "~/core/tournament/utils";
 import {
+  checkIn,
+  checkOut,
   FindTournamentByNameForUrlI,
   updateSeeds,
 } from "~/services/tournament";
@@ -40,11 +41,16 @@ import { useTimeoutState } from "~/utils/hooks";
 
 enum Action {
   UPDATE_SEEDS = "UPDATE_SEEDS",
+  CHECK_IN = "CHECK_IN",
+  CHECK_OUT = "CHECK_OUT",
 }
 
 export const action: ActionFunction = async ({ context, request }) => {
   const data = Object.fromEntries(await request.formData());
   invariant(typeof data._action === "string", "Invalid type for _action");
+
+  const user = requireUser(context);
+
   switch (data._action) {
     case Action.UPDATE_SEEDS: {
       invariant(typeof data.seeds === "string", "Invalid type for seeds");
@@ -54,17 +60,33 @@ export const action: ActionFunction = async ({ context, request }) => {
       );
       const newSeeds = JSON.parse(data.seeds);
 
-      const user = requireUser(context);
-
       await updateSeeds({
         tournamentId: data.tournamentId,
         userId: user.id,
         newSeeds,
       });
 
-      return new Response(undefined, { status: 200 });
+      break;
+    }
+    // TODO: broken
+    case Action.CHECK_IN: {
+      invariant(typeof data.teamId === "string", "Invalid type for seeds");
+
+      await checkIn({ teamId: data.teamId, userId: user.id });
+      break;
+    }
+    case Action.CHECK_OUT: {
+      invariant(typeof data.teamId === "string", "Invalid type for seeds");
+
+      await checkOut({ teamId: data.teamId, userId: user.id });
+      break;
+    }
+    default: {
+      throw new Response("Bad Request", { status: 400 });
     }
   }
+
+  return new Response(undefined, { status: 200 });
 };
 
 export const links: LinksFunction = () => {
@@ -204,7 +226,6 @@ function SeedAlert({
               hidden: !teamOrderChanged,
             })}
             type="submit"
-            loadingText="Saving..."
             loading={transition.state !== "idle"}
           >
             Save seeds
@@ -268,44 +289,44 @@ function RowContents({
 }
 
 function CheckOutButton({ teamId }: { teamId: string }) {
-  const fetcher = useFetcher();
+  const transition = useTransition();
   return (
-    <fetcher.Form
+    <Form
       method="post"
-      action={`/api/tournamentTeam/${teamId}/check-out`}
       className="tournament__action-section__button-container"
     >
+      <input type="hidden" name="_action" value={Action.CHECK_OUT} />
+      <input type="hidden" name="teamId" value={teamId} />
       <Button
         tiny
         variant="minimal-destructive"
-        loading={fetcher.state !== "idle"}
-        loadingText="Checking out"
+        loading={transition.state !== "idle"}
         type="submit"
       >
         Check-out
       </Button>
-    </fetcher.Form>
+    </Form>
   );
 }
 
 function CheckInButton({ teamId }: { teamId: string }) {
-  const fetcher = useFetcher();
+  const transition = useTransition();
   return (
-    <fetcher.Form
+    <Form
       method="post"
-      action={`/api/tournamentTeam/${teamId}/check-in`}
       className="tournament__action-section__button-container"
     >
+      <input type="hidden" name="_action" value={Action.CHECK_OUT} />
+      <input type="hidden" name="teamId" value={teamId} />
       <Button
         tiny
         variant="minimal-success"
-        loading={fetcher.state !== "idle"}
-        loadingText="Checking in"
+        loading={transition.state !== "idle"}
         type="submit"
       >
         Check-in
       </Button>
-    </fetcher.Form>
+    </Form>
   );
 }
 
