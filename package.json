@@ -1,8 +1,7 @@
 {
   "private": true,
-  "name": "remix-app-template",
-  "description": "",
-  "license": "",
+  "name": "sendou.ink",
+  "version": "3.0.0",
   "scripts": {
     "build": "remix build",
     "dev:remix": "remix watch",
