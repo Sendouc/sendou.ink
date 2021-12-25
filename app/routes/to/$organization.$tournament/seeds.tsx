@@ -15,8 +15,14 @@ import {
 } from "@dnd-kit/sortable";
 import classNames from "classnames";
 import * as React from "react";
-import type { LinksFunction } from "remix";
-import { useFetcher, useMatches } from "remix";
+import {
+  ActionFunction,
+  Form,
+  LinksFunction,
+  useFetcher,
+  useMatches,
+  useTransition,
+} from "remix";
 import invariant from "tiny-invariant";
 import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
@@ -24,10 +30,42 @@ import { Catcher } from "~/components/Catcher";
 import { Draggable } from "~/components/Draggable";
 import { TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
 import { checkInHasStarted } from "~/core/tournament/utils";
-import type { FindTournamentByNameForUrlI } from "~/services/tournament";
+import {
+  FindTournamentByNameForUrlI,
+  updateSeeds,
+} from "~/services/tournament";
 import seedsStylesUrl from "~/styles/tournament-seeds.css";
-import type { Unpacked } from "~/utils";
+import { requireUser, Unpacked } from "~/utils";
 import { useTimeoutState } from "~/utils/hooks";
+
+enum Action {
+  UPDATE_SEEDS = "UPDATE_SEEDS",
+}
+
+export const action: ActionFunction = async ({ context, request }) => {
+  const data = Object.fromEntries(await request.formData());
+  invariant(typeof data._action === "string", "Invalid type for _action");
+  switch (data._action) {
+    case Action.UPDATE_SEEDS: {
+      invariant(typeof data.seeds === "string", "Invalid type for seeds");
+      invariant(
+        typeof data.tournamentId === "string",
+        "Invalid type for tournamentId"
+      );
+      const newSeeds = JSON.parse(data.seeds);
+
+      const user = requireUser(context);
+
+      await updateSeeds({
+        tournamentId: data.tournamentId,
+        userId: user.id,
+        newSeeds,
+      });
+
+      return new Response(undefined, { status: 200 });
+    }
+  }
+};
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: seedsStylesUrl }];
@@ -36,10 +74,10 @@ export const links: LinksFunction = () => {
 // TODO: what if returns error? check other APIs too -> add Cypress test
 // TODO: error if not admin
 export default function SeedsTab() {
-  const seedsFetcher = useFetcher();
   const [, parentRoute] = useMatches();
   const { id, teams, checkInStartTime } =
     parentRoute.data as FindTournamentByNameForUrlI;
+  const transition = useTransition();
   const [teamOrder, setTeamOrder] = React.useState(teams.map((t) => t.id));
   const [activeTeam, setActiveTeam] = React.useState<Unpacked<
     FindTournamentByNameForUrlI["teams"]
@@ -57,11 +95,7 @@ export default function SeedsTab() {
 
   return (
     <>
-      <SeedAlert
-        fetcher={seedsFetcher}
-        tournamentId={id}
-        teamOrder={teamOrder}
-      />
+      <SeedAlert tournamentId={id} teamOrder={teamOrder} />
       <ul>
         <li className="tournament__seeds__teams-list-row">
           <div className="tournament__seeds__teams-container__header">Seed</div>
@@ -107,12 +141,12 @@ export default function SeedsTab() {
               <Draggable
                 key={team.id}
                 id={team.id}
-                disabled={seedsFetcher.state !== "idle"}
+                disabled={transition.state !== "idle"}
                 liClassName={classNames(
                   "tournament__seeds__teams-list-row",
                   "sortable",
                   {
-                    disabled: seedsFetcher.state !== "idle",
+                    disabled: transition.state !== "idle",
                     "visibility-hidden": activeTeam?.id === team.id,
                   }
                 )}
@@ -138,31 +172,28 @@ export default function SeedsTab() {
 function SeedAlert({
   tournamentId,
   teamOrder,
-  fetcher,
 }: {
   tournamentId: string;
   teamOrder: string[];
-  fetcher: ReturnType<typeof useFetcher>;
 }) {
   const [teamOrderInDb, setTeamOrderInDb] = React.useState(teamOrder);
   const [showSuccess, setShowSuccess] = useTimeoutState(false);
+  const transition = useTransition();
 
   React.useEffect(() => {
     // TODO: what if error?
-    if (fetcher.state !== "loading") return;
+    if (transition.state !== "loading") return;
 
     setTeamOrderInDb(teamOrder);
     setShowSuccess(true, { timeout: 3000 });
-  }, [fetcher.state]);
+  }, [transition.state]);
 
   const teamOrderChanged = teamOrder.some((id, i) => id !== teamOrderInDb[i]);
 
   return (
-    <fetcher.Form
-      action={`/api/tournament/${tournamentId}/seeds`}
-      method="post"
-      className="tournament__seeds__form"
-    >
+    <Form method="post" className="tournament__seeds__form">
+      <input type="hidden" name="_action" value={Action.UPDATE_SEEDS} />
+      <input type="hidden" name="tournamentId" value={tournamentId} />
       <input type="hidden" name="seeds" value={JSON.stringify(teamOrder)} />
       <Alert
         type={teamOrderChanged ? "warning" : showSuccess ? "success" : "info"}
@@ -174,7 +205,7 @@ function SeedAlert({
             })}
             type="submit"
             loadingText="Saving..."
-            loading={fetcher.state !== "idle"}
+            loading={transition.state !== "idle"}
           >
             Save seeds
           </Button>
@@ -188,7 +219,7 @@ function SeedAlert({
           <>Drag teams to adjust their seeding</>
         )}
       </Alert>
-    </fetcher.Form>
+    </Form>
   );
 }
 
