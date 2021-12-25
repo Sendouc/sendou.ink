@@ -85,10 +85,7 @@ export const action: ActionFunction = async ({
       return new Response("Player deleted from team", { status: 200 });
     }
     default: {
-      return new Response(undefined, {
-        status: 405,
-        headers: { Allow: "POST, DELETE" },
-      });
+      throw new Response("Bad Request", { status: 400 });
     }
   }
 };

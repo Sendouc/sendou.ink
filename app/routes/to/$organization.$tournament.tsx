@@ -3,6 +3,7 @@
 import {
   LinksFunction,
   LoaderFunction,
+  ActionFunction,
   MetaFunction,
   NavLink,
   Outlet,
@@ -15,16 +16,39 @@ import { InfoBanner } from "~/components/tournament/InfoBanner";
 import { isTournamentAdmin } from "~/core/tournament/permissions";
 import { tournamentHasStarted } from "~/core/tournament/utils";
 import {
+  checkIn,
   findTournamentByNameForUrl,
   FindTournamentByNameForUrlI,
 } from "~/services/tournament";
-import { makeTitle } from "~/utils";
+import { makeTitle, requireUser } from "~/utils";
 import type { MyCSSProperties } from "~/utils";
 import { useUser } from "~/utils/hooks";
 import tournamentStylesUrl from "../../styles/tournament.css";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: tournamentStylesUrl }];
+};
+
+export enum TournamentAction {
+  CHECK_IN = "CHECK_IN",
+}
+
+export const action: ActionFunction = async ({ request, context }) => {
+  const data = Object.fromEntries(await request.formData());
+  const user = requireUser(context);
+
+  switch (data._action) {
+    case TournamentAction.CHECK_IN: {
+      invariant(typeof data.teamId === "string", "Invalid type for teamId");
+
+      await checkIn({ teamId: data.teamId, userId: user.id });
+      break;
+    }
+    default: {
+      throw new Response("Bad Request", { status: 400 });
+    }
+  }
+  return new Response(undefined, { status: 200 });
 };
 
 export const loader: LoaderFunction = ({ params }) => {

@@ -1,16 +1,17 @@
 // TODO: Warning: Text content did not match. Server: "57" Client: "56"
 
 import * as React from "react";
-import { useFetcher, useLoaderData } from "remix";
+import { useTransition, useLoaderData, Form } from "remix";
 import {
   checkInClosesDate,
   TOURNAMENT_TEAM_ROSTER_MIN_SIZE,
 } from "~/constants";
+import { TournamentAction } from "~/routes/to/$organization.$tournament";
 import type { FindTournamentByNameForUrlI } from "~/services/tournament";
 import { Unpacked } from "~/utils";
 import { Button } from "../Button";
 import { AlertIcon } from "../icons/Alert";
-import { CheckmarkIcon } from "../icons/Checkmark";
+import { CheckInIcon } from "../icons/CheckIn";
 import { ErrorIcon } from "../icons/Error";
 import { SuccessIcon } from "../icons/Success";
 import { ActionSectionWrapper } from "./ActionSectionWrapper";
@@ -20,7 +21,7 @@ export function ActionSectionBeforeStartContent({
 }: {
   ownTeam: Unpacked<FindTournamentByNameForUrlI["teams"]>;
 }) {
-  const fetcher = useFetcher();
+  const transition = useTransition();
   const tournament = useLoaderData<FindTournamentByNameForUrlI>();
 
   const timeInMinutesBeforeCheckInCloses = () => {
@@ -111,21 +112,25 @@ export function ActionSectionBeforeStartContent({
             <AlertIcon /> Check-in closes in less than a minute
           </>
         )}
-        <fetcher.Form
+        <Form
           method="post"
-          action={`/api/tournamentTeam/${ownTeam.id}/check-in`}
           className="tournament__action-section__button-container"
         >
+          <input
+            type="hidden"
+            name="_action"
+            value={TournamentAction.CHECK_IN}
+          />
+          <input type="hidden" name="teamId" value={ownTeam.id} />
           <Button
-            variant="outlined-success"
-            loadingText="Checking in..."
+            variant="outlined"
             type="submit"
-            loading={fetcher.state !== "idle"}
-            icon={<CheckmarkIcon />}
+            loading={transition.state !== "idle"}
+            icon={<CheckInIcon />}
           >
             Check-in
           </Button>
-        </fetcher.Form>
+        </Form>
       </ActionSectionWrapper>
     );
   }
