@@ -175,6 +175,7 @@ input:not(.plain) {
   background-color: transparent;
   border-radius: var(--rounded);
   color: var(--text);
+  font-size: var(--fonts-sm);
   outline: none;
 }
 

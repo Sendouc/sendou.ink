@@ -160,7 +160,7 @@ export default function RegisterPage() {
             defaultValue={actionData?.fields?.friendCode}
             required
             data-cy="friend-code-input"
-            placeholder="1234-5678-9101"
+            placeholder="1234-1234-1234"
             pattern={friendCodeRegExpString}
           />
           <FormInfoText>Friend code can be changed later</FormInfoText>
