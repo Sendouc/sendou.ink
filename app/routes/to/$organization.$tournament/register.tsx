@@ -148,10 +148,7 @@ export default function RegisterPage() {
             data-cy="team-name-input"
           />
           <FormErrorMessage errorMsg={actionData?.fieldErrors?.teamName} />
-          <label
-            className="tournament__register__friend-code-label"
-            htmlFor="friendCode"
-          >
+          <label className="mt-3" htmlFor="friendCode">
             Friend code for your opponents to add
           </label>
           <input

@@ -38,3 +38,6 @@ export function tournamentHasStarted(
 
 export const friendCodeRegExpString = "^(SW-)?[0-9]{4}-?[0-9]{4}-?[0-9]{4}$";
 export const friendCodeRegExp = new RegExp(friendCodeRegExpString, "i");
+
+export const roompassRegExpString = "^[0-9]{4}$";
+export const roompassRegExp = new RegExp(roompassRegExpString, "i");

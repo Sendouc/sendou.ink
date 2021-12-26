@@ -8,30 +8,39 @@ import {
   useActionData,
   useLoaderData,
   useLocation,
+  useTransition,
 } from "remix";
 import invariant from "tiny-invariant";
 import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
+import { Catcher } from "~/components/Catcher";
 import { FormErrorMessage } from "~/components/FormErrorMessage";
+import { FormInfoText } from "~/components/FormInfoText";
 import { TeamRoster } from "~/components/tournament/TeamRoster";
 import { TOURNAMENT_TEAM_ROSTER_MAX_SIZE } from "~/constants";
 import {
+  friendCodeRegExpString,
+  roompassRegExp,
+  roompassRegExpString,
+} from "~/core/tournament/utils";
+import type { FindManyByTrustReceiverId } from "~/models/TrustRelationship";
+import {
+  editTeam,
   ownTeamWithInviteCode,
   putPlayerToTeam,
   removePlayerFromTeam,
 } from "~/services/tournament";
 import { getTrustingUsers } from "~/services/user";
-import type { FindManyByTrustReceiverId } from "~/models/TrustRelationship";
 import styles from "~/styles/tournament-manage-roster.css";
 import { requireUser } from "~/utils";
 import { useBaseURL, useIsSubmitting, useTimeoutState } from "~/utils/hooks";
-import { Catcher } from "~/components/Catcher";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
 export enum ManageRosterAction {
+  EDIT_TEAM = "EDIT_TEAM",
   ADD_PLAYER = "ADD_PLAYER",
   DELETE_PLAYER = "DELETE_PLAYER",
 }
@@ -48,7 +57,6 @@ export const action: ActionFunction = async ({
   context,
 }): Promise<Response | ActionData> => {
   const data = Object.fromEntries(await request.formData());
-  invariant(typeof data.userId === "string", "Invalid type for userId");
   invariant(typeof data.teamId === "string", "Invalid type for teamId");
   invariant(typeof data._action === "string", "Invalid type for _action");
 
@@ -56,6 +64,8 @@ export const action: ActionFunction = async ({
 
   switch (data._action) {
     case ManageRosterAction.ADD_PLAYER: {
+      invariant(typeof data.userId === "string", "Invalid type for userId");
+
       try {
         await putPlayerToTeam({
           teamId: data.teamId,
@@ -77,12 +87,38 @@ export const action: ActionFunction = async ({
       return new Response("Added player to team", { status: 200 });
     }
     case ManageRosterAction.DELETE_PLAYER: {
+      invariant(typeof data.userId === "string", "Invalid type for userId");
+
       await removePlayerFromTeam({
-        captainId: user.id,
+        userId: user.id,
         playerId: data.userId,
         teamId: data.teamId,
       });
       return new Response("Player deleted from team", { status: 200 });
+    }
+    case ManageRosterAction.EDIT_TEAM: {
+      invariant(
+        typeof data.friendCode === "string",
+        "Invalid type for friendCode"
+      );
+      invariant(typeof data.roomPass === "string", "Invalid type for roomPass");
+      invariant(
+        ["yes", "no"].includes(data.canHost as string),
+        "Invalid type for canHost"
+      );
+
+      if (!roompassRegExp.test(data.roomPass)) {
+        return new Response("Invalid room pass", { status: 400 });
+      }
+
+      await editTeam({
+        friendCode: data.friendCode,
+        roomPass: data.roomPass,
+        teamId: data.teamId,
+        canHost: data.canHost === "yes" ? true : false,
+        userId: user.id,
+      });
+      return new Response("Tournament team edited", { status: 200 });
     }
     default: {
       throw new Response("Bad Request", { status: 400 });
@@ -130,6 +166,7 @@ export default function ManageRosterPage() {
   const { ownTeam, trustingUsers } = useLoaderData<Data>();
   const baseURL = useBaseURL();
   const location = useLocation();
+  const transition = useTransition();
   const isSubmitting = useIsSubmitting("POST");
 
   const urlWithInviteCode = `${baseURL}${location.pathname.replace(
@@ -147,12 +184,85 @@ export default function ManageRosterPage() {
       <div className="tournament__manage-roster__roster-container">
         <TeamRoster team={ownTeam} deleteMode={!ownTeam.checkedInTime} />
       </div>
-      {ownTeam.members.length < TOURNAMENT_TEAM_ROSTER_MAX_SIZE && (
-        <div className="tournament__manage-roster__actions">
-          <div className="tournament__manage-roster__actions__section">
-            <label htmlFor="inviteCodeInput">
-              Share this URL to invite players to your team
+      <Form method="post">
+        <input
+          type="hidden"
+          name="_action"
+          value={ManageRosterAction.EDIT_TEAM}
+        />
+        <input type="hidden" name="teamId" value={ownTeam.id} />
+        <fieldset>
+          <legend>Edit team info</legend>
+          <label htmlFor="friendCode">
+            Friend code for your opponents to add
+          </label>
+          <input
+            name="friendCode"
+            id="friendCode"
+            defaultValue={ownTeam.friendCode}
+            required
+            pattern={friendCodeRegExpString}
+          />
+
+          <label className="mt-3" htmlFor="roomPass">
+            Room password
+          </label>
+          <input
+            name="roomPass"
+            id="roomPass"
+            defaultValue={ownTeam.roomPass ?? undefined}
+            placeholder="1234"
+            pattern={roompassRegExpString}
+          />
+          <FormInfoText>
+            If blank the password will be randomly generated whenever you host
+          </FormInfoText>
+
+          <label className="mt-3" htmlFor="canHost">
+            Does your team want to host?
+          </label>
+          <div className="flex align-center">
+            <input
+              type="radio"
+              id="yes"
+              name="canHost"
+              value="yes"
+              defaultChecked={ownTeam.canHost}
+            />
+            <label className="mb-0 ml-2 " htmlFor="yes">
+              Yes
             </label>
+          </div>
+
+          <div className="mt-1 flex align-center">
+            <input
+              type="radio"
+              id="no"
+              name="canHost"
+              value="no"
+              defaultChecked={!ownTeam.canHost}
+            />
+            <label className="mb-0 ml-2" htmlFor="no">
+              No
+            </label>
+          </div>
+          <FormInfoText>
+            You might still have to host if both teams prefer not to
+          </FormInfoText>
+          <Button
+            className="mt-4"
+            type="submit"
+            loading={transition.state !== "idle"}
+          >
+            Save
+          </Button>
+        </fieldset>
+      </Form>
+      {ownTeam.members.length < TOURNAMENT_TEAM_ROSTER_MAX_SIZE && (
+        <fieldset className="tournament__manage-roster__actions">
+          <legend>Add players to your team</legend>
+          <div className="tournament__manage-roster__actions__section">
+            <label htmlFor="inviteCodeInput">Share this URL</label>
             <input
               id="inviteCodeInput"
               className="tournament__manage-roster__input"
@@ -196,7 +306,7 @@ export default function ManageRosterPage() {
               </Form>
             </div>
           )}
-        </div>
+        </fieldset>
       )}
     </div>
   );

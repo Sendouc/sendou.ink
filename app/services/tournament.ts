@@ -369,17 +369,49 @@ export async function putPlayerToTeam({
   });
 }
 
+export async function editTeam({
+  teamId,
+  userId,
+  friendCode,
+  roomPass,
+  canHost,
+}: {
+  teamId: string;
+  userId: string;
+  friendCode: string;
+  roomPass: string | null;
+  canHost: boolean;
+}) {
+  const tournamentTeam = await TournamentTeam.findById(teamId);
+  if (!tournamentTeam) throw new Response("Invalid team id", { status: 400 });
+
+  if (
+    !tournamentTeam.members.some(
+      ({ memberId, captain }) => captain && memberId === userId
+    )
+  ) {
+    throw new Response("Not captain of the team", { status: 401 });
+  }
+
+  return TournamentTeam.editTeam({
+    id: teamId,
+    canHost,
+    friendCode,
+    roomPass,
+  });
+}
+
 export async function removePlayerFromTeam({
   teamId,
-  captainId,
+  userId,
   playerId,
 }: {
   teamId: string;
-  captainId: string;
+  userId: string;
   playerId: string;
 }) {
-  if (captainId === playerId) {
-    throw new Response("Can't remove captain", { status: 400 });
+  if (userId === playerId) {
+    throw new Response("Can't remove self", { status: 400 });
   }
 
   const tournamentTeam = await TournamentTeam.findById(teamId);
@@ -392,7 +424,7 @@ export async function removePlayerFromTeam({
   }
   if (
     !tournamentTeam.members.some(
-      ({ memberId, captain }) => captain && memberId === captainId
+      ({ memberId, captain }) => captain && memberId === userId
     )
   ) {
     throw new Response("Not captain of the team", { status: 401 });

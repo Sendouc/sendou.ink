@@ -60,3 +60,27 @@ export function checkOut(id: string) {
     },
   });
 }
+
+export type EditTeam = Prisma.PromiseReturnType<typeof editTeam>;
+export function editTeam({
+  id,
+  friendCode,
+  roomPass,
+  canHost,
+}: {
+  id: string;
+  friendCode: string;
+  roomPass: string | null;
+  canHost: boolean;
+}) {
+  return db.tournamentTeam.update({
+    where: {
+      id,
+    },
+    data: {
+      friendCode,
+      roomPass,
+      canHost,
+    },
+  });
+}

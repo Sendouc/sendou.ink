@@ -113,6 +113,9 @@ export function findByNameForUrlWithInviteCodes(tournamentNameForUrl: string) {
           name: true,
           inviteCode: true,
           checkedInTime: true,
+          friendCode: true,
+          roomPass: true,
+          canHost: true,
           members: {
             select: {
               captain: true,
