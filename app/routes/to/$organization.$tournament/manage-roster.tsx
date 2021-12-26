@@ -12,7 +12,7 @@ import {
 import invariant from "tiny-invariant";
 import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
-import ErrorMessage from "~/components/ErrorMessage";
+import { FormErrorMessage } from "~/components/FormErrorMessage";
 import { TeamRoster } from "~/components/tournament/TeamRoster";
 import { TOURNAMENT_TEAM_ROSTER_MAX_SIZE } from "~/constants";
 import {
@@ -185,7 +185,7 @@ export default function ManageRosterPage() {
                     </option>
                   ))}
                 </select>
-                <ErrorMessage errorMsg={actionData?.fieldErrors?.userId} />
+                <FormErrorMessage errorMsg={actionData?.fieldErrors?.userId} />
                 <Button
                   className="tournament__manage-roster__input__button"
                   type="submit"

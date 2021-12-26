@@ -35,3 +35,6 @@ export function tournamentHasStarted(
 ) {
   return brackets[0].rounds.length > 0;
 }
+
+export const friendCodeRegExpString = "^(SW-)?[0-9]{4}-?[0-9]{4}-?[0-9]{4}$";
+export const friendCodeRegExp = new RegExp(friendCodeRegExpString, "i");

@@ -6,15 +6,18 @@ export function create({
   userId,
   teamName,
   tournamentId,
+  friendCode,
 }: {
   userId: string;
   teamName: string;
   tournamentId: string;
+  friendCode: string;
 }) {
   return db.tournamentTeam.create({
     data: {
       name: teamName.trim(),
       tournamentId,
+      friendCode,
       members: {
         create: {
           memberId: userId,

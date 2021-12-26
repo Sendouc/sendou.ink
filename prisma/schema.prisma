@@ -85,6 +85,7 @@ model TournamentTeam {
   name          String
   tournamentId  String
   canHost       Boolean                      @default(true)
+  // TODO: make mandatory
   friendCode    String?
   inviteCode    String                       @default(uuid())
   checkedInTime DateTime?
