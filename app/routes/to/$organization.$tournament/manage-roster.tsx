@@ -300,6 +300,7 @@ export default function ManageRosterPage() {
                   className="tournament__manage-roster__input__button"
                   type="submit"
                   loading={isSubmitting}
+                  data-cy="add-to-roster-button"
                 >
                   Add to roster
                 </Button>
@@ -327,6 +328,7 @@ function CopyToClipboardButton({
         setShowCopied(true, { timeout: 3000 });
       }}
       type="button"
+      data-cy="copy-to-clipboard-button"
     >
       {showCopied ? "Copied!" : "Copy to clipboard"}
     </button>

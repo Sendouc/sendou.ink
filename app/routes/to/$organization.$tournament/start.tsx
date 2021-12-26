@@ -184,7 +184,6 @@ function ActionButtons({
           onClick={
             disabled ? () => dispatch({ type: "SHOW_ALERT" }) : undefined
           }
-          loadingText="Starting..."
           loading={transition.state !== "idle"}
         >
           Start bracket

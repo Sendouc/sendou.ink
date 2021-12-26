@@ -2,6 +2,7 @@ import path from "path";
 import express from "express";
 import compression from "compression";
 import morgan from "morgan";
+import { z } from "zod";
 import { createRequestHandler } from "@remix-run/express";
 import { setUpAuth } from "./auth";
 import { seed } from "../prisma/seed/script";
@@ -38,8 +39,12 @@ function userToContext(req: Express.Request) {
 }
 
 if (process.env.NODE_ENV === "development") {
-  app.post("/seed", async (_req, res) => {
-    await seed();
+  app.post("/seed", async (req, res) => {
+    const variation = z
+      .enum(["check-in"])
+      .optional()
+      .parse(req.query.variation);
+    await seed(variation);
 
     res.status(200).end();
   });

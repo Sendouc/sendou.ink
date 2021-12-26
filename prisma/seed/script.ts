@@ -147,6 +147,7 @@ export async function seed(variation?: "check-in") {
           name: "Kraken Paradise",
           tournamentId,
           friendCode: "1234-1234-1234",
+          inviteCode: "033e3695-0421-4aa1-a5ef-6ee82297a398",
         },
       });
 

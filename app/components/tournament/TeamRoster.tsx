@@ -87,7 +87,12 @@ function DeleteFromRosterButton({
       />
       <input type="hidden" name="teamId" value={teamId} />
       <input type="hidden" name="userId" value={playerId} />
-      <Button variant="destructive" tiny loading={transition.state !== "idle"}>
+      <Button
+        variant="destructive"
+        tiny
+        loading={transition.state !== "idle"}
+        data-cy="remove-player-button"
+      >
         Remove
       </Button>
     </Form>

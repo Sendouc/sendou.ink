@@ -14,18 +14,18 @@ declare global {
   namespace Cypress {
     interface Chainable<Subject> {
       getCy(id: string): Chainable<JQuery<HTMLElement>>;
-      seed(): void;
+      seed(variation?: "check-in"): void;
       logIn(user: MockUser): void;
     }
   }
 }
 
-Cypress.Commands.add("getCy", (value: string) => {
-  return cy.get(`[data-cy=${value}]`);
+Cypress.Commands.add("getCy", (id) => {
+  return cy.get(`[data-cy=${id}]`);
 });
 
-Cypress.Commands.add("seed", () => {
-  cy.request("POST", "seed");
+Cypress.Commands.add("seed", (variation) => {
+  cy.request("POST", `seed${variation ? `?variation=${variation}` : ""}`);
 });
 
 Cypress.Commands.add("logIn", (user: MockUser) => {

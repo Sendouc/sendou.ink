@@ -45,7 +45,7 @@ export function ActionSectionBeforeStartContent({
 
   if (ownTeam.checkedInTime) {
     return (
-      <ActionSectionWrapper icon="success">
+      <ActionSectionWrapper icon="success" data-cy="checked-in-alert">
         <SuccessIcon /> Your team is checked in!
       </ActionSectionWrapper>
     );
@@ -85,7 +85,7 @@ export function ActionSectionBeforeStartContent({
     minutesTillCheckInCloses > 0
   ) {
     return (
-      <ActionSectionWrapper icon="warning">
+      <ActionSectionWrapper icon="warning" data-cy="not-enough-players-warning">
         <AlertIcon /> You need at least 4 players in your roster to play.
         Check-in is open for {minutesTillCheckInCloses} more{" "}
         {minutesTillCheckInCloses > 1 ? "minutes" : "minute"}
@@ -101,6 +101,7 @@ export function ActionSectionBeforeStartContent({
     return (
       <ActionSectionWrapper
         icon={minutesTillCheckInCloses <= 1 ? "warning" : "info"}
+        data-cy="check-in-alert"
       >
         {minutesTillCheckInCloses > 1 ? (
           <>
@@ -127,6 +128,7 @@ export function ActionSectionBeforeStartContent({
             type="submit"
             loading={transition.state !== "idle"}
             icon={<CheckInIcon />}
+            data-cy="check-in-button"
           >
             Check-in
           </Button>
