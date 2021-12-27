@@ -39,7 +39,20 @@ export async function parseRequestFormData<T extends z.ZodTypeAny>({
   request: Request;
   schema: T;
 }): Promise<z.infer<T>> {
-  return schema.parse(Object.fromEntries(await request.formData()));
+  try {
+    return schema.parse(Object.fromEntries(await request.formData()));
+  } catch (e) {
+    if (e instanceof z.ZodError) {
+      console.error(e);
+      let errorMessage = "Request had following issues: ";
+      for (const issue of e.issues) {
+        errorMessage += `${issue.message} (path: ${issue.path.join(",")});`;
+      }
+      throw new Response(errorMessage, { status: 400 });
+    }
+
+    throw e;
+  }
 }
 
 /** @link https://stackoverflow.com/a/69413184 */
