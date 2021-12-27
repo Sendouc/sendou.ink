@@ -43,7 +43,10 @@ export const useTimeoutState = <T>(
 
       _setState(action);
 
-      const id = setTimeout(() => _setState(defaultState), opts?.timeout);
+      const id = setTimeout(
+        () => _setState(defaultState),
+        opts?.timeout ?? 4000
+      );
       setCurrentTimeoutId(id);
     },
     [currentTimeoutId, defaultState]

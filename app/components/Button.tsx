@@ -1,8 +1,10 @@
 import classNames from "classnames";
 import * as React from "react";
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?:
+    | "success"
     | "outlined"
     | "outlined-success"
     | "destructive"
@@ -30,6 +32,7 @@ export function Button(props: ButtonProps) {
   return (
     <button
       className={classNames(className, {
+        success: variant === "success",
         outlined: variant === "outlined",
         "outlined-success": variant === "outlined-success",
         destructive: variant === "destructive",

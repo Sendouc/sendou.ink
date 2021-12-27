@@ -8,7 +8,6 @@ import {
   useActionData,
   useLoaderData,
   useLocation,
-  useTransition,
 } from "remix";
 import invariant from "tiny-invariant";
 import { z } from "zod";
@@ -17,6 +16,7 @@ import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
 import { FormErrorMessage } from "~/components/FormErrorMessage";
 import { FormInfoText } from "~/components/FormInfoText";
+import { SubmitButton } from "~/components/SubmitButton";
 import { TeamRoster } from "~/components/tournament/TeamRoster";
 import { TOURNAMENT_TEAM_ROSTER_MAX_SIZE } from "~/constants";
 import {
@@ -41,13 +41,6 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-type ActionData = {
-  fieldErrors?: { userId?: string | undefined };
-  fields?: {
-    userId: string;
-  };
-};
-
 const actionSchema = z.union([
   z.object({
     _action: z.literal("ADD_PLAYER"),
@@ -66,18 +59,22 @@ const actionSchema = z.union([
     canHost: z
       .enum(["yes", "no"])
       .transform((val) => (val === "yes" ? true : false)),
-    roomPass: z
-      .string()
-      .regex(roompassRegExp)
-      .nullish()
-      .transform((val) => val ?? null),
+    roomPass: z.preprocess(
+      (val) => val || null,
+      z.string().regex(roompassRegExp).nullable()
+    ),
   }),
 ]);
+
+type ActionData = {
+  error?: { userId?: string };
+  ok?: z.infer<typeof actionSchema>["_action"];
+};
 
 export const action: ActionFunction = async ({
   request,
   context,
-}): Promise<Response | ActionData> => {
+}): Promise<ActionData> => {
   const data = await parseRequestFormData({
     request,
     schema: actionSchema,
@@ -96,15 +93,14 @@ export const action: ActionFunction = async ({
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
           if (e.code === "P2002" && e.message.includes("`tournamentId`")) {
             return {
-              fieldErrors: { userId: "This player is already in a team." },
-              fields: { userId: data.userId },
+              error: { userId: "This player is already in a team." },
             };
           }
         }
         throw e;
       }
 
-      return new Response("Added player to team", { status: 200 });
+      return { ok: "ADD_PLAYER" };
     }
     case "DELETE_PLAYER": {
       await removePlayerFromTeam({
@@ -112,7 +108,7 @@ export const action: ActionFunction = async ({
         playerId: data.userId,
         teamId: data.teamId,
       });
-      return new Response("Player deleted from team", { status: 200 });
+      return { ok: "DELETE_PLAYER" };
     }
     case "EDIT_TEAM": {
       await editTeam({
@@ -122,9 +118,10 @@ export const action: ActionFunction = async ({
         canHost: data.canHost,
         userId: user.id,
       });
-      return new Response("Tournament team edited", { status: 200 });
+      return { ok: "EDIT_TEAM" };
     }
     default: {
+      const exhaustive: never = data;
       throw new Response("Bad Request", { status: 400 });
     }
   }
@@ -166,11 +163,10 @@ export const loader: LoaderFunction = async ({ params, context }) => {
 
 // TODO: should not 404 but redirect instead - catchBoundary?
 export default function ManageRosterPage() {
-  const actionData = useActionData<ActionData | undefined>();
+  const actionData = useActionData<ActionData>();
   const { ownTeam, trustingUsers } = useLoaderData<Data>();
   const baseURL = useBaseURL();
   const location = useLocation();
-  const transition = useTransition();
   const isSubmitting = useIsSubmitting("POST");
 
   const urlWithInviteCode = `${baseURL}${location.pathname.replace(
@@ -178,7 +174,6 @@ export default function ManageRosterPage() {
     "join-team"
   )}?code=${ownTeam.inviteCode}`;
 
-  // TODO: show success when editing team
   return (
     <div className="tournament__manage-roster">
       {ownTeam.members.length >= TOURNAMENT_TEAM_ROSTER_MAX_SIZE && (
@@ -230,7 +225,7 @@ export default function ManageRosterPage() {
               value="yes"
               defaultChecked={ownTeam.canHost}
             />
-            <label className="mb-0 ml-2 " htmlFor="yes">
+            <label className="mb-0 ml-2" htmlFor="yes">
               Yes
             </label>
           </div>
@@ -250,13 +245,14 @@ export default function ManageRosterPage() {
           <FormInfoText>
             You might still have to host if both teams prefer not to
           </FormInfoText>
-          <Button
+          <SubmitButton
             className="mt-4"
-            type="submit"
-            loading={transition.state !== "idle"}
+            loadingText="Saving..."
+            successText="Saved!"
+            actionType="EDIT_TEAM"
           >
             Save
-          </Button>
+          </SubmitButton>
         </fieldset>
       </Form>
       {ownTeam.members.length < TOURNAMENT_TEAM_ROSTER_MAX_SIZE && (
@@ -284,7 +280,6 @@ export default function ManageRosterPage() {
                   className="tournament__manage-roster__select"
                   name="userId"
                   id="userId"
-                  defaultValue={actionData?.fields?.userId}
                 >
                   {trustingUsers.map(({ trustGiver }) => (
                     <option key={trustGiver.id} value={trustGiver.id}>
@@ -292,7 +287,7 @@ export default function ManageRosterPage() {
                     </option>
                   ))}
                 </select>
-                <FormErrorMessage errorMsg={actionData?.fieldErrors?.userId} />
+                <FormErrorMessage errorMsg={actionData?.error?.userId} />
                 <Button
                   className="tournament__manage-roster__input__button"
                   type="submit"
@@ -322,7 +317,7 @@ function CopyToClipboardButton({
       className="tournament__manage-roster__input__button"
       onClick={() => {
         navigator.clipboard.writeText(urlWithInviteCode);
-        setShowCopied(true, { timeout: 3000 });
+        setShowCopied(true);
       }}
       type="button"
       data-cy="copy-to-clipboard-button"

@@ -142,6 +142,12 @@ button.minimal-success {
   color: var(--theme-success);
 }
 
+button.success {
+  border-color: var(--theme-success);
+  background-color: var(--theme-success);
+  outline-color: var(--theme-success);
+}
+
 button.destructive {
   border-color: var(--theme-error);
   background-color: transparent;
