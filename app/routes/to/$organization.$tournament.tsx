@@ -11,7 +11,7 @@ import {
 } from "remix";
 import invariant from "tiny-invariant";
 import { AdminIcon } from "~/components/icons/Admin";
-import { ActionSection } from "~/components/tournament/ActionSection";
+import { CheckinActions } from "~/components/tournament/CheckinActions";
 import { InfoBanner } from "~/components/tournament/InfoBanner";
 import { isTournamentAdmin } from "~/core/tournament/permissions";
 import { tournamentHasStarted } from "~/core/tournament/utils";
@@ -149,7 +149,7 @@ export default function TournamentPage() {
         </div>
       </div>
       <div className="tournament__container__spacer" />
-      <ActionSection />
+      <CheckinActions />
       <div className="tournament__outlet-spacer" />
       {/* TODO: pass context instead of useMatches */}
       <Outlet />
