@@ -11,6 +11,7 @@ import {
   useTransition,
 } from "remix";
 import invariant from "tiny-invariant";
+import { z } from "zod";
 import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
@@ -19,6 +20,7 @@ import { FormInfoText } from "~/components/FormInfoText";
 import { TeamRoster } from "~/components/tournament/TeamRoster";
 import { TOURNAMENT_TEAM_ROSTER_MAX_SIZE } from "~/constants";
 import {
+  friendCodeRegExp,
   friendCodeRegExpString,
   roompassRegExp,
   roompassRegExpString,
@@ -32,18 +34,12 @@ import {
 } from "~/services/tournament";
 import { getTrustingUsers } from "~/services/user";
 import styles from "~/styles/tournament-manage-roster.css";
-import { requireUser } from "~/utils";
+import { parseRequestFormData, requireUser } from "~/utils";
 import { useBaseURL, useIsSubmitting, useTimeoutState } from "~/utils/hooks";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
-
-export enum ManageRosterAction {
-  EDIT_TEAM = "EDIT_TEAM",
-  ADD_PLAYER = "ADD_PLAYER",
-  DELETE_PLAYER = "DELETE_PLAYER",
-}
 
 type ActionData = {
   fieldErrors?: { userId?: string | undefined };
@@ -52,20 +48,44 @@ type ActionData = {
   };
 };
 
+const actionSchema = z.union([
+  z.object({
+    _action: z.literal("ADD_PLAYER"),
+    userId: z.string().uuid(),
+    teamId: z.string().uuid(),
+  }),
+  z.object({
+    _action: z.literal("DELETE_PLAYER"),
+    userId: z.string().uuid(),
+    teamId: z.string().uuid(),
+  }),
+  z.object({
+    _action: z.literal("EDIT_TEAM"),
+    teamId: z.string().uuid(),
+    friendCode: z.string().regex(friendCodeRegExp),
+    canHost: z
+      .enum(["yes", "no"])
+      .transform((val) => (val === "yes" ? true : false)),
+    roomPass: z
+      .string()
+      .regex(roompassRegExp)
+      .nullish()
+      .transform((val) => val ?? null),
+  }),
+]);
+
 export const action: ActionFunction = async ({
   request,
   context,
 }): Promise<Response | ActionData> => {
-  const data = Object.fromEntries(await request.formData());
-  invariant(typeof data.teamId === "string", "Invalid type for teamId");
-  invariant(typeof data._action === "string", "Invalid type for _action");
-
+  const data = await parseRequestFormData({
+    request,
+    schema: actionSchema,
+  });
   const user = requireUser(context);
 
   switch (data._action) {
-    case ManageRosterAction.ADD_PLAYER: {
-      invariant(typeof data.userId === "string", "Invalid type for userId");
-
+    case "ADD_PLAYER": {
       try {
         await putPlayerToTeam({
           teamId: data.teamId,
@@ -86,9 +106,7 @@ export const action: ActionFunction = async ({
 
       return new Response("Added player to team", { status: 200 });
     }
-    case ManageRosterAction.DELETE_PLAYER: {
-      invariant(typeof data.userId === "string", "Invalid type for userId");
-
+    case "DELETE_PLAYER": {
       await removePlayerFromTeam({
         userId: user.id,
         playerId: data.userId,
@@ -96,26 +114,12 @@ export const action: ActionFunction = async ({
       });
       return new Response("Player deleted from team", { status: 200 });
     }
-    case ManageRosterAction.EDIT_TEAM: {
-      invariant(
-        typeof data.friendCode === "string",
-        "Invalid type for friendCode"
-      );
-      invariant(typeof data.roomPass === "string", "Invalid type for roomPass");
-      invariant(
-        ["yes", "no"].includes(data.canHost as string),
-        "Invalid type for canHost"
-      );
-
-      if (!roompassRegExp.test(data.roomPass)) {
-        return new Response("Invalid room pass", { status: 400 });
-      }
-
+    case "EDIT_TEAM": {
       await editTeam({
         friendCode: data.friendCode,
         roomPass: data.roomPass,
         teamId: data.teamId,
-        canHost: data.canHost === "yes" ? true : false,
+        canHost: data.canHost,
         userId: user.id,
       });
       return new Response("Tournament team edited", { status: 200 });
@@ -174,6 +178,7 @@ export default function ManageRosterPage() {
     "join-team"
   )}?code=${ownTeam.inviteCode}`;
 
+  // TODO: show success when editing team
   return (
     <div className="tournament__manage-roster">
       {ownTeam.members.length >= TOURNAMENT_TEAM_ROSTER_MAX_SIZE && (
@@ -185,11 +190,7 @@ export default function ManageRosterPage() {
         <TeamRoster team={ownTeam} deleteMode={!ownTeam.checkedInTime} />
       </div>
       <Form method="post">
-        <input
-          type="hidden"
-          name="_action"
-          value={ManageRosterAction.EDIT_TEAM}
-        />
+        <input type="hidden" name="_action" value="EDIT_TEAM" />
         <input type="hidden" name="teamId" value={ownTeam.id} />
         <fieldset>
           <legend>Edit team info</legend>
@@ -274,11 +275,7 @@ export default function ManageRosterPage() {
           {trustingUsers.length > 0 && (
             <div className="tournament__manage-roster__actions__section">
               <Form method="post">
-                <input
-                  type="hidden"
-                  name="_action"
-                  value={ManageRosterAction.ADD_PLAYER}
-                />
+                <input type="hidden" name="_action" value="ADD_PLAYER" />
                 <input type="hidden" name="teamId" value={ownTeam.id} />
                 <label htmlFor="userId">
                   Add players you previously played with

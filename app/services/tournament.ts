@@ -154,8 +154,6 @@ export async function bracketById(bracketId: string): Promise<BracketModified> {
     .filter((round) => round.position < 0)
     .sort((a, b) => b.position - a.position);
 
-  console.log("losersRounds.length", losersRounds.length);
-
   return {
     winners: modifyRounds(winnersRounds, "winners", losersRounds.length === 0),
     losers: modifyRounds(losersRounds, "losers", false),

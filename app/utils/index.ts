@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import { json, useLocation } from "remix";
+import { z } from "zod";
 
 export function makeTitle(endOfTitle?: string) {
   return endOfTitle ? `sendou.ink | ${endOfTitle}` : "sendou.ink";
@@ -28,6 +29,17 @@ export function getLogInUrl(location: ReturnType<typeof useLocation>) {
   return `/auth/discord?origin=${encodeURIComponent(
     location.pathname + location.search
   )}`;
+}
+
+/** Parse formData of a request with the given schema. Throws HTTP 400 response if fails. */
+export async function parseRequestFormData<T extends z.ZodTypeAny>({
+  request,
+  schema,
+}: {
+  request: Request;
+  schema: T;
+}): Promise<z.infer<T>> {
+  return schema.parse(Object.fromEntries(await request.formData()));
 }
 
 /** @link https://stackoverflow.com/a/69413184 */

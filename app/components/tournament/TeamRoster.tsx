@@ -1,5 +1,4 @@
 import { Form, useTransition } from "remix";
-import { ManageRosterAction } from "~/routes/to/$organization.$tournament/manage-roster";
 import { useUser } from "~/utils/hooks";
 import { Button } from "../Button";
 
@@ -80,11 +79,7 @@ function DeleteFromRosterButton({
   const transition = useTransition();
   return (
     <Form method="post">
-      <input
-        type="hidden"
-        name="_action"
-        value={ManageRosterAction.DELETE_PLAYER}
-      />
+      <input type="hidden" name="_action" value="DELETE_PLAYER" />
       <input type="hidden" name="teamId" value={teamId} />
       <input type="hidden" name="userId" value={playerId} />
       <Button
