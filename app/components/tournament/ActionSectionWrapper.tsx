@@ -6,13 +6,15 @@ export function ActionSectionWrapper({
   ...rest
 }: {
   children: React.ReactNode;
-  icon: "warning" | "info" | "success" | "error";
+  icon?: "warning" | "info" | "success" | "error";
   "data-cy"?: string;
 }) {
   // todo: flex-dir: column on mobile
-  const style: MyCSSProperties = {
-    "--action-section-icon-color": `var(--theme-${icon})`,
-  };
+  const style: MyCSSProperties | undefined = icon
+    ? {
+        "--action-section-icon-color": `var(--theme-${icon})`,
+      }
+    : undefined;
   return (
     <section
       className="tournament__action-section"

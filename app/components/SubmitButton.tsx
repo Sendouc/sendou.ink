@@ -4,7 +4,7 @@ import { useTimeoutState } from "~/utils/hooks";
 import { Button, ButtonProps } from "./Button";
 
 export function SubmitButton(
-  _props: ButtonProps & { actionType: string; successText: string }
+  _props: ButtonProps & { actionType: string; successText?: string }
 ) {
   const { actionType, successText, children, ...rest } = _props;
   const actionData = useActionData<{ ok?: string }>();
@@ -12,7 +12,7 @@ export function SubmitButton(
   const [showSuccess, setShowSuccess] = useTimeoutState(false);
 
   useEffect(() => {
-    if (actionData?.ok !== actionType) return;
+    if (!successText || actionData?.ok !== actionType) return;
 
     setShowSuccess(true);
   }, [actionData]);
@@ -30,10 +30,10 @@ export function SubmitButton(
     <Button
       type="submit"
       loading={isLoading()}
-      variant={showSuccess ? "success" : rest.variant}
+      variant={showSuccess && successText ? "success" : rest.variant}
       {...rest}
     >
-      {showSuccess ? successText : children}
+      {showSuccess && successText ? successText : children}
     </Button>
   );
 }

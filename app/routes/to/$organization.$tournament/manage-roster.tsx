@@ -292,7 +292,6 @@ export default function ManageRosterPage() {
                   className="tournament__manage-roster__input__button"
                   actionType="ADD_PLAYER"
                   loadingText="Adding..."
-                  successText="Added!"
                   data-cy="add-to-roster-button"
                 >
                   Add to roster

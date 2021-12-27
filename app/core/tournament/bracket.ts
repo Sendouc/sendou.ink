@@ -374,7 +374,6 @@ function resolveSide(
   const matchNumbers = getWinnerDestinationMatchIdToMatchNumbers(rounds).get(
     destinationMatch.id
   );
-  console.log(matchNumbers);
   const otherNumber = matchNumbers?.find((num) => num !== currentMatch.number);
   invariant(
     otherNumber,

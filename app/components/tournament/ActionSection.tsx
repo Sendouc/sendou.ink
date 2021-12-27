@@ -4,6 +4,7 @@ import { useUser } from "~/utils/hooks";
 import { ActionSectionBeforeStartContent } from "./ActionSectionBeforeStartContent";
 
 // TODO: warning when not registered but check in is open
+// TODO: rename, refactor
 export function ActionSection() {
   const tournament = useLoaderData<FindTournamentByNameForUrlI>();
   const user = useUser();
@@ -14,16 +15,10 @@ export function ActionSection() {
     )
   );
 
-  if (!ownTeam) {
+  const tournamentHasStarted = tournament.brackets.some((b) => b.rounds.length);
+  if (!ownTeam || tournamentHasStarted) {
     return null;
   }
 
-  // TODO:
-  const tournamentStatus = "not-started"; // "ongoing" | "concluded"
-
-  if (tournamentStatus === "not-started") {
-    return <ActionSectionBeforeStartContent ownTeam={ownTeam} />;
-  }
-
-  return null;
+  return <ActionSectionBeforeStartContent ownTeam={ownTeam} />;
 }

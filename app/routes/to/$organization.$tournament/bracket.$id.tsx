@@ -9,6 +9,7 @@ import {
 } from "~/services/tournament";
 import type { BracketModified } from "~/services/tournament";
 import { useUser } from "~/utils/hooks";
+import { BracketActions } from "~/components/tournament/BracketActions";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -27,8 +28,8 @@ export const loader: LoaderFunction = async ({ params }) => {
 export default function BracketTabWrapper() {
   const data = useLoaderData<BracketModified>();
   const [, parentRoute] = useMatches();
-  const user = useUser();
   const { teams } = parentRoute.data as FindTournamentByNameForUrlI;
+  const user = useUser();
 
   const ownTeam = teams.find((team) =>
     team.members.some(({ member }) => member.id === user?.id)
@@ -36,6 +37,7 @@ export default function BracketTabWrapper() {
 
   return (
     <div className="tournament-bracket__container">
+      <BracketActions />
       <EliminationBracket
         bracketSide={data.winners}
         ownTeamName={ownTeam?.name}

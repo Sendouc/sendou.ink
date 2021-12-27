@@ -138,6 +138,8 @@ type BracketModifiedSide = {
     number: number;
     score?: [upperTeamScore: number, lowerTeamScore: number];
     participants?: [upperTeamName: string | null, lowerTeamName: string | null];
+    winnerDestinationMatchId: string | null;
+    loserDestinationMatchId: string | null;
   }[];
 }[];
 
@@ -199,6 +201,8 @@ function modifyRounds(
         return {
           number: match.position,
           id: match.id,
+          winnerDestinationMatchId: match.winnerDestinationMatchId,
+          loserDestinationMatchId: match.loserDestinationMatchId,
           score,
           participants,
         };
@@ -274,6 +278,8 @@ export async function createTournamentRounds({
           id: match.id,
           position: match.number,
           roundId: round.id,
+          winnerDestinationMatchId: match.winnerDestinationMatchId,
+          loserDestinationMatchId: match.loserDestinationMatchId,
         }));
       }),
     }),
