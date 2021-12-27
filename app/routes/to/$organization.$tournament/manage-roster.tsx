@@ -12,7 +12,6 @@ import {
 import invariant from "tiny-invariant";
 import { z } from "zod";
 import { Alert } from "~/components/Alert";
-import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
 import { FormErrorMessage } from "~/components/FormErrorMessage";
 import { FormInfoText } from "~/components/FormInfoText";
@@ -35,7 +34,7 @@ import {
 import { getTrustingUsers } from "~/services/user";
 import styles from "~/styles/tournament-manage-roster.css";
 import { parseRequestFormData, requireUser } from "~/utils";
-import { useBaseURL, useIsSubmitting, useTimeoutState } from "~/utils/hooks";
+import { useBaseURL, useTimeoutState } from "~/utils/hooks";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -122,7 +121,9 @@ export const action: ActionFunction = async ({
     }
     default: {
       const exhaustive: never = data;
-      throw new Response("Bad Request", { status: 400 });
+      throw new Response(`Unknown action: ${JSON.stringify(exhaustive)}`, {
+        status: 400,
+      });
     }
   }
 };
@@ -167,7 +168,6 @@ export default function ManageRosterPage() {
   const { ownTeam, trustingUsers } = useLoaderData<Data>();
   const baseURL = useBaseURL();
   const location = useLocation();
-  const isSubmitting = useIsSubmitting("POST");
 
   const urlWithInviteCode = `${baseURL}${location.pathname.replace(
     "manage-roster",
