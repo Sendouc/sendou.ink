@@ -288,14 +288,15 @@ export default function ManageRosterPage() {
                   ))}
                 </select>
                 <FormErrorMessage errorMsg={actionData?.error?.userId} />
-                <Button
+                <SubmitButton
                   className="tournament__manage-roster__input__button"
-                  type="submit"
-                  loading={isSubmitting}
+                  actionType="ADD_PLAYER"
+                  loadingText="Adding..."
+                  successText="Added!"
                   data-cy="add-to-roster-button"
                 >
                   Add to roster
-                </Button>
+                </SubmitButton>
               </Form>
             </div>
           )}
