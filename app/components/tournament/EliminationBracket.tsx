@@ -85,7 +85,9 @@ export function EliminationBracket({
                   return (
                     <Match
                       hidden={
-                        roundI === 0 && match.participants?.includes(null)
+                        round.name.includes("Winner") &&
+                        roundI === 0 &&
+                        match.participants?.includes(null)
                       }
                       key={match.id}
                       match={match}

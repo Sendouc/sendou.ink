@@ -52,7 +52,7 @@ export function BracketActions() {
     const higherCount = match.score
       ? Math.max(match.score[0], match.score[1])
       : 0;
-    const isNotOver = higherCount > match.bestOf / 2;
+    const isNotOver = higherCount < match.bestOf / 2;
 
     return hasBothParticipants && isOwnMatch && isNotOver;
   });

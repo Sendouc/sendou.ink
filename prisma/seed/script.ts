@@ -12,6 +12,7 @@ import { readFile } from "fs/promises";
 import path from "path";
 import crypto from "crypto";
 import { createTournamentRounds } from "../../app/services/tournament";
+import invariant from "tiny-invariant";
 const prisma = new PrismaClient();
 
 const mapListDE = `{"losers":[[{"id":4647,"name":"Kelp Dome","mode":"SZ"},{"id":4658,"name":"Blackbelly Skatepark","mode":"TC"},{"id":4645,"name":"Manta Maria","mode":"CB"}],[{"id":4624,"name":"Inkblot Art Academy","mode":"RM"},{"id":4707,"name":"Ancho-V Games","mode":"SZ"},{"id":4618,"name":"Humpback Pump Track","mode":"TC"}],[{"id":4692,"name":"Camp Triggerfish","mode":"SZ"},{"id":4665,"name":"MakoMart","mode":"CB"},{"id":4634,"name":"Moray Towers","mode":"RM"}],[{"id":4609,"name":"Musselforge Fitness","mode":"RM"},{"id":4647,"name":"Kelp Dome","mode":"SZ"},{"id":4678,"name":"Arowana Mall","mode":"TC"}],[{"id":4705,"name":"New Albacore Hotel","mode":"CB"},{"id":4644,"name":"Manta Maria","mode":"RM"},{"id":4707,"name":"Ancho-V Games","mode":"SZ"}],[{"id":4657,"name":"Blackbelly Skatepark","mode":"SZ"},{"id":4690,"name":"Piranha Pit","mode":"CB"},{"id":4682,"name":"Goby Arena","mode":"SZ"},{"id":4678,"name":"Arowana Mall","mode":"TC"},{"id":4624,"name":"Inkblot Art Academy","mode":"RM"}]],"winners":[[{"id":4677,"name":"Arowana Mall","mode":"SZ"},{"id":4665,"name":"MakoMart","mode":"CB"},{"id":4618,"name":"Humpback Pump Track","mode":"TC"}],[{"id":4624,"name":"Inkblot Art Academy","mode":"RM"},{"id":4683,"name":"Goby Arena","mode":"TC"},{"id":4692,"name":"Camp Triggerfish","mode":"SZ"}],[{"id":4647,"name":"Kelp Dome","mode":"SZ"},{"id":4634,"name":"Moray Towers","mode":"RM"},{"id":4707,"name":"Ancho-V Games","mode":"SZ"},{"id":4610,"name":"Musselforge Fitness","mode":"CB"},{"id":4658,"name":"Blackbelly Skatepark","mode":"TC"}],[{"id":4644,"name":"Manta Maria","mode":"RM"},{"id":4677,"name":"Arowana Mall","mode":"SZ"},{"id":4690,"name":"Piranha Pit","mode":"CB"},{"id":4682,"name":"Goby Arena","mode":"SZ"},{"id":4618,"name":"Humpback Pump Track","mode":"TC"}],[{"id":4624,"name":"Inkblot Art Academy","mode":"RM"},{"id":4707,"name":"Ancho-V Games","mode":"SZ"},{"id":4610,"name":"Musselforge Fitness","mode":"CB"},{"id":4657,"name":"Blackbelly Skatepark","mode":"SZ"},{"id":4693,"name":"Camp Triggerfish","mode":"TC"},{"id":4664,"name":"MakoMart","mode":"RM"},{"id":4647,"name":"Kelp Dome","mode":"SZ"}],[{"id":4617,"name":"Humpback Pump Track","mode":"SZ"},{"id":4635,"name":"Moray Towers","mode":"CB"},{"id":4682,"name":"Goby Arena","mode":"SZ"},{"id":4644,"name":"Manta Maria","mode":"RM"},{"id":4678,"name":"Arowana Mall","mode":"TC"},{"id":4692,"name":"Camp Triggerfish","mode":"SZ"},{"id":4705,"name":"New Albacore Hotel","mode":"CB"}]]}`;
@@ -59,6 +60,7 @@ export async function seed(variation?: "check-in" | "match") {
     await tournamentAddMaps(tournament.id);
     if (variation === "match") {
       await tournamentRoundsCreate();
+      await advanceRound();
     }
 
     async function tournamentRoundsCreate() {
@@ -86,6 +88,56 @@ export async function seed(variation?: "check-in" | "match") {
             )
           ),
         },
+      });
+    }
+
+    async function advanceRound() {
+      const matches = await prisma.tournamentMatch.findMany({
+        include: { participants: true },
+      });
+      const matchToAdvance = matches.find((match) => match.position === 1);
+      invariant(matchToAdvance);
+
+      await prisma.tournamentMatchGameResult.createMany({
+        data: [
+          {
+            matchId: matchToAdvance.id,
+            winner: "UPPER",
+            position: 1,
+            reporterId: "",
+          },
+          {
+            matchId: matchToAdvance.id,
+            winner: "LOWER",
+            position: 2,
+            reporterId: "",
+          },
+          {
+            matchId: matchToAdvance.id,
+            winner: "UPPER",
+            position: 3,
+            reporterId: "",
+          },
+        ],
+      });
+
+      await prisma.tournamentMatchParticipant.createMany({
+        data: [
+          {
+            matchId: matchToAdvance.winnerDestinationMatchId!,
+            order: "LOWER",
+            teamId: matchToAdvance.participants.find(
+              (p) => p.order === "UPPER"
+            )!.teamId,
+          },
+          {
+            matchId: matchToAdvance.loserDestinationMatchId!,
+            order: "LOWER", // TODO: figure out this
+            teamId: matchToAdvance.participants.find(
+              (p) => p.order === "LOWER"
+            )!.teamId,
+          },
+        ],
       });
     }
   } finally {
@@ -283,6 +335,7 @@ export async function seed(variation?: "check-in" | "match") {
           "In The Zone eXtreme\n\nCroissant cookie jelly macaroon caramels. Liquorice icing bonbon fruitcake wafer. Fruitcake pudding icing biscuit pie pie macaroon carrot cake shortbread. Soufflé dessert powder marshmallow biscuit.\n\nJelly-o wafer chocolate bar tootsie roll cheesecake chocolate bar. Icing candy canes cookie chocolate bar sesame snaps sugar plum cheesecake lollipop biscuit. Muffin marshmallow sweet soufflé bonbon pudding gummies sweet apple pie.\n\nSoufflé cookie sugar plum sesame snaps muffin cupcake wafer jelly-o carrot cake. Ice cream danish jelly-o dragée marzipan croissant. Shortbread cheesecake marshmallow biscuit gummi bears.",
         brackets: {
           create: {
+            id: "72867c9f-8515-4e44-ae8a-3766174e1ed4",
             type: "DE",
           },
         },
