@@ -36,6 +36,17 @@ export function tournamentHasStarted(
   return brackets[0].rounds.length > 0;
 }
 
+export function matchIsOver(
+  bestOf: number,
+  score?: [upperTeamScore: number, lowerTeamScore: number]
+) {
+  if (!score) return false;
+
+  const [upperTeamScore, lowerTeamScore] = score;
+  const half = bestOf / 2;
+  return upperTeamScore > half || lowerTeamScore > half;
+}
+
 export const friendCodeRegExpString = "^(SW-)?[0-9]{4}-?[0-9]{4}-?[0-9]{4}$";
 export const friendCodeRegExp = new RegExp(friendCodeRegExpString, "i");
 

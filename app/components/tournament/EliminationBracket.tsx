@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import invariant from "tiny-invariant";
+import { matchIsOver } from "~/core/tournament/utils";
 import type { BracketModified } from "~/services/tournament";
 import { MyCSSProperties, Unpacked } from "~/utils";
 
@@ -92,6 +93,7 @@ export function EliminationBracket({
                       key={match.id}
                       match={match}
                       ownTeamName={ownTeamName}
+                      isOver={matchIsOver(round.bestOf, match.score)}
                     />
                   );
                 })}
@@ -140,10 +142,12 @@ export function Match({
   match,
   hidden,
   ownTeamName,
+  isOver,
 }: {
   match: Unpacked<Unpacked<BracketModified["winners"]>["matches"]>;
   hidden?: boolean;
   ownTeamName?: string;
+  isOver: boolean;
 }) {
   return (
     <div className={classNames("tournament-bracket__elim__match", { hidden })}>
@@ -155,7 +159,10 @@ export function Match({
           "tournament-bracket__elim__team",
           "tournament-bracket__elim__teamOne",
           {
-            own: ownTeamName && ownTeamName === match.participants?.[0],
+            own:
+              !isOver && ownTeamName && ownTeamName === match.participants?.[0],
+            defeated:
+              isOver && (match.score?.[0] ?? 0) < (match.score?.[1] ?? 0),
           }
         )}
       >
@@ -173,7 +180,10 @@ export function Match({
           "tournament-bracket__elim__team",
           "tournament-bracket__elim__teamTwo",
           {
-            own: ownTeamName && ownTeamName === match.participants?.[1],
+            own:
+              !isOver && ownTeamName && ownTeamName === match.participants?.[1],
+            defeated:
+              isOver && (match.score?.[1] ?? 0) < (match.score?.[0] ?? 0),
           }
         )}
       >

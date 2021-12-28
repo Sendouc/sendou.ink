@@ -88,6 +88,10 @@
   font-weight: var(--bold);
 }
 
+.tournament-bracket__elim__team.defeated {
+  color: var(--text-lighter);
+}
+
 .tournament-bracket__elim__teamOne {
   border-radius: var(--rounded) var(--rounded) 0 0;
   grid-area: team-one;
