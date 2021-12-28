@@ -11,9 +11,12 @@ import {
 import { readFile } from "fs/promises";
 import path from "path";
 import crypto from "crypto";
+import { createTournamentRounds } from "../../app/services/tournament";
 const prisma = new PrismaClient();
 
-export async function seed(variation?: "check-in") {
+const mapListDE = `{"losers":[[{"id":4647,"name":"Kelp Dome","mode":"SZ"},{"id":4658,"name":"Blackbelly Skatepark","mode":"TC"},{"id":4645,"name":"Manta Maria","mode":"CB"}],[{"id":4624,"name":"Inkblot Art Academy","mode":"RM"},{"id":4707,"name":"Ancho-V Games","mode":"SZ"},{"id":4618,"name":"Humpback Pump Track","mode":"TC"}],[{"id":4692,"name":"Camp Triggerfish","mode":"SZ"},{"id":4665,"name":"MakoMart","mode":"CB"},{"id":4634,"name":"Moray Towers","mode":"RM"}],[{"id":4609,"name":"Musselforge Fitness","mode":"RM"},{"id":4647,"name":"Kelp Dome","mode":"SZ"},{"id":4678,"name":"Arowana Mall","mode":"TC"}],[{"id":4705,"name":"New Albacore Hotel","mode":"CB"},{"id":4644,"name":"Manta Maria","mode":"RM"},{"id":4707,"name":"Ancho-V Games","mode":"SZ"}],[{"id":4657,"name":"Blackbelly Skatepark","mode":"SZ"},{"id":4690,"name":"Piranha Pit","mode":"CB"},{"id":4682,"name":"Goby Arena","mode":"SZ"},{"id":4678,"name":"Arowana Mall","mode":"TC"},{"id":4624,"name":"Inkblot Art Academy","mode":"RM"}]],"winners":[[{"id":4677,"name":"Arowana Mall","mode":"SZ"},{"id":4665,"name":"MakoMart","mode":"CB"},{"id":4618,"name":"Humpback Pump Track","mode":"TC"}],[{"id":4624,"name":"Inkblot Art Academy","mode":"RM"},{"id":4683,"name":"Goby Arena","mode":"TC"},{"id":4692,"name":"Camp Triggerfish","mode":"SZ"}],[{"id":4647,"name":"Kelp Dome","mode":"SZ"},{"id":4634,"name":"Moray Towers","mode":"RM"},{"id":4707,"name":"Ancho-V Games","mode":"SZ"},{"id":4610,"name":"Musselforge Fitness","mode":"CB"},{"id":4658,"name":"Blackbelly Skatepark","mode":"TC"}],[{"id":4644,"name":"Manta Maria","mode":"RM"},{"id":4677,"name":"Arowana Mall","mode":"SZ"},{"id":4690,"name":"Piranha Pit","mode":"CB"},{"id":4682,"name":"Goby Arena","mode":"SZ"},{"id":4618,"name":"Humpback Pump Track","mode":"TC"}],[{"id":4624,"name":"Inkblot Art Academy","mode":"RM"},{"id":4707,"name":"Ancho-V Games","mode":"SZ"},{"id":4610,"name":"Musselforge Fitness","mode":"CB"},{"id":4657,"name":"Blackbelly Skatepark","mode":"SZ"},{"id":4693,"name":"Camp Triggerfish","mode":"TC"},{"id":4664,"name":"MakoMart","mode":"RM"},{"id":4647,"name":"Kelp Dome","mode":"SZ"}],[{"id":4617,"name":"Humpback Pump Track","mode":"SZ"},{"id":4635,"name":"Moray Towers","mode":"CB"},{"id":4682,"name":"Goby Arena","mode":"SZ"},{"id":4644,"name":"Manta Maria","mode":"RM"},{"id":4678,"name":"Arowana Mall","mode":"TC"},{"id":4692,"name":"Camp Triggerfish","mode":"SZ"},{"id":4705,"name":"New Albacore Hotel","mode":"CB"}]]}`;
+
+export async function seed(variation?: "check-in" | "match") {
   try {
     //
     // make sure we won't override production database
@@ -54,6 +57,37 @@ export async function seed(variation?: "check-in") {
     await trustRelationship(nzapUserCreated.id, adminUserCreated.id);
     await stages();
     await tournamentAddMaps(tournament.id);
+    if (variation === "match") {
+      await tournamentRoundsCreate();
+    }
+
+    async function tournamentRoundsCreate() {
+      const stages = await prisma.stage.findMany({});
+      await createTournamentRounds({
+        userId: adminUserCreated.id,
+        organizationNameForUrl: "sendou",
+        tournamentNameForUrl: "in-the-zone-x",
+        bracketId: tournament.brackets[0].id,
+        mapList: {
+          winners: JSON.parse(mapListDE).winners.map((round: any) =>
+            round.map((stage: any) =>
+              stages.find(
+                (stageInDb) =>
+                  stage.name === stageInDb.name && stage.mode === stageInDb.mode
+              )
+            )
+          ),
+          losers: JSON.parse(mapListDE).losers.map((round: any) =>
+            round.map((stage: any) =>
+              stages.find(
+                (stageInDb) =>
+                  stage.name === stageInDb.name && stage.mode === stageInDb.mode
+              )
+            )
+          ),
+        },
+      });
+    }
   } finally {
     await prisma.$disconnect();
   }
@@ -141,13 +175,14 @@ export async function seed(variation?: "check-in") {
       "Woomy Zoomy Boomy",
     ];
 
-    if (variation === "check-in") {
+    if (variation === "check-in" || variation === "match") {
       const team = await prisma.tournamentTeam.create({
         data: {
           name: "Kraken Paradise",
           tournamentId,
           friendCode: "1234-1234-1234",
           inviteCode: "033e3695-0421-4aa1-a5ef-6ee82297a398",
+          checkedInTime: variation === "match" ? new Date() : undefined,
         },
       });
 
@@ -251,6 +286,9 @@ export async function seed(variation?: "check-in") {
             type: "DE",
           },
         },
+      },
+      include: {
+        brackets: true,
       },
     });
   }

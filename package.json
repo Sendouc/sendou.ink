@@ -5,7 +5,7 @@
   "scripts": {
     "build": "remix build",
     "dev:remix": "remix watch",
-    "dev:server": "cross-env NODE_ENV=development node --experimental-specifier-resolution=node --loader ts-node/esm server/index.ts",
+    "dev:server": "cross-env NODE_ENV=development node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register server/index.ts",
     "dev": "concurrently \"npm run dev:remix\" \"npm run dev:server\"",
     "postinstall": "remix setup node",
     "gen": "npx prisma generate",
@@ -13,7 +13,7 @@
     "migration:create": "npx prisma migrate dev --create-only",
     "migration:apply:dev": "npx prisma migrate dev",
     "migration:apply:prod": "npx prisma migrate deploy",
-    "seed": "node --experimental-specifier-resolution=node --loader ts-node/esm prisma/seed",
+    "seed": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register prisma/seed",
     "seed:reset": "npx prisma migrate reset --force --skip-generate",
     "lint:styles": "stylelint \"app/styles/**/*.css\"",
     "prettier:check": "prettier --check .",
@@ -69,6 +69,7 @@
     "stylelint-config-standard": "^24.0.0",
     "stylelint-order": "^5.0.0",
     "ts-node": "^10.4.0",
+    "tsconfig-paths": "^3.12.0",
     "tsm": "^2.2.1",
     "typescript": "^4.5.4",
     "uvu": "^0.5.2"
