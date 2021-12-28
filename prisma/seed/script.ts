@@ -63,6 +63,288 @@ export async function seed(variation?: "check-in" | "match") {
       await advanceRound();
     }
 
+    async function adminUser() {
+      return prisma.user.create({
+        data: {
+          id: ADMIN_TEST_UUID,
+          discordDiscriminator: "4059",
+          discordId: ADMIN_TEST_DISCORD_ID,
+          discordName: "Sendou",
+          discordRefreshToken: "none",
+          twitch: "Sendou",
+          youtubeId: "UCWbJLXByvsfQvTcR4HLPs5Q",
+          youtubeName: "Sendou",
+          discordAvatar: ADMIN_TEST_AVATAR,
+          twitter: "sendouc",
+        },
+      });
+    }
+
+    async function nzapUser() {
+      return prisma.user.create({
+        data: {
+          id: NZAP_TEST_UUID,
+          discordDiscriminator: "6227",
+          discordId: NZAP_TEST_DISCORD_ID,
+          discordName: "N-ZAP",
+          discordRefreshToken: "none",
+          discordAvatar: NZAP_TEST_AVATAR,
+        },
+      });
+    }
+
+    async function users(ids: string[]) {
+      const usersFromSendouInk = await readFile(
+        path.resolve("prisma", "seed", "users.json"),
+        "utf8"
+      );
+
+      return prisma.user.createMany({
+        data: JSON.parse(usersFromSendouInk)
+          .slice(0, 200)
+          .map((user: any, i: number) => ({
+            id: ids[i],
+            discordId: user.discordId,
+            discordDiscriminator: user.discriminator,
+            discordName: user.username,
+            discordRefreshToken: "none",
+            twitter: user.profile?.twitterName,
+          })),
+      });
+    }
+
+    async function tournamentTeams(
+      tournamentId: string,
+      userIds: string[],
+      loggedInUserId: string
+    ) {
+      const userIdsCopy = [...userIds];
+      const mockTeams = [
+        "Team Olive",
+        "Chimera",
+        "Team Paradise",
+        "Team Blue",
+        "🛏️",
+        "Name Subject to Change",
+        "FTWin!",
+        "Starbust",
+        "Jackpot",
+        "Crème Fresh",
+        "Squids Next Door",
+        "Get Kraken",
+        "Kougeki",
+        "Last Minute",
+        "Squidding Good",
+        "Alliance Rogue",
+        "Second Wind",
+        "Kelp Domers",
+        "Arctic Moon",
+        "sink gang",
+        "Good Morning",
+        "Kings",
+        "NIS",
+        "Woomy Zoomy Boomy",
+      ];
+
+      if (variation === "check-in" || variation === "match") {
+        const team = await prisma.tournamentTeam.create({
+          data: {
+            name: "Kraken Paradise",
+            tournamentId,
+            friendCode: "1234-1234-1234",
+            inviteCode: "033e3695-0421-4aa1-a5ef-6ee82297a398",
+            checkedInTime: variation === "match" ? new Date() : undefined,
+          },
+        });
+
+        await prisma.tournamentTeamMember.create({
+          data: {
+            memberId: loggedInUserId,
+            teamId: team.id,
+            captain: true,
+            tournamentId,
+          },
+        });
+
+        for (let memberI = 0; memberI < 3; memberI++) {
+          const memberId = userIdsCopy.shift()!;
+          await prisma.tournamentTeamMember.create({
+            data: {
+              memberId,
+              teamId: team.id,
+              tournamentId,
+            },
+          });
+        }
+      }
+
+      for (const [mockTeamI, mockTeam] of mockTeams.entries()) {
+        const memberCount = (mockTeamI % 5) + 2;
+        const team = await prisma.tournamentTeam.create({
+          data: {
+            name: mockTeam,
+            tournamentId,
+            friendCode: "0123-4567-8910",
+            checkedInTime: memberCount >= 4 ? new Date() : undefined,
+          },
+        });
+
+        for (let memberI = 0; memberI < memberCount; memberI++) {
+          const memberId = userIdsCopy.shift()!;
+          await prisma.tournamentTeamMember.create({
+            data: {
+              memberId,
+              teamId: team.id,
+              captain: memberI === 0,
+              tournamentId,
+            },
+          });
+        }
+      }
+    }
+
+    async function trustRelationship(
+      trustGiverId: string,
+      trustReceiverId: string
+    ) {
+      return prisma.trustRelationships.create({
+        data: {
+          trustGiverId,
+          trustReceiverId,
+        },
+      });
+    }
+
+    async function organizations(userId: string) {
+      return prisma.organization.create({
+        data: {
+          name: "Sendou's Tournaments",
+          discordInvite: "sendou",
+          nameForUrl: "sendou",
+          twitter: "sendouc",
+          ownerId: userId,
+        },
+      });
+    }
+
+    async function tournaments(organizationId: string) {
+      const lastFullHour = new Date();
+      lastFullHour.setMinutes(0);
+      lastFullHour.setSeconds(0);
+      lastFullHour.setMilliseconds(0);
+
+      const oneAfterNextFullHour = new Date(lastFullHour);
+      oneAfterNextFullHour.setHours(lastFullHour.getHours() + 2);
+
+      return prisma.tournament.create({
+        data: {
+          bannerBackground:
+            "radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%)",
+          bannerTextHSLArgs: "231, 9%, 16%",
+          checkInStartTime:
+            variation === "check-in"
+              ? lastFullHour
+              : new Date(2025, 11, 17, 11),
+          startTime:
+            variation === "check-in"
+              ? oneAfterNextFullHour
+              : new Date(2025, 11, 17, 12),
+          name: "In The Zone X",
+          nameForUrl: "in-the-zone-x",
+          organizerId: organizationId,
+          description:
+            "In The Zone eXtreme\n\nCroissant cookie jelly macaroon caramels. Liquorice icing bonbon fruitcake wafer. Fruitcake pudding icing biscuit pie pie macaroon carrot cake shortbread. Soufflé dessert powder marshmallow biscuit.\n\nJelly-o wafer chocolate bar tootsie roll cheesecake chocolate bar. Icing candy canes cookie chocolate bar sesame snaps sugar plum cheesecake lollipop biscuit. Muffin marshmallow sweet soufflé bonbon pudding gummies sweet apple pie.\n\nSoufflé cookie sugar plum sesame snaps muffin cupcake wafer jelly-o carrot cake. Ice cream danish jelly-o dragée marzipan croissant. Shortbread cheesecake marshmallow biscuit gummi bears.",
+          brackets: {
+            create: {
+              id: "72867c9f-8515-4e44-ae8a-3766174e1ed4",
+              type: "DE",
+            },
+          },
+        },
+        include: {
+          brackets: true,
+        },
+      });
+    }
+
+    async function tournamentAddMaps(id: string) {
+      const stages = await prisma.stage.findMany({});
+
+      const mapsIncluded: string[] = [];
+      const modesIncluded = {
+        SZ: 0,
+        TC: 0,
+        RM: 0,
+        CB: 0,
+      };
+      const connect: { id: number }[] = [];
+
+      for (const stage of stages.sort((a, b) => a.name.localeCompare(b.name))) {
+        if (
+          modesIncluded.SZ === 8 &&
+          modesIncluded.TC === 6 &&
+          modesIncluded.RM === 6 &&
+          modesIncluded.CB === 6
+        ) {
+          break;
+        }
+        if (stage.mode === "TW") continue;
+        if (modesIncluded.SZ === 8 && stage.mode === "SZ") {
+          continue;
+        }
+        if (modesIncluded.TC === 6 && stage.mode === "TC") {
+          continue;
+        }
+        if (modesIncluded.RM === 6 && stage.mode === "RM") {
+          continue;
+        }
+        if (modesIncluded.CB === 6 && stage.mode === "CB") {
+          continue;
+        }
+        if (
+          mapsIncluded.reduce(
+            (acc, cur) => acc + (cur === stage.name ? 1 : 0),
+            0
+          ) >= 2
+        ) {
+          continue;
+        }
+
+        connect.push({ id: stage.id });
+        modesIncluded[stage.mode]++;
+        mapsIncluded.push(stage.name);
+      }
+
+      return prisma.tournament.update({
+        where: { id },
+        data: {
+          mapPool: {
+            connect,
+          },
+        },
+      });
+    }
+
+    async function stages() {
+      const modesList = ["TW", "SZ", "TC", "RM", "CB"] as const;
+      const result = [];
+
+      for (const mapName of stagesList) {
+        for (const modeName of modesList) {
+          const created = await prisma.stage.create({
+            data: {
+              name: mapName,
+              mode: modeName,
+            },
+          });
+
+          result.push(created.id);
+        }
+      }
+
+      return result;
+    }
+
     async function tournamentRoundsCreate() {
       const stages = await prisma.stage.findMany({});
       await createTournamentRounds({
@@ -142,285 +424,5 @@ export async function seed(variation?: "check-in" | "match") {
     }
   } finally {
     await prisma.$disconnect();
-  }
-
-  async function adminUser() {
-    return prisma.user.create({
-      data: {
-        id: ADMIN_TEST_UUID,
-        discordDiscriminator: "4059",
-        discordId: ADMIN_TEST_DISCORD_ID,
-        discordName: "Sendou",
-        discordRefreshToken: "none",
-        twitch: "Sendou",
-        youtubeId: "UCWbJLXByvsfQvTcR4HLPs5Q",
-        youtubeName: "Sendou",
-        discordAvatar: ADMIN_TEST_AVATAR,
-        twitter: "sendouc",
-      },
-    });
-  }
-
-  async function nzapUser() {
-    return prisma.user.create({
-      data: {
-        id: NZAP_TEST_UUID,
-        discordDiscriminator: "6227",
-        discordId: NZAP_TEST_DISCORD_ID,
-        discordName: "N-ZAP",
-        discordRefreshToken: "none",
-        discordAvatar: NZAP_TEST_AVATAR,
-      },
-    });
-  }
-
-  async function users(ids: string[]) {
-    const usersFromSendouInk = await readFile(
-      path.resolve("prisma", "seed", "users.json"),
-      "utf8"
-    );
-
-    return prisma.user.createMany({
-      data: JSON.parse(usersFromSendouInk)
-        .slice(0, 200)
-        .map((user: any, i: number) => ({
-          id: ids[i],
-          discordId: user.discordId,
-          discordDiscriminator: user.discriminator,
-          discordName: user.username,
-          discordRefreshToken: "none",
-          twitter: user.profile?.twitterName,
-        })),
-    });
-  }
-
-  async function tournamentTeams(
-    tournamentId: string,
-    userIds: string[],
-    loggedInUserId: string
-  ) {
-    const userIdsCopy = [...userIds];
-    const mockTeams = [
-      "Team Olive",
-      "Chimera",
-      "Team Paradise",
-      "Team Blue",
-      "🛏️",
-      "Name Subject to Change",
-      "FTWin!",
-      "Starbust",
-      "Jackpot",
-      "Crème Fresh",
-      "Squids Next Door",
-      "Get Kraken",
-      "Kougeki",
-      "Last Minute",
-      "Squidding Good",
-      "Alliance Rogue",
-      "Second Wind",
-      "Kelp Domers",
-      "Arctic Moon",
-      "sink gang",
-      "Good Morning",
-      "Kings",
-      "NIS",
-      "Woomy Zoomy Boomy",
-    ];
-
-    if (variation === "check-in" || variation === "match") {
-      const team = await prisma.tournamentTeam.create({
-        data: {
-          name: "Kraken Paradise",
-          tournamentId,
-          friendCode: "1234-1234-1234",
-          inviteCode: "033e3695-0421-4aa1-a5ef-6ee82297a398",
-          checkedInTime: variation === "match" ? new Date() : undefined,
-        },
-      });
-
-      await prisma.tournamentTeamMember.create({
-        data: {
-          memberId: loggedInUserId,
-          teamId: team.id,
-          captain: true,
-          tournamentId,
-        },
-      });
-
-      for (let memberI = 0; memberI < 3; memberI++) {
-        const memberId = userIdsCopy.shift()!;
-        await prisma.tournamentTeamMember.create({
-          data: {
-            memberId,
-            teamId: team.id,
-            tournamentId,
-          },
-        });
-      }
-    }
-
-    for (const [mockTeamI, mockTeam] of mockTeams.entries()) {
-      const memberCount = (mockTeamI % 5) + 2;
-      const team = await prisma.tournamentTeam.create({
-        data: {
-          name: mockTeam,
-          tournamentId,
-          friendCode: "0123-4567-8910",
-          checkedInTime: memberCount >= 4 ? new Date() : undefined,
-        },
-      });
-
-      for (let memberI = 0; memberI < memberCount; memberI++) {
-        const memberId = userIdsCopy.shift()!;
-        await prisma.tournamentTeamMember.create({
-          data: {
-            memberId,
-            teamId: team.id,
-            captain: memberI === 0,
-            tournamentId,
-          },
-        });
-      }
-    }
-  }
-
-  async function trustRelationship(
-    trustGiverId: string,
-    trustReceiverId: string
-  ) {
-    return prisma.trustRelationships.create({
-      data: {
-        trustGiverId,
-        trustReceiverId,
-      },
-    });
-  }
-
-  async function organizations(userId: string) {
-    return prisma.organization.create({
-      data: {
-        name: "Sendou's Tournaments",
-        discordInvite: "sendou",
-        nameForUrl: "sendou",
-        twitter: "sendouc",
-        ownerId: userId,
-      },
-    });
-  }
-
-  async function tournaments(organizationId: string) {
-    const lastFullHour = new Date();
-    lastFullHour.setMinutes(0);
-    lastFullHour.setSeconds(0);
-    lastFullHour.setMilliseconds(0);
-
-    const oneAfterNextFullHour = new Date(lastFullHour);
-    oneAfterNextFullHour.setHours(lastFullHour.getHours() + 2);
-
-    return prisma.tournament.create({
-      data: {
-        bannerBackground:
-          "radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%)",
-        bannerTextHSLArgs: "231, 9%, 16%",
-        checkInStartTime:
-          variation === "check-in" ? lastFullHour : new Date(2025, 11, 17, 11),
-        startTime:
-          variation === "check-in"
-            ? oneAfterNextFullHour
-            : new Date(2025, 11, 17, 12),
-        name: "In The Zone X",
-        nameForUrl: "in-the-zone-x",
-        organizerId: organizationId,
-        description:
-          "In The Zone eXtreme\n\nCroissant cookie jelly macaroon caramels. Liquorice icing bonbon fruitcake wafer. Fruitcake pudding icing biscuit pie pie macaroon carrot cake shortbread. Soufflé dessert powder marshmallow biscuit.\n\nJelly-o wafer chocolate bar tootsie roll cheesecake chocolate bar. Icing candy canes cookie chocolate bar sesame snaps sugar plum cheesecake lollipop biscuit. Muffin marshmallow sweet soufflé bonbon pudding gummies sweet apple pie.\n\nSoufflé cookie sugar plum sesame snaps muffin cupcake wafer jelly-o carrot cake. Ice cream danish jelly-o dragée marzipan croissant. Shortbread cheesecake marshmallow biscuit gummi bears.",
-        brackets: {
-          create: {
-            id: "72867c9f-8515-4e44-ae8a-3766174e1ed4",
-            type: "DE",
-          },
-        },
-      },
-      include: {
-        brackets: true,
-      },
-    });
-  }
-
-  async function tournamentAddMaps(id: string) {
-    const stages = await prisma.stage.findMany({});
-
-    const mapsIncluded: string[] = [];
-    const modesIncluded = {
-      SZ: 0,
-      TC: 0,
-      RM: 0,
-      CB: 0,
-    };
-    const connect: { id: number }[] = [];
-
-    for (const stage of stages.sort((a, b) => a.name.localeCompare(b.name))) {
-      if (
-        modesIncluded.SZ === 8 &&
-        modesIncluded.TC === 6 &&
-        modesIncluded.RM === 6 &&
-        modesIncluded.CB === 6
-      ) {
-        break;
-      }
-      if (stage.mode === "TW") continue;
-      if (modesIncluded.SZ === 8 && stage.mode === "SZ") {
-        continue;
-      }
-      if (modesIncluded.TC === 6 && stage.mode === "TC") {
-        continue;
-      }
-      if (modesIncluded.RM === 6 && stage.mode === "RM") {
-        continue;
-      }
-      if (modesIncluded.CB === 6 && stage.mode === "CB") {
-        continue;
-      }
-      if (
-        mapsIncluded.reduce(
-          (acc, cur) => acc + (cur === stage.name ? 1 : 0),
-          0
-        ) >= 2
-      ) {
-        continue;
-      }
-
-      connect.push({ id: stage.id });
-      modesIncluded[stage.mode]++;
-      mapsIncluded.push(stage.name);
-    }
-
-    return prisma.tournament.update({
-      where: { id },
-      data: {
-        mapPool: {
-          connect,
-        },
-      },
-    });
-  }
-
-  async function stages() {
-    const modesList = ["TW", "SZ", "TC", "RM", "CB"] as const;
-    const result = [];
-
-    for (const mapName of stagesList) {
-      for (const modeName of modesList) {
-        const created = await prisma.stage.create({
-          data: {
-            name: mapName,
-            mode: modeName,
-          },
-        });
-
-        result.push(created.id);
-      }
-    }
-
-    return result;
   }
 }
