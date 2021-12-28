@@ -65,6 +65,9 @@ export async function findByNameForUrl({
           id: true,
           name: true,
           createdAt: true,
+          friendCode: true,
+          roomPass: true,
+          canHost: true,
           members: {
             select: {
               captain: true,
