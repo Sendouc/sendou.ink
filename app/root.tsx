@@ -5,6 +5,7 @@ import type { LinksFunction, LoaderFunction } from "remix";
 import resetStyles from "~/styles/reset.css";
 import globalStyles from "~/styles/global.css";
 import layoutStyles from "~/styles/layout.css";
+import tailwindStyles from "./tailwind.css";
 import { Layout } from "./components/Layout";
 import { Catcher } from "./components/Catcher";
 
@@ -18,6 +19,7 @@ export const links: LinksFunction = () => {
     { rel: "stylesheet", href: resetStyles },
     { rel: "stylesheet", href: globalStyles },
     { rel: "stylesheet", href: layoutStyles },
+    { rel: "stylesheet", href: tailwindStyles },
   ];
 };
 

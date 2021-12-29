@@ -126,7 +126,6 @@ function DuringMatchActions({
         team.name
       ) && team.id !== ownTeam.id
   );
-  console.log({ teams, currentMatch });
   invariant(opponentTeam, "opponentTeam is undefined");
 
   if (joinedRoom) {
