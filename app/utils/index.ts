@@ -1,3 +1,4 @@
+import { Mode } from "@prisma/client";
 import type { CSSProperties } from "react";
 import { json, useLocation } from "remix";
 import { z } from "zod";
@@ -29,6 +30,14 @@ export function getLogInUrl(location: ReturnType<typeof useLocation>) {
   return `/auth/discord?origin=${encodeURIComponent(
     location.pathname + location.search
   )}`;
+}
+
+export function stageNameToImageUrl(name: string) {
+  return `/img/stages/${name.replaceAll(" ", "-").toLowerCase()}.webp`;
+}
+
+export function modeToImageUrl(mode: Mode) {
+  return `/img/modes/${mode}.webp`;
 }
 
 /** Parse formData of a request with the given schema. Throws HTTP 400 response if fails. */

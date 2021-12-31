@@ -4,6 +4,7 @@ import classNames from "classnames";
 import { modesShort, stages } from "~/constants";
 import { LinksFunction, useMatches } from "remix";
 import { FindTournamentByNameForUrlI } from "~/services/tournament";
+import { modeToImageUrl, stageNameToImageUrl } from "~/utils";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -28,7 +29,7 @@ export default function MapPoolTab() {
             })}
             loading="lazy"
             alt={stage}
-            src={`/img/stages/${stage.replaceAll(" ", "-").toLowerCase()}.webp`}
+            src={stageNameToImageUrl(stage)}
           />
           {modesPerStage(mapPool)[stage] && (
             <div className="map-pool__mode-images-container">
@@ -38,7 +39,7 @@ export default function MapPoolTab() {
                     <img
                       key={mode}
                       className="map-pool__mode-image"
-                      src={`/img/modes/${mode}.webp`}
+                      src={modeToImageUrl(mode)}
                       alt={mode}
                     />
                   )

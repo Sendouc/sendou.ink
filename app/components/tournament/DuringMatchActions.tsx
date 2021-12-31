@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { useMatches } from "remix";
 import invariant from "tiny-invariant";
+import { modesShortToLong } from "~/constants";
 import { resolveHostInfo } from "~/core/tournament/utils";
 import type {
   BracketModified,
   FindTournamentByNameForUrlI,
 } from "~/services/tournament";
-import { Unpacked } from "~/utils";
+import { modeToImageUrl, Unpacked } from "~/utils";
 import { Button } from "../Button";
 import { ActionSectionWrapper } from "./ActionSectionWrapper";
 import { DuringMatchActionsRosters } from "./DuringMatchActionsRosters";
@@ -52,17 +53,29 @@ export function DuringMatchActions({
       ["Room pass", `${roomPass} (${weHost ? "We" : "They"} host)`],
       ["Friend code to add", friendCodeToAdd],
       ["Score", currentMatch.score?.join("-")],
-      ["Current map", `${stage.mode} ${stage.name}`],
+      ["Best of", currentRound.stages.length],
     ];
 
     return (
       <div className="flex gap-2.5 flex-wrap w-100">
+        <div className="tournament-bracket__stage-banner">
+          <div className="tournament-bracket__stage-banner__top-bar">
+            <h4 className="tournament-bracket__stage-banner__top-bar__header">
+              <img
+                className="tournament-bracket__stage-banner__top-bar__mode-image"
+                src={modeToImageUrl(stage.mode)}
+              />
+              {modesShortToLong[stage.mode]} on {stage.name}
+            </h4>
+            <h4>Stage 1</h4>
+          </div>
+        </div>
         <ActionSectionWrapper>
           <div className="flex flex-wrap">
             <div className="grid grid-cols-2 gap-y-2 gap-x-4">
               {roundInfo.map(([title, value]) => (
                 <React.Fragment key={title}>
-                  <label className="plain font-bold">{title}</label>
+                  <label className="font-bold plain">{title}</label>
                   <div>{value}</div>
                 </React.Fragment>
               ))}
@@ -82,7 +95,7 @@ export function DuringMatchActions({
 
   return (
     <ActionSectionWrapper>
-      <h4 className="font-bold mr-6">Opponent: {opponentTeam.name}</h4>
+      <h4 className="mr-6 font-bold">Opponent: {opponentTeam.name}</h4>
       <ol className="list-decimal">
         <li>Add FC: {friendCodeToAdd}</li>
         {weHost ? (

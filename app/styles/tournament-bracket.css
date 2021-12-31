@@ -5,6 +5,37 @@
   margin: 0 auto;
 }
 
+.tournament-bracket__stage-banner {
+  /* TODO: */
+  background-image: url("https://pbs.twimg.com/media/DoAV42MXsAAtHCh?format=jpg&name=large");
+  height: 10rem;
+  width: 100%;
+  background-position: center;
+  border-radius: var(--rounded);
+}
+
+.tournament-bracket__stage-banner__top-bar {
+  padding: var(--s-2);
+  display: flex;
+  justify-content: space-between;
+  backdrop-filter: blur(5px);
+  background: rgba(0, 0, 0, 0.25);
+  border-start-end-radius: var(--rounded);
+  border-start-start-radius: var(--rounded);
+}
+
+.tournament-bracket__stage-banner__top-bar__header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.tournament-bracket__stage-banner__top-bar__mode-image {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
 .tournament-bracket__elim__bracket {
   display: grid;
   column-gap: 2px;
