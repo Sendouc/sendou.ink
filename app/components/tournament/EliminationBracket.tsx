@@ -23,7 +23,7 @@ export function EliminationBracket({
             key={round.id}
             title={round.name}
             isLast={i === bracketSide.length - 1}
-            bestOf={round.bestOf}
+            bestOf={round.stages.length}
             status="UPCOMING"
           />
         ))}
@@ -93,7 +93,7 @@ export function EliminationBracket({
                       key={match.id}
                       match={match}
                       ownTeamName={ownTeamName}
-                      isOver={matchIsOver(round.bestOf, match.score)}
+                      isOver={matchIsOver(round.stages.length, match.score)}
                     />
                   );
                 })}

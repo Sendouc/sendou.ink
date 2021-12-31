@@ -213,7 +213,7 @@ input[type="checkbox"] {
   height: 16px;
 }
 
-label {
+label:not(.plain) {
   display: block;
   font-size: var(--fonts-xs);
   font-weight: var(--bold);

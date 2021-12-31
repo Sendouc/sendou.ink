@@ -384,19 +384,19 @@ export async function seed(variation?: "check-in" | "match") {
         data: [
           {
             matchId: matchToAdvance.id,
-            winner: "UPPER",
+            winner: "LOWER",
             position: 1,
             reporterId: "",
           },
           {
             matchId: matchToAdvance.id,
-            winner: "LOWER",
+            winner: "UPPER",
             position: 2,
             reporterId: "",
           },
           {
             matchId: matchToAdvance.id,
-            winner: "UPPER",
+            winner: "LOWER",
             position: 3,
             reporterId: "",
           },
@@ -409,14 +409,14 @@ export async function seed(variation?: "check-in" | "match") {
             matchId: matchToAdvance.winnerDestinationMatchId!,
             order: "LOWER",
             teamId: matchToAdvance.participants.find(
-              (p) => p.order === "UPPER"
+              (p) => p.order === "LOWER"
             )!.teamId,
           },
           {
             matchId: matchToAdvance.loserDestinationMatchId!,
             order: "LOWER", // TODO: figure out this
             teamId: matchToAdvance.participants.find(
-              (p) => p.order === "LOWER"
+              (p) => p.order === "UPPER"
             )!.teamId,
           },
         ],

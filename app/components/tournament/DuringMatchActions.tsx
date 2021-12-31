@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useMatches } from "remix";
 import invariant from "tiny-invariant";
 import { resolveHostInfo } from "~/core/tournament/utils";
@@ -9,18 +9,23 @@ import type {
 import { Unpacked } from "~/utils";
 import { Button } from "../Button";
 import { ActionSectionWrapper } from "./ActionSectionWrapper";
+import { DuringMatchActionsRosters } from "./DuringMatchActionsRosters";
 
 export function DuringMatchActions({
   ownTeam,
   currentMatch,
+  currentRound,
 }: {
   ownTeam: Unpacked<FindTournamentByNameForUrlI["teams"]>;
   currentMatch: Unpacked<Unpacked<BracketModified["winners"]>["matches"]>;
+  currentRound: Unpacked<BracketModified["winners"]>;
 }) {
   const [, parentRoute] = useMatches();
   const { teams, seeds } = parentRoute.data as FindTournamentByNameForUrlI;
   const [joinedRoom, setJoinedRoom] = useState(
-    (currentMatch.score?.[0] ?? 0) > 0 || (currentMatch.score?.[1] ?? 0) > 0
+    true ||
+      (currentMatch.score?.[0] ?? 0) > 0 ||
+      (currentMatch.score?.[1] ?? 0) > 0
   );
 
   const opponentTeam = teams.find(
@@ -31,25 +36,50 @@ export function DuringMatchActions({
   );
   invariant(opponentTeam, "opponentTeam is undefined");
 
-  if (joinedRoom) {
-    return (
-      <ActionSectionWrapper>
-        <h4>Opponent: {opponentTeam.name}</h4>
-        <div>scores map etc.</div>
-      </ActionSectionWrapper>
-    );
-  }
-
   const { weHost, friendCodeToAdd, roomPass } = resolveHostInfo({
     ourTeam: ownTeam,
     theirTeam: opponentTeam,
     seeds,
   });
 
+  if (joinedRoom) {
+    const currentStage = currentRound.stages.find((m) => m.position === 1);
+    invariant(currentStage, "currentStage is undefined");
+    const { stage } = currentStage;
+
+    const roundInfo = [
+      ["Opponent", opponentTeam.name],
+      ["Room pass", `${roomPass} (${weHost ? "We" : "They"} host)`],
+      ["Friend code to add", friendCodeToAdd],
+      ["Score", currentMatch.score?.join("-")],
+      ["Current map", `${stage.mode} ${stage.name}`],
+    ];
+
+    return (
+      <ActionSectionWrapper>
+        <div className="flex flex-wrap">
+          <div className="grid grid-cols-2 gap-y-2 gap-x-4">
+            {roundInfo.map(([title, value]) => (
+              <React.Fragment key={title}>
+                <label className="plain font-bold">{title}</label>
+                <div>{value}</div>
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+        <DuringMatchActionsRosters
+          ownTeam={ownTeam}
+          opponentTeam={opponentTeam}
+          stage={stage}
+        />
+      </ActionSectionWrapper>
+    );
+  }
+
   return (
     <ActionSectionWrapper>
-      <h4>Opponent: {opponentTeam.name}</h4>
-      <ol>
+      <h4 className="font-bold mr-6">Opponent: {opponentTeam.name}</h4>
+      <ol className="list-decimal">
         <li>Add FC: {friendCodeToAdd}</li>
         {weHost ? (
           <li>

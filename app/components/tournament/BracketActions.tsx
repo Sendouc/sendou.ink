@@ -16,7 +16,7 @@ import { DuringMatchActions } from "./DuringMatchActions";
 // - Select players who played with radio boxes if team.length > min_roster_length
 // - Report
 
-export function WaitingForMatchActions() {
+export function BracketActions() {
   const data = useLoaderData<BracketModified>();
   const user = useUser();
   const [, parentRoute] = useMatches();
@@ -34,14 +34,14 @@ export function WaitingForMatchActions() {
     ...data.winners.flatMap((round, roundI) =>
       round.matches.map((match) => ({
         ...match,
-        bestOf: round.bestOf,
+        round,
         isFirstRound: roundI === 0,
       }))
     ),
     ...data.losers.flatMap((round) =>
       round.matches.map((match) => ({
         ...match,
-        bestOf: round.bestOf,
+        round,
         isFirstRound: false,
       }))
     ),
@@ -55,13 +55,19 @@ export function WaitingForMatchActions() {
     const higherCount = match.score
       ? Math.max(match.score[0], match.score[1])
       : 0;
-    const isNotOver = higherCount < match.bestOf / 2;
+    const isNotOver = higherCount < match.round.matches.length / 2;
 
     return hasBothParticipants && isOwnMatch && isNotOver;
   });
 
   if (currentMatch) {
-    return <DuringMatchActions ownTeam={ownTeam} currentMatch={currentMatch} />;
+    return (
+      <DuringMatchActions
+        ownTeam={ownTeam}
+        currentMatch={currentMatch}
+        currentRound={currentMatch.round}
+      />
+    );
   }
 
   const nextMatch = allMatches.find((match) => {
@@ -98,7 +104,7 @@ export function WaitingForMatchActions() {
       <b>{matchWeAreWaitingFor.participants[1]}</b>
       <i>
         {(matchWeAreWaitingFor.score ?? [0, 0]).join("-")} - Best of{" "}
-        {matchWeAreWaitingFor.bestOf}
+        {matchWeAreWaitingFor.round.matches.length}
       </i>
     </ActionSectionWrapper>
   );

@@ -10,9 +10,10 @@ export function findById(bracketId: string) {
         select: {
           id: true,
           position: true,
-          _count: {
+          stages: {
             select: {
-              stages: true,
+              position: true,
+              stage: true,
             },
           },
           matches: {

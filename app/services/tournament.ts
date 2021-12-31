@@ -1,4 +1,4 @@
-import type { Prisma } from ".prisma/client";
+import type { Prisma, Stage } from ".prisma/client";
 import {
   TOURNAMENT_CHECK_IN_CLOSING_MINUTES_FROM_START,
   TOURNAMENT_TEAM_ROSTER_MAX_SIZE,
@@ -132,7 +132,7 @@ export type BracketModified = EliminationBracket<BracketModifiedSide>;
 type BracketModifiedSide = {
   id: string;
   name: string;
-  bestOf: number;
+  stages: { position: number; stage: Stage }[];
   matches: {
     id: string;
     number: number;
@@ -175,7 +175,7 @@ function modifyRounds(
     return {
       id: round.id,
       name: roundNames[i],
-      bestOf: round._count.stages,
+      stages: round.stages,
       matches: round.matches.map((match) => {
         const score =
           match.participants.length === 2
