@@ -56,23 +56,27 @@ export function DuringMatchActions({
     ];
 
     return (
-      <ActionSectionWrapper>
-        <div className="flex flex-wrap">
-          <div className="grid grid-cols-2 gap-y-2 gap-x-4">
-            {roundInfo.map(([title, value]) => (
-              <React.Fragment key={title}>
-                <label className="plain font-bold">{title}</label>
-                <div>{value}</div>
-              </React.Fragment>
-            ))}
+      <div className="flex gap-2.5 flex-wrap w-100">
+        <ActionSectionWrapper>
+          <div className="flex flex-wrap">
+            <div className="grid grid-cols-2 gap-y-2 gap-x-4">
+              {roundInfo.map(([title, value]) => (
+                <React.Fragment key={title}>
+                  <label className="plain font-bold">{title}</label>
+                  <div>{value}</div>
+                </React.Fragment>
+              ))}
+            </div>
           </div>
-        </div>
-        <DuringMatchActionsRosters
-          ownTeam={ownTeam}
-          opponentTeam={opponentTeam}
-          stage={stage}
-        />
-      </ActionSectionWrapper>
+        </ActionSectionWrapper>
+        <ActionSectionWrapper>
+          <DuringMatchActionsRosters
+            ownTeam={ownTeam}
+            opponentTeam={opponentTeam}
+            stage={stage}
+          />
+        </ActionSectionWrapper>
+      </div>
     );
   }
 

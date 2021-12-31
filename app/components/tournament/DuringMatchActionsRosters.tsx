@@ -23,11 +23,11 @@ export function DuringMatchActionsRosters({
       <h3>
         Report score for {stage.mode} {stage.name}
       </h3>
-      <div className="flex justify-between mt-2">
+      <div className="flex justify-between mt-4">
         {[ownTeam, opponentTeam].map((team, teamI) => (
           <div key={team.id}>
             <h4>{team.name}</h4>
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-1.5 mt-2">
               {team.members.map(({ member }) => (
                 <div key={member.id} className="flex items-center">
                   <input
@@ -53,7 +53,7 @@ export function DuringMatchActionsRosters({
                       })
                     }
                   />{" "}
-                  <label className="plain ml-2" htmlFor={member.id}>
+                  <label className="ml-2 plain" htmlFor={member.id}>
                     {member.discordName}
                   </label>
                 </div>
@@ -62,16 +62,9 @@ export function DuringMatchActionsRosters({
           </div>
         ))}
       </div>
-      {checkedPlayers.every(
-        (team) => team.length === TOURNAMENT_TEAM_ROSTER_MIN_SIZE
-      ) ? (
-        <Button>Report score</Button>
-      ) : (
-        <p>
-          Please choose exactly {TOURNAMENT_TEAM_ROSTER_MIN_SIZE}+
-          {TOURNAMENT_TEAM_ROSTER_MIN_SIZE} players
-        </p>
-      )}
+      <div className="mt-4">
+        <ReportScoreButtons checkedPlayers={checkedPlayers} />
+      </div>
     </div>
   );
 }
@@ -91,4 +84,25 @@ function checkedPlayersInitialState([teamOne, teamTwo]: [
   }
 
   return result;
+}
+
+function ReportScoreButtons({
+  checkedPlayers,
+}: {
+  checkedPlayers: string[][];
+}) {
+  if (
+    !checkedPlayers.every(
+      (team) => team.length === TOURNAMENT_TEAM_ROSTER_MIN_SIZE
+    )
+  ) {
+    return (
+      <p>
+        Please choose exactly {TOURNAMENT_TEAM_ROSTER_MIN_SIZE}+
+        {TOURNAMENT_TEAM_ROSTER_MIN_SIZE} players
+      </p>
+    );
+  }
+
+  return <Button>Report score</Button>;
 }

@@ -373,3 +373,9 @@ select::selection {
 .justify-center {
   justify-content: center;
 }
+
+/* CSS Var helpers */
+
+.css-var-tournaments-bg {
+  background: var(--tournaments-bg);
+}
