@@ -1,3 +1,11 @@
+/* TODO: should be able to go wider than container https://stackoverflow.com/questions/5581034/is-there-are-way-to-make-a-child-divs-width-wider-than-the-parent-div-using-css */
+.tournament-bracket__container {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: var(--s-6);
+}
+
 .tournament-bracket__elim__container {
   display: flex;
   width: 100%;
@@ -6,34 +14,87 @@
 }
 
 .tournament-bracket__stage-banner {
+  width: 100%;
+  height: 10rem;
+
   /* TODO: */
   background-image: url("https://pbs.twimg.com/media/DoAV42MXsAAtHCh?format=jpg&name=large");
-  height: 10rem;
-  width: 100%;
   background-position: center;
   border-radius: var(--rounded);
+  grid-area: img;
 }
 
 .tournament-bracket__stage-banner__top-bar {
-  padding: var(--s-2);
   display: flex;
   justify-content: space-between;
+  padding: var(--s-2);
   backdrop-filter: blur(5px);
-  background: rgba(0, 0, 0, 0.25);
+  background: rgb(0 0 0 / 25%);
   border-start-end-radius: var(--rounded);
   border-start-start-radius: var(--rounded);
 }
 
 .tournament-bracket__stage-banner__top-bar__header {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   gap: var(--s-2);
+}
+
+.tournament-bracket__during-match-actions-container {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: var(--s-2-5);
+}
+
+.tournament-bracket__infos {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tournament-bracket__infos__columns {
+  display: grid;
+  column-gap: var(--s-4);
+  grid-template-columns: 1fr 1fr;
+  row-gap: var(--s-2);
 }
 
 .tournament-bracket__stage-banner__top-bar__mode-image {
   width: 1.5rem;
   height: 1.5rem;
+}
+
+.tournament-bracket__during-match-actions {
+  display: grid;
+  margin-top: var(--s-4);
+  gap: var(--s-4);
+  grid-template-areas:
+    "img img"
+    "infos rosters";
+  grid-template-columns: 1fr 1fr;
+}
+
+.tournament-bracket__during-match-actions__rosters {
+  display: flex;
+  width: 100%;
+  justify-content: space-evenly;
+}
+
+.tournament-bracket__during-match-actions__team-players {
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--s-2);
+  gap: var(--s-1-5);
+}
+
+.tournament-bracket__during-match-actions__checkbox-name {
+  display: flex;
+  align-items: center;
+}
+
+.tournament-bracket__during-match-actions__player-name {
+  margin-inline-start: var(--s-2);
 }
 
 .tournament-bracket__elim__bracket {

@@ -17,13 +17,11 @@ export function ActionSectionWrapper({
     : undefined;
   return (
     <section
-      className="p-1.5 rounded-2xl css-var-tournaments-bg grow"
+      className="tournament__action-section"
       style={style}
       data-cy={rest["data-cy"]}
     >
-      <div className="flex w-full h-full p-3 text-sm font-semibold align-center rounded-2xl gap-1-5 bg-bg-lighter">
-        {children}
-      </div>
+      <div className="tournament__action-section__content">{children}</div>
     </section>
   );
 }

@@ -36,8 +36,7 @@ export default function BracketTabWrapper() {
   );
 
   return (
-    /* TODO: should be able to go wider than container https://stackoverflow.com/questions/5581034/is-there-are-way-to-make-a-child-divs-width-wider-than-the-parent-div-using-css */
-    <div className="flex w-full flex-col gap-6">
+    <div className="tournament-bracket__container">
       <BracketActions />
       <EliminationBracket
         bracketSide={data.winners}

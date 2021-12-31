@@ -9,27 +9,25 @@ import { Button } from "../Button";
 export function DuringMatchActionsRosters({
   ownTeam,
   opponentTeam,
-  stage,
 }: {
   ownTeam: Unpacked<FindTournamentByNameForUrlI["teams"]>;
   opponentTeam: Unpacked<FindTournamentByNameForUrlI["teams"]>;
-  stage: Stage;
 }) {
   const [checkedPlayers, setCheckedPlayers] = useState<[string[], string[]]>(
     checkedPlayersInitialState([ownTeam, opponentTeam])
   );
   return (
     <div>
-      <h3>
-        Report score for {stage.mode} {stage.name}
-      </h3>
-      <div className="flex justify-between mt-4">
+      <div className="tournament-bracket__during-match-actions__rosters">
         {[ownTeam, opponentTeam].map((team, teamI) => (
           <div key={team.id}>
             <h4>{team.name}</h4>
-            <div className="flex flex-col gap-1.5 mt-2">
+            <div className="tournament-bracket__during-match-actions__team-players">
               {team.members.map(({ member }) => (
-                <div key={member.id} className="flex items-center">
+                <div
+                  key={member.id}
+                  className="tournament-bracket__during-match-actions__checkbox-name"
+                >
                   <input
                     type="checkbox"
                     id={member.id}
@@ -53,7 +51,10 @@ export function DuringMatchActionsRosters({
                       })
                     }
                   />{" "}
-                  <label className="ml-2 plain" htmlFor={member.id}>
+                  <label
+                    className="plain tournament-bracket__during-match-actions__player-name"
+                    htmlFor={member.id}
+                  >
                     {member.discordName}
                   </label>
                 </div>
@@ -62,7 +63,7 @@ export function DuringMatchActionsRosters({
           </div>
         ))}
       </div>
-      <div className="mt-4">
+      <div>
         <ReportScoreButtons checkedPlayers={checkedPlayers} />
       </div>
     </div>
@@ -99,7 +100,7 @@ function ReportScoreButtons({
     return (
       <p>
         Please choose exactly {TOURNAMENT_TEAM_ROSTER_MIN_SIZE}+
-        {TOURNAMENT_TEAM_ROSTER_MIN_SIZE} players
+        {TOURNAMENT_TEAM_ROSTER_MIN_SIZE} players to report score
       </p>
     );
   }

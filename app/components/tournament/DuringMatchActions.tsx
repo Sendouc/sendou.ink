@@ -57,7 +57,7 @@ export function DuringMatchActions({
     ];
 
     return (
-      <div className="flex gap-2.5 flex-wrap w-100">
+      <div className="tournament-bracket__during-match-actions">
         <div className="tournament-bracket__stage-banner">
           <div className="tournament-bracket__stage-banner__top-bar">
             <h4 className="tournament-bracket__stage-banner__top-bar__header">
@@ -71,11 +71,11 @@ export function DuringMatchActions({
           </div>
         </div>
         <ActionSectionWrapper>
-          <div className="flex flex-wrap">
-            <div className="grid grid-cols-2 gap-y-2 gap-x-4">
+          <div className="tournament-bracket__infos">
+            <div className="tournament-bracket__infos__columns">
               {roundInfo.map(([title, value]) => (
                 <React.Fragment key={title}>
-                  <label className="font-bold plain">{title}</label>
+                  <label>{title}</label>
                   <div>{value}</div>
                 </React.Fragment>
               ))}
@@ -86,7 +86,6 @@ export function DuringMatchActions({
           <DuringMatchActionsRosters
             ownTeam={ownTeam}
             opponentTeam={opponentTeam}
-            stage={stage}
           />
         </ActionSectionWrapper>
       </div>
