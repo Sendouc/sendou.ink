@@ -5,3 +5,4 @@ node_modules
 /server/build
 /public/build
 /app/tailwind.css
+/app/db/test.db
