@@ -1,4 +1,3 @@
-import { Stage } from "@prisma/client";
 import clone from "just-clone";
 import { useState } from "react";
 import { TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
