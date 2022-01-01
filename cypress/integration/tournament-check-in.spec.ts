@@ -4,7 +4,7 @@ describe("Before tournament starts", () => {
     cy.logIn("sendou");
   });
 
-  it.only("Can edit team details, add/remove players and check-in", () => {
+  it("Can edit team details, add/remove players and check-in", () => {
     cy.visit("/to/sendou/in-the-zone-x/manage-roster", {
       onBeforeLoad(win: Window): void {
         cy.spy(win.navigator.clipboard, "writeText").as("copy");

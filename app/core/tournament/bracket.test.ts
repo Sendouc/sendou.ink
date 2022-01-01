@@ -105,7 +105,7 @@ TournamentRoundsForDB("Generates rounds correctly", () => {
   assert.equal(uniqueParticipants.size, TEAM_COUNT + 1); // + BYE
 });
 
-TournamentRoundsForDB.only("Advances bye to right spot", () => {
+TournamentRoundsForDB("Advances bye to right spot", () => {
   const TEAM_COUNT = 7;
   const bracketForDb = tournamentRoundsForDB({
     mapList,
