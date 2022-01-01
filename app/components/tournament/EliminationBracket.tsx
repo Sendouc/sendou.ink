@@ -169,7 +169,7 @@ export function Match({
         {match.participants?.[0]}{" "}
         <span
           className={classNames("tournament-bracket__elim__score", {
-            "visibility-hidden": typeof match.score?.[0] !== "number",
+            invisible: typeof match.score?.[0] !== "number",
           })}
         >
           {match.score?.[0] ?? 0}
@@ -190,7 +190,7 @@ export function Match({
         {match.participants?.[1]}{" "}
         <span
           className={classNames("tournament-bracket__elim__score", {
-            "visibility-hidden": typeof match.score?.[0] !== "number",
+            invisible: typeof match.score?.[0] !== "number",
           })}
         >
           {match.score?.[1] ?? 0}

@@ -122,7 +122,7 @@ export default function StartBracketTab() {
   };
 
   return (
-    <Form method="post" className="width-100">
+    <Form method="post" className="width-full">
       <input
         type="hidden"
         name="map-list"

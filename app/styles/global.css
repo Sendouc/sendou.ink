@@ -334,48 +334,14 @@ select::selection {
 
 /* Utility classes */
 
-.ml-2 {
-  margin-inline-start: var(--s-2);
-}
-
-.mt-1 {
-  margin-block-start: var(--s-1);
-}
-
 .mt-3 {
   margin-block-start: var(--s-3);
 }
 
-.mt-4 {
-  margin-block-start: var(--s-4);
-}
-
-.mb-0 {
-  margin-block-end: 0;
-}
-
-.visibility-hidden {
+.invisible {
   visibility: hidden;
 }
 
-.width-100 {
+.width-full {
   width: 100%;
-}
-
-.flex {
-  display: flex;
-}
-
-.align-center {
-  align-items: center;
-}
-
-.justify-center {
-  justify-content: center;
-}
-
-/* CSS Var helpers */
-
-.css-var-tournaments-bg {
-  background: var(--tournaments-bg);
 }

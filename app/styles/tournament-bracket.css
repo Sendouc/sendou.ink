@@ -41,6 +41,12 @@
   gap: var(--s-2);
 }
 
+.tournament-bracket__during-match__opponent-info {
+  margin-right: var(--s-6);
+  font-size: var(--fonts-md);
+  font-weight: var(--bold);
+}
+
 .tournament-bracket__during-match-actions-container {
   display: flex;
   width: 100%;

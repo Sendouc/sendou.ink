@@ -217,7 +217,7 @@ export default function ManageRosterPage() {
           <label className="mt-3" htmlFor="canHost">
             Does your team want to host?
           </label>
-          <div className="flex align-center">
+          <div className="tournament__manage-roster__radio-with-label">
             <input
               type="radio"
               id="yes"
@@ -225,12 +225,15 @@ export default function ManageRosterPage() {
               value="yes"
               defaultChecked={ownTeam.canHost}
             />
-            <label className="mb-0 ml-2" htmlFor="yes">
+            <label
+              className="tournament__manage-roster__radio-label"
+              htmlFor="yes"
+            >
               Yes
             </label>
           </div>
 
-          <div className="mt-1 flex align-center">
+          <div className="tournament__manage-roster__radio-with-label">
             <input
               type="radio"
               id="no"
@@ -238,7 +241,10 @@ export default function ManageRosterPage() {
               value="no"
               defaultChecked={!ownTeam.canHost}
             />
-            <label className="mb-0 ml-2" htmlFor="no">
+            <label
+              className="tournament__manage-roster__radio-label"
+              htmlFor="no"
+            >
               No
             </label>
           </div>

@@ -24,9 +24,7 @@ export function DuringMatchActions({
   const [, parentRoute] = useMatches();
   const { teams, seeds } = parentRoute.data as FindTournamentByNameForUrlI;
   const [joinedRoom, setJoinedRoom] = useState(
-    true ||
-      (currentMatch.score?.[0] ?? 0) > 0 ||
-      (currentMatch.score?.[1] ?? 0) > 0
+    (currentMatch.score?.[0] ?? 0) > 0 || (currentMatch.score?.[1] ?? 0) > 0
   );
 
   const opponentTeam = teams.find(
@@ -94,8 +92,10 @@ export function DuringMatchActions({
 
   return (
     <ActionSectionWrapper>
-      <h4 className="mr-6 font-bold">Opponent: {opponentTeam.name}</h4>
-      <ol className="list-decimal">
+      <h4 className="tournament-bracket__during-match__opponent-info">
+        Opponent: {opponentTeam.name}
+      </h4>
+      <ol>
         <li>Add FC: {friendCodeToAdd}</li>
         {weHost ? (
           <li>

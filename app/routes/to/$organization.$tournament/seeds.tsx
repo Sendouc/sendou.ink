@@ -169,7 +169,7 @@ export default function SeedsTab() {
                   "sortable",
                   {
                     disabled: transition.state !== "idle",
-                    "visibility-hidden": activeTeam?.id === team.id,
+                    invisible: activeTeam?.id === team.id,
                   }
                 )}
               >
