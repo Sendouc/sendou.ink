@@ -1,8 +1,10 @@
+-- TODO: STRICT
+
 CREATE TABLE "users" (
   "id" text PRIMARY KEY,
   "discord_id" text UNIQUE NOT NULL,
   "discord_name" text NOT NULL,
-  "discord_discriminator" text NOT NULL,
+  "discord_discriminator" text CHECK (length("discord_discriminator" = 4)) NOT NULL,
   "discord_avatar" text,
   "discord_refresh_token" text NOT NULL,
   "twitch" text,
@@ -49,9 +51,9 @@ CREATE TABLE "tournament_teams" (
   "id" text PRIMARY KEY,
   "name" text NOT NULL,
   "tournament_id" text NOT NULL,
-  "can_host_bool" integer NOT NULL DEFAULT 0,
+  "can_host_bool" integer CHECK ("can_host_bool" IN (0, 1)) NOT NULL DEFAULT 0,
   "friend_code" text NOT NULL,
-  "room_pass" text,
+  "room_pass" text CHECK (length("room_pass" = 4)),
   "invite_code" text NOT NULL,
   "checked_in_timestamp" text,
   "created_at_timestamp" text NOT NULL,
@@ -62,7 +64,7 @@ CREATE TABLE "tournament_team_members" (
   "member_id" text NOT NULL,
   "team_id" text NOT NULL,
   "tournament_id" text NOT NULL,
-  "captain_bool" integer NOT NULL DEFAULT 0,
+  "captain_bool" integer CHECK ("captain_bool" IN (0, 1)) NOT NULL DEFAULT 0,
   FOREIGN KEY (team_id) REFERENCES tournament_teams(id),
   FOREIGN KEY (member_id) REFERENCES users(id)
 );
@@ -78,7 +80,7 @@ CREATE TABLE "trust_relationships" (
 CREATE TABLE "tournament_brackets" (
   "id" text PRIMARY KEY,
   "tournament_id" text NOT NULL,
-  "type" text,
+  "type" text CHECK ("type" IN ('SE', 'DE')),
   FOREIGN KEY (tournament_id) REFERENCES tournaments(id)
 );
 

@@ -1,6 +1,5 @@
 {
   "private": true,
-  "type": "module",
   "name": "sendou.ink",
   "version": "3.0.0",
   "scripts": {
@@ -11,11 +10,13 @@
     "postinstall": "remix setup node",
     "gen": "npx prisma generate",
     "start": "cross-env NODE_ENV=production node server/index.js",
-    "migrate": "rm ./app/db/test.db && node ./app/db/migrate.js",
+    "sqlite:test": "npm run migrate && npm run seed2",
+    "migrate": "rm ./db.sqlite3 && node ./app/db/migrate.mjs",
     "migration:create": "npx prisma migrate dev --create-only",
     "migration:apply:dev": "npx prisma migrate dev",
     "migration:apply:prod": "npx prisma migrate deploy",
     "seed": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register prisma/seed",
+    "seed2": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register app/db/seed",
     "seed:reset": "npx prisma migrate reset --force --skip-generate",
     "lint:styles": "stylelint \"app/styles/**/*.css\"",
     "prettier:check": "prettier --check .",

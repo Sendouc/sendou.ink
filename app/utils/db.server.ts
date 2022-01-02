@@ -1,4 +1,7 @@
 import { PrismaClient } from "@prisma/client";
+import SQLite3 from "better-sqlite3";
+import { UserModel } from "~/models/User/User";
+// import { v4 as uuidv4 } from "uuid";
 
 let db: PrismaClient;
 
@@ -21,3 +24,25 @@ if (process.env.NODE_ENV === "production") {
 }
 
 export { db };
+
+export class Database {
+  db;
+  user;
+  //static #instance: Database;
+  constructor() {
+    // make Database class into singleton
+    // if (Database.#instance) {
+    //   return Database.#instance;
+    // }
+    // Database.#instance = this;
+
+    this.db = new SQLite3("db.sqlite3");
+    this.user = new UserModel(this.db);
+  }
+  // init() {
+  //   for (const model of this.registered_models) model.init()
+  // }
+
+  // // model  definitions
+  // book = this.register(BookModel)
+}
