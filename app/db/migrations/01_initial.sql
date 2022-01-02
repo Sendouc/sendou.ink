@@ -36,7 +36,7 @@ CREATE TABLE "tournaments" (
   "banner_background" text NOT NULL,
   "banner_text_hsl_args" text NOT NULL,
   "seeds_json" text,
-  "organizer_id" text,
+  "organizer_id" text NOT NULL,
   FOREIGN KEY (organizer_id) REFERENCES organizations(id) ON DELETE RESTRICT
 );
 CREATE INDEX tournaments_organizer_id ON tournaments(organizer_id);

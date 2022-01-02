@@ -4,7 +4,7 @@ import { Model } from "~/models/common/Model";
 import type { Optional } from "~/utils";
 import { Helpers } from "../common/Helpers";
 
-const UserSchema = z.object({
+export const UserSchema = z.object({
   id: z.string(),
   discord_id: z.string(),
   discord_name: z.string(),
@@ -19,7 +19,7 @@ const UserSchema = z.object({
   updated_at_timestamp: z.string(),
 });
 
-type UserI = z.infer<typeof UserSchema>;
+export type UserI = z.infer<typeof UserSchema>;
 
 export class UserModel extends Model {
   #createStmt;

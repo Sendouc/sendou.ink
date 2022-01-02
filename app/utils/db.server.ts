@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import SQLite3 from "better-sqlite3";
 import { OrganizationModel } from "~/models/Organization/Organization";
+import { TournamentModel } from "~/models/Tournament/Tournament";
 import { UserModel } from "~/models/User/User";
 // import { v4 as uuidv4 } from "uuid";
 
@@ -30,6 +31,7 @@ export class Database {
   db;
   user;
   organization;
+  tournament;
   //static #instance: Database;
   constructor() {
     // make Database class into singleton
@@ -44,5 +46,6 @@ export class Database {
 
     this.user = new UserModel(this.db);
     this.organization = new OrganizationModel(this.db);
+    this.tournament = new TournamentModel(this.db);
   }
 }

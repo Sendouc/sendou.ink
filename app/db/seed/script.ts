@@ -15,8 +15,9 @@ import { v4 as uuidv4 } from "uuid";
 
 const db = new Database();
 
-//variation?: "check-in" | "match"
-export async function seed() {
+const ORG_ID = uuidv4();
+
+export async function seed(variation?: "check-in" | "match") {
   //
   // make sure we won't override production database
   //
@@ -34,7 +35,7 @@ export async function seed() {
   const userIds = new Array(500).fill(null).map(() => uuidv4());
   users(userIds);
   organizations();
-  // const tournament = await tournaments(organization.id);
+  tournaments();
   // await tournamentTeams(tournament.id, userIds, adminUserCreated.id);
   // await trustRelationship(nzapUserCreated.id, adminUserCreated.id);
   // await stages();
@@ -95,6 +96,54 @@ export async function seed() {
         youtube_name: null,
       });
     }
+  }
+
+  async function organizations() {
+    return db.organization.create({
+      id: ORG_ID,
+      owner_id: ADMIN_TEST_UUID,
+      discord_invite: "sendou",
+      name_for_url: "sendou",
+      twitter: "sendouc",
+      name: "Sendou's Tournaments",
+    });
+  }
+
+  async function tournaments() {
+    const lastFullHour = new Date();
+    lastFullHour.setMinutes(0);
+    lastFullHour.setSeconds(0);
+    lastFullHour.setMilliseconds(0);
+
+    const oneAfterNextFullHour = new Date(lastFullHour);
+    oneAfterNextFullHour.setHours(lastFullHour.getHours() + 2);
+
+    return db.tournament.create({
+      banner_background:
+        "radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%)",
+      banner_text_hsl_args: "231, 9%, 16%",
+      check_in_start_timestamp:
+        variation === "check-in"
+          ? lastFullHour.toISOString()
+          : new Date(2025, 11, 17, 11).toISOString(),
+      start_time_timestamp:
+        variation === "check-in"
+          ? oneAfterNextFullHour.toISOString()
+          : new Date(2025, 11, 17, 12).toISOString(),
+      name: "In The Zone X",
+      name_for_url: "in-the-zone-x",
+      organizer_id: ORG_ID,
+      seeds_json: null,
+      description:
+        "In The Zone eXtreme\n\nCroissant cookie jelly macaroon caramels. Liquorice icing bonbon fruitcake wafer. Fruitcake pudding icing biscuit pie pie macaroon carrot cake shortbread. Soufflé dessert powder marshmallow biscuit.\n\nJelly-o wafer chocolate bar tootsie roll cheesecake chocolate bar. Icing candy canes cookie chocolate bar sesame snaps sugar plum cheesecake lollipop biscuit. Muffin marshmallow sweet soufflé bonbon pudding gummies sweet apple pie.\n\nSoufflé cookie sugar plum sesame snaps muffin cupcake wafer jelly-o carrot cake. Ice cream danish jelly-o dragée marzipan croissant. Shortbread cheesecake marshmallow biscuit gummi bears.",
+    });
+
+    // TODO: brackets: {
+    //   create: {
+    //     id: "72867c9f-8515-4e44-ae8a-3766174e1ed4",
+    //     type: "DE",
+    //   },
+    // },
   }
 
   // async function tournamentTeams(
@@ -195,56 +244,6 @@ export async function seed() {
   //     data: {
   //       trustGiverId,
   //       trustReceiverId,
-  //     },
-  //   });
-  // }
-
-  async function organizations() {
-    return db.organization.create({
-      owner_id: ADMIN_TEST_UUID,
-      discord_invite: "sendou",
-      name_for_url: "sendou",
-      twitter: "sendouc",
-      name: "Sendou's Tournaments",
-    });
-  }
-
-  // async function tournaments(organizationId: string) {
-  //   const lastFullHour = new Date();
-  //   lastFullHour.setMinutes(0);
-  //   lastFullHour.setSeconds(0);
-  //   lastFullHour.setMilliseconds(0);
-
-  //   const oneAfterNextFullHour = new Date(lastFullHour);
-  //   oneAfterNextFullHour.setHours(lastFullHour.getHours() + 2);
-
-  //   return prisma.tournament.create({
-  //     data: {
-  //       bannerBackground:
-  //         "radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%)",
-  //       bannerTextHSLArgs: "231, 9%, 16%",
-  //       checkInStartTime:
-  //         variation === "check-in"
-  //           ? lastFullHour
-  //           : new Date(2025, 11, 17, 11),
-  //       startTime:
-  //         variation === "check-in"
-  //           ? oneAfterNextFullHour
-  //           : new Date(2025, 11, 17, 12),
-  //       name: "In The Zone X",
-  //       nameForUrl: "in-the-zone-x",
-  //       organizerId: organizationId,
-  //       description:
-  //         "In The Zone eXtreme\n\nCroissant cookie jelly macaroon caramels. Liquorice icing bonbon fruitcake wafer. Fruitcake pudding icing biscuit pie pie macaroon carrot cake shortbread. Soufflé dessert powder marshmallow biscuit.\n\nJelly-o wafer chocolate bar tootsie roll cheesecake chocolate bar. Icing candy canes cookie chocolate bar sesame snaps sugar plum cheesecake lollipop biscuit. Muffin marshmallow sweet soufflé bonbon pudding gummies sweet apple pie.\n\nSoufflé cookie sugar plum sesame snaps muffin cupcake wafer jelly-o carrot cake. Ice cream danish jelly-o dragée marzipan croissant. Shortbread cheesecake marshmallow biscuit gummi bears.",
-  //       brackets: {
-  //         create: {
-  //           id: "72867c9f-8515-4e44-ae8a-3766174e1ed4",
-  //           type: "DE",
-  //         },
-  //       },
-  //     },
-  //     include: {
-  //       brackets: true,
   //     },
   //   });
   // }

@@ -4,7 +4,7 @@ import { Model } from "~/models/common/Model";
 import type { Optional } from "~/utils";
 import { Helpers } from "../common/Helpers";
 
-const OrganizationSchema = z.object({
+export const OrganizationSchema = z.object({
   id: z.string(),
   name: z.string(),
   name_for_url: z.string(),
@@ -13,7 +13,7 @@ const OrganizationSchema = z.object({
   twitter: z.string().nullable(),
 });
 
-type OrganizationI = z.infer<typeof OrganizationSchema>;
+export type OrganizationI = z.infer<typeof OrganizationSchema>;
 
 export class OrganizationModel extends Model {
   #createStmt;
