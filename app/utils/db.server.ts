@@ -37,12 +37,9 @@ export class Database {
     // Database.#instance = this;
 
     this.db = new SQLite3("db.sqlite3");
+    this.db.pragma("journal_mode = WAL");
+    this.db.pragma("foreign_keys = ON");
+
     this.user = new UserModel(this.db);
   }
-  // init() {
-  //   for (const model of this.registered_models) model.init()
-  // }
-
-  // // model  definitions
-  // book = this.register(BookModel)
 }
