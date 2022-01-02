@@ -33,7 +33,7 @@ export async function seed() {
   nzapUser();
   const userIds = new Array(500).fill(null).map(() => uuidv4());
   users(userIds);
-  // const organization = await organizations(adminUserCreated.id);
+  organizations();
   // const tournament = await tournaments(organization.id);
   // await tournamentTeams(tournament.id, userIds, adminUserCreated.id);
   // await trustRelationship(nzapUserCreated.id, adminUserCreated.id);
@@ -199,17 +199,15 @@ export async function seed() {
   //   });
   // }
 
-  // async function organizations(userId: string) {
-  //   return prisma.organization.create({
-  //     data: {
-  //       name: "Sendou's Tournaments",
-  //       discordInvite: "sendou",
-  //       nameForUrl: "sendou",
-  //       twitter: "sendouc",
-  //       ownerId: userId,
-  //     },
-  //   });
-  // }
+  async function organizations() {
+    return db.organization.create({
+      owner_id: ADMIN_TEST_UUID,
+      discord_invite: "sendou",
+      name_for_url: "sendou",
+      twitter: "sendouc",
+      name: "Sendou's Tournaments",
+    });
+  }
 
   // async function tournaments(organizationId: string) {
   //   const lastFullHour = new Date();

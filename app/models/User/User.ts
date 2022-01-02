@@ -9,7 +9,7 @@ const UserSchema = z.object({
   discord_id: z.string(),
   discord_name: z.string(),
   discord_discriminator: z.string(),
-  discord_avatar: z.string().nullable(), // undefined or null..?
+  discord_avatar: z.string().nullable(),
   discord_refresh_token: z.string(),
   twitch: z.string().nullable(),
   twitter: z.string().nullable(),

@@ -18,8 +18,8 @@ CREATE TABLE "users" (
 CREATE TABLE "organizations" (
   "id" text PRIMARY KEY,
   "name" text NOT NULL,
-  "name_for_url" text UNIQUE,
-  "owner_id" text,
+  "name_for_url" text NOT NULL UNIQUE,
+  "owner_id" text NOT NULL,
   "discord_invite" text NOT NULL,
   "twitter" text,
   FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE RESTRICT
