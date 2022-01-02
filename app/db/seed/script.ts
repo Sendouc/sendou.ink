@@ -2,8 +2,14 @@ import { Database } from "~/utils/db.server";
 import {
   ADMIN_TEST_AVATAR,
   ADMIN_TEST_DISCORD_ID,
-  //ADMIN_TEST_UUID,
+  ADMIN_TEST_UUID,
+  NZAP_TEST_AVATAR,
+  NZAP_TEST_DISCORD_ID,
+  NZAP_TEST_UUID,
 } from "../../../app/constants";
+import fs from "node:fs";
+import path from "node:path";
+import { v4 as uuidv4 } from "uuid";
 
 //const mapListDE = `{"losers":[[{"id":4647,"name":"Kelp Dome","mode":"SZ"},{"id":4658,"name":"Blackbelly Skatepark","mode":"TC"},{"id":4645,"name":"Manta Maria","mode":"CB"}],[{"id":4624,"name":"Inkblot Art Academy","mode":"RM"},{"id":4707,"name":"Ancho-V Games","mode":"SZ"},{"id":4618,"name":"Humpback Pump Track","mode":"TC"}],[{"id":4692,"name":"Camp Triggerfish","mode":"SZ"},{"id":4665,"name":"MakoMart","mode":"CB"},{"id":4634,"name":"Moray Towers","mode":"RM"}],[{"id":4609,"name":"Musselforge Fitness","mode":"RM"},{"id":4647,"name":"Kelp Dome","mode":"SZ"},{"id":4678,"name":"Arowana Mall","mode":"TC"}],[{"id":4705,"name":"New Albacore Hotel","mode":"CB"},{"id":4644,"name":"Manta Maria","mode":"RM"},{"id":4707,"name":"Ancho-V Games","mode":"SZ"}],[{"id":4657,"name":"Blackbelly Skatepark","mode":"SZ"},{"id":4690,"name":"Piranha Pit","mode":"CB"},{"id":4682,"name":"Goby Arena","mode":"SZ"},{"id":4678,"name":"Arowana Mall","mode":"TC"},{"id":4624,"name":"Inkblot Art Academy","mode":"RM"}]],"winners":[[{"id":4677,"name":"Arowana Mall","mode":"SZ"},{"id":4665,"name":"MakoMart","mode":"CB"},{"id":4618,"name":"Humpback Pump Track","mode":"TC"}],[{"id":4624,"name":"Inkblot Art Academy","mode":"RM"},{"id":4683,"name":"Goby Arena","mode":"TC"},{"id":4692,"name":"Camp Triggerfish","mode":"SZ"}],[{"id":4647,"name":"Kelp Dome","mode":"SZ"},{"id":4634,"name":"Moray Towers","mode":"RM"},{"id":4707,"name":"Ancho-V Games","mode":"SZ"},{"id":4610,"name":"Musselforge Fitness","mode":"CB"},{"id":4658,"name":"Blackbelly Skatepark","mode":"TC"}],[{"id":4644,"name":"Manta Maria","mode":"RM"},{"id":4677,"name":"Arowana Mall","mode":"SZ"},{"id":4690,"name":"Piranha Pit","mode":"CB"},{"id":4682,"name":"Goby Arena","mode":"SZ"},{"id":4618,"name":"Humpback Pump Track","mode":"TC"}],[{"id":4624,"name":"Inkblot Art Academy","mode":"RM"},{"id":4707,"name":"Ancho-V Games","mode":"SZ"},{"id":4610,"name":"Musselforge Fitness","mode":"CB"},{"id":4657,"name":"Blackbelly Skatepark","mode":"SZ"},{"id":4693,"name":"Camp Triggerfish","mode":"TC"},{"id":4664,"name":"MakoMart","mode":"RM"},{"id":4647,"name":"Kelp Dome","mode":"SZ"}],[{"id":4617,"name":"Humpback Pump Track","mode":"SZ"},{"id":4635,"name":"Moray Towers","mode":"CB"},{"id":4682,"name":"Goby Arena","mode":"SZ"},{"id":4644,"name":"Manta Maria","mode":"RM"},{"id":4678,"name":"Arowana Mall","mode":"TC"},{"id":4692,"name":"Camp Triggerfish","mode":"SZ"},{"id":4705,"name":"New Albacore Hotel","mode":"CB"}]]}`;
 
@@ -24,9 +30,9 @@ export async function seed() {
   // create mock data
   //
   adminUser();
-  // const nzapUserCreated = await nzapUser();
-  // const userIds = new Array(500).fill(null).map(() => crypto.randomUUID());
-  // await users(userIds);
+  nzapUser();
+  const userIds = new Array(500).fill(null).map(() => uuidv4());
+  users(userIds);
   // const organization = await organizations(adminUserCreated.id);
   // const tournament = await tournaments(organization.id);
   // await tournamentTeams(tournament.id, userIds, adminUserCreated.id);
@@ -40,7 +46,7 @@ export async function seed() {
 
   function adminUser() {
     return db.user.create({
-      //id: ADMIN_TEST_UUID,
+      id: ADMIN_TEST_UUID,
       discord_discriminator: "4059",
       discord_id: ADMIN_TEST_DISCORD_ID,
       discord_name: "Sendou",
@@ -53,38 +59,43 @@ export async function seed() {
     });
   }
 
-  // async function nzapUser() {
-  //   return prisma.user.create({
-  //     data: {
-  //       id: NZAP_TEST_UUID,
-  //       discordDiscriminator: "6227",
-  //       discordId: NZAP_TEST_DISCORD_ID,
-  //       discordName: "N-ZAP",
-  //       discordRefreshToken: "none",
-  //       discordAvatar: NZAP_TEST_AVATAR,
-  //     },
-  //   });
-  // }
+  function nzapUser() {
+    return db.user.create({
+      id: NZAP_TEST_UUID,
+      discord_discriminator: "6227",
+      discord_id: NZAP_TEST_DISCORD_ID,
+      discord_name: "N-ZAP",
+      discord_refresh_token: "none",
+      discord_avatar: NZAP_TEST_AVATAR,
+      twitch: null,
+      twitter: null,
+      youtube_id: null,
+      youtube_name: null,
+    });
+  }
 
-  // async function users(ids: string[]) {
-  //   const usersFromSendouInk = await readFile(
-  //     path.resolve("prisma", "seed", "users.json"),
-  //     "utf8"
-  //   );
+  function users(ids: string[]) {
+    const users_from_sendou_ink = fs.readFileSync(
+      path.resolve(__dirname, "users.json"),
+      "utf8"
+    );
 
-  //   return prisma.user.createMany({
-  //     data: JSON.parse(usersFromSendouInk)
-  //       .slice(0, 200)
-  //       .map((user: any, i: number) => ({
-  //         id: ids[i],
-  //         discordId: user.discordId,
-  //         discordDiscriminator: user.discriminator,
-  //         discordName: user.username,
-  //         discordRefreshToken: "none",
-  //         twitter: user.profile?.twitterName,
-  //       })),
-  //   });
-  // }
+    const usersToCreate = JSON.parse(users_from_sendou_ink).slice(0, 200);
+    for (const [i, user] of usersToCreate.entries()) {
+      db.user.create({
+        id: ids[i],
+        discord_id: user.discordId,
+        discord_avatar: user.discordAvatar ?? null,
+        discord_discriminator: user.discriminator,
+        discord_refresh_token: "none",
+        discord_name: user.username,
+        twitter: user.profile?.twitterName ?? null,
+        twitch: null,
+        youtube_id: null,
+        youtube_name: null,
+      });
+    }
+  }
 
   // async function tournamentTeams(
   //   tournamentId: string,

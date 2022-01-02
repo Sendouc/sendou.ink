@@ -1,4 +1,4 @@
-import { Database } from "./db.server";
+import { Database } from "../../utils/db.server";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -8,12 +8,4 @@ export class Model {
     const sql = fs.readFileSync(path.resolve(...pathSegments), "utf8");
     return db.prepare(sql);
   }
-
-  // get newId() {
-  //   return uuidv4();
-  // }
-
-  // get dateNow() {
-  //   return new Date().toISOString();
-  // }
 }
