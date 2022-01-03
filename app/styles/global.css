@@ -213,7 +213,7 @@ input[type="checkbox"] {
   height: 16px;
 }
 
-label:not(.plain) {
+.label {
   display: block;
   font-size: var(--fonts-xs);
   font-weight: var(--bold);
@@ -338,10 +338,43 @@ select::selection {
   margin-block-start: var(--s-3);
 }
 
+.mt-4 {
+  margin-block-start: var(--s-4);
+}
+
+.mb-0 {
+  margin-block-end: 0;
+}
+
+.ml-2 {
+  margin-inline-start: var(--s-2);
+}
+
+.my-1-5 {
+  margin-block-end: var(--s-1-5);
+  margin-block-start: var(--s-1-5);
+}
+
+.text-xs {
+  font-size: var(--fonts-xs);
+}
+
 .invisible {
   visibility: hidden;
 }
 
 .width-full {
   width: 100%;
+}
+
+.flex {
+  display: flex;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.items-center {
+  align-items: center;
 }

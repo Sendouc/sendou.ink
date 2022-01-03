@@ -15,6 +15,7 @@ import { Alert } from "~/components/Alert";
 import { Catcher } from "~/components/Catcher";
 import { FormErrorMessage } from "~/components/FormErrorMessage";
 import { FormInfoText } from "~/components/FormInfoText";
+import { Label } from "~/components/Label";
 import { SubmitButton } from "~/components/SubmitButton";
 import { TeamRoster } from "~/components/tournament/TeamRoster";
 import { TOURNAMENT_TEAM_ROSTER_MAX_SIZE } from "~/constants";
@@ -189,9 +190,9 @@ export default function ManageRosterPage() {
         <input type="hidden" name="teamId" value={ownTeam.id} />
         <fieldset>
           <legend>Edit team info</legend>
-          <label htmlFor="friendCode">
+          <Label htmlFor="friendCode">
             Friend code for your opponents to add
-          </label>
+          </Label>
           <input
             name="friendCode"
             id="friendCode"
@@ -200,9 +201,9 @@ export default function ManageRosterPage() {
             pattern={friendCodeRegExpString}
           />
 
-          <label className="mt-3" htmlFor="roomPass">
+          <Label className="mt-3" htmlFor="roomPass">
             Room password
-          </label>
+          </Label>
           <input
             name="roomPass"
             id="roomPass"
@@ -214,9 +215,9 @@ export default function ManageRosterPage() {
             If blank the password will be randomly generated whenever you host
           </FormInfoText>
 
-          <label className="mt-3" htmlFor="canHost">
+          <Label className="mt-3" htmlFor="canHost">
             Does your team want to host?
-          </label>
+          </Label>
           <div className="tournament__manage-roster__radio-with-label">
             <input
               type="radio"
@@ -225,12 +226,12 @@ export default function ManageRosterPage() {
               value="yes"
               defaultChecked={ownTeam.canHost}
             />
-            <label
+            <Label
               className="tournament__manage-roster__radio-label"
               htmlFor="yes"
             >
               Yes
-            </label>
+            </Label>
           </div>
 
           <div className="tournament__manage-roster__radio-with-label">
@@ -241,12 +242,12 @@ export default function ManageRosterPage() {
               value="no"
               defaultChecked={!ownTeam.canHost}
             />
-            <label
+            <Label
               className="tournament__manage-roster__radio-label"
               htmlFor="no"
             >
               No
-            </label>
+            </Label>
           </div>
           <FormInfoText>
             You might still have to host if both teams prefer not to
@@ -265,7 +266,7 @@ export default function ManageRosterPage() {
         <fieldset className="tournament__manage-roster__actions">
           <legend>Add players to your team</legend>
           <div className="tournament__manage-roster__actions__section">
-            <label htmlFor="inviteCodeInput">Share this URL</label>
+            <Label htmlFor="inviteCodeInput">Share this URL</Label>
             <input
               id="inviteCodeInput"
               className="tournament__manage-roster__input"
@@ -279,9 +280,9 @@ export default function ManageRosterPage() {
               <Form method="post">
                 <input type="hidden" name="_action" value="ADD_PLAYER" />
                 <input type="hidden" name="teamId" value={ownTeam.id} />
-                <label htmlFor="userId">
+                <Label htmlFor="userId">
                   Add players you previously played with
-                </label>
+                </Label>
                 <select
                   className="tournament__manage-roster__select"
                   name="userId"

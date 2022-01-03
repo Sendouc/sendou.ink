@@ -1,9 +1,10 @@
 import clone from "just-clone";
-import { useState } from "react";
+import * as React from "react";
 import { TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
 import type { FindTournamentByNameForUrlI } from "~/services/tournament";
 import { Unpacked } from "~/utils";
 import { Button } from "../Button";
+import { Label } from "../Label";
 
 export function DuringMatchActionsRosters({
   ownTeam,
@@ -12,15 +13,28 @@ export function DuringMatchActionsRosters({
   ownTeam: Unpacked<FindTournamentByNameForUrlI["teams"]>;
   opponentTeam: Unpacked<FindTournamentByNameForUrlI["teams"]>;
 }) {
-  const [checkedPlayers, setCheckedPlayers] = useState<[string[], string[]]>(
-    checkedPlayersInitialState([ownTeam, opponentTeam])
-  );
+  const [checkedPlayers, setCheckedPlayers] = React.useState<
+    [string[], string[]]
+  >(checkedPlayersInitialState([ownTeam, opponentTeam]));
+  const [winnerId, setWinnerId] = React.useState<string | null>(null);
   return (
-    <div>
+    <div className="width-full">
       <div className="tournament-bracket__during-match-actions__rosters">
         {[ownTeam, opponentTeam].map((team, teamI) => (
           <div key={team.id}>
             <h4>{team.name}</h4>
+            <div className="flex items-center justify-center my-1-5">
+              <input
+                type="radio"
+                id={team.id}
+                name="winner"
+                value={team.id}
+                onChange={(e) => setWinnerId(e.currentTarget.value)}
+              />
+              <Label className="mb-0 ml-2" htmlFor={team.id}>
+                Winner
+              </Label>
+            </div>
             <div className="tournament-bracket__during-match-actions__team-players">
               {team.members.map(({ member }) => (
                 <div
@@ -50,23 +64,34 @@ export function DuringMatchActionsRosters({
                       })
                     }
                   />{" "}
-                  <label
+                  <Label
                     className="plain tournament-bracket__during-match-actions__player-name"
                     htmlFor={member.id}
                   >
                     {member.discordName}
-                  </label>
+                  </Label>
                 </div>
               ))}
             </div>
           </div>
         ))}
       </div>
-      <div>
-        <ReportScoreButtons checkedPlayers={checkedPlayers} />
+      <div className="tournament-bracket__during-match-actions__actions">
+        <ReportScoreButtons
+          checkedPlayers={checkedPlayers}
+          winnerName={winningTeam()}
+        />
       </div>
     </div>
   );
+
+  function winningTeam() {
+    if (!winnerId) return;
+    if (ownTeam.id === winnerId) return ownTeam.name;
+    if (opponentTeam.id === winnerId) return opponentTeam.name;
+
+    throw new Error("No winning team matching the id");
+  }
 }
 
 function checkedPlayersInitialState([teamOne, teamTwo]: [
@@ -88,8 +113,10 @@ function checkedPlayersInitialState([teamOne, teamTwo]: [
 
 function ReportScoreButtons({
   checkedPlayers,
+  winnerName,
 }: {
   checkedPlayers: string[][];
+  winnerName?: string;
 }) {
   if (
     !checkedPlayers.every(
@@ -97,12 +124,24 @@ function ReportScoreButtons({
     )
   ) {
     return (
-      <p>
+      <p className="tournament-bracket__during-match-actions__amount-warning-paragraph">
         Please choose exactly {TOURNAMENT_TEAM_ROSTER_MIN_SIZE}+
         {TOURNAMENT_TEAM_ROSTER_MIN_SIZE} players to report score
       </p>
     );
   }
 
-  return <Button>Report score</Button>;
+  if (!winnerName) {
+    return (
+      <p className="tournament-bracket__during-match-actions__amount-warning-paragraph">
+        Please select the winning team
+      </p>
+    );
+  }
+
+  return (
+    <Button type="submit" variant="minimal">
+      Report {winnerName} win
+    </Button>
+  );
 }

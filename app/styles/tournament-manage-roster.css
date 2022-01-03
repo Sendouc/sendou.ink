@@ -40,8 +40,7 @@
 }
 
 .tournament__manage-roster__radio-label {
-  /* TODO: better way for global styles... <Label> component */
-  margin-block-end: 0 !important;
+  margin-block-end: 0;
   margin-inline-start: var(--s-2);
 }
 

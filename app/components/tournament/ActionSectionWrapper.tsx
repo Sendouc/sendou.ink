@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { MyCSSProperties } from "~/utils";
 
 export function ActionSectionWrapper({
@@ -7,6 +8,7 @@ export function ActionSectionWrapper({
 }: {
   children: React.ReactNode;
   icon?: "warning" | "info" | "success" | "error";
+  "justify-center"?: boolean;
   "data-cy"?: string;
 }) {
   // todo: flex-dir: column on mobile
@@ -21,7 +23,13 @@ export function ActionSectionWrapper({
       style={style}
       data-cy={rest["data-cy"]}
     >
-      <div className="tournament__action-section__content">{children}</div>
+      <div
+        className={classNames("tournament__action-section__content", {
+          "justify-center": rest["justify-center"],
+        })}
+      >
+        {children}
+      </div>
     </section>
   );
 }

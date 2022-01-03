@@ -9,6 +9,7 @@ import type {
 } from "~/services/tournament";
 import { modeToImageUrl, Unpacked } from "~/utils";
 import { Button } from "../Button";
+import { Label } from "../Label";
 import { ActionSectionWrapper } from "./ActionSectionWrapper";
 import { DuringMatchActionsRosters } from "./DuringMatchActionsRosters";
 
@@ -65,15 +66,19 @@ export function DuringMatchActions({
               />
               {modesShortToLong[stage.mode]} on {stage.name}
             </h4>
-            <h4>Stage 1</h4>
+            <h4>
+              Stage {currentMatch.score?.reduce((acc, cur) => acc + cur, 1)}
+            </h4>
           </div>
         </div>
-        <ActionSectionWrapper>
+        <ActionSectionWrapper justify-center>
           <div className="tournament-bracket__infos">
             <div className="tournament-bracket__infos__columns">
               {roundInfo.map(([title, value]) => (
                 <React.Fragment key={title}>
-                  <label>{title}</label>
+                  <Label className="tournament-bracket__infos__label">
+                    {title}
+                  </Label>
                   <div>{value}</div>
                 </React.Fragment>
               ))}
