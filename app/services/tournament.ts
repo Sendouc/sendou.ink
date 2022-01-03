@@ -1,4 +1,4 @@
-import type { Prisma, Stage } from ".prisma/client";
+import type { Prisma, Stage, TournamentMatchGameResult } from ".prisma/client";
 import {
   TOURNAMENT_CHECK_IN_CLOSING_MINUTES_FROM_START,
   TOURNAMENT_TEAM_ROSTER_MAX_SIZE,
@@ -11,13 +11,17 @@ import {
   tournamentRoundsForDB,
   winnersRoundNames,
 } from "~/core/tournament/bracket";
-import { isTournamentAdmin } from "~/core/tournament/permissions";
-import { sortTeamsBySeed } from "~/core/tournament/utils";
+import {
+  canReportMatchScore,
+  isTournamentAdmin,
+} from "~/core/tournament/permissions";
+import { matchIsOver, sortTeamsBySeed } from "~/core/tournament/utils";
 import * as Tournament from "~/models/Tournament";
 import * as TournamentBracket from "~/models/TournamentBracket";
 import * as TournamentTeam from "~/models/TournamentTeam";
 import * as TournamentTeamMember from "~/models/TournamentTeamMember";
 import * as TrustRelationship from "~/models/TrustRelationship";
+import * as TournamentMatch from "~/models/TournamentMatch";
 import { Serialized, Unpacked } from "~/utils";
 import { db } from "~/utils/db.server";
 
@@ -525,4 +529,51 @@ export async function updateSeeds({
 
   // TODO: fail if tournament has started
   return Tournament.updateSeeds({ tournamentId, seeds: newSeeds });
+}
+
+export async function reportScore({
+  userId,
+  winnerTeamId,
+  matchId,
+  rosters,
+}: {
+  userId: string;
+  winnerTeamId: string;
+  matchId: string;
+  stagePosition: number;
+  rosters: Record<string, string[]>;
+}) {
+  const match = await TournamentMatch.findById(matchId);
+  if (!match) throw new Response("Invalid match id", { status: 400 });
+  if (
+    !canReportMatchScore({
+      userId,
+      members: match.participants.flatMap((p) => p.team.members),
+    })
+  ) {
+    throw new Response("No permissions to report score", { status: 401 });
+  }
+  if (match.results.some((result) => result.matchId === matchId)) {
+    // no throw so it's handled gracefully if both teams report the score at the same time
+    return;
+  }
+  if (
+    matchIsOver(match.round.stages.length, matchResultsToTuple(match.results))
+  ) {
+    throw new Response("Match is already over", { status: 400 });
+  }
+
+  // put to DB
+  // if over advance bracket
+}
+
+function matchResultsToTuple(results: TournamentMatchGameResult[]) {
+  return results.reduce(
+    (acc: [number, number], result) => {
+      if (result.winner === "UPPER") acc[0]++;
+      else acc[1]++;
+      return acc;
+    },
+    [0, 0]
+  );
 }
