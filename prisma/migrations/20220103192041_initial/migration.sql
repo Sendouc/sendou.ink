@@ -137,11 +137,20 @@ CREATE TABLE "TournamentMatchParticipant" (
 
 -- CreateTable
 CREATE TABLE "TournamentMatchGameResult" (
+    "id" TEXT NOT NULL,
     "matchId" TEXT NOT NULL,
     "position" INTEGER NOT NULL,
     "winner" "TeamOrder" NOT NULL,
     "reporterId" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "TournamentMatchGameResult_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "_TournamentMatchGameResultToUser" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL
 );
 
 -- CreateTable
@@ -179,6 +188,12 @@ CREATE UNIQUE INDEX "TournamentMatchParticipant_teamId_matchId_key" ON "Tourname
 
 -- CreateIndex
 CREATE UNIQUE INDEX "TournamentMatchGameResult_matchId_position_key" ON "TournamentMatchGameResult"("matchId", "position");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_TournamentMatchGameResultToUser_AB_unique" ON "_TournamentMatchGameResultToUser"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_TournamentMatchGameResultToUser_B_index" ON "_TournamentMatchGameResultToUser"("B");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_StageToTournament_AB_unique" ON "_StageToTournament"("A", "B");
@@ -236,6 +251,12 @@ ALTER TABLE "TournamentMatchParticipant" ADD CONSTRAINT "TournamentMatchParticip
 
 -- AddForeignKey
 ALTER TABLE "TournamentMatchGameResult" ADD CONSTRAINT "TournamentMatchGameResult_matchId_fkey" FOREIGN KEY ("matchId") REFERENCES "TournamentMatch"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_TournamentMatchGameResultToUser" ADD FOREIGN KEY ("A") REFERENCES "TournamentMatchGameResult"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_TournamentMatchGameResultToUser" ADD FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_StageToTournament" ADD FOREIGN KEY ("A") REFERENCES "Stage"("id") ON DELETE CASCADE ON UPDATE CASCADE;

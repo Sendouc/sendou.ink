@@ -8,8 +8,8 @@ datasource db {
 }
 
 model User {
-  id                   String                 @id @default(uuid())
-  discordId            String                 @unique
+  id                   String                      @id @default(uuid())
+  discordId            String                      @unique
   discordName          String
   discordDiscriminator String
   discordAvatar        String?
@@ -18,12 +18,13 @@ model User {
   twitter              String?
   youtubeId            String?
   youtubeName          String?
-  createdAt            DateTime               @default(now())
-  updatedAt            DateTime               @updatedAt
-  trustedUsers         TrustRelationships[]   @relation("trustGiver")
-  trustingUsers        TrustRelationships[]   @relation("trustReceiver")
+  createdAt            DateTime                    @default(now())
+  updatedAt            DateTime                    @updatedAt
+  trustedUsers         TrustRelationships[]        @relation("trustGiver")
+  trustingUsers        TrustRelationships[]        @relation("trustReceiver")
   ownedOrganization    Organization?
   tournamentTeams      TournamentTeamMember[]
+  tournamentMatches    TournamentMatchGameResult[]
 }
 
 model Organization {
@@ -187,12 +188,14 @@ model TournamentMatchParticipant {
 }
 
 model TournamentMatchGameResult {
+  id         String          @id @default(uuid())
   matchId    String
   position   Int
   winner     TeamOrder
   reporterId String
   createdAt  DateTime        @default(now())
   match      TournamentMatch @relation(fields: [matchId], references: [id])
+  players    User[]
 
   @@unique([matchId, position])
 }

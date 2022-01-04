@@ -30,17 +30,22 @@ export function createResult({
   reporterId,
   winner,
   matchId,
+  playerIds,
 }: {
   position: number;
   reporterId: string;
   winner: TeamOrder;
   matchId: string;
+  playerIds: string[];
 }) {
   return db.tournamentMatchGameResult.create({
     data: {
       position,
       reporterId,
       winner,
+      players: {
+        connect: playerIds.map((id) => ({ id })),
+      },
       match: {
         connect: {
           id: matchId,
