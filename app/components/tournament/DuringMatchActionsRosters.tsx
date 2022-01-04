@@ -11,10 +11,12 @@ export function DuringMatchActionsRosters({
   ownTeam,
   opponentTeam,
   matchId,
+  position,
 }: {
   ownTeam: Unpacked<FindTournamentByNameForUrlI["teams"]>;
   opponentTeam: Unpacked<FindTournamentByNameForUrlI["teams"]>;
   matchId: string;
+  position: number;
 }) {
   const [checkedPlayers, setCheckedPlayers] = React.useState<
     [string[], string[]]
@@ -89,6 +91,7 @@ export function DuringMatchActionsRosters({
             name="playerIds"
             value={JSON.stringify(checkedPlayers.flat())}
           />
+          <input type="hidden" name="position" value={position} />
           <ReportScoreButtons
             checkedPlayers={checkedPlayers}
             winnerName={winningTeam()}

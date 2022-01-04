@@ -146,12 +146,14 @@ model TournamentRound {
 }
 
 model TournamentRoundStage {
+  id       String                      @id @default(uuid())
   // position of the match 1 for Game 1, 2 for Game 2 etc.
   position Int
   roundId  String
   stageId  Int
-  round    TournamentRound @relation(fields: [roundId], references: [id])
-  stage    Stage           @relation(fields: [stageId], references: [id])
+  round    TournamentRound             @relation(fields: [roundId], references: [id])
+  stage    Stage                       @relation(fields: [stageId], references: [id])
+  results  TournamentMatchGameResult[]
 
   @@unique([position, roundId])
 }
@@ -188,14 +190,15 @@ model TournamentMatchParticipant {
 }
 
 model TournamentMatchGameResult {
-  id         String          @id @default(uuid())
-  matchId    String
-  position   Int
-  winner     TeamOrder
-  reporterId String
-  createdAt  DateTime        @default(now())
-  match      TournamentMatch @relation(fields: [matchId], references: [id])
-  players    User[]
+  id           String               @id @default(uuid())
+  matchId      String
+  roundStageId String
+  winner       TeamOrder
+  reporterId   String
+  createdAt    DateTime             @default(now())
+  match        TournamentMatch      @relation(fields: [matchId], references: [id])
+  players      User[]
+  roundStage   TournamentRoundStage @relation(fields: [roundStageId], references: [id])
 
-  @@unique([matchId, position])
+  @@unique([matchId, roundStageId])
 }

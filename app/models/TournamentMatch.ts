@@ -26,13 +26,13 @@ export function findById(id: string) {
 }
 
 export function createResult({
-  position,
+  roundStageId,
   reporterId,
   winner,
   matchId,
   playerIds,
 }: {
-  position: number;
+  roundStageId: string;
   reporterId: string;
   winner: TeamOrder;
   matchId: string;
@@ -40,7 +40,11 @@ export function createResult({
 }) {
   return db.tournamentMatchGameResult.create({
     data: {
-      position,
+      roundStage: {
+        connect: {
+          id: roundStageId,
+        },
+      },
       reporterId,
       winner,
       players: {

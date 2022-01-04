@@ -16,7 +16,7 @@ import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
 import { RefreshIcon } from "~/components/icons/Refresh";
-import { modesShort, modesShortToLong } from "~/constants";
+import { BEST_OF_OPTIONS, modesShort, modesShortToLong } from "~/constants";
 import { eliminationBracket } from "~/core/tournament/algorithms";
 import {
   EliminationBracketSide,
@@ -229,7 +229,7 @@ function RoundsCollection({
             <section key={round.name} className="tournament__start__round">
               <h4>{round.name}</h4>
               <div className="tournament__start__best-of-buttons-container">
-                {([3, 5, 7, 9] as const).map((bestOf) => (
+                {BEST_OF_OPTIONS.map((bestOf) => (
                   <button
                     key={bestOf}
                     type="button"

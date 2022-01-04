@@ -43,7 +43,11 @@ export function DuringMatchActions({
   });
 
   if (joinedRoom) {
-    const currentStage = currentRound.stages.find((m) => m.position === 1);
+    const currentPosition =
+      currentMatch.score?.reduce((acc, cur) => acc + cur, 1) ?? 1;
+    const currentStage = currentRound.stages.find(
+      (m) => m.position === currentPosition
+    );
     invariant(currentStage, "currentStage is undefined");
     const { stage } = currentStage;
 
@@ -66,9 +70,7 @@ export function DuringMatchActions({
               />
               {modesShortToLong[stage.mode]} on {stage.name}
             </h4>
-            <h4>
-              Stage {currentMatch.score?.reduce((acc, cur) => acc + cur, 1)}
-            </h4>
+            <h4>Stage {currentPosition}</h4>
           </div>
         </div>
         <ActionSectionWrapper justify-center>
@@ -90,6 +92,7 @@ export function DuringMatchActions({
             ownTeam={ownTeam}
             opponentTeam={opponentTeam}
             matchId={currentMatch.id}
+            position={currentPosition}
           />
         </ActionSectionWrapper>
       </div>

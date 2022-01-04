@@ -375,7 +375,7 @@ export async function seed(variation?: "check-in" | "match") {
 
     async function advanceRound() {
       const matches = await prisma.tournamentMatch.findMany({
-        include: { participants: true },
+        include: { participants: true, round: { include: { stages: true } } },
       });
       const matchToAdvance = matches.find((match) => match.position === 1);
       invariant(matchToAdvance);
@@ -385,19 +385,25 @@ export async function seed(variation?: "check-in" | "match") {
           {
             matchId: matchToAdvance.id,
             winner: "LOWER",
-            position: 1,
+            roundStageId: matchToAdvance.round.stages.find(
+              (stage) => stage.position === 1
+            )!.id,
             reporterId: "",
           },
           {
             matchId: matchToAdvance.id,
             winner: "UPPER",
-            position: 2,
+            roundStageId: matchToAdvance.round.stages.find(
+              (stage) => stage.position === 2
+            )!.id,
             reporterId: "",
           },
           {
             matchId: matchToAdvance.id,
             winner: "LOWER",
-            position: 3,
+            roundStageId: matchToAdvance.round.stages.find(
+              (stage) => stage.position === 3
+            )!.id,
             reporterId: "",
           },
         ],

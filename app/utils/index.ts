@@ -64,6 +64,14 @@ export async function parseRequestFormData<T extends z.ZodTypeAny>({
   }
 }
 
+export function safeJSONParse(value: any) {
+  try {
+    return JSON.parse(value);
+  } catch (e) {
+    return undefined;
+  }
+}
+
 /** @link https://stackoverflow.com/a/69413184 */
 // @ts-expect-error
 export const assertType = <A, B extends A>() => {};

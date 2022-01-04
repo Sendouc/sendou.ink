@@ -24,6 +24,7 @@ import * as TrustRelationship from "~/models/TrustRelationship";
 import * as TournamentMatch from "~/models/TournamentMatch";
 import { Serialized, Unpacked } from "~/utils";
 import { db } from "~/utils/db.server";
+import invariant from "tiny-invariant";
 
 export type FindTournamentByNameForUrlI = Serialized<
   Prisma.PromiseReturnType<typeof findTournamentByNameForUrl>
@@ -536,11 +537,13 @@ export async function reportScore({
   winnerTeamId,
   matchId,
   playerIds,
+  position,
 }: {
   userId: string;
   winnerTeamId: string;
   matchId: string;
   playerIds: string[];
+  position: number;
 }) {
   const match = await TournamentMatch.findById(matchId);
   if (!match) throw new Response("Invalid match id", { status: 400 });
@@ -552,7 +555,8 @@ export async function reportScore({
   ) {
     throw new Response("No permissions to report score", { status: 401 });
   }
-  if (match.results.some((result) => result.matchId === matchId)) {
+
+  if (position <= match.results.length) {
     // no throw so it's handled gracefully if both teams report the score at the same time
     return;
   }
@@ -567,11 +571,14 @@ export async function reportScore({
     throw new Response("Invalid winner team id", { status: 400 });
   }
 
+  const stage = match.round.stages.find((stage) => stage.position === position);
+  invariant(stage, "stage is undefined");
+
   // TODO transaction advance bracket conditionally
   return TournamentMatch.createResult({
     matchId,
     playerIds,
-    position: match.position,
+    roundStageId: stage.id,
     reporterId: userId,
     winner: winnerTeam.order,
   });

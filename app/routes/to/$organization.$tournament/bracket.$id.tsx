@@ -12,7 +12,8 @@ import type { BracketModified } from "~/services/tournament";
 import { useUser } from "~/utils/hooks";
 import { BracketActions } from "~/components/tournament/BracketActions";
 import { z } from "zod";
-import { parseRequestFormData, requireUser } from "~/utils";
+import { parseRequestFormData, requireUser, safeJSONParse } from "~/utils";
+import { BEST_OF_OPTIONS, TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -23,9 +24,16 @@ const bracketActionSchema = z.union([
     _action: z.literal("REPORT_SCORE"),
     matchId: z.string().uuid(),
     winnerTeamId: z.string().uuid(),
+    position: z.preprocess(
+      Number,
+      z
+        .number()
+        .min(1)
+        .max(Math.max(...BEST_OF_OPTIONS))
+    ),
     playerIds: z.preprocess(
-      (val) => (val ? JSON.parse(val as any) : undefined),
-      z.array(z.string().uuid()).length(8)
+      safeJSONParse,
+      z.array(z.string().uuid()).length(TOURNAMENT_TEAM_ROSTER_MIN_SIZE * 2)
     ),
   }),
   z.object({
@@ -55,6 +63,7 @@ export const action: ActionFunction = async ({
         playerIds: data.playerIds,
         userId: user.id,
         winnerTeamId: data.winnerTeamId,
+        position: data.position,
       });
       return { ok: "REPORT_SCORE" };
     }

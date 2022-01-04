@@ -74,6 +74,8 @@ export const TOURNAMENT_TEAM_ROSTER_MIN_SIZE = 4;
 export const TOURNAMENT_TEAM_ROSTER_MAX_SIZE = 6;
 /** How many minutes before the start of the tournament check-in closes */
 export const TOURNAMENT_CHECK_IN_CLOSING_MINUTES_FROM_START = 10;
+export const BEST_OF_OPTIONS = [3, 5, 7, 9] as const;
+
 export const checkInClosesDate = (startTime: string): Date => {
   return new Date(new Date(startTime).getTime() - 1000 * 10);
 };
