@@ -1,4 +1,4 @@
-import classNames from "classnames";
+import clsx from "clsx";
 
 export interface LabelProps
   extends React.LabelHTMLAttributes<HTMLLabelElement> {
@@ -6,5 +6,5 @@ export interface LabelProps
 }
 
 export function Label({ className, ...rest }: LabelProps) {
-  return <label className={classNames(className, "label")} {...rest} />;
+  return <label className={clsx(className, "label")} {...rest} />;
 }

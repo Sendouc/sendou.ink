@@ -13,7 +13,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import classNames from "classnames";
+import clsx from "clsx";
 import * as React from "react";
 import {
   ActionFunction,
@@ -164,7 +164,7 @@ export default function SeedsTab() {
                 key={team.id}
                 id={team.id}
                 disabled={transition.state !== "idle"}
-                liClassName={classNames(
+                liClassName={clsx(
                   "tournament__seeds__teams-list-row",
                   "sortable",
                   {
@@ -222,7 +222,7 @@ function SeedAlert({
         className="tournament__seeds__alert"
         rightAction={
           <Button
-            className={classNames("tournament__seeds__alert__button", {
+            className={clsx("tournament__seeds__alert__button", {
               hidden: !teamOrderChanged,
             })}
             type="submit"
@@ -275,7 +275,7 @@ function RowContents({
         ) : null}
       </div>
       <div
-        className={classNames({
+        className={clsx({
           tournament__seeds__ok:
             team.members.length >= TOURNAMENT_TEAM_ROSTER_MIN_SIZE,
           tournament__seeds__problem:

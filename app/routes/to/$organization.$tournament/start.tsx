@@ -1,5 +1,5 @@
 import type { Mode, Stage } from ".prisma/client";
-import classNames from "classnames";
+import clsx from "clsx";
 import {
   ActionFunction,
   Form,
@@ -233,7 +233,7 @@ function RoundsCollection({
                   <button
                     key={bestOf}
                     type="button"
-                    className={classNames("tournament__start__best-of", {
+                    className={clsx("tournament__start__best-of", {
                       active: round.bestOf === bestOf,
                     })}
                     onClick={() =>

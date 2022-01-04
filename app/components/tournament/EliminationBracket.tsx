@@ -1,4 +1,4 @@
-import classNames from "classnames";
+import clsx from "clsx";
 import invariant from "tiny-invariant";
 import { matchIsOver } from "~/core/tournament/utils";
 import type { BracketModified } from "~/services/tournament";
@@ -125,7 +125,7 @@ function RoundInfo({
 }) {
   return (
     <div
-      className={classNames("tournament-bracket__elim__roundInfo", {
+      className={clsx("tournament-bracket__elim__roundInfo", {
         highlighted: status === "INPROGRESS",
         last: isLast,
       })}
@@ -150,12 +150,12 @@ export function Match({
   isOver: boolean;
 }) {
   return (
-    <div className={classNames("tournament-bracket__elim__match", { hidden })}>
+    <div className={clsx("tournament-bracket__elim__match", { hidden })}>
       <div className="tournament-bracket__elim__roundNumber">
         {match.number}
       </div>
       <div
-        className={classNames(
+        className={clsx(
           "tournament-bracket__elim__team",
           "tournament-bracket__elim__teamOne",
           {
@@ -168,7 +168,7 @@ export function Match({
       >
         {match.participants?.[0]}{" "}
         <span
-          className={classNames("tournament-bracket__elim__score", {
+          className={clsx("tournament-bracket__elim__score", {
             invisible: typeof match.score?.[0] !== "number",
           })}
         >
@@ -176,7 +176,7 @@ export function Match({
         </span>
       </div>
       <div
-        className={classNames(
+        className={clsx(
           "tournament-bracket__elim__team",
           "tournament-bracket__elim__teamTwo",
           {
@@ -189,7 +189,7 @@ export function Match({
       >
         {match.participants?.[1]}{" "}
         <span
-          className={classNames("tournament-bracket__elim__score", {
+          className={clsx("tournament-bracket__elim__score", {
             invisible: typeof match.score?.[0] !== "number",
           })}
         >

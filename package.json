@@ -29,7 +29,7 @@
     "@prisma/client": "^3.7.0",
     "@remix-run/express": "^1.1.1",
     "@remix-run/react": "^1.1.1",
-    "classnames": "^2.3.1",
+    "clsx": "^1.1.1",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "cross-env": "^7.0.3",

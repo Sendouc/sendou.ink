@@ -1,4 +1,4 @@
-import classNames from "classnames";
+import clsx from "clsx";
 import { MyCSSProperties } from "~/utils";
 
 export function ActionSectionWrapper({
@@ -24,7 +24,7 @@ export function ActionSectionWrapper({
       data-cy={rest["data-cy"]}
     >
       <div
-        className={classNames("tournament__action-section__content", {
+        className={clsx("tournament__action-section__content", {
           "justify-center": rest["justify-center"],
         })}
       >
