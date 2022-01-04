@@ -1,5 +1,6 @@
 import clone from "just-clone";
 import * as React from "react";
+import { Form } from "remix";
 import { TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
 import type { FindTournamentByNameForUrlI } from "~/services/tournament";
 import { Unpacked } from "~/utils";
@@ -9,80 +10,92 @@ import { Label } from "../Label";
 export function DuringMatchActionsRosters({
   ownTeam,
   opponentTeam,
+  matchId,
 }: {
   ownTeam: Unpacked<FindTournamentByNameForUrlI["teams"]>;
   opponentTeam: Unpacked<FindTournamentByNameForUrlI["teams"]>;
+  matchId: string;
 }) {
   const [checkedPlayers, setCheckedPlayers] = React.useState<
     [string[], string[]]
   >(checkedPlayersInitialState([ownTeam, opponentTeam]));
   const [winnerId, setWinnerId] = React.useState<string | null>(null);
   return (
-    <div className="width-full">
-      <div className="tournament-bracket__during-match-actions__rosters">
-        {[ownTeam, opponentTeam].map((team, teamI) => (
-          <div key={team.id}>
-            <h4>{team.name}</h4>
-            <div className="flex items-center justify-center my-1-5">
-              <input
-                type="radio"
-                id={team.id}
-                name="winner"
-                value={team.id}
-                onChange={(e) => setWinnerId(e.currentTarget.value)}
-              />
-              <Label className="mb-0 ml-2" htmlFor={team.id}>
-                Winner
-              </Label>
-            </div>
-            <div className="tournament-bracket__during-match-actions__team-players">
-              {team.members.map(({ member }) => (
-                <div
-                  key={member.id}
-                  className="tournament-bracket__during-match-actions__checkbox-name"
-                >
-                  <input
-                    type="checkbox"
-                    id={member.id}
-                    name="playerName"
-                    disabled={
-                      team.members.length === TOURNAMENT_TEAM_ROSTER_MIN_SIZE
-                    }
-                    checked={checkedPlayers.flat().includes(member.id)}
-                    onChange={() =>
-                      setCheckedPlayers((players) => {
-                        const newPlayers = clone(players);
-                        if (checkedPlayers.flat().includes(member.id)) {
-                          newPlayers[teamI] = newPlayers[teamI].filter(
-                            (id) => id !== member.id
-                          );
-                        } else {
-                          newPlayers[teamI].push(member.id);
-                        }
-
-                        return newPlayers;
-                      })
-                    }
-                  />{" "}
-                  <Label
-                    className="plain tournament-bracket__during-match-actions__player-name"
-                    htmlFor={member.id}
+    <Form method="post" className="width-full">
+      <div>
+        <div className="tournament-bracket__during-match-actions__rosters">
+          {[ownTeam, opponentTeam].map((team, teamI) => (
+            <div key={team.id}>
+              <h4>{team.name}</h4>
+              <div className="tournament-bracket__during-match-actions__radio-container">
+                <input
+                  type="radio"
+                  id={team.id}
+                  name="winnerTeamId"
+                  value={team.id}
+                  onChange={(e) => setWinnerId(e.currentTarget.value)}
+                />
+                <Label className="mb-0 ml-2" htmlFor={team.id}>
+                  Winner
+                </Label>
+              </div>
+              <div className="tournament-bracket__during-match-actions__team-players">
+                {team.members.map(({ member }) => (
+                  <div
+                    key={member.id}
+                    className="tournament-bracket__during-match-actions__checkbox-name"
                   >
-                    {member.discordName}
-                  </Label>
-                </div>
-              ))}
+                    <input
+                      type="checkbox"
+                      id={member.id}
+                      name="playerName"
+                      disabled={
+                        team.members.length === TOURNAMENT_TEAM_ROSTER_MIN_SIZE
+                      }
+                      value={member.id}
+                      checked={checkedPlayers.flat().includes(member.id)}
+                      onChange={() =>
+                        setCheckedPlayers((players) => {
+                          const newPlayers = clone(players);
+                          if (checkedPlayers.flat().includes(member.id)) {
+                            newPlayers[teamI] = newPlayers[teamI].filter(
+                              (id) => id !== member.id
+                            );
+                          } else {
+                            newPlayers[teamI].push(member.id);
+                          }
+
+                          return newPlayers;
+                        })
+                      }
+                    />{" "}
+                    <Label
+                      className="tournament-bracket__during-match-actions__player-name"
+                      htmlFor={member.id}
+                    >
+                      {member.discordName}
+                    </Label>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+        <div className="tournament-bracket__during-match-actions__actions">
+          <input type="hidden" name="_action" value="REPORT_SCORE" />
+          <input type="hidden" name="matchId" value={matchId} />
+          <input
+            type="hidden"
+            name="playerIds"
+            value={JSON.stringify(checkedPlayers.flat())}
+          />
+          <ReportScoreButtons
+            checkedPlayers={checkedPlayers}
+            winnerName={winningTeam()}
+          />
+        </div>
       </div>
-      <div className="tournament-bracket__during-match-actions__actions">
-        <ReportScoreButtons
-          checkedPlayers={checkedPlayers}
-          winnerName={winningTeam()}
-        />
-      </div>
-    </div>
+    </Form>
   );
 
   function winningTeam() {

@@ -89,6 +89,7 @@ export function DuringMatchActions({
           <DuringMatchActionsRosters
             ownTeam={ownTeam}
             opponentTeam={opponentTeam}
+            matchId={currentMatch.id}
           />
         </ActionSectionWrapper>
       </div>

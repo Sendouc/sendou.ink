@@ -110,10 +110,16 @@
   text-align: center;
 }
 
+.tournament-bracket__during-match-actions__radio-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .tournament-bracket__during-match-actions__team-players {
   display: flex;
   flex-direction: column;
-  margin-top: var(--s-2);
+  margin-top: var(--s-3);
   gap: var(--s-1-5);
 }
 

@@ -535,13 +535,12 @@ export async function reportScore({
   userId,
   winnerTeamId,
   matchId,
-  rosters,
+  playerIds,
 }: {
   userId: string;
   winnerTeamId: string;
   matchId: string;
-  stagePosition: number;
-  rosters: Record<string, string[]>;
+  playerIds: string[];
 }) {
   const match = await TournamentMatch.findById(matchId);
   if (!match) throw new Response("Invalid match id", { status: 400 });
@@ -563,8 +562,19 @@ export async function reportScore({
     throw new Response("Match is already over", { status: 400 });
   }
 
-  // put to DB
-  // if over advance bracket
+  const winnerTeam = match.participants.find((p) => p.teamId === winnerTeamId);
+  if (!winnerTeam) {
+    throw new Response("Invalid winner team id", { status: 400 });
+  }
+
+  // TODO transaction advance bracket conditionally
+  return TournamentMatch.createResult({
+    matchId,
+    playerIds,
+    position: match.position,
+    reporterId: userId,
+    winner: winnerTeam.order,
+  });
 }
 
 function matchResultsToTuple(results: TournamentMatchGameResult[]) {
