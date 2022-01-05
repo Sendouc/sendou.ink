@@ -639,17 +639,6 @@ export async function reportScore({
   }
 }
 
-function matchResultsToTuple(results: { winner: TeamOrder }[]) {
-  return results.reduce(
-    (acc: [number, number], result) => {
-      if (result.winner === "UPPER") acc[0]++;
-      else acc[1]++;
-      return acc;
-    },
-    [0, 0]
-  );
-}
-
 function resolveNewOrder({
   bracket,
   oldMatch,
@@ -688,4 +677,50 @@ function resolveNewOrder({
   // always have the smaller number compared to loser's bracket match
   if (matchesThatLeadToNewMatch[0].id === oldMatch.id) return "UPPER";
   return "LOWER";
+}
+
+export async function undoLastScore({
+  matchId,
+  position,
+  userId,
+}: {
+  matchId: string;
+  position: number;
+  userId: string;
+}) {
+  const match = await TournamentMatch.findById(matchId);
+  if (!match) throw new Response("Invalid match id", { status: 400 });
+  if (
+    !canReportMatchScore({
+      userId,
+      members: match.participants.flatMap((p) => p.team.members),
+    })
+  ) {
+    throw new Response("No permissions to undo score", { status: 401 });
+  }
+
+  if (
+    matchIsOver(match.round.stages.length, matchResultsToTuple(match.results))
+  ) {
+    throw new Response("Match is already over", { status: 400 });
+  }
+
+  const resultToUndo = match.results[position - 1];
+  if (!resultToUndo) {
+    // let's assume the match was already undone instead of erroring
+    return;
+  }
+
+  return TournamentMatch.deleteResult(resultToUndo.id);
+}
+
+function matchResultsToTuple(results: { winner: TeamOrder }[]) {
+  return results.reduce(
+    (acc: [number, number], result) => {
+      if (result.winner === "UPPER") acc[0]++;
+      else acc[1]++;
+      return acc;
+    },
+    [0, 0]
+  );
 }

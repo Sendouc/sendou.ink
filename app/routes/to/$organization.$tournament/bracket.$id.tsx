@@ -7,6 +7,7 @@ import {
   bracketById,
   FindTournamentByNameForUrlI,
   reportScore,
+  undoLastScore,
 } from "~/services/tournament";
 import type { BracketModified } from "~/services/tournament";
 import { useUser } from "~/utils/hooks";
@@ -38,6 +39,14 @@ const bracketActionSchema = z.union([
   }),
   z.object({
     _action: z.literal("UNDO_REPORT_SCORE"),
+    matchId: z.string().uuid(),
+    position: z.preprocess(
+      Number,
+      z
+        .number()
+        .min(1)
+        .max(Math.max(...BEST_OF_OPTIONS))
+    ),
   }),
 ]);
 
@@ -70,6 +79,11 @@ export const action: ActionFunction = async ({
       return { ok: "REPORT_SCORE" };
     }
     case "UNDO_REPORT_SCORE": {
+      await undoLastScore({
+        matchId: data.matchId,
+        position: data.position,
+        userId: user.id,
+      });
       return { ok: "UNDO_REPORT_SCORE" };
     }
     default: {

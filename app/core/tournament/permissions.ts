@@ -1,5 +1,3 @@
-import type { TournamentTeamMember } from "@prisma/client";
-
 export function isTournamentAdmin({
   userId,
   organization,
@@ -15,7 +13,7 @@ export function canReportMatchScore({
   members,
 }: {
   userId: string;
-  members: TournamentTeamMember[];
+  members: { memberId: string }[];
 }) {
   return members.some((member) => member.memberId === userId);
 }

@@ -72,6 +72,15 @@
   margin-block-end: 0;
 }
 
+.tournament-bracket__infos__value {
+  display: flex;
+  gap: var(--s-2);
+}
+
+.tournament-bracket__infos__value > button {
+  font-size: var(--fonts-xxs);
+}
+
 .tournament-bracket__stage-banner__top-bar__mode-image {
   width: 1.5rem;
   height: 1.5rem;
