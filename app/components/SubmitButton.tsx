@@ -16,11 +16,14 @@ export function SubmitButton(
   const [showSuccess, setShowSuccess] = useTimeoutState(false);
 
   useEffect(() => {
-    if ((!successText && !onSuccess) || actionData?.ok !== actionType) return;
+    // did this submit button's action happen?
+    if (actionData?.ok !== actionType) return;
+    // this is essentially to ensure this only fires once per mutation
+    if (transition.type !== "actionReload") return;
 
     onSuccess?.();
     setShowSuccess(true);
-  }, [actionData]);
+  }, [actionData?.ok, transition.type]);
 
   const isLoading = (): boolean => {
     // is there an action happening at the moment?

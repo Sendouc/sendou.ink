@@ -21,7 +21,7 @@ export function DuringMatchActionsRosters({
   const [checkedPlayers, setCheckedPlayers] = React.useState<
     [string[], string[]]
   >(checkedPlayersInitialState([ownTeam, opponentTeam]));
-  const [winnerId, setWinnerId] = React.useState<string | null>(null);
+  const [winnerId, setWinnerId] = React.useState<string | undefined>();
 
   return (
     <Form method="post" className="width-full">
@@ -35,8 +35,7 @@ export function DuringMatchActionsRosters({
                   type="radio"
                   id={team.id}
                   name="winnerTeamId"
-                  value={team.id}
-                  onChange={(e) => setWinnerId(e.currentTarget.value)}
+                  onChange={() => setWinnerId(team.id)}
                   checked={winnerId === team.id}
                 />
                 <Label className="mb-0 ml-2" htmlFor={team.id}>
@@ -88,6 +87,7 @@ export function DuringMatchActionsRosters({
         <div className="tournament-bracket__during-match-actions__actions">
           <input type="hidden" name="_action" value="REPORT_SCORE" />
           <input type="hidden" name="matchId" value={matchId} />
+          <input type="hidden" name="winnerTeamId" value={winnerId ?? ""} />
           <input
             type="hidden"
             name="playerIds"
@@ -97,7 +97,7 @@ export function DuringMatchActionsRosters({
           <ReportScoreButtons
             checkedPlayers={checkedPlayers}
             winnerName={winningTeam()}
-            clearWinner={() => setWinnerId(null)}
+            clearWinner={() => setWinnerId(undefined)}
           />
         </div>
       </div>
@@ -113,6 +113,7 @@ export function DuringMatchActionsRosters({
   }
 }
 
+// TODO: remember what previously selected for our team
 function checkedPlayersInitialState([teamOne, teamTwo]: [
   Unpacked<FindTournamentByNameForUrlI["teams"]>,
   Unpacked<FindTournamentByNameForUrlI["teams"]>
