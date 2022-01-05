@@ -58,3 +58,11 @@ export function createResult({
     },
   });
 }
+
+export function createParticipants(
+  data: ({ matchId: string; order: TeamOrder; teamId: string } | undefined)[]
+) {
+  return db.tournamentMatchParticipant.createMany({
+    data: data.flatMap((result) => result ?? []),
+  });
+}

@@ -90,7 +90,7 @@ export function BracketActions() {
   );
   invariant(matchWeAreWaitingFor, "matchWeAreWaitingFor is undefined");
 
-  if (matchWeAreWaitingFor.participants?.length !== 2) {
+  if (matchWeAreWaitingFor.participants?.filter(Boolean).length !== 2) {
     return (
       <ActionSectionWrapper>
         Waiting on match number {matchWeAreWaitingFor.number} (missing teams)
@@ -104,7 +104,7 @@ export function BracketActions() {
       <b>{matchWeAreWaitingFor.participants[1]}</b>
       <i>
         {(matchWeAreWaitingFor.score ?? [0, 0]).join("-")} - Best of{" "}
-        {matchWeAreWaitingFor.round.matches.length}
+        {matchWeAreWaitingFor.round.stages.length}
       </i>
     </ActionSectionWrapper>
   );

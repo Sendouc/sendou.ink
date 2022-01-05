@@ -46,6 +46,7 @@ type ActionData = {
 };
 
 export const action: ActionFunction = async ({
+  params,
   request,
   context,
 }): Promise<ActionData> => {
@@ -53,7 +54,7 @@ export const action: ActionFunction = async ({
     request,
     schema: bracketActionSchema,
   });
-
+  invariant(typeof params.id === "string", "Expected params.id to be string");
   const user = requireUser(context);
 
   switch (data._action) {
@@ -64,6 +65,7 @@ export const action: ActionFunction = async ({
         userId: user.id,
         winnerTeamId: data.winnerTeamId,
         position: data.position,
+        bracketId: params.id,
       });
       return { ok: "REPORT_SCORE" };
     }

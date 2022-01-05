@@ -1,4 +1,4 @@
-import type { Prisma, Stage, TournamentMatchGameResult } from ".prisma/client";
+import type { Prisma, Stage, TeamOrder } from ".prisma/client";
 import {
   TOURNAMENT_CHECK_IN_CLOSING_MINUTES_FROM_START,
   TOURNAMENT_TEAM_ROSTER_MAX_SIZE,
@@ -538,12 +538,14 @@ export async function reportScore({
   matchId,
   playerIds,
   position,
+  bracketId,
 }: {
   userId: string;
   winnerTeamId: string;
   matchId: string;
   playerIds: string[];
   position: number;
+  bracketId: string;
 }) {
   const match = await TournamentMatch.findById(matchId);
   if (!match) throw new Response("Invalid match id", { status: 400 });
@@ -574,17 +576,70 @@ export async function reportScore({
   const stage = match.round.stages.find((stage) => stage.position === position);
   invariant(stage, "stage is undefined");
 
-  // TODO transaction advance bracket conditionally
-  return TournamentMatch.createResult({
-    matchId,
-    playerIds,
-    roundStageId: stage.id,
-    reporterId: userId,
-    winner: winnerTeam.order,
-  });
+  // advance tournament after reporting score if match is over
+  if (
+    matchIsOver(
+      match.round.stages.length,
+      matchResultsToTuple(
+        match.results
+          .map((r) => ({ winner: r.winner }))
+          .concat([{ winner: winnerTeam.order }])
+      )
+    )
+  ) {
+    const loserTeam = match.participants.find((p) => p.teamId !== winnerTeamId);
+    invariant(loserTeam, "loserTeamId is undefined");
+
+    const bracket = await TournamentBracket.findById(bracketId);
+    if (!bracket) throw new Response("Invalid bracket id", { status: 400 });
+
+    return db.$transaction([
+      TournamentMatch.createResult({
+        matchId,
+        playerIds,
+        roundStageId: stage.id,
+        reporterId: userId,
+        winner: winnerTeam.order,
+      }),
+      // todo: bracket reset
+      TournamentMatch.createParticipants([
+        match.winnerDestinationMatchId
+          ? {
+              matchId: match.winnerDestinationMatchId,
+              order: resolveNewOrder({
+                bracket,
+                oldMatch: match,
+                newMatchId: match.winnerDestinationMatchId,
+              }),
+              teamId: winnerTeam.teamId,
+            }
+          : undefined,
+        match.loserDestinationMatchId
+          ? {
+              matchId: match.loserDestinationMatchId,
+              order: resolveNewOrder({
+                bracket,
+                oldMatch: match,
+                newMatchId: match.loserDestinationMatchId,
+              }),
+              teamId: loserTeam?.teamId,
+            }
+          : undefined,
+      ]),
+    ]);
+    // otherwise if set is not over simply create result and return
+  } else {
+    return TournamentMatch.createResult({
+      matchId,
+      playerIds,
+      roundStageId: stage.id,
+      reporterId: userId,
+      winner: winnerTeam.order,
+    });
+  }
 }
 
-function matchResultsToTuple(results: TournamentMatchGameResult[]) {
+function matchResultsToTuple(results: { winner: TeamOrder }[]) {
   return results.reduce(
     (acc: [number, number], result) => {
       if (result.winner === "UPPER") acc[0]++;
@@ -593,4 +648,45 @@ function matchResultsToTuple(results: TournamentMatchGameResult[]) {
     },
     [0, 0]
   );
+}
+
+function resolveNewOrder({
+  bracket,
+  oldMatch,
+  newMatchId,
+}: {
+  bracket: NonNullable<TournamentBracket.FindById>;
+  oldMatch: NonNullable<TournamentMatch.FindById>;
+  newMatchId: string;
+}): TeamOrder {
+  const allMatches = bracket.rounds.flat().flatMap((round) => {
+    return round.matches;
+  });
+
+  const newMatch = allMatches.find((m) => m.id === newMatchId);
+  invariant(newMatch, "newMatch is undefined");
+
+  const matchesThatLeadToNewMatch = allMatches
+    .filter((m) =>
+      [m.loserDestinationMatchId, m.winnerDestinationMatchId].includes(
+        newMatchId
+      )
+    )
+    .sort((a, b) => a.position - b.position);
+  invariant(
+    matchesThatLeadToNewMatch.length === 2,
+    `matchesThatLeadToNewMatch length was unexpected: ${matchesThatLeadToNewMatch.length}`
+  );
+  console.log(JSON.stringify({ matchesThatLeadToNewMatch, oldMatch }, null, 2));
+  invariant(
+    matchesThatLeadToNewMatch.find((m) => m.id === oldMatch.id),
+    "oldMatch not among matchesThatLeadToNewMatch"
+  );
+
+  // if match number is smaller it should mean the match is above
+  // the other match. thanks to sorting above 0 index should have
+  // the smaller match number. Winner's bracket match should
+  // always have the smaller number compared to loser's bracket match
+  if (matchesThatLeadToNewMatch[0].id === oldMatch.id) return "UPPER";
+  return "LOWER";
 }

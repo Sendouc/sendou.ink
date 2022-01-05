@@ -26,6 +26,7 @@ export function findById(bracketId: string) {
                 select: {
                   team: {
                     select: {
+                      id: true,
                       name: true,
                     },
                   },

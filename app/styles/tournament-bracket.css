@@ -65,7 +65,7 @@
   margin: 0 auto;
   column-gap: var(--s-6);
   grid-template-columns: 1fr 1fr;
-  row-gap: var(--s-2-5);
+  row-gap: var(--s-1-5);
 }
 
 .tournament-bracket__infos__label {
