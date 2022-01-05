@@ -23,8 +23,12 @@ export function SubmitButton(
   }, [actionData]);
 
   const isLoading = (): boolean => {
-    if (transition.type !== "actionSubmission") return false;
+    // is there an action happening at the moment?
+    if (!["actionSubmission", "actionReload"].includes(transition.type)) {
+      return false;
+    }
 
+    // is it the action of this submit button?
     const _action = transition.submission?.formData.get("_action");
     if (_action !== actionType) return false;
 
