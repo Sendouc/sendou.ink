@@ -298,7 +298,7 @@ function RoundsCollection({
                   return (
                     <li
                       className="tournament__start__map-row"
-                      key={"" + stageI + stage.id}
+                      key={`${stageI}${stage.id}`}
                     >
                       <img
                         src={`/img/modes/${stage.mode}.webp`}

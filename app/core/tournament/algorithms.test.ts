@@ -89,7 +89,7 @@ BracketPaths("Following winners", () => {
 
   let latest: Match = bracket16.winners[0];
   let rounds = 0;
-  let roundIds = new Set();
+  const roundIds = new Set();
   while (latest) {
     rounds++;
     roundIds.add(latest.id);
@@ -114,7 +114,7 @@ BracketPaths("Following losers", () => {
   let latest: Match = bracket16.winners[0];
   let rounds = 0;
   let countWinnerDestNoLoserDest = 0;
-  let roundIds = new Set();
+  const roundIds = new Set();
   while (latest) {
     rounds++;
     roundIds.add(latest.id);

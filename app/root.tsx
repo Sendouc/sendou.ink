@@ -28,7 +28,7 @@ export const loader: LoaderFunction = ({ context }) => {
   return { user: user ?? null, baseURL };
 };
 
-export let unstable_shouldReload = () => false;
+export const unstable_shouldReload = () => false;
 
 export default function App() {
   return (

@@ -4,7 +4,7 @@ import { json, useLocation } from "remix";
 import { z } from "zod";
 
 export function makeTitle(endOfTitle?: string) {
-  return endOfTitle ? `sendou.ink | ${endOfTitle}` : "sendou.ink";
+  return endOfTitle ? `sendou.ink | ${endOfTitle}` : "sendou.ink";
 }
 
 /** Get logged in user from context. Throws with 401 error if no user found. */

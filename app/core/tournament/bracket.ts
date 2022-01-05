@@ -377,7 +377,9 @@ function resolveSide(
   const otherNumber = matchNumbers?.find((num) => num !== currentMatch.number);
   invariant(
     otherNumber,
-    `no otherNumber; matchNumbers length is not 2 was: ${matchNumbers?.length}`
+    `no otherNumber; matchNumbers length is not 2 was: ${
+      matchNumbers?.length ?? "NO_LENGTH"
+    }`
   );
 
   if (otherNumber > currentMatch.number) return "upperTeam";

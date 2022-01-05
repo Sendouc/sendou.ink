@@ -77,7 +77,7 @@ export function generateMapListForRounds({
       result = shuffle(result);
     }
 
-    let resultWithNoNull: Mode[] = [];
+    const resultWithNoNull: Mode[] = [];
     for (let i = 0; i < result.length; i++) {
       const element = result[i];
       // Is SZ
@@ -149,7 +149,7 @@ export function generateMapListForRounds({
   }
 
   function resolveMaps(modes: Mode[]) {
-    let result: string[] = [];
+    const result: string[] = [];
     for (const mode of modes) {
       mapGenerator.next();
       const nextMap = mapGenerator.next({

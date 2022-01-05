@@ -12,7 +12,7 @@ type MockUser = "sendou";
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
-    interface Chainable<Subject> {
+    interface Chainable {
       getCy(id: string): Chainable<JQuery<HTMLElement>>;
       seed(variation?: "check-in"): void;
       logIn(user: MockUser): void;

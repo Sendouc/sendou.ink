@@ -9,6 +9,7 @@ import {
   useLocation,
 } from "remix";
 import invariant from "tiny-invariant";
+import { z } from "zod";
 import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
 import {
@@ -32,6 +33,9 @@ export const action: ActionFunction = async ({ request, context, params }) => {
     typeof tournamentId === "string",
     "Invalid type for tournament id."
   );
+  const parsedParams = z
+    .object({ organization: z.string(), tournament: z.string() })
+    .parse(params);
 
   const user = requireUser(context);
 
@@ -41,7 +45,9 @@ export const action: ActionFunction = async ({ request, context, params }) => {
     tournamentId: tournamentId,
   });
 
-  return redirect(`/to/${params.organization}/${params.tournament}/teams`);
+  return redirect(
+    `/to/${parsedParams.organization}/${parsedParams.tournament}/teams`
+  );
 };
 
 const INVITE_CODE_LENGTH = 36;
@@ -210,11 +216,12 @@ function Contents({ data }: { data: Data }) {
           </Form>
         </div>
       );
-    default:
+    default: {
       const exhaustive: never = data;
       throw new Error(
         `Unexpected join team status code: ${JSON.stringify(exhaustive)}`
       );
+    }
   }
 }
 

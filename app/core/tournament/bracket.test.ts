@@ -80,7 +80,7 @@ TournamentRoundsForDB("Generates rounds correctly", () => {
   const roundsCounted = countRounds(bracket);
   let max = -Infinity;
   let min = Infinity;
-  let uniqueParticipants = new Set<string>();
+  const uniqueParticipants = new Set<string>();
 
   for (const round of bracketForDb) {
     max = Math.max(max, round.position);

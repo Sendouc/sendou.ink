@@ -35,7 +35,7 @@ export default function MapPoolTab() {
             <div className="map-pool__mode-images-container">
               {modesShort.map(
                 (mode) =>
-                  modesPerStage(mapPool)[stage]?.includes(mode as Mode) && (
+                  modesPerStage(mapPool)[stage]?.includes(mode) && (
                     <img
                       key={mode}
                       className="map-pool__mode-image"

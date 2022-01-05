@@ -147,7 +147,7 @@ export const loader: LoaderFunction = async ({ params, context }) => {
   );
 
   const user = requireUser(context);
-  let [ownTeam, trustingUsers] = await Promise.all([
+  const [ownTeam, trustingUsersAll] = await Promise.all([
     ownTeamWithInviteCode({
       organizationNameForUrl: params.organization,
       tournamentNameForUrl: params.tournament,
@@ -156,7 +156,7 @@ export const loader: LoaderFunction = async ({ params, context }) => {
     getTrustingUsers(user.id),
   ]);
 
-  trustingUsers = trustingUsers.filter(({ trustGiver }) => {
+  const trustingUsers = trustingUsersAll.filter(({ trustGiver }) => {
     return !ownTeam.members.some(({ member }) => member.id === trustGiver.id);
   });
 
@@ -323,8 +323,10 @@ function CopyToClipboardButton({
     <button
       className="tournament__manage-roster__input__button"
       onClick={() => {
-        navigator.clipboard.writeText(urlWithInviteCode);
-        setShowCopied(true);
+        navigator.clipboard
+          .writeText(urlWithInviteCode)
+          .then(() => setShowCopied(true))
+          .catch((e) => console.error(e));
       }}
       type="button"
       data-cy="copy-to-clipboard-button"
