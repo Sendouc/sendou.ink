@@ -4,16 +4,21 @@ import { useTimeoutState } from "~/utils/hooks";
 import { Button, ButtonProps } from "./Button";
 
 export function SubmitButton(
-  _props: ButtonProps & { actionType: string; successText?: string }
+  _props: ButtonProps & {
+    actionType: string;
+    successText?: string;
+    onSuccess?: () => void;
+  }
 ) {
-  const { actionType, successText, children, ...rest } = _props;
+  const { actionType, successText, onSuccess, children, ...rest } = _props;
   const actionData = useActionData<{ ok?: string }>();
   const transition = useTransition();
   const [showSuccess, setShowSuccess] = useTimeoutState(false);
 
   useEffect(() => {
-    if (!successText || actionData?.ok !== actionType) return;
+    if ((!successText && !onSuccess) || actionData?.ok !== actionType) return;
 
+    onSuccess?.();
     setShowSuccess(true);
   }, [actionData]);
 

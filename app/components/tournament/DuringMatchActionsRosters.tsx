@@ -4,8 +4,8 @@ import { Form } from "remix";
 import { TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
 import type { FindTournamentByNameForUrlI } from "~/services/tournament";
 import { Unpacked } from "~/utils";
-import { Button } from "../Button";
 import { Label } from "../Label";
+import { SubmitButton } from "../SubmitButton";
 
 export function DuringMatchActionsRosters({
   ownTeam,
@@ -22,6 +22,7 @@ export function DuringMatchActionsRosters({
     [string[], string[]]
   >(checkedPlayersInitialState([ownTeam, opponentTeam]));
   const [winnerId, setWinnerId] = React.useState<string | null>(null);
+
   return (
     <Form method="post" className="width-full">
       <div>
@@ -36,6 +37,7 @@ export function DuringMatchActionsRosters({
                   name="winnerTeamId"
                   value={team.id}
                   onChange={(e) => setWinnerId(e.currentTarget.value)}
+                  checked={winnerId === team.id}
                 />
                 <Label className="mb-0 ml-2" htmlFor={team.id}>
                   Winner
@@ -95,6 +97,7 @@ export function DuringMatchActionsRosters({
           <ReportScoreButtons
             checkedPlayers={checkedPlayers}
             winnerName={winningTeam()}
+            clearWinner={() => setWinnerId(null)}
           />
         </div>
       </div>
@@ -130,9 +133,11 @@ function checkedPlayersInitialState([teamOne, teamTwo]: [
 function ReportScoreButtons({
   checkedPlayers,
   winnerName,
+  clearWinner,
 }: {
   checkedPlayers: string[][];
   winnerName?: string;
+  clearWinner: () => void;
 }) {
   if (
     !checkedPlayers.every(
@@ -156,8 +161,13 @@ function ReportScoreButtons({
   }
 
   return (
-    <Button type="submit" variant="minimal">
+    <SubmitButton
+      variant="minimal"
+      actionType="REPORT_SCORE"
+      loadingText={`Reporting ${winnerName} win...`}
+      onSuccess={clearWinner}
+    >
       Report {winnerName} win
-    </Button>
+    </SubmitButton>
   );
 }

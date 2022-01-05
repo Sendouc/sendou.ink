@@ -677,7 +677,6 @@ function resolveNewOrder({
     matchesThatLeadToNewMatch.length === 2,
     `matchesThatLeadToNewMatch length was unexpected: ${matchesThatLeadToNewMatch.length}`
   );
-  console.log(JSON.stringify({ matchesThatLeadToNewMatch, oldMatch }, null, 2));
   invariant(
     matchesThatLeadToNewMatch.find((m) => m.id === oldMatch.id),
     "oldMatch not among matchesThatLeadToNewMatch"
