@@ -1,3 +1,4 @@
+import * as React from "react";
 import { useState } from "react";
 import { HamburgerButton } from "./HamburgerButton";
 import { MobileNav } from "./MobileNav";
@@ -6,7 +7,11 @@ import { UserItem } from "./UserItem";
 import { Link } from "remix";
 import { navItems } from "~/constants";
 
-export function Layout({ children }: { children: React.ReactNode }) {
+export const Layout = React.memo(function Layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [menuExpanded, setMenuExpanded] = useState(false);
 
   return (
@@ -58,4 +63,4 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <main className="layout__main">{children}</main>
     </>
   );
-}
+});

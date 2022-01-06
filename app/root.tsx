@@ -31,11 +31,11 @@ export const loader: LoaderFunction = ({ context }) => {
 export const unstable_shouldReload = () => false;
 
 export default function App() {
+  const children = React.useMemo(() => <Outlet />, []);
+
   return (
     <Document>
-      <Layout>
-        <Outlet />
-      </Layout>
+      <Layout>{children}</Layout>
     </Document>
   );
 }
