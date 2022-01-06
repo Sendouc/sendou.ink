@@ -7,8 +7,8 @@
   display: grid;
   width: 100%;
   align-items: center;
-  margin: var(--s-1);
   padding: var(--s-2);
+  margin: var(--s-1);
   border-radius: var(--rounded);
   column-gap: var(--s-1);
   font-size: var(--fonts-sm);
