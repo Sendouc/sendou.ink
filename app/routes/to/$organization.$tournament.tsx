@@ -30,6 +30,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: tournamentStylesUrl }];
 };
 
+// TODO: remove... this wont have more than one action
 export enum TournamentAction {
   CHECK_IN = "CHECK_IN",
 }
@@ -73,6 +74,7 @@ export const meta: MetaFunction = (props) => {
 
   return {
     title: makeTitle(data?.name),
+    // TODO: description, image?
     //description: data.description ?? undefined,
   };
 };
@@ -101,10 +103,14 @@ export default function TournamentPage() {
     );
 
     if (isTournamentAdmin({ userId: user?.id, organization: data.organizer })) {
+      result.push({
+        code: "manage",
+        text: "Manage",
+        icon: <AdminIcon />,
+      });
       if (!tournamentHasStarted(data.brackets)) {
         result.push({ code: "seeds", text: "Seeds", icon: <AdminIcon /> });
       }
-      result.push({ code: "edit", text: "Edit", icon: <AdminIcon /> });
       if (thereIsABracketToStart)
         result.push({ code: "start", text: "Start", icon: <AdminIcon /> });
     }

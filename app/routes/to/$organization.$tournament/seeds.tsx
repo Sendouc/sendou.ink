@@ -309,7 +309,6 @@ function CheckOutButton({ teamId }: { teamId: string }) {
   );
 }
 
-// TODO: error Cannot destructure property 'default' of 'routeModules[id]' as it is undefined.
 function CheckInButton({ teamId }: { teamId: string }) {
   const transition = useTransition();
   return (

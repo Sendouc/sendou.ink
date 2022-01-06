@@ -1,0 +1,22 @@
+.tournament__manage__teams-container__header {
+  font-weight: var(--bold);
+}
+
+/* TODO: overflow-x scroll */
+.tournament__manage__teams-list-row {
+  display: grid;
+  width: 100%;
+  align-items: center;
+  margin: var(--s-1);
+  padding: var(--s-2);
+  border-radius: var(--rounded);
+  column-gap: var(--s-1);
+  font-size: var(--fonts-sm);
+  grid-template-columns: 4fr 3fr 3fr;
+  list-style: none;
+  row-gap: var(--s-1-5);
+}
+
+.tournament__manage__teams-list-row:nth-child(even) {
+  background-color: var(--bg-lighter-transparent);
+}
