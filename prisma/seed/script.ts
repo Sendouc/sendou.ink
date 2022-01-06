@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { PrismaClient } from "@prisma/client";
 import {
   ADMIN_TEST_AVATAR,

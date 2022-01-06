@@ -15,7 +15,11 @@ import {
   canReportMatchScore,
   isTournamentAdmin,
 } from "~/core/tournament/permissions";
-import { matchIsOver, sortTeamsBySeed } from "~/core/tournament/utils";
+import {
+  captainOfTeam,
+  matchIsOver,
+  sortTeamsBySeed,
+} from "~/core/tournament/utils";
 import * as Tournament from "~/models/Tournament";
 import * as TournamentBracket from "~/models/TournamentBracket";
 import * as TournamentTeam from "~/models/TournamentTeam";
@@ -329,9 +333,7 @@ export async function joinTeamViaInviteCode({
     throw new Response("Team is already full", { status: 400 });
   }
 
-  const trustReceiverId = tournamentTeamToJoin.members.find(
-    ({ captain }) => captain
-  )!.memberId;
+  const trustReceiverId = captainOfTeam(tournamentTeamToJoin).memberId;
 
   return Promise.all([
     TournamentTeamMember.create({

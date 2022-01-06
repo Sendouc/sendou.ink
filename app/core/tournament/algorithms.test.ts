@@ -111,7 +111,7 @@ BracketPaths("Following losers", () => {
   const bracket16 = eliminationBracket(16, "DE");
   const count = countRounds(bracket16);
 
-  let latest: Match = bracket16.winners[0];
+  let latest: Match | undefined = bracket16.winners[0];
   let rounds = 0;
   let countWinnerDestNoLoserDest = 0;
   const roundIds = new Set();
@@ -124,7 +124,7 @@ BracketPaths("Following losers", () => {
     if (latest.winnerDestinationMatch && !latest.loserDestinationMatch) {
       countWinnerDestNoLoserDest++;
     }
-    latest = (latest.loserDestinationMatch ?? latest.winnerDestinationMatch)!;
+    latest = latest.loserDestinationMatch ?? latest.winnerDestinationMatch;
   }
 
   // no duplicate rounds

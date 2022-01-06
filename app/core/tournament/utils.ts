@@ -1,9 +1,18 @@
+import invariant from "tiny-invariant";
 import { ROOM_PASS_LENGTH } from "~/constants";
 import type { FindTournamentByNameForUrlI } from "~/services/tournament";
 import { Unpacked } from "~/utils";
 
 export function checkInHasStarted(checkInStartTime: string) {
   return new Date(checkInStartTime) < new Date();
+}
+
+type Team<T> = { members: ({ captain: boolean } & T)[] };
+export function captainOfTeam<T>(team: Team<T>) {
+  const result = team.members.find(({ captain }) => captain);
+  invariant(result, "Team has no captain");
+
+  return result;
 }
 
 export function sortTeamsBySeed(seeds: string[]) {

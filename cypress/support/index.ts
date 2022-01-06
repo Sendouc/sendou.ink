@@ -1,9 +1,9 @@
+import { LoggedInUser } from "~/validators/user";
 import {
   ADMIN_TEST_AVATAR,
   ADMIN_TEST_DISCORD_ID,
   ADMIN_TEST_UUID,
 } from "../../app/constants";
-import type { LoggedInUser } from "~/utils";
 
 export {};
 

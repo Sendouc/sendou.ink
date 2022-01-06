@@ -1,12 +1,12 @@
 import * as React from "react";
 import { Links, LiveReload, Meta, Outlet, Scripts, useCatch } from "remix";
 import type { LinksFunction, LoaderFunction } from "remix";
-
+import { LoggedInUserSchema } from "~/validators/user";
+import { Layout } from "./components/Layout";
+import { Catcher } from "./components/Catcher";
 import resetStyles from "~/styles/reset.css";
 import globalStyles from "~/styles/global.css";
 import layoutStyles from "~/styles/layout.css";
-import { Layout } from "./components/Layout";
-import { Catcher } from "./components/Catcher";
 
 export const links: LinksFunction = () => {
   return [
@@ -22,10 +22,10 @@ export const links: LinksFunction = () => {
 };
 
 export const loader: LoaderFunction = ({ context }) => {
-  const { user } = context;
+  const { user } = LoggedInUserSchema.parse(context as unknown);
   const baseURL = process.env.BASE_URL ?? "http://localhost:3000";
 
-  return { user: user ?? null, baseURL };
+  return { user, baseURL };
 };
 
 export const unstable_shouldReload = () => false;

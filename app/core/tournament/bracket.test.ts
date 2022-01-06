@@ -1,6 +1,7 @@
-import { Stage, TeamOrder } from ".prisma/client";
+import { TeamOrder } from ".prisma/client";
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
+import { mapPoolForTest } from "~/utils/testUtils";
 import { eliminationBracket } from "./algorithms";
 import {
   countRounds,
@@ -59,9 +60,7 @@ RoundNames("No bracket reset round for SE", () => {
   assert.not.ok(hasBR);
 });
 
-const mapPool: Stage[] = JSON.parse(
-  `[{"id":923,"mode":"TC","name":"The Reef"},{"id":925,"mode":"CB","name":"The Reef"},{"id":927,"mode":"SZ","name":"Musselforge Fitness"},{"id":929,"mode":"RM","name":"Musselforge Fitness"},{"id":934,"mode":"RM","name":"Starfish Mainstage"},{"id":942,"mode":"SZ","name":"Inkblot Art Academy"},{"id":943,"mode":"TC","name":"Inkblot Art Academy"},{"id":947,"mode":"SZ","name":"Sturgeon Shipyard"},{"id":948,"mode":"TC","name":"Sturgeon Shipyard"},{"id":953,"mode":"TC","name":"Moray Towers"},{"id":959,"mode":"RM","name":"Port Mackerel"},{"id":960,"mode":"CB","name":"Port Mackerel"},{"id":972,"mode":"SZ","name":"Snapper Canal"},{"id":978,"mode":"TC","name":"Blackbelly Skatepark"},{"id":980,"mode":"CB","name":"Blackbelly Skatepark"},{"id":985,"mode":"CB","name":"MakoMart"},{"id":987,"mode":"SZ","name":"Walleye Warehouse"},{"id":988,"mode":"TC","name":"Walleye Warehouse"},{"id":994,"mode":"RM","name":"Shellendorf Institute"},{"id":995,"mode":"CB","name":"Shellendorf Institute"},{"id":1007,"mode":"SZ","name":"Piranha Pit"},{"id":1012,"mode":"SZ","name":"Camp Triggerfish"},{"id":1019,"mode":"RM","name":"Wahoo World"},{"id":1020,"mode":"CB","name":"Wahoo World"},{"id":1027,"mode":"SZ","name":"Ancho-V Games"},{"id":1034,"mode":"RM","name":"Skipper Pavilion"}]`
-);
+const mapPool = mapPoolForTest();
 const bracket = eliminationBracket(24, "DE");
 const rounds = getRoundsDefaultBestOf(bracket);
 const mapList = generateMapListForRounds({ mapPool, rounds });

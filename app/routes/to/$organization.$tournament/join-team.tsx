@@ -12,6 +12,7 @@ import invariant from "tiny-invariant";
 import { z } from "zod";
 import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
+import { captainOfTeam } from "~/core/tournament/utils";
 import {
   FindTournamentByNameForUrlI,
   findTournamentWithInviteCodes,
@@ -122,8 +123,7 @@ export const loader: LoaderFunction = async ({ request, params, context }) => {
     status: "OK",
     teamName: teamInvitedTo.name,
     inviteCode,
-    inviterName: teamInvitedTo.members.find(({ captain }) => captain)!.member
-      .discordName,
+    inviterName: captainOfTeam(teamInvitedTo).member.discordName,
   });
 };
 

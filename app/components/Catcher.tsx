@@ -41,6 +41,7 @@ export function Catcher() {
     //   break;
 
     default:
-      throw new Error(caught.data || caught.statusText);
+      console.error(caught);
+      throw new Error(`${caught.status} - ${caught.statusText}`);
   }
 }

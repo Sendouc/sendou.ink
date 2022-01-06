@@ -1,17 +1,20 @@
 import * as React from "react";
 import { useMatches } from "remix";
-import { LoggedInUser } from ".";
+import { z } from "zod";
+import { LoggedInUserSchema } from "~/validators/user";
 
 export const useUser = () => {
   const [root] = useMatches();
 
-  return root.data?.user as LoggedInUser;
+  const { user } = LoggedInUserSchema.parse(root.data);
+  return user;
 };
 
 export const useBaseURL = () => {
   const [root] = useMatches();
 
-  return root.data.baseURL as string;
+  const { baseURL } = z.object({ baseURL: z.string() }).parse(root.data);
+  return baseURL;
 };
 
 // TODO: fix causes memory leak

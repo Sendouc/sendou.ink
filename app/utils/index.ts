@@ -2,27 +2,28 @@ import { Mode } from "@prisma/client";
 import type { CSSProperties } from "react";
 import { json, useLocation } from "remix";
 import { z } from "zod";
+import { LoggedInUserSchema } from "~/validators/user";
 
 export function makeTitle(endOfTitle?: string) {
   return endOfTitle ? `sendou.ink | ${endOfTitle}` : "sendou.ink";
 }
 
 /** Get logged in user from context. Throws with 401 error if no user found. */
-export function requireUser(ctx: any) {
-  const user = ctx.user;
+export function requireUser(ctx: unknown) {
+  const { user } = LoggedInUserSchema.parse(ctx);
 
   if (!user) {
     throw json("Log in required", { status: 401 });
   }
 
-  return user as NonNullable<LoggedInUser>;
+  return user;
 }
 
 /** Get logged in user from context. Doesn't throw. */
-export function getUser(ctx: any) {
-  const user = ctx.user;
+export function getUser(ctx: unknown) {
+  const { user } = LoggedInUserSchema.parse(ctx);
 
-  return user as LoggedInUser;
+  return user;
 }
 
 /** Get link to log in with query param set as current page */
@@ -49,6 +50,8 @@ export async function parseRequestFormData<T extends z.ZodTypeAny>({
   schema: T;
 }): Promise<z.infer<T>> {
   try {
+    // False alarm
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return schema.parse(Object.fromEntries(await request.formData()));
   } catch (e) {
     if (e instanceof z.ZodError) {
@@ -64,23 +67,18 @@ export async function parseRequestFormData<T extends z.ZodTypeAny>({
   }
 }
 
-export function safeJSONParse(value: any) {
+export function safeJSONParse(value: unknown): unknown {
   try {
-    return JSON.parse(value);
+    const parsedValue = z.string().parse(value);
+    return JSON.parse(parsedValue);
   } catch (e) {
     return undefined;
   }
 }
 
 /** @link https://stackoverflow.com/a/69413184 */
-// @ts-expect-error
-export const assertType = <A, B extends A>() => {};
-
-export type LoggedInUser = {
-  id: string;
-  discordId: string;
-  discordAvatar: string;
-} | null;
+// @ts-expect-error helper to assert type to be another compile time
+export const assertType = <A, B extends A>() => {}; // eslint-disable-line
 
 export type Serialized<T> = {
   [P in keyof T]: T[P] extends Date
@@ -92,7 +90,7 @@ export type Serialized<T> = {
 
 export type Unpacked<T> = T extends (infer U)[]
   ? U
-  : T extends (...args: any[]) => infer U
+  : T extends (...args: unknown[]) => infer U
   ? U
   : T extends Promise<infer U>
   ? U
@@ -100,8 +98,8 @@ export type Unpacked<T> = T extends (infer U)[]
 
 export type MyReducerAction<
   K extends string,
-  T extends {} | undefined = undefined
-> = T extends {}
+  T extends Record<string, unknown> | undefined = undefined
+> = T extends Record<string, unknown>
   ? {
       type: K;
       data: T;
