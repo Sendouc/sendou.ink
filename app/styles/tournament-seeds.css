@@ -59,11 +59,12 @@
   display: flex;
   padding: 0;
   counter-reset: list;
+  gap: var(--s-2);
+  overflow-x: auto;
 }
 
 .tournament__seeds__members-list > li {
   list-style: none;
-  margin-inline-start: var(--s-3);
   white-space: nowrap;
 }
 
@@ -71,4 +72,10 @@
   color: var(--theme-secondary);
   content: counter(list) ") ";
   counter-increment: list;
+}
+
+@media screen and (min-width: 768px) {
+  .tournament__seeds__members-list {
+    overflow-x: visible;
+  }
 }

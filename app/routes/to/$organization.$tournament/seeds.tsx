@@ -176,7 +176,6 @@ function SeedAlert({
 
   return (
     <Form method="post" className="tournament__seeds__form">
-      <input type="hidden" name="_action" value="UPDATE_SEEDS" />
       <input type="hidden" name="tournamentId" value={tournamentId} />
       <input type="hidden" name="seeds" value={JSON.stringify(teamOrder)} />
       <Alert
@@ -206,7 +205,7 @@ function SeedAlert({
   );
 }
 
-const RowContents = React.memo(function RowContents({
+function RowContents({
   team,
   seed,
 }: {
@@ -228,6 +227,6 @@ const RowContents = React.memo(function RowContents({
       </ol>
     </>
   );
-});
+}
 
 export const CatchBoundary = Catcher;
