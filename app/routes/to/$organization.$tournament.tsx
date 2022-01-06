@@ -24,6 +24,7 @@ import { makeTitle, requireUser } from "~/utils";
 import type { MyCSSProperties } from "~/utils";
 import { useUser } from "~/utils/hooks";
 import tournamentStylesUrl from "../../styles/tournament.css";
+import * as React from "react";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: tournamentStylesUrl }];
@@ -133,17 +134,12 @@ export default function TournamentPage() {
             className="tournament__links-container"
           >
             {navLinks.map(({ code, text, icon }) => (
-              // TODO: on mobile keep the active link in center
-              <NavLink
+              <TournamentNavLink
                 key={code}
-                className="tournament__nav-link"
-                to={code}
-                data-cy={`${code}-nav-link`}
-                prefetch="intent"
-                end
-              >
-                {icon} {text}
-              </NavLink>
+                code={code}
+                icon={icon}
+                text={text}
+              />
             ))}
           </div>
         </div>
@@ -154,5 +150,39 @@ export default function TournamentPage() {
       {/* TODO: pass context instead of useMatches */}
       <Outlet />
     </div>
+  );
+}
+
+function TournamentNavLink({
+  code,
+  icon,
+  text,
+}: {
+  code: string;
+  icon: React.ReactNode;
+  text: string;
+}) {
+  const ref = React.useRef<HTMLAnchorElement>(null);
+
+  React.useEffect(() => {
+    if (!ref.current?.className.includes("active")) return;
+    ref.current?.scrollIntoView({
+      behavior: "smooth",
+      inline: "center",
+      block: "nearest",
+    });
+  }, []);
+
+  return (
+    <NavLink
+      className="tournament__nav-link"
+      to={code}
+      data-cy={`${code}-nav-link`}
+      prefetch="intent"
+      end
+      ref={ref}
+    >
+      {icon} {text}
+    </NavLink>
   );
 }
