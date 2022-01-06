@@ -3,6 +3,7 @@ import invariant from "tiny-invariant";
 import { matchIsOver } from "~/core/tournament/utils";
 import type { BracketModified } from "~/services/tournament";
 import { MyCSSProperties, Unpacked } from "~/utils";
+import { EliminationBracketMatch } from "./EliminationBracketMatch";
 
 export function EliminationBracket({
   bracketSide,
@@ -84,7 +85,7 @@ export function EliminationBracket({
                 {round.matches.map((match) => {
                   // TODO: handle losers
                   return (
-                    <Match
+                    <EliminationBracketMatch
                       hidden={
                         round.name.includes("Winner") &&
                         roundI === 0 &&
@@ -134,68 +135,6 @@ function RoundInfo({
       {status !== "DONE" && (
         <div className="tournament-bracket__elim__bestOf">Bo{bestOf}</div>
       )}
-    </div>
-  );
-}
-
-export function Match({
-  match,
-  hidden,
-  ownTeamName,
-  isOver,
-}: {
-  match: Unpacked<Unpacked<BracketModified["winners"]>["matches"]>;
-  hidden?: boolean;
-  ownTeamName?: string;
-  isOver: boolean;
-}) {
-  return (
-    <div className={clsx("tournament-bracket__elim__match", { hidden })}>
-      <div className="tournament-bracket__elim__roundNumber">
-        {match.number}
-      </div>
-      <div
-        className={clsx(
-          "tournament-bracket__elim__team",
-          "tournament-bracket__elim__teamOne",
-          {
-            own:
-              !isOver && ownTeamName && ownTeamName === match.participants?.[0],
-            defeated:
-              isOver && (match.score?.[0] ?? 0) < (match.score?.[1] ?? 0),
-          }
-        )}
-      >
-        {match.participants?.[0]}{" "}
-        <span
-          className={clsx("tournament-bracket__elim__score", {
-            invisible: typeof match.score?.[0] !== "number",
-          })}
-        >
-          {match.score?.[0] ?? 0}
-        </span>
-      </div>
-      <div
-        className={clsx(
-          "tournament-bracket__elim__team",
-          "tournament-bracket__elim__teamTwo",
-          {
-            own:
-              !isOver && ownTeamName && ownTeamName === match.participants?.[1],
-            defeated:
-              isOver && (match.score?.[1] ?? 0) < (match.score?.[0] ?? 0),
-          }
-        )}
-      >
-        {match.participants?.[1]}{" "}
-        <span
-          className={clsx("tournament-bracket__elim__score", {
-            invisible: typeof match.score?.[0] !== "number",
-          })}
-        >
-          {match.score?.[1] ?? 0}
-        </span>
-      </div>
     </div>
   );
 }

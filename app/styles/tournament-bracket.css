@@ -230,6 +230,13 @@
   grid-area: team-two;
 }
 
+.tournament-bracket__elim__loser-info {
+  display: flex;
+  align-items: center;
+  color: var(--text-lighter);
+  font-size: var(--fonts-xs);
+}
+
 .tournament-bracket__elim__score {
   font-weight: bold;
 }

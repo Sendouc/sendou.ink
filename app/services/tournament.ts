@@ -147,6 +147,10 @@ type BracketModifiedSide = {
     number: number;
     score?: [upperTeamScore: number, lowerTeamScore: number];
     participants?: [upperTeamName: string | null, lowerTeamName: string | null];
+    participantSourceMatches?: [
+      upperTeamSourceMatchNumber: number | null,
+      lowerTeamSourceMatchNumber: number | null
+    ];
     winnerDestinationMatchId: string | null;
     loserDestinationMatchId: string | null;
   }[];
@@ -165,12 +169,20 @@ export async function bracketById(bracketId: string): Promise<BracketModified> {
     .filter((round) => round.position < 0)
     .sort((a, b) => b.position - a.position);
 
+  const winners = modifyRounds(
+    winnersRounds,
+    "winners",
+    losersRounds.length === 0
+  );
+  const losers = modifyRounds(losersRounds, "losers", false);
+
   return {
-    winners: modifyRounds(winnersRounds, "winners", losersRounds.length === 0),
-    losers: modifyRounds(losersRounds, "losers", false),
+    winners,
+    losers: addLoserTeamSourceInfo({ winners, losers }),
   };
 }
 
+// TODO: rename
 function modifyRounds(
   rounds: NonNullable<TournamentBracket.FindById>["rounds"],
   side: EliminationBracketSide,
@@ -218,6 +230,40 @@ function modifyRounds(
       }),
     };
   });
+}
+
+function addLoserTeamSourceInfo({
+  winners,
+  losers,
+}: {
+  winners: BracketModifiedSide;
+  losers: BracketModifiedSide;
+}): BracketModifiedSide {
+  const matchIdToSourceMatchNumber = winners
+    .flatMap((round) => round.matches)
+    .reduce((acc: Map<string, number[]>, match) => {
+      if (!match.loserDestinationMatchId) return acc;
+
+      return acc.set(
+        match.loserDestinationMatchId,
+        (acc.get(match.loserDestinationMatchId) ?? [])
+          .concat(match.number)
+          .sort((a, b) => a - b)
+      );
+    }, new Map());
+
+  return losers.map((round) => ({
+    ...round,
+    matches: round.matches.map((match) => {
+      const sourceMatches = matchIdToSourceMatchNumber.get(match.id);
+      return {
+        ...match,
+        participantSourceMatches: sourceMatches
+          ? [sourceMatches[0] ?? null, sourceMatches[1] ?? null]
+          : undefined,
+      };
+    }),
+  }));
 }
 
 export const createTournamentTeam = TournamentTeam.create;
