@@ -3,11 +3,10 @@ import compression from "compression";
 import express from "express";
 import morgan from "morgan";
 import path from "path";
-import { SeedVariationsSchema } from "~/validators/seedVariations";
 import { LoggedInUser } from "~/validators/user";
-import { seed } from "../prisma/seed/script";
 import { setUpAuth } from "./auth";
 import { setUpMockAuth } from "./mock-auth";
+import { setUpSeed } from "./seed";
 
 const MODE = process.env.NODE_ENV;
 const BUILD_DIR = path.join(process.cwd(), "server/build");
@@ -28,19 +27,9 @@ let mockUserFromHTTPCall: { user: LoggedInUser | null } = { user: null };
 try {
   setUpAuth(app);
   setUpMockAuth(app, mockUserFromHTTPCall);
+  setUpSeed(app);
 } catch (err) {
   console.error(err);
-}
-
-if (process.env.NODE_ENV === "development") {
-  app.post("/seed", async (req, res) => {
-    const variation = SeedVariationsSchema.optional().parse(
-      req.query.variation
-    );
-    await seed(variation);
-
-    res.status(200).end();
-  });
 }
 
 function userToContext(req: Express.Request) {
