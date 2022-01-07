@@ -61,8 +61,10 @@ export async function seed(variation?: SeedVariations) {
     await trustRelationship(nzapUserCreated.id, adminUserCreated.id);
     await stages();
     await tournamentAddMaps(tournament.id);
-    if (variation === "match") {
+    if (variation === "match" || variation === "tournament-start") {
       await tournamentRoundsCreate();
+    }
+    if (variation === "match") {
       await advanceRound();
     }
 
@@ -149,14 +151,21 @@ export async function seed(variation?: SeedVariations) {
         "Woomy Zoomy Boomy",
       ];
 
-      if (variation === "check-in" || variation === "match") {
+      if (
+        variation === "check-in" ||
+        variation === "match" ||
+        variation === "tournament-start"
+      ) {
         const team = await prisma.tournamentTeam.create({
           data: {
             name: "Kraken Paradise",
             tournamentId,
             friendCode: "1234-1234-1234",
             inviteCode: "033e3695-0421-4aa1-a5ef-6ee82297a398",
-            checkedInTime: variation === "match" ? new Date() : undefined,
+            checkedInTime:
+              variation === "match" || variation === "tournament-start"
+                ? new Date()
+                : undefined,
           },
         });
 
