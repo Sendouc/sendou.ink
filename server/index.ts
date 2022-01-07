@@ -6,6 +6,10 @@ import { z } from "zod";
 import { createRequestHandler } from "@remix-run/express";
 import { setUpAuth } from "./auth";
 import { seed } from "../prisma/seed/script";
+import { LoggedInUser } from "~/validators/user";
+import { db } from "~/utils/db.server";
+import { User } from "@prisma/client";
+import { SeedVariationsSchema } from "~/validators/seedVariations";
 
 const MODE = process.env.NODE_ENV;
 const BUILD_DIR = path.join(process.cwd(), "server/build");
@@ -27,6 +31,65 @@ try {
   console.error(err);
 }
 
+let mockUserFromHTTPCall: LoggedInUser | null = null;
+
+if (process.env.NODE_ENV === "development") {
+  app.post("/seed", async (req, res) => {
+    const variation = SeedVariationsSchema.optional().parse(
+      req.query.variation
+    );
+    await seed(variation);
+
+    res.status(200).end();
+  });
+
+  // TODO: this could be in a different file -> later this will also be for prod
+  app.post("/mock-auth", async (req, res) => {
+    try {
+      const data = z
+        .object({ username: z.string().nullish(), team: z.string().nullish() })
+        .parse(req.query);
+
+      const allUsers = await db.user.findMany({});
+
+      let newMockUser: User | undefined;
+      if (data.username) {
+        const username = data.username.toLowerCase().trim();
+        newMockUser = allUsers.find(
+          (user) => user.discordName.toLowerCase() === username
+        );
+      } else if (data.team) {
+        const team = data.team.toLowerCase().trim();
+        const teams = await db.tournamentTeam.findMany({
+          include: { members: { include: { member: true } } },
+        });
+
+        const wantedTeam = teams.find(
+          (teamFromDb) => teamFromDb.name.toLowerCase() === team.toLowerCase()
+        );
+        if (!wantedTeam) return res.status(400).end();
+
+        const captain = wantedTeam.members.find((member) => member.captain);
+        if (!captain) return res.status(400).end();
+
+        newMockUser = captain.member;
+      }
+
+      if (!newMockUser) return res.status(400).end();
+
+      mockUserFromHTTPCall = {
+        discordAvatar: newMockUser.discordAvatar,
+        discordId: newMockUser.discordId,
+        id: newMockUser.id,
+      };
+    } catch {
+      return res.status(400).end();
+    }
+
+    res.status(200).end();
+  });
+}
+
 function userToContext(req: Express.Request) {
   if (process.env.NODE_ENV === "development") {
     // @ts-expect-error
@@ -34,20 +97,12 @@ function userToContext(req: Express.Request) {
     if (mockedUser) {
       return { user: JSON.parse(mockedUser) };
     }
+
+    if (mockUserFromHTTPCall) {
+      return { user: mockUserFromHTTPCall };
+    }
   }
   return { user: req.user };
-}
-
-if (process.env.NODE_ENV === "development") {
-  app.post("/seed", async (req, res) => {
-    const variation = z
-      .enum(["check-in"])
-      .optional()
-      .parse(req.query.variation);
-    await seed(variation);
-
-    res.status(200).end();
-  });
 }
 
 app.all(

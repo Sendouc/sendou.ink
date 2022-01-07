@@ -6,7 +6,7 @@ export const LoggedInUserSchema = z.object({
     .object({
       id: z.string(),
       discordId: z.string(),
-      discordAvatar: z.string(),
+      discordAvatar: z.string().nullable(),
     })
     .nullish(),
 });

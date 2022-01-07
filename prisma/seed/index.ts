@@ -1,15 +1,12 @@
 import { PrismaClient } from "@prisma/client";
-import { z } from "zod";
+import { SeedVariationsSchema } from "~/validators/seedVariations";
 const prisma = new PrismaClient();
 import { seed } from "./script";
 
 const maybeVariation = process.argv[2]?.startsWith("-v=")
   ? process.argv[2].split("-v=")[1]
   : undefined;
-const variation = z
-  .enum(["check-in", "match"])
-  .optional()
-  .parse(maybeVariation);
+const variation = SeedVariationsSchema.optional().parse(maybeVariation);
 
 seed(variation)
   .then(() => {
