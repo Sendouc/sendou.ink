@@ -169,6 +169,7 @@ export function eliminationBracket(
 
   return bracket;
 
+  // TODO: also need to make match number 0 if loser bye
   function createMatch(args: Omit<Match, "id" | "number">): Match {
     const number = [args.lowerTeam, args.upperTeam].includes("BYE")
       ? 0

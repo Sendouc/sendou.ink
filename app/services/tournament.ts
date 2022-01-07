@@ -717,30 +717,35 @@ function newParticipantsForMatches({
   winnerTeam: Unpacked<NonNullable<TournamentMatch.FindById>["participants"]>;
   loserTeam: Unpacked<NonNullable<TournamentMatch.FindById>["participants"]>;
 }): TournamentMatch.CreateParticipantsData {
-  return [
-    match.winnerDestinationMatchId
-      ? {
-          matchId: match.winnerDestinationMatchId,
-          order: resolveNewOrder({
-            bracket,
-            oldMatch: match,
-            newMatchId: match.winnerDestinationMatchId,
-          }),
-          teamId: winnerTeam.teamId,
-        }
-      : undefined,
-    match.loserDestinationMatchId
-      ? {
-          matchId: match.loserDestinationMatchId,
-          order: resolveNewOrder({
-            bracket,
-            oldMatch: match,
-            newMatchId: match.loserDestinationMatchId,
-          }),
-          teamId: loserTeam.teamId,
-        }
-      : undefined,
-  ];
+  const result: TournamentMatch.CreateParticipantsData = [];
+
+  if (match.winnerDestinationMatchId) {
+    result.push({
+      matchId: match.winnerDestinationMatchId,
+      order: resolveNewOrder({
+        bracket,
+        oldMatch: match,
+        newMatchId: match.winnerDestinationMatchId,
+      }),
+      teamId: winnerTeam.teamId,
+    });
+  }
+
+  if (match.loserDestinationMatchId) {
+    result.push({
+      matchId: match.loserDestinationMatchId,
+      order: resolveNewOrder({
+        bracket,
+        oldMatch: match,
+        newMatchId: match.loserDestinationMatchId,
+      }),
+      teamId: loserTeam.teamId,
+    });
+  }
+
+  // if match number === 0 let's advance
+
+  return result;
 }
 
 export async function undoLastScore({
