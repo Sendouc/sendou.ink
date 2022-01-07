@@ -63,9 +63,11 @@ export function deleteResult(id: string) {
   return db.tournamentMatchGameResult.delete({ where: { id } });
 }
 
-export function createParticipants(
-  data: ({ matchId: string; order: TeamOrder; teamId: string } | undefined)[]
-) {
+export type CreateParticipantsData = (
+  | { matchId: string; order: TeamOrder; teamId: string }
+  | undefined
+)[];
+export function createParticipants(data: CreateParticipantsData) {
   return db.tournamentMatchParticipant.createMany({
     data: data.flatMap((result) => result ?? []),
   });

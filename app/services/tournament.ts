@@ -650,30 +650,9 @@ export async function reportScore({
         winner: winnerTeam.order,
       }),
       // todo: bracket reset
-      TournamentMatch.createParticipants([
-        match.winnerDestinationMatchId
-          ? {
-              matchId: match.winnerDestinationMatchId,
-              order: resolveNewOrder({
-                bracket,
-                oldMatch: match,
-                newMatchId: match.winnerDestinationMatchId,
-              }),
-              teamId: winnerTeam.teamId,
-            }
-          : undefined,
-        match.loserDestinationMatchId
-          ? {
-              matchId: match.loserDestinationMatchId,
-              order: resolveNewOrder({
-                bracket,
-                oldMatch: match,
-                newMatchId: match.loserDestinationMatchId,
-              }),
-              teamId: loserTeam?.teamId,
-            }
-          : undefined,
-      ]),
+      TournamentMatch.createParticipants(
+        newParticipantsForMatches({ bracket, match, loserTeam, winnerTeam })
+      ),
     ]);
     // otherwise if set is not over simply create result and return
   } else {
@@ -725,6 +704,43 @@ function resolveNewOrder({
   // always have the smaller number compared to loser's bracket match
   if (matchesThatLeadToNewMatch[0].id === oldMatch.id) return "UPPER";
   return "LOWER";
+}
+
+function newParticipantsForMatches({
+  bracket,
+  match,
+  winnerTeam,
+  loserTeam,
+}: {
+  bracket: NonNullable<TournamentBracket.FindById>;
+  match: NonNullable<TournamentMatch.FindById>;
+  winnerTeam: Unpacked<NonNullable<TournamentMatch.FindById>["participants"]>;
+  loserTeam: Unpacked<NonNullable<TournamentMatch.FindById>["participants"]>;
+}): TournamentMatch.CreateParticipantsData {
+  return [
+    match.winnerDestinationMatchId
+      ? {
+          matchId: match.winnerDestinationMatchId,
+          order: resolveNewOrder({
+            bracket,
+            oldMatch: match,
+            newMatchId: match.winnerDestinationMatchId,
+          }),
+          teamId: winnerTeam.teamId,
+        }
+      : undefined,
+    match.loserDestinationMatchId
+      ? {
+          matchId: match.loserDestinationMatchId,
+          order: resolveNewOrder({
+            bracket,
+            oldMatch: match,
+            newMatchId: match.loserDestinationMatchId,
+          }),
+          teamId: loserTeam.teamId,
+        }
+      : undefined,
+  ];
 }
 
 export async function undoLastScore({
