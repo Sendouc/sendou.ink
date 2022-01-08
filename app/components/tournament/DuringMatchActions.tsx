@@ -26,7 +26,9 @@ export function DuringMatchActions({
   const [, parentRoute] = useMatches();
   const { teams, seeds } = parentRoute.data as FindTournamentByNameForUrlI;
   const [joinedRoom, setJoinedRoom] = useState(
-    (currentMatch.score?.[0] ?? 0) > 0 || (currentMatch.score?.[1] ?? 0) > 0
+    true ||
+      (currentMatch.score?.[0] ?? 0) > 0 ||
+      (currentMatch.score?.[1] ?? 0) > 0
   );
 
   const opponentTeam = teams.find(
@@ -52,26 +54,10 @@ export function DuringMatchActions({
     invariant(currentStage, "currentStage is undefined");
     const { stage } = currentStage;
 
-    const roundInfo: [string, React.ReactElement | string | number][] = [
-      ["Opponent", opponentTeam.name],
-      ["Room pass", `${roomPass} (${weHost ? "We" : "They"} host)`],
-      ["Friend code to add", friendCodeToAdd],
-      [
-        "Score",
-        <>
-          {currentMatch.score?.join("-")}
-          {currentPosition > 1 && (
-            <SubmitButton
-              actionType="UNDO_REPORT_SCORE"
-              variant="minimal-destructive"
-              loadingText="Undoing..."
-            >
-              Undo last score
-            </SubmitButton>
-          )}
-        </>,
-      ],
-      ["Best of", currentRound.stages.length],
+    const roundInfos: string[] = [
+      `Pass ${roomPass} (${weHost ? "We" : "They"} host)`,
+      `Add ${friendCodeToAdd}`,
+      `${currentMatch.score?.join("-")} (Bo${currentRound.stages.length})`,
     ];
 
     return (
@@ -88,7 +74,12 @@ export function DuringMatchActions({
             <h4>Stage {currentPosition}</h4>
           </div>
         </div>
-        <ActionSectionWrapper justify-center>
+        <div className="tournament-bracket__infos">
+          {roundInfos.map((info) => (
+            <div key={info}>{info}</div>
+          ))}
+        </div>
+        {/* <ActionSectionWrapper justify-center>
           <div className="tournament-bracket__infos">
             <Form method="post">
               <input type="hidden" name="_action" value="UNDO_REPORT_SCORE" />
@@ -112,7 +103,7 @@ export function DuringMatchActions({
               </div>
             </Form>
           </div>
-        </ActionSectionWrapper>
+        </ActionSectionWrapper> */}
         <ActionSectionWrapper>
           <DuringMatchActionsRosters
             ownTeam={ownTeam}

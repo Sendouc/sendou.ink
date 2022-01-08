@@ -20,7 +20,8 @@
   /* TODO: */
   background-image: url("https://pbs.twimg.com/media/DoAV42MXsAAtHCh?format=jpg&name=large");
   background-position: center;
-  border-radius: var(--rounded);
+  border-start-end-radius: var(--rounded);
+  border-start-start-radius: var(--rounded);
   grid-area: img;
 }
 
@@ -56,25 +57,21 @@
 
 .tournament-bracket__infos {
   display: flex;
-  flex-wrap: wrap;
-}
-
-.tournament-bracket__infos__columns {
-  display: grid;
+  flex-direction: column;
   align-items: center;
-  margin: 0 auto;
-  column-gap: var(--s-6);
-  grid-template-columns: 1fr 1fr;
-  row-gap: var(--s-1-5);
+  justify-content: center;
+  margin-bottom: var(--s-4);
+  background: var(--tournaments-bg);
+  border-end-end-radius: var(--rounded);
+  border-end-start-radius: var(--rounded);
+  color: var(--tournaments-text);
+  column-gap: var(--s-8);
+  font-size: var(--fonts-xxs);
+  font-weight: var(--bold);
 }
 
 .tournament-bracket__infos__label {
   margin-block-end: 0;
-}
-
-.tournament-bracket__infos__value {
-  display: flex;
-  gap: var(--s-2);
 }
 
 .tournament-bracket__infos__value > button {
@@ -89,7 +86,6 @@
 .tournament-bracket__during-match-actions {
   display: grid;
   margin-top: var(--s-4);
-  gap: var(--s-4);
   grid-template-areas:
     "img"
     "infos"
@@ -290,10 +286,7 @@
 }
 
 @media screen and (min-width: 480px) {
-  .tournament-bracket__during-match-actions {
-    grid-template-areas:
-      "img img"
-      "infos rosters";
-    grid-template-columns: 1fr 1fr;
+  .tournament-bracket__infos {
+    flex-direction: row;
   }
 }
