@@ -1,5 +1,6 @@
 import { useLoaderData, useMatches } from "remix";
 import invariant from "tiny-invariant";
+import { matchIsOver } from "~/core/tournament/utils";
 import type {
   BracketModified,
   FindTournamentByNameForUrlI,
@@ -52,12 +53,11 @@ export function BracketActions() {
     );
     const isOwnMatch = match.participants?.some((p) => p === ownTeam.name);
 
-    const higherCount = match.score
-      ? Math.max(match.score[0], match.score[1])
-      : 0;
-    const isNotOver = higherCount < match.round.matches.length / 2;
-
-    return hasBothParticipants && isOwnMatch && isNotOver;
+    return (
+      hasBothParticipants &&
+      isOwnMatch &&
+      !matchIsOver(match.round.stages.length, match.score)
+    );
   });
 
   if (currentMatch) {
