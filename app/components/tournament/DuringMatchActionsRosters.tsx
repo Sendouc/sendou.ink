@@ -6,6 +6,7 @@ import type { FindTournamentByNameForUrlI } from "~/services/tournament";
 import { Unpacked } from "~/utils";
 import { Label } from "../Label";
 import { SubmitButton } from "../SubmitButton";
+import { TeamRosterCheckboxes } from "./TeamRosterCheckboxes";
 
 export function DuringMatchActionsRosters({
   ownTeam,
@@ -42,45 +43,24 @@ export function DuringMatchActionsRosters({
                   Winner
                 </Label>
               </div>
-              <div className="tournament-bracket__during-match-actions__team-players">
-                {team.members.map(({ member }) => (
-                  <div
-                    key={member.id}
-                    className="tournament-bracket__during-match-actions__checkbox-name"
-                  >
-                    <input
-                      type="checkbox"
-                      id={member.id}
-                      name="playerName"
-                      disabled={
-                        team.members.length === TOURNAMENT_TEAM_ROSTER_MIN_SIZE
-                      }
-                      value={member.id}
-                      checked={checkedPlayers.flat().includes(member.id)}
-                      onChange={() =>
-                        setCheckedPlayers((players) => {
-                          const newPlayers = clone(players);
-                          if (checkedPlayers.flat().includes(member.id)) {
-                            newPlayers[teamI] = newPlayers[teamI].filter(
-                              (id) => id !== member.id
-                            );
-                          } else {
-                            newPlayers[teamI].push(member.id);
-                          }
+              <TeamRosterCheckboxes
+                team={team}
+                checkedPlayers={checkedPlayers[teamI]}
+                handlePlayerClick={(playerId: string) =>
+                  setCheckedPlayers((players) => {
+                    const newPlayers = clone(players);
+                    if (checkedPlayers.flat().includes(playerId)) {
+                      newPlayers[teamI] = newPlayers[teamI].filter(
+                        (id) => id !== playerId
+                      );
+                    } else {
+                      newPlayers[teamI].push(playerId);
+                    }
 
-                          return newPlayers;
-                        })
-                      }
-                    />{" "}
-                    <Label
-                      className="tournament-bracket__during-match-actions__player-name"
-                      htmlFor={member.id}
-                    >
-                      {member.discordName}
-                    </Label>
-                  </div>
-                ))}
-              </div>
+                    return newPlayers;
+                  })
+                }
+              />
             </div>
           ))}
         </div>

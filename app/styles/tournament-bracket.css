@@ -66,8 +66,8 @@
   border-end-start-radius: var(--rounded);
   color: var(--tournaments-text);
   column-gap: var(--s-8);
-  font-size: var(--fonts-xxs);
-  font-weight: var(--bold);
+  font-size: var(--fonts-xs);
+  padding-block: 1px;
 }
 
 .tournament-bracket__infos__label {
@@ -85,7 +85,6 @@
 
 .tournament-bracket__during-match-actions {
   display: grid;
-  margin-top: var(--s-4);
   grid-template-areas:
     "img"
     "infos"
