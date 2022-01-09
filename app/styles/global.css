@@ -7,6 +7,7 @@
   --text: rgb(255 255 255 / 95%);
   --text-lighter: rgb(255 255 255 / 55%);
   --theme-error: rgb(219 70 65);
+  --theme-error-transparent: rgba(219 70 65 / 75%);
   --theme-warning: #f5f587;
   --theme-info: #a3a6ff;
   --theme-success: #a3ffae;

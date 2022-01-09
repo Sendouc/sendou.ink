@@ -1,4 +1,4 @@
-import { useMatches } from "remix";
+import { Form, useMatches } from "remix";
 import invariant from "tiny-invariant";
 import { modesShortToLong } from "~/constants";
 import { resolveHostInfo } from "~/core/tournament/utils";
@@ -7,6 +7,7 @@ import type {
   FindTournamentByNameForUrlI,
 } from "~/services/tournament";
 import { modeToImageUrl, Unpacked } from "~/utils";
+import { SubmitButton } from "../SubmitButton";
 import { ActionSectionWrapper } from "./ActionSectionWrapper";
 import { DuringMatchActionsRosters } from "./DuringMatchActionsRosters";
 
@@ -70,37 +71,28 @@ export function DuringMatchActions({
           </h4>
           <h4>Stage {currentPosition}</h4>
         </div>
+        {currentPosition > 1 && (
+          <Form method="post">
+            <input type="hidden" name="_action" value="UNDO_REPORT_SCORE" />
+            <input type="hidden" name="position" value={currentPosition - 1} />
+            <input type="hidden" name="matchId" value={currentMatch.id} />
+            <div className="tournament-bracket__stage-banner__bottom-bar">
+              <SubmitButton
+                actionType="UNDO_REPORT_SCORE"
+                className="tournament-bracket__stage-banner__undo-button"
+                loadingText="Undoing..."
+              >
+                Undo last score
+              </SubmitButton>
+            </div>
+          </Form>
+        )}
       </div>
       <div className="tournament-bracket__infos">
         {roundInfos.map((info) => (
           <div>{info}</div>
         ))}
       </div>
-      {/* <ActionSectionWrapper justify-center>
-          <div className="tournament-bracket__infos">
-            <Form method="post">
-              <input type="hidden" name="_action" value="UNDO_REPORT_SCORE" />
-              <input
-                type="hidden"
-                name="position"
-                value={currentPosition - 1}
-              />
-              <input type="hidden" name="matchId" value={currentMatch.id} />
-              <div className="tournament-bracket__infos__columns">
-                {roundInfo.map(([title, value]) => (
-                  <React.Fragment key={title}>
-                    <Label className="tournament-bracket__infos__label">
-                      {title}
-                    </Label>
-                    <div className="tournament-bracket__infos__value">
-                      {value}
-                    </div>
-                  </React.Fragment>
-                ))}
-              </div>
-            </Form>
-          </div>
-        </ActionSectionWrapper> */}
       <ActionSectionWrapper>
         <DuringMatchActionsRosters
           ownTeam={ownTeam}
