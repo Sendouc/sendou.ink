@@ -11,6 +11,7 @@ declare module "express-session" {
 export function setUpSeed(app: Express): void {
   if (process.env.NODE_ENV !== "development") return;
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   app.post("/seed", async (req, res) => {
     const variation = SeedVariationsSchema.optional().parse(
       req.query.variation

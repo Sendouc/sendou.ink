@@ -1,3 +1,6 @@
+/* eslint-disable */
+// TODO: eslint-disable
+
 import { createRequestHandler } from "@remix-run/express";
 import compression from "compression";
 import express from "express";
@@ -22,7 +25,7 @@ app.use(express.static("public/build", { immutable: true, maxAge: "1y" }));
 
 app.use(morgan("tiny"));
 
-let mockUserFromHTTPCall: { user: LoggedInUser | null } = { user: null };
+const mockUserFromHTTPCall: { user: LoggedInUser | null } = { user: null };
 
 try {
   setUpAuth(app);
@@ -34,7 +37,7 @@ try {
 
 function userToContext(req: Express.Request) {
   if (process.env.NODE_ENV === "development") {
-    // @ts-expect-error
+    // @ts-expect-error TODO: check how to set headers types
     const mockedUser = req.headers["mock-auth"];
     if (mockedUser) {
       return { user: JSON.parse(mockedUser) };

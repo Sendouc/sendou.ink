@@ -10,6 +10,7 @@ export function setUpMockAuth(
 ): void {
   if (process.env.NODE_ENV !== "development") return;
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   app.post("/mock-auth", async (req, res) => {
     try {
       const data = z

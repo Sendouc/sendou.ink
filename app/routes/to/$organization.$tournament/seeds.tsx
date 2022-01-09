@@ -23,6 +23,7 @@ import {
   useTransition,
 } from "remix";
 import invariant from "tiny-invariant";
+import { z } from "zod";
 import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
@@ -44,7 +45,7 @@ export const action: ActionFunction = async ({ context, request }) => {
     typeof data.tournamentId === "string",
     "Invalid type for tournamentId"
   );
-  const newSeeds = JSON.parse(data.seeds);
+  const newSeeds = z.array(z.string()).parse(JSON.parse(data.seeds));
 
   await updateSeeds({
     tournamentId: data.tournamentId,

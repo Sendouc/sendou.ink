@@ -64,7 +64,11 @@ export function setUpAuth(app: Express): void {
               discordAvatar: user.discordAvatar,
             });
           })
-          .catch((err) => cb(err));
+          .catch((err: unknown) => {
+            if (err instanceof Error || err === undefined || err === null) {
+              cb(err);
+            }
+          });
 
         function parseConnections() {
           if (!loggedInUser.connections) return null;
@@ -124,6 +128,7 @@ export function setUpAuth(app: Express): void {
       invariant(typeof returnTo === "string", "returnTo is not string");
       req.session.returnTo = returnTo;
     }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
     return passport.authenticate("discord")(req, res);
   });
   app.get("/auth/discord/callback", (req, res) => {
@@ -131,6 +136,7 @@ export function setUpAuth(app: Express): void {
     if (req.session.returnTo) {
       delete req.session.returnTo;
     }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
     return passport.authenticate("discord", {
       failureRedirect: "/login",
       successRedirect: returnTo,

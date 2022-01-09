@@ -15,9 +15,10 @@ export function EliminationBracketMatch({
 }) {
   const cellText = (index: number) => {
     if (match.participants?.[index]) return match.participants?.[index];
-    if (match.participantSourceMatches?.[index]) {
+    const matchNumber = match.participantSourceMatches?.[index];
+    if (typeof matchNumber === "number") {
       return (
-        <i className="tournament-bracket__elim__loser-info">{`Loser of match ${match.participantSourceMatches?.[index]}`}</i>
+        <i className="tournament-bracket__elim__loser-info">{`Loser of match ${matchNumber}`}</i>
       );
     }
 
