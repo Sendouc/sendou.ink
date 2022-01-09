@@ -4,6 +4,7 @@ import invariant from "tiny-invariant";
 import clone from "just-clone";
 import { BestOf, EliminationBracket } from "./bracket";
 
+// TODO: make this accept an array of bestOf instead of EliminationBracket
 export function generateMapListForRounds({
   mapPool,
   rounds,
