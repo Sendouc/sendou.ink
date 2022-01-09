@@ -46,6 +46,9 @@ export function DuringMatchActionsRosters({
               <TeamRosterCheckboxes
                 team={team}
                 checkedPlayers={checkedPlayers[teamI]}
+                disabled={
+                  team.members.length <= TOURNAMENT_TEAM_ROSTER_MIN_SIZE
+                }
                 handlePlayerClick={(playerId: string) =>
                   setCheckedPlayers((players) => {
                     const newPlayers = clone(players);

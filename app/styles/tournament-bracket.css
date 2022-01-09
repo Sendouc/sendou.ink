@@ -97,8 +97,8 @@
   width: 100%;
   height: 2rem;
   justify-content: center;
-  margin-top: var(--s-2);
   color: var(--theme-warning);
+  margin-block-start: var(--s-6);
 }
 
 .tournament-bracket__during-match-actions__amount-warning-paragraph {
@@ -110,7 +110,9 @@
 .tournament-bracket__during-match-actions__rosters {
   display: flex;
   width: 100%;
+  flex-wrap: wrap;
   justify-content: space-evenly;
+  row-gap: var(--s-4);
   text-align: center;
 }
 
@@ -122,18 +124,69 @@
 
 .tournament-bracket__during-match-actions__team-players {
   display: flex;
+  width: 15rem;
   flex-direction: column;
   margin-top: var(--s-3);
-  gap: var(--s-1-5);
+  gap: var(--s-2);
 }
 
 .tournament-bracket__during-match-actions__checkbox-name {
   display: flex;
+  width: 100%;
   align-items: center;
+  cursor: pointer;
+}
+
+.tournament-bracket__during-match-actions__checkbox-name:not(.disabled-opaque):hover {
+  border-radius: var(--rounded);
+  outline: 2px solid var(--theme-transparent);
+  outline-offset: 2px;
+}
+
+.tournament-bracket__during-match-actions__checkbox {
+  width: 50% !important;
+  height: 1.5rem !important;
+  appearance: none;
+  background-color: var(--theme-transparent);
+  border-end-start-radius: var(--rounded);
+  border-start-start-radius: var(--rounded);
+}
+
+.tournament-bracket__during-match-actions__checkbox:checked {
+  background-color: var(--theme);
+}
+
+.tournament-bracket__during-match-actions__checkbox::after {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-lighter);
+  content: "Didn't play";
+  font-size: var(--fonts-xxs);
+  font-weight: var(--bold);
+  letter-spacing: var(--sparse);
+  padding-block-end: 1px;
+}
+
+.tournament-bracket__during-match-actions__checkbox:checked::after {
+  color: var(--button-text);
+  content: "Played";
 }
 
 .tournament-bracket__during-match-actions__player-name {
-  margin-inline-start: var(--s-2);
+  display: flex;
+  width: 50%;
+  height: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  background-color: var(--bg);
+  border-end-end-radius: var(--rounded);
+  border-start-end-radius: var(--rounded);
+  overflow-x: hidden;
+  text-overflow: ellipsis;
 }
 
 .tournament-bracket__elim__bracket {

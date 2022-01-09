@@ -55,6 +55,9 @@
   --s-72: 18rem;
   --s-80: 20rem;
   --s-96: 2rem;
+
+  /* letter-spacing: */
+  --sparse: 0.4px;
 }
 
 /* xs: "(min-width: 480px)",
@@ -330,6 +333,11 @@ select::selection {
 
 .button-text-paragraph > button {
   font-size: var(--fonts-md);
+}
+
+.disabled-opaque {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 /* Utility classes */
