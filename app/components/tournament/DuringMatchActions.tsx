@@ -89,8 +89,8 @@ export function DuringMatchActions({
         )}
       </div>
       <div className="tournament-bracket__infos">
-        {roundInfos.map((info) => (
-          <div>{info}</div>
+        {roundInfos.map((info, i) => (
+          <div key={i}>{info}</div>
         ))}
       </div>
       <ActionSectionWrapper>

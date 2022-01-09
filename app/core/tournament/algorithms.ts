@@ -56,11 +56,14 @@ export function eliminationBracket(
       !(upperTeam === "BYE" && lowerTeam === "BYE"),
       "Unexpected both teams in the first round are BYEs"
     );
-    const firstRoundMatch = createMatch({
-      upperTeam,
-      lowerTeam,
-      side: "winners",
-    });
+    const firstRoundMatch = createMatch(
+      {
+        upperTeam,
+        lowerTeam,
+        side: "winners",
+      },
+      upperTeam === "BYE" || lowerTeam === "BYE"
+    );
 
     matchesWQueue.push(firstRoundMatch);
     matchesLQueue.push(firstRoundMatch);
@@ -123,9 +126,13 @@ export function eliminationBracket(
     invariant(match1, "Unexpected no match1 in losers bracket");
     invariant(match2, "Unexpected no match2 in losers bracket");
 
-    const losersMatch = createMatch({
-      side: "losers",
-    });
+    const losersMatch = createMatch(
+      {
+        side: "losers",
+      },
+      // If the first match already has a bye then this losers match will also be skipped
+      match1.lowerTeam === "BYE" || match1.upperTeam === "BYE"
+    );
 
     match1[
       match1.side === "winners"
@@ -169,11 +176,11 @@ export function eliminationBracket(
 
   return bracket;
 
-  // TODO: also need to make match number 0 if loser bye
-  function createMatch(args: Omit<Match, "id" | "number">): Match {
-    const number = [args.lowerTeam, args.upperTeam].includes("BYE")
-      ? 0
-      : matchNumber++;
+  function createMatch(
+    args: Omit<Match, "id" | "number">,
+    willBeSkipped?: boolean
+  ): Match {
+    const number = willBeSkipped ? 0 : matchNumber++;
     return {
       id: uuidv4(),
       number,

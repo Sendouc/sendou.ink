@@ -6,15 +6,15 @@ import { LoggedInUserSchema } from "~/validators/user";
 export const useUser = () => {
   const [root] = useMatches();
 
-  const { user } = LoggedInUserSchema.parse(root.data);
-  return user;
+  const parsed = LoggedInUserSchema.parse(root.data);
+  return parsed?.user;
 };
 
 export const useBaseURL = () => {
   const [root] = useMatches();
 
-  const { baseURL } = z.object({ baseURL: z.string() }).parse(root.data);
-  return baseURL;
+  const parsed = z.object({ baseURL: z.string() }).nullish().parse(root.data);
+  return parsed?.baseURL;
 };
 
 // TODO: fix causes memory leak

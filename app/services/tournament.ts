@@ -672,11 +672,14 @@ function resolveNewOrder({
   newMatchId,
 }: {
   bracket: NonNullable<TournamentBracket.FindById>;
-  oldMatch: NonNullable<TournamentMatch.FindById>;
+  oldMatch: { id: string };
   newMatchId: string;
 }): TeamOrder {
   const allMatches = bracket.rounds.flat().flatMap((round) => {
-    return round.matches;
+    return round.matches.map((match) => ({
+      ...match,
+      isWinners: round.position > 0,
+    }));
   });
 
   const newMatch = allMatches.find((m) => m.id === newMatchId);
@@ -688,7 +691,19 @@ function resolveNewOrder({
         newMatchId
       )
     )
-    .sort((a, b) => a.position - b.position);
+    .sort((a, b) => {
+      // first let's put teams from winners above teams from losers
+      // this might come to question if losers match is bye (so position 0)
+      // and would thus be above the winners bracket match if not for
+      // this condition
+      if (a.isWinners !== b.isWinners) {
+        return Number(b.isWinners) - Number(a.isWinners);
+      }
+
+      // otherwise if match number is smaller it
+      // should mean the match is above the other match.
+      return a.position - b.position;
+    });
   invariant(
     matchesThatLeadToNewMatch.length === 2,
     `matchesThatLeadToNewMatch length was unexpected: ${matchesThatLeadToNewMatch.length}`
@@ -698,10 +713,6 @@ function resolveNewOrder({
     "oldMatch not among matchesThatLeadToNewMatch"
   );
 
-  // if match number is smaller it should mean the match is above
-  // the other match. thanks to sorting above 0 index should have
-  // the smaller match number. Winner's bracket match should
-  // always have the smaller number compared to loser's bracket match
   if (matchesThatLeadToNewMatch[0].id === oldMatch.id) return "UPPER";
   return "LOWER";
 }
@@ -741,9 +752,29 @@ function newParticipantsForMatches({
       }),
       teamId: loserTeam.teamId,
     });
-  }
 
-  // if match number === 0 let's advance
+    const losersMatch = bracket.rounds
+      .flatMap((round) => round.matches)
+      .find(({ id }) => id === match.loserDestinationMatchId);
+    invariant(losersMatch, "losersMatch undefined");
+
+    // if the match will have a BYE then we need to generate one more participant
+    if (losersMatch.position === 0) {
+      invariant(
+        losersMatch.winnerDestinationMatchId,
+        "losersMatch.winnerDestinationMatchId undefined"
+      );
+      result.push({
+        matchId: losersMatch.winnerDestinationMatchId,
+        order: resolveNewOrder({
+          bracket,
+          oldMatch: losersMatch,
+          newMatchId: losersMatch.winnerDestinationMatchId,
+        }),
+        teamId: loserTeam.teamId,
+      });
+    }
+  }
 
   return result;
 }
