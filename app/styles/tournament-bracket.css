@@ -339,6 +339,15 @@
   border-radius: 0 var(--rounded) var(--rounded) 0;
 }
 
+.tournament-bracket__elim__lines > .no-line {
+  visibility: hidden;
+}
+
+.tournament-bracket__elim__lines > .top-only {
+  border-bottom: none;
+  border-radius: 0 var(--rounded) 0 0;
+}
+
 .tournament-bracket__elim__lines > .bottom-only {
   border-top: none;
   border-radius: 0 0 var(--rounded) 0;

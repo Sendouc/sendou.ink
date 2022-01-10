@@ -35,37 +35,6 @@ export function EliminationBracket({
             round.matches.length === nextRound?.matches.length;
           const drawStraightLines =
             round.matches.length === 1 || amountOfMatchesBetweenRoundsEqual;
-          const theKindOfLinesToDraw: (
-            | undefined
-            | "no-line"
-            | "bottom-only"
-            | "top-only"
-          )[] = new Array(
-            amountOfMatchesBetweenRoundsEqual
-              ? round.matches.length
-              : Math.ceil(round.matches.length / 2)
-          )
-            .fill(null)
-            .map((_, lineI) => {
-              // lines   0   1   2   3
-              // rounds 0 1 2 3 4 5 6 7
-              if (roundI !== 0 || round.name.includes("Losers")) {
-                return undefined;
-              }
-              const matchOne = round.matches[lineI * 2];
-              const matchTwo = round.matches[lineI * 2 + 1];
-              invariant(matchOne, "matchOne is undefined");
-              invariant(matchTwo, "matchTwo is undefined");
-
-              if (
-                matchOne.participants?.includes(null) &&
-                matchTwo.participants?.includes(null)
-              ) {
-                return "no-line";
-              }
-              if (matchOne.participants?.includes(null)) return "bottom-only";
-              return "top-only";
-            });
 
           const style: MyCSSProperties = {
             "--brackets-bottom-border-length": drawStraightLines
@@ -83,14 +52,9 @@ export function EliminationBracket({
             >
               <div className="tournament-bracket__elim__matches">
                 {round.matches.map((match) => {
-                  // TODO: handle losers
                   return (
                     <EliminationBracketMatch
-                      hidden={
-                        round.name.includes("Winner") &&
-                        roundI === 0 &&
-                        match.participants?.includes(null)
-                      }
+                      hidden={match.number === 0}
                       key={match.id}
                       match={match}
                       ownTeamName={ownTeamName}
@@ -101,7 +65,11 @@ export function EliminationBracket({
               </div>
               <div className="tournament-bracket__elim__lines">
                 {roundI !== bracketSide.length - 1 &&
-                  theKindOfLinesToDraw.map((className, i) => (
+                  theKindOfLinesToDraw({
+                    amountOfMatchesBetweenRoundsEqual,
+                    round,
+                    roundI,
+                  }).map((className, i) => (
                     <div className={className} key={i} />
                   ))}
               </div>
@@ -111,6 +79,48 @@ export function EliminationBracket({
       </div>
     </div>
   );
+}
+
+function theKindOfLinesToDraw({
+  round,
+  roundI,
+  amountOfMatchesBetweenRoundsEqual,
+}: {
+  round: Unpacked<BracketModified["winners"]>;
+  roundI: number;
+  amountOfMatchesBetweenRoundsEqual: boolean;
+}): (undefined | "no-line" | "bottom-only" | "top-only")[] {
+  return new Array(
+    amountOfMatchesBetweenRoundsEqual
+      ? round.matches.length
+      : Math.ceil(round.matches.length / 2)
+  )
+    .fill(null)
+    .map((_, lineI) => {
+      // lines   0   1   2   3
+      // rounds 0 1 2 3 4 5 6 7
+      if (roundI !== 0) {
+        return undefined;
+      }
+      // TODO: better identifier for losers
+      if (round.name.includes("Losers")) {
+        return round.matches[lineI]?.number === 0 ? "no-line" : undefined;
+      }
+      const matchOne = round.matches[lineI * 2];
+      const matchTwo = round.matches[lineI * 2 + 1];
+      invariant(matchOne, "matchOne is undefined");
+      invariant(matchTwo, "matchTwo is undefined");
+
+      if (
+        matchOne.participants?.includes(null) &&
+        matchTwo.participants?.includes(null)
+      ) {
+        return "no-line";
+      }
+      if (matchOne.participants?.includes(null)) return "bottom-only";
+      if (matchTwo.participants?.includes(null)) return "top-only";
+      return undefined;
+    });
 }
 
 function RoundInfo({
