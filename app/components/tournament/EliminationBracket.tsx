@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import invariant from "tiny-invariant";
 import { matchIsOver } from "~/core/tournament/utils";
-import type { BracketModified } from "~/services/tournament";
+import type { BracketModified } from "~/services/bracket";
 import { MyCSSProperties, Unpacked } from "~/utils";
 import { EliminationBracketMatch } from "./EliminationBracketMatch";
 

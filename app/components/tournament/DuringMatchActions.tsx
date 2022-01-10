@@ -2,10 +2,8 @@ import { Form, useMatches } from "remix";
 import invariant from "tiny-invariant";
 import { modesShortToLong } from "~/constants";
 import { resolveHostInfo } from "~/core/tournament/utils";
-import type {
-  BracketModified,
-  FindTournamentByNameForUrlI,
-} from "~/services/tournament";
+import type { FindTournamentByNameForUrlI } from "~/services/tournament";
+import type { BracketModified } from "~/services/bracket";
 import { modeToImageUrl, Unpacked } from "~/utils";
 import { SubmitButton } from "../SubmitButton";
 import { ActionSectionWrapper } from "./ActionSectionWrapper";

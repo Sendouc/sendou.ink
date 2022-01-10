@@ -3,13 +3,9 @@ import type { LinksFunction, LoaderFunction } from "remix";
 import { EliminationBracket } from "~/components/tournament/EliminationBracket";
 import styles from "~/styles/tournament-bracket.css";
 import invariant from "tiny-invariant";
-import {
-  bracketById,
-  FindTournamentByNameForUrlI,
-  reportScore,
-  undoLastScore,
-} from "~/services/tournament";
-import type { BracketModified } from "~/services/tournament";
+import type { FindTournamentByNameForUrlI } from "~/services/tournament";
+import { bracketById, reportScore, undoLastScore } from "~/services/bracket";
+import type { BracketModified } from "~/services/bracket";
 import { useUser } from "~/utils/hooks";
 import { BracketActions } from "~/components/tournament/BracketActions";
 import { z } from "zod";

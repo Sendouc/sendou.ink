@@ -1,10 +1,8 @@
 import { useLoaderData, useMatches } from "remix";
 import invariant from "tiny-invariant";
 import { matchIsOver } from "~/core/tournament/utils";
-import type {
-  BracketModified,
-  FindTournamentByNameForUrlI,
-} from "~/services/tournament";
+import type { BracketModified } from "~/services/bracket";
+import type { FindTournamentByNameForUrlI } from "~/services/tournament";
 import { useUser } from "~/utils/hooks";
 import { ActionSectionWrapper } from "./ActionSectionWrapper";
 import { DuringMatchActions } from "./DuringMatchActions";

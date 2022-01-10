@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import type { BracketModified } from "~/services/tournament";
+import type { BracketModified } from "~/services/bracket";
 import { Unpacked } from "~/utils";
 
 export function EliminationBracketMatch({

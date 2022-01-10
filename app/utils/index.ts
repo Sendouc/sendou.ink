@@ -10,20 +10,20 @@ export function makeTitle(endOfTitle?: string) {
 
 /** Get logged in user from context. Throws with 401 error if no user found. */
 export function requireUser(ctx: unknown) {
-  const { user } = LoggedInUserSchema.parse(ctx);
+  const data = LoggedInUserSchema.parse(ctx);
 
-  if (!user) {
+  if (!data?.user) {
     throw json("Log in required", { status: 401 });
   }
 
-  return user;
+  return data?.user;
 }
 
 /** Get logged in user from context. Doesn't throw. */
 export function getUser(ctx: unknown) {
-  const { user } = LoggedInUserSchema.parse(ctx);
+  const data = LoggedInUserSchema.parse(ctx);
 
-  return user;
+  return data?.user;
 }
 
 /** Get link to log in with query param set as current page */

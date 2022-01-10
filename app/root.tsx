@@ -22,10 +22,10 @@ export const links: LinksFunction = () => {
 };
 
 export const loader: LoaderFunction = ({ context }) => {
-  const { user } = LoggedInUserSchema.parse(context as unknown);
+  const data = LoggedInUserSchema.parse(context as unknown);
   const baseURL = process.env.BASE_URL ?? "http://localhost:3000";
 
-  return { user, baseURL };
+  return { user: data?.user, baseURL };
 };
 
 export const unstable_shouldReload = () => false;
