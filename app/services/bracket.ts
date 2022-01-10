@@ -115,23 +115,47 @@ function addLoserTeamSourceInfo({
   winners: BracketModifiedSide;
   losers: BracketModifiedSide;
 }): BracketModifiedSide {
-  const matchIdToSourceMatchNumber = winners
+  const nextMatchAfterBye = (id: string) => {
+    const match = losers
+      .flatMap((round) => round.matches)
+      .find((match) => match.id === id);
+    if (!match) return;
+    if (match.number !== 0) return;
+
+    return match.winnerDestinationMatchId;
+  };
+
+  const matchIdToSourceMatchNumbers = winners
     .flatMap((round) => round.matches)
     .reduce((acc: Map<string, number[]>, match) => {
       if (!match.loserDestinationMatchId) return acc;
 
-      return acc.set(
+      acc.set(
         match.loserDestinationMatchId,
         (acc.get(match.loserDestinationMatchId) ?? [])
           .concat(match.number)
           .sort((a, b) => a - b)
       );
+
+      const nextMatchAfterByeId = nextMatchAfterBye(
+        match.loserDestinationMatchId
+      );
+      if (nextMatchAfterByeId) {
+        acc.set(
+          nextMatchAfterByeId,
+          (acc.get(match.loserDestinationMatchId) ?? [])
+            .concat(match.number)
+            .sort((a, b) => a - b)
+        );
+      }
+
+      return acc;
     }, new Map());
 
   return losers.map((round) => ({
     ...round,
     matches: round.matches.map((match) => {
-      const sourceMatches = matchIdToSourceMatchNumber.get(match.id);
+      const sourceMatches = matchIdToSourceMatchNumbers.get(match.id);
       return {
         ...match,
         participantSourceMatches: sourceMatches
