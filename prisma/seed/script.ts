@@ -432,7 +432,16 @@ export async function seed(variation?: SeedVariations) {
           },
           {
             matchId: matchToAdvance.loserDestinationMatchId!,
-            order: "LOWER", // TODO: figure out this
+            order: "LOWER",
+            teamId: matchToAdvance.participants.find(
+              (p) => p.order === "UPPER"
+            )!.teamId,
+          },
+          {
+            matchId: matches.find(
+              (match) => match.id === matchToAdvance.loserDestinationMatchId!
+            )!.winnerDestinationMatchId!,
+            order: "LOWER",
             teamId: matchToAdvance.participants.find(
               (p) => p.order === "UPPER"
             )!.teamId,
