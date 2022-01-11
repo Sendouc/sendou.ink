@@ -108,7 +108,7 @@ function modifyRounds(
   });
 }
 
-function addLoserTeamSourceInfo({
+export function addLoserTeamSourceInfo({
   winners,
   losers,
 }: {
@@ -129,13 +129,7 @@ function addLoserTeamSourceInfo({
     .flatMap((round) => round.matches)
     .reduce((acc: Map<string, number[]>, match) => {
       if (!match.loserDestinationMatchId) return acc;
-
-      acc.set(
-        match.loserDestinationMatchId,
-        (acc.get(match.loserDestinationMatchId) ?? [])
-          .concat(match.number)
-          .sort((a, b) => a - b)
-      );
+      if (match.number === 0) return acc;
 
       const nextMatchAfterByeId = nextMatchAfterBye(
         match.loserDestinationMatchId
@@ -143,6 +137,13 @@ function addLoserTeamSourceInfo({
       if (nextMatchAfterByeId) {
         acc.set(
           nextMatchAfterByeId,
+          (acc.get(match.loserDestinationMatchId) ?? [])
+            .concat(match.number)
+            .sort((a, b) => a - b)
+        );
+      } else {
+        acc.set(
+          match.loserDestinationMatchId,
           (acc.get(match.loserDestinationMatchId) ?? [])
             .concat(match.number)
             .sort((a, b) => a - b)
