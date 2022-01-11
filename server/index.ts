@@ -8,6 +8,7 @@ import morgan from "morgan";
 import path from "path";
 import { LoggedInUser } from "~/validators/user";
 import { setUpAuth } from "./auth";
+import { setUpEvents } from "./events";
 import { setUpMockAuth } from "./mock-auth";
 import { setUpSeed } from "./seed";
 
@@ -15,6 +16,7 @@ const MODE = process.env.NODE_ENV;
 const BUILD_DIR = path.join(process.cwd(), "server/build");
 
 const app = express();
+app.disable("x-powered-by");
 app.use(compression());
 
 // You may want to be more aggressive with this caching
@@ -31,6 +33,7 @@ try {
   setUpAuth(app);
   setUpMockAuth(app, mockUserFromHTTPCall);
   setUpSeed(app);
+  setUpEvents(app);
 } catch (err) {
   console.error(err);
 }
