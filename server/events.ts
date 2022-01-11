@@ -16,7 +16,7 @@ export function setUpEvents(app: Express): void {
     res.flushHeaders();
 
     let counter = 0;
-    let interValID = setInterval(() => {
+    const interValID = setInterval(() => {
       counter++;
       console.log("write", counter);
       res.write(`data: ${JSON.stringify({ num: counter })}\n\n`); // res.write() instead of res.send()

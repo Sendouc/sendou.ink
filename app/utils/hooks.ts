@@ -13,8 +13,8 @@ export const useUser = () => {
 export const useBaseURL = () => {
   const [root] = useMatches();
 
-  const parsed = z.object({ baseURL: z.string() }).nullish().parse(root.data);
-  return parsed?.baseURL;
+  const parsed = z.object({ baseURL: z.string() }).parse(root.data);
+  return parsed.baseURL;
 };
 
 // TODO: fix causes memory leak
