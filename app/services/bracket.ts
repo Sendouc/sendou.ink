@@ -14,7 +14,9 @@ import * as TournamentMatch from "~/models/TournamentMatch";
 import { Unpacked } from "~/utils";
 import { db } from "~/utils/db.server";
 
-export type BracketModified = EliminationBracket<BracketModifiedSide>;
+export type BracketModified = {
+  id: string;
+} & EliminationBracket<BracketModifiedSide>;
 type BracketModifiedSide = {
   id: string;
   name: string;
@@ -54,6 +56,7 @@ export async function bracketById(bracketId: string): Promise<BracketModified> {
   const losers = modifyRounds(losersRounds, "losers", false);
 
   return {
+    id: bracketId,
     winners,
     losers: addLoserTeamSourceInfo({ winners, losers }),
   };

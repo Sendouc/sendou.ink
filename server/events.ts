@@ -27,7 +27,7 @@ const TargetSchema = z.object({
 export function setUpEvents(app: Express, events: EventTargetRecorder): void {
   // https://stackoverflow.com/a/59041709
   app.get("/events", (req, res) => {
-    const target = TargetSchema.parse(req.body);
+    const target = TargetSchema.parse(req.query);
 
     res.setHeader("Cache-Control", "no-cache");
     res.setHeader("Content-Type", "text/event-stream");

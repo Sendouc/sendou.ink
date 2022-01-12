@@ -42,25 +42,23 @@ try {
   console.error(err);
 }
 
-function getLoadContext(req: Express.Request) {
-  const result: Record<string, unknown> = {};
+function userToContext(req: Express.Request) {
   if (process.env.NODE_ENV === "development") {
     // @ts-expect-error TODO: check how to set headers types
     const mockedUser = req.headers["mock-auth"];
     if (mockedUser) {
-      return (result.user = JSON.parse(mockedUser));
+      return JSON.parse(mockedUser);
     }
 
     if (mockUserFromHTTPCall.user) {
-      return (result.user = mockUserFromHTTPCall.user);
+      return mockUserFromHTTPCall.user;
     }
-  } else {
-    result.user = req.user;
   }
+  return req.user;
+}
 
-  result.events = events;
-
-  return result;
+function getLoadContext(req: Express.Request) {
+  return { events, user: userToContext(req) };
 }
 
 app.all(

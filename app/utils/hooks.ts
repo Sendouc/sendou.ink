@@ -17,6 +17,33 @@ export const useBaseURL = () => {
   return parsed.baseURL;
 };
 
+export const useEvents = (bracketId: string) => {
+  React.useEffect(() => {
+    const source = new EventSource(
+      `/events?type=bracket&bracketId=${bracketId}`
+    );
+
+    source.addEventListener("open", () => {
+      console.log("SSE opened!");
+    });
+
+    source.addEventListener("message", (e) => {
+      console.log(e.data);
+
+      //const data = JSON.parse(e.data);
+      //setDonation(data);
+    });
+
+    source.addEventListener("error", (e) => {
+      console.error(e);
+    });
+
+    return () => {
+      source.close();
+    };
+  }, []);
+};
+
 // TODO: fix causes memory leak
 /** @link https://stackoverflow.com/a/64983274 */
 export const useTimeoutState = <T>(

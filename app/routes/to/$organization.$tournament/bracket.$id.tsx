@@ -6,7 +6,7 @@ import invariant from "tiny-invariant";
 import type { FindTournamentByNameForUrlI } from "~/services/tournament";
 import { bracketById, reportScore, undoLastScore } from "~/services/bracket";
 import type { BracketModified } from "~/services/bracket";
-import { useUser } from "~/utils/hooks";
+import { useEvents, useUser } from "~/utils/hooks";
 import { BracketActions } from "~/components/tournament/BracketActions";
 import { z } from "zod";
 import {
@@ -112,12 +112,16 @@ export const loader: LoaderFunction = async ({ params }) => {
   return typedJson(bracket);
 };
 
+// TODO: might cause problemos later
+export const unstable_shouldReload = () => false;
+
 // TODO: make bracket a bit smaller
 export default function BracketTabWrapper() {
   const data = useLoaderData<BracketModified>();
   const [, parentRoute] = useMatches();
   const { teams } = parentRoute.data as FindTournamentByNameForUrlI;
   const user = useUser();
+  useEvents(data.id);
 
   const ownTeam = teams.find((team) =>
     team.members.some(({ member }) => member.id === user?.id)

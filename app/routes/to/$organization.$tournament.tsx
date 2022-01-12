@@ -79,6 +79,8 @@ export const meta: MetaFunction = (props) => {
   };
 };
 
+// TODO: implement shouldReload -> skip on some actions
+
 export default function TournamentPage() {
   const data = useLoaderData<FindTournamentByNameForUrlI>();
   const user = useUser();
