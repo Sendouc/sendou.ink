@@ -17,7 +17,10 @@ export const useBaseURL = () => {
   return parsed.baseURL;
 };
 
-export const useEvents = (bracketId: string) => {
+export const useEvents = (
+  bracketId: string,
+  handleEvent: (data: unknown) => void
+) => {
   React.useEffect(() => {
     const source = new EventSource(
       `/events?type=bracket&bracketId=${bracketId}`
@@ -28,10 +31,7 @@ export const useEvents = (bracketId: string) => {
     });
 
     source.addEventListener("message", (e) => {
-      console.log(e.data);
-
-      //const data = JSON.parse(e.data);
-      //setDonation(data);
+      handleEvent(JSON.parse(e.data));
     });
 
     source.addEventListener("error", (e) => {

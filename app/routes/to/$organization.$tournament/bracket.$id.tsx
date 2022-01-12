@@ -16,6 +16,7 @@ import {
   safeJSONParse,
 } from "~/utils";
 import { BEST_OF_OPTIONS, TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
+import { useBracketDataWithEvents } from "~/hooks/useBracketDataWithEvents";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -117,11 +118,10 @@ export const unstable_shouldReload = () => false;
 
 // TODO: make bracket a bit smaller
 export default function BracketTabWrapper() {
-  const data = useLoaderData<BracketModified>();
+  const data = useBracketDataWithEvents();
   const [, parentRoute] = useMatches();
   const { teams } = parentRoute.data as FindTournamentByNameForUrlI;
   const user = useUser();
-  useEvents(data.id);
 
   const ownTeam = teams.find((team) =>
     team.members.some(({ member }) => member.id === user?.id)
