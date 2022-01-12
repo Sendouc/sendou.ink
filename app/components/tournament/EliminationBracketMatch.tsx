@@ -8,7 +8,7 @@ export function EliminationBracketMatch({
   ownTeamName,
   isOver,
 }: {
-  match: Unpacked<Unpacked<BracketModified["winners"]>["matches"]>;
+  match: Unpacked<Unpacked<BracketModified["rounds"]>["matches"]>;
   hidden?: boolean;
   ownTeamName?: string;
   isOver: boolean;

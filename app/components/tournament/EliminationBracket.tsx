@@ -6,31 +6,31 @@ import { MyCSSProperties, Unpacked } from "~/utils";
 import { EliminationBracketMatch } from "./EliminationBracketMatch";
 
 export function EliminationBracket({
-  bracketSide,
+  rounds,
   ownTeamName,
 }: {
-  bracketSide: BracketModified["winners"];
+  rounds: BracketModified["rounds"];
   ownTeamName?: string;
 }) {
   const style: MyCSSProperties = {
-    "--brackets-columns": bracketSide.length,
-    "--brackets-max-matches": bracketSide[0].matches.length,
+    "--brackets-columns": rounds.length,
+    "--brackets-max-matches": rounds[0].matches.length,
   };
   return (
     <div className="tournament-bracket__elim__container" style={style}>
       <div className="tournament-bracket__elim__bracket">
-        {bracketSide.map((round, i) => (
+        {rounds.map((round, i) => (
           <RoundInfo
             key={round.id}
             title={round.name}
-            isLast={i === bracketSide.length - 1}
+            isLast={i === rounds.length - 1}
             bestOf={round.stages.length}
             status="UPCOMING"
           />
         ))}
-        {bracketSide.map((round, roundI) => {
-          const nextRound: Unpacked<BracketModified["winners"]> | undefined =
-            bracketSide[roundI + 1];
+        {rounds.map((round, roundI) => {
+          const nextRound: Unpacked<BracketModified["rounds"]> | undefined =
+            rounds[roundI + 1];
           const amountOfMatchesBetweenRoundsEqual =
             round.matches.length === nextRound?.matches.length;
           const drawStraightLines =
@@ -64,7 +64,7 @@ export function EliminationBracket({
                 })}
               </div>
               <div className="tournament-bracket__elim__lines">
-                {roundI !== bracketSide.length - 1 &&
+                {roundI !== rounds.length - 1 &&
                   theKindOfLinesToDraw({
                     amountOfMatchesBetweenRoundsEqual,
                     round,
@@ -86,7 +86,7 @@ function theKindOfLinesToDraw({
   roundI,
   amountOfMatchesBetweenRoundsEqual,
 }: {
-  round: Unpacked<BracketModified["winners"]>;
+  round: Unpacked<BracketModified["rounds"]>;
   roundI: number;
   amountOfMatchesBetweenRoundsEqual: boolean;
 }): (undefined | "no-line" | "bottom-only" | "top-only")[] {

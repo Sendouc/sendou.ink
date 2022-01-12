@@ -29,22 +29,13 @@ export function BracketActions() {
 
   if (tournamentIsOver || !ownTeam) return null;
 
-  const allMatches = [
-    ...data.winners.flatMap((round, roundI) =>
-      round.matches.map((match) => ({
-        ...match,
-        round,
-        isFirstRound: roundI === 0,
-      }))
-    ),
-    ...data.losers.flatMap((round) =>
-      round.matches.map((match) => ({
-        ...match,
-        round,
-        isFirstRound: false,
-      }))
-    ),
-  ];
+  const allMatches = data.rounds.flatMap((round, roundI) =>
+    round.matches.map((match) => ({
+      ...match,
+      round,
+      isFirstRound: roundI === 0,
+    }))
+  );
   const currentMatch = allMatches.find((match) => {
     const hasBothParticipants = match.participants?.every(
       (p) => typeof p === "string"

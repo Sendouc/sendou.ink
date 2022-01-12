@@ -2,7 +2,6 @@ import type { Stage, TeamOrder } from ".prisma/client";
 import type { BracketData } from "server/events";
 import invariant from "tiny-invariant";
 import {
-  EliminationBracket,
   EliminationBracketSide,
   losersRoundNames,
   winnersRoundNames,
@@ -16,11 +15,14 @@ import { db } from "~/utils/db.server";
 
 export type BracketModified = {
   id: string;
-} & EliminationBracket<BracketModifiedSide>;
+  rounds: BracketModifiedSide;
+};
+
 type BracketModifiedSide = {
   id: string;
   name: string;
   stages: { position: number; stage: Stage }[];
+  side?: EliminationBracketSide;
   matches: {
     id: string;
     number: number;
@@ -53,12 +55,17 @@ export async function bracketById(bracketId: string): Promise<BracketModified> {
     "winners",
     losersRounds.length === 0
   );
-  const losers = modifyRounds(losersRounds, "losers", false);
+  const losers = addLoserTeamSourceInfo({
+    winners,
+    losers: modifyRounds(losersRounds, "losers", false),
+  });
+  const rounds = winners
+    .map((round) => ({ ...round, side: "winners" as EliminationBracketSide }))
+    .concat(losers.map((round) => ({ ...round, side: "losers" })));
 
   return {
     id: bracketId,
-    winners,
-    losers: addLoserTeamSourceInfo({ winners, losers }),
+    rounds,
   };
 }
 

@@ -15,8 +15,8 @@ export function DuringMatchActions({
   currentRound,
 }: {
   ownTeam: Unpacked<FindTournamentByNameForUrlI["teams"]>;
-  currentMatch: Unpacked<Unpacked<BracketModified["winners"]>["matches"]>;
-  currentRound: Unpacked<BracketModified["winners"]>;
+  currentMatch: Unpacked<Unpacked<BracketModified["rounds"]>["matches"]>;
+  currentRound: Unpacked<BracketModified["rounds"]>;
 }) {
   const [, parentRoute] = useMatches();
   const { teams, seeds } = parentRoute.data as FindTournamentByNameForUrlI;

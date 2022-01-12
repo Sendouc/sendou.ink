@@ -131,11 +131,11 @@ export default function BracketTabWrapper() {
     <div className="tournament-bracket__container">
       <BracketActions />
       <EliminationBracket
-        bracketSide={data.winners}
+        rounds={data.rounds.filter((round) => round.side === "winners")}
         ownTeamName={ownTeam?.name}
       />
       <EliminationBracket
-        bracketSide={data.losers}
+        rounds={data.rounds.filter((round) => round.side === "losers")}
         ownTeamName={ownTeam?.name}
       />
     </div>
