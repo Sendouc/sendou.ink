@@ -9,7 +9,12 @@ import type { BracketModified } from "~/services/bracket";
 import { useUser } from "~/utils/hooks";
 import { BracketActions } from "~/components/tournament/BracketActions";
 import { z } from "zod";
-import { parseRequestFormData, requireUser, safeJSONParse } from "~/utils";
+import {
+  parseRequestFormData,
+  requireEvents,
+  requireUser,
+  safeJSONParse,
+} from "~/utils";
 import { BEST_OF_OPTIONS, TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
 
 export const links: LinksFunction = () => {
@@ -61,10 +66,11 @@ export const action: ActionFunction = async ({
   });
   invariant(typeof params.id === "string", "Expected params.id to be string");
   const user = requireUser(context);
+  const events = requireEvents(context);
 
   switch (data._action) {
     case "REPORT_SCORE": {
-      await reportScore({
+      const bracketData = await reportScore({
         matchId: data.matchId,
         playerIds: data.playerIds,
         userId: user.id,
@@ -72,6 +78,12 @@ export const action: ActionFunction = async ({
         position: data.position,
         bracketId: params.id,
       });
+      if (bracketData) {
+        for (const { event } of events.bracket[params.id]) {
+          event(bracketData);
+        }
+      }
+
       return { ok: "REPORT_SCORE" };
     }
     case "UNDO_REPORT_SCORE": {

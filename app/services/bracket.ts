@@ -1,4 +1,5 @@
 import type { Stage, TeamOrder } from ".prisma/client";
+import type { BracketData } from "server/events";
 import invariant from "tiny-invariant";
 import {
   EliminationBracket,
@@ -181,7 +182,7 @@ export async function reportScore({
   playerIds: string[];
   position: number;
   bracketId: string;
-}) {
+}): Promise<BracketData | undefined> {
   const match = await TournamentMatch.findById(matchId);
   if (!match) throw new Response("Invalid match id", { status: 400 });
   if (
@@ -212,23 +213,19 @@ export async function reportScore({
   invariant(stage, "stage is undefined");
 
   // advance tournament after reporting score if match is over
-  if (
-    matchIsOver(
-      match.round.stages.length,
-      matchResultsToTuple(
-        match.results
-          .map((r) => ({ winner: r.winner }))
-          .concat([{ winner: winnerTeam.order }])
-      )
-    )
-  ) {
+  const newScore = matchResultsToTuple(
+    match.results
+      .map((r) => ({ winner: r.winner }))
+      .concat([{ winner: winnerTeam.order }])
+  );
+  if (matchIsOver(match.round.stages.length, newScore)) {
     const loserTeam = match.participants.find((p) => p.teamId !== winnerTeamId);
     invariant(loserTeam, "loserTeamId is undefined");
 
     const bracket = await TournamentBracket.findById(bracketId);
     if (!bracket) throw new Response("Invalid bracket id", { status: 400 });
 
-    return db.$transaction([
+    await db.$transaction([
       TournamentMatch.createResult({
         matchId,
         playerIds,
@@ -241,15 +238,30 @@ export async function reportScore({
         newParticipantsForMatches({ bracket, match, loserTeam, winnerTeam })
       ),
     ]);
+    // TODO: return BracketData
+    return undefined;
     // otherwise if set is not over simply create result and return
   } else {
-    return TournamentMatch.createResult({
+    await TournamentMatch.createResult({
       matchId,
       playerIds,
       roundStageId: stage.id,
       reporterId: userId,
       winner: winnerTeam.order,
     });
+    const upperParticipant = match.participants.find(
+      (p) => p.order === "UPPER"
+    )!;
+    const lowerParticipant = match.participants.find(
+      (p) => p.order === "LOWER"
+    )!;
+    return [
+      match.position,
+      upperParticipant.team.name,
+      lowerParticipant.team.name,
+      newScore[0],
+      newScore[1],
+    ];
   }
 }
 

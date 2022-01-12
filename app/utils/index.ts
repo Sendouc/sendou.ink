@@ -1,6 +1,7 @@
 import { Mode } from "@prisma/client";
 import type { CSSProperties } from "react";
 import { json, useLocation } from "remix";
+import type { EventTargetRecorder } from "server/events";
 import { z } from "zod";
 import { LoggedInUserSchema } from "~/validators/user";
 
@@ -24,6 +25,19 @@ export function getUser(ctx: unknown) {
   const data = LoggedInUserSchema.parse(ctx);
 
   return data?.user;
+}
+
+/** Get events object from context. Throws with 500 error if none found found. */
+export function requireEvents(ctx: unknown) {
+  try {
+    const data = z.object({ events: z.unknown() }).parse(ctx);
+
+    // TODO:
+    return data.events as EventTargetRecorder;
+  } catch (e) {
+    console.error(e);
+    throw json("Events missing", { status: 500 });
+  }
 }
 
 /** Get link to log in with query param set as current page */
