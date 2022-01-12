@@ -4,8 +4,8 @@ import { v4 as uuidv4 } from "uuid";
 
 export type BracketData = [
   matchNumber: number,
-  teamUpper: string,
-  teamLower: string,
+  teamUpper: string | null,
+  teamLower: string | null,
   scoreUpper: number,
   scoreLower: number
 ];
@@ -70,7 +70,7 @@ const sendEvent = ({
   data,
 }: {
   res: Response;
-  data: Array<string | number>;
+  data: Array<string | number | null>;
 }) => {
   res.write(`data: ${JSON.stringify(data)}\n\n`);
 };

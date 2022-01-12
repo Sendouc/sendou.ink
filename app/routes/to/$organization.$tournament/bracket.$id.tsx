@@ -1,22 +1,22 @@
-import { ActionFunction, json, useLoaderData, useMatches } from "remix";
 import type { LinksFunction, LoaderFunction } from "remix";
-import { EliminationBracket } from "~/components/tournament/EliminationBracket";
-import styles from "~/styles/tournament-bracket.css";
+import { ActionFunction, json, useMatches } from "remix";
 import invariant from "tiny-invariant";
-import type { FindTournamentByNameForUrlI } from "~/services/tournament";
-import { bracketById, reportScore, undoLastScore } from "~/services/bracket";
-import type { BracketModified } from "~/services/bracket";
-import { useEvents, useUser } from "~/utils/hooks";
-import { BracketActions } from "~/components/tournament/BracketActions";
 import { z } from "zod";
+import { BracketActions } from "~/components/tournament/BracketActions";
+import { EliminationBracket } from "~/components/tournament/EliminationBracket";
+import { BEST_OF_OPTIONS, TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
+import { useBracketDataWithEvents } from "~/hooks/useBracketDataWithEvents";
+import type { BracketModified } from "~/services/bracket";
+import { bracketById, reportScore, undoLastScore } from "~/services/bracket";
+import type { FindTournamentByNameForUrlI } from "~/services/tournament";
+import styles from "~/styles/tournament-bracket.css";
 import {
   parseRequestFormData,
   requireEvents,
   requireUser,
   safeJSONParse,
 } from "~/utils";
-import { BEST_OF_OPTIONS, TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
-import { useBracketDataWithEvents } from "~/hooks/useBracketDataWithEvents";
+import { useUser } from "~/utils/hooks";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];

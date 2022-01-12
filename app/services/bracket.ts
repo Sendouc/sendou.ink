@@ -259,16 +259,18 @@ export async function reportScore({
       reporterId: userId,
       winner: winnerTeam.order,
     });
+
     const upperParticipant = match.participants.find(
       (p) => p.order === "UPPER"
-    )!;
+    );
     const lowerParticipant = match.participants.find(
       (p) => p.order === "LOWER"
-    )!;
+    );
+
     return [
       match.position,
-      upperParticipant.team.name,
-      lowerParticipant.team.name,
+      upperParticipant?.team.name ?? null,
+      lowerParticipant?.team.name ?? null,
       newScore[0],
       newScore[1],
     ];

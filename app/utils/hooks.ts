@@ -31,6 +31,7 @@ export const useEvents = (
     });
 
     source.addEventListener("message", (e) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       handleEvent(JSON.parse(e.data));
     });
 
