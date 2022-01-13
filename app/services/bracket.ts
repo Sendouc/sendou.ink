@@ -398,7 +398,7 @@ export async function undoLastScore({
   matchId: string;
   position: number;
   userId: string;
-}) {
+}): Promise<BracketData | undefined> {
   const match = await TournamentMatch.findById(matchId);
   if (!match) throw new Response("Invalid match id", { status: 400 });
   if (
@@ -422,7 +422,23 @@ export async function undoLastScore({
     return;
   }
 
-  return TournamentMatch.deleteResult(resultToUndo.id);
+  await TournamentMatch.deleteResult(resultToUndo.id);
+
+  const upperParticipant = match.participants.find((p) => p.order === "UPPER");
+  const lowerParticipant = match.participants.find((p) => p.order === "LOWER");
+  const newScore = matchResultsToTuple(
+    match.results
+      .filter((result) => result.id !== resultToUndo.id)
+      .map((r) => ({ winner: r.winner }))
+  );
+
+  return [
+    match.position,
+    upperParticipant?.team.name ?? null,
+    lowerParticipant?.team.name ?? null,
+    newScore[0],
+    newScore[1],
+  ];
 }
 
 function matchResultsToTuple(results: { winner: TeamOrder }[]) {

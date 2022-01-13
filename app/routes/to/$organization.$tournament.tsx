@@ -8,6 +8,7 @@ import {
   NavLink,
   Outlet,
   useLoaderData,
+  ShouldReloadFunction,
 } from "remix";
 import invariant from "tiny-invariant";
 import { AdminIcon } from "~/components/icons/Admin";
@@ -79,7 +80,11 @@ export const meta: MetaFunction = (props) => {
   };
 };
 
-// TODO: implement shouldReload -> skip on some actions
+export const unstable_shouldReload: ShouldReloadFunction = (data) => {
+  const action = data.submission?.formData.get("_action");
+  if (!action) return true;
+  return !["REPORT_SCORE", "UNDO_REPORT_SCORE"].includes(String(action));
+};
 
 export default function TournamentPage() {
   const data = useLoaderData<FindTournamentByNameForUrlI>();

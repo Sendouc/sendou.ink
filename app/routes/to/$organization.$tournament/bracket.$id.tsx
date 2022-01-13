@@ -88,11 +88,18 @@ export const action: ActionFunction = async ({
       return { ok: "REPORT_SCORE" };
     }
     case "UNDO_REPORT_SCORE": {
-      await undoLastScore({
+      const bracketData = await undoLastScore({
         matchId: data.matchId,
         position: data.position,
         userId: user.id,
       });
+
+      if (bracketData) {
+        for (const { event } of events.bracket[params.id]) {
+          event(bracketData);
+        }
+      }
+
       return { ok: "UNDO_REPORT_SCORE" };
     }
     default: {
@@ -113,9 +120,6 @@ export const loader: LoaderFunction = async ({ params }) => {
   return typedJson(bracket);
 };
 
-// TODO: might cause problemos later
-export const unstable_shouldReload = () => false;
-
 // TODO: make bracket a bit smaller
 export default function BracketTabWrapper() {
   const data = useBracketDataWithEvents();
@@ -129,7 +133,7 @@ export default function BracketTabWrapper() {
 
   return (
     <div className="tournament-bracket__container">
-      <BracketActions />
+      <BracketActions data={data} />
       <EliminationBracket
         rounds={data.rounds.filter((round) => round.side === "winners")}
         ownTeamName={ownTeam?.name}

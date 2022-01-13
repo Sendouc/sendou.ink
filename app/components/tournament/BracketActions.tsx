@@ -1,4 +1,4 @@
-import { useLoaderData, useMatches } from "remix";
+import { useMatches } from "remix";
 import invariant from "tiny-invariant";
 import { matchIsOver } from "~/core/tournament/utils";
 import type { BracketModified } from "~/services/bracket";
@@ -7,16 +7,7 @@ import { useUser } from "~/utils/hooks";
 import { ActionSectionWrapper } from "./ActionSectionWrapper";
 import { DuringMatchActions } from "./DuringMatchActions";
 
-// 2) set up UI
-// - 1) Add *fc* 2) Host/join room with pass XXXX 3) Done
-
-// 3) report score
-// - Show map played
-// - Select players who played with radio boxes if team.length > min_roster_length
-// - Report
-
-export function BracketActions() {
-  const data = useLoaderData<BracketModified>();
+export function BracketActions({ data }: { data: BracketModified }) {
   const user = useUser();
   const [, parentRoute] = useMatches();
   const { teams } = parentRoute.data as FindTournamentByNameForUrlI;
