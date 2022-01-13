@@ -51,17 +51,20 @@ export function BracketActions({ data }: { data: BracketModified }) {
   }
 
   const nextMatch = allMatches.find((match) => {
+    const participantsCount = match.participants?.reduce(
+      (acc, cur) => acc + (cur === null ? 1 : 0),
+      0
+    );
     return (
-      match.participants?.reduce(
-        (acc, cur) => acc + (cur === null ? 1 : 0),
-        0
-      ) === 1 &&
-      match.participants.some((p) => p === ownTeam.name) &&
+      participantsCount === 1 &&
+      match.participants?.some((p) => p === ownTeam.name) &&
       !match.isFirstRound
     );
   });
 
-  invariant(nextMatch, "nextMatch is undefined");
+  // we are out of the tournament
+  if (!nextMatch) return null;
+
   const matchWeAreWaitingFor = allMatches.find(
     (match) =>
       [match.winnerDestinationMatchId, match.loserDestinationMatchId].includes(
