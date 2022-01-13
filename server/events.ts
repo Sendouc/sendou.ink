@@ -1,14 +1,16 @@
 import type { Express, Response } from "express";
 import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
+import { BracketModified } from "~/services/bracket";
+import { Unpacked } from "~/utils";
 
-export type BracketData = [
-  matchNumber: number,
-  teamUpper: string | null,
-  teamLower: string | null,
-  scoreUpper: number,
-  scoreLower: number
-];
+export type BracketData = {
+  number: Unpacked<Unpacked<BracketModified["rounds"]>["matches"]>["number"];
+  participants: Unpacked<
+    Unpacked<BracketModified["rounds"]>["matches"]
+  >["participants"];
+  score: Unpacked<Unpacked<BracketModified["rounds"]>["matches"]>["score"];
+}[];
 
 export interface EventTargetRecorder {
   bracket: {
@@ -65,12 +67,6 @@ export function setUpEvents(app: Express, events: EventTargetRecorder): void {
   });
 }
 
-const sendEvent = ({
-  res,
-  data,
-}: {
-  res: Response;
-  data: Array<string | number | null>;
-}) => {
+const sendEvent = ({ res, data }: { res: Response; data: unknown }) => {
   res.write(`data: ${JSON.stringify(data)}\n\n`);
 };

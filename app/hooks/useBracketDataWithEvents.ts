@@ -9,23 +9,22 @@ export function useBracketDataWithEvents(): BracketModified {
   const [dataWithEvents, setDataWithEvents] = React.useState(data);
 
   const handleEvent = (data: unknown) => {
-    const [matchNumber, teamUpper, teamLower, scoreUpper, scoreLower] =
-      data as BracketData;
-
-    setDataWithEvents({
-      ...dataWithEvents,
-      rounds: dataWithEvents.rounds.map((round) => ({
-        ...round,
-        matches: round.matches.map((match) => {
-          if (match.number !== matchNumber) return match;
-          return {
-            ...match,
-            participants: [teamUpper, teamLower],
-            score: [scoreUpper, scoreLower],
-          };
-        }),
-      })),
-    });
+    for (const { number, participants, score } of data as BracketData) {
+      setDataWithEvents({
+        ...dataWithEvents,
+        rounds: dataWithEvents.rounds.map((round) => ({
+          ...round,
+          matches: round.matches.map((match) => {
+            if (match.number !== number) return match;
+            return {
+              ...match,
+              participants: participants ?? match.participants,
+              score: score ?? match.score,
+            };
+          }),
+        })),
+      });
+    }
   };
 
   useEvents(data.id, handleEvent);

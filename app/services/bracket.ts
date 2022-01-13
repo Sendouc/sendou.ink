@@ -194,6 +194,8 @@ export async function reportScore({
   bracketId: string;
 }): Promise<BracketData | undefined> {
   const match = await TournamentMatch.findById(matchId);
+
+  //#region check validity of request
   if (!match) throw new Response("Invalid match id", { status: 400 });
   if (
     !canReportMatchScore({
@@ -221,6 +223,7 @@ export async function reportScore({
 
   const stage = match.round.stages.find((stage) => stage.position === position);
   invariant(stage, "stage is undefined");
+  //#endregion
 
   // advance tournament after reporting score if match is over
   const newScore = matchResultsToTuple(
@@ -235,6 +238,12 @@ export async function reportScore({
     const bracket = await TournamentBracket.findById(bracketId);
     if (!bracket) throw new Response("Invalid bracket id", { status: 400 });
 
+    const newParticipants = newParticipantsForMatches({
+      bracket,
+      match,
+      loserTeam,
+      winnerTeam,
+    });
     await db.$transaction([
       TournamentMatch.createResult({
         matchId,
@@ -244,12 +253,29 @@ export async function reportScore({
         winner: winnerTeam.order,
       }),
       // todo: bracket reset
-      TournamentMatch.createParticipants(
-        newParticipantsForMatches({ bracket, match, loserTeam, winnerTeam })
-      ),
+      TournamentMatch.createParticipants(newParticipants),
     ]);
-    // TODO: return BracketData
-    return undefined;
+
+    const upperParticipant = match.participants.find(
+      (p) => p.order === "UPPER"
+    );
+    const lowerParticipant = match.participants.find(
+      (p) => p.order === "LOWER"
+    );
+    return [
+      {
+        number: match.position,
+        participants:
+          upperParticipant?.team.name || lowerParticipant?.team.name
+            ? [
+                upperParticipant?.team.name ?? null,
+                lowerParticipant?.team.name ?? null,
+              ]
+            : undefined,
+        score: newScore,
+      },
+      //...newParticipantsToBracketData(),
+    ];
     // otherwise if set is not over simply create result and return
   } else {
     await TournamentMatch.createResult({
@@ -268,11 +294,17 @@ export async function reportScore({
     );
 
     return [
-      match.position,
-      upperParticipant?.team.name ?? null,
-      lowerParticipant?.team.name ?? null,
-      newScore[0],
-      newScore[1],
+      {
+        number: match.position,
+        participants:
+          upperParticipant?.team.name || lowerParticipant?.team.name
+            ? [
+                upperParticipant?.team.name ?? null,
+                lowerParticipant?.team.name ?? null,
+              ]
+            : undefined,
+        score: newScore,
+      },
     ];
   }
 }
@@ -390,6 +422,37 @@ function newParticipantsForMatches({
   return result;
 }
 
+// function newParticipantsToBracketData(
+//   data: TournamentMatch.CreateParticipantsData,
+//   bracket: TournamentBracket.FindById
+// ): BracketData {
+//   const result: BracketData = [];
+
+//   // [
+//   //   match.position,
+//   //   upperParticipant?.team.name ?? null,
+//   //   lowerParticipant?.team.name ?? null,
+//   //   newScore[0],
+//   //   newScore[1],
+//   // ],
+//   for (const participant of data) {
+//     const match = bracket?.rounds
+//       .flatMap((r) => r.matches)
+//       .find((match) => match.id === participant.matchId);
+//     invariant(match, "match is undefined");
+
+//     const upperParticipant = () => {
+//       if (participant.)
+//     };
+
+//     result.push([
+//       match.position,
+//       match.participants.find((p) => p.order === "UPPER") ?? "",
+//       match.participants.find((p) => p.order === "LOWER") ?? "",
+//     ]);
+//   }
+// }
+
 export async function undoLastScore({
   matchId,
   position,
@@ -433,11 +496,17 @@ export async function undoLastScore({
   );
 
   return [
-    match.position,
-    upperParticipant?.team.name ?? null,
-    lowerParticipant?.team.name ?? null,
-    newScore[0],
-    newScore[1],
+    {
+      number: match.position,
+      participants:
+        upperParticipant?.team.name || lowerParticipant?.team.name
+          ? [
+              upperParticipant?.team.name ?? null,
+              lowerParticipant?.team.name ?? null,
+            ]
+          : undefined,
+      score: newScore,
+    },
   ];
 }
 
