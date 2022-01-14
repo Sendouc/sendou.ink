@@ -274,7 +274,7 @@ export async function reportScore({
             : undefined,
         score: newScore,
       },
-      //...newParticipantsToBracketData(),
+      ...newParticipantsToBracketData(newParticipants, bracket),
     ];
     // otherwise if set is not over simply create result and return
   } else {
@@ -422,36 +422,47 @@ function newParticipantsForMatches({
   return result;
 }
 
-// function newParticipantsToBracketData(
-//   data: TournamentMatch.CreateParticipantsData,
-//   bracket: TournamentBracket.FindById
-// ): BracketData {
-//   const result: BracketData = [];
+function newParticipantsToBracketData(
+  data: TournamentMatch.CreateParticipantsData,
+  bracket: TournamentBracket.FindById
+): BracketData {
+  const result: BracketData = [];
 
-//   // [
-//   //   match.position,
-//   //   upperParticipant?.team.name ?? null,
-//   //   lowerParticipant?.team.name ?? null,
-//   //   newScore[0],
-//   //   newScore[1],
-//   // ],
-//   for (const participant of data) {
-//     const match = bracket?.rounds
-//       .flatMap((r) => r.matches)
-//       .find((match) => match.id === participant.matchId);
-//     invariant(match, "match is undefined");
+  for (const participant of data) {
+    const matches = bracket?.rounds.flatMap((r) => r.matches);
+    const match = matches?.find((match) => match.id === participant.matchId);
+    invariant(matches && match, "match is undefined");
 
-//     const upperParticipant = () => {
-//       if (participant.)
-//     };
+    const allParticipants = matches.flatMap((m) => m.participants);
 
-//     result.push([
-//       match.position,
-//       match.participants.find((p) => p.order === "UPPER") ?? "",
-//       match.participants.find((p) => p.order === "LOWER") ?? "",
-//     ]);
-//   }
-// }
+    const participants = (): NonNullable<
+      Unpacked<BracketData>["participants"]
+    > => {
+      let upper =
+        match.participants.find((p) => p.order === "UPPER")?.team.name ?? null;
+      let lower =
+        match.participants.find((p) => p.order === "LOWER")?.team.name ?? null;
+
+      const newParticipant = allParticipants.find(
+        (p) => p.team.id === participant.teamId
+      );
+      invariant(newParticipant, "newParticipant is undefined");
+
+      if (participant.order === "UPPER") upper = newParticipant.team.name;
+      else lower = newParticipant.team.name;
+
+      return [upper, lower];
+    };
+
+    result.push({
+      number: match.position,
+      participants: participants(),
+      score: participants().length > 1 ? [0, 0] : null,
+    });
+  }
+
+  return result;
+}
 
 export async function undoLastScore({
   matchId,

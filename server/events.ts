@@ -6,10 +6,12 @@ import { Unpacked } from "~/utils";
 
 export type BracketData = {
   number: Unpacked<Unpacked<BracketModified["rounds"]>["matches"]>["number"];
-  participants: Unpacked<
-    Unpacked<BracketModified["rounds"]>["matches"]
-  >["participants"];
-  score: Unpacked<Unpacked<BracketModified["rounds"]>["matches"]>["score"];
+  participants:
+    | Unpacked<Unpacked<BracketModified["rounds"]>["matches"]>["participants"]
+    | null;
+  score:
+    | Unpacked<Unpacked<BracketModified["rounds"]>["matches"]>["score"]
+    | null;
 }[];
 
 export interface EventTargetRecorder {
