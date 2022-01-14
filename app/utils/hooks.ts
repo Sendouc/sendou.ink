@@ -36,7 +36,7 @@ export const useEvents = (
     });
 
     source.addEventListener("error", (e) => {
-      console.error(e);
+      console.error("SSE error: ", e);
     });
 
     return () => {
