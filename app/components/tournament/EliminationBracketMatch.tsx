@@ -33,7 +33,10 @@ export function EliminationBracketMatch({
 
     if (hasBothParticipants)
       return (
-        <Link className="tournament-bracket__match__link" to="/">
+        <Link
+          className="tournament-bracket__match__link"
+          to={`match/${match.id}`}
+        >
           {children}
         </Link>
       );

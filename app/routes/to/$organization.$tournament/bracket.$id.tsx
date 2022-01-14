@@ -1,4 +1,4 @@
-import type { LinksFunction, LoaderFunction } from "remix";
+import { LinksFunction, LoaderFunction, Outlet } from "remix";
 import { ActionFunction, json, useMatches } from "remix";
 import invariant from "tiny-invariant";
 import { z } from "zod";
@@ -133,6 +133,7 @@ export default function BracketTabWrapper() {
 
   return (
     <div className="tournament-bracket__container">
+      <Outlet />
       <BracketActions data={data} />
       <EliminationBracket
         rounds={data.rounds.filter((round) => round.side === "winners")}
