@@ -245,6 +245,15 @@
   font-size: var(--fonts-xs);
 }
 
+.tournament-bracket__match__link {
+  all: unset;
+  cursor: pointer;
+}
+
+.tournament-bracket__match__link:hover {
+  --_tournaments-match-bg-color: var(--bg-lighter-transparent);
+}
+
 .tournament-bracket__elim__match {
   display: grid;
   margin: 1rem 0;
@@ -271,9 +280,10 @@
   width: 200px;
   justify-content: space-between;
   padding: 0.25rem 0.75rem;
-  background-color: var(--bg-lighter);
+  background-color: var(--_tournaments-match-bg-color, var(--bg-lighter));
   font-size: var(--fonts-sm);
   place-self: flex-start;
+  transition: background-color 100ms ease-out;
 }
 
 .tournament-bracket__elim__team.own {

@@ -1,4 +1,6 @@
 import clsx from "clsx";
+import * as React from "react";
+import { Link } from "remix";
 import type { BracketModified } from "~/services/bracket";
 import { Unpacked } from "~/utils";
 
@@ -25,53 +27,73 @@ export function EliminationBracketMatch({
     return null;
   };
 
+  const Container = ({ children }: { children: React.ReactNode }) => {
+    const hasBothParticipants =
+      (match.participants?.filter(Boolean).length ?? 0) > 1;
+
+    if (hasBothParticipants)
+      return (
+        <Link className="tournament-bracket__match__link" to="/">
+          {children}
+        </Link>
+      );
+
+    return <>{children}</>;
+  };
+
   return (
-    <div className={clsx("tournament-bracket__elim__match", { hidden })}>
-      <div className="tournament-bracket__elim__roundNumber">
-        {match.number}
-      </div>
-      <div
-        className={clsx(
-          "tournament-bracket__elim__team",
-          "tournament-bracket__elim__teamOne",
-          {
-            own:
-              !isOver && ownTeamName && ownTeamName === match.participants?.[0],
-            defeated:
-              isOver && (match.score?.[0] ?? 0) < (match.score?.[1] ?? 0),
-          }
-        )}
-      >
-        {cellText(0)}
-        <span
-          className={clsx("tournament-bracket__elim__score", {
-            invisible: typeof match.score?.[0] !== "number",
-          })}
+    <Container>
+      <div className={clsx("tournament-bracket__elim__match", { hidden })}>
+        <div className="tournament-bracket__elim__roundNumber">
+          {match.number}
+        </div>
+        <div
+          className={clsx(
+            "tournament-bracket__elim__team",
+            "tournament-bracket__elim__teamOne",
+            {
+              own:
+                !isOver &&
+                ownTeamName &&
+                ownTeamName === match.participants?.[0],
+              defeated:
+                isOver && (match.score?.[0] ?? 0) < (match.score?.[1] ?? 0),
+            }
+          )}
         >
-          {match.score?.[0] ?? 0}
-        </span>
-      </div>
-      <div
-        className={clsx(
-          "tournament-bracket__elim__team",
-          "tournament-bracket__elim__teamTwo",
-          {
-            own:
-              !isOver && ownTeamName && ownTeamName === match.participants?.[1],
-            defeated:
-              isOver && (match.score?.[1] ?? 0) < (match.score?.[0] ?? 0),
-          }
-        )}
-      >
-        {cellText(1)}{" "}
-        <span
-          className={clsx("tournament-bracket__elim__score", {
-            invisible: typeof match.score?.[0] !== "number",
-          })}
+          {cellText(0)}
+          <span
+            className={clsx("tournament-bracket__elim__score", {
+              invisible: typeof match.score?.[0] !== "number",
+            })}
+          >
+            {match.score?.[0] ?? 0}
+          </span>
+        </div>
+        <div
+          className={clsx(
+            "tournament-bracket__elim__team",
+            "tournament-bracket__elim__teamTwo",
+            {
+              own:
+                !isOver &&
+                ownTeamName &&
+                ownTeamName === match.participants?.[1],
+              defeated:
+                isOver && (match.score?.[1] ?? 0) < (match.score?.[0] ?? 0),
+            }
+          )}
         >
-          {match.score?.[1] ?? 0}
-        </span>
+          {cellText(1)}{" "}
+          <span
+            className={clsx("tournament-bracket__elim__score", {
+              invisible: typeof match.score?.[0] !== "number",
+            })}
+          >
+            {match.score?.[1] ?? 0}
+          </span>
+        </div>
       </div>
-    </div>
+    </Container>
   );
 }
