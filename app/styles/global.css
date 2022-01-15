@@ -2,6 +2,7 @@
   --bg: hsl(237.3deg 42.3% 30.6%);
   --bg-lighter: hsl(237.3deg 42.3% 35.6%);
   --bg-lighter-transparent: hsla(237.3deg 42.3% 35.6% / 50%);
+  --bg-modal-backdrop: hsla(237deg 98% 1% / 70%);
   --border: hsl(237.3deg 42.3% 45.6%);
   --button-text: rgb(0 0 0 / 85%);
   --text: rgb(255 255 255 / 95%);
@@ -269,6 +270,43 @@ select {
 select::selection {
   overflow: hidden;
   font-weight: bold;
+}
+
+.modal {
+  position: fixed;
+  z-index: 999;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: var(--bg-modal-backdrop);
+}
+
+.modal > div {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 800px;
+  padding: 2em;
+  background-color: var(--bg-lighter);
+  border-radius: var(--rounded);
+  overscroll-behavior: contain;
+}
+
+.modal-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 70px;
+  color: var(--text);
+  font-size: 80%;
+  line-height: 50px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.modal-close:hover {
+  font-weight: var(--bold);
 }
 
 .form-validation-error {

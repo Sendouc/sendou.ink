@@ -1,3 +1,4 @@
+import type { Prisma } from ".prisma/client";
 import type { Stage, TeamOrder } from ".prisma/client";
 import type { BracketData } from "server/events";
 import invariant from "tiny-invariant";
@@ -531,3 +532,14 @@ function matchResultsToTuple(results: { winner: TeamOrder }[]) {
     [0, 0]
   );
 }
+
+// TODO: figure out better convention.. in tournament file we serialize here we don't
+export type MatchByIdI = Prisma.PromiseReturnType<typeof matchById>;
+export const matchById = async (id: string) => {
+  const match = await TournamentMatch.findById(id);
+  if (!match) {
+    throw new Response("Invalid match id", { status: 404 });
+  }
+
+  return match;
+};
