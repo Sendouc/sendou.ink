@@ -65,7 +65,7 @@ export const action: ActionFunction = async ({
     request,
     schema: bracketActionSchema,
   });
-  invariant(typeof params.id === "string", "Expected params.id to be string");
+  invariant(typeof params.bid === "string", "Expected params.bid to be string");
   const user = requireUser(context);
   const events = requireEvents(context);
 
@@ -77,10 +77,10 @@ export const action: ActionFunction = async ({
         userId: user.id,
         winnerTeamId: data.winnerTeamId,
         position: data.position,
-        bracketId: params.id,
+        bracketId: params.bid,
       });
       if (bracketData) {
-        for (const { event } of events.bracket[params.id]) {
+        for (const { event } of events.bracket[params.bid]) {
           event(bracketData);
         }
       }
@@ -95,7 +95,7 @@ export const action: ActionFunction = async ({
       });
 
       if (bracketData) {
-        for (const { event } of events.bracket[params.id]) {
+        for (const { event } of events.bracket[params.bid]) {
           event(bracketData);
         }
       }
@@ -114,9 +114,10 @@ export const action: ActionFunction = async ({
 const typedJson = (args: BracketModified) => json(args);
 
 export const loader: LoaderFunction = async ({ params }) => {
-  invariant(typeof params.id === "string", "Expected params.id to be string");
+  console.log("params.bid", params.bid);
+  invariant(typeof params.bid === "string", "Expected params.bid to be string");
 
-  const bracket = await bracketById(params.id);
+  const bracket = await bracketById(params.bid);
   return typedJson(bracket);
 };
 
