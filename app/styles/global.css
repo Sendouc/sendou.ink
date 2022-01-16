@@ -291,6 +291,7 @@ select::selection {
   background-color: var(--bg-lighter);
   border-radius: var(--rounded);
   overscroll-behavior: contain;
+  transform: translate(-50%, -50%);
 }
 
 .modal-close {
