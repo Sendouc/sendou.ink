@@ -1,7 +1,7 @@
 import { useMatches } from "remix";
 import type { FindTournamentByNameForUrlI } from "~/services/tournament";
 import { TeamRoster } from "~/components/tournament/TeamRoster";
-import { useUser } from "~/utils/hooks";
+import { useUser } from "~/hooks/common";
 
 export default function TeamsTab() {
   const [, parentRoute] = useMatches();

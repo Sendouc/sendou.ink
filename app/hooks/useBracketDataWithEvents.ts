@@ -3,7 +3,7 @@ import { useLoaderData } from "remix";
 import type { BracketData } from "server/events";
 import type { BracketModified } from "~/services/bracket";
 import { Unpacked } from "~/utils";
-import { useEvents } from "~/utils/hooks";
+import { useEvents } from "~/hooks/common";
 
 export function useBracketDataWithEvents(): BracketModified {
   const data = useLoaderData<BracketModified>();

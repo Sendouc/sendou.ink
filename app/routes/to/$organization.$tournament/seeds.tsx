@@ -39,7 +39,7 @@ import {
   safeJSONParse,
   Unpacked,
 } from "~/utils";
-import { useTimeoutState } from "~/utils/hooks";
+import { useTimeoutState } from "~/hooks/common";
 
 const seedsActionSchema = z.object({
   tournamentId: z.string().uuid(),

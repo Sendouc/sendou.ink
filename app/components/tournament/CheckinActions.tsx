@@ -7,7 +7,7 @@ import {
 } from "~/constants";
 import { TournamentAction } from "~/routes/to/$organization.$tournament";
 import type { FindTournamentByNameForUrlI } from "~/services/tournament";
-import { useUser } from "~/utils/hooks";
+import { useUser } from "~/hooks/common";
 import { Button } from "../Button";
 import { AlertIcon } from "../icons/Alert";
 import { CheckInIcon } from "../icons/CheckIn";

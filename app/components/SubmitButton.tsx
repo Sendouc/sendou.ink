@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useActionData, useTransition } from "remix";
-import { useTimeoutState } from "~/utils/hooks";
+import { useTimeoutState } from "~/hooks/common";
 import { Button, ButtonProps } from "./Button";
 
 export function SubmitButton(

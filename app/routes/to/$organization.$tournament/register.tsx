@@ -18,7 +18,7 @@ import {
   FindTournamentByNameForUrlI,
 } from "~/services/tournament";
 import styles from "~/styles/tournament-register.css";
-import { useUser } from "~/utils/hooks";
+import { useUser } from "~/hooks/common";
 import { requireUser } from "~/utils";
 import { Catcher } from "~/components/Catcher";
 import {

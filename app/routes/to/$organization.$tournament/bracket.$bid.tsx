@@ -16,7 +16,7 @@ import {
   requireUser,
   safeJSONParse,
 } from "~/utils";
-import { useUser } from "~/utils/hooks";
+import { useUser } from "~/hooks/common";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];

@@ -1,7 +1,7 @@
 import { useCatch, useLocation } from "remix";
 import { DISCORD_URL } from "~/constants";
 import { getLogInUrl } from "~/utils";
-import { useUser } from "~/utils/hooks";
+import { useUser } from "~/hooks/common";
 import { Button } from "./Button";
 
 // TODO: some nice art

@@ -23,7 +23,7 @@ import {
 } from "~/services/tournament";
 import { makeTitle, requireUser } from "~/utils";
 import type { MyCSSProperties } from "~/utils";
-import { useUser } from "~/utils/hooks";
+import { useUser } from "~/hooks/common";
 import tournamentStylesUrl from "../../styles/tournament.css";
 import * as React from "react";
 

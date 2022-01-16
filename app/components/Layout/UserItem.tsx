@@ -1,6 +1,6 @@
 import { useLocation } from "remix";
 import { getLogInUrl } from "~/utils";
-import { useUser } from "~/utils/hooks";
+import { useUser } from "~/hooks/common";
 import { DiscordIcon } from "../icons/Discord";
 
 export function UserItem() {

@@ -5,7 +5,7 @@ import { resolveTournamentFormatString } from "~/core/tournament/bracket";
 import { tournamentHasStarted } from "~/core/tournament/utils";
 import { FindTournamentByNameForUrlI } from "~/services/tournament";
 import { getLogInUrl } from "~/utils";
-import { useUser } from "~/utils/hooks";
+import { useUser } from "~/hooks/common";
 
 export function InfoBanner() {
   const data = useLoaderData<FindTournamentByNameForUrlI>();
