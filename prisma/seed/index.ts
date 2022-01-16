@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { SeedVariationsSchema } from "~/validators/seedVariations";
+import { SeedVariationsSchema } from "~/utils/schemas";
 const prisma = new PrismaClient();
 import { seed } from "./script";
 

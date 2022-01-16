@@ -1,4 +1,4 @@
-import { SeedVariationsSchema } from "~/validators/seedVariations";
+import { SeedVariationsSchema } from "~/utils/schemas";
 import { seed } from "../prisma/seed/script";
 import type { Express } from "express";
 

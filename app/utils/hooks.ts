@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useMatches } from "remix";
 import { z } from "zod";
-import { LoggedInUserSchema } from "~/validators/user";
+import { LoggedInUserSchema } from "~/utils/schemas";
 
 export const useUser = () => {
   const [root] = useMatches();

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Links, LiveReload, Meta, Outlet, Scripts, useCatch } from "remix";
 import type { LinksFunction, LoaderFunction } from "remix";
-import { LoggedInUserSchema } from "~/validators/user";
+import { LoggedInUserSchema } from "~/utils/schemas";
 import { Layout } from "./components/Layout";
 import { Catcher } from "./components/Catcher";
 import resetStyles from "~/styles/reset.css";

@@ -3,7 +3,7 @@ import type { CSSProperties } from "react";
 import { json, useLocation } from "remix";
 import type { EventTargetRecorder } from "server/events";
 import { z } from "zod";
-import { LoggedInUserSchema } from "~/validators/user";
+import { LoggedInUserSchema } from "~/utils/schemas";
 
 export function makeTitle(endOfTitle?: string) {
   return endOfTitle ? `sendou.ink | ${endOfTitle}` : "sendou.ink";
@@ -89,10 +89,6 @@ export function safeJSONParse(value: unknown): unknown {
     return undefined;
   }
 }
-
-/** @link https://stackoverflow.com/a/69413184 */
-// @ts-expect-error helper to assert type to be another compile time
-export const assertType = <A, B extends A>() => {}; // eslint-disable-line
 
 export type Serialized<T> = {
   [P in keyof T]: T[P] extends Date

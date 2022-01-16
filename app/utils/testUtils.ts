@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ModeSchema } from "~/validators/mode";
+import { ModeSchema } from "~/utils/schemas";
 
 export function mapPoolForTest() {
   const mapPool: unknown = JSON.parse(

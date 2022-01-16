@@ -2,7 +2,7 @@ import { User } from "@prisma/client";
 import type { Express } from "express";
 import { z } from "zod";
 import { db } from "~/utils/db.server";
-import type { LoggedInUser } from "~/validators/user";
+import type { LoggedInUser } from "~/utils/schemas";
 
 export function setUpMockAuth(
   app: Express,

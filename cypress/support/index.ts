@@ -1,4 +1,4 @@
-import { LoggedInUser } from "~/validators/user";
+import { LoggedInUser } from "~/utils/schemas";
 import {
   ADMIN_TEST_AVATAR,
   ADMIN_TEST_DISCORD_ID,

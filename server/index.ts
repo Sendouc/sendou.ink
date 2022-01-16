@@ -6,7 +6,7 @@ import compression from "compression";
 import express from "express";
 import morgan from "morgan";
 import path from "path";
-import { LoggedInUser } from "~/validators/user";
+import { LoggedInUser } from "~/utils/schemas";
 import { setUpAuth } from "./auth";
 import { EventTargetRecorder, setUpEvents } from "./events";
 import { setUpMockAuth } from "./mock-auth";

@@ -14,7 +14,7 @@ import { readFile } from "fs/promises";
 import path from "path";
 import { createTournamentRounds } from "../../app/services/tournament";
 import invariant from "tiny-invariant";
-import { SeedVariations } from "~/validators/seedVariations";
+import { SeedVariations } from "~/utils/schemas";
 import { v4 as uuidv4 } from "uuid";
 const prisma = new PrismaClient();
 
