@@ -14,7 +14,6 @@ import invariant from "tiny-invariant";
 import { AdminIcon } from "~/components/icons/Admin";
 import { CheckinActions } from "~/components/tournament/CheckinActions";
 import { InfoBanner } from "~/components/tournament/InfoBanner";
-import { isTournamentAdmin } from "~/core/tournament/permissions";
 import { tournamentHasStarted } from "~/core/tournament/utils";
 import {
   checkIn,
@@ -26,6 +25,7 @@ import type { MyCSSProperties } from "~/utils";
 import { useUser } from "~/hooks/common";
 import tournamentStylesUrl from "../../styles/tournament.css";
 import * as React from "react";
+import { isTournamentAdmin } from "~/validators/tournament";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: tournamentStylesUrl }];

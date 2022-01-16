@@ -1,13 +1,3 @@
-export function isTournamentAdmin({
-  userId,
-  organization,
-}: {
-  userId?: string;
-  organization: { ownerId: string };
-}) {
-  return organization.ownerId === userId;
-}
-
 export function canReportMatchScore({
   userId,
   members,

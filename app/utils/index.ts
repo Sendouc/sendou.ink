@@ -40,6 +40,13 @@ export function requireEvents(ctx: unknown) {
   }
 }
 
+/** Asserts condition is truthy. Throws a new `Response` with status code 400 and given message if falsy.  */
+export function validate(condition: any, message: string): asserts condition {
+  if (condition) return;
+
+  throw new Response(message, { status: 400 });
+}
+
 /** Get link to log in with query param set as current page */
 export function getLogInUrl(location: ReturnType<typeof useLocation>) {
   return `/auth/discord?origin=${encodeURIComponent(

@@ -4,7 +4,6 @@ import {
   TOURNAMENT_TEAM_ROSTER_MAX_SIZE,
 } from "~/constants";
 import { MapListIds, tournamentRoundsForDB } from "~/core/tournament/bracket";
-import { isTournamentAdmin } from "~/core/tournament/permissions";
 import { captainOfTeam, sortTeamsBySeed } from "~/core/tournament/utils";
 import * as Tournament from "~/models/Tournament";
 import * as TournamentTeam from "~/models/TournamentTeam";
@@ -12,6 +11,7 @@ import * as TournamentTeamMember from "~/models/TournamentTeamMember";
 import * as TrustRelationship from "~/models/TrustRelationship";
 import { Serialized, Unpacked } from "~/utils";
 import { db } from "~/utils/db.server";
+import { isTournamentAdmin } from "~/validators/tournament";
 
 export type FindTournamentByNameForUrlI = Serialized<
   Prisma.PromiseReturnType<typeof findTournamentByNameForUrl>
@@ -408,28 +408,4 @@ export async function checkOut({
   // TODO: fail if tournament has started
 
   return TournamentTeam.checkOut(teamId);
-}
-
-export async function updateSeeds({
-  tournamentId,
-  userId,
-  newSeeds,
-}: {
-  tournamentId: string;
-  userId: string;
-  newSeeds: string[];
-}) {
-  const tournament = await Tournament.findById(tournamentId);
-  if (!tournament) throw new Response("Invalid tournament id", { status: 400 });
-  if (
-    !isTournamentAdmin({
-      organization: tournament.organizer,
-      userId,
-    })
-  ) {
-    throw new Response("Not tournament admin", { status: 401 });
-  }
-
-  // TODO: fail if tournament has started
-  return Tournament.updateSeeds({ tournamentId, seeds: newSeeds });
 }

@@ -28,18 +28,22 @@ import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
 import { Draggable } from "~/components/Draggable";
-import {
-  FindTournamentByNameForUrlI,
-  updateSeeds,
-} from "~/services/tournament";
+import { FindTournamentByNameForUrlI } from "~/services/tournament";
 import seedsStylesUrl from "~/styles/tournament-seeds.css";
 import {
   parseRequestFormData,
   requireUser,
   safeJSONParse,
   Unpacked,
+  validate,
 } from "~/utils";
 import { useTimeoutState } from "~/hooks/common";
+import { updateSeeds } from "~/db/tournament/mutations/updateSeeds";
+import { findTournamentById } from "~/db/tournament/queries/findTournamentById";
+import {
+  isTournamentAdmin,
+  tournamentHasNotStarted,
+} from "~/validators/tournament";
 
 const seedsActionSchema = z.object({
   tournamentId: z.string().uuid(),
@@ -53,10 +57,20 @@ export const action: ActionFunction = async ({ context, request }) => {
   });
   const user = requireUser(context);
 
+  const tournament = await findTournamentById(data.tournamentId);
+  validate(tournament, "Invalid tournament id");
+  validate(
+    isTournamentAdmin({ userId: user.id, organization: tournament.organizer }),
+    "Not tournament admin"
+  );
+  validate(
+    tournamentHasNotStarted(tournament),
+    "Can't change seeds after tournament has started"
+  );
+
   await updateSeeds({
     tournamentId: data.tournamentId,
-    userId: user.id,
-    newSeeds: data.seeds,
+    seeds: data.seeds,
   });
 
   return null;

@@ -137,21 +137,3 @@ export function findByNameForUrlWithInviteCodes(tournamentNameForUrl: string) {
     },
   });
 }
-
-export type UpdateSeeds = Prisma.PromiseReturnType<typeof updateSeeds>;
-export function updateSeeds({
-  tournamentId,
-  seeds,
-}: {
-  tournamentId: string;
-  seeds: string[];
-}) {
-  return db.tournament.update({
-    where: {
-      id: tournamentId,
-    },
-    data: {
-      seeds,
-    },
-  });
-}
