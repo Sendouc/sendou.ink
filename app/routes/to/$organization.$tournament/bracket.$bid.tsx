@@ -114,7 +114,6 @@ export const action: ActionFunction = async ({
 const typedJson = (args: BracketModified) => json(args);
 
 export const loader: LoaderFunction = async ({ params }) => {
-  console.log("params.bid", params.bid);
   invariant(typeof params.bid === "string", "Expected params.bid to be string");
 
   const bracket = await bracketById(params.bid);

@@ -33,27 +33,33 @@ import {
   updateSeeds,
 } from "~/services/tournament";
 import seedsStylesUrl from "~/styles/tournament-seeds.css";
-import { requireUser, Unpacked } from "~/utils";
+import {
+  parseRequestFormData,
+  requireUser,
+  safeJSONParse,
+  Unpacked,
+} from "~/utils";
 import { useTimeoutState } from "~/utils/hooks";
 
-export const action: ActionFunction = async ({ context, request }) => {
-  const data = Object.fromEntries(await request.formData());
-  const user = requireUser(context);
+const seedsActionSchema = z.object({
+  tournamentId: z.string().uuid(),
+  seeds: z.preprocess(safeJSONParse, z.array(z.string())),
+});
 
-  invariant(typeof data.seeds === "string", "Invalid type for seeds");
-  invariant(
-    typeof data.tournamentId === "string",
-    "Invalid type for tournamentId"
-  );
-  const newSeeds = z.array(z.string()).parse(JSON.parse(data.seeds));
+export const action: ActionFunction = async ({ context, request }) => {
+  const data = await parseRequestFormData({
+    request,
+    schema: seedsActionSchema,
+  });
+  const user = requireUser(context);
 
   await updateSeeds({
     tournamentId: data.tournamentId,
     userId: user.id,
-    newSeeds,
+    newSeeds: data.seeds,
   });
 
-  return new Response(undefined, { status: 200 });
+  return null;
 };
 
 export const links: LinksFunction = () => {
