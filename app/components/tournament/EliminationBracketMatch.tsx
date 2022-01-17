@@ -35,7 +35,7 @@ export function EliminationBracketMatch({
       return (
         <Link
           className="tournament-bracket__match__link"
-          to={`match/${match.id}`}
+          to={`match/${match.number}`}
         >
           {children}
         </Link>
