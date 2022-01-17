@@ -4,7 +4,7 @@ import type { FindTournamentByNameForUrlI } from "~/services/tournament";
 import { Unpacked } from "~/utils";
 import { Label } from "../Label";
 
-export function TeamRosterCheckboxes({
+export function TeamRosterInputsCheckboxes({
   team,
   checkedPlayers,
   handlePlayerClick,

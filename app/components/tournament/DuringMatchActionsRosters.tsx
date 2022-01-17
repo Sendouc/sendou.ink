@@ -1,12 +1,10 @@
-import clone from "just-clone";
 import * as React from "react";
 import { Form } from "remix";
 import { TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
 import type { FindTournamentByNameForUrlI } from "~/services/tournament";
 import { Unpacked } from "~/utils";
-import { Label } from "../Label";
 import { SubmitButton } from "../SubmitButton";
-import { TeamRosterCheckboxes } from "./TeamRosterCheckboxes";
+import { TeamRosterInputs } from "./TeamRosterInputs";
 
 export function DuringMatchActionsRosters({
   ownTeam,
@@ -27,46 +25,14 @@ export function DuringMatchActionsRosters({
   return (
     <Form method="post" className="width-full">
       <div>
-        <div className="tournament-bracket__during-match-actions__rosters">
-          {[ownTeam, opponentTeam].map((team, teamI) => (
-            <div key={team.id}>
-              <h4>{team.name}</h4>
-              <div className="tournament-bracket__during-match-actions__radio-container">
-                <input
-                  type="radio"
-                  id={team.id}
-                  name="winnerTeamId"
-                  onChange={() => setWinnerId(team.id)}
-                  checked={winnerId === team.id}
-                />
-                <Label className="mb-0 ml-2" htmlFor={team.id}>
-                  Winner
-                </Label>
-              </div>
-              <TeamRosterCheckboxes
-                team={team}
-                checkedPlayers={checkedPlayers[teamI]}
-                disabled={
-                  team.members.length <= TOURNAMENT_TEAM_ROSTER_MIN_SIZE
-                }
-                handlePlayerClick={(playerId: string) =>
-                  setCheckedPlayers((players) => {
-                    const newPlayers = clone(players);
-                    if (checkedPlayers.flat().includes(playerId)) {
-                      newPlayers[teamI] = newPlayers[teamI].filter(
-                        (id) => id !== playerId
-                      );
-                    } else {
-                      newPlayers[teamI].push(playerId);
-                    }
-
-                    return newPlayers;
-                  })
-                }
-              />
-            </div>
-          ))}
-        </div>
+        <TeamRosterInputs
+          teamOne={ownTeam}
+          teamTwo={opponentTeam}
+          winnerId={winnerId}
+          setWinnerId={setWinnerId}
+          checkedPlayers={checkedPlayers}
+          setCheckedPlayers={setCheckedPlayers}
+        />
         <div className="tournament-bracket__during-match-actions__actions">
           <input type="hidden" name="_action" value="REPORT_SCORE" />
           <input type="hidden" name="matchId" value={matchId} />
