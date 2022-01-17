@@ -1,8 +1,7 @@
 import clsx from "clsx";
 import { TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
-import type { FindTournamentByNameForUrlI } from "~/services/tournament";
-import { Unpacked } from "~/utils";
 import { Label } from "../Label";
+import { TeamRosterInputTeam } from "./TeamRosterInputs";
 
 export function TeamRosterInputsCheckboxes({
   team,
@@ -10,7 +9,7 @@ export function TeamRosterInputsCheckboxes({
   handlePlayerClick,
   disabled,
 }: {
-  team: Unpacked<FindTournamentByNameForUrlI["teams"]>;
+  team: TeamRosterInputTeam;
   checkedPlayers: string[];
   handlePlayerClick: (playerId: string) => void;
   disabled: boolean;

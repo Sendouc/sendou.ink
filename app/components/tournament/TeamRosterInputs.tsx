@@ -1,10 +1,21 @@
 import clone from "just-clone";
 import { TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
-import { FindTournamentByNameForUrlI } from "~/services/tournament";
-import { Unpacked } from "~/utils";
 import { Label } from "../Label";
 import { TeamRosterInputsCheckboxes } from "./TeamRosterInputsCheckboxes";
 
+/** Fields of a tournament team required to render `<TeamRosterInputs />` */
+export interface TeamRosterInputTeam {
+  name: string;
+  id: string;
+  members: {
+    member: {
+      id: string;
+      discordName: string;
+    };
+  }[];
+}
+
+/** Inputs to select who played for teams in a match as well as the winner. Can also be used in a presentational way. */
 export function TeamRosterInputs({
   teamOne,
   teamTwo,
@@ -13,8 +24,8 @@ export function TeamRosterInputs({
   checkedPlayers,
   setCheckedPlayers,
 }: {
-  teamOne: Unpacked<FindTournamentByNameForUrlI["teams"]>;
-  teamTwo: Unpacked<FindTournamentByNameForUrlI["teams"]>;
+  teamOne: TeamRosterInputTeam;
+  teamTwo: TeamRosterInputTeam;
   winnerId?: string;
   setWinnerId: (newId: string) => void;
   checkedPlayers: [string[], string[]];
