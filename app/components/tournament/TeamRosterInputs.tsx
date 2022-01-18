@@ -11,29 +11,33 @@ export interface TeamRosterInputTeam {
     member: {
       id: string;
       discordName: string;
+      /** Only used when rendering <TeamRosterInputs /> of a match that was already reported. */
+      played?: boolean;
     };
   }[];
 }
 
 /** Inputs to select who played for teams in a match as well as the winner. Can also be used in a presentational way. */
 export function TeamRosterInputs({
-  teamOne,
-  teamTwo,
+  teamUpper,
+  teamLower,
   winnerId,
   setWinnerId,
   checkedPlayers,
   setCheckedPlayers,
+  interactable = true,
 }: {
-  teamOne: TeamRosterInputTeam;
-  teamTwo: TeamRosterInputTeam;
+  teamUpper: TeamRosterInputTeam;
+  teamLower: TeamRosterInputTeam;
   winnerId?: string;
   setWinnerId: (newId: string) => void;
   checkedPlayers: [string[], string[]];
   setCheckedPlayers: React.Dispatch<React.SetStateAction<[string[], string[]]>>;
+  interactable?: boolean;
 }) {
   return (
     <div className="tournament-bracket__during-match-actions__rosters">
-      {[teamOne, teamTwo].map((team, teamI) => (
+      {[teamUpper, teamLower].map((team, teamI) => (
         <div key={team.id}>
           <h4>{team.name}</h4>
           <div className="tournament-bracket__during-match-actions__radio-container">
