@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import clone from "just-clone";
 import { TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
 import { Label } from "../Label";
@@ -55,17 +56,12 @@ export function TeamRosterInputs({
       {[teamUpper, teamLower].map((team, teamI) => (
         <div key={team.id}>
           <h4>{team.name}</h4>
-          <div className="tournament-bracket__during-match-actions__radio-container">
-            <input
-              type="radio"
-              id={team.id}
-              onChange={() => setWinnerId(team.id)}
-              checked={winnerId === team.id}
-            />
-            <Label className="mb-0 ml-2" htmlFor={team.id}>
-              Winner
-            </Label>
-          </div>
+          <WinnerRadio
+            presentational={presentational}
+            checked={winnerId === team.id}
+            teamId={team.id}
+            onChange={() => setWinnerId(team.id)}
+          />
           <TeamRosterInputsCheckboxes
             team={team}
             checkedPlayers={checkedPlayers[teamI]}
@@ -87,6 +83,41 @@ export function TeamRosterInputs({
           />
         </div>
       ))}
+    </div>
+  );
+}
+
+/** Renders radio button to select winner, or in presentational mode just display the text "Winner" */
+function WinnerRadio({
+  presentational,
+  teamId,
+  checked,
+  onChange,
+}: {
+  presentational: boolean;
+  teamId: string;
+  checked: boolean;
+  onChange: () => void;
+}) {
+  if (presentational) {
+    return (
+      <div
+        className={clsx(
+          "tournament-bracket__during-match-actions__winner-text",
+          { invisible: !checked }
+        )}
+      >
+        Winner
+      </div>
+    );
+  }
+
+  return (
+    <div className="tournament-bracket__during-match-actions__radio-container">
+      <input type="radio" id={teamId} onChange={onChange} checked={checked} />
+      <Label className="mb-0 ml-2" htmlFor={teamId}>
+        Winner
+      </Label>
     </div>
   );
 }

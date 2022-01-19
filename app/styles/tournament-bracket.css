@@ -134,6 +134,12 @@
   text-align: center;
 }
 
+.tournament-bracket__during-match-actions__winner-text {
+  font-size: var(--fonts-xs);
+  font-weight: var(--bold);
+  color: var(--theme-secondary);
+}
+
 .tournament-bracket__during-match-actions__radio-container {
   display: flex;
   align-items: center;
