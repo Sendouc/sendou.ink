@@ -1,4 +1,10 @@
-import { json, LoaderFunction, useLoaderData, useLocation } from "remix";
+import {
+  json,
+  LinksFunction,
+  LoaderFunction,
+  useLoaderData,
+  useLocation,
+} from "remix";
 import { z } from "zod";
 import Modal from "~/components/Modal";
 import { TeamRosterInputs } from "~/components/tournament/TeamRosterInputs";
@@ -7,6 +13,11 @@ import {
   findMatchModalInfoByNumber,
 } from "~/db/tournament/queries/findMatchModalInfoByNumber";
 import { Unpacked } from "~/utils";
+import styles from "~/styles/tournament-match.css";
+
+export const links: LinksFunction = () => {
+  return [{ rel: "stylesheet", href: styles }];
+};
 
 const typedJson = (args: NonNullable<FindMatchModalInfoByNumber>) => json(args);
 
@@ -28,20 +39,24 @@ export default function MatchModal() {
   return (
     <Modal title={data.title} closeUrl={location.pathname.split("/match")[0]}>
       <h4>{data.roundName}</h4>
-      {data.matchInfos
-        .filter((matchInfo) => matchInfo.winner)
-        .map((matchInfo) => {
-          return (
-            <TeamRosterInputs
-              key={matchInfo.idForReact}
-              teamUpper={matchInfo.teamUpper}
-              teamLower={matchInfo.teamLower}
-              checkedPlayers={matchInfoToCheckedPlayers(matchInfo)}
-              setCheckedPlayers={() => null}
-              setWinnerId={() => null}
-            />
-          );
-        })}
+      <div className="tournament-match-modal__rounds">
+        {data.matchInfos
+          .filter((matchInfo) => matchInfo.winnerId)
+          .map((matchInfo) => {
+            return (
+              <TeamRosterInputs
+                key={matchInfo.idForReact}
+                teamUpper={matchInfo.teamUpper}
+                teamLower={matchInfo.teamLower}
+                checkedPlayers={matchInfoToCheckedPlayers(matchInfo)}
+                setCheckedPlayers={() => null}
+                setWinnerId={() => null}
+                winnerId={matchInfo.winnerId}
+                presentational
+              />
+            );
+          })}
+      </div>
     </Modal>
   );
 }

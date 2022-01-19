@@ -26,8 +26,8 @@ export function DuringMatchActionsRosters({
     <Form method="post" className="width-full">
       <div>
         <TeamRosterInputs
-          teamOne={ownTeam}
-          teamTwo={opponentTeam}
+          teamUpper={ownTeam}
+          teamLower={opponentTeam}
           winnerId={winnerId}
           setWinnerId={setWinnerId}
           checkedPlayers={checkedPlayers}

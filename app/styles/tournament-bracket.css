@@ -152,11 +152,11 @@
   display: flex;
   width: 100%;
   align-items: center;
-  cursor: pointer;
 }
 
-.tournament-bracket__during-match-actions__checkbox-name:not(.disabled-opaque):hover {
+.tournament-bracket__during-match-actions__checkbox-name:not(.disabled-opaque):not(.presentational):hover {
   border-radius: var(--rounded);
+  cursor: pointer;
   outline: 2px solid var(--theme-transparent);
   outline-offset: 2px;
 }

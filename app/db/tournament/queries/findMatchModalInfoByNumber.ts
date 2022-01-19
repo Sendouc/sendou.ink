@@ -1,6 +1,5 @@
 import type {
   Mode,
-  TeamOrder,
   TournamentMatchGameResult,
   TournamentTeamMember,
   User,
@@ -19,7 +18,7 @@ export type FindMatchModalInfoByNumber =
         idForReact: string;
         teamUpper: TeamRosterInputTeam;
         teamLower: TeamRosterInputTeam;
-        winner?: TeamOrder;
+        winnerId?: string;
         stage: { name: string; mode: Mode };
       }[];
     }
@@ -92,7 +91,11 @@ export async function findMatchModalInfoByNumber({
           id: lowerTeam.teamId,
           members: membersWithPlayedInfo.lowerTeamMembers,
         },
-        winner: stageResult?.winner,
+        winnerId: stageResult
+          ? stageResult.winner === "UPPER"
+            ? upperTeam.teamId
+            : lowerTeam.teamId
+          : undefined,
         stage: {
           name: tournamentRoundStage.stage.name,
           mode: tournamentRoundStage.stage.mode,

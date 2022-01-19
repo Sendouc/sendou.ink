@@ -17,6 +17,8 @@ export interface TeamRosterInputTeam {
   }[];
 }
 
+export type TeamRosterInputsType = "DEFAULT" | "DISABLED" | "PRESENTATIONAL";
+
 /** Inputs to select who played for teams in a match as well as the winner. Can also be used in a presentational way. */
 export function TeamRosterInputs({
   teamUpper,
@@ -25,7 +27,7 @@ export function TeamRosterInputs({
   setWinnerId,
   checkedPlayers,
   setCheckedPlayers,
-  interactable = true,
+  presentational = false,
 }: {
   teamUpper: TeamRosterInputTeam;
   teamLower: TeamRosterInputTeam;
@@ -33,8 +35,21 @@ export function TeamRosterInputs({
   setWinnerId: (newId: string) => void;
   checkedPlayers: [string[], string[]];
   setCheckedPlayers: React.Dispatch<React.SetStateAction<[string[], string[]]>>;
-  interactable?: boolean;
+  presentational?: boolean;
 }) {
+  const inputMode = (team: TeamRosterInputTeam): TeamRosterInputsType => {
+    if (presentational) return "PRESENTATIONAL";
+
+    // Disabled in this case because we expect a result to have exactly
+    // TOURNAMENT_TEAM_ROSTER_MIN_SIZE members per team when reporting it
+    // so there is no point to let user to change them around
+    if (team.members.length <= TOURNAMENT_TEAM_ROSTER_MIN_SIZE) {
+      return "DISABLED";
+    }
+
+    return "DEFAULT";
+  };
+
   return (
     <div className="tournament-bracket__during-match-actions__rosters">
       {[teamUpper, teamLower].map((team, teamI) => (
@@ -44,7 +59,6 @@ export function TeamRosterInputs({
             <input
               type="radio"
               id={team.id}
-              name="winnerTeamId"
               onChange={() => setWinnerId(team.id)}
               checked={winnerId === team.id}
             />
@@ -55,7 +69,7 @@ export function TeamRosterInputs({
           <TeamRosterInputsCheckboxes
             team={team}
             checkedPlayers={checkedPlayers[teamI]}
-            disabled={team.members.length <= TOURNAMENT_TEAM_ROSTER_MIN_SIZE}
+            mode={inputMode(team)}
             handlePlayerClick={(playerId: string) =>
               setCheckedPlayers((players) => {
                 const newPlayers = clone(players);

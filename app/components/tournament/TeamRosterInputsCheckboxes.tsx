@@ -1,18 +1,18 @@
 import clsx from "clsx";
-import { TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
 import { Label } from "../Label";
-import { TeamRosterInputTeam } from "./TeamRosterInputs";
+import { TeamRosterInputsType, TeamRosterInputTeam } from "./TeamRosterInputs";
 
 export function TeamRosterInputsCheckboxes({
   team,
   checkedPlayers,
   handlePlayerClick,
-  disabled,
+  mode,
 }: {
   team: TeamRosterInputTeam;
   checkedPlayers: string[];
   handlePlayerClick: (playerId: string) => void;
-  disabled: boolean;
+  /** DEFAULT = inputs work, DISABLED = inputs disabled and look disabled, PRESENTATION = inputs disabled but look like in DEFAULT (without hover styles) */
+  mode: TeamRosterInputsType;
 }) {
   return (
     <div className="tournament-bracket__during-match-actions__team-players">
@@ -21,7 +21,8 @@ export function TeamRosterInputsCheckboxes({
           key={member.id}
           className={clsx(
             "tournament-bracket__during-match-actions__checkbox-name",
-            { "disabled-opaque": disabled }
+            { "disabled-opaque": mode === "DISABLED" },
+            { presentational: mode === "PRESENTATIONAL" }
           )}
         >
           <input
@@ -29,7 +30,7 @@ export function TeamRosterInputsCheckboxes({
             type="checkbox"
             id={member.id}
             name="playerName"
-            disabled={team.members.length === TOURNAMENT_TEAM_ROSTER_MIN_SIZE}
+            disabled={mode === "DISABLED" || mode === "PRESENTATIONAL"}
             value={member.id}
             checked={checkedPlayers.flat().includes(member.id)}
             onChange={() => handlePlayerClick(member.id)}
