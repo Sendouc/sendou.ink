@@ -2,6 +2,8 @@ import * as React from "react";
 import { Link, useNavigate } from "remix";
 import { useOnClickOutside } from "~/hooks/common";
 
+const ESC_BUTTON = "Escape";
+
 export default function Modal({
   closeUrl,
   title,
@@ -14,11 +16,21 @@ export default function Modal({
   const navigate = useNavigate();
   const ref = React.useRef<HTMLDivElement>(null);
 
-  const useOnClickOutsideHandler = React.useCallback(
-    () => navigate(closeUrl),
-    [closeUrl]
-  );
-  useOnClickOutside(ref, useOnClickOutsideHandler);
+  const navigateBack = React.useCallback(() => navigate(closeUrl), [closeUrl]);
+  useOnClickOutside(ref, navigateBack);
+
+  React.useEffect(() => {
+    function handleEscButtonPress(e: KeyboardEvent) {
+      if (e.key === ESC_BUTTON) {
+        navigateBack();
+      }
+    }
+
+    document.addEventListener("keydown", handleEscButtonPress);
+    return () => {
+      document.removeEventListener("keydown", handleEscButtonPress);
+    };
+  });
 
   return (
     <div className="modal">
