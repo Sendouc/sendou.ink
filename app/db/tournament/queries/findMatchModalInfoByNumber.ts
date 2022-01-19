@@ -15,7 +15,7 @@ export type FindMatchModalInfoByNumber =
       title: string;
       roundName: string;
       matchInfos: {
-        idForReact: string;
+        idForFrontend: string;
         teamUpper: TeamRosterInputTeam;
         teamLower: TeamRosterInputTeam;
         winnerId?: string;
@@ -80,7 +80,7 @@ export async function findMatchModalInfoByNumber({
       });
 
       return {
-        idForReact: uuidv4(),
+        idForFrontend: uuidv4(),
         teamUpper: {
           name: upperTeam.team.name,
           id: upperTeam.teamId,

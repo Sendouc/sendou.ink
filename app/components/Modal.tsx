@@ -16,7 +16,7 @@ export default function Modal({
         <Link to={closeUrl} className="modal-close">
           Close
         </Link>
-        <h1>{title}</h1>
+        <h2>{title}</h2>
         <div>{children}</div>
       </div>
     </div>

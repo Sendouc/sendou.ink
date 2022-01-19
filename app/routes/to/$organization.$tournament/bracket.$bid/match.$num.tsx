@@ -14,6 +14,7 @@ import {
 } from "~/db/tournament/queries/findMatchModalInfoByNumber";
 import { Unpacked } from "~/utils";
 import styles from "~/styles/tournament-match.css";
+import { FancyStageBanner } from "~/components/tournament/FancyStageBanner";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -38,22 +39,27 @@ export default function MatchModal() {
 
   return (
     <Modal title={data.title} closeUrl={location.pathname.split("/match")[0]}>
-      <h4>{data.roundName}</h4>
+      <h4 className="tournament-match-modal__round-name">{data.roundName}</h4>
       <div className="tournament-match-modal__rounds">
         {data.matchInfos
           .filter((matchInfo) => matchInfo.winnerId)
-          .map((matchInfo) => {
+          .map((matchInfo, i) => {
             return (
-              <TeamRosterInputs
-                key={matchInfo.idForReact}
-                teamUpper={matchInfo.teamUpper}
-                teamLower={matchInfo.teamLower}
-                checkedPlayers={matchInfoToCheckedPlayers(matchInfo)}
-                setCheckedPlayers={() => null}
-                setWinnerId={() => null}
-                winnerId={matchInfo.winnerId}
-                presentational
-              />
+              <div
+                className="tournament-match-modal__round"
+                key={matchInfo.idForFrontend}
+              >
+                <FancyStageBanner stage={matchInfo.stage} roundNumber={i + 1} />
+                <TeamRosterInputs
+                  teamUpper={matchInfo.teamUpper}
+                  teamLower={matchInfo.teamLower}
+                  checkedPlayers={matchInfoToCheckedPlayers(matchInfo)}
+                  setCheckedPlayers={() => null}
+                  setWinnerId={() => null}
+                  winnerId={matchInfo.winnerId}
+                  presentational
+                />
+              </div>
             );
           })}
       </div>

@@ -1,13 +1,13 @@
 import { Form, useMatches } from "remix";
 import invariant from "tiny-invariant";
-import { modesShortToLong } from "~/constants";
 import { resolveHostInfo } from "~/core/tournament/utils";
-import type { FindTournamentByNameForUrlI } from "~/services/tournament";
 import type { BracketModified } from "~/services/bracket";
-import { modeToImageUrl, Unpacked } from "~/utils";
+import type { FindTournamentByNameForUrlI } from "~/services/tournament";
+import { Unpacked } from "~/utils";
 import { SubmitButton } from "../SubmitButton";
 import { ActionSectionWrapper } from "./ActionSectionWrapper";
 import { DuringMatchActionsRosters } from "./DuringMatchActionsRosters";
+import { FancyStageBanner } from "./FancyStageBanner";
 
 export function DuringMatchActions({
   ownTeam,
@@ -58,17 +58,11 @@ export function DuringMatchActions({
 
   return (
     <div className="tournament-bracket__during-match-actions">
-      <div className="tournament-bracket__stage-banner">
-        <div className="tournament-bracket__stage-banner__top-bar">
-          <h4 className="tournament-bracket__stage-banner__top-bar__header">
-            <img
-              className="tournament-bracket__stage-banner__top-bar__mode-image"
-              src={modeToImageUrl(stage.mode)}
-            />
-            {modesShortToLong[stage.mode]} on {stage.name}
-          </h4>
-          <h4>Stage {currentPosition}</h4>
-        </div>
+      <FancyStageBanner
+        stage={stage}
+        roundNumber={currentPosition}
+        infos={roundInfos}
+      >
         {currentPosition > 1 && (
           <Form method="post">
             <input type="hidden" name="_action" value="UNDO_REPORT_SCORE" />
@@ -85,12 +79,7 @@ export function DuringMatchActions({
             </div>
           </Form>
         )}
-      </div>
-      <div className="tournament-bracket__infos">
-        {roundInfos.map((info, i) => (
-          <div key={i}>{info}</div>
-        ))}
-      </div>
+      </FancyStageBanner>
       <ActionSectionWrapper>
         <DuringMatchActionsRosters
           ownTeam={ownTeam}

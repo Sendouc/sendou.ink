@@ -290,7 +290,6 @@ select::selection {
   padding: 2em;
   background-color: var(--bg-lighter);
   border-radius: var(--rounded);
-  overscroll-behavior: contain;
   transform: translate(-50%, -50%);
 }
 
@@ -425,4 +424,8 @@ select::selection {
 
 .items-center {
   align-items: center;
+}
+
+.rounded {
+  border-radius: var(--rounded);
 }
