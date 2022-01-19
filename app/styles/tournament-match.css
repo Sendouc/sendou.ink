@@ -1,3 +1,11 @@
+.tournament-match-modal__vs-title {
+  margin-inline-end: var(--s-3);
+}
+
+.tournament-match-modal__score-title {
+  color: var(--theme-secondary);
+}
+
 .tournament-match-modal__round-name {
   color: var(--theme);
   font-size: var(--fonts-sm);

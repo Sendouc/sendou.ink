@@ -135,9 +135,9 @@
 }
 
 .tournament-bracket__during-match-actions__winner-text {
+  color: var(--theme-secondary);
   font-size: var(--fonts-xs);
   font-weight: var(--bold);
-  color: var(--theme-secondary);
 }
 
 .tournament-bracket__during-match-actions__radio-container {

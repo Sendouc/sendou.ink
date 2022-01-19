@@ -7,7 +7,7 @@ export default function Modal({
   children,
 }: {
   closeUrl: string;
-  title: string;
+  title: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (

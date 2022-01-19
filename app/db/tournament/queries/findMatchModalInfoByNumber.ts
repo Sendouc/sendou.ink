@@ -13,6 +13,7 @@ import { v4 as uuidv4 } from "uuid";
 export type FindMatchModalInfoByNumber =
   | {
       title: string;
+      scoreTitle: string;
       roundName: string;
       matchInfos: {
         idForFrontend: string;
@@ -103,8 +104,20 @@ export async function findMatchModalInfoByNumber({
       };
     });
 
+  const scoreTitle = match.results
+    .reduce(
+      (scores, result) => {
+        if (result.winner === "UPPER") scores[0]++;
+        else scores[1]++;
+        return scores;
+      },
+      [0, 0]
+    )
+    .join("-");
+
   return {
     title: `${teamsOrdered[0].team.name} vs. ${teamsOrdered[1].team.name}`,
+    scoreTitle,
     roundName: getRoundNameByPositions(
       tournamentRound.position,
       tournamentRounds.map((round) => round.position)

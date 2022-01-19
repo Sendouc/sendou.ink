@@ -38,7 +38,17 @@ export default function MatchModal() {
   const location = useLocation();
 
   return (
-    <Modal title={data.title} closeUrl={location.pathname.split("/match")[0]}>
+    <Modal
+      title={
+        <div>
+          <span className="tournament-match-modal__vs-title">{data.title}</span>{" "}
+          <span className="tournament-match-modal__score-title">
+            {data.scoreTitle}
+          </span>
+        </div>
+      }
+      closeUrl={location.pathname.split("/match")[0]}
+    >
       <h4 className="tournament-match-modal__round-name">{data.roundName}</h4>
       <div className="tournament-match-modal__rounds">
         {data.matchInfos
