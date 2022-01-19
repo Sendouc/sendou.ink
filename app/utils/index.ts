@@ -32,7 +32,7 @@ export function requireEvents(ctx: unknown) {
   try {
     const data = z.object({ events: z.unknown() }).parse(ctx);
 
-    // TODO:
+    // TODO: fix type assertion
     return data.events as EventTargetRecorder;
   } catch (e) {
     console.error(e);
@@ -41,6 +41,7 @@ export function requireEvents(ctx: unknown) {
 }
 
 /** Asserts condition is truthy. Throws a new `Response` with status code 400 and given message if falsy.  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- same format as TS docs: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions
 export function validate(condition: any, message: string): asserts condition {
   if (condition) return;
 

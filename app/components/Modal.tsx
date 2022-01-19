@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Link } from "remix";
+import { Link, useNavigate } from "remix";
+import { useOnClickOutside } from "~/hooks/common";
 
 export default function Modal({
   closeUrl,
@@ -10,9 +11,18 @@ export default function Modal({
   title: React.ReactNode;
   children: React.ReactNode;
 }) {
+  const navigate = useNavigate();
+  const ref = React.useRef<HTMLDivElement>(null);
+
+  const useOnClickOutsideHandler = React.useCallback(
+    () => navigate(closeUrl),
+    [closeUrl]
+  );
+  useOnClickOutside(ref, useOnClickOutsideHandler);
+
   return (
     <div className="modal">
-      <div>
+      <div ref={ref}>
         <Link to={closeUrl} className="modal-close">
           Close
         </Link>
