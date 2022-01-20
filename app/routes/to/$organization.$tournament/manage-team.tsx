@@ -24,17 +24,22 @@ import {
   roompassRegExp,
   roompassRegExpString,
 } from "~/core/tournament/utils";
+import { putPlayerToTeam } from "~/db/tournament/mutations/putPlayerToTeam";
+import { tournamentTeamById } from "~/db/tournament/queries/tournamentTeamById";
 import { useBaseURL, useTimeoutState } from "~/hooks/common";
 import type { FindManyByTrustReceiverId } from "~/models/TrustRelationship";
 import {
   editTeam,
   ownTeamWithInviteCode,
-  putPlayerToTeam,
   removePlayerFromTeam,
 } from "~/services/tournament";
 import { getTrustingUsers } from "~/services/user";
 import styles from "~/styles/tournament-manage-team.css";
-import { parseRequestFormData, requireUser } from "~/utils";
+import { parseRequestFormData, requireUser, validate } from "~/utils";
+import {
+  isCaptainOfTheTeam,
+  tournamentTeamIsNotFull,
+} from "~/validators/tournament";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -83,9 +88,19 @@ export const action: ActionFunction = async ({
   switch (data._action) {
     case "ADD_PLAYER": {
       try {
+        const tournamentTeam = await tournamentTeamById(data.teamId);
+
+        // TODO: Validate if tournament already started / concluded (depending on if tournament allows mid-event roster additions)
+        validate(tournamentTeam, "Invalid tournament team id");
+        validate(tournamentTeamIsNotFull(tournamentTeam), "Team is full");
+        validate(
+          isCaptainOfTheTeam(user, tournamentTeam),
+          "Not captain of the team"
+        );
+
         await putPlayerToTeam({
+          tournamentId: tournamentTeam.tournament.id,
           teamId: data.teamId,
-          captainId: user.id,
           newPlayerId: data.userId,
         });
       } catch (e) {
