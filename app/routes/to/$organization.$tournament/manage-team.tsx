@@ -164,7 +164,7 @@ export const loader: LoaderFunction = async ({ params, context }) => {
 };
 
 // TODO: should not 404 but redirect instead - catchBoundary?
-export default function ManageRosterPage() {
+export default function ManageTeamPage() {
   const actionData = useActionData<ActionData>();
   const { ownTeam, trustingUsers } = useLoaderData<Data>();
   const baseURL = useBaseURL();

@@ -112,7 +112,8 @@ export default function TournamentPage() {
     if (isTournamentAdmin({ userId: user?.id, organization: data.organizer })) {
       result.push({
         code: "manage",
-        text: "Manage",
+        // TODO: figure out a good name
+        text: "Controls",
         icon: <AdminIcon />,
       });
       if (!tournamentHasStarted(data.brackets)) {

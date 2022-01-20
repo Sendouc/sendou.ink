@@ -122,11 +122,11 @@ function InfoBannerActionButton() {
   if (alreadyRegistered) {
     return (
       <Link
-        to="manage-roster"
+        to="manage-team"
         className="info-banner__action-button"
         prefetch="intent"
       >
-        Manage roster
+        Manage team
       </Link>
     );
   }
