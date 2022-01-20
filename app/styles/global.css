@@ -283,13 +283,17 @@ select::selection {
 }
 
 .modal > div {
-  position: absolute;
+  position: relative;
   top: 50%;
   left: 50%;
   width: 800px;
-  padding: 2em;
+
+  /* TODO: just use as much space as is needed */
+  height: 100%;
+  padding: var(--s-8);
   background-color: var(--bg-lighter);
   border-radius: var(--rounded);
+  overflow-y: auto;
   transform: translate(-50%, -50%);
 }
 
