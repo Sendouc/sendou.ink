@@ -31,6 +31,14 @@ export function CheckinActions() {
   const [minutesTillCheckInCloses, setMinutesTillCheckInCloses] =
     React.useState(timeInMinutesBeforeCheckInCloses());
 
+  React.useEffect(() => {
+    const timeout = setInterval(() => {
+      setMinutesTillCheckInCloses(timeInMinutesBeforeCheckInCloses());
+    }, 1000 * 15);
+
+    return () => clearTimeout(timeout);
+  }, []);
+
   const ownTeam = tournament.teams.find((team) =>
     team.members.some(
       ({ member, captain }) => captain && member.id === user?.id
@@ -41,14 +49,6 @@ export function CheckinActions() {
   if (!ownTeam || tournamentHasStarted) {
     return null;
   }
-
-  React.useEffect(() => {
-    const timeout = setInterval(() => {
-      setMinutesTillCheckInCloses(timeInMinutesBeforeCheckInCloses());
-    }, 1000 * 15);
-
-    return () => clearTimeout(timeout);
-  }, []);
 
   if (ownTeam.checkedInTime) {
     return (
