@@ -13,20 +13,23 @@ export function SearchInputDev() {
 
   const handleEnter = () => {
     const [action, value] = inputValue.split(":");
-    if (!action || !value) return;
+    if (!action) return;
 
     let fetchUrl = "";
     switch (action) {
       case "liu": {
+        if (!value) return;
         fetchUrl = `/mock-auth?username=${encodeURIComponent(value)}`;
         break;
       }
       case "lit": {
+        if (!value) return;
         fetchUrl = `/mock-auth?team=${encodeURIComponent(value)}`;
         break;
       }
       case "seed": {
-        fetchUrl = `/seed?variation=${encodeURIComponent(value)}`;
+        if (!value) fetchUrl = "/seed";
+        else fetchUrl = `/seed?variation=${encodeURIComponent(value)}`;
         break;
       }
       default: {
