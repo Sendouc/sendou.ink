@@ -9,7 +9,6 @@ import {
   useLoaderData,
   useLocation,
 } from "remix";
-import invariant from "tiny-invariant";
 import { z } from "zod";
 import { Alert } from "~/components/Alert";
 import { Catcher } from "~/components/Catcher";
@@ -25,6 +24,7 @@ import {
   roompassRegExp,
   roompassRegExpString,
 } from "~/core/tournament/utils";
+import { useBaseURL, useTimeoutState } from "~/hooks/common";
 import type { FindManyByTrustReceiverId } from "~/models/TrustRelationship";
 import {
   editTeam,
@@ -33,9 +33,8 @@ import {
   removePlayerFromTeam,
 } from "~/services/tournament";
 import { getTrustingUsers } from "~/services/user";
-import styles from "~/styles/tournament-manage-roster.css";
+import styles from "~/styles/tournament-manage-team.css";
 import { parseRequestFormData, requireUser } from "~/utils";
-import { useBaseURL, useTimeoutState } from "~/hooks/common";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -137,20 +136,15 @@ type Data = {
 const typedJson = (args: Data) => json(args);
 
 export const loader: LoaderFunction = async ({ params, context }) => {
-  invariant(
-    typeof params.organization === "string",
-    "Expected params.organization to be string"
-  );
-  invariant(
-    typeof params.tournament === "string",
-    "Expected params.tournament to be string"
-  );
+  const parsedParams = z
+    .object({ organization: z.string(), tournament: z.string() })
+    .parse(params);
 
   const user = requireUser(context);
   const [ownTeam, trustingUsersAll] = await Promise.all([
     ownTeamWithInviteCode({
-      organizationNameForUrl: params.organization,
-      tournamentNameForUrl: params.tournament,
+      organizationNameForUrl: parsedParams.organization,
+      tournamentNameForUrl: parsedParams.tournament,
       userId: user.id,
     }),
     getTrustingUsers(user.id),
@@ -171,18 +165,18 @@ export default function ManageTeamPage() {
   const location = useLocation();
 
   const urlWithInviteCode = `${baseURL}${location.pathname.replace(
-    "manage-roster",
+    "manage-team",
     "join-team"
   )}?code=${ownTeam.inviteCode}`;
 
   return (
-    <div className="tournament__manage-roster">
+    <div className="tournament__manage-team">
       {ownTeam.members.length >= TOURNAMENT_TEAM_ROSTER_MAX_SIZE && (
         <Alert type="info">
           Your team is full - more players can't be added
         </Alert>
       )}
-      <div className="tournament__manage-roster__roster-container">
+      <div className="tournament__manage-team__roster-container">
         <TeamRoster team={ownTeam} deleteMode={!ownTeam.checkedInTime} />
       </div>
       <Form method="post">
@@ -218,7 +212,7 @@ export default function ManageTeamPage() {
           <Label className="mt-3" htmlFor="canHost">
             Does your team want to host?
           </Label>
-          <div className="tournament__manage-roster__radio-with-label">
+          <div className="tournament__manage-team__radio-with-label">
             <input
               type="radio"
               id="yes"
@@ -227,14 +221,14 @@ export default function ManageTeamPage() {
               defaultChecked={ownTeam.canHost}
             />
             <Label
-              className="tournament__manage-roster__radio-label"
+              className="tournament__manage-team__radio-label"
               htmlFor="yes"
             >
               Yes
             </Label>
           </div>
 
-          <div className="tournament__manage-roster__radio-with-label">
+          <div className="tournament__manage-team__radio-with-label">
             <input
               type="radio"
               id="no"
@@ -243,7 +237,7 @@ export default function ManageTeamPage() {
               defaultChecked={!ownTeam.canHost}
             />
             <Label
-              className="tournament__manage-roster__radio-label"
+              className="tournament__manage-team__radio-label"
               htmlFor="no"
             >
               No
@@ -263,20 +257,20 @@ export default function ManageTeamPage() {
         </fieldset>
       </Form>
       {ownTeam.members.length < TOURNAMENT_TEAM_ROSTER_MAX_SIZE && (
-        <fieldset className="tournament__manage-roster__actions">
+        <fieldset className="tournament__manage-team__actions">
           <legend>Add players to your team</legend>
-          <div className="tournament__manage-roster__actions__section">
+          <div className="tournament__manage-team__actions__section">
             <Label htmlFor="inviteCodeInput">Share this URL</Label>
             <input
               id="inviteCodeInput"
-              className="tournament__manage-roster__input"
+              className="tournament__manage-team__input"
               disabled
               value={urlWithInviteCode}
             />
             <CopyToClipboardButton urlWithInviteCode={urlWithInviteCode} />
           </div>
           {trustingUsers.length > 0 && (
-            <div className="tournament__manage-roster__actions__section">
+            <div className="tournament__manage-team__actions__section">
               <Form method="post">
                 <input type="hidden" name="_action" value="ADD_PLAYER" />
                 <input type="hidden" name="teamId" value={ownTeam.id} />
@@ -284,7 +278,7 @@ export default function ManageTeamPage() {
                   Add players you previously played with
                 </Label>
                 <select
-                  className="tournament__manage-roster__select"
+                  className="tournament__manage-team__select"
                   name="userId"
                   id="userId"
                 >
@@ -296,7 +290,7 @@ export default function ManageTeamPage() {
                 </select>
                 <FormErrorMessage errorMsg={actionData?.error?.userId} />
                 <SubmitButton
-                  className="tournament__manage-roster__input__button"
+                  className="tournament__manage-team__input__button"
                   actionType="ADD_PLAYER"
                   loadingText="Adding..."
                   data-cy="add-to-roster-button"
@@ -321,7 +315,7 @@ function CopyToClipboardButton({
 
   return (
     <button
-      className="tournament__manage-roster__input__button"
+      className="tournament__manage-team__input__button"
       onClick={() => {
         navigator.clipboard
           .writeText(urlWithInviteCode)

@@ -1,15 +1,15 @@
-.tournament__manage-roster {
+.tournament__manage-team {
   display: flex;
   width: 100%;
   flex-direction: column;
   gap: var(--s-8);
 }
 
-.tournament__manage-roster__roster-container {
+.tournament__manage-team__roster-container {
   margin: 0 auto;
 }
 
-.tournament__manage-roster__actions {
+.tournament__manage-team__actions {
   display: flex;
   width: 100%;
   flex-wrap: wrap;
@@ -18,32 +18,32 @@
   row-gap: var(--s-8);
 }
 
-.tournament__manage-roster__actions__section {
+.tournament__manage-team__actions__section {
   display: flex;
   width: 18rem;
   flex-direction: column;
   align-items: flex-start;
 }
 
-.tournament__manage-roster__input {
+.tournament__manage-team__input {
   width: min(100%, 20rem);
 }
 
-.tournament__manage-roster__select {
+.tournament__manage-team__select {
   width: min(100%, 10rem);
 }
 
-.tournament__manage-roster__radio-with-label {
+.tournament__manage-team__radio-with-label {
   display: flex;
   align-items: center;
   margin-block-start: var(--s-1);
 }
 
-.tournament__manage-roster__radio-label {
+.tournament__manage-team__radio-label {
   margin-block-end: 0;
   margin-inline-start: var(--s-2);
 }
 
-.tournament__manage-roster__input__button {
+.tournament__manage-team__input__button {
   margin-block-start: var(--s-4);
 }

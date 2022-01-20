@@ -102,7 +102,7 @@ export const loader: LoaderFunction = async ({ request, params, context }) => {
     )
   ) {
     return redirect(
-      `/to/${params.organization}/${params.tournament}/manage-roster`
+      `/to/${params.organization}/${params.tournament}/manage-team`
     );
   }
 

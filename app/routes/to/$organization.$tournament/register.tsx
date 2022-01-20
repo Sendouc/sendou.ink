@@ -106,7 +106,7 @@ export const action: ActionFunction = async ({
   );
 
   return redirect(
-    `/to/${params.organization}/${params.tournament}/manage-roster`
+    `/to/${params.organization}/${params.tournament}/manage-team`
   );
 };
 
