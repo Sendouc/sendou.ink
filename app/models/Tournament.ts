@@ -5,7 +5,11 @@ export type FindById = Prisma.PromiseReturnType<typeof findById>;
 export function findById(id: string) {
   return db.tournament.findUnique({
     where: { id },
-    include: { organizer: true, teams: { include: { members: true } } },
+    include: {
+      organizer: true,
+      brackets: { include: { rounds: true } },
+      teams: { include: { members: true } },
+    },
   });
 }
 
@@ -134,6 +138,24 @@ export function findByNameForUrlWithInviteCodes(tournamentNameForUrl: string) {
           },
         },
       },
+    },
+  });
+}
+
+export type UpdateSeeds = Prisma.PromiseReturnType<typeof updateSeeds>;
+export function updateSeeds({
+  tournamentId,
+  seeds,
+}: {
+  tournamentId: string;
+  seeds: string[];
+}) {
+  return db.tournament.update({
+    where: {
+      id: tournamentId,
+    },
+    data: {
+      seeds,
     },
   });
 }

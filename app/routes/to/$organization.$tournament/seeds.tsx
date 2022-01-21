@@ -38,8 +38,7 @@ import {
   validate,
 } from "~/utils";
 import { useTimeoutState } from "~/hooks/common";
-import { updateSeeds } from "~/db/tournament/mutations/updateSeeds";
-import { findTournamentById } from "~/db/tournament/queries/findTournamentById";
+import * as Tournament from "~/models/Tournament";
 import {
   isTournamentAdmin,
   tournamentHasNotStarted,
@@ -57,7 +56,7 @@ export const action: ActionFunction = async ({ context, request }) => {
   });
   const user = requireUser(context);
 
-  const tournament = await findTournamentById(data.tournamentId);
+  const tournament = await Tournament.findById(data.tournamentId);
   validate(tournament, "Invalid tournament id");
   validate(
     isTournamentAdmin({ userId: user.id, organization: tournament.organizer }),
@@ -68,7 +67,7 @@ export const action: ActionFunction = async ({ context, request }) => {
     "Can't change seeds after tournament has started"
   );
 
-  await updateSeeds({
+  await Tournament.updateSeeds({
     tournamentId: data.tournamentId,
     seeds: data.seeds,
   });

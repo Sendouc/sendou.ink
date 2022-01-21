@@ -24,9 +24,9 @@ import {
   roompassRegExp,
   roompassRegExpString,
 } from "~/core/tournament/utils";
-import { putPlayerToTeam } from "~/db/tournament/mutations/putPlayerToTeam";
-import { tournamentTeamById } from "~/db/tournament/queries/tournamentTeamById";
 import { useBaseURL, useTimeoutState } from "~/hooks/common";
+import * as TournamentTeam from "~/models/TournamentTeam";
+import * as TournamentTeamMember from "~/models/TournamentTeamMember";
 import type { FindManyByTrustReceiverId } from "~/models/TrustRelationship";
 import {
   editTeam,
@@ -88,7 +88,7 @@ export const action: ActionFunction = async ({
   switch (data._action) {
     case "ADD_PLAYER": {
       try {
-        const tournamentTeam = await tournamentTeamById(data.teamId);
+        const tournamentTeam = await TournamentTeam.findById(data.teamId);
 
         // TODO: Validate if tournament already started / concluded (depending on if tournament allows mid-event roster additions)
         validate(tournamentTeam, "Invalid tournament team id");
@@ -98,10 +98,10 @@ export const action: ActionFunction = async ({
           "Not captain of the team"
         );
 
-        await putPlayerToTeam({
+        await TournamentTeamMember.joinTeam({
           tournamentId: tournamentTeam.tournament.id,
           teamId: data.teamId,
-          newPlayerId: data.userId,
+          memberId: data.userId,
         });
       } catch (e) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {

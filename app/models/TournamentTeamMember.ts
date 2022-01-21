@@ -1,13 +1,13 @@
 import type { Prisma } from ".prisma/client";
 import { db } from "~/utils/db.server";
 
-export type Create = Prisma.PromiseReturnType<typeof create>;
-export function create({
-  userId,
+export type JoinTeam = Prisma.PromiseReturnType<typeof joinTeam>;
+export function joinTeam({
+  memberId,
   teamId,
   tournamentId,
 }: {
-  userId: string;
+  memberId: string;
   teamId: string;
   tournamentId: string;
 }) {
@@ -15,7 +15,7 @@ export function create({
     data: {
       tournamentId,
       teamId,
-      memberId: userId,
+      memberId,
     },
   });
 }
