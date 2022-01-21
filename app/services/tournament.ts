@@ -5,10 +5,10 @@ import {
 } from "~/constants";
 import { MapListIds, tournamentRoundsForDB } from "~/core/tournament/bracket";
 import { captainOfTeam, sortTeamsBySeed } from "~/core/tournament/utils";
-import * as Tournament from "~/models/Tournament";
-import * as TournamentTeam from "~/models/TournamentTeam";
-import * as TournamentTeamMember from "~/models/TournamentTeamMember";
-import * as TrustRelationship from "~/models/TrustRelationship";
+import * as Tournament from "~/models/Tournament.server";
+import * as TournamentTeam from "~/models/TournamentTeam.server";
+import * as TournamentTeamMember from "~/models/TournamentTeamMember.server";
+import * as TrustRelationship from "~/models/TrustRelationship.server";
 import { Serialized, Unpacked } from "~/utils";
 import { db } from "~/utils/db.server";
 import { isTournamentAdmin } from "~/validators/tournament";

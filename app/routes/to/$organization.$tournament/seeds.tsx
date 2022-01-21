@@ -38,7 +38,7 @@ import {
   validate,
 } from "~/utils";
 import { useTimeoutState } from "~/hooks/common";
-import * as Tournament from "~/models/Tournament";
+import * as Tournament from "~/models/Tournament.server";
 import {
   isTournamentAdmin,
   tournamentHasNotStarted,

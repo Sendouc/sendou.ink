@@ -25,9 +25,9 @@ import {
   roompassRegExpString,
 } from "~/core/tournament/utils";
 import { useBaseURL, useTimeoutState } from "~/hooks/common";
-import * as TournamentTeam from "~/models/TournamentTeam";
-import * as TournamentTeamMember from "~/models/TournamentTeamMember";
-import type { FindManyByTrustReceiverId } from "~/models/TrustRelationship";
+import * as TournamentTeam from "~/models/TournamentTeam.server";
+import * as TournamentTeamMember from "~/models/TournamentTeamMember.server";
+import type { FindManyByTrustReceiverId } from "~/models/TrustRelationship.server";
 import {
   editTeam,
   ownTeamWithInviteCode,

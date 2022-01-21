@@ -9,8 +9,8 @@ import {
 } from "~/core/tournament/bracket";
 import { canReportMatchScore } from "~/core/tournament/permissions";
 import { matchIsOver } from "~/core/tournament/utils";
-import * as TournamentBracket from "~/models/TournamentBracket";
-import * as TournamentMatch from "~/models/TournamentMatch";
+import * as TournamentBracket from "~/models/TournamentBracket.server";
+import * as TournamentMatch from "~/models/TournamentMatch.server";
 import { Unpacked } from "~/utils";
 import { db } from "~/utils/db.server";
 

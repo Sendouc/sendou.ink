@@ -8,10 +8,7 @@ import {
 import { z } from "zod";
 import Modal from "~/components/Modal";
 import { TeamRosterInputs } from "~/components/tournament/TeamRosterInputs";
-import {
-  FindMatchModalInfoByNumber,
-  findMatchModalInfoByNumber,
-} from "~/db/tournament/queries/findMatchModalInfoByNumber";
+import * as TournamentMatch from "~/models/TournamentMatch.server";
 import { Unpacked } from "~/utils";
 import styles from "~/styles/tournament-match.css";
 import { FancyStageBanner } from "~/components/tournament/FancyStageBanner";
@@ -20,21 +17,25 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-const typedJson = (args: NonNullable<FindMatchModalInfoByNumber>) => json(args);
+const typedJson = (args: NonNullable<TournamentMatch.FindInfoForModal>) =>
+  json(args);
 
 export const loader: LoaderFunction = async ({ params }) => {
   const { bid: bracketId, num: matchNumber } = z
     .object({ bid: z.string(), num: z.preprocess(Number, z.number()) })
     .parse(params);
 
-  const match = await findMatchModalInfoByNumber({ bracketId, matchNumber });
+  const match = await TournamentMatch.findInfoForModal({
+    bracketId,
+    matchNumber,
+  });
   if (!match) throw new Response("No match found", { status: 404 });
 
   return typedJson(match);
 };
 
 export default function MatchModal() {
-  const data = useLoaderData<NonNullable<FindMatchModalInfoByNumber>>();
+  const data = useLoaderData<NonNullable<TournamentMatch.FindInfoForModal>>();
   const location = useLocation();
 
   return (
@@ -78,7 +79,9 @@ export default function MatchModal() {
 }
 
 function matchInfoToCheckedPlayers(
-  matchInfo: Unpacked<NonNullable<FindMatchModalInfoByNumber>["matchInfos"]>
+  matchInfo: Unpacked<
+    NonNullable<TournamentMatch.FindInfoForModal>["matchInfos"]
+  >
 ): [string[], string[]] {
   return [
     matchInfo.teamUpper.members
