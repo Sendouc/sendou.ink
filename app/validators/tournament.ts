@@ -35,5 +35,5 @@ export function tournamentTeamIsNotFull(team: { members: unknown[] }) {
 }
 
 export function teamHasNotCheckedIn(team: { checkedInTime: Date | null }) {
-  return !Boolean(team.checkedInTime);
+  return !team.checkedInTime;
 }
