@@ -25,7 +25,7 @@ import type { MyCSSProperties } from "~/utils";
 import { useUser } from "~/hooks/common";
 import tournamentStylesUrl from "../../styles/tournament.css";
 import * as React from "react";
-import { isTournamentAdmin } from "~/validators/tournament";
+import { isTournamentAdmin } from "~/core/tournament/validators";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: tournamentStylesUrl }];

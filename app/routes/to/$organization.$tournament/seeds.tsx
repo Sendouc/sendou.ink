@@ -42,7 +42,7 @@ import * as Tournament from "~/models/Tournament.server";
 import {
   isTournamentAdmin,
   tournamentHasNotStarted,
-} from "~/validators/tournament";
+} from "~/core/tournament/validators";
 
 const seedsActionSchema = z.object({
   tournamentId: z.string().uuid(),

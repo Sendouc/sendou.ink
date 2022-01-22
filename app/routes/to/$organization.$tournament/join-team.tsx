@@ -23,7 +23,7 @@ import {
 import * as Tournament from "~/models/Tournament.server";
 import * as TournamentTeamMember from "~/models/TournamentTeamMember.server";
 import * as TrustRelationship from "~/models/TrustRelationship.server";
-import { tournamentTeamIsNotFull } from "~/validators/tournament";
+import { tournamentTeamIsNotFull } from "~/core/tournament/validators";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];

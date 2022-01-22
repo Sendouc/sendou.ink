@@ -6,7 +6,7 @@ import * as Tournament from "~/models/Tournament.server";
 import * as TournamentTeam from "~/models/TournamentTeam.server";
 import { Serialized, Unpacked } from "~/utils";
 import { db } from "~/utils/db.server";
-import { isTournamentAdmin } from "~/validators/tournament";
+import { isTournamentAdmin } from "~/core/tournament/validators";
 
 export type FindTournamentByNameForUrlI = Serialized<
   Prisma.PromiseReturnType<typeof findTournamentByNameForUrl>

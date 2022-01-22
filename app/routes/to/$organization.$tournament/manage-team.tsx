@@ -38,7 +38,7 @@ import {
   isCaptainOfTheTeam,
   teamHasNotCheckedIn,
   tournamentTeamIsNotFull,
-} from "~/validators/tournament";
+} from "~/core/tournament/validators";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
