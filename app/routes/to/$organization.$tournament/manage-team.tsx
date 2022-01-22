@@ -5,6 +5,7 @@ import {
   json,
   LinksFunction,
   LoaderFunction,
+  redirect,
   useActionData,
   useLoaderData,
   useLocation,
@@ -23,21 +24,19 @@ import {
   friendCodeRegExpString,
   roompassRegExp,
   roompassRegExpString,
+  tournamentURL,
 } from "~/core/tournament/utils";
 import { useBaseURL, useTimeoutState } from "~/hooks/common";
+import * as Tournament from "~/models/Tournament.server";
 import * as TournamentTeam from "~/models/TournamentTeam.server";
 import * as TournamentTeamMember from "~/models/TournamentTeamMember.server";
+import * as User from "~/models/User.server";
 import type { FindManyByTrustReceiverId } from "~/models/TrustRelationship.server";
-import {
-  editTeam,
-  ownTeamWithInviteCode,
-  removePlayerFromTeam,
-} from "~/services/tournament";
-import { getTrustingUsers } from "~/services/user";
 import styles from "~/styles/tournament-manage-team.css";
 import { parseRequestFormData, requireUser, validate } from "~/utils";
 import {
   isCaptainOfTheTeam,
+  teamHasNotCheckedIn,
   tournamentTeamIsNotFull,
 } from "~/validators/tournament";
 
@@ -117,21 +116,42 @@ export const action: ActionFunction = async ({
       return { ok: "ADD_PLAYER" };
     }
     case "DELETE_PLAYER": {
-      await removePlayerFromTeam({
-        userId: user.id,
-        playerId: data.userId,
-        teamId: data.teamId,
+      const tournamentTeam = await TournamentTeam.findById(data.teamId);
+
+      validate(tournamentTeam, "Invalid team id");
+      validate(data.userId !== user.id, "Can't remove self");
+      validate(
+        isCaptainOfTheTeam(user, tournamentTeam),
+        "Not captain of the team"
+      );
+      validate(
+        teamHasNotCheckedIn(tournamentTeam),
+        "Can't remove players after checking in"
+      );
+
+      await TournamentTeamMember.del({
+        memberId: data.userId,
+        tournamentId: tournamentTeam.tournament.id,
       });
+
       return { ok: "DELETE_PLAYER" };
     }
     case "EDIT_TEAM": {
-      await editTeam({
+      const tournamentTeam = await TournamentTeam.findById(data.teamId);
+
+      validate(tournamentTeam, "Invalid team id");
+      validate(
+        isCaptainOfTheTeam(user, tournamentTeam),
+        "Not captain of the team"
+      );
+
+      await TournamentTeam.editTeam({
+        id: data.teamId,
+        canHost: data.canHost,
         friendCode: data.friendCode,
         roomPass: data.roomPass,
-        teamId: data.teamId,
-        canHost: data.canHost,
-        userId: user.id,
       });
+
       return { ok: "EDIT_TEAM" };
     }
     default: {
@@ -144,7 +164,7 @@ export const action: ActionFunction = async ({
 };
 
 type Data = {
-  ownTeam: Prisma.PromiseReturnType<typeof ownTeamWithInviteCode>;
+  ownTeam: NonNullable<Tournament.OwnTeam>;
   trustingUsers: FindManyByTrustReceiverId;
 };
 
@@ -157,13 +177,22 @@ export const loader: LoaderFunction = async ({ params, context }) => {
 
   const user = requireUser(context);
   const [ownTeam, trustingUsersAll] = await Promise.all([
-    ownTeamWithInviteCode({
-      organizationNameForUrl: parsedParams.organization,
+    Tournament.ownTeam({
+      organizerNameForUrl: parsedParams.organization,
       tournamentNameForUrl: parsedParams.tournament,
-      userId: user.id,
+      user,
     }),
-    getTrustingUsers(user.id),
+    User.findTrusters(user.id),
   ]);
+
+  if (!ownTeam) {
+    return redirect(
+      tournamentURL({
+        organizerNameForUrl: parsedParams.organization,
+        tournamentNameForUrl: parsedParams.tournament,
+      })
+    );
+  }
 
   const trustingUsers = trustingUsersAll.filter(({ trustGiver }) => {
     return !ownTeam.members.some(({ member }) => member.id === trustGiver.id);

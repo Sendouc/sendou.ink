@@ -33,3 +33,7 @@ export function isCaptainOfTheTeam(
 export function tournamentTeamIsNotFull(team: { members: unknown[] }) {
   return team.members.length < TOURNAMENT_TEAM_ROSTER_MAX_SIZE;
 }
+
+export function teamHasNotCheckedIn(team: { checkedInTime: Date | null }) {
+  return !Boolean(team.checkedInTime);
+}

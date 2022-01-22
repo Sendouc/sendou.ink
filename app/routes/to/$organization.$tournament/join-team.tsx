@@ -8,46 +8,71 @@ import {
   useTransition,
   useLocation,
 } from "remix";
-import invariant from "tiny-invariant";
 import { z } from "zod";
 import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
-import { captainOfTeam } from "~/core/tournament/utils";
-import {
-  FindTournamentByNameForUrlI,
-  findTournamentWithInviteCodes,
-  joinTeamViaInviteCode,
-} from "~/services/tournament";
+import { captainOfTeam, tournamentURL } from "~/core/tournament/utils";
 import styles from "~/styles/tournament-join-team.css";
-import { getLogInUrl, getUser, requireUser } from "~/utils";
+import {
+  getLogInUrl,
+  getUser,
+  parseRequestFormData,
+  requireUser,
+  validate,
+} from "~/utils";
+import * as Tournament from "~/models/Tournament.server";
+import * as TournamentTeamMember from "~/models/TournamentTeamMember.server";
+import * as TrustRelationship from "~/models/TrustRelationship.server";
+import { tournamentTeamIsNotFull } from "~/validators/tournament";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
+const actionSchema = z.object({
+  inviteCode: z.string().uuid(),
+  tournamentId: z.string().uuid(),
+});
+
 export const action: ActionFunction = async ({ request, context, params }) => {
-  const formData = await request.formData();
-  const inviteCode = formData.get("inviteCode");
-  const tournamentId = formData.get("tournamentId");
-  invariant(typeof inviteCode === "string", "Invalid type for inviteCode.");
-  invariant(
-    typeof tournamentId === "string",
-    "Invalid type for tournament id."
-  );
+  const data = await parseRequestFormData({
+    request,
+    schema: actionSchema,
+  });
   const parsedParams = z
     .object({ organization: z.string(), tournament: z.string() })
     .parse(params);
-
   const user = requireUser(context);
 
-  await joinTeamViaInviteCode({
-    inviteCode,
-    userId: user.id,
-    tournamentId: tournamentId,
-  });
+  const tournament = await Tournament.findById(data.tournamentId);
+
+  validate(tournament, "Invalid tournament id");
+  // TODO: 400 if tournament already started / concluded (depending on if tournament allows mid-event roster additions)
+
+  const teamToJoin = tournament.teams.find(
+    (team) => team.inviteCode === data.inviteCode
+  );
+  validate(teamToJoin, "Invalid invite code");
+  validate(tournamentTeamIsNotFull(teamToJoin), "Team is full");
+
+  await Promise.all([
+    TournamentTeamMember.joinTeam({
+      teamId: teamToJoin.id,
+      memberId: user.id,
+      tournamentId: data.tournamentId,
+    }),
+    // TODO: this could also be put to queue and scheduled for later
+    TrustRelationship.upsert({
+      trustReceiverId: captainOfTeam(teamToJoin).memberId,
+      trustGiverId: user.id,
+    }),
+  ]);
 
   return redirect(
-    `/to/${parsedParams.organization}/${parsedParams.tournament}/teams`
+    `${tournamentURL({
+      organizerNameForUrl: parsedParams.organization,
+      tournamentNameForUrl: parsedParams.tournament,
+    })}/teams`
   );
 };
 
@@ -64,32 +89,34 @@ type Data =
 const typedJson = (args: Data) => json(args);
 
 export const loader: LoaderFunction = async ({ request, params, context }) => {
-  invariant(
-    typeof params.organization === "string",
-    "Expected params.organization to be string"
-  );
-  invariant(
-    typeof params.tournament === "string",
-    "Expected params.tournament to be string"
-  );
-
-  const inviteCode = new URL(request.url).searchParams.get("code");
-  if (!inviteCode) return typedJson({ status: "NO_CODE" });
-  if (inviteCode.length !== INVITE_CODE_LENGTH)
-    return typedJson({ status: "TOO_SHORT" });
-
+  const parsedParams = z
+    .object({ tournament: z.string(), organization: z.string() })
+    .parse(params);
   const user = getUser(context);
 
   if (!user) return typedJson({ status: "LOG_IN" });
 
-  const tournament = await findTournamentWithInviteCodes({
-    organizationNameForUrl: params.organization,
-    tournamentNameForUrl: params.tournament,
+  const inviteCode = new URL(request.url).searchParams.get("code");
+  if (!inviteCode) return typedJson({ status: "NO_CODE" });
+  if (inviteCode.length !== INVITE_CODE_LENGTH) {
+    return typedJson({ status: "TOO_SHORT" });
+  }
+
+  const tournament = await Tournament.findByNameForUrl({
+    organizationNameForUrl: parsedParams.organization,
+    tournamentNameForUrl: parsedParams.tournament,
+    withInviteCodes: true,
   });
+  if (!tournament) return new Response(null, { status: 404 });
 
   // TODO: handle inviting players mid-event
   if (tournament.startTime < new Date()) {
-    return redirect(`/to/${params.organization}/${params.tournament}`);
+    return redirect(
+      tournamentURL({
+        organizerNameForUrl: parsedParams.organization,
+        tournamentNameForUrl: parsedParams.tournament,
+      })
+    );
   }
 
   const teamAlreadyMemberOf = tournament.teams.find((team) =>
@@ -102,7 +129,10 @@ export const loader: LoaderFunction = async ({ request, params, context }) => {
     )
   ) {
     return redirect(
-      `/to/${params.organization}/${params.tournament}/manage-team`
+      `${tournamentURL({
+        organizerNameForUrl: parsedParams.organization,
+        tournamentNameForUrl: parsedParams.tournament,
+      })}/manage-team`
     );
   }
 
@@ -141,7 +171,8 @@ function Contents({ data }: { data: Data }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [, parentRoute] = useMatches();
-  const parentRouteData = parentRoute.data as FindTournamentByNameForUrlI;
+  const parentRouteData =
+    parentRoute.data as NonNullable<Tournament.FindByNameForUrl>;
   const transition = useTransition();
 
   switch (data.status) {

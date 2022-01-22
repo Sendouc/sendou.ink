@@ -97,6 +97,14 @@ function idToRoomPass(id: string) {
   return pass;
 }
 
+export const tournamentURL = ({
+  organizerNameForUrl,
+  tournamentNameForUrl,
+}: {
+  organizerNameForUrl: string;
+  tournamentNameForUrl: string;
+}) => `/to/${organizerNameForUrl}/${tournamentNameForUrl}`;
+
 export const friendCodeRegExpString = "^(SW-)?[0-9]{4}-?[0-9]{4}-?[0-9]{4}$";
 export const friendCodeRegExp = new RegExp(friendCodeRegExpString, "i");
 
