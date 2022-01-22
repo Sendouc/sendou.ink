@@ -130,7 +130,6 @@ export default function TournamentPage() {
     "--tournaments-bg": data.bannerBackground,
     "--tournaments-text": data.CSSProperties.text,
     "--tournaments-text-transparent": data.CSSProperties.textTransparent,
-    // todo: could make a TS helper type for this that checks for leading --
   };
 
   const linksContainerStyle: MyCSSProperties = {

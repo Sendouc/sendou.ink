@@ -19,9 +19,7 @@
   height: 10rem;
   flex-direction: column;
   justify-content: space-between;
-
-  /* TODO: */
-  background-image: url("https://pbs.twimg.com/media/DoAV42MXsAAtHCh?format=jpg&name=large");
+  background-image: var(--_tournament-bg-url);
   background-position: center;
   border-start-end-radius: var(--rounded);
   border-start-start-radius: var(--rounded);

@@ -59,6 +59,11 @@ export function stageNameToImageUrl(name: string) {
   return `/img/stages/${name.replaceAll(" ", "-").toLowerCase()}.webp`;
 }
 
+export function stageNameToBannerImageUrl(name: string) {
+  // TODO: webp
+  return `/img/stage-banners/${name.replaceAll(" ", "-").toLowerCase()}.png`;
+}
+
 export function modeToImageUrl(mode: Mode) {
   return `/img/modes/${mode}.webp`;
 }
@@ -124,10 +129,12 @@ export type MyReducerAction<
     }
   : { type: K };
 
+// TODO: make everything start with _ like _tournament-bg-url to avoid collision with global css vars
 export interface MyCSSProperties extends CSSProperties {
   "--tournaments-bg"?: string;
   "--tournaments-text"?: string;
   "--tournaments-text-transparent"?: string;
+  "--_tournament-bg-url"?: string;
   "--action-section-icon-color"?: string;
   "--brackets-columns"?: number;
   "--brackets-max-matches"?: number;

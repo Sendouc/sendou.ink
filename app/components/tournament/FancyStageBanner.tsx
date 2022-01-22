@@ -1,7 +1,11 @@
 import * as React from "react";
 import type { Mode } from "@prisma/client";
 import { modesShortToLong } from "~/constants";
-import { modeToImageUrl } from "~/utils";
+import {
+  modeToImageUrl,
+  MyCSSProperties,
+  stageNameToBannerImageUrl,
+} from "~/utils";
 import clsx from "clsx";
 
 export function FancyStageBanner({
@@ -15,12 +19,17 @@ export function FancyStageBanner({
   infos?: JSX.Element[];
   children?: React.ReactNode;
 }) {
+  const style: MyCSSProperties = {
+    "--_tournament-bg-url": `url("${stageNameToBannerImageUrl(stage.name)}")`,
+  };
+
   return (
     <>
       <div
         className={clsx("tournament-bracket__stage-banner", {
           rounded: !infos,
         })}
+        style={style}
       >
         <div className="tournament-bracket__stage-banner__top-bar">
           <h4 className="tournament-bracket__stage-banner__top-bar__header">
