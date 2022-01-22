@@ -60,6 +60,13 @@ export const Layout = React.memo(function Layout({
           ))}
         </div>
       </nav>
+      <Link className="layout__beta__link" to="/beta">
+        <div className="layout__beta__banner">
+          {new Array(50).fill(null).map((_, i) => (
+            <span key={i}>BETA</span>
+          ))}
+        </div>
+      </Link>
       <main className="layout__main">{children}</main>
     </>
   );

@@ -40,6 +40,23 @@
   justify-self: flex-end;
 }
 
+.layout__beta__link {
+  text-decoration: none;
+}
+
+.layout__beta__banner {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  background-color: var(--theme);
+  color: var(--button-text-transparent);
+  font-size: var(--fonts-xs);
+  font-weight: var(--bold);
+  gap: var(--s-8);
+  overflow-x: hidden;
+  white-space: nowrap;
+}
+
 .layout__nav {
   display: none;
   justify-content: center;

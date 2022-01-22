@@ -5,6 +5,7 @@
   --bg-modal-backdrop: hsla(237deg 98% 1% / 70%);
   --border: hsl(237.3deg 42.3% 45.6%);
   --button-text: rgb(0 0 0 / 85%);
+  --button-text-transparent: rgb(0 0 0 / 65%);
   --text: rgb(255 255 255 / 95%);
   --text-lighter: rgb(255 255 255 / 55%);
   --theme-error: rgb(219 70 65);
@@ -86,6 +87,12 @@ body {
 
 *:focus:not(:focus-visible) {
   outline: none !important;
+}
+
+a {
+  color: var(--theme);
+  font-weight: var(--semi-bold);
+  text-decoration: none;
 }
 
 button {
@@ -384,6 +391,10 @@ select::selection {
 }
 
 /* Utility classes */
+
+.mt-2 {
+  margin-block-start: var(--s-2);
+}
 
 .mt-3 {
   margin-block-start: var(--s-3);
