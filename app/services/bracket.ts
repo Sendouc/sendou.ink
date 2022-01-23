@@ -458,7 +458,7 @@ function newParticipantsToBracketData(
     result.push({
       number: match.position,
       participants: participants(),
-      score: participants().length > 1 ? [0, 0] : null,
+      score: participants().filter(Boolean).length > 1 ? [0, 0] : null,
     });
   }
 
