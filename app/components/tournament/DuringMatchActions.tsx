@@ -82,6 +82,10 @@ export function DuringMatchActions({
       </FancyStageBanner>
       <ActionSectionWrapper>
         <DuringMatchActionsRosters
+          // Without the key prop when switching to another match the winnerId is remembered
+          // which causes "No winning team matching the id" error.
+          // Switching the key props forces the component to remount.
+          key={currentMatch.id}
           ownTeam={ownTeam}
           opponentTeam={opponentTeam}
           matchId={currentMatch.id}
