@@ -1,14 +1,8 @@
-import type { LinksFunction } from "remix";
 import { DISCORD_URL } from "~/constants";
-import styles from "~/styles/beta.css";
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
-};
 
 export default function BetaPage() {
   return (
-    <div className="beta__container">
+    <div className="container">
       <h2>Beta of sendou.ink (Splatoon 3)</h2>
       <p>
         Hello there! I appreciate you taking time to visit this beta version of
