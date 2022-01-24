@@ -27,6 +27,10 @@ if (process.env.NODE_ENV === "production") {
 
 export { db };
 
+declare global {
+  var __Database: Database;
+}
+
 export class Database {
   db;
   user;
@@ -34,7 +38,7 @@ export class Database {
   tournament;
   //static #instance: Database;
   constructor() {
-    // make Database class into singleton
+    // TODO: make Database class into singleton
     // if (Database.#instance) {
     //   return Database.#instance;
     // }
