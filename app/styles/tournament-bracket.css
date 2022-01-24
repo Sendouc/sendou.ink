@@ -378,6 +378,17 @@
   transform: translate(-50%, -50%);
 }
 
+.top-only::after {
+  position: absolute;
+  top: 75%;
+  right: -4px;
+  width: 3px;
+  height: 60%;
+  background: var(--bg);
+  content: "";
+  transform: translate(-50%, -50%);
+}
+
 @media screen and (min-width: 480px) {
   .tournament-bracket__infos {
     flex-direction: row;
