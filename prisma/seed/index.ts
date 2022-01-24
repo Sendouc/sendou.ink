@@ -1,17 +1,14 @@
 import { PrismaClient } from "@prisma/client";
+import { SeedVariationsSchema } from "~/utils/schemas";
 const prisma = new PrismaClient();
 import { seed } from "./script";
 
-const legalVariations = ["check-in", "match"];
-
-const variation = process.argv[2]?.startsWith("-v=")
+const maybeVariation = process.argv[2]?.startsWith("-v=")
   ? process.argv[2].split("-v=")[1]
   : undefined;
-if (variation !== undefined && !legalVariations.includes(variation)) {
-  throw Error("Unknown variation");
-}
+const variation = SeedVariationsSchema.optional().parse(maybeVariation);
 
-seed(variation as any)
+seed(variation)
   .then(() => {
     console.log(
       `🌱 All done with seeding${variation ? ` (variation: ${variation})` : ""}`
@@ -21,6 +18,6 @@ seed(variation as any)
     console.error(e);
     process.exit(1);
   })
-  .finally(async () => {
-    await prisma.$disconnect();
+  .finally(() => {
+    prisma.$disconnect().catch((err) => console.error(err));
   });

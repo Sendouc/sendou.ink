@@ -1,3 +1,4 @@
+import * as React from "react";
 import { useState } from "react";
 import { HamburgerButton } from "./HamburgerButton";
 import { MobileNav } from "./MobileNav";
@@ -6,7 +7,11 @@ import { UserItem } from "./UserItem";
 import { Link } from "remix";
 import { navItems } from "~/constants";
 
-export function Layout({ children }: { children: React.ReactNode }) {
+export const Layout = React.memo(function Layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [menuExpanded, setMenuExpanded] = useState(false);
 
   return (
@@ -55,7 +60,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
           ))}
         </div>
       </nav>
+      <Link className="layout__beta__link" to="/beta">
+        <div className="layout__beta__banner">
+          {new Array(50).fill(null).map((_, i) => (
+            <span key={i}>BETA</span>
+          ))}
+        </div>
+      </Link>
       <main className="layout__main">{children}</main>
     </>
   );
-}
+});

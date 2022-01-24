@@ -2,11 +2,14 @@
   --bg: hsl(237.3deg 42.3% 30.6%);
   --bg-lighter: hsl(237.3deg 42.3% 35.6%);
   --bg-lighter-transparent: hsla(237.3deg 42.3% 35.6% / 50%);
+  --bg-modal-backdrop: hsla(237deg 98% 1% / 70%);
   --border: hsl(237.3deg 42.3% 45.6%);
   --button-text: rgb(0 0 0 / 85%);
+  --button-text-transparent: rgb(0 0 0 / 65%);
   --text: rgb(255 255 255 / 95%);
   --text-lighter: rgb(255 255 255 / 55%);
   --theme-error: rgb(219 70 65);
+  --theme-error-transparent: rgba(219 70 65 / 75%);
   --theme-warning: #f5f587;
   --theme-info: #a3a6ff;
   --theme-success: #a3ffae;
@@ -55,6 +58,9 @@
   --s-72: 18rem;
   --s-80: 20rem;
   --s-96: 2rem;
+
+  /* letter-spacing: */
+  --sparse: 0.4px;
 }
 
 /* xs: "(min-width: 480px)",
@@ -81,6 +87,12 @@ body {
 
 *:focus:not(:focus-visible) {
   outline: none !important;
+}
+
+a {
+  color: var(--theme);
+  font-weight: var(--semi-bold);
+  text-decoration: none;
 }
 
 button {
@@ -213,7 +225,7 @@ input[type="checkbox"] {
   height: 16px;
 }
 
-label:not(.plain) {
+.label {
   display: block;
   font-size: var(--fonts-xs);
   font-weight: var(--bold);
@@ -265,6 +277,48 @@ select {
 select::selection {
   overflow: hidden;
   font-weight: bold;
+}
+
+/* Does not respect window getting resized */
+.modal {
+  position: fixed;
+  z-index: 999;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: var(--bg-modal-backdrop);
+}
+
+.modal > div {
+  position: relative;
+  top: 50%;
+  left: 50%;
+  width: 800px;
+
+  /* TODO: just use as much space as is needed */
+  height: 100%;
+  padding: var(--s-8);
+  background-color: var(--bg-lighter);
+  border-radius: var(--rounded);
+  overflow-y: auto;
+  transform: translate(-50%, -50%);
+}
+
+.modal-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 70px;
+  color: var(--text);
+  font-size: 80%;
+  line-height: 50px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.modal-close:hover {
+  font-weight: var(--bold);
 }
 
 .form-validation-error {
@@ -332,10 +386,40 @@ select::selection {
   font-size: var(--fonts-md);
 }
 
+.disabled-opaque {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 /* Utility classes */
+
+.mt-2 {
+  margin-block-start: var(--s-2);
+}
 
 .mt-3 {
   margin-block-start: var(--s-3);
+}
+
+.mt-4 {
+  margin-block-start: var(--s-4);
+}
+
+.mb-0 {
+  margin-block-end: 0;
+}
+
+.ml-2 {
+  margin-inline-start: var(--s-2);
+}
+
+.my-1-5 {
+  margin-block-end: var(--s-1-5);
+  margin-block-start: var(--s-1-5);
+}
+
+.text-xs {
+  font-size: var(--fonts-xs);
 }
 
 .invisible {
@@ -344,4 +428,20 @@ select::selection {
 
 .width-full {
   width: 100%;
+}
+
+.flex {
+  display: flex;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.rounded {
+  border-radius: var(--rounded);
 }

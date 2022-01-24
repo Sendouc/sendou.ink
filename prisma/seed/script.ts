@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { PrismaClient } from "@prisma/client";
 import {
   ADMIN_TEST_AVATAR,
@@ -10,14 +12,15 @@ import {
 } from "../../app/constants";
 import { readFile } from "fs/promises";
 import path from "path";
-import crypto from "crypto";
 import { createTournamentRounds } from "../../app/services/tournament";
 import invariant from "tiny-invariant";
+import { SeedVariations } from "~/utils/schemas";
+import { v4 as uuidv4 } from "uuid";
 const prisma = new PrismaClient();
 
 const mapListDE = `{"losers":[[{"id":4647,"name":"Kelp Dome","mode":"SZ"},{"id":4658,"name":"Blackbelly Skatepark","mode":"TC"},{"id":4645,"name":"Manta Maria","mode":"CB"}],[{"id":4624,"name":"Inkblot Art Academy","mode":"RM"},{"id":4707,"name":"Ancho-V Games","mode":"SZ"},{"id":4618,"name":"Humpback Pump Track","mode":"TC"}],[{"id":4692,"name":"Camp Triggerfish","mode":"SZ"},{"id":4665,"name":"MakoMart","mode":"CB"},{"id":4634,"name":"Moray Towers","mode":"RM"}],[{"id":4609,"name":"Musselforge Fitness","mode":"RM"},{"id":4647,"name":"Kelp Dome","mode":"SZ"},{"id":4678,"name":"Arowana Mall","mode":"TC"}],[{"id":4705,"name":"New Albacore Hotel","mode":"CB"},{"id":4644,"name":"Manta Maria","mode":"RM"},{"id":4707,"name":"Ancho-V Games","mode":"SZ"}],[{"id":4657,"name":"Blackbelly Skatepark","mode":"SZ"},{"id":4690,"name":"Piranha Pit","mode":"CB"},{"id":4682,"name":"Goby Arena","mode":"SZ"},{"id":4678,"name":"Arowana Mall","mode":"TC"},{"id":4624,"name":"Inkblot Art Academy","mode":"RM"}]],"winners":[[{"id":4677,"name":"Arowana Mall","mode":"SZ"},{"id":4665,"name":"MakoMart","mode":"CB"},{"id":4618,"name":"Humpback Pump Track","mode":"TC"}],[{"id":4624,"name":"Inkblot Art Academy","mode":"RM"},{"id":4683,"name":"Goby Arena","mode":"TC"},{"id":4692,"name":"Camp Triggerfish","mode":"SZ"}],[{"id":4647,"name":"Kelp Dome","mode":"SZ"},{"id":4634,"name":"Moray Towers","mode":"RM"},{"id":4707,"name":"Ancho-V Games","mode":"SZ"},{"id":4610,"name":"Musselforge Fitness","mode":"CB"},{"id":4658,"name":"Blackbelly Skatepark","mode":"TC"}],[{"id":4644,"name":"Manta Maria","mode":"RM"},{"id":4677,"name":"Arowana Mall","mode":"SZ"},{"id":4690,"name":"Piranha Pit","mode":"CB"},{"id":4682,"name":"Goby Arena","mode":"SZ"},{"id":4618,"name":"Humpback Pump Track","mode":"TC"}],[{"id":4624,"name":"Inkblot Art Academy","mode":"RM"},{"id":4707,"name":"Ancho-V Games","mode":"SZ"},{"id":4610,"name":"Musselforge Fitness","mode":"CB"},{"id":4657,"name":"Blackbelly Skatepark","mode":"SZ"},{"id":4693,"name":"Camp Triggerfish","mode":"TC"},{"id":4664,"name":"MakoMart","mode":"RM"},{"id":4647,"name":"Kelp Dome","mode":"SZ"}],[{"id":4617,"name":"Humpback Pump Track","mode":"SZ"},{"id":4635,"name":"Moray Towers","mode":"CB"},{"id":4682,"name":"Goby Arena","mode":"SZ"},{"id":4644,"name":"Manta Maria","mode":"RM"},{"id":4678,"name":"Arowana Mall","mode":"TC"},{"id":4692,"name":"Camp Triggerfish","mode":"SZ"},{"id":4705,"name":"New Albacore Hotel","mode":"CB"}]]}`;
 
-export async function seed(variation?: "check-in" | "match") {
+export async function seed(variation?: SeedVariations) {
   try {
     //
     // make sure we won't override production database
@@ -50,7 +53,7 @@ export async function seed(variation?: "check-in" | "match") {
     //
     const adminUserCreated = await adminUser();
     const nzapUserCreated = await nzapUser();
-    const userIds = new Array(500).fill(null).map(() => crypto.randomUUID());
+    const userIds = new Array(500).fill(null).map(() => uuidv4());
     await users(userIds);
     const organization = await organizations(adminUserCreated.id);
     const tournament = await tournaments(organization.id);
@@ -58,8 +61,10 @@ export async function seed(variation?: "check-in" | "match") {
     await trustRelationship(nzapUserCreated.id, adminUserCreated.id);
     await stages();
     await tournamentAddMaps(tournament.id);
-    if (variation === "match") {
+    if (variation === "match" || variation === "tournament-start") {
       await tournamentRoundsCreate();
+    }
+    if (variation === "match") {
       await advanceRound();
     }
 
@@ -127,7 +132,7 @@ export async function seed(variation?: "check-in" | "match") {
         "🛏️",
         "Name Subject to Change",
         "FTWin!",
-        "Starbust",
+        "Starburst",
         "Jackpot",
         "Crème Fresh",
         "Squids Next Door",
@@ -146,14 +151,21 @@ export async function seed(variation?: "check-in" | "match") {
         "Woomy Zoomy Boomy",
       ];
 
-      if (variation === "check-in" || variation === "match") {
+      if (
+        variation === "check-in" ||
+        variation === "match" ||
+        variation === "tournament-start"
+      ) {
         const team = await prisma.tournamentTeam.create({
           data: {
             name: "Kraken Paradise",
             tournamentId,
             friendCode: "1234-1234-1234",
             inviteCode: "033e3695-0421-4aa1-a5ef-6ee82297a398",
-            checkedInTime: variation === "match" ? new Date() : undefined,
+            checkedInTime:
+              variation === "match" || variation === "tournament-start"
+                ? new Date()
+                : undefined,
           },
         });
 
@@ -375,7 +387,7 @@ export async function seed(variation?: "check-in" | "match") {
 
     async function advanceRound() {
       const matches = await prisma.tournamentMatch.findMany({
-        include: { participants: true },
+        include: { participants: true, round: { include: { stages: true } } },
       });
       const matchToAdvance = matches.find((match) => match.position === 1);
       invariant(matchToAdvance);
@@ -385,19 +397,25 @@ export async function seed(variation?: "check-in" | "match") {
           {
             matchId: matchToAdvance.id,
             winner: "LOWER",
-            position: 1,
+            roundStageId: matchToAdvance.round.stages.find(
+              (stage) => stage.position === 1
+            )!.id,
             reporterId: "",
           },
           {
             matchId: matchToAdvance.id,
             winner: "UPPER",
-            position: 2,
+            roundStageId: matchToAdvance.round.stages.find(
+              (stage) => stage.position === 2
+            )!.id,
             reporterId: "",
           },
           {
             matchId: matchToAdvance.id,
             winner: "LOWER",
-            position: 3,
+            roundStageId: matchToAdvance.round.stages.find(
+              (stage) => stage.position === 3
+            )!.id,
             reporterId: "",
           },
         ],
@@ -414,7 +432,16 @@ export async function seed(variation?: "check-in" | "match") {
           },
           {
             matchId: matchToAdvance.loserDestinationMatchId!,
-            order: "LOWER", // TODO: figure out this
+            order: "LOWER",
+            teamId: matchToAdvance.participants.find(
+              (p) => p.order === "UPPER"
+            )!.teamId,
+          },
+          {
+            matchId: matches.find(
+              (match) => match.id === matchToAdvance.loserDestinationMatchId!
+            )!.winnerDestinationMatchId!,
+            order: "LOWER",
             teamId: matchToAdvance.participants.find(
               (p) => p.order === "UPPER"
             )!.teamId,

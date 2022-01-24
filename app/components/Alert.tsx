@@ -1,4 +1,4 @@
-import classNames from "classnames";
+import clsx from "clsx";
 import { AlertIcon } from "./icons/Alert";
 import { SuccessIcon } from "./icons/Success";
 
@@ -13,7 +13,7 @@ export function Alert(props: {
   return (
     <div
       data-type={props.type}
-      className={classNames("alert", props.className)}
+      className={clsx("alert", props.className)}
       data-cy={props["data-cy"]}
     >
       {(props.type === "warning" || props.type === "info") && <AlertIcon />}

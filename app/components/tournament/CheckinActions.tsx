@@ -7,7 +7,7 @@ import {
 } from "~/constants";
 import { TournamentAction } from "~/routes/to/$organization.$tournament";
 import type { FindTournamentByNameForUrlI } from "~/services/tournament";
-import { useUser } from "~/utils/hooks";
+import { useUser } from "~/hooks/common";
 import { Button } from "../Button";
 import { AlertIcon } from "../icons/Alert";
 import { CheckInIcon } from "../icons/CheckIn";
@@ -21,17 +21,6 @@ export function CheckinActions() {
   const user = useUser();
   const transition = useTransition();
 
-  const ownTeam = tournament.teams.find((team) =>
-    team.members.some(
-      ({ member, captain }) => captain && member.id === user?.id
-    )
-  );
-
-  const tournamentHasStarted = tournament.brackets.some((b) => b.rounds.length);
-  if (!ownTeam || tournamentHasStarted) {
-    return null;
-  }
-
   const timeInMinutesBeforeCheckInCloses = () => {
     return Math.floor(
       (checkInClosesDate(tournament.startTime).getTime() -
@@ -39,7 +28,6 @@ export function CheckinActions() {
         (1000 * 60)
     );
   };
-
   const [minutesTillCheckInCloses, setMinutesTillCheckInCloses] =
     React.useState(timeInMinutesBeforeCheckInCloses());
 
@@ -50,6 +38,17 @@ export function CheckinActions() {
 
     return () => clearTimeout(timeout);
   }, []);
+
+  const ownTeam = tournament.teams.find((team) =>
+    team.members.some(
+      ({ member, captain }) => captain && member.id === user?.id
+    )
+  );
+
+  const tournamentHasStarted = tournament.brackets.some((b) => b.rounds.length);
+  if (!ownTeam || tournamentHasStarted) {
+    return null;
+  }
 
   if (ownTeam.checkedInTime) {
     return (

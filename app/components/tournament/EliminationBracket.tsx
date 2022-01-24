@@ -1,70 +1,40 @@
-import classNames from "classnames";
+import clsx from "clsx";
 import invariant from "tiny-invariant";
 import { matchIsOver } from "~/core/tournament/utils";
-import type { BracketModified } from "~/services/tournament";
+import type { BracketModified } from "~/services/bracket";
 import { MyCSSProperties, Unpacked } from "~/utils";
+import { EliminationBracketMatch } from "./EliminationBracketMatch";
 
 export function EliminationBracket({
-  bracketSide,
+  rounds,
   ownTeamName,
 }: {
-  bracketSide: BracketModified["winners"];
+  rounds: BracketModified["rounds"];
   ownTeamName?: string;
 }) {
   const style: MyCSSProperties = {
-    "--brackets-columns": bracketSide.length,
-    "--brackets-max-matches": bracketSide[0].matches.length,
+    "--brackets-columns": rounds.length,
+    "--brackets-max-matches": rounds[0].matches.length,
   };
   return (
     <div className="tournament-bracket__elim__container" style={style}>
       <div className="tournament-bracket__elim__bracket">
-        {bracketSide.map((round, i) => (
+        {rounds.map((round, i) => (
           <RoundInfo
             key={round.id}
             title={round.name}
-            isLast={i === bracketSide.length - 1}
+            isLast={i === rounds.length - 1}
             bestOf={round.stages.length}
             status="UPCOMING"
           />
         ))}
-        {bracketSide.map((round, roundI) => {
-          const nextRound: Unpacked<BracketModified["winners"]> | undefined =
-            bracketSide[roundI + 1];
+        {rounds.map((round, roundI) => {
+          const nextRound: Unpacked<BracketModified["rounds"]> | undefined =
+            rounds[roundI + 1];
           const amountOfMatchesBetweenRoundsEqual =
             round.matches.length === nextRound?.matches.length;
           const drawStraightLines =
             round.matches.length === 1 || amountOfMatchesBetweenRoundsEqual;
-          const theKindOfLinesToDraw: (
-            | undefined
-            | "no-line"
-            | "bottom-only"
-            | "top-only"
-          )[] = new Array(
-            amountOfMatchesBetweenRoundsEqual
-              ? round.matches.length
-              : Math.ceil(round.matches.length / 2)
-          )
-            .fill(null)
-            .map((_, lineI) => {
-              // lines   0   1   2   3
-              // rounds 0 1 2 3 4 5 6 7
-              if (roundI !== 0 || round.name.includes("Losers")) {
-                return undefined;
-              }
-              const matchOne = round.matches[lineI * 2];
-              const matchTwo = round.matches[lineI * 2 + 1];
-              invariant(matchOne, "matchOne is undefined");
-              invariant(matchTwo, "matchTwo is undefined");
-
-              if (
-                matchOne.participants?.includes(null) &&
-                matchTwo.participants?.includes(null)
-              ) {
-                return "no-line";
-              }
-              if (matchOne.participants?.includes(null)) return "bottom-only";
-              return "top-only";
-            });
 
           const style: MyCSSProperties = {
             "--brackets-bottom-border-length": drawStraightLines
@@ -82,14 +52,9 @@ export function EliminationBracket({
             >
               <div className="tournament-bracket__elim__matches">
                 {round.matches.map((match) => {
-                  // TODO: handle losers
                   return (
-                    <Match
-                      hidden={
-                        round.name.includes("Winner") &&
-                        roundI === 0 &&
-                        match.participants?.includes(null)
-                      }
+                    <EliminationBracketMatch
+                      hidden={match.number === 0}
                       key={match.id}
                       match={match}
                       ownTeamName={ownTeamName}
@@ -99,8 +64,12 @@ export function EliminationBracket({
                 })}
               </div>
               <div className="tournament-bracket__elim__lines">
-                {roundI !== bracketSide.length - 1 &&
-                  theKindOfLinesToDraw.map((className, i) => (
+                {roundI !== rounds.length - 1 &&
+                  theKindOfLinesToDraw({
+                    amountOfMatchesBetweenRoundsEqual,
+                    round,
+                    roundI,
+                  }).map((className, i) => (
                     <div className={className} key={i} />
                   ))}
               </div>
@@ -110,6 +79,48 @@ export function EliminationBracket({
       </div>
     </div>
   );
+}
+
+function theKindOfLinesToDraw({
+  round,
+  roundI,
+  amountOfMatchesBetweenRoundsEqual,
+}: {
+  round: Unpacked<BracketModified["rounds"]>;
+  roundI: number;
+  amountOfMatchesBetweenRoundsEqual: boolean;
+}): (undefined | "no-line" | "bottom-only" | "top-only")[] {
+  return new Array(
+    amountOfMatchesBetweenRoundsEqual
+      ? round.matches.length
+      : Math.ceil(round.matches.length / 2)
+  )
+    .fill(null)
+    .map((_, lineI) => {
+      // lines   0   1   2   3
+      // rounds 0 1 2 3 4 5 6 7
+      if (roundI !== 0) {
+        return undefined;
+      }
+      // TODO: better identifier for losers
+      if (round.name.includes("Losers")) {
+        return round.matches[lineI]?.number === 0 ? "no-line" : undefined;
+      }
+      const matchOne = round.matches[lineI * 2];
+      const matchTwo = round.matches[lineI * 2 + 1];
+      invariant(matchOne, "matchOne is undefined");
+      invariant(matchTwo, "matchTwo is undefined");
+
+      if (
+        matchOne.participants?.includes(null) &&
+        matchTwo.participants?.includes(null)
+      ) {
+        return "no-line";
+      }
+      if (matchOne.participants?.includes(null)) return "bottom-only";
+      if (matchTwo.participants?.includes(null)) return "top-only";
+      return undefined;
+    });
 }
 
 function RoundInfo({
@@ -125,7 +136,7 @@ function RoundInfo({
 }) {
   return (
     <div
-      className={classNames("tournament-bracket__elim__roundInfo", {
+      className={clsx("tournament-bracket__elim__roundInfo", {
         highlighted: status === "INPROGRESS",
         last: isLast,
       })}
@@ -134,68 +145,6 @@ function RoundInfo({
       {status !== "DONE" && (
         <div className="tournament-bracket__elim__bestOf">Bo{bestOf}</div>
       )}
-    </div>
-  );
-}
-
-export function Match({
-  match,
-  hidden,
-  ownTeamName,
-  isOver,
-}: {
-  match: Unpacked<Unpacked<BracketModified["winners"]>["matches"]>;
-  hidden?: boolean;
-  ownTeamName?: string;
-  isOver: boolean;
-}) {
-  return (
-    <div className={classNames("tournament-bracket__elim__match", { hidden })}>
-      <div className="tournament-bracket__elim__roundNumber">
-        {match.number}
-      </div>
-      <div
-        className={classNames(
-          "tournament-bracket__elim__team",
-          "tournament-bracket__elim__teamOne",
-          {
-            own:
-              !isOver && ownTeamName && ownTeamName === match.participants?.[0],
-            defeated:
-              isOver && (match.score?.[0] ?? 0) < (match.score?.[1] ?? 0),
-          }
-        )}
-      >
-        {match.participants?.[0]}{" "}
-        <span
-          className={classNames("tournament-bracket__elim__score", {
-            invisible: typeof match.score?.[0] !== "number",
-          })}
-        >
-          {match.score?.[0] ?? 0}
-        </span>
-      </div>
-      <div
-        className={classNames(
-          "tournament-bracket__elim__team",
-          "tournament-bracket__elim__teamTwo",
-          {
-            own:
-              !isOver && ownTeamName && ownTeamName === match.participants?.[1],
-            defeated:
-              isOver && (match.score?.[1] ?? 0) < (match.score?.[0] ?? 0),
-          }
-        )}
-      >
-        {match.participants?.[1]}{" "}
-        <span
-          className={classNames("tournament-bracket__elim__score", {
-            invisible: typeof match.score?.[0] !== "number",
-          })}
-        >
-          {match.score?.[1] ?? 0}
-        </span>
-      </div>
     </div>
   );
 }

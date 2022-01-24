@@ -1,9 +1,9 @@
-export const isTournamentAdmin = ({
+export function canReportMatchScore({
   userId,
-  organization,
+  members,
 }: {
-  userId?: string;
-  organization: { ownerId: string };
-}) => {
-  return organization.ownerId === userId;
-};
+  userId: string;
+  members: { memberId: string }[];
+}) {
+  return members.some((member) => member.memberId === userId);
+}

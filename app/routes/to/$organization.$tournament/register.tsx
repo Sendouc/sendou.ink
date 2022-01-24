@@ -18,7 +18,7 @@ import {
   FindTournamentByNameForUrlI,
 } from "~/services/tournament";
 import styles from "~/styles/tournament-register.css";
-import { useUser } from "~/utils/hooks";
+import { useUser } from "~/hooks/common";
 import { requireUser } from "~/utils";
 import { Catcher } from "~/components/Catcher";
 import {
@@ -26,6 +26,7 @@ import {
   friendCodeRegExpString,
 } from "~/core/tournament/utils";
 import { FormInfoText } from "~/components/FormInfoText";
+import { Label } from "~/components/Label";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -105,7 +106,7 @@ export const action: ActionFunction = async ({
   );
 
   return redirect(
-    `/to/${params.organization}/${params.tournament}/manage-roster`
+    `/to/${params.organization}/${params.tournament}/manage-team`
   );
 };
 
@@ -137,7 +138,7 @@ export default function RegisterPage() {
       <div className="tournament__register__content">
         <Form method="post">
           <input type="hidden" name="tournamentId" value={tournamentData.id} />
-          <label htmlFor="teamName">Team name</label>
+          <Label htmlFor="teamName">Team name</Label>
           <input
             name="teamName"
             id="teamName"
@@ -148,9 +149,9 @@ export default function RegisterPage() {
             data-cy="team-name-input"
           />
           <FormErrorMessage errorMsg={actionData?.fieldErrors?.teamName} />
-          <label className="mt-3" htmlFor="friendCode">
+          <Label className="mt-3" htmlFor="friendCode">
             Friend code for your opponents to add
-          </label>
+          </Label>
           <input
             name="friendCode"
             id="friendCode"

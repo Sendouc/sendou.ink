@@ -13,7 +13,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import classNames from "classnames";
+import clsx from "clsx";
 import * as React from "react";
 import {
   ActionFunction,
@@ -23,70 +23,56 @@ import {
   useTransition,
 } from "remix";
 import invariant from "tiny-invariant";
+import { z } from "zod";
 import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
 import { Draggable } from "~/components/Draggable";
-import { TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
-import { checkInHasStarted } from "~/core/tournament/utils";
-import {
-  checkIn,
-  checkOut,
-  FindTournamentByNameForUrlI,
-  updateSeeds,
-} from "~/services/tournament";
+import { FindTournamentByNameForUrlI } from "~/services/tournament";
 import seedsStylesUrl from "~/styles/tournament-seeds.css";
-import { requireUser, Unpacked } from "~/utils";
-import { useTimeoutState } from "~/utils/hooks";
+import {
+  parseRequestFormData,
+  requireUser,
+  safeJSONParse,
+  Unpacked,
+  validate,
+} from "~/utils";
+import { useTimeoutState } from "~/hooks/common";
+import * as Tournament from "~/models/Tournament.server";
+import {
+  isTournamentAdmin,
+  tournamentHasNotStarted,
+} from "~/core/tournament/validators";
 
-enum Action {
-  UPDATE_SEEDS = "UPDATE_SEEDS",
-  CHECK_IN = "CHECK_IN",
-  CHECK_OUT = "CHECK_OUT",
-}
+const seedsActionSchema = z.object({
+  tournamentId: z.string().uuid(),
+  seeds: z.preprocess(safeJSONParse, z.array(z.string())),
+});
 
 export const action: ActionFunction = async ({ context, request }) => {
-  const data = Object.fromEntries(await request.formData());
-  invariant(typeof data._action === "string", "Invalid type for _action");
-
+  const data = await parseRequestFormData({
+    request,
+    schema: seedsActionSchema,
+  });
   const user = requireUser(context);
 
-  switch (data._action) {
-    case Action.UPDATE_SEEDS: {
-      invariant(typeof data.seeds === "string", "Invalid type for seeds");
-      invariant(
-        typeof data.tournamentId === "string",
-        "Invalid type for tournamentId"
-      );
-      const newSeeds = JSON.parse(data.seeds);
+  const tournament = await Tournament.findById(data.tournamentId);
+  validate(tournament, "Invalid tournament id");
+  validate(
+    isTournamentAdmin({ userId: user.id, organization: tournament.organizer }),
+    "Not tournament admin"
+  );
+  validate(
+    tournamentHasNotStarted(tournament),
+    "Can't change seeds after tournament has started"
+  );
 
-      await updateSeeds({
-        tournamentId: data.tournamentId,
-        userId: user.id,
-        newSeeds,
-      });
+  await Tournament.updateSeeds({
+    tournamentId: data.tournamentId,
+    seeds: data.seeds,
+  });
 
-      break;
-    }
-    // TODO: broken
-    case Action.CHECK_IN: {
-      invariant(typeof data.teamId === "string", "Invalid type for seeds");
-
-      await checkIn({ teamId: data.teamId, userId: user.id });
-      break;
-    }
-    case Action.CHECK_OUT: {
-      invariant(typeof data.teamId === "string", "Invalid type for seeds");
-
-      await checkOut({ teamId: data.teamId, userId: user.id });
-      break;
-    }
-    default: {
-      throw new Response("Bad Request", { status: 400 });
-    }
-  }
-
-  return new Response(undefined, { status: 200 });
+  return null;
 };
 
 export const links: LinksFunction = () => {
@@ -97,8 +83,7 @@ export const links: LinksFunction = () => {
 // TODO: error if not admin
 export default function SeedsTab() {
   const [, parentRoute] = useMatches();
-  const { id, teams, checkInStartTime } =
-    parentRoute.data as FindTournamentByNameForUrlI;
+  const { id, teams } = parentRoute.data as FindTournamentByNameForUrlI;
   const transition = useTransition();
   const [teamOrder, setTeamOrder] = React.useState(teams.map((t) => t.id));
   const [activeTeam, setActiveTeam] = React.useState<Unpacked<
@@ -123,10 +108,7 @@ export default function SeedsTab() {
           <div className="tournament__seeds__teams-container__header">Seed</div>
           <div className="tournament__seeds__teams-container__header">Name</div>
           <div className="tournament__seeds__teams-container__header">
-            {checkInHasStarted(checkInStartTime) ? "" : "Registered at"}
-          </div>
-          <div className="tournament__seeds__teams-container__header">
-            Roster size
+            Players
           </div>
         </li>
         <DndContext
@@ -164,7 +146,7 @@ export default function SeedsTab() {
                 key={team.id}
                 id={team.id}
                 disabled={transition.state !== "idle"}
-                liClassName={classNames(
+                liClassName={clsx(
                   "tournament__seeds__teams-list-row",
                   "sortable",
                   {
@@ -214,7 +196,6 @@ function SeedAlert({
 
   return (
     <Form method="post" className="tournament__seeds__form">
-      <input type="hidden" name="_action" value={Action.UPDATE_SEEDS} />
       <input type="hidden" name="tournamentId" value={tournamentId} />
       <input type="hidden" name="seeds" value={JSON.stringify(teamOrder)} />
       <Alert
@@ -222,7 +203,7 @@ function SeedAlert({
         className="tournament__seeds__alert"
         rightAction={
           <Button
-            className={classNames("tournament__seeds__alert__button", {
+            className={clsx("tournament__seeds__alert__button", {
               hidden: !teamOrderChanged,
             })}
             type="submit"
@@ -251,83 +232,20 @@ function RowContents({
   team: Unpacked<FindTournamentByNameForUrlI["teams"]>;
   seed?: number;
 }) {
-  const [, parentRoute] = useMatches();
-  const { checkInStartTime } = parentRoute.data as FindTournamentByNameForUrlI;
-
   return (
     <>
       <div>{seed}</div>
-      <div>{team.name}</div>
-      <div>
-        {!checkInHasStarted(checkInStartTime) ? (
-          <>
-            {new Date(team.createdAt).toLocaleString("en-US", {
-              month: "numeric",
-              day: "numeric",
-              hour: "numeric",
-              minute: "numeric",
-            })}
-          </>
-        ) : team.checkedInTime ? (
-          <CheckOutButton teamId={team.id} />
-        ) : team.members.length >= TOURNAMENT_TEAM_ROSTER_MIN_SIZE ? (
-          <CheckInButton teamId={team.id} />
-        ) : null}
-      </div>
-      <div
-        className={classNames({
-          tournament__seeds__ok:
-            team.members.length >= TOURNAMENT_TEAM_ROSTER_MIN_SIZE,
-          tournament__seeds__problem:
-            team.members.length < TOURNAMENT_TEAM_ROSTER_MIN_SIZE,
-        })}
+      <div className="tournament__seeds__team-name">{team.name}</div>
+      {/* TODO: scrollbar overlaps on windows? */}
+      <ol
+        className="tournament__seeds__members-list"
+        // style={{ whiteSpace: "nowrap", overflowX: "auto" }}
       >
-        {team.members.length}
-      </div>
+        {team.members.map((member) => (
+          <li key={member.member.id}>{member.member.discordName}</li>
+        ))}
+      </ol>
     </>
-  );
-}
-
-function CheckOutButton({ teamId }: { teamId: string }) {
-  const transition = useTransition();
-  return (
-    <Form
-      method="post"
-      className="tournament__action-section__button-container"
-    >
-      <input type="hidden" name="_action" value={Action.CHECK_OUT} />
-      <input type="hidden" name="teamId" value={teamId} />
-      <Button
-        tiny
-        variant="minimal-destructive"
-        loading={transition.state !== "idle"}
-        type="submit"
-      >
-        Check-out
-      </Button>
-    </Form>
-  );
-}
-
-// TODO: error Cannot destructure property 'default' of 'routeModules[id]' as it is undefined.
-function CheckInButton({ teamId }: { teamId: string }) {
-  const transition = useTransition();
-  return (
-    <Form
-      method="post"
-      className="tournament__action-section__button-container"
-    >
-      <input type="hidden" name="_action" value={Action.CHECK_OUT} />
-      <input type="hidden" name="teamId" value={teamId} />
-      <Button
-        tiny
-        variant="minimal-success"
-        loading={transition.state !== "idle"}
-        type="submit"
-      >
-        Check-in
-      </Button>
-    </Form>
   );
 }
 

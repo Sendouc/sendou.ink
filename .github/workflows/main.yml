@@ -15,6 +15,8 @@ jobs:
         run: npm install
       - name: Prettier
         run: npm run prettier:check
+      - name: Lint TS
+        run: npm run lint:ts
       - name: Stylelint
         run: npm run lint:styles
       - name: Unit tests

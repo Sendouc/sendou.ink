@@ -1,16 +1,22 @@
-import path from "path";
-import express from "express";
-import compression from "compression";
-import morgan from "morgan";
-import { z } from "zod";
+/* eslint-disable */
+// TODO: eslint-disable
+
 import { createRequestHandler } from "@remix-run/express";
+import compression from "compression";
+import express from "express";
+import morgan from "morgan";
+import path from "path";
+import { LoggedInUser } from "~/utils/schemas";
 import { setUpAuth } from "./auth";
-import { seed } from "../prisma/seed/script";
+import { EventTargetRecorder, setUpEvents } from "./events";
+import { setUpMockAuth } from "./mock-auth";
+import { setUpSeed } from "./seed";
 
 const MODE = process.env.NODE_ENV;
 const BUILD_DIR = path.join(process.cwd(), "server/build");
 
 const app = express();
+app.disable("x-powered-by");
 app.use(compression());
 
 // You may want to be more aggressive with this caching
@@ -21,33 +27,38 @@ app.use(express.static("public/build", { immutable: true, maxAge: "1y" }));
 
 app.use(morgan("tiny"));
 
+const mockUserFromHTTPCall: { user: LoggedInUser | null } = { user: null };
+
+const events: EventTargetRecorder = {
+  bracket: {},
+};
+
 try {
   setUpAuth(app);
+  setUpMockAuth(app, mockUserFromHTTPCall);
+  setUpSeed(app);
+  setUpEvents(app, events);
 } catch (err) {
   console.error(err);
 }
 
 function userToContext(req: Express.Request) {
   if (process.env.NODE_ENV === "development") {
-    // @ts-expect-error
+    // @ts-expect-error TODO: check how to set headers types
     const mockedUser = req.headers["mock-auth"];
     if (mockedUser) {
-      return { user: JSON.parse(mockedUser) };
+      return JSON.parse(mockedUser);
+    }
+
+    if (mockUserFromHTTPCall.user) {
+      return mockUserFromHTTPCall.user;
     }
   }
-  return { user: req.user };
+  return req.user;
 }
 
-if (process.env.NODE_ENV === "development") {
-  app.post("/seed", async (req, res) => {
-    const variation = z
-      .enum(["check-in"])
-      .optional()
-      .parse(req.query.variation);
-    await seed(variation);
-
-    res.status(200).end();
-  });
+function getLoadContext(req: Express.Request) {
+  return { events, user: userToContext(req) };
 }
 
 app.all(
@@ -55,7 +66,7 @@ app.all(
   MODE === "production"
     ? createRequestHandler({
         build: require("./build"),
-        getLoadContext: userToContext,
+        getLoadContext,
       })
     : (req, res, next) => {
         purgeRequireCache();
@@ -63,7 +74,7 @@ app.all(
         return createRequestHandler({
           build,
           mode: MODE,
-          getLoadContext: userToContext,
+          getLoadContext,
         })(req, res, next);
       }
 );

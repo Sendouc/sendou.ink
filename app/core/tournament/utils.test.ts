@@ -66,7 +66,7 @@ SortTeams("Can handle non-existent id in seeds", () => {
 
 SortTeams("Sorting works with empty arrays", () => {
   const seeds: string[] = [];
-  const teamsToSeed: any = [];
+  const teamsToSeed: { id: string; createdAt: string }[] = [];
 
   assert.equal(teamsToSeed.sort(sortTeamsBySeed(seeds)), []);
 });

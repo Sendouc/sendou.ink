@@ -5,7 +5,11 @@ export type FindById = Prisma.PromiseReturnType<typeof findById>;
 export function findById(id: string) {
   return db.tournament.findUnique({
     where: { id },
-    include: { organizer: true, teams: { include: { members: true } } },
+    include: {
+      organizer: true,
+      brackets: { include: { rounds: true } },
+      teams: { include: { members: true } },
+    },
   });
 }
 
@@ -15,9 +19,11 @@ export type FindByNameForUrl = Prisma.PromiseReturnType<
 export async function findByNameForUrl({
   tournamentNameForUrl,
   organizationNameForUrl,
+  withInviteCodes = false,
 }: {
   tournamentNameForUrl: string;
   organizationNameForUrl: string;
+  withInviteCodes?: boolean;
 }) {
   const tournaments = await db.tournament.findMany({
     where: {
@@ -68,6 +74,7 @@ export async function findByNameForUrl({
           friendCode: true,
           roomPass: true,
           canHost: true,
+          inviteCode: withInviteCodes,
           members: {
             select: {
               captain: true,
@@ -93,49 +100,45 @@ export async function findByNameForUrl({
   );
 }
 
-export type FindByNameForUrlWithInviteCodes = Prisma.PromiseReturnType<
-  typeof findByNameForUrlWithInviteCodes
->;
-
-// TODO: merge with above and don't repeat .find() logic
-export function findByNameForUrlWithInviteCodes(tournamentNameForUrl: string) {
-  return db.tournament.findMany({
+export type OwnTeam = Prisma.PromiseReturnType<typeof ownTeam>;
+export async function ownTeam({
+  tournamentNameForUrl,
+  organizerNameForUrl,
+  user,
+}: {
+  tournamentNameForUrl: string;
+  organizerNameForUrl: string;
+  user: { id: string };
+}) {
+  const tournaments = await db.tournament.findMany({
     where: {
+      organizer: {
+        nameForUrl: organizerNameForUrl.toLowerCase(),
+      },
       nameForUrl: tournamentNameForUrl.toLowerCase(),
     },
-    select: {
-      startTime: true,
-      organizer: {
-        select: {
-          nameForUrl: true,
-        },
-      },
+    include: {
+      organizer: true,
       teams: {
-        select: {
-          id: true,
-          name: true,
-          inviteCode: true,
-          checkedInTime: true,
-          friendCode: true,
-          roomPass: true,
-          canHost: true,
+        include: {
           members: {
-            select: {
-              captain: true,
-              member: {
-                select: {
-                  id: true,
-                  discordAvatar: true,
-                  discordName: true,
-                  discordId: true,
-                },
-              },
+            include: {
+              member: true,
             },
           },
         },
       },
     },
   });
+
+  if (tournaments.length === 0) return null;
+
+  const ownTeam = tournaments[0].teams.find((team) =>
+    team.members.some(({ captain, member }) => captain && member.id === user.id)
+  );
+  if (!ownTeam) null;
+
+  return ownTeam;
 }
 
 export type UpdateSeeds = Prisma.PromiseReturnType<typeof updateSeeds>;

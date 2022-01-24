@@ -1,6 +1,6 @@
 import styles from "~/styles/tournament-map-pool.css";
 import type { Mode } from ".prisma/client";
-import classNames from "classnames";
+import clsx from "clsx";
 import { modesShort, stages } from "~/constants";
 import { LinksFunction, useMatches } from "remix";
 import { FindTournamentByNameForUrlI } from "~/services/tournament";
@@ -24,7 +24,7 @@ export default function MapPoolTab() {
       {stages.map((stage) => (
         <div key={stage} className="map-pool__stage-images-container">
           <img
-            className={classNames("map-pool__stage-image", {
+            className={clsx("map-pool__stage-image", {
               "map-pool__stage-image-disabled": !modesPerStage(mapPool)[stage],
             })}
             loading="lazy"
@@ -35,7 +35,7 @@ export default function MapPoolTab() {
             <div className="map-pool__mode-images-container">
               {modesShort.map(
                 (mode) =>
-                  modesPerStage(mapPool)[stage]?.includes(mode as Mode) && (
+                  modesPerStage(mapPool)[stage]?.includes(mode) && (
                     <img
                       key={mode}
                       className="map-pool__mode-image"

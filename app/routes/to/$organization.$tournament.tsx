@@ -8,12 +8,12 @@ import {
   NavLink,
   Outlet,
   useLoaderData,
+  ShouldReloadFunction,
 } from "remix";
 import invariant from "tiny-invariant";
 import { AdminIcon } from "~/components/icons/Admin";
 import { CheckinActions } from "~/components/tournament/CheckinActions";
 import { InfoBanner } from "~/components/tournament/InfoBanner";
-import { isTournamentAdmin } from "~/core/tournament/permissions";
 import { tournamentHasStarted } from "~/core/tournament/utils";
 import {
   checkIn,
@@ -22,13 +22,16 @@ import {
 } from "~/services/tournament";
 import { makeTitle, requireUser } from "~/utils";
 import type { MyCSSProperties } from "~/utils";
-import { useUser } from "~/utils/hooks";
+import { useUser } from "~/hooks/common";
 import tournamentStylesUrl from "../../styles/tournament.css";
+import * as React from "react";
+import { isTournamentAdmin } from "~/core/tournament/validators";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: tournamentStylesUrl }];
 };
 
+// TODO: remove... this wont have more than one action
 export enum TournamentAction {
   CHECK_IN = "CHECK_IN",
 }
@@ -72,8 +75,15 @@ export const meta: MetaFunction = (props) => {
 
   return {
     title: makeTitle(data?.name),
+    // TODO: description, image?
     //description: data.description ?? undefined,
   };
+};
+
+export const unstable_shouldReload: ShouldReloadFunction = (data) => {
+  const action = data.submission?.formData.get("_action");
+  if (!action) return true;
+  return !["REPORT_SCORE", "UNDO_REPORT_SCORE"].includes(String(action));
 };
 
 export default function TournamentPage() {
@@ -100,10 +110,15 @@ export default function TournamentPage() {
     );
 
     if (isTournamentAdmin({ userId: user?.id, organization: data.organizer })) {
+      result.push({
+        code: "manage",
+        // TODO: figure out a good name
+        text: "Controls",
+        icon: <AdminIcon />,
+      });
       if (!tournamentHasStarted(data.brackets)) {
         result.push({ code: "seeds", text: "Seeds", icon: <AdminIcon /> });
       }
-      result.push({ code: "edit", text: "Edit", icon: <AdminIcon /> });
       if (thereIsABracketToStart)
         result.push({ code: "start", text: "Start", icon: <AdminIcon /> });
     }
@@ -115,7 +130,6 @@ export default function TournamentPage() {
     "--tournaments-bg": data.bannerBackground,
     "--tournaments-text": data.CSSProperties.text,
     "--tournaments-text-transparent": data.CSSProperties.textTransparent,
-    // todo: could make a TS helper type for this that checks for leading --
   };
 
   const linksContainerStyle: MyCSSProperties = {
@@ -133,17 +147,12 @@ export default function TournamentPage() {
             className="tournament__links-container"
           >
             {navLinks.map(({ code, text, icon }) => (
-              // TODO: on mobile keep the active link in center
-              <NavLink
+              <TournamentNavLink
                 key={code}
-                className="tournament__nav-link"
-                to={code}
-                data-cy={`${code}-nav-link`}
-                prefetch="intent"
-                end
-              >
-                {icon} {text}
-              </NavLink>
+                code={code}
+                icon={icon}
+                text={text}
+              />
             ))}
           </div>
         </div>
@@ -154,5 +163,39 @@ export default function TournamentPage() {
       {/* TODO: pass context instead of useMatches */}
       <Outlet />
     </div>
+  );
+}
+
+function TournamentNavLink({
+  code,
+  icon,
+  text,
+}: {
+  code: string;
+  icon: React.ReactNode;
+  text: string;
+}) {
+  const ref = React.useRef<HTMLAnchorElement>(null);
+
+  React.useEffect(() => {
+    if (!ref.current?.className.includes("active")) return;
+    ref.current?.scrollIntoView({
+      behavior: "smooth",
+      inline: "center",
+      block: "nearest",
+    });
+  }, []);
+
+  return (
+    <NavLink
+      className="tournament__nav-link"
+      to={code}
+      data-cy={`${code}-nav-link`}
+      prefetch="intent"
+      end
+      ref={ref}
+    >
+      {icon} {text}
+    </NavLink>
   );
 }

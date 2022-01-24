@@ -120,6 +120,41 @@ export function getRoundNames(bracket: Bracket): EliminationBracket<string[]> {
   };
 }
 
+/** Returns round name (e.g. "Winners' Round 1") from positions
+ *
+ * @param position Position of the match to get the name for
+ * @param allPositions All positions of matches in the bracket. Positive integers are winners and negative losers.
+ *
+ */
+export function getRoundNameByPositions(
+  position: number,
+  allPositions: number[]
+): string {
+  const winnersRoundCount = allPositions.reduce(
+    (sum, pos) => (pos > 0 ? 1 : 0) + sum,
+    0
+  );
+  const losersRoundCount = allPositions.reduce(
+    (sum, pos) => (pos < 0 ? 1 : 0) + sum,
+    0
+  );
+
+  const allRoundNames = {
+    winners: winnersRoundNames(winnersRoundCount, losersRoundCount === 0),
+    losers: losersRoundNames(losersRoundCount),
+  };
+
+  const result = (() => {
+    const index = Math.abs(position) - 1;
+    if (position > 0) return allRoundNames.winners[index];
+
+    return allRoundNames.losers[index];
+  })();
+  invariant(result, "No round name found");
+
+  return result;
+}
+
 export function countRounds(bracket: Bracket): EliminationBracket<number> {
   const isDE = bracket.losers.length > 0;
   let winners = 1 + Number(isDE);
@@ -377,7 +412,9 @@ function resolveSide(
   const otherNumber = matchNumbers?.find((num) => num !== currentMatch.number);
   invariant(
     otherNumber,
-    `no otherNumber; matchNumbers length is not 2 was: ${matchNumbers?.length}`
+    `no otherNumber; matchNumbers length is not 2 was: ${
+      matchNumbers?.length ?? "NO_LENGTH"
+    }`
   );
 
   if (otherNumber > currentMatch.number) return "upperTeam";

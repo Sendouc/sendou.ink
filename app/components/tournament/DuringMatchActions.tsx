@@ -1,16 +1,13 @@
-import React, { useState } from "react";
-import { useMatches } from "remix";
+import { Form, useMatches } from "remix";
 import invariant from "tiny-invariant";
-import { modesShortToLong } from "~/constants";
 import { resolveHostInfo } from "~/core/tournament/utils";
-import type {
-  BracketModified,
-  FindTournamentByNameForUrlI,
-} from "~/services/tournament";
-import { modeToImageUrl, Unpacked } from "~/utils";
-import { Button } from "../Button";
+import type { BracketModified } from "~/services/bracket";
+import type { FindTournamentByNameForUrlI } from "~/services/tournament";
+import { Unpacked } from "~/utils";
+import { SubmitButton } from "../SubmitButton";
 import { ActionSectionWrapper } from "./ActionSectionWrapper";
 import { DuringMatchActionsRosters } from "./DuringMatchActionsRosters";
+import { FancyStageBanner } from "./FancyStageBanner";
 
 export function DuringMatchActions({
   ownTeam,
@@ -18,14 +15,11 @@ export function DuringMatchActions({
   currentRound,
 }: {
   ownTeam: Unpacked<FindTournamentByNameForUrlI["teams"]>;
-  currentMatch: Unpacked<Unpacked<BracketModified["winners"]>["matches"]>;
-  currentRound: Unpacked<BracketModified["winners"]>;
+  currentMatch: Unpacked<Unpacked<BracketModified["rounds"]>["matches"]>;
+  currentRound: Unpacked<BracketModified["rounds"]>;
 }) {
   const [, parentRoute] = useMatches();
   const { teams, seeds } = parentRoute.data as FindTournamentByNameForUrlI;
-  const [joinedRoom, setJoinedRoom] = useState(
-    (currentMatch.score?.[0] ?? 0) > 0 || (currentMatch.score?.[1] ?? 0) > 0
-  );
 
   const opponentTeam = teams.find(
     (team) =>
@@ -41,85 +35,63 @@ export function DuringMatchActions({
     seeds,
   });
 
-  if (joinedRoom) {
-    const currentStage = currentRound.stages.find((m) => m.position === 1);
-    invariant(currentStage, "currentStage is undefined");
-    const { stage } = currentStage;
+  const currentPosition =
+    currentMatch.score?.reduce((acc, cur) => acc + cur, 1) ?? 1;
+  const currentStage = currentRound.stages.find(
+    (m) => m.position === currentPosition
+  );
+  invariant(currentStage, "currentStage is undefined");
+  const { stage } = currentStage;
 
-    const roundInfo = [
-      ["Opponent", opponentTeam.name],
-      ["Room pass", `${roomPass} (${weHost ? "We" : "They"} host)`],
-      ["Friend code to add", friendCodeToAdd],
-      ["Score", currentMatch.score?.join("-")],
-      ["Best of", currentRound.stages.length],
-    ];
-
-    return (
-      <div className="tournament-bracket__during-match-actions">
-        <div className="tournament-bracket__stage-banner">
-          <div className="tournament-bracket__stage-banner__top-bar">
-            <h4 className="tournament-bracket__stage-banner__top-bar__header">
-              <img
-                className="tournament-bracket__stage-banner__top-bar__mode-image"
-                src={modeToImageUrl(stage.mode)}
-              />
-              {modesShortToLong[stage.mode]} on {stage.name}
-            </h4>
-            <h4>Stage 1</h4>
-          </div>
-        </div>
-        <ActionSectionWrapper>
-          <div className="tournament-bracket__infos">
-            <div className="tournament-bracket__infos__columns">
-              {roundInfo.map(([title, value]) => (
-                <React.Fragment key={title}>
-                  <label>{title}</label>
-                  <div>{value}</div>
-                </React.Fragment>
-              ))}
-            </div>
-          </div>
-        </ActionSectionWrapper>
-        <ActionSectionWrapper>
-          <DuringMatchActionsRosters
-            ownTeam={ownTeam}
-            opponentTeam={opponentTeam}
-          />
-        </ActionSectionWrapper>
-      </div>
-    );
-  }
+  const roundInfos = [
+    <>
+      Add <b>{friendCodeToAdd}</b>
+    </>,
+    <>
+      Pass <b>{roomPass}</b> ({weHost ? "We" : "They"} host)
+    </>,
+    <>
+      <b>{currentMatch.score?.join("-")}</b> (Best of{" "}
+      {currentRound.stages.length})
+    </>,
+  ];
 
   return (
-    <ActionSectionWrapper>
-      <h4 className="tournament-bracket__during-match__opponent-info">
-        Opponent: {opponentTeam.name}
-      </h4>
-      <ol>
-        <li>Add FC: {friendCodeToAdd}</li>
-        {weHost ? (
-          <li>
-            <p>Your team hosting. Make a room (pass has to be {roomPass})</p>
-          </li>
-        ) : (
-          <li>
-            <p>Their team is hosting. Join the room (pass: {roomPass})</p>
-          </li>
+    <div className="tournament-bracket__during-match-actions">
+      <FancyStageBanner
+        stage={stage}
+        roundNumber={currentPosition}
+        infos={roundInfos}
+      >
+        {currentPosition > 1 && (
+          <Form method="post">
+            <input type="hidden" name="_action" value="UNDO_REPORT_SCORE" />
+            <input type="hidden" name="position" value={currentPosition - 1} />
+            <input type="hidden" name="matchId" value={currentMatch.id} />
+            <div className="tournament-bracket__stage-banner__bottom-bar">
+              <SubmitButton
+                actionType="UNDO_REPORT_SCORE"
+                className="tournament-bracket__stage-banner__undo-button"
+                loadingText="Undoing..."
+              >
+                Undo last score
+              </SubmitButton>
+            </div>
+          </Form>
         )}
-        <li>
-          <p className="button-text-paragraph">
-            Click{" "}
-            <Button
-              type="button"
-              onClick={() => setJoinedRoom(true)}
-              variant="minimal-success"
-            >
-              here
-            </Button>{" "}
-            when you have completed the steps above
-          </p>
-        </li>
-      </ol>
-    </ActionSectionWrapper>
+      </FancyStageBanner>
+      <ActionSectionWrapper>
+        <DuringMatchActionsRosters
+          // Without the key prop when switching to another match the winnerId is remembered
+          // which causes "No winning team matching the id" error.
+          // Switching the key props forces the component to remount.
+          key={currentMatch.id}
+          ownTeam={ownTeam}
+          opponentTeam={opponentTeam}
+          matchId={currentMatch.id}
+          position={currentPosition}
+        />
+      </ActionSectionWrapper>
+    </div>
   );
 }

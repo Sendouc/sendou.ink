@@ -1,4 +1,4 @@
-import classNames from "classnames";
+import clsx from "clsx";
 import * as React from "react";
 
 export interface ButtonProps
@@ -31,7 +31,7 @@ export function Button(props: ButtonProps) {
   } = props;
   return (
     <button
-      className={classNames(className, {
+      className={clsx(className, {
         success: variant === "success",
         outlined: variant === "outlined",
         "outlined-success": variant === "outlined-success",

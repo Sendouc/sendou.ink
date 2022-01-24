@@ -1,4 +1,4 @@
-import classNames from "classnames";
+import clsx from "clsx";
 
 export function HamburgerButton({
   onClick,
@@ -21,7 +21,7 @@ export function HamburgerButton({
         xmlns="http://www.w3.org/2000/svg"
       >
         <rect
-          className={classNames("layout__burger__top-line", {
+          className={clsx("layout__burger__top-line", {
             expanded,
           })}
           x="6"
@@ -32,7 +32,7 @@ export function HamburgerButton({
           fill="currentColor"
         ></rect>
         <rect
-          className={classNames("layout__burger__middle-line", {
+          className={clsx("layout__burger__middle-line", {
             expanded,
           })}
           x="6"
@@ -43,7 +43,7 @@ export function HamburgerButton({
           fill="currentColor"
         ></rect>
         <rect
-          className={classNames("layout__burger__bottom-line", {
+          className={clsx("layout__burger__bottom-line", {
             expanded,
           })}
           x="6"

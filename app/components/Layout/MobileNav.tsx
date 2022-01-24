@@ -1,4 +1,4 @@
-import classNames from "classnames";
+import clsx from "clsx";
 import { Fragment } from "react";
 import { Link } from "remix";
 import { navItems } from "~/constants";
@@ -12,7 +12,7 @@ export function MobileNav({
   closeMenu: () => void;
 }) {
   return (
-    <div className={classNames("layout__mobile-nav", { expanded })}>
+    <div className={clsx("layout__mobile-nav", { expanded })}>
       <div className="layout__mobile-nav__top-action">
         <SearchInput />
       </div>
@@ -25,7 +25,7 @@ export function MobileNav({
             {navGroup.items.map((navItem, i) => (
               <Link
                 key={navItem}
-                className={classNames("layout__mobile-nav__link", {
+                className={clsx("layout__mobile-nav__link", {
                   first: i === 0,
                   last: i + 1 === navGroup.items.length,
                 })}

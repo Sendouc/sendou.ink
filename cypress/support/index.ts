@@ -1,9 +1,9 @@
+import { LoggedInUser } from "~/utils/schemas";
 import {
   ADMIN_TEST_AVATAR,
   ADMIN_TEST_DISCORD_ID,
   ADMIN_TEST_UUID,
 } from "../../app/constants";
-import type { LoggedInUser } from "~/utils";
 
 export {};
 
@@ -12,7 +12,7 @@ type MockUser = "sendou";
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
-    interface Chainable<Subject> {
+    interface Chainable {
       getCy(id: string): Chainable<JQuery<HTMLElement>>;
       seed(variation?: "check-in"): void;
       logIn(user: MockUser): void;

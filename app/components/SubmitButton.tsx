@@ -1,25 +1,37 @@
 import { useEffect } from "react";
 import { useActionData, useTransition } from "remix";
-import { useTimeoutState } from "~/utils/hooks";
+import { useTimeoutState } from "~/hooks/common";
 import { Button, ButtonProps } from "./Button";
 
 export function SubmitButton(
-  _props: ButtonProps & { actionType: string; successText?: string }
+  _props: ButtonProps & {
+    actionType: string;
+    successText?: string;
+    onSuccess?: () => void;
+  }
 ) {
-  const { actionType, successText, children, ...rest } = _props;
+  const { actionType, successText, onSuccess, children, ...rest } = _props;
   const actionData = useActionData<{ ok?: string }>();
   const transition = useTransition();
   const [showSuccess, setShowSuccess] = useTimeoutState(false);
 
   useEffect(() => {
-    if (!successText || actionData?.ok !== actionType) return;
+    // did this submit button's action happen?
+    if (actionData?.ok !== actionType) return;
+    // this is essentially to ensure this only fires once per mutation
+    if (transition.type !== "actionReload") return;
 
+    onSuccess?.();
     setShowSuccess(true);
-  }, [actionData]);
+  }, [actionData?.ok, transition.type]);
 
   const isLoading = (): boolean => {
-    if (transition.type !== "actionSubmission") return false;
+    // is there an action happening at the moment?
+    if (!["actionSubmission", "actionReload"].includes(transition.type)) {
+      return false;
+    }
 
+    // is it the action of this submit button?
     const _action = transition.submission?.formData.get("_action");
     if (_action !== actionType) return false;
 

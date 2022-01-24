@@ -2,9 +2,10 @@ import { Link, useLoaderData, useLocation } from "remix";
 import { DiscordIcon } from "~/components/icons/Discord";
 import { TwitterIcon } from "~/components/icons/Twitter";
 import { resolveTournamentFormatString } from "~/core/tournament/bracket";
+import { tournamentHasStarted } from "~/core/tournament/utils";
 import { FindTournamentByNameForUrlI } from "~/services/tournament";
 import { getLogInUrl } from "~/utils";
-import { useUser } from "~/utils/hooks";
+import { useUser } from "~/hooks/common";
 
 export function InfoBanner() {
   const data = useLoaderData<FindTournamentByNameForUrlI>();
@@ -109,6 +110,31 @@ function InfoBannerActionButton() {
   const user = useUser();
   const location = useLocation();
 
+  const isAlreadyInATeamButNotCaptain = data.teams
+    .flatMap((team) => team.members)
+    .filter(({ captain }) => !captain)
+    .some(({ member }) => member.id === user?.id);
+  if (isAlreadyInATeamButNotCaptain) return null;
+
+  const alreadyRegistered = data.teams
+    .flatMap((team) => team.members)
+    .some(({ member }) => member.id === user?.id);
+  if (alreadyRegistered) {
+    return (
+      <Link
+        to="manage-team"
+        className="info-banner__action-button"
+        prefetch="intent"
+      >
+        Manage team
+      </Link>
+    );
+  }
+
+  if (tournamentHasStarted(data.brackets)) {
+    return null;
+  }
+
   if (!user) {
     return (
       <form action={getLogInUrl(location)} method="post">
@@ -119,27 +145,6 @@ function InfoBannerActionButton() {
           Log in to join
         </button>
       </form>
-    );
-  }
-
-  const isAlreadyInATeamButNotCaptain = data.teams
-    .flatMap((team) => team.members)
-    .filter(({ captain }) => !captain)
-    .some(({ member }) => member.id === user.id);
-  if (isAlreadyInATeamButNotCaptain) return null;
-
-  const alreadyRegistered = data.teams
-    .flatMap((team) => team.members)
-    .some(({ member }) => member.id === user.id);
-  if (alreadyRegistered) {
-    return (
-      <Link
-        to="manage-roster"
-        className="info-banner__action-button"
-        prefetch="intent"
-      >
-        Manage roster
-      </Link>
     );
   }
 

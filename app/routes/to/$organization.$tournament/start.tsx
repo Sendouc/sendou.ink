@@ -1,5 +1,5 @@
 import type { Mode, Stage } from ".prisma/client";
-import classNames from "classnames";
+import clsx from "clsx";
 import {
   ActionFunction,
   Form,
@@ -16,7 +16,7 @@ import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
 import { RefreshIcon } from "~/components/icons/Refresh";
-import { modesShort, modesShortToLong } from "~/constants";
+import { BEST_OF_OPTIONS, modesShort, modesShortToLong } from "~/constants";
 import { eliminationBracket } from "~/core/tournament/algorithms";
 import {
   EliminationBracketSide,
@@ -229,11 +229,11 @@ function RoundsCollection({
             <section key={round.name} className="tournament__start__round">
               <h4>{round.name}</h4>
               <div className="tournament__start__best-of-buttons-container">
-                {([3, 5, 7, 9] as const).map((bestOf) => (
+                {BEST_OF_OPTIONS.map((bestOf) => (
                   <button
                     key={bestOf}
                     type="button"
-                    className={classNames("tournament__start__best-of", {
+                    className={clsx("tournament__start__best-of", {
                       active: round.bestOf === bestOf,
                     })}
                     onClick={() =>
@@ -298,7 +298,7 @@ function RoundsCollection({
                   return (
                     <li
                       className="tournament__start__map-row"
-                      key={"" + stageI + stage.id}
+                      key={`${stageI}${stage.id}`}
                     >
                       <img
                         src={`/img/modes/${stage.mode}.webp`}

@@ -1,28 +1,51 @@
 import { Mode } from "@prisma/client";
 import type { CSSProperties } from "react";
 import { json, useLocation } from "remix";
+import type { EventTargetRecorder } from "server/events";
 import { z } from "zod";
+import { LoggedInUserSchema } from "~/utils/schemas";
 
 export function makeTitle(endOfTitle?: string) {
-  return endOfTitle ? `sendou.ink | ${endOfTitle}` : "sendou.ink";
+  return endOfTitle ? `sendou.ink | ${endOfTitle}` : "sendou.ink";
 }
 
 /** Get logged in user from context. Throws with 401 error if no user found. */
-export function requireUser(ctx: any) {
-  const user = ctx.user;
+export function requireUser(ctx: unknown) {
+  const data = LoggedInUserSchema.parse(ctx);
 
-  if (!user) {
+  if (!data?.user) {
     throw json("Log in required", { status: 401 });
   }
 
-  return user as NonNullable<LoggedInUser>;
+  return data?.user;
 }
 
 /** Get logged in user from context. Doesn't throw. */
-export function getUser(ctx: any) {
-  const user = ctx.user;
+export function getUser(ctx: unknown) {
+  const data = LoggedInUserSchema.parse(ctx);
 
-  return user as LoggedInUser;
+  return data?.user;
+}
+
+/** Get events object from context. Throws with 500 error if none found found. */
+export function requireEvents(ctx: unknown) {
+  try {
+    const data = z.object({ events: z.unknown() }).parse(ctx);
+
+    // TODO: fix type assertion
+    return data.events as EventTargetRecorder;
+  } catch (e) {
+    console.error(e);
+    throw json("Events missing", { status: 500 });
+  }
+}
+
+/** Asserts condition is truthy. Throws a new `Response` with status code 400 and given message if falsy.  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- same format as TS docs: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions
+export function validate(condition: any, message: string): asserts condition {
+  if (condition) return;
+
+  throw new Response(message, { status: 400 });
 }
 
 /** Get link to log in with query param set as current page */
@@ -34,6 +57,11 @@ export function getLogInUrl(location: ReturnType<typeof useLocation>) {
 
 export function stageNameToImageUrl(name: string) {
   return `/img/stages/${name.replaceAll(" ", "-").toLowerCase()}.webp`;
+}
+
+export function stageNameToBannerImageUrl(name: string) {
+  // TODO: webp
+  return `/img/stage-banners/${name.replaceAll(" ", "-").toLowerCase()}.png`;
 }
 
 export function modeToImageUrl(mode: Mode) {
@@ -49,6 +77,8 @@ export async function parseRequestFormData<T extends z.ZodTypeAny>({
   schema: T;
 }): Promise<z.infer<T>> {
   try {
+    // False alarm
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return schema.parse(Object.fromEntries(await request.formData()));
   } catch (e) {
     if (e instanceof z.ZodError) {
@@ -64,15 +94,14 @@ export async function parseRequestFormData<T extends z.ZodTypeAny>({
   }
 }
 
-/** @link https://stackoverflow.com/a/69413184 */
-// @ts-expect-error
-export const assertType = <A, B extends A>() => {};
-
-export type LoggedInUser = {
-  id: string;
-  discordId: string;
-  discordAvatar: string;
-} | null;
+export function safeJSONParse(value: unknown): unknown {
+  try {
+    const parsedValue = z.string().parse(value);
+    return JSON.parse(parsedValue);
+  } catch (e) {
+    return undefined;
+  }
+}
 
 export type Serialized<T> = {
   [P in keyof T]: T[P] extends Date
@@ -86,7 +115,7 @@ export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
 
 export type Unpacked<T> = T extends (infer U)[]
   ? U
-  : T extends (...args: any[]) => infer U
+  : T extends (...args: unknown[]) => infer U
   ? U
   : T extends Promise<infer U>
   ? U
@@ -94,18 +123,20 @@ export type Unpacked<T> = T extends (infer U)[]
 
 export type MyReducerAction<
   K extends string,
-  T extends {} | undefined = undefined
-> = T extends {}
+  T extends Record<string, unknown> | undefined = undefined
+> = T extends Record<string, unknown>
   ? {
       type: K;
       data: T;
     }
   : { type: K };
 
+// TODO: make everything start with _ like _tournament-bg-url to avoid collision with global css vars
 export interface MyCSSProperties extends CSSProperties {
   "--tournaments-bg"?: string;
   "--tournaments-text"?: string;
   "--tournaments-text-transparent"?: string;
+  "--_tournament-bg-url"?: string;
   "--action-section-icon-color"?: string;
   "--brackets-columns"?: number;
   "--brackets-max-matches"?: number;
