@@ -279,6 +279,7 @@ select::selection {
   font-weight: bold;
 }
 
+/* Does not respect window getting resized */
 .modal {
   position: fixed;
   z-index: 999;
