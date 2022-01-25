@@ -53,7 +53,7 @@ CREATE TABLE "tournament_teams" (
   "id" text PRIMARY KEY,
   "name" text NOT NULL,
   "tournament_id" text NOT NULL,
-  "can_host_bool" integer CHECK ("can_host_bool" IN (0, 1)) NOT NULL DEFAULT 0,
+  "can_host_bool" boolean CHECK ("can_host_bool" IN (0, 1)) NOT NULL DEFAULT 0,
   "friend_code" text NOT NULL,
   "room_pass" text CHECK (length("room_pass" = 4)),
   "invite_code" text NOT NULL UNIQUE,
@@ -67,7 +67,7 @@ CREATE TABLE "tournament_team_members" (
   "member_id" text NOT NULL,
   "team_id" text NOT NULL,
   "tournament_id" text NOT NULL,
-  "captain_bool" integer CHECK ("captain_bool" IN (0, 1)) NOT NULL DEFAULT 0,
+  "captain_bool" boolean CHECK ("captain_bool" IN (0, 1)) NOT NULL DEFAULT 0,
   FOREIGN KEY (team_id) REFERENCES tournament_teams(id) ON DELETE RESTRICT,
   FOREIGN KEY (member_id) REFERENCES users(id) ON DELETE RESTRICT
 );
@@ -150,3 +150,25 @@ CREATE TABLE "tournament_match_results" (
 CREATE INDEX tournament_match_results_match_id ON tournament_match_results(match_id);
 CREATE INDEX tournament_match_results_reporter_id ON tournament_match_results(reporter_id);
 CREATE UNIQUE INDEX one_position_per_match_id ON tournament_match_results(match_id, position);
+
+-- TODO: either remove ..._boolean ..._timestamp from above or add here
+CREATE TABLE "lfg_groups" (
+  "id" text PRIMARY KEY,
+  "message" text,
+  "ranked" boolean CHECK ("ranked" IN (0, 1)),
+  "type" text CHECK ("type" IN ('TWIN', 'QUAD', 'VERSUS')) NOT NULL,
+  "active" boolean CHECK ("ranked" IN (0, 1)),
+  "match_id" text,
+  "created_at" text NOT NULL
+);
+
+-- TODO: how could we make sure on DB level one player per group
+-- at a time? Move active to this and CHECK?
+CREATE TABLE "lfg_group_members" (
+  "group_id" text NOT NULL REFERENCES lfg_groups(id) ON DELETE CASCADE,
+  "member_id" text NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  "weapons" text,
+  "captain" boolean CHECK ("captain" IN (0, 1)),
+);
+CREATE INDEX lfg_group_members_group_id ON lfg_group_members(group_id);
+CREATE INDEX lfg_group_members_member_id ON lfg_group_members(member_id);
