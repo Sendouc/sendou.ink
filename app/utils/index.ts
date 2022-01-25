@@ -68,6 +68,10 @@ export function modeToImageUrl(mode: Mode) {
   return `/img/modes/${mode}.webp`;
 }
 
+export function layoutIcon(icon: string) {
+  return `/img/layout/${icon}.webp`;
+}
+
 /** Parse formData of a request with the given schema. Throws HTTP 400 response if fails. */
 export async function parseRequestFormData<T extends z.ZodTypeAny>({
   request,
