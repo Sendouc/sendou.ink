@@ -1,1 +1,0 @@
-INSERT INTO users VALUES ($id, $discord_id, $discord_name, $discord_discriminator, $discord_avatar, $discord_refresh_token, $twitch, $twitter, $youtube_id, $youtube_name, $created_at_timestamp, $updated_at_timestamp)

@@ -2,7 +2,7 @@ import { ActionFunction, Form, LinksFunction, MetaFunction } from "remix";
 import { z } from "zod";
 import { LFGGroupSelector } from "~/components/play/LFGGroupSelector";
 import styles from "~/styles/play.css";
-import { makeTitle, parseRequestFormData, requireDB } from "~/utils";
+import { makeTitle, parseRequestFormData } from "~/utils";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -19,37 +19,34 @@ type ActionData = {
 
 export const action: ActionFunction = async ({
   request,
-  context,
 }): Promise<ActionData> => {
   const data = await parseRequestFormData({
     request,
     schema: playActionSchema,
   });
-  const db = requireDB(context);
-
   switch (data._action) {
     case "START_LOOKING": {
-      const getRanked = () => {
-        if (!data.type.startsWith("VERSUS")) return null;
-        return data.type.includes("UNRANKED") ? 0 : 1;
-      };
-      const getType = () => {
-        switch (data.type) {
-          case "VERSUS-RANKED":
-          case "VERSUS-UNRANKED":
-            return "VERSUS";
-          case "QUAD":
-          case "TWIN":
-            return data.type;
-        }
-      };
+      // const getRanked = () => {
+      //   if (!data.type.startsWith("VERSUS")) return null;
+      //   return data.type.includes("UNRANKED") ? 0 : 1;
+      // };
+      // const getType = () => {
+      //   switch (data.type) {
+      //     case "VERSUS-RANKED":
+      //     case "VERSUS-UNRANKED":
+      //       return "VERSUS";
+      //     case "QUAD":
+      //     case "TWIN":
+      //       return data.type;
+      //   }
+      // };
 
-      db.LFGGroup.create({
-        active: 1,
-        message: "",
-        ranked: getRanked(),
-        type: getType(),
-      });
+      // db.LFGGroup.create({
+      //   active: 1,
+      //   message: "",
+      //   ranked: getRanked(),
+      //   type: getType(),
+      // });
       return { ok: "START_LOOKING" };
     }
     default: {

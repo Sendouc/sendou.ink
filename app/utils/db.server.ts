@@ -1,10 +1,4 @@
 import { PrismaClient } from "@prisma/client";
-import SQLite3 from "better-sqlite3";
-import { LFGGroupModel } from "~/models/LFGGroup/LFGGroup";
-import { OrganizationModel } from "~/models/Organization/Organization";
-import { TournamentModel } from "~/models/Tournament/Tournament";
-import { UserModel } from "~/models/User/User";
-// import { v4 as uuidv4 } from "uuid";
 
 let db: PrismaClient;
 
@@ -28,34 +22,3 @@ if (process.env.NODE_ENV === "production") {
 }
 
 export { db };
-
-declare global {
-  var __Database: Database;
-}
-
-export class Database {
-  db;
-  user;
-  organization;
-  tournament;
-  LFGGroup;
-  //static #instance: Database;
-  constructor() {
-    // TODO: make Database class into singleton
-    // if (Database.#instance) {
-    //   return Database.#instance;
-    // }
-    // Database.#instance = this;
-
-    console.log("Constructing DB...");
-
-    this.db = new SQLite3("db.sqlite3");
-    this.db.pragma("journal_mode = WAL");
-    this.db.pragma("foreign_keys = ON");
-
-    this.user = new UserModel(this.db);
-    this.organization = new OrganizationModel(this.db);
-    this.tournament = new TournamentModel(this.db);
-    this.LFGGroup = new LFGGroupModel(this.db);
-  }
-}
