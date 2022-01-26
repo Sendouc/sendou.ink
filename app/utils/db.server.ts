@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import SQLite3 from "better-sqlite3";
+import { LFGGroupModel } from "~/models/LFGGroup/LFGGroup";
 import { OrganizationModel } from "~/models/Organization/Organization";
 import { TournamentModel } from "~/models/Tournament/Tournament";
 import { UserModel } from "~/models/User/User";
@@ -37,6 +38,7 @@ export class Database {
   user;
   organization;
   tournament;
+  LFGGroup;
   //static #instance: Database;
   constructor() {
     // TODO: make Database class into singleton
@@ -45,6 +47,8 @@ export class Database {
     // }
     // Database.#instance = this;
 
+    console.log("Constructing DB...");
+
     this.db = new SQLite3("db.sqlite3");
     this.db.pragma("journal_mode = WAL");
     this.db.pragma("foreign_keys = ON");
@@ -52,5 +56,6 @@ export class Database {
     this.user = new UserModel(this.db);
     this.organization = new OrganizationModel(this.db);
     this.tournament = new TournamentModel(this.db);
+    this.LFGGroup = new LFGGroupModel(this.db);
   }
 }

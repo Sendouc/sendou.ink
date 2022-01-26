@@ -6,6 +6,7 @@ import compression from "compression";
 import express from "express";
 import morgan from "morgan";
 import path from "path";
+import { Database } from "~/utils/db.server";
 import { LoggedInUser } from "~/utils/schemas";
 import { setUpAuth } from "./auth";
 import { EventTargetRecorder, setUpEvents } from "./events";
@@ -58,7 +59,7 @@ function userToContext(req: Express.Request) {
 }
 
 function getLoadContext(req: Express.Request) {
-  return { events, user: userToContext(req) };
+  return { events, user: userToContext(req), db: new Database() };
 }
 
 app.all(

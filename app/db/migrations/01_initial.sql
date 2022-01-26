@@ -157,7 +157,7 @@ CREATE TABLE "lfg_groups" (
   "message" text,
   "ranked" boolean CHECK ("ranked" IN (0, 1)),
   "type" text CHECK ("type" IN ('TWIN', 'QUAD', 'VERSUS')) NOT NULL,
-  "active" boolean CHECK ("ranked" IN (0, 1)),
+  "active" boolean CHECK ("active" IN (0, 1)),
   "match_id" text,
   "created_at" text NOT NULL
 );
@@ -168,7 +168,7 @@ CREATE TABLE "lfg_group_members" (
   "group_id" text NOT NULL REFERENCES lfg_groups(id) ON DELETE CASCADE,
   "member_id" text NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   "weapons" text,
-  "captain" boolean CHECK ("captain" IN (0, 1)),
+  "captain" boolean CHECK ("captain" IN (0, 1))
 );
 CREATE INDEX lfg_group_members_group_id ON lfg_group_members(group_id);
 CREATE INDEX lfg_group_members_member_id ON lfg_group_members(member_id);

@@ -10,10 +10,10 @@ export class Helpers {
   }
 
   static get createdAt() {
-    return { created_at_timestamp: dateNow() };
+    return { created_at: dateNow() };
   }
 
   static get updatedAt() {
-    return { updated_at_timestamp: dateNow() };
+    return { updated_at: dateNow() };
   }
 }

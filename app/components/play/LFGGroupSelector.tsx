@@ -34,39 +34,44 @@ export function LFGGroupSelector() {
   const [type, setType] = React.useState("VERSUS-RANKED");
 
   return (
-    <RadioGroup
-      className="play__type-radio-group"
-      value={type}
-      onChange={setType}
-    >
-      {OPTIONS.map((option, i) => {
-        console.log(option.type);
-        return (
-          <RadioGroup.Option key={i} value={option.type}>
-            {({ checked }) => (
-              <div
-                className={clsx("play__type-radio-group__item", { checked })}
-              >
-                <label className="play__type-radio-group__label">
-                  {option.text}
-                  <span
-                    className={clsx(
-                      "play__type-radio-group__label__explanation",
-                      { checked }
-                    )}
-                  >
-                    {option.explanation}
-                  </span>
-                </label>
-                <img
-                  className={clsx("play__type-radio-group__image", { checked })}
-                  src={layoutIcon(option.image)}
-                />
-              </div>
-            )}
-          </RadioGroup.Option>
-        );
-      })}
-    </RadioGroup>
+    <>
+      <input type="hidden" name="type" value={type} />
+      <RadioGroup
+        className="play__type-radio-group"
+        value={type}
+        onChange={setType}
+      >
+        {OPTIONS.map((option, i) => {
+          console.log(option.type);
+          return (
+            <RadioGroup.Option key={i} value={option.type}>
+              {({ checked }) => (
+                <div
+                  className={clsx("play__type-radio-group__item", { checked })}
+                >
+                  <label className="play__type-radio-group__label">
+                    {option.text}
+                    <span
+                      className={clsx(
+                        "play__type-radio-group__label__explanation",
+                        { checked }
+                      )}
+                    >
+                      {option.explanation}
+                    </span>
+                  </label>
+                  <img
+                    className={clsx("play__type-radio-group__image", {
+                      checked,
+                    })}
+                    src={layoutIcon(option.image)}
+                  />
+                </div>
+              )}
+            </RadioGroup.Option>
+          );
+        })}
+      </RadioGroup>
+    </>
   );
 }

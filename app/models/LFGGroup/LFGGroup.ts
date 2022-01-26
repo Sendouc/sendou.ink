@@ -9,7 +9,7 @@ const LFGGroupType = z.enum(["TWIN", "QUAD", "VERSUS"]);
 export const LFGGroupSchema = z.object({
   id: z.string().uuid(),
   message: z.string().max(250).nullable(),
-  ranked: z.number().int().min(0).max(1),
+  ranked: z.number().int().min(0).max(1).nullable(),
   type: LFGGroupType,
   active: z.number().int().min(0).max(1),
   match_id: z.string().uuid().nullable(),
@@ -26,7 +26,7 @@ export class LFGGroupModel extends Model {
     this.#createStmt = this.prepareSql(db, __dirname, "create_lfg_group.sql");
   }
 
-  create(args: Optional<LFGGroupI, "id">) {
+  create(args: Optional<LFGGroupI, "id" | "match_id" | "created_at">) {
     return this.#createStmt.run({
       ...args,
       ...Helpers.id(args.id),

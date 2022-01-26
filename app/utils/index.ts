@@ -4,6 +4,7 @@ import { json, useLocation } from "remix";
 import type { EventTargetRecorder } from "server/events";
 import { z } from "zod";
 import { LoggedInUserSchema } from "~/utils/schemas";
+import type { Database } from "./db.server";
 
 export function makeTitle(endOfTitle?: string) {
   return endOfTitle ? `sendou.ink | ${endOfTitle}` : "sendou.ink";
@@ -38,6 +39,11 @@ export function requireEvents(ctx: unknown) {
     console.error(e);
     throw json("Events missing", { status: 500 });
   }
+}
+
+// TODO: any
+export function requireDB(ctx: any) {
+  return ctx.db as Database;
 }
 
 /** Asserts condition is truthy. Throws a new `Response` with status code 400 and given message if falsy.  */
