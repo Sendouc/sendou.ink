@@ -68,6 +68,10 @@ export function modeToImageUrl(mode: Mode) {
   return `/img/modes/${mode}.webp`;
 }
 
+export function layoutIcon(icon: string) {
+  return `/img/layout/${icon}.webp`;
+}
+
 /** Parse formData of a request with the given schema. Throws HTTP 400 response if fails. */
 export async function parseRequestFormData<T extends z.ZodTypeAny>({
   request,
@@ -110,6 +114,8 @@ export type Serialized<T> = {
     ? string | null
     : Serialized<T[P]>;
 };
+
+export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
 
 export type Unpacked<T> = T extends (infer U)[]
   ? U

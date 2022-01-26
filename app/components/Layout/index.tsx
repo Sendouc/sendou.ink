@@ -6,6 +6,7 @@ import { SearchInput } from "./SearchInput";
 import { UserItem } from "./UserItem";
 import { Link } from "remix";
 import { navItems } from "~/constants";
+import { layoutIcon } from "~/utils";
 
 export const Layout = React.memo(function Layout({
   children,
@@ -19,7 +20,7 @@ export const Layout = React.memo(function Layout({
       <header className="layout__header">
         <div className="layout__header__logo-container">
           <Link to="/">
-            <img className="layout__logo" src="/img/layout/logo.webp" />
+            <img className="layout__logo" src={layoutIcon("logo")} />
           </Link>
         </div>
         <div className="layout__header__search-container">
@@ -50,8 +51,10 @@ export const Layout = React.memo(function Layout({
                   data-cy={`nav-link-${navItem}`}
                 >
                   <img
-                    src={`/img/layout/${navItem.replace(" ", "")}.webp`}
+                    src={layoutIcon(navItem.replace(" ", ""))}
                     className="layout__nav__link__icon"
+                    width="32"
+                    height="32"
                   />
                   {navItem}
                 </Link>

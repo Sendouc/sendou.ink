@@ -5,3 +5,6 @@ node_modules
 /server/build
 /public/build
 /app/tailwind.css
+db.sqlite3
+db.sqlite3-shm
+db.sqlite3-wal

@@ -7,6 +7,9 @@ CREATE TYPE "BracketType" AS ENUM ('SE', 'DE');
 -- CreateEnum
 CREATE TYPE "TeamOrder" AS ENUM ('UPPER', 'LOWER');
 
+-- CreateEnum
+CREATE TYPE "LFGGroupType" AS ENUM ('TWIN', 'QUAD', 'VERSUS');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
@@ -151,6 +154,40 @@ CREATE TABLE "TournamentMatchGameResult" (
 );
 
 -- CreateTable
+CREATE TABLE "LFGGroup" (
+    "id" TEXT NOT NULL,
+    "ranked" BOOLEAN,
+    "type" "LFGGroupType" NOT NULL,
+    "active" BOOLEAN NOT NULL DEFAULT true,
+    "matchId" TEXT,
+    "inviteCode" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "LFGGroup_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "LFGGroupLike" (
+    "likerId" TEXT NOT NULL,
+    "targetId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- CreateTable
+CREATE TABLE "LFGGroupMember" (
+    "groupId" TEXT NOT NULL,
+    "memberId" TEXT NOT NULL,
+    "captain" BOOLEAN NOT NULL DEFAULT false
+);
+
+-- CreateTable
+CREATE TABLE "LFGGroupMatch" (
+    "id" TEXT NOT NULL,
+
+    CONSTRAINT "LFGGroupMatch_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "_TournamentMatchGameResultToUser" (
     "A" TEXT NOT NULL,
     "B" TEXT NOT NULL
@@ -191,6 +228,12 @@ CREATE UNIQUE INDEX "TournamentMatchParticipant_teamId_matchId_key" ON "Tourname
 
 -- CreateIndex
 CREATE UNIQUE INDEX "TournamentMatchGameResult_matchId_roundStageId_key" ON "TournamentMatchGameResult"("matchId", "roundStageId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "LFGGroupLike_likerId_targetId_key" ON "LFGGroupLike"("likerId", "targetId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "LFGGroupMember_groupId_memberId_key" ON "LFGGroupMember"("groupId", "memberId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_TournamentMatchGameResultToUser_AB_unique" ON "_TournamentMatchGameResultToUser"("A", "B");
@@ -257,6 +300,21 @@ ALTER TABLE "TournamentMatchGameResult" ADD CONSTRAINT "TournamentMatchGameResul
 
 -- AddForeignKey
 ALTER TABLE "TournamentMatchGameResult" ADD CONSTRAINT "TournamentMatchGameResult_roundStageId_fkey" FOREIGN KEY ("roundStageId") REFERENCES "TournamentRoundStage"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "LFGGroup" ADD CONSTRAINT "LFGGroup_matchId_fkey" FOREIGN KEY ("matchId") REFERENCES "LFGGroupMatch"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "LFGGroupLike" ADD CONSTRAINT "LFGGroupLike_likerId_fkey" FOREIGN KEY ("likerId") REFERENCES "LFGGroup"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "LFGGroupLike" ADD CONSTRAINT "LFGGroupLike_targetId_fkey" FOREIGN KEY ("targetId") REFERENCES "LFGGroup"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "LFGGroupMember" ADD CONSTRAINT "LFGGroupMember_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "LFGGroup"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "LFGGroupMember" ADD CONSTRAINT "LFGGroupMember_memberId_fkey" FOREIGN KEY ("memberId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_TournamentMatchGameResultToUser" ADD FOREIGN KEY ("A") REFERENCES "TournamentMatchGameResult"("id") ON DELETE CASCADE ON UPDATE CASCADE;

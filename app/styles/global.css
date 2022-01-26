@@ -391,6 +391,12 @@ select::selection {
   opacity: 0.6;
 }
 
+.container {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding-inline: var(--s-2);
+}
+
 /* Utility classes */
 
 .mt-2 {
