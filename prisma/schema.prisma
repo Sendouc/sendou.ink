@@ -25,7 +25,7 @@ model User {
   ownedOrganization    Organization?
   tournamentTeams      TournamentTeamMember[]
   tournamentMatches    TournamentMatchGameResult[]
-  lfgGroups       LFGGroupMember[]
+  lfgGroups            LFGGroupMember[]
 }
 
 model Organization {
@@ -211,23 +211,40 @@ enum LFGGroupType {
 }
 
 model LFGGroup {
-  id             String           @id @default(uuid())
-  message        String?
-  ranked         Boolean?
-  type           LFGGroupType
-  active         Boolean          @default(true)
-  matchId        String?
-  createdAt      DateTime         @default(now())
-  LFGGroupMember LFGGroupMember[]
+  id            String           @id @default(uuid())
+  ranked        Boolean?
+  type          LFGGroupType
+  active        Boolean          @default(true)
+  matchId       String?
+  inviteCode    String           @default(uuid())
+  createdAt     DateTime         @default(now())
+  members       LFGGroupMember[]
+  match         LFGGroupMatch?   @relation(fields: [matchId], references: [id])
+  likedGroups   LFGGroupLike[]   @relation("liker")
+  likesReceived LFGGroupLike[]   @relation("target")
+}
+
+model LFGGroupLike {
+  likerId   String
+  targetId  String
+  liker     LFGGroup @relation("liker", fields: [likerId], references: [id])
+  target    LFGGroup @relation("target", fields: [targetId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([likerId, targetId])
 }
 
 model LFGGroupMember {
   groupId  String
   memberId String
-  weapons  String[] // for Splatoon 3 probably a different type here
   captain  Boolean  @default(false)
   group    LFGGroup @relation(fields: [groupId], references: [id])
   user     User     @relation(fields: [memberId], references: [id])
 
   @@unique([groupId, memberId])
+}
+
+model LFGGroupMatch {
+  id     String     @id @default(uuid())
+  groups LFGGroup[]
 }

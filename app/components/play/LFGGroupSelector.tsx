@@ -42,7 +42,6 @@ export function LFGGroupSelector() {
         onChange={setType}
       >
         {OPTIONS.map((option, i) => {
-          console.log(option.type);
           return (
             <RadioGroup.Option key={i} value={option.type}>
               {({ checked }) => (
