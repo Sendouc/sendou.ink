@@ -1,27 +1,28 @@
-import { Form, useLocation } from "remix";
+import { Form } from "remix";
 import { useBaseURL, useTimeoutState } from "~/hooks/common";
 import { FindManyByTrustReceiverId } from "~/models/TrustRelationship.server";
+import { Button } from "./Button";
 import { FormErrorMessage } from "./FormErrorMessage";
 import { Label } from "./Label";
 import { SubmitButton } from "./SubmitButton";
 
 export function AddPlayers({
+  pathname,
   inviteCode,
   addUserError,
   trustingUsers,
   hiddenInputs,
+  tinyButtons = false,
 }: {
+  pathname: string;
   inviteCode: string;
   addUserError?: string;
   trustingUsers: FindManyByTrustReceiverId;
   hiddenInputs: { name: string; value: string }[];
+  tinyButtons?: boolean;
 }) {
   const baseURL = useBaseURL();
-  const location = useLocation();
-  const urlWithInviteCode = `${baseURL}${location.pathname.replace(
-    "manage-team",
-    "join-team"
-  )}?code=${inviteCode}`;
+  const urlWithInviteCode = `${baseURL}${pathname}?code=${inviteCode}`;
 
   return (
     <fieldset className="add-players__actions">
@@ -34,7 +35,10 @@ export function AddPlayers({
           disabled
           value={urlWithInviteCode}
         />
-        <CopyToClipboardButton urlWithInviteCode={urlWithInviteCode} />
+        <CopyToClipboardButton
+          urlWithInviteCode={urlWithInviteCode}
+          tiny={tinyButtons}
+        />
       </div>
       {trustingUsers.length > 0 && (
         <div className="add-players__actions__section">
@@ -63,6 +67,7 @@ export function AddPlayers({
               actionType="ADD_PLAYER"
               loadingText="Adding..."
               data-cy="add-to-roster-button"
+              tiny={tinyButtons}
             >
               Add to roster
             </SubmitButton>
@@ -75,13 +80,15 @@ export function AddPlayers({
 
 function CopyToClipboardButton({
   urlWithInviteCode,
+  tiny,
 }: {
   urlWithInviteCode: string;
+  tiny: boolean;
 }) {
   const [showCopied, setShowCopied] = useTimeoutState(false);
 
   return (
-    <button
+    <Button
       className="add-players__input__button"
       onClick={() => {
         navigator.clipboard
@@ -91,8 +98,9 @@ function CopyToClipboardButton({
       }}
       type="button"
       data-cy="copy-to-clipboard-button"
+      tiny={tiny}
     >
       {showCopied ? "Copied!" : "Copy to clipboard"}
-    </button>
+    </Button>
   );
 }

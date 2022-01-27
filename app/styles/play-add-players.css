@@ -1,0 +1,5 @@
+.play-add-players__button-container {
+  display: flex;
+  justify-content: center;
+  margin-block-start: var(--s-8);
+}

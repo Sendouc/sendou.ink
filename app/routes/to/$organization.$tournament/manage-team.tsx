@@ -8,6 +8,7 @@ import {
   redirect,
   useActionData,
   useLoaderData,
+  useLocation,
 } from "remix";
 import { z } from "zod";
 import { AddPlayers } from "~/components/AddPlayers";
@@ -202,6 +203,7 @@ export const loader: LoaderFunction = async ({ params, context }) => {
 // TODO: should not 404 but redirect instead - catchBoundary?
 export default function ManageTeamPage() {
   const actionData = useActionData<ActionData>();
+  const location = useLocation();
   const { ownTeam, trustingUsers } = useLoaderData<Data>();
 
   return (
@@ -293,6 +295,7 @@ export default function ManageTeamPage() {
       </Form>
       {ownTeam.members.length < TOURNAMENT_TEAM_ROSTER_MAX_SIZE && (
         <AddPlayers
+          pathname={location.pathname.replace("manage-team", "join-team")}
           inviteCode={ownTeam.inviteCode}
           trustingUsers={trustingUsers}
           hiddenInputs={[

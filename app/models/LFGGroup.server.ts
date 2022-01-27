@@ -37,5 +37,19 @@ export function findActiveByMember(user: { id: string }) {
         },
       },
     },
+    include: {
+      members: true
+    }
   });
+}
+
+export function startLooking(id: string) {
+  return db.lfgGroup.update({
+    where: {
+      id
+    },
+    data: {
+      looking: true
+    }
+  })
 }

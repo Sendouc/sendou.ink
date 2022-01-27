@@ -8,6 +8,7 @@ Prerequisites: [Node.js 16.13](https://nodejs.org/en/)
 2. Make a copy of `.env.example` that's called `.env` and fill it with values.
 
 - You can check [Prisma's guide](https://www.prisma.io/dataguide/postgresql/setting-up-a-local-postgresql-database) on how to get PostgreSQL set up and running locally.
+- Run `npm run migration:apply:dev` to set up the tables of your database.
 - Run `npm run seed` to seed the database with some test data.
 
 3. Run `npm run dev` to run both the server and frontend.
