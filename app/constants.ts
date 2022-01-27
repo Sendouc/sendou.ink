@@ -48,7 +48,7 @@ export const navItems = [
   },
   {
     title: "play",
-    items: ["calendar", "battle", "Rankings"],
+    items: ["calendar", "play", "Rankings"],
   },
   {
     title: "tools",

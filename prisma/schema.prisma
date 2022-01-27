@@ -25,7 +25,7 @@ model User {
   ownedOrganization    Organization?
   tournamentTeams      TournamentTeamMember[]
   tournamentMatches    TournamentMatchGameResult[]
-  lfgGroups            LFGGroupMember[]
+  lfgGroups            LfgGroupMember[]
 }
 
 model Organization {
@@ -204,47 +204,50 @@ model TournamentMatchGameResult {
   @@unique([matchId, roundStageId])
 }
 
-enum LFGGroupType {
+enum LfgGroupType {
   TWIN
   QUAD
   VERSUS
 }
 
-model LFGGroup {
+model LfgGroup {
   id            String           @id @default(uuid())
   ranked        Boolean?
-  type          LFGGroupType
+  type          LfgGroupType
   active        Boolean          @default(true)
+  looking       Boolean
   matchId       String?
   inviteCode    String           @default(uuid())
   createdAt     DateTime         @default(now())
-  members       LFGGroupMember[]
-  match         LFGGroupMatch?   @relation(fields: [matchId], references: [id])
-  likedGroups   LFGGroupLike[]   @relation("liker")
-  likesReceived LFGGroupLike[]   @relation("target")
+  members       LfgGroupMember[]
+  match         LfgGroupMatch?   @relation(fields: [matchId], references: [id])
+  likedGroups   LfgGroupLike[]   @relation("liker")
+  likesReceived LfgGroupLike[]   @relation("target")
+
+  @@index([active])
 }
 
-model LFGGroupLike {
+model LfgGroupLike {
   likerId   String
   targetId  String
-  liker     LFGGroup @relation("liker", fields: [likerId], references: [id])
-  target    LFGGroup @relation("target", fields: [targetId], references: [id])
+  liker     LfgGroup @relation("liker", fields: [likerId], references: [id])
+  target    LfgGroup @relation("target", fields: [targetId], references: [id])
   createdAt DateTime @default(now())
 
   @@unique([likerId, targetId])
 }
 
-model LFGGroupMember {
+model LfgGroupMember {
   groupId  String
   memberId String
   captain  Boolean  @default(false)
-  group    LFGGroup @relation(fields: [groupId], references: [id])
+  group    LfgGroup @relation(fields: [groupId], references: [id])
   user     User     @relation(fields: [memberId], references: [id])
 
   @@unique([groupId, memberId])
 }
 
-model LFGGroupMatch {
+model LfgGroupMatch {
   id     String     @id @default(uuid())
-  groups LFGGroup[]
+  groups LfgGroup[]
 }

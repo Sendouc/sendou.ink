@@ -8,7 +8,7 @@ CREATE TYPE "BracketType" AS ENUM ('SE', 'DE');
 CREATE TYPE "TeamOrder" AS ENUM ('UPPER', 'LOWER');
 
 -- CreateEnum
-CREATE TYPE "LFGGroupType" AS ENUM ('TWIN', 'QUAD', 'VERSUS');
+CREATE TYPE "LfgGroupType" AS ENUM ('TWIN', 'QUAD', 'VERSUS');
 
 -- CreateTable
 CREATE TABLE "User" (
@@ -154,37 +154,38 @@ CREATE TABLE "TournamentMatchGameResult" (
 );
 
 -- CreateTable
-CREATE TABLE "LFGGroup" (
+CREATE TABLE "LfgGroup" (
     "id" TEXT NOT NULL,
     "ranked" BOOLEAN,
-    "type" "LFGGroupType" NOT NULL,
+    "type" "LfgGroupType" NOT NULL,
     "active" BOOLEAN NOT NULL DEFAULT true,
+    "looking" BOOLEAN NOT NULL,
     "matchId" TEXT,
     "inviteCode" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "LFGGroup_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "LfgGroup_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "LFGGroupLike" (
+CREATE TABLE "LfgGroupLike" (
     "likerId" TEXT NOT NULL,
     "targetId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- CreateTable
-CREATE TABLE "LFGGroupMember" (
+CREATE TABLE "LfgGroupMember" (
     "groupId" TEXT NOT NULL,
     "memberId" TEXT NOT NULL,
     "captain" BOOLEAN NOT NULL DEFAULT false
 );
 
 -- CreateTable
-CREATE TABLE "LFGGroupMatch" (
+CREATE TABLE "LfgGroupMatch" (
     "id" TEXT NOT NULL,
 
-    CONSTRAINT "LFGGroupMatch_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "LfgGroupMatch_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -230,10 +231,10 @@ CREATE UNIQUE INDEX "TournamentMatchParticipant_teamId_matchId_key" ON "Tourname
 CREATE UNIQUE INDEX "TournamentMatchGameResult_matchId_roundStageId_key" ON "TournamentMatchGameResult"("matchId", "roundStageId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "LFGGroupLike_likerId_targetId_key" ON "LFGGroupLike"("likerId", "targetId");
+CREATE UNIQUE INDEX "LfgGroupLike_likerId_targetId_key" ON "LfgGroupLike"("likerId", "targetId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "LFGGroupMember_groupId_memberId_key" ON "LFGGroupMember"("groupId", "memberId");
+CREATE UNIQUE INDEX "LfgGroupMember_groupId_memberId_key" ON "LfgGroupMember"("groupId", "memberId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_TournamentMatchGameResultToUser_AB_unique" ON "_TournamentMatchGameResultToUser"("A", "B");
@@ -302,19 +303,19 @@ ALTER TABLE "TournamentMatchGameResult" ADD CONSTRAINT "TournamentMatchGameResul
 ALTER TABLE "TournamentMatchGameResult" ADD CONSTRAINT "TournamentMatchGameResult_roundStageId_fkey" FOREIGN KEY ("roundStageId") REFERENCES "TournamentRoundStage"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "LFGGroup" ADD CONSTRAINT "LFGGroup_matchId_fkey" FOREIGN KEY ("matchId") REFERENCES "LFGGroupMatch"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "LfgGroup" ADD CONSTRAINT "LfgGroup_matchId_fkey" FOREIGN KEY ("matchId") REFERENCES "LfgGroupMatch"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "LFGGroupLike" ADD CONSTRAINT "LFGGroupLike_likerId_fkey" FOREIGN KEY ("likerId") REFERENCES "LFGGroup"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "LfgGroupLike" ADD CONSTRAINT "LfgGroupLike_likerId_fkey" FOREIGN KEY ("likerId") REFERENCES "LfgGroup"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "LFGGroupLike" ADD CONSTRAINT "LFGGroupLike_targetId_fkey" FOREIGN KEY ("targetId") REFERENCES "LFGGroup"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "LfgGroupLike" ADD CONSTRAINT "LfgGroupLike_targetId_fkey" FOREIGN KEY ("targetId") REFERENCES "LfgGroup"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "LFGGroupMember" ADD CONSTRAINT "LFGGroupMember_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "LFGGroup"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "LfgGroupMember" ADD CONSTRAINT "LfgGroupMember_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "LfgGroup"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "LFGGroupMember" ADD CONSTRAINT "LFGGroupMember_memberId_fkey" FOREIGN KEY ("memberId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "LfgGroupMember" ADD CONSTRAINT "LfgGroupMember_memberId_fkey" FOREIGN KEY ("memberId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_TournamentMatchGameResultToUser" ADD FOREIGN KEY ("A") REFERENCES "TournamentMatchGameResult"("id") ON DELETE CASCADE ON UPDATE CASCADE;

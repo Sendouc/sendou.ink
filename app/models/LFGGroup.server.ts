@@ -1,4 +1,4 @@
-import type { LFGGroupType } from "@prisma/client";
+import type { LfgGroupType } from "@prisma/client";
 import { db } from "~/utils/db.server";
 
 export function create({
@@ -6,21 +6,34 @@ export function create({
   ranked,
   user,
 }: {
-  type: LFGGroupType;
+  type: LfgGroupType;
   ranked?: boolean;
   user: { id: string };
 }) {
-  return db.lFGGroup.create({
+  return db.lfgGroup.create({
     data: {
       type,
-      // TWIN becomes active immediately because it makes no sense
+      // TWIN starts looking immediately because it makes no sense
       // to pre-add players to the group
-      active: type === "TWIN",
+      looking: type === "TWIN",
       ranked,
       members: {
         create: {
           memberId: user.id,
           captain: true,
+        },
+      },
+    },
+  });
+}
+
+export function findActiveByMember(user: { id: string }) {
+  return db.lfgGroup.findFirst({
+    where: {
+      active: true,
+      members: {
+        some: {
+          memberId: user.id,
         },
       },
     },

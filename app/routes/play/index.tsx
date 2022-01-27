@@ -1,12 +1,25 @@
-import { ActionFunction, Form, LinksFunction, MetaFunction } from "remix";
+import {
+  ActionFunction,
+  Form,
+  LinksFunction,
+  LoaderFunction,
+  MetaFunction,
+  redirect,
+} from "remix";
 import { z } from "zod";
 import { LFGGroupSelector } from "~/components/play/LFGGroupSelector";
 import styles from "~/styles/play.css";
-import { makeTitle, parseRequestFormData, requireUser } from "~/utils";
+import { getUser, makeTitle, parseRequestFormData, requireUser } from "~/utils";
 import * as LFGGroup from "~/models/LFGGroup.server";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
+};
+
+export const meta: MetaFunction = () => {
+  return {
+    title: makeTitle("Play!"),
+  };
 };
 
 const playActionSchema = z.object({
@@ -14,14 +27,7 @@ const playActionSchema = z.object({
   type: z.enum(["VERSUS-RANKED", "VERSUS-UNRANKED", "TWIN", "QUAD"]),
 });
 
-type ActionData = {
-  ok?: z.infer<typeof playActionSchema>["_action"];
-};
-
-export const action: ActionFunction = async ({
-  request,
-  context,
-}): Promise<ActionData> => {
+export const action: ActionFunction = async ({ request, context }) => {
   const data = await parseRequestFormData({
     request,
     schema: playActionSchema,
@@ -44,13 +50,17 @@ export const action: ActionFunction = async ({
             return data.type;
         }
       };
-      await LFGGroup.create({
+      const group = await LFGGroup.create({
         user,
         type: getType(),
         ranked: getRanked(),
       });
 
-      return { ok: "CREATE_LFG_GROUP" };
+      if (group.looking) {
+        return redirect("/play/looking");
+      }
+
+      return redirect("/play/add-players");
     }
     default: {
       const exhaustive: never = data._action;
@@ -61,14 +71,22 @@ export const action: ActionFunction = async ({
   }
 };
 
-export const meta: MetaFunction = () => {
-  return {
-    title: makeTitle("Play!"),
-  };
-};
+export const loader: LoaderFunction = async ({ context }) => {
+  const user = getUser(context);
+  // TODO: show something reasonable when user not logged in
+  if (!user) return null;
 
-// TODO: loader: redirect to /lfg if active LFGGroup
-//               redirect to /match if active LFGGroup AND match
+  const group = await LFGGroup.findActiveByMember(user);
+  if (!group) return null;
+
+  if (group.looking) {
+    return redirect("/play/looking");
+  }
+
+  // TODO: else if matchId -> redirect to /match
+
+  return redirect("/play/add-players");
+};
 
 export default function PlayPage() {
   return (
