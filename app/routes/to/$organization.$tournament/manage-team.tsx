@@ -8,12 +8,11 @@ import {
   redirect,
   useActionData,
   useLoaderData,
-  useLocation,
 } from "remix";
 import { z } from "zod";
+import { AddPlayers } from "~/components/AddPlayers";
 import { Alert } from "~/components/Alert";
 import { Catcher } from "~/components/Catcher";
-import { FormErrorMessage } from "~/components/FormErrorMessage";
 import { FormInfoText } from "~/components/FormInfoText";
 import { Label } from "~/components/Label";
 import { SubmitButton } from "~/components/SubmitButton";
@@ -26,19 +25,18 @@ import {
   roompassRegExpString,
   tournamentURL,
 } from "~/core/tournament/utils";
-import { useBaseURL, useTimeoutState } from "~/hooks/common";
-import * as Tournament from "~/models/Tournament.server";
-import * as TournamentTeam from "~/models/TournamentTeam.server";
-import * as TournamentTeamMember from "~/models/TournamentTeamMember.server";
-import * as User from "~/models/User.server";
-import type { FindManyByTrustReceiverId } from "~/models/TrustRelationship.server";
-import styles from "~/styles/tournament-manage-team.css";
-import { parseRequestFormData, requireUser, validate } from "~/utils";
 import {
   isCaptainOfTheTeam,
   teamHasNotCheckedIn,
   tournamentTeamIsNotFull,
 } from "~/core/tournament/validators";
+import * as Tournament from "~/models/Tournament.server";
+import * as TournamentTeam from "~/models/TournamentTeam.server";
+import * as TournamentTeamMember from "~/models/TournamentTeamMember.server";
+import type { FindManyByTrustReceiverId } from "~/models/TrustRelationship.server";
+import * as User from "~/models/User.server";
+import styles from "~/styles/tournament-manage-team.css";
+import { parseRequestFormData, requireUser, validate } from "~/utils";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -205,13 +203,6 @@ export const loader: LoaderFunction = async ({ params, context }) => {
 export default function ManageTeamPage() {
   const actionData = useActionData<ActionData>();
   const { ownTeam, trustingUsers } = useLoaderData<Data>();
-  const baseURL = useBaseURL();
-  const location = useLocation();
-
-  const urlWithInviteCode = `${baseURL}${location.pathname.replace(
-    "manage-team",
-    "join-team"
-  )}?code=${ownTeam.inviteCode}`;
 
   return (
     <div className="tournament__manage-team">
@@ -301,76 +292,17 @@ export default function ManageTeamPage() {
         </fieldset>
       </Form>
       {ownTeam.members.length < TOURNAMENT_TEAM_ROSTER_MAX_SIZE && (
-        <fieldset className="tournament__manage-team__actions">
-          <legend>Add players to your team</legend>
-          <div className="tournament__manage-team__actions__section">
-            <Label htmlFor="inviteCodeInput">Share this URL</Label>
-            <input
-              id="inviteCodeInput"
-              className="tournament__manage-team__input"
-              disabled
-              value={urlWithInviteCode}
-            />
-            <CopyToClipboardButton urlWithInviteCode={urlWithInviteCode} />
-          </div>
-          {trustingUsers.length > 0 && (
-            <div className="tournament__manage-team__actions__section">
-              <Form method="post">
-                <input type="hidden" name="_action" value="ADD_PLAYER" />
-                <input type="hidden" name="teamId" value={ownTeam.id} />
-                <Label htmlFor="userId">
-                  Add players you previously played with
-                </Label>
-                <select
-                  className="tournament__manage-team__select"
-                  name="userId"
-                  id="userId"
-                >
-                  {trustingUsers.map(({ trustGiver }) => (
-                    <option key={trustGiver.id} value={trustGiver.id}>
-                      {trustGiver.discordName}
-                    </option>
-                  ))}
-                </select>
-                <FormErrorMessage errorMsg={actionData?.error?.userId} />
-                <SubmitButton
-                  className="tournament__manage-team__input__button"
-                  actionType="ADD_PLAYER"
-                  loadingText="Adding..."
-                  data-cy="add-to-roster-button"
-                >
-                  Add to roster
-                </SubmitButton>
-              </Form>
-            </div>
-          )}
-        </fieldset>
+        <AddPlayers
+          inviteCode={ownTeam.inviteCode}
+          trustingUsers={trustingUsers}
+          hiddenInputs={[
+            { name: "_action", value: "ADD_PLAYER" },
+            { name: "teamId", value: ownTeam.id },
+          ]}
+          addUserError={actionData?.error?.userId}
+        />
       )}
     </div>
-  );
-}
-
-function CopyToClipboardButton({
-  urlWithInviteCode,
-}: {
-  urlWithInviteCode: string;
-}) {
-  const [showCopied, setShowCopied] = useTimeoutState(false);
-
-  return (
-    <button
-      className="tournament__manage-team__input__button"
-      onClick={() => {
-        navigator.clipboard
-          .writeText(urlWithInviteCode)
-          .then(() => setShowCopied(true))
-          .catch((e) => console.error(e));
-      }}
-      type="button"
-      data-cy="copy-to-clipboard-button"
-    >
-      {showCopied ? "Copied!" : "Copy to clipboard"}
-    </button>
   );
 }
 

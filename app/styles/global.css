@@ -397,6 +397,34 @@ select::selection {
   padding-inline: var(--s-2);
 }
 
+.add-players__actions {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: var(--s-14);
+  row-gap: var(--s-8);
+}
+
+.add-players__actions__section {
+  display: flex;
+  width: 18rem;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.add-players__input {
+  width: min(100%, 20rem);
+}
+
+.add-players__input__button {
+  margin-block-start: var(--s-4);
+}
+
+.add-players__select {
+  width: min(100%, 10rem);
+}
+
 /* Utility classes */
 
 .mt-2 {

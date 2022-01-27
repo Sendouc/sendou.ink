@@ -16,6 +16,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
+// TODO: Switch to layout component
 export const meta: MetaFunction = () => {
   return {
     title: makeTitle("Play!"),
