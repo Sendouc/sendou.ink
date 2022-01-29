@@ -70,6 +70,7 @@ export const NZAP_TEST_DISCORD_ID = "455039198672453645";
 export const NZAP_TEST_AVATAR = "f809176af93132c3db5f0a5019e96339";
 
 export const ROOM_PASS_LENGTH = 4;
+export const LFG_GROUP_FULL_SIZE = 4;
 export const TOURNAMENT_TEAM_ROSTER_MIN_SIZE = 4;
 export const TOURNAMENT_TEAM_ROSTER_MAX_SIZE = 6;
 /** How many minutes before the start of the tournament check-in closes */

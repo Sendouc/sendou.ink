@@ -225,6 +225,8 @@ model LfgGroup {
   likesReceived LfgGroupLike[]   @relation("target")
 
   @@index([active])
+  @@index([looking])
+  @@index([type])
 }
 
 model LfgGroupLike {

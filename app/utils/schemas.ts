@@ -13,6 +13,7 @@ export const SeedVariationsSchema = z.enum([
   "check-in",
   "match",
   "tournament-start",
+  "looking",
 ]);
 
 export type LoggedInUser = NonNullable<

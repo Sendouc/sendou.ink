@@ -16,6 +16,7 @@ import { createTournamentRounds } from "../../app/services/tournament";
 import invariant from "tiny-invariant";
 import { SeedVariations } from "~/utils/schemas";
 import { v4 as uuidv4 } from "uuid";
+import clone from "just-clone";
 const prisma = new PrismaClient();
 
 const mapListDE = `{"losers":[[{"id":4647,"name":"Kelp Dome","mode":"SZ"},{"id":4658,"name":"Blackbelly Skatepark","mode":"TC"},{"id":4645,"name":"Manta Maria","mode":"CB"}],[{"id":4624,"name":"Inkblot Art Academy","mode":"RM"},{"id":4707,"name":"Ancho-V Games","mode":"SZ"},{"id":4618,"name":"Humpback Pump Track","mode":"TC"}],[{"id":4692,"name":"Camp Triggerfish","mode":"SZ"},{"id":4665,"name":"MakoMart","mode":"CB"},{"id":4634,"name":"Moray Towers","mode":"RM"}],[{"id":4609,"name":"Musselforge Fitness","mode":"RM"},{"id":4647,"name":"Kelp Dome","mode":"SZ"},{"id":4678,"name":"Arowana Mall","mode":"TC"}],[{"id":4705,"name":"New Albacore Hotel","mode":"CB"},{"id":4644,"name":"Manta Maria","mode":"RM"},{"id":4707,"name":"Ancho-V Games","mode":"SZ"}],[{"id":4657,"name":"Blackbelly Skatepark","mode":"SZ"},{"id":4690,"name":"Piranha Pit","mode":"CB"},{"id":4682,"name":"Goby Arena","mode":"SZ"},{"id":4678,"name":"Arowana Mall","mode":"TC"},{"id":4624,"name":"Inkblot Art Academy","mode":"RM"}]],"winners":[[{"id":4677,"name":"Arowana Mall","mode":"SZ"},{"id":4665,"name":"MakoMart","mode":"CB"},{"id":4618,"name":"Humpback Pump Track","mode":"TC"}],[{"id":4624,"name":"Inkblot Art Academy","mode":"RM"},{"id":4683,"name":"Goby Arena","mode":"TC"},{"id":4692,"name":"Camp Triggerfish","mode":"SZ"}],[{"id":4647,"name":"Kelp Dome","mode":"SZ"},{"id":4634,"name":"Moray Towers","mode":"RM"},{"id":4707,"name":"Ancho-V Games","mode":"SZ"},{"id":4610,"name":"Musselforge Fitness","mode":"CB"},{"id":4658,"name":"Blackbelly Skatepark","mode":"TC"}],[{"id":4644,"name":"Manta Maria","mode":"RM"},{"id":4677,"name":"Arowana Mall","mode":"SZ"},{"id":4690,"name":"Piranha Pit","mode":"CB"},{"id":4682,"name":"Goby Arena","mode":"SZ"},{"id":4618,"name":"Humpback Pump Track","mode":"TC"}],[{"id":4624,"name":"Inkblot Art Academy","mode":"RM"},{"id":4707,"name":"Ancho-V Games","mode":"SZ"},{"id":4610,"name":"Musselforge Fitness","mode":"CB"},{"id":4657,"name":"Blackbelly Skatepark","mode":"SZ"},{"id":4693,"name":"Camp Triggerfish","mode":"TC"},{"id":4664,"name":"MakoMart","mode":"RM"},{"id":4647,"name":"Kelp Dome","mode":"SZ"}],[{"id":4617,"name":"Humpback Pump Track","mode":"SZ"},{"id":4635,"name":"Moray Towers","mode":"CB"},{"id":4682,"name":"Goby Arena","mode":"SZ"},{"id":4644,"name":"Manta Maria","mode":"RM"},{"id":4678,"name":"Arowana Mall","mode":"TC"},{"id":4692,"name":"Camp Triggerfish","mode":"SZ"},{"id":4705,"name":"New Albacore Hotel","mode":"CB"}]]}`;
@@ -45,6 +46,9 @@ export async function seed(variation?: SeedVariations) {
     await prisma.tournament.deleteMany();
     await prisma.organization.deleteMany();
     await prisma.trustRelationships.deleteMany();
+    await prisma.lfgGroupLike.deleteMany();
+    await prisma.lfgGroupMember.deleteMany();
+    await prisma.lfgGroup.deleteMany();
     await prisma.user.deleteMany();
     await prisma.stage.deleteMany();
 
@@ -61,11 +65,20 @@ export async function seed(variation?: SeedVariations) {
     await trustRelationship(nzapUserCreated.id, adminUserCreated.id);
     await stages();
     await tournamentAddMaps(tournament.id);
+
+    const userIdsInTheSystem = (await prisma.user.findMany({})).map(
+      (u) => u.id
+    );
+    await lookingLfgGroups(userIdsInTheSystem);
+
     if (variation === "match" || variation === "tournament-start") {
       await tournamentRoundsCreate();
     }
     if (variation === "match") {
       await advanceRound();
+    }
+    if (variation === "looking") {
+      await ownGroup();
     }
 
     async function adminUser() {
@@ -355,6 +368,63 @@ export async function seed(variation?: SeedVariations) {
       }
 
       return result;
+    }
+
+    async function lookingLfgGroups(userIds: string[]) {
+      function randomIntFromInterval(min: number, max: number) {
+        // min and max included
+        return Math.floor(Math.random() * (max - min + 1) + min);
+      }
+
+      const userIdsStack = clone(userIds);
+      for (let i = 0; i < 24; i++) {
+        const amountOfUsers = randomIntFromInterval(1, 3);
+        await prisma.lfgGroup.create({
+          data: {
+            looking: true,
+            active: true,
+            type: "VERSUS",
+            ranked: i < 12,
+            members: {
+              createMany: {
+                data: new Array(amountOfUsers).fill(null).map((_, i) => ({
+                  memberId: userIdsStack.shift()!,
+                  captain: i === 0,
+                })),
+              },
+            },
+          },
+        });
+      }
+    }
+
+    async function ownGroup() {
+      const groups = await prisma.lfgGroup.findMany({});
+      return prisma.lfgGroup.create({
+        data: {
+          looking: true,
+          type: "VERSUS",
+          active: true,
+          ranked: true,
+          members: {
+            createMany: {
+              data: [
+                {
+                  memberId: ADMIN_TEST_UUID,
+                },
+                { memberId: NZAP_TEST_UUID },
+              ],
+            },
+          },
+          likesReceived: {
+            createMany: {
+              data: new Array(10).fill(null).map((_) => ({
+                likerId: groups.shift()!.id,
+              })),
+            },
+          },
+        },
+      });
     }
 
     async function tournamentRoundsCreate() {

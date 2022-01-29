@@ -38,18 +38,48 @@ export function findActiveByMember(user: { id: string }) {
       },
     },
     include: {
-      members: true
-    }
+      members: true,
+    },
+  });
+}
+
+export function findLookingByType(type: LfgGroupType, ranked: boolean | null) {
+  return db.lfgGroup.findMany({
+    where: {
+      type,
+      looking: true,
+      // For ranked groups we show both ranked and unranked options
+      ranked: ranked === false ? false : undefined,
+    },
+    select: {
+      id: true,
+      ranked: true,
+      members: {
+        select: {
+          user: {
+            select: {
+              discordAvatar: true,
+              discordDiscriminator: true,
+              discordName: true,
+              discordId: true,
+            },
+          },
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 }
 
 export function startLooking(id: string) {
   return db.lfgGroup.update({
     where: {
-      id
+      id,
     },
     data: {
-      looking: true
-    }
-  })
+      looking: true,
+    },
+  });
 }
