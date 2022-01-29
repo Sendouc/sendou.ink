@@ -12,7 +12,7 @@ export function Avatar({
     "--_avatar-size": tiny ? "2rem" : undefined,
   };
   return (
-    <div style={style} className="avatar__placeholder">
+    <div style={style} className={clsx("avatar__placeholder", { tiny })}>
       {user.discordAvatar && (
         <img
           alt=""

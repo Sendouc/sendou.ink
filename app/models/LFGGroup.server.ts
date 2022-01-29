@@ -27,6 +27,38 @@ export function create({
   });
 }
 
+export function like({
+  likerId,
+  targetId,
+}: {
+  likerId: string;
+  targetId: string;
+}) {
+  return db.lfgGroupLike.create({
+    data: {
+      likerId,
+      targetId,
+    },
+  });
+}
+
+export function unlike({
+  likerId,
+  targetId,
+}: {
+  likerId: string;
+  targetId: string;
+}) {
+  return db.lfgGroupLike.delete({
+    where: {
+      likerId_targetId: {
+        likerId,
+        targetId,
+      },
+    },
+  });
+}
+
 export function findActiveByMember(user: { id: string }) {
   return db.lfgGroup.findFirst({
     where: {
@@ -39,6 +71,16 @@ export function findActiveByMember(user: { id: string }) {
     },
     include: {
       members: true,
+      likedGroups: {
+        select: {
+          targetId: true,
+        },
+      },
+      likesReceived: {
+        select: {
+          likerId: true,
+        },
+      },
     },
   });
 }

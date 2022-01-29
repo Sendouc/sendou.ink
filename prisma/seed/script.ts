@@ -412,6 +412,7 @@ export async function seed(variation?: SeedVariations) {
               data: [
                 {
                   memberId: ADMIN_TEST_UUID,
+                  captain: true,
                 },
                 { memberId: NZAP_TEST_UUID },
               ],

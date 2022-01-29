@@ -1,6 +1,13 @@
 .play-looking__columns {
   display: grid;
+  column-gap: var(--s-5);
   grid-template-columns: repeat(3, 1fr);
+}
+
+.play-looking__cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
 }
 
 .play-looking__column-header {
@@ -10,16 +17,26 @@
 
 .play-looking__card {
   display: flex;
-  width: 100%;
-  justify-content: space-evenly;
-  padding: var(--s-4);
+  flex-direction: column;
+  align-items: center;
   background-color: var(--bg-lighter);
   border-radius: var(--rounded);
   gap: var(--s-4);
+  padding-block: var(--s-3);
+  padding-inline: var(--s-2);
+}
+
+.play-looking__card__members {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--s-2);
 }
 
 .play-looking__member-card {
   display: flex;
+  min-width: calc(50% - var(--s-4));
   max-width: calc(50% - var(--s-4));
   flex: 1;
   flex-direction: column;

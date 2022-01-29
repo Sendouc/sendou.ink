@@ -446,6 +446,10 @@ select::selection {
   inline-size: var(--_avatar-size, 2.5rem);
 }
 
+.avatar__placeholder.tiny {
+  border-radius: 14px;
+}
+
 /* Utility classes */
 
 .mt-2 {
