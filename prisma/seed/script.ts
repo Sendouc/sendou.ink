@@ -66,9 +66,9 @@ export async function seed(variation?: SeedVariations) {
     await stages();
     await tournamentAddMaps(tournament.id);
 
-    const userIdsInTheSystem = (await prisma.user.findMany({})).map(
-      (u) => u.id
-    );
+    const userIdsInTheSystem = (await prisma.user.findMany())
+      .map((u) => u.id)
+      .filter((id) => id !== ADMIN_TEST_UUID && id !== NZAP_TEST_UUID);
     await lookingLfgGroups(userIdsInTheSystem);
 
     if (variation === "match" || variation === "tournament-start") {
@@ -123,6 +123,7 @@ export async function seed(variation?: SeedVariations) {
           .map((user: any, i: number) => ({
             id: ids[i],
             discordId: user.discordId,
+            discordAvatar: user.discordAvatar,
             discordDiscriminator: user.discriminator,
             discordName: user.username,
             discordRefreshToken: "none",

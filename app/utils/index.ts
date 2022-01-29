@@ -141,6 +141,7 @@ export interface MyCSSProperties extends CSSProperties {
   "--tournaments-text"?: string;
   "--tournaments-text-transparent"?: string;
   "--_tournament-bg-url"?: string;
+  "--_avatar-size"?: string;
   "--action-section-icon-color"?: string;
   "--brackets-columns"?: number;
   "--brackets-max-matches"?: number;

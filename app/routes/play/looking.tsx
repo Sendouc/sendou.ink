@@ -1,12 +1,25 @@
-import { json, LoaderFunction, redirect, useLoaderData } from "remix";
+import {
+  json,
+  LinksFunction,
+  LoaderFunction,
+  redirect,
+  useLoaderData,
+} from "remix";
 import { LFG_GROUP_FULL_SIZE } from "~/constants";
 import * as LFGGroup from "~/models/LFGGroup.server";
-import { requireUser } from "~/utils";
+import { requireUser, Unpacked } from "~/utils";
+import styles from "~/styles/play-looking.css";
+import { Avatar } from "~/components/Avatar";
+
+export const links: LinksFunction = () => {
+  return [{ rel: "stylesheet", href: styles }];
+};
 
 interface LookingLoaderData {
   groups: {
     id: string;
     members?: {
+      id: string;
       discordId: string;
       discordAvatar: string | null;
       discordName: string;
@@ -38,6 +51,7 @@ export const loader: LoaderFunction = async ({ context }) => {
   return json<LookingLoaderData>({
     groups: groups
       .filter((group) => group.members.length <= maxGroupSizeToConsider)
+      .filter((group) => group.id !== ownGroup.id)
       .map((group) => ({
         id: group.id,
         // When looking for a match ranked groups are censored
@@ -54,8 +68,42 @@ export default function LookingPage() {
   const data = useLoaderData<LookingLoaderData>();
 
   return (
-    <div>
-      <pre>{JSON.stringify(data, null, 2)}</pre>
+    <div className="container">
+      <div className="play-looking__columns">
+        <div>
+          <h2 className="play-looking__column-header">You want to play with</h2>
+        </div>
+        <div>
+          <h2 className="play-looking__column-header invisible">Groups</h2>
+          {data.groups.map((group) => {
+            return <GroupCard key={group.id} group={group} />;
+          })}
+        </div>
+        <div>
+          <h2 className="play-looking__column-header">Want to play with you</h2>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function GroupCard({
+  group,
+}: {
+  group: Unpacked<LookingLoaderData["groups"]>;
+}) {
+  return (
+    <div className="play-looking__card">
+      {group.members?.map((member) => {
+        return (
+          <div key={member.id} className="play-looking__member-card">
+            <Avatar tiny user={member} />
+            <span className="play-looking__member-name">
+              {member.discordName}
+            </span>
+          </div>
+        );
+      })}
     </div>
   );
 }

@@ -58,6 +58,7 @@ export function findLookingByType(type: LfgGroupType, ranked: boolean | null) {
         select: {
           user: {
             select: {
+              id: true,
               discordAvatar: true,
               discordDiscriminator: true,
               discordName: true,

@@ -1,5 +1,6 @@
 import { Form, useTransition } from "remix";
 import { useUser } from "~/hooks/common";
+import { Avatar } from "../Avatar";
 import { Button } from "../Button";
 
 export function TeamRoster({
@@ -42,16 +43,7 @@ export function TeamRoster({
                 {captain ? "C" : i + 1}
               </div>
               <div className="teams-tab__member__container">
-                <div className="teams-tab__member__placeholder">
-                  {member.discordAvatar && (
-                    <img
-                      alt=""
-                      className="teams-tab__member__avatar"
-                      loading="lazy"
-                      src={`https://cdn.discordapp.com/avatars/${member.discordId}/${member.discordAvatar}.png?size=80`}
-                    />
-                  )}
-                </div>
+                <Avatar user={member} />
                 <div className="teams-tab__member__container__name-button">
                   <div>{member.discordName}</div>
                   {showDeleteButtons(member.id) && (

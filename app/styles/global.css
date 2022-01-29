@@ -1,5 +1,6 @@
 :root {
   --bg: hsl(237.3deg 42.3% 30.6%);
+  --bg-darker: hsl(237.3deg 42.3% 26.6%);
   --bg-lighter: hsl(237.3deg 42.3% 35.6%);
   --bg-lighter-transparent: hsla(237.3deg 42.3% 35.6% / 50%);
   --bg-modal-backdrop: hsla(237deg 98% 1% / 70%);
@@ -423,6 +424,26 @@ select::selection {
 
 .add-players__select {
   width: min(100%, 10rem);
+}
+
+.avatar__img {
+  block-size: var(--_avatar-size, 2.5rem);
+  border-radius: var(--rounded);
+  filter: none;
+  inline-size: var(--_avatar-size, 2.5rem);
+  text-indent: -10000px;
+}
+
+/* Without this the avatar becomes completely round when small */
+.avatar__img.tiny {
+  border-radius: 14px;
+}
+
+.avatar__placeholder {
+  background-image: url("/svg/background-pattern.svg");
+  block-size: var(--_avatar-size, 2.5rem);
+  border-radius: var(--rounded);
+  inline-size: var(--_avatar-size, 2.5rem);
 }
 
 /* Utility classes */

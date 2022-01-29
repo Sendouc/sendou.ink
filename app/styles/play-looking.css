@@ -1,0 +1,39 @@
+.play-looking__columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.play-looking__column-header {
+  font-size: var(--fonts-md);
+  text-align: center;
+}
+
+.play-looking__card {
+  display: flex;
+  width: 100%;
+  justify-content: space-evenly;
+  padding: var(--s-4);
+  background-color: var(--bg-lighter);
+  border-radius: var(--rounded);
+  gap: var(--s-4);
+}
+
+.play-looking__member-card {
+  display: flex;
+  max-width: calc(50% - var(--s-4));
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-darker);
+  border-radius: var(--rounded);
+  overflow-x: hidden;
+  padding-block: var(--s-2);
+}
+
+.play-looking__member-name {
+  font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
+  margin-block-start: 1px;
+  white-space: nowrap;
+}

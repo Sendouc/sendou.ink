@@ -280,21 +280,6 @@
   gap: var(--s-2);
 }
 
-.teams-tab__member__avatar {
-  block-size: 2.5rem;
-  border-radius: var(--rounded);
-  filter: none;
-  inline-size: 2.5rem;
-  text-indent: -10000px;
-}
-
-.teams-tab__member__placeholder {
-  background-image: url("/svg/background-pattern.svg");
-  block-size: 2.5rem;
-  border-radius: var(--rounded);
-  inline-size: 2.5rem;
-}
-
 @media screen and (min-width: 480px) {
   .info-banner__bottom-row__infos {
     gap: var(--s-8);
