@@ -20,7 +20,7 @@ UniteGroupInfo("Doesn't remove captain if groups are same size", () => {
 });
 
 UniteGroupInfo("Bigger group survives", () => {
-  let { otherGroupId, survivingGroupId } = uniteGroupInfo(
+  const { otherGroupId, survivingGroupId } = uniteGroupInfo(
     BIG_GROUP,
     SMALL_GROUP
   );
