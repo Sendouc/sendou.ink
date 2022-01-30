@@ -20,6 +20,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
+type ActionSchema = z.infer<typeof actionSchema>;
 const actionSchema = z.object({
   _action: z.enum(["LIKE", "UNLIKE", "UNITE_GROUP", "MATCH_UP"]),
   targetGroupId: z.string().uuid(),
@@ -201,10 +202,16 @@ function GroupCard({
   type: "LIKES_GIVEN" | "NEUTRAL" | "LIKES_RECEIVED";
 }) {
   const buttonText = () => {
-    if (type === "LIKES_GIVEN") return "idk";
+    if (type === "LIKES_GIVEN") return "Undo";
     if (type === "NEUTRAL") return "Let's play!";
 
     return "Group up";
+  };
+  const buttonValue = (): ActionSchema["_action"] => {
+    if (type === "LIKES_GIVEN") return "UNLIKE";
+    if (type === "NEUTRAL") return "LIKE";
+
+    return "MATCH_UP";
   };
 
   return (
@@ -224,7 +231,13 @@ function GroupCard({
         </div>
         <input type="hidden" name="targetGroupId" value={group.id} />
         {isGroupAdmin && (
-          <Button type="submit" name="_action" value="LIKE" tiny>
+          <Button
+            type="submit"
+            name="_action"
+            value={buttonValue()}
+            tiny
+            variant={type === "LIKES_GIVEN" ? "destructive" : undefined}
+          >
             {buttonText()}
           </Button>
         )}
