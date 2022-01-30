@@ -280,6 +280,10 @@ select::selection {
   font-weight: bold;
 }
 
+hr {
+  border-color: var(--theme-transparent);
+}
+
 /* Does not respect window getting resized */
 .modal {
   position: fixed;
@@ -473,8 +477,11 @@ select::selection {
 }
 
 .my-1-5 {
-  margin-block-end: var(--s-1-5);
-  margin-block-start: var(--s-1-5);
+  margin-block: var(--s-1-5);
+}
+
+.my-4 {
+  margin-block: var(--s-4);
 }
 
 .text-xs {

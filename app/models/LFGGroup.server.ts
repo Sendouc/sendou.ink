@@ -59,6 +59,38 @@ export function unlike({
   });
 }
 
+export interface UniteGroupsArgs {
+  survivingGroupId: string;
+  otherGroupId: string;
+  removeCaptainsFromOther: boolean;
+}
+export function uniteGroups({
+  survivingGroupId,
+  otherGroupId,
+  removeCaptainsFromOther,
+}: UniteGroupsArgs) {
+  return db.$transaction([
+    db.lfgGroupMember.updateMany({
+      where: { groupId: otherGroupId },
+      data: {
+        groupId: survivingGroupId,
+        captain: removeCaptainsFromOther ? false : undefined,
+        // TODO: also reset message
+      },
+    }),
+    db.lfgGroup.delete({ where: { id: otherGroupId } }),
+    db.lfgGroupLike.deleteMany({
+      where: {
+        OR: [{ likerId: survivingGroupId }, { targetId: survivingGroupId }],
+      },
+    }),
+  ]);
+}
+
+export function findById(id: string) {
+  return db.lfgGroup.findUnique({ where: { id }, include: { members: true } });
+}
+
 export function findActiveByMember(user: { id: string }) {
   return db.lfgGroup.findFirst({
     where: {

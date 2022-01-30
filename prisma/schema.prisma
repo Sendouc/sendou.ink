@@ -232,8 +232,8 @@ model LfgGroup {
 model LfgGroupLike {
   likerId   String
   targetId  String
-  liker     LfgGroup @relation("liker", fields: [likerId], references: [id])
-  target    LfgGroup @relation("target", fields: [targetId], references: [id])
+  liker     LfgGroup @relation("liker", fields: [likerId], references: [id], onDelete: Cascade)
+  target    LfgGroup @relation("target", fields: [targetId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 
   @@unique([likerId, targetId])

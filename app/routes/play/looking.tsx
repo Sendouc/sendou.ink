@@ -1,17 +1,17 @@
 import {
   ActionFunction,
-  Form,
   json,
   LinksFunction,
   LoaderFunction,
   redirect,
   useLoaderData,
 } from "remix";
+import invariant from "tiny-invariant";
 import { z } from "zod";
-import { Avatar } from "~/components/Avatar";
-import { Button } from "~/components/Button";
+import { GroupCard } from "~/components/play/GroupCard";
 import { LFG_GROUP_FULL_SIZE } from "~/constants";
-import { isGroupAdmin } from "~/core/play/validators";
+import { uniteGroupInfo } from "~/core/play/utils";
+import { canUniteWithGroup, isGroupAdmin } from "~/core/play/validators";
 import * as LFGGroup from "~/models/LFGGroup.server";
 import styles from "~/styles/play-looking.css";
 import { parseRequestFormData, requireUser, validate } from "~/utils";
@@ -20,36 +20,86 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-type ActionSchema = z.infer<typeof actionSchema>;
-const actionSchema = z.object({
-  _action: z.enum(["LIKE", "UNLIKE", "UNITE_GROUP", "MATCH_UP"]),
-  targetGroupId: z.string().uuid(),
-});
+export type LookingActionSchema = z.infer<typeof lookingActionSchema>;
+const lookingActionSchema = z.union([
+  z.object({
+    _action: z.enum(["LIKE", "UNLIKE", "MATCH_UP"]),
+    targetGroupId: z.string().uuid(),
+  }),
+  z.object({
+    _action: z.literal("UNITE_GROUP"),
+    targetGroupId: z.string().uuid(),
+    // we also get target number size so that when you like or try to unite groups
+    // what you see on your screen will be guaranteed to match what the group
+    // actually is
+    targetGroupSize: z.preprocess(Number, z.number().min(1).max(4).int()),
+  }),
+]);
 
 export const action: ActionFunction = async ({ request, context }) => {
   const data = await parseRequestFormData({
     request,
-    schema: actionSchema,
+    schema: lookingActionSchema,
   });
   const user = requireUser(context);
 
-  const group = await LFGGroup.findActiveByMember(user);
-  validate(group, "No active group");
-  validate(group.looking, "Group is not looking");
-  validate(isGroupAdmin({ group, user }), "Not group admin");
+  const ownGroup = await LFGGroup.findActiveByMember(user);
+  validate(ownGroup, "No active group");
+  validate(ownGroup.looking, "Group is not looking");
+  validate(isGroupAdmin({ group: ownGroup, user }), "Not group admin");
 
   switch (data._action) {
-    case "UNITE_GROUP":
+    case "UNITE_GROUP": {
+      validate(
+        canUniteWithGroup({
+          ownGroupType: ownGroup.type,
+          ownGroupSize: ownGroup.members.length,
+          otherGroupSize: data.targetGroupSize,
+        }),
+        "Group to unite with too big"
+      );
+
+      const groupToUniteWith = await LFGGroup.findById(data.targetGroupId);
+      // let's just fail silently if they already
+      // matched up with someone else or stopped looking
+      if (
+        !groupToUniteWith ||
+        groupToUniteWith.members.length !== data.targetGroupSize ||
+        !groupToUniteWith.looking
+      ) {
+        break;
+      }
+
+      await LFGGroup.uniteGroups(
+        uniteGroupInfo(
+          {
+            id: ownGroup.id,
+            memberCount: ownGroup.members.length,
+          },
+          {
+            id: groupToUniteWith.id,
+            memberCount: groupToUniteWith.members.length,
+          }
+        )
+      );
+
+      break;
+    }
     case "MATCH_UP":
     case "UNLIKE": {
       await LFGGroup.unlike({
-        likerId: group.id,
+        likerId: ownGroup.id,
         targetId: data.targetGroupId,
       });
       break;
     }
     case "LIKE": {
-      await LFGGroup.like({ likerId: group.id, targetId: data.targetGroupId });
+      // TODO: maybe also do the members.length check here?
+      // upside: handles edge case - downside: one extra db call per like
+      await LFGGroup.like({
+        likerId: ownGroup.id,
+        targetId: data.targetGroupId,
+      });
       break;
     }
   }
@@ -59,7 +109,7 @@ export const action: ActionFunction = async ({ request, context }) => {
   // TODO: notify watchers
 };
 
-type LookingLoaderDataGroup = {
+export type LookingLoaderDataGroup = {
   id: string;
   members?: {
     id: string;
@@ -74,6 +124,7 @@ interface LookingLoaderData {
   likedGroups: LookingLoaderDataGroup[];
   neutralGroups: LookingLoaderDataGroup[];
   likerGroups: LookingLoaderDataGroup[];
+  ownGroup: LookingLoaderDataGroup;
 }
 
 export const loader: LoaderFunction = async ({ context }) => {
@@ -87,13 +138,6 @@ export const loader: LoaderFunction = async ({ context }) => {
     ownGroup.ranked
   );
 
-  // For example if we have a group of 3 and group type is QUAD we only want to consider groups of size 1
-  // .. if we have a group size of 2 then we can consider groups of size 1 or 2 and so on
-  const maxGroupSizeToConsider = (() => {
-    if (ownGroup.type === "TWIN") return 1;
-
-    return LFG_GROUP_FULL_SIZE - ownGroup.members.length;
-  })();
   const lookingForMatch = ownGroup.members.length === LFG_GROUP_FULL_SIZE;
   const likesGiven = ownGroup.likedGroups.reduce(
     (acc, lg) => acc.add(lg.targetId),
@@ -104,9 +148,23 @@ export const loader: LoaderFunction = async ({ context }) => {
     new Set<string>()
   );
 
-  return json<LookingLoaderData>(
-    groups
-      .filter((group) => group.members.length <= maxGroupSizeToConsider)
+  const ownGroupWithMembers = groups.find((g) => g.id === ownGroup.id);
+  invariant(ownGroupWithMembers, "ownGroupWithMembers is undefined");
+  const ownGroupForResponse: LookingLoaderDataGroup = {
+    id: ownGroup.id,
+    members: ownGroupWithMembers.members.map((m) => m.user),
+  };
+
+  return json<LookingLoaderData>({
+    ownGroup: ownGroupForResponse,
+    ...groups
+      .filter((group) =>
+        canUniteWithGroup({
+          ownGroupType: ownGroup.type,
+          ownGroupSize: ownGroup.members.length,
+          otherGroupSize: group.members.length,
+        })
+      )
       .filter((group) => group.id !== ownGroup.id)
       .map((group) => ({
         id: group.id,
@@ -115,10 +173,10 @@ export const loader: LoaderFunction = async ({ context }) => {
         members:
           group.ranked && lookingForMatch
             ? undefined
-            : group.members.map((member) => member.user),
+            : group.members.map((m) => m.user),
       }))
       .reduce(
-        (acc: LookingLoaderData, group) => {
+        (acc: Omit<LookingLoaderData, "ownGroup">, group) => {
           // likesReceived first so that if both received like and
           // given like then handle this edge case by just displaying the
           // group as waiting like back
@@ -132,8 +190,8 @@ export const loader: LoaderFunction = async ({ context }) => {
           return acc;
         },
         { likedGroups: [], neutralGroups: [], likerGroups: [] }
-      )
-  );
+      ),
+  });
 };
 
 export default function LookingPage() {
@@ -141,6 +199,8 @@ export default function LookingPage() {
 
   return (
     <div className="container">
+      <GroupCard group={data.ownGroup} type="LIKES_GIVEN" />
+      <hr className="my-4" />
       <div className="play-looking__columns">
         <div>
           <h2 className="play-looking__column-header">You want to play with</h2>
@@ -189,59 +249,5 @@ export default function LookingPage() {
         </div>
       </div>
     </div>
-  );
-}
-
-function GroupCard({
-  group,
-  isGroupAdmin = false,
-  type,
-}: {
-  group: LookingLoaderDataGroup;
-  isGroupAdmin?: boolean;
-  type: "LIKES_GIVEN" | "NEUTRAL" | "LIKES_RECEIVED";
-}) {
-  const buttonText = () => {
-    if (type === "LIKES_GIVEN") return "Undo";
-    if (type === "NEUTRAL") return "Let's play!";
-
-    return "Group up";
-  };
-  const buttonValue = (): ActionSchema["_action"] => {
-    if (type === "LIKES_GIVEN") return "UNLIKE";
-    if (type === "NEUTRAL") return "LIKE";
-
-    return "MATCH_UP";
-  };
-
-  return (
-    <Form method="post">
-      <div className="play-looking__card">
-        <div className="play-looking__card__members">
-          {group.members?.map((member) => {
-            return (
-              <div key={member.id} className="play-looking__member-card">
-                <Avatar tiny user={member} />
-                <span className="play-looking__member-name">
-                  {member.discordName}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-        <input type="hidden" name="targetGroupId" value={group.id} />
-        {isGroupAdmin && (
-          <Button
-            type="submit"
-            name="_action"
-            value={buttonValue()}
-            tiny
-            variant={type === "LIKES_GIVEN" ? "destructive" : undefined}
-          >
-            {buttonText()}
-          </Button>
-        )}
-      </div>
-    </Form>
   );
 }

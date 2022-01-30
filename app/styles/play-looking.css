@@ -19,9 +19,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 0 auto;
   background-color: var(--bg-lighter);
   border-radius: var(--rounded);
   gap: var(--s-4);
+  max-inline-size: 24rem;
   padding-block: var(--s-3);
   padding-inline: var(--s-2);
 }
