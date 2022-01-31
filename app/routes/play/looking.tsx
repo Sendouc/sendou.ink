@@ -142,6 +142,7 @@ interface LookingLoaderData {
   likerGroups: LookingLoaderDataGroup[];
   ownGroup: LookingLoaderDataGroup;
   type: LfgGroupType;
+  userIsCaptain: boolean;
 }
 
 export const loader: LoaderFunction = async ({ context }) => {
@@ -175,6 +176,7 @@ export const loader: LoaderFunction = async ({ context }) => {
   return json<LookingLoaderData>({
     ownGroup: ownGroupForResponse,
     type: ownGroup.type,
+    userIsCaptain: isGroupAdmin({ group: ownGroup, user }),
     ...groups
       .filter((group) =>
         canUniteWithGroup({
@@ -194,7 +196,10 @@ export const loader: LoaderFunction = async ({ context }) => {
             : group.members.map((m) => m.user),
       }))
       .reduce(
-        (acc: Omit<LookingLoaderData, "ownGroup" | "type">, group) => {
+        (
+          acc: Omit<LookingLoaderData, "ownGroup" | "type" | "userIsCaptain">,
+          group
+        ) => {
           // likesReceived first so that if both received like and
           // given like then handle this edge case by just displaying the
           // group as waiting like back
@@ -227,15 +232,17 @@ export default function LookingPage() {
         </div>
         <div className="play-looking__waves-button">
           <Form method="post">
-            <Button
-              type="submit"
-              name="_action"
-              value="LOOK_AGAIN"
-              tiny
-              variant="outlined"
-            >
-              Look again
-            </Button>
+            {data.userIsCaptain && (
+              <Button
+                type="submit"
+                name="_action"
+                value="LOOK_AGAIN"
+                tiny
+                variant="outlined"
+              >
+                Look again
+              </Button>
+            )}
           </Form>
         </div>
       </div>
@@ -255,7 +262,7 @@ export default function LookingPage() {
                 <GroupCard
                   key={group.id}
                   group={group}
-                  isGroupAdmin
+                  isCaptain={data.userIsCaptain}
                   type="LIKES_GIVEN"
                 />
               );
@@ -270,7 +277,7 @@ export default function LookingPage() {
                 <GroupCard
                   key={group.id}
                   group={group}
-                  isGroupAdmin
+                  isCaptain={data.userIsCaptain}
                   type="NEUTRAL"
                 />
               );
@@ -285,7 +292,7 @@ export default function LookingPage() {
                 <GroupCard
                   key={group.id}
                   group={group}
-                  isGroupAdmin
+                  isCaptain={data.userIsCaptain}
                   type="LIKES_RECEIVED"
                 />
               );

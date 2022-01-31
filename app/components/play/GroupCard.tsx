@@ -8,11 +8,11 @@ import type {
 
 export function GroupCard({
   group,
-  isGroupAdmin = false,
+  isCaptain = false,
   type,
 }: {
   group: LookingLoaderDataGroup;
-  isGroupAdmin?: boolean;
+  isCaptain?: boolean;
   type?: "LIKES_GIVEN" | "NEUTRAL" | "LIKES_RECEIVED";
 }) {
   const buttonText = () => {
@@ -51,7 +51,7 @@ export function GroupCard({
             value={group.members?.length ?? -1}
           />
         )}
-        {isGroupAdmin && (
+        {isCaptain && (
           <Button
             type="submit"
             name="_action"
