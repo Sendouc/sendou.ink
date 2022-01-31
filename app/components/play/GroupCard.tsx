@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { Form } from "remix";
 import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
@@ -10,14 +11,16 @@ export function GroupCard({
   group,
   isCaptain = false,
   type,
+  ranked,
 }: {
   group: LookingLoaderDataGroup;
   isCaptain?: boolean;
   type?: "LIKES_GIVEN" | "NEUTRAL" | "LIKES_RECEIVED";
+  ranked?: boolean;
 }) {
   const buttonText = () => {
     if (type === "LIKES_GIVEN") return "Undo";
-    if (type === "NEUTRAL") return "Let's play!";
+    if (type === "NEUTRAL") return "Let's play?";
 
     return "Group up";
   };
@@ -25,12 +28,17 @@ export function GroupCard({
     if (type === "LIKES_GIVEN") return "UNLIKE";
     if (type === "NEUTRAL") return "LIKE";
 
-    return "UNITE_GROUP";
+    return "UNITE_GROUPS";
   };
 
   return (
     <Form method="post">
       <div className="play-looking__card">
+        {typeof ranked === "boolean" && (
+          <div className={clsx("play-looking__ranked-text", { ranked })}>
+            {ranked ? "Ranked" : "Unranked"}
+          </div>
+        )}
         <div className="play-looking__card__members">
           {group.members?.map((member) => {
             return (

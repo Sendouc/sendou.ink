@@ -63,13 +63,15 @@ export interface UniteGroupsArgs {
   survivingGroupId: string;
   otherGroupId: string;
   removeCaptainsFromOther: boolean;
+  unitedGroupIsRanked?: boolean;
 }
 export function uniteGroups({
   survivingGroupId,
   otherGroupId,
   removeCaptainsFromOther,
+  unitedGroupIsRanked,
 }: UniteGroupsArgs) {
-  return db.$transaction([
+  const queries = [
     db.lfgGroupMember.updateMany({
       where: { groupId: otherGroupId },
       data: {
@@ -84,7 +86,18 @@ export function uniteGroups({
         OR: [{ likerId: survivingGroupId }, { targetId: survivingGroupId }],
       },
     }),
-  ]);
+  ];
+
+  if (typeof unitedGroupIsRanked === "boolean") {
+    queries.push(
+      db.lfgGroup.update({
+        where: { id: survivingGroupId },
+        data: { ranked: unitedGroupIsRanked },
+      })
+    );
+  }
+
+  return db.$transaction(queries);
 }
 
 export function findById(id: string) {

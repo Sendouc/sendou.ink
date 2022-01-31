@@ -30,7 +30,7 @@ const lookingActionSchema = z.union([
     targetGroupId: z.string().uuid(),
   }),
   z.object({
-    _action: z.literal("UNITE_GROUP"),
+    _action: z.literal("UNITE_GROUPS"),
     targetGroupId: z.string().uuid(),
     // we also get target number size so that when you like or try to unite groups
     // what you see on your screen will be guaranteed to match what the group
@@ -55,7 +55,7 @@ export const action: ActionFunction = async ({ request, context }) => {
   validate(isGroupAdmin({ group: ownGroup, user }), "Not group admin");
 
   switch (data._action) {
-    case "UNITE_GROUP": {
+    case "UNITE_GROUPS": {
       validate(
         canUniteWithGroup({
           ownGroupType: ownGroup.type,
@@ -76,8 +76,8 @@ export const action: ActionFunction = async ({ request, context }) => {
         break;
       }
 
-      await LFGGroup.uniteGroups(
-        uniteGroupInfo(
+      await LFGGroup.uniteGroups({
+        ...uniteGroupInfo(
           {
             id: ownGroup.id,
             memberCount: ownGroup.members.length,
@@ -86,8 +86,16 @@ export const action: ActionFunction = async ({ request, context }) => {
             id: groupToUniteWith.id,
             memberCount: groupToUniteWith.members.length,
           }
-        )
-      );
+        ),
+        unitedGroupIsRanked:
+          // if one group is ranked and other is unranked
+          // the new group should use the ranked status of the
+          // target group
+          ownGroup.ranked === groupToUniteWith.ranked ||
+          typeof groupToUniteWith.ranked !== "boolean"
+            ? undefined
+            : groupToUniteWith.ranked,
+      });
 
       break;
     }
@@ -134,6 +142,7 @@ export type LookingLoaderDataGroup = {
     discordName: string;
     discordDiscriminator: string;
   }[];
+  ranked?: boolean;
 };
 
 interface LookingLoaderData {
@@ -171,6 +180,7 @@ export const loader: LoaderFunction = async ({ context }) => {
   const ownGroupForResponse: LookingLoaderDataGroup = {
     id: ownGroup.id,
     members: ownGroupWithMembers.members.map((m) => m.user),
+    ranked: ownGroup.ranked ?? undefined,
   };
 
   return json<LookingLoaderData>({
@@ -194,6 +204,7 @@ export const loader: LoaderFunction = async ({ context }) => {
           group.ranked && lookingForMatch
             ? undefined
             : group.members.map((m) => m.user),
+        ranked: group.ranked ?? undefined,
       }))
       .reduce(
         (
@@ -251,7 +262,7 @@ export default function LookingPage() {
 
   return (
     <div className="container">
-      <GroupCard group={data.ownGroup} />
+      <GroupCard group={data.ownGroup} ranked={data.ownGroup.ranked} />
       <hr className="my-4" />
       <div className="play-looking__columns">
         <div>
@@ -264,6 +275,7 @@ export default function LookingPage() {
                   group={group}
                   isCaptain={data.userIsCaptain}
                   type="LIKES_GIVEN"
+                  ranked={group.ranked}
                 />
               );
             })}
@@ -279,6 +291,7 @@ export default function LookingPage() {
                   group={group}
                   isCaptain={data.userIsCaptain}
                   type="NEUTRAL"
+                  ranked={group.ranked}
                 />
               );
             })}
@@ -294,6 +307,7 @@ export default function LookingPage() {
                   group={group}
                   isCaptain={data.userIsCaptain}
                   type="LIKES_RECEIVED"
+                  ranked={data.ownGroup.ranked}
                 />
               );
             })}

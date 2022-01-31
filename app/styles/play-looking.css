@@ -29,7 +29,8 @@
 .play-looking__cards {
   display: flex;
   flex-direction: column;
-  gap: var(--s-3);
+  gap: var(--s-5);
+  margin-block-start: var(--s-4);
 }
 
 .play-looking__column-header {
@@ -44,10 +45,25 @@
   margin: 0 auto;
   background-color: var(--bg-lighter);
   border-radius: var(--rounded);
-  gap: var(--s-4);
   max-inline-size: 24rem;
-  padding-block: var(--s-3);
+  padding-block-end: var(--s-3);
+  padding-block-start: var(--s-2);
   padding-inline: var(--s-2);
+}
+
+.play-looking__ranked-text {
+  background-color: var(--bg-lighter);
+  border-radius: var(--rounded);
+  color: var(--theme-secondary);
+  font-size: var(--fonts-xxs);
+  font-weight: var(--semi-bold);
+  margin-block-start: -17px;
+  padding-block: var(--s-0-5);
+  padding-inline: var(--s-2);
+}
+
+.play-looking__ranked-text.ranked {
+  color: var(--theme);
 }
 
 .play-looking__card__members {
@@ -56,6 +72,8 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: var(--s-2);
+  margin-block-end: var(--s-3);
+  margin-block-start: var(--s-1-5);
 }
 
 .play-looking__member-card {
