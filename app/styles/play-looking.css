@@ -1,3 +1,25 @@
+.play-looking__waves {
+  padding: var(--s-8);
+  background: url("/svg/background-pattern.svg");
+  background-color: var(--bg-lighter);
+  border-radius: var(--rounded);
+}
+
+.play-looking__waves-text {
+  padding: var(--s-4);
+  background-color: var(--bg-darker);
+  border-radius: var(--rounded);
+  font-size: var(--fonts-sm);
+  margin-block-start: var(--s-4);
+  text-align: center;
+}
+
+.play-looking__waves-button {
+  display: flex;
+  justify-content: center;
+  margin-block-start: var(--s-4);
+}
+
 .play-looking__columns {
   display: grid;
   column-gap: var(--s-5);

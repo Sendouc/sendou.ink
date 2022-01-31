@@ -158,3 +158,15 @@ export function startLooking(id: string) {
     },
   });
 }
+
+export function setInactive(id: string) {
+  return db.lfgGroup.update({
+    where: {
+      id,
+    },
+    data: {
+      looking: false,
+      active: false,
+    },
+  });
+}

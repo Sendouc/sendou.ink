@@ -13,7 +13,7 @@ export function GroupCard({
 }: {
   group: LookingLoaderDataGroup;
   isGroupAdmin?: boolean;
-  type: "LIKES_GIVEN" | "NEUTRAL" | "LIKES_RECEIVED";
+  type?: "LIKES_GIVEN" | "NEUTRAL" | "LIKES_RECEIVED";
 }) {
   const buttonText = () => {
     if (type === "LIKES_GIVEN") return "Undo";

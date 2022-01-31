@@ -1,5 +1,7 @@
+import { LfgGroupType } from "@prisma/client";
 import {
   ActionFunction,
+  Form,
   json,
   LinksFunction,
   LoaderFunction,
@@ -8,8 +10,9 @@ import {
 } from "remix";
 import invariant from "tiny-invariant";
 import { z } from "zod";
+import { Button } from "~/components/Button";
 import { GroupCard } from "~/components/play/GroupCard";
-import { LFG_GROUP_FULL_SIZE } from "~/constants";
+import { DISCORD_URL, LFG_GROUP_FULL_SIZE } from "~/constants";
 import { uniteGroupInfo } from "~/core/play/utils";
 import { canUniteWithGroup, isGroupAdmin } from "~/core/play/validators";
 import * as LFGGroup from "~/models/LFGGroup.server";
@@ -33,6 +36,9 @@ const lookingActionSchema = z.union([
     // what you see on your screen will be guaranteed to match what the group
     // actually is
     targetGroupSize: z.preprocess(Number, z.number().min(1).max(4).int()),
+  }),
+  z.object({
+    _action: z.literal("LOOK_AGAIN"),
   }),
 ]);
 
@@ -102,6 +108,16 @@ export const action: ActionFunction = async ({ request, context }) => {
       });
       break;
     }
+    case "LOOK_AGAIN": {
+      await LFGGroup.setInactive(ownGroup.id);
+      break;
+    }
+    default: {
+      const exhaustive: never = data;
+      throw new Response(`Unknown action: ${JSON.stringify(exhaustive)}`, {
+        status: 400,
+      });
+    }
   }
 
   return { ok: data._action };
@@ -125,6 +141,7 @@ interface LookingLoaderData {
   neutralGroups: LookingLoaderDataGroup[];
   likerGroups: LookingLoaderDataGroup[];
   ownGroup: LookingLoaderDataGroup;
+  type: LfgGroupType;
 }
 
 export const loader: LoaderFunction = async ({ context }) => {
@@ -157,6 +174,7 @@ export const loader: LoaderFunction = async ({ context }) => {
 
   return json<LookingLoaderData>({
     ownGroup: ownGroupForResponse,
+    type: ownGroup.type,
     ...groups
       .filter((group) =>
         canUniteWithGroup({
@@ -176,7 +194,7 @@ export const loader: LoaderFunction = async ({ context }) => {
             : group.members.map((m) => m.user),
       }))
       .reduce(
-        (acc: Omit<LookingLoaderData, "ownGroup">, group) => {
+        (acc: Omit<LookingLoaderData, "ownGroup" | "type">, group) => {
           // likesReceived first so that if both received like and
           // given like then handle this edge case by just displaying the
           // group as waiting like back
@@ -197,9 +215,36 @@ export const loader: LoaderFunction = async ({ context }) => {
 export default function LookingPage() {
   const data = useLoaderData<LookingLoaderData>();
 
+  if (lookingOver(data.type, data.ownGroup)) {
+    return (
+      <div className="container">
+        <div className="play-looking__waves">
+          <GroupCard group={data.ownGroup} />
+          <div className="play-looking__waves-text">
+            This is your group! You can reach out to them on{" "}
+            <a href={DISCORD_URL}>our Discord</a> in the #groups-meetup channel.
+          </div>
+        </div>
+        <div className="play-looking__waves-button">
+          <Form method="post">
+            <Button
+              type="submit"
+              name="_action"
+              value="LOOK_AGAIN"
+              tiny
+              variant="outlined"
+            >
+              Look again
+            </Button>
+          </Form>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container">
-      <GroupCard group={data.ownGroup} type="LIKES_GIVEN" />
+      <GroupCard group={data.ownGroup} />
       <hr className="my-4" />
       <div className="play-looking__columns">
         <div>
@@ -250,4 +295,16 @@ export default function LookingPage() {
       </div>
     </div>
   );
+}
+
+function lookingOver(type: LfgGroupType, ownGroup: LookingLoaderDataGroup) {
+  if (type === "TWIN" && ownGroup.members?.length === 2) {
+    return true;
+  }
+
+  if (["QUAD"].includes(type) && ownGroup.members?.length === 4) {
+    return true;
+  }
+
+  return false;
 }
