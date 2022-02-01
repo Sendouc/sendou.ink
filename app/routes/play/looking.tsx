@@ -160,14 +160,19 @@ export const loader: LoaderFunction = async ({ context }) => {
   if (!ownGroup) return redirect("/play");
   if (!ownGroup.looking) return redirect("/play/add-players");
 
-  const groups = await LFGGroup.findLookingByType(
-    ownGroup.type,
-    ownGroup.ranked
-  );
-
   const lookingForMatch =
     ownGroup.type === "VERSUS" &&
     ownGroup.members.length === LFG_GROUP_FULL_SIZE;
+
+  const groups = await LFGGroup.findLookingByType(
+    ownGroup.type,
+    // before we are looking for a match show both ranked and unranked
+    // groups and allow that status to change
+    lookingForMatch && typeof ownGroup.ranked === "boolean"
+      ? ownGroup.ranked
+      : undefined
+  );
+
   const likesGiven = ownGroup.likedGroups.reduce(
     (acc, lg) => acc.add(lg.targetId),
     new Set<string>()

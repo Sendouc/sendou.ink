@@ -72,8 +72,12 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: var(--s-2);
-  margin-block-end: var(--s-3);
+  margin-block-end: var(--s-1);
   margin-block-start: var(--s-1-5);
+}
+
+.play-looking__card__button {
+  margin-block-start: var(--s-2);
 }
 
 .play-looking__member-card {

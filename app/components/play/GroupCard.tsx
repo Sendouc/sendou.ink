@@ -63,6 +63,7 @@ export function GroupCard({
         )}
         {isCaptain && (
           <Button
+            className="play-looking__card__button"
             type="submit"
             name="_action"
             value={buttonValue()}

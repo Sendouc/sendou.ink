@@ -130,13 +130,12 @@ export function findActiveByMember(user: { id: string }) {
   });
 }
 
-export function findLookingByType(type: LfgGroupType, ranked: boolean | null) {
+export function findLookingByType(type: LfgGroupType, ranked?: boolean) {
   return db.lfgGroup.findMany({
     where: {
       type,
       looking: true,
-      // For ranked groups we show both ranked and unranked options
-      ranked: ranked === false ? false : undefined,
+      ranked,
     },
     select: {
       id: true,
