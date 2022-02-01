@@ -87,7 +87,8 @@
   background-color: var(--bg-darker);
   border-radius: var(--rounded);
   overflow-x: hidden;
-  padding-block: var(--s-2);
+  padding-block-end: var(--s-1);
+  padding-block-start: var(--s-2);
 }
 
 .play-looking__member-name {

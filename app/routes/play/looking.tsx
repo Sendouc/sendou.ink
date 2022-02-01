@@ -89,12 +89,12 @@ export const action: ActionFunction = async ({ request, context }) => {
         ),
         unitedGroupIsRanked:
           // if one group is ranked and other is unranked
-          // the new group should use the ranked status of the
-          // target group
+          // the new group should use the ranked status of
+          // own group
           ownGroup.ranked === groupToUniteWith.ranked ||
-          typeof groupToUniteWith.ranked !== "boolean"
+          typeof ownGroup.ranked !== "boolean"
             ? undefined
-            : groupToUniteWith.ranked,
+            : ownGroup.ranked,
       });
 
       break;
@@ -165,7 +165,9 @@ export const loader: LoaderFunction = async ({ context }) => {
     ownGroup.ranked
   );
 
-  const lookingForMatch = ownGroup.members.length === LFG_GROUP_FULL_SIZE;
+  const lookingForMatch =
+    ownGroup.type === "VERSUS" &&
+    ownGroup.members.length === LFG_GROUP_FULL_SIZE;
   const likesGiven = ownGroup.likedGroups.reduce(
     (acc, lg) => acc.add(lg.targetId),
     new Set<string>()
@@ -188,12 +190,14 @@ export const loader: LoaderFunction = async ({ context }) => {
     type: ownGroup.type,
     userIsCaptain: isGroupAdmin({ group: ownGroup, user }),
     ...groups
-      .filter((group) =>
-        canUniteWithGroup({
-          ownGroupType: ownGroup.type,
-          ownGroupSize: ownGroup.members.length,
-          otherGroupSize: group.members.length,
-        })
+      .filter(
+        (group) =>
+          (lookingForMatch && group.members.length === LFG_GROUP_FULL_SIZE) ||
+          canUniteWithGroup({
+            ownGroupType: ownGroup.type,
+            ownGroupSize: ownGroup.members.length,
+            otherGroupSize: group.members.length,
+          })
       )
       .filter((group) => group.id !== ownGroup.id)
       .map((group) => ({
@@ -235,7 +239,7 @@ export default function LookingPage() {
     return (
       <div className="container">
         <div className="play-looking__waves">
-          <GroupCard group={data.ownGroup} />
+          <GroupCard group={data.ownGroup} lookingForMatch={false} />
           <div className="play-looking__waves-text">
             This is your group! You can reach out to them on{" "}
             <a href={DISCORD_URL}>our Discord</a> in the #groups-meetup channel.
@@ -260,9 +264,14 @@ export default function LookingPage() {
     );
   }
 
+  const lookingForMatch = data.ownGroup.members?.length === LFG_GROUP_FULL_SIZE;
   return (
     <div className="container">
-      <GroupCard group={data.ownGroup} ranked={data.ownGroup.ranked} />
+      <GroupCard
+        group={data.ownGroup}
+        ranked={data.ownGroup.ranked}
+        lookingForMatch={false}
+      />
       <hr className="my-4" />
       <div className="play-looking__columns">
         <div>
@@ -276,6 +285,7 @@ export default function LookingPage() {
                   isCaptain={data.userIsCaptain}
                   type="LIKES_GIVEN"
                   ranked={group.ranked}
+                  lookingForMatch={lookingForMatch}
                 />
               );
             })}
@@ -292,6 +302,7 @@ export default function LookingPage() {
                   isCaptain={data.userIsCaptain}
                   type="NEUTRAL"
                   ranked={group.ranked}
+                  lookingForMatch={lookingForMatch}
                 />
               );
             })}
@@ -308,6 +319,7 @@ export default function LookingPage() {
                   isCaptain={data.userIsCaptain}
                   type="LIKES_RECEIVED"
                   ranked={data.ownGroup.ranked}
+                  lookingForMatch={lookingForMatch}
                 />
               );
             })}

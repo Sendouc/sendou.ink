@@ -12,17 +12,19 @@ export function GroupCard({
   isCaptain = false,
   type,
   ranked,
+  lookingForMatch,
 }: {
   group: LookingLoaderDataGroup;
   isCaptain?: boolean;
   type?: "LIKES_GIVEN" | "NEUTRAL" | "LIKES_RECEIVED";
   ranked?: boolean;
+  lookingForMatch: boolean;
 }) {
   const buttonText = () => {
     if (type === "LIKES_GIVEN") return "Undo";
     if (type === "NEUTRAL") return "Let's play?";
 
-    return "Group up";
+    return lookingForMatch ? "Match up" : "Group up";
   };
   const buttonValue = (): LookingActionSchema["_action"] => {
     if (type === "LIKES_GIVEN") return "UNLIKE";
