@@ -189,6 +189,19 @@ CREATE TABLE "LfgGroupMatch" (
 );
 
 -- CreateTable
+CREATE TABLE "Skill" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "mu" DOUBLE PRECISION NOT NULL,
+    "sigma" DOUBLE PRECISION NOT NULL,
+    "matchId" TEXT,
+    "tournamentId" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Skill_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "_TournamentMatchGameResultToUser" (
     "A" TEXT NOT NULL,
     "B" TEXT NOT NULL
@@ -325,6 +338,15 @@ ALTER TABLE "LfgGroupMember" ADD CONSTRAINT "LfgGroupMember_groupId_fkey" FOREIG
 
 -- AddForeignKey
 ALTER TABLE "LfgGroupMember" ADD CONSTRAINT "LfgGroupMember_memberId_fkey" FOREIGN KEY ("memberId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Skill" ADD CONSTRAINT "Skill_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Skill" ADD CONSTRAINT "Skill_matchId_fkey" FOREIGN KEY ("matchId") REFERENCES "LfgGroupMatch"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Skill" ADD CONSTRAINT "Skill_tournamentId_fkey" FOREIGN KEY ("tournamentId") REFERENCES "Tournament"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_TournamentMatchGameResultToUser" ADD FOREIGN KEY ("A") REFERENCES "TournamentMatchGameResult"("id") ON DELETE CASCADE ON UPDATE CASCADE;

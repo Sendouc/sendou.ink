@@ -26,6 +26,7 @@ model User {
   tournamentTeams      TournamentTeamMember[]
   tournamentMatches    TournamentMatchGameResult[]
   lfgGroups            LfgGroupMember[]
+  skill                Skill[]
 }
 
 model Organization {
@@ -61,6 +62,7 @@ model Tournament {
   organizer         Organization        @relation(fields: [organizerId], references: [id])
   teams             TournamentTeam[]
   brackets          TournamentBracket[]
+  changedSkills     Skill[]
 
   // There might be duplicate nameForUrl's but inside an organization they're unique
   @@unique([nameForUrl, organizerId])
@@ -250,6 +252,20 @@ model LfgGroupMember {
 }
 
 model LfgGroupMatch {
-  id     String     @id @default(uuid())
-  groups LfgGroup[]
+  id            String     @id @default(uuid())
+  groups        LfgGroup[]
+  changedSkills Skill[]
+}
+
+model Skill {
+  id           String         @id @default(uuid())
+  userId       String
+  mu           Float
+  sigma        Float
+  matchId      String?
+  tournamentId String?
+  createdAt    DateTime       @default(now())
+  user         User           @relation(fields: [userId], references: [id])
+  match        LfgGroupMatch? @relation(fields: [matchId], references: [id])
+  tournament   Tournament?    @relation(fields: [tournamentId], references: [id])
 }
