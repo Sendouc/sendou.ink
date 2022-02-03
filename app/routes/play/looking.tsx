@@ -18,6 +18,11 @@ import { canUniteWithGroup, isGroupAdmin } from "~/core/play/validators";
 import * as LFGGroup from "~/models/LFGGroup.server";
 import styles from "~/styles/play-looking.css";
 import { parseRequestFormData, requireUser, validate } from "~/utils";
+import {
+  skillToMMR,
+  teamSkillToApproximateMMR,
+  teamSkillToExactMMR,
+} from "~/core/mmr/utils";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -141,7 +146,12 @@ export type LookingLoaderDataGroup = {
     discordAvatar: string | null;
     discordName: string;
     discordDiscriminator: string;
+    MMR?: number;
   }[];
+  teamMMR?: {
+    exact: boolean;
+    value: number;
+  };
   ranked?: boolean;
 };
 
@@ -186,8 +196,19 @@ export const loader: LoaderFunction = async ({ context }) => {
   invariant(ownGroupWithMembers, "ownGroupWithMembers is undefined");
   const ownGroupForResponse: LookingLoaderDataGroup = {
     id: ownGroup.id,
-    members: ownGroupWithMembers.members.map((m) => m.user),
+    members: ownGroupWithMembers.members.map((m) => {
+      const { skill, ...rest } = m.user;
+
+      return {
+        ...rest,
+        MMR: skillToMMR(skill),
+      };
+    }),
     ranked: ownGroup.ranked ?? undefined,
+    teamMMR: {
+      exact: true,
+      value: teamSkillToExactMMR(ownGroupWithMembers.members),
+    },
   };
 
   return json<LookingLoaderData>({
@@ -212,8 +233,18 @@ export const loader: LoaderFunction = async ({ context }) => {
         members:
           group.ranked && lookingForMatch
             ? undefined
-            : group.members.map((m) => m.user),
+            : group.members.map((m) => {
+                const { skill, ...rest } = m.user;
+
+                return {
+                  ...rest,
+                  MMR: skillToMMR(skill),
+                };
+              }),
         ranked: group.ranked ?? undefined,
+        teamMMR: lookingForMatch
+          ? { exact: false, value: teamSkillToApproximateMMR(group.members) }
+          : undefined,
       }))
       .reduce(
         (

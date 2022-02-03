@@ -101,3 +101,8 @@
   margin-block-start: 1px;
   white-space: nowrap;
 }
+
+.play-looking__mmr {
+  font-size: var(--fonts-sm);
+  font-weight: var(--bold);
+}

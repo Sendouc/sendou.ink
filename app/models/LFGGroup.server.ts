@@ -149,6 +149,16 @@ export function findLookingByType(type: LfgGroupType, ranked?: boolean) {
               discordDiscriminator: true,
               discordName: true,
               discordId: true,
+              skill: {
+                select: {
+                  mu: true,
+                  sigma: true,
+                },
+                orderBy: {
+                  createdAt: "desc",
+                },
+                take: 1,
+              },
             },
           },
         },

@@ -50,6 +50,7 @@ export async function seed(variation?: SeedVariations) {
     await prisma.lfgGroupLike.deleteMany();
     await prisma.lfgGroupMember.deleteMany();
     await prisma.lfgGroup.deleteMany();
+    await prisma.skill.deleteMany();
     await prisma.user.deleteMany();
     await prisma.stage.deleteMany();
 
@@ -66,6 +67,7 @@ export async function seed(variation?: SeedVariations) {
     await trustRelationship(nzapUserCreated.id, adminUserCreated.id);
     await stages();
     await tournamentAddMaps(tournament.id);
+    await skills();
 
     const userIdsInTheSystem = (await prisma.user.findMany())
       .map((u) => u.id)
@@ -349,6 +351,20 @@ export async function seed(variation?: SeedVariations) {
             connect,
           },
         },
+      });
+    }
+
+    async function skills() {
+      const users = (await prisma.user.findMany()).filter(
+        () => Math.random() < 0.9
+      );
+
+      return prisma.skill.createMany({
+        data: users.map((u) => ({
+          mu: Math.random() * 40 + 10,
+          sigma: Math.random() * 10 + 1,
+          userId: u.id,
+        })),
       });
     }
 

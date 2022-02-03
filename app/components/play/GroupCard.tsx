@@ -53,6 +53,12 @@ export function GroupCard({
             );
           })}
         </div>
+        {group.teamMMR && (
+          <div className="play-looking__mmr">
+            MMR: {!group.teamMMR.exact && <>~</>}
+            {group.teamMMR.value}
+          </div>
+        )}
         <input type="hidden" name="targetGroupId" value={group.id} />
         {type === "LIKES_RECEIVED" && (
           <input
