@@ -52,6 +52,15 @@ export function GroupCard({
               </div>
             );
           })}
+          {!group.members &&
+            new Array(4).fill(null).map((_, i) => {
+              return (
+                <div key={i} className="play-looking__member-card">
+                  <Avatar tiny user={{ discordId: "", discordAvatar: null }} />
+                  <span className="play-looking__member-name">???</span>
+                </div>
+              );
+            })}
         </div>
         {group.teamMMR && (
           <div className="play-looking__mmr">
