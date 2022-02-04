@@ -104,7 +104,10 @@ export const action: ActionFunction = async ({ request, context }) => {
 
       break;
     }
-    case "MATCH_UP":
+    case "MATCH_UP": {
+      await LFGGroup.matchUp([ownGroup.id, data.targetGroupId]);
+      break;
+    }
     case "UNLIKE": {
       await LFGGroup.unlike({
         likerId: ownGroup.id,
@@ -168,6 +171,7 @@ export const loader: LoaderFunction = async ({ context }) => {
   const user = requireUser(context);
   const ownGroup = await LFGGroup.findActiveByMember(user);
   if (!ownGroup) return redirect("/play");
+  if (ownGroup.matchId) return redirect(`/play/match/${ownGroup.matchId}`);
   if (!ownGroup.looking) return redirect("/play/add-players");
 
   const lookingForMatch =
@@ -201,14 +205,19 @@ export const loader: LoaderFunction = async ({ context }) => {
 
       return {
         ...rest,
-        MMR: skillToMMR(skill),
+        // In this stage we don't show team MMR's anymore because
+        // we want the team to compare their team MMR to other
+        // team MMR's instead
+        MMR: lookingForMatch ? undefined : skillToMMR(skill),
       };
     }),
     ranked: ownGroup.ranked ?? undefined,
-    teamMMR: {
-      exact: true,
-      value: teamSkillToExactMMR(ownGroupWithMembers.members),
-    },
+    teamMMR: lookingForMatch
+      ? {
+          exact: true,
+          value: teamSkillToExactMMR(ownGroupWithMembers.members),
+        }
+      : undefined,
   };
 
   return json<LookingLoaderData>({

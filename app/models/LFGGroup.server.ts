@@ -100,6 +100,22 @@ export function uniteGroups({
   return db.$transaction(queries);
 }
 
+export async function matchUp(groupIds: [string, string]) {
+  const match = await db.lfgGroupMatch.create({ data: {} });
+
+  return db.lfgGroup.updateMany({
+    where: {
+      id: {
+        in: groupIds,
+      },
+    },
+    data: {
+      matchId: match.id,
+      looking: false,
+    },
+  });
+}
+
 export function findById(id: string) {
   return db.lfgGroup.findUnique({ where: { id }, include: { members: true } });
 }

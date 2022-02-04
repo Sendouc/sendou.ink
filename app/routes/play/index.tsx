@@ -77,14 +77,10 @@ export const loader: LoaderFunction = async ({ context }) => {
   // TODO: show something reasonable when user not logged in
   if (!user) return null;
 
-  const group = await LFGGroup.findActiveByMember(user);
-  if (!group) return null;
-
-  if (group.looking) {
-    return redirect("/play/looking");
-  }
-
-  // TODO: else if matchId -> redirect to /match
+  const ownGroup = await LFGGroup.findActiveByMember(user);
+  if (!ownGroup) return null;
+  if (ownGroup.matchId) return redirect(`/play/match/${ownGroup.matchId}`);
+  if (ownGroup.looking) return redirect("/play/looking");
 
   return redirect("/play/add-players");
 };

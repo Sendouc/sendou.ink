@@ -1,11 +1,11 @@
 import clsx from "clsx";
 import { Form } from "remix";
-import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
 import type {
   LookingActionSchema,
   LookingLoaderDataGroup,
 } from "~/routes/play/looking";
+import { GroupMembers } from "./GroupMembers";
 
 export function GroupCard({
   group,
@@ -30,7 +30,7 @@ export function GroupCard({
     if (type === "LIKES_GIVEN") return "UNLIKE";
     if (type === "NEUTRAL") return "LIKE";
 
-    return "UNITE_GROUPS";
+    return lookingForMatch ? "MATCH_UP" : "UNITE_GROUPS";
   };
 
   return (
@@ -41,27 +41,7 @@ export function GroupCard({
             {ranked ? "Ranked" : "Unranked"}
           </div>
         )}
-        <div className="play-looking__card__members">
-          {group.members?.map((member) => {
-            return (
-              <div key={member.id} className="play-looking__member-card">
-                <Avatar tiny user={member} />
-                <span className="play-looking__member-name">
-                  {member.discordName}
-                </span>
-              </div>
-            );
-          })}
-          {!group.members &&
-            new Array(4).fill(null).map((_, i) => {
-              return (
-                <div key={i} className="play-looking__member-card">
-                  <Avatar tiny user={{ discordId: "", discordAvatar: null }} />
-                  <span className="play-looking__member-name">???</span>
-                </div>
-              );
-            })}
-        </div>
+        <GroupMembers members={group.members} />
         {group.teamMMR && (
           <div className="play-looking__mmr">
             MMR: {!group.teamMMR.exact && <>~</>}

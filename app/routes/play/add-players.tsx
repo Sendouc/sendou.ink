@@ -41,20 +41,16 @@ export const loader: LoaderFunction = async ({ context }) => {
   const user = getUser(context);
   if (!user) return redirect("/play");
 
-  const [group, trustingUsers] = await Promise.all([
+  const [ownGroup, trustingUsers] = await Promise.all([
     LFGGroup.findActiveByMember(user),
     User.findTrusters(user.id),
   ]);
-  if (!group) return redirect("/play");
-
-  if (group.looking) {
-    return redirect("/play/looking");
-  }
-
-  // TODO: else if matchId -> redirect to /match
+  if (!ownGroup) return redirect("/play");
+  if (ownGroup.matchId) return redirect(`/play/match/${ownGroup.matchId}`);
+  if (ownGroup.looking) return redirect("/play/looking");
 
   return json<AddPlayersLoaderData>({
-    inviteCode: group.inviteCode,
+    inviteCode: ownGroup.inviteCode,
     trustingUsers,
   });
 };
