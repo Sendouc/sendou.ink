@@ -4,6 +4,7 @@ import {
   json,
   LinksFunction,
   LoaderFunction,
+  MetaFunction,
   redirect,
   useLoaderData,
   useTransition,
@@ -18,6 +19,8 @@ import * as LFGMatch from "~/models/LFGMatch.server";
 import styles from "~/styles/play-match.css";
 import {
   getUser,
+  listToUserReadableString,
+  makeTitle,
   parseRequestFormData,
   requireUser,
   UserLean,
@@ -26,6 +29,20 @@ import {
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
+};
+
+export const meta: MetaFunction = ({ data }: { data: LFGMatchLoaderData }) => {
+  return {
+    title: data.isOwnMatch
+      ? makeTitle(
+          `vs. ${listToUserReadableString(
+            data.groups[1].map(
+              (u) => `${u.discordName}#${u.discordDiscriminator}`
+            )
+          )}`
+        )
+      : "Match",
+  };
 };
 
 const matchActionSchema = z.union([
@@ -70,6 +87,7 @@ export const action: ActionFunction = async ({ request, context }) => {
 interface LFGMatchLoaderData {
   /** Can the user counterpick and report scores? */
   isCaptain: boolean;
+  isOwnMatch: boolean;
   isRanked: boolean;
   groups: UserLean[][];
 }
@@ -98,6 +116,7 @@ export const loader: LoaderFunction = async ({ params, context }) => {
   return json<LFGMatchLoaderData>({
     isCaptain,
     isRanked,
+    isOwnMatch,
     groups: match.groups
       .sort((a, b) => {
         const aIsOwnGroup = a.members.some((m) => user?.id === m.user.id);
