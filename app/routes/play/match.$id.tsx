@@ -1,20 +1,70 @@
 import {
+  ActionFunction,
   Form,
   json,
   LinksFunction,
   LoaderFunction,
+  redirect,
   useLoaderData,
+  useTransition,
 } from "remix";
 import invariant from "tiny-invariant";
+import { z } from "zod";
+import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
 import { DISCORD_URL } from "~/constants";
+import * as LFGGroup from "~/models/LFGGroup.server";
 import * as LFGMatch from "~/models/LFGMatch.server";
-import { getUser, UserLean } from "~/utils";
 import styles from "~/styles/play-match.css";
-import { Avatar } from "~/components/Avatar";
+import {
+  getUser,
+  parseRequestFormData,
+  requireUser,
+  UserLean,
+  validate,
+} from "~/utils";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
+};
+
+const matchActionSchema = z.union([
+  z.object({
+    _action: z.literal("LOOK_AGAIN"),
+  }),
+  z.object({
+    _action: z.literal("PLACEHOLDER"),
+  }),
+]);
+
+export const action: ActionFunction = async ({ request, context }) => {
+  const data = await parseRequestFormData({
+    request,
+    schema: matchActionSchema,
+  });
+  const user = requireUser(context);
+
+  const ownGroup = await LFGGroup.findActiveByMember(user);
+  validate(ownGroup, "No active group");
+
+  switch (data._action) {
+    case "PLACEHOLDER":
+    case "LOOK_AGAIN": {
+      validate(!ownGroup.ranked, "Score reporting required");
+      await LFGGroup.setInactive(ownGroup.id);
+      return redirect("/play");
+    }
+    default: {
+      const exhaustive: never = data;
+      throw new Response(`Unknown action: ${JSON.stringify(exhaustive)}`, {
+        status: 400,
+      });
+    }
+  }
+
+  return { ok: data._action };
+
+  // TODO: notify watchers
 };
 
 interface LFGMatchLoaderData {
@@ -33,8 +83,7 @@ export const loader: LoaderFunction = async ({ params, context }) => {
     throw new Response(null, { status: 404 });
   }
 
-  //const isRanked = match.groups.every((g) => g.ranked);
-  const isRanked = false;
+  const isRanked = match.groups.every((g) => g.ranked);
   const isOwnMatch = match.groups.some((g) =>
     g.members.some((m) => user?.id === m.user.id)
   );
@@ -70,6 +119,7 @@ export const loader: LoaderFunction = async ({ params, context }) => {
 
 export default function LFGMatchPage() {
   const data = useLoaderData<LFGMatchLoaderData>();
+  const transition = useTransition();
 
   return (
     <div className="container">
@@ -101,21 +151,24 @@ export default function LFGMatchPage() {
           </div>
         )}
       </div>
-      <div className="play-match__waves-button">
-        <Form method="post">
-          {data.isCaptain && (
-            <Button
-              type="submit"
-              name="_action"
-              value="LOOK_AGAIN"
-              tiny
-              variant="outlined"
-            >
-              Look again
-            </Button>
-          )}
-        </Form>
-      </div>
+      {!data.isRanked && (
+        <div className="play-match__waves-button">
+          <Form method="post">
+            {data.isCaptain && (
+              <Button
+                type="submit"
+                name="_action"
+                value="LOOK_AGAIN"
+                tiny
+                variant="outlined"
+                loading={transition.state !== "idle"}
+              >
+                Look again
+              </Button>
+            )}
+          </Form>
+        </div>
+      )}
     </div>
   );
 }

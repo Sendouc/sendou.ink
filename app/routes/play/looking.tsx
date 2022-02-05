@@ -116,8 +116,6 @@ export const action: ActionFunction = async ({ request, context }) => {
       break;
     }
     case "LIKE": {
-      // TODO: maybe also do the members.length check here?
-      // upside: handles edge case - downside: one extra db call per like
       await LFGGroup.like({
         likerId: ownGroup.id,
         targetId: data.targetGroupId,
@@ -126,7 +124,7 @@ export const action: ActionFunction = async ({ request, context }) => {
     }
     case "LOOK_AGAIN": {
       await LFGGroup.setInactive(ownGroup.id);
-      break;
+      return redirect("/play");
     }
     default: {
       const exhaustive: never = data;
