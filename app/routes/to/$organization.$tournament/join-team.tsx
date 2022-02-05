@@ -107,7 +107,7 @@ export const loader: LoaderFunction = async ({ request, params, context }) => {
     tournamentNameForUrl: parsedParams.tournament,
     withInviteCodes: true,
   });
-  if (!tournament) return new Response(null, { status: 404 });
+  if (!tournament) throw new Response(null, { status: 404 });
 
   // TODO: handle inviting players mid-event
   if (tournament.startTime < new Date()) {

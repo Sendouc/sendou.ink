@@ -29,7 +29,9 @@ export const loader: LoaderFunction = async ({ params, context }) => {
   const user = getUser(context);
 
   const match = await LFGMatch.findById(params.id);
-  if (!match) return new Response(null, { status: 404 });
+  if (!match || match.groups.length === 0) {
+    throw new Response(null, { status: 404 });
+  }
 
   //const isRanked = match.groups.every((g) => g.ranked);
   const isRanked = false;
@@ -38,7 +40,7 @@ export const loader: LoaderFunction = async ({ params, context }) => {
   );
   // Non-ranked matches are only of interest to participants
   if (!isRanked && !isOwnMatch) {
-    return new Response(null, { status: 404 });
+    throw new Response(null, { status: 404 });
   }
 
   const isCaptain = match.groups.some((g) =>
