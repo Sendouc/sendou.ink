@@ -17,7 +17,7 @@ import { uniteGroupInfo } from "~/core/play/utils";
 import { canUniteWithGroup, isGroupAdmin } from "~/core/play/validators";
 import * as LFGGroup from "~/models/LFGGroup.server";
 import styles from "~/styles/play-looking.css";
-import { parseRequestFormData, requireUser, validate } from "~/utils";
+import { parseRequestFormData, requireUser, UserLean, validate } from "~/utils";
 import {
   skillToMMR,
   teamSkillToApproximateMMR,
@@ -143,14 +143,9 @@ export const action: ActionFunction = async ({ request, context }) => {
 
 export type LookingLoaderDataGroup = {
   id: string;
-  members?: {
-    id: string;
-    discordId: string;
-    discordAvatar: string | null;
-    discordName: string;
-    discordDiscriminator: string;
+  members?: (UserLean & {
     MMR?: number;
-  }[];
+  })[];
   teamMMR?: {
     exact: boolean;
     value: number;
@@ -164,7 +159,7 @@ interface LookingLoaderData {
   likerGroups: LookingLoaderDataGroup[];
   ownGroup: LookingLoaderDataGroup;
   type: LfgGroupType;
-  userIsCaptain: boolean;
+  isCaptain: boolean;
 }
 
 export const loader: LoaderFunction = async ({ context }) => {
@@ -223,7 +218,7 @@ export const loader: LoaderFunction = async ({ context }) => {
   return json<LookingLoaderData>({
     ownGroup: ownGroupForResponse,
     type: ownGroup.type,
-    userIsCaptain: isGroupAdmin({ group: ownGroup, user }),
+    isCaptain: isGroupAdmin({ group: ownGroup, user }),
     ...groups
       .filter(
         (group) =>
@@ -257,7 +252,7 @@ export const loader: LoaderFunction = async ({ context }) => {
       }))
       .reduce(
         (
-          acc: Omit<LookingLoaderData, "ownGroup" | "type" | "userIsCaptain">,
+          acc: Omit<LookingLoaderData, "ownGroup" | "type" | "isCaptain">,
           group
         ) => {
           // likesReceived first so that if both received like and
@@ -292,7 +287,7 @@ export default function LookingPage() {
         </div>
         <div className="play-looking__waves-button">
           <Form method="post">
-            {data.userIsCaptain && (
+            {data.isCaptain && (
               <Button
                 type="submit"
                 name="_action"
@@ -327,7 +322,7 @@ export default function LookingPage() {
                 <GroupCard
                   key={group.id}
                   group={group}
-                  isCaptain={data.userIsCaptain}
+                  isCaptain={data.isCaptain}
                   type="LIKES_GIVEN"
                   ranked={group.ranked}
                   lookingForMatch={lookingForMatch}
@@ -344,7 +339,7 @@ export default function LookingPage() {
                 <GroupCard
                   key={group.id}
                   group={group}
-                  isCaptain={data.userIsCaptain}
+                  isCaptain={data.isCaptain}
                   type="NEUTRAL"
                   ranked={group.ranked}
                   lookingForMatch={lookingForMatch}
@@ -361,7 +356,7 @@ export default function LookingPage() {
                 <GroupCard
                   key={group.id}
                   group={group}
-                  isCaptain={data.userIsCaptain}
+                  isCaptain={data.isCaptain}
                   type="LIKES_RECEIVED"
                   ranked={data.ownGroup.ranked}
                   lookingForMatch={lookingForMatch}

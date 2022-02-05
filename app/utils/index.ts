@@ -150,3 +150,12 @@ export interface MyCSSProperties extends CSSProperties {
   "--brackets-column-matches"?: number;
   "--tabs-count"?: number;
 }
+
+/** Minimal information on user to show their name and avatar */
+export interface UserLean {
+  id: string;
+  discordId: string;
+  discordAvatar: string | null;
+  discordName: string;
+  discordDiscriminator: string;
+}

@@ -1,0 +1,53 @@
+.play-match__waves {
+  padding: var(--s-8);
+  background: url("/svg/background-pattern.svg");
+  background-color: var(--bg-lighter);
+  border-radius: var(--rounded);
+}
+
+.play-match__teams {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--s-4);
+}
+
+.play-match__waves-section {
+  padding: var(--s-4);
+  background-color: var(--bg-darker);
+  border-radius: var(--rounded);
+  font-size: var(--fonts-sm);
+  text-align: center;
+}
+
+.play-match__info {
+  margin-block-start: var(--s-8);
+}
+
+.play-match__players {
+  display: grid;
+  max-width: 14rem;
+  flex: 1;
+  gap: var(--s-4);
+  grid-template-columns: 1fr 1fr;
+}
+
+.play-match__player-name {
+  font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
+  margin-block-start: 1px;
+  white-space: nowrap;
+}
+
+.play-match__player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: var(--fonts-xs);
+}
+
+.play-match__waves-button {
+  display: flex;
+  justify-content: center;
+  margin-block-start: var(--s-4);
+}
