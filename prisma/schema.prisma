@@ -82,6 +82,7 @@ model Stage {
   mode               Mode
   tournamentMapPools Tournament[]
   tournamentRounds   TournamentRoundStage[]
+  lfgGroupMatches    LfgGroupMatchStage[]
 }
 
 model TournamentTeam {
@@ -196,6 +197,7 @@ model TournamentMatchGameResult {
   id           String               @id @default(uuid())
   matchId      String
   roundStageId String
+  // TODO: winnerTeamId instead
   winner       TeamOrder
   reporterId   String
   createdAt    DateTime             @default(now())
@@ -213,18 +215,19 @@ enum LfgGroupType {
 }
 
 model LfgGroup {
-  id            String           @id @default(uuid())
+  id            String               @id @default(uuid())
   ranked        Boolean?
   type          LfgGroupType
-  active        Boolean          @default(true)
+  active        Boolean              @default(true)
   looking       Boolean
   matchId       String?
-  inviteCode    String           @default(uuid())
-  createdAt     DateTime         @default(now())
+  inviteCode    String               @default(uuid())
+  createdAt     DateTime             @default(now())
   members       LfgGroupMember[]
-  match         LfgGroupMatch?   @relation(fields: [matchId], references: [id])
-  likedGroups   LfgGroupLike[]   @relation("liker")
-  likesReceived LfgGroupLike[]   @relation("target")
+  match         LfgGroupMatch?       @relation(fields: [matchId], references: [id])
+  likedGroups   LfgGroupLike[]       @relation("liker")
+  likesReceived LfgGroupLike[]       @relation("target")
+  matches       LfgGroupMatchStage[]
 
   @@index([active])
   @@index([looking])
@@ -252,9 +255,22 @@ model LfgGroupMember {
 }
 
 model LfgGroupMatch {
-  id            String     @id @default(uuid())
+  id            String               @id @default(uuid())
   groups        LfgGroup[]
   changedSkills Skill[]
+  stages        LfgGroupMatchStage[]
+}
+
+model LfgGroupMatchStage {
+  lfgGroupMatchId String
+  stageId         Int
+  order           Int
+  winnerGroupId   String?
+  lfgGroupMatch   LfgGroupMatch @relation(fields: [lfgGroupMatchId], references: [id])
+  stage           Stage         @relation(fields: [stageId], references: [id])
+  winnerGroup     LfgGroup?     @relation(fields: [winnerGroupId], references: [id])
+
+  @@unique([lfgGroupMatchId, order])
 }
 
 model Skill {

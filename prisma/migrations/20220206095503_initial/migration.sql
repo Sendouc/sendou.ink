@@ -189,6 +189,14 @@ CREATE TABLE "LfgGroupMatch" (
 );
 
 -- CreateTable
+CREATE TABLE "LfgGroupMatchStage" (
+    "lfgGroupMatchId" TEXT NOT NULL,
+    "stageId" INTEGER NOT NULL,
+    "order" INTEGER NOT NULL,
+    "winnerGroupId" TEXT
+);
+
+-- CreateTable
 CREATE TABLE "Skill" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
@@ -202,14 +210,14 @@ CREATE TABLE "Skill" (
 );
 
 -- CreateTable
-CREATE TABLE "_TournamentMatchGameResultToUser" (
-    "A" TEXT NOT NULL,
+CREATE TABLE "_StageToTournament" (
+    "A" INTEGER NOT NULL,
     "B" TEXT NOT NULL
 );
 
 -- CreateTable
-CREATE TABLE "_StageToTournament" (
-    "A" INTEGER NOT NULL,
+CREATE TABLE "_TournamentMatchGameResultToUser" (
+    "A" TEXT NOT NULL,
     "B" TEXT NOT NULL
 );
 
@@ -259,16 +267,19 @@ CREATE UNIQUE INDEX "LfgGroupLike_likerId_targetId_key" ON "LfgGroupLike"("liker
 CREATE UNIQUE INDEX "LfgGroupMember_groupId_memberId_key" ON "LfgGroupMember"("groupId", "memberId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "_TournamentMatchGameResultToUser_AB_unique" ON "_TournamentMatchGameResultToUser"("A", "B");
-
--- CreateIndex
-CREATE INDEX "_TournamentMatchGameResultToUser_B_index" ON "_TournamentMatchGameResultToUser"("B");
+CREATE UNIQUE INDEX "LfgGroupMatchStage_lfgGroupMatchId_order_key" ON "LfgGroupMatchStage"("lfgGroupMatchId", "order");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_StageToTournament_AB_unique" ON "_StageToTournament"("A", "B");
 
 -- CreateIndex
 CREATE INDEX "_StageToTournament_B_index" ON "_StageToTournament"("B");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_TournamentMatchGameResultToUser_AB_unique" ON "_TournamentMatchGameResultToUser"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_TournamentMatchGameResultToUser_B_index" ON "_TournamentMatchGameResultToUser"("B");
 
 -- AddForeignKey
 ALTER TABLE "Organization" ADD CONSTRAINT "Organization_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -280,10 +291,10 @@ ALTER TABLE "Tournament" ADD CONSTRAINT "Tournament_organizerId_fkey" FOREIGN KE
 ALTER TABLE "TournamentTeam" ADD CONSTRAINT "TournamentTeam_tournamentId_fkey" FOREIGN KEY ("tournamentId") REFERENCES "Tournament"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "TournamentTeamMember" ADD CONSTRAINT "TournamentTeamMember_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "TournamentTeam"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "TournamentTeamMember" ADD CONSTRAINT "TournamentTeamMember_memberId_fkey" FOREIGN KEY ("memberId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "TournamentTeamMember" ADD CONSTRAINT "TournamentTeamMember_memberId_fkey" FOREIGN KEY ("memberId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "TournamentTeamMember" ADD CONSTRAINT "TournamentTeamMember_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "TournamentTeam"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "TrustRelationships" ADD CONSTRAINT "TrustRelationships_trustGiverId_fkey" FOREIGN KEY ("trustGiverId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -298,10 +309,13 @@ ALTER TABLE "TournamentBracket" ADD CONSTRAINT "TournamentBracket_tournamentId_f
 ALTER TABLE "TournamentRound" ADD CONSTRAINT "TournamentRound_bracketId_fkey" FOREIGN KEY ("bracketId") REFERENCES "TournamentBracket"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "TournamentRoundStage" ADD CONSTRAINT "TournamentRoundStage_stageId_fkey" FOREIGN KEY ("stageId") REFERENCES "Stage"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "TournamentRoundStage" ADD CONSTRAINT "TournamentRoundStage_roundId_fkey" FOREIGN KEY ("roundId") REFERENCES "TournamentRound"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "TournamentRoundStage" ADD CONSTRAINT "TournamentRoundStage_stageId_fkey" FOREIGN KEY ("stageId") REFERENCES "Stage"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "TournamentMatch" ADD CONSTRAINT "TournamentMatch_roundId_fkey" FOREIGN KEY ("roundId") REFERENCES "TournamentRound"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "TournamentMatch" ADD CONSTRAINT "TournamentMatch_winnerDestinationMatchId_fkey" FOREIGN KEY ("winnerDestinationMatchId") REFERENCES "TournamentMatch"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -310,19 +324,16 @@ ALTER TABLE "TournamentMatch" ADD CONSTRAINT "TournamentMatch_winnerDestinationM
 ALTER TABLE "TournamentMatch" ADD CONSTRAINT "TournamentMatch_loserDestinationMatchId_fkey" FOREIGN KEY ("loserDestinationMatchId") REFERENCES "TournamentMatch"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "TournamentMatch" ADD CONSTRAINT "TournamentMatch_roundId_fkey" FOREIGN KEY ("roundId") REFERENCES "TournamentRound"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "TournamentMatchParticipant" ADD CONSTRAINT "TournamentMatchParticipant_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "TournamentTeam"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "TournamentMatchParticipant" ADD CONSTRAINT "TournamentMatchParticipant_matchId_fkey" FOREIGN KEY ("matchId") REFERENCES "TournamentMatch"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "TournamentMatchGameResult" ADD CONSTRAINT "TournamentMatchGameResult_matchId_fkey" FOREIGN KEY ("matchId") REFERENCES "TournamentMatch"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "TournamentMatchGameResult" ADD CONSTRAINT "TournamentMatchGameResult_roundStageId_fkey" FOREIGN KEY ("roundStageId") REFERENCES "TournamentRoundStage"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "TournamentMatchGameResult" ADD CONSTRAINT "TournamentMatchGameResult_roundStageId_fkey" FOREIGN KEY ("roundStageId") REFERENCES "TournamentRoundStage"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "TournamentMatchGameResult" ADD CONSTRAINT "TournamentMatchGameResult_matchId_fkey" FOREIGN KEY ("matchId") REFERENCES "TournamentMatch"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "LfgGroup" ADD CONSTRAINT "LfgGroup_matchId_fkey" FOREIGN KEY ("matchId") REFERENCES "LfgGroupMatch"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -334,28 +345,37 @@ ALTER TABLE "LfgGroupLike" ADD CONSTRAINT "LfgGroupLike_likerId_fkey" FOREIGN KE
 ALTER TABLE "LfgGroupLike" ADD CONSTRAINT "LfgGroupLike_targetId_fkey" FOREIGN KEY ("targetId") REFERENCES "LfgGroup"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "LfgGroupMember" ADD CONSTRAINT "LfgGroupMember_memberId_fkey" FOREIGN KEY ("memberId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "LfgGroupMember" ADD CONSTRAINT "LfgGroupMember_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "LfgGroup"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "LfgGroupMember" ADD CONSTRAINT "LfgGroupMember_memberId_fkey" FOREIGN KEY ("memberId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "LfgGroupMatchStage" ADD CONSTRAINT "LfgGroupMatchStage_stageId_fkey" FOREIGN KEY ("stageId") REFERENCES "Stage"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "LfgGroupMatchStage" ADD CONSTRAINT "LfgGroupMatchStage_winnerGroupId_fkey" FOREIGN KEY ("winnerGroupId") REFERENCES "LfgGroup"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "LfgGroupMatchStage" ADD CONSTRAINT "LfgGroupMatchStage_lfgGroupMatchId_fkey" FOREIGN KEY ("lfgGroupMatchId") REFERENCES "LfgGroupMatch"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Skill" ADD CONSTRAINT "Skill_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Skill" ADD CONSTRAINT "Skill_matchId_fkey" FOREIGN KEY ("matchId") REFERENCES "LfgGroupMatch"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "Skill" ADD CONSTRAINT "Skill_tournamentId_fkey" FOREIGN KEY ("tournamentId") REFERENCES "Tournament"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_TournamentMatchGameResultToUser" ADD FOREIGN KEY ("A") REFERENCES "TournamentMatchGameResult"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_TournamentMatchGameResultToUser" ADD FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Skill" ADD CONSTRAINT "Skill_matchId_fkey" FOREIGN KEY ("matchId") REFERENCES "LfgGroupMatch"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_StageToTournament" ADD FOREIGN KEY ("A") REFERENCES "Stage"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_StageToTournament" ADD FOREIGN KEY ("B") REFERENCES "Tournament"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_TournamentMatchGameResultToUser" ADD FOREIGN KEY ("A") REFERENCES "TournamentMatchGameResult"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_TournamentMatchGameResultToUser" ADD FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
