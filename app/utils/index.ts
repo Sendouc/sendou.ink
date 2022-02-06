@@ -146,6 +146,8 @@ export type MyReducerAction<
     }
   : { type: K };
 
+export type ArrayElement<A> = A extends readonly (infer T)[] ? T : never;
+
 // TODO: make everything start with _ like _tournament-bg-url to avoid collision with global css vars
 export interface MyCSSProperties extends CSSProperties {
   "--tournaments-bg"?: string;

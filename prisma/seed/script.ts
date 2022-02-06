@@ -1,6 +1,14 @@
 /* eslint-disable */
 
 import { PrismaClient } from "@prisma/client";
+import { readFile } from "fs/promises";
+import clone from "just-clone";
+import shuffle from "just-shuffle";
+import path from "path";
+import invariant from "tiny-invariant";
+import { v4 as uuidv4 } from "uuid";
+import { stagesWithIds } from "~/core/stages/stages";
+import { SeedVariations } from "~/utils/schemas";
 import {
   ADMIN_TEST_AVATAR,
   ADMIN_TEST_DISCORD_ID,
@@ -8,16 +16,8 @@ import {
   NZAP_TEST_AVATAR,
   NZAP_TEST_DISCORD_ID,
   NZAP_TEST_UUID,
-  stages as stagesList,
 } from "../../app/constants";
-import { readFile } from "fs/promises";
-import path from "path";
 import { createTournamentRounds } from "../../app/services/tournament";
-import invariant from "tiny-invariant";
-import { SeedVariations } from "~/utils/schemas";
-import { v4 as uuidv4 } from "uuid";
-import clone from "just-clone";
-import shuffle from "just-shuffle";
 const prisma = new PrismaClient();
 
 const mapListDE = `{"losers":[[{"id":4647,"name":"Kelp Dome","mode":"SZ"},{"id":4658,"name":"Blackbelly Skatepark","mode":"TC"},{"id":4645,"name":"Manta Maria","mode":"CB"}],[{"id":4624,"name":"Inkblot Art Academy","mode":"RM"},{"id":4707,"name":"Ancho-V Games","mode":"SZ"},{"id":4618,"name":"Humpback Pump Track","mode":"TC"}],[{"id":4692,"name":"Camp Triggerfish","mode":"SZ"},{"id":4665,"name":"MakoMart","mode":"CB"},{"id":4634,"name":"Moray Towers","mode":"RM"}],[{"id":4609,"name":"Musselforge Fitness","mode":"RM"},{"id":4647,"name":"Kelp Dome","mode":"SZ"},{"id":4678,"name":"Arowana Mall","mode":"TC"}],[{"id":4705,"name":"New Albacore Hotel","mode":"CB"},{"id":4644,"name":"Manta Maria","mode":"RM"},{"id":4707,"name":"Ancho-V Games","mode":"SZ"}],[{"id":4657,"name":"Blackbelly Skatepark","mode":"SZ"},{"id":4690,"name":"Piranha Pit","mode":"CB"},{"id":4682,"name":"Goby Arena","mode":"SZ"},{"id":4678,"name":"Arowana Mall","mode":"TC"},{"id":4624,"name":"Inkblot Art Academy","mode":"RM"}]],"winners":[[{"id":4677,"name":"Arowana Mall","mode":"SZ"},{"id":4665,"name":"MakoMart","mode":"CB"},{"id":4618,"name":"Humpback Pump Track","mode":"TC"}],[{"id":4624,"name":"Inkblot Art Academy","mode":"RM"},{"id":4683,"name":"Goby Arena","mode":"TC"},{"id":4692,"name":"Camp Triggerfish","mode":"SZ"}],[{"id":4647,"name":"Kelp Dome","mode":"SZ"},{"id":4634,"name":"Moray Towers","mode":"RM"},{"id":4707,"name":"Ancho-V Games","mode":"SZ"},{"id":4610,"name":"Musselforge Fitness","mode":"CB"},{"id":4658,"name":"Blackbelly Skatepark","mode":"TC"}],[{"id":4644,"name":"Manta Maria","mode":"RM"},{"id":4677,"name":"Arowana Mall","mode":"SZ"},{"id":4690,"name":"Piranha Pit","mode":"CB"},{"id":4682,"name":"Goby Arena","mode":"SZ"},{"id":4618,"name":"Humpback Pump Track","mode":"TC"}],[{"id":4624,"name":"Inkblot Art Academy","mode":"RM"},{"id":4707,"name":"Ancho-V Games","mode":"SZ"},{"id":4610,"name":"Musselforge Fitness","mode":"CB"},{"id":4657,"name":"Blackbelly Skatepark","mode":"SZ"},{"id":4693,"name":"Camp Triggerfish","mode":"TC"},{"id":4664,"name":"MakoMart","mode":"RM"},{"id":4647,"name":"Kelp Dome","mode":"SZ"}],[{"id":4617,"name":"Humpback Pump Track","mode":"SZ"},{"id":4635,"name":"Moray Towers","mode":"CB"},{"id":4682,"name":"Goby Arena","mode":"SZ"},{"id":4644,"name":"Manta Maria","mode":"RM"},{"id":4678,"name":"Arowana Mall","mode":"TC"},{"id":4692,"name":"Camp Triggerfish","mode":"SZ"},{"id":4705,"name":"New Albacore Hotel","mode":"CB"}]]}`;
@@ -369,23 +369,9 @@ export async function seed(variation?: SeedVariations) {
     }
 
     async function stages() {
-      const modesList = ["TW", "SZ", "TC", "RM", "CB"] as const;
-      const result = [];
-
-      for (const mapName of stagesList) {
-        for (const modeName of modesList) {
-          const created = await prisma.stage.create({
-            data: {
-              name: mapName,
-              mode: modeName,
-            },
-          });
-
-          result.push(created.id);
-        }
-      }
-
-      return result;
+      return prisma.stage.createMany({
+        data: stagesWithIds(),
+      });
     }
 
     async function lfgGroups(userIds: string[]) {
