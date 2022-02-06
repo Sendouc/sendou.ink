@@ -52,6 +52,7 @@ export async function seed(variation?: SeedVariations) {
     await prisma.lfgGroup.deleteMany();
     await prisma.skill.deleteMany();
     await prisma.user.deleteMany();
+    await prisma.lfgGroupMatchStage.deleteMany();
     await prisma.stage.deleteMany();
 
     //

@@ -1,3 +1,4 @@
+import { Mode } from "@prisma/client";
 import {
   ActionFunction,
   Form,
@@ -21,6 +22,7 @@ import {
   getUser,
   listToUserReadableString,
   makeTitle,
+  modeToImageUrl,
   parseRequestFormData,
   requireUser,
   UserLean,
@@ -90,6 +92,10 @@ interface LFGMatchLoaderData {
   isOwnMatch: boolean;
   isRanked: boolean;
   groups: UserLean[][];
+  mapList: {
+    name: string;
+    mode: Mode;
+  }[];
 }
 
 export const loader: LoaderFunction = async ({ params, context }) => {
@@ -133,6 +139,7 @@ export const loader: LoaderFunction = async ({ params, context }) => {
           discordDiscriminator: g.user.discordDiscriminator,
         }));
       }),
+    mapList: match.stages.map(({ stage }) => stage),
   });
 };
 
@@ -188,6 +195,26 @@ export default function LFGMatchPage() {
           </Form>
         </div>
       )}
+      <ol className="play-match__stages">
+        <h2 className="play-match__map-list-header">Map list</h2>
+        <div className="play-match__best-of">Best of {data.mapList.length}</div>
+        {data.mapList.map((stage, i) => {
+          return (
+            <li
+              key={`${stage.name}-${stage.mode}`}
+              className="play-match__stage"
+            >
+              <img
+                className="play-match__mode"
+                src={modeToImageUrl(stage.mode)}
+              />
+              {i + 1}){" "}
+              <span className="play-match__stage-name">{stage.name}</span> (
+              {stage.mode})
+            </li>
+          );
+        })}
+      </ol>
     </div>
   );
 }

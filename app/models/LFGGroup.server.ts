@@ -1,4 +1,5 @@
 import type { LfgGroupType } from "@prisma/client";
+import { generateMapListForLfgMatch } from "~/core/play/mapList";
 import { db } from "~/utils/db.server";
 
 export function create({
@@ -101,7 +102,15 @@ export function uniteGroups({
 }
 
 export async function matchUp(groupIds: [string, string]) {
-  const match = await db.lfgGroupMatch.create({ data: {} });
+  const match = await db.lfgGroupMatch.create({
+    data: {
+      stages: {
+        createMany: {
+          data: generateMapListForLfgMatch(),
+        },
+      },
+    },
+  });
 
   return db.lfgGroup.updateMany({
     where: {
