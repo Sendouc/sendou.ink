@@ -16,7 +16,8 @@ import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
 import { RefreshIcon } from "~/components/icons/Refresh";
-import { BEST_OF_OPTIONS, modesShort, modesShortToLong } from "~/constants";
+import { BEST_OF_OPTIONS } from "~/constants";
+import { modesShort, modesShortToLong } from "~/core/stages/stages";
 import { eliminationBracket } from "~/core/tournament/algorithms";
 import {
   EliminationBracketSide,

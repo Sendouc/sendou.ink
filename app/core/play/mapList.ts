@@ -2,8 +2,7 @@ import { Mode } from "@prisma/client";
 import clone from "just-clone";
 import shuffle from "just-shuffle";
 import invariant from "tiny-invariant";
-import { StageName } from "~/constants";
-import { stageToId } from "../stages/stages";
+import { StageName, stageToId } from "../stages/stages";
 
 const AMOUNT_OF_STAGES_TO_GENERATE = 9;
 const LEGAL_MODES: Mode[] = ["TC", "RM", "CB"];

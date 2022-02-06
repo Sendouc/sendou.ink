@@ -1,12 +1,12 @@
 import * as React from "react";
 import type { Mode } from "@prisma/client";
-import { modesShortToLong } from "~/constants";
 import {
   modeToImageUrl,
   MyCSSProperties,
   stageNameToBannerImageUrl,
 } from "~/utils";
 import clsx from "clsx";
+import { modesShortToLong } from "~/core/stages/stages";
 
 export function FancyStageBanner({
   stage,

@@ -1,10 +1,10 @@
 import styles from "~/styles/tournament-map-pool.css";
 import type { Mode } from ".prisma/client";
 import clsx from "clsx";
-import { modesShort, stages } from "~/constants";
 import { LinksFunction, useMatches } from "remix";
 import { FindTournamentByNameForUrlI } from "~/services/tournament";
 import { modeToImageUrl, stageNameToImageUrl } from "~/utils";
+import { modesShort, stages } from "~/core/stages/stages";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
