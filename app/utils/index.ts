@@ -73,11 +73,10 @@ export function layoutIcon(icon: string) {
 }
 
 export function listToUserReadableString(input: string[]): string {
-  if (input.length === 0) return "";
-  if (input.length === 1) return input[0];
-
   const inputClone = [...input];
   const last = inputClone.pop();
+  if (!last) return "";
+  if (inputClone.length === 0) return last;
 
   return `${inputClone.join(", ")} & ${last}`;
 }
