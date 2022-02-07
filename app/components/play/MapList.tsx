@@ -2,16 +2,14 @@ import { Mode } from "@prisma/client";
 import clsx from "clsx";
 import clone from "just-clone";
 import { useState } from "react";
+import { Form } from "remix";
 import { scoreValid } from "~/core/play/validators";
+import { Button } from "../Button";
 import { ModeImage } from "../ModeImage";
 
 const NO_RESULT = "NO_RESULT";
 
-export function MapList({
-  mapList,
-  canSubmitScore,
-  groupIds,
-}: {
+interface MapListProps {
   mapList: {
     name: string;
     mode: Mode;
@@ -21,8 +19,11 @@ export function MapList({
     our: string;
     their: string;
   };
-}) {
-  const [winners, setWinners] = useState<string[]>([]);
+}
+export function MapList({ mapList, canSubmitScore, groupIds }: MapListProps) {
+  const [winners, setWinners] = useState<string[]>(
+    new Array(5).fill(null).map(() => "5f31654d-977b-402b-817a-6f20cd933aa5")
+  );
 
   const updateWinners = (winnerId: string, index: number) => {
     const newWinners = clone(winners);
@@ -38,11 +39,6 @@ export function MapList({
 
     setWinners(newWinners);
   };
-
-  // TODO: not properly handling scores getting reported after conclusion
-  const warningText = scoreValid(winners, mapList.length)
-    ? undefined
-    : "Report more maps to submit the score";
 
   return (
     <ol className="play-match__stages">
@@ -75,7 +71,46 @@ export function MapList({
           </li>
         );
       })}
-      <div className="play-match__error-text">{warningText}</div>
+      {canSubmitScore && <Submitter mapList={mapList} winners={winners} />}
     </ol>
+  );
+}
+
+function Submitter({
+  mapList,
+  winners,
+}: {
+  mapList: MapListProps["mapList"];
+  winners: string[];
+}) {
+  // TODO: not properly handling scores getting reported after conclusion
+  const warningText = scoreValid(winners, mapList.length)
+    ? undefined
+    : "Report more maps to submit the score";
+
+  if (warningText) {
+    return <div className="play-match__error-text">{warningText}</div>;
+  }
+
+  const ids = Array.from(new Set(winners));
+  const score = winners.reduce(
+    (acc: [number, number], winnerId) => {
+      if (winnerId === ids[0]) acc[0]++;
+      else acc[1]++;
+
+      return acc;
+    },
+    [0, 0]
+  );
+
+  return (
+    <div className="play-match__score-submit-button">
+      <Form method="post">
+        <input type="hidden" name="winnerIds" value={JSON.stringify(winners)} />
+        <Button type="submit" name="_action" value="REPORT_SCORE">
+          Submit {score.join("-")}
+        </Button>
+      </Form>
+    </div>
   );
 }

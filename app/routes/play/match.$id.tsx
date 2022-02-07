@@ -25,6 +25,7 @@ import {
   makeTitle,
   parseRequestFormData,
   requireUser,
+  safeJSONParse,
   UserLean,
   validate,
 } from "~/utils";
@@ -52,7 +53,11 @@ const matchActionSchema = z.union([
     _action: z.literal("LOOK_AGAIN"),
   }),
   z.object({
-    _action: z.literal("PLACEHOLDER"),
+    _action: z.literal("REPORT_SCORE"),
+    winnerIds: z.preprocess(
+      safeJSONParse,
+      z.array(z.string().uuid()).min(5).max(9)
+    ),
   }),
 ]);
 
@@ -67,7 +72,14 @@ export const action: ActionFunction = async ({ request, context }) => {
   validate(ownGroup, "No active group");
 
   switch (data._action) {
-    case "PLACEHOLDER":
+    case "REPORT_SCORE": {
+      validate(ownGroup.matchId, "No match for the group");
+      await LFGMatch.reportScore({
+        matchId: ownGroup.matchId,
+        winnerIds: data.winnerIds,
+      });
+      break;
+    }
     case "LOOK_AGAIN": {
       validate(!ownGroup.ranked, "Score reporting required");
       await LFGGroup.setInactive(ownGroup.id);

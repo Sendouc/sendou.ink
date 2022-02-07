@@ -115,3 +115,9 @@
   margin-block-start: var(--s-4);
   text-align: center;
 }
+
+.play-match__score-submit-button {
+  display: flex;
+  justify-content: center;
+  margin-block-start: var(--s-4);
+}
