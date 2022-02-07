@@ -14,6 +14,7 @@ import invariant from "tiny-invariant";
 import { z } from "zod";
 import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
+import { MapList } from "~/components/play/MapList";
 import { DISCORD_URL } from "~/constants";
 import * as LFGGroup from "~/models/LFGGroup.server";
 import * as LFGMatch from "~/models/LFGMatch.server";
@@ -22,7 +23,6 @@ import {
   getUser,
   listToUserReadableString,
   makeTitle,
-  modeToImageUrl,
   parseRequestFormData,
   requireUser,
   UserLean,
@@ -38,7 +38,7 @@ export const meta: MetaFunction = ({ data }: { data: LFGMatchLoaderData }) => {
     title: data.isOwnMatch
       ? makeTitle(
           `vs. ${listToUserReadableString(
-            data.groups[1].map(
+            data.groups[1].members.map(
               (u) => `${u.discordName}#${u.discordDiscriminator}`
             )
           )}`
@@ -91,7 +91,7 @@ interface LFGMatchLoaderData {
   isCaptain: boolean;
   isOwnMatch: boolean;
   isRanked: boolean;
-  groups: UserLean[][];
+  groups: { id: string; members: UserLean[] }[];
   mapList: {
     name: string;
     mode: Mode;
@@ -103,7 +103,7 @@ export const loader: LoaderFunction = async ({ params, context }) => {
   const user = getUser(context);
 
   const match = await LFGMatch.findById(params.id);
-  if (!match || match.groups.length === 0) {
+  if (!match || match.groups.length !== 2) {
     throw new Response(null, { status: 404 });
   }
 
@@ -131,13 +131,16 @@ export const loader: LoaderFunction = async ({ params, context }) => {
         return Number(bIsOwnGroup) - Number(aIsOwnGroup);
       })
       .map((g) => {
-        return g.members.map((g) => ({
-          id: g.user.id,
-          discordId: g.user.discordId,
-          discordAvatar: g.user.discordAvatar,
-          discordName: g.user.discordName,
-          discordDiscriminator: g.user.discordDiscriminator,
-        }));
+        return {
+          id: g.id,
+          members: g.members.map((g) => ({
+            id: g.user.id,
+            discordId: g.user.discordId,
+            discordAvatar: g.user.discordAvatar,
+            discordName: g.user.discordName,
+            discordDiscriminator: g.user.discordDiscriminator,
+          })),
+        };
       }),
     mapList: match.stages.map(({ stage }) => stage),
   });
@@ -157,7 +160,7 @@ export default function LFGMatchPage() {
                 key={i}
                 className="play-match__waves-section play-match__players"
               >
-                {g.map((user) => (
+                {g.members.map((user) => (
                   <div key={user.id} className="play-match__player">
                     <Avatar user={user} />
                     <span className="play-match__player-name">
@@ -195,26 +198,14 @@ export default function LFGMatchPage() {
           </Form>
         </div>
       )}
-      <ol className="play-match__stages">
-        <h2 className="play-match__map-list-header">Map list</h2>
-        <div className="play-match__best-of">Best of {data.mapList.length}</div>
-        {data.mapList.map((stage, i) => {
-          return (
-            <li
-              key={`${stage.name}-${stage.mode}`}
-              className="play-match__stage"
-            >
-              <img
-                className="play-match__mode"
-                src={modeToImageUrl(stage.mode)}
-              />
-              {i + 1}){" "}
-              <span className="play-match__stage-name">{stage.name}</span> (
-              {stage.mode})
-            </li>
-          );
-        })}
-      </ol>
+      <MapList
+        mapList={data.mapList}
+        canSubmitScore={data.isCaptain}
+        groupIds={{
+          our: data.groups[0].id,
+          their: data.groups[1].id,
+        }}
+      />
     </div>
   );
 }

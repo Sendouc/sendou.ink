@@ -52,13 +52,20 @@
   margin-block-start: var(--s-4);
 }
 
-/* .play-match__stage {
-  background-image: var(--_tournament-bg-url);
-  background-position: center;
-  border-radius: var(--rounded);
-  max-width: 24rem;
-  margin: 0 auto;
-} */
+.play-match__select {
+  width: 4rem;
+  margin-inline-end: var(--s-4);
+}
+
+.play-match__select-column-header {
+  width: 6rem;
+  padding: var(--s-1-5);
+  color: var(--theme);
+  font-size: var(--fonts-xs);
+  font-weight: var(--bold);
+  list-style: none;
+  text-align: center;
+}
 
 .play-match__stages {
   max-width: max-content;
@@ -99,4 +106,12 @@
 .play-match__stage-name {
   font-weight: var(--bold);
   margin-inline: 4px;
+  text-overflow: clip;
+  white-space: nowrap;
+}
+
+.play-match__error-text {
+  color: var(--theme-warning);
+  margin-block-start: var(--s-4);
+  text-align: center;
 }

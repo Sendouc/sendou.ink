@@ -34,3 +34,34 @@ export function canUniteWithGroup({
 
   return maxGroupSizeToConsider >= otherGroupSize;
 }
+
+/**
+ * Is score valid? In a best of 9 examples of valid scores:
+ * 5-0, 5-1, 5-4;
+ * invalid scores:
+ * 6-0, 5-5, 4-3
+ * */
+export function scoreValid(winners: string[], bestOf: number) {
+  const requiredWinsToTakeTheSet = Math.ceil(bestOf / 2);
+  const ids = Array.from(new Set(winners));
+  if (ids.length > 2) return false;
+
+  const scores = [0, 0];
+  for (const [i, winnerId] of winners.entries()) {
+    if (winnerId === ids[0]) scores[0]++;
+    else scores[1]++;
+
+    // it's not possible to report more maps once set has concluded
+    if (
+      scores.some((score) => score === requiredWinsToTakeTheSet) &&
+      i !== winners.length - 1
+    ) {
+      return false;
+    }
+  }
+
+  return (
+    scores.some((score) => score === requiredWinsToTakeTheSet) &&
+    scores.some((score) => score < requiredWinsToTakeTheSet)
+  );
+}
