@@ -40,6 +40,15 @@ export function MapList({ mapList, canSubmitScore, groupIds }: MapListProps) {
     setWinners(newWinners);
   };
 
+  const selectInvisible = (index: number) => {
+    if (scoreValid(winners, mapList.length) && winners.length <= index) {
+      return true;
+    }
+    if (index > winners.length) return true;
+
+    return false;
+  };
+
   return (
     <ol className="play-match__stages">
       <h2 className="play-match__map-list-header">Map list</h2>
@@ -55,7 +64,7 @@ export function MapList({ mapList, canSubmitScore, groupIds }: MapListProps) {
             {canSubmitScore && (
               <select
                 className={clsx("play-match__select", {
-                  invisible: i > winners.length,
+                  invisible: selectInvisible(i),
                 })}
                 onChange={(e) => updateWinners(e.target.value, i)}
                 value={winners[i] ?? NO_RESULT}
@@ -83,7 +92,6 @@ function Submitter({
   mapList: MapListProps["mapList"];
   winners: string[];
 }) {
-  // TODO: not properly handling scores getting reported after conclusion
   const warningText = scoreValid(winners, mapList.length)
     ? undefined
     : "Report more maps to submit the score";
