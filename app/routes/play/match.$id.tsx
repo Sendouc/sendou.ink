@@ -1,4 +1,5 @@
 import { Mode } from "@prisma/client";
+import clsx from "clsx";
 import {
   ActionFunction,
   Form,
@@ -14,6 +15,8 @@ import invariant from "tiny-invariant";
 import { z } from "zod";
 import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
+import { CheckmarkIcon } from "~/components/icons/Checkmark";
+import { ModeImage } from "~/components/ModeImage";
 import { MapList } from "~/components/play/MapList";
 import { DISCORD_URL } from "~/constants";
 import * as LFGGroup from "~/models/LFGGroup.server";
@@ -75,8 +78,8 @@ export const action: ActionFunction = async ({ request, context }) => {
     case "REPORT_SCORE": {
       validate(ownGroup.matchId, "No match for the group");
       await LFGMatch.reportScore({
-        matchId: ownGroup.matchId,
-        winnerIds: data.winnerIds,
+        UNSAFE_matchId: ownGroup.matchId,
+        UNSAFE_winnerIds: data.winnerIds,
       });
       break;
     }
@@ -111,7 +114,7 @@ interface LFGMatchLoaderData {
     winner?: number;
   }[];
   /** The final score. Shown if match is concluded */
-  score?: [number, number];
+  scores?: [number, number];
 }
 
 export const loader: LoaderFunction = async ({ params, context }) => {
@@ -154,7 +157,7 @@ export const loader: LoaderFunction = async ({ params, context }) => {
         })),
       };
     });
-  const score = match.stages[0].winnerGroupId
+  const scores = match.stages[0].winnerGroupId
     ? match.stages.reduce(
         (acc: [number, number], stage) => {
           if (!stage.winnerGroupId) return acc;
@@ -170,7 +173,7 @@ export const loader: LoaderFunction = async ({ params, context }) => {
     isRanked,
     isOwnMatch,
     groups,
-    score,
+    scores,
     mapList: match.stages
       .map(({ stage, winnerGroupId }) => {
         const winner = () => {
@@ -183,7 +186,7 @@ export const loader: LoaderFunction = async ({ params, context }) => {
           winner: winner(),
         };
       })
-      .filter((stage) => !score || typeof stage.winner === "number"),
+      .filter((stage) => !scores || typeof stage.winner === "number"),
   });
 };
 
@@ -199,7 +202,7 @@ export default function LFGMatchPage() {
             return (
               <div
                 key={i}
-                className="play-match__waves-section play-match__players"
+                className="play-match__waves-section play-match__team-info"
               >
                 {g.members.map((user) => (
                   <div key={user.id} className="play-match__player">
@@ -209,6 +212,15 @@ export default function LFGMatchPage() {
                     </span>
                   </div>
                 ))}
+                {data.scores && (
+                  <div
+                    className={clsx("play-match__score", {
+                      winner: data.scores[i] === Math.max(...data.scores),
+                    })}
+                  >
+                    {data.scores[i]}
+                  </div>
+                )}
               </div>
             );
           })}
@@ -218,6 +230,37 @@ export default function LFGMatchPage() {
             This is your match! You can reach out to your opponents{" "}
             <a href={DISCORD_URL}>our Discord</a> in the{" "}
             <code>#match-meetup</code> channel.
+          </div>
+        )}
+        {data.scores && (
+          <div className="play-match__played-map-list">
+            {data.mapList.map((stage) => {
+              return (
+                <>
+                  <div
+                    className={clsx("play-match__checkmark", "left", {
+                      invisible: stage.winner === 0,
+                    })}
+                  >
+                    <CheckmarkIcon />
+                  </div>
+                  <div className="play-match__played-stage">
+                    <ModeImage
+                      className="play-match__played-mode"
+                      mode={stage.mode}
+                    />
+                    {stage.name}
+                  </div>
+                  <div
+                    className={clsx("play-match__checkmark", {
+                      invisible: stage.winner === 1,
+                    })}
+                  >
+                    <CheckmarkIcon />
+                  </div>
+                </>
+              );
+            })}
           </div>
         )}
       </div>
@@ -239,7 +282,7 @@ export default function LFGMatchPage() {
           </Form>
         </div>
       )}
-      {!data.score && (
+      {!data.scores && (
         <MapList
           mapList={data.mapList}
           canSubmitScore={data.isCaptain}

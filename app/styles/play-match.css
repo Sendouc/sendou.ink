@@ -24,7 +24,42 @@
   margin-block-start: var(--s-8);
 }
 
-.play-match__players {
+.play-match__played-map-list {
+  display: grid;
+  justify-content: center;
+  font-size: var(--fonts-sm);
+  font-weight: var(--semi-bold);
+  gap: var(--s-2);
+  grid-template-columns: 4rem max-content 4rem;
+  margin-block-start: var(--s-4);
+  text-align: center;
+}
+
+.play-match__checkmark {
+  display: grid;
+  width: 2rem;
+  color: var(--theme-success);
+  place-items: center;
+}
+
+.play-match__checkmark.left {
+  margin-left: auto;
+}
+
+.play-match__played-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--s-1);
+  background-color: var(--bg-darker);
+  border-radius: var(--rounded);
+}
+
+.play-match__played-mode {
+  width: 1.5rem;
+}
+
+.play-match__team-info {
   display: grid;
   max-width: 14rem;
   flex: 1;
@@ -44,6 +79,17 @@
   flex-direction: column;
   align-items: center;
   font-size: var(--fonts-xs);
+}
+
+.play-match__score {
+  border-radius: var(--rounded);
+  font-size: var(--fonts-lg);
+  font-weight: var(--bold);
+  grid-column: 1 / 3;
+}
+
+.play-match__score.winner {
+  background-color: var(--theme-transparent);
 }
 
 .play-match__waves-button {

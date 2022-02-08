@@ -21,9 +21,7 @@ interface MapListProps {
   };
 }
 export function MapList({ mapList, canSubmitScore, groupIds }: MapListProps) {
-  const [winners, setWinners] = useState<string[]>(
-    new Array(5).fill(null).map(() => "5f31654d-977b-402b-817a-6f20cd933aa5")
-  );
+  const [winners, setWinners] = useState<string[]>([]);
 
   const updateWinners = (winnerId: string, index: number) => {
     const newWinners = clone(winners);
