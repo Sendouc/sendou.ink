@@ -1,5 +1,7 @@
+import type { Prisma } from "@prisma/client";
 import { db } from "~/utils/db.server";
 
+export type FindById = Prisma.PromiseReturnType<typeof findById>;
 export function findById(id: string) {
   return db.lfgGroupMatch.findUnique({
     where: { id },

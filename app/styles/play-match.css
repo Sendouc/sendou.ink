@@ -1,8 +1,16 @@
+.play-match__error {
+  padding: var(--s-4);
+  background-color: var(--bg-lighter);
+  border-radius: var(--rounded);
+  color: var(--theme-warning);
+}
+
 .play-match__waves {
   padding: var(--s-8);
   background: url("/svg/background-pattern.svg");
   background-color: var(--bg-lighter);
   border-radius: var(--rounded);
+  margin-block-start: var(--s-4);
 }
 
 .play-match__teams {
@@ -53,6 +61,7 @@
   padding: var(--s-1);
   background-color: var(--bg-darker);
   border-radius: var(--rounded);
+  padding-inline: var(--s-3);
 }
 
 .play-match__played-mode {

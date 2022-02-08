@@ -8,6 +8,7 @@ import {
   LoaderFunction,
   MetaFunction,
   redirect,
+  useActionData,
   useLoaderData,
   useTransition,
 } from "remix";
@@ -19,6 +20,8 @@ import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { ModeImage } from "~/components/ModeImage";
 import { MapList } from "~/components/play/MapList";
 import { DISCORD_URL } from "~/constants";
+import { scoresAreIdentical } from "~/core/play/utils";
+import { isGroupAdmin } from "~/core/play/validators";
 import * as LFGGroup from "~/models/LFGGroup.server";
 import * as LFGMatch from "~/models/LFGMatch.server";
 import styles from "~/styles/play-match.css";
@@ -64,7 +67,15 @@ const matchActionSchema = z.union([
   }),
 ]);
 
-export const action: ActionFunction = async ({ request, context }) => {
+type ActionData = {
+  error?: "DIFFERENT_SCORE";
+  ok?: z.infer<typeof matchActionSchema>["_action"];
+};
+
+export const action: ActionFunction = async ({
+  request,
+  context,
+}): Promise<ActionData | Response> => {
   const data = await parseRequestFormData({
     request,
     schema: matchActionSchema,
@@ -76,7 +87,24 @@ export const action: ActionFunction = async ({ request, context }) => {
 
   switch (data._action) {
     case "REPORT_SCORE": {
-      validate(ownGroup.matchId, "No match for the group");
+      validate(ownGroup.matchId, "Group doesn't have a match");
+      validate(isGroupAdmin({ group: ownGroup, user }), "Not group admin");
+      const match = await LFGMatch.findById(ownGroup.matchId);
+      if (match?.stages.some((stage) => stage.winnerGroupId)) {
+        // just don't do anything if they report same as someone else before them
+        // to user it looks identical to if they were the first to submit
+        if (
+          scoresAreIdentical({
+            stages: match.stages,
+            winnerIds: data.winnerIds,
+          })
+        ) {
+          break;
+        }
+
+        return { error: "DIFFERENT_SCORE" };
+      }
+
       await LFGMatch.reportScore({
         UNSAFE_matchId: ownGroup.matchId,
         UNSAFE_winnerIds: data.winnerIds,
@@ -190,12 +218,21 @@ export const loader: LoaderFunction = async ({ params, context }) => {
   });
 };
 
+// TODO: match time
 export default function LFGMatchPage() {
   const data = useLoaderData<LFGMatchLoaderData>();
   const transition = useTransition();
+  const actionData = useActionData<ActionData>();
 
   return (
     <div className="container">
+      {actionData?.error === "DIFFERENT_SCORE" && (
+        <div className="play-match__error">
+          The score you reported is different from what your opponent reported.
+          If you think the information below is wrong notify us on the #helpdesk
+          channel of our <a href={DISCORD_URL}>Discord</a> channel
+        </div>
+      )}
       <div className="play-match__waves">
         <div className="play-match__teams">
           {data.groups.map((g, i) => {
@@ -239,7 +276,7 @@ export default function LFGMatchPage() {
                 <>
                   <div
                     className={clsx("play-match__checkmark", "left", {
-                      invisible: stage.winner === 0,
+                      invisible: stage.winner !== 0,
                     })}
                   >
                     <CheckmarkIcon />
@@ -253,7 +290,7 @@ export default function LFGMatchPage() {
                   </div>
                   <div
                     className={clsx("play-match__checkmark", {
-                      invisible: stage.winner === 1,
+                      invisible: stage.winner !== 1,
                     })}
                   >
                     <CheckmarkIcon />

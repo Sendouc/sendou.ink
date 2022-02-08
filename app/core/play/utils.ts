@@ -1,4 +1,5 @@
 import type { UniteGroupsArgs } from "~/models/LFGGroup.server";
+import * as LFGMatch from "~/models/LFGMatch.server";
 
 export interface UniteGroupInfoArg {
   id: string;
@@ -17,4 +18,24 @@ export function uniteGroupInfo(
     otherGroupId,
     removeCaptainsFromOther: groupA.memberCount !== groupB.memberCount,
   };
+}
+
+/** Checks if the reported score is the same as score from the database */
+export function scoresAreIdentical({
+  stages,
+  winnerIds,
+}: {
+  stages: { winnerGroupId: string | null }[];
+  winnerIds: string[];
+}): boolean {
+  const stagesWithWinner = stages.filter((stage) => stage.winnerGroupId);
+  if (stagesWithWinner.length !== winnerIds.length) return false;
+
+  for (const [i, stage] of stagesWithWinner.entries()) {
+    if (!stage.winnerGroupId) break;
+
+    if (stage.winnerGroupId !== winnerIds[i]) return false;
+  }
+
+  return true;
 }

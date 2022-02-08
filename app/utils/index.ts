@@ -5,8 +5,10 @@ import type { EventTargetRecorder } from "server/events";
 import { z } from "zod";
 import { LoggedInUserSchema } from "~/utils/schemas";
 
-export function makeTitle(endOfTitle?: string) {
-  return endOfTitle ? `sendou.ink | ${endOfTitle}` : "sendou.ink";
+export function makeTitle(title?: string | string[]) {
+  if (!title) return "sendou.ink";
+  if (typeof title === "string") return `${title} | sendou.ink`;
+  return `${title.join(" | ")} | sendou.ink`;
 }
 
 /** Get logged in user from context. Throws with 401 error if no user found. */

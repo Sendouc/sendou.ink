@@ -5,6 +5,7 @@ import {
   json,
   LinksFunction,
   LoaderFunction,
+  MetaFunction,
   redirect,
   useLoaderData,
 } from "remix";
@@ -17,7 +18,13 @@ import { uniteGroupInfo } from "~/core/play/utils";
 import { canUniteWithGroup, isGroupAdmin } from "~/core/play/validators";
 import * as LFGGroup from "~/models/LFGGroup.server";
 import styles from "~/styles/play-looking.css";
-import { parseRequestFormData, requireUser, UserLean, validate } from "~/utils";
+import {
+  makeTitle,
+  parseRequestFormData,
+  requireUser,
+  UserLean,
+  validate,
+} from "~/utils";
 import {
   skillToMMR,
   teamSkillToApproximateMMR,
@@ -26,6 +33,15 @@ import {
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
+};
+
+export const meta: MetaFunction = ({ data }: { data: LookingLoaderData }) => {
+  return {
+    title: makeTitle([
+      `(${data.likedGroups.length}/${data.neutralGroups.length}/${data.likerGroups.length})`,
+      "Looking",
+    ]),
+  };
 };
 
 export type LookingActionSchema = z.infer<typeof lookingActionSchema>;
@@ -160,6 +176,7 @@ interface LookingLoaderData {
   isCaptain: boolean;
 }
 
+// TODO: show unranked when looking for match as ranked
 export const loader: LoaderFunction = async ({ context }) => {
   const user = requireUser(context);
   const ownGroup = await LFGGroup.findActiveByMember(user);
