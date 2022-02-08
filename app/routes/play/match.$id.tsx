@@ -107,7 +107,11 @@ interface LFGMatchLoaderData {
   mapList: {
     name: string;
     mode: Mode;
+    /** Did 0 index group or 1 index group take this map */
+    winner?: number;
   }[];
+  /** The final score. Shown if match is concluded */
+  score?: [number, number];
 }
 
 export const loader: LoaderFunction = async ({ params, context }) => {
@@ -131,30 +135,55 @@ export const loader: LoaderFunction = async ({ params, context }) => {
   const isCaptain = match.groups.some((g) =>
     g.members.some((m) => m.user.id === user?.id && m.captain)
   );
+  const groups = match.groups
+    .sort((a, b) => {
+      const aIsOwnGroup = a.members.some((m) => user?.id === m.user.id);
+      const bIsOwnGroup = b.members.some((m) => user?.id === m.user.id);
+
+      return Number(bIsOwnGroup) - Number(aIsOwnGroup);
+    })
+    .map((g) => {
+      return {
+        id: g.id,
+        members: g.members.map((g) => ({
+          id: g.user.id,
+          discordId: g.user.discordId,
+          discordAvatar: g.user.discordAvatar,
+          discordName: g.user.discordName,
+          discordDiscriminator: g.user.discordDiscriminator,
+        })),
+      };
+    });
+  const score = match.stages[0].winnerGroupId
+    ? match.stages.reduce(
+        (acc: [number, number], stage) => {
+          if (!stage.winnerGroupId) return acc;
+          if (stage.winnerGroupId === groups[0].id) acc[0]++;
+          else acc[1]++;
+          return acc;
+        },
+        [0, 0]
+      )
+    : undefined;
   return json<LFGMatchLoaderData>({
     isCaptain,
     isRanked,
     isOwnMatch,
-    groups: match.groups
-      .sort((a, b) => {
-        const aIsOwnGroup = a.members.some((m) => user?.id === m.user.id);
-        const bIsOwnGroup = b.members.some((m) => user?.id === m.user.id);
+    groups,
+    score,
+    mapList: match.stages
+      .map(({ stage, winnerGroupId }) => {
+        const winner = () => {
+          if (!winnerGroupId) return undefined;
 
-        return Number(bIsOwnGroup) - Number(aIsOwnGroup);
-      })
-      .map((g) => {
-        return {
-          id: g.id,
-          members: g.members.map((g) => ({
-            id: g.user.id,
-            discordId: g.user.discordId,
-            discordAvatar: g.user.discordAvatar,
-            discordName: g.user.discordName,
-            discordDiscriminator: g.user.discordDiscriminator,
-          })),
+          return groups[0].id === winnerGroupId ? 0 : 1;
         };
-      }),
-    mapList: match.stages.map(({ stage }) => stage),
+        return {
+          ...stage,
+          winner: winner(),
+        };
+      })
+      .filter((stage) => !score || typeof stage.winner === "number"),
   });
 };
 
@@ -210,14 +239,16 @@ export default function LFGMatchPage() {
           </Form>
         </div>
       )}
-      <MapList
-        mapList={data.mapList}
-        canSubmitScore={data.isCaptain}
-        groupIds={{
-          our: data.groups[0].id,
-          their: data.groups[1].id,
-        }}
-      />
+      {!data.score && (
+        <MapList
+          mapList={data.mapList}
+          canSubmitScore={data.isCaptain}
+          groupIds={{
+            our: data.groups[0].id,
+            their: data.groups[1].id,
+          }}
+        />
+      )}
     </div>
   );
 }

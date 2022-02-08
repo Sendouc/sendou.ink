@@ -12,6 +12,10 @@ export function findById(id: string) {
               mode: true,
             },
           },
+          winnerGroupId: true,
+        },
+        orderBy: {
+          order: "asc",
         },
       },
       groups: { include: { members: { include: { user: true } } } },
