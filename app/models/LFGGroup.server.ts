@@ -182,7 +182,7 @@ export function findLookingByType(type: LfgGroupType, ranked?: boolean) {
                 orderBy: {
                   createdAt: "desc",
                 },
-                take: 1,
+                distinct: "userId",
               },
             },
           },

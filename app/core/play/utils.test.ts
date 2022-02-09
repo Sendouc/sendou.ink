@@ -1,9 +1,17 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
-import { scoresAreIdentical, uniteGroupInfo, UniteGroupInfoArg } from "./utils";
+import {
+  groupsToWinningAndLosingPlayerIds,
+  scoresAreIdentical,
+  uniteGroupInfo,
+  UniteGroupInfoArg,
+} from "./utils";
 
 const UniteGroupInfo = suite("uniteGroupInfo()");
 const ScoresAreIdentical = suite("scoresAreIdentical()");
+const GroupsToWinningAndLosingPlayerIds = suite(
+  "groupsToWinningAndLosingPlayerIds()"
+);
 
 const SMALL_GROUP: UniteGroupInfoArg = { id: "small", memberCount: 1 };
 const BIG_GROUP: UniteGroupInfoArg = { id: "big", memberCount: 3 };
@@ -70,5 +78,24 @@ ScoresAreIdentical("Detects not identical score", () => {
   assert.not.ok(result3);
 });
 
+GroupsToWinningAndLosingPlayerIds(
+  "Splits players to winning and losing",
+  () => {
+    const { winning, losing } = groupsToWinningAndLosingPlayerIds({
+      winnerGroupIds: ["a", "b", "b"],
+      groups: [
+        { id: "b", members: [{ user: { id: "m3" } }, { user: { id: "m4" } }] },
+        { id: "a", members: [{ user: { id: "m1" } }, { user: { id: "m2" } }] },
+      ],
+    });
+
+    assert.ok(winning.includes("m3"));
+    assert.ok(winning.includes("m4"));
+    assert.ok(losing.includes("m1"));
+    assert.ok(losing.includes("m2"));
+  }
+);
+
 UniteGroupInfo.run();
 ScoresAreIdentical.run();
+GroupsToWinningAndLosingPlayerIds.run();

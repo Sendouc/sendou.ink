@@ -20,7 +20,10 @@ import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { ModeImage } from "~/components/ModeImage";
 import { MapList } from "~/components/play/MapList";
 import { DISCORD_URL } from "~/constants";
-import { scoresAreIdentical } from "~/core/play/utils";
+import {
+  groupsToWinningAndLosingPlayerIds,
+  scoresAreIdentical,
+} from "~/core/play/utils";
 import { isGroupAdmin } from "~/core/play/validators";
 import * as LFGGroup from "~/models/LFGGroup.server";
 import * as LFGMatch from "~/models/LFGMatch.server";
@@ -90,7 +93,8 @@ export const action: ActionFunction = async ({
       validate(ownGroup.matchId, "Group doesn't have a match");
       validate(isGroupAdmin({ group: ownGroup, user }), "Not group admin");
       const match = await LFGMatch.findById(ownGroup.matchId);
-      if (match?.stages.some((stage) => stage.winnerGroupId)) {
+      invariant(match, "Match is undefined");
+      if (match.stages.some((stage) => stage.winnerGroupId)) {
         // just don't do anything if they report same as someone else before them
         // to user it looks identical to if they were the first to submit
         if (
@@ -108,6 +112,10 @@ export const action: ActionFunction = async ({
       await LFGMatch.reportScore({
         UNSAFE_matchId: ownGroup.matchId,
         UNSAFE_winnerIds: data.winnerIds,
+        playerIds: groupsToWinningAndLosingPlayerIds({
+          winnerGroupIds: data.winnerIds,
+          groups: match.groups,
+        }),
       });
       break;
     }

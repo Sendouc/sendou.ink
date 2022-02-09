@@ -360,13 +360,25 @@ export async function seed(variation?: SeedVariations) {
         () => Math.random() < 0.9
       );
 
-      return prisma.skill.createMany({
+      await prisma.skill.createMany({
         data: users.map((u) => ({
           mu: Math.random() * 40 + 10,
           sigma: Math.random() * 10 + 1,
           userId: u.id,
         })),
       });
+
+      const now = new Date().getTime();
+      for (let i = 0; i < 5; i++) {
+        await prisma.skill.create({
+          data: {
+            mu: 30 + i,
+            sigma: 15 - i,
+            userId: ADMIN_TEST_UUID,
+            createdAt: new Date(now + i * 10000),
+          },
+        });
+      }
     }
 
     async function stages() {

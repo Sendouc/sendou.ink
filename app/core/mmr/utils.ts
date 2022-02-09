@@ -1,4 +1,4 @@
-import { expose, Rating } from "ts-trueskill";
+import { expose, rate, Rating } from "ts-trueskill";
 
 /** Get first skill object of the array (should be ordered so that most recent skill is first) and convert it into MMR. */
 export function skillToMMR(
@@ -45,4 +45,43 @@ export function teamSkillToApproximateMMR(teamSkills: TeamSkill[]) {
 
 function toTwoDecimals(value: number) {
   return Number(value.toFixed(2));
+}
+
+interface AdjustSkill {
+  mu: number;
+  sigma: number;
+  userId: string;
+}
+export function adjustSkills({
+  skills,
+  playerIds,
+}: {
+  skills: AdjustSkill[];
+  playerIds: {
+    winning: string[];
+    losing: string[];
+  };
+}): AdjustSkill[] {
+  const mapToRatings = (id: string) => {
+    const skill = skills.find((s) => s.userId === id);
+    if (!skill) return new Rating();
+
+    return new Rating(skill.mu, skill.sigma);
+  };
+  const winningTeam = playerIds.winning.map(mapToRatings);
+  const losingTeam = playerIds.losing.map(mapToRatings);
+
+  const [ratedWinners, ratedLosers] = rate([winningTeam, losingTeam]);
+  const ratedToReturnable =
+    (side: "winning" | "losing") =>
+    (rating: Rating, i: number): AdjustSkill => ({
+      mu: rating.mu,
+      sigma: rating.sigma,
+      userId: playerIds[side][i],
+    });
+
+  return [
+    ...ratedWinners.map(ratedToReturnable("winning")),
+    ...ratedLosers.map(ratedToReturnable("losing")),
+  ];
 }

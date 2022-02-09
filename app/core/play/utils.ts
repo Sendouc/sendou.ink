@@ -1,3 +1,4 @@
+import invariant from "tiny-invariant";
 import type { UniteGroupsArgs } from "~/models/LFGGroup.server";
 
 export interface UniteGroupInfoArg {
@@ -37,4 +38,38 @@ export function scoresAreIdentical({
   }
 
   return true;
+}
+
+export function groupsToWinningAndLosingPlayerIds({
+  winnerGroupIds,
+  groups,
+}: {
+  winnerGroupIds: string[];
+  groups: { id: string; members: { user: { id: string } }[] }[];
+}): {
+  winning: string[];
+  losing: string[];
+} {
+  const occurences: Record<string, number> = {};
+  for (const groupId of winnerGroupIds) {
+    if (occurences[groupId]) occurences[groupId]++;
+    else occurences[groupId] = 1;
+  }
+
+  const winnerGroupId = Object.entries(occurences)
+    .sort((a, b) => a[1] - b[1])
+    .pop()?.[0];
+  invariant(winnerGroupId, "winnerGroupId is undefined");
+
+  return groups.reduce(
+    (acc, group) => {
+      const ids = group.members.map((m) => m.user.id);
+
+      if (group.id === winnerGroupId) acc.winning = ids;
+      else acc.losing = ids;
+
+      return acc;
+    },
+    { winning: [] as string[], losing: [] as string[] }
+  );
 }

@@ -1,4 +1,5 @@
 import type { Prisma } from "@prisma/client";
+import { adjustSkills } from "~/core/mmr/utils";
 import { db } from "~/utils/db.server";
 
 export type FindById = Prisma.PromiseReturnType<typeof findById>;
@@ -25,26 +26,47 @@ export function findById(id: string) {
   });
 }
 
-export function reportScore({
+export async function reportScore({
   UNSAFE_matchId,
   UNSAFE_winnerIds,
+  playerIds,
 }: {
   UNSAFE_matchId: string;
   UNSAFE_winnerIds: string[];
+  playerIds: {
+    winning: string[];
+    losing: string[];
+  };
 }) {
+  const allPlayerIds = [...playerIds.winning, ...playerIds.losing];
+  const skills = await db.skill.findMany({
+    where: { userId: { in: allPlayerIds } },
+    orderBy: {
+      createdAt: "desc",
+    },
+    distinct: "userId",
+  });
+
+  const adjustedSkills = adjustSkills({ skills, playerIds });
+
   // https://stackoverflow.com/a/26715934
-  return db.$executeRawUnsafe(`
-  update "LfgGroupMatchStage" as lfg set
-    "winnerGroupId" = lfg2.winner_id
-  from (values
-    ${UNSAFE_winnerIds.map(
-      (winnerId, i) => `('${UNSAFE_matchId}', ${i + 1}, '${winnerId}')`
-    ).join(",")}
-  ) as lfg2(lfg_group_match_id, "order", winner_id)
-  where lfg2.lfg_group_match_id = lfg."lfgGroupMatchId" and lfg2.order = lfg.order;
-`);
+  return db.$transaction([
+    db.skill.createMany({
+      data: adjustedSkills.map((s) => ({ ...s, matchId: UNSAFE_matchId })),
+    }),
+    db.$executeRawUnsafe(`
+    update "LfgGroupMatchStage" as lfg set
+      "winnerGroupId" = lfg2.winner_id
+    from (values
+      ${UNSAFE_winnerIds.map(
+        (winnerId, i) => `('${UNSAFE_matchId}', ${i + 1}, '${winnerId}')`
+      ).join(",")}
+    ) as lfg2(lfg_group_match_id, "order", winner_id)
+    where lfg2.lfg_group_match_id = lfg."lfgGroupMatchId" and lfg2.order = lfg.order;
+    `),
+  ]);
   // 1) update scores DONE
-  // 2) update skill
+  // 2) update skill DONE
   // 3) update team skill?
-  // 4) if already reported error if different
+  // 4) if already reported error if different DONE
 }
