@@ -27,7 +27,6 @@ model User {
   tournamentMatches    TournamentMatchGameResult[]
   lfgGroups            LfgGroupMember[]
   skill                Skill[]
-  groupSkills          GroupSkill[]
 }
 
 model Organization {
@@ -43,28 +42,27 @@ model Organization {
 }
 
 model Tournament {
-  id                 String              @id @default(uuid())
-  name               String
+  id                String              @id @default(uuid())
+  name              String
   // Name in lower case to show in URL
-  nameForUrl         String
-  description        String
-  startTime          DateTime
-  checkInStartTime   DateTime
+  nameForUrl        String
+  description       String
+  startTime         DateTime
+  checkInStartTime  DateTime
   // CSS for tournament banner's background value
-  bannerBackground   String
+  bannerBackground  String
   // CSS for tournament banner's color value
-  bannerTextHSLArgs  String
+  bannerTextHSLArgs String
   // Team ID's in an array in the order of the seed. 0 index is 1st seed, 1 index is 2nd seed etc.
   // Any team not in the list will be at the bottom in the order of their createdAt time stamp
   // (older teams first)
-  seeds              String[]
-  mapPool            Stage[]
-  organizerId        String
-  organizer          Organization        @relation(fields: [organizerId], references: [id])
-  teams              TournamentTeam[]
-  brackets           TournamentBracket[]
-  changedSkills      Skill[]
-  changedGroupSkills GroupSkill[]
+  seeds             String[]
+  mapPool           Stage[]
+  organizerId       String
+  organizer         Organization        @relation(fields: [organizerId], references: [id])
+  teams             TournamentTeam[]
+  brackets          TournamentBracket[]
+  changedSkills     Skill[]
 
   // There might be duplicate nameForUrl's but inside an organization they're unique
   @@unique([nameForUrl, organizerId])
@@ -257,12 +255,11 @@ model LfgGroupMember {
 }
 
 model LfgGroupMatch {
-  id                 String               @id @default(uuid())
-  createdAt          DateTime             @default(now())
-  groups             LfgGroup[]
-  changedSkills      Skill[]
-  stages             LfgGroupMatchStage[]
-  changedGroupSkills GroupSkill[]
+  id            String               @id @default(uuid())
+  createdAt     DateTime             @default(now())
+  groups        LfgGroup[]
+  changedSkills Skill[]
+  stages        LfgGroupMatchStage[]
 }
 
 model LfgGroupMatchStage {
@@ -288,16 +285,8 @@ model Skill {
   user         User           @relation(fields: [userId], references: [id])
   match        LfgGroupMatch? @relation(fields: [matchId], references: [id])
   tournament   Tournament?    @relation(fields: [tournamentId], references: [id])
-}
 
-model GroupSkill {
-  id           String         @id @default(uuid())
-  mu           Float
-  sigma        Float
-  matchId      String?
-  tournamentId String?
-  createdAt    DateTime       @default(now())
-  users        User[]
-  match        LfgGroupMatch? @relation(fields: [matchId], references: [id])
-  tournament   Tournament?    @relation(fields: [tournamentId], references: [id])
+  // One event can only count for skill once
+  @@unique([userId, matchId])
+  @@unique([userId, tournamentId])
 }

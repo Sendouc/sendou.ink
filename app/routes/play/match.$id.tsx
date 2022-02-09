@@ -133,8 +133,6 @@ export const action: ActionFunction = async ({
   }
 
   return { ok: data._action };
-
-  // TODO: notify watchers
 };
 
 interface LFGMatchLoaderData {

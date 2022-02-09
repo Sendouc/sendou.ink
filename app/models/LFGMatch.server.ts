@@ -65,8 +65,4 @@ export async function reportScore({
     where lfg2.lfg_group_match_id = lfg."lfgGroupMatchId" and lfg2.order = lfg.order;
     `),
   ]);
-  // 1) update scores DONE
-  // 2) update skill DONE
-  // 3) update team skill?
-  // 4) if already reported error if different DONE
 }
