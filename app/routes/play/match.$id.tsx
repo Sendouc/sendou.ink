@@ -115,11 +115,12 @@ export const action: ActionFunction = async ({
 
       await LFGMatch.reportScore({
         UNSAFE_matchId: params.id,
-        UNSAFE_winnerIds: data.winnerIds,
+        UNSAFE_winnerGroupIds: data.winnerIds,
         playerIds: groupsToWinningAndLosingPlayerIds({
           winnerGroupIds: data.winnerIds,
           groups: match.groups,
         }),
+        groupIds: match.groups.map((g) => g.id),
       });
       break;
     }

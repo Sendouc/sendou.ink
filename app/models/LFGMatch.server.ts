@@ -28,15 +28,18 @@ export function findById(id: string) {
 
 export async function reportScore({
   UNSAFE_matchId,
-  UNSAFE_winnerIds,
+  UNSAFE_winnerGroupIds,
   playerIds,
+  groupIds,
 }: {
   UNSAFE_matchId: string;
-  UNSAFE_winnerIds: string[];
+  /** Group ID's in order of stages win */
+  UNSAFE_winnerGroupIds: string[];
   playerIds: {
     winning: string[];
     losing: string[];
   };
+  groupIds: string[];
 }) {
   const allPlayerIds = [...playerIds.winning, ...playerIds.losing];
   const skills = await db.skill.findMany({
@@ -54,11 +57,21 @@ export async function reportScore({
     db.skill.createMany({
       data: adjustedSkills.map((s) => ({ ...s, matchId: UNSAFE_matchId })),
     }),
+    db.lfgGroup.updateMany({
+      where: {
+        id: {
+          in: groupIds,
+        },
+      },
+      data: {
+        active: false,
+      },
+    }),
     db.$executeRawUnsafe(`
     update "LfgGroupMatchStage" as lfg set
       "winnerGroupId" = lfg2.winner_id
     from (values
-      ${UNSAFE_winnerIds.map(
+      ${UNSAFE_winnerGroupIds.map(
         (winnerId, i) => `('${UNSAFE_matchId}', ${i + 1}, '${winnerId}')`
       ).join(",")}
     ) as lfg2(lfg_group_match_id, "order", winner_id)
