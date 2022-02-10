@@ -5,12 +5,22 @@ import {
   LoaderFunction,
   MetaFunction,
   redirect,
+  useLocation,
+  useTransition,
 } from "remix";
 import { z } from "zod";
 import { LFGGroupSelector } from "~/components/play/LFGGroupSelector";
 import styles from "~/styles/play.css";
-import { getUser, makeTitle, parseRequestFormData, requireUser } from "~/utils";
+import {
+  getLogInUrl,
+  getUser,
+  makeTitle,
+  parseRequestFormData,
+  requireUser,
+} from "~/utils";
 import * as LFGGroup from "~/models/LFGGroup.server";
+import { Button } from "~/components/Button";
+import { useUser } from "~/hooks/common";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -86,12 +96,34 @@ export const loader: LoaderFunction = async ({ context }) => {
 };
 
 export default function PlayPage() {
+  const transition = useTransition();
+  const user = useUser();
+  const location = useLocation();
+
   return (
     <div className="container">
       <Form method="post">
         <input type="hidden" name="_action" value="CREATE_LFG_GROUP" />
         <LFGGroupSelector />
-        <button type="submit">Submit</button>
+        {user ? (
+          <Button
+            className="play__continue-button"
+            type="submit"
+            loading={transition.state !== "idle"}
+            loadingText="Continuing..."
+          >
+            Continue
+          </Button>
+        ) : (
+          <form action={getLogInUrl(location)} method="post">
+            <p className="button-text-paragraph play__log-in">
+              To start looking first{" "}
+              <Button type="submit" variant="minimal">
+                log in
+              </Button>
+            </p>
+          </form>
+        )}
       </Form>
     </div>
   );

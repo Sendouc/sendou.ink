@@ -54,3 +54,15 @@
 .play__type-radio-group__image.checked {
   transform: scale(1.75);
 }
+
+.play__continue-button {
+  margin: 0 auto;
+  margin-block-start: var(--s-6);
+}
+
+.play__log-in {
+  font-size: var(--fonts-sm);
+  font-weight: var(--semi-bold);
+  margin-block-start: var(--s-6);
+  text-align: center;
+}
