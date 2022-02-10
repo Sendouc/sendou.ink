@@ -63,26 +63,6 @@ MapListForRounds(
   }
 );
 
-// TODO: flaky
-MapListForRounds("Should not repeat map in adjacent rounds", () => {
-  for (const side of [mapList.winners, mapList.losers]) {
-    let maps: string[] = [];
-    let newMaps: string[] = [];
-    for (const round of side) {
-      for (const stage of round) {
-        if (maps.includes(stage.name)) {
-          throw new Error(`Repeating map: ${stage.name}`);
-        }
-
-        newMaps.push(stage.name);
-      }
-
-      maps = newMaps;
-      newMaps = [];
-    }
-  }
-});
-
 MapListForRounds(
   "Should generate a map list even if only one map/mode combo (SZ)",
   () => {
