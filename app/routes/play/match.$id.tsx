@@ -24,7 +24,7 @@ import {
   groupsToWinningAndLosingPlayerIds,
   scoresAreIdentical,
 } from "~/core/play/utils";
-import { isGroupAdmin } from "~/core/play/validators";
+import { isGroupAdmin, matchIsUnranked } from "~/core/play/validators";
 import * as LFGGroup from "~/models/LFGGroup.server";
 import * as LFGMatch from "~/models/LFGMatch.server";
 import styles from "~/styles/play-match.css";
@@ -78,22 +78,26 @@ type ActionData = {
 export const action: ActionFunction = async ({
   request,
   context,
+  params,
 }): Promise<ActionData | Response> => {
+  invariant(typeof params.id === "string", "Expected params.id to be string");
   const data = await parseRequestFormData({
     request,
     schema: matchActionSchema,
   });
   const user = requireUser(context);
 
-  const ownGroup = await LFGGroup.findActiveByMember(user);
-  validate(ownGroup, "No active group");
+  const match = await LFGMatch.findById(params.id);
+  invariant(match, "Match is undefined");
+  const ownGroup = match.groups.find((g) =>
+    g.members.some((m) => m.memberId === user.id)
+  );
+  validate(ownGroup, "Not own match");
+  validate(ownGroup.active, "Not active");
+  validate(isGroupAdmin({ group: ownGroup, user }), "Not group admin");
 
   switch (data._action) {
     case "REPORT_SCORE": {
-      validate(ownGroup.matchId, "Group doesn't have a match");
-      validate(isGroupAdmin({ group: ownGroup, user }), "Not group admin");
-      const match = await LFGMatch.findById(ownGroup.matchId);
-      invariant(match, "Match is undefined");
       if (match.stages.some((stage) => stage.winnerGroupId)) {
         // just don't do anything if they report same as someone else before them
         // to user it looks identical to if they were the first to submit
@@ -110,7 +114,7 @@ export const action: ActionFunction = async ({
       }
 
       await LFGMatch.reportScore({
-        UNSAFE_matchId: ownGroup.matchId,
+        UNSAFE_matchId: params.id,
         UNSAFE_winnerIds: data.winnerIds,
         playerIds: groupsToWinningAndLosingPlayerIds({
           winnerGroupIds: data.winnerIds,
@@ -120,7 +124,7 @@ export const action: ActionFunction = async ({
       break;
     }
     case "LOOK_AGAIN": {
-      validate(!ownGroup.ranked, "Score reporting required");
+      validate(matchIsUnranked(match), "Score reporting required");
       await LFGGroup.setInactive(ownGroup.id);
       return redirect("/play");
     }
@@ -152,7 +156,7 @@ interface LFGMatchLoaderData {
 }
 
 export const loader: LoaderFunction = async ({ params, context }) => {
-  invariant(typeof params.id === "string", "Expected params.bid to be string");
+  invariant(typeof params.id === "string", "Expected params.id to be string");
   const user = getUser(context);
 
   const match = await LFGMatch.findById(params.id);
@@ -191,7 +195,7 @@ export const loader: LoaderFunction = async ({ params, context }) => {
         })),
       };
     });
-  const scores = match.stages[0].winnerGroupId
+  const scores = match.stages[0]?.winnerGroupId
     ? match.stages.reduce(
         (acc: [number, number], stage) => {
           if (!stage.winnerGroupId) return acc;
@@ -325,7 +329,7 @@ export default function LFGMatchPage() {
           </Form>
         </div>
       )}
-      {!data.scores && (
+      {!data.scores && data.isRanked && (
         <MapList
           mapList={data.mapList}
           canSubmitScore={data.isCaptain}

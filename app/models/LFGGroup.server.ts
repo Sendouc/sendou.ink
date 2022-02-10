@@ -101,14 +101,22 @@ export function uniteGroups({
   return db.$transaction(queries);
 }
 
-export async function matchUp(groupIds: [string, string]) {
+export async function matchUp({
+  groupIds,
+  ranked,
+}: {
+  groupIds: [string, string];
+  ranked?: boolean;
+}) {
   const match = await db.lfgGroupMatch.create({
     data: {
-      stages: {
-        createMany: {
-          data: generateMapListForLfgMatch(),
-        },
-      },
+      stages: ranked
+        ? {
+            createMany: {
+              data: generateMapListForLfgMatch(),
+            },
+          }
+        : undefined,
     },
   });
 
@@ -155,12 +163,11 @@ export function findActiveByMember(user: { id: string }) {
   });
 }
 
-export function findLookingByType(type: LfgGroupType, ranked?: boolean) {
+export function findLookingByType(type: LfgGroupType) {
   return db.lfgGroup.findMany({
     where: {
       type,
       looking: true,
-      ranked,
     },
     select: {
       id: true,

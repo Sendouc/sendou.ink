@@ -65,3 +65,7 @@ export function scoreValid(winners: string[], bestOf: number) {
     scores.some((score) => score < requiredWinsToTakeTheSet)
   );
 }
+
+export function matchIsUnranked(match: { stages: unknown[] }) {
+  return match.stages.length === 0;
+}

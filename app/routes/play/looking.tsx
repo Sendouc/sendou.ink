@@ -121,7 +121,13 @@ export const action: ActionFunction = async ({ request, context }) => {
       break;
     }
     case "MATCH_UP": {
-      await LFGGroup.matchUp([ownGroup.id, data.targetGroupId]);
+      const groupToMatchUpWith = await LFGGroup.findById(data.targetGroupId);
+      validate(groupToMatchUpWith, "Invalid targetGroupId");
+
+      await LFGGroup.matchUp({
+        groupIds: [ownGroup.id, data.targetGroupId],
+        ranked: Boolean(groupToMatchUpWith.ranked && ownGroup.ranked),
+      });
       break;
     }
     case "UNLIKE": {
@@ -176,7 +182,6 @@ interface LookingLoaderData {
   isCaptain: boolean;
 }
 
-// TODO: show unranked when looking for match as ranked
 export const loader: LoaderFunction = async ({ context }) => {
   const user = requireUser(context);
   const ownGroup = await LFGGroup.findActiveByMember(user);
@@ -188,14 +193,7 @@ export const loader: LoaderFunction = async ({ context }) => {
     ownGroup.type === "VERSUS" &&
     ownGroup.members.length === LFG_GROUP_FULL_SIZE;
 
-  const groups = await LFGGroup.findLookingByType(
-    ownGroup.type,
-    // before we are looking for a match show both ranked and unranked
-    // groups and allow that status to change
-    lookingForMatch && typeof ownGroup.ranked === "boolean"
-      ? ownGroup.ranked
-      : undefined
-  );
+  const groups = await LFGGroup.findLookingByType(ownGroup.type);
 
   const likesGiven = ownGroup.likedGroups.reduce(
     (acc, lg) => acc.add(lg.targetId),
@@ -206,6 +204,7 @@ export const loader: LoaderFunction = async ({ context }) => {
     new Set<string>()
   );
 
+  const isRanked = groups.every((g) => g.ranked);
   const ownGroupWithMembers = groups.find((g) => g.id === ownGroup.id);
   invariant(ownGroupWithMembers, "ownGroupWithMembers is undefined");
   const ownGroupForResponse: LookingLoaderDataGroup = {
@@ -215,19 +214,17 @@ export const loader: LoaderFunction = async ({ context }) => {
 
       return {
         ...rest,
-        // In this stage we don't show team MMR's anymore because
-        // we want the team to compare their team MMR to other
-        // team MMR's instead
-        MMR: lookingForMatch ? undefined : skillToMMR(skill),
+        MMR: lookingForMatch && ownGroup.ranked ? undefined : skillToMMR(skill),
       };
     }),
     ranked: ownGroup.ranked ?? undefined,
-    teamMMR: lookingForMatch
-      ? {
-          exact: true,
-          value: teamSkillToExactMMR(ownGroupWithMembers.members),
-        }
-      : undefined,
+    teamMMR:
+      lookingForMatch && isRanked
+        ? {
+            exact: true,
+            value: teamSkillToExactMMR(ownGroupWithMembers.members),
+          }
+        : undefined,
   };
 
   return json<LookingLoaderData>({
@@ -245,26 +242,37 @@ export const loader: LoaderFunction = async ({ context }) => {
           })
       )
       .filter((group) => group.id !== ownGroup.id)
-      .map((group) => ({
-        id: group.id,
-        // When looking for a match ranked groups are censored
-        // and instead we only reveal their approximate skill level
-        members:
-          group.ranked && lookingForMatch
-            ? undefined
-            : group.members.map((m) => {
-                const { skill, ...rest } = m.user;
+      .map((group) => {
+        const ranked = () => {
+          if (lookingForMatch && !ownGroup.ranked) return false;
 
-                return {
-                  ...rest,
-                  MMR: skillToMMR(skill),
-                };
-              }),
-        ranked: group.ranked ?? undefined,
-        teamMMR: lookingForMatch
-          ? { exact: false, value: teamSkillToApproximateMMR(group.members) }
-          : undefined,
-      }))
+          return group.ranked ?? undefined;
+        };
+        return {
+          id: group.id,
+          // When looking for a match ranked groups are censored
+          // and instead we only reveal their approximate skill level
+          members:
+            ownGroup.ranked && group.ranked && lookingForMatch
+              ? undefined
+              : group.members.map((m) => {
+                  const { skill, ...rest } = m.user;
+
+                  return {
+                    ...rest,
+                    MMR: skillToMMR(skill),
+                  };
+                }),
+          ranked: ranked(),
+          teamMMR:
+            lookingForMatch && isRanked
+              ? {
+                  exact: false,
+                  value: teamSkillToApproximateMMR(group.members),
+                }
+              : undefined,
+        };
+      })
       .reduce(
         (
           acc: Omit<LookingLoaderData, "ownGroup" | "type" | "isCaptain">,
@@ -373,7 +381,7 @@ export default function LookingPage() {
                   group={group}
                   isCaptain={data.isCaptain}
                   type="LIKES_RECEIVED"
-                  ranked={data.ownGroup.ranked}
+                  ranked={lookingForMatch ? group.ranked : data.ownGroup.ranked}
                   lookingForMatch={lookingForMatch}
                 />
               );
