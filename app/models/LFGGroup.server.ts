@@ -163,15 +163,16 @@ export function findActiveByMember(user: { id: string }) {
   });
 }
 
-export function findLookingByType(type: LfgGroupType) {
+export function findLooking() {
   return db.lfgGroup.findMany({
     where: {
-      type,
+      active: true,
       looking: true,
     },
     select: {
       id: true,
       ranked: true,
+      type: true,
       members: {
         select: {
           user: {

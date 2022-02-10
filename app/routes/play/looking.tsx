@@ -184,7 +184,10 @@ interface LookingLoaderData {
 
 export const loader: LoaderFunction = async ({ context }) => {
   const user = requireUser(context);
-  const ownGroup = await LFGGroup.findActiveByMember(user);
+  const [ownGroup, allGroups] = await Promise.all([
+    LFGGroup.findActiveByMember(user),
+    LFGGroup.findLooking(),
+  ]);
   if (!ownGroup) return redirect("/play");
   if (ownGroup.matchId) return redirect(`/play/match/${ownGroup.matchId}`);
   if (!ownGroup.looking) return redirect("/play/add-players");
@@ -193,7 +196,7 @@ export const loader: LoaderFunction = async ({ context }) => {
     ownGroup.type === "VERSUS" &&
     ownGroup.members.length === LFG_GROUP_FULL_SIZE;
 
-  const groups = await LFGGroup.findLookingByType(ownGroup.type);
+  const groups = allGroups.filter((g) => g.type === ownGroup.type);
 
   const likesGiven = ownGroup.likedGroups.reduce(
     (acc, lg) => acc.add(lg.targetId),
