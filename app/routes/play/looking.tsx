@@ -331,6 +331,17 @@ export default function LookingPage() {
   }
 
   const lookingForMatch = data.ownGroup.members?.length === LFG_GROUP_FULL_SIZE;
+
+  const columns = [
+    { type: "LIKES_GIVEN", groups: data.likedGroups, title: "Liked" },
+    { type: "NEUTRAL", groups: data.neutralGroups, title: "Neutral" },
+    {
+      type: "LIKES_RECEIVED",
+      groups: data.likerGroups,
+      title: "Likes received",
+    },
+  ] as const;
+
   return (
     <div className="container">
       <GroupCard
@@ -340,57 +351,29 @@ export default function LookingPage() {
       />
       <hr className="my-4" />
       <div className="play-looking__columns">
-        <div>
-          <h2 className="play-looking__column-header">You want to play with</h2>
-          <div className="play-looking__cards">
-            {data.likedGroups.map((group) => {
-              return (
-                <GroupCard
-                  key={group.id}
-                  group={group}
-                  isCaptain={data.isCaptain}
-                  type="LIKES_GIVEN"
-                  ranked={group.ranked}
-                  lookingForMatch={lookingForMatch}
-                />
-              );
-            })}
+        {columns.map((column) => (
+          <div key={column.type}>
+            <h2 className="play-looking__column-header">{column.title}</h2>
+            <div className="play-looking__cards">
+              {column.groups.map((group) => {
+                return (
+                  <GroupCard
+                    key={group.id}
+                    group={group}
+                    isCaptain={data.isCaptain}
+                    type={column.type}
+                    ranked={
+                      column.type === "LIKES_RECEIVED" && !lookingForMatch
+                        ? data.ownGroup.ranked
+                        : group.ranked
+                    }
+                    lookingForMatch={lookingForMatch}
+                  />
+                );
+              })}
+            </div>
           </div>
-        </div>
-        <div>
-          <h2 className="play-looking__column-header invisible">Groups</h2>
-          <div className="play-looking__cards">
-            {data.neutralGroups.map((group) => {
-              return (
-                <GroupCard
-                  key={group.id}
-                  group={group}
-                  isCaptain={data.isCaptain}
-                  type="NEUTRAL"
-                  ranked={group.ranked}
-                  lookingForMatch={lookingForMatch}
-                />
-              );
-            })}
-          </div>
-        </div>
-        <div>
-          <h2 className="play-looking__column-header">Want to play with you</h2>
-          <div className="play-looking__cards">
-            {data.likerGroups.map((group) => {
-              return (
-                <GroupCard
-                  key={group.id}
-                  group={group}
-                  isCaptain={data.isCaptain}
-                  type="LIKES_RECEIVED"
-                  ranked={lookingForMatch ? group.ranked : data.ownGroup.ranked}
-                  lookingForMatch={lookingForMatch}
-                />
-              );
-            })}
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );
