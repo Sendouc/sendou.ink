@@ -2,7 +2,7 @@ import type { Express, Response } from "express";
 import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
 import { BracketModified } from "~/services/bracket";
-import { Unpacked } from "~/utils";
+import type { Unpacked } from "~/utils";
 
 export type BracketData = {
   number: Unpacked<Unpacked<BracketModified["rounds"]>["matches"]>["number"];
@@ -14,19 +14,42 @@ export type BracketData = {
     | null;
 }[];
 
+export type GroupLikeData =
+  | {
+      action: "RELOAD";
+    }
+  | {
+      groupId: string;
+      action: "LIKE" | "UNLIKE";
+    };
+
+type BracketEventCollection<T> = {
+  id: string;
+  event: (data: T) => void;
+}[];
+
 export interface EventTargetRecorder {
   bracket: {
-    [bracketId: string]: {
-      id: string;
-      event: (data: BracketData) => void;
-    }[];
+    [bracketId: string]: BracketEventCollection<BracketData>;
+  };
+  lfg: {
+    likes: {
+      [groupId: string]: BracketEventCollection<GroupLikeData>;
+    };
   };
 }
 
-const TargetSchema = z.object({
-  type: z.literal("bracket"),
-  bracketId: z.string(),
-});
+export type SSETarget = z.infer<typeof TargetSchema>;
+const TargetSchema = z.union([
+  z.object({
+    type: z.literal("bracket"),
+    bracketId: z.string(),
+  }),
+  z.object({
+    type: z.literal("likes"),
+    groupId: z.string(),
+  }),
+]);
 
 export function setUpEvents(app: Express, events: EventTargetRecorder): void {
   // https://stackoverflow.com/a/59041709
@@ -46,29 +69,55 @@ export function setUpEvents(app: Express, events: EventTargetRecorder): void {
     res.flushHeaders();
 
     const id = uuidv4();
-    if (target.type === "bracket") {
-      const sendBracketEvent = (data: BracketData) => sendEvent({ res, data });
-      if (!events.bracket[target.bracketId]) {
-        events.bracket[target.bracketId] = [{ id, event: sendBracketEvent }];
-      } else {
-        events.bracket[target.bracketId].push({
-          id,
-          event: sendBracketEvent,
-        });
-      }
-    }
+    eventsArray().push({
+      id,
+      event: (data: unknown) => sendEvent({ res, data }),
+    });
 
     res.on("close", () => {
-      if (target.type === "bracket") {
-        events.bracket[target.bracketId] = events.bracket[
-          target.bracketId
-        ].filter((event) => event.id !== id);
-      }
+      filterInPlace(eventsArray(), (elem) => elem.id !== id);
       res.end();
     });
+
+    function eventsArray() {
+      switch (target.type) {
+        case "bracket": {
+          const result = events.bracket[target.bracketId] ?? [];
+          events.bracket[target.bracketId] = result;
+          return result;
+        }
+        case "likes": {
+          const result = events.lfg.likes[target.groupId] ?? [];
+          events.lfg.likes[target.groupId] = result;
+          return result;
+        }
+      }
+    }
   });
 }
 
 const sendEvent = ({ res, data }: { res: Response; data: unknown }) => {
   res.write(`data: ${JSON.stringify(data)}\n\n`);
 };
+
+/** @link https://stackoverflow.com/a/37319954 */
+function filterInPlace(
+  a: { id: string }[],
+  condition: (
+    elem: { id: string },
+    index: number,
+    array: { id: string }[]
+  ) => boolean
+) {
+  let i = 0,
+    j = 0;
+
+  while (i < a.length) {
+    const val = a[i];
+    if (condition(val, i, a)) a[j++] = val;
+    i++;
+  }
+
+  a.length = j;
+  return a;
+}

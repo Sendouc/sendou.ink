@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useMatches } from "remix";
+import type { SSETarget } from "server/events";
 import { z } from "zod";
 import { LoggedInUserSchema } from "~/utils/schemas";
 
@@ -18,12 +19,12 @@ export const useBaseURL = () => {
 };
 
 export const useEvents = (
-  bracketId: string,
+  target: SSETarget,
   handleEvent: (data: unknown) => void
 ) => {
   React.useEffect(() => {
     const source = new EventSource(
-      `/events?type=bracket&bracketId=${bracketId}`
+      `/events?${new URLSearchParams(target).toString()}`
     );
 
     source.addEventListener("open", () => {

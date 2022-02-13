@@ -8,7 +8,7 @@ import { useEvents } from "~/hooks/common";
 export function useBracketDataWithEvents(): BracketModified {
   const data = useLoaderData<BracketModified>();
   const [dataWithEvents, setDataWithEvents] = React.useState(data);
-  useEvents(data.id, (data: unknown) => {
+  useEvents({ type: "bracket", bracketId: data.id }, (data: unknown) => {
     const dataMap = (data as BracketData).reduce(
       (map, bracketData) => map.set(bracketData.number, bracketData),
       new Map<number, Unpacked<BracketData>>()
