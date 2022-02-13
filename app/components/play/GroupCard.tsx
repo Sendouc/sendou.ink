@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { Form } from "remix";
+import { useFetcher } from "remix";
 import { Button } from "~/components/Button";
 import type {
   LookingActionSchema,
@@ -20,6 +20,8 @@ export function GroupCard({
   ranked?: boolean;
   lookingForMatch: boolean;
 }) {
+  const fetcher = useFetcher();
+
   const buttonText = () => {
     if (type === "LIKES_GIVEN") return "Undo";
     if (type === "NEUTRAL") return "Let's play?";
@@ -34,7 +36,7 @@ export function GroupCard({
   };
 
   return (
-    <Form method="post">
+    <fetcher.Form method="post">
       <div className="play-looking__card">
         {typeof ranked === "boolean" && (
           <div className={clsx("play-looking__ranked-text", { ranked })}>
@@ -64,11 +66,12 @@ export function GroupCard({
             value={buttonValue()}
             tiny
             variant={type === "LIKES_GIVEN" ? "destructive" : undefined}
+            loading={fetcher.state !== "idle"}
           >
             {buttonText()}
           </Button>
         )}
       </div>
-    </Form>
+    </fetcher.Form>
   );
 }

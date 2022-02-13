@@ -6,6 +6,7 @@ import {
   LoaderFunction,
   redirect,
   useLoaderData,
+  useTransition,
 } from "remix";
 import { AddPlayers } from "~/components/AddPlayers";
 import { Button } from "~/components/Button";
@@ -57,6 +58,7 @@ export const loader: LoaderFunction = async ({ context }) => {
 
 export default function PlayAddPlayersPage() {
   const data = useLoaderData<AddPlayersLoaderData>();
+  const transition = useTransition();
 
   return (
     <div className="container">
@@ -76,7 +78,9 @@ export default function PlayAddPlayersPage() {
       <div className="play-add-players__button-container">
         {/* TODO: or.... look for match */}
         <Form method="post">
-          <Button type="submit">Look for teammates</Button>
+          <Button type="submit" loading={transition.state !== "idle"}>
+            Look for teammates
+          </Button>
         </Form>
       </div>
     </div>
