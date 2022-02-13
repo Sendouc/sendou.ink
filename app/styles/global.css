@@ -368,6 +368,51 @@ hr {
   fill: var(--theme-success);
 }
 
+.tab {
+  --tab-border-style: 6px solid var(--theme);
+
+  all: unset;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  border-top: var(--tab-border-style);
+  border-bottom: var(--tab-border-style);
+  background-color: var(--bg-lighter);
+  color: var(--text);
+  cursor: pointer;
+  font-size: var(--fonts-sm);
+  gap: var(--s-1);
+  padding-block: var(--s-1-5);
+  white-space: nowrap;
+}
+
+.tab-list {
+  display: flex;
+  margin-block-end: var(--s-6);
+}
+
+.tab:first-of-type {
+  border-left: var(--tab-border-style);
+  border-bottom-left-radius: var(--rounded);
+  border-top-left-radius: var(--rounded);
+}
+
+.tab:last-of-type {
+  border-right: var(--tab-border-style);
+  border-bottom-right-radius: var(--rounded);
+  border-top-right-radius: var(--rounded);
+}
+
+.tab:hover {
+  font-weight: var(--bold);
+}
+
+.tab.selected {
+  background-color: var(--theme);
+  color: var(--button-text);
+  font-weight: var(--bold);
+}
+
 .four-zero-one__container {
   text-align: center;
 }

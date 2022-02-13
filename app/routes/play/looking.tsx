@@ -30,6 +30,7 @@ import {
   teamSkillToApproximateMMR,
   teamSkillToExactMMR,
 } from "~/core/mmr/utils";
+import { Tab } from "~/components/Tab";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -338,7 +339,7 @@ export default function LookingPage() {
     {
       type: "LIKES_RECEIVED",
       groups: data.likerGroups,
-      title: "Likes received",
+      title: lookingForMatch ? "Match up" : "Group up",
     },
   ] as const;
 
@@ -349,7 +350,36 @@ export default function LookingPage() {
         ranked={data.ownGroup.ranked}
         lookingForMatch={false}
       />
-      <hr className="my-4" />
+      <hr className="play-looking__divider" />
+      <Tab
+        containerClassName="play-looking__tabs"
+        tabListClassName="play-looking__tab-list"
+        defaultIndex={1}
+        tabs={columns.map((column) => ({
+          id: column.type,
+          title: column.title,
+          content: (
+            <div className="play-looking__cards">
+              {column.groups.map((group) => {
+                return (
+                  <GroupCard
+                    key={group.id}
+                    group={group}
+                    isCaptain={data.isCaptain}
+                    type={column.type}
+                    ranked={
+                      column.type === "LIKES_RECEIVED" && !lookingForMatch
+                        ? data.ownGroup.ranked
+                        : group.ranked
+                    }
+                    lookingForMatch={lookingForMatch}
+                  />
+                );
+              })}
+            </div>
+          ),
+        }))}
+      />
       <div className="play-looking__columns">
         {columns.map((column) => (
           <div key={column.type}>
