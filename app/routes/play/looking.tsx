@@ -7,7 +7,6 @@ import {
   LoaderFunction,
   MetaFunction,
   redirect,
-  useLoaderData,
 } from "remix";
 import invariant from "tiny-invariant";
 import { z } from "zod";
@@ -21,7 +20,9 @@ import styles from "~/styles/play-looking.css";
 import {
   makeTitle,
   parseRequestFormData,
+  requireEvents,
   requireUser,
+  sendEvents,
   UserLean,
   validate,
 } from "~/utils";
@@ -31,6 +32,7 @@ import {
   teamSkillToExactMMR,
 } from "~/core/mmr/utils";
 import { Tab } from "~/components/Tab";
+import { useLookingDataWithEvents } from "~/hooks/useLookingDataWithEvents";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -70,6 +72,7 @@ export const action: ActionFunction = async ({ request, context }) => {
     schema: lookingActionSchema,
   });
   const user = requireUser(context);
+  const events = requireEvents(context);
 
   const ownGroup = await LFGGroup.findActiveByMember(user);
   validate(ownGroup, "No active group");
@@ -118,24 +121,38 @@ export const action: ActionFunction = async ({ request, context }) => {
             ? undefined
             : ownGroup.ranked,
       });
-
+      for (const { event } of events.lfg.likes[ownGroup.id]) {
+        event({ action: "UNITE_GROUPS" });
+      }
       break;
     }
     case "MATCH_UP": {
       const groupToMatchUpWith = await LFGGroup.findById(data.targetGroupId);
       validate(groupToMatchUpWith, "Invalid targetGroupId");
 
-      await LFGGroup.matchUp({
+      // let's just fail silently if they already
+      // matched up with someone else or stopped looking
+      if (groupToMatchUpWith.matchId || !groupToMatchUpWith.looking) {
+        break;
+      }
+
+      const match = await LFGGroup.matchUp({
         groupIds: [ownGroup.id, data.targetGroupId],
         ranked: Boolean(groupToMatchUpWith.ranked && ownGroup.ranked),
       });
-      break;
+      for (const { event } of events.lfg.likes[ownGroup.id]) {
+        event({ action: "MATCH_UP", matchId: match.id });
+      }
+      return redirect(`/play/match/${match.id}`);
     }
     case "UNLIKE": {
       await LFGGroup.unlike({
         likerId: ownGroup.id,
         targetId: data.targetGroupId,
       });
+      for (const { event } of events.lfg.likes[ownGroup.id]) {
+        event({ action: "UNLIKE", groupId: data.targetGroupId });
+      }
       break;
     }
     case "LIKE": {
@@ -143,6 +160,13 @@ export const action: ActionFunction = async ({ request, context }) => {
         likerId: ownGroup.id,
         targetId: data.targetGroupId,
       });
+      // for (const { event } of events.lfg.likes[ownGroup.id]) {
+      //   event({ action: "LIKE", groupId: data.targetGroupId });
+      // }
+      sendEvents(
+        { action: "LIKE", groupId: data.targetGroupId },
+        events.lfg.likes[ownGroup.id]
+      );
       break;
     }
     case "LOOK_AGAIN": {
@@ -158,8 +182,6 @@ export const action: ActionFunction = async ({ request, context }) => {
   }
 
   return { ok: data._action };
-
-  // TODO: notify watchers
 };
 
 export type LookingLoaderDataGroup = {
@@ -174,7 +196,7 @@ export type LookingLoaderDataGroup = {
   ranked?: boolean;
 };
 
-interface LookingLoaderData {
+export interface LookingLoaderData {
   likedGroups: LookingLoaderDataGroup[];
   neutralGroups: LookingLoaderDataGroup[];
   likerGroups: LookingLoaderDataGroup[];
@@ -300,7 +322,7 @@ export const loader: LoaderFunction = async ({ context }) => {
 };
 
 export default function LookingPage() {
-  const data = useLoaderData<LookingLoaderData>();
+  const data = useLookingDataWithEvents();
 
   if (lookingOver(data.type, data.ownGroup)) {
     return (

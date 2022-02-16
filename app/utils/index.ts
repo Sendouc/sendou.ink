@@ -119,6 +119,12 @@ export function safeJSONParse(value: unknown): unknown {
   }
 }
 
+export function sendEvents(eventArgs: any, ...sources: any) {
+  for (const { event } of sources.filter(Boolean)) {
+    event(eventArgs);
+  }
+}
+
 export type Serialized<T> = {
   [P in keyof T]: T[P] extends Date
     ? string

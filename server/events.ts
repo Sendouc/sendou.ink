@@ -16,7 +16,11 @@ export type BracketData = {
 
 export type GroupLikeData =
   | {
-      action: "RELOAD";
+      matchId: string;
+      action: "MATCH_UP";
+    }
+  | {
+      action: "UNITE_GROUPS";
     }
   | {
       groupId: string;

@@ -120,7 +120,7 @@ export async function matchUp({
     },
   });
 
-  return db.lfgGroup.updateMany({
+  await db.lfgGroup.updateMany({
     where: {
       id: {
         in: groupIds,
@@ -131,6 +131,8 @@ export async function matchUp({
       looking: false,
     },
   });
+
+  return match;
 }
 
 export function findById(id: string) {

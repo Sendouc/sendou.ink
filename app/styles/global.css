@@ -407,6 +407,10 @@ hr {
   font-weight: var(--bold);
 }
 
+.tab:active {
+  transform: none;
+}
+
 .tab.selected {
   background-color: var(--theme);
   color: var(--button-text);
