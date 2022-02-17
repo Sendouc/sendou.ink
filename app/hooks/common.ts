@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useMatches } from "remix";
+import { useLoaderData, useMatches, useNavigate } from "remix";
 import type { SSETarget } from "server/events";
 import { z } from "zod";
 import { LoggedInUserSchema } from "~/utils/schemas";
@@ -97,4 +97,30 @@ export function useOnClickOutside<T extends HTMLElement = HTMLElement>(
       document.removeEventListener("touchstart", listener);
     };
   }, [ref, handler]);
+}
+
+/** Refreshed loader data of the current route in an interval.
+ * @returns Timestamp last updated
+ */
+export function usePolling(pollingActive: boolean = true) {
+  const [lastUpdated, setLastUpdated] = React.useState(new Date());
+  const data = useLoaderData();
+  const navigate = useNavigate();
+
+  const INTERVAL = 30_000; // 30 seconds
+
+  React.useEffect(() => {
+    if (!pollingActive) return;
+    const timer = setTimeout(() => {
+      navigate(".");
+    }, INTERVAL);
+
+    return () => clearTimeout(timer);
+  }, [pollingActive, navigate, data]);
+
+  React.useEffect(() => {
+    setLastUpdated(new Date());
+  }, [data]);
+
+  return lastUpdated;
 }

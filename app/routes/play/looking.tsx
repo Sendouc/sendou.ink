@@ -13,9 +13,16 @@ import invariant from "tiny-invariant";
 import { z } from "zod";
 import { Button } from "~/components/Button";
 import { GroupCard } from "~/components/play/GroupCard";
+import { Tab } from "~/components/Tab";
 import { DISCORD_URL, LFG_GROUP_FULL_SIZE } from "~/constants";
+import {
+  skillToMMR,
+  teamSkillToApproximateMMR,
+  teamSkillToExactMMR,
+} from "~/core/mmr/utils";
 import { uniteGroupInfo } from "~/core/play/utils";
 import { canUniteWithGroup, isGroupAdmin } from "~/core/play/validators";
+import { usePolling } from "~/hooks/common";
 import * as LFGGroup from "~/models/LFGGroup.server";
 import styles from "~/styles/play-looking.css";
 import {
@@ -25,12 +32,6 @@ import {
   UserLean,
   validate,
 } from "~/utils";
-import {
-  skillToMMR,
-  teamSkillToApproximateMMR,
-  teamSkillToExactMMR,
-} from "~/core/mmr/utils";
-import { Tab } from "~/components/Tab";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -302,6 +303,9 @@ export const loader: LoaderFunction = async ({ context }) => {
 export default function LookingPage() {
   const data = useLoaderData<LookingLoaderData>();
 
+  const isPolling = !lookingOver(data.type, data.ownGroup);
+  const lastUpdated = usePolling(isPolling);
+
   if (lookingOver(data.type, data.ownGroup)) {
     return (
       <div className="container">
@@ -350,6 +354,14 @@ export default function LookingPage() {
         ranked={data.ownGroup.ranked}
         lookingForMatch={false}
       />
+      <div className="play-looking__last-updated">
+        Last updated:{" "}
+        {lastUpdated.toLocaleTimeString("en", {
+          hour: "numeric",
+          minute: "numeric",
+          second: "numeric",
+        })}
+      </div>
       <hr className="play-looking__divider" />
       <Tab
         containerClassName="play-looking__tabs"

@@ -20,9 +20,16 @@
   margin-block-start: var(--s-4);
 }
 
+.play-looking__last-updated {
+  color: var(--text-lighter);
+  font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
+  margin-block-start: var(--s-4);
+}
+
 .play-looking__divider {
   display: none;
-  margin-block: var(--s-4);
+  margin-block-end: var(--s-4);
 }
 
 .play-looking__tabs {
