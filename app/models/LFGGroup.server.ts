@@ -1,5 +1,6 @@
 import type { LfgGroupType } from "@prisma/client";
 import { generateMapListForLfgMatch } from "~/core/play/mapList";
+import { groupExpiredDates } from "~/core/play/utils";
 import { db } from "~/utils/db.server";
 
 export function create({
@@ -35,12 +36,22 @@ export function like({
   likerId: string;
   targetId: string;
 }) {
-  return db.lfgGroupLike.create({
-    data: {
-      likerId,
-      targetId,
-    },
-  });
+  // not transaction because doesn't really matter
+  // if only one goes through and other not
+  return Promise.all([
+    db.lfgGroupLike.create({
+      data: {
+        likerId,
+        targetId,
+      },
+    }),
+    db.lfgGroup.update({
+      where: { id: likerId },
+      data: {
+        lastActionAt: new Date(),
+      },
+    }),
+  ]);
 }
 
 export function unlike({
@@ -50,14 +61,24 @@ export function unlike({
   likerId: string;
   targetId: string;
 }) {
-  return db.lfgGroupLike.delete({
-    where: {
-      likerId_targetId: {
-        likerId,
-        targetId,
+  // not transaction because doesn't really matter
+  // if only one goes through and other not
+  return Promise.all([
+    db.lfgGroupLike.delete({
+      where: {
+        likerId_targetId: {
+          likerId,
+          targetId,
+        },
       },
-    },
-  });
+    }),
+    db.lfgGroup.update({
+      where: { id: likerId },
+      data: {
+        lastActionAt: new Date(),
+      },
+    }),
+  ]);
 }
 
 export interface UniteGroupsArgs {
@@ -72,7 +93,7 @@ export function uniteGroups({
   removeCaptainsFromOther,
   unitedGroupIsRanked,
 }: UniteGroupsArgs) {
-  const queries = [
+  return db.$transaction([
     db.lfgGroupMember.updateMany({
       where: { groupId: otherGroupId },
       data: {
@@ -87,18 +108,14 @@ export function uniteGroups({
         OR: [{ likerId: survivingGroupId }, { targetId: survivingGroupId }],
       },
     }),
-  ];
-
-  if (typeof unitedGroupIsRanked === "boolean") {
-    queries.push(
-      db.lfgGroup.update({
-        where: { id: survivingGroupId },
-        data: { ranked: unitedGroupIsRanked },
-      })
-    );
-  }
-
-  return db.$transaction(queries);
+    db.lfgGroup.update({
+      where: { id: survivingGroupId },
+      data:
+        typeof unitedGroupIsRanked === "boolean"
+          ? { ranked: unitedGroupIsRanked, lastActionAt: new Date() }
+          : { lastActionAt: new Date() },
+    }),
+  ]);
 }
 
 export async function matchUp({
@@ -173,6 +190,7 @@ export function findLooking() {
       id: true,
       ranked: true,
       type: true,
+      lastActionAt: true,
       members: {
         select: {
           user: {
@@ -222,6 +240,17 @@ export function setInactive(id: string) {
     data: {
       looking: false,
       active: false,
+    },
+  });
+}
+
+export function unexpire(groupId: string) {
+  return db.lfgGroup.update({
+    where: {
+      id: groupId,
+    },
+    data: {
+      lastActionAt: new Date(),
     },
   });
 }

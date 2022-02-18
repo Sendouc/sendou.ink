@@ -223,6 +223,7 @@ model LfgGroup {
   matchId       String?
   inviteCode    String               @default(uuid())
   createdAt     DateTime             @default(now())
+  lastActionAt  DateTime             @default(now())
   members       LfgGroupMember[]
   match         LfgGroupMatch?       @relation(fields: [matchId], references: [id])
   likedGroups   LfgGroupLike[]       @relation("liker")

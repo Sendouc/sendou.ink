@@ -20,11 +20,19 @@
   margin-block-start: var(--s-4);
 }
 
-.play-looking__last-updated {
+.play-looking__info-text {
   color: var(--text-lighter);
   font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
   margin-block-start: var(--s-4);
+}
+
+.play-looking__info-text.expired {
+  color: var(--theme-warning);
+}
+
+.play-looking__info-button {
+  display: inline-block;
 }
 
 .play-looking__divider {

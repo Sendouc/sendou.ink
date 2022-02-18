@@ -73,3 +73,20 @@ export function groupsToWinningAndLosingPlayerIds({
     { winning: [] as string[], losing: [] as string[] }
   );
 }
+
+/**
+ * Group dates to compare against for expired status. E.g. if the group
+ * lastActionAt.getTime() is smaller than that of EXPIRED Date's then
+ * that group is expired
+ */
+export function groupExpiredDates(): Record<
+  "ALMOST_EXPIRED" | "EXPIRED",
+  Date
+> {
+  const now = new Date();
+  const thirtyMinutesAgo = new Date(now.getTime() - 60_000 * 30);
+  const now2 = new Date();
+  const twentyMinutesAgo = new Date(now2.getTime() - 60_000 * 20);
+
+  return { EXPIRED: thirtyMinutesAgo, ALMOST_EXPIRED: twentyMinutesAgo };
+}

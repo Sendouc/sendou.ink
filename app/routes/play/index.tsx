@@ -84,7 +84,6 @@ export const action: ActionFunction = async ({ request, context }) => {
 
 export const loader: LoaderFunction = async ({ context }) => {
   const user = getUser(context);
-  // TODO: show something reasonable when user not logged in
   if (!user) return null;
 
   const ownGroup = await LFGGroup.findActiveByMember(user);

@@ -1,7 +1,6 @@
 import { LfgGroupType } from "@prisma/client";
 import {
   ActionFunction,
-  Form,
   json,
   LinksFunction,
   LoaderFunction,
@@ -11,16 +10,17 @@ import {
 } from "remix";
 import invariant from "tiny-invariant";
 import { z } from "zod";
-import { Button } from "~/components/Button";
 import { GroupCard } from "~/components/play/GroupCard";
+import { LookingInfoText } from "~/components/play/LookingInfoText";
+import { UnrankedMatchInfo } from "~/components/play/UnrankedMatchInfo";
 import { Tab } from "~/components/Tab";
-import { DISCORD_URL, LFG_GROUP_FULL_SIZE } from "~/constants";
+import { LFG_GROUP_FULL_SIZE } from "~/constants";
 import {
   skillToMMR,
   teamSkillToApproximateMMR,
   teamSkillToExactMMR,
 } from "~/core/mmr/utils";
-import { uniteGroupInfo } from "~/core/play/utils";
+import { groupExpiredDates, uniteGroupInfo } from "~/core/play/utils";
 import { canUniteWithGroup, isGroupAdmin } from "~/core/play/validators";
 import { usePolling } from "~/hooks/common";
 import * as LFGGroup from "~/models/LFGGroup.server";
@@ -62,6 +62,9 @@ const lookingActionSchema = z.union([
   }),
   z.object({
     _action: z.literal("LOOK_AGAIN"),
+  }),
+  z.object({
+    _action: z.literal("UNEXPIRE"),
   }),
 ]);
 
@@ -150,6 +153,10 @@ export const action: ActionFunction = async ({ request, context }) => {
       await LFGGroup.setInactive(ownGroup.id);
       return redirect("/play");
     }
+    case "UNEXPIRE": {
+      await LFGGroup.unexpire(ownGroup.id);
+      break;
+    }
     default: {
       const exhaustive: never = data;
       throw new Response(`Unknown action: ${JSON.stringify(exhaustive)}`, {
@@ -175,13 +182,14 @@ export type LookingLoaderDataGroup = {
   ranked?: boolean;
 };
 
-interface LookingLoaderData {
+export interface LookingLoaderData {
   likedGroups: LookingLoaderDataGroup[];
   neutralGroups: LookingLoaderDataGroup[];
   likerGroups: LookingLoaderDataGroup[];
   ownGroup: LookingLoaderDataGroup;
   type: LfgGroupType;
   isCaptain: boolean;
+  lastActionAtTimestamp: number;
 }
 
 export const loader: LoaderFunction = async ({ context }) => {
@@ -232,10 +240,13 @@ export const loader: LoaderFunction = async ({ context }) => {
         : undefined,
   };
 
+  const { EXPIRED: expiredDate } = groupExpiredDates();
+
   return json<LookingLoaderData>({
     ownGroup: ownGroupForResponse,
     type: ownGroup.type,
     isCaptain: isGroupAdmin({ group: ownGroup, user }),
+    lastActionAtTimestamp: ownGroup.lastActionAt.getTime(),
     ...groups
       .filter(
         (group) =>
@@ -247,6 +258,7 @@ export const loader: LoaderFunction = async ({ context }) => {
           })
       )
       .filter((group) => group.id !== ownGroup.id)
+      .filter((group) => group.lastActionAt.getTime() > expiredDate.getTime())
       .map((group) => {
         const ranked = () => {
           if (lookingForMatch && !ownGroup.ranked) return false;
@@ -280,7 +292,10 @@ export const loader: LoaderFunction = async ({ context }) => {
       })
       .reduce(
         (
-          acc: Omit<LookingLoaderData, "ownGroup" | "type" | "isCaptain">,
+          acc: Omit<
+            LookingLoaderData,
+            "ownGroup" | "type" | "isCaptain" | "lastActionAtTimestamp"
+          >,
           group
         ) => {
           // likesReceived first so that if both received like and
@@ -307,32 +322,7 @@ export default function LookingPage() {
   const lastUpdated = usePolling(isPolling);
 
   if (lookingOver(data.type, data.ownGroup)) {
-    return (
-      <div className="container">
-        <div className="play-looking__waves">
-          <GroupCard group={data.ownGroup} lookingForMatch={false} />
-          <div className="play-looking__waves-text">
-            This is your group! You can reach out to them on{" "}
-            <a href={DISCORD_URL}>our Discord</a> in the #groups-meetup channel.
-          </div>
-        </div>
-        <div className="play-looking__waves-button">
-          <Form method="post">
-            {data.isCaptain && (
-              <Button
-                type="submit"
-                name="_action"
-                value="LOOK_AGAIN"
-                tiny
-                variant="outlined"
-              >
-                Look again
-              </Button>
-            )}
-          </Form>
-        </div>
-      </div>
-    );
+    return <UnrankedMatchInfo />;
   }
 
   const lookingForMatch = data.ownGroup.members?.length === LFG_GROUP_FULL_SIZE;
@@ -354,14 +344,7 @@ export default function LookingPage() {
         ranked={data.ownGroup.ranked}
         lookingForMatch={false}
       />
-      <div className="play-looking__last-updated">
-        Last updated:{" "}
-        {lastUpdated.toLocaleTimeString("en", {
-          hour: "numeric",
-          minute: "numeric",
-          second: "numeric",
-        })}
-      </div>
+      <LookingInfoText lastUpdated={lastUpdated} />
       <hr className="play-looking__divider" />
       <Tab
         containerClassName="play-looking__tabs"

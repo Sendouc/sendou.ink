@@ -163,6 +163,7 @@ CREATE TABLE "LfgGroup" (
     "matchId" TEXT,
     "inviteCode" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "lastActionAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "LfgGroup_pkey" PRIMARY KEY ("id")
 );
