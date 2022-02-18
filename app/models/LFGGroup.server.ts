@@ -185,25 +185,12 @@ export function findLooking() {
       active: true,
       looking: true,
     },
-    select: {
-      id: true,
-      ranked: true,
-      type: true,
-      lastActionAt: true,
+    include: {
       members: {
-        select: {
+        include: {
           user: {
-            select: {
-              id: true,
-              discordAvatar: true,
-              discordDiscriminator: true,
-              discordName: true,
-              discordId: true,
+            include: {
               skill: {
-                select: {
-                  mu: true,
-                  sigma: true,
-                },
                 orderBy: {
                   createdAt: "desc",
                 },
@@ -213,6 +200,8 @@ export function findLooking() {
           },
         },
       },
+      likedGroups: true,
+      likesReceived: true,
     },
     orderBy: {
       createdAt: "desc",

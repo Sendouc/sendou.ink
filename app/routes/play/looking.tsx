@@ -12,7 +12,7 @@ import invariant from "tiny-invariant";
 import { z } from "zod";
 import { GroupCard } from "~/components/play/GroupCard";
 import { LookingInfoText } from "~/components/play/LookingInfoText";
-import { UnrankedMatchInfo } from "~/components/play/UnrankedMatchInfo";
+import { FinishedGroup } from "~/components/play/FinishedGroup";
 import { Tab } from "~/components/Tab";
 import { LFG_GROUP_FULL_SIZE } from "~/constants";
 import {
@@ -194,10 +194,12 @@ export interface LookingLoaderData {
 
 export const loader: LoaderFunction = async ({ context }) => {
   const user = requireUser(context);
-  const [ownGroup, allGroups] = await Promise.all([
-    LFGGroup.findActiveByMember(user),
-    LFGGroup.findLooking(),
-  ]);
+  const groups = await LFGGroup.findLooking();
+
+  const ownGroup = groups.find((g) =>
+    g.members.some((m) => m.user.id === user.id)
+  );
+
   if (!ownGroup) return redirect("/play");
   if (ownGroup.matchId) return redirect(`/play/match/${ownGroup.matchId}`);
   if (!ownGroup.looking) return redirect("/play/add-players");
@@ -206,7 +208,7 @@ export const loader: LoaderFunction = async ({ context }) => {
     ownGroup.type === "VERSUS" &&
     ownGroup.members.length === LFG_GROUP_FULL_SIZE;
 
-  const groups = allGroups.filter((g) => g.type === ownGroup.type);
+  const groupsOfType = groups.filter((g) => g.type === ownGroup.type);
 
   const likesGiven = ownGroup.likedGroups.reduce(
     (acc, lg) => acc.add(lg.targetId),
@@ -217,8 +219,8 @@ export const loader: LoaderFunction = async ({ context }) => {
     new Set<string>()
   );
 
-  const isRanked = groups.every((g) => g.ranked);
-  const ownGroupWithMembers = groups.find((g) => g.id === ownGroup.id);
+  const isRanked = groupsOfType.every((g) => g.ranked);
+  const ownGroupWithMembers = groupsOfType.find((g) => g.id === ownGroup.id);
   invariant(ownGroupWithMembers, "ownGroupWithMembers is undefined");
   const ownGroupForResponse: LookingLoaderDataGroup = {
     id: ownGroup.id,
@@ -247,7 +249,7 @@ export const loader: LoaderFunction = async ({ context }) => {
     type: ownGroup.type,
     isCaptain: isGroupAdmin({ group: ownGroup, user }),
     lastActionAtTimestamp: ownGroup.lastActionAt.getTime(),
-    ...groups
+    ...groupsOfType
       .filter(
         (group) =>
           (lookingForMatch && group.members.length === LFG_GROUP_FULL_SIZE) ||
@@ -322,7 +324,7 @@ export default function LookingPage() {
   const lastUpdated = usePolling(isPolling);
 
   if (lookingOver(data.type, data.ownGroup)) {
-    return <UnrankedMatchInfo />;
+    return <FinishedGroup />;
   }
 
   const lookingForMatch = data.ownGroup.members?.length === LFG_GROUP_FULL_SIZE;

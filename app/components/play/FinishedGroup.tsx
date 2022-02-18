@@ -4,7 +4,7 @@ import { LookingLoaderData } from "~/routes/play/looking";
 import { Button } from "../Button";
 import { GroupCard } from "./GroupCard";
 
-export function UnrankedMatchInfo() {
+export function FinishedGroup() {
   const data = useLoaderData<LookingLoaderData>();
 
   return (
