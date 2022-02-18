@@ -8,7 +8,7 @@ import { Button } from "../Button";
 const CONTAINER_CLASSNAME = "play-looking__info-text";
 
 export function LookingInfoText({ lastUpdated }: { lastUpdated: Date }) {
-  const [_, forceUpdate] = React.useState(Math.random());
+  const [, forceUpdate] = React.useState(Math.random());
   const data = useLoaderData<LookingLoaderData>();
 
   React.useEffect(() => {

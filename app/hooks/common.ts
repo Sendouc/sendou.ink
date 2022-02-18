@@ -102,9 +102,9 @@ export function useOnClickOutside<T extends HTMLElement = HTMLElement>(
 /** Refreshed loader data of the current route in an interval.
  * @returns Timestamp last updated
  */
-export function usePolling(pollingActive: boolean = true) {
+export function usePolling(pollingActive = true) {
   const [lastUpdated, setLastUpdated] = React.useState(new Date());
-  const data = useLoaderData();
+  const data = useLoaderData<unknown>();
   const navigate = useNavigate();
 
   const INTERVAL = 30_000; // 30 seconds

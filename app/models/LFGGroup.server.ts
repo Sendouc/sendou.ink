@@ -1,6 +1,5 @@
 import type { LfgGroupType } from "@prisma/client";
 import { generateMapListForLfgMatch } from "~/core/play/mapList";
-import { groupExpiredDates } from "~/core/play/utils";
 import { db } from "~/utils/db.server";
 
 export function create({
