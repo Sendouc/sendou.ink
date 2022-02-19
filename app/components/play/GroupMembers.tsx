@@ -1,4 +1,5 @@
 import type { LookingLoaderDataGroup } from "~/routes/play/looking";
+import { layoutIcon } from "~/utils";
 import { Avatar } from "../Avatar";
 
 export function GroupMembers({
@@ -40,6 +41,29 @@ function Contents({ members }: { members: LookingLoaderDataGroup["members"] }) {
             </span>
             {member.MMR && (
               <div className="play-looking__member-mmr">MMR: {member.MMR}</div>
+            )}
+            {member.peakXP && (
+              <div className="play-looking__member-power">
+                <img
+                  src={layoutIcon("top500")}
+                  width="18"
+                  height="18"
+                  title="Peak X Power"
+                />{" "}
+                {member.peakXP}
+              </div>
+            )}
+            {member.peakLP && (
+              <div className="play-looking__member-power league">
+                <img
+                  // TODO: actual league icon
+                  src={layoutIcon("top500")}
+                  width="18"
+                  height="18"
+                  title="Peak League Power"
+                />{" "}
+                {member.peakLP}
+              </div>
             )}
           </div>
         );

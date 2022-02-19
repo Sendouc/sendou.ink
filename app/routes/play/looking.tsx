@@ -32,6 +32,7 @@ import {
   UserLean,
   validate,
 } from "~/utils";
+import { addInfoFromOldSendouInk } from "~/core/play/playerInfos/playerInfos.server";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -174,6 +175,9 @@ export type LookingLoaderDataGroup = {
   id: string;
   members?: (UserLean & {
     MMR?: number;
+    weapons?: string[];
+    peakXP?: number;
+    peakLP?: number;
   })[];
   teamMMR?: {
     exact: boolean;
@@ -244,77 +248,79 @@ export const loader: LoaderFunction = async ({ context }) => {
 
   const { EXPIRED: expiredDate } = groupExpiredDates();
 
-  return json<LookingLoaderData>({
-    ownGroup: ownGroupForResponse,
-    type: ownGroup.type,
-    isCaptain: isGroupAdmin({ group: ownGroup, user }),
-    lastActionAtTimestamp: ownGroup.lastActionAt.getTime(),
-    ...groupsOfType
-      .filter(
-        (group) =>
-          (lookingForMatch && group.members.length === LFG_GROUP_FULL_SIZE) ||
-          canUniteWithGroup({
-            ownGroupType: ownGroup.type,
-            ownGroupSize: ownGroup.members.length,
-            otherGroupSize: group.members.length,
-          })
-      )
-      .filter((group) => group.id !== ownGroup.id)
-      .filter((group) => group.lastActionAt.getTime() > expiredDate.getTime())
-      .map((group) => {
-        const ranked = () => {
-          if (lookingForMatch && !ownGroup.ranked) return false;
+  return json<LookingLoaderData>(
+    addInfoFromOldSendouInk(ownGroup.type === "VERSUS" ? "SOLO" : "LEAGUE", {
+      ownGroup: ownGroupForResponse,
+      type: ownGroup.type,
+      isCaptain: isGroupAdmin({ group: ownGroup, user }),
+      lastActionAtTimestamp: ownGroup.lastActionAt.getTime(),
+      ...groupsOfType
+        .filter(
+          (group) =>
+            (lookingForMatch && group.members.length === LFG_GROUP_FULL_SIZE) ||
+            canUniteWithGroup({
+              ownGroupType: ownGroup.type,
+              ownGroupSize: ownGroup.members.length,
+              otherGroupSize: group.members.length,
+            })
+        )
+        .filter((group) => group.id !== ownGroup.id)
+        .filter((group) => group.lastActionAt.getTime() > expiredDate.getTime())
+        .map((group) => {
+          const ranked = () => {
+            if (lookingForMatch && !ownGroup.ranked) return false;
 
-          return group.ranked ?? undefined;
-        };
-        return {
-          id: group.id,
-          // When looking for a match ranked groups are censored
-          // and instead we only reveal their approximate skill level
-          members:
-            ownGroup.ranked && group.ranked && lookingForMatch
-              ? undefined
-              : group.members.map((m) => {
-                  const { skill, ...rest } = m.user;
+            return group.ranked ?? undefined;
+          };
+          return {
+            id: group.id,
+            // When looking for a match ranked groups are censored
+            // and instead we only reveal their approximate skill level
+            members:
+              ownGroup.ranked && group.ranked && lookingForMatch
+                ? undefined
+                : group.members.map((m) => {
+                    const { skill, ...rest } = m.user;
 
-                  return {
-                    ...rest,
-                    MMR: skillToMMR(skill),
-                  };
-                }),
-          ranked: ranked(),
-          teamMMR:
-            lookingForMatch && isRanked
-              ? {
-                  exact: false,
-                  value: teamSkillToApproximateMMR(group.members),
-                }
-              : undefined,
-        };
-      })
-      .reduce(
-        (
-          acc: Omit<
-            LookingLoaderData,
-            "ownGroup" | "type" | "isCaptain" | "lastActionAtTimestamp"
-          >,
-          group
-        ) => {
-          // likesReceived first so that if both received like and
-          // given like then handle this edge case by just displaying the
-          // group as waiting like back
-          if (likesReceived.has(group.id)) {
-            acc.likerGroups.push(group);
-          } else if (likesGiven.has(group.id)) {
-            acc.likedGroups.push(group);
-          } else {
-            acc.neutralGroups.push(group);
-          }
-          return acc;
-        },
-        { likedGroups: [], neutralGroups: [], likerGroups: [] }
-      ),
-  });
+                    return {
+                      ...rest,
+                      MMR: skillToMMR(skill),
+                    };
+                  }),
+            ranked: ranked(),
+            teamMMR:
+              lookingForMatch && isRanked
+                ? {
+                    exact: false,
+                    value: teamSkillToApproximateMMR(group.members),
+                  }
+                : undefined,
+          };
+        })
+        .reduce(
+          (
+            acc: Omit<
+              LookingLoaderData,
+              "ownGroup" | "type" | "isCaptain" | "lastActionAtTimestamp"
+            >,
+            group
+          ) => {
+            // likesReceived first so that if both received like and
+            // given like then handle this edge case by just displaying the
+            // group as waiting like back
+            if (likesReceived.has(group.id)) {
+              acc.likerGroups.push(group);
+            } else if (likesGiven.has(group.id)) {
+              acc.likedGroups.push(group);
+            } else {
+              acc.neutralGroups.push(group);
+            }
+            return acc;
+          },
+          { likedGroups: [], neutralGroups: [], likerGroups: [] }
+        ),
+    })
+  );
 };
 
 export default function LookingPage() {

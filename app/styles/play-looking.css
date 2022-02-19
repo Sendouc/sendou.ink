@@ -142,6 +142,17 @@
   font-size: var(--fonts-xxs);
 }
 
+.play-looking__member-power {
+  display: flex;
+  margin-top: -4px;
+  font-size: var(--fonts-xxs);
+  gap: var(--s-1);
+}
+
+.play-looking__member-power.league {
+  filter: hue-rotate(180deg);
+}
+
 @media screen and (min-width: 768px) {
   .play-looking__divider {
     display: block;
