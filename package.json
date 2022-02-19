@@ -3,7 +3,7 @@
   "name": "sendou.ink",
   "version": "3.0.0",
   "scripts": {
-    "deploy": "npm install && npm run build",
+    "deploy": "npm install && migration:apply:prod && npm run build",
     "build": "cross-env NODE_ENV=production remix build",
     "dev:remix": "remix watch",
     "dev:server": "cross-env NODE_ENV=development node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register server/index.ts",
