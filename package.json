@@ -17,6 +17,7 @@
     "results": "ts-node prisma/scripts/endPlusVoting.ts",
     "mongo": "ts-node prisma/scripts/dataFromMongo.ts",
     "top500": "ts-node prisma/scripts/top500jsons.ts",
+    "lfg": "ts-node prisma/scripts/lfgJson.ts",
     "league": "cross-env NODE_OPTIONS=--max-old-space-size=8192 ts-node prisma/scripts/leagueJsons.ts",
     "ex:clean": "cross-env NODE_ENV=development lingui extract --clean && npm run prettier:format",
     "seed": "prisma db seed --preview-feature",
