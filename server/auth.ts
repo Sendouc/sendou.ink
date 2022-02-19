@@ -21,10 +21,6 @@ export function setUpAuth(app: Express): void {
     process.env.DISCORD_CLIENT_SECRET,
     "env var DISCORD_CLIENT_SECRET undefined"
   );
-  invariant(
-    process.env.DISCORD_CALLBACK_URL,
-    "env var DISCORD_CALLBACK_URL undefined"
-  );
   invariant(process.env.COOKIE_SECRET, "env var COOKIE_SECRET undefined");
 
   passport.use(
@@ -32,7 +28,7 @@ export function setUpAuth(app: Express): void {
       {
         clientID: process.env.DISCORD_CLIENT_ID,
         clientSecret: process.env.DISCORD_CLIENT_SECRET,
-        callbackURL: process.env.DISCORD_CALLBACK_URL,
+        callbackURL: `${process.env.FRONT_PAGE_URL}auth/discord/callback`,
         scope: ["identify", "connections"],
       },
       function (_accessToken, refreshToken, loggedInUser, cb) {
