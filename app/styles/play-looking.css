@@ -110,6 +110,11 @@
   margin-block-start: var(--s-2);
 }
 
+.play-looking__card__button-small {
+  font-size: var(--fonts-xxs) !important;
+  margin-block-start: var(--s-1);
+}
+
 .play-looking__member-card {
   display: flex;
   min-width: calc(50% - var(--s-4));

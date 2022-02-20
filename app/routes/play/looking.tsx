@@ -351,6 +351,8 @@ export default function LookingPage() {
         group={data.ownGroup}
         ranked={data.ownGroup.ranked}
         lookingForMatch={false}
+        isOwnGroup
+        isCaptain={data.isCaptain}
       />
       <LookingInfoText lastUpdated={lastUpdated} />
       <hr className="play-looking__divider" />
