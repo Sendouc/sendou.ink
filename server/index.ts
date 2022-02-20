@@ -12,18 +12,30 @@ import { EventTargetRecorder, setUpEvents } from "./events";
 import { setUpMockAuth } from "./mock-auth";
 import { setUpSeed } from "./seed";
 
-const MODE = process.env.NODE_ENV;
-const BUILD_DIR = path.join(process.cwd(), "server/build");
+import * as build from "@remix-run/dev/server-build";
+
+const PUBLIC_DIR = path.join(process.cwd(), "public");
+const BROWSER_BUILD_DIR = "/build/";
 
 const app = express();
 app.disable("x-powered-by");
 app.use(compression());
 
-// You may want to be more aggressive with this caching
-app.use(express.static("public", { maxAge: "1h" }));
-
-// Remix fingerprints its assets so we can cache forever
-app.use(express.static("public/build", { immutable: true, maxAge: "1y" }));
+app.use(
+  express.static("public", {
+    setHeaders(res, pathname) {
+      const relativePath = pathname.replace(PUBLIC_DIR, "");
+      res.setHeader(
+        "Cache-Control",
+        relativePath.startsWith(BROWSER_BUILD_DIR)
+          ? // Remix fingerprints its assets so we can cache forever
+            "public, max-age=31536000, immutable"
+          : // You may want to be more aggressive with this caching
+            "public, max-age=3600"
+      );
+    },
+  })
+);
 
 app.use(morgan("tiny"));
 
@@ -66,37 +78,10 @@ function getLoadContext(req: Express.Request) {
 
 app.all(
   "*",
-  MODE === "production"
-    ? createRequestHandler({
-        build: require("./build"),
-        getLoadContext,
-      })
-    : (req, res, next) => {
-        purgeRequireCache();
-        const build = require("./build");
-        return createRequestHandler({
-          build,
-          mode: MODE,
-          getLoadContext,
-        })(req, res, next);
-      }
+  createRequestHandler({ build, mode: process.env.NODE_ENV, getLoadContext })
 );
 
 const port = process.env.PORT ?? 5800;
 app.listen(port, () => {
   console.log(`Express server listening on port ${port}`);
 });
-
-////////////////////////////////////////////////////////////////////////////////
-function purgeRequireCache() {
-  // purge require cache on requests for "server side HMR" this won't let
-  // you have in-memory objects between requests in development,
-  // alternatively you can set up nodemon/pm2-dev to restart the server on
-  // file changes, we prefer the DX of this though, so we've included it
-  // for you by default
-  for (const key in require.cache) {
-    if (key.startsWith(BUILD_DIR)) {
-      delete require.cache[key];
-    }
-  }
-}

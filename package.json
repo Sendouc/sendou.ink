@@ -10,7 +10,7 @@
     "dev": "concurrently \"npm run dev:remix\" \"npm run dev:server\"",
     "postinstall": "remix setup node",
     "gen": "npx prisma generate",
-    "start": "cross-env NODE_ENV=production node ./server/build/index.js",
+    "start": "cross-env NODE_ENV=production node ./build/index.js",
     "migration:create": "npx prisma migrate dev --create-only",
     "migration:apply:dev": "npx prisma migrate dev",
     "migration:apply:prod": "npx prisma migrate deploy",

@@ -1,38 +1,12 @@
-import fs from "node:fs";
-import path from "node:path";
-import z from "zod";
-import { weapons } from "~/constants";
 import type {
   LookingLoaderData,
   LookingLoaderDataGroup,
 } from "~/routes/play/looking";
+import rawInfos from "./data.json";
 
-const infos = z
-  .record(
-    z.object({
-      weapons: z.array(z.enum(weapons)).optional(),
-      peakXP: z.number().optional(),
-      peakLP: z.number().optional(),
-    })
-  )
-  .parse(
-    JSON.parse(
-      fs
-        .readFileSync(
-          path.join(
-            __dirname,
-            "..",
-            "..",
-            "app",
-            "core",
-            "play",
-            "playerInfos",
-            "data.json"
-          )
-        )
-        .toString()
-    )
-  );
+const infos = rawInfos as Partial<
+  Record<string, { weapons?: string[]; peakXP?: number; peakLP?: number }>
+>;
 
 export function addInfoFromOldSendouInk(
   type: "LEAGUE" | "SOLO",
