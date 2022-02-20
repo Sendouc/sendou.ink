@@ -49,6 +49,7 @@
   width: 2rem;
   height: 2rem;
   transition: transform 0.2s ease-out;
+  visibility: hidden;
 }
 
 .play__type-radio-group__image.checked {
