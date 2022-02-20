@@ -31,7 +31,7 @@ export function MobileNav({
                 })}
                 to={navItem.disabled ? "/" : navItem.name}
                 onClick={closeMenu}
-                data-cy={`mobile-nav-link-${navItem}`}
+                data-cy={`mobile-nav-link-${navItem.name}`}
               >
                 <img
                   className={clsx("layout__mobile-nav__link__icon", {

@@ -123,6 +123,7 @@ export function setUpAuth(app: Express): void {
     return passport.authenticate("discord")(req, res);
   });
   app.get("/auth/discord/callback", (req, res) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const returnTo = req.session?.returnTo ?? process.env.FRONT_PAGE_URL;
     if (req.session?.returnTo) {
       delete req.session.returnTo;
@@ -130,6 +131,7 @@ export function setUpAuth(app: Express): void {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
     return passport.authenticate("discord", {
       failureRedirect: "/login",
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       successRedirect: returnTo,
     })(req, res);
   });

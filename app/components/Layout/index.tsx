@@ -51,7 +51,7 @@ export const Layout = React.memo(function Layout({
                     disabled: navItem.disabled,
                   })}
                   to={navItem.disabled ? "/" : navItem.name}
-                  data-cy={`nav-link-${navItem}`}
+                  data-cy={`nav-link-${navItem.name}`}
                 >
                   <img
                     src={layoutIcon(navItem.name.replace(" ", ""))}
