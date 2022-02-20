@@ -2,12 +2,6 @@ import { SeedVariationsSchema } from "~/utils/schemas";
 import { seed } from "../prisma/seed/script";
 import type { Express } from "express";
 
-declare module "express-session" {
-  export interface SessionData {
-    returnTo?: string;
-  }
-}
-
 export function setUpSeed(app: Express): void {
   if (process.env.NODE_ENV !== "development") return;
 
