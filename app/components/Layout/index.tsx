@@ -7,6 +7,7 @@ import { UserItem } from "./UserItem";
 import { Link } from "remix";
 import { navItems } from "~/constants";
 import { layoutIcon } from "~/utils";
+import clsx from "clsx";
 
 export const Layout = React.memo(function Layout({
   children,
@@ -45,18 +46,20 @@ export const Layout = React.memo(function Layout({
               <div className="layout__nav__column__title">{navGroup.title}</div>
               {navGroup.items.map((navItem) => (
                 <Link
-                  key={navItem}
-                  className="layout__nav__link"
-                  to={navItem}
+                  key={navItem.name}
+                  className={clsx("layout__nav__link", {
+                    disabled: navItem.disabled,
+                  })}
+                  to={navItem.disabled ? "/" : navItem.name}
                   data-cy={`nav-link-${navItem}`}
                 >
                   <img
-                    src={layoutIcon(navItem.replace(" ", ""))}
+                    src={layoutIcon(navItem.name.replace(" ", ""))}
                     className="layout__nav__link__icon"
                     width="32"
                     height="32"
                   />
-                  {navItem}
+                  {navItem.name}
                 </Link>
               ))}
             </div>

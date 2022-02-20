@@ -18,6 +18,7 @@
     "seed:reset": "npx prisma migrate reset --force --skip-generate",
     "lint:ts": "eslint . --ext .ts,.tsx",
     "lint:styles": "stylelint \"app/styles/**/*.css\"",
+    "lsf": "npm run lint:styles -- --fix",
     "prettier:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
     "cy:open": "npx cypress open",

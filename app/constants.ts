@@ -22,19 +22,34 @@ export const checkInClosesDate = (startTime: string): Date => {
 export const navItems = [
   {
     title: "builds",
-    items: ["browse", "gear", "analyzer"],
+    items: [
+      { name: "browse", disabled: true },
+      { name: "gear", disabled: true },
+      { name: "analyzer", disabled: true },
+    ],
   },
   {
     title: "play",
-    items: ["calendar", "play", "Rankings"],
+    items: [
+      { name: "calendar", disabled: true },
+      { name: "play", disabled: false },
+      { name: "rankings", disabled: true },
+    ],
   },
   {
     title: "tools",
-    items: ["planner", "rotations", "top 500"],
+    items: [
+      { name: "planner", disabled: true },
+      { name: "rotations", disabled: true },
+      { name: "top 500", disabled: true },
+    ],
   },
   {
     title: "misc",
-    items: ["badges", "links"],
+    items: [
+      { name: "badges", disabled: true },
+      { name: "links", disabled: true },
+    ],
   },
 ] as const;
 

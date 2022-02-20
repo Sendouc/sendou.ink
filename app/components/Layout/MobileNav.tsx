@@ -24,20 +24,22 @@ export function MobileNav({
             </div>
             {navGroup.items.map((navItem, i) => (
               <Link
-                key={navItem}
+                key={navItem.name}
                 className={clsx("layout__mobile-nav__link", {
                   first: i === 0,
                   last: i + 1 === navGroup.items.length,
                 })}
-                to={navItem}
+                to={navItem.disabled ? "/" : navItem.name}
                 onClick={closeMenu}
                 data-cy={`mobile-nav-link-${navItem}`}
               >
                 <img
-                  className="layout__mobile-nav__link__icon"
-                  src={`/img/layout/${navItem.replace(" ", "")}.webp`}
+                  className={clsx("layout__mobile-nav__link__icon", {
+                    disabled: navItem.disabled,
+                  })}
+                  src={`/img/layout/${navItem.name.replace(" ", "")}.webp`}
                 />
-                <div>{navItem}</div>
+                <div>{navItem.name}</div>
               </Link>
             ))}
           </Fragment>
