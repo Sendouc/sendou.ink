@@ -22,6 +22,7 @@ export function setUpAuth(app: Express): void {
     "env var DISCORD_CLIENT_SECRET undefined"
   );
   invariant(process.env.COOKIE_SECRET, "env var COOKIE_SECRET undefined");
+  invariant(process.env.FRONT_PAGE_URL, "env var FRONT_PAGE_URL undefined");
 
   passport.use(
     new DiscordStrategy(
