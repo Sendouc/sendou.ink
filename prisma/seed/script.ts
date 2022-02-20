@@ -7,7 +7,6 @@ import shuffle from "just-shuffle";
 import path from "path";
 import invariant from "tiny-invariant";
 import { v4 as uuidv4 } from "uuid";
-import { stagesWithIds } from "~/core/stages/stages";
 import { SeedVariations } from "~/utils/schemas";
 import {
   ADMIN_TEST_AVATAR,
@@ -66,7 +65,6 @@ export async function seed(variation?: SeedVariations) {
     const tournament = await tournaments(organization.id);
     await tournamentTeams(tournament.id, userIds, adminUserCreated.id);
     await trustRelationship(nzapUserCreated.id, adminUserCreated.id);
-    await stages();
     await tournamentAddMaps(tournament.id);
     await skills();
 
@@ -379,12 +377,6 @@ export async function seed(variation?: SeedVariations) {
           },
         });
       }
-    }
-
-    async function stages() {
-      return prisma.stage.createMany({
-        data: stagesWithIds(),
-      });
     }
 
     async function lfgGroups(userIds: string[]) {
