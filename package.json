@@ -4,6 +4,7 @@
   "version": "3.0.0",
   "scripts": {
     "deploy": "npm install && npm run migration:apply:prod && npm run build",
+    "build": "cross-env NODE_ENV=production remix build",
     "dev": "cross-env NODE_ENV=development remix build && run-p dev:*",
     "dev:remix": "cross-env NODE_ENV=development remix watch",
     "dev:node": "cross-env NODE_ENV=development nodemon ./build/index.js",
