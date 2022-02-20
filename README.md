@@ -2,16 +2,17 @@ Note: This is the WIP Splatoon 3 version of the site. To see the current live ve
 
 ## Running locally
 
-Prerequisites: [Node.js 16.13](https://nodejs.org/en/)
+Prerequisites: [nvm](https://github.com/nvm-sh/nvm)
 
-1. Run `npm i` to install the dependencies.
-2. Make a copy of `.env.example` that's called `.env` and fill it with values.
+1. Use `nvm use` to switch to the correct Node version.
+2. Run `npm i` to install the dependencies.
+3. Make a copy of `.env.example` that's called `.env` and fill it with values.
 
 - You can check [Prisma's guide](https://www.prisma.io/dataguide/postgresql/setting-up-a-local-postgresql-database) on how to get PostgreSQL set up and running locally.
 - Run `npm run migration:apply:dev` to set up the tables of your database.
 - Run `npm run seed` to seed the database with some test data.
 
-3. Run `npm run dev` to run both the server and frontend.
+4. Run `npm run dev` to run both the server and frontend.
 
 ## File structure
 

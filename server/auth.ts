@@ -1,16 +1,10 @@
 import type { Express } from "express";
 import invariant from "tiny-invariant";
-import session from "express-session";
+import cookieSession from "cookie-session";
 import cookieParser from "cookie-parser";
 import passport from "passport";
 import { Strategy as DiscordStrategy } from "passport-discord";
 import { db } from "../app/utils/db.server";
-
-declare module "express-session" {
-  export interface SessionData {
-    returnTo?: string;
-  }
-}
 
 export function setUpAuth(app: Express): void {
   invariant(
@@ -110,10 +104,10 @@ export function setUpAuth(app: Express): void {
 
   app.use(cookieParser());
   app.use(
-    session({
-      secret: process.env.COOKIE_SECRET,
-      resave: true,
-      saveUninitialized: true,
+    cookieSession({
+      name: "session",
+      keys: [process.env.COOKIE_SECRET],
+      maxAge: 24 * 60 * 60 * 1000 * 30, // one month
     })
   );
   app.use(passport.initialize());
@@ -123,14 +117,14 @@ export function setUpAuth(app: Express): void {
     const returnTo = req.query.origin ?? req.header("Referer");
     if (returnTo) {
       invariant(typeof returnTo === "string", "returnTo is not string");
-      req.session.returnTo = returnTo;
+      if (req.session) req.session.returnTo = returnTo;
     }
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
     return passport.authenticate("discord")(req, res);
   });
   app.get("/auth/discord/callback", (req, res) => {
-    const returnTo = req.session.returnTo ?? process.env.FRONT_PAGE_URL;
-    if (req.session.returnTo) {
+    const returnTo = req.session?.returnTo ?? process.env.FRONT_PAGE_URL;
+    if (req.session?.returnTo) {
       delete req.session.returnTo;
     }
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
@@ -141,7 +135,7 @@ export function setUpAuth(app: Express): void {
   });
 
   app.use(function (req, _res, next) {
-    if (req.session.returnTo) {
+    if (req.session?.returnTo) {
       delete req.session.returnTo;
     }
     next();
