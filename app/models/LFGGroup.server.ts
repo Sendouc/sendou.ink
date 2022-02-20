@@ -16,7 +16,8 @@ export function create({
       type,
       // TWIN starts looking immediately because it makes no sense
       // to pre-add players to the group
-      looking: type === "TWIN",
+      // looking: type === "TWIN",
+      looking: true,
       ranked,
       members: {
         create: {
