@@ -17,6 +17,7 @@ import { Tab } from "~/components/Tab";
 import { LFG_GROUP_FULL_SIZE } from "~/constants";
 import {
   skillToMMR,
+  teamHasSkill,
   teamSkillToApproximateMMR,
   teamSkillToExactMMR,
 } from "~/core/mmr/utils";
@@ -223,7 +224,7 @@ export const loader: LoaderFunction = async ({ context }) => {
     new Set<string>()
   );
 
-  const isRanked = groupsOfType.every((g) => g.ranked);
+  const isRanked = groupsOfType.some((g) => g.ranked);
   const ownGroupWithMembers = groupsOfType.find((g) => g.id === ownGroup.id);
   invariant(ownGroupWithMembers, "ownGroupWithMembers is undefined");
   const ownGroupForResponse: LookingLoaderDataGroup = {
@@ -238,7 +239,7 @@ export const loader: LoaderFunction = async ({ context }) => {
     }),
     ranked: ownGroup.ranked ?? undefined,
     teamMMR:
-      lookingForMatch && isRanked
+      lookingForMatch && isRanked && teamHasSkill(ownGroupWithMembers.members)
         ? {
             exact: true,
             value: teamSkillToExactMMR(ownGroupWithMembers.members),
@@ -289,7 +290,7 @@ export const loader: LoaderFunction = async ({ context }) => {
                   }),
             ranked: ranked(),
             teamMMR:
-              lookingForMatch && isRanked
+              lookingForMatch && group.ranked && teamHasSkill(group.members)
                 ? {
                     exact: false,
                     value: teamSkillToApproximateMMR(group.members),

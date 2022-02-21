@@ -47,6 +47,19 @@ function toTwoDecimals(value: number) {
   return Number(value.toFixed(2));
 }
 
+export function teamHasSkill(teamSkills: TeamSkill[]) {
+  let hasSkill = false;
+
+  for (const { user } of teamSkills) {
+    if (user.skill.length > 0) {
+      hasSkill = true;
+      break;
+    }
+  }
+
+  return hasSkill;
+}
+
 interface AdjustSkill {
   mu: number;
   sigma: number;
