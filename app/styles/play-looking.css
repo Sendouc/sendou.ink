@@ -154,6 +154,16 @@
   gap: var(--s-1);
 }
 
+.play-looking__member-weapons {
+  display: flex;
+  gap: var(--s-1);
+}
+
+.play-looking__member-weapon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
 .play-looking__member-power.league {
   filter: hue-rotate(180deg);
 }

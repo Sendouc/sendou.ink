@@ -1,6 +1,7 @@
 import type { LookingLoaderDataGroup } from "~/routes/play/looking";
 import { layoutIcon } from "~/utils";
 import { Avatar } from "../Avatar";
+import { WeaponImage } from "../WeaponImage";
 
 export function GroupMembers({
   members,
@@ -63,6 +64,17 @@ function Contents({ members }: { members: LookingLoaderDataGroup["members"] }) {
                   title="Peak League Power"
                 />{" "}
                 {member.peakLP}
+              </div>
+            )}
+            {member.weapons && (
+              <div className="play-looking__member-weapons">
+                {member.weapons.map((wpn) => (
+                  <WeaponImage
+                    className="play-looking__member-weapon"
+                    key={wpn}
+                    weapon={wpn}
+                  />
+                ))}{" "}
               </div>
             )}
           </div>
