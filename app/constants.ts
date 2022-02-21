@@ -15,6 +15,9 @@ export const TOURNAMENT_TEAM_ROSTER_MAX_SIZE = 6;
 export const TOURNAMENT_CHECK_IN_CLOSING_MINUTES_FROM_START = 10;
 export const BEST_OF_OPTIONS = [3, 5, 7, 9] as const;
 
+/** How many minutes a group has to be inactive before being hidden from the looking page */
+export const LFG_GROUP_INACTIVE_MINUTES = 30;
+
 export const checkInClosesDate = (startTime: string): Date => {
   return new Date(new Date(startTime).getTime() - 1000 * 10);
 };

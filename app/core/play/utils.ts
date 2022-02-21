@@ -1,4 +1,5 @@
 import invariant from "tiny-invariant";
+import { LFG_GROUP_INACTIVE_MINUTES } from "~/constants";
 import type { UniteGroupsArgs } from "~/models/LFGGroup.server";
 
 export interface UniteGroupInfoArg {
@@ -84,9 +85,17 @@ export function groupExpiredDates(): Record<
   Date
 > {
   const now = new Date();
-  const thirtyMinutesAgo = new Date(now.getTime() - 60_000 * 30);
+  const thirtyMinutesAgo = new Date(
+    now.getTime() - 60_000 * LFG_GROUP_INACTIVE_MINUTES
+  );
   const now2 = new Date();
-  const twentyMinutesAgo = new Date(now2.getTime() - 60_000 * 20);
+  const twentyMinutesAgo = new Date(
+    now2.getTime() - 60_000 * (LFG_GROUP_INACTIVE_MINUTES - 10)
+  );
 
   return { EXPIRED: thirtyMinutesAgo, ALMOST_EXPIRED: twentyMinutesAgo };
+}
+
+export function groupWillBeInactiveAt(timestamp: number) {
+  return new Date(timestamp + 60_000 * LFG_GROUP_INACTIVE_MINUTES);
 }
