@@ -1,4 +1,4 @@
-import type { LfgGroupType } from "@prisma/client";
+import type { LfgGroupType, Prisma } from "@prisma/client";
 import { generateMapListForLfgMatch } from "~/core/play/mapList";
 import { db } from "~/utils/db.server";
 
@@ -180,6 +180,7 @@ export function findActiveByMember(user: { id: string }) {
   });
 }
 
+export type FindLooking = Prisma.PromiseReturnType<typeof findLooking>;
 export function findLooking() {
   return db.lfgGroup.findMany({
     where: {

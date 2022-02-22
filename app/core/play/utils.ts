@@ -1,6 +1,14 @@
 import invariant from "tiny-invariant";
-import { LFG_GROUP_INACTIVE_MINUTES } from "~/constants";
-import type { UniteGroupsArgs } from "~/models/LFGGroup.server";
+import { LFG_GROUP_FULL_SIZE, LFG_GROUP_INACTIVE_MINUTES } from "~/constants";
+import * as LFGGroup from "~/models/LFGGroup.server";
+import { LookingLoaderData } from "~/routes/play/looking";
+import { Unpacked } from "~/utils";
+import {
+  skillToMMR,
+  teamHasSkill,
+  teamSkillToApproximateMMR,
+} from "../mmr/utils";
+import { canUniteWithGroup } from "./validators";
 
 export interface UniteGroupInfoArg {
   id: string;
@@ -9,7 +17,7 @@ export interface UniteGroupInfoArg {
 export function uniteGroupInfo(
   groupA: UniteGroupInfoArg,
   groupB: UniteGroupInfoArg
-): UniteGroupsArgs {
+): LFGGroup.UniteGroupsArgs {
   const survivingGroupId =
     groupA.memberCount > groupB.memberCount ? groupA.id : groupB.id;
   const otherGroupId = survivingGroupId === groupA.id ? groupB.id : groupA.id;
@@ -98,4 +106,87 @@ export function groupExpiredDates(): Record<
 
 export function groupWillBeInactiveAt(timestamp: number) {
   return new Date(timestamp + 60_000 * LFG_GROUP_INACTIVE_MINUTES);
+}
+
+export function otherGroupsForResponse({
+  groups,
+  likes,
+  lookingForMatch,
+  ownGroup,
+}: {
+  groups: LFGGroup.FindLooking;
+  likes: {
+    given: Set<string>;
+    received: Set<string>;
+  };
+  lookingForMatch: boolean;
+  ownGroup: Unpacked<LFGGroup.FindLooking>;
+}) {
+  const { EXPIRED: expiredDate } = groupExpiredDates();
+
+  return groups
+    .filter(
+      (group) =>
+        (lookingForMatch && group.members.length === LFG_GROUP_FULL_SIZE) ||
+        canUniteWithGroup({
+          ownGroupType: ownGroup.type,
+          ownGroupSize: ownGroup.members.length,
+          otherGroupSize: group.members.length,
+        })
+    )
+    .filter((group) => group.id !== ownGroup.id)
+    .filter((group) => group.lastActionAt.getTime() > expiredDate.getTime())
+    .map((group) => {
+      const ranked = () => {
+        if (lookingForMatch && !ownGroup.ranked) return false;
+
+        return group.ranked ?? undefined;
+      };
+      return {
+        id: group.id,
+        // When looking for a match ranked groups are censored
+        // and instead we only reveal their approximate skill level
+        members:
+          ownGroup.ranked && group.ranked && lookingForMatch
+            ? undefined
+            : group.members.map((m) => {
+                const { skill, ...rest } = m.user;
+
+                return {
+                  ...rest,
+                  MMR: skillToMMR(skill),
+                };
+              }),
+        ranked: ranked(),
+        teamMMR:
+          lookingForMatch && group.ranked && teamHasSkill(group.members)
+            ? {
+                exact: false,
+                value: teamSkillToApproximateMMR(group.members),
+              }
+            : undefined,
+      };
+    })
+    .reduce(
+      (
+        acc: Omit<
+          LookingLoaderData,
+          "ownGroup" | "type" | "isCaptain" | "lastActionAtTimestamp"
+        >,
+        group
+      ) => {
+        // likesReceived first so that if both received like and
+        // given like then handle this edge case by just displaying the
+        // group as waiting like back
+        if (likes.received.has(group.id)) {
+          acc.likerGroups.push(group);
+        } else if (likes.given.has(group.id)) {
+          acc.likedGroups.push(group);
+        } else {
+          acc.neutralGroups.push(group);
+        }
+        return acc;
+      },
+      { likedGroups: [], neutralGroups: [], likerGroups: [] }
+    );
 }

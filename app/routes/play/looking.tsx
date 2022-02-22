@@ -10,18 +10,18 @@ import {
 } from "remix";
 import invariant from "tiny-invariant";
 import { z } from "zod";
+import { FinishedGroup } from "~/components/play/FinishedGroup";
 import { GroupCard } from "~/components/play/GroupCard";
 import { LookingInfoText } from "~/components/play/LookingInfoText";
-import { FinishedGroup } from "~/components/play/FinishedGroup";
 import { Tab } from "~/components/Tab";
 import { LFG_GROUP_FULL_SIZE } from "~/constants";
 import {
   skillToMMR,
   teamHasSkill,
-  teamSkillToApproximateMMR,
   teamSkillToExactMMR,
 } from "~/core/mmr/utils";
-import { groupExpiredDates, uniteGroupInfo } from "~/core/play/utils";
+import { addInfoFromOldSendouInk } from "~/core/play/playerInfos/playerInfos.server";
+import { otherGroupsForResponse, uniteGroupInfo } from "~/core/play/utils";
 import { canUniteWithGroup, isGroupAdmin } from "~/core/play/validators";
 import { usePolling } from "~/hooks/common";
 import * as LFGGroup from "~/models/LFGGroup.server";
@@ -33,7 +33,6 @@ import {
   UserLean,
   validate,
 } from "~/utils";
-import { addInfoFromOldSendouInk } from "~/core/play/playerInfos/playerInfos.server";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -215,117 +214,57 @@ export const loader: LoaderFunction = async ({ context }) => {
 
   const groupsOfType = groups.filter((g) => g.type === ownGroup.type);
 
-  const likesGiven = ownGroup.likedGroups.reduce(
-    (acc, lg) => acc.add(lg.targetId),
-    new Set<string>()
-  );
-  const likesReceived = ownGroup.likesReceived.reduce(
-    (acc, lg) => acc.add(lg.likerId),
-    new Set<string>()
-  );
-
   const isRanked = groupsOfType.some((g) => g.ranked);
   const ownGroupWithMembers = groupsOfType.find((g) => g.id === ownGroup.id);
   invariant(ownGroupWithMembers, "ownGroupWithMembers is undefined");
-  const ownGroupForResponse: LookingLoaderDataGroup = {
-    id: ownGroup.id,
-    members: ownGroupWithMembers.members.map((m) => {
-      const { skill, ...rest } = m.user;
-
-      return {
-        ...rest,
-        MMR: lookingForMatch && ownGroup.ranked ? undefined : skillToMMR(skill),
-      };
-    }),
-    ranked: ownGroup.ranked ?? undefined,
-    teamMMR:
-      lookingForMatch && isRanked && teamHasSkill(ownGroupWithMembers.members)
-        ? {
-            exact: true,
-            value: teamSkillToExactMMR(ownGroupWithMembers.members),
-          }
-        : undefined,
-  };
-
-  const { EXPIRED: expiredDate } = groupExpiredDates();
 
   return json<LookingLoaderData>(
     addInfoFromOldSendouInk(
       ownGroup.type === "VERSUS" ? "SOLO" : "LEAGUE",
       !lookingForMatch,
       {
-        ownGroup: ownGroupForResponse,
+        ownGroup: {
+          id: ownGroup.id,
+          members: ownGroupWithMembers.members.map((m) => {
+            const { skill, ...rest } = m.user;
+
+            return {
+              ...rest,
+              MMR:
+                lookingForMatch && ownGroup.ranked
+                  ? undefined
+                  : skillToMMR(skill),
+            };
+          }),
+          ranked: ownGroup.ranked ?? undefined,
+          teamMMR:
+            lookingForMatch &&
+            isRanked &&
+            teamHasSkill(ownGroupWithMembers.members)
+              ? {
+                  exact: true,
+                  value: teamSkillToExactMMR(ownGroupWithMembers.members),
+                }
+              : undefined,
+        },
         type: ownGroup.type,
         isCaptain: isGroupAdmin({ group: ownGroup, user }),
         lastActionAtTimestamp: ownGroup.lastActionAt.getTime(),
-        ...groupsOfType
-          .filter(
-            (group) =>
-              (lookingForMatch &&
-                group.members.length === LFG_GROUP_FULL_SIZE) ||
-              canUniteWithGroup({
-                ownGroupType: ownGroup.type,
-                ownGroupSize: ownGroup.members.length,
-                otherGroupSize: group.members.length,
-              })
-          )
-          .filter((group) => group.id !== ownGroup.id)
-          .filter(
-            (group) => group.lastActionAt.getTime() > expiredDate.getTime()
-          )
-          .map((group) => {
-            const ranked = () => {
-              if (lookingForMatch && !ownGroup.ranked) return false;
-
-              return group.ranked ?? undefined;
-            };
-            return {
-              id: group.id,
-              // When looking for a match ranked groups are censored
-              // and instead we only reveal their approximate skill level
-              members:
-                ownGroup.ranked && group.ranked && lookingForMatch
-                  ? undefined
-                  : group.members.map((m) => {
-                      const { skill, ...rest } = m.user;
-
-                      return {
-                        ...rest,
-                        MMR: skillToMMR(skill),
-                      };
-                    }),
-              ranked: ranked(),
-              teamMMR:
-                lookingForMatch && group.ranked && teamHasSkill(group.members)
-                  ? {
-                      exact: false,
-                      value: teamSkillToApproximateMMR(group.members),
-                    }
-                  : undefined,
-            };
-          })
-          .reduce(
-            (
-              acc: Omit<
-                LookingLoaderData,
-                "ownGroup" | "type" | "isCaptain" | "lastActionAtTimestamp"
-              >,
-              group
-            ) => {
-              // likesReceived first so that if both received like and
-              // given like then handle this edge case by just displaying the
-              // group as waiting like back
-              if (likesReceived.has(group.id)) {
-                acc.likerGroups.push(group);
-              } else if (likesGiven.has(group.id)) {
-                acc.likedGroups.push(group);
-              } else {
-                acc.neutralGroups.push(group);
-              }
-              return acc;
-            },
-            { likedGroups: [], neutralGroups: [], likerGroups: [] }
-          ),
+        ...otherGroupsForResponse({
+          groups,
+          lookingForMatch,
+          ownGroup,
+          likes: {
+            received: ownGroup.likesReceived.reduce(
+              (acc, lg) => acc.add(lg.likerId),
+              new Set<string>()
+            ),
+            given: ownGroup.likedGroups.reduce(
+              (acc, lg) => acc.add(lg.targetId),
+              new Set<string>()
+            ),
+          },
+        }),
       }
     )
   );
