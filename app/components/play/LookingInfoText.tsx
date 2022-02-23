@@ -1,8 +1,11 @@
-import { Form, useLoaderData } from "remix";
-import { LookingLoaderData } from "~/routes/play/looking";
-import * as React from "react";
-import { groupExpiredDates, groupWillBeInactiveAt } from "~/core/play/utils";
 import clsx from "clsx";
+import * as React from "react";
+import { Form, useLoaderData } from "remix";
+import {
+  groupExpirationStatus,
+  groupWillBeInactiveAt,
+} from "~/core/play/utils";
+import { LookingLoaderData } from "~/routes/play/looking";
 import { Button } from "../Button";
 
 const CONTAINER_CLASSNAME = "play-looking__info-text";
@@ -19,21 +22,9 @@ export function LookingInfoText({ lastUpdated }: { lastUpdated: Date }) {
     return () => clearInterval(timer);
   }, []);
 
-  const groupExpirationStatus = (():
-    | undefined
-    | "ALMOST_EXPIRED"
-    | "EXPIRED" => {
-    const { EXPIRED: expiredDate, ALMOST_EXPIRED: almostExpiredDate } =
-      groupExpiredDates();
-    if (expiredDate.getTime() > data.lastActionAtTimestamp) return "EXPIRED";
-    if (almostExpiredDate.getTime() > data.lastActionAtTimestamp) {
-      return "ALMOST_EXPIRED";
-    }
-  })();
-
-  if (groupExpirationStatus) {
+  if (groupExpirationStatus(data.lastActionAtTimestamp)) {
     const text =
-      groupExpirationStatus === "EXPIRED"
+      groupExpirationStatus(data.lastActionAtTimestamp) === "EXPIRED"
         ? "Your group has been hidden due to inactivity"
         : `Without any activity your group will be hidden at ${groupWillBeInactiveAt(
             data.lastActionAtTimestamp
@@ -42,7 +33,8 @@ export function LookingInfoText({ lastUpdated }: { lastUpdated: Date }) {
       <Form method="post">
         <div
           className={clsx(CONTAINER_CLASSNAME, {
-            expired: groupExpirationStatus === "EXPIRED",
+            expired:
+              groupExpirationStatus(data.lastActionAtTimestamp) === "EXPIRED",
           })}
         >
           {text}. Click{" "}

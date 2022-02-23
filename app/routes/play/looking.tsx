@@ -21,7 +21,11 @@ import {
   teamSkillToExactMMR,
 } from "~/core/mmr/utils";
 import { addInfoFromOldSendouInk } from "~/core/play/playerInfos/playerInfos.server";
-import { otherGroupsForResponse, uniteGroupInfo } from "~/core/play/utils";
+import {
+  groupExpirationStatus,
+  otherGroupsForResponse,
+  uniteGroupInfo,
+} from "~/core/play/utils";
 import { canUniteWithGroup, isGroupAdmin } from "~/core/play/validators";
 import { usePolling } from "~/hooks/common";
 import * as LFGGroup from "~/models/LFGGroup.server";
@@ -292,6 +296,10 @@ export default function LookingPage() {
     },
   ] as const;
 
+  const canTakeAction =
+    data.isCaptain &&
+    groupExpirationStatus(data.lastActionAtTimestamp) !== "EXPIRED";
+
   return (
     <div className="container">
       <GroupCard
@@ -299,7 +307,8 @@ export default function LookingPage() {
         ranked={data.ownGroup.ranked}
         lookingForMatch={false}
         isOwnGroup
-        isCaptain={data.isCaptain}
+        // we can stop looking even if the group expired
+        canTakeAction={data.isCaptain}
       />
       <LookingInfoText lastUpdated={lastUpdated} />
       <hr className="play-looking__divider" />
@@ -317,7 +326,7 @@ export default function LookingPage() {
                   <GroupCard
                     key={group.id}
                     group={group}
-                    isCaptain={data.isCaptain}
+                    canTakeAction={canTakeAction}
                     type={column.type}
                     ranked={
                       column.type === "LIKES_RECEIVED" && !lookingForMatch
@@ -342,7 +351,7 @@ export default function LookingPage() {
                   <GroupCard
                     key={group.id}
                     group={group}
-                    isCaptain={data.isCaptain}
+                    canTakeAction={canTakeAction}
                     type={column.type}
                     ranked={
                       column.type === "LIKES_RECEIVED" && !lookingForMatch

@@ -108,6 +108,15 @@ export function groupWillBeInactiveAt(timestamp: number) {
   return new Date(timestamp + 60_000 * LFG_GROUP_INACTIVE_MINUTES);
 }
 
+export function groupExpirationStatus(lastActionAtTimestamp: number) {
+  const { EXPIRED: expiredDate, ALMOST_EXPIRED: almostExpiredDate } =
+    groupExpiredDates();
+  if (expiredDate.getTime() > lastActionAtTimestamp) return "EXPIRED";
+  if (almostExpiredDate.getTime() > lastActionAtTimestamp) {
+    return "ALMOST_EXPIRED";
+  }
+}
+
 export function otherGroupsForResponse({
   groups,
   likes,

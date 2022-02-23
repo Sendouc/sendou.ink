@@ -9,14 +9,14 @@ import { GroupMembers } from "./GroupMembers";
 
 export function GroupCard({
   group,
-  isCaptain = false,
+  canTakeAction = false,
   type,
   ranked,
   lookingForMatch,
   isOwnGroup = false,
 }: {
   group: LookingLoaderDataGroup;
-  isCaptain?: boolean;
+  canTakeAction?: boolean;
   type?: "LIKES_GIVEN" | "NEUTRAL" | "LIKES_RECEIVED";
   ranked?: boolean;
   lookingForMatch: boolean;
@@ -67,7 +67,7 @@ export function GroupCard({
             value={group.members?.length ?? -1}
           />
         )}
-        {isCaptain && (
+        {canTakeAction && (
           <Button
             className={
               isOwnGroup
