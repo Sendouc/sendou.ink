@@ -80,7 +80,7 @@
   font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
   margin-block-start: 1px;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 
 .play-match__player {
