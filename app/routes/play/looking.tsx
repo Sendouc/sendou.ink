@@ -255,7 +255,7 @@ export const loader: LoaderFunction = async ({ context }) => {
         isCaptain: isGroupAdmin({ group: ownGroup, user }),
         lastActionAtTimestamp: ownGroup.lastActionAt.getTime(),
         ...otherGroupsForResponse({
-          groups,
+          groups: groupsOfType,
           lookingForMatch,
           ownGroup,
           likes: {
