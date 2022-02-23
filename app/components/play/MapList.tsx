@@ -78,7 +78,9 @@ export function MapList({ mapList, canSubmitScore, groupIds }: MapListProps) {
           </li>
         );
       })}
-      {canSubmitScore && <Submitter mapList={mapList} winners={winners} />}
+      {canSubmitScore && (
+        <Submitter mapList={mapList} winners={winners} groupIds={groupIds} />
+      )}
     </ol>
   );
 }
@@ -86,9 +88,14 @@ export function MapList({ mapList, canSubmitScore, groupIds }: MapListProps) {
 function Submitter({
   mapList,
   winners,
+  groupIds,
 }: {
   mapList: MapListProps["mapList"];
   winners: string[];
+  groupIds: {
+    our: string;
+    their: string;
+  };
 }) {
   const warningText = scoreValid(winners, mapList.length)
     ? undefined
@@ -98,10 +105,9 @@ function Submitter({
     return <div className="play-match__error-text">{warningText}</div>;
   }
 
-  const ids = Array.from(new Set(winners));
   const score = winners.reduce(
     (acc: [number, number], winnerId) => {
-      if (winnerId === ids[0]) acc[0]++;
+      if (winnerId === groupIds.our) acc[0]++;
       else acc[1]++;
 
       return acc;
