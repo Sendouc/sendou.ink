@@ -10,6 +10,7 @@ import {
 } from "remix";
 import invariant from "tiny-invariant";
 import { z } from "zod";
+import { Alert } from "~/components/Alert";
 import { FinishedGroup } from "~/components/play/FinishedGroup";
 import { GroupCard } from "~/components/play/GroupCard";
 import { LookingInfoText } from "~/components/play/LookingInfoText";
@@ -300,6 +301,12 @@ export default function LookingPage() {
     data.isCaptain &&
     groupExpirationStatus(data.lastActionAtTimestamp) !== "EXPIRED";
 
+  const thereIsAGroup =
+    data.likedGroups.length +
+      data.likerGroups.length +
+      data.neutralGroups.length >
+    0;
+
   return (
     <div className="container">
       <GroupCard
@@ -312,60 +319,66 @@ export default function LookingPage() {
       />
       <LookingInfoText lastUpdated={lastUpdated} />
       <hr className="play-looking__divider" />
-      <Tab
-        containerClassName="play-looking__tabs"
-        tabListClassName="play-looking__tab-list"
-        defaultIndex={1}
-        tabs={columns.map((column) => ({
-          id: column.type,
-          title: column.title,
-          content: (
-            <div className="play-looking__cards">
-              {column.groups.map((group) => {
-                return (
-                  <GroupCard
-                    key={group.id}
-                    group={group}
-                    canTakeAction={canTakeAction}
-                    type={column.type}
-                    ranked={
-                      column.type === "LIKES_RECEIVED" && !lookingForMatch
-                        ? data.ownGroup.ranked
-                        : group.ranked
-                    }
-                    lookingForMatch={lookingForMatch}
-                  />
-                );
-              })}
-            </div>
-          ),
-        }))}
-      />
-      <div className="play-looking__columns">
-        {columns.map((column) => (
-          <div key={column.type}>
-            <h2 className="play-looking__column-header">{column.title}</h2>
-            <div className="play-looking__cards">
-              {column.groups.map((group) => {
-                return (
-                  <GroupCard
-                    key={group.id}
-                    group={group}
-                    canTakeAction={canTakeAction}
-                    type={column.type}
-                    ranked={
-                      column.type === "LIKES_RECEIVED" && !lookingForMatch
-                        ? data.ownGroup.ranked
-                        : group.ranked
-                    }
-                    lookingForMatch={lookingForMatch}
-                  />
-                );
-              })}
-            </div>
+      {thereIsAGroup ? (
+        <>
+          <Tab
+            containerClassName="play-looking__tabs"
+            tabListClassName="play-looking__tab-list"
+            defaultIndex={1}
+            tabs={columns.map((column) => ({
+              id: column.type,
+              title: column.title,
+              content: (
+                <div className="play-looking__cards">
+                  {column.groups.map((group) => {
+                    return (
+                      <GroupCard
+                        key={group.id}
+                        group={group}
+                        canTakeAction={canTakeAction}
+                        type={column.type}
+                        ranked={
+                          column.type === "LIKES_RECEIVED" && !lookingForMatch
+                            ? data.ownGroup.ranked
+                            : group.ranked
+                        }
+                        lookingForMatch={lookingForMatch}
+                      />
+                    );
+                  })}
+                </div>
+              ),
+            }))}
+          />
+          <div className="play-looking__columns">
+            {columns.map((column) => (
+              <div key={column.type}>
+                <h2 className="play-looking__column-header">{column.title}</h2>
+                <div className="play-looking__cards">
+                  {column.groups.map((group) => {
+                    return (
+                      <GroupCard
+                        key={group.id}
+                        group={group}
+                        canTakeAction={canTakeAction}
+                        type={column.type}
+                        ranked={
+                          column.type === "LIKES_RECEIVED" && !lookingForMatch
+                            ? data.ownGroup.ranked
+                            : group.ranked
+                        }
+                        lookingForMatch={lookingForMatch}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </>
+      ) : (
+        <Alert type="info">Right now there is no other group looking.</Alert>
+      )}
     </div>
   );
 }
