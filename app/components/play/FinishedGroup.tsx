@@ -13,7 +13,7 @@ export function FinishedGroup() {
         <GroupCard group={data.ownGroup} lookingForMatch={false} />
         <div className="play-looking__waves-text">
           This is your group! You can reach out to them on{" "}
-          <a href={DISCORD_URL}>our Discord</a> in the #groups-meetup channel.
+          <a href={DISCORD_URL}>our Discord</a> in the #group-meetup channel.
         </div>
       </div>
       <div className="play-looking__waves-button">
