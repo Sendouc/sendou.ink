@@ -91,10 +91,12 @@
 }
 
 .play-match__score {
+  display: grid;
   border-radius: var(--rounded);
   font-size: var(--fonts-lg);
   font-weight: var(--bold);
   grid-column: 1 / 3;
+  place-items: center;
 }
 
 .play-match__score.winner {
