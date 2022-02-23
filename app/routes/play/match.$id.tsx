@@ -43,9 +43,13 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const meta: MetaFunction = ({ data }: { data: LFGMatchLoaderData }) => {
+export const meta: MetaFunction = ({
+  data,
+}: {
+  data: Nullable<LFGMatchLoaderData>;
+}) => {
   return {
-    title: data.isOwnMatch
+    title: data?.isOwnMatch
       ? makeTitle(
           `vs. ${listToUserReadableString(
             data.groups[1].members.map(
