@@ -29,7 +29,6 @@ export const navItems: {
   name: string;
   imageSrc?: string;
 }[] = [
-  { code: "splatoon3", name: "Splatoon 3", imageSrc: "splat" },
   { code: "xsearch", name: "Browser" },
   { code: "xtrends", name: "Tier List" },
   { code: "leaderboards", name: "Leaderboards" },
