@@ -70,6 +70,9 @@ const lookingActionSchema = z.union([
     _action: z.literal("LOOK_AGAIN"),
   }),
   z.object({
+    _action: z.literal("LEAVE_GROUP"),
+  }),
+  z.object({
     _action: z.literal("UNEXPIRE"),
   }),
 ]);
@@ -84,10 +87,12 @@ export const action: ActionFunction = async ({ request, context }) => {
   const ownGroup = await LFGGroup.findActiveByMember(user);
   validate(ownGroup, "No active group");
   validate(ownGroup.looking, "Group is not looking");
-  validate(isGroupAdmin({ group: ownGroup, user }), "Not group admin");
 
+  const validateIsGroupAdmin = () =>
+    validate(isGroupAdmin({ group: ownGroup, user }), "Not group admin");
   switch (data._action) {
     case "UNITE_GROUPS": {
+      validateIsGroupAdmin();
       validate(
         canUniteWithGroup({
           ownGroupType: ownGroup.type,
@@ -132,6 +137,7 @@ export const action: ActionFunction = async ({ request, context }) => {
       break;
     }
     case "MATCH_UP": {
+      validateIsGroupAdmin();
       const groupToMatchUpWith = await LFGGroup.findById(data.targetGroupId);
       validate(groupToMatchUpWith, "Invalid targetGroupId");
 
@@ -142,6 +148,7 @@ export const action: ActionFunction = async ({ request, context }) => {
       break;
     }
     case "UNLIKE": {
+      validateIsGroupAdmin();
       await LFGGroup.unlike({
         likerId: ownGroup.id,
         targetId: data.targetGroupId,
@@ -149,6 +156,7 @@ export const action: ActionFunction = async ({ request, context }) => {
       break;
     }
     case "LIKE": {
+      validateIsGroupAdmin();
       await LFGGroup.like({
         likerId: ownGroup.id,
         targetId: data.targetGroupId,
@@ -156,10 +164,16 @@ export const action: ActionFunction = async ({ request, context }) => {
       break;
     }
     case "LOOK_AGAIN": {
+      validateIsGroupAdmin();
       await LFGGroup.setInactive(ownGroup.id);
       return redirect("/play");
     }
+    case "LEAVE_GROUP": {
+      await LFGGroup.leaveGroup({ memberId: user.id, groupId: ownGroup.id });
+      return redirect("/play");
+    }
     case "UNEXPIRE": {
+      validateIsGroupAdmin();
       await LFGGroup.unexpire(ownGroup.id);
       break;
     }
@@ -288,12 +302,23 @@ export default function LookingPage() {
   const lookingForMatch = data.ownGroup.members?.length === LFG_GROUP_FULL_SIZE;
 
   const columns = [
-    { type: "LIKES_GIVEN", groups: data.likedGroups, title: "Liked" },
-    { type: "NEUTRAL", groups: data.neutralGroups, title: "Neutral" },
+    {
+      type: "LIKES_GIVEN",
+      groups: data.likedGroups,
+      title: "Liked",
+      action: "UNLIKE",
+    },
+    {
+      type: "NEUTRAL",
+      groups: data.neutralGroups,
+      title: "Neutral",
+      action: "LIKE",
+    },
     {
       type: "LIKES_RECEIVED",
       groups: data.likerGroups,
       title: lookingForMatch ? "Match up" : "Group up",
+      action: lookingForMatch ? "MATCH_UP" : "UNITE_GROUPS",
     },
   ] as const;
 
@@ -312,10 +337,11 @@ export default function LookingPage() {
       <GroupCard
         group={data.ownGroup}
         ranked={data.ownGroup.ranked}
-        lookingForMatch={false}
         isOwnGroup
-        // we can stop looking even if the group expired
-        canTakeAction={data.isCaptain}
+        action={data.isCaptain ? "LOOK_AGAIN" : "LEAVE_GROUP"}
+        // we can stop looking or leave team
+        // even if team is expired
+        showAction
       />
       <LookingInfoText lastUpdated={lastUpdated} />
       <hr className="play-looking__divider" />
@@ -335,14 +361,13 @@ export default function LookingPage() {
                       <GroupCard
                         key={group.id}
                         group={group}
-                        canTakeAction={canTakeAction}
-                        type={column.type}
+                        action={column.action}
+                        showAction={canTakeAction}
                         ranked={
                           column.type === "LIKES_RECEIVED" && !lookingForMatch
                             ? data.ownGroup.ranked
                             : group.ranked
                         }
-                        lookingForMatch={lookingForMatch}
                       />
                     );
                   })}
@@ -360,14 +385,13 @@ export default function LookingPage() {
                       <GroupCard
                         key={group.id}
                         group={group}
-                        canTakeAction={canTakeAction}
-                        type={column.type}
+                        action={column.action}
+                        showAction={canTakeAction}
                         ranked={
                           column.type === "LIKES_RECEIVED" && !lookingForMatch
                             ? data.ownGroup.ranked
                             : group.ranked
                         }
-                        lookingForMatch={lookingForMatch}
                       />
                     );
                   })}

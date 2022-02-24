@@ -9,39 +9,47 @@ import { GroupMembers } from "./GroupMembers";
 
 export function GroupCard({
   group,
-  canTakeAction = false,
-  type,
+  action,
+  showAction,
   ranked,
-  lookingForMatch,
   isOwnGroup = false,
 }: {
   group: LookingLoaderDataGroup;
-  canTakeAction?: boolean;
-  type?: "LIKES_GIVEN" | "NEUTRAL" | "LIKES_RECEIVED";
+  action: Exclude<LookingActionSchema["_action"], "UNEXPIRE">;
+  showAction: boolean;
   ranked?: boolean;
-  lookingForMatch: boolean;
   isOwnGroup?: boolean;
 }) {
   const fetcher = useFetcher();
 
   const buttonText = () => {
-    if (isOwnGroup) return "Stop looking";
-    if (type === "LIKES_GIVEN") return "Undo";
-    if (type === "NEUTRAL") return "Let's play?";
-
-    return lookingForMatch ? "Match up" : "Group up";
-  };
-  const buttonValue = (): LookingActionSchema["_action"] => {
-    if (isOwnGroup) return "LOOK_AGAIN";
-    if (type === "LIKES_GIVEN") return "UNLIKE";
-    if (type === "NEUTRAL") return "LIKE";
-
-    return lookingForMatch ? "MATCH_UP" : "UNITE_GROUPS";
+    switch (action) {
+      case "LEAVE_GROUP":
+        return "Leave group";
+      case "LIKE":
+        return "Let's play?";
+      case "UNLIKE":
+        return "Undo";
+      case "UNITE_GROUPS":
+        return "Group up";
+      case "MATCH_UP":
+        return "Match up";
+      case "LOOK_AGAIN":
+        return "Stop looking";
+      default:
+        throw new Error(`Invalid group action type: ${action}`);
+    }
   };
   const buttonVariant = (): ButtonProps["variant"] => {
-    if (isOwnGroup) return "minimal-destructive";
-
-    return type === "LIKES_GIVEN" ? "destructive" : undefined;
+    switch (action) {
+      case "LEAVE_GROUP":
+      case "LOOK_AGAIN":
+        return "minimal-destructive";
+      case "UNLIKE":
+        return "destructive";
+      default:
+        return undefined;
+    }
   };
 
   return (
@@ -60,14 +68,14 @@ export function GroupCard({
           </div>
         )}
         <input type="hidden" name="targetGroupId" value={group.id} />
-        {type === "LIKES_RECEIVED" && (
+        {action === "UNITE_GROUPS" && (
           <input
             type="hidden"
             name="targetGroupSize"
             value={group.members?.length ?? -1}
           />
         )}
-        {canTakeAction && (
+        {showAction && (
           <Button
             className={
               isOwnGroup
@@ -76,7 +84,7 @@ export function GroupCard({
             }
             type="submit"
             name="_action"
-            value={buttonValue()}
+            value={action}
             tiny
             variant={buttonVariant()}
             loading={fetcher.state !== "idle"}

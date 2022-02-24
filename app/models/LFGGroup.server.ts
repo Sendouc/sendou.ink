@@ -234,6 +234,28 @@ export function setInactive(id: string) {
   });
 }
 
+export function leaveGroup({
+  groupId,
+  memberId,
+}: {
+  groupId: string;
+  memberId: string;
+}) {
+  // delete many so we don't throw in case
+  // the group was just integrated into another
+  // group
+  return db.lfgGroupMember.deleteMany({
+    where: {
+      groupId,
+      memberId,
+      // no escaping group if match has been formed
+      group: {
+        matchId: null,
+      },
+    },
+  });
+}
+
 export function unexpire(groupId: string) {
   return db.lfgGroup.update({
     where: {
