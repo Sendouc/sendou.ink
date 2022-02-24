@@ -40,7 +40,14 @@ const Nav = () => {
             }
             pl={2}
           >
-            <MyLink href={"/" + code} isColored={false} noUnderline>
+            <MyLink
+              isExternal={code === "sendouq"}
+              href={
+                code === "sendouq" ? "https://beta.sendou.ink/play" : "/" + code
+              }
+              isColored={false}
+              noUnderline
+            >
               <Flex
                 width="100%"
                 rounded="lg"

@@ -29,6 +29,7 @@ export const navItems: {
   name: string;
   imageSrc?: string;
 }[] = [
+  { code: "sendouq", name: "Sendouq" },
   { code: "xsearch", name: "Browser" },
   { code: "xtrends", name: "Tier List" },
   { code: "leaderboards", name: "Leaderboards" },
