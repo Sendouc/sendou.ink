@@ -36,10 +36,17 @@ function Contents({ members }: { members: LookingLoaderDataGroup["members"] }) {
       {members?.map((member) => {
         return (
           <div key={member.id} className="play-looking__member-card">
-            <Avatar tiny user={member} />
-            <span className="play-looking__member-name">
-              {member.discordName}
-            </span>
+            <a
+              href={`https://sendou.ink/u/${member.discordId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="play-looking__member-link"
+            >
+              <Avatar tiny user={member} />
+              <span className="play-looking__member-name">
+                {member.discordName}
+              </span>
+            </a>
             {member.MMR && (
               <div className="play-looking__member-mmr">MMR: {member.MMR}</div>
             )}

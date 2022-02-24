@@ -137,6 +137,13 @@
   white-space: nowrap;
 }
 
+.play-looking__member-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--text-color);
+}
+
 .play-looking__mmr {
   font-size: var(--fonts-sm);
   font-weight: var(--bold);
