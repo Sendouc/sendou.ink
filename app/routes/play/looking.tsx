@@ -142,8 +142,8 @@ export const action: ActionFunction = async ({ request, context }) => {
       validate(groupToMatchUpWith, "Invalid targetGroupId");
       validate(!ownGroup.matchId, "Already matched up");
 
-      // fail silently if already matched up
-      if (groupToMatchUpWith.matchId) break;
+      // fail silently if already matched up or group stopped looking
+      if (groupToMatchUpWith.matchId || !groupToMatchUpWith.looking) break;
 
       await LFGGroup.matchUp({
         groupIds: [ownGroup.id, data.targetGroupId],
