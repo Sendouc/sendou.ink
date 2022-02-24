@@ -140,6 +140,10 @@ export const action: ActionFunction = async ({ request, context }) => {
       validateIsGroupAdmin();
       const groupToMatchUpWith = await LFGGroup.findById(data.targetGroupId);
       validate(groupToMatchUpWith, "Invalid targetGroupId");
+      validate(!ownGroup.matchId, "Already matched up");
+
+      // fail silently if already matched up
+      if (groupToMatchUpWith.matchId) break;
 
       await LFGGroup.matchUp({
         groupIds: [ownGroup.id, data.targetGroupId],
