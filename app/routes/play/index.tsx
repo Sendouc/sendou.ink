@@ -1,10 +1,12 @@
 import {
   ActionFunction,
   Form,
+  json,
   LinksFunction,
   LoaderFunction,
   MetaFunction,
   redirect,
+  useLoaderData,
   useLocation,
   useTransition,
 } from "remix";
@@ -21,6 +23,8 @@ import {
 import * as LFGGroup from "~/models/LFGGroup.server";
 import { Button } from "~/components/Button";
 import { useUser } from "~/hooks/common";
+import { LfgGroupType } from "@prisma/client";
+import { filterExpiredGroups } from "~/core/play/utils";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -82,12 +86,37 @@ export const action: ActionFunction = async ({ request, context }) => {
   }
 };
 
+export interface PlayFrontPageLoader {
+  counts: Record<"TWIN" | "QUAD" | "VERSUS-RANKED" | "VERSUS-UNRANKED", number>;
+}
+
 export const loader: LoaderFunction = async ({ context }) => {
   const user = getUser(context);
-  if (!user) return null;
 
-  const ownGroup = await LFGGroup.findActiveByMember(user);
-  if (!ownGroup) return null;
+  const groups = await LFGGroup.findLooking();
+  const counts = groups.filter(filterExpiredGroups).reduce(
+    (acc: PlayFrontPageLoader["counts"], group) => {
+      const memberCount = group.members.length;
+
+      if (group.type === "QUAD") acc.QUAD += memberCount;
+      else if (group.type === "TWIN") acc.TWIN += memberCount;
+      else if (group.type === "VERSUS" && group.ranked) {
+        acc["VERSUS-RANKED"] += memberCount;
+      } else if (group.type === "VERSUS" && !group.ranked) {
+        acc["VERSUS-UNRANKED"] += memberCount;
+      } else throw new Error("Unknown group scenario");
+
+      return acc;
+    },
+    { TWIN: 0, QUAD: 0, "VERSUS-RANKED": 0, "VERSUS-UNRANKED": 0 }
+  );
+
+  if (!user) return json<PlayFrontPageLoader>({ counts });
+
+  const ownGroup = groups.find((g) =>
+    g.members.some((m) => m.user.id === user.id)
+  );
+  if (!ownGroup) return json<PlayFrontPageLoader>({ counts });
   if (ownGroup.matchId) return redirect(`/play/match/${ownGroup.matchId}`);
   if (ownGroup.looking) return redirect("/play/looking");
 
@@ -98,12 +127,13 @@ export default function PlayPage() {
   const transition = useTransition();
   const user = useUser();
   const location = useLocation();
+  const data = useLoaderData<PlayFrontPageLoader>();
 
   return (
     <div className="container">
       <Form method="post">
         <input type="hidden" name="_action" value="CREATE_LFG_GROUP" />
-        <LFGGroupSelector />
+        <LFGGroupSelector counts={data.counts} />
         {user ? (
           <Button
             className="play__continue-button"

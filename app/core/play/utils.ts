@@ -131,8 +131,6 @@ export function otherGroupsForResponse({
   lookingForMatch: boolean;
   ownGroup: Unpacked<LFGGroup.FindLooking>;
 }) {
-  const { EXPIRED: expiredDate } = groupExpiredDates();
-
   return groups
     .filter(
       (group) =>
@@ -144,7 +142,7 @@ export function otherGroupsForResponse({
         })
     )
     .filter((group) => group.id !== ownGroup.id)
-    .filter((group) => group.lastActionAt.getTime() > expiredDate.getTime())
+    .filter(filterExpiredGroups)
     .map((group) => {
       const ranked = () => {
         if (lookingForMatch && !ownGroup.ranked) return false;
@@ -198,4 +196,10 @@ export function otherGroupsForResponse({
       },
       { likedGroups: [], neutralGroups: [], likerGroups: [] }
     );
+}
+
+export function filterExpiredGroups(group: { lastActionAt: Date }) {
+  const { EXPIRED: expiredDate } = groupExpiredDates();
+
+  return group.lastActionAt.getTime() > expiredDate.getTime();
 }

@@ -27,9 +27,10 @@
 
 .play__type-radio-group__label {
   display: grid;
+  width: 100%;
   font-size: var(--fonts-sm);
   font-weight: var(--semi-bold);
-  grid-template-columns: 50px 1fr;
+  grid-template-columns: 50px 2fr 1fr;
   margin-inline-start: var(--s-2);
   place-items: center;
 }
@@ -38,11 +39,31 @@
   color: var(--text-lighter);
   font-size: var(--fonts-xs);
   margin-block-start: 1px;
+  margin-inline-end: auto;
   margin-inline-start: var(--s-2);
 }
 
 .play__type-radio-group__label__explanation.checked {
   color: var(--button-text-transparent);
+}
+
+.play__type-radio-group__label__count {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 3px;
+  color: var(--text-lighter);
+  font-size: var(--fonts-xs);
+  font-weight: var(--bold);
+  margin-inline-start: auto;
+}
+
+.play__type-radio-group__label__count.checked {
+  color: var(--button-text-transparent);
+}
+
+.play__type-radio-group__label__icon {
+  width: 1rem;
 }
 
 .play__type-radio-group__image {

@@ -2,6 +2,8 @@ import * as React from "react";
 import { RadioGroup } from "@headlessui/react";
 import { layoutIcon } from "~/utils";
 import clsx from "clsx";
+import { PlayFrontPageLoader } from "~/routes/play";
+import { UsersIcon } from "../icons/Users";
 
 const OPTIONS = [
   {
@@ -28,9 +30,13 @@ const OPTIONS = [
     text: "Quad",
     explanation: "League Battle",
   },
-];
+] as const;
 
-export function LFGGroupSelector() {
+export function LFGGroupSelector({
+  counts,
+}: {
+  counts: PlayFrontPageLoader["counts"];
+}) {
   const [type, setType] = React.useState("VERSUS-RANKED");
 
   return (
@@ -57,6 +63,14 @@ export function LFGGroupSelector() {
                       )}
                     >
                       {option.explanation}
+                    </span>
+                    <span
+                      className={clsx("play__type-radio-group__label__count", {
+                        checked,
+                      })}
+                    >
+                      <UsersIcon className="play__type-radio-group__label__icon" />
+                      {counts[option.type]}
                     </span>
                   </label>
                   <img
