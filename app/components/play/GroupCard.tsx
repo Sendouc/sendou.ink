@@ -12,28 +12,30 @@ export function GroupCard({
   action,
   showAction,
   ranked,
+  ownGroupRanked,
   isOwnGroup = false,
 }: {
   group: LookingLoaderDataGroup;
   action?: Exclude<LookingActionSchema["_action"], "UNEXPIRE">;
   showAction: boolean;
   ranked?: boolean;
+  ownGroupRanked?: boolean;
   isOwnGroup?: boolean;
 }) {
   const fetcher = useFetcher();
 
-  const buttonText = () => {
+  const buttonText = (ranked: boolean = false) => {
     switch (action) {
       case "LEAVE_GROUP":
         return "Leave group";
       case "LIKE":
-        return "Let's play?";
+        return ranked ? "Let's play ranked?" : "Let's play unranked?";
       case "UNLIKE":
         return "Undo";
       case "UNITE_GROUPS":
-        return "Group up";
+        return ownGroupRanked ? "Group up (ranked)" : "Group up (unranked)";
       case "MATCH_UP":
-        return "Match up";
+        return ranked ? "Match up (ranked)" : "Match up (unranked)";
       case "LOOK_AGAIN":
         return "Stop looking";
       default:
@@ -89,7 +91,7 @@ export function GroupCard({
             variant={buttonVariant()}
             loading={fetcher.state !== "idle"}
           >
-            {buttonText()}
+            {buttonText(group.ranked)}
           </Button>
         )}
       </div>

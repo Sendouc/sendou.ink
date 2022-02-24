@@ -371,6 +371,7 @@ export default function LookingPage() {
                             ? data.ownGroup.ranked
                             : group.ranked
                         }
+                        ownGroupRanked={data.ownGroup.ranked}
                       />
                     );
                   })}
@@ -395,6 +396,7 @@ export default function LookingPage() {
                             ? data.ownGroup.ranked
                             : group.ranked
                         }
+                        ownGroupRanked={data.ownGroup.ranked}
                       />
                     );
                   })}
