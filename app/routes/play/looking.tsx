@@ -164,7 +164,6 @@ export const action: ActionFunction = async ({ request, context }) => {
       break;
     }
     case "LOOK_AGAIN": {
-      validateIsGroupAdmin();
       await LFGGroup.setInactive(ownGroup.id);
       return redirect("/play");
     }

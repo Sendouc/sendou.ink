@@ -10,7 +10,7 @@ export function FinishedGroup() {
   return (
     <div className="container">
       <div className="play-looking__waves">
-        <GroupCard group={data.ownGroup} lookingForMatch={false} />
+        <GroupCard group={data.ownGroup} showAction={false} />
         <div className="play-looking__waves-text">
           This is your group! You can reach out to them on{" "}
           <a href={DISCORD_URL}>our Discord</a> in the #group-meetup channel.
@@ -18,17 +18,15 @@ export function FinishedGroup() {
       </div>
       <div className="play-looking__waves-button">
         <Form method="post">
-          {data.isCaptain && (
-            <Button
-              type="submit"
-              name="_action"
-              value="LOOK_AGAIN"
-              tiny
-              variant="outlined"
-            >
-              Look again
-            </Button>
-          )}
+          <Button
+            type="submit"
+            name="_action"
+            value="LOOK_AGAIN"
+            tiny
+            variant="outlined"
+          >
+            Look again
+          </Button>
         </Form>
       </div>
     </div>

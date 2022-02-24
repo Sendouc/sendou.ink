@@ -15,7 +15,7 @@ export function GroupCard({
   isOwnGroup = false,
 }: {
   group: LookingLoaderDataGroup;
-  action: Exclude<LookingActionSchema["_action"], "UNEXPIRE">;
+  action?: Exclude<LookingActionSchema["_action"], "UNEXPIRE">;
   showAction: boolean;
   ranked?: boolean;
   isOwnGroup?: boolean;
