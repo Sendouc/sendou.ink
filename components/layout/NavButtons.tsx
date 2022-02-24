@@ -12,7 +12,15 @@ const NavButtons = ({ onButtonClick }: { onButtonClick?: () => void }) => {
     <Flex mt={2} flexWrap="wrap" alignItems="center" justifyContent="center">
       {navItems.map(({ imageSrc, code, name }) => {
         return (
-          <MyLink key={code} href={"/" + code} isColored={false} noUnderline>
+          <MyLink
+            isExternal={code === "sendouq"}
+            key={code}
+            href={
+              code === "sendouq" ? "https://beta.sendou.ink/play" : "/" + code
+            }
+            isColored={false}
+            noUnderline
+          >
             <Flex
               width="9.5rem"
               rounded="lg"
