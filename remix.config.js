@@ -3,7 +3,7 @@
  */
 module.exports = {
   server: "./server/index.js",
-  // devServerBroadcastDelay: 1000,
+  devServerBroadcastDelay: 1000,
   // ignoredRouteFiles: [".*"],
   // appDirectory: "app",
   // assetsBuildDirectory: "public/build",

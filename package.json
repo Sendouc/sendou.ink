@@ -7,7 +7,7 @@
     "build": "cross-env NODE_ENV=production remix build",
     "dev": "cross-env NODE_ENV=development remix build && run-p dev:*",
     "dev:remix": "cross-env NODE_ENV=development remix watch",
-    "dev:node": "cross-env NODE_ENV=development nodemon ./build/index.js",
+    "dev:node": "cross-env NODE_ENV=development nodemon ./build/index.js --watch ./build/index.js",
     "postinstall": "remix setup node",
     "gen": "npx prisma generate",
     "start": "cross-env NODE_ENV=production node ./build/index.js",
