@@ -23,7 +23,6 @@ import {
 import * as LFGGroup from "~/models/LFGGroup.server";
 import { Button } from "~/components/Button";
 import { useUser } from "~/hooks/common";
-import { LfgGroupType } from "@prisma/client";
 import { filterExpiredGroups } from "~/core/play/utils";
 
 export const links: LinksFunction = () => {

@@ -24,7 +24,7 @@ export function GroupCard({
 }) {
   const fetcher = useFetcher();
 
-  const buttonText = (ranked: boolean = false) => {
+  const buttonText = (ranked = false) => {
     switch (action) {
       case "LEAVE_GROUP":
         return "Leave group";
