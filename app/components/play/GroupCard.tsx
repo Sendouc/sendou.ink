@@ -37,7 +37,7 @@ export function GroupCard({
       case "LOOK_AGAIN":
         return "Stop looking";
       default:
-        throw new Error(`Invalid group action type: ${action}`);
+        throw new Error(`Invalid group action type: ${action ?? "UNDEFINED"}`);
     }
   };
   const buttonVariant = (): ButtonProps["variant"] => {
