@@ -97,13 +97,15 @@ export const loader: LoaderFunction = async ({ context }) => {
     (acc: PlayFrontPageLoader["counts"], group) => {
       const memberCount = group.members.length;
 
-      if (group.type === "QUAD") acc.QUAD += memberCount;
-      else if (group.type === "TWIN") acc.TWIN += memberCount;
-      else if (group.type === "VERSUS" && group.ranked) {
+      if (group.type === "QUAD" && memberCount !== 4) {
+        acc.QUAD += memberCount;
+      } else if (group.type === "TWIN" && memberCount !== 2) {
+        acc.TWIN += memberCount;
+      } else if (group.type === "VERSUS" && group.ranked) {
         acc["VERSUS-RANKED"] += memberCount;
       } else if (group.type === "VERSUS" && !group.ranked) {
         acc["VERSUS-UNRANKED"] += memberCount;
-      } else throw new Error("Unknown group scenario");
+      }
 
       return acc;
     },
