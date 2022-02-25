@@ -52,7 +52,6 @@ export async function reportScore({
 
   const adjustedSkills = adjustSkills({ skills, playerIds });
 
-  // https://stackoverflow.com/a/26715934
   return db.$transaction([
     db.skill.createMany({
       data: adjustedSkills.map((s) => ({ ...s, matchId: UNSAFE_matchId })),
@@ -64,9 +63,10 @@ export async function reportScore({
         },
       },
       data: {
-        active: false,
+        status: "INACTIVE",
       },
     }),
+    // https://stackoverflow.com/a/26715934
     db.$executeRawUnsafe(`
     update "LfgGroupMatchStage" as lfg set
       "winnerGroupId" = lfg2.winner_id

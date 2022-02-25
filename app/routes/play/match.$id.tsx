@@ -97,7 +97,7 @@ export const action: ActionFunction = async ({
     g.members.some((m) => m.memberId === user.id)
   );
   validate(ownGroup, "Not own match");
-  validate(ownGroup.active, "Not active");
+  validate(ownGroup.status === "MATCH", "Group doesn't have a match");
   validate(isGroupAdmin({ group: ownGroup, user }), "Not group admin");
 
   switch (data._action) {

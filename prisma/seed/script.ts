@@ -389,8 +389,7 @@ export async function seed(variation?: SeedVariations) {
         const amountOfUsers = randomIntFromInterval(1, 3);
         await prisma.lfgGroup.create({
           data: {
-            looking: true,
-            active: true,
+            status: "LOOKING",
             type: "VERSUS",
             ranked: i < 12,
             members: {
@@ -408,8 +407,7 @@ export async function seed(variation?: SeedVariations) {
       for (let i = 0; i < 24; i++) {
         await prisma.lfgGroup.create({
           data: {
-            looking: true,
-            active: true,
+            status: "LOOKING",
             type: "VERSUS",
             ranked: i < 12,
             members: {
@@ -446,9 +444,8 @@ export async function seed(variation?: SeedVariations) {
 
       return prisma.lfgGroup.create({
         data: {
-          looking: true,
+          status: "LOOKING",
           type: "VERSUS",
-          active: true,
           ranked: true,
           members: {
             createMany: {

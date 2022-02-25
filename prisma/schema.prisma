@@ -214,12 +214,18 @@ enum LfgGroupType {
   VERSUS
 }
 
+enum LfgGroupStatus {
+  PRE_ADD
+  LOOKING
+  MATCH
+  INACTIVE
+}
+
 model LfgGroup {
   id            String               @id @default(uuid())
   ranked        Boolean?
   type          LfgGroupType
-  active        Boolean              @default(true)
-  looking       Boolean
+  status        LfgGroupStatus       @default(INACTIVE)
   matchId       String?
   inviteCode    String               @default(uuid())
   createdAt     DateTime             @default(now())
@@ -230,9 +236,8 @@ model LfgGroup {
   likesReceived LfgGroupLike[]       @relation("target")
   matches       LfgGroupMatchStage[]
 
-  @@index([active])
-  @@index([looking])
   @@index([type])
+  @@index([status])
 }
 
 model LfgGroupLike {

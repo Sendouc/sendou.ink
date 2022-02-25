@@ -16,6 +16,7 @@ import * as User from "~/models/User.server";
 import { getUser, requireUser, validate } from "~/utils";
 import styles from "~/styles/play-add-players.css";
 import { isGroupAdmin } from "~/core/play/validators";
+import invariant from "tiny-invariant";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -24,7 +25,7 @@ export const links: LinksFunction = () => {
 export const action: ActionFunction = async ({ context }) => {
   const user = requireUser(context);
 
-  const group = await LFGGroup.findActiveByMember(user);
+  const group = await LFGGroup.findLookingByMember(user);
   validate(group, "Not a member of active group");
   validate(isGroupAdmin({ user, group }), "Not captain of the group");
 
@@ -43,12 +44,15 @@ export const loader: LoaderFunction = async ({ context }) => {
   if (!user) return redirect("/play");
 
   const [ownGroup, trustingUsers] = await Promise.all([
-    LFGGroup.findActiveByMember(user),
+    LFGGroup.findLookingByMember(user),
     User.findTrusters(user.id),
   ]);
   if (!ownGroup) return redirect("/play");
-  if (ownGroup.matchId) return redirect(`/play/match/${ownGroup.matchId}`);
-  if (ownGroup.looking) return redirect("/play/looking");
+  if (ownGroup.status === "MATCH") {
+    invariant(ownGroup.matchId, "Unexpected no matchId but status is MATCH");
+    return redirect(`/play/match/${ownGroup.matchId}`);
+  }
+  if (ownGroup.status === "LOOKING") return redirect("/play/looking");
 
   return json<AddPlayersLoaderData>({
     inviteCode: ownGroup.inviteCode,

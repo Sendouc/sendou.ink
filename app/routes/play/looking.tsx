@@ -84,9 +84,9 @@ export const action: ActionFunction = async ({ request, context }) => {
   });
   const user = requireUser(context);
 
-  const ownGroup = await LFGGroup.findActiveByMember(user);
+  const ownGroup = await LFGGroup.findLookingByMember(user);
   validate(ownGroup, "No active group");
-  validate(ownGroup.looking, "Group is not looking");
+  validate(ownGroup.status === "LOOKING", "Group is not looking");
 
   const validateIsGroupAdmin = () =>
     validate(isGroupAdmin({ group: ownGroup, user }), "Not group admin");
@@ -108,7 +108,7 @@ export const action: ActionFunction = async ({ request, context }) => {
       if (
         !groupToUniteWith ||
         groupToUniteWith.members.length !== data.targetGroupSize ||
-        !groupToUniteWith.looking
+        groupToUniteWith.status !== "LOOKING"
       ) {
         break;
       }
@@ -140,15 +140,18 @@ export const action: ActionFunction = async ({ request, context }) => {
       validateIsGroupAdmin();
       const groupToMatchUpWith = await LFGGroup.findById(data.targetGroupId);
       validate(groupToMatchUpWith, "Invalid targetGroupId");
-      validate(!ownGroup.matchId, "Already matched up");
+      validate(ownGroup.status === "LOOKING", "Group not looking");
 
       // fail silently if already matched up or group stopped looking
-      if (groupToMatchUpWith.matchId || !groupToMatchUpWith.looking) break;
+      if (groupToMatchUpWith.status !== "LOOKING") {
+        break;
+      }
 
       await LFGGroup.matchUp({
         groupIds: [ownGroup.id, data.targetGroupId],
         ranked: Boolean(groupToMatchUpWith.ranked && ownGroup.ranked),
       });
+      // TODO: redirect here
       break;
     }
     case "UNLIKE": {
@@ -220,15 +223,18 @@ export interface LookingLoaderData {
 
 export const loader: LoaderFunction = async ({ context }) => {
   const user = requireUser(context);
-  const groups = await LFGGroup.findLooking();
+  const groups = await LFGGroup.findLookingAndOwnActive(user.id);
 
   const ownGroup = groups.find((g) =>
     g.members.some((m) => m.user.id === user.id)
   );
 
   if (!ownGroup) return redirect("/play");
-  if (ownGroup.matchId) return redirect(`/play/match/${ownGroup.matchId}`);
-  if (!ownGroup.looking) return redirect("/play/add-players");
+  if (ownGroup.status === "MATCH") {
+    invariant(ownGroup.matchId, "Unexpected no matchId but status is MATCH");
+    return redirect(`/play/match/${ownGroup.matchId}`);
+  }
+  if (ownGroup.status === "PRE_ADD") return redirect("/play/add-players");
 
   const lookingForMatch =
     ownGroup.type === "VERSUS" &&

@@ -24,6 +24,7 @@ import * as LFGGroup from "~/models/LFGGroup.server";
 import { Button } from "~/components/Button";
 import { useUser } from "~/hooks/common";
 import { filterExpiredGroups } from "~/core/play/utils";
+import invariant from "tiny-invariant";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -70,7 +71,7 @@ export const action: ActionFunction = async ({ request, context }) => {
         ranked: getRanked(),
       });
 
-      if (group.looking) {
+      if (group.status === "LOOKING") {
         return redirect("/play/looking");
       }
 
@@ -92,7 +93,7 @@ export interface PlayFrontPageLoader {
 export const loader: LoaderFunction = async ({ context }) => {
   const user = getUser(context);
 
-  const groups = await LFGGroup.findLooking();
+  const groups = await LFGGroup.findLookingAndOwnActive(user?.id);
   const counts = groups.filter(filterExpiredGroups).reduce(
     (acc: PlayFrontPageLoader["counts"], group) => {
       const memberCount = group.members.length;
@@ -118,8 +119,11 @@ export const loader: LoaderFunction = async ({ context }) => {
     g.members.some((m) => m.user.id === user.id)
   );
   if (!ownGroup) return json<PlayFrontPageLoader>({ counts });
-  if (ownGroup.matchId) return redirect(`/play/match/${ownGroup.matchId}`);
-  if (ownGroup.looking) return redirect("/play/looking");
+  if (ownGroup.status === "MATCH") {
+    invariant(ownGroup.matchId, "Unexpected no matchId but status is MATCH");
+    return redirect(`/play/match/${ownGroup.matchId}`);
+  }
+  if (ownGroup.status === "LOOKING") return redirect("/play/looking");
 
   return redirect("/play/add-players");
 };

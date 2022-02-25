@@ -16,8 +16,8 @@ export function create({
       type,
       // TWIN starts looking immediately because it makes no sense
       // to pre-add players to the group
-      // looking: type === "TWIN",
-      looking: true,
+      // looking: type === "TWIN" ? "LOOKING" : "PRE-ADD",
+      status: "LOOKING",
       ranked,
       members: {
         create: {
@@ -145,7 +145,7 @@ export async function matchUp({
     },
     data: {
       matchId: match.id,
-      looking: false,
+      status: "MATCH",
     },
   });
 }
@@ -154,10 +154,10 @@ export function findById(id: string) {
   return db.lfgGroup.findUnique({ where: { id }, include: { members: true } });
 }
 
-export function findActiveByMember(user: { id: string }) {
+export function findLookingByMember(user: { id: string }) {
   return db.lfgGroup.findFirst({
     where: {
-      active: true,
+      status: "LOOKING",
       members: {
         some: {
           memberId: user.id,
@@ -180,13 +180,33 @@ export function findActiveByMember(user: { id: string }) {
   });
 }
 
-export type FindLooking = Prisma.PromiseReturnType<typeof findLooking>;
-export function findLooking() {
+export type FindLookingAndOwnActive = Prisma.PromiseReturnType<
+  typeof findLookingAndOwnActive
+>;
+export function findLookingAndOwnActive(userId?: string) {
+  const where = userId
+    ? {
+        OR: [
+          {
+            status: "LOOKING" as const,
+          },
+          {
+            members: {
+              some: {
+                memberId: userId,
+              },
+            },
+            NOT: {
+              status: "INACTIVE" as const,
+            },
+          },
+        ],
+      }
+    : {
+        status: "LOOKING" as const,
+      };
   return db.lfgGroup.findMany({
-    where: {
-      active: true,
-      looking: true,
-    },
+    where,
     include: {
       members: {
         include: {
@@ -217,7 +237,7 @@ export function startLooking(id: string) {
       id,
     },
     data: {
-      looking: true,
+      status: "LOOKING",
     },
   });
 }
@@ -228,8 +248,7 @@ export function setInactive(id: string) {
       id,
     },
     data: {
-      looking: false,
-      active: false,
+      status: "INACTIVE",
     },
   });
 }

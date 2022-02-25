@@ -123,13 +123,13 @@ export function otherGroupsForResponse({
   lookingForMatch,
   ownGroup,
 }: {
-  groups: LFGGroup.FindLooking;
+  groups: LFGGroup.FindLookingAndOwnActive;
   likes: {
     given: Set<string>;
     received: Set<string>;
   };
   lookingForMatch: boolean;
-  ownGroup: Unpacked<LFGGroup.FindLooking>;
+  ownGroup: Unpacked<LFGGroup.FindLookingAndOwnActive>;
 }) {
   return groups
     .filter(
