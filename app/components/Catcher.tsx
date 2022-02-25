@@ -42,6 +42,6 @@ export function Catcher() {
 
     default:
       console.error(caught);
-      throw new Error(`${caught.status} - ${caught.statusText}`);
+      throw new Error(`${caught.status} - ${caught.statusText},${caught.data}`);
   }
 }

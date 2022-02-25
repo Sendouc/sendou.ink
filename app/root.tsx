@@ -7,6 +7,7 @@ import { Catcher } from "./components/Catcher";
 import resetStyles from "~/styles/reset.css";
 import globalStyles from "~/styles/global.css";
 import layoutStyles from "~/styles/layout.css";
+import { DISCORD_URL } from "./constants";
 
 export const links: LinksFunction = () => {
   return [
@@ -77,19 +78,19 @@ export function CatchBoundary() {
   );
 }
 
-// TODO.... maybe we can render the same exact thing with added dialog you can close?
 export function ErrorBoundary({ error }: { error: Error }) {
-  console.error(error);
+  // TODO: do something not hacky with this
+  const [message, data] = error.message.split(",");
   return (
     <Document title="Error!">
       <Layout>
-        <div>
-          <h1>There was an error</h1>
-          <p>{error.message}</p>
+        <div className="container">
+          <h1>Error happened: {message}</h1>
+          <p>Message: {data}</p>
           <hr />
-          <p>
-            Hey, developer, you should replace this with what you want your
-            users to see.
+          <p className="mt-2 text-sm">
+            If you need help or want to report the error so that it can be fixed
+            please visit <a href={DISCORD_URL}>our Discord</a>
           </p>
         </div>
       </Layout>
