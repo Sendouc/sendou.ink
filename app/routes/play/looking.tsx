@@ -147,12 +147,11 @@ export const action: ActionFunction = async ({ request, context }) => {
         break;
       }
 
-      await LFGGroup.matchUp({
+      const match = await LFGGroup.matchUp({
         groupIds: [ownGroup.id, data.targetGroupId],
         ranked: Boolean(groupToMatchUpWith.ranked && ownGroup.ranked),
       });
-      // TODO: redirect here
-      break;
+      return redirect(`/play/match/${match.id}`);
     }
     case "UNLIKE": {
       validateIsGroupAdmin();
