@@ -43,10 +43,16 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const meta: MetaFunction = ({ data }: { data: LookingLoaderData }) => {
+export const meta: MetaFunction = ({
+  data,
+}: {
+  data: Nullable<LookingLoaderData>;
+}) => {
   return {
     title: makeTitle([
-      `(${data.likedGroups.length}/${data.neutralGroups.length}/${data.likerGroups.length})`,
+      data
+        ? `(${data.likedGroups.length}/${data.neutralGroups.length}/${data.likerGroups.length})`
+        : "(???)",
       "Looking",
     ]),
   };
