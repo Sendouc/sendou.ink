@@ -20,7 +20,7 @@ import { Button } from "~/components/Button";
 import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { ModeImage } from "~/components/ModeImage";
 import { MapList } from "~/components/play/MapList";
-import { DISCORD_URL } from "~/constants";
+import { DISCORD_URL, LFG_AMOUNT_OF_STAGES_TO_GENERATE } from "~/constants";
 import {
   groupsToWinningAndLosingPlayerIds,
   scoresAreIdentical,
@@ -70,7 +70,10 @@ const matchActionSchema = z.union([
     _action: z.literal("REPORT_SCORE"),
     winnerIds: z.preprocess(
       safeJSONParse,
-      z.array(z.string().uuid()).min(5).max(9)
+      z
+        .array(z.string().uuid())
+        .min(Math.ceil(LFG_AMOUNT_OF_STAGES_TO_GENERATE / 2))
+        .max(LFG_AMOUNT_OF_STAGES_TO_GENERATE)
     ),
   }),
 ]);
