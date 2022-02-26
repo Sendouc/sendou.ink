@@ -1,6 +1,7 @@
 import { Mode } from "@prisma/client";
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
+import { LFG_AMOUNT_OF_STAGES_TO_GENERATE } from "~/constants";
 import { idToStage } from "../stages/stages";
 import { generateMapListForLfgMatch } from "./mapList";
 
@@ -15,7 +16,7 @@ GenerateMapListForLfgMatch("Right amount of SZ", () => {
     if (stageObj.mode === "SZ") amountOfSz++;
   }
 
-  assert.equal(amountOfSz, 4);
+  assert.equal(amountOfSz, Math.floor(LFG_AMOUNT_OF_STAGES_TO_GENERATE / 2));
 });
 
 GenerateMapListForLfgMatch("Contains all modes", () => {
@@ -43,7 +44,7 @@ GenerateMapListForLfgMatch("No duplicate maps", () => {
     maps.add(stageObj.name);
   }
 
-  assert.equal(maps.size, 9);
+  assert.equal(maps.size, LFG_AMOUNT_OF_STAGES_TO_GENERATE);
 });
 
 GenerateMapListForLfgMatch.run();
