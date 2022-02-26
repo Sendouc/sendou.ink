@@ -2,9 +2,9 @@ import { Mode } from "@prisma/client";
 import clone from "just-clone";
 import shuffle from "just-shuffle";
 import invariant from "tiny-invariant";
+import { LFG_AMOUNT_OF_STAGES_TO_GENERATE } from "~/constants";
 import { StageName, stageToId } from "../stages/stages";
 
-const AMOUNT_OF_STAGES_TO_GENERATE = 9;
 const LEGAL_MODES: Mode[] = ["TC", "RM", "CB"];
 
 // ⚠️ Every used mode needs to have at least AMOUNT_OF_STAGES_TO_GENERATE maps
@@ -86,7 +86,7 @@ export function generateMapListForLfgMatch(): {
   const usedMaps = new Set<StageName>();
 
   const stageList: { name: string; mode: Mode }[] = [];
-  for (let i = 0; i < AMOUNT_OF_STAGES_TO_GENERATE; i++) {
+  for (let i = 0; i < LFG_AMOUNT_OF_STAGES_TO_GENERATE; i++) {
     const mode = (() => {
       if (i !== 0 && i % 2 !== 0) {
         return "SZ";

@@ -20,6 +20,9 @@ export const LFG_GROUP_INACTIVE_MINUTES = 30;
 
 export const MMR_TOPX_VISIBILITY_CUTOFF = 50;
 
+export const LFG_AMOUNT_OF_STAGES_TO_GENERATE = 7;
+// export const LFG_AMOUNT_OF_STAGES_TO_GENERATE = 9;
+
 export const checkInClosesDate = (startTime: string): Date => {
   return new Date(new Date(startTime).getTime() - 1000 * 10);
 };
