@@ -18,6 +18,8 @@ export const BEST_OF_OPTIONS = [3, 5, 7, 9] as const;
 /** How many minutes a group has to be inactive before being hidden from the looking page */
 export const LFG_GROUP_INACTIVE_MINUTES = 30;
 
+export const MMR_TOPX_VISIBILITY_CUTOFF = 50;
+
 export const checkInClosesDate = (startTime: string): Date => {
   return new Date(new Date(startTime).getTime() - 1000 * 10);
 };

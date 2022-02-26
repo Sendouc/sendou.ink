@@ -1,7 +1,9 @@
 import { expose, rate, Rating } from "ts-trueskill";
+import { MMR_TOPX_VISIBILITY_CUTOFF } from "~/constants";
+import { PlayFrontPageLoader } from "~/routes/play";
 
 /** Get first skill object of the array (should be ordered so that most recent skill is first) and convert it into MMR. */
-export function skillToMMR(
+export function skillArrayToMMR(
   skills: {
     mu: number;
     sigma: number;
@@ -10,6 +12,10 @@ export function skillToMMR(
   const skill: { mu: number; sigma: number } | undefined = skills[0];
   if (!skill) return;
 
+  return muSigmaToSP(skill);
+}
+
+export function muSigmaToSP(skill: { mu: number; sigma: number }) {
   return toTwoDecimals(expose(new Rating(skill.mu, skill.sigma)) * 10 + 1000);
 }
 
@@ -26,7 +32,7 @@ export function teamSkillToExactMMR(teamSkills: TeamSkill[]) {
   let sum = 0;
 
   for (const { user } of teamSkills) {
-    const MMR = skillToMMR(user.skill);
+    const MMR = skillArrayToMMR(user.skill);
     if (!MMR) continue;
 
     sum += MMR;
@@ -97,4 +103,44 @@ export function adjustSkills({
     ...ratedWinners.map(ratedToReturnable("winning")),
     ...ratedLosers.map(ratedToReturnable("losing")),
   ];
+}
+
+export function resolveOwnMMR({
+  skills,
+  user,
+}: {
+  skills: { userId: string; mu: number; sigma: number }[];
+  user?: { id: string };
+}): PlayFrontPageLoader["ownMMR"] {
+  if (!user) return;
+
+  const ownSkillObj = skills.find((s) => s.userId === user.id);
+  if (!ownSkillObj) return;
+
+  const ownSkill = muSigmaToSP(ownSkillObj);
+  const allSkills = skills.map((s) => muSigmaToSP(s));
+  const ownPercentile = percentile(allSkills, ownSkill);
+  // can't be top 0%
+  const topX = Math.max(1, Math.round(100 - ownPercentile));
+
+  return {
+    value: ownSkill,
+    // we show the top x data only for those who have it good
+    // since probably nobody wants to know they are the bottom
+    // 10% or something
+    topX: topX > MMR_TOPX_VISIBILITY_CUTOFF ? undefined : topX,
+  };
+}
+
+// https://stackoverflow.com/a/69730272
+function percentile(arr: number[], val: number) {
+  let count = 0;
+  arr.forEach((v) => {
+    if (v < val) {
+      count++;
+    } else if (v == val) {
+      count += 0.5;
+    }
+  });
+  return (100 * count) / arr.length;
 }

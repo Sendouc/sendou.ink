@@ -1,8 +1,9 @@
 import { suite } from "uvu";
-import { adjustSkills } from "./utils";
+import { adjustSkills, muSigmaToSP, resolveOwnMMR } from "./utils";
 import * as assert from "uvu/assert";
 
 const AdjustSkills = suite("adjustSkills()");
+const ResolveOwnMMR = suite("resolveOwnMMR()");
 
 const MU_AT_START = 20;
 const SIGMA_AT_START = 4;
@@ -49,4 +50,48 @@ AdjustSkills("Handles missing skills", () => {
   assert.equal(adjusted.length, 4);
 });
 
+ResolveOwnMMR("Doesn't show own MMR if missing", () => {
+  const own = resolveOwnMMR({
+    skills: [{ userId: "test2", mu: 20, sigma: 7 }],
+    user: { id: "test" },
+  });
+  const own2 = resolveOwnMMR({
+    skills: [],
+    user: { id: "test" },
+  });
+
+  assert.not.ok(own);
+  assert.not.ok(own2);
+});
+
+ResolveOwnMMR("Calculates own MMR stats correctly", () => {
+  const skills = new Array(9)
+    .fill(null)
+    .map((_, i) => ({ userId: `${i}`, mu: 20 + i, sigma: 7 }));
+  skills.push({ userId: "test", mu: 40, sigma: 7 });
+  const own = resolveOwnMMR({
+    skills,
+    user: { id: "test" },
+  });
+
+  const valueShouldBe = muSigmaToSP({ mu: 40, sigma: 7 });
+
+  assert.equal(own?.topX, 10);
+  assert.equal(own?.value, valueShouldBe);
+});
+
+ResolveOwnMMR("Hides topX if not good", () => {
+  const skills = new Array(9)
+    .fill(null)
+    .map((_, i) => ({ userId: `${i}`, mu: 20 + i, sigma: 7 }));
+  skills.push({ userId: "test", mu: 1, sigma: 7 });
+  const own = resolveOwnMMR({
+    skills,
+    user: { id: "test" },
+  });
+
+  assert.not.ok(own?.topX);
+});
+
 AdjustSkills.run();
+ResolveOwnMMR.run();

@@ -26,6 +26,8 @@ export function requireUser(ctx: unknown) {
 export function getUser(ctx: unknown) {
   const data = LoggedInUserSchema.parse(ctx);
 
+  if (!data?.user) return;
+
   return data?.user;
 }
 

@@ -17,7 +17,7 @@ import { LookingInfoText } from "~/components/play/LookingInfoText";
 import { Tab } from "~/components/Tab";
 import { LFG_GROUP_FULL_SIZE } from "~/constants";
 import {
-  skillToMMR,
+  skillArrayToMMR,
   teamHasSkill,
   teamSkillToExactMMR,
 } from "~/core/mmr/utils";
@@ -266,7 +266,7 @@ export const loader: LoaderFunction = async ({ context }) => {
               MMR:
                 lookingForMatch && ownGroup.ranked
                   ? undefined
-                  : skillToMMR(skill),
+                  : skillArrayToMMR(skill),
             };
           }),
           ranked: ownGroup.ranked ?? undefined,

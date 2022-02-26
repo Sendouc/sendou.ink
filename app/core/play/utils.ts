@@ -5,7 +5,7 @@ import { PlayFrontPageLoader } from "~/routes/play";
 import { LookingLoaderData } from "~/routes/play/looking";
 import { Unpacked } from "~/utils";
 import {
-  skillToMMR,
+  skillArrayToMMR,
   teamHasSkill,
   teamSkillToApproximateMMR,
 } from "../mmr/utils";
@@ -162,7 +162,7 @@ export function otherGroupsForResponse({
 
                 return {
                   ...rest,
-                  MMR: skillToMMR(skill),
+                  MMR: skillArrayToMMR(skill),
                 };
               }),
         ranked: ranked(),

@@ -21,10 +21,12 @@ import {
   requireUser,
 } from "~/utils";
 import * as LFGGroup from "~/models/LFGGroup.server";
+import * as Skill from "~/models/Skill.server";
 import { Button } from "~/components/Button";
 import { useUser } from "~/hooks/common";
 import { countGroups } from "~/core/play/utils";
 import invariant from "tiny-invariant";
+import { resolveOwnMMR } from "~/core/mmr/utils";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -88,20 +90,30 @@ export const action: ActionFunction = async ({ request, context }) => {
 
 export interface PlayFrontPageLoader {
   counts: Record<"TWIN" | "QUAD" | "VERSUS-RANKED" | "VERSUS-UNRANKED", number>;
+  ownMMR?: {
+    value: number;
+    topX?: number;
+  };
 }
 
 export const loader: LoaderFunction = async ({ context }) => {
   const user = getUser(context);
 
-  const groups = await LFGGroup.findLookingAndOwnActive(user?.id);
+  const [groups, skills] = await Promise.all([
+    LFGGroup.findLookingAndOwnActive(user?.id),
+    Skill.findAllMostRecent(),
+  ]);
 
-  if (!user) return json<PlayFrontPageLoader>({ counts: countGroups(groups) });
+  const ownMMR = resolveOwnMMR({ skills, user });
+
+  if (!user)
+    return json<PlayFrontPageLoader>({ counts: countGroups(groups), ownMMR });
 
   const ownGroup = groups.find((g) =>
     g.members.some((m) => m.user.id === user.id)
   );
   if (!ownGroup) {
-    return json<PlayFrontPageLoader>({ counts: countGroups(groups) });
+    return json<PlayFrontPageLoader>({ counts: countGroups(groups), ownMMR });
   }
   if (ownGroup.status === "MATCH") {
     invariant(ownGroup.matchId, "Unexpected no matchId but status is MATCH");
@@ -120,6 +132,17 @@ export default function PlayPage() {
 
   return (
     <div className="container">
+      {data.ownMMR && (
+        <div className="play__own-mmr">
+          <div className="play__own-mmr__mmr">SP: {data.ownMMR.value}</div>
+          {data.ownMMR.topX && (
+            <div className="play__own-mmr__topx">
+              Top {data.ownMMR.topX}% (better than {100 - data.ownMMR.topX}% of
+              players)
+            </div>
+          )}
+        </div>
+      )}
       <Form method="post">
         <input type="hidden" name="_action" value="CREATE_LFG_GROUP" />
         <LFGGroupSelector counts={data.counts} />

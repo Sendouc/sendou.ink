@@ -1,3 +1,20 @@
+.play__own-mmr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.2;
+  margin-block-end: var(--s-6);
+}
+
+.play__own-mmr__mmr {
+  font-size: var(--fonts-xl);
+}
+
+.play__own-mmr__topx {
+  color: var(--text-lighter);
+  font-size: var(--fonts-sm);
+}
+
 .play__type-radio-group {
   display: flex;
   flex-direction: column;
