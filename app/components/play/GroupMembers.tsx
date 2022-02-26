@@ -48,7 +48,7 @@ function Contents({ members }: { members: LookingLoaderDataGroup["members"] }) {
               </span>
             </a>
             {member.MMR && (
-              <div className="play-looking__member-mmr">MMR: {member.MMR}</div>
+              <div className="play-looking__member-mmr">SP: {member.MMR}</div>
             )}
             {member.peakXP && (
               <div className="play-looking__member-power">

@@ -10,7 +10,7 @@ export function skillToMMR(
   const skill: { mu: number; sigma: number } | undefined = skills[0];
   if (!skill) return;
 
-  return toTwoDecimals(expose(new Rating(skill.mu, skill.sigma)) * 10);
+  return toTwoDecimals(expose(new Rating(skill.mu, skill.sigma)) * 10 + 1000);
 }
 
 interface TeamSkill {

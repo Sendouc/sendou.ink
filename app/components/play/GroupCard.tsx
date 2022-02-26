@@ -65,7 +65,7 @@ export function GroupCard({
         <GroupMembers members={group.members} />
         {group.teamMMR && (
           <div className="play-looking__mmr">
-            MMR: {!group.teamMMR.exact && <>~</>}
+            SP: {!group.teamMMR.exact && <>~</>}
             {group.teamMMR.value}
           </div>
         )}
