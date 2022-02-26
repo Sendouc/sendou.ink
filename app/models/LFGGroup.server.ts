@@ -1,4 +1,5 @@
 import type { LfgGroupType, Prisma } from "@prisma/client";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { generateMapListForLfgMatch } from "~/core/play/mapList";
 import { db } from "~/utils/db.server";
 
@@ -29,29 +30,36 @@ export function create({
   });
 }
 
-export function like({
+export async function like({
   likerId,
   targetId,
 }: {
   likerId: string;
   targetId: string;
 }) {
-  // not transaction because doesn't really matter
-  // if only one goes through and other not
-  return Promise.all([
-    db.lfgGroupLike.create({
-      data: {
-        likerId,
-        targetId,
-      },
-    }),
-    db.lfgGroup.update({
-      where: { id: likerId },
-      data: {
-        lastActionAt: new Date(),
-      },
-    }),
-  ]);
+  try {
+    // not transaction because doesn't really matter
+    // if only one goes through and other not
+    await Promise.all([
+      db.lfgGroupLike.create({
+        data: {
+          likerId,
+          targetId,
+        },
+      }),
+      db.lfgGroup.update({
+        where: { id: likerId },
+        data: {
+          lastActionAt: new Date(),
+        },
+      }),
+    ]);
+  } catch (e) {
+    // No need for any errors if e.g. duplicate entry was tried or
+    // liked user stopped looking
+    if (e instanceof PrismaClientKnownRequestError) return;
+    throw e;
+  }
 }
 
 export function unlike({
