@@ -1,7 +1,7 @@
 import invariant from "tiny-invariant";
 import { LFG_GROUP_FULL_SIZE, LFG_GROUP_INACTIVE_MINUTES } from "~/constants";
 import * as LFGGroup from "~/models/LFGGroup.server";
-import { PlayFrontPageLoader } from "~/routes/play";
+import { PlayFrontPageLoader } from "~/routes/play/index";
 import { LookingLoaderData } from "~/routes/play/looking";
 import { Unpacked } from "~/utils";
 import {

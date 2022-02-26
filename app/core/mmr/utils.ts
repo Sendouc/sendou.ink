@@ -1,6 +1,6 @@
 import { expose, rate, Rating } from "ts-trueskill";
 import { MMR_TOPX_VISIBILITY_CUTOFF } from "~/constants";
-import { PlayFrontPageLoader } from "~/routes/play";
+import { PlayFrontPageLoader } from "~/routes/play/index";
 
 /** Get first skill object of the array (should be ordered so that most recent skill is first) and convert it into MMR. */
 export function skillArrayToMMR(

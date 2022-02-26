@@ -2,7 +2,7 @@ import * as React from "react";
 import { RadioGroup } from "@headlessui/react";
 import { layoutIcon } from "~/utils";
 import clsx from "clsx";
-import { PlayFrontPageLoader } from "~/routes/play";
+import { PlayFrontPageLoader } from "~/routes/play/index";
 import { UsersIcon } from "../icons/Users";
 
 const OPTIONS = [
