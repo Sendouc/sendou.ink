@@ -97,12 +97,14 @@ export const action: ActionFunction = async ({
     g.members.some((m) => m.memberId === user.id)
   );
   validate(ownGroup, "Not own match");
-  validate(ownGroup.status === "MATCH", "Group doesn't have a match");
   validate(isGroupAdmin({ group: ownGroup, user }), "Not group admin");
 
   switch (data._action) {
     case "REPORT_SCORE": {
-      if (match.stages.some((stage) => stage.winnerGroupId)) {
+      const matchWasAlreadyReported = match.stages.some(
+        (stage) => stage.winnerGroupId
+      );
+      if (matchWasAlreadyReported) {
         // just don't do anything if they report same as someone else before them
         // to user it looks identical to if they were the first to submit
         if (
