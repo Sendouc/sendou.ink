@@ -86,7 +86,7 @@ export function ErrorBoundary({ error }: { error: Error }) {
       <Layout>
         <div className="container">
           <h1>Error happened: {message}</h1>
-          {data && data.length > 0 && <p>Message: {data}</p>}
+          {data && data.length > 0 && data !== "null" && <p>Message: {data}</p>}
           <hr />
           <p className="mt-2 text-sm">
             If you need help or want to report the error so that it can be fixed
