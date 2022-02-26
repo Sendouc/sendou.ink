@@ -533,6 +533,10 @@ hr {
   margin-block: var(--s-4);
 }
 
+.text-center {
+  text-align: center;
+}
+
 .text-sm {
   font-size: var(--fonts-sm);
 }

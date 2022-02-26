@@ -1,0 +1,14 @@
+.play-layout__link-container {
+  display: flex;
+  justify-content: space-between;
+  margin-block-end: var(--s-2);
+}
+
+.play-layout__link {
+  font-size: var(--fonts-xs);
+  font-weight: var(--body);
+}
+
+.play-layout__link.active {
+  visibility: hidden;
+}
