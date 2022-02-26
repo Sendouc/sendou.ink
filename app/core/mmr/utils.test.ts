@@ -76,7 +76,7 @@ ResolveOwnMMR("Calculates own MMR stats correctly", () => {
 
   const valueShouldBe = muSigmaToSP({ mu: 40, sigma: 7 });
 
-  assert.equal(own?.topX, 10);
+  assert.equal(own?.topX, 5);
   assert.equal(own?.value, valueShouldBe);
 });
 
