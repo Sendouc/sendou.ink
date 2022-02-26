@@ -147,6 +147,14 @@ export const action: ActionFunction = async ({ request, context }) => {
       const groupToMatchUpWith = await LFGGroup.findById(data.targetGroupId);
       validate(groupToMatchUpWith, "Invalid targetGroupId");
       validate(ownGroup.status === "LOOKING", "Group not looking");
+      validate(
+        groupToMatchUpWith.members.length === LFG_GROUP_FULL_SIZE,
+        "Group to match up with not full"
+      );
+      validate(
+        ownGroup.members.length === LFG_GROUP_FULL_SIZE,
+        "Own group not full"
+      );
 
       // fail silently if already matched up or group stopped looking
       if (groupToMatchUpWith.status !== "LOOKING") {
