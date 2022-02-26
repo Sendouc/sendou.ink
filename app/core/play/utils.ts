@@ -1,6 +1,7 @@
 import invariant from "tiny-invariant";
 import { LFG_GROUP_FULL_SIZE, LFG_GROUP_INACTIVE_MINUTES } from "~/constants";
 import * as LFGGroup from "~/models/LFGGroup.server";
+import { PlayFrontPageLoader } from "~/routes/play";
 import { LookingLoaderData } from "~/routes/play/looking";
 import { Unpacked } from "~/utils";
 import {
@@ -202,4 +203,27 @@ export function filterExpiredGroups(group: { lastActionAt: Date }) {
   const { EXPIRED: expiredDate } = groupExpiredDates();
 
   return group.lastActionAt.getTime() > expiredDate.getTime();
+}
+
+export function countGroups(
+  groups: LFGGroup.FindLookingAndOwnActive
+): PlayFrontPageLoader["counts"] {
+  return groups.filter(filterExpiredGroups).reduce(
+    (acc: PlayFrontPageLoader["counts"], group) => {
+      const memberCount = group.members.length;
+
+      if (group.type === "QUAD" && memberCount !== 4) {
+        acc.QUAD += memberCount;
+      } else if (group.type === "TWIN" && memberCount !== 2) {
+        acc.TWIN += memberCount;
+      } else if (group.type === "VERSUS" && group.ranked) {
+        acc["VERSUS-RANKED"] += memberCount;
+      } else if (group.type === "VERSUS" && !group.ranked) {
+        acc["VERSUS-UNRANKED"] += memberCount;
+      }
+
+      return acc;
+    },
+    { TWIN: 0, QUAD: 0, "VERSUS-RANKED": 0, "VERSUS-UNRANKED": 0 }
+  );
 }

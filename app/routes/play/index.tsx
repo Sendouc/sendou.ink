@@ -23,7 +23,7 @@ import {
 import * as LFGGroup from "~/models/LFGGroup.server";
 import { Button } from "~/components/Button";
 import { useUser } from "~/hooks/common";
-import { filterExpiredGroups } from "~/core/play/utils";
+import { countGroups } from "~/core/play/utils";
 import invariant from "tiny-invariant";
 
 export const links: LinksFunction = () => {
@@ -94,31 +94,15 @@ export const loader: LoaderFunction = async ({ context }) => {
   const user = getUser(context);
 
   const groups = await LFGGroup.findLookingAndOwnActive(user?.id);
-  const counts = groups.filter(filterExpiredGroups).reduce(
-    (acc: PlayFrontPageLoader["counts"], group) => {
-      const memberCount = group.members.length;
 
-      if (group.type === "QUAD" && memberCount !== 4) {
-        acc.QUAD += memberCount;
-      } else if (group.type === "TWIN" && memberCount !== 2) {
-        acc.TWIN += memberCount;
-      } else if (group.type === "VERSUS" && group.ranked) {
-        acc["VERSUS-RANKED"] += memberCount;
-      } else if (group.type === "VERSUS" && !group.ranked) {
-        acc["VERSUS-UNRANKED"] += memberCount;
-      }
-
-      return acc;
-    },
-    { TWIN: 0, QUAD: 0, "VERSUS-RANKED": 0, "VERSUS-UNRANKED": 0 }
-  );
-
-  if (!user) return json<PlayFrontPageLoader>({ counts });
+  if (!user) return json<PlayFrontPageLoader>({ counts: countGroups(groups) });
 
   const ownGroup = groups.find((g) =>
     g.members.some((m) => m.user.id === user.id)
   );
-  if (!ownGroup) return json<PlayFrontPageLoader>({ counts });
+  if (!ownGroup) {
+    return json<PlayFrontPageLoader>({ counts: countGroups(groups) });
+  }
   if (ownGroup.status === "MATCH") {
     invariant(ownGroup.matchId, "Unexpected no matchId but status is MATCH");
     return redirect(`/play/match/${ownGroup.matchId}`);
