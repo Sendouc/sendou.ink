@@ -1,5 +1,6 @@
 import { Mode } from "@prisma/client";
 import clsx from "clsx";
+import React from "react";
 import {
   ActionFunction,
   Form,
@@ -290,7 +291,7 @@ export default function LFGMatchPage() {
           <div className="play-match__played-map-list">
             {data.mapList.map((stage) => {
               return (
-                <>
+                <React.Fragment key={`${stage.name}-${stage.mode}`}>
                   <div
                     className={clsx("play-match__checkmark", "left", {
                       invisible: stage.winner !== 0,
@@ -312,7 +313,7 @@ export default function LFGMatchPage() {
                   >
                     <CheckmarkIcon />
                   </div>
-                </>
+                </React.Fragment>
               );
             })}
           </div>
