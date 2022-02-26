@@ -206,7 +206,10 @@
     ]
   },
   "946869002028859452": {
-    "weapons": ["Foil Squeezer", "Kensa Splattershot", "Slosher Deco"]
+    "weapons": ["Foil Squeezer", "Kensa Splattershot", "Kensa Rapid Blaster"]
+  },
+  "740907319856201799": {
+    "weapons": ["Splattershot Jr.", "Bloblobber Deco", "Bloblobber"]
   },
   "229027887573893120": {
     "weapons": [
@@ -250,6 +253,9 @@
     "weapons": ["Kensa Sloshing Machine", "L-3 Nozzlenose D", "N-ZAP '85"],
     "peakXP": 2652.4,
     "peakLP": 2567.6
+  },
+  "313108618243473408": {
+    "peakLP": 2408.1
   },
   "328641373655924739": {
     "weapons": [
@@ -309,9 +315,6 @@
       "Soda Slosher",
       "Sorella Brella"
     ]
-  },
-  "313108618243473408": {
-    "peakLP": 2408.1
   },
   "337334100253999105": {
     "weapons": [
@@ -397,9 +400,6 @@
   "133298574174846978": {
     "peakXP": 2582.2,
     "peakLP": 2489.1
-  },
-  "165132987598372864": {
-    "weapons": ["Hero Dualie Replicas", "Custom Dualie Squelchers"]
   },
   "309099705151913984": {
     "weapons": ["Zink Mini Splatling", "Mini Splatling", "Kensa Splattershot"],
@@ -503,12 +503,7 @@
     ]
   },
   "265491280115662858": {
-    "weapons": [
-      "Mini Splatling",
-      "Ballpoint Splatling Nouveau",
-      "Heavy Splatling Remix",
-      "Nautilus 47"
-    ],
+    "weapons": ["Ballpoint Splatling Nouveau", "Heavy Splatling Remix"],
     "peakXP": 2585.7,
     "peakLP": 2541.3
   },
@@ -558,7 +553,7 @@
     "weapons": ["Kensa .52 Gal", ".96 Gal", "Kensa Splattershot Pro"]
   },
   "349217035374559233": {
-    "weapons": ["Soda Slosher", "Sorella Brella"],
+    "weapons": ["Soda Slosher", "Sorella Brella", "Splat Brella"],
     "peakXP": 2802.4,
     "peakLP": 2530.1
   },
@@ -579,6 +574,9 @@
       "N-ZAP '85"
     ],
     "peakLP": 2510.8
+  },
+  "165132987598372864": {
+    "weapons": ["Hero Dualie Replicas", "Custom Dualie Squelchers"]
   },
   "260733298215485440": {
     "weapons": ["Kensa Splattershot Pro", "Custom Dualie Squelchers"]
@@ -1091,14 +1089,6 @@
   "521298800258711567": {
     "weapons": ["Splat Charger", "Firefin Splat Charger"]
   },
-  "153544537824821248": {
-    "weapons": [
-      "Kensa Splattershot",
-      "Kensa Splattershot Pro",
-      "Kensa Sloshing Machine",
-      "Nautilus 79"
-    ]
-  },
   "432594198479241236": {
     "weapons": [
       "Foil Squeezer",
@@ -1173,6 +1163,14 @@
   },
   "253287398576750592": {
     "weapons": ["Kensa Splattershot Pro", "Foil Squeezer"]
+  },
+  "153544537824821248": {
+    "weapons": [
+      "Kensa Splattershot",
+      "Kensa Splattershot Pro",
+      "Kensa Sloshing Machine",
+      "Nautilus 79"
+    ]
   },
   "358147861705392129": {
     "weapons": [
@@ -1465,16 +1463,8 @@
   "366022687023300609": {
     "weapons": ["Sploosh-o-matic 7"]
   },
-  "277507617633337344": {
-    "weapons": [
-      "Dark Tetra Dualies",
-      "Light Tetra Dualies",
-      "Kensa Glooga Dualies",
-      "Glooga Dualies Deco",
-      "Custom Dualie Squelchers"
-    ],
-    "peakXP": 2807,
-    "peakLP": 2463.6
+  "751471859530334318": {
+    "weapons": ["Kensa .52 Gal", "Kensa Splattershot Pro", "Fresh Squiffer"]
   },
   "187294752209633280": {
     "weapons": [
@@ -1509,9 +1499,6 @@
       "Nautilus 47"
     ],
     "peakLP": 2388.6
-  },
-  "751471859530334318": {
-    "weapons": ["Kensa .52 Gal", "Kensa Splattershot Pro", "Fresh Squiffer"]
   },
   "759144458247471104": {
     "weapons": ["Clear Dapple Dualies", "Custom Hydra Splatling"]
@@ -1616,17 +1603,6 @@
       "Custom Dualie Squelchers"
     ]
   },
-  "206476405201043458": {
-    "weapons": [
-      "Octo Shot Replica",
-      "Splattershot Jr.",
-      "Kensa .52 Gal",
-      "Kensa Rapid Blaster",
-      "E-liter 4K Scope"
-    ],
-    "peakXP": 2706.1,
-    "peakLP": 2602.6
-  },
   "482873047674781697": {
     "weapons": ["Foil Squeezer"]
   },
@@ -1700,9 +1676,6 @@
       "Splattershot Jr.",
       "Custom Dualie Squelchers"
     ]
-  },
-  "195601840040181760": {
-    "weapons": ["Octo Shot Replica", "Foil Squeezer", "Inkbrush"]
   },
   "151144919136862210": {
     "weapons": [
@@ -1804,6 +1777,17 @@
   "230797102844870656": {
     "weapons": ["Kensa Splattershot", "Kensa .52 Gal"],
     "peakLP": 2420.2
+  },
+  "206476405201043458": {
+    "weapons": [
+      "Octo Shot Replica",
+      "Splattershot Jr.",
+      "Kensa .52 Gal",
+      "Kensa Rapid Blaster",
+      "E-liter 4K Scope"
+    ],
+    "peakXP": 2706.1,
+    "peakLP": 2602.6
   },
   "419308967932461056": {
     "weapons": ["Bloblobber"]
@@ -2312,9 +2296,6 @@
     "peakXP": 2703.8,
     "peakLP": 2581.1
   },
-  "180857074488442880": {
-    "weapons": ["Soda Slosher"]
-  },
   "409548842934206474": {
     "weapons": [
       "Sploosh-o-matic 7",
@@ -2379,13 +2360,72 @@
     "peakXP": 2637.6,
     "peakLP": 2588.6
   },
+  "180857074488442880": {
+    "weapons": ["Soda Slosher"]
+  },
+  "223785046891298816": {
+    "weapons": ["E-liter 4K", "Splattershot", "Kensa Splattershot"]
+  },
+  "315405555416039425": {
+    "weapons": ["Kensa Splattershot", "Kensa .52 Gal"],
+    "peakLP": 2421.5
+  },
+  "195601840040181760": {
+    "weapons": ["Octo Shot Replica", "Foil Squeezer", "Inkbrush"],
+    "peakXP": 2618.3,
+    "peakLP": 2573.8
+  },
+  "947143763287998494": {
+    "weapons": ["Kensa Splattershot Pro", "Splatterscope", "Dualie Squelchers"]
+  },
+  "860098180519821312": {
+    "weapons": ["Custom Jet Squelcher", "Jet Squelcher"]
+  },
+  "384436034995355649": {
+    "weapons": [
+      "Enperry Splat Dualies",
+      "Custom Dualie Squelchers",
+      "Dark Tetra Dualies",
+      "Glooga Dualies Deco",
+      "Rapid Blaster Pro Deco"
+    ]
+  },
+  "754406516244873327": {
+    "weapons": ["Custom Dualie Squelchers", "Dualie Squelchers"]
+  },
+  "518123620216602634": {
+    "weapons": [
+      "Kensa L-3 Nozzlenose",
+      "Kensa Mini Splatling",
+      "Ballpoint Splatling Nouveau",
+      "Kensa Glooga Dualies",
+      "Tenta Camo Brella"
+    ]
+  },
+  "611868051087949834": {
+    "weapons": [
+      "Hero Splatling Replica",
+      "Heavy Splatling Remix",
+      "Nautilus 79",
+      "Mini Splatling",
+      "Ballpoint Splatling Nouveau"
+    ]
+  },
   "244246880442122250": {
     "weapons": ["Tenta Brella", "Tenta Sorella Brella", "Tenta Camo Brella"],
     "peakXP": 2708.8,
     "peakLP": 2649.2
   },
-  "223785046891298816": {
-    "weapons": ["E-liter 4K", "Splattershot", "Kensa Splattershot"]
+  "277507617633337344": {
+    "weapons": [
+      "Dark Tetra Dualies",
+      "Light Tetra Dualies",
+      "Kensa Glooga Dualies",
+      "Glooga Dualies Deco",
+      "Custom Dualie Squelchers"
+    ],
+    "peakXP": 2807,
+    "peakLP": 2463.6
   },
   "193171438985936898": {
     "weapons": [
@@ -2479,10 +2519,6 @@
   "377617505461600256": {
     "weapons": ["Sploosh-o-matic 7", "Heavy Splatling Remix", "Kensa Octobrush"]
   },
-  "294326973558423552": {
-    "weapons": ["Splattershot Jr.", "N-ZAP '85", ".96 Gal", "Classic Squiffer"],
-    "peakLP": 2544.4
-  },
   "320858492124659713": {
     "weapons": ["Custom Dualie Squelchers", "Kensa Splattershot Pro"]
   },
@@ -2545,7 +2581,7 @@
     "weapons": ["L-3 Nozzlenose D", "Kensa L-3 Nozzlenose"]
   },
   "315610730294411264": {
-    "weapons": ["N-ZAP '85"]
+    "weapons": ["N-ZAP '85", "Jet Squelcher"]
   },
   "263559967842238465": {
     "weapons": ["Dualie Squelchers", "Classic Squiffer", "Glooga Dualies Deco"],
@@ -2554,14 +2590,6 @@
   "322167739743469569": {
     "weapons": ["Octobrush", "Octobrush Nouveau"],
     "peakLP": 2292.9
-  },
-  "427221050330316814": {
-    "weapons": [
-      "Heavy Splatling",
-      "Heavy Splatling Remix",
-      "Heavy Splatling Deco",
-      "Mini Splatling"
-    ]
   },
   "195204472501305345": {
     "weapons": ["Splatterscope"],
@@ -2652,6 +2680,62 @@
     ],
     "peakXP": 2609.8,
     "peakLP": 2413
+  },
+  "294326973558423552": {
+    "weapons": ["Splattershot Jr.", "N-ZAP '85", ".96 Gal", "Classic Squiffer"],
+    "peakLP": 2544.4
+  },
+  "902914425265209355": {
+    "weapons": [
+      "Tentatek Splattershot",
+      "Kensa Splattershot Pro",
+      ".52 Gal Deco"
+    ]
+  },
+  "370556209880760330": {
+    "weapons": [
+      "Splat Roller",
+      "Neo Splash-o-matic",
+      "New Squiffer",
+      "Fresh Squiffer"
+    ]
+  },
+  "357301111381557248": {
+    "weapons": [
+      "Kensa Splattershot",
+      "Splattershot Jr.",
+      "N-ZAP '85",
+      ".96 Gal",
+      "H-3 Nozzlenose D"
+    ]
+  },
+  "947213969985253427": {
+    "weapons": ["N-ZAP '85", "Kensa Splattershot"]
+  },
+  "947216132748742766": {
+    "weapons": ["Sploosh-o-matic 7"]
+  },
+  "947222524964519949": {
+    "weapons": [
+      "Custom Dualie Squelchers",
+      "Dualie Squelchers",
+      "Dapple Dualies",
+      "Dapple Dualies Nouveau",
+      "Clear Dapple Dualies"
+    ]
+  },
+  "314765216179159040": {
+    "weapons": ["Soda Slosher", "Neo Splash-o-matic"]
+  },
+  "936048087791702087": {
+    "weapons": ["Inkbrush Nouveau", "Custom E-liter 4K", "Rapid Blaster Deco"]
+  },
+  "427221050330316814": {
+    "weapons": [
+      "Heavy Splatling Remix",
+      "Heavy Splatling Deco",
+      "Rapid Blaster Pro Deco"
+    ]
   },
   "390864187888238592": {
     "weapons": ["Custom Dualie Squelchers", "Dualie Squelchers", "Tri-Slosher"]
@@ -2820,7 +2904,7 @@
     "peakLP": 2476.1
   },
   "392316684381323265": {
-    "weapons": ["Custom Dualie Squelchers", "N-ZAP '85"],
+    "weapons": ["N-ZAP '85", "Dualie Squelchers"],
     "peakLP": 2461.1
   },
   "119539335149256706": {
@@ -3019,12 +3103,7 @@
     "weapons": ["Octo Shot Replica", "Kensa Splattershot", "Splattershot"]
   },
   "446533939184533504": {
-    "weapons": [
-      "Neo Splash-o-matic",
-      "Tentatek Splattershot",
-      "Kensa Splattershot",
-      "Kensa Splattershot Pro"
-    ]
+    "weapons": ["Neo Splash-o-matic", "N-ZAP '85", "Kensa Splattershot Pro"]
   },
   "493056989686005760": {
     "weapons": [
@@ -3320,15 +3399,6 @@
       "Hero Shot Replica"
     ]
   },
-  "484483684661985291": {
-    "weapons": [
-      "Kensa Splattershot",
-      "Kensa Splattershot Pro",
-      "L-3 Nozzlenose D",
-      "Nautilus 79",
-      ".96 Gal Deco"
-    ]
-  },
   "152879023192670208": {
     "weapons": [
       "Tentatek Splattershot",
@@ -3549,15 +3619,6 @@
       "Kensa Splattershot Pro"
     ]
   },
-  "107661716824809472": {
-    "weapons": [
-      ".96 Gal",
-      "Foil Squeezer",
-      "Kensa Splattershot Pro",
-      "Forge Splattershot Pro",
-      "L-3 Nozzlenose D"
-    ]
-  },
   "227336695408885760": {
     "weapons": [
       "Enperry Splat Dualies",
@@ -3647,6 +3708,15 @@
       "Slosher",
       "Rapid Blaster Pro Deco",
       "Rapid Blaster Deco"
+    ]
+  },
+  "107661716824809472": {
+    "weapons": [
+      ".96 Gal",
+      "Foil Squeezer",
+      "Kensa Splattershot Pro",
+      "Forge Splattershot Pro",
+      "L-3 Nozzlenose D"
     ]
   },
   "361742382963621889": {
@@ -3805,7 +3875,8 @@
       "Jet Squelcher",
       "Custom Jet Squelcher",
       "Custom Dualie Squelchers",
-      "Dualie Squelchers"
+      "N-ZAP '85",
+      "N-ZAP '89"
     ]
   },
   "381129695980290050": {
@@ -3919,6 +3990,15 @@
     "peakXP": 2731.3,
     "peakLP": 2646.6
   },
+  "142363033832914944": {
+    "weapons": [
+      "Custom Jet Squelcher",
+      "Jet Squelcher",
+      "N-ZAP '85",
+      "Kensa .52 Gal",
+      "Firefin Splatterscope"
+    ]
+  },
   "548608243019022346": {
     "weapons": [
       "Tenta Camo Brella",
@@ -3930,7 +4010,7 @@
     "weapons": ["N-ZAP '85"]
   },
   "357866429552525322": {
-    "weapons": ["Kensa Splattershot"]
+    "weapons": ["Kensa Splattershot", "Splattershot Jr."]
   },
   "367041515807178766": {
     "weapons": [
@@ -4170,8 +4250,7 @@
     "weapons": [
       "Enperry Splat Dualies",
       "Kensa Splattershot",
-      "Hero Roller Replica",
-      "L-3 Nozzlenose D"
+      "Hero Roller Replica"
     ],
     "peakLP": 2489.7
   },
@@ -4544,6 +4623,15 @@
     "peakXP": 2805.7,
     "peakLP": 2639.4
   },
+  "90117027854823424": {
+    "weapons": [
+      "N-ZAP '85",
+      "Splattershot Jr.",
+      "Kensa Splattershot",
+      "Tenta Camo Brella"
+    ],
+    "peakLP": 2586.9
+  },
   "110023598911008768": {
     "weapons": ["N-ZAP '85", "Splattershot Jr."]
   },
@@ -4569,10 +4657,6 @@
   "168477650497568778": {
     "peakXP": 2823.8,
     "peakLP": 2618.2
-  },
-  "90117027854823424": {
-    "weapons": ["Aerospray RG"],
-    "peakLP": 2586.9
   },
   "524592272411459584": {
     "weapons": ["Explosher", "Custom Explosher"],
@@ -4689,9 +4773,6 @@
   "391583460747378701": {
     "peakLP": 2465.6
   },
-  "337280278030581761": {
-    "weapons": ["Kensa Splattershot"]
-  },
   "148212922567491584": {
     "weapons": [
       "Inkbrush",
@@ -4708,6 +4789,15 @@
       "Custom Explosher",
       "Mini Splatling"
     ]
+  },
+  "337280278030581761": {
+    "weapons": [
+      "Kensa Splattershot",
+      "Kensa Splattershot Pro",
+      "Neo Splash-o-matic"
+    ],
+    "peakXP": 2700.9,
+    "peakLP": 2635.1
   },
   "159408855518806018": {
     "weapons": ["Ballpoint Splatling Nouveau", "Range Blaster"]
@@ -5295,8 +5385,7 @@
       "Firefin Splatterscope",
       "Rapid Blaster Pro Deco",
       "Mini Splatling",
-      "Enperry Splat Dualies",
-      "Herobrush Replica"
+      "Splatterscope"
     ]
   },
   "591776610248687629": {
@@ -5428,6 +5517,15 @@
     "peakXP": 2713.1,
     "peakLP": 2635.6
   },
+  "434788451733209088": {
+    "weapons": [
+      "Splattershot Jr.",
+      "Kensa Splattershot Jr.",
+      "N-ZAP '85",
+      "Custom Dualie Squelchers",
+      "Kensa Sloshing Machine"
+    ]
+  },
   "110136136474595328": {
     "peakXP": 2701.7,
     "peakLP": 2658.1
@@ -5550,15 +5648,6 @@
       "Splat Brella"
     ]
   },
-  "434788451733209088": {
-    "weapons": [
-      "Splattershot Jr.",
-      "Kensa Splattershot Jr.",
-      "N-ZAP '85",
-      "Custom Dualie Squelchers",
-      "Kensa Sloshing Machine"
-    ]
-  },
   "606866212416258054": {
     "weapons": ["Kensa Splattershot", "Kensa Splattershot Pro"]
   },
@@ -5572,6 +5661,14 @@
   },
   "617270411050221593": {
     "weapons": ["Custom Hydra Splatling", "Heavy Splatling Remix"]
+  },
+  "363840546885730305": {
+    "weapons": [
+      "Kensa Dynamo Roller",
+      "Splatterscope",
+      "Forge Splattershot Pro",
+      "Foil Flingza Roller"
+    ]
   },
   "212589040803774464": {
     "weapons": [
@@ -5654,14 +5751,6 @@
     ],
     "peakXP": 2540.2,
     "peakLP": 2544.4
-  },
-  "363840546885730305": {
-    "weapons": [
-      "Kensa Dynamo Roller",
-      "Splatterscope",
-      "Forge Splattershot Pro",
-      "Foil Flingza Roller"
-    ]
   },
   "120984388962877440": {
     "weapons": [".96 Gal"]
@@ -6212,7 +6301,12 @@
     ]
   },
   "358314893297844244": {
-    "weapons": ["Mini Splatling", "Zink Mini Splatling"],
+    "weapons": [
+      "Mini Splatling",
+      "Zink Mini Splatling",
+      "Splattershot Jr.",
+      "Nautilus 79"
+    ],
     "peakLP": 2423.3
   },
   "168599992385142785": {
@@ -6368,6 +6462,13 @@
     "weapons": ["Tri-Slosher", "Tri-Slosher Nouveau", "Kensa .52 Gal"],
     "peakLP": 2413.5
   },
+  "359463703076143106": {
+    "weapons": ["Sorella Brella", "Tenta Camo Brella", "Kensa Dynamo Roller"]
+  },
+  "331239483423064065": {
+    "weapons": ["Splat Roller", "Kensa Dynamo Roller"],
+    "peakLP": 2550.6
+  },
   "199558778381795330": {
     "weapons": [
       "Custom Hydra Splatling",
@@ -6376,13 +6477,6 @@
     ],
     "peakXP": 2700.6,
     "peakLP": 2539.4
-  },
-  "359463703076143106": {
-    "weapons": ["Sorella Brella", "Tenta Camo Brella", "Kensa Dynamo Roller"]
-  },
-  "331239483423064065": {
-    "weapons": ["Splat Roller", "Kensa Dynamo Roller"],
-    "peakLP": 2550.6
   },
   "92909500100513792": {
     "peakXP": 2813.8,
@@ -6540,15 +6634,6 @@
   },
   "240765575637237760": {
     "weapons": ["Gold Dynamo Roller", "Kensa Dynamo Roller", "E-liter 4K"]
-  },
-  "397119494511919114": {
-    "weapons": [
-      "Kensa Sloshing Machine",
-      "Splattershot Jr.",
-      "Tri-Slosher",
-      "Luna Blaster",
-      "N-ZAP '85"
-    ]
   },
   "119536481428701185": {
     "weapons": [
@@ -6798,11 +6883,20 @@
       "Tri-Slosher Nouveau"
     ]
   },
+  "397119494511919114": {
+    "weapons": [
+      "Kensa Sloshing Machine",
+      "Splattershot Jr.",
+      "Tri-Slosher",
+      "Luna Blaster",
+      "N-ZAP '85"
+    ]
+  },
   "371735224989646848": {
     "weapons": ["L-3 Nozzlenose D", "Nautilus 79", "Neo Splash-o-matic"]
   },
   "402888557309460500": {
-    "weapons": ["Glooga Dualies Deco"]
+    "weapons": ["Glooga Dualies Deco", "Kensa .52 Gal"]
   },
   "262322571125587970": {
     "weapons": [
@@ -6811,6 +6905,14 @@
       "Kensa Rapid Blaster"
     ],
     "peakLP": 2470.8
+  },
+  "266282065224400896": {
+    "weapons": [
+      "Gold Dynamo Roller",
+      "Heavy Splatling Remix",
+      "Neo Splash-o-matic",
+      "N-ZAP '85"
+    ]
   },
   "550047199447351297": {
     "weapons": ["Nautilus 79", "Nautilus 47"],
@@ -6950,14 +7052,6 @@
       "Goo Tuber"
     ]
   },
-  "266282065224400896": {
-    "weapons": [
-      "Gold Dynamo Roller",
-      "Heavy Splatling Remix",
-      "Neo Splash-o-matic",
-      "N-ZAP '85"
-    ]
-  },
   "152839298889154560": {
     "weapons": [
       "Splattershot Jr.",
@@ -6972,7 +7066,8 @@
       "Firefin Splatterscope",
       "Splatterscope",
       "Splattershot Jr.",
-      "N-ZAP '89"
+      "N-ZAP '89",
+      "Custom Jet Squelcher"
     ]
   },
   "171343171530260480": {
@@ -7086,10 +7181,6 @@
       "Octobrush"
     ]
   },
-  "188975805265608704": {
-    "weapons": ["Dynamo Roller", "Gold Dynamo Roller", "Kensa Dynamo Roller"],
-    "peakLP": 2429.9
-  },
   "576688147610730507": {
     "weapons": ["Carbon Roller", "Jet Squelcher", "New Squiffer", "N-ZAP '85"]
   },
@@ -7175,6 +7266,10 @@
     "peakXP": 2608.9,
     "peakLP": 2463.7
   },
+  "188975805265608704": {
+    "weapons": ["Dynamo Roller", "Gold Dynamo Roller", "Kensa Dynamo Roller"],
+    "peakLP": 2429.9
+  },
   "555368699754840066": {
     "weapons": [
       "Clash Blaster Neo",
@@ -7233,7 +7328,7 @@
     "peakLP": 2455.5
   },
   "401870080855506947": {
-    "weapons": ["Bloblobber Deco"],
+    "weapons": ["Bloblobber Deco", "Splash-o-matic", "N-ZAP '85"],
     "peakXP": 2736.3,
     "peakLP": 2637.9
   },
@@ -7468,6 +7563,11 @@
     "weapons": ["N-ZAP '85", "H-3 Nozzlenose D"]
   },
   "307659621068308480": {
+    "weapons": [
+      "Tentatek Splattershot",
+      "Kensa .52 Gal",
+      "Custom Dualie Squelchers"
+    ],
     "peakXP": 2609.7,
     "peakLP": 2522.7
   },
@@ -7738,9 +7838,6 @@
   "536351653532794901": {
     "weapons": [".52 Gal", ".96 Gal", ".96 Gal Deco"]
   },
-  "695343788545146980": {
-    "weapons": ["N-ZAP '85", "Splattershot Jr."]
-  },
   "426023282593103872": {
     "weapons": ["Soda Slosher", "Tri-Slosher", "Kensa Rapid Blaster"],
     "peakLP": 2507.2
@@ -7823,6 +7920,9 @@
   },
   "531145535818825739": {
     "weapons": ["Hero Dualie Replicas", "Dualie Squelchers"]
+  },
+  "695343788545146980": {
+    "weapons": ["N-ZAP '85", "Splattershot Jr."]
   },
   "167427360059162625": {
     "weapons": [
@@ -8030,9 +8130,10 @@
   },
   "436928735485100042": {
     "weapons": [
-      "Kensa Splattershot",
-      "Neo Splash-o-matic",
-      "Custom Dualie Squelchers"
+      "Splat Charger",
+      "Firefin Splat Charger",
+      "Custom Jet Squelcher",
+      "Bamboozler 14 Mk I"
     ],
     "peakXP": 2611.9,
     "peakLP": 2518.3
@@ -8437,6 +8538,9 @@
       "Mini Splatling"
     ]
   },
+  "365884825661472769": {
+    "weapons": ["Kensa Splat Roller", "Foil Flingza Roller"]
+  },
   "323881879575199745": {
     "weapons": ["Foil Squeezer"],
     "peakXP": 2593.4,
@@ -8506,15 +8610,6 @@
       ".96 Gal",
       "Kensa .52 Gal",
       "Kensa Splattershot"
-    ]
-  },
-  "365884825661472769": {
-    "weapons": [
-      "Splattershot Jr.",
-      "N-ZAP '85",
-      "Gold Dynamo Roller",
-      "Custom Jet Squelcher",
-      "Bamboozler 14 Mk I"
     ]
   },
   "381149705520021507": {
@@ -8797,12 +8892,7 @@
     "weapons": ["Heavy Splatling", "Custom Hydra Splatling", "Splatterscope"]
   },
   "695307735671242782": {
-    "weapons": [
-      "Kensa Octobrush",
-      "Herobrush Replica",
-      "Octobrush Nouveau",
-      "Kensa Sloshing Machine"
-    ]
+    "weapons": ["Kensa Octobrush", "Foil Squeezer", "Kensa Sloshing Machine"]
   },
   "132189238744711168": {
     "weapons": ["Rapid Blaster", "Custom Dualie Squelchers", "Nautilus 79"]
@@ -8845,6 +8935,9 @@
   "98237850859896832": {
     "weapons": ["Custom Blaster", "Tri-Slosher", "Luna Blaster"]
   },
+  "394762516221132811": {
+    "weapons": ["N-ZAP '85", "Splattershot Jr."]
+  },
   "357679942181453825": {
     "weapons": [
       "Dark Tetra Dualies",
@@ -8852,9 +8945,6 @@
       "L-3 Nozzlenose D",
       "Foil Squeezer"
     ]
-  },
-  "394762516221132811": {
-    "weapons": ["N-ZAP '85", "Splattershot Jr."]
   },
   "433707823134670849": {
     "weapons": ["Soda Slosher", "Hero Slosher Replica"],
@@ -9046,14 +9136,6 @@
       "Kensa Mini Splatling"
     ]
   },
-  "545308641486700554": {
-    "weapons": [
-      "Tri-Slosher",
-      "Kensa .52 Gal",
-      "Kensa Splattershot",
-      "Neo Splash-o-matic"
-    ]
-  },
   "339064929732657152": {
     "weapons": [
       "Kensa Splattershot Pro",
@@ -9072,6 +9154,14 @@
       "Kensa Splattershot"
     ]
   },
+  "545308641486700554": {
+    "weapons": [
+      "Tri-Slosher",
+      "Kensa .52 Gal",
+      "Kensa Splattershot",
+      "Neo Splash-o-matic"
+    ]
+  },
   "532597218922725376": {
     "weapons": ["Kensa Splattershot", "N-ZAP '85", "Kensa Splattershot Pro"]
   },
@@ -9085,10 +9175,6 @@
   },
   "471669156500996097": {
     "weapons": ["Splattershot Jr.", "N-ZAP '85", ".96 Gal"]
-  },
-  "424093594736001025": {
-    "weapons": ["Bloblobber", "Bloblobber Deco", "Kensa Splattershot"],
-    "peakLP": 2532.1
   },
   "413788772237574145": {
     "weapons": ["Soda Slosher", "Hero Slosher Replica"],
@@ -9232,6 +9318,10 @@
       "Kensa Sloshing Machine"
     ],
     "peakLP": 2528.4
+  },
+  "424093594736001025": {
+    "weapons": ["Bloblobber Deco"],
+    "peakLP": 2532.1
   },
   "252285332790312960": {
     "weapons": ["Octobrush", "Octobrush Nouveau", "Kensa Octobrush"]
@@ -9419,6 +9509,16 @@
     ],
     "peakLP": 2442.2
   },
+  "411621214994432000": {
+    "weapons": [
+      "Kensa Splattershot Pro",
+      "Custom Jet Squelcher",
+      "N-ZAP '85",
+      "Sploosh-o-matic 7",
+      "Kensa Splattershot"
+    ],
+    "peakLP": 2685.3
+  },
   "457953140956725250": {
     "weapons": ["Octo Shot Replica", "Kensa Splattershot", "Kensa Luna Blaster"]
   },
@@ -9487,10 +9587,6 @@
       "Foil Flingza Roller",
       "E-liter 4K Scope"
     ]
-  },
-  "411621214994432000": {
-    "weapons": ["Kensa Splattershot Pro", "Custom Jet Squelcher"],
-    "peakLP": 2685.3
   },
   "718037775554969621": {
     "weapons": ["Tenta Brella", "Tenta Sorella Brella", "Tenta Camo Brella"]
@@ -9906,7 +10002,12 @@
     ]
   },
   "738432624598581340": {
-    "weapons": ["Kensa Charger"]
+    "weapons": [
+      "Kensa Splatterscope",
+      "Firefin Splatterscope",
+      "E-liter 4K",
+      "E-liter 4K Scope"
+    ]
   },
   "287000562787024896": {
     "weapons": [
@@ -10208,6 +10309,14 @@
   "343713109560655873": {
     "weapons": ["N-ZAP '85", "Splattershot Jr."]
   },
+  "650447994839105576": {
+    "weapons": [
+      "Custom Dualie Squelchers",
+      "Dualie Squelchers",
+      "Nautilus 79",
+      "Kensa Splattershot Pro"
+    ]
+  },
   "347127232839417856": {
     "weapons": [
       "Splattershot Jr.",
@@ -10354,14 +10463,6 @@
     ],
     "peakXP": 2606,
     "peakLP": 2645.1
-  },
-  "650447994839105576": {
-    "weapons": [
-      "Custom Dualie Squelchers",
-      "Dualie Squelchers",
-      "Nautilus 79",
-      "Kensa Splattershot Pro"
-    ]
   },
   "436252807864254496": {
     "weapons": [
@@ -10666,11 +10767,11 @@
   },
   "416992682381148160": {
     "weapons": [
-      "Enperry Splat Dualies",
       "L-3 Nozzlenose D",
       "Kensa .52 Gal",
       "Neo Splash-o-matic",
-      "Custom Dualie Squelchers"
+      "Custom Dualie Squelchers",
+      "Enperry Splat Dualies"
     ],
     "peakXP": 2734.5,
     "peakLP": 2523.7
@@ -10727,10 +10828,11 @@
     "weapons": ["Dualie Squelchers", "Kensa .52 Gal"]
   },
   "353262885721341954": {
-    "weapons": ["Tri-Slosher Nouveau", "Tri-Slosher"]
+    "weapons": ["Tri-Slosher Nouveau", "Tri-Slosher"],
+    "peakLP": 2372
   },
   "333051103358746635": {
-    "weapons": [".96 Gal", "Foil Squeezer"]
+    "weapons": [".96 Gal", "Foil Squeezer", "Kensa Splattershot Pro"]
   },
   "377592932254875649": {
     "weapons": [
@@ -11210,6 +11312,23 @@
   "148555760626827264": {
     "weapons": [".96 Gal", "Kensa Splattershot"]
   },
+  "358899983057158144": {
+    "weapons": [
+      "Kensa Dynamo Roller",
+      "Gold Dynamo Roller",
+      "Hero Roller Replica",
+      "Foil Flingza Roller"
+    ]
+  },
+  "290316748526321665": {
+    "weapons": [
+      "Kensa Splattershot",
+      "Nautilus 79",
+      "Custom Blaster",
+      "Hero Dualie Replicas",
+      "Sloshing Machine"
+    ]
+  },
   "130000310222585856": {
     "weapons": ["Splattershot Jr."]
   },
@@ -11235,10 +11354,10 @@
   "721848238470332527": {
     "weapons": [
       "Splattershot Jr.",
-      "Tenta Camo Brella",
-      "Tenta Brella",
-      "Jet Squelcher",
-      "N-ZAP '85"
+      "Kensa .52 Gal",
+      "Kensa Splattershot",
+      "Foil Flingza Roller",
+      "Tenta Brella"
     ],
     "peakLP": 2349.2
   },
@@ -11326,27 +11445,10 @@
       "Octo Shot Replica"
     ]
   },
-  "290316748526321665": {
-    "weapons": [
-      "Kensa Splattershot",
-      "Nautilus 79",
-      "Custom Blaster",
-      "Hero Dualie Replicas",
-      "Sloshing Machine"
-    ]
-  },
   "388079291356807187": {
     "weapons": ["Dark Tetra Dualies", "Light Tetra Dualies"],
     "peakXP": 2660.4,
     "peakLP": 2448.9
-  },
-  "358899983057158144": {
-    "weapons": [
-      "Kensa Dynamo Roller",
-      "Gold Dynamo Roller",
-      "Hero Roller Replica",
-      "Foil Flingza Roller"
-    ]
   },
   "689498426295189578": {
     "weapons": [
@@ -11832,11 +11934,11 @@
   },
   "504269718106931211": {
     "weapons": [
-      "Splatterscope",
-      "E-liter 4K",
       "Tenta Camo Brella",
+      "E-liter 4K",
+      "Kensa Splattershot Jr.",
       "Sorella Brella",
-      "Kensa Splattershot Jr."
+      "Soda Slosher"
     ],
     "peakLP": 2292.8
   },
@@ -12015,7 +12117,7 @@
     "peakLP": 2212.1
   },
   "310443726768046082": {
-    "weapons": ["Custom Explosher"]
+    "weapons": ["Custom Explosher", "Jet Squelcher", "Custom Jet Squelcher"]
   },
   "479125178962411520": {
     "weapons": ["Custom Dualie Squelchers", "Dualie Squelchers"],
@@ -12441,7 +12543,7 @@
     "peakLP": 2556
   },
   "396403521601404930": {
-    "weapons": ["N-ZAP '85", "Splattershot Jr."]
+    "weapons": ["N-ZAP '85"]
   },
   "526883393485406208": {
     "weapons": [
@@ -12769,9 +12871,6 @@
       "Aerospray MG"
     ]
   },
-  "464473086973181953": {
-    "weapons": ["Hero Charger Replica", "E-liter 4K", "Hydra Splatling"]
-  },
   "709088738684305418": {
     "weapons": [
       "Dark Tetra Dualies",
@@ -12803,15 +12902,6 @@
   "264603675685552132": {
     "weapons": ["Gold Dynamo Roller", "Splattershot Jr."]
   },
-  "586569803838521345": {
-    "weapons": [
-      "Firefin Splatterscope",
-      "Splatterscope",
-      "Grim Range Blaster",
-      "Splattershot Jr.",
-      "Kensa Splattershot"
-    ]
-  },
   "683100303943401526": {
     "weapons": ["Kensa Splattershot"]
   },
@@ -12821,6 +12911,18 @@
       "Splattershot Jr.",
       "Custom Splattershot Jr.",
       "L-3 Nozzlenose D",
+      "H-3 Nozzlenose D"
+    ]
+  },
+  "464473086973181953": {
+    "weapons": ["Hero Charger Replica", "E-liter 4K", "Hydra Splatling"]
+  },
+  "586569803838521345": {
+    "weapons": [
+      "Firefin Splatterscope",
+      "Grim Range Blaster",
+      "Splattershot Jr.",
+      "Kensa Splattershot",
       "H-3 Nozzlenose D"
     ]
   },
@@ -12845,16 +12947,16 @@
       "Kensa Splattershot"
     ]
   },
-  "167597472032620544": {
-    "weapons": ["Grim Range Blaster", "Foil Flingza Roller", "Custom Explosher"]
-  },
   "458692175199469571": {
     "weapons": [
-      "Soda Slosher",
       "Kensa Rapid Blaster",
       "Mini Splatling",
-      "N-ZAP '85"
+      "N-ZAP '85",
+      "Soda Slosher"
     ]
+  },
+  "167597472032620544": {
+    "weapons": ["Grim Range Blaster", "Foil Flingza Roller", "Custom Explosher"]
   },
   "722844946037735554": {
     "weapons": [
@@ -13372,7 +13474,8 @@
       "Neo Splash-o-matic",
       "L-3 Nozzlenose D",
       "Tenta Brella",
-      "Tenta Camo Brella"
+      "Tenta Camo Brella",
+      "Soda Slosher"
     ]
   },
   "283330684473573376": {
@@ -13567,6 +13670,9 @@
   "338111102716084238": {
     "weapons": ["Splattershot Jr.", "N-ZAP '85", "N-ZAP '89"]
   },
+  "290580482607939585": {
+    "weapons": ["Splatterscope", "Sploosh-o-matic 7", "Fresh Squiffer"]
+  },
   "272500470453370882": {
     "weapons": ["Kensa Rapid Blaster", "Custom Blaster"]
   },
@@ -13738,6 +13844,9 @@
   "517836981603139595": {
     "weapons": ["H-3 Nozzlenose D", "Custom Jet Squelcher"]
   },
+  "465254297521881098": {
+    "weapons": ["Dualie Squelchers"]
+  },
   "265548501826535426": {
     "weapons": [
       "Classic Squiffer",
@@ -13747,9 +13856,6 @@
     ],
     "peakXP": 2635.4,
     "peakLP": 2613
-  },
-  "465254297521881098": {
-    "weapons": ["Dualie Squelchers"]
   },
   "274245305363464192": {
     "weapons": ["Custom Splattershot Jr."],
@@ -13782,7 +13888,12 @@
     ]
   },
   "651407142045351966": {
-    "weapons": ["Firefin Splatterscope", "E-liter 4K", "Classic Squiffer"]
+    "weapons": [
+      "Firefin Splatterscope",
+      "E-liter 4K",
+      "Classic Squiffer",
+      "Rapid Blaster Pro Deco"
+    ]
   },
   "96006147688927232": {
     "weapons": [
@@ -13961,6 +14072,13 @@
     "peakXP": 2649.9,
     "peakLP": 2512.5
   },
+  "247013404131328000": {
+    "weapons": [
+      "Tentatek Splattershot",
+      "Slosher Deco",
+      "Kensa Splattershot Pro"
+    ]
+  },
   "345862150599737344": {
     "weapons": ["Soda Slosher"]
   },
@@ -14010,6 +14128,9 @@
   },
   "302996630993371136": {
     "weapons": ["N-ZAP '85", "Splattershot Jr."]
+  },
+  "569507748077764648": {
+    "weapons": ["Carbon Roller Deco", "Dark Tetra Dualies", "Nautilus 79"]
   },
   "663916154724679682": {
     "weapons": ["N-ZAP '89"]
@@ -14068,9 +14189,6 @@
     ],
     "peakXP": 2808.9,
     "peakLP": 2632.2
-  },
-  "569507748077764648": {
-    "weapons": ["Carbon Roller Deco", "Dark Tetra Dualies", "Nautilus 79"]
   },
   "639247686192726020": {
     "weapons": [
@@ -14603,10 +14721,9 @@
   "149181692916137984": {
     "weapons": [
       "Soda Slosher",
-      "Kensa Sloshing Machine",
+      "Slosher",
       "Tri-Slosher",
-      "Tri-Slosher Nouveau",
-      "Kensa .52 Gal"
+      "Kensa Sloshing Machine"
     ]
   },
   "461947387976351754": {
@@ -14706,6 +14823,17 @@
   "232443624955052042": {
     "weapons": ["Custom Dualie Squelchers", "Dualie Squelchers"]
   },
+  "675299701117157377": {
+    "weapons": [
+      "Slosher Deco",
+      "Soda Slosher",
+      "Kensa Rapid Blaster",
+      "Kensa Sloshing Machine",
+      "Tri-Slosher"
+    ],
+    "peakXP": 2602.9,
+    "peakLP": 2523.7
+  },
   "493132852041351188": {
     "weapons": ["Kensa Dynamo Roller"]
   },
@@ -14777,17 +14905,6 @@
   },
   "502287040428113920": {
     "weapons": ["Splattershot Jr.", "N-ZAP '85", "Tri-Slosher", "Bloblobber"]
-  },
-  "675299701117157377": {
-    "weapons": [
-      "Slosher Deco",
-      "Soda Slosher",
-      "Kensa Rapid Blaster",
-      "Kensa Sloshing Machine",
-      "Tri-Slosher"
-    ],
-    "peakXP": 2602.9,
-    "peakLP": 2523.7
   },
   "600886777129205770": {
     "weapons": ["N-ZAP '85", "Kensa Splattershot", "Neo Splash-o-matic"],
@@ -15112,9 +15229,11 @@
   },
   "284294139502133248": {
     "weapons": [
+      "Splash-o-matic",
       "Neo Splash-o-matic",
       "Tentatek Splattershot",
-      "Kensa Splattershot"
+      "Kensa Splattershot",
+      "Kensa .52 Gal"
     ]
   },
   "582583044012113920": {
@@ -15520,6 +15639,13 @@
     "peakLP": 2359.2
   },
   "497147537526882327": {
+    "weapons": [
+      "Tri-Slosher",
+      "Neo Splash-o-matic",
+      "Kensa Sloshing Machine",
+      "Nautilus 79",
+      "Dualie Squelchers"
+    ],
     "peakXP": 2720.7,
     "peakLP": 2559.5
   },
@@ -15654,6 +15780,15 @@
       "Octobrush Nouveau"
     ]
   },
+  "186254761324969986": {
+    "weapons": [
+      "Heavy Splatling Remix",
+      "Nautilus 79",
+      "Ballpoint Splatling Nouveau",
+      "Mini Splatling",
+      "Custom Hydra Splatling"
+    ]
+  },
   "346383172986208256": {
     "weapons": [
       "Splatterscope",
@@ -15690,15 +15825,6 @@
       "Tri-Slosher",
       "Tri-Slosher Nouveau",
       "Hero Slosher Replica"
-    ]
-  },
-  "186254761324969986": {
-    "weapons": [
-      "Heavy Splatling Remix",
-      "Nautilus 79",
-      "Ballpoint Splatling Nouveau",
-      "Mini Splatling",
-      "Custom Hydra Splatling"
     ]
   },
   "551445135179644948": {
@@ -15845,13 +15971,6 @@
   "605571558932480012": {
     "weapons": ["Splat Roller", "N-ZAP '85", "Kensa L-3 Nozzlenose"]
   },
-  "742706661906448435": {
-    "weapons": [
-      "Kensa Splattershot",
-      "Tentatek Splattershot",
-      "Neo Splash-o-matic"
-    ]
-  },
   "271840215662985226": {
     "weapons": [
       "Kensa Splattershot Pro",
@@ -15859,6 +15978,13 @@
       "Custom Dualie Squelchers",
       ".96 Gal",
       "N-ZAP '85"
+    ]
+  },
+  "742706661906448435": {
+    "weapons": [
+      "Kensa Splattershot",
+      "Tentatek Splattershot",
+      "Neo Splash-o-matic"
     ]
   },
   "236609729487437824": {
@@ -15879,13 +16005,7 @@
     "peakLP": 2529.5
   },
   "706281494888316990": {
-    "weapons": [
-      "Soda Slosher",
-      "Tri-Slosher",
-      "Kensa Sloshing Machine",
-      "Kensa Rapid Blaster",
-      "Rapid Blaster Pro Deco"
-    ]
+    "weapons": ["Soda Slosher", "Grim Range Blaster"]
   },
   "261652932947083274": {
     "weapons": ["Dark Tetra Dualies", "Hero Blaster Replica", "Splash-o-matic"]
@@ -15967,6 +16087,9 @@
     "peakXP": 2706,
     "peakLP": 2562.3
   },
+  "353291124875722752": {
+    "weapons": ["Splatterscope", "Firefin Splatterscope"]
+  },
   "398485979226177546": {
     "weapons": [
       "Splattershot Jr.",
@@ -15974,9 +16097,6 @@
       "N-ZAP '85",
       "Tri-Slosher"
     ]
-  },
-  "353291124875722752": {
-    "weapons": ["Splatterscope", "Firefin Splatterscope"]
   },
   "209722471425900556": {
     "weapons": [
@@ -16127,6 +16247,16 @@
       "Custom Jet Squelcher"
     ]
   },
+  "359491102438588419": {
+    "weapons": [
+      "Custom Jet Squelcher",
+      "Jet Squelcher",
+      "Bamboozler 14 Mk I",
+      "Neo Splash-o-matic"
+    ],
+    "peakXP": 2602.4,
+    "peakLP": 2486.4
+  },
   "652978543453667328": {
     "weapons": ["Kensa .52 Gal"]
   },
@@ -16176,16 +16306,6 @@
   "383726795335270415": {
     "weapons": ["New Squiffer"]
   },
-  "359491102438588419": {
-    "weapons": [
-      "Custom Jet Squelcher",
-      "Jet Squelcher",
-      "Bamboozler 14 Mk I",
-      "Neo Splash-o-matic"
-    ],
-    "peakXP": 2602.4,
-    "peakLP": 2486.4
-  },
   "239191879873331200": {
     "weapons": [
       "Ballpoint Splatling Nouveau",
@@ -16207,14 +16327,14 @@
       "Kensa .52 Gal"
     ]
   },
-  "343219263655510021": {
-    "weapons": ["Hero Charger Replica", "Firefin Splat Charger", "E-liter 4K"]
-  },
   "544609889130119178": {
     "weapons": ["Custom E-liter 4K Scope", "Octo Shot Replica"]
   },
   "169914716154494976": {
     "weapons": ["Kensa .52 Gal"]
+  },
+  "343219263655510021": {
+    "weapons": ["Hero Charger Replica", "Firefin Splat Charger", "E-liter 4K"]
   },
   "588062624328187922": {
     "weapons": ["H-3 Nozzlenose D"]
@@ -16323,6 +16443,20 @@
       ".96 Gal",
       "Grim Range Blaster"
     ]
+  },
+  "399314892902891524": {
+    "weapons": ["Custom Jet Squelcher", "Bamboozler 14 Mk I"],
+    "peakXP": 2642.6,
+    "peakLP": 2498.7
+  },
+  "228573709038911490": {
+    "weapons": [
+      "Neo Splash-o-matic",
+      "Custom Dualie Squelchers",
+      "Dualie Squelchers",
+      "Kensa Splattershot"
+    ],
+    "peakLP": 2472.4
   },
   "501242256523788289": {
     "weapons": [
@@ -16449,24 +16583,6 @@
       "Tri-Slosher"
     ]
   },
-  "399314892902891524": {
-    "weapons": [
-      "Custom Jet Squelcher",
-      "Jet Squelcher",
-      "Bamboozler 14 Mk I",
-      "Firefin Splatterscope"
-    ],
-    "peakXP": 2642.6,
-    "peakLP": 2498.7
-  },
-  "228573709038911490": {
-    "weapons": [
-      "Neo Splash-o-matic",
-      "Custom Dualie Squelchers",
-      "Kensa Splattershot"
-    ],
-    "peakLP": 2472.4
-  },
   "324220328094072852": {
     "weapons": ["N-ZAP '85", "Splattershot Jr."],
     "peakLP": 2488.1
@@ -16526,6 +16642,9 @@
     "peakXP": 2746.3,
     "peakLP": 2441.1
   },
+  "358347295865045023": {
+    "weapons": ["Neo Splash-o-matic"]
+  },
   "583402990791163904": {
     "weapons": [
       "Splattershot Jr.",
@@ -16541,9 +16660,6 @@
       "H-3 Nozzlenose D",
       "Kensa Rapid Blaster"
     ]
-  },
-  "358347295865045023": {
-    "weapons": ["Neo Splash-o-matic"]
   },
   "348672093510172683": {
     "weapons": [
@@ -17541,15 +17657,6 @@
     ],
     "peakLP": 2293.2
   },
-  "95738079637147648": {
-    "weapons": [
-      "Custom Splattershot Jr.",
-      "Clash Blaster",
-      "Splat Roller",
-      "Bamboozler 14 Mk I",
-      "Enperry Splat Dualies"
-    ]
-  },
   "733716004525309964": {
     "weapons": [
       "N-ZAP '85",
@@ -17573,6 +17680,15 @@
     ],
     "peakXP": 2565.1,
     "peakLP": 2500.8
+  },
+  "95738079637147648": {
+    "weapons": [
+      "Custom Splattershot Jr.",
+      "Clash Blaster",
+      "Splat Roller",
+      "Bamboozler 14 Mk I",
+      "Enperry Splat Dualies"
+    ]
   },
   "304039889186455554": {
     "weapons": [
@@ -17758,6 +17874,11 @@
       "Tenta Brella"
     ]
   },
+  "661328509712728066": {
+    "weapons": ["L-3 Nozzlenose D", "Kensa Rapid Blaster"],
+    "peakXP": 2639.5,
+    "peakLP": 2546.7
+  },
   "347037992143290368": {
     "weapons": [
       "Custom Hydra Splatling",
@@ -17816,10 +17937,6 @@
   },
   "697539053037551728": {
     "weapons": ["Tri-Slosher", "Hero Slosher Replica", "Kensa Rapid Blaster"]
-  },
-  "661328509712728066": {
-    "peakXP": 2639.5,
-    "peakLP": 2546.7
   },
   "385233272235622411": {
     "weapons": ["E-liter 4K Scope"]
@@ -17895,11 +18012,11 @@
   },
   "526165570404483084": {
     "weapons": [
-      "Aerospray PG",
       "N-ZAP '85",
       "N-ZAP '89",
       "Splattershot Jr.",
-      "Nautilus 79"
+      "Kensa Splattershot",
+      "Neo Splash-o-matic"
     ]
   },
   "406927094799663114": {
@@ -18072,12 +18189,7 @@
     "peakLP": 2536.8
   },
   "79237403620945920": {
-    "weapons": [
-      "Tenta Brella",
-      "Tenta Camo Brella",
-      "Splattershot Jr.",
-      "N-ZAP '85"
-    ],
+    "weapons": ["N-ZAP '85", "Rapid Blaster Pro Deco", "N-ZAP '89"],
     "peakXP": 2701,
     "peakLP": 2570.2
   },
@@ -18469,15 +18581,6 @@
     "peakXP": 2701.4,
     "peakLP": 2544.8
   },
-  "447896487116931083": {
-    "weapons": [
-      "Splat Charger",
-      "Splatterscope",
-      "Foil Squeezer",
-      "Tenta Camo Brella",
-      "H-3 Nozzlenose D"
-    ]
-  },
   "726459443713409076": {
     "weapons": ["Foil Squeezer"],
     "peakXP": 2714.7,
@@ -18490,6 +18593,9 @@
     "weapons": ["Octo Shot Replica", "L-3 Nozzlenose D", "Foil Squeezer"],
     "peakXP": 2703.4,
     "peakLP": 2510.6
+  },
+  "447896487116931083": {
+    "weapons": ["Splat Charger", "H-3 Nozzlenose D", "Tenta Camo Brella"]
   },
   "309881856898367489": {
     "weapons": ["Inkbrush Nouveau", "Permanent Inkbrush", "Octobrush"]
@@ -19626,11 +19732,10 @@
   },
   "435570291859521547": {
     "weapons": [
-      "Nautilus 79",
       "N-ZAP '89",
       "Splattershot Jr.",
-      "Fresh Squiffer",
-      "Grim Range Blaster"
+      "Grim Range Blaster",
+      "Fresh Squiffer"
     ]
   },
   "714494349479510056": {
@@ -19647,6 +19752,9 @@
   },
   "561642828908724244": {
     "weapons": ["Kensa Dynamo Roller", ".96 Gal Deco", "Kensa .52 Gal"]
+  },
+  "310622799683256321": {
+    "weapons": ["Kensa .52 Gal", "Nautilus 79", "Kensa Splattershot"]
   },
   "408993809356161041": {
     "weapons": [
@@ -19806,7 +19914,7 @@
     ]
   },
   "417725809436917761": {
-    "weapons": ["Splattershot Jr.", "N-ZAP '85", "N-ZAP '89"],
+    "weapons": ["Splattershot Jr.", "N-ZAP '85", "Kensa Rapid Blaster"],
     "peakLP": 2445.1
   },
   "360986777147670529": {
@@ -20208,7 +20316,10 @@
     ]
   },
   "335599633126522881": {
-    "weapons": ["N-ZAP '85", "Tri-Slosher"]
+    "weapons": ["N-ZAP '85", "L-3 Nozzlenose", "L-3 Nozzlenose D"]
+  },
+  "413898331387985941": {
+    "weapons": ["Fresh Squiffer"]
   },
   "625548208642326528": {
     "weapons": [
@@ -20955,14 +21066,6 @@
       "Hero Slosher Replica"
     ]
   },
-  "706554930089033728": {
-    "weapons": [
-      "Tentatek Splattershot",
-      "H-3 Nozzlenose D",
-      "L-3 Nozzlenose D",
-      "Kensa Splattershot"
-    ]
-  },
   "562637304057823235": {
     "weapons": [
       "Tentatek Splattershot",
@@ -21142,15 +21245,6 @@
   "785107713477836830": {
     "weapons": ["Kensa Splattershot Pro", "Custom Dualie Squelchers"]
   },
-  "827177277518512178": {
-    "weapons": [
-      "Tri-Slosher",
-      "Kensa .52 Gal",
-      "Kensa Splattershot",
-      "L-3 Nozzlenose D"
-    ],
-    "peakLP": 2496.9
-  },
   "763511247785295892": {
     "weapons": [
       "Custom Jet Squelcher",
@@ -21163,6 +21257,15 @@
     "weapons": ["Kensa Sloshing Machine"],
     "peakLP": 2525.8
   },
+  "827177277518512178": {
+    "weapons": [
+      "Tri-Slosher",
+      "Kensa .52 Gal",
+      "Kensa Splattershot",
+      "L-3 Nozzlenose D"
+    ],
+    "peakLP": 2496.9
+  },
   "758079079038713906": {
     "weapons": [
       "E-liter 4K Scope",
@@ -21170,6 +21273,14 @@
       "Classic Squiffer",
       "Splatterscope",
       "Firefin Splatterscope"
+    ]
+  },
+  "706554930089033728": {
+    "weapons": [
+      "Tentatek Splattershot",
+      "H-3 Nozzlenose D",
+      "L-3 Nozzlenose D",
+      "Kensa Splattershot"
     ]
   },
   "435892487735869443": {
@@ -21384,6 +21495,14 @@
     ],
     "peakLP": 2472.9
   },
+  "349368491708645378": {
+    "weapons": [
+      "Kensa Splattershot",
+      "Octo Shot Replica",
+      "N-ZAP '85",
+      "N-ZAP '89"
+    ]
+  },
   "392399655196950538": {
     "weapons": [
       "Kensa Rapid Blaster",
@@ -21473,14 +21592,6 @@
       "Sloshing Machine Neo",
       "Soda Slosher",
       "Mini Splatling"
-    ]
-  },
-  "349368491708645378": {
-    "weapons": [
-      "Kensa Splattershot",
-      "Octo Shot Replica",
-      "N-ZAP '85",
-      "N-ZAP '89"
     ]
   },
   "714250344322039809": {
@@ -22434,15 +22545,6 @@
       "Tri-Slosher"
     ]
   },
-  "819321885174923275": {
-    "weapons": [
-      "Sploosh-o-matic 7",
-      "Splattershot Jr.",
-      ".96 Gal",
-      "Octo Shot Replica",
-      "N-ZAP '85"
-    ]
-  },
   "433063936498073601": {
     "weapons": [
       ".52 Gal",
@@ -22597,6 +22699,15 @@
   "308558722471297024": {
     "weapons": ["Custom Explosher", "Splattershot Jr."]
   },
+  "819321885174923275": {
+    "weapons": [
+      "Sploosh-o-matic 7",
+      "N-ZAP '85",
+      "Kensa Splattershot",
+      "E-liter 4K",
+      "Kensa .52 Gal"
+    ]
+  },
   "221443438132854785": {
     "weapons": ["N-ZAP '89", "Neo Splash-o-matic", "Forge Splattershot Pro"]
   },
@@ -22643,13 +22754,8 @@
       "Neo Splash-o-matic"
     ]
   },
-  "138797169074372608": {
-    "weapons": [
-      "E-liter 4K Scope",
-      "Tentatek Splattershot",
-      ".96 Gal",
-      "Custom Jet Squelcher"
-    ]
+  "443516190728388615": {
+    "weapons": ["Sploosh-o-matic 7", "N-ZAP '83", "N-ZAP '85"]
   },
   "554124226915860507": {
     "weapons": [
@@ -22659,6 +22765,15 @@
       "Kensa Splattershot",
       "N-ZAP '85"
     ]
+  },
+  "138797169074372608": {
+    "weapons": [
+      "Tentatek Splattershot",
+      ".96 Gal",
+      "Custom Jet Squelcher",
+      "Splattershot Jr."
+    ],
+    "peakLP": 2496
   },
   "595595906418606091": {
     "weapons": [
@@ -22709,9 +22824,6 @@
   },
   "389911117175980032": {
     "weapons": ["Splattershot Jr.", "N-ZAP '85", "Kensa Splattershot"]
-  },
-  "443516190728388615": {
-    "weapons": ["Sploosh-o-matic 7", "N-ZAP '83", "N-ZAP '85"]
   },
   "798093477472370729": {
     "weapons": ["Luna Blaster", "Sploosh-o-matic 7"]
@@ -22883,10 +22995,6 @@
     ],
     "peakLP": 2473.4
   },
-  "767716380833087489": {
-    "weapons": ["Splattershot Jr.", "N-ZAP '85"],
-    "peakLP": 2601.2
-  },
   "628850295379722250": {
     "weapons": [
       "Splattershot Jr.",
@@ -22895,6 +23003,10 @@
       "N-ZAP '85",
       "N-ZAP '89"
     ]
+  },
+  "767716380833087489": {
+    "weapons": ["Splattershot Jr.", "N-ZAP '85"],
+    "peakLP": 2601.2
   },
   "699480103213727754": {
     "weapons": [
@@ -23109,7 +23221,7 @@
       "Neo Splash-o-matic",
       "Glooga Dualies Deco",
       "Kensa Splattershot",
-      "Herobrush Replica"
+      "Custom Dualie Squelchers"
     ]
   },
   "591216936202010634": {
@@ -23231,9 +23343,6 @@
       "Custom Dualie Squelchers"
     ]
   },
-  "384569857825570826": {
-    "weapons": ["Bamboozler 14 Mk I", "Tri-Slosher Nouveau", "Splat Roller"]
-  },
   "771386409889169468": {
     "weapons": [
       "N-ZAP '89",
@@ -23262,6 +23371,13 @@
       "Light Tetra Dualies",
       "Octobrush Nouveau",
       "Kensa Luna Blaster"
+    ]
+  },
+  "384569857825570826": {
+    "weapons": [
+      "Bamboozler 14 Mk I",
+      "Tri-Slosher Nouveau",
+      "Rapid Blaster Deco"
     ]
   },
   "567057723116748811": {
@@ -23696,6 +23812,14 @@
     ],
     "peakLP": 2444.2
   },
+  "480394213863981067": {
+    "weapons": [
+      "Neo Splash-o-matic",
+      "Tentatek Splattershot",
+      "Kensa Splattershot",
+      "Nautilus 79"
+    ]
+  },
   "161101401684967424": {
     "weapons": ["Kensa Splattershot Jr."]
   },
@@ -23760,14 +23884,6 @@
     ],
     "peakXP": 2605.3,
     "peakLP": 2668.5
-  },
-  "480394213863981067": {
-    "weapons": [
-      "Neo Splash-o-matic",
-      "Tentatek Splattershot",
-      "Kensa Splattershot",
-      "Nautilus 79"
-    ]
   },
   "388147207875854346": {
     "weapons": ["Nautilus 79", "Soda Slosher"]
@@ -24295,6 +24411,9 @@
       "E-liter 4K"
     ]
   },
+  "109890696323842048": {
+    "weapons": ["Custom Blaster"]
+  },
   "132899611189706752": {
     "weapons": [
       "Kensa Splattershot Pro",
@@ -24331,9 +24450,6 @@
       "Classic Squiffer",
       "Grim Range Blaster"
     ]
-  },
-  "109890696323842048": {
-    "weapons": ["Custom Blaster"]
   },
   "361960857275727884": {
     "weapons": ["Herobrush Replica", "Splatterscope"]
@@ -24458,20 +24574,17 @@
   "352930105942736908": {
     "weapons": ["Dark Tetra Dualies", "Light Tetra Dualies"]
   },
-  "334097139720388608": {
-    "weapons": [
-      "Custom Hydra Splatling",
-      "Heavy Splatling",
-      "Heavy Splatling Remix",
-      "Ballpoint Splatling Nouveau"
-    ],
-    "peakXP": 2615.1,
-    "peakLP": 2591
+  "191143592931098624": {
+    "weapons": ["Kensa Splattershot", "Splash-o-matic", "Tentatek Splattershot"]
   },
   "528043224124620802": {
     "weapons": ["N-ZAP '85", "Dualie Squelchers", "Kensa Splattershot"],
     "peakXP": 2649.9,
     "peakLP": 2591
+  },
+  "293023646136664076": {
+    "weapons": ["Bamboozler 14 Mk I", "Bamboozler 14 Mk II", "New Squiffer"],
+    "peakLP": 2455.3
   },
   "198084438821699584": {
     "weapons": [
@@ -24483,8 +24596,15 @@
     ],
     "peakLP": 2472.4
   },
-  "191143592931098624": {
-    "weapons": ["Kensa Splattershot", "Splash-o-matic", "Tentatek Splattershot"]
+  "334097139720388608": {
+    "weapons": [
+      "Custom Hydra Splatling",
+      "Heavy Splatling",
+      "Heavy Splatling Remix",
+      "Ballpoint Splatling Nouveau"
+    ],
+    "peakXP": 2615.1,
+    "peakLP": 2591
   },
   "313407177236807680": {
     "weapons": [
@@ -24497,10 +24617,6 @@
   },
   "163974823930888192": {
     "weapons": ["Kensa Splattershot"]
-  },
-  "293023646136664076": {
-    "weapons": ["Bamboozler 14 Mk I", "Bamboozler 14 Mk II"],
-    "peakLP": 2455.3
   },
   "190992860311584769": {
     "weapons": [
@@ -24777,6 +24893,15 @@
     "weapons": ["Foil Squeezer", "Octo Shot Replica", "Neo Splash-o-matic"],
     "peakLP": 2290.5
   },
+  "178598074229194753": {
+    "weapons": [
+      "Kensa Splattershot Jr.",
+      "N-ZAP '85",
+      "Kensa Splattershot",
+      "Rapid Blaster Pro Deco"
+    ],
+    "peakLP": 2293.9
+  },
   "164734950686326784": {
     "weapons": [
       "Soda Slosher",
@@ -24808,15 +24933,6 @@
     "weapons": ["Classic Squiffer", "Fresh Squiffer", "New Squiffer"],
     "peakXP": 2632.2,
     "peakLP": 2561.3
-  },
-  "178598074229194753": {
-    "weapons": [
-      "Kensa Splattershot Jr.",
-      "N-ZAP '85",
-      "Kensa Splattershot",
-      "Rapid Blaster Pro Deco"
-    ],
-    "peakLP": 2293.9
   },
   "774389617063493664": {
     "weapons": [
@@ -25029,6 +25145,13 @@
       "Kensa Sloshing Machine"
     ]
   },
+  "667107182801584148": {
+    "weapons": [
+      "Kensa Dynamo Roller",
+      "Foil Flingza Roller",
+      "Carbon Roller Deco"
+    ]
+  },
   "323232900793499648": {
     "weapons": [
       "Mini Splatling",
@@ -25078,13 +25201,6 @@
       "N-ZAP '85",
       "Kensa Octobrush",
       "Fresh Squiffer"
-    ]
-  },
-  "667107182801584148": {
-    "weapons": [
-      "Kensa Dynamo Roller",
-      "Foil Flingza Roller",
-      "Carbon Roller Deco"
     ]
   },
   "539523556162273293": {
@@ -25486,9 +25602,6 @@
       "Heavy Splatling Remix"
     ]
   },
-  "726578166076014662": {
-    "peakLP": 2449.5
-  },
   "283314794532962305": {
     "weapons": [
       "Dark Tetra Dualies",
@@ -25702,6 +25815,15 @@
     ],
     "peakLP": 2356.4
   },
+  "726578166076014662": {
+    "weapons": [
+      "Splatterscope",
+      "Firefin Splatterscope",
+      "E-liter 4K",
+      "E-liter 4K Scope"
+    ],
+    "peakLP": 2449.5
+  },
   "450734250694541312": {
     "weapons": ["Kensa .52 Gal"]
   },
@@ -25834,14 +25956,6 @@
     ],
     "peakLP": 2284.5
   },
-  "682627073919287377": {
-    "weapons": [
-      "Kensa Splattershot",
-      "Neo Splash-o-matic",
-      "Nautilus 79",
-      "Carbon Roller Deco"
-    ]
-  },
   "854075472891215882": {
     "weapons": [
       "Kensa Dynamo Roller",
@@ -25926,6 +26040,9 @@
       "Kensa Splattershot",
       "Kensa .52 Gal"
     ]
+  },
+  "682627073919287377": {
+    "weapons": ["Kensa L-3 Nozzlenose"]
   },
   "290684737650163713": {
     "weapons": [
@@ -26084,9 +26201,8 @@
     "weapons": [
       "Custom Dualie Squelchers",
       "Dualie Squelchers",
-      "Jet Squelcher",
-      "Custom Jet Squelcher",
-      "Kensa Undercover Brella"
+      "N-ZAP '89",
+      "N-ZAP '85"
     ]
   },
   "614820279755079712": {
@@ -26244,15 +26360,6 @@
     "weapons": ["N-ZAP '85", "Splattershot Jr."],
     "peakLP": 2455
   },
-  "531156112137912332": {
-    "weapons": [
-      "Soda Slosher",
-      "Kensa Sloshing Machine",
-      "Tri-Slosher",
-      "N-ZAP '85",
-      "Splattershot Jr."
-    ]
-  },
   "439635342077984768": {
     "weapons": ["N-ZAP '85", "Splattershot Jr."]
   },
@@ -26346,13 +26453,16 @@
       "Bloblobber"
     ]
   },
-  "846381961231728660": {
-    "weapons": ["Nautilus 47", "Nautilus 79"]
-  },
   "351057290943791105": {
     "weapons": ["Tentatek Splattershot", "Kensa Splattershot"],
     "peakXP": 2656.6,
     "peakLP": 2466.9
+  },
+  "531156112137912332": {
+    "weapons": ["N-ZAP '85", "Splattershot Jr."]
+  },
+  "846381961231728660": {
+    "weapons": ["Nautilus 47", "Nautilus 79"]
   },
   "435543647346491402": {
     "weapons": [
@@ -26432,6 +26542,9 @@
     "weapons": ["Splash-o-matic", "Splattershot Pro", "Foil Squeezer"],
     "peakLP": 2449.1
   },
+  "349542248070774784": {
+    "weapons": ["Sorella Brella", "Tenta Camo Brella", "Classic Squiffer"]
+  },
   "841401629663559713": {
     "weapons": ["Custom Dualie Squelchers"]
   },
@@ -26466,14 +26579,6 @@
       "Kensa Splattershot Pro",
       "Neo Splash-o-matic",
       "Octo Shot Replica"
-    ]
-  },
-  "349542248070774784": {
-    "weapons": [
-      "Sorella Brella",
-      "Tenta Camo Brella",
-      "Kensa Undercover Brella",
-      "Classic Squiffer"
     ]
   },
   "707414921754837023": {
@@ -26774,15 +26879,6 @@
   "537134960050438155": {
     "weapons": ["Octo Shot Replica"]
   },
-  "403397074164514817": {
-    "weapons": [
-      ".52 Gal",
-      "Kensa Dynamo Roller",
-      "Inkbrush",
-      "Krak-On Splat Roller",
-      "Octo Shot Replica"
-    ]
-  },
   "614846938327810072": {
     "weapons": [
       "Splash-o-matic",
@@ -26849,15 +26945,6 @@
   "388891980756942849": {
     "weapons": ["L-3 Nozzlenose D", "Hero Brella Replica", "Splattershot Jr."]
   },
-  "327811945707339776": {
-    "weapons": [
-      "Ballpoint Splatling Nouveau",
-      "Heavy Splatling Deco",
-      "Tenta Brella",
-      "Kensa L-3 Nozzlenose",
-      "Foil Squeezer"
-    ]
-  },
   "768576254580228117": {
     "weapons": [
       "N-ZAP '89",
@@ -26876,9 +26963,6 @@
       "Tri-Slosher Nouveau"
     ]
   },
-  "588434629141463079": {
-    "weapons": ["Kensa Rapid Blaster"]
-  },
   "462651462313443340": {
     "weapons": [
       "Custom Dualie Squelchers",
@@ -26894,6 +26978,21 @@
       "Kensa Splatterscope",
       "Kensa Splattershot"
     ]
+  },
+  "327811945707339776": {
+    "weapons": [
+      "Ballpoint Splatling Nouveau",
+      "Heavy Splatling Deco",
+      "Hero Splatling Replica",
+      "Custom Hydra Splatling",
+      "Mini Splatling"
+    ]
+  },
+  "403397074164514817": {
+    "weapons": ["Gold Dynamo Roller", ".52 Gal", "Inkbrush", "Splat Brella"]
+  },
+  "588434629141463079": {
+    "weapons": ["Kensa Rapid Blaster"]
   },
   "712678189469663274": {
     "weapons": [
@@ -27013,9 +27112,9 @@
   "518016631973085185": {
     "weapons": [
       "Custom Hydra Splatling",
-      "Mini Splatling",
       "Kensa Glooga Dualies",
-      "Custom Jet Squelcher"
+      "Glooga Dualies Deco",
+      "N-ZAP '85"
     ]
   },
   "734194031831285841": {
@@ -27198,15 +27297,6 @@
       "Nautilus 79"
     ]
   },
-  "740361649587749046": {
-    "weapons": [
-      "Tenta Camo Brella",
-      "Custom Explosher",
-      "Dark Tetra Dualies",
-      "Splat Charger",
-      "Inkbrush Nouveau"
-    ]
-  },
   "823298205500309518": {
     "weapons": [
       "Neo Splash-o-matic",
@@ -27293,6 +27383,15 @@
       "Explosher",
       "Custom Hydra Splatling",
       "Mini Splatling"
+    ]
+  },
+  "740361649587749046": {
+    "weapons": [
+      "Splat Charger",
+      "Inkbrush Nouveau",
+      "Tenta Camo Brella",
+      "Nautilus 79",
+      "Splattershot Jr."
     ]
   },
   "407625267356499998": {
@@ -27885,15 +27984,6 @@
   "423857581644316682": {
     "weapons": ["Octo Shot Replica", "Kensa Splattershot"]
   },
-  "675430810811236372": {
-    "weapons": [
-      "Heavy Splatling Remix",
-      "Custom Jet Squelcher",
-      "Custom Hydra Splatling",
-      "Clear Dapple Dualies",
-      "Neo Splash-o-matic"
-    ]
-  },
   "484407455992905733": {
     "weapons": [
       "E-liter 4K",
@@ -27901,6 +27991,15 @@
       "Custom Jet Squelcher",
       "Heavy Splatling",
       "Explosher"
+    ]
+  },
+  "675430810811236372": {
+    "weapons": [
+      "Heavy Splatling Remix",
+      "Custom Jet Squelcher",
+      "Custom Hydra Splatling",
+      "Clear Dapple Dualies",
+      "Neo Splash-o-matic"
     ]
   },
   "476939860276543499": {
@@ -27996,11 +28095,20 @@
     "peakLP": 2421.9
   },
   "397740587463213066": {
-    "weapons": ["N-ZAP '85", ".96 Gal"],
+    "weapons": ["N-ZAP '85", ".96 Gal", "Kensa Splattershot"],
     "peakLP": 2522.2
   },
   "539716289720221696": {
     "weapons": [".96 Gal", "Neo Splash-o-matic", "Grim Range Blaster"]
+  },
+  "598988846511816705": {
+    "weapons": [
+      "E-liter 4K",
+      "Splat Charger",
+      "Firefin Splat Charger",
+      "Bamboozler 14 Mk I",
+      "Bamboozler 14 Mk III"
+    ]
   },
   "353306351859924993": {
     "weapons": [
@@ -28071,15 +28179,6 @@
       "Dark Tetra Dualies",
       "Tri-Slosher Nouveau",
       "Kensa Splattershot"
-    ]
-  },
-  "598988846511816705": {
-    "weapons": [
-      "E-liter 4K",
-      "Splat Charger",
-      "Firefin Splat Charger",
-      "Bamboozler 14 Mk I",
-      "Bamboozler 14 Mk III"
     ]
   },
   "390176992470892548": {
@@ -28187,14 +28286,6 @@
       "Nautilus 79"
     ]
   },
-  "494950864931258378": {
-    "weapons": [
-      "Soda Slosher",
-      "Slosher Deco",
-      "Custom Explosher",
-      "Firefin Splatterscope"
-    ]
-  },
   "870163479217176576": {
     "weapons": [
       "Classic Squiffer",
@@ -28246,11 +28337,10 @@
   },
   "854166963126927390": {
     "weapons": [
-      "Custom E-liter 4K Scope",
-      "Firefin Splatterscope",
-      "New Squiffer",
-      "Kensa Splattershot Jr.",
-      "Splattershot Jr."
+      "Kensa .52 Gal",
+      "Octo Shot Replica",
+      "Krak-On Splat Roller",
+      "Kensa Splat Roller"
     ]
   },
   "456113896269545504": {
@@ -28292,6 +28382,15 @@
   "460742410876485633": {
     "weapons": ["Kensa Splattershot", "N-ZAP '85", "Neo Splash-o-matic"],
     "peakLP": 2440.5
+  },
+  "494950864931258378": {
+    "weapons": [
+      "Custom Explosher",
+      "Firefin Splatterscope",
+      "Soda Slosher",
+      "Slosher Deco",
+      "Kensa Dynamo Roller"
+    ]
   },
   "586755930612564008": {
     "weapons": [
@@ -28945,9 +29044,6 @@
   "581267960522342402": {
     "weapons": ["Dapple Dualies", "Sploosh-o-matic 7", "Splattershot Jr."]
   },
-  "857043322204061737": {
-    "weapons": ["Forge Splattershot Pro", "Nautilus 79", "Sloshing Machine"]
-  },
   "772187054393131020": {
     "weapons": [
       "Splash-o-matic",
@@ -29082,6 +29178,14 @@
     ],
     "peakLP": 2553.9
   },
+  "857043322204061737": {
+    "weapons": [
+      "Nautilus 79",
+      "Sloshing Machine",
+      "Kensa Rapid Blaster",
+      "Foil Squeezer"
+    ]
+  },
   "661570438811353100": {
     "weapons": [
       "Splat Brella",
@@ -29091,6 +29195,10 @@
     ],
     "peakLP": 2326.2
   },
+  "778156111051751434": {
+    "weapons": ["N-ZAP '85", "Kensa Splattershot"],
+    "peakLP": 2377.6
+  },
   "565828530496339978": {
     "weapons": [
       "Foil Squeezer",
@@ -29099,6 +29207,9 @@
     ],
     "peakXP": 2686.2,
     "peakLP": 2578.2
+  },
+  "846657248830423062": {
+    "weapons": ["Kensa Dynamo Roller", "Custom Hydra Splatling"]
   },
   "120213357205651457": {
     "weapons": [
@@ -29174,14 +29285,11 @@
     ]
   },
   "134776998991101952": {
-    "weapons": ["Herobrush Replica", "Custom Blaster"]
+    "weapons": ["Herobrush Replica", "Custom Blaster"],
+    "peakLP": 2226.3
   },
   "111911598544715776": {
     "weapons": ["Dapple Dualies"]
-  },
-  "778156111051751434": {
-    "weapons": ["N-ZAP '85", "Kensa Splattershot", ".96 Gal"],
-    "peakLP": 2377.6
   },
   "575478589106028554": {
     "weapons": ["Octo Shot Replica", "Neo Splash-o-matic", "N-ZAP '85"]
@@ -29189,14 +29297,6 @@
   "457677854155472896": {
     "weapons": ["Nautilus 79", "L-3 Nozzlenose D", "Sploosh-o-matic 7"],
     "peakLP": 2385.7
-  },
-  "846657248830423062": {
-    "weapons": [
-      "Kensa Dynamo Roller",
-      "Gold Dynamo Roller",
-      "Dynamo Roller",
-      "Custom Hydra Splatling"
-    ]
   },
   "347036855453220865": {
     "weapons": [
@@ -29282,6 +29382,9 @@
       "Carbon Roller Deco"
     ]
   },
+  "847495731710656522": {
+    "weapons": ["Inkbrush", "Kensa Octobrush", "Splattershot Jr.", "N-ZAP '85"]
+  },
   "418885053771415563": {
     "weapons": [
       "Splattershot Jr.",
@@ -29329,9 +29432,6 @@
       "Tri-Slosher",
       "Tri-Slosher Nouveau"
     ]
-  },
-  "847495731710656522": {
-    "weapons": ["Inkbrush", "Kensa Octobrush", "Splattershot Jr.", "N-ZAP '85"]
   },
   "705086782051582042": {
     "weapons": ["Splattershot Jr."]
@@ -29748,10 +29848,6 @@
       "N-ZAP '85"
     ]
   },
-  "630097070308720650": {
-    "weapons": ["N-ZAP '85"],
-    "peakLP": 2416.3
-  },
   "358047346015076353": {
     "weapons": [
       "Neo Splash-o-matic",
@@ -29834,16 +29930,6 @@
       "Splat Dualies"
     ]
   },
-  "551920446942085130": {
-    "weapons": [
-      ".52 Gal",
-      "Heavy Splatling Remix",
-      "Ballpoint Splatling Nouveau",
-      "Kensa .52 Gal",
-      "Splattershot Jr."
-    ],
-    "peakLP": 2357.7
-  },
   "642474886098583582": {
     "weapons": [
       "Foil Squeezer",
@@ -29920,6 +30006,20 @@
       "Rapid Blaster Pro Deco",
       "Kensa Undercover Brella"
     ]
+  },
+  "551920446942085130": {
+    "weapons": [
+      ".52 Gal",
+      "Heavy Splatling Remix",
+      "Ballpoint Splatling Nouveau",
+      "Kensa .52 Gal",
+      "Splattershot Jr."
+    ],
+    "peakLP": 2357.7
+  },
+  "630097070308720650": {
+    "weapons": ["N-ZAP '85"],
+    "peakLP": 2416.3
   },
   "346124737245609985": {
     "weapons": ["Foil Flingza Roller"]
@@ -30326,10 +30426,10 @@
   "833851915656757308": {
     "weapons": [
       "Firefin Splatterscope",
-      "Custom Explosher",
+      "N-ZAP '85",
       "Custom Jet Squelcher",
-      "Bamboozler 14 Mk I",
-      "Kensa Sloshing Machine"
+      "Custom Explosher",
+      "Bamboozler 14 Mk I"
     ]
   },
   "130806647990779904": {
@@ -30472,9 +30572,6 @@
       "Kensa .52 Gal",
       "Foil Flingza Roller"
     ]
-  },
-  "585924177048109076": {
-    "weapons": ["Dark Tetra Dualies"]
   },
   "245368481489354752": {
     "weapons": [
@@ -30762,7 +30859,7 @@
     ]
   },
   "735483002611826708": {
-    "weapons": ["Herobrush Replica", "Hero Roller Replica", "Kensa Octobrush"]
+    "weapons": ["Herobrush Replica", "Hero Roller Replica", "Fresh Squiffer"]
   },
   "668133452012453911": {
     "weapons": [
@@ -30836,6 +30933,10 @@
       "Glooga Dualies Deco"
     ]
   },
+  "309429991345487882": {
+    "weapons": ["Kensa Charger", "Firefin Splat Charger", "Glooga Dualies"],
+    "peakLP": 2510.8
+  },
   "838713926862635028": {
     "weapons": ["N-ZAP '85", "N-ZAP '89", "Kensa .52 Gal"],
     "peakLP": 2205.3
@@ -30851,10 +30952,6 @@
       "Foil Squeezer",
       "Custom Jet Squelcher"
     ]
-  },
-  "309429991345487882": {
-    "weapons": ["Kensa Charger", "Firefin Splat Charger", "Glooga Dualies"],
-    "peakLP": 2510.8
   },
   "337476985057968129": {
     "weapons": [
@@ -31542,6 +31639,15 @@
       "Octo Shot Replica"
     ]
   },
+  "701896681549070448": {
+    "weapons": [
+      "Neo Splash-o-matic",
+      "Kensa Sloshing Machine",
+      "Kensa .52 Gal",
+      "N-ZAP '85",
+      "Soda Slosher"
+    ]
+  },
   "385588272551952386": {
     "weapons": ["Kensa Splattershot", "N-ZAP '89", "Kensa Sloshing Machine"]
   },
@@ -31561,15 +31667,6 @@
       "Custom Jet Squelcher",
       "E-liter 4K",
       "Nautilus 79"
-    ]
-  },
-  "701896681549070448": {
-    "weapons": [
-      "Neo Splash-o-matic",
-      "Kensa Sloshing Machine",
-      "Kensa .52 Gal",
-      "N-ZAP '85",
-      "Soda Slosher"
     ]
   },
   "414693990466715650": {
@@ -31803,15 +31900,6 @@
       "Soda Slosher"
     ]
   },
-  "817549867072356352": {
-    "weapons": [
-      "Splat Roller",
-      "Gold Dynamo Roller",
-      "Kensa Dynamo Roller",
-      "Foil Flingza Roller"
-    ],
-    "peakLP": 2497
-  },
   "825455158627401829": {
     "weapons": [
       "Kensa .52 Gal",
@@ -31967,6 +32055,15 @@
       "Classic Squiffer"
     ]
   },
+  "817549867072356352": {
+    "weapons": [
+      "Splat Roller",
+      "Gold Dynamo Roller",
+      "Kensa Dynamo Roller",
+      "Foil Flingza Roller"
+    ],
+    "peakLP": 2497
+  },
   "898668177964269569": {
     "weapons": [
       "E-liter 4K",
@@ -31986,10 +32083,10 @@
   },
   "854880740441194516": {
     "weapons": [
-      "Dynamo Roller",
-      "Bamboozler 14 Mk I",
-      "H-3 Nozzlenose",
-      "Hero Slosher Replica",
+      "Kensa Octobrush",
+      "Kensa Splattershot",
+      "Kensa Dynamo Roller",
+      "Soda Slosher",
       "Hero Brella Replica"
     ]
   },
@@ -32047,14 +32144,6 @@
       "Splattershot Jr."
     ]
   },
-  "495628095622217748": {
-    "weapons": [
-      "Bamboozler 14 Mk I",
-      "Bamboozler 14 Mk II",
-      "Mini Splatling",
-      "Zink Mini Splatling"
-    ]
-  },
   "539133862341509120": {
     "weapons": [
       "Gold Dynamo Roller",
@@ -32062,13 +32151,6 @@
       "Kensa Glooga Dualies",
       "Kensa Undercover Brella",
       "Kensa Dynamo Roller"
-    ]
-  },
-  "407559246297825281": {
-    "weapons": [
-      "Glooga Dualies Deco",
-      "Kensa Glooga Dualies",
-      "Splattershot Jr."
     ]
   },
   "837728997022498938": {
@@ -32233,6 +32315,21 @@
       "Soda Slosher",
       "H-3 Nozzlenose D",
       "Dapple Dualies Nouveau"
+    ]
+  },
+  "407559246297825281": {
+    "weapons": [
+      "Glooga Dualies Deco",
+      "Kensa Glooga Dualies",
+      "Splattershot Jr."
+    ]
+  },
+  "495628095622217748": {
+    "weapons": [
+      "Bamboozler 14 Mk I",
+      "Bamboozler 14 Mk II",
+      "Mini Splatling",
+      "Zink Mini Splatling"
     ]
   },
   "356156351589777428": {
@@ -32407,10 +32504,6 @@
       "Nautilus 79"
     ]
   },
-  "601129896110063814": {
-    "weapons": ["Kensa Splattershot", "Tentatek Splattershot"],
-    "peakLP": 2392.1
-  },
   "535670990093549568": {
     "weapons": [
       "Custom Hydra Splatling",
@@ -32515,11 +32608,12 @@
       "Kensa Sloshing Machine"
     ]
   },
+  "601129896110063814": {
+    "weapons": ["Kensa Splattershot", "Tentatek Splattershot", "N-ZAP '85"],
+    "peakLP": 2392.1
+  },
   "872822677683994654": {
     "weapons": ["Clear Dapple Dualies"]
-  },
-  "622570832421715988": {
-    "weapons": ["E-liter 4K"]
   },
   "817445521589010473": {
     "weapons": [
@@ -32557,10 +32651,6 @@
       "Tri-Slosher Nouveau",
       "Foil Squeezer"
     ]
-  },
-  "477967061344190466": {
-    "weapons": ["Neo Splash-o-matic", "Kensa Splattershot"],
-    "peakLP": 2488.7
   },
   "752582395076673577": {
     "weapons": [
@@ -32631,7 +32721,7 @@
       "Octo Shot Replica",
       "Sploosh-o-matic 7",
       "Kensa Splattershot Jr.",
-      "Kensa Splatterscope"
+      "N-ZAP '85"
     ]
   },
   "351204362053222407": {
@@ -32777,6 +32867,13 @@
       "Kensa Splattershot",
       "Neo Splash-o-matic"
     ]
+  },
+  "622570832421715988": {
+    "weapons": ["Splatterscope", "Hero Charger Replica", "E-liter 4K"]
+  },
+  "477967061344190466": {
+    "weapons": ["Neo Splash-o-matic", "Kensa Splattershot"],
+    "peakLP": 2488.7
   },
   "850493758734467073": {
     "weapons": [
@@ -33129,15 +33226,6 @@
       "Tentatek Splattershot"
     ]
   },
-  "463423891977535508": {
-    "weapons": [
-      "Kensa Splattershot Jr.",
-      "Tentatek Splattershot",
-      "Forge Splattershot Pro",
-      ".96 Gal Deco",
-      "Splat Brella"
-    ]
-  },
   "216817080002019329": {
     "weapons": [
       "E-liter 4K",
@@ -33241,6 +33329,15 @@
   },
   "917789056874733588": {
     "weapons": ["E-liter 4K"]
+  },
+  "463423891977535508": {
+    "weapons": [
+      ".96 Gal",
+      "Kensa Glooga Dualies",
+      "Light Tetra Dualies",
+      "Forge Splattershot Pro",
+      "N-ZAP '85"
+    ]
   },
   "825099281337155595": {
     "weapons": ["Hero Shot Replica", "Inkbrush", "Heavy Splatling"]
@@ -33530,15 +33627,6 @@
       "Custom Jet Squelcher"
     ]
   },
-  "583720678767853568": {
-    "weapons": [
-      "Rapid Blaster Pro Deco",
-      ".52 Gal",
-      "Kensa Sloshing Machine",
-      "Ballpoint Splatling Nouveau"
-    ],
-    "peakLP": 2558.4
-  },
   "657705475768320000": {
     "weapons": [
       "Dark Tetra Dualies",
@@ -33701,6 +33789,15 @@
       "Soda Slosher"
     ]
   },
+  "583720678767853568": {
+    "weapons": [
+      "Rapid Blaster Pro Deco",
+      ".52 Gal",
+      "Kensa Sloshing Machine",
+      "Ballpoint Splatling Nouveau"
+    ],
+    "peakLP": 2558.4
+  },
   "724020131658858639": {
     "weapons": [
       "E-liter 4K",
@@ -33721,9 +33818,6 @@
       "Herobrush Replica",
       "Soda Slosher"
     ]
-  },
-  "401578167724408832": {
-    "weapons": ["Kensa Splattershot", "Kensa .52 Gal", "Neo Splash-o-matic"]
   },
   "440245270115123250": {
     "weapons": [
@@ -33916,7 +34010,12 @@
     "weapons": ["Grim Range Blaster", "E-liter 4K", "Dualie Squelchers"]
   },
   "800149916495642624": {
-    "weapons": ["Sorella Brella", ".96 Gal Deco"]
+    "weapons": [
+      "Sorella Brella",
+      ".96 Gal Deco",
+      ".96 Gal",
+      "Undercover Brella"
+    ]
   },
   "766828595732807680": {
     "weapons": [
@@ -33927,6 +34026,9 @@
       "L-3 Nozzlenose D"
     ],
     "peakLP": 2302.9
+  },
+  "401578167724408832": {
+    "weapons": ["Kensa Splattershot", "Kensa .52 Gal", "Neo Splash-o-matic"]
   },
   "331982079871156224": {
     "weapons": ["Heavy Splatling Remix"]
@@ -34035,9 +34137,6 @@
       "Kensa .52 Gal"
     ]
   },
-  "458586844284583946": {
-    "weapons": ["N-ZAP '85", "Kensa Splattershot Pro", "Classic Squiffer"]
-  },
   "250260427965988864": {
     "weapons": ["Kensa Splattershot", "N-ZAP '85"]
   },
@@ -34111,6 +34210,9 @@
       "H-3 Nozzlenose D",
       "Light Tetra Dualies"
     ]
+  },
+  "458586844284583946": {
+    "weapons": ["N-ZAP '85", "Kensa Splattershot Pro", "Classic Squiffer"]
   },
   "923792181100175392": {
     "weapons": ["Neo Splash-o-matic", "Kensa .52 Gal", "Tri-Slosher"]
@@ -34379,11 +34481,6 @@
     "peakXP": 2582.8,
     "peakLP": 2449.4
   },
-  "929870642810060890": {
-    "weapons": ["Soda Slosher", "Kensa Sloshing Machine"],
-    "peakXP": 2673.4,
-    "peakLP": 2531
-  },
   "775820345411502090": {
     "weapons": [
       "Slosher",
@@ -34394,6 +34491,11 @@
     ],
     "peakXP": 2638.4,
     "peakLP": 2394.8
+  },
+  "929870642810060890": {
+    "weapons": ["Tri-Slosher", "Soda Slosher", "Kensa Sloshing Machine"],
+    "peakXP": 2673.4,
+    "peakLP": 2531
   },
   "130787633843535872": {
     "weapons": ["Bloblobber Deco", "Tri-Slosher", "Hero Charger Replica"]
@@ -34423,6 +34525,14 @@
       "Kensa Octobrush",
       "Octo Shot Replica",
       "Aerospray PG"
+    ]
+  },
+  "753247428223959070": {
+    "weapons": [
+      "Neo Splash-o-matic",
+      "N-ZAP '85",
+      "Kensa Rapid Blaster",
+      "Soda Slosher"
     ]
   },
   "273630333017128970": {
@@ -34797,8 +34907,8 @@
     "weapons": [
       "Splattershot Jr.",
       "Gold Dynamo Roller",
-      "Kensa Rapid Blaster",
-      "Kensa Octobrush"
+      "Kensa Octobrush",
+      "Kensa Rapid Blaster"
     ]
   },
   "242349305640386560": {
@@ -34850,6 +34960,9 @@
       "Kensa Dynamo Roller",
       "Slosher"
     ]
+  },
+  "718035522114813957": {
+    "weapons": ["Dark Tetra Dualies", "Kensa Splattershot Pro"]
   },
   "892382217366540298": {
     "weapons": [
@@ -34928,15 +35041,6 @@
       "Kensa Dynamo Roller",
       "Sorella Brella",
       "Kensa Rapid Blaster"
-    ]
-  },
-  "822918086541705217": {
-    "weapons": [
-      "Octo Shot Replica",
-      "N-ZAP '89",
-      "Fresh Squiffer",
-      "Splatterscope",
-      "Kensa Dynamo Roller"
     ]
   },
   "430844013034209280": {
@@ -35037,6 +35141,15 @@
   "871248279382425611": {
     "weapons": ["Glooga Dualies Deco", "N-ZAP '85"]
   },
+  "822918086541705217": {
+    "weapons": [
+      "Octo Shot Replica",
+      "N-ZAP '89",
+      "Fresh Squiffer",
+      "Splatterscope",
+      "Kensa Dynamo Roller"
+    ]
+  },
   "942537820055154702": {
     "weapons": [
       "Splatterscope",
@@ -35104,15 +35217,6 @@
       "Hero Shot Replica",
       "Classic Squiffer",
       "Hero Roller Replica"
-    ]
-  },
-  "765987835047575552": {
-    "weapons": [
-      "Neo Splash-o-matic",
-      "Splash-o-matic",
-      "Kensa Splattershot Pro",
-      "Tentatek Splattershot",
-      "Kensa Splattershot"
     ]
   },
   "895391139144798218": {
@@ -35286,6 +35390,15 @@
       "Heavy Splatling Deco"
     ]
   },
+  "765987835047575552": {
+    "weapons": [
+      "Neo Splash-o-matic",
+      "Splash-o-matic",
+      "Kensa Splattershot Pro",
+      "Tentatek Splattershot",
+      "Kensa Splattershot"
+    ]
+  },
   "779544159321194507": {
     "weapons": ["Hero Charger Replica", "Kensa .52 Gal", "Neo Splash-o-matic"]
   },
@@ -35431,6 +35544,15 @@
       "Undercover Sorella Brella"
     ]
   },
+  "645720686677065751": {
+    "weapons": [
+      "Soda Slosher",
+      "Hero Slosher Replica",
+      "L-3 Nozzlenose D",
+      "Inkbrush Nouveau",
+      "Permanent Inkbrush"
+    ]
+  },
   "190978001435885568": {
     "weapons": [
       "Kensa Dynamo Roller",
@@ -35439,9 +35561,6 @@
       "E-liter 4K",
       "Custom Hydra Splatling"
     ]
-  },
-  "752545496631083061": {
-    "weapons": ["Hero Roller Replica"]
   },
   "779523773850058832": {
     "weapons": ["Soda Slosher", "Tri-Slosher", "Neo Splash-o-matic"]
@@ -35504,6 +35623,9 @@
   },
   "472527643770617856": {
     "weapons": ["New Squiffer", "Kensa Sloshing Machine"]
+  },
+  "752545496631083061": {
+    "weapons": ["Hero Roller Replica"]
   },
   "477614815905316869": {
     "weapons": ["Tri-Slosher Nouveau", "Clash Blaster Neo"]
