@@ -107,7 +107,7 @@ export function usePolling(pollingActive = true) {
   const data = useLoaderData<unknown>();
   const navigate = useNavigate();
 
-  const INTERVAL = 30_000; // 30 seconds
+  const INTERVAL = 20_000; // 20 seconds
 
   React.useEffect(() => {
     if (!pollingActive) return;
