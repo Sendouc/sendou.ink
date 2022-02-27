@@ -8,11 +8,22 @@ import {
   redirect,
   useLoaderData,
 } from "remix";
+import invariant from "tiny-invariant";
+import { z } from "zod";
 import { AddPlayers } from "~/components/AddPlayers";
+import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
+import { GroupCard } from "~/components/play/GroupCard";
+import {
+  canPreAddToGroup,
+  isGroupAdmin,
+  userIsNotInGroup,
+} from "~/core/play/validators";
+import { usePolling } from "~/hooks/common";
 import * as LFGGroup from "~/models/LFGGroup.server";
 import type { FindManyByTrustReceiverId } from "~/models/TrustRelationship.server";
 import * as User from "~/models/User.server";
+import styles from "~/styles/play-add-players.css";
 import {
   getUser,
   makeTitle,
@@ -20,19 +31,8 @@ import {
   requireUser,
   validate,
 } from "~/utils";
-import styles from "~/styles/play-add-players.css";
-import {
-  canPreAddToGroup,
-  isGroupAdmin,
-  userIsNotInGroup,
-} from "~/core/play/validators";
-import invariant from "tiny-invariant";
-import { z } from "zod";
-import { usePolling } from "~/hooks/common";
-import { GroupCard } from "~/components/play/GroupCard";
-import { LookingLoaderDataGroup } from "./looking";
 import { sendouQFrontPage } from "~/utils/urls";
-import { Alert } from "~/components/Alert";
+import { LookingLoaderDataGroup } from "./looking";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -171,7 +171,7 @@ export default function PlayAddPlayersPage() {
       {data.isCaptain ? (
         <>
           <AddPlayers
-            pathname="/join"
+            pathname="join"
             inviteCode={data.inviteCode}
             trustingUsers={data.trustingUsers}
             addUserError={undefined}

@@ -24,7 +24,7 @@ export const links: LinksFunction = () => {
 
 export const loader: LoaderFunction = ({ context }) => {
   const data = LoggedInUserSchema.parse(context as unknown);
-  const baseURL = process.env.BASE_URL ?? "http://localhost:5800";
+  const baseURL = process.env.FRONT_PAGE_URL ?? "http://localhost:5800/";
 
   return { user: data?.user, baseURL };
 };
