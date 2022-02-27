@@ -39,6 +39,7 @@ import {
   UserLean,
   validate,
 } from "~/utils";
+import { oldSendouInkUserProfile } from "~/utils/urls";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -263,12 +264,20 @@ export default function LFGMatchPage() {
                 className="play-match__waves-section play-match__team-info"
               >
                 {g.members.map((user) => (
-                  <div key={user.id} className="play-match__player">
-                    <Avatar user={user} />
-                    <span className="play-match__player-name">
-                      {user.discordName}
-                    </span>
-                  </div>
+                  <a
+                    href={oldSendouInkUserProfile({
+                      discordId: user.discordId,
+                    })}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <div key={user.id} className="play-match__player">
+                      <Avatar user={user} />
+                      <span className="play-match__player-name">
+                        {user.discordName}
+                      </span>
+                    </div>
+                  </a>
                 ))}
                 {data.scores && (
                   <div

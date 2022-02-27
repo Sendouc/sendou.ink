@@ -1,5 +1,6 @@
 import type { LookingLoaderDataGroup } from "~/routes/play/looking";
 import { layoutIcon } from "~/utils";
+import { oldSendouInkUserProfile } from "~/utils/urls";
 import { Avatar } from "../Avatar";
 import { WeaponImage } from "../WeaponImage";
 
@@ -37,7 +38,7 @@ function Contents({ members }: { members: LookingLoaderDataGroup["members"] }) {
         return (
           <div key={member.id} className="play-looking__member-card">
             <a
-              href={`https://sendou.ink/u/${member.discordId}`}
+              href={oldSendouInkUserProfile({ discordId: member.discordId })}
               target="_blank"
               rel="noopener noreferrer"
               className="play-looking__member-link"
