@@ -236,6 +236,7 @@ model LfgGroup {
   likesReceived LfgGroupLike[]       @relation("target")
   matches       LfgGroupMatchStage[]
 
+  // TODO: @@index([inviteCode])
   @@index([type])
   @@index([status])
 }

@@ -86,7 +86,7 @@ export const action: ActionFunction = async ({ request, context }) => {
   });
   const user = requireUser(context);
 
-  const ownGroup = await LFGGroup.findLookingByMember(user);
+  const ownGroup = await LFGGroup.findActiveByMember(user);
   validate(ownGroup, "No active group");
   validate(ownGroup.status === "LOOKING", "Group is not looking");
 
@@ -201,8 +201,6 @@ export const action: ActionFunction = async ({ request, context }) => {
   }
 
   return { ok: data._action };
-
-  // TODO: notify watchers
 };
 
 export type LookingLoaderDataGroup = {
@@ -232,11 +230,7 @@ export interface LookingLoaderData {
 
 export const loader: LoaderFunction = async ({ context }) => {
   const user = requireUser(context);
-  const groups = await LFGGroup.findLookingAndOwnActive(user.id);
-
-  const ownGroup = groups.find((g) =>
-    g.members.some((m) => m.user.id === user.id)
-  );
+  const { groups, ownGroup } = await LFGGroup.findLookingAndOwnActive(user.id);
 
   if (!ownGroup) return redirect("/play");
   if (ownGroup.status === "MATCH") {

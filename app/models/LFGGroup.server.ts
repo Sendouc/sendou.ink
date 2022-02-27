@@ -17,8 +17,7 @@ export function create({
       type,
       // TWIN starts looking immediately because it makes no sense
       // to pre-add players to the group
-      // looking: type === "TWIN" ? "LOOKING" : "PRE-ADD",
-      status: "LOOKING",
+      status: type === "TWIN" ? "LOOKING" : "PRE_ADD",
       ranked,
       members: {
         create: {
@@ -87,6 +86,25 @@ export function unlike({
       },
     }),
   ]);
+}
+
+export function addMember({
+  userId,
+  groupId,
+}: {
+  userId: string;
+  groupId: string;
+}) {
+  return db.lfgGroup.update({
+    where: { id: groupId },
+    data: {
+      members: {
+        create: {
+          memberId: userId,
+        },
+      },
+    },
+  });
 }
 
 export interface UniteGroupsArgs {
@@ -160,14 +178,35 @@ export async function matchUp({
   return match;
 }
 
+export function findByInviteCode(inviteCode: string) {
+  return db.lfgGroup.findFirst({
+    where: {
+      inviteCode,
+      status: "PRE_ADD",
+    },
+    include: {
+      members: {
+        include: {
+          user: true,
+        },
+      },
+    },
+  });
+}
+
 export function findById(id: string) {
   return db.lfgGroup.findUnique({ where: { id }, include: { members: true } });
 }
 
-export function findLookingByMember(user: { id: string }) {
+export type FindActiveByMember = Prisma.PromiseReturnType<
+  typeof findActiveByMember
+>;
+export function findActiveByMember(user: { id: string }) {
   return db.lfgGroup.findFirst({
     where: {
-      status: "LOOKING",
+      status: {
+        not: "INACTIVE",
+      },
       members: {
         some: {
           memberId: user.id,
@@ -175,7 +214,7 @@ export function findLookingByMember(user: { id: string }) {
       },
     },
     include: {
-      members: true,
+      members: { include: { user: true } },
       likedGroups: {
         select: {
           targetId: true,
@@ -192,8 +231,8 @@ export function findLookingByMember(user: { id: string }) {
 
 export type FindLookingAndOwnActive = Prisma.PromiseReturnType<
   typeof findLookingAndOwnActive
->;
-export function findLookingAndOwnActive(userId?: string) {
+>["groups"];
+export async function findLookingAndOwnActive(userId?: string) {
   const where = userId
     ? {
         OR: [
@@ -215,7 +254,7 @@ export function findLookingAndOwnActive(userId?: string) {
     : {
         status: "LOOKING" as const,
       };
-  return db.lfgGroup.findMany({
+  const groups = await db.lfgGroup.findMany({
     where,
     include: {
       members: {
@@ -239,6 +278,12 @@ export function findLookingAndOwnActive(userId?: string) {
       createdAt: "desc",
     },
   });
+
+  const ownGroup = groups.find((g) =>
+    g.members.some((m) => m.user.id === userId)
+  );
+
+  return { groups, ownGroup };
 }
 
 export function startLooking(id: string) {

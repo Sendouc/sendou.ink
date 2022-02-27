@@ -1,5 +1,6 @@
 import { LfgGroupType } from "@prisma/client";
 import { LFG_GROUP_FULL_SIZE } from "~/constants";
+import * as LFGGroup from "~/models/LFGGroup.server";
 
 export function isGroupAdmin({
   group,
@@ -68,4 +69,30 @@ export function scoreValid(winners: string[], bestOf: number) {
 
 export function matchIsUnranked(match: { stages: unknown[] }) {
   return match.stages.length === 0;
+}
+
+export function canPreAddToGroup(group: {
+  type: LfgGroupType;
+  members: unknown[];
+}) {
+  if (group.type === "VERSUS" && group.members.length < LFG_GROUP_FULL_SIZE) {
+    return true;
+  }
+
+  // it doesn't make sense to fill a quad completely as it defeats the purpose
+  if (group.type === "QUAD" && group.members.length < LFG_GROUP_FULL_SIZE - 1) {
+    return true;
+  }
+
+  return false;
+}
+
+export function userIsNotInGroup({
+  groups,
+  userId,
+}: {
+  groups: LFGGroup.FindLookingAndOwnActive;
+  userId: string;
+}) {
+  return groups.every((g) => g.members.every((m) => m.memberId !== userId));
 }

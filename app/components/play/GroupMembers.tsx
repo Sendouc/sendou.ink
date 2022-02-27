@@ -10,7 +10,7 @@ export function GroupMembers({
   members: LookingLoaderDataGroup["members"];
 }) {
   return (
-    <div className="play-looking__card__members">
+    <div className="play__card__members">
       <Contents members={members} />
     </div>
   );
@@ -22,9 +22,9 @@ function Contents({ members }: { members: LookingLoaderDataGroup["members"] }) {
       <>
         {new Array(4).fill(null).map((_, i) => {
           return (
-            <div key={i} className="play-looking__member-card">
+            <div key={i} className="play__card__member-card">
               <Avatar tiny user={{ discordId: "", discordAvatar: null }} />
-              <span className="play-looking__member-name">???</span>
+              <span className="play__card__member-name">???</span>
             </div>
           );
         })}
@@ -36,23 +36,23 @@ function Contents({ members }: { members: LookingLoaderDataGroup["members"] }) {
     <>
       {members?.map((member) => {
         return (
-          <div key={member.id} className="play-looking__member-card">
+          <div key={member.id} className="play__card__member-card">
             <a
               href={oldSendouInkUserProfile({ discordId: member.discordId })}
               target="_blank"
               rel="noopener noreferrer"
-              className="play-looking__member-link"
+              className="play__card__member-link"
             >
               <Avatar tiny user={member} />
-              <span className="play-looking__member-name">
+              <span className="play__card__member-name">
                 {member.discordName}
               </span>
             </a>
             {member.MMR && (
-              <div className="play-looking__member-mmr">SP: {member.MMR}</div>
+              <div className="play__card__member-mmr">SP: {member.MMR}</div>
             )}
             {member.peakXP && (
-              <div className="play-looking__member-power">
+              <div className="play__card__member-power">
                 <img
                   src={layoutIcon("top500")}
                   width="18"
@@ -63,7 +63,7 @@ function Contents({ members }: { members: LookingLoaderDataGroup["members"] }) {
               </div>
             )}
             {member.peakLP && (
-              <div className="play-looking__member-power league">
+              <div className="play__card__member-power league">
                 <img
                   // TODO: actual league icon
                   src={layoutIcon("top500")}
@@ -75,10 +75,10 @@ function Contents({ members }: { members: LookingLoaderDataGroup["members"] }) {
               </div>
             )}
             {member.weapons && (
-              <div className="play-looking__member-weapons">
+              <div className="play__card__member-weapons">
                 {member.weapons.map((wpn) => (
                   <WeaponImage
-                    className="play-looking__member-weapon"
+                    className="play__card__member-weapon"
                     key={wpn}
                     weapon={wpn}
                   />

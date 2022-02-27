@@ -87,8 +87,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: var(--fonts-xs);
   color: var(--text);
+  font-size: var(--fonts-xs);
 }
 
 .play-match__score {

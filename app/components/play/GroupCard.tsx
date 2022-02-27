@@ -56,15 +56,15 @@ export function GroupCard({
 
   return (
     <fetcher.Form method="post">
-      <div className="play-looking__card">
+      <div className="play__card">
         {typeof ranked === "boolean" && (
-          <div className={clsx("play-looking__ranked-text", { ranked })}>
+          <div className={clsx("play__card__ranked-text", { ranked })}>
             {ranked ? "Ranked" : "Unranked"}
           </div>
         )}
         <GroupMembers members={group.members} />
         {group.teamMMR && (
-          <div className="play-looking__mmr">
+          <div className="play__card__mmr">
             SP: {!group.teamMMR.exact && <>~</>}
             {group.teamMMR.value}
           </div>
@@ -80,9 +80,7 @@ export function GroupCard({
         {showAction && (
           <Button
             className={
-              isOwnGroup
-                ? "play-looking__card__button-small"
-                : "play-looking__card__button"
+              isOwnGroup ? "play__card__button-small" : "play__card__button"
             }
             type="submit"
             name="_action"

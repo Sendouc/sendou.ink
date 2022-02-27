@@ -99,7 +99,7 @@ export interface PlayFrontPageLoader {
 export const loader: LoaderFunction = async ({ context }) => {
   const user = getUser(context);
 
-  const [groups, skills] = await Promise.all([
+  const [{ groups, ownGroup }, skills] = await Promise.all([
     LFGGroup.findLookingAndOwnActive(user?.id),
     Skill.findAllMostRecent(),
   ]);
@@ -109,9 +109,6 @@ export const loader: LoaderFunction = async ({ context }) => {
   if (!user)
     return json<PlayFrontPageLoader>({ counts: countGroups(groups), ownMMR });
 
-  const ownGroup = groups.find((g) =>
-    g.members.some((m) => m.user.id === user.id)
-  );
   if (!ownGroup) {
     return json<PlayFrontPageLoader>({ counts: countGroups(groups), ownMMR });
   }

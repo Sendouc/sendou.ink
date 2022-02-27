@@ -13,6 +13,7 @@ export function AddPlayers({
   trustingUsers,
   hiddenInputs,
   tinyButtons = false,
+  legendText,
 }: {
   pathname: string;
   inviteCode: string;
@@ -20,13 +21,14 @@ export function AddPlayers({
   trustingUsers: FindManyByTrustReceiverId;
   hiddenInputs: { name: string; value: string }[];
   tinyButtons?: boolean;
+  legendText: string;
 }) {
   const baseURL = useBaseURL();
   const urlWithInviteCode = `${baseURL}${pathname}?code=${inviteCode}`;
 
   return (
     <fieldset className="add-players__actions">
-      <legend>Add players to your team</legend>
+      <legend>{legendText}</legend>
       <div className="add-players__actions__section">
         <Label htmlFor="inviteCodeInput">Share this URL</Label>
         <input
@@ -69,7 +71,7 @@ export function AddPlayers({
               data-cy="add-to-roster-button"
               tiny={tinyButtons}
             >
-              Add to roster
+              Add
             </SubmitButton>
           </Form>
         </div>
@@ -99,6 +101,7 @@ function CopyToClipboardButton({
       type="button"
       data-cy="copy-to-clipboard-button"
       tiny={tiny}
+      variant="outlined"
     >
       {showCopied ? "Copied!" : "Copy to clipboard"}
     </Button>

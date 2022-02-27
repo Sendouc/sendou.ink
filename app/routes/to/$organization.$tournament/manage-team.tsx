@@ -175,7 +175,7 @@ export const loader: LoaderFunction = async ({ params, context }) => {
     .parse(params);
 
   const user = requireUser(context);
-  const [ownTeam, trustingUsersAll] = await Promise.all([
+  const [ownTeam, trustingUsers] = await Promise.all([
     Tournament.ownTeam({
       organizerNameForUrl: parsedParams.organization,
       tournamentNameForUrl: parsedParams.tournament,
@@ -193,11 +193,12 @@ export const loader: LoaderFunction = async ({ params, context }) => {
     );
   }
 
-  const trustingUsers = trustingUsersAll.filter(({ trustGiver }) => {
-    return !ownTeam.members.some(({ member }) => member.id === trustGiver.id);
+  return typedJson({
+    ownTeam,
+    trustingUsers: trustingUsers.filter(({ trustGiver }) => {
+      return !ownTeam.members.some(({ member }) => member.id === trustGiver.id);
+    }),
   });
-
-  return typedJson({ ownTeam, trustingUsers });
 };
 
 // TODO: should not 404 but redirect instead - catchBoundary?
@@ -303,6 +304,7 @@ export default function ManageTeamPage() {
             { name: "teamId", value: ownTeam.id },
           ]}
           addUserError={actionData?.error?.userId}
+          legendText="Add players to team"
         />
       )}
     </div>
