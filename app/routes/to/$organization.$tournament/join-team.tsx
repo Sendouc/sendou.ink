@@ -240,7 +240,7 @@ function Contents({ data }: { data: Data }) {
                   type="button"
                   onClick={() => navigate(parentRoute.pathname)}
                 >
-                  Don't join
+                  Don&apos;t join
                 </Button>
               )}
             </div>

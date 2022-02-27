@@ -265,13 +265,14 @@ export default function LFGMatchPage() {
               >
                 {g.members.map((user) => (
                   <a
+                    key={user.id}
                     href={oldSendouInkUserProfile({
                       discordId: user.discordId,
                     })}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <div key={user.id} className="play-match__player">
+                    <div className="play-match__player">
                       <Avatar user={user} />
                       <span className="play-match__player-name">
                         {user.discordName}

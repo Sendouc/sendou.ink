@@ -6,13 +6,13 @@ export default function BetaPage() {
       <h2>Beta of sendou.ink (Splatoon 3)</h2>
       <p>
         Hello there! I appreciate you taking time to visit this beta version of
-        sendou.ink's Splatoon 3 site. This being a beta there is a few things
-        you should consider:
+        sendou.ink&apos;s Splatoon 3 site. This being a beta there is a few
+        things you should consider:
       </p>
       <ul className="mt-2">
         <li>
-          It's likely the database will be cleared (more than once) before beta
-          ends
+          It&apos;s likely the database will be cleared (more than once) before
+          beta ends
         </li>
         <li>
           Bugs are expected. Please give feedback on{" "}

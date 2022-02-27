@@ -24,8 +24,8 @@ export default function PlayRulesPage() {
             the time of the DC)
           </li>
           <li>
-            The team without DC's objective counter was at 30 or higher at the
-            time of the disconnect
+            The team without DC&apos;s objective counter was at 30 or higher at
+            the time of the disconnect
           </li>
           <li>Team with the disconnection stopped playing without delay</li>
           <li>
@@ -40,8 +40,8 @@ export default function PlayRulesPage() {
       </Paragraph>
       <Paragraph>
         If players disconnect from both teams a replay can be played without
-        using either team's one replay for the set (or even if there were no
-        replays left to use from either team).
+        using either team&apos;s one replay for the set (or even if there were
+        no replays left to use from either team).
       </Paragraph>
       <Paragraph>
         Host disconnection can be replayed with the same conditions as above.
@@ -57,9 +57,9 @@ export default function PlayRulesPage() {
 
       <h2>Subbing</h2>
       <Paragraph>
-        Subs are not allowed. If one or several players in a team can't play or
-        can't be reached then the set has to be played without them (3v4 etc.)
-        or forfeited.
+        Subs are not allowed. If one or several players in a team can&apos;t
+        play or can&apos;t be reached then the set has to be played without them
+        (3v4 etc.) or forfeited.
       </Paragraph>
 
       <h2>Alting</h2>
