@@ -1,5 +1,6 @@
+import clone from "just-clone";
 import { expose, rate, Rating } from "ts-trueskill";
-import { MMR_TOPX_VISIBILITY_CUTOFF } from "~/constants";
+import { LFG_GROUP_FULL_SIZE, MMR_TOPX_VISIBILITY_CUTOFF } from "~/constants";
 import { PlayFrontPageLoader } from "~/routes/play/index";
 
 /** Get first skill object of the array (should be ordered so that most recent skill is first) and convert it into MMR. */
@@ -31,7 +32,28 @@ interface TeamSkill {
 export function teamSkillToExactMMR(teamSkills: TeamSkill[]) {
   let sum = 0;
 
-  for (const { user } of teamSkills) {
+  const teamSkillsClone = clone(teamSkills);
+  while (teamSkillsClone.length < LFG_GROUP_FULL_SIZE) {
+    teamSkillsClone.push({ user: { skill: [] } });
+  }
+
+  const defaultRating = new Rating();
+  const skillsWithDefaults = teamSkillsClone.reduce((acc: TeamSkill[], cur) => {
+    if (cur.user.skill.length === 0) {
+      return [
+        {
+          user: {
+            skill: [{ mu: defaultRating.mu, sigma: defaultRating.sigma }],
+          },
+        },
+        ...acc,
+      ];
+    }
+
+    return [cur, ...acc];
+  }, []);
+
+  for (const { user } of skillsWithDefaults) {
     const MMR = skillArrayToMMR(user.skill);
     if (!MMR) continue;
 
@@ -51,19 +73,6 @@ export function teamSkillToApproximateMMR(teamSkills: TeamSkill[]) {
 
 function toTwoDecimals(value: number) {
   return Number(value.toFixed(2));
-}
-
-export function teamHasSkill(teamSkills: TeamSkill[]) {
-  let hasSkill = false;
-
-  for (const { user } of teamSkills) {
-    if (user.skill.length > 0) {
-      hasSkill = true;
-      break;
-    }
-  }
-
-  return hasSkill;
 }
 
 interface AdjustSkill {

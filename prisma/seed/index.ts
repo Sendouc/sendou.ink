@@ -10,6 +10,7 @@ const variation = SeedVariationsSchema.optional().parse(maybeVariation);
 
 seed(variation)
   .then(() => {
+    // eslint-disable-next-line no-console
     console.log(
       `🌱 All done with seeding${variation ? ` (variation: ${variation})` : ""}`
     );

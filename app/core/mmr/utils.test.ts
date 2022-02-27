@@ -1,9 +1,15 @@
 import { suite } from "uvu";
-import { adjustSkills, muSigmaToSP, resolveOwnMMR } from "./utils";
+import {
+  adjustSkills,
+  muSigmaToSP,
+  resolveOwnMMR,
+  teamSkillToExactMMR,
+} from "./utils";
 import * as assert from "uvu/assert";
 
 const AdjustSkills = suite("adjustSkills()");
 const ResolveOwnMMR = suite("resolveOwnMMR()");
+const TeamSkillToExactMMR = suite("TeamSkillToExactMMR()");
 
 const MU_AT_START = 20;
 const SIGMA_AT_START = 4;
@@ -93,5 +99,34 @@ ResolveOwnMMR("Hides topX if not good", () => {
   assert.not.ok(own?.topX);
 });
 
+TeamSkillToExactMMR("Sums up MMR's", () => {
+  const MU = 20;
+  const SIGMA = 7;
+  const skills = new Array(4).fill(null).map((_) => ({ mu: MU, sigma: SIGMA }));
+
+  const teamMMR = teamSkillToExactMMR(
+    skills.map((s) => ({ user: { skill: [{ mu: s.mu, sigma: s.sigma }] } }))
+  );
+
+  assert.equal(teamMMR, muSigmaToSP({ mu: MU, sigma: SIGMA }) * 4);
+});
+
+TeamSkillToExactMMR("Pads team MMR", () => {
+  const MU = 20;
+  const SIGMA = 7;
+  const skills = new Array(3).fill(null).map((_) => ({ mu: MU, sigma: SIGMA }));
+
+  const teamMMR = teamSkillToExactMMR(
+    skills.map((s) => ({ user: { skill: [{ mu: s.mu, sigma: s.sigma }] } }))
+  );
+
+  assert.equal(teamMMR, muSigmaToSP({ mu: MU, sigma: SIGMA }) * 3 + 1000);
+
+  const teamMMRNoSkills = teamSkillToExactMMR([]);
+
+  assert.equal(teamMMRNoSkills, 4 * 1000);
+});
+
 AdjustSkills.run();
 ResolveOwnMMR.run();
+TeamSkillToExactMMR.run();

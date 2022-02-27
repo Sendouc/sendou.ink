@@ -16,11 +16,7 @@ import { GroupCard } from "~/components/play/GroupCard";
 import { LookingInfoText } from "~/components/play/LookingInfoText";
 import { Tab } from "~/components/Tab";
 import { LFG_GROUP_FULL_SIZE } from "~/constants";
-import {
-  skillArrayToMMR,
-  teamHasSkill,
-  teamSkillToExactMMR,
-} from "~/core/mmr/utils";
+import { skillArrayToMMR, teamSkillToExactMMR } from "~/core/mmr/utils";
 import { addInfoFromOldSendouInk } from "~/core/play/playerInfos/playerInfos.server";
 import {
   groupExpirationStatus,
@@ -279,9 +275,7 @@ export const loader: LoaderFunction = async ({ context }) => {
           }),
           ranked: ownGroup.ranked ?? undefined,
           teamMMR:
-            lookingForMatch &&
-            isRanked &&
-            teamHasSkill(ownGroupWithMembers.members)
+            lookingForMatch && isRanked
               ? {
                   exact: true,
                   value: teamSkillToExactMMR(ownGroupWithMembers.members),

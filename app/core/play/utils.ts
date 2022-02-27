@@ -4,11 +4,7 @@ import * as LFGGroup from "~/models/LFGGroup.server";
 import { PlayFrontPageLoader } from "~/routes/play/index";
 import { LookingLoaderData } from "~/routes/play/looking";
 import { Unpacked } from "~/utils";
-import {
-  skillArrayToMMR,
-  teamHasSkill,
-  teamSkillToApproximateMMR,
-} from "../mmr/utils";
+import { skillArrayToMMR, teamSkillToApproximateMMR } from "../mmr/utils";
 import { canUniteWithGroup } from "./validators";
 
 export interface UniteGroupInfoArg {
@@ -167,7 +163,7 @@ export function otherGroupsForResponse({
               }),
         ranked: ranked(),
         teamMMR:
-          lookingForMatch && group.ranked && teamHasSkill(group.members)
+          lookingForMatch && group.ranked
             ? {
                 exact: false,
                 value: teamSkillToApproximateMMR(group.members),

@@ -27,9 +27,9 @@ export const useEvents = (
       `/events?${new URLSearchParams(target).toString()}`
     );
 
-    source.addEventListener("open", () => {
-      console.log("SSE opened!");
-    });
+    // source.addEventListener("open", () => {
+    //   console.log("SSE opened!");
+    // });
 
     source.addEventListener("message", (e) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
