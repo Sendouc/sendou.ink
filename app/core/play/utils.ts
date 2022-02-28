@@ -1,10 +1,22 @@
 import invariant from "tiny-invariant";
-import { LFG_GROUP_FULL_SIZE, LFG_GROUP_INACTIVE_MINUTES } from "~/constants";
+import {
+  BIT_HIGHER_MMR_LIMIT,
+  CLOSE_MMR_LIMIT,
+  LFG_GROUP_FULL_SIZE,
+  LFG_GROUP_INACTIVE_MINUTES,
+} from "~/constants";
 import * as LFGGroup from "~/models/LFGGroup.server";
 import { PlayFrontPageLoader } from "~/routes/play/index";
-import { LookingLoaderData } from "~/routes/play/looking";
+import {
+  LookingLoaderData,
+  LookingLoaderDataGroup,
+} from "~/routes/play/looking";
 import { Unpacked } from "~/utils";
-import { skillArrayToMMR, teamSkillToApproximateMMR } from "../mmr/utils";
+import {
+  skillArrayToMMR,
+  teamSkillToApproximateMMR,
+  teamSkillToExactMMR,
+} from "../mmr/utils";
 import { canUniteWithGroup } from "./validators";
 
 export interface UniteGroupInfoArg {
@@ -119,6 +131,7 @@ export function otherGroupsForResponse({
   likes,
   lookingForMatch,
   ownGroup,
+  useRelativeSkillLevel,
 }: {
   groups: LFGGroup.FindLookingAndOwnActive;
   likes: {
@@ -127,6 +140,7 @@ export function otherGroupsForResponse({
   };
   lookingForMatch: boolean;
   ownGroup: Unpacked<LFGGroup.FindLookingAndOwnActive>;
+  useRelativeSkillLevel: boolean;
 }) {
   return groups
     .filter(
@@ -140,7 +154,7 @@ export function otherGroupsForResponse({
     )
     .filter((group) => group.id !== ownGroup.id)
     .filter(filterExpiredGroups)
-    .map((group) => {
+    .map((group): LookingLoaderDataGroup => {
       const ranked = () => {
         if (lookingForMatch && !ownGroup.ranked) return false;
 
@@ -162,8 +176,12 @@ export function otherGroupsForResponse({
                 };
               }),
         ranked: ranked(),
+        MMRRelation:
+          ownGroup.ranked && group.ranked && useRelativeSkillLevel
+            ? resolveMMRRelation({ group, ownGroup })
+            : undefined,
         teamMMR:
-          lookingForMatch && group.ranked
+          lookingForMatch && group.ranked && !useRelativeSkillLevel
             ? {
                 exact: false,
                 value: teamSkillToApproximateMMR(group.members),
@@ -222,4 +240,36 @@ export function countGroups(
     },
     { TWIN: 0, QUAD: 0, "VERSUS-RANKED": 0, "VERSUS-UNRANKED": 0 }
   );
+}
+
+function resolveMMRRelation({
+  group,
+  ownGroup,
+}: {
+  group: Unpacked<LFGGroup.FindLookingAndOwnActive>;
+  ownGroup: Unpacked<LFGGroup.FindLookingAndOwnActive>;
+}): NonNullable<LookingLoaderDataGroup["MMRRelation"]> {
+  return calculateDifference({
+    ourMMR: teamSkillToExactMMR(ownGroup.members),
+    theirMMR: teamSkillToExactMMR(group.members),
+  });
+}
+
+export function calculateDifference({
+  ourMMR,
+  theirMMR,
+}: {
+  ourMMR: number;
+  theirMMR: number;
+}) {
+  const difference = Math.abs(ourMMR - theirMMR);
+  const ownIsBigger = ourMMR > theirMMR;
+
+  if (difference <= CLOSE_MMR_LIMIT) return "CLOSE";
+  if (difference > BIT_HIGHER_MMR_LIMIT && ownIsBigger) return "LOWER";
+  if (difference > BIT_HIGHER_MMR_LIMIT && !ownIsBigger) return "HIGHER";
+  if (ownIsBigger) return "BIT_LOWER";
+  if (!ownIsBigger) return "BIT_HIGHER";
+
+  throw new Error("Unexpected calculateMMRRelation scenario");
 }

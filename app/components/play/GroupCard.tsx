@@ -5,6 +5,11 @@ import type {
   LookingActionSchema,
   LookingLoaderDataGroup,
 } from "~/routes/play/looking";
+import { ArrowDownIcon } from "../icons/ArrowDown";
+import { ArrowUpIcon } from "../icons/ArrowUp";
+import { DoubleArrowDownIcon } from "../icons/DoubleArrowDown";
+import { DoubleArrowUpIcon } from "../icons/DoubleArrowUp";
+import { MinusIcon } from "../icons/Minus";
 import { GroupMembers } from "./GroupMembers";
 
 export function GroupCard({
@@ -69,6 +74,7 @@ export function GroupCard({
             {group.teamMMR.value}
           </div>
         )}
+        {group.MMRRelation && <MMRRelation relation={group.MMRRelation} />}
         <input type="hidden" name="targetGroupId" value={group.id} />
         {action === "UNITE_GROUPS" && (
           <input
@@ -95,4 +101,52 @@ export function GroupCard({
       </div>
     </fetcher.Form>
   );
+}
+
+function MMRRelation({
+  relation,
+}: {
+  relation: NonNullable<LookingLoaderDataGroup["MMRRelation"]>;
+}) {
+  switch (relation) {
+    case "CLOSE": {
+      return (
+        <div className="play__card__mmr-relation">
+          <MinusIcon /> Close SP
+        </div>
+      );
+    }
+    case "BIT_HIGHER": {
+      return (
+        <div className="play__card__mmr-relation">
+          <ArrowUpIcon /> A bit higher SP
+        </div>
+      );
+    }
+    case "BIT_LOWER": {
+      return (
+        <div className="play__card__mmr-relation">
+          <ArrowDownIcon /> A bit lower SP
+        </div>
+      );
+    }
+    case "HIGHER": {
+      return (
+        <div className="play__card__mmr-relation">
+          <DoubleArrowUpIcon /> Higher SP
+        </div>
+      );
+    }
+    case "LOWER": {
+      return (
+        <div className="play__card__mmr-relation">
+          <DoubleArrowDownIcon /> Lower SP
+        </div>
+      );
+    }
+    default: {
+      const exhaustive: never = relation;
+      throw new Error(`Unknown relation: ${JSON.stringify(exhaustive)}`);
+    }
+  }
 }

@@ -1,6 +1,8 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
+import { BIT_HIGHER_MMR_LIMIT } from "~/constants";
 import {
+  calculateDifference,
   groupsToWinningAndLosingPlayerIds,
   scoresAreIdentical,
   uniteGroupInfo,
@@ -12,6 +14,7 @@ const ScoresAreIdentical = suite("scoresAreIdentical()");
 const GroupsToWinningAndLosingPlayerIds = suite(
   "groupsToWinningAndLosingPlayerIds()"
 );
+const CalculateDifference = suite("calculateDifference()");
 
 const SMALL_GROUP: UniteGroupInfoArg = { id: "small", memberCount: 1 };
 const BIG_GROUP: UniteGroupInfoArg = { id: "big", memberCount: 3 };
@@ -96,6 +99,29 @@ GroupsToWinningAndLosingPlayerIds(
   }
 );
 
+CalculateDifference("Close", () => {
+  assert.equal(calculateDifference({ ourMMR: 0, theirMMR: 0 }), "CLOSE");
+  assert.equal(calculateDifference({ ourMMR: 0, theirMMR: 1 }), "CLOSE");
+  assert.equal(calculateDifference({ ourMMR: 1, theirMMR: 0 }), "CLOSE");
+});
+
+CalculateDifference("Higher/lower", () => {
+  assert.equal(calculateDifference({ ourMMR: 0, theirMMR: 10_000 }), "HIGHER");
+  assert.equal(calculateDifference({ ourMMR: 10_000, theirMMR: 0 }), "LOWER");
+});
+
+CalculateDifference.only("A bit higher/lower", () => {
+  assert.equal(
+    calculateDifference({ ourMMR: 0, theirMMR: BIT_HIGHER_MMR_LIMIT }),
+    "BIT_HIGHER"
+  );
+  assert.equal(
+    calculateDifference({ ourMMR: 0, theirMMR: -BIT_HIGHER_MMR_LIMIT }),
+    "BIT_LOWER"
+  );
+});
+
 UniteGroupInfo.run();
 ScoresAreIdentical.run();
 GroupsToWinningAndLosingPlayerIds.run();
+CalculateDifference.run();

@@ -99,6 +99,19 @@
   font-size: var(--fonts-xxs);
 }
 
+.play__card__mmr-relation {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  font-size: var(--fonts-sm);
+  font-weight: var(--semi-bold);
+  gap: var(--s-2);
+}
+
+.play__card__mmr-relation > svg {
+  width: 1rem;
+}
+
 .play__card__member-power {
   display: flex;
   margin-top: -4px;

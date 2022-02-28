@@ -35,6 +35,8 @@ import {
   validate,
 } from "~/utils";
 
+const USE_RELATIVE_SKILL_LEVEL = true;
+
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
@@ -215,6 +217,7 @@ export type LookingLoaderDataGroup = {
     exact: boolean;
     value: number;
   };
+  MMRRelation?: "LOWER" | "BIT_LOWER" | "CLOSE" | "BIT_HIGHER" | "HIGHER";
   ranked?: boolean;
 };
 
@@ -269,7 +272,7 @@ export const loader: LoaderFunction = async ({ context }) => {
           }),
           ranked: ownGroup.ranked ?? undefined,
           teamMMR:
-            lookingForMatch && isRanked
+            lookingForMatch && isRanked && !USE_RELATIVE_SKILL_LEVEL
               ? {
                   exact: true,
                   value: teamSkillToExactMMR(ownGroupWithMembers.members),
@@ -280,6 +283,7 @@ export const loader: LoaderFunction = async ({ context }) => {
         isCaptain: isGroupAdmin({ group: ownGroup, user }),
         lastActionAtTimestamp: ownGroup.lastActionAt.getTime(),
         ...otherGroupsForResponse({
+          useRelativeSkillLevel: USE_RELATIVE_SKILL_LEVEL,
           groups: groupsOfType,
           lookingForMatch,
           ownGroup,
