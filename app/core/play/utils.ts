@@ -177,7 +177,10 @@ export function otherGroupsForResponse({
               }),
         ranked: ranked(),
         MMRRelation:
-          ownGroup.ranked && group.ranked && useRelativeSkillLevel
+          ownGroup.ranked &&
+          group.ranked &&
+          useRelativeSkillLevel &&
+          group.members.length === LFG_GROUP_FULL_SIZE
             ? resolveMMRRelation({ group, ownGroup })
             : undefined,
         teamMMR:
