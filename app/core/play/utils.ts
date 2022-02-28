@@ -142,78 +142,82 @@ export function otherGroupsForResponse({
   ownGroup: Unpacked<LFGGroup.FindLookingAndOwnActive>;
   useRelativeSkillLevel: boolean;
 }) {
-  return groups
-    .filter(
-      (group) =>
-        (lookingForMatch && group.members.length === LFG_GROUP_FULL_SIZE) ||
-        canUniteWithGroup({
-          ownGroupType: ownGroup.type,
-          ownGroupSize: ownGroup.members.length,
-          otherGroupSize: group.members.length,
-        })
-    )
-    .filter((group) => group.id !== ownGroup.id)
-    .filter(filterExpiredGroups)
-    .map((group): LookingLoaderDataGroup => {
-      const ranked = () => {
-        if (lookingForMatch && !ownGroup.ranked) return false;
+  return (
+    groups
+      .filter(
+        (group) =>
+          (lookingForMatch && group.members.length === LFG_GROUP_FULL_SIZE) ||
+          canUniteWithGroup({
+            ownGroupType: ownGroup.type,
+            ownGroupSize: ownGroup.members.length,
+            otherGroupSize: group.members.length,
+          })
+      )
+      .filter((group) => group.id !== ownGroup.id)
+      .filter(filterExpiredGroups)
+      // this should not happen.... but sometimes it does :)
+      .filter((g) => g.members.length > 0)
+      .map((group): LookingLoaderDataGroup => {
+        const ranked = () => {
+          if (lookingForMatch && !ownGroup.ranked) return false;
 
-        return group.ranked ?? undefined;
-      };
-      return {
-        id: group.id,
-        // When looking for a match ranked groups are censored
-        // and instead we only reveal their approximate skill level
-        members:
-          ownGroup.ranked && group.ranked && lookingForMatch
-            ? undefined
-            : group.members.map((m) => {
-                const { skill, ...rest } = m.user;
+          return group.ranked ?? undefined;
+        };
+        return {
+          id: group.id,
+          // When looking for a match ranked groups are censored
+          // and instead we only reveal their approximate skill level
+          members:
+            ownGroup.ranked && group.ranked && lookingForMatch
+              ? undefined
+              : group.members.map((m) => {
+                  const { skill, ...rest } = m.user;
 
-                return {
-                  ...rest,
-                  MMR: skillArrayToMMR(skill),
-                };
-              }),
-        ranked: ranked(),
-        MMRRelation:
-          ownGroup.ranked &&
-          group.ranked &&
-          useRelativeSkillLevel &&
-          group.members.length === LFG_GROUP_FULL_SIZE
-            ? resolveMMRRelation({ group, ownGroup })
-            : undefined,
-        teamMMR:
-          lookingForMatch && group.ranked && !useRelativeSkillLevel
-            ? {
-                exact: false,
-                value: teamSkillToApproximateMMR(group.members),
-              }
-            : undefined,
-      };
-    })
-    .reduce(
-      (
-        acc: Omit<
-          LookingLoaderData,
-          "ownGroup" | "type" | "isCaptain" | "lastActionAtTimestamp"
-        >,
-        group
-      ) => {
-        // likesReceived first so that if both received like and
-        // given like then handle this edge case by just displaying the
-        // group as waiting like back
-        if (likes.received.has(group.id)) {
-          acc.likerGroups.push(group);
-        } else if (likes.given.has(group.id)) {
-          acc.likedGroups.push(group);
-        } else {
-          acc.neutralGroups.push(group);
-        }
-        return acc;
-      },
-      { likedGroups: [], neutralGroups: [], likerGroups: [] }
-    );
+                  return {
+                    ...rest,
+                    MMR: skillArrayToMMR(skill),
+                  };
+                }),
+          ranked: ranked(),
+          MMRRelation:
+            ownGroup.ranked &&
+            group.ranked &&
+            useRelativeSkillLevel &&
+            group.members.length === LFG_GROUP_FULL_SIZE
+              ? resolveMMRRelation({ group, ownGroup })
+              : undefined,
+          teamMMR:
+            lookingForMatch && group.ranked && !useRelativeSkillLevel
+              ? {
+                  exact: false,
+                  value: teamSkillToApproximateMMR(group.members),
+                }
+              : undefined,
+        };
+      })
+      .reduce(
+        (
+          acc: Omit<
+            LookingLoaderData,
+            "ownGroup" | "type" | "isCaptain" | "lastActionAtTimestamp"
+          >,
+          group
+        ) => {
+          // likesReceived first so that if both received like and
+          // given like then handle this edge case by just displaying the
+          // group as waiting like back
+          if (likes.received.has(group.id)) {
+            acc.likerGroups.push(group);
+          } else if (likes.given.has(group.id)) {
+            acc.likedGroups.push(group);
+          } else {
+            acc.neutralGroups.push(group);
+          }
+          return acc;
+        },
+        { likedGroups: [], neutralGroups: [], likerGroups: [] }
+      )
+  );
 }
 
 export function filterExpiredGroups(group: { lastActionAt: Date }) {
