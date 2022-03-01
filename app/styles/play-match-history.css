@@ -42,7 +42,7 @@
   display: none;
   align-items: center;
   font-size: var(--fonts-xs);
-  margin-inline-start: var(--s-4);
+  margin-inline-start: auto;
 }
 
 .play-match-history__score-header.winner {
