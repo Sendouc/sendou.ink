@@ -71,7 +71,7 @@ export function teamSkillToApproximateMMR(teamSkills: TeamSkill[]) {
   return roundToNearest25(teamMMR);
 }
 
-function toTwoDecimals(value: number) {
+export function toTwoDecimals(value: number) {
   return Number(value.toFixed(2));
 }
 

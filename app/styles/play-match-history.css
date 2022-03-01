@@ -1,6 +1,18 @@
+.play-match-history__title {
+  line-height: 2rem;
+  margin-block-start: var(--s-6);
+}
+
+.play-match-history__winrate-info {
+  color: var(--text-lighter);
+  font-size: var(--fonts-sm);
+  font-weight: var(--semi-bold);
+}
+
 .play-match-history__date {
   border-block-end: 5px solid var(--theme-transparent);
   margin-block-end: var(--s-5);
+  margin-block-start: var(--s-4);
 }
 
 .play-match-history__match {

@@ -12,6 +12,7 @@ import invariant from "tiny-invariant";
 import styles from "~/styles/play-match-history.css";
 import clsx from "clsx";
 import { sendouQMatchPage } from "~/utils/urls";
+import { toTwoDecimals } from "~/core/mmr/utils";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -32,6 +33,9 @@ interface MathHistoryLoaderData {
       their: number;
     };
   }[];
+  stageCount: number;
+  setWinRate: number;
+  stageWinRate: number;
 }
 
 export const loader: LoaderFunction = async ({ params }) => {
@@ -40,41 +44,65 @@ export const loader: LoaderFunction = async ({ params }) => {
   const matches = await LFGMatch.findByUserId({ userId: params.id });
   if (matches.length === 0) throw new Response(null, { status: 404 }); // TODO: don't show link if it would 404?
 
+  const mappedMatches = matches.map(
+    (match): Unpacked<MathHistoryLoaderData["matches"]> => {
+      const usersGroup = match.groups.find((g) =>
+        g.members.some((m) => m.memberId === params.id)
+      );
+      invariant(usersGroup, "Unexpected usersGroup undefined");
+
+      const opposingGroup = match.groups.find((g) => g.id !== usersGroup.id);
+      invariant(opposingGroup, "Unexpected opposingGroup undefined");
+
+      return {
+        id: match.id,
+        createdAtTimestamp: match.createdAt.getTime(),
+        teammates: usersGroup.members.map((m) => m.user.discordName),
+        opponents: opposingGroup.members.map((m) => m.user.discordName),
+        score: {
+          our: match.stages
+            .filter((s) => s.winnerGroupId)
+            .reduce(
+              (acc, stage) =>
+                acc + Number(stage.winnerGroupId === usersGroup.id),
+              0
+            ),
+          their: match.stages
+            .filter((s) => s.winnerGroupId)
+            .reduce(
+              (acc, stage) =>
+                acc + Number(stage.winnerGroupId !== usersGroup.id),
+              0
+            ),
+        },
+      };
+    }
+  );
+
+  const stageCount = mappedMatches.reduce(
+    (acc, match) => match.score.our + match.score.their + acc,
+    0
+  );
+
   return json<MathHistoryLoaderData>({
-    matches: matches.map(
-      (match): Unpacked<MathHistoryLoaderData["matches"]> => {
-        const usersGroup = match.groups.find((g) =>
-          g.members.some((m) => m.memberId === params.id)
-        );
-        invariant(usersGroup, "Unexpected usersGroup undefined");
-
-        const opposingGroup = match.groups.find((g) => g.id !== usersGroup.id);
-        invariant(opposingGroup, "Unexpected opposingGroup undefined");
-
-        return {
-          id: match.id,
-          createdAtTimestamp: match.createdAt.getTime(),
-          teammates: usersGroup.members.map((m) => m.user.discordName),
-          opponents: opposingGroup.members.map((m) => m.user.discordName),
-          score: {
-            our: match.stages
-              .filter((s) => s.winnerGroupId)
-              .reduce(
-                (acc, stage) =>
-                  acc + Number(stage.winnerGroupId === usersGroup.id),
-                0
-              ),
-            their: match.stages
-              .filter((s) => s.winnerGroupId)
-              .reduce(
-                (acc, stage) =>
-                  acc + Number(stage.winnerGroupId !== usersGroup.id),
-                0
-              ),
-          },
-        };
-      }
+    stageCount: mappedMatches.reduce(
+      (acc, match) => match.score.our + match.score.their + acc,
+      0
     ),
+    setWinRate: toTwoDecimals(
+      (mappedMatches.reduce(
+        (acc, match) => Number(match.score.our > match.score.their) + acc,
+        0
+      ) /
+        mappedMatches.length) *
+        100
+    ),
+    stageWinRate: toTwoDecimals(
+      (mappedMatches.reduce((acc, match) => match.score.our + acc, 0) /
+        stageCount) *
+        100
+    ),
+    matches: mappedMatches,
   });
 };
 
@@ -98,6 +126,17 @@ export default function MatchHistoryPage() {
 
         return (
           <>
+            <h1 className="play-match-history__title">
+              Sendou&apos;s SendouQ results
+            </h1>
+            <span className="play-match-history__winrate-info">
+              {data.matches.length} {data.matches.length === 1 ? "set" : "sets"}{" "}
+              played ({data.setWinRate}% winrate)
+            </span>{" "}
+            •{" "}
+            <span className="play-match-history__winrate-info">
+              {data.stageCount} maps played ({data.stageWinRate}% winrate)
+            </span>
             {showDate && (
               <h2 className="play-match-history__date">{currentDateString}</h2>
             )}
@@ -107,7 +146,7 @@ export default function MatchHistoryPage() {
                 dateTime={new Date(match.createdAtTimestamp).toISOString()}
               >
                 {new Date(match.createdAtTimestamp).toLocaleString("en-us", {
-                  hour: "numeric",
+                  hour: "2-digit",
                   minute: "numeric",
                 })}
               </time>
