@@ -113,6 +113,17 @@ export default function MatchHistoryPage() {
   let lastDateShown = "";
   return (
     <>
+      <h1 className="play-match-history__title">
+        Sendou&apos;s SendouQ results
+      </h1>
+      <span className="play-match-history__winrate-info">
+        {data.matches.length} {data.matches.length === 1 ? "set" : "sets"}{" "}
+        played ({data.setWinRate}% winrate)
+      </span>{" "}
+      •{" "}
+      <span className="play-match-history__winrate-info">
+        {data.stageCount} maps played ({data.stageWinRate}% winrate)
+      </span>
       {data.matches.map((match) => {
         const currentDateString = new Date(
           match.createdAtTimestamp
@@ -127,17 +138,6 @@ export default function MatchHistoryPage() {
 
         return (
           <React.Fragment key={match.id}>
-            <h1 className="play-match-history__title">
-              Sendou&apos;s SendouQ results
-            </h1>
-            <span className="play-match-history__winrate-info">
-              {data.matches.length} {data.matches.length === 1 ? "set" : "sets"}{" "}
-              played ({data.setWinRate}% winrate)
-            </span>{" "}
-            •{" "}
-            <span className="play-match-history__winrate-info">
-              {data.stageCount} maps played ({data.stageWinRate}% winrate)
-            </span>
             {showDate && (
               <h2 className="play-match-history__date">{currentDateString}</h2>
             )}
