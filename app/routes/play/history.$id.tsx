@@ -13,6 +13,7 @@ import styles from "~/styles/play-match-history.css";
 import clsx from "clsx";
 import { sendouQMatchPage } from "~/utils/urls";
 import { toTwoDecimals } from "~/core/mmr/utils";
+import * as React from "react";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -125,7 +126,7 @@ export default function MatchHistoryPage() {
         }
 
         return (
-          <>
+          <React.Fragment key={match.id}>
             <h1 className="play-match-history__title">
               Sendou&apos;s SendouQ results
             </h1>
@@ -183,7 +184,7 @@ export default function MatchHistoryPage() {
                 <Link to={sendouQMatchPage(match.id)}>View details</Link>
               </div>
             </div>
-          </>
+          </React.Fragment>
         );
       })}
     </>
