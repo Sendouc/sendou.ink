@@ -100,7 +100,7 @@ export const loader: LoaderFunction = async ({ context }) => {
   const user = getUser(context);
 
   const [{ groups, ownGroup }, skills] = await Promise.all([
-    LFGGroup.findLookingAndOwnActive(user?.id),
+    LFGGroup.findLookingAndOwnActive(user?.id, true),
     Skill.findAllMostRecent(),
   ]);
 

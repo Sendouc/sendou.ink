@@ -232,13 +232,23 @@ export function findActiveByMember(user: { id: string }) {
 export type FindLookingAndOwnActive = Prisma.PromiseReturnType<
   typeof findLookingAndOwnActive
 >["groups"];
-export async function findLookingAndOwnActive(userId?: string) {
+export async function findLookingAndOwnActive(
+  userId?: string,
+  showPreAddMatch = false
+) {
+  const mainFilter = showPreAddMatch
+    ? {
+        NOT: {
+          status: "INACTIVE" as const,
+        },
+      }
+    : {
+        status: "LOOKING" as const,
+      };
   const where = userId
     ? {
         OR: [
-          {
-            status: "LOOKING" as const,
-          },
+          mainFilter,
           {
             members: {
               some: {
@@ -251,9 +261,7 @@ export async function findLookingAndOwnActive(userId?: string) {
           },
         ],
       }
-    : {
-        status: "LOOKING" as const,
-      };
+    : mainFilter;
   const groups = await db.lfgGroup.findMany({
     where,
     include: {
