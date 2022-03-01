@@ -37,6 +37,7 @@ interface MathHistoryLoaderData {
   stageCount: number;
   setWinRate: number;
   stageWinRate: number;
+  ownName: string;
 }
 
 export const loader: LoaderFunction = async ({ params }) => {
@@ -44,6 +45,11 @@ export const loader: LoaderFunction = async ({ params }) => {
 
   const matches = await LFGMatch.findByUserId({ userId: params.id });
   if (matches.length === 0) throw new Response(null, { status: 404 }); // TODO: don't show link if it would 404?
+
+  const ownUser = matches[0].groups
+    .flatMap((g) => g.members)
+    .find((m) => m.memberId === params.id);
+  invariant(ownUser, "Unexpected no ownUser");
 
   const mappedMatches = matches.map(
     (match): Unpacked<MathHistoryLoaderData["matches"]> => {
@@ -86,6 +92,7 @@ export const loader: LoaderFunction = async ({ params }) => {
   );
 
   return json<MathHistoryLoaderData>({
+    ownName: ownUser.user.discordName,
     stageCount: mappedMatches.reduce(
       (acc, match) => match.score.our + match.score.their + acc,
       0
@@ -114,7 +121,7 @@ export default function MatchHistoryPage() {
   return (
     <>
       <h1 className="play-match-history__title">
-        Sendou&apos;s SendouQ results
+        {data.ownName}&apos;s SendouQ results
       </h1>
       <span className="play-match-history__winrate-info">
         {data.matches.length} {data.matches.length === 1 ? "set" : "sets"}{" "}
