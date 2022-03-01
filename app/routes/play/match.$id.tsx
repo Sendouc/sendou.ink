@@ -247,7 +247,7 @@ export default function LFGMatchPage() {
   const actionData = useActionData<ActionData>();
 
   return (
-    <div className="container">
+    <div>
       {actionData?.error === "DIFFERENT_SCORE" && (
         <div className="play-match__error">
           The score you reported is different from what your opponent reported.

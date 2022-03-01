@@ -84,7 +84,7 @@ export function ErrorBoundary({ error }: { error: Error }) {
   return (
     <Document title="Error!">
       <Layout>
-        <div className="container">
+        <div>
           <h1>Error happened: {message}</h1>
           {data && data.length > 0 && data !== "null" && <p>Message: {data}</p>}
           <hr />

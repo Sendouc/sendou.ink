@@ -114,7 +114,7 @@ export default function JoinTeamPage() {
   const data = useLoaderData<Data>();
 
   return (
-    <div className="container text-center text-sm">
+    <div className="text-center text-sm">
       <Contents data={data} />
     </div>
   );

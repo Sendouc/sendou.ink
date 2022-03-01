@@ -112,7 +112,10 @@
 }
 
 .layout__main {
+  max-width: 48rem;
   padding-top: var(--s-8);
+  margin: 0 auto;
+  padding-inline: var(--s-2);
 }
 
 .layout__burger {

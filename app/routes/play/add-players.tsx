@@ -162,7 +162,7 @@ export default function PlayAddPlayersPage() {
   usePolling();
 
   return (
-    <div className="container play-add-players__container">
+    <div className="play-add-players__container">
       <GroupCard
         group={data.group}
         showAction={!data.isCaptain}

@@ -26,6 +26,44 @@ export function findById(id: string) {
   });
 }
 
+export function findByUserId({ userId }: { userId: string }) {
+  return db.lfgGroupMatch.findMany({
+    where: {
+      groups: {
+        some: {
+          members: {
+            some: {
+              memberId: userId,
+            },
+          },
+        },
+      },
+      stages: {
+        some: {
+          winnerGroupId: {
+            not: null,
+          },
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      groups: {
+        include: {
+          members: {
+            include: {
+              user: true,
+            },
+          },
+        },
+      },
+      stages: true,
+    },
+  });
+}
+
 export async function reportScore({
   UNSAFE_matchId,
   UNSAFE_winnerGroupIds,

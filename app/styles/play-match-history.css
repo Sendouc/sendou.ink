@@ -1,0 +1,60 @@
+.play-match-history__date {
+  border-block-end: 5px solid var(--theme-transparent);
+  margin-block-end: var(--s-5);
+}
+
+.play-match-history__match {
+  display: flex;
+  gap: var(--s-4);
+  margin-block-end: var(--s-5);
+}
+
+.play-match-history__time-header {
+  display: flex;
+  width: min-content;
+  align-items: center;
+  border-inline-end: 2px solid var(--theme-transparent);
+  color: var(--text-lighter);
+  font-size: var(--fonts-sm);
+  font-weight: var(--semi-bold);
+  padding-inline-end: var(--s-4);
+  text-align: center;
+}
+
+.play-match-history__score-header {
+  font-size: var(--fonts-sm);
+  font-weight: var(--bold);
+  margin-inline-end: var(--s-2);
+}
+
+.play-match-history__players {
+  font-size: var(--fonts-sm);
+  font-weight: var(--semi-bold);
+}
+
+.play-match-history__match-page-link-mobile {
+  font-size: var(--fonts-xs);
+  margin-block-start: var(--s-2);
+}
+
+.play-match-history__match-page-link {
+  display: flex;
+  display: none;
+  align-items: center;
+  font-size: var(--fonts-xs);
+  margin-inline-start: var(--s-4);
+}
+
+.play-match-history__score-header.winner {
+  color: var(--theme-secondary);
+}
+
+@media screen and (min-width: 640px) {
+  .play-match-history__match-page-link {
+    display: flex;
+  }
+
+  .play-match-history__match-page-link-mobile {
+    display: none;
+  }
+}

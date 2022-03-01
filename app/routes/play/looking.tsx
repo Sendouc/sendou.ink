@@ -347,7 +347,7 @@ export default function LookingPage() {
     0;
 
   return (
-    <div className="container">
+    <div>
       <GroupCard
         group={data.ownGroup}
         ranked={data.ownGroup.ranked}

@@ -445,12 +445,6 @@ hr {
   opacity: 0.6;
 }
 
-.container {
-  max-width: 48rem;
-  margin: 0 auto;
-  padding-inline: var(--s-2);
-}
-
 .add-players__actions {
   display: flex;
   width: 100%;

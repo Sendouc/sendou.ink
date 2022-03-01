@@ -2,7 +2,7 @@ import { DISCORD_URL } from "~/constants";
 
 export default function BetaPage() {
   return (
-    <div className="container">
+    <div>
       <h2>Beta of sendou.ink (Splatoon 3)</h2>
       <p>
         Hello there! I appreciate you taking time to visit this beta version of

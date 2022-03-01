@@ -8,3 +8,6 @@ export function sendouQFrontPage() {
 export function sendouQAddPlayersPage() {
   return "/play/add-players";
 }
+export function sendouQMatchPage(matchId: string) {
+  return `/play/match/${matchId}`;
+}

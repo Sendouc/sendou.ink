@@ -1,16 +1,20 @@
 .play-layout__link-container {
   display: flex;
+  width: 100%;
   justify-content: space-between;
-  margin-block-end: var(--s-2);
+  margin-block-end: var(--s-4);
 }
 
 .play-layout__link {
+  display: flex;
+  flex: 1;
+  justify-content: center;
   font-size: var(--fonts-xs);
   font-weight: var(--body);
 }
 
 .play-layout__link.active {
-  visibility: hidden;
+  color: var(--theme-secondary);
 }
 
 .play__card {

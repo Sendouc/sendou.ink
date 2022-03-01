@@ -128,7 +128,7 @@ export default function PlayPage() {
   const data = useLoaderData<PlayFrontPageLoader>();
 
   return (
-    <div className="container">
+    <div>
       {data.ownMMR && (
         <div className="play__own-mmr">
           <div className="play__own-mmr__mmr">SP: {data.ownMMR.value}</div>

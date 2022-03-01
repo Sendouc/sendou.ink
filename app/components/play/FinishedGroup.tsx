@@ -8,7 +8,7 @@ export function FinishedGroup() {
   const data = useLoaderData<LookingLoaderData>();
 
   return (
-    <div className="container">
+    <div>
       <div className="play-looking__waves">
         <GroupCard group={data.ownGroup} showAction={false} />
         <div className="play-looking__waves-text">
