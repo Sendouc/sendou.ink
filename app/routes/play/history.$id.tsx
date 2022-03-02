@@ -8,6 +8,7 @@ import {
 } from "remix";
 import { makeTitle, Unpacked } from "~/utils";
 import * as LFGMatch from "~/models/LFGMatch.server";
+import * as User from "~/models/User.server";
 import invariant from "tiny-invariant";
 import styles from "~/styles/play-match-history.css";
 import clsx from "clsx";
@@ -43,13 +44,11 @@ interface MathHistoryLoaderData {
 export const loader: LoaderFunction = async ({ params }) => {
   invariant(typeof params.id === "string", "Expected params.id to be string");
 
-  const matches = await LFGMatch.findByUserId({ userId: params.id });
-  if (matches.length === 0) throw new Response(null, { status: 404 }); // TODO: don't show link if it would 404?
-
-  const ownUser = matches[0].groups
-    .flatMap((g) => g.members)
-    .find((m) => m.memberId === params.id);
-  invariant(ownUser, "Unexpected no ownUser");
+  const [matches, user] = await Promise.all([
+    LFGMatch.findByUserId({ userId: params.id }),
+    User.findById(params.id),
+  ]);
+  if (!user) throw new Response(null, { status: 404 });
 
   const mappedMatches = matches.map(
     (match): Unpacked<MathHistoryLoaderData["matches"]> => {
@@ -92,7 +91,7 @@ export const loader: LoaderFunction = async ({ params }) => {
   );
 
   return json<MathHistoryLoaderData>({
-    ownName: ownUser.user.discordName,
+    ownName: user.discordName,
     stageCount: mappedMatches.reduce(
       (acc, match) => match.score.our + match.score.their + acc,
       0
@@ -123,14 +122,22 @@ export default function MatchHistoryPage() {
       <h1 className="play-match-history__title">
         {data.ownName}&apos;s SendouQ results
       </h1>
-      <span className="play-match-history__winrate-info">
-        {data.matches.length} {data.matches.length === 1 ? "set" : "sets"}{" "}
-        played ({data.setWinRate}% winrate)
-      </span>{" "}
-      •{" "}
-      <span className="play-match-history__winrate-info">
-        {data.stageCount} maps played ({data.stageWinRate}% winrate)
-      </span>
+      {data.matches.length > 0 ? (
+        <>
+          <span className="play-match-history__winrate-info">
+            {data.matches.length} {data.matches.length === 1 ? "set" : "sets"}{" "}
+            played ({data.setWinRate}% winrate)
+          </span>{" "}
+          •{" "}
+          <span className="play-match-history__winrate-info">
+            {data.stageCount} maps played ({data.stageWinRate}% winrate)
+          </span>
+        </>
+      ) : (
+        <span className="play-match-history__no-matches">
+          No matches played yet
+        </span>
+      )}
       {data.matches.map((match) => {
         const currentDateString = new Date(
           match.createdAtTimestamp

@@ -15,3 +15,7 @@ export function findTrusters(userId: string) {
     },
   });
 }
+
+export function findById(userId: string) {
+  return db.user.findUnique({ where: { id: userId } });
+}

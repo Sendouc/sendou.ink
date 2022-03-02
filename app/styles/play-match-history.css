@@ -9,6 +9,12 @@
   font-weight: var(--semi-bold);
 }
 
+.play-match-history__no-matches {
+  color: var(--text-lighter);
+  font-size: var(--fonts-lg);
+  font-weight: var(--bold);
+}
+
 .play-match-history__date {
   border-block-end: 5px solid var(--theme-transparent);
   margin-block-end: var(--s-5);
