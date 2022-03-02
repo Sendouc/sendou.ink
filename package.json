@@ -30,7 +30,7 @@
     "@dnd-kit/core": "^5.0.1",
     "@dnd-kit/sortable": "^6.0.0",
     "@dnd-kit/utilities": "^3.1.0",
-    "@headlessui/react": "^1.4.3",
+    "@headlessui/react": "^1.5.0",
     "@prisma/client": "^3.9.2",
     "@remix-run/express": "^1.2.3",
     "@remix-run/react": "^1.2.3",
@@ -52,7 +52,7 @@
     "tiny-invariant": "^1.2.0",
     "ts-trueskill": "^3.3.0",
     "uuid": "^8.3.2",
-    "zod": "^3.11.6"
+    "zod": "^3.13.2"
   },
   "devDependencies": {
     "@remix-run/dev": "^1.2.3",
@@ -64,7 +64,7 @@
     "@types/passport": "^1.0.7",
     "@types/passport-discord": "^0.1.5",
     "@types/react": "^17.0.39",
-    "@types/react-dom": "^17.0.12",
+    "@types/react-dom": "^17.0.13",
     "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.13.0",
     "@typescript-eslint/parser": "^5.13.0",
