@@ -11,11 +11,6 @@ import { DISCORD_URL } from "./constants";
 
 export const links: LinksFunction = () => {
   return [
-    {
-      rel: "icon",
-      href: "/img/layout/logo.webp",
-      type: "image/webp",
-    },
     { rel: "stylesheet", href: resetStyles },
     { rel: "stylesheet", href: globalStyles },
     { rel: "stylesheet", href: layoutStyles },
