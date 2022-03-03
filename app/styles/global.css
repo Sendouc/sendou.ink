@@ -1,4 +1,6 @@
 :root {
+  color-scheme: dark;
+
   --bg: hsl(237.3deg 42.3% 30.6%);
   --bg-darker: hsl(237.3deg 42.3% 26.6%);
   --bg-lighter: hsl(237.3deg 42.3% 35.6%);
