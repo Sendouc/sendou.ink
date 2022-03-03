@@ -113,16 +113,16 @@ export function setUpAuth(app: Express): void {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  app.post("/auth/discord", (req, res) => {
+  app.post("/auth/discord", (req, res, next) => {
     const returnTo = req.query.origin ?? req.header("Referer");
     if (returnTo) {
       invariant(typeof returnTo === "string", "returnTo is not string");
       if (req.session) req.session.returnTo = returnTo;
     }
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
-    return passport.authenticate("discord")(req, res);
+    return passport.authenticate("discord")(req, res, next);
   });
-  app.get("/auth/discord/callback", (req, res) => {
+  app.get("/auth/discord/callback", (req, res, next) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const returnTo = req.session?.returnTo ?? process.env.FRONT_PAGE_URL;
     if (req.session?.returnTo) {
@@ -133,8 +133,12 @@ export function setUpAuth(app: Express): void {
       failureRedirect: "/login",
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       successRedirect: returnTo,
-    })(req, res);
+    })(req, res, next);
   });
+  // app.post("/logout", function (req, res) {
+  //   req.logout();
+  //   res.redirect("/");
+  // });
 
   app.use(function (req, _res, next) {
     if (req.session?.returnTo) {
