@@ -64,6 +64,42 @@ export function findByUserId({ userId }: { userId: string }) {
   });
 }
 
+export type RecentOfUser = Prisma.PromiseReturnType<typeof recentOfUser>;
+export function recentOfUser(userId: string) {
+  const twoHoursAgo = () => {
+    const result = new Date();
+    result.setHours(result.getHours() - 2);
+
+    return result;
+  };
+  return db.lfgGroupMatch.findFirst({
+    where: {
+      groups: {
+        some: {
+          members: {
+            some: {
+              memberId: userId,
+            },
+          },
+        },
+      },
+      createdAt: {
+        gte: twoHoursAgo(),
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      groups: {
+        include: {
+          members: true,
+        },
+      },
+    },
+  });
+}
+
 export async function reportScore({
   UNSAFE_matchId,
   UNSAFE_winnerGroupIds,

@@ -116,6 +116,12 @@
   width: 1rem;
 }
 
+.play__card__replay {
+  color: var(--theme-info);
+  font-size: var(--fonts-sm);
+  font-weight: var(--semi-bold);
+}
+
 .play__card__member-power {
   display: flex;
   margin-top: -4px;

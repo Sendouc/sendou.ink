@@ -26,6 +26,7 @@ import {
 import { canUniteWithGroup, isGroupAdmin } from "~/core/play/validators";
 import { usePolling } from "~/hooks/common";
 import * as LFGGroup from "~/models/LFGGroup.server";
+import * as LFGMatch from "~/models/LFGMatch.server";
 import styles from "~/styles/play-looking.css";
 import {
   makeTitle,
@@ -219,6 +220,7 @@ export type LookingLoaderDataGroup = {
   };
   MMRRelation?: "LOWER" | "BIT_LOWER" | "CLOSE" | "BIT_HIGHER" | "HIGHER";
   ranked?: boolean;
+  replay?: boolean;
 };
 
 export interface LookingLoaderData {
@@ -233,7 +235,10 @@ export interface LookingLoaderData {
 
 export const loader: LoaderFunction = async ({ context }) => {
   const user = requireUser(context);
-  const { groups, ownGroup } = await LFGGroup.findLookingAndOwnActive(user.id);
+  const [{ groups, ownGroup }, recentMatch] = await Promise.all([
+    LFGGroup.findLookingAndOwnActive(user.id),
+    LFGMatch.recentOfUser(user.id),
+  ]);
 
   if (!ownGroup) return redirect("/play");
   if (ownGroup.status === "MATCH") {
@@ -283,6 +288,8 @@ export const loader: LoaderFunction = async ({ context }) => {
         isCaptain: isGroupAdmin({ group: ownGroup, user }),
         lastActionAtTimestamp: ownGroup.lastActionAt.getTime(),
         ...otherGroupsForResponse({
+          recentMatch,
+          user,
           useRelativeSkillLevel: USE_RELATIVE_SKILL_LEVEL,
           groups: groupsOfType,
           lookingForMatch,

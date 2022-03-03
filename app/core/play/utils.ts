@@ -6,6 +6,7 @@ import {
   LFG_GROUP_INACTIVE_MINUTES,
 } from "~/constants";
 import * as LFGGroup from "~/models/LFGGroup.server";
+import * as LFGMatch from "~/models/LFGMatch.server";
 import { PlayFrontPageLoader } from "~/routes/play/index";
 import {
   LookingLoaderData,
@@ -132,6 +133,8 @@ export function otherGroupsForResponse({
   lookingForMatch,
   ownGroup,
   useRelativeSkillLevel,
+  recentMatch,
+  user,
 }: {
   groups: LFGGroup.FindLookingAndOwnActive;
   likes: {
@@ -141,6 +144,8 @@ export function otherGroupsForResponse({
   lookingForMatch: boolean;
   ownGroup: Unpacked<LFGGroup.FindLookingAndOwnActive>;
   useRelativeSkillLevel: boolean;
+  recentMatch: LFGMatch.RecentOfUser;
+  user: { id: string };
 }) {
   return (
     groups
@@ -179,6 +184,7 @@ export function otherGroupsForResponse({
                   };
                 }),
           ranked: ranked(),
+          replay: isMatchReplay({ user, group, recentMatch }),
           MMRRelation:
             ownGroup.ranked &&
             group.ranked &&
@@ -218,6 +224,34 @@ export function otherGroupsForResponse({
         { likedGroups: [], neutralGroups: [], likerGroups: [] }
       )
   );
+}
+
+export function isMatchReplay({
+  recentMatch,
+  user,
+  group,
+}: {
+  recentMatch: { groups: { members: { memberId: string }[] }[] } | null;
+  user: { id: string };
+  group: { members: { memberId: string }[] };
+}): boolean {
+  if (!recentMatch) return false;
+
+  const opponentGroupOfRecent = recentMatch.groups.find((g) =>
+    g.members.every((m) => m.memberId !== user.id)
+  );
+  invariant(
+    opponentGroupOfRecent,
+    "Unexpected opponentGroupOfRecent undefined"
+  );
+
+  const memberIdsOfGroup = new Set(group.members.map((m) => m.memberId));
+  let sameCount = 0;
+  for (const { memberId } of opponentGroupOfRecent.members) {
+    if (memberIdsOfGroup.has(memberId)) sameCount++;
+  }
+
+  return sameCount > 2;
 }
 
 export function filterExpiredGroups(group: { lastActionAt: Date }) {

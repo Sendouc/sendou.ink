@@ -74,7 +74,10 @@ export function GroupCard({
             {group.teamMMR.value}
           </div>
         )}
-        {group.MMRRelation && <MMRRelation relation={group.MMRRelation} />}
+        {group.MMRRelation && !group.replay && (
+          <MMRRelation relation={group.MMRRelation} />
+        )}
+        {group.replay && <div className="play__card__replay">Replay</div>}
         <input type="hidden" name="targetGroupId" value={group.id} />
         {action === "UNITE_GROUPS" && (
           <input

@@ -80,6 +80,7 @@ export async function seed(variation?: SeedVariations) {
     }
     if (variation === "looking" || variation === "looking-match") {
       await ownGroup(variation === "looking-match", remainingUserIdsForGroups);
+      await lfgMatches();
     }
 
     async function adminUser() {
@@ -405,19 +406,32 @@ export async function seed(variation?: SeedVariations) {
       }
 
       for (let i = 0; i < 24; i++) {
+        const members = {
+          createMany: {
+            data: new Array(4).fill(null).map((_, i) => ({
+              memberId: userIdsStack.shift()!,
+              captain: i === 0,
+            })),
+          },
+        };
+        if (i === 0) {
+          await prisma.lfgGroup.create({
+            data: {
+              id: `quad-${i + 1}-past`,
+              status: "INACTIVE",
+              type: "VERSUS",
+              ranked: true,
+              members,
+            },
+          });
+        }
         await prisma.lfgGroup.create({
           data: {
+            id: `quad-${i + 1}`,
             status: "LOOKING",
             type: "VERSUS",
             ranked: i < 12,
-            members: {
-              createMany: {
-                data: new Array(4).fill(null).map((_, i) => ({
-                  memberId: userIdsStack.shift()!,
-                  captain: i === 0,
-                })),
-              },
-            },
+            members,
           },
         });
       }
@@ -442,6 +456,20 @@ export async function seed(variation?: SeedVariations) {
         }
       }
 
+      await prisma.lfgGroup.create({
+        data: {
+          id: "own-group-past",
+          status: "INACTIVE",
+          type: "VERSUS",
+          ranked: true,
+          members: {
+            createMany: {
+              data: members,
+            },
+          },
+        },
+      });
+
       return prisma.lfgGroup.create({
         data: {
           status: "LOOKING",
@@ -457,6 +485,26 @@ export async function seed(variation?: SeedVariations) {
               data: new Array(20).fill(null).map((_) => ({
                 likerId: groups.shift()!.id,
               })),
+            },
+          },
+        },
+      });
+    }
+
+    async function lfgMatches() {
+      return prisma.lfgGroupMatch.create({
+        data: {
+          groups: {
+            connect: [{ id: "quad-1-past" }, { id: "own-group-past" }],
+          },
+          stages: {
+            createMany: {
+              data: [
+                { order: 1, stageId: 1, winnerGroupId: "own-group-past" },
+                { order: 2, stageId: 40, winnerGroupId: "own-group-past" },
+                { order: 3, stageId: 60, winnerGroupId: "own-group-past" },
+                { order: 4, stageId: 101, winnerGroupId: "own-group-past" },
+              ],
             },
           },
         },

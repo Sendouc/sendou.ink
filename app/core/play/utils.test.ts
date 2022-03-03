@@ -4,6 +4,7 @@ import { BIT_HIGHER_MMR_LIMIT } from "~/constants";
 import {
   calculateDifference,
   groupsToWinningAndLosingPlayerIds,
+  isMatchReplay,
   scoresAreIdentical,
   uniteGroupInfo,
   UniteGroupInfoArg,
@@ -15,6 +16,7 @@ const GroupsToWinningAndLosingPlayerIds = suite(
   "groupsToWinningAndLosingPlayerIds()"
 );
 const CalculateDifference = suite("calculateDifference()");
+const IsMatchReplay = suite("isMatchReplay()");
 
 const SMALL_GROUP: UniteGroupInfoArg = { id: "small", memberCount: 1 };
 const BIG_GROUP: UniteGroupInfoArg = { id: "big", memberCount: 3 };
@@ -110,7 +112,7 @@ CalculateDifference("Higher/lower", () => {
   assert.equal(calculateDifference({ ourMMR: 10_000, theirMMR: 0 }), "LOWER");
 });
 
-CalculateDifference.only("A bit higher/lower", () => {
+CalculateDifference("A bit higher/lower", () => {
   assert.equal(
     calculateDifference({ ourMMR: 0, theirMMR: BIT_HIGHER_MMR_LIMIT }),
     "BIT_HIGHER"
@@ -121,7 +123,67 @@ CalculateDifference.only("A bit higher/lower", () => {
   );
 });
 
+const user = { id: "a" };
+const createMembers = (input: string[]) => input.map((v) => ({ memberId: v }));
+
+IsMatchReplay("Detects replays", () => {
+  assert.ok(
+    isMatchReplay({
+      user,
+      recentMatch: {
+        groups: [
+          { members: createMembers(["a", "b", "c", "d"]) },
+          { members: createMembers(["e", "f", "g", "h"]) },
+        ],
+      },
+      group: { members: createMembers(["e", "f", "g", "h"]) },
+    })
+  );
+
+  assert.ok(
+    isMatchReplay({
+      user,
+      recentMatch: {
+        groups: [
+          { members: createMembers(["e", "f", "g", "h"]) },
+          { members: createMembers(["a", "b", "c", "d"]) },
+        ],
+      },
+      group: { members: createMembers(["e", "f", "g", "1"]) },
+    })
+  );
+});
+
+IsMatchReplay("Detects not replays", () => {
+  assert.not.ok(
+    isMatchReplay({
+      user,
+      recentMatch: {
+        groups: [
+          { members: createMembers(["a", "b", "c", "d"]) },
+          { members: createMembers(["e", "f", "g", "h"]) },
+        ],
+      },
+      group: { members: createMembers(["1", "2", "3", "4"]) },
+    })
+  );
+
+  assert.not.ok(
+    isMatchReplay({
+      user,
+      recentMatch: {
+        groups: [
+          { members: createMembers(["a", "b", "c", "d"]) },
+          { members: createMembers(["e", "f", "g", "h"]) },
+        ],
+      },
+      group: { members: createMembers(["e", "f", "3", "4"]) },
+    })
+  );
+});
+
 UniteGroupInfo.run();
 ScoresAreIdentical.run();
 GroupsToWinningAndLosingPlayerIds.run();
 CalculateDifference.run();
+IsMatchReplay.run();
