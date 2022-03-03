@@ -62,7 +62,7 @@ export function DumbSearchInput({
 }: {
   value: string;
   setValue: (newValue: string) => void;
-  handleEnter: () => void;
+  handleEnter: () => Promise<void> | undefined;
 }) {
   return (
     <div className={"layout__search-input__container"}>
@@ -74,7 +74,7 @@ export function DumbSearchInput({
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={(event) => {
           if (event.key === "Enter") {
-            handleEnter();
+            void handleEnter();
           }
         }}
       />
