@@ -19,6 +19,7 @@ import {
   makeTitle,
   parseRequestFormData,
   requireUser,
+  validate,
 } from "~/utils";
 import * as LFGGroup from "~/models/LFGGroup.server";
 import * as Skill from "~/models/Skill.server";
@@ -50,6 +51,9 @@ export const action: ActionFunction = async ({ request, context }) => {
     schema: playActionSchema,
   });
   const user = requireUser(context);
+
+  const ids = await LFGGroup.activeUserIds();
+  validate(!ids.has(user.id), "Already in an active group");
 
   switch (data._action) {
     case "CREATE_LFG_GROUP": {
