@@ -147,7 +147,7 @@ export default function PlayPage() {
           <Button
             className="play__continue-button"
             type="submit"
-            loading={transition.state !== "idle"}
+            loading={transition.state === "submitting"}
             loadingText="Continuing..."
           >
             Continue
