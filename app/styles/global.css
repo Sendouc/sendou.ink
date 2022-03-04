@@ -529,6 +529,10 @@ hr {
   margin-block: var(--s-4);
 }
 
+.text-color-error {
+  color: var(--theme-error);
+}
+
 .text-center {
   text-align: center;
 }

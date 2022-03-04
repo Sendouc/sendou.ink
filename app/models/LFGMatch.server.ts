@@ -7,6 +7,7 @@ export function findById(id: string) {
   return db.lfgGroupMatch.findUnique({
     where: { id },
     select: {
+      createdAt: true,
       stages: {
         select: {
           stage: {

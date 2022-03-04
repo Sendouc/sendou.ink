@@ -39,7 +39,11 @@ import {
   UserLean,
   validate,
 } from "~/utils";
-import { oldSendouInkUserProfile } from "~/utils/urls";
+import {
+  oldSendouInkUserProfile,
+  sendouQAddPlayersPage,
+  sendouQFrontPage,
+} from "~/utils/urls";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -77,10 +81,16 @@ const matchActionSchema = z.union([
         .max(LFG_AMOUNT_OF_STAGES_TO_GENERATE)
     ),
   }),
+  z.object({
+    _action: z.literal("PLAY_AGAIN_SAME_GROUP"),
+  }),
+  z.object({
+    _action: z.literal("PLAY_AGAIN_DIFFERENT_GROUP"),
+  }),
 ]);
 
 type ActionData = {
-  error?: "DIFFERENT_SCORE";
+  error?: "DIFFERENT_SCORE" | "ALREADY_IN_GROUP";
   ok?: z.infer<typeof matchActionSchema>["_action"];
 };
 
@@ -140,6 +150,40 @@ export const action: ActionFunction = async ({
       await LFGGroup.setInactive(ownGroup.id);
       return redirect("/play");
     }
+    case "PLAY_AGAIN_SAME_GROUP": {
+      const ids = await LFGGroup.activeUserIds();
+      for (const member of ownGroup.members) {
+        if (ids.has(member.memberId)) {
+          return { error: "ALREADY_IN_GROUP" };
+        }
+      }
+
+      await LFGGroup.createPrefilled({
+        ranked: ownGroup.ranked,
+        members: ownGroup.members.map((m) => ({
+          memberId: m.memberId,
+          captain: m.captain,
+        })),
+      });
+      return redirect(sendouQAddPlayersPage());
+    }
+    case "PLAY_AGAIN_DIFFERENT_GROUP": {
+      const ids = await LFGGroup.activeUserIds();
+      if (ids.has(user.id)) {
+        return redirect(sendouQFrontPage());
+      }
+
+      await LFGGroup.createPrefilled({
+        ranked: ownGroup.ranked,
+        members: [
+          {
+            memberId: user.id,
+            captain: true,
+          },
+        ],
+      });
+      return redirect(sendouQAddPlayersPage());
+    }
     default: {
       const exhaustive: never = data;
       throw new Response(`Unknown action: ${JSON.stringify(exhaustive)}`, {
@@ -156,6 +200,7 @@ interface LFGMatchLoaderData {
   isCaptain: boolean;
   isOwnMatch: boolean;
   isRanked: boolean;
+  createdAtTimestamp: number;
   groups: { id: string; members: UserLean[] }[];
   mapList: {
     name: string;
@@ -224,6 +269,7 @@ export const loader: LoaderFunction = async ({ params, context }) => {
     isOwnMatch,
     groups,
     scores,
+    createdAtTimestamp: new Date(match.createdAt).getTime(),
     mapList: match.stages
       .map(({ stage, winnerGroupId }) => {
         const winner = () => {
@@ -245,6 +291,18 @@ export default function LFGMatchPage() {
   const data = useLoaderData<LFGMatchLoaderData>();
   const transition = useTransition();
   const actionData = useActionData<ActionData>();
+
+  const showPlayAgainSection = () => {
+    if (!data.isCaptain) return false;
+    if (!data.scores) return false;
+
+    const oneHourAgo = new Date(
+      new Date().getTime() - 60 * 60 * 1_000
+    ).getTime();
+    if (data.createdAtTimestamp < oneHourAgo) return false;
+
+    return true;
+  };
 
   return (
     <div>
@@ -299,6 +357,38 @@ export default function LFGMatchPage() {
             <a href={DISCORD_URL}>our Discord</a> in the{" "}
             <code>#match-meetup</code> channel.
           </div>
+        )}
+        {showPlayAgainSection() && (
+          <Form method="post">
+            <div className="play-match__waves-section play-match__play-again-container">
+              {actionData?.error === "ALREADY_IN_GROUP" ? (
+                <span className="text-color-error">
+                  Some group member is already in a new group
+                </span>
+              ) : (
+                <>
+                  Want to play again?
+                  <Button
+                    name="_action"
+                    value="PLAY_AGAIN_SAME_GROUP"
+                    tiny
+                    className="play-match__play-again-button"
+                  >
+                    Same group
+                  </Button>
+                  <Button
+                    name="_action"
+                    value="PLAY_AGAIN_DIFFERENT_GROUP"
+                    variant="outlined"
+                    tiny
+                    className="play-match__play-again-button"
+                  >
+                    New group
+                  </Button>
+                </>
+              )}
+            </div>
+          </Form>
         )}
         {data.scores && (
           <div className="play-match__played-map-list">

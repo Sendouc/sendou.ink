@@ -1,4 +1,4 @@
-import type { LfgGroupType, Prisma } from "@prisma/client";
+import type { LfgGroupStatus, LfgGroupType, Prisma } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { generateMapListForLfgMatch } from "~/core/play/mapList";
 import { db } from "~/utils/db.server";
@@ -24,6 +24,25 @@ export function create({
           memberId: user.id,
           captain: true,
         },
+      },
+    },
+  });
+}
+
+export function createPrefilled({
+  ranked,
+  members,
+}: {
+  ranked: boolean | null;
+  members: { memberId: string; captain: boolean }[];
+}) {
+  return db.lfgGroup.create({
+    data: {
+      type: "VERSUS",
+      ranked,
+      status: "PRE_ADD",
+      members: {
+        createMany: { data: members },
       },
     },
   });
@@ -229,9 +248,25 @@ export function findActiveByMember(user: { id: string }) {
   });
 }
 
+export async function activeUserIds() {
+  const rows = (await db.$queryRaw`
+  SELECT "LfgGroupMember"."memberId", "LfgGroup".status
+  FROM "LfgGroupMember"
+  JOIN "LfgGroup" ON ("LfgGroupMember"."groupId" = "LfgGroup".id)
+  WHERE "LfgGroup".status != 'INACTIVE';`) as {
+    memberId: string;
+    status: LfgGroupStatus;
+  }[];
+
+  return new Map<string, LfgGroupStatus>(
+    rows.map((r) => [r.memberId, r.status])
+  );
+}
+
 export type FindLookingAndOwnActive = Prisma.PromiseReturnType<
   typeof findLookingAndOwnActive
 >["groups"];
+// TODO: refactor -> true by default
 export async function findLookingAndOwnActive(
   userId?: string,
   showPreAddMatch = false
