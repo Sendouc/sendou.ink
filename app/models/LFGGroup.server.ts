@@ -249,14 +249,16 @@ export function findActiveByMember(user: { id: string }) {
 }
 
 export async function activeUserIds() {
-  const rows = (await db.$queryRaw`
+  const rows = await db.$queryRaw<
+    {
+      memberId: string;
+      status: LfgGroupStatus;
+    }[]
+  >`
   SELECT "LfgGroupMember"."memberId", "LfgGroup".status
   FROM "LfgGroupMember"
   JOIN "LfgGroup" ON ("LfgGroupMember"."groupId" = "LfgGroup".id)
-  WHERE "LfgGroup".status != 'INACTIVE';`) as {
-    memberId: string;
-    status: LfgGroupStatus;
-  }[];
+  WHERE "LfgGroup".status != 'INACTIVE';`;
 
   return new Map<string, LfgGroupStatus>(
     rows.map((r) => [r.memberId, r.status])
