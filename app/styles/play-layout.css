@@ -91,6 +91,11 @@
   white-space: nowrap;
 }
 
+.play__card__captain {
+  color: var(--theme-info);
+  font-weight: var(--bold);
+}
+
 .play__card__member-link {
   display: flex;
   flex-direction: column;

@@ -45,7 +45,10 @@ function Contents({ members }: { members: LookingLoaderDataGroup["members"] }) {
             >
               <Avatar tiny user={member} />
               <span className="play__card__member-name">
-                {member.discordName}
+                {member.discordName}{" "}
+                {member.captain && (
+                  <span className="play__card__captain">C</span>
+                )}
               </span>
             </a>
             {member.MMR && (

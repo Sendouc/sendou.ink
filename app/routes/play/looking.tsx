@@ -208,6 +208,7 @@ export type LookingLoaderDataGroup = {
   id: string;
   members?: (UserLean & {
     MMR?: number;
+    captain?: boolean;
     weapons?: string[];
     peakXP?: number;
     peakLP?: number;
@@ -259,6 +260,7 @@ export const loader: LoaderFunction = async ({ context }) => {
 
           return {
             ...rest,
+            captain: m.captain,
             MMR: skillArrayToMMR(skill),
           };
         }),
