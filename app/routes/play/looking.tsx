@@ -16,7 +16,7 @@ import { GroupCard } from "~/components/play/GroupCard";
 import { LookingInfoText } from "~/components/play/LookingInfoText";
 import { Tab } from "~/components/Tab";
 import { LFG_GROUP_FULL_SIZE } from "~/constants";
-import { skillArrayToMMR, teamSkillToExactMMR } from "~/core/mmr/utils";
+import { skillArrayToMMR } from "~/core/mmr/utils";
 import { addInfoFromOldSendouInk } from "~/core/play/playerInfos/playerInfos.server";
 import {
   groupExpirationStatus,
@@ -35,8 +35,6 @@ import {
   UserLean,
   validate,
 } from "~/utils";
-
-const USE_RELATIVE_SKILL_LEVEL = true;
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -214,10 +212,6 @@ export type LookingLoaderDataGroup = {
     peakXP?: number;
     peakLP?: number;
   })[];
-  teamMMR?: {
-    exact: boolean;
-    value: number;
-  };
   MMRRelation?: "LOWER" | "BIT_LOWER" | "CLOSE" | "BIT_HIGHER" | "HIGHER";
   ranked?: boolean;
   replay?: boolean;
@@ -253,7 +247,6 @@ export const loader: LoaderFunction = async ({ context }) => {
 
   const groupsOfType = groups.filter((g) => g.type === ownGroup.type);
 
-  const isRanked = groupsOfType.some((g) => g.ranked);
   const ownGroupWithMembers = groupsOfType.find((g) => g.id === ownGroup.id);
   invariant(ownGroupWithMembers, "ownGroupWithMembers is undefined");
 
@@ -276,13 +269,6 @@ export const loader: LoaderFunction = async ({ context }) => {
             };
           }),
           ranked: ownGroup.ranked ?? undefined,
-          teamMMR:
-            lookingForMatch && isRanked && !USE_RELATIVE_SKILL_LEVEL
-              ? {
-                  exact: true,
-                  value: teamSkillToExactMMR(ownGroupWithMembers.members),
-                }
-              : undefined,
         },
         type: ownGroup.type,
         isCaptain: isGroupAdmin({ group: ownGroup, user }),
@@ -290,7 +276,6 @@ export const loader: LoaderFunction = async ({ context }) => {
         ...otherGroupsForResponse({
           recentMatch,
           user,
-          useRelativeSkillLevel: USE_RELATIVE_SKILL_LEVEL,
           groups: groupsOfType,
           lookingForMatch,
           ownGroup,

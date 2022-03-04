@@ -63,14 +63,6 @@ export function teamSkillToExactMMR(teamSkills: TeamSkill[]) {
   return toTwoDecimals(sum);
 }
 
-export function teamSkillToApproximateMMR(teamSkills: TeamSkill[]) {
-  // https://stackoverflow.com/a/58147484
-  const roundToNearest25 = (x: number) => Math.round(x / 25) * 25;
-
-  const teamMMR = teamSkillToExactMMR(teamSkills);
-  return roundToNearest25(teamMMR);
-}
-
 export function toTwoDecimals(value: number) {
   return Number(value.toFixed(2));
 }

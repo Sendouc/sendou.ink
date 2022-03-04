@@ -13,11 +13,7 @@ import {
   LookingLoaderDataGroup,
 } from "~/routes/play/looking";
 import { Unpacked } from "~/utils";
-import {
-  skillArrayToMMR,
-  teamSkillToApproximateMMR,
-  teamSkillToExactMMR,
-} from "../mmr/utils";
+import { skillArrayToMMR, teamSkillToExactMMR } from "../mmr/utils";
 import { canUniteWithGroup } from "./validators";
 
 export interface UniteGroupInfoArg {
@@ -132,7 +128,6 @@ export function otherGroupsForResponse({
   likes,
   lookingForMatch,
   ownGroup,
-  useRelativeSkillLevel,
   recentMatch,
   user,
 }: {
@@ -143,7 +138,6 @@ export function otherGroupsForResponse({
   };
   lookingForMatch: boolean;
   ownGroup: Unpacked<LFGGroup.FindLookingAndOwnActive>;
-  useRelativeSkillLevel: boolean;
   recentMatch: LFGMatch.RecentOfUser;
   user: { id: string };
 }) {
@@ -188,16 +182,8 @@ export function otherGroupsForResponse({
           MMRRelation:
             ownGroup.ranked &&
             group.ranked &&
-            useRelativeSkillLevel &&
             group.members.length === LFG_GROUP_FULL_SIZE
               ? resolveMMRRelation({ group, ownGroup })
-              : undefined,
-          teamMMR:
-            lookingForMatch && group.ranked && !useRelativeSkillLevel
-              ? {
-                  exact: false,
-                  value: teamSkillToApproximateMMR(group.members),
-                }
               : undefined,
         };
       })

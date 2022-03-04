@@ -68,12 +68,6 @@ export function GroupCard({
           </div>
         )}
         <GroupMembers members={group.members} />
-        {group.teamMMR && (
-          <div className="play__card__mmr">
-            SP: {!group.teamMMR.exact && <>~</>}
-            {group.teamMMR.value}
-          </div>
-        )}
         {group.MMRRelation && !group.replay && (
           <MMRRelation relation={group.MMRRelation} />
         )}
