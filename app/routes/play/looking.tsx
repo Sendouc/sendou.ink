@@ -251,47 +251,40 @@ export const loader: LoaderFunction = async ({ context }) => {
   invariant(ownGroupWithMembers, "ownGroupWithMembers is undefined");
 
   return json<LookingLoaderData>(
-    addInfoFromOldSendouInk(
-      ownGroup.type === "VERSUS" ? "SOLO" : "LEAGUE",
-      !lookingForMatch,
-      {
-        ownGroup: {
-          id: ownGroup.id,
-          members: ownGroupWithMembers.members.map((m) => {
-            const { skill, ...rest } = m.user;
+    addInfoFromOldSendouInk(ownGroup.type === "VERSUS" ? "SOLO" : "LEAGUE", {
+      ownGroup: {
+        id: ownGroup.id,
+        members: ownGroupWithMembers.members.map((m) => {
+          const { skill, ...rest } = m.user;
 
-            return {
-              ...rest,
-              MMR:
-                lookingForMatch && ownGroup.ranked
-                  ? undefined
-                  : skillArrayToMMR(skill),
-            };
-          }),
-          ranked: ownGroup.ranked ?? undefined,
-        },
-        type: ownGroup.type,
-        isCaptain: isGroupAdmin({ group: ownGroup, user }),
-        lastActionAtTimestamp: ownGroup.lastActionAt.getTime(),
-        ...otherGroupsForResponse({
-          recentMatch,
-          user,
-          groups: groupsOfType,
-          lookingForMatch,
-          ownGroup,
-          likes: {
-            received: ownGroup.likesReceived.reduce(
-              (acc, lg) => acc.add(lg.likerId),
-              new Set<string>()
-            ),
-            given: ownGroup.likedGroups.reduce(
-              (acc, lg) => acc.add(lg.targetId),
-              new Set<string>()
-            ),
-          },
+          return {
+            ...rest,
+            MMR: skillArrayToMMR(skill),
+          };
         }),
-      }
-    )
+        ranked: ownGroup.ranked ?? undefined,
+      },
+      type: ownGroup.type,
+      isCaptain: isGroupAdmin({ group: ownGroup, user }),
+      lastActionAtTimestamp: ownGroup.lastActionAt.getTime(),
+      ...otherGroupsForResponse({
+        recentMatch,
+        user,
+        groups: groupsOfType,
+        lookingForMatch,
+        ownGroup,
+        likes: {
+          received: ownGroup.likesReceived.reduce(
+            (acc, lg) => acc.add(lg.likerId),
+            new Set<string>()
+          ),
+          given: ownGroup.likedGroups.reduce(
+            (acc, lg) => acc.add(lg.targetId),
+            new Set<string>()
+          ),
+        },
+      }),
+    })
   );
 };
 

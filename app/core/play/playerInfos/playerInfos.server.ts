@@ -10,7 +10,6 @@ const infos = rawInfos as Partial<
 
 export function addInfoFromOldSendouInk(
   type: "LEAGUE" | "SOLO",
-  showWeapons: boolean,
   data: LookingLoaderData
 ): LookingLoaderData {
   return {
@@ -28,7 +27,7 @@ export function addInfoFromOldSendouInk(
         const playerInfos = infos[member.discordId];
         return {
           ...member,
-          weapons: showWeapons ? playerInfos?.weapons?.slice(0, 3) : undefined,
+          weapons: playerInfos?.weapons?.slice(0, 3),
           peakXP: type === "SOLO" ? playerInfos?.peakXP : undefined,
           peakLP: type === "LEAGUE" ? playerInfos?.peakLP : undefined,
         };
