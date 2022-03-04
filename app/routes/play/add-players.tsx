@@ -67,7 +67,10 @@ export const action: ActionFunction = async ({ context, request }) => {
     schema: preAddPlayersActionSchema,
   });
 
-  const { groups, ownGroup } = await LFGGroup.findLookingAndOwnActive(user.id);
+  const { groups, ownGroup } = await LFGGroup.findLookingAndOwnActive(
+    user.id,
+    true
+  );
   validate(ownGroup, "Not a member of active group");
 
   switch (data._action) {
@@ -127,7 +130,7 @@ export const loader: LoaderFunction = async ({ context }) => {
   if (!user) return redirect("/play");
 
   const [{ ownGroup, groups }, trustingUsers] = await Promise.all([
-    LFGGroup.findLookingAndOwnActive(user.id),
+    LFGGroup.findLookingAndOwnActive(user.id, true),
     User.findTrusters(user.id),
   ]);
   if (!ownGroup) return redirect("/play");
