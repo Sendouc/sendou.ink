@@ -16,7 +16,8 @@ export function findTrusters(userId: string) {
   });
 }
 
-export function findById(userId: string) {
+export function findById(userId?: string) {
+  if (!userId) return;
   return db.user.findUnique({ where: { id: userId } });
 }
 

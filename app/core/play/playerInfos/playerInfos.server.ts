@@ -35,3 +35,8 @@ export function addInfoFromOldSendouInk(
     };
   }
 }
+
+export function userHasTop500Result({ discordId }: { discordId?: string }) {
+  if (!discordId) return false;
+  return Boolean(infos[discordId]?.peakXP);
+}

@@ -2,6 +2,7 @@ import {
   ActionFunction,
   Form,
   json,
+  Link,
   LinksFunction,
   LoaderFunction,
   MetaFunction,
@@ -23,10 +24,12 @@ import {
 } from "~/utils";
 import * as LFGGroup from "~/models/LFGGroup.server";
 import * as Skill from "~/models/Skill.server";
+import * as User from "~/models/User.server";
 import { Button } from "~/components/Button";
 import { useUser } from "~/hooks/common";
 import { countGroups, resolveRedirect } from "~/core/play/utils";
 import { resolveOwnMMR } from "~/core/mmr/utils";
+import { userHasTop500Result } from "~/core/play/playerInfos/playerInfos.server";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -97,24 +100,30 @@ export interface PlayFrontPageLoader {
     value: number;
     topX?: number;
   };
+  needsBio: boolean;
 }
 
 export const loader: LoaderFunction = async ({ context }) => {
   const user = getUser(context);
 
-  const [{ groups, ownGroup }, skills] = await Promise.all([
+  const [{ groups, ownGroup }, skills, userInfo] = await Promise.all([
     LFGGroup.findLookingAndOwnActive(user?.id, true),
     Skill.findAllMostRecent(),
+    User.findById(user?.id),
   ]);
 
   const ownMMR = resolveOwnMMR({ skills, user });
 
-  if (!user)
-    return json<PlayFrontPageLoader>({ counts: countGroups(groups), ownMMR });
-
-  if (!ownGroup) {
-    return json<PlayFrontPageLoader>({ counts: countGroups(groups), ownMMR });
+  if (!user || !ownGroup) {
+    return json<PlayFrontPageLoader>({
+      counts: countGroups(groups),
+      ownMMR,
+      needsBio:
+        !userInfo?.miniBio &&
+        !userHasTop500Result({ discordId: user?.discordId }),
+    });
   }
+
   const redirectRes = resolveRedirect({
     currentStatus: ownGroup.status,
     currentPage: "INACTIVE",
@@ -126,9 +135,6 @@ export const loader: LoaderFunction = async ({ context }) => {
 };
 
 export default function PlayPage() {
-  const transition = useTransition();
-  const user = useUser();
-  const location = useLocation();
   const data = useLoaderData<PlayFrontPageLoader>();
 
   return (
@@ -147,26 +153,46 @@ export default function PlayPage() {
       <Form method="post">
         <input type="hidden" name="_action" value="CREATE_LFG_GROUP" />
         <LFGGroupSelector counts={data.counts} />
-        {user ? (
-          <Button
-            className="play__continue-button"
-            type="submit"
-            loading={transition.state === "submitting"}
-            loadingText="Continuing..."
-          >
-            Continue
-          </Button>
-        ) : (
-          <form action={getLogInUrl(location)} method="post">
-            <p className="button-text-paragraph play__log-in">
-              To start looking first{" "}
-              <Button type="submit" variant="minimal">
-                log in
-              </Button>
-            </p>
-          </form>
-        )}
+        <QueueUp needsBio={data.needsBio} />
       </Form>
     </div>
+  );
+}
+
+function QueueUp({ needsBio }: { needsBio: boolean }) {
+  const user = useUser();
+  const location = useLocation();
+  const transition = useTransition();
+
+  if (needsBio) {
+    return (
+      <p className="play__action-needed">
+        Please <Link to="settings">add bio</Link> before queueing up
+      </p>
+    );
+  }
+
+  if (!user) {
+    return (
+      <form action={getLogInUrl(location)} method="post">
+        <p className="button-text-paragraph play__action-needed">
+          To start looking first{" "}
+          <Button type="submit" variant="minimal">
+            log in
+          </Button>
+        </p>
+      </form>
+    );
+  }
+
+  return (
+    <Button
+      className="play__continue-button"
+      type="submit"
+      loading={transition.state === "submitting"}
+      loadingText="Continuing..."
+    >
+      Continue
+    </Button>
   );
 }

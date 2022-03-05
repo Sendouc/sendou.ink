@@ -99,7 +99,7 @@
   margin-block-start: var(--s-6);
 }
 
-.play__log-in {
+.play__action-needed {
   font-size: var(--fonts-sm);
   font-weight: var(--semi-bold);
   margin-block-start: var(--s-6);
