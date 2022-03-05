@@ -419,6 +419,15 @@ hr {
   font-weight: var(--bold);
 }
 
+.popover-content {
+  max-width: 20rem;
+  padding: var(--s-2);
+  backdrop-filter: blur(10px) brightness(75%);
+  border-radius: var(--rounded);
+  font-size: var(--fonts-sm);
+  font-weight: var(--semi-bold);
+}
+
 .four-zero-one__container {
   text-align: center;
 }

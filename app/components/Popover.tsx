@@ -1,0 +1,31 @@
+import { Popover as HeadlessPopover } from "@headlessui/react";
+import * as React from "react";
+import { usePopper } from "react-popper";
+
+export function Popover({ children }: { children: React.ReactNode }) {
+  const [referenceElement, setReferenceElement] = React.useState();
+  const [popperElement, setPopperElement] = React.useState();
+  const { styles, attributes } = usePopper(referenceElement, popperElement);
+
+  return (
+    <HeadlessPopover>
+      <HeadlessPopover.Button
+        // @ts-expect-error Popper docs: https://popper.js.org/react-popper/v2/
+        ref={setReferenceElement}
+        className="minimal tiny"
+      >
+        INFO
+      </HeadlessPopover.Button>
+
+      <HeadlessPopover.Panel
+        // @ts-expect-error Popper docs: https://popper.js.org/react-popper/v2/
+        ref={setPopperElement}
+        className="popover-content"
+        style={styles.popper}
+        {...attributes.popper}
+      >
+        {children}
+      </HeadlessPopover.Panel>
+    </HeadlessPopover>
+  );
+}
