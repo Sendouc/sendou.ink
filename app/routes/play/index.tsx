@@ -25,8 +25,7 @@ import * as LFGGroup from "~/models/LFGGroup.server";
 import * as Skill from "~/models/Skill.server";
 import { Button } from "~/components/Button";
 import { useUser } from "~/hooks/common";
-import { countGroups } from "~/core/play/utils";
-import invariant from "tiny-invariant";
+import { countGroups, resolveRedirect } from "~/core/play/utils";
 import { resolveOwnMMR } from "~/core/mmr/utils";
 
 export const links: LinksFunction = () => {
@@ -116,13 +115,14 @@ export const loader: LoaderFunction = async ({ context }) => {
   if (!ownGroup) {
     return json<PlayFrontPageLoader>({ counts: countGroups(groups), ownMMR });
   }
-  if (ownGroup.status === "MATCH") {
-    invariant(ownGroup.matchId, "Unexpected no matchId but status is MATCH");
-    return redirect(`/play/match/${ownGroup.matchId}`);
-  }
-  if (ownGroup.status === "LOOKING") return redirect("/play/looking");
+  const redirectRes = resolveRedirect({
+    currentStatus: ownGroup.status,
+    currentPage: "INACTIVE",
+    matchId: ownGroup.matchId,
+  });
+  if (redirectRes) return redirectRes;
 
-  return redirect("/play/add-players");
+  throw new Error(`Unexpected state - group status: ${ownGroup.status}`);
 };
 
 export default function PlayPage() {

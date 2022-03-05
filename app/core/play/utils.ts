@@ -1,3 +1,5 @@
+import { LfgGroupStatus } from "@prisma/client";
+import { redirect } from "remix";
 import invariant from "tiny-invariant";
 import {
   BIT_HIGHER_MMR_LIMIT,
@@ -13,6 +15,12 @@ import {
   LookingLoaderDataGroup,
 } from "~/routes/play/looking";
 import { Unpacked } from "~/utils";
+import {
+  sendouQAddPlayersPage,
+  sendouQFrontPage,
+  sendouQLookingPage,
+  sendouQMatchPage,
+} from "~/utils/urls";
 import { skillArrayToMMR, teamSkillToExactMMR } from "../mmr/utils";
 import { canUniteWithGroup } from "./validators";
 
@@ -299,4 +307,37 @@ export function calculateDifference({
   if (!ownIsBigger) return "BIT_HIGHER";
 
   throw new Error("Unexpected calculateMMRRelation scenario");
+}
+
+export function resolveRedirect({
+  currentStatus = "INACTIVE",
+  currentPage,
+  matchId,
+}: {
+  currentStatus: LfgGroupStatus;
+  currentPage: LfgGroupStatus;
+  matchId: string | null;
+}) {
+  if (currentStatus === currentPage) return;
+  switch (currentStatus) {
+    case "INACTIVE": {
+      return redirect(sendouQFrontPage());
+    }
+    case "LOOKING": {
+      return redirect(sendouQLookingPage());
+    }
+    case "MATCH": {
+      invariant(matchId, "Unexpected no match id for redirect");
+      return redirect(sendouQMatchPage(matchId));
+    }
+    case "PRE_ADD": {
+      return redirect(sendouQAddPlayersPage());
+    }
+    default: {
+      const exhaustive: never = currentStatus;
+      throw new Response(`Unknown status: ${JSON.stringify(exhaustive)}`, {
+        status: 500,
+      });
+    }
+  }
 }

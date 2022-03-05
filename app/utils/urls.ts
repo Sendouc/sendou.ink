@@ -5,6 +5,9 @@ export function oldSendouInkUserProfile({ discordId }: { discordId: string }) {
 export function sendouQFrontPage() {
   return "/play";
 }
+export function sendouQLookingPage() {
+  return "/play/looking";
+}
 export function sendouQAddPlayersPage() {
   return "/play/add-players";
 }

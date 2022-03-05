@@ -21,6 +21,7 @@ import { addInfoFromOldSendouInk } from "~/core/play/playerInfos/playerInfos.ser
 import {
   groupExpirationStatus,
   otherGroupsForResponse,
+  resolveRedirect,
   uniteGroupInfo,
 } from "~/core/play/utils";
 import { canUniteWithGroup, isGroupAdmin } from "~/core/play/validators";
@@ -236,11 +237,12 @@ export const loader: LoaderFunction = async ({ context }) => {
   ]);
 
   if (!ownGroup) return redirect("/play");
-  if (ownGroup.status === "MATCH") {
-    invariant(ownGroup.matchId, "Unexpected no matchId but status is MATCH");
-    return redirect(`/play/match/${ownGroup.matchId}`);
-  }
-  if (ownGroup.status === "PRE_ADD") return redirect("/play/add-players");
+  const redirectRes = resolveRedirect({
+    currentStatus: ownGroup.status,
+    currentPage: "LOOKING",
+    matchId: ownGroup.matchId,
+  });
+  if (redirectRes) return redirectRes;
 
   const lookingForMatch =
     ownGroup.type === "VERSUS" &&

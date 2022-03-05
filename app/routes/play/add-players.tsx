@@ -8,12 +8,12 @@ import {
   redirect,
   useLoaderData,
 } from "remix";
-import invariant from "tiny-invariant";
 import { z } from "zod";
 import { AddPlayers } from "~/components/AddPlayers";
 import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
 import { GroupCard } from "~/components/play/GroupCard";
+import { resolveRedirect } from "~/core/play/utils";
 import {
   canPreAddToGroup,
   isGroupAdmin,
@@ -134,11 +134,12 @@ export const loader: LoaderFunction = async ({ context }) => {
     User.findTrusters(user.id),
   ]);
   if (!ownGroup) return redirect("/play");
-  if (ownGroup.status === "MATCH") {
-    invariant(ownGroup.matchId, "Unexpected no matchId but status is MATCH");
-    return redirect(`/play/match/${ownGroup.matchId}`);
-  }
-  if (ownGroup.status === "LOOKING") return redirect("/play/looking");
+  const redirectRes = resolveRedirect({
+    currentStatus: ownGroup.status,
+    currentPage: "PRE_ADD",
+    matchId: ownGroup.matchId,
+  });
+  if (redirectRes) return redirectRes;
 
   return json<AddPlayersLoaderData>({
     inviteCode: ownGroup.inviteCode,
