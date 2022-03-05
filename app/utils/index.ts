@@ -121,6 +121,12 @@ export function safeJSONParse(value: unknown): unknown {
   }
 }
 
+export function falsyToNull(value: unknown): unknown {
+  if (value) return value;
+
+  return null;
+}
+
 export type Serialized<T> = {
   [P in keyof T]: T[P] extends Date
     ? string
@@ -172,5 +178,4 @@ export interface UserLean {
   discordId: string;
   discordAvatar: string | null;
   discordName: string;
-  discordDiscriminator: string;
 }

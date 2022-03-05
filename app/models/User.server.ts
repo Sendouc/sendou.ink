@@ -19,3 +19,13 @@ export function findTrusters(userId: string) {
 export function findById(userId: string) {
   return db.user.findUnique({ where: { id: userId } });
 }
+
+export function update({
+  userId,
+  miniBio,
+}: {
+  userId: string;
+  miniBio: Nullable<string>;
+}) {
+  return db.user.update({ where: { id: userId }, data: { miniBio } });
+}

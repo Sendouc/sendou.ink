@@ -2,6 +2,7 @@ import type { LookingLoaderDataGroup } from "~/routes/play/looking";
 import { layoutIcon } from "~/utils";
 import { oldSendouInkUserProfile } from "~/utils/urls";
 import { Avatar } from "../Avatar";
+import { Popover } from "../Popover";
 import { WeaponImage } from "../WeaponImage";
 
 export function GroupMembers({
@@ -88,6 +89,9 @@ function Contents({ members }: { members: LookingLoaderDataGroup["members"] }) {
                 ))}{" "}
               </div>
             )}
+            <div className="play__card__info">
+              {member.miniBio && <Popover>{member.miniBio}</Popover>}
+            </div>
           </div>
         );
       })}

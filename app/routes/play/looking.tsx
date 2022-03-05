@@ -219,6 +219,7 @@ export type LookingLoaderDataGroup = {
     weapons?: string[];
     peakXP?: number;
     peakLP?: number;
+    miniBio?: string;
   })[];
   MMRRelation?: "LOWER" | "BIT_LOWER" | "CLOSE" | "BIT_HIGHER" | "HIGHER";
   ranked?: boolean;
@@ -264,12 +265,14 @@ export const loader: LoaderFunction = async ({ context }) => {
       ownGroup: {
         id: ownGroup.id,
         members: ownGroupWithMembers.members.map((m) => {
-          const { skill, ...rest } = m.user;
-
           return {
-            ...rest,
+            miniBio: m.user.miniBio ?? undefined,
+            discordAvatar: m.user.discordAvatar,
+            discordId: m.user.discordId,
+            discordName: m.user.discordName,
+            id: m.user.id,
             captain: m.captain,
-            MMR: skillArrayToMMR(skill),
+            MMR: skillArrayToMMR(m.user.skill),
           };
         }),
         ranked: ownGroup.ranked ?? undefined,

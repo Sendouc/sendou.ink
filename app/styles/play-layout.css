@@ -1,14 +1,11 @@
 .play-layout__link-container {
   display: flex;
   width: 100%;
-  justify-content: space-between;
-  margin-block-end: var(--s-4);
+  justify-content: space-evenly;
+  margin-block-end: var(--s-6);
 }
 
 .play-layout__link {
-  display: flex;
-  flex: 1;
-  justify-content: center;
   font-size: var(--fonts-xs);
   font-weight: var(--body);
 }
@@ -79,7 +76,6 @@
   justify-content: center;
   background-color: var(--bg-darker);
   border-radius: var(--rounded);
-  overflow-x: hidden;
   padding-block-end: var(--s-1);
   padding-block-start: var(--s-2);
 }
@@ -137,6 +133,11 @@
 .play__card__member-weapons {
   display: flex;
   gap: var(--s-1);
+  margin-block-end: var(--s-1);
+}
+
+.play__card__info {
+  margin-block-start: auto;
 }
 
 .play__card__member-weapon {

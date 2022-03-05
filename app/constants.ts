@@ -22,6 +22,8 @@ export const MMR_TOPX_VISIBILITY_CUTOFF = 50;
 
 export const LFG_AMOUNT_OF_STAGES_TO_GENERATE = 7;
 
+export const MINI_BIO_MAX_LENGTH = 280;
+
 export const CLOSE_MMR_LIMIT = 250;
 export const BIT_HIGHER_MMR_LIMIT = 750;
 

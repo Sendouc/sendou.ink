@@ -178,11 +178,14 @@ export function otherGroupsForResponse({
             ownGroup.ranked && group.ranked && lookingForMatch
               ? undefined
               : group.members.map((m) => {
-                  const { skill, ...rest } = m.user;
-
                   return {
-                    ...rest,
-                    MMR: skillArrayToMMR(skill),
+                    miniBio: m.user.miniBio ?? undefined,
+                    discordAvatar: m.user.discordAvatar,
+                    discordId: m.user.discordId,
+                    discordName: m.user.discordName,
+                    id: m.user.id,
+                    captain: m.captain,
+                    MMR: skillArrayToMMR(m.user.skill),
                   };
                 }),
           ranked: ranked(),

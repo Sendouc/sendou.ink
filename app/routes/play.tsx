@@ -35,12 +35,7 @@ export default function PlayLayoutPage() {
           </NavLink>
         )}
         {user && (
-          <NavLink
-            style={{ display: "none" }}
-            className="play-layout__link"
-            to="settings"
-            end
-          >
+          <NavLink className="play-layout__link" to="settings" end>
             Settings
           </NavLink>
         )}

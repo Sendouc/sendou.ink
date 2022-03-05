@@ -58,9 +58,7 @@ export const meta: MetaFunction = ({
     title: data?.isOwnMatch
       ? makeTitle(
           `vs. ${listToUserReadableString(
-            data.groups[1].members.map(
-              (u) => `${u.discordName}#${u.discordDiscriminator}`
-            )
+            data.groups[1].members.map((u) => u.discordName)
           )}`
         )
       : "Match",

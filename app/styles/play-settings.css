@@ -1,0 +1,25 @@
+.play-settings__mini-bio-label {
+  display: block;
+  font-size: var(--fonts-sm);
+  font-weight: var(--bold);
+}
+
+.play-settings__explanation {
+  color: var(--text-lighter);
+  font-size: var(--fonts-sm);
+  margin-block-end: var(--s-2);
+}
+
+.play-settings__mini-bio {
+  width: min(18rem, 100%);
+  height: 6rem;
+}
+
+.play-settings__character-count {
+  margin-top: -0.25rem;
+  font-size: var(--fonts-xs);
+}
+
+.play-settings__character-count.error {
+  color: var(--theme-error);
+}

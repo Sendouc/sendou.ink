@@ -18,6 +18,8 @@ model User {
   twitter              String?
   youtubeId            String?
   youtubeName          String?
+  miniBio              String?
+  weapons              String[]
   createdAt            DateTime                    @default(now())
   updatedAt            DateTime                    @updatedAt
   trustedUsers         TrustRelationships[]        @relation("trustGiver")
