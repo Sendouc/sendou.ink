@@ -89,8 +89,14 @@ export const action: ActionFunction = async ({ request, context }) => {
   const user = requireUser(context);
 
   const ownGroup = await LFGGroup.findActiveByMember(user);
-  validate(ownGroup, "No active group");
-  validate(ownGroup.status === "LOOKING", "Group is not looking");
+
+  if (!ownGroup) return redirect("/play");
+  const redirectRes = resolveRedirect({
+    currentStatus: ownGroup.status,
+    currentPage: "LOOKING",
+    matchId: ownGroup.matchId,
+  });
+  if (redirectRes) return redirectRes;
 
   const validateIsGroupAdmin = () =>
     validate(isGroupAdmin({ group: ownGroup, user }), "Not group admin");
