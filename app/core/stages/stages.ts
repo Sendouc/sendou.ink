@@ -29,13 +29,7 @@ export const stages = [
   "Skipper Pavilion",
 ] as const;
 
-export const modesShort: readonly Mode[] = [
-  "TW",
-  "SZ",
-  "TC",
-  "RM",
-  "CB",
-] as const;
+export const modesShort: Mode[] = ["TW", "SZ", "TC", "RM", "CB"];
 export const modesShortToLong: Record<Mode, string> = {
   TW: "Turf War",
   SZ: "Splat Zones",

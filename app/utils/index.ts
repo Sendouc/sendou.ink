@@ -89,15 +89,18 @@ export function listToUserReadableString(input: string[]): string {
 export async function parseRequestFormData<T extends z.ZodTypeAny>({
   request,
   schema,
+  useBody = false,
 }: {
   request: Request;
   schema: T;
+  useBody?: boolean;
 }): Promise<z.infer<T>> {
   try {
-    const formDataObj = Object.fromEntries(await request.formData());
     // False alarm
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return schema.parse(formDataObj);
+    return schema.parse(
+      useBody ? request.body : Object.fromEntries(await request.formData())
+    );
   } catch (e) {
     if (e instanceof z.ZodError) {
       console.error(e);
