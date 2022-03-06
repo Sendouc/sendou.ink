@@ -1,13 +1,46 @@
-.play-settings__mini-bio-label {
+.play-settings__label {
   display: block;
   font-size: var(--fonts-sm);
   font-weight: var(--bold);
+}
+
+.play-settings__weapons {
+  display: flex;
+  width: 17rem;
+  flex-direction: column;
+  padding: 0;
+  gap: var(--s-2);
+  margin-block-start: var(--s-3);
+}
+
+.play-settings__weapon-row {
+  display: flex;
+  align-items: center;
+  padding: var(--s-1) var(--s-2);
+  background-color: var(--theme);
+  border-radius: var(--rounded);
+  color: var(--button-text);
+  font-size: var(--fonts-xxs);
+  font-weight: var(--bold);
+  letter-spacing: var(--s-0-5);
+  text-transform: uppercase;
+}
+
+.play-settings__weapon {
+  width: 2rem;
+  margin-inline-end: var(--s-2);
 }
 
 .play-settings__explanation {
   color: var(--text-lighter);
   font-size: var(--fonts-sm);
   margin-block-end: var(--s-2);
+}
+
+.play-settings__error-text {
+  color: var(--theme-error);
+  font-size: var(--fonts-sm);
+  margin-block-start: var(--s-2);
 }
 
 .play-settings__mini-bio {

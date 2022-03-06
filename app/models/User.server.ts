@@ -24,9 +24,11 @@ export function findById(userId?: string) {
 export function update({
   userId,
   miniBio,
+  weapons,
 }: {
   userId: string;
   miniBio: Nullable<string>;
+  weapons: string[];
 }) {
-  return db.user.update({ where: { id: userId }, data: { miniBio } });
+  return db.user.update({ where: { id: userId }, data: { miniBio, weapons } });
 }

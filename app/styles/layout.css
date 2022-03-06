@@ -113,8 +113,8 @@
 
 .layout__main {
   max-width: 48rem;
-  padding-top: var(--s-8);
   margin: 0 auto;
+  padding-block: var(--s-8);
   padding-inline: var(--s-2);
 }
 

@@ -39,10 +39,11 @@ export function Button(props: ButtonProps) {
         minimal: variant === "minimal",
         "minimal-success": variant === "minimal-success",
         "minimal-destructive": variant === "minimal-destructive",
-        loading: loading,
+        "disabled-opaque": props.disabled,
+        loading,
         tiny,
       })}
-      disabled={loading}
+      disabled={props.disabled || loading}
       {...rest}
     >
       {icon && React.cloneElement(icon, { className: "button-icon" })}

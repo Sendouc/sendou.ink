@@ -10,16 +10,23 @@ import {
   useTransition,
 } from "remix";
 import { Button } from "~/components/Button";
-import { MINI_BIO_MAX_LENGTH } from "~/constants";
+import {
+  LFG_WEAPON_POOL_MAX_LENGTH,
+  MINI_BIO_MAX_LENGTH,
+  weapons,
+} from "~/constants";
 import styles from "~/styles/play-settings.css";
 import {
   falsyToNull,
   makeTitle,
   parseRequestFormData,
   requireUser,
+  safeJSONParse,
 } from "~/utils";
 import * as User from "~/models/User.server";
 import { z } from "zod";
+import { Combobox } from "~/components/Combobox";
+import { WeaponImage } from "~/components/WeaponImage";
 
 export const meta: MetaFunction = () => {
   return {
@@ -36,6 +43,10 @@ const settingsActionSchema = z.object({
     falsyToNull,
     z.string().max(MINI_BIO_MAX_LENGTH).nullable()
   ),
+  weapons: z.preprocess(
+    safeJSONParse,
+    z.array(z.enum(weapons)).max(LFG_WEAPON_POOL_MAX_LENGTH)
+  ),
 });
 
 export const action: ActionFunction = async ({ request, context }) => {
@@ -45,32 +56,46 @@ export const action: ActionFunction = async ({ request, context }) => {
     schema: settingsActionSchema,
   });
 
-  await User.update({ userId: user.id, miniBio: data.miniBio });
+  await User.update({
+    userId: user.id,
+    miniBio: data.miniBio,
+    weapons: data.weapons,
+  });
 
   return null;
 };
 
 export type SettingsLoaderData = {
   miniBio?: string;
+  weapons: string[];
 };
 
 export const loader: ActionFunction = async ({ context }) => {
   const user = requireUser(context);
 
-  const { miniBio } = (await User.findById(user.id)) ?? {};
+  const { miniBio, weapons } = (await User.findById(user.id)) ?? {};
 
-  return json<SettingsLoaderData>({ miniBio: miniBio ?? undefined });
+  return json<SettingsLoaderData>({
+    miniBio: miniBio ?? undefined,
+    weapons: weapons ?? [],
+  });
 };
 
 export default function PlaySettingsPage() {
   const data = useLoaderData<SettingsLoaderData>();
   const transition = useTransition();
   const [miniBio, setMiniBio] = React.useState(data.miniBio ?? "");
+  const [weaponPool, setWeaponPool] = React.useState(data.weapons);
 
   return (
     <div>
       <Form method="post">
-        <label className="play-settings__mini-bio-label" htmlFor="mini-bio">
+        <input
+          type="hidden"
+          name="weapons"
+          value={JSON.stringify(weaponPool)}
+        />
+        <label className="play-settings__label" htmlFor="mini-bio">
           SendouQ Bio
         </label>
         <div className="play-settings__explanation">
@@ -92,10 +117,50 @@ export default function PlaySettingsPage() {
         >
           {miniBio.length}/{MINI_BIO_MAX_LENGTH}
         </div>
-        <div className="mt-4">
+        <label className="play-settings__label mt-4" htmlFor="weapon-pool">
+          Weapon pool
+        </label>
+        <div className="play-settings__explanation">
+          What are your preferred weapons to play? Select up to{" "}
+          {LFG_WEAPON_POOL_MAX_LENGTH}.
+        </div>
+        <Combobox
+          options={weapons.filter((wpn) => !weaponPool.includes(wpn))}
+          onChange={(val) => setWeaponPool((pool) => [...pool, val])}
+          inputName="weapon-pool"
+          placeholder="Luna Blaster"
+        />
+        <ol className="play-settings__weapons">
+          {weaponPool.map((wpn, i) => (
+            <li key={wpn} className="play-settings__weapon-row">
+              <WeaponImage className="play-settings__weapon" weapon={wpn} />{" "}
+              {i + 1}) {wpn}{" "}
+              <Button
+                className="ml-auto"
+                tiny
+                type="button"
+                onClick={() =>
+                  setWeaponPool((pool) =>
+                    pool.filter((weaponInPool) => weaponInPool !== wpn)
+                  )
+                }
+              >
+                ✖
+              </Button>
+            </li>
+          ))}
+        </ol>
+        {weaponPool.length > LFG_WEAPON_POOL_MAX_LENGTH && (
+          <div className="play-settings__error-text">
+            You can have at most {LFG_WEAPON_POOL_MAX_LENGTH} weapons in your
+            weapon pool
+          </div>
+        )}
+        <div className="mt-6">
           <Button
             loading={transition.state === "submitting"}
             loadingText="Saving..."
+            disabled={weaponPool.length > LFG_WEAPON_POOL_MAX_LENGTH}
           >
             Save
           </Button>

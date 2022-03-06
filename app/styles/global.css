@@ -188,7 +188,7 @@ button > .button-icon {
   margin-inline-end: var(--s-1-5);
 }
 
-textarea {
+textarea:not(.plain) {
   padding: var(--s-2) var(--s-3);
   border: 1px solid var(--border);
   accent-color: var(--theme-secondary);
@@ -200,6 +200,13 @@ textarea {
   overflow-wrap: normal;
   overflow-x: scroll;
   white-space: pre;
+}
+
+textarea:not(.plain):focus-within {
+  border-color: transparent;
+
+  /* TODO: rectangle on Safari */
+  outline: 2px solid var(--theme);
 }
 
 input:not(.plain) {
@@ -228,6 +235,7 @@ input:not(.plain):focus-within {
 
 input:not(.plain)::placeholder {
   color: var(--text-lighter);
+  font-size: var(--fonts-xxs);
   font-weight: var(--semi-bold);
   letter-spacing: 0.5px;
 }
@@ -443,6 +451,31 @@ hr {
   white-space: pre-wrap;
 }
 
+.combobox-input {
+  width: 12rem;
+}
+
+.combobox-options {
+  position: absolute;
+  width: 12rem;
+  margin-top: var(--s-2);
+  background-color: var(--bg-darker);
+  border-radius: var(--rounded);
+  color: var(--text);
+  font-size: var(--fonts-sm);
+  padding-block: var(--s-3);
+  padding-inline: 0;
+}
+
+.combobox-item {
+  padding: var(--s-1) var(--s-3);
+  list-style: none;
+}
+
+.combobox-item.active {
+  background-color: var(--theme-transparent);
+}
+
 .four-zero-one__container {
   text-align: center;
 }
@@ -537,8 +570,20 @@ hr {
   margin-block-start: var(--s-4);
 }
 
+.mt-6 {
+  margin-block-start: var(--s-6);
+}
+
 .mb-0 {
   margin-block-end: 0;
+}
+
+.mb-2 {
+  margin-block-end: var(--s-2);
+}
+
+.ml-auto {
+  margin-inline-start: auto;
 }
 
 .ml-2 {

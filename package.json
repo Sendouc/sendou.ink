@@ -41,6 +41,7 @@
     "cookie-session": "^2.0.0",
     "cross-env": "^7.0.3",
     "express": "^4.17.3",
+    "fuse.js": "^6.5.3",
     "just-clone": "^5.0.1",
     "just-shuffle": "^4.0.1",
     "morgan": "^1.10.0",
