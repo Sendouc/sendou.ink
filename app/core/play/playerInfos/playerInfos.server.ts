@@ -27,7 +27,6 @@ export function addInfoFromOldSendouInk(
         const playerInfos = infos[member.discordId];
         return {
           ...member,
-          weapons: playerInfos?.weapons?.slice(0, 3),
           peakXP: type === "SOLO" ? playerInfos?.peakXP : undefined,
           peakLP: type === "LEAGUE" ? playerInfos?.peakLP : undefined,
         };

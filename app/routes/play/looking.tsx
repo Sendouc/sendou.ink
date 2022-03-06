@@ -272,6 +272,7 @@ export const loader: LoaderFunction = async ({ context }) => {
             discordName: m.user.discordName,
             id: m.user.id,
             captain: m.captain,
+            weapons: m.user.weapons,
             MMR: skillArrayToMMR(m.user.skill),
           };
         }),
