@@ -13,6 +13,12 @@
       }
     ],
     "selector-class-pattern": ["[a-z-_]+"],
-    "custom-property-pattern": "(?<=_?)"
+    "custom-property-pattern": "(?<=_?)",
+    "property-no-vendor-prefix": [
+      true,
+      {
+        "ignoreProperties": ["backdrop-filter"]
+      }
+    ]
   }
 }
