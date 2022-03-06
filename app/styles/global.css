@@ -454,6 +454,7 @@ hr {
 
 @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
   .popover-content {
+    -webkit-backdrop-filter: blur(10px) brightness(75%);
     backdrop-filter: blur(10px) brightness(75%);
     background-color: transparent;
   }
