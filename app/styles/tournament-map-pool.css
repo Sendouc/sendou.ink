@@ -41,6 +41,8 @@
   position: absolute;
   display: flex;
   padding: var(--s-1-5);
+
+  /* TODO: add fallback from Firefox */
   backdrop-filter: blur(5px) grayscale(25%);
   border-end-end-radius: var(--rounded);
   border-start-start-radius: var(--rounded);

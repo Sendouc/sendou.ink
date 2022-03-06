@@ -5,6 +5,7 @@
   --bg-darker: hsl(237.3deg 42.3% 26.6%);
   --bg-lighter: hsl(237.3deg 42.3% 35.6%);
   --bg-lighter-transparent: hsla(237.3deg 42.3% 35.6% / 50%);
+  --bg-darker-transparent: hsla(237.3deg 42.3% 26.6% / 90%);
   --bg-modal-backdrop: hsla(237deg 98% 1% / 70%);
   --border: hsl(237.3deg 42.3% 45.6%);
   --button-text: rgb(0 0 0 / 85%);
@@ -444,11 +445,18 @@ hr {
 .popover-content {
   max-width: 20rem;
   padding: var(--s-2);
-  backdrop-filter: blur(10px) brightness(75%);
+  background-color: var(--bg-darker-transparent);
   border-radius: var(--rounded);
   font-size: var(--fonts-sm);
   font-weight: var(--semi-bold);
   white-space: pre-wrap;
+}
+
+@supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+  .popover-content {
+    backdrop-filter: blur(10px) brightness(75%);
+    background-color: transparent;
+  }
 }
 
 .combobox-input {
