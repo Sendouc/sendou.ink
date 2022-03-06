@@ -98,6 +98,8 @@ export async function seed(variation?: SeedVariations) {
           youtubeName: "Sendou",
           discordAvatar: ADMIN_TEST_AVATAR,
           twitter: "sendouc",
+          miniBio: "Test bio\nXP3100 on my alt\n5-0 FTWin (close games)",
+          weapons: ["Tenta Brella", "Mini Splatling", "Luna Blaster"],
         },
       });
     }
