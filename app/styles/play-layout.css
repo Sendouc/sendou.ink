@@ -76,6 +76,7 @@
   justify-content: center;
   background-color: var(--bg-darker);
   border-radius: var(--rounded);
+  overflow-x: hidden;
   padding-block-end: var(--s-1);
   padding-block-start: var(--s-2);
 }
