@@ -10,8 +10,10 @@ export function findById(id: string) {
       createdAt: true,
       stages: {
         select: {
+          id: true,
           stage: {
             select: {
+              id: true,
               name: true,
               mode: true,
             },

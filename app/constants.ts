@@ -1,3 +1,5 @@
+import { Ability } from "@prisma/client";
+
 export const DISCORD_URL = "https://discord.gg/sendou";
 
 export const ADMIN_TEST_UUID = "846e12eb-d373-4002-a0c3-e23077e1c88c";
@@ -208,3 +210,33 @@ export const weapons = [
   "Hero Brella Replica",
   "Octo Shot Replica",
 ] as const;
+
+export const abilities: Ability[] = [
+  "ISM",
+  "ISS",
+  "REC",
+  "RSU",
+  "SSU",
+  "SCU",
+  "SS",
+  "SPU",
+  "QR",
+  "QSJ",
+  "BRU",
+  "RES",
+  "BDU",
+  "MPU",
+  "OG",
+  "LDE",
+  "T",
+  "CB",
+  "NS",
+  "H",
+  "TI",
+  "RP",
+  "AD",
+  "SJ",
+  "OS",
+  "DR",
+  "EMPTY",
+];
