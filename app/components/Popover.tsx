@@ -2,7 +2,13 @@ import { Popover as HeadlessPopover } from "@headlessui/react";
 import * as React from "react";
 import { usePopper } from "react-popper";
 
-export function Popover({ children }: { children: React.ReactNode }) {
+export function Popover({
+  children,
+  trigger,
+}: {
+  children: React.ReactNode;
+  trigger: React.ReactNode;
+}) {
   const [referenceElement, setReferenceElement] = React.useState();
   const [popperElement, setPopperElement] = React.useState();
   const { styles, attributes } = usePopper(referenceElement, popperElement);
@@ -14,7 +20,7 @@ export function Popover({ children }: { children: React.ReactNode }) {
         ref={setReferenceElement}
         className="minimal tiny"
       >
-        INFO
+        {trigger}
       </HeadlessPopover.Button>
 
       <HeadlessPopover.Panel

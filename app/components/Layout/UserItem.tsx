@@ -1,7 +1,10 @@
 import { useLocation } from "remix";
-import { getLogInUrl } from "~/utils";
 import { useUser } from "~/hooks/common";
+import { getLogInUrl } from "~/utils";
+import { Button } from "../Button";
 import { DiscordIcon } from "../icons/Discord";
+import { LogOutIcon } from "../icons/LogOut";
+import { Popover } from "../Popover";
 
 export function UserItem() {
   const user = useUser();
@@ -9,10 +12,20 @@ export function UserItem() {
 
   if (user && user.discordAvatar)
     return (
-      <img
-        className="layout__avatar"
-        src={`https://cdn.discordapp.com/avatars/${user.discordId}/${user.discordAvatar}.png?size=80`}
-      />
+      <Popover
+        trigger={
+          <img
+            className="layout__avatar"
+            src={`https://cdn.discordapp.com/avatars/${user.discordId}/${user.discordAvatar}.png?size=80`}
+          />
+        }
+      >
+        <form method="post" action="/logout">
+          <Button tiny variant="outlined" icon={<LogOutIcon />}>
+            Log out
+          </Button>
+        </form>
+      </Popover>
     );
 
   // TODO: just show text... my profile?

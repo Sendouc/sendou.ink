@@ -135,10 +135,10 @@ export function setUpAuth(app: Express): void {
       successRedirect: returnTo,
     })(req, res, next);
   });
-  // app.post("/logout", function (req, res) {
-  //   req.logout();
-  //   res.redirect("/");
-  // });
+  app.post("/logout", function (req, res) {
+    req.logout();
+    res.redirect("/");
+  });
 
   app.use(function (req, _res, next) {
     if (req.session?.returnTo) {

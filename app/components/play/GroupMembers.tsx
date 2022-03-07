@@ -90,7 +90,9 @@ function Contents({ members }: { members: LookingLoaderDataGroup["members"] }) {
               </div>
             )}
             <div className="play__card__info">
-              {member.miniBio && <Popover>{member.miniBio}</Popover>}
+              {member.miniBio && (
+                <Popover trigger="INFO">{member.miniBio}</Popover>
+              )}
             </div>
           </div>
         );
