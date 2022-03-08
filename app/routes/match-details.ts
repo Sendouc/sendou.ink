@@ -106,7 +106,7 @@ export const action: ActionFunction = async ({ request }) => {
 
   for (const [i, map] of input.data.maps.entries()) {
     const lfgStage = match.stages[i];
-    invariant(lfgStage, "Unexpected lfgStage undefined");
+    invariant(lfgStage?.id, "Unexpected lfgStage undefined");
 
     createGameDetailsInput.push({
       id: uuidv4(),

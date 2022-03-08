@@ -273,7 +273,8 @@ model LfgGroupMatch {
 }
 
 model LfgGroupMatchStage {
-  id              String        @id @default(uuid())
+  // TODO: this should be a required id field
+  id              String?       @unique @default(uuid())
   lfgGroupMatchId String
   stageId         Int
   order           Int

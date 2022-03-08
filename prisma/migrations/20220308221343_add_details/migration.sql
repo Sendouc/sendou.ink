@@ -1,15 +1,14 @@
 /*
   Warnings:
 
-  - The required column `id` was added to the `LfgGroupMatchStage` table with a prisma-level default value. This is not possible if the table is not empty. Please add this column as optional, then populate it before making it required.
+  - A unique constraint covering the columns `[id]` on the table `LfgGroupMatchStage` will be added. If there are existing duplicate values, this will fail.
 
 */
 -- CreateEnum
 CREATE TYPE "Ability" AS ENUM ('CB', 'LDE', 'OG', 'T', 'H', 'NS', 'TI', 'RP', 'AD', 'DR', 'SJ', 'OS', 'BDU', 'REC', 'RES', 'ISM', 'ISS', 'MPU', 'QR', 'QSJ', 'RSU', 'SSU', 'SCU', 'SPU', 'SS', 'BRU', 'EMPTY');
 
 -- AlterTable
-ALTER TABLE "LfgGroupMatchStage" ADD COLUMN     "id" TEXT NOT NULL,
-ADD CONSTRAINT "LfgGroupMatchStage_pkey" PRIMARY KEY ("id");
+ALTER TABLE "LfgGroupMatchStage" ADD COLUMN     "id" TEXT;
 
 -- AlterTable
 ALTER TABLE "User" ADD COLUMN     "bannedUntil" TIMESTAMP(3);
@@ -57,6 +56,9 @@ CREATE UNIQUE INDEX "GameDetail_lfgStageId_key" ON "GameDetail"("lfgStageId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "GameDetailTeam_gameDetailId_isWinner_key" ON "GameDetailTeam"("gameDetailId", "isWinner");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "LfgGroupMatchStage_id_key" ON "LfgGroupMatchStage"("id");
 
 -- AddForeignKey
 ALTER TABLE "GameDetail" ADD CONSTRAINT "GameDetail_lfgStageId_fkey" FOREIGN KEY ("lfgStageId") REFERENCES "LfgGroupMatchStage"("id") ON DELETE SET NULL ON UPDATE CASCADE;
