@@ -11,7 +11,7 @@ import { SeedVariations } from "~/utils/schemas";
 import {
   ADMIN_TEST_AVATAR,
   ADMIN_TEST_DISCORD_ID,
-  ADMIN_TEST_UUID,
+  ADMIN_UUID,
   NZAP_TEST_AVATAR,
   NZAP_TEST_DISCORD_ID,
   NZAP_TEST_UUID,
@@ -71,7 +71,7 @@ export async function seed(variation?: SeedVariations) {
 
     const userIdsInTheSystem = (await prisma.user.findMany())
       .map((u) => u.id)
-      .filter((id) => id !== ADMIN_TEST_UUID && id !== NZAP_TEST_UUID);
+      .filter((id) => id !== ADMIN_UUID && id !== NZAP_TEST_UUID);
     const remainingUserIdsForGroups = await lfgGroups(userIdsInTheSystem);
 
     if (variation === "match" || variation === "tournament-start") {
@@ -88,7 +88,7 @@ export async function seed(variation?: SeedVariations) {
     async function adminUser() {
       return prisma.user.create({
         data: {
-          id: ADMIN_TEST_UUID,
+          id: ADMIN_UUID,
           discordDiscriminator: "4059",
           discordId: ADMIN_TEST_DISCORD_ID,
           discordName: "Sendou",
@@ -376,7 +376,7 @@ export async function seed(variation?: SeedVariations) {
           data: {
             mu: 30 + i,
             sigma: 15 - i,
-            userId: ADMIN_TEST_UUID,
+            userId: ADMIN_UUID,
             createdAt: new Date(now + i * 10000),
           },
         });
@@ -447,7 +447,7 @@ export async function seed(variation?: SeedVariations) {
 
       const members = [
         {
-          memberId: ADMIN_TEST_UUID,
+          memberId: ADMIN_UUID,
           captain: true,
         },
         { memberId: NZAP_TEST_UUID },
@@ -510,6 +510,9 @@ export async function seed(variation?: SeedVariations) {
                 { order: 2, stageId: 40, winnerGroupId: PAST_OUR_GROUP_UUID },
                 { order: 3, stageId: 60, winnerGroupId: PAST_OUR_GROUP_UUID },
                 { order: 4, stageId: 101, winnerGroupId: PAST_OUR_GROUP_UUID },
+                { order: 5, stageId: 30 },
+                { order: 6, stageId: 50 },
+                { order: 7, stageId: 90 },
               ],
             },
           },

@@ -103,12 +103,7 @@ export function recentOfUser(userId: string) {
   });
 }
 
-export async function reportScore({
-  UNSAFE_matchId,
-  UNSAFE_winnerGroupIds,
-  playerIds,
-  groupIds,
-}: {
+interface ReportScoreArgs {
   UNSAFE_matchId: string;
   /** Group ID's in order of stages win */
   UNSAFE_winnerGroupIds: string[];
@@ -117,7 +112,13 @@ export async function reportScore({
     losing: string[];
   };
   groupIds: string[];
-}) {
+}
+export async function reportScore({
+  UNSAFE_matchId,
+  UNSAFE_winnerGroupIds,
+  playerIds,
+  groupIds,
+}: ReportScoreArgs) {
   const allPlayerIds = [...playerIds.winning, ...playerIds.losing];
   const skills = await db.skill.findMany({
     where: { userId: { in: allPlayerIds } },
@@ -143,8 +144,32 @@ export async function reportScore({
         status: "INACTIVE",
       },
     }),
-    // https://stackoverflow.com/a/26715934
-    db.$executeRawUnsafe(`
+    insertScores({ UNSAFE_matchId, UNSAFE_winnerGroupIds }),
+  ]);
+}
+
+export async function overrideScores({
+  UNSAFE_matchId,
+  UNSAFE_winnerGroupIds,
+}: Pick<ReportScoreArgs, "UNSAFE_matchId" | "UNSAFE_winnerGroupIds">) {
+  return db.$transaction([
+    db.lfgGroupMatchStage.updateMany({
+      where: { lfgGroupMatchId: UNSAFE_matchId },
+      data: { winnerGroupId: null },
+    }),
+    insertScores({
+      UNSAFE_matchId,
+      UNSAFE_winnerGroupIds,
+    }),
+  ]);
+}
+
+function insertScores({
+  UNSAFE_matchId,
+  UNSAFE_winnerGroupIds,
+}: Pick<ReportScoreArgs, "UNSAFE_matchId" | "UNSAFE_winnerGroupIds">) {
+  // https://stackoverflow.com/a/26715934
+  return db.$executeRawUnsafe(`
     update "LfgGroupMatchStage" as lfg set
       "winnerGroupId" = lfg2.winner_id
     from (values
@@ -153,6 +178,5 @@ export async function reportScore({
       ).join(",")}
     ) as lfg2(lfg_group_match_id, "order", winner_id)
     where lfg2.lfg_group_match_id = lfg."lfgGroupMatchId" and lfg2.order = lfg.order;
-    `),
-  ]);
+    `);
 }

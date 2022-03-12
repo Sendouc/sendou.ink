@@ -2,7 +2,8 @@ import { Ability } from "@prisma/client";
 
 export const DISCORD_URL = "https://discord.gg/sendou";
 
-export const ADMIN_TEST_UUID = "846e12eb-d373-4002-a0c3-e23077e1c88c";
+export const ADMIN_UUID = "ee2d82dd-624f-4b07-9d8d-ddee1f8fb36f";
+
 export const ADMIN_TEST_DISCORD_ID = "79237403620945920";
 export const ADMIN_TEST_AVATAR = "fcfd65a3bea598905abb9ca25296816b";
 export const NZAP_TEST_UUID = "fab649fe-3421-46e9-88cf-d10aa2153821";

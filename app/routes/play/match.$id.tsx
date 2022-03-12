@@ -21,11 +21,13 @@ import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { ModeImage } from "~/components/ModeImage";
 import { MapList } from "~/components/play/MapList";
 import { DISCORD_URL, LFG_AMOUNT_OF_STAGES_TO_GENERATE } from "~/constants";
+import { isAdmin } from "~/core/common/permissions";
 import {
   groupsToWinningAndLosingPlayerIds,
   scoresAreIdentical,
 } from "~/core/play/utils";
 import { isGroupAdmin, matchIsUnranked } from "~/core/play/validators";
+import { useUser } from "~/hooks/common";
 import * as LFGGroup from "~/models/LFGGroup.server";
 import * as LFGMatch from "~/models/LFGMatch.server";
 import styles from "~/styles/play-match.css";
@@ -70,7 +72,7 @@ const matchActionSchema = z.union([
     _action: z.literal("LOOK_AGAIN"),
   }),
   z.object({
-    _action: z.literal("REPORT_SCORE"),
+    _action: z.enum(["REPORT_SCORE", "EDIT_REPORTED_SCORE"]),
     winnerIds: z.preprocess(
       safeJSONParse,
       z
@@ -87,7 +89,7 @@ const matchActionSchema = z.union([
   }),
 ]);
 
-type ActionData = {
+export type MatchActionData = {
   error?: "DIFFERENT_SCORE" | "ALREADY_IN_GROUP";
   ok?: z.infer<typeof matchActionSchema>["_action"];
 };
@@ -96,7 +98,7 @@ export const action: ActionFunction = async ({
   request,
   context,
   params,
-}): Promise<ActionData | Response> => {
+}): Promise<MatchActionData | Response> => {
   invariant(typeof params.id === "string", "Expected params.id to be string");
   const data = await parseRequestFormData({
     request,
@@ -142,6 +144,16 @@ export const action: ActionFunction = async ({
         groupIds: match.groups.map((g) => g.id),
       });
       break;
+    }
+    case "EDIT_REPORTED_SCORE": {
+      validate(isAdmin(user.id), "Not admin");
+
+      await LFGMatch.overrideScores({
+        UNSAFE_matchId: params.id,
+        UNSAFE_winnerGroupIds: data.winnerIds,
+      });
+
+      return { ok: "EDIT_REPORTED_SCORE" };
     }
     case "LOOK_AGAIN": {
       validate(matchIsUnranked(match), "Score reporting required");
@@ -268,19 +280,17 @@ export const loader: LoaderFunction = async ({ params, context }) => {
     groups,
     scores,
     createdAtTimestamp: new Date(match.createdAt).getTime(),
-    mapList: match.stages
-      .map(({ stage, winnerGroupId }) => {
-        const winner = () => {
-          if (!winnerGroupId) return undefined;
+    mapList: match.stages.map(({ stage, winnerGroupId }) => {
+      const winner = () => {
+        if (!winnerGroupId) return undefined;
 
-          return groups[0].id === winnerGroupId ? 0 : 1;
-        };
-        return {
-          ...stage,
-          winner: winner(),
-        };
-      })
-      .filter((stage) => !scores || typeof stage.winner === "number"),
+        return groups[0].id === winnerGroupId ? 0 : 1;
+      };
+      return {
+        ...stage,
+        winner: winner(),
+      };
+    }),
   });
 };
 
@@ -288,7 +298,9 @@ export const loader: LoaderFunction = async ({ params, context }) => {
 export default function LFGMatchPage() {
   const data = useLoaderData<LFGMatchLoaderData>();
   const transition = useTransition();
-  const actionData = useActionData<ActionData>();
+  const actionData = useActionData<MatchActionData>();
+  const user = useUser();
+  const [adminEditActive, setAdminEditActive] = React.useState(false);
 
   const showPlayAgainSection = () => {
     if (!data.isCaptain) return false;
@@ -301,6 +313,12 @@ export default function LFGMatchPage() {
 
     return true;
   };
+
+  React.useEffect(() => {
+    if (actionData?.ok === "EDIT_REPORTED_SCORE") {
+      setAdminEditActive(false);
+    }
+  }, [actionData]);
 
   return (
     <div>
@@ -388,35 +406,48 @@ export default function LFGMatchPage() {
             </div>
           </Form>
         )}
-        {data.scores && (
+        {data.scores && !adminEditActive && (
           <div className="play-match__played-map-list">
-            {data.mapList.map((stage) => {
-              return (
-                <React.Fragment key={`${stage.name}-${stage.mode}`}>
-                  <div
-                    className={clsx("play-match__checkmark", "left", {
-                      invisible: stage.winner !== 0,
-                    })}
-                  >
-                    <CheckmarkIcon />
-                  </div>
-                  <div className="play-match__played-stage">
-                    <ModeImage
-                      className="play-match__played-mode"
-                      mode={stage.mode}
-                    />
-                    {stage.name}
-                  </div>
-                  <div
-                    className={clsx("play-match__checkmark", {
-                      invisible: stage.winner !== 1,
-                    })}
-                  >
-                    <CheckmarkIcon />
-                  </div>
-                </React.Fragment>
-              );
-            })}
+            {data.mapList
+              .filter((stage) => typeof stage.winner === "number")
+              .map((stage) => {
+                return (
+                  <React.Fragment key={`${stage.name}-${stage.mode}`}>
+                    <div
+                      className={clsx("play-match__checkmark", "left", {
+                        invisible: stage.winner !== 0,
+                      })}
+                    >
+                      <CheckmarkIcon />
+                    </div>
+                    <div className="play-match__played-stage">
+                      <ModeImage
+                        className="play-match__played-mode"
+                        mode={stage.mode}
+                      />
+                      {stage.name}
+                    </div>
+                    <div
+                      className={clsx("play-match__checkmark", {
+                        invisible: stage.winner !== 1,
+                      })}
+                    >
+                      <CheckmarkIcon />
+                    </div>
+                  </React.Fragment>
+                );
+              })}
+          </div>
+        )}
+        {isAdmin(user?.id) && data.scores && (
+          <div className="flex justify-center mt-4">
+            <Button
+              tiny
+              variant={adminEditActive ? "destructive" : undefined}
+              onClick={() => setAdminEditActive((isActive) => !isActive)}
+            >
+              {adminEditActive ? "Cancel" : "Edit"}
+            </Button>
           </div>
         )}
       </div>
@@ -438,9 +469,16 @@ export default function LFGMatchPage() {
           </Form>
         </div>
       )}
-      {!data.scores && data.isRanked && (
+      {(!data.scores || adminEditActive) && data.isRanked && (
         <MapList
           mapList={data.mapList}
+          reportedWinnerIds={data.mapList
+            .filter((m) => typeof m.winner === "number")
+            .map((m) => {
+              const winnerGroup = data.groups[m.winner as number];
+              invariant(winnerGroup, "Unexpected winnerGroup is undefined");
+              return winnerGroup.id;
+            })}
           canSubmitScore={data.isCaptain}
           groupIds={{
             our: data.groups[0].id,
