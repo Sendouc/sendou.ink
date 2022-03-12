@@ -16,6 +16,7 @@
     "migration:apply:prod": "npx prisma migrate deploy",
     "seed": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register prisma/seed",
     "seed:reset": "npx prisma migrate reset --force --skip-generate",
+    "restore": "psql -d prod_copy -f backup.sql",
     "lint:ts": "eslint . --ext .ts,.tsx",
     "lint:styles": "stylelint \"app/styles/**/*.css\"",
     "lsf": "npm run lint:styles -- --fix",

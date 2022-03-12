@@ -99,7 +99,9 @@ export async function parseRequestFormData<T extends z.ZodTypeAny>({
     // False alarm
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return schema.parse(
-      useBody ? request.body : Object.fromEntries(await request.formData())
+      useBody
+        ? await request.json()
+        : Object.fromEntries(await request.formData())
     );
   } catch (e) {
     if (e instanceof z.ZodError) {

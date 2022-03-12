@@ -37,7 +37,7 @@ export const detailedMapSchema = z.object({
   winners: teamInfoSchema,
   losers: teamInfoSchema,
   date: z.string().refine((val) => {
-    const d = new Date(Number(val));
+    const d = new Date(val);
     if (Number.isNaN(d.getTime())) {
       return false;
     }

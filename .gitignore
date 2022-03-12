@@ -5,3 +5,4 @@ node_modules
 /server/build
 /public/build
 /build
+backup.sql
