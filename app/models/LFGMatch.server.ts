@@ -19,6 +19,11 @@ export function findById(id: string) {
             },
           },
           winnerGroupId: true,
+          details: {
+            include: {
+              teams: true,
+            },
+          },
         },
         orderBy: {
           order: "asc",

@@ -76,6 +76,9 @@ export const action: ActionFunction = async ({ request }) => {
   if (!match) {
     return new Response("Invalid match id", { status: 400 });
   }
+  if (match.stages[0].details) {
+    return new Response(null, { status: 200 });
+  }
 
   const expectedMapsCount = match.stages.reduce(
     (acc, cur) => Number(Boolean(cur.winnerGroupId)) + acc,
@@ -138,5 +141,5 @@ export const action: ActionFunction = async ({ request }) => {
 
   await GameDetail.create(createGameDetailsInput);
 
-  return new Response(null, { status: 204 });
+  return new Response(null, { status: 201 });
 };
