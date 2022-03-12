@@ -117,10 +117,12 @@ export const action: ActionFunction = async ({
   }
 
   validate(ownGroup, "Not own match");
-  validate(isGroupAdmin({ group: ownGroup, user }), "Not group admin");
+  const validateIsGroupAdmin = () =>
+    validate(isGroupAdmin({ group: ownGroup, user }), "Not group admin");
 
   switch (data._action) {
     case "REPORT_SCORE": {
+      validateIsGroupAdmin();
       const matchWasAlreadyReported = match.stages.some(
         (stage) => stage.winnerGroupId
       );
@@ -173,6 +175,7 @@ export const action: ActionFunction = async ({
       return redirect("/play");
     }
     case "PLAY_AGAIN_SAME_GROUP": {
+      validateIsGroupAdmin();
       const ids = await LFGGroup.activeUserIds();
       for (const member of ownGroup.members) {
         if (ids.has(member.memberId)) {
@@ -190,6 +193,7 @@ export const action: ActionFunction = async ({
       return redirect(sendouQAddPlayersPage());
     }
     case "PLAY_AGAIN_DIFFERENT_GROUP": {
+      validateIsGroupAdmin();
       const ids = await LFGGroup.activeUserIds();
       if (ids.has(user.id)) {
         return redirect(sendouQFrontPage());
@@ -486,18 +490,16 @@ export default function LFGMatchPage() {
       {!data.isRanked && (
         <div className="play-match__waves-button">
           <Form method="post">
-            {data.isCaptain && (
-              <Button
-                type="submit"
-                name="_action"
-                value="LOOK_AGAIN"
-                tiny
-                variant="outlined"
-                loading={transition.state !== "idle"}
-              >
-                Look again
-              </Button>
-            )}
+            <Button
+              type="submit"
+              name="_action"
+              value="LOOK_AGAIN"
+              tiny
+              variant="outlined"
+              loading={transition.state !== "idle"}
+            >
+              Look again
+            </Button>
           </Form>
         </div>
       )}
