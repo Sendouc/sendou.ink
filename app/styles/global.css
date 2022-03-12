@@ -443,6 +443,7 @@ hr {
 }
 
 .popover-content {
+  z-index: 1;
   max-width: 20rem;
   padding: var(--s-2);
   background-color: var(--bg-darker-transparent);
