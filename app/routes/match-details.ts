@@ -76,7 +76,9 @@ export const action: ActionFunction = async ({ request }) => {
   if (!match) {
     return new Response("Invalid match id", { status: 400 });
   }
-  if (match.stages[0].details) {
+
+  // we already have details for this match
+  if (match.stages[0].details.length > 0) {
     return new Response(null, { status: 200 });
   }
 
