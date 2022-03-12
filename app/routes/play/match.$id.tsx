@@ -108,9 +108,14 @@ export const action: ActionFunction = async ({
 
   const match = await LFGMatch.findById(params.id);
   invariant(match, "Match is undefined");
-  const ownGroup = match.groups.find((g) =>
+
+  let ownGroup = match.groups.find((g) =>
     g.members.some((m) => m.memberId === user.id)
   );
+  if (!ownGroup && isAdmin(user.id)) {
+    ownGroup = match.groups[0];
+  }
+
   validate(ownGroup, "Not own match");
   validate(isGroupAdmin({ group: ownGroup, user }), "Not group admin");
 
@@ -457,20 +462,23 @@ export default function LFGMatchPage() {
               >
                 {adminEditActive ? "Cancel" : "Edit"}
               </Button>
-              <SubmitButton
-                variant="destructive"
-                name="_action"
-                value="DELETE_MATCH"
-                actionType="DELETE_MATCH"
-                onClick={(e) => {
-                  if (!confirm("Delete match?")) {
-                    e.preventDefault();
-                  }
-                }}
-                loadingText="Deleting..."
-              >
-                Delete
-              </SubmitButton>
+              {!adminEditActive && (
+                <SubmitButton
+                  tiny
+                  variant="destructive"
+                  name="_action"
+                  value="DELETE_MATCH"
+                  actionType="DELETE_MATCH"
+                  onClick={(e) => {
+                    if (!confirm("Delete match?")) {
+                      e.preventDefault();
+                    }
+                  }}
+                  loadingText="Deleting..."
+                >
+                  Delete
+                </SubmitButton>
+              )}
             </div>
           </Form>
         )}
@@ -503,7 +511,7 @@ export default function LFGMatchPage() {
               invariant(winnerGroup, "Unexpected winnerGroup is undefined");
               return winnerGroup.id;
             })}
-          canSubmitScore={data.isCaptain}
+          canSubmitScore={data.isCaptain || isAdmin(user?.id)}
           groupIds={{
             our: data.groups[0].id,
             their: data.groups[1].id,
