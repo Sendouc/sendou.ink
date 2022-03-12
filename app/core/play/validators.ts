@@ -1,6 +1,7 @@
 import { LfgGroupType } from "@prisma/client";
 import { LFG_GROUP_FULL_SIZE } from "~/constants";
 import * as LFGGroup from "~/models/LFGGroup.server";
+import { isAdmin } from "../common/permissions";
 
 export function isGroupAdmin({
   group,
@@ -9,8 +10,11 @@ export function isGroupAdmin({
   group: { members: { captain: boolean; memberId: string }[] };
   user: { id: string };
 }) {
-  return group.members.some(
-    (member) => member.captain && member.memberId === user.id
+  return (
+    isAdmin(user.id) ||
+    group.members.some(
+      (member) => member.captain && member.memberId === user.id
+    )
   );
 }
 

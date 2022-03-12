@@ -20,6 +20,7 @@ import { Button } from "~/components/Button";
 import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { ModeImage } from "~/components/ModeImage";
 import { MapList } from "~/components/play/MapList";
+import { SubmitButton } from "~/components/SubmitButton";
 import { DISCORD_URL, LFG_AMOUNT_OF_STAGES_TO_GENERATE } from "~/constants";
 import { isAdmin } from "~/core/common/permissions";
 import {
@@ -69,7 +70,12 @@ export const meta: MetaFunction = ({
 
 const matchActionSchema = z.union([
   z.object({
-    _action: z.literal("LOOK_AGAIN"),
+    _action: z.enum([
+      "LOOK_AGAIN",
+      "PLAY_AGAIN_SAME_GROUP",
+      "PLAY_AGAIN_DIFFERENT_GROUP",
+      "DELETE_MATCH",
+    ]),
   }),
   z.object({
     _action: z.enum(["REPORT_SCORE", "EDIT_REPORTED_SCORE"]),
@@ -80,12 +86,6 @@ const matchActionSchema = z.union([
         .min(Math.ceil(LFG_AMOUNT_OF_STAGES_TO_GENERATE / 2))
         .max(LFG_AMOUNT_OF_STAGES_TO_GENERATE)
     ),
-  }),
-  z.object({
-    _action: z.literal("PLAY_AGAIN_SAME_GROUP"),
-  }),
-  z.object({
-    _action: z.literal("PLAY_AGAIN_DIFFERENT_GROUP"),
   }),
 ]);
 
@@ -154,6 +154,13 @@ export const action: ActionFunction = async ({
       });
 
       return { ok: "EDIT_REPORTED_SCORE" };
+    }
+    case "DELETE_MATCH": {
+      validate(isAdmin(user.id), "Not admin");
+
+      await LFGMatch.deleteMatch(params.id);
+
+      return redirect(sendouQFrontPage());
     }
     case "LOOK_AGAIN": {
       validate(matchIsUnranked(match), "Score reporting required");
@@ -440,15 +447,32 @@ export default function LFGMatchPage() {
           </div>
         )}
         {isAdmin(user?.id) && data.scores && (
-          <div className="flex justify-center mt-4">
-            <Button
-              tiny
-              variant={adminEditActive ? "destructive" : undefined}
-              onClick={() => setAdminEditActive((isActive) => !isActive)}
-            >
-              {adminEditActive ? "Cancel" : "Edit"}
-            </Button>
-          </div>
+          <Form method="post">
+            <div className="flex justify-center mt-4 gap-4">
+              <Button
+                tiny
+                variant={adminEditActive ? "destructive" : undefined}
+                onClick={() => setAdminEditActive((isActive) => !isActive)}
+                type="button"
+              >
+                {adminEditActive ? "Cancel" : "Edit"}
+              </Button>
+              <SubmitButton
+                variant="destructive"
+                name="_action"
+                value="DELETE_MATCH"
+                actionType="DELETE_MATCH"
+                onClick={(e) => {
+                  if (!confirm("Delete match?")) {
+                    e.preventDefault();
+                  }
+                }}
+                loadingText="Deleting..."
+              >
+                Delete
+              </SubmitButton>
+            </div>
+          </Form>
         )}
       </div>
       {!data.isRanked && (

@@ -164,6 +164,13 @@ export async function overrideScores({
   ]);
 }
 
+export function deleteMatch(id: string) {
+  return db.$transaction([
+    db.lfgGroupMatchStage.deleteMany({ where: { lfgGroupMatchId: id } }),
+    db.lfgGroupMatch.delete({ where: { id } }),
+  ]);
+}
+
 function insertScores({
   UNSAFE_matchId,
   UNSAFE_winnerGroupIds,

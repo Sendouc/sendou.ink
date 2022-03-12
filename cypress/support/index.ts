@@ -2,7 +2,7 @@ import { LoggedInUser } from "~/utils/schemas";
 import {
   ADMIN_TEST_AVATAR,
   ADMIN_TEST_DISCORD_ID,
-  ADMIN_TEST_UUID,
+  ADMIN_UUID,
 } from "../../app/constants";
 
 export {};
@@ -31,7 +31,7 @@ Cypress.Commands.add("seed", (variation) => {
 Cypress.Commands.add("logIn", (user: MockUser) => {
   const mockUsers: Record<string, LoggedInUser> = {
     sendou: {
-      id: ADMIN_TEST_UUID,
+      id: ADMIN_UUID,
       discordId: ADMIN_TEST_DISCORD_ID,
       discordAvatar: ADMIN_TEST_AVATAR,
     },

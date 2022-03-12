@@ -643,6 +643,10 @@ hr {
   align-items: center;
 }
 
+.gap-4 {
+  gap: var(--s-4);
+}
+
 .rounded {
   border-radius: var(--rounded);
 }
