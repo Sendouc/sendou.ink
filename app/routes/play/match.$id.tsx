@@ -39,6 +39,7 @@ import {
   parseRequestFormData,
   requireUser,
   safeJSONParse,
+  Unpacked,
   UserLean,
   validate,
 } from "~/utils";
@@ -233,6 +234,9 @@ interface LFGMatchLoaderData {
     mode: Mode;
     /** Did 0 index group or 1 index group take this map */
     winner?: number;
+    detail?: Unpacked<
+      Unpacked<NonNullable<LFGMatch.FindById>["stages"]>["details"]
+    >;
   }[];
   /** The final score. Shown if match is concluded */
   scores?: [number, number];
@@ -296,7 +300,7 @@ export const loader: LoaderFunction = async ({ params, context }) => {
     groups,
     scores,
     createdAtTimestamp: new Date(match.createdAt).getTime(),
-    mapList: match.stages.map(({ stage, winnerGroupId }) => {
+    mapList: match.stages.map(({ stage, winnerGroupId, details }) => {
       const winner = () => {
         if (!winnerGroupId) return undefined;
 
@@ -305,12 +309,12 @@ export const loader: LoaderFunction = async ({ params, context }) => {
       return {
         ...stage,
         winner: winner(),
+        detail: details[0],
       };
     }),
   });
 };
 
-// TODO: match time
 export default function LFGMatchPage() {
   const data = useLoaderData<LFGMatchLoaderData>();
   const transition = useTransition();
@@ -381,6 +385,15 @@ export default function LFGMatchPage() {
                 )}
               </div>
             );
+          })}
+        </div>
+        <div className="play-match__time">
+          {new Date(data.createdAtTimestamp).toLocaleString("en-us", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
           })}
         </div>
         {!data.isRanked && (

@@ -20,6 +20,15 @@
   gap: var(--s-4);
 }
 
+.play-match__time {
+  display: flex;
+  justify-content: center;
+  color: var(--text-lighter);
+  font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
+  margin-block-start: var(--s-2);
+}
+
 .play-match__waves-section {
   padding: var(--s-4);
   background-color: var(--bg-darker);

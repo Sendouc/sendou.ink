@@ -316,11 +316,12 @@ model GameDetail {
 }
 
 model GameDetailTeam {
-  id           String     @id @default(uuid())
+  id           String             @id @default(uuid())
   gameDetailId String
   isWinner     Boolean
   score        Int
-  gameDetails  GameDetail @relation(fields: [gameDetailId], references: [id])
+  detail       GameDetail         @relation(fields: [gameDetailId], references: [id])
+  players      GameDetailPlayer[]
 
   @@unique([gameDetailId, isWinner])
 }
@@ -368,6 +369,7 @@ model GameDetailPlayer {
   specials         Int
   paint            Int
   gear             String[]
+  team             GameDetailTeam @relation(fields: [gameDetailTeamId], references: [id])
 
   @@id([gameDetailTeamId, principalId])
 }

@@ -9,12 +9,12 @@ export function isGroupAdmin({
 }: {
   group?: { members: { captain: boolean; memberId: string }[] };
   user: { id: string };
-}) {
-  return (
+}): boolean {
+  return Boolean(
     isAdmin(user.id) ||
-    group?.members.some(
-      (member) => member.captain && member.memberId === user.id
-    )
+      group?.members.some(
+        (member) => member.captain && member.memberId === user.id
+      )
   );
 }
 

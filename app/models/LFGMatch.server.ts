@@ -20,8 +20,27 @@ export function findById(id: string) {
           },
           winnerGroupId: true,
           details: {
-            include: {
-              teams: true,
+            select: {
+              duration: true,
+              teams: {
+                select: {
+                  isWinner: true,
+                  score: true,
+                  players: {
+                    select: {
+                      assists: true,
+                      deaths: true,
+                      kills: true,
+                      paint: true,
+                      specials: true,
+                      mainAbilities: true,
+                      subAbilities: true,
+                      name: true,
+                      weapon: true,
+                    },
+                  },
+                },
+              },
             },
           },
         },
