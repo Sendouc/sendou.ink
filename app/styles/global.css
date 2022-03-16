@@ -651,3 +651,7 @@ hr {
 .rounded {
   border-radius: var(--rounded);
 }
+
+.z-10 {
+  z-index: 10;
+}

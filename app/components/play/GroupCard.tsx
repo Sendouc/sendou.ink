@@ -60,7 +60,7 @@ export function GroupCard({
       <div className="play__card">
         {typeof ranked === "boolean" && (
           <div className={clsx("play__card__ranked-text", { ranked })}>
-            {ranked ? "Ranked" : "Unranked"}
+            {ranked ? "Ranked" : "Scrim"}
           </div>
         )}
         <GroupMembers members={group.members} />

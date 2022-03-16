@@ -271,15 +271,13 @@ export function countGroups(
         acc.QUAD += memberCount;
       } else if (group.type === "TWIN" && memberCount !== 2) {
         acc.TWIN += memberCount;
-      } else if (group.type === "VERSUS" && group.ranked) {
-        acc["VERSUS-RANKED"] += memberCount;
-      } else if (group.type === "VERSUS" && !group.ranked) {
-        acc["VERSUS-UNRANKED"] += memberCount;
+      } else if (group.type === "VERSUS") {
+        acc["VERSUS"] += memberCount;
       }
 
       return acc;
     },
-    { TWIN: 0, QUAD: 0, "VERSUS-RANKED": 0, "VERSUS-UNRANKED": 0 }
+    { TWIN: 0, QUAD: 0, VERSUS: 0 }
   );
 }
 

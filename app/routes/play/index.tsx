@@ -95,7 +95,7 @@ export const action: ActionFunction = async ({ request, context }) => {
 };
 
 export interface PlayFrontPageLoader {
-  counts: Record<"TWIN" | "QUAD" | "VERSUS-RANKED" | "VERSUS-UNRANKED", number>;
+  counts: Record<"TWIN" | "QUAD" | "VERSUS", number>;
   ownMMR?: {
     value: number;
     topX?: number;
