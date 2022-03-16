@@ -1,5 +1,4 @@
 import { PrismaClient } from "@prisma/client";
-import { playersWithResults } from "~/core/play/playerInfos/playerInfos.server";
 import fs from "fs";
 
 const prisma = new PrismaClient();
@@ -21,15 +20,11 @@ async function main() {
   }[] = [];
 
   for (const match of matches) {
-    const players = playersWithResults(
-      match.groups.flatMap((g) => g.members).flatMap((m) => m.user.discordId)
-    );
     const mapList = match.stages
       .sort((a, b) => a.order - b.order)
       .filter((stage) => stage.winnerGroupId)
       .map((stage) => ({ map: stage.stage.name, mode: stage.stage.mode }));
 
-    if (!players.length) continue;
     if (!mapList.length) continue;
 
     result.push({
@@ -37,7 +32,9 @@ async function main() {
       mapList,
       start_time: match.createdAt.toISOString(),
       end_time: new Date(match.createdAt.getTime() + 60 * 60000).toISOString(),
-      players,
+      players: match.groups
+        .flatMap((g) => g.members)
+        .flatMap((m) => m.user.discordId),
     });
   }
 

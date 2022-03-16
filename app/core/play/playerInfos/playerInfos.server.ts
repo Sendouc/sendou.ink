@@ -7,7 +7,6 @@ import rawInfos from "./data.json";
 const infos = rawInfos as Partial<
   Record<string, { weapons?: string[]; peakXP?: number; peakLP?: number }>
 >;
-const idsWithResults = new Set(Object.keys(infos));
 
 export function addInfoFromOldSendouInk(
   type: "LEAGUE" | "SOLO",
@@ -34,10 +33,6 @@ export function addInfoFromOldSendouInk(
       }),
     };
   }
-}
-
-export function playersWithResults(discordIds: string[]): string[] {
-  return discordIds.filter((id) => idsWithResults.has(id));
 }
 
 export function userHasTop500Result({ discordId }: { discordId?: string }) {

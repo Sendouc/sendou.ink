@@ -1,6 +1,5 @@
 import { Mode } from "@prisma/client";
 import { fetchTimeout } from "~/utils";
-import { playersWithResults } from "./play/playerInfos/playerInfos.server";
 
 const LANISTA_REQUEST_TIMEOUT = 7000;
 
@@ -26,19 +25,13 @@ export async function requestMatchDetails({
       throw new Error("process.env.LANISTA_URL not set");
     }
 
-    // there is nothing Lanista can do for us in this case
-    // -> user should link and try again later manually
-    if (playersWithResults(playerDiscordIds).length === 0) {
-      return;
-    }
-
     const response = await fetchTimeout(
       process.env.LANISTA_URL,
       LANISTA_REQUEST_TIMEOUT,
       {
         body: JSON.stringify({
           maplist: playedStages,
-          requesterId: playersWithResults(playerDiscordIds),
+          requesterId: playerDiscordIds,
           startTime: startTime.toISOString(),
           endTime: (endTime ?? new Date()).toISOString(),
           matchId,
