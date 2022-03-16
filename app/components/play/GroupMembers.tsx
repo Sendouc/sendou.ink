@@ -24,7 +24,10 @@ function Contents({ members }: { members: LookingLoaderDataGroup["members"] }) {
         {new Array(4).fill(null).map((_, i) => {
           return (
             <div key={i} className="play__card__member-card">
-              <Avatar tiny user={{ discordId: "", discordAvatar: null }} />
+              <Avatar
+                size="tiny"
+                user={{ discordId: "", discordAvatar: null }}
+              />
               <span className="play__card__member-name">???</span>
             </div>
           );
@@ -44,7 +47,7 @@ function Contents({ members }: { members: LookingLoaderDataGroup["members"] }) {
               rel="noopener noreferrer"
               className="play__card__member-link"
             >
-              <Avatar tiny user={member} />
+              <Avatar size="tiny" user={member} />
               <span className="play__card__member-name">
                 {member.discordName}{" "}
                 {member.captain && (

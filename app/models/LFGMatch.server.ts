@@ -24,10 +24,12 @@ export function findById(id: string) {
               duration: true,
               teams: {
                 select: {
+                  id: true,
                   isWinner: true,
                   score: true,
                   players: {
                     select: {
+                      principalId: true,
                       assists: true,
                       deaths: true,
                       kills: true,
@@ -37,6 +39,7 @@ export function findById(id: string) {
                       subAbilities: true,
                       name: true,
                       weapon: true,
+                      gear: true,
                     },
                   },
                 },

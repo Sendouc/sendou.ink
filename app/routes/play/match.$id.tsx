@@ -15,14 +15,17 @@ import {
 } from "remix";
 import invariant from "tiny-invariant";
 import { z } from "zod";
-import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
 import { CheckmarkIcon } from "~/components/icons/Checkmark";
+import { ClockIcon } from "~/components/icons/Clock";
 import { ModeImage } from "~/components/ModeImage";
+import { DetailedPlayers } from "~/components/play/DetailedPlayers";
 import { MapList } from "~/components/play/MapList";
+import { MatchTeams } from "~/components/play/MatchTeams";
 import { SubmitButton } from "~/components/SubmitButton";
 import { DISCORD_URL, LFG_AMOUNT_OF_STAGES_TO_GENERATE } from "~/constants";
 import { isAdmin } from "~/core/common/permissions";
+import { requestMatchDetails } from "~/core/lanista";
 import {
   groupsToWinningAndLosingPlayerIds,
   scoresAreIdentical,
@@ -43,11 +46,7 @@ import {
   UserLean,
   validate,
 } from "~/utils";
-import {
-  oldSendouInkUserProfile,
-  sendouQAddPlayersPage,
-  sendouQFrontPage,
-} from "~/utils/urls";
+import { sendouQAddPlayersPage, sendouQFrontPage } from "~/utils/urls";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -59,13 +58,13 @@ export const meta: MetaFunction = ({
   data: Nullable<LFGMatchLoaderData>;
 }) => {
   return {
-    title: data?.isOwnMatch
-      ? makeTitle(
-          `vs. ${listToUserReadableString(
+    title: makeTitle(
+      data?.isOwnMatch
+        ? `vs. ${listToUserReadableString(
             data.groups[1].members.map((u) => u.discordName)
           )}`
-        )
-      : "Match",
+        : "Match"
+    ),
   };
 };
 
@@ -151,7 +150,19 @@ export const action: ActionFunction = async ({
         }),
         groupIds: match.groups.map((g) => g.id),
       });
-      break;
+
+      await requestMatchDetails({
+        matchId: params.id,
+        startTime: match.createdAt,
+        playedStages: match.stages
+          .slice(0, data.winnerIds.length)
+          .map(({ stage }) => ({ mode: stage.mode, stage: stage.name })),
+        playerDiscordIds: match.groups
+          .flatMap((g) => g.members)
+          .map((m) => m.user.discordId),
+      });
+
+      return { ok: "REPORT_SCORE" };
     }
     case "EDIT_REPORTED_SCORE": {
       validate(isAdmin(user.id), "Not admin");
@@ -222,7 +233,7 @@ export const action: ActionFunction = async ({
   return { ok: data._action };
 };
 
-interface LFGMatchLoaderData {
+export interface LFGMatchLoaderData {
   /** Can the user counterpick and report scores? */
   isCaptain: boolean;
   isOwnMatch: boolean;
@@ -350,43 +361,7 @@ export default function LFGMatchPage() {
         </div>
       )}
       <div className="play-match__waves">
-        <div className="play-match__teams">
-          {data.groups.map((g, i) => {
-            return (
-              <div
-                key={i}
-                className="play-match__waves-section play-match__team-info"
-              >
-                {g.members.map((user) => (
-                  <a
-                    key={user.id}
-                    href={oldSendouInkUserProfile({
-                      discordId: user.discordId,
-                    })}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <div className="play-match__player">
-                      <Avatar user={user} />
-                      <span className="play-match__player-name">
-                        {user.discordName}
-                      </span>
-                    </div>
-                  </a>
-                ))}
-                {data.scores && (
-                  <div
-                    className={clsx("play-match__score", {
-                      winner: data.scores[i] === Math.max(...data.scores),
-                    })}
-                  >
-                    {data.scores[i]}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
+        <MatchTeams />
         <div className="play-match__time">
           {new Date(data.createdAtTimestamp).toLocaleString("en-us", {
             year: "numeric",
@@ -440,6 +415,32 @@ export default function LFGMatchPage() {
             {data.mapList
               .filter((stage) => typeof stage.winner === "number")
               .map((stage) => {
+                const pointsScored = stage.detail?.teams.map((t) => t.score);
+                const [biggerScore, smallerScore] = (pointsScored ?? []).sort(
+                  (a, b) => b - a
+                );
+                const secondsToDisplay = (duration: number) => {
+                  let minutes = 0;
+                  let seconds = duration;
+
+                  while (seconds >= 60) {
+                    seconds -= 60;
+                    minutes++;
+                  }
+
+                  return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+                };
+                const leftTeamDetails = stage.detail?.teams.find(
+                  (t) =>
+                    (t.isWinner && stage.winner === 0) ||
+                    (!t.isWinner && stage.winner === 1)
+                );
+                const rightTeamDetails = stage.detail?.teams.find(
+                  (t) =>
+                    (t.isWinner && stage.winner === 1) ||
+                    (!t.isWinner && stage.winner === 0)
+                );
+
                 return (
                   <React.Fragment key={`${stage.name}-${stage.mode}`}>
                     <div
@@ -455,6 +456,24 @@ export default function LFGMatchPage() {
                         mode={stage.mode}
                       />
                       {stage.name}
+                      {stage.detail?.duration && (
+                        <div className="play-match__clock">
+                          <ClockIcon />{" "}
+                          {secondsToDisplay(stage.detail.duration)}
+                        </div>
+                      )}
+                      {pointsScored && (
+                        <div className="play-match__stage-score">
+                          {pointsScored.some((p) => p === 100) ? (
+                            "KO"
+                          ) : (
+                            <>
+                              {stage.winner === 0 ? biggerScore : smallerScore}-
+                              {stage.winner === 1 ? biggerScore : smallerScore}
+                            </>
+                          )}
+                        </div>
+                      )}
                     </div>
                     <div
                       className={clsx("play-match__checkmark", {
@@ -463,6 +482,16 @@ export default function LFGMatchPage() {
                     >
                       <CheckmarkIcon />
                     </div>
+                    {leftTeamDetails && rightTeamDetails && (
+                      <>
+                        <DetailedPlayers players={leftTeamDetails.players} />
+                        <div className="play-match__players-spacer" />
+                        <DetailedPlayers
+                          players={rightTeamDetails.players}
+                          bravo
+                        />
+                      </>
+                    )}
                   </React.Fragment>
                 );
               })}

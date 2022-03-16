@@ -5,6 +5,17 @@ import type { EventTargetRecorder } from "server/events";
 import { z } from "zod";
 import { LoggedInUserSchema } from "~/utils/schemas";
 
+export function flipObject<
+  K extends string | number,
+  T extends string | number
+>(obj: Record<T, K>): Record<K, T> {
+  const result = Object.fromEntries(
+    Object.entries(obj).map((a) => a.reverse())
+  ) as Record<K, T>;
+
+  return result;
+}
+
 export function makeTitle(title?: string | string[]) {
   if (!title) return "sendou.ink";
   if (typeof title === "string") return `${title} | sendou.ink`;
@@ -42,6 +53,17 @@ export function requireEvents(ctx: unknown) {
     console.error(e);
     throw json("Events missing", { status: 500 });
   }
+}
+
+// https://stackoverflow.com/a/57888548
+export function fetchTimeout(url: string, ms: number, options: RequestInit) {
+  const controller = new AbortController();
+  const promise = fetch(url, { signal: controller.signal, ...options });
+  if (options.signal) {
+    options.signal.addEventListener("abort", () => controller.abort());
+  }
+  const timeout = setTimeout(() => controller.abort(), ms);
+  return promise.finally(() => clearTimeout(timeout));
 }
 
 /** Asserts condition is truthy. Throws a new `Response` with status code 400 and given message if falsy.  */
@@ -181,6 +203,7 @@ export interface MyCSSProperties extends CSSProperties {
 export interface UserLean {
   id: string;
   discordId: string;
+  discordDiscriminator: string;
   discordAvatar: string | null;
   discordName: string;
 }

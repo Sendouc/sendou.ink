@@ -2,6 +2,14 @@ export function oldSendouInkUserProfile({ discordId }: { discordId: string }) {
   return `https://sendou.ink/u/${discordId}`;
 }
 
+export function oldSendouInkPlayerProfile({
+  principalId,
+}: {
+  principalId: string;
+}) {
+  return `https://sendou.ink/pid/${principalId}`;
+}
+
 export function sendouQFrontPage() {
   return "/play";
 }

@@ -183,6 +183,7 @@ export function otherGroupsForResponse({
                     discordAvatar: m.user.discordAvatar,
                     discordId: m.user.discordId,
                     discordName: m.user.discordName,
+                    discordDiscriminator: m.user.discordDiscriminator,
                     id: m.user.id,
                     captain: m.captain,
                     weapons: m.user.weapons,
