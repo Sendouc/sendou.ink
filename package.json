@@ -25,7 +25,8 @@
     "cy:open": "npx cypress open",
     "cy:run": "npx cypress run",
     "test:unit": "uvu -r tsm -r tsconfig-paths/register -i cypress",
-    "tests": "npm run lint:styles && npm run lint:ts && npm run prettier:check && npm run typecheck"
+    "tests": "npm run lint:styles && npm run lint:ts && npm run prettier:check && npm run typecheck",
+    "matches": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/matchesWithoutDetails.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^5.0.2",
