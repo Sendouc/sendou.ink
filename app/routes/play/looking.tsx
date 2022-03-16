@@ -221,7 +221,14 @@ export type LookingLoaderDataGroup = {
     peakLP?: number;
     miniBio?: string;
   })[];
-  MMRRelation?: "LOWER" | "BIT_LOWER" | "CLOSE" | "BIT_HIGHER" | "HIGHER";
+  MMRRelation?:
+    | "LOT_LOWER"
+    | "LOWER"
+    | "BIT_LOWER"
+    | "CLOSE"
+    | "BIT_HIGHER"
+    | "HIGHER"
+    | "LOT_HIGHER";
   ranked?: boolean;
   replay?: boolean;
 };

@@ -5,11 +5,7 @@ import type {
   LookingActionSchema,
   LookingLoaderDataGroup,
 } from "~/routes/play/looking";
-import { ArrowDownIcon } from "../icons/ArrowDown";
 import { ArrowUpIcon } from "../icons/ArrowUp";
-import { DoubleArrowDownIcon } from "../icons/DoubleArrowDown";
-import { DoubleArrowUpIcon } from "../icons/DoubleArrowUp";
-import { MinusIcon } from "../icons/Minus";
 import { GroupMembers } from "./GroupMembers";
 
 export function GroupCard({
@@ -82,9 +78,7 @@ export function GroupCard({
         )}
         {showAction && (
           <Button
-            className={
-              isOwnGroup ? "play__card__button-small" : "play__card__button"
-            }
+            className={clsx({ "play__card__button-small": isOwnGroup })}
             type="submit"
             name="_action"
             value={action}
@@ -105,45 +99,97 @@ function MMRRelation({
 }: {
   relation: NonNullable<LookingLoaderDataGroup["MMRRelation"]>;
 }) {
-  switch (relation) {
-    case "CLOSE": {
-      return (
-        <div className="play__card__mmr-relation">
-          <MinusIcon /> Close SP
-        </div>
-      );
+  const labelText = () => {
+    switch (relation) {
+      case "LOT_LOWER": {
+        return "A lot lower";
+      }
+      case "LOWER": {
+        return "Lower";
+      }
+      case "BIT_LOWER": {
+        return "A bit lower";
+      }
+      case "CLOSE": {
+        return "Close";
+      }
+      case "BIT_HIGHER": {
+        return "A bit higher";
+      }
+      case "HIGHER": {
+        return "Higher";
+      }
+      case "LOT_HIGHER": {
+        return "A lot higher";
+      }
     }
-    case "BIT_HIGHER": {
-      return (
-        <div className="play__card__mmr-relation">
-          <ArrowUpIcon /> A bit higher SP
-        </div>
-      );
-    }
-    case "BIT_LOWER": {
-      return (
-        <div className="play__card__mmr-relation">
-          <ArrowDownIcon /> A bit lower SP
-        </div>
-      );
-    }
-    case "HIGHER": {
-      return (
-        <div className="play__card__mmr-relation">
-          <DoubleArrowUpIcon /> Higher SP
-        </div>
-      );
-    }
-    case "LOWER": {
-      return (
-        <div className="play__card__mmr-relation">
-          <DoubleArrowDownIcon /> Lower SP
-        </div>
-      );
-    }
-    default: {
-      const exhaustive: never = relation;
-      throw new Error(`Unknown relation: ${JSON.stringify(exhaustive)}`);
-    }
-  }
+  };
+  const gridColumn = () => {
+    const relationsOrdered = [
+      "LOW_LOWER",
+      "LOWER",
+      "BIT_LOWER",
+      "CLOSE",
+      "BIT_HIGHER",
+      "HIGHER",
+      "LOW_HIGHER",
+    ];
+
+    return {
+      gridColumn: `${relationsOrdered.indexOf(relation) + 1} / ${
+        relationsOrdered.indexOf(relation) + 2
+      }`,
+    };
+  };
+
+  return (
+    <div className="play__card__mmr-relation-bar__container">
+      <div className="play__card__mmr-relation-bar__label">
+        {labelText()} SP
+      </div>
+      <div className="play__card__mmr-relation-bar">
+        <div
+          className={clsx("play__card__mmr-relation-bar__1", {
+            "play__card__mmr-relation-bar__active": relation === "LOT_LOWER",
+          })}
+        />
+        <div
+          className={clsx("play__card__mmr-relation-bar__2", {
+            "play__card__mmr-relation-bar__active": relation === "LOWER",
+          })}
+        />
+        <div
+          className={clsx("play__card__mmr-relation-bar__3", {
+            "play__card__mmr-relation-bar__active": relation === "BIT_LOWER",
+          })}
+        />
+        <div
+          className={clsx("play__card__mmr-relation-bar__4", {
+            "play__card__mmr-relation-bar__active": relation === "CLOSE",
+          })}
+        />
+        <div
+          className={clsx("play__card__mmr-relation-bar__5", {
+            "play__card__mmr-relation-bar__active": relation === "BIT_HIGHER",
+          })}
+        />
+        <div
+          className={clsx("play__card__mmr-relation-bar__6", {
+            "play__card__mmr-relation-bar__active": relation === "HIGHER",
+          })}
+        />
+        <div
+          className={clsx("play__card__mmr-relation-bar__7", {
+            "play__card__mmr-relation-bar__active": relation === "LOT_HIGHER",
+          })}
+        />
+      </div>
+      <div className="play__card__mmr-relation-bar">
+        <ArrowUpIcon
+          className="play__card__mmr-relation-bar__indicator"
+          style={gridColumn()}
+        />
+      </div>
+    </div>
+  );
 }

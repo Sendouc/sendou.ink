@@ -108,8 +108,14 @@ CalculateDifference("Close", () => {
 });
 
 CalculateDifference("Higher/lower", () => {
-  assert.equal(calculateDifference({ ourMMR: 0, theirMMR: 10_000 }), "HIGHER");
-  assert.equal(calculateDifference({ ourMMR: 10_000, theirMMR: 0 }), "LOWER");
+  assert.equal(
+    calculateDifference({ ourMMR: 0, theirMMR: 10_000 }),
+    "LOT_HIGHER"
+  );
+  assert.equal(
+    calculateDifference({ ourMMR: 10_000, theirMMR: 0 }),
+    "LOT_LOWER"
+  );
 });
 
 CalculateDifference("A bit higher/lower", () => {

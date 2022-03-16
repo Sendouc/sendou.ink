@@ -4,6 +4,7 @@ import invariant from "tiny-invariant";
 import {
   BIT_HIGHER_MMR_LIMIT,
   CLOSE_MMR_LIMIT,
+  HIGHER_MMR_LIMIT,
   LFG_GROUP_FULL_SIZE,
   LFG_GROUP_INACTIVE_MINUTES,
 } from "~/constants";
@@ -301,15 +302,20 @@ export function calculateDifference({
 }: {
   ourMMR: number;
   theirMMR: number;
-}) {
+}): NonNullable<LookingLoaderDataGroup["MMRRelation"]> {
   const difference = Math.abs(ourMMR - theirMMR);
   const ownIsBigger = ourMMR > theirMMR;
 
   if (difference <= CLOSE_MMR_LIMIT) return "CLOSE";
-  if (difference > BIT_HIGHER_MMR_LIMIT && ownIsBigger) return "LOWER";
-  if (difference > BIT_HIGHER_MMR_LIMIT && !ownIsBigger) return "HIGHER";
-  if (ownIsBigger) return "BIT_LOWER";
-  if (!ownIsBigger) return "BIT_HIGHER";
+
+  if (difference <= BIT_HIGHER_MMR_LIMIT && ownIsBigger) return "BIT_LOWER";
+  if (difference <= BIT_HIGHER_MMR_LIMIT && !ownIsBigger) return "BIT_HIGHER";
+
+  if (difference <= HIGHER_MMR_LIMIT && ownIsBigger) return "LOWER";
+  if (difference <= HIGHER_MMR_LIMIT && !ownIsBigger) return "HIGHER";
+
+  if (ownIsBigger) return "LOT_LOWER";
+  if (!ownIsBigger) return "LOT_HIGHER";
 
   throw new Error("Unexpected calculateMMRRelation scenario");
 }

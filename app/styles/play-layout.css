@@ -21,6 +21,7 @@
   margin: 0 auto;
   background-color: var(--bg-lighter);
   border-radius: var(--rounded);
+  gap: var(--s-2);
   max-inline-size: 24rem;
   padding-block-end: var(--s-3);
   padding-block-start: var(--s-2);
@@ -47,13 +48,8 @@
   font-weight: var(--bold);
 }
 
-.play__card__button {
-  margin-block-start: var(--s-2);
-}
-
 .play__card__button-small {
   font-size: var(--fonts-xxs) !important;
-  margin-block-start: var(--s-1);
 }
 
 .play__card__members {
@@ -62,8 +58,6 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: var(--s-2);
-  margin-block-end: var(--s-1);
-  margin-block-start: var(--s-1-5);
 }
 
 .play__card__member-card {
@@ -105,17 +99,75 @@
   font-size: var(--fonts-xxs);
 }
 
-.play__card__mmr-relation {
+.play__card__mmr-relation-bar__container {
   display: flex;
-  width: 100%;
-  justify-content: center;
-  font-size: var(--fonts-sm);
-  font-weight: var(--semi-bold);
-  gap: var(--s-2);
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-1);
 }
 
-.play__card__mmr-relation > svg {
-  width: 1rem;
+.play__card__mmr-relation-bar__label {
+  color: var(--text-lighter);
+  font-size: var(--fonts-xxs);
+}
+
+.play__card__mmr-relation-bar {
+  display: grid;
+  width: 10rem;
+  height: 1rem;
+  border-radius: var(--rounded);
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.play__card__mmr-relation-bar__1 {
+  background-color: green;
+  border-end-start-radius: var(--rounded);
+  border-start-start-radius: var(--rounded);
+  opacity: 0.4;
+}
+
+.play__card__mmr-relation-bar__2 {
+  background-color: rgb(80 241 80);
+  opacity: 0.4;
+}
+
+.play__card__mmr-relation-bar__3 {
+  background-color: rgb(184 240 100);
+  opacity: 0.4;
+}
+
+.play__card__mmr-relation-bar__4 {
+  background-color: yellow;
+  opacity: 0.4;
+}
+
+.play__card__mmr-relation-bar__5 {
+  background-color: rgb(247 192 92);
+  opacity: 0.4;
+}
+
+.play__card__mmr-relation-bar__6 {
+  background-color: rgb(226 111 69);
+  opacity: 0.4;
+}
+
+.play__card__mmr-relation-bar__7 {
+  background-color: red;
+  border-end-end-radius: var(--rounded);
+  border-start-end-radius: var(--rounded);
+  opacity: 0.4;
+}
+
+.play__card__mmr-relation-bar__active {
+  opacity: 1;
+}
+
+.play__card__mmr-relation-bar__indicator {
+  display: grid;
+  width: 1.1rem;
+  width: 100%;
+  height: 100%;
+  place-items: center;
 }
 
 .play__card__replay {

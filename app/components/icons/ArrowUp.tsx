@@ -1,8 +1,17 @@
-export function ArrowUpIcon({ className }: { className?: string }) {
+import { CSSProperties } from "react";
+
+export function ArrowUpIcon({
+  className,
+  style,
+}: {
+  className?: string;
+  style: CSSProperties;
+}) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       className={className}
+      style={style}
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
