@@ -250,13 +250,15 @@ export const loader: LoaderFunction = async ({ context }) => {
     LFGMatch.recentOfUser(user.id),
   ]);
 
-  if (!ownGroup) return redirect("/play");
   const redirectRes = resolveRedirect({
-    currentStatus: ownGroup.status,
+    currentStatus: ownGroup?.status,
     currentPage: "LOOKING",
-    matchId: ownGroup.matchId,
+    matchId: ownGroup?.matchId,
   });
   if (redirectRes) return redirectRes;
+
+  // should be redirected by now
+  invariant(ownGroup, "Unexpected no ownGroup");
 
   const lookingForMatch =
     ownGroup.type === "VERSUS" &&
