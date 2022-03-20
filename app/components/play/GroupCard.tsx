@@ -125,14 +125,16 @@ function MMRRelation({
     }
   };
   const gridColumn = () => {
-    const relationsOrdered = [
-      "LOW_LOWER",
+    const relationsOrdered: NonNullable<
+      LookingLoaderDataGroup["MMRRelation"]
+    >[] = [
+      "LOT_LOWER",
       "LOWER",
       "BIT_LOWER",
       "CLOSE",
       "BIT_HIGHER",
       "HIGHER",
-      "LOW_HIGHER",
+      "LOT_HIGHER",
     ];
 
     return {
