@@ -14,7 +14,7 @@ import {
   ADMIN_UUID,
   NZAP_TEST_AVATAR,
   NZAP_TEST_DISCORD_ID,
-  NZAP_TEST_UUID,
+  NZAP_UUID,
 } from "../../app/constants";
 import { createTournamentRounds } from "../../app/services/tournament";
 const prisma = new PrismaClient();
@@ -74,7 +74,7 @@ export async function seed(variation?: SeedVariations) {
 
     const userIdsInTheSystem = (await prisma.user.findMany())
       .map((u) => u.id)
-      .filter((id) => id !== ADMIN_UUID && id !== NZAP_TEST_UUID);
+      .filter((id) => id !== ADMIN_UUID && id !== NZAP_UUID);
     const remainingUserIdsForGroups = await lfgGroups(userIdsInTheSystem);
 
     if (variation === "match" || variation === "tournament-start") {
@@ -111,7 +111,7 @@ export async function seed(variation?: SeedVariations) {
     async function nzapUser() {
       return prisma.user.create({
         data: {
-          id: NZAP_TEST_UUID,
+          id: NZAP_UUID,
           discordDiscriminator: "6227",
           discordId: NZAP_TEST_DISCORD_ID,
           discordName: "N-ZAP",
@@ -395,7 +395,7 @@ export async function seed(variation?: SeedVariations) {
           {
             roomId: CURRENT_OUR_GROUP_UUID,
             content: "Hello there testing testing",
-            senderId: NZAP_TEST_UUID,
+            senderId: NZAP_UUID,
             createdAt: new Date(new Date().getTime() - 60000 * 2), // 2 minutes ago
           },
           {
@@ -476,7 +476,7 @@ export async function seed(variation?: SeedVariations) {
           memberId: ADMIN_UUID,
           captain: true,
         },
-        { memberId: NZAP_TEST_UUID },
+        { memberId: NZAP_UUID },
       ];
 
       if (lookingMatch) {

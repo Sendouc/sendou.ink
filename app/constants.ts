@@ -6,7 +6,7 @@ export const ADMIN_UUID = "ee2d82dd-624f-4b07-9d8d-ddee1f8fb36f";
 
 export const ADMIN_TEST_DISCORD_ID = "79237403620945920";
 export const ADMIN_TEST_AVATAR = "fcfd65a3bea598905abb9ca25296816b";
-export const NZAP_TEST_UUID = "fab649fe-3421-46e9-88cf-d10aa2153821";
+export const NZAP_UUID = "6cd9d01d-b724-498a-b706-eb70edd8a773";
 export const NZAP_TEST_DISCORD_ID = "455039198672453645";
 export const NZAP_TEST_AVATAR = "f809176af93132c3db5f0a5019e96339";
 
