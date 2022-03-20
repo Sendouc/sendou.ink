@@ -14,7 +14,10 @@ export function Message({
   return (
     <li className="chat__message">
       <div className="chat__message__message-header">
-        <div className="chat__message__sender">{data.sender.discordName}</div>
+        <div className="chat__message__sender">
+          {/* TODO: */}
+          {data.sender.discordName ?? ""}
+        </div>
         {userInfo && (
           <div className="chat__message__extra-info">{userInfo}</div>
         )}

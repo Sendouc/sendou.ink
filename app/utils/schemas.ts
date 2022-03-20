@@ -27,7 +27,8 @@ export const LoggedInUserSchema = z
         id: z.string(),
         discordId: z.string(),
         discordAvatar: z.string().nullable(),
-        discordName: z.string(),
+        // TODO: fix
+        discordName: z.string().nullish(),
       })
       .nullish(),
   })

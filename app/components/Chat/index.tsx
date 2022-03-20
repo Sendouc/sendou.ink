@@ -47,7 +47,8 @@ export function Chat({
                   content: sentMessage,
                   sender: {
                     id: user.id,
-                    discordName: user.discordName,
+                    // TODO:
+                    discordName: user.discordName!,
                   },
                 }}
                 userInfo={userInfos[user.id]}
