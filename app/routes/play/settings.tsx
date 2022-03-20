@@ -137,7 +137,6 @@ export default function PlaySettingsPage() {
           id="friend-code"
           name="friendCode"
           defaultValue={data.friendCode}
-          required
           pattern={friendCodeRegExpString}
           placeholder="8496-9128-4205"
         />
