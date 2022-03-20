@@ -30,13 +30,13 @@ export function GroupCard({
       case "LEAVE_GROUP":
         return "Leave group";
       case "LIKE":
-        return ranked ? "Let's play ranked?" : "Let's play unranked?";
+        return ranked ? "Let's play ranked?" : "Let's scrim?";
       case "UNLIKE":
         return "Undo";
       case "UNITE_GROUPS":
-        return ownGroupRanked ? "Group up (ranked)" : "Group up (unranked)";
+        return ownGroupRanked ? "Group up (ranked)" : "Group up (scrim)";
       case "MATCH_UP":
-        return ranked ? "Match up (ranked)" : "Match up (unranked)";
+        return ranked ? "Match up (ranked)" : "Match up (scrim)";
       case "LOOK_AGAIN":
         return "Stop looking";
       default:
