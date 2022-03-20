@@ -3,6 +3,7 @@ import type { CSSProperties } from "react";
 import { json, useLocation } from "remix";
 import type { EventTargetRecorder } from "server/events";
 import { z } from "zod";
+import { ADMIN_UUID } from "~/constants";
 import { LoggedInUserSchema } from "~/utils/schemas";
 
 export function flipObject<
@@ -54,6 +55,13 @@ export function requireEvents(ctx: unknown) {
     console.error(e);
     throw json("Events missing", { status: 500 });
   }
+}
+
+export function isTestUser(userId?: string) {
+  // latter is N-ZAP
+  return (
+    userId === ADMIN_UUID || userId === "6cd9d01d-b724-498a-b706-eb70edd8a773"
+  );
 }
 
 // https://stackoverflow.com/a/57888548
