@@ -9,13 +9,16 @@ import {
   LoaderFunction,
   MetaFunction,
   redirect,
+  ShouldReloadFunction,
   useActionData,
   useLoaderData,
+  useParams,
   useTransition,
 } from "remix";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 import { Button } from "~/components/Button";
+import { Chat } from "~/components/Chat";
 import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { ClockIcon } from "~/components/icons/Clock";
 import { ModeImage } from "~/components/ModeImage";
@@ -46,7 +49,11 @@ import {
   UserLean,
   validate,
 } from "~/utils";
-import { sendouQAddPlayersPage, sendouQFrontPage } from "~/utils/urls";
+import {
+  chatRoute,
+  sendouQAddPlayersPage,
+  sendouQFrontPage,
+} from "~/utils/urls";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -233,13 +240,17 @@ export const action: ActionFunction = async ({
   return { ok: data._action };
 };
 
+export const unstable_shouldReload: ShouldReloadFunction = (data) => {
+  return data.submission?.action !== chatRoute();
+};
+
 export interface LFGMatchLoaderData {
   /** Can the user counterpick and report scores? */
   isCaptain: boolean;
   isOwnMatch: boolean;
   isRanked: boolean;
   createdAtTimestamp: number;
-  groups: { id: string; members: UserLean[] }[];
+  groups: { id: string; members: (UserLean & { friendCode?: string })[] }[];
   mapList: {
     name: string;
     mode: Mode;
@@ -290,6 +301,7 @@ export const loader: LoaderFunction = async ({ params, context }) => {
           discordAvatar: g.user.discordAvatar,
           discordName: g.user.discordName,
           discordDiscriminator: g.user.discordDiscriminator,
+          friendCode: g.user.friendCode ?? undefined,
         })),
       };
     });
@@ -333,14 +345,22 @@ export default function LFGMatchPage() {
   const user = useUser();
   const [adminEditActive, setAdminEditActive] = React.useState(false);
 
-  const showPlayAgainSection = () => {
-    if (!data.isCaptain) return false;
-    if (!data.scores) return false;
+  const params = useParams();
+  invariant(params.id, "!params.id");
 
+  const matchStartedInTheLastHour = () => {
     const oneHourAgo = new Date(
       new Date().getTime() - 60 * 60 * 1_000
     ).getTime();
-    if (data.createdAtTimestamp < oneHourAgo) return false;
+    if (data.createdAtTimestamp > oneHourAgo) return true;
+
+    return false;
+  };
+
+  const showPlayAgainSection = () => {
+    if (!data.isCaptain) return false;
+    if (!data.scores) return false;
+    if (!matchStartedInTheLastHour()) return false;
 
     return true;
   };
@@ -352,216 +372,234 @@ export default function LFGMatchPage() {
   }, [actionData]);
 
   return (
-    <div>
-      {actionData?.error === "DIFFERENT_SCORE" && (
-        <div className="play-match__error">
-          The score you reported is different from what your opponent reported.
-          If you think the information below is wrong notify us on the #helpdesk
-          channel of our <a href={DISCORD_URL}>Discord</a> channel
-        </div>
-      )}
-      <div className="play-match__waves">
-        <MatchTeams />
-        <div className="play-match__time">
-          {new Date(data.createdAtTimestamp).toLocaleString("en-us", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "numeric",
-            minute: "numeric",
-          })}
-        </div>
-        {!data.isRanked && (
-          <div className="play-match__waves-section play-match__info">
-            This is your match! You can reach out to your opponents{" "}
-            <a href={DISCORD_URL}>our Discord</a> in the{" "}
-            <code>#match-meetup</code> channel.
-          </div>
-        )}
-        {showPlayAgainSection() && (
-          <Form method="post">
-            <div className="play-match__waves-section play-match__play-again-container">
-              {actionData?.error === "ALREADY_IN_GROUP" ? (
-                <span className="text-color-error">
-                  Some group member is already in a new group
-                </span>
-              ) : (
-                <>
-                  Want to play again?
-                  <Button
-                    name="_action"
-                    value="PLAY_AGAIN_SAME_GROUP"
-                    tiny
-                    className="play-match__play-again-button"
-                  >
-                    Same group
-                  </Button>
-                  <Button
-                    name="_action"
-                    value="PLAY_AGAIN_DIFFERENT_GROUP"
-                    variant="outlined"
-                    tiny
-                    className="play-match__play-again-button"
-                  >
-                    New group
-                  </Button>
-                </>
-              )}
-            </div>
-          </Form>
-        )}
-        {data.scores && !adminEditActive && (
-          <div className="play-match__played-map-list">
-            {data.mapList
-              .filter((stage) => typeof stage.winner === "number")
-              .map((stage) => {
-                const pointsScored = stage.detail?.teams.map((t) => t.score);
-                const [biggerScore, smallerScore] = (pointsScored ?? []).sort(
-                  (a, b) => b - a
-                );
-                const secondsToDisplay = (duration: number) => {
-                  let minutes = 0;
-                  let seconds = duration;
-
-                  while (seconds >= 60) {
-                    seconds -= 60;
-                    minutes++;
-                  }
-
-                  return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-                };
-                const leftTeamDetails = stage.detail?.teams.find(
-                  (t) =>
-                    (t.isWinner && stage.winner === 0) ||
-                    (!t.isWinner && stage.winner === 1)
-                );
-                const rightTeamDetails = stage.detail?.teams.find(
-                  (t) =>
-                    (t.isWinner && stage.winner === 1) ||
-                    (!t.isWinner && stage.winner === 0)
-                );
-
-                return (
-                  <React.Fragment key={`${stage.name}-${stage.mode}`}>
-                    <div
-                      className={clsx("play-match__checkmark", "left", {
-                        invisible: stage.winner !== 0,
-                      })}
-                    >
-                      <CheckmarkIcon />
-                    </div>
-                    <div className="play-match__played-stage">
-                      <ModeImage
-                        className="play-match__played-mode"
-                        mode={stage.mode}
-                      />
-                      {stage.name}
-                      {stage.detail?.duration && (
-                        <div className="play-match__clock">
-                          <ClockIcon />{" "}
-                          {secondsToDisplay(stage.detail.duration)}
-                        </div>
-                      )}
-                      {pointsScored && (
-                        <div className="play-match__stage-score">
-                          {pointsScored.some((p) => p === 100) ? (
-                            "KO"
-                          ) : (
-                            <>
-                              {stage.winner === 0 ? biggerScore : smallerScore}-
-                              {stage.winner === 1 ? biggerScore : smallerScore}
-                            </>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                    <div
-                      className={clsx("play-match__checkmark", {
-                        invisible: stage.winner !== 1,
-                      })}
-                    >
-                      <CheckmarkIcon />
-                    </div>
-                    {leftTeamDetails && rightTeamDetails && (
-                      <>
-                        <DetailedPlayers players={leftTeamDetails.players} />
-                        <div className="play-match__players-spacer" />
-                        <DetailedPlayers
-                          players={rightTeamDetails.players}
-                          bravo
-                        />
-                      </>
-                    )}
-                  </React.Fragment>
-                );
-              })}
-          </div>
-        )}
-        {isAdmin(user?.id) && data.scores && (
-          <Form method="post">
-            <div className="flex justify-center mt-4 gap-4">
-              <Button
-                tiny
-                variant={adminEditActive ? "destructive" : undefined}
-                onClick={() => setAdminEditActive((isActive) => !isActive)}
-                type="button"
-              >
-                {adminEditActive ? "Cancel" : "Edit"}
-              </Button>
-              {!adminEditActive && (
-                <SubmitButton
-                  tiny
-                  variant="destructive"
-                  name="_action"
-                  value="DELETE_MATCH"
-                  actionType="DELETE_MATCH"
-                  onClick={(e) => {
-                    if (!confirm("Delete match?")) {
-                      e.preventDefault();
-                    }
-                  }}
-                  loadingText="Deleting..."
-                >
-                  Delete
-                </SubmitButton>
-              )}
-            </div>
-          </Form>
-        )}
-      </div>
-      {!data.isRanked && (
-        <div className="play-match__waves-button">
-          <Form method="post">
-            <Button
-              type="submit"
-              name="_action"
-              value="LOOK_AGAIN"
-              tiny
-              variant="outlined"
-              loading={transition.state !== "idle"}
-            >
-              Look again
-            </Button>
-          </Form>
-        </div>
-      )}
-      {(!data.scores || adminEditActive) && data.isRanked && (
-        <MapList
-          mapList={data.mapList}
-          reportedWinnerIds={data.mapList
-            .filter((m) => typeof m.winner === "number")
-            .map((m) => {
-              const winnerGroup = data.groups[m.winner as number];
-              invariant(winnerGroup, "Unexpected winnerGroup is undefined");
-              return winnerGroup.id;
-            })}
-          canSubmitScore={data.isCaptain || isAdmin(user?.id)}
-          groupIds={{
-            our: data.groups[0].id,
-            their: data.groups[1].id,
-          }}
+    <>
+      {data.isOwnMatch && matchStartedInTheLastHour() && (
+        <Chat
+          id={params.id}
+          userInfos={Object.fromEntries(
+            data.groups
+              .flatMap((g) => g.members)
+              .flatMap((m) => (m.friendCode ? [[m.id, m.friendCode]] : []))
+          )}
         />
       )}
-    </div>
+      <div>
+        {actionData?.error === "DIFFERENT_SCORE" && (
+          <div className="play-match__error">
+            The score you reported is different from what your opponent
+            reported. If you think the information below is wrong notify us on
+            the #helpdesk channel of our <a href={DISCORD_URL}>Discord</a>{" "}
+            channel
+          </div>
+        )}
+        <div className="play-match__waves">
+          <MatchTeams />
+          <div className="play-match__time">
+            {new Date(data.createdAtTimestamp).toLocaleString("en-us", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            })}
+          </div>
+          {!data.isRanked && (
+            <div className="play-match__waves-section play-match__info">
+              This is your match! You can reach out to your opponents{" "}
+              <a href={DISCORD_URL}>our Discord</a> in the{" "}
+              <code>#match-meetup</code> channel.
+            </div>
+          )}
+          {showPlayAgainSection() && (
+            <Form method="post">
+              <div className="play-match__waves-section play-match__play-again-container">
+                {actionData?.error === "ALREADY_IN_GROUP" ? (
+                  <span className="text-color-error">
+                    Some group member is already in a new group
+                  </span>
+                ) : (
+                  <>
+                    Want to play again?
+                    <Button
+                      name="_action"
+                      value="PLAY_AGAIN_SAME_GROUP"
+                      tiny
+                      className="play-match__play-again-button"
+                    >
+                      Same group
+                    </Button>
+                    <Button
+                      name="_action"
+                      value="PLAY_AGAIN_DIFFERENT_GROUP"
+                      variant="outlined"
+                      tiny
+                      className="play-match__play-again-button"
+                    >
+                      New group
+                    </Button>
+                  </>
+                )}
+              </div>
+            </Form>
+          )}
+          {data.scores && !adminEditActive && (
+            <div className="play-match__played-map-list">
+              {data.mapList
+                .filter((stage) => typeof stage.winner === "number")
+                .map((stage) => {
+                  const pointsScored = stage.detail?.teams.map((t) => t.score);
+                  const [biggerScore, smallerScore] = (pointsScored ?? []).sort(
+                    (a, b) => b - a
+                  );
+                  const secondsToDisplay = (duration: number) => {
+                    let minutes = 0;
+                    let seconds = duration;
+
+                    while (seconds >= 60) {
+                      seconds -= 60;
+                      minutes++;
+                    }
+
+                    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+                  };
+                  const leftTeamDetails = stage.detail?.teams.find(
+                    (t) =>
+                      (t.isWinner && stage.winner === 0) ||
+                      (!t.isWinner && stage.winner === 1)
+                  );
+                  const rightTeamDetails = stage.detail?.teams.find(
+                    (t) =>
+                      (t.isWinner && stage.winner === 1) ||
+                      (!t.isWinner && stage.winner === 0)
+                  );
+
+                  return (
+                    <React.Fragment key={`${stage.name}-${stage.mode}`}>
+                      <div
+                        className={clsx("play-match__checkmark", "left", {
+                          invisible: stage.winner !== 0,
+                        })}
+                      >
+                        <CheckmarkIcon />
+                      </div>
+                      <div className="play-match__played-stage">
+                        <ModeImage
+                          className="play-match__played-mode"
+                          mode={stage.mode}
+                        />
+                        {stage.name}
+                        {stage.detail?.duration && (
+                          <div className="play-match__clock">
+                            <ClockIcon />{" "}
+                            {secondsToDisplay(stage.detail.duration)}
+                          </div>
+                        )}
+                        {pointsScored && (
+                          <div className="play-match__stage-score">
+                            {pointsScored.some((p) => p === 100) ? (
+                              "KO"
+                            ) : (
+                              <>
+                                {stage.winner === 0
+                                  ? biggerScore
+                                  : smallerScore}
+                                -
+                                {stage.winner === 1
+                                  ? biggerScore
+                                  : smallerScore}
+                              </>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                      <div
+                        className={clsx("play-match__checkmark", {
+                          invisible: stage.winner !== 1,
+                        })}
+                      >
+                        <CheckmarkIcon />
+                      </div>
+                      {leftTeamDetails && rightTeamDetails && (
+                        <>
+                          <DetailedPlayers players={leftTeamDetails.players} />
+                          <div className="play-match__players-spacer" />
+                          <DetailedPlayers
+                            players={rightTeamDetails.players}
+                            bravo
+                          />
+                        </>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+            </div>
+          )}
+          {isAdmin(user?.id) && data.scores && (
+            <Form method="post">
+              <div className="flex justify-center mt-4 gap-4">
+                <Button
+                  tiny
+                  variant={adminEditActive ? "destructive" : undefined}
+                  onClick={() => setAdminEditActive((isActive) => !isActive)}
+                  type="button"
+                >
+                  {adminEditActive ? "Cancel" : "Edit"}
+                </Button>
+                {!adminEditActive && (
+                  <SubmitButton
+                    tiny
+                    variant="destructive"
+                    name="_action"
+                    value="DELETE_MATCH"
+                    actionType="DELETE_MATCH"
+                    onClick={(e) => {
+                      if (!confirm("Delete match?")) {
+                        e.preventDefault();
+                      }
+                    }}
+                    loadingText="Deleting..."
+                  >
+                    Delete
+                  </SubmitButton>
+                )}
+              </div>
+            </Form>
+          )}
+        </div>
+        {!data.isRanked && (
+          <div className="play-match__waves-button">
+            <Form method="post">
+              <Button
+                type="submit"
+                name="_action"
+                value="LOOK_AGAIN"
+                tiny
+                variant="outlined"
+                loading={transition.state !== "idle"}
+              >
+                Look again
+              </Button>
+            </Form>
+          </div>
+        )}
+        {(!data.scores || adminEditActive) && data.isRanked && (
+          <MapList
+            mapList={data.mapList}
+            reportedWinnerIds={data.mapList
+              .filter((m) => typeof m.winner === "number")
+              .map((m) => {
+                const winnerGroup = data.groups[m.winner as number];
+                invariant(winnerGroup, "Unexpected winnerGroup is undefined");
+                return winnerGroup.id;
+              })}
+            canSubmitScore={data.isCaptain || isAdmin(user?.id)}
+            groupIds={{
+              our: data.groups[0].id,
+              their: data.groups[1].id,
+            }}
+          />
+        )}
+      </div>
+    </>
   );
 }

@@ -43,9 +43,7 @@ const mockUserFromHTTPCall: { user: LoggedInUser | null } = { user: null };
 
 const events: EventTargetRecorder = {
   bracket: {},
-  lfg: {
-    likes: {},
-  },
+  chat: {},
 };
 
 try {

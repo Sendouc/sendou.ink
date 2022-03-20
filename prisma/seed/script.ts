@@ -21,6 +21,7 @@ const prisma = new PrismaClient();
 
 const mapListDE = `{"losers":[[{"id":4647,"name":"Kelp Dome","mode":"SZ"},{"id":4658,"name":"Blackbelly Skatepark","mode":"TC"},{"id":4645,"name":"Manta Maria","mode":"CB"}],[{"id":4624,"name":"Inkblot Art Academy","mode":"RM"},{"id":4707,"name":"Ancho-V Games","mode":"SZ"},{"id":4618,"name":"Humpback Pump Track","mode":"TC"}],[{"id":4692,"name":"Camp Triggerfish","mode":"SZ"},{"id":4665,"name":"MakoMart","mode":"CB"},{"id":4634,"name":"Moray Towers","mode":"RM"}],[{"id":4609,"name":"Musselforge Fitness","mode":"RM"},{"id":4647,"name":"Kelp Dome","mode":"SZ"},{"id":4678,"name":"Arowana Mall","mode":"TC"}],[{"id":4705,"name":"New Albacore Hotel","mode":"CB"},{"id":4644,"name":"Manta Maria","mode":"RM"},{"id":4707,"name":"Ancho-V Games","mode":"SZ"}],[{"id":4657,"name":"Blackbelly Skatepark","mode":"SZ"},{"id":4690,"name":"Piranha Pit","mode":"CB"},{"id":4682,"name":"Goby Arena","mode":"SZ"},{"id":4678,"name":"Arowana Mall","mode":"TC"},{"id":4624,"name":"Inkblot Art Academy","mode":"RM"}]],"winners":[[{"id":4677,"name":"Arowana Mall","mode":"SZ"},{"id":4665,"name":"MakoMart","mode":"CB"},{"id":4618,"name":"Humpback Pump Track","mode":"TC"}],[{"id":4624,"name":"Inkblot Art Academy","mode":"RM"},{"id":4683,"name":"Goby Arena","mode":"TC"},{"id":4692,"name":"Camp Triggerfish","mode":"SZ"}],[{"id":4647,"name":"Kelp Dome","mode":"SZ"},{"id":4634,"name":"Moray Towers","mode":"RM"},{"id":4707,"name":"Ancho-V Games","mode":"SZ"},{"id":4610,"name":"Musselforge Fitness","mode":"CB"},{"id":4658,"name":"Blackbelly Skatepark","mode":"TC"}],[{"id":4644,"name":"Manta Maria","mode":"RM"},{"id":4677,"name":"Arowana Mall","mode":"SZ"},{"id":4690,"name":"Piranha Pit","mode":"CB"},{"id":4682,"name":"Goby Arena","mode":"SZ"},{"id":4618,"name":"Humpback Pump Track","mode":"TC"}],[{"id":4624,"name":"Inkblot Art Academy","mode":"RM"},{"id":4707,"name":"Ancho-V Games","mode":"SZ"},{"id":4610,"name":"Musselforge Fitness","mode":"CB"},{"id":4657,"name":"Blackbelly Skatepark","mode":"SZ"},{"id":4693,"name":"Camp Triggerfish","mode":"TC"},{"id":4664,"name":"MakoMart","mode":"RM"},{"id":4647,"name":"Kelp Dome","mode":"SZ"}],[{"id":4617,"name":"Humpback Pump Track","mode":"SZ"},{"id":4635,"name":"Moray Towers","mode":"CB"},{"id":4682,"name":"Goby Arena","mode":"SZ"},{"id":4644,"name":"Manta Maria","mode":"RM"},{"id":4678,"name":"Arowana Mall","mode":"TC"},{"id":4692,"name":"Camp Triggerfish","mode":"SZ"},{"id":4705,"name":"New Albacore Hotel","mode":"CB"}]]}`;
 const PAST_OUR_GROUP_UUID = "69a5f3a1-f8c2-4f1a-92ae-c4e3d439f456";
+const CURRENT_OUR_GROUP_UUID = "0d098ef6-1a5e-4418-9314-7f7c6ba8091b";
 const PAST_OPPONENT_GROUP_UUID = "7b0a0799-e2a6-49a0-a0c7-5f9d0dd3260d";
 
 export async function seed(variation?: SeedVariations) {
@@ -52,6 +53,7 @@ export async function seed(variation?: SeedVariations) {
     await prisma.lfgGroupMember.deleteMany();
     await prisma.lfgGroup.deleteMany();
     await prisma.skill.deleteMany();
+    await prisma.chatMessage.deleteMany();
     await prisma.user.deleteMany();
     await prisma.lfgGroupMatchStage.deleteMany();
 
@@ -68,6 +70,7 @@ export async function seed(variation?: SeedVariations) {
     await trustRelationship(nzapUserCreated.id, adminUserCreated.id);
     await tournamentAddMaps(tournament.id);
     await skills();
+    await chatMessages();
 
     const userIdsInTheSystem = (await prisma.user.findMany())
       .map((u) => u.id)
@@ -100,6 +103,7 @@ export async function seed(variation?: SeedVariations) {
           twitter: "sendouc",
           miniBio: "Test bio\nXP3100 on my alt\n5-0 FTWin (close games)",
           weapons: ["Tenta Brella", "Mini Splatling", "Luna Blaster"],
+          friendCode: "0109-3838-9398",
         },
       });
     }
@@ -383,6 +387,28 @@ export async function seed(variation?: SeedVariations) {
       }
     }
 
+    async function chatMessages() {
+      if (variation !== "looking") return;
+
+      await prisma.chatMessage.createMany({
+        data: [
+          {
+            roomId: CURRENT_OUR_GROUP_UUID,
+            content: "Hello there testing testing",
+            senderId: NZAP_TEST_UUID,
+            createdAt: new Date(new Date().getTime() - 60000 * 2), // 2 minutes ago
+          },
+          {
+            roomId: CURRENT_OUR_GROUP_UUID,
+            content:
+              "Goo Tuber Goo Tuber Goo Tuber Goo Tuber Goo Tuber Goo Tuber Goo Tuber Goo Tuber Goo Tuber Goo Tuber Goo Tuber Goo Tuber 1234-4123",
+            senderId: ADMIN_UUID,
+            createdAt: new Date(new Date().getTime() - 60000), // 1 minutes ago
+          },
+        ],
+      });
+    }
+
     async function lfgGroups(userIds: string[]) {
       function randomIntFromInterval(min: number, max: number) {
         // min and max included
@@ -475,6 +501,7 @@ export async function seed(variation?: SeedVariations) {
 
       return prisma.lfgGroup.create({
         data: {
+          id: CURRENT_OUR_GROUP_UUID,
           status: "LOOKING",
           type: "VERSUS",
           ranked: true,

@@ -25,10 +25,15 @@ export function update({
   userId,
   miniBio,
   weapons,
+  friendCode,
 }: {
   userId: string;
   miniBio: Nullable<string>;
   weapons: string[];
+  friendCode: Nullable<string>;
 }) {
-  return db.user.update({ where: { id: userId }, data: { miniBio, weapons } });
+  return db.user.update({
+    where: { id: userId },
+    data: { miniBio, weapons, friendCode },
+  });
 }

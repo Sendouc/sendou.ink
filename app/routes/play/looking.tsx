@@ -6,11 +6,13 @@ import {
   LoaderFunction,
   MetaFunction,
   redirect,
+  ShouldReloadFunction,
   useLoaderData,
 } from "remix";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 import { Alert } from "~/components/Alert";
+import { Chat } from "~/components/Chat";
 import { FinishedGroup } from "~/components/play/FinishedGroup";
 import { GroupCard } from "~/components/play/GroupCard";
 import { LookingInfoText } from "~/components/play/LookingInfoText";
@@ -36,6 +38,7 @@ import {
   UserLean,
   validate,
 } from "~/utils";
+import { chatRoute } from "~/utils/urls";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -220,6 +223,7 @@ export type LookingLoaderDataGroup = {
     peakXP?: number;
     peakLP?: number;
     miniBio?: string;
+    friendCode?: string;
   })[];
   MMRRelation?:
     | "LOT_LOWER"
@@ -231,6 +235,10 @@ export type LookingLoaderDataGroup = {
     | "LOT_HIGHER";
   ranked?: boolean;
   replay?: boolean;
+};
+
+export const unstable_shouldReload: ShouldReloadFunction = (data) => {
+  return data.submission?.action !== chatRoute();
 };
 
 export interface LookingLoaderData {
@@ -276,6 +284,7 @@ export const loader: LoaderFunction = async ({ context }) => {
         members: ownGroupWithMembers.members.map((m) => {
           return {
             miniBio: m.user.miniBio ?? undefined,
+            friendCode: m.user.friendCode ?? undefined,
             discordAvatar: m.user.discordAvatar,
             discordId: m.user.discordId,
             discordName: m.user.discordName,
@@ -355,80 +364,95 @@ export default function LookingPage() {
       data.neutralGroups.length >
     0;
 
+  invariant(data.ownGroup.members, "!data.ownGroup.members");
   return (
-    <div>
-      <GroupCard
-        group={data.ownGroup}
-        ranked={data.ownGroup.ranked}
-        isOwnGroup
-        action={data.isCaptain ? "LOOK_AGAIN" : "LEAVE_GROUP"}
-        // we can stop looking or leave team
-        // even if team is expired
-        showAction
-      />
-      <LookingInfoText lastUpdated={lastUpdated} />
-      <hr className="play-looking__divider" />
-      {thereIsAGroup ? (
-        <>
-          <Tab
-            containerClassName="play-looking__tabs"
-            tabListClassName="play-looking__tab-list"
-            defaultIndex={1}
-            tabs={columns.map((column) => ({
-              id: column.type,
-              title: column.title,
-              content: (
-                <div className="play-looking__cards">
-                  {column.groups.map((group) => {
-                    return (
-                      <GroupCard
-                        key={group.id}
-                        group={group}
-                        action={column.action}
-                        showAction={canTakeAction}
-                        ranked={
-                          column.type === "LIKES_RECEIVED" && !lookingForMatch
-                            ? data.ownGroup.ranked
-                            : group.ranked
-                        }
-                        ownGroupRanked={data.ownGroup.ranked}
-                      />
-                    );
-                  })}
-                </div>
-              ),
-            }))}
-          />
-          <div className="play-looking__columns">
-            {columns.map((column) => (
-              <div key={column.type}>
-                <h2 className="play-looking__column-header">{column.title}</h2>
-                <div className="play-looking__cards">
-                  {column.groups.map((group) => {
-                    return (
-                      <GroupCard
-                        key={group.id}
-                        group={group}
-                        action={column.action}
-                        showAction={canTakeAction}
-                        ranked={
-                          column.type === "LIKES_RECEIVED" && !lookingForMatch
-                            ? data.ownGroup.ranked
-                            : group.ranked
-                        }
-                        ownGroupRanked={data.ownGroup.ranked}
-                      />
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
-          </div>
-        </>
-      ) : (
-        <Alert type="info">Right now there is no other group looking.</Alert>
+    <>
+      {data.ownGroup.members.length > 1 && (
+        <Chat
+          id={data.ownGroup.id}
+          userInfos={Object.fromEntries(
+            data.ownGroup.members.flatMap((m) =>
+              m.friendCode ? [[m.id, m.friendCode]] : []
+            )
+          )}
+        />
       )}
-    </div>
+      <div>
+        <GroupCard
+          group={data.ownGroup}
+          ranked={data.ownGroup.ranked}
+          isOwnGroup
+          action={data.isCaptain ? "LOOK_AGAIN" : "LEAVE_GROUP"}
+          // we can stop looking or leave team
+          // even if team is expired
+          showAction
+        />
+        <LookingInfoText lastUpdated={lastUpdated} />
+        <hr className="play-looking__divider" />
+        {thereIsAGroup ? (
+          <>
+            <Tab
+              containerClassName="play-looking__tabs"
+              tabListClassName="play-looking__tab-list"
+              defaultIndex={1}
+              tabs={columns.map((column) => ({
+                id: column.type,
+                title: column.title,
+                content: (
+                  <div className="play-looking__cards">
+                    {column.groups.map((group) => {
+                      return (
+                        <GroupCard
+                          key={group.id}
+                          group={group}
+                          action={column.action}
+                          showAction={canTakeAction}
+                          ranked={
+                            column.type === "LIKES_RECEIVED" && !lookingForMatch
+                              ? data.ownGroup.ranked
+                              : group.ranked
+                          }
+                          ownGroupRanked={data.ownGroup.ranked}
+                        />
+                      );
+                    })}
+                  </div>
+                ),
+              }))}
+            />
+            <div className="play-looking__columns">
+              {columns.map((column) => (
+                <div key={column.type}>
+                  <h2 className="play-looking__column-header">
+                    {column.title}
+                  </h2>
+                  <div className="play-looking__cards">
+                    {column.groups.map((group) => {
+                      return (
+                        <GroupCard
+                          key={group.id}
+                          group={group}
+                          action={column.action}
+                          showAction={canTakeAction}
+                          ranked={
+                            column.type === "LIKES_RECEIVED" && !lookingForMatch
+                              ? data.ownGroup.ranked
+                              : group.ranked
+                          }
+                          ownGroupRanked={data.ownGroup.ranked}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        ) : (
+          <Alert type="info">Right now there is no other group looking.</Alert>
+        )}
+      </div>
+    </>
   );
 }
 

@@ -566,6 +566,109 @@ hr {
   border-radius: 14px;
 }
 
+.chat__fab {
+  position: fixed;
+  z-index: 50;
+  bottom: 20px;
+  left: 50%;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  box-shadow: 0 2px 2px 0 var(--theme-transparent),
+    0 1px 5px 0 var(--theme-transparent),
+    0 3px 1px -2px var(--theme-transparent);
+  transform: translate(-50%);
+}
+
+.chat__fab:active {
+  transform: translate(-50%);
+}
+
+.chat__fab__icon {
+  width: 28px;
+}
+
+.chat__window {
+  position: fixed;
+  z-index: 50;
+  bottom: 50px;
+  left: 50%;
+  display: flex;
+  width: 20rem;
+  height: 30rem;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--s-2) var(--s-3);
+  background-color: var(--bg-darker-transparent);
+  border-radius: var(--rounded);
+  transform: translate(-50%);
+}
+
+@supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+  .chat__window {
+    -webkit-backdrop-filter: blur(10px) brightness(75%);
+    backdrop-filter: blur(10px) brightness(75%);
+    background-color: transparent;
+  }
+}
+
+.chat__messages {
+  display: flex;
+  overflow: auto;
+  max-height: 24rem;
+  flex-direction: column;
+  padding: 0;
+  gap: var(--s-1-5);
+}
+
+.chat__message {
+  line-height: 1.4;
+  list-style: none;
+}
+
+.chat__message__message-header {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--s-1-5);
+}
+
+.chat__message__sender {
+  color: #fff;
+  font-size: var(--fonts-sm);
+  font-weight: var(--semi-bold);
+}
+
+.chat__message__extra-info {
+  color: var(--text-lighter);
+  font-size: var(--fonts-xxs);
+  font-weight: var(--semi-bold);
+  margin-block-end: 1px;
+}
+
+.chat__message__time {
+  color: var(--text-lighter);
+  font-size: var(--fonts-xxs);
+  white-space: nowrap;
+}
+
+.chat__message__content {
+  font-size: var(--fonts-xs);
+}
+
+.chat__message__content.sending {
+  opacity: 0.6;
+}
+
+.chat__input-container {
+  display: flex;
+  gap: var(--s-2);
+  margin-block-end: var(--s-8);
+}
+
+.chat__message__input {
+  width: 100%;
+}
+
 /* Utility classes */
 
 .mt-2 {
@@ -598,6 +701,10 @@ hr {
 
 .ml-2 {
   margin-inline-start: var(--s-2);
+}
+
+.mr-2 {
+  margin-inline-end: var(--s-2);
 }
 
 .my-1-5 {
@@ -642,6 +749,10 @@ hr {
 
 .items-center {
   align-items: center;
+}
+
+.gap-2 {
+  gap: var(--s-2);
 }
 
 .gap-4 {

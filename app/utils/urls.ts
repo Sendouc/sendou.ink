@@ -22,3 +22,8 @@ export function sendouQAddPlayersPage() {
 export function sendouQMatchPage(matchId: string) {
   return `/play/match/${matchId}`;
 }
+
+export function chatRoute(roomIds?: string[]) {
+  if (!roomIds || roomIds.length === 0) return "/chat";
+  return `/chat?${roomIds.map((id) => `id=${id}`).join("&")}`;
+}

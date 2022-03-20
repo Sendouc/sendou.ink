@@ -3,6 +3,7 @@ import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
 import { BracketModified } from "~/services/bracket";
 import type { Unpacked } from "~/utils";
+import { ChatLoaderData } from "~/routes/chat";
 
 export type BracketData = {
   number: Unpacked<Unpacked<BracketModified["rounds"]>["matches"]>["number"];
@@ -13,29 +14,19 @@ export type BracketData = {
     | Unpacked<Unpacked<BracketModified["rounds"]>["matches"]>["score"]
     | null;
 }[];
-
-export type GroupLikeData =
-  | {
-      action: "RELOAD";
-    }
-  | {
-      groupId: string;
-      action: "LIKE" | "UNLIKE";
-    };
-
-type BracketEventCollection<T> = {
-  id: string;
-  event: (data: T) => void;
-}[];
-
 export interface EventTargetRecorder {
   bracket: {
-    [bracketId: string]: BracketEventCollection<BracketData>;
+    [bracketId: string]: {
+      id: string;
+      event: (data: BracketData) => void;
+    }[];
   };
-  lfg: {
-    likes: {
-      [groupId: string]: BracketEventCollection<GroupLikeData>;
-    };
+  chat: {
+    [roomId: string]: {
+      id: string;
+      userId: string;
+      event: (data: Unpacked<ChatLoaderData["messages"]>) => void;
+    }[];
   };
 }
 
@@ -46,8 +37,9 @@ const TargetSchema = z.union([
     bracketId: z.string(),
   }),
   z.object({
-    type: z.literal("likes"),
-    groupId: z.string(),
+    type: z.literal("chat"),
+    roomId: z.string(),
+    userId: z.string(),
   }),
 ]);
 
@@ -69,10 +61,9 @@ export function setUpEvents(app: Express, events: EventTargetRecorder): void {
     res.flushHeaders();
 
     const id = uuidv4();
-    eventsArray().push({
-      id,
-      event: (data: unknown) => sendEvent({ res, data }),
-    });
+
+    // @ts-expect-error TODO: figure out how to do types here correctly
+    eventsArray().push(eventsArrayContent());
 
     res.on("close", () => {
       filterInPlace(eventsArray(), (elem) => elem.id !== id);
@@ -86,10 +77,31 @@ export function setUpEvents(app: Express, events: EventTargetRecorder): void {
           events.bracket[target.bracketId] = result;
           return result;
         }
-        case "likes": {
-          const result = events.lfg.likes[target.groupId] ?? [];
-          events.lfg.likes[target.groupId] = result;
+        case "chat": {
+          const result = events.chat[target.roomId] ?? [];
+          events.chat[target.roomId] = result;
           return result;
+        }
+      }
+    }
+
+    function eventsArrayContent() {
+      switch (target.type) {
+        case "bracket": {
+          return {
+            id,
+            event: (data: unknown) => sendEvent({ res, data }),
+          };
+        }
+        case "chat": {
+          return {
+            id,
+            event: (data: unknown) => sendEvent({ res, data }),
+            userId: target.userId,
+          };
+        }
+        default: {
+          throw new Error(`Unknown target: ${JSON.stringify(target)}`);
         }
       }
     }

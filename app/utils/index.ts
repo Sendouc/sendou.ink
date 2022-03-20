@@ -42,6 +42,7 @@ export function getUser(ctx: unknown) {
   return data?.user;
 }
 
+// TODO: this should instead return a function that does the for...of for you
 /** Get events object from context. Throws with 500 error if none found found. */
 export function requireEvents(ctx: unknown) {
   try {

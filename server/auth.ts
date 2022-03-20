@@ -53,6 +53,7 @@ export function setUpAuth(app: Express): void {
               id: user.id,
               discordId: user.discordId,
               discordAvatar: user.discordAvatar,
+              discordName: user.discordName,
             });
           })
           .catch((err: unknown) => {

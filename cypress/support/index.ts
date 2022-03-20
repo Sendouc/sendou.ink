@@ -34,6 +34,7 @@ Cypress.Commands.add("logIn", (user: MockUser) => {
       id: ADMIN_UUID,
       discordId: ADMIN_TEST_DISCORD_ID,
       discordAvatar: ADMIN_TEST_AVATAR,
+      discordName: "Sendou",
     },
   } as const;
 

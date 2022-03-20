@@ -32,6 +32,8 @@ export const CLOSE_MMR_LIMIT = 250;
 export const BIT_HIGHER_MMR_LIMIT = 500;
 export const HIGHER_MMR_LIMIT = 750;
 
+export const MAX_CHAT_MESSAGE_LENGTH = 280;
+
 export const checkInClosesDate = (startTime: string): Date => {
   return new Date(new Date(startTime).getTime() - 1000 * 10);
 };

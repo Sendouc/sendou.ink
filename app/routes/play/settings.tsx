@@ -27,6 +27,10 @@ import * as User from "~/models/User.server";
 import { z } from "zod";
 import { Combobox } from "~/components/Combobox";
 import { WeaponImage } from "~/components/WeaponImage";
+import {
+  friendCodeRegExp,
+  friendCodeRegExpString,
+} from "~/core/tournament/utils";
 
 export const meta: MetaFunction = () => {
   return {
@@ -47,6 +51,7 @@ const settingsActionSchema = z.object({
     safeJSONParse,
     z.array(z.enum(weapons)).max(LFG_WEAPON_POOL_MAX_LENGTH)
   ),
+  friendCode: z.preprocess(falsyToNull, z.string().regex(friendCodeRegExp)),
 });
 
 export const action: ActionFunction = async ({ request, context }) => {
@@ -60,6 +65,7 @@ export const action: ActionFunction = async ({ request, context }) => {
     userId: user.id,
     miniBio: data.miniBio,
     weapons: data.weapons,
+    friendCode: data.friendCode,
   });
 
   return null;
@@ -68,16 +74,18 @@ export const action: ActionFunction = async ({ request, context }) => {
 export type SettingsLoaderData = {
   miniBio?: string;
   weapons: string[];
+  friendCode?: string;
 };
 
 export const loader: ActionFunction = async ({ context }) => {
   const user = requireUser(context);
 
-  const { miniBio, weapons } = (await User.findById(user.id)) ?? {};
+  const { miniBio, weapons, friendCode } = (await User.findById(user.id)) ?? {};
 
   return json<SettingsLoaderData>({
     miniBio: miniBio ?? undefined,
     weapons: weapons ?? [],
+    friendCode: friendCode ?? undefined,
   });
 };
 
@@ -117,6 +125,23 @@ export default function PlaySettingsPage() {
         >
           {miniBio.length}/{MINI_BIO_MAX_LENGTH}
         </div>
+
+        <label className="play-settings__label mt-4" htmlFor="friend-code">
+          Friend Code
+        </label>
+        <div className="play-settings__explanation">
+          Shown in the chat window next to your name to make it easy for others
+          to add you.
+        </div>
+        <input
+          id="friend-code"
+          name="friendCode"
+          defaultValue={data.friendCode}
+          required
+          pattern={friendCodeRegExpString}
+          placeholder="8496-9128-4205"
+        />
+
         <label className="play-settings__label mt-4" htmlFor="weapon-pool">
           Weapon pool
         </label>

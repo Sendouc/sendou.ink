@@ -19,6 +19,7 @@ model User {
   youtubeId            String?
   youtubeName          String?
   miniBio              String?
+  friendCode           String?
   weapons              String[]
   createdAt            DateTime                    @default(now())
   updatedAt            DateTime                    @updatedAt
@@ -30,6 +31,7 @@ model User {
   tournamentMatches    TournamentMatchGameResult[]
   lfgGroups            LfgGroupMember[]
   skill                Skill[]
+  chatMessages         ChatMessage[]
 }
 
 model Organization {
@@ -273,8 +275,7 @@ model LfgGroupMatch {
 }
 
 model LfgGroupMatchStage {
-  // TODO: this should be a required id field
-  id              String?       @unique @default(uuid())
+  id              String        @id @default(uuid())
   lfgGroupMatchId String
   stageId         Int
   order           Int
@@ -372,4 +373,13 @@ model GameDetailPlayer {
   team             GameDetailTeam @relation(fields: [gameDetailTeamId], references: [id])
 
   @@id([gameDetailTeamId, principalId])
+}
+
+model ChatMessage {
+  id        Int      @id @default(autoincrement())
+  content   String
+  senderId  String
+  roomId    String
+  createdAt DateTime @default(now())
+  sender    User     @relation(fields: [senderId], references: [id])
 }
