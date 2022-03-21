@@ -51,7 +51,10 @@ const settingsActionSchema = z.object({
     safeJSONParse,
     z.array(z.enum(weapons)).max(LFG_WEAPON_POOL_MAX_LENGTH)
   ),
-  friendCode: z.preprocess(falsyToNull, z.string().regex(friendCodeRegExp)),
+  friendCode: z.preprocess(
+    falsyToNull,
+    z.string().regex(friendCodeRegExp).nullable()
+  ),
 });
 
 export const action: ActionFunction = async ({ request, context }) => {
