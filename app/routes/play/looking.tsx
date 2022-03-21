@@ -200,7 +200,6 @@ export const action: ActionFunction = async ({ request, context }) => {
       return redirect("/play");
     }
     case "UNEXPIRE": {
-      validateIsGroupAdmin();
       await LFGGroup.unexpire(ownGroup.id);
       break;
     }
