@@ -29,7 +29,7 @@ export function MobileNav({
                   first: i === 0,
                   last: i + 1 === navGroup.items.length,
                 })}
-                to={navItem.disabled ? "/" : navItem.name}
+                to={navItem.disabled ? "/" : navItem.url ?? navItem.name}
                 onClick={closeMenu}
                 data-cy={`mobile-nav-link-${navItem.name}`}
               >
@@ -39,7 +39,7 @@ export function MobileNav({
                   })}
                   src={`/img/layout/${navItem.name.replace(" ", "")}.webp`}
                 />
-                <div>{navItem.name}</div>
+                <div>{navItem.displayName ?? navItem.name}</div>
               </Link>
             ))}
           </Fragment>
