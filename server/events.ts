@@ -52,6 +52,7 @@ export function setUpEvents(app: Express, events: EventTargetRecorder): void {
     res.setHeader("Content-Type", "text/event-stream");
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Connection", "keep-alive");
+    res.setHeader("X-Accel-Buffering", "no");
 
     // https://stackoverflow.com/a/69938612
     // Without this Express compression prevents any messages from being
