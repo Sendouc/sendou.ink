@@ -50,7 +50,7 @@ export const Layout = React.memo(function Layout({
                   className={clsx("layout__nav__link", {
                     disabled: navItem.disabled,
                   })}
-                  to={navItem.disabled ? "/" : navItem.name}
+                  to={navItem.disabled ? "/" : navItem.url ?? navItem.name}
                   data-cy={`nav-link-${navItem.name}`}
                 >
                   <img
@@ -59,7 +59,7 @@ export const Layout = React.memo(function Layout({
                     width="32"
                     height="32"
                   />
-                  {navItem.name}
+                  {navItem.displayName ?? navItem.name}
                 </Link>
               ))}
             </div>

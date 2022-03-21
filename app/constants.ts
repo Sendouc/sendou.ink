@@ -38,7 +38,15 @@ export const checkInClosesDate = (startTime: string): Date => {
   return new Date(new Date(startTime).getTime() - 1000 * 10);
 };
 
-export const navItems = [
+export const navItems: {
+  title: string;
+  items: {
+    name: string;
+    disabled: boolean;
+    displayName?: string;
+    url?: string;
+  }[];
+}[] = [
   {
     title: "builds",
     items: [
@@ -51,7 +59,7 @@ export const navItems = [
     title: "play",
     items: [
       { name: "calendar", disabled: true },
-      { name: "play", disabled: false },
+      { name: "sendouq", disabled: false, displayName: "SendouQ", url: "play" },
       { name: "rankings", disabled: true },
     ],
   },
@@ -70,7 +78,7 @@ export const navItems = [
       { name: "links", disabled: true },
     ],
   },
-] as const;
+];
 
 export const weapons = [
   "Sploosh-o-matic",
