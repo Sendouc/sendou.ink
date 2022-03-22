@@ -4,6 +4,7 @@ import { json, useLocation } from "remix";
 import type { EventTargetRecorder } from "server/events";
 import { z } from "zod";
 import { ADMIN_UUID, NZAP_UUID } from "~/constants";
+import { EnvironmentVariable } from "~/root";
 import { LoggedInUserSchema } from "~/utils/schemas";
 
 export function flipObject<
@@ -55,11 +56,6 @@ export function requireEvents(ctx: unknown) {
     console.error(e);
     throw json("Events missing", { status: 500 });
   }
-}
-
-export function isTestUser(userId?: string) {
-  // latter is N-ZAP
-  return userId === ADMIN_UUID || userId === NZAP_UUID;
 }
 
 // https://stackoverflow.com/a/57888548
@@ -159,6 +155,22 @@ export function falsyToNull(value: unknown): unknown {
   if (value) return value;
 
   return null;
+}
+
+export function isFeatureFlagOn({
+  flag,
+  userId,
+}: {
+  flag: keyof EnvironmentVariable;
+  userId?: string;
+}) {
+  if (typeof window === "undefined") return false;
+
+  if (window.ENV[flag] === "admin") {
+    return userId === ADMIN_UUID || userId === NZAP_UUID;
+  }
+
+  return window.ENV[flag] === "true";
 }
 
 export type Serialized<T> = {

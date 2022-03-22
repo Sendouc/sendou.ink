@@ -40,7 +40,7 @@ import * as LFGMatch from "~/models/LFGMatch.server";
 import styles from "~/styles/play-match.css";
 import {
   getUser,
-  isTestUser,
+  isFeatureFlagOn,
   listToUserReadableString,
   makeTitle,
   parseRequestFormData,
@@ -376,7 +376,7 @@ export default function LFGMatchPage() {
     <>
       {data.isOwnMatch &&
         matchStartedInTheLastHour() &&
-        isTestUser(user?.id) && (
+        isFeatureFlagOn({ flag: "FF_ENABLE_CHAT", userId: user?.id }) && (
           <Chat
             id={params.id}
             users={Object.fromEntries(

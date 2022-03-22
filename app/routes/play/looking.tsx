@@ -32,7 +32,7 @@ import * as LFGGroup from "~/models/LFGGroup.server";
 import * as LFGMatch from "~/models/LFGMatch.server";
 import styles from "~/styles/play-looking.css";
 import {
-  isTestUser,
+  isFeatureFlagOn,
   makeTitle,
   parseRequestFormData,
   requireUser,
@@ -368,17 +368,18 @@ export default function LookingPage() {
   invariant(data.ownGroup.members, "!data.ownGroup.members");
   return (
     <>
-      {data.ownGroup.members.length > 1 && isTestUser(user?.id) && (
-        <Chat
-          id={data.ownGroup.id}
-          users={Object.fromEntries(
-            data.ownGroup.members.map((m) => [
-              m.id,
-              { name: m.discordName, info: m.friendCode },
-            ])
-          )}
-        />
-      )}
+      {data.ownGroup.members.length > 1 &&
+        isFeatureFlagOn({ flag: "FF_ENABLE_CHAT", userId: user?.id }) && (
+          <Chat
+            id={data.ownGroup.id}
+            users={Object.fromEntries(
+              data.ownGroup.members.map((m) => [
+                m.id,
+                { name: m.discordName, info: m.friendCode },
+              ])
+            )}
+          />
+        )}
       <div>
         <GroupCard
           group={data.ownGroup}

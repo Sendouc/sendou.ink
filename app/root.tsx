@@ -1,7 +1,16 @@
 import * as React from "react";
-import { Links, LiveReload, Meta, Outlet, Scripts, useCatch } from "remix";
+import {
+  json,
+  Links,
+  LiveReload,
+  Meta,
+  Outlet,
+  Scripts,
+  useCatch,
+  useLoaderData,
+} from "remix";
 import type { LinksFunction, LoaderFunction } from "remix";
-import { LoggedInUserSchema } from "~/utils/schemas";
+import { LoggedInUser, LoggedInUserSchema } from "~/utils/schemas";
 import { Layout } from "./components/Layout";
 import { Catcher } from "./components/Catcher";
 import resetStyles from "~/styles/reset.css";
@@ -17,11 +26,27 @@ export const links: LinksFunction = () => {
   ];
 };
 
+export interface EnvironmentVariable {
+  FF_ENABLE_CHAT?: "true" | "admin" | string;
+}
+
+export interface RootLoaderData {
+  user?: LoggedInUser;
+  baseURL: string;
+  ENV: EnvironmentVariable;
+}
+
 export const loader: LoaderFunction = ({ context }) => {
   const data = LoggedInUserSchema.parse(context as unknown);
   const baseURL = process.env.FRONT_PAGE_URL ?? "http://localhost:5800/";
 
-  return { user: data?.user, baseURL };
+  return json<RootLoaderData>({
+    user: data?.user,
+    baseURL,
+    ENV: {
+      FF_ENABLE_CHAT: process.env.FF_ENABLE_CHAT,
+    },
+  });
 };
 
 export const unstable_shouldReload = () => false;
@@ -43,6 +68,8 @@ function Document({
   children: React.ReactNode;
   title?: string;
 }) {
+  const data = useLoaderData<RootLoaderData>();
+
   return (
     <html lang="en">
       <head>
@@ -54,6 +81,11 @@ function Document({
       </head>
       <body>
         {children}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.ENV = ${JSON.stringify(data.ENV)}`,
+          }}
+        />
         <Scripts />
         {process.env.NODE_ENV === "development" && <LiveReload />}
       </body>
