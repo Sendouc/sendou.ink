@@ -371,10 +371,11 @@ export default function LookingPage() {
       {data.ownGroup.members.length > 1 && isTestUser(user?.id) && (
         <Chat
           id={data.ownGroup.id}
-          userInfos={Object.fromEntries(
-            data.ownGroup.members.flatMap((m) =>
-              m.friendCode ? [[m.id, m.friendCode]] : []
-            )
+          users={Object.fromEntries(
+            data.ownGroup.members.map((m) => [
+              m.id,
+              { name: m.discordName, info: m.friendCode },
+            ])
           )}
         />
       )}

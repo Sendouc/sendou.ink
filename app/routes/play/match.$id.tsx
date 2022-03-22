@@ -379,10 +379,10 @@ export default function LFGMatchPage() {
         isTestUser(user?.id) && (
           <Chat
             id={params.id}
-            userInfos={Object.fromEntries(
+            users={Object.fromEntries(
               data.groups
                 .flatMap((g) => g.members)
-                .flatMap((m) => (m.friendCode ? [[m.id, m.friendCode]] : []))
+                .map((m) => [m.id, { name: m.discordName, info: m.friendCode }])
             )}
           />
         )}

@@ -9,10 +9,10 @@ import useChat from "./useChat";
 
 export function Chat({
   id,
-  userInfos,
+  users,
 }: {
   id: string;
-  userInfos: { [id: string]: string };
+  users: { [id: string]: { info?: string; name: string } };
 }) {
   const user = useUser();
   const {
@@ -33,25 +33,25 @@ export function Chat({
       {isOpen && (
         <div className="chat__window">
           <ul className="chat__messages" ref={containerRef}>
-            {messages?.map((message) => (
-              <Message
-                key={message.id}
-                data={message}
-                userInfo={userInfos[message.sender.id]}
-              />
-            ))}
-            {sentMessage && (
+            {messages
+              ?.filter((message) => users[message.sender.id])
+              .map((message) => (
+                <Message
+                  key={message.id}
+                  data={message}
+                  user={users[message.sender.id]}
+                />
+              ))}
+            {sentMessage && users[user.id] && (
               <Message
                 data={{
                   createdAtTimestamp: new Date().getTime(),
                   content: sentMessage,
                   sender: {
                     id: user.id,
-                    // TODO:
-                    discordName: user.discordName!,
                   },
                 }}
-                userInfo={userInfos[user.id]}
+                user={users[user.id]}
                 sending
               />
             )}

@@ -5,21 +5,18 @@ import { Unpacked } from "~/utils";
 export function Message({
   data,
   sending,
-  userInfo,
+  user,
 }: {
   data: Omit<Unpacked<ChatLoaderData["messages"]>, "roomId" | "id">;
   sending?: boolean;
-  userInfo?: string;
+  user: { info?: string; name: string };
 }) {
   return (
     <li className="chat__message">
       <div className="chat__message__message-header">
-        <div className="chat__message__sender">
-          {/* TODO: */}
-          {data.sender.discordName ?? ""}
-        </div>
-        {userInfo && (
-          <div className="chat__message__extra-info">{userInfo}</div>
+        <div className="chat__message__sender">{user.name}</div>
+        {user.info && (
+          <div className="chat__message__extra-info">{user.info}</div>
         )}
       </div>
 

@@ -39,9 +39,6 @@ export const action: ActionFunction = async ({ request, context }) => {
     roomId: messageFromDb.roomId,
     sender: {
       id: user.id,
-      // TODO: fix
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      discordName: user.discordName!,
     },
   };
 
@@ -63,7 +60,6 @@ export interface ChatLoaderData {
     content: string;
     sender: {
       id: string;
-      discordName: string;
     };
     createdAtTimestamp: number;
     roomId: string;
