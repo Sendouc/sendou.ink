@@ -1,7 +1,7 @@
-import { EnvironmentVariable } from "~/root";
+import { EnvironmentVariables } from "~/root";
 
 declare global {
   interface Window {
-    ENV: EnvironmentVariable;
+    ENV: EnvironmentVariables;
   }
 }

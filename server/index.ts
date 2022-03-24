@@ -4,11 +4,12 @@
 import { createRequestHandler } from "@remix-run/express";
 import compression from "compression";
 import express from "express";
+import { createServer } from "http";
+import { Server as SocketServer } from "socket.io";
 import morgan from "morgan";
 import path from "path";
 import { LoggedInUser } from "~/utils/schemas";
 import { setUpAuth } from "./auth";
-import { EventTargetRecorder, setUpEvents } from "./events";
 import { setUpMockAuth } from "./mock-auth";
 import { setUpSeed } from "./seed";
 
@@ -18,6 +19,9 @@ const PUBLIC_DIR = path.join(process.cwd(), "public");
 const BROWSER_BUILD_DIR = "/build/";
 
 const app = express();
+const httpServer = createServer(app);
+const io = new SocketServer(httpServer);
+
 app.disable("x-powered-by");
 app.use(compression());
 
@@ -41,16 +45,10 @@ app.use(morgan("tiny"));
 
 const mockUserFromHTTPCall: { user: LoggedInUser | null } = { user: null };
 
-const events: EventTargetRecorder = {
-  bracket: {},
-  chat: {},
-};
-
 try {
   setUpAuth(app);
   setUpMockAuth(app, mockUserFromHTTPCall);
   setUpSeed(app);
-  setUpEvents(app, events);
 } catch (err) {
   console.error(err);
 }
@@ -71,7 +69,7 @@ function userToContext(req: Express.Request) {
 }
 
 function getLoadContext(req: Express.Request) {
-  return { events, user: userToContext(req) };
+  return { socket: io, user: userToContext(req) };
 }
 
 app.all(
@@ -80,6 +78,6 @@ app.all(
 );
 
 const port = process.env.PORT ?? 5800;
-app.listen(port, () => {
-  console.log(`Express server listening on port ${port}`);
+httpServer.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
 });

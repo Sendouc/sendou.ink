@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useLoaderData, useMatches, useNavigate } from "remix";
-import type { SSETarget } from "server/events";
 import { z } from "zod";
 import { LoggedInUserSchema } from "~/utils/schemas";
 
@@ -16,34 +15,6 @@ export const useBaseURL = () => {
 
   const parsed = z.object({ baseURL: z.string() }).parse(root.data);
   return parsed.baseURL;
-};
-
-export const useEvents = (
-  target: SSETarget,
-  handleEvent: (data: unknown) => void
-) => {
-  React.useEffect(() => {
-    const source = new EventSource(
-      `/events?${new URLSearchParams(target).toString()}`
-    );
-
-    // source.addEventListener("open", () => {
-    //   console.log("SSE opened!");
-    // });
-
-    source.addEventListener("message", (e) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      handleEvent(JSON.parse(e.data));
-    });
-
-    source.addEventListener("error", (e) => {
-      console.error("SSE error: ", e);
-    });
-
-    return () => {
-      source.close();
-    };
-  }, []);
 };
 
 // TODO: fix causes memory leak

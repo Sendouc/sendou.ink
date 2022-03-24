@@ -1,7 +1,8 @@
 import * as React from "react";
 import { useFetcher } from "remix";
 import invariant from "tiny-invariant";
-import { useEvents, useUser } from "~/hooks/common";
+import { useUser } from "~/hooks/common";
+import { useSocketEvent } from "~/hooks/useSocketEvent";
 import { ChatActionData, ChatLoaderData } from "~/routes/chat";
 import { Unpacked } from "~/utils";
 import { chatRoute } from "~/utils/urls";
@@ -20,11 +21,9 @@ export default function useChat(id: string) {
   const user = useUser();
   invariant(user, "!user");
 
-  useEvents({ type: "chat", roomId: id, userId: user.id }, (data: unknown) => {
-    setMessagesAfterLoad((messages) => [
-      ...messages,
-      data as Unpacked<ChatLoaderData["messages"]>,
-    ]);
+  useSocketEvent(`chat-${id}`, (data: Unpacked<ChatLoaderData["messages"]>) => {
+    if (data.sender.id === user.id) return;
+    setMessagesAfterLoad((messages) => [...messages, data]);
     setIsOpen(true);
   });
 

@@ -1,21 +1,15 @@
-import { LinksFunction, LoaderFunction, Outlet } from "remix";
+import { LinksFunction, LoaderFunction, Outlet, useLoaderData } from "remix";
 import { ActionFunction, json, useMatches } from "remix";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 import { BracketActions } from "~/components/tournament/BracketActions";
 import { EliminationBracket } from "~/components/tournament/EliminationBracket";
 import { BEST_OF_OPTIONS, TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
-import { useBracketDataWithEvents } from "~/hooks/useBracketDataWithEvents";
 import type { BracketModified } from "~/services/bracket";
 import { bracketById, reportScore, undoLastScore } from "~/services/bracket";
 import type { FindTournamentByNameForUrlI } from "~/services/tournament";
 import styles from "~/styles/tournament-bracket.css";
-import {
-  parseRequestFormData,
-  requireEvents,
-  requireUser,
-  safeJSONParse,
-} from "~/utils";
+import { parseRequestFormData, requireUser, safeJSONParse } from "~/utils";
 import { useUser } from "~/hooks/common";
 
 export const links: LinksFunction = () => {
@@ -67,11 +61,11 @@ export const action: ActionFunction = async ({
   });
   invariant(typeof params.bid === "string", "Expected params.bid to be string");
   const user = requireUser(context);
-  const events = requireEvents(context);
+  //const events = requireEvents(context);
 
   switch (data._action) {
     case "REPORT_SCORE": {
-      const bracketData = await reportScore({
+      /*const bracketData = */ await reportScore({
         matchId: data.matchId,
         playerIds: data.playerIds,
         userId: user.id,
@@ -79,26 +73,26 @@ export const action: ActionFunction = async ({
         position: data.position,
         bracketId: params.bid,
       });
-      if (bracketData) {
-        for (const { event } of events.bracket[params.bid]) {
-          event(bracketData);
-        }
-      }
+      // if (bracketData) {
+      //   for (const { event } of events.bracket[params.bid]) {
+      //     event(bracketData);
+      //   }
+      // }
 
       return { ok: "REPORT_SCORE" };
     }
     case "UNDO_REPORT_SCORE": {
-      const bracketData = await undoLastScore({
+      /*const bracketData = */ await undoLastScore({
         matchId: data.matchId,
         position: data.position,
         userId: user.id,
       });
 
-      if (bracketData) {
-        for (const { event } of events.bracket[params.bid]) {
-          event(bracketData);
-        }
-      }
+      // if (bracketData) {
+      //   for (const { event } of events.bracket[params.bid]) {
+      //     event(bracketData);
+      //   }
+      // }
 
       return { ok: "UNDO_REPORT_SCORE" };
     }
@@ -122,7 +116,8 @@ export const loader: LoaderFunction = async ({ params }) => {
 
 // TODO: make bracket a bit smaller
 export default function BracketTabWrapper() {
-  const data = useBracketDataWithEvents();
+  // const data = useBracketDataWithEvents();
+  const data = useLoaderData<BracketModified>();
   const [, parentRoute] = useMatches();
   const { teams } = parentRoute.data as FindTournamentByNameForUrlI;
   const user = useUser();

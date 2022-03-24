@@ -1,6 +1,5 @@
 import type { Prisma } from ".prisma/client";
 import type { Stage, TeamOrder } from ".prisma/client";
-import type { BracketData } from "server/events";
 import invariant from "tiny-invariant";
 import {
   EliminationBracketSide,
@@ -9,6 +8,7 @@ import {
 } from "~/core/tournament/bracket";
 import { canReportMatchScore } from "~/core/tournament/permissions";
 import { matchIsOver } from "~/core/tournament/utils";
+import { BracketData } from "~/hooks/useBracketDataWithEvents";
 import * as TournamentBracket from "~/models/TournamentBracket.server";
 import * as TournamentMatch from "~/models/TournamentMatch.server";
 import { Unpacked } from "~/utils";

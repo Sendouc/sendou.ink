@@ -26,14 +26,14 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export interface EnvironmentVariable {
+export interface EnvironmentVariables {
   FF_ENABLE_CHAT?: "true" | "admin" | string;
 }
 
 export interface RootLoaderData {
   user?: LoggedInUser;
   baseURL: string;
-  ENV: EnvironmentVariable;
+  ENV: EnvironmentVariables;
 }
 
 export const loader: LoaderFunction = ({ context }) => {
@@ -53,9 +53,10 @@ export const unstable_shouldReload = () => false;
 
 export default function App() {
   const children = React.useMemo(() => <Outlet />, []);
+  const data = useLoaderData<RootLoaderData>();
 
   return (
-    <Document>
+    <Document ENV={data.ENV}>
       <Layout>{children}</Layout>
     </Document>
   );
@@ -64,12 +65,12 @@ export default function App() {
 function Document({
   children,
   title,
+  ENV,
 }: {
   children: React.ReactNode;
   title?: string;
+  ENV?: EnvironmentVariables;
 }) {
-  const data = useLoaderData<RootLoaderData>();
-
   return (
     <html lang="en">
       <head>
@@ -82,9 +83,13 @@ function Document({
       <body>
         {children}
         <script
-          dangerouslySetInnerHTML={{
-            __html: `window.ENV = ${JSON.stringify(data.ENV)}`,
-          }}
+          dangerouslySetInnerHTML={
+            ENV
+              ? {
+                  __html: `window.ENV = ${JSON.stringify(ENV)}`,
+                }
+              : undefined
+          }
         />
         <Scripts />
         {process.env.NODE_ENV === "development" && <LiveReload />}

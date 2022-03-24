@@ -1,10 +1,10 @@
 import { Mode } from "@prisma/client";
 import type { CSSProperties } from "react";
 import { json, useLocation } from "remix";
-import type { EventTargetRecorder } from "server/events";
+import type { Socket } from "socket.io-client";
 import { z } from "zod";
 import { ADMIN_UUID, NZAP_UUID } from "~/constants";
-import { EnvironmentVariable } from "~/root";
+import { EnvironmentVariables } from "~/root";
 import { LoggedInUserSchema } from "~/utils/schemas";
 
 export function flipObject<
@@ -44,18 +44,9 @@ export function getUser(ctx: unknown) {
   return data?.user;
 }
 
-// TODO: this should instead return a function that does the for...of for you
-/** Get events object from context. Throws with 500 error if none found found. */
-export function requireEvents(ctx: unknown) {
-  try {
-    const data = z.object({ events: z.unknown() }).parse(ctx);
-
-    // TODO: fix type assertion
-    return data.events as EventTargetRecorder;
-  } catch (e) {
-    console.error(e);
-    throw json("Events missing", { status: 500 });
-  }
+export function getSocket(ctx: unknown) {
+  //@ts-expect-error no way we validating this
+  return ctx.socket as Socket;
 }
 
 // https://stackoverflow.com/a/57888548
@@ -161,7 +152,7 @@ export function isFeatureFlagOn({
   flag,
   userId,
 }: {
-  flag: keyof EnvironmentVariable;
+  flag: keyof EnvironmentVariables;
   userId?: string;
 }) {
   if (typeof window === "undefined") return false;

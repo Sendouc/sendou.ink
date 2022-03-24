@@ -4,7 +4,7 @@ import { MAX_CHAT_MESSAGE_LENGTH } from "~/constants";
 import * as ChatMessage from "~/models/ChatMessage.server";
 import {
   parseRequestFormData,
-  requireEvents,
+  getSocket,
   requireUser,
   Unpacked,
 } from "~/utils";
@@ -24,7 +24,7 @@ export const action: ActionFunction = async ({ request, context }) => {
     schema: chatActionSchema,
   });
   const user = requireUser(context);
-  const events = requireEvents(context);
+  const socket = getSocket(context);
 
   const messageFromDb = await ChatMessage.create({
     content: data.message,
@@ -42,12 +42,7 @@ export const action: ActionFunction = async ({ request, context }) => {
     },
   };
 
-  for (const { event, userId } of events.chat[data.roomId]) {
-    // don't send chat message to yourself
-    if (userId === user.id) continue;
-
-    event(createdMessage);
-  }
+  socket.emit(`chat-${data.roomId}`, createdMessage);
 
   return json<ChatActionData>({
     createdMessage,
