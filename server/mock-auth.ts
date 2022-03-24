@@ -48,7 +48,6 @@ export function setUpMockAuth(
         discordAvatar: newMockUser.discordAvatar,
         discordId: newMockUser.discordId,
         id: newMockUser.id,
-        discordName: newMockUser.discordName,
       };
     } catch {
       return res.status(400).end();
