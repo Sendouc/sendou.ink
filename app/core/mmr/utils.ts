@@ -1,5 +1,5 @@
 import clone from "just-clone";
-import { expose, rate, Rating } from "ts-trueskill";
+import { rating, ordinal, rate } from "openskill";
 import { LFG_GROUP_FULL_SIZE, MMR_TOPX_VISIBILITY_CUTOFF } from "~/constants";
 import { PlayFrontPageLoader } from "~/routes/play/index";
 
@@ -17,7 +17,7 @@ export function skillArrayToMMR(
 }
 
 export function muSigmaToSP(skill: { mu: number; sigma: number }) {
-  return toTwoDecimals(expose(new Rating(skill.mu, skill.sigma)) * 10 + 1000);
+  return toTwoDecimals(ordinal(rating(skill)) * 10 + 1000);
 }
 
 interface TeamSkill {
@@ -37,7 +37,7 @@ export function teamSkillToExactMMR(teamSkills: TeamSkill[]) {
     teamSkillsClone.push({ user: { skill: [] } });
   }
 
-  const defaultRating = new Rating();
+  const defaultRating = rating();
   const skillsWithDefaults = teamSkillsClone.reduce((acc: TeamSkill[], cur) => {
     if (cur.user.skill.length === 0) {
       return [
@@ -84,9 +84,9 @@ export function adjustSkills({
 }): AdjustSkill[] {
   const mapToRatings = (id: string) => {
     const skill = skills.find((s) => s.userId === id);
-    if (!skill) return new Rating();
+    if (!skill) return rating();
 
-    return new Rating(skill.mu, skill.sigma);
+    return rating(skill);
   };
   const winningTeam = playerIds.winning.map(mapToRatings);
   const losingTeam = playerIds.losing.map(mapToRatings);
