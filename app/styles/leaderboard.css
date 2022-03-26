@@ -1,0 +1,39 @@
+.leaderboard__container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+
+.leaderboard__title {
+  font-size: var(--fonts-xl);
+  line-height: 2rem;
+  text-align: center;
+}
+
+.leaderboard__table {
+  margin: 0 auto;
+  border-collapse: collapse;
+  overflow-x: auto;
+}
+
+.leaderboard__table-header-cell {
+  font-size: var(--fonts-xs);
+  padding-inline-end: var(--s-2);
+  text-align: start;
+}
+
+.leaderboard__table__row:nth-child(2n) {
+  background-color: var(--theme-transparent);
+}
+
+.leaderboard__table__row > td {
+  margin-inline: var(--s-2);
+}
+
+.leaderboard__table__small-text-cell {
+  font-size: var(--fonts-xs);
+}
+
+.leaderboard__table__small-text-cell.secondary {
+  color: var(--text-lighter);
+}

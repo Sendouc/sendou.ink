@@ -13,6 +13,21 @@ export function findAllMostRecent() {
   });
 }
 
-export function findAll() {
-  return db.skill.findMany({ include: { match: true, user: true } });
+export function findAllByMonth({
+  month,
+  year,
+}: {
+  month: number;
+  year: number;
+}) {
+  const from = new Date(year, month - 1, 1);
+  // https://stackoverflow.com/questions/222309/calculate-last-day-of-month
+  const to = new Date(Date.UTC(year, month, 0));
+
+  return db.skill.findMany({
+    include: { match: true, user: true },
+    where: {
+      match: { AND: [{ createdAt: { gte: from } }, { createdAt: { lt: to } }] },
+    },
+  });
 }

@@ -6,7 +6,6 @@ import { muSigmaToSP } from "./utils";
 export interface LeaderboardEntry {
   MMR: number;
   user: UserLean;
-  createdAtTimestamp: number;
   entries: number;
 }
 type SkillInput = Pick<Skill, "mu" | "sigma" | "userId"> & {
@@ -35,7 +34,6 @@ export function skillsToLeaderboard(skills: SkillInput[]): LeaderboardEntry[] {
     if (!peakMMR[skill.userId] || peakMMR[skill.userId].MMR < MMR) {
       peakMMR[skill.userId] = {
         MMR,
-        createdAtTimestamp: skill.match?.createdAt.getTime() ?? 0,
         user: {
           discordAvatar: skill.user.discordAvatar,
           discordDiscriminator: skill.user.discordDiscriminator,
