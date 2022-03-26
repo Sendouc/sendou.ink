@@ -12,3 +12,7 @@ export function findAllMostRecent() {
     distinct: "userId",
   });
 }
+
+export function findAll() {
+  return db.skill.findMany({ include: { match: true, user: true } });
+}

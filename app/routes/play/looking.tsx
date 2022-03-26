@@ -53,7 +53,7 @@ export const meta: MetaFunction = ({
   return {
     title: makeTitle([
       data
-        ? `(${data.likedGroups.length}/${data.neutralGroups.length}/${data.likerGroups.length})`
+        ? `(${data.likedGroups?.length}/${data.neutralGroups?.length}/${data.likerGroups?.length})`
         : "(???)",
       "Looking",
     ]),
