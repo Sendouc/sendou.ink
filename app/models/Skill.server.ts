@@ -25,7 +25,7 @@ export function findAllByMonth({
   const to = new Date(Date.UTC(year, month, 0));
 
   return db.skill.findMany({
-    include: { match: true, user: true },
+    include: { match: { select: { createdAt: true } }, user: true },
     where: {
       match: { AND: [{ createdAt: { gte: from } }, { createdAt: { lt: to } }] },
     },

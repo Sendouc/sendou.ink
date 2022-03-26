@@ -1,16 +1,15 @@
 import { Skill } from "@prisma/client";
 import { AMOUNT_OF_ENTRIES_REQUIRED_FOR_LEADERBOARD } from "~/constants";
-import { UserLean } from "~/utils";
 import { muSigmaToSP } from "./utils";
 
 export interface LeaderboardEntry {
   MMR: number;
-  user: UserLean;
+  user: { id: string; discordName: string };
   entries: number;
 }
 type SkillInput = Pick<Skill, "mu" | "sigma" | "userId"> & {
   match: { createdAt: Date } | null;
-  user: UserLean;
+  user: { id: string; discordName: string };
 };
 type UserId = string;
 
@@ -35,9 +34,6 @@ export function skillsToLeaderboard(skills: SkillInput[]): LeaderboardEntry[] {
       peakMMR[skill.userId] = {
         MMR,
         user: {
-          discordAvatar: skill.user.discordAvatar,
-          discordDiscriminator: skill.user.discordDiscriminator,
-          discordId: skill.user.discordId,
           discordName: skill.user.discordName,
           id: skill.user.id,
         },
