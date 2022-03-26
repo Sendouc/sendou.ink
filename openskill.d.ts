@@ -6,5 +6,8 @@ type Rating = {
 declare module "openskill" {
   export function rating(rating?: Rating): Rating;
   export function ordinal(rating: Rating): number;
-  export function rate(ratings: [Rating[], Rating[]]): [Rating[], Rating[]];
+  export function rate(
+    ratings: [Rating[], Rating[]],
+    options: { tau: number; preventSigmaIncrease: boolean }
+  ): [Rating[], Rating[]];
 }

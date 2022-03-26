@@ -3,6 +3,8 @@ import { rating, ordinal, rate } from "openskill";
 import { LFG_GROUP_FULL_SIZE, MMR_TOPX_VISIBILITY_CUTOFF } from "~/constants";
 import { PlayFrontPageLoader } from "~/routes/play/index";
 
+const TAU = 0.3;
+
 /** Get first skill object of the array (should be ordered so that most recent skill is first) and convert it into MMR. */
 export function skillArrayToMMR(
   skills: {
@@ -91,7 +93,10 @@ export function adjustSkills({
   const winningTeam = playerIds.winning.map(mapToRatings);
   const losingTeam = playerIds.losing.map(mapToRatings);
 
-  const [ratedWinners, ratedLosers] = rate([winningTeam, losingTeam]);
+  const [ratedWinners, ratedLosers] = rate([winningTeam, losingTeam], {
+    tau: TAU,
+    preventSigmaIncrease: true,
+  });
   const ratedToReturnable =
     (side: "winning" | "losing") =>
     (rating: Rating, i: number): AdjustSkill => ({
