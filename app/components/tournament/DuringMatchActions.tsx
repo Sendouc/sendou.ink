@@ -1,6 +1,5 @@
 import { Form, useMatches } from "remix";
 import invariant from "tiny-invariant";
-import { resolveHostInfo } from "~/core/tournament/utils";
 import type { BracketModified } from "~/services/bracket";
 import type { FindTournamentByNameForUrlI } from "~/services/tournament";
 import { Unpacked } from "~/utils";
@@ -19,7 +18,7 @@ export function DuringMatchActions({
   currentRound: Unpacked<BracketModified["rounds"]>;
 }) {
   const [, parentRoute] = useMatches();
-  const { teams, seeds } = parentRoute.data as FindTournamentByNameForUrlI;
+  const { teams } = parentRoute.data as FindTournamentByNameForUrlI;
 
   const opponentTeam = teams.find(
     (team) =>
@@ -29,11 +28,12 @@ export function DuringMatchActions({
   );
   invariant(opponentTeam, "opponentTeam is undefined");
 
-  const { weHost, friendCodeToAdd, roomPass } = resolveHostInfo({
-    ourTeam: ownTeam,
-    theirTeam: opponentTeam,
-    seeds,
-  });
+  // TODO:
+  const { weHost, friendCodeToAdd, roomPass } = {
+    weHost: true,
+    friendCodeToAdd: "1234-1234-1234",
+    roomPass: "1324",
+  };
 
   const currentPosition =
     currentMatch.score?.reduce((acc, cur) => acc + cur, 1) ?? 1;

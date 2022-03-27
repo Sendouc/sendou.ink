@@ -12,21 +12,16 @@ import {
 } from "remix";
 import invariant from "tiny-invariant";
 import { Button } from "~/components/Button";
+import { Catcher } from "~/components/Catcher";
 import { FormErrorMessage } from "~/components/FormErrorMessage";
+import { Label } from "~/components/Label";
+import { useUser } from "~/hooks/common";
 import {
   createTournamentTeam,
   FindTournamentByNameForUrlI,
 } from "~/services/tournament";
 import styles from "~/styles/tournament-register.css";
-import { useUser } from "~/hooks/common";
 import { requireUser } from "~/utils";
-import { Catcher } from "~/components/Catcher";
-import {
-  friendCodeRegExp,
-  friendCodeRegExpString,
-} from "~/core/tournament/utils";
-import { FormInfoText } from "~/components/FormInfoText";
-import { Label } from "~/components/Label";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -39,7 +34,6 @@ type ActionData = {
   fieldErrors?: { teamName?: string };
   fields?: {
     teamName: string;
-    friendCode: string;
   };
 };
 
@@ -54,10 +48,6 @@ export const action: ActionFunction = async ({
     typeof data.tournamentId === "string",
     "Invalid type for tournament id"
   );
-  invariant(
-    typeof data.friendCode === "string",
-    "Invalid type for friend code"
-  );
 
   if (
     data.teamName.length < TEAM_NAME_MIN_LENGTH ||
@@ -69,10 +59,6 @@ export const action: ActionFunction = async ({
     );
   }
 
-  if (!friendCodeRegExp.test(data.friendCode)) {
-    return new Response("Invalid friend code", { status: 400 });
-  }
-
   const user = requireUser(context);
 
   // TODO: validate can register for tournament i.e. reg is open
@@ -81,7 +67,6 @@ export const action: ActionFunction = async ({
     await createTournamentTeam({
       teamName: data.teamName,
       tournamentId: data.tournamentId,
-      friendCode: data.friendCode,
       userId: user.id,
     });
   } catch (e) {
@@ -89,7 +74,7 @@ export const action: ActionFunction = async ({
       if (e.code === "P2002" && e.message.includes("`name`")) {
         return {
           fieldErrors: { teamName: "Team name already taken." },
-          fields: { teamName: data.teamName, friendCode: data.friendCode },
+          fields: { teamName: data.teamName },
         };
       }
     }
@@ -149,19 +134,6 @@ export default function RegisterPage() {
             data-cy="team-name-input"
           />
           <FormErrorMessage errorMsg={actionData?.fieldErrors?.teamName} />
-          <Label className="mt-3" htmlFor="friendCode">
-            Friend code for your opponents to add
-          </Label>
-          <input
-            name="friendCode"
-            id="friendCode"
-            defaultValue={actionData?.fields?.friendCode}
-            required
-            data-cy="friend-code-input"
-            placeholder="1234-1234-1234"
-            pattern={friendCodeRegExpString}
-          />
-          <FormInfoText>Friend code can be changed later</FormInfoText>
           <div className="tournament__register__buttons-container">
             <Button
               type="submit"

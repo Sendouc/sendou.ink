@@ -184,7 +184,6 @@ export async function seed(variation?: SeedVariations) {
           data: {
             name: "Kraken Paradise",
             tournamentId,
-            friendCode: "1234-1234-1234",
             inviteCode: "033e3695-0421-4aa1-a5ef-6ee82297a398",
             checkedInTime:
               variation === "match" || variation === "tournament-start"
@@ -220,7 +219,6 @@ export async function seed(variation?: SeedVariations) {
           data: {
             name: mockTeam,
             tournamentId,
-            friendCode: "0123-4567-8910",
             checkedInTime: memberCount >= 4 ? new Date() : undefined,
           },
         });

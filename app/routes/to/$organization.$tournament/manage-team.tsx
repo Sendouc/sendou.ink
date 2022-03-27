@@ -1,7 +1,6 @@
 import { Prisma } from ".prisma/client";
 import {
   ActionFunction,
-  Form,
   json,
   LinksFunction,
   LoaderFunction,
@@ -14,18 +13,9 @@ import { z } from "zod";
 import { AddPlayers } from "~/components/AddPlayers";
 import { Alert } from "~/components/Alert";
 import { Catcher } from "~/components/Catcher";
-import { FormInfoText } from "~/components/FormInfoText";
-import { Label } from "~/components/Label";
-import { SubmitButton } from "~/components/SubmitButton";
 import { TeamRoster } from "~/components/tournament/TeamRoster";
 import { TOURNAMENT_TEAM_ROSTER_MAX_SIZE } from "~/constants";
-import {
-  friendCodeRegExp,
-  friendCodeRegExpString,
-  roompassRegExp,
-  roompassRegExpString,
-  tournamentURL,
-} from "~/core/tournament/utils";
+import { tournamentURL } from "~/core/tournament/utils";
 import {
   isCaptainOfTheTeam,
   teamHasNotCheckedIn,
@@ -53,18 +43,6 @@ const actionSchema = z.union([
     _action: z.literal("DELETE_PLAYER"),
     userId: z.string().uuid(),
     teamId: z.string().uuid(),
-  }),
-  z.object({
-    _action: z.literal("EDIT_TEAM"),
-    teamId: z.string().uuid(),
-    friendCode: z.string().regex(friendCodeRegExp),
-    canHost: z
-      .enum(["yes", "no"])
-      .transform((val) => (val === "yes" ? true : false)),
-    roomPass: z.preprocess(
-      (val) => val || null,
-      z.string().regex(roompassRegExp).nullable()
-    ),
   }),
 ]);
 
@@ -135,24 +113,6 @@ export const action: ActionFunction = async ({
 
       return { ok: "DELETE_PLAYER" };
     }
-    case "EDIT_TEAM": {
-      const tournamentTeam = await TournamentTeam.findById(data.teamId);
-
-      validate(tournamentTeam, "Invalid team id");
-      validate(
-        isCaptainOfTheTeam(user, tournamentTeam),
-        "Not captain of the team"
-      );
-
-      await TournamentTeam.editTeam({
-        id: data.teamId,
-        canHost: data.canHost,
-        friendCode: data.friendCode,
-        roomPass: data.roomPass,
-      });
-
-      return { ok: "EDIT_TEAM" };
-    }
     default: {
       const exhaustive: never = data;
       throw new Response(`Unknown action: ${JSON.stringify(exhaustive)}`, {
@@ -217,83 +177,6 @@ export default function ManageTeamPage() {
       <div className="tournament__manage-team__roster-container">
         <TeamRoster team={ownTeam} deleteMode={!ownTeam.checkedInTime} />
       </div>
-      <Form method="post">
-        <input type="hidden" name="_action" value="EDIT_TEAM" />
-        <input type="hidden" name="teamId" value={ownTeam.id} />
-        <fieldset>
-          <legend>Edit team info</legend>
-          <Label htmlFor="friendCode">
-            Friend code for your opponents to add
-          </Label>
-          <input
-            name="friendCode"
-            id="friendCode"
-            defaultValue={ownTeam.friendCode}
-            required
-            pattern={friendCodeRegExpString}
-          />
-
-          <Label className="mt-3" htmlFor="roomPass">
-            Room password
-          </Label>
-          <input
-            name="roomPass"
-            id="roomPass"
-            defaultValue={ownTeam.roomPass ?? undefined}
-            placeholder="1234"
-            pattern={roompassRegExpString}
-          />
-          <FormInfoText>
-            If blank the password will be randomly generated whenever you host
-          </FormInfoText>
-
-          <Label className="mt-3" htmlFor="canHost">
-            Does your team want to host?
-          </Label>
-          <div className="tournament__manage-team__radio-with-label">
-            <input
-              type="radio"
-              id="yes"
-              name="canHost"
-              value="yes"
-              defaultChecked={ownTeam.canHost}
-            />
-            <Label
-              className="tournament__manage-team__radio-label"
-              htmlFor="yes"
-            >
-              Yes
-            </Label>
-          </div>
-
-          <div className="tournament__manage-team__radio-with-label">
-            <input
-              type="radio"
-              id="no"
-              name="canHost"
-              value="no"
-              defaultChecked={!ownTeam.canHost}
-            />
-            <Label
-              className="tournament__manage-team__radio-label"
-              htmlFor="no"
-            >
-              No
-            </Label>
-          </div>
-          <FormInfoText>
-            You might still have to host if both teams prefer not to
-          </FormInfoText>
-          <SubmitButton
-            className="mt-4"
-            loadingText="Saving..."
-            successText="Saved!"
-            actionType="EDIT_TEAM"
-          >
-            Save
-          </SubmitButton>
-        </fieldset>
-      </Form>
       {ownTeam.members.length < TOURNAMENT_TEAM_ROSTER_MAX_SIZE && (
         <AddPlayers
           pathname={location.pathname.replace("manage-team", "join-team")}

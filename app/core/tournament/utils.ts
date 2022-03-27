@@ -1,7 +1,5 @@
 import invariant from "tiny-invariant";
 import { ROOM_PASS_LENGTH } from "~/constants";
-import type { FindTournamentByNameForUrlI } from "~/services/tournament";
-import { Unpacked } from "~/utils";
 
 export function checkInHasStarted(checkInStartTime: string) {
   return new Date(checkInStartTime) < new Date();
@@ -58,43 +56,6 @@ export function matchIsOver(
   const [upperTeamScore, lowerTeamScore] = score;
   const half = bestOf / 2;
   return upperTeamScore > half || lowerTeamScore > half;
-}
-
-export function resolveHostInfo({
-  ourTeam,
-  theirTeam,
-  seeds,
-}: {
-  ourTeam: Unpacked<FindTournamentByNameForUrlI["teams"]>;
-  theirTeam: Unpacked<FindTournamentByNameForUrlI["teams"]>;
-  seeds: string[];
-}): { friendCodeToAdd: string; roomPass: string; weHost: boolean } {
-  const seededOrder = [ourTeam, theirTeam].sort(sortTeamsBySeed(seeds));
-  const weAreHigherSeed = seededOrder[0].id === ourTeam.id;
-
-  let weHost = false;
-  if (ourTeam.canHost && !theirTeam.canHost) weHost = true;
-  if (!ourTeam.canHost && !theirTeam.canHost && weAreHigherSeed) weHost = true;
-  const teamToHost = weHost ? ourTeam : theirTeam;
-
-  return {
-    weHost,
-    roomPass: teamToHost.roomPass ?? idToRoomPass(teamToHost.id),
-    friendCodeToAdd: teamToHost.friendCode,
-  };
-}
-
-function idToRoomPass(id: string) {
-  let pass = "";
-  for (const letter of id) {
-    if (pass.length === ROOM_PASS_LENGTH) break;
-    const maybeNumber = Number(letter);
-    if (Number.isNaN(maybeNumber)) continue;
-
-    pass += letter;
-  }
-
-  return pass;
 }
 
 export const tournamentURL = ({

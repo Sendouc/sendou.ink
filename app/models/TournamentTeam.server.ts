@@ -6,18 +6,15 @@ export function create({
   userId,
   teamName,
   tournamentId,
-  friendCode,
 }: {
   userId: string;
   teamName: string;
   tournamentId: string;
-  friendCode: string;
 }) {
   return db.tournamentTeam.create({
     data: {
       name: teamName.trim(),
       tournamentId,
-      friendCode,
       members: {
         create: {
           memberId: userId,
@@ -57,30 +54,6 @@ export function checkOut(id: string) {
     },
     data: {
       checkedInTime: null,
-    },
-  });
-}
-
-export type EditTeam = Prisma.PromiseReturnType<typeof editTeam>;
-export function editTeam({
-  id,
-  friendCode,
-  roomPass,
-  canHost,
-}: {
-  id: string;
-  friendCode: string;
-  roomPass: string | null;
-  canHost: boolean;
-}) {
-  return db.tournamentTeam.update({
-    where: {
-      id,
-    },
-    data: {
-      friendCode,
-      roomPass,
-      canHost,
     },
   });
 }

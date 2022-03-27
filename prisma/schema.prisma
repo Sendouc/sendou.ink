@@ -20,6 +20,7 @@ model User {
   youtubeName          String?
   miniBio              String?
   friendCode           String?
+  canVc                Boolean                     @default(false)
   weapons              String[]
   createdAt            DateTime                    @default(now())
   updatedAt            DateTime                    @updatedAt
@@ -94,9 +95,6 @@ model TournamentTeam {
   id            String                       @id @default(uuid())
   name          String
   tournamentId  String
-  canHost       Boolean                      @default(true)
-  friendCode    String
-  roomPass      String?
   inviteCode    String                       @default(uuid())
   checkedInTime DateTime?
   createdAt     DateTime                     @default(now())
