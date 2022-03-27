@@ -138,13 +138,17 @@ export function uniteGroups({
   removeCaptainsFromOther,
   unitedGroupIsRanked,
 }: UniteGroupsArgs) {
+  const survivingGroupUpdatedTimestamps = {
+    lastActionAt: new Date(),
+    createdAt: new Date(),
+  };
+
   return db.$transaction([
     db.lfgGroupMember.updateMany({
       where: { groupId: otherGroupId },
       data: {
         groupId: survivingGroupId,
         captain: removeCaptainsFromOther ? false : undefined,
-        // TODO: also reset message
       },
     }),
     db.lfgGroup.delete({ where: { id: otherGroupId } }),
@@ -157,8 +161,8 @@ export function uniteGroups({
       where: { id: survivingGroupId },
       data:
         typeof unitedGroupIsRanked === "boolean"
-          ? { ranked: unitedGroupIsRanked, lastActionAt: new Date() }
-          : { lastActionAt: new Date() },
+          ? { ranked: unitedGroupIsRanked, ...survivingGroupUpdatedTimestamps }
+          : survivingGroupUpdatedTimestamps,
     }),
   ]);
 }
