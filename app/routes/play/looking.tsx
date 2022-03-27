@@ -50,11 +50,14 @@ export const meta: MetaFunction = ({
 }: {
   data: Nullable<LookingLoaderData>;
 }) => {
+  if (!data) return { title: makeTitle("Looking") };
+  if (lookingOver(data.type, data.ownGroup)) {
+    return { title: makeTitle("Ready to play") };
+  }
+
   return {
     title: makeTitle([
-      data
-        ? `(${data.likedGroups?.length}/${data.neutralGroups?.length}/${data.likerGroups?.length})`
-        : "(???)",
+      `(${data.likedGroups?.length}/${data.neutralGroups?.length}/${data.likerGroups?.length})`,
       "Looking",
     ]),
   };
