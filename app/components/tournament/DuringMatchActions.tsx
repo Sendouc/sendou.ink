@@ -28,13 +28,6 @@ export function DuringMatchActions({
   );
   invariant(opponentTeam, "opponentTeam is undefined");
 
-  // TODO:
-  const { weHost, friendCodeToAdd, roomPass } = {
-    weHost: true,
-    friendCodeToAdd: "1234-1234-1234",
-    roomPass: "1324",
-  };
-
   const currentPosition =
     currentMatch.score?.reduce((acc, cur) => acc + cur, 1) ?? 1;
   const currentStage = currentRound.stages.find(
@@ -44,12 +37,6 @@ export function DuringMatchActions({
   const { stage } = currentStage;
 
   const roundInfos = [
-    <>
-      Add <b>{friendCodeToAdd}</b>
-    </>,
-    <>
-      Pass <b>{roomPass}</b> ({weHost ? "We" : "They"} host)
-    </>,
     <>
       <b>{currentMatch.score?.join("-")}</b> (Best of{" "}
       {currentRound.stages.length})
