@@ -406,13 +406,6 @@ export default function LFGMatchPage() {
               minute: "numeric",
             })}
           </div>
-          {!data.isRanked && (
-            <div className="play-match__waves-section play-match__info">
-              This is your match! You can reach out to your opponents{" "}
-              <a href={DISCORD_URL}>our Discord</a> in the{" "}
-              <code>#match-meetup</code> channel.
-            </div>
-          )}
           {showPlayAgainSection() && (
             <Form method="post">
               <div className="play-match__waves-section play-match__play-again-container">

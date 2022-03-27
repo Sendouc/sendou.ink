@@ -1,20 +1,31 @@
 import { Form, useLoaderData } from "remix";
-import { DISCORD_URL } from "~/constants";
+import { useUser } from "~/hooks/common";
 import { LookingLoaderData } from "~/routes/play/looking";
+import { isFeatureFlagOn } from "~/utils";
 import { Button } from "../Button";
+import { Chat } from "../Chat";
 import { GroupCard } from "./GroupCard";
 
 export function FinishedGroup() {
   const data = useLoaderData<LookingLoaderData>();
+  const user = useUser();
 
   return (
     <div>
+      {isFeatureFlagOn({ flag: "FF_ENABLE_CHAT", userId: user?.id }) &&
+        data.ownGroup.members && (
+          <Chat
+            id={data.ownGroup.id}
+            users={Object.fromEntries(
+              data.ownGroup.members.map((m) => [
+                m.id,
+                { name: m.discordName, info: m.friendCode },
+              ])
+            )}
+          />
+        )}
       <div className="play-looking__waves">
         <GroupCard group={data.ownGroup} showAction={false} />
-        <div className="play-looking__waves-text">
-          This is your group! You can reach out to them on{" "}
-          <a href={DISCORD_URL}>our Discord</a> in the #group-meetup channel.
-        </div>
       </div>
       <div className="play-looking__waves-button">
         <Form method="post">
