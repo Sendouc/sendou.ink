@@ -12,6 +12,7 @@ export default function useChat(id: string) {
   const [messagesAfterLoad, setMessagesAfterLoad] = React.useState<
     ChatLoaderData["messages"]
   >([]);
+  const [unreadCount, setUnreadCount] = React.useState(0);
   const loaderFetcher = useFetcher<ChatLoaderData>();
   const actionFetcher = useFetcher<ChatActionData>();
   const containerRef = React.useRef<HTMLUListElement>(null);
@@ -21,16 +22,33 @@ export default function useChat(id: string) {
   const user = useUser();
   invariant(user, "!user");
 
-  useSocketEvent(`chat-${id}`, (data: Unpacked<ChatLoaderData["messages"]>) => {
-    if (data.sender.id === user.id) return;
-    setMessagesAfterLoad((messages) => [...messages, data]);
-    setIsOpen(true);
-  });
+  const eventHandler = React.useCallback(
+    (data: Unpacked<ChatLoaderData["messages"]>) => {
+      if (data.sender.id === user.id) return;
+      setMessagesAfterLoad((messages) => [...messages, data]);
+      if (!isOpen) {
+        setUnreadCount((count) => count + 1);
+      }
+    },
+    [isOpen]
+  );
+
+  useSocketEvent(`chat-${id}`, eventHandler);
 
   React.useEffect(() => {
     loaderFetcher.load(chatRoute([id]));
   }, []);
 
+  // open chat on data load if there are messages
+  React.useEffect(() => {
+    if (!loaderFetcher.data) return;
+
+    if (loaderFetcher.data.messages.length > 0) {
+      setIsOpen(true);
+    }
+  }, [loaderFetcher.data]);
+
+  // after sending message reset and refocus input so user can keep typing
   React.useEffect(() => {
     if (actionFetcher.submission) {
       formRef.current?.reset();
@@ -69,6 +87,17 @@ export default function useChat(id: string) {
     return newMessageContent;
   }, [actionFetcher]);
 
+  const toggleOpen = React.useCallback(() => {
+    setIsOpen((open) => {
+      if (!open) {
+        setUnreadCount(0);
+        return true;
+      }
+
+      return false;
+    });
+  }, []);
+
   React.useEffect(() => {
     if (!containerRef.current) return;
     containerRef.current.scrollTop = containerRef.current.scrollHeight;
@@ -82,6 +111,7 @@ export default function useChat(id: string) {
     inputRef,
     actionFetcher,
     isOpen,
-    setIsOpen,
+    toggleOpen,
+    unreadCount,
   };
 }

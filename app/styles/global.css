@@ -588,6 +588,23 @@ hr {
   width: 28px;
 }
 
+.chat__fab__unread {
+  position: fixed;
+  z-index: 70;
+  bottom: 60px;
+  left: 50.9%;
+  display: flex;
+  width: 1rem;
+  height: 1rem;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--theme-warning);
+  border-radius: 50%;
+  color: var(--button-text);
+  font-size: var(--fonts-xs);
+  font-weight: var(--bold);
+}
+
 .chat__window {
   position: fixed;
   z-index: 50;
@@ -619,6 +636,10 @@ hr {
 
   .chat__window {
     left: 85%;
+  }
+
+  .chat__fab__unread {
+    left: 85.9%;
   }
 }
 

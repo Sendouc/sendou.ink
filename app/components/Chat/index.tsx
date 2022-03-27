@@ -23,10 +23,11 @@ export function Chat({
     inputRef,
     actionFetcher,
     isOpen,
-    setIsOpen,
+    toggleOpen,
+    unreadCount,
   } = useChat(id);
 
-  if (!user) return null;
+  if (!user || !messages) return null;
 
   return (
     <>
@@ -76,13 +77,16 @@ export function Chat({
           </actionFetcher.Form>
         </div>
       )}
-      <button className="chat__fab" onClick={() => setIsOpen(() => !isOpen)}>
+      <button className="chat__fab" onClick={toggleOpen}>
         {isOpen ? (
           <CrossIcon className="chat__fab__icon" />
         ) : (
           <SpeechBubbleIcon className="chat__fab__icon" />
         )}
       </button>
+      {unreadCount > 0 && (
+        <div className="chat__fab__unread">{unreadCount}</div>
+      )}
     </>
   );
 }
