@@ -15,7 +15,6 @@ import { Alert } from "~/components/Alert";
 import { Catcher } from "~/components/Catcher";
 import { TeamRoster } from "~/components/tournament/TeamRoster";
 import { TOURNAMENT_TEAM_ROSTER_MAX_SIZE } from "~/constants";
-import { tournamentURL } from "~/core/tournament/utils";
 import {
   isCaptainOfTheTeam,
   teamHasNotCheckedIn,
@@ -28,6 +27,7 @@ import type { FindManyByTrustReceiverId } from "~/models/TrustRelationship.serve
 import * as User from "~/models/User.server";
 import styles from "~/styles/tournament-manage-team.css";
 import { parseRequestFormData, requireUser, validate } from "~/utils";
+import { tournamentFrontPage } from "~/utils/urls";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -146,9 +146,9 @@ export const loader: LoaderFunction = async ({ params, context }) => {
 
   if (!ownTeam) {
     return redirect(
-      tournamentURL({
-        organizerNameForUrl: parsedParams.organization,
-        tournamentNameForUrl: parsedParams.tournament,
+      tournamentFrontPage({
+        organization: parsedParams.organization,
+        tournament: parsedParams.tournament,
       })
     );
   }

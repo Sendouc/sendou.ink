@@ -11,7 +11,7 @@ import {
 import { z } from "zod";
 import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
-import { captainOfTeam, tournamentURL } from "~/core/tournament/utils";
+import { captainOfTeam } from "~/core/tournament/utils";
 import styles from "~/styles/tournament-join-team.css";
 import {
   getLogInUrl,
@@ -24,6 +24,11 @@ import * as Tournament from "~/models/Tournament.server";
 import * as TournamentTeamMember from "~/models/TournamentTeamMember.server";
 import * as TrustRelationship from "~/models/TrustRelationship.server";
 import { tournamentTeamIsNotFull } from "~/core/tournament/validators";
+import {
+  tournamentFrontPage,
+  tournamentManageTeamPage,
+  tournamentTeamsPage,
+} from "~/utils/urls";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -69,10 +74,10 @@ export const action: ActionFunction = async ({ request, context, params }) => {
   ]);
 
   return redirect(
-    `${tournamentURL({
-      organizerNameForUrl: parsedParams.organization,
-      tournamentNameForUrl: parsedParams.tournament,
-    })}/teams`
+    tournamentTeamsPage({
+      organization: parsedParams.organization,
+      tournament: parsedParams.tournament,
+    })
   );
 };
 
@@ -112,9 +117,9 @@ export const loader: LoaderFunction = async ({ request, params, context }) => {
   // TODO: handle inviting players mid-event
   if (tournament.startTime < new Date()) {
     return redirect(
-      tournamentURL({
-        organizerNameForUrl: parsedParams.organization,
-        tournamentNameForUrl: parsedParams.tournament,
+      tournamentFrontPage({
+        organization: parsedParams.organization,
+        tournament: parsedParams.tournament,
       })
     );
   }
@@ -128,12 +133,7 @@ export const loader: LoaderFunction = async ({ request, params, context }) => {
       ({ member, captain }) => member.id === user.id && captain
     )
   ) {
-    return redirect(
-      `${tournamentURL({
-        organizerNameForUrl: parsedParams.organization,
-        tournamentNameForUrl: parsedParams.tournament,
-      })}/manage-team`
-    );
+    return redirect(tournamentManageTeamPage(parsedParams));
   }
 
   // TODO: handle switching team

@@ -58,16 +58,5 @@ export function matchIsOver(
   return upperTeamScore > half || lowerTeamScore > half;
 }
 
-export const tournamentURL = ({
-  organizerNameForUrl,
-  tournamentNameForUrl,
-}: {
-  organizerNameForUrl: string;
-  tournamentNameForUrl: string;
-}) => `/to/${organizerNameForUrl}/${tournamentNameForUrl}`;
-
 export const friendCodeRegExpString = "^(SW-)?[0-9]{4}-?[0-9]{4}-?[0-9]{4}$";
 export const friendCodeRegExp = new RegExp(friendCodeRegExpString, "i");
-
-export const roompassRegExpString = `^[0-9]{${ROOM_PASS_LENGTH}}$`;
-export const roompassRegExp = new RegExp(roompassRegExpString, "i");

@@ -10,6 +10,13 @@ export function oldSendouInkPlayerProfile({
   return `https://sendou.ink/pid/${principalId}`;
 }
 
+export const tournamentFrontPage = ({
+  organization,
+  tournament,
+}: {
+  organization: string;
+  tournament: string;
+}) => `/to/${organization}/${tournament}`;
 export function tournamentManageTeamPage({
   organization,
   tournament,
@@ -18,6 +25,15 @@ export function tournamentManageTeamPage({
   tournament: string;
 }) {
   return `/to/${organization}/${tournament}/manage-team`;
+}
+export function tournamentTeamsPage({
+  organization,
+  tournament,
+}: {
+  organization: string;
+  tournament: string;
+}) {
+  return `/to/${organization}/${tournament}/teams`;
 }
 
 export function sendouQFrontPage() {
