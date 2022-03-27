@@ -543,10 +543,8 @@ hr {
 }
 
 .avatar__img {
-  block-size: var(--_avatar-size, 2.5rem);
   border-radius: var(--rounded);
   filter: none;
-  inline-size: var(--_avatar-size, 2.5rem);
   text-indent: -10000px;
 }
 
