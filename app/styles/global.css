@@ -612,6 +612,16 @@ hr {
   }
 }
 
+@media screen and (min-width: 1024px) {
+  .chat__fab {
+    left: 85%;
+  }
+
+  .chat__window {
+    left: 85%;
+  }
+}
+
 .chat__messages {
   display: flex;
   overflow: auto;
