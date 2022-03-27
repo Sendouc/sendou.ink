@@ -13,30 +13,42 @@ export function GroupCard({
   action,
   showAction,
   ranked,
-  ownGroupRanked,
+  ownGroup,
   isOwnGroup = false,
 }: {
   group: LookingLoaderDataGroup;
   action?: Exclude<LookingActionSchema["_action"], "UNEXPIRE">;
   showAction: boolean;
   ranked?: boolean;
-  ownGroupRanked?: boolean;
+  ownGroup?: {
+    ranked?: boolean;
+    league: boolean;
+  };
   isOwnGroup?: boolean;
 }) {
   const fetcher = useFetcher();
 
-  const buttonText = (ranked = false) => {
+  const buttonText = (otherGroupRanked = false) => {
     switch (action) {
       case "LEAVE_GROUP":
         return "Leave group";
       case "LIKE":
-        return ranked ? "Let's play ranked?" : "Let's scrim?";
+        if (ownGroup?.league) return "Let's play league?";
+
+        // when we ask for other team to group up it takes their ranked status
+        return otherGroupRanked ? "Let's play ranked?" : "Let's scrim?";
       case "UNLIKE":
         return "Undo";
       case "UNITE_GROUPS":
-        return ownGroupRanked ? "Group up (ranked)" : "Group up (scrim)";
+        if (ownGroup?.league) return "Group up";
+
+        // when we group up the new group takes our ranked status
+        return ownGroup?.ranked ? "Group up (ranked)" : "Group up (scrim)";
       case "MATCH_UP":
-        return ranked ? "Match up (ranked)" : "Match up (scrim)";
+        if (ownGroup?.league) return "Match up";
+
+        // when we match up with other group it takes their ranked status
+        return otherGroupRanked ? "Match up (ranked)" : "Match up (scrim)";
       case "LOOK_AGAIN":
         return "Stop looking";
       default:

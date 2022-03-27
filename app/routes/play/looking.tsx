@@ -415,7 +415,11 @@ export default function LookingPage() {
                               ? data.ownGroup.ranked
                               : group.ranked
                           }
-                          ownGroupRanked={data.ownGroup.ranked}
+                          ownGroup={{
+                            ranked: data.ownGroup.ranked,
+                            league:
+                              data.type === "QUAD" || data.type === "TWIN",
+                          }}
                         />
                       );
                     })}
@@ -442,7 +446,11 @@ export default function LookingPage() {
                               ? data.ownGroup.ranked
                               : group.ranked
                           }
-                          ownGroupRanked={data.ownGroup.ranked}
+                          ownGroup={{
+                            ranked: data.ownGroup.ranked,
+                            league:
+                              data.type === "QUAD" || data.type === "TWIN",
+                          }}
                         />
                       );
                     })}
