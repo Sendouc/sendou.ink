@@ -10,6 +10,16 @@ export function oldSendouInkPlayerProfile({
   return `https://sendou.ink/pid/${principalId}`;
 }
 
+export function tournamentManageTeamPage({
+  organization,
+  tournament,
+}: {
+  organization: string;
+  tournament: string;
+}) {
+  return `/to/${organization}/${tournament}/manage-team`;
+}
+
 export function sendouQFrontPage() {
   return "/play";
 }

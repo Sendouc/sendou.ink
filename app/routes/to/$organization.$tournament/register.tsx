@@ -11,17 +11,17 @@ import {
   useTransition,
 } from "remix";
 import invariant from "tiny-invariant";
+import { z } from "zod";
 import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
 import { FormErrorMessage } from "~/components/FormErrorMessage";
 import { Label } from "~/components/Label";
 import { useUser } from "~/hooks/common";
-import {
-  createTournamentTeam,
-  FindTournamentByNameForUrlI,
-} from "~/services/tournament";
 import styles from "~/styles/tournament-register.css";
-import { requireUser } from "~/utils";
+import { parseRequestFormData, requireUser } from "~/utils";
+import { tournamentManageTeamPage } from "~/utils/urls";
+import * as TournamentTeam from "~/models/TournamentTeam.server";
+import { FindTournamentByNameForUrlI } from "~/services/tournament";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -37,34 +37,26 @@ type ActionData = {
   };
 };
 
+const registerActionSchema = z.object({
+  teamName: z.string().min(TEAM_NAME_MIN_LENGTH).max(TEAM_NAME_MAX_LENGTH),
+  tournamentId: z.string().uuid(),
+});
+
 export const action: ActionFunction = async ({
   request,
   context,
   params,
 }): Promise<Response | ActionData> => {
-  const data = Object.fromEntries(await request.formData());
-  invariant(typeof data.teamName === "string", "Invalid type for team name");
-  invariant(
-    typeof data.tournamentId === "string",
-    "Invalid type for tournament id"
-  );
-
-  if (
-    data.teamName.length < TEAM_NAME_MIN_LENGTH ||
-    data.teamName.length > TEAM_NAME_MAX_LENGTH
-  ) {
-    return new Response(
-      `Team name length has to be between min ${TEAM_NAME_MIN_LENGTH} and max ${TEAM_NAME_MAX_LENGTH}. Was ${data.teamName.length}.`,
-      { status: 400 }
-    );
-  }
-
+  const data = await parseRequestFormData({
+    request,
+    schema: registerActionSchema,
+  });
   const user = requireUser(context);
 
   // TODO: validate can register for tournament i.e. reg is open
 
   try {
-    await createTournamentTeam({
+    await TournamentTeam.create({
       teamName: data.teamName,
       tournamentId: data.tournamentId,
       userId: user.id,
@@ -81,17 +73,13 @@ export const action: ActionFunction = async ({
     throw e;
   }
 
-  invariant(
-    typeof params.organization === "string",
-    "Unexpected undefined params organization."
-  );
-  invariant(
-    typeof params.tournament === "string",
-    "Unexpected undefined params tournament."
-  );
-
+  invariant(typeof params.organization === "string", "!params.organization.");
+  invariant(typeof params.tournament === "string", "!params.tournament.");
   return redirect(
-    `/to/${params.organization}/${params.tournament}/manage-team`
+    tournamentManageTeamPage({
+      tournament: params.tournament,
+      organization: params.organization,
+    })
   );
 };
 
