@@ -8,7 +8,7 @@ Prerequisites: [nvm](https://github.com/nvm-sh/nvm)
 2. Run `npm i` to install the dependencies.
 3. Make a copy of `.env.example` that's called `.env` and fill it with values.
 
-- You can check [Prisma's guide](https://www.prisma.io/dataguide/postgresql/setting-up-a-local-postgresql-database) on how to get PostgreSQL set up and running locally.
+- You can check [Prisma's guide](https://www.prisma.io/dataguide/postgresql/setting-up-a-local-postgresql-database) on how to get PostgreSQL 14 set up and running locally.
 - Run `npm run migration:apply:dev` to set up the tables of your database.
 - Run `npm run seed` to seed the database with some test data.
 
