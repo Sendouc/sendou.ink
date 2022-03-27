@@ -30,6 +30,7 @@ import { useUser } from "~/hooks/common";
 import { countGroups, resolveRedirect } from "~/core/play/utils";
 import { resolveOwnMMR } from "~/core/mmr/utils";
 import { userHasTop500Result } from "~/core/play/playerInfos/playerInfos.server";
+import { sendouQAddPlayersPage, sendouQLookingPage } from "~/utils/urls";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -80,10 +81,10 @@ export const action: ActionFunction = async ({ request, context }) => {
       });
 
       if (group.status === "LOOKING") {
-        return redirect("/play/looking");
+        return redirect(sendouQLookingPage());
       }
 
-      return redirect("/play/add-players");
+      return redirect(sendouQAddPlayersPage());
     }
     default: {
       const exhaustive: never = data._action;
@@ -164,6 +165,18 @@ function QueueUp({ needsBio }: { needsBio: boolean }) {
   const location = useLocation();
   const transition = useTransition();
 
+  const isSubmitting = () => {
+    if (transition.state === "submitting") return true;
+    if (
+      transition.state === "loading" &&
+      transition.type === "actionRedirect"
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
   if (needsBio) {
     return (
       <p className="play__action-needed">
@@ -189,7 +202,7 @@ function QueueUp({ needsBio }: { needsBio: boolean }) {
     <Button
       className="play__continue-button"
       type="submit"
-      loading={transition.state === "submitting"}
+      loading={isSubmitting()}
       loadingText="Continuing..."
     >
       Continue
