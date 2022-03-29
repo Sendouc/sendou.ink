@@ -17,6 +17,8 @@ import resetStyles from "~/styles/reset.css";
 import globalStyles from "~/styles/global.css";
 import layoutStyles from "~/styles/layout.css";
 import { DISCORD_URL } from "./constants";
+import { io, Socket } from "socket.io-client";
+import { SocketProvider } from "./utils/socketContext";
 
 export const links: LinksFunction = () => {
   return [
@@ -52,12 +54,24 @@ export const loader: LoaderFunction = ({ context }) => {
 export const unstable_shouldReload = () => false;
 
 export default function App() {
+  const [socket, setSocket] = React.useState<Socket>();
+
   const children = React.useMemo(() => <Outlet />, []);
   const data = useLoaderData<RootLoaderData>();
 
+  React.useEffect(() => {
+    const socket = io();
+    setSocket(socket);
+    return () => {
+      socket.close();
+    };
+  }, []);
+
   return (
     <Document ENV={data.ENV}>
-      <Layout>{children}</Layout>
+      <SocketProvider socket={socket}>
+        <Layout>{children}</Layout>
+      </SocketProvider>
     </Document>
   );
 }

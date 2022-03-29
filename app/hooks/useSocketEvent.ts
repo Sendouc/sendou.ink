@@ -1,15 +1,16 @@
-import io from "socket.io-client";
 import * as React from "react";
+import { useSocket } from "~/utils/socketContext";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function useSocketEvent(event: string, handler: (data: any) => void) {
-  React.useEffect(() => {
-    const socket = io();
+  const socket = useSocket();
 
+  React.useEffect(() => {
+    if (!socket) return;
     socket.on(event, handler);
 
     return () => {
-      socket.close();
+      socket.off(event);
     };
-  }, [handler]);
+  }, [socket, handler]);
 }
