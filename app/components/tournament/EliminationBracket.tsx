@@ -40,9 +40,8 @@ export function EliminationBracket({
             "--brackets-bottom-border-length": drawStraightLines
               ? 0
               : undefined,
-            "--brackets-column-matches": drawStraightLines
-              ? 0
-              : round.matches.length,
+            "--brackets-column-matches": round.matches.length,
+            "--height-override": drawStraightLines ? "1px" : undefined,
           };
           return (
             <div

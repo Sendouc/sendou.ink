@@ -310,9 +310,3 @@
     padding-inline-end: 0;
   }
 }
-
-@media screen and (min-width: 768px) {
-  .tournament__container {
-    width: 48rem;
-  }
-}

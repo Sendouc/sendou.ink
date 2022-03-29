@@ -344,9 +344,12 @@
 .tournament-bracket__elim__lines > div {
   position: relative;
   width: calc(var(--brackets-match-height) / 4);
-  height: calc(
-    2px + var(--brackets-match-height) *
-      (var(--brackets-max-matches) / var(--brackets-column-matches))
+  height: var(
+    --height-override,
+    calc(
+      2px + var(--brackets-match-height) *
+        (var(--brackets-max-matches) / var(--brackets-column-matches))
+    )
   );
   border-top: 2px solid var(--theme-transparent);
   border-bottom: var(--brackets-bottom-border-length, 2px) solid

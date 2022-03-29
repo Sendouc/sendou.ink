@@ -206,6 +206,7 @@ export interface MyCSSProperties extends CSSProperties {
   "--brackets-max-matches"?: number;
   "--brackets-bottom-border-length"?: number;
   "--brackets-column-matches"?: number;
+  "--height-override"?: string;
   "--tabs-count"?: number;
 }
 

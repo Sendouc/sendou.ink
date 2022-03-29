@@ -1,5 +1,4 @@
 import invariant from "tiny-invariant";
-import { ROOM_PASS_LENGTH } from "~/constants";
 
 export function checkInHasStarted(checkInStartTime: string) {
   return new Date(checkInStartTime) < new Date();
