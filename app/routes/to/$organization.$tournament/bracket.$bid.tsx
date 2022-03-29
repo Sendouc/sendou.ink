@@ -1,4 +1,4 @@
-import { LinksFunction, LoaderFunction, Outlet, useLoaderData } from "remix";
+import { LinksFunction, LoaderFunction, Outlet } from "remix";
 import { ActionFunction, json, useMatches } from "remix";
 import invariant from "tiny-invariant";
 import { z } from "zod";
