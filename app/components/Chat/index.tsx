@@ -70,6 +70,7 @@ export function Chat({
               name="message"
               maxLength={MAX_CHAT_MESSAGE_LENGTH}
               required
+              autoComplete="off"
             />
             <Button tiny variant="outlined" type="submit">
               Send
