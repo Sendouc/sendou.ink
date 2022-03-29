@@ -9,8 +9,14 @@ import type { BracketModified } from "~/services/bracket";
 import { bracketById, reportScore, undoLastScore } from "~/services/bracket";
 import type { FindTournamentByNameForUrlI } from "~/services/tournament";
 import styles from "~/styles/tournament-bracket.css";
-import { parseRequestFormData, requireUser, safeJSONParse } from "~/utils";
+import {
+  getSocket,
+  parseRequestFormData,
+  requireUser,
+  safeJSONParse,
+} from "~/utils";
 import { useUser } from "~/hooks/common";
+import { useBracketDataWithEvents } from "~/hooks/useBracketDataWithEvents";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -61,11 +67,11 @@ export const action: ActionFunction = async ({
   });
   invariant(typeof params.bid === "string", "Expected params.bid to be string");
   const user = requireUser(context);
-  //const events = requireEvents(context);
+  const socket = getSocket(context);
 
   switch (data._action) {
     case "REPORT_SCORE": {
-      /*const bracketData = */ await reportScore({
+      const bracketData = await reportScore({
         matchId: data.matchId,
         playerIds: data.playerIds,
         userId: user.id,
@@ -73,26 +79,19 @@ export const action: ActionFunction = async ({
         position: data.position,
         bracketId: params.bid,
       });
-      // if (bracketData) {
-      //   for (const { event } of events.bracket[params.bid]) {
-      //     event(bracketData);
-      //   }
-      // }
+
+      socket.emit(`bracket-${params.bid}`, bracketData);
 
       return { ok: "REPORT_SCORE" };
     }
     case "UNDO_REPORT_SCORE": {
-      /*const bracketData = */ await undoLastScore({
+      const bracketData = await undoLastScore({
         matchId: data.matchId,
         position: data.position,
         userId: user.id,
       });
 
-      // if (bracketData) {
-      //   for (const { event } of events.bracket[params.bid]) {
-      //     event(bracketData);
-      //   }
-      // }
+      socket.emit(`bracket-${params.bid}`, bracketData);
 
       return { ok: "UNDO_REPORT_SCORE" };
     }
@@ -116,8 +115,7 @@ export const loader: LoaderFunction = async ({ params }) => {
 
 // TODO: make bracket a bit smaller
 export default function BracketTabWrapper() {
-  // const data = useBracketDataWithEvents();
-  const data = useLoaderData<BracketModified>();
+  const data = useBracketDataWithEvents();
   const [, parentRoute] = useMatches();
   const { teams } = parentRoute.data as FindTournamentByNameForUrlI;
   const user = useUser();
