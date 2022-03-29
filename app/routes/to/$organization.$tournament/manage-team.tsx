@@ -179,7 +179,9 @@ export default function ManageTeamPage() {
       </div>
       {ownTeam.members.length < TOURNAMENT_TEAM_ROSTER_MAX_SIZE && (
         <AddPlayers
-          pathname={location.pathname.replace("manage-team", "join-team")}
+          pathname={location.pathname
+            .replace("manage-team", "join-team")
+            .slice(1)}
           inviteCode={ownTeam.inviteCode}
           trustingUsers={trustingUsers}
           hiddenInputs={[
