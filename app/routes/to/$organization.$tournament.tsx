@@ -100,7 +100,10 @@ export default function TournamentPage() {
 
     if (tournamentHasStarted(data.brackets)) {
       result.push({ code: `bracket/${data.brackets[0].id}`, text: "Bracket" });
-      if (!tournamentIsOver) {
+
+      // TODO: add streams page
+      // eslint-disable-next-line no-constant-condition
+      if (!tournamentIsOver && false) {
         result.push({ code: "streams", text: "Streams (4)" });
       }
     }

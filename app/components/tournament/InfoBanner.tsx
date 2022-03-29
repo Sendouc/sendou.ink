@@ -126,7 +126,7 @@ function InfoBannerActionButton() {
         className="info-banner__action-button"
         prefetch="intent"
       >
-        Manage team
+        Add players
       </Link>
     );
   }
