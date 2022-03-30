@@ -56,7 +56,7 @@ export function useBracketDataWithEvents(): BracketModified {
         })),
       });
     },
-    [data, setDataWithEvents]
+    [dataWithEvents, setDataWithEvents]
   );
 
   useSocketEvent(`bracket-${data.id}`, eventHandler);

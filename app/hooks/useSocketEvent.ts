@@ -12,5 +12,5 @@ export function useSocketEvent(event: string, handler: (data: any) => void) {
     return () => {
       socket.off(event);
     };
-  }, [socket, handler]);
+  }, [socket, handler, event]);
 }

@@ -59,6 +59,7 @@ export default function App() {
   const children = React.useMemo(() => <Outlet />, []);
   const data = useLoaderData<RootLoaderData>();
 
+  // TODO: for future optimization could only connect socket on sendouq/tournament pages
   React.useEffect(() => {
     const socket = io();
     setSocket(socket);

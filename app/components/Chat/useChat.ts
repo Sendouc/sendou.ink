@@ -30,14 +30,16 @@ export default function useChat(id: string) {
         setUnreadCount((count) => count + 1);
       }
     },
-    [isOpen]
+    [isOpen, user.id]
   );
 
   useSocketEvent(`chat-${id}`, eventHandler);
 
   React.useEffect(() => {
     loaderFetcher.load(chatRoute([id]));
-  }, []);
+    // TODO: should also have loaderFetcher
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   // open chat on data load if there are messages
   React.useEffect(() => {
@@ -59,10 +61,10 @@ export default function useChat(id: string) {
   React.useEffect(() => {
     if (!actionFetcher.data) return;
 
-    setMessagesAfterLoad([
-      ...messagesAfterLoad,
-      actionFetcher.data.createdMessage,
-    ]);
+    setMessagesAfterLoad((messagesAfterLoad) => {
+      if (!actionFetcher.data) return [...messagesAfterLoad];
+      return [...messagesAfterLoad, actionFetcher.data.createdMessage];
+    });
   }, [actionFetcher.data]);
 
   const messages = React.useMemo(

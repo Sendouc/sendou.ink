@@ -23,7 +23,9 @@ export function SubmitButton(
 
     onSuccess?.();
     setShowSuccess(true);
-  }, [actionData?.ok, transition.type]);
+    // TODO: should also have onSuccess
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [actionData?.ok, transition.type, actionType, setShowSuccess]);
 
   const isLoading = (): boolean => {
     // is there an action happening at the moment?

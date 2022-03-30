@@ -190,7 +190,7 @@ function SeedAlert({
 
     setTeamOrderInDb(teamOrder);
     setShowSuccess(true, { timeout: 3000 });
-  }, [transition.state]);
+  }, [transition.state, setShowSuccess, teamOrder]);
 
   const teamOrderChanged = teamOrder.some((id, i) => id !== teamOrderInDb[i]);
 

@@ -21,13 +21,13 @@ export function CheckinActions() {
   const user = useUser();
   const transition = useTransition();
 
-  const timeInMinutesBeforeCheckInCloses = () => {
+  const timeInMinutesBeforeCheckInCloses = React.useCallback(() => {
     return Math.floor(
       (checkInClosesDate(tournament.startTime).getTime() -
         new Date().getTime()) /
         (1000 * 60)
     );
-  };
+  }, [tournament.startTime]);
   const [minutesTillCheckInCloses, setMinutesTillCheckInCloses] =
     React.useState(timeInMinutesBeforeCheckInCloses());
 

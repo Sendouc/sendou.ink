@@ -16,7 +16,10 @@ export default function Modal({
   const navigate = useNavigate();
   const ref = React.useRef<HTMLDivElement>(null);
 
-  const navigateBack = React.useCallback(() => navigate(closeUrl), [closeUrl]);
+  const navigateBack = React.useCallback(
+    () => navigate(closeUrl),
+    [closeUrl, navigate]
+  );
   useOnClickOutside(ref, navigateBack);
 
   React.useEffect(() => {
