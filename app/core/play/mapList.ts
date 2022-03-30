@@ -13,8 +13,6 @@ const LEGAL_STAGES: Record<Mode, StageName[]> = {
   SZ: [
     "Ancho-V Games",
     "Blackbelly Skatepark",
-    "Camp Triggerfish",
-    "Goby Arena",
     "Humpback Pump Track",
     "Inkblot Art Academy",
     "MakoMart",
@@ -56,7 +54,6 @@ const LEGAL_STAGES: Record<Mode, StageName[]> = {
     "The Reef",
   ],
   CB: [
-    "Ancho-V Games",
     "Humpback Pump Track",
     "Inkblot Art Academy",
     "MakoMart",
@@ -68,7 +65,6 @@ const LEGAL_STAGES: Record<Mode, StageName[]> = {
     "Starfish Mainstage",
     "Sturgeon Shipyard",
     "The Reef",
-    "Wahoo World",
   ],
 };
 
