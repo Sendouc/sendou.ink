@@ -1,7 +1,9 @@
+import { Skill } from "@prisma/client";
 import clone from "just-clone";
 import { rating, ordinal, rate } from "openskill";
 import { LFG_GROUP_FULL_SIZE, MMR_TOPX_VISIBILITY_CUTOFF } from "~/constants";
 import { PlayFrontPageLoader } from "~/routes/play/index";
+import { SeedsLoaderData } from "~/routes/to/$organization.$tournament/seeds";
 
 const TAU = 0.3;
 
@@ -149,4 +151,32 @@ function percentile(arr: number[], val: number) {
     }
   });
   return (100 * count) / arr.length;
+}
+
+export function averageTeamMMRs({
+  skills,
+  teams,
+}: {
+  skills: Pick<Skill, "userId" | "mu" | "sigma">[];
+  teams: { id: string; members: { member: { id: string } }[] }[];
+}) {
+  const result: SeedsLoaderData["MMRs"] = {};
+
+  for (const team of teams) {
+    let MMRSum = 0;
+    let playersWithSkill = 0;
+    for (const { member } of team.members) {
+      const skill = skills.find((s) => s.userId === member.id);
+      if (!skill) continue;
+
+      MMRSum += muSigmaToSP(skill);
+      playersWithSkill++;
+    }
+
+    if (playersWithSkill === 0) continue;
+
+    result[team.id] = Math.round(MMRSum / playersWithSkill);
+  }
+
+  return result;
 }

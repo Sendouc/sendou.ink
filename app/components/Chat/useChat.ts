@@ -37,8 +37,6 @@ export default function useChat(id: string) {
 
   React.useEffect(() => {
     loaderFetcher.load(chatRoute([id]));
-    // TODO: should also have loaderFetcher
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   // open chat on data load if there are messages

@@ -18,7 +18,10 @@ import * as React from "react";
 import {
   ActionFunction,
   Form,
+  json,
   LinksFunction,
+  LoaderFunction,
+  useLoaderData,
   useMatches,
   useTransition,
 } from "remix";
@@ -39,10 +42,16 @@ import {
 } from "~/utils";
 import { useTimeoutState } from "~/hooks/common";
 import * as Tournament from "~/models/Tournament.server";
+import * as Skill from "~/models/Skill.server";
 import {
   isTournamentAdmin,
   tournamentHasNotStarted,
 } from "~/core/tournament/validators";
+import { averageTeamMMRs } from "~/core/mmr/utils";
+
+export const links: LinksFunction = () => {
+  return [{ rel: "stylesheet", href: seedsStylesUrl }];
+};
 
 const seedsActionSchema = z.object({
   tournamentId: z.string().uuid(),
@@ -75,13 +84,33 @@ export const action: ActionFunction = async ({ context, request }) => {
   return null;
 };
 
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: seedsStylesUrl }];
+export interface SeedsLoaderData {
+  MMRs: Record<string, number>;
+}
+
+export const loader: LoaderFunction = async ({ params }) => {
+  invariant(typeof params.organization === "string", "!params.organization");
+  invariant(typeof params.tournament === "string", "!params.tournament");
+
+  const tournament = await Tournament.findByNameForUrl({
+    organizationNameForUrl: params.organization,
+    tournamentNameForUrl: params.tournament,
+  });
+  invariant(tournament, "!tournament");
+
+  const skills = await Skill.findMostRecentByUserIds(
+    tournament.teams.flatMap((t) => t.members).map((m) => m.member.id)
+  );
+
+  return json<SeedsLoaderData>({
+    MMRs: averageTeamMMRs({ skills, teams: tournament.teams }),
+  });
 };
 
 // TODO: what if returns error? check other APIs too -> add Cypress test
 // TODO: error if not admin
-export default function SeedsTab() {
+// TODO: handle overflow better
+export default function TournamentSeedsPage() {
   const [, parentRoute] = useMatches();
   const { id, teams } = parentRoute.data as FindTournamentByNameForUrlI;
   const transition = useTransition();
@@ -106,6 +135,7 @@ export default function SeedsTab() {
       <ul>
         <li className="tournament__seeds__teams-list-row">
           <div className="tournament__seeds__teams-container__header">Seed</div>
+          <div className="tournament__seeds__teams-container__header">SP</div>
           <div className="tournament__seeds__teams-container__header">Name</div>
           <div className="tournament__seeds__teams-container__header">
             Players
@@ -232,15 +262,15 @@ function RowContents({
   team: Unpacked<FindTournamentByNameForUrlI["teams"]>;
   seed?: number;
 }) {
+  const data = useLoaderData<SeedsLoaderData>();
+
   return (
     <>
       <div>{seed}</div>
+      <div>{data.MMRs[team.id]}</div>
       <div className="tournament__seeds__team-name">{team.name}</div>
       {/* TODO: scrollbar overlaps on windows? */}
-      <ol
-        className="tournament__seeds__members-list"
-        // style={{ whiteSpace: "nowrap", overflowX: "auto" }}
-      >
+      <ol className="tournament__seeds__members-list">
         {team.members.map((member) => (
           <li key={member.member.id}>{member.member.discordName}</li>
         ))}

@@ -13,6 +13,16 @@ export function findAllMostRecent() {
   });
 }
 
+export function findMostRecentByUserIds(ids: string[]) {
+  return db.skill.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+    distinct: "userId",
+    where: { userId: { in: ids } },
+  });
+}
+
 export function findAllByMonth({
   month,
   year,

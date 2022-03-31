@@ -1,6 +1,7 @@
 import { suite } from "uvu";
 import {
   adjustSkills,
+  averageTeamMMRs,
   muSigmaToSP,
   resolveOwnMMR,
   teamSkillToExactMMR,
@@ -9,7 +10,8 @@ import * as assert from "uvu/assert";
 
 const AdjustSkills = suite("adjustSkills()");
 const ResolveOwnMMR = suite("resolveOwnMMR()");
-const TeamSkillToExactMMR = suite("TeamSkillToExactMMR()");
+const TeamSkillToExactMMR = suite("teamSkillToExactMMR()");
+const AverageTeamMMRs = suite("averageTeamMMRs()");
 
 const MU_AT_START = 20;
 const SIGMA_AT_START = 4;
@@ -100,33 +102,73 @@ ResolveOwnMMR("Hides topX if not good", () => {
 });
 
 TeamSkillToExactMMR("Sums up MMR's", () => {
-  const MU = 20;
-  const SIGMA = 7;
-  const skills = new Array(4).fill(null).map((_) => ({ mu: MU, sigma: SIGMA }));
+  const skills = new Array(4)
+    .fill(null)
+    .map((_) => ({ mu: MU_AT_START, sigma: SIGMA_AT_START }));
 
   const teamMMR = teamSkillToExactMMR(
     skills.map((s) => ({ user: { skill: [{ mu: s.mu, sigma: s.sigma }] } }))
   );
 
-  assert.equal(teamMMR, muSigmaToSP({ mu: MU, sigma: SIGMA }) * 4);
+  assert.equal(
+    teamMMR,
+    muSigmaToSP({ mu: MU_AT_START, sigma: SIGMA_AT_START }) * 4
+  );
 });
 
 TeamSkillToExactMMR("Pads team MMR", () => {
-  const MU = 20;
-  const SIGMA = 7;
-  const skills = new Array(3).fill(null).map((_) => ({ mu: MU, sigma: SIGMA }));
+  const skills = new Array(3)
+    .fill(null)
+    .map((_) => ({ mu: MU_AT_START, sigma: SIGMA_AT_START }));
 
   const teamMMR = teamSkillToExactMMR(
     skills.map((s) => ({ user: { skill: [{ mu: s.mu, sigma: s.sigma }] } }))
   );
 
-  assert.equal(teamMMR, muSigmaToSP({ mu: MU, sigma: SIGMA }) * 3 + 1000);
+  assert.equal(
+    teamMMR,
+    muSigmaToSP({ mu: MU_AT_START, sigma: SIGMA_AT_START }) * 3 + 1000
+  );
 
   const teamMMRNoSkills = teamSkillToExactMMR([]);
 
   assert.equal(teamMMRNoSkills, 4 * 1000);
 });
 
+AverageTeamMMRs("Gets average MMR", () => {
+  const MMRs = averageTeamMMRs({
+    skills: [
+      { mu: MU_AT_START, sigma: SIGMA_AT_START, userId: "1" },
+      { mu: MU_AT_START + 1, sigma: SIGMA_AT_START, userId: "2" },
+    ],
+    teams: [
+      { id: "a", members: [{ member: { id: "1" } }, { member: { id: "2" } }] },
+    ],
+  });
+
+  const expected =
+    (muSigmaToSP({ mu: MU_AT_START, sigma: SIGMA_AT_START }) +
+      muSigmaToSP({ mu: MU_AT_START + 1, sigma: SIGMA_AT_START })) /
+    2;
+  assert.equal(MMRs["a"], Math.round(expected));
+});
+
+AverageTeamMMRs("Handles teams with no skill", () => {
+  const MMRs = averageTeamMMRs({
+    skills: [
+      { mu: MU_AT_START, sigma: SIGMA_AT_START, userId: "1" },
+      { mu: MU_AT_START + 1, sigma: SIGMA_AT_START, userId: "2" },
+    ],
+    teams: [
+      { id: "a", members: [{ member: { id: "1" } }, { member: { id: "2" } }] },
+      { id: "b", members: [{ member: { id: "3" } }, { member: { id: "4" } }] },
+    ],
+  });
+
+  assert.equal(Object.keys(MMRs).length, 1);
+});
+
 AdjustSkills.run();
 ResolveOwnMMR.run();
 TeamSkillToExactMMR.run();
+AverageTeamMMRs.run();
