@@ -12,9 +12,14 @@
   border-radius: var(--rounded);
   column-gap: var(--s-1);
   font-size: var(--fonts-sm);
-  grid-template-columns: 4fr 3fr 3fr;
+  grid-template-columns: 0.5fr 4fr 3fr 3fr;
   list-style: none;
   row-gap: var(--s-1-5);
+}
+
+.tournament__manage__trash-icon {
+  width: 1rem;
+  margin-block-end: 1px;
 }
 
 /* TODO: this does not work correctly when variation = check-in */

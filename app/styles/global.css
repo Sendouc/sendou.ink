@@ -764,6 +764,10 @@ hr {
   visibility: hidden;
 }
 
+.hidden {
+  display: none;
+}
+
 .width-full {
   width: 100%;
 }

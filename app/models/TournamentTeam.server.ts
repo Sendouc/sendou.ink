@@ -57,3 +57,15 @@ export function checkOut(id: string) {
     },
   });
 }
+
+export function unregister(id: string) {
+  // TODO: this should use cascades instead
+  return db.$transaction([
+    db.tournamentTeamMember.deleteMany({ where: { teamId: id } }),
+    db.tournamentTeam.delete({
+      where: {
+        id,
+      },
+    }),
+  ]);
+}
