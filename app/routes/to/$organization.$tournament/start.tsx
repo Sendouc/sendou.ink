@@ -73,7 +73,7 @@ export const action: ActionFunction = async ({ request, params, context }) => {
   );
 };
 
-const typedJson = (args: UseTournamentRoundsArgs) => json(args);
+export type StartLoaderData = UseTournamentRoundsArgs | null;
 
 export const loader: LoaderFunction = async ({ params }) => {
   invariant(
@@ -95,6 +95,10 @@ export const loader: LoaderFunction = async ({ params }) => {
     0
   );
 
+  if (teamCount < 2) {
+    return json<StartLoaderData>(null);
+  }
+
   // TODO: handle many brackets
   const bracket = eliminationBracket(teamCount, tournament.brackets[0].type);
   const initialState = participantCountToRoundsInfo({
@@ -102,17 +106,31 @@ export const loader: LoaderFunction = async ({ params }) => {
     mapPool: tournament.mapPool,
   });
 
-  return typedJson({ initialState, mapPool: tournament.mapPool });
+  return json<StartLoaderData>({ initialState, mapPool: tournament.mapPool });
 };
+
+export default function StartBracketPage() {
+  const data = useLoaderData<StartLoaderData>();
+
+  if (data) {
+    return <GenerateMaps data={data} />;
+  }
+
+  return (
+    <p className="tournament__start__pre-check-in-info">
+      On this page you&apos;ll be able to start the tournament once at least two
+      teams have checked in.
+    </p>
+  );
+}
 
 // TODO: component that shows a table of map, counts in the map pool, which rounds
 // TODO: handle warning if check-in has not concluded
-export default function StartBracketTab() {
+function GenerateMaps({ data }: { data: NonNullable<StartLoaderData> }) {
   const [, parentRoute] = useMatches();
   const { brackets } = parentRoute.data as FindTournamentByNameForUrlI;
-  const args = useLoaderData<UseTournamentRoundsArgs>();
   const [{ bracket, showAlert, actionButtonsDisabled }, dispatch] =
-    useTournamentRounds(args);
+    useTournamentRounds(data);
 
   // TODO: dropdown to select this
   const bracketId = brackets[0].id;
@@ -143,7 +161,7 @@ export default function StartBracketTab() {
             dispatch={dispatch}
             rounds={bracket.winners}
           />
-          {args.initialState.losers.length > 0 && (
+          {data.initialState.losers.length > 0 && (
             <RoundsCollection
               side="losers"
               dispatch={dispatch}

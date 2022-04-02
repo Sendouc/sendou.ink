@@ -1,3 +1,10 @@
+.tournament__start__pre-check-in-info {
+  color: var(--text-lighter);
+  font-size: var(--fonts-lg);
+  font-weight: var(--bold);
+  text-align: center;
+}
+
 .tournament__start__title {
   padding-block-end: var(--s-2);
   padding-inline-start: var(--s-1-5);

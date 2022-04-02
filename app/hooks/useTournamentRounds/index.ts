@@ -2,14 +2,14 @@ import clone from "just-clone";
 import * as React from "react";
 import invariant from "tiny-invariant";
 import { generateMapListForRounds } from "~/core/tournament/mapList";
+import { StartLoaderData } from "~/routes/to/$organization.$tournament/start";
 import type {
   UseTournamentRoundsAction,
-  UseTournamentRoundsArgs,
   UseTournamentRoundsState,
 } from "./types";
 
 // TODO: could save this to local storage but need to handle amount of rounds changing
-export function useTournamentRounds(args: UseTournamentRoundsArgs) {
+export function useTournamentRounds(args: NonNullable<StartLoaderData>) {
   return React.useReducer(
     (oldState: UseTournamentRoundsState, action: UseTournamentRoundsAction) => {
       switch (action.type) {
