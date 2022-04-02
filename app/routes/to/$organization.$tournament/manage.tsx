@@ -86,6 +86,7 @@ export default function ManageTab() {
   return (
     <>
       <div className="tournament__manage__teams-list-row">
+        <div />
         <div className="tournament__manage__teams-container__header">Name</div>
         <div className="tournament__manage__teams-container__header">
           Registered at
