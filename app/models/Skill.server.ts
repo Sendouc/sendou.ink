@@ -6,8 +6,11 @@ export type FindAllMostRecent = Prisma.PromiseReturnType<
 >;
 export function findAllMostRecent() {
   return db.skill.findMany({
+    // TODO: tournament match, skill decay... createdAt
     orderBy: {
-      createdAt: "desc",
+      match: {
+        createdAt: "desc",
+      },
     },
     distinct: "userId",
   });
@@ -16,7 +19,10 @@ export function findAllMostRecent() {
 export function findMostRecentByUserIds(ids: string[]) {
   return db.skill.findMany({
     orderBy: {
-      createdAt: "desc",
+      // TODO: tournament match, skill decay... createdAt
+      match: {
+        createdAt: "desc",
+      },
     },
     distinct: "userId",
     where: { userId: { in: ids } },
