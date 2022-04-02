@@ -253,3 +253,19 @@ export const abilities: Ability[] = [
   "DR",
   "EMPTY",
 ];
+
+export const monthNames = [
+  null,
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+] as const;

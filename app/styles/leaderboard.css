@@ -4,9 +4,26 @@
   gap: var(--s-4);
 }
 
+.leaderboard__header-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-1);
+}
+
 .leaderboard__title {
   font-size: var(--fonts-xl);
   line-height: 2rem;
+  text-align: center;
+}
+
+.leaderboard__select {
+  width: 8rem;
+}
+
+.leaderboard__no-players {
+  color: var(--text-lighter);
+  font-weight: var(--bold);
   text-align: center;
 }
 

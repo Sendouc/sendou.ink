@@ -56,3 +56,36 @@ function sortSkillsByCreatedAt(a: SkillInput, b: SkillInput) {
     (a.match?.createdAt.getTime() ?? 0) - (b.match?.createdAt.getTime() ?? 0)
   );
 }
+
+export function monthYearOptions() {
+  const FIRST_MONTH = 3;
+  const FIRST_YEAR = 2022;
+
+  const result: { month: number; year: number }[] = [];
+  let month = new Date().getMonth() + 1;
+  let year = new Date().getFullYear();
+
+  do {
+    result.push({ month, year });
+
+    month--;
+    if (month === 0) {
+      month = 12;
+      year--;
+    }
+  } while (month >= FIRST_MONTH && year >= FIRST_YEAR);
+
+  return result;
+}
+
+export function monthYearIsValid({
+  month,
+  year,
+}: {
+  month: number;
+  year: number;
+}) {
+  return monthYearOptions().some(
+    (option) => option.month === month && option.year === year
+  );
+}
