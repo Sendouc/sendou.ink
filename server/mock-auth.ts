@@ -6,13 +6,16 @@ import type { LoggedInUser } from "~/utils/schemas";
 
 export function setUpMockAuth(
   app: Express,
-  userObj: { user: LoggedInUser | null }
+  usersObj: Record<string, LoggedInUser>
 ): void {
   if (process.env.NODE_ENV !== "development") return;
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   app.post("/mock-auth", async (req, res) => {
     try {
+      // @ts-expect-error TODO: express user type
+      if (!req.user?.id) return res.status(400).end();
+
       const data = z
         .object({ username: z.string().nullish(), team: z.string().nullish() })
         .parse(req.query);
@@ -44,7 +47,9 @@ export function setUpMockAuth(
 
       if (!newMockUser) return res.status(400).end();
 
-      userObj.user = {
+      /* prettier-ignore */
+      // @ts-expect-error TODO: express user type
+      usersObj[req.user.id] = { // eslint-disable-line @typescript-eslint/no-unsafe-member-access
         discordAvatar: newMockUser.discordAvatar,
         discordId: newMockUser.discordId,
         id: newMockUser.id,

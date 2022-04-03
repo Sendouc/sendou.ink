@@ -43,7 +43,7 @@ app.use(
 
 app.use(morgan("tiny"));
 
-const mockUserFromHTTPCall: { user: LoggedInUser | null } = { user: null };
+const mockUserFromHTTPCall: Record<string, LoggedInUser> = {};
 
 try {
   setUpAuth(app);
@@ -55,14 +55,10 @@ try {
 
 function userToContext(req: Express.Request) {
   if (process.env.NODE_ENV === "development") {
-    // @ts-expect-error TODO: check how to set headers types
-    const mockedUser = req.headers["mock-auth"];
+    // @ts-expect-error TODO: express user type
+    const mockedUser = mockUserFromHTTPCall[req.user?.id];
     if (mockedUser) {
-      return JSON.parse(mockedUser);
-    }
-
-    if (mockUserFromHTTPCall.user) {
-      return mockUserFromHTTPCall.user;
+      return mockedUser;
     }
   }
   return req.user;
