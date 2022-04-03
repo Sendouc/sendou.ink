@@ -157,7 +157,7 @@ export function getRoundNameByPositions(
 
 export function countRounds(bracket: Bracket): EliminationBracket<number> {
   const isDE = bracket.losers.length > 0;
-  let winners = 1 + Number(isDE);
+  let winners = isDE ? 2 : 0;
 
   for (let i = bracket.participantsWithByesCount; i > 1; i /= 2) {
     winners++;
