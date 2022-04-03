@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { ChatLoaderData } from "~/routes/chat";
-import { Unpacked } from "~/utils";
+import { Unpacked, ValueOf } from "~/utils";
+import { ChatProps } from ".";
 
 export function Message({
   data,
@@ -9,7 +10,7 @@ export function Message({
 }: {
   data: Omit<Unpacked<ChatLoaderData["messages"]>, "roomId" | "id">;
   sending?: boolean;
-  user: { info?: string; name: string };
+  user: ValueOf<ChatProps["users"]>;
 }) {
   return (
     <li className="chat__message">

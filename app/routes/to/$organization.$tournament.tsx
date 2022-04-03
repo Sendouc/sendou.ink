@@ -26,6 +26,7 @@ import { useUser } from "~/hooks/common";
 import tournamentStylesUrl from "../../styles/tournament.css";
 import * as React from "react";
 import { isTournamentAdmin } from "~/core/tournament/validators";
+import { chatRoute } from "~/utils/urls";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: tournamentStylesUrl }];
@@ -81,6 +82,7 @@ export const meta: MetaFunction = (props) => {
 };
 
 export const unstable_shouldReload: ShouldReloadFunction = (data) => {
+  if (data.submission?.action === chatRoute()) return false;
   const action = data.submission?.formData.get("_action");
   if (!action) return true;
   return !["REPORT_SCORE", "UNDO_REPORT_SCORE"].includes(String(action));

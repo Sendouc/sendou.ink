@@ -82,6 +82,7 @@ export async function findByNameForUrl({
                   discordName: true,
                   discordId: true,
                   discordDiscriminator: true,
+                  friendCode: true,
                 },
               },
             },

@@ -1,4 +1,9 @@
-import { LinksFunction, LoaderFunction, Outlet } from "remix";
+import {
+  LinksFunction,
+  LoaderFunction,
+  Outlet,
+  ShouldReloadFunction,
+} from "remix";
 import { ActionFunction, json, useMatches } from "remix";
 import invariant from "tiny-invariant";
 import { z } from "zod";
@@ -17,6 +22,7 @@ import {
 } from "~/utils";
 import { useUser } from "~/hooks/common";
 import { useBracketDataWithEvents } from "~/hooks/useBracketDataWithEvents";
+import { chatRoute } from "~/utils/urls";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -104,13 +110,15 @@ export const action: ActionFunction = async ({
   }
 };
 
-const typedJson = (args: BracketModified) => json(args);
+export const unstable_shouldReload: ShouldReloadFunction = (data) => {
+  return data.submission?.action !== chatRoute();
+};
 
 export const loader: LoaderFunction = async ({ params }) => {
   invariant(typeof params.bid === "string", "Expected params.bid to be string");
 
   const bracket = await bracketById(params.bid);
-  return typedJson(bracket);
+  return json<BracketModified>(bracket);
 };
 
 // TODO: make bracket a bit smaller
@@ -124,18 +132,17 @@ export default function BracketTabWrapper() {
     team.members.some(({ member }) => member.id === user?.id)
   );
 
+  const winnersRounds = data.rounds.filter((round) => round.side === "winners");
+  const losersRounds = data.rounds.filter((round) => round.side === "losers");
+
   return (
     <div className="tournament-bracket__container">
       <Outlet />
       <BracketActions data={data} />
-      <EliminationBracket
-        rounds={data.rounds.filter((round) => round.side === "winners")}
-        ownTeamName={ownTeam?.name}
-      />
-      <EliminationBracket
-        rounds={data.rounds.filter((round) => round.side === "losers")}
-        ownTeamName={ownTeam?.name}
-      />
+      <EliminationBracket rounds={winnersRounds} ownTeamName={ownTeam?.name} />
+      {losersRounds.length > 0 ? (
+        <EliminationBracket rounds={losersRounds} ownTeamName={ownTeam?.name} />
+      ) : null}
     </div>
   );
 }

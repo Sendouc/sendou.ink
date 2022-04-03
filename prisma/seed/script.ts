@@ -147,7 +147,7 @@ export async function seed(variation?: SeedVariations) {
       userIds: string[],
       loggedInUserId: string
     ) {
-      const userIdsCopy = [...userIds];
+      const userIdsCopy = [...userIds].filter((id) => id !== NZAP_UUID);
       const mockTeams = [
         "Team Olive",
         "Chimera",
@@ -230,6 +230,17 @@ export async function seed(variation?: SeedVariations) {
               memberId,
               teamId: team.id,
               captain: memberI === 0,
+              tournamentId,
+            },
+          });
+        }
+
+        if (team.name === "Last Minute") {
+          await prisma.tournamentTeamMember.create({
+            data: {
+              memberId: NZAP_UUID,
+              teamId: team.id,
+              captain: false,
               tournamentId,
             },
           });

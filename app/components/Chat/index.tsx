@@ -7,13 +7,12 @@ import { SpeechBubbleIcon } from "../icons/SpeechBubble";
 import { Message } from "./Message";
 import useChat from "./useChat";
 
-export function Chat({
-  id,
-  users,
-}: {
+export interface ChatProps {
   id: string;
-  users: { [id: string]: { info?: string; name: string } };
-}) {
+  users: { [id: string]: { info?: string | null; name: string } };
+}
+
+export function Chat({ id, users }: ChatProps) {
   const user = useUser();
   const {
     messages,

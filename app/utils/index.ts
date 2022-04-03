@@ -182,6 +182,8 @@ export type Unpacked<T> = T extends (infer U)[]
   ? U
   : T;
 
+export type ValueOf<T> = T[keyof T];
+
 export type MyReducerAction<
   K extends string,
   T extends Record<string, unknown> | undefined = undefined

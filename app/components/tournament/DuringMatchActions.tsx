@@ -3,6 +3,7 @@ import invariant from "tiny-invariant";
 import type { BracketModified } from "~/services/bracket";
 import type { FindTournamentByNameForUrlI } from "~/services/tournament";
 import { Unpacked } from "~/utils";
+import { Chat } from "../Chat";
 import { SubmitButton } from "../SubmitButton";
 import { ActionSectionWrapper } from "./ActionSectionWrapper";
 import { DuringMatchActionsRosters } from "./DuringMatchActionsRosters";
@@ -44,41 +45,60 @@ export function DuringMatchActions({
   ];
 
   return (
-    <div className="tournament-bracket__during-match-actions">
-      <FancyStageBanner
-        stage={stage}
-        roundNumber={currentPosition}
-        infos={roundInfos}
-      >
-        {currentPosition > 1 && (
-          <Form method="post">
-            <input type="hidden" name="_action" value="UNDO_REPORT_SCORE" />
-            <input type="hidden" name="position" value={currentPosition - 1} />
-            <input type="hidden" name="matchId" value={currentMatch.id} />
-            <div className="tournament-bracket__stage-banner__bottom-bar">
-              <SubmitButton
-                actionType="UNDO_REPORT_SCORE"
-                className="tournament-bracket__stage-banner__undo-button"
-                loadingText="Undoing..."
-              >
-                Undo last score
-              </SubmitButton>
-            </div>
-          </Form>
+    <>
+      <Chat
+        key={currentMatch.id}
+        id={currentMatch.id}
+        users={Object.fromEntries(
+          [...ownTeam.members, ...opponentTeam.members].map((m) => [
+            m.member.id,
+            {
+              name: m.member.discordName,
+              info: m.member.friendCode,
+            },
+          ])
         )}
-      </FancyStageBanner>
-      <ActionSectionWrapper>
-        <DuringMatchActionsRosters
-          // Without the key prop when switching to another match the winnerId is remembered
-          // which causes "No winning team matching the id" error.
-          // Switching the key props forces the component to remount.
-          key={currentMatch.id}
-          ownTeam={ownTeam}
-          opponentTeam={opponentTeam}
-          matchId={currentMatch.id}
-          position={currentPosition}
-        />
-      </ActionSectionWrapper>
-    </div>
+      />
+      <div className="tournament-bracket__during-match-actions">
+        <FancyStageBanner
+          stage={stage}
+          roundNumber={currentPosition}
+          infos={roundInfos}
+        >
+          {currentPosition > 1 && (
+            <Form method="post">
+              <input type="hidden" name="_action" value="UNDO_REPORT_SCORE" />
+              <input
+                type="hidden"
+                name="position"
+                value={currentPosition - 1}
+              />
+              <input type="hidden" name="matchId" value={currentMatch.id} />
+              <div className="tournament-bracket__stage-banner__bottom-bar">
+                <SubmitButton
+                  actionType="UNDO_REPORT_SCORE"
+                  className="tournament-bracket__stage-banner__undo-button"
+                  loadingText="Undoing..."
+                >
+                  Undo last score
+                </SubmitButton>
+              </div>
+            </Form>
+          )}
+        </FancyStageBanner>
+        <ActionSectionWrapper>
+          <DuringMatchActionsRosters
+            // Without the key prop when switching to another match the winnerId is remembered
+            // which causes "No winning team matching the id" error.
+            // Switching the key props forces the component to remount.
+            key={currentMatch.id}
+            ownTeam={ownTeam}
+            opponentTeam={opponentTeam}
+            matchId={currentMatch.id}
+            position={currentPosition}
+          />
+        </ActionSectionWrapper>
+      </div>
+    </>
   );
 }
