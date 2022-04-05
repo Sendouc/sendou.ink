@@ -15,7 +15,7 @@
     "migration:apply:dev": "npx prisma migrate dev",
     "migration:apply:prod": "npx prisma migrate deploy",
     "migrate": "ley -r tsm -r dotenv/config",
-    "seed": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register prisma/seed",
+    "seed:old": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register prisma/seed",
     "seed:reset": "npx prisma migrate reset --force --skip-generate",
     "restore": "psql -d prod_copy -f backup.sql",
     "lint:ts": "eslint . --ext .ts,.tsx",
@@ -27,7 +27,8 @@
     "cy:run": "npx cypress run",
     "test:unit": "uvu -r tsm -r tsconfig-paths/register -i cypress",
     "tests": "npm run lint:styles && npm run lint:ts && npm run prettier:check && npm run typecheck && npm run test:unit",
-    "recalculate-skills": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/recalculateSkills.ts"
+    "recalculate-skills": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/recalculateSkills.ts",
+    "seed": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register -r dotenv/config scripts/seed.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^5.0.3",

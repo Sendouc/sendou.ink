@@ -4,7 +4,7 @@ export async function up(sql: postgres.Sql<any>) {
   await sql`
     create table users (
       id serial primary key,
-      discord_id text not null,
+      discord_id text not null unique,
       discord_name text not null,
       discord_discriminator text not null,
       discord_avatar text,
@@ -103,6 +103,7 @@ export async function up(sql: postgres.Sql<any>) {
       sp numeric generated always as (trunc((mu - 3 * sigma) * 10 + 1000, 2)) stored,
       user_id integer not null references users,
       match_id integer references group_matches,
+      created_at timestamp with time zone not null default current_timestamp,
       unique (user_id, match_id)
     )
   `;

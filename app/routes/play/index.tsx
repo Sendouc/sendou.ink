@@ -2,7 +2,6 @@ import {
   ActionFunction,
   Form,
   json,
-  Link,
   LinksFunction,
   LoaderFunction,
   MetaFunction,
@@ -12,7 +11,13 @@ import {
   useTransition,
 } from "remix";
 import { z } from "zod";
+import { Button } from "~/components/Button";
 import { LFGGroupSelector } from "~/components/play/LFGGroupSelector";
+import { resolveOwnMMR } from "~/core/mmr/utils";
+import { countGroups, resolveRedirect } from "~/core/play/utils";
+import { useUser } from "~/hooks/common";
+import * as LFGGroup from "~/models/LFGGroup.server";
+import * as Skill from "~/models/Skill.server";
 import styles from "~/styles/play.css";
 import {
   getLogInUrl,
@@ -22,14 +27,6 @@ import {
   requireUser,
   validate,
 } from "~/utils";
-import * as LFGGroup from "~/models/LFGGroup.server";
-import * as Skill from "~/models/Skill.server";
-import * as User from "~/models/User.server";
-import { Button } from "~/components/Button";
-import { useUser } from "~/hooks/common";
-import { countGroups, resolveRedirect } from "~/core/play/utils";
-import { resolveOwnMMR } from "~/core/mmr/utils";
-import { userHasTop500Result } from "~/core/play/playerInfos/playerInfos.server";
 import { sendouQAddPlayersPage, sendouQLookingPage } from "~/utils/urls";
 
 export const links: LinksFunction = () => {
@@ -101,16 +98,14 @@ export interface PlayFrontPageLoader {
     value: number;
     topX?: number;
   };
-  needsBio: boolean;
 }
 
 export const loader: LoaderFunction = async ({ context }) => {
   const user = getUser(context);
 
-  const [{ groups, ownGroup }, skills, userInfo] = await Promise.all([
+  const [{ groups, ownGroup }, skills] = await Promise.all([
     LFGGroup.findLookingAndOwnActive(user?.id, true),
     Skill.findAllMostRecent(),
-    User.findById(user?.id),
   ]);
 
   const ownMMR = resolveOwnMMR({ skills, user });
@@ -119,9 +114,6 @@ export const loader: LoaderFunction = async ({ context }) => {
     return json<PlayFrontPageLoader>({
       counts: countGroups(groups),
       ownMMR,
-      needsBio:
-        !userInfo?.miniBio &&
-        !userHasTop500Result({ discordId: user?.discordId }),
     });
   }
 
@@ -154,13 +146,13 @@ export default function PlayPage() {
       <Form method="post">
         <input type="hidden" name="_action" value="CREATE_LFG_GROUP" />
         <LFGGroupSelector counts={data.counts} />
-        <QueueUp needsBio={data.needsBio} />
+        <QueueUp />
       </Form>
     </div>
   );
 }
 
-function QueueUp({ needsBio }: { needsBio: boolean }) {
+function QueueUp() {
   const user = useUser();
   const location = useLocation();
   const transition = useTransition();
@@ -176,14 +168,6 @@ function QueueUp({ needsBio }: { needsBio: boolean }) {
 
     return false;
   };
-
-  if (needsBio) {
-    return (
-      <p className="play__action-needed">
-        Please <Link to="settings">add bio</Link> before queueing up
-      </p>
-    );
-  }
 
   if (!user) {
     return (
