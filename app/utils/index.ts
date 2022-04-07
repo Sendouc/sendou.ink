@@ -1,4 +1,5 @@
 import { Mode } from "@prisma/client";
+import postgres from "postgres";
 import type { CSSProperties } from "react";
 import { json, useLocation } from "remix";
 import type { Socket } from "socket.io-client";
@@ -131,6 +132,35 @@ export async function parseRequestFormData<T extends z.ZodTypeAny>({
 
     throw e;
   }
+}
+
+export async function parsedSqlQuery<T extends z.ZodTypeAny>({
+  query,
+  schema,
+  unwrap = false,
+}: {
+  query: postgres.PendingQuery<postgres.Row[]>;
+  schema: T;
+  unwrap?: boolean;
+}): Promise<z.infer<T>> {
+  const enableChecks = process.env.NODE_ENV === "development";
+
+  const rows = (await query) as unknown[];
+  if (unwrap && enableChecks && rows.length > 1) {
+    throw new Error(`Wanted to unwrap but too many rows: ${rows.length}`);
+  }
+  const result = unwrap ? rows[0] : rows;
+
+  if (enableChecks) {
+    try {
+      schema.parse(result);
+    } catch (e) {
+      console.error("Error when parsing SQL query");
+      throw e;
+    }
+  }
+
+  return result;
 }
 
 export function safeJSONParse(value: unknown): unknown {

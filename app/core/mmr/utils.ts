@@ -1,8 +1,7 @@
 import { Skill } from "@prisma/client";
 import clone from "just-clone";
-import { rating, ordinal, rate } from "openskill";
-import { LFG_GROUP_FULL_SIZE, MMR_TOPX_VISIBILITY_CUTOFF } from "~/constants";
-import { PlayFrontPageLoader } from "~/routes/play/index";
+import { ordinal, rate, rating } from "openskill";
+import { LFG_GROUP_FULL_SIZE } from "~/constants";
 import { SeedsLoaderData } from "~/routes/to/$organization.$tournament/seeds";
 
 const TAU = 0.3;
@@ -111,46 +110,6 @@ export function adjustSkills({
     ...ratedWinners.map(ratedToReturnable("winning")),
     ...ratedLosers.map(ratedToReturnable("losing")),
   ];
-}
-
-export function resolveOwnMMR({
-  skills,
-  user,
-}: {
-  skills: { userId: string; mu: number; sigma: number }[];
-  user?: { id: string };
-}): PlayFrontPageLoader["ownMMR"] {
-  if (!user) return;
-
-  const ownSkillObj = skills.find((s) => s.userId === user.id);
-  if (!ownSkillObj) return;
-
-  const ownSkill = muSigmaToSP(ownSkillObj);
-  const allSkills = skills.map((s) => muSigmaToSP(s));
-  const ownPercentile = percentile(allSkills, ownSkill);
-  // can't be top 0%
-  const topX = Math.max(1, Math.round(100 - ownPercentile));
-
-  return {
-    value: ownSkill,
-    // we show the top x data only for those who have it good
-    // since probably nobody wants to know they are the bottom
-    // 10% or something
-    topX: topX > MMR_TOPX_VISIBILITY_CUTOFF ? undefined : topX,
-  };
-}
-
-// https://stackoverflow.com/a/69730272
-function percentile(arr: number[], val: number) {
-  let count = 0;
-  arr.forEach((v) => {
-    if (v < val) {
-      count++;
-    } else if (v == val) {
-      count += 0.5;
-    }
-  });
-  return (100 * count) / arr.length;
 }
 
 export function averageTeamMMRs({

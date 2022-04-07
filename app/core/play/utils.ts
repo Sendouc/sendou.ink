@@ -325,7 +325,7 @@ export function resolveRedirect({
 }: {
   currentStatus?: LfgGroupStatus;
   currentPage: LfgGroupStatus;
-  matchId?: string | null;
+  matchId?: string | null | number;
 }) {
   if (currentStatus === currentPage) return;
   switch (currentStatus) {

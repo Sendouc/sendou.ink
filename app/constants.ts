@@ -22,7 +22,6 @@ export const BEST_OF_OPTIONS = [3, 5, 7, 9] as const;
 /** How many minutes a group has to be inactive before being hidden from the looking page */
 export const LFG_GROUP_INACTIVE_MINUTES = 30;
 
-export const MMR_TOPX_VISIBILITY_CUTOFF = 50;
 export const AMOUNT_OF_ENTRIES_REQUIRED_FOR_LEADERBOARD = 7;
 
 export const LFG_AMOUNT_OF_STAGES_TO_GENERATE = 7;

@@ -70,7 +70,7 @@ async function users() {
     `,
   ]);
 
-  await sql`ALTER SEQUENCE users_id_seq RESTART WITH 3;`;
+  await sql`alter table users alter column id restart with 3`;
   await sql`
     insert into users 
       ${sql(

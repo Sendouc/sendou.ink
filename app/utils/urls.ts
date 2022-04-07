@@ -45,7 +45,8 @@ export function sendouQLookingPage() {
 export function sendouQAddPlayersPage() {
   return "/play/add-players";
 }
-export function sendouQMatchPage(matchId: string) {
+// TODO: remove string
+export function sendouQMatchPage(matchId: string | number) {
   return `/play/match/${matchId}`;
 }
 export function playerMatchHistoryPage(userId: string) {

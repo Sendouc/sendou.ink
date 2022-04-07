@@ -13,11 +13,11 @@ import {
 import { z } from "zod";
 import { Button } from "~/components/Button";
 import { LFGGroupSelector } from "~/components/play/LFGGroupSelector";
-import { resolveOwnMMR } from "~/core/mmr/utils";
-import { countGroups, resolveRedirect } from "~/core/play/utils";
+import { resolveRedirect } from "~/core/play/utils";
+import { db } from "~/db";
+import { RelativeOwnSP } from "~/db/services/skills";
 import { useUser } from "~/hooks/common";
 import * as LFGGroup from "~/models/LFGGroup.server";
-import * as Skill from "~/models/Skill.server";
 import styles from "~/styles/play.css";
 import {
   getLogInUrl,
@@ -94,26 +94,22 @@ export const action: ActionFunction = async ({ request, context }) => {
 
 export interface PlayFrontPageLoader {
   counts: Record<"TWIN" | "QUAD" | "VERSUS", number>;
-  ownMMR?: {
-    value: number;
-    topX?: number;
-  };
+  skill: RelativeOwnSP;
 }
 
 export const loader: LoaderFunction = async ({ context }) => {
   const user = getUser(context);
 
-  const [{ groups, ownGroup }, skills] = await Promise.all([
-    LFGGroup.findLookingAndOwnActive(user?.id, true),
-    Skill.findAllMostRecent(),
+  const [ownGroup, skill] = await Promise.all([
+    db.groups.ownGroupStatus({ id: 1 }),
+    db.skills.relativeOwnSP({ id: 1 }),
   ]);
 
-  const ownMMR = resolveOwnMMR({ skills, user });
-
-  if (!user || !ownGroup) {
+  if (!user || !ownGroup?.status) {
     return json<PlayFrontPageLoader>({
-      counts: countGroups(groups),
-      ownMMR,
+      //counts: countGroups(groups),
+      counts: { TWIN: 0, QUAD: 0, VERSUS: 0 },
+      skill,
     });
   }
 
@@ -132,12 +128,12 @@ export default function PlayPage() {
 
   return (
     <div>
-      {data.ownMMR && (
+      {data.skill && (
         <div className="play__own-mmr">
-          <div className="play__own-mmr__mmr">SP: {data.ownMMR.value}</div>
-          {data.ownMMR.topX && (
+          <div className="play__own-mmr__mmr">SP: {data.skill.sp}</div>
+          {data.skill.topX && (
             <div className="play__own-mmr__topx">
-              Top {data.ownMMR.topX}% (better than {100 - data.ownMMR.topX}% of
+              Top {data.skill.topX}% (better than {100 - data.skill.topX}% of
               players)
             </div>
           )}

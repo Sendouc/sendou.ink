@@ -3,13 +3,11 @@ import {
   adjustSkills,
   averageTeamMMRs,
   muSigmaToSP,
-  resolveOwnMMR,
   teamSkillToExactMMR,
 } from "./utils";
 import * as assert from "uvu/assert";
 
 const AdjustSkills = suite("adjustSkills()");
-const ResolveOwnMMR = suite("resolveOwnMMR()");
 const TeamSkillToExactMMR = suite("teamSkillToExactMMR()");
 const AverageTeamMMRs = suite("averageTeamMMRs()");
 
@@ -56,49 +54,6 @@ AdjustSkills("Handles missing skills", () => {
   });
 
   assert.equal(adjusted.length, 4);
-});
-
-ResolveOwnMMR("Doesn't show own MMR if missing", () => {
-  const own = resolveOwnMMR({
-    skills: [{ userId: "test2", mu: 20, sigma: 7 }],
-    user: { id: "test" },
-  });
-  const own2 = resolveOwnMMR({
-    skills: [],
-    user: { id: "test" },
-  });
-
-  assert.not.ok(own);
-  assert.not.ok(own2);
-});
-
-ResolveOwnMMR("Calculates own MMR stats correctly", () => {
-  const skills = new Array(9)
-    .fill(null)
-    .map((_, i) => ({ userId: `${i}`, mu: 20 + i, sigma: 7 }));
-  skills.push({ userId: "test", mu: 40, sigma: 7 });
-  const own = resolveOwnMMR({
-    skills,
-    user: { id: "test" },
-  });
-
-  const valueShouldBe = muSigmaToSP({ mu: 40, sigma: 7 });
-
-  assert.equal(own?.topX, 5);
-  assert.equal(own?.value, valueShouldBe);
-});
-
-ResolveOwnMMR("Hides topX if not good", () => {
-  const skills = new Array(9)
-    .fill(null)
-    .map((_, i) => ({ userId: `${i}`, mu: 20 + i, sigma: 7 }));
-  skills.push({ userId: "test", mu: 1, sigma: 7 });
-  const own = resolveOwnMMR({
-    skills,
-    user: { id: "test" },
-  });
-
-  assert.not.ok(own?.topX);
 });
 
 TeamSkillToExactMMR("Sums up MMR's", () => {
@@ -169,6 +124,5 @@ AverageTeamMMRs("Handles teams with no skill", () => {
 });
 
 AdjustSkills.run();
-ResolveOwnMMR.run();
 TeamSkillToExactMMR.run();
 AverageTeamMMRs.run();
