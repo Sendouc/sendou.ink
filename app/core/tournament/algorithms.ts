@@ -18,6 +18,7 @@ export function eliminationBracket(
   const matchesLQueue: Match[] = [];
   const backfillQ: Match[] = [];
   let matchNumber = 1;
+  let matchPosition = 1;
 
   invariant(
     powerOf2(participants.length),
@@ -177,13 +178,16 @@ export function eliminationBracket(
   return bracket;
 
   function createMatch(
-    args: Omit<Match, "id" | "number">,
+    args: Omit<Match, "id" | "number" | "position">,
     willBeSkipped?: boolean
   ): Match {
     const number = willBeSkipped ? 0 : matchNumber++;
+    const position = matchPosition++;
+
     return {
       id: uuidv4(),
       number,
+      position,
       ...args,
     };
   }
@@ -238,7 +242,10 @@ export type TeamIdentifier = number | "BYE";
 
 export interface Match {
   id: string;
+  /** Match number as displayed on bracket. 0 if match should not show. */
   number: number;
+  /** Match position that decides the order in which matches are displayed. No zeros. */
+  position: number;
   upperTeam?: TeamIdentifier;
   lowerTeam?: TeamIdentifier;
   winner?: TeamIdentifier;

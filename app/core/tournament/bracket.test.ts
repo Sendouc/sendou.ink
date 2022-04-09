@@ -60,13 +60,24 @@ RoundNames("No bracket reset round for SE", () => {
   assert.not.ok(hasBR);
 });
 
-const mapPool = mapPoolForTest();
-const bracket = eliminationBracket(24, "DE");
-const rounds = getRoundsDefaultBestOf(bracket);
-const mapList = generateMapListForRounds({ mapPool, rounds });
+const testTournamentData = (type: "SE" | "DE", participantsCount: number) => {
+  const mapPool = mapPoolForTest();
+  const bracket = eliminationBracket(participantsCount, type);
+  const rounds = getRoundsDefaultBestOf(bracket);
+  const mapList = generateMapListForRounds({ mapPool, rounds });
+
+  return {
+    mapPool,
+    bracket,
+    rounds,
+    mapList,
+  };
+};
 
 TournamentRoundsForDB("Generates rounds correctly", () => {
   const TEAM_COUNT = 24;
+
+  const { bracket, mapList } = testTournamentData("DE", TEAM_COUNT);
   const bracketForDb = tournamentRoundsForDB({
     mapList,
     bracketType: "DE",
@@ -104,7 +115,42 @@ TournamentRoundsForDB("Generates rounds correctly", () => {
   assert.equal(uniqueParticipants.size, TEAM_COUNT + 1); // + BYE
 });
 
+TournamentRoundsForDB(
+  "Generates rounds correctly (many byes, correct amount of teams round 2)",
+  () => {
+    const TEAM_COUNT = 18;
+
+    const { mapList } = testTournamentData("SE", TEAM_COUNT);
+
+    const bracketForDb = tournamentRoundsForDB({
+      mapList,
+      bracketType: "SE",
+      participantsSeeded: new Array(TEAM_COUNT)
+        .fill(null)
+        .map((_, i) => i + 1)
+        .map(String)
+        .map((id) => ({ id })),
+    });
+
+    const participantsInRoundTwo = bracketForDb[1].matches.reduce(
+      (acc, cur) => {
+        const participants = cur.participants.reduce(
+          (acc, cur) => acc + (cur.team === "BYE" ? 0 : 1),
+          0
+        );
+
+        return acc + participants;
+      },
+      0
+    );
+
+    assert.equal(participantsInRoundTwo, 14);
+  }
+);
+
 TournamentRoundsForDB("Advances bye to right spot", () => {
+  const { mapList } = testTournamentData("DE", 24);
+
   const TEAM_COUNT = 7;
   const bracketForDb = tournamentRoundsForDB({
     mapList,

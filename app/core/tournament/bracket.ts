@@ -363,39 +363,53 @@ function advanceByes(
 
   const teamsForSecondRound = new Map<
     number,
-    ["upperTeam" | "lowerTeam", number]
+    ["upperTeam" | "lowerTeam", number][]
   >();
   for (const round of result.winners[0]) {
     const winnerDestinationMatch = round.winnerDestinationMatch;
     invariant(winnerDestinationMatch, "winnerDestinationmatch is undefined");
 
+    const teamsForSecondRoundArr =
+      teamsForSecondRound.get(winnerDestinationMatch.number) ?? [];
+    let changed = false;
     if (
       round.upperTeam &&
       round.upperTeam !== "BYE" &&
       round.lowerTeam === "BYE"
     ) {
-      teamsForSecondRound.set(winnerDestinationMatch.number, [
+      teamsForSecondRoundArr.push([
         resolveSide(round, winnerDestinationMatch, result),
         round.upperTeam,
       ]);
+      changed = true;
     } else if (
       round.lowerTeam &&
       round.lowerTeam !== "BYE" &&
       round.upperTeam === "BYE"
     ) {
-      teamsForSecondRound.set(winnerDestinationMatch.number, [
+      teamsForSecondRoundArr.push([
         resolveSide(round, winnerDestinationMatch, result),
         round.lowerTeam,
       ]);
+      changed = true;
+    }
+
+    if (changed) {
+      teamsForSecondRound.set(
+        winnerDestinationMatch.number,
+        teamsForSecondRoundArr
+      );
     }
   }
 
   for (const [i, round] of result.winners[1].entries()) {
-    const teamForSecondRound = teamsForSecondRound.get(round.number);
-    if (!teamForSecondRound) continue;
+    const teamForSecondRoundArr = teamsForSecondRound.get(round.number);
+    if (!teamForSecondRoundArr) continue;
 
-    const [key, teamNumber] = teamForSecondRound;
-    result.winners[1][i] = { ...result.winners[1][i], [key]: teamNumber };
+    for (const teamForSecondRound of teamForSecondRoundArr) {
+      const [key, teamNumber] = teamForSecondRound;
+      result.winners[1][i] = { ...result.winners[1][i], [key]: teamNumber };
+    }
   }
 
   return result;
@@ -406,22 +420,25 @@ function resolveSide(
   destinationMatch: Match,
   rounds: EliminationBracket<Match[][]>
 ): "upperTeam" | "lowerTeam" {
-  const matchNumbers = getWinnerDestinationMatchIdToMatchNumbers(rounds).get(
-    destinationMatch.id
+  const matchPositions = getWinnerDestinationMatchIdToMatchPositions(
+    rounds
+  ).get(destinationMatch.id);
+  const otherPosition = matchPositions?.find(
+    (num) => num !== currentMatch.position
   );
-  const otherNumber = matchNumbers?.find((num) => num !== currentMatch.number);
+
   invariant(
-    otherNumber,
-    `no otherNumber; matchNumbers length is not 2 was: ${
-      matchNumbers?.length ?? "NO_LENGTH"
+    otherPosition,
+    `no otherPosition; matchPositions length was: ${
+      matchPositions?.length ?? "NO_LENGTH"
     }`
   );
 
-  if (otherNumber > currentMatch.number) return "upperTeam";
+  if (otherPosition > currentMatch.position) return "upperTeam";
   return "lowerTeam";
 }
 
-function getWinnerDestinationMatchIdToMatchNumbers(
+function getWinnerDestinationMatchIdToMatchPositions(
   rounds: EliminationBracket<Match[][]>
 ): Map<string, number[]> {
   return rounds.winners[0].reduce((map, round) => {
@@ -430,12 +447,12 @@ function getWinnerDestinationMatchIdToMatchNumbers(
       "round.winnerDestinationMatch is undefined"
     );
     if (!map.has(round.winnerDestinationMatch.id)) {
-      return map.set(round.winnerDestinationMatch.id, [round.number]);
+      return map.set(round.winnerDestinationMatch.id, [round.position]);
     }
 
     const arr = map.get(round.winnerDestinationMatch.id);
     invariant(arr, "arr is undefined");
-    arr.push(round.number);
+    arr.push(round.position);
 
     return map;
   }, new Map<string, number[]>());
