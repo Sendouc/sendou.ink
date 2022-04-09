@@ -155,7 +155,10 @@ export function getRoundNameByPositions(
   return result;
 }
 
-export function countRounds(bracket: Bracket): EliminationBracket<number> {
+export function countRounds(
+  bracket: Bracket,
+  skipFirstRoundLosersIfNotPlayed = true
+): EliminationBracket<number> {
   const isDE = bracket.losers.length > 0;
   let winners = isDE ? 2 : 0;
 
@@ -198,7 +201,11 @@ export function countRounds(bracket: Bracket): EliminationBracket<number> {
   }
 
   // First round of losers is not played if certain amount of byes
-  if (matchesWithByes && matchesWithByes >= matchesWithOpponent) {
+  if (
+    skipFirstRoundLosersIfNotPlayed &&
+    matchesWithByes &&
+    matchesWithByes >= matchesWithOpponent
+  ) {
     losers--;
   }
 
@@ -274,8 +281,9 @@ export function tournamentRoundsForDB({
     for (const [roundI, round] of side.entries()) {
       const position = isWinners ? roundI + 1 : -(roundI + 1);
       const stagesRaw = mapList[isWinners ? "winners" : "losers"][roundI];
-      invariant(stagesRaw, "stagesRaw is undefined");
-      const stages = stagesRaw.map((stage, i) => ({
+      // can be undefined if it's about unplayed first round of losers,
+      // we don't need to add any stages for that round
+      const stages = (stagesRaw ?? []).map((stage, i) => ({
         position: i + 1,
         stageId: stage.id,
       }));
@@ -323,7 +331,7 @@ export function tournamentRoundsForDB({
 }
 
 function groupMatchesByRound(bracket: Bracket): EliminationBracket<Match[][]> {
-  const { winners, losers } = countRounds(bracket);
+  const { winners, losers } = countRounds(bracket, false);
 
   const result: EliminationBracket<Match[][]> = {
     winners: new Array(winners).fill(null).map(() => []),
@@ -354,7 +362,8 @@ function groupMatchesByRound(bracket: Bracket): EliminationBracket<Match[][]> {
 
     search(match.winnerDestinationMatch, side, depth + 1);
     matchesIncluded.add(match.id);
-    result[side][depth - 1]?.push(match);
+    invariant(result[side][depth - 1], "No rounds array for the match");
+    result[side][depth - 1].push(match);
   }
 }
 
@@ -368,11 +377,10 @@ function advanceByes(
     ["upperTeam" | "lowerTeam", number][]
   >();
   for (const round of result.winners[0]) {
-    const winnerDestinationMatch = round.winnerDestinationMatch;
-    invariant(winnerDestinationMatch, "winnerDestinationmatch is undefined");
+    invariant(round.winnerDestinationMatch, "!round.winnerDestinationMatch");
 
     const teamsForSecondRoundArr =
-      teamsForSecondRound.get(winnerDestinationMatch.number) ?? [];
+      teamsForSecondRound.get(round.winnerDestinationMatch.number) ?? [];
     let changed = false;
     if (
       round.upperTeam &&
@@ -380,7 +388,7 @@ function advanceByes(
       round.lowerTeam === "BYE"
     ) {
       teamsForSecondRoundArr.push([
-        resolveSide(round, winnerDestinationMatch, result),
+        resolveSide(round, round.winnerDestinationMatch, result),
         round.upperTeam,
       ]);
       changed = true;
@@ -390,7 +398,7 @@ function advanceByes(
       round.upperTeam === "BYE"
     ) {
       teamsForSecondRoundArr.push([
-        resolveSide(round, winnerDestinationMatch, result),
+        resolveSide(round, round.winnerDestinationMatch, result),
         round.lowerTeam,
       ]);
       changed = true;
@@ -398,7 +406,7 @@ function advanceByes(
 
     if (changed) {
       teamsForSecondRound.set(
-        winnerDestinationMatch.number,
+        round.winnerDestinationMatch.number,
         teamsForSecondRoundArr
       );
     }

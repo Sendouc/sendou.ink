@@ -87,7 +87,7 @@ TournamentRoundsForDB("Generates rounds correctly", () => {
       .map(String)
       .map((id) => ({ id })),
   });
-  const roundsCounted = countRounds(bracket);
+  const roundsCounted = countRounds(bracket, false);
   let max = -Infinity;
   let min = Infinity;
   const uniqueParticipants = new Set<string>();
@@ -149,9 +149,9 @@ TournamentRoundsForDB(
 );
 
 TournamentRoundsForDB("Advances bye to right spot", () => {
-  const { mapList } = testTournamentData("DE", 24);
-
   const TEAM_COUNT = 7;
+  const { mapList } = testTournamentData("DE", TEAM_COUNT);
+
   const bracketForDb = tournamentRoundsForDB({
     mapList,
     bracketType: "SE",
@@ -177,6 +177,38 @@ TournamentRoundsForDB("Advances bye to right spot", () => {
   assert.equal(roundTwoParticipants, 1);
   assert.equal(teamOrder, "UPPER");
 });
+
+TournamentRoundsForDB(
+  "Has matching match for each loser destination match id",
+  () => {
+    const TEAM_COUNT = 11;
+    const { mapList } = testTournamentData("DE", 11);
+
+    const bracketForDb = tournamentRoundsForDB({
+      mapList,
+      bracketType: "DE",
+      participantsSeeded: new Array(TEAM_COUNT)
+        .fill(null)
+        .map((_, i) => i + 1)
+        .map(String)
+        .map((id) => ({ id })),
+    });
+
+    const matches = bracketForDb.flatMap((round) => round.matches);
+    const losers = matches
+      .filter((match) => !match.loserDestinationMatchId)
+      .flatMap((match) => match.id ?? []);
+    const loserDestinationMatchIds = matches.flatMap(
+      (match) => match.loserDestinationMatchId ?? []
+    );
+
+    for (const id of loserDestinationMatchIds) {
+      if (!losers.includes(id)) {
+        throw new Error(`No matching losers match found for id: ${id}`);
+      }
+    }
+  }
+);
 
 CountBracketRounds.run();
 RoundNames.run();
