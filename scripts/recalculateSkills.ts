@@ -1,25 +1,19 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient, Skill } from "@prisma/client";
 import { rating } from "openskill";
 import { adjustSkills } from "~/core/mmr/utils";
 import { groupsToWinningAndLosingPlayerIds } from "~/core/play/utils";
 
 const prisma = new PrismaClient();
 
-type SkillWithDetails = {
-  mu: number;
-  sigma: number;
-  userId: string;
-  matchId: string;
-};
 type UserId = string;
-type CurrentSkills = Record<UserId, Pick<SkillWithDetails, "mu" | "sigma">>;
+type CurrentSkills = Record<UserId, Pick<Skill, "mu" | "sigma">>;
 
 async function main() {
   const matches = (await allMatches()).filter((m) =>
     m.stages.some((s) => s.winnerGroupId)
   );
 
-  const newSkills: SkillWithDetails[] = [];
+  const newSkills: Omit<Skill, "id">[] = [];
   const currentSkills: CurrentSkills = {};
 
   for (const match of matches) {
@@ -41,7 +35,14 @@ async function main() {
       }),
     });
 
-    newSkills.push(...adjustedSkills.map((s) => ({ ...s, matchId: match.id })));
+    newSkills.push(
+      ...adjustedSkills.map((s) => ({
+        ...s,
+        matchId: match.id,
+        tournamentId: null,
+        createdAt: match.createdAt,
+      }))
+    );
 
     for (const skill of adjustedSkills) {
       const { userId, ...rest } = skill;
@@ -69,7 +70,7 @@ function skillsPerUser({
 }: {
   currentSkills: CurrentSkills;
   userIds: string[];
-}): Omit<SkillWithDetails, "matchId">[] {
+}): Pick<Skill, "userId" | "mu" | "sigma">[] {
   return userIds.map((id) => {
     const skill = currentSkills[id] ? currentSkills[id] : rating();
     return { userId: id, ...skill };
