@@ -108,7 +108,8 @@ function modifyRounds(
               ]
             : undefined;
         return {
-          number: match.position,
+          // TODO: match.number could be made mandatory in DB and this would become redundant
+          number: match.number ?? match.position,
           id: match.id,
           winnerDestinationMatchId: match.winnerDestinationMatchId,
           loserDestinationMatchId: match.loserDestinationMatchId,

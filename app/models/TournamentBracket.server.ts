@@ -19,6 +19,7 @@ export function findById(bracketId: string) {
           matches: {
             select: {
               id: true,
+              number: true,
               position: true,
               winnerDestinationMatchId: true,
               loserDestinationMatchId: true,
@@ -38,6 +39,9 @@ export function findById(bracketId: string) {
                   winner: true,
                 },
               },
+            },
+            orderBy: {
+              position: "asc",
             },
           },
         },

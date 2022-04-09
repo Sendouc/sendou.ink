@@ -126,7 +126,8 @@ export async function createTournamentRounds({
       data: rounds.flatMap((round) => {
         return round.matches.map((match) => ({
           id: match.id,
-          position: match.number,
+          number: match.number,
+          position: match.position,
           roundId: round.id,
           winnerDestinationMatchId: match.winnerDestinationMatchId,
           loserDestinationMatchId: match.loserDestinationMatchId,

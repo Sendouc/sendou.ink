@@ -243,6 +243,7 @@ export interface TournamentRoundForDB {
   matches: {
     id: string;
     number: number;
+    position: number;
     winnerDestinationMatchId?: string;
     loserDestinationMatchId?: string;
     participants: {
@@ -282,6 +283,7 @@ export function tournamentRoundsForDB({
       const matches = round.map((match) => {
         return {
           id: match.id,
+          position: match.position,
           number: match.number,
           winnerDestinationMatchId: match.winnerDestinationMatch?.id,
           loserDestinationMatchId: match.loserDestinationMatch?.id,
