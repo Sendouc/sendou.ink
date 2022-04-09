@@ -43,15 +43,6 @@ const VouchModal: React.FC<Props> = ({ canVouchFor }) => {
 
   return (
     <>
-      <Button
-        size="sm"
-        mb={4}
-        ml={2}
-        onClick={() => setIsOpen(true)}
-        data-cy="vouch-button"
-      >
-        Vouch
-      </Button>
       {isOpen && (
         <Modal
           isOpen={isOpen}

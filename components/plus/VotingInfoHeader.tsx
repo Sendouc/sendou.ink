@@ -8,8 +8,7 @@ const VotingInfoHeader = ({ isMember }: { isMember: boolean }) => {
     return (
       <>
         Voting is open till {endDate.toLocaleString()}.{" "}
-        <MyLink href="/plus/voting">Go vote</MyLink> or{" "}
-        <MyLink href="/plus/history">view voting history</MyLink>
+        <MyLink href="/plus/voting">Go vote</MyLink>
       </>
     );
   }
@@ -17,15 +16,13 @@ const VotingInfoHeader = ({ isMember }: { isMember: boolean }) => {
   if (isHappening)
     return (
       <>
-        Voting is happening till {endDate.toLocaleString()}.{" "}
-        <MyLink href="/plus/history">View voting history</MyLink>
+        Voting is happening till {endDate.toLocaleString()}.
       </>
     );
 
   return (
     <>
-      Next voting starts {nextVotingDate.toLocaleString()}.{" "}
-      <MyLink href="/plus/history">View voting history</MyLink>
+      Next voting starts {nextVotingDate.toLocaleString()}.
     </>
   );
 };
