@@ -31,11 +31,12 @@ SkillsToLeaderboard("Works with empty array", () => {
 SkillsToLeaderboard("Ignores skills if below amount required", () => {
   const players = skillsToLeaderboard([
     {
-      match: { createdAt: new Date() },
+      createdAt: new Date(),
       mu: 10,
       sigma: 2,
       userId: "1",
       user: USER,
+      amountOfSets: null,
     },
   ]);
 
@@ -45,11 +46,12 @@ SkillsToLeaderboard("Ignores skills if below amount required", () => {
 SkillsToLeaderboard("Gets peak", () => {
   const players = skillsToLeaderboard(
     new Array(10).fill(null).map((_) => ({
-      match: { createdAt: new Date() },
+      createdAt: new Date(),
       mu: 10,
       sigma: 2,
       userId: "1",
       user: USER,
+      amountOfSets: null,
     }))
   );
 
@@ -59,11 +61,12 @@ SkillsToLeaderboard("Gets peak", () => {
 SkillsToLeaderboard("Ignores peaks at the start", () => {
   const players = skillsToLeaderboard(
     new Array(10).fill(null).map((_, i) => ({
-      match: { createdAt: new Date() },
+      createdAt: new Date(),
       mu: i === 0 ? 30 : 10,
       sigma: 2,
       userId: "1",
       user: USER,
+      amountOfSets: null,
     }))
   );
 
@@ -73,11 +76,12 @@ SkillsToLeaderboard("Ignores peaks at the start", () => {
 SkillsToLeaderboard("Gets peak from in between", () => {
   const players = skillsToLeaderboard(
     new Array(10).fill(null).map((_, i) => ({
-      match: { createdAt: new Date() },
+      createdAt: new Date(),
       mu: i === 8 ? 30 : 10,
       sigma: 2,
       userId: "1",
       user: USER,
+      amountOfSets: null,
     }))
   );
 
@@ -87,11 +91,12 @@ SkillsToLeaderboard("Gets peak from in between", () => {
 SkillsToLeaderboard("Calculates entries", () => {
   const players = skillsToLeaderboard(
     new Array(10).fill(null).map((_, i) => ({
-      match: { createdAt: new Date() },
+      createdAt: new Date(),
       mu: i === 8 ? 30 : 10,
       sigma: 2,
       userId: "1",
       user: USER,
+      amountOfSets: null,
     }))
   );
 
@@ -103,19 +108,21 @@ SkillsToLeaderboard("Orders by MMR", () => {
     new Array(10)
       .fill(null)
       .map((_, i) => ({
-        match: { createdAt: new Date() },
+        createdAt: new Date(),
         mu: i === 8 ? 30 : 10,
         sigma: 2,
         userId: "1",
         user: USER,
+        amountOfSets: null,
       }))
       .concat(
         new Array(10).fill(null).map((_) => ({
-          match: { createdAt: new Date() },
+          createdAt: new Date(),
           mu: 40,
           sigma: 2,
           userId: "2",
           user: USER_2,
+          amountOfSets: null,
         }))
       )
   );

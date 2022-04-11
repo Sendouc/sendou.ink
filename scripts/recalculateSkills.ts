@@ -111,7 +111,7 @@ function allTournaments() {
 function isTournament(
   event: Unpacked<AllTournaments> | Unpacked<AllMatches>
 ): event is Unpacked<AllTournaments> {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
   return Boolean((event as any).startTime);
 }
 
