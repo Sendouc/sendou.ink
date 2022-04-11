@@ -1,15 +1,33 @@
-import { Prisma } from "@prisma/client";
+import { Prisma, Skill } from "@prisma/client";
 import { db } from "~/utils/db.server";
+
+export function createMany(
+  data: Pick<
+    Skill,
+    "mu" | "sigma" | "tournamentId" | "userId" | "amountOfSets"
+  >[]
+) {
+  return db.skill.createMany({
+    data,
+  });
+}
 
 export type FindAllMostRecent = Prisma.PromiseReturnType<
   typeof findAllMostRecent
 >;
-export function findAllMostRecent() {
+export function findAllMostRecent(userIds?: string[]) {
   return db.skill.findMany({
     orderBy: {
       createdAt: "desc",
     },
     distinct: "userId",
+    where: userIds
+      ? {
+          userId: {
+            in: userIds,
+          },
+        }
+      : undefined,
   });
 }
 
@@ -35,9 +53,9 @@ export function findAllByMonth({
   const to = new Date(Date.UTC(year, month, 0));
 
   return db.skill.findMany({
-    include: { match: { select: { createdAt: true } }, user: true },
+    include: { user: true },
     where: {
-      match: { AND: [{ createdAt: { gte: from } }, { createdAt: { lt: to } }] },
+      AND: [{ createdAt: { gte: from } }, { createdAt: { lt: to } }],
     },
   });
 }

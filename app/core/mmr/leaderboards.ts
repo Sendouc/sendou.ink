@@ -7,8 +7,10 @@ export interface LeaderboardEntry {
   user: { id: string; discordName: string };
   entries: number;
 }
-type SkillInput = Pick<Skill, "mu" | "sigma" | "userId"> & {
-  match: { createdAt: Date } | null;
+type SkillInput = Pick<
+  Skill,
+  "mu" | "sigma" | "userId" | "amountOfSets" | "createdAt"
+> & {
   user: { id: string; discordName: string };
 };
 type UserId = string;
@@ -19,9 +21,9 @@ export function skillsToLeaderboard(skills: SkillInput[]): LeaderboardEntry[] {
 
   for (const skill of skills.sort(sortSkillsByCreatedAt)) {
     if (!counts[skill.userId]) {
-      counts[skill.userId] = 1;
+      counts[skill.userId] = skill.amountOfSets ?? 1;
     } else {
-      counts[skill.userId]++;
+      counts[skill.userId] = counts[skill.userId] + (skill.amountOfSets ?? 1);
     }
 
     if (counts[skill.userId] < AMOUNT_OF_ENTRIES_REQUIRED_FOR_LEADERBOARD) {
@@ -52,9 +54,7 @@ export function skillsToLeaderboard(skills: SkillInput[]): LeaderboardEntry[] {
 }
 
 function sortSkillsByCreatedAt(a: SkillInput, b: SkillInput) {
-  return (
-    (a.match?.createdAt.getTime() ?? 0) - (b.match?.createdAt.getTime() ?? 0)
-  );
+  return a.createdAt.getTime() - b.createdAt.getTime();
 }
 
 export function monthYearOptions() {

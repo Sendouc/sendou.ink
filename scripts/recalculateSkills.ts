@@ -1,7 +1,11 @@
 import { Prisma, PrismaClient, Skill } from "@prisma/client";
 import { rating } from "openskill";
-import { adjustSkills } from "~/core/mmr/utils";
+import { adjustSkills, bracketToChangedMMRs } from "~/core/mmr/utils";
 import { groupsToWinningAndLosingPlayerIds } from "~/core/play/utils";
+import { Unpacked } from "~/utils";
+import * as TournamentMatch from "~/models/TournamentMatch.server";
+
+// TODO: tournament skills
 
 const prisma = new PrismaClient();
 
@@ -12,35 +16,28 @@ async function main() {
   const matches = (await allMatches()).filter((m) =>
     m.stages.some((s) => s.winnerGroupId)
   );
+  const tournaments = await allTournaments();
+
+  const events = [...matches, ...tournaments].sort((a, b) => {
+    const aDate = isTournament(a) ? a.startTime : a.createdAt;
+    const bDate = isTournament(b) ? b.startTime : b.createdAt;
+
+    return aDate.getTime() - bDate.getTime();
+  });
 
   const newSkills: Omit<Skill, "id">[] = [];
   const currentSkills: CurrentSkills = {};
 
-  for (const match of matches) {
-    const adjustedSkills = adjustSkills({
-      skills: skillsPerUser({
-        currentSkills,
-        userIds: match.groups.flatMap((g) =>
-          g.members.flatMap((m) => m.memberId)
-        ),
-      }),
-      playerIds: groupsToWinningAndLosingPlayerIds({
-        groups: match.groups.map((g) => ({
-          id: g.id,
-          members: g.members.map((m) => ({ user: { id: m.memberId } })),
-        })),
-        winnerGroupIds: match.stages.flatMap((s) =>
-          s.winnerGroupId ? [s.winnerGroupId] : []
-        ),
-      }),
-    });
+  for (const event of events) {
+    const adjustedSkills = await getAdjustedSkills(event, currentSkills);
 
     newSkills.push(
       ...adjustedSkills.map((s) => ({
         ...s,
-        matchId: match.id,
-        tournamentId: null,
-        createdAt: match.createdAt,
+        matchId: isTournament(event) ? null : event.id,
+        tournamentId: isTournament(event) ? event.id : null,
+        createdAt: isTournament(event) ? event.startTime : event.createdAt,
+        amountOfSets: s.amountOfSets,
       }))
     );
 
@@ -51,17 +48,71 @@ async function main() {
   }
 
   await prisma.$transaction([
-    prisma.skill.deleteMany({}),
+    prisma.skill.deleteMany(),
     prisma.skill.createMany({ data: newSkills }),
   ]);
+}
+
+async function getAdjustedSkills(
+  event: Unpacked<AllTournaments> | Unpacked<AllMatches>,
+  currentSkills: CurrentSkills
+) {
+  if (isTournament(event)) {
+    // TODO: fix if can have many brackets
+    const matches = await TournamentMatch.allTournamentMatchesWithRosterInfo(
+      event.brackets[0].id
+    );
+
+    return bracketToChangedMMRs({
+      matches,
+      skills: Object.entries(currentSkills).map(([userId, skill]) => ({
+        userId,
+        ...skill,
+      })),
+    });
+  }
+
+  return adjustSkills({
+    skills: skillsPerUser({
+      currentSkills,
+      userIds: event.groups.flatMap((g) =>
+        g.members.flatMap((m) => m.memberId)
+      ),
+    }),
+    playerIds: groupsToWinningAndLosingPlayerIds({
+      groups: event.groups.map((g) => ({
+        id: g.id,
+        members: g.members.map((m) => ({ user: { id: m.memberId } })),
+      })),
+      winnerGroupIds: event.stages.flatMap((s) =>
+        s.winnerGroupId ? [s.winnerGroupId] : []
+      ),
+    }),
+  }).map((s) => ({ ...s, amountOfSets: null })); // just to keep types happy
 }
 
 export type AllMatches = Prisma.PromiseReturnType<typeof allMatches>;
 function allMatches() {
   return prisma.lfgGroupMatch.findMany({
     include: { stages: true, groups: { include: { members: true } } },
-    orderBy: { createdAt: "asc" },
   });
+}
+
+export type AllTournaments = Prisma.PromiseReturnType<typeof allTournaments>;
+function allTournaments() {
+  return prisma.tournament.findMany({
+    where: {
+      concluded: true,
+    },
+    include: { brackets: { select: { id: true } } },
+  });
+}
+
+function isTournament(
+  event: Unpacked<AllTournaments> | Unpacked<AllMatches>
+): event is Unpacked<AllTournaments> {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  return Boolean((event as any).startTime);
 }
 
 function skillsPerUser({

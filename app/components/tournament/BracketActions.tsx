@@ -1,24 +1,41 @@
-import { useMatches } from "remix";
+import { Form, useMatches } from "remix";
 import invariant from "tiny-invariant";
-import { matchIsOver } from "~/core/tournament/utils";
+import { allMatchesReported, matchIsOver } from "~/core/tournament/utils";
 import type { BracketModified } from "~/services/bracket";
 import type { FindTournamentByNameForUrlI } from "~/services/tournament";
 import { useUser } from "~/hooks/common";
 import { ActionSectionWrapper } from "./ActionSectionWrapper";
 import { DuringMatchActions } from "./DuringMatchActions";
+import { Button } from "../Button";
+import { isTournamentAdmin } from "~/core/tournament/validators";
 
 export function BracketActions({ data }: { data: BracketModified }) {
   const user = useUser();
   const [, parentRoute] = useMatches();
-  const { teams } = parentRoute.data as FindTournamentByNameForUrlI;
+  const tournament = parentRoute.data as FindTournamentByNameForUrlI;
 
-  const ownTeam = teams.find((team) =>
+  const ownTeam = tournament.teams.find((team) =>
     team.members.some(({ member }) => member.id === user?.id)
   );
 
-  const tournamentIsOver = false;
+  if (
+    !tournament.concluded &&
+    isTournamentAdmin({
+      userId: user?.id,
+      organization: tournament.organizer,
+    }) &&
+    allMatchesReported(data)
+  )
+    return (
+      <Form method="post">
+        <input type="hidden" name="_action" value="FINISH_TOURNAMENT" />
+        <div className="flex justify-center">
+          <Button type="submit">Finish tournament</Button>
+        </div>
+      </Form>
+    );
 
-  if (tournamentIsOver || !ownTeam) return null;
+  if (tournament.concluded || !ownTeam) return null;
 
   const allMatches = data.rounds.flatMap((round, roundI) =>
     round.matches.map((match) => ({

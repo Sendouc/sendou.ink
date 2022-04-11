@@ -243,3 +243,39 @@ function playersOfMatch({
     }),
   };
 }
+
+export type AllTournamentMatchesWithRosterInfo = Prisma.PromiseReturnType<
+  typeof allTournamentMatchesWithRosterInfo
+>;
+export function allTournamentMatchesWithRosterInfo(bracketId: string) {
+  return db.tournamentMatch.findMany({
+    select: {
+      participants: {
+        select: {
+          team: {
+            select: {
+              members: {
+                select: {
+                  memberId: true,
+                },
+              },
+            },
+          },
+          order: true,
+        },
+      },
+      results: {
+        select: {
+          players: {
+            select: {
+              id: true,
+            },
+          },
+          winner: true,
+        },
+      },
+    },
+    where: { round: { bracketId } },
+    orderBy: { position: "asc" },
+  });
+}

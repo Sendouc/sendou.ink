@@ -1,27 +1,39 @@
 import {
+  ActionFunction,
+  json,
   LinksFunction,
   LoaderFunction,
   Outlet,
   ShouldReloadFunction,
+  useMatches,
 } from "remix";
-import { ActionFunction, json, useMatches } from "remix";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 import { BracketActions } from "~/components/tournament/BracketActions";
 import { EliminationBracket } from "~/components/tournament/EliminationBracket";
 import { BEST_OF_OPTIONS, TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
+import { bracketToChangedMMRs } from "~/core/mmr/utils";
+import { isTournamentAdmin } from "~/core/tournament/validators";
+import { useUser } from "~/hooks/common";
+import { useBracketDataWithEvents } from "~/hooks/useBracketDataWithEvents";
+import * as Skill from "~/models/Skill.server";
+import * as Tournament from "~/models/Tournament.server";
+import * as TournamentMatch from "~/models/TournamentMatch.server";
 import type { BracketModified } from "~/services/bracket";
 import { bracketById, reportScore, undoLastScore } from "~/services/bracket";
-import type { FindTournamentByNameForUrlI } from "~/services/tournament";
+import {
+  findTournamentByNameForUrl,
+  FindTournamentByNameForUrlI,
+} from "~/services/tournament";
 import styles from "~/styles/tournament-bracket.css";
 import {
   getSocket,
   parseRequestFormData,
   requireUser,
   safeJSONParse,
+  validate,
 } from "~/utils";
-import { useUser } from "~/hooks/common";
-import { useBracketDataWithEvents } from "~/hooks/useBracketDataWithEvents";
+import { db } from "~/utils/db.server";
 import { chatRoute } from "~/utils/urls";
 
 export const links: LinksFunction = () => {
@@ -55,6 +67,9 @@ const bracketActionSchema = z.union([
         .min(1)
         .max(Math.max(...BEST_OF_OPTIONS))
     ),
+  }),
+  z.object({
+    _action: z.literal("FINISH_TOURNAMENT"),
   }),
 ]);
 
@@ -100,6 +115,41 @@ export const action: ActionFunction = async ({
       socket.emit(`bracket-${params.bid}`, bracketData);
 
       return { ok: "UNDO_REPORT_SCORE" };
+    }
+    case "FINISH_TOURNAMENT": {
+      invariant(params.organization, "!params.organization");
+      invariant(params.tournament, "!params.tournament");
+
+      const [tournament, matches] = await Promise.all([
+        findTournamentByNameForUrl({
+          organizationNameForUrl: params.organization,
+          tournamentNameForUrl: params.tournament,
+        }),
+        TournamentMatch.allTournamentMatchesWithRosterInfo(params.bid),
+      ]);
+      const skills = await Skill.findAllMostRecent(
+        tournament.teams.flatMap((t) => t.members.map((m) => m.member.id))
+      );
+
+      validate(
+        isTournamentAdmin({
+          userId: user.id,
+          organization: tournament.organizer,
+        }),
+        "Not tournament admin"
+      );
+
+      await db.$transaction([
+        Skill.createMany(
+          bracketToChangedMMRs({ matches, skills }).map((s) => ({
+            ...s,
+            tournamentId: tournament.id,
+          }))
+        ),
+        Tournament.conclude(tournament.id),
+      ]);
+
+      return { ok: "FINISH_TOURNAMENT" };
     }
     default: {
       const exhaustive: never = data;

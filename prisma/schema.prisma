@@ -33,6 +33,7 @@ model User {
   lfgGroups            LfgGroupMember[]
   skill                Skill[]
   chatMessages         ChatMessage[]
+  matchesLeft          LfgGroupMatch[]
 }
 
 model Organization {
@@ -53,6 +54,7 @@ model Tournament {
   // Name in lower case to show in URL
   nameForUrl        String
   description       String
+  concluded         Boolean             @default(false)
   startTime         DateTime
   checkInStartTime  DateTime
   // CSS for tournament banner's background value
@@ -266,11 +268,13 @@ model LfgGroupMember {
 }
 
 model LfgGroupMatch {
-  id            String               @id @default(uuid())
-  createdAt     DateTime             @default(now())
-  groups        LfgGroup[]
-  changedSkills Skill[]
-  stages        LfgGroupMatchStage[]
+  id                  String               @id @default(uuid())
+  createdAt           DateTime             @default(now())
+  cancelCausingUserId String?
+  groups              LfgGroup[]
+  changedSkills       Skill[]
+  stages              LfgGroupMatchStage[]
+  user                User?                @relation(fields: [cancelCausingUserId], references: [id])
 }
 
 model LfgGroupMatchStage {
@@ -294,6 +298,7 @@ model Skill {
   sigma        Float
   matchId      String?
   tournamentId String?
+  amountOfSets Int?
   createdAt    DateTime       @default(now())
   user         User           @relation(fields: [userId], references: [id])
   match        LfgGroupMatch? @relation(fields: [matchId], references: [id])

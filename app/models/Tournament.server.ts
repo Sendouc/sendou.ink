@@ -38,6 +38,7 @@ export async function findByNameForUrl({
       bannerBackground: true,
       bannerTextHSLArgs: true,
       seeds: true,
+      concluded: true,
       organizer: {
         select: {
           name: true,
@@ -153,6 +154,15 @@ export function updateSeeds({
     },
     data: {
       seeds,
+    },
+  });
+}
+
+export function conclude(id: string) {
+  return db.tournament.update({
+    where: { id },
+    data: {
+      concluded: true,
     },
   });
 }

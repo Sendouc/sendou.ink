@@ -4,6 +4,9 @@ import { rating, ordinal, rate } from "openskill";
 import { LFG_GROUP_FULL_SIZE, MMR_TOPX_VISIBILITY_CUTOFF } from "~/constants";
 import { PlayFrontPageLoader } from "~/routes/play/index";
 import { SeedsLoaderData } from "~/routes/to/$organization.$tournament/seeds";
+import * as TournamentMatch from "~/models/TournamentMatch.server";
+import invariant from "tiny-invariant";
+import { Unpacked } from "~/utils";
 
 const TAU = 0.3;
 
@@ -179,4 +182,68 @@ export function averageTeamMMRs({
   }
 
   return result;
+}
+
+export function bracketToChangedMMRs({
+  matches,
+  skills,
+}: {
+  matches: TournamentMatch.AllTournamentMatchesWithRosterInfo;
+  skills: Pick<Skill, "mu" | "sigma" | "userId">[];
+}): Pick<Skill, "mu" | "sigma" | "userId" | "amountOfSets">[] {
+  const result = Object.fromEntries(
+    skills.map((s) => [s.userId, { mu: s.mu, sigma: s.sigma, amountOfSets: 0 }])
+  );
+
+  for (const match of matches) {
+    const currentSkills = Object.entries(result).map(([userId, skill]) => ({
+      ...skill,
+      userId,
+    }));
+    const playerIds = winnersAndLosersOfTournamentMatch(match);
+    const newMMRs = adjustSkills({ skills: currentSkills, playerIds });
+
+    for (const newMMR of newMMRs) {
+      const newAmountOfSets = (result[newMMR.userId]?.amountOfSets ?? 0) + 1;
+      result[newMMR.userId] = { ...newMMR, amountOfSets: newAmountOfSets };
+    }
+  }
+
+  return Object.entries(result)
+    .map(([userId, skill]) => ({ ...skill, userId }))
+    .filter((skill) => skill.amountOfSets > 0);
+}
+
+function winnersAndLosersOfTournamentMatch(
+  match: Unpacked<TournamentMatch.AllTournamentMatchesWithRosterInfo>
+) {
+  const scores = match.results.reduce(
+    (acc, result) => {
+      acc[result.winner]++;
+
+      return acc;
+    },
+    { UPPER: 0, LOWER: 0 }
+  );
+  invariant(scores.LOWER !== scores.UPPER, "scores.LOWER === scores.UPPER");
+  const winner = scores.LOWER > scores.UPPER ? "LOWER" : "UPPER";
+
+  const playersWhoPlayedInSet = match.results.reduce((acc, result) => {
+    result.players.forEach((player) => acc.add(player.id));
+
+    return acc;
+  }, new Set<string>());
+
+  return match.participants.reduce(
+    (acc: { winning: string[]; losing: string[] }, participant) => {
+      acc[winner === participant.order ? "winning" : "losing"].push(
+        ...participant.team.members
+          .map((m) => m.memberId)
+          .filter((id) => playersWhoPlayedInSet.has(id))
+      );
+
+      return acc;
+    },
+    { winning: [], losing: [] }
+  );
 }

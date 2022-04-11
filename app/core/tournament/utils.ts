@@ -1,4 +1,5 @@
 import invariant from "tiny-invariant";
+import { BracketModified } from "~/services/bracket";
 
 export function checkInHasStarted(checkInStartTime: string) {
   return new Date(checkInStartTime) < new Date();
@@ -55,6 +56,18 @@ export function matchIsOver(
   const [upperTeamScore, lowerTeamScore] = score;
   const half = bestOf / 2;
   return upperTeamScore > half || lowerTeamScore > half;
+}
+
+export function allMatchesReported(bracket: BracketModified) {
+  return bracket.rounds
+    .flatMap((r) =>
+      r.matches.map((match) => ({ ...match, bestOf: r.stages.length }))
+    )
+    .every((match) => {
+      const mapsToWin = Math.ceil(match.bestOf / 2);
+
+      return match.score && match.score.some((score) => score >= mapsToWin);
+    });
 }
 
 export const friendCodeRegExpString = "^(SW-)?[0-9]{4}-?[0-9]{4}-?[0-9]{4}$";
