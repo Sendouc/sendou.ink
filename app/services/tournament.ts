@@ -6,7 +6,10 @@ import * as Tournament from "~/models/Tournament.server";
 import * as TournamentTeam from "~/models/TournamentTeam.server";
 import { Serialized, Unpacked } from "~/utils";
 import { db } from "~/utils/db.server";
-import { isTournamentAdmin } from "~/core/tournament/validators";
+import {
+  isTournamentAdmin,
+  tournamentHasNotStarted,
+} from "~/core/tournament/validators";
 
 export type FindTournamentByNameForUrlI = Serialized<
   Prisma.PromiseReturnType<typeof findTournamentByNameForUrl>
@@ -26,7 +29,9 @@ export async function findTournamentByNameForUrl({
 
   if (!result) throw new Response("No tournament found", { status: 404 });
 
-  result.teams.sort(sortTeamsBySeed(result.seeds));
+  result.teams = result.teams
+    .sort(sortTeamsBySeed(result.seeds))
+    .filter((team) => team.checkedInTime || tournamentHasNotStarted(result));
 
   result.organizer.twitter = twitterToUrl(result.organizer.twitter);
   result.organizer.discordInvite = discordInviteToUrl(
