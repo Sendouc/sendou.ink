@@ -1,6 +1,7 @@
 import type { Prisma } from "@prisma/client";
-import { adjustSkills } from "~/core/mmr/utils";
+import { adjustSkills, adjustSkillsWithCancel } from "~/core/mmr/utils";
 import { db } from "~/utils/db.server";
+import * as Skill from "~/models/Skill.server";
 
 export type FindById = Prisma.PromiseReturnType<typeof findById>;
 export function findById(id: string) {
@@ -8,6 +9,7 @@ export function findById(id: string) {
     where: { id },
     select: {
       createdAt: true,
+      cancelCausingUserId: true,
       stages: {
         select: {
           id: true,
@@ -144,20 +146,19 @@ export async function reportScore({
   groupIds,
 }: ReportScoreArgs) {
   const allPlayerIds = [...playerIds.winning, ...playerIds.losing];
-  const skills = await db.skill.findMany({
-    where: { userId: { in: allPlayerIds } },
-    orderBy: {
-      createdAt: "desc",
-    },
-    distinct: "userId",
-  });
+  const skills = await Skill.findMostRecentByUserIds(allPlayerIds);
 
   const adjustedSkills = adjustSkills({ skills, playerIds });
 
   return db.$transaction([
-    db.skill.createMany({
-      data: adjustedSkills.map((s) => ({ ...s, matchId: UNSAFE_matchId })),
-    }),
+    Skill.createMany(
+      adjustedSkills.map((s) => ({
+        ...s,
+        matchId: UNSAFE_matchId,
+        tournamentId: null,
+        amountOfSets: null,
+      }))
+    ),
     db.lfgGroup.updateMany({
       where: {
         id: {
@@ -210,4 +211,58 @@ function insertScores({
     ) as lfg2(lfg_group_match_id, "order", winner_id)
     where lfg2.lfg_group_match_id = lfg."lfgGroupMatchId" and lfg2.order = lfg.order;
     `);
+}
+
+export async function cancel({
+  matchId,
+  cancelCausingUserId,
+  groupIds,
+  playerIds,
+}: {
+  matchId: string;
+  cancelCausingUserId: string;
+  groupIds: string[];
+  playerIds: {
+    winning: string[];
+    losing: string[];
+  };
+}) {
+  const allPlayerIds = [...playerIds.winning, ...playerIds.losing];
+  const skills = await Skill.findMostRecentByUserIds(allPlayerIds);
+
+  const adjustedSkills = adjustSkillsWithCancel({
+    skills,
+    playerIds,
+    // if someone quits / is a no show we don't punish their
+    // teammates for that but they get no change to skill.
+    // Winners still get their raised points
+    noUpdateUserIds: playerIds.losing.filter(
+      (id) => id !== cancelCausingUserId
+    ),
+  });
+
+  return db.$transaction([
+    Skill.createMany(
+      adjustedSkills.map((s) => ({
+        ...s,
+        matchId,
+        tournamentId: null,
+        amountOfSets: null,
+      }))
+    ),
+    db.lfgGroup.updateMany({
+      where: {
+        id: {
+          in: groupIds,
+        },
+      },
+      data: {
+        status: "INACTIVE",
+      },
+    }),
+    db.lfgGroupMatch.update({
+      where: { id: matchId },
+      data: { cancelCausingUserId },
+    }),
+  ]);
 }

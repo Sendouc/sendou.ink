@@ -732,8 +732,16 @@ hr {
   margin-inline-start: var(--s-2);
 }
 
+.mr-1 {
+  margin-inline-end: var(--s-1);
+}
+
 .mr-2 {
   margin-inline-end: var(--s-2);
+}
+
+.mr-3 {
+  margin-inline-end: var(--s-3);
 }
 
 .my-1-5 {
@@ -782,6 +790,10 @@ hr {
 
 .items-center {
   align-items: center;
+}
+
+.flex-col {
+  flex-direction: column;
 }
 
 .gap-2 {

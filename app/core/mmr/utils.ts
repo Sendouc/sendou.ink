@@ -116,6 +116,23 @@ export function adjustSkills({
   ];
 }
 
+export function adjustSkillsWithCancel({
+  skills,
+  playerIds,
+  noUpdateUserIds,
+}: {
+  skills: AdjustSkill[];
+  playerIds: {
+    winning: string[];
+    losing: string[];
+  };
+  noUpdateUserIds: string[];
+}) {
+  const allAdjusted = adjustSkills({ skills, playerIds });
+
+  return allAdjusted.filter((skill) => !noUpdateUserIds.includes(skill.userId));
+}
+
 export function resolveOwnMMR({
   skills,
   user,

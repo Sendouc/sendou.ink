@@ -5,7 +5,7 @@ import { groupsToWinningAndLosingPlayerIds } from "~/core/play/utils";
 import { Unpacked } from "~/utils";
 import * as TournamentMatch from "~/models/TournamentMatch.server";
 
-// TODO: tournament skills
+// TODO: canceled skills
 
 const prisma = new PrismaClient();
 

@@ -1,4 +1,4 @@
-import { Mode } from "@prisma/client";
+import { Mode, User } from "@prisma/client";
 import type { CSSProperties } from "react";
 import { json, useLocation } from "remix";
 import type { Socket } from "socket.io-client";
@@ -16,6 +16,12 @@ export function flipObject<
   ) as Record<K, T>;
 
   return result;
+}
+
+export function userFullDiscordName(
+  user: Pick<User, "discordName" | "discordDiscriminator">
+) {
+  return `${user.discordName}#${user.discordDiscriminator}`;
 }
 
 export function makeTitle(title?: string | string[]) {

@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { useLoaderData } from "remix";
 import { LFGMatchLoaderData } from "~/routes/play/match.$id";
+import { userFullDiscordName } from "~/utils";
 import { weaponsInGameOrder } from "~/utils/sorters";
 import {
   oldSendouInkPlayerProfile,
@@ -115,6 +116,7 @@ export function MatchTeams() {
                   })}
                   target="_blank"
                   rel="noopener noreferrer"
+                  title={userFullDiscordName(user)}
                 >
                   <div className="play-match__player">
                     <Avatar user={user} />

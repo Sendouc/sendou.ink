@@ -95,6 +95,10 @@ const matchActionSchema = z.union([
         .max(LFG_AMOUNT_OF_STAGES_TO_GENERATE)
     ),
   }),
+  z.object({
+    _action: z.literal("CANCEL_MATCH"),
+    cancelCausingUserId: z.string().uuid(),
+  }),
 ]);
 
 export type MatchActionData = {
@@ -117,6 +121,10 @@ export const action: ActionFunction = async ({
   const match = await LFGMatch.findById(params.id);
   invariant(match, "Match is undefined");
 
+  const matchWasAlreadyReported =
+    Boolean(match.cancelCausingUserId) ||
+    match.stages.some((stage) => stage.winnerGroupId);
+
   let ownGroup = match.groups.find((g) =>
     g.members.some((m) => m.memberId === user.id)
   );
@@ -131,9 +139,6 @@ export const action: ActionFunction = async ({
   switch (data._action) {
     case "REPORT_SCORE": {
       validateIsGroupAdmin();
-      const matchWasAlreadyReported = match.stages.some(
-        (stage) => stage.winnerGroupId
-      );
       if (matchWasAlreadyReported) {
         // just don't do anything if they report same as someone else before them
         // to user it looks identical to if they were the first to submit
@@ -230,6 +235,33 @@ export const action: ActionFunction = async ({
       });
       return redirect(sendouQAddPlayersPage());
     }
+    case "CANCEL_MATCH": {
+      validateIsGroupAdmin();
+      if (matchWasAlreadyReported) {
+        // most likely user won't know their request didn't do anything
+        // since someone else did the same already
+        return { ok: "CANCEL_MATCH" };
+      }
+
+      const losingGroup = match.groups.find((g) =>
+        g.members.some((m) => m.memberId === data.cancelCausingUserId)
+      );
+      validate(losingGroup, "Invalid cancelCausingUserId");
+      const winningGroup = match.groups.find((g) => g.id !== losingGroup.id);
+      invariant(winningGroup, "!winnerGroup");
+
+      await LFGMatch.cancel({
+        matchId: params.id,
+        cancelCausingUserId: data.cancelCausingUserId,
+        groupIds: match.groups.map((g) => g.id),
+        playerIds: {
+          losing: losingGroup.members.map((m) => m.memberId),
+          winning: winningGroup.members.map((m) => m.memberId),
+        },
+      });
+
+      return { ok: "CANCEL_MATCH" };
+    }
     default: {
       const exhaustive: never = data;
       throw new Response(`Unknown action: ${JSON.stringify(exhaustive)}`, {
@@ -250,6 +282,7 @@ export interface LFGMatchLoaderData {
   isCaptain: boolean;
   isOwnMatch: boolean;
   isRanked: boolean;
+  wasCanceled: boolean;
   createdAtTimestamp: number;
   groups: { id: string; members: (UserLean & { friendCode?: string })[] }[];
   mapList: {
@@ -321,6 +354,7 @@ export const loader: LoaderFunction = async ({ params, context }) => {
     isCaptain,
     isRanked,
     isOwnMatch,
+    wasCanceled: Boolean(match.cancelCausingUserId),
     groups,
     scores,
     createdAtTimestamp: new Date(match.createdAt).getTime(),
@@ -360,10 +394,17 @@ export default function LFGMatchPage() {
 
   const showPlayAgainSection = () => {
     if (!data.isCaptain) return false;
-    if (!data.scores) return false;
+    if (!data.scores && !data.wasCanceled) return false;
     if (!matchStartedInTheLastHour()) return false;
 
     return true;
+  };
+
+  const showMapListSection = () => {
+    if (data.wasCanceled) return false;
+    if (!data.isRanked) return false;
+
+    return !data.scores || adminEditActive;
   };
 
   React.useEffect(() => {
@@ -397,7 +438,7 @@ export default function LFGMatchPage() {
         )}
         <div className="play-match__waves">
           <MatchTeams />
-          <div className="play-match__time">
+          <div className="play-match__small-info time">
             {new Date(data.createdAtTimestamp).toLocaleString("en-us", {
               year: "numeric",
               month: "long",
@@ -406,6 +447,9 @@ export default function LFGMatchPage() {
               minute: "numeric",
             })}
           </div>
+          {data.wasCanceled ? (
+            <div className="play-match__small-info canceled">Canceled</div>
+          ) : null}
           {showPlayAgainSection() && (
             <Form method="post">
               <div className="play-match__waves-section play-match__play-again-container">
@@ -578,7 +622,7 @@ export default function LFGMatchPage() {
             </Form>
           </div>
         )}
-        {(!data.scores || adminEditActive) && data.isRanked && (
+        {showMapListSection() ? (
           <MapList
             mapList={data.mapList}
             reportedWinnerIds={data.mapList
@@ -594,7 +638,7 @@ export default function LFGMatchPage() {
               their: data.groups[1].id,
             }}
           />
-        )}
+        ) : null}
       </div>
     </>
   );
