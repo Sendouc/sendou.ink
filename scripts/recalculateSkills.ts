@@ -1,11 +1,13 @@
 import { Prisma, PrismaClient, Skill } from "@prisma/client";
 import { rating } from "openskill";
-import { adjustSkills, bracketToChangedMMRs } from "~/core/mmr/utils";
+import {
+  adjustSkills,
+  adjustSkillsWithCancel,
+  bracketToChangedMMRs,
+} from "~/core/mmr/utils";
 import { groupsToWinningAndLosingPlayerIds } from "~/core/play/utils";
 import { Unpacked } from "~/utils";
 import * as TournamentMatch from "~/models/TournamentMatch.server";
-
-// TODO: canceled skills
 
 const prisma = new PrismaClient();
 
@@ -13,8 +15,8 @@ type UserId = string;
 type CurrentSkills = Record<UserId, Pick<Skill, "mu" | "sigma">>;
 
 async function main() {
-  const matches = (await allMatches()).filter((m) =>
-    m.stages.some((s) => s.winnerGroupId)
+  const matches = (await allMatches()).filter(
+    (m) => m.stages.some((s) => s.winnerGroupId) || m.cancelCausingUserId
   );
   const tournaments = await allTournaments();
 
@@ -72,23 +74,34 @@ async function getAdjustedSkills(
     });
   }
 
+  const skills = skillsPerUser({
+    currentSkills,
+    userIds: event.groups.flatMap((g) => g.members.flatMap((m) => m.memberId)),
+  });
+  const playerIds = groupsToWinningAndLosingPlayerIds({
+    groups: event.groups.map((g) => ({
+      id: g.id,
+      members: g.members.map((m) => ({ user: { id: m.memberId } })),
+    })),
+    winnerGroupIds: event.stages.flatMap((s) =>
+      s.winnerGroupId ? [s.winnerGroupId] : []
+    ),
+  });
+
+  if (event.cancelCausingUserId) {
+    return adjustSkillsWithCancel({
+      skills,
+      playerIds,
+      noUpdateUserIds: playerIds.losing.filter(
+        (id) => id !== event.cancelCausingUserId
+      ),
+    }).map((s) => ({ ...s, amountOfSets: null }));
+  }
+
   return adjustSkills({
-    skills: skillsPerUser({
-      currentSkills,
-      userIds: event.groups.flatMap((g) =>
-        g.members.flatMap((m) => m.memberId)
-      ),
-    }),
-    playerIds: groupsToWinningAndLosingPlayerIds({
-      groups: event.groups.map((g) => ({
-        id: g.id,
-        members: g.members.map((m) => ({ user: { id: m.memberId } })),
-      })),
-      winnerGroupIds: event.stages.flatMap((s) =>
-        s.winnerGroupId ? [s.winnerGroupId] : []
-      ),
-    }),
-  }).map((s) => ({ ...s, amountOfSets: null })); // just to keep types happy
+    skills,
+    playerIds,
+  }).map((s) => ({ ...s, amountOfSets: null }));
 }
 
 export type AllMatches = Prisma.PromiseReturnType<typeof allMatches>;
