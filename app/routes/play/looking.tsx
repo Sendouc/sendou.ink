@@ -27,12 +27,11 @@ import {
   uniteGroupInfo,
 } from "~/core/play/utils";
 import { canUniteWithGroup, isGroupAdmin } from "~/core/play/validators";
-import { usePolling, useUser } from "~/hooks/common";
+import { usePolling } from "~/hooks/common";
 import * as LFGGroup from "~/models/LFGGroup.server";
 import * as LFGMatch from "~/models/LFGMatch.server";
 import styles from "~/styles/play-looking.css";
 import {
-  isFeatureFlagOn,
   makeTitle,
   parseRequestFormData,
   requireUser,
@@ -329,7 +328,6 @@ export default function LookingPage() {
 
   const isPolling = !lookingOver(data.type, data.ownGroup);
   const lastUpdated = usePolling(isPolling);
-  const user = useUser();
 
   if (lookingOver(data.type, data.ownGroup)) {
     return <FinishedGroup />;
@@ -371,18 +369,17 @@ export default function LookingPage() {
   invariant(data.ownGroup.members, "!data.ownGroup.members");
   return (
     <>
-      {data.ownGroup.members.length > 1 &&
-        isFeatureFlagOn({ flag: "FF_ENABLE_CHAT", userId: user?.id }) && (
-          <Chat
-            id={data.ownGroup.id}
-            users={Object.fromEntries(
-              data.ownGroup.members.map((m) => [
-                m.id,
-                { name: m.discordName, info: m.friendCode },
-              ])
-            )}
-          />
-        )}
+      {data.ownGroup.members.length > 1 && (
+        <Chat
+          id={data.ownGroup.id}
+          users={Object.fromEntries(
+            data.ownGroup.members.map((m) => [
+              m.id,
+              { name: m.discordName, info: m.friendCode },
+            ])
+          )}
+        />
+      )}
       <div>
         <GroupCard
           group={data.ownGroup}

@@ -40,7 +40,6 @@ import * as LFGMatch from "~/models/LFGMatch.server";
 import styles from "~/styles/play-match.css";
 import {
   getUser,
-  isFeatureFlagOn,
   listToUserReadableString,
   makeTitle,
   parseRequestFormData,
@@ -415,18 +414,16 @@ export default function LFGMatchPage() {
 
   return (
     <>
-      {data.isOwnMatch &&
-        matchStartedInTheLastHour() &&
-        isFeatureFlagOn({ flag: "FF_ENABLE_CHAT", userId: user?.id }) && (
-          <Chat
-            id={params.id}
-            users={Object.fromEntries(
-              data.groups
-                .flatMap((g) => g.members)
-                .map((m) => [m.id, { name: m.discordName, info: m.friendCode }])
-            )}
-          />
-        )}
+      {data.isOwnMatch && matchStartedInTheLastHour() && (
+        <Chat
+          id={params.id}
+          users={Object.fromEntries(
+            data.groups
+              .flatMap((g) => g.members)
+              .map((m) => [m.id, { name: m.discordName, info: m.friendCode }])
+          )}
+        />
+      )}
       <div>
         {actionData?.error === "DIFFERENT_SCORE" && (
           <div className="play-match__error">
