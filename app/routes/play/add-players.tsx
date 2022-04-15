@@ -1,13 +1,13 @@
 import {
   ActionFunction,
-  Form,
   json,
   LinksFunction,
   LoaderFunction,
   MetaFunction,
   redirect,
-  useLoaderData,
-} from "remix";
+} from "@remix-run/node";
+
+import { Form, useLoaderData } from "@remix-run/react";
 import { z } from "zod";
 import { AddPlayers } from "~/components/AddPlayers";
 import { Alert } from "~/components/Alert";

@@ -1,4 +1,4 @@
-import { Form, useLoaderData } from "remix";
+import { Form, useLoaderData } from "@remix-run/react";
 import { LookingLoaderData } from "~/routes/play/looking";
 import { Button } from "../Button";
 import { Chat } from "../Chat";

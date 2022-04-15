@@ -5,10 +5,8 @@ import {
   LinksFunction,
   LoaderFunction,
   redirect,
-  useActionData,
-  useLoaderData,
-  useLocation,
-} from "remix";
+} from "@remix-run/node";
+import { useActionData, useLoaderData, useLocation } from "@remix-run/react";
 import { z } from "zod";
 import { AddPlayers } from "~/components/AddPlayers";
 import { Alert } from "~/components/Alert";

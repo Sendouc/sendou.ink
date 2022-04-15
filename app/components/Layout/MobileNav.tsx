@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { Fragment } from "react";
-import { Link } from "remix";
+import { Link } from "@remix-run/react";
 import { navItems } from "~/constants";
 import { SearchInput } from "./SearchInput";
 

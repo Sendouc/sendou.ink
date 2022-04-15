@@ -1,7 +1,8 @@
 import styles from "~/styles/tournament-map-pool.css";
 import type { Mode } from ".prisma/client";
 import clsx from "clsx";
-import { LinksFunction, useMatches } from "remix";
+import { LinksFunction } from "@remix-run/node";
+import { useMatches } from "@remix-run/react";
 import { FindTournamentByNameForUrlI } from "~/services/tournament";
 import { modeToImageUrl, stageNameToImageUrl } from "~/utils";
 import { modesShort, stages } from "~/core/stages/stages";

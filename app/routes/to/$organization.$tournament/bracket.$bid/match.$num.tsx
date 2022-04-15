@@ -1,10 +1,5 @@
-import {
-  json,
-  LinksFunction,
-  LoaderFunction,
-  useLoaderData,
-  useLocation,
-} from "remix";
+import { json, LinksFunction, LoaderFunction } from "@remix-run/node";
+import { useLoaderData, useLocation } from "@remix-run/react";
 import { z } from "zod";
 import Modal from "~/components/Modal";
 import { TeamRosterInputs } from "~/components/tournament/TeamRosterInputs";

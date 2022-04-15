@@ -1,6 +1,7 @@
 import * as React from "react";
+import type { LinksFunction, LoaderFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import {
-  json,
   Links,
   LiveReload,
   Meta,
@@ -8,8 +9,7 @@ import {
   Scripts,
   useCatch,
   useLoaderData,
-} from "remix";
-import type { LinksFunction, LoaderFunction } from "remix";
+} from "@remix-run/react";
 import { LoggedInUser, LoggedInUserSchema } from "~/utils/schemas";
 import { Layout } from "./components/Layout";
 import { Catcher } from "./components/Catcher";

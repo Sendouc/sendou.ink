@@ -1,4 +1,4 @@
-import { Link, useLoaderData, useLocation } from "remix";
+import { Link, useLoaderData, useLocation } from "@remix-run/react";
 import { DiscordIcon } from "~/components/icons/Discord";
 import { TwitterIcon } from "~/components/icons/Twitter";
 import { resolveTournamentFormatString } from "~/core/tournament/bracket";

@@ -1,4 +1,4 @@
-import { useCatch, useLocation } from "remix";
+import { useCatch, useLocation } from "@remix-run/react";
 import { DISCORD_URL } from "~/constants";
 import { getLogInUrl } from "~/utils";
 import { useUser } from "~/hooks/common";

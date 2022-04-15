@@ -1,4 +1,4 @@
-import { Form } from "remix";
+import { Form } from "@remix-run/react";
 import { useBaseURL, useTimeoutState } from "~/hooks/common";
 import { FindManyByTrustReceiverId } from "~/models/TrustRelationship.server";
 import { Button } from "./Button";

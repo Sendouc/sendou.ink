@@ -1,4 +1,5 @@
 import { LfgGroupType } from "@prisma/client";
+
 import {
   ActionFunction,
   json,
@@ -6,9 +7,9 @@ import {
   LoaderFunction,
   MetaFunction,
   redirect,
-  ShouldReloadFunction,
-  useLoaderData,
-} from "remix";
+} from "@remix-run/node";
+
+import { ShouldReloadFunction, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 import { Alert } from "~/components/Alert";

@@ -2,13 +2,11 @@ import clsx from "clsx";
 import * as React from "react";
 import {
   ActionFunction,
-  Form,
   json,
   LinksFunction,
   MetaFunction,
-  useLoaderData,
-  useTransition,
-} from "remix";
+} from "@remix-run/node";
+import { Form, useLoaderData, useTransition } from "@remix-run/react";
 import { Button } from "~/components/Button";
 import {
   LFG_WEAPON_POOL_MAX_LENGTH,

@@ -1,6 +1,7 @@
 import { Mode, User } from "@prisma/client";
 import type { CSSProperties } from "react";
-import { json, useLocation } from "remix";
+import { json } from "@remix-run/node";
+import { useLocation } from "@remix-run/react";
 import type { Socket } from "socket.io-client";
 import { z } from "zod";
 import { ADMIN_UUID, NZAP_UUID } from "~/constants";

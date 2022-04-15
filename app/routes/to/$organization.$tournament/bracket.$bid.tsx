@@ -3,10 +3,8 @@ import {
   json,
   LinksFunction,
   LoaderFunction,
-  Outlet,
-  ShouldReloadFunction,
-  useMatches,
-} from "remix";
+} from "@remix-run/node";
+import { Outlet, ShouldReloadFunction, useMatches } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 import { BracketActions } from "~/components/tournament/BracketActions";

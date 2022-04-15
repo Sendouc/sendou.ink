@@ -1,4 +1,4 @@
-import { ActionFunction, json, LoaderFunction } from "remix";
+import { ActionFunction, json, LoaderFunction } from "@remix-run/node";
 import { z } from "zod";
 import { MAX_CHAT_MESSAGE_LENGTH } from "~/constants";
 import * as ChatMessage from "~/models/ChatMessage.server";

@@ -1,4 +1,4 @@
-import { useMatches } from "remix";
+import { useMatches } from "@remix-run/react";
 import type { FindTournamentByNameForUrlI } from "~/services/tournament";
 import { TeamRoster } from "~/components/tournament/TeamRoster";
 import { useUser } from "~/hooks/common";

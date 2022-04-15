@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import * as React from "react";
-import { Link } from "remix";
+import { Link } from "@remix-run/react";
 import type { BracketModified } from "~/services/bracket";
 import { Unpacked } from "~/utils";
 

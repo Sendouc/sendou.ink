@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import * as React from "react";
-import { Form, useLoaderData } from "remix";
+import { Form, useLoaderData } from "@remix-run/react";
 import {
   groupExpirationStatus,
   groupWillBeInactiveAt,

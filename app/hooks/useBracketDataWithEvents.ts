@@ -1,4 +1,4 @@
-import { useLoaderData } from "remix";
+import { useLoaderData } from "@remix-run/react";
 import type { BracketModified } from "~/services/bracket";
 import { Unpacked } from "~/utils";
 import * as React from "react";

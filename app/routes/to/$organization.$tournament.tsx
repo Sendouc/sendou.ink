@@ -1,15 +1,17 @@
 // TODO: 404 page that shows other tournaments by the organization
 
 import {
+  ActionFunction,
   LinksFunction,
   LoaderFunction,
-  ActionFunction,
   MetaFunction,
+} from "@remix-run/node";
+import {
   NavLink,
   Outlet,
-  useLoaderData,
   ShouldReloadFunction,
-} from "remix";
+  useLoaderData,
+} from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { AdminIcon } from "~/components/icons/Admin";
 import { CheckinActions } from "~/components/tournament/CheckinActions";

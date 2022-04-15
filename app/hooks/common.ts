@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useLoaderData, useMatches, useNavigate } from "remix";
+import { useLoaderData, useMatches, useNavigate } from "@remix-run/react";
 import { z } from "zod";
 import { LoggedInUserSchema } from "~/utils/schemas";
 

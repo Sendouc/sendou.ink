@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { useLoaderData } from "remix";
+import { useLoaderData } from "@remix-run/react";
 import { LFGMatchLoaderData } from "~/routes/play/match.$id";
 import { userFullDiscordName } from "~/utils";
 import { weaponsInGameOrder } from "~/utils/sorters";

@@ -1,5 +1,5 @@
 import { LfgGroupStatus } from "@prisma/client";
-import { redirect } from "remix";
+import { redirect } from "@remix-run/node";
 import invariant from "tiny-invariant";
 import {
   BIT_HIGHER_MMR_LIMIT,

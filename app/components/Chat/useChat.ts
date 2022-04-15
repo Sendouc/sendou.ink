@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useFetcher } from "remix";
+import { useFetcher } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { useUser } from "~/hooks/common";
 import { useSocketEvent } from "~/hooks/useSocketEvent";

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link, useNavigate } from "remix";
+import { Link, useNavigate } from "@remix-run/react";
 import { useOnClickOutside } from "~/hooks/common";
 
 const ESC_BUTTON = "Escape";

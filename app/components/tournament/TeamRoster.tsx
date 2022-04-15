@@ -1,4 +1,4 @@
-import { Form, useTransition } from "remix";
+import { Form, useTransition } from "@remix-run/react";
 import { useUser } from "~/hooks/common";
 import { Avatar } from "../Avatar";
 import { Button } from "../Button";

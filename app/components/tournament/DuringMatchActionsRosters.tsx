@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Form } from "remix";
+import { Form } from "@remix-run/react";
 import { TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
 import type { FindTournamentByNameForUrlI } from "~/services/tournament";
 import { Unpacked } from "~/utils";

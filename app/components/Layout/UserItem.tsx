@@ -1,4 +1,4 @@
-import { useLocation } from "remix";
+import { useLocation } from "@remix-run/react";
 import { useUser } from "~/hooks/common";
 import { getLogInUrl } from "~/utils";
 import { Button } from "../Button";

@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { useFetcher } from "remix";
+import { useFetcher } from "@remix-run/react";
 import { Button, ButtonProps } from "~/components/Button";
 import type {
   LookingActionSchema,

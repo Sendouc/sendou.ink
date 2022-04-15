@@ -1,5 +1,5 @@
 import React from "react";
-import { MetaFunction } from "remix";
+import { MetaFunction } from "@remix-run/node";
 import { makeTitle } from "~/utils";
 
 export const meta: MetaFunction = () => {

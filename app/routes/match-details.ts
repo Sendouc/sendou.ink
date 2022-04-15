@@ -1,4 +1,4 @@
-import type { ActionFunction } from "remix";
+import type { ActionFunction } from "@remix-run/node";
 import { z } from "zod";
 import { abilities, weapons } from "~/constants";
 import { idToStage, modesShort, stages } from "~/core/stages/stages";

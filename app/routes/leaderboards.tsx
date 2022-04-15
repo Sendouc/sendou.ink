@@ -1,13 +1,10 @@
 import {
-  Form,
   json,
-  Link,
   LinksFunction,
   LoaderFunction,
   MetaFunction,
-  useLoaderData,
-  useSubmit,
-} from "remix";
+} from "@remix-run/node";
+import { Form, Link, useLoaderData, useSubmit } from "@remix-run/react";
 import { monthNames } from "~/constants";
 import {
   LeaderboardEntry,

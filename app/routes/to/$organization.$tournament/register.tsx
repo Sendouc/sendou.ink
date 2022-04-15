@@ -1,15 +1,13 @@
 import { Prisma } from ".prisma/client";
+import { ActionFunction, LinksFunction, redirect } from "@remix-run/node";
 import {
-  ActionFunction,
   Form,
-  LinksFunction,
-  redirect,
   useActionData,
   useLocation,
   useMatches,
   useNavigate,
   useTransition,
-} from "remix";
+} from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 import { Button } from "~/components/Button";

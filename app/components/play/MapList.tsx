@@ -2,7 +2,7 @@ import { Mode } from "@prisma/client";
 import clsx from "clsx";
 import clone from "just-clone";
 import * as React from "react";
-import { Form, useLoaderData } from "remix";
+import { Form, useLoaderData } from "@remix-run/react";
 import { scoreValid } from "~/core/play/validators";
 import { LFGMatchLoaderData } from "~/routes/play/match.$id";
 import { userFullDiscordName } from "~/utils";

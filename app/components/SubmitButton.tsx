@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useActionData, useTransition } from "remix";
+import { useActionData, useTransition } from "@remix-run/react";
 import { useTimeoutState } from "~/hooks/common";
 import { Button, ButtonProps } from "./Button";
 

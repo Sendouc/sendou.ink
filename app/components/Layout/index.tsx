@@ -4,7 +4,7 @@ import { HamburgerButton } from "./HamburgerButton";
 import { MobileNav } from "./MobileNav";
 import { SearchInput } from "./SearchInput";
 import { UserItem } from "./UserItem";
-import { Link } from "remix";
+import { Link } from "@remix-run/react";
 import { navItems } from "~/constants";
 import { layoutIcon } from "~/utils";
 import clsx from "clsx";

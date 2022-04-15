@@ -1,11 +1,10 @@
 import {
   json,
-  Link,
   LinksFunction,
   LoaderFunction,
   MetaFunction,
-  useLoaderData,
-} from "remix";
+} from "@remix-run/node";
+import { Link, useLoaderData } from "@remix-run/react";
 import { makeTitle, Unpacked } from "~/utils";
 import * as LFGMatch from "~/models/LFGMatch.server";
 import * as User from "~/models/User.server";
