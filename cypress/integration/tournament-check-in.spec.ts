@@ -17,7 +17,7 @@ describe("Before tournament starts", () => {
     cy.getCy("copy-to-clipboard-button").click();
     cy.get("@copy").should(
       "be.calledWithExactly",
-      `http://localhost:3000/to/sendou/in-the-zone-x/join-team?code=033e3695-0421-4aa1-a5ef-6ee82297a398`
+      `http://localhost:5800/to/sendou/in-the-zone-x/join-team?code=033e3695-0421-4aa1-a5ef-6ee82297a398`
     );
     cy.getCy("add-to-roster-button").click();
     cy.getCy("check-in-button").click();

@@ -13,7 +13,6 @@ describe("Before tournament starts", () => {
     cy.title().should("include", "In The Zone X");
     cy.getCy("register-button").click();
     cy.getCy("team-name-input").type("Team Olive");
-    cy.getCy("friend-code-input").type("1234-1234-1234");
     cy.getCy("register-submit-button").click();
     cy.contains("Team name already taken");
 

@@ -234,17 +234,6 @@ export async function seed(variation?: SeedVariations) {
             },
           });
         }
-
-        if (team.name === "Last Minute") {
-          await prisma.tournamentTeamMember.create({
-            data: {
-              memberId: NZAP_UUID,
-              teamId: team.id,
-              captain: false,
-              tournamentId,
-            },
-          });
-        }
       }
     }
 

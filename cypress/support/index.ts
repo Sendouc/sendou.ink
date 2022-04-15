@@ -37,7 +37,7 @@ Cypress.Commands.add("logIn", (user: MockUser) => {
     },
   } as const;
 
-  cy.intercept("http://localhost:3000/**", (req) => {
+  cy.intercept("http://localhost:5800/**", (req) => {
     req.headers["mock-auth"] = JSON.stringify(mockUsers[user]);
   });
 });

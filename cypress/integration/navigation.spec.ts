@@ -4,8 +4,8 @@ describe("Desktop navigation", () => {
   });
 
   it("Links lead to new pages", () => {
-    cy.getCy("nav-link-links").click();
-    cy.contains("links page");
+    cy.getCy("nav-link-sendouq").click();
+    cy.contains("Rules");
   });
 
   it("Directs log in to backend", () => {
@@ -24,8 +24,8 @@ describe("Mobile navigation", () => {
 
   it("Opens mobile nav and links lead to a new page", () => {
     cy.getCy("hamburger-button").click();
-    cy.getCy("mobile-nav-link-links").click();
-    cy.contains("links page");
+    cy.getCy("mobile-nav-link-sendouq").click({ scrollBehavior: "bottom" });
+    cy.contains("Rules");
   });
 
   it("Directs log in to backend", () => {

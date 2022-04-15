@@ -60,6 +60,12 @@ function userToContext(req: Express.Request) {
     if (mockedUser) {
       return mockedUser;
     }
+
+    // @ts-expect-error TODO: headers type
+    const mockedUserFromHeader = req.headers["mock-auth"];
+    if (mockedUserFromHeader) {
+      return JSON.parse(mockedUserFromHeader);
+    }
   }
   return req.user;
 }

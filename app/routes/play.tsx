@@ -1,7 +1,6 @@
 import clsx from "clsx";
-import { Link } from "react-router-dom";
 import { LinksFunction } from "@remix-run/node";
-import { NavLink, Outlet, useLocation } from "@remix-run/react";
+import { Link, NavLink, Outlet, useLocation } from "@remix-run/react";
 import { useUser } from "~/hooks/common";
 import styles from "~/styles/play-layout.css";
 
