@@ -266,7 +266,8 @@ export async function reportScore({
     );
     return [
       {
-        number: match.position,
+        // TODO: can be removed when we make number mandatory in DB
+        number: match.number!,
         participants:
           upperParticipant?.team.name || lowerParticipant?.team.name
             ? [
@@ -297,7 +298,8 @@ export async function reportScore({
 
     return [
       {
-        number: match.position,
+        // TODO: can be removed when we make number mandatory in DB
+        number: match.number!,
         participants:
           upperParticipant?.team.name || lowerParticipant?.team.name
             ? [
@@ -403,6 +405,9 @@ function newParticipantsForMatches({
       .find(({ id }) => id === match.loserDestinationMatchId);
     invariant(losersMatch, "losersMatch undefined");
 
+    // TODO: probably this is not correct: https://github.com/Sendouc/sendou.ink/issues/819
+    // not sure where position = 0 comes from
+    // ---
     // if the match will have a BYE then we need to generate one more participant
     if (losersMatch.position === 0) {
       invariant(
@@ -457,7 +462,8 @@ function newParticipantsToBracketData(
     };
 
     result.push({
-      number: match.position,
+      // TODO: can be removed when we make number mandatory in DB
+      number: match.number!,
       participants: participants(),
       score: participants().filter(Boolean).length > 1 ? [0, 0] : null,
     });
@@ -510,7 +516,8 @@ export async function undoLastScore({
 
   return [
     {
-      number: match.position,
+      // TODO: can be removed when we make number mandatory in DB
+      number: match.number!,
       participants:
         upperParticipant?.team.name || lowerParticipant?.team.name
           ? [
