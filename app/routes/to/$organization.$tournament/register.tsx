@@ -17,9 +17,11 @@ import { Label } from "~/components/Label";
 import { useUser } from "~/hooks/common";
 import styles from "~/styles/tournament-register.css";
 import { parseRequestFormData, requireUser } from "~/utils";
-import { tournamentManageTeamPage } from "~/utils/urls";
+import { tournamentFrontPage, tournamentManageTeamPage } from "~/utils/urls";
 import * as TournamentTeam from "~/models/TournamentTeam.server";
 import { FindTournamentByNameForUrlI } from "~/services/tournament";
+import { Navigate } from "react-router";
+import { PleaseLogin } from "~/components/PleaseLogin";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -90,18 +92,27 @@ export default function RegisterPage() {
   const location = useLocation();
   const user = useUser();
 
-  // TODO: redirect if tournament has concluded
-
-  if (!user) {
-    return <div>pls log in lul</div>;
-  }
-
   const isAlreadyInTeam = tournamentData.teams.some((roster) =>
-    roster.members.some(({ member }) => member.id === user.id)
+    roster.members.some(({ member }) => member.id === user?.id)
   );
 
-  // TODO: handle redirect
-  if (isAlreadyInTeam) return null;
+  if (isAlreadyInTeam || tournamentData.concluded)
+    return (
+      <Navigate
+        to={tournamentFrontPage({
+          organization: tournamentData.organizer.nameForUrl,
+          tournament: tournamentData.nameForUrl,
+        })}
+      />
+    );
+
+  if (!user) {
+    return (
+      <PleaseLogin
+        texts={["Please", "log in", "to register for this tournament."]}
+      />
+    );
+  }
 
   return (
     <div>

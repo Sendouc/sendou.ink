@@ -8,7 +8,6 @@ import {
 import {
   Form,
   useLoaderData,
-  useLocation,
   useMatches,
   useNavigate,
   useTransition,
@@ -18,13 +17,7 @@ import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
 import { captainOfTeam } from "~/core/tournament/utils";
 import styles from "~/styles/tournament-join-team.css";
-import {
-  getLogInUrl,
-  getUser,
-  parseRequestFormData,
-  requireUser,
-  validate,
-} from "~/utils";
+import { getUser, parseRequestFormData, requireUser, validate } from "~/utils";
 import * as Tournament from "~/models/Tournament.server";
 import * as TournamentTeamMember from "~/models/TournamentTeamMember.server";
 import * as TrustRelationship from "~/models/TrustRelationship.server";
@@ -34,6 +27,7 @@ import {
   tournamentManageTeamPage,
   tournamentTeamsPage,
 } from "~/utils/urls";
+import { PleaseLogin } from "~/components/PleaseLogin";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -173,7 +167,6 @@ export default function JoinTeamPage() {
 }
 
 function Contents({ data }: { data: Data }) {
-  const location = useLocation();
   const navigate = useNavigate();
   const [, parentRoute] = useMatches();
   const parentRouteData =
@@ -203,17 +196,7 @@ function Contents({ data }: { data: Data }) {
         </>
       );
     case "LOG_IN":
-      return (
-        <form action={getLogInUrl(location)} method="post">
-          <p className="button-text-paragraph">
-            Please{" "}
-            <Button type="submit" variant="minimal">
-              log in
-            </Button>{" "}
-            to join this team.
-          </p>
-        </form>
-      );
+      return <PleaseLogin texts={["Please", "log in", "to join this team."]} />;
     case "ALREADY_JOINED":
       return (
         <>You are already a member of {data.teamName} for this tournament.</>

@@ -32,6 +32,7 @@ export async function findByNameForUrl({
     select: {
       id: true,
       name: true,
+      nameForUrl: true,
       description: true,
       startTime: true,
       checkInStartTime: true,
