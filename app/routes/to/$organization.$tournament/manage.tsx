@@ -7,7 +7,10 @@ import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
 import { TrashIcon } from "~/components/icons/Trash";
 import { TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
-import { checkInHasStarted } from "~/core/tournament/utils";
+import {
+  checkInHasStarted,
+  tournamentHasStarted,
+} from "~/core/tournament/utils";
 import {
   isTournamentAdmin,
   tournamentHasNotStarted,
@@ -124,12 +127,6 @@ function RowContents({
   const tournament = parentRoute.data as FindTournamentByNameForUrlI;
   const unregisterFormRef = useRef<HTMLFormElement>(null);
 
-  const playersLacking = (() => {
-    if (team.members.length >= TOURNAMENT_TEAM_ROSTER_MIN_SIZE) return;
-
-    return TOURNAMENT_TEAM_ROSTER_MIN_SIZE - team.members.length;
-  })();
-
   const handleUnregisterButtonClick = () => {
     invariant(unregisterFormRef.current, "!unregisterFormRef.current");
 
@@ -170,63 +167,76 @@ function RowContents({
           })}
         </div>
         <div>
-          {!checkInHasStarted(
-            tournament.checkInStartTime
-          ) ? null : team.checkedInTime ? (
-            <CheckOutButton teamId={team.id} />
-          ) : !playersLacking ? (
-            <CheckInButton teamId={team.id} />
-          ) : (
-            <div className="text-xs">
-              <i>
-                {playersLacking} more{" "}
-                {playersLacking > 1 ? "players" : "player"} required
-              </i>
-            </div>
-          )}
+          <CheckInAction team={team} />
         </div>
       </div>
     </>
   );
 }
 
-function CheckOutButton({ teamId }: { teamId: string }) {
-  const transition = useTransition();
+function CheckInAction({
+  team,
+}: {
+  team: Unpacked<FindTournamentByNameForUrlI["teams"]>;
+}) {
+  const [, parentRoute] = useMatches();
+  const tournament = parentRoute.data as FindTournamentByNameForUrlI;
+
+  if (
+    tournamentHasStarted(tournament.brackets) ||
+    !checkInHasStarted(tournament.checkInStartTime)
+  ) {
+    return null;
+  }
+
+  if (team.checkedInTime) {
+    return <CheckInOutButton type="OUT" teamId={team.id} />;
+  }
+
+  const playersLacking = (() => {
+    if (team.members.length >= TOURNAMENT_TEAM_ROSTER_MIN_SIZE) return;
+
+    return TOURNAMENT_TEAM_ROSTER_MIN_SIZE - team.members.length;
+  })();
+
+  if (!playersLacking) return <CheckInOutButton type="IN" teamId={team.id} />;
+
   return (
-    <Form
-      method="post"
-      className="tournament__action-section__button-container"
-    >
-      <input type="hidden" name="_action" value="CHECK_OUT" />
-      <input type="hidden" name="teamId" value={teamId} />
-      <Button
-        tiny
-        variant="minimal-destructive"
-        loading={transition.state !== "idle"}
-        type="submit"
-      >
-        Check-out
-      </Button>
-    </Form>
+    <div className="text-xs">
+      <i>
+        {playersLacking} more {playersLacking > 1 ? "players" : "player"}{" "}
+        required
+      </i>
+    </div>
   );
 }
 
-function CheckInButton({ teamId }: { teamId: string }) {
+function CheckInOutButton({
+  teamId,
+  type,
+}: {
+  teamId: string;
+  type: "IN" | "OUT";
+}) {
   const transition = useTransition();
   return (
     <Form
       method="post"
       className="tournament__action-section__button-container"
     >
-      <input type="hidden" name="_action" value="CHECK_IN" />
+      <input
+        type="hidden"
+        name="_action"
+        value={type === "IN" ? "CHECK_IN" : "CHECK_OUT"}
+      />
       <input type="hidden" name="teamId" value={teamId} />
       <Button
         tiny
-        variant="minimal-success"
+        variant={type === "IN" ? "minimal-success" : "minimal-destructive"}
         loading={transition.state !== "idle"}
         type="submit"
       >
-        Check-in
+        {type === "IN" ? "Check-in" : "Check-out"}
       </Button>
     </Form>
   );

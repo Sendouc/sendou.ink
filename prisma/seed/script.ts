@@ -276,7 +276,7 @@ export async function seed(variation?: SeedVariations) {
             "radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%)",
           bannerTextHSLArgs: "231, 9%, 16%",
           checkInStartTime:
-            variation === "check-in"
+            variation === "check-in" || variation === "match"
               ? lastFullHour
               : new Date(2025, 11, 17, 11),
           startTime:
