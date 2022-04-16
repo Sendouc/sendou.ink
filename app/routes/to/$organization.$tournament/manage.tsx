@@ -145,7 +145,7 @@ function RowContents({
         <input type="hidden" name="teamId" value={team.id} />
       </Form>
       <div className="tournament__manage__teams-list-row">
-        {tournamentHasNotStarted(tournament) && (
+        {tournamentHasNotStarted(tournament) ? (
           <Button
             type="button"
             name="_action"
@@ -157,6 +157,8 @@ function RowContents({
           >
             <TrashIcon className="tournament__manage__trash-icon" />
           </Button>
+        ) : (
+          <div />
         )}
         <div>{team.name}</div>
         <div>
