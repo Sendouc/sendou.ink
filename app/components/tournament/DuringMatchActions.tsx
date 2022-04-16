@@ -32,7 +32,7 @@ export function DuringMatchActions({
   const currentPosition =
     currentMatch.score?.reduce((acc, cur) => acc + cur, 1) ?? 1;
   const currentStage = currentRound.stages.find(
-    (m) => m.position === currentPosition
+    (s) => s.position === currentPosition
   );
   invariant(currentStage, "currentStage is undefined");
   const { stage } = currentStage;

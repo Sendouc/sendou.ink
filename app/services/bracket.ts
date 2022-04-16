@@ -405,11 +405,8 @@ function newParticipantsForMatches({
       .find(({ id }) => id === match.loserDestinationMatchId);
     invariant(losersMatch, "losersMatch undefined");
 
-    // TODO: probably this is not correct: https://github.com/Sendouc/sendou.ink/issues/819
-    // not sure where position = 0 comes from
-    // ---
     // if the match will have a BYE then we need to generate one more participant
-    if (losersMatch.position === 0) {
+    if (losersMatch.number === 0) {
       invariant(
         losersMatch.winnerDestinationMatchId,
         "losersMatch.winnerDestinationMatchId undefined"
