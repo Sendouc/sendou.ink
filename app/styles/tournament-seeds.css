@@ -14,6 +14,11 @@
   visibility: hidden;
 }
 
+.tournament__seeds__order-button {
+  margin-block-start: var(--s-2);
+  margin-inline-end: auto;
+}
+
 /* TODO: overflow-x scroll */
 .tournament__seeds__teams-list-row {
   display: grid;

@@ -13,8 +13,6 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import clsx from "clsx";
-import * as React from "react";
 import {
   ActionFunction,
   json,
@@ -28,12 +26,23 @@ import {
   useMatches,
   useTransition,
 } from "@remix-run/react";
+import clsx from "clsx";
+import * as React from "react";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
 import { Draggable } from "~/components/Draggable";
+import { averageTeamMMRs } from "~/core/mmr/utils";
+import { tournamentHasStarted } from "~/core/tournament/utils";
+import {
+  isTournamentAdmin,
+  tournamentHasNotStarted,
+} from "~/core/tournament/validators";
+import { useTimeoutState } from "~/hooks/common";
+import * as Skill from "~/models/Skill.server";
+import * as Tournament from "~/models/Tournament.server";
 import { FindTournamentByNameForUrlI } from "~/services/tournament";
 import seedsStylesUrl from "~/styles/tournament-seeds.css";
 import {
@@ -43,16 +52,7 @@ import {
   Unpacked,
   validate,
 } from "~/utils";
-import { useTimeoutState } from "~/hooks/common";
-import * as Tournament from "~/models/Tournament.server";
-import * as Skill from "~/models/Skill.server";
-import {
-  isTournamentAdmin,
-  tournamentHasNotStarted,
-} from "~/core/tournament/validators";
-import { averageTeamMMRs } from "~/core/mmr/utils";
 import { tournamentFrontPage } from "~/utils/urls";
-import { tournamentHasStarted } from "~/core/tournament/utils";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: seedsStylesUrl }];
@@ -132,6 +132,7 @@ export const loader: LoaderFunction = async ({ params, context }) => {
 // TODO: what if returns error? check other APIs too -> add Cypress test
 // TODO: handle overflow better
 export default function TournamentSeedsPage() {
+  const data = useLoaderData<SeedsLoaderData>();
   const [, parentRoute] = useMatches();
   const { id, teams } = parentRoute.data as FindTournamentByNameForUrlI;
   const transition = useTransition();
@@ -153,6 +154,21 @@ export default function TournamentSeedsPage() {
   return (
     <>
       <SeedAlert tournamentId={id} teamOrder={teamOrder} />
+      <Button
+        className="tournament__seeds__order-button"
+        variant="minimal"
+        tiny
+        type="button"
+        onClick={() => {
+          setTeamOrder(
+            teams
+              .sort((a, b) => (data.MMRs[b.id] ?? -1) - data.MMRs[a.id] ?? -1)
+              .map((t) => t.id)
+          );
+        }}
+      >
+        Order all by SP
+      </Button>
       <ul>
         <li className="tournament__seeds__teams-list-row">
           <div className="tournament__seeds__teams-container__header">Seed</div>
@@ -254,11 +270,11 @@ function SeedAlert({
         className="tournament__seeds__alert"
         rightAction={
           <Button
-            className={clsx("tournament__seeds__alert__button", {
-              hidden: !teamOrderChanged,
-            })}
+            className="tournament__seeds__alert__button"
             type="submit"
             loading={transition.state !== "idle"}
+            disabled={!teamOrderChanged}
+            loadingText="Saving..."
           >
             Save seeds
           </Button>
