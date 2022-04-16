@@ -219,6 +219,11 @@ function CheckInOutButton({
   type: "IN" | "OUT";
 }) {
   const transition = useTransition();
+
+  const isSubmitting =
+    transition.state !== "idle" &&
+    transition.submission?.formData.get("teamId") === teamId;
+
   return (
     <Form
       method="post"
@@ -233,8 +238,9 @@ function CheckInOutButton({
       <Button
         tiny
         variant={type === "IN" ? "minimal-success" : "minimal-destructive"}
-        loading={transition.state !== "idle"}
+        loading={isSubmitting}
         type="submit"
+        loadingText={type === "IN" ? "Checking-in..." : "Checking-out..."}
       >
         {type === "IN" ? "Check-in" : "Check-out"}
       </Button>
