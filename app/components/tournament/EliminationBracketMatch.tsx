@@ -30,8 +30,9 @@ export function EliminationBracketMatch({
   const Container = ({ children }: { children: React.ReactNode }) => {
     const hasBothParticipants =
       (match.participants?.filter(Boolean).length ?? 0) > 1;
+    const atLeastOneStageReported = match.score?.some((s) => s > 0);
 
-    if (hasBothParticipants)
+    if (hasBothParticipants && atLeastOneStageReported)
       return (
         <Link
           className="tournament-bracket__match__link"
