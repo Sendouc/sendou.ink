@@ -27,6 +27,7 @@ import {
   useTransition,
 } from "@remix-run/react";
 import clsx from "clsx";
+import clone from "just-clone";
 import * as React from "react";
 import invariant from "tiny-invariant";
 import { z } from "zod";
@@ -35,7 +36,7 @@ import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
 import { Draggable } from "~/components/Draggable";
 import { averageTeamMMRs } from "~/core/mmr/utils";
-import { tournamentHasStarted } from "~/core/tournament/utils";
+import { sortTeamsBySeed, tournamentHasStarted } from "~/core/tournament/utils";
 import {
   isTournamentAdmin,
   tournamentHasNotStarted,
@@ -91,6 +92,7 @@ export const action: ActionFunction = async ({ context, request }) => {
 
 export interface SeedsLoaderData {
   MMRs: Record<string, number>;
+  order: string[];
 }
 
 export const loader: LoaderFunction = async ({ params, context }) => {
@@ -126,6 +128,7 @@ export const loader: LoaderFunction = async ({ params, context }) => {
 
   return json<SeedsLoaderData>({
     MMRs: averageTeamMMRs({ skills, teams: tournament.teams }),
+    order: tournament.seeds,
   });
 };
 
@@ -136,7 +139,14 @@ export default function TournamentSeedsPage() {
   const [, parentRoute] = useMatches();
   const { id, teams } = parentRoute.data as FindTournamentByNameForUrlI;
   const transition = useTransition();
-  const [teamOrder, setTeamOrder] = React.useState(teams.map((t) => t.id));
+  const [teamOrder, setTeamOrder] = React.useState(
+    clone(teams)
+      // probably this sorting should be redundant but
+      // just in case we sort it here again
+      // (might matter if the order switched after page load e.g.)
+      .sort(sortTeamsBySeed(data.order))
+      .map((t) => t.id)
+  );
   const [activeTeam, setActiveTeam] = React.useState<Unpacked<
     FindTournamentByNameForUrlI["teams"]
   > | null>(null);

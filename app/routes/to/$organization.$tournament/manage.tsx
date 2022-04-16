@@ -26,6 +26,7 @@ import { parseRequestFormData, requireUser, Unpacked, validate } from "~/utils";
 import { useUser } from "~/hooks/common";
 import { tournamentFrontPage } from "~/utils/urls";
 import { Navigate } from "~/components/Navigate";
+import clone from "just-clone";
 
 const manageActionSchema = z.object({
   _action: z.enum(["CHECK_OUT", "CHECK_IN", "UNREGISTER"]),
@@ -82,7 +83,7 @@ export default function ManageTab() {
   const user = useUser();
   const [, parentRoute] = useMatches();
   const tournament = parentRoute.data as FindTournamentByNameForUrlI;
-  const teamsSorted = tournament.teams.sort((a, b) =>
+  const teamsSorted = clone(tournament.teams).sort((a, b) =>
     a.name.localeCompare(b.name)
   );
 
