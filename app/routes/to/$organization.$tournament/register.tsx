@@ -20,8 +20,8 @@ import { parseRequestFormData, requireUser } from "~/utils";
 import { tournamentFrontPage, tournamentManageTeamPage } from "~/utils/urls";
 import * as TournamentTeam from "~/models/TournamentTeam.server";
 import { FindTournamentByNameForUrlI } from "~/services/tournament";
-import { Navigate } from "react-router";
 import { PleaseLogin } from "~/components/PleaseLogin";
+import { Navigate } from "~/components/Navigate";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];

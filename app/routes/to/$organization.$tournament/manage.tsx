@@ -24,8 +24,8 @@ import {
 import manageStylesUrl from "~/styles/tournament-manage.css";
 import { parseRequestFormData, requireUser, Unpacked, validate } from "~/utils";
 import { useUser } from "~/hooks/common";
-import { Navigate } from "react-router";
 import { tournamentFrontPage } from "~/utils/urls";
+import { Navigate } from "~/components/Navigate";
 
 const manageActionSchema = z.object({
   _action: z.enum(["CHECK_OUT", "CHECK_IN", "UNREGISTER"]),
