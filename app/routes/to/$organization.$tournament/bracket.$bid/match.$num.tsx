@@ -12,8 +12,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-const typedJson = (args: NonNullable<TournamentMatch.FindInfoForModal>) =>
-  json(args);
+type MatchLoaderData = NonNullable<TournamentMatch.FindInfoForModal>;
 
 export const loader: LoaderFunction = async ({ params }) => {
   const { bid: bracketId, num: matchNumber } = z
@@ -26,11 +25,11 @@ export const loader: LoaderFunction = async ({ params }) => {
   });
   if (!match) throw new Response("No match found", { status: 404 });
 
-  return typedJson(match);
+  return json<MatchLoaderData>(match);
 };
 
 export default function MatchModal() {
-  const data = useLoaderData<NonNullable<TournamentMatch.FindInfoForModal>>();
+  const data = useLoaderData<MatchLoaderData>();
   const location = useLocation();
 
   return (
