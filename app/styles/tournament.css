@@ -242,10 +242,12 @@
 
 .teams-tab__team-name {
   display: flex;
+  flex-direction: column;
   align-self: center;
   border-block-end: 2px solid var(--theme);
   font-size: var(--fonts-lg);
   font-weight: var(--extra-bold);
+  gap: var(--s-2);
   justify-self: center;
 }
 

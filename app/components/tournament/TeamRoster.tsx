@@ -1,11 +1,15 @@
-import { Form, useTransition } from "@remix-run/react";
+import { Form, useMatches, useTransition } from "@remix-run/react";
+import { tournamentHasNotStarted } from "~/core/tournament/validators";
 import { useUser } from "~/hooks/common";
+import { FindTournamentByNameForUrlI } from "~/services/tournament";
 import { Avatar } from "../Avatar";
 import { Button } from "../Button";
+import { SubmitButton } from "../SubmitButton";
 
 export function TeamRoster({
   team,
-  deleteMode: deleteMode,
+  showUnregister = false,
+  deleteMode = false,
 }: {
   team: {
     id: string;
@@ -21,19 +25,51 @@ export function TeamRoster({
     }[];
   };
   deleteMode?: boolean;
+  showUnregister?: boolean;
 }) {
+  const [, parentRoute] = useMatches();
+  const tournament = parentRoute.data as FindTournamentByNameForUrlI;
   const user = useUser();
 
   const showDeleteButtons = (userToDeleteId: string) => {
-    // TODO:
-    const tournamentHasStarted = false;
+    return (
+      tournamentHasNotStarted(tournament) &&
+      deleteMode &&
+      userToDeleteId !== user?.id
+    );
+  };
 
-    return !tournamentHasStarted && deleteMode && userToDeleteId !== user?.id;
+  const showUnregisterButton = () => {
+    return tournamentHasNotStarted(tournament) && showUnregister;
   };
 
   return (
     <div className="teams-tab__team-container">
-      <div className="teams-tab__team-name">{team.name}</div>
+      <div className="teams-tab__team-name">
+        {team.name}
+        {showUnregisterButton() ? (
+          <Form method="post" className="flex justify-center">
+            <input type="hidden" name="_action" value="UNREGISTER" />
+            <input type="hidden" name="teamId" value={team.id} />
+            <SubmitButton
+              actionType="UNREGISTER"
+              tiny
+              variant="minimal-destructive"
+              loadingText="Unregistering..."
+              onClick={(e) => {
+                if (
+                  !confirm(`Unregister ${team.name} from ${tournament.name}?`)
+                ) {
+                  e.preventDefault();
+                }
+              }}
+              data-cy="unregister-button"
+            >
+              Unregister
+            </SubmitButton>
+          </Form>
+        ) : null}
+      </div>
       <div className="teams-tab__members-container">
         {team.members
           .sort((a, b) => Number(b.captain) - Number(a.captain))

@@ -7,14 +7,17 @@ describe("Before tournament starts", () => {
     ).as("tournaments");
   });
 
-  it("Registers a new team", () => {
+  function registerToTournament(teamName: string) {
     cy.logIn("sendou");
     cy.visit("/to/sendou/in-the-zone-x");
     cy.title().should("include", "In The Zone X");
     cy.getCy("register-button").click();
-    cy.getCy("team-name-input").type("Team Olive");
+    cy.getCy("team-name-input").type(teamName);
     cy.getCy("register-submit-button").click();
-    cy.contains("Team name already taken");
+  }
+
+  it("Registers a new team", () => {
+    registerToTournament("Team Olive");
 
     cy.wait("@tournaments");
     cy.getCy("team-name-input").clear().type("Team Olive V2");
@@ -32,5 +35,13 @@ describe("Before tournament starts", () => {
       "have.class",
       "map-pool__stage-image-disabled"
     );
+  });
+
+  it("Can unregister from tournament", () => {
+    registerToTournament("Team Olive V2");
+
+    cy.on("window:confirm", () => true);
+    cy.getCy("unregister-button").click();
+    cy.getCy("register-button");
   });
 });

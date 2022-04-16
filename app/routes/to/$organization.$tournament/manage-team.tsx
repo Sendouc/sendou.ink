@@ -7,6 +7,7 @@ import {
   redirect,
 } from "@remix-run/node";
 import { useActionData, useLoaderData, useLocation } from "@remix-run/react";
+import invariant from "tiny-invariant";
 import { z } from "zod";
 import { AddPlayers } from "~/components/AddPlayers";
 import { Alert } from "~/components/Alert";
@@ -16,6 +17,7 @@ import { TOURNAMENT_TEAM_ROSTER_MAX_SIZE } from "~/constants";
 import {
   isCaptainOfTheTeam,
   teamHasNotCheckedIn,
+  tournamentHasNotStarted,
   tournamentTeamIsNotFull,
 } from "~/core/tournament/validators";
 import * as Tournament from "~/models/Tournament.server";
@@ -42,6 +44,10 @@ const actionSchema = z.union([
     userId: z.string().uuid(),
     teamId: z.string().uuid(),
   }),
+  z.object({
+    _action: z.literal("UNREGISTER"),
+    teamId: z.string().uuid(),
+  }),
 ]);
 
 type ActionData = {
@@ -59,18 +65,14 @@ export const action: ActionFunction = async ({
   });
   const user = requireUser(context);
 
+  const tournamentTeam = await TournamentTeam.findById(data.teamId);
+  validate(tournamentTeam, "Invalid tournament team id");
+  validate(isCaptainOfTheTeam(user, tournamentTeam), "Not captain of the team");
+
   switch (data._action) {
     case "ADD_PLAYER": {
       try {
-        const tournamentTeam = await TournamentTeam.findById(data.teamId);
-
-        // TODO: Validate if tournament already started / concluded (depending on if tournament allows mid-event roster additions)
-        validate(tournamentTeam, "Invalid tournament team id");
         validate(tournamentTeamIsNotFull(tournamentTeam), "Team is full");
-        validate(
-          isCaptainOfTheTeam(user, tournamentTeam),
-          "Not captain of the team"
-        );
 
         await TournamentTeamMember.joinTeam({
           tournamentId: tournamentTeam.tournament.id,
@@ -91,14 +93,7 @@ export const action: ActionFunction = async ({
       return { ok: "ADD_PLAYER" };
     }
     case "DELETE_PLAYER": {
-      const tournamentTeam = await TournamentTeam.findById(data.teamId);
-
-      validate(tournamentTeam, "Invalid team id");
       validate(data.userId !== user.id, "Can't remove self");
-      validate(
-        isCaptainOfTheTeam(user, tournamentTeam),
-        "Not captain of the team"
-      );
       validate(
         teamHasNotCheckedIn(tournamentTeam),
         "Can't remove players after checking in"
@@ -110,6 +105,16 @@ export const action: ActionFunction = async ({
       });
 
       return { ok: "DELETE_PLAYER" };
+    }
+    case "UNREGISTER": {
+      const tournament = await Tournament.findById(tournamentTeam.tournamentId);
+      invariant(tournament, "!tournament");
+
+      validate(tournamentHasNotStarted(tournament), "Tournament is ongoing");
+
+      await TournamentTeam.unregister(data.teamId);
+
+      return { ok: "UNREGISTER" };
     }
     default: {
       const exhaustive: never = data;
@@ -173,7 +178,11 @@ export default function ManageTeamPage() {
         </Alert>
       )}
       <div className="tournament__manage-team__roster-container">
-        <TeamRoster team={ownTeam} deleteMode={!ownTeam.checkedInTime} />
+        <TeamRoster
+          team={ownTeam}
+          deleteMode={!ownTeam.checkedInTime}
+          showUnregister
+        />
       </div>
       {ownTeam.members.length < TOURNAMENT_TEAM_ROSTER_MAX_SIZE && (
         <AddPlayers
