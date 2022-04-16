@@ -577,7 +577,7 @@ export async function seed(variation?: SeedVariations) {
       const matches = await prisma.tournamentMatch.findMany({
         include: { participants: true, round: { include: { stages: true } } },
       });
-      const matchToAdvance = matches.find((match) => match.position === 1);
+      const matchToAdvance = matches.find((match) => match.number === 1);
       invariant(matchToAdvance);
 
       await prisma.tournamentMatchGameResult.createMany({

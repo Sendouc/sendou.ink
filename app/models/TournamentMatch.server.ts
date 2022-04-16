@@ -123,10 +123,10 @@ export async function findInfoForModal({
   });
 
   const tournamentRound = tournamentRounds.find((round) =>
-    round.matches.find((match) => match.position === matchNumber)
+    round.matches.find((match) => match.number === matchNumber)
   );
   const match = tournamentRound?.matches.find(
-    (match) => match.position === matchNumber
+    (match) => match.number === matchNumber
   );
 
   if (!tournamentRound || !match) return;
