@@ -20,6 +20,9 @@ import {
 } from "~/services/tournament";
 import manageStylesUrl from "~/styles/tournament-manage.css";
 import { parseRequestFormData, requireUser, Unpacked, validate } from "~/utils";
+import { useUser } from "~/hooks/common";
+import { Navigate } from "react-router";
+import { tournamentFrontPage } from "~/utils/urls";
 
 const manageActionSchema = z.object({
   _action: z.enum(["CHECK_OUT", "CHECK_IN", "UNREGISTER"]),
@@ -72,11 +75,29 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: manageStylesUrl }];
 };
 
-// TODO: error if not admin
 export default function ManageTab() {
+  const user = useUser();
   const [, parentRoute] = useMatches();
-  const { teams } = parentRoute.data as FindTournamentByNameForUrlI;
-  const teamsSorted = teams.sort((a, b) => a.name.localeCompare(b.name));
+  const tournament = parentRoute.data as FindTournamentByNameForUrlI;
+  const teamsSorted = tournament.teams.sort((a, b) =>
+    a.name.localeCompare(b.name)
+  );
+
+  if (
+    !isTournamentAdmin({
+      userId: user?.id,
+      organization: tournament.organizer,
+    })
+  ) {
+    return (
+      <Navigate
+        to={tournamentFrontPage({
+          organization: tournament.organizer.nameForUrl,
+          tournament: tournament.nameForUrl,
+        })}
+      />
+    );
+  }
 
   return (
     <>

@@ -20,6 +20,7 @@ import {
   json,
   LinksFunction,
   LoaderFunction,
+  redirect,
 } from "@remix-run/node";
 import {
   Form,
@@ -50,6 +51,8 @@ import {
   tournamentHasNotStarted,
 } from "~/core/tournament/validators";
 import { averageTeamMMRs } from "~/core/mmr/utils";
+import { tournamentFrontPage } from "~/utils/urls";
+import { tournamentHasStarted } from "~/core/tournament/utils";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: seedsStylesUrl }];
@@ -90,7 +93,9 @@ export interface SeedsLoaderData {
   MMRs: Record<string, number>;
 }
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ params, context }) => {
+  const user = requireUser(context);
+
   invariant(typeof params.organization === "string", "!params.organization");
   invariant(typeof params.tournament === "string", "!params.tournament");
 
@@ -99,6 +104,21 @@ export const loader: LoaderFunction = async ({ params }) => {
     tournamentNameForUrl: params.tournament,
   });
   invariant(tournament, "!tournament");
+
+  if (
+    !isTournamentAdmin({
+      userId: user.id,
+      organization: tournament.organizer,
+    }) ||
+    tournamentHasStarted(tournament.brackets)
+  ) {
+    return redirect(
+      tournamentFrontPage({
+        organization: tournament.organizer.nameForUrl,
+        tournament: tournament.nameForUrl,
+      })
+    );
+  }
 
   const skills = await Skill.findMostRecentByUserIds(
     tournament.teams.flatMap((t) => t.members).map((m) => m.member.id)
@@ -110,7 +130,6 @@ export const loader: LoaderFunction = async ({ params }) => {
 };
 
 // TODO: what if returns error? check other APIs too -> add Cypress test
-// TODO: error if not admin
 // TODO: handle overflow better
 export default function TournamentSeedsPage() {
   const [, parentRoute] = useMatches();

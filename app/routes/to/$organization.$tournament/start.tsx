@@ -40,8 +40,9 @@ import {
 } from "~/services/tournament";
 import startBracketTabStylesUrl from "~/styles/tournament-start.css";
 import { requireUser } from "~/utils";
-
-// TODO: error if not admin AND keep the links available
+import { isTournamentAdmin } from "~/core/tournament/validators";
+import { tournamentHasStarted } from "~/core/tournament/utils";
+import { tournamentFrontPage } from "~/utils/urls";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: startBracketTabStylesUrl }];
@@ -77,7 +78,8 @@ export const action: ActionFunction = async ({ request, params, context }) => {
 
 export type StartLoaderData = UseTournamentRoundsArgs | null;
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ params, context }) => {
+  const user = requireUser(context);
   invariant(
     typeof params.organization === "string",
     "Expected params.organization to be string"
@@ -91,6 +93,21 @@ export const loader: LoaderFunction = async ({ params }) => {
     organizationNameForUrl: params.organization,
     tournamentNameForUrl: params.tournament,
   });
+
+  if (
+    !isTournamentAdmin({
+      userId: user.id,
+      organization: tournament.organizer,
+    }) ||
+    tournamentHasStarted(tournament.brackets)
+  ) {
+    return redirect(
+      tournamentFrontPage({
+        organization: tournament.organizer.nameForUrl,
+        tournament: tournament.nameForUrl,
+      })
+    );
+  }
 
   const teamCount = tournament.teams.reduce(
     (acc, cur) => acc + (cur.checkedInTime ? 1 : 0),
