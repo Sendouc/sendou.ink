@@ -19,6 +19,7 @@ import layoutStyles from "~/styles/layout.css";
 import { DISCORD_URL } from "./constants";
 import { io, Socket } from "socket.io-client";
 import { SocketProvider } from "./utils/socketContext";
+import { Menu } from "./components/Layout/Menu";
 
 export const links: LinksFunction = () => {
   return [
@@ -71,7 +72,8 @@ export default function App() {
   return (
     <Document ENV={data.ENV}>
       <SocketProvider socket={socket}>
-        <Layout>{children}</Layout>
+        <Menu />
+        {children}
       </SocketProvider>
     </Document>
   );
