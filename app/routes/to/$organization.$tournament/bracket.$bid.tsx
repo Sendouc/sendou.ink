@@ -9,7 +9,7 @@ import invariant from "tiny-invariant";
 import { z } from "zod";
 import { BracketActions } from "~/components/tournament/BracketActions";
 import { EliminationBracket } from "~/components/tournament/EliminationBracket";
-import { BEST_OF_OPTIONS, TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
+import { BEST_OF_OPTIONS } from "~/constants";
 import { bracketToChangedMMRs } from "~/core/mmr/utils";
 import { isTournamentAdmin } from "~/core/tournament/validators";
 import { useUser } from "~/hooks/common";
@@ -28,10 +28,13 @@ import {
   getSocket,
   parseRequestFormData,
   requireUser,
-  safeJSONParse,
   validate,
 } from "~/utils";
 import { db } from "~/utils/db.server";
+import {
+  reportedMatchPlayerIds,
+  reportedMatchPositions,
+} from "~/utils/schemas";
 import { chatRoute } from "~/utils/urls";
 
 export const links: LinksFunction = () => {
@@ -43,17 +46,8 @@ const bracketActionSchema = z.union([
     _action: z.literal("REPORT_SCORE"),
     matchId: z.string().uuid(),
     winnerTeamId: z.string().uuid(),
-    position: z.preprocess(
-      Number,
-      z
-        .number()
-        .min(1)
-        .max(Math.max(...BEST_OF_OPTIONS))
-    ),
-    playerIds: z.preprocess(
-      safeJSONParse,
-      z.array(z.string().uuid()).length(TOURNAMENT_TEAM_ROSTER_MIN_SIZE * 2)
-    ),
+    position: reportedMatchPositions,
+    playerIds: reportedMatchPlayerIds,
   }),
   z.object({
     _action: z.literal("UNDO_REPORT_SCORE"),

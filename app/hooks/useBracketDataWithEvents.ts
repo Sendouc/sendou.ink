@@ -1,7 +1,7 @@
 import { useLoaderData } from "@remix-run/react";
+import * as React from "react";
 import type { BracketModified } from "~/services/bracket";
 import { Unpacked } from "~/utils";
-import * as React from "react";
 import { useSocketEvent } from "./useSocketEvent";
 
 export type BracketData = {

@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { Label } from "../Label";
 import { TeamRosterInputsType, TeamRosterInputTeam } from "./TeamRosterInputs";
+import * as React from "react";
 
 export function TeamRosterInputsCheckboxes({
   team,
@@ -14,6 +15,8 @@ export function TeamRosterInputsCheckboxes({
   /** DEFAULT = inputs work, DISABLED = inputs disabled and look disabled, PRESENTATION = inputs disabled but look like in DEFAULT (without hover styles) */
   mode: TeamRosterInputsType;
 }) {
+  const id = React.useId();
+
   return (
     <div className="tournament-bracket__during-match-actions__team-players">
       {team.members.map(({ member }) => (
@@ -28,7 +31,7 @@ export function TeamRosterInputsCheckboxes({
           <input
             className="plain tournament-bracket__during-match-actions__checkbox"
             type="checkbox"
-            id={member.id}
+            id={`${member.id}-${id}`}
             name="playerName"
             disabled={mode === "DISABLED" || mode === "PRESENTATIONAL"}
             value={member.id}
@@ -37,7 +40,7 @@ export function TeamRosterInputsCheckboxes({
           />{" "}
           <Label
             className="tournament-bracket__during-match-actions__player-name"
-            htmlFor={member.id}
+            htmlFor={`${member.id}-${id}`}
           >
             {member.discordName}
           </Label>

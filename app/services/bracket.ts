@@ -22,7 +22,7 @@ export type BracketModified = {
 type BracketModifiedSide = {
   id: string;
   name: string;
-  stages: { position: number; stage: Stage }[];
+  stages: { id: string; position: number; stage: Stage }[];
   side?: EliminationBracketSide;
   matches: {
     id: string;
@@ -213,7 +213,10 @@ export async function reportScore({
     return;
   }
   if (
-    matchIsOver(match.round.stages.length, matchResultsToTuple(match.results))
+    matchIsOver({
+      bestOf: match.round.stages.length,
+      score: matchResultsToTuple(match.results),
+    })
   ) {
     throw new Response("Match is already over", { status: 400 });
   }
@@ -233,7 +236,7 @@ export async function reportScore({
       .map((r) => ({ winner: r.winner }))
       .concat([{ winner: winnerTeam.order }])
   );
-  if (matchIsOver(match.round.stages.length, newScore)) {
+  if (matchIsOver({ bestOf: match.round.stages.length, score: newScore })) {
     const loserTeam = match.participants.find((p) => p.teamId !== winnerTeamId);
     invariant(loserTeam, "loserTeamId is undefined");
 
@@ -490,7 +493,10 @@ export async function undoLastScore({
   }
 
   if (
-    matchIsOver(match.round.stages.length, matchResultsToTuple(match.results))
+    matchIsOver({
+      bestOf: match.round.stages.length,
+      score: matchResultsToTuple(match.results),
+    })
   ) {
     throw new Response("Match is already over", { status: 400 });
   }

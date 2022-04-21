@@ -1,6 +1,7 @@
 import type { Mode } from ".prisma/client";
 import { z } from "zod";
-import type { Unpacked } from "~/utils";
+import { BEST_OF_OPTIONS, TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
+import { safeJSONParse, Unpacked } from "~/utils";
 import { assertType } from "./assertType";
 
 type MapList = z.infer<typeof ModeSchema>;
@@ -31,3 +32,16 @@ export const LoggedInUserSchema = z
       .nullish(),
   })
   .nullish();
+
+export const reportedMatchPlayerIds = z.preprocess(
+  safeJSONParse,
+  z.array(z.string().uuid()).length(TOURNAMENT_TEAM_ROSTER_MIN_SIZE * 2)
+);
+
+export const reportedMatchPositions = z.preprocess(
+  Number,
+  z
+    .number()
+    .min(1)
+    .max(Math.max(...BEST_OF_OPTIONS))
+);

@@ -12,6 +12,7 @@ export function findById(bracketId: string) {
           position: true,
           stages: {
             select: {
+              id: true,
               position: true,
               stage: true,
             },

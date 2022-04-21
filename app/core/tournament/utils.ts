@@ -47,10 +47,12 @@ export function tournamentHasStarted(
   return brackets[0].rounds.length > 0;
 }
 
-export function matchIsOver(
-  bestOf: number,
-  score?: [upperTeamScore: number, lowerTeamScore: number]
-) {
+export interface MatchIsOverArgs {
+  bestOf: number;
+  score?: [upperTeamScore: number, lowerTeamScore: number];
+}
+// TODO: move to validators
+export function matchIsOver({ bestOf, score }: MatchIsOverArgs) {
   if (!score) return false;
 
   const [upperTeamScore, lowerTeamScore] = score;

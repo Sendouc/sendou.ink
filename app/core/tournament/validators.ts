@@ -1,15 +1,34 @@
 import { TOURNAMENT_TEAM_ROSTER_MAX_SIZE } from "~/constants";
+import { matchIsOver, MatchIsOverArgs } from "./utils";
+
+interface IsTournamentAdminArgs {
+  userId?: string;
+  organization: { ownerId: string };
+}
 
 /** Checks that a user is considered an admin of the tournament. An admin can perform all sorts of actions that normal users can't.  */
 export function isTournamentAdmin({
   // TODO: refactor to user
   userId,
   organization,
-}: {
-  userId?: string;
-  organization: { ownerId: string };
-}) {
+}: IsTournamentAdminArgs) {
   return organization.ownerId === userId;
+}
+
+export function canEditMatchResults({
+  userId,
+  organization,
+  match,
+  tournamentConcluded,
+}: IsTournamentAdminArgs & {
+  match: MatchIsOverArgs;
+  tournamentConcluded: boolean;
+}) {
+  if (!isTournamentAdmin({ userId, organization })) return false;
+  if (!matchIsOver(match)) return false;
+  if (tournamentConcluded) return false;
+
+  return true;
 }
 
 /** Checks if tournament has not started meaning there is no bracket with rounds generated. */

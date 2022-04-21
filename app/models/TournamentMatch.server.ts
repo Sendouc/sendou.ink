@@ -10,6 +10,7 @@ import invariant from "tiny-invariant";
 import { TeamRosterInputTeam } from "~/components/tournament/TeamRosterInputs";
 import { getRoundNameByPositions } from "~/core/tournament/bracket";
 import { v4 as uuidv4 } from "uuid";
+import { MatchIsOverArgs } from "~/core/tournament/utils";
 
 export type FindById = Prisma.PromiseReturnType<typeof findById>;
 export function findById(id: string) {
@@ -73,6 +74,49 @@ export function deleteResult(id: string) {
   return db.tournamentMatchGameResult.delete({ where: { id } });
 }
 
+export function updateResults({
+  matchId,
+  newResults,
+  reporterId,
+}: {
+  matchId: string;
+  newResults: {
+    UNSAFE_playerIds: string[];
+    roundStageId: string;
+    winnerOrder: TeamOrder;
+  }[];
+  reporterId: string;
+}) {
+  const newResultsWithIds = newResults.map((r) => ({ ...r, id: uuidv4() }));
+
+  return db.$transaction([
+    db.tournamentMatchGameResult.deleteMany({
+      where: {
+        matchId,
+      },
+    }),
+    db.tournamentMatchGameResult.createMany({
+      data: newResultsWithIds.map((result) => ({
+        id: result.id,
+        matchId,
+        reporterId,
+        roundStageId: result.roundStageId,
+        winner: result.winnerOrder,
+      })),
+    }),
+    db.$executeRawUnsafe(`
+      insert into "_TournamentMatchGameResultToUser" ("A", "B") values
+        ${newResultsWithIds
+          .flatMap((result) =>
+            result.UNSAFE_playerIds.map(
+              (playerId) => `('${result.id}', '${playerId}')`
+            )
+          )
+          .join(", ")};
+    `),
+  ]);
+}
+
 export type CreateParticipantsData = {
   matchId: string;
   order: TeamOrder;
@@ -86,9 +130,12 @@ export function createParticipants(data: CreateParticipantsData) {
 
 export type FindInfoForModal =
   | {
+      id: string;
       title: string;
       scoreTitle: string;
       roundName: string;
+      bestOf: MatchIsOverArgs["bestOf"];
+      score: MatchIsOverArgs["score"];
       matchInfos: {
         idForFrontend: string;
         teamUpper: TeamRosterInputTeam;
@@ -177,18 +224,18 @@ export async function findInfoForModal({
       };
     });
 
-  const scoreTitle = match.results
-    .reduce(
-      (scores, result) => {
-        if (result.winner === "UPPER") scores[0]++;
-        else scores[1]++;
-        return scores;
-      },
-      [0, 0]
-    )
-    .join("-");
+  const score = match.results.reduce(
+    (scores: [number, number], result) => {
+      if (result.winner === "UPPER") scores[0]++;
+      else scores[1]++;
+      return scores;
+    },
+    [0, 0]
+  );
+  const scoreTitle = score.join("-");
 
   return {
+    id: match.id,
     title: `${teamsOrdered[0].team.name} vs. ${teamsOrdered[1].team.name}`,
     scoreTitle,
     roundName: getRoundNameByPositions(
@@ -196,6 +243,8 @@ export async function findInfoForModal({
       tournamentRounds.map((round) => round.position)
     ),
     matchInfos,
+    score,
+    bestOf: tournamentRound.stages.length,
   };
 }
 
@@ -215,7 +264,7 @@ function playersOfMatch({
     member: User;
   })[];
 }) {
-  if (!stageResult) return { upperTeamMembers: [], lowerTeamMembers: [] };
+  if (!stageResult) return { upperTeamMembers, lowerTeamMembers };
 
   const stageResultPlayerIds = stageResult.players.reduce(
     (acc, cur) => acc.add(cur.id),

@@ -3,6 +3,7 @@ import clone from "just-clone";
 import { TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
 import { Label } from "../Label";
 import { TeamRosterInputsCheckboxes } from "./TeamRosterInputsCheckboxes";
+import * as React from "react";
 
 /** Fields of a tournament team required to render `<TeamRosterInputs />` */
 export interface TeamRosterInputTeam {
@@ -12,7 +13,6 @@ export interface TeamRosterInputTeam {
     member: {
       id: string;
       discordName: string;
-      /** Only used when rendering <TeamRosterInputs /> of a match that was already reported. */
       played?: boolean;
     };
   }[];
@@ -32,10 +32,10 @@ export function TeamRosterInputs({
 }: {
   teamUpper: TeamRosterInputTeam;
   teamLower: TeamRosterInputTeam;
-  winnerId?: string;
-  setWinnerId: (newId: string) => void;
+  winnerId?: string | null;
+  setWinnerId?: (newId: string) => void;
   checkedPlayers: [string[], string[]];
-  setCheckedPlayers: React.Dispatch<React.SetStateAction<[string[], string[]]>>;
+  setCheckedPlayers?: (newPlayerIds: [string[], string[]]) => void;
   presentational?: boolean;
 }) {
   const inputMode = (team: TeamRosterInputTeam): TeamRosterInputsType => {
@@ -60,15 +60,15 @@ export function TeamRosterInputs({
             presentational={presentational}
             checked={winnerId === team.id}
             teamId={team.id}
-            onChange={() => setWinnerId(team.id)}
+            onChange={() => setWinnerId?.(team.id)}
           />
           <TeamRosterInputsCheckboxes
             team={team}
             checkedPlayers={checkedPlayers[teamI]}
             mode={inputMode(team)}
-            handlePlayerClick={(playerId: string) =>
-              setCheckedPlayers((players) => {
-                const newPlayers = clone(players);
+            handlePlayerClick={(playerId: string) => {
+              const newCheckedPlayers = () => {
+                const newPlayers = clone(checkedPlayers);
                 if (checkedPlayers.flat().includes(playerId)) {
                   newPlayers[teamI] = newPlayers[teamI].filter(
                     (id) => id !== playerId
@@ -78,8 +78,9 @@ export function TeamRosterInputs({
                 }
 
                 return newPlayers;
-              })
-            }
+              };
+              setCheckedPlayers?.(newCheckedPlayers());
+            }}
           />
         </div>
       ))}
@@ -99,6 +100,8 @@ function WinnerRadio({
   checked: boolean;
   onChange: () => void;
 }) {
+  const id = React.useId();
+
   if (presentational) {
     return (
       <div
@@ -114,8 +117,13 @@ function WinnerRadio({
 
   return (
     <div className="tournament-bracket__during-match-actions__radio-container">
-      <input type="radio" id={teamId} onChange={onChange} checked={checked} />
-      <Label className="mb-0 ml-2" htmlFor={teamId}>
+      <input
+        type="radio"
+        id={`${teamId}-${id}`}
+        onChange={onChange}
+        checked={checked}
+      />
+      <Label className="mb-0 ml-2" htmlFor={`${teamId}-${id}`}>
         Winner
       </Label>
     </div>

@@ -1,3 +1,4 @@
+// TODO: move to validators
 export function canReportMatchScore({
   userId,
   members,

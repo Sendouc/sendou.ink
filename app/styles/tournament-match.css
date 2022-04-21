@@ -11,6 +11,19 @@
   font-size: var(--fonts-sm);
 }
 
+.tournament-match-modal__error-msg {
+  color: var(--theme-error);
+  font-size: var(--fonts-sm);
+  
+  /* Prevent layout shift */
+  padding-block: 0.16rem;
+}
+
+.tournament-match-modal__reset-match-msg {
+  max-width: 24rem;
+  font-size: var(--fonts-xs);
+}
+
 .tournament-match-modal__rounds {
   display: flex;
   flex-direction: column;

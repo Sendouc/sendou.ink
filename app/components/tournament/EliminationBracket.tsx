@@ -57,7 +57,10 @@ export function EliminationBracket({
                       key={match.id}
                       match={match}
                       ownTeamName={ownTeamName}
-                      isOver={matchIsOver(round.stages.length, match.score)}
+                      isOver={matchIsOver({
+                        bestOf: round.stages.length,
+                        score: match.score,
+                      })}
                     />
                   );
                 })}

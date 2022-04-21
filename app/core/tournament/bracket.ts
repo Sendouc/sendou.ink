@@ -3,6 +3,9 @@ import clone from "just-clone";
 import invariant from "tiny-invariant";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
+import { FindInfoForModal } from "~/models/TournamentMatch.server";
+import { BracketMatchAction } from "~/routes/to/$organization.$tournament/bracket.$bid/match.$num";
+import { Unpacked } from "~/utils";
 import { TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "../../constants";
 import { FindTournamentByNameForUrlI } from "../../services/tournament";
 import { Bracket, eliminationBracket, Match } from "./algorithms";
@@ -466,6 +469,47 @@ function getWinnerDestinationMatchIdToMatchPositions(
 
     return map;
   }, new Map<string, number[]>());
+}
+
+export function newResultChangesWinner({
+  oldResults,
+  newResults,
+}: {
+  oldResults: Unpacked<NonNullable<FindInfoForModal>>["matchInfos"];
+  newResults: BracketMatchAction["results"];
+}): boolean {
+  const oldWinnerIdCounts = oldResults.reduce(
+    (acc: Record<string, number>, stage) => {
+      if (!stage.winnerId) return acc;
+
+      if (!acc[stage.winnerId]) acc[stage.winnerId] = 1;
+      else acc[stage.winnerId]++;
+
+      return acc;
+    },
+    {}
+  );
+  const countsToWinner = (counts: Record<string, number>) =>
+    Object.entries(counts).sort((a, b) => b[1] - a[1])?.[0][0];
+
+  const oldWinnerId = countsToWinner(oldWinnerIdCounts);
+  invariant(oldWinnerId, "!oldWinnerId");
+
+  const newWinnerIdCounts = newResults.reduce(
+    (acc: Record<string, number>, stage) => {
+      if (!stage.winnerTeamId) return acc;
+
+      if (!acc[stage.winnerTeamId]) acc[stage.winnerTeamId] = 1;
+      else acc[stage.winnerTeamId]++;
+
+      return acc;
+    },
+    {}
+  );
+  const newWinnerId = countsToWinner(newWinnerIdCounts);
+  invariant(newWinnerId, "!newWinnerId");
+
+  return oldWinnerId !== newWinnerId;
 }
 
 export type EliminationBracket<T> = {

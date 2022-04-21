@@ -142,6 +142,7 @@ export async function parseRequestFormData<T extends z.ZodTypeAny>({
 
 export function safeJSONParse(value: unknown): unknown {
   try {
+    if (typeof value !== "string") return value;
     const parsedValue = z.string().parse(value);
     return JSON.parse(parsedValue);
   } catch (e) {

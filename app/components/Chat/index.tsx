@@ -77,7 +77,7 @@ export function Chat({ id, users }: ChatProps) {
           </actionFetcher.Form>
         </div>
       )}
-      <button className="chat__fab" onClick={toggleOpen}>
+      <button type="button" className="chat__fab" onClick={toggleOpen}>
         {isOpen ? (
           <CrossIcon className="chat__fab__icon" />
         ) : (

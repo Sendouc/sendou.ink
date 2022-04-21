@@ -189,6 +189,11 @@ button > .button-icon {
   margin-inline-end: var(--s-1-5);
 }
 
+button.tiny > .button-icon {
+  width: 1rem;
+  margin-inline-end: var(--s-1);
+}
+
 textarea:not(.plain) {
   padding: var(--s-2) var(--s-3);
   border: 1px solid var(--border);

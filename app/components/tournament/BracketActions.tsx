@@ -53,7 +53,7 @@ export function BracketActions({ data }: { data: BracketModified }) {
     return (
       hasBothParticipants &&
       isOwnMatch &&
-      !matchIsOver(match.round.stages.length, match.score)
+      !matchIsOver({ bestOf: match.round.stages.length, score: match.score })
     );
   });
 
