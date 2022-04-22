@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import randomColor from "randomcolor";
+import { useState } from "react";
 
 interface HSL {
   h: number;
@@ -312,7 +313,7 @@ class Solver {
       2
     )}%) hue-rotate(${fmt(3, 3.6)}deg) brightness(${fmt(4)}%) contrast(${fmt(
       5
-    )}%);`;
+    )}%)`;
   }
 }
 
@@ -346,8 +347,16 @@ function getFilters(hex: string) {
 }
 
 export function DrawingSection({ type }: { type: "girl" | "boy" }) {
+  const [hexCode, setHexCode] = useState(randomColor());
+
+  const handleColorChange = () => setHexCode(randomColor());
+
   return (
-    <div className={clsx("menu__img-container", type)}>
+    <div
+      className={clsx("menu__img-container", type)}
+      onClick={handleColorChange}
+      onMouseEnter={handleColorChange}
+    >
       <img
         className={clsx("menu__img", type)}
         src={`/img/layout/new_${type}_dark.png`}
@@ -355,7 +364,7 @@ export function DrawingSection({ type }: { type: "girl" | "boy" }) {
       <img
         className={clsx("menu__img-bg", type)}
         src={`/img/layout/new_${type}_bg.png`}
-        style={{ filter: getFilters(randomColor()) }}
+        style={{ filter: getFilters(hexCode) }}
       />
     </div>
   );

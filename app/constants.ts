@@ -51,7 +51,7 @@ export const navItems: {
   {
     title: "builds",
     items: [
-      { name: "browse", disabled: true },
+      { name: "builds", disabled: true },
       { name: "gear", disabled: true },
       { name: "analyzer", disabled: true },
     ],
