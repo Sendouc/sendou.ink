@@ -410,9 +410,15 @@ hr {
   display: flex;
   justify-content: flex-end;
   gap: var(--s-1);
+  margin-block-start: 1px;
 }
 
-.menu__icons-container > svg {
+.menu__icons-container > a {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.menu__icon {
   width: 1.25rem;
   padding: 0.1rem;
   fill: var(--theme-transparent);

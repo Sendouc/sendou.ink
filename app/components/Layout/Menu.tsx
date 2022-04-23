@@ -1,9 +1,12 @@
 import { Link } from "@remix-run/react";
 import { navItems } from "~/constants";
 import { layoutIcon } from "~/utils";
+import { discordUrl, gitHubUrl, patreonUrl, twitterUrl } from "~/utils/urls";
 import { Button } from "../Button";
 import { CrossIcon } from "../icons/Cross";
 import { DiscordIcon } from "../icons/Discord";
+import { GitHubIcon } from "../icons/Github";
+import { PatreonIcon } from "../icons/Patreon";
 import { TwitterIcon } from "../icons/Twitter";
 import DrawingSection from "./DrawingSection";
 
@@ -44,7 +47,18 @@ export function Menu({ close }: { close: () => void }) {
           )}
         </nav>
         <div className="menu__icons-container">
-          <DiscordIcon /> <TwitterIcon />
+          <a href={gitHubUrl()}>
+            <GitHubIcon className="menu__icon" />
+          </a>
+          <a href={discordUrl()}>
+            <DiscordIcon className="menu__icon" />
+          </a>
+          <a href={twitterUrl()}>
+            <TwitterIcon className="menu__icon" />
+          </a>
+          <a href={patreonUrl()}>
+            <PatreonIcon className="menu__icon" />
+          </a>
         </div>
       </div>
       <DrawingSection type="girl" />

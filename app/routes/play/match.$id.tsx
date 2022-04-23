@@ -1,7 +1,4 @@
 import { Mode } from "@prisma/client";
-import clsx from "clsx";
-import React from "react";
-
 import {
   ActionFunction,
   json,
@@ -10,7 +7,6 @@ import {
   MetaFunction,
   redirect,
 } from "@remix-run/node";
-
 import {
   Form,
   ShouldReloadFunction,
@@ -19,7 +15,8 @@ import {
   useParams,
   useTransition,
 } from "@remix-run/react";
-
+import clsx from "clsx";
+import React from "react";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 import { Button } from "~/components/Button";
@@ -31,7 +28,7 @@ import { DetailedPlayers } from "~/components/play/DetailedPlayers";
 import { MapList } from "~/components/play/MapList";
 import { MatchTeams } from "~/components/play/MatchTeams";
 import { SubmitButton } from "~/components/SubmitButton";
-import { DISCORD_URL, LFG_AMOUNT_OF_STAGES_TO_GENERATE } from "~/constants";
+import { LFG_AMOUNT_OF_STAGES_TO_GENERATE } from "~/constants";
 import { isAdmin } from "~/core/common/permissions";
 import { requestMatchDetails } from "~/core/lanista";
 import {
@@ -56,6 +53,7 @@ import {
 } from "~/utils";
 import {
   chatRoute,
+  discordUrl,
   sendouQAddPlayersPage,
   sendouQFrontPage,
 } from "~/utils/urls";
@@ -434,7 +432,7 @@ export default function LFGMatchPage() {
           <div className="play-match__error">
             The score you reported is different from what your opponent
             reported. If you think the information below is wrong notify us on
-            the #helpdesk channel of our <a href={DISCORD_URL}>Discord</a>{" "}
+            the #helpdesk channel of our <a href={discordUrl()}>Discord</a>{" "}
             channel
           </div>
         )}

@@ -56,3 +56,12 @@ export function chatRoute(roomIds?: string[]) {
   if (!roomIds || roomIds.length === 0) return "/chat";
   return `/chat?${roomIds.map((id) => `id=${id}`).join("&")}`;
 }
+
+//
+// Outside of sendou.ink
+//
+
+export const discordUrl = () => "https://discord.gg/sendou";
+export const twitterUrl = () => "https://twitter.com/sendouink";
+export const patreonUrl = () => "https://patreon.com/sendou";
+export const gitHubUrl = () => "https://github.com/Sendouc/sendou.ink";

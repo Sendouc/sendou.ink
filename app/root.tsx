@@ -16,10 +16,9 @@ import { Catcher } from "./components/Catcher";
 import resetStyles from "~/styles/reset.css";
 import globalStyles from "~/styles/global.css";
 import layoutStyles from "~/styles/layout.css";
-import { DISCORD_URL } from "./constants";
 import { io, Socket } from "socket.io-client";
 import { SocketProvider } from "./utils/socketContext";
-import { Menu } from "./components/Layout/Menu";
+import { discordUrl } from "./utils/urls";
 
 export const links: LinksFunction = () => {
   return [
@@ -138,7 +137,7 @@ export function ErrorBoundary({ error }: { error: Error }) {
           <hr />
           <p className="mt-2 text-sm">
             If you need help or want to report the error so that it can be fixed
-            please visit <a href={DISCORD_URL}>our Discord</a>
+            please visit <a href={discordUrl()}>our Discord</a>
           </p>
         </div>
       </Layout>
