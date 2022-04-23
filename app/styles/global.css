@@ -354,6 +354,14 @@ hr {
   place-items: center;
 }
 
+@supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+  .menu {
+    -webkit-backdrop-filter: blur(15px);
+    backdrop-filter: blur(15px);
+    background: transparent;
+  }
+}
+
 .menu__middle-container {
   width: 100%;
 }
@@ -366,7 +374,7 @@ hr {
 .menu__logo-container {
   display: flex;
   align-items: center;
-  color: var(--theme-transparent);
+  color: var(--text);
   font-size: var(--fonts-xs);
   font-weight: var(--bold);
   gap: var(--s-1);
@@ -379,6 +387,7 @@ hr {
 .menu__cross-icon {
   height: 1.25rem;
   width: 1.25rem;
+  fill: var(--text);
 }
 
 .menu__nav {
@@ -421,7 +430,7 @@ hr {
 .menu__icon {
   width: 1.25rem;
   padding: 0.1rem;
-  fill: var(--theme-transparent);
+  fill: var(--text);
 }
 
 .menu__img-container {
@@ -487,7 +496,6 @@ hr {
   top: 0;
   right: 0;
   width: 70px;
-  color: var(--text);
   font-size: 80%;
   line-height: 50px;
   text-align: center;
