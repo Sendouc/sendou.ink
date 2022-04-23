@@ -8,37 +8,32 @@ import { Link } from "@remix-run/react";
 import { navItems } from "~/constants";
 import { layoutIcon } from "~/utils";
 import clsx from "clsx";
+import { Menu } from "./Menu";
 
 export const Layout = React.memo(function Layout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [menuExpanded, setMenuExpanded] = useState(false);
+  const [menuVisible, setMenuVisible] = useState(true);
 
   return (
     <>
       <header className="layout__header">
-        <div className="layout__header__logo-container">
-          <Link to="/">
-            <img className="layout__logo" src={layoutIcon("logo")} />
-          </Link>
-        </div>
+        <div />
         <div className="layout__header__search-container">
           <SearchInput />
         </div>
         <div className="layout__header__right-container">
           <UserItem />
-          <HamburgerButton
-            expanded={menuExpanded}
-            onClick={() => setMenuExpanded((e) => !e)}
-          />
+          <HamburgerButton onClick={() => setMenuVisible((e) => !e)} />
         </div>
       </header>
       <MobileNav
-        expanded={menuExpanded}
-        closeMenu={() => setMenuExpanded(false)}
+        expanded={menuVisible}
+        closeMenu={() => setMenuVisible(false)}
       />
+      {menuVisible ? <Menu close={() => setMenuVisible(false)} /> : null}
       <nav className="layout__nav">
         <div className="layout__nav__items">
           {navItems.map((navGroup) => (
@@ -54,6 +49,7 @@ export const Layout = React.memo(function Layout({
                   data-cy={`nav-link-${navItem.name}`}
                 >
                   <img
+                    alt=""
                     src={layoutIcon(navItem.name.replace(" ", ""))}
                     className="layout__nav__link__icon"
                     width="32"

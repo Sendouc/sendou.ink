@@ -1,19 +1,25 @@
 import { Link } from "@remix-run/react";
-import clsx from "clsx";
 import { navItems } from "~/constants";
 import { layoutIcon } from "~/utils";
+import { Button } from "../Button";
+import { CrossIcon } from "../icons/Cross";
 import { DiscordIcon } from "../icons/Discord";
 import { TwitterIcon } from "../icons/Twitter";
 import DrawingSection from "./DrawingSection";
 
-export function Menu() {
+export function Menu({ close }: { close: () => void }) {
   return (
     <div className="menu">
       <DrawingSection type="boy" />
       <div className="menu__middle-container">
-        <div className="menu__logo-container">
-          <img className="menu__logo" src={layoutIcon("logo")} />
-          sendou.ink
+        <div className="menu__top-extras">
+          <div className="menu__logo-container">
+            <img className="menu__logo" src={layoutIcon("logo")} />
+            sendou.ink
+          </div>
+          <Button onClick={close} variant="minimal" aria-label="Close menu">
+            <CrossIcon className="menu__cross-icon" />
+          </Button>
         </div>
         <nav className="menu__nav">
           {navItems.flatMap((navGroup) =>

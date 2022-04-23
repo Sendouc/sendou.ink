@@ -358,10 +358,15 @@ hr {
   width: 100%;
 }
 
+.menu__top-extras {
+  display: flex;
+  justify-content: space-between;
+}
+
 .menu__logo-container {
   display: flex;
   align-items: center;
-  color: var(--text-lighter);
+  color: var(--theme-transparent);
   font-size: var(--fonts-xs);
   font-weight: var(--bold);
   gap: var(--s-1);
@@ -369,6 +374,11 @@ hr {
 
 .menu__logo {
   height: 1.25rem;
+}
+
+.menu__cross-icon {
+  height: 1.25rem;
+  width: 1.25rem;
 }
 
 .menu__nav {
@@ -412,7 +422,7 @@ hr {
   position: relative;
   display: flex;
   overflow: hidden;
-  width: 15rem;
+  width: 16rem;
   height: 18rem;
   justify-content: center;
   background-color: hsla(237deg 98% 1% / 25%);

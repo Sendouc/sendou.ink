@@ -72,8 +72,7 @@ export default function App() {
   return (
     <Document ENV={data.ENV}>
       <SocketProvider socket={socket}>
-        <Menu />
-        {children}
+        <Layout>{children}</Layout>
       </SocketProvider>
     </Document>
   );

@@ -1,12 +1,4 @@
-import clsx from "clsx";
-
-export function HamburgerButton({
-  onClick,
-  expanded,
-}: {
-  onClick: () => void;
-  expanded: boolean;
-}) {
+export function HamburgerButton({ onClick }: { onClick: () => void }) {
   return (
     <button
       className="layout__burger"
@@ -21,9 +13,6 @@ export function HamburgerButton({
         xmlns="http://www.w3.org/2000/svg"
       >
         <rect
-          className={clsx("layout__burger__top-line", {
-            expanded,
-          })}
           x="6"
           y="9"
           width="20"
@@ -32,9 +21,6 @@ export function HamburgerButton({
           fill="currentColor"
         ></rect>
         <rect
-          className={clsx("layout__burger__middle-line", {
-            expanded,
-          })}
           x="6"
           y="15"
           width="20"
@@ -43,9 +29,6 @@ export function HamburgerButton({
           fill="currentColor"
         ></rect>
         <rect
-          className={clsx("layout__burger__bottom-line", {
-            expanded,
-          })}
           x="6"
           y="21"
           width="20"
