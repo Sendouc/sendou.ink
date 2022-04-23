@@ -442,10 +442,12 @@ hr {
   justify-content: center;
   background-color: hsla(237deg 98% 1% / 25%);
   justify-self: flex-start;
+  border-radius: 0 15px 15px 0;
 }
 
 .menu__img-container:first-of-type {
   justify-self: flex-end;
+  border-radius: 15px 0 0 15px;
 }
 
 @keyframes slide-in-from-top {
