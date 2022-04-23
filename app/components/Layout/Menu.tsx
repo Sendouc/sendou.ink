@@ -33,6 +33,7 @@ export function Menu({ close }: { close: () => void }) {
                 className="menu__nav__link"
                 to={navItem.disabled ? "/" : navItem.url ?? navItem.name}
                 data-cy={`nav-link-${navItem.name}`}
+                onClick={close}
               >
                 <img
                   src={layoutIcon(navItem.name.replace(" ", ""))}
