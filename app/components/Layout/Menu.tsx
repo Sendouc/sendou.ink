@@ -25,27 +25,24 @@ export function Menu({ close }: { close: () => void }) {
           </Button>
         </div>
         <nav className="menu__nav">
-          {navItems.flatMap((navGroup) =>
-            // TODO: useless groups
-            navGroup.items.map((navItem) => (
-              <Link
-                key={navItem.name}
-                className="menu__nav__link"
-                to={navItem.disabled ? "/" : navItem.url ?? navItem.name}
-                data-cy={`nav-link-${navItem.name}`}
-                onClick={close}
-              >
-                <img
-                  src={layoutIcon(navItem.name.replace(" ", ""))}
-                  // TODO: fix
-                  className="layout__nav__link__icon"
-                  width="32"
-                  height="32"
-                />
-                {navItem.displayName ?? navItem.name}
-              </Link>
-            ))
-          )}
+          {navItems.map((navItem) => (
+            <Link
+              key={navItem.name}
+              className="menu__nav__link"
+              to={navItem.disabled ? "/" : navItem.url ?? navItem.name}
+              data-cy={`nav-link-${navItem.name}`}
+              onClick={close}
+            >
+              <img
+                src={layoutIcon(navItem.name.replace(" ", ""))}
+                // TODO: fix
+                className="layout__nav__link__icon"
+                width="32"
+                height="32"
+              />
+              {navItem.displayName ?? navItem.name}
+            </Link>
+          ))}
         </nav>
         <div className="menu__icons-container">
           <a href={gitHubUrl()}>

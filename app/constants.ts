@@ -38,45 +38,22 @@ export const checkInClosesDate = (startTime: string): Date => {
 };
 
 export const navItems: {
-  title: string;
-  items: {
-    name: string;
-    disabled: boolean;
-    displayName?: string;
-    url?: string;
-  }[];
+  name: string;
+  disabled: boolean;
+  displayName?: string;
+  url?: string;
 }[] = [
-  {
-    title: "builds",
-    items: [
-      { name: "builds", disabled: true },
-      { name: "gear", disabled: true },
-      { name: "analyzer", disabled: true },
-    ],
-  },
-  {
-    title: "play",
-    items: [
-      { name: "calendar", disabled: true },
-      { name: "sendouq", disabled: false, displayName: "SendouQ", url: "play" },
-      { name: "leaderboards", disabled: false },
-    ],
-  },
-  {
-    title: "tools",
-    items: [
-      { name: "planner", disabled: true },
-      { name: "rotations", disabled: true },
-      { name: "top 500", disabled: true },
-    ],
-  },
-  {
-    title: "misc",
-    items: [
-      { name: "badges", disabled: true },
-      { name: "links", disabled: true },
-    ],
-  },
+  { name: "builds", disabled: true },
+  { name: "gear", disabled: true },
+  { name: "analyzer", disabled: true },
+  { name: "calendar", disabled: true },
+  { name: "sendouq", disabled: false, displayName: "SendouQ", url: "play" },
+  { name: "leaderboards", disabled: false },
+  { name: "planner", disabled: true },
+  { name: "rotations", disabled: true },
+  { name: "top 500", disabled: true },
+  { name: "badges", disabled: true },
+  { name: "links", disabled: true },
 ];
 
 export const weapons = [
