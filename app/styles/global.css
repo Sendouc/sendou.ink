@@ -971,6 +971,10 @@ hr {
   border-radius: var(--rounded);
 }
 
+.no-scroll {
+  overflow: hidden;
+}
+
 .z-10 {
   z-index: 10;
 }
