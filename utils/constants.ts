@@ -234,6 +234,10 @@ const TERA_ID = 1121;
 const DOMO_ID = 2240;
 const FROG_ID = 1099;
 const BLISS_ID = 4377;
+const ISABEL_ID = 809;
+const MEHDI_ID = 5077;
+const JAY_ID = 3104;
+const STORM_HERO_ID = 3576;
 
 const FUMIKO_ID = -1;
 const PEPAPIG_ID = -1;
@@ -317,6 +321,9 @@ export const IN_THE_ZONE_WINNERS = [
   // 24
   // https://twitter.com/Sendouc/status/1375948326491815937
   [JARED_ID, KYO_ID, ZERRAZ_ID, MIKA_ID],
+  // 25
+  // https://twitter.com/Sendouc/status/1517993124601241602
+  [ISABEL_ID, MEHDI_ID, JAY_ID, STORM_HERO_ID]
 ];
 
 export const wonITZCount = (
