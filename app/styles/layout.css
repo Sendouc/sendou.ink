@@ -24,7 +24,6 @@
   max-width: 48rem;
   margin: 0 auto;
   padding-block-end: var(--s-32);
-  padding-block-start: var(--s-8);
   padding-inline: var(--s-2);
 }
 

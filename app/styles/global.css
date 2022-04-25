@@ -605,6 +605,40 @@ hr {
   font-weight: var(--bold);
 }
 
+.sub-nav__container {
+  background-color: var(--bg-lighter);
+  width: 100vw;
+  background-image: url("/svg/background-pattern.svg");
+  display: flex;
+  justify-content: center;
+  overflow-x: auto;
+  flex-wrap: wrap;
+}
+
+.sub-nav__link {
+  background-color: var(--bg-lighter);
+  height: 100%;
+  color: var(--text);
+  font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
+  padding: var(--s-4);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.sub-nav__active-icon {
+  visibility: hidden;
+  height: 1.2rem;
+  margin-block-start: -3px;
+  margin-block-end: -1rem;
+}
+
+.sub-nav__link.active > .sub-nav__active-icon {
+  visibility: visible;
+}
+
 .popover-content {
   z-index: 1;
   max-width: 20rem;

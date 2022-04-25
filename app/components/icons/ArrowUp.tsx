@@ -5,7 +5,7 @@ export function ArrowUpIcon({
   style,
 }: {
   className?: string;
-  style: CSSProperties;
+  style?: CSSProperties;
 }) {
   return (
     <svg

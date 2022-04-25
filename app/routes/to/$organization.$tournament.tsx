@@ -12,23 +12,23 @@ import {
   ShouldReloadFunction,
   useLoaderData,
 } from "@remix-run/react";
+import * as React from "react";
 import invariant from "tiny-invariant";
 import { AdminIcon } from "~/components/icons/Admin";
+import { SubNav, SubNavLink } from "~/components/SubNav";
 import { CheckinActions } from "~/components/tournament/CheckinActions";
-import { InfoBanner } from "~/components/tournament/InfoBanner";
 import { tournamentHasStarted } from "~/core/tournament/utils";
+import { isTournamentAdmin } from "~/core/tournament/validators";
+import { useUser } from "~/hooks/common";
 import {
   checkIn,
   findTournamentByNameForUrl,
   FindTournamentByNameForUrlI,
 } from "~/services/tournament";
-import { makeTitle, requireUser } from "~/utils";
 import type { MyCSSProperties } from "~/utils";
-import { useUser } from "~/hooks/common";
-import tournamentStylesUrl from "../../styles/tournament.css";
-import * as React from "react";
-import { isTournamentAdmin } from "~/core/tournament/validators";
+import { makeTitle, requireUser } from "~/utils";
 import { chatRoute } from "~/utils/urls";
+import tournamentStylesUrl from "../../styles/tournament.css";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: tournamentStylesUrl }];
@@ -145,9 +145,8 @@ export default function TournamentPage() {
 
   return (
     <div className="tournament__container" style={tournamentContainerStyle}>
-      <InfoBanner />
-      <div className="tournament__container__spacer" />
-      <div className="tournament__links-overflower">
+      {/* <InfoBanner /> */}
+      {/* <div className="tournament__links-overflower">
         <div className="tournament__links-border">
           <div
             style={linksContainerStyle}
@@ -163,7 +162,14 @@ export default function TournamentPage() {
             ))}
           </div>
         </div>
-      </div>
+      </div> */}
+      <SubNav>
+        {navLinks.map((link) => (
+          <SubNavLink key={link.code} to={link.code}>
+            {link.text}
+          </SubNavLink>
+        ))}
+      </SubNav>
       <div className="tournament__container__spacer" />
       <CheckinActions />
       <div className="tournament__outlet-spacer" />
