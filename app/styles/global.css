@@ -354,19 +354,31 @@ hr {
   place-items: center;
 }
 
-.menu__inner {
-  display: grid;
-  grid-template-columns: 25% 50% 25%;
-  grid-template-rows: 1.25rem 18rem 1.25rem;
-  grid-template-areas: ". top-icons ." "img-boy nav-items img-girl" ". bottom-icons .";
-  place-items: center;
-}
-
 @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
   .menu {
     -webkit-backdrop-filter: blur(15px);
     backdrop-filter: blur(15px);
     background: transparent;
+  }
+}
+
+.menu__inner {
+  display: grid;
+  grid-template-columns: 26% 48% 26%;
+  grid-template-rows: 1.25rem 14rem 1.25rem;
+  grid-template-areas: ". top-icons ." "img-boy nav-items img-girl" ". bottom-icons .";
+  place-items: center;
+}
+
+/* xs: "(min-width: 480px)",
+sm: "(min-width: 640px)",
+md: "(min-width: 768px)",
+lg: "(min-width: 1024px)",
+xl: "(min-width: 1280px)", */
+
+@media screen and (min-width: 1024px) {
+  .menu__inner {
+    grid-template-rows: 1.25rem 18rem 1.25rem;
   }
 }
 
@@ -405,9 +417,8 @@ hr {
   justify-content: center;
   padding: var(--s-12);
   background-color: var(--bg-darker-very-transparent);
-  column-gap: var(--s-3);
+  gap: var(--s-2);
   grid-template-columns: repeat(3, 8rem);
-  row-gap: var(--s-0-5);
   grid-area: nav-items;
 }
 
@@ -449,14 +460,17 @@ hr {
   position: relative;
   overflow: hidden;
   background-color: hsla(237deg 98% 1% / 25%);
-  border-radius: 0 15px 15px 0;
+  border-radius: 0 var(--rounded) var(--rounded) 0;
   grid-area: img-girl;
   height: 100%;
+  width: 100%;
   justify-self: flex-start;
+  display: flex;
+  justify-content: center;
 }
 
 .menu__img-container.boy {
-  border-radius: 15px 0 0 15px;
+  border-radius: var(--rounded) 0 0 var(--rounded);
   justify-self: flex-end;
   grid-area: img-boy;
 }
@@ -485,6 +499,7 @@ hr {
   overflow: hidden;
   animation: 0.75s ease-out 0s 1 slide-in-from-bottom;
   height: 100%;
+  object-fit: cover;
 }
 
 .menu__img-bg {
@@ -493,6 +508,7 @@ hr {
   top: 0;
   animation: 0.75s ease-out 0s 1 slide-in-from-bottom;
   height: 100%;
+  object-fit: cover;
 }
 
 .menu__img.boy {
