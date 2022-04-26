@@ -342,6 +342,7 @@ hr {
 }
 
 .menu {
+  --small-icons-height: 1.25rem;
   position: fixed;
   z-index: 999;
   top: 0;
@@ -355,7 +356,9 @@ hr {
 
 .menu__inner {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 25% 50% 25%;
+  grid-template-rows: 1.25rem 18rem 1.25rem;
+  grid-template-areas: ". top-icons ." "img-boy nav-items img-girl" ". bottom-icons .";
   place-items: center;
 }
 
@@ -367,13 +370,11 @@ hr {
   }
 }
 
-.menu__middle-container {
-  width: 100%;
-}
-
 .menu__top-extras {
   display: flex;
   justify-content: space-between;
+  grid-area: top-icons;
+  width: 100%;
 }
 
 .menu__logo-container {
@@ -383,22 +384,23 @@ hr {
   font-size: var(--fonts-xs);
   font-weight: var(--bold);
   gap: var(--s-1);
+  height: var(--small-icons-height);
 }
 
 .menu__logo {
-  height: 1.25rem;
+  height: 100%;
 }
 
 .menu__cross-icon {
   width: 1.25rem;
-  height: 1.25rem;
+  height: 100%;
   fill: var(--text);
 }
 
 .menu__nav {
   display: grid;
   width: 100%;
-  height: 18rem;
+  height: 100%;
   align-items: center;
   justify-content: center;
   padding: var(--s-12);
@@ -406,6 +408,7 @@ hr {
   column-gap: var(--s-3);
   grid-template-columns: repeat(3, 8rem);
   row-gap: var(--s-0-5);
+  grid-area: nav-items;
 }
 
 .menu__nav__link {
@@ -423,13 +426,16 @@ hr {
 .menu__icons-container {
   display: flex;
   justify-content: flex-end;
+  width: 100%;
   gap: var(--s-1);
   margin-block-start: 1px;
+  height: var(--small-icons-height);
+  grid-area: bottom-icons;
 }
 
 .menu__icons-container > a {
   display: flex;
-  height: 1.25rem;
+  height: 100%;
   justify-content: flex-end;
 }
 
@@ -441,19 +447,18 @@ hr {
 
 .menu__img-container {
   position: relative;
-  display: flex;
   overflow: hidden;
-  width: 16rem;
-  height: 18rem;
-  justify-content: center;
   background-color: hsla(237deg 98% 1% / 25%);
   border-radius: 0 15px 15px 0;
+  grid-area: img-girl;
+  height: 100%;
   justify-self: flex-start;
 }
 
-.menu__img-container:first-of-type {
+.menu__img-container.boy {
   border-radius: 15px 0 0 15px;
   justify-self: flex-end;
+  grid-area: img-boy;
 }
 
 @keyframes slide-in-from-top {
@@ -478,17 +483,16 @@ hr {
 
 .menu__img {
   overflow: hidden;
-  height: 18rem;
   animation: 0.75s ease-out 0s 1 slide-in-from-bottom;
-  object-fit: cover;
+  height: 100%;
 }
 
 .menu__img-bg {
   position: absolute;
   z-index: -1;
   top: 0;
-  height: 18rem;
   animation: 0.75s ease-out 0s 1 slide-in-from-bottom;
+  height: 100%;
 }
 
 .menu__img.boy {
