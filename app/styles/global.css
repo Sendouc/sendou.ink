@@ -370,12 +370,6 @@ hr {
   place-items: center;
 }
 
-/* xs: "(min-width: 480px)",
-sm: "(min-width: 640px)",
-md: "(min-width: 768px)",
-lg: "(min-width: 1024px)",
-xl: "(min-width: 1280px)", */
-
 @media screen and (min-width: 1024px) {
   .menu__inner {
     grid-template-rows: 1.25rem 18rem 1.25rem;
@@ -417,7 +411,7 @@ xl: "(min-width: 1280px)", */
   justify-content: center;
   padding: var(--s-12);
   background-color: var(--bg-darker-very-transparent);
-  gap: var(--s-2);
+  row-gap: var(--s-2);
   grid-template-columns: repeat(3, 8rem);
   grid-area: nav-items;
 }
