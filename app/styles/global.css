@@ -343,6 +343,7 @@ hr {
 
 .menu {
   --small-icons-height: 1.25rem;
+
   position: fixed;
   z-index: 999;
   top: 0;
@@ -364,9 +365,9 @@ hr {
 
 .menu__inner {
   display: grid;
-  grid-template-columns: 26% 48% 26%;
-  grid-template-rows: 1.25rem 14rem 1.25rem;
   grid-template-areas: ". top-icons ." "img-boy nav-items img-girl" ". bottom-icons .";
+  grid-template-columns: 1.15fr 2fr 1.15fr;
+  grid-template-rows: 1.25rem 14rem 1.25rem;
   place-items: center;
 }
 
@@ -378,23 +379,19 @@ hr {
 
 .menu__top-extras {
   display: flex;
+  width: 100%;
   justify-content: space-between;
   grid-area: top-icons;
-  width: 100%;
 }
 
 .menu__logo-container {
   display: flex;
+  height: var(--small-icons-height);
   align-items: center;
   color: var(--text);
   font-size: var(--fonts-xs);
   font-weight: var(--bold);
   gap: var(--s-1);
-  height: var(--small-icons-height);
-}
-
-.menu__logo {
-  height: 100%;
 }
 
 .menu__cross-icon {
@@ -411,9 +408,9 @@ hr {
   justify-content: center;
   padding: var(--s-12);
   background-color: var(--bg-darker-very-transparent);
-  row-gap: var(--s-2);
-  grid-template-columns: repeat(3, 8rem);
   grid-area: nav-items;
+  grid-template-columns: repeat(3, 8rem);
+  row-gap: var(--s-2);
 }
 
 .menu__nav__link {
@@ -430,12 +427,12 @@ hr {
 
 .menu__icons-container {
   display: flex;
-  justify-content: flex-end;
   width: 100%;
-  gap: var(--s-1);
-  margin-block-start: 1px;
   height: var(--small-icons-height);
+  justify-content: flex-end;
+  gap: var(--s-1);
   grid-area: bottom-icons;
+  margin-block-start: 1px;
 }
 
 .menu__icons-container > a {
@@ -452,21 +449,21 @@ hr {
 
 .menu__img-container {
   position: relative;
+  display: flex;
   overflow: hidden;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
   background-color: hsla(237deg 98% 1% / 25%);
   border-radius: 0 var(--rounded) var(--rounded) 0;
   grid-area: img-girl;
-  height: 100%;
-  width: 100%;
   justify-self: flex-start;
-  display: flex;
-  justify-content: center;
 }
 
 .menu__img-container.boy {
   border-radius: var(--rounded) 0 0 var(--rounded);
-  justify-self: flex-end;
   grid-area: img-boy;
+  justify-self: flex-end;
 }
 
 @keyframes slide-in-from-top {
@@ -491,8 +488,8 @@ hr {
 
 .menu__img {
   overflow: hidden;
-  animation: 0.75s ease-out 0s 1 slide-in-from-bottom;
   height: 100%;
+  animation: 0.75s ease-out 0s 1 slide-in-from-bottom;
   object-fit: cover;
 }
 
@@ -500,8 +497,8 @@ hr {
   position: absolute;
   z-index: -1;
   top: 0;
-  animation: 0.75s ease-out 0s 1 slide-in-from-bottom;
   height: 100%;
+  animation: 0.75s ease-out 0s 1 slide-in-from-bottom;
   object-fit: cover;
 }
 
@@ -620,33 +617,33 @@ hr {
 }
 
 .sub-nav__container {
-  background-color: var(--bg-lighter);
-  width: 100vw;
-  background-image: url("/svg/background-pattern.svg");
   display: flex;
-  justify-content: center;
-  overflow-x: auto;
+  width: 100vw;
   flex-wrap: wrap;
+  justify-content: center;
+  background-color: var(--bg-lighter);
+  background-image: url("/svg/background-pattern.svg");
+  overflow-x: auto;
 }
 
 .sub-nav__link {
-  background-color: var(--bg-lighter);
+  display: flex;
   height: 100%;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--s-4);
+  background-color: var(--bg-lighter);
   color: var(--text);
   font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
-  padding: var(--s-4);
   white-space: nowrap;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
 }
 
 .sub-nav__active-icon {
-  visibility: hidden;
   height: 1.2rem;
-  margin-block-start: -3px;
   margin-block-end: -1rem;
+  margin-block-start: -3px;
+  visibility: hidden;
 }
 
 .sub-nav__link.active > .sub-nav__active-icon {
