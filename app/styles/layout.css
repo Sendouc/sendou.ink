@@ -14,6 +14,13 @@
   display: none;
 }
 
+.layout__header__title-container {
+  text-align: center;
+  font-size: var(--fonts-sm);
+  font-weight: var(--bold);
+  color: var(--text-lighter);
+}
+
 .layout__header__right-container {
   display: flex;
   gap: var(--s-4);

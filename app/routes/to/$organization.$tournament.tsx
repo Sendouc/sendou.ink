@@ -10,6 +10,7 @@ import { Outlet, ShouldReloadFunction, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { CheckinActions } from "~/components/tournament/CheckinActions";
+import { PAGE_TITLE_KEY } from "~/constants";
 import { tournamentHasStarted } from "~/core/tournament/utils";
 import { isTournamentAdmin } from "~/core/tournament/validators";
 import { useUser } from "~/hooks/common";
@@ -49,7 +50,7 @@ export const action: ActionFunction = async ({ request, context }) => {
   return new Response(undefined, { status: 200 });
 };
 
-export const loader: LoaderFunction = ({ params }) => {
+export const loader: LoaderFunction = async ({ params }) => {
   invariant(
     typeof params.organization === "string",
     "Expected params.organization to be string"
@@ -59,10 +60,15 @@ export const loader: LoaderFunction = ({ params }) => {
     "Expected params.tournament to be string"
   );
 
-  return findTournamentByNameForUrl({
+  const tournament = await findTournamentByNameForUrl({
     organizationNameForUrl: params.organization,
     tournamentNameForUrl: params.tournament,
   });
+
+  return {
+    ...tournament,
+    [PAGE_TITLE_KEY]: tournament.name,
+  };
 };
 
 export const meta: MetaFunction = (props) => {
