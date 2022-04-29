@@ -1,6 +1,5 @@
-import * as React from "react";
 import clsx from "clsx";
-import { SearchIcon } from "../../components/icons/Search";
+import * as React from "react";
 
 export function SearchInput() {
   // TODO: search input that searches
@@ -69,7 +68,7 @@ export function DumbSearchInput({
       <input
         className={clsx("plain", "layout__search-input")}
         type="text"
-        placeholder="Search"
+        placeholder="Admin command"
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={(event) => {
@@ -78,7 +77,6 @@ export function DumbSearchInput({
           }
         }}
       />
-      <SearchIcon className="layout__search-input__icon" />
     </div>
   );
 }

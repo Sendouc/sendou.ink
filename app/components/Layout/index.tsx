@@ -20,10 +20,10 @@ export const Layout = React.memo(function Layout({
   return (
     <>
       <header className="layout__header">
-        <div />
         <div className="layout__header__search-container">
           <SearchInput />
         </div>
+        <div />
         <div className="layout__header__right-container">
           <UserItem />
           <HamburgerButton

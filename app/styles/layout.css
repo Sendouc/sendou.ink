@@ -190,11 +190,6 @@
   letter-spacing: 0.5px;
 }
 
-.layout__search-input__icon {
-  height: 1.25rem;
-  color: var(--text);
-}
-
 .layout__log-in-button {
   display: flex;
   height: var(--item-size);
@@ -237,6 +232,7 @@
 
   .layout__header__search-container {
     display: block;
+    max-width: 12rem;
   }
 }
 
