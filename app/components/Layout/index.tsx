@@ -25,6 +25,7 @@ export const Layout = React.memo(function Layout({
   // deeper routes take precedence
   const pageTitle = matches
     .map((match) => match.data)
+    .filter(Boolean)
     .reduceRight((acc: Nullable<string>, routeData) => {
       if (!acc && typeof routeData[PAGE_TITLE_KEY] === "string") {
         return routeData[PAGE_TITLE_KEY] as string;
