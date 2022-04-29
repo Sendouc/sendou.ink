@@ -6,15 +6,8 @@ import {
   LoaderFunction,
   MetaFunction,
 } from "@remix-run/node";
-import {
-  NavLink,
-  Outlet,
-  ShouldReloadFunction,
-  useLoaderData,
-} from "@remix-run/react";
-import * as React from "react";
+import { Outlet, ShouldReloadFunction, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
-import { AdminIcon } from "~/components/icons/Admin";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { CheckinActions } from "~/components/tournament/CheckinActions";
 import { tournamentHasStarted } from "~/core/tournament/utils";
@@ -25,8 +18,7 @@ import {
   findTournamentByNameForUrl,
   FindTournamentByNameForUrlI,
 } from "~/services/tournament";
-import type { MyCSSProperties } from "~/utils";
-import { makeTitle, requireUser } from "~/utils";
+import { makeTitle, MyCSSProperties, requireUser } from "~/utils";
 import { chatRoute } from "~/utils/urls";
 import tournamentStylesUrl from "../../styles/tournament.css";
 
@@ -78,8 +70,6 @@ export const meta: MetaFunction = (props) => {
 
   return {
     title: makeTitle(data?.name),
-    // TODO: description, image?
-    //description: data.description ?? undefined,
   };
 };
 
@@ -95,7 +85,7 @@ export default function TournamentPage() {
   const user = useUser();
 
   const navLinks = (() => {
-    const result: { code: string; text: string; icon?: React.ReactNode }[] = [
+    const result: { code: string; text: string }[] = [
       { code: "", text: "Overview" },
       { code: "map-pool", text: "Map Pool" },
       { code: "teams", text: `Teams (${data.teams.length})` },
@@ -119,15 +109,12 @@ export default function TournamentPage() {
     if (isTournamentAdmin({ userId: user?.id, organization: data.organizer })) {
       result.push({
         code: "manage",
-        // TODO: figure out a good name
         text: "Controls",
-        icon: <AdminIcon />,
       });
       if (!tournamentHasStarted(data.brackets)) {
-        result.push({ code: "seeds", text: "Seeds", icon: <AdminIcon /> });
+        result.push({ code: "seeds", text: "Seeds" });
       }
-      if (thereIsABracketToStart)
-        result.push({ code: "start", text: "Start", icon: <AdminIcon /> });
+      if (thereIsABracketToStart) result.push({ code: "start", text: "Start" });
     }
 
     return result;
@@ -139,36 +126,15 @@ export default function TournamentPage() {
     "--tournaments-text-transparent": data.CSSProperties.textTransparent,
   };
 
-  const linksContainerStyle: MyCSSProperties = {
-    "--tabs-count": navLinks.length,
-  };
-
   return (
     <div className="tournament__container" style={tournamentContainerStyle}>
-      {/* <InfoBanner /> */}
-      {/* <div className="tournament__links-overflower">
-        <div className="tournament__links-border">
-          <div
-            style={linksContainerStyle}
-            className="tournament__links-container"
-          >
-            {navLinks.map(({ code, text, icon }) => (
-              <TournamentNavLink
-                key={code}
-                code={code}
-                icon={icon}
-                text={text}
-              />
-            ))}
-          </div>
-        </div>
-      </div> */}
       <SubNav>
         {navLinks.map((link) => (
           <SubNavLink key={link.code} to={link.code}>
             {link.text}
           </SubNavLink>
         ))}
+        <MyTeamLink />
       </SubNav>
       <div className="tournament__container__spacer" />
       <CheckinActions />
@@ -179,36 +145,57 @@ export default function TournamentPage() {
   );
 }
 
-function TournamentNavLink({
-  code,
-  icon,
-  text,
-}: {
-  code: string;
-  icon: React.ReactNode;
-  text: string;
-}) {
-  const ref = React.useRef<HTMLAnchorElement>(null);
+function MyTeamLink() {
+  const data = useLoaderData<FindTournamentByNameForUrlI>();
+  const user = useUser();
 
-  React.useEffect(() => {
-    if (!ref.current?.className.includes("active")) return;
-    ref.current?.scrollIntoView({
-      behavior: "smooth",
-      inline: "center",
-      block: "nearest",
-    });
-  }, []);
+  const isAlreadyInATeamButNotCaptain = data.teams
+    .flatMap((team) => team.members)
+    .filter(({ captain }) => !captain)
+    .some(({ member }) => member.id === user?.id);
+  if (isAlreadyInATeamButNotCaptain) return null;
+
+  const alreadyRegistered = data.teams
+    .flatMap((team) => team.members)
+    .some(({ member }) => member.id === user?.id);
+  if (alreadyRegistered) {
+    return (
+      <SubNavLink
+        to="manage-team"
+        className="info-banner__action-button"
+        prefetch="intent"
+      >
+        Add players
+      </SubNavLink>
+    );
+  }
+
+  if (tournamentHasStarted(data.brackets)) {
+    return null;
+  }
+
+  // TODO: prompt user to log in if not logged in
+  // if (!user) {
+  //   return (
+  //     <form action={getLogInUrl(location)} method="post">
+  //       <button
+  //         className="info-banner__action-button"
+  //         data-cy="log-in-to-join-button"
+  //       >
+  //         Log in to join
+  //       </button>
+  //     </form>
+  //   );
+  // }
+  if (!user) return null;
 
   return (
-    <NavLink
-      className="tournament__nav-link"
-      to={code}
-      data-cy={`${code}-nav-link`}
-      prefetch="intent"
-      end
-      ref={ref}
+    <SubNavLink
+      to="register"
+      className="info-banner__action-button"
+      data-cy="register-button"
     >
-      {icon} {text}
-    </NavLink>
+      Register
+    </SubNavLink>
   );
 }

@@ -59,47 +59,6 @@
   place-items: center;
 }
 
-.tournament__nav-link {
-  all: unset;
-  display: flex;
-  width: 100%;
-  justify-content: center;
-  background-color: var(--bg-lighter);
-  color: var(--text);
-  cursor: pointer;
-  font-size: var(--fonts-sm);
-  gap: var(--s-1);
-  padding-block: var(--s-1-5);
-}
-
-.tournament__nav-link > svg {
-  width: 1rem;
-}
-
-.tournament__nav-link:first-of-type {
-  border-bottom-left-radius: var(--rounded);
-  border-top-left-radius: var(--rounded);
-}
-
-.tournament__nav-link:last-of-type {
-  border-bottom-right-radius: var(--rounded);
-  border-top-right-radius: var(--rounded);
-}
-
-.tournament__nav-link:hover {
-  font-weight: var(--bold);
-}
-
-.tournament__nav-link:focus-visible {
-  background-color: var(--bg-lighter-transparent);
-}
-
-.tournament__nav-link.active {
-  background-color: transparent;
-  color: var(--tournaments-text);
-  font-weight: var(--bold);
-}
-
 .info-banner {
   width: 100%;
   padding: var(--s-6);
@@ -189,44 +148,10 @@
   inline-size: 2.25rem;
 }
 
-.info-banner__icon-button:active {
-  transform: translateY(1px);
-}
-
-.info-banner__icon-button:focus-visible {
-  outline: 2px solid var(--tournaments-text-transparent);
-}
-
-.info-banner__action-button {
-  all: unset;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid;
-  border-color: var(--tournaments-text-transparent);
-  border-radius: var(--rounded);
-  color: inherit;
-  cursor: pointer;
-  font-size: var(--fonts-sm);
-  font-weight: var(--bold);
-  padding-block: var(--s-2);
-  padding-inline: var(--s-4);
-  text-decoration: none;
-}
-
-.info-banner__action-button:active {
-  transform: translateY(1px);
-}
-
-.info-banner__action-button:focus-visible {
-  outline: 2px solid var(--tournaments-text-transparent);
-}
-
 .tournament__outlet-spacer {
   padding-block-start: var(--s-8);
 }
 
-/* separate .css file..? */
 .teams-tab {
   display: flex;
   flex-direction: column;
@@ -306,9 +231,5 @@
   .teams-tab__members-container {
     border-inline-start: 2px solid var(--theme);
     padding-inline-start: var(--s-6);
-  }
-
-  .tournament__nav-link:last-of-type {
-    padding-inline-end: 0;
   }
 }

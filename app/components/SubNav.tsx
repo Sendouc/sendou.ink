@@ -1,4 +1,6 @@
 import { NavLink } from "@remix-run/react";
+import { RemixNavLinkProps } from "@remix-run/react/components";
+import clsx from "clsx";
 import React from "react";
 import { ArrowUpIcon } from "./icons/ArrowUp";
 
@@ -7,15 +9,15 @@ export function SubNav({ children }: { children: React.ReactNode }) {
 }
 
 export function SubNavLink({
-  to,
   children,
-}: {
-  to: string;
+  className,
+  ...props
+}: RemixNavLinkProps & {
   children: React.ReactNode;
 }) {
   return (
-    <NavLink className="sub-nav__link" to={to} end>
-      <span>{children}</span>
+    <NavLink className={clsx("sub-nav__link", className)} end {...props}>
+      <span className="sub-nav__link__text">{children}</span>
       <ArrowUpIcon className="sub-nav__active-icon" />
     </NavLink>
   );
