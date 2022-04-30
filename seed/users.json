@@ -1,0 +1,1936 @@
+[
+  {
+    "id": 9395,
+    "username": "jamoinderharald",
+    "discriminator": "6562",
+    "discordAvatar": null,
+    "discordId": "740016624207265802",
+    "profile": null
+  },
+  {
+    "id": 9396,
+    "username": "SageGuy",
+    "discriminator": "4094",
+    "discordAvatar": "b3c1e9c22d63b31502a623f8f7991ca5",
+    "discordId": "169982171874852865",
+    "profile": {
+      "twitterName": "sageguyvg"
+    }
+  },
+  {
+    "id": 9398,
+    "username": "Octocam",
+    "discriminator": "6593",
+    "discordAvatar": "79028017b03d93ec1a3294ea4ce71ce4",
+    "discordId": "279701834984062977",
+    "profile": null
+  },
+  {
+    "id": 9399,
+    "username": "Furikake♪",
+    "discriminator": "3319",
+    "discordAvatar": "f06c965d1672a116322fef345eca2229",
+    "discordId": "745396322894348429",
+    "profile": null
+  },
+  {
+    "id": 9400,
+    "username": "kinqsbay",
+    "discriminator": "0420",
+    "discordAvatar": "01db0f431f6506a3fb515a1db57e59b8",
+    "discordId": "197961447685357568",
+    "profile": {
+      "twitterName": "flingzas"
+    }
+  },
+  {
+    "id": 9401,
+    "username": "xav",
+    "discriminator": "4131",
+    "discordAvatar": null,
+    "discordId": "705957094561677343",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 74,
+    "username": "Pink Freeza",
+    "discriminator": "5573",
+    "discordAvatar": "7d5312da923cddd178589c57b4dab985",
+    "discordId": "337442714268205067",
+    "profile": {
+      "twitterName": "pinkfreeza"
+    }
+  },
+  {
+    "id": 94,
+    "username": ";~;",
+    "discriminator": "4788",
+    "discordAvatar": "51eeebddaa5f06c883bd8937c975b6c8",
+    "discordId": "459069424381591562",
+    "profile": {
+      "twitterName": "discombubbleate"
+    }
+  },
+  {
+    "id": 9425,
+    "username": "𝘚𝘞𝘐𝘕𝘋𝘓𝘌",
+    "discriminator": "4046",
+    "discordAvatar": "c83751110e374676827ff5fd6a9abf0f",
+    "discordId": "348029030177439745",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 9431,
+    "username": "Samzyy xo",
+    "discriminator": "2260",
+    "discordAvatar": "8ddc66104a99475e0aa9cf43e177976d",
+    "discordId": "775013474677555270",
+    "profile": {
+      "twitterName": "samzyycrossing"
+    }
+  },
+  {
+    "id": 331,
+    "username": "Elegsis",
+    "discriminator": "2505",
+    "discordAvatar": "a_a309e421aa705607f6aadae657bad61c",
+    "discordId": "332814412152832011",
+    "profile": {
+      "twitterName": "elegsis"
+    }
+  },
+  {
+    "id": 337,
+    "username": "pie",
+    "discriminator": "8766",
+    "discordAvatar": "f955fd78aae32ea2079eb1696e6f1c67",
+    "discordId": "327830749833199626",
+    "profile": {
+      "twitterName": "piezathebrave"
+    }
+  },
+  {
+    "id": 301,
+    "username": "Eka",
+    "discriminator": "1906",
+    "discordAvatar": "380fdc44ff7dda5e0563506a72f8bcf4",
+    "discordId": "345542757143805952",
+    "profile": {
+      "twitterName": "ekabacklines"
+    }
+  },
+  {
+    "id": 9402,
+    "username": "torqs",
+    "discriminator": "8434",
+    "discordAvatar": "249a185a87e9ef21ce398809102008b7",
+    "discordId": "916113278361567232",
+    "profile": null
+  },
+  {
+    "id": 338,
+    "username": "Frost",
+    "discriminator": "0321",
+    "discordAvatar": "1bad3cb6f7e7929055b902ceb1ca7630",
+    "discordId": "527310294301802517",
+    "profile": {
+      "twitterName": "frost_spl2"
+    }
+  },
+  {
+    "id": 339,
+    "username": "Lorelei",
+    "discriminator": "0099",
+    "discordAvatar": "bfc778d520b474384f3a25db9b77143a",
+    "discordId": "265938151632011285",
+    "profile": {
+      "twitterName": "loreleispl"
+    }
+  },
+  {
+    "id": 340,
+    "username": "Sluke",
+    "discriminator": "6990",
+    "discordAvatar": "13010a26fc37761f4a6ba6376eaaca53",
+    "discordId": "106999601713655808",
+    "profile": {
+      "twitterName": "im_sluke"
+    }
+  },
+  {
+    "id": 341,
+    "username": "Rapiko'-'",
+    "discriminator": "9192",
+    "discordAvatar": "f824f94a1f57447a6c85e58fad0a61f1",
+    "discordId": "294918829874610176",
+    "profile": {
+      "twitterName": "spla_rapiko"
+    }
+  },
+  {
+    "id": 347,
+    "username": "SlyMe",
+    "discriminator": "0543",
+    "discordAvatar": "886cbe499951b08d02764f0768adc664",
+    "discordId": "161173517163954176",
+    "profile": {
+      "twitterName": "slymezzz"
+    }
+  },
+  {
+    "id": 348,
+    "username": "jame",
+    "discriminator": "7365",
+    "discordAvatar": "ce834ed72063d8cd543bff283cbc167a",
+    "discordId": "340345187576578049",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 349,
+    "username": "Meta",
+    "discriminator": "6591",
+    "discordAvatar": "035f5525cc0c7cd1cbfdd730b5f0acb5",
+    "discordId": "456498337991098369",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 350,
+    "username": "calcifer",
+    "discriminator": "6448",
+    "discordAvatar": "26c0140431b581f448c464d0693e130a",
+    "discordId": "242063494214582282",
+    "profile": {
+      "twitterName": "hvcalcifer"
+    }
+  },
+  {
+    "id": 351,
+    "username": "rubypingu",
+    "discriminator": "1200",
+    "discordAvatar": "772422a13e5cc0973925d0369c680bb7",
+    "discordId": "255015296031653888",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 9422,
+    "username": "gabes",
+    "discriminator": "6484",
+    "discordAvatar": "4538d88dd5d2b699bee4fbccb0fa8c29",
+    "discordId": "738053874316738660",
+    "profile": {
+      "twitterName": "gaberizi"
+    }
+  },
+  {
+    "id": 353,
+    "username": "Iкr2мcH",
+    "discriminator": "0602",
+    "discordAvatar": "a_37afd615e16ef064dd476bce62ff477b",
+    "discordId": "167656802786344960",
+    "profile": {
+      "twitterName": "nyesx1"
+    }
+  },
+  {
+    "id": 363,
+    "username": "DanCaliburV",
+    "discriminator": "0448",
+    "discordAvatar": "da3904e73ad56d4ca58a917c2576caa9",
+    "discordId": "215584622849949696",
+    "profile": {
+      "twitterName": "dancaliburv"
+    }
+  },
+  {
+    "id": 9417,
+    "username": "Jakob",
+    "discriminator": "3729",
+    "discordAvatar": "7e50b57ae31326bc34b1a6e49ab4ae6a",
+    "discordId": "732939127963648062",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 365,
+    "username": "Dustin_DM",
+    "discriminator": "0759",
+    "discordAvatar": "0a4a21ec845c3f5dbe8fa4f7a31c8543",
+    "discordId": "330380702505762817",
+    "profile": {
+      "twitterName": "dustin_dm_"
+    }
+  },
+  {
+    "id": 9423,
+    "username": "MERAKID2823723",
+    "discriminator": "1436",
+    "discordAvatar": "26cd8bd0449f27fceb46f607b2805774",
+    "discordId": "885170843959832607",
+    "profile": null
+  },
+  {
+    "id": 366,
+    "username": "Emanuel",
+    "discriminator": "3361",
+    "discordAvatar": "ed07af3f757b26319aa2b916a1c81da4",
+    "discordId": "596124763626274847",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 367,
+    "username": "Sweeglie",
+    "discriminator": "5754",
+    "discordAvatar": "5320b64906277328bf60d28807e8a3e5",
+    "discordId": "163184255650889728",
+    "profile": {
+      "twitterName": "sweeglie_"
+    }
+  },
+  {
+    "id": 9435,
+    "username": "Rõse",
+    "discriminator": "6155",
+    "discordAvatar": "9d609f2283bc4c235d7148003fa0bc8a",
+    "discordId": "212006369434402817",
+    "profile": null
+  },
+  {
+    "id": 369,
+    "username": "chendyyy",
+    "discriminator": "5627",
+    "discordAvatar": "fe38ef9141953bb0c3e0da6a074ad303",
+    "discordId": "443792531172622336",
+    "profile": {
+      "twitterName": "chenndyy"
+    }
+  },
+  {
+    "id": 9424,
+    "username": "Jibbs",
+    "discriminator": "6575",
+    "discordAvatar": "f04cbd51c5d416db9750ce40ee7d7d50",
+    "discordId": "328080008600092684",
+    "profile": {
+      "twitterName": "jibblysquibbly "
+    }
+  },
+  {
+    "id": 9404,
+    "username": "Sulphurous",
+    "discriminator": "6495",
+    "discordAvatar": "4ad6dbb5d07178565ce54947656bbbb8",
+    "discordId": "918166984921858098",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 9405,
+    "username": "Amanda",
+    "discriminator": "6695",
+    "discordAvatar": "aee951ba22f03233e535d4053c356b62",
+    "discordId": "311783930355384324",
+    "profile": {
+      "twitterName": "_amandareyes"
+    }
+  },
+  {
+    "id": 9406,
+    "username": "mars 2.0",
+    "discriminator": "3836",
+    "discordAvatar": "a863e5c9e80015b04f45e0a22e2adbc7",
+    "discordId": "412531115987959809",
+    "profile": {
+      "twitterName": "marss_ie"
+    }
+  },
+  {
+    "id": 9407,
+    "username": "charlie2604",
+    "discriminator": "4841",
+    "discordAvatar": "e4f1a6bbdf37539a093da83f6916a9ad",
+    "discordId": "825430082331607050",
+    "profile": null
+  },
+  {
+    "id": 9408,
+    "username": "Kuno",
+    "discriminator": "0304",
+    "discordAvatar": "5fdaf56d6801e98e1a5dcbc359c66349",
+    "discordId": "764250823966326844",
+    "profile": {
+      "twitterName": "watashiwakuno"
+    }
+  },
+  {
+    "id": 9409,
+    "username": "rosu",
+    "discriminator": "0887",
+    "discordAvatar": "88d9187febcd608164ba6bf9d06c7804",
+    "discordId": "614886793199747075",
+    "profile": null
+  },
+  {
+    "id": 9412,
+    "username": "LamaSekte",
+    "discriminator": "4186",
+    "discordAvatar": null,
+    "discordId": "838402055612792853",
+    "profile": null
+  },
+  {
+    "id": 9437,
+    "username": "Fujii",
+    "discriminator": "4550",
+    "discordAvatar": "72a4f9eb40e001c24313876150980aaa",
+    "discordId": "906365993499099196",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 370,
+    "username": "Alex Bluefall",
+    "discriminator": "3305",
+    "discordAvatar": "8cd16144ea5cb94988728af6681daa96",
+    "discordId": "490650609641324544",
+    "profile": {
+      "twitterName": "drpbluefall_spl"
+    }
+  },
+  {
+    "id": 373,
+    "username": "Jackaboy",
+    "discriminator": "6854",
+    "discordAvatar": "393875d80a63ade9f92ac3c52b91186b",
+    "discordId": "398301802094788618",
+    "profile": {
+      "twitterName": "thatboyjackaboy"
+    }
+  },
+  {
+    "id": 374,
+    "username": "Sayyy",
+    "discriminator": "6163",
+    "discordAvatar": "a_4b5ec3139885d14746943e1aaaf05038",
+    "discordId": "337334100253999105",
+    "profile": {
+      "twitterName": "siiigor"
+    }
+  },
+  {
+    "id": 9416,
+    "username": "Hyuse^^",
+    "discriminator": "1270",
+    "discordAvatar": "650491c37f3e8c9845c880c906cf46f5",
+    "discordId": "512211499553652736",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 9419,
+    "username": "Virmae.",
+    "discriminator": "2796",
+    "discordAvatar": "6e99f5a23a324fa8db3e211b27d2e747",
+    "discordId": "826897361695277067",
+    "profile": null
+  },
+  {
+    "id": 9420,
+    "username": "chikorita",
+    "discriminator": "3264",
+    "discordAvatar": "e83de6bfde61f15a533ed2481db6feb4",
+    "discordId": "442744181471969281",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 9429,
+    "username": "Tenta",
+    "discriminator": "6545",
+    "discordAvatar": "9c8d27ba90da8974d45de1dce2ac3ef8",
+    "discordId": "920405989889540108",
+    "profile": {
+      "twitterName": "tenta01756934"
+    }
+  },
+  {
+    "id": 9426,
+    "username": "Σllimαc",
+    "discriminator": "9334",
+    "discordAvatar": "809ec813dc3866623eac4d80dd2ff964",
+    "discordId": "474918061460422684",
+    "profile": {
+      "twitterName": "ellm4c_"
+    }
+  },
+  {
+    "id": 9427,
+    "username": "Dom",
+    "discriminator": "4548",
+    "discordAvatar": "0209a1c6d52f9305839c8bbcd8b27676",
+    "discordId": "264829457615945729",
+    "profile": null
+  },
+  {
+    "id": 9428,
+    "username": "もみじ",
+    "discriminator": "0904",
+    "discordAvatar": "67652ae896682d4ac529c09288c83521",
+    "discordId": "275491864344395776",
+    "profile": null
+  },
+  {
+    "id": 9430,
+    "username": "Zenter",
+    "discriminator": "1000",
+    "discordAvatar": "a_1eea85bfc6c208a289f913cfbea73b40",
+    "discordId": "340970087492091905",
+    "profile": null
+  },
+  {
+    "id": 9432,
+    "username": "DatOneDood124 [xINF]",
+    "discriminator": "3875",
+    "discordAvatar": "a3a63ef4d087c4baa80b3bb15869b1ad",
+    "discordId": "692797150878498857",
+    "profile": null
+  },
+  {
+    "id": 9434,
+    "username": "Amackgamer365",
+    "discriminator": "6506",
+    "discordAvatar": null,
+    "discordId": "918763431786606632",
+    "profile": null
+  },
+  {
+    "id": 9418,
+    "username": "Nosigma",
+    "discriminator": "6902",
+    "discordAvatar": "168273d195a598c85723f1e374205420",
+    "discordId": "311246816186466314",
+    "profile": {
+      "twitterName": "no_sigmaaa"
+    }
+  },
+  {
+    "id": 9438,
+    "username": "Freeger",
+    "discriminator": "8208",
+    "discordAvatar": null,
+    "discordId": "925192199027703888",
+    "profile": null
+  },
+  {
+    "id": 9439,
+    "username": "Ascertain",
+    "discriminator": "4511",
+    "discordAvatar": "96b0a295a1f6bbc97d7c08f84128541f",
+    "discordId": "917198389052059728",
+    "profile": null
+  },
+  {
+    "id": 9414,
+    "username": "GangsterSausage",
+    "discriminator": "0405",
+    "discordAvatar": "70bcc70f65d5bdc2e66681f4b7b6543c",
+    "discordId": "495908674309455882",
+    "profile": null
+  },
+  {
+    "id": 9440,
+    "username": "Noob?☆Patツ",
+    "discriminator": "0615",
+    "discordAvatar": "8e5484e9ed2d054ba8c4f2c7d3693828",
+    "discordId": "411620250027556897",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 368,
+    "username": "seven.",
+    "discriminator": "8959",
+    "discordAvatar": "7d79073672d4e7e9263664e372200e3e",
+    "discordId": "400891626458841099",
+    "profile": {
+      "twitterName": "b_sevennn"
+    }
+  },
+  {
+    "id": 9421,
+    "username": "Ja$$y",
+    "discriminator": "9004",
+    "discordAvatar": "366689c6a7e773bff38e1b178bb15140",
+    "discordId": "922704875899461664",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 9413,
+    "username": "LiamMoaMoa",
+    "discriminator": "7500",
+    "discordAvatar": "c9b5278f4ea15fb07fbf978f11d35384",
+    "discordId": "358295416078467072",
+    "profile": {
+      "twitterName": "liammoamoa"
+    }
+  },
+  {
+    "id": 9433,
+    "username": "HARUUU",
+    "discriminator": "0721",
+    "discordAvatar": "a7d4dd478268b147747f8590bb3fac00",
+    "discordId": "660902180425039882",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 9411,
+    "username": "19",
+    "discriminator": "6021",
+    "discordAvatar": "46b5ebe0f93461506bf872a9653c2dac",
+    "discordId": "728071638004006932",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 352,
+    "username": "Tenshi",
+    "discriminator": "1050",
+    "discordAvatar": "728ec41a0ce6529f5eba87ee054b38cd",
+    "discordId": "304382991331753987",
+    "profile": {
+      "twitterName": "tenshi1050"
+    }
+  },
+  {
+    "id": 9436,
+    "username": "duck",
+    "discriminator": "7145",
+    "discordAvatar": "1653de983796618a0bd866791538dc2a",
+    "discordId": "376895449723961356",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 9410,
+    "username": "haunt",
+    "discriminator": "3607",
+    "discordAvatar": "88bffd872f024ef0ce54245c87bb47ab",
+    "discordId": "399371689827368982",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 9415,
+    "username": "Beast",
+    "discriminator": "4792",
+    "discordAvatar": "e79e4af9105076024769f1d36acdda7f",
+    "discordId": "220681972991787010",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 364,
+    "username": "Mudcup",
+    "discriminator": "7399",
+    "discordAvatar": "3d8c1c612e6c13c5b6d9aeb265874ae4",
+    "discordId": "352198407684882433",
+    "profile": {
+      "twitterName": "purplemudcup"
+    }
+  },
+  {
+    "id": 9397,
+    "username": "DJ ᴋᴀɪɪ",
+    "discriminator": "4770",
+    "discordAvatar": "bab95c691172f84a1037d68d2fecd8e7",
+    "discordId": "671478401806368798",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 306,
+    "username": "scarfy",
+    "discriminator": "1145",
+    "discordAvatar": "9139ed3295134a2985fb0ae9557d0099",
+    "discordId": "235819592851652608",
+    "profile": {
+      "twitterName": "scarfy_"
+    }
+  },
+  {
+    "id": 9441,
+    "username": "JingSiang靜香",
+    "discriminator": "7441",
+    "discordAvatar": "8fbc45be088a888e3f427acf6f990da1",
+    "discordId": "448171538986958850",
+    "profile": {
+      "twitterName": "jyunsiang_huang"
+    }
+  },
+  {
+    "id": 82,
+    "username": "lucidorangee",
+    "discriminator": "4774",
+    "discordAvatar": "612c2bb1b1e18b1b0538fe3c8b0af84c",
+    "discordId": "151182612969291776",
+    "profile": {
+      "twitterName": "lucidorangee"
+    }
+  },
+  {
+    "id": 398,
+    "username": "wiz",
+    "discriminator": "0125",
+    "discordAvatar": "4029db4b7011ad7dabc51a4400509c4f",
+    "discordId": "187294752209633280",
+    "profile": {
+      "twitterName": "w1zb1zz"
+    }
+  },
+  {
+    "id": 10,
+    "username": "Leelum",
+    "discriminator": "0024",
+    "discordAvatar": "31c89ff44752aecef4470b561d17c057",
+    "discordId": "324742333658693642",
+    "profile": {
+      "twitterName": "leelum_xp"
+    }
+  },
+  {
+    "id": 382,
+    "username": "inkfarer",
+    "discriminator": "6942",
+    "discordAvatar": "6625f74e9e5cd6f39edbd9776bba1d96",
+    "discordId": "87494390724964352",
+    "profile": {
+      "twitterName": "inkfarer"
+    }
+  },
+  {
+    "id": 40,
+    "username": "ИX!",
+    "discriminator": "7889",
+    "discordAvatar": "a_a999651c5844393ffc02a66f2bf09e40",
+    "discordId": "328641373655924739",
+    "profile": {
+      "twitterName": "nylonxylophone"
+    }
+  },
+  {
+    "id": 388,
+    "username": "Axel2114",
+    "discriminator": "7477",
+    "discordAvatar": "b0bff71b323d5ebbf77ea533f26b9a89",
+    "discordId": "125302469277384704",
+    "profile": {
+      "twitterName": "sibaxl2114"
+    }
+  },
+  {
+    "id": 85,
+    "username": "jwanaldee",
+    "discriminator": "9909",
+    "discordAvatar": "0025ffd5f0d5c69d65d29edf90ab6f61",
+    "discordId": "277652709438521344",
+    "profile": {
+      "twitterName": "jwanaldee"
+    }
+  },
+  {
+    "id": 81,
+    "username": "Primatis",
+    "discriminator": "7037",
+    "discordAvatar": "aa71e075be16f1ade8d4cb1d1d6a1858",
+    "discordId": "196840947567296523",
+    "profile": {
+      "twitterName": "primatis"
+    }
+  },
+  {
+    "id": 38,
+    "username": "Bloo",
+    "discriminator": "9080",
+    "discordAvatar": "621720d01df061e4675a19f7257a1d92",
+    "discordId": "403311746695036928",
+    "profile": {
+      "twitterName": "blooinsanity"
+    }
+  },
+  {
+    "id": 39,
+    "username": ".thomas",
+    "discriminator": "2988",
+    "discordAvatar": "6c80c792bc16f38522c826a9a1e80859",
+    "discordId": "175257365459763200",
+    "profile": {
+      "twitterName": "thom_spl"
+    }
+  },
+  {
+    "id": 41,
+    "username": "An☂o",
+    "discriminator": "5290",
+    "discordAvatar": "e6f453b7895f4c36721fd7f4912a41ba",
+    "discordId": "352835824976658432",
+    "profile": {
+      "twitterName": "antjoseho"
+    }
+  },
+  {
+    "id": 42,
+    "username": "Johanian",
+    "discriminator": "3051",
+    "discordAvatar": "e8b2909f5dd87cff9b3acdd3904074da",
+    "discordId": "195024779424694272",
+    "profile": {
+      "twitterName": "johanianx"
+    }
+  },
+  {
+    "id": 43,
+    "username": "Dastyy",
+    "discriminator": "6106",
+    "discordAvatar": "cc8d1827d62b7812f90a570f8dd03e59",
+    "discordId": "202875235232382976",
+    "profile": {
+      "twitterName": "dastual"
+    }
+  },
+  {
+    "id": 50,
+    "username": "mamaru",
+    "discriminator": "8717",
+    "discordAvatar": "5463d2fbd8c56e19289907bda2f3013a",
+    "discordId": "216586620852240384",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 52,
+    "username": "Breck",
+    "discriminator": "5129",
+    "discordAvatar": "2aa026f8fa4a1d8637ec1b923015d673",
+    "discordId": "459801351267024921",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 58,
+    "username": "Friendship",
+    "discriminator": "4824",
+    "discordAvatar": "813393ec6b47036e33cc5060c0a0cc0a",
+    "discordId": "297176387700391936",
+    "profile": {
+      "twitterName": "friendsh1p_"
+    }
+  },
+  {
+    "id": 59,
+    "username": "rocky",
+    "discriminator": "5997",
+    "discordAvatar": "83071163392ff459ef2e24691179f752",
+    "discordId": "346770277688016897",
+    "profile": {
+      "twitterName": "rockykitsune"
+    }
+  },
+  {
+    "id": 72,
+    "username": "Seanie Boy",
+    "discriminator": "2944",
+    "discordAvatar": "f9aea560a5d0ab6563823aadd491503d",
+    "discordId": "222044340397146112",
+    "profile": {
+      "twitterName": "SpasmicCatious"
+    }
+  },
+  {
+    "id": 80,
+    "username": "ｓｏｌ",
+    "discriminator": "5654",
+    "discordAvatar": "3871003dba2f16ea7801e36062e668be",
+    "discordId": "309705402679951362",
+    "profile": {
+      "twitterName": "sol_4k"
+    }
+  },
+  {
+    "id": 83,
+    "username": "happi",
+    "discriminator": "0413",
+    "discordAvatar": "24bb98a8d940c012c85c5e2915e037e8",
+    "discordId": "338034484924645386",
+    "profile": {
+      "twitterName": "ahahappi"
+    }
+  },
+  {
+    "id": 84,
+    "username": "Lean",
+    "discriminator": "3146",
+    "discordAvatar": "1e4fc995cdafe9176534ec8cba7ed3bc",
+    "discordId": "86905636402495488",
+    "profile": {
+      "twitterName": "leanyoshi"
+    }
+  },
+  {
+    "id": 86,
+    "username": "Κκs|Kreall",
+    "discriminator": "6488",
+    "discordAvatar": "c4bb013a69c58f6f88c502e24cb97a2b",
+    "discordId": "138777084297216000",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 87,
+    "username": "Nems",
+    "discriminator": "0697",
+    "discordAvatar": "0dff723156d8e85eb15d4553eeeaf42e",
+    "discordId": "313108618243473408",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 88,
+    "username": "♡~",
+    "discriminator": "9821",
+    "discordAvatar": "1e3082e43e5c71c5dfd12d96577b97c1",
+    "discordId": "369857194100916235",
+    "profile": {
+      "twitterName": "snipedyourmind"
+    }
+  },
+  {
+    "id": 375,
+    "username": "WoomyA5h3",
+    "discriminator": "0939",
+    "discordAvatar": "8680061ab80a6e3e573170a5fcc06e0b",
+    "discordId": "216628527158525952",
+    "profile": {
+      "twitterName": "voidagent5"
+    }
+  },
+  {
+    "id": 376,
+    "username": "Lunaaa",
+    "discriminator": "3966",
+    "discordAvatar": "ba4b2add29e27f1f63fc380bab1fff47",
+    "discordId": "82639647447977984",
+    "profile": {
+      "twitterName": "lunaaattv"
+    }
+  },
+  {
+    "id": 377,
+    "username": "JOJO",
+    "discriminator": "0104",
+    "discordAvatar": "250386c4c16222a2d538e2b54d0e7d85",
+    "discordId": "333440003734634497",
+    "profile": {
+      "twitterName": "_pbjo"
+    }
+  },
+  {
+    "id": 378,
+    "username": "IUPPITER",
+    "discriminator": "0545",
+    "discordAvatar": "029fc72967912238a0acd9660523c17f",
+    "discordId": "285197599034572802",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 379,
+    "username": "SHIN",
+    "discriminator": "0377",
+    "discordAvatar": "6b28de9e9337bfc4f7fb951083b8cda3",
+    "discordId": "310373746743705600",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 380,
+    "username": "SuperaJokera",
+    "discriminator": "5546",
+    "discordAvatar": "7974dc1e48140bd7c4dcf53baa14e02c",
+    "discordId": "418176537561661441",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 381,
+    "username": "勇者いか",
+    "discriminator": "7315",
+    "discordAvatar": "0ac778703c75d02e0a9f29890f194b0d",
+    "discordId": "534193472777748480",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 383,
+    "username": "bendr",
+    "discriminator": "2120",
+    "discordAvatar": "359c78adabfdabf2305288b90fa333e4",
+    "discordId": "150845781027454976",
+    "profile": {
+      "twitterName": "nitro_spacex"
+    }
+  },
+  {
+    "id": 387,
+    "username": "WrNx Zolairx",
+    "discriminator": "9816",
+    "discordAvatar": "ca260e3b1a788dea2f0f4a8563636a36",
+    "discordId": "88195663644332032",
+    "profile": {
+      "twitterName": "zolairx"
+    }
+  },
+  {
+    "id": 389,
+    "username": "Hoppiかさ🌊",
+    "discriminator": "8029",
+    "discordAvatar": "06c2f0b95c3a1cd9e71afedb2edd7d5c",
+    "discordId": "346764023318183936",
+    "profile": {
+      "twitterName": "hoppikasa_sp"
+    }
+  },
+  {
+    "id": 390,
+    "username": "Kazuto™",
+    "discriminator": "6380",
+    "discordAvatar": "d0dcd91c79548ac53346cde9004c11bc",
+    "discordId": "138326211142090752",
+    "profile": {
+      "twitterName": "splatoonkazuto"
+    }
+  },
+  {
+    "id": 397,
+    "username": "PPAP",
+    "discriminator": "9159",
+    "discordAvatar": "a2b9e35f11647a3a05bb8a12a4c7ec0e",
+    "discordId": "474753686447325184",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 399,
+    "username": "Webber",
+    "discriminator": "4218",
+    "discordAvatar": "d13a7d9808b296df9bba5918eca889ee",
+    "discordId": "480559517827072010",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 400,
+    "username": "aNtonic",
+    "discriminator": "7247",
+    "discordAvatar": "6fa63741342ad89dd3d40173330e6866",
+    "discordId": "400767945573269515",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 402,
+    "username": "proto👡",
+    "discriminator": "0069",
+    "discordAvatar": "b5bb2999776bfafeb3e7ae3304e823df",
+    "discordId": "476085870609432596",
+    "profile": {
+      "twitterName": "protoh3d"
+    }
+  },
+  {
+    "id": 404,
+    "username": "Treecko",
+    "discriminator": "0702",
+    "discordAvatar": "1bf04058087299dbd1ed0c58c978443a",
+    "discordId": "280805785964118028",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 413,
+    "username": "WowItsCharles",
+    "discriminator": "3664",
+    "discordAvatar": "e1a1d52650dd226465255eeeb1765d23",
+    "discordId": "133298574174846978",
+    "profile": {
+      "twitterName": "wowitscharles"
+    }
+  },
+  {
+    "id": 414,
+    "username": "Cass, the Fae",
+    "discriminator": "5088",
+    "discordAvatar": "a963da433c832c3068def49f15195e29",
+    "discordId": "165132987598372864",
+    "profile": {
+      "twitterName": "cassfae"
+    }
+  },
+  {
+    "id": 420,
+    "username": "Gompoi",
+    "discriminator": "3477",
+    "discordAvatar": "fa9fbd0d954a072a3cdd4a0e4d637c0f",
+    "discordId": "232886836492500992",
+    "profile": {
+      "twitterName": "gompoi_"
+    }
+  },
+  {
+    "id": 626,
+    "username": "JuanBoSVM",
+    "discriminator": "0071",
+    "discordAvatar": "830336f3dbfed9f58712635434ba9f68",
+    "discordId": "415660144366452736",
+    "profile": {
+      "twitterName": "juanbosvm"
+    }
+  },
+  {
+    "id": 422,
+    "username": "Darkrai.",
+    "discriminator": "4196",
+    "discordAvatar": "60c14f40304f7200a4e2179d6fa2821d",
+    "discordId": "402127529630105600",
+    "profile": {
+      "twitterName": "darkraii__"
+    }
+  },
+  {
+    "id": 423,
+    "username": "reshy! ☆",
+    "discriminator": "7572",
+    "discordAvatar": "4735665b7620dcf52711df836b2bbf10",
+    "discordId": "366636125852401667",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 425,
+    "username": "Amelio",
+    "discriminator": "9778",
+    "discordAvatar": "3cee59a512483f235f43eb0129f3698f",
+    "discordId": "427812311185752064",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 426,
+    "username": "Nino",
+    "discriminator": "3308",
+    "discordAvatar": "8fb3c66756637f4b94dccef1863231b9",
+    "discordId": "191507548258566144",
+    "profile": {
+      "twitterName": "__halcyonrhythm"
+    }
+  },
+  {
+    "id": 439,
+    "username": "Ray~",
+    "discriminator": "0507",
+    "discordAvatar": "a74e80cded51094ff93a13e8e9aa1230",
+    "discordId": "142824456551792640",
+    "profile": {
+      "twitterName": "ray_splatuwu"
+    }
+  },
+  {
+    "id": 440,
+    "username": "𝓻𝓪𝓮",
+    "discriminator": "8022",
+    "discordAvatar": "3c3cb367f0d9ae74c54a82b2ae5e72c2",
+    "discordId": "165976975352135681",
+    "profile": {
+      "twitterName": "raebutgae"
+    }
+  },
+  {
+    "id": 446,
+    "username": "Pancake",
+    "discriminator": "1839",
+    "discordAvatar": "c88172c9dbd1650a27da78f93a436261",
+    "discordId": "155577805726416896",
+    "profile": {
+      "twitterName": "chrispancake1"
+    }
+  },
+  {
+    "id": 448,
+    "username": "Inky Ninja",
+    "discriminator": "1503",
+    "discordAvatar": "1f6cb9bf989d044ef5866f113aaf78c7",
+    "discordId": "376121304555716630",
+    "profile": {
+      "twitterName": "inkyninjayt"
+    }
+  },
+  {
+    "id": 449,
+    "username": "Erato",
+    "discriminator": "7140",
+    "discordAvatar": "375c4c29039b76697b05fe5240d00cd7",
+    "discordId": "448191073014251531",
+    "profile": {
+      "twitterName": "octo_eri"
+    }
+  },
+  {
+    "id": 450,
+    "username": "Depresso Espresso",
+    "discriminator": "7487",
+    "discordAvatar": "047ad888c944dc22dcceffd27a944eee",
+    "discordId": "105813815815335936",
+    "profile": {
+      "twitterName": "agnt_3"
+    }
+  },
+  {
+    "id": 476,
+    "username": "jorge.",
+    "discriminator": "5525",
+    "discordAvatar": "f6bf7d7f45529b1d01acf5c6f87b03c5",
+    "discordId": "342031387705999372",
+    "profile": {
+      "twitterName": "g0rje_"
+    }
+  },
+  {
+    "id": 477,
+    "username": "Dash2469",
+    "discriminator": "0496",
+    "discordAvatar": "a7a3c9117efbd2029a5119a0682f6c5f",
+    "discordId": "400834780276588565",
+    "profile": {
+      "twitterName": "dp2469"
+    }
+  },
+  {
+    "id": 478,
+    "username": "approximately 1 tess",
+    "discriminator": "7854",
+    "discordAvatar": "8905abd67eae733c698cc21e5ad6c1a3",
+    "discordId": "321045137570398208",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 479,
+    "username": "Reon",
+    "discriminator": "6978",
+    "discordAvatar": "26ec310c935b261505efa994a7abc5cd",
+    "discordId": "88465324654989312",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 481,
+    "username": "Satou",
+    "discriminator": "6196",
+    "discordAvatar": "3f659a0fdc426b72cb0e6ccdea56f540",
+    "discordId": "371979303665270786",
+    "profile": {
+      "twitterName": "77satou"
+    }
+  },
+  {
+    "id": 497,
+    "username": "SIR-AMITY",
+    "discriminator": "1428",
+    "discordAvatar": "15d0ea8b5fdc393118db57349a79039d",
+    "discordId": "219494122111762434",
+    "profile": {
+      "twitterName": "sir_amity"
+    }
+  },
+  {
+    "id": 508,
+    "username": "Liotos",
+    "discriminator": "8986",
+    "discordAvatar": "eff2bbd0be5dda41c61809976414da38",
+    "discordId": "280029594327711754",
+    "profile": {
+      "twitterName": "spicypunishment"
+    }
+  },
+  {
+    "id": 509,
+    "username": "Semper",
+    "discriminator": "5676",
+    "discordAvatar": "e21aa67deb9f6b759d412fc88d0c61af",
+    "discordId": "432072490995548160",
+    "profile": {
+      "twitterName": "sempersplat"
+    }
+  },
+  {
+    "id": 510,
+    "username": "ふろん",
+    "discriminator": "3798",
+    "discordAvatar": "7de8859a1625837253053798fc08fce5",
+    "discordId": "376397114038550528",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 511,
+    "username": "Leon.",
+    "discriminator": "9197",
+    "discordAvatar": "08e47d8cb0904ca40dea9a7c40050851",
+    "discordId": "345881701739921409",
+    "profile": {
+      "twitterName": "splat_syts"
+    }
+  },
+  {
+    "id": 517,
+    "username": "Snepicn’t",
+    "discriminator": "8528",
+    "discordAvatar": "43bd86f1fa0466a0c18c719f8b14aee9",
+    "discordId": "483356879884386305",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 528,
+    "username": "rui",
+    "discriminator": "3716",
+    "discordAvatar": "93bcad4bc3403808671b7d8b4bd9b9d6",
+    "discordId": "516036546370207764",
+    "profile": {
+      "twitterName": "ruiichar"
+    }
+  },
+  {
+    "id": 541,
+    "username": "♪『λʑeʁesƫ』»",
+    "discriminator": "5213",
+    "discordAvatar": "1622ccf9e44e5a60a742f678ae209299",
+    "discordId": "155126472527314946",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 552,
+    "username": "dark5ds",
+    "discriminator": "8096",
+    "discordAvatar": "2b142daa815000a3ce9c6d4a71bed9ae",
+    "discordId": "169109234191958016",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 553,
+    "username": "omen",
+    "discriminator": "9375",
+    "discordAvatar": "fcf4bdc5954d528b18e395cb3abeab46",
+    "discordId": "475218745946669068",
+    "profile": {
+      "twitterName": "__omen___"
+    }
+  },
+  {
+    "id": 554,
+    "username": "07actual",
+    "discriminator": "0707",
+    "discordAvatar": "ce20cba837361d2c59aaf693cc8fd89a",
+    "discordId": "153273939815038977",
+    "profile": {
+      "twitterName": "07_actual"
+    }
+  },
+  {
+    "id": 556,
+    "username": "Titan",
+    "discriminator": "8650",
+    "discordAvatar": "e0126bded256d07eec2ca71d02a92204",
+    "discordId": "429612034699558912",
+    "profile": {
+      "twitterName": "titan0017"
+    }
+  },
+  {
+    "id": 557,
+    "username": "ηf~Splater",
+    "discriminator": "3371",
+    "discordAvatar": "f627746517501bf70c16ba956dde8026",
+    "discordId": "442062237201334273",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 558,
+    "username": "Smokey",
+    "discriminator": "2664",
+    "discordAvatar": "11d2c5fbc7b83fc118dfe89202cfd47a",
+    "discordId": "446533939184533504",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 561,
+    "username": "Checkmate",
+    "discriminator": "6933",
+    "discordAvatar": "62e8b1fbd3809496ac8820e37c308268",
+    "discordId": "267677923383705601",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 562,
+    "username": "Claud",
+    "discriminator": "6178",
+    "discordAvatar": "a450fb37ad9d2cb57ae56373beb967fa",
+    "discordId": "527689739092885504",
+    "profile": {
+      "twitterName": "el_claud"
+    }
+  },
+  {
+    "id": 564,
+    "username": "Crim's VC Bitch",
+    "discriminator": "2734",
+    "discordAvatar": "2e8724ed276fe16ba466337d19acd3c2",
+    "discordId": "508380380575957032",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 567,
+    "username": "Fletzer_95",
+    "discriminator": "4563",
+    "discordAvatar": "b01c3879045734ae60bcc76dcf2a71e0",
+    "discordId": "563802257003380739",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 569,
+    "username": "Ai",
+    "discriminator": "5244",
+    "discordAvatar": "f5a488f674c46a93c22912bc9ecac6fd",
+    "discordId": "288242544192651267",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 571,
+    "username": "Izzy",
+    "discriminator": "0280",
+    "discordAvatar": "45e4ef53f703901f6085b56ed6018aab",
+    "discordId": "337652604953690132",
+    "profile": {
+      "twitterName": "its_izzzy_"
+    }
+  },
+  {
+    "id": 573,
+    "username": "Clover",
+    "discriminator": "1965",
+    "discordAvatar": "a780e617c3505f4c487699c53e808a8a",
+    "discordId": "493056989686005760",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 575,
+    "username": "bepopee",
+    "discriminator": "9565",
+    "discordAvatar": "4b292f30bc6a03c22d169e94a8ccd7bb",
+    "discordId": "213067778163212288",
+    "profile": {
+      "twitterName": "bepopee_"
+    }
+  },
+  {
+    "id": 582,
+    "username": "Bananasquid",
+    "discriminator": "5781",
+    "discordAvatar": "c262cd47e59743c41e8796a57b4e54f0",
+    "discordId": "559330389689368607",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 583,
+    "username": "Reaper_",
+    "discriminator": "9641",
+    "discordAvatar": "8a6159edfd768377d3b2a9588051277b",
+    "discordId": "588810793743679512",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 584,
+    "username": "Galaxy<3",
+    "discriminator": "2713",
+    "discordAvatar": "eadc84b7ceeda014877f7343ec8e2e1d",
+    "discordId": "333746656291848193",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 585,
+    "username": "Olivia’s waifu",
+    "discriminator": "5904",
+    "discordAvatar": "c9b95ad168353b84be3ce4deefbc23da",
+    "discordId": "271390069665824769",
+    "profile": {
+      "twitterName": "harrybr00"
+    }
+  },
+  {
+    "id": 586,
+    "username": "ljt831",
+    "discriminator": "6324",
+    "discordAvatar": "11fee8abe535a05e48171633b6f0536f",
+    "discordId": "217596335220719616",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 588,
+    "username": "Commissions",
+    "discriminator": "3996",
+    "discordAvatar": "82c4ce8a74be274204e2b9208fbe5849",
+    "discordId": "173624183350231051",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 589,
+    "username": "Mugi",
+    "discriminator": "5720",
+    "discordAvatar": "84d24e44d28bd8c37867809217894d72",
+    "discordId": "100024579447070720",
+    "profile": {
+      "twitterName": "mugikohai"
+    }
+  },
+  {
+    "id": 612,
+    "username": "[J&K] Josh",
+    "discriminator": "0029",
+    "discordAvatar": "9e45ecc11f61803007c082f6b2b2f470",
+    "discordId": "269800165664096257",
+    "profile": {
+      "twitterName": "joshandkato"
+    }
+  },
+  {
+    "id": 613,
+    "username": "Adde",
+    "discriminator": "6697",
+    "discordAvatar": "6bd84bd4c9647f498942a30409724763",
+    "discordId": "600582155168645180",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 615,
+    "username": "Thibad",
+    "discriminator": "3010",
+    "discordAvatar": "7294642e18ea3081ae473cec53faae0f",
+    "discordId": "321356404113932288",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 619,
+    "username": "Arnide",
+    "discriminator": "9267",
+    "discordAvatar": "ac448d1319282c0b6f2f501f21c2282e",
+    "discordId": "114820277388443653",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 627,
+    "username": "Luiz.",
+    "discriminator": "7821",
+    "discordAvatar": "049253e9842541bbd28303f0c24518c5",
+    "discordId": "204707303050444800",
+    "profile": {
+      "twitterName": "luiz_sp2"
+    }
+  },
+  {
+    "id": 628,
+    "username": "nair",
+    "discriminator": "4940",
+    "discordAvatar": "c7913d2d169da5f04d0f76f39f7c2cb6",
+    "discordId": "190421914219446272",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 616,
+    "username": "Smaack",
+    "discriminator": "8232",
+    "discordAvatar": "5c6ca1e2ac7b268a502ba4c2c4085ad4",
+    "discordId": "262647368183185408",
+    "profile": {
+      "twitterName": "smaackbz62"
+    }
+  },
+  {
+    "id": 514,
+    "username": "Danget",
+    "discriminator": "5097",
+    "discordAvatar": "62308346f81e9f39826496bbdee18ee6",
+    "discordId": "196683301988204545",
+    "profile": {
+      "twitterName": "danget_sp"
+    }
+  },
+  {
+    "id": 9442,
+    "username": "Kkoki",
+    "discriminator": "2922",
+    "discordAvatar": "539365ac09d9c52ed12b709da81d5c3a",
+    "discordId": "835204040291254342",
+    "profile": null
+  },
+  {
+    "id": 480,
+    "username": "Sey",
+    "discriminator": "5234",
+    "discordAvatar": "0f8adc8eeb54ca00ba00b393c0a165f5",
+    "discordId": "428824396833095680",
+    "profile": {
+      "twitterName": "sey_spl"
+    }
+  },
+  {
+    "id": 421,
+    "username": "tedcruwuz",
+    "discriminator": "4409",
+    "discordAvatar": "837cd907b389bac843f99953332af369",
+    "discordId": "309099705151913984",
+    "profile": {
+      "twitterName": "tedcruwuz"
+    }
+  },
+  {
+    "id": 591,
+    "username": "beanii™",
+    "discriminator": "3251",
+    "discordAvatar": "2a31b0fc94a938f10b100dee62240c2e",
+    "discordId": "172166054217383936",
+    "profile": {
+      "twitterName": "beanii1843"
+    }
+  },
+  {
+    "id": 574,
+    "username": "Bass",
+    "discriminator": "2362",
+    "discordAvatar": "d0dd437e5af8229606b461e9a8e9ac49",
+    "discordId": "366565286230491137",
+    "profile": {
+      "twitterName": "elbassineurslay"
+    }
+  },
+  {
+    "id": 401,
+    "username": "Zenigata☆",
+    "discriminator": "1863",
+    "discordAvatar": "59f8385982ff78ce2dbc61b96b825662",
+    "discordId": "211689179891892234",
+    "profile": {
+      "twitterName": "zenigata_tokenz"
+    }
+  },
+  {
+    "id": 620,
+    "username": "SirSkit",
+    "discriminator": "9733",
+    "discordAvatar": "e377fefdf979770fe6e5acc83efa3e19",
+    "discordId": "138375977926393857",
+    "profile": {
+      "twitterName": "sirsurskit"
+    }
+  },
+  {
+    "id": 424,
+    "username": "Skrub!",
+    "discriminator": "0654",
+    "discordAvatar": "6aede9171a069637e8e8b8e6c9c56912",
+    "discordId": "356199654721060876",
+    "profile": {
+      "twitterName": "skrub15_"
+    }
+  },
+  {
+    "id": 505,
+    "username": "!Amphy!",
+    "discriminator": "1710",
+    "discordAvatar": "9bda791420119aaf21ea57ce74ee3c7e",
+    "discordId": "405433123502030850",
+    "profile": {
+      "twitterName": "pokeelectrico"
+    }
+  },
+  {
+    "id": 614,
+    "username": "Xers 🪐",
+    "discriminator": "3056",
+    "discordAvatar": "c2637f9e103732d773d8cb8ace9677be",
+    "discordId": "207150814735761408",
+    "profile": {
+      "twitterName": "xercess1"
+    }
+  },
+  {
+    "id": 9444,
+    "username": "Berlinsito",
+    "discriminator": "8569",
+    "discordAvatar": "e1b94797f1a855f58100a6a4fbd9e646",
+    "discordId": "807462405348917278",
+    "profile": null
+  },
+  {
+    "id": 69,
+    "username": "Luzrod",
+    "discriminator": "6948",
+    "discordAvatar": "e7ca19e527edd33f3be4068cf13a99cc",
+    "discordId": "260733298215485440",
+    "profile": {
+      "twitterName": "luzrodsp"
+    }
+  },
+  {
+    "id": 9445,
+    "username": "kidjohnz",
+    "discriminator": "8541",
+    "discordAvatar": "a6b9651485eeac99b361d95dca65ce04",
+    "discordId": "275518010851196929",
+    "profile": null
+  },
+  {
+    "id": 9447,
+    "username": "botwfan456",
+    "discriminator": "0506",
+    "discordAvatar": "452702c3cfde35be0021f77c1cf82079",
+    "discordId": "715579928480841739",
+    "profile": null
+  },
+  {
+    "id": 9474,
+    "username": "herochargereplica",
+    "discriminator": "3369",
+    "discordAvatar": "1f94e09763fc3432b9e0972de40f3d29",
+    "discordId": "776117776040460309",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 9449,
+    "username": "Tachi Ko",
+    "discriminator": "6486",
+    "discordAvatar": "7394cabfda921e60a1512a1ced7fa2a1",
+    "discordId": "448303478834724864",
+    "profile": null
+  },
+  {
+    "id": 9450,
+    "username": "deadrabbit~",
+    "discriminator": "3593",
+    "discordAvatar": "9e088483d712138a624f3b618fa6d2ec",
+    "discordId": "465070143513559050",
+    "profile": null
+  },
+  {
+    "id": 9475,
+    "username": "+.Kio.+",
+    "discriminator": "2584",
+    "discordAvatar": "e3ec84c6f2b7f8b587e9319d8cf66877",
+    "discordId": "757714856597127289",
+    "profile": null
+  },
+  {
+    "id": 9476,
+    "username": "BlueSquid!",
+    "discriminator": "3645",
+    "discordAvatar": "c22791fddfc28746e385beb509f8ee08",
+    "discordId": "496766864999841792",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 9451,
+    "username": "thedoc",
+    "discriminator": "2111",
+    "discordAvatar": "a2171826f320f8c5bd2d44faf80f796d",
+    "discordId": "876535492202622986",
+    "profile": null
+  },
+  {
+    "id": 9488,
+    "username": "Jennie",
+    "discriminator": "2422",
+    "discordAvatar": "e7efe058410a8143ff7163cbb3587694",
+    "discordId": "702950720927826032",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 9453,
+    "username": "pause_LC",
+    "discriminator": "9603",
+    "discordAvatar": "f66f2aaff8abcbed6a244df8173466a6",
+    "discordId": "783425500739010621",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 9454,
+    "username": "Squ1nts",
+    "discriminator": "6343",
+    "discordAvatar": "8af558d1d028a62d6648c9ee66d34870",
+    "discordId": "761771556921016341",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 9455,
+    "username": "Zanark",
+    "discriminator": "3657",
+    "discordAvatar": "8ea799f7ec53eb71f84b65542fab41cc",
+    "discordId": "165418192473292800",
+    "profile": null
+  },
+  {
+    "id": 9452,
+    "username": "ST | 𝒦𝒾𝓇𝒷𝓎 𝒢𝒶𝓃𝑔",
+    "discriminator": "7617",
+    "discordAvatar": "a_062caa2181752c6718ea24fe05116942",
+    "discordId": "432990721495138304",
+    "profile": null
+  },
+  {
+    "id": 9479,
+    "username": "사슴",
+    "discriminator": "9201",
+    "discordAvatar": "5361c33e82cd4275596b2b32ed22a1fa",
+    "discordId": "542602854758744080",
+    "profile": null
+  },
+  {
+    "id": 9456,
+    "username": "Yaya~",
+    "discriminator": "9870",
+    "discordAvatar": "a_1c154502a7ff347866b5c9f371bc2394",
+    "discordId": "554514984256929793",
+    "profile": {
+      "twitterName": null
+    }
+  },
+  {
+    "id": 9489,
+    "username": "Derguez",
+    "discriminator": "1127",
+    "discordAvatar": "2ac668ad8fa8dee004fb97fa76f6f99a",
+    "discordId": "368058262232498188",
+    "profile": null
+  },
+  {
+    "id": 9459,
+    "username": "Blue Ninja",
+    "discriminator": "6409",
+    "discordAvatar": "afbc420f0f9d8e2ae833e86791af96e3",
+    "discordId": "622468960889339914",
+    "profile": null
+  },
+  {
+    "id": 9460,
+    "username": "Clxudy_Jacksxn",
+    "discriminator": "1701",
+    "discordAvatar": "0ddf8ca7b4ec1ec45845fc4df089fd13",
+    "discordId": "799680529921605684",
+    "profile": null
+  },
+  {
+    "id": 9462,
+    "username": "ReeKid",
+    "discriminator": "9562",
+    "discordAvatar": "93b00e260a68d9bf2144eb1d3883d98c",
+    "discordId": "850697410946400257",
+    "profile": null
+  }
+]
