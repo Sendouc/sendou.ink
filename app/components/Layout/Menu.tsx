@@ -6,7 +6,7 @@ import { discordUrl, gitHubUrl, patreonUrl, twitterUrl } from "~/utils/urls";
 import { Button } from "../Button";
 import { CrossIcon } from "../icons/Cross";
 import { DiscordIcon } from "../icons/Discord";
-import { GitHubIcon } from "../icons/Github";
+import { GitHubIcon } from "../icons/GitHub";
 import { PatreonIcon } from "../icons/Patreon";
 import { TwitterIcon } from "../icons/Twitter";
 import DrawingSection from "./DrawingSection";
