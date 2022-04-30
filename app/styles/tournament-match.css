@@ -14,7 +14,7 @@
 .tournament-match-modal__error-msg {
   color: var(--theme-error);
   font-size: var(--fonts-sm);
-  
+
   /* Prevent layout shift */
   padding-block: 0.16rem;
 }

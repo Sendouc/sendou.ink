@@ -1,8 +1,8 @@
 import { useCatch, useLocation } from "@remix-run/react";
-import { DISCORD_URL } from "~/constants";
 import { getLogInUrl } from "~/utils";
 import { useUser } from "~/hooks/common";
 import { Button } from "./Button";
+import { discordUrl } from "~/utils/urls";
 
 // TODO: some nice art
 export function Catcher() {
@@ -18,7 +18,7 @@ export function Catcher() {
           {user ? (
             <p>
               If you need assistance you can ask for help on{" "}
-              <a className="four-zero-one__link" href={DISCORD_URL}>
+              <a className="four-zero-one__link" href={discordUrl()}>
                 our Discord
               </a>
             </p>

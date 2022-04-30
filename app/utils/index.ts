@@ -4,8 +4,6 @@ import { json } from "@remix-run/node";
 import { useLocation } from "@remix-run/react";
 import type { Socket } from "socket.io-client";
 import { z } from "zod";
-import { ADMIN_UUID, NZAP_UUID } from "~/constants";
-import { EnvironmentVariables } from "~/root";
 import { LoggedInUserSchema } from "~/utils/schemas";
 
 export function flipObject<
@@ -156,21 +154,21 @@ export function falsyToNull(value: unknown): unknown {
   return null;
 }
 
-export function isFeatureFlagOn({
-  flag,
-  userId,
-}: {
-  flag: keyof EnvironmentVariables;
-  userId?: string;
-}) {
-  if (typeof window === "undefined") return false;
+// export function isFeatureFlagOn({
+//   flag,
+//   userId,
+// }: {
+//   flag: keyof EnvironmentVariables;
+//   userId?: string;
+// }) {
+//   if (typeof window === "undefined") return false;
 
-  if (window.ENV[flag] === "admin") {
-    return userId === ADMIN_UUID || userId === NZAP_UUID;
-  }
+//   if (window.ENV[flag] === "admin") {
+//     return userId === ADMIN_UUID || userId === NZAP_UUID;
+//   }
 
-  return window.ENV[flag] === "true";
-}
+//   return window.ENV[flag] === "true";
+// }
 
 export type Serialized<T> = {
   [P in keyof T]: T[P] extends Date
@@ -217,7 +215,6 @@ export interface MyCSSProperties extends CSSProperties {
   "--brackets-bottom-border-length"?: number;
   "--brackets-column-matches"?: number;
   "--height-override"?: string;
-  "--tabs-count"?: number;
 }
 
 /** Minimal information on user to show their name and avatar */

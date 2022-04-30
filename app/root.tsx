@@ -1,4 +1,3 @@
-import * as React from "react";
 import type { LinksFunction, LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
@@ -8,17 +7,18 @@ import {
   Outlet,
   Scripts,
   useCatch,
-  useLoaderData,
 } from "@remix-run/react";
-import { LoggedInUser, LoggedInUserSchema } from "~/utils/schemas";
-import { Layout } from "./components/Layout";
-import { Catcher } from "./components/Catcher";
-import resetStyles from "~/styles/reset.css";
+import clsx from "clsx";
+import * as React from "react";
+import { io, Socket } from "socket.io-client";
 import globalStyles from "~/styles/global.css";
 import layoutStyles from "~/styles/layout.css";
-import { DISCORD_URL } from "./constants";
-import { io, Socket } from "socket.io-client";
+import resetStyles from "~/styles/reset.css";
+import { LoggedInUser, LoggedInUserSchema } from "~/utils/schemas";
+import { Catcher } from "./components/Catcher";
+import { Layout } from "./components/Layout";
 import { SocketProvider } from "./utils/socketContext";
+import { discordUrl } from "./utils/urls";
 
 export const links: LinksFunction = () => {
   return [
@@ -28,14 +28,14 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export interface EnvironmentVariables {
-  FF_ENABLE_CHAT?: "true" | "admin" | string;
-}
+// export interface EnvironmentVariables {
+//   FF_ENABLE_CHAT?: "true" | "admin" | string;
+// }
 
 export interface RootLoaderData {
   user?: LoggedInUser;
   baseURL: string;
-  ENV: EnvironmentVariables;
+  // ENV: EnvironmentVariables;
 }
 
 export const loader: LoaderFunction = ({ context }) => {
@@ -45,19 +45,20 @@ export const loader: LoaderFunction = ({ context }) => {
   return json<RootLoaderData>({
     user: data?.user,
     baseURL,
-    ENV: {
-      FF_ENABLE_CHAT: process.env.FF_ENABLE_CHAT,
-    },
+    // ENV: {
+    //   FF_ENABLE_CHAT: process.env.FF_ENABLE_CHAT,
+    // },
   });
 };
 
 export const unstable_shouldReload = () => false;
 
 export default function App() {
+  const [menuOpen, setMenuOpen] = React.useState(false);
   const [socket, setSocket] = React.useState<Socket>();
 
   const children = React.useMemo(() => <Outlet />, []);
-  const data = useLoaderData<RootLoaderData>();
+  // const data = useLoaderData<RootLoaderData>();
 
   // TODO: for future optimization could only connect socket on sendouq/tournament pages
   React.useEffect(() => {
@@ -69,9 +70,11 @@ export default function App() {
   }, []);
 
   return (
-    <Document ENV={data.ENV}>
+    <Document /*ENV={data.ENV}*/ disableBodyScroll={menuOpen}>
       <SocketProvider socket={socket}>
-        <Layout>{children}</Layout>
+        <Layout menuOpen={menuOpen} setMenuOpen={setMenuOpen}>
+          {children}
+        </Layout>
       </SocketProvider>
     </Document>
   );
@@ -80,11 +83,13 @@ export default function App() {
 function Document({
   children,
   title,
-  ENV,
-}: {
+  disableBodyScroll = false,
+}: // ENV,
+{
   children: React.ReactNode;
   title?: string;
-  ENV?: EnvironmentVariables;
+  disableBodyScroll?: boolean;
+  // ENV?: EnvironmentVariables;
 }) {
   return (
     <html lang="en">
@@ -95,9 +100,9 @@ function Document({
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className={clsx({ "no-scroll": disableBodyScroll })}>
         {children}
-        <script
+        {/* <script
           dangerouslySetInnerHTML={
             ENV
               ? {
@@ -105,7 +110,7 @@ function Document({
                 }
               : undefined
           }
-        />
+        /> */}
         <Scripts />
         {process.env.NODE_ENV === "development" && <LiveReload />}
       </body>
@@ -114,11 +119,15 @@ function Document({
 }
 
 export function CatchBoundary() {
+  const [menuOpen, setMenuOpen] = React.useState(false);
   const caught = useCatch();
 
   return (
-    <Document title={`${caught.status} ${caught.statusText}`}>
-      <Layout>
+    <Document
+      title={`${caught.status} ${caught.statusText}`}
+      disableBodyScroll={menuOpen}
+    >
+      <Layout menuOpen={menuOpen} setMenuOpen={setMenuOpen}>
         <Catcher />
       </Layout>
     </Document>
@@ -126,18 +135,20 @@ export function CatchBoundary() {
 }
 
 export function ErrorBoundary({ error }: { error: Error }) {
+  const [menuOpen, setMenuOpen] = React.useState(false);
+
   // TODO: do something not hacky with this
   const [message, data] = error.message.split(",");
   return (
-    <Document title="Error!">
-      <Layout>
+    <Document title="Error!" disableBodyScroll={menuOpen}>
+      <Layout menuOpen={menuOpen} setMenuOpen={setMenuOpen}>
         <div>
           <h1>Error happened: {message}</h1>
           {data && data.length > 0 && data !== "null" && <p>Message: {data}</p>}
           <hr />
           <p className="mt-2 text-sm">
             If you need help or want to report the error so that it can be fixed
-            please visit <a href={DISCORD_URL}>our Discord</a>
+            please visit <a href={discordUrl()}>our Discord</a>
           </p>
         </div>
       </Layout>

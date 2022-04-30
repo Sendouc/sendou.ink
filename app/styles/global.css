@@ -5,6 +5,7 @@
   --bg-darker: hsl(237.3deg 42.3% 26.6%);
   --bg-lighter: hsl(237.3deg 42.3% 35.6%);
   --bg-lighter-transparent: hsla(237.3deg 42.3% 35.6% / 50%);
+  --bg-darker-very-transparent: hsla(237.3deg 42.3% 26.6% / 50%);
   --bg-darker-transparent: hsla(237.3deg 42.3% 26.6% / 90%);
   --bg-modal-backdrop: hsla(237deg 98% 1% / 70%);
   --border: hsl(237.3deg 42.3% 45.6%);
@@ -345,7 +346,6 @@ hr {
   top: 0;
   right: 0;
   width: 70px;
-  color: var(--text);
   font-size: 80%;
   line-height: 50px;
   text-align: center;
@@ -445,6 +445,40 @@ hr {
   background-color: var(--theme);
   color: var(--button-text);
   font-weight: var(--bold);
+}
+
+.sub-nav__container {
+  display: flex;
+  width: 100vw;
+  flex-wrap: wrap;
+  justify-content: center;
+  background-color: var(--bg-lighter);
+  background-image: url("/svg/background-pattern.svg");
+  overflow-x: auto;
+}
+
+.sub-nav__link {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--s-4);
+  background-color: var(--bg-lighter);
+  color: var(--text);
+  font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
+  white-space: nowrap;
+}
+
+.sub-nav__active-icon {
+  height: 1.2rem;
+  margin-block-end: -1rem;
+  margin-block-start: -3px;
+  visibility: hidden;
+}
+
+.sub-nav__link.active > .sub-nav__active-icon {
+  visibility: visible;
 }
 
 .popover-content {
@@ -811,6 +845,10 @@ hr {
 
 .rounded {
   border-radius: var(--rounded);
+}
+
+.no-scroll {
+  overflow: hidden;
 }
 
 .z-10 {

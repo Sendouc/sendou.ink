@@ -1,14 +1,12 @@
-import { Link, useLoaderData, useLocation } from "@remix-run/react";
+import { Link, useLocation, useMatches } from "@remix-run/react";
 import { DiscordIcon } from "~/components/icons/Discord";
 import { TwitterIcon } from "~/components/icons/Twitter";
 import { resolveTournamentFormatString } from "~/core/tournament/bracket";
-import { tournamentHasStarted } from "~/core/tournament/utils";
 import { FindTournamentByNameForUrlI } from "~/services/tournament";
-import { getLogInUrl } from "~/utils";
-import { useUser } from "~/hooks/common";
 
 export function InfoBanner() {
-  const data = useLoaderData<FindTournamentByNameForUrlI>();
+  const [, parentRoute] = useMatches();
+  const data = parentRoute.data as FindTournamentByNameForUrlI;
   const location = useLocation();
 
   const urlToTournamentFrontPage = location.pathname
@@ -78,7 +76,6 @@ export function InfoBanner() {
               <div>{data.organizer.name}</div>
             </div>
           </div>
-          <InfoBannerActionButton />
         </div>
       </div>
     </>
@@ -103,58 +100,4 @@ function dayNumber(date: string) {
 
 function dateYYYYMMDD(date: string) {
   return new Date(date).toISOString().split("T")[0];
-}
-
-function InfoBannerActionButton() {
-  const data = useLoaderData<FindTournamentByNameForUrlI>();
-  const user = useUser();
-  const location = useLocation();
-
-  const isAlreadyInATeamButNotCaptain = data.teams
-    .flatMap((team) => team.members)
-    .filter(({ captain }) => !captain)
-    .some(({ member }) => member.id === user?.id);
-  if (isAlreadyInATeamButNotCaptain) return null;
-
-  const alreadyRegistered = data.teams
-    .flatMap((team) => team.members)
-    .some(({ member }) => member.id === user?.id);
-  if (alreadyRegistered) {
-    return (
-      <Link
-        to="manage-team"
-        className="info-banner__action-button"
-        prefetch="intent"
-      >
-        Add players
-      </Link>
-    );
-  }
-
-  if (tournamentHasStarted(data.brackets)) {
-    return null;
-  }
-
-  if (!user) {
-    return (
-      <form action={getLogInUrl(location)} method="post">
-        <button
-          className="info-banner__action-button"
-          data-cy="log-in-to-join-button"
-        >
-          Log in to join
-        </button>
-      </form>
-    );
-  }
-
-  return (
-    <Link
-      to="register"
-      className="info-banner__action-button"
-      data-cy="register-button"
-    >
-      Register
-    </Link>
-  );
 }
