@@ -20,6 +20,7 @@ CREATE TABLE "organizations" (
   "twitter" text,
   FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE RESTRICT
 );
+
 CREATE INDEX organizations_owner_id ON organizations(owner_id);
 
 CREATE TABLE "tournaments" (
@@ -31,10 +32,14 @@ CREATE TABLE "tournaments" (
   "check_in_start_timestamp" integer NOT NULL,
   "banner_background" text NOT NULL,
   "banner_text_hsl_args" text NOT NULL,
+  "banner_text_color" TEXT GENERATED ALWAYS AS (printf('hsl(%s)', banner_text_hsl_args)) VIRTUAL,
+  "banner_text_color_transparent" TEXT GENERATED ALWAYS AS (printf('hsl(%s, 0.3)', banner_text_hsl_args)) VIRTUAL,
   "organizer_id" text NOT NULL,
   FOREIGN KEY (organizer_id) REFERENCES organizations(id) ON DELETE RESTRICT
 );
+
 CREATE INDEX tournaments_organizer_id ON tournaments(organizer_id);
+
 CREATE UNIQUE INDEX one_name_for_url_per_organization ON tournaments(name_for_url, organizer_id);
 
 CREATE TABLE "stages" (
@@ -42,6 +47,7 @@ CREATE TABLE "stages" (
   "name" text NOT NULL,
   "mode" text CHECK ("mode" IN ('TW', 'SZ', 'TC', 'RM', 'CB')) NOT NULL
 );
+
 CREATE UNIQUE INDEX one_map_per_mode ON stages(name, mode);
 
 CREATE TABLE "tournament_teams" (
@@ -54,6 +60,7 @@ CREATE TABLE "tournament_teams" (
   "created_at_timestamp" integer NOT NULL,
   FOREIGN KEY (tournament_id) REFERENCES tournaments(id) ON DELETE RESTRICT
 );
+
 CREATE INDEX tournament_teams_tournament_id ON tournament_teams(tournament_id);
 
 CREATE TABLE "tournament_team_members" (
@@ -64,7 +71,9 @@ CREATE TABLE "tournament_team_members" (
   FOREIGN KEY (team_id) REFERENCES tournament_teams(id) ON DELETE RESTRICT,
   FOREIGN KEY (member_id) REFERENCES users(id) ON DELETE RESTRICT
 );
+
 CREATE INDEX tournament_team_members_team_id ON tournament_team_members(team_id);
+
 CREATE INDEX tournament_team_members_member_id ON tournament_team_members(member_id);
 
 CREATE TABLE "trust_relationships" (
@@ -74,8 +83,11 @@ CREATE TABLE "trust_relationships" (
   FOREIGN KEY (trust_giver_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (trust_receiver_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
 CREATE INDEX trust_relationships_trust_giver_id ON trust_relationships(trust_giver_id);
+
 CREATE INDEX trust_relationships_trust_receiver_id ON trust_relationships(trust_receiver_id);
+
 CREATE UNIQUE INDEX one_trust_between_users ON trust_relationships(trust_giver_id, trust_receiver_id);
 
 CREATE TABLE "tournament_brackets" (
@@ -84,6 +96,7 @@ CREATE TABLE "tournament_brackets" (
   "type" text CHECK ("type" IN ('SE', 'DE')),
   FOREIGN KEY (tournament_id) REFERENCES tournaments(id) ON DELETE CASCADE
 );
+
 CREATE INDEX tournament_brackets_tournament_id ON tournament_brackets(tournament_id);
 
 CREATE TABLE "tournament_rounds" (
@@ -92,7 +105,9 @@ CREATE TABLE "tournament_rounds" (
   "bracket_id" integer NOT NULL,
   FOREIGN KEY (bracket_id) REFERENCES tournament_brackets(id) ON DELETE CASCADE
 );
+
 CREATE INDEX tournament_rounds_bracket_id ON tournament_rounds(bracket_id);
+
 CREATE UNIQUE INDEX one_round_per_position ON tournament_rounds(bracket_id, position);
 
 CREATE TABLE "tournament_round_stages" (
@@ -102,8 +117,11 @@ CREATE TABLE "tournament_round_stages" (
   FOREIGN KEY (round_id) REFERENCES tournament_rounds(id) ON DELETE CASCADE,
   FOREIGN KEY (stage_id) REFERENCES stages(id) ON DELETE RESTRICT
 );
+
 CREATE INDEX tournament_round_stages_round_id ON tournament_round_stages(round_id);
+
 CREATE INDEX tournament_round_stages_stage_id ON tournament_round_stages(stage_id);
+
 CREATE UNIQUE INDEX one_stage_per_order ON tournament_round_stages(position, round_id);
 
 CREATE TABLE "tournament_matches" (
@@ -117,8 +135,11 @@ CREATE TABLE "tournament_matches" (
   FOREIGN KEY (winner_destination_match_id) REFERENCES tournament_matches(id) ON DELETE CASCADE,
   FOREIGN KEY (loser_destionation_match_id) REFERENCES tournament_matches(id) ON DELETE CASCADE
 );
+
 CREATE INDEX tournament_matches_round_id ON tournament_matches(round_id);
+
 CREATE INDEX tournament_matches_winner_destination_match_id ON tournament_matches(winner_destination_match_id);
+
 CREATE INDEX tournament_matches_loser_destionation_match_id ON tournament_matches(loser_destionation_match_id);
 
 CREATE TABLE "tournament_match_teams" (
@@ -128,8 +149,11 @@ CREATE TABLE "tournament_match_teams" (
   FOREIGN KEY (team_id) REFERENCES tournament_teams(id) ON DELETE CASCADE,
   FOREIGN KEY (match_id) REFERENCES tournament_matches(id) ON DELETE CASCADE
 );
+
 CREATE INDEX tournament_match_teams_team_id ON tournament_match_teams(team_id);
+
 CREATE INDEX tournament_match_teams_match_id ON tournament_match_teams(match_id);
+
 CREATE UNIQUE INDEX one_team_per_order ON tournament_match_teams("order", match_id);
 
 CREATE TABLE "tournament_match_results" (
@@ -141,6 +165,9 @@ CREATE TABLE "tournament_match_results" (
   FOREIGN KEY (match_id) REFERENCES tournament_matches(id) ON DELETE CASCADE,
   FOREIGN KEY (reporter_id) REFERENCES users(id) ON DELETE RESTRICT
 );
+
 CREATE INDEX tournament_match_results_match_id ON tournament_match_results(match_id);
+
 CREATE INDEX tournament_match_results_reporter_id ON tournament_match_results(reporter_id);
+
 CREATE UNIQUE INDEX one_position_per_match_id ON tournament_match_results(match_id, position);

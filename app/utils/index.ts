@@ -157,6 +157,9 @@ export function falsyToNull(value: unknown): unknown {
 export function dateToUnixTimestamp(date: Date) {
   return Math.floor(date.getTime() / 1000);
 }
+export function secondsToMilliseconds(timeInSeconds: number) {
+  return timeInSeconds * 1000;
+}
 
 // export function isFeatureFlagOn({
 //   flag,

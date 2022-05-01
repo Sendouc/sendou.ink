@@ -29,6 +29,8 @@ export interface Tournament {
   check_in_start_timestamp: number;
   banner_background: string;
   banner_text_hsl_args: string;
+  banner_text_color: string;
+  banner_text_color_transparent: string;
   organizer_id: number;
 }
 

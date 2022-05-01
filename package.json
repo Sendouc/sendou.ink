@@ -10,6 +10,7 @@
     "dev:node": "cross-env NODE_ENV=development nodemon ./build/index.js --watch ./build/index.js",
     "start": "cross-env NODE_ENV=production node ./build/index.js",
     "migrate": "touch ./db.sqlite3 && node ./migrations/index.mjs",
+    "migrate:hard": "rm ./db.sqlite3 && npm run migrate",
     "seed": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register seed/seed.ts",
     "lint:ts": "eslint . --ext .ts,.tsx",
     "lint:styles": "stylelint \"app/styles/**/*.css\"",

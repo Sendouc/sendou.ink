@@ -11,11 +11,18 @@ import { Outlet, ShouldReloadFunction, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 import { SubNav, SubNavLink } from "~/components/SubNav";
+import { CheckinActions } from "~/components/tournament/CheckinActions";
 import { tournamentHasStarted } from "~/core/tournament/utils";
 import { db } from "~/db";
 import { useUser } from "~/hooks/common";
 import { checkIn, FindTournamentByNameForUrlI } from "~/services/tournament";
-import { makeTitle, MyCSSProperties, PageTitle, requireUser } from "~/utils";
+import {
+  makeTitle,
+  MyCSSProperties,
+  PageTitle,
+  requireUser,
+  secondsToMilliseconds,
+} from "~/utils";
 import { chatRoute } from "~/utils/urls";
 import tournamentStylesUrl from "../../styles/tournament.css";
 
@@ -48,14 +55,20 @@ export const action: ActionFunction = async ({ request, context }) => {
 
 export type TournamentLoaderData = {
   teamCount: number;
-  tournamentHasStarted: boolean;
-  bracketId: number;
+  /** Bracket id to link to. If undefined means tournament has not started yet */
+  bracketId?: number;
   membershipStatus: "CAPTAIN" | "NOT-CAPTAIN" | "NOT-REGISTERED";
   isTournamentAdmin: boolean;
   theme: {
     bannerBackground: string;
     textColor: string;
     textColorTransparent: string;
+  };
+  checkIn: {
+    checkedIn: boolean;
+    enoughPlayers: boolean;
+    startTimestamp: number;
+    endTimestamp: number;
   };
 } & PageTitle;
 
@@ -72,9 +85,9 @@ export const loader: LoaderFunction = ({ params }) => {
   return json<TournamentLoaderData>({
     pageTitle: tournament.name,
     theme: {
-      bannerBackground: "",
-      textColor: "",
-      textColorTransparent: "",
+      bannerBackground: tournament.banner_background,
+      textColor: tournament.banner_text_color,
+      textColorTransparent: tournament.banner_text_color_transparent,
     },
 
     teamCount: 1,
@@ -84,7 +97,15 @@ export const loader: LoaderFunction = ({ params }) => {
     membershipStatus: "CAPTAIN",
 
     bracketId: 1,
-    tournamentHasStarted: false,
+
+    checkIn: {
+      checkedIn: false,
+      enoughPlayers: false,
+      startTimestamp: secondsToMilliseconds(
+        tournament.check_in_start_timestamp
+      ),
+      endTimestamp: new Date().getTime(),
+    },
   });
 };
 
@@ -114,7 +135,7 @@ export default function TournamentPage() {
     ];
     const tournamentIsOver = false;
 
-    if (data.tournamentHasStarted) {
+    if (data.bracketId) {
       result.push({ code: `bracket/${data.bracketId}`, text: "Bracket" });
 
       // TODO: add streams page
@@ -129,7 +150,7 @@ export default function TournamentPage() {
         code: "manage",
         text: "Controls",
       });
-      if (!data.tournamentHasStarted) {
+      if (!data.bracketId) {
         result.push({ code: "seeds", text: "Seeds" });
       }
       if (!tournamentHasStarted) result.push({ code: "start", text: "Start" });
@@ -155,7 +176,7 @@ export default function TournamentPage() {
         <MyTeamLink />
       </SubNav>
       <div className="tournament__container__spacer" />
-      {/* <CheckinActions /> */}
+      <CheckinActions />
       <div className="tournament__outlet-spacer" />
       {/* TODO: pass context instead of useMatches */}
       <Outlet />
@@ -180,7 +201,7 @@ function MyTeamLink() {
     );
   }
 
-  if (data.tournamentHasStarted) {
+  if (data.bracketId) {
     return null;
   }
 
