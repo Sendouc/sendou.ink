@@ -1,0 +1,5 @@
+- [ ] remove models
+- [ ] remove services
+- [ ] remove prisma
+- [ ] comment out sendouq db functions
+- [ ] actual solution for migrations

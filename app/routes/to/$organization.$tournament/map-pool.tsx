@@ -1,19 +1,15 @@
-import styles from "~/styles/tournament-map-pool.css";
-import type { Mode } from ".prisma/client";
-import clsx from "clsx";
 import { LinksFunction } from "@remix-run/node";
-import { useMatches } from "@remix-run/react";
-import { FindTournamentByNameForUrlI } from "~/services/tournament";
-import { modeToImageUrl, stageNameToImageUrl } from "~/utils";
+import clsx from "clsx";
 import { modesShort, stages } from "~/core/stages/stages";
+import styles from "~/styles/tournament-map-pool.css";
+import { modeToImageUrl, stageNameToImageUrl } from "~/utils";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
 export default function MapPoolTab() {
-  const [, parentRoute] = useMatches();
-  const { mapPool } = parentRoute.data as FindTournamentByNameForUrlI;
+  const mapPool = [];
 
   return (
     <div className="map-pool">

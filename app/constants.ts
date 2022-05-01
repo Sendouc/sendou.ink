@@ -10,8 +10,6 @@ export const NZAP_UUID = "6cd9d01d-b724-498a-b706-eb70edd8a773";
 export const NZAP_TEST_DISCORD_ID = "455039198672453645";
 export const NZAP_TEST_AVATAR = "f809176af93132c3db5f0a5019e96339";
 
-export const PAGE_TITLE_KEY = "pageTitle";
-
 export const ROOM_PASS_LENGTH = 4;
 export const LFG_GROUP_FULL_SIZE = 4;
 export const TOURNAMENT_TEAM_ROSTER_MIN_SIZE = 4;

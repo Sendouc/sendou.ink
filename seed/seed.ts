@@ -7,6 +7,7 @@ import {
 } from "~/constants";
 import { db } from "~/db";
 import { sql } from "~/db/sqlite3";
+import { dateToUnixTimestamp } from "~/utils";
 import usersFromSendouInk from "./users.json";
 
 const users = {
@@ -65,15 +66,36 @@ const organization = {
   },
 };
 
+const tournament = {
+  name: "tournament",
+  execute: () => {
+    db.tournament.create({
+      banner_background:
+        "radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%)",
+      banner_text_hsl_args: "231, 9%, 16%",
+      check_in_start_timestamp: dateToUnixTimestamp(new Date(2025, 11, 17, 11)),
+      start_time_timestamp: dateToUnixTimestamp(new Date(2025, 11, 17, 12)),
+      name: "In The Zone X",
+      name_for_url: "in-the-zone-x",
+      organizer_id: 1,
+      description:
+        "In The Zone eXtreme\n\nCroissant cookie jelly macaroon caramels. Liquorice icing bonbon fruitcake wafer. Fruitcake pudding icing biscuit pie pie macaroon carrot cake shortbread. Soufflé dessert powder marshmallow biscuit.\n\nJelly-o wafer chocolate bar tootsie roll cheesecake chocolate bar. Icing candy canes cookie chocolate bar sesame snaps sugar plum cheesecake lollipop biscuit. Muffin marshmallow sweet soufflé bonbon pudding gummies sweet apple pie.\n\nSoufflé cookie sugar plum sesame snaps muffin cupcake wafer jelly-o carrot cake. Ice cream danish jelly-o dragée marzipan croissant. Shortbread cheesecake marshmallow biscuit gummi bears.",
+      bracket: {
+        type: "DE",
+      },
+    });
+  },
+};
+
 const wipeDB = () => {
-  const tablesToDelete = ["organizations", "users"];
+  const tablesToDelete = ["tournaments", "organizations", "users"];
 
   for (const table of tablesToDelete) {
     sql.prepare(`delete from ${table}`).run();
   }
 };
 
-const commonSeeds = [users, organization];
+const commonSeeds = [users, organization, tournament];
 
 function main() {
   wipeDB();

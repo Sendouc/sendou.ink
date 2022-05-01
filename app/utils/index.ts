@@ -154,6 +154,10 @@ export function falsyToNull(value: unknown): unknown {
   return null;
 }
 
+export function dateToUnixTimestamp(date: Date) {
+  return Math.floor(date.getTime() / 1000);
+}
+
 // export function isFeatureFlagOn({
 //   flag,
 //   userId,
@@ -215,6 +219,10 @@ export interface MyCSSProperties extends CSSProperties {
   "--brackets-bottom-border-length"?: number;
   "--brackets-column-matches"?: number;
   "--height-override"?: string;
+}
+
+export interface PageTitle {
+  pageTitle: string;
 }
 
 /** Minimal information on user to show their name and avatar */

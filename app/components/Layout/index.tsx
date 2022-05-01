@@ -1,7 +1,7 @@
 import { useMatches } from "@remix-run/react";
 import * as React from "react";
-import { PAGE_TITLE_KEY } from "~/constants";
 import { useWindowSize } from "~/hooks/common";
+import { PageTitle } from "~/utils";
 import { HamburgerButton } from "./HamburgerButton";
 import { Menu } from "./Menu";
 import { MobileMenu } from "./MobileMenu";
@@ -21,14 +21,18 @@ export const Layout = React.memo(function Layout({
 }: LayoutProps) {
   const matches = useMatches();
 
+  // small hack to make it so that we only need to
+  // update this value in one place
+  const pageTitleKey: keyof PageTitle = "pageTitle";
+
   // you can set this page title from any loader
   // deeper routes take precedence
   const pageTitle = matches
     .map((match) => match.data)
     .filter(Boolean)
     .reduceRight((acc: Nullable<string>, routeData) => {
-      if (!acc && typeof routeData[PAGE_TITLE_KEY] === "string") {
-        return routeData[PAGE_TITLE_KEY] as string;
+      if (!acc && typeof routeData[pageTitleKey] === "string") {
+        return routeData[pageTitleKey] as string;
       }
 
       return acc;

@@ -19,3 +19,23 @@ export interface Organization {
   discord_invite: string;
   twitter: Nullable<string>;
 }
+
+export interface Tournament {
+  id: number;
+  name: string;
+  name_for_url: string;
+  description: string;
+  start_time_timestamp: number;
+  check_in_start_timestamp: number;
+  banner_background: string;
+  banner_text_hsl_args: string;
+  organizer_id: number;
+}
+
+export type BracketType = "SE" | "DE";
+
+export interface TournamentBracket {
+  id: number;
+  tournament_id: number;
+  type: BracketType;
+}

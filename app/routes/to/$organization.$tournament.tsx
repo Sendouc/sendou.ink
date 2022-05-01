@@ -2,24 +2,20 @@
 
 import {
   ActionFunction,
+  json,
   LinksFunction,
   LoaderFunction,
   MetaFunction,
 } from "@remix-run/node";
 import { Outlet, ShouldReloadFunction, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
+import { z } from "zod";
 import { SubNav, SubNavLink } from "~/components/SubNav";
-import { CheckinActions } from "~/components/tournament/CheckinActions";
-import { PAGE_TITLE_KEY } from "~/constants";
 import { tournamentHasStarted } from "~/core/tournament/utils";
-import { isTournamentAdmin } from "~/core/tournament/validators";
+import { db } from "~/db";
 import { useUser } from "~/hooks/common";
-import {
-  checkIn,
-  findTournamentByNameForUrl,
-  FindTournamentByNameForUrlI,
-} from "~/services/tournament";
-import { makeTitle, MyCSSProperties, requireUser } from "~/utils";
+import { checkIn, FindTournamentByNameForUrlI } from "~/services/tournament";
+import { makeTitle, MyCSSProperties, PageTitle, requireUser } from "~/utils";
 import { chatRoute } from "~/utils/urls";
 import tournamentStylesUrl from "../../styles/tournament.css";
 
@@ -50,25 +46,46 @@ export const action: ActionFunction = async ({ request, context }) => {
   return new Response(undefined, { status: 200 });
 };
 
-export const loader: LoaderFunction = async ({ params }) => {
-  invariant(
-    typeof params.organization === "string",
-    "Expected params.organization to be string"
-  );
-  invariant(
-    typeof params.tournament === "string",
-    "Expected params.tournament to be string"
-  );
-
-  const tournament = await findTournamentByNameForUrl({
-    organizationNameForUrl: params.organization,
-    tournamentNameForUrl: params.tournament,
-  });
-
-  return {
-    ...tournament,
-    [PAGE_TITLE_KEY]: tournament.name,
+export type TournamentLoaderData = {
+  teamCount: number;
+  tournamentHasStarted: boolean;
+  bracketId: number;
+  membershipStatus: "CAPTAIN" | "NOT-CAPTAIN" | "NOT-REGISTERED";
+  isTournamentAdmin: boolean;
+  theme: {
+    bannerBackground: string;
+    textColor: string;
+    textColorTransparent: string;
   };
+} & PageTitle;
+
+const tournamentParamsSchema = z.object({
+  organization: z.string(),
+  tournament: z.string(),
+});
+
+export const loader: LoaderFunction = ({ params }) => {
+  const namesForUrl = tournamentParamsSchema.parse(params);
+
+  const tournament = db.tournament.findByNamesForUrl(namesForUrl);
+
+  return json<TournamentLoaderData>({
+    pageTitle: tournament.name,
+    theme: {
+      bannerBackground: "",
+      textColor: "",
+      textColorTransparent: "",
+    },
+
+    teamCount: 1,
+
+    isTournamentAdmin: false,
+
+    membershipStatus: "CAPTAIN",
+
+    bracketId: 1,
+    tournamentHasStarted: false,
+  });
 };
 
 export const meta: MetaFunction = (props) => {
@@ -87,19 +104,18 @@ export const unstable_shouldReload: ShouldReloadFunction = (data) => {
 };
 
 export default function TournamentPage() {
-  const data = useLoaderData<FindTournamentByNameForUrlI>();
-  const user = useUser();
+  const data = useLoaderData<TournamentLoaderData>();
 
-  const navLinks = (() => {
+  const navLinks = () => {
     const result: { code: string; text: string }[] = [
       { code: "", text: "Overview" },
       { code: "map-pool", text: "Map Pool" },
-      { code: "teams", text: `Teams (${data.teams.length})` },
+      { code: "teams", text: `Teams (${data.teamCount})` },
     ];
     const tournamentIsOver = false;
 
-    if (tournamentHasStarted(data.brackets)) {
-      result.push({ code: `bracket/${data.brackets[0].id}`, text: "Bracket" });
+    if (data.tournamentHasStarted) {
+      result.push({ code: `bracket/${data.bracketId}`, text: "Bracket" });
 
       // TODO: add streams page
       // eslint-disable-next-line no-constant-condition
@@ -108,34 +124,30 @@ export default function TournamentPage() {
       }
     }
 
-    const thereIsABracketToStart = data.brackets.some(
-      (bracket) => bracket.rounds.length === 0
-    );
-
-    if (isTournamentAdmin({ userId: user?.id, organization: data.organizer })) {
+    if (data.isTournamentAdmin) {
       result.push({
         code: "manage",
         text: "Controls",
       });
-      if (!tournamentHasStarted(data.brackets)) {
+      if (!data.tournamentHasStarted) {
         result.push({ code: "seeds", text: "Seeds" });
       }
-      if (thereIsABracketToStart) result.push({ code: "start", text: "Start" });
+      if (!tournamentHasStarted) result.push({ code: "start", text: "Start" });
     }
 
     return result;
-  })();
+  };
 
   const tournamentContainerStyle: MyCSSProperties = {
-    "--tournaments-bg": data.bannerBackground,
-    "--tournaments-text": data.CSSProperties.text,
-    "--tournaments-text-transparent": data.CSSProperties.textTransparent,
+    "--tournaments-bg": data.theme.bannerBackground,
+    "--tournaments-text": data.theme.textColor,
+    "--tournaments-text-transparent": data.theme.textColorTransparent,
   };
 
   return (
     <div className="tournament__container" style={tournamentContainerStyle}>
       <SubNav>
-        {navLinks.map((link) => (
+        {navLinks().map((link) => (
           <SubNavLink key={link.code} to={link.code}>
             {link.text}
           </SubNavLink>
@@ -143,7 +155,7 @@ export default function TournamentPage() {
         <MyTeamLink />
       </SubNav>
       <div className="tournament__container__spacer" />
-      <CheckinActions />
+      {/* <CheckinActions /> */}
       <div className="tournament__outlet-spacer" />
       {/* TODO: pass context instead of useMatches */}
       <Outlet />
@@ -152,19 +164,11 @@ export default function TournamentPage() {
 }
 
 function MyTeamLink() {
-  const data = useLoaderData<FindTournamentByNameForUrlI>();
+  const data = useLoaderData<TournamentLoaderData>();
   const user = useUser();
 
-  const isAlreadyInATeamButNotCaptain = data.teams
-    .flatMap((team) => team.members)
-    .filter(({ captain }) => !captain)
-    .some(({ member }) => member.id === user?.id);
-  if (isAlreadyInATeamButNotCaptain) return null;
-
-  const alreadyRegistered = data.teams
-    .flatMap((team) => team.members)
-    .some(({ member }) => member.id === user?.id);
-  if (alreadyRegistered) {
+  if (data.membershipStatus === "NOT-CAPTAIN") return null;
+  if (data.membershipStatus === "CAPTAIN") {
     return (
       <SubNavLink
         to="manage-team"
@@ -176,7 +180,7 @@ function MyTeamLink() {
     );
   }
 
-  if (tournamentHasStarted(data.brackets)) {
+  if (data.tournamentHasStarted) {
     return null;
   }
 
