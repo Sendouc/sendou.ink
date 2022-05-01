@@ -3,3 +3,5 @@
 - [ ] remove prisma
 - [ ] comment out sendouq db functions
 - [ ] actual solution for migrations
+- [ ] isTournamentAdmin calling in tournament loader
+- [ ] requireUserNew, getUserNew, LoggedInUserNew, schema

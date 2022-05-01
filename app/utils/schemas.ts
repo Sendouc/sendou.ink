@@ -1,6 +1,7 @@
 import type { Mode } from ".prisma/client";
 import { z } from "zod";
 import { BEST_OF_OPTIONS, TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
+import { LoggedInUserNew } from "~/db/types";
 import { safeJSONParse, Unpacked } from "~/utils";
 import { assertType } from "./assertType";
 
@@ -32,6 +33,18 @@ export const LoggedInUserSchema = z
       .nullish(),
   })
   .nullish();
+
+const loggedInUserSchema = z.object({
+  id: z.number(),
+  discordId: z.string(),
+  discordAvatar: z.string().nullable(),
+});
+assertType<z.infer<typeof loggedInUserSchema>, LoggedInUserNew>();
+export const LoggedInUserFromContextSchema = z
+  .object({
+    user: loggedInUserSchema.optional(),
+  })
+  .optional();
 
 export const reportedMatchPlayerIds = z.preprocess(
   safeJSONParse,

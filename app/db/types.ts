@@ -1,3 +1,5 @@
+import { CamelCasedProperties } from "type-fest";
+
 export interface User {
   id: number;
   discord_id: string;
@@ -10,6 +12,10 @@ export interface User {
   youtube_name: Nullable<string>;
   friend_code: Nullable<string>;
 }
+
+export type LoggedInUserNew = CamelCasedProperties<
+  Pick<User, "id" | "discord_id" | "discord_avatar">
+>;
 
 export interface Organization {
   id: number;

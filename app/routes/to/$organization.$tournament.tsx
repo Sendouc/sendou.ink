@@ -14,9 +14,10 @@ import { SubNav, SubNavLink } from "~/components/SubNav";
 import { CheckinActions } from "~/components/tournament/CheckinActions";
 import { tournamentHasStarted } from "~/core/tournament/utils";
 import { db } from "~/db";
-import { useUser } from "~/hooks/common";
+import { useUserNew } from "~/hooks/common";
 import { checkIn, FindTournamentByNameForUrlI } from "~/services/tournament";
 import {
+  getUserNew,
   makeTitle,
   MyCSSProperties,
   PageTitle,
@@ -77,7 +78,8 @@ const tournamentParamsSchema = z.object({
   tournament: z.string(),
 });
 
-export const loader: LoaderFunction = ({ params }) => {
+export const loader: LoaderFunction = ({ params, context }) => {
+  const user = getUserNew(context);
   const namesForUrl = tournamentParamsSchema.parse(params);
 
   const tournament = db.tournament.findByNamesForUrl(namesForUrl);
@@ -92,7 +94,10 @@ export const loader: LoaderFunction = ({ params }) => {
 
     teamCount: 1,
 
-    isTournamentAdmin: false,
+    isTournamentAdmin: db.tournament.isAdmin({
+      userId: user?.id,
+      tournamentId: tournament.id,
+    }),
 
     membershipStatus: "CAPTAIN",
 
@@ -186,7 +191,7 @@ export default function TournamentPage() {
 
 function MyTeamLink() {
   const data = useLoaderData<TournamentLoaderData>();
-  const user = useUser();
+  const user = useUserNew();
 
   if (data.membershipStatus === "NOT-CAPTAIN") return null;
   if (data.membershipStatus === "CAPTAIN") {

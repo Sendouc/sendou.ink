@@ -4,7 +4,10 @@ import { json } from "@remix-run/node";
 import { useLocation } from "@remix-run/react";
 import type { Socket } from "socket.io-client";
 import { z } from "zod";
-import { LoggedInUserSchema } from "~/utils/schemas";
+import {
+  LoggedInUserFromContextSchema,
+  LoggedInUserSchema,
+} from "~/utils/schemas";
 
 export function flipObject<
   K extends string | number,
@@ -40,9 +43,27 @@ export function requireUser(ctx: unknown) {
   return data?.user;
 }
 
+export function requireUserNew(ctx: unknown) {
+  const data = LoggedInUserFromContextSchema.parse(ctx);
+
+  if (!data?.user) {
+    throw json("Log in required", { status: 401 });
+  }
+
+  return data?.user;
+}
+
 /** Get logged in user from context. Doesn't throw. */
 export function getUser(ctx: unknown) {
   const data = LoggedInUserSchema.parse(ctx);
+
+  if (!data?.user) return;
+
+  return data?.user;
+}
+
+export function getUserNew(ctx: unknown) {
+  const data = LoggedInUserFromContextSchema.parse(ctx);
 
   if (!data?.user) return;
 

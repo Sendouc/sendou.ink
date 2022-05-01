@@ -1,12 +1,22 @@
 import * as React from "react";
 import { useLoaderData, useMatches, useNavigate } from "@remix-run/react";
 import { z } from "zod";
-import { LoggedInUserSchema } from "~/utils/schemas";
+import {
+  LoggedInUserFromContextSchema,
+  LoggedInUserSchema,
+} from "~/utils/schemas";
 
 export const useUser = () => {
   const [root] = useMatches();
 
   const parsed = LoggedInUserSchema.parse(root.data);
+  return parsed?.user;
+};
+
+export const useUserNew = () => {
+  const [root] = useMatches();
+
+  const parsed = LoggedInUserFromContextSchema.parse(root.data);
   return parsed?.user;
 };
 

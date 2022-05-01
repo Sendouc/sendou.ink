@@ -1,5 +1,5 @@
 import { useLocation } from "@remix-run/react";
-import { useUser } from "~/hooks/common";
+import { useUserNew } from "~/hooks/common";
 import { getLogInUrl } from "~/utils";
 import { Button } from "../Button";
 import { DiscordIcon } from "../icons/Discord";
@@ -7,7 +7,7 @@ import { LogOutIcon } from "../icons/LogOut";
 import { Popover } from "../Popover";
 
 export function UserItem() {
-  const user = useUser();
+  const user = useUserNew();
   const location = useLocation();
 
   if (user && user.discordAvatar)

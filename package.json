@@ -56,6 +56,7 @@
     "socket.io": "^4.4.1",
     "socket.io-client": "^4.4.1",
     "tiny-invariant": "^1.2.0",
+    "type-fest": "^2.12.2",
     "uuid": "^8.3.2",
     "zod": "^3.14.4"
   },

@@ -13,7 +13,7 @@ import usersFromSendouInk from "./users.json";
 const users = {
   name: "users",
   execute: () => {
-    db.user.create({
+    db.user.upsert({
       discord_discriminator: "4059",
       discord_id: ADMIN_TEST_DISCORD_ID,
       discord_name: "Sendou",
@@ -25,7 +25,7 @@ const users = {
       friend_code: "0109-3838-9398",
     });
 
-    db.user.create({
+    db.user.upsert({
       discord_discriminator: "6227",
       discord_id: NZAP_TEST_DISCORD_ID,
       discord_name: "N-ZAP",
@@ -38,7 +38,7 @@ const users = {
     });
 
     for (const user of usersFromSendouInk) {
-      db.user.create({
+      db.user.upsert({
         discord_id: user.discordId,
         discord_avatar: user.discordAvatar,
         discord_discriminator: user.discriminator,

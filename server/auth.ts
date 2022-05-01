@@ -4,7 +4,8 @@ import cookieSession from "cookie-session";
 import cookieParser from "cookie-parser";
 import passport from "passport";
 import { Strategy as DiscordStrategy } from "passport-discord";
-import { db } from "../app/utils/db.server";
+import { db } from "~/db";
+import { LoggedInUserNew } from "~/db/types";
 
 export function setUpAuth(app: Express): void {
   invariant(
@@ -26,50 +27,45 @@ export function setUpAuth(app: Express): void {
         callbackURL: `${process.env.FRONT_PAGE_URL}auth/discord/callback`,
         scope: ["identify", "connections"],
       },
-      function (_accessToken, refreshToken, loggedInUser, cb) {
-        db.user
-          .upsert({
-            create: {
-              discordId: loggedInUser.id,
-              discordName: loggedInUser.username,
-              discordDiscriminator: loggedInUser.discriminator,
-              discordAvatar: loggedInUser.avatar,
-              discordRefreshToken: refreshToken,
-              ...parseConnections(),
-            },
-            update: {
-              discordName: loggedInUser.username,
-              discordDiscriminator: loggedInUser.discriminator,
-              discordAvatar: loggedInUser.avatar,
-              discordRefreshToken: refreshToken,
-              ...parseConnections(),
-            },
-            where: {
-              discordId: loggedInUser.id,
-            },
-          })
-          .then((user) => {
-            return cb(null, {
-              id: user.id,
-              discordId: user.discordId,
-              discordAvatar: user.discordAvatar,
-            });
-          })
-          .catch((err: unknown) => {
-            if (err instanceof Error || err === undefined || err === null) {
-              cb(err);
-            }
+      function (_accessToken, _refreshToken, loggedInUser, cb) {
+        try {
+          const userFromDb = db.user.upsert({
+            discord_id: loggedInUser.id,
+            discord_name: loggedInUser.username,
+            discord_discriminator: loggedInUser.discriminator,
+            discord_avatar: loggedInUser.avatar,
+            friend_code: null,
+            ...parseConnections(),
           });
 
-        function parseConnections() {
-          if (!loggedInUser.connections) return null;
+          const userForSession: LoggedInUserNew = {
+            id: userFromDb.id,
+            discordId: userFromDb.discord_id,
+            discordAvatar: userFromDb.discord_avatar,
+          };
 
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+          return cb(null, userForSession);
+        } catch (err) {
+          if (err instanceof Error || err === undefined || err === null) {
+            cb(err);
+          } else throw err;
+        }
+
+        function parseConnections() {
           const result: {
-            twitch?: string;
-            twitter?: string;
-            youtubeId?: string;
-            youtubeName?: string;
-          } = {};
+            twitch: Nullable<string>;
+            twitter: Nullable<string>;
+            youtube_id: Nullable<string>;
+            youtube_name: Nullable<string>;
+          } = {
+            twitch: null,
+            twitter: null,
+            youtube_id: null,
+            youtube_name: null,
+          };
+
+          if (!loggedInUser.connections) return result;
 
           for (const connection of loggedInUser.connections) {
             if (connection.visibility !== 1 || !connection.verified) continue;
@@ -82,8 +78,8 @@ export function setUpAuth(app: Express): void {
                 result.twitter = connection.name;
                 break;
               case "youtube":
-                result.youtubeId = connection.id;
-                result.youtubeName = connection.name;
+                result.youtube_id = connection.id;
+                result.youtube_name = connection.name;
             }
           }
 

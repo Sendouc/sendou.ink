@@ -66,3 +66,21 @@ export function findByNamesForUrl(params: {
 }) {
   return findByNamesForUrlStm.get(params) as Tournament;
 }
+
+const isAdminStm = sql.prepare(`
+  SELECT EXISTS (
+    SELECT 1 
+      FROM tournaments
+      JOIN organizations ON tournaments.organizer_id = organizations.id
+      WHERE organizations.owner_id = $userId AND tournaments.id = $tournamentId
+  ) as is_tournament_admin
+`);
+
+export function isAdmin(params: { userId?: number; tournamentId: number }) {
+  if (!params.userId) return false;
+  const { is_tournament_admin } = isAdminStm.get(params) as {
+    is_tournament_admin: number;
+  };
+
+  return Boolean(is_tournament_admin);
+}

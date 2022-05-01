@@ -14,9 +14,10 @@ import { io, Socket } from "socket.io-client";
 import globalStyles from "~/styles/global.css";
 import layoutStyles from "~/styles/layout.css";
 import resetStyles from "~/styles/reset.css";
-import { LoggedInUser, LoggedInUserSchema } from "~/utils/schemas";
+import { LoggedInUserFromContextSchema } from "~/utils/schemas";
 import { Catcher } from "./components/Catcher";
 import { Layout } from "./components/Layout";
+import { LoggedInUserNew } from "./db/types";
 import { SocketProvider } from "./utils/socketContext";
 import { discordUrl } from "./utils/urls";
 
@@ -33,13 +34,13 @@ export const links: LinksFunction = () => {
 // }
 
 export interface RootLoaderData {
-  user?: LoggedInUser;
+  user?: LoggedInUserNew;
   baseURL: string;
   // ENV: EnvironmentVariables;
 }
 
 export const loader: LoaderFunction = ({ context }) => {
-  const data = LoggedInUserSchema.parse(context as unknown);
+  const data = LoggedInUserFromContextSchema.parse(context);
   const baseURL = process.env.FRONT_PAGE_URL ?? "http://localhost:5800/";
 
   return json<RootLoaderData>({
