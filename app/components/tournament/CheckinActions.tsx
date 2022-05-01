@@ -1,13 +1,10 @@
 // TODO: Warning: Text content did not match. Server: "57" Client: "56"
-import * as React from "react";
 import { Form, useLoaderData, useTransition } from "@remix-run/react";
+import * as React from "react";
 import {
-  checkInClosesDate,
-  TOURNAMENT_TEAM_ROSTER_MIN_SIZE,
-} from "~/constants";
-import { TournamentAction } from "~/routes/to/$organization.$tournament";
-import type { FindTournamentByNameForUrlI } from "~/services/tournament";
-import { useUser } from "~/hooks/common";
+  TournamentAction,
+  TournamentLoaderData,
+} from "~/routes/to/$organization.$tournament";
 import { Button } from "../Button";
 import { AlertIcon } from "../icons/Alert";
 import { CheckInIcon } from "../icons/CheckIn";
@@ -17,17 +14,14 @@ import { ActionSectionWrapper } from "./ActionSectionWrapper";
 
 // TODO: warning when not registered but check in is open
 export function CheckinActions() {
-  const tournament = useLoaderData<FindTournamentByNameForUrlI>();
-  const user = useUser();
+  const data = useLoaderData<TournamentLoaderData>();
   const transition = useTransition();
 
   const timeInMinutesBeforeCheckInCloses = React.useCallback(() => {
     return Math.floor(
-      (checkInClosesDate(tournament.startTime).getTime() -
-        new Date().getTime()) /
-        (1000 * 60)
+      (data.checkIn.endTimestamp - new Date().getTime()) / (1000 * 60)
     );
-  }, [tournament.startTime]);
+  }, [data.checkIn.endTimestamp]);
   const [minutesTillCheckInCloses, setMinutesTillCheckInCloses] =
     React.useState(timeInMinutesBeforeCheckInCloses());
 
@@ -39,18 +33,11 @@ export function CheckinActions() {
     return () => clearTimeout(timeout);
   }, []);
 
-  const ownTeam = tournament.teams.find((team) =>
-    team.members.some(
-      ({ member, captain }) => captain && member.id === user?.id
-    )
-  );
-
-  const tournamentHasStarted = tournament.brackets.some((b) => b.rounds.length);
-  if (!ownTeam || tournamentHasStarted) {
+  if (data.membershipStatus !== "CAPTAIN" || !data.bracketId) {
     return null;
   }
 
-  if (ownTeam.checkedInTime) {
+  if (data.checkIn.checkedIn) {
     return (
       <ActionSectionWrapper icon="success" data-cy="checked-in-alert">
         <SuccessIcon /> Your team is checked in!
@@ -58,11 +45,9 @@ export function CheckinActions() {
     );
   }
 
-  const checkInHasStarted = new Date(tournament.checkInStartTime) < new Date();
-  const teamHasEnoughMembers =
-    ownTeam.members.length >= TOURNAMENT_TEAM_ROSTER_MIN_SIZE;
+  const checkInHasStarted = new Date(data.checkIn.startTimestamp) < new Date();
 
-  if (!checkInHasStarted && !teamHasEnoughMembers) {
+  if (!checkInHasStarted && !data.checkIn.enoughPlayers) {
     return (
       <ActionSectionWrapper icon="warning" data-cy="team-size-alert">
         <AlertIcon /> You need at least 4 players in your roster to play
@@ -70,25 +55,18 @@ export function CheckinActions() {
     );
   }
 
-  const differenceInMinutesBetweenCheckInAndStart = Math.floor(
-    (new Date(tournament.startTime).getTime() -
-      new Date(tournament.checkInStartTime).getTime()) /
-      (1000 * 60)
-  );
-
-  if (!checkInHasStarted && teamHasEnoughMembers) {
+  if (!checkInHasStarted && data.checkIn.enoughPlayers) {
     return (
       <ActionSectionWrapper icon="info">
-        <AlertIcon /> Check-in starts{" "}
-        {differenceInMinutesBetweenCheckInAndStart} minutes before the
-        tournament starts
+        <AlertIcon /> Check-in starts at{" "}
+        {new Date(data.checkIn.startTimestamp).toLocaleString("en")}
       </ActionSectionWrapper>
     );
   }
 
   if (
     checkInHasStarted &&
-    !teamHasEnoughMembers &&
+    !data.checkIn.enoughPlayers &&
     minutesTillCheckInCloses > 0
   ) {
     return (
@@ -102,7 +80,7 @@ export function CheckinActions() {
 
   if (
     checkInHasStarted &&
-    teamHasEnoughMembers &&
+    data.checkIn.enoughPlayers &&
     minutesTillCheckInCloses > 0
   ) {
     return (
@@ -129,7 +107,6 @@ export function CheckinActions() {
             name="_action"
             value={TournamentAction.CHECK_IN}
           />
-          <input type="hidden" name="teamId" value={ownTeam.id} />
           <Button
             variant="outlined"
             type="submit"
