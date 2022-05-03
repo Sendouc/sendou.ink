@@ -24,6 +24,7 @@ import {
   getUserNew,
   makeTitle,
   MyCSSProperties,
+  notFoundIfFalsy,
   PageTitle,
   requireUser,
   secondsToMilliseconds,
@@ -77,7 +78,7 @@ export type TournamentLoaderData = {
   };
 } & PageTitle;
 
-const tournamentParamsSchema = z.object({
+export const tournamentParamsSchema = z.object({
   organization: z.string(),
   tournament: z.string(),
 });
@@ -86,7 +87,9 @@ export const loader: LoaderFunction = ({ params, context }) => {
   const user = getUserNew(context);
   const namesForUrl = tournamentParamsSchema.parse(params);
 
-  const tournament = db.tournament.findByNamesForUrl(namesForUrl);
+  const tournament = notFoundIfFalsy(
+    db.tournament.findByNamesForUrl(namesForUrl)
+  );
   const ownTeam = db.tournamentTeam.findByUserId({
     user_id: user?.id,
     tournament_id: tournament.id,
@@ -99,18 +102,13 @@ export const loader: LoaderFunction = ({ params, context }) => {
       textColor: tournament.banner_text_color,
       textColorTransparent: tournament.banner_text_color_transparent,
     },
-
     teamCount: db.tournamentTeam.countByTournamentId(tournament.id),
-
     isTournamentAdmin: db.tournament.isAdmin({
       userId: user?.id,
       tournamentId: tournament.id,
     }),
-
     membershipStatus: membershipStatus({ userId: user?.id, team: ownTeam }),
-
-    bracketId: 1,
-
+    bracketId: db.tournamentBracket.activeIdByTournamentId(tournament.id),
     checkIn: {
       checkedIn: Boolean(ownTeam?.checked_in_timestamp),
       enoughPlayers:

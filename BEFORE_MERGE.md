@@ -10,3 +10,4 @@
 - [ ] db.users, db.tournaments etc.
 - [ ] current timestamp string not number
 - [ ] all files below db to have .server
+- [ ] db calls to use function not const

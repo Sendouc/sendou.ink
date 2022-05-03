@@ -1,38 +1,58 @@
-import { LinksFunction } from "@remix-run/node";
+import { json, LinksFunction, LoaderFunction } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import { modesShort, stages } from "~/core/stages/stages";
+import { db } from "~/db";
+import { Mode, Stage } from "~/db/types";
 import styles from "~/styles/tournament-map-pool.css";
-import { modeToImageUrl, stageNameToImageUrl } from "~/utils";
+import { modeToImageUrl, notFoundIfFalsy, stageNameToImageUrl } from "~/utils";
+import { tournamentParamsSchema } from "../$organization.$tournament";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
+interface MapPoolLoaderData {
+  stages: Stage[];
+}
+
+export const loader: LoaderFunction = ({ params }) => {
+  const namesForUrl = tournamentParamsSchema.parse(params);
+  const tournament = notFoundIfFalsy(
+    db.tournament.findByNamesForUrl(namesForUrl)
+  );
+
+  return json<MapPoolLoaderData>({
+    stages: db.tournament.mapPool(tournament.id),
+  });
+};
+
 export default function MapPoolTab() {
-  const mapPool = [];
+  const data = useLoaderData<MapPoolLoaderData>();
+
+  const groupedStages = modesPerStage(data.stages);
 
   return (
     <div className="map-pool">
       <div className="map-pool__info-square">
         <span className="map-pool__info-square__text">
-          {mapPool.length} maps
+          {stages.length} maps
         </span>
       </div>
       {stages.map((stage) => (
         <div key={stage} className="map-pool__stage-images-container">
           <img
             className={clsx("map-pool__stage-image", {
-              "map-pool__stage-image-disabled": !modesPerStage(mapPool)[stage],
+              "map-pool__stage-image-disabled": !groupedStages[stage],
             })}
             loading="lazy"
-            alt={stage}
             src={stageNameToImageUrl(stage)}
           />
-          {modesPerStage(mapPool)[stage] && (
+          {groupedStages[stage] && (
             <div className="map-pool__mode-images-container">
               {modesShort.map(
                 (mode) =>
-                  modesPerStage(mapPool)[stage]?.includes(mode) && (
+                  groupedStages[stage]?.includes(mode) && (
                     <img
                       key={mode}
                       className="map-pool__mode-image"

@@ -17,6 +17,13 @@ export type LoggedInUserNew = CamelCasedProperties<
   Pick<User, "id" | "discord_id" | "discord_avatar">
 >;
 
+export type Mode = "TW" | "SZ" | "TC" | "RM" | "CB";
+export interface Stage {
+  id: number;
+  name: string;
+  mode: Mode;
+}
+
 export interface Organization {
   id: number;
   name: string;

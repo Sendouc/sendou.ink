@@ -1,3 +1,4 @@
+import { Stage } from "@prisma/client";
 import {
   ADMIN_ID,
   ADMIN_TEST_AVATAR,
@@ -134,8 +135,69 @@ const tournamentTeams = {
   },
 };
 
+const tournamentStages = {
+  name: "tournamentStages",
+  execute: () => {
+    const stages = sql.prepare("select * from stages").all() as Stage[];
+
+    const mapsIncluded: string[] = [];
+    const modesIncluded = {
+      SZ: 0,
+      TC: 0,
+      RM: 0,
+      CB: 0,
+    };
+    const stageIds: number[] = [];
+
+    for (const stage of stages.sort((a, b) => a.name.localeCompare(b.name))) {
+      if (
+        modesIncluded.SZ === 8 &&
+        modesIncluded.TC === 6 &&
+        modesIncluded.RM === 6 &&
+        modesIncluded.CB === 6
+      ) {
+        break;
+      }
+      if (stage.mode === "TW") continue;
+      if (modesIncluded.SZ === 8 && stage.mode === "SZ") {
+        continue;
+      }
+      if (modesIncluded.TC === 6 && stage.mode === "TC") {
+        continue;
+      }
+      if (modesIncluded.RM === 6 && stage.mode === "RM") {
+        continue;
+      }
+      if (modesIncluded.CB === 6 && stage.mode === "CB") {
+        continue;
+      }
+      if (
+        mapsIncluded.reduce(
+          (acc, cur) => acc + (cur === stage.name ? 1 : 0),
+          0
+        ) >= 2
+      ) {
+        continue;
+      }
+
+      stageIds.push(stage.id);
+      modesIncluded[stage.mode]++;
+      mapsIncluded.push(stage.name);
+    }
+
+    for (const id of stageIds) {
+      sql
+        .prepare(
+          "INSERT INTO tournament_map_pool (tournament_id, stage_id) VALUES ($tournament_id, $stage_id)"
+        )
+        .run({ tournament_id: 1, stage_id: id });
+    }
+  },
+};
+
 const wipeDB = () => {
   const tablesToDelete = [
+    "tournament_map_pool",
     "tournament_team_members",
     "tournament_teams",
     "tournaments",
@@ -148,7 +210,13 @@ const wipeDB = () => {
   }
 };
 
-const commonSeeds = [users, organization, tournament, tournamentTeams];
+const commonSeeds = [
+  users,
+  organization,
+  tournament,
+  tournamentStages,
+  tournamentTeams,
+];
 
 function main() {
   wipeDB();

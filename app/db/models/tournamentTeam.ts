@@ -75,7 +75,9 @@ export const findByUserId = (params: {
 }) => {
   if (!params.user_id) return;
 
-  const team = findByUserIdStm.get(params) as TournamentTeam;
+  const team = findByUserIdStm.get(params) as TournamentTeam | undefined;
+  if (!team) return;
+
   const members = findMembers.all({ team_id: team.id }) as Array<
     TournamentTeamMember & User
   >;

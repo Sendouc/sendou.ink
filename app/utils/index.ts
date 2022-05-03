@@ -75,6 +75,12 @@ export function getSocket(ctx: unknown) {
   return ctx.socket as Socket;
 }
 
+export function notFoundIfFalsy<T>(value: T | null | undefined): T {
+  if (value) return value;
+
+  throw new Response(null, { status: 404 });
+}
+
 // https://stackoverflow.com/a/57888548
 export function fetchTimeout(url: string, ms: number, options: RequestInit) {
   const controller = new AbortController();

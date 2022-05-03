@@ -1,5 +1,5 @@
 import { sql } from "../sqlite3";
-import type { Tournament, TournamentBracket } from "../types";
+import type { Stage, Tournament, TournamentBracket } from "../types";
 
 const createTournamentStm = sql.prepare(`
   INSERT INTO
@@ -64,7 +64,7 @@ export function findByNamesForUrl(params: {
   organization: string;
   tournament: string;
 }) {
-  return findByNamesForUrlStm.get(params) as Tournament;
+  return findByNamesForUrlStm.get(params) as Tournament | undefined;
 }
 
 const isAdminStm = sql.prepare(`
@@ -83,4 +83,15 @@ export function isAdmin(params: { userId?: number; tournamentId: number }) {
   };
 
   return Boolean(is_tournament_admin);
+}
+
+const mapPoolStm = sql.prepare(`
+  SELECT stages.*
+    FROM tournament_map_pool
+    JOIN stages ON tournament_map_pool.stage_id = stages.id
+    WHERE tournament_map_pool.tournament_id = $tournament_id
+`);
+
+export function mapPool(tournament_id: number) {
+  return mapPoolStm.all({ tournament_id }) as Stage[];
 }
