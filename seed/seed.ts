@@ -87,15 +87,68 @@ const tournament = {
   },
 };
 
+const tournamentTeams = {
+  name: "tournamentTeams",
+  execute: () => {
+    const mockTeams = [
+      "Team Olive",
+      "Chimera",
+      "Team Paradise",
+      "Team Blue",
+      "🛏️",
+      "Name Subject to Change",
+      "FTWin!",
+      "Starburst",
+      "Jackpot",
+      "Crème Fresh",
+      "Squids Next Door",
+      "Get Kraken",
+      "Kougeki",
+      "Last Minute",
+      "Squidding Good",
+      "Alliance Rogue",
+      "Second Wind",
+      "Kelp Domers",
+      "Arctic Moon",
+      "sink gang",
+      "Good Morning",
+      "Kings",
+      "NIS",
+      "Woomy Zoomy Boomy",
+    ];
+
+    let memberForTeam = 2;
+    for (const [mockTeamI, mockTeam] of mockTeams.entries()) {
+      const memberCount = (mockTeamI % 5) + 2;
+
+      db.tournamentTeam.create({
+        name: mockTeam,
+        tournament_id: 1,
+        members: new Array(memberCount).fill(null).map((_, i) => ({
+          is_captain: Number(i === 0),
+          member_id: memberForTeam++,
+          // checkedInTime: memberCount >= 4 ? new Date() : undefined,
+        })),
+      });
+    }
+  },
+};
+
 const wipeDB = () => {
-  const tablesToDelete = ["tournaments", "organizations", "users"];
+  const tablesToDelete = [
+    "tournament_team_members",
+    "tournament_teams",
+    "tournaments",
+    "organizations",
+    "users",
+  ];
 
   for (const table of tablesToDelete) {
     sql.prepare(`delete from ${table}`).run();
   }
 };
 
-const commonSeeds = [users, organization, tournament];
+const commonSeeds = [users, organization, tournament, tournamentTeams];
 
 function main() {
   wipeDB();

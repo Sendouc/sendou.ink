@@ -40,6 +40,23 @@ export interface Tournament {
   organizer_id: number;
 }
 
+export interface TournamentTeam {
+  id: number;
+  name: string;
+  seed: Nullable<number>;
+  tournament_id: number;
+  invite_code: string;
+  checked_in_timestamp: Nullable<number>;
+  created_at_timestamp: number;
+}
+
+export interface TournamentTeamMember {
+  member_id: number;
+  team_id: number;
+  tournament_id: number;
+  is_captain: number;
+}
+
 export type BracketType = "SE" | "DE";
 
 export interface TournamentBracket {

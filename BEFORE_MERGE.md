@@ -5,3 +5,6 @@
 - [ ] actual solution for migrations
 - [ ] isTournamentAdmin calling in tournament loader
 - [ ] requireUserNew, getUserNew, LoggedInUserNew, schema
+- [ ] strict tables
+- [ ] make every named parameter snake_case in sql calls
+- [ ] db.users, db.tournaments etc.

@@ -92,7 +92,7 @@ export const loader: LoaderFunction = ({ params, context }) => {
       textColorTransparent: tournament.banner_text_color_transparent,
     },
 
-    teamCount: 1,
+    teamCount: db.tournamentTeam.countByTournamentId(tournament.id),
 
     isTournamentAdmin: db.tournament.isAdmin({
       userId: user?.id,

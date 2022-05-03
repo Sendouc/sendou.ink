@@ -55,9 +55,9 @@ CREATE TABLE "tournament_teams" (
   "name" text NOT NULL,
   "seed" integer,
   "tournament_id" integer NOT NULL,
-  "invite_code" text NOT NULL,
+  "invite_code" text DEFAULT (lower(hex(randomblob(16)))) NOT NULL,
   "checked_in_timestamp" integer,
-  "created_at_timestamp" integer NOT NULL,
+  "created_at_timestamp" integer DEFAULT CURRENT_TIMESTAMP NOT NULL,
   FOREIGN KEY (tournament_id) REFERENCES tournaments(id) ON DELETE RESTRICT
 );
 
