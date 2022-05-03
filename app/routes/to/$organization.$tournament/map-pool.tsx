@@ -12,7 +12,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-interface MapPoolLoaderData {
+interface MapPoolTabLoaderData {
   stages: Stage[];
 }
 
@@ -22,13 +22,13 @@ export const loader: LoaderFunction = ({ params }) => {
     db.tournament.findByNamesForUrl(namesForUrl)
   );
 
-  return json<MapPoolLoaderData>({
+  return json<MapPoolTabLoaderData>({
     stages: db.tournament.mapPool(tournament.id),
   });
 };
 
 export default function MapPoolTab() {
-  const data = useLoaderData<MapPoolLoaderData>();
+  const data = useLoaderData<MapPoolTabLoaderData>();
 
   const groupedStages = modesPerStage(data.stages);
 

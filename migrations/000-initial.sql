@@ -77,7 +77,6 @@ CREATE INDEX tournament_teams_tournament_id ON tournament_teams(tournament_id);
 CREATE TABLE "tournament_team_members" (
   "member_id" integer NOT NULL,
   "team_id" integer NOT NULL,
-  "tournament_id" integer NOT NULL,
   "is_captain" integer CHECK ("is_captain" IN (0, 1)) NOT NULL DEFAULT 0,
   FOREIGN KEY (team_id) REFERENCES tournament_teams(id) ON DELETE CASCADE,
   FOREIGN KEY (member_id) REFERENCES users(id) ON DELETE RESTRICT

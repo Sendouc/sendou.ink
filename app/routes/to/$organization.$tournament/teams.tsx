@@ -1,32 +1,34 @@
-import { useMatches } from "@remix-run/react";
-import type { FindTournamentByNameForUrlI } from "~/services/tournament";
+import { json, LoaderFunction } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 import { TeamRoster } from "~/components/tournament/TeamRoster";
-import { useUser } from "~/hooks/common";
+import { db } from "~/db";
+import { TournamentTeamFindManyByTournamentId } from "~/db/models/tournamentTeam";
+import { notFoundIfFalsy } from "~/utils";
+import { tournamentParamsSchema } from "../$organization.$tournament";
+
+interface TeamsTabLoaderData {
+  teams: TournamentTeamFindManyByTournamentId;
+}
+
+export const loader: LoaderFunction = ({ params }) => {
+  const namesForUrl = tournamentParamsSchema.parse(params);
+  const tournament = notFoundIfFalsy(
+    db.tournament.findByNamesForUrl(namesForUrl)
+  );
+
+  return json<TeamsTabLoaderData>({
+    teams: db.tournamentTeam.findManyByTournamentId(tournament.id),
+  });
+};
 
 export default function TeamsTab() {
-  const [, parentRoute] = useMatches();
-  const { teams } = parentRoute.data as FindTournamentByNameForUrlI;
-  const user = useUser();
+  const data = useLoaderData<TeamsTabLoaderData>();
 
-  const teamsSorted = user
-    ? [...teams].sort((a, b) => {
-        if (a.members.some(({ member }) => member.id === user.id)) {
-          return -1;
-        }
-
-        if (b.members.some(({ member }) => member.id === user.id)) {
-          return 1;
-        }
-
-        return 0;
-      })
-    : teams;
-
-  if (!teams.length) return null;
+  if (!data.teams.length) return null;
 
   return (
     <div className="teams-tab">
-      {teamsSorted.map((team) => (
+      {data.teams.map((team) => (
         <TeamRoster team={team} key={team.id} />
       ))}
     </div>

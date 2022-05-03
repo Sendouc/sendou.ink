@@ -1,3 +1,4 @@
+import { CamelCasedProperties } from "type-fest";
 import { sql } from "../sqlite3";
 import { TournamentTeam, TournamentTeamMember, User } from "../types";
 
@@ -48,13 +49,58 @@ export const create = sql.transaction(
   }
 );
 
-const countStm = sql.prepare(
-  "SELECT COUNT(*) as count FROM tournament_teams WHERE tournament_id=$tournament_id"
-);
+const countStm = sql.prepare(`
+  SELECT COUNT(*) as count 
+    FROM tournament_teams 
+    WHERE tournament_id = $tournament_id
+`);
 
 export const countByTournamentId = (tournament_id: number) => {
   return (countStm.get({ tournament_id }) as { count: number }).count;
 };
+
+const findManyByTournamentIdStm = sql.prepare(`
+  SELECT id, name, (
+      SELECT json_group_array(
+        json_object(
+          'id', users.id, 
+          'discordAvatar', users.discord_avatar,
+          'discordId', users.discord_id,
+          'discordName', users.discord_name,
+          'isCaptain', tournament_team_members.is_captain
+        )
+      ) 
+      FROM tournament_team_members
+      JOIN users ON tournament_team_members.member_id = users.id
+      WHERE tournament_team_members.team_id = tournament_teams.id
+    ) as members
+    FROM tournament_teams
+    WHERE tournament_teams.tournament_id = $tournament_id
+    ORDER BY created_at_timestamp DESC
+`);
+
+export type TournamentTeamFindManyByTournamentId = ReturnType<
+  typeof findManyByTournamentId
+>;
+export function findManyByTournamentId(tournament_id: number) {
+  const teams = findManyByTournamentIdStm.all({
+    tournament_id,
+  });
+
+  return teams.map(
+    (t) =>
+      // eslint-disable-next-line
+      ({ ...t, members: JSON.parse(t.members) } as Pick<
+        TournamentTeam,
+        "id" | "name"
+      > & {
+        members: CamelCasedProperties<
+          Pick<User, "id" | "discord_avatar" | "discord_id" | "discord_name"> &
+            Pick<TournamentTeamMember, "is_captain">
+        >[];
+      })
+  );
+}
 
 const findByUserIdStm = sql.prepare(`
   SELECT tournament_teams.* FROM tournament_teams

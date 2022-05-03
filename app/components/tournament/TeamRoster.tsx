@@ -1,7 +1,8 @@
 import { Form, useMatches, useTransition } from "@remix-run/react";
-import { tournamentHasNotStarted } from "~/core/tournament/validators";
-import { useUser } from "~/hooks/common";
-import { FindTournamentByNameForUrlI } from "~/services/tournament";
+import type { TournamentTeamFindManyByTournamentId } from "~/db/models/tournamentTeam";
+import { useUserNew } from "~/hooks/common";
+import { TournamentLoaderData } from "~/routes/to/$organization.$tournament";
+import { Unpacked } from "~/utils";
 import { Avatar } from "../Avatar";
 import { Button } from "../Button";
 import { SubmitButton } from "../SubmitButton";
@@ -11,36 +12,23 @@ export function TeamRoster({
   showUnregister = false,
   deleteMode = false,
 }: {
-  team: {
-    id: string;
-    name: string;
-    members: {
-      captain: boolean;
-      member: {
-        id: string;
-        discordAvatar: string | null;
-        discordId: string;
-        discordName: string;
-      };
-    }[];
-  };
+  team: Unpacked<TournamentTeamFindManyByTournamentId>;
   deleteMode?: boolean;
   showUnregister?: boolean;
 }) {
   const [, parentRoute] = useMatches();
-  const tournament = parentRoute.data as FindTournamentByNameForUrlI;
-  const user = useUser();
+  const parentRouteData = parentRoute.data as TournamentLoaderData;
+  const user = useUserNew();
 
-  const showDeleteButtons = (userToDeleteId: string) => {
+  // TODO: number
+  const showDeleteButtons = (userToDeleteId: number | string) => {
     return (
-      tournamentHasNotStarted(tournament) &&
-      deleteMode &&
-      userToDeleteId !== user?.id
+      parentRouteData.bracketId && deleteMode && userToDeleteId !== user?.id
     );
   };
 
   const showUnregisterButton = () => {
-    return tournamentHasNotStarted(tournament) && showUnregister;
+    return parentRouteData.bracketId && showUnregister;
   };
 
   return (
@@ -58,7 +46,9 @@ export function TeamRoster({
               loadingText="Unregistering..."
               onClick={(e) => {
                 if (
-                  !confirm(`Unregister ${team.name} from ${tournament.name}?`)
+                  !confirm(
+                    `Unregister ${team.name} from ${parentRouteData.pageTitle}?`
+                  )
                 ) {
                   e.preventDefault();
                 }
@@ -72,11 +62,11 @@ export function TeamRoster({
       </div>
       <div className="teams-tab__members-container">
         {team.members
-          .sort((a, b) => Number(b.captain) - Number(a.captain))
-          .map(({ member, captain }, i) => (
+          .sort((a, b) => Number(b.isCaptain) - Number(a.isCaptain))
+          .map((member, i) => (
             <div key={member.id} className="teams-tab__member">
               <div className="teams-tab__member__order-number">
-                {captain ? "C" : i + 1}
+                {member.isCaptain ? "C" : i + 1}
               </div>
               <div className="teams-tab__member__container">
                 <Avatar user={member} />
@@ -101,8 +91,10 @@ function DeleteFromRosterButton({
   playerId,
   teamId,
 }: {
-  playerId: string;
-  teamId: string;
+  // TODO: number
+  playerId: string | number;
+  // TODO: number
+  teamId: string | number;
 }) {
   const transition = useTransition();
   return (

@@ -60,7 +60,6 @@ export interface TournamentTeam {
 export interface TournamentTeamMember {
   member_id: number;
   team_id: number;
-  tournament_id: number;
   is_captain: number;
 }
 

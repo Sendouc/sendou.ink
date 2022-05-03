@@ -11,3 +11,4 @@
 - [ ] current timestamp string not number
 - [ ] all files below db to have .server
 - [ ] db calls to use function not const
+- [ ] make URL of format /1/sendous/in-the-zone-x where 1 = tournament-id. Validation of sendous and in-the-zone done in parent loader
