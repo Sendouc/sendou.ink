@@ -1,5 +1,5 @@
 import { sql } from "../sqlite3";
-import { TournamentTeam, TournamentTeamMember } from "../types";
+import { TournamentTeam, TournamentTeamMember, User } from "../types";
 
 const createTournamentTeamStm = sql.prepare(`
   INSERT INTO
@@ -49,9 +49,36 @@ export const create = sql.transaction(
 );
 
 const countStm = sql.prepare(
-  "SELECT COUNT(*) as count from tournament_teams WHERE tournament_id=$tournament_id"
+  "SELECT COUNT(*) as count FROM tournament_teams WHERE tournament_id=$tournament_id"
 );
 
 export const countByTournamentId = (tournament_id: number) => {
   return (countStm.get({ tournament_id }) as { count: number }).count;
+};
+
+const findByUserIdStm = sql.prepare(`
+  SELECT tournament_teams.* FROM tournament_teams
+    JOIN tournament_team_members ON tournament_teams.id = tournament_team_members.team_id
+    WHERE tournament_teams.tournament_id = $tournament_id AND tournament_team_members.member_id = $user_id
+`);
+
+const findMembers = sql.prepare(`
+  SELECT * FROM tournament_team_members
+    JOIN users on tournament_team_members.member_id = users.id
+    WHERE team_id = $team_id
+`);
+
+export type TournamentTeamFindByUserId = ReturnType<typeof findByUserId>;
+export const findByUserId = (params: {
+  tournament_id: number;
+  user_id?: number;
+}) => {
+  if (!params.user_id) return;
+
+  const team = findByUserIdStm.get(params) as TournamentTeam;
+  const members = findMembers.all({ team_id: team.id }) as Array<
+    TournamentTeamMember & User
+  >;
+
+  return { ...team, members };
 };

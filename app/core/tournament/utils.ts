@@ -1,4 +1,6 @@
 import invariant from "tiny-invariant";
+import { TournamentTeamFindByUserId } from "~/db/models/tournamentTeam";
+import { TournamentLoaderData } from "~/routes/to/$organization.$tournament";
 import { BracketModified } from "~/services/bracket";
 
 export function checkInHasStarted(checkInStartTime: string) {
@@ -74,3 +76,19 @@ export function allMatchesReported(bracket: BracketModified) {
 
 export const friendCodeRegExpString = "^(SW-)?[0-9]{4}-?[0-9]{4}-?[0-9]{4}$";
 export const friendCodeRegExp = new RegExp(friendCodeRegExpString, "i");
+
+export function membershipStatus({
+  userId,
+  team,
+}: {
+  userId?: number;
+  team: TournamentTeamFindByUserId;
+}): TournamentLoaderData["membershipStatus"] {
+  if (!userId || !team) return "NOT-REGISTERED";
+
+  const member = team.members.find((m) => m.member_id === userId);
+  invariant(member, "!member");
+
+  if (member.is_captain) return "CAPTAIN";
+  return "NOT-CAPTAIN";
+}

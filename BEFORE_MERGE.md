@@ -8,3 +8,5 @@
 - [ ] strict tables
 - [ ] make every named parameter snake_case in sql calls
 - [ ] db.users, db.tournaments etc.
+- [ ] current timestamp string not number
+- [ ] all files below db to have .server

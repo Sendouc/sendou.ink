@@ -12,7 +12,11 @@ import invariant from "tiny-invariant";
 import { z } from "zod";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { CheckinActions } from "~/components/tournament/CheckinActions";
-import { tournamentHasStarted } from "~/core/tournament/utils";
+import { TOURNAMENT_TEAM_ROSTER_MIN_SIZE } from "~/constants";
+import {
+  membershipStatus,
+  tournamentHasStarted,
+} from "~/core/tournament/utils";
 import { db } from "~/db";
 import { useUserNew } from "~/hooks/common";
 import { checkIn, FindTournamentByNameForUrlI } from "~/services/tournament";
@@ -83,6 +87,10 @@ export const loader: LoaderFunction = ({ params, context }) => {
   const namesForUrl = tournamentParamsSchema.parse(params);
 
   const tournament = db.tournament.findByNamesForUrl(namesForUrl);
+  const ownTeam = db.tournamentTeam.findByUserId({
+    user_id: user?.id,
+    tournament_id: tournament.id,
+  });
 
   return json<TournamentLoaderData>({
     pageTitle: tournament.name,
@@ -99,17 +107,18 @@ export const loader: LoaderFunction = ({ params, context }) => {
       tournamentId: tournament.id,
     }),
 
-    membershipStatus: "CAPTAIN",
+    membershipStatus: membershipStatus({ userId: user?.id, team: ownTeam }),
 
     bracketId: 1,
 
     checkIn: {
-      checkedIn: false,
-      enoughPlayers: false,
+      checkedIn: Boolean(ownTeam?.checked_in_timestamp),
+      enoughPlayers:
+        (ownTeam?.members ?? []).length >= TOURNAMENT_TEAM_ROSTER_MIN_SIZE,
       startTimestamp: secondsToMilliseconds(
         tournament.check_in_start_timestamp
       ),
-      endTimestamp: new Date().getTime(),
+      endTimestamp: tournament.start_time_timestamp,
     },
   });
 };
