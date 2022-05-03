@@ -19,13 +19,11 @@ const createTournamentTeamMemberStm = sql.prepare(`
     tournament_team_members (
       member_id,
       team_id,
-      tournament_id,
       is_captain
     )
     VALUES (
       $member_id,
       $team_id,
-      $tournament_id,
       $is_captain
     )
 `);
