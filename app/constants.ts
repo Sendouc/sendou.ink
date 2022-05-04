@@ -35,6 +35,8 @@ export const HIGHER_MMR_LIMIT = 750;
 
 export const MAX_CHAT_MESSAGE_LENGTH = 280;
 
+export const SQLITE_UNIQUE_CONSTRAINT_ERROR_CODE = "SQLITE_CONSTRAINT_UNIQUE";
+
 export const checkInClosesDate = (startTime: string): Date => {
   return new Date(new Date(startTime).getTime() - 1000 * 10);
 };

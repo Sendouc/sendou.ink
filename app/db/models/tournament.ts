@@ -41,7 +41,10 @@ export const create = sql.transaction(
   (
     input: Omit<
       Tournament,
-      "id" | "banner_text_color" | "banner_text_color_transparent"
+      | "id"
+      | "banner_text_color"
+      | "banner_text_color_transparent"
+      | "is_concluded"
     > & { bracket: Pick<TournamentBracket, "type"> }
   ) => {
     const { bracket, ...createTournamentArgs } = input;

@@ -35,6 +35,7 @@ CREATE TABLE "tournaments" (
   "banner_text_color" TEXT GENERATED ALWAYS AS (printf('hsl(%s)', banner_text_hsl_args)) VIRTUAL,
   "banner_text_color_transparent" TEXT GENERATED ALWAYS AS (printf('hsl(%s, 0.3)', banner_text_hsl_args)) VIRTUAL,
   "organizer_id" integer NOT NULL,
+  "is_concluded" integer CHECK ("is_concluded" IN (0, 1)) NOT NULL DEFAULT 0,
   FOREIGN KEY (organizer_id) REFERENCES organizations(id) ON DELETE RESTRICT
 );
 
@@ -63,7 +64,7 @@ CREATE INDEX tournament_map_pool_stage_id ON tournament_map_pool(stage_id);
 
 CREATE TABLE "tournament_teams" (
   "id" integer PRIMARY KEY,
-  "name" text NOT NULL,
+  "name" text UNIQUE NOT NULL,
   "seed" integer,
   "tournament_id" integer NOT NULL,
   "invite_code" text DEFAULT (lower(hex(randomblob(16)))) NOT NULL,

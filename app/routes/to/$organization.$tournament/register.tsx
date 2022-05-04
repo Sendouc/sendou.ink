@@ -1,4 +1,3 @@
-import { Prisma } from ".prisma/client";
 import { ActionFunction, LinksFunction, redirect } from "@remix-run/node";
 import {
   Form,
@@ -6,22 +5,30 @@ import {
   useLocation,
   useMatches,
   useNavigate,
+  useParams,
   useTransition,
 } from "@remix-run/react";
-import invariant from "tiny-invariant";
 import { z } from "zod";
 import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
 import { FormErrorMessage } from "~/components/FormErrorMessage";
 import { Label } from "~/components/Label";
-import { useUser } from "~/hooks/common";
-import styles from "~/styles/tournament-register.css";
-import { parseRequestFormData, requireUser } from "~/utils";
-import { tournamentFrontPage, tournamentManageTeamPage } from "~/utils/urls";
-import * as TournamentTeam from "~/models/TournamentTeam.server";
-import { FindTournamentByNameForUrlI } from "~/services/tournament";
-import { PleaseLogin } from "~/components/PleaseLogin";
 import { Navigate } from "~/components/Navigate";
+import { PleaseLogin } from "~/components/PleaseLogin";
+import { db } from "~/db";
+import { useUserNew } from "~/hooks/common";
+import styles from "~/styles/tournament-register.css";
+import {
+  notFoundIfFalsy,
+  parseRequestFormData,
+  requireUserNew,
+  validate,
+} from "~/utils";
+import { tournamentFrontPage, tournamentManageTeamPage } from "~/utils/urls";
+import {
+  TournamentLoaderData,
+  tournamentParamsSchema,
+} from "../$organization.$tournament";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -39,7 +46,6 @@ type ActionData = {
 
 const registerActionSchema = z.object({
   teamName: z.string().min(TEAM_NAME_MIN_LENGTH).max(TEAM_NAME_MAX_LENGTH),
-  tournamentId: z.string().uuid(),
 });
 
 export const action: ActionFunction = async ({
@@ -51,58 +57,62 @@ export const action: ActionFunction = async ({
     request,
     schema: registerActionSchema,
   });
-  const user = requireUser(context);
+  const user = requireUserNew(context);
+  const namesForUrl = tournamentParamsSchema.parse(params);
+  const tournament = notFoundIfFalsy(
+    db.tournament.findByNamesForUrl(namesForUrl)
+  );
 
-  // TODO: validate can register for tournament i.e. reg is open
+  validate(!tournament.is_concluded, "Tournament is concluded");
+  validate(
+    !db.tournamentTeam.findByUserId({
+      user_id: user.id,
+      tournament_id: tournament.id,
+    }),
+    "Already in a team"
+  );
 
-  try {
-    await TournamentTeam.create({
-      teamName: data.teamName,
-      tournamentId: data.tournamentId,
-      userId: user.id,
-    });
-  } catch (e) {
-    if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      if (e.code === "P2002" && e.message.includes("`name`")) {
-        return {
-          fieldErrors: { teamName: "Team name already taken." },
-          fields: { teamName: data.teamName },
-        };
-      }
-    }
-    throw e;
+  const result = db.tournamentTeam.create({
+    name: data.teamName,
+    tournament_id: tournament.id,
+    members: [
+      {
+        is_captain: 1,
+        member_id: user.id,
+      },
+    ],
+  });
+
+  if (result.error === "DUPLICATE_TEAM_NAME") {
+    return {
+      fieldErrors: { teamName: "Team name already taken." },
+      fields: { teamName: data.teamName },
+    };
   }
 
-  invariant(typeof params.organization === "string", "!params.organization.");
-  invariant(typeof params.tournament === "string", "!params.tournament.");
-  return redirect(
-    tournamentManageTeamPage({
-      tournament: params.tournament,
-      organization: params.organization,
-    })
-  );
+  return redirect(tournamentManageTeamPage(namesForUrl));
 };
 
 export default function RegisterPage() {
   const actionData = useActionData<ActionData | undefined>();
   const transition = useTransition();
-  const [, parentRoute] = useMatches();
-  const tournamentData = parentRoute.data as FindTournamentByNameForUrlI;
   const navigate = useNavigate();
   const location = useLocation();
-  const user = useUser();
+  const user = useUserNew();
+  const [, parentRoute] = useMatches();
+  const params = useParams();
+  const parentRouteData = parentRoute.data as TournamentLoaderData;
 
-  const isAlreadyInTeam = tournamentData.teams.some((roster) =>
-    roster.members.some(({ member }) => member.id === user?.id)
+  const isAlreadyInTeam = ["CAPTAIN", "NOT-CAPTAIN"].includes(
+    parentRouteData.membershipStatus
   );
 
-  if (isAlreadyInTeam || tournamentData.concluded)
+  if (isAlreadyInTeam || parentRouteData.concluded)
     return (
       <Navigate
-        to={tournamentFrontPage({
-          organization: tournamentData.organizer.nameForUrl,
-          tournament: tournamentData.nameForUrl,
-        })}
+        to={tournamentFrontPage(
+          params as Record<"tournament" | "organization", string>
+        )}
       />
     );
 
@@ -119,7 +129,6 @@ export default function RegisterPage() {
       <h2 className="tournament__register__header">Register now</h2>
       <div className="tournament__register__content">
         <Form method="post">
-          <input type="hidden" name="tournamentId" value={tournamentData.id} />
           <Label htmlFor="teamName">Team name</Label>
           <input
             name="teamName"

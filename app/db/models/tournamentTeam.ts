@@ -1,6 +1,8 @@
 import { CamelCasedProperties } from "type-fest";
+import { SQLITE_UNIQUE_CONSTRAINT_ERROR_CODE } from "~/constants";
 import { sql } from "../sqlite3";
 import { TournamentTeam, TournamentTeamMember, User } from "../types";
+import { SqliteError } from "better-sqlite3";
 
 const createTournamentTeamStm = sql.prepare(`
   INSERT INTO
@@ -28,12 +30,14 @@ const createTournamentTeamMemberStm = sql.prepare(`
     )
 `);
 
-export const create = sql.transaction(
-  (
-    input: Pick<TournamentTeam, "name" | "tournament_id"> & {
-      members: Pick<TournamentTeamMember, "member_id" | "is_captain">[];
-    }
-  ) => {
+type CreateTournamentTeamInput = Pick<
+  TournamentTeam,
+  "name" | "tournament_id"
+> & {
+  members: Pick<TournamentTeamMember, "member_id" | "is_captain">[];
+};
+const createTransaction = sql.transaction(
+  (input: CreateTournamentTeamInput) => {
     const { members, ...createTournamentTeamsArgs } = input;
     const info = createTournamentTeamStm.run(createTournamentTeamsArgs);
 
@@ -46,6 +50,21 @@ export const create = sql.transaction(
     }
   }
 );
+
+export const create = (input: CreateTournamentTeamInput) => {
+  try {
+    createTransaction(input);
+  } catch (e) {
+    if (
+      e instanceof SqliteError &&
+      e.code === SQLITE_UNIQUE_CONSTRAINT_ERROR_CODE
+    ) {
+      return { error: "DUPLICATE_TEAM_NAME" } as const;
+    } else throw e;
+  }
+
+  return { ok: true };
+};
 
 const countStm = sql.prepare(`
   SELECT COUNT(*) as count 

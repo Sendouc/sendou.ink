@@ -1,10 +1,7 @@
 // TODO: Warning: Text content did not match. Server: "57" Client: "56"
 import { Form, useLoaderData, useTransition } from "@remix-run/react";
 import * as React from "react";
-import {
-  TournamentAction,
-  TournamentLoaderData,
-} from "~/routes/to/$organization.$tournament";
+import { TournamentLoaderData } from "~/routes/to/$organization.$tournament";
 import { Button } from "../Button";
 import { AlertIcon } from "../icons/Alert";
 import { CheckInIcon } from "../icons/CheckIn";
@@ -102,11 +99,6 @@ export function CheckinActions() {
           method="post"
           className="tournament__action-section__button-container"
         >
-          <input
-            type="hidden"
-            name="_action"
-            value={TournamentAction.CHECK_IN}
-          />
           <Button
             variant="outlined"
             type="submit"

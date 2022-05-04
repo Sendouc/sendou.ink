@@ -36,26 +36,12 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: tournamentStylesUrl }];
 };
 
-// TODO: remove... this wont have more than one action
-export enum TournamentAction {
-  CHECK_IN = "CHECK_IN",
-}
-
 export const action: ActionFunction = async ({ request, context }) => {
   const data = Object.fromEntries(await request.formData());
   const user = requireUser(context);
 
-  switch (data._action) {
-    case TournamentAction.CHECK_IN: {
-      invariant(typeof data.teamId === "string", "Invalid type for teamId");
-
-      await checkIn({ teamId: data.teamId, userId: user.id });
-      break;
-    }
-    default: {
-      throw new Response("Bad Request", { status: 400 });
-    }
-  }
+  invariant(typeof data.teamId === "string", "Invalid type for teamId");
+  await checkIn({ teamId: data.teamId, userId: user.id });
   return new Response(undefined, { status: 200 });
 };
 
@@ -76,6 +62,7 @@ export type TournamentLoaderData = {
     startTimestamp: number;
     endTimestamp: number;
   };
+  concluded: boolean;
 } & PageTitle;
 
 export const tournamentParamsSchema = z.object({
@@ -118,6 +105,7 @@ export const loader: LoaderFunction = ({ params, context }) => {
       ),
       endTimestamp: tournament.start_time_timestamp,
     },
+    concluded: Boolean(tournament.is_concluded),
   });
 };
 

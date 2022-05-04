@@ -45,6 +45,7 @@ export interface Tournament {
   banner_text_color: string;
   banner_text_color_transparent: string;
   organizer_id: number;
+  is_concluded: number;
 }
 
 export interface TournamentTeam {
