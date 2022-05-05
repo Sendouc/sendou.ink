@@ -1,4 +1,5 @@
 import { TOURNAMENT_TEAM_ROSTER_MAX_SIZE } from "~/constants";
+import { TournamentTeam, TournamentTeamMember, User } from "~/db/types";
 import { matchIsOver, MatchIsOverArgs } from "./utils";
 
 interface IsTournamentAdminArgs {
@@ -39,12 +40,15 @@ export function tournamentHasNotStarted(tournament: {
 }
 
 /** Checks if given user is captain of the team. Captain is considered the admin of the team. */
-export function isCaptainOfTheTeam(
-  user: { id: string },
-  team: { members: { captain: boolean; memberId: string }[] }
-) {
-  return team.members.some(
-    ({ memberId, captain }) => captain && memberId === user.id
+export function isCaptainOfTheTeam({
+  user,
+  teamMembers,
+}: {
+  user: Pick<User, "id">;
+  teamMembers: (Pick<TournamentTeamMember, "is_captain"> & Pick<User, "id">)[];
+}) {
+  return teamMembers.some(
+    (member) => member.is_captain && member.id === user.id
   );
 }
 
@@ -53,6 +57,8 @@ export function tournamentTeamIsNotFull(team: { members: unknown[] }) {
   return team.members.length < TOURNAMENT_TEAM_ROSTER_MAX_SIZE;
 }
 
-export function teamHasNotCheckedIn(team: { checkedInTime: Date | null }) {
-  return !team.checkedInTime;
+export function teamHasNotCheckedIn(
+  team: Pick<TournamentTeam, "checked_in_timestamp">
+) {
+  return !team.checked_in_timestamp;
 }

@@ -1,34 +1,16 @@
-import { json, LoaderFunction } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { useMatches } from "@remix-run/react";
 import { TeamRoster } from "~/components/tournament/TeamRoster";
-import { db } from "~/db";
-import { TournamentTeamFindManyByTournamentId } from "~/db/models/tournamentTeam";
-import { notFoundIfFalsy } from "~/utils";
-import { tournamentParamsSchema } from "../$organization.$tournament";
-
-interface TeamsTabLoaderData {
-  teams: TournamentTeamFindManyByTournamentId;
-}
-
-export const loader: LoaderFunction = ({ params }) => {
-  const namesForUrl = tournamentParamsSchema.parse(params);
-  const tournament = notFoundIfFalsy(
-    db.tournament.findByNamesForUrl(namesForUrl)
-  );
-
-  return json<TeamsTabLoaderData>({
-    teams: db.tournamentTeam.findManyByTournamentId(tournament.id),
-  });
-};
+import { TournamentLoaderData } from "../$organization.$tournament";
 
 export default function TeamsTab() {
-  const data = useLoaderData<TeamsTabLoaderData>();
+  const [, parentRoute] = useMatches();
+  const { teams } = parentRoute.data as TournamentLoaderData;
 
-  if (!data.teams.length) return null;
+  if (!teams.length) return null;
 
   return (
     <div className="teams-tab">
-      {data.teams.map((team) => (
+      {teams.map((team) => (
         <TeamRoster team={team} key={team.id} />
       ))}
     </div>

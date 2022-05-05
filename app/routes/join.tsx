@@ -34,7 +34,7 @@ export const links: LinksFunction = () => {
 };
 
 const actionSchema = z.object({
-  inviteCode: z.string().uuid(),
+  inviteCode: z.string(),
 });
 
 export const action: ActionFunction = async ({ request, context }) => {

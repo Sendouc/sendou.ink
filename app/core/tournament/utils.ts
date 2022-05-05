@@ -1,7 +1,8 @@
 import invariant from "tiny-invariant";
-import { TournamentTeamFindByUserId } from "~/db/models/tournamentTeam";
+import { TournamentTeamFindManyByTournamentId } from "~/db/models/tournamentTeam";
 import { TournamentLoaderData } from "~/routes/to/$organization.$tournament";
 import { BracketModified } from "~/services/bracket";
+import { Unpacked } from "~/utils";
 
 export function checkInHasStarted(checkInStartTime: string) {
   return new Date(checkInStartTime) < new Date();
@@ -82,13 +83,13 @@ export function membershipStatus({
   team,
 }: {
   userId?: number;
-  team: TournamentTeamFindByUserId;
+  team?: Unpacked<TournamentTeamFindManyByTournamentId>;
 }): TournamentLoaderData["membershipStatus"] {
   if (!userId || !team) return "NOT-REGISTERED";
 
-  const member = team.members.find((m) => m.member_id === userId);
+  const member = team.members.find((m) => m.id === userId);
   invariant(member, "!member");
 
-  if (member.is_captain) return "CAPTAIN";
+  if (member.isCaptain) return "CAPTAIN";
   return "NOT-CAPTAIN";
 }

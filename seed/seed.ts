@@ -3,6 +3,7 @@ import {
   ADMIN_ID,
   ADMIN_TEST_AVATAR,
   ADMIN_TEST_DISCORD_ID,
+  NZAP_ID,
   NZAP_TEST_AVATAR,
   NZAP_TEST_DISCORD_ID,
 } from "~/constants";
@@ -195,6 +196,14 @@ const tournamentStages = {
   },
 };
 
+const trustRelationships = {
+  name: "trustRelationships",
+  execute: () => {
+    db.user.addTrust({ trust_giver_id: NZAP_ID, trust_receiver_id: ADMIN_ID });
+    db.user.addTrust({ trust_giver_id: 190, trust_receiver_id: ADMIN_ID });
+  },
+};
+
 const wipeDB = () => {
   const tablesToDelete = [
     "tournament_map_pool",
@@ -202,6 +211,7 @@ const wipeDB = () => {
     "tournament_teams",
     "tournaments",
     "organizations",
+    "trust_relationships",
     "users",
   ];
 
@@ -212,6 +222,7 @@ const wipeDB = () => {
 
 const commonSeeds = [
   users,
+  trustRelationships,
   organization,
   tournament,
   tournamentStages,

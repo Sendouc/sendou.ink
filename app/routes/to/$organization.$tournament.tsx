@@ -18,6 +18,7 @@ import {
   tournamentHasStarted,
 } from "~/core/tournament/utils";
 import { db } from "~/db";
+import { TournamentTeamFindManyByTournamentId } from "~/db/models/tournamentTeam";
 import { useUserNew } from "~/hooks/common";
 import { checkIn, FindTournamentByNameForUrlI } from "~/services/tournament";
 import {
@@ -46,7 +47,7 @@ export const action: ActionFunction = async ({ request, context }) => {
 };
 
 export type TournamentLoaderData = {
-  teamCount: number;
+  teams: TournamentTeamFindManyByTournamentId;
   /** Bracket id to link to. If undefined means tournament has not started yet */
   bracketId?: number;
   membershipStatus: "CAPTAIN" | "NOT-CAPTAIN" | "NOT-REGISTERED";
@@ -77,10 +78,10 @@ export const loader: LoaderFunction = ({ params, context }) => {
   const tournament = notFoundIfFalsy(
     db.tournament.findByNamesForUrl(namesForUrl)
   );
-  const ownTeam = db.tournamentTeam.findByUserId({
-    user_id: user?.id,
-    tournament_id: tournament.id,
-  });
+
+  const teams = db.tournamentTeam.findManyByTournamentId(tournament.id);
+
+  const ownTeam = teams.find((t) => t.members.some((m) => m.id === user?.id));
 
   return json<TournamentLoaderData>({
     pageTitle: tournament.name,
@@ -89,7 +90,7 @@ export const loader: LoaderFunction = ({ params, context }) => {
       textColor: tournament.banner_text_color,
       textColorTransparent: tournament.banner_text_color_transparent,
     },
-    teamCount: db.tournamentTeam.countByTournamentId(tournament.id),
+    teams,
     isTournamentAdmin: db.tournament.isAdmin({
       userId: user?.id,
       tournamentId: tournament.id,
@@ -131,7 +132,7 @@ export default function TournamentPage() {
     const result: { code: string; text: string }[] = [
       { code: "", text: "Overview" },
       { code: "map-pool", text: "Map Pool" },
-      { code: "teams", text: `Teams (${data.teamCount})` },
+      { code: "teams", text: `Teams (${data.teams.length})` },
     ];
     const tournamentIsOver = false;
 

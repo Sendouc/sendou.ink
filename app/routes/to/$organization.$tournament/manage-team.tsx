@@ -1,4 +1,3 @@
-import { Prisma } from ".prisma/client";
 import {
   ActionFunction,
   json,
@@ -6,8 +5,14 @@ import {
   LoaderFunction,
   redirect,
 } from "@remix-run/node";
-import { useActionData, useLoaderData, useLocation } from "@remix-run/react";
+import {
+  useActionData,
+  useLoaderData,
+  useLocation,
+  useMatches,
+} from "@remix-run/react";
 import invariant from "tiny-invariant";
+import { CamelCasedProperties } from "type-fest";
 import { z } from "zod";
 import { AddPlayers } from "~/components/AddPlayers";
 import { Alert } from "~/components/Alert";
@@ -17,17 +22,22 @@ import { TOURNAMENT_TEAM_ROSTER_MAX_SIZE } from "~/constants";
 import {
   isCaptainOfTheTeam,
   teamHasNotCheckedIn,
-  tournamentHasNotStarted,
-  tournamentTeamIsNotFull,
 } from "~/core/tournament/validators";
-import * as Tournament from "~/models/Tournament.server";
-import * as TournamentTeam from "~/models/TournamentTeam.server";
-import * as TournamentTeamMember from "~/models/TournamentTeamMember.server";
-import type { FindManyByTrustReceiverId } from "~/models/TrustRelationship.server";
-import * as User from "~/models/User.server";
+import { db } from "~/db";
+import { User } from "~/db/types";
+import { useUserNew } from "~/hooks/common";
 import styles from "~/styles/tournament-manage-team.css";
-import { parseRequestFormData, requireUser, validate } from "~/utils";
+import {
+  notFoundIfFalsy,
+  parseRequestFormData,
+  requireUserNew,
+  validate,
+} from "~/utils";
 import { tournamentFrontPage } from "~/utils/urls";
+import {
+  TournamentLoaderData,
+  tournamentParamsSchema,
+} from "../$organization.$tournament";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -36,17 +46,14 @@ export const links: LinksFunction = () => {
 const actionSchema = z.union([
   z.object({
     _action: z.literal("ADD_PLAYER"),
-    userId: z.string().uuid(),
-    teamId: z.string().uuid(),
+    userId: z.preprocess(Number, z.number().int()),
   }),
   z.object({
     _action: z.literal("DELETE_PLAYER"),
-    userId: z.string().uuid(),
-    teamId: z.string().uuid(),
+    userId: z.preprocess(Number, z.number().int()),
   }),
   z.object({
     _action: z.literal("UNREGISTER"),
-    teamId: z.string().uuid(),
   }),
 ]);
 
@@ -56,6 +63,7 @@ type ActionData = {
 };
 
 export const action: ActionFunction = async ({
+  params,
   request,
   context,
 }): Promise<ActionData> => {
@@ -63,56 +71,57 @@ export const action: ActionFunction = async ({
     request,
     schema: actionSchema,
   });
-  const user = requireUser(context);
+  const user = requireUserNew(context);
 
-  const tournamentTeam = await TournamentTeam.findById(data.teamId);
-  validate(tournamentTeam, "Invalid tournament team id");
-  validate(isCaptainOfTheTeam(user, tournamentTeam), "Not captain of the team");
+  const namesForUrl = tournamentParamsSchema.parse(params);
+  const tournament = notFoundIfFalsy(
+    db.tournament.findByNamesForUrl(namesForUrl)
+  );
+
+  const ownTeam = db.tournamentTeam.findByUserId({
+    user_id: user.id,
+    tournament_id: tournament.id,
+  });
+  validate(ownTeam, "Not registered");
+  validate(
+    isCaptainOfTheTeam({ user, teamMembers: ownTeam.members }),
+    "Not captain of the team"
+  );
 
   switch (data._action) {
     case "ADD_PLAYER": {
-      try {
-        validate(tournamentTeamIsNotFull(tournamentTeam), "Team is full");
-
-        await TournamentTeamMember.joinTeam({
-          tournamentId: tournamentTeam.tournament.id,
-          teamId: data.teamId,
-          memberId: data.userId,
-        });
-      } catch (e) {
-        if (e instanceof Prisma.PrismaClientKnownRequestError) {
-          if (e.code === "P2002" && e.message.includes("`tournamentId`")) {
-            return {
-              error: { userId: "This player is already in a team." },
-            };
-          }
-        }
-        throw e;
-      }
+      validate(
+        !db.tournamentTeam.findByUserId({
+          user_id: data.userId,
+          tournament_id: tournament.id,
+        }),
+        "Already in team"
+      );
+      db.tournamentTeam.joinTeam({ user_id: data.userId, team_id: ownTeam.id });
 
       return { ok: "ADD_PLAYER" };
     }
     case "DELETE_PLAYER": {
       validate(data.userId !== user.id, "Can't remove self");
       validate(
-        teamHasNotCheckedIn(tournamentTeam),
+        teamHasNotCheckedIn(ownTeam),
         "Can't remove players after checking in"
       );
 
-      await TournamentTeamMember.del({
-        memberId: data.userId,
-        tournamentId: tournamentTeam.tournament.id,
+      db.tournamentTeam.leaveTeam({
+        team_id: ownTeam.id,
+        user_id: data.userId,
       });
 
       return { ok: "DELETE_PLAYER" };
     }
     case "UNREGISTER": {
-      const tournament = await Tournament.findById(tournamentTeam.tournamentId);
-      invariant(tournament, "!tournament");
+      validate(
+        !db.tournamentBracket.activeIdByTournamentId(tournament.id),
+        "Tournament is ongoing"
+      );
 
-      validate(tournamentHasNotStarted(tournament), "Tournament is ongoing");
-
-      await TournamentTeam.unregister(data.teamId);
+      db.tournamentTeam.del(ownTeam.id);
 
       return { ok: "UNREGISTER" };
     }
@@ -125,42 +134,36 @@ export const action: ActionFunction = async ({
   }
 };
 
-type Data = {
-  ownTeam: NonNullable<Tournament.OwnTeam>;
-  trustingUsers: FindManyByTrustReceiverId;
+export type ManageTeamLoaderData = {
+  inviteCode: string;
+  trustingUsers: CamelCasedProperties<Pick<User, "id" | "discord_name">>[];
 };
 
-const typedJson = (args: Data) => json(args);
+export const loader: LoaderFunction = ({ params, context }) => {
+  const namesForUrl = tournamentParamsSchema.parse(params);
+  const tournament = notFoundIfFalsy(
+    db.tournament.findByNamesForUrl(namesForUrl)
+  );
 
-export const loader: LoaderFunction = async ({ params, context }) => {
-  const parsedParams = z
-    .object({ organization: z.string(), tournament: z.string() })
-    .parse(params);
+  const user = requireUserNew(context);
 
-  const user = requireUser(context);
-  const [ownTeam, trustingUsers] = await Promise.all([
-    Tournament.ownTeam({
-      organizerNameForUrl: parsedParams.organization,
-      tournamentNameForUrl: parsedParams.tournament,
-      user,
-    }),
-    User.findTrusters(user.id),
-  ]);
+  const ownTeam = db.tournamentTeam.findByUserId({
+    user_id: user.id,
+    tournament_id: tournament.id,
+  });
 
-  if (!ownTeam) {
-    return redirect(
-      tournamentFrontPage({
-        organization: parsedParams.organization,
-        tournament: parsedParams.tournament,
-      })
-    );
+  if (!ownTeam || !isCaptainOfTheTeam({ user, teamMembers: ownTeam.members })) {
+    return redirect(tournamentFrontPage(namesForUrl));
   }
 
-  return typedJson({
-    ownTeam,
-    trustingUsers: trustingUsers.filter(({ trustGiver }) => {
-      return !ownTeam.members.some(({ member }) => member.id === trustGiver.id);
-    }),
+  return json<ManageTeamLoaderData>({
+    inviteCode: ownTeam.invite_code,
+    trustingUsers: db.user
+      .trustedPlayersAvailableForTournamentTeam({
+        trust_receiver_id: user.id,
+        tournament_id: tournament.id,
+      })
+      .map((u) => ({ id: u.id, discordName: u.discord_name })),
   });
 };
 
@@ -168,7 +171,15 @@ export const loader: LoaderFunction = async ({ params, context }) => {
 export default function ManageTeamPage() {
   const actionData = useActionData<ActionData>();
   const location = useLocation();
-  const { ownTeam, trustingUsers } = useLoaderData<Data>();
+  const data = useLoaderData<ManageTeamLoaderData>();
+  const [, parentRoute] = useMatches();
+  const { teams } = parentRoute.data as TournamentLoaderData;
+  const user = useUserNew();
+
+  const ownTeam = teams.find((t) =>
+    t.members.some((m) => m.id === user?.id && m.isCaptain)
+  );
+  invariant(ownTeam, "!ownTeam");
 
   return (
     <div className="tournament__manage-team">
@@ -180,7 +191,7 @@ export default function ManageTeamPage() {
       <div className="tournament__manage-team__roster-container">
         <TeamRoster
           team={ownTeam}
-          deleteMode={!ownTeam.checkedInTime}
+          deleteMode={!ownTeam.checked_in_timestamp}
           showUnregister
         />
       </div>
@@ -189,12 +200,9 @@ export default function ManageTeamPage() {
           pathname={location.pathname
             .replace("manage-team", "join-team")
             .slice(1)}
-          inviteCode={ownTeam.inviteCode}
-          trustingUsers={trustingUsers}
-          hiddenInputs={[
-            { name: "_action", value: "ADD_PLAYER" },
-            { name: "teamId", value: ownTeam.id },
-          ]}
+          inviteCode={data.inviteCode}
+          trustingUsers={data.trustingUsers}
+          hiddenInputs={[{ name: "_action", value: "ADD_PLAYER" }]}
           addUserError={actionData?.error?.userId}
           legendText="Add players to team"
         />

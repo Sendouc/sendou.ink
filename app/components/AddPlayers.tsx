@@ -1,6 +1,6 @@
 import { Form } from "@remix-run/react";
 import { useBaseURL, useTimeoutState } from "~/hooks/common";
-import { FindManyByTrustReceiverId } from "~/models/TrustRelationship.server";
+import { ManageTeamLoaderData } from "~/routes/to/$organization.$tournament/manage-team";
 import { Button } from "./Button";
 import { FormErrorMessage } from "./FormErrorMessage";
 import { Label } from "./Label";
@@ -18,7 +18,7 @@ export function AddPlayers({
   pathname: string;
   inviteCode: string;
   addUserError?: string;
-  trustingUsers: FindManyByTrustReceiverId;
+  trustingUsers: ManageTeamLoaderData["trustingUsers"];
   hiddenInputs: { name: string; value: string }[];
   tinyButtons?: boolean;
   legendText: string;
@@ -57,9 +57,9 @@ export function AddPlayers({
               Add players you previously played with
             </Label>
             <select className="add-players__select" name="userId" id="userId">
-              {trustingUsers.map(({ trustGiver }) => (
-                <option key={trustGiver.id} value={trustGiver.id}>
-                  {trustGiver.discordName}
+              {trustingUsers.map((user) => (
+                <option key={user.id} value={user.id}>
+                  {user.discordName}
                 </option>
               ))}
             </select>

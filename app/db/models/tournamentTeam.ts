@@ -66,6 +66,35 @@ export const create = (input: CreateTournamentTeamInput) => {
   return { ok: true };
 };
 
+const delStm = sql.prepare(`
+  DELETE FROM tournament_teams
+    WHERE id = $team_id
+`);
+
+export function del(team_id: number) {
+  delStm.run({ team_id });
+}
+
+const joinTeamStm = sql.prepare(`
+  INSERT INTO tournament_team_members
+    (member_id, team_id)
+  VALUES
+    ($user_id, $team_id)
+`);
+
+export function joinTeam(input: { user_id: number; team_id: number }) {
+  joinTeamStm.run(input);
+}
+
+const leaveTeamStm = sql.prepare(`
+  DELETE FROM tournament_team_members
+    WHERE member_id = $user_id AND team_id = $team_id
+`);
+
+export function leaveTeam(input: { user_id: number; team_id: number }) {
+  leaveTeamStm.run(input);
+}
+
 const countStm = sql.prepare(`
   SELECT COUNT(*) as count 
     FROM tournament_teams 
@@ -77,7 +106,7 @@ export const countByTournamentId = (tournament_id: number) => {
 };
 
 const findManyByTournamentIdStm = sql.prepare(`
-  SELECT id, name, (
+  SELECT id, name, checked_in_timestamp, (
       SELECT json_group_array(
         json_object(
           'id', users.id, 
@@ -109,7 +138,7 @@ export function findManyByTournamentId(tournament_id: number) {
       // eslint-disable-next-line
       ({ ...t, members: JSON.parse(t.members) } as Pick<
         TournamentTeam,
-        "id" | "name"
+        "id" | "name" | "checked_in_timestamp"
       > & {
         members: CamelCasedProperties<
           Pick<User, "id" | "discord_avatar" | "discord_id" | "discord_name"> &
@@ -131,6 +160,7 @@ const findMembers = sql.prepare(`
     WHERE team_id = $team_id
 `);
 
+// TODO: rename... findOwnTeam
 export type TournamentTeamFindByUserId = ReturnType<typeof findByUserId>;
 export const findByUserId = (params: {
   tournament_id: number;

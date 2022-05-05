@@ -90,7 +90,7 @@ CREATE INDEX tournament_team_members_member_id ON tournament_team_members(member
 CREATE TABLE "trust_relationships" (
   "trust_giver_id" integer NOT NULL,
   "trust_receiver_id" integer NOT NULL,
-  "created_at_timestamp" integer NOT NULL,
+  "created_at_timestamp" integer DEFAULT (strftime('%s', 'now')) NOT NULL,
   FOREIGN KEY (trust_giver_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (trust_receiver_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -172,7 +172,7 @@ CREATE TABLE "tournament_match_results" (
   "position" integer NOT NULL,
   "winner_id" integer NOT NULL,
   "reporter_id" integer NOT NULL,
-  "created_at_timestamp" integer NOT NULL,
+  "created_at_timestamp" integer DEFAULT (strftime('%s', 'now')) NOT NULL,
   FOREIGN KEY (match_id) REFERENCES tournament_matches(id) ON DELETE CASCADE,
   FOREIGN KEY (reporter_id) REFERENCES users(id) ON DELETE RESTRICT
 );

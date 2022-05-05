@@ -23,12 +23,12 @@ export function TeamRoster({
   // TODO: number
   const showDeleteButtons = (userToDeleteId: number | string) => {
     return (
-      parentRouteData.bracketId && deleteMode && userToDeleteId !== user?.id
+      !parentRouteData.bracketId && deleteMode && userToDeleteId !== user?.id
     );
   };
 
   const showUnregisterButton = () => {
-    return parentRouteData.bracketId && showUnregister;
+    return !parentRouteData.bracketId && showUnregister;
   };
 
   return (
