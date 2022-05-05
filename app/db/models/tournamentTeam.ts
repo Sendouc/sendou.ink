@@ -1,8 +1,8 @@
-import { CamelCasedProperties } from "type-fest";
+import { SqliteError } from "better-sqlite3";
+import { CamelCasedPropertiesDeep } from "type-fest";
 import { SQLITE_UNIQUE_CONSTRAINT_ERROR_CODE } from "~/constants";
 import { sql } from "../sqlite3";
 import { TournamentTeam, TournamentTeamMember, User } from "../types";
-import { SqliteError } from "better-sqlite3";
 
 const createTournamentTeamStm = sql.prepare(`
   INSERT INTO
@@ -106,7 +106,7 @@ export const countByTournamentId = (tournament_id: number) => {
 };
 
 const findManyByTournamentIdStm = sql.prepare(`
-  SELECT id, name, checked_in_timestamp, (
+  SELECT id, name, checked_in_timestamp as checkedInTimestamp, (
       SELECT json_group_array(
         json_object(
           'id', users.id, 
@@ -136,15 +136,15 @@ export function findManyByTournamentId(tournament_id: number) {
   return teams.map(
     (t) =>
       // eslint-disable-next-line
-      ({ ...t, members: JSON.parse(t.members) } as Pick<
-        TournamentTeam,
-        "id" | "name" | "checked_in_timestamp"
-      > & {
-        members: CamelCasedProperties<
-          Pick<User, "id" | "discord_avatar" | "discord_id" | "discord_name"> &
-            Pick<TournamentTeamMember, "is_captain">
-        >[];
-      })
+      ({ ...t, members: JSON.parse(t.members) } as CamelCasedPropertiesDeep<
+        Pick<TournamentTeam, "id" | "name" | "checked_in_timestamp"> & {
+          members: (Pick<
+            User,
+            "id" | "discord_avatar" | "discord_id" | "discord_name"
+          > &
+            Pick<TournamentTeamMember, "is_captain">)[];
+        }
+      >)
   );
 }
 

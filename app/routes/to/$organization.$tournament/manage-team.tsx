@@ -191,7 +191,7 @@ export default function ManageTeamPage() {
       <div className="tournament__manage-team__roster-container">
         <TeamRoster
           team={ownTeam}
-          deleteMode={!ownTeam.checked_in_timestamp}
+          deleteMode={!ownTeam.checkedInTimestamp}
           showUnregister
         />
       </div>
