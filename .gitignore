@@ -1,12 +1,6 @@
 node_modules
 
-.env
 /.cache
-/server/build
-/public/build
 /build
-backup.sql
-
-db.sqlite3
-db.sqlite3-shm
-db.sqlite3-wal
+/public/build
+.env
