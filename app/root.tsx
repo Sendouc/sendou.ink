@@ -1,3 +1,4 @@
+import * as React from "react";
 import styles from "./tailwind.css";
 
 import type { LinksFunction, MetaFunction } from "@remix-run/node";
@@ -26,7 +27,9 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Outlet />
+        <React.StrictMode>
+          <Outlet />
+        </React.StrictMode>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
