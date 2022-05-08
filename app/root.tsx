@@ -13,7 +13,7 @@ import {
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
-  title: "New Remix App",
+  title: "sendou.ink",
   viewport: "width=device-width,initial-scale=1",
 });
 
@@ -26,9 +26,11 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="bg-deep-blue text-slate-50">
         <React.StrictMode>
-          <Outlet />
+          <Layout>
+            <Outlet />
+          </Layout>
         </React.StrictMode>
         <ScrollRestoration />
         <Scripts />
@@ -36,4 +38,8 @@ export default function App() {
       </body>
     </html>
   );
+}
+
+function Layout({ children }: { children: React.ReactNode }) {
+  return <main>{children}</main>;
 }
