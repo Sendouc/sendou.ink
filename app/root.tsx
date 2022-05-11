@@ -41,5 +41,12 @@ export default function App() {
 }
 
 function Layout({ children }: { children: React.ReactNode }) {
-  return <main>{children}</main>;
+  return (
+    <main>
+      <form method="post" action="/auth">
+        <button type="submit">log in</button>
+      </form>
+      {children}
+    </main>
+  );
 }
