@@ -8,7 +8,7 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-import { authenticator } from "@/core/authenticator.server";
+import { authenticator } from "~/core/authenticator.server";
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",

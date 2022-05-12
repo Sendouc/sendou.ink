@@ -1,6 +1,6 @@
 import { DISCORD_AUTH_KEY } from "./authenticator.server";
-import { db } from "@/db";
-import type { User } from "@/db/types";
+import { db } from "~/db";
+import type { User } from "~/db/types";
 import type { OAuth2Profile } from "remix-auth-oauth2";
 import { OAuth2Strategy } from "remix-auth-oauth2";
 import invariant from "tiny-invariant";

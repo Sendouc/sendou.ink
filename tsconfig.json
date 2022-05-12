@@ -11,7 +11,7 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./app/*"]
+      "~/*": ["./app/*"]
     },
     "noEmit": true,
     "forceConsistentCasingInFileNames": true,

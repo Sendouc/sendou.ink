@@ -1,4 +1,4 @@
-import { authenticator, DISCORD_AUTH_KEY } from "@/core/authenticator.server";
+import { authenticator, DISCORD_AUTH_KEY } from "~/core/authenticator.server";
 import type { LoaderFunction } from "@remix-run/node";
 
 export const loader: LoaderFunction = async ({ request }) => {
