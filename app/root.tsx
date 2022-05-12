@@ -1,5 +1,5 @@
 import * as React from "react";
-import type { MetaFunction } from "@remix-run/node";
+import type { LoaderFunction, MetaFunction } from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -8,12 +8,21 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
+import { authenticator } from "@/core/authenticator.server";
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
   title: "sendou.ink",
   viewport: "width=device-width,initial-scale=1",
 });
+
+export const loader: LoaderFunction = async ({ request }) => {
+  const user = await authenticator.isAuthenticated(request);
+
+  console.log({ user });
+
+  return null;
+};
 
 export default function App() {
   return (
