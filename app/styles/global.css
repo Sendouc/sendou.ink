@@ -1,0 +1,316 @@
+:root {
+  color-scheme: dark;
+
+  --bg: hsl(237.3deg 42.3% 30.6%);
+  --bg-darker: hsl(237.3deg 42.3% 26.6%);
+  --bg-lighter: hsl(237.3deg 42.3% 35.6%);
+  --bg-lighter-transparent: hsla(237.3deg 42.3% 35.6% / 50%);
+  --bg-darker-very-transparent: hsla(237.3deg 42.3% 26.6% / 50%);
+  --bg-darker-transparent: hsla(237.3deg 42.3% 26.6% / 90%);
+  --bg-modal-backdrop: hsla(237deg 98% 1% / 70%);
+  --border: hsl(237.3deg 42.3% 45.6%);
+  --button-text: rgb(0 0 0 / 85%);
+  --button-text-transparent: rgb(0 0 0 / 65%);
+  --text: rgb(255 255 255 / 95%);
+  --text-lighter: rgb(255 255 255 / 55%);
+  --theme-error: rgb(219 70 65);
+  --theme-error-transparent: rgba(219 70 65 / 75%);
+  --theme-warning: #f5f587;
+  --theme-info: #a3a6ff;
+  --theme-success: #a3ffae;
+  --theme: hsl(255deg 66.7% 75%);
+  --theme-transparent: hsl(255deg 66.7% 75% / 40%);
+  --theme-secondary: hsl(85deg 66.7% 55.3%);
+
+  /* background-pattern.svg not using this currently */
+  --theme-pattern: #6741d9;
+  --rounded: 16px;
+  --rounded-sm: 10px;
+  --fonts-xl: 1.5rem;
+  --fonts-lg: 1.2rem;
+  --fonts-md: 1rem;
+  --fonts-sm: 0.9rem;
+  --fonts-xs: 0.8rem;
+  --fonts-xxs: 0.7rem;
+  --extra-bold: 700;
+  --bold: 600;
+  --semi-bold: 500;
+  --body: 400;
+  --s-1: 0.25rem;
+  --s-1-5: 0.375rem;
+  --s-2: 0.5rem;
+  --s-2-5: 0.625rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.25rem;
+  --s-6: 1.5rem;
+  --s-7: 1.75rem;
+  --s-8: 2rem;
+  --s-9: 2.25rem;
+  --s-10: 2.5rem;
+  --s-11: 2.75rem;
+  --s-12: 3rem;
+  --s-14: 3.5rem;
+  --s-16: 4rem;
+  --s-20: 5rem;
+  --s-24: 6rem;
+  --s-28: 7rem;
+  --s-32: 8rem;
+  --s-40: 10rem;
+  --s-48: 12rem;
+  --s-56: 14rem;
+  --s-64: 16rem;
+  --s-72: 18rem;
+  --s-80: 20rem;
+  --s-96: 2rem;
+
+  /* letter-spacing: */
+  --sparse: 0.4px;
+}
+
+/* xs: "(min-width: 480px)",
+sm: "(min-width: 640px)",
+md: "(min-width: 768px)",
+lg: "(min-width: 1024px)",
+xl: "(min-width: 1280px)", */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: antialiased;
+  line-height: 1.55;
+}
+
+*:focus:not(:focus-visible) {
+  outline: none !important;
+}
+
+a {
+  color: var(--theme);
+  font-weight: var(--semi-bold);
+  text-decoration: none;
+}
+
+button {
+  display: flex;
+  width: auto;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--theme);
+  appearance: none;
+  background: var(--theme);
+  border-radius: var(--rounded-sm);
+  color: var(--button-text);
+  cursor: pointer;
+  font-size: var(--fonts-sm);
+  font-weight: var(--bold);
+  line-height: 1.2;
+  outline-offset: 2px;
+  padding-block: var(--s-1-5);
+  padding-inline: var(--s-2-5);
+  user-select: none;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--theme);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+button.outlined {
+  background-color: transparent;
+  color: var(--theme);
+}
+
+button.outlined-success {
+  border-color: var(--theme-success);
+  background-color: transparent;
+  color: var(--theme-success);
+}
+
+button.tiny {
+  font-size: var(--fonts-xs);
+  padding-block: var(--s-1);
+  padding-inline: var(--s-2);
+}
+
+button.minimal {
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  color: var(--theme);
+}
+
+button.minimal-success {
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  color: var(--theme-success);
+}
+
+button.success {
+  border-color: var(--theme-success);
+  background-color: var(--theme-success);
+  outline-color: var(--theme-success);
+}
+
+button.destructive {
+  border-color: var(--theme-error);
+  background-color: transparent;
+  color: var(--theme-error);
+  outline-color: var(--theme-error);
+}
+
+button.minimal-destructive {
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  color: var(--theme-error);
+  outline-color: var(--theme-error);
+}
+
+button.loading {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+button > .button-icon {
+  width: 1.25rem;
+  margin-inline-end: var(--s-1-5);
+}
+
+button.tiny > .button-icon {
+  width: 1rem;
+  margin-inline-end: var(--s-1);
+}
+
+textarea:not(.plain) {
+  padding: var(--s-2) var(--s-3);
+  border: 1px solid var(--border);
+  accent-color: var(--theme-secondary);
+  background-color: transparent;
+  border-radius: var(--rounded);
+  color: var(--text);
+  font-size: var(--fonts-sm);
+  outline: none;
+  overflow-wrap: normal;
+  overflow-x: scroll;
+  white-space: pre;
+}
+
+textarea:not(.plain):focus-within {
+  border-color: transparent;
+
+  /* TODO: rectangle on Safari */
+  outline: 2px solid var(--theme);
+}
+
+input:not(.plain) {
+  height: 1rem;
+  padding: var(--s-4) var(--s-3);
+  border: 1px solid var(--border);
+  accent-color: var(--theme-secondary);
+  background-color: transparent;
+  border-radius: var(--rounded);
+  color: var(--text);
+  font-size: var(--fonts-sm);
+  outline: none;
+}
+
+input:user-invalid {
+  border-color: transparent;
+  outline: 2px solid var(--theme-error);
+}
+
+input:not(.plain):focus-within {
+  border-color: transparent;
+
+  /* TODO: rectangle on Safari */
+  outline: 2px solid var(--theme);
+}
+
+input:not(.plain)::placeholder {
+  color: var(--text-lighter);
+  font-size: var(--fonts-xxs);
+  font-weight: var(--semi-bold);
+  letter-spacing: 0.5px;
+}
+
+input:not(.plain).error {
+  border-color: transparent;
+  outline: 2px solid var(--theme-error);
+}
+
+input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+}
+
+.label {
+  display: block;
+  font-size: var(--fonts-xs);
+  font-weight: var(--bold);
+  margin-block-end: var(--s-1);
+}
+
+fieldset {
+  border: none;
+  background-color: var(--bg-lighter);
+  border-radius: var(--rounded);
+  padding-block: var(--s-6);
+  padding-inline: var(--s-7);
+}
+
+legend {
+  padding: var(--s-2);
+  background: url("/svg/background-pattern.svg");
+  background-color: var(--bg);
+  border-radius: 2px;
+  border-radius: var(--rounded-sm);
+  font-size: var(--fonts-sm);
+  font-weight: var(--bold);
+}
+
+article {
+  padding-inline: var(--s-3);
+  white-space: pre-line;
+}
+
+select {
+  all: unset;
+  width: 90%;
+  border: 1px solid var(--border);
+  background: var(--select-background, var(--bg-lighter));
+
+  /* TODO: Get color from CSS var */
+  background-image: url('data:image/svg+xml;utf8,<svg width="1rem" color="rgb(255 255 255 / 55%)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>');
+  background-position-x: 95%;
+  background-position-y: 50%;
+  background-repeat: no-repeat;
+  border-radius: var(--rounded);
+  cursor: pointer;
+  font-size: var(--fonts-sm);
+  font-weight: 500;
+  padding-block: 3.5px;
+  padding-inline: var(--s-3);
+}
+
+select::selection {
+  overflow: hidden;
+  font-weight: bold;
+}
+
+hr {
+  border-color: var(--theme-transparent);
+}
