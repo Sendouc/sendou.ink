@@ -32,28 +32,6 @@
   visibility: visible;
 }
 
-.avatar__img {
-  border-radius: var(--rounded);
-  filter: none;
-  text-indent: -10000px;
-}
-
-/* Without this the avatar becomes completely round when small */
-.avatar__img.tiny {
-  border-radius: 14px;
-}
-
-.avatar__placeholder {
-  background-image: url("/svg/background-pattern.svg");
-  block-size: var(--_avatar-size, 2.5rem);
-  border-radius: var(--rounded);
-  inline-size: var(--_avatar-size, 2.5rem);
-}
-
-.avatar__placeholder.tiny {
-  border-radius: 14px;
-}
-
 .popover-content {
   z-index: 1;
   max-width: 20rem;
@@ -71,6 +49,12 @@
     backdrop-filter: blur(10px) brightness(75%);
     background-color: transparent;
   }
+}
+
+.avatar {
+  background-color: var(--bg-lighter);
+  background-image: url("/svg/background-pattern.svg");
+  border-radius: 50%;
 }
 
 /*

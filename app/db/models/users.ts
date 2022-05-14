@@ -49,3 +49,13 @@ export function upsert(
 ) {
   return upsertStm.get(input) as User;
 }
+
+const findByIdentifierStm = sql.prepare(`
+  SELECT *
+    FROM "User"
+    WHERE "discordId" = $identifier
+`);
+
+export function findByIdentifier(identifier: string) {
+  return findByIdentifierStm.get({ identifier }) as User | undefined;
+}

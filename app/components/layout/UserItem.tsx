@@ -1,6 +1,7 @@
 import { Link } from "@remix-run/react";
 import { useUser } from "~/hooks/useUser";
 import { LOG_IN_URL, LOG_OUT_URL, userPage } from "~/utils/urls";
+import { Avatar } from "../Avatar";
 import { Button } from "../Button";
 import { DiscordIcon } from "../icons/Discord";
 import { LogOutIcon } from "../icons/LogOut";
@@ -12,15 +13,7 @@ export function UserItem() {
 
   if (user && user.discordAvatar)
     return (
-      <Popover
-        trigger={
-          <img
-            className="layout__avatar"
-            src={`https://cdn.discordapp.com/avatars/${user.discordId}/${user.discordAvatar}.png?size=80`}
-            alt="My avatar"
-          />
-        }
-      >
+      <Popover trigger={<Avatar {...user} />}>
         <div className="layout__user-popover">
           {/* TODO: make the Button component transformable to Link instead of creating a wrapper */}
           <Link to={userPage(user.discordId)}>
@@ -41,12 +34,6 @@ export function UserItem() {
         </div>
       </Popover>
     );
-
-  // TODO: just show text... my profile?
-  // TODO: also show this if discordAvatar is stale and 404's
-  if (user) {
-    return <div className="layout__header__logo-container" />;
-  }
 
   return (
     <form action={LOG_IN_URL} method="post" data-cy="log-in-form">

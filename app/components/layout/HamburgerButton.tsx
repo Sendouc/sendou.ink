@@ -12,6 +12,7 @@ export function HamburgerButton({
       className="layout__burger"
       onClick={onClick}
       data-cy="hamburger-button"
+      type="button"
     >
       <svg
         width="32"
