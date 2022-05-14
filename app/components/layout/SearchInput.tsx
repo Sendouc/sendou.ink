@@ -2,7 +2,6 @@ import clsx from "clsx";
 import * as React from "react";
 
 export function SearchInput() {
-  // TODO: search input that searches
   if (process.env.NODE_ENV !== "development") return <div />;
   return <SearchInputDev />;
 }

@@ -72,3 +72,13 @@
     background-color: transparent;
   }
 }
+
+/*
+ *
+ * Utility classes
+ *
+*/
+
+.w-full {
+  width: 100%;
+}
