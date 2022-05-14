@@ -1,8 +1,6 @@
 {
-  "name": "remix-template-fly",
+  "name": "sendou.ink",
   "private": true,
-  "description": "",
-  "license": "",
   "sideEffects": false,
   "scripts": {
     "build": "remix build",
@@ -10,7 +8,13 @@
     "dev": "remix dev",
     "start": "remix-serve build",
     "migrate": "touch ./db.sqlite3 && node ./migrations/index.mjs",
-    "lint:ts": "eslint . --ext .ts,.tsx"
+    "lint:ts": "eslint . --ext .ts,.tsx",
+    "lint:styles": "stylelint \"app/styles/**/*.css\"",
+    "lf": "npm run lint:styles -- --fix && npm run lint:ts -- --fix && npm run prettier:write",
+    "prettier:check": "prettier --check .",
+    "prettier:write": "prettier --write .",
+    "typecheck": "tsc --noEmit",
+    "checks": "npm run lint:styles && npm run lint:ts && npm run prettier:check && npm run typecheck"
   },
   "dependencies": {
     "@headlessui/react": "^1.6.1",
@@ -26,7 +30,8 @@
     "react-popper": "^2.3.0",
     "remix-auth": "^3.2.1",
     "remix-auth-oauth2": "^1.2.1",
-    "tiny-invariant": "^1.2.0"
+    "tiny-invariant": "^1.2.0",
+    "zod": "^3.16.0"
   },
   "devDependencies": {
     "@remix-run/dev": "^1.4.3",
@@ -35,7 +40,17 @@
     "@types/randomcolor": "^0.5.6",
     "@types/react": "^17.0.24",
     "@types/react-dom": "^17.0.9",
-    "eslint": "^8.11.0",
+    "@typescript-eslint/eslint-plugin": "^5.23.0",
+    "@typescript-eslint/parser": "^5.23.0",
+    "eslint": "^8.15.0",
+    "eslint-plugin-react": "^7.29.4",
+    "eslint-plugin-react-hooks": "^4.5.0",
+    "prettier": "^2.6.2",
+    "stylelint": "^14.8.2",
+    "stylelint-config-idiomatic-order": "^8.1.0",
+    "stylelint-config-prettier": "^9.0.3",
+    "stylelint-config-standard": "^25.0.0",
+    "stylelint-order": "^5.0.0",
     "typescript": "^4.5.5"
   },
   "engines": {

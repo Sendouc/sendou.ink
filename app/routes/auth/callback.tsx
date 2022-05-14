@@ -1,5 +1,6 @@
 import { authenticator, DISCORD_AUTH_KEY } from "~/core/authenticator.server";
-import { LoaderFunction, redirect } from "@remix-run/node";
+import type { LoaderFunction } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { userPage } from "~/utils/urls";
 
 export const loader: LoaderFunction = async ({ request }) => {

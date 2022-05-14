@@ -37,6 +37,7 @@ export function MobileMenu({
                     disabled: navItem.disabled,
                   })}
                   src={`/img/layout/${navItem.name.replace(" ", "")}.webp`}
+                  alt={navItem.name}
                 />
                 <div>{navItem.displayName ?? navItem.name}</div>
               </Link>

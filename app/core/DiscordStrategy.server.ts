@@ -4,12 +4,33 @@ import type { User } from "~/db/types";
 import type { OAuth2Profile } from "remix-auth-oauth2";
 import { OAuth2Strategy } from "remix-auth-oauth2";
 import invariant from "tiny-invariant";
+import { z } from "zod";
 
 interface DiscordExtraParams extends Record<string, string | number> {
   scope: string;
 }
 
 export type LoggedInUser = Pick<User, "id" | "discordId" | "discordAvatar">;
+
+const partialDiscordUserSchema = z.object({
+  avatar: z.string().nullish(),
+  discriminator: z.string(),
+  id: z.string(),
+  username: z.string(),
+});
+const partialDiscordConnectionsSchema = z.array(
+  z.object({
+    visibility: z.number(),
+    verified: z.boolean(),
+    name: z.string(),
+    id: z.string(),
+    type: z.string(),
+  })
+);
+const discordUserDetailsSchema = z.tuple([
+  partialDiscordUserSchema,
+  partialDiscordConnectionsSchema,
+]);
 
 export class DiscordStrategy extends OAuth2Strategy<
   LoggedInUser,
@@ -42,12 +63,19 @@ export class DiscordStrategy extends OAuth2Strategy<
             headers: [authHeader],
           }),
         ]);
-        const [user, connections] = await Promise.all(
-          discordResponses.map((res) => res.json())
+
+        const [user, connections] = discordUserDetailsSchema.parse(
+          await Promise.all(
+            discordResponses.map((res) => {
+              if (!res.ok) throw new Error("Call to Discord API failed");
+
+              return res.json();
+            })
+          )
         );
 
         const userFromDb = db.users.upsert({
-          discordAvatar: user.avatar,
+          discordAvatar: user.avatar ?? null,
           discordDiscriminator: user.discriminator,
           discordId: user.id,
           discordName: user.username,
@@ -65,7 +93,9 @@ export class DiscordStrategy extends OAuth2Strategy<
     this.scope = "identify connections";
   }
 
-  private parseConnections(connections: any) {
+  private parseConnections(
+    connections: z.infer<typeof partialDiscordConnectionsSchema>
+  ) {
     if (!connections) throw new Error("No connections");
 
     const result: {

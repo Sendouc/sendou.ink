@@ -360,11 +360,13 @@ export function DrawingSection({ type }: { type: "girl" | "boy" }) {
       <img
         className={clsx("menu__img", type)}
         src={`/img/layout/new_${type}_dark.png`}
+        alt=""
       />
       <img
         className={clsx("menu__img-bg", type)}
         src={`/img/layout/new_${type}_bg.png`}
         style={{ filter: getFilters(hexCode) }}
+        alt=""
       />
     </div>
   );

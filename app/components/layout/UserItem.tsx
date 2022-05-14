@@ -34,7 +34,7 @@ export function UserItem() {
             </Button>
           </Link>
           <form method="post" action={LOG_OUT_URL}>
-            <Button tiny variant="outlined" icon={<LogOutIcon />}>
+            <Button tiny variant="outlined" icon={<LogOutIcon />} type="submit">
               Log out
             </Button>
           </form>
