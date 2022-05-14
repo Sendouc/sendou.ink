@@ -4,15 +4,12 @@ import type { User } from "~/db/types";
 import type { OAuth2Profile } from "remix-auth-oauth2";
 import { OAuth2Strategy } from "remix-auth-oauth2";
 import invariant from "tiny-invariant";
-import type { CamelCasedProperties } from "type-fest";
 
 interface DiscordExtraParams extends Record<string, string | number> {
   scope: string;
 }
 
-export type LoggedInUser = CamelCasedProperties<
-  Pick<User, "id" | "discord_id" | "discord_avatar">
->;
+export type LoggedInUser = Pick<User, "id" | "discordId" | "discordAvatar">;
 
 export class DiscordStrategy extends OAuth2Strategy<
   LoggedInUser,
@@ -50,17 +47,17 @@ export class DiscordStrategy extends OAuth2Strategy<
         );
 
         const userFromDb = db.users.upsert({
-          discord_avatar: user.avatar,
-          discord_discriminator: user.discriminator,
-          discord_id: user.id,
-          discord_name: user.username,
+          discordAvatar: user.avatar,
+          discordDiscriminator: user.discriminator,
+          discordId: user.id,
+          discordName: user.username,
           ...this.parseConnections(connections),
         });
 
         return {
           id: userFromDb.id,
-          discordId: userFromDb.discord_id,
-          discordAvatar: userFromDb.discord_avatar,
+          discordId: userFromDb.discordId,
+          discordAvatar: userFromDb.discordAvatar,
         };
       }
     );
@@ -74,13 +71,13 @@ export class DiscordStrategy extends OAuth2Strategy<
     const result: {
       twitch: string | null;
       twitter: string | null;
-      youtube_id: string | null;
-      youtube_name: string | null;
+      youtubeId: string | null;
+      youtubeName: string | null;
     } = {
       twitch: null,
       twitter: null,
-      youtube_id: null,
-      youtube_name: null,
+      youtubeId: null,
+      youtubeName: null,
     };
 
     for (const connection of connections) {
@@ -94,8 +91,8 @@ export class DiscordStrategy extends OAuth2Strategy<
           result.twitter = connection.name;
           break;
         case "youtube":
-          result.youtube_id = connection.id;
-          result.youtube_name = connection.name;
+          result.youtubeId = connection.id;
+          result.youtubeName = connection.name;
       }
     }
 

@@ -3,48 +3,48 @@ import type { User } from "../types";
 
 const upsertStm = sql.prepare(`
   INSERT INTO
-    users (
-      discord_id,
-      discord_name,
-      discord_discriminator,
-      discord_avatar,
-      twitch,
-      twitter,
-      youtube_id,
-      youtube_name
+    "User" (
+      "discordId",
+      "discordName",
+      "discordDiscriminator",
+      "discordAvatar",
+      "twitch",
+      "twitter",
+      "youtubeId",
+      "youtubeName"
     )
     VALUES (
-      $discord_id,
-      $discord_name,
-      $discord_discriminator,
-      $discord_avatar,
+      $discordId,
+      $discordName,
+      $discordDiscriminator,
+      $discordAvatar,
       $twitch,
       $twitter,
-      $youtube_id,
-      $youtube_name
+      $youtubeId,
+      $youtubeName
     )
-    ON CONFLICT(discord_id) DO UPDATE SET
-      discord_name = excluded.discord_name,
-      discord_discriminator = excluded.discord_discriminator,
-      discord_avatar = excluded.discord_avatar,
-      twitch = excluded.twitch,
-      twitch = excluded.twitch,
-      youtube_id = excluded.youtube_id,
-      youtube_name = excluded.youtube_name
+    ON CONFLICT("discordId") DO UPDATE SET
+      "discordName" = excluded."discordName",
+      "discordDiscriminator" = excluded."discordDiscriminator",
+      "discordAvatar" = excluded."discordAvatar",
+      "twitch" = excluded."twitch",
+      "twitch" = excluded."twitch",
+      "youtubeId" = excluded."youtubeId",
+      "youtubeName" = excluded."youtubeName"
     RETURNING *
 `);
 
 export function upsert(
   input: Pick<
     User,
-    | "discord_id"
-    | "discord_name"
-    | "discord_discriminator"
-    | "discord_avatar"
+    | "discordId"
+    | "discordName"
+    | "discordDiscriminator"
+    | "discordAvatar"
     | "twitch"
     | "twitter"
-    | "youtube_id"
-    | "youtube_name"
+    | "youtubeId"
+    | "youtubeName"
   >
 ) {
   return upsertStm.get(input) as User;

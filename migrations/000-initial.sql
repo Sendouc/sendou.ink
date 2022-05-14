@@ -1,13 +1,13 @@
-CREATE TABLE "users" (
+CREATE TABLE "User" (
   "id" integer PRIMARY KEY,
-  "discord_id" text UNIQUE NOT NULL,
-  "discord_name" text NOT NULL,
-  "discord_discriminator" text NOT NULL,
-  "discord_avatar" text,
+  "discordId" text UNIQUE NOT NULL,
+  "discordName" text NOT NULL,
+  "discordDiscriminator" text NOT NULL,
+  "discordAvatar" text,
   "twitch" text,
   "twitter" text,
-  "youtube_id" text,
-  "youtube_name" text,
+  "youtubeId" text,
+  "youtubeName" text,
   "bio" text,
   "country" text
 ) STRICT;
