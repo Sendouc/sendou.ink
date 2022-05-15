@@ -14,7 +14,7 @@ export function Avatar({
   // TODO: also show this if discordAvatar is stale and 404's
   if (!discordAvatar) return <div className="avatar" />;
 
-  const dimensions = size === "lg" ? 125 : 48;
+  const dimensions = size === "lg" ? 125 : 44;
 
   return (
     <img

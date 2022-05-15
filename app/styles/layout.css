@@ -1,5 +1,5 @@
 .layout__header {
-  --item-size: 3rem;
+  --item-size: 2.75rem;
 
   position: relative;
   z-index: 501;
@@ -231,8 +231,6 @@
 
 @media screen and (min-width: 640px) {
   .layout__header {
-    --item-size: 38px;
-
     grid-template-columns: 1fr 1fr 1fr;
   }
 
