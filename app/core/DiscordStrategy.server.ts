@@ -102,12 +102,10 @@ export class DiscordStrategy extends OAuth2Strategy<
       twitch: string | null;
       twitter: string | null;
       youtubeId: string | null;
-      youtubeName: string | null;
     } = {
       twitch: null,
       twitter: null,
       youtubeId: null,
-      youtubeName: null,
     };
 
     for (const connection of connections) {
@@ -122,7 +120,6 @@ export class DiscordStrategy extends OAuth2Strategy<
           break;
         case "youtube":
           result.youtubeId = connection.id;
-          result.youtubeName = connection.name;
       }
     }
 

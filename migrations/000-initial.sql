@@ -7,7 +7,6 @@ CREATE TABLE "User" (
   "twitch" text,
   "twitter" text,
   "youtubeId" text,
-  "youtubeName" text,
   "bio" text,
   "country" text
 ) STRICT;

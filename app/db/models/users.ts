@@ -10,8 +10,7 @@ const upsertStm = sql.prepare(`
       "discordAvatar",
       "twitch",
       "twitter",
-      "youtubeId",
-      "youtubeName"
+      "youtubeId"
     )
     VALUES (
       $discordId,
@@ -20,8 +19,7 @@ const upsertStm = sql.prepare(`
       $discordAvatar,
       $twitch,
       $twitter,
-      $youtubeId,
-      $youtubeName
+      $youtubeId
     )
     ON CONFLICT("discordId") DO UPDATE SET
       "discordName" = excluded."discordName",
@@ -29,8 +27,7 @@ const upsertStm = sql.prepare(`
       "discordAvatar" = excluded."discordAvatar",
       "twitch" = excluded."twitch",
       "twitch" = excluded."twitch",
-      "youtubeId" = excluded."youtubeId",
-      "youtubeName" = excluded."youtubeName"
+      "youtubeId" = excluded."youtubeId"
     RETURNING *
 `);
 
@@ -44,7 +41,6 @@ export function upsert(
     | "twitch"
     | "twitter"
     | "youtubeId"
-    | "youtubeName"
   >
 ) {
   return upsertStm.get(input) as User;

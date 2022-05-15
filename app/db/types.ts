@@ -7,7 +7,6 @@ export interface User {
   twitch: string | null;
   twitter: string | null;
   youtubeId: string | null;
-  youtubeName: string | null;
   bio: string | null;
   country: string | null;
 }
