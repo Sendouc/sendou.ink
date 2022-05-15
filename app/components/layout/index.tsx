@@ -51,7 +51,7 @@ export const Layout = React.memo(function Layout({
         </div>
       </header>
       <ScreenWidthSensitiveMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-      <main className="layout__main">{children}</main>
+      {children}
     </>
   );
 });

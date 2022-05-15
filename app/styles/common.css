@@ -1,10 +1,10 @@
 .sub-nav__container {
   display: flex;
-  width: 100vw;
   flex-wrap: wrap;
   justify-content: center;
   background-color: var(--bg-lighter);
   background-image: url("/svg/background-pattern.svg");
+  margin-block-end: var(--s-4);
   overflow-x: auto;
 }
 
