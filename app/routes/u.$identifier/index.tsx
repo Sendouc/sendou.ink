@@ -8,12 +8,13 @@ import { useLoaderData } from "@remix-run/react";
 import { Avatar } from "~/components/Avatar";
 import styles from "~/styles/u.css";
 import { SocialLink } from "~/components/u/SocialLink";
+import { countries } from "countries-list";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-const userParamsSchema = z.object({ identifier: z.string() });
+export const userParamsSchema = z.object({ identifier: z.string() });
 
 type UserPageLoaderData = Pick<
   User,
@@ -24,11 +25,15 @@ type UserPageLoaderData = Pick<
   | "youtubeId"
   | "twitch"
   | "twitter"
->;
+> & { country?: { name: string; emoji: string } };
 
 export const loader: LoaderFunction = ({ params }) => {
   const { identifier } = userParamsSchema.parse(params);
   const user = notFoundIfFalsy(db.users.findByIdentifier(identifier));
+
+  const countryObj = user.country
+    ? countries[user.country as keyof typeof countries]
+    : undefined;
 
   return json<UserPageLoaderData>({
     discordAvatar: user.discordAvatar,
@@ -38,6 +43,12 @@ export const loader: LoaderFunction = ({ params }) => {
     twitch: user.twitch,
     twitter: user.twitter,
     youtubeId: user.youtubeId,
+    country: countryObj
+      ? {
+          name: countryObj.name,
+          emoji: countryObj.emoji,
+        }
+      : undefined,
   });
 };
 
@@ -55,6 +66,12 @@ export default function UserInfoPage() {
         {data.discordName}
         <span className="u__discriminator">#{data.discordDiscriminator}</span>
       </h2>
+      {data.country ? (
+        <div className="u__country">
+          <span className="u__country-emoji">{data.country.emoji}</span>{" "}
+          <span className="u__country-name">{data.country.name}</span>
+        </div>
+      ) : null}
       <div className="u__socials">
         {data.twitch ? (
           <SocialLink type="twitch" identifier={data.twitch} />

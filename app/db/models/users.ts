@@ -50,6 +50,16 @@ export function upsert(
   return upsertStm.get(input) as User;
 }
 
+const updateProfileStm = sql.prepare(`
+  UPDATE "User"
+    SET "country" = $country
+    WHERE "id" = $id
+`);
+
+export function updateProfile(params: Pick<User, "country" | "id">) {
+  updateProfileStm.run(params);
+}
+
 const findByIdentifierStm = sql.prepare(`
   SELECT *
     FROM "User"

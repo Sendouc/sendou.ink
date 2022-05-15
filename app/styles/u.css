@@ -1,9 +1,8 @@
 .u__avatar-container {
   display: grid;
   justify-content: center;
-  column-gap: var(--s-1);
+  column-gap: var(--s-2-5);
   grid-template-areas: "avatar name" "avatar country" "avatar ." "avatar team" "socials .";
-  row-gap: var(--s-2);
 }
 
 .u__avatar {
@@ -18,11 +17,29 @@
   color: var(--text-lighter);
 }
 
+.u__country {
+  display: flex;
+  align-items: center;
+  gap: var(--s-1);
+  grid-area: country;
+  line-height: 0.75;
+}
+
+.u__country-name {
+  color: var(--text-lighter);
+  font-weight: var(--bold);
+}
+
+.u__country-emoji {
+  font-size: var(--fonts-lg);
+}
+
 .u__socials {
   display: flex;
   justify-content: center;
   gap: var(--s-1-5);
   grid-area: socials;
+  padding-block-start: var(--s-2-5);
 }
 
 .u__social-link {

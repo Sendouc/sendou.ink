@@ -20,6 +20,7 @@
   --theme-success: #a3ffae;
   --theme: hsl(255deg 66.7% 75%);
   --theme-transparent: hsl(255deg 66.7% 75% / 40%);
+  --theme-transparent-vibrant: hsl(255deg 78% 65% / 54%);
   --theme-secondary: hsl(85deg 66.7% 55.3%);
 
   /* background-pattern.svg not using this currently */
@@ -257,7 +258,7 @@ input[type="checkbox"] {
   height: 16px;
 }
 
-.label {
+label {
   display: block;
   font-size: var(--fonts-xs);
   font-weight: var(--bold);
