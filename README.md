@@ -1,41 +1,31 @@
-# Welcome to Remix!
+Note: This is the WIP Splatoon 3 version of the site. To see the current live version checkout the [main branch](https://github.com/Sendouc/sendou.ink/tree/main)
 
-- [Remix Docs](https://remix.run/docs)
+## Running locally
 
-## Fly Setup
+Prerequisites: [nvm](https://github.com/nvm-sh/nvm)
 
-1. [Install `flyctl`](https://fly.io/docs/getting-started/installing-flyctl/)
+There is a sequence of commands you need to run:
 
-2. Sign up and log in to Fly
+1. `nvm use` to switch to the correct Node version.
+2. `npm i` to install the dependencies.
+3. Make a copy of `.env.example` that's called `.env` and fill it with values.
+4. `npm run migrate` to set up the database tables.
+5. `npm run dev` to run both the server and frontend.
 
-```sh
-flyctl auth signup
+## Project structure
+
 ```
-
-3. Setup Fly. It might ask if you want to deploy, say no since you haven't built the app yet.
-
-```sh
-flyctl launch
+sendou.ink/
+├── app/
+│   ├── components/ -- React components
+│   ├── core/ -- Core business logic
+│   ├── db/ -- Database layer
+│   ├── hooks/ -- React hooks
+│   ├── routes/ -- Routes see: https://remix.run/docs/en/v1/guides/routing
+│   ├── styles/ -- All .css files of the project for styling
+│   └── utils/ -- Random helper functions used in many places
+├── migrations/ -- Database migrations
+├── cypress/ -- see: https://docs.cypress.io/guides/core-concepts/writing-and-organizing-tests#Folder-structure
+├── public/ -- Images, built assets etc. static files to be served as is
+└── scripts/ -- Stand-alone scripts to be run outside of the app
 ```
-
-## Development
-
-From your terminal:
-
-```sh
-npm run dev
-```
-
-This starts your app in development mode, rebuilding assets on file changes.
-
-## Deployment
-
-If you've followed the setup instructions already, all you need to do is run this:
-
-```sh
-npm run deploy
-```
-
-You can run `flyctl info` to get the url and ip address of your server.
-
-Check out the [fly docs](https://fly.io/docs/getting-started/node/) for more information.
