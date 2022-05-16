@@ -19,7 +19,5 @@ jobs:
         run: npm run lint:ts
       - name: Stylelint
         run: npm run lint:styles
-      - name: Unit tests
-        run: npm run test:unit
       - name: Typecheck
         run: npm run typecheck

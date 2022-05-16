@@ -4,45 +4,28 @@ Note: This is the WIP Splatoon 3 version of the site. To see the current live ve
 
 Prerequisites: [nvm](https://github.com/nvm-sh/nvm)
 
-1. Use `nvm use` to switch to the correct Node version.
-2. Run `npm i` to install the dependencies.
+There is a sequence of commands you need to run:
+
+1. `nvm use` to switch to the correct Node version.
+2. `npm i` to install the dependencies.
 3. Make a copy of `.env.example` that's called `.env` and fill it with values.
+4. `npm run migrate` to set up the database tables.
+5. `npm run dev` to run both the server and frontend.
 
-- You can check [Prisma's guide](https://www.prisma.io/dataguide/postgresql/setting-up-a-local-postgresql-database) on how to get PostgreSQL 14 set up and running locally.
-- Run `npm run migration:apply:dev` to set up the tables of your database.
-- Run `npm run seed` to seed the database with some test data.
-
-4. Run `npm run dev` to run both the server and frontend.
-
-## File structure
+## Project structure
 
 ```
 sendou.ink/
 ├── app/
-│   ├── components/ -- Components shared between many routes
+│   ├── components/ -- React components
 │   ├── core/ -- Core business logic
+│   ├── db/ -- Database layer
 │   ├── hooks/ -- React hooks
-│   ├── models/ -- Calls to database
 │   ├── routes/ -- Routes see: https://remix.run/docs/en/v1/guides/routing
 │   ├── styles/ -- All .css files of the project for styling
-│   ├── utils/ -- Random helper functions used in many places
-│   └── constants.ts -- Global constants of the projects
+│   └── utils/ -- Random helper functions used in many places
+├── migrations/ -- Database migrations
 ├── cypress/ -- see: https://docs.cypress.io/guides/core-concepts/writing-and-organizing-tests#Folder-structure
-├── prisma/ -- Prisma related files
-│   ├── migrations/ -- Database migrations via Prisma Migrate
-│   ├── seed/ -- Seeding logic for tests and development
-│   ├── client.ts -- Global import of the Prisma object
-│   └── schema.prisma -- Database table schema
 ├── public/ -- Images, built assets etc. static files to be served as is
-└── server/ -- Express.js server-side logic that is not handled in Remix e.g. auth
+└── scripts/ -- Stand-alone scripts to be run outside of the app
 ```
-
-## Seeding script variations
-
-You can give a variation as a flag to the seeding script changing what exactly is put in the database. For example `npm run seed -- -v=check-in` seeds the database with a variation where check-in is in progress.
-
-## Commands
-
-### Convert .png to .webp
-
-`cwebp -q 80 image.png -o image.webp`

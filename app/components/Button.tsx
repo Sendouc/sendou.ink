@@ -27,6 +27,7 @@ export function Button(props: ButtonProps) {
     tiny,
     className,
     icon,
+    type = "button",
     ...rest
   } = props;
   return (
@@ -44,6 +45,7 @@ export function Button(props: ButtonProps) {
         tiny,
       })}
       disabled={props.disabled || loading}
+      type={type}
       {...rest}
     >
       {icon && React.cloneElement(icon, { className: "button-icon" })}

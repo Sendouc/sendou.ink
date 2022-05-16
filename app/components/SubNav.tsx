@@ -1,7 +1,7 @@
 import { NavLink } from "@remix-run/react";
-import { RemixNavLinkProps } from "@remix-run/react/components";
+import type { RemixNavLinkProps } from "@remix-run/react/components";
 import clsx from "clsx";
-import React from "react";
+import type * as React from "react";
 import { ArrowUpIcon } from "./icons/ArrowUp";
 
 export function SubNav({ children }: { children: React.ReactNode }) {

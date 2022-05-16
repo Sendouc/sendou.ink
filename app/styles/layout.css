@@ -1,5 +1,5 @@
 .layout__header {
-  --item-size: 3rem;
+  --item-size: 2.75rem;
 
   position: relative;
   z-index: 501;
@@ -43,9 +43,9 @@
   justify-content: center;
   padding: 0.25rem;
   border: 2px solid;
-  border-color: var(--theme-transparent);
+  border-color: var(--theme-transparent-vibrant);
   background-color: transparent;
-  border-radius: var(--rounded);
+  border-radius: 50%;
   color: inherit;
   cursor: pointer;
   gap: 2px;
@@ -223,17 +223,14 @@
   transform: translateY(1px);
 }
 
-.layout__avatar {
-  width: var(--item-size);
-  min-width: var(--item-size);
-  height: var(--item-size);
-  border-radius: var(--rounded);
+.layout__user-popover {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
 }
 
 @media screen and (min-width: 640px) {
   .layout__header {
-    --item-size: 38px;
-
     grid-template-columns: 1fr 1fr 1fr;
   }
 

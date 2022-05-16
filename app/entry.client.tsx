@@ -1,5 +1,4 @@
-import { hydrate } from "react-dom";
 import { RemixBrowser } from "@remix-run/react";
+import { hydrate } from "react-dom";
 
-// TODO: should this be hydrateRoot?
 hydrate(<RemixBrowser />, document);

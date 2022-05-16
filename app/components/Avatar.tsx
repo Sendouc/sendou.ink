@@ -1,27 +1,30 @@
 import clsx from "clsx";
-import { MyCSSProperties } from "~/utils";
+import type { User } from "~/db/types";
 
 export function Avatar({
-  user,
+  discordId,
+  discordAvatar,
   size,
-}: {
-  user: { discordId: string; discordAvatar: string | null };
-  size?: "tiny" | "mini";
+  className,
+}: Pick<User, "discordId" | "discordAvatar"> & {
+  className?: string;
+  size?: "lg";
 }) {
-  const style: MyCSSProperties = {
-    "--_avatar-size":
-      size === "tiny" ? "2rem" : size === "mini" ? "1.5rem" : undefined,
-  };
+  // TODO: just show text... my profile?
+  // TODO: also show this if discordAvatar is stale and 404's
+  if (!discordAvatar) return <div className="avatar" />;
+
+  const dimensions = size === "lg" ? 125 : 44;
+
   return (
-    <div style={style} className={clsx("avatar__placeholder", { tiny: size })}>
-      {user.discordAvatar && (
-        <img
-          alt=""
-          className={clsx("avatar__img", { tiny: size })}
-          loading="lazy"
-          src={`https://cdn.discordapp.com/avatars/${user.discordId}/${user.discordAvatar}.png?size=80`}
-        />
-      )}
-    </div>
+    <img
+      className={clsx("avatar", className, { lg: size === "lg" })}
+      src={`https://cdn.discordapp.com/avatars/${discordId}/${discordAvatar}.png${
+        size === "lg" ? "" : "?size=80"
+      }`}
+      alt="My avatar"
+      width={dimensions}
+      height={dimensions}
+    />
   );
 }

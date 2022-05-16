@@ -1,0 +1,10 @@
+.u-edit__container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-4);
+}
+
+.u-edit__country-select {
+  max-width: 10rem;
+}

@@ -1,6 +1,0 @@
-.join__buttons {
-  display: flex;
-  justify-content: center;
-  gap: var(--s-2);
-  padding-block-start: var(--s-4);
-}
