@@ -1,59 +1,18 @@
-import type { LinksFunction, LoaderFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
-import { db } from "~/db";
-import { z } from "zod";
-import type { User } from "~/db/types";
-import { notFoundIfFalsy } from "~/utils/remix";
-import { useLoaderData } from "@remix-run/react";
+import type { LinksFunction } from "@remix-run/node";
+import { useMatches } from "@remix-run/react";
 import { Avatar } from "~/components/Avatar";
-import styles from "~/styles/u.css";
 import { SocialLink } from "~/components/u/SocialLink";
-import { countries } from "countries-list";
+import styles from "~/styles/u.css";
+import type { UserPageLoaderData } from "../u.$identifier";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const userParamsSchema = z.object({ identifier: z.string() });
-
-type UserPageLoaderData = Pick<
-  User,
-  | "discordName"
-  | "discordAvatar"
-  | "discordDiscriminator"
-  | "discordId"
-  | "youtubeId"
-  | "twitch"
-  | "twitter"
-> & { country?: { name: string; emoji: string } };
-
-export const loader: LoaderFunction = ({ params }) => {
-  const { identifier } = userParamsSchema.parse(params);
-  const user = notFoundIfFalsy(db.users.findByIdentifier(identifier));
-
-  const countryObj = user.country
-    ? countries[user.country as keyof typeof countries]
-    : undefined;
-
-  return json<UserPageLoaderData>({
-    discordAvatar: user.discordAvatar,
-    discordDiscriminator: user.discordDiscriminator,
-    discordId: user.discordId,
-    discordName: user.discordName,
-    twitch: user.twitch,
-    twitter: user.twitter,
-    youtubeId: user.youtubeId,
-    country: countryObj
-      ? {
-          name: countryObj.name,
-          emoji: countryObj.emoji,
-        }
-      : undefined,
-  });
-};
-
 export default function UserInfoPage() {
-  const data = useLoaderData<UserPageLoaderData>();
+  const [, parentRoute] = useMatches();
+  const data = parentRoute.data as UserPageLoaderData;
+
   return (
     <div className="u__avatar-container">
       <Avatar

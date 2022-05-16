@@ -1,23 +1,13 @@
-import type {
-  ActionFunction,
-  LinksFunction,
-  LoaderFunction,
-} from "@remix-run/node";
-import { json } from "@remix-run/node";
-import { Form, useLoaderData, useTransition } from "@remix-run/react";
+import type { ActionFunction, LinksFunction } from "@remix-run/node";
+import { Form, useMatches, useTransition } from "@remix-run/react";
 import { countries } from "countries-list";
-import { Button } from "~/components/Button";
-import styles from "~/styles/u-edit.css";
 import { z } from "zod";
-import { falsyToNull } from "~/utils/zod";
-import {
-  notFoundIfFalsy,
-  parseRequestFormData,
-  requireUser,
-} from "~/utils/remix";
+import { Button } from "~/components/Button";
 import { db } from "~/db";
-import type { User } from "~/db/types";
-import { userParamsSchema } from "./index";
+import styles from "~/styles/u-edit.css";
+import { parseRequestFormData, requireUser } from "~/utils/remix";
+import { falsyToNull } from "~/utils/zod";
+import type { UserPageLoaderData } from "../u.$identifier";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -47,20 +37,9 @@ export const action: ActionFunction = async ({ request }) => {
   return null;
 };
 
-type UserEditLoaderData = Pick<User, "country">;
-
-export const loader: LoaderFunction = async ({ request, params }) => {
-  const user = await requireUser(request);
-  const { identifier } = userParamsSchema.parse(params);
-
-  const userFromDb = notFoundIfFalsy(db.users.findByIdentifier(identifier));
-  if (userFromDb.id !== user.id) throw new Response(null, { status: 401 });
-
-  return json<UserEditLoaderData>({ country: userFromDb?.country });
-};
-
 export default function UserEditPage() {
-  const data = useLoaderData<UserEditLoaderData>();
+  const [, parentRoute] = useMatches();
+  const data = parentRoute.data as UserPageLoaderData;
   const transition = useTransition();
 
   return (
@@ -71,7 +50,7 @@ export default function UserEditPage() {
           className="u-edit__country-select"
           name="country"
           id="country"
-          defaultValue={data.country ?? ""}
+          defaultValue={data.country?.code ?? ""}
         >
           <option value="" />
           {Object.entries(countries).map(([code, country]) => (
