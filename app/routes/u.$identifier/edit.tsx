@@ -51,6 +51,7 @@ export default function UserEditPage() {
           name="country"
           id="country"
           defaultValue={data.country?.code ?? ""}
+          data-cy="country-select"
         >
           <option value="" />
           {Object.entries(countries).map(([code, country]) => (
@@ -61,11 +62,12 @@ export default function UserEditPage() {
         </select>
       </div>
       <Button
-        loadingText="Submitting..."
+        loadingText="Saving..."
         type="submit"
         loading={transition.state === "submitting"}
+        data-cy="submit-button"
       >
-        Submit
+        Save
       </Button>
     </Form>
   );

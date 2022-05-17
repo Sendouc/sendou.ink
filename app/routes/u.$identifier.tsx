@@ -61,7 +61,9 @@ export default function UserPageLayout() {
   return (
     <>
       <SubNav>
-        <SubNavLink to="">Profile</SubNavLink>
+        <SubNavLink to="" data-cy="profile-page-link">
+          Profile
+        </SubNavLink>
         {isOwnPage ? (
           <SubNavLink to="edit" data-cy="edit-page-link">
             Edit

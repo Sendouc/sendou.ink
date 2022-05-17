@@ -13,7 +13,15 @@ export function UserItem() {
 
   if (user && user.discordAvatar)
     return (
-      <Popover trigger={<Avatar {...user} />}>
+      <Popover
+        trigger={
+          <Avatar
+            data-cy="user-avatar"
+            discordAvatar={user.discordAvatar}
+            discordId={user.discordId}
+          />
+        }
+      >
         <div className="layout__user-popover">
           {/* TODO: make the Button component transformable to Link instead of creating a wrapper */}
           <Link to={userPage(user.discordId)}>
@@ -21,6 +29,7 @@ export function UserItem() {
               className="w-full"
               tiny
               variant="outlined"
+              data-cy="profile-button"
               icon={<UserIcon />}
             >
               Profile

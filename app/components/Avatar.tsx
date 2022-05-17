@@ -6,10 +6,11 @@ export function Avatar({
   discordAvatar,
   size,
   className,
+  ...rest
 }: Pick<User, "discordId" | "discordAvatar"> & {
   className?: string;
   size?: "lg";
-}) {
+} & React.ButtonHTMLAttributes<HTMLImageElement>) {
   // TODO: just show text... my profile?
   // TODO: also show this if discordAvatar is stale and 404's
   if (!discordAvatar) return <div className="avatar" />;
@@ -25,6 +26,7 @@ export function Avatar({
       alt="My avatar"
       width={dimensions}
       height={dimensions}
+      {...rest}
     />
   );
 }
