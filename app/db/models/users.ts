@@ -48,11 +48,12 @@ export function upsert(
 
 const updateProfileStm = sql.prepare(`
   UPDATE "User"
-    SET "country" = $country
+    SET "country" = $country,
+        "bio" = $bio
     WHERE "id" = $id
 `);
 
-export function updateProfile(params: Pick<User, "country" | "id">) {
+export function updateProfile(params: Pick<User, "country" | "id" | "bio">) {
   updateProfileStm.run(params);
 }
 

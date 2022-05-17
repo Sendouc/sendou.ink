@@ -22,6 +22,7 @@ export type UserPageLoaderData = Pick<
   | "youtubeId"
   | "twitch"
   | "twitter"
+  | "bio"
 > & { country?: { name: string; emoji: string; code: string } };
 
 export const loader: LoaderFunction = ({ params }) => {
@@ -41,6 +42,7 @@ export const loader: LoaderFunction = ({ params }) => {
     twitch: user.twitch,
     twitter: user.twitter,
     youtubeId: user.youtubeId,
+    bio: user.bio,
     country:
       countryObj && user.country
         ? {

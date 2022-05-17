@@ -1,3 +1,5 @@
+export const USER_BIO_MAX_LENGTH = 2000;
+
 export const navItemsGrouped: {
   title: string;
   items: {

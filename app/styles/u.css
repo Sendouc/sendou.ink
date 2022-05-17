@@ -1,3 +1,9 @@
+.u__container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-8);
+}
+
 .u__avatar-container {
   display: grid;
   justify-content: center;
@@ -77,4 +83,8 @@
 
 .u__social-link.twitch > svg {
   fill: #9146ff;
+}
+
+.u__bio {
+  white-space: pre-wrap;
 }

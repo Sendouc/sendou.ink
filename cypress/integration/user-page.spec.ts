@@ -11,24 +11,31 @@ describe("User page", () => {
     cy.getCy("edit-page-link").should("not.exist");
   });
 
-  it("edits own profile", function () {
+  it.only("edits own profile", function () {
     cy.auth();
     cy.visit("/");
     cy.getCy("user-avatar").click();
     cy.getCy("profile-button").click();
     cy.getCy("edit-page-link").click();
     cy.getCy("country-select").select("FI");
+
+    const bio = "my cool bio :)";
+    cy.getCy("bio-textarea").type(bio);
+
     cy.getCy("submit-button").click();
+
     cy.getCy("profile-page-link").click();
     cy.contains("Sendou");
     cy.contains("Finland");
+    cy.contains(bio);
 
     // let's also check clearing select is possible
     cy.getCy("edit-page-link").click();
-    cy.getCy("country-select").select(0);
+    cy.getCy("country-select").select(0, { force: true });
     cy.getCy("submit-button").click();
     cy.getCy("profile-page-link").click();
     cy.contains("Sendou");
     cy.contains("Finland").should("not.exist");
+    cy.contains(bio);
   });
 });

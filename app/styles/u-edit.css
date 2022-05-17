@@ -8,3 +8,29 @@
 .u-edit__country-select {
   max-width: 10rem;
 }
+
+.u-edit__bio-header {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.u-edit__bio-textarea {
+  width: 18rem;
+  max-width: 100%;
+  height: 8rem;
+}
+
+.u-edit__length-limit {
+  color: var(--text-lighter);
+  font-size: var(--fonts-xs);
+  margin-block-start: -5px;
+}
+
+.u-edit__length-limit.warning {
+  color: var(--theme-warning);
+}
+
+.u-edit__length-limit.error {
+  color: var(--theme-error);
+}
