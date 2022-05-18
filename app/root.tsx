@@ -5,6 +5,7 @@ import type {
   MetaFunction,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
+import type { ShouldReloadFunction } from "@remix-run/react";
 import {
   Links,
   LiveReload,
@@ -20,6 +21,8 @@ import resetStyles from "~/styles/reset.css";
 import commonStyles from "~/styles/common.css";
 import { Layout } from "./components/layout";
 import type { LoggedInUser } from "./core/DiscordStrategy.server";
+
+export const unstable_shouldReload: ShouldReloadFunction = () => false;
 
 export const links: LinksFunction = () => {
   return [
