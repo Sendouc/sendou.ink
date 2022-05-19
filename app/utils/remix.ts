@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { authenticator } from "~/core/authenticator.server";
+import { authenticator } from "~/core/auth/authenticator.server";
 
 export function notFoundIfFalsy<T>(value: T | null | undefined): T {
   if (!value) throw new Response(null, { status: 404 });

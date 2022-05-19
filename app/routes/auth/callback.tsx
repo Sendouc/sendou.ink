@@ -1,4 +1,7 @@
-import { authenticator, DISCORD_AUTH_KEY } from "~/core/authenticator.server";
+import {
+  authenticator,
+  DISCORD_AUTH_KEY,
+} from "~/core/auth/authenticator.server";
 import type { LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { userPage } from "~/utils/urls";

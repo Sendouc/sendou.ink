@@ -14,13 +14,13 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-import { authenticator } from "~/core/authenticator.server";
+import { authenticator } from "~/core/auth/authenticator.server";
 import globalStyles from "~/styles/global.css";
 import layoutStyles from "~/styles/layout.css";
 import resetStyles from "~/styles/reset.css";
 import commonStyles from "~/styles/common.css";
 import { Layout } from "./components/layout";
-import type { LoggedInUser } from "./core/DiscordStrategy.server";
+import type { LoggedInUser } from "~/core/auth/DiscordStrategy.server";
 
 export const unstable_shouldReload: ShouldReloadFunction = () => false;
 
