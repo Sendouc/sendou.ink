@@ -27,7 +27,10 @@ const userEditActionSchema = z.object({
       )
       .nullable()
   ),
-  bio: z.preprocess(falsyToNull, z.string().max(USER_BIO_MAX_LENGTH)),
+  bio: z.preprocess(
+    falsyToNull,
+    z.string().max(USER_BIO_MAX_LENGTH).nullable()
+  ),
 });
 
 export const action: ActionFunction = async ({ request }) => {

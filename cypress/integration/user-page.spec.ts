@@ -11,7 +11,7 @@ describe("User page", () => {
     cy.getCy("edit-page-link").should("not.exist");
   });
 
-  it.only("edits own profile", function () {
+  it("edits own profile", function () {
     cy.intercept("/u/79237403620945920/edit?_data=routes%2Fu.%24identifier").as(
       "editPageData"
     );
@@ -34,9 +34,10 @@ describe("User page", () => {
     cy.contains("Finland");
     cy.contains(bio);
 
-    // let's also check clearing select is possible
+    // let's also check that clearing inputs is possible
     cy.getCy("edit-page-link").click();
     cy.getCy("country-select").select(0);
+    cy.getCy("bio-textarea").clear();
     cy.getCy("submit-button").click();
     cy.wait("@editPageData");
 
