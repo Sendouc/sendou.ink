@@ -16,6 +16,7 @@
     "prettier:check": "prettier --check .",
     "prettier:write": "prettier --write .",
     "typecheck": "tsc --noEmit",
+    "test:unit": "uvu -r tsm -r tsconfig-paths/register -i cypress",
     "cy:open": "cypress open",
     "checks": "npm run lint:styles && npm run lint:ts && npm run prettier:check && npm run typecheck"
   },
@@ -58,7 +59,9 @@
     "stylelint-order": "^5.0.0",
     "ts-node": "^10.7.0",
     "tsconfig-paths": "^4.0.0",
-    "typescript": "^4.5.5"
+    "tsm": "^2.2.1",
+    "typescript": "^4.5.5",
+    "uvu": "^0.5.3"
   },
   "engines": {
     "node": ">=14"
