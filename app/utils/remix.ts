@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { authenticator } from "~/core/auth/authenticator.server";
+import { db } from "~/db";
 
 export function notFoundIfFalsy<T>(value: T | null | undefined): T {
   if (!value) throw new Response(null, { status: 404 });
@@ -40,9 +41,16 @@ export async function parseRequestFormData<T extends z.ZodTypeAny>({
 }
 
 export async function requireUser(request: Request) {
-  const user = await authenticator.isAuthenticated(request);
+  const user = await getUser(request);
 
   if (!user) throw new Response(null, { status: 401 });
 
   return user;
+}
+
+export async function getUser(request: Request) {
+  const userId = await authenticator.isAuthenticated(request);
+  if (!userId) return;
+
+  return db.users.findByIdentifier(userId);
 }

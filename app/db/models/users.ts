@@ -61,8 +61,9 @@ const findByIdentifierStm = sql.prepare(`
   SELECT *
     FROM "User"
     WHERE "discordId" = $identifier
+      OR "id" = $identifier
 `);
 
-export function findByIdentifier(identifier: string) {
+export function findByIdentifier(identifier: string | number) {
   return findByIdentifierStm.get({ identifier }) as User | undefined;
 }

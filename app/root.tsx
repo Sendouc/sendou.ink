@@ -1,4 +1,3 @@
-import * as React from "react";
 import type {
   LinksFunction,
   LoaderFunction,
@@ -14,13 +13,14 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-import { authenticator } from "~/core/auth/authenticator.server";
+import * as React from "react";
+import commonStyles from "~/styles/common.css";
 import globalStyles from "~/styles/global.css";
 import layoutStyles from "~/styles/layout.css";
 import resetStyles from "~/styles/reset.css";
-import commonStyles from "~/styles/common.css";
 import { Layout } from "./components/layout";
-import type { LoggedInUser } from "~/core/auth/DiscordStrategy.server";
+import type { User } from "./db/types";
+import { getUser } from "./utils/remix";
 
 export const unstable_shouldReload: ShouldReloadFunction = () => false;
 
@@ -40,13 +40,21 @@ export const meta: MetaFunction = () => ({
 });
 
 export interface RootLoaderData {
-  user?: LoggedInUser;
+  user?: Pick<User, "id" | "discordId" | "discordAvatar">;
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const user = (await authenticator.isAuthenticated(request)) ?? undefined;
+  const user = await getUser(request);
 
-  return json<RootLoaderData>({ user });
+  return json<RootLoaderData>({
+    user: user
+      ? {
+          discordAvatar: user.discordAvatar,
+          discordId: user.discordId,
+          id: user.id,
+        }
+      : undefined,
+  });
 };
 
 export default function App() {

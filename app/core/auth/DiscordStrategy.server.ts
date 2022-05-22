@@ -10,7 +10,7 @@ interface DiscordExtraParams extends Record<string, string | number> {
   scope: string;
 }
 
-export type LoggedInUser = Pick<User, "id" | "discordId" | "discordAvatar">;
+export type LoggedInUser = User["id"];
 
 const partialDiscordUserSchema = z.object({
   avatar: z.string().nullish(),
@@ -82,11 +82,7 @@ export class DiscordStrategy extends OAuth2Strategy<
           ...this.parseConnections(connections),
         });
 
-        return {
-          id: userFromDb.id,
-          discordId: userFromDb.discordId,
-          discordAvatar: userFromDb.discordAvatar,
-        };
+        return userFromDb.id;
       }
     );
 
