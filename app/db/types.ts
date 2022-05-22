@@ -10,3 +10,22 @@ export interface User {
   bio: string | null;
   country: string | null;
 }
+
+export interface PlusSuggestion {
+  text: string;
+  authorId: number;
+  suggestedId: number;
+  month: number;
+  year: number;
+  tier: number;
+  createdAt: number;
+}
+
+export interface PlusVote {
+  month: number;
+  year: number;
+  tier: number;
+  authorId: number;
+  votedId: number;
+  score: number;
+}
