@@ -2,8 +2,6 @@ import type { MonthYear } from "~/core/plus";
 import { sql } from "../sql";
 import type { PlusSuggestion, User } from "../types";
 
-// XXX: refactor to .server.
-
 const createStm = sql.prepare(`
   INSERT INTO 
     "PlusSuggestion" (

@@ -3,7 +3,7 @@ import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { upcomingVoting } from "~/core/plus";
 import { db } from "~/db";
-import type * as plusSuggestions from "~/db/models/plusSuggestions";
+import type * as plusSuggestions from "~/db/models/plusSuggestions.server";
 import { requireUser } from "~/utils/remix";
 
 interface PlusLoaderData {
