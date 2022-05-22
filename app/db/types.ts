@@ -9,6 +9,7 @@ export interface User {
   youtubeId: string | null;
   bio: string | null;
   country: string | null;
+  plusTier: number | null;
 }
 
 export interface PlusSuggestion {

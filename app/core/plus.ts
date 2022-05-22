@@ -1,4 +1,4 @@
-interface MonthYear {
+export interface MonthYear {
   month: number;
   year: number;
 }
@@ -22,6 +22,10 @@ export function lastCompletedVoting(now: Date): MonthYear {
   });
 }
 
+export function upcomingVoting(now: Date): MonthYear {
+  return nextMonth(lastCompletedVoting(now));
+}
+
 /** Range of first Friday of a month to the following Monday (this range is when voting is active) */
 function monthsVotingRange({ month, year }: MonthYear) {
   const startDate = new Date(Date.UTC(year, month, 1, 10));
@@ -43,6 +47,18 @@ function previousMonth(input: MonthYear): MonthYear {
   if (month < 0) {
     month = 11;
     year--;
+  }
+
+  return { month, year };
+}
+
+function nextMonth(input: MonthYear): MonthYear {
+  let { month, year } = input;
+
+  month++;
+  if (month === 12) {
+    month = 0;
+    year++;
   }
 
   return { month, year };
