@@ -109,3 +109,24 @@ export function find(args: MonthYear & Pick<User, "plusTier">) {
     suggestions: JSON.parse(row.suggestions).map(JSON.parse),
   })) as FindResult;
 }
+
+const tiersSuggestedForStm = sql.prepare(`
+  SELECT
+   json_group_array(tier)
+  FROM
+  (
+  SELECT
+    DISTINCT tier
+  FROM
+    "PlusSuggestion"
+  WHERE
+    "month" = $month
+    AND "year" = $year
+    AND "suggestedId" = $userId
+  ORDER BY tier ASC
+  )
+`);
+
+export function tiersSuggestedFor(args: MonthYear & { userId: User["id"] }) {
+  return JSON.parse(tiersSuggestedForStm.pluck().get(args)) as User["id"][];
+}

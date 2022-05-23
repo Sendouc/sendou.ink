@@ -40,7 +40,7 @@ export const meta: MetaFunction = () => ({
 });
 
 export interface RootLoaderData {
-  user?: Pick<User, "id" | "discordId" | "discordAvatar">;
+  user?: Pick<User, "id" | "discordId" | "discordAvatar" | "plusTier">;
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -52,6 +52,7 @@ export const loader: LoaderFunction = async ({ request }) => {
           discordAvatar: user.discordAvatar,
           discordId: user.discordId,
           id: user.id,
+          plusTier: user.plusTier,
         }
       : undefined,
   });
