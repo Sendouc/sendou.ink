@@ -1,5 +1,9 @@
 import { z } from "zod";
-import { authenticator } from "~/core/auth/authenticator.server";
+import {
+  IMPERSONATED_SESSION_KEY,
+  SESSION_KEY,
+} from "~/core/auth/authenticator.server";
+import { sessionStorage } from "~/core/auth/session.server";
 import { db } from "~/db";
 
 export function notFoundIfFalsy<T>(value: T | null | undefined): T {
@@ -49,7 +53,13 @@ export async function requireUser(request: Request) {
 }
 
 export async function getUser(request: Request) {
-  const userId = await authenticator.isAuthenticated(request);
+  const session = await sessionStorage.getSession(
+    request.headers.get("Cookie")
+  );
+
+  const userId =
+    session.get(IMPERSONATED_SESSION_KEY) ?? session.get(SESSION_KEY);
+
   if (!userId) return;
 
   return db.users.findByIdentifier(userId);
