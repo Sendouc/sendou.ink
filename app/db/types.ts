@@ -9,6 +9,7 @@ export interface User {
   youtubeId: string | null;
   bio: string | null;
   country: string | null;
+  // xxx: problem with "votes that you don't have to end"... can we calcualte dynamically?
   plusTier: number | null;
 }
 
