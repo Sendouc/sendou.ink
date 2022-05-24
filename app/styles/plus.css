@@ -2,3 +2,27 @@
   color: var(--text-lighter);
   font-size: var(--fonts-lg);
 }
+
+.plus__radios {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-5);
+}
+
+.plus__radio-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-1);
+}
+
+.plus__radio-label {
+  font-size: var(--fonts-sm);
+  margin-block-end: 0;
+}
+
+.plus__users-count {
+  color: var(--text-lighter);
+  font-size: var(--fonts-xxs);
+}

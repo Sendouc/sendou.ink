@@ -37,7 +37,7 @@ WITH gs as (
   SELECT
     "tier",
     json_object(
-      'suggested',
+      'info',
       json_object(
         'discordId',
         suggested."discordId",
@@ -66,7 +66,7 @@ WITH gs as (
           "text"
         )
       )
-    ) as suggestions
+    ) as users
   FROM
     "PlusSuggestion"
     JOIN "User" AS author ON "PlusSuggestion"."authorId" = author."id"
@@ -81,7 +81,7 @@ WITH gs as (
 )
 SELECT
   tier,
-  json_group_array(suggestions) as suggestions
+  json_group_array(users) as users
 from
   gs
 GROUP BY
@@ -90,8 +90,8 @@ GROUP BY
 
 export type FindResult = {
   tier: number;
-  suggestions: {
-    suggested: Pick<
+  users: {
+    info: Pick<
       User,
       "discordId" | "discordName" | "discordDiscriminator" | "discordAvatar"
     >;
@@ -106,7 +106,7 @@ export function find(args: MonthYear & Pick<User, "plusTier">) {
 
   return findStm.all(args).map((row) => ({
     ...row,
-    suggestions: JSON.parse(row.suggestions).map(JSON.parse),
+    users: JSON.parse(row.users).map(JSON.parse),
   })) as FindResult;
 }
 

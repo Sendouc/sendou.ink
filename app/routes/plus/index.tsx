@@ -8,6 +8,8 @@ import { useUser } from "~/hooks/useUser";
 import { requireUser } from "~/utils/remix";
 import styles from "~/styles/plus.css";
 import { Catcher } from "~/components/Catcher";
+import * as React from "react";
+import invariant from "tiny-invariant";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -35,14 +37,42 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function PlusPage() {
   const data = useLoaderData<PlusLoaderData>();
+  const [tierVisible, setTierVisible] = React.useState(
+    data.suggestions?.[0].tier ?? 0
+  );
 
   if (!data.suggestions) {
     return <SuggestedForInfo />;
   }
 
+  const visibleSuggestions = data.suggestions.find(
+    ({ tier }) => tier === tierVisible
+  );
+  invariant(visibleSuggestions);
+
   return (
     <div>
       <SuggestedForInfo />
+      <div className="plus__radios">
+        {data.suggestions.map(({ tier, users }) => {
+          const id = String(tier);
+          return (
+            <div key={id} className="plus__radio-container">
+              <label htmlFor={id} className="plus__radio-label">
+                +{tier}{" "}
+                <span className="plus__users-count">({users.length})</span>
+              </label>
+              <input
+                id={id}
+                name="tier"
+                type="radio"
+                checked={tierVisible === tier}
+                onChange={() => setTierVisible(tier)}
+              />
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
