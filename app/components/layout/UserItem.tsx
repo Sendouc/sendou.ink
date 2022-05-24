@@ -11,7 +11,7 @@ import { Popover } from "../Popover";
 export function UserItem() {
   const user = useUser();
 
-  if (user && user.discordAvatar)
+  if (user)
     return (
       <Popover
         trigger={
