@@ -7,17 +7,12 @@ import { MobileMenu } from "./MobileMenu";
 import { SearchInput } from "./SearchInput";
 import { UserItem } from "./UserItem";
 
-interface LayoutProps {
-  children: React.ReactNode;
-  menuOpen: boolean;
-  setMenuOpen: (open: boolean) => void;
-}
-
 export const Layout = React.memo(function Layout({
   children,
-  menuOpen,
-  setMenuOpen,
-}: LayoutProps) {
+}: {
+  children: React.ReactNode;
+}) {
+  const [menuOpen, setMenuOpen] = React.useState(false);
   const matches = useMatches();
 
   const pageTitleKey = "pageTitle";
@@ -39,6 +34,7 @@ export const Layout = React.memo(function Layout({
     <>
       <header className="layout__header">
         <div className="layout__header__search-container">
+          {/* xxx: replace with admin page */}
           <SearchInput />
         </div>
         <div className="layout__header__title-container">{pageTitle}</div>
@@ -59,7 +55,10 @@ export const Layout = React.memo(function Layout({
 function ScreenWidthSensitiveMenu({
   menuOpen,
   setMenuOpen,
-}: Pick<LayoutProps, "menuOpen" | "setMenuOpen">) {
+}: {
+  menuOpen: boolean;
+  setMenuOpen: (open: boolean) => void;
+}) {
   const { width } = useWindowSize();
 
   const closeMenu = () => setMenuOpen(false);

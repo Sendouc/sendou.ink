@@ -7,6 +7,7 @@ import type * as plusSuggestions from "~/db/models/plusSuggestions.server";
 import { useUser } from "~/hooks/useUser";
 import { requireUser } from "~/utils/remix";
 import styles from "~/styles/plus.css";
+import { Catcher } from "~/components/Catcher";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -71,3 +72,5 @@ function SuggestedForInfo() {
     </div>
   );
 }
+
+export const CatchBoundary = Catcher;

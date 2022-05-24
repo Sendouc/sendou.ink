@@ -59,7 +59,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export default function App() {
-  const [menuOpen, setMenuOpen] = React.useState(false);
   return (
     <html lang="en">
       <head>
@@ -68,7 +67,7 @@ export default function App() {
       </head>
       <body>
         <React.StrictMode>
-          <Layout menuOpen={menuOpen} setMenuOpen={setMenuOpen}>
+          <Layout>
             <Outlet />
           </Layout>
         </React.StrictMode>

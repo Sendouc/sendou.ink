@@ -1,3 +1,12 @@
+.button-text-paragraph {
+  display: flex;
+  gap: var(--s-1);
+}
+
+.button-text-paragraph > button {
+  font-size: var(--fonts-md);
+}
+
 .sub-nav__container {
   display: flex;
   flex-wrap: wrap;
