@@ -44,6 +44,6 @@ describe("User page", () => {
     cy.getCy("profile-page-link").click();
     cy.contains("Sendou");
     cy.contains("Finland").should("not.exist");
-    cy.contains(bio);
+    cy.contains(bio).should("not.exist");
   });
 });

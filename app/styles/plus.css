@@ -1,4 +1,4 @@
 .plus__suggested-info-text {
-  font-size: var(--fonts-lg);
   color: var(--text-lighter);
+  font-size: var(--fonts-lg);
 }
