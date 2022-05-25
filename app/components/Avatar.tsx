@@ -1,20 +1,24 @@
 import clsx from "clsx";
 import type { User } from "~/db/types";
 
+const dimensions = {
+  sm: 44,
+  md: 81,
+  lg: 125,
+};
+
 export function Avatar({
   discordId,
   discordAvatar,
-  size,
+  size = "sm",
   className,
   ...rest
 }: Pick<User, "discordId" | "discordAvatar"> & {
   className?: string;
-  size?: "lg";
+  size: "sm" | "md" | "lg";
 } & React.ButtonHTMLAttributes<HTMLImageElement>) {
   // TODO: just show text... my profile?
   // TODO: also show this if discordAvatar is stale and 404's
-
-  const dimensions = size === "lg" ? 125 : 44;
 
   return (
     <img
@@ -27,8 +31,8 @@ export function Avatar({
           : "/img/blank.gif" // avoid broken image placeholder
       }
       alt=""
-      width={dimensions}
-      height={dimensions}
+      width={dimensions[size]}
+      height={dimensions[size]}
       {...rest}
     />
   );

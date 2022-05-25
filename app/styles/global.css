@@ -267,19 +267,18 @@ label {
 
 fieldset {
   border: none;
-  background-color: var(--bg-lighter);
+  background-color: var(--bg-darker-transparent);
   border-radius: var(--rounded);
-  padding-block: var(--s-6);
-  padding-inline: var(--s-7);
+  font-size: var(--fonts-sm);
+  padding-inline: var(--s-3);
 }
 
 legend {
-  padding: var(--s-2);
-  background: url("/svg/background-pattern.svg");
-  background-color: var(--bg);
+  padding: var(--s-1);
+  background-color: transparent;
   border-radius: 2px;
   border-radius: var(--rounded-sm);
-  font-size: var(--fonts-sm);
+  font-size: var(--fonts-xs);
   font-weight: var(--bold);
 }
 

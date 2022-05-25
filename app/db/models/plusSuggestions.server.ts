@@ -39,6 +39,8 @@ WITH gs as (
     json_object(
       'info',
       json_object(
+        'id',
+        suggested."id",
         'discordId',
         suggested."discordId",
         'discordName',
@@ -53,6 +55,8 @@ WITH gs as (
         json_object(
           'author',
           json_object(
+            'id',
+            author."id",
             'discordId',
             author."discordId",
             'discordName',
@@ -93,10 +97,17 @@ export type FindResult = {
   users: {
     info: Pick<
       User,
-      "discordId" | "discordName" | "discordDiscriminator" | "discordAvatar"
+      | "id"
+      | "discordId"
+      | "discordName"
+      | "discordDiscriminator"
+      | "discordAvatar"
     >;
     suggestions: (Pick<PlusSuggestion, "createdAt" | "text"> & {
-      author: Pick<User, "discordId" | "discordName" | "discordDiscriminator">;
+      author: Pick<
+        User,
+        "id" | "discordId" | "discordName" | "discordDiscriminator"
+      >;
     })[];
   }[];
 }[];

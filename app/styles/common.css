@@ -66,6 +66,23 @@
   border-radius: 50%;
 }
 
+.stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.stack.sm {
+  gap: var(--s-2);
+}
+
+.stack.md {
+  gap: var(--s-4);
+}
+
+.stack.lg {
+  gap: var(--s-6);
+}
+
 /*
  *
  * Utility classes

@@ -26,3 +26,26 @@
   color: var(--text-lighter);
   font-size: var(--fonts-xxs);
 }
+
+.plus__suggested-user-info {
+  display: flex;
+  max-width: 24rem;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.plus__comment-button {
+  max-width: 12rem;
+  margin-inline-start: auto;
+}
+
+.plus__view-comments-action {
+  color: var(--text-lighter);
+  font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
+}
+
+.plus__comment-time {
+  color: var(--text-lighter);
+  font-size: var(--fonts-xxs);
+}
