@@ -1,4 +1,4 @@
-import type { LoaderFunction } from "@remix-run/node";
+import type { LoaderFunction, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Outlet, useLoaderData } from "@remix-run/react";
 import { countries } from "countries-list";
@@ -8,7 +8,14 @@ import { SubNav, SubNavLink } from "~/components/SubNav";
 import { db } from "~/db";
 import type { User } from "~/db/types";
 import { useUser } from "~/hooks/useUser";
-import { notFoundIfFalsy } from "~/utils/remix";
+import { makeTitle, notFoundIfFalsy } from "~/utils/remix";
+import { discordFullName } from "~/utils/strings";
+
+export const meta: MetaFunction = ({ data }: { data: UserPageLoaderData }) => {
+  return {
+    title: makeTitle(discordFullName(data)),
+  };
+};
 
 export const userParamsSchema = z.object({ identifier: z.string() });
 

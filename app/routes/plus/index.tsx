@@ -1,11 +1,15 @@
-import type { LinksFunction, LoaderFunction } from "@remix-run/node";
+import type {
+  LinksFunction,
+  LoaderFunction,
+  MetaFunction,
+} from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { upcomingVoting } from "~/core/plus";
 import { db } from "~/db";
 import type * as plusSuggestions from "~/db/models/plusSuggestions.server";
 import { useUser } from "~/hooks/useUser";
-import { requireUser } from "~/utils/remix";
+import { makeTitle, requireUser } from "~/utils/remix";
 import styles from "~/styles/plus.css";
 import { Catcher } from "~/components/Catcher";
 import * as React from "react";
@@ -18,6 +22,13 @@ import { databaseTimestampToDate } from "~/utils/dates";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
+};
+
+export const meta: MetaFunction = () => {
+  return {
+    title: makeTitle("Plus Server suggestions"),
+    description: "This month's suggestions for +1, +2 and +3.",
+  };
 };
 
 interface PlusLoaderData {

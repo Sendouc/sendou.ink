@@ -64,3 +64,7 @@ export async function getUser(request: Request) {
 
   return db.users.findByIdentifier(userId);
 }
+
+export function makeTitle(title: string) {
+  return `${title} | sendou.ink`;
+}
