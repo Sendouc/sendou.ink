@@ -265,6 +265,10 @@ label {
   margin-block-end: var(--s-1);
 }
 
+details summary {
+  cursor: pointer;
+}
+
 fieldset {
   border: none;
   background-color: var(--bg-darker-transparent);

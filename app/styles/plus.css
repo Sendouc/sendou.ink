@@ -1,3 +1,8 @@
+.plus__container {
+  max-width: 24rem;
+  margin-inline: auto;
+}
+
 .plus__suggested-info-text {
   color: var(--text-lighter);
   font-size: var(--fonts-lg);
@@ -29,7 +34,6 @@
 
 .plus__suggested-user-info {
   display: flex;
-  max-width: 24rem;
   align-items: center;
   gap: var(--s-2);
 }

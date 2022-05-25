@@ -56,7 +56,7 @@ export default function PlusPage() {
   invariant(visibleSuggestions);
 
   return (
-    <div>
+    <div className="plus__container">
       <SuggestedForInfo />
       <div className="stack md">
         <div className="plus__radios">
@@ -81,7 +81,7 @@ export default function PlusPage() {
         </div>
         <div className="stack lg">
           {visibleSuggestions.users.map((u) => (
-            <SuggestedUser key={u.info.id} user={u} />
+            <SuggestedUser key={`${u.info.id}-${tierVisible}`} user={u} />
           ))}
         </div>
       </div>
@@ -129,7 +129,7 @@ function SuggestedUser({
           size="md"
         />
         <h2>{user.info.discordName}</h2>
-        <Button className="plus__comment-button" tiny variant="minimal">
+        <Button className="plus__comment-button" tiny variant="outlined">
           Comment
         </Button>
       </div>
@@ -137,7 +137,7 @@ function SuggestedUser({
         <summary className="plus__view-comments-action">
           Comments ({user.suggestions.length})
         </summary>
-        <div className="stack sm">
+        <div className="stack sm mt-2">
           {user.suggestions.map((s) => (
             <fieldset key={s.author.id}>
               <legend>{discordFullName(s.author)}</legend>

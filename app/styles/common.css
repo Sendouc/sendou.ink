@@ -80,7 +80,7 @@
 }
 
 .stack.lg {
-  gap: var(--s-6);
+  gap: var(--s-8);
 }
 
 /*
@@ -91,4 +91,8 @@
 
 .w-full {
   width: 100%;
+}
+
+.mt-2 {
+  margin-block-start: var(--s-2);
 }
