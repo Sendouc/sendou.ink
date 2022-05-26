@@ -94,7 +94,9 @@ export default function PlusCommentModalPage() {
         </h2>
         <CommentTextarea />
         <div className="plus__modal-buttons">
-          <Button type="submit">Submit</Button>
+          <Button type="submit" data-cy="submit-button">
+            Submit
+          </Button>
           <Button
             onClick={() => navigate(PLUS_SUGGESTIONS_PAGE)}
             variant="minimal-destructive"
@@ -129,6 +131,7 @@ function CommentTextarea() {
         value={value}
         onChange={(e) => setValue(e.target.value)}
         maxLength={PlUS_SUGGESTION_COMMENT_MAX_LENGTH}
+        data-cy="comment-textarea"
       />
     </div>
   );

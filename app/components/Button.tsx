@@ -57,7 +57,7 @@ type LinkButtonProps = Pick<
   ButtonProps,
   "variant" | "children" | "className" | "tiny"
 > &
-  Pick<RemixLinkProps, "to">;
+  Pick<RemixLinkProps, "to"> & { "data-cy"?: string };
 
 export function LinkButton({
   variant,
@@ -65,9 +65,14 @@ export function LinkButton({
   tiny,
   className,
   to,
+  "data-cy": testId,
 }: LinkButtonProps) {
   return (
-    <Link className={clsx("button", variant, { tiny }, className)} to={to}>
+    <Link
+      className={clsx("button", variant, { tiny }, className)}
+      to={to}
+      data-cy={testId}
+    >
       {children}
     </Link>
   );

@@ -88,6 +88,7 @@ export default function PlusSuggestionsPage() {
                     type="radio"
                     checked={tierVisible === tier}
                     onChange={() => setTierVisible(tier)}
+                    data-cy={`plus${tier}-radio`}
                   />
                 </div>
               );
@@ -168,6 +169,7 @@ function SuggestedUser({
             tiny
             variant="outlined"
             to={`comment/${tier}/${suggested.info.id}`}
+            data-cy="comment-button"
           >
             Comment
           </LinkButton>
