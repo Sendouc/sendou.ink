@@ -14,6 +14,7 @@ import { upcomingVoting } from "~/core/plus";
 import { db } from "~/db";
 import type * as plusSuggestions from "~/db/models/plusSuggestions.server";
 import { useUser } from "~/hooks/useUser";
+import { canAddCommentToSuggestionFE } from "~/permissions";
 import styles from "~/styles/plus.css";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { makeTitle, requireUser } from "~/utils/remix";
@@ -134,7 +135,7 @@ function SuggestedForInfo() {
 }
 
 function SuggestedUser({
-  user,
+  user: suggestedUser,
   tier,
 }: {
   user: Unpacked<
@@ -142,36 +143,44 @@ function SuggestedUser({
   >;
   tier: number;
 }) {
-  const commentPageUrl = () =>
-    `comment?${new URLSearchParams({
-      id: String(user.info.id),
-      tier: String(tier),
-    }).toString()}`;
+  const data = useLoaderData<PlusSuggestionsLoaderData>();
+  const user = useUser();
+
+  const commentPageUrl = `comment?${new URLSearchParams({
+    id: String(suggestedUser.info.id),
+    tier: String(tier),
+  }).toString()}`;
 
   return (
     <div className="stack md">
       <div className="plus__suggested-user-info">
         <Avatar
-          discordAvatar={user.info.discordAvatar}
-          discordId={user.info.discordId}
+          discordAvatar={suggestedUser.info.discordAvatar}
+          discordId={suggestedUser.info.discordId}
           size="md"
         />
-        <h2>{user.info.discordName}</h2>
-        <LinkButton
-          className="plus__comment-button"
-          tiny
-          variant="outlined"
-          to={commentPageUrl()}
-        >
-          Comment
-        </LinkButton>
+        <h2>{suggestedUser.info.discordName}</h2>
+        {canAddCommentToSuggestionFE({
+          user,
+          allSuggestions: data.suggestions!,
+          target: { id: suggestedUser.info.id, plusTier: tier },
+        }) ? (
+          <LinkButton
+            className="plus__comment-button"
+            tiny
+            variant="outlined"
+            to={commentPageUrl}
+          >
+            Comment
+          </LinkButton>
+        ) : null}
       </div>
       <details>
         <summary className="plus__view-comments-action">
-          Comments ({user.suggestions.length})
+          Comments ({suggestedUser.suggestions.length})
         </summary>
         <div className="stack sm mt-2">
-          {user.suggestions.map((s) => (
+          {suggestedUser.suggestions.map((s) => (
             // xxx: white-space: pre-wrap?
             <fieldset key={s.author.id}>
               <legend>{discordFullName(s.author)}</legend>

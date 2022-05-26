@@ -27,7 +27,7 @@ export function upcomingVoting(now: Date): MonthYear {
 }
 
 /** Range of first Friday of a month to the following Monday (this range is when voting is active) */
-function monthsVotingRange({ month, year }: MonthYear) {
+export function monthsVotingRange({ month, year }: MonthYear) {
   const startDate = new Date(Date.UTC(year, month, 1, 10));
 
   while (startDate.getDay() !== 5) {

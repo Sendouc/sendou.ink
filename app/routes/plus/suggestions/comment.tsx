@@ -12,8 +12,28 @@ import { PLUS_SUGGESTIONS_PAGE } from "~/utils/urls";
 import type { PlusSuggestionsLoaderData } from "../suggestions";
 import * as React from "react";
 import { PlUS_SUGGESTION_COMMENT_MAX_LENGTH } from "~/constants";
+import type { ActionFunction } from "@remix-run/node";
+import { z } from "zod";
+import { parseRequestFormData, requireUser } from "~/utils/remix";
+import { canAddCommentToSuggestionFE } from "~/permissions";
+import { useUser } from "~/hooks/useUser";
+
+const commentActionSchema = z.object({
+  comment: z.string().max(PlUS_SUGGESTION_COMMENT_MAX_LENGTH),
+});
+
+export const action: ActionFunction = async ({ request }) => {
+  const data = await parseRequestFormData({
+    request,
+    schema: commentActionSchema,
+  });
+  const user = await requireUser(request);
+
+  return null;
+};
 
 export default function PlusCommentModalPage() {
+  const user = useUser();
   const matches = useMatches();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -26,7 +46,14 @@ export default function PlusCommentModalPage() {
     ?.find(({ tier }) => tier === tierSuggestedTo)
     ?.users.find((u) => u.info.id === userBeingCommentedId);
 
-  if (!userBeingCommented) {
+  if (
+    !userBeingCommented ||
+    !canAddCommentToSuggestionFE({
+      user,
+      allSuggestions: data.suggestions!,
+      target: { id: userBeingCommentedId, plusTier: tierSuggestedTo },
+    })
+  ) {
     return <Redirect to={PLUS_SUGGESTIONS_PAGE} />;
   }
 

@@ -23,7 +23,8 @@ sendou.ink/
 │   ├── hooks/ -- React hooks
 │   ├── routes/ -- Routes see: https://remix.run/docs/en/v1/guides/routing
 │   ├── styles/ -- All .css files of the project for styling
-│   └── utils/ -- Random helper functions used in many places
+│   ├── utils/ -- Random helper functions used in many places
+│   └── permissions.ts / -- What actions are allowed. Separated by frontend and backend as frontend has constraints based on what user sees.
 ├── migrations/ -- Database migrations
 ├── cypress/ -- see: https://docs.cypress.io/guides/core-concepts/writing-and-organizing-tests#Folder-structure
 ├── public/ -- Images, built assets etc. static files to be served as is

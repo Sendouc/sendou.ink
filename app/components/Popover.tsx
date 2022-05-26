@@ -2,6 +2,7 @@ import { Popover as HeadlessPopover } from "@headlessui/react";
 import * as React from "react";
 import { usePopper } from "react-popper";
 
+// xxx: gets weird border on click
 export function Popover({
   children,
   trigger,
