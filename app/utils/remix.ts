@@ -65,6 +65,14 @@ export async function getUser(request: Request) {
   return db.users.findByIdentifier(userId);
 }
 
+/** Asserts condition is truthy. Throws a new `Response` with status code 400 and given message if falsy.  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- same format as TS docs: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions
+export function validate(condition: any): asserts condition {
+  if (condition) return;
+
+  throw new Response(null, { status: 400 });
+}
+
 export function makeTitle(title: string) {
   return `${title} | sendou.ink`;
 }

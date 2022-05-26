@@ -4,8 +4,8 @@ import { allTruthy } from "./utils/arrays";
 
 interface CanAddCommentToSuggestionFEArgs {
   user?: Pick<User, "id">;
-  allSuggestions: plusSuggestions.FindResult;
-  target: Pick<User, "id" | "plusTier">;
+  suggestions: plusSuggestions.FindResult;
+  suggested: { id: User["id"]; plusTier: NonNullable<User["plusTier"]> };
 }
 export function canAddCommentToSuggestionFE(
   args: CanAddCommentToSuggestionFEArgs
@@ -16,18 +16,16 @@ export function canAddCommentToSuggestionFE(
 interface CanAddCommentToSuggestionBEArgs
   extends CanAddCommentToSuggestionFEArgs {
   user?: Pick<User, "id" | "plusTier">;
-  targetPlusTier: number;
 }
 export function canAddCommentToSuggestionBE({
   user,
-  targetPlusTier,
-  allSuggestions,
-  target,
+  suggestions,
+  suggested,
 }: CanAddCommentToSuggestionBEArgs) {
   return allTruthy([
-    canAddCommentToSuggestionFE({ user, allSuggestions, target }),
-    playerAlreadySuggested({ allSuggestions, target }),
-    targetPlusTierIsSmallerOrEqual({ user, targetPlusTier }),
+    canAddCommentToSuggestionFE({ user, suggestions, suggested }),
+    playerAlreadySuggested({ suggestions, suggested }),
+    targetPlusTierIsSmallerOrEqual({ user, suggested }),
   ]);
 }
 
@@ -46,31 +44,31 @@ export function canAddCommentToSuggestionBE({
 
 function alreadyCommentedByUser({
   user,
-  allSuggestions,
-  target,
+  suggestions,
+  suggested,
 }: CanAddCommentToSuggestionFEArgs) {
   return Boolean(
-    allSuggestions
-      .find(({ tier }) => tier === target.plusTier)
-      ?.users.find((u) => u.info.id === target.id)
+    suggestions
+      .find(({ tier }) => tier === suggested.plusTier)
+      ?.users.find((u) => u.info.id === suggested.id)
       ?.suggestions.some((s) => s.author.id === user?.id)
   );
 }
 
 function playerAlreadySuggested({
-  allSuggestions,
-  target,
-}: Pick<CanAddCommentToSuggestionBEArgs, "allSuggestions" | "target">) {
+  suggestions,
+  suggested,
+}: Pick<CanAddCommentToSuggestionBEArgs, "suggestions" | "suggested">) {
   return Boolean(
-    allSuggestions
-      .find(({ tier }) => tier === target.plusTier)
-      ?.users.find((u) => u.info.id === target.id)
+    suggestions
+      .find(({ tier }) => tier === suggested.plusTier)
+      ?.users.find((u) => u.info.id === suggested.id)
   );
 }
 
 function targetPlusTierIsSmallerOrEqual({
   user,
-  targetPlusTier,
-}: Pick<CanAddCommentToSuggestionBEArgs, "user" | "targetPlusTier">) {
-  return user?.plusTier && user.plusTier <= targetPlusTier;
+  suggested,
+}: Pick<CanAddCommentToSuggestionBEArgs, "user" | "suggested">) {
+  return user?.plusTier && user.plusTier <= suggested.plusTier;
 }

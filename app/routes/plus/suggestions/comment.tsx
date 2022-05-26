@@ -14,12 +14,21 @@ import * as React from "react";
 import { PlUS_SUGGESTION_COMMENT_MAX_LENGTH } from "~/constants";
 import type { ActionFunction } from "@remix-run/node";
 import { z } from "zod";
-import { parseRequestFormData, requireUser } from "~/utils/remix";
-import { canAddCommentToSuggestionFE } from "~/permissions";
+import { parseRequestFormData, requireUser, validate } from "~/utils/remix";
+import {
+  canAddCommentToSuggestionBE,
+  canAddCommentToSuggestionFE,
+} from "~/permissions";
 import { useUser } from "~/hooks/useUser";
+import { upcomingVoting } from "~/core/plus";
+import { db } from "~/db";
+import { actualNumber } from "~/utils/zod";
+import invariant from "tiny-invariant";
 
 const commentActionSchema = z.object({
-  comment: z.string().max(PlUS_SUGGESTION_COMMENT_MAX_LENGTH),
+  text: z.string().min(1).max(PlUS_SUGGESTION_COMMENT_MAX_LENGTH),
+  tier: z.preprocess(actualNumber, z.number().min(1).max(3)),
+  suggestedId: z.preprocess(actualNumber, z.number()),
 });
 
 export const action: ActionFunction = async ({ request }) => {
@@ -29,9 +38,31 @@ export const action: ActionFunction = async ({ request }) => {
   });
   const user = await requireUser(request);
 
+  const suggestions = db.plusSuggestions.find({
+    ...upcomingVoting(new Date()),
+    plusTier: user.plusTier,
+  });
+
+  validate(suggestions);
+  validate(
+    canAddCommentToSuggestionBE({
+      suggestions,
+      user,
+      suggested: { id: data.suggestedId, plusTier: data.tier },
+    })
+  );
+
+  db.plusSuggestions.create({
+    authorId: user.id,
+    ...data,
+    ...upcomingVoting(new Date()),
+  });
+
   return null;
 };
 
+// xxx: making unnecessary call to loader + when going back to modal and back keeps making http calls?
+// xxx: modal closes when submitting without redirect?
 export default function PlusCommentModalPage() {
   const user = useUser();
   const matches = useMatches();
@@ -39,19 +70,20 @@ export default function PlusCommentModalPage() {
   const [searchParams] = useSearchParams();
   const data = matches.at(-2)!.data as PlusSuggestionsLoaderData;
 
-  const userBeingCommentedId = Number(searchParams.get("id"));
+  const targetUserId = Number(searchParams.get("id"));
   const tierSuggestedTo = Number(searchParams.get("tier"));
 
   const userBeingCommented = data.suggestions
     ?.find(({ tier }) => tier === tierSuggestedTo)
-    ?.users.find((u) => u.info.id === userBeingCommentedId);
+    ?.users.find((u) => u.info.id === targetUserId);
 
+  invariant(data.suggestions);
   if (
     !userBeingCommented ||
     !canAddCommentToSuggestionFE({
       user,
-      allSuggestions: data.suggestions!,
-      target: { id: userBeingCommentedId, plusTier: tierSuggestedTo },
+      suggestions: data.suggestions,
+      suggested: { id: targetUserId, plusTier: tierSuggestedTo },
     })
   ) {
     return <Redirect to={PLUS_SUGGESTIONS_PAGE} />;
@@ -60,6 +92,8 @@ export default function PlusCommentModalPage() {
   return (
     <Dialog className="plus__modal" isOpen>
       <Form method="post" className="stack md">
+        <input type="hidden" name="tier" value={tierSuggestedTo} />
+        <input type="hidden" name="suggestedId" value={targetUserId} />
         <h2 className="plus__modal-title">
           {userBeingCommented.info.discordName}&apos;s +{tierSuggestedTo}{" "}
           suggestion
@@ -85,7 +119,7 @@ function CommentTextarea() {
   return (
     <div>
       <Label
-        htmlFor="comment"
+        htmlFor="text"
         valueLimits={{
           current: value.length,
           max: PlUS_SUGGESTION_COMMENT_MAX_LENGTH,
@@ -94,8 +128,8 @@ function CommentTextarea() {
         Your comment
       </Label>
       <textarea
-        id="comment"
-        name="comment"
+        id="text"
+        name="text"
         className="plus__modal-textarea"
         rows={4}
         value={value}

@@ -97,7 +97,7 @@ export default function PlusSuggestionsPage() {
             {visibleSuggestions.users.map((u) => (
               <SuggestedUser
                 key={`${u.info.id}-${tierVisible}`}
-                user={u}
+                suggested={u}
                 tier={tierVisible}
               />
             ))}
@@ -135,10 +135,10 @@ function SuggestedForInfo() {
 }
 
 function SuggestedUser({
-  user: suggestedUser,
+  suggested,
   tier,
 }: {
-  user: Unpacked<
+  suggested: Unpacked<
     Unpacked<NonNullable<PlusSuggestionsLoaderData["suggestions"]>>["users"]
   >;
   tier: number;
@@ -147,23 +147,25 @@ function SuggestedUser({
   const user = useUser();
 
   const commentPageUrl = `comment?${new URLSearchParams({
-    id: String(suggestedUser.info.id),
+    id: String(suggested.info.id),
     tier: String(tier),
   }).toString()}`;
+
+  invariant(data.suggestions);
 
   return (
     <div className="stack md">
       <div className="plus__suggested-user-info">
         <Avatar
-          discordAvatar={suggestedUser.info.discordAvatar}
-          discordId={suggestedUser.info.discordId}
+          discordAvatar={suggested.info.discordAvatar}
+          discordId={suggested.info.discordId}
           size="md"
         />
-        <h2>{suggestedUser.info.discordName}</h2>
+        <h2>{suggested.info.discordName}</h2>
         {canAddCommentToSuggestionFE({
           user,
-          allSuggestions: data.suggestions!,
-          target: { id: suggestedUser.info.id, plusTier: tier },
+          suggestions: data.suggestions,
+          suggested: { id: suggested.info.id, plusTier: tier },
         }) ? (
           <LinkButton
             className="plus__comment-button"
@@ -177,10 +179,10 @@ function SuggestedUser({
       </div>
       <details>
         <summary className="plus__view-comments-action">
-          Comments ({suggestedUser.suggestions.length})
+          Comments ({suggested.suggestions.length})
         </summary>
         <div className="stack sm mt-2">
-          {suggestedUser.suggestions.map((s) => (
+          {suggested.suggestions.map((s) => (
             // xxx: white-space: pre-wrap?
             <fieldset key={s.author.id}>
               <legend>{discordFullName(s.author)}</legend>

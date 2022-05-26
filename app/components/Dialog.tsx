@@ -49,6 +49,7 @@ function useDOMSync(isOpen: boolean) {
 
     if (isOpen) {
       dialog.showModal();
+      // TODO: can be replaced with https://twitter.com/argyleink/status/1529869352660439048 once gets control
       html.classList.add("lock-scroll");
     } else {
       dialog.close();

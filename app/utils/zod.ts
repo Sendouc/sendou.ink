@@ -15,3 +15,9 @@ export function falsyToNull(value: unknown): unknown {
 
   return null;
 }
+
+export function actualNumber(value: unknown) {
+  const parsed = Number(value);
+
+  return Number.isNaN(parsed) ? undefined : parsed;
+}
