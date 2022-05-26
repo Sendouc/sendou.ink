@@ -83,6 +83,10 @@
   gap: var(--s-8);
 }
 
+.lock-scroll {
+  overflow: hidden;
+}
+
 /*
  *
  * Utility classes

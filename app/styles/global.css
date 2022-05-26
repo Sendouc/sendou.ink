@@ -7,7 +7,6 @@
   --bg-lighter-transparent: hsla(237.3deg 42.3% 35.6% / 50%);
   --bg-darker-very-transparent: hsla(237.3deg 42.3% 26.6% / 50%);
   --bg-darker-transparent: hsla(237.3deg 42.3% 26.6% / 90%);
-  --bg-modal-backdrop: hsla(237deg 98% 1% / 70%);
   --border: hsl(237.3deg 42.3% 45.6%);
   --button-text: rgb(0 0 0 / 85%);
   --button-text-transparent: rgb(0 0 0 / 65%);
@@ -317,4 +316,34 @@ select::selection {
 
 hr {
   border-color: var(--theme-transparent);
+}
+
+dialog {
+  border: 0;
+  margin: auto;
+  background-color: var(--bg);
+  border-radius: var(--rounded);
+}
+
+dialog::backdrop {
+  background: hsla(237deg 98% 1% / 70%);
+}
+
+@supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+  dialog::backdrop {
+    -webkit-backdrop-filter: blur(7px) brightness(70%);
+    backdrop-filter: blur(7px) brightness(70%);
+    background-color: transparent;
+  }
+}
+
+dialog[open],
+dialog::backdrop {
+  animation: show 500ms ease;
+}
+
+@keyframes show {
+  0% {
+    opacity: 0;
+  }
 }
