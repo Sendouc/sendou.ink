@@ -8,7 +8,7 @@ import { Outlet, useLoaderData } from "@remix-run/react";
 import * as React from "react";
 import invariant from "tiny-invariant";
 import { Avatar } from "~/components/Avatar";
-import { Button } from "~/components/Button";
+import { LinkButton } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
 import { upcomingVoting } from "~/core/plus";
 import { db } from "~/db";
@@ -143,9 +143,14 @@ function SuggestedUser({
           size="md"
         />
         <h2>{user.info.discordName}</h2>
-        <Button className="plus__comment-button" tiny variant="outlined">
+        <LinkButton
+          className="plus__comment-button"
+          tiny
+          variant="outlined"
+          to="comment"
+        >
           Comment
-        </Button>
+        </LinkButton>
       </div>
       <details>
         <summary className="plus__view-comments-action">

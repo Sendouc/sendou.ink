@@ -1,3 +1,5 @@
+import { Link } from "@remix-run/react";
+import type { RemixLinkProps } from "@remix-run/react/components";
 import clsx from "clsx";
 import * as React from "react";
 
@@ -32,18 +34,15 @@ export function Button(props: ButtonProps) {
   } = props;
   return (
     <button
-      className={clsx(className, {
-        success: variant === "success",
-        outlined: variant === "outlined",
-        "outlined-success": variant === "outlined-success",
-        destructive: variant === "destructive",
-        minimal: variant === "minimal",
-        "minimal-success": variant === "minimal-success",
-        "minimal-destructive": variant === "minimal-destructive",
-        "disabled-opaque": props.disabled,
-        loading,
-        tiny,
-      })}
+      className={clsx(
+        variant,
+        {
+          "disabled-opaque": props.disabled,
+          loading,
+          tiny,
+        },
+        className
+      )}
       disabled={props.disabled || loading}
       type={type}
       {...rest}
@@ -51,5 +50,25 @@ export function Button(props: ButtonProps) {
       {icon && React.cloneElement(icon, { className: "button-icon" })}
       {loading && loadingText ? loadingText : children}
     </button>
+  );
+}
+
+type LinkButtonProps = Pick<
+  ButtonProps,
+  "variant" | "children" | "className" | "tiny"
+> &
+  Pick<RemixLinkProps, "to">;
+
+export function LinkButton({
+  variant,
+  children,
+  tiny,
+  className,
+  to,
+}: LinkButtonProps) {
+  return (
+    <Link className={clsx("button", variant, { tiny }, className)} to={to}>
+      {children}
+    </Link>
   );
 }
