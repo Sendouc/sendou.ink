@@ -24,7 +24,7 @@ export const Layout = React.memo(function Layout({
     .filter(Boolean)
     .reduceRight((acc: string | null, routeData) => {
       if (!acc && typeof routeData[pageTitleKey] === "string") {
-        return routeData[pageTitleKey] as string;
+        return routeData[pageTitleKey] ;
       }
 
       return acc;
