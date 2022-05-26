@@ -20,7 +20,7 @@ module.exports = {
     "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
     "no-constant-condition": ["error", { checkLoops: false }],
     "no-console": ["error", { allow: ["warn", "error"] }],
-    "no-warning-comments": ["error", { terms: ["xxx"] }],
+    "no-warning-comments": ["warn", { terms: ["xxx"] }],
     "@typescript-eslint/no-unsafe-return": 0,
     "@typescript-eslint/no-unsafe-member-access": 0,
     "@typescript-eslint/no-unsafe-assignment": 0,

@@ -12,7 +12,7 @@
     "seed": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/seed.ts",
     "lint:ts": "eslint . --ext .ts,.tsx",
     "lint:styles": "stylelint \"app/styles/**/*.css\"",
-    "lf": "npm run lint:styles -- --fix && npm run lint:ts -- --fix && npm run prettier:write",
+    "lf": "npm run typecheck && npm run lint:styles -- --fix && npm run lint:ts -- --fix && npm run prettier:write",
     "prettier:check": "prettier --check .",
     "prettier:write": "prettier --write .",
     "typecheck": "tsc --noEmit",

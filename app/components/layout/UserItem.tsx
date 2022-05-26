@@ -19,6 +19,7 @@ export function UserItem() {
             data-cy="user-avatar"
             discordAvatar={user.discordAvatar}
             discordId={user.discordId}
+            size="sm"
           />
         }
       >
