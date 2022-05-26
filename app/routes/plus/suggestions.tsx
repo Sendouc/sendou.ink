@@ -172,6 +172,7 @@ function SuggestedUser({
         </summary>
         <div className="stack sm mt-2">
           {user.suggestions.map((s) => (
+            // xxx: white-space: pre-wrap?
             <fieldset key={s.author.id}>
               <legend>{discordFullName(s.author)}</legend>
               {s.text}

@@ -1,8 +1,17 @@
-import { useMatches, useNavigate, useSearchParams } from "@remix-run/react";
+import {
+  Form,
+  useMatches,
+  useNavigate,
+  useSearchParams,
+} from "@remix-run/react";
+import { Button } from "~/components/Button";
 import { Dialog } from "~/components/Dialog";
+import { Label } from "~/components/Label";
 import { Redirect } from "~/components/Redirect";
 import { PLUS_SUGGESTIONS_PAGE } from "~/utils/urls";
 import type { PlusSuggestionsLoaderData } from "../suggestions";
+import * as React from "react";
+import { PlUS_SUGGESTION_COMMENT_MAX_LENGTH } from "~/constants";
 
 export default function PlusCommentModalPage() {
   const matches = useMatches();
@@ -22,8 +31,50 @@ export default function PlusCommentModalPage() {
   }
 
   return (
-    <Dialog isOpen close={() => navigate(PLUS_SUGGESTIONS_PAGE)}>
-      hello world
+    <Dialog className="plus__modal" isOpen>
+      <Form method="post" className="stack md">
+        <h2 className="plus__modal-title">
+          {userBeingCommented.info.discordName}&apos;s +{tierSuggestedTo}{" "}
+          suggestion
+        </h2>
+        <CommentTextarea />
+        <div className="plus__modal-buttons">
+          <Button type="submit">Submit</Button>
+          <Button
+            onClick={() => navigate(PLUS_SUGGESTIONS_PAGE)}
+            variant="minimal-destructive"
+            tiny
+          >
+            Cancel
+          </Button>
+        </div>
+      </Form>
     </Dialog>
+  );
+}
+
+function CommentTextarea() {
+  const [value, setValue] = React.useState("");
+  return (
+    <div>
+      <Label
+        htmlFor="comment"
+        valueLimits={{
+          current: value.length,
+          max: PlUS_SUGGESTION_COMMENT_MAX_LENGTH,
+        }}
+      >
+        Your comment
+      </Label>
+      <textarea
+        id="comment"
+        name="comment"
+        className="plus__modal-textarea"
+        rows={4}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        maxLength={PlUS_SUGGESTION_COMMENT_MAX_LENGTH}
+      />
+    </div>
   );
 }

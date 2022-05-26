@@ -83,8 +83,37 @@
   gap: var(--s-8);
 }
 
+.stack.vertical {
+  flex-direction: row;
+}
+
 .lock-scroll {
   overflow: hidden;
+}
+
+.label__container {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--s-2);
+  margin-block-end: var(--label-margin);
+}
+
+.label__container > label {
+  margin: 0;
+}
+
+.label__value {
+  color: var(--text-lighter);
+  font-size: var(--fonts-xxs);
+  margin-block-start: -5px;
+}
+
+.label__value.warning {
+  color: var(--theme-warning);
+}
+
+.label__value.error {
+  color: var(--theme-error);
 }
 
 /*

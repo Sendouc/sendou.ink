@@ -66,6 +66,7 @@
 
   /* letter-spacing: */
   --sparse: 0.4px;
+  --label-margin: var(--s-1);
 }
 
 /* xs: "(min-width: 480px)",
@@ -261,7 +262,7 @@ label {
   display: block;
   font-size: var(--fonts-xs);
   font-weight: var(--bold);
-  margin-block-end: var(--s-1);
+  margin-block-end: var(--label-margin);
 }
 
 details summary {

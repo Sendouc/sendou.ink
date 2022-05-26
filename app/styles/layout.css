@@ -31,7 +31,7 @@
   max-width: 48rem;
   margin: 0 auto;
   padding-block-end: var(--s-32);
-  padding-inline: var(--s-2-5);
+  padding-inline: var(--s-3);
 }
 
 .layout__burger {

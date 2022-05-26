@@ -4,31 +4,32 @@ export function Dialog({
   children,
   isOpen,
   close,
+  className,
 }: {
   children: React.ReactNode;
   isOpen: boolean;
-  close: () => void;
+  close?: () => void;
+  className: string;
 }) {
   const ref = useDOMSync(isOpen);
 
   // https://stackoverflow.com/a/26984690
-  const closeOnOutsideClick = (
-    event: React.MouseEvent<HTMLDialogElement, MouseEvent>
-  ) => {
-    const rect: DOMRect = ref.current.getBoundingClientRect();
-    const isInDialog =
-      rect.top <= event.clientY &&
-      event.clientY <= rect.top + rect.height &&
-      rect.left <= event.clientX &&
-      event.clientX <= rect.left + rect.width;
-    if (!isInDialog) {
-      close();
-    }
-  };
+  const closeOnOutsideClick = close
+    ? (event: React.MouseEvent<HTMLDialogElement, MouseEvent>) => {
+        const rect: DOMRect = ref.current.getBoundingClientRect();
+        const isInDialog =
+          rect.top <= event.clientY &&
+          event.clientY <= rect.top + rect.height &&
+          rect.left <= event.clientX &&
+          event.clientX <= rect.left + rect.width;
+        if (!isInDialog) {
+          close();
+        }
+      }
+    : undefined;
 
   return (
-    <dialog ref={ref} onClick={closeOnOutsideClick}>
-      <button onClick={close}>x</button>
+    <dialog className={className} ref={ref} onClick={closeOnOutsideClick}>
       {children}
     </dialog>
   );
@@ -39,20 +40,23 @@ function useDOMSync(isOpen: boolean) {
   const ref = React.useRef<any>(null);
 
   React.useEffect(() => {
-    if (ref.current.open && isOpen) return;
-    if (!ref.current.open && !isOpen) return;
+    const dialog = ref.current;
+
+    if (dialog.open && isOpen) return;
+    if (!dialog.open && !isOpen) return;
 
     const html = document.getElementsByTagName("html")[0];
 
     if (isOpen) {
-      ref.current.showModal();
+      dialog.showModal();
       html.classList.add("lock-scroll");
     } else {
-      ref.current.close();
+      dialog.close();
       html.classList.remove("lock-scroll");
     }
 
     return () => {
+      dialog.close();
       html.classList.remove("lock-scroll");
     };
   }, [isOpen]);

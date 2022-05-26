@@ -53,3 +53,22 @@
   color: var(--text-lighter);
   font-size: var(--fonts-xxs);
 }
+
+.plus__modal {
+  width: min(90%, 24rem);
+}
+
+.plus__modal-title {
+  font-size: var(--fonts-sm);
+}
+
+.plus__modal-textarea {
+  width: 100%;
+  resize: none;
+}
+
+.plus__modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--s-4);
+}

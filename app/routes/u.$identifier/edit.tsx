@@ -1,10 +1,10 @@
 import type { ActionFunction, LinksFunction } from "@remix-run/node";
 import { Form, useMatches, useTransition } from "@remix-run/react";
-import clsx from "clsx";
 import { countries } from "countries-list";
 import * as React from "react";
 import { z } from "zod";
 import { Button } from "~/components/Button";
+import { Label } from "~/components/Label";
 import { USER_BIO_MAX_LENGTH } from "~/constants";
 import { db } from "~/db";
 import type { User } from "~/db/types";
@@ -87,14 +87,12 @@ function BioTextarea({ initialValue }: { initialValue: User["bio"] }) {
 
   return (
     <div className="w-full">
-      <div className="u-edit__bio-header">
-        <label htmlFor="bio">Bio</label>
-        <div
-          className={clsx("u-edit__length-limit", lengthWarning(value.length))}
-        >
-          {value.length}/{USER_BIO_MAX_LENGTH}
-        </div>
-      </div>
+      <Label
+        htmlFor="bio"
+        valueLimits={{ current: value.length, max: USER_BIO_MAX_LENGTH }}
+      >
+        Bio
+      </Label>
       <textarea
         id="bio"
         name="bio"
@@ -106,9 +104,4 @@ function BioTextarea({ initialValue }: { initialValue: User["bio"] }) {
       />
     </div>
   );
-}
-
-function lengthWarning(length: number) {
-  if (length >= USER_BIO_MAX_LENGTH) return "error";
-  if (length + 100 >= USER_BIO_MAX_LENGTH) return "warning";
 }
