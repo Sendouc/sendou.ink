@@ -31,7 +31,7 @@ export const meta: MetaFunction = () => {
   };
 };
 
-interface PlusLoaderData {
+export interface PlusSuggestionsLoaderData {
   suggestions?: plusSuggestions.FindResult;
   suggestedForTiers: number[];
 }
@@ -39,7 +39,7 @@ interface PlusLoaderData {
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await requireUser(request);
 
-  return json<PlusLoaderData>({
+  return json<PlusSuggestionsLoaderData>({
     suggestions: db.plusSuggestions.find({
       ...upcomingVoting(new Date()),
       plusTier: user.plusTier,
@@ -51,8 +51,8 @@ export const loader: LoaderFunction = async ({ request }) => {
   });
 };
 
-export default function PlusPage() {
-  const data = useLoaderData<PlusLoaderData>();
+export default function PlusSuggestionsPage() {
+  const data = useLoaderData<PlusSuggestionsLoaderData>();
   const [tierVisible, setTierVisible] = React.useState(
     data.suggestions?.[0].tier ?? 0
   );
@@ -94,7 +94,11 @@ export default function PlusPage() {
           </div>
           <div className="stack lg">
             {visibleSuggestions.users.map((u) => (
-              <SuggestedUser key={`${u.info.id}-${tierVisible}`} user={u} />
+              <SuggestedUser
+                key={`${u.info.id}-${tierVisible}`}
+                user={u}
+                tier={tierVisible}
+              />
             ))}
           </div>
         </div>
@@ -104,7 +108,7 @@ export default function PlusPage() {
 }
 
 function SuggestedForInfo() {
-  const data = useLoaderData<PlusLoaderData>();
+  const data = useLoaderData<PlusSuggestionsLoaderData>();
   const user = useUser();
 
   // no need to show anything if they can't be suggested anyway...
@@ -131,9 +135,19 @@ function SuggestedForInfo() {
 
 function SuggestedUser({
   user,
+  tier,
 }: {
-  user: Unpacked<Unpacked<NonNullable<PlusLoaderData["suggestions"]>>["users"]>;
+  user: Unpacked<
+    Unpacked<NonNullable<PlusSuggestionsLoaderData["suggestions"]>>["users"]
+  >;
+  tier: number;
 }) {
+  const commentPageUrl = () =>
+    `comment?${new URLSearchParams({
+      id: String(user.info.id),
+      tier: String(tier),
+    }).toString()}`;
+
   return (
     <div className="stack md">
       <div className="plus__suggested-user-info">
@@ -147,7 +161,7 @@ function SuggestedUser({
           className="plus__comment-button"
           tiny
           variant="outlined"
-          to="comment"
+          to={commentPageUrl()}
         >
           Comment
         </LinkButton>
