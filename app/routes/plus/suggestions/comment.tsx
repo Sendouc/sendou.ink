@@ -4,7 +4,7 @@ import { Dialog } from "~/components/Dialog";
 export default function PlusCommentModalPage() {
   const navigate = useNavigate();
   return (
-    <Dialog isOpen close={() => navigate("/plus")}>
+    <Dialog isOpen close={() => navigate("/plus/suggestions")}>
       hello world
     </Dialog>
   );
