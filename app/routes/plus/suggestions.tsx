@@ -146,11 +146,6 @@ function SuggestedUser({
   const data = useLoaderData<PlusSuggestionsLoaderData>();
   const user = useUser();
 
-  const commentPageUrl = `comment?${new URLSearchParams({
-    id: String(suggested.info.id),
-    tier: String(tier),
-  }).toString()}`;
-
   invariant(data.suggestions);
 
   return (
@@ -167,11 +162,12 @@ function SuggestedUser({
           suggestions: data.suggestions,
           suggested: { id: suggested.info.id, plusTier: tier },
         }) ? (
+          // TODO: resetScroll={false} https://twitter.com/ryanflorence/status/1527775882797907969
           <LinkButton
             className="plus__comment-button"
             tiny
             variant="outlined"
-            to={commentPageUrl}
+            to={`comment/${tier}/${suggested.info.id}`}
           >
             Comment
           </LinkButton>
@@ -183,8 +179,7 @@ function SuggestedUser({
         </summary>
         <div className="stack sm mt-2">
           {suggested.suggestions.map((s) => (
-            // xxx: white-space: pre-wrap?
-            <fieldset key={s.author.id}>
+            <fieldset className="plus__comment" key={s.author.id}>
               <legend>{discordFullName(s.author)}</legend>
               {s.text}
               <span className="plus__comment-time">

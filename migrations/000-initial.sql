@@ -22,7 +22,8 @@ CREATE TABLE "PlusSuggestion" (
   "tier" integer NOT NULL,
   "createdAt" integer DEFAULT (strftime('%s', 'now')) NOT NULL,
   FOREIGN KEY ("authorId") REFERENCES "User"("id") ON DELETE CASCADE,
-  FOREIGN KEY ("suggestedId") REFERENCES "User"("id") ON DELETE CASCADE
+  FOREIGN KEY ("suggestedId") REFERENCES "User"("id") ON DELETE CASCADE,
+  UNIQUE("month", "year", "suggestedId", "authorId", "tier") ON CONFLICT ROLLBACK
 ) STRICT;
 
 CREATE INDEX plus_suggestion_author_id ON "PlusSuggestion"("authorId");

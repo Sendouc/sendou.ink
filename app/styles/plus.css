@@ -49,6 +49,10 @@
   font-weight: var(--semi-bold);
 }
 
+.plus__comment {
+  white-space: pre-wrap;
+}
+
 .plus__comment-time {
   color: var(--text-lighter);
   font-size: var(--fonts-xxs);

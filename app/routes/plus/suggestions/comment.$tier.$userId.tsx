@@ -1,9 +1,4 @@
-import {
-  Form,
-  useMatches,
-  useNavigate,
-  useSearchParams,
-} from "@remix-run/react";
+import { Form, useMatches, useNavigate, useParams } from "@remix-run/react";
 import { Button } from "~/components/Button";
 import { Dialog } from "~/components/Dialog";
 import { Label } from "~/components/Label";
@@ -13,6 +8,7 @@ import type { PlusSuggestionsLoaderData } from "../suggestions";
 import * as React from "react";
 import { PlUS_SUGGESTION_COMMENT_MAX_LENGTH } from "~/constants";
 import type { ActionFunction } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { z } from "zod";
 import { parseRequestFormData, requireUser, validate } from "~/utils/remix";
 import {
@@ -58,20 +54,18 @@ export const action: ActionFunction = async ({ request }) => {
     ...upcomingVoting(new Date()),
   });
 
-  return null;
+  return redirect(PLUS_SUGGESTIONS_PAGE);
 };
 
-// xxx: making unnecessary call to loader + when going back to modal and back keeps making http calls?
-// xxx: modal closes when submitting without redirect?
 export default function PlusCommentModalPage() {
   const user = useUser();
   const matches = useMatches();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const params = useParams();
   const data = matches.at(-2)!.data as PlusSuggestionsLoaderData;
 
-  const targetUserId = Number(searchParams.get("id"));
-  const tierSuggestedTo = Number(searchParams.get("tier"));
+  const targetUserId = Number(params.userId);
+  const tierSuggestedTo = Number(params.tier);
 
   const userBeingCommented = data.suggestions
     ?.find(({ tier }) => tier === tierSuggestedTo)

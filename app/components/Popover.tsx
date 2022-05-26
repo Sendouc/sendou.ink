@@ -3,6 +3,7 @@ import * as React from "react";
 import { usePopper } from "react-popper";
 
 // xxx: gets weird border on click
+// TODO: after clicking item in the pop over panel should close it
 export function Popover({
   children,
   trigger,
