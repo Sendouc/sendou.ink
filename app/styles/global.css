@@ -186,9 +186,13 @@ a {
   opacity: 0.6;
 }
 
-:is(button, .button) > .button-icon {
+.button-icon {
   width: 1.25rem;
   margin-inline-end: var(--s-1-5);
+}
+
+.button-icon.lonely {
+  margin-inline-end: 0;
 }
 
 :is(button, .button).tiny > .button-icon {
