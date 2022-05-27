@@ -10,15 +10,10 @@ export function Catcher() {
   switch (caught.status) {
     case 401:
       return (
-        <div className="four-zero-one__container">
-          <h2 className="four-zero-one__status-header">401 Unauthorized</h2>
+        <div>
+          <h2>Error 401 Unauthorized</h2>
           {user ? (
-            <p>
-              If you need assistance you can ask for help on{" "}
-              <a className="four-zero-one__link" href={SENDOU_INK_DISCORD_URL}>
-                our Discord
-              </a>
-            </p>
+            <GetHelp />
           ) : (
             <form action={LOG_IN_URL} method="post">
               <p className="button-text-paragraph">
@@ -32,4 +27,21 @@ export function Catcher() {
         </div>
       );
   }
+
+  return (
+    <div>
+      <h2>Error {caught.status}</h2>
+      {caught.data ? <code>{JSON.stringify(caught.data, null, 2)}</code> : null}
+      <GetHelp />
+    </div>
+  );
+}
+
+function GetHelp() {
+  return (
+    <p className="mt-2">
+      If you need assistance you can ask for help on{" "}
+      <a href={SENDOU_INK_DISCORD_URL}>our Discord</a>
+    </p>
+  );
 }
