@@ -9,7 +9,7 @@ export function Dialog({
   children: React.ReactNode;
   isOpen: boolean;
   close?: () => void;
-  className: string;
+  className?: string;
 }) {
   const ref = useDOMSync(isOpen);
 

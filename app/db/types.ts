@@ -14,6 +14,7 @@ export interface User {
 }
 
 export interface PlusSuggestion {
+  id: number;
   text: string;
   authorId: number;
   suggestedId: number;

@@ -14,6 +14,7 @@ CREATE TABLE "User" (
 
 ---
 CREATE TABLE "PlusSuggestion" (
+  "id" integer PRIMARY KEY,
   "text" text NOT NULL,
   "authorId" integer NOT NULL,
   "suggestedId" integer NOT NULL,

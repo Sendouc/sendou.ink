@@ -1,4 +1,5 @@
 import type {
+  ActionFunction,
   LinksFunction,
   LoaderFunction,
   MetaFunction,
@@ -7,19 +8,28 @@ import { json } from "@remix-run/node";
 import { Outlet, useLoaderData } from "@remix-run/react";
 import * as React from "react";
 import invariant from "tiny-invariant";
+import { z } from "zod";
 import { Avatar } from "~/components/Avatar";
-import { LinkButton } from "~/components/Button";
+import { Button, LinkButton } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
+import { FormWithConfirm } from "~/components/FormWithConfirm";
+import { TrashIcon } from "~/components/icons/Trash";
 import { upcomingVoting } from "~/core/plus";
 import { db } from "~/db";
 import type * as plusSuggestions from "~/db/models/plusSuggestions.server";
 import { useUser } from "~/hooks/useUser";
-import { canAddCommentToSuggestionFE } from "~/permissions";
+import { canAddCommentToSuggestionFE, canDeleteComment } from "~/permissions";
 import styles from "~/styles/plus.css";
 import { databaseTimestampToDate } from "~/utils/dates";
-import { makeTitle, requireUser } from "~/utils/remix";
+import {
+  makeTitle,
+  parseRequestFormData,
+  requireUser,
+  validate,
+} from "~/utils/remix";
 import { discordFullName } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
+import { actualNumber } from "~/utils/zod";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -30,6 +40,35 @@ export const meta: MetaFunction = () => {
     title: makeTitle("Plus Server suggestions"),
     description: "This month's suggestions for +1, +2 and +3.",
   };
+};
+
+const suggestionActionSchema = z.object({
+  suggestionId: z.preprocess(actualNumber, z.number()),
+});
+
+export const action: ActionFunction = async ({ request }) => {
+  const data = await parseRequestFormData({
+    request,
+    schema: suggestionActionSchema,
+  });
+  const user = await requireUser(request);
+
+  const suggestions = db.plusSuggestions.find({
+    ...upcomingVoting(new Date()),
+    plusTier: user.plusTier,
+  });
+
+  const targetSuggestion = suggestions
+    ?.flatMap((s) => s.users)
+    .flatMap((u) => u.suggestions)
+    .find((s) => s.id === data.suggestionId);
+
+  validate(targetSuggestion);
+  validate(canDeleteComment({ user, author: targetSuggestion.author }));
+
+  db.plusSuggestions.del(data.suggestionId);
+
+  return null;
 };
 
 export interface PlusSuggestionsLoaderData {
@@ -181,16 +220,29 @@ function SuggestedUser({
         </summary>
         <div className="stack sm mt-2">
           {suggested.suggestions.map((s) => (
-            <fieldset className="plus__comment" key={s.author.id}>
+            <fieldset key={s.id} className="plus__comment">
               <legend>{discordFullName(s.author)}</legend>
               {s.text}
-              <span className="plus__comment-time">
-                {" "}
-                ―{" "}
-                <time>
-                  {databaseTimestampToDate(s.createdAt).toLocaleString()}
-                </time>
-              </span>
+              <div className="stack vertical xs items-center">
+                <span className="plus__comment-time">
+                  <time>
+                    {databaseTimestampToDate(s.createdAt).toLocaleString()}
+                  </time>
+                </span>
+                {canDeleteComment({ author: s.author, user }) ? (
+                  <FormWithConfirm
+                    fields={[["suggestionId", s.id]]}
+                    dialogHeading={`Delete your comment to ${suggested.info.discordName}'s +${tier} suggestion?`}
+                  >
+                    <Button
+                      className="plus__delete-button"
+                      icon={<TrashIcon />}
+                      variant="minimal-destructive"
+                      aria-label="Delete comment"
+                    />
+                  </FormWithConfirm>
+                ) : null}
+              </div>
             </fieldset>
           ))}
         </div>

@@ -274,11 +274,11 @@ fieldset {
   background-color: var(--bg-darker-transparent);
   border-radius: var(--rounded);
   font-size: var(--fonts-sm);
+  padding-block-end: var(--s-3);
   padding-inline: var(--s-3);
 }
 
 legend {
-  padding: var(--s-1);
   background-color: transparent;
   border-radius: 2px;
   border-radius: var(--rounded-sm);

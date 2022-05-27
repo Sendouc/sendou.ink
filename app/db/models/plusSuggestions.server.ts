@@ -53,6 +53,8 @@ WITH gs as (
       'suggestions',
       json_group_array(
         json_object(
+          'id',
+          "PlusSuggestion"."id",
           'author',
           json_object(
             'id',
@@ -103,7 +105,7 @@ export type FindResult = {
       | "discordDiscriminator"
       | "discordAvatar"
     >;
-    suggestions: (Pick<PlusSuggestion, "createdAt" | "text"> & {
+    suggestions: (Pick<PlusSuggestion, "id" | "createdAt" | "text"> & {
       author: Pick<
         User,
         "id" | "discordId" | "discordName" | "discordDiscriminator"
@@ -140,4 +142,14 @@ const tiersSuggestedForStm = sql.prepare(`
 
 export function tiersSuggestedFor(args: MonthYear & { userId: User["id"] }) {
   return JSON.parse(tiersSuggestedForStm.pluck().get(args)) as User["id"][];
+}
+
+const delStm = sql.prepare(`
+  DELETE FROM "PlusSuggestion"
+    WHERE
+      "id" = $id
+`);
+
+export function del(id: PlusSuggestion["id"]) {
+  delStm.run({ id });
 }

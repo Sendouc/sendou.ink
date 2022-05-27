@@ -58,6 +58,10 @@
   font-size: var(--fonts-xxs);
 }
 
+.plus__delete-button {
+  display: inline;
+}
+
 .plus__modal {
   width: min(90%, 24rem);
 }

@@ -29,6 +29,14 @@ export function canAddCommentToSuggestionBE({
   ]);
 }
 
+interface CanDeleteCommentArgs {
+  author: Pick<User, "id">;
+  user?: Pick<User, "id">;
+}
+export function canDeleteComment(args: CanDeleteCommentArgs) {
+  return isOwnComment(args);
+}
+
 // TODO: needed for new suggestions
 // function votingIsActive() {
 //   const now = new Date();
@@ -71,4 +79,8 @@ function targetPlusTierIsSmallerOrEqual({
   suggested,
 }: Pick<CanAddCommentToSuggestionBEArgs, "user" | "suggested">) {
   return user?.plusTier && user.plusTier <= suggested.plusTier;
+}
+
+function isOwnComment({ author, user }: CanDeleteCommentArgs) {
+  return author.id === user?.id;
 }
