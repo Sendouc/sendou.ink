@@ -4,7 +4,7 @@ import { allTruthy } from "./utils/arrays";
 
 interface CanAddCommentToSuggestionFEArgs {
   user?: Pick<User, "id">;
-  suggestions: plusSuggestions.FindResult;
+  suggestions: plusSuggestions.FindVisibleForUser;
   suggested: { id: User["id"]; plusTier: NonNullable<User["plusTier"]> };
 }
 export function canAddCommentToSuggestionFE(
@@ -56,9 +56,8 @@ function alreadyCommentedByUser({
   suggested,
 }: CanAddCommentToSuggestionFEArgs) {
   return Boolean(
-    suggestions
-      .find(({ tier }) => tier === suggested.plusTier)
-      ?.users.find((u) => u.info.id === suggested.id)
+    suggestions[suggested.plusTier]
+      ?.find((u) => u.info.id === suggested.id)
       ?.suggestions.some((s) => s.author.id === user?.id)
   );
 }
@@ -68,9 +67,7 @@ function playerAlreadySuggested({
   suggested,
 }: Pick<CanAddCommentToSuggestionBEArgs, "suggestions" | "suggested">) {
   return Boolean(
-    suggestions
-      .find(({ tier }) => tier === suggested.plusTier)
-      ?.users.find((u) => u.info.id === suggested.id)
+    suggestions[suggested.plusTier]?.find((u) => u.info.id === suggested.id)
   );
 }
 

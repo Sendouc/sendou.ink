@@ -32,95 +32,110 @@ export function create(
   createStm.run(args);
 }
 
-const findStm = sql.prepare(`
-WITH gs as (
-  SELECT
-    "tier",
-    json_object(
-      'info',
-      json_object(
-        'id',
-        suggested."id",
-        'discordId',
-        suggested."discordId",
-        'discordName',
-        suggested."discordName",
-        'discordDiscriminator',
-        suggested."discordDiscriminator",
-        'discordAvatar',
-        suggested."discordAvatar"
-      ),
-      'suggestions',
-      json_group_array(
-        json_object(
-          'id',
-          "PlusSuggestion"."id",
-          'author',
-          json_object(
-            'id',
-            author."id",
-            'discordId',
-            author."discordId",
-            'discordName',
-            author."discordName",
-            'discordDiscriminator',
-            author."discordDiscriminator"
-          ),
-          'createdAt',
-          "createdAt",
-          'text',
-          "text"
-        )
-      )
-    ) as users
-  FROM
-    "PlusSuggestion"
-    JOIN "User" AS author ON "PlusSuggestion"."authorId" = author."id"
-    JOIN "User" AS suggested ON "PlusSuggestion"."suggestedId" = suggested."id"
-  WHERE
-    "month" = $month
-    AND "year" = $year
-    AND "tier" >= $plusTier
-  GROUP BY
-    "suggestedId",
-    "tier"
-)
-SELECT
-  tier,
-  json_group_array(users) as users
-from
-  gs
-GROUP BY
-  "tier"
+const findVisibleForUserStm = sql.prepare(`
+  SELECT 
+    suggestion."id", 
+    suggestion."createdAt", 
+    suggestion."text", 
+    suggestion."tier", 
+    author."id" as "authorId",
+    author."discordId" as "authorDiscordId",
+    author."discordName" as "authorDiscordName",
+    author."discordDiscriminator" as "authorDiscordDiscriminator",
+    suggested."id" as "suggestedId",
+    suggested."discordId" as "suggestedDiscordId",
+    suggested."discordName" as "suggestedDiscordName",
+    suggested."discordDiscriminator" as "suggestedDiscordDiscriminator",
+    suggested."discordAvatar" as "suggestedDiscordAvatar"
+      FROM "PlusSuggestion" as suggestion
+  JOIN "User" AS author ON suggestion."authorId" = author."id"
+  JOIN "User" AS suggested ON suggestion."suggestedId" = suggested."id"
+    WHERE
+      "month" = $month
+      AND "year" = $year
+      AND "tier" >= $plusTier
+    ORDER BY 
+      "createdAt" ASC
 `);
 
-export type FindResult = {
-  tier: number;
-  users: {
-    info: Pick<
+export interface FindVisibleForUserSuggestedUserInfo {
+  info: Pick<
+    User,
+    | "id"
+    | "discordId"
+    | "discordName"
+    | "discordDiscriminator"
+    | "discordAvatar"
+  >;
+  suggestions: (Pick<PlusSuggestion, "id" | "createdAt" | "text"> & {
+    author: Pick<
       User,
-      | "id"
-      | "discordId"
-      | "discordName"
-      | "discordDiscriminator"
-      | "discordAvatar"
+      "id" | "discordId" | "discordName" | "discordDiscriminator"
     >;
-    suggestions: (Pick<PlusSuggestion, "id" | "createdAt" | "text"> & {
-      author: Pick<
-        User,
-        "id" | "discordId" | "discordName" | "discordDiscriminator"
-      >;
-    })[];
-  }[];
-}[];
+  })[];
+}
+export interface FindVisibleForUser {
+  [tier: string]: FindVisibleForUserSuggestedUserInfo[];
+}
 
-export function find(args: MonthYear & Pick<User, "plusTier">) {
-  if (!args.plusTier) return;
+export function findVisibleForUser(
+  args: MonthYear & Pick<User, "plusTier">
+): FindVisibleForUser {
+  return sortNewestPlayersToBeSuggestedFirst(
+    mapFindVisibleForUserRowsToResult(findVisibleForUserStm.all(args))
+  );
+}
 
-  return findStm.all(args).map((row) => ({
-    ...row,
-    users: JSON.parse(row.users).map(JSON.parse),
-  })) as FindResult;
+function mapFindVisibleForUserRowsToResult(rows: any[]): FindVisibleForUser {
+  return rows.reduce((result: FindVisibleForUser, row) => {
+    if (!result[row.tier]) result[row.tier] = [];
+
+    const suggestionInfo = {
+      id: row.id,
+      createdAt: row.createdAt,
+      text: row.text,
+      author: {
+        id: row.authorId,
+        discordId: row.authorDiscordId,
+        discordName: row.authorDiscordName,
+        discordDiscriminator: row.authorDiscordDiscriminator,
+      },
+    };
+
+    const existingSuggestion = result[row.tier].find(
+      (suggestion) => suggestion.info.id === row.suggestedId
+    );
+
+    if (existingSuggestion) {
+      existingSuggestion.suggestions.push(suggestionInfo);
+    } else {
+      result[row.tier].push({
+        info: {
+          id: row.suggestedId,
+          discordId: row.suggestedDiscordId,
+          discordName: row.suggestedDiscordName,
+          discordDiscriminator: row.suggestedDiscriminator,
+          discordAvatar: row.suggestedDiscordAvatar,
+        },
+        suggestions: [suggestionInfo],
+      });
+    }
+
+    return result;
+  }, {});
+}
+
+function sortNewestPlayersToBeSuggestedFirst(
+  suggestions: FindVisibleForUser
+): FindVisibleForUser {
+  return Object.fromEntries(
+    Object.entries(suggestions).map(([tier, suggestions]) => [
+      tier,
+      suggestions.sort(
+        (a, b) => b.suggestions[0].createdAt - a.suggestions[0].createdAt
+      ),
+    ])
+  );
 }
 
 const tiersSuggestedForStm = sql.prepare(`

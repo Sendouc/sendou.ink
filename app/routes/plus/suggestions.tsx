@@ -28,7 +28,6 @@ import {
   validate,
 } from "~/utils/remix";
 import { discordFullName } from "~/utils/strings";
-import type { Unpacked } from "~/utils/types";
 import { actualNumber } from "~/utils/zod";
 
 export const links: LinksFunction = () => {
@@ -53,13 +52,13 @@ export const action: ActionFunction = async ({ request }) => {
   });
   const user = await requireUser(request);
 
-  const suggestions = db.plusSuggestions.find({
+  const suggestions = db.plusSuggestions.findVisibleForUser({
     ...upcomingVoting(new Date()),
     plusTier: user.plusTier,
   });
 
-  const targetSuggestion = suggestions
-    ?.flatMap((s) => s.users)
+  const targetSuggestion = Object.values(suggestions)
+    ?.flat()
     .flatMap((u) => u.suggestions)
     .find((s) => s.id === data.suggestionId);
 
@@ -72,7 +71,7 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export interface PlusSuggestionsLoaderData {
-  suggestions?: plusSuggestions.FindResult;
+  suggestions?: plusSuggestions.FindVisibleForUser;
   suggestedForTiers: number[];
 }
 
@@ -80,7 +79,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   const user = await requireUser(request);
 
   return json<PlusSuggestionsLoaderData>({
-    suggestions: db.plusSuggestions.find({
+    suggestions: db.plusSuggestions.findVisibleForUser({
       ...upcomingVoting(new Date()),
       plusTier: user.plusTier,
     }),
@@ -94,16 +93,15 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function PlusSuggestionsPage() {
   const data = useLoaderData<PlusSuggestionsLoaderData>();
   const [tierVisible, setTierVisible] = React.useState(
-    data.suggestions?.[0].tier ?? 0
+    tierVisibleInitialState(data.suggestions)
   );
 
   if (!data.suggestions) {
     return <SuggestedForInfo />;
   }
 
-  const visibleSuggestions = data.suggestions.find(
-    ({ tier }) => tier === tierVisible
-  );
+  invariant(tierVisible);
+  const visibleSuggestions = data.suggestions[tierVisible];
   invariant(visibleSuggestions);
 
   return (
@@ -113,28 +111,32 @@ export default function PlusSuggestionsPage() {
         <SuggestedForInfo />
         <div className="stack md">
           <div className="plus__radios">
-            {data.suggestions.map(({ tier, users }) => {
-              const id = String(tier);
-              return (
-                <div key={id} className="plus__radio-container">
-                  <label htmlFor={id} className="plus__radio-label">
-                    +{tier}{" "}
-                    <span className="plus__users-count">({users.length})</span>
-                  </label>
-                  <input
-                    id={id}
-                    name="tier"
-                    type="radio"
-                    checked={tierVisible === tier}
-                    onChange={() => setTierVisible(tier)}
-                    data-cy={`plus${tier}-radio`}
-                  />
-                </div>
-              );
-            })}
+            {Object.entries(data.suggestions)
+              .sort((a, b) => Number(a[0]) - Number(b[0]))
+              .map(([tier, suggestions]) => {
+                const id = String(tier);
+                return (
+                  <div key={id} className="plus__radio-container">
+                    <label htmlFor={id} className="plus__radio-label">
+                      +{tier}{" "}
+                      <span className="plus__users-count">
+                        ({suggestions.length})
+                      </span>
+                    </label>
+                    <input
+                      id={id}
+                      name="tier"
+                      type="radio"
+                      checked={tierVisible === tier}
+                      onChange={() => setTierVisible(tier)}
+                      data-cy={`plus${tier}-radio`}
+                    />
+                  </div>
+                );
+              })}
           </div>
           <div className="stack lg">
-            {visibleSuggestions.users.map((u) => (
+            {visibleSuggestions.map((u) => (
               <SuggestedUser
                 key={`${u.info.id}-${tierVisible}`}
                 suggested={u}
@@ -146,6 +148,13 @@ export default function PlusSuggestionsPage() {
       </div>
     </>
   );
+}
+
+function tierVisibleInitialState(
+  suggestions?: plusSuggestions.FindVisibleForUser
+) {
+  if (!suggestions) return;
+  return String(Math.min(...Object.keys(suggestions).map(Number)));
 }
 
 function SuggestedForInfo() {
@@ -178,10 +187,8 @@ function SuggestedUser({
   suggested,
   tier,
 }: {
-  suggested: Unpacked<
-    Unpacked<NonNullable<PlusSuggestionsLoaderData["suggestions"]>>["users"]
-  >;
-  tier: number;
+  suggested: plusSuggestions.FindVisibleForUserSuggestedUserInfo;
+  tier: string;
 }) {
   const data = useLoaderData<PlusSuggestionsLoaderData>();
   const user = useUser();
@@ -200,7 +207,7 @@ function SuggestedUser({
         {canAddCommentToSuggestionFE({
           user,
           suggestions: data.suggestions,
-          suggested: { id: suggested.info.id, plusTier: tier },
+          suggested: { id: suggested.info.id, plusTier: Number(tier) },
         }) ? (
           // TODO: resetScroll={false} https://twitter.com/ryanflorence/status/1527775882797907969
           <LinkButton

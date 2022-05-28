@@ -34,7 +34,7 @@ export const action: ActionFunction = async ({ request }) => {
   });
   const user = await requireUser(request);
 
-  const suggestions = db.plusSuggestions.find({
+  const suggestions = db.plusSuggestions.findVisibleForUser({
     ...upcomingVoting(new Date()),
     plusTier: user.plusTier,
   });
@@ -65,19 +65,19 @@ export default function PlusCommentModalPage() {
   const data = matches.at(-2)!.data as PlusSuggestionsLoaderData;
 
   const targetUserId = Number(params.userId);
-  const tierSuggestedTo = Number(params.tier);
-
-  const userBeingCommented = data.suggestions
-    ?.find(({ tier }) => tier === tierSuggestedTo)
-    ?.users.find((u) => u.info.id === targetUserId);
+  const tierSuggestedTo = String(params.tier);
 
   invariant(data.suggestions);
+  const userBeingCommented = data.suggestions[tierSuggestedTo]?.find(
+    (u) => u.info.id === targetUserId
+  );
+
   if (
     !userBeingCommented ||
     !canAddCommentToSuggestionFE({
       user,
       suggestions: data.suggestions,
-      suggested: { id: targetUserId, plusTier: tierSuggestedTo },
+      suggested: { id: targetUserId, plusTier: Number(tierSuggestedTo) },
     })
   ) {
     return <Redirect to={PLUS_SUGGESTIONS_PAGE} />;
