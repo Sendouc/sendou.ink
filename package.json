@@ -5,7 +5,7 @@
   "scripts": {
     "build": "remix build",
     "deploy": "fly deploy --remote-only",
-    "dev": "cross-env NODE_ENV=dev remix dev",
+    "dev": "cross-env NODE_ENV=development remix dev",
     "dev:cypress": "cross-env NODE_ENV=test PORT=4455 remix dev",
     "start": "remix-serve build",
     "migrate": "node ./migrations/index.mjs",

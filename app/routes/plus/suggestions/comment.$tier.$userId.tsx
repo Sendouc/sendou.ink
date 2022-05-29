@@ -1,25 +1,24 @@
-import { Form, useMatches, useNavigate, useParams } from "@remix-run/react";
-import { Button } from "~/components/Button";
-import { Dialog } from "~/components/Dialog";
-import { Label } from "~/components/Label";
-import { Redirect } from "~/components/Redirect";
-import { PLUS_SUGGESTIONS_PAGE } from "~/utils/urls";
-import type { PlusSuggestionsLoaderData } from "../suggestions";
-import * as React from "react";
-import { PlUS_SUGGESTION_COMMENT_MAX_LENGTH } from "~/constants";
 import type { ActionFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
+import { Form, useMatches, useNavigate, useParams } from "@remix-run/react";
+import * as React from "react";
 import { z } from "zod";
-import { parseRequestFormData, requireUser, validate } from "~/utils/remix";
+import { Button } from "~/components/Button";
+import { Dialog } from "~/components/Dialog";
+import { Redirect } from "~/components/Redirect";
+import { PlUS_SUGGESTION_COMMENT_MAX_LENGTH } from "~/constants";
+import { upcomingVoting } from "~/core/plus";
+import { db } from "~/db";
+import { useUser } from "~/hooks/useUser";
 import {
   canAddCommentToSuggestionBE,
   canAddCommentToSuggestionFE,
 } from "~/permissions";
-import { useUser } from "~/hooks/useUser";
-import { upcomingVoting } from "~/core/plus";
-import { db } from "~/db";
+import { parseRequestFormData, requireUser, validate } from "~/utils/remix";
+import { PLUS_SUGGESTIONS_PAGE } from "~/utils/urls";
 import { actualNumber } from "~/utils/zod";
-import invariant from "tiny-invariant";
+import type { PlusSuggestionsLoaderData } from "../suggestions";
+import { CommentTextarea } from "./new";
 
 const commentActionSchema = z.object({
   text: z.string().min(1).max(PlUS_SUGGESTION_COMMENT_MAX_LENGTH),
@@ -67,12 +66,12 @@ export default function PlusCommentModalPage() {
   const targetUserId = Number(params.userId);
   const tierSuggestedTo = String(params.tier);
 
-  invariant(data.suggestions);
-  const userBeingCommented = data.suggestions[tierSuggestedTo]?.find(
+  const userBeingCommented = data.suggestions?.[tierSuggestedTo]?.find(
     (u) => u.info.id === targetUserId
   );
 
   if (
+    !data.suggestions ||
     !userBeingCommented ||
     !canAddCommentToSuggestionFE({
       user,
@@ -107,32 +106,5 @@ export default function PlusCommentModalPage() {
         </div>
       </Form>
     </Dialog>
-  );
-}
-
-function CommentTextarea() {
-  const [value, setValue] = React.useState("");
-  return (
-    <div>
-      <Label
-        htmlFor="text"
-        valueLimits={{
-          current: value.length,
-          max: PlUS_SUGGESTION_COMMENT_MAX_LENGTH,
-        }}
-      >
-        Your comment
-      </Label>
-      <textarea
-        id="text"
-        name="text"
-        className="plus__modal-textarea"
-        rows={4}
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        maxLength={PlUS_SUGGESTION_COMMENT_MAX_LENGTH}
-        data-cy="comment-textarea"
-      />
-    </div>
   );
 }

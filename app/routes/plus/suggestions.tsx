@@ -6,6 +6,7 @@ import type {
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Outlet, useLoaderData } from "@remix-run/react";
+import clsx from "clsx";
 import * as React from "react";
 import invariant from "tiny-invariant";
 import { z } from "zod";
@@ -18,7 +19,11 @@ import { upcomingVoting } from "~/core/plus";
 import { db } from "~/db";
 import type * as plusSuggestions from "~/db/models/plusSuggestions.server";
 import { useUser } from "~/hooks/useUser";
-import { canAddCommentToSuggestionFE, canDeleteComment } from "~/permissions";
+import {
+  canAddCommentToSuggestionFE,
+  canAddNewSuggestionFE,
+  canDeleteComment,
+} from "~/permissions";
 import styles from "~/styles/plus.css";
 import { databaseTimestampToDate } from "~/utils/dates";
 import {
@@ -94,6 +99,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function PlusSuggestionsPage() {
   const data = useLoaderData<PlusSuggestionsLoaderData>();
+  const user = useUser();
   const [tierVisible, setTierVisible] = React.useState(
     tierVisibleInitialState(data.suggestions)
   );
@@ -111,31 +117,44 @@ export default function PlusSuggestionsPage() {
       <Outlet />
       <div className="plus__container">
         <SuggestedForInfo />
-        <div className="stack md">
-          <div className="plus__radios">
-            {Object.entries(data.suggestions)
-              .sort((a, b) => Number(a[0]) - Number(b[0]))
-              .map(([tier, suggestions]) => {
-                const id = String(tier);
-                return (
-                  <div key={id} className="plus__radio-container">
-                    <label htmlFor={id} className="plus__radio-label">
-                      +{tier}{" "}
-                      <span className="plus__users-count">
-                        ({suggestions.length})
-                      </span>
-                    </label>
-                    <input
-                      id={id}
-                      name="tier"
-                      type="radio"
-                      checked={tierVisible === tier}
-                      onChange={() => setTierVisible(tier)}
-                      data-cy={`plus${tier}-radio`}
-                    />
-                  </div>
-                );
-              })}
+        <div className="stack lg">
+          <div
+            className={clsx("plus__top-container", {
+              "content-centered": !canAddNewSuggestionFE({
+                user,
+                suggestions: data.suggestions,
+              }),
+            })}
+          >
+            <div className="plus__radios">
+              {Object.entries(data.suggestions)
+                .sort((a, b) => Number(a[0]) - Number(b[0]))
+                .map(([tier, suggestions]) => {
+                  const id = String(tier);
+                  return (
+                    <div key={id} className="plus__radio-container">
+                      <label htmlFor={id} className="plus__radio-label">
+                        +{tier}{" "}
+                        <span className="plus__users-count">
+                          ({suggestions.length})
+                        </span>
+                      </label>
+                      <input
+                        id={id}
+                        name="tier"
+                        type="radio"
+                        checked={tierVisible === tier}
+                        onChange={() => setTierVisible(tier)}
+                        data-cy={`plus${tier}-radio`}
+                      />
+                    </div>
+                  );
+                })}
+            </div>
+            {canAddNewSuggestionFE({ user, suggestions: data.suggestions }) ? (
+              // TODO: resetScroll={false} https://twitter.com/ryanflorence/status/1527775882797907969
+              <LinkButton to="new">Suggest</LinkButton>
+            ) : null}
           </div>
           <div className="stack lg">
             {visibleSuggestions.map((u) => (

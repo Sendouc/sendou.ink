@@ -8,6 +8,16 @@
   font-size: var(--fonts-lg);
 }
 
+.plus__top-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.plus__top-container.content-centered {
+  justify-content: center;
+}
+
 .plus__radios {
   display: flex;
   align-items: center;
@@ -68,6 +78,10 @@
 
 .plus__modal-title {
   font-size: var(--fonts-sm);
+}
+
+.plus__modal-select {
+  max-width: 6rem;
 }
 
 .plus__modal-textarea {
