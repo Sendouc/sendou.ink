@@ -80,7 +80,8 @@ export interface FindVisibleForUser {
 
 export function findVisibleForUser(
   args: MonthYear & Pick<User, "plusTier">
-): FindVisibleForUser {
+): FindVisibleForUser | undefined {
+  if (!args.plusTier) return;
   return sortNewestPlayersToBeSuggestedFirst(
     mapFindVisibleForUserRowsToResult(findVisibleForUserStm.all(args))
   );

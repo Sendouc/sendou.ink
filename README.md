@@ -12,6 +12,11 @@ There is a sequence of commands you need to run:
 4. `npm run migrate` to set up the database tables.
 5. `npm run dev` to run both the server and frontend.
 
+And if you want to run the E2E tests:
+
+6. Make a copy of the `db.sqlite3` file created by migration and name it `db-cypress.sqlite3`.
+7. `npm run dev:cypress` and `npm run cy:open` can be used to run the E2E tests.
+
 ## Project structure
 
 ```

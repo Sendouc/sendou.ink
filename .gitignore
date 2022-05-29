@@ -5,4 +5,7 @@ node_modules
 /public/build
 .env
 
-db.sqlite3*
+db*.sqlite3*
+
+/cypress/videos
+/cypress/screenshots

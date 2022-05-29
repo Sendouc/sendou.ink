@@ -57,10 +57,12 @@ export const action: ActionFunction = async ({ request }) => {
     plusTier: user.plusTier,
   });
 
-  const targetSuggestion = Object.values(suggestions)
-    ?.flat()
-    .flatMap((u) => u.suggestions)
-    .find((s) => s.id === data.suggestionId);
+  const targetSuggestion = suggestions
+    ? Object.values(suggestions)
+        ?.flat()
+        .flatMap((u) => u.suggestions)
+        .find((s) => s.id === data.suggestionId)
+    : undefined;
 
   validate(targetSuggestion);
   validate(canDeleteComment({ user, author: targetSuggestion.author }));
@@ -222,7 +224,10 @@ function SuggestedUser({
         ) : null}
       </div>
       <details>
-        <summary className="plus__view-comments-action">
+        <summary
+          className="plus__view-comments-action"
+          data-cy="comments-summary"
+        >
           Comments ({suggested.suggestions.length})
         </summary>
         <div className="stack sm mt-2">
@@ -246,6 +251,7 @@ function SuggestedUser({
                       icon={<TrashIcon />}
                       variant="minimal-destructive"
                       aria-label="Delete comment"
+                      data-cy="delete-comment-button"
                     />
                   </FormWithConfirm>
                 ) : null}

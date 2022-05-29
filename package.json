@@ -5,11 +5,13 @@
   "scripts": {
     "build": "remix build",
     "deploy": "fly deploy --remote-only",
-    "dev": "remix dev",
+    "dev": "cross-env NODE_ENV=dev remix dev",
+    "dev:cypress": "cross-env NODE_ENV=test PORT=4455 remix dev",
     "start": "remix-serve build",
     "migrate": "node ./migrations/index.mjs",
     "migrate:reset": "node scripts/delete-db-files.mjs && npm run migrate",
     "seed": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/seed.ts",
+    "seed:cypress": "cross-env NODE_ENV=test npm run seed",
     "lint:ts": "eslint . --ext .ts,.tsx",
     "lint:styles": "stylelint \"app/styles/**/*.css\"",
     "lf": "npm run typecheck && npm run lint:styles -- --fix && npm run lint:ts -- --fix && npm run prettier:write",
@@ -18,6 +20,7 @@
     "typecheck": "tsc --noEmit",
     "test:unit": "uvu -r tsm -r tsconfig-paths/register -i cypress",
     "cy:open": "cypress open",
+    "cy:run": "cypress run",
     "checks": "npm run lint:styles && npm run lint:ts && npm run prettier:check && npm run typecheck"
   },
   "dependencies": {
@@ -48,6 +51,7 @@
     "@types/react-dom": "^18.0.5",
     "@typescript-eslint/eslint-plugin": "^5.26.0",
     "@typescript-eslint/parser": "^5.26.0",
+    "cross-env": "^7.0.3",
     "cypress": "^9.7.0",
     "eslint": "^8.16.0",
     "eslint-plugin-react": "^7.30.0",

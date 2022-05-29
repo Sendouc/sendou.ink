@@ -13,7 +13,7 @@ describe("Plus suggestions page", () => {
     cy.contains("You are suggested");
   });
 
-  it("adds a comment", () => {
+  it.only("adds a comment and deletes one", () => {
     cy.auth();
     cy.visit(PLUS_SUGGESTIONS_PAGE);
     cy.getCy("plus2-radio").click();
@@ -24,5 +24,10 @@ describe("Plus suggestions page", () => {
     cy.getCy("submit-button").click();
 
     cy.contains("Cracked!");
+
+    cy.getCy("comments-summary").first().click();
+    cy.getCy("delete-comment-button").first().click();
+    cy.getCy("confirm-button").click();
+    cy.contains("Cracked!").should("not.exist");
   });
 });
