@@ -1,5 +1,5 @@
-import { useMatches, useNavigate } from "@remix-run/react";
-import { Button } from "~/components/Button";
+import { useMatches } from "@remix-run/react";
+import { Button, LinkButton } from "~/components/Button";
 import { Dialog } from "~/components/Dialog";
 import { Redirect } from "~/components/Redirect";
 import { useUser } from "~/hooks/useUser";
@@ -10,9 +10,9 @@ import * as React from "react";
 import { Label } from "~/components/Label";
 import { PlUS_SUGGESTION_COMMENT_MAX_LENGTH, PLUS_TIERS } from "~/constants";
 import invariant from "tiny-invariant";
+import { Combobox } from "~/components/Combobox";
 
 export default function PlusNewSuggestionModalPage() {
-  const navigate = useNavigate();
   const user = useUser();
   const matches = useMatches();
   const data = matches.at(-2)!.data as PlusSuggestionsLoaderData;
@@ -32,8 +32,8 @@ export default function PlusNewSuggestionModalPage() {
       <div className="stack md">
         <h2 className="plus__modal-title">Adding a new suggestion</h2>
         <div>
-          <label>Tier</label>
-          <select className="plus__modal-select">
+          <label htmlFor="tier">Tier</label>
+          <select id="tier" name="tier" className="plus__modal-select">
             {PLUS_TIERS.filter((tier) => {
               invariant(user?.plusTier);
               return tier >= user.plusTier;
@@ -42,18 +42,27 @@ export default function PlusNewSuggestionModalPage() {
             ))}
           </select>
         </div>
+        <div>
+          <label htmlFor="user">User</label>
+          <Combobox
+            options={["Seppo", "Heppo"]}
+            onChange={(val) => console.log(val)}
+            inputName="user"
+            placeholder="Sendou#0043"
+          />
+        </div>
         <CommentTextarea />
         <div className="plus__modal-buttons">
           <Button type="submit" data-cy="submit-button">
             Submit
           </Button>
-          <Button
-            onClick={() => navigate(PLUS_SUGGESTIONS_PAGE)}
+          <LinkButton
+            to={PLUS_SUGGESTIONS_PAGE}
             variant="minimal-destructive"
             tiny
           >
             Cancel
-          </Button>
+          </LinkButton>
         </div>
       </div>
     </Dialog>

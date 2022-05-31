@@ -1,9 +1,8 @@
 import type { ActionFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { Form, useMatches, useNavigate, useParams } from "@remix-run/react";
-import * as React from "react";
 import { z } from "zod";
-import { Button } from "~/components/Button";
+import { Button, LinkButton } from "~/components/Button";
 import { Dialog } from "~/components/Dialog";
 import { Redirect } from "~/components/Redirect";
 import { PlUS_SUGGESTION_COMMENT_MAX_LENGTH } from "~/constants";
@@ -96,13 +95,13 @@ export default function PlusCommentModalPage() {
           <Button type="submit" data-cy="submit-button">
             Submit
           </Button>
-          <Button
-            onClick={() => navigate(PLUS_SUGGESTIONS_PAGE)}
+          <LinkButton
+            to={PLUS_SUGGESTIONS_PAGE}
             variant="minimal-destructive"
             tiny
           >
             Cancel
-          </Button>
+          </LinkButton>
         </div>
       </Form>
     </Dialog>

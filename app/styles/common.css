@@ -60,6 +60,31 @@
   }
 }
 
+.combobox-input {
+  width: 12rem;
+}
+
+.combobox-options {
+  position: absolute;
+  width: 12rem;
+  margin-top: var(--s-2);
+  background-color: var(--bg-darker);
+  border-radius: var(--rounded);
+  color: var(--text);
+  font-size: var(--fonts-sm);
+  padding-block: var(--s-3);
+  padding-inline: 0;
+}
+
+.combobox-item {
+  padding: var(--s-1) var(--s-3);
+  list-style: none;
+}
+
+.combobox-item.active {
+  background-color: var(--theme-transparent);
+}
+
 .avatar {
   background-color: var(--bg-lighter);
   background-image: url("/svg/background-pattern.svg");
