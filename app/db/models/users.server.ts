@@ -67,3 +67,15 @@ const findByIdentifierStm = sql.prepare(`
 export function findByIdentifier(identifier: string | number) {
   return findByIdentifierStm.get({ identifier }) as User | undefined;
 }
+
+const findAllStm = sql.prepare(`
+  SELECT "id", "discordId", "discordName", "discordDiscriminator"
+    FROM "User"
+`);
+
+export function findAll() {
+  return findAllStm.all() as Pick<
+    User,
+    "id" | "discordId" | "discordName" | "discordDiscriminator"
+  >[];
+}

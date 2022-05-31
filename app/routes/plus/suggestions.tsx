@@ -265,6 +265,7 @@ function SuggestedUser({
                     fields={[["suggestionId", s.id]]}
                     dialogHeading={`Delete your comment to ${suggested.info.discordName}'s +${tier} suggestion?`}
                   >
+                    {/* xxx: what when this is the first suggestion... it would trigger different behavior so confusing maybe? */}
                     <Button
                       className="plus__delete-button"
                       icon={<TrashIcon />}

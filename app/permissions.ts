@@ -30,6 +30,8 @@ export function canAddCommentToSuggestionBE({
     canAddCommentToSuggestionFE({ user, suggestions, suggested }),
     playerAlreadySuggested({ suggestions, suggested }),
     targetPlusTierIsSmallerOrEqual({ user, suggested }),
+    // xxx: todo playerAlreadyMember
+    //playerAlreadyMember({})
   ]);
 }
 

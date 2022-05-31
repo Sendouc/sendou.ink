@@ -76,9 +76,28 @@
   padding-inline: 0;
 }
 
+.combobox-options.empty {
+  padding-block: var(--s-1-5);
+}
+
 .combobox-item {
   padding: var(--s-1) var(--s-3);
   list-style: none;
+}
+
+.combobox-no-matches {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-lighter);
+  font-size: var(--fonts-xs);
+  font-weight: var(--bold);
+  gap: var(--s-1);
+}
+
+.combobox-emoji {
+  color: var(--text);
+  font-size: var(--fonts-lg);
 }
 
 .combobox-item.active {
