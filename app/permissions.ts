@@ -1,6 +1,6 @@
 import type * as plusSuggestions from "~/db/models/plusSuggestions.server";
 import { monthsVotingRange } from "./core/plus";
-import type { User } from "./db/types";
+import type { PlusSuggestion, User } from "./db/types";
 import { allTruthy } from "./utils/arrays";
 
 // TODO: 1) move "root checkers" to one file and utils to one file 2) make utils const for more terseness
@@ -39,11 +39,32 @@ export function canAddCommentToSuggestionBE({
 }
 
 interface CanDeleteCommentArgs {
+  suggestionId: PlusSuggestion["id"];
   author: Pick<User, "id">;
   user?: Pick<User, "id">;
+  suggestions: plusSuggestions.FindVisibleForUser;
 }
 export function canDeleteComment(args: CanDeleteCommentArgs) {
+  if (isFirstSuggestion(args)) {
+    return allTruthy([!isVotingActive(), isOwnComment(args)]);
+  }
+
   return isOwnComment(args);
+}
+
+function isFirstSuggestion({
+  suggestionId,
+  suggestions,
+}: Pick<CanDeleteCommentArgs, "suggestionId" | "suggestions">) {
+  for (const suggestedUser of Object.values(suggestions).flat()) {
+    for (const [i, suggestion] of suggestedUser.suggestions.entries()) {
+      if (suggestion.id !== suggestionId) continue;
+
+      return i === 0;
+    }
+  }
+
+  throw new Error(`Invalid suggestion id: ${suggestionId}`);
 }
 
 function alreadyCommentedByUser({
@@ -92,7 +113,7 @@ export function canSuggestNewUserFE({
   suggestions,
 }: CanSuggestNewUserFEArgs) {
   return allTruthy([
-    !votingIsActive(),
+    !isVotingActive(),
     !hasUserSuggestedThisMonth({ user, suggestions }),
     isPlusServerMember(user),
   ]);
@@ -116,7 +137,7 @@ export function canSuggestNewUserBE({
   ]);
 }
 
-function votingIsActive() {
+function isVotingActive() {
   const now = new Date();
   const { endDate, startDate } = monthsVotingRange({
     month: now.getMonth(),

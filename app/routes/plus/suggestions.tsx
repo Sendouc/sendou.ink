@@ -18,6 +18,7 @@ import { TrashIcon } from "~/components/icons/Trash";
 import { upcomingVoting } from "~/core/plus";
 import { db } from "~/db";
 import type * as plusSuggestions from "~/db/models/plusSuggestions.server";
+import type { PlusSuggestion } from "~/db/types";
 import { useUser } from "~/hooks/useUser";
 import {
   canAddCommentToSuggestionFE,
@@ -69,8 +70,16 @@ export const action: ActionFunction = async ({ request }) => {
         .find((s) => s.id === data.suggestionId)
     : undefined;
 
+  validate(suggestions);
   validate(targetSuggestion);
-  validate(canDeleteComment({ user, author: targetSuggestion.author }));
+  validate(
+    canDeleteComment({
+      user,
+      author: targetSuggestion.author,
+      suggestionId: data.suggestionId,
+      suggestions,
+    })
+  );
 
   db.plusSuggestions.del(data.suggestionId);
 
@@ -224,6 +233,7 @@ function SuggestedUser({
           discordId={suggested.info.discordId}
           size="md"
         />
+        {/* xxx: can cause page to overflow when long e.g. Buckinghamshire */}
         <h2>{suggested.info.discordName}</h2>
         {canAddCommentToSuggestionFE({
           user,
@@ -251,37 +261,66 @@ function SuggestedUser({
           Comments ({suggested.suggestions.length})
         </summary>
         <div className="stack sm mt-2">
-          {suggested.suggestions.map((s) => (
-            <fieldset key={s.id} className="plus__comment">
-              <legend>{discordFullName(s.author)}</legend>
-              {s.text}
-              <div className="stack vertical xs items-center">
-                <span className="plus__comment-time">
-                  <time>
-                    {databaseTimestampToDate(s.createdAt).toLocaleString()}
-                  </time>
-                </span>
-                {canDeleteComment({ author: s.author, user }) ? (
-                  <FormWithConfirm
-                    fields={[["suggestionId", s.id]]}
-                    dialogHeading={`Delete your comment to ${suggested.info.discordName}'s +${tier} suggestion?`}
-                  >
-                    {/* xxx: what when this is the first suggestion... it would trigger different behavior so confusing maybe? */}
-                    <Button
-                      className="plus__delete-button"
-                      icon={<TrashIcon />}
-                      variant="minimal-destructive"
-                      aria-label="Delete comment"
-                      data-cy="delete-comment-button"
+          {suggested.suggestions.map((suggestion) => {
+            invariant(data.suggestions);
+            return (
+              <fieldset key={suggestion.id} className="plus__comment">
+                <legend>{discordFullName(suggestion.author)}</legend>
+                {suggestion.text}
+                <div className="stack vertical xs items-center">
+                  <span className="plus__comment-time">
+                    <time>
+                      {databaseTimestampToDate(
+                        suggestion.createdAt
+                      ).toLocaleString()}
+                    </time>
+                  </span>
+                  {canDeleteComment({
+                    author: suggestion.author,
+                    user,
+                    suggestionId: suggestion.id,
+                    suggestions: data.suggestions,
+                  }) ? (
+                    <CommentDeleteButton
+                      suggestionId={suggestion.id}
+                      tier={tier}
+                      suggestedDiscordName={suggested.info.discordName}
                     />
-                  </FormWithConfirm>
-                ) : null}
-              </div>
-            </fieldset>
-          ))}
+                  ) : null}
+                </div>
+              </fieldset>
+            );
+          })}
         </div>
       </details>
     </div>
+  );
+}
+
+function CommentDeleteButton({
+  suggestionId,
+  tier,
+  suggestedDiscordName,
+}: {
+  suggestionId: PlusSuggestion["id"];
+  tier: string;
+  suggestedDiscordName: string;
+}) {
+  return (
+    <FormWithConfirm
+      fields={[["suggestionId", suggestionId]]}
+      // TODO: Delete your suggestion of suggestedDiscordName and 3 comments to it? + different behavior of the delete event
+      dialogHeading={`Delete your comment to ${suggestedDiscordName}'s +${tier} suggestion?`}
+    >
+      {/* xxx: what when this is the first suggestion... it would trigger different behavior so confusing maybe? */}
+      <Button
+        className="plus__delete-button"
+        icon={<TrashIcon />}
+        variant="minimal-destructive"
+        aria-label="Delete comment"
+        data-cy="delete-comment-button"
+      />
+    </FormWithConfirm>
   );
 }
 

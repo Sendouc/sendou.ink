@@ -1,6 +1,6 @@
 import type { ActionFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { Form, useMatches, useNavigate, useParams } from "@remix-run/react";
+import { Form, useMatches, useParams } from "@remix-run/react";
 import { z } from "zod";
 import { Button, LinkButton } from "~/components/Button";
 import { Dialog } from "~/components/Dialog";
@@ -42,7 +42,8 @@ export const action: ActionFunction = async ({ request }) => {
     canAddCommentToSuggestionBE({
       suggestions,
       user,
-      suggested: { id: data.suggestedId, plusTier: data.tier },
+      suggested: { id: data.suggestedId },
+      targetPlusTier: data.tier,
     })
   );
 
@@ -58,7 +59,6 @@ export const action: ActionFunction = async ({ request }) => {
 export default function PlusCommentModalPage() {
   const user = useUser();
   const matches = useMatches();
-  const navigate = useNavigate();
   const params = useParams();
   const data = matches.at(-2)!.data as PlusSuggestionsLoaderData;
 
@@ -75,7 +75,8 @@ export default function PlusCommentModalPage() {
     !canAddCommentToSuggestionFE({
       user,
       suggestions: data.suggestions,
-      suggested: { id: targetUserId, plusTier: Number(tierSuggestedTo) },
+      suggested: { id: targetUserId },
+      targetPlusTier: Number(tierSuggestedTo),
     })
   ) {
     return <Redirect to={PLUS_SUGGESTIONS_PAGE} />;

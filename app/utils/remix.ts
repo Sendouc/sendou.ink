@@ -26,6 +26,7 @@ export async function parseRequestFormData<T extends z.ZodTypeAny>({
 }: {
   request: Request;
   schema: T;
+  // xxx: get rid of this
   useBody?: boolean;
 }): Promise<z.infer<T>> {
   try {
