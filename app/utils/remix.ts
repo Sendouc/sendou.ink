@@ -12,6 +12,12 @@ export function notFoundIfFalsy<T>(value: T | null | undefined): T {
   return value;
 }
 
+export function badRequestIfFalsy<T>(value: T | null | undefined): T {
+  if (!value) throw new Response(null, { status: 400 });
+
+  return value;
+}
+
 /** Parse formData of a request with the given schema. Throws HTTP 400 response if fails. */
 export async function parseRequestFormData<T extends z.ZodTypeAny>({
   request,

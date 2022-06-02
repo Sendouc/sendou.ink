@@ -21,7 +21,7 @@ import type * as plusSuggestions from "~/db/models/plusSuggestions.server";
 import { useUser } from "~/hooks/useUser";
 import {
   canAddCommentToSuggestionFE,
-  canAddNewSuggestionFE,
+  canSuggestNewUserFE,
   canDeleteComment,
 } from "~/permissions";
 import styles from "~/styles/plus.css";
@@ -120,7 +120,7 @@ export default function PlusSuggestionsPage() {
         <div className="stack lg">
           <div
             className={clsx("plus__top-container", {
-              "content-centered": !canAddNewSuggestionFE({
+              "content-centered": !canSuggestNewUserFE({
                 user,
                 suggestions: data.suggestions,
               }),
@@ -151,7 +151,7 @@ export default function PlusSuggestionsPage() {
                   );
                 })}
             </div>
-            {canAddNewSuggestionFE({ user, suggestions: data.suggestions }) ? (
+            {canSuggestNewUserFE({ user, suggestions: data.suggestions }) ? (
               // TODO: resetScroll={false} https://twitter.com/ryanflorence/status/1527775882797907969
               <LinkButton to="new">Suggest</LinkButton>
             ) : null}
@@ -228,7 +228,8 @@ function SuggestedUser({
         {canAddCommentToSuggestionFE({
           user,
           suggestions: data.suggestions,
-          suggested: { id: suggested.info.id, plusTier: Number(tier) },
+          suggested: { id: suggested.info.id },
+          targetPlusTier: Number(tier),
         }) ? (
           // TODO: resetScroll={false} https://twitter.com/ryanflorence/status/1527775882797907969
           <LinkButton

@@ -3,13 +3,16 @@ import { monthsVotingRange } from "./core/plus";
 import type { User } from "./db/types";
 import { allTruthy } from "./utils/arrays";
 
-interface CanAddCommentToSuggestionFEArgs {
+// TODO: 1) move "root checkers" to one file and utils to one file 2) make utils const for more terseness
+
+interface CanAddCommentToSuggestionArgs {
   user?: Pick<User, "id" | "plusTier">;
   suggestions: plusSuggestions.FindVisibleForUser;
-  suggested: { id: User["id"]; plusTier: NonNullable<User["plusTier"]> };
+  suggested: Pick<User, "id">;
+  targetPlusTier: NonNullable<User["plusTier"]>;
 }
 export function canAddCommentToSuggestionFE(
-  args: CanAddCommentToSuggestionFEArgs
+  args: CanAddCommentToSuggestionArgs
 ) {
   return allTruthy([
     !alreadyCommentedByUser(args),
@@ -17,21 +20,21 @@ export function canAddCommentToSuggestionFE(
   ]);
 }
 
-interface CanAddCommentToSuggestionBEArgs
-  extends CanAddCommentToSuggestionFEArgs {
-  user?: Pick<User, "id" | "plusTier">;
-}
 export function canAddCommentToSuggestionBE({
   user,
   suggestions,
   suggested,
-}: CanAddCommentToSuggestionBEArgs) {
+  targetPlusTier,
+}: CanAddCommentToSuggestionArgs) {
   return allTruthy([
-    canAddCommentToSuggestionFE({ user, suggestions, suggested }),
-    playerAlreadySuggested({ suggestions, suggested }),
-    targetPlusTierIsSmallerOrEqual({ user, suggested }),
-    // xxx: todo playerAlreadyMember
-    //playerAlreadyMember({})
+    canAddCommentToSuggestionFE({
+      user,
+      suggestions,
+      suggested,
+      targetPlusTier,
+    }),
+    playerAlreadySuggested({ suggestions, suggested, targetPlusTier }),
+    targetPlusTierIsSmallerOrEqual({ user, targetPlusTier }),
   ]);
 }
 
@@ -47,9 +50,10 @@ function alreadyCommentedByUser({
   user,
   suggestions,
   suggested,
-}: CanAddCommentToSuggestionFEArgs) {
+  targetPlusTier,
+}: CanAddCommentToSuggestionArgs) {
   return Boolean(
-    suggestions[suggested.plusTier]
+    suggestions[targetPlusTier]
       ?.find((u) => u.info.id === suggested.id)
       ?.suggestions.some((s) => s.author.id === user?.id)
   );
@@ -58,31 +62,35 @@ function alreadyCommentedByUser({
 function playerAlreadySuggested({
   suggestions,
   suggested,
-}: Pick<CanAddCommentToSuggestionBEArgs, "suggestions" | "suggested">) {
+  targetPlusTier,
+}: Pick<
+  CanAddCommentToSuggestionArgs,
+  "suggestions" | "suggested" | "targetPlusTier"
+>) {
   return Boolean(
-    suggestions[suggested.plusTier]?.find((u) => u.info.id === suggested.id)
+    suggestions[targetPlusTier]?.find((u) => u.info.id === suggested.id)
   );
 }
 
 function targetPlusTierIsSmallerOrEqual({
   user,
-  suggested,
-}: Pick<CanAddCommentToSuggestionBEArgs, "user" | "suggested">) {
-  return user?.plusTier && user.plusTier <= suggested.plusTier;
+  targetPlusTier,
+}: Pick<CanAddCommentToSuggestionArgs, "user" | "targetPlusTier">) {
+  return user?.plusTier && user.plusTier <= targetPlusTier;
 }
 
 function isOwnComment({ author, user }: CanDeleteCommentArgs) {
   return author.id === user?.id;
 }
 
-interface CanAddNewSuggestionsFEArgs {
+interface CanSuggestNewUserFEArgs {
   user?: Pick<User, "id" | "plusTier">;
   suggestions: plusSuggestions.FindVisibleForUser;
 }
-export function canAddNewSuggestionFE({
+export function canSuggestNewUserFE({
   user,
   suggestions,
-}: CanAddNewSuggestionsFEArgs) {
+}: CanSuggestNewUserFEArgs) {
   return allTruthy([
     !votingIsActive(),
     !hasUserSuggestedThisMonth({ user, suggestions }),
@@ -90,18 +98,21 @@ export function canAddNewSuggestionFE({
   ]);
 }
 
-interface CanAddNewSuggestionsBEArgs extends CanAddNewSuggestionsFEArgs {
-  suggested: { id: User["id"]; plusTier: NonNullable<User["plusTier"]> };
+interface CanSuggestNewUserBEArgs extends CanSuggestNewUserFEArgs {
+  suggested: { id: User["id"]; currentPlusTier: User["plusTier"] };
+  targetPlusTier: NonNullable<User["plusTier"]>;
 }
-export function canAddNewSuggestionBE({
+export function canSuggestNewUserBE({
   user,
   suggestions,
   suggested,
-}: CanAddNewSuggestionsBEArgs) {
+  targetPlusTier,
+}: CanSuggestNewUserBEArgs) {
   return allTruthy([
-    canAddNewSuggestionFE({ user, suggestions }),
-    !playerAlreadySuggested({ suggestions, suggested }),
-    targetPlusTierIsSmallerOrEqual({ user, suggested }),
+    canSuggestNewUserFE({ user, suggestions }),
+    !playerAlreadySuggested({ suggestions, suggested, targetPlusTier }),
+    targetPlusTierIsSmallerOrEqual({ user, targetPlusTier }),
+    !playerAlreadyMember({ suggested, targetPlusTier }),
   ]);
 }
 
@@ -121,10 +132,19 @@ function isPlusServerMember(user?: Pick<User, "plusTier">) {
   return Boolean(user?.plusTier);
 }
 
+function playerAlreadyMember({
+  suggested,
+  targetPlusTier,
+}: Pick<CanSuggestNewUserBEArgs, "suggested" | "targetPlusTier">) {
+  return (
+    suggested.currentPlusTier && suggested.currentPlusTier <= targetPlusTier
+  );
+}
+
 function hasUserSuggestedThisMonth({
   user,
   suggestions,
-}: Pick<CanAddNewSuggestionsFEArgs, "user" | "suggestions">) {
+}: Pick<CanSuggestNewUserFEArgs, "user" | "suggestions">) {
   return Object.values(suggestions)
     .flat()
     .some(({ suggestions }) => suggestions[0].author.id === user?.id);

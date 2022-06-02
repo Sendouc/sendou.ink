@@ -3,7 +3,7 @@ import { Button, LinkButton } from "~/components/Button";
 import { Dialog } from "~/components/Dialog";
 import { Redirect } from "~/components/Redirect";
 import { useUser } from "~/hooks/useUser";
-import { canAddNewSuggestionBE, canAddNewSuggestionFE } from "~/permissions";
+import { canSuggestNewUserFE, canSuggestNewUserBE } from "~/permissions";
 import { PLUS_SUGGESTIONS_PAGE } from "~/utils/urls";
 import type { PlusSuggestionsLoaderData } from "../suggestions";
 import * as React from "react";
@@ -15,7 +15,12 @@ import type { ActionFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { z } from "zod";
 import { actualNumber } from "~/utils/zod";
-import { parseRequestFormData, requireUser, validate } from "~/utils/remix";
+import {
+  badRequestIfFalsy,
+  parseRequestFormData,
+  requireUser,
+  validate,
+} from "~/utils/remix";
 import { upcomingVoting } from "~/core/plus";
 import { db } from "~/db";
 
@@ -30,7 +35,10 @@ export const action: ActionFunction = async ({ request }) => {
     request,
     schema: commentActionSchema,
   });
-  const suggestedId = data["user[value]"];
+
+  const suggestedUser = badRequestIfFalsy(
+    db.users.findByIdentifier(data["user[value]"])
+  );
 
   const user = await requireUser(request);
 
@@ -41,16 +49,20 @@ export const action: ActionFunction = async ({ request }) => {
 
   validate(suggestions);
   validate(
-    canAddNewSuggestionBE({
+    canSuggestNewUserBE({
       user,
-      suggested: { id: suggestedId, plusTier: data.tier },
+      suggested: {
+        id: suggestedUser.id,
+        currentPlusTier: suggestedUser.plusTier,
+      },
+      targetPlusTier: data.tier,
       suggestions,
     })
   );
 
   db.plusSuggestions.create({
     authorId: user.id,
-    suggestedId,
+    suggestedId: suggestedUser.id,
     tier: data.tier,
     text: data.text,
     ...upcomingVoting(new Date()),
@@ -66,7 +78,7 @@ export default function PlusNewSuggestionModalPage() {
 
   if (
     !data.suggestions ||
-    !canAddNewSuggestionFE({
+    !canSuggestNewUserFE({
       user,
       suggestions: data.suggestions,
     })
