@@ -7,7 +7,7 @@ import { discordFullName } from "~/utils/strings";
 export interface UsersLoaderData {
   users: ({
     discordFullName: string;
-  } & Pick<User, "id" | "discordId">)[];
+  } & Pick<User, "id" | "discordId" | "plusTier">)[];
 }
 
 export const loader: LoaderFunction = () => {
@@ -16,6 +16,7 @@ export const loader: LoaderFunction = () => {
       id: u.id,
       discordFullName: discordFullName(u),
       discordId: u.discordId,
+      plusTier: u.plusTier,
     })),
   });
 };

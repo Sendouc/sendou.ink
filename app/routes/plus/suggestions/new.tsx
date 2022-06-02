@@ -3,13 +3,17 @@ import { Button, LinkButton } from "~/components/Button";
 import { Dialog } from "~/components/Dialog";
 import { Redirect } from "~/components/Redirect";
 import { useUser } from "~/hooks/useUser";
-import { canSuggestNewUserFE, canSuggestNewUserBE } from "~/permissions";
+import {
+  canSuggestNewUserFE,
+  canSuggestNewUserBE,
+  playerAlreadyMember,
+  playerAlreadySuggested,
+} from "~/permissions";
 import { PLUS_SUGGESTIONS_PAGE } from "~/utils/urls";
 import type { PlusSuggestionsLoaderData } from "../suggestions";
 import * as React from "react";
 import { Label } from "~/components/Label";
 import { PlUS_SUGGESTION_COMMENT_MAX_LENGTH, PLUS_TIERS } from "~/constants";
-import invariant from "tiny-invariant";
 import { UserCombobox } from "~/components/Combobox";
 import type { ActionFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
@@ -23,6 +27,8 @@ import {
 } from "~/utils/remix";
 import { upcomingVoting } from "~/core/plus";
 import { db } from "~/db";
+import type { User } from "~/db/types";
+import { ErrorMessage } from "~/components/ErrorMessage";
 
 const commentActionSchema = z.object({
   tier: z.preprocess(actualNumber, z.number().min(1).max(3)),
@@ -36,7 +42,7 @@ export const action: ActionFunction = async ({ request }) => {
     schema: commentActionSchema,
   });
 
-  const suggestedUser = badRequestIfFalsy(
+  const suggested = badRequestIfFalsy(
     db.users.findByIdentifier(data["user[value]"])
   );
 
@@ -51,10 +57,7 @@ export const action: ActionFunction = async ({ request }) => {
   validate(
     canSuggestNewUserBE({
       user,
-      suggested: {
-        id: suggestedUser.id,
-        currentPlusTier: suggestedUser.plusTier,
-      },
+      suggested,
       targetPlusTier: data.tier,
       suggestions,
     })
@@ -62,7 +65,7 @@ export const action: ActionFunction = async ({ request }) => {
 
   db.plusSuggestions.create({
     authorId: user.id,
-    suggestedId: suggestedUser.id,
+    suggestedId: suggested.id,
     tier: data.tier,
     text: data.text,
     ...upcomingVoting(new Date()),
@@ -75,6 +78,21 @@ export default function PlusNewSuggestionModalPage() {
   const user = useUser();
   const matches = useMatches();
   const data = matches.at(-2)!.data as PlusSuggestionsLoaderData;
+  const [selectedUser, setSelectedUser] = React.useState<{
+    /** User id */
+    value: string;
+    plusTier: number | null;
+  }>();
+
+  const tierOptions = PLUS_TIERS.filter((tier) => {
+    // user will be redirected anyway
+    if (!user?.plusTier) return true;
+
+    return tier >= user.plusTier;
+  });
+  const [targetPlusTier, setTargetPlusTier] = React.useState<number>(
+    tierOptions[0]
+  );
 
   if (
     !data.suggestions ||
@@ -86,28 +104,48 @@ export default function PlusNewSuggestionModalPage() {
     return <Redirect to={PLUS_SUGGESTIONS_PAGE} />;
   }
 
+  const selectedUserErrorMessage = getSelectedUserErrorMessage({
+    suggested: selectedUser
+      ? { id: Number(selectedUser.value), plusTier: selectedUser.plusTier }
+      : undefined,
+    suggestions: data.suggestions,
+    targetPlusTier,
+  });
+
   return (
     <Dialog className="plus__modal" isOpen>
       <Form method="post" className="stack md">
         <h2 className="plus__modal-title">Adding a new suggestion</h2>
         <div>
           <label htmlFor="tier">Tier</label>
-          <select id="tier" name="tier" className="plus__modal-select">
-            {PLUS_TIERS.filter((tier) => {
-              invariant(user?.plusTier);
-              return tier >= user.plusTier;
-            }).map((tier) => (
-              <option key={tier}>+{tier}</option>
+          <select
+            id="tier"
+            name="tier"
+            className="plus__modal-select"
+            value={targetPlusTier}
+            onChange={(e) => setTargetPlusTier(Number(e.target.value))}
+          >
+            {tierOptions.map((tier) => (
+              <option key={tier} value={tier}>
+                +{tier}
+              </option>
             ))}
           </select>
         </div>
         <div>
           <label htmlFor="user">Suggested user</label>
-          <UserCombobox inputName="user" />
+          <UserCombobox inputName="user" onChange={setSelectedUser} />
+          {selectedUserErrorMessage ? (
+            <ErrorMessage>{selectedUserErrorMessage}</ErrorMessage>
+          ) : null}
         </div>
         <CommentTextarea />
         <div className="plus__modal-buttons">
-          <Button type="submit" data-cy="submit-button">
+          <Button
+            type="submit"
+            data-cy="submit-button"
+            disabled={Boolean(selectedUserErrorMessage)}
+          >
             Submit
           </Button>
           <LinkButton
@@ -123,11 +161,28 @@ export default function PlusNewSuggestionModalPage() {
   );
 }
 
-function validateSelectedUser():
-  | "OK"
-  | "ALREADY_PLUS_MEMBER"
-  | "ALREADY_SUGGESTED" {
-  return "OK";
+function getSelectedUserErrorMessage({
+  suggestions,
+  targetPlusTier,
+  suggested,
+}: {
+  suggestions: NonNullable<PlusSuggestionsLoaderData["suggestions"]>;
+  targetPlusTier: number;
+  suggested?: Pick<User, "id" | "plusTier">;
+}) {
+  if (!suggested) return;
+
+  if (
+    playerAlreadyMember({
+      suggested,
+      targetPlusTier,
+    })
+  ) {
+    return `This user already has access to +${targetPlusTier}`;
+  }
+  if (playerAlreadySuggested({ targetPlusTier, suggestions, suggested })) {
+    return `This user was already suggested to +${targetPlusTier}`;
+  }
 }
 
 export function CommentTextarea() {

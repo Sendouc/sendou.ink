@@ -13,7 +13,7 @@ describe("Plus suggestions page", () => {
     cy.contains("You are suggested");
   });
 
-  it.only("adds a comment and deletes one", () => {
+  it("adds a comment and deletes one", () => {
     cy.auth();
     cy.visit(PLUS_SUGGESTIONS_PAGE);
     cy.getCy("plus2-radio").click();
@@ -30,4 +30,6 @@ describe("Plus suggestions page", () => {
     cy.getCy("confirm-button").click();
     cy.contains("Cracked!").should("not.exist");
   });
+
+  // xxx: test adding completely new suggestion, validation works
 });

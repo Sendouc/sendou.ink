@@ -80,7 +80,7 @@ function alreadyCommentedByUser({
   );
 }
 
-function playerAlreadySuggested({
+export function playerAlreadySuggested({
   suggestions,
   suggested,
   targetPlusTier,
@@ -120,7 +120,7 @@ export function canSuggestNewUserFE({
 }
 
 interface CanSuggestNewUserBEArgs extends CanSuggestNewUserFEArgs {
-  suggested: { id: User["id"]; currentPlusTier: User["plusTier"] };
+  suggested: Pick<User, "id" | "plusTier">;
   targetPlusTier: NonNullable<User["plusTier"]>;
 }
 export function canSuggestNewUserBE({
@@ -153,13 +153,11 @@ function isPlusServerMember(user?: Pick<User, "plusTier">) {
   return Boolean(user?.plusTier);
 }
 
-function playerAlreadyMember({
+export function playerAlreadyMember({
   suggested,
   targetPlusTier,
 }: Pick<CanSuggestNewUserBEArgs, "suggested" | "targetPlusTier">) {
-  return (
-    suggested.currentPlusTier && suggested.currentPlusTier <= targetPlusTier
-  );
+  return suggested.plusTier && suggested.plusTier <= targetPlusTier;
 }
 
 function hasUserSuggestedThisMonth({

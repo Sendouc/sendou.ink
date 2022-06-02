@@ -5,22 +5,26 @@ import clsx from "clsx";
 import type { Unpacked } from "~/utils/types";
 import { useFetcher } from "@remix-run/react";
 import type { UsersLoaderData } from "~/routes/users";
+import type { User } from "~/db/types";
 
 const MAX_RESULTS_SHOWN = 6;
 
-interface ComboBoxProps<T> {
-  options: ({ label: string; value: string } & T)[];
+type ComboboxOption<T> = { label: string; value: string } & T;
+interface ComboboxProps<T> {
+  options: ComboboxOption<T>[];
   inputName: string;
   placeholder: string;
   isLoading?: boolean;
+  onChange?: (selectedOption?: ComboboxOption<T>) => void;
 }
 
-export function Combobox<T extends Record<string, string>>({
+export function Combobox<T extends Record<string, string | null | number>>({
   options,
   inputName,
   placeholder,
+  onChange,
   isLoading = false,
-}: ComboBoxProps<T>) {
+}: ComboboxProps<T>) {
   const [selectedOption, setSelectedOption] =
     React.useState<Unpacked<typeof options>>();
   const [query, setQuery] = React.useState("");
@@ -42,7 +46,10 @@ export function Combobox<T extends Record<string, string>>({
   return (
     <HeadlessCombobox
       value={selectedOption}
-      onChange={setSelectedOption}
+      onChange={(selected) => {
+        onChange?.(selected);
+        setSelectedOption(selected);
+      }}
       name={inputName}
       disabled={isLoading}
     >
@@ -84,9 +91,14 @@ export function Combobox<T extends Record<string, string>>({
   );
 }
 
-export function UserCombobox<T>({
+// TODO: if we search with only discord id "79237403620945920" then doesn't really make sense to do fuzzy search
+export function UserCombobox({
   inputName,
-}: Pick<ComboBoxProps<T>, "inputName">) {
+  onChange,
+}: Pick<
+  ComboboxProps<Pick<User, "discordId" | "plusTier">>,
+  "inputName" | "onChange"
+>) {
   const fetcher = useFetcher<UsersLoaderData>();
 
   React.useEffect(() => {
@@ -105,10 +117,12 @@ export function UserCombobox<T>({
               label: u.discordFullName,
               value: String(u.id),
               discordId: u.discordId,
+              plusTier: u.plusTier,
             }))
       }
       placeholder="Sendou#0043"
       isLoading={isLoading}
+      onChange={onChange}
     />
   );
 }

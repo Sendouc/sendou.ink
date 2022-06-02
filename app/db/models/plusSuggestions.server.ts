@@ -59,6 +59,7 @@ const findVisibleForUserStm = sql.prepare(`
 `);
 
 export interface FindVisibleForUserSuggestedUserInfo {
+  // xxx: rename suggestedUser or something
   info: Pick<
     User,
     | "id"

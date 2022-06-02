@@ -129,6 +129,12 @@ a {
   transform: translateY(1px);
 }
 
+:is(button, .button):disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: initial;
+}
+
 :is(button, .button).outlined {
   background-color: transparent;
   color: var(--theme);
@@ -317,6 +323,10 @@ select {
 select::selection {
   overflow: hidden;
   font-weight: bold;
+}
+
+select:focus {
+  outline: 2px solid var(--theme);
 }
 
 hr {

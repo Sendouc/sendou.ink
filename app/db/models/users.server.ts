@@ -69,13 +69,13 @@ export function findByIdentifier(identifier: string | number) {
 }
 
 const findAllStm = sql.prepare(`
-  SELECT "id", "discordId", "discordName", "discordDiscriminator"
+  SELECT "id", "discordId", "discordName", "discordDiscriminator", "plusTier"
     FROM "User"
 `);
 
 export function findAll() {
   return findAllStm.all() as Pick<
     User,
-    "id" | "discordId" | "discordName" | "discordDiscriminator"
+    "id" | "discordId" | "discordName" | "discordDiscriminator" | "plusTier"
   >[];
 }

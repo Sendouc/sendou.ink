@@ -164,6 +164,13 @@
   color: var(--theme-error);
 }
 
+.error-message {
+  display: block;
+  color: var(--theme-error);
+  font-size: var(--fonts-xs);
+  margin-block-start: var(--label-margin);
+}
+
 /*
  *
  * Utility classes
