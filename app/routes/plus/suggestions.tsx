@@ -233,8 +233,7 @@ function SuggestedUser({
           discordId={suggested.suggestedUser.discordId}
           size="md"
         />
-        {/* xxx: can cause page to overflow when long e.g. Buckinghamshire */}
-        <h2>{suggested.suggestedUser.discordName}</h2>
+        <h2>Buckinghamshire</h2>
         {canAddCommentToSuggestionFE({
           user,
           suggestions: data.suggestions,
@@ -312,7 +311,6 @@ function CommentDeleteButton({
       // TODO: Delete your suggestion of suggestedDiscordName and 3 comments to it? + different behavior of the delete event
       dialogHeading={`Delete your comment to ${suggestedDiscordName}'s +${tier} suggestion?`}
     >
-      {/* xxx: what when this is the first suggestion... it would trigger different behavior so confusing maybe? */}
       <Button
         className="plus__delete-button"
         icon={<TrashIcon />}
