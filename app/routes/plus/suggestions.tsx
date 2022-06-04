@@ -233,7 +233,7 @@ function SuggestedUser({
           discordId={suggested.suggestedUser.discordId}
           size="md"
         />
-        <h2>Buckinghamshire</h2>
+        <h2>{suggested.suggestedUser.discordName}</h2>
         {canAddCommentToSuggestionFE({
           user,
           suggestions: data.suggestions,
@@ -284,6 +284,7 @@ function SuggestedUser({
                       suggestionId={suggestion.id}
                       tier={tier}
                       suggestedDiscordName={suggested.suggestedUser.discordName}
+                      isFirstSuggestion={suggested.suggestions.length === 1}
                     />
                   ) : null}
                 </div>
@@ -300,16 +301,21 @@ function CommentDeleteButton({
   suggestionId,
   tier,
   suggestedDiscordName,
+  isFirstSuggestion = false,
 }: {
   suggestionId: PlusSuggestion["id"];
   tier: string;
   suggestedDiscordName: string;
+  isFirstSuggestion?: boolean;
 }) {
   return (
     <FormWithConfirm
       fields={[["suggestionId", suggestionId]]}
-      // TODO: Delete your suggestion of suggestedDiscordName and 3 comments to it? + different behavior of the delete event
-      dialogHeading={`Delete your comment to ${suggestedDiscordName}'s +${tier} suggestion?`}
+      dialogHeading={
+        isFirstSuggestion
+          ? `Delete your suggestion of ${suggestedDiscordName} to +${tier}?`
+          : `Delete your comment to ${suggestedDiscordName}'s +${tier} suggestion?`
+      }
     >
       <Button
         className="plus__delete-button"
