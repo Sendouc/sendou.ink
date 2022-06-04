@@ -66,7 +66,7 @@ export default function PlusCommentModalPage() {
   const tierSuggestedTo = String(params.tier);
 
   const userBeingCommented = data.suggestions?.[tierSuggestedTo]?.find(
-    (u) => u.info.id === targetUserId
+    (u) => u.suggestedUser.id === targetUserId
   );
 
   if (
@@ -88,8 +88,8 @@ export default function PlusCommentModalPage() {
         <input type="hidden" name="tier" value={tierSuggestedTo} />
         <input type="hidden" name="suggestedId" value={targetUserId} />
         <h2 className="plus__modal-title">
-          {userBeingCommented.info.discordName}&apos;s +{tierSuggestedTo}{" "}
-          suggestion
+          {userBeingCommented.suggestedUser.discordName}&apos;s +
+          {tierSuggestedTo} suggestion
         </h2>
         <CommentTextarea />
         <div className="plus__modal-buttons">

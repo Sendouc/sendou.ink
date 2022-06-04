@@ -168,7 +168,7 @@ export default function PlusSuggestionsPage() {
           <div className="stack lg">
             {visibleSuggestions.map((u) => (
               <SuggestedUser
-                key={`${u.info.id}-${tierVisible}`}
+                key={`${u.suggestedUser.id}-${tierVisible}`}
                 suggested={u}
                 tier={tierVisible}
               />
@@ -229,16 +229,16 @@ function SuggestedUser({
     <div className="stack md">
       <div className="plus__suggested-user-info">
         <Avatar
-          discordAvatar={suggested.info.discordAvatar}
-          discordId={suggested.info.discordId}
+          discordAvatar={suggested.suggestedUser.discordAvatar}
+          discordId={suggested.suggestedUser.discordId}
           size="md"
         />
         {/* xxx: can cause page to overflow when long e.g. Buckinghamshire */}
-        <h2>{suggested.info.discordName}</h2>
+        <h2>{suggested.suggestedUser.discordName}</h2>
         {canAddCommentToSuggestionFE({
           user,
           suggestions: data.suggestions,
-          suggested: { id: suggested.info.id },
+          suggested: { id: suggested.suggestedUser.id },
           targetPlusTier: Number(tier),
         }) ? (
           // TODO: resetScroll={false} https://twitter.com/ryanflorence/status/1527775882797907969
@@ -246,7 +246,7 @@ function SuggestedUser({
             className="plus__comment-button"
             tiny
             variant="outlined"
-            to={`comment/${tier}/${suggested.info.id}`}
+            to={`comment/${tier}/${suggested.suggestedUser.id}`}
             data-cy="comment-button"
           >
             Comment
@@ -284,7 +284,7 @@ function SuggestedUser({
                     <CommentDeleteButton
                       suggestionId={suggestion.id}
                       tier={tier}
-                      suggestedDiscordName={suggested.info.discordName}
+                      suggestedDiscordName={suggested.suggestedUser.discordName}
                     />
                   ) : null}
                 </div>

@@ -75,7 +75,7 @@ function alreadyCommentedByUser({
 }: CanAddCommentToSuggestionArgs) {
   return Boolean(
     suggestions[targetPlusTier]
-      ?.find((u) => u.info.id === suggested.id)
+      ?.find((u) => u.suggestedUser.id === suggested.id)
       ?.suggestions.some((s) => s.author.id === user?.id)
   );
 }
@@ -89,7 +89,9 @@ export function playerAlreadySuggested({
   "suggestions" | "suggested" | "targetPlusTier"
 >) {
   return Boolean(
-    suggestions[targetPlusTier]?.find((u) => u.info.id === suggested.id)
+    suggestions[targetPlusTier]?.find(
+      (u) => u.suggestedUser.id === suggested.id
+    )
   );
 }
 

@@ -59,8 +59,7 @@ const findVisibleForUserStm = sql.prepare(`
 `);
 
 export interface FindVisibleForUserSuggestedUserInfo {
-  // xxx: rename suggestedUser or something
-  info: Pick<
+  suggestedUser: Pick<
     User,
     | "id"
     | "discordId"
@@ -105,14 +104,14 @@ function mapFindVisibleForUserRowsToResult(rows: any[]): FindVisibleForUser {
     };
 
     const existingSuggestion = result[row.tier].find(
-      (suggestion) => suggestion.info.id === row.suggestedId
+      (suggestion) => suggestion.suggestedUser.id === row.suggestedId
     );
 
     if (existingSuggestion) {
       existingSuggestion.suggestions.push(suggestionInfo);
     } else {
       result[row.tier].push({
-        info: {
+        suggestedUser: {
           id: row.suggestedId,
           discordId: row.suggestedDiscordId,
           discordName: row.suggestedDiscordName,
