@@ -46,7 +46,11 @@ interface CanDeleteCommentArgs {
 }
 export function canDeleteComment(args: CanDeleteCommentArgs) {
   if (isFirstSuggestion(args)) {
-    return allTruthy([!isVotingActive(), isOwnComment(args)]);
+    return allTruthy([
+      !isVotingActive(),
+      isOwnComment(args),
+      suggestionHasNoOtherComments(args),
+    ]);
   }
 
   return isOwnComment(args);
@@ -104,6 +108,21 @@ function targetPlusTierIsSmallerOrEqual({
 
 function isOwnComment({ author, user }: CanDeleteCommentArgs) {
   return author.id === user?.id;
+}
+
+function suggestionHasNoOtherComments({
+  suggestions,
+  suggestionId,
+}: Pick<CanDeleteCommentArgs, "suggestionId" | "suggestions">) {
+  for (const suggestedUser of Object.values(suggestions).flat()) {
+    for (const suggestion of suggestedUser.suggestions) {
+      if (suggestion.id !== suggestionId) continue;
+
+      return suggestedUser.suggestions.length === 1;
+    }
+  }
+
+  throw new Error(`Invalid suggestion id: ${suggestionId}`);
 }
 
 interface CanSuggestNewUserFEArgs {
