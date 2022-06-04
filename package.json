@@ -9,7 +9,7 @@
     "dev:cypress": "cross-env NODE_ENV=test PORT=4455 remix dev",
     "start": "remix-serve build",
     "migrate": "node ./migrations/index.mjs",
-    "migrate:reset": "node scripts/delete-db-files.mjs && npm run migrate",
+    "migrate:reset": "node scripts/delete-db-files.mjs && npm run migrate && npm run seed",
     "seed": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/seed.ts",
     "seed:cypress": "cross-env NODE_ENV=test npm run seed",
     "lint:ts": "eslint . --ext .ts,.tsx",

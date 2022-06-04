@@ -9,8 +9,11 @@ export interface User {
   youtubeId: string | null;
   bio: string | null;
   country: string | null;
-  // xxx: problem with "votes that you don't have to end"... can we calcualte dynamically?
-  plusTier: number | null;
+}
+
+/** User table after joined with PlusTier table */
+export interface UserWithPlusTier extends User {
+  plusTier: PlusTier["tier"] | null;
 }
 
 export interface PlusSuggestion {
@@ -31,4 +34,10 @@ export interface PlusVote {
   authorId: number;
   votedId: number;
   score: number;
+  validAfter: number;
+}
+
+export interface PlusTier {
+  userId: number;
+  tier: number;
 }

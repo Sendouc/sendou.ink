@@ -1,5 +1,5 @@
 import { sql } from "../sql";
-import type { User } from "../types";
+import type { User, UserWithPlusTier } from "../types";
 
 const upsertStm = sql.prepare(`
   INSERT INTO
@@ -58,24 +58,28 @@ export function updateProfile(params: Pick<User, "country" | "id" | "bio">) {
 }
 
 const findByIdentifierStm = sql.prepare(`
-  SELECT *
+  SELECT "User".*, "PlusTier".tier as "plusTier"
     FROM "User"
+    LEFT JOIN "PlusTier" ON "PlusTier"."userId" = "User"."id"
     WHERE "discordId" = $identifier
       OR "id" = $identifier
 `);
 
 export function findByIdentifier(identifier: string | number) {
-  return findByIdentifierStm.get({ identifier }) as User | undefined;
+  return findByIdentifierStm.get({ identifier }) as
+    | UserWithPlusTier
+    | undefined;
 }
 
 const findAllStm = sql.prepare(`
-  SELECT "id", "discordId", "discordName", "discordDiscriminator", "plusTier"
+  SELECT "User"."id", "User"."discordId", "User"."discordName", "User"."discordDiscriminator", "PlusTier".tier as "plusTier"
     FROM "User"
+    LEFT JOIN "PlusTier" ON "PlusTier"."userId" = "User"."id"
 `);
 
 export function findAll() {
   return findAllStm.all() as Pick<
-    User,
+    UserWithPlusTier,
     "id" | "discordId" | "discordName" | "discordDiscriminator" | "plusTier"
   >[];
 }

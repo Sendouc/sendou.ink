@@ -1,6 +1,6 @@
 import type { MonthYear } from "~/core/plus";
 import { sql } from "../sql";
-import type { PlusSuggestion, User } from "../types";
+import type { PlusSuggestion, User, UserWithPlusTier } from "../types";
 
 const createStm = sql.prepare(`
   INSERT INTO 
@@ -79,7 +79,7 @@ export interface FindVisibleForUser {
 }
 
 export function findVisibleForUser(
-  args: MonthYear & Pick<User, "plusTier">
+  args: MonthYear & Pick<UserWithPlusTier, "plusTier">
 ): FindVisibleForUser | undefined {
   if (!args.plusTier) return;
   return sortNewestPlayersToBeSuggestedFirst(

@@ -5,7 +5,7 @@ import clsx from "clsx";
 import type { Unpacked } from "~/utils/types";
 import { useFetcher } from "@remix-run/react";
 import type { UsersLoaderData } from "~/routes/users";
-import type { User } from "~/db/types";
+import type { UserWithPlusTier } from "~/db/types";
 
 const MAX_RESULTS_SHOWN = 6;
 
@@ -97,7 +97,7 @@ export function UserCombobox({
   inputName,
   onChange,
 }: Pick<
-  ComboboxProps<Pick<User, "discordId" | "plusTier">>,
+  ComboboxProps<Pick<UserWithPlusTier, "discordId" | "plusTier">>,
   "inputName" | "onChange"
 >) {
   const fetcher = useFetcher<UsersLoaderData>();

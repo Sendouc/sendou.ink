@@ -1,9 +1,8 @@
+import { faker } from "@faker-js/faker";
+import { lastCompletedVoting } from "~/core/plus";
 import { db } from "~/db";
 import { sql } from "~/db/sql";
-import { faker } from "@faker-js/faker";
-import type { User } from "~/db/types";
-import invariant from "tiny-invariant";
-import { upcomingVoting } from "~/core/plus";
+import type { CreateManyPlusVotesArgs } from "./models/plusVotes.server";
 
 const ADMIN_TEST_DISCORD_ID = "79237403620945920";
 const ADMIN_TEST_AVATAR = "fcfd65a3bea598905abb9ca25296816b";
@@ -15,8 +14,8 @@ const basicSeeds = [
   adminUser,
   nzapUser,
   users,
-  plusTierToUsers,
-  plusSuggestions,
+  initialPlusMembers,
+  // thisMonthsSuggestions,
 ];
 
 export function seed() {
@@ -74,37 +73,57 @@ function fakeUser() {
   };
 }
 
-function plusTierToUsers() {
-  sql.prepare(`update "User" set "plusTier" = 3 where id < 150`).run();
-  sql.prepare(`update "User" set "plusTier" = 2 where id < 80`).run();
-  sql.prepare(`update "User" set "plusTier" = 1 where id < 30`).run();
+function initialPlusMembers() {
+  const votes: CreateManyPlusVotesArgs = [];
 
-  // omit N-ZAP user for testing
-  sql.prepare(`update "User" set "plusTier" = null where id = 2`).run();
-}
+  const { month, year } = lastCompletedVoting(new Date());
 
-function plusSuggestions() {
-  const usersInPlus = sql
-    .prepare(`select * from "User" where "plusTier" is not null and "id" != 1`) // exclude admin
-    .all() as User[];
-  const { month, year } = upcomingVoting(new Date());
+  const tier = (id: number) => {
+    if (id < 30) return 1;
+    if (id < 80) return 2;
 
-  for (let userId = 150; userId < 190; userId++) {
-    const amountOfSuggestions = faker.helpers.arrayElement([1, 1, 2, 3, 4]);
+    return 3;
+  };
 
-    for (let i = 0; i < amountOfSuggestions; i++) {
-      const suggester = usersInPlus.shift();
-      invariant(suggester);
-      invariant(suggester.plusTier);
+  for (let id = 1; id < 151; id++) {
+    if (id === 2) continue; // omit N-ZAP user for testing;
 
-      db.plusSuggestions.create({
-        authorId: suggester.id,
-        month,
-        year,
-        suggestedId: userId,
-        text: faker.lorem.lines(),
-        tier: suggester.plusTier,
-      });
-    }
+    votes.push({
+      authorId: 1,
+      month,
+      year,
+      score: 1,
+      tier: tier(id),
+      validAfter: new Date(),
+      votedId: id,
+    });
   }
+
+  db.plusVotes.createMany(votes);
 }
+
+// function thisMonthsSuggestions() {
+//   const usersInPlus = sql
+//     .prepare(`select * from "User" where "plusTier" is not null and "id" != 1`) // exclude admin
+//     .all() as User[];
+//   const { month, year } = upcomingVoting(new Date());
+
+//   for (let userId = 150; userId < 190; userId++) {
+//     const amountOfSuggestions = faker.helpers.arrayElement([1, 1, 2, 3, 4]);
+
+//     for (let i = 0; i < amountOfSuggestions; i++) {
+//       const suggester = usersInPlus.shift();
+//       invariant(suggester);
+//       invariant(suggester.plusTier);
+
+//       db.plusSuggestions.create({
+//         authorId: suggester.id,
+//         month,
+//         year,
+//         suggestedId: userId,
+//         text: faker.lorem.lines(),
+//         tier: suggester.plusTier,
+//       });
+//     }
+//   }
+// }

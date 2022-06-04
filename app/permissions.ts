@@ -1,15 +1,15 @@
 import type * as plusSuggestions from "~/db/models/plusSuggestions.server";
 import { monthsVotingRange } from "./core/plus";
-import type { PlusSuggestion, User } from "./db/types";
+import type { PlusSuggestion, User, UserWithPlusTier } from "./db/types";
 import { allTruthy } from "./utils/arrays";
 
 // TODO: 1) move "root checkers" to one file and utils to one file 2) make utils const for more terseness
 
 interface CanAddCommentToSuggestionArgs {
-  user?: Pick<User, "id" | "plusTier">;
+  user?: Pick<UserWithPlusTier, "id" | "plusTier">;
   suggestions: plusSuggestions.FindVisibleForUser;
   suggested: Pick<User, "id">;
-  targetPlusTier: NonNullable<User["plusTier"]>;
+  targetPlusTier: NonNullable<UserWithPlusTier["plusTier"]>;
 }
 export function canAddCommentToSuggestionFE(
   args: CanAddCommentToSuggestionArgs
@@ -129,7 +129,7 @@ function suggestionHasNoOtherComments({
 }
 
 interface CanSuggestNewUserFEArgs {
-  user?: Pick<User, "id" | "plusTier">;
+  user?: Pick<UserWithPlusTier, "id" | "plusTier">;
   suggestions: plusSuggestions.FindVisibleForUser;
 }
 export function canSuggestNewUserFE({
@@ -147,8 +147,8 @@ export function canSuggestNewUserFE({
 }
 
 interface CanSuggestNewUserBEArgs extends CanSuggestNewUserFEArgs {
-  suggested: Pick<User, "id" | "plusTier">;
-  targetPlusTier: NonNullable<User["plusTier"]>;
+  suggested: Pick<UserWithPlusTier, "id" | "plusTier">;
+  targetPlusTier: NonNullable<UserWithPlusTier["plusTier"]>;
 }
 export function canSuggestNewUserBE({
   user,
@@ -176,7 +176,7 @@ function isVotingActive() {
   );
 }
 
-function isPlusServerMember(user?: Pick<User, "plusTier">) {
+function isPlusServerMember(user?: Pick<UserWithPlusTier, "plusTier">) {
   return Boolean(user?.plusTier);
 }
 

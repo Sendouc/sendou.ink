@@ -27,7 +27,7 @@ import {
 } from "~/utils/remix";
 import { upcomingVoting } from "~/core/plus";
 import { db } from "~/db";
-import type { User } from "~/db/types";
+import type { UserWithPlusTier } from "~/db/types";
 import { ErrorMessage } from "~/components/ErrorMessage";
 
 const commentActionSchema = z.object({
@@ -169,7 +169,7 @@ function getSelectedUserErrorMessage({
 }: {
   suggestions: NonNullable<PlusSuggestionsLoaderData["suggestions"]>;
   targetPlusTier: number;
-  suggested?: Pick<User, "id" | "plusTier">;
+  suggested?: Pick<UserWithPlusTier, "id" | "plusTier">;
 }) {
   if (!suggested) return;
 

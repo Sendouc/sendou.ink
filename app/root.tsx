@@ -19,7 +19,7 @@ import globalStyles from "~/styles/global.css";
 import layoutStyles from "~/styles/layout.css";
 import resetStyles from "~/styles/reset.css";
 import { Layout } from "./components/layout";
-import type { User } from "./db/types";
+import type { UserWithPlusTier } from "./db/types";
 import { getUser } from "./utils/remix";
 
 export const unstable_shouldReload: ShouldReloadFunction = () => false;
@@ -40,7 +40,10 @@ export const meta: MetaFunction = () => ({
 });
 
 export interface RootLoaderData {
-  user?: Pick<User, "id" | "discordId" | "discordAvatar" | "plusTier">;
+  user?: Pick<
+    UserWithPlusTier,
+    "id" | "discordId" | "discordAvatar" | "plusTier"
+  >;
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
