@@ -118,8 +118,7 @@ export default function PlusSuggestionsPage() {
   }
 
   invariant(tierVisible);
-  const visibleSuggestions = data.suggestions[tierVisible];
-  invariant(visibleSuggestions);
+  const visibleSuggestions = data.suggestions[tierVisible] ?? [];
 
   return (
     <>
@@ -175,6 +174,11 @@ export default function PlusSuggestionsPage() {
                 tier={tierVisible}
               />
             ))}
+            {visibleSuggestions.length === 0 ? (
+              <div className="plus__suggested-info-text text-center">
+                No suggestions yet
+              </div>
+            ) : null}
           </div>
         </div>
       </div>
