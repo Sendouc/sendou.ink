@@ -1,5 +1,6 @@
 import { faker } from "@faker-js/faker";
-import { lastCompletedVoting } from "~/core/plus";
+import invariant from "tiny-invariant";
+import { lastCompletedVoting, upcomingVoting } from "~/core/plus";
 import { db } from "~/db";
 import { sql } from "~/db/sql";
 import type { CreateManyPlusVotesArgs } from "./models/plusVotes.server";
@@ -15,7 +16,7 @@ const basicSeeds = [
   nzapUser,
   users,
   initialPlusMembers,
-  // thisMonthsSuggestions,
+  thisMonthsSuggestions,
 ];
 
 export function seed() {
@@ -26,7 +27,7 @@ export function seed() {
 }
 
 function wipeDB() {
-  const tablesToDelete = ["User"];
+  const tablesToDelete = ["User", "PlusSuggestion", "PlusVote"];
 
   for (const table of tablesToDelete) {
     sql.prepare(`delete from "${table}"`).run();
@@ -88,13 +89,15 @@ function initialPlusMembers() {
   for (let id = 1; id < 151; id++) {
     if (id === 2) continue; // omit N-ZAP user for testing;
 
+    const fiveMinutesAgo = new Date(new Date().getTime() - 5 * 60 * 1000);
+
     votes.push({
       authorId: 1,
       month,
       year,
       score: 1,
       tier: tier(id),
-      validAfter: new Date(),
+      validAfter: fiveMinutesAgo,
       votedId: id,
     });
   }
@@ -102,28 +105,28 @@ function initialPlusMembers() {
   db.plusVotes.createMany(votes);
 }
 
-// function thisMonthsSuggestions() {
-//   const usersInPlus = sql
-//     .prepare(`select * from "User" where "plusTier" is not null and "id" != 1`) // exclude admin
-//     .all() as User[];
-//   const { month, year } = upcomingVoting(new Date());
+function thisMonthsSuggestions() {
+  const usersInPlus = db.users
+    .findAll()
+    .filter((u) => u.plusTier && u.id !== 1); // exclude admin
+  const { month, year } = upcomingVoting(new Date());
 
-//   for (let userId = 150; userId < 190; userId++) {
-//     const amountOfSuggestions = faker.helpers.arrayElement([1, 1, 2, 3, 4]);
+  for (let userId = 150; userId < 190; userId++) {
+    const amountOfSuggestions = faker.helpers.arrayElement([1, 1, 2, 3, 4]);
 
-//     for (let i = 0; i < amountOfSuggestions; i++) {
-//       const suggester = usersInPlus.shift();
-//       invariant(suggester);
-//       invariant(suggester.plusTier);
+    for (let i = 0; i < amountOfSuggestions; i++) {
+      const suggester = usersInPlus.shift();
+      invariant(suggester);
+      invariant(suggester.plusTier);
 
-//       db.plusSuggestions.create({
-//         authorId: suggester.id,
-//         month,
-//         year,
-//         suggestedId: userId,
-//         text: faker.lorem.lines(),
-//         tier: suggester.plusTier,
-//       });
-//     }
-//   }
-// }
+      db.plusSuggestions.create({
+        authorId: suggester.id,
+        month,
+        year,
+        suggestedId: userId,
+        text: faker.lorem.lines(),
+        tier: suggester.plusTier,
+      });
+    }
+  }
+}

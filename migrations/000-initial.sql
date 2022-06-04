@@ -94,7 +94,7 @@ CREATE VIEW "PlusTier" AS WITH "LastFinishedVotingMonthsAverages" AS (
     tier
 )
 SELECT
-  "votedId" as "userId",
+  "votedId" AS "userId",
   min(tier) AS tier
 FROM
   "LastFinishedVotingMonthsAverages"

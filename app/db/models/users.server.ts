@@ -74,7 +74,7 @@ export function findByIdentifier(identifier: string | number) {
 const findAllStm = sql.prepare(`
   SELECT "User"."id", "User"."discordId", "User"."discordName", "User"."discordDiscriminator", "PlusTier".tier as "plusTier"
     FROM "User"
-    LEFT JOIN "PlusTier" ON "PlusTier"."userId" = "User"."id"
+    LEFT JOIN "PlusTier" ON "PlusTier"."userId" = "User".id
 `);
 
 export function findAll() {
