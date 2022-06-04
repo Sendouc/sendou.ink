@@ -60,6 +60,7 @@ export function Combobox<T extends Record<string, string | null | number>>({
         displayValue={(option) =>
           (option as Unpacked<typeof options>)?.label ?? ""
         }
+        data-cy={`${inputName}-combobox-input`}
       />
       <HeadlessCombobox.Options
         className={clsx("combobox-options", {

@@ -162,7 +162,9 @@ export default function PlusSuggestionsPage() {
             </div>
             {canSuggestNewUserFE({ user, suggestions: data.suggestions }) ? (
               // TODO: resetScroll={false} https://twitter.com/ryanflorence/status/1527775882797907969
-              <LinkButton to="new">Suggest</LinkButton>
+              <LinkButton to="new" data-cy="new-suggest-button">
+                Suggest
+              </LinkButton>
             ) : null}
           </div>
           <div className="stack lg">

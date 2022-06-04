@@ -45,9 +45,12 @@ interface CanDeleteCommentArgs {
   suggestions: plusSuggestions.FindVisibleForUser;
 }
 export function canDeleteComment(args: CanDeleteCommentArgs) {
+  const votingActive =
+    process.env.NODE_ENV === "test" ? false : isVotingActive();
+
   if (isFirstSuggestion(args)) {
     return allTruthy([
-      !isVotingActive(),
+      !votingActive,
       isOwnComment(args),
       suggestionHasNoOtherComments(args),
     ]);
@@ -133,8 +136,11 @@ export function canSuggestNewUserFE({
   user,
   suggestions,
 }: CanSuggestNewUserFEArgs) {
+  const votingActive =
+    process.env.NODE_ENV === "test" ? false : isVotingActive();
+
   return allTruthy([
-    !isVotingActive(),
+    !votingActive,
     !hasUserSuggestedThisMonth({ user, suggestions }),
     isPlusServerMember(user),
   ]);

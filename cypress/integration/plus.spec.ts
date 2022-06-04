@@ -31,5 +31,28 @@ describe("Plus suggestions page", () => {
     cy.contains("Cracked!").should("not.exist");
   });
 
-  // xxx: test adding completely new suggestion, validation works
+  it.only("adds a new suggestion, validates suggested user and deletes it", () => {
+    cy.clock(new Date(Date.UTC(2022, 5, 15))); // let's make sure voting is not happening
+    cy.auth();
+    cy.visit(PLUS_SUGGESTIONS_PAGE);
+
+    cy.getCy("new-suggest-button").click();
+    cy.getCy("tier-select").select("2");
+    cy.getCy("user-combobox-input").type("Sendou{enter}");
+
+    cy.contains("This user already has access");
+    cy.getCy("submit-button").should("be.disabled");
+
+    cy.getCy("user-combobox-input").clear().type("N-ZAP{enter}");
+    cy.getCy("comment-textarea").type("So good");
+    cy.getCy("submit-button").click();
+
+    cy.getCy("plus2-radio").click();
+    cy.contains("N-ZAP");
+
+    cy.getCy("comments-summary").first().click();
+    cy.getCy("delete-comment-button").first().click();
+    cy.getCy("confirm-button").click();
+    cy.contains("N-ZAP").should("not.exist");
+  });
 });

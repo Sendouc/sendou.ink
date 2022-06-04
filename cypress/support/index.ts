@@ -15,9 +15,8 @@ Cypress.Commands.add("getCy", (id) => {
   return cy.get(`[data-cy=${id}]`);
 });
 
-// TODO: make this a request instead... probably faster?
 Cypress.Commands.add("seed", () => {
-  cy.exec("npm run seed:cypress");
+  cy.request("POST", `/seed`);
 });
 
 Cypress.Commands.add("auth", (id = 1) => {

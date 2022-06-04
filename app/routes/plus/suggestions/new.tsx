@@ -121,6 +121,7 @@ export default function PlusNewSuggestionModalPage() {
           <select
             id="tier"
             name="tier"
+            data-cy="tier-select"
             className="plus__modal-select"
             value={targetPlusTier}
             onChange={(e) => setTargetPlusTier(Number(e.target.value))}

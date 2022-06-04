@@ -3,8 +3,5 @@
  */
 module.exports = {
   ignoredRouteFiles: ["**/.*"],
-  // appDirectory: "app",
-  // assetsBuildDirectory: "public/build",
-  // serverBuildPath: "build/index.js",
-  // publicPath: "/build/",
+  cacheDirectory: process.env.NODE_ENV === "test" ? ".cache-test" : undefined,
 };

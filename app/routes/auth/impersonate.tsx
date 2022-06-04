@@ -4,7 +4,9 @@ import { IMPERSONATED_SESSION_KEY } from "~/core/auth/authenticator.server";
 import { sessionStorage } from "~/core/auth/session.server";
 
 export const action: ActionFunction = async ({ request }) => {
-  if (!["development", "test"].includes(process.env.NODE_ENV)) return null;
+  if (process.env.NODE_ENV === "production") {
+    throw new Response(null, { status: 400 });
+  }
 
   const session = await sessionStorage.getSession(
     request.headers.get("Cookie")
