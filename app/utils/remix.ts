@@ -22,21 +22,14 @@ export function badRequestIfFalsy<T>(value: T | null | undefined): T {
 export async function parseRequestFormData<T extends z.ZodTypeAny>({
   request,
   schema,
-  useBody = false,
 }: {
   request: Request;
   schema: T;
-  // xxx: get rid of this
-  useBody?: boolean;
 }): Promise<z.infer<T>> {
   try {
     // False alarm
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return schema.parse(
-      useBody
-        ? await request.json()
-        : Object.fromEntries(await request.formData())
-    );
+    return schema.parse(Object.fromEntries(await request.formData()));
   } catch (e) {
     if (e instanceof z.ZodError) {
       console.error(e);
