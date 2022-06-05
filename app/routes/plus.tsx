@@ -10,12 +10,12 @@ export default function PlusPageLayout() {
         <SubNavLink to="suggestions" data-cy="profile-page-link">
           Suggestions
         </SubNavLink>
-        <SubNavLink to="voting/history" data-cy="edit-page-link">
-          Voting History
+        <SubNavLink to="voting/results" data-cy="edit-page-link">
+          Results
         </SubNavLink>
         {canVoteFE() ? (
           <SubNavLink to="voting" data-cy="edit-page-link">
-            Vote
+            Voting
           </SubNavLink>
         ) : null}
       </SubNav>

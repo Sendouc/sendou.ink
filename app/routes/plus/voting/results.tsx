@@ -31,7 +31,7 @@ export const meta: MetaFunction = () => {
   };
 };
 
-interface PlusVotingHistoryLoaderData {
+interface PlusVotingResultsLoaderData {
   results: PlusVotingResultByMonthYear["results"];
   ownScores?: {
     score?: PlusVotingResult["score"];
@@ -47,14 +47,14 @@ export const loader: LoaderFunction = async ({ request }) => {
     userId: user?.id,
   });
 
-  return json<PlusVotingHistoryLoaderData>({
+  return json<PlusVotingResultsLoaderData>({
     results,
     ownScores: ownScores?.map(maybeHideScore),
   });
 };
 
-export default function PlusVotingHistoryPage() {
-  const data = useLoaderData<PlusVotingHistoryLoaderData>();
+export default function PlusVotingResultsPage() {
+  const data = useLoaderData<PlusVotingResultsLoaderData>();
 
   const { month, year } = lastCompletedVoting(new Date());
 
@@ -87,7 +87,7 @@ export default function PlusVotingHistoryPage() {
 }
 
 function Results() {
-  const data = useLoaderData<PlusVotingHistoryLoaderData>();
+  const data = useLoaderData<PlusVotingResultsLoaderData>();
 
   return (
     <div className="stack lg">
