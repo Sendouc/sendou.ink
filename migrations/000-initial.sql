@@ -45,6 +45,8 @@ CREATE TABLE "PlusVote" (
   "votedId" integer NOT NULL,
   "score" integer NOT NULL,
   "validAfter" integer NOT NULL,
+  FOREIGN KEY ("authorId") REFERENCES "User"("id") ON DELETE CASCADE,
+  FOREIGN KEY ("votedId") REFERENCES "User"("id") ON DELETE CASCADE,
   UNIQUE("month", "year", "authorId", "votedId") ON CONFLICT ROLLBACK
 ) STRICT;
 
@@ -52,53 +54,75 @@ CREATE INDEX plus_vote_author_id ON "PlusVote"("authorId");
 
 CREATE INDEX plus_vote_voted_id ON "PlusVote"("votedId");
 
--- 1) Get the latest finished month/year
--- 2) Get votes that match this finished month/year then get vote average per user+tier
--- 3) Final result is userId + lowest tier with average of 50 or greater
-CREATE VIEW "PlusTier" AS WITH "LastFinishedVotingMonthsAverages" AS (
-  SELECT
-    votedId,
-    tier,
-    AVG(score) AS average
-  FROM
-    PlusVote
-  WHERE
-    year = (
-      SELECT
-        year
-      FROM
-        PlusVote
-      WHERE
-        validAfter < strftime('%s', 'now')
-      ORDER BY
-        year desc,
-        month desc
-      LIMIT
-        1
-    )
-    AND month = (
-      SELECT
-        month
-      FROM
-        PlusVote
-      WHERE
-        validAfter < strftime('%s', 'now')
-      ORDER BY
-        year desc,
-        month desc
-      LIMIT
-        1
-    )
-  GROUP BY
-    "votedId",
-    tier
-)
+-- TODO: maybe tests for this?
+CREATE VIEW "PlusVotingResult" AS
+SELECT
+  "votedId",
+  tier,
+  AVG(score) AS average,
+  month,
+  year,
+  EXISTS (
+    SELECT
+      1
+    FROM
+      "PlusSuggestion"
+    WHERE
+      "PlusSuggestion"."month" = "PlusVote"."month"
+      AND "PlusSuggestion"."year" = "PlusVote"."year"
+      AND "PlusSuggestion"."suggestedId" = "PlusVote"."votedId"
+      AND "PlusSuggestion"."tier" = "PlusVote"."tier"
+  ) as "wasSuggested"
+FROM
+  "PlusVote"
+GROUP BY
+  "votedId",
+  tier,
+  month,
+  year;
+
+CREATE VIEW "PlusTier" AS
 SELECT
   "votedId" AS "userId",
-  min(tier) AS tier
+  case
+    when average < 0.5
+    AND "wasSuggested" = 1 then NULL
+    when average >= 0.5 then tier
+    when average < 0.5
+    AND tier != 3 then tier + 1
+  end tier
 FROM
-  "LastFinishedVotingMonthsAverages"
+  "PlusVotingResult"
 WHERE
-  average >= 0.5
+  year = (
+    SELECT
+      year
+    FROM
+      "PlusVote"
+    WHERE
+      "validAfter" < strftime('%s', 'now')
+    ORDER BY
+      year desc,
+      month desc
+    LIMIT
+      1
+  )
+  AND month = (
+    SELECT
+      month
+    FROM
+      "PlusVote"
+    WHERE
+      "validAfter" < strftime('%s', 'now')
+    ORDER BY
+      year desc,
+      month desc
+    LIMIT
+      1
+  )
 GROUP BY
   "votedId";
+
+-- if suggested or +3 then no change from current behavior
+-- if not suggested and average < 0.5 then tier = voted tier - 1
+-- so in fact we need one more table in addition to PlusTier - PlusVotingResult (contains LastFinishedVotingMonthsAverages + wasSuggested)

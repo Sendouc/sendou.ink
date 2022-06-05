@@ -37,6 +37,15 @@ export interface PlusVote {
   validAfter: number;
 }
 
+export interface PlusVotingResult {
+  votedId: number;
+  tier: number;
+  score: number;
+  month: number;
+  year: number;
+  wasSuggested: number;
+}
+
 export interface PlusTier {
   userId: number;
   tier: number;
