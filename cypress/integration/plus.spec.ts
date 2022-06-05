@@ -31,7 +31,7 @@ describe("Plus suggestions page", () => {
     cy.contains("Cracked!").should("not.exist");
   });
 
-  it.only("adds a new suggestion, validates suggested user and deletes it", () => {
+  it("adds a new suggestion, validates suggested user and deletes it", () => {
     cy.clock(new Date(Date.UTC(2022, 5, 15))); // let's make sure voting is not happening
     cy.auth();
     cy.visit(PLUS_SUGGESTIONS_PAGE);
@@ -54,5 +54,19 @@ describe("Plus suggestions page", () => {
     cy.getCy("delete-comment-button").first().click();
     cy.getCy("confirm-button").click();
     cy.contains("N-ZAP").should("not.exist");
+  });
+});
+
+describe("Plus voting results page", () => {
+  beforeEach(() => {
+    cy.seed();
+  });
+
+  it("views results and sees own percentage as a failed suggest", () => {
+    cy.auth(200);
+    cy.visit("/plus/voting/results");
+
+    cy.contains("Sendou");
+    cy.contains("your score was");
   });
 });

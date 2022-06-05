@@ -4,7 +4,7 @@ import type {
   MetaFunction,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import { lastCompletedVoting } from "~/core/plus";
 import { db } from "~/db";
 import type { PlusVotingResultByMonthYear } from "~/db/models/plusVotes.server";
@@ -14,7 +14,6 @@ import { getUser, makeTitle } from "~/utils/remix";
 import type { Unpacked } from "~/utils/types";
 import styles from "~/styles/plus-history.css";
 import { discordFullName } from "~/utils/strings";
-import { Link } from "react-router-dom";
 import { userPage } from "~/utils/urls";
 import clsx from "clsx";
 
