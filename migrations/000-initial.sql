@@ -60,7 +60,7 @@ SELECT
   "votedId",
   tier,
   AVG(score) AS score,
-  AVG(score) >= 0.5 as "passedVoting",
+  AVG(score) >= 0 as "passedVoting",
   month,
   year,
   EXISTS (
