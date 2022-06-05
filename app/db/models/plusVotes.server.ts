@@ -56,7 +56,7 @@ const resultsByMonthYearStm = sql.prepare(`
     FROM "PlusVotingResult"
     JOIN "User" ON "PlusVotingResult"."votedId" = "User".id
     WHERE month = $month AND year = $year
-    ORDER BY RANDOM()
+    ORDER BY "User"."discordName" COLLATE NOCASE ASC
 `);
 
 type PlusVotingResultUser = Pick<

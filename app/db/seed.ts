@@ -15,7 +15,8 @@ const basicSeeds = [
   adminUser,
   nzapUser,
   users,
-  initialPlusMembers,
+  lastMonthsVoting,
+  lastMonthSuggestions,
   thisMonthsSuggestions,
 ];
 
@@ -74,35 +75,71 @@ function fakeUser() {
   };
 }
 
-function initialPlusMembers() {
+const idToPlusTier = (id: number) => {
+  if (id < 30) return 1;
+  if (id < 80) return 2;
+  if (id <= 150) return 3;
+
+  // these ids failed the voting
+  if (id >= 200 && id <= 209) return 1;
+  if (id >= 210 && id <= 219) return 2;
+  if (id >= 220 && id <= 229) return 3;
+
+  throw new Error("Invalid id - no plus tier");
+};
+
+function lastMonthsVoting() {
   const votes: CreateManyPlusVotesArgs = [];
 
   const { month, year } = lastCompletedVoting(new Date());
 
-  const tier = (id: number) => {
-    if (id < 30) return 1;
-    if (id < 80) return 2;
-
-    return 3;
-  };
+  const fiveMinutesAgo = new Date(new Date().getTime() - 5 * 60 * 1000);
 
   for (let id = 1; id < 151; id++) {
     if (id === 2) continue; // omit N-ZAP user for testing;
-
-    const fiveMinutesAgo = new Date(new Date().getTime() - 5 * 60 * 1000);
 
     votes.push({
       authorId: 1,
       month,
       year,
       score: 1,
-      tier: tier(id),
+      tier: idToPlusTier(id),
+      validAfter: fiveMinutesAgo,
+      votedId: id,
+    });
+  }
+
+  for (let id = 200; id < 225; id++) {
+    votes.push({
+      authorId: 1,
+      month,
+      year,
+      score: -1,
+      tier: idToPlusTier(id),
       validAfter: fiveMinutesAgo,
       votedId: id,
     });
   }
 
   db.plusVotes.createMany(votes);
+}
+
+function lastMonthSuggestions() {
+  const usersSuggested = [
+    3, 10, 14, 90, 120, 140, 200, 201, 203, 204, 205, 216, 217, 218, 219, 220,
+  ];
+  const { month, year } = lastCompletedVoting(new Date());
+
+  for (const id of usersSuggested) {
+    db.plusSuggestions.create({
+      authorId: 1,
+      month,
+      year,
+      suggestedId: id,
+      text: faker.lorem.lines(),
+      tier: idToPlusTier(id),
+    });
+  }
 }
 
 function thisMonthsSuggestions() {

@@ -13,6 +13,10 @@ import { roundToTwoDecimalPlaces } from "~/utils/number";
 import { getUser, makeTitle } from "~/utils/remix";
 import type { Unpacked } from "~/utils/types";
 import styles from "~/styles/plus-history.css";
+import { discordFullName } from "~/utils/strings";
+import { Link } from "react-router-dom";
+import { userPage } from "~/utils/urls";
+import clsx from "clsx";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -69,7 +73,7 @@ export default function PlusVotingHistoryPage() {
               ) : (
                 <span className="plus-history__fail">didn&apos;t pass</span>
               )}{" "}
-              the +1 voting
+              the +{result.tier} voting
               {result.score
                 ? `, your score was ${result.score} (at least 0.5 required to pass)`
                 : ""}
@@ -77,6 +81,45 @@ export default function PlusVotingHistoryPage() {
           ))}
         </ul>
       ) : null}
+      <Results />
+    </div>
+  );
+}
+
+function Results() {
+  const data = useLoaderData<PlusVotingHistoryLoaderData>();
+
+  return (
+    <div className="stack lg">
+      {data.results.map((tiersResults) => (
+        <div className="stack md" key={tiersResults.tier}>
+          <h3 className="plus-history__tier-header">
+            <span>+{tiersResults.tier}</span>
+          </h3>
+          {(["passed", "failed"] as const).map((status) => (
+            <div key={status} className="plus-history__passed-info-container">
+              <h4 className="plus-history__passed-header">
+                {status === "passed" ? "Passed" : "Didn't pass"} (
+                {tiersResults[status].length})
+              </h4>
+              {tiersResults[status].map((user) => (
+                <Link
+                  to={userPage(user.discordId)}
+                  className={clsx("plus-history__user-status", {
+                    failed: status === "failed",
+                  })}
+                  key={user.id}
+                >
+                  {user.wasSuggested ? (
+                    <span className="plus-history__suggestion-s">S</span>
+                  ) : null}
+                  {discordFullName(user)}
+                </Link>
+              ))}
+            </div>
+          ))}
+        </div>
+      ))}
     </div>
   );
 }

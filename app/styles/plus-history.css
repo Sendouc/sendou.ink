@@ -13,3 +13,59 @@
 .plus-history__fail {
   color: var(--theme-error);
 }
+
+.plus-history__tier-header {
+  display: flex;
+  flex-direction: row;
+  color: var(--theme);
+}
+
+.plus-history__tier-header::before,
+.plus-history__tier-header::after {
+  flex: 1 1;
+  border-bottom: 3px solid var(--theme-transparent);
+  margin: auto;
+  content: "";
+}
+
+.plus-history__tier-header::before {
+  margin-right: 10px;
+}
+
+.plus-history__tier-header::after {
+  margin-left: 10px;
+}
+
+.plus-history__passed-info-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.plus-history__passed-header {
+  color: var(--text-lighter);
+  font-size: var(--fonts-xs);
+}
+
+.plus-history__user-status {
+  background-color: var(--theme);
+  border-radius: var(--rounded);
+  color: var(--button-text);
+  font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
+  padding-inline: var(--s-1-5);
+}
+
+.plus-history__user-status.failed {
+  background-color: var(--theme-error-transparent);
+  color: var(--text);
+}
+
+.plus-history__suggestion-s {
+  background-color: var(--bg-lighter);
+  border-radius: 50%;
+  color: var(--text);
+  font-weight: var(--bold);
+  margin-inline-end: var(--s-1);
+  padding-inline: var(--s-1);
+}
