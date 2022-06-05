@@ -1,0 +1,15 @@
+.plus-history__own-scores {
+  padding: 0;
+  font-size: var(--fonts-sm);
+  font-weight: var(--semi-bold);
+  list-style-type: none;
+  text-align: center;
+}
+
+.plus-history__success {
+  color: var(--theme-success);
+}
+
+.plus-history__fail {
+  color: var(--theme-error);
+}

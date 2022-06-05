@@ -59,7 +59,8 @@ CREATE VIEW "PlusVotingResult" AS
 SELECT
   "votedId",
   tier,
-  AVG(score) AS average,
+  AVG(score) AS score,
+  AVG(score) >= 0.5 as "passedVoting",
   month,
   year,
   EXISTS (
@@ -85,10 +86,10 @@ CREATE VIEW "PlusTier" AS
 SELECT
   "votedId" AS "userId",
   case
-    when average < 0.5
+    when "passedVoting" = 0
     AND "wasSuggested" = 1 then NULL
-    when average >= 0.5 then tier
-    when average < 0.5
+    when "passedVoting" = 1 then tier
+    when "passedVoting" = 0
     AND tier != 3 then tier + 1
   end tier
 FROM

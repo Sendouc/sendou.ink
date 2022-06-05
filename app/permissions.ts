@@ -195,3 +195,12 @@ function hasUserSuggestedThisMonth({
     .flat()
     .some(({ suggestions }) => suggestions[0].author.id === user?.id);
 }
+
+export function canVoteFE() {
+  return allTruthy([isVotingActive(), !alreadyVoted()]);
+}
+
+// xxx: implement alreadyVoted()
+function alreadyVoted() {
+  return false;
+}

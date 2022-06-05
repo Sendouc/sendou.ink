@@ -44,6 +44,7 @@ export interface PlusVotingResult {
   month: number;
   year: number;
   wasSuggested: number;
+  passedVoting: number;
 }
 
 export interface PlusTier {
