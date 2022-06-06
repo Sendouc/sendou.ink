@@ -16,7 +16,7 @@ module.exports = withBundleAnalyzer({
     optimizeFonts: true,
   },
   images: {
-    domains: ["www.countryflags.io"],
+    domains: ["flagcdn.com"],
   },
   eslint: {
     dirs: ["pages", "components", "services", "hooks", "utils"],
