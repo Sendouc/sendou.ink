@@ -13,6 +13,7 @@ export const getAllUsersLean = async () =>
       discriminator: true,
       discordAvatar: true,
       discordId: true,
+      plusStatus: true,
       profile: {
         select: {
           twitterName: true,
