@@ -167,6 +167,11 @@ export const regularTournamentBadges: {
     winnerDiscordIds:
       "260602342309756940,105390854063034368,97804913941172224,107263003031764992",
   },
+  {
+    badgeName: "20xx",
+    name: "a 20XX Series tournament",
+    winnerDiscordIds: "173365902035779584"
+  }
 ];
 
 interface BadgesProps {
