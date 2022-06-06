@@ -1,1 +1,3 @@
-module.exports = { database: "db.sqlite3" };
+require("dotenv").config();
+
+module.exports = { database: process.env.DB_PATH };
