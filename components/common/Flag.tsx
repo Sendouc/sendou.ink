@@ -5,7 +5,7 @@ export default function Flag({ countryCode }: { countryCode: string }) {
     <Image
       width={16}
       height={16}
-      src={`https://www.countryflags.io/${countryCode}/flat/16.png`}
+      src={`https://flagcdn.com/w20/${countryCode}.png`}
       alt={`Flag with country code ${countryCode}`}
     />
   );
