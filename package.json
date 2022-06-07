@@ -3,11 +3,11 @@
   "private": true,
   "sideEffects": false,
   "scripts": {
-    "deploy": "npm install && npm run migrate up && npm run build",
+    "deploy": "npm install && npm run build",
     "build": "remix build",
     "dev": "cross-env NODE_ENV=development remix dev",
     "dev:cypress": "cross-env NODE_ENV=test PORT=4455 DB_PATH=db-cypress.sqlite3 remix dev",
-    "start": "remix-serve build",
+    "start": "npm run migrate up && remix-serve build",
     "migrate": "ley",
     "migrate:reset": "node scripts/delete-db-files.mjs && npm run migrate && npm run seed",
     "seed": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/seed.ts",
