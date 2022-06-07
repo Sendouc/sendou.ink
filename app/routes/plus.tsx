@@ -1,7 +1,6 @@
 import { Outlet } from "@remix-run/react";
 import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
-import { canVoteFE } from "~/permissions";
 
 export default function PlusPageLayout() {
   return (
@@ -13,11 +12,9 @@ export default function PlusPageLayout() {
         <SubNavLink to="voting/results" data-cy="edit-page-link">
           Results
         </SubNavLink>
-        {canVoteFE() ? (
-          <SubNavLink to="voting" data-cy="edit-page-link">
-            Voting
-          </SubNavLink>
-        ) : null}
+        <SubNavLink to="voting" data-cy="edit-page-link">
+          Voting
+        </SubNavLink>
       </SubNav>
       <Main>
         <Outlet />

@@ -8,7 +8,7 @@ import { Link, useLoaderData } from "@remix-run/react";
 import { lastCompletedVoting } from "~/core/plus";
 import { db } from "~/db";
 import type { PlusVotingResultByMonthYear } from "~/db/models/plusVotes.server";
-import type { PlusVotingResult } from "~/db/types";
+import type { PlusVotingResult, UserWithPlusTier } from "~/db/types";
 import { roundToTwoDecimalPlaces } from "~/utils/number";
 import { getUser, makeTitle } from "~/utils/remix";
 import type { Unpacked } from "~/utils/types";
@@ -31,7 +31,7 @@ export const meta: MetaFunction = () => {
 };
 
 interface PlusVotingResultsLoaderData {
-  results: PlusVotingResultByMonthYear["results"];
+  results?: PlusVotingResultByMonthYear["results"];
   ownScores?: {
     score?: PlusVotingResult["score"];
     tier: PlusVotingResult["tier"];
@@ -47,7 +47,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   });
 
   return json<PlusVotingResultsLoaderData>({
-    results,
+    results: shouldShowResults(user) ? results : undefined,
     ownScores: ownScores?.map(maybeHideScore),
   });
 };
@@ -80,45 +80,55 @@ export default function PlusVotingResultsPage() {
           ))}
         </ul>
       ) : null}
-      <Results />
+      {!data.ownScores ? (
+        <div className="text-center text-sm">
+          You weren&apos;t in the voting this month.
+        </div>
+      ) : null}
+      {data.results ? <Results results={data.results} /> : null}
     </div>
   );
 }
 
-function Results() {
-  const data = useLoaderData<PlusVotingResultsLoaderData>();
-
+function Results({
+  results,
+}: {
+  results: NonNullable<PlusVotingResultsLoaderData["results"]>;
+}) {
   return (
-    <div className="stack lg">
-      {data.results.map((tiersResults) => (
-        <div className="stack md" key={tiersResults.tier}>
-          <h3 className="plus-history__tier-header">
-            <span>+{tiersResults.tier}</span>
-          </h3>
-          {(["passed", "failed"] as const).map((status) => (
-            <div key={status} className="plus-history__passed-info-container">
-              <h4 className="plus-history__passed-header">
-                {status === "passed" ? "Passed" : "Didn't pass"} (
-                {tiersResults[status].length})
-              </h4>
-              {tiersResults[status].map((user) => (
-                <Link
-                  to={userPage(user.discordId)}
-                  className={clsx("plus-history__user-status", {
-                    failed: status === "failed",
-                  })}
-                  key={user.id}
-                >
-                  {user.wasSuggested ? (
-                    <span className="plus-history__suggestion-s">S</span>
-                  ) : null}
-                  {discordFullName(user)}
-                </Link>
-              ))}
-            </div>
-          ))}
-        </div>
-      ))}
+    <div>
+      <div className="text-xs text-lighter">S = Suggested user</div>
+      <div className="stack lg">
+        {results.map((tiersResults) => (
+          <div className="stack md" key={tiersResults.tier}>
+            <h3 className="plus-history__tier-header">
+              <span>+{tiersResults.tier}</span>
+            </h3>
+            {(["passed", "failed"] as const).map((status) => (
+              <div key={status} className="plus-history__passed-info-container">
+                <h4 className="plus-history__passed-header">
+                  {status === "passed" ? "Passed" : "Didn't pass"} (
+                  {tiersResults[status].length})
+                </h4>
+                {tiersResults[status].map((user) => (
+                  <Link
+                    to={userPage(user.discordId)}
+                    className={clsx("plus-history__user-status", {
+                      failed: status === "failed",
+                    })}
+                    key={user.id}
+                  >
+                    {user.wasSuggested ? (
+                      <span className="plus-history__suggestion-s">S</span>
+                    ) : null}
+                    {discordFullName(user)}
+                  </Link>
+                ))}
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -133,4 +143,8 @@ function maybeHideScore(
     score: showScore ? roundToTwoDecimalPlaces(score.score) : undefined,
     passedVoting: score.passedVoting,
   };
+}
+
+function shouldShowResults(user?: UserWithPlusTier) {
+  return Boolean(user?.plusTier);
 }

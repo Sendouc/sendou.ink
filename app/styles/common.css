@@ -181,8 +181,16 @@
   font-size: var(--fonts-sm);
 }
 
+.text-xs {
+  font-size: var(--fonts-xs);
+}
+
 .text-center {
   text-align: center;
+}
+
+.text-lighter {
+  color: var(--text-lighter);
 }
 
 .w-full {
