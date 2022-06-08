@@ -13,7 +13,10 @@ import { PLUS_SUGGESTIONS_PAGE } from "~/utils/urls";
 import type { PlusSuggestionsLoaderData } from "../suggestions";
 import * as React from "react";
 import { Label } from "~/components/Label";
-import { PlUS_SUGGESTION_COMMENT_MAX_LENGTH, PLUS_TIERS } from "~/constants";
+import {
+  PlUS_SUGGESTION_FIRST_COMMENT_MAX_LENGTH,
+  PLUS_TIERS,
+} from "~/constants";
 import { UserCombobox } from "~/components/Combobox";
 import type { ActionFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
@@ -32,7 +35,7 @@ import { ErrorMessage } from "~/components/ErrorMessage";
 
 const commentActionSchema = z.object({
   tier: z.preprocess(actualNumber, z.number().min(1).max(3)),
-  text: z.string().min(1).max(PlUS_SUGGESTION_COMMENT_MAX_LENGTH),
+  text: z.string().min(1).max(PlUS_SUGGESTION_FIRST_COMMENT_MAX_LENGTH),
   "user[value]": z.preprocess(actualNumber, z.number().positive()),
 });
 
@@ -186,6 +189,7 @@ function getSelectedUserErrorMessage({
   }
 }
 
+// TODO: better UX - allow going over but prevent submit like Twitter
 export function CommentTextarea() {
   const [value, setValue] = React.useState("");
   return (
@@ -194,7 +198,7 @@ export function CommentTextarea() {
         htmlFor="text"
         valueLimits={{
           current: value.length,
-          max: PlUS_SUGGESTION_COMMENT_MAX_LENGTH,
+          max: PlUS_SUGGESTION_FIRST_COMMENT_MAX_LENGTH,
         }}
       >
         Your comment
@@ -206,7 +210,7 @@ export function CommentTextarea() {
         rows={4}
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        maxLength={PlUS_SUGGESTION_COMMENT_MAX_LENGTH}
+        maxLength={PlUS_SUGGESTION_FIRST_COMMENT_MAX_LENGTH}
         data-cy="comment-textarea"
         required
       />
