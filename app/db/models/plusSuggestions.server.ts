@@ -1,4 +1,5 @@
 import type { MonthYear } from "~/core/plus";
+import { databaseTimestampToDate } from "~/utils/dates";
 import { sql } from "../sql";
 import type { PlusSuggestion, User, UserWithPlusTier } from "../types";
 
@@ -67,7 +68,8 @@ export interface FindVisibleForUserSuggestedUserInfo {
     | "discordDiscriminator"
     | "discordAvatar"
   >;
-  suggestions: (Pick<PlusSuggestion, "id" | "createdAt" | "text"> & {
+  suggestions: (Pick<PlusSuggestion, "id" | "text"> & {
+    createdAtText: string;
     author: Pick<
       User,
       "id" | "discordId" | "discordName" | "discordDiscriminator"
@@ -93,7 +95,15 @@ function mapFindVisibleForUserRowsToResult(rows: any[]): FindVisibleForUser {
 
     const suggestionInfo = {
       id: row.id,
-      createdAt: row.createdAt,
+      createdAtText: databaseTimestampToDate(row.createdAt).toLocaleString(
+        "en-US",
+        {
+          day: "numeric",
+          month: "short",
+          hour: "numeric",
+          minute: "numeric",
+        }
+      ),
       text: row.text,
       author: {
         id: row.authorId,

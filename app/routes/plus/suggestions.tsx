@@ -26,7 +26,6 @@ import {
   canDeleteComment,
 } from "~/permissions";
 import styles from "~/styles/plus.css";
-import { databaseTimestampToDate } from "~/utils/dates";
 import {
   makeTitle,
   parseRequestFormData,
@@ -274,16 +273,7 @@ function SuggestedUser({
                 {suggestion.text}
                 <div className="stack vertical xs items-center">
                   <span className="plus__comment-time">
-                    <time>
-                      {databaseTimestampToDate(
-                        suggestion.createdAt
-                      ).toLocaleString("en-US", {
-                        day: "numeric",
-                        month: "short",
-                        hour: "numeric",
-                        minute: "numeric",
-                      })}
-                    </time>
+                    <time>{suggestion.createdAtText}</time>
                   </span>
                   {canDeleteComment({
                     author: suggestion.author,
