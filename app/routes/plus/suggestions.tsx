@@ -108,17 +108,21 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function PlusSuggestionsPage() {
   const data = useLoaderData<PlusSuggestionsLoaderData>();
   const user = useUser();
+  // TODO: this stays undefined when adding first suggestion
   const [tierVisible, setTierVisible] = React.useState(
     tierVisibleInitialState(data.suggestions)
   );
 
+  useSetSelectedTierForFirstSuggestEffect({ tierVisible, setTierVisible });
+
+  // xxx: looks kinda weird when 0 suggestions
   if (!data.suggestions) {
     return <SuggestedForInfo />;
   }
 
-  invariant(tierVisible);
-  const visibleSuggestions = data.suggestions[tierVisible] ?? [];
+  const visibleSuggestions = tierVisible ? data.suggestions[tierVisible] : [];
 
+  // xxx: looks strange when suggestedforinfo and suggestions both show https://cdn.discordapp.com/attachments/816458257714511872/984195125913731102/unknown.png
   return (
     <>
       <Outlet />
@@ -166,13 +170,16 @@ export default function PlusSuggestionsPage() {
             ) : null}
           </div>
           <div className="stack lg">
-            {visibleSuggestions.map((u) => (
-              <SuggestedUser
-                key={`${u.suggestedUser.id}-${tierVisible}`}
-                suggested={u}
-                tier={tierVisible}
-              />
-            ))}
+            {visibleSuggestions.map((u) => {
+              invariant(tierVisible);
+              return (
+                <SuggestedUser
+                  key={`${u.suggestedUser.id}-${tierVisible}`}
+                  suggested={u}
+                  tier={tierVisible}
+                />
+              );
+            })}
             {visibleSuggestions.length === 0 ? (
               <div className="plus__suggested-info-text text-center">
                 No suggestions yet
@@ -188,8 +195,23 @@ export default function PlusSuggestionsPage() {
 function tierVisibleInitialState(
   suggestions?: plusSuggestions.FindVisibleForUser
 ) {
-  if (!suggestions) return;
+  if (!suggestions || Object.keys(suggestions).length === 0) return;
   return String(Math.min(...Object.keys(suggestions).map(Number)));
+}
+
+function useSetSelectedTierForFirstSuggestEffect({
+  tierVisible,
+  setTierVisible,
+}: {
+  tierVisible?: string;
+  setTierVisible: (tier?: string) => void;
+}) {
+  const data = useLoaderData<PlusSuggestionsLoaderData>();
+  React.useEffect(() => {
+    if (tierVisible) return;
+
+    setTierVisible(tierVisibleInitialState(data.suggestions));
+  }, [data, tierVisible, setTierVisible]);
 }
 
 function SuggestedForInfo() {
