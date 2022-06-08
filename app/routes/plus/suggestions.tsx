@@ -277,7 +277,12 @@ function SuggestedUser({
                     <time>
                       {databaseTimestampToDate(
                         suggestion.createdAt
-                      ).toLocaleString()}
+                      ).toLocaleString("en-US", {
+                        day: "numeric",
+                        month: "short",
+                        hour: "numeric",
+                        minute: "numeric",
+                      })}
                     </time>
                   </span>
                   {canDeleteComment({
