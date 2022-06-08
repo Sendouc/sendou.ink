@@ -1,16 +1,16 @@
-import users from "./users.json";
 import "dotenv/config";
+import { sql } from "~/db/sql";
 import { db } from "../app/db";
 
-const usersWithPlusStatus = users.filter(
-  (user) => user.plusStatus?.membershipTier
-);
+import users from "./users-slim.json";
+import votes from "./votes.json";
 
-for (const user of usersWithPlusStatus) {
+sql.prepare(`delete from "User"`).run();
+for (const user of users) {
   db.users.upsert({
-    discordDiscriminator: user.discriminator,
+    discordDiscriminator: user.discordDiscriminator,
     discordId: user.discordId,
-    discordName: user.username,
+    discordName: user.discordName,
     twitch: null,
     youtubeId: null,
     discordAvatar: user.discordAvatar,
@@ -18,17 +18,9 @@ for (const user of usersWithPlusStatus) {
   });
 }
 
-const votes: any[] = [];
-for (const [i, user] of usersWithPlusStatus.entries()) {
-  votes.push({
-    authorId: 1,
-    month: 5,
-    year: 2022,
-    score: 1,
-    tier: user.plusStatus!.membershipTier,
-    validAfter: new Date(),
-    votedId: i + 1,
-  });
-}
+sql.prepare(`delete from "PlusVote"`).run();
+db.plusVotes.createMany(
+  votes.map((vote) => ({ ...vote, validAfter: new Date(vote.validAfter) }))
+);
 
-db.plusVotes.createMany(votes);
+console.log("done");
