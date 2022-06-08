@@ -120,7 +120,10 @@ export default function PlusSuggestionsPage() {
     return <SuggestedForInfo />;
   }
 
-  const visibleSuggestions = tierVisible ? data.suggestions[tierVisible] : [];
+  const visibleSuggestions =
+    tierVisible && data.suggestions[tierVisible]
+      ? data.suggestions[tierVisible]
+      : [];
 
   // xxx: looks strange when suggestedforinfo and suggestions both show https://cdn.discordapp.com/attachments/816458257714511872/984195125913731102/unknown.png
   return (

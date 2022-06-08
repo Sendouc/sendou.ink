@@ -7,6 +7,7 @@ const dimensions = {
   lg: 125,
 };
 
+// xxx: ugly placeholder when image broken (because of webp?)
 export function Avatar({
   discordId,
   discordAvatar,
