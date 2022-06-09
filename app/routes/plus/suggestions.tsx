@@ -115,7 +115,6 @@ export default function PlusSuggestionsPage() {
 
   useSetSelectedTierForFirstSuggestEffect({ tierVisible, setTierVisible });
 
-  // xxx: looks kinda weird when 0 suggestions
   if (!data.suggestions) {
     return <SuggestedForInfo />;
   }
@@ -126,12 +125,10 @@ export default function PlusSuggestionsPage() {
       : [];
   invariant(visibleSuggestions);
 
-  // xxx: looks strange when suggestedforinfo and suggestions both show https://cdn.discordapp.com/attachments/816458257714511872/984195125913731102/unknown.png
   return (
     <>
       <Outlet />
       <div className="plus__container">
-        <SuggestedForInfo />
         <div className="stack lg">
           <div
             className={clsx("plus__top-container", {
