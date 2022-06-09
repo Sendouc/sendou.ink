@@ -25,6 +25,7 @@ export function Avatar({
     <img
       className={clsx("avatar", className)}
       src={
+        // xxx: picture src offer png fallback
         discordAvatar
           ? `https://cdn.discordapp.com/avatars/${discordId}/${discordAvatar}.webp${
               size === "lg" ? "" : "?size=80"

@@ -13,6 +13,7 @@ import {
   canAddCommentToSuggestionBE,
   canAddCommentToSuggestionFE,
 } from "~/permissions";
+import { atOrError } from "~/utils/arrays";
 import { parseRequestFormData, requireUser, validate } from "~/utils/remix";
 import { PLUS_SUGGESTIONS_PAGE } from "~/utils/urls";
 import { actualNumber } from "~/utils/zod";
@@ -60,7 +61,7 @@ export default function PlusCommentModalPage() {
   const user = useUser();
   const matches = useMatches();
   const params = useParams();
-  const data = matches.at(-2)!.data as PlusSuggestionsLoaderData;
+  const data = atOrError(matches, -2).data as PlusSuggestionsLoaderData;
 
   const targetUserId = Number(params.userId);
   const tierSuggestedTo = String(params.tier);
