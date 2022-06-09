@@ -33,7 +33,7 @@ export function Combobox<T extends Record<string, string | null | number>>({
     if (!query) return [];
 
     const fuse = new Fuse(options, {
-      keys: [...Object.keys(options[0])],
+      keys: [...Object.keys(options[0] ?? {})],
     });
     return fuse
       .search(query)

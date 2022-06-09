@@ -1,5 +1,6 @@
 import type { LinksFunction } from "@remix-run/node";
 import { useMatches } from "@remix-run/react";
+import invariant from "tiny-invariant";
 import { Avatar } from "~/components/Avatar";
 import { SocialLink } from "~/components/u/SocialLink";
 import styles from "~/styles/u.css";
@@ -11,6 +12,7 @@ export const links: LinksFunction = () => {
 
 export default function UserInfoPage() {
   const [, parentRoute] = useMatches();
+  invariant(parentRoute);
   const data = parentRoute.data as UserPageLoaderData;
 
   return (

@@ -29,4 +29,6 @@ export function Label({ valueLimits, children, htmlFor }: LabelProps) {
 function lengthWarning(valueLimits: NonNullable<LabelProps["valueLimits"]>) {
   if (valueLimits.current >= valueLimits.max) return "error";
   if (valueLimits.current / valueLimits.max >= 0.9) return "warning";
+
+  return;
 }

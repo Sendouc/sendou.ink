@@ -28,8 +28,8 @@ export function Popover({
         // @ts-expect-error Popper docs: https://popper.js.org/react-popper/v2/
         ref={setPopperElement}
         className="popover-content"
-        style={styles.popper}
-        {...attributes.popper}
+        style={styles["popper"]}
+        {...attributes["popper"]}
       >
         {children}
       </HeadlessPopover.Panel>

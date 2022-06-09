@@ -63,8 +63,8 @@ export default function PlusCommentModalPage() {
   const params = useParams();
   const data = atOrError(matches, -2).data as PlusSuggestionsLoaderData;
 
-  const targetUserId = Number(params.userId);
-  const tierSuggestedTo = String(params.tier);
+  const targetUserId = Number(params["userId"]);
+  const tierSuggestedTo = String(params["tier"]);
 
   const userBeingCommented = data.suggestions?.[tierSuggestedTo]?.find(
     (u) => u.suggestedUser.id === targetUserId

@@ -1,4 +1,5 @@
 import React from "react";
+import invariant from "tiny-invariant";
 
 export function Dialog({
   children,
@@ -46,6 +47,7 @@ function useDOMSync(isOpen: boolean) {
     if (!dialog.open && !isOpen) return;
 
     const html = document.getElementsByTagName("html")[0];
+    invariant(html);
 
     if (isOpen) {
       dialog.showModal();

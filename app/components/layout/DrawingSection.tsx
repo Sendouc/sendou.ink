@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import randomColor from "randomcolor";
 import { useState } from "react";
+import { atOrError } from "~/utils/arrays";
 
 interface HSL {
   h: number;
@@ -92,13 +93,19 @@ class Color {
 
   multiply(matrix: number[]) {
     const newR = this.clamp(
-      this.r * matrix[0] + this.g * matrix[1] + this.b * matrix[2]
+      this.r * atOrError(matrix, 0) +
+        this.g * atOrError(matrix, 1) +
+        this.b * atOrError(matrix, 2)
     );
     const newG = this.clamp(
-      this.r * matrix[3] + this.g * matrix[4] + this.b * matrix[5]
+      this.r * atOrError(matrix, 3) +
+        this.g * atOrError(matrix, 4) +
+        this.b * atOrError(matrix, 5)
     );
     const newB = this.clamp(
-      this.r * matrix[6] + this.g * matrix[7] + this.b * matrix[8]
+      this.r * atOrError(matrix, 6) +
+        this.g * atOrError(matrix, 7) +
+        this.b * atOrError(matrix, 8)
     );
     this.r = newR;
     this.g = newG;
@@ -240,15 +247,15 @@ class Solver {
       const ck = c / Math.pow(k + 1, gamma);
       for (let i = 0; i < 6; i++) {
         deltas[i] = Math.random() > 0.5 ? 1 : -1;
-        highArgs[i] = values[i] + ck * deltas[i];
-        lowArgs[i] = values[i] - ck * deltas[i];
+        highArgs[i] = atOrError(values, i) + ck * deltas[i];
+        lowArgs[i] = atOrError(values, i) - ck * deltas[i];
       }
 
       const lossDiff = this.loss(highArgs) - this.loss(lowArgs);
       for (let i = 0; i < 6; i++) {
         const g = (lossDiff / (2 * ck)) * deltas[i];
-        const ak = a[i] / Math.pow(A + k + 1, alpha);
-        values[i] = fix(values[i] - ak * g, i);
+        const ak = atOrError(a, i) / Math.pow(A + k + 1, alpha);
+        values[i] = fix(atOrError(values, i) - ak * g, i);
       }
 
       const loss = this.loss(values);
@@ -287,12 +294,12 @@ class Solver {
     const color = this.reusedColor;
     color.set(0, 0, 0);
 
-    color.invert(filters[0] / 100);
-    color.sepia(filters[1] / 100);
-    color.saturate(filters[2] / 100);
-    color.hueRotate(filters[3] * 3.6);
-    color.brightness(filters[4] / 100);
-    color.contrast(filters[5] / 100);
+    color.invert(atOrError(filters, 0) / 100);
+    color.sepia(atOrError(filters, 1) / 100);
+    color.saturate(atOrError(filters, 2) / 100);
+    color.hueRotate(atOrError(filters, 3) * 3.6);
+    color.brightness(atOrError(filters, 4) / 100);
+    color.contrast(atOrError(filters, 5) / 100);
 
     const colorHSL = color.hsl();
     return (
@@ -307,7 +314,7 @@ class Solver {
 
   css(filters: number[]) {
     function fmt(idx: number, multiplier = 1) {
-      return Math.round(filters[idx] * multiplier);
+      return Math.round(atOrError(filters, idx) * multiplier);
     }
     return `invert(${fmt(0)}%) sepia(${fmt(1)}%) saturate(${fmt(
       2
@@ -328,9 +335,9 @@ function hexToRgb(hex: string): RGB {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   if (result) {
     return [
-      parseInt(result[1], 16),
-      parseInt(result[2], 16),
-      parseInt(result[3], 16),
+      parseInt(atOrError(result, 1), 16),
+      parseInt(atOrError(result, 2), 16),
+      parseInt(atOrError(result, 3), 16),
     ];
   }
 
@@ -340,7 +347,11 @@ function hexToRgb(hex: string): RGB {
 function getFilters(hex: string) {
   let rgb = [255, 255, 255];
   rgb = hexToRgb(hex);
-  const color = new Color(rgb[0], rgb[1], rgb[2]);
+  const color = new Color(
+    atOrError(rgb, 0),
+    atOrError(rgb, 1),
+    atOrError(rgb, 2)
+  );
   const solver = new Solver(color);
   const result = solver.solve();
   return result.filter;

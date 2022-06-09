@@ -1,4 +1,5 @@
 import type { MonthYear } from "~/core/plus";
+import { atOrError } from "~/utils/arrays";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { sql } from "../sql";
 import type { PlusSuggestion, User, UserWithPlusTier } from "../types";
@@ -68,7 +69,7 @@ export interface FindVisibleForUserSuggestedUserInfo {
     | "discordDiscriminator"
     | "discordAvatar"
   >;
-  suggestions: (Pick<PlusSuggestion, "id" | "text"> & {
+  suggestions: (Pick<PlusSuggestion, "id" | "text" | "createdAt"> & {
     createdAtText: string;
     author: Pick<
       User,
@@ -91,10 +92,12 @@ export function findVisibleForUser(
 
 function mapFindVisibleForUserRowsToResult(rows: any[]): FindVisibleForUser {
   return rows.reduce((result: FindVisibleForUser, row) => {
-    if (!result[row.tier]) result[row.tier] = [];
+    const usersOfTier = result[row.tier] ?? [];
+    result[row.tier] = usersOfTier;
 
     const suggestionInfo = {
       id: row.id,
+      createdAt: row.createdAt,
       createdAtText: databaseTimestampToDate(row.createdAt).toLocaleString(
         "en-US",
         {
@@ -113,14 +116,14 @@ function mapFindVisibleForUserRowsToResult(rows: any[]): FindVisibleForUser {
       },
     };
 
-    const existingSuggestion = result[row.tier].find(
+    const existingSuggestion = usersOfTier.find(
       (suggestion) => suggestion.suggestedUser.id === row.suggestedId
     );
 
     if (existingSuggestion) {
       existingSuggestion.suggestions.push(suggestionInfo);
     } else {
-      result[row.tier].push({
+      usersOfTier.push({
         suggestedUser: {
           id: row.suggestedId,
           discordId: row.suggestedDiscordId,
@@ -143,7 +146,9 @@ function sortNewestPlayersToBeSuggestedFirst(
     Object.entries(suggestions).map(([tier, suggestions]) => [
       tier,
       suggestions.sort(
-        (a, b) => b.suggestions[0].createdAt - a.suggestions[0].createdAt
+        (a, b) =>
+          atOrError(b.suggestions, 0).createdAt -
+          atOrError(a.suggestions, 0).createdAt
       ),
     ])
   );

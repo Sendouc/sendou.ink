@@ -98,14 +98,13 @@ function groupPlusVotingResults(
   > = {};
 
   for (const row of rows) {
-    if (!grouped[row.tier]) {
-      grouped[row.tier] = {
-        passed: [],
-        failed: [],
-      };
-    }
+    const playersOfTier = grouped[row.tier] ?? {
+      passed: [],
+      failed: [],
+    };
+    grouped[row.tier] = playersOfTier;
 
-    grouped[row.tier][row.passedVoting ? "passed" : "failed"].push({
+    playersOfTier[row.passedVoting ? "passed" : "failed"].push({
       id: row.id,
       discordAvatar: row.discordAvatar,
       discordDiscriminator: row.discordDiscriminator,

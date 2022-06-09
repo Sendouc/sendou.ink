@@ -2,6 +2,7 @@ import type { ActionFunction, LinksFunction } from "@remix-run/node";
 import { Form, useMatches, useTransition } from "@remix-run/react";
 import { countries } from "countries-list";
 import * as React from "react";
+import invariant from "tiny-invariant";
 import { z } from "zod";
 import { Button } from "~/components/Button";
 import { Label } from "~/components/Label";
@@ -47,6 +48,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 export default function UserEditPage() {
   const [, parentRoute] = useMatches();
+  invariant(parentRoute);
   const data = parentRoute.data as UserPageLoaderData;
   const transition = useTransition();
 

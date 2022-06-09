@@ -124,6 +124,7 @@ export default function PlusSuggestionsPage() {
     tierVisible && data.suggestions[tierVisible]
       ? data.suggestions[tierVisible]
       : [];
+  invariant(visibleSuggestions);
 
   // xxx: looks strange when suggestedforinfo and suggestions both show https://cdn.discordapp.com/attachments/816458257714511872/984195125913731102/unknown.png
   return (

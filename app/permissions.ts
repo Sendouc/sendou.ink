@@ -193,7 +193,10 @@ function hasUserSuggestedThisMonth({
 }: Pick<CanSuggestNewUserFEArgs, "user" | "suggestions">) {
   return Object.values(suggestions)
     .flat()
-    .some(({ suggestions }) => suggestions[0].author.id === user?.id);
+    .some(
+      ({ suggestions }) =>
+        suggestions[0] && suggestions[0].author.id === user?.id
+    );
 }
 
 export function canVoteFE() {

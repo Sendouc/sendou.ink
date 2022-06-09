@@ -32,6 +32,7 @@ import { upcomingVoting } from "~/core/plus";
 import { db } from "~/db";
 import type { UserWithPlusTier } from "~/db/types";
 import { ErrorMessage } from "~/components/ErrorMessage";
+import { atOrError } from "~/utils/arrays";
 
 const commentActionSchema = z.object({
   tier: z.preprocess(actualNumber, z.number().min(1).max(3)),
@@ -80,7 +81,7 @@ export const action: ActionFunction = async ({ request }) => {
 export default function PlusNewSuggestionModalPage() {
   const user = useUser();
   const matches = useMatches();
-  const data = matches.at(-2)!.data as PlusSuggestionsLoaderData;
+  const data = atOrError(matches, -2).data as PlusSuggestionsLoaderData;
   const [selectedUser, setSelectedUser] = React.useState<{
     /** User id */
     value: string;
@@ -93,16 +94,17 @@ export default function PlusNewSuggestionModalPage() {
 
     return tier >= user.plusTier;
   });
-  const [targetPlusTier, setTargetPlusTier] = React.useState<number>(
-    tierOptions[0]
-  );
+  const [targetPlusTier, setTargetPlusTier] = React.useState<
+    number | undefined
+  >(tierOptions[0]);
 
   if (
     !data.suggestions ||
     !canSuggestNewUserFE({
       user,
       suggestions: data.suggestions,
-    })
+    }) ||
+    !targetPlusTier
   ) {
     return <Redirect to={PLUS_SUGGESTIONS_PAGE} />;
   }
@@ -187,6 +189,8 @@ function getSelectedUserErrorMessage({
   if (playerAlreadySuggested({ targetPlusTier, suggestions, suggested })) {
     return `This user was already suggested to +${targetPlusTier}`;
   }
+
+  return;
 }
 
 // TODO: better UX - allow going over but prevent submit like Twitter
