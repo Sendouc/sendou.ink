@@ -15,14 +15,14 @@
     "seed:cypress": "cross-env NODE_ENV=test npm run seed",
     "lint:ts": "eslint . --ext .ts,.tsx",
     "lint:styles": "stylelint \"app/styles/**/*.css\"",
-    "lf": "npm run typecheck && npm run lint:styles -- --fix && npm run lint:ts -- --fix && npm run prettier:write",
     "prettier:check": "prettier --check .",
     "prettier:write": "prettier --write .",
     "typecheck": "tsc --noEmit",
     "test:unit": "uvu -r tsm -r tsconfig-paths/register -i cypress",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
-    "checks": "npm run lint:styles && npm run lint:ts && npm run prettier:check && npm run typecheck"
+    "checks": "npm run typecheck && npm run test:unit && npm run lint:styles && npm run lint:ts && npm run prettier:check",
+    "cf": "npm run typecheck && npm run test:unit && npm run lint:styles -- --fix && npm run lint:ts -- --fix && npm run prettier:write"
   },
   "dependencies": {
     "@faker-js/faker": "^7.2.0",
