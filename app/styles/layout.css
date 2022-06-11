@@ -107,15 +107,6 @@
   bottom: 0;
 }
 
-.layout__mobile-nav__top-action {
-  display: grid;
-  padding-top: var(--s-12);
-  padding-bottom: var(--s-8);
-  background-color: var(--bg);
-  gap: var(--s-4);
-  place-items: center;
-}
-
 .layout__mobile-nav__link__icon {
   width: 2rem;
   height: 2rem;
@@ -130,6 +121,7 @@
   justify-content: center;
   grid-auto-columns: 1fr;
   grid-auto-rows: 4rem;
+  padding-block-start: 4.5rem;
 }
 
 .layout__mobile-nav__group-title {

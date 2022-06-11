@@ -15,9 +15,6 @@ export function MobileMenu({
 
   return (
     <div className={clsx("layout__mobile-nav", { expanded })}>
-      <div className="layout__mobile-nav__top-action">
-        {/* <SearchInput /> */}
-      </div>
       <div className="layout__mobile-nav__links">
         {navItemsGrouped(Boolean(user?.plusTier)).map((navGroup) => (
           <Fragment key={navGroup.title}>
