@@ -1,7 +1,8 @@
 import clsx from "clsx";
 import { Fragment } from "react";
 import { Link } from "@remix-run/react";
-import { navItemsGrouped } from "~/constants";
+import { useUser } from "~/hooks/useUser";
+import { navItemsGrouped } from "./Menu";
 
 export function MobileMenu({
   expanded,
@@ -10,13 +11,15 @@ export function MobileMenu({
   expanded: boolean;
   closeMenu: () => void;
 }) {
+  const user = useUser();
+
   return (
     <div className={clsx("layout__mobile-nav", { expanded })}>
       <div className="layout__mobile-nav__top-action">
         {/* <SearchInput /> */}
       </div>
       <div className="layout__mobile-nav__links">
-        {navItemsGrouped.map((navGroup) => (
+        {navItemsGrouped(Boolean(user?.plusTier)).map((navGroup) => (
           <Fragment key={navGroup.title}>
             <div className="layout__mobile-nav__group-title">
               {navGroup.title}

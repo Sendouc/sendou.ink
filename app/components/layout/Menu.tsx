@@ -7,7 +7,6 @@ import { PatreonIcon } from "../icons/Patreon";
 import { TwitterIcon } from "../icons/Twitter";
 import DrawingSection from "./DrawingSection";
 import * as React from "react";
-import { navItemsGrouped } from "~/constants";
 import { useOnClickOutside } from "~/hooks/useOnClickOutside";
 import {
   SENDOU_INK_DISCORD_URL,
@@ -16,8 +15,10 @@ import {
   SENDOU_INK_TWITTER_URL,
 } from "~/utils/urls";
 import { layoutIcon } from "~/utils/images";
+import { useUser } from "~/hooks/useUser";
 
 export function Menu({ close }: { close: () => void }) {
+  const user = useUser();
   const ref = React.useRef(null);
   useOnClickOutside(ref, close);
 
@@ -40,7 +41,7 @@ export function Menu({ close }: { close: () => void }) {
           </Button>
         </div>
         <nav className="menu__nav">
-          {navItemsGrouped
+          {navItemsGrouped(Boolean(user?.plusTier))
             .flatMap((group) => group.items)
             .map((navItem) => (
               <Link
@@ -78,4 +79,63 @@ export function Menu({ close }: { close: () => void }) {
       </div>
     </div>
   );
+}
+
+export function navItemsGrouped(isPlusMember: boolean): {
+  title: string;
+  items: {
+    name: string;
+    disabled: boolean;
+    displayName?: string;
+    url?: string;
+  }[];
+}[] {
+  return [
+    {
+      title: "builds",
+      items: [
+        { name: "builds", disabled: true },
+        { name: "gear", disabled: true },
+        { name: "analyzer", disabled: true },
+      ],
+    },
+    {
+      title: "play",
+      items: [
+        { name: "calendar", disabled: true },
+        {
+          name: "sendouq",
+          disabled: false,
+          displayName: "SendouQ",
+          url: "play",
+        },
+        { name: "leaderboards", disabled: false },
+      ],
+    },
+    {
+      title: "tools",
+      items: [
+        { name: "planner", disabled: true },
+        { name: "rotations", disabled: true },
+        { name: "top 500", disabled: true },
+      ],
+    },
+    {
+      title: "misc",
+      items: [
+        { name: "badges", disabled: true },
+        { name: "links", disabled: true },
+        ...(isPlusMember
+          ? [
+              {
+                name: "plus",
+                displayName: "Plus Server",
+                url: "plus/suggestions",
+                disabled: false,
+              },
+            ]
+          : []),
+      ],
+    },
+  ];
 }

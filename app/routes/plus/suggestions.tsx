@@ -253,6 +253,7 @@ function SuggestedUser({
 
   invariant(data.suggestions);
 
+  // xxx: name should link to user page
   return (
     <div className="stack md">
       <div className="plus__suggested-user-info">
