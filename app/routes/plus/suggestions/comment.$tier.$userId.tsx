@@ -8,8 +8,7 @@ import { Redirect } from "~/components/Redirect";
 import { PlUS_SUGGESTION_COMMENT_MAX_LENGTH } from "~/constants";
 import { upcomingVoting } from "~/core/plus";
 import { db } from "~/db";
-import { useUser } from "~/hooks/useUser";
-import { requireUser } from "~/modules/auth";
+import { requireUser, useUser } from "~/modules/auth";
 import {
   canAddCommentToSuggestionBE,
   canAddCommentToSuggestionFE,

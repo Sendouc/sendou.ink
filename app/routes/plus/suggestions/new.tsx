@@ -2,7 +2,6 @@ import { Form, useMatches } from "@remix-run/react";
 import { Button, LinkButton } from "~/components/Button";
 import { Dialog } from "~/components/Dialog";
 import { Redirect } from "~/components/Redirect";
-import { useUser } from "~/hooks/useUser";
 import {
   canSuggestNewUserFE,
   canSuggestNewUserBE,
@@ -32,7 +31,7 @@ import { db } from "~/db";
 import type { UserWithPlusTier } from "~/db/types";
 import { ErrorMessage } from "~/components/ErrorMessage";
 import { atOrError } from "~/utils/arrays";
-import { requireUser } from "~/modules/auth";
+import { requireUser, useUser } from "~/modules/auth";
 
 const commentActionSchema = z.object({
   tier: z.preprocess(actualNumber, z.number().min(1).max(3)),

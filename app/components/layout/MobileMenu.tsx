@@ -1,8 +1,8 @@
 import clsx from "clsx";
 import { Fragment } from "react";
 import { Link } from "@remix-run/react";
-import { useUser } from "~/hooks/useUser";
 import { navItemsGrouped } from "./Menu";
+import { useUser } from "~/modules/auth";
 
 export function MobileMenu({
   expanded,

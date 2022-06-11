@@ -15,7 +15,7 @@ import {
   SENDOU_INK_TWITTER_URL,
 } from "~/utils/urls";
 import { layoutIcon } from "~/utils/images";
-import { useUser } from "~/hooks/useUser";
+import { useUser } from "~/modules/auth";
 
 export function Menu({ close }: { close: () => void }) {
   const user = useUser();

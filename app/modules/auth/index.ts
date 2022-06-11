@@ -6,3 +6,5 @@ export {
 } from "./routes.server";
 
 export { getUser, requireUser } from "./user.server";
+
+export { useUser } from "./user";

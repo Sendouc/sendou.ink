@@ -1,6 +1,6 @@
 import { useCatch } from "@remix-run/react";
 import { Button } from "~/components/Button";
-import { useUser } from "~/hooks/useUser";
+import { useUser } from "~/modules/auth";
 import { LOG_IN_URL, SENDOU_INK_DISCORD_URL } from "~/utils/urls";
 
 export function Catcher() {

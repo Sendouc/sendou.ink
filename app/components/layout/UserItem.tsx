@@ -1,5 +1,5 @@
 import { Link } from "@remix-run/react";
-import { useUser } from "~/hooks/useUser";
+import { useUser } from "~/modules/auth";
 import { LOG_IN_URL, LOG_OUT_URL, userPage } from "~/utils/urls";
 import { Avatar } from "../Avatar";
 import { Button } from "../Button";

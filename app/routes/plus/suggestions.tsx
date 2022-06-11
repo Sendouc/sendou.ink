@@ -19,8 +19,7 @@ import { upcomingVoting } from "~/core/plus";
 import { db } from "~/db";
 import type * as plusSuggestions from "~/db/models/plusSuggestions.server";
 import type { PlusSuggestion } from "~/db/types";
-import { useUser } from "~/hooks/useUser";
-import { requireUser } from "~/modules/auth";
+import { requireUser, useUser } from "~/modules/auth";
 import {
   canAddCommentToSuggestionFE,
   canSuggestNewUserFE,

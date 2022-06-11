@@ -7,7 +7,7 @@ import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { db } from "~/db";
 import type { User } from "~/db/types";
-import { useUser } from "~/hooks/useUser";
+import { useUser } from "~/modules/auth";
 import { makeTitle, notFoundIfFalsy } from "~/utils/remix";
 import { discordFullName } from "~/utils/strings";
 
