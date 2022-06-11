@@ -5,7 +5,7 @@ import type {
   MetaFunction,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Outlet, useLoaderData } from "@remix-run/react";
+import { Link, Outlet, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
 import invariant from "tiny-invariant";
@@ -29,6 +29,7 @@ import styles from "~/styles/plus.css";
 import { makeTitle, parseRequestFormData, validate } from "~/utils/remix";
 import { discordFullName } from "~/utils/strings";
 import { actualNumber } from "~/utils/zod";
+import { userPage } from "~/utils/urls";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -248,7 +249,7 @@ function SuggestedUser({
 
   invariant(data.suggestions);
 
-  // xxx: name should link to user page
+  // xxx: should comment/new modal links preload? does it cause many preloads if we do?
   return (
     <div className="stack md">
       <div className="plus__suggested-user-info">
@@ -257,7 +258,14 @@ function SuggestedUser({
           discordId={suggested.suggestedUser.discordId}
           size="md"
         />
-        <h2>{suggested.suggestedUser.discordName}</h2>
+        <h2>
+          <Link
+            className="all-unset"
+            to={userPage(suggested.suggestedUser.discordId)}
+          >
+            {suggested.suggestedUser.discordName}
+          </Link>
+        </h2>
         {canAddCommentToSuggestionFE({
           user,
           suggestions: data.suggestions,

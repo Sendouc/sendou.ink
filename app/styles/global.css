@@ -157,6 +157,7 @@ a {
   border: none;
   background-color: transparent;
   color: var(--theme);
+  outline: initial;
 }
 
 :is(button, .button).minimal-success {
