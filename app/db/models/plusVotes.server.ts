@@ -1,7 +1,18 @@
-import type { MonthYear } from "~/modules/plus-server";
+import shuffle from "just-shuffle";
+import invariant from "tiny-invariant";
+import type { MonthYear} from "~/modules/plus-server";
+import { upcomingVoting } from "~/modules/plus-server";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
+import type { Unpacked } from "~/utils/types";
+import { db } from "..";
 import { sql } from "../sql";
-import type { PlusVote, PlusVotingResult, User } from "../types";
+import type {
+  PlusVote,
+  PlusVotingResult,
+  User,
+  UserWithPlusTier,
+} from "../types";
+import type { FindVisibleForUserSuggestedUserInfo } from "./plusSuggestions.server";
 
 const createStm = sql.prepare(`
   INSERT INTO 
@@ -143,4 +154,81 @@ function ownScoresFromPlusVotingResults(
   }
 
   return result.sort((a, b) => a.tier - b.tier);
+}
+
+const plusServerMembersStm = sql.prepare(`
+  SELECT 
+    "User"."id",
+    "User"."discordId",
+    "User"."discordName",
+    "User"."discordDiscriminator",
+    "User"."discordAvatar",
+    "User"."bio"
+  FROM "User"
+  JOIN "PlusTier" ON "User"."id" = "PlusTier"."userId"
+  WHERE "PlusTier"."tier" = $plusTier
+`);
+
+export type UsersForVoting = {
+  user: Pick<
+    User,
+    | "id"
+    | "discordId"
+    | "discordName"
+    | "discordDiscriminator"
+    | "discordAvatar"
+    | "bio"
+  >;
+  suggestions?: FindVisibleForUserSuggestedUserInfo["suggestions"];
+}[];
+
+export function usersForVoting(
+  loggedInUser?: Pick<UserWithPlusTier, "id" | "plusTier">
+) {
+  if (!loggedInUser || !loggedInUser.plusTier) return;
+
+  const { month, year } = upcomingVoting(new Date());
+  const members = plusServerMembersStm.all({
+    plusTier: loggedInUser.plusTier,
+  }) as Unpacked<UsersForVoting>["user"][];
+
+  const allSuggestedTiers = db.plusSuggestions.findVisibleForUser({
+    plusTier: loggedInUser.plusTier,
+    month,
+    year,
+    includeBio: true,
+  });
+  invariant(allSuggestedTiers);
+  const suggestedUsers = allSuggestedTiers[loggedInUser.plusTier] ?? [];
+
+  const result: UsersForVoting = [];
+
+  for (const member of members) {
+    result.push({
+      user: {
+        id: member.id,
+        discordId: member.discordId,
+        discordName: member.discordName,
+        discordDiscriminator: member.discordDiscriminator,
+        discordAvatar: member.discordAvatar,
+        bio: member.bio,
+      },
+    });
+  }
+
+  for (const { suggestedUser, suggestions } of suggestedUsers) {
+    result.push({
+      user: {
+        id: suggestedUser.id,
+        discordId: suggestedUser.discordId,
+        discordName: suggestedUser.discordName,
+        discordDiscriminator: suggestedUser.discordDiscriminator,
+        discordAvatar: suggestedUser.discordAvatar,
+        bio: suggestedUser.bio,
+      },
+      suggestions,
+    });
+  }
+
+  return shuffle(result.filter(({ user }) => user.id !== loggedInUser.id));
 }

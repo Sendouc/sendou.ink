@@ -48,7 +48,8 @@ const findVisibleForUserStm = sql.prepare(`
     suggested."discordId" as "suggestedDiscordId",
     suggested."discordName" as "suggestedDiscordName",
     suggested."discordDiscriminator" as "suggestedDiscordDiscriminator",
-    suggested."discordAvatar" as "suggestedDiscordAvatar"
+    suggested."discordAvatar" as "suggestedDiscordAvatar",
+    suggested."bio" as "suggestedBio"
       FROM "PlusSuggestion" as suggestion
   JOIN "User" AS author ON suggestion."authorId" = author."id"
   JOIN "User" AS suggested ON suggestion."suggestedId" = suggested."id"
@@ -68,6 +69,7 @@ export interface FindVisibleForUserSuggestedUserInfo {
     | "discordName"
     | "discordDiscriminator"
     | "discordAvatar"
+    | "bio"
   >;
   suggestions: (Pick<PlusSuggestion, "id" | "text" | "createdAt"> & {
     createdAtText: string;
@@ -82,7 +84,8 @@ export interface FindVisibleForUser {
 }
 
 export function findVisibleForUser(
-  args: MonthYear & Pick<UserWithPlusTier, "plusTier">
+  args: MonthYear &
+    Pick<UserWithPlusTier, "plusTier"> & { includeBio?: boolean }
 ): FindVisibleForUser | undefined {
   if (!args.plusTier) return;
   return sortNewestPlayersToBeSuggestedFirst(
@@ -90,7 +93,10 @@ export function findVisibleForUser(
   );
 }
 
-function mapFindVisibleForUserRowsToResult(rows: any[]): FindVisibleForUser {
+function mapFindVisibleForUserRowsToResult(
+  rows: any[],
+  includeBio?: boolean
+): FindVisibleForUser {
   return rows.reduce((result: FindVisibleForUser, row) => {
     const usersOfTier = result[row.tier] ?? [];
     result[row.tier] = usersOfTier;
@@ -130,6 +136,7 @@ function mapFindVisibleForUserRowsToResult(rows: any[]): FindVisibleForUser {
           discordName: row.suggestedDiscordName,
           discordDiscriminator: row.suggestedDiscriminator,
           discordAvatar: row.suggestedDiscordAvatar,
+          bio: includeBio ? row.suggestedBio : null,
         },
         suggestions: [suggestionInfo],
       });

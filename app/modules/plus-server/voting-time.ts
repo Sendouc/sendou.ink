@@ -19,6 +19,7 @@ export function lastCompletedVoting(now: Date): MonthYear {
   });
 }
 
+// xxx: rename... nextNonCompletedVoting ?
 export function upcomingVoting(now: Date): MonthYear {
   return nextMonth(lastCompletedVoting(now));
 }

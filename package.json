@@ -35,6 +35,7 @@
     "clsx": "^1.1.1",
     "countries-list": "^2.6.1",
     "fuse.js": "^6.6.2",
+    "just-shuffle": "^4.0.1",
     "randomcolor": "^0.6.2",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
