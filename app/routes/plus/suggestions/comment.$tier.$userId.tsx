@@ -9,12 +9,13 @@ import { PlUS_SUGGESTION_COMMENT_MAX_LENGTH } from "~/constants";
 import { upcomingVoting } from "~/core/plus";
 import { db } from "~/db";
 import { useUser } from "~/hooks/useUser";
+import { requireUser } from "~/modules/auth";
 import {
   canAddCommentToSuggestionBE,
   canAddCommentToSuggestionFE,
 } from "~/permissions";
 import { atOrError } from "~/utils/arrays";
-import { parseRequestFormData, requireUser, validate } from "~/utils/remix";
+import { parseRequestFormData, validate } from "~/utils/remix";
 import { PLUS_SUGGESTIONS_PAGE } from "~/utils/urls";
 import { actualNumber } from "~/utils/zod";
 import type { PlusSuggestionsLoaderData } from "../suggestions";

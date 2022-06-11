@@ -9,8 +9,9 @@ import { Label } from "~/components/Label";
 import { USER_BIO_MAX_LENGTH } from "~/constants";
 import { db } from "~/db";
 import type { User } from "~/db/types";
+import { requireUser } from "~/modules/auth";
 import styles from "~/styles/u-edit.css";
-import { parseRequestFormData, requireUser } from "~/utils/remix";
+import { parseRequestFormData } from "~/utils/remix";
 import { falsyToNull } from "~/utils/zod";
 import type { UserPageLoaderData } from "../u.$identifier";
 

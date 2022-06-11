@@ -20,18 +20,14 @@ import { db } from "~/db";
 import type * as plusSuggestions from "~/db/models/plusSuggestions.server";
 import type { PlusSuggestion } from "~/db/types";
 import { useUser } from "~/hooks/useUser";
+import { requireUser } from "~/modules/auth";
 import {
   canAddCommentToSuggestionFE,
   canSuggestNewUserFE,
   canDeleteComment,
 } from "~/permissions";
 import styles from "~/styles/plus.css";
-import {
-  makeTitle,
-  parseRequestFormData,
-  requireUser,
-  validate,
-} from "~/utils/remix";
+import { makeTitle, parseRequestFormData, validate } from "~/utils/remix";
 import { discordFullName } from "~/utils/strings";
 import { actualNumber } from "~/utils/zod";
 

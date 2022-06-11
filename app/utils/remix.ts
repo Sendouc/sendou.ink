@@ -1,10 +1,4 @@
 import { z } from "zod";
-import {
-  IMPERSONATED_SESSION_KEY,
-  SESSION_KEY,
-} from "~/core/auth/authenticator.server";
-import { sessionStorage } from "~/core/auth/session.server";
-import { db } from "~/db";
 
 export function notFoundIfFalsy<T>(value: T | null | undefined): T {
   if (!value) throw new Response(null, { status: 404 });
@@ -42,27 +36,6 @@ export async function parseRequestFormData<T extends z.ZodTypeAny>({
 
     throw e;
   }
-}
-
-export async function requireUser(request: Request) {
-  const user = await getUser(request);
-
-  if (!user) throw new Response(null, { status: 401 });
-
-  return user;
-}
-
-export async function getUser(request: Request) {
-  const session = await sessionStorage.getSession(
-    request.headers.get("Cookie")
-  );
-
-  const userId =
-    session.get(IMPERSONATED_SESSION_KEY) ?? session.get(SESSION_KEY);
-
-  if (!userId) return;
-
-  return db.users.findByIdentifier(userId);
 }
 
 /** Asserts condition is truthy. Throws a new `Response` with status code 400 and given message if falsy.  */

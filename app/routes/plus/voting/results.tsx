@@ -10,12 +10,13 @@ import { db } from "~/db";
 import type { PlusVotingResultByMonthYear } from "~/db/models/plusVotes.server";
 import type { PlusVotingResult, UserWithPlusTier } from "~/db/types";
 import { roundToTwoDecimalPlaces } from "~/utils/number";
-import { getUser, makeTitle } from "~/utils/remix";
+import { makeTitle } from "~/utils/remix";
 import type { Unpacked } from "~/utils/types";
 import styles from "~/styles/plus-history.css";
 import { discordFullName } from "~/utils/strings";
 import { userPage } from "~/utils/urls";
 import clsx from "clsx";
+import { getUser } from "~/modules/auth";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];

@@ -25,7 +25,6 @@ import { actualNumber } from "~/utils/zod";
 import {
   badRequestIfFalsy,
   parseRequestFormData,
-  requireUser,
   validate,
 } from "~/utils/remix";
 import { upcomingVoting } from "~/core/plus";
@@ -33,6 +32,7 @@ import { db } from "~/db";
 import type { UserWithPlusTier } from "~/db/types";
 import { ErrorMessage } from "~/components/ErrorMessage";
 import { atOrError } from "~/utils/arrays";
+import { requireUser } from "~/modules/auth";
 
 const commentActionSchema = z.object({
   tier: z.preprocess(actualNumber, z.number().min(1).max(3)),

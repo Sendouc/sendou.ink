@@ -20,7 +20,7 @@ import layoutStyles from "~/styles/layout.css";
 import resetStyles from "~/styles/reset.css";
 import { Layout } from "./components/layout";
 import type { UserWithPlusTier } from "./db/types";
-import { getUser } from "./utils/remix";
+import { getUser } from "./modules/auth";
 
 export const unstable_shouldReload: ShouldReloadFunction = () => false;
 
