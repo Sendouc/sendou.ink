@@ -161,7 +161,11 @@ export default function PlusSuggestionsPage() {
             </div>
             {canSuggestNewUserFE({ user, suggestions: data.suggestions }) ? (
               // TODO: resetScroll={false} https://twitter.com/ryanflorence/status/1527775882797907969
-              <LinkButton to="new" data-cy="new-suggest-button">
+              <LinkButton
+                to="new"
+                data-cy="new-suggest-button"
+                prefetch="render"
+              >
                 Suggest
               </LinkButton>
             ) : null}
@@ -249,7 +253,6 @@ function SuggestedUser({
 
   invariant(data.suggestions);
 
-  // xxx: should comment/new modal links preload? does it cause many preloads if we do?
   return (
     <div className="stack md">
       <div className="plus__suggested-user-info">
@@ -279,6 +282,7 @@ function SuggestedUser({
             variant="outlined"
             to={`comment/${tier}/${suggested.suggestedUser.id}`}
             data-cy="comment-button"
+            prefetch="render"
           >
             Comment
           </LinkButton>
