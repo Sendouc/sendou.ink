@@ -30,6 +30,8 @@ import { makeTitle, parseRequestFormData, validate } from "~/utils/remix";
 import { discordFullName } from "~/utils/strings";
 import { actualNumber } from "~/utils/zod";
 import { userPage } from "~/utils/urls";
+import { RelativeTime } from "~/components/RelativeTime";
+import { databaseTimestampToDate } from "~/utils/dates";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -304,7 +306,13 @@ function SuggestedUser({
                 {suggestion.text}
                 <div className="stack vertical xs items-center">
                   <span className="plus__comment-time">
-                    <time>{suggestion.createdAtText}</time>
+                    <RelativeTime
+                      timestamp={databaseTimestampToDate(
+                        suggestion.createdAt
+                      ).getTime()}
+                    >
+                      {suggestion.createdAtRelative}
+                    </RelativeTime>
                   </span>
                   {canDeleteComment({
                     author: suggestion.author,

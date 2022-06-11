@@ -1,3 +1,4 @@
+import { formatDistance } from "date-fns";
 import type { MonthYear } from "~/modules/plus-server";
 import { atOrError } from "~/utils/arrays";
 import { databaseTimestampToDate } from "~/utils/dates";
@@ -72,7 +73,7 @@ export interface FindVisibleForUserSuggestedUserInfo {
     | "bio"
   >;
   suggestions: (Pick<PlusSuggestion, "id" | "text" | "createdAt"> & {
-    createdAtText: string;
+    createdAtRelative: string;
     author: Pick<
       User,
       "id" | "discordId" | "discordName" | "discordDiscriminator"
@@ -104,14 +105,10 @@ function mapFindVisibleForUserRowsToResult(
     const suggestionInfo = {
       id: row.id,
       createdAt: row.createdAt,
-      createdAtText: databaseTimestampToDate(row.createdAt).toLocaleString(
-        "en-US",
-        {
-          day: "numeric",
-          month: "short",
-          hour: "numeric",
-          minute: "numeric",
-        }
+      createdAtRelative: formatDistance(
+        databaseTimestampToDate(row.createdAt),
+        new Date(),
+        { addSuffix: true }
       ),
       text: row.text,
       author: {
