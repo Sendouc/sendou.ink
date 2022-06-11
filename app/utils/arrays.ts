@@ -1,4 +1,6 @@
-// xxx: should instead take array of functions to improve efficiency (not run them all if not necessary)
+// TODO: when more examples of permissions profile difference between
+// this implementation and one that takes arrays
+// (not all arrays need to necessarily run but they need to be defined)
 export function allTruthy(arr: unknown[]) {
   return arr.every(Boolean);
 }
