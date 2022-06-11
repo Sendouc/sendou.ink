@@ -1,4 +1,4 @@
-import { monthsVotingRange, upcomingVoting } from "~/core/plus";
+import { monthsVotingRange, upcomingVoting } from "~/modules/plus-server";
 
 export default function PlusVotingPage() {
   return (

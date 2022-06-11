@@ -1,5 +1,5 @@
 import type * as plusSuggestions from "~/db/models/plusSuggestions.server";
-import { monthsVotingRange } from "./core/plus";
+import { monthsVotingRange } from "./modules/plus-server";
 import type { PlusSuggestion, User, UserWithPlusTier } from "./db/types";
 import { allTruthy } from "./utils/arrays";
 

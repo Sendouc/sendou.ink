@@ -26,7 +26,7 @@ import {
   parseRequestFormData,
   validate,
 } from "~/utils/remix";
-import { upcomingVoting } from "~/core/plus";
+import { upcomingVoting } from "~/modules/plus-server";
 import { db } from "~/db";
 import type { UserWithPlusTier } from "~/db/types";
 import { ErrorMessage } from "~/components/ErrorMessage";

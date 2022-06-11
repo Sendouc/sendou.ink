@@ -1,4 +1,4 @@
-import type { MonthYear } from "~/core/plus";
+import type { MonthYear } from "~/modules/plus-server";
 import { atOrError } from "~/utils/arrays";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { sql } from "../sql";

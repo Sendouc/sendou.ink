@@ -1,7 +1,4 @@
-export interface MonthYear {
-  month: number;
-  year: number;
-}
+import type { MonthYear } from "./types";
 
 export function lastCompletedVoting(now: Date): MonthYear {
   const thisMonthsRange = monthsVotingRange({

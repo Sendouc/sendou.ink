@@ -1,6 +1,6 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
-import { lastCompletedVoting } from "./plus";
+import { lastCompletedVoting } from "./voting-time";
 
 const LastCompletedVoting = suite("lastCompletedVoting()");
 

@@ -6,7 +6,7 @@ import { Button, LinkButton } from "~/components/Button";
 import { Dialog } from "~/components/Dialog";
 import { Redirect } from "~/components/Redirect";
 import { PlUS_SUGGESTION_COMMENT_MAX_LENGTH } from "~/constants";
-import { upcomingVoting } from "~/core/plus";
+import { upcomingVoting } from "~/modules/plus-server";
 import { db } from "~/db";
 import { requireUser, useUser } from "~/modules/auth";
 import {

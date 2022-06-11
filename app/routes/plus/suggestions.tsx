@@ -15,7 +15,7 @@ import { Button, LinkButton } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { TrashIcon } from "~/components/icons/Trash";
-import { upcomingVoting } from "~/core/plus";
+import { upcomingVoting } from "~/modules/plus-server";
 import { db } from "~/db";
 import type * as plusSuggestions from "~/db/models/plusSuggestions.server";
 import type { PlusSuggestion } from "~/db/types";

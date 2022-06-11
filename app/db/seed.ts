@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import invariant from "tiny-invariant";
-import { lastCompletedVoting, upcomingVoting } from "~/core/plus";
+import { lastCompletedVoting, upcomingVoting } from "~/modules/plus-server";
 import { db } from "~/db";
 import { sql } from "~/db/sql";
 import type { CreateManyPlusVotesArgs } from "./models/plusVotes.server";

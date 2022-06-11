@@ -5,7 +5,7 @@ import type {
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
-import { lastCompletedVoting } from "~/core/plus";
+import { lastCompletedVoting } from "~/modules/plus-server";
 import { db } from "~/db";
 import type { PlusVotingResultByMonthYear } from "~/db/models/plusVotes.server";
 import type { PlusVotingResult, UserWithPlusTier } from "~/db/types";
