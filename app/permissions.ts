@@ -164,7 +164,7 @@ export function canSuggestNewUserBE({
   ]);
 }
 
-function isVotingActive() {
+export function isVotingActive() {
   const now = new Date();
   const { endDate, startDate } = monthsVotingRange({
     month: now.getMonth(),

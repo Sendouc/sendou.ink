@@ -1,6 +1,6 @@
 import shuffle from "just-shuffle";
 import invariant from "tiny-invariant";
-import type { MonthYear} from "~/modules/plus-server";
+import type { MonthYear } from "~/modules/plus-server";
 import { upcomingVoting } from "~/modules/plus-server";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import type { Unpacked } from "~/utils/types";

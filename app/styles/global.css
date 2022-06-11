@@ -334,6 +334,14 @@ hr {
   border-color: var(--theme-transparent);
 }
 
+abbr:not([title]) {
+  text-decoration: none;
+}
+
+abbr[title] {
+  cursor: help;
+}
+
 dialog {
   border: 0;
   margin: auto;
