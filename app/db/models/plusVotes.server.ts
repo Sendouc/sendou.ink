@@ -1,7 +1,7 @@
 import shuffle from "just-shuffle";
 import invariant from "tiny-invariant";
 import type { MonthYear } from "~/modules/plus-server";
-import { upcomingVoting } from "~/modules/plus-server";
+import { nextNonCompletedVoting } from "~/modules/plus-server";
 import { atOrError } from "~/utils/arrays";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import type { Unpacked } from "~/utils/types";
@@ -204,7 +204,7 @@ export function usersForVoting(
 ) {
   if (!loggedInUser || !loggedInUser.plusTier) return;
 
-  const { month, year } = upcomingVoting(new Date());
+  const { month, year } = nextNonCompletedVoting(new Date());
   const members = plusServerMembersStm.all({
     plusTier: loggedInUser.plusTier,
   }) as Unpacked<UsersForVoting>["user"][];

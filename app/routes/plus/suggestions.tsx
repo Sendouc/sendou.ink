@@ -14,7 +14,7 @@ import { Button, LinkButton } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { TrashIcon } from "~/components/icons/Trash";
-import { upcomingVoting } from "~/modules/plus-server";
+import { nextNonCompletedVoting } from "~/modules/plus-server";
 import { db } from "~/db";
 import type * as plusSuggestions from "~/db/models/plusSuggestions.server";
 import type { PlusSuggestion, User } from "~/db/types";
@@ -50,7 +50,7 @@ export const action: ActionFunction = async ({ request }) => {
   const user = await requireUser(request);
 
   const suggestions = db.plusSuggestions.findVisibleForUser({
-    ...upcomingVoting(new Date()),
+    ...nextNonCompletedVoting(new Date()),
     plusTier: user.plusTier,
   });
 
@@ -87,11 +87,11 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   return json<PlusSuggestionsLoaderData>({
     suggestions: db.plusSuggestions.findVisibleForUser({
-      ...upcomingVoting(new Date()),
+      ...nextNonCompletedVoting(new Date()),
       plusTier: user.plusTier,
     }),
     suggestedForTiers: db.plusSuggestions.tiersSuggestedFor({
-      ...upcomingVoting(new Date()),
+      ...nextNonCompletedVoting(new Date()),
       userId: user.id,
     }),
   });

@@ -14,7 +14,7 @@ import { getUser, requireUser } from "~/modules/auth";
 import type { PlusVoteFromFE } from "~/modules/plus-server";
 import {
   monthsVotingRange,
-  upcomingVoting,
+  nextNonCompletedVoting,
   usePlusVoting,
 } from "~/modules/plus-server";
 import { isVotingActive } from "~/permissions";
@@ -54,7 +54,7 @@ export const action: ActionFunction = async ({ request }) => {
     score: PLUS_UPVOTE,
   });
 
-  const { month, year } = upcomingVoting(new Date());
+  const { month, year } = nextNonCompletedVoting(new Date());
   const { endDate } = monthsVotingRange({ month, year });
   db.plusVotes.upsertMany(
     votesForDb.map((vote) => ({
@@ -113,7 +113,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   const user = await getUser(request);
 
   const now = new Date();
-  const { startDate, endDate } = monthsVotingRange(upcomingVoting(now));
+  const { startDate, endDate } = monthsVotingRange(nextNonCompletedVoting(now));
   if (!isVotingActive()) {
     return json<PlusVotingLoaderData>({
       type: "timeInfo",

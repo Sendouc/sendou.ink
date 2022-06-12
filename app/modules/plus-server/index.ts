@@ -1,6 +1,6 @@
 export {
   lastCompletedVoting,
-  upcomingVoting,
+  nextNonCompletedVoting,
   monthsVotingRange,
 } from "./voting-time";
 

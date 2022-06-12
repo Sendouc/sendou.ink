@@ -4,7 +4,7 @@ import { PLUS_DOWNVOTE, PLUS_UPVOTE } from "~/constants";
 import type { UsersForVoting } from "~/db/models/plusVotes.server";
 import type { User } from "~/db/types";
 import type { PlusVoteFromFE } from "./types";
-import { upcomingVoting } from "./voting-time";
+import { nextNonCompletedVoting } from "./voting-time";
 
 const LOCAL_STORAGE_KEY = "plusVoting";
 
@@ -84,7 +84,7 @@ function useLoadInitialStateFromLocalStorageEffect({
   >;
   setVotes: React.Dispatch<React.SetStateAction<PlusVoteFromFE[]>>;
 }) {
-  const { month, year } = upcomingVoting(new Date());
+  const { month, year } = nextNonCompletedVoting(new Date());
 
   React.useEffect(() => {
     const usersForVotingFromLocalStorage =
@@ -181,7 +181,7 @@ function votesToLocalStorage({
   usersForVoting?: UsersForVoting;
   votes: PlusVoteFromFE[];
 }) {
-  const { month, year } = upcomingVoting(new Date());
+  const { month, year } = nextNonCompletedVoting(new Date());
 
   invariant(usersForVoting);
   const toLocalStorage: VotingLocalStorageData = {

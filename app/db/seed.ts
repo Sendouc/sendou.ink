@@ -1,6 +1,9 @@
 import { faker } from "@faker-js/faker";
 import invariant from "tiny-invariant";
-import { lastCompletedVoting, upcomingVoting } from "~/modules/plus-server";
+import {
+  lastCompletedVoting,
+  nextNonCompletedVoting,
+} from "~/modules/plus-server";
 import { db } from "~/db";
 import { sql } from "~/db/sql";
 import type { UpsertManyPlusVotesArgs } from "./models/plusVotes.server";
@@ -72,6 +75,7 @@ function fakeUser() {
     twitch: null,
     twitter: null,
     youtubeId: null,
+    // xxx: add bio
   };
 }
 
@@ -146,7 +150,7 @@ function thisMonthsSuggestions() {
   const usersInPlus = db.users
     .findAll()
     .filter((u) => u.plusTier && u.id !== 1); // exclude admin
-  const { month, year } = upcomingVoting(new Date());
+  const { month, year } = nextNonCompletedVoting(new Date());
 
   for (let userId = 150; userId < 190; userId++) {
     const amountOfSuggestions = faker.helpers.arrayElement([1, 1, 2, 3, 4]);
