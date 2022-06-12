@@ -182,7 +182,7 @@ const tips = [
 
 function Voting(data: Extract<PlusVotingLoaderData, { type: "voting" }>) {
   const [randomTip] = React.useState(tips[Math.floor(Math.random() * 3)]);
-  const { currentUser, previous, votes, vote, undoLast, isReady, progress } =
+  const { currentUser, previous, votes, addVote, undoLast, isReady, progress } =
     usePlusVoting(data.usersForVoting);
 
   if (!isReady) return null;
@@ -224,14 +224,14 @@ function Voting(data: Extract<PlusVotingLoaderData, { type: "voting" }>) {
             <Button
               className="plus-voting__vote-button downvote"
               variant="outlined"
-              onClick={() => vote("downvote")}
+              onClick={() => addVote("downvote")}
             >
               -1
             </Button>
             <Button
               className="plus-voting__vote-button"
               variant="outlined"
-              onClick={() => vote("upvote")}
+              onClick={() => addVote("upvote")}
             >
               +1
             </Button>

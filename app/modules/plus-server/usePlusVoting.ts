@@ -18,7 +18,7 @@ export function usePlusVoting(usersForVotingFromServer: UsersForVoting) {
   const [usersForVoting, setUsersForVoting] = React.useState<UsersForVoting>();
   const [votes, setVotes] = React.useState<PlusVoteFromFE[]>([]);
 
-  const vote = React.useCallback(
+  const addVote = React.useCallback(
     (type: "upvote" | "downvote") => {
       setVotes((votes) => {
         const votedId = usersForVoting?.[votes.length]?.user.id;
@@ -53,7 +53,7 @@ export function usePlusVoting(usersForVotingFromServer: UsersForVoting) {
     setVotes,
   });
 
-  useVoteWithArrowKeysEffect(vote);
+  useVoteWithArrowKeysEffect(addVote);
 
   const currentUser = usersForVoting?.[votes.length];
 
@@ -61,9 +61,8 @@ export function usePlusVoting(usersForVotingFromServer: UsersForVoting) {
     usersForVoting ? [votes.length, usersForVoting.length] : undefined;
 
   return {
-    // xxx: rename one of these -> both similar name but completely different
     votes,
-    vote,
+    addVote,
     undoLast,
     currentUser,
     previous: previousUser({ usersForVoting, votes }),
