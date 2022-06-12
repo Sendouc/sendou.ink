@@ -2,6 +2,7 @@ import * as React from "react";
 import invariant from "tiny-invariant";
 import { PLUS_DOWNVOTE, PLUS_UPVOTE } from "~/constants";
 import type { UsersForVoting } from "~/db/models/plusVotes.server";
+import type { User } from "~/db/types";
 import type { PlusVoteFromFE } from "./types";
 import { upcomingVoting } from "./voting-time";
 
@@ -11,7 +12,8 @@ interface VotingLocalStorageData {
   month: number;
   year: number;
   votes: PlusVoteFromFE[];
-  usersForVoting: UsersForVoting;
+  /** User id -> order for sorting */
+  usersForVotingOrder: Record<User["id"], number>;
 }
 
 export function usePlusVoting(usersForVotingFromServer: UsersForVoting) {
@@ -71,7 +73,6 @@ export function usePlusVoting(usersForVotingFromServer: UsersForVoting) {
   };
 }
 
-// xxx: with this implementation i guess bio's / suggestions won't update mid-voting?
 function useLoadInitialStateFromLocalStorageEffect({
   usersForVotingFromServer,
   setUsersForVoting,
@@ -106,8 +107,29 @@ function useLoadInitialStateFromLocalStorageEffect({
       return;
     }
 
-    setUsersForVoting(parsedUsersForVoting.usersForVoting);
-    setVotes(parsedUsersForVoting.votes);
+    let usersForVotingForState = usersForVotingFromServer;
+
+    // bit of defensive coding in case for some reason the local storage data is out of date
+    try {
+      usersForVotingForState = [...usersForVotingFromServer].sort((a, b) => {
+        const aOrder = parsedUsersForVoting.usersForVotingOrder[a.user.id];
+        const bOrder = parsedUsersForVoting.usersForVotingOrder[b.user.id];
+
+        if (typeof aOrder !== "number") {
+          throw new Error(`No order for user with id ${a.user.id}`);
+        }
+        if (typeof bOrder !== "number") {
+          throw new Error(`No order for user with id ${b.user.id}`);
+        }
+
+        return aOrder - bOrder;
+      });
+      setVotes(parsedUsersForVoting.votes);
+    } catch (e) {
+      console.error(e);
+    }
+
+    setUsersForVoting(usersForVotingForState);
   }, [month, year, usersForVotingFromServer, setUsersForVoting, setVotes]);
 }
 
@@ -166,7 +188,9 @@ function votesToLocalStorage({
     month,
     year,
     votes,
-    usersForVoting,
+    usersForVotingOrder: Object.fromEntries(
+      usersForVoting.map(({ user }, i) => [user.id, i])
+    ),
   };
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(toLocalStorage));
 }
