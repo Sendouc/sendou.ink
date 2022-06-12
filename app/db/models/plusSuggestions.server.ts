@@ -131,7 +131,7 @@ function mapFindVisibleForUserRowsToResult(
           id: row.suggestedId,
           discordId: row.suggestedDiscordId,
           discordName: row.suggestedDiscordName,
-          discordDiscriminator: row.suggestedDiscriminator,
+          discordDiscriminator: row.suggestedDiscordDiscriminator,
           discordAvatar: row.suggestedDiscordAvatar,
           bio: includeBio ? row.suggestedBio : null,
         },

@@ -2,12 +2,21 @@ import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { formatDistance } from "date-fns";
+import { Avatar } from "~/components/Avatar";
+import { Button } from "~/components/Button";
 import { RelativeTime } from "~/components/RelativeTime";
 import { db } from "~/db";
 import type { UsersForVoting } from "~/db/models/plusVotes.server";
 import { getUser } from "~/modules/auth";
-import { monthsVotingRange, upcomingVoting } from "~/modules/plus-server";
+import {
+  monthsVotingRange,
+  upcomingVoting,
+  usePlusVoting,
+} from "~/modules/plus-server";
 import { isVotingActive } from "~/permissions";
+import { discordFullName } from "~/utils/strings";
+import { assertUnreachable } from "~/utils/types";
+import { PlusSuggestionComments } from "../suggestions";
 
 type PlusVotingLoaderData =
   // voting is not active OR user is not eligible to vote
@@ -20,7 +29,7 @@ type PlusVotingLoaderData =
   // user can vote
   | {
       type: "voting";
-      usersForVoting?: UsersForVoting;
+      usersForVoting: UsersForVoting;
     }
   // user already voted
   | { type: "votingInfo"; votingInfo: { placeholder: true } };
@@ -59,18 +68,79 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function PlusVotingPage() {
   const data = useLoaderData<PlusVotingLoaderData>();
 
-  if (data.type === "timeInfo") {
-    return (
-      <div className="text-sm text-center">
-        {data.timing === "starts"
-          ? "Next voting starts"
-          : "Voting is currently happening. Ends"}{" "}
-        <RelativeTime timestamp={data.timestamp}>
-          {data.relativeTime}
-        </RelativeTime>
-      </div>
-    );
+  switch (data.type) {
+    case "timeInfo": {
+      return <VotingTimingInfo {...data} />;
+    }
+    case "voting": {
+      return <Voting {...data} />;
+    }
+    case "votingInfo": {
+      return null;
+    }
+    default: {
+      assertUnreachable(data);
+    }
   }
+}
 
-  return null;
+function VotingTimingInfo(
+  data: Extract<PlusVotingLoaderData, { type: "timeInfo" }>
+) {
+  return (
+    <div className="text-sm text-center">
+      {data.timing === "starts"
+        ? "Next voting starts"
+        : "Voting is currently happening. Ends"}{" "}
+      <RelativeTime timestamp={data.timestamp}>
+        {data.relativeTime}
+      </RelativeTime>
+    </div>
+  );
+}
+
+function Voting(data: Extract<PlusVotingLoaderData, { type: "voting" }>) {
+  const { currentUser, previous, vote, undoLast, isReady } = usePlusVoting(
+    data.usersForVoting
+  );
+
+  if (!isReady) return null;
+
+  return (
+    <div>
+      {currentUser ? (
+        <div className="stack md items-center">
+          <Avatar
+            discordAvatar={currentUser.user.discordAvatar}
+            discordId={currentUser.user.discordId}
+            size="lg"
+          />
+          <h2>{discordFullName(currentUser.user)}</h2>
+          <div className="stack vertical md">
+            <Button
+              variant="outlined"
+              onClick={() => vote({ score: -1, userId: currentUser.user.id })}
+            >
+              -1
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => vote({ score: 1, userId: currentUser.user.id })}
+            >
+              +1
+            </Button>
+          </div>
+          {currentUser.suggestions ? (
+            <PlusSuggestionComments
+              suggestions={currentUser.suggestions}
+              defaultOpen
+            />
+          ) : null}
+          {currentUser.user.bio ? (
+            <article>{currentUser.user.bio}</article>
+          ) : null}
+        </div>
+      ) : null}
+    </div>
+  );
 }

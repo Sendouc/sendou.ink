@@ -1,6 +1,12 @@
+import type { LinksFunction } from "@remix-run/node";
 import { Outlet } from "@remix-run/react";
 import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
+import styles from "~/styles/plus.css";
+
+export const links: LinksFunction = () => {
+  return [{ rel: "stylesheet", href: styles }];
+};
 
 export default function PlusPageLayout() {
   return (

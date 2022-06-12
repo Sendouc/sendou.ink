@@ -1,6 +1,5 @@
 import type {
   ActionFunction,
-  LinksFunction,
   LoaderFunction,
   MetaFunction,
 } from "@remix-run/node";
@@ -18,24 +17,19 @@ import { TrashIcon } from "~/components/icons/Trash";
 import { upcomingVoting } from "~/modules/plus-server";
 import { db } from "~/db";
 import type * as plusSuggestions from "~/db/models/plusSuggestions.server";
-import type { PlusSuggestion } from "~/db/types";
+import type { PlusSuggestion, User } from "~/db/types";
 import { requireUser, useUser } from "~/modules/auth";
 import {
   canAddCommentToSuggestionFE,
   canSuggestNewUserFE,
   canDeleteComment,
 } from "~/permissions";
-import styles from "~/styles/plus.css";
 import { makeTitle, parseRequestFormData, validate } from "~/utils/remix";
 import { discordFullName } from "~/utils/strings";
 import { actualNumber } from "~/utils/zod";
 import { userPage } from "~/utils/urls";
 import { RelativeTime } from "~/components/RelativeTime";
 import { databaseTimestampToDate } from "~/utils/dates";
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
-};
 
 export const meta: MetaFunction = () => {
   return {
@@ -290,50 +284,81 @@ function SuggestedUser({
           </LinkButton>
         ) : null}
       </div>
-      <details>
-        <summary
-          className="plus__view-comments-action"
-          data-cy="comments-summary"
-        >
-          Comments ({suggested.suggestions.length})
-        </summary>
-        <div className="stack sm mt-2">
-          {suggested.suggestions.map((suggestion) => {
-            invariant(data.suggestions);
-            return (
-              <fieldset key={suggestion.id} className="plus__comment">
-                <legend>{discordFullName(suggestion.author)}</legend>
-                {suggestion.text}
-                <div className="stack vertical xs items-center">
-                  <span className="plus__comment-time">
-                    <RelativeTime
-                      timestamp={databaseTimestampToDate(
-                        suggestion.createdAt
-                      ).getTime()}
-                    >
-                      {suggestion.createdAtRelative}
-                    </RelativeTime>
-                  </span>
-                  {canDeleteComment({
-                    author: suggestion.author,
-                    user,
-                    suggestionId: suggestion.id,
-                    suggestions: data.suggestions,
-                  }) ? (
-                    <CommentDeleteButton
-                      suggestionId={suggestion.id}
-                      tier={tier}
-                      suggestedDiscordName={suggested.suggestedUser.discordName}
-                      isFirstSuggestion={suggested.suggestions.length === 1}
-                    />
-                  ) : null}
-                </div>
-              </fieldset>
-            );
-          })}
-        </div>
-      </details>
+      <PlusSuggestionComments
+        suggestions={suggested.suggestions}
+        deleteButtonArgs={{
+          suggested,
+          user,
+          tier,
+          suggestions: data.suggestions,
+        }}
+      />
     </div>
+  );
+}
+
+export function PlusSuggestionComments({
+  suggestions,
+  deleteButtonArgs,
+  defaultOpen,
+}: {
+  suggestions: plusSuggestions.FindVisibleForUserSuggestedUserInfo["suggestions"];
+  deleteButtonArgs?: {
+    user?: Pick<User, "id">;
+    suggestions: plusSuggestions.FindVisibleForUser;
+    tier: string;
+    suggested: plusSuggestions.FindVisibleForUserSuggestedUserInfo;
+  };
+  defaultOpen?: true;
+}) {
+  return (
+    <details open={defaultOpen} className="w-full">
+      <summary
+        className="plus__view-comments-action"
+        data-cy="comments-summary"
+      >
+        Comments ({suggestions.length})
+      </summary>
+      <div className="stack sm mt-2">
+        {suggestions.map((suggestion) => {
+          return (
+            <fieldset key={suggestion.id} className="plus__comment">
+              <legend>{discordFullName(suggestion.author)}</legend>
+              {suggestion.text}
+              <div className="stack vertical xs items-center">
+                <span className="plus__comment-time">
+                  <RelativeTime
+                    timestamp={databaseTimestampToDate(
+                      suggestion.createdAt
+                    ).getTime()}
+                  >
+                    {suggestion.createdAtRelative}
+                  </RelativeTime>
+                </span>
+                {deleteButtonArgs &&
+                canDeleteComment({
+                  author: suggestion.author,
+                  user: deleteButtonArgs.user,
+                  suggestionId: suggestion.id,
+                  suggestions: deleteButtonArgs.suggestions,
+                }) ? (
+                  <CommentDeleteButton
+                    suggestionId={suggestion.id}
+                    tier={deleteButtonArgs.tier}
+                    suggestedDiscordName={
+                      deleteButtonArgs.suggested.suggestedUser.discordName
+                    }
+                    isFirstSuggestion={
+                      deleteButtonArgs.suggested.suggestions.length === 1
+                    }
+                  />
+                ) : null}
+              </div>
+            </fieldset>
+          );
+        })}
+      </div>
+    </details>
   );
 }
 
