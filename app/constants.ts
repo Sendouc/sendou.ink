@@ -6,3 +6,6 @@ export const PlUS_SUGGESTION_FIRST_COMMENT_MAX_LENGTH = 500;
 export const PlUS_SUGGESTION_COMMENT_MAX_LENGTH = TWEET_LENGTH_MAX_LENGTH;
 
 export const PLUS_TIERS = [1, 2, 3];
+
+export const PLUS_UPVOTE = 1;
+export const PLUS_DOWNVOTE = -1;

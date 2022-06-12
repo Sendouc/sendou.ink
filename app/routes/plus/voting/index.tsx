@@ -7,6 +7,7 @@ import { z } from "zod";
 import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
 import { RelativeTime } from "~/components/RelativeTime";
+import { PLUS_DOWNVOTE, PLUS_UPVOTE } from "~/constants";
 import { db } from "~/db";
 import type { UsersForVoting } from "~/db/models/plusVotes.server";
 import { getUser, requireUser } from "~/modules/auth";
@@ -25,7 +26,7 @@ import { PlusSuggestionComments } from "../suggestions";
 
 const voteSchema = z.object({
   votedId: z.number(),
-  score: z.number().refine((val) => [-1, 1].includes(val)),
+  score: z.number().refine((val) => [PLUS_DOWNVOTE, PLUS_UPVOTE].includes(val)),
 });
 
 assertType<z.infer<typeof voteSchema>, PlusVoteFromFE>();
@@ -48,7 +49,10 @@ export const action: ActionFunction = async ({ request }) => {
   validateVotes({ votes: data.votes, usersForVoting });
 
   // freebie +1 for yourself if you vote
-  const votesForDb = [...data.votes].concat({ votedId: user.id, score: 1 });
+  const votesForDb = [...data.votes].concat({
+    votedId: user.id,
+    score: PLUS_UPVOTE,
+  });
 
   const { month, year } = upcomingVoting(new Date());
   const { endDate } = monthsVotingRange({ month, year });

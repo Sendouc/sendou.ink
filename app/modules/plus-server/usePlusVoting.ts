@@ -1,5 +1,6 @@
 import * as React from "react";
 import invariant from "tiny-invariant";
+import { PLUS_DOWNVOTE, PLUS_UPVOTE } from "~/constants";
 import type { UsersForVoting } from "~/db/models/plusVotes.server";
 import type { PlusVoteFromFE } from "./types";
 import { upcomingVoting } from "./voting-time";
@@ -25,7 +26,7 @@ export function usePlusVoting(usersForVotingFromServer: UsersForVoting) {
 
         const newVotes = [
           ...votes,
-          { votedId, score: type === "upvote" ? 1 : -1 },
+          { votedId, score: type === "upvote" ? PLUS_UPVOTE : PLUS_DOWNVOTE },
         ];
 
         votesToLocalStorage({ usersForVoting, votes: newVotes });
