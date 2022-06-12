@@ -21,16 +21,16 @@ export function usePlusVoting(usersForVotingFromServer: UsersForVoting) {
   const [usersForVoting, setUsersForVoting] = React.useState<UsersForVoting>();
   const [votes, setVotes] = React.useState<PlusVote[]>([]);
 
-  useLoadInitialStateFromLocalStorageEffect({
-    usersForVotingFromServer,
-    setUsersForVoting,
-    setVotes,
-  });
-
   const vote = React.useCallback(
-    ({ score, userId }: PlusVote) => {
+    (type: "upvote" | "downvote") => {
       setVotes((votes) => {
-        const newVotes = [...votes, { userId, score }];
+        const userId = usersForVoting?.[votes.length]?.user.id;
+        if (!userId) return votes;
+
+        const newVotes = [
+          ...votes,
+          { userId, score: type === "upvote" ? 1 : -1 },
+        ];
 
         votesToLocalStorage({ usersForVoting, votes: newVotes });
 
@@ -49,6 +49,14 @@ export function usePlusVoting(usersForVotingFromServer: UsersForVoting) {
       return newVotes;
     });
   }, [usersForVoting]);
+
+  useLoadInitialStateFromLocalStorageEffect({
+    usersForVotingFromServer,
+    setUsersForVoting,
+    setVotes,
+  });
+
+  useVoteWithArrowKeysEffect(vote);
 
   const currentUser = usersForVoting?.[votes.length];
 
@@ -103,6 +111,26 @@ function useLoadInitialStateFromLocalStorageEffect({
     setUsersForVoting(parsedUsersForVoting.usersForVoting);
     setVotes(parsedUsersForVoting.votes);
   }, [month, year, usersForVotingFromServer, setUsersForVoting, setVotes]);
+}
+
+function useVoteWithArrowKeysEffect(
+  vote: (type: "upvote" | "downvote") => void
+) {
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === "ArrowRight") {
+        vote("upvote");
+      } else if (e.code === "ArrowLeft") {
+        vote("downvote");
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [vote]);
 }
 
 function previousUser({

@@ -139,16 +139,10 @@ function Voting(data: Extract<PlusVotingLoaderData, { type: "voting" }>) {
           />
           <h2>{discordFullName(currentUser.user)}</h2>
           <div className="stack vertical md">
-            <Button
-              variant="outlined"
-              onClick={() => vote({ score: -1, userId: currentUser.user.id })}
-            >
+            <Button variant="outlined" onClick={() => vote("upvote")}>
               -1
             </Button>
-            <Button
-              variant="outlined"
-              onClick={() => vote({ score: 1, userId: currentUser.user.id })}
-            >
+            <Button variant="outlined" onClick={() => vote("downvote")}>
               +1
             </Button>
           </div>
