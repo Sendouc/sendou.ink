@@ -221,6 +221,10 @@ textarea:not(.plain) {
   white-space: pre;
 }
 
+progress {
+  accent-color: var(--theme);
+}
+
 textarea:not(.plain):focus-within {
   border-color: transparent;
 

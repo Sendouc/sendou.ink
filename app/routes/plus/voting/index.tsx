@@ -115,6 +115,14 @@ function Voting(data: Extract<PlusVotingLoaderData, { type: "voting" }>) {
 
   return (
     <div className="plus-voting__container stack md">
+      {progress ? (
+        <progress
+          className="plus-voting__progress"
+          value={progress[0]}
+          max={progress[1]}
+          title={`Voting progress ${progress[0]} out of ${progress[1]}`}
+        />
+      ) : null}
       {previous ? (
         <p className="button-text-paragraph text-sm text-lighter">
           Previously{" "}

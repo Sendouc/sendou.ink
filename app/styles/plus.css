@@ -104,10 +104,14 @@
 .plus-voting__vote-button {
   width: 6rem;
   height: 2.5rem;
-  font-size: var(--fonts-md);
   color: var(--text) !important;
+  font-size: var(--fonts-md);
 }
 
 .plus-voting__vote-button.downvote {
   border-color: var(--theme-error-transparent);
+}
+
+.plus-voting__progress {
+  width: 100%;
 }
