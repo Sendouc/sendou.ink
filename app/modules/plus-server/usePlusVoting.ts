@@ -1,15 +1,11 @@
-import type { UsersForVoting } from "~/db/models/plusVotes.server";
 import * as React from "react";
-import { upcomingVoting } from "./voting-time";
-import type { PlusVotingResult, User } from "~/db/types";
 import invariant from "tiny-invariant";
+import type { UsersForVoting } from "~/db/models/plusVotes.server";
+import type { PlusVote } from "./types";
+import { upcomingVoting } from "./voting-time";
 
 const LOCAL_STORAGE_KEY = "plusVoting";
 
-interface PlusVote {
-  userId: User["id"];
-  score: PlusVotingResult["score"];
-}
 interface VotingLocalStorageData {
   month: number;
   year: number;
@@ -64,6 +60,8 @@ export function usePlusVoting(usersForVotingFromServer: UsersForVoting) {
     usersForVoting ? [votes.length, usersForVoting.length] : undefined;
 
   return {
+    // xxx: rename one of these -> both similar name but completely different
+    votes,
     vote,
     undoLast,
     currentUser,

@@ -1,23 +1,50 @@
-import type { LoaderFunction } from "@remix-run/node";
+import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { Form, useLoaderData } from "@remix-run/react";
 import { formatDistance } from "date-fns";
 import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
 import { RelativeTime } from "~/components/RelativeTime";
 import { db } from "~/db";
 import type { UsersForVoting } from "~/db/models/plusVotes.server";
-import { getUser } from "~/modules/auth";
+import { getUser, requireUser } from "~/modules/auth";
 import {
   monthsVotingRange,
+  PlusVote,
   upcomingVoting,
   usePlusVoting,
 } from "~/modules/plus-server";
 import { isVotingActive } from "~/permissions";
 import { discordFullName } from "~/utils/strings";
-import { assertUnreachable } from "~/utils/types";
+import { assertType, assertUnreachable } from "~/utils/types";
 import { PlusSuggestionComments } from "../suggestions";
 import * as React from "react";
+import { z } from "zod";
+import { safeJSONParse } from "~/utils/zod";
+import { parseRequestFormData } from "~/utils/remix";
+
+const voteSchema = z.object({
+  userId: z.number(),
+  score: z.number().refine((val) => [-1, 1].includes(val)),
+});
+
+assertType<z.infer<typeof voteSchema>, PlusVote>();
+
+const votingActionSchema = z.object({
+  votes: z.preprocess(safeJSONParse, z.array(voteSchema)),
+});
+
+export const action: ActionFunction = async ({ request }) => {
+  const user = await requireUser(request);
+  const data = await parseRequestFormData({
+    request,
+    schema: votingActionSchema,
+  });
+
+  console.log({ data });
+
+  return null;
+};
 
 type PlusVotingLoaderData =
   // voting is not active OR user is not eligible to vote
@@ -108,7 +135,7 @@ const tips = [
 
 function Voting(data: Extract<PlusVotingLoaderData, { type: "voting" }>) {
   const [randomTip] = React.useState(tips[Math.floor(Math.random() * 3)]);
-  const { currentUser, previous, vote, undoLast, isReady, progress } =
+  const { currentUser, previous, votes, vote, undoLast, isReady, progress } =
     usePlusVoting(data.usersForVoting);
 
   if (!isReady) return null;
@@ -172,7 +199,14 @@ function Voting(data: Extract<PlusVotingLoaderData, { type: "voting" }>) {
             <article>{currentUser.user.bio}</article>
           ) : null}
         </div>
-      ) : null}
+      ) : (
+        <Form method="post">
+          <input type="hidden" name="votes" value={JSON.stringify(votes)} />
+          <Button className="plus-voting__submit-button" type="submit">
+            Submit votes
+          </Button>
+        </Form>
+      )}
     </div>
   );
 }

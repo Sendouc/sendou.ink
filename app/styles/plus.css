@@ -112,6 +112,14 @@
   border-color: var(--theme-error-transparent);
 }
 
+.plus-voting__submit-button {
+  width: 12rem;
+  height: 2.5rem;
+  display: flex;
+  margin-inline: auto;
+  margin-block-start: var(--s-6);
+}
+
 .plus-voting__progress {
   width: 100%;
 }
