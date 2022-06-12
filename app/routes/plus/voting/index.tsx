@@ -114,16 +114,16 @@ function Voting(data: Extract<PlusVotingLoaderData, { type: "voting" }>) {
   if (!isReady) return null;
 
   return (
-    <div className="stack md">
+    <div className="plus-voting__container stack md">
       {previous ? (
         <p className="button-text-paragraph text-sm text-lighter">
           Previously{" "}
-          <span>
+          <span className={previous.score > 0 ? "text-success" : "text-error"}>
             {previous.score > 0 ? "+" : ""}
             {previous.score}
           </span>{" "}
           on {discordFullName(previous.user)}.
-          <Button variant="minimal" onClick={undoLast}>
+          <Button className="ml-auto" variant="minimal" onClick={undoLast}>
             Undo?
           </Button>
         </p>
@@ -139,10 +139,18 @@ function Voting(data: Extract<PlusVotingLoaderData, { type: "voting" }>) {
           />
           <h2>{discordFullName(currentUser.user)}</h2>
           <div className="stack vertical md">
-            <Button variant="outlined" onClick={() => vote("upvote")}>
+            <Button
+              className="plus-voting__vote-button downvote"
+              variant="outlined"
+              onClick={() => vote("downvote")}
+            >
               -1
             </Button>
-            <Button variant="outlined" onClick={() => vote("downvote")}>
+            <Button
+              className="plus-voting__vote-button"
+              variant="outlined"
+              onClick={() => vote("upvote")}
+            >
               +1
             </Button>
           </div>
