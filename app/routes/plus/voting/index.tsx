@@ -17,6 +17,7 @@ import { isVotingActive } from "~/permissions";
 import { discordFullName } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import { PlusSuggestionComments } from "../suggestions";
+import * as React from "react";
 
 type PlusVotingLoaderData =
   // voting is not active OR user is not eligible to vote
@@ -99,15 +100,36 @@ function VotingTimingInfo(
   );
 }
 
+const tips = [
+  "Voting progress is saved locally",
+  "Use left and right arrows on desktop to vote",
+  "You +1 yourself automatically",
+];
+
 function Voting(data: Extract<PlusVotingLoaderData, { type: "voting" }>) {
-  const { currentUser, previous, vote, undoLast, isReady } = usePlusVoting(
-    data.usersForVoting
-  );
+  const [randomTip] = React.useState(tips[Math.floor(Math.random() * 3)]);
+  const { currentUser, previous, vote, undoLast, isReady, progress } =
+    usePlusVoting(data.usersForVoting);
 
   if (!isReady) return null;
 
   return (
-    <div>
+    <div className="stack md">
+      {previous ? (
+        <p className="button-text-paragraph text-sm text-lighter">
+          Previously{" "}
+          <span>
+            {previous.score > 0 ? "+" : ""}
+            {previous.score}
+          </span>{" "}
+          on {discordFullName(previous.user)}.
+          <Button variant="minimal" onClick={undoLast}>
+            Undo?
+          </Button>
+        </p>
+      ) : (
+        <p className="text-sm text-lighter">Tip: {randomTip}</p>
+      )}
       {currentUser ? (
         <div className="stack md items-center">
           <Avatar

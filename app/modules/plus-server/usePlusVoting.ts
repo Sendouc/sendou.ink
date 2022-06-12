@@ -52,15 +52,20 @@ export function usePlusVoting(usersForVotingFromServer: UsersForVoting) {
 
   const currentUser = usersForVoting?.[votes.length];
 
+  const progress: [currentAmount: number, targetAmount: number] | undefined =
+    usersForVoting ? [votes.length, usersForVoting.length] : undefined;
+
   return {
     vote,
     undoLast,
     currentUser,
     previous: previousUser({ usersForVoting, votes }),
     isReady: Boolean(usersForVoting),
+    progress,
   };
 }
 
+// xxx: with this implementation i guess bio's / suggestions won't update mid-voting?
 function useLoadInitialStateFromLocalStorageEffect({
   usersForVotingFromServer,
   setUsersForVoting,
@@ -116,7 +121,7 @@ function previousUser({
   invariant(previousScore);
 
   return {
-    user: previousUser,
+    ...previousUser,
     score: previousScore,
   };
 }
