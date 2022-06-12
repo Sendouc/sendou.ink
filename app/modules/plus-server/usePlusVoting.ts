@@ -1,7 +1,7 @@
 import * as React from "react";
 import invariant from "tiny-invariant";
 import type { UsersForVoting } from "~/db/models/plusVotes.server";
-import type { PlusVote } from "./types";
+import type { PlusVoteFromFE } from "./types";
 import { upcomingVoting } from "./voting-time";
 
 const LOCAL_STORAGE_KEY = "plusVoting";
@@ -9,23 +9,23 @@ const LOCAL_STORAGE_KEY = "plusVoting";
 interface VotingLocalStorageData {
   month: number;
   year: number;
-  votes: PlusVote[];
+  votes: PlusVoteFromFE[];
   usersForVoting: UsersForVoting;
 }
 
 export function usePlusVoting(usersForVotingFromServer: UsersForVoting) {
   const [usersForVoting, setUsersForVoting] = React.useState<UsersForVoting>();
-  const [votes, setVotes] = React.useState<PlusVote[]>([]);
+  const [votes, setVotes] = React.useState<PlusVoteFromFE[]>([]);
 
   const vote = React.useCallback(
     (type: "upvote" | "downvote") => {
       setVotes((votes) => {
-        const userId = usersForVoting?.[votes.length]?.user.id;
-        if (!userId) return votes;
+        const votedId = usersForVoting?.[votes.length]?.user.id;
+        if (!votedId) return votes;
 
         const newVotes = [
           ...votes,
-          { userId, score: type === "upvote" ? 1 : -1 },
+          { votedId, score: type === "upvote" ? 1 : -1 },
         ];
 
         votesToLocalStorage({ usersForVoting, votes: newVotes });
@@ -81,7 +81,7 @@ function useLoadInitialStateFromLocalStorageEffect({
   setUsersForVoting: React.Dispatch<
     React.SetStateAction<UsersForVoting | undefined>
   >;
-  setVotes: React.Dispatch<React.SetStateAction<PlusVote[]>>;
+  setVotes: React.Dispatch<React.SetStateAction<PlusVoteFromFE[]>>;
 }) {
   const { month, year } = upcomingVoting(new Date());
 
@@ -136,7 +136,7 @@ function previousUser({
   votes,
 }: {
   usersForVoting?: UsersForVoting;
-  votes: PlusVote[];
+  votes: PlusVoteFromFE[];
 }) {
   if (!usersForVoting) return;
 
@@ -157,7 +157,7 @@ function votesToLocalStorage({
   votes,
 }: {
   usersForVoting?: UsersForVoting;
-  votes: PlusVote[];
+  votes: PlusVoteFromFE[];
 }) {
   const { month, year } = upcomingVoting(new Date());
 

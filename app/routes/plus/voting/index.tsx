@@ -2,33 +2,33 @@ import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import { formatDistance } from "date-fns";
+import * as React from "react";
+import { z } from "zod";
 import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
 import { RelativeTime } from "~/components/RelativeTime";
 import { db } from "~/db";
 import type { UsersForVoting } from "~/db/models/plusVotes.server";
 import { getUser, requireUser } from "~/modules/auth";
+import type { PlusVoteFromFE } from "~/modules/plus-server";
 import {
   monthsVotingRange,
-  PlusVote,
   upcomingVoting,
   usePlusVoting,
 } from "~/modules/plus-server";
 import { isVotingActive } from "~/permissions";
+import { parseRequestFormData } from "~/utils/remix";
 import { discordFullName } from "~/utils/strings";
 import { assertType, assertUnreachable } from "~/utils/types";
-import { PlusSuggestionComments } from "../suggestions";
-import * as React from "react";
-import { z } from "zod";
 import { safeJSONParse } from "~/utils/zod";
-import { parseRequestFormData } from "~/utils/remix";
+import { PlusSuggestionComments } from "../suggestions";
 
 const voteSchema = z.object({
-  userId: z.number(),
+  votedId: z.number(),
   score: z.number().refine((val) => [-1, 1].includes(val)),
 });
 
-assertType<z.infer<typeof voteSchema>, PlusVote>();
+assertType<z.infer<typeof voteSchema>, PlusVoteFromFE>();
 
 const votingActionSchema = z.object({
   votes: z.preprocess(safeJSONParse, z.array(voteSchema)),
@@ -41,10 +41,53 @@ export const action: ActionFunction = async ({ request }) => {
     schema: votingActionSchema,
   });
 
-  console.log({ data });
+  if (!isVotingActive()) {
+    throw new Response(null, { status: 400 });
+  }
+  const usersForVoting = db.plusVotes.usersForVoting(user);
+  validateVotes({ votes: data.votes, usersForVoting });
+
+  // freebie +1 for yourself if you vote
+  const votesForDb = [...data.votes].concat({ votedId: user.id, score: 1 });
+
+  const { month, year } = upcomingVoting(new Date());
+  const { endDate } = monthsVotingRange({ month, year });
+  db.plusVotes.upsertMany(
+    votesForDb.map((vote) => ({
+      ...vote,
+      authorId: user.id,
+      month,
+      year,
+      tier: user.plusTier!, // no clue why i couldn't make narrowing the type down above work
+      validAfter: endDate,
+    }))
+  );
 
   return null;
 };
+
+function validateVotes({
+  votes,
+  usersForVoting,
+}: {
+  votes: PlusVoteFromFE[];
+  usersForVoting?: UsersForVoting;
+}) {
+  if (!usersForVoting) throw new Response(null, { status: 400 });
+
+  // converting it to set also handles the check for duplicate ids
+  const votedUserIds = new Set(votes.map((v) => v.votedId));
+
+  if (votedUserIds.size !== usersForVoting.length) {
+    throw new Response(null, { status: 400 });
+  }
+
+  for (const { user } of usersForVoting) {
+    if (!votedUserIds.has(user.id)) {
+      throw new Response(null, { status: 400 });
+    }
+  }
+}
 
 type PlusVotingLoaderData =
   // voting is not active OR user is not eligible to vote

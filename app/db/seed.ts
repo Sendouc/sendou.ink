@@ -3,7 +3,7 @@ import invariant from "tiny-invariant";
 import { lastCompletedVoting, upcomingVoting } from "~/modules/plus-server";
 import { db } from "~/db";
 import { sql } from "~/db/sql";
-import type { CreateManyPlusVotesArgs } from "./models/plusVotes.server";
+import type { UpsertManyPlusVotesArgs } from "./models/plusVotes.server";
 
 const ADMIN_TEST_DISCORD_ID = "79237403620945920";
 const ADMIN_TEST_AVATAR = "fcfd65a3bea598905abb9ca25296816b";
@@ -89,7 +89,7 @@ const idToPlusTier = (id: number) => {
 };
 
 function lastMonthsVoting() {
-  const votes: CreateManyPlusVotesArgs = [];
+  const votes: UpsertManyPlusVotesArgs = [];
 
   const { month, year } = lastCompletedVoting(new Date());
 
@@ -121,7 +121,7 @@ function lastMonthsVoting() {
     });
   }
 
-  db.plusVotes.createMany(votes);
+  db.plusVotes.upsertMany(votes);
 }
 
 function lastMonthSuggestions() {

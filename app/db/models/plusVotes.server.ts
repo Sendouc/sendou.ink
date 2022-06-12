@@ -2,6 +2,7 @@ import shuffle from "just-shuffle";
 import invariant from "tiny-invariant";
 import type { MonthYear } from "~/modules/plus-server";
 import { upcomingVoting } from "~/modules/plus-server";
+import { atOrError } from "~/utils/arrays";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import type { Unpacked } from "~/utils/types";
 import { db } from "..";
@@ -37,11 +38,27 @@ const createStm = sql.prepare(`
     )
 `);
 
-export type CreateManyPlusVotesArgs = (Pick<
+const deleteManyStm = sql.prepare(`
+  DELETE FROM
+    "PlusVote"
+  WHERE
+    "authorId" = $authorId
+    AND "month" = $month
+    AND "year" = $year
+`);
+
+export type UpsertManyPlusVotesArgs = (Pick<
   PlusVote,
   "month" | "year" | "tier" | "authorId" | "votedId" | "score"
 > & { validAfter: Date })[];
-export const createMany = sql.transaction((votes: CreateManyPlusVotesArgs) => {
+export const upsertMany = sql.transaction((votes: UpsertManyPlusVotesArgs) => {
+  const firstVote = atOrError(votes, 0);
+  deleteManyStm.run({
+    authorId: firstVote.authorId,
+    month: firstVote.month,
+    year: firstVote.year,
+  });
+
   for (const vote of votes) {
     const { validAfter, ...rest } = vote;
     createStm.run({

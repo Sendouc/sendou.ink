@@ -113,11 +113,11 @@
 }
 
 .plus-voting__submit-button {
+  display: flex;
   width: 12rem;
   height: 2.5rem;
-  display: flex;
-  margin-inline: auto;
   margin-block-start: var(--s-6);
+  margin-inline: auto;
 }
 
 .plus-voting__progress {
