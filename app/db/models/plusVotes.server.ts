@@ -249,3 +249,24 @@ export function usersForVoting(
 
   return shuffle(result.filter(({ user }) => user.id !== loggedInUser.id));
 }
+
+const hasVotedStm = sql.prepare(`
+  SELECT 1
+    FROM "PlusVote"
+    WHERE "authorId" = $userId AND "month" = $month AND "year" = $year
+`);
+
+export function hasVoted({
+  month,
+  year,
+  user,
+}: MonthYear & { user?: Pick<User, "id"> }) {
+  if (!user) return false;
+  return Boolean(
+    hasVotedStm.get({
+      userId: user.id,
+      month,
+      year,
+    })
+  );
+}

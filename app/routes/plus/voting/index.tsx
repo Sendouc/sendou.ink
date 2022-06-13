@@ -6,6 +6,7 @@ import * as React from "react";
 import { z } from "zod";
 import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
+import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { RelativeTime } from "~/components/RelativeTime";
 import { PLUS_DOWNVOTE, PLUS_UPVOTE } from "~/constants";
 import { db } from "~/db";
@@ -100,14 +101,13 @@ type PlusVotingLoaderData =
       relativeTime: string;
       timestamp: number;
       timing: "starts" | "ends";
+      voted?: boolean;
     }
   // user can vote
   | {
       type: "voting";
       usersForVoting: UsersForVoting;
-    }
-  // user already voted
-  | { type: "votingInfo"; votingInfo: { placeholder: true } };
+    };
 
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await getUser(request);
@@ -124,13 +124,18 @@ export const loader: LoaderFunction = async ({ request }) => {
   }
 
   const usersForVoting = db.plusVotes.usersForVoting(user);
+  const hasVoted = db.plusVotes.hasVoted({
+    user,
+    ...nextNonCompletedVoting(new Date()),
+  });
 
-  if (!usersForVoting) {
+  if (!usersForVoting || hasVoted) {
     return json<PlusVotingLoaderData>({
       type: "timeInfo",
       relativeTime: formatDistance(endDate, now, { addSuffix: true }),
       timestamp: endDate.getTime(),
       timing: "ends",
+      voted: hasVoted,
     });
   }
 
@@ -150,9 +155,6 @@ export default function PlusVotingPage() {
     case "voting": {
       return <Voting {...data} />;
     }
-    case "votingInfo": {
-      return null;
-    }
     default: {
       assertUnreachable(data);
     }
@@ -163,13 +165,20 @@ function VotingTimingInfo(
   data: Extract<PlusVotingLoaderData, { type: "timeInfo" }>
 ) {
   return (
-    <div className="text-sm text-center">
-      {data.timing === "starts"
-        ? "Next voting starts"
-        : "Voting is currently happening. Ends"}{" "}
-      <RelativeTime timestamp={data.timestamp}>
-        {data.relativeTime}
-      </RelativeTime>
+    <div className="stack md">
+      {data.voted ? (
+        <div className="plus-voting__alert">
+          <CheckmarkIcon /> You have voted
+        </div>
+      ) : null}
+      <div className="text-sm text-center">
+        {data.timing === "starts"
+          ? "Next voting starts"
+          : "Voting is currently happening. Ends"}{" "}
+        <RelativeTime timestamp={data.timestamp}>
+          {data.relativeTime}
+        </RelativeTime>
+      </div>
     </div>
   );
 }

@@ -17,6 +17,7 @@
   --theme-warning: #f5f587;
   --theme-info: #a3a6ff;
   --theme-success: #a3ffae;
+  --theme-success-transparent: #a3ffae52;
   --theme: hsl(255deg 66.7% 75%);
   --theme-transparent: hsl(255deg 66.7% 75% / 40%);
   --theme-transparent-vibrant: hsl(255deg 78% 65% / 54%);
@@ -29,7 +30,7 @@
   --fonts-xl: 1.5rem;
   --fonts-lg: 1.2rem;
   --fonts-md: 1rem;
-  --fonts-sm: 0.9rem;
+  --fonts-sm: 0.92rem;
   --fonts-xs: 0.8rem;
   --fonts-xxs: 0.7rem;
   --extra-bold: 700;

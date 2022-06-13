@@ -69,4 +69,6 @@ describe("Plus voting results page", () => {
     cy.contains("Sendou");
     cy.contains("your score was");
   });
+
+  // xxx: describe Plus Voting
 });
