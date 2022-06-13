@@ -23,16 +23,16 @@ export function nextNonCompletedVoting(now: Date): MonthYear {
   return nextMonth(lastCompletedVoting(now));
 }
 
-/** Range of first Friday of a month to the following Monday (this range is when voting is active) */
+/** Range of first Friday of a month to the following Sunday (this range is when voting is active) */
 export function monthsVotingRange({ month, year }: MonthYear) {
-  const startDate = new Date(Date.UTC(year, month, 1, 10));
+  const startDate = new Date(Date.UTC(year, month, 1, 18)); // EU evening, NA day
 
   while (startDate.getDay() !== 5) {
     startDate.setDate(startDate.getDate() + 1);
   }
 
   const endDate = new Date(startDate.getTime());
-  endDate.setDate(endDate.getDate() + 3);
+  endDate.setDate(endDate.getDate() + 2);
 
   return { startDate, endDate };
 }

@@ -189,6 +189,7 @@ const tips = [
   "You +1 yourself automatically",
 ];
 
+// xxx: should display how long there is left until the voting ends
 function Voting(data: Extract<PlusVotingLoaderData, { type: "voting" }>) {
   const [randomTip] = React.useState(tips[Math.floor(Math.random() * 3)]);
   const { currentUser, previous, votes, addVote, undoLast, isReady, progress } =
