@@ -24,5 +24,8 @@
     "noFallthroughCasesInSwitch": true,
     "noPropertyAccessFromIndexSignature": true,
     "useUnknownInCatchVariables": true
+  },
+  "ts-node": {
+    "transpileOnly": true
   }
 }

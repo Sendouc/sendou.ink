@@ -1,0 +1,18 @@
+{
+  "name": "lohi",
+  "scripts": {
+    "dev": "ts-node index.ts",
+    "commands": "ts-node commands.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@discordjs/builders": "^0.15.0",
+    "@discordjs/rest": "^0.5.0",
+    "discord-api-types": "^0.34.0",
+    "discord.js": "^13.8.0",
+    "dotenv": "^16.0.1",
+    "tiny-invariant": "^1.2.0",
+    "ts-node": "^10.8.1",
+    "typescript": "^4.7.3"
+  }
+}
