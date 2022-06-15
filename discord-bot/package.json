@@ -2,7 +2,7 @@
   "name": "lohi",
   "scripts": {
     "dev": "ts-node index.ts",
-    "commands": "ts-node commands.ts",
+    "commands": "ts-node deploy-commands.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
