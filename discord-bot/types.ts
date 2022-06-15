@@ -1,4 +1,7 @@
-import type { SlashCommandBuilder } from "@discordjs/builders";
+import type {
+  SlashCommandBuilder,
+  SlashCommandSubcommandsOnlyBuilder,
+} from "@discordjs/builders";
 import type { CommandInteraction } from "discord.js";
 
 export interface BotCommand {
@@ -6,7 +9,7 @@ export interface BotCommand {
   // description: string;
   // /** ID's of guilds where this command will be set */
   // guilds: string[];
-  builder: SlashCommandBuilder;
+  builder: SlashCommandBuilder | SlashCommandSubcommandsOnlyBuilder;
   execute: (commandParameters: {
     interaction: CommandInteraction;
   }) => Promise<void>;

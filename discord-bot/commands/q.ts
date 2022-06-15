@@ -91,13 +91,45 @@ const COMMAND_NAME = "q";
 
 export const questionCommand: BotCommand = {
   name: COMMAND_NAME,
-  builder: new SlashCommandBuilder()
-    .setName(COMMAND_NAME)
-    .setDescription("wohoo"),
+  builder: addSubcommands(
+    new SlashCommandBuilder()
+      .setName(COMMAND_NAME)
+      .setDescription("Find a link")
+  ),
   execute: async ({ interaction }) => {
     return interaction.reply("Pong!");
   },
 };
+
+function addSubcommands(builder: SlashCommandBuilder) {
+  for (const [key, value] of Object.entries(groupedLinks)) {
+    builder.addSubcommand((subcommand) => {
+      const result = subcommand
+        .setName(key)
+        .setDescription(`TODO: explanation for ${key} command`);
+
+      if (typeof value !== "string") {
+        result.addStringOption((option) =>
+          option
+            .setName("name")
+            .setDescription("TODO: subname desc")
+            .setRequired(true)
+            .addChoices(
+              ...Object.keys(value).map((key) => ({
+                name: key.toUpperCase(),
+                value: key,
+              }))
+            )
+        );
+      }
+
+      return result;
+    });
+  }
+
+  return builder;
+}
+
 // const questionCommand: BotCommand = {
 //   name: "add",
 //   description: "Gives you the specified role",
