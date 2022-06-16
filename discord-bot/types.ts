@@ -6,9 +6,8 @@ import type { CommandInteraction } from "discord.js";
 
 export interface BotCommand {
   name: string;
-  // description: string;
-  // /** ID's of guilds where this command will be set */
-  // guilds: string[];
+  /** ID's of guilds where this command will be set */
+  guilds: string[];
   builder: SlashCommandBuilder | SlashCommandSubcommandsOnlyBuilder;
   execute: (commandParameters: {
     interaction: CommandInteraction;
