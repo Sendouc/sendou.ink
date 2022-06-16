@@ -44,13 +44,13 @@ function addSubcommands(builder: SlashCommandBuilder) {
     builder.addSubcommand((subcommand) => {
       const result = subcommand
         .setName(key)
-        .setDescription(`TODO: explanation for ${key} command`);
+        .setDescription(keyToDescription(key));
 
       if (typeof value !== "string") {
         result.addStringOption((option) =>
           option
             .setName(WAVE_ARG)
-            .setDescription("TODO: wave desc")
+            .setDescription("Type of map")
             .setRequired(true)
             .addChoices(
               ...Object.keys(value).map((key) => ({
@@ -76,4 +76,35 @@ function toContent(value: string | string[]) {
   if (typeof value === "string") return value;
 
   return value.join("\n");
+}
+
+function keyToDescription(key: string) {
+  const descriptions = new Map([
+    ["sg", "Spawning Grounds maps"],
+    ["mb", "Marooner's Bay maps"],
+    ["lo", "Lost Outpost maps"],
+    ["ss", "Salmonid Smokeyard maps"],
+    ["ap", "Ruins of Ark Polaris maps"],
+    [
+      "fundamentals",
+      "Written guide going over all the Overfishing fundamentals",
+    ],
+    [
+      "fundamentals2",
+      "Live video that goes into some Overfishing fundamentals",
+    ],
+    ["advanced", "Written guide going over advanced Overfishing strategies"],
+    ["spawns", "Table showing spawn timers"],
+
+    ["ballpoint", "Video guide explaining the basics of Ballpoint in SR"],
+    ["explo", "Video guide explaining the basics of Explosher in SR"],
+    ["dynamo", "Video guide explaining the basics of Dynamo in SR"],
+    ["bamboo", "Video guide explaining the basics of Bamboo in SR"],
+    ["hydra", "Video guide explaining the basics of Hydra in SR"],
+  ]);
+
+  const result = descriptions.get(key);
+  if (!result) throw new Error(`Unknown subcommand: ${key}`);
+
+  return result;
 }
