@@ -25,7 +25,7 @@ client.on("interactionCreate", async (interaction) => {
     );
   }
 
-  return command.execute({ interaction, client });
+  return command.execute({ interaction, client }).catch(console.error);
 });
 
 client.login(process.env["BOT_TOKEN"]).catch((err) => console.error(err));
