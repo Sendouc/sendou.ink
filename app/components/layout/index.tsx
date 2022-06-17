@@ -4,7 +4,6 @@ import { useWindowSize } from "~/hooks/useWindowSize";
 import { HamburgerButton } from "./HamburgerButton";
 import { Menu } from "./Menu";
 import { MobileMenu } from "./MobileMenu";
-import { SearchInput } from "./SearchInput";
 import { UserItem } from "./UserItem";
 
 export const Layout = React.memo(function Layout({
@@ -33,10 +32,6 @@ export const Layout = React.memo(function Layout({
   return (
     <>
       <header className="layout__header">
-        <div className="layout__header__search-container">
-          {/* xxx: replace with admin page */}
-          <SearchInput />
-        </div>
         <div className="layout__header__title-container">{pageTitle}</div>
         <div className="layout__header__right-container">
           <UserItem />
