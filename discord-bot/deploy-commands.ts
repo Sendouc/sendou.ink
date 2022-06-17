@@ -7,6 +7,7 @@ import { commands } from "./commands";
 
 invariant(process.env["BOT_TOKEN"], "DISCORD_TOKEN must be set");
 invariant(process.env["BOT_ID"], "BOT_ID must be set");
+// xxx: not really TEST_GUILD_ID must be set
 invariant(process.env["TEST_GUILD_ID"], "TEST_GUILD_ID must be set");
 
 const serializedCommands = commands.map((cmd) => cmd.builder.toJSON());
@@ -21,5 +22,6 @@ rest
     ),
     { body: serializedCommands } // TODO: divide by guild
   )
+  // eslint-disable-next-line no-console
   .then(() => console.log("Successfully registered application commands."))
   .catch(console.error);

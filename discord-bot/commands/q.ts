@@ -54,7 +54,7 @@ function addSubcommands(builder: SlashCommandBuilder) {
             .setRequired(true)
             .addChoices(
               ...Object.keys(value).map((key) => ({
-                name: capitalizeFirstLetter(key),
+                name: key,
                 value: key,
               }))
             )
@@ -66,10 +66,6 @@ function addSubcommands(builder: SlashCommandBuilder) {
   }
 
   return builder;
-}
-
-function capitalizeFirstLetter(value: string) {
-  return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
 function toContent(value: string | string[]) {

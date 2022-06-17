@@ -9,6 +9,7 @@ invariant(process.env["BOT_TOKEN"], "DISCORD_TOKEN must be set");
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 client.once("ready", () => {
+  // eslint-disable-next-line no-console
   console.log("Ready!");
 });
 
@@ -24,7 +25,7 @@ client.on("interactionCreate", async (interaction) => {
     );
   }
 
-  return command.execute({ interaction });
+  return command.execute({ interaction, client });
 });
 
 client.login(process.env["BOT_TOKEN"]).catch((err) => console.error(err));
