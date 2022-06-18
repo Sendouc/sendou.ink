@@ -9,3 +9,5 @@ export const PLUS_TIERS = [1, 2, 3];
 
 export const PLUS_UPVOTE = 1;
 export const PLUS_DOWNVOTE = -1;
+
+export const ADMIN_DISCORD_ID = "79237403620945920";

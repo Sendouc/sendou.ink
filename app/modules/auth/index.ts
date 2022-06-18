@@ -1,6 +1,7 @@
 export {
   callbackLoader,
   impersonateAction,
+  stopImpersonatingAction,
   logInAction,
   logOutAction,
 } from "./routes.server";

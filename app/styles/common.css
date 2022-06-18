@@ -74,6 +74,7 @@
   font-size: var(--fonts-sm);
   padding-block: var(--s-3);
   padding-inline: 0;
+  z-index: 2;
 }
 
 .combobox-options.empty {

@@ -7,8 +7,8 @@ import {
 import { db } from "~/db";
 import { sql } from "~/db/sql";
 import type { UpsertManyPlusVotesArgs } from "./models/plusVotes.server";
+import { ADMIN_DISCORD_ID } from "~/constants";
 
-const ADMIN_TEST_DISCORD_ID = "79237403620945920";
 const ADMIN_TEST_AVATAR = "fcfd65a3bea598905abb9ca25296816b";
 
 const NZAP_TEST_DISCORD_ID = "455039198672453645";
@@ -41,7 +41,7 @@ function wipeDB() {
 function adminUser() {
   db.users.upsert({
     discordDiscriminator: "4059",
-    discordId: ADMIN_TEST_DISCORD_ID,
+    discordId: ADMIN_DISCORD_ID,
     discordName: "Sendou",
     twitch: "Sendou",
     youtubeId: "UCWbJLXByvsfQvTcR4HLPs5Q",

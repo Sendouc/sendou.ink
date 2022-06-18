@@ -2,6 +2,7 @@ import type * as plusSuggestions from "~/db/models/plusSuggestions.server";
 import { monthsVotingRange } from "./modules/plus-server";
 import type { PlusSuggestion, User, UserWithPlusTier } from "./db/types";
 import { allTruthy } from "./utils/arrays";
+import { ADMIN_DISCORD_ID } from "./constants";
 
 // TODO: 1) move "root checkers" to one file and utils to one file 2) make utils const for more terseness
 
@@ -197,4 +198,11 @@ function hasUserSuggestedThisMonth({
       ({ suggestions }) =>
         suggestions[0] && suggestions[0].author.id === user?.id
     );
+}
+
+export function canPerformAdminActions(user?: Pick<User, "discordId">) {
+  if (process.env.NODE_ENV === "development") return true;
+
+  if (!user) return false;
+  return user.discordId === ADMIN_DISCORD_ID;
 }

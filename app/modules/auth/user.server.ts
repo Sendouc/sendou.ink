@@ -22,3 +22,11 @@ export async function requireUser(request: Request) {
 
   return user;
 }
+
+export async function isImpersonating(request: Request) {
+  const session = await authSessionStorage.getSession(
+    request.headers.get("Cookie")
+  );
+
+  return Boolean(session.get(IMPERSONATED_SESSION_KEY));
+}

@@ -2,6 +2,7 @@ import { useCatch } from "@remix-run/react";
 import { Button } from "~/components/Button";
 import { useUser } from "~/modules/auth";
 import { LOG_IN_URL, SENDOU_INK_DISCORD_URL } from "~/utils/urls";
+import { Main } from "./Main";
 
 export function Catcher() {
   const caught = useCatch();
@@ -10,7 +11,7 @@ export function Catcher() {
   switch (caught.status) {
     case 401:
       return (
-        <div>
+        <Main>
           <h2>Error 401 Unauthorized</h2>
           {user ? (
             <GetHelp />
@@ -24,16 +25,16 @@ export function Catcher() {
               </p>
             </form>
           )}
-        </div>
+        </Main>
       );
   }
 
   return (
-    <div>
+    <Main>
       <h2>Error {caught.status}</h2>
       {caught.data ? <code>{JSON.stringify(caught.data, null, 2)}</code> : null}
       <GetHelp />
-    </div>
+    </Main>
   );
 }
 
