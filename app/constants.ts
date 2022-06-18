@@ -11,3 +11,5 @@ export const PLUS_UPVOTE = 1;
 export const PLUS_DOWNVOTE = -1;
 
 export const ADMIN_DISCORD_ID = "79237403620945920";
+
+export const LOHI_TOKEN_HEADER_NAME = "Lohi-Token";

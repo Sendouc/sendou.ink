@@ -83,3 +83,19 @@ export function findAll() {
     "id" | "discordId" | "discordName" | "discordDiscriminator" | "plusTier"
   >[];
 }
+
+const findAllPlusMembersStm = sql.prepare(`
+SELECT "User"."discordId", "PlusTier"."tier" as "plusTier"
+  FROM "User"
+  LEFT JOIN "PlusTier" ON "PlusTier"."userId" = "User".id
+  WHERE "PlusTier"."tier" IS NOT NULL
+`);
+
+export type FindAllPlusMembers = Pick<
+  UserWithPlusTier,
+  "discordId" | "plusTier"
+>[];
+
+export function findAllPlusMembers() {
+  return findAllPlusMembersStm.all() as FindAllPlusMembers;
+}

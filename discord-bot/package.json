@@ -1,7 +1,7 @@
 {
   "name": "lohi",
   "scripts": {
-    "dev": "ts-node index.ts",
+    "dev": "node --experimental-fetch --require ts-node/register --require tsconfig-paths/register index.ts",
     "commands": "ts-node deploy-commands.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -13,6 +13,7 @@
     "dotenv": "^16.0.1",
     "tiny-invariant": "^1.2.0",
     "ts-node": "^10.8.1",
+    "tsconfig-paths": "^4.0.0",
     "typescript": "^4.7.3"
   }
 }

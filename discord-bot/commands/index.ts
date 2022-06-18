@@ -1,8 +1,9 @@
 import { questionCommand } from "./q";
 import { lfgRoleCommand } from "./lfg";
+import { accessCommand } from "./access";
 import type { BotCommand } from "discord-bot/types";
 
-export const commands = [questionCommand, lfgRoleCommand];
+export const commands = [questionCommand, lfgRoleCommand, accessCommand];
 
 export const commandsMap = Object.fromEntries(commands.map((c) => [c.name, c]));
 

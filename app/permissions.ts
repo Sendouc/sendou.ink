@@ -2,7 +2,8 @@ import type * as plusSuggestions from "~/db/models/plusSuggestions.server";
 import { monthsVotingRange } from "./modules/plus-server";
 import type { PlusSuggestion, User, UserWithPlusTier } from "./db/types";
 import { allTruthy } from "./utils/arrays";
-import { ADMIN_DISCORD_ID } from "./constants";
+import { ADMIN_DISCORD_ID, LOHI_TOKEN_HEADER_NAME } from "./constants";
+import invariant from "tiny-invariant";
 
 // TODO: 1) move "root checkers" to one file and utils to one file 2) make utils const for more terseness
 
@@ -205,4 +206,11 @@ export function canPerformAdminActions(user?: Pick<User, "discordId">) {
 
   if (!user) return false;
   return user.discordId === ADMIN_DISCORD_ID;
+}
+
+invariant(process.env["LOHI_TOKEN"], "LOHI_TOKEN is required");
+export function canAccessLohiEndpoint(request: Request) {
+  return (
+    request.headers.get(LOHI_TOKEN_HEADER_NAME) === process.env["LOHI_TOKEN"]
+  );
 }
