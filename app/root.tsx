@@ -18,6 +18,7 @@ import commonStyles from "~/styles/common.css";
 import globalStyles from "~/styles/global.css";
 import layoutStyles from "~/styles/layout.css";
 import resetStyles from "~/styles/reset.css";
+import { Catcher } from "./components/Catcher";
 import { Layout } from "./components/layout";
 import type { UserWithPlusTier } from "./db/types";
 import { getUser } from "./modules/auth";
@@ -61,7 +62,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   });
 };
 
-export default function App() {
+function Document({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
@@ -70,14 +71,29 @@ export default function App() {
       </head>
       <body>
         <React.StrictMode>
-          <Layout>
-            <Outlet />
-          </Layout>
+          <Layout>{children}</Layout>
         </React.StrictMode>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
       </body>
     </html>
+  );
+}
+
+export default function App() {
+  return (
+    <Document>
+      <Outlet />
+    </Document>
+  );
+}
+
+// TODO: this shows user as logged out even if they are logged in - a bit awkward with 404's
+export function CatchBoundary() {
+  return (
+    <Document>
+      <Catcher />
+    </Document>
   );
 }

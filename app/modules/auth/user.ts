@@ -6,5 +6,5 @@ export function useUser() {
   const [root] = useMatches();
   invariant(root);
 
-  return (root.data as RootLoaderData).user;
+  return (root.data as RootLoaderData | undefined)?.user;
 }
