@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import type { User } from "~/db/types";
+import * as React from "react";
 
 const dimensions = {
   sm: 44,
@@ -17,6 +18,7 @@ export function Avatar({
   className?: string;
   size: "sm" | "md" | "lg";
 } & React.ButtonHTMLAttributes<HTMLImageElement>) {
+  const [isErrored, setIsErrored] = React.useState(false);
   // TODO: just show text... my profile?
   // TODO: also show this if discordAvatar is stale and 404's
 
@@ -24,8 +26,8 @@ export function Avatar({
     <img
       className={clsx("avatar", className)}
       src={
-        discordAvatar
-          ? `https://cdn.discordapp.com/avatars/${discordId}/${discordAvatar}.webp${
+        discordAvatar && !isErrored
+          ? `https://cdn.discordapp.com/avatas/${discordId}/${discordAvatar}.webp${
               size === "lg" ? "" : "?size=80"
             }`
           : "/img/blank.gif" // avoid broken image placeholder
@@ -33,6 +35,7 @@ export function Avatar({
       alt=""
       width={dimensions[size]}
       height={dimensions[size]}
+      onError={() => setIsErrored(true)}
       {...rest}
     />
   );
