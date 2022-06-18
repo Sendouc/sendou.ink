@@ -9,13 +9,6 @@
   background-color: var(--bg);
 }
 
-.layout__header__title-container {
-  color: var(--text-lighter);
-  font-size: var(--fonts-sm);
-  font-weight: var(--bold);
-  text-align: center;
-}
-
 .layout__header__right-container {
   display: flex;
   gap: var(--s-4);

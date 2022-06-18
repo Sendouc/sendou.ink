@@ -1,4 +1,3 @@
-import { useMatches } from "@remix-run/react";
 import * as React from "react";
 import { useWindowSize } from "~/hooks/useWindowSize";
 import { HamburgerButton } from "./HamburgerButton";
@@ -12,27 +11,10 @@ export const Layout = React.memo(function Layout({
   children: React.ReactNode;
 }) {
   const [menuOpen, setMenuOpen] = React.useState(false);
-  const matches = useMatches();
-
-  const pageTitleKey = "pageTitle";
-
-  // you can set this page title from any loader
-  // deeper routes take precedence
-  const pageTitle = matches
-    .map((match) => match.data)
-    .filter(Boolean)
-    .reduceRight((acc: string | null, routeData) => {
-      if (!acc && typeof routeData[pageTitleKey] === "string") {
-        return routeData[pageTitleKey];
-      }
-
-      return acc;
-    }, null);
 
   return (
     <>
       <header className="layout__header">
-        <div className="layout__header__title-container">{pageTitle}</div>
         <div className="layout__header__right-container">
           <UserItem />
           <HamburgerButton
