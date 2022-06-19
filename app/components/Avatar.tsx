@@ -27,7 +27,7 @@ export function Avatar({
       className={clsx("avatar", className)}
       src={
         discordAvatar && !isErrored
-          ? `https://cdn.discordapp.com/avatas/${discordId}/${discordAvatar}.webp${
+          ? `https://cdn.discordapp.com/avatars/${discordId}/${discordAvatar}.webp${
               size === "lg" ? "" : "?size=80"
             }`
           : "/img/blank.gif" // avoid broken image placeholder
