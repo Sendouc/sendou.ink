@@ -18,6 +18,7 @@ import commonStyles from "~/styles/common.css";
 import globalStyles from "~/styles/global.css";
 import layoutStyles from "~/styles/layout.css";
 import resetStyles from "~/styles/reset.css";
+import wysiwygStyles from "~/modules/wysiwyg/theme.css";
 import { Catcher } from "./components/Catcher";
 import { Layout } from "./components/layout";
 import type { UserWithPlusTier } from "./db/types";
@@ -31,6 +32,7 @@ export const links: LinksFunction = () => {
     { rel: "stylesheet", href: globalStyles },
     { rel: "stylesheet", href: commonStyles },
     { rel: "stylesheet", href: layoutStyles },
+    { rel: "stylesheet", href: wysiwygStyles },
   ];
 };
 
