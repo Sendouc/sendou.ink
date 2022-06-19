@@ -208,8 +208,8 @@ export function canPerformAdminActions(user?: Pick<User, "discordId">) {
   return user.discordId === ADMIN_DISCORD_ID;
 }
 
-invariant(process.env["LOHI_TOKEN"], "LOHI_TOKEN is required");
 export function canAccessLohiEndpoint(request: Request) {
+  invariant(process.env["LOHI_TOKEN"], "LOHI_TOKEN is required");
   return (
     request.headers.get(LOHI_TOKEN_HEADER_NAME) === process.env["LOHI_TOKEN"]
   );
