@@ -18,6 +18,7 @@ const basicSeeds = [
   adminUser,
   nzapUser,
   users,
+  userBios,
   lastMonthsVoting,
   lastMonthSuggestions,
   thisMonthsSuggestions,
@@ -66,6 +67,20 @@ function users() {
   new Array(500).fill(null).map(fakeUser).forEach(db.users.upsert);
 }
 
+function userBios() {
+  for (let id = 3; id < 500; id++) {
+    if (Math.random() < 0.25) continue; // 75% have bio
+
+    sql.prepare(`UPDATE "User" SET bio = $bio WHERE id = $id`).run({
+      id,
+      bio: faker.lorem.paragraphs(
+        faker.helpers.arrayElement([1, 1, 1, 2, 3, 4]),
+        "\n\n"
+      ),
+    });
+  }
+}
+
 function fakeUser() {
   return {
     discordAvatar: null,
@@ -75,7 +90,6 @@ function fakeUser() {
     twitch: null,
     twitter: null,
     youtubeId: null,
-    // xxx: add bio
   };
 }
 
