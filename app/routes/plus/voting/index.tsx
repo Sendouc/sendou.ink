@@ -98,15 +98,21 @@ type PlusVotingLoaderData =
   // voting is not active OR user is not eligible to vote
   | {
       type: "timeInfo";
-      relativeTime: string;
-      timestamp: number;
-      timing: "starts" | "ends";
       voted?: boolean;
+      timeInfo: {
+        timestamp: number;
+        timing: "starts" | "ends";
+        relativeTime: string;
+      };
     }
   // user can vote
   | {
       type: "voting";
       usersForVoting: UsersForVoting;
+      votingEnds: {
+        timestamp: number;
+        relativeTime: string;
+      };
     };
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -117,9 +123,11 @@ export const loader: LoaderFunction = async ({ request }) => {
   if (!isVotingActive()) {
     return json<PlusVotingLoaderData>({
       type: "timeInfo",
-      relativeTime: formatDistance(startDate, now, { addSuffix: true }),
-      timestamp: startDate.getTime(),
-      timing: "starts",
+      timeInfo: {
+        relativeTime: formatDistance(startDate, now, { addSuffix: true }),
+        timestamp: startDate.getTime(),
+        timing: "starts",
+      },
     });
   }
 
@@ -132,16 +140,22 @@ export const loader: LoaderFunction = async ({ request }) => {
   if (!usersForVoting || hasVoted) {
     return json<PlusVotingLoaderData>({
       type: "timeInfo",
-      relativeTime: formatDistance(endDate, now, { addSuffix: true }),
-      timestamp: endDate.getTime(),
-      timing: "ends",
       voted: hasVoted,
+      timeInfo: {
+        relativeTime: formatDistance(endDate, now, { addSuffix: true }),
+        timestamp: endDate.getTime(),
+        timing: "ends",
+      },
     });
   }
 
   return json<PlusVotingLoaderData>({
     type: "voting",
     usersForVoting,
+    votingEnds: {
+      timestamp: endDate.getTime(),
+      relativeTime: formatDistance(endDate, now, { addSuffix: true }),
+    },
   });
 };
 
@@ -172,11 +186,11 @@ function VotingTimingInfo(
         </div>
       ) : null}
       <div className="text-sm text-center">
-        {data.timing === "starts"
+        {data.timeInfo.timing === "starts"
           ? "Next voting starts"
           : "Voting is currently happening. Ends"}{" "}
-        <RelativeTime timestamp={data.timestamp}>
-          {data.relativeTime}
+        <RelativeTime timestamp={data.timeInfo.timestamp}>
+          {data.timeInfo.relativeTime}
         </RelativeTime>
       </div>
     </div>
@@ -189,7 +203,6 @@ const tips = [
   "You +1 yourself automatically",
 ];
 
-// xxx: should display how long there is left until the voting ends
 function Voting(data: Extract<PlusVotingLoaderData, { type: "voting" }>) {
   const [randomTip] = React.useState(tips[Math.floor(Math.random() * 3)]);
   const { currentUser, previous, votes, addVote, undoLast, isReady, progress } =
@@ -199,14 +212,22 @@ function Voting(data: Extract<PlusVotingLoaderData, { type: "voting" }>) {
 
   return (
     <div className="plus-voting__container stack md">
-      {progress ? (
-        <progress
-          className="plus-voting__progress"
-          value={progress[0]}
-          max={progress[1]}
-          title={`Voting progress ${progress[0]} out of ${progress[1]}`}
-        />
-      ) : null}
+      <div className="stack xs">
+        <div className="text-sm text-center">
+          Voting ends{" "}
+          <RelativeTime timestamp={data.votingEnds.timestamp}>
+            {data.votingEnds.relativeTime}
+          </RelativeTime>
+        </div>
+        {progress ? (
+          <progress
+            className="plus-voting__progress"
+            value={progress[0]}
+            max={progress[1]}
+            title={`Voting progress ${progress[0]} out of ${progress[1]}`}
+          />
+        ) : null}
+      </div>
       {previous ? (
         <p className="button-text-paragraph text-sm text-lighter">
           Previously{" "}
