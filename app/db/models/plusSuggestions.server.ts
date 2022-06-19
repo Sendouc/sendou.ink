@@ -90,7 +90,10 @@ export function findVisibleForUser(
 ): FindVisibleForUser | undefined {
   if (!args.plusTier) return;
   return sortNewestPlayersToBeSuggestedFirst(
-    mapFindVisibleForUserRowsToResult(findVisibleForUserStm.all(args))
+    mapFindVisibleForUserRowsToResult(
+      findVisibleForUserStm.all(args),
+      args.includeBio
+    )
   );
 }
 
