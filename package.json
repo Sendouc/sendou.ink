@@ -25,12 +25,12 @@
     "cf": "npm run typecheck && npm run test:unit && npm run lint:styles -- --fix && npm run lint:ts -- --fix && npm run prettier:write"
   },
   "dependencies": {
-    "@faker-js/faker": "^7.2.0",
-    "@headlessui/react": "^1.6.4",
+    "@faker-js/faker": "^7.3.0",
+    "@headlessui/react": "^1.6.5",
     "@popperjs/core": "^2.11.5",
-    "@remix-run/node": "^1.6.0",
-    "@remix-run/react": "^1.6.0",
-    "@remix-run/serve": "^1.6.0",
+    "@remix-run/node": "^1.6.1",
+    "@remix-run/react": "^1.6.1",
+    "@remix-run/serve": "^1.6.1",
     "better-sqlite3": "^7.5.3",
     "clsx": "^1.1.1",
     "countries-list": "^2.6.1",
@@ -47,14 +47,14 @@
     "zod": "^3.17.3"
   },
   "devDependencies": {
-    "@remix-run/dev": "^1.6.0",
-    "@remix-run/eslint-config": "^1.6.0",
+    "@remix-run/dev": "^1.6.1",
+    "@remix-run/eslint-config": "^1.6.1",
     "@types/better-sqlite3": "^7.5.0",
     "@types/randomcolor": "^0.5.6",
     "@types/react": "^18.0.14",
     "@types/react-dom": "^18.0.5",
-    "@typescript-eslint/eslint-plugin": "^5.28.0",
-    "@typescript-eslint/parser": "^5.28.0",
+    "@typescript-eslint/eslint-plugin": "^5.29.0",
+    "@typescript-eslint/parser": "^5.29.0",
     "cross-env": "^7.0.3",
     "cypress": "^9.7.0",
     "dotenv": "^16.0.1",
@@ -72,7 +72,7 @@
     "tsconfig-paths": "^4.0.0",
     "tsm": "^2.2.1",
     "typescript": "^4.7.4",
-    "uvu": "^0.5.3"
+    "uvu": "^0.5.4"
   },
   "engines": {
     "node": ">=14"
