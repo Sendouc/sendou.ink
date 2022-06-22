@@ -8,7 +8,7 @@ describe("Plus suggestions page", () => {
   });
 
   it("views suggestions status as non plus member", function () {
-    cy.auth(150);
+    cy.auth(151);
     cy.visit(PLUS_SUGGESTIONS_PAGE);
     cy.contains("You are suggested");
   });
@@ -62,12 +62,19 @@ describe("Plus voting results page", () => {
     cy.seed();
   });
 
-  it("views results and sees own percentage as a failed suggest", () => {
+  it("does not see results but sees own percentage as a failed suggest", () => {
     cy.auth(200);
     cy.visit("/plus/voting/results");
 
-    cy.contains("Sendou");
+    cy.contains("Sendou").should("not.exist");
     cy.contains("your score was");
+  });
+
+  it("views full results as member who passed", () => {
+    cy.auth(1);
+    cy.visit("/plus/voting/results");
+
+    cy.contains("Sendou");
   });
 
   // xxx: describe Plus Voting

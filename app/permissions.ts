@@ -202,7 +202,7 @@ function hasUserSuggestedThisMonth({
 }
 
 export function canPerformAdminActions(user?: Pick<User, "discordId">) {
-  if (process.env.NODE_ENV === "development") return true;
+  if (["development", "test"].includes(process.env.NODE_ENV)) return true;
 
   if (!user) return false;
   return user.discordId === ADMIN_DISCORD_ID;
