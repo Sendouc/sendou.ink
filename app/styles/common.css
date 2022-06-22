@@ -66,6 +66,7 @@
 
 .combobox-options {
   position: absolute;
+  z-index: 2;
   width: 12rem;
   margin-top: var(--s-2);
   background-color: var(--bg-darker);
@@ -74,7 +75,6 @@
   font-size: var(--fonts-sm);
   padding-block: var(--s-3);
   padding-inline: 0;
-  z-index: 2;
 }
 
 .combobox-options.empty {

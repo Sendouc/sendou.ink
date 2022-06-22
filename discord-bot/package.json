@@ -3,7 +3,8 @@
   "scripts": {
     "dev": "node --experimental-fetch --require ts-node/register --require tsconfig-paths/register index.ts",
     "commands": "ts-node deploy-commands.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@discordjs/builders": "^0.15.0",

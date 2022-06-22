@@ -5,6 +5,7 @@ module.exports = {
     tsconfigRootDir: __dirname,
     project: ["./tsconfig.json"],
   },
+  ignorePatterns: ["discord-bot/**/*"],
   plugins: ["@typescript-eslint"],
   extends: [
     "eslint:recommended",
