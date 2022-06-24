@@ -153,67 +153,70 @@ export default function PlusSuggestionsPage() {
     <>
       <Outlet />
       <div className="plus__container">
-        <div className="stack lg">
-          <div
-            className={clsx("plus__top-container", {
-              "content-centered": !canSuggestNewUserFE({
-                user,
-                suggestions: data.suggestions,
-              }),
-            })}
-          >
-            <div className="plus__radios">
-              {Object.entries(data.suggestions)
-                .sort((a, b) => Number(a[0]) - Number(b[0]))
-                .map(([tier, suggestions]) => {
-                  const id = String(tier);
-                  return (
-                    <div key={id} className="plus__radio-container">
-                      <label htmlFor={id} className="plus__radio-label">
-                        +{tier}{" "}
-                        <span className="plus__users-count">
-                          ({suggestions.length})
-                        </span>
-                      </label>
-                      <input
-                        id={id}
-                        name="tier"
-                        type="radio"
-                        checked={tierVisible === tier}
-                        onChange={() => setTierVisible(tier)}
-                        data-cy={`plus${tier}-radio`}
-                      />
-                    </div>
-                  );
-                })}
-            </div>
-            {canSuggestNewUserFE({ user, suggestions: data.suggestions }) ? (
-              // TODO: resetScroll={false} https://twitter.com/ryanflorence/status/1527775882797907969
-              <LinkButton
-                to="new"
-                data-cy="new-suggest-button"
-                prefetch="render"
-              >
-                Suggest
-              </LinkButton>
-            ) : null}
-          </div>
+        <div className="stack md">
+          <SuggestedForInfo hideText />
           <div className="stack lg">
-            {visibleSuggestions.map((u) => {
-              invariant(tierVisible);
-              return (
-                <SuggestedUser
-                  key={`${u.suggestedUser.id}-${tierVisible}`}
-                  suggested={u}
-                  tier={tierVisible}
-                />
-              );
-            })}
-            {visibleSuggestions.length === 0 ? (
-              <div className="plus__suggested-info-text text-center">
-                No suggestions yet
+            <div
+              className={clsx("plus__top-container", {
+                "content-centered": !canSuggestNewUserFE({
+                  user,
+                  suggestions: data.suggestions,
+                }),
+              })}
+            >
+              <div className="plus__radios">
+                {Object.entries(data.suggestions)
+                  .sort((a, b) => Number(a[0]) - Number(b[0]))
+                  .map(([tier, suggestions]) => {
+                    const id = String(tier);
+                    return (
+                      <div key={id} className="plus__radio-container">
+                        <label htmlFor={id} className="plus__radio-label">
+                          +{tier}{" "}
+                          <span className="plus__users-count">
+                            ({suggestions.length})
+                          </span>
+                        </label>
+                        <input
+                          id={id}
+                          name="tier"
+                          type="radio"
+                          checked={tierVisible === tier}
+                          onChange={() => setTierVisible(tier)}
+                          data-cy={`plus${tier}-radio`}
+                        />
+                      </div>
+                    );
+                  })}
               </div>
-            ) : null}
+              {canSuggestNewUserFE({ user, suggestions: data.suggestions }) ? (
+                // TODO: resetScroll={false} https://twitter.com/ryanflorence/status/1527775882797907969
+                <LinkButton
+                  to="new"
+                  data-cy="new-suggest-button"
+                  prefetch="render"
+                >
+                  Suggest
+                </LinkButton>
+              ) : null}
+            </div>
+            <div className="stack lg">
+              {visibleSuggestions.map((u) => {
+                invariant(tierVisible);
+                return (
+                  <SuggestedUser
+                    key={`${u.suggestedUser.id}-${tierVisible}`}
+                    suggested={u}
+                    tier={tierVisible}
+                  />
+                );
+              })}
+              {visibleSuggestions.length === 0 ? (
+                <div className="plus__suggested-info-text text-center">
+                  No suggestions yet
+                </div>
+              ) : null}
+            </div>
           </div>
         </div>
       </div>
@@ -243,7 +246,7 @@ function useSetSelectedTierForFirstSuggestEffect({
   }, [data, tierVisible, setTierVisible]);
 }
 
-function SuggestedForInfo() {
+function SuggestedForInfo({ hideText = false }: { hideText?: boolean }) {
   const data = useLoaderData<PlusSuggestionsLoaderData>();
   const user = useUser();
 
@@ -253,6 +256,8 @@ function SuggestedForInfo() {
   }
 
   if (data.suggestedForTiers.length === 0) {
+    if (hideText) return null;
+
     return (
       <div className="plus__suggested-info-text">
         You are not suggested yet this month.
@@ -262,11 +267,13 @@ function SuggestedForInfo() {
 
   return (
     <div className="stack md">
-      <div className="plus__suggested-info-text">
-        You are suggested to{" "}
-        {data.suggestedForTiers.map((tier) => `+${tier}`).join(" and ")} this
-        month.
-      </div>
+      {!hideText ? (
+        <div className="plus__suggested-info-text">
+          You are suggested to{" "}
+          {data.suggestedForTiers.map((tier) => `+${tier}`).join(" and ")} this
+          month.
+        </div>
+      ) : null}
       {canDeleteSuggestionOfThemselves() ? (
         <div className="stack vertical md">
           {data.suggestedForTiers.map((tier) => (
