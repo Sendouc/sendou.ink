@@ -5,7 +5,7 @@ import { z } from "zod";
 import { Button, LinkButton } from "~/components/Button";
 import { Dialog } from "~/components/Dialog";
 import { Redirect } from "~/components/Redirect";
-import { PlUS_SUGGESTION_COMMENT_MAX_LENGTH } from "~/constants";
+import { PlUS_SUGGESTION_COMMENT_MAX_LENGTH, PLUS_TIERS } from "~/constants";
 import { nextNonCompletedVoting } from "~/modules/plus-server";
 import { db } from "~/db";
 import { requireUser, useUser } from "~/modules/auth";
@@ -22,7 +22,13 @@ import { CommentTextarea } from "./new";
 
 const commentActionSchema = z.object({
   text: z.string().min(1).max(PlUS_SUGGESTION_COMMENT_MAX_LENGTH),
-  tier: z.preprocess(actualNumber, z.number().min(1).max(3)),
+  tier: z.preprocess(
+    actualNumber,
+    z
+      .number()
+      .min(Math.min(...PLUS_TIERS))
+      .max(Math.max(...PLUS_TIERS))
+  ),
   suggestedId: z.preprocess(actualNumber, z.number()),
 });
 

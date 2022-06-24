@@ -86,11 +86,22 @@ function fakeUser() {
     discordAvatar: null,
     discordDiscriminator: String(faker.random.numeric(4)),
     discordId: String(faker.random.numeric(17)),
-    discordName: faker.random.word(),
+    discordName: uniqueDiscordName(),
     twitch: null,
     twitter: null,
     youtubeId: null,
   };
+}
+
+const usedNames = new Set<string>();
+function uniqueDiscordName() {
+  let result = faker.random.word();
+  while (usedNames.has(result)) {
+    result = faker.random.word();
+  }
+  usedNames.add(result);
+
+  return result;
 }
 
 const idToPlusTier = (id: number) => {

@@ -1,5 +1,6 @@
 import { formatDistance } from "date-fns";
 import type { MonthYear } from "~/modules/plus-server";
+import { nextNonCompletedVoting } from "~/modules/plus-server";
 import { atOrError } from "~/utils/arrays";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { sql } from "../sql";
@@ -190,4 +191,17 @@ const delStm = sql.prepare(`
 
 export function del(id: PlusSuggestion["id"]) {
   delStm.run({ id });
+}
+
+const deleteAllStm = sql.prepare(`
+  DELETE FROM "PlusSuggestion"
+    WHERE
+      "suggestedId" = $suggestedId
+      AND tier = $tier
+      AND month = $month
+      AND year = $year
+`);
+
+export function deleteAll(args: Pick<PlusSuggestion, "suggestedId" | "tier">) {
+  deleteAllStm.run({ ...args, ...nextNonCompletedVoting(new Date()) });
 }

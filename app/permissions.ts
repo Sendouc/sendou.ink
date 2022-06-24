@@ -130,6 +130,10 @@ function suggestionHasNoOtherComments({
   throw new Error(`Invalid suggestion id: ${suggestionId}`);
 }
 
+export function canDeleteSuggestionOfThemselves() {
+  return !isVotingActive();
+}
+
 interface CanSuggestNewUserFEArgs {
   user?: Pick<UserWithPlusTier, "id" | "plusTier">;
   suggestions: plusSuggestions.FindVisibleForUser;

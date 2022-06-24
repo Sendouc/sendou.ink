@@ -34,7 +34,13 @@ import { atOrError } from "~/utils/arrays";
 import { requireUser, useUser } from "~/modules/auth";
 
 const commentActionSchema = z.object({
-  tier: z.preprocess(actualNumber, z.number().min(1).max(3)),
+  tier: z.preprocess(
+    actualNumber,
+    z
+      .number()
+      .min(Math.min(...PLUS_TIERS))
+      .max(Math.max(...PLUS_TIERS))
+  ),
   text: z.string().min(1).max(PlUS_SUGGESTION_FIRST_COMMENT_MAX_LENGTH),
   "user[value]": z.preprocess(actualNumber, z.number().positive()),
 });

@@ -23,6 +23,7 @@ import {
   canAddCommentToSuggestionFE,
   canSuggestNewUserFE,
   canDeleteComment,
+  canDeleteSuggestionOfThemselves,
 } from "~/permissions";
 import { makeTitle, parseRequestFormData, validate } from "~/utils/remix";
 import { discordFullName } from "~/utils/strings";
@@ -30,6 +31,8 @@ import { actualNumber } from "~/utils/zod";
 import { userPage } from "~/utils/urls";
 import { RelativeTime } from "~/components/RelativeTime";
 import { databaseTimestampToDate } from "~/utils/dates";
+import { PLUS_TIERS } from "~/constants";
+import { assertUnreachable } from "~/utils/types";
 
 export const meta: MetaFunction = () => {
   return {
@@ -38,9 +41,22 @@ export const meta: MetaFunction = () => {
   };
 };
 
-const suggestionActionSchema = z.object({
-  suggestionId: z.preprocess(actualNumber, z.number()),
-});
+const suggestionActionSchema = z.union([
+  z.object({
+    _action: z.literal("DELETE_COMMENT"),
+    suggestionId: z.preprocess(actualNumber, z.number()),
+  }),
+  z.object({
+    _action: z.literal("DELETE_SUGGESTION_OF_THEMSELVES"),
+    tier: z.preprocess(
+      actualNumber,
+      z
+        .number()
+        .min(Math.min(...PLUS_TIERS))
+        .max(Math.max(...PLUS_TIERS))
+    ),
+  }),
+]);
 
 export const action: ActionFunction = async ({ request }) => {
   const data = await parseRequestFormData({
@@ -49,30 +65,46 @@ export const action: ActionFunction = async ({ request }) => {
   });
   const user = await requireUser(request);
 
-  const suggestions = db.plusSuggestions.findVisibleForUser({
-    ...nextNonCompletedVoting(new Date()),
-    plusTier: user.plusTier,
-  });
+  switch (data._action) {
+    case "DELETE_COMMENT": {
+      const suggestions = db.plusSuggestions.findVisibleForUser({
+        ...nextNonCompletedVoting(new Date()),
+        plusTier: user.plusTier,
+      });
 
-  const targetSuggestion = suggestions
-    ? Object.values(suggestions)
-        ?.flat()
-        .flatMap((u) => u.suggestions)
-        .find((s) => s.id === data.suggestionId)
-    : undefined;
+      const targetSuggestion = suggestions
+        ? Object.values(suggestions)
+            ?.flat()
+            .flatMap((u) => u.suggestions)
+            .find((s) => s.id === data.suggestionId)
+        : undefined;
 
-  validate(suggestions);
-  validate(targetSuggestion);
-  validate(
-    canDeleteComment({
-      user,
-      author: targetSuggestion.author,
-      suggestionId: data.suggestionId,
-      suggestions,
-    })
-  );
+      validate(suggestions);
+      validate(targetSuggestion);
+      validate(
+        canDeleteComment({
+          user,
+          author: targetSuggestion.author,
+          suggestionId: data.suggestionId,
+          suggestions,
+        })
+      );
 
-  db.plusSuggestions.del(data.suggestionId);
+      db.plusSuggestions.del(data.suggestionId);
+
+      break;
+    }
+    case "DELETE_SUGGESTION_OF_THEMSELVES": {
+      validate(canDeleteSuggestionOfThemselves());
+
+      db.plusSuggestions.deleteAll({ suggestedId: user.id, tier: data.tier });
+
+      break;
+    }
+    default: {
+      assertUnreachable(data);
+    }
+  }
 
   return null;
 };
@@ -229,10 +261,30 @@ function SuggestedForInfo() {
   }
 
   return (
-    <div className="plus__suggested-info-text">
-      You are suggested for{" "}
-      {data.suggestedForTiers.map((tier) => `+${tier}`).join(" and ")} this
-      month.
+    <div className="stack md">
+      <div className="plus__suggested-info-text">
+        You are suggested to{" "}
+        {data.suggestedForTiers.map((tier) => `+${tier}`).join(" and ")} this
+        month.
+      </div>
+      {canDeleteSuggestionOfThemselves() ? (
+        <div className="stack vertical md">
+          {data.suggestedForTiers.map((tier) => (
+            <FormWithConfirm
+              key={tier}
+              fields={[
+                ["_action", "DELETE_SUGGESTION_OF_THEMSELVES"],
+                ["tier", tier],
+              ]}
+              dialogHeading={`Delete your suggestion to +${tier}? You won't appear in next voting.`}
+            >
+              <Button key={tier} tiny variant="destructive" type="submit">
+                Delete your +{tier} suggestion
+              </Button>
+            </FormWithConfirm>
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -375,7 +427,10 @@ function CommentDeleteButton({
 }) {
   return (
     <FormWithConfirm
-      fields={[["suggestionId", suggestionId]]}
+      fields={[
+        ["suggestionId", suggestionId],
+        ["_action", "DELETE_COMMENT"],
+      ]}
       dialogHeading={
         isFirstSuggestion
           ? `Delete your suggestion of ${suggestedDiscordName} to +${tier}?`
