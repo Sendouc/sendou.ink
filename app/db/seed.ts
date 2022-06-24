@@ -8,6 +8,7 @@ import { db } from "~/db";
 import { sql } from "~/db/sql";
 import type { UpsertManyPlusVotesArgs } from "./models/plusVotes.server";
 import { ADMIN_DISCORD_ID } from "~/constants";
+import shuffle from "just-shuffle";
 
 const ADMIN_TEST_AVATAR = "fcfd65a3bea598905abb9ca25296816b";
 
@@ -22,6 +23,7 @@ const basicSeeds = [
   lastMonthsVoting,
   lastMonthSuggestions,
   thisMonthsSuggestions,
+  badgesToAdmin,
 ];
 
 export function seed() {
@@ -32,7 +34,7 @@ export function seed() {
 }
 
 function wipeDB() {
-  const tablesToDelete = ["User", "PlusSuggestion", "PlusVote"];
+  const tablesToDelete = ["User", "PlusSuggestion", "PlusVote", "BadgeOwner"];
 
   for (const table of tablesToDelete) {
     sql.prepare(`delete from "${table}"`).run();
@@ -194,5 +196,28 @@ function thisMonthsSuggestions() {
         tier: suggester.plusTier,
       });
     }
+  }
+}
+
+function badgesToAdmin() {
+  const availableBadgeCodes = shuffle(
+    sql
+      .prepare(`select "code" from "Badge"`)
+      .all()
+      .map((b) => b.code)
+  ).slice(0, 8) as string[];
+
+  const badgesWithDuplicates = availableBadgeCodes.flatMap((code) =>
+    new Array(faker.helpers.arrayElement([1, 1, 1, 2, 3, 4]))
+      .fill(null)
+      .map(() => code)
+  );
+
+  for (const code of badgesWithDuplicates) {
+    sql
+      .prepare(
+        `insert into "BadgeOwner" ("code", "userId") values ($code, $userId)`
+      )
+      .run({ code, userId: 1 });
   }
 }
