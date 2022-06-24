@@ -6,6 +6,7 @@ import { z } from "zod";
 import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { db } from "~/db";
+import type { CountsByUserId } from "~/db/models/badges.server";
 import type { User } from "~/db/types";
 import { useUser } from "~/modules/auth";
 import { makeTitle, notFoundIfFalsy } from "~/utils/remix";
@@ -30,7 +31,10 @@ export type UserPageLoaderData = Pick<
   | "twitch"
   | "twitter"
   | "bio"
-> & { country?: { name: string; emoji: string; code: string } };
+> & {
+  country?: { name: string; emoji: string; code: string };
+  badges: CountsByUserId;
+};
 
 export const loader: LoaderFunction = ({ params }) => {
   const { identifier } = userParamsSchema.parse(params);
@@ -58,6 +62,7 @@ export const loader: LoaderFunction = ({ params }) => {
             code: user.country,
           }
         : undefined,
+    badges: db.badges.countsByUserId(user.id),
   });
 };
 
