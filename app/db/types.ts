@@ -51,3 +51,18 @@ export interface PlusTier {
   userId: number;
   tier: number;
 }
+
+export interface Badge {
+  code: string;
+  displayName: string;
+}
+
+export interface BadgeOwner {
+  code: string;
+  userId: number;
+}
+
+export interface BadgeManager {
+  code: string;
+  userId: number;
+}
