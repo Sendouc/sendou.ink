@@ -89,15 +89,19 @@ function BadgeContainer(props: { badges: UserPageLoaderData["badges"] }) {
         {smallBadges.length > 0 ? (
           <div className="u__small-badges">
             {smallBadges.map((badge) => (
-              <img
-                key={badge.code}
-                src={`/gif/badges/${badge.code}.gif`}
-                alt={badge.displayName}
-                title={badge.displayName}
-                onClick={() => setBadgeFirst(badge)}
-                width="48"
-                height="48"
-              />
+              <div key={badge.code} className="u__small-badge-container">
+                <img
+                  src={`/gif/badges/${badge.code}.gif`}
+                  alt={badge.displayName}
+                  title={badge.displayName}
+                  onClick={() => setBadgeFirst(badge)}
+                  width="48"
+                  height="48"
+                />
+                {badge.count > 1 ? (
+                  <div className="u__small-badge-count">x{badge.count}</div>
+                ) : null}
+              </div>
             ))}
           </div>
         ) : null}
@@ -110,5 +114,6 @@ function BadgeContainer(props: { badges: UserPageLoaderData["badges"] }) {
 }
 
 function badgeExplanationText(badge: Unpacked<UserPageLoaderData["badges"]>) {
-  return `Awarded for winning ${badge.displayName}`;
+  const countString = badge.count > 1 ? ` (x${badge.count})` : "";
+  return `Awarded for winning ${badge.displayName}${countString}`;
 }

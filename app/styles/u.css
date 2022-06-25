@@ -104,11 +104,27 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  gap: var(--s-1);
+  gap: var(--s-3);
 }
 
 .u__badge-explanation {
   color: var(--text-lighter);
   font-size: var(--fonts-xs);
   text-align: center;
+}
+
+.u__small-badge-container {
+  position: relative;
+}
+
+.u__small-badge-count {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin-top: -10px;
+  margin-right: auto;
+  margin-left: auto;
+  color: var(--theme-secondary);
+  font-size: var(--fonts-xxxs);
+  font-weight: var(--bold);
 }
