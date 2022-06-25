@@ -2,11 +2,11 @@ import { sql } from "../sql";
 import type { Badge, User } from "../types";
 
 const countsByUserIdStm = sql.prepare(`
-  select "Badge"."code", "Badge"."displayName", count("BadgeOwner"."code") as count 
+  select "Badge"."code", "Badge"."displayName", count("BadgeOwner"."badgeId") as count 
     from "BadgeOwner" 
-    join "Badge" on "Badge"."code" = "BadgeOwner"."code"
+    join "Badge" on "Badge"."id" = "BadgeOwner"."badgeId"
     where "BadgeOwner"."userId" = $userId 
-    group by "BadgeOwner"."code", "BadgeOwner"."userId"
+    group by "BadgeOwner"."badgeId", "BadgeOwner"."userId"
   `);
 
 export type CountsByUserId = Array<

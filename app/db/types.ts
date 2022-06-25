@@ -53,16 +53,17 @@ export interface PlusTier {
 }
 
 export interface Badge {
+  id: number;
   code: string;
   displayName: string;
 }
 
 export interface BadgeOwner {
-  code: string;
+  badgeId: number;
   userId: number;
 }
 
 export interface BadgeManager {
-  code: string;
+  badgeId: number;
   userId: number;
 }

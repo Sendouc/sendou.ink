@@ -202,22 +202,22 @@ function thisMonthsSuggestions() {
 function badgesToAdmin() {
   const availableBadgeCodes = shuffle(
     sql
-      .prepare(`select "code" from "Badge"`)
+      .prepare(`select "id" from "Badge"`)
       .all()
-      .map((b) => b.code)
-  ).slice(0, 8) as string[];
+      .map((b) => b.id)
+  ).slice(0, 8) as number[];
 
-  const badgesWithDuplicates = availableBadgeCodes.flatMap((code) =>
+  const badgesWithDuplicates = availableBadgeCodes.flatMap((id) =>
     new Array(faker.helpers.arrayElement([1, 1, 1, 2, 3, 4]))
       .fill(null)
-      .map(() => code)
+      .map(() => id)
   );
 
-  for (const code of badgesWithDuplicates) {
+  for (const id of badgesWithDuplicates) {
     sql
       .prepare(
-        `insert into "BadgeOwner" ("code", "userId") values ($code, $userId)`
+        `insert into "BadgeOwner" ("badgeId", "userId") values ($id, $userId)`
       )
-      .run({ code, userId: 1 });
+      .run({ id, userId: 1 });
   }
 }

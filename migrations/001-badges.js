@@ -2,7 +2,8 @@ module.exports.up = function (db) {
   db.prepare(
     `
     create table "Badge" (
-      "code" text not null primary key,
+      "id" integer primary key,
+      "code" text not null,
       "displayName" text not null
     ) strict
   `
@@ -17,7 +18,7 @@ module.exports.up = function (db) {
   db.prepare(
     `
     create table "BadgeOwner" (
-      "code" text not null,
+      "badgeId" integer not null,
       "userId" integer not null
     ) strict
   `
@@ -26,9 +27,9 @@ module.exports.up = function (db) {
   db.prepare(
     `
     create table "BadgeManager" (
-      "code" text not null,
+      "badgeId" integer not null,
       "userId" integer not null,
-      unique("code", "userId") on conflict rollback
+      unique("badgeId", "userId") on conflict rollback
     ) strict
   `
   ).run();
@@ -163,7 +164,7 @@ function initialBadgesForDb() {
       displayName: "LUTI Season 12 (Div 8)",
     },
     {
-      code: "lutitan2",
+      code: "lutitan",
       displayName: "LUTI Season 12 (Div 9)",
     },
     {
