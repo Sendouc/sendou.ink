@@ -2,12 +2,15 @@ import type { LinksFunction } from "@remix-run/node";
 import { useMatches } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { Avatar } from "~/components/Avatar";
-import { SocialLink } from "~/components/u/SocialLink";
 import styles from "~/styles/u.css";
 import type { UserPageLoaderData } from "../u.$identifier";
 import * as React from "react";
 import type { Unpacked } from "~/utils/types";
 import clsx from "clsx";
+import { assertUnreachable } from "~/utils/types";
+import { TwitchIcon } from "~/components/icons/Twitch";
+import { TwitterIcon } from "~/components/icons/Twitter";
+import { YouTubeIcon } from "~/components/icons/YouTube";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -53,6 +56,58 @@ export default function UserInfoPage() {
       {data.bio ? <article className="u__bio">{data.bio}</article> : null}
     </div>
   );
+}
+
+interface SocialLinkProps {
+  type: "youtube" | "twitter" | "twitch";
+  identifier: string;
+}
+
+export function SocialLink({
+  type,
+  identifier,
+}: {
+  type: "youtube" | "twitter" | "twitch";
+  identifier: string;
+}) {
+  const href = () => {
+    switch (type) {
+      case "twitch":
+        return `https://www.twitch.tv/${identifier}`;
+      case "twitter":
+        return `https://www.twitter.com/${identifier}`;
+      case "youtube":
+        return `https://www.youtube.com/channel/${identifier}`;
+      default:
+        assertUnreachable(type);
+    }
+  };
+
+  return (
+    <a
+      className={clsx("u__social-link", {
+        youtube: type === "youtube",
+        twitter: type === "twitter",
+        twitch: type === "twitch",
+      })}
+      href={href()}
+    >
+      <SocialLinkIcon type={type} />
+    </a>
+  );
+}
+
+function SocialLinkIcon({ type }: Pick<SocialLinkProps, "type">) {
+  switch (type) {
+    case "twitch":
+      return <TwitchIcon />;
+    case "twitter":
+      return <TwitterIcon />;
+    case "youtube":
+      return <YouTubeIcon />;
+    default:
+      assertUnreachable(type);
+  }
 }
 
 function BadgeContainer(props: { badges: UserPageLoaderData["badges"] }) {
