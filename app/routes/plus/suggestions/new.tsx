@@ -150,7 +150,7 @@ export default function PlusNewSuggestionModalPage() {
             <ErrorMessage>{selectedUserErrorMessage}</ErrorMessage>
           ) : null}
         </div>
-        <CommentTextarea />
+        <CommentTextarea maxLength={PlUS_SUGGESTION_FIRST_COMMENT_MAX_LENGTH} />
         <div className="plus__modal-buttons">
           <Button
             type="submit"
@@ -199,7 +199,7 @@ function getSelectedUserErrorMessage({
 }
 
 // TODO: better UX - allow going over but prevent submit like Twitter
-export function CommentTextarea() {
+export function CommentTextarea({ maxLength }: { maxLength: number }) {
   const [value, setValue] = React.useState("");
   return (
     <div>
@@ -207,7 +207,7 @@ export function CommentTextarea() {
         htmlFor="text"
         valueLimits={{
           current: value.length,
-          max: PlUS_SUGGESTION_FIRST_COMMENT_MAX_LENGTH,
+          max: maxLength,
         }}
       >
         Your comment
@@ -219,7 +219,7 @@ export function CommentTextarea() {
         rows={4}
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        maxLength={PlUS_SUGGESTION_FIRST_COMMENT_MAX_LENGTH}
+        maxLength={maxLength}
         data-cy="comment-textarea"
         required
       />
