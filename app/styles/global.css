@@ -7,6 +7,7 @@
   --bg-lighter-transparent: hsla(237.3deg 42.3% 35.6% / 50%);
   --bg-darker-very-transparent: hsla(237.3deg 42.3% 26.6% / 50%);
   --bg-darker-transparent: hsla(237.3deg 42.3% 26.6% / 90%);
+  --bg-badge: #000;
   --border: hsl(237.3deg 42.3% 45.6%);
   --button-text: rgb(0 0 0 / 85%);
   --button-text-transparent: rgb(0 0 0 / 65%);

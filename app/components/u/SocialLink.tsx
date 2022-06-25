@@ -8,6 +8,8 @@ interface SocialLinkProps {
   type: "youtube" | "twitter" | "twitch";
   identifier: string;
 }
+
+// xxx: move to route file
 export function SocialLink({
   type,
   identifier,

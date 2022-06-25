@@ -1,7 +1,7 @@
 .u__container {
   display: flex;
   flex-direction: column;
-  gap: var(--s-8);
+  gap: var(--s-6);
 }
 
 .u__avatar-container {
@@ -87,4 +87,28 @@
 
 .u__bio {
   white-space: pre-wrap;
+}
+
+.u__badges {
+  display: flex;
+  max-width: 24rem;
+  padding: var(--s-2);
+  background-color: var(--bg-badge);
+  border-radius: var(--rounded);
+  margin-inline: auto;
+}
+
+.u__small-badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  gap: var(--s-1);
+}
+
+.u__badge-explanation {
+  color: var(--text-lighter);
+  font-size: var(--fonts-xs);
+  text-align: center;
 }
