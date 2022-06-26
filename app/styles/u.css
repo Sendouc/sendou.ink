@@ -121,10 +121,10 @@
   position: absolute;
   top: 0;
   right: 0;
-  margin-top: -10px;
+  margin-top: -8px;
   margin-right: auto;
   margin-left: auto;
-  color: var(--theme-secondary);
+  color: var(--theme-vibrant);
   font-size: var(--fonts-xxxs);
   font-weight: var(--bold);
 }

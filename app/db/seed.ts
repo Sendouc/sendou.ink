@@ -24,6 +24,7 @@ const basicSeeds = [
   lastMonthSuggestions,
   thisMonthsSuggestions,
   badgesToAdmin,
+  badgesToUsers,
 ];
 
 export function seed() {
@@ -200,14 +201,14 @@ function thisMonthsSuggestions() {
 }
 
 function badgesToAdmin() {
-  const availableBadgeCodes = shuffle(
+  const availableBadgeIds = shuffle(
     sql
       .prepare(`select "id" from "Badge"`)
       .all()
       .map((b) => b.id)
   ).slice(0, 8) as number[];
 
-  const badgesWithDuplicates = availableBadgeCodes.flatMap((id) =>
+  const badgesWithDuplicates = availableBadgeIds.flatMap((id) =>
     new Array(faker.helpers.arrayElement([1, 1, 1, 2, 3, 4]))
       .fill(null)
       .map(() => id)
@@ -219,5 +220,41 @@ function badgesToAdmin() {
         `insert into "BadgeOwner" ("badgeId", "userId") values ($id, $userId)`
       )
       .run({ id, userId: 1 });
+  }
+}
+
+function badgesToUsers() {
+  const availableBadgeIds = shuffle(
+    sql
+      .prepare(`select "id" from "Badge"`)
+      .all()
+      .map((b) => b.id)
+  );
+
+  let userIds = sql
+    .prepare(`select "id" from "User"`)
+    .all()
+    .map((u) => u.id) as number[];
+
+  for (const id of availableBadgeIds) {
+    userIds = shuffle(userIds);
+    for (
+      let i = 0;
+      i <
+      faker.datatype.number({
+        min: 1,
+        max: 24,
+      });
+      i++
+    ) {
+      const userToGetABadge = userIds.shift()!;
+      sql
+        .prepare(
+          `insert into "BadgeOwner" ("badgeId", "userId") values ($id, $userId)`
+        )
+        .run({ id, userId: userToGetABadge });
+
+      userIds.push(userToGetABadge);
+    }
   }
 }

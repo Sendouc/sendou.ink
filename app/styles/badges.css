@@ -1,0 +1,13 @@
+.badges__container {
+  display: flex;
+  padding: var(--s-2);
+  background-color: var(--bg-badge);
+  border-radius: var(--rounded);
+}
+
+.badges__small-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--s-2);
+}
