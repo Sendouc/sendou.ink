@@ -123,7 +123,7 @@ export function navItemsGrouped(isPlusMember: boolean): {
     {
       title: "misc",
       items: [
-        { name: "badges", disabled: true },
+        { name: "badges", disabled: false },
         { name: "links", disabled: true },
         ...(isPlusMember
           ? [

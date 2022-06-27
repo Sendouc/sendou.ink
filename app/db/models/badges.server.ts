@@ -19,7 +19,7 @@ export function countsByUserId(userId: User["id"]) {
   return countsByUserIdStm.all({ userId }) as CountsByUserId;
 }
 
-// xxx: but how does admin give to rights to badge if those with 0 owners don't show?
+// xxx: make it so that it returns all badges not just owned
 const allWithAtLeastOneOwnerStm = sql.prepare(`
   select "Badge"."id", "Badge"."code", "Badge"."displayName"
     from "Badge"
@@ -34,4 +34,28 @@ export type AllWithAtLeastOneOwner = Array<
 
 export function allWithAtLeastOneOwner() {
   return allWithAtLeastOneOwnerStm.all() as AllWithAtLeastOneOwner;
+}
+
+export type OwnersByBadge = Array<
+  Pick<User, "id" | "discordId" | "discordName" | "discordDiscriminator"> & {
+    count: number;
+  }
+>;
+
+const ownersByBadgeIdStm = sql.prepare(`
+  select 
+      count("BadgeOwner"."badgeId") as count, 
+      "User"."id",
+      "User"."discordId",
+      "User"."discordName",
+      "User"."discordDiscriminator"
+    from "BadgeOwner" 
+    join "User" on "User"."id" = "BadgeOwner"."userId"
+    where "BadgeOwner"."badgeId" = $id
+    group by "User"."id"
+    order by count desc
+`);
+
+export function ownersByBadgeId(id: Badge["id"]) {
+  return ownersByBadgeIdStm.all({ id }) as OwnersByBadge;
 }

@@ -11,6 +11,7 @@ import { assertUnreachable } from "~/utils/types";
 import { TwitchIcon } from "~/components/icons/Twitch";
 import { TwitterIcon } from "~/components/icons/Twitter";
 import { YouTubeIcon } from "~/components/icons/YouTube";
+import { badgeExplanationText } from "../badges/$id";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -155,7 +156,7 @@ function BadgeContainer(props: { badges: UserPageLoaderData["badges"] }) {
                   height="48"
                 />
                 {badge.count > 1 ? (
-                  <div className="u__small-badge-count">x{badge.count}</div>
+                  <div className="u__small-badge-count">×{badge.count}</div>
                 ) : null}
               </div>
             ))}
@@ -167,9 +168,4 @@ function BadgeContainer(props: { badges: UserPageLoaderData["badges"] }) {
       </div>
     </div>
   );
-}
-
-function badgeExplanationText(badge: Unpacked<UserPageLoaderData["badges"]>) {
-  const countString = badge.count > 1 ? ` (x${badge.count})` : "";
-  return `Awarded for winning ${badge.displayName}${countString}`;
 }

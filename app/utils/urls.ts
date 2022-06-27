@@ -6,6 +6,7 @@ export const LOG_IN_URL = "/auth";
 export const LOG_OUT_URL = "/auth/logout";
 export const PLUS_SUGGESTIONS_PAGE = "/plus/suggestions";
 export const ADMIN_PAGE = "/admin";
+export const BADGES_PAGE = "/badges";
 export const STOP_IMPERSONATING_URL = "/auth/impersonate/stop";
 
 export const userPage = (discordId: string) => `/u/${discordId}`;
