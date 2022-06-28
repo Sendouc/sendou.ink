@@ -4,9 +4,24 @@
   position: relative;
   z-index: 501;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   padding: var(--s-4);
   background-color: var(--bg);
+}
+
+.layout__page-heading {
+  display: flex;
+  align-items: center;
+  font-size: var(--fonts-md);
+  font-weight: var(--bold);
+  gap: var(--s-2-5);
+  letter-spacing: 0.02rem;
+}
+
+.layout__icon {
+  background-color: var(--bg-lighter);
+  background-image: url("/svg/background-pattern.svg");
+  border-radius: var(--rounded);
 }
 
 .layout__header__right-container {

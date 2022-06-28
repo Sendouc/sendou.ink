@@ -92,6 +92,7 @@
 .u__badges {
   display: flex;
   max-width: 24rem;
+  align-items: center;
   padding: var(--s-2);
   background-color: var(--bg-badge);
   border-radius: var(--rounded);
