@@ -2,6 +2,8 @@ import clsx from "clsx";
 import { Link } from "@remix-run/react";
 import navItems from "./nav-items.json";
 
+// xxx: rename to Menu
+// xxx: overflows but maybe on chrome mobile emulator only?
 export function MobileMenu({
   expanded,
   closeMenu,

@@ -92,46 +92,26 @@
 .layout__mobile-nav {
   position: absolute;
   z-index: 500;
-  bottom: 100vh;
-  width: 100%;
-  height: 100%;
-  padding-bottom: var(--s-6);
-  background-color: var(--bg-lighter);
-  background-image: url("/svg/background-pattern.svg");
-  overflow-y: auto;
-
-  /* TODO: same for Safari */
-  overscroll-behavior: contain;
-  transition: bottom 0.5s;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.layout__mobile-nav.expanded {
-  bottom: 0;
-}
-
-/* .layout__mobile-nav {
-  position: absolute;
-  z-index: 500;
-  bottom: 100vh;
+  top: 0;
   right: 0;
-  width: 35%;
-  height: 50%;
-  padding-bottom: var(--s-6);
+  width: max-content;
+  height: max-content;
+  margin-top: 10rem;
+  margin-right: -12rem;
+  backdrop-filter: blur(10px) brightness(75%);
   background-color: var(--bg-lighter);
   background-image: url("/svg/background-pattern.svg");
+  border-end-start-radius: var(--rounded);
+  border-start-start-radius: var(--rounded);
   overflow-y: auto;
-
-  /* TODO: same for Safari
-  overscroll-behavior: contain;
-  transition: bottom 0.5s;
+  transition: margin-right 0.5s;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .layout__mobile-nav.expanded {
-  bottom: 50vh;
-  border-radius: var(--rounded);
-} */
+  margin-right: 0;
+}
+
 .layout__mobile-nav__link__icon {
   width: 2rem;
   height: 2rem;
@@ -142,26 +122,15 @@
   justify-content: center;
   grid-auto-columns: 1fr;
   grid-auto-rows: 4rem;
-  padding-block-start: 6rem;
-}
-
-.layout__mobile-nav__group-title {
-  align-self: flex-end;
-  padding: var(--s-2) var(--s-3);
-  margin-bottom: var(--s-1);
-  background-color: var(--bg);
-  border-radius: var(--rounded);
-  font-weight: var(--bold);
-  justify-self: center;
-  text-transform: uppercase;
+  padding-block: var(--s-4);
 }
 
 .layout__mobile-nav__link {
   display: flex;
   align-items: center;
-  padding: 0 var(--s-2);
+  padding: 0 var(--s-4);
   border-top: 3px solid var(--bg-lighter);
-  margin: 0 var(--s-12);
+  margin: 0 var(--s-4);
   background-color: var(--bg);
   color: var(--text);
   font-size: var(--fonts-sm);

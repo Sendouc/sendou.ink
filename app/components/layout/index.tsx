@@ -13,6 +13,7 @@ export const Layout = React.memo(function Layout({
   const location = useLocation();
   const [menuOpen, setMenuOpen] = React.useState(false);
 
+  // xxx: does not work on all tabs in plus
   const currentPagesNavItem = navItems.find((navItem) =>
     location.pathname.includes(navItem.url)
   );
@@ -24,7 +25,7 @@ export const Layout = React.memo(function Layout({
           <h1 className="layout__page-heading">
             <img
               className="layout__icon"
-              // xxx: from constant... but this will be compnanet anyway?
+              // xxx: from constant... but this will be a component anyway?
               // xxx: change to avif
               src={`/img/layout/${currentPagesNavItem.name}.webp`}
               width="40"

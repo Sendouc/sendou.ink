@@ -245,6 +245,7 @@ function Voting(data: Extract<PlusVotingLoaderData, { type: "voting" }>) {
       )}
       {currentUser ? (
         <div className="stack md items-center">
+          {/* xxx: doesn't seem to work at all */}
           <Avatar
             discordAvatar={currentUser.user.discordAvatar}
             discordId={currentUser.user.discordId}
@@ -252,6 +253,7 @@ function Voting(data: Extract<PlusVotingLoaderData, { type: "voting" }>) {
           />
           <h2>{discordFullName(currentUser.user)}</h2>
           <div className="stack vertical md">
+            {/* xxx: has purple outline when focused */}
             <Button
               className="plus-voting__vote-button downvote"
               variant="outlined"
