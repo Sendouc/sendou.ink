@@ -11,7 +11,7 @@ export function Menu({
   closeMenu: () => void;
 }) {
   return (
-    <div className={clsx("layout__menu", { expanded })}>
+    <nav className={clsx("layout__menu", { expanded })} aria-hidden={!expanded}>
       <div className="layout__menu__links">
         {navItems.map((navItem, i) => (
           <Link
@@ -23,6 +23,7 @@ export function Menu({
             to={navItem.url ?? navItem.name}
             onClick={closeMenu}
             data-cy={`menu-link-${navItem.name}`}
+            tabIndex={!expanded ? -1 : undefined}
           >
             <img
               className="layout__menu__link__icon"
@@ -33,6 +34,6 @@ export function Menu({
           </Link>
         ))}
       </div>
-    </div>
+    </nav>
   );
 }
