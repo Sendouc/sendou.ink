@@ -1,6 +1,6 @@
 import * as React from "react";
 import { HamburgerButton } from "./HamburgerButton";
-import { MobileMenu } from "./MobileMenu";
+import { Menu } from "./Menu";
 import { UserItem } from "./UserItem";
 import navItems from "./nav-items.json";
 import { useLocation } from "@remix-run/react";
@@ -45,7 +45,7 @@ export const Layout = React.memo(function Layout({
           />
         </div>
       </header>
-      <MobileMenu expanded={menuOpen} closeMenu={() => setMenuOpen(false)} />
+      <Menu expanded={menuOpen} closeMenu={() => setMenuOpen(false)} />
       {children}
     </>
   );
