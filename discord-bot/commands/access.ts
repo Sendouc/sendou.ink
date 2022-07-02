@@ -1,4 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
+import { GuildMemberRoleManager } from "discord.js";
 import invariant from "tiny-invariant";
 import { LOHI_TOKEN_HEADER_NAME } from "~/constants";
 import type { PlusListLoaderData } from "~/routes/plus/list";
@@ -6,6 +7,13 @@ import ids from "../ids";
 import type { BotCommand } from "../types";
 
 const COMMAND_NAME = "access";
+
+const plusTierRoles = [
+  "",
+  ids.roles.plusOne,
+  ids.roles.plusTwo,
+  ids.roles.plusThree,
+] as const;
 
 export const accessCommand: BotCommand = {
   guilds: [ids.guilds.plusServer],
@@ -17,13 +25,45 @@ export const accessCommand: BotCommand = {
     ),
   execute: async ({ interaction }) => {
     const { users } = await usersWithAccess();
+    const ownUser = users.find((u) => u.discordId === interaction.user.id);
 
-    if (!users.some((u) => u.discordId === interaction.user.id)) {
-      return interaction.reply("You currently don't have access");
+    if (!ownUser) {
+      return interaction.reply({
+        content: "You currently don't have access",
+        ephemeral: true,
+      });
     }
 
-    // TODO: logic to change roles here
-    return interaction.reply("ok");
+    const targetRoleId = plusTierRoles[ownUser.plusTier];
+    if (!targetRoleId) {
+      throw new Error(`No role for plus tier "${ownUser.plusTier}"`);
+    }
+
+    const roleManager = interaction.member?.roles as GuildMemberRoleManager;
+    const usersRoleIds = roleManager.cache.map((r) => r.id);
+    const alreadyHasRole = usersRoleIds.some((id) => id === targetRoleId);
+
+    if (alreadyHasRole) {
+      return interaction.reply({
+        content: `You have access to +${ownUser.plusTier} and already have the role for it`,
+        ephemeral: true,
+      });
+    }
+
+    const roleIdsToDelete = usersRoleIds.filter((id) =>
+      plusTierRoles.includes(id as any)
+    );
+
+    for (const roleIdToDelete of roleIdsToDelete) {
+      await roleManager.remove(roleIdToDelete);
+    }
+
+    await roleManager.add(targetRoleId);
+
+    return interaction.reply({
+      content: `Gave the role giving access to +${ownUser.plusTier}`,
+      ephemeral: true,
+    });
   },
 };
 
