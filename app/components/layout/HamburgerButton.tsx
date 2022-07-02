@@ -13,6 +13,7 @@ export function HamburgerButton({
       onClick={onClick}
       data-cy="hamburger-button"
       type="button"
+      aria-label={!expanded ? "Open menu" : "Close menu"}
     >
       <svg
         width="32"
