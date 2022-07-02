@@ -13,9 +13,8 @@ export const Layout = React.memo(function Layout({
   const location = useLocation();
   const [menuOpen, setMenuOpen] = React.useState(false);
 
-  // xxx: does not work on all tabs in plus
   const currentPagesNavItem = navItems.find((navItem) =>
-    location.pathname.includes(navItem.url)
+    location.pathname.includes(navItem.name)
   );
 
   return (
