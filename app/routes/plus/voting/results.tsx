@@ -8,7 +8,7 @@ import { Link, useLoaderData } from "@remix-run/react";
 import { lastCompletedVoting } from "~/modules/plus-server";
 import { db } from "~/db";
 import type { PlusVotingResultByMonthYear } from "~/db/models/plusVotes.server";
-import type { PlusVotingResult, UserWithPlusTier } from "~/db/types";
+import type { PlusVotingResult } from "~/db/types";
 import { roundToTwoDecimalPlaces } from "~/utils/number";
 import { makeTitle } from "~/utils/remix";
 import type { Unpacked } from "~/utils/types";
@@ -48,7 +48,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   });
 
   return json<PlusVotingResultsLoaderData>({
-    results: shouldShowResults(user) ? results : undefined,
+    results,
     ownScores: ownScores?.map(maybeHideScore),
   });
 };
@@ -144,8 +144,4 @@ function maybeHideScore(
     score: showScore ? roundToTwoDecimalPlaces(score.score) : undefined,
     passedVoting: score.passedVoting,
   };
-}
-
-function shouldShowResults(user?: UserWithPlusTier) {
-  return Boolean(user?.plusTier);
 }
