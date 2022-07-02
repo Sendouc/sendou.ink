@@ -253,7 +253,6 @@ function Voting(data: Extract<PlusVotingLoaderData, { type: "voting" }>) {
           />
           <h2>{discordFullName(currentUser.user)}</h2>
           <div className="stack vertical md">
-            {/* xxx: has purple outline when focused */}
             <Button
               className="plus-voting__vote-button downvote"
               variant="outlined"

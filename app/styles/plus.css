@@ -110,6 +110,7 @@
 
 .plus-voting__vote-button.downvote {
   border-color: var(--theme-error-transparent);
+  outline-color: var(--theme-error);
 }
 
 .plus-voting__submit-button {
