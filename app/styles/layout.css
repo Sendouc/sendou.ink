@@ -115,6 +115,9 @@
 .layout__menu__link__icon {
   width: 2rem;
   height: 2rem;
+  background-color: var(--bg-lighter);
+  background-image: url("/svg/background-pattern.svg");
+  border-radius: var(--rounded);
 }
 
 .layout__menu__links {
