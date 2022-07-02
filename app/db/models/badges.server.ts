@@ -19,13 +19,9 @@ export function countsByUserId(userId: User["id"]) {
   return countsByUserIdStm.all({ userId }) as CountsByUserId;
 }
 
-// xxx: make it so that it returns all badges not just owned
 const allWithAtLeastOneOwnerStm = sql.prepare(`
   select "Badge"."id", "Badge"."code", "Badge"."displayName"
     from "Badge"
-    join "BadgeOwner" on "BadgeOwner"."badgeId" = "Badge"."id"
-    group by "Badge"."id"
-    having count("BadgeOwner"."userId") > 0
 `);
 
 export type AllWithAtLeastOneOwner = Array<
