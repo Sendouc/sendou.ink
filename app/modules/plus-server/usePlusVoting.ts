@@ -55,7 +55,7 @@ export function usePlusVoting(usersForVotingFromServer: UsersForVoting) {
     setVotes,
   });
 
-  useVoteWithArrowKeysEffect(addVote);
+  useVoteWithKeysEffect(addVote);
 
   const currentUser = usersForVoting?.[votes.length];
 
@@ -133,15 +133,13 @@ function useLoadInitialStateFromLocalStorageEffect({
   }, [month, year, usersForVotingFromServer, setUsersForVoting, setVotes]);
 }
 
-function useVoteWithArrowKeysEffect(
-  vote: (type: "upvote" | "downvote") => void
-) {
+function useVoteWithKeysEffect(vote: (type: "upvote" | "downvote") => void) {
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.code === "ArrowRight") {
-        vote("upvote");
-      } else if (e.code === "ArrowLeft") {
+      if (e.code === "KeyS") {
         vote("downvote");
+      } else if (e.code === "KeyK") {
+        vote("upvote");
       }
     };
 

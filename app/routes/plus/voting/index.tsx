@@ -199,7 +199,7 @@ function VotingTimingInfo(
 
 const tips = [
   "Voting progress is saved locally",
-  "Use left and right arrows on desktop to vote",
+  "Use S (-1) and K (+1) arrows on desktop to vote",
   "You +1 yourself automatically",
 ];
 
