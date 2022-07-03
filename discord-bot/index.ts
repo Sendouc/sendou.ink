@@ -6,7 +6,9 @@ import { commandsMap } from "./commands";
 
 invariant(process.env["BOT_TOKEN"], "DISCORD_TOKEN must be set");
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+const client = new Client({
+  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS],
+});
 
 client.once("ready", () => {
   // eslint-disable-next-line no-console

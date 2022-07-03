@@ -2,7 +2,7 @@
   "name": "lohi",
   "scripts": {
     "dev": "node --experimental-fetch --require ts-node/register --require tsconfig-paths/register index.ts",
-    "commands": "ts-node deploy-commands.ts",
+    "commands": "node --experimental-fetch --require ts-node/register --require tsconfig-paths/register deploy-commands.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "typecheck": "tsc --noEmit"
   },

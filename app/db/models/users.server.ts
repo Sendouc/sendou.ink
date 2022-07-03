@@ -91,11 +91,9 @@ SELECT "User"."discordId", "PlusTier"."tier" as "plusTier"
   WHERE "PlusTier"."tier" IS NOT NULL
 `);
 
-export type FindAllPlusMembers = Pick<
-  UserWithPlusTier,
-  "discordId" | "plusTier"
->[];
-
 export function findAllPlusMembers() {
-  return findAllPlusMembersStm.all() as FindAllPlusMembers;
+  return findAllPlusMembersStm.all() as Array<{
+    discordId: User["discordId"];
+    plusTier: NonNullable<UserWithPlusTier["plusTier"]>;
+  }>;
 }

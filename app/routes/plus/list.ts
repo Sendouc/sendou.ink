@@ -2,10 +2,9 @@ import { json } from "@remix-run/node";
 import type { LoaderFunction } from "@remix-run/node";
 import { db } from "~/db";
 import { canAccessLohiEndpoint } from "~/permissions";
-import type { FindAllPlusMembers } from "~/db/models/users.server";
 
 export interface PlusListLoaderData {
-  users: FindAllPlusMembers;
+  users: Record<string, number>;
 }
 
 export const loader: LoaderFunction = ({ request }) => {
@@ -13,5 +12,9 @@ export const loader: LoaderFunction = ({ request }) => {
     throw new Response(null, { status: 403 });
   }
 
-  return json<PlusListLoaderData>({ users: db.users.findAllPlusMembers() });
+  return json<PlusListLoaderData>({
+    users: Object.fromEntries(
+      db.users.findAllPlusMembers().map((u) => [u.discordId, u.plusTier])
+    ),
+  });
 };
