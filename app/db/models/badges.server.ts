@@ -19,17 +19,16 @@ export function countsByUserId(userId: User["id"]) {
   return countsByUserIdStm.all({ userId }) as CountsByUserId;
 }
 
-const allWithAtLeastOneOwnerStm = sql.prepare(`
+const allStm = sql.prepare(`
   select "Badge"."id", "Badge"."code", "Badge"."displayName"
     from "Badge"
 `);
 
-export type AllWithAtLeastOneOwner = Array<
-  Pick<Badge, "id" | "displayName" | "code">
->;
+export type All = Array<Pick<Badge, "id" | "displayName" | "code">>;
 
-export function allWithAtLeastOneOwner() {
-  return allWithAtLeastOneOwnerStm.all() as AllWithAtLeastOneOwner;
+export function all() {
+  return []; // TODO: remove when page is done
+  return allStm.all() as All;
 }
 
 export type OwnersByBadge = Array<

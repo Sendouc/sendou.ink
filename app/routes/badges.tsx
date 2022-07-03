@@ -2,7 +2,7 @@ import type { LinksFunction, LoaderFunction } from "@remix-run/node";
 import { Link, Outlet, useLoaderData, useParams } from "@remix-run/react";
 import { Main } from "~/components/Main";
 import { db } from "~/db";
-import type { AllWithAtLeastOneOwner } from "~/db/models/badges.server";
+import type { All } from "~/db/models/badges.server";
 import styles from "~/styles/badges.css";
 import { jsonCached } from "~/utils/remix";
 
@@ -11,14 +11,11 @@ export const links: LinksFunction = () => {
 };
 
 export interface BadgesLoaderData {
-  badges: AllWithAtLeastOneOwner;
+  badges: All;
 }
 
 export const loader: LoaderFunction = () => {
-  return jsonCached<BadgesLoaderData>(
-    { badges: db.badges.allWithAtLeastOneOwner() },
-    120
-  );
+  return jsonCached<BadgesLoaderData>({ badges: db.badges.all() }, 120);
 };
 
 // xxx: https://web.dev/replace-gifs-with-videos/ check possibility to replace gif
