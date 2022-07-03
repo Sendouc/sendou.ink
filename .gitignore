@@ -9,3 +9,5 @@ db*.sqlite3*
 
 /cypress/videos
 /cypress/screenshots
+
+.DS_Store

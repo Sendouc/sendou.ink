@@ -5,6 +5,9 @@
 
 .button-text-paragraph > button {
   font-size: var(--fonts-md);
+  font-weight: var(--semi-bold);
+  font-size: var(--fonts-sm);
+  margin-block-end: 0.125rem;
 }
 
 .sub-nav__container {

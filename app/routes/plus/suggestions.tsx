@@ -18,7 +18,7 @@ import { nextNonCompletedVoting } from "~/modules/plus-server";
 import { db } from "~/db";
 import type * as plusSuggestions from "~/db/models/plusSuggestions.server";
 import type { PlusSuggestion, User } from "~/db/types";
-import { requireUser, useUser } from "~/modules/auth";
+import { getUser, requireUser, useUser } from "~/modules/auth";
 import {
   canAddCommentToSuggestionFE,
   canSuggestNewUserFE,
@@ -28,7 +28,7 @@ import {
 import { makeTitle, parseRequestFormData, validate } from "~/utils/remix";
 import { discordFullName } from "~/utils/strings";
 import { actualNumber } from "~/utils/zod";
-import { userPage } from "~/utils/urls";
+import { FAQ_PAGE, LOG_IN_URL, userPage } from "~/utils/urls";
 import { RelativeTime } from "~/components/RelativeTime";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { PLUS_TIERS } from "~/constants";
@@ -115,7 +115,13 @@ export interface PlusSuggestionsLoaderData {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const user = await requireUser(request);
+  const user = await getUser(request);
+
+  if (!user) {
+    return json<PlusSuggestionsLoaderData>({
+      suggestedForTiers: [],
+    });
+  }
 
   return json<PlusSuggestionsLoaderData>({
     suggestions: db.plusSuggestions.findVisibleForUser({
@@ -138,6 +144,23 @@ export default function PlusSuggestionsPage() {
   );
 
   useSetSelectedTierForFirstSuggestEffect({ tierVisible, setTierVisible });
+
+  if (!user) {
+    return (
+      <form className="text-sm" action={LOG_IN_URL} method="post">
+        <p className="button-text-paragraph">
+          To view your suggestion status{" "}
+          <Button type="submit" variant="minimal">
+            log in
+          </Button>
+        </p>
+        <p className="mt-2">
+          Not sure what the Plus Server is about? Read the{" "}
+          <Link to={FAQ_PAGE}>FAQ</Link>
+        </p>
+      </form>
+    );
+  }
 
   if (!data.suggestions) {
     return <SuggestedForInfo />;
