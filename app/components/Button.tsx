@@ -1,5 +1,5 @@
 import { Link } from "@remix-run/react";
-import type { RemixLinkProps } from "@remix-run/react/components";
+import type { LinkProps } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
 
@@ -60,7 +60,7 @@ type LinkButtonProps = Pick<
   ButtonProps,
   "variant" | "children" | "className" | "tiny"
 > &
-  Pick<RemixLinkProps, "to" | "prefetch"> & { "data-cy"?: string };
+  Pick<LinkProps, "to" | "prefetch"> & { "data-cy"?: string };
 
 export function LinkButton({
   variant,
