@@ -4,6 +4,7 @@ import { Menu } from "./Menu";
 import { UserItem } from "./UserItem";
 import navItems from "./nav-items.json";
 import { useLocation } from "@remix-run/react";
+import { Image } from "../Image";
 
 export const Layout = React.memo(function Layout({
   children,
@@ -22,13 +23,11 @@ export const Layout = React.memo(function Layout({
       <header className="layout__header">
         {currentPagesNavItem ? (
           <h1 className="layout__page-heading">
-            <img
+            <Image
               className="layout__icon"
-              // xxx: from constant... but this will be a component anyway?
-              // xxx: change to avif
-              src={`/img/layout/${currentPagesNavItem.name}.webp`}
-              width="40"
-              height="40"
+              path={`/img/layout/${currentPagesNavItem.name}`}
+              width={40}
+              height={40}
               alt=""
             />
             {currentPagesNavItem.displayName}

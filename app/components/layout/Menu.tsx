@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { Link } from "@remix-run/react";
 import navItems from "./nav-items.json";
+import { Image } from "../Image";
 
 // xxx: overflows but maybe on chrome mobile emulator only?
 export function Menu({
@@ -25,9 +26,9 @@ export function Menu({
             data-cy={`menu-link-${navItem.name}`}
             tabIndex={!expanded ? -1 : undefined}
           >
-            <img
+            <Image
               className="layout__menu__link__icon"
-              src={`/img/layout/${navItem.name.replace(" ", "")}.webp`}
+              path={`/img/layout/${navItem.name.replace(" ", "")}`}
               alt={navItem.name}
             />
             <div>{navItem.displayName ?? navItem.name}</div>
