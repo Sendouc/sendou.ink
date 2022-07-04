@@ -2,8 +2,8 @@ import clsx from "clsx";
 import { Link } from "@remix-run/react";
 import navItems from "./nav-items.json";
 import { Image } from "../Image";
+import { useIsMounted } from "~/hooks/useIsMounted";
 
-// xxx: overflows but maybe on chrome mobile emulator only?
 export function Menu({
   expanded,
   closeMenu,
@@ -11,6 +11,11 @@ export function Menu({
   expanded: boolean;
   closeMenu: () => void;
 }) {
+  const isMounted = useIsMounted();
+
+  // without this menu is initially visible due to SSR and not knowing user screen width on server (probably)
+  if (!isMounted) return null;
+
   return (
     <nav className={clsx("layout__menu", { expanded })} aria-hidden={!expanded}>
       <div className="layout__menu__links">
