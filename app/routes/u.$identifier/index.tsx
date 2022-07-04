@@ -145,8 +145,7 @@ function BadgeContainer(props: { badges: UserPageLoaderData["badges"] }) {
         {smallBadges.length > 0 ? (
           <div className="u__small-badges">
             {smallBadges.map((badge) => (
-              // xxx: should use badge.id - code is not necessarily unique
-              <div key={badge.code} className="u__small-badge-container">
+              <div key={badge.id} className="u__small-badge-container">
                 <img
                   src={`/gif/badges/${badge.code}.gif`}
                   alt={badge.displayName}
