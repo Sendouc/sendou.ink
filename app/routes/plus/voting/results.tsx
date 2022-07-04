@@ -49,12 +49,14 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   return json<PlusVotingResultsLoaderData>({
     results,
-    ownScores: ownScores?.map(maybeHideScore),
+    ownScores: ownScores?.map(scoreForDisplaying),
   });
 };
 
 export default function PlusVotingResultsPage() {
   const data = useLoaderData<PlusVotingResultsLoaderData>();
+
+  console.log({ data });
 
   const { month, year } = lastCompletedVoting(new Date());
 
@@ -75,7 +77,7 @@ export default function PlusVotingResultsPage() {
               )}{" "}
               the +{result.tier} voting
               {result.score
-                ? `, your score was ${result.score} (at least 0.5 required to pass)`
+                ? `, your score was ${result.score}% (at least 50% required to pass)`
                 : ""}
             </li>
           ))}
@@ -134,14 +136,20 @@ function Results({
   );
 }
 
-function maybeHideScore(
+function databaseAvgToPercentage(score: number) {
+  const scoreNormalized = score + 1;
+
+  return roundToTwoDecimalPlaces((scoreNormalized / 2) * 100);
+}
+
+function scoreForDisplaying(
   score: Unpacked<NonNullable<PlusVotingResultByMonthYear["ownScores"]>>
 ) {
   const showScore = score.wasSuggested && !score.passedVoting;
 
   return {
     tier: score.tier,
-    score: showScore ? roundToTwoDecimalPlaces(score.score) : undefined,
+    score: showScore ? databaseAvgToPercentage(score.score) : undefined,
     passedVoting: score.passedVoting,
   };
 }

@@ -6,6 +6,7 @@ node_modules
 .env
 
 db*.sqlite3*
+dump
 
 /cypress/videos
 /cypress/screenshots
