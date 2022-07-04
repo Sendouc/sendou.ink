@@ -5,6 +5,7 @@ import { db } from "~/db";
 import type { All } from "~/db/models/badges.server";
 import styles from "~/styles/badges.css";
 import { jsonCached } from "~/utils/remix";
+import { badgeUrl } from "~/utils/urls";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -35,8 +36,7 @@ export default function BadgesPageLayout() {
             .map((badge) => (
               <Link key={badge.id} to={String(badge.id)}>
                 <img
-                  // xxx: from constants
-                  src={`/gif/badges/${badge.code}.gif`}
+                  src={badgeUrl({ code: badge.code, extension: "gif" })}
                   alt={badge.displayName}
                   title={badge.displayName}
                   width="64"

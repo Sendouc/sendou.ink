@@ -1,3 +1,5 @@
+import type { Badge } from "~/db/types";
+
 export const SENDOU_INK_DISCORD_URL = "https://discord.gg/sendou";
 export const SENDOU_INK_TWITTER_URL = "https://twitter.com/sendouink";
 export const SENDOU_INK_PATREON_URL = "https://patreon.com/sendou";
@@ -13,3 +15,11 @@ export const STOP_IMPERSONATING_URL = "/auth/impersonate/stop";
 export const userPage = (discordId: string) => `/u/${discordId}`;
 export const impersonateUrl = (idToLogInAs: number) =>
   `/auth/impersonate?id=${idToLogInAs}`;
+
+export const badgeUrl = ({
+  code,
+  extension,
+}: {
+  code: Badge["code"];
+  extension: "gif" | "avif" | "png";
+}) => `/badges/${code}.${extension}`;

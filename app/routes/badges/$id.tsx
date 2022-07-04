@@ -7,7 +7,7 @@ import type { OwnersByBadge } from "~/db/models/badges.server";
 import type { Badge } from "~/db/types";
 import { jsonCached } from "~/utils/remix";
 import { discordFullName } from "~/utils/strings";
-import { BADGES_PAGE } from "~/utils/urls";
+import { BADGES_PAGE, badgeUrl } from "~/utils/urls";
 import type { BadgesLoaderData } from "../badges";
 
 export interface BadgeDetailsLoaderData {
@@ -38,7 +38,7 @@ export default function BadgeDetailsPage() {
   return (
     <div className="stack md items-center">
       <img
-        src={`/gif/badges/${badge.code}.gif`}
+        src={badgeUrl({ code: badge.code, extension: "gif" })}
         alt={badge.displayName}
         title={badge.displayName}
         width="200"
