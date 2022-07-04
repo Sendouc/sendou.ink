@@ -12,6 +12,7 @@ import { TwitchIcon } from "~/components/icons/Twitch";
 import { TwitterIcon } from "~/components/icons/Twitter";
 import { YouTubeIcon } from "~/components/icons/YouTube";
 import { badgeExplanationText } from "../badges/$id";
+import { badgeUrl } from "~/utils/urls";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -136,7 +137,7 @@ function BadgeContainer(props: { badges: UserPageLoaderData["badges"] }) {
       >
         <img
           key={bigBadge.code}
-          src={`/gif/badges/${bigBadge.code}.gif`}
+          src={badgeUrl({ code: bigBadge.code, extension: "gif" })}
           alt={bigBadge.displayName}
           title={bigBadge.displayName}
           width="125"
@@ -147,7 +148,7 @@ function BadgeContainer(props: { badges: UserPageLoaderData["badges"] }) {
             {smallBadges.map((badge) => (
               <div key={badge.id} className="u__small-badge-container">
                 <img
-                  src={`/gif/badges/${badge.code}.gif`}
+                  src={badgeUrl({ code: badge.code, extension: "gif" })}
                   alt={badge.displayName}
                   title={badge.displayName}
                   onClick={() => setBadgeFirst(badge)}

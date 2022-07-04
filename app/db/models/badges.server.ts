@@ -27,7 +27,6 @@ const allStm = sql.prepare(`
 export type All = Array<Pick<Badge, "id" | "displayName" | "code">>;
 
 export function all() {
-  return []; // TODO: remove when page is done
   return allStm.all() as All;
 }
 

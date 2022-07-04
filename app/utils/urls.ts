@@ -21,5 +21,5 @@ export const badgeUrl = ({
   extension,
 }: {
   code: Badge["code"];
-  extension: "gif" | "avif" | "png";
-}) => `/badges/${code}.${extension}`;
+  extension?: "gif";
+}) => `/badges/${code}${extension ? `.${extension}` : ""}`;

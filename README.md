@@ -35,3 +35,17 @@ sendou.ink/
 ├── public/ -- Images, built assets etc. static files to be served as is
 └── scripts/ -- Stand-alone scripts to be run outside of the app
 ```
+
+## Commands
+
+### Converting gifs (badges) to thumbnail
+
+### png
+
+```bash
+sips -s format png ./*.gif --out .
+```
+
+### avif
+
+https://github.com/lovell/avif-cli

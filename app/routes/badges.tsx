@@ -1,5 +1,6 @@
 import type { LinksFunction, LoaderFunction } from "@remix-run/node";
 import { Link, Outlet, useLoaderData, useParams } from "@remix-run/react";
+import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { db } from "~/db";
 import type { All } from "~/db/models/badges.server";
@@ -19,7 +20,6 @@ export const loader: LoaderFunction = () => {
   return jsonCached<BadgesLoaderData>({ badges: db.badges.all() }, 120);
 };
 
-// xxx: https://web.dev/replace-gifs-with-videos/ check possibility to replace gif
 export default function BadgesPageLayout() {
   const data = useLoaderData<BadgesLoaderData>();
   const params = useParams();
@@ -34,13 +34,14 @@ export default function BadgesPageLayout() {
           {data.badges
             .filter((b) => !badgeIdBeingViewed || b.id !== badgeIdBeingViewed)
             .map((badge) => (
+              // xxx: firefox and squid junction avif fails to display
               <Link key={badge.id} to={String(badge.id)}>
-                <img
-                  src={badgeUrl({ code: badge.code, extension: "gif" })}
-                  alt={badge.displayName}
+                <Image
+                  path={badgeUrl({ code: badge.code })}
                   title={badge.displayName}
-                  width="64"
-                  height="64"
+                  alt={badge.displayName}
+                  width={64}
+                  height={64}
                 />
               </Link>
             ))}

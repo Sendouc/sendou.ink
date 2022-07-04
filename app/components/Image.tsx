@@ -1,18 +1,20 @@
 export function Image({
   path,
   alt,
+  title,
   className,
   width,
   height,
 }: {
   path: string;
   alt: string;
-  className: string;
+  title?: string;
+  className?: string;
   width?: number;
   height?: number;
 }) {
   return (
-    <picture>
+    <picture title={title}>
       <source
         type="image/avif"
         srcSet={`${path}.avif`}
