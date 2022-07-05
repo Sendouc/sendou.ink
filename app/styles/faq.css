@@ -1,12 +1,12 @@
 .faq__summary {
-  background-color: var(--bg-lighter);
   padding: var(--s-3);
+  background-color: var(--bg-lighter);
   border-radius: var(--rounded);
   font-size: var(--fonts-lg);
   font-weight: var(--bold);
 }
 
 .faq__details > p {
-  padding-block: var(--s-3);
   margin-inline: var(--s-4);
+  padding-block: var(--s-3);
 }

@@ -2,7 +2,12 @@ import { sql } from "../sql";
 import type { Badge, User } from "../types";
 
 const countsByUserIdStm = sql.prepare(`
-  select "Badge"."code", "Badge"."displayName", "Badge"."id", count("BadgeOwner"."badgeId") as count 
+  select 
+      "Badge"."code", 
+      "Badge"."displayName", 
+      "Badge"."id", 
+      "Badge"."hue", 
+      count("BadgeOwner"."badgeId") as count 
     from "BadgeOwner" 
     join "Badge" on "Badge"."id" = "BadgeOwner"."badgeId"
     where "BadgeOwner"."userId" = $userId 
@@ -10,7 +15,7 @@ const countsByUserIdStm = sql.prepare(`
   `);
 
 export type CountsByUserId = Array<
-  Pick<Badge, "code" | "displayName" | "id"> & {
+  Pick<Badge, "code" | "displayName" | "id" | "hue"> & {
     count: number;
   }
 >;
@@ -20,11 +25,15 @@ export function countsByUserId(userId: User["id"]) {
 }
 
 const allStm = sql.prepare(`
-  select "Badge"."id", "Badge"."code", "Badge"."displayName"
+  select 
+      "Badge"."id", 
+      "Badge"."code", 
+      "Badge"."displayName", 
+      "Badge"."hue"
     from "Badge"
 `);
 
-export type All = Array<Pick<Badge, "id" | "displayName" | "code">>;
+export type All = Array<Pick<Badge, "id" | "displayName" | "code" | "hue">>;
 
 export function all() {
   return allStm.all() as All;

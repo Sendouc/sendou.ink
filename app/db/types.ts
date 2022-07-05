@@ -56,6 +56,7 @@ export interface Badge {
   id: number;
   code: string;
   displayName: string;
+  hue?: number;
 }
 
 export interface BadgeOwner {

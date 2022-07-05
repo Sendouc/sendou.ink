@@ -5,6 +5,7 @@ export function Image({
   className,
   width,
   height,
+  style,
 }: {
   path: string;
   alt: string;
@@ -12,6 +13,7 @@ export function Image({
   className?: string;
   width?: number;
   height?: number;
+  style?: React.CSSProperties;
 }) {
   return (
     <picture title={title}>
@@ -21,6 +23,7 @@ export function Image({
         className={className}
         width={width}
         height={height}
+        style={style}
       />
       <img
         alt={alt}
@@ -28,6 +31,7 @@ export function Image({
         className={className}
         width={width}
         height={height}
+        style={style}
       />
     </picture>
   );

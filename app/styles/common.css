@@ -5,8 +5,8 @@
 
 .button-text-paragraph > button {
   font-size: var(--fonts-md);
-  font-weight: var(--semi-bold);
   font-size: var(--fonts-sm);
+  font-weight: var(--semi-bold);
   margin-block-end: 0.125rem;
 }
 

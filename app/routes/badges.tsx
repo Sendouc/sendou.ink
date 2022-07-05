@@ -1,12 +1,11 @@
 import type { LinksFunction, LoaderFunction } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
-import { Image } from "~/components/Image";
+import { Badge } from "~/components/Badge";
 import { Main } from "~/components/Main";
 import { db } from "~/db";
 import type { All } from "~/db/models/badges.server";
 import styles from "~/styles/badges.css";
 import { jsonCached } from "~/utils/remix";
-import { badgeUrl } from "~/utils/urls";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -35,13 +34,7 @@ export default function BadgesPageLayout() {
               key={badge.id}
               to={String(badge.id)}
             >
-              <Image
-                path={badgeUrl({ code: badge.code })}
-                title={badge.displayName}
-                alt={badge.displayName}
-                width={64}
-                height={64}
-              />
+              <Badge badge={badge} size={64} isAnimated={false} />
             </NavLink>
           ))}
         </div>

@@ -1,13 +1,14 @@
 import type { LoaderFunction } from "@remix-run/node";
 import { useLoaderData, useMatches, useParams } from "@remix-run/react";
 import clsx from "clsx";
+import { Badge } from "~/components/Badge";
 import { Redirect } from "~/components/Redirect";
 import { db } from "~/db";
 import type { OwnersByBadge } from "~/db/models/badges.server";
-import type { Badge } from "~/db/types";
+import type { Badge as BadgeDBType } from "~/db/types";
 import { jsonCached } from "~/utils/remix";
 import { discordFullName } from "~/utils/strings";
-import { BADGES_PAGE, badgeUrl } from "~/utils/urls";
+import { BADGES_PAGE } from "~/utils/urls";
 import type { BadgesLoaderData } from "../badges";
 
 export interface BadgeDetailsLoaderData {
@@ -37,13 +38,7 @@ export default function BadgeDetailsPage() {
 
   return (
     <div className="stack md items-center">
-      <img
-        src={badgeUrl({ code: badge.code, extension: "gif" })}
-        alt={badge.displayName}
-        title={badge.displayName}
-        width="200"
-        height="200"
-      />
+      <Badge badge={badge} isAnimated size={200} />
       <div className="badges__explanation">{badgeExplanationText(badge)}</div>
       <div className="badges__owners-container">
         <ul className="badges__owners">
@@ -66,7 +61,7 @@ export default function BadgeDetailsPage() {
 }
 
 export function badgeExplanationText(
-  badge: Pick<Badge, "displayName" | "code"> & { count?: number }
+  badge: Pick<BadgeDBType, "displayName" | "code"> & { count?: number }
 ) {
   const countString =
     badge.count && badge.count > 1 ? ` (x${badge.count})` : "";

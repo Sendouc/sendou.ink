@@ -56,8 +56,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function PlusVotingResultsPage() {
   const data = useLoaderData<PlusVotingResultsLoaderData>();
 
-  console.log({ data });
-
   const { month, year } = lastCompletedVoting(new Date());
 
   return (

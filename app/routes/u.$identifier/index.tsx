@@ -12,7 +12,7 @@ import { TwitchIcon } from "~/components/icons/Twitch";
 import { TwitterIcon } from "~/components/icons/Twitter";
 import { YouTubeIcon } from "~/components/icons/YouTube";
 import { badgeExplanationText } from "../badges/$id";
-import { badgeUrl } from "~/utils/urls";
+import { Badge } from "~/components/Badge";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -135,25 +135,16 @@ function BadgeContainer(props: { badges: UserPageLoaderData["badges"] }) {
           "justify-center": smallBadges.length === 0,
         })}
       >
-        <img
-          key={bigBadge.code}
-          src={badgeUrl({ code: bigBadge.code, extension: "gif" })}
-          alt={bigBadge.displayName}
-          title={bigBadge.displayName}
-          width="125"
-          height="125"
-        />
+        <Badge badge={bigBadge} size={125} isAnimated />
         {smallBadges.length > 0 ? (
           <div className="u__small-badges">
             {smallBadges.map((badge) => (
               <div key={badge.id} className="u__small-badge-container">
-                <img
-                  src={badgeUrl({ code: badge.code, extension: "gif" })}
-                  alt={badge.displayName}
-                  title={badge.displayName}
+                <Badge
+                  badge={badge}
                   onClick={() => setBadgeFirst(badge)}
-                  width="48"
-                  height="48"
+                  size={48}
+                  isAnimated
                 />
                 {badge.count > 1 ? (
                   <div className="u__small-badge-count">×{badge.count}</div>
