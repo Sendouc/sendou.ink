@@ -53,9 +53,31 @@ const updateProfileStm = sql.prepare(`
     WHERE "id" = $id
 `);
 
-export function updateProfile(params: Pick<User, "country" | "id" | "bio">) {
-  updateProfileStm.run(params);
+export function updateProfile(args: Pick<User, "country" | "id" | "bio">) {
+  updateProfileStm.run(args);
 }
+
+const deleteStm = sql.prepare(`
+  delete from "User" where id = $id
+    returning *
+`);
+
+const updateDiscordId = sql.prepare(`
+  update "User" 
+    set "discordId" = $discordId
+    where "id" = $id
+`);
+
+export const migrate = sql.transaction(
+  (args: { newUserId: User["id"]; oldUserId: User["id"] }) => {
+    const deletedUser = deleteStm.get({ id: args.newUserId }) as User;
+
+    updateDiscordId.run({
+      id: args.oldUserId,
+      discordId: deletedUser.discordId,
+    });
+  }
+);
 
 const findByIdentifierStm = sql.prepare(`
   SELECT "User".*, "PlusTier".tier as "plusTier"
