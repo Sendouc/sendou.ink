@@ -1,5 +1,5 @@
 import type { LinksFunction, LoaderFunction } from "@remix-run/node";
-import { Link, Outlet, useLoaderData, useParams } from "@remix-run/react";
+import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { db } from "~/db";
@@ -22,29 +22,28 @@ export const loader: LoaderFunction = () => {
 
 export default function BadgesPageLayout() {
   const data = useLoaderData<BadgesLoaderData>();
-  const params = useParams();
-
-  const badgeIdBeingViewed = params["id"] ? Number(params["id"]) : undefined;
 
   return (
     <Main>
       <div className="badges__container">
         <Outlet />
         <div className="badges__small-badges">
-          {data.badges
-            .filter((b) => !badgeIdBeingViewed || b.id !== badgeIdBeingViewed)
-            .map((badge) => (
-              // xxx: firefox and squid junction avif fails to display
-              <Link key={badge.id} to={String(badge.id)}>
-                <Image
-                  path={badgeUrl({ code: badge.code })}
-                  title={badge.displayName}
-                  alt={badge.displayName}
-                  width={64}
-                  height={64}
-                />
-              </Link>
-            ))}
+          {data.badges.map((badge) => (
+            // xxx: firefox and squid junction avif fails to display
+            <NavLink
+              className="badges__nav-link"
+              key={badge.id}
+              to={String(badge.id)}
+            >
+              <Image
+                path={badgeUrl({ code: badge.code })}
+                title={badge.displayName}
+                alt={badge.displayName}
+                width={64}
+                height={64}
+              />
+            </NavLink>
+          ))}
         </div>
       </div>
     </Main>

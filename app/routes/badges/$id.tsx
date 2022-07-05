@@ -45,18 +45,22 @@ export default function BadgeDetailsPage() {
         height="200"
       />
       <div className="badges__explanation">{badgeExplanationText(badge)}</div>
-      <ul className="badges__owners">
-        {data.owners.map((owner) => (
-          <li key={owner.id}>
-            <span
-              className={clsx("badges__count", { invisible: owner.count <= 1 })}
-            >
-              ×{owner.count}
-            </span>
-            <span>{discordFullName(owner)}</span>
-          </li>
-        ))}
-      </ul>
+      <div className="badges__owners-container">
+        <ul className="badges__owners">
+          {data.owners.map((owner) => (
+            <li key={owner.id}>
+              <span
+                className={clsx("badges__count", {
+                  invisible: owner.count <= 1,
+                })}
+              >
+                ×{owner.count}
+              </span>
+              <span>{discordFullName(owner)}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
