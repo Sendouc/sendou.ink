@@ -3,6 +3,8 @@ import { Link } from "@remix-run/react";
 import navItems from "./nav-items.json";
 import { Image } from "../Image";
 import { useIsMounted } from "~/hooks/useIsMounted";
+import { canPerformAdminActions } from "~/permissions";
+import { useUser } from "~/modules/auth";
 
 export function Menu({
   expanded,
@@ -11,15 +13,24 @@ export function Menu({
   expanded: boolean;
   closeMenu: () => void;
 }) {
+  const user = useUser();
   const isMounted = useIsMounted();
 
   // without this menu is initially visible due to SSR and not knowing user screen width on server (probably)
   if (!isMounted) return null;
 
+  const visibleNavItems = navItems.filter((navItem) => {
+    if (navItem.name === "admin") {
+      return canPerformAdminActions(user);
+    }
+
+    return true;
+  });
+
   return (
     <nav className={clsx("layout__menu", { expanded })} aria-hidden={!expanded}>
       <div className="layout__menu__links">
-        {navItems.map((navItem, i) => (
+        {visibleNavItems.map((navItem, i) => (
           <Link
             key={navItem.name}
             className={clsx("layout__menu__link", {

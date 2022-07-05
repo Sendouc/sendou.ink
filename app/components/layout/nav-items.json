@@ -1,4 +1,9 @@
 [
+  {
+    "name": "admin",
+    "displayName": "Admin",
+    "url": "admin"
+  },
   { "name": "badges", "displayName": "Badges", "url": "badges" },
   {
     "name": "plus",
