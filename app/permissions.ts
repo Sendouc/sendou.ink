@@ -4,8 +4,25 @@ import type { PlusSuggestion, User, UserWithPlusTier } from "./db/types";
 import { allTruthy } from "./utils/arrays";
 import { ADMIN_DISCORD_ID, LOHI_TOKEN_HEADER_NAME } from "./constants";
 import invariant from "tiny-invariant";
+import type { ManagersByBadgeId } from "./db/models/badges.server";
 
 // TODO: 1) move "root checkers" to one file and utils to one file 2) make utils const for more terseness
+
+export function canPerformAdminActions(user?: Pick<User, "discordId">) {
+  if (["development", "test"].includes(process.env.NODE_ENV)) return true;
+
+  if (!user) return false;
+  return user.discordId === ADMIN_DISCORD_ID;
+}
+
+function adminOverride(user?: Pick<User, "discordId">) {
+  if (canPerformAdminActions(user)) {
+    return () => true;
+  }
+
+  return (canPerformActionAsNormalUser: boolean) =>
+    canPerformActionAsNormalUser;
+}
 
 interface CanAddCommentToSuggestionArgs {
   user?: Pick<UserWithPlusTier, "id" | "plusTier">;
@@ -205,16 +222,26 @@ function hasUserSuggestedThisMonth({
     );
 }
 
-export function canPerformAdminActions(user?: Pick<User, "discordId">) {
-  if (["development", "test"].includes(process.env.NODE_ENV)) return true;
-
-  if (!user) return false;
-  return user.discordId === ADMIN_DISCORD_ID;
-}
-
 export function canAccessLohiEndpoint(request: Request) {
   invariant(process.env["LOHI_TOKEN"], "LOHI_TOKEN is required");
   return (
     request.headers.get(LOHI_TOKEN_HEADER_NAME) === process.env["LOHI_TOKEN"]
   );
+}
+
+interface CanEditBadgeOwnersArgs {
+  user?: Pick<User, "id" | "discordId">;
+  managers: ManagersByBadgeId;
+}
+
+export function canEditBadgeOwners({ user, managers }: CanEditBadgeOwnersArgs) {
+  return adminOverride(user)(isBadgeManager({ user, managers }));
+}
+
+function isBadgeManager({
+  user,
+  managers,
+}: Pick<CanEditBadgeOwnersArgs, "user" | "managers">) {
+  if (!user) return false;
+  return managers.some((manager) => manager.id === user.id);
 }

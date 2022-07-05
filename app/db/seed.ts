@@ -25,6 +25,7 @@ const basicSeeds = [
   thisMonthsSuggestions,
   badgesToAdmin,
   badgesToUsers,
+  badgeManagers,
 ];
 
 export function seed() {
@@ -256,5 +257,16 @@ function badgesToUsers() {
 
       userIds.push(userToGetABadge);
     }
+  }
+}
+
+function badgeManagers() {
+  // make N-ZAP user manager of several badges
+  for (let id = 1; id <= 10; id++) {
+    sql
+      .prepare(
+        `insert into "BadgeManager" ("badgeId", "userId") values ($id, $userId)`
+      )
+      .run({ id, userId: 2 });
   }
 }

@@ -1,18 +1,25 @@
+import { json } from "@remix-run/node";
 import type { LoaderFunction } from "@remix-run/node";
 import { useLoaderData, useMatches, useParams } from "@remix-run/react";
 import clsx from "clsx";
 import { Badge } from "~/components/Badge";
+import { LinkButton } from "~/components/Button";
 import { Redirect } from "~/components/Redirect";
 import { db } from "~/db";
-import type { OwnersByBadge } from "~/db/models/badges.server";
+import type {
+  ManagersByBadgeId,
+  OwnersByBadgeId,
+} from "~/db/models/badges.server";
 import type { Badge as BadgeDBType } from "~/db/types";
-import { jsonCached } from "~/utils/remix";
+import { useUser } from "~/modules/auth";
+import { canEditBadgeOwners } from "~/permissions";
 import { discordFullName } from "~/utils/strings";
 import { BADGES_PAGE } from "~/utils/urls";
 import type { BadgesLoaderData } from "../badges";
 
 export interface BadgeDetailsLoaderData {
-  owners: OwnersByBadge;
+  owners: OwnersByBadgeId;
+  managers: ManagersByBadgeId;
 }
 
 export const loader: LoaderFunction = ({ params }) => {
@@ -21,13 +28,14 @@ export const loader: LoaderFunction = ({ params }) => {
     throw new Response(null, { status: 404 });
   }
 
-  return jsonCached<BadgeDetailsLoaderData>(
-    { owners: db.badges.ownersByBadgeId(badgeId) },
-    120
-  );
+  return json<BadgeDetailsLoaderData>({
+    owners: db.badges.ownersByBadgeId(badgeId),
+    managers: db.badges.managersByBadgeId(badgeId),
+  });
 };
 
 export default function BadgeDetailsPage() {
+  const user = useUser();
   const [, parentRoute] = useMatches();
   const { badges } = parentRoute!.data as BadgesLoaderData;
   const params = useParams();
@@ -40,6 +48,11 @@ export default function BadgeDetailsPage() {
     <div className="stack md items-center">
       <Badge badge={badge} isAnimated size={200} />
       <div className="badges__explanation">{badgeExplanationText(badge)}</div>
+      {canEditBadgeOwners({ user, managers: data.managers }) ? (
+        <LinkButton to="edit" variant="outlined" tiny>
+          Edit
+        </LinkButton>
+      ) : null}
       <div className="badges__owners-container">
         <ul className="badges__owners">
           {data.owners.map((owner) => (

@@ -39,7 +39,7 @@ export function all() {
   return allStm.all() as All;
 }
 
-export type OwnersByBadge = Array<
+export type OwnersByBadgeId = Array<
   Pick<User, "id" | "discordId" | "discordName" | "discordDiscriminator"> & {
     count: number;
   }
@@ -47,18 +47,37 @@ export type OwnersByBadge = Array<
 
 const ownersByBadgeIdStm = sql.prepare(`
   select 
-      count("BadgeOwner"."badgeId") as count, 
-      "User"."id",
-      "User"."discordId",
-      "User"."discordName",
-      "User"."discordDiscriminator"
-    from "BadgeOwner" 
-    join "User" on "User"."id" = "BadgeOwner"."userId"
-    where "BadgeOwner"."badgeId" = $id
-    group by "User"."id"
-    order by count desc
+    count("BadgeOwner"."badgeId") as count, 
+    "User"."id",
+    "User"."discordId",
+    "User"."discordName",
+    "User"."discordDiscriminator"
+  from "BadgeOwner" 
+  join "User" on "User"."id" = "BadgeOwner"."userId"
+  where "BadgeOwner"."badgeId" = $id
+  group by "User"."id"
+  order by count desc
 `);
 
 export function ownersByBadgeId(id: Badge["id"]) {
-  return ownersByBadgeIdStm.all({ id }) as OwnersByBadge;
+  return ownersByBadgeIdStm.all({ id }) as OwnersByBadgeId;
+}
+
+export type ManagersByBadgeId = Array<
+  Pick<User, "id" | "discordId" | "discordName" | "discordDiscriminator">
+>;
+
+const managersByBadgeIdStm = sql.prepare(`
+  select 
+    "User"."id",
+    "User"."discordId",
+    "User"."discordName",
+    "User"."discordDiscriminator"
+  from "BadgeManager" 
+  join "User" on "User"."id" = "BadgeManager"."userId"
+  where "BadgeManager"."badgeId" = $id
+`);
+
+export function managersByBadgeId(id: Badge["id"]) {
+  return managersByBadgeIdStm.all({ id }) as ManagersByBadgeId;
 }

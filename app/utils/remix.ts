@@ -50,9 +50,3 @@ export function validate(condition: any): asserts condition {
 export function makeTitle(title: string) {
   return `${title} | sendou.ink`;
 }
-
-export function jsonCached<T>(data: T, cachedForInMinutes: number) {
-  return json(data, {
-    headers: { "Cache-Control": `max-age=${cachedForInMinutes * 60}` },
-  });
-}
