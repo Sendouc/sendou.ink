@@ -36,7 +36,13 @@ export function seed() {
 }
 
 function wipeDB() {
-  const tablesToDelete = ["User", "PlusSuggestion", "PlusVote", "BadgeOwner"];
+  const tablesToDelete = [
+    "User",
+    "PlusSuggestion",
+    "PlusVote",
+    "BadgeOwner",
+    "BadgeManager",
+  ];
 
   for (const table of tablesToDelete) {
     sql.prepare(`delete from "${table}"`).run();
