@@ -74,7 +74,7 @@ export default function PlusVotingResultsPage() {
                 <span className="plus-history__fail">didn&apos;t pass</span>
               )}{" "}
               the +{result.tier} voting
-              {result.score
+              {typeof result.score === "number"
                 ? `, your score was ${result.score}% (at least 50% required to pass)`
                 : ""}
             </li>

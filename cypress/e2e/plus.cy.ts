@@ -62,19 +62,20 @@ describe("Plus voting results page", () => {
     cy.seed();
   });
 
-  it("does not see results but sees own percentage as a failed suggest", () => {
+  it("sees own % and results as a failed suggest", () => {
     cy.auth(200);
     cy.visit("/plus/voting/results");
 
-    cy.contains("Sendou").should("not.exist");
+    cy.contains("Sendou");
     cy.contains("your score was");
   });
 
-  it("views full results as member who passed", () => {
+  it("views results without % as member who passed", () => {
     cy.auth(1);
     cy.visit("/plus/voting/results");
 
     cy.contains("Sendou");
+    cy.contains("passed");
   });
 
   // xxx: figure out a good way to do plus server tests with serverside isVotingActive or delete existing tests
