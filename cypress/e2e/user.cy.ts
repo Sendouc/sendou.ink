@@ -46,4 +46,19 @@ describe("User page", () => {
     cy.contains("Finland").should("not.exist");
     cy.contains(bio).should("not.exist");
   });
+
+  it("changes big badge in badge container", () => {
+    cy.visit("/u/79237403620945920");
+
+    cy.getCy("small-badge").first().click();
+
+    cy.getCy("badge-explanation")
+      .invoke("text")
+      .then((previousText) => {
+        cy.getCy("small-badge").first().click();
+        cy.getCy("badge-explanation")
+          .invoke("text")
+          .should("not.equal", previousText);
+      });
+  });
 });

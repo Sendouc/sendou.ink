@@ -11,12 +11,15 @@ import type { ManagersByBadgeId } from "./db/models/badges.server";
 export function canPerformAdminActions(user?: Pick<User, "discordId">) {
   if (["development", "test"].includes(process.env.NODE_ENV)) return true;
 
-  if (!user) return false;
-  return user.discordId === ADMIN_DISCORD_ID;
+  return isAdmin(user);
+}
+
+function isAdmin(user?: Pick<User, "discordId">) {
+  return user?.discordId === ADMIN_DISCORD_ID;
 }
 
 function adminOverride(user?: Pick<User, "discordId">) {
-  if (canPerformAdminActions(user)) {
+  if (isAdmin(user)) {
     return () => true;
   }
 

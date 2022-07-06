@@ -49,7 +49,7 @@ export default function BadgeDetailsPage() {
       <Badge badge={badge} isAnimated size={200} />
       <div className="badges__explanation">{badgeExplanationText(badge)}</div>
       {canEditBadgeOwners({ user, managers: data.managers }) ? (
-        <LinkButton to="edit" variant="outlined" tiny>
+        <LinkButton to="edit" variant="outlined" tiny data-cy="edit-button">
           Edit
         </LinkButton>
       ) : null}
