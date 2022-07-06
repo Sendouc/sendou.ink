@@ -1,4 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
+import { Client, GuildMember, Role } from "discord.js";
 import invariant from "tiny-invariant";
 import ids from "../ids";
 import type { BotCommand } from "../types";
@@ -7,6 +8,7 @@ import { isPlusTierRoleId, plusTierToRoleId, usersWithAccess } from "../utils";
 const COMMAND_NAME = "plus";
 const ACTION_ARG = "dry";
 
+// doesn't seem to remove all roles...
 export const plusCommand: BotCommand = {
   guilds: [ids.guilds.adminServer],
   name: COMMAND_NAME,
@@ -27,41 +29,58 @@ export const plusCommand: BotCommand = {
 
     const { users } = await usersWithAccess();
 
-    const plusServer = client.guilds.cache.find(
-      (g) => g.id === ids.guilds.plusServer
-    );
-    invariant(plusServer);
-
     let removed = 0;
     let added = 0;
 
-    for (const [, member] of await plusServer.members.fetch()) {
-      const usersPlusMemberRoleIds = member.roles.cache
-        .filter((role) => isPlusTierRoleId(role.id))
-        .map((r) => r.id);
-
+    for (const { member, roleIds } of await membersWithPlusRoles(client)) {
       const userMemberStatus = users[member.id];
-      const roleToGive = plusTierToRoleId(userMemberStatus);
+      const roleIdToGive = plusTierToRoleId(userMemberStatus);
 
-      const rolesToRemove = usersPlusMemberRoleIds.filter(
-        (id) => id !== roleToGive
-      );
+      const roleIdsToRemove = roleIds.filter((id) => id !== roleIdToGive);
 
-      for (const idToRemove of rolesToRemove) {
+      for (const idToRemove of roleIdsToRemove) {
         if (!isDryRun) await member.roles.remove(idToRemove);
         removed++;
       }
 
-      if (roleToGive && !usersPlusMemberRoleIds.includes(roleToGive)) {
-        if (!isDryRun) await member.roles.add(roleToGive);
+      if (roleIdToGive && !roleIds.includes(roleIdToGive)) {
+        if (!isDryRun) await member.roles.add(roleIdToGive);
         added++;
       }
     }
 
-    return interaction.editReply(
-      `Removed ${removed} roles, gave ${added}. Members in server: ${
-        plusServer!.members.cache.size
-      }`
-    );
+    return interaction.editReply(`Removed ${removed} roles, gave ${added}.`);
   },
 };
+
+async function membersWithPlusRoles(client: Client<boolean>) {
+  const plusServer = client.guilds.cache.find(
+    (g) => g.id === ids.guilds.plusServer
+  );
+  invariant(plusServer);
+
+  const plusOne = await plusServer.roles.fetch(ids.roles.plusOne);
+  const plusTwo = await plusServer.roles.fetch(ids.roles.plusTwo);
+  const plusThree = await plusServer.roles.fetch(ids.roles.plusThree);
+
+  const memberIdToRoles = new Map<
+    string,
+    { member: GuildMember; roleIds: string[] }
+  >();
+
+  for (const role of [plusOne, plusTwo, plusThree]) {
+    invariant(role);
+
+    for (const [, member] of role.members) {
+      const value = memberIdToRoles.get(member.id) ?? { member, roleIds: [] };
+
+      value.roleIds.push(role.id);
+      memberIdToRoles.set(member.id, value);
+    }
+  }
+
+  return Array.from(memberIdToRoles.values()).map(({ roleIds, member }) => ({
+    roleIds,
+    member,
+  }));
+}
