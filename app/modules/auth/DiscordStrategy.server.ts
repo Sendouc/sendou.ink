@@ -41,20 +41,15 @@ export class DiscordStrategy extends OAuth2Strategy<
   scope: string;
 
   constructor() {
-    invariant(process.env["DISCORD_CLIENT_ID"]);
-    invariant(process.env["DISCORD_CLIENT_SECRET"]);
-    invariant(process.env["BASE_URL"]);
+    const envVars = authEnvVars();
 
     super(
       {
         authorizationURL: "https://discord.com/api/oauth2/authorize",
         tokenURL: "https://discord.com/api/oauth2/token",
-        clientID: process.env["DISCORD_CLIENT_ID"],
-        clientSecret: process.env["DISCORD_CLIENT_SECRET"],
-        callbackURL: new URL(
-          "/auth/callback",
-          process.env["BASE_URL"]
-        ).toString(),
+        clientID: envVars.DISCORD_CLIENT_ID,
+        clientSecret: envVars.DISCORD_CLIENT_SECRET,
+        callbackURL: new URL("/auth/callback", envVars.BASE_URL).toString(),
       },
       async ({ accessToken }) => {
         const authHeader = ["Authorization", `Bearer ${accessToken}`];
@@ -132,4 +127,25 @@ export class DiscordStrategy extends OAuth2Strategy<
 
     return new URLSearchParams(urlSearchParams);
   }
+}
+
+function authEnvVars() {
+  if (process.env.NODE_ENV === "production") {
+    invariant(process.env["DISCORD_CLIENT_ID"]);
+    invariant(process.env["DISCORD_CLIENT_SECRET"]);
+    invariant(process.env["BASE_URL"]);
+
+    return {
+      DISCORD_CLIENT_ID: process.env["DISCORD_CLIENT_ID"],
+      DISCORD_CLIENT_SECRET: process.env["DISCORD_CLIENT_SECRET"],
+      BASE_URL: process.env["BASE_URL"],
+    };
+  }
+
+  // allow running the project in development without setting auth env vars
+  return {
+    DISCORD_CLIENT_ID: process.env["DISCORD_CLIENT_ID"] ?? "",
+    DISCORD_CLIENT_SECRET: process.env["DISCORD_CLIENT_SECRET"] ?? "",
+    BASE_URL: process.env["BASE_URL"] ?? "",
+  };
 }

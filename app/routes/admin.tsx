@@ -11,7 +11,7 @@ import { Catcher } from "~/components/Catcher";
 import { UserCombobox } from "~/components/Combobox";
 import { Main } from "~/components/Main";
 import { requireUser } from "~/modules/auth";
-import { isImpersonating } from "~/modules/auth/user.server";
+import { getUser, isImpersonating } from "~/modules/auth/user.server";
 import { canPerformAdminActions } from "~/permissions";
 import { makeTitle, parseRequestFormData, validate } from "~/utils/remix";
 import { impersonateUrl, STOP_IMPERSONATING_URL } from "~/utils/urls";
@@ -52,7 +52,7 @@ interface AdminPageLoaderData {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const user = await requireUser(request);
+  const user = await getUser(request);
 
   if (!canPerformAdminActions(user)) {
     return redirect("/");
