@@ -138,7 +138,7 @@ const ownersByBadgeIdStm = sql.prepare(`
   join "User" on "User"."id" = "BadgeOwner"."userId"
   where "BadgeOwner"."badgeId" = $id
   group by "User"."id"
-  order by count desc
+  order by count desc, "User"."discordName" collate nocase asc
 `);
 
 export function ownersByBadgeId(id: Badge["id"]) {
