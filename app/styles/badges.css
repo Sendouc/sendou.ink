@@ -76,3 +76,7 @@
 .badges-edit__small-header {
   font-size: var(--fonts-md);
 }
+
+.badges-edit__submit-button {
+  margin: 0 auto;
+}

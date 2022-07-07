@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+export const id = z.number().int().positive();
+
 export function safeJSONParse(value: unknown): unknown {
   try {
     if (typeof value !== "string") return value;
@@ -20,4 +22,8 @@ export function actualNumber(value: unknown) {
   const parsed = Number(value);
 
   return Number.isNaN(parsed) ? undefined : parsed;
+}
+
+export function noDuplicates(arr: (number | string)[]) {
+  return new Set(arr).size === arr.length;
 }

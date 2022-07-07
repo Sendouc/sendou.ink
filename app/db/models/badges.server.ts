@@ -1,6 +1,88 @@
 import { sql } from "../sql";
 import type { Badge, User } from "../types";
 
+const deleteManyManagersStm = sql.prepare(`
+  DELETE FROM
+    "BadgeManager"
+  WHERE
+    "badgeId" = $badgeId
+`);
+
+const createManagerStm = sql.prepare(`
+  INSERT INTO 
+    "BadgeManager" (
+      "badgeId",
+      "userId"
+    )
+    VALUES
+    (
+      $badgeId,
+      $userId
+    )
+`);
+
+export const upsertManyManagers = sql.transaction(
+  ({
+    badgeId,
+    managerIds,
+  }: {
+    badgeId: Badge["id"];
+    managerIds: Array<User["id"]>;
+  }) => {
+    deleteManyManagersStm.run({
+      badgeId,
+    });
+
+    for (const userId of managerIds) {
+      createManagerStm.run({
+        userId,
+        badgeId,
+      });
+    }
+  }
+);
+
+const deleteManyOwnersStm = sql.prepare(`
+  DELETE FROM
+    "BadgeOwner"
+  WHERE
+    "badgeId" = $badgeId
+`);
+
+const createOwnerStm = sql.prepare(`
+  INSERT INTO 
+    "BadgeOwner" (
+      "badgeId",
+      "userId"
+    )
+    VALUES
+    (
+      $badgeId,
+      $userId
+    )
+`);
+
+export const upsertManyOwners = sql.transaction(
+  ({
+    badgeId,
+    ownerIds,
+  }: {
+    badgeId: Badge["id"];
+    ownerIds: Array<User["id"]>;
+  }) => {
+    deleteManyOwnersStm.run({
+      badgeId,
+    });
+
+    for (const userId of ownerIds) {
+      createOwnerStm.run({
+        userId,
+        badgeId,
+      });
+    }
+  }
+);
+
 const countsByUserIdStm = sql.prepare(`
   select 
       "Badge"."code", 
