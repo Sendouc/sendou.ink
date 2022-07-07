@@ -1,6 +1,6 @@
 import { json } from "@remix-run/node";
 import type { LoaderFunction } from "@remix-run/node";
-import { useLoaderData, useMatches, useParams } from "@remix-run/react";
+import { Outlet, useLoaderData, useMatches, useParams } from "@remix-run/react";
 import clsx from "clsx";
 import { Badge } from "~/components/Badge";
 import { LinkButton } from "~/components/Button";
@@ -16,6 +16,10 @@ import { canEditBadgeOwners } from "~/permissions";
 import { discordFullName } from "~/utils/strings";
 import { BADGES_PAGE } from "~/utils/urls";
 import type { BadgesLoaderData } from "../badges";
+
+export interface BadgeDetailsContext {
+  badgeName: string;
+}
 
 export interface BadgeDetailsLoaderData {
   owners: OwnersByBadgeId;
@@ -44,8 +48,11 @@ export default function BadgeDetailsPage() {
   const badge = badges.find((b) => b.id === Number(params["id"]));
   if (!badge) return <Redirect to={BADGES_PAGE} />;
 
+  const context: BadgeDetailsContext = { badgeName: badge.displayName };
+
   return (
     <div className="stack md items-center">
+      <Outlet context={context} />
       <Badge badge={badge} isAnimated size={200} />
       <div className="badges__explanation">{badgeExplanationText(badge)}</div>
       {canEditBadgeOwners({ user, managers: data.managers }) ? (

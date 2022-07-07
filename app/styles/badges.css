@@ -52,3 +52,27 @@
   color: var(--theme-vibrant);
   font-size: var(--fonts-xs);
 }
+
+.badges-edit__users-list > li {
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.badges-edit__users-list {
+  padding: 0;
+  font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
+  display: flex;
+  gap: var(--s-2);
+  flex-direction: column;
+}
+
+.badges-edit__big-header {
+  font-size: var(--fonts-lg);
+}
+
+.badges-edit__small-header {
+  font-size: var(--fonts-md);
+}

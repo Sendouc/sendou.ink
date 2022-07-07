@@ -14,6 +14,7 @@ interface ComboboxProps<T> {
   options: ComboboxOption<T>[];
   inputName: string;
   placeholder: string;
+  className?: string;
   isLoading?: boolean;
   onChange?: (selectedOption?: ComboboxOption<T>) => void;
 }
@@ -23,6 +24,7 @@ export function Combobox<T extends Record<string, string | null | number>>({
   inputName,
   placeholder,
   onChange,
+  className,
   isLoading = false,
 }: ComboboxProps<T>) {
   const [selectedOption, setSelectedOption] =
@@ -56,7 +58,7 @@ export function Combobox<T extends Record<string, string | null | number>>({
       <HeadlessCombobox.Input
         onChange={(event) => setQuery(event.target.value)}
         placeholder={isLoading ? "Loading..." : placeholder}
-        className="combobox-input"
+        className={clsx("combobox-input", className)}
         displayValue={(option) =>
           (option as Unpacked<typeof options>)?.label ?? ""
         }
@@ -96,10 +98,12 @@ export function Combobox<T extends Record<string, string | null | number>>({
 export function UserCombobox({
   inputName,
   onChange,
+  userIdsToOmit,
+  className,
 }: Pick<
   ComboboxProps<Pick<UserWithPlusTier, "discordId" | "plusTier">>,
-  "inputName" | "onChange"
->) {
+  "inputName" | "onChange" | "className"
+> & { userIdsToOmit?: Set<number> }) {
   const fetcher = useFetcher<UsersLoaderData>();
 
   React.useEffect(() => {
@@ -108,22 +112,29 @@ export function UserCombobox({
 
   const isLoading = fetcher.type !== "done";
 
+  const options = () => {
+    if (isLoading) return [];
+
+    const data = userIdsToOmit
+      ? fetcher.data.users.filter((user) => !userIdsToOmit.has(user.id))
+      : fetcher.data.users;
+
+    return data.map((u) => ({
+      label: u.discordFullName,
+      value: String(u.id),
+      discordId: u.discordId,
+      plusTier: u.plusTier,
+    }));
+  };
+
   return (
     <Combobox
       inputName={inputName}
-      options={
-        isLoading
-          ? []
-          : fetcher.data.users.map((u) => ({
-              label: u.discordFullName,
-              value: String(u.id),
-              discordId: u.discordId,
-              plusTier: u.plusTier,
-            }))
-      }
+      options={options()}
       placeholder="Sendou#0043"
       isLoading={isLoading}
       onChange={onChange}
+      className={className}
     />
   );
 }

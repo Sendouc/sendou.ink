@@ -8,17 +8,18 @@ import type { ManagersByBadgeId } from "./db/models/badges.server";
 
 // TODO: 1) move "root checkers" to one file and utils to one file 2) make utils const for more terseness
 
-export function canPerformAdminActions(user?: Pick<User, "discordId">) {
+type IsAdminUser = Pick<User, "discordId">;
+function isAdmin(user?: IsAdminUser) {
+  return user?.discordId === ADMIN_DISCORD_ID;
+}
+
+export function canPerformAdminActions(user?: IsAdminUser) {
   if (["development", "test"].includes(process.env.NODE_ENV)) return true;
 
   return isAdmin(user);
 }
 
-function isAdmin(user?: Pick<User, "discordId">) {
-  return user?.discordId === ADMIN_DISCORD_ID;
-}
-
-function adminOverride(user?: Pick<User, "discordId">) {
+function adminOverride(user?: IsAdminUser) {
   if (isAdmin(user)) {
     return () => true;
   }
@@ -247,4 +248,8 @@ function isBadgeManager({
 }: Pick<CanEditBadgeOwnersArgs, "user" | "managers">) {
   if (!user) return false;
   return managers.some((manager) => manager.id === user.id);
+}
+
+export function canEditBadgeManagers(user?: IsAdminUser) {
+  return isAdmin(user);
 }
