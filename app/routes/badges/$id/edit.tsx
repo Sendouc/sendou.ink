@@ -12,7 +12,7 @@ import { actualNumber, noDuplicates, safeJSONParse, id } from "~/utils/zod";
 import type { ActionFunction } from "@remix-run/node";
 import { requireUser, useUser } from "~/modules/auth";
 import { parseRequestFormData, validate } from "~/utils/remix";
-import { canEditBadgeManagers } from "~/permissions";
+import { canEditBadgeManagers, canEditBadgeOwners } from "~/permissions";
 import { assertUnreachable } from "~/utils/types";
 import { db } from "~/db";
 import type { User } from "~/db/types";
@@ -36,14 +36,21 @@ export const action: ActionFunction = async ({ request, params }) => {
   const badgeId = z.preprocess(actualNumber, z.number()).parse(params["id"]);
   const user = await requireUser(request);
 
-  validate(canEditBadgeManagers(user));
-
   switch (data._action) {
     case "MANAGERS": {
+      validate(canEditBadgeManagers(user));
+
       db.badges.upsertManyManagers({ badgeId, managerIds: data.managerIds });
       break;
     }
     case "OWNERS": {
+      validate(
+        canEditBadgeOwners({
+          user,
+          managers: db.badges.managersByBadgeId(badgeId),
+        })
+      );
+
       db.badges.upsertManyOwners({ badgeId, ownerIds: data.ownerIds });
       break;
     }
@@ -117,7 +124,7 @@ function Managers({ data }: { data: BadgeDetailsLoaderData }) {
         <h3 className="badges-edit__small-header">Managers</h3>
         <ul className="badges-edit__users-list">
           {managers.map((manager) => (
-            <li key={manager.id}>
+            <li key={manager.id} data-cy="manager">
               {manager.discordFullName}
               <Button
                 icon={<TrashIcon />}
@@ -126,6 +133,7 @@ function Managers({ data }: { data: BadgeDetailsLoaderData }) {
                 onClick={() =>
                   setManagers(managers.filter((m) => m.id !== manager.id))
                 }
+                data-cy="delete-manager-button"
               />
             </li>
           ))}
@@ -188,6 +196,7 @@ function Owners({ data }: { data: BadgeDetailsLoaderData }) {
               {owner.discordFullName}
               <input
                 className="badges-edit__number-input"
+                data-cy="owner-count-input"
                 id="number"
                 type="number"
                 value={owner.count}

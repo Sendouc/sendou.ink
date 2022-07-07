@@ -71,7 +71,7 @@ export default function BadgeDetailsPage() {
               >
                 ×{owner.count}
               </span>
-              <span>{discordFullName(owner)}</span>
+              <span data-cy="badge-owner">{discordFullName(owner)}</span>
             </li>
           ))}
         </ul>

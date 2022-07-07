@@ -239,7 +239,7 @@ function badgesToUsers() {
   );
 
   let userIds = sql
-    .prepare(`select "id" from "User"`)
+    .prepare(`select "id" from "User" where id != 2`) // no badges for N-ZAP
     .all()
     .map((u) => u.id) as number[];
 
