@@ -353,6 +353,7 @@ abbr[title] {
 }
 
 dialog {
+  width: min(90%, 24rem);
   border: 0;
   margin: auto;
   background-color: var(--bg);

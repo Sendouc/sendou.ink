@@ -73,10 +73,6 @@
   display: inline;
 }
 
-.plus__modal {
-  width: min(90%, 24rem);
-}
-
 .plus__modal-title {
   font-size: var(--fonts-sm);
 }

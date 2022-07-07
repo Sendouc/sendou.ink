@@ -28,7 +28,6 @@ export default function BadgesPageLayout() {
         <Outlet />
         <div className="badges__small-badges">
           {data.badges.map((badge) => (
-            // xxx: firefox and squid junction avif fails to display
             <NavLink
               className="badges__nav-link"
               key={badge.id}

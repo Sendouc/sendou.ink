@@ -123,7 +123,7 @@ export default function PlusNewSuggestionModalPage() {
   });
 
   return (
-    <Dialog className="plus__modal" isOpen>
+    <Dialog isOpen>
       <Form method="post" className="stack md">
         <h2 className="plus__modal-title">Adding a new suggestion</h2>
         <div>

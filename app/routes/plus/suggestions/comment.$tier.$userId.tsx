@@ -90,7 +90,7 @@ export default function PlusCommentModalPage() {
   }
 
   return (
-    <Dialog className="plus__modal" isOpen>
+    <Dialog isOpen>
       <Form method="post" className="stack md">
         <input type="hidden" name="tier" value={tierSuggestedTo} />
         <input type="hidden" name="suggestedId" value={targetUserId} />

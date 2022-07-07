@@ -55,7 +55,6 @@ export const action: ActionFunction = async ({ request, params }) => {
   return null;
 };
 
-// xxx: on SSR modal flickers first shown at top
 export default function EditBadgePage() {
   const user = useUser();
   const matches = useMatches();
