@@ -1,6 +1,17 @@
-// meant to be used in browser console
+import "dotenv/config";
+import invariant from "tiny-invariant";
+import { sql } from "~/db/sql";
+import type { Badge } from "~/db/types";
+import { db } from "../app/db";
 
-const regularTournamentBadges = [
+export const regularTournamentBadges: {
+  badgeName: string;
+  name: string;
+  altNames?: string[];
+  hueRotateAngle?: number;
+  winnerDiscordIds: string;
+  description?: string;
+}[] = [
   {
     badgeName: "sundae",
     name: "4v4 Sundaes",
@@ -188,7 +199,7 @@ const regularTournamentBadges = [
       "283557982078369792,743970109261086822,783425500739010621,589789457272799233,432990721495138304,327811945707339776",
   },
   {
-    badgeName: "lutitan2",
+    badgeName: "lutitan",
     name: "LUTI Season 12 (Div 9)",
     winnerDiscordIds: "",
   },
@@ -223,7 +234,30 @@ const regularTournamentBadges = [
   },
 ];
 
-const badgeDbEntries = regularTournamentBadges.map((b) => ({
-  code: b.badgeName,
-  displayName: b.name,
-}));
+sql.prepare(`delete from "BadgeOwner"`).run();
+const badges: Badge[] = sql.prepare(`select * from "Badge"`).all();
+const userIdMap = Object.fromEntries(
+  sql
+    .prepare(`select "id", "discordId" from "User"`)
+    .all()
+    .map((u) => [u.discordId, u.id])
+);
+for (const badgeObj of regularTournamentBadges) {
+  const badgeId = badges.find((b) => b.code === badgeObj.badgeName)?.id;
+  invariant(badgeId, "badgeId failed");
+
+  const userIds: number[] = [];
+  for (const discordId of badgeObj.winnerDiscordIds.trim().split(",")) {
+    const userId = userIdMap[discordId];
+    if (!userId) {
+      continue;
+    }
+
+    userIds.push(userId);
+  }
+
+  db.badges.upsertManyOwners({ badgeId, ownerIds: userIds });
+}
+
+// eslint-disable-next-line no-console
+console.log("done");
