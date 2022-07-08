@@ -245,7 +245,6 @@ function Voting(data: Extract<PlusVotingLoaderData, { type: "voting" }>) {
       )}
       {currentUser ? (
         <div className="stack md items-center">
-          {/* xxx: doesn't seem to work at all */}
           <Avatar
             discordAvatar={currentUser.user.discordAvatar}
             discordId={currentUser.user.discordId}
