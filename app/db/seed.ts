@@ -30,7 +30,11 @@ const basicSeeds = [
 
 export function seed() {
   wipeDB();
+
+  let count = 0;
   for (const seedFunc of basicSeeds) {
+    count++;
+    console.log("ran seed", count);
     seedFunc();
   }
 }
