@@ -11,8 +11,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Install deps
-        run: npm install
+      - name: Cypress E2E tests
+        uses: cypress-io/github-action@v4
+        with:
+          build: npm run build
+          start: npm start
+        env:
+          BASE_URL: http://localhost:5800
+          PORT: 5800
+          DB_PATH: db.sqlite3
       - name: Prettier
         run: npm run prettier:check
       - name: Lint TS
@@ -21,8 +28,3 @@ jobs:
         run: npm run lint:styles
       - name: Typecheck
         run: npm run typecheck
-      - name: Cypress run
-        uses: cypress-io/github-action@v4
-        with:
-          build: npm run build
-          start: npm start
