@@ -38,6 +38,7 @@ export function seed() {
 function wipeDB() {
   const tablesToDelete = [
     "User",
+    "PlusVote",
     "PlusSuggestion",
     "PlusVote",
     "BadgeOwner",
