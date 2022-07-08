@@ -21,6 +21,8 @@ jobs:
           PORT: 4455
           DB_PATH: db.sqlite3
           SESSION_SECRET: secret
+          DISCORD_CLIENT_ID: 123
+          DISCORD_CLIENT_SECRET: secret
       - name: Prettier
         run: npm run prettier:check
       - name: Lint TS
