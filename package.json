@@ -28,11 +28,11 @@
   },
   "dependencies": {
     "@faker-js/faker": "^7.3.0",
-    "@headlessui/react": "^1.6.5",
+    "@headlessui/react": "^1.6.6",
     "@popperjs/core": "^2.11.5",
-    "@remix-run/node": "^1.6.3",
-    "@remix-run/react": "^1.6.3",
-    "@remix-run/serve": "^1.6.3",
+    "@remix-run/node": "^1.6.4",
+    "@remix-run/react": "^1.6.4",
+    "@remix-run/serve": "^1.6.4",
     "better-sqlite3": "^7.5.3",
     "clsx": "^1.2.1",
     "countries-list": "^2.6.1",
@@ -48,8 +48,8 @@
     "zod": "^3.17.3"
   },
   "devDependencies": {
-    "@remix-run/dev": "^1.6.3",
-    "@remix-run/eslint-config": "^1.6.3",
+    "@remix-run/dev": "^1.6.4",
+    "@remix-run/eslint-config": "^1.6.4",
     "@types/better-sqlite3": "^7.5.0",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",

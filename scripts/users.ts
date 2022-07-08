@@ -28,4 +28,5 @@ for (const user of users) {
   });
 }
 
+// eslint-disable-next-line no-console
 console.log("done");
