@@ -22,7 +22,7 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
       - name: Cypress run
-      uses: cypress-io/github-action@v4
-      with:
-        build: npm run build
-        start: npm start
+        uses: cypress-io/github-action@v4
+        with:
+          build: npm run build
+          start: npm start
