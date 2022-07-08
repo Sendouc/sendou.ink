@@ -20,9 +20,7 @@ jobs:
           BASE_URL: http://localhost:4455
           PORT: 4455
           DB_PATH: db.sqlite3
-          SESSION_SECRET: secret
-          DISCORD_CLIENT_ID: 123
-          DISCORD_CLIENT_SECRET: secret
+          NODE_ENV: test
       - name: Prettier
         run: npm run prettier:check
       - name: Lint TS
