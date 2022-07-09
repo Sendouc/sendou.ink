@@ -93,6 +93,17 @@
   font-size: var(--fonts-md);
 }
 
+.badges-edit__differences {
+  padding: 0;
+  font-size: var(--fonts-xs);
+  list-style: none;
+}
+
+.badges-edit__differences > li::before {
+  padding-inline-end: 5px;
+  content: "-";
+}
+
 .badges-edit__submit-button {
   margin: 0 auto;
 }

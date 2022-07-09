@@ -39,7 +39,8 @@ describe("Plus suggestions page", () => {
     cy.getCy("new-owner-combobox-input").clear().type("N-ZAP{enter}");
     cy.getCy("owner-count-input").last().type("1"); // new count = 11
 
-    cy.contains("1 change").click();
+    cy.getCy("difference-added");
+    cy.getCy("save-owners-button").click();
     cy.contains("11");
   });
 
@@ -56,7 +57,8 @@ describe("Plus suggestions page", () => {
 
         cy.getCy("owner-count-input").first().type("{selectall}").type("0");
 
-        cy.contains("1 change").click();
+        cy.getCy("difference-removed");
+        cy.getCy("save-owners-button").click();
 
         cy.visit(BADGES_PAGE);
         cy.getCy("badge-nav-link").first().click();

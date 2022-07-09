@@ -94,13 +94,6 @@ export default function EditBadgePage() {
   );
 }
 
-function submitButtonText(amountOfChanges: number) {
-  if (amountOfChanges === 0) return "Submit";
-  if (amountOfChanges === 1) return `Submit ${amountOfChanges} change`;
-
-  return `Submit ${amountOfChanges} changes`;
-}
-
 function Managers({ data }: { data: BadgeDetailsLoaderData }) {
   const [managers, setManagers] = React.useState(
     data.managers.map((m) => ({
@@ -171,6 +164,13 @@ function Managers({ data }: { data: BadgeDetailsLoaderData }) {
       </Button>
     </div>
   );
+
+  function submitButtonText(amountOfChanges: number) {
+    if (amountOfChanges === 0) return "Submit";
+    if (amountOfChanges === 1) return `Submit ${amountOfChanges} change`;
+
+    return `Submit ${amountOfChanges} changes`;
+  }
 }
 
 function Owners({ data }: { data: BadgeDetailsLoaderData }) {
@@ -182,11 +182,7 @@ function Owners({ data }: { data: BadgeDetailsLoaderData }) {
     }))
   );
 
-  const amountOfChanges = owners.reduce((acc, owner) => {
-    const oldOwner = data.owners.find((o) => o.id === owner.id);
-    const hasChanged = !oldOwner || owner.count !== oldOwner.count;
-    return acc + (hasChanged ? 1 : 0);
-  }, 0);
+  const ownerDifferences = getOwnerDifferences(owners, data.owners);
 
   return (
     <div className="stack md">
@@ -231,6 +227,37 @@ function Owners({ data }: { data: BadgeDetailsLoaderData }) {
           userIdsToOmit={new Set(owners.map((m) => m.id))}
         />
       </div>
+      {ownerDifferences.length > 0 ? (
+        <ul className="badges-edit__differences">
+          {ownerDifferences.map((o) => (
+            <li key={o.id}>
+              {o.type === "added" ? (
+                <>
+                  {o.difference}{" "}
+                  <span
+                    className="text-success font-semi-bold"
+                    data-cy="difference-added"
+                  >
+                    added
+                  </span>{" "}
+                  to {o.discordFullName}
+                </>
+              ) : (
+                <>
+                  {o.difference}{" "}
+                  <span
+                    className="text-error font-semi-bold"
+                    data-cy="difference-removed"
+                  >
+                    removed
+                  </span>{" "}
+                  from {o.discordFullName}
+                </>
+              )}
+            </li>
+          ))}
+        </ul>
+      ) : null}
       <input
         type="hidden"
         name="ownerIds"
@@ -240,14 +267,55 @@ function Owners({ data }: { data: BadgeDetailsLoaderData }) {
         type="submit"
         tiny
         className="badges-edit__submit-button"
-        disabled={amountOfChanges === 0}
+        disabled={ownerDifferences.length === 0}
         name="_action"
         value="OWNERS"
+        data-cy="save-owners-button"
       >
-        {submitButtonText(amountOfChanges)}
+        Save
       </Button>
     </div>
   );
+}
+
+function getOwnerDifferences(
+  newOwners: Array<{
+    id: number;
+    discordFullName: string;
+    count: number;
+  }>,
+  oldOwners: BadgeDetailsLoaderData["owners"]
+) {
+  const result: Array<{
+    id: User["id"];
+    type: "added" | "removed";
+    difference: number;
+    discordFullName: string;
+  }> = [];
+
+  for (const owner of newOwners) {
+    const oldOwner = oldOwners.find((o) => o.id === owner.id);
+    if (!oldOwner) {
+      result.push({
+        id: owner.id,
+        type: "added",
+        difference: owner.count,
+        discordFullName: owner.discordFullName,
+      });
+      continue;
+    }
+
+    if (owner.count !== oldOwner.count) {
+      result.push({
+        id: owner.id,
+        type: owner.count > oldOwner.count ? "added" : "removed",
+        difference: Math.abs(owner.count - oldOwner.count),
+        discordFullName: owner.discordFullName,
+      });
+    }
+  }
+
+  return result;
 }
 
 function countArrayToDuplicatedIdsArray(

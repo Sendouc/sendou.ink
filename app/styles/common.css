@@ -205,6 +205,10 @@
   color: var(--theme-success);
 }
 
+.font-semi-bold {
+  font-weight: var(--semi-bold);
+}
+
 .w-full {
   width: 100%;
 }
