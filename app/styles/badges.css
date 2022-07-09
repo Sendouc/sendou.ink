@@ -26,6 +26,12 @@
   text-align: center;
 }
 
+.badges__managers {
+  color: var(--text-lighter);
+  font-size: var(--fonts-xxs);
+  text-align: center;
+}
+
 .badges__owners-container {
   height: 8rem;
   overflow-y: auto;

@@ -54,7 +54,16 @@ export default function BadgeDetailsPage() {
     <div className="stack md items-center">
       <Outlet context={context} />
       <Badge badge={badge} isAnimated size={200} />
-      <div className="badges__explanation">{badgeExplanationText(badge)}</div>
+      <div>
+        <div className="badges__explanation">{badgeExplanationText(badge)}</div>
+        <div
+          className={clsx("badges__managers", {
+            invisible: data.managers.length === 0,
+          })}
+        >
+          Managed by {data.managers.map((m) => discordFullName(m)).join(", ")}
+        </div>
+      </div>
       {canEditBadgeOwners({ user, managers: data.managers }) ? (
         <LinkButton to="edit" variant="outlined" tiny data-cy="edit-button">
           Edit
