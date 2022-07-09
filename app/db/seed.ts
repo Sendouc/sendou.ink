@@ -31,10 +31,7 @@ const basicSeeds = [
 export function seed() {
   wipeDB();
 
-  let count = 0;
   for (const seedFunc of basicSeeds) {
-    count++;
-    console.log("ran seed", count);
     seedFunc();
   }
 }
@@ -79,7 +76,8 @@ function nzapUser() {
 }
 
 function users() {
-  new Array(500).fill(null).map(fakeUser).forEach(db.users.upsert);
+  const usedNames = new Set<string>();
+  new Array(500).fill(null).map(fakeUser(usedNames)).forEach(db.users.upsert);
 }
 
 function userBios() {
@@ -96,20 +94,19 @@ function userBios() {
   }
 }
 
-function fakeUser() {
-  return {
+function fakeUser(usedNames: Set<string>) {
+  return () => ({
     discordAvatar: null,
     discordDiscriminator: String(faker.random.numeric(4)),
     discordId: String(faker.random.numeric(17)),
-    discordName: uniqueDiscordName(),
+    discordName: uniqueDiscordName(usedNames),
     twitch: null,
     twitter: null,
     youtubeId: null,
-  };
+  });
 }
 
-const usedNames = new Set<string>();
-function uniqueDiscordName() {
+function uniqueDiscordName(usedNames: Set<string>) {
   let result = faker.random.word();
   while (usedNames.has(result)) {
     result = faker.random.word();
