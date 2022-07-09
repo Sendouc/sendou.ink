@@ -15,6 +15,7 @@ export const STOP_IMPERSONATING_URL = "/auth/impersonate/stop";
 export const userPage = (discordId: string) => `/u/${discordId}`;
 export const impersonateUrl = (idToLogInAs: number) =>
   `/auth/impersonate?id=${idToLogInAs}`;
+export const badgePage = (badgeId: number) => `${BADGES_PAGE}/${badgeId}`;
 
 export const badgeUrl = ({
   code,

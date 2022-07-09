@@ -9,6 +9,7 @@ import { UserCombobox } from "~/components/Combobox";
 import { TrashIcon } from "~/components/icons/Trash";
 import { z } from "zod";
 import { actualNumber, noDuplicates, safeJSONParse, id } from "~/utils/zod";
+import { redirect } from "@remix-run/node";
 import type { ActionFunction } from "@remix-run/node";
 import { requireUser, useUser } from "~/modules/auth";
 import { parseRequestFormData, validate } from "~/utils/remix";
@@ -16,6 +17,7 @@ import { canEditBadgeManagers, canEditBadgeOwners } from "~/permissions";
 import { assertUnreachable } from "~/utils/types";
 import { db } from "~/db";
 import type { User } from "~/db/types";
+import { badgePage } from "~/utils/urls";
 
 const editBadgeActionSchema = z.union([
   z.object({
@@ -59,7 +61,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
   }
 
-  return null;
+  return redirect(badgePage(badgeId));
 };
 
 export default function EditBadgePage() {

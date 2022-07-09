@@ -26,8 +26,7 @@ describe("Plus suggestions page", () => {
     cy.getCy("new-manager-combobox-input").clear().type("Sendou{enter}");
     cy.contains("2 changes").click();
 
-    cy.reload();
-    cy.getCy("manager").contains("Sendou");
+    cy.contains("Managed by Sendou");
   });
 
   it("edits adds badge owner", function () {
@@ -41,7 +40,6 @@ describe("Plus suggestions page", () => {
     cy.getCy("owner-count-input").last().type("1"); // new count = 11
 
     cy.contains("1 change").click();
-    cy.contains("Cancel").click();
     cy.contains("11");
   });
 
