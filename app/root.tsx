@@ -67,6 +67,7 @@ function Document({ children }: { children: React.ReactNode }) {
     <html lang="en">
       <head>
         <Meta />
+        <meta name="color-scheme" content="dark" />
         <Links />
       </head>
       <body>
