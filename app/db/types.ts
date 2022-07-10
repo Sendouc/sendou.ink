@@ -9,6 +9,8 @@ export interface User {
   youtubeId: string | null;
   bio: string | null;
   country: string | null;
+  patronTier: number | null;
+  patronSince: number | null;
 }
 
 /** User table after joined with PlusTier table */
@@ -59,7 +61,13 @@ export interface Badge {
   hue?: number;
 }
 
+/** View that is union of TournamentBadgeOwner and Patreon badges */
 export interface BadgeOwner {
+  badgeId: number;
+  userId: number;
+}
+
+export interface TournamentBadgeOwner {
   badgeId: number;
   userId: number;
 }

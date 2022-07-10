@@ -44,14 +44,14 @@ export const upsertManyManagers = sql.transaction(
 
 const deleteManyOwnersStm = sql.prepare(`
   DELETE FROM
-    "BadgeOwner"
+    "TournamentBadgeOwner"
   WHERE
     "badgeId" = $badgeId
 `);
 
 const createOwnerStm = sql.prepare(`
   INSERT INTO 
-    "BadgeOwner" (
+    "TournamentBadgeOwner" (
       "badgeId",
       "userId"
     )

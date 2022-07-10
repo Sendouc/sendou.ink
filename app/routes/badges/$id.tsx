@@ -92,6 +92,11 @@ export default function BadgeDetailsPage() {
 export function badgeExplanationText(
   badge: Pick<BadgeDBType, "displayName" | "code"> & { count?: number }
 ) {
+  if (badge.code === "patreon") return "Supporter of sendou.ink on Patreon";
+  if (badge.code === "patreon_plus") {
+    return "Supporter+ of sendou.ink on Patreon";
+  }
+
   const countString =
     badge.count && badge.count > 1 ? ` (x${badge.count})` : "";
   return `Awarded for winning ${badge.displayName}${countString}`;
