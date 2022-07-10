@@ -16,7 +16,7 @@ export const links: LinksFunction = () => {
 
 export default function FAQPage() {
   return (
-    <Main>
+    <Main className="stack md">
       <details className="faq__details">
         <summary className="faq__summary">What is the Plus Server?</summary>
         <p>
@@ -31,6 +31,21 @@ export default function FAQPage() {
           everyone who participated in the voting downvoted you while 100% would
           be the opposite. 50% is required to pass the voting. If a member gets
           a score below 50% they get demoted a tier or in the case of +3 kicked.
+        </p>
+      </details>
+      <details className="faq__details">
+        <summary className="faq__summary">
+          How to get a badge prize for my event?
+        </summary>
+        <p>
+          You commission borzoic#1991 to make the badge. Price is 10-30€
+          depending on the complexity. Afterwards contact Sendou to get it added
+          to the web page.
+        </p>
+        <p>
+          Any tournament can have a badge as a prize. If you want to award
+          badges for other feats it&apos;s best to consult Sendou first about
+          your idea.
         </p>
       </details>
     </Main>

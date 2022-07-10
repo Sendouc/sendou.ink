@@ -20,6 +20,14 @@
   display: none;
 }
 
+.badges__general-info-texts {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-lighter);
+  font-size: var(--fonts-xs);
+  padding-inline: var(--s-1);
+}
+
 .badges__explanation {
   color: var(--theme);
   font-weight: var(--semi-bold);
@@ -100,8 +108,8 @@
 }
 
 .badges-edit__differences > li::before {
-  padding-inline-end: 5px;
   content: "-";
+  padding-inline-end: 5px;
 }
 
 .badges-edit__submit-button {

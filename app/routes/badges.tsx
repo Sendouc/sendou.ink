@@ -1,11 +1,12 @@
 import { json } from "@remix-run/node";
 import type { LinksFunction, LoaderFunction } from "@remix-run/node";
-import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
+import { Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import { Badge } from "~/components/Badge";
 import { Main } from "~/components/Main";
 import { db } from "~/db";
 import type { All } from "~/db/models/badges.server";
 import styles from "~/styles/badges.css";
+import { BORZOIC_TWITTER, FAQ_PAGE } from "~/utils/urls";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -38,6 +39,17 @@ export default function BadgesPageLayout() {
             </NavLink>
           ))}
         </div>
+      </div>
+      <div className="badges__general-info-texts">
+        <p>
+          Badges by{" "}
+          <a href={BORZOIC_TWITTER} target="_blank" rel="noreferrer">
+            borzoic
+          </a>
+        </p>
+        <p>
+          <Link to={FAQ_PAGE}>Badge for your event?</Link>
+        </p>
       </div>
     </Main>
   );
