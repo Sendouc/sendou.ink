@@ -35,7 +35,7 @@ export function Menu({
             key={navItem.name}
             className={clsx("layout__menu__link", {
               first: i === 0,
-              last: i + 1 === navItems.length,
+              last: i + 1 === visibleNavItems.length,
             })}
             to={navItem.url ?? navItem.name}
             onClick={closeMenu}
