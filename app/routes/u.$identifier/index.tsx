@@ -114,6 +114,12 @@ function SocialLinkIcon({ type }: Pick<SocialLinkProps, "type">) {
 
 function BadgeContainer(props: { badges: UserPageLoaderData["badges"] }) {
   const [badges, setBadges] = React.useState(props.badges);
+
+  // keep badges in sync when route changes from one user profile to another
+  React.useEffect(() => {
+    setBadges(props.badges);
+  }, [props.badges]);
+
   const [bigBadge, ...smallBadges] = badges;
   if (!bigBadge) return null;
 
