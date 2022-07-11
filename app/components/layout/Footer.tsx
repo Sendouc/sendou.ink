@@ -2,10 +2,12 @@ import { Link, useLoaderData } from "@remix-run/react";
 import type { RootLoaderData } from "~/root";
 import { discordFullName } from "~/utils/strings";
 import {
+  CONTRIBUTIONS_PAGE,
   FAQ_PAGE,
   SENDOU_INK_DISCORD_URL,
   SENDOU_INK_GITHUB_URL,
   SENDOU_INK_PATREON_URL,
+  SENDOU_INK_TWITTER_URL,
   SENDOU_TWITTER_URL,
   userPage,
 } from "~/utils/urls";
@@ -24,7 +26,7 @@ export function Footer() {
         <a href={SENDOU_TWITTER_URL} target="_blank" rel="noreferrer">
           sendou.ink by Sendou
         </a>
-        <Link to={"/"}>Contributors</Link>
+        <Link to={CONTRIBUTIONS_PAGE}>Contributors</Link>
         <Link to={FAQ_PAGE}>FAQ</Link>
       </div>
       <div className="layout__footer__socials">
@@ -41,7 +43,7 @@ export function Footer() {
         </a>
         <a
           className="layout__footer__social-link"
-          href={SENDOU_TWITTER_URL}
+          href={SENDOU_INK_TWITTER_URL}
           target="_blank"
           rel="noreferrer"
         >
