@@ -12,3 +12,4 @@ dump
 /cypress/screenshots
 
 .DS_Store
+.excalidraw

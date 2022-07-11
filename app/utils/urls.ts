@@ -1,6 +1,7 @@
 import type { Badge } from "~/db/types";
 
 export const SENDOU_INK_DISCORD_URL = "https://discord.gg/sendou";
+export const SENDOU_TWITTER_URL = "https://twitter.com/sendouc";
 export const SENDOU_INK_TWITTER_URL = "https://twitter.com/sendouink";
 export const SENDOU_INK_PATREON_URL = "https://patreon.com/sendou";
 export const SENDOU_INK_GITHUB_URL = "https://github.com/Sendouc/sendou.ink";

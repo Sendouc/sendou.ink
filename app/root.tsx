@@ -20,6 +20,8 @@ import layoutStyles from "~/styles/layout.css";
 import resetStyles from "~/styles/reset.css";
 import { Catcher } from "./components/Catcher";
 import { Layout } from "./components/layout";
+import { db } from "./db";
+import type { FindAllPatrons } from "./db/models/users.server";
 import type { UserWithPlusTier } from "./db/types";
 import { getUser } from "./modules/auth";
 
@@ -41,6 +43,7 @@ export const meta: MetaFunction = () => ({
 });
 
 export interface RootLoaderData {
+  patrons: FindAllPatrons;
   user?: Pick<
     UserWithPlusTier,
     "id" | "discordId" | "discordAvatar" | "plusTier"
@@ -51,6 +54,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   const user = await getUser(request);
 
   return json<RootLoaderData>({
+    patrons: db.users.findAllPatrons(),
     user: user
       ? {
           discordAvatar: user.discordAvatar,

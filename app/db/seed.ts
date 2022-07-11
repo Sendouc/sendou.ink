@@ -9,6 +9,7 @@ import { sql } from "~/db/sql";
 import type { UpsertManyPlusVotesArgs } from "./models/plusVotes.server";
 import { ADMIN_DISCORD_ID } from "~/constants";
 import shuffle from "just-shuffle";
+import { dateToDatabaseTimestamp } from "~/utils/dates";
 
 const ADMIN_TEST_AVATAR = "fcfd65a3bea598905abb9ca25296816b";
 
@@ -26,6 +27,7 @@ const basicSeeds = [
   badgesToAdmin,
   badgesToUsers,
   badgeManagers,
+  patrons,
 ];
 
 export function seed() {
@@ -42,7 +44,7 @@ function wipeDB() {
     "PlusVote",
     "PlusSuggestion",
     "PlusVote",
-    "BadgeOwner",
+    "TournamentBadgeOwner",
     "BadgeManager",
   ];
 
@@ -226,7 +228,7 @@ function badgesToAdmin() {
   for (const id of badgesWithDuplicates) {
     sql
       .prepare(
-        `insert into "BadgeOwner" ("badgeId", "userId") values ($id, $userId)`
+        `insert into "TournamentBadgeOwner" ("badgeId", "userId") values ($id, $userId)`
       )
       .run({ id, userId: 1 });
   }
@@ -259,7 +261,7 @@ function badgesToUsers() {
       const userToGetABadge = userIds.shift()!;
       sql
         .prepare(
-          `insert into "BadgeOwner" ("badgeId", "userId") values ($id, $userId)`
+          `insert into "TournamentBadgeOwner" ("badgeId", "userId") values ($id, $userId)`
         )
         .run({ id, userId: userToGetABadge });
 
@@ -276,5 +278,24 @@ function badgeManagers() {
         `insert into "BadgeManager" ("badgeId", "userId") values ($id, $userId)`
       )
       .run({ id, userId: 2 });
+  }
+}
+
+function patrons() {
+  const userIds = sql
+    .prepare(`select "id" from "User" order by random() limit 50`)
+    .all()
+    .map((u) => u.id);
+
+  for (const id of userIds) {
+    sql
+      .prepare(
+        `update user set "patronTier" = $patronTier, "patronSince" = $patronSince where id = $id`
+      )
+      .run({
+        id,
+        patronSince: dateToDatabaseTimestamp(faker.date.past()),
+        patronTier: faker.helpers.arrayElement([1, 1, 2, 2, 2, 3, 3, 4]),
+      });
   }
 }

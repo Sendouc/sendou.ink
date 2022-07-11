@@ -23,6 +23,7 @@
   --theme-vibrant: hsl(255deg 78% 65%);
   --theme-transparent: hsl(255deg 66.7% 75% / 40%);
   --theme-transparent-vibrant: hsl(255deg 78% 65% / 54%);
+  --theme-semi-transparent-vibrant: hsl(255deg 78% 65% / 75%);
   --theme-secondary: hsl(85deg 66.7% 55.3%);
 
   /* background-pattern.svg not using this currently */
@@ -310,6 +311,11 @@ legend {
 article {
   padding-inline: var(--s-3);
   white-space: pre-line;
+}
+
+ol,
+ul {
+  padding: 0;
 }
 
 select {

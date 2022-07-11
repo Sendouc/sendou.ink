@@ -145,3 +145,25 @@ export function findAllPlusMembers() {
     plusTier: NonNullable<UserWithPlusTier["plusTier"]>;
   }>;
 }
+
+const findAllPatronsStm = sql.prepare(`
+  select
+    "id",
+    "discordId",
+    "discordName",
+    "discordDiscriminator",
+    "patronTier"
+  from "User"
+  where "patronTier" is not null
+  order by "patronTier" desc, "patronSince" asc
+`);
+
+export type FindAllPatrons = Array<
+  Pick<
+    User,
+    "id" | "discordId" | "discordName" | "discordDiscriminator" | "patronTier"
+  >
+>;
+export function findAllPatrons() {
+  return findAllPatronsStm.all() as FindAllPatrons;
+}

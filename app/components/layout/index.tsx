@@ -5,6 +5,7 @@ import { UserItem } from "./UserItem";
 import navItems from "./nav-items.json";
 import { useLocation } from "@remix-run/react";
 import { Image } from "../Image";
+import { Footer } from "./Footer";
 
 export const Layout = React.memo(function Layout({
   children,
@@ -19,7 +20,7 @@ export const Layout = React.memo(function Layout({
   );
 
   return (
-    <>
+    <div className="layout__container">
       <header className="layout__header">
         {currentPagesNavItem ? (
           <h1 className="layout__page-heading">
@@ -45,6 +46,7 @@ export const Layout = React.memo(function Layout({
       </header>
       <Menu expanded={menuOpen} closeMenu={() => setMenuOpen(false)} />
       {children}
-    </>
+      <Footer />
+    </div>
   );
 });

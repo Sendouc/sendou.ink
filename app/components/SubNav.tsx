@@ -5,7 +5,11 @@ import type * as React from "react";
 import { ArrowUpIcon } from "./icons/ArrowUp";
 
 export function SubNav({ children }: { children: React.ReactNode }) {
-  return <nav className="sub-nav__container">{children}</nav>;
+  return (
+    <div>
+      <nav className="sub-nav__container">{children}</nav>
+    </div>
+  );
 }
 
 export function SubNavLink({
