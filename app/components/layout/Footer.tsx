@@ -13,8 +13,8 @@ import { DiscordIcon } from "../icons/Discord";
 import { GitHubIcon } from "../icons/GitHub";
 import { PatreonIcon } from "../icons/Patreon";
 import { TwitterIcon } from "../icons/Twitter";
+import { Image } from "../Image";
 
-// xxx: add some sendouLove
 export function Footer() {
   const data = useLoaderData<RootLoaderData>();
 
@@ -76,6 +76,7 @@ export function Footer() {
       <div>
         <h4 className="layout__footer__patron-title">
           Thanks to the patrons for the support
+          <Image alt="" path="/img/layout/sendou_love" width={24} height={24} />
         </h4>
         <ul className="layout__footer__patron-list">
           {data.patrons.map((patron) => (

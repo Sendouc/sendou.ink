@@ -1,4 +1,8 @@
-import type { ActionFunction, LoaderFunction } from "@remix-run/node";
+import type {
+  ActionFunction,
+  LoaderFunction,
+  MetaFunction,
+} from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import { formatDistance } from "date-fns";
@@ -19,11 +23,17 @@ import {
   usePlusVoting,
 } from "~/modules/plus-server";
 import { isVotingActive } from "~/permissions";
-import { parseRequestFormData } from "~/utils/remix";
+import { makeTitle, parseRequestFormData } from "~/utils/remix";
 import { discordFullName } from "~/utils/strings";
 import { assertType, assertUnreachable } from "~/utils/types";
 import { safeJSONParse } from "~/utils/zod";
 import { PlusSuggestionComments } from "../suggestions";
+
+export const meta: MetaFunction = () => {
+  return {
+    title: makeTitle("Plus Server voting"),
+  };
+};
 
 const voteSchema = z.object({
   votedId: z.number(),
