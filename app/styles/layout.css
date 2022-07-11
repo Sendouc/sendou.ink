@@ -270,3 +270,33 @@
   list-style: none;
   margin-block-start: var(--s-2);
 }
+
+@media screen and (max-width: 640px) {
+  .layout__footer__socials {
+    flex-direction: column;
+  }
+
+  .layout__footer__social-link {
+    max-width: initial;
+    flex-direction: row;
+  }
+
+  .layout__footer__social-header {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    text-align: initial;
+  }
+
+  .layout__footer__social-header > p {
+    margin-block-start: var(--s-1);
+  }
+
+  .layout__footer__social-icon {
+    height: 1.75rem;
+  }
+
+  .layout__footer__social-link:hover > .layout__footer__social-icon {
+    transform: translateX(-0.3rem);
+  }
+}
