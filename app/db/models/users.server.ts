@@ -57,6 +57,32 @@ export function updateProfile(args: Pick<User, "country" | "id" | "bio">) {
   updateProfileStm.run(args);
 }
 
+const deleteAllPatronDataStm = sql.prepare(`
+  update "User"
+    set "patronTier" = null,
+        "patronSince" = null
+`);
+
+const addPatronDataStm = sql.prepare(`
+  update "User"
+  set "patronTier" = $patronTier,
+      "patronSince" = $patronSince
+  where "discordId" = $discordId
+`);
+
+export type UpdatePatronDataArgs = Array<
+  Pick<User, "discordId" | "patronTier" | "patronSince">
+>;
+export const updatePatronData = sql.transaction(
+  (argsArr: UpdatePatronDataArgs) => {
+    deleteAllPatronDataStm.run();
+
+    for (const args of argsArr) {
+      addPatronDataStm.run(args);
+    }
+  }
+);
+
 const deleteStm = sql.prepare(`
   delete from "User" where id = $id
     returning *

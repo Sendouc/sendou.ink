@@ -1,9 +1,12 @@
 import type { ActionFunction } from "@remix-run/node";
 import { z } from "zod";
+import { db } from "~/db";
+import type { UpdatePatronDataArgs } from "~/db/models/users.server";
 import { getUser } from "~/modules/auth";
 import { canAccessLohiEndpoint, canPerformAdminActions } from "~/permissions";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { fetchWithTimeout } from "~/utils/fetch";
+import type { Unpacked } from "~/utils/types";
 
 const PATREON_INITIAL_URL =
   "https://www.patreon.com/api/oauth2/api/campaigns/2744004/pledges?include=patron.null,reward.null";
@@ -22,12 +25,6 @@ function idToTier(id: string) {
   return tier;
 }
 
-interface ParsedPatron {
-  discordId: string;
-  tier: number;
-  createdAtTimestamp: number;
-}
-
 interface NoDiscordConnectionUser {
   email: string;
   name: string;
@@ -40,7 +37,7 @@ export const action: ActionFunction = async ({ request }) => {
     throw new Response("Not authorized", { status: 403 });
   }
 
-  const patrons: Array<ParsedPatron> = [];
+  const patrons: UpdatePatronDataArgs = [];
   const noDiscordConnected: Array<NoDiscordConnectionUser> = [];
   const noDataIds: Array<string> = [];
   let nextUrlToFetchWith: string | undefined;
@@ -57,6 +54,8 @@ export const action: ActionFunction = async ({ request }) => {
 
     nextUrlToFetchWith = patronData.links.next;
   }
+
+  db.users.updatePatronData(patrons);
 
   return new Response(
     `Added ${patrons.length} patrons. ${
@@ -138,7 +137,7 @@ function parsePatronData({
   const patronsWithIds: Array<
     {
       patreonId: string;
-    } & Omit<ParsedPatron, "discordId">
+    } & Omit<Unpacked<UpdatePatronDataArgs>, "discordId">
   > = [];
 
   for (const patron of data) {
@@ -151,15 +150,15 @@ function parsePatronData({
 
     patronsWithIds.push({
       patreonId: patron.relationships.patron.data.id,
-      createdAtTimestamp: dateToDatabaseTimestamp(
+      patronSince: dateToDatabaseTimestamp(
         new Date(patron.attributes.created_at)
       ),
-      tier: idToTier(patron.relationships.reward.data.id),
+      patronTier: idToTier(patron.relationships.reward.data.id),
     });
   }
 
   const result: {
-    patrons: Array<ParsedPatron>;
+    patrons: UpdatePatronDataArgs;
     noDiscordConnection: Array<NoDiscordConnectionUser>;
     noDataIds: string[];
   } = {
@@ -186,9 +185,9 @@ function parsePatronData({
     }
 
     result.patrons.push({
-      createdAtTimestamp: patronData.createdAtTimestamp,
+      patronSince: patronData.patronSince,
       discordId,
-      tier: patronData.tier,
+      patronTier: patronData.patronTier,
     });
   }
 
