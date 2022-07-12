@@ -23,7 +23,7 @@ export default function ContributionsPage() {
         <a href={SENDOU_TWITTER_URL} target="_blank" rel="noreferrer">
           Sendou
         </a>{" "}
-        with help from contributors.
+        with help from contributors:
       </p>
       <ul className="mt-2">
         <li>

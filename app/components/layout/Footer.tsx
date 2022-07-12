@@ -8,7 +8,6 @@ import {
   SENDOU_INK_GITHUB_URL,
   SENDOU_INK_PATREON_URL,
   SENDOU_INK_TWITTER_URL,
-  SENDOU_TWITTER_URL,
   userPage,
 } from "~/utils/urls";
 import { DiscordIcon } from "../icons/Discord";
@@ -23,9 +22,6 @@ export function Footer() {
   return (
     <footer className="layout__footer">
       <div className="layout__footer__link-list">
-        <a href={SENDOU_TWITTER_URL} target="_blank" rel="noreferrer">
-          sendou.ink by Sendou
-        </a>
         <Link to={CONTRIBUTIONS_PAGE}>Contributors</Link>
         <Link to={FAQ_PAGE}>FAQ</Link>
       </div>

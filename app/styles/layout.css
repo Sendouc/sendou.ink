@@ -265,6 +265,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  padding: 0;
   font-size: var(--fonts-xs);
   gap: var(--s-1);
   list-style: none;
