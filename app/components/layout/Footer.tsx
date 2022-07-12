@@ -75,21 +75,28 @@ export function Footer() {
           <PatreonIcon className="layout__footer__social-icon patreon" />
         </a>
       </div>
-      <div>
-        <h4 className="layout__footer__patron-title">
-          Thanks to the patrons for the support
-          <Image alt="" path="/img/layout/sendou_love" width={24} height={24} />
-        </h4>
-        <ul className="layout__footer__patron-list">
-          {data.patrons.map((patron) => (
-            <li key={patron.id}>
-              <Link to={userPage(patron.discordId)}>
-                {discordFullName(patron)}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
+      {data.patrons.length > 0 ? (
+        <div>
+          <h4 className="layout__footer__patron-title">
+            Thanks to the patrons for the support
+            <Image
+              alt=""
+              path="/img/layout/sendou_love"
+              width={24}
+              height={24}
+            />
+          </h4>
+          <ul className="layout__footer__patron-list">
+            {data.patrons.map((patron) => (
+              <li key={patron.id}>
+                <Link to={userPage(patron.discordId)}>
+                  {discordFullName(patron)}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
     </footer>
   );
 }
