@@ -22,6 +22,7 @@ module.exports = {
     "no-constant-condition": ["error", { checkLoops: false }],
     "no-console": ["error", { allow: ["warn", "error"] }],
     "no-warning-comments": ["warn", { terms: ["xxx"] }],
+    "no-var": 0,
     "@typescript-eslint/no-unsafe-return": 0,
     "@typescript-eslint/no-unsafe-member-access": 0,
     "@typescript-eslint/no-unsafe-assignment": 0,
