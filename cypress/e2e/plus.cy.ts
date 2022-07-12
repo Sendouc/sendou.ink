@@ -77,7 +77,4 @@ describe("Plus voting results page", () => {
     cy.contains("Sendou");
     cy.contains("passed");
   });
-
-  // xxx: figure out a good way to do plus server tests with serverside isVotingActive or delete existing tests
-  // -> if way is found then should also add tests for voting
 });

@@ -1,33 +1,28 @@
 :root {
-  color-scheme: dark;
-
-  --bg: hsl(237.3deg 42.3% 30.6%);
-  --bg-darker: hsl(237.3deg 42.3% 26.6%);
-  --bg-lighter: hsl(237.3deg 42.3% 35.6%);
-  --bg-lighter-transparent: hsla(237.3deg 42.3% 35.6% / 50%);
-  --bg-darker-very-transparent: hsla(237.3deg 42.3% 26.6% / 50%);
-  --bg-darker-transparent: hsla(237.3deg 42.3% 26.6% / 90%);
+  --bg: hsl(202deg 100% 96%);
+  --bg-darker: hsl(202deg 90% 90%);
+  --bg-lighter: hsl(225deg 100% 88%);
+  --bg-lighter-transparent: hsla(225deg 100% 88% / 50%);
+  --bg-darker-very-transparent: hsl(202deg 90% 90% / 50%);
+  --bg-darker-transparent: hsla(202deg 90% 90% / 65%);
   --bg-badge: #000;
-  --border: hsl(237.3deg 42.3% 45.6%);
-  --button-text: rgb(0 0 0 / 85%);
+  --border: hsl(237deg 100% 86%);
+  --button-text: rgba(255, 255, 255, 0.85);
   --button-text-transparent: rgb(0 0 0 / 65%);
-  --text: rgb(255 255 255 / 95%);
-  --text-lighter: rgb(255 255 255 / 55%);
-  --theme-error: rgb(219 70 65);
-  --theme-error-transparent: rgba(219 70 65 / 75%);
-  --theme-warning: #f5f587;
-  --theme-info: #a3a6ff;
-  --theme-success: #a3ffae;
-  --theme-success-transparent: #a3ffae52;
-  --theme: hsl(255deg 66.7% 75%);
-  --theme-vibrant: hsl(255deg 78% 65%);
+  --text: rgba(0, 0, 0, 0.95);
+  --text-lighter: rgba(75, 75, 75, 0.95);
+  --theme-error: rgb(199 13 6);
+  --theme-error-transparent: rgba(199 13 6 / 75%);
+  --theme-warning: #c9c900;
+  --theme-success: #00a514;
+  --theme-success-transparent: #00a51452;
+  --theme: hsl(255deg 64% 63%);
+  --theme-vibrant: hsl(255deg 100% 81%);
   --theme-transparent: hsl(255deg 66.7% 75% / 40%);
-  --theme-transparent-vibrant: hsl(255deg 78% 65% / 54%);
-  --theme-semi-transparent-vibrant: hsl(255deg 78% 65% / 75%);
+  --theme-transparent-vibrant: hsl(255deg 100% 81% / 54%);
+  --theme-semi-transparent-vibrant: hsl(255deg 100% 81% / 75%);
   --theme-secondary: hsl(85deg 66.7% 55.3%);
 
-  /* background-pattern.svg not using this currently */
-  --theme-pattern: #6741d9;
   --rounded: 16px;
   --rounded-sm: 10px;
   --fonts-xl: 1.5rem;
@@ -68,10 +63,36 @@
   --s-72: 18rem;
   --s-80: 20rem;
   --s-96: 2rem;
-
-  /* letter-spacing: */
   --sparse: 0.4px;
   --label-margin: var(--s-1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: hsl(237.3deg 42.3% 30.6%);
+    --bg-darker: hsl(237.3deg 42.3% 26.6%);
+    --bg-lighter: hsl(237.3deg 42.3% 35.6%);
+    --bg-lighter-transparent: rgba(64, 67, 108, 0.5);
+    --bg-darker-very-transparent: hsla(237.3deg 42.3% 26.6% / 50%);
+    --bg-darker-transparent: hsla(237.3deg 42.3% 26.6% / 90%);
+    --bg-badge: #000;
+    --border: hsl(237.3deg 42.3% 45.6%);
+    --button-text: rgb(0 0 0 / 85%);
+    --button-text-transparent: rgb(0 0 0 / 65%);
+    --text: rgb(255 255 255 / 95%);
+    --text-lighter: rgb(255 255 255 / 55%);
+    --theme-error: rgb(219 70 65);
+    --theme-error-transparent: rgba(219 70 65 / 75%);
+    --theme-warning: #f5f587;
+    --theme-success: #a3ffae;
+    --theme-success-transparent: #a3ffae52;
+    --theme: hsl(255deg 66.7% 75%);
+    --theme-vibrant: hsl(255deg 78% 65%);
+    --theme-transparent: hsl(255deg 66.7% 75% / 40%);
+    --theme-transparent-vibrant: hsl(255deg 78% 65% / 54%);
+    --theme-semi-transparent-vibrant: hsl(255deg 78% 65% / 75%);
+    --theme-secondary: hsl(85deg 66.7% 55.3%);
+  }
 }
 
 /* xs: "(min-width: 480px)",

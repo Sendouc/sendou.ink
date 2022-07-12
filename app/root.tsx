@@ -71,7 +71,7 @@ function Document({ children }: { children: React.ReactNode }) {
     <html lang="en">
       <head>
         <Meta />
-        <meta name="color-scheme" content="dark" />
+        <meta name="color-scheme" content="dark light" />
         <Links />
       </head>
       <body>
