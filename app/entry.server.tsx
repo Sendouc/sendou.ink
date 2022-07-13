@@ -31,9 +31,8 @@ if (!global.appStartSignal && process.env.NODE_ENV === "production") {
   global.appStartSignal = true;
 
   // every 2 hours
-  cron.schedule(
-    "0 */2 * * *",
-    // @ts-expect-error seems to be mistyped
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  cron.schedule("0 */2 * * *", () =>
     updatePatreonData().catch((err) => console.error(err))
   );
 }
