@@ -4,6 +4,7 @@
   align-items: center;
   background-color: var(--bg-badge);
   border-radius: var(--rounded);
+  color: var(--badge-text);
   gap: var(--s-6);
   padding-block: var(--s-2);
   padding-inline: var(--s-3);
