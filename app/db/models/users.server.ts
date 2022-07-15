@@ -57,6 +57,29 @@ export function updateProfile(args: Pick<User, "country" | "id" | "bio">) {
   updateProfileStm.run(args);
 }
 
+const updateByDiscordIdStm = sql.prepare(`
+  update "User"
+    set "discordAvatar" = $discordAvatar,
+        "discordName" = $discordName,
+        "discordDiscriminator" = $discordDiscriminator
+    where "discordId" = $discordId
+`);
+
+export const updateMany = sql.transaction(
+  (
+    argsArr: Array<
+      Pick<
+        User,
+        "discordAvatar" | "discordName" | "discordDiscriminator" | "discordId"
+      >
+    >
+  ) => {
+    for (const updateArgs of argsArr) {
+      updateByDiscordIdStm.run(updateArgs);
+    }
+  }
+);
+
 const deleteAllPatronDataStm = sql.prepare(`
   update "User"
     set "patronTier" = null,

@@ -3,13 +3,18 @@ import { LOHI_TOKEN_HEADER_NAME } from "~/constants";
 import type { PlusListLoaderData } from "~/routes/plus/list";
 import ids from "./ids";
 
-export async function usersWithAccess(): Promise<PlusListLoaderData> {
+export function sendouInkFetch(path: string, init?: RequestInit) {
   invariant(process.env["SENDOU_INK_URL"], "SENDOU_INK_URL is not set");
   invariant(process.env["LOHI_TOKEN"], "LOHI_TOKEN is not set");
 
-  const response = await fetch(`${process.env["SENDOU_INK_URL"]}/plus/list`, {
+  return fetch(`${process.env["SENDOU_INK_URL"]}${path}`, {
     headers: [[LOHI_TOKEN_HEADER_NAME, process.env["LOHI_TOKEN"]]],
+    ...init,
   });
+}
+
+export async function usersWithAccess(): Promise<PlusListLoaderData> {
+  const response = await sendouInkFetch("/plus/list");
 
   if (!response.ok) {
     throw new Error(

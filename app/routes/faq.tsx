@@ -33,6 +33,7 @@ export default function FAQPage() {
           a score below 50% they get demoted a tier or in the case of +3 kicked.
         </p>
       </details>
+
       <details className="faq__details">
         <summary className="faq__summary">
           How to get a badge prize for my event?
@@ -47,6 +48,27 @@ export default function FAQPage() {
           badges for other feats it&apos;s best to consult Sendou first about
           your idea.
         </p>
+      </details>
+
+      <details className="faq__details">
+        <summary className="faq__summary">
+          How to update my avatar or username?
+        </summary>
+        <p>
+          Updating username or avatar on Discord doesn&apos;t right away update
+          them on sendou.ink. To make that happen you have two options:
+        </p>
+        <ol>
+          <li>
+            If you are a member of this website&apos;s Discord or the Plus
+            Server you can simply wait. There is a routine that runs once a day
+            that handles the updating.
+          </li>
+          <li>
+            Alternatively if you want to update them right away you can log out
+            and back in on sendou.ink.
+          </li>
+        </ol>
       </details>
     </Main>
   );

@@ -3,12 +3,11 @@ import { Client, GuildMember, Role } from "discord.js";
 import invariant from "tiny-invariant";
 import ids from "../ids";
 import type { BotCommand } from "../types";
-import { isPlusTierRoleId, plusTierToRoleId, usersWithAccess } from "../utils";
+import { plusTierToRoleId, usersWithAccess } from "../utils";
 
 const COMMAND_NAME = "plus";
 const ACTION_ARG = "dry";
 
-// doesn't seem to remove all roles...
 export const plusCommand: BotCommand = {
   guilds: [ids.guilds.adminServer],
   name: COMMAND_NAME,

@@ -2,6 +2,7 @@ import { questionCommand } from "./q";
 import { lfgRoleCommand } from "./lfg";
 import { accessCommand } from "./access";
 import { plusCommand } from "./plus";
+import { updateAllCommand } from "./updateall";
 import type { BotCommand } from "discord-bot/types";
 
 export const commands = [
@@ -9,6 +10,7 @@ export const commands = [
   lfgRoleCommand,
   accessCommand,
   plusCommand,
+  updateAllCommand,
 ];
 
 export const commandsMap = Object.fromEntries(commands.map((c) => [c.name, c]));
