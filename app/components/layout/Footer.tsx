@@ -1,4 +1,4 @@
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link } from "@remix-run/react";
 import type { RootLoaderData } from "~/root";
 import { discordFullName } from "~/utils/strings";
 import {
@@ -16,9 +16,11 @@ import { PatreonIcon } from "../icons/Patreon";
 import { TwitterIcon } from "../icons/Twitter";
 import { Image } from "../Image";
 
-export function Footer() {
-  const data = useLoaderData<RootLoaderData>();
-
+export function Footer({
+  patrons = [],
+}: {
+  patrons?: RootLoaderData["patrons"];
+}) {
   return (
     <footer className="layout__footer">
       <div className="layout__footer__link-list">
@@ -71,7 +73,7 @@ export function Footer() {
           <PatreonIcon className="layout__footer__social-icon patreon" />
         </a>
       </div>
-      {data.patrons.length > 0 ? (
+      {patrons.length > 0 ? (
         <div>
           <h4 className="layout__footer__patron-title">
             Thanks to the patrons for the support
@@ -83,7 +85,7 @@ export function Footer() {
             />
           </h4>
           <ul className="layout__footer__patron-list">
-            {data.patrons.map((patron) => (
+            {patrons.map((patron) => (
               <li key={patron.id}>
                 <Link to={userPage(patron.discordId)}>
                   {discordFullName(patron)}

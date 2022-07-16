@@ -6,11 +6,14 @@ import navItems from "./nav-items.json";
 import { useLocation } from "@remix-run/react";
 import { Image } from "../Image";
 import { Footer } from "./Footer";
+import type { RootLoaderData } from "~/root";
 
 export const Layout = React.memo(function Layout({
   children,
+  patrons,
 }: {
   children: React.ReactNode;
+  patrons?: RootLoaderData["patrons"];
 }) {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = React.useState(false);
@@ -46,7 +49,7 @@ export const Layout = React.memo(function Layout({
       </header>
       <Menu expanded={menuOpen} closeMenu={() => setMenuOpen(false)} />
       {children}
-      <Footer />
+      <Footer patrons={patrons} />
     </div>
   );
 });

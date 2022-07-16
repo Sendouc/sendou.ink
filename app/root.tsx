@@ -1,10 +1,9 @@
-import type {
-  LinksFunction,
-  LoaderFunction,
-  MetaFunction,
+import {
+  json,
+  type LinksFunction,
+  type LoaderFunction,
+  type MetaFunction,
 } from "@remix-run/node";
-import { json } from "@remix-run/node";
-import type { ShouldReloadFunction } from "@remix-run/react";
 import {
   Links,
   LiveReload,
@@ -12,6 +11,8 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
+  type ShouldReloadFunction,
 } from "@remix-run/react";
 import * as React from "react";
 import commonStyles from "~/styles/common.css";
@@ -66,7 +67,13 @@ export const loader: LoaderFunction = async ({ request }) => {
   });
 };
 
-function Document({ children }: { children: React.ReactNode }) {
+function Document({
+  children,
+  patrons,
+}: {
+  children: React.ReactNode;
+  patrons?: RootLoaderData["patrons"];
+}) {
   return (
     <html lang="en">
       <head>
@@ -76,7 +83,7 @@ function Document({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <React.StrictMode>
-          <Layout>{children}</Layout>
+          <Layout patrons={patrons}>{children}</Layout>
         </React.StrictMode>
         <ScrollRestoration />
         <Scripts />
@@ -87,8 +94,12 @@ function Document({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  // prop drilling patrons instead of using useLoaderData in the Footer directly because
+  // useLoaderData can't be used in CatchBoundary and Footer is rendered in it as well
+  const data = useLoaderData<RootLoaderData>();
+
   return (
-    <Document>
+    <Document patrons={data.patrons}>
       <Outlet />
     </Document>
   );

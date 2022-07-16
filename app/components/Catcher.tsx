@@ -27,15 +27,24 @@ export function Catcher() {
           )}
         </Main>
       );
+    case 404:
+      return (
+        <Main>
+          <h2>Error {caught.status} - Page not found</h2>
+          <GetHelp />
+        </Main>
+      );
+    default:
+      return (
+        <Main>
+          <h2>Error {caught.status}</h2>
+          {caught.data ? (
+            <code>{JSON.stringify(caught.data, null, 2)}</code>
+          ) : null}
+          <GetHelp />
+        </Main>
+      );
   }
-
-  return (
-    <Main>
-      <h2>Error {caught.status}</h2>
-      {caught.data ? <code>{JSON.stringify(caught.data, null, 2)}</code> : null}
-      <GetHelp />
-    </Main>
-  );
 }
 
 function GetHelp() {
