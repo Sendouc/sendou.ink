@@ -11,9 +11,11 @@ import type { RootLoaderData } from "~/root";
 export const Layout = React.memo(function Layout({
   children,
   patrons,
+  isCatchBoundary = false,
 }: {
   children: React.ReactNode;
   patrons?: RootLoaderData["patrons"];
+  isCatchBoundary?: boolean;
 }) {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = React.useState(false);
@@ -40,7 +42,7 @@ export const Layout = React.memo(function Layout({
           <div />
         )}
         <div className="layout__header__right-container">
-          <UserItem />
+          {!isCatchBoundary ? <UserItem /> : null}
           <HamburgerButton
             expanded={menuOpen}
             onClick={() => setMenuOpen(!menuOpen)}

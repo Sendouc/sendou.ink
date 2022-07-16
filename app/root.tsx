@@ -70,9 +70,11 @@ export const loader: LoaderFunction = async ({ request }) => {
 function Document({
   children,
   patrons,
+  isCatchBoundary,
 }: {
   children: React.ReactNode;
   patrons?: RootLoaderData["patrons"];
+  isCatchBoundary?: boolean;
 }) {
   return (
     <html lang="en">
@@ -83,7 +85,9 @@ function Document({
       </head>
       <body>
         <React.StrictMode>
-          <Layout patrons={patrons}>{children}</Layout>
+          <Layout patrons={patrons} isCatchBoundary={isCatchBoundary}>
+            {children}
+          </Layout>
         </React.StrictMode>
         <ScrollRestoration />
         <Scripts />
@@ -105,10 +109,9 @@ export default function App() {
   );
 }
 
-// TODO: this shows user as logged out even if they are logged in - a bit awkward with 404's
 export function CatchBoundary() {
   return (
-    <Document>
+    <Document isCatchBoundary>
       <Catcher />
     </Document>
   );
