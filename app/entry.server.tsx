@@ -1,17 +1,23 @@
 import type { EntryContext } from "@remix-run/node";
 import { RemixServer } from "@remix-run/react";
+import { I18nextProvider } from "react-i18next";
 import { renderToString } from "react-dom/server";
 import cron from "node-cron";
 import { updatePatreonData } from "./modules/patreon";
+import { i18Instance } from "./modules/i18n";
 
-export default function handleRequest(
+export default async function handleRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
   remixContext: EntryContext
 ) {
+  const i18n = await i18Instance(request, remixContext);
+
   const markup = renderToString(
-    <RemixServer context={remixContext} url={request.url} />
+    <I18nextProvider i18n={i18n}>
+      <RemixServer context={remixContext} url={request.url} />
+    </I18nextProvider>
   );
 
   responseHeaders.set("Content-Type", "text/html");

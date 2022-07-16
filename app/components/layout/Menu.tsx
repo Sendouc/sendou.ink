@@ -5,6 +5,7 @@ import { Image } from "../Image";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { canPerformAdminActions } from "~/permissions";
 import { useUser } from "~/modules/auth";
+import { useTranslation } from "react-i18next";
 
 export function Menu({
   expanded,
@@ -15,6 +16,7 @@ export function Menu({
 }) {
   const user = useUser();
   const isMounted = useIsMounted();
+  const { t } = useTranslation();
 
   // without this menu is initially visible due to SSR and not knowing user screen width on server (probably)
   if (!isMounted) return null;
@@ -47,7 +49,7 @@ export function Menu({
               path={`/img/layout/${navItem.name.replace(" ", "")}`}
               alt={navItem.name}
             />
-            <div>{navItem.displayName ?? navItem.name}</div>
+            <div>{t(`pages.${navItem.name}`)}</div>
           </Link>
         ))}
       </div>

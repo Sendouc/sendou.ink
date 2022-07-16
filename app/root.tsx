@@ -25,6 +25,9 @@ import { db } from "./db";
 import type { FindAllPatrons } from "./db/models/users.server";
 import type { UserWithPlusTier } from "./db/types";
 import { getUser } from "./modules/auth";
+import { DEFAULT_LANGUAGE, i18next } from "./modules/i18n";
+import { useChangeLanguage } from "remix-i18next";
+import { useTranslation } from "react-i18next";
 
 export const unstable_shouldReload: ShouldReloadFunction = () => false;
 
@@ -44,6 +47,7 @@ export const meta: MetaFunction = () => ({
 });
 
 export interface RootLoaderData {
+  locale: string;
   patrons: FindAllPatrons;
   user?: Pick<
     UserWithPlusTier,
@@ -53,8 +57,10 @@ export interface RootLoaderData {
 
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await getUser(request);
+  const locale = await i18next.getLocale(request);
 
   return json<RootLoaderData>({
+    locale,
     patrons: db.users.findAllPatrons(),
     user: user
       ? {
@@ -67,17 +73,23 @@ export const loader: LoaderFunction = async ({ request }) => {
   });
 };
 
+export const handle = {
+  i18n: "common",
+};
+
 function Document({
   children,
-  patrons,
-  isCatchBoundary,
+  data,
 }: {
   children: React.ReactNode;
-  patrons?: RootLoaderData["patrons"];
-  isCatchBoundary?: boolean;
+  data?: RootLoaderData;
 }) {
+  const { i18n } = useTranslation();
+  const locale = data?.locale ?? DEFAULT_LANGUAGE;
+  useChangeLanguage(locale);
+
   return (
-    <html lang="en">
+    <html lang={locale} dir={i18n.dir()}>
       <head>
         <Meta />
         <meta name="color-scheme" content="dark light" />
@@ -85,7 +97,7 @@ function Document({
       </head>
       <body>
         <React.StrictMode>
-          <Layout patrons={patrons} isCatchBoundary={isCatchBoundary}>
+          <Layout patrons={data?.patrons} isCatchBoundary={!data}>
             {children}
           </Layout>
         </React.StrictMode>
@@ -98,12 +110,12 @@ function Document({
 }
 
 export default function App() {
-  // prop drilling patrons instead of using useLoaderData in the Footer directly because
-  // useLoaderData can't be used in CatchBoundary and Footer is rendered in it as well
+  // prop drilling data instead of using useLoaderData in the child components directly because
+  // useLoaderData can't be used in CatchBoundary and layout is rendered in it as well
   const data = useLoaderData<RootLoaderData>();
 
   return (
-    <Document patrons={data.patrons}>
+    <Document data={data}>
       <Outlet />
     </Document>
   );
@@ -111,7 +123,7 @@ export default function App() {
 
 export function CatchBoundary() {
   return (
-    <Document isCatchBoundary>
+    <Document>
       <Catcher />
     </Document>
   );

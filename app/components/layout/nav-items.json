@@ -1,13 +1,11 @@
 [
   {
     "name": "admin",
-    "displayName": "Admin",
     "url": "admin"
   },
-  { "name": "badges", "displayName": "Badges", "url": "badges" },
+  { "name": "badges", "url": "badges" },
   {
     "name": "plus",
-    "displayName": "Plus Server",
     "url": "plus/suggestions"
   }
 ]
