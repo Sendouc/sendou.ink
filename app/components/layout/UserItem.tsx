@@ -1,4 +1,5 @@
 import { Link } from "@remix-run/react";
+import { useTranslation } from "react-i18next";
 import { useUser } from "~/modules/auth";
 import { LOG_IN_URL, LOG_OUT_URL, userPage } from "~/utils/urls";
 import { Avatar } from "../Avatar";
@@ -9,6 +10,7 @@ import { UserIcon } from "../icons/User";
 import { Popover } from "../Popover";
 
 export function UserItem() {
+  const { t } = useTranslation();
   const user = useUser();
 
   if (user)
@@ -24,7 +26,6 @@ export function UserItem() {
         }
       >
         <div className="layout__user-popover">
-          {/* TODO: make the Button component transformable to Link instead of creating a wrapper */}
           <Link to={userPage(user.discordId)}>
             <Button
               className="w-full"
@@ -33,12 +34,12 @@ export function UserItem() {
               data-cy="profile-button"
               icon={<UserIcon />}
             >
-              Profile
+              {t("header.profile")}
             </Button>
           </Link>
           <form method="post" action={LOG_OUT_URL}>
             <Button tiny variant="outlined" icon={<LogOutIcon />} type="submit">
-              Log out
+              {t("header.logout")}
             </Button>
           </form>
         </div>
@@ -52,7 +53,7 @@ export function UserItem() {
         className="layout__log-in-button"
         data-cy="log-in-button"
       >
-        <DiscordIcon /> Log in
+        <DiscordIcon /> {t("header.login")}
       </button>
     </form>
   );

@@ -1,0 +1,10 @@
+{
+  "faq.q1": "What is the Plus Server?",
+  "faq.a1": "Plus Server is a Discord server for high level western players to look for people to play with and against. It was founded on September 2017. Divided into three tiers of which +1 is the highest. You get access when a member of the server suggests you and you pass the monthly voting.\n\nIn the voting you get a percentage based on your result. 0% would mean everyone who participated in the voting downvoted you while 100% would be the opposite. 50% is required to pass the voting. If a member get a score below 50% they get demoted a tier or in the case of +3 kicked.",
+
+  "faq.q2": "How to get a badge prize for my event?",
+  "faq.a2": "You commission borzoic#1991 to make the badge. Price is 10-30€ depending on the complexity. Afterwards contact Sendou to get it added to the web page.\n\nAny tournament can have a badge as a prize. If you want to award badges for other feats it&apos;s best to consult Sendou first about your idea.",
+
+  "faq.q3": "How to update my avatar or username?",
+  "faq.a3": "Updating username or avatar on Discord doesn't right away update them on sendou.ink. To make that happen you have two options:\n\n1) If you are a member of this website's Discord or the Plus Server you can simply wait. There is a routine that runs once a day that handles the updating.\n\n2) Alternatively if you want to update them right away you can log out and back in on sendou.ink."
+}

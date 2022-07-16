@@ -1,5 +1,17 @@
 {
   "pages.admin": "Admin",
   "pages.badges": "Badges",
-  "pages.plus": "Plus Server"
+  "pages.plus": "Plus Server",
+  "pages.contributors": "Contributors",
+  "pages.faq": "FAQ",
+
+  "header.profile": "Profile",
+  "header.logout": "Log out",
+  "header.login": "Log in",
+
+  "footer.github.subtitle": "Source code",
+  "footer.twitter.subtitle": "Updates",
+  "footer.discord.subtitle": "Help & feedback",
+  "footer.patreon.subtitle": "Support",
+  "footer.thanks": "Thanks to the patrons for the support"
 }

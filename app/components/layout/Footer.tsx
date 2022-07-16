@@ -1,4 +1,5 @@
 import { Link } from "@remix-run/react";
+import { useTranslation } from "react-i18next";
 import type { RootLoaderData } from "~/root";
 import { discordFullName } from "~/utils/strings";
 import {
@@ -21,11 +22,13 @@ export function Footer({
 }: {
   patrons?: RootLoaderData["patrons"];
 }) {
+  const { t } = useTranslation();
+
   return (
     <footer className="layout__footer">
       <div className="layout__footer__link-list">
-        <Link to={CONTRIBUTIONS_PAGE}>Contributors</Link>
-        <Link to={FAQ_PAGE}>FAQ</Link>
+        <Link to={CONTRIBUTIONS_PAGE}>{t("pages.contributors")}</Link>
+        <Link to={FAQ_PAGE}>{t("pages.faq")}</Link>
       </div>
       <div className="layout__footer__socials">
         <a
@@ -35,7 +38,7 @@ export function Footer({
           rel="noreferrer"
         >
           <div className="layout__footer__social-header">
-            GitHub<p>Source code</p>
+            GitHub<p>{t("footer.github.subtitle")}</p>
           </div>
           <GitHubIcon className="layout__footer__social-icon github" />
         </a>
@@ -46,7 +49,7 @@ export function Footer({
           rel="noreferrer"
         >
           <div className="layout__footer__social-header">
-            Twitter<p>Updates</p>
+            Twitter<p>{t("footer.twitter.subtitle")}</p>
           </div>
           <TwitterIcon className="layout__footer__social-icon twitter" />
         </a>
@@ -57,7 +60,7 @@ export function Footer({
           rel="noreferrer"
         >
           <div className="layout__footer__social-header">
-            Discord<p>Help & feedback</p>
+            Discord<p>{t("footer.discord.subtitle")}</p>
           </div>{" "}
           <DiscordIcon className="layout__footer__social-icon discord" />
         </a>
@@ -68,7 +71,7 @@ export function Footer({
           rel="noreferrer"
         >
           <div className="layout__footer__social-header">
-            Patreon<p>Support</p>
+            Patreon<p>{t("footer.patreon.subtitle")}</p>
           </div>{" "}
           <PatreonIcon className="layout__footer__social-icon patreon" />
         </a>
@@ -76,7 +79,7 @@ export function Footer({
       {patrons.length > 0 ? (
         <div>
           <h4 className="layout__footer__patron-title">
-            Thanks to the patrons for the support
+            {t("footer.thanks")}
             <Image
               alt=""
               path="/img/layout/sendou_love"

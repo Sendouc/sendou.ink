@@ -9,4 +9,5 @@
 .faq__details > p {
   margin-inline: var(--s-4);
   padding-block: var(--s-3);
+  white-space: pre-line;
 }

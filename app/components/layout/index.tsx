@@ -7,6 +7,7 @@ import { useLocation } from "@remix-run/react";
 import { Image } from "../Image";
 import { Footer } from "./Footer";
 import type { RootLoaderData } from "~/root";
+import { useTranslation } from "react-i18next";
 
 export const Layout = React.memo(function Layout({
   children,
@@ -17,6 +18,7 @@ export const Layout = React.memo(function Layout({
   patrons?: RootLoaderData["patrons"];
   isCatchBoundary?: boolean;
 }) {
+  const { t } = useTranslation();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = React.useState(false);
 
@@ -36,7 +38,7 @@ export const Layout = React.memo(function Layout({
               height={40}
               alt=""
             />
-            {currentPagesNavItem.displayName}
+            {t(`pages.${currentPagesNavItem.name}`)}
           </h1>
         ) : (
           <div />
