@@ -28,6 +28,10 @@ You don't need to fill the missing values from `.env.example` to get started. In
 
 TODO: instructions on how to develop Lohi locally
 
+## Contributing
+
+Contributions very welcome! See [CONTRIBUTING.md](./CONTRIBUTING.md) for more information.
+
 ## Project structure
 
 ```
