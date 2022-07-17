@@ -13,9 +13,14 @@ import { TwitterIcon } from "~/components/icons/Twitter";
 import { YouTubeIcon } from "~/components/icons/YouTube";
 import { badgeExplanationText } from "../badges/$id";
 import { Badge } from "~/components/Badge";
+import { useTranslation } from "react-i18next";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
+};
+
+export const handle = {
+  i18n: "badges",
 };
 
 export default function UserInfoPage() {
@@ -113,6 +118,7 @@ function SocialLinkIcon({ type }: Pick<SocialLinkProps, "type">) {
 }
 
 function BadgeContainer(props: { badges: UserPageLoaderData["badges"] }) {
+  const { t } = useTranslation("badges");
   const [badges, setBadges] = React.useState(props.badges);
 
   // keep badges in sync when route changes from one user profile to another
@@ -165,7 +171,7 @@ function BadgeContainer(props: { badges: UserPageLoaderData["badges"] }) {
         ) : null}
       </div>
       <div className="u__badge-explanation" data-cy="badge-explanation">
-        {badgeExplanationText(bigBadge)}
+        {badgeExplanationText(t, bigBadge)}
       </div>
     </div>
   );

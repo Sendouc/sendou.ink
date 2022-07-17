@@ -6,16 +6,17 @@ import { Badge } from "~/components/Badge";
 import { LinkButton } from "~/components/Button";
 import { Redirect } from "~/components/Redirect";
 import { db } from "~/db";
-import type {
-  ManagersByBadgeId,
-  OwnersByBadgeId,
+import {
+  type ManagersByBadgeId,
+  type OwnersByBadgeId,
 } from "~/db/models/badges.server";
-import type { Badge as BadgeDBType } from "~/db/types";
+import { type Badge as BadgeDBType } from "~/db/types";
 import { useUser } from "~/modules/auth";
 import { canEditBadgeOwners } from "~/permissions";
 import { discordFullName } from "~/utils/strings";
 import { BADGES_PAGE } from "~/utils/urls";
-import type { BadgesLoaderData } from "../badges";
+import { type BadgesLoaderData } from "../badges";
+import { useTranslation, type TFunction } from "react-i18next";
 
 export interface BadgeDetailsContext {
   badgeName: string;
@@ -44,6 +45,7 @@ export default function BadgeDetailsPage() {
   const { badges } = parentRoute!.data as BadgesLoaderData;
   const params = useParams();
   const data = useLoaderData<BadgeDetailsLoaderData>();
+  const { t } = useTranslation("badges");
 
   const badge = badges.find((b) => b.id === Number(params["id"]));
   if (!badge) return <Redirect to={BADGES_PAGE} />;
@@ -55,7 +57,9 @@ export default function BadgeDetailsPage() {
       <Outlet context={context} />
       <Badge badge={badge} isAnimated size={200} />
       <div>
-        <div className="badges__explanation">{badgeExplanationText(badge)}</div>
+        <div className="badges__explanation">
+          {badgeExplanationText(t, badge)}
+        </div>
         <div
           className={clsx("badges__managers", {
             invisible: data.managers.length === 0,
@@ -90,14 +94,13 @@ export default function BadgeDetailsPage() {
 }
 
 export function badgeExplanationText(
+  t: TFunction<"badges", undefined>,
   badge: Pick<BadgeDBType, "displayName" | "code"> & { count?: number }
 ) {
-  if (badge.code === "patreon") return "Supporter of sendou.ink on Patreon";
+  if (badge.code === "patreon") return t("patreon");
   if (badge.code === "patreon_plus") {
-    return "Supporter+ of sendou.ink on Patreon";
+    return t("patreon+");
   }
 
-  const countString =
-    badge.count && badge.count > 1 ? ` (x${badge.count})` : "";
-  return `Awarded for winning ${badge.displayName}${countString}`;
+  return t("tournament", { count: badge.count, tournament: badge.displayName });
 }

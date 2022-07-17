@@ -13,5 +13,9 @@
   "footer.twitter.subtitle": "Updates",
   "footer.discord.subtitle": "Help & feedback",
   "footer.patreon.subtitle": "Support",
-  "footer.thanks": "Thanks to the patrons for the support"
+  "footer.thanks": "Thanks to the patrons for the support",
+
+  "actions.save": "Save",
+  "actions.saving": "Saving...",
+  "actions.edit": "Edit"
 }
