@@ -5,3 +5,7 @@ export function discordFullName(
 ) {
   return `${user.discordName}#${user.discordDiscriminator}`;
 }
+
+export function makeTitle(title: string) {
+  return `${title} | sendou.ink`;
+}

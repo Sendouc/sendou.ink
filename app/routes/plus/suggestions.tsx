@@ -25,7 +25,8 @@ import {
   canDeleteComment,
   canDeleteSuggestionOfThemselves,
 } from "~/permissions";
-import { makeTitle, parseRequestFormData, validate } from "~/utils/remix";
+import { parseRequestFormData, validate } from "~/utils/remix";
+import { makeTitle } from "~/utils/strings";
 import { discordFullName } from "~/utils/strings";
 import { actualNumber } from "~/utils/zod";
 import { FAQ_PAGE, LOG_IN_URL, userPage } from "~/utils/urls";

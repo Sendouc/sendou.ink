@@ -9,7 +9,8 @@ import { db } from "~/db";
 import type { CountsByUserId } from "~/db/models/badges.server";
 import type { User } from "~/db/types";
 import { useUser } from "~/modules/auth";
-import { makeTitle, notFoundIfFalsy } from "~/utils/remix";
+import { notFoundIfFalsy } from "~/utils/remix";
+import { makeTitle } from "~/utils/strings";
 import { discordFullName } from "~/utils/strings";
 
 export const meta: MetaFunction = ({ data }: { data: UserPageLoaderData }) => {

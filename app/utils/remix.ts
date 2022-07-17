@@ -45,7 +45,3 @@ export function validate(condition: any): asserts condition {
 
   throw new Response(null, { status: 400 });
 }
-
-export function makeTitle(title: string) {
-  return `${title} | sendou.ink`;
-}

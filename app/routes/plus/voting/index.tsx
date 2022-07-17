@@ -23,7 +23,8 @@ import {
   usePlusVoting,
 } from "~/modules/plus-server";
 import { isVotingActive } from "~/permissions";
-import { makeTitle, parseRequestFormData } from "~/utils/remix";
+import { parseRequestFormData } from "~/utils/remix";
+import { makeTitle } from "~/utils/strings";
 import { discordFullName } from "~/utils/strings";
 import { assertType, assertUnreachable } from "~/utils/types";
 import { safeJSONParse } from "~/utils/zod";

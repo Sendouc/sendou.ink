@@ -1,6 +1,6 @@
 import type { MetaFunction } from "@remix-run/node";
 import { Main } from "~/components/Main";
-import { makeTitle } from "~/utils/remix";
+import { makeTitle } from "~/utils/strings";
 import {
   BORZOIC_TWITTER,
   GITHUB_CONTRIBUTORS_URL,

@@ -10,7 +10,7 @@ import { db } from "~/db";
 import type { PlusVotingResultByMonthYear } from "~/db/models/plusVotes.server";
 import type { PlusVotingResult } from "~/db/types";
 import { roundToTwoDecimalPlaces } from "~/utils/number";
-import { makeTitle } from "~/utils/remix";
+import { makeTitle } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import styles from "~/styles/plus-history.css";
 import { discordFullName } from "~/utils/strings";

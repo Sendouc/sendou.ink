@@ -1,8 +1,9 @@
 import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import { useTranslation } from "react-i18next";
 import { Main } from "~/components/Main";
+import { useSetTitle } from "~/hooks/useSetTitle";
 import styles from "~/styles/faq.css";
-import { makeTitle } from "~/utils/remix";
+import { makeTitle } from "~/utils/strings";
 
 const AMOUNT_OF_QUESTIONS = 3;
 
@@ -22,7 +23,9 @@ export const handle = {
 };
 
 export default function FAQPage() {
-  const { t } = useTranslation("faq");
+  const { t } = useTranslation(["faq", "common"]);
+  useSetTitle(t("pages.faq", { ns: "common" }));
+
   return (
     <Main className="stack md">
       {new Array(AMOUNT_OF_QUESTIONS).fill(null).map((_, i) => {
