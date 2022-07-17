@@ -7,6 +7,7 @@ import { db } from "~/db";
 import type { All } from "~/db/models/badges.server";
 import styles from "~/styles/badges.css";
 import { BORZOIC_TWITTER, FAQ_PAGE } from "~/utils/urls";
+import { Trans, useTranslation } from "react-i18next";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -16,11 +17,16 @@ export interface BadgesLoaderData {
   badges: All;
 }
 
+export const handle = {
+  i18n: "badges",
+};
+
 export const loader: LoaderFunction = () => {
   return json<BadgesLoaderData>({ badges: db.badges.all() });
 };
 
 export default function BadgesPageLayout() {
+  const { t } = useTranslation("badges");
   const data = useLoaderData<BadgesLoaderData>();
 
   return (
@@ -42,13 +48,15 @@ export default function BadgesPageLayout() {
       </div>
       <div className="badges__general-info-texts">
         <p>
-          Badges by{" "}
-          <a href={BORZOIC_TWITTER} target="_blank" rel="noreferrer">
-            borzoic
-          </a>
+          <Trans i18nKey="madeBy" t={t}>
+            Badges by{" "}
+            <a href={BORZOIC_TWITTER} target="_blank" rel="noreferrer">
+              borzoic
+            </a>
+          </Trans>
         </p>
         <p>
-          <Link to={FAQ_PAGE}>Badge for your event?</Link>
+          <Link to={FAQ_PAGE}>{t("forYourEvent")}</Link>
         </p>
       </div>
     </Main>

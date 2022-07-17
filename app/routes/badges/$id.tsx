@@ -65,7 +65,9 @@ export default function BadgeDetailsPage() {
             invisible: data.managers.length === 0,
           })}
         >
-          Managed by {data.managers.map((m) => discordFullName(m)).join(", ")}
+          {t("managedBy", {
+            users: data.managers.map((m) => discordFullName(m)).join(", "),
+          })}
         </div>
       </div>
       {canEditBadgeOwners({ user, managers: data.managers }) ? (
@@ -102,5 +104,8 @@ export function badgeExplanationText(
     return t("patreon+");
   }
 
-  return t("tournament", { count: badge.count, tournament: badge.displayName });
+  return t("tournament", {
+    count: badge.count ?? 1,
+    tournament: badge.displayName,
+  });
 }
