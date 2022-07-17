@@ -49,7 +49,7 @@ export function Menu({
               path={`/img/layout/${navItem.name.replace(" ", "")}`}
               alt={navItem.name}
             />
-            <div>{t(`pages.${navItem.name}`)}</div>
+            <div>{t(`pages.${navItem.name}` as any)}</div>
           </Link>
         ))}
       </div>

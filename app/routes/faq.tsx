@@ -24,7 +24,7 @@ export const handle = {
 
 export default function FAQPage() {
   const { t } = useTranslation(["faq", "common"]);
-  useSetTitle(t("pages.faq", { ns: "common" }));
+  useSetTitle(t("common:pages.faq"));
 
   return (
     <Main className="stack md">
@@ -33,9 +33,9 @@ export default function FAQPage() {
         return (
           <details key={i} className="faq__details">
             <summary className="faq__summary">
-              {t(`faq.q${questionNumber}`)}
+              {t(`faq:q${questionNumber}` as any)}
             </summary>
-            <p>{t(`faq.a${questionNumber}`)}</p>
+            <p>{t(`faq:a${questionNumber}` as any)}</p>
           </details>
         );
       })}

@@ -38,7 +38,7 @@ export const Layout = React.memo(function Layout({
               height={40}
               alt=""
             />
-            {t(`pages.${currentPagesNavItem.name}`)}
+            {t(`pages.${currentPagesNavItem.name}` as any)}
           </h1>
         ) : (
           <div />
