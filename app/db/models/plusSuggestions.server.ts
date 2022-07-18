@@ -60,7 +60,7 @@ const findVisibleForUserStm = sql.prepare(`
       AND "year" = $year
       AND "tier" >= $plusTier
     ORDER BY 
-      "createdAt" ASC
+      suggestion."id" ASC
 `);
 
 export interface FindVisibleForUserSuggestedUserInfo {
