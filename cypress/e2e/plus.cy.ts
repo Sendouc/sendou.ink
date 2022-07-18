@@ -16,10 +16,21 @@ describe("Plus suggestions page", () => {
   it("adds a comment and deletes one", () => {
     cy.auth();
     cy.visit(PLUS_SUGGESTIONS_PAGE);
-    cy.getCy("plus2-radio").click();
-    cy.getCy("comment-button").first().click();
 
-    cy.url().should("include", "/2/"); // let's check the radio button click did something
+    cy.getCy("suggested-user-name")
+      .first()
+      .invoke("text")
+      .then((previousContent) => {
+        cy.getCy("plus2-radio").click();
+
+        // let's verify the radio button click actually changed stuff
+        cy.getCy("suggested-user-name")
+          .first()
+          .invoke("text")
+          .should("not.equal", previousContent);
+      });
+
+    cy.getCy("comment-button").first().click();
     cy.getCy("comment-textarea").type("Cracked!");
     cy.getCy("submit-button").click();
 
