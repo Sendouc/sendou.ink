@@ -52,7 +52,7 @@
     "remix-auth-oauth2": "^1.2.2",
     "remix-i18next": "^4.1.1",
     "tiny-invariant": "^1.2.0",
-    "zod": "^3.17.3"
+    "zod": "^3.17.9"
   },
   "devDependencies": {
     "@remix-run/dev": "^1.6.5",
@@ -62,10 +62,10 @@
     "@types/node-cron": "^3.0.2",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
-    "@typescript-eslint/eslint-plugin": "^5.30.6",
-    "@typescript-eslint/parser": "^5.30.6",
+    "@typescript-eslint/eslint-plugin": "^5.30.7",
+    "@typescript-eslint/parser": "^5.30.7",
     "cross-env": "^7.0.3",
-    "cypress": "^10.3.0",
+    "cypress": "^10.3.1",
     "dotenv": "^16.0.1",
     "eslint": "^8.20.0",
     "eslint-plugin-react": "^7.30.1",
@@ -79,7 +79,7 @@
     "stylelint-order": "^5.0.0",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.0.0",
-    "tsm": "^2.2.1",
+    "tsm": "^2.2.2",
     "typescript": "^4.7.4",
     "uvu": "^0.5.6"
   },
