@@ -20,5 +20,7 @@ export function i18nLoader() {
         order: ["htmlTag"],
         caches: [],
       },
+      // without this hydration fails in E2E tests
+      initImmediate: false,
     });
 }
