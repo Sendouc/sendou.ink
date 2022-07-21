@@ -29,6 +29,10 @@
   background-color: var(--theme-transparent);
 }
 
+.calendar__week:focus {
+  outline: 2px solid var(--theme);
+}
+
 .calendar__event-count {
   font-size: var(--fonts-xxxs);
   font-weight: var(--body);
@@ -40,6 +44,7 @@
 .calendar__week:nth-child(9) {
   width: calc(var(--full-size-week-width) - 2.5rem);
   height: calc(var(--full-size-week-height) - 2.5rem);
+  cursor: initial;
   font-size: var(--fonts-xxxxs);
   opacity: 0;
 }

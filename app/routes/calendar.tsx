@@ -80,31 +80,42 @@ function WeekLinks() {
     <Flipper flipKey={data.weeks.map(({ number }) => number).join("")}>
       <div className="flex justify-center">
         <div className="calendar__weeks">
-          {data.weeks.map((week) => (
-            <Flipped key={week.number} flipId={week.number}>
-              <Link
-                to={`?week=${week.number}&year=${week.year}`}
-                className="calendar__week"
-              >
-                <>
-                  <div>
-                    {week.number === data.thisWeek
-                      ? "This"
-                      : week.number - data.thisWeek === 1
-                      ? "Next"
-                      : week.number - data.thisWeek === -1
-                      ? "Last"
-                      : week.number}{" "}
-                    <br />
-                    Week
-                  </div>
-                  <div className="calendar__event-count">
-                    ×{week.numberOfEvents}
-                  </div>
-                </>
-              </Link>
-            </Flipped>
-          ))}
+          {data.weeks.map((week, i) => {
+            const hidden = [
+              0,
+              1,
+              data.weeks.length - 2,
+              data.weeks.length - 1,
+            ].includes(i);
+
+            return (
+              <Flipped key={week.number} flipId={week.number}>
+                <Link
+                  to={`?week=${week.number}&year=${week.year}`}
+                  className="calendar__week"
+                  aria-hidden={hidden}
+                  tabIndex={hidden ? -1 : 0}
+                >
+                  <>
+                    <div>
+                      {week.number === data.thisWeek
+                        ? "This"
+                        : week.number - data.thisWeek === 1
+                        ? "Next"
+                        : week.number - data.thisWeek === -1
+                        ? "Last"
+                        : week.number}{" "}
+                      <br />
+                      Week
+                    </div>
+                    <div className="calendar__event-count">
+                      ×{week.numberOfEvents}
+                    </div>
+                  </>
+                </Link>
+              </Flipped>
+            );
+          })}
         </div>
       </div>
     </Flipper>
