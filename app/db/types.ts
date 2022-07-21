@@ -76,3 +76,31 @@ export interface BadgeManager {
   badgeId: number;
   userId: number;
 }
+
+export interface CalendarEvent {
+  id: number;
+  name: string;
+  authorId: number;
+  description: string | null;
+  discordUrl: string | null;
+  bracketUrl: string | null;
+  participantCount: number | null;
+}
+
+export interface CalendarEventDate {
+  eventId: number;
+  startTime: number;
+}
+
+export interface CalendarEventWinner {
+  eventId: number;
+  teamName: string;
+  placement: number;
+  userId: number | null;
+  name: string | null;
+}
+
+export interface CalendarEventBadge {
+  eventId: number;
+  badgeId: number;
+}
