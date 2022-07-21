@@ -1,0 +1,57 @@
+.calendar__weeks {
+  display: flex;
+  max-width: 24rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2);
+  padding-inline: var(--s-2-5);
+
+  --full-size-week-height: 6.75rem;
+
+  /* xxx: this should be behind a media query */
+  --full-size-week-width: 6rem;
+}
+
+.calendar__week {
+  display: flex;
+  width: var(--full-size-week-width);
+  height: var(--full-size-week-height);
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--s-2);
+  background-color: var(--theme-transparent);
+  border-radius: var(--rounded);
+  color: var(--theme);
+  font-size: var(--fonts-sm);
+  font-weight: var(--bold);
+  text-align: center;
+}
+
+.calendar__event-count {
+  font-size: var(--fonts-xs);
+  font-weight: var(--body);
+}
+
+.calendar__week:nth-child(1),
+.calendar__week:nth-child(5) {
+  width: calc(var(--full-size-week-width) - 2rem);
+  height: calc(var(--full-size-week-height) - 2rem);
+  font-size: var(--fonts-xxs);
+}
+
+.calendar__week:nth-child(1) > .calendar__event-count,
+.calendar__week:nth-child(5) > .calendar__event-count {
+  font-size: var(--fonts-xxxs);
+}
+
+.calendar__week:nth-child(2),
+.calendar__week:nth-child(4) {
+  width: calc(var(--full-size-week-width) - 1rem);
+  height: calc(var(--full-size-week-height) - 1rem);
+  font-size: var(--fonts-xs);
+}
+
+.calendar__week:nth-child(2) > .calendar__event-count,
+.calendar__week:nth-child(4) > .calendar__event-count {
+  font-size: var(--fonts-xxs);
+}
