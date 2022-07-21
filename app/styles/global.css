@@ -20,6 +20,7 @@
   --theme: hsl(255deg 64% 63%);
   --theme-vibrant: hsl(255deg 100% 81%);
   --theme-transparent: hsl(255deg 66.7% 75% / 40%);
+  --theme-very-transparent: hsl(255deg 66.7% 75% / 30%);
   --theme-transparent-vibrant: hsl(255deg 100% 81% / 54%);
   --theme-semi-transparent-vibrant: hsl(255deg 100% 81% / 75%);
   --theme-secondary: hsl(85deg 66.7% 55.3%);
@@ -32,6 +33,7 @@
   --fonts-xs: 0.8rem;
   --fonts-xxs: 0.7rem;
   --fonts-xxxs: 0.6rem;
+  --fonts-xxxxs: 0.5rem;
   --extra-bold: 700;
   --bold: 600;
   --semi-bold: 500;
