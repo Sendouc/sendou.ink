@@ -20,7 +20,9 @@ export function weekNumberToDate({
   week: number;
   year: number;
 }) {
-  const result = new Date(year, 0, 4);
+  // xxx: possible problem of mismatch when server time and local time don't match
+  // gotta make sure events which belong to monday are still shown for sunday
+  const result = new Date(Date.UTC(year, 0, 4));
   result.setDate(
     result.getDate() - (result.getDay() || 7) + 1 + 7 * (week - 1)
   );

@@ -1,12 +1,19 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { json, type LinksFunction } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
+import type { UseDataFunctionReturn } from "@remix-run/react/dist/components";
 import { addDays, subDays } from "date-fns";
 import { Flipped, Flipper } from "react-flip-toolkit";
 import { z } from "zod";
 import { Main } from "~/components/Main";
+import { db } from "~/db";
 import styles from "~/styles/calendar.css";
-import { dateToWeekNumber, weekNumberToDate } from "~/utils/dates";
+import {
+  databaseTimestampToDate,
+  dateToWeekNumber,
+  weekNumberToDate,
+} from "~/utils/dates";
+import type { Unpacked } from "~/utils/types";
 import { actualNumber } from "~/utils/zod";
 
 export const links: LinksFunction = () => {
@@ -36,8 +43,6 @@ export const loader = ({ request }: LoaderArgs) => {
     ? parsedParams.data.year
     : now.getFullYear();
 
-  console.log({ weekToFetch, yearToFetch, thisWeek }); // TODO: db query to get events of this week
-
   return json({
     thisWeek,
     weeks: closeByWeeks({ week: weekToFetch, year: yearToFetch }).map(
@@ -46,6 +51,7 @@ export const loader = ({ request }: LoaderArgs) => {
         numberOfEvents: 12,
       })
     ),
+    events: fetchEventsOfWeek({ week: weekToFetch, year: yearToFetch }),
   });
 };
 
@@ -65,10 +71,26 @@ function closeByWeeks(args: { week: number; year: number }) {
   });
 }
 
+function fetchEventsOfWeek(args: { week: number; year: number }) {
+  const startTime = weekNumberToDate(args);
+
+  const endTime = new Date(startTime);
+  endTime.setDate(endTime.getDate() + 7);
+  // so we get all events of sunday even from US west coast perspective
+  endTime.setHours(endTime.getHours() + 12);
+
+  return db.calendar.findAllBetweenTwoTimestamps({ startTime, endTime });
+}
+
 export default function CalendarPage() {
+  const data = useLoaderData<typeof loader>();
+
   return (
     <Main>
       <WeekLinks />
+      {data.events.map((event) => {
+        return <Event key={event.id} event={event} />;
+      })}
     </Main>
   );
 }
@@ -119,5 +141,23 @@ function WeekLinks() {
         </div>
       </div>
     </Flipper>
+  );
+}
+
+function Event({
+  event,
+}: {
+  event: Unpacked<UseDataFunctionReturn<typeof loader>["events"]>;
+}) {
+  return (
+    <section className="calendar__event">
+      <time>
+        {databaseTimestampToDate(event.startTime).toLocaleTimeString("en", {
+          hour: "numeric",
+          minute: "numeric",
+        })}
+      </time>{" "}
+      {event.name}
+    </section>
   );
 }

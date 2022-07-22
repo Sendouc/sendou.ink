@@ -70,3 +70,7 @@
 .calendar__week:nth-child(6) > .calendar__event-count {
   font-size: var(--fonts-xxs);
 }
+
+.calendar__event {
+  font-size: var(--fonts-lg);
+}

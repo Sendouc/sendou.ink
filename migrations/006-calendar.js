@@ -17,7 +17,8 @@ module.exports.up = function (db) {
   db.prepare(
     ` 
     create table "CalendarEventDate" (
-      "eventId" integer primary key,
+      "id" integer primary key,
+      "eventId" integer not null,
       "startTime" integer not null,
       foreign key ("eventId") references "CalendarEvent"("id") on delete cascade
     ) strict
@@ -27,7 +28,7 @@ module.exports.up = function (db) {
   db.prepare(
     `
     create table "CalendarEventWinner" (
-      "eventId" integer primary key,
+      "eventId" integer not null,
       "teamName" text not null,
       "placement" integer not null,
       "userId" integer,
@@ -41,7 +42,7 @@ module.exports.up = function (db) {
   db.prepare(
     `
     create table "CalendarEventBadge" (
-      "eventId" integer primary key,
+      "eventId" integer not null,
       "badgeId" integer not null,
       foreign key ("eventId") references "CalendarEvent"("id") on delete cascade,
       foreign key ("badgeId") references "Badge"("id") on delete restrict,

@@ -88,6 +88,7 @@ export interface CalendarEvent {
 }
 
 export interface CalendarEventDate {
+  id: number;
   eventId: number;
   startTime: number;
 }

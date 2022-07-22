@@ -10,6 +10,7 @@ import type { UpsertManyPlusVotesArgs } from "./models/plusVotes.server";
 import { ADMIN_DISCORD_ID } from "~/constants";
 import shuffle from "just-shuffle";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
+import capitalize from "just-capitalize";
 
 const ADMIN_TEST_AVATAR = "fcfd65a3bea598905abb9ca25296816b";
 
@@ -28,6 +29,7 @@ const basicSeeds = [
   badgesToUsers,
   badgeManagers,
   patrons,
+  calendarEvents,
 ];
 
 export function seed() {
@@ -40,6 +42,10 @@ export function seed() {
 
 function wipeDB() {
   const tablesToDelete = [
+    "CalendarEventDate",
+    "CalendarEventWinner",
+    "CalendarEventBadge",
+    "CalendarEvent",
     "User",
     "PlusVote",
     "PlusSuggestion",
@@ -297,5 +303,89 @@ function patrons() {
         patronSince: dateToDatabaseTimestamp(faker.date.past()),
         patronTier: faker.helpers.arrayElement([1, 1, 2, 2, 2, 3, 3, 4]),
       });
+  }
+}
+
+function calendarEvents() {
+  const userIds = sql
+    .prepare(`select "id" from "User" order by random()`)
+    .all()
+    .map((u) => u.id);
+
+  for (let id = 1; id <= 100; id++) {
+    sql
+      .prepare(
+        `
+      insert into "CalendarEvent" (
+        "id",
+        "name",
+        "description",
+        "discordUrl",
+        "bracketUrl",
+        "authorId"
+      ) values (
+        $id,
+        $name,
+        $description,
+        $discordUrl,
+        $bracketUrl,
+        $authorId
+      )
+      `
+      )
+      .run({
+        id,
+        name: `${capitalize(faker.word.adjective())} ${capitalize(
+          faker.word.noun()
+        )}`,
+        description: faker.lorem.paragraph(),
+        discordUrl: faker.internet.url(),
+        bracketUrl: faker.internet.url(),
+        authorId: userIds.pop(),
+      });
+
+    const twoDayEvent = Math.random() > 0.9;
+    const startTime = faker.date.soon(42);
+    startTime.setMinutes(0, 0, 0);
+
+    sql
+      .prepare(
+        `
+        insert into "CalendarEventDate" (
+          "eventId",
+          "startTime"
+        ) values (
+          $eventId,
+          $startTime
+        )
+      `
+      )
+      .run({
+        eventId: id,
+        startTime: dateToDatabaseTimestamp(startTime),
+      });
+
+    if (twoDayEvent) {
+      startTime.setDate(startTime.getDate() + 1);
+
+      sql
+        .prepare(
+          `
+          insert into "CalendarEventDate" (
+            "eventId",
+            "startTime"
+          ) values (
+            $eventId,
+            $startTime
+          )
+        `
+        )
+        .run({
+          eventId: id,
+          startTime: dateToDatabaseTimestamp(startTime),
+        });
+    }
+
+    // xxx: 20% of cases have 1-2 badge prizes
   }
 }
