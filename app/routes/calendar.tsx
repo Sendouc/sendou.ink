@@ -1,19 +1,20 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { json, type LinksFunction } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
-import type { UseDataFunctionReturn } from "@remix-run/react/dist/components";
+import clsx from "clsx";
 import { addDays, subDays } from "date-fns";
+import React from "react";
 import { Flipped, Flipper } from "react-flip-toolkit";
+import { useTranslation } from "react-i18next";
 import { z } from "zod";
-import { Main } from "~/components/Main";
 import { db } from "~/db";
+import { useIsMounted } from "~/hooks/useIsMounted";
 import styles from "~/styles/calendar.css";
 import {
   databaseTimestampToDate,
   dateToWeekNumber,
   weekNumberToDate,
 } from "~/utils/dates";
-import type { Unpacked } from "~/utils/types";
 import { actualNumber } from "~/utils/zod";
 
 export const links: LinksFunction = () => {
@@ -84,14 +85,62 @@ function fetchEventsOfWeek(args: { week: number; year: number }) {
 
 export default function CalendarPage() {
   const data = useLoaderData<typeof loader>();
+  const { i18n } = useTranslation();
 
+  // there is hydration mismatch error if we render
+  // dates/times on the server
+  const isMounted = useIsMounted();
+
+  const datesRendered = new Set<string>();
   return (
-    <Main>
+    <main>
       <WeekLinks />
-      {data.events.map((event) => {
-        return <Event key={event.id} event={event} />;
-      })}
-    </Main>
+      <div className="calendar__events-container">
+        {data.events.map((event) => {
+          const dateString = databaseTimestampToDate(
+            event.startTime
+          ).toLocaleDateString(i18n.language, {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+          });
+          const renderDateString = !datesRendered.has(dateString);
+          datesRendered.add(dateString);
+
+          return (
+            <React.Fragment key={event.id}>
+              <div
+                className={clsx("calendar__event__date-container", {
+                  invisible: !isMounted || !renderDateString,
+                })}
+              >
+                <div className="calendar__event__date main">
+                  {isMounted ? dateString : null}
+                </div>
+              </div>
+              <section className="calendar__event main">
+                <time
+                  dateTime={databaseTimestampToDate(
+                    event.startTime
+                  ).toISOString()}
+                  className="calendar__event__time"
+                >
+                  {isMounted
+                    ? databaseTimestampToDate(
+                        event.startTime
+                      ).toLocaleTimeString(i18n.language, {
+                        hour: "numeric",
+                        minute: "numeric",
+                      })
+                    : null}
+                </time>{" "}
+                <h2 className="calendar__event__title">{event.name}</h2>
+              </section>
+            </React.Fragment>
+          );
+        })}
+      </div>
+    </main>
   );
 }
 
@@ -141,23 +190,5 @@ function WeekLinks() {
         </div>
       </div>
     </Flipper>
-  );
-}
-
-function Event({
-  event,
-}: {
-  event: Unpacked<UseDataFunctionReturn<typeof loader>["events"]>;
-}) {
-  return (
-    <section className="calendar__event">
-      <time>
-        {databaseTimestampToDate(event.startTime).toLocaleTimeString("en", {
-          hour: "numeric",
-          minute: "numeric",
-        })}
-      </time>{" "}
-      {event.name}
-    </section>
   );
 }

@@ -71,6 +71,32 @@
   font-size: var(--fonts-xxs);
 }
 
+.calendar__events-container {
+  background-color: var(--theme-transparent-vibrant);
+  margin-block-start: var(--s-8);
+}
+
 .calendar__event {
   font-size: var(--fonts-lg);
+}
+
+.calendar__event__date-container {
+  background-color: var(--bg);
+  padding-block-start: var(--s-3);
+}
+
+.calendar__event__date {
+  height: 1.5rem;
+  font-weight: var(--semi-bold);
+}
+
+.calendar__event__time {
+  display: block;
+  height: 1.25rem;
+  font-size: var(--fonts-sm);
+  margin-block-start: var(--s-2);
+}
+
+.calendar__event__title {
+  font-size: var(--fonts-xl);
 }

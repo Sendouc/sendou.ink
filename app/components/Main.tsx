@@ -7,4 +7,6 @@ export const Main = ({
 }: {
   children: React.ReactNode;
   className?: string;
-}) => <main className={clsx("layout__main", className)}>{children}</main>;
+}) => (
+  <main className={clsx("layout__main", "main", className)}>{children}</main>
+);
