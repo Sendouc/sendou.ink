@@ -1,6 +1,7 @@
-import type { LoaderArgs } from "@remix-run/node";
+import type { LoaderArgs, MetaFunction } from "@remix-run/node";
 import { json, type LinksFunction } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
+import type { UseDataFunctionReturn } from "@remix-run/react/dist/components";
 import clsx from "clsx";
 import { addDays, subDays } from "date-fns";
 import React from "react";
@@ -9,16 +10,34 @@ import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { db } from "~/db";
 import { useIsMounted } from "~/hooks/useIsMounted";
+import { i18next } from "~/modules/i18n";
 import styles from "~/styles/calendar.css";
+import { joinListToNaturalString } from "~/utils/arrays";
 import {
   databaseTimestampToDate,
   dateToWeekNumber,
   weekNumberToDate,
 } from "~/utils/dates";
+import { makeTitle } from "~/utils/strings";
 import { actualNumber } from "~/utils/zod";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
+};
+
+export const meta: MetaFunction = (args) => {
+  const data = args.data as Nullable<UseDataFunctionReturn<typeof loader>>;
+
+  if (!data) return {};
+
+  return {
+    title: data.title,
+    description: `${data.events.length} events happening during week ${
+      data.thisWeek
+    } including ${joinListToNaturalString(
+      data.events.slice(0, 3).map((e) => e.name)
+    )}`,
+  };
 };
 
 const loaderSearchParamsSchema = z.object({
@@ -29,7 +48,8 @@ const loaderSearchParamsSchema = z.object({
   ),
 });
 
-export const loader = ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderArgs) => {
+  const t = await i18next.getFixedT(request);
   const url = new URL(request.url);
   const parsedParams = loaderSearchParamsSchema.safeParse({
     year: url.searchParams.get("year"),
@@ -53,6 +73,7 @@ export const loader = ({ request }: LoaderArgs) => {
       })
     ),
     events: fetchEventsOfWeek({ week: weekToFetch, year: yearToFetch }),
+    title: makeTitle([`Week ${weekToFetch}`, t("pages.calendar")]),
   });
 };
 

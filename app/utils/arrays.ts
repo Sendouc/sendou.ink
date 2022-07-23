@@ -26,3 +26,11 @@ function at<T>(arr: T[], n: number) {
   // Otherwise, this is just normal property access
   return arr[n];
 }
+
+export function joinListToNaturalString(arg: string[]) {
+  const list = [...arg];
+  const last = list.pop();
+  const commaJoined = list.join(", ");
+
+  return last ? `${commaJoined} and ${last}` : commaJoined;
+}
