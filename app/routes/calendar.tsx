@@ -8,6 +8,7 @@ import React from "react";
 import { Flipped, Flipper } from "react-flip-toolkit";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
+import { LinkButton } from "~/components/Button";
 import { db } from "~/db";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { i18next } from "~/modules/i18n";
@@ -18,7 +19,8 @@ import {
   dateToWeekNumber,
   weekNumberToDate,
 } from "~/utils/dates";
-import { makeTitle } from "~/utils/strings";
+import { discordFullName, makeTitle } from "~/utils/strings";
+import { resolveBaseUrl } from "~/utils/urls";
 import { actualNumber } from "~/utils/zod";
 
 export const links: LinksFunction = () => {
@@ -140,22 +142,57 @@ export default function CalendarPage() {
                 </div>
               </div>
               <section className="calendar__event main">
-                <time
-                  dateTime={databaseTimestampToDate(
-                    event.startTime
-                  ).toISOString()}
-                  className="calendar__event__time"
+                <div
+                  className={clsx("calendar__event__top-info-container", {
+                    invisible: !isMounted,
+                  })}
                 >
-                  {isMounted
-                    ? databaseTimestampToDate(
-                        event.startTime
-                      ).toLocaleTimeString(i18n.language, {
-                        hour: "numeric",
-                        minute: "numeric",
-                      })
-                    : null}
-                </time>{" "}
-                <h2 className="calendar__event__title">{event.name}</h2>
+                  <time
+                    dateTime={databaseTimestampToDate(
+                      event.startTime
+                    ).toISOString()}
+                    className="calendar__event__time"
+                  >
+                    {isMounted
+                      ? databaseTimestampToDate(
+                          event.startTime
+                        ).toLocaleTimeString(i18n.language, {
+                          hour: "numeric",
+                          minute: "numeric",
+                        })
+                      : null}
+                  </time>
+                  <div className="calendar__event__author">
+                    From {discordFullName(event)}
+                  </div>
+                </div>
+                <Link to={String(event.eventId)}>
+                  <h2 className="calendar__event__title">{event.name}</h2>
+                </Link>
+                {event.discordUrl || event.bracketUrl ? (
+                  <div className="calendar__event__bottom-info-container">
+                    {event.discordUrl ? (
+                      <LinkButton
+                        to={event.discordUrl}
+                        variant="outlined"
+                        tiny
+                        isExternal
+                      >
+                        Discord
+                      </LinkButton>
+                    ) : null}
+                    {event.bracketUrl ? (
+                      <LinkButton
+                        to={event.bracketUrl}
+                        variant="outlined"
+                        tiny
+                        isExternal
+                      >
+                        {resolveBaseUrl(event.bracketUrl)}
+                      </LinkButton>
+                    ) : null}
+                  </div>
+                ) : null}
               </section>
             </React.Fragment>
           );

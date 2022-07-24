@@ -76,13 +76,15 @@
   margin-block-start: var(--s-8);
 }
 
+/* xxx: padding for last -> generate grouped events on server? */
 .calendar__event {
+  display: flex;
+  flex-direction: column;
   font-size: var(--fonts-lg);
 }
 
 .calendar__event__date-container {
   background-color: var(--bg);
-  padding-block-start: var(--s-3);
 }
 
 .calendar__event__date {
@@ -91,12 +93,32 @@
 }
 
 .calendar__event__time {
-  display: block;
+  font-weight: var(--semi-bold);
+}
+
+.calendar__event__top-info-container {
+  display: flex;
   height: 1.25rem;
+  align-items: center;
   font-size: var(--fonts-sm);
+  gap: var(--s-2);
   margin-block-start: var(--s-2);
 }
 
+.calendar__event__author {
+  color: var(--text-lighter);
+}
+
 .calendar__event__title {
+  color: var(--text);
   font-size: var(--fonts-xl);
+  line-height: 1.35;
+}
+
+.calendar__event__bottom-info-container {
+  display: flex;
+  align-items: center;
+  font-size: var(--fonts-sm);
+  gap: var(--s-2);
+  margin-block-start: var(--s-2);
 }

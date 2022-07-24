@@ -1,16 +1,20 @@
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { sql } from "../sql";
-import type { CalendarEvent, CalendarEventDate } from "../types";
+import type { CalendarEvent, CalendarEventDate, User } from "../types";
 
 const findAllBetweenTwoTimestampsStm = sql.prepare(`
-  select 
+  select
       "CalendarEvent"."name",
       "CalendarEvent"."discordUrl",
       "CalendarEvent"."bracketUrl",
       "CalendarEventDate"."id",
-      "CalendarEventDate"."startTime"
+      "CalendarEventDate"."eventId",
+      "CalendarEventDate"."startTime",
+      "User"."discordName",
+      "User"."discordDiscriminator"
     from "CalendarEvent"
     join "CalendarEventDate" on "CalendarEvent"."id" = "CalendarEventDate"."eventId"
+    join "User" on "CalendarEvent"."authorId" = "User"."id"
     where "CalendarEventDate"."startTime" between $startTime and $endTime
     order by "CalendarEventDate"."startTime" asc
 `);
@@ -27,6 +31,7 @@ export function findAllBetweenTwoTimestamps({
     endTime: dateToDatabaseTimestamp(endTime),
   }) as Array<
     Pick<CalendarEvent, "name" | "discordUrl" | "bracketUrl"> &
-      Pick<CalendarEventDate, "id" | "startTime">
+      Pick<CalendarEventDate, "id" | "eventId" | "startTime"> &
+      Pick<User, "discordName" | "discordDiscriminator">
   >;
 }
