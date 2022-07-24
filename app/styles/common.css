@@ -135,7 +135,7 @@
   gap: var(--s-8);
 }
 
-.stack.vertical {
+.stack.horizontal {
   flex-direction: row;
 }
 

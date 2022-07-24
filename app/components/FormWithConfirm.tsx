@@ -32,7 +32,7 @@ export function FormWithConfirm({
       <Dialog isOpen={dialogOpen} close={closeDialog} className="text-center">
         <div className="stack md">
           <h2 className="text-sm">{dialogHeading}</h2>
-          <div className="stack vertical md justify-center">
+          <div className="stack horizontal md justify-center">
             <Button
               form={id}
               variant="destructive"

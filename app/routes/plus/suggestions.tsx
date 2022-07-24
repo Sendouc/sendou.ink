@@ -299,7 +299,7 @@ function SuggestedForInfo({ hideText = false }: { hideText?: boolean }) {
         </div>
       ) : null}
       {canDeleteSuggestionOfThemselves() ? (
-        <div className="stack vertical md">
+        <div className="stack horizontal md">
           {data.suggestedForTiers.map((tier) => (
             <FormWithConfirm
               key={tier}
@@ -409,7 +409,7 @@ export function PlusSuggestionComments({
             <fieldset key={suggestion.id} className="plus__comment">
               <legend>{discordFullName(suggestion.author)}</legend>
               {suggestion.text}
-              <div className="stack vertical xs items-center">
+              <div className="stack horizontal xs items-center">
                 <span className="plus__comment-time">
                   <RelativeTime
                     timestamp={databaseTimestampToDate(
