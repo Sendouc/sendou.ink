@@ -8,6 +8,7 @@ import type { All } from "~/db/models/badges.server";
 import styles from "~/styles/badges.css";
 import { BORZOIC_TWITTER, FAQ_PAGE } from "~/utils/urls";
 import { Trans, useTranslation } from "react-i18next";
+import { useAnimateListEntry } from "~/hooks/useAnimateListEntry";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -29,9 +30,11 @@ export default function BadgesPageLayout() {
   const { t } = useTranslation("badges");
   const data = useLoaderData<BadgesLoaderData>();
 
+  const containerRef = useAnimateListEntry(".badges__nav-link");
+
   return (
     <Main>
-      <div className="badges__container">
+      <div className="badges__container" ref={containerRef}>
         <Outlet />
         <div className="badges__small-badges">
           {data.badges.map((badge) => (

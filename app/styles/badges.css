@@ -17,6 +17,10 @@
   gap: var(--s-2);
 }
 
+.badges__nav-link {
+  opacity: 0;
+}
+
 .badges__nav-link.active {
   display: none;
 }
