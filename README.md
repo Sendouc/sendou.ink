@@ -59,9 +59,11 @@ sendou.ink/
 ### png
 
 ```bash
-sips -s format png ./*.gif --out .
+sips -s format png ./sundae.gif --out .
 ```
 
-### avif
+### Add new badge to the database
 
-https://github.com/lovell/avif-cli
+```bash
+npm run add-badge -- sundae "4v4 Sundaes"
+```
