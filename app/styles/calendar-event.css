@@ -1,0 +1,7 @@
+.event__title {
+  line-height: 1.35;
+}
+
+.event__time {
+  font-weight: var(--semi-bold);
+}

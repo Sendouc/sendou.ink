@@ -114,6 +114,8 @@ export default function CalendarPage() {
   // dates/times on the server
   const isMounted = useIsMounted();
 
+  // xxx: scrolls down on page load?
+  // xxx: instead calculate into object
   const datesRendered = new Set<string>();
   return (
     <main>

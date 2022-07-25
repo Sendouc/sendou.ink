@@ -12,7 +12,7 @@ import shuffle from "just-shuffle";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import capitalize from "just-capitalize";
 
-const ADMIN_TEST_AVATAR = "fcfd65a3bea598905abb9ca25296816b";
+const ADMIN_TEST_AVATAR = "e424e1ba50d2019fdc4730d261e56c55";
 
 const NZAP_TEST_DISCORD_ID = "455039198672453645";
 const NZAP_TEST_AVATAR = "f809176af93132c3db5f0a5019e96339"; // https://cdn.discordapp.com/avatars/455039198672453645/f809176af93132c3db5f0a5019e96339.webp?size=160
