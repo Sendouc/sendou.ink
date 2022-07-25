@@ -3,5 +3,14 @@
 }
 
 .event__time {
+  height: 1rem;
   font-weight: var(--semi-bold);
+}
+
+.event__author {
+  display: flex;
+  align-items: center;
+  color: var(--text-lighter);
+  font-weight: var(--semi-bold);
+  gap: var(--s-1);
 }

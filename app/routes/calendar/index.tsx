@@ -3,7 +3,7 @@ import { json, type LinksFunction } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import type { UseDataFunctionReturn } from "@remix-run/react/dist/components";
 import clsx from "clsx";
-import { addDays, subDays } from "date-fns";
+import { addDays, addMonths, subDays, subMonths } from "date-fns";
 import React from "react";
 import { Flipped, Flipper } from "react-flip-toolkit";
 import { useTranslation } from "react-i18next";
@@ -35,7 +35,7 @@ export const meta: MetaFunction = (args) => {
   return {
     title: data.title,
     description: `${data.events.length} events happening during week ${
-      data.thisWeek
+      data.displayedWeek
     } including ${joinListToNaturalString(
       data.events.slice(0, 3).map((e) => e.name)
     )}`,
@@ -59,23 +59,37 @@ export const loader = async ({ request }: LoaderArgs) => {
   });
 
   const now = new Date();
-  const thisWeek = dateToWeekNumber(now);
+  const currentWeek = dateToWeekNumber(now);
 
-  const weekToFetch = parsedParams.success ? parsedParams.data.week : thisWeek;
-  const yearToFetch = parsedParams.success
+  const displayedWeek = parsedParams.success
+    ? parsedParams.data.week
+    : currentWeek;
+  const displayedYear = parsedParams.success
     ? parsedParams.data.year
     : now.getFullYear();
 
+  const eventCounts = db.calendar.eventsCountPerWeek({
+    startTime: subMonths(
+      weekNumberToDate({ week: displayedWeek, year: displayedYear }),
+      1
+    ),
+    endTime: addMonths(
+      weekNumberToDate({ week: displayedWeek, year: displayedYear }),
+      1
+    ),
+  });
+
   return json({
-    thisWeek,
-    weeks: closeByWeeks({ week: weekToFetch, year: yearToFetch }).map(
+    currentWeek, // the week that is currently in real life
+    displayedWeek,
+    weeks: closeByWeeks({ week: displayedWeek, year: displayedYear }).map(
       (week) => ({
         ...week,
-        numberOfEvents: 12,
+        numberOfEvents: eventCounts.get(week.number) ?? 0,
       })
     ),
-    events: fetchEventsOfWeek({ week: weekToFetch, year: yearToFetch }),
-    title: makeTitle([`Week ${weekToFetch}`, t("pages.calendar")]),
+    events: fetchEventsOfWeek({ week: displayedWeek, year: displayedYear }),
+    title: makeTitle([`Week ${displayedWeek}`, t("pages.calendar")]),
   });
 };
 
@@ -107,99 +121,12 @@ function fetchEventsOfWeek(args: { week: number; year: number }) {
 }
 
 export default function CalendarPage() {
-  const data = useLoaderData<typeof loader>();
-  const { i18n } = useTranslation();
-
-  // there is hydration mismatch error if we render
-  // dates/times on the server
   const isMounted = useIsMounted();
 
-  // xxx: scrolls down on page load?
-  // xxx: instead calculate into object
-  const datesRendered = new Set<string>();
   return (
     <main>
       <WeekLinks />
-      <div className="calendar__events-container">
-        {data.events.map((event) => {
-          const dateString = databaseTimestampToDate(
-            event.startTime
-          ).toLocaleDateString(i18n.language, {
-            weekday: "long",
-            day: "numeric",
-            month: "long",
-          });
-          const renderDateString = !datesRendered.has(dateString);
-          datesRendered.add(dateString);
-
-          return (
-            <React.Fragment key={event.id}>
-              <div
-                className={clsx("calendar__event__date-container", {
-                  invisible: !isMounted || !renderDateString,
-                })}
-              >
-                <div className="calendar__event__date main">
-                  {isMounted ? dateString : null}
-                </div>
-              </div>
-              <section className="calendar__event main">
-                <div
-                  className={clsx("calendar__event__top-info-container", {
-                    invisible: !isMounted,
-                  })}
-                >
-                  <time
-                    dateTime={databaseTimestampToDate(
-                      event.startTime
-                    ).toISOString()}
-                    className="calendar__event__time"
-                  >
-                    {isMounted
-                      ? databaseTimestampToDate(
-                          event.startTime
-                        ).toLocaleTimeString(i18n.language, {
-                          hour: "numeric",
-                          minute: "numeric",
-                        })
-                      : null}
-                  </time>
-                  <div className="calendar__event__author">
-                    From {discordFullName(event)}
-                  </div>
-                </div>
-                <Link to={String(event.eventId)}>
-                  <h2 className="calendar__event__title">{event.name}</h2>
-                </Link>
-                {event.discordUrl || event.bracketUrl ? (
-                  <div className="calendar__event__bottom-info-container">
-                    {event.discordUrl ? (
-                      <LinkButton
-                        to={event.discordUrl}
-                        variant="outlined"
-                        tiny
-                        isExternal
-                      >
-                        Discord
-                      </LinkButton>
-                    ) : null}
-                    {event.bracketUrl ? (
-                      <LinkButton
-                        to={event.bracketUrl}
-                        variant="outlined"
-                        tiny
-                        isExternal
-                      >
-                        {resolveBaseUrl(event.bracketUrl)}
-                      </LinkButton>
-                    ) : null}
-                  </div>
-                ) : null}
-              </section>
-            </React.Fragment>
-          );
-        })}
-      </div>
+      {isMounted ? <EventsList /> : <div className="calendar__placeholder" />}
     </main>
   );
 }
@@ -223,17 +150,17 @@ function WeekLinks() {
               <Flipped key={week.number} flipId={week.number}>
                 <Link
                   to={`?week=${week.number}&year=${week.year}`}
-                  className="calendar__week"
+                  className={clsx("calendar__week", { invisible: hidden })}
                   aria-hidden={hidden}
                   tabIndex={hidden ? -1 : 0}
                 >
                   <>
                     <div>
-                      {week.number === data.thisWeek
+                      {week.number === data.currentWeek
                         ? "This"
-                        : week.number - data.thisWeek === 1
+                        : week.number - data.currentWeek === 1
                         ? "Next"
-                        : week.number - data.thisWeek === -1
+                        : week.number - data.currentWeek === -1
                         ? "Last"
                         : week.number}{" "}
                       <br />
@@ -250,5 +177,126 @@ function WeekLinks() {
         </div>
       </div>
     </Flipper>
+  );
+}
+
+function EventsList() {
+  const data = useLoaderData<typeof loader>();
+  const { i18n } = useTranslation();
+
+  // xxx: maybe after all show sunday-monday night events on previous week
+  // xxx: (Day 2,3,4 etc. in title when multiday event)
+
+  return (
+    <div className="calendar__events-container">
+      {filterOutNextWeeksEvents(
+        data.displayedWeek,
+        eventsGroupedByDay(data.events)
+      ).map(([daysDate, events]) => {
+        return (
+          <React.Fragment key={daysDate.getTime()}>
+            <div className="calendar__event__date-container">
+              <div className="calendar__event__date main">
+                {daysDate.toLocaleDateString(i18n.language, {
+                  weekday: "long",
+                  day: "numeric",
+                  month: "long",
+                })}
+              </div>
+            </div>
+            <div className="stack md">
+              {events.map((calendarEvent) => {
+                return (
+                  <section
+                    key={calendarEvent.eventId}
+                    className="calendar__event main"
+                  >
+                    <div className="calendar__event__top-info-container">
+                      <time
+                        dateTime={databaseTimestampToDate(
+                          calendarEvent.startTime
+                        ).toISOString()}
+                        className="calendar__event__time"
+                      >
+                        {databaseTimestampToDate(
+                          calendarEvent.startTime
+                        ).toLocaleTimeString(i18n.language, {
+                          hour: "numeric",
+                          minute: "numeric",
+                        })}
+                      </time>
+                      <div className="calendar__event__author">
+                        From {discordFullName(calendarEvent)}
+                      </div>
+                    </div>
+                    <Link to={String(calendarEvent.eventId)}>
+                      <h2 className="calendar__event__title">
+                        {calendarEvent.name}
+                      </h2>
+                    </Link>
+                    {calendarEvent.discordUrl || calendarEvent.bracketUrl ? (
+                      <div className="calendar__event__bottom-info-container">
+                        {calendarEvent.discordUrl ? (
+                          <LinkButton
+                            to={calendarEvent.discordUrl}
+                            variant="outlined"
+                            tiny
+                            isExternal
+                          >
+                            Discord
+                          </LinkButton>
+                        ) : null}
+                        {calendarEvent.bracketUrl ? (
+                          <LinkButton
+                            to={calendarEvent.bracketUrl}
+                            variant="outlined"
+                            tiny
+                            isExternal
+                          >
+                            {resolveBaseUrl(calendarEvent.bracketUrl)}
+                          </LinkButton>
+                        ) : null}
+                      </div>
+                    ) : null}
+                  </section>
+                );
+              })}
+            </div>
+          </React.Fragment>
+        );
+      })}
+    </div>
+  );
+}
+
+function eventsGroupedByDay(
+  events: UseDataFunctionReturn<typeof loader>["events"]
+) {
+  const result: Array<[Date, UseDataFunctionReturn<typeof loader>["events"]]> =
+    [];
+
+  for (const calendarEvent of events) {
+    const previousIterationEvents = result[result.length - 1] ?? null;
+
+    const eventsDate = databaseTimestampToDate(calendarEvent.startTime);
+    if (
+      !previousIterationEvents ||
+      previousIterationEvents[0].getDay() !== eventsDate.getDay()
+    ) {
+      result.push([eventsDate, [calendarEvent]]);
+    } else {
+      previousIterationEvents[1].push(calendarEvent);
+    }
+  }
+
+  return result;
+}
+
+function filterOutNextWeeksEvents(
+  displayedWeek: number,
+  groupedEvents: ReturnType<typeof eventsGroupedByDay>
+) {
+  return groupedEvents.filter(
+    ([date]) => dateToWeekNumber(date) === displayedWeek
   );
 }

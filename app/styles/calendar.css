@@ -1,3 +1,7 @@
+.calendar__placeholder {
+  height: 48rem;
+}
+
 .calendar__weeks {
   display: flex;
   align-items: center;
@@ -76,11 +80,14 @@
   margin-block-start: var(--s-8);
 }
 
-/* xxx: padding for last -> generate grouped events on server? */
 .calendar__event {
   display: flex;
   flex-direction: column;
   font-size: var(--fonts-lg);
+}
+
+.calendar__event:last-child {
+  padding-block-end: var(--s-4);
 }
 
 .calendar__event__date-container {
@@ -88,8 +95,8 @@
 }
 
 .calendar__event__date {
-  height: 1.5rem;
   font-weight: var(--semi-bold);
+  padding-block-start: var(--s-6);
 }
 
 .calendar__event__time {

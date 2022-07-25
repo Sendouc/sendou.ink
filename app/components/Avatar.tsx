@@ -3,6 +3,7 @@ import type { User } from "~/db/types";
 import * as React from "react";
 
 const dimensions = {
+  xs: 36,
   sm: 44,
   md: 81,
   lg: 125,
@@ -16,7 +17,7 @@ export function Avatar({
   ...rest
 }: Pick<User, "discordId" | "discordAvatar"> & {
   className?: string;
-  size: "sm" | "md" | "lg";
+  size: "xs" | "sm" | "md" | "lg";
 } & React.ButtonHTMLAttributes<HTMLImageElement>) {
   const [isErrored, setIsErrored] = React.useState(false);
   // TODO: just show text... my profile?

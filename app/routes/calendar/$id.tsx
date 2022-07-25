@@ -11,6 +11,8 @@ import { notFoundIfFalsy } from "~/utils/remix";
 import { resolveBaseUrl } from "~/utils/urls";
 import { actualNumber, id } from "~/utils/zod";
 import styles from "~/styles/calendar-event.css";
+import { Avatar } from "~/components/Avatar";
+import { discordFullName } from "~/utils/strings";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -32,15 +34,13 @@ export default function CalendarEventPage() {
   const { i18n } = useTranslation();
   const isMounted = useIsMounted();
 
-  // TODO: -> next user info with avatar
-  // xxx: time doesn't take space, not taking in account many dates
+  // xxx: not taking in account many dates
 
   return (
     <Main className="stack lg">
       <section className="stack sm">
-        <div>
+        <div className="event__time">
           <time
-            className="event__time"
             dateTime={databaseTimestampToDate(event.startTime).toISOString()}
           >
             {isMounted
@@ -83,7 +83,17 @@ export default function CalendarEventPage() {
           </div>
         ) : null}
       </section>
-      <div>{event.description}</div>
+      <div className="stack sm">
+        <div className="event__author">
+          <Avatar
+            discordAvatar={event.discordAvatar}
+            discordId={event.discordId}
+            size="xs"
+          />
+          {discordFullName(event)}
+        </div>
+        <div>{event.description}</div>
+      </div>
     </Main>
   );
 }
