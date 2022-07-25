@@ -11,7 +11,7 @@ There is a sequence of commands you need to run:
 1. `nvm use` to switch to the correct Node version.
 2. `npm i` to install the dependencies.
 3. Make a copy of `.env.example` that's called `.env`. See below for note about environment variables.
-4. `npm run migrate` to set up the database tables.
+4. `npm run migrate up` to set up the database tables.
 5. `npm run seed` to fill database with test data.
 6. `npm run dev` to run the project in development mode.
 
