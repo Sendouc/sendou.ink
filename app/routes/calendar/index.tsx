@@ -241,9 +241,6 @@ function EventsList() {
   const data = useLoaderData<typeof loader>();
   const { i18n } = useTranslation();
 
-  // xxx: maybe after all show sunday-monday night events on previous week
-  // xxx: (Day 2,3,4 etc. in title when multiday event)
-
   return (
     <div className="calendar__events-container">
       {filterOutNextWeeksEvents(
@@ -288,7 +285,12 @@ function EventsList() {
                     </div>
                     <Link to={String(calendarEvent.eventId)}>
                       <h2 className="calendar__event__title">
-                        {calendarEvent.name}
+                        {calendarEvent.name}{" "}
+                        {calendarEvent.nthAppearance ? (
+                          <span className="calendar__event__day">
+                            Day {calendarEvent.nthAppearance}
+                          </span>
+                        ) : null}
                       </h2>
                     </Link>
                     {calendarEvent.discordUrl || calendarEvent.bracketUrl ? (

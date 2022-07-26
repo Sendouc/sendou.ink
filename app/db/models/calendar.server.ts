@@ -26,7 +26,7 @@ export function findAllBetweenTwoTimestamps({
   startTime: Date;
   endTime: Date;
 }) {
-  return findAllBetweenTwoTimestampsStm.all({
+  const rows = findAllBetweenTwoTimestampsStm.all({
     startTime: dateToDatabaseTimestamp(startTime),
     endTime: dateToDatabaseTimestamp(endTime),
   }) as Array<
@@ -34,6 +34,14 @@ export function findAllBetweenTwoTimestamps({
       Pick<CalendarEventDate, "id" | "eventId" | "startTime"> &
       Pick<User, "discordName" | "discordDiscriminator">
   >;
+
+  const eventsSeen = new Map<CalendarEventDate["eventId"], number>();
+  return rows.map((row) => {
+    const eventsSoFar = (eventsSeen.get(row.eventId) ?? 0) + 1;
+    eventsSeen.set(row.eventId, eventsSoFar);
+
+    return { ...row, nthAppearance: eventsSoFar > 1 ? eventsSoFar : undefined };
+  });
 }
 
 const findByIdStm = sql.prepare(`
