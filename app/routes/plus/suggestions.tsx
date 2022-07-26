@@ -4,14 +4,8 @@ import type {
   MetaFunction,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import type {
-  ShouldReloadFunction} from "@remix-run/react";
-import {
-  Link,
-  Outlet,
-  useLoaderData,
-  useSearchParams,
-} from "@remix-run/react";
+import type { ShouldReloadFunction } from "@remix-run/react";
+import { Link, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
 import clsx from "clsx";
 import invariant from "tiny-invariant";
 import { z } from "zod";
@@ -267,7 +261,7 @@ function searchParamsToLegalTier(
   if (
     !tierFromSearchParams ||
     !suggestions ||
-    !suggestions.hasOwnProperty(tierFromSearchParams)
+    !suggestions[tierFromSearchParams]
   ) {
     return tierVisibleInitialState(suggestions);
   }
