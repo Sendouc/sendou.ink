@@ -56,6 +56,7 @@
 .calendar__week:nth-child(5) {
   width: var(--full-size-week-width);
   height: var(--full-size-week-height);
+  color: var(--text);
   font-size: var(--fonts-sm);
 }
 
