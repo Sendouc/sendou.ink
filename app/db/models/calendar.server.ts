@@ -4,17 +4,26 @@ import type { CalendarEvent, CalendarEventDate, User } from "../types";
 
 const findAllBetweenTwoTimestampsStm = sql.prepare(`
   select
-      "CalendarEvent"."name",
-      "CalendarEvent"."discordUrl",
-      "CalendarEvent"."bracketUrl",
-      "CalendarEventDate"."id",
-      "CalendarEventDate"."eventId",
-      "CalendarEventDate"."startTime",
-      "User"."discordName",
-      "User"."discordDiscriminator"
+    "CalendarEvent"."name",
+    "CalendarEvent"."discordUrl",
+    "CalendarEvent"."bracketUrl",
+    "CalendarEventDate"."id",
+    "CalendarEventDate"."eventId",
+    "CalendarEventDate"."startTime",
+    "User"."discordName",
+    "User"."discordDiscriminator",
+    "CalendarEventRanks"."nthAppearance"
     from "CalendarEvent"
     join "CalendarEventDate" on "CalendarEvent"."id" = "CalendarEventDate"."eventId"
     join "User" on "CalendarEvent"."authorId" = "User"."id"
+    join (
+      select 
+        "id", 
+        "eventId", 
+        "startTime", 
+        rank() over(partition by "eventId" order by "startTime" asc) "nthAppearance" 
+      from "CalendarEventDate"
+    ) "CalendarEventRanks" on "CalendarEventDate"."id" = CalendarEventRanks."id"
     where "CalendarEventDate"."startTime" between $startTime and $endTime
     order by "CalendarEventDate"."startTime" asc
 `);
@@ -26,22 +35,16 @@ export function findAllBetweenTwoTimestamps({
   startTime: Date;
   endTime: Date;
 }) {
-  const rows = findAllBetweenTwoTimestampsStm.all({
+  return findAllBetweenTwoTimestampsStm.all({
     startTime: dateToDatabaseTimestamp(startTime),
     endTime: dateToDatabaseTimestamp(endTime),
   }) as Array<
     Pick<CalendarEvent, "name" | "discordUrl" | "bracketUrl"> &
       Pick<CalendarEventDate, "id" | "eventId" | "startTime"> &
-      Pick<User, "discordName" | "discordDiscriminator">
+      Pick<User, "discordName" | "discordDiscriminator"> & {
+        nthAppearance: number;
+      }
   >;
-
-  const eventsSeen = new Map<CalendarEventDate["eventId"], number>();
-  return rows.map((row) => {
-    const eventsSoFar = (eventsSeen.get(row.eventId) ?? 0) + 1;
-    eventsSeen.set(row.eventId, eventsSoFar);
-
-    return { ...row, nthAppearance: eventsSoFar > 1 ? eventsSoFar : undefined };
-  });
 }
 
 const findByIdStm = sql.prepare(`

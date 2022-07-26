@@ -292,7 +292,7 @@ function EventsList() {
                       <Link to={String(calendarEvent.eventId)}>
                         <h2 className="calendar__event__title">
                           {calendarEvent.name}{" "}
-                          {calendarEvent.nthAppearance ? (
+                          {calendarEvent.nthAppearance > 1 ? (
                             <span className="calendar__event__day">
                               Day {calendarEvent.nthAppearance}
                             </span>
