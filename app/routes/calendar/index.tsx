@@ -44,10 +44,7 @@ export const meta: MetaFunction = (args) => {
 
 const loaderSearchParamsSchema = z.object({
   week: z.preprocess(actualNumber, z.number().int().min(1).max(53)),
-  year: z.preprocess(
-    actualNumber,
-    z.number().int().min(2022).max(new Date().getFullYear())
-  ),
+  year: z.preprocess(actualNumber, z.number().int()),
 });
 
 export const loader = async ({ request }: LoaderArgs) => {
