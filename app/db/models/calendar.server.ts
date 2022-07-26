@@ -60,10 +60,11 @@ const findByIdStm = sql.prepare(`
   join "CalendarEventDate" on "CalendarEvent"."id" = "CalendarEventDate"."eventId"
   join "User" on "CalendarEvent"."authorId" = "User"."id"
   where "CalendarEvent"."id" = $id
+  order by "CalendarEventDate"."startTime" asc
 `);
 
 export function findById(id: CalendarEvent["id"]) {
-  return findByIdStm.get({ id }) as Nullable<
+  const rows = findByIdStm.all({ id }) as Array<
     Pick<CalendarEvent, "name" | "description" | "discordUrl" | "bracketUrl"> &
       Pick<CalendarEventDate, "startTime" | "eventId"> &
       Pick<
@@ -71,6 +72,14 @@ export function findById(id: CalendarEvent["id"]) {
         "discordName" | "discordDiscriminator" | "discordId" | "discordAvatar"
       >
   >;
+
+  if (rows.length === 0) return null;
+
+  return {
+    ...rows[0],
+    startTimes: rows.map((row) => row.startTime),
+    startTime: undefined,
+  };
 }
 
 const startTimesOfRangeStm = sql.prepare(`

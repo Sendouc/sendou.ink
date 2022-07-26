@@ -13,6 +13,7 @@ import { actualNumber, id } from "~/utils/zod";
 import styles from "~/styles/calendar-event.css";
 import { Avatar } from "~/components/Avatar";
 import { discordFullName } from "~/utils/strings";
+import * as React from "react";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -34,29 +35,35 @@ export default function CalendarEventPage() {
   const { i18n } = useTranslation();
   const isMounted = useIsMounted();
 
-  // xxx: not taking in account many dates
+  // xxx: should not say day 1 if we only have one day
+  // -> implement badges
+  // -> implement tags
 
   return (
     <Main className="stack lg">
       <section className="stack sm">
-        <div className="event__time">
-          <time
-            dateTime={databaseTimestampToDate(event.startTime).toISOString()}
-          >
-            {isMounted
-              ? databaseTimestampToDate(event.startTime).toLocaleDateString(
-                  i18n.language,
-                  {
-                    hour: "numeric",
-                    minute: "numeric",
-                    day: "numeric",
-                    month: "long",
-                    weekday: "long",
-                  }
-                )
-              : null}
-          </time>
+        <div className="event__times">
+          {event.startTimes.map((startTime, i) => (
+            <React.Fragment key={startTime}>
+              <span className="event__day">Day {i + 1}</span>
+              <time dateTime={databaseTimestampToDate(startTime).toISOString()}>
+                {isMounted
+                  ? databaseTimestampToDate(startTime).toLocaleDateString(
+                      i18n.language,
+                      {
+                        hour: "numeric",
+                        minute: "numeric",
+                        day: "numeric",
+                        month: "long",
+                        weekday: "long",
+                      }
+                    )
+                  : null}
+              </time>
+            </React.Fragment>
+          ))}
         </div>
+        {/* xxx: are we even loading these styles? */}
         <h2 className="calendar__event__title">{event.name}</h2>
         {event.discordUrl || event.bracketUrl ? (
           <div className="stack horizontal sm">

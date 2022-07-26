@@ -2,9 +2,15 @@
   line-height: 1.35;
 }
 
-.event__time {
-  height: 1rem;
+.event__day {
+  color: var(--text-lighter);
+}
+
+.event__times {
   font-weight: var(--semi-bold);
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  column-gap: var(--s-1-5);
 }
 
 .event__author {
