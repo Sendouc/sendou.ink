@@ -8,7 +8,7 @@ import {
   playerAlreadyMember,
   playerAlreadySuggested,
 } from "~/permissions";
-import { PLUS_SUGGESTIONS_PAGE } from "~/utils/urls";
+import { plusSuggestionPage, PLUS_SUGGESTIONS_PAGE } from "~/utils/urls";
 import type { PlusSuggestionsLoaderData } from "../suggestions";
 import * as React from "react";
 import { Label } from "~/components/Label";
@@ -80,7 +80,7 @@ export const action: ActionFunction = async ({ request }) => {
     ...nextNonCompletedVoting(new Date()),
   });
 
-  return redirect(PLUS_SUGGESTIONS_PAGE);
+  return redirect(plusSuggestionPage(data.tier));
 };
 
 export default function PlusNewSuggestionModalPage() {

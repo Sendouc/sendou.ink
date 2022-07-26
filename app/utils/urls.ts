@@ -12,6 +12,8 @@ export const LEAN_TWITTER = "https://twitter.com/LeanYoshi";
 export const UBERU_TWITTER = "https://twitter.com/uberu5";
 export const LOG_IN_URL = "/auth";
 export const LOG_OUT_URL = "/auth/logout";
+
+// xxx: remove?
 export const PLUS_SUGGESTIONS_PAGE = "/plus/suggestions";
 export const ADMIN_PAGE = "/admin";
 export const FAQ_PAGE = "/faq";
@@ -23,6 +25,8 @@ export const userPage = (discordId: string) => `/u/${discordId}`;
 export const impersonateUrl = (idToLogInAs: number) =>
   `/auth/impersonate?id=${idToLogInAs}`;
 export const badgePage = (badgeId: number) => `${BADGES_PAGE}/${badgeId}`;
+export const plusSuggestionPage = (tier: string | number) =>
+  `/plus/suggestions${tier ? `?tier=${tier}` : ""}`;
 
 export const badgeUrl = ({
   code,
