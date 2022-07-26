@@ -119,6 +119,10 @@
   flex-direction: column;
 }
 
+.stack.xxs {
+  gap: var(--s-1);
+}
+
 .stack.xs {
   gap: var(--s-1-5);
 }

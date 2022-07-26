@@ -1,8 +1,4 @@
-import {
-  databaseTimestampToDate,
-  dateToDatabaseTimestamp,
-  dateToWeekNumber,
-} from "~/utils/dates";
+import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { sql } from "../sql";
 import type { CalendarEvent, CalendarEventDate, User } from "../types";
 

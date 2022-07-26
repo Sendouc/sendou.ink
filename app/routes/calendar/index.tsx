@@ -20,6 +20,7 @@ import {
   weekNumberToDate,
 } from "~/utils/dates";
 import { discordFullName, makeTitle } from "~/utils/strings";
+import type { Unpacked } from "~/utils/types";
 import { resolveBaseUrl } from "~/utils/urls";
 import { actualNumber } from "~/utils/zod";
 
@@ -151,17 +152,7 @@ function WeekLinks() {
                   tabIndex={hidden ? -1 : 0}
                 >
                   <>
-                    <div>
-                      {week.number === data.currentWeek
-                        ? "This"
-                        : week.number - data.currentWeek === 1
-                        ? "Next"
-                        : week.number - data.currentWeek === -1
-                        ? "Last"
-                        : week.number}{" "}
-                      <br />
-                      Week
-                    </div>
+                    <WeekLinkTitle week={week} />
                     <div
                       className={clsx("calendar__event-count", {
                         invisible: !eventCounts,
@@ -177,6 +168,58 @@ function WeekLinks() {
         </div>
       </div>
     </Flipper>
+  );
+}
+
+function WeekLinkTitle({
+  week,
+}: {
+  week: Unpacked<UseDataFunctionReturn<typeof loader>["weeks"]>;
+}) {
+  const data = useLoaderData<typeof loader>();
+  const { i18n } = useTranslation();
+
+  const relativeWeekIdentifier =
+    week.number === data.currentWeek
+      ? "This"
+      : week.number - data.currentWeek === 1
+      ? "Next"
+      : week.number - data.currentWeek === -1
+      ? "Last"
+      : null;
+
+  if (relativeWeekIdentifier) {
+    return (
+      <div className="stack xxs">
+        <div>{relativeWeekIdentifier}</div>
+        <div>Week</div>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div>
+        {weekNumberToDate({
+          week: week.number,
+          year: week.year,
+        }).toLocaleDateString(i18n.language, {
+          day: "numeric",
+          month: "short",
+        })}
+      </div>
+      <div className="calendar__week__dash">-</div>
+      <div>
+        {weekNumberToDate({
+          week: week.number,
+          year: week.year,
+          position: "end",
+        }).toLocaleDateString(i18n.language, {
+          day: "numeric",
+          month: "short",
+        })}
+      </div>
+    </div>
   );
 }
 
