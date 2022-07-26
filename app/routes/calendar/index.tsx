@@ -123,6 +123,7 @@ export default function CalendarPage() {
   );
 }
 
+// xxx: overflows on mobile -> make it so that opaque blocks don't take space or are "allowed" to overflow?
 function WeekLinks() {
   const data = useLoaderData<typeof loader>();
   const isMounted = useIsMounted();
@@ -241,89 +242,94 @@ function EventsList() {
   const data = useLoaderData<typeof loader>();
   const { i18n } = useTranslation();
 
+  function excludeNextWeeksEvents([date]: Unpacked<
+    ReturnType<typeof eventsGroupedByDay>
+  >) {
+    return dateToWeekNumber(date) === data.displayedWeek;
+  }
+
   return (
     <div className="calendar__events-container">
-      {filterOutNextWeeksEvents(
-        data.displayedWeek,
-        eventsGroupedByDay(data.events)
-      ).map(([daysDate, events]) => {
-        return (
-          <React.Fragment key={daysDate.getTime()}>
-            <div className="calendar__event__date-container">
-              <div className="calendar__event__date main">
-                {daysDate.toLocaleDateString(i18n.language, {
-                  weekday: "long",
-                  day: "numeric",
-                  month: "long",
+      {eventsGroupedByDay(data.events)
+        .filter(excludeNextWeeksEvents)
+        .map(([daysDate, events]) => {
+          return (
+            <React.Fragment key={daysDate.getTime()}>
+              <div className="calendar__event__date-container">
+                <div className="calendar__event__date main">
+                  {daysDate.toLocaleDateString(i18n.language, {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "long",
+                  })}
+                </div>
+              </div>
+              <div className="stack md">
+                {events.map((calendarEvent) => {
+                  return (
+                    <section
+                      key={calendarEvent.eventId}
+                      className="calendar__event main"
+                    >
+                      <div className="calendar__event__top-info-container">
+                        <time
+                          dateTime={databaseTimestampToDate(
+                            calendarEvent.startTime
+                          ).toISOString()}
+                          className="calendar__event__time"
+                        >
+                          {databaseTimestampToDate(
+                            calendarEvent.startTime
+                          ).toLocaleTimeString(i18n.language, {
+                            hour: "numeric",
+                            minute: "numeric",
+                          })}
+                        </time>
+                        <div className="calendar__event__author">
+                          From {discordFullName(calendarEvent)}
+                        </div>
+                      </div>
+                      <Link to={String(calendarEvent.eventId)}>
+                        <h2 className="calendar__event__title">
+                          {calendarEvent.name}{" "}
+                          {calendarEvent.nthAppearance ? (
+                            <span className="calendar__event__day">
+                              Day {calendarEvent.nthAppearance}
+                            </span>
+                          ) : null}
+                        </h2>
+                      </Link>
+                      {calendarEvent.discordUrl || calendarEvent.bracketUrl ? (
+                        <div className="calendar__event__bottom-info-container">
+                          {calendarEvent.discordUrl ? (
+                            <LinkButton
+                              to={calendarEvent.discordUrl}
+                              variant="outlined"
+                              tiny
+                              isExternal
+                            >
+                              Discord
+                            </LinkButton>
+                          ) : null}
+                          {calendarEvent.bracketUrl ? (
+                            <LinkButton
+                              to={calendarEvent.bracketUrl}
+                              variant="outlined"
+                              tiny
+                              isExternal
+                            >
+                              {resolveBaseUrl(calendarEvent.bracketUrl)}
+                            </LinkButton>
+                          ) : null}
+                        </div>
+                      ) : null}
+                    </section>
+                  );
                 })}
               </div>
-            </div>
-            <div className="stack md">
-              {events.map((calendarEvent) => {
-                return (
-                  <section
-                    key={calendarEvent.eventId}
-                    className="calendar__event main"
-                  >
-                    <div className="calendar__event__top-info-container">
-                      <time
-                        dateTime={databaseTimestampToDate(
-                          calendarEvent.startTime
-                        ).toISOString()}
-                        className="calendar__event__time"
-                      >
-                        {databaseTimestampToDate(
-                          calendarEvent.startTime
-                        ).toLocaleTimeString(i18n.language, {
-                          hour: "numeric",
-                          minute: "numeric",
-                        })}
-                      </time>
-                      <div className="calendar__event__author">
-                        From {discordFullName(calendarEvent)}
-                      </div>
-                    </div>
-                    <Link to={String(calendarEvent.eventId)}>
-                      <h2 className="calendar__event__title">
-                        {calendarEvent.name}{" "}
-                        {calendarEvent.nthAppearance ? (
-                          <span className="calendar__event__day">
-                            Day {calendarEvent.nthAppearance}
-                          </span>
-                        ) : null}
-                      </h2>
-                    </Link>
-                    {calendarEvent.discordUrl || calendarEvent.bracketUrl ? (
-                      <div className="calendar__event__bottom-info-container">
-                        {calendarEvent.discordUrl ? (
-                          <LinkButton
-                            to={calendarEvent.discordUrl}
-                            variant="outlined"
-                            tiny
-                            isExternal
-                          >
-                            Discord
-                          </LinkButton>
-                        ) : null}
-                        {calendarEvent.bracketUrl ? (
-                          <LinkButton
-                            to={calendarEvent.bracketUrl}
-                            variant="outlined"
-                            tiny
-                            isExternal
-                          >
-                            {resolveBaseUrl(calendarEvent.bracketUrl)}
-                          </LinkButton>
-                        ) : null}
-                      </div>
-                    ) : null}
-                  </section>
-                );
-              })}
-            </div>
-          </React.Fragment>
-        );
-      })}
+            </React.Fragment>
+          );
+        })}
     </div>
   );
 }
@@ -349,13 +355,4 @@ function eventsGroupedByDay(
   }
 
   return result;
-}
-
-function filterOutNextWeeksEvents(
-  displayedWeek: number,
-  groupedEvents: ReturnType<typeof eventsGroupedByDay>
-) {
-  return groupedEvents.filter(
-    ([date]) => dateToWeekNumber(date) === displayedWeek
-  );
 }
