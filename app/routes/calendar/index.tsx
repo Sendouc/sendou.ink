@@ -68,26 +68,20 @@ export const loader = async ({ request }: LoaderArgs) => {
     ? parsedParams.data.year
     : now.getFullYear();
 
-  const eventCounts = db.calendar.eventsCountPerWeek({
-    startTime: subMonths(
-      weekNumberToDate({ week: displayedWeek, year: displayedYear }),
-      1
-    ),
-    endTime: addMonths(
-      weekNumberToDate({ week: displayedWeek, year: displayedYear }),
-      1
-    ),
-  });
-
   return json({
-    currentWeek, // the week that is currently in real life
+    currentWeek,
     displayedWeek,
-    weeks: closeByWeeks({ week: displayedWeek, year: displayedYear }).map(
-      (week) => ({
-        ...week,
-        numberOfEvents: eventCounts.get(week.number) ?? 0,
-      })
-    ),
+    nearbyStartTimes: db.calendar.startTimesOfRange({
+      startTime: subMonths(
+        weekNumberToDate({ week: displayedWeek, year: displayedYear }),
+        1
+      ),
+      endTime: addMonths(
+        weekNumberToDate({ week: displayedWeek, year: displayedYear }),
+        1
+      ),
+    }),
+    weeks: closeByWeeks({ week: displayedWeek, year: displayedYear }),
     events: fetchEventsOfWeek({ week: displayedWeek, year: displayedYear }),
     title: makeTitle([`Week ${displayedWeek}`, t("pages.calendar")]),
   });
@@ -133,6 +127,11 @@ export default function CalendarPage() {
 
 function WeekLinks() {
   const data = useLoaderData<typeof loader>();
+  const isMounted = useIsMounted();
+
+  const eventCounts = isMounted
+    ? getEventsCountPerWeek(data.nearbyStartTimes)
+    : null;
 
   return (
     <Flipper flipKey={data.weeks.map(({ number }) => number).join("")}>
@@ -166,8 +165,12 @@ function WeekLinks() {
                       <br />
                       Week
                     </div>
-                    <div className="calendar__event-count">
-                      ×{week.numberOfEvents}
+                    <div
+                      className={clsx("calendar__event-count", {
+                        invisible: !eventCounts,
+                      })}
+                    >
+                      ×{eventCounts?.get(week.number) ?? 0}
                     </div>
                   </>
                 </Link>
@@ -178,6 +181,20 @@ function WeekLinks() {
       </div>
     </Flipper>
   );
+}
+
+function getEventsCountPerWeek(
+  startTimes: UseDataFunctionReturn<typeof loader>["nearbyStartTimes"]
+) {
+  const result = new Map<number, number>();
+
+  for (const startTime of startTimes) {
+    const week = dateToWeekNumber(databaseTimestampToDate(startTime));
+    const previousCount = result.get(week) ?? 0;
+    result.set(week, previousCount + 1);
+  }
+
+  return result;
 }
 
 function EventsList() {

@@ -69,32 +69,24 @@ export function findById(id: CalendarEvent["id"]) {
   >;
 }
 
-const eventsCountPerWeekStm = sql.prepare(`
+const startTimesOfRangeStm = sql.prepare(`
   select
     "CalendarEventDate"."startTime"
   from "CalendarEventDate"
   where "CalendarEventDate"."startTime" between $startTime and $endTime
 `);
 
-export function eventsCountPerWeek({
+export function startTimesOfRange({
   startTime,
   endTime,
 }: {
   startTime: Date;
   endTime: Date;
 }) {
-  const startTimes = eventsCountPerWeekStm.all({
-    startTime: dateToDatabaseTimestamp(startTime),
-    endTime: dateToDatabaseTimestamp(endTime),
-  }) as Array<Pick<CalendarEventDate, "startTime">>;
-
-  const result = new Map<number, number>();
-
-  for (const { startTime } of startTimes) {
-    const week = dateToWeekNumber(databaseTimestampToDate(startTime));
-    const previousCount = result.get(week) ?? 0;
-    result.set(week, previousCount + 1);
-  }
-
-  return result;
+  return (
+    startTimesOfRangeStm.all({
+      startTime: dateToDatabaseTimestamp(startTime),
+      endTime: dateToDatabaseTimestamp(endTime),
+    }) as Array<Pick<CalendarEventDate, "startTime">>
+  ).map(({ startTime }) => startTime);
 }
