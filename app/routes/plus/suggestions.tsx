@@ -4,10 +4,11 @@ import type {
   MetaFunction,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
+import type {
+  ShouldReloadFunction} from "@remix-run/react";
 import {
   Link,
   Outlet,
-  ShouldReloadFunction,
   useLoaderData,
   useSearchParams,
 } from "@remix-run/react";

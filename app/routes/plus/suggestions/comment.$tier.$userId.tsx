@@ -15,7 +15,7 @@ import {
 } from "~/permissions";
 import { atOrError } from "~/utils/arrays";
 import { parseRequestFormData, validate } from "~/utils/remix";
-import { PLUS_SUGGESTIONS_PAGE } from "~/utils/urls";
+import { plusSuggestionPage } from "~/utils/urls";
 import { actualNumber } from "~/utils/zod";
 import type { PlusSuggestionsLoaderData } from "../suggestions";
 import { CommentTextarea } from "./new";
@@ -60,7 +60,7 @@ export const action: ActionFunction = async ({ request }) => {
     ...nextNonCompletedVoting(new Date()),
   });
 
-  return redirect(PLUS_SUGGESTIONS_PAGE);
+  return redirect(plusSuggestionPage());
 };
 
 export default function PlusCommentModalPage() {
@@ -86,7 +86,7 @@ export default function PlusCommentModalPage() {
       targetPlusTier: Number(tierSuggestedTo),
     })
   ) {
-    return <Redirect to={PLUS_SUGGESTIONS_PAGE} />;
+    return <Redirect to={plusSuggestionPage()} />;
   }
 
   return (
@@ -104,7 +104,7 @@ export default function PlusCommentModalPage() {
             Submit
           </Button>
           <LinkButton
-            to={PLUS_SUGGESTIONS_PAGE}
+            to={plusSuggestionPage()}
             variant="minimal-destructive"
             tiny
           >

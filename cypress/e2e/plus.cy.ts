@@ -1,4 +1,4 @@
-import { PLUS_SUGGESTIONS_PAGE } from "~/utils/urls";
+import { plusSuggestionPage } from "~/utils/urls";
 
 export {};
 
@@ -9,13 +9,13 @@ describe("Plus suggestions page", () => {
 
   it("views suggestions status as non plus member", function () {
     cy.auth(151);
-    cy.visit(PLUS_SUGGESTIONS_PAGE);
+    cy.visit(plusSuggestionPage());
     cy.contains("You are suggested");
   });
 
   it("adds a comment and deletes one", () => {
     cy.auth();
-    cy.visit(PLUS_SUGGESTIONS_PAGE);
+    cy.visit(plusSuggestionPage());
 
     cy.getCy("suggested-user-name")
       .first()
@@ -45,7 +45,7 @@ describe("Plus suggestions page", () => {
   it("adds a new suggestion, validates suggested user and deletes it", () => {
     cy.clock(new Date(Date.UTC(2022, 5, 15))); // let's make sure voting is not happening
     cy.auth();
-    cy.visit(PLUS_SUGGESTIONS_PAGE);
+    cy.visit(plusSuggestionPage());
 
     cy.getCy("new-suggest-button").click();
     cy.getCy("tier-select").select("2");

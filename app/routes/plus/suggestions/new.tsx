@@ -8,7 +8,7 @@ import {
   playerAlreadyMember,
   playerAlreadySuggested,
 } from "~/permissions";
-import { plusSuggestionPage, PLUS_SUGGESTIONS_PAGE } from "~/utils/urls";
+import { plusSuggestionPage } from "~/utils/urls";
 import type { PlusSuggestionsLoaderData } from "../suggestions";
 import * as React from "react";
 import { Label } from "~/components/Label";
@@ -111,7 +111,7 @@ export default function PlusNewSuggestionModalPage() {
     }) ||
     !targetPlusTier
   ) {
-    return <Redirect to={PLUS_SUGGESTIONS_PAGE} />;
+    return <Redirect to={plusSuggestionPage()} />;
   }
 
   const selectedUserErrorMessage = getSelectedUserErrorMessage({
@@ -160,7 +160,7 @@ export default function PlusNewSuggestionModalPage() {
             Submit
           </Button>
           <LinkButton
-            to={PLUS_SUGGESTIONS_PAGE}
+            to={plusSuggestionPage()}
             variant="minimal-destructive"
             tiny
           >
