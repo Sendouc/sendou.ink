@@ -1,6 +1,6 @@
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { sql } from "../sql";
-import type { CalendarEvent, CalendarEventDate, User } from "../types";
+import type { CalendarEvent, CalendarEventDate, User, Badge } from "../types";
 
 const findAllBetweenTwoTimestampsStm = sql.prepare(`
   select
@@ -16,7 +16,7 @@ const findAllBetweenTwoTimestampsStm = sql.prepare(`
     "CalendarEventRanks"."nthAppearance",
     exists (select 1 
       from "CalendarEventBadge" 
-      where "badgeId" = "CalendarEventDate"."eventId"
+      where "CalendarEventBadge"."eventId" = "CalendarEventDate"."eventId"
     ) as "hasBadge"
     from "CalendarEvent"
     join "CalendarEventDate" on "CalendarEvent"."id" = "CalendarEventDate"."eventId"
@@ -74,7 +74,7 @@ const findByIdStm = sql.prepare(`
     "CalendarEvent"."tags",
     exists (select 1 
       from "CalendarEventBadge" 
-      where "badgeId" = "CalendarEventDate"."eventId"
+      where "CalendarEventBadge"."eventId" = "CalendarEventDate"."eventId"
     ) as "hasBadge",
     "CalendarEventDate"."startTime",
     "CalendarEventDate"."eventId",
@@ -131,4 +131,17 @@ export function startTimesOfRange({
       endTime: dateToDatabaseTimestamp(endTime),
     }) as Array<Pick<CalendarEventDate, "startTime">>
   ).map(({ startTime }) => startTime);
+}
+
+const findBadgesByIdStm = sql.prepare(`
+  select "Badge"."id", "Badge"."code", "Badge"."hue", "Badge"."displayName"
+  from "CalendarEventBadge"
+  join "Badge" on "CalendarEventBadge"."badgeId" = "Badge"."id"
+  where "CalendarEventBadge"."eventId" = $eventId
+`);
+
+export function findBadgesById(eventId: CalendarEvent["id"]) {
+  return findBadgesByIdStm.all({ eventId }) as Array<
+    Pick<Badge, "id" | "code" | "hue" | "displayName">
+  >;
 }

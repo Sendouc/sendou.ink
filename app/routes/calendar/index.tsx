@@ -341,7 +341,10 @@ function EventsList() {
                       ) : null}
                     </section>,
                     i < events.length - 1 ? (
-                      <hr className="calendar__event__divider" />
+                      <hr
+                        key={`${calendarEvent.eventId}-line`}
+                        className="calendar__event__divider"
+                      />
                     ) : null,
                   ];
                 })}

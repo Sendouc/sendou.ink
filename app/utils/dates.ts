@@ -23,8 +23,6 @@ export function weekNumberToDate({
   /** start = Date of Monday, end = Date of Sunday */
   position?: "start" | "end";
 }) {
-  // xxx: possible problem of mismatch when server time and local time don't match
-  // gotta make sure events which belong to monday are still shown for sunday
   const result = new Date(Date.UTC(year, 0, 4));
 
   result.setDate(
