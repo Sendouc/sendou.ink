@@ -44,6 +44,10 @@ export const meta: MetaFunction = (args) => {
   };
 };
 
+export const handle = {
+  i18n: "calendar",
+};
+
 const loaderSearchParamsSchema = z.object({
   week: z.preprocess(actualNumber, z.number().int().min(1).max(53)),
   year: z.preprocess(actualNumber, z.number().int()),
@@ -354,14 +358,15 @@ function Tags({
 }: {
   tags: Unpacked<UseDataFunctionReturn<typeof loader>["events"]>["tags"];
 }) {
+  const { t } = useTranslation("calendar");
+
   if (tags.length === 0) return null;
 
-  // xxx: fix name
   return (
     <ul className="calendar__event__tags">
       {tags.map((tag) => (
         <li key={tag} style={{ backgroundColor: allTags[tag].color }}>
-          Badge prize
+          {t(`tag.${tag}`)}
         </li>
       ))}
     </ul>
