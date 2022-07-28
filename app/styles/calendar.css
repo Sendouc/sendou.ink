@@ -128,6 +128,20 @@
   margin-block: var(--s-1);
 }
 
+.calendar__event__tags {
+  list-style: none;
+  padding: 0;
+  font-size: var(--fonts-xxs);
+  display: flex;
+  color: var(--button-text);
+  font-weight: var(--semi-bold);
+}
+
+.calendar__event__tags > li {
+  padding-inline: var(--s-1-5);
+  border-radius: var(--rounded);
+}
+
 .calendar__event__day {
   color: var(--text-lighter);
 }

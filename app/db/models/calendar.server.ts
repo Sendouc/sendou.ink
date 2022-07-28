@@ -1,7 +1,9 @@
 import { dateToDatabaseTimestamp } from "~/utils/dates";
+import { Unpacked } from "~/utils/types";
 import { sql } from "../sql";
 import type { CalendarEvent, CalendarEventDate, User } from "../types";
 
+// xxx: TODO: add tags
 const findAllBetweenTwoTimestampsStm = sql.prepare(`
   select
     "CalendarEvent"."name",
@@ -12,7 +14,11 @@ const findAllBetweenTwoTimestampsStm = sql.prepare(`
     "CalendarEventDate"."startTime",
     "User"."discordName",
     "User"."discordDiscriminator",
-    "CalendarEventRanks"."nthAppearance"
+    "CalendarEventRanks"."nthAppearance",
+    exists (select 1 
+      from "CalendarEventBadge" 
+      where "badgeId" = "CalendarEventDate"."eventId"
+    ) as "hasBadge"
     from "CalendarEvent"
     join "CalendarEventDate" on "CalendarEvent"."id" = "CalendarEventDate"."eventId"
     join "User" on "CalendarEvent"."authorId" = "User"."id"
@@ -28,6 +34,17 @@ const findAllBetweenTwoTimestampsStm = sql.prepare(`
     order by "CalendarEventDate"."startTime" asc
 `);
 
+function addTagArray<
+  T extends { hasBadge: number; tags?: CalendarEvent["tags"] }
+>(arg: T) {
+  const { hasBadge, ...row } = arg;
+  const tags = (row.tags ? row.tags.split(",") : []) as Array<"BADGE_PRIZE">;
+
+  if (hasBadge) tags.push("BADGE_PRIZE");
+
+  return { ...row, tags };
+}
+
 export function findAllBetweenTwoTimestamps({
   startTime,
   endTime,
@@ -35,16 +52,18 @@ export function findAllBetweenTwoTimestamps({
   startTime: Date;
   endTime: Date;
 }) {
-  return findAllBetweenTwoTimestampsStm.all({
+  const rows = findAllBetweenTwoTimestampsStm.all({
     startTime: dateToDatabaseTimestamp(startTime),
     endTime: dateToDatabaseTimestamp(endTime),
   }) as Array<
-    Pick<CalendarEvent, "name" | "discordUrl" | "bracketUrl"> &
+    Pick<CalendarEvent, "name" | "discordUrl" | "bracketUrl" | "tags"> &
       Pick<CalendarEventDate, "id" | "eventId" | "startTime"> &
       Pick<User, "discordName" | "discordDiscriminator"> & {
         nthAppearance: number;
-      }
+      } & { hasBadge: number }
   >;
+
+  return rows.map(addTagArray);
 }
 
 const findByIdStm = sql.prepare(`

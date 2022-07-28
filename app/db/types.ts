@@ -81,6 +81,7 @@ export interface CalendarEvent {
   id: number;
   name: string;
   authorId: number;
+  tags?: string; // xxx: TODO: add in migration
   description: string | null;
   discordUrl: string | null;
   bracketUrl: string | null;

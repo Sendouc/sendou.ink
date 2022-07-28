@@ -23,6 +23,7 @@ import { discordFullName, makeTitle } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import { resolveBaseUrl } from "~/utils/urls";
 import { actualNumber } from "~/utils/zod";
+import allTags from "./tags.json";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -288,16 +289,19 @@ function EventsList() {
                           From {discordFullName(calendarEvent)}
                         </div>
                       </div>
-                      <Link to={String(calendarEvent.eventId)}>
-                        <h2 className="calendar__event__title">
-                          {calendarEvent.name}{" "}
-                          {calendarEvent.nthAppearance > 1 ? (
-                            <span className="calendar__event__day">
-                              Day {calendarEvent.nthAppearance}
-                            </span>
-                          ) : null}
-                        </h2>
-                      </Link>
+                      <div>
+                        <Link to={String(calendarEvent.eventId)}>
+                          <h2 className="calendar__event__title">
+                            {calendarEvent.name}{" "}
+                            {calendarEvent.nthAppearance > 1 ? (
+                              <span className="calendar__event__day">
+                                Day {calendarEvent.nthAppearance}
+                              </span>
+                            ) : null}
+                          </h2>
+                        </Link>
+                        <Tags tags={calendarEvent.tags} />
+                      </div>
                       {calendarEvent.discordUrl || calendarEvent.bracketUrl ? (
                         <div className="calendar__event__bottom-info-container">
                           {calendarEvent.discordUrl ? (
@@ -330,6 +334,25 @@ function EventsList() {
           );
         })}
     </div>
+  );
+}
+
+function Tags({
+  tags,
+}: {
+  tags: Unpacked<UseDataFunctionReturn<typeof loader>["events"]>["tags"];
+}) {
+  if (tags.length === 0) return null;
+
+  // xxx: fix name
+  return (
+    <ul className="calendar__event__tags">
+      {tags.map((tag) => (
+        <li key={tag} style={{ backgroundColor: allTags[tag].color }}>
+          Badge prize
+        </li>
+      ))}
+    </ul>
   );
 }
 
