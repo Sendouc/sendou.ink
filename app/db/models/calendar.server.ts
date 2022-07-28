@@ -1,5 +1,4 @@
 import { dateToDatabaseTimestamp } from "~/utils/dates";
-import { Unpacked } from "~/utils/types";
 import { sql } from "../sql";
 import type { CalendarEvent, CalendarEventDate, User } from "../types";
 

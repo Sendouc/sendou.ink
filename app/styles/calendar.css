@@ -82,7 +82,6 @@
 
 .calendar__events-container {
   background-color: var(--bg-lighter);
-  margin-block-start: var(--s-8);
 }
 
 .calendar__event {
@@ -114,7 +113,6 @@
   align-items: center;
   font-size: var(--fonts-sm);
   gap: var(--s-2);
-  margin-block-start: var(--s-2);
 }
 
 .calendar__event__author {
@@ -125,21 +123,20 @@
   color: var(--text);
   font-size: var(--fonts-xl);
   line-height: 1.35;
-  margin-block: var(--s-1);
 }
 
 .calendar__event__tags {
-  list-style: none;
-  padding: 0;
-  font-size: var(--fonts-xxs);
   display: flex;
+  padding: 0;
   color: var(--button-text);
+  font-size: var(--fonts-xxs);
   font-weight: var(--semi-bold);
+  list-style: none;
 }
 
 .calendar__event__tags > li {
-  padding-inline: var(--s-1-5);
   border-radius: var(--rounded);
+  padding-inline: var(--s-1-5);
 }
 
 .calendar__event__day {
@@ -151,5 +148,9 @@
   align-items: center;
   font-size: var(--fonts-sm);
   gap: var(--s-2);
-  margin-block-start: var(--s-2);
+}
+
+.calendar__event__divider {
+  width: 50rem;
+  margin: 0 auto;
 }
