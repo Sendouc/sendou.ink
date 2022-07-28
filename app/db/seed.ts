@@ -17,6 +17,8 @@ const ADMIN_TEST_AVATAR = "e424e1ba50d2019fdc4730d261e56c55";
 const NZAP_TEST_DISCORD_ID = "455039198672453645";
 const NZAP_TEST_AVATAR = "f809176af93132c3db5f0a5019e96339"; // https://cdn.discordapp.com/avatars/455039198672453645/f809176af93132c3db5f0a5019e96339.webp?size=160
 
+const AMOUNT_OF_CALENDAR_EVENTS = 100;
+
 const basicSeeds = [
   adminUser,
   nzapUser,
@@ -30,6 +32,7 @@ const basicSeeds = [
   badgeManagers,
   patrons,
   calendarEvents,
+  calendarEventBadges,
 ];
 
 export function seed() {
@@ -240,13 +243,17 @@ function badgesToAdmin() {
   }
 }
 
-function badgesToUsers() {
-  const availableBadgeIds = shuffle(
+function getAvailableBadgeIds() {
+  return shuffle(
     sql
       .prepare(`select "id" from "Badge"`)
       .all()
       .map((b) => b.id)
   );
+}
+
+function badgesToUsers() {
+  const availableBadgeIds = getAvailableBadgeIds();
 
   let userIds = sql
     .prepare(`select "id" from "User" where id != 2`) // no badges for N-ZAP
@@ -312,7 +319,7 @@ function calendarEvents() {
     .all()
     .map((u) => u.id);
 
-  for (let id = 1; id <= 100; id++) {
+  for (let id = 1; id <= AMOUNT_OF_CALENDAR_EVENTS; id++) {
     sql
       .prepare(
         `
@@ -384,6 +391,28 @@ function calendarEvents() {
           eventId: id,
           startTime: dateToDatabaseTimestamp(startTime),
         });
+    }
+  }
+}
+
+function calendarEventBadges() {
+  for (let eventId = 1; eventId <= AMOUNT_OF_CALENDAR_EVENTS; eventId++) {
+    if (Math.random() > 0.25) continue;
+
+    const availableBadgeIds = getAvailableBadgeIds();
+
+    for (
+      let i = 0;
+      i < faker.helpers.arrayElement([1, 1, 1, 1, 2, 2, 3]);
+      i++
+    ) {
+      sql
+        .prepare(
+          `insert into "CalendarEventBadge" 
+          ("eventId", "badgeId") 
+          values ($eventId, $badgeId)`
+        )
+        .run({ eventId, badgeId: availableBadgeIds.pop() });
     }
   }
 }
