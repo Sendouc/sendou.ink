@@ -59,8 +59,7 @@ export default function CalendarEventPage() {
             </React.Fragment>
           ))}
         </div>
-        {/* xxx: are we even loading these styles? */}
-        <h2 className="calendar__event__title">{event.name}</h2>
+        <h2>{event.name}</h2>
         {event.discordUrl || event.bracketUrl ? (
           <div className="stack horizontal sm">
             {event.discordUrl ? (

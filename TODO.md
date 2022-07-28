@@ -19,6 +19,6 @@ Calendar
 
 - [x] WeekLinks make opaque blocks not take space on mobile
 - [x] Type problem with Avatar
-- [ ] Maybe classNames that do nothing on calendar event page?
+- [x] Maybe classNames that do nothing on calendar event page?
 - [ ] Rename model events -> calendarEvents
 - [ ] On the event page should not say Day 1 if only one day
