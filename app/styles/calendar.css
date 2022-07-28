@@ -125,20 +125,6 @@
   line-height: 1.35;
 }
 
-.calendar__event__tags {
-  display: flex;
-  padding: 0;
-  color: var(--button-text);
-  font-size: var(--fonts-xxs);
-  font-weight: var(--semi-bold);
-  list-style: none;
-}
-
-.calendar__event__tags > li {
-  border-radius: var(--rounded);
-  padding-inline: var(--s-1-5);
-}
-
 .calendar__event__day {
   color: var(--text-lighter);
 }

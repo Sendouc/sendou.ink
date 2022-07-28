@@ -23,7 +23,7 @@ import { discordFullName, makeTitle } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import { resolveBaseUrl } from "~/utils/urls";
 import { actualNumber } from "~/utils/zod";
-import allTags from "./tags.json";
+import { Tags } from "./components/Tags";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -350,26 +350,6 @@ function EventsList() {
           );
         })}
     </div>
-  );
-}
-
-function Tags({
-  tags,
-}: {
-  tags: Unpacked<UseDataFunctionReturn<typeof loader>["events"]>["tags"];
-}) {
-  const { t } = useTranslation("calendar");
-
-  if (tags.length === 0) return null;
-
-  return (
-    <ul className="calendar__event__tags">
-      {tags.map((tag) => (
-        <li key={tag} style={{ backgroundColor: allTags[tag].color }}>
-          {t(`tag.${tag}`)}
-        </li>
-      ))}
-    </ul>
   );
 }
 

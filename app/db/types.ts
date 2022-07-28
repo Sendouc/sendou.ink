@@ -1,3 +1,5 @@
+import type allTags from "../routes/calendar/tags.json";
+
 export interface User {
   id: number;
   discordId: string;
@@ -87,6 +89,8 @@ export interface CalendarEvent {
   bracketUrl: string | null;
   participantCount: number | null;
 }
+
+export type CalendarEventTag = keyof typeof allTags;
 
 export interface CalendarEventDate {
   id: number;
