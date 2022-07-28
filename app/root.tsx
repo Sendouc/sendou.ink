@@ -16,7 +16,8 @@ import {
 } from "@remix-run/react";
 import * as React from "react";
 import commonStyles from "~/styles/common.css";
-import globalStyles from "~/styles/global.css";
+import variableStyles from "~/styles/vars.css";
+import utilStyles from "~/styles/utils.css";
 import layoutStyles from "~/styles/layout.css";
 import resetStyles from "~/styles/reset.css";
 import { Catcher } from "./components/Catcher";
@@ -34,8 +35,9 @@ export const unstable_shouldReload: ShouldReloadFunction = () => false;
 export const links: LinksFunction = () => {
   return [
     { rel: "stylesheet", href: resetStyles },
-    { rel: "stylesheet", href: globalStyles },
     { rel: "stylesheet", href: commonStyles },
+    { rel: "stylesheet", href: variableStyles },
+    { rel: "stylesheet", href: utilStyles },
     { rel: "stylesheet", href: layoutStyles },
   ];
 };

@@ -1,0 +1,71 @@
+.text-sm {
+  font-size: var(--fonts-sm);
+}
+
+.text-xs {
+  font-size: var(--fonts-xs);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-lighter {
+  color: var(--text-lighter);
+}
+
+.text-error {
+  color: var(--theme-error);
+}
+
+.text-success {
+  color: var(--theme-success);
+}
+
+.font-semi-bold {
+  font-weight: var(--semi-bold);
+}
+
+.w-full {
+  width: 100%;
+}
+
+.mt-2 {
+  margin-block-start: var(--s-2);
+}
+
+.mt-4 {
+  margin-block-start: var(--s-4);
+}
+
+.ml-auto {
+  margin-inline-start: auto;
+}
+
+.mx-auto {
+  margin: 0 auto;
+}
+
+.hidden {
+  display: none;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.all-unset {
+  all: unset;
+}
