@@ -131,7 +131,7 @@ function PrizeBadges() {
   return (
     <div
       className="event__badges__container"
-      style={{ color: allTags["BADGE_PRIZE"].color }}
+      style={{ color: allTags["BADGE"].color }}
     >
       Win!
       <div className="event__badges__gifs">

@@ -321,7 +321,7 @@ function calendarEvents() {
     .map((u) => u.id);
 
   for (let id = 1; id <= AMOUNT_OF_CALENDAR_EVENTS; id++) {
-    const tags = shuffle(Object.keys(allTags));
+    const tags = shuffle(Object.keys(allTags)).filter((tag) => tag !== "BADGE");
 
     sql
       .prepare(

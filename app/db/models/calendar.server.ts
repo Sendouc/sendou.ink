@@ -45,7 +45,7 @@ function addTagArray<
   const { hasBadge, ...row } = arg;
   const tags = (row.tags ? row.tags.split(",") : []) as Array<CalendarEventTag>;
 
-  if (hasBadge) tags.push("BADGE_PRIZE");
+  if (hasBadge) tags.push("BADGE");
 
   return { ...row, tags };
 }

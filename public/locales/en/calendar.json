@@ -1,5 +1,5 @@
 {
-  "tag.name.BADGE_PRIZE": "Badge prize",
+  "tag.name.BADGE": "Badge prizes",
   "tag.name.SPECIAL": "Special rules",
   "tag.name.ART": "Art prizes",
   "tag.name.MONEY": "Money prizes",
@@ -8,7 +8,7 @@
   "tag.name.COUNT": "Entry limit",
   "tag.name.LAN": "LAN",
   "tag.name.QUALIFIER": "Qualifier",
-  "tag.desc.BADGE_PRIZE": "Winner of this event gets a sendou.ink badge.",
+  "tag.desc.BADGE": "Winner of this event gets a sendou.ink badge.",
   "tag.desc.SPECIAL": "Ruleset that differ from the standard e.g. limited what weapons can be used.",
   "tag.desc.ART": "You can win art by playing in this tournament.",
   "tag.desc.MONEY": "You can win money by playing in this tournament.",
