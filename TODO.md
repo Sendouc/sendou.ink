@@ -7,7 +7,8 @@ Calendar
 - [x] Add badges to the seed
 - [x] Implement badge prizes
 - [x] Implement tags
-- [ ] Add initial tags.json
+- [x] Add initial tags.json
+- [ ] Add tags to the seed
 - [ ] Page to add a new event
   - [ ] Different fields to submit depending on if future date or past date
 - [ ] Edit page (add winners this way)

@@ -11,7 +11,7 @@ export function Tags({ tags }: { tags: Array<CalendarEventTag> }) {
     <ul className="calendar__event__tags">
       {tags.map((tag) => (
         <li key={tag} style={{ backgroundColor: allTags[tag].color }}>
-          {t(`tag.${tag}`)}
+          {t(`tag.name.${tag}`)}
         </li>
       ))}
     </ul>

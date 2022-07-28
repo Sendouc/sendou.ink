@@ -1,3 +1,20 @@
 {
-  "tag.BADGE_PRIZE": "Badge prize"
+  "tag.name.BADGE_PRIZE": "Badge prize",
+  "tag.name.SPECIAL": "Special rules",
+  "tag.name.ART": "Art prizes",
+  "tag.name.MONEY": "Money prizes",
+  "tag.name.REGION": "Region locked",
+  "tag.name.LOW": "Skill cap",
+  "tag.name.COUNT": "Entry limit",
+  "tag.name.LAN": "LAN",
+  "tag.name.QUALIFIER": "Qualifier",
+  "tag.desc.BADGE_PRIZE": "Winner of this event gets a sendou.ink badge.",
+  "tag.desc.SPECIAL": "Ruleset that differ from the standard e.g. limited what weapons can be used.",
+  "tag.desc.ART": "You can win art by playing in this tournament.",
+  "tag.desc.MONEY": "You can win money by playing in this tournament.",
+  "tag.desc.REGION": "Limited who can play in this event based on location.",
+  "tag.desc.LOW": "Who can play in this event is limited by skill.",
+  "tag.desc.COUNT": "Only limited amount of teams can register.",
+  "tag.desc.LAN": "This event is played locally.",
+  "tag.desc.QUALIFIER": "This tournament is a qualifier for another event."
 }
