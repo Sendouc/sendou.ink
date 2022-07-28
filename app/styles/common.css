@@ -486,7 +486,7 @@ dialog::backdrop {
 .calendar__event__tags {
   display: flex;
   padding: 0;
-  color: var(--button-text);
+  color: var(--black-text);
   font-size: var(--fonts-xxs);
   font-weight: var(--semi-bold);
   list-style: none;

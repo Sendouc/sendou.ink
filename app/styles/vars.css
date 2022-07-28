@@ -11,6 +11,7 @@
   --button-text: rgb(255 255 255 / 85%);
   --button-text-transparent: rgb(0 0 0 / 65%);
   --text: rgb(0 0 0 / 95%);
+  --black-text: rgb(0 0 0 / 95%);
   --text-lighter: rgb(75 75 75 / 95%);
   --theme-error: rgb(199 13 6);
   --theme-error-transparent: rgba(199 13 6 / 75%);
@@ -82,6 +83,7 @@
     --button-text: rgb(0 0 0 / 85%);
     --button-text-transparent: rgb(0 0 0 / 65%);
     --text: rgb(255 255 255 / 95%);
+    --black-text: rgb(0 0 0 / 95%);
     --text-lighter: rgb(255 255 255 / 55%);
     --theme-error: rgb(219 70 65);
     --theme-error-transparent: rgba(219 70 65 / 75%);
