@@ -1,6 +1,12 @@
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { sql } from "../sql";
-import type { CalendarEvent, CalendarEventDate, User, Badge } from "../types";
+import type {
+  CalendarEvent,
+  CalendarEventDate,
+  User,
+  Badge,
+  CalendarEventTag,
+} from "../types";
 
 const findAllBetweenTwoTimestampsStm = sql.prepare(`
   select
@@ -37,7 +43,7 @@ function addTagArray<
   T extends { hasBadge: number; tags?: CalendarEvent["tags"] }
 >(arg: T) {
   const { hasBadge, ...row } = arg;
-  const tags = (row.tags ? row.tags.split(",") : []) as Array<"BADGE_PRIZE">;
+  const tags = (row.tags ? row.tags.split(",") : []) as Array<CalendarEventTag>;
 
   if (hasBadge) tags.push("BADGE_PRIZE");
 
