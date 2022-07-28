@@ -74,7 +74,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   return json({
     currentWeek,
     displayedWeek,
-    nearbyStartTimes: db.calendar.startTimesOfRange({
+    nearbyStartTimes: db.calendarEvents.startTimesOfRange({
       startTime: subMonths(
         weekNumberToDate({ week: displayedWeek, year: displayedYear }),
         1
@@ -114,7 +114,7 @@ function fetchEventsOfWeek(args: { week: number; year: number }) {
   // so we get all events of sunday even from US west coast perspective
   endTime.setHours(endTime.getHours() + 12);
 
-  return db.calendar.findAllBetweenTwoTimestamps({ startTime, endTime });
+  return db.calendarEvents.findAllBetweenTwoTimestamps({ startTime, endTime });
 }
 
 export default function CalendarPage() {

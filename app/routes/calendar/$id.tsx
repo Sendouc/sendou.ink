@@ -31,11 +31,11 @@ export const loader = ({ params }: LoaderArgs) => {
   const parsedParams = z
     .object({ id: z.preprocess(actualNumber, id) })
     .parse(params);
-  const event = notFoundIfFalsy(db.calendar.findById(parsedParams.id));
+  const event = notFoundIfFalsy(db.calendarEvents.findById(parsedParams.id));
 
   return json({
     event,
-    badgePrizes: db.calendar.findBadgesById(parsedParams.id),
+    badgePrizes: db.calendarEvents.findBadgesById(parsedParams.id),
   });
 };
 

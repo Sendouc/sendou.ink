@@ -23,5 +23,5 @@ Calendar
 - [x] Maybe classNames that do nothing on calendar event page?
 - [ ] refactor global.css/common.css -> variables.css / utils.css / common.css
 - [ ] addTagArray get tags type from constant
-- [ ] Rename model events -> calendarEvents
+- [x] Rename model events -> calendarEvents
 - [x] On the event page should not say Day 1 if only one day
