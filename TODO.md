@@ -11,7 +11,6 @@ Calendar
   - [ ] Different fields to submit depending on if future date or past date
 - [ ] Edit page (add winners this way)
 - [ ] Winners on the event info page
-- [ ] Add "playerCount" to Tournament table
 - [ ] There should be a banner on the list page if you have past tournaments to report
 - [ ] On the user page tab showing past results
 - [ ] Translations

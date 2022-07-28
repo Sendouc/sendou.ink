@@ -9,6 +9,7 @@ module.exports.up = function (db) {
       "discordUrl" text,
       "bracketUrl" text,
       "participantCount" integer,
+      "tags" text,
       foreign key ("authorId") references "User"("id") on delete restrict
     ) strict
     `

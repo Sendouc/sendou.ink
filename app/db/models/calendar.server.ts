@@ -2,12 +2,12 @@ import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { sql } from "../sql";
 import type { CalendarEvent, CalendarEventDate, User } from "../types";
 
-// xxx: TODO: add tags
 const findAllBetweenTwoTimestampsStm = sql.prepare(`
   select
     "CalendarEvent"."name",
     "CalendarEvent"."discordUrl",
     "CalendarEvent"."bracketUrl",
+    "CalendarEvent"."tags",
     "CalendarEventDate"."id",
     "CalendarEventDate"."eventId",
     "CalendarEventDate"."startTime",
