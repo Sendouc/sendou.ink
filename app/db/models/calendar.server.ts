@@ -67,7 +67,7 @@ const findByIdStm = sql.prepare(`
 `);
 
 export function findById(id: CalendarEvent["id"]) {
-  const rows = findByIdStm.all({ id }) as Array<
+  const [firstRow, ...rest] = findByIdStm.all({ id }) as Array<
     Pick<CalendarEvent, "name" | "description" | "discordUrl" | "bracketUrl"> &
       Pick<CalendarEventDate, "startTime" | "eventId"> &
       Pick<
@@ -76,11 +76,11 @@ export function findById(id: CalendarEvent["id"]) {
       >
   >;
 
-  if (rows.length === 0) return null;
+  if (!firstRow) return null;
 
   return {
-    ...rows[0],
-    startTimes: rows.map((row) => row.startTime),
+    ...firstRow,
+    startTimes: [firstRow, ...rest].map((row) => row.startTime),
     startTime: undefined,
   };
 }
