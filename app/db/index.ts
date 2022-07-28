@@ -9,6 +9,5 @@ export const db = {
   plusSuggestions,
   plusVotes,
   badges,
-  // xxx: rename to events.... or calendarEvents?
   calendar,
 };

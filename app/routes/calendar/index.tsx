@@ -123,7 +123,6 @@ export default function CalendarPage() {
   );
 }
 
-// xxx: overflows on mobile -> make it so that opaque blocks don't take space or are "allowed" to overflow?
 function WeekLinks() {
   const data = useLoaderData<typeof loader>();
   const isMounted = useIsMounted();

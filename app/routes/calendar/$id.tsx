@@ -35,10 +35,6 @@ export default function CalendarEventPage() {
   const { i18n } = useTranslation();
   const isMounted = useIsMounted();
 
-  // xxx: should not say day 1 if we only have one day
-  // -> implement badges
-  // -> implement tags
-
   return (
     <Main className="stack lg">
       <section className="stack sm">

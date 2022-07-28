@@ -385,7 +385,5 @@ function calendarEvents() {
           startTime: dateToDatabaseTimestamp(startTime),
         });
     }
-
-    // xxx: 20% of cases have 1-2 badge prizes
   }
 }
