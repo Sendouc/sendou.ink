@@ -8,7 +8,8 @@ Calendar
 - [x] Implement badge prizes
 - [x] Implement tags
 - [x] Add initial tags.json
-- [ ] Add tags to the seed
+- [x] Add tags to the seed
+- [ ] Tags should be clickable and apply a filter (also many tags)
 - [ ] Page to add a new event
   - [ ] Different fields to submit depending on if future date or past date
 - [ ] Edit page (add winners this way)

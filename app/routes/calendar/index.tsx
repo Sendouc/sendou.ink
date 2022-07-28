@@ -301,7 +301,7 @@ function EventsList() {
                             From {discordFullName(calendarEvent)}
                           </div>
                         </div>
-                        <div className="stack sm">
+                        <div className="stack xs">
                           <Link to={String(calendarEvent.eventId)}>
                             <h2 className="calendar__event__title">
                               {calendarEvent.name}{" "}

@@ -11,6 +11,7 @@ import { ADMIN_DISCORD_ID } from "~/constants";
 import shuffle from "just-shuffle";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import capitalize from "just-capitalize";
+import allTags from "~/routes/calendar/tags.json";
 
 const ADMIN_TEST_AVATAR = "e424e1ba50d2019fdc4730d261e56c55";
 
@@ -320,6 +321,8 @@ function calendarEvents() {
     .map((u) => u.id);
 
   for (let id = 1; id <= AMOUNT_OF_CALENDAR_EVENTS; id++) {
+    const tags = shuffle(Object.keys(allTags));
+
     sql
       .prepare(
         `
@@ -329,14 +332,16 @@ function calendarEvents() {
         "description",
         "discordUrl",
         "bracketUrl",
-        "authorId"
+        "authorId",
+        "tags"
       ) values (
         $id,
         $name,
         $description,
         $discordUrl,
         $bracketUrl,
-        $authorId
+        $authorId,
+        $tags
       )
       `
       )
@@ -349,6 +354,17 @@ function calendarEvents() {
         discordUrl: faker.internet.url(),
         bracketUrl: faker.internet.url(),
         authorId: userIds.pop(),
+        tags:
+          Math.random() > 0.2
+            ? tags
+                .slice(
+                  0,
+                  faker.helpers.arrayElement([
+                    1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 4, 5, 6,
+                  ])
+                )
+                .join(",")
+            : null,
       });
 
     const twoDayEvent = Math.random() > 0.9;

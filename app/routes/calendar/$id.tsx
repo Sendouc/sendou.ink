@@ -75,7 +75,7 @@ export default function CalendarEventPage() {
           ))}
         </div>
         <div className="stack md">
-          <div>
+          <div className="stack xs">
             <h2>{event.name}</h2>
             <Tags tags={event.tags} />
           </div>

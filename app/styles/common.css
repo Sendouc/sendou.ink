@@ -485,10 +485,13 @@ dialog::backdrop {
 
 .calendar__event__tags {
   display: flex;
+  max-width: 18rem;
+  flex-wrap: wrap;
   padding: 0;
   color: var(--black-text);
   font-size: var(--fonts-xxs);
   font-weight: var(--semi-bold);
+  gap: var(--s-1);
   list-style: none;
 }
 
