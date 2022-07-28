@@ -17,6 +17,7 @@ import * as React from "react";
 import { Tags } from "./components/Tags";
 import { Badge } from "~/components/Badge";
 import allTags from "./tags.json";
+import clsx from "clsx";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -49,7 +50,13 @@ export default function CalendarEventPage() {
         <div className="event__times">
           {event.startTimes.map((startTime, i) => (
             <React.Fragment key={startTime}>
-              <span className="event__day">Day {i + 1}</span>
+              <span
+                className={clsx("event__day", {
+                  hidden: event.startTimes.length === 1,
+                })}
+              >
+                Day {i + 1}
+              </span>
               <time dateTime={databaseTimestampToDate(startTime).toISOString()}>
                 {isMounted
                   ? databaseTimestampToDate(startTime).toLocaleDateString(

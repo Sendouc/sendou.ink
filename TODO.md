@@ -5,8 +5,9 @@ Calendar
 ## Features
 
 - [x] Add badges to the seed
-- [ ] Implement badge prizes
-- [ ] Implement tags
+- [x] Implement badge prizes
+- [x] Implement tags
+- [ ] Add initial tags.json
 - [ ] Page to add a new event
   - [ ] Different fields to submit depending on if future date or past date
 - [ ] Edit page (add winners this way)
@@ -23,4 +24,4 @@ Calendar
 - [ ] refactor global.css/common.css -> variables.css / utils.css / common.css
 - [ ] addTagArray get tags type from constant
 - [ ] Rename model events -> calendarEvents
-- [ ] On the event page should not say Day 1 if only one day
+- [x] On the event page should not say Day 1 if only one day
