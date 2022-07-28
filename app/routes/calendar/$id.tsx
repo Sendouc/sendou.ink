@@ -14,6 +14,7 @@ import styles from "~/styles/calendar-event.css";
 import { Avatar } from "~/components/Avatar";
 import { discordFullName } from "~/utils/strings";
 import * as React from "react";
+import { Tags } from "./components/Tags";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -59,31 +60,36 @@ export default function CalendarEventPage() {
             </React.Fragment>
           ))}
         </div>
-        <h2>{event.name}</h2>
-        {event.discordUrl || event.bracketUrl ? (
-          <div className="stack horizontal sm">
-            {event.discordUrl ? (
-              <LinkButton
-                to={event.discordUrl}
-                variant="outlined"
-                tiny
-                isExternal
-              >
-                Discord
-              </LinkButton>
-            ) : null}
-            {event.bracketUrl ? (
-              <LinkButton
-                to={event.bracketUrl}
-                variant="outlined"
-                tiny
-                isExternal
-              >
-                {resolveBaseUrl(event.bracketUrl)}
-              </LinkButton>
-            ) : null}
+        <div className="stack md">
+          <div>
+            <h2>{event.name}</h2>
+            <Tags tags={event.tags} />
           </div>
-        ) : null}
+          {event.discordUrl || event.bracketUrl ? (
+            <div className="stack horizontal sm">
+              {event.discordUrl ? (
+                <LinkButton
+                  to={event.discordUrl}
+                  variant="outlined"
+                  tiny
+                  isExternal
+                >
+                  Discord
+                </LinkButton>
+              ) : null}
+              {event.bracketUrl ? (
+                <LinkButton
+                  to={event.bracketUrl}
+                  variant="outlined"
+                  tiny
+                  isExternal
+                >
+                  {resolveBaseUrl(event.bracketUrl)}
+                </LinkButton>
+              ) : null}
+            </div>
+          ) : null}
+        </div>
       </section>
       <div className="stack sm">
         <div className="event__author">

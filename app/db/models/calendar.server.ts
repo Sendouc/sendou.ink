@@ -71,6 +71,11 @@ const findByIdStm = sql.prepare(`
     "CalendarEvent"."description",
     "CalendarEvent"."discordUrl",
     "CalendarEvent"."bracketUrl",
+    "CalendarEvent"."tags",
+    exists (select 1 
+      from "CalendarEventBadge" 
+      where "badgeId" = "CalendarEventDate"."eventId"
+    ) as "hasBadge",
     "CalendarEventDate"."startTime",
     "CalendarEventDate"."eventId",
     "User"."discordName",
@@ -86,21 +91,24 @@ const findByIdStm = sql.prepare(`
 
 export function findById(id: CalendarEvent["id"]) {
   const [firstRow, ...rest] = findByIdStm.all({ id }) as Array<
-    Pick<CalendarEvent, "name" | "description" | "discordUrl" | "bracketUrl"> &
+    Pick<
+      CalendarEvent,
+      "name" | "description" | "discordUrl" | "bracketUrl" | "tags"
+    > &
       Pick<CalendarEventDate, "startTime" | "eventId"> &
       Pick<
         User,
         "discordName" | "discordDiscriminator" | "discordId" | "discordAvatar"
-      >
+      > & { hasBadge: number }
   >;
 
   if (!firstRow) return null;
 
-  return {
+  return addTagArray({
     ...firstRow,
     startTimes: [firstRow, ...rest].map((row) => row.startTime),
     startTime: undefined,
-  };
+  });
 }
 
 const startTimesOfRangeStm = sql.prepare(`
