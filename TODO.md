@@ -20,9 +20,8 @@ Calendar
 
 ## Other
 
-- [ ] Avatar (?) can have class attribute in DOM without value
 - [x] flatMap -> React.fragment
-- [ ] Event page layout shift with time not taking space before mount (only if one day)
+- [x] Event page layout shift with time not taking space before mount (only if one day)
 - [x] WeekLinks make opaque blocks not take space on mobile
 - [x] Type problem with Avatar
 - [x] Maybe classNames that do nothing on calendar event page?

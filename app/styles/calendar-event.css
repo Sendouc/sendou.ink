@@ -13,6 +13,10 @@
   grid-template-columns: max-content 1fr;
 }
 
+.event__times > time {
+  height: 1.25rem;
+}
+
 .event__author-badges-container {
   display: flex;
   align-items: flex-end;
