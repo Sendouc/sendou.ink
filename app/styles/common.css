@@ -144,6 +144,9 @@ textarea:not(.plain) {
   overflow-wrap: normal;
   overflow-x: scroll;
   white-space: pre;
+  width: 18rem;
+  max-width: 100%;
+  height: 8rem;
 }
 
 progress {

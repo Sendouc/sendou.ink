@@ -11,6 +11,7 @@ import { z } from "zod";
 import { LinkButton } from "~/components/Button";
 import { db } from "~/db";
 import { useIsMounted } from "~/hooks/useIsMounted";
+import { useUser } from "~/modules/auth";
 import { i18next } from "~/modules/i18n";
 import styles from "~/styles/calendar.css";
 import { joinListToNaturalString } from "~/utils/arrays";
@@ -118,11 +119,17 @@ function fetchEventsOfWeek(args: { week: number; year: number }) {
 }
 
 export default function CalendarPage() {
+  const user = useUser();
   const isMounted = useIsMounted();
 
   return (
     <main className="stack lg">
       <WeekLinks />
+      {user && (
+        <LinkButton to="new" className="calendar__add-new-button">
+          Add new
+        </LinkButton>
+      )}
       {isMounted ? <EventsList /> : <div className="calendar__placeholder" />}
     </main>
   );
