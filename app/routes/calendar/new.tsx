@@ -10,6 +10,7 @@ import styles from "~/styles/calendar-new.css";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 import { TrashIcon } from "~/components/icons/Trash";
+import { Input } from "~/components/Input";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -22,6 +23,7 @@ export default function CalendarNewEventPage() {
         <NameInput />
         <DescriptionTextarea />
         <DatesInput />
+        <DiscordLinkInput />
       </Form>
     </Main>
   );
@@ -30,7 +32,7 @@ export default function CalendarNewEventPage() {
 function NameInput() {
   return (
     <div>
-      <Label htmlFor="country" required>
+      <Label htmlFor="name" required>
         Name
       </Label>
       <input name="name" />
@@ -132,6 +134,15 @@ function DatesInput() {
           </React.Fragment>
         ))}
       </div>
+    </div>
+  );
+}
+
+function DiscordLinkInput() {
+  return (
+    <div className="stack items-start">
+      <Label htmlFor="discord">Discord server link</Label>
+      <Input name="discord" leftAddon="https://discord.gg/" />
     </div>
   );
 }
