@@ -20,6 +20,7 @@ Calendar
 
 ## Other
 
+- [ ] components render twice on state change?
 - [x] flatMap -> React.fragment
 - [x] Event page layout shift with time not taking space before mount (only if one day)
 - [x] WeekLinks make opaque blocks not take space on mobile

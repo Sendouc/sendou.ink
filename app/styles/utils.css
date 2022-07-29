@@ -42,6 +42,10 @@
   margin-inline-start: auto;
 }
 
+.mr-auto {
+  margin-inline-end: auto;
+}
+
 .mx-auto {
   margin: 0 auto;
 }
@@ -60,6 +64,10 @@
 
 .items-center {
   align-items: center;
+}
+
+.items-start {
+  align-items: flex-start;
 }
 
 .justify-center {

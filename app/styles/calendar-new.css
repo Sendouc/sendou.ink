@@ -1,0 +1,9 @@
+.calendar-new__dates-list {
+  display: grid;
+  padding: 0;
+  font-size: var(--fonts-sm);
+  font-weight: var(--semi-bold);
+  gap: var(--s-2);
+  grid-template-columns: max-content max-content 1fr;
+  list-style: none;
+}

@@ -3,8 +3,8 @@
 }
 
 .calendar__add-new-button {
-  margin-inline-start: auto;
   margin-inline-end: var(--s-8);
+  margin-inline-start: auto;
 }
 
 .calendar__weeks {
