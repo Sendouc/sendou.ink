@@ -24,6 +24,9 @@ export default function CalendarNewEventPage() {
         <DescriptionTextarea />
         <DatesInput />
         <DiscordLinkInput />
+        <BracketUrlInput />
+        {/* <TagsAdder /> */}
+        {/* <BadgesAdder /> */}
       </Form>
     </Main>
   );
@@ -141,8 +144,17 @@ function DatesInput() {
 function DiscordLinkInput() {
   return (
     <div className="stack items-start">
-      <Label htmlFor="discord">Discord server link</Label>
-      <Input name="discord" leftAddon="https://discord.gg/" />
+      <Label htmlFor="discordUrl">Discord server invite URL</Label>
+      <Input name="discordUrl" leftAddon="https://discord.gg/" />
+    </div>
+  );
+}
+
+function BracketUrlInput() {
+  return (
+    <div>
+      <Label htmlFor="bracketUrl">Bracket URL</Label>
+      <input name="bracketUrl" type="url" />
     </div>
   );
 }

@@ -20,6 +20,7 @@ Calendar
 
 ## Other
 
+- [ ] Maybe make bracket URL mandatory?
 - [ ] components render twice on state change?
 - [x] flatMap -> React.fragment
 - [x] Event page layout shift with time not taking space before mount (only if one day)
