@@ -104,19 +104,19 @@
   width: max-content;
   height: max-content;
   margin-top: 10rem;
-  margin-right: -12rem;
   backdrop-filter: blur(10px) brightness(75%);
   background-color: var(--bg-lighter);
   background-image: url("/svg/background-pattern.svg");
   border-end-start-radius: var(--rounded);
   border-start-start-radius: var(--rounded);
   overflow-y: auto;
-  transition: margin-right 0.5s;
+  transform: translateX(100%);
+  transition: transform 0.5s;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .layout__menu.expanded {
-  margin-right: 0;
+  transform: none;
 }
 
 .layout__menu__link__icon {
