@@ -4,9 +4,9 @@ import type {
   MetaFunction,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Link, Outlet, useLoaderData } from "@remix-run/react";
+import type { ShouldReloadFunction } from "@remix-run/react";
+import { Link, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
 import clsx from "clsx";
-import * as React from "react";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 import { Avatar } from "~/components/Avatar";
@@ -115,6 +115,11 @@ export interface PlusSuggestionsLoaderData {
   suggestedForTiers: number[];
 }
 
+export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
+  // only reload if form submission not when user changes tabs
+  return Boolean(submission);
+};
+
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await getUser(request);
 
@@ -138,13 +143,13 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function PlusSuggestionsPage() {
   const data = useLoaderData<PlusSuggestionsLoaderData>();
+  const [searchParams, setSearchParams] = useSearchParams();
   const user = useUser();
-  // TODO: this stays undefined when adding first suggestion
-  const [tierVisible, setTierVisible] = React.useState(
-    tierVisibleInitialState(data.suggestions)
-  );
+  const tierVisible = searchParamsToLegalTier(searchParams, data.suggestions);
 
-  useSetSelectedTierForFirstSuggestEffect({ tierVisible, setTierVisible });
+  const handleTierChange = (tier: string) => {
+    setSearchParams({ tier });
+  };
 
   if (!user) {
     return (
@@ -206,7 +211,7 @@ export default function PlusSuggestionsPage() {
                           name="tier"
                           type="radio"
                           checked={tierVisible === tier}
-                          onChange={() => setTierVisible(tier)}
+                          onChange={() => handleTierChange(tier)}
                           data-cy={`plus${tier}-radio`}
                         />
                       </div>
@@ -248,26 +253,27 @@ export default function PlusSuggestionsPage() {
   );
 }
 
+function searchParamsToLegalTier(
+  searchParams: URLSearchParams,
+  suggestions?: plusSuggestions.FindVisibleForUser
+) {
+  const tierFromSearchParams = searchParams.get("tier");
+  if (
+    !tierFromSearchParams ||
+    !suggestions ||
+    !suggestions[tierFromSearchParams]
+  ) {
+    return tierVisibleInitialState(suggestions);
+  }
+
+  return tierFromSearchParams;
+}
+
 function tierVisibleInitialState(
   suggestions?: plusSuggestions.FindVisibleForUser
 ) {
   if (!suggestions || Object.keys(suggestions).length === 0) return;
   return String(Math.min(...Object.keys(suggestions).map(Number)));
-}
-
-function useSetSelectedTierForFirstSuggestEffect({
-  tierVisible,
-  setTierVisible,
-}: {
-  tierVisible?: string;
-  setTierVisible: (tier?: string) => void;
-}) {
-  const data = useLoaderData<PlusSuggestionsLoaderData>();
-  React.useEffect(() => {
-    if (tierVisible) return;
-
-    setTierVisible(tierVisibleInitialState(data.suggestions));
-  }, [data, tierVisible, setTierVisible]);
 }
 
 function SuggestedForInfo({ hideText = false }: { hideText?: boolean }) {
