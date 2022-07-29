@@ -60,7 +60,7 @@ export const action: ActionFunction = async ({ request }) => {
     ...nextNonCompletedVoting(new Date()),
   });
 
-  return redirect(plusSuggestionPage());
+  return redirect(plusSuggestionPage(data.tier));
 };
 
 export default function PlusCommentModalPage() {

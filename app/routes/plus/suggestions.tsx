@@ -221,7 +221,7 @@ export default function PlusSuggestionsPage() {
               {canSuggestNewUserFE({ user, suggestions: data.suggestions }) ? (
                 // TODO: resetScroll={false} https://twitter.com/ryanflorence/status/1527775882797907969
                 <LinkButton
-                  to="new"
+                  to={`new${tierVisible ? `?tier=${tierVisible}` : ""}`}
                   data-cy="new-suggest-button"
                   prefetch="render"
                 >
@@ -366,7 +366,7 @@ function SuggestedUser({
             className="plus__comment-button"
             tiny
             variant="outlined"
-            to={`comment/${tier}/${suggested.suggestedUser.id}`}
+            to={`comment/${tier}/${suggested.suggestedUser.id}?tier=${tier}`}
             data-cy="comment-button"
             prefetch="render"
           >
