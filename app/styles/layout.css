@@ -97,14 +97,13 @@
 }
 
 .layout__menu {
-  position: absolute;
+  position: fixed;
   z-index: 500;
   top: 0;
   right: 0;
   width: max-content;
   height: max-content;
   margin-top: 10rem;
-  backdrop-filter: blur(10px) brightness(75%);
   background-color: var(--bg-lighter);
   background-image: url("/svg/background-pattern.svg");
   border-end-start-radius: var(--rounded);
