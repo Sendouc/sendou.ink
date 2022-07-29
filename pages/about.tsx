@@ -7,11 +7,7 @@ const About = () => {
   return (
     <>
       <MyHead title={t`About`} />
-      This site was made by{" "}
-      <MyLink isExternal href="https://sendou.cc/">
-        Sendou
-      </MyLink>{" "}
-      with help from the people below.
+      This site was made by Sendou with help from the people below.
       <section className="mt-4">
         <MyHeading className="mb-2" size="3xl">
           <Trans>Thanks to</Trans>
