@@ -43,6 +43,10 @@
   padding-inline: var(--s-3);
 }
 
+.main.half-width {
+  max-width: 24rem;
+}
+
 .layout__main {
   padding-block-end: var(--s-32);
 }

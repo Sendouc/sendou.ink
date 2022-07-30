@@ -20,6 +20,7 @@ Calendar
 
 ## Other
 
+- [ ] Sort tags so that they are always in same order
 - [x] Maybe make bracket URL mandatory?
 - [ ] components render twice on state change?
 - [ ] If week has no events show some text + don't show time zone text

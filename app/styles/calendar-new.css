@@ -7,3 +7,7 @@
   grid-template-columns: max-content max-content 1fr;
   list-style: none;
 }
+
+.calendar-new__tags-select {
+  max-width: 10rem;
+}

@@ -2,7 +2,7 @@ import { Form } from "@remix-run/react";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import * as React from "react";
-import type { CalendarEvent } from "~/db/types";
+import type { CalendarEvent, CalendarEventTag } from "~/db/types";
 import { CALENDAR_EVENT_DESCRIPTION_MAX_LENGTH } from "~/constants";
 import { Button } from "~/components/Button";
 import type { LinksFunction } from "@remix-run/node";
@@ -13,21 +13,27 @@ import { TrashIcon } from "~/components/icons/Trash";
 import { Input } from "~/components/Input";
 import { FormMessage } from "~/components/FormMessage";
 import { useIsMounted } from "~/hooks/useIsMounted";
+import allTags from "./tags.json";
+import { Tags } from "./components/Tags";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
+export const handle = {
+  i18n: "calendar",
+};
+
 export default function CalendarNewEventPage() {
   return (
-    <Main>
+    <Main halfWidth>
       <Form className="stack md" method="post">
         <NameInput />
         <DescriptionTextarea />
         <DatesInput />
         <BracketUrlInput />
         <DiscordLinkInput />
-        {/* <TagsAdder /> */}
+        <TagsAdder />
         {/* <BadgesAdder /> */}
       </Form>
     </Main>
@@ -169,6 +175,41 @@ function BracketUrlInput() {
         Bracket URL
       </Label>
       <input name="bracketUrl" type="url" />
+    </div>
+  );
+}
+
+function TagsAdder() {
+  const { t } = useTranslation("calendar");
+  const [tags, setTags] = React.useState<CalendarEventTag[]>([]);
+
+  const tagsForSelect = (
+    Object.keys(allTags) as Array<CalendarEventTag>
+  ).filter((tag) => !tags.includes(tag));
+
+  return (
+    <div className="stack sm">
+      <div>
+        <label htmlFor="tags">Tags</label>
+        <select
+          id="tags"
+          className="calendar-new__tags-select"
+          onChange={(e) =>
+            setTags([...tags, e.target.value as CalendarEventTag])
+          }
+        >
+          <option value="">Choose a tag</option>
+          {tagsForSelect.map((tag) => (
+            <option key={tag} value={tag}>
+              {t(`tag.name.${tag}`)}
+            </option>
+          ))}
+        </select>
+        <FormMessage type="info">
+          &quot;Badge prizes&quot; tag is added automatically if applicable
+        </FormMessage>
+      </div>
+      <Tags tags={tags} />
     </div>
   );
 }
