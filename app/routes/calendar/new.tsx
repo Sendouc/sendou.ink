@@ -2,11 +2,7 @@ import { Form, useLoaderData } from "@remix-run/react";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import * as React from "react";
-import type {
-  Badge as BadgeType,
-  CalendarEvent,
-  CalendarEventTag,
-} from "~/db/types";
+import type { Badge as BadgeType, CalendarEventTag } from "~/db/types";
 import {
   CALENDAR_EVENT_BRACKET_URL_MAX_LENGTH,
   CALENDAR_EVENT_DESCRIPTION_MAX_LENGTH,
@@ -37,6 +33,7 @@ import { requireUser } from "~/modules/auth";
 import { Badge } from "~/components/Badge";
 import { z } from "zod";
 import {
+  actualNumber,
   date,
   falsyToNull,
   id,
@@ -46,6 +43,7 @@ import {
 } from "~/utils/zod";
 import { parseRequestFormData } from "~/utils/remix";
 import {
+  databaseTimestampToDate,
   dateToDatabaseTimestamp,
   dateToYearMonthDayHourMinuteString,
 } from "~/utils/dates";
@@ -60,7 +58,23 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
+// export const meta: MetaFunction = (args) => {
+//   const data = args.data as Nullable<UseDataFunctionReturn<typeof loader>>;
+
+//   if (!data) return {};
+
+//   return {
+//     title: data.title,
+//     description: `${data.events.length} events happening during week ${
+//       data.displayedWeek
+//     } including ${joinListToNaturalString(
+//       data.events.slice(0, 3).map((e) => e.name)
+//     )}`,
+//   };
+// };
+
 const newCalendarEventActionSchema = z.object({
+  eventToEditId: z.preprocess(actualNumber, id.nullish()),
   name: z
     .string()
     .min(CALENDAR_EVENT_NAME_MIN_LENGTH)
@@ -100,8 +114,7 @@ export const action: ActionFunction = async ({ request }) => {
     schema: newCalendarEventActionSchema,
   });
 
-  const createdEventId = db.calendarEvents.create({
-    authorId: user.id,
+  const commonArgs = {
     name: data.name,
     description: data.description,
     startTimes: data.dates.map((date) => dateToDatabaseTimestamp(date)),
@@ -109,9 +122,27 @@ export const action: ActionFunction = async ({ request }) => {
     discordInviteCode: data.discordInviteCode,
     tags: data.tags ? data.tags.join(",") : data.tags,
     badges: data.badges ?? [],
-  });
+  };
+  if (data.eventToEditId) {
+    const eventToEdit = db.calendarEvents.findById(data.eventToEditId);
+    if (eventToEdit?.authorId !== user.id) {
+      throw new Response(null, { status: 401 });
+    }
 
-  return redirect(calendarEventPage(createdEventId));
+    db.calendarEvents.update({
+      eventId: data.eventToEditId,
+      ...commonArgs,
+    });
+
+    return redirect(calendarEventPage(data.eventToEditId));
+  } else {
+    const createdEventId = db.calendarEvents.create({
+      authorId: user.id,
+      ...commonArgs,
+    });
+
+    return redirect(calendarEventPage(createdEventId));
+  }
 };
 
 export const handle = {
@@ -120,16 +151,35 @@ export const handle = {
 
 export const loader = async ({ request }: LoaderArgs) => {
   const user = await requireUser(request);
+  const url = new URL(request.url);
+
+  const eventId = Number(url.searchParams.get("eventId"));
+  const eventToEdit = Number.isNaN(eventId)
+    ? undefined
+    : db.calendarEvents.findById(eventId);
 
   return json({
     managedBadges: db.badges.managedByUserId(user.id),
+    eventToEdit:
+      eventToEdit?.authorId === user.id
+        ? { ...eventToEdit, badges: db.calendarEvents.findBadgesById(eventId) }
+        : undefined,
   });
 };
 
 export default function CalendarNewEventPage() {
+  const { eventToEdit } = useLoaderData<typeof loader>();
+
   return (
     <Main halfWidth>
       <Form className="stack md items-start" method="post">
+        {eventToEdit && (
+          <input
+            type="hidden"
+            name="eventToEditId"
+            value={eventToEdit.eventId}
+          />
+        )}
         <NameInput />
         <DescriptionTextarea />
         <DatesInput />
@@ -146,6 +196,8 @@ export default function CalendarNewEventPage() {
 }
 
 function NameInput() {
+  const { eventToEdit } = useLoaderData<typeof loader>();
+
   return (
     <div>
       <Label htmlFor="name" required>
@@ -156,17 +208,15 @@ function NameInput() {
         required
         minLength={CALENDAR_EVENT_NAME_MIN_LENGTH}
         maxLength={CALENDAR_EVENT_NAME_MAX_LENGTH}
+        defaultValue={eventToEdit?.name}
       />
     </div>
   );
 }
 
-function DescriptionTextarea({
-  initialValue,
-}: {
-  initialValue?: CalendarEvent["description"];
-}) {
-  const [value, setValue] = React.useState(initialValue ?? "");
+function DescriptionTextarea() {
+  const { eventToEdit } = useLoaderData<typeof loader>();
+  const [value, setValue] = React.useState(eventToEdit?.description ?? "");
 
   return (
     <div>
@@ -191,9 +241,15 @@ function DescriptionTextarea({
 }
 
 function DatesInput() {
+  const { eventToEdit } = useLoaderData<typeof loader>();
   const { i18n } = useTranslation();
   const [dateInputValue, setDateInputValue] = React.useState<string>();
-  const [dates, setDates] = React.useState<{ date: Date; id: string }[]>([]);
+  const [dates, setDates] = React.useState(
+    (eventToEdit?.startTimes ?? []).map((startTime) => ({
+      date: databaseTimestampToDate(startTime),
+      id: String(Math.random()),
+    }))
+  );
   const isMounted = useIsMounted();
 
   const usersTimeZone = isMounted
@@ -249,23 +305,27 @@ function DatesInput() {
           {dates.map(({ date, id }, i) => (
             <React.Fragment key={id}>
               <div
-                className={clsx("text-lighter", { hidden: dates.length === 1 })}
+                className={clsx("text-lighter", {
+                  hidden: dates.length === 1,
+                })}
               >
                 Day {i + 1}
               </div>
-              <div>
-                {date.toLocaleTimeString(i18n.language, {
-                  hour: "numeric",
-                  minute: "numeric",
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                  weekday: "long",
-                })}
+              <div className={clsx({ invisible: !isMounted })}>
+                {isMounted
+                  ? date.toLocaleTimeString(i18n.language, {
+                      hour: "numeric",
+                      minute: "numeric",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                      weekday: "long",
+                    })
+                  : "T"}
               </div>
               <Button
                 onClick={() => setDates(dates.filter((date) => date.id !== id))}
-                className="mr-auto"
+                className={clsx("mr-auto", { invisible: !isMounted })}
                 icon={<TrashIcon />}
                 variant="minimal-destructive"
                 aria-label="Remove date"
@@ -278,20 +338,9 @@ function DatesInput() {
   );
 }
 
-function DiscordLinkInput() {
-  return (
-    <div className="stack items-start">
-      <Label htmlFor="discordInviteCode">Discord server invite URL</Label>
-      <Input
-        name="discordInviteCode"
-        leftAddon="https://discord.gg/"
-        maxLength={CALENDAR_EVENT_DISCORD_INVITE_CODE_MAX_LENGTH}
-      />
-    </div>
-  );
-}
-
 function BracketUrlInput() {
+  const { eventToEdit } = useLoaderData<typeof loader>();
+
   return (
     <div>
       <Label htmlFor="bracketUrl" required>
@@ -302,19 +351,39 @@ function BracketUrlInput() {
         type="url"
         required
         maxLength={CALENDAR_EVENT_BRACKET_URL_MAX_LENGTH}
+        defaultValue={eventToEdit?.bracketUrl}
+      />
+    </div>
+  );
+}
+
+function DiscordLinkInput() {
+  const { eventToEdit } = useLoaderData<typeof loader>();
+
+  return (
+    <div className="stack items-start">
+      <Label htmlFor="discordInviteCode">Discord server invite URL</Label>
+      <Input
+        name="discordInviteCode"
+        leftAddon="https://discord.gg/"
+        maxLength={CALENDAR_EVENT_DISCORD_INVITE_CODE_MAX_LENGTH}
+        defaultValue={eventToEdit?.discordInviteCode ?? undefined}
       />
     </div>
   );
 }
 
 function TagsAdder() {
+  const { eventToEdit } = useLoaderData<typeof loader>();
   const { t } = useTranslation("calendar");
-  const [tags, setTags] = React.useState<CalendarEventTag[]>([]);
+  const [tags, setTags] = React.useState(
+    (eventToEdit?.tags ?? []) as Array<CalendarEventTag>
+  );
   const id = React.useId();
 
   const tagsForSelect = (
     Object.keys(allTags) as Array<CalendarEventTag>
-  ).filter((tag) => !tags.includes(tag));
+  ).filter((tag) => !tags.includes(tag) && tag !== "BADGE");
 
   return (
     <div className="stack sm">
@@ -349,8 +418,9 @@ function TagsAdder() {
 }
 
 function BadgesAdder() {
+  const { eventToEdit } = useLoaderData<typeof loader>();
   const { managedBadges } = useLoaderData<typeof loader>();
-  const [badges, setBadges] = React.useState<BadgeType[]>([]);
+  const [badges, setBadges] = React.useState(eventToEdit?.badges ?? []);
   const id = React.useId();
 
   if (managedBadges.length === 0) return null;

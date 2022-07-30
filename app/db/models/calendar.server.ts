@@ -27,6 +27,16 @@ const createStm = sql.prepare(`
   ) returning *
 `);
 
+const updateStm = sql.prepare(`
+  update "CalendarEvent" set
+    "name" = $name,
+    "tags" = $tags,
+    "description" = $description,
+    "discordInviteCode" = $discordInviteCode,
+    "bracketUrl" = $bracketUrl
+  where "id" = $eventId
+`);
+
 const createDateStm = sql.prepare(`
   insert into "CalendarEventDate" (
     "eventId",
@@ -38,6 +48,11 @@ const createDateStm = sql.prepare(`
   )
 `);
 
+const deleteDatesByEventIdStm = sql.prepare(`
+  delete from "CalendarEventDate"
+  where "eventId" = $eventId
+`);
+
 const createBadgeStm = sql.prepare(`
   insert into "CalendarEventBadge" (
     "eventId",
@@ -47,6 +62,11 @@ const createBadgeStm = sql.prepare(`
     $eventId,
     $badgeId
   )
+`);
+
+const deleteBadgesByEventIdStm = sql.prepare(`
+  delete from "CalendarEventBadge"
+  where "eventId" = $eventId
 `);
 
 export type CreateArgs = Pick<
@@ -80,6 +100,33 @@ export const create = sql.transaction(
     }
 
     return createdEvent.id;
+  }
+);
+
+export const update = sql.transaction(
+  ({
+    startTimes,
+    badges,
+    eventId,
+    ...calendarEventArgs
+  }: Omit<CreateArgs, "authorId"> & { eventId: CalendarEvent["id"] }) => {
+    updateStm.run({ ...calendarEventArgs, eventId });
+
+    deleteDatesByEventIdStm.run({ eventId });
+    for (const startTime of startTimes) {
+      createDateStm.run({
+        eventId,
+        startTime,
+      });
+    }
+
+    deleteBadgesByEventIdStm.run({ eventId });
+    for (const badgeId of badges) {
+      createBadgeStm.run({
+        eventId,
+        badgeId,
+      });
+    }
   }
 );
 
@@ -150,9 +197,11 @@ const findByIdStm = sql.prepare(`
   select
     "CalendarEvent"."name",
     "CalendarEvent"."description",
+    "CalendarEvent"."discordInviteCode",
     "CalendarEvent"."discordUrl",
     "CalendarEvent"."bracketUrl",
     "CalendarEvent"."tags",
+    "User"."id" as "authorId",
     exists (select 1 
       from "CalendarEventBadge" 
       where "CalendarEventBadge"."eventId" = "CalendarEventDate"."eventId"
@@ -174,7 +223,13 @@ export function findById(id: CalendarEvent["id"]) {
   const [firstRow, ...rest] = findByIdStm.all({ id }) as Array<
     Pick<
       CalendarEvent,
-      "name" | "description" | "discordUrl" | "bracketUrl" | "tags"
+      | "name"
+      | "description"
+      | "discordUrl"
+      | "discordInviteCode"
+      | "bracketUrl"
+      | "tags"
+      | "authorId"
     > &
       Pick<CalendarEventDate, "startTime" | "eventId"> &
       Pick<

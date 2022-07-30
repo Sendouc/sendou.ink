@@ -20,6 +20,8 @@ Calendar
 
 ## Other
 
+- [ ] Tags selector can remove
+- [ ] Calendar new title
 - [ ] Sort tags so that they are always in same order
 - [x] Maybe make bracket URL mandatory?
 - [ ] components render twice on state change?
