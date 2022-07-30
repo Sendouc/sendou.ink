@@ -79,30 +79,26 @@ export default function CalendarEventPage() {
             <h2>{event.name}</h2>
             <Tags tags={event.tags} />
           </div>
-          {event.discordUrl || event.bracketUrl ? (
-            <div className="stack horizontal sm">
-              {event.discordUrl ? (
-                <LinkButton
-                  to={event.discordUrl}
-                  variant="outlined"
-                  tiny
-                  isExternal
-                >
-                  Discord
-                </LinkButton>
-              ) : null}
-              {event.bracketUrl ? (
-                <LinkButton
-                  to={event.bracketUrl}
-                  variant="outlined"
-                  tiny
-                  isExternal
-                >
-                  {resolveBaseUrl(event.bracketUrl)}
-                </LinkButton>
-              ) : null}
-            </div>
-          ) : null}
+          <div className="stack horizontal sm">
+            {event.discordUrl ? (
+              <LinkButton
+                to={event.discordUrl}
+                variant="outlined"
+                tiny
+                isExternal
+              >
+                Discord
+              </LinkButton>
+            ) : null}
+            <LinkButton
+              to={event.bracketUrl}
+              variant="outlined"
+              tiny
+              isExternal
+            >
+              {resolveBaseUrl(event.bracketUrl)}
+            </LinkButton>
+          </div>
         </div>
       </section>
       <div className="stack sm">

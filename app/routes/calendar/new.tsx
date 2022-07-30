@@ -25,8 +25,8 @@ export default function CalendarNewEventPage() {
         <NameInput />
         <DescriptionTextarea />
         <DatesInput />
-        <DiscordLinkInput />
         <BracketUrlInput />
+        <DiscordLinkInput />
         {/* <TagsAdder /> */}
         {/* <BadgesAdder /> */}
       </Form>
@@ -165,7 +165,9 @@ function DiscordLinkInput() {
 function BracketUrlInput() {
   return (
     <div>
-      <Label htmlFor="bracketUrl">Bracket URL</Label>
+      <Label htmlFor="bracketUrl" required>
+        Bracket URL
+      </Label>
       <input name="bracketUrl" type="url" />
     </div>
   );

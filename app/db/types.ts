@@ -86,7 +86,7 @@ export interface CalendarEvent {
   tags?: string;
   description: string | null;
   discordUrl: string | null;
-  bracketUrl: string | null;
+  bracketUrl: string;
   participantCount: number | null;
 }
 

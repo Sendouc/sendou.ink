@@ -332,31 +332,26 @@ function EventsList() {
                             <Tags tags={calendarEvent.tags} />
                           </div>
                         </div>
-                        {calendarEvent.discordUrl ||
-                        calendarEvent.bracketUrl ? (
-                          <div className="calendar__event__bottom-info-container">
-                            {calendarEvent.discordUrl ? (
-                              <LinkButton
-                                to={calendarEvent.discordUrl}
-                                variant="outlined"
-                                tiny
-                                isExternal
-                              >
-                                Discord
-                              </LinkButton>
-                            ) : null}
-                            {calendarEvent.bracketUrl ? (
-                              <LinkButton
-                                to={calendarEvent.bracketUrl}
-                                variant="outlined"
-                                tiny
-                                isExternal
-                              >
-                                {resolveBaseUrl(calendarEvent.bracketUrl)}
-                              </LinkButton>
-                            ) : null}
-                          </div>
-                        ) : null}
+                        <div className="calendar__event__bottom-info-container">
+                          {calendarEvent.discordUrl ? (
+                            <LinkButton
+                              to={calendarEvent.discordUrl}
+                              variant="outlined"
+                              tiny
+                              isExternal
+                            >
+                              Discord
+                            </LinkButton>
+                          ) : null}
+                          <LinkButton
+                            to={calendarEvent.bracketUrl}
+                            variant="outlined"
+                            tiny
+                            isExternal
+                          >
+                            {resolveBaseUrl(calendarEvent.bracketUrl)}
+                          </LinkButton>
+                        </div>
                       </section>
                       {i < events.length - 1 ? (
                         <hr className="calendar__event__divider" />

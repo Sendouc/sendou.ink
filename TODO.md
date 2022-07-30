@@ -20,7 +20,7 @@ Calendar
 
 ## Other
 
-- [ ] Maybe make bracket URL mandatory?
+- [x] Maybe make bracket URL mandatory?
 - [ ] components render twice on state change?
 - [ ] If week has no events show some text + don't show time zone text
 - [x] flatMap -> React.fragment
