@@ -1,11 +1,15 @@
-import { Form } from "@remix-run/react";
+import { Form, useLoaderData } from "@remix-run/react";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import * as React from "react";
-import type { CalendarEvent, CalendarEventTag } from "~/db/types";
+import type {
+  Badge as BadgeType,
+  CalendarEvent,
+  CalendarEventTag,
+} from "~/db/types";
 import { CALENDAR_EVENT_DESCRIPTION_MAX_LENGTH } from "~/constants";
 import { Button } from "~/components/Button";
-import type { LinksFunction } from "@remix-run/node";
+import { json, type LinksFunction, type LoaderArgs } from "@remix-run/node";
 import styles from "~/styles/calendar-new.css";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
@@ -15,6 +19,9 @@ import { FormMessage } from "~/components/FormMessage";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import allTags from "./tags.json";
 import { Tags } from "./components/Tags";
+import { db } from "~/db";
+import { requireUser } from "~/modules/auth";
+import { Badge } from "~/components/Badge";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -24,17 +31,28 @@ export const handle = {
   i18n: "calendar",
 };
 
+export const loader = async ({ request }: LoaderArgs) => {
+  const user = await requireUser(request);
+
+  return json({
+    managedBadges: db.badges.managedByUserId(user.id),
+  });
+};
+
 export default function CalendarNewEventPage() {
   return (
     <Main halfWidth>
-      <Form className="stack md" method="post">
+      <Form className="stack md items-start" method="post">
         <NameInput />
         <DescriptionTextarea />
         <DatesInput />
         <BracketUrlInput />
         <DiscordLinkInput />
         <TagsAdder />
-        {/* <BadgesAdder /> */}
+        <BadgesAdder />
+        <Button type="submit" className="mt-4">
+          Submit
+        </Button>
       </Form>
     </Main>
   );
@@ -46,7 +64,7 @@ function NameInput() {
       <Label htmlFor="name" required>
         Name
       </Label>
-      <input name="name" />
+      <input name="name" required />
     </div>
   );
 }
@@ -174,7 +192,7 @@ function BracketUrlInput() {
       <Label htmlFor="bracketUrl" required>
         Bracket URL
       </Label>
-      <input name="bracketUrl" type="url" />
+      <input name="bracketUrl" type="url" required />
     </div>
   );
 }
@@ -193,7 +211,7 @@ function TagsAdder() {
         <label htmlFor="tags">Tags</label>
         <select
           id="tags"
-          className="calendar-new__tags-select"
+          className="calendar-new__select"
           onChange={(e) =>
             setTags([...tags, e.target.value as CalendarEventTag])
           }
@@ -210,6 +228,65 @@ function TagsAdder() {
         </FormMessage>
       </div>
       <Tags tags={tags} />
+    </div>
+  );
+}
+
+function BadgesAdder() {
+  const { managedBadges } = useLoaderData<typeof loader>();
+  const [badges, setBadges] = React.useState<BadgeType[]>([]);
+
+  if (managedBadges.length === 0) return null;
+
+  const handleBadgeDelete = (badgeId: BadgeType["id"]) => {
+    setBadges(badges.filter((badge) => badge.id !== badgeId));
+  };
+
+  const badgesForSelect = managedBadges.filter(
+    (badge) => !badges.some((b) => b.id === badge.id)
+  );
+
+  return (
+    <div className="stack md">
+      <div>
+        <label htmlFor="badges">Badge prizes</label>
+        <select
+          id="badges"
+          className="calendar-new__select"
+          onChange={(e) => {
+            setBadges([
+              ...badges,
+              managedBadges.find(
+                (badge) => badge.id === Number(e.target.value)
+              )!,
+            ]);
+          }}
+        >
+          <option value="">Choose a badge prize</option>
+          {badgesForSelect.map((badge) => (
+            <option key={badge.id} value={badge.id}>
+              {badge.displayName}
+            </option>
+          ))}
+        </select>
+      </div>
+      {badges.length > 0 && (
+        <div className="calendar-new__badges">
+          {badges.map((badge) => (
+            <div className="stack horizontal md items-center" key={badge.id}>
+              <Badge badge={badge} isAnimated size={32} />
+              <span>{badge.displayName}</span>
+              <Button
+                className="ml-auto"
+                onClick={() => handleBadgeDelete(badge.id)}
+                icon={<TrashIcon />}
+                variant="minimal-destructive"
+                aria-label="Remove badge"
+              />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
