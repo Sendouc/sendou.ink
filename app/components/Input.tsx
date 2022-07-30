@@ -2,17 +2,21 @@ import clsx from "clsx";
 
 export function Input({
   name,
-  leftAddon,
   className,
+  minLength,
+  maxLength,
+  leftAddon,
 }: {
   name: string;
-  leftAddon?: string;
   className?: string;
+  minLength?: number;
+  maxLength?: number;
+  leftAddon?: string;
 }) {
   return (
     <div className={clsx("input-container", className)}>
       {leftAddon ? <div className="input-addon">{leftAddon}</div> : null}
-      <input name={name} />
+      <input name={name} minLength={minLength} maxLength={maxLength} />
     </div>
   );
 }

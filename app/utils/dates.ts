@@ -33,3 +33,8 @@ export function weekNumberToDate({
   }
   return result;
 }
+
+/** Returns date as a string with the format YYYY-MM-DDThh:mm */
+export function dateToYearMonthDayHourMinuteString(date: Date) {
+  return date.toISOString().slice(0, 16);
+}

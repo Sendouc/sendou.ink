@@ -7,9 +7,21 @@ import type {
   CalendarEvent,
   CalendarEventTag,
 } from "~/db/types";
-import { CALENDAR_EVENT_DESCRIPTION_MAX_LENGTH } from "~/constants";
+import {
+  CALENDAR_EVENT_BRACKET_URL_MAX_LENGTH,
+  CALENDAR_EVENT_DESCRIPTION_MAX_LENGTH,
+  CALENDAR_EVENT_DISCORD_INVITE_CODE_MAX_LENGTH,
+  CALENDAR_EVENT_MAX_AMOUNT_OF_DATES,
+  CALENDAR_EVENT_NAME_MAX_LENGTH,
+  CALENDAR_EVENT_NAME_MIN_LENGTH,
+} from "~/constants";
 import { Button } from "~/components/Button";
-import { json, type LinksFunction, type LoaderArgs } from "@remix-run/node";
+import {
+  json,
+  type ActionFunction,
+  type LinksFunction,
+  type LoaderArgs,
+} from "@remix-run/node";
 import styles from "~/styles/calendar-new.css";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
@@ -22,9 +34,68 @@ import { Tags } from "./components/Tags";
 import { db } from "~/db";
 import { requireUser } from "~/modules/auth";
 import { Badge } from "~/components/Badge";
+import { z } from "zod";
+import {
+  date,
+  falsyToNull,
+  id,
+  processMany,
+  removeDuplicates,
+  safeJSONParse,
+} from "~/utils/zod";
+import { parseRequestFormData } from "~/utils/remix";
+import { dateToYearMonthDayHourMinuteString } from "~/utils/dates";
+
+const MIN_DATE = new Date(Date.UTC(2015, 4, 28));
+
+const MAX_DATE = new Date();
+MAX_DATE.setFullYear(MAX_DATE.getFullYear() + 1);
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
+};
+
+const newCalendarEventActionSchema = z.object({
+  name: z
+    .string()
+    .min(CALENDAR_EVENT_NAME_MIN_LENGTH)
+    .max(CALENDAR_EVENT_NAME_MAX_LENGTH),
+  description: z.preprocess(
+    falsyToNull,
+    z.string().max(CALENDAR_EVENT_DESCRIPTION_MAX_LENGTH).nullable()
+  ),
+  dates: z.preprocess(
+    safeJSONParse,
+    z
+      .array(z.preprocess(date, z.date().min(MIN_DATE).max(MAX_DATE)))
+      .min(1)
+      .max(CALENDAR_EVENT_MAX_AMOUNT_OF_DATES)
+  ),
+  bracketUrl: z.string().url().max(CALENDAR_EVENT_BRACKET_URL_MAX_LENGTH),
+  discordInviteCode: z.preprocess(
+    falsyToNull,
+    z.string().max(CALENDAR_EVENT_DISCORD_INVITE_CODE_MAX_LENGTH).nullable()
+  ),
+  tags: z.preprocess(
+    processMany(safeJSONParse, removeDuplicates),
+    z
+      .array(z.string().refine((val) => Object.keys(allTags).includes(val)))
+      .nullable()
+  ),
+  badges: z.preprocess(
+    processMany(safeJSONParse, removeDuplicates),
+    z.array(id).nullable()
+  ),
+});
+
+export const action: ActionFunction = async ({ request }) => {
+  const user = await requireUser(request);
+  const data = await parseRequestFormData({
+    request,
+    schema: newCalendarEventActionSchema,
+  });
+
+  return null;
 };
 
 export const handle = {
@@ -64,7 +135,12 @@ function NameInput() {
       <Label htmlFor="name" required>
         Name
       </Label>
-      <input name="name" required />
+      <input
+        name="name"
+        required
+        minLength={CALENDAR_EVENT_NAME_MIN_LENGTH}
+        maxLength={CALENDAR_EVENT_NAME_MAX_LENGTH}
+      />
     </div>
   );
 }
@@ -110,6 +186,13 @@ function DatesInput() {
 
   return (
     <div className="stack md items-start">
+      {dates.length > 0 && (
+        <input
+          type="hidden"
+          name="dates"
+          value={JSON.stringify(dates.map(({ date }) => date.getTime()))}
+        />
+      )}
       <div>
         <Label htmlFor="date" required>
           Dates
@@ -120,6 +203,8 @@ function DatesInput() {
             type="datetime-local"
             value={dateInputValue ?? ""}
             onChange={(e) => setDateInputValue(e.target.value)}
+            min={dateToYearMonthDayHourMinuteString(MIN_DATE)}
+            max={dateToYearMonthDayHourMinuteString(MAX_DATE)}
           />
           <Button
             tiny
@@ -181,7 +266,11 @@ function DiscordLinkInput() {
   return (
     <div className="stack items-start">
       <Label htmlFor="discordInviteCode">Discord server invite URL</Label>
-      <Input name="discordInviteCode" leftAddon="https://discord.gg/" />
+      <Input
+        name="discordInviteCode"
+        leftAddon="https://discord.gg/"
+        maxLength={CALENDAR_EVENT_DISCORD_INVITE_CODE_MAX_LENGTH}
+      />
     </div>
   );
 }
@@ -192,7 +281,12 @@ function BracketUrlInput() {
       <Label htmlFor="bracketUrl" required>
         Bracket URL
       </Label>
-      <input name="bracketUrl" type="url" required />
+      <input
+        name="bracketUrl"
+        type="url"
+        required
+        maxLength={CALENDAR_EVENT_BRACKET_URL_MAX_LENGTH}
+      />
     </div>
   );
 }
@@ -200,6 +294,7 @@ function BracketUrlInput() {
 function TagsAdder() {
   const { t } = useTranslation("calendar");
   const [tags, setTags] = React.useState<CalendarEventTag[]>([]);
+  const id = React.useId();
 
   const tagsForSelect = (
     Object.keys(allTags) as Array<CalendarEventTag>
@@ -207,10 +302,15 @@ function TagsAdder() {
 
   return (
     <div className="stack sm">
+      <input
+        type="hidden"
+        name="tags"
+        value={JSON.stringify(tags.length > 0 ? tags : null)}
+      />
       <div>
-        <label htmlFor="tags">Tags</label>
+        <label htmlFor={id}>Tags</label>
         <select
-          id="tags"
+          id={id}
           className="calendar-new__select"
           onChange={(e) =>
             setTags([...tags, e.target.value as CalendarEventTag])
@@ -235,6 +335,7 @@ function TagsAdder() {
 function BadgesAdder() {
   const { managedBadges } = useLoaderData<typeof loader>();
   const [badges, setBadges] = React.useState<BadgeType[]>([]);
+  const id = React.useId();
 
   if (managedBadges.length === 0) return null;
 
@@ -248,10 +349,17 @@ function BadgesAdder() {
 
   return (
     <div className="stack md">
+      <input
+        type="hidden"
+        name="badges"
+        value={JSON.stringify(
+          badges.length > 0 ? badges.map((b) => b.id) : null
+        )}
+      />
       <div>
-        <label htmlFor="badges">Badge prizes</label>
+        <label htmlFor={id}>Badge prizes</label>
         <select
-          id="badges"
+          id={id}
           className="calendar-new__select"
           onChange={(e) => {
             setBadges([
