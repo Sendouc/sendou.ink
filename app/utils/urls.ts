@@ -24,6 +24,7 @@ export const impersonateUrl = (idToLogInAs: number) =>
 export const badgePage = (badgeId: number) => `${BADGES_PAGE}/${badgeId}`;
 export const plusSuggestionPage = (tier?: string | number) =>
   `/plus/suggestions${tier ? `?tier=${tier}` : ""}`;
+export const calendarEventPage = (eventId: number) => `/calendar/${eventId}`;
 
 export const badgeUrl = ({
   code,

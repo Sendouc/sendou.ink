@@ -83,7 +83,7 @@ export interface CalendarEvent {
   id: number;
   name: string;
   authorId: number;
-  tags?: string;
+  tags: string | null;
   description: string | null;
   discordInviteCode: string | null;
   // generated column

@@ -18,6 +18,7 @@ import {
 import { Button } from "~/components/Button";
 import {
   json,
+  redirect,
   type ActionFunction,
   type LinksFunction,
   type LoaderArgs,
@@ -44,7 +45,11 @@ import {
   safeJSONParse,
 } from "~/utils/zod";
 import { parseRequestFormData } from "~/utils/remix";
-import { dateToYearMonthDayHourMinuteString } from "~/utils/dates";
+import {
+  dateToDatabaseTimestamp,
+  dateToYearMonthDayHourMinuteString,
+} from "~/utils/dates";
+import { calendarEventPage } from "~/utils/urls";
 
 const MIN_DATE = new Date(Date.UTC(2015, 4, 28));
 
@@ -95,7 +100,18 @@ export const action: ActionFunction = async ({ request }) => {
     schema: newCalendarEventActionSchema,
   });
 
-  return null;
+  const createdEventId = db.calendarEvents.create({
+    authorId: user.id,
+    name: data.name,
+    description: data.description,
+    startTimes: data.dates.map((date) => dateToDatabaseTimestamp(date)),
+    bracketUrl: data.bracketUrl,
+    discordInviteCode: data.discordInviteCode,
+    tags: data.tags ? data.tags.join(",") : data.tags,
+    badges: data.badges ?? [],
+  });
+
+  return redirect(calendarEventPage(createdEventId));
 };
 
 export const handle = {

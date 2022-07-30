@@ -6,7 +6,82 @@ import type {
   User,
   Badge,
   CalendarEventTag,
+  CalendarEventBadge,
 } from "../types";
+
+const createStm = sql.prepare(`
+  insert into "CalendarEvent" (
+    "name",
+    "authorId",
+    "tags",
+    "description",
+    "discordInviteCode",
+    "bracketUrl"
+  ) values (
+    $name,
+    $authorId,
+    $tags,
+    $description,
+    $discordInviteCode,
+    $bracketUrl
+  ) returning *
+`);
+
+const createDateStm = sql.prepare(`
+  insert into "CalendarEventDate" (
+    "eventId",
+    "startTime"
+  )
+  values (
+    $eventId,
+    $startTime
+  )
+`);
+
+const createBadgeStm = sql.prepare(`
+  insert into "CalendarEventBadge" (
+    "eventId",
+    "badgeId"
+  )
+  values (
+    $eventId,
+    $badgeId
+  )
+`);
+
+export type CreateArgs = Pick<
+  CalendarEvent,
+  | "name"
+  | "authorId"
+  | "tags"
+  | "description"
+  | "discordInviteCode"
+  | "bracketUrl"
+> & {
+  startTimes: Array<CalendarEventDate["startTime"]>;
+  badges: Array<CalendarEventBadge["badgeId"]>;
+};
+export const create = sql.transaction(
+  ({ startTimes, badges, ...calendarEventArgs }: CreateArgs) => {
+    const createdEvent = createStm.get(calendarEventArgs) as CalendarEvent;
+
+    for (const startTime of startTimes) {
+      createDateStm.run({
+        eventId: createdEvent.id,
+        startTime,
+      });
+    }
+
+    for (const badgeId of badges) {
+      createBadgeStm.run({
+        eventId: createdEvent.id,
+        badgeId,
+      });
+    }
+
+    return createdEvent.id;
+  }
+);
 
 const findAllBetweenTwoTimestampsStm = sql.prepare(`
   select
