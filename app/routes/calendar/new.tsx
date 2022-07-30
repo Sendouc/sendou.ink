@@ -180,8 +180,8 @@ function DatesInput() {
 function DiscordLinkInput() {
   return (
     <div className="stack items-start">
-      <Label htmlFor="discordUrl">Discord server invite URL</Label>
-      <Input name="discordUrl" leftAddon="https://discord.gg/" />
+      <Label htmlFor="discordInviteCode">Discord server invite URL</Label>
+      <Input name="discordInviteCode" leftAddon="https://discord.gg/" />
     </div>
   );
 }

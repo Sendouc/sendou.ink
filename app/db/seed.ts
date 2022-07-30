@@ -330,7 +330,7 @@ function calendarEvents() {
         "id",
         "name",
         "description",
-        "discordUrl",
+        "discordInviteCode",
         "bracketUrl",
         "authorId",
         "tags"
@@ -338,7 +338,7 @@ function calendarEvents() {
         $id,
         $name,
         $description,
-        $discordUrl,
+        $discordInviteCode,
         $bracketUrl,
         $authorId,
         $tags
@@ -351,7 +351,7 @@ function calendarEvents() {
           faker.word.noun()
         )}`,
         description: faker.lorem.paragraph(),
-        discordUrl: faker.internet.url(),
+        discordInviteCode: faker.lorem.word(),
         bracketUrl: faker.internet.url(),
         authorId: userIds.pop(),
         tags:

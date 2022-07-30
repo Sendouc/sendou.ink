@@ -7,7 +7,8 @@ module.exports.up = function (db) {
       "authorId" integer not null,
       "bracketUrl" text not null,
       "description" text,
-      "discordUrl" text,
+      "discordInviteCode" text,
+      "discordUrl" text generated always as ('https://discord.gg/' || "discordInviteCode") virtual,
       "participantCount" integer,
       "tags" text,
       foreign key ("authorId") references "User"("id") on delete restrict

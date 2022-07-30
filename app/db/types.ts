@@ -85,6 +85,8 @@ export interface CalendarEvent {
   authorId: number;
   tags?: string;
   description: string | null;
+  discordInviteCode: string | null;
+  // generated column
   discordUrl: string | null;
   bracketUrl: string;
   participantCount: number | null;
