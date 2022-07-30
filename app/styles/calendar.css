@@ -145,3 +145,10 @@
   width: 50rem;
   margin: 0 auto;
 }
+
+.calendar__time-zone-info {
+  color: var(--text-lighter);
+  font-size: var(--fonts-xs);
+  padding-block-end: var(--s-2);
+  text-align: center;
+}

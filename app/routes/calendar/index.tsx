@@ -125,12 +125,24 @@ export default function CalendarPage() {
   return (
     <main className="stack lg">
       <WeekLinks />
-      {user && (
-        <LinkButton to="new" className="calendar__add-new-button">
-          Add new
-        </LinkButton>
-      )}
-      {isMounted ? <EventsList /> : <div className="calendar__placeholder" />}
+      <div className="stack">
+        {user && (
+          <LinkButton to="new" className="calendar__add-new-button" tiny>
+            Add new
+          </LinkButton>
+        )}
+        {isMounted ? (
+          <>
+            <EventsList />
+            <div className="calendar__time-zone-info">
+              All times in your local time zone:{" "}
+              {Intl.DateTimeFormat().resolvedOptions().timeZone}
+            </div>
+          </>
+        ) : (
+          <div className="calendar__placeholder" />
+        )}
+      </div>
     </main>
   );
 }

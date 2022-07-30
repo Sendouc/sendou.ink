@@ -11,8 +11,8 @@ Calendar
 - [x] Add tags to the seed
 - [ ] Tags should be clickable and apply a filter (also many tags)
 - [ ] Page to add a new event
-  - [ ] Different fields to submit depending on if future date or past date
-- [ ] Edit page (add winners this way)
+- [ ] Edit page
+- [ ] Add winners page
 - [ ] Winners on the event info page
 - [ ] There should be a banner on the list page if you have past tournaments to report
 - [ ] On the user page tab showing past results
@@ -22,6 +22,7 @@ Calendar
 
 - [ ] Maybe make bracket URL mandatory?
 - [ ] components render twice on state change?
+- [ ] If week has no events show some text + don't show time zone text
 - [x] flatMap -> React.fragment
 - [x] Event page layout shift with time not taking space before mount (only if one day)
 - [x] WeekLinks make opaque blocks not take space on mobile
