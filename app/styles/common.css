@@ -526,6 +526,13 @@ dialog::backdrop {
   margin-block-start: var(--label-margin);
 }
 
+.info-message {
+  display: block;
+  color: var(--text-lighter);
+  font-size: var(--fonts-xs);
+  margin-block-start: var(--label-margin);
+}
+
 .calendar__event__tags {
   display: flex;
   max-width: 18rem;

@@ -11,6 +11,8 @@ import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 import { TrashIcon } from "~/components/icons/Trash";
 import { Input } from "~/components/Input";
+import { FormMessage } from "~/components/FormMessage";
+import { useIsMounted } from "~/hooks/useIsMounted";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -76,6 +78,11 @@ function DatesInput() {
   const { i18n } = useTranslation();
   const [dateInputValue, setDateInputValue] = React.useState<string>();
   const [dates, setDates] = React.useState<{ date: Date; id: string }[]>([]);
+  const isMounted = useIsMounted();
+
+  const usersTimeZone = isMounted
+    ? Intl.DateTimeFormat().resolvedOptions().timeZone
+    : "";
 
   return (
     <div className="stack md items-start">
@@ -108,35 +115,40 @@ function DatesInput() {
             Add date
           </Button>
         </div>
+        <FormMessage type="info" className={clsx({ invisible: !isMounted })}>
+          Times in your local time zone: {usersTimeZone}
+        </FormMessage>
       </div>
-      <div className="calendar-new__dates-list">
-        {dates.map(({ date, id }, i) => (
-          <React.Fragment key={id}>
-            <div
-              className={clsx("text-lighter", { hidden: dates.length === 1 })}
-            >
-              Day {i + 1}
-            </div>
-            <div>
-              {date.toLocaleTimeString(i18n.language, {
-                hour: "numeric",
-                minute: "numeric",
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                weekday: "long",
-              })}
-            </div>
-            <Button
-              onClick={() => setDates(dates.filter((date) => date.id !== id))}
-              className="mr-auto"
-              icon={<TrashIcon />}
-              variant="minimal-destructive"
-              aria-label="Remove date"
-            />
-          </React.Fragment>
-        ))}
-      </div>
+      {dates.length > 0 && (
+        <div className="calendar-new__dates-list">
+          {dates.map(({ date, id }, i) => (
+            <React.Fragment key={id}>
+              <div
+                className={clsx("text-lighter", { hidden: dates.length === 1 })}
+              >
+                Day {i + 1}
+              </div>
+              <div>
+                {date.toLocaleTimeString(i18n.language, {
+                  hour: "numeric",
+                  minute: "numeric",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  weekday: "long",
+                })}
+              </div>
+              <Button
+                onClick={() => setDates(dates.filter((date) => date.id !== id))}
+                className="mr-auto"
+                icon={<TrashIcon />}
+                variant="minimal-destructive"
+                aria-label="Remove date"
+              />
+            </React.Fragment>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
