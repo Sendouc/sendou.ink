@@ -136,7 +136,7 @@ const findAllBetweenTwoTimestampsStm = sql.prepare(`
     "CalendarEvent"."discordUrl",
     "CalendarEvent"."bracketUrl",
     "CalendarEvent"."tags",
-    "CalendarEventDate"."id",
+    "CalendarEventDate"."id" as "eventDateId",
     "CalendarEventDate"."eventId",
     "CalendarEventDate"."startTime",
     "User"."discordName",
@@ -184,8 +184,9 @@ export function findAllBetweenTwoTimestamps({
     endTime: dateToDatabaseTimestamp(endTime),
   }) as Array<
     Pick<CalendarEvent, "name" | "discordUrl" | "bracketUrl" | "tags"> &
-      Pick<CalendarEventDate, "id" | "eventId" | "startTime"> &
-      Pick<User, "discordName" | "discordDiscriminator"> & {
+      Pick<CalendarEventDate, "eventId" | "startTime"> & {
+        eventDateId: CalendarEventDate["id"];
+      } & Pick<User, "discordName" | "discordDiscriminator"> & {
         nthAppearance: number;
       } & { hasBadge: number }
   >;

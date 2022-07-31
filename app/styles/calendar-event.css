@@ -17,26 +17,6 @@
   height: 1.25rem;
 }
 
-.event__author-badges-container {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-}
-
-.event__badges__container {
-  font-size: var(--fonts-xs);
-  font-weight: var(--semi-bold);
-  text-align: center;
-}
-
-.event__badges__gifs {
-  display: flex;
-  flex-wrap: wrap;
-  padding: var(--s-2);
-  background-color: var(--bg-badge);
-  border-radius: var(--rounded);
-}
-
 .event__author {
   display: flex;
   align-items: center;

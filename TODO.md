@@ -22,6 +22,7 @@ Calendar
 
 ## Other
 
+- [x] badges inside tag?
 - [ ] Move "BADGE" tag resolving to DB?
 - [x] Tags selector can remove
 - [x] Calendar new title

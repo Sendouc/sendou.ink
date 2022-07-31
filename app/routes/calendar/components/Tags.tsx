@@ -1,15 +1,19 @@
+import clsx from "clsx";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { Badge } from "~/components/Badge";
 import { Button } from "~/components/Button";
 import { CrossIcon } from "~/components/icons/Cross";
-import type { CalendarEventTag } from "~/db/types";
+import type { Badge as BadgeType, CalendarEventTag } from "~/db/types";
 import allTags from "../tags.json";
 
 export function Tags({
   tags,
+  badges,
   onDelete,
 }: {
   tags: Array<CalendarEventTag>;
+  badges?: Array<BadgeType>;
   /** Called when tag delete button clicked. If undefined delete buttons won't be shown. */
   onDelete?: (tag: CalendarEventTag) => void;
 }) {
@@ -21,7 +25,10 @@ export function Tags({
     <ul className="calendar__event__tags">
       {tags.map((tag) => (
         <React.Fragment key={tag}>
-          <li style={{ backgroundColor: allTags[tag].color }}>
+          <li
+            style={{ backgroundColor: allTags[tag].color }}
+            className={clsx({ "calendar__event__badge-tag": tag === "BADGE" })}
+          >
             {t(`tag.name.${tag}`)}
             {onDelete && (
               <Button
@@ -33,6 +40,13 @@ export function Tags({
                 tiny
                 data-cy="tag-delete-button"
               />
+            )}
+            {tag === "BADGE" && badges && (
+              <div className="calendar__event__tag-badges">
+                {badges.map((badge) => (
+                  <Badge key={badge.id} badge={badge} size={20} isAnimated />
+                ))}
+              </div>
             )}
           </li>
         </React.Fragment>

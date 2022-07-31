@@ -551,8 +551,17 @@ dialog::backdrop {
   padding-inline: var(--s-1-5);
 }
 
+.calendar__event__badge-tag {
+  color: var(--badge-text);
+}
+
 .calendar__event__tag-delete-button {
   margin-left: auto;
+}
+
+.calendar__event__tag-badges {
+  display: flex;
+  margin-inline-start: var(--s-1);
 }
 
 .calendar__event__tag-delete-button > svg {

@@ -11,7 +11,6 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { Avatar } from "~/components/Avatar";
-import { Badge } from "~/components/Badge";
 import { LinkButton } from "~/components/Button";
 import { Main } from "~/components/Main";
 import { db } from "~/db";
@@ -26,7 +25,6 @@ import { discordFullName, makeTitle } from "~/utils/strings";
 import { calendarEditPage, resolveBaseUrl } from "~/utils/urls";
 import { actualNumber, id } from "~/utils/zod";
 import { Tags } from "./components/Tags";
-import allTags from "./tags.json";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -63,12 +61,12 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 
 export default function CalendarEventPage() {
   const user = useUser();
-  const { event } = useLoaderData<typeof loader>();
+  const { event, badgePrizes } = useLoaderData<typeof loader>();
   const { i18n } = useTranslation();
   const isMounted = useIsMounted();
 
   return (
-    <Main className="stack md">
+    <Main className="stack lg">
       <section className="stack sm">
         <div className="event__times">
           {event.startTimes.map((startTime, i) => (
@@ -100,7 +98,7 @@ export default function CalendarEventPage() {
         <div className="stack md">
           <div className="stack xs">
             <h2>{event.name}</h2>
-            <Tags tags={event.tags} />
+            <Tags tags={event.tags} badges={badgePrizes} />
           </div>
           <div className="stack horizontal sm flex-wrap">
             {event.discordUrl ? (
@@ -130,39 +128,16 @@ export default function CalendarEventPage() {
         </div>
       </section>
       <div className="stack sm">
-        <div className="event__author-badges-container">
-          <div className="event__author">
-            <Avatar
-              discordAvatar={event.discordAvatar}
-              discordId={event.discordId}
-              size="xs"
-            />
-            {discordFullName(event)}
-          </div>
-          <PrizeBadges />
+        <div className="event__author">
+          <Avatar
+            discordAvatar={event.discordAvatar}
+            discordId={event.discordId}
+            size="xs"
+          />
+          {discordFullName(event)}
         </div>
         <div>{event.description}</div>
       </div>
     </Main>
-  );
-}
-
-function PrizeBadges() {
-  const { badgePrizes } = useLoaderData<typeof loader>();
-
-  if (badgePrizes.length === 0) return null;
-
-  return (
-    <div
-      className="event__badges__container"
-      style={{ color: allTags["BADGE"].color }}
-    >
-      Win!
-      <div className="event__badges__gifs">
-        {badgePrizes.map((badge) => (
-          <Badge key={badge.code} badge={badge} size={26} isAnimated />
-        ))}
-      </div>
-    </div>
   );
 }

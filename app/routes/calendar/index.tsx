@@ -115,7 +115,14 @@ function fetchEventsOfWeek(args: { week: number; year: number }) {
   // so we get all events of sunday even from US west coast perspective
   endTime.setHours(endTime.getHours() + 12);
 
-  return db.calendarEvents.findAllBetweenTwoTimestamps({ startTime, endTime });
+  return db.calendarEvents
+    .findAllBetweenTwoTimestamps({ startTime, endTime })
+    .map((event) => ({
+      ...event,
+      badgePrizes: event.tags.includes("BADGE")
+        ? db.calendarEvents.findBadgesById(event.eventId)
+        : [],
+    }));
 }
 
 export default function CalendarPage() {
@@ -290,7 +297,7 @@ function EventsList() {
               <div className="stack md">
                 {events.map((calendarEvent, i) => {
                   return (
-                    <React.Fragment key={calendarEvent.eventId}>
+                    <React.Fragment key={calendarEvent.eventDateId}>
                       <section className="calendar__event main stack md">
                         <div className="stack sm">
                           <div
@@ -329,7 +336,10 @@ function EventsList() {
                                 ) : null}
                               </h2>
                             </Link>
-                            <Tags tags={calendarEvent.tags} />
+                            <Tags
+                              tags={calendarEvent.tags}
+                              badges={calendarEvent.badgePrizes}
+                            />
                           </div>
                         </div>
                         <div className="calendar__event__bottom-info-container">
