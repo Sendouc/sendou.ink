@@ -1,7 +1,27 @@
 import { dateToYearMonthDayHourMinuteString } from "~/utils/dates";
-import { calendarEditPage } from "~/utils/urls";
+import {
+  calendarEditPage,
+  calendarEventPage,
+  CALENDAR_PAGE,
+} from "~/utils/urls";
 
 export {};
+
+describe("Calendar", () => {
+  beforeEach(() => {
+    cy.seed();
+  });
+
+  it("browses weeks and inspects one event page", () => {
+    cy.visit(CALENDAR_PAGE);
+
+    cy.contains("Last").click();
+    cy.getCy("no-events");
+    cy.contains("Next").click();
+    cy.getCy("event-page-link").first().click();
+    cy.getCy("event-description"); // page switched after link click
+  });
+});
 
 describe("New calendar event page", () => {
   beforeEach(() => {
@@ -69,7 +89,9 @@ describe("New calendar event page", () => {
 
   it("edits an event", () => {
     cy.auth(2);
-    cy.visit(calendarEditPage(1));
+
+    cy.visit(calendarEventPage(1));
+    cy.getCy("edit-button").click();
 
     cy.getCy("name-input").clear().type("Edited Event");
 

@@ -120,7 +120,11 @@ export default function CalendarEventPage() {
               {resolveBaseUrl(event.bracketUrl)}
             </LinkButton>
             {canEditCalendarEvent({ user, event }) && (
-              <LinkButton tiny to={calendarEditPage(event.eventId)}>
+              <LinkButton
+                tiny
+                to={calendarEditPage(event.eventId)}
+                data-cy="edit-button"
+              >
                 Edit
               </LinkButton>
             )}
@@ -136,7 +140,7 @@ export default function CalendarEventPage() {
           />
           {discordFullName(event)}
         </div>
-        <div>{event.description}</div>
+        <div data-cy="event-description">{event.description}</div>
       </div>
     </Main>
   );
