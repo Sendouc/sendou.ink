@@ -38,10 +38,10 @@ export async function parseRequestFormData<T extends z.ZodTypeAny>({
   }
 }
 
-/** Asserts condition is truthy. Throws a new `Response` with status code 400 and given message if falsy.  */
+/** Asserts condition is truthy. Throws a new `Response` with given status code if falsy.  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- same format as TS docs: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions
-export function validate(condition: any): asserts condition {
+export function validate(condition: any, status = 400): asserts condition {
   if (condition) return;
 
-  throw new Response(null, { status: 400 });
+  throw new Response(null, { status });
 }

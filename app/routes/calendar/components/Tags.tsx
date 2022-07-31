@@ -1,3 +1,4 @@
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "~/components/Button";
 import { CrossIcon } from "~/components/icons/Cross";
@@ -19,8 +20,8 @@ export function Tags({
   return (
     <ul className="calendar__event__tags">
       {tags.map((tag) => (
-        <>
-          <li key={tag} style={{ backgroundColor: allTags[tag].color }}>
+        <React.Fragment key={tag}>
+          <li style={{ backgroundColor: allTags[tag].color }}>
             {t(`tag.name.${tag}`)}
             {onDelete && (
               <Button
@@ -33,7 +34,7 @@ export function Tags({
               />
             )}
           </li>
-        </>
+        </React.Fragment>
       ))}
     </ul>
   );

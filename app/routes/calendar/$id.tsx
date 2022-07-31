@@ -16,12 +16,14 @@ import { LinkButton } from "~/components/Button";
 import { Main } from "~/components/Main";
 import { db } from "~/db";
 import { useIsMounted } from "~/hooks/useIsMounted";
+import { useUser } from "~/modules/auth";
 import { i18next } from "~/modules/i18n";
+import { canEditCalendarEvent } from "~/permissions";
 import styles from "~/styles/calendar-event.css";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { notFoundIfFalsy } from "~/utils/remix";
 import { discordFullName, makeTitle } from "~/utils/strings";
-import { resolveBaseUrl } from "~/utils/urls";
+import { calendarEditPage, resolveBaseUrl } from "~/utils/urls";
 import { actualNumber, id } from "~/utils/zod";
 import { Tags } from "./components/Tags";
 import allTags from "./tags.json";
@@ -60,12 +62,13 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 };
 
 export default function CalendarEventPage() {
+  const user = useUser();
   const { event } = useLoaderData<typeof loader>();
   const { i18n } = useTranslation();
   const isMounted = useIsMounted();
 
   return (
-    <Main className="stack lg">
+    <Main className="stack md">
       <section className="stack sm">
         <div className="event__times">
           {event.startTimes.map((startTime, i) => (
@@ -99,7 +102,7 @@ export default function CalendarEventPage() {
             <h2>{event.name}</h2>
             <Tags tags={event.tags} />
           </div>
-          <div className="stack horizontal sm">
+          <div className="stack horizontal sm flex-wrap">
             {event.discordUrl ? (
               <LinkButton
                 to={event.discordUrl}
@@ -118,6 +121,11 @@ export default function CalendarEventPage() {
             >
               {resolveBaseUrl(event.bracketUrl)}
             </LinkButton>
+            {canEditCalendarEvent({ user, event }) && (
+              <LinkButton tiny to={calendarEditPage(event.eventId)}>
+                Edit
+              </LinkButton>
+            )}
           </div>
         </div>
       </section>

@@ -42,7 +42,11 @@ import {
   removeDuplicates,
   safeJSONParse,
 } from "~/utils/zod";
-import { parseRequestFormData } from "~/utils/remix";
+import {
+  badRequestIfFalsy,
+  parseRequestFormData,
+  validate,
+} from "~/utils/remix";
 import {
   databaseTimestampToDate,
   dateToDatabaseTimestamp,
@@ -52,6 +56,7 @@ import { calendarEventPage } from "~/utils/urls";
 import { makeTitle } from "~/utils/strings";
 import { i18next } from "~/modules/i18n";
 import type { UseDataFunctionReturn } from "@remix-run/react/dist/components";
+import { canEditCalendarEvent } from "~/permissions";
 
 const MIN_DATE = new Date(Date.UTC(2015, 4, 28));
 
@@ -137,10 +142,10 @@ export const action: ActionFunction = async ({ request }) => {
     badges: data.badges ?? [],
   };
   if (data.eventToEditId) {
-    const eventToEdit = db.calendarEvents.findById(data.eventToEditId);
-    if (eventToEdit?.authorId !== user.id) {
-      throw new Response(null, { status: 401 });
-    }
+    const eventToEdit = badRequestIfFalsy(
+      db.calendarEvents.findById(data.eventToEditId)
+    );
+    validate(canEditCalendarEvent({ user, event: eventToEdit }), 401);
 
     db.calendarEvents.update({
       eventId: data.eventToEditId,

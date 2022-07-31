@@ -74,6 +74,10 @@
   justify-content: center;
 }
 
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
 .all-unset {
   all: unset;
 }

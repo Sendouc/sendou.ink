@@ -9,8 +9,8 @@ Calendar
 - [x] Implement tags
 - [x] Add initial tags.json
 - [x] Add tags to the seed
-- [ ] Page to add a new event
-- [ ] Edit page
+- [x] Page to add a new event
+- [x] Edit page
 - [ ] E2E test form controls (adding/removing date, adding/removing tags) etc.
 - [ ] E2E test browsing events + event page
 - [ ] E2E test adding and editing event
@@ -27,7 +27,7 @@ Calendar
 - [x] Calendar new title
 - [x] Sort tags so that they are always in same order
 - [x] Maybe make bracket URL mandatory?
-- [ ] components render twice on state change?
+- [x] components render twice on state change?
 - [ ] If week has no events show some text + don't show time zone text
 - [x] flatMap -> React.fragment
 - [x] Event page layout shift with time not taking space before mount (only if one day)
