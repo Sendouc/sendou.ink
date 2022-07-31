@@ -213,7 +213,7 @@ export default function CalendarNewEventPage() {
         <DiscordLinkInput />
         <TagsAdder />
         <BadgesAdder />
-        <Button type="submit" className="mt-4">
+        <Button type="submit" className="mt-4" data-cy="submit-button">
           Submit
         </Button>
       </Form>
@@ -235,6 +235,7 @@ function NameInput() {
         minLength={CALENDAR_EVENT_NAME_MIN_LENGTH}
         maxLength={CALENDAR_EVENT_NAME_MAX_LENGTH}
         defaultValue={eventToEdit?.name}
+        data-cy="name-input"
       />
     </div>
   );
@@ -261,6 +262,7 @@ function DescriptionTextarea() {
         value={value}
         onChange={(e) => setValue(e.target.value)}
         maxLength={CALENDAR_EVENT_DESCRIPTION_MAX_LENGTH}
+        data-cy="description-textarea"
       />
     </div>
   );
@@ -381,6 +383,7 @@ function BracketUrlInput() {
         required
         maxLength={CALENDAR_EVENT_BRACKET_URL_MAX_LENGTH}
         defaultValue={eventToEdit?.bracketUrl}
+        data-cy="bracket-url-input"
       />
     </div>
   );
@@ -397,6 +400,7 @@ function DiscordLinkInput() {
         leftAddon="https://discord.gg/"
         maxLength={CALENDAR_EVENT_DISCORD_INVITE_CODE_MAX_LENGTH}
         defaultValue={eventToEdit?.discordInviteCode ?? undefined}
+        data-cy="discord-invite-code-input"
       />
     </div>
   );

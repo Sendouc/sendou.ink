@@ -7,6 +7,7 @@ export function Input({
   maxLength,
   defaultValue,
   leftAddon,
+  "data-cy": dataCy,
 }: {
   name: string;
   className?: string;
@@ -14,6 +15,7 @@ export function Input({
   maxLength?: number;
   defaultValue?: string;
   leftAddon?: string;
+  "data-cy"?: string;
 }) {
   return (
     <div className={clsx("input-container", className)}>
@@ -23,6 +25,7 @@ export function Input({
         minLength={minLength}
         maxLength={maxLength}
         defaultValue={defaultValue}
+        data-cy={dataCy}
       />
     </div>
   );
