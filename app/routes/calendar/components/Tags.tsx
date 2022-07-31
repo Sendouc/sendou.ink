@@ -31,6 +31,7 @@ export function Tags({
                 variant="minimal"
                 aria-label="Remove date"
                 tiny
+                data-cy="tag-delete-button"
               />
             )}
           </li>

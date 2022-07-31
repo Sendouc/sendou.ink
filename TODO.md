@@ -11,7 +11,7 @@ Calendar
 - [x] Add tags to the seed
 - [x] Page to add a new event
 - [x] Edit page
-- [ ] E2E test form controls (adding/removing date, adding/removing tags) etc.
+- [x] E2E test form controls (adding/removing date, adding/removing tags) etc.
 - [ ] E2E test browsing events + event page
 - [ ] E2E test adding and editing event
 - [ ] Add winners page

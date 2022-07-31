@@ -303,6 +303,7 @@ function DatesInput() {
             onChange={(e) => setDateInputValue(e.target.value)}
             min={dateToYearMonthDayHourMinuteString(MIN_DATE)}
             max={dateToYearMonthDayHourMinuteString(MAX_DATE)}
+            data-cy="date-input"
           />
           <Button
             tiny
@@ -318,6 +319,7 @@ function DatesInput() {
                 ].sort((a, b) => a.date.getTime() - b.date.getTime())
               );
             }}
+            data-cy="add-date-button"
           >
             Add date
           </Button>
@@ -355,6 +357,7 @@ function DatesInput() {
                 icon={<TrashIcon />}
                 variant="minimal-destructive"
                 aria-label="Remove date"
+                data-cy="date-delete-button"
               />
             </React.Fragment>
           ))}
@@ -426,6 +429,7 @@ function TagsAdder() {
           onChange={(e) =>
             setTags([...tags, e.target.value as CalendarEventTag])
           }
+          data-cy="tags-select"
         >
           <option value="">Choose a tag</option>
           {tagsForSelect.map((tag) => (
@@ -486,6 +490,7 @@ function BadgesAdder() {
               )!,
             ]);
           }}
+          data-cy="badges-select"
         >
           <option value="">Choose a badge prize</option>
           {badgesForSelect.map((badge) => (
@@ -507,6 +512,7 @@ function BadgesAdder() {
                 icon={<TrashIcon />}
                 variant="minimal-destructive"
                 aria-label="Remove badge"
+                data-cy="badge-delete-button"
               />
             </div>
           ))}
