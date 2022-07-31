@@ -13,7 +13,7 @@ Calendar
 - [x] Edit page
 - [x] E2E test form controls (adding/removing date, adding/removing tags) etc.
 - [ ] E2E test browsing events + event page
-- [ ] E2E test adding and editing event
+- [x] E2E test adding and editing event
 - [ ] Add winners page
 - [ ] Winners on the event info page
 - [ ] There should be a banner on the list page if you have past tournaments to report

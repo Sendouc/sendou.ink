@@ -17,6 +17,7 @@ const ADMIN_TEST_AVATAR = "e424e1ba50d2019fdc4730d261e56c55";
 
 const NZAP_TEST_DISCORD_ID = "455039198672453645";
 const NZAP_TEST_AVATAR = "f809176af93132c3db5f0a5019e96339"; // https://cdn.discordapp.com/avatars/455039198672453645/f809176af93132c3db5f0a5019e96339.webp?size=160
+const NZAP_TEST_ID = 2;
 
 const AMOUNT_OF_CALENDAR_EVENTS = 100;
 
@@ -353,7 +354,7 @@ function calendarEvents() {
         description: faker.lorem.paragraph(),
         discordInviteCode: faker.lorem.word(),
         bracketUrl: faker.internet.url(),
-        authorId: userIds.pop(),
+        authorId: id === 1 ? NZAP_TEST_ID : userIds.pop(),
         tags:
           Math.random() > 0.2
             ? tags

@@ -64,6 +64,17 @@ describe("New calendar event page", () => {
     cy.getCy("badges-select").select(1);
 
     cy.getCy("submit-button").click();
-    cy.url().should("include", "101"); // we should have been redirected to the new event's page
+    cy.url().should("include", "/101"); // we should have been redirected to the new event's page
+  });
+
+  it("edits an event", () => {
+    cy.auth(2);
+    cy.visit(calendarEditPage(1));
+
+    cy.getCy("name-input").clear().type("Edited Event");
+
+    cy.getCy("submit-button").click();
+    cy.url().should("include", "/1"); // we should have been redirected to the new event's page
+    cy.contains("Edited Event");
   });
 });
