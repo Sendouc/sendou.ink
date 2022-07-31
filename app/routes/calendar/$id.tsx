@@ -1,33 +1,52 @@
-import { json, type LinksFunction, type LoaderArgs } from "@remix-run/node";
+import {
+  json,
+  type MetaFunction,
+  type LinksFunction,
+  type LoaderArgs,
+} from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+import type { UseDataFunctionReturn } from "@remix-run/react/dist/components";
+import clsx from "clsx";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
+import { Avatar } from "~/components/Avatar";
+import { Badge } from "~/components/Badge";
 import { LinkButton } from "~/components/Button";
 import { Main } from "~/components/Main";
 import { db } from "~/db";
 import { useIsMounted } from "~/hooks/useIsMounted";
+import { i18next } from "~/modules/i18n";
+import styles from "~/styles/calendar-event.css";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { notFoundIfFalsy } from "~/utils/remix";
+import { discordFullName, makeTitle } from "~/utils/strings";
 import { resolveBaseUrl } from "~/utils/urls";
 import { actualNumber, id } from "~/utils/zod";
-import styles from "~/styles/calendar-event.css";
-import { Avatar } from "~/components/Avatar";
-import { discordFullName } from "~/utils/strings";
-import * as React from "react";
 import { Tags } from "./components/Tags";
-import { Badge } from "~/components/Badge";
 import allTags from "./tags.json";
-import clsx from "clsx";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
+};
+
+export const meta: MetaFunction = (args) => {
+  const data = args.data as Nullable<UseDataFunctionReturn<typeof loader>>;
+
+  if (!data) return {};
+
+  return {
+    title: data.title,
+    description: data.event.description,
+  };
 };
 
 export const handle = {
   i18n: "calendar",
 };
 
-export const loader = ({ params }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderArgs) => {
+  const t = await i18next.getFixedT(request);
   const parsedParams = z
     .object({ id: z.preprocess(actualNumber, id) })
     .parse(params);
@@ -36,6 +55,7 @@ export const loader = ({ params }: LoaderArgs) => {
   return json({
     event,
     badgePrizes: db.calendarEvents.findBadgesById(parsedParams.id),
+    title: makeTitle([event.name, t("pages.calendar")]),
   });
 };
 

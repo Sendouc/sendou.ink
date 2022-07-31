@@ -16,6 +16,7 @@ import { Button } from "~/components/Button";
 import {
   json,
   redirect,
+  type MetaFunction,
   type ActionFunction,
   type LinksFunction,
   type LoaderArgs,
@@ -48,6 +49,9 @@ import {
   dateToYearMonthDayHourMinuteString,
 } from "~/utils/dates";
 import { calendarEventPage } from "~/utils/urls";
+import { makeTitle } from "~/utils/strings";
+import { i18next } from "~/modules/i18n";
+import type { UseDataFunctionReturn } from "@remix-run/react/dist/components";
 
 const MIN_DATE = new Date(Date.UTC(2015, 4, 28));
 
@@ -58,20 +62,15 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-// export const meta: MetaFunction = (args) => {
-//   const data = args.data as Nullable<UseDataFunctionReturn<typeof loader>>;
+export const meta: MetaFunction = (args) => {
+  const data = args.data as Nullable<UseDataFunctionReturn<typeof loader>>;
 
-//   if (!data) return {};
+  if (!data) return {};
 
-//   return {
-//     title: data.title,
-//     description: `${data.events.length} events happening during week ${
-//       data.displayedWeek
-//     } including ${joinListToNaturalString(
-//       data.events.slice(0, 3).map((e) => e.name)
-//     )}`,
-//   };
-// };
+  return {
+    title: data.title,
+  };
+};
 
 const newCalendarEventActionSchema = z.object({
   eventToEditId: z.preprocess(actualNumber, id.nullish()),
@@ -164,6 +163,7 @@ export const handle = {
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
+  const t = await i18next.getFixedT(request);
   const user = await requireUser(request);
   const url = new URL(request.url);
 
@@ -172,17 +172,19 @@ export const loader = async ({ request }: LoaderArgs) => {
     ? undefined
     : db.calendarEvents.findById(eventId);
 
+  const canEditEvent = eventToEdit?.authorId === user.id;
+
   return json({
     managedBadges: db.badges.managedByUserId(user.id),
-    eventToEdit:
-      eventToEdit?.authorId === user.id
-        ? {
-            ...eventToEdit,
-            // "BADGE" tag is special and can't be edited like other tags
-            tags: eventToEdit.tags.filter((tag) => tag !== "BADGE"),
-            badges: db.calendarEvents.findBadgesById(eventId),
-          }
-        : undefined,
+    eventToEdit: canEditEvent
+      ? {
+          ...eventToEdit,
+          // "BADGE" tag is special and can't be edited like other tags
+          tags: eventToEdit.tags.filter((tag) => tag !== "BADGE"),
+          badges: db.calendarEvents.findBadgesById(eventId),
+        }
+      : undefined,
+    title: makeTitle([canEditEvent ? "Edit" : "New", t("pages.calendar")]),
   });
 };
 

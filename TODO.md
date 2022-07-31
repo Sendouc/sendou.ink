@@ -24,7 +24,7 @@ Calendar
 
 - [ ] Move "BADGE" tag resolving to DB?
 - [x] Tags selector can remove
-- [ ] Calendar new title
+- [x] Calendar new title
 - [x] Sort tags so that they are always in same order
 - [x] Maybe make bracket URL mandatory?
 - [ ] components render twice on state change?
