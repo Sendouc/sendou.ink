@@ -1,3 +1,6 @@
+import allTags from "~/routes/calendar/tags.json";
+import type { CalendarEventTag } from "./db/types";
+
 export const TWEET_LENGTH_MAX_LENGTH = 280;
 export const DISCORD_MESSAGE_MAX_LENGTH = 2000;
 
@@ -12,6 +15,9 @@ export const CALENDAR_EVENT_DESCRIPTION_MAX_LENGTH = DISCORD_MESSAGE_MAX_LENGTH;
 export const CALENDAR_EVENT_DISCORD_INVITE_CODE_MAX_LENGTH = 50;
 export const CALENDAR_EVENT_BRACKET_URL_MAX_LENGTH = 100;
 export const CALENDAR_EVENT_MAX_AMOUNT_OF_DATES = 5;
+export const CALENDAR_EVENT_TAGS = Object.keys(
+  allTags
+) as Array<CalendarEventTag>;
 
 export const PLUS_TIERS = [1, 2, 3];
 

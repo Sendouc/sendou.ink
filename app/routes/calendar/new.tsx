@@ -4,6 +4,7 @@ import { Main } from "~/components/Main";
 import * as React from "react";
 import type { Badge as BadgeType, CalendarEventTag } from "~/db/types";
 import {
+  CALENDAR_EVENT_TAGS,
   CALENDAR_EVENT_BRACKET_URL_MAX_LENGTH,
   CALENDAR_EVENT_DESCRIPTION_MAX_LENGTH,
   CALENDAR_EVENT_DISCORD_INVITE_CODE_MAX_LENGTH,
@@ -26,7 +27,6 @@ import { TrashIcon } from "~/components/icons/Trash";
 import { Input } from "~/components/Input";
 import { FormMessage } from "~/components/FormMessage";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import allTags from "./tags.json";
 import { Tags } from "./components/Tags";
 import { db } from "~/db";
 import { requireUser } from "~/modules/auth";
@@ -98,7 +98,13 @@ const newCalendarEventActionSchema = z.object({
   tags: z.preprocess(
     processMany(safeJSONParse, removeDuplicates),
     z
-      .array(z.string().refine((val) => Object.keys(allTags).includes(val)))
+      .array(
+        z
+          .string()
+          .refine((val) =>
+            CALENDAR_EVENT_TAGS.includes(val as CalendarEventTag)
+          )
+      )
       .nullable()
   ),
   badges: z.preprocess(
@@ -120,7 +126,15 @@ export const action: ActionFunction = async ({ request }) => {
     startTimes: data.dates.map((date) => dateToDatabaseTimestamp(date)),
     bracketUrl: data.bracketUrl,
     discordInviteCode: data.discordInviteCode,
-    tags: data.tags ? data.tags.join(",") : data.tags,
+    tags: data.tags
+      ? data.tags
+          .sort(
+            (a, b) =>
+              CALENDAR_EVENT_TAGS.indexOf(a as CalendarEventTag) -
+              CALENDAR_EVENT_TAGS.indexOf(b as CalendarEventTag)
+          )
+          .join(",")
+      : data.tags,
     badges: data.badges ?? [],
   };
   if (data.eventToEditId) {
@@ -386,9 +400,9 @@ function TagsAdder() {
   );
   const id = React.useId();
 
-  const tagsForSelect = (
-    Object.keys(allTags) as Array<CalendarEventTag>
-  ).filter((tag) => !tags.includes(tag) && tag !== "BADGE");
+  const tagsForSelect = CALENDAR_EVENT_TAGS.filter(
+    (tag) => !tags.includes(tag) && tag !== "BADGE"
+  );
 
   return (
     <div className="stack sm">

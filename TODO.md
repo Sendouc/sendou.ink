@@ -9,9 +9,11 @@ Calendar
 - [x] Implement tags
 - [x] Add initial tags.json
 - [x] Add tags to the seed
-- [ ] Tags should be clickable and apply a filter (also many tags)
 - [ ] Page to add a new event
 - [ ] Edit page
+- [ ] E2E test form controls (adding/removing date, adding/removing tags) etc.
+- [ ] E2E test browsing events + event page
+- [ ] E2E test adding and editing event
 - [ ] Add winners page
 - [ ] Winners on the event info page
 - [ ] There should be a banner on the list page if you have past tournaments to report
@@ -20,9 +22,10 @@ Calendar
 
 ## Other
 
+- [ ] Move "BADGE" tag resolving to DB?
 - [x] Tags selector can remove
 - [ ] Calendar new title
-- [ ] Sort tags so that they are always in same order
+- [x] Sort tags so that they are always in same order
 - [x] Maybe make bracket URL mandatory?
 - [ ] components render twice on state change?
 - [ ] If week has no events show some text + don't show time zone text
