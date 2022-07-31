@@ -546,6 +546,18 @@ dialog::backdrop {
 }
 
 .calendar__event__tags > li {
+  display: flex;
   border-radius: var(--rounded);
   padding-inline: var(--s-1-5);
+}
+
+.calendar__event__tag-delete-button {
+  margin-left: auto;
+}
+
+.calendar__event__tag-delete-button > svg {
+  width: 0.85rem !important;
+  color: var(--black-text);
+  margin-inline-end: 0 !important;
+  margin-inline-start: var(--s-1);
 }

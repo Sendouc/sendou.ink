@@ -20,7 +20,7 @@ Calendar
 
 ## Other
 
-- [ ] Tags selector can remove
+- [x] Tags selector can remove
 - [ ] Calendar new title
 - [ ] Sort tags so that they are always in same order
 - [x] Maybe make bracket URL mandatory?

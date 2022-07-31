@@ -162,7 +162,12 @@ export const loader = async ({ request }: LoaderArgs) => {
     managedBadges: db.badges.managedByUserId(user.id),
     eventToEdit:
       eventToEdit?.authorId === user.id
-        ? { ...eventToEdit, badges: db.calendarEvents.findBadgesById(eventId) }
+        ? {
+            ...eventToEdit,
+            // "BADGE" tag is special and can't be edited like other tags
+            tags: eventToEdit.tags.filter((tag) => tag !== "BADGE"),
+            badges: db.calendarEvents.findBadgesById(eventId),
+          }
         : undefined,
   });
 };
@@ -412,7 +417,12 @@ function TagsAdder() {
           &quot;Badge prizes&quot; tag is added automatically if applicable
         </FormMessage>
       </div>
-      <Tags tags={tags} />
+      <Tags
+        tags={tags}
+        onDelete={(tagToDelete) =>
+          setTags(tags.filter((tag) => tag !== tagToDelete))
+        }
+      />
     </div>
   );
 }
