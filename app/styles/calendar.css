@@ -146,6 +146,12 @@
   margin: 0 auto;
 }
 
+.calendar__no-events {
+  color: var(--text-lighter);
+  padding-block: var(--s-20);
+  text-align: center;
+}
+
 .calendar__time-zone-info {
   color: var(--text-lighter);
   font-size: var(--fonts-xs);

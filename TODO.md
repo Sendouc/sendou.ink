@@ -23,13 +23,12 @@ Calendar
 ## Other
 
 - [x] badges inside tag?
-- [ ] Move "BADGE" tag resolving to DB?
 - [x] Tags selector can remove
 - [x] Calendar new title
 - [x] Sort tags so that they are always in same order
 - [x] Maybe make bracket URL mandatory?
 - [x] components render twice on state change?
-- [ ] If week has no events show some text + don't show time zone text
+- [x] If week has no events show some text + don't show time zone text
 - [x] flatMap -> React.fragment
 - [x] Event page layout shift with time not taking space before mount (only if one day)
 - [x] WeekLinks make opaque blocks not take space on mobile

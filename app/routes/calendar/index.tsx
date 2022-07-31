@@ -126,13 +126,24 @@ function fetchEventsOfWeek(args: { week: number; year: number }) {
 }
 
 export default function CalendarPage() {
+  const data = useLoaderData<typeof loader>();
   const user = useUser();
   const isMounted = useIsMounted();
+
+  // we don't know which events are starting in user's time zone on server
+  // so that's why this calculation is not in the loader
+  const thisWeeksEvents = isMounted
+    ? data.events.filter(
+        (event) =>
+          dateToWeekNumber(databaseTimestampToDate(event.startTime)) ===
+          data.displayedWeek
+      )
+    : data.events;
 
   return (
     <main className="stack lg">
       <WeekLinks />
-      <div className="stack">
+      <div className="stack md">
         {user && (
           <LinkButton to="new" className="calendar__add-new-button" tiny>
             Add new
@@ -140,11 +151,17 @@ export default function CalendarPage() {
         )}
         {isMounted ? (
           <>
-            <EventsList />
-            <div className="calendar__time-zone-info">
-              All times in your local time zone:{" "}
-              {Intl.DateTimeFormat().resolvedOptions().timeZone}
-            </div>
+            {thisWeeksEvents.length > 0 ? (
+              <>
+                <EventsList events={thisWeeksEvents} />
+                <div className="calendar__time-zone-info">
+                  All times in your local time zone:{" "}
+                  {Intl.DateTimeFormat().resolvedOptions().timeZone}
+                </div>
+              </>
+            ) : (
+              <h2 className="calendar__no-events">No events this week</h2>
+            )}
           </>
         ) : (
           <div className="calendar__placeholder" />
@@ -268,111 +285,106 @@ function getEventsCountPerWeek(
   return result;
 }
 
-function EventsList() {
-  const data = useLoaderData<typeof loader>();
+function EventsList({
+  events,
+}: {
+  events: UseDataFunctionReturn<typeof loader>["events"];
+}) {
   const { i18n } = useTranslation();
-
-  function excludeNextWeeksEvents([date]: Unpacked<
-    ReturnType<typeof eventsGroupedByDay>
-  >) {
-    return dateToWeekNumber(date) === data.displayedWeek;
-  }
 
   return (
     <div className="calendar__events-container">
-      {eventsGroupedByDay(data.events)
-        .filter(excludeNextWeeksEvents)
-        .map(([daysDate, events]) => {
-          return (
-            <React.Fragment key={daysDate.getTime()}>
-              <div className="calendar__event__date-container">
-                <div className="calendar__event__date main">
-                  {daysDate.toLocaleDateString(i18n.language, {
-                    weekday: "long",
-                    day: "numeric",
-                    month: "long",
-                  })}
-                </div>
+      {eventsGroupedByDay(events).map(([daysDate, events]) => {
+        return (
+          <React.Fragment key={daysDate.getTime()}>
+            <div className="calendar__event__date-container">
+              <div className="calendar__event__date main">
+                {daysDate.toLocaleDateString(i18n.language, {
+                  weekday: "long",
+                  day: "numeric",
+                  month: "long",
+                })}
               </div>
-              <div className="stack md">
-                {events.map((calendarEvent, i) => {
-                  return (
-                    <React.Fragment key={calendarEvent.eventDateId}>
-                      <section className="calendar__event main stack md">
-                        <div className="stack sm">
-                          <div
-                            className={clsx(
-                              "calendar__event__top-info-container",
-                              {
-                                "mt-4": i === 0,
-                              }
-                            )}
+            </div>
+            <div className="stack md">
+              {events.map((calendarEvent, i) => {
+                return (
+                  <React.Fragment key={calendarEvent.eventDateId}>
+                    <section className="calendar__event main stack md">
+                      <div className="stack sm">
+                        <div
+                          className={clsx(
+                            "calendar__event__top-info-container",
+                            {
+                              "mt-4": i === 0,
+                            }
+                          )}
+                        >
+                          <time
+                            dateTime={databaseTimestampToDate(
+                              calendarEvent.startTime
+                            ).toISOString()}
+                            className="calendar__event__time"
                           >
-                            <time
-                              dateTime={databaseTimestampToDate(
-                                calendarEvent.startTime
-                              ).toISOString()}
-                              className="calendar__event__time"
-                            >
-                              {databaseTimestampToDate(
-                                calendarEvent.startTime
-                              ).toLocaleTimeString(i18n.language, {
-                                hour: "numeric",
-                                minute: "numeric",
-                              })}
-                            </time>
-                            <div className="calendar__event__author">
-                              From {discordFullName(calendarEvent)}
-                            </div>
-                          </div>
-                          <div className="stack xs">
-                            <Link to={String(calendarEvent.eventId)}>
-                              <h2 className="calendar__event__title">
-                                {calendarEvent.name}{" "}
-                                {calendarEvent.nthAppearance > 1 ? (
-                                  <span className="calendar__event__day">
-                                    Day {calendarEvent.nthAppearance}
-                                  </span>
-                                ) : null}
-                              </h2>
-                            </Link>
-                            <Tags
-                              tags={calendarEvent.tags}
-                              badges={calendarEvent.badgePrizes}
-                            />
+                            {databaseTimestampToDate(
+                              calendarEvent.startTime
+                            ).toLocaleTimeString(i18n.language, {
+                              hour: "numeric",
+                              minute: "numeric",
+                            })}
+                          </time>
+                          <div className="calendar__event__author">
+                            From {discordFullName(calendarEvent)}
                           </div>
                         </div>
-                        <div className="calendar__event__bottom-info-container">
-                          {calendarEvent.discordUrl ? (
-                            <LinkButton
-                              to={calendarEvent.discordUrl}
-                              variant="outlined"
-                              tiny
-                              isExternal
-                            >
-                              Discord
-                            </LinkButton>
-                          ) : null}
+                        <div className="stack xs">
+                          <Link to={String(calendarEvent.eventId)}>
+                            <h2 className="calendar__event__title">
+                              {calendarEvent.name}{" "}
+                              {calendarEvent.nthAppearance > 1 ? (
+                                <span className="calendar__event__day">
+                                  Day {calendarEvent.nthAppearance}
+                                </span>
+                              ) : null}
+                            </h2>
+                          </Link>
+                          <Tags
+                            tags={calendarEvent.tags}
+                            badges={calendarEvent.badgePrizes}
+                          />
+                        </div>
+                      </div>
+                      <div className="calendar__event__bottom-info-container">
+                        {calendarEvent.discordUrl ? (
                           <LinkButton
-                            to={calendarEvent.bracketUrl}
+                            to={calendarEvent.discordUrl}
                             variant="outlined"
                             tiny
                             isExternal
                           >
-                            {resolveBaseUrl(calendarEvent.bracketUrl)}
+                            Discord
                           </LinkButton>
-                        </div>
-                      </section>
-                      {i < events.length - 1 ? (
-                        <hr className="calendar__event__divider" />
-                      ) : null}
-                    </React.Fragment>
-                  );
-                })}
-              </div>
-            </React.Fragment>
-          );
-        })}
+                        ) : null}
+                        <LinkButton
+                          to={calendarEvent.bracketUrl}
+                          variant="outlined"
+                          tiny
+                          isExternal
+                        >
+                          {resolveBaseUrl(calendarEvent.bracketUrl)}
+                        </LinkButton>
+                      </div>
+                    </section>
+                    {i < events.length - 1 ? (
+                      <hr className="calendar__event__divider" />
+                    ) : null}
+                  </React.Fragment>
+                );
+              })}
+            </div>
+          </React.Fragment>
+        );
+      })}
     </div>
   );
 }
