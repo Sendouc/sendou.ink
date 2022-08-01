@@ -9,6 +9,7 @@
     "dev:cypress": "cross-env NODE_ENV=test PORT=4455 DB_PATH=db-cypress.sqlite3 remix dev",
     "start": "npm run migrate up && remix-serve build",
     "migrate": "ley",
+    "migrate:cypress": "cross-env DB_PATH=db-cypress.sqlite3 ley",
     "migrate:reset": "node scripts/delete-db-files.mjs && npm run migrate && npm run seed",
     "add-badge": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/add-badge.ts",
     "seed": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/seed.ts",

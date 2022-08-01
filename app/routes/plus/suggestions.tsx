@@ -24,6 +24,7 @@ import {
   canSuggestNewUserFE,
   canDeleteComment,
   canDeleteSuggestionOfThemselves,
+  isFirstSuggestion,
 } from "~/permissions";
 import { parseRequestFormData, validate } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
@@ -73,25 +74,46 @@ export const action: ActionFunction = async ({ request }) => {
         plusTier: user.plusTier,
       });
 
-      const targetSuggestion = suggestions
-        ? Object.values(suggestions)
-            ?.flat()
-            .flatMap((u) => u.suggestions)
-            .find((s) => s.id === data.suggestionId)
-        : undefined;
+      const flattenedSuggestedUserInfo = Object.entries(suggestions ?? {})
+        .flatMap(([tier, suggestions]) =>
+          suggestions.map(({ suggestedUser, suggestions }) => ({
+            tier: Number(tier),
+            suggestedUser,
+            suggestions,
+          }))
+        )
+        .find(({ suggestions }) =>
+          suggestions.some((s) => s.id === data.suggestionId)
+        );
 
       validate(suggestions);
-      validate(targetSuggestion);
+      validate(flattenedSuggestedUserInfo);
       validate(
         canDeleteComment({
           user,
-          author: targetSuggestion.author,
+          author: flattenedSuggestedUserInfo.suggestions.find(
+            (s) => s.id === data.suggestionId
+          )!.author,
           suggestionId: data.suggestionId,
           suggestions,
         })
       );
 
-      db.plusSuggestions.del(data.suggestionId);
+      const suggestionHasComments =
+        flattenedSuggestedUserInfo.suggestions.length > 1;
+      if (
+        suggestionHasComments &&
+        isFirstSuggestion({ suggestionId: data.suggestionId, suggestions })
+      ) {
+        // admin only action
+        db.plusSuggestions.deleteSuggestionWithComments({
+          ...nextNonCompletedVoting(new Date()),
+          tier: flattenedSuggestedUserInfo.tier,
+          suggestedId: flattenedSuggestedUserInfo.suggestedUser.id,
+        });
+      } else {
+        db.plusSuggestions.del(data.suggestionId);
+      }
 
       break;
     }
@@ -394,7 +416,7 @@ export function PlusSuggestionComments({
 }: {
   suggestions: plusSuggestions.FindVisibleForUserSuggestedUserInfo["suggestions"];
   deleteButtonArgs?: {
-    user?: Pick<User, "id">;
+    user?: Pick<User, "id" | "discordId">;
     suggestions: plusSuggestions.FindVisibleForUser;
     tier: string;
     suggested: plusSuggestions.FindVisibleForUserSuggestedUserInfo;
