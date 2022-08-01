@@ -22,6 +22,7 @@ Calendar
 
 ## Other
 
+- [ ] New unfriendly crash if omits dates
 - [x] badges inside tag?
 - [x] Tags selector can remove
 - [x] Calendar new title

@@ -10,6 +10,7 @@ import { allTruthy } from "./utils/arrays";
 import { ADMIN_DISCORD_ID, LOHI_TOKEN_HEADER_NAME } from "./constants";
 import invariant from "tiny-invariant";
 import type { ManagersByBadgeId } from "./db/models/badges.server";
+import { databaseTimestampToDate } from "./utils/dates";
 
 // TODO: 1) move "root checkers" to one file and utils to one file 2) make utils const for more terseness
 
@@ -269,4 +270,29 @@ export function canEditCalendarEvent({
   event,
 }: CanEditCalendarEventArgs) {
   return adminOverride(user)(user?.id === event.authorId);
+}
+
+interface CanReportCalendarEventWinnersArgs {
+  user?: Pick<User, "id" | "discordId">;
+  event: Pick<CalendarEvent, "authorId">;
+  startTimes: number[];
+}
+export function canReportCalendarEventWinners({
+  user,
+  event,
+  startTimes,
+}: CanReportCalendarEventWinnersArgs) {
+  return allTruthy([
+    canEditCalendarEvent({ user, event }),
+    eventStartedInThePast(startTimes),
+  ]);
+}
+
+function eventStartedInThePast(
+  startTimes: CanReportCalendarEventWinnersArgs["startTimes"]
+) {
+  return startTimes.every(
+    (startTime) =>
+      databaseTimestampToDate(startTime).getTime() < new Date().getTime()
+  );
 }

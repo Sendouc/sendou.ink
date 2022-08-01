@@ -17,14 +17,21 @@ import { db } from "~/db";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useUser } from "~/modules/auth";
 import { i18next } from "~/modules/i18n";
-import { canEditCalendarEvent } from "~/permissions";
+import {
+  canEditCalendarEvent,
+  canReportCalendarEventWinners,
+} from "~/permissions";
 import styles from "~/styles/calendar-event.css";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { notFoundIfFalsy } from "~/utils/remix";
 import { discordFullName, makeTitle } from "~/utils/strings";
-import { calendarEditPage, resolveBaseUrl } from "~/utils/urls";
+import {
+  calendarEditPage,
+  calendarReportWinnersPage,
+  resolveBaseUrl,
+} from "~/utils/urls";
 import { actualNumber, id } from "~/utils/zod";
-import { Tags } from "./components/Tags";
+import { Tags } from "../components/Tags";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -126,6 +133,19 @@ export default function CalendarEventPage() {
                 data-cy="edit-button"
               >
                 Edit
+              </LinkButton>
+            )}
+            {canReportCalendarEventWinners({
+              user,
+              event,
+              startTimes: event.startTimes,
+            }) && (
+              <LinkButton
+                tiny
+                to={calendarReportWinnersPage(event.eventId)}
+                data-cy="edit-button"
+              >
+                Report winners
               </LinkButton>
             )}
           </div>
