@@ -19,6 +19,11 @@ export const CALENDAR_EVENT_TAGS = Object.keys(
   allTags
 ) as Array<CalendarEventTag>;
 
+export const CALENDAR_EVENT_RESULT = {
+  MAX_PARTICIPANTS_COUNT: 1000,
+  MAX_PLAYERS_LENGTH: 8,
+} as const;
+
 export const PLUS_TIERS = [1, 2, 3];
 
 export const PLUS_UPVOTE = 1;

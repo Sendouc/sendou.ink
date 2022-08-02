@@ -15,6 +15,7 @@ interface ComboboxProps<T> {
   inputName: string;
   placeholder: string;
   className?: string;
+  id?: string;
   isLoading?: boolean;
   onChange?: (selectedOption?: ComboboxOption<T>) => void;
 }
@@ -25,6 +26,7 @@ export function Combobox<T extends Record<string, string | null | number>>({
   placeholder,
   onChange,
   className,
+  id,
   isLoading = false,
 }: ComboboxProps<T>) {
   const [selectedOption, setSelectedOption] =
@@ -63,6 +65,7 @@ export function Combobox<T extends Record<string, string | null | number>>({
           (option as Unpacked<typeof options>)?.label ?? ""
         }
         data-cy={`${inputName}-combobox-input`}
+        id={id}
       />
       <HeadlessCombobox.Options
         className={clsx("combobox-options", {
@@ -100,9 +103,10 @@ export function UserCombobox({
   onChange,
   userIdsToOmit,
   className,
+  id,
 }: Pick<
   ComboboxProps<Pick<UserWithPlusTier, "discordId" | "plusTier">>,
-  "inputName" | "onChange" | "className"
+  "inputName" | "onChange" | "className" | "id"
 > & { userIdsToOmit?: Set<number> }) {
   const fetcher = useFetcher<UsersLoaderData>();
 
@@ -135,6 +139,7 @@ export function UserCombobox({
       isLoading={isLoading}
       onChange={onChange}
       className={className}
+      id={id}
     />
   );
 }

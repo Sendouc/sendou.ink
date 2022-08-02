@@ -482,6 +482,10 @@ dialog::backdrop {
   gap: var(--s-4);
 }
 
+.stack.smedium {
+  gap: var(--s-6);
+}
+
 .stack.lg {
   gap: var(--s-8);
 }
