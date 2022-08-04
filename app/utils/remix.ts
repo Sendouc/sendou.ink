@@ -23,7 +23,7 @@ export async function parseRequestFormData<T extends z.ZodTypeAny>({
   try {
     // False alarm
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return schema.parse(Object.fromEntries(await request.formData()));
+    return schema.parse(formDataToObject(await request.formData()));
   } catch (e) {
     if (e instanceof z.ZodError) {
       console.error(e);
@@ -36,6 +36,25 @@ export async function parseRequestFormData<T extends z.ZodTypeAny>({
 
     throw e;
   }
+}
+
+function formDataToObject(formData: FormData) {
+  const result: Record<string, string | string[]> = {};
+
+  for (const [key, value] of formData.entries()) {
+    const newValue = String(value);
+    const existingValue = result[key];
+
+    if (Array.isArray(existingValue)) {
+      existingValue.push(newValue);
+    } else if (typeof existingValue === "string") {
+      result[key] = [existingValue, newValue];
+    } else {
+      result[key] = newValue;
+    }
+  }
+
+  return result;
 }
 
 /** Asserts condition is truthy. Throws a new `Response` with given status code if falsy.  */

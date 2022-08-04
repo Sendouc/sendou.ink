@@ -55,3 +55,9 @@ export function removeDuplicates(value: unknown) {
 
   return Array.from(new Set(value));
 }
+
+export function toArray<T>(value: T | Array<T>) {
+  if (Array.isArray(value)) return value;
+
+  return [value];
+}

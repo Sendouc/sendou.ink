@@ -1,5 +1,5 @@
-import type { ActionFunction, LoaderArgs } from "@remix-run/node";
-import { Form } from "@remix-run/react";
+import { type ActionFunction, type LoaderArgs, json } from "@remix-run/node";
+import { Form, useLoaderData } from "@remix-run/react";
 import { z } from "zod";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
@@ -7,8 +7,14 @@ import { CALENDAR_EVENT_RESULT } from "~/constants";
 import { db } from "~/db";
 import { requireUser } from "~/modules/auth";
 import { canReportCalendarEventWinners } from "~/permissions";
-import { notFoundIfFalsy, validate } from "~/utils/remix";
-import { actualNumber, id } from "~/utils/zod";
+import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
+import {
+  actualNumber,
+  id,
+  processMany,
+  safeJSONParse,
+  toArray,
+} from "~/utils/zod";
 import * as React from "react";
 import type { User } from "~/db/types";
 import { Button } from "~/components/Button";
@@ -16,10 +22,63 @@ import clsx from "clsx";
 import { UserCombobox } from "~/components/Combobox";
 import { FormMessage } from "~/components/FormMessage";
 
+const reportWinnersActionSchema = z.object({
+  participantsCount: z.preprocess(
+    actualNumber,
+    z
+      .number()
+      .int()
+      .positive()
+      .max(CALENDAR_EVENT_RESULT.MAX_PARTICIPANTS_COUNT)
+  ),
+  team: z
+    .array(
+      z.preprocess(
+        processMany(safeJSONParse, toArray),
+        z.object({
+          teamName: z
+            .string()
+            .min(1)
+            .max(CALENDAR_EVENT_RESULT.MAX_TEAM_NAME_LENGTH),
+          placement: z.preprocess(
+            actualNumber,
+            z
+              .number()
+              .int()
+              .positive()
+              .max(CALENDAR_EVENT_RESULT.MAX_TEAM_PLACEMENT)
+          ),
+          players: z
+            .array(
+              z.union([
+                z
+                  .string()
+                  .min(1)
+                  .max(CALENDAR_EVENT_RESULT.MAX_PLAYER_NAME_LENGTH),
+                z.object({ id }),
+              ])
+            )
+            .nonempty()
+            .max(CALENDAR_EVENT_RESULT.MAX_PLAYERS_LENGTH),
+        })
+      )
+    )
+    // don't allow repeating same team name
+    .refine(
+      (val) => val.length === new Set(val.map((team) => team.teamName)).size
+    ),
+});
+
 export const action: ActionFunction = async ({ request }) => {
-  const formData = await request.formData();
-  // eslint-disable-next-line no-console
-  console.log({ formData });
+  // xxx: return nice errors to frontend to render
+  // try {
+  //   const data = await parseRequestFormData({
+  //     request,
+  //     schema: reportWinnersActionSchema,
+  //   });
+  // } catch (e) {
+  //   return null;
+  // }
 
   return null;
 };
@@ -44,26 +103,18 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     401
   );
 
-  return null;
+  return json({
+    name: event.name,
+  });
 };
 
-interface TeamResults {
-  teamName: string;
-  placement: string;
-  players: Array<
-    | {
-        id: User["id"];
-      }
-    | string
-  >;
-}
-
 export default function ReportWinnersPage() {
+  const data = useLoaderData<typeof loader>();
+
   return (
     <Main halfWidth>
       <Form method="post" className="stack smedium items-start">
-        {/* xxx: use real name */}
-        <h1 className="text-lg">Reporting results of TEST Tournament</h1>
+        <h1 className="text-lg">Reporting results of {data.name}</h1>
         <ParticipantsCountInput />
         <FormMessage type="info">
           You choose how many results to report. It can be just the winning
@@ -123,6 +174,7 @@ function TeamInputs() {
                   : undefined
               }
               hidden={hidden}
+              initialPlacement={String(i + 1)}
             />
             {!hidden && <hr className="w-full" />}
           </React.Fragment>
@@ -140,19 +192,32 @@ function TeamInputs() {
 
 const NEW_PLAYER = { id: 0 } as const;
 
+interface TeamResults {
+  teamName: string;
+  placement: string;
+  players: Array<
+    | {
+        id: User["id"];
+      }
+    | string
+  >;
+}
+
 function Team({
   onRemoveTeam,
   hidden,
+  initialPlacement,
 }: {
   onRemoveTeam?: () => void;
   hidden: boolean;
+  initialPlacement: string;
 }) {
   const teamNameId = React.useId();
   const placementId = React.useId();
+
   const [results, setResults] = React.useState<TeamResults>({
     teamName: "",
-    // xxx: could use i + 1
-    placement: "1",
+    placement: initialPlacement,
     players: [NEW_PLAYER, NEW_PLAYER, NEW_PLAYER, NEW_PLAYER],
   });
 
@@ -167,15 +232,28 @@ function Team({
   return (
     <div className={clsx("stack md items-start", { hidden })}>
       {!hidden && (
-        <input type="hidden" name="team" value={JSON.stringify(results)} />
+        <input
+          type="hidden"
+          name="team"
+          value={JSON.stringify({
+            ...results,
+            players: results.players.filter(
+              (player) =>
+                (typeof player === "string" && player !== "") ||
+                (typeof player === "object" && player.id !== 0)
+            ),
+          })}
+        />
       )}
-      <div className="stack horizontal md">
+      <div className="stack horizontal md flex-wrap">
         <div>
           <Label htmlFor={teamNameId}>Team name</Label>
           <input
             id={teamNameId}
             value={results.teamName}
             onChange={handleTeamNameChange}
+            min={1}
+            max={CALENDAR_EVENT_RESULT.MAX_TEAM_NAME_LENGTH}
           />
         </div>
         <div>
@@ -186,6 +264,7 @@ function Team({
             type="number"
             onChange={handlePlacementChange}
             min={1}
+            max={CALENDAR_EVENT_RESULT.MAX_TEAM_PLACEMENT}
             className="w-24"
           />
         </div>
@@ -260,6 +339,8 @@ function Players({
               <input
                 id={formId}
                 onChange={(e) => handleInputChange(i, e.target.value)}
+                min={1}
+                max={CALENDAR_EVENT_RESULT.MAX_PLAYER_NAME_LENGTH}
               />
             ) : (
               <UserCombobox
