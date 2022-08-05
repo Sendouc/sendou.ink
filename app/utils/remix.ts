@@ -38,6 +38,16 @@ export async function parseRequestFormData<T extends z.ZodTypeAny>({
   }
 }
 
+export async function safeParseRequestFormData<T extends z.ZodTypeAny>({
+  request,
+  schema,
+}: {
+  request: Request;
+  schema: T;
+}): Promise<z.SafeParseReturnType<z.infer<T>, T>> {
+  return schema.safeParse(formDataToObject(await request.formData()));
+}
+
 function formDataToObject(formData: FormData) {
   const result: Record<string, string | string[]> = {};
 

@@ -1,5 +1,5 @@
 import { type ActionFunction, type LoaderArgs, json } from "@remix-run/node";
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { z } from "zod";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
@@ -7,20 +7,40 @@ import { CALENDAR_EVENT_RESULT } from "~/constants";
 import { db } from "~/db";
 import { requireUser } from "~/modules/auth";
 import { canReportCalendarEventWinners } from "~/permissions";
-import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import {
-  actualNumber,
-  id,
-  processMany,
-  safeJSONParse,
-  toArray,
-} from "~/utils/zod";
+  notFoundIfFalsy,
+  safeParseRequestFormData,
+  validate,
+} from "~/utils/remix";
+import { actualNumber, id, safeJSONParse, toArray } from "~/utils/zod";
 import * as React from "react";
 import type { User } from "~/db/types";
 import { Button } from "~/components/Button";
 import clsx from "clsx";
 import { UserCombobox } from "~/components/Combobox";
 import { FormMessage } from "~/components/FormMessage";
+
+const playersSchema = z
+  .array(
+    z.union([
+      z.string().min(1).max(CALENDAR_EVENT_RESULT.MAX_PLAYER_NAME_LENGTH),
+      z.object({ id }),
+    ])
+  )
+  .nonempty({ message: "Each team must have at least one player." })
+  .max(CALENDAR_EVENT_RESULT.MAX_PLAYERS_LENGTH)
+  .refine(
+    (val) => {
+      const userIds = val.flatMap((user) =>
+        typeof user === "string" ? [] : user.id
+      );
+
+      return userIds.length === new Set(userIds).size;
+    },
+    {
+      message: "Can't have the same player twice in the same team.",
+    }
+  );
 
 const reportWinnersActionSchema = z.object({
   participantsCount: z.preprocess(
@@ -31,54 +51,47 @@ const reportWinnersActionSchema = z.object({
       .positive()
       .max(CALENDAR_EVENT_RESULT.MAX_PARTICIPANTS_COUNT)
   ),
-  team: z
-    .array(
-      z.preprocess(
-        processMany(safeJSONParse, toArray),
-        z.object({
-          teamName: z
-            .string()
-            .min(1)
-            .max(CALENDAR_EVENT_RESULT.MAX_TEAM_NAME_LENGTH),
-          placement: z.preprocess(
-            actualNumber,
-            z
-              .number()
-              .int()
-              .positive()
-              .max(CALENDAR_EVENT_RESULT.MAX_TEAM_PLACEMENT)
-          ),
-          players: z
-            .array(
-              z.union([
-                z
-                  .string()
-                  .min(1)
-                  .max(CALENDAR_EVENT_RESULT.MAX_PLAYER_NAME_LENGTH),
-                z.object({ id }),
-              ])
-            )
-            .nonempty()
-            .max(CALENDAR_EVENT_RESULT.MAX_PLAYERS_LENGTH),
-        })
+  team: z.preprocess(
+    toArray,
+    z
+      .array(
+        z.preprocess(
+          safeJSONParse,
+          z.object({
+            teamName: z
+              .string()
+              .min(1)
+              .max(CALENDAR_EVENT_RESULT.MAX_TEAM_NAME_LENGTH),
+            placement: z.preprocess(
+              actualNumber,
+              z
+                .number()
+                .int()
+                .positive()
+                .max(CALENDAR_EVENT_RESULT.MAX_TEAM_PLACEMENT)
+            ),
+            players: playersSchema,
+          })
+        )
       )
-    )
-    // don't allow repeating same team name
-    .refine(
-      (val) => val.length === new Set(val.map((team) => team.teamName)).size
-    ),
+      .refine(
+        (val) => val.length === new Set(val.map((team) => team.teamName)).size,
+        { message: "Each team needs a unique name." }
+      )
+  ),
 });
 
 export const action: ActionFunction = async ({ request }) => {
-  // xxx: return nice errors to frontend to render
-  // try {
-  //   const data = await parseRequestFormData({
-  //     request,
-  //     schema: reportWinnersActionSchema,
-  //   });
-  // } catch (e) {
-  //   return null;
-  // }
+  const data = await safeParseRequestFormData({
+    request,
+    schema: reportWinnersActionSchema,
+  });
+
+  if (!data.success) {
+    return {
+      errors: data.error.errors.map((error) => error.message),
+    };
+  }
 
   return null;
 };
@@ -110,6 +123,9 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
 export default function ReportWinnersPage() {
   const data = useLoaderData<typeof loader>();
+  const actionData = useActionData<typeof action>();
+
+  console.log({ actionData });
 
   return (
     <Main halfWidth>
@@ -252,8 +268,9 @@ function Team({
             id={teamNameId}
             value={results.teamName}
             onChange={handleTeamNameChange}
-            min={1}
-            max={CALENDAR_EVENT_RESULT.MAX_TEAM_NAME_LENGTH}
+            // xxx: why doesn't work?
+            minLength={1}
+            maxLength={CALENDAR_EVENT_RESULT.MAX_TEAM_NAME_LENGTH}
           />
         </div>
         <div>
