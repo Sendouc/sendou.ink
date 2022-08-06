@@ -60,7 +60,7 @@ export default function UserInfoPage() {
         </div>
       </div>
       <BadgeContainer badges={data.badges} />
-      {data.bio ? <article className="u__bio">{data.bio}</article> : null}
+      {data.bio && <article>{data.bio}</article>}
     </div>
   );
 }

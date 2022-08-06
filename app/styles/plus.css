@@ -142,3 +142,8 @@
   height: 1.75rem;
   fill: var(--theme-success);
 }
+
+.plus-voting__bio-header {
+  font-size: var(--fonts-lg);
+  padding-block-end: var(--s-2);
+}
