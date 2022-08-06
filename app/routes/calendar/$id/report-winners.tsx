@@ -82,17 +82,35 @@ const reportWinnersActionSchema = z.object({
   ),
 });
 
-export const action: ActionFunction = async ({ request }) => {
-  const data = await safeParseRequestFormData({
+const reportWinnersParamsSchema = z.object({
+  id: z.preprocess(actualNumber, id),
+});
+
+export const action: ActionFunction = async ({ request, params }) => {
+  const parsedParams = reportWinnersParamsSchema.parse(params);
+  const parsedInput = await safeParseRequestFormData({
     request,
     schema: reportWinnersActionSchema,
   });
 
-  if (!data.success) {
+  if (!parsedInput.success) {
     return {
-      errors: data.error.errors.map((error) => error.message),
+      errors: parsedInput.errors,
     };
   }
+
+  db.calendarEvents.upsertReportedScores({
+    eventId: parsedParams.id,
+    participantCount: parsedInput.data.participantsCount,
+    winners: parsedInput.data.team.flatMap((t) =>
+      t.players.map((player) => ({
+        teamName: t.teamName,
+        placement: t.placement,
+        userId: typeof player !== "string" ? player.id : null,
+        name: typeof player === "string" ? player : null,
+      }))
+    ),
+  });
 
   return null;
 };
@@ -102,9 +120,7 @@ export const handle = {
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
-  const parsedParams = z
-    .object({ id: z.preprocess(actualNumber, id) })
-    .parse(params);
+  const parsedParams = reportWinnersParamsSchema.parse(params);
   const user = await requireUser(request);
   const event = notFoundIfFalsy(db.calendarEvents.findById(parsedParams.id));
 
@@ -267,8 +283,7 @@ function Team({
             id={teamNameId}
             value={results.teamName}
             onChange={handleTeamNameChange}
-            // xxx: why doesn't work?
-            minLength={1}
+            required={!hidden}
             maxLength={CALENDAR_EVENT_RESULT.MAX_TEAM_NAME_LENGTH}
           />
         </div>
@@ -279,7 +294,7 @@ function Team({
             value={results.placement}
             type="number"
             onChange={handlePlacementChange}
-            min={1}
+            required={!hidden}
             max={CALENDAR_EVENT_RESULT.MAX_TEAM_PLACEMENT}
             className="w-24"
           />

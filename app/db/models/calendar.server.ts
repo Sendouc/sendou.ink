@@ -7,6 +7,7 @@ import type {
   Badge,
   CalendarEventTag,
   CalendarEventBadge,
+  CalendarEventWinner,
 } from "../types";
 
 const createStm = sql.prepare(`
@@ -126,6 +127,53 @@ export const update = sql.transaction(
         eventId,
         badgeId,
       });
+    }
+  }
+);
+
+const updateCalendarEventParticipantsCountStm = sql.prepare(`
+  update "CalendarEvent" 
+    set "participantCount" = $participantCount
+    where "id" = $eventId
+`);
+
+const deleteCalendarEventWinnersByEventIdStm = sql.prepare(`
+  delete from "CalendarEventWinner"
+    where "eventId" = $eventId
+`);
+
+const insertCalendarEventWinnerStm = sql.prepare(`
+  insert into "CalendarEventWinner" (
+    "eventId",
+    "teamName",
+    "placement",
+    "userId",
+    "name"
+  ) values (
+    $eventId,
+    $teamName,
+    $placement,
+    $userId,
+    $name
+  )
+`);
+export const upsertReportedScores = sql.transaction(
+  ({
+    eventId,
+    participantCount,
+    winners,
+  }: {
+    eventId: CalendarEvent["id"];
+    participantCount: CalendarEvent["participantCount"];
+    winners: Array<
+      Pick<CalendarEventWinner, "teamName" | "placement" | "userId" | "name">
+    >;
+  }) => {
+    updateCalendarEventParticipantsCountStm.run({ eventId, participantCount });
+    deleteCalendarEventWinnersByEventIdStm.run({ eventId });
+
+    for (const winner of winners) {
+      insertCalendarEventWinnerStm.run({ ...winner, eventId });
     }
   }
 );

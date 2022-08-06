@@ -44,8 +44,23 @@ export async function safeParseRequestFormData<T extends z.ZodTypeAny>({
 }: {
   request: Request;
   schema: T;
-}): Promise<z.SafeParseReturnType<z.infer<T>, T>> {
-  return schema.safeParse(formDataToObject(await request.formData()));
+}): Promise<
+  { success: true; data: z.infer<T> } | { success: false; errors: string[] }
+> {
+  const parsed = schema.safeParse(formDataToObject(await request.formData()));
+
+  // this implementation is somewhat redundant but it's the only way I got types to work nice
+  if (!parsed.success) {
+    return {
+      success: false,
+      errors: parsed.error.errors.map((error) => error.message),
+    };
+  }
+
+  return {
+    success: true,
+    data: parsed.data,
+  };
 }
 
 function formDataToObject(formData: FormData) {
