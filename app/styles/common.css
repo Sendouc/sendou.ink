@@ -461,6 +461,14 @@ dialog::backdrop {
   border-radius: 50%;
 }
 
+.form-errors {
+  font-size: var(--fonts-sm);
+}
+
+.form-errors > h4 {
+  color: var(--theme-error);
+}
+
 .stack {
   display: flex;
   flex-direction: column;

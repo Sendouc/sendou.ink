@@ -1,5 +1,5 @@
 import { type ActionFunction, type LoaderArgs, json } from "@remix-run/node";
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import { Form, useLoaderData } from "@remix-run/react";
 import { z } from "zod";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
@@ -19,6 +19,7 @@ import { Button } from "~/components/Button";
 import clsx from "clsx";
 import { UserCombobox } from "~/components/Combobox";
 import { FormMessage } from "~/components/FormMessage";
+import { FormErrors } from "~/components/FormErrors";
 
 const playersSchema = z
   .array(
@@ -123,9 +124,6 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
 export default function ReportWinnersPage() {
   const data = useLoaderData<typeof loader>();
-  const actionData = useActionData<typeof action>();
-
-  console.log({ actionData });
 
   return (
     <Main halfWidth>
@@ -140,6 +138,7 @@ export default function ReportWinnersPage() {
         <Button type="submit" className="mt-4">
           Submit
         </Button>
+        <FormErrors />
       </Form>
     </Main>
   );
