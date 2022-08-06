@@ -286,7 +286,7 @@ function Voting(data: Extract<PlusVotingLoaderData, { type: "voting" }>) {
           ) : null}
           {currentUser.user.bio ? (
             <>
-              <article>
+              <article className="w-full">
                 <h2 className="plus-voting__bio-header">Bio</h2>
                 {currentUser.user.bio}
               </article>
