@@ -65,3 +65,16 @@ sips -s format png ./*.gif --out .
 ### avif
 
 https://github.com/lovell/avif-cli
+
+## How to...
+
+### Download production database from Render.com
+
+Note: This is only useful if you have access to a production running on Render.com
+
+1. Access "Shell" tab
+2. `cd /var/data`
+3. `sqlite3 db.sqlite3` then inside sqlite3 CLI `.output dump` and `.dump`
+4. `wormhole send dump.sql`
+5. On the receiver computer use the command shown.
+6. `sqlite3 db-prod.sqlite3 < dump` on the receiver computer.
