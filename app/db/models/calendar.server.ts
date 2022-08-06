@@ -178,6 +178,46 @@ export const upsertReportedScores = sql.transaction(
   }
 );
 
+const findWinnersByEventIdStm = sql.prepare(`
+  select 
+    "teamName",
+    "placement",
+    "userId",
+    "name"
+  from "CalendarEventWinner"
+  where "eventId" = $eventId
+  order by "placement" asc
+`);
+
+export function findWinnersByEventId(eventId: CalendarEvent["id"]) {
+  const rows = findWinnersByEventIdStm.all({ eventId }) as Array<
+    Pick<CalendarEventWinner, "teamName" | "placement" | "userId" | "name">
+  >;
+
+  const result: Array<{
+    teamName: CalendarEventWinner["teamName"];
+    placement: CalendarEventWinner["placement"];
+    players: Array<string | { id: number }>;
+  }> = [];
+
+  for (const row of rows) {
+    const team = result.find((team) => team.teamName === row.teamName);
+    const player = row.name ?? { id: row.userId! };
+
+    if (team) {
+      team.players.push(player);
+    } else {
+      result.push({
+        teamName: row.teamName,
+        placement: row.placement,
+        players: [player],
+      });
+    }
+  }
+
+  return result;
+}
+
 const findAllBetweenTwoTimestampsStm = sql.prepare(`
   select
     "CalendarEvent"."name",
@@ -250,6 +290,7 @@ const findByIdStm = sql.prepare(`
     "CalendarEvent"."discordUrl",
     "CalendarEvent"."bracketUrl",
     "CalendarEvent"."tags",
+    "CalendarEvent"."participantCount",
     "User"."id" as "authorId",
     exists (select 1 
       from "CalendarEventBadge" 
@@ -279,6 +320,7 @@ export function findById(id: CalendarEvent["id"]) {
       | "bracketUrl"
       | "tags"
       | "authorId"
+      | "participantCount"
     > &
       Pick<CalendarEventDate, "startTime" | "eventId"> &
       Pick<

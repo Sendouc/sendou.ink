@@ -17,6 +17,7 @@ interface ComboboxProps<T> {
   className?: string;
   id?: string;
   isLoading?: boolean;
+  initialValue?: ComboboxOption<T>;
   onChange?: (selectedOption?: ComboboxOption<T>) => void;
 }
 
@@ -24,6 +25,7 @@ export function Combobox<T extends Record<string, string | null | number>>({
   options,
   inputName,
   placeholder,
+  initialValue,
   onChange,
   className,
   id,
@@ -32,6 +34,10 @@ export function Combobox<T extends Record<string, string | null | number>>({
   const [selectedOption, setSelectedOption] =
     React.useState<Unpacked<typeof options>>();
   const [query, setQuery] = React.useState("");
+
+  React.useEffect(() => {
+    setSelectedOption(initialValue);
+  }, [initialValue]);
 
   const filteredOptions = (() => {
     if (!query) return [];
@@ -100,6 +106,7 @@ export function Combobox<T extends Record<string, string | null | number>>({
 // TODO: if we search with only discord id "79237403620945920" then doesn't really make sense to do fuzzy search
 export function UserCombobox({
   inputName,
+  initialUserId,
   onChange,
   userIdsToOmit,
   className,
@@ -107,17 +114,15 @@ export function UserCombobox({
 }: Pick<
   ComboboxProps<Pick<UserWithPlusTier, "discordId" | "plusTier">>,
   "inputName" | "onChange" | "className" | "id"
-> & { userIdsToOmit?: Set<number> }) {
+> & { userIdsToOmit?: Set<number>; initialUserId?: number }) {
   const fetcher = useFetcher<UsersLoaderData>();
 
   React.useEffect(() => {
     if (fetcher.type === "init") fetcher.load("/users");
   }, [fetcher]);
 
-  const isLoading = fetcher.type !== "done";
-
-  const options = () => {
-    if (isLoading) return [];
+  const options = React.useMemo(() => {
+    if (fetcher.type !== "done") return [];
 
     const data = userIdsToOmit
       ? fetcher.data.users.filter((user) => !userIdsToOmit.has(user.id))
@@ -129,14 +134,20 @@ export function UserCombobox({
       discordId: u.discordId,
       plusTier: u.plusTier,
     }));
-  };
+  }, [fetcher, userIdsToOmit]);
+
+  const initialValue = React.useMemo(() => {
+    if (!initialUserId) return;
+    return options.find((o) => o.value === String(initialUserId));
+  }, [options, initialUserId]);
 
   return (
     <Combobox
       inputName={inputName}
-      options={options()}
+      options={options}
       placeholder="Sendou#0043"
-      isLoading={isLoading}
+      isLoading={fetcher.type !== "done"}
+      initialValue={initialValue}
       onChange={onChange}
       className={className}
       id={id}

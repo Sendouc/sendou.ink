@@ -20,6 +20,8 @@ import clsx from "clsx";
 import { UserCombobox } from "~/components/Combobox";
 import { FormMessage } from "~/components/FormMessage";
 import { FormErrors } from "~/components/FormErrors";
+import type { UseDataFunctionReturn } from "@remix-run/react/dist/components";
+import type { Unpacked } from "~/utils/types";
 
 const playersSchema = z
   .array(
@@ -44,7 +46,7 @@ const playersSchema = z
   );
 
 const reportWinnersActionSchema = z.object({
-  participantsCount: z.preprocess(
+  participantCount: z.preprocess(
     actualNumber,
     z
       .number()
@@ -101,7 +103,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   db.calendarEvents.upsertReportedScores({
     eventId: parsedParams.id,
-    participantCount: parsedInput.data.participantsCount,
+    participantCount: parsedInput.data.participantCount,
     winners: parsedInput.data.team.flatMap((t) =>
       t.players.map((player) => ({
         teamName: t.teamName,
@@ -135,6 +137,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   return json({
     name: event.name,
+    participantCount: event.participantCount,
+    winners: db.calendarEvents.findWinnersByEventId(parsedParams.id),
   });
 };
 
@@ -161,20 +165,20 @@ export default function ReportWinnersPage() {
 }
 
 function ParticipantsCountInput() {
-  // const { eventToEdit } = useLoaderData<typeof loader>();
+  const data = useLoaderData<typeof loader>();
 
   return (
     <div>
       <Label htmlFor="name" required>
-        Participants count
+        Participant count
       </Label>
       <input
-        name="participantsCount"
+        name="participantCount"
         type="number"
         required
         min={1}
         max={CALENDAR_EVENT_RESULT.MAX_PARTICIPANTS_COUNT}
-        // defaultValue={eventToEdit?.name}
+        defaultValue={data.participantCount ?? undefined}
         data-cy="participants-count-input"
         className="w-24"
       />
@@ -183,7 +187,10 @@ function ParticipantsCountInput() {
 }
 
 function TeamInputs() {
-  const [amountOfTeams, setAmountOfTeams] = React.useState(1);
+  const data = useLoaderData<typeof loader>();
+  const [amountOfTeams, setAmountOfTeams] = React.useState(
+    Math.max(data.winners.length, 1)
+  );
 
   const handleTeamDelete = () => {
     setAmountOfTeams(amountOfTeams - 1);
@@ -206,6 +213,7 @@ function TeamInputs() {
               }
               hidden={hidden}
               initialPlacement={String(i + 1)}
+              initialValues={data.winners[i]}
             />
             {!hidden && <hr className="w-full" />}
           </React.Fragment>
@@ -238,18 +246,22 @@ function Team({
   onRemoveTeam,
   hidden,
   initialPlacement,
+  initialValues,
 }: {
   onRemoveTeam?: () => void;
   hidden: boolean;
   initialPlacement: string;
+  initialValues?: Unpacked<UseDataFunctionReturn<typeof loader>["winners"]>;
 }) {
   const teamNameId = React.useId();
   const placementId = React.useId();
 
   const [results, setResults] = React.useState<TeamResults>({
-    teamName: "",
-    placement: initialPlacement,
-    players: [NEW_PLAYER, NEW_PLAYER, NEW_PLAYER, NEW_PLAYER],
+    teamName: initialValues?.teamName ?? "",
+    placement: String(initialValues?.placement ?? initialPlacement),
+    players: initialValues?.players
+      ? initialValues.players
+      : [NEW_PLAYER, NEW_PLAYER, NEW_PLAYER, NEW_PLAYER],
   });
 
   const handleTeamNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -369,14 +381,15 @@ function Players({
             {asPlainInput ? (
               <input
                 id={formId}
+                value={player}
                 onChange={(e) => handleInputChange(i, e.target.value)}
-                min={1}
                 max={CALENDAR_EVENT_RESULT.MAX_PLAYER_NAME_LENGTH}
               />
             ) : (
               <UserCombobox
                 id={formId}
-                inputName="old-user"
+                inputName="team-player"
+                initialUserId={player.id}
                 onChange={(selected) =>
                   handleInputChange(
                     i,
