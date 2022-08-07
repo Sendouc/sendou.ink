@@ -32,11 +32,15 @@ export async function givePlusRoleToMember({
   const { users } = await usersWithAccessCached();
   const usersPlusTier = users[member.id];
 
-  if (!usersPlusTier && interaction) {
-    return interaction.reply({
-      content: "You currently don't have access",
-      ephemeral: true,
-    });
+  if (!usersPlusTier) {
+    if (interaction) {
+      return interaction.reply({
+        content: "You currently don't have access",
+        ephemeral: true,
+      });
+    } else {
+      return;
+    }
   }
 
   const targetRoleId = plusTierToRoleId(usersPlusTier);
