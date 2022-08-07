@@ -272,22 +272,22 @@ function Team({
     setResults({ ...results, placement: e.target.value });
   };
 
+  if (hidden) return null;
+
   return (
-    <div className={clsx("stack md items-start", { hidden })}>
-      {!hidden && (
-        <input
-          type="hidden"
-          name="team"
-          value={JSON.stringify({
-            ...results,
-            players: results.players.filter(
-              (player) =>
-                (typeof player === "string" && player !== "") ||
-                (typeof player === "object" && player.id !== 0)
-            ),
-          })}
-        />
-      )}
+    <div className={clsx("stack md items-start")}>
+      <input
+        type="hidden"
+        name="team"
+        value={JSON.stringify({
+          ...results,
+          players: results.players.filter(
+            (player) =>
+              (typeof player === "string" && player !== "") ||
+              (typeof player === "object" && player.id !== 0)
+          ),
+        })}
+      />
       <div className="stack horizontal md flex-wrap">
         <div>
           <Label htmlFor={teamNameId}>Team name</Label>
@@ -295,7 +295,7 @@ function Team({
             id={teamNameId}
             value={results.teamName}
             onChange={handleTeamNameChange}
-            required={!hidden}
+            required
             maxLength={CALENDAR_EVENT_RESULT.MAX_TEAM_NAME_LENGTH}
           />
         </div>
@@ -306,7 +306,7 @@ function Team({
             value={results.placement}
             type="number"
             onChange={handlePlacementChange}
-            required={!hidden}
+            required
             max={CALENDAR_EVENT_RESULT.MAX_TEAM_PLACEMENT}
             className="w-24"
           />
