@@ -3,9 +3,8 @@ import * as React from "react";
 import Fuse from "fuse.js";
 import clsx from "clsx";
 import type { Unpacked } from "~/utils/types";
-import { useFetcher } from "@remix-run/react";
-import type { UsersLoaderData } from "~/routes/users";
 import type { UserWithPlusTier } from "~/db/types";
+import { useUsers } from "~/hooks/swr";
 
 const MAX_RESULTS_SHOWN = 6;
 
@@ -115,18 +114,14 @@ export function UserCombobox({
   ComboboxProps<Pick<UserWithPlusTier, "discordId" | "plusTier">>,
   "inputName" | "onChange" | "className" | "id"
 > & { userIdsToOmit?: Set<number>; initialUserId?: number }) {
-  const fetcher = useFetcher<UsersLoaderData>();
-
-  React.useEffect(() => {
-    if (fetcher.type === "init") fetcher.load("/users");
-  }, [fetcher]);
+  const { users, isLoading, isError } = useUsers();
 
   const options = React.useMemo(() => {
-    if (fetcher.type !== "done") return [];
+    if (!users) return [];
 
     const data = userIdsToOmit
-      ? fetcher.data.users.filter((user) => !userIdsToOmit.has(user.id))
-      : fetcher.data.users;
+      ? users.filter((user) => !userIdsToOmit.has(user.id))
+      : users;
 
     return data.map((u) => ({
       label: u.discordFullName,
@@ -134,19 +129,27 @@ export function UserCombobox({
       discordId: u.discordId,
       plusTier: u.plusTier,
     }));
-  }, [fetcher, userIdsToOmit]);
+  }, [users, userIdsToOmit]);
 
   const initialValue = React.useMemo(() => {
     if (!initialUserId) return;
     return options.find((o) => o.value === String(initialUserId));
   }, [options, initialUserId]);
 
+  if (isError) {
+    return (
+      <div className="text-sm text-error">
+        Something went wrong. Try reloading the page.
+      </div>
+    );
+  }
+
   return (
     <Combobox
       inputName={inputName}
       options={options}
       placeholder="Sendou#0043"
-      isLoading={fetcher.type !== "done"}
+      isLoading={isLoading}
       initialValue={initialValue}
       onChange={onChange}
       className={className}

@@ -23,7 +23,7 @@ Calendar
 
 ## Other
 
-- [ ] User selector allow passing users from top level
+- [x] User selector allow passing users from top level
 - [ ] Constants use CALENDAR_EVENT object
 - [ ] New unfriendly crash if omits dates
 - [x] badges inside tag?
