@@ -50,13 +50,13 @@ import {
 import {
   databaseTimestampToDate,
   dateToDatabaseTimestamp,
-  dateToYearMonthDayHourMinuteString,
 } from "~/utils/dates";
 import { calendarEventPage } from "~/utils/urls";
 import { makeTitle } from "~/utils/strings";
 import { i18next } from "~/modules/i18n";
 import type { UseDataFunctionReturn } from "@remix-run/react/dist/components";
 import { canEditCalendarEvent } from "~/permissions";
+import { DateInput } from "~/components/DateInput";
 
 const MIN_DATE = new Date(Date.UTC(2015, 4, 28));
 
@@ -288,19 +288,16 @@ function DatesInput() {
 
             return (
               <div key={i} className="stack horizontal sm items-center">
-                <input
+                <DateInput
                   id="date"
-                  type="datetime-local"
                   name="date"
                   defaultValue={
                     defaultStartTime
-                      ? dateToYearMonthDayHourMinuteString(
-                          databaseTimestampToDate(defaultStartTime)
-                        )
+                      ? databaseTimestampToDate(defaultStartTime)
                       : undefined
                   }
-                  min={dateToYearMonthDayHourMinuteString(MIN_DATE)}
-                  max={dateToYearMonthDayHourMinuteString(MAX_DATE)}
+                  min={MIN_DATE}
+                  max={MAX_DATE}
                   data-cy="date-input"
                   required
                 />
