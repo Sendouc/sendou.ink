@@ -1,19 +1,21 @@
-// Require the necessary discord.js classes
-import { Client, Intents } from "discord.js";
+import { Client, GatewayIntentBits } from "discord.js";
 import "dotenv/config";
 import invariant from "tiny-invariant";
 import { commandsMap } from "./commands";
+import { handleMemberJoin } from "./handleMemberJoin";
 
 invariant(process.env["BOT_TOKEN"], "DISCORD_TOKEN must be set");
 
 const client = new Client({
-  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS],
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
 });
 
 client.once("ready", () => {
   // eslint-disable-next-line no-console
   console.log("Ready!");
 });
+
+client.on("guildMemberAdd", handleMemberJoin);
 
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isCommand()) return;
