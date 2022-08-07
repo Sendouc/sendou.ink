@@ -104,14 +104,14 @@ export const action: ActionFunction = async ({ request, params }) => {
   db.calendarEvents.upsertReportedScores({
     eventId: parsedParams.id,
     participantCount: parsedInput.data.participantCount,
-    winners: parsedInput.data.team.flatMap((t) =>
-      t.players.map((player) => ({
-        teamName: t.teamName,
-        placement: t.placement,
-        userId: typeof player !== "string" ? player.id : null,
-        name: typeof player === "string" ? player : null,
-      }))
-    ),
+    results: parsedInput.data.team.map((t) => ({
+      teamName: t.teamName,
+      placement: t.placement,
+      players: t.players.map((p) => ({
+        userId: typeof p === "string" ? null : p.id,
+        name: typeof p === "string" ? p : null,
+      })),
+    })),
   });
 
   return null;

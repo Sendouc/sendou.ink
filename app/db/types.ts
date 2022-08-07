@@ -100,10 +100,15 @@ export interface CalendarEventDate {
   startTime: number;
 }
 
-export interface CalendarEventWinner {
+export interface CalendarEventResultTeam {
+  id: number;
   eventId: number;
-  teamName: string;
+  name: string;
   placement: number;
+}
+
+export interface CalendarEventResultPlayer {
+  teamId: number;
   userId: number | null;
   name: string | null;
 }

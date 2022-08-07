@@ -23,6 +23,7 @@ Calendar
 
 ## Other
 
+- [ ] Redirect to event page after submitting results
 - [x] date input take in account time zone difference between server and client
 - [x] User selector allow passing users from top level
 - [x] Constants use CALENDAR_EVENT object

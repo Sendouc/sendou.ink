@@ -19,7 +19,7 @@ const NZAP_TEST_DISCORD_ID = "455039198672453645";
 const NZAP_TEST_AVATAR = "f809176af93132c3db5f0a5019e96339"; // https://cdn.discordapp.com/avatars/455039198672453645/f809176af93132c3db5f0a5019e96339.webp?size=160
 const NZAP_TEST_ID = 2;
 
-const AMOUNT_OF_CALENDAR_EVENTS = 100;
+const AMOUNT_OF_CALENDAR_EVENTS = 200;
 
 const basicSeeds = [
   adminUser,
@@ -48,7 +48,8 @@ export function seed() {
 function wipeDB() {
   const tablesToDelete = [
     "CalendarEventDate",
-    "CalendarEventWinner",
+    "CalendarEventResultPlayer",
+    "CalendarEventResultTeam",
     "CalendarEventBadge",
     "CalendarEvent",
     "User",
@@ -315,11 +316,15 @@ function patrons() {
   }
 }
 
-function calendarEvents() {
-  const userIds = sql
+function userIdsInRandomOrder() {
+  return sql
     .prepare(`select "id" from "User" order by random()`)
     .all()
     .map((u) => u.id);
+}
+
+function calendarEvents() {
+  const userIds = userIdsInRandomOrder();
 
   for (let id = 1; id <= AMOUNT_OF_CALENDAR_EVENTS; id++) {
     const tags = shuffle(Object.keys(allTags)).filter((tag) => tag !== "BADGE");
@@ -369,7 +374,8 @@ function calendarEvents() {
       });
 
     const twoDayEvent = Math.random() > 0.9;
-    const startTime = faker.date.soon(42);
+    const startTime =
+      id % 2 === 0 ? faker.date.soon(42) : faker.date.recent(42);
     startTime.setMinutes(0, 0, 0);
 
     sql

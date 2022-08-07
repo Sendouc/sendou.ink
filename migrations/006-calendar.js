@@ -29,14 +29,24 @@ module.exports.up = function (db) {
 
   db.prepare(
     `
-    create table "CalendarEventWinner" (
+    create table "CalendarEventResultTeam" (
+      "id" integer primary key,
       "eventId" integer not null,
-      "teamName" text not null,
+      "name" text not null,
       "placement" integer not null,
+      foreign key ("eventId") references "CalendarEvent"("id") on delete cascade
+    ) strict
+    `
+  ).run();
+
+  db.prepare(
+    `
+    create table "CalendarEventResultPlayer" (
+      "teamId" integer not null,
       "userId" integer,
       "name" text,
-      foreign key ("eventId") references "CalendarEvent"("id") on delete cascade,
-      foreign key ("userId") references "User"("id") on delete cascade
+      foreign key ("teamId") references "CalendarEventResultTeam"("id") on delete cascade,
+      foreign key ("userId") references "User"("id") on delete restrict
     ) strict
     `
   ).run();
@@ -57,7 +67,8 @@ module.exports.up = function (db) {
 module.exports.down = function (db) {
   for (const table of [
     "CalendarEventDate",
-    "CalendarEventWinner",
+    "CalendarEventResultPlayer",
+    "CalendarEventResultTeam",
     "CalendarEventBadge",
     "CalendarEvent",
   ]) {

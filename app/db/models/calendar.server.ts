@@ -7,7 +7,8 @@ import type {
   Badge,
   CalendarEventTag,
   CalendarEventBadge,
-  CalendarEventWinner,
+  CalendarEventResultTeam,
+  CalendarEventResultPlayer,
 } from "../types";
 
 const createStm = sql.prepare(`
@@ -137,72 +138,108 @@ const updateCalendarEventParticipantsCountStm = sql.prepare(`
     where "id" = $eventId
 `);
 
-const deleteCalendarEventWinnersByEventIdStm = sql.prepare(`
-  delete from "CalendarEventWinner"
+const deleteCalendarEventResultTeamsByEventIdStm = sql.prepare(`
+  delete from "CalendarEventResultTeam"
     where "eventId" = $eventId
 `);
 
-const insertCalendarEventWinnerStm = sql.prepare(`
-  insert into "CalendarEventWinner" (
+const insertCalendarEventResultTeamStm = sql.prepare(`
+  insert into "CalendarEventResultTeam" (
     "eventId",
-    "teamName",
-    "placement",
+    "name",
+    "placement"
+  ) values (
+    $eventId,
+    $name,
+    $placement
+  )
+  returning *
+`);
+
+const insertCalendarEventResultPlayerStm = sql.prepare(`
+  insert into "CalendarEventResultPlayer" (
+    "teamId",
     "userId",
     "name"
   ) values (
-    $eventId,
-    $teamName,
-    $placement,
+    $teamId,
     $userId,
     $name
   )
 `);
+
 export const upsertReportedScores = sql.transaction(
   ({
     eventId,
     participantCount,
-    winners,
+    results,
   }: {
     eventId: CalendarEvent["id"];
     participantCount: CalendarEvent["participantCount"];
-    winners: Array<
-      Pick<CalendarEventWinner, "teamName" | "placement" | "userId" | "name">
-    >;
+    results: Array<{
+      teamName: CalendarEventResultTeam["name"];
+      placement: CalendarEventResultTeam["placement"];
+      players: Array<{
+        userId: CalendarEventResultPlayer["userId"];
+        name: CalendarEventResultPlayer["name"];
+      }>;
+    }>;
   }) => {
     updateCalendarEventParticipantsCountStm.run({ eventId, participantCount });
-    deleteCalendarEventWinnersByEventIdStm.run({ eventId });
+    deleteCalendarEventResultTeamsByEventIdStm.run({ eventId });
 
-    for (const winner of winners) {
-      insertCalendarEventWinnerStm.run({ ...winner, eventId });
+    for (const { players, ...teamArgs } of results) {
+      const teamInDb = insertCalendarEventResultTeamStm.get({
+        eventId,
+        name: teamArgs.teamName,
+        placement: teamArgs.placement,
+      }) as CalendarEventResultTeam;
+
+      for (const playerArgs of players) {
+        insertCalendarEventResultPlayerStm.run({
+          teamId: teamInDb.id,
+          userId: playerArgs.userId,
+          name: playerArgs.name,
+        });
+      }
     }
   }
 );
 
 const findWinnersByEventIdStm = sql.prepare(`
   select 
-    "teamName",
-    "placement",
-    "userId",
-    "name"
-  from "CalendarEventWinner"
-  where "eventId" = $eventId
+    "CalendarEventResultTeam"."id",
+    "CalendarEventResultTeam"."name" as "teamName",
+    "CalendarEventResultTeam"."placement",
+    "CalendarEventResultPlayer"."userId" as "playerId",
+    "CalendarEventResultPlayer"."name" as "playerName"
+  from "CalendarEventResultTeam"
+  join 
+    "CalendarEventResultPlayer" 
+      on 
+    "CalendarEventResultPlayer"."teamId" = "CalendarEventResultTeam"."id"
+  where "CalendarEventResultTeam"."eventId" = $eventId
   order by "placement" asc
 `);
 
 export function findWinnersByEventId(eventId: CalendarEvent["id"]) {
-  const rows = findWinnersByEventIdStm.all({ eventId }) as Array<
-    Pick<CalendarEventWinner, "teamName" | "placement" | "userId" | "name">
-  >;
+  const rows = findWinnersByEventIdStm.all({ eventId }) as Array<{
+    id: CalendarEventResultTeam["id"];
+    teamName: CalendarEventResultTeam["name"];
+    placement: CalendarEventResultTeam["placement"];
+    playerId: CalendarEventResultPlayer["userId"];
+    playerName: CalendarEventResultPlayer["name"];
+  }>;
 
   const result: Array<{
-    teamName: CalendarEventWinner["teamName"];
-    placement: CalendarEventWinner["placement"];
+    teamName: CalendarEventResultTeam["name"];
+    placement: CalendarEventResultTeam["placement"];
     players: Array<string | { id: number }>;
   }> = [];
 
   for (const row of rows) {
     const team = result.find((team) => team.teamName === row.teamName);
-    const player = row.name ?? { id: row.userId! };
+    const player = row.playerName ?? { id: row.playerId! };
 
     if (team) {
       team.players.push(player);
