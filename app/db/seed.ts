@@ -35,6 +35,7 @@ const basicSeeds = [
   patrons,
   calendarEvents,
   calendarEventBadges,
+  calendarEventResults,
 ];
 
 export function seed() {
@@ -320,7 +321,7 @@ function userIdsInRandomOrder() {
   return sql
     .prepare(`select "id" from "User" order by random()`)
     .all()
-    .map((u) => u.id);
+    .map((u) => u.id) as number[];
 }
 
 function calendarEvents() {
@@ -437,5 +438,50 @@ function calendarEventBadges() {
         )
         .run({ eventId, badgeId: availableBadgeIds.pop() });
     }
+  }
+}
+
+function calendarEventResults() {
+  let userIds = userIdsInRandomOrder();
+  const eventIdsOfPast = new Set<number>(
+    sql
+      .prepare(
+        `select "CalendarEvent"."id" 
+          from "CalendarEvent" 
+          join "CalendarEventDate" on "CalendarEventDate"."eventId" = "CalendarEvent"."id"
+          where "CalendarEventDate"."startTime" < $startTime`
+      )
+      .all({ startTime: dateToDatabaseTimestamp(new Date()) })
+      .map((r) => r.id)
+  );
+
+  for (const eventId of eventIdsOfPast) {
+    if (Math.random() < 0.3) continue;
+
+    db.calendarEvents.upsertReportedScores({
+      eventId,
+      participantCount: faker.datatype.number({ min: 10, max: 250 }),
+      results: new Array(faker.helpers.arrayElement([1, 1, 2, 3, 3, 3, 8, 8]))
+        .fill(null)
+        // eslint-disable-next-line no-loop-func
+        .map((_, i) => ({
+          placement: i + 1,
+          teamName: capitalize(faker.word.noun()),
+          players: new Array(
+            faker.helpers.arrayElement([1, 2, 3, 4, 4, 4, 4, 4, 5, 6])
+          )
+            .fill(null)
+            .map(() => {
+              const withStringName = Math.random() < 0.2;
+
+              return {
+                name: withStringName ? faker.name.firstName() : null,
+                userId: withStringName ? null : userIds.pop()!,
+              };
+            }),
+        })),
+    });
+
+    userIds = userIdsInRandomOrder();
   }
 }

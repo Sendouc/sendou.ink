@@ -222,7 +222,7 @@ const findWinnersByEventIdStm = sql.prepare(`
   order by "placement" asc
 `);
 
-export function findWinnersByEventId(eventId: CalendarEvent["id"]) {
+export function findResultsByEventId(eventId: CalendarEvent["id"]) {
   const rows = findWinnersByEventIdStm.all({ eventId }) as Array<{
     id: CalendarEventResultTeam["id"];
     teamName: CalendarEventResultTeam["name"];

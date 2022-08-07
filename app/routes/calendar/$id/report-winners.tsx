@@ -138,7 +138,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return json({
     name: event.name,
     participantCount: event.participantCount,
-    winners: db.calendarEvents.findWinnersByEventId(parsedParams.id),
+    winners: db.calendarEvents.findResultsByEventId(parsedParams.id),
   });
 };
 

@@ -63,6 +63,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     event,
     badgePrizes: db.calendarEvents.findBadgesById(parsedParams.id),
     title: makeTitle([event.name, t("pages.calendar")]),
+    results: db.calendarEvents.findResultsByEventId(parsedParams.id),
   });
 };
 
