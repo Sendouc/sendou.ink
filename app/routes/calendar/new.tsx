@@ -3,15 +3,7 @@ import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import * as React from "react";
 import type { Badge as BadgeType, CalendarEventTag } from "~/db/types";
-import {
-  CALENDAR_EVENT_TAGS,
-  CALENDAR_EVENT_BRACKET_URL_MAX_LENGTH,
-  CALENDAR_EVENT_DESCRIPTION_MAX_LENGTH,
-  CALENDAR_EVENT_DISCORD_INVITE_CODE_MAX_LENGTH,
-  CALENDAR_EVENT_MAX_AMOUNT_OF_DATES,
-  CALENDAR_EVENT_NAME_MAX_LENGTH,
-  CALENDAR_EVENT_NAME_MIN_LENGTH,
-} from "~/constants";
+import { CALENDAR_EVENT } from "~/constants";
 import { Button } from "~/components/Button";
 import {
   json,
@@ -41,6 +33,7 @@ import {
   processMany,
   removeDuplicates,
   safeJSONParse,
+  toArray,
 } from "~/utils/zod";
 import {
   badRequestIfFalsy,
@@ -81,20 +74,23 @@ const newCalendarEventActionSchema = z.object({
   eventToEditId: z.preprocess(actualNumber, id.nullish()),
   name: z
     .string()
-    .min(CALENDAR_EVENT_NAME_MIN_LENGTH)
-    .max(CALENDAR_EVENT_NAME_MAX_LENGTH),
+    .min(CALENDAR_EVENT.NAME_MIN_LENGTH)
+    .max(CALENDAR_EVENT.NAME_MAX_LENGTH),
   description: z.preprocess(
     falsyToNull,
-    z.string().max(CALENDAR_EVENT_DESCRIPTION_MAX_LENGTH).nullable()
+    z.string().max(CALENDAR_EVENT.DESCRIPTION_MAX_LENGTH).nullable()
   ),
-  date: z
-    .array(z.preprocess(date, z.date().min(MIN_DATE).max(MAX_DATE)))
-    .min(1)
-    .max(CALENDAR_EVENT_MAX_AMOUNT_OF_DATES),
-  bracketUrl: z.string().url().max(CALENDAR_EVENT_BRACKET_URL_MAX_LENGTH),
+  date: z.preprocess(
+    toArray,
+    z
+      .array(z.preprocess(date, z.date().min(MIN_DATE).max(MAX_DATE)))
+      .min(1)
+      .max(CALENDAR_EVENT.MAX_AMOUNT_OF_DATES)
+  ),
+  bracketUrl: z.string().url().max(CALENDAR_EVENT.BRACKET_URL_MAX_LENGTH),
   discordInviteCode: z.preprocess(
     falsyToNull,
-    z.string().max(CALENDAR_EVENT_DISCORD_INVITE_CODE_MAX_LENGTH).nullable()
+    z.string().max(CALENDAR_EVENT.DISCORD_INVITE_CODE_MAX_LENGTH).nullable()
   ),
   tags: z.preprocess(
     processMany(safeJSONParse, removeDuplicates),
@@ -103,7 +99,7 @@ const newCalendarEventActionSchema = z.object({
         z
           .string()
           .refine((val) =>
-            CALENDAR_EVENT_TAGS.includes(val as CalendarEventTag)
+            CALENDAR_EVENT.TAGS.includes(val as CalendarEventTag)
           )
       )
       .nullable()
@@ -131,8 +127,8 @@ export const action: ActionFunction = async ({ request }) => {
       ? data.tags
           .sort(
             (a, b) =>
-              CALENDAR_EVENT_TAGS.indexOf(a as CalendarEventTag) -
-              CALENDAR_EVENT_TAGS.indexOf(b as CalendarEventTag)
+              CALENDAR_EVENT.TAGS.indexOf(a as CalendarEventTag) -
+              CALENDAR_EVENT.TAGS.indexOf(b as CalendarEventTag)
           )
           .join(",")
       : data.tags,
@@ -229,8 +225,8 @@ function NameInput() {
       <input
         name="name"
         required
-        minLength={CALENDAR_EVENT_NAME_MIN_LENGTH}
-        maxLength={CALENDAR_EVENT_NAME_MAX_LENGTH}
+        minLength={CALENDAR_EVENT.NAME_MIN_LENGTH}
+        maxLength={CALENDAR_EVENT.NAME_MAX_LENGTH}
         defaultValue={eventToEdit?.name}
         data-cy="name-input"
       />
@@ -248,7 +244,7 @@ function DescriptionTextarea() {
         htmlFor="description"
         valueLimits={{
           current: value.length,
-          max: CALENDAR_EVENT_DESCRIPTION_MAX_LENGTH,
+          max: CALENDAR_EVENT.DESCRIPTION_MAX_LENGTH,
         }}
       >
         Description
@@ -258,7 +254,7 @@ function DescriptionTextarea() {
         name="description"
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        maxLength={CALENDAR_EVENT_DESCRIPTION_MAX_LENGTH}
+        maxLength={CALENDAR_EVENT.DESCRIPTION_MAX_LENGTH}
         data-cy="description-textarea"
       />
     </div>
@@ -306,7 +302,7 @@ function DatesInput() {
                     <Button
                       tiny
                       disabled={
-                        datesCount === CALENDAR_EVENT_MAX_AMOUNT_OF_DATES
+                        datesCount === CALENDAR_EVENT.MAX_AMOUNT_OF_DATES
                       }
                       onClick={() => setDatesCount((count) => count + 1)}
                       data-cy="add-date-button"
@@ -349,7 +345,7 @@ function BracketUrlInput() {
         name="bracketUrl"
         type="url"
         required
-        maxLength={CALENDAR_EVENT_BRACKET_URL_MAX_LENGTH}
+        maxLength={CALENDAR_EVENT.BRACKET_URL_MAX_LENGTH}
         defaultValue={eventToEdit?.bracketUrl}
         data-cy="bracket-url-input"
       />
@@ -366,7 +362,7 @@ function DiscordLinkInput() {
       <Input
         name="discordInviteCode"
         leftAddon="https://discord.gg/"
-        maxLength={CALENDAR_EVENT_DISCORD_INVITE_CODE_MAX_LENGTH}
+        maxLength={CALENDAR_EVENT.DISCORD_INVITE_CODE_MAX_LENGTH}
         defaultValue={eventToEdit?.discordInviteCode ?? undefined}
         data-cy="discord-invite-code-input"
       />
@@ -382,7 +378,7 @@ function TagsAdder() {
   );
   const id = React.useId();
 
-  const tagsForSelect = CALENDAR_EVENT_TAGS.filter(
+  const tagsForSelect = CALENDAR_EVENT.TAGS.filter(
     (tag) => !tags.includes(tag) && tag !== "BADGE"
   );
 

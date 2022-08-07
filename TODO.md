@@ -25,7 +25,7 @@ Calendar
 
 - [x] date input take in account time zone difference between server and client
 - [x] User selector allow passing users from top level
-- [ ] Constants use CALENDAR_EVENT object
+- [x] Constants use CALENDAR_EVENT object
 - [x] New unfriendly crash if omits dates
 - [x] badges inside tag?
 - [x] Tags selector can remove
