@@ -34,7 +34,19 @@ export function weekNumberToDate({
   return result;
 }
 
-/** Returns date as a string with the format YYYY-MM-DDThh:mm */
+/** Returns date as a string with the format YYYY-MM-DDThh:mm in user's time zone */
 export function dateToYearMonthDayHourMinuteString(date: Date) {
-  return date.toISOString().slice(0, 16);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const hour = date.getHours();
+  const minute = date.getMinutes();
+
+  return `${year}-${prefixZero(month)}-${prefixZero(day)}T${prefixZero(
+    hour
+  )}:${prefixZero(minute)}`;
+}
+
+function prefixZero(number: number) {
+  return number < 10 ? `0${number}` : number;
 }

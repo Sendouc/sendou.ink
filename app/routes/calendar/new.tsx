@@ -87,13 +87,10 @@ const newCalendarEventActionSchema = z.object({
     falsyToNull,
     z.string().max(CALENDAR_EVENT_DESCRIPTION_MAX_LENGTH).nullable()
   ),
-  dates: z.preprocess(
-    safeJSONParse,
-    z
-      .array(z.preprocess(date, z.date().min(MIN_DATE).max(MAX_DATE)))
-      .min(1)
-      .max(CALENDAR_EVENT_MAX_AMOUNT_OF_DATES)
-  ),
+  date: z
+    .array(z.preprocess(date, z.date().min(MIN_DATE).max(MAX_DATE)))
+    .min(1)
+    .max(CALENDAR_EVENT_MAX_AMOUNT_OF_DATES),
   bracketUrl: z.string().url().max(CALENDAR_EVENT_BRACKET_URL_MAX_LENGTH),
   discordInviteCode: z.preprocess(
     falsyToNull,
@@ -127,7 +124,7 @@ export const action: ActionFunction = async ({ request }) => {
   const commonArgs = {
     name: data.name,
     description: data.description,
-    startTimes: data.dates.map((date) => dateToDatabaseTimestamp(date)),
+    startTimes: data.date.map((date) => dateToDatabaseTimestamp(date)),
     bracketUrl: data.bracketUrl,
     discordInviteCode: data.discordInviteCode,
     tags: data.tags
@@ -270,13 +267,8 @@ function DescriptionTextarea() {
 
 function DatesInput() {
   const { eventToEdit } = useLoaderData<typeof loader>();
-  const { i18n } = useTranslation();
-  const [dateInputValue, setDateInputValue] = React.useState<string>();
-  const [dates, setDates] = React.useState(
-    (eventToEdit?.startTimes ?? []).map((startTime) => ({
-      date: databaseTimestampToDate(startTime),
-      id: String(Math.random()),
-    }))
+  const [datesCount, setDatesCount] = React.useState(
+    eventToEdit?.startTimes.length ?? 1
   );
   const isMounted = useIsMounted();
 
@@ -286,85 +278,64 @@ function DatesInput() {
 
   return (
     <div className="stack md items-start">
-      {dates.length > 0 && (
-        <input
-          type="hidden"
-          name="dates"
-          value={JSON.stringify(dates.map(({ date }) => date.getTime()))}
-        />
-      )}
       <div>
         <Label htmlFor="date" required>
           Dates
         </Label>
-        <div className="stack horizontal sm items-center">
-          <input
-            id="date"
-            type="datetime-local"
-            value={dateInputValue ?? ""}
-            onChange={(e) => setDateInputValue(e.target.value)}
-            min={dateToYearMonthDayHourMinuteString(MIN_DATE)}
-            max={dateToYearMonthDayHourMinuteString(MAX_DATE)}
-            data-cy="date-input"
-          />
-          <Button
-            tiny
-            disabled={!dateInputValue}
-            onClick={() => {
-              setDates(
-                [
-                  ...dates,
-                  {
-                    date: new Date(dateInputValue!),
-                    id: String(Math.random()),
-                  },
-                ].sort((a, b) => a.date.getTime() - b.date.getTime())
-              );
-            }}
-            data-cy="add-date-button"
-          >
-            Add date
-          </Button>
+        <div className="stack sm">
+          {new Array(datesCount).fill(null).map((_, i) => {
+            const defaultStartTime = eventToEdit?.startTimes[i];
+
+            return (
+              <div key={i} className="stack horizontal sm items-center">
+                <input
+                  id="date"
+                  type="datetime-local"
+                  name="date"
+                  defaultValue={
+                    defaultStartTime
+                      ? dateToYearMonthDayHourMinuteString(
+                          databaseTimestampToDate(defaultStartTime)
+                        )
+                      : undefined
+                  }
+                  min={dateToYearMonthDayHourMinuteString(MIN_DATE)}
+                  max={dateToYearMonthDayHourMinuteString(MAX_DATE)}
+                  data-cy="date-input"
+                  required
+                />
+                {i === datesCount - 1 && (
+                  <>
+                    <Button
+                      tiny
+                      disabled={
+                        datesCount === CALENDAR_EVENT_MAX_AMOUNT_OF_DATES
+                      }
+                      onClick={() => setDatesCount((count) => count + 1)}
+                      data-cy="add-date-button"
+                    >
+                      Add
+                    </Button>
+                    {datesCount > 1 && (
+                      <Button
+                        tiny
+                        onClick={() => setDatesCount((count) => count - 1)}
+                        data-cy="remove-date-button"
+                        variant="destructive"
+                      >
+                        Remove
+                      </Button>
+                    )}
+                  </>
+                )}
+              </div>
+            );
+          })}
         </div>
         <FormMessage type="info" className={clsx({ invisible: !isMounted })}>
           Times in your local time zone: {usersTimeZone}
         </FormMessage>
       </div>
-      {dates.length > 0 && (
-        <div className="calendar-new__dates-list">
-          {dates.map(({ date, id }, i) => (
-            <React.Fragment key={id}>
-              <div
-                className={clsx("text-lighter", {
-                  hidden: dates.length === 1,
-                })}
-              >
-                Day {i + 1}
-              </div>
-              <div className={clsx({ invisible: !isMounted })}>
-                {isMounted
-                  ? date.toLocaleTimeString(i18n.language, {
-                      hour: "numeric",
-                      minute: "numeric",
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                      weekday: "long",
-                    })
-                  : "T"}
-              </div>
-              <Button
-                onClick={() => setDates(dates.filter((date) => date.id !== id))}
-                className={clsx("mr-auto", { invisible: !isMounted })}
-                icon={<TrashIcon />}
-                variant="minimal-destructive"
-                aria-label="Remove date"
-                data-cy="date-delete-button"
-              />
-            </React.Fragment>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
