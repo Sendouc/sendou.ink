@@ -33,14 +33,10 @@ export async function givePlusRoleToMember({
   const usersPlusTier = users[member.id];
 
   if (!usersPlusTier) {
-    if (interaction) {
-      return interaction.reply({
-        content: "You currently don't have access",
-        ephemeral: true,
-      });
-    } else {
-      return;
-    }
+    return interaction?.reply({
+      content: "You currently don't have access",
+      ephemeral: true,
+    });
   }
 
   const targetRoleId = plusTierToRoleId(usersPlusTier);
@@ -52,8 +48,8 @@ export async function givePlusRoleToMember({
   const usersRoleIds = roleManager.cache.map((r) => r.id);
   const alreadyHasRole = usersRoleIds.some((id) => id === targetRoleId);
 
-  if (alreadyHasRole && interaction) {
-    return interaction.reply({
+  if (alreadyHasRole) {
+    return interaction?.reply({
       content: `You have access to +${usersPlusTier} and already have the role for it`,
       ephemeral: true,
     });
