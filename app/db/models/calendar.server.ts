@@ -212,12 +212,20 @@ const findWinnersByEventIdStm = sql.prepare(`
     "CalendarEventResultTeam"."name" as "teamName",
     "CalendarEventResultTeam"."placement",
     "CalendarEventResultPlayer"."userId" as "playerId",
-    "CalendarEventResultPlayer"."name" as "playerName"
+    "CalendarEventResultPlayer"."name" as "playerName",
+    "User"."discordName" as "playerDiscordName",
+    "User"."discordDiscriminator" as "playerDiscordDiscriminator",
+    "User"."discordId" as "playerDiscordId",
+    "User"."discordAvatar" as "playerDiscordAvatar"
   from "CalendarEventResultTeam"
   join 
     "CalendarEventResultPlayer" 
       on 
     "CalendarEventResultPlayer"."teamId" = "CalendarEventResultTeam"."id"
+  join
+    "User"
+      on
+    "User"."id" = "CalendarEventResultPlayer"."userId"
   where "CalendarEventResultTeam"."eventId" = $eventId
   order by "placement" asc
 `);
@@ -228,18 +236,40 @@ export function findResultsByEventId(eventId: CalendarEvent["id"]) {
     teamName: CalendarEventResultTeam["name"];
     placement: CalendarEventResultTeam["placement"];
     playerId: CalendarEventResultPlayer["userId"];
-    playerName: CalendarEventResultPlayer["name"];
+    playerName: CalendarEventResultPlayer["name"] | null;
+    playerDiscordName: User["discordName"] | null;
+    playerDiscordDiscriminator: User["discordDiscriminator"] | null;
+    playerDiscordId: User["discordId"] | null;
+    playerDiscordAvatar: User["discordAvatar"];
   }>;
 
   const result: Array<{
     teamName: CalendarEventResultTeam["name"];
     placement: CalendarEventResultTeam["placement"];
-    players: Array<string | { id: number }>;
+    players: Array<
+      | string
+      | Pick<
+          User,
+          | "id"
+          | "discordId"
+          | "discordName"
+          | "discordDiscriminator"
+          | "discordAvatar"
+        >
+    >;
   }> = [];
 
   for (const row of rows) {
     const team = result.find((team) => team.teamName === row.teamName);
-    const player = row.playerName ?? { id: row.playerId! };
+    const player = row.playerName ?? {
+      // player name and user id are mutually exclusive
+      // also if user id exists we know a joined user also has to exist
+      id: row.playerId!,
+      discordId: row.playerDiscordId!,
+      discordName: row.playerDiscordName!,
+      discordDiscriminator: row.playerDiscordDiscriminator!,
+      discordAvatar: row.playerDiscordAvatar,
+    };
 
     if (team) {
       team.players.push(player);

@@ -23,6 +23,7 @@ Calendar
 
 ## Other
 
+- [ ] Refactor Avatar to accept player object instead of separate fields
 - [ ] Redirect to event page after submitting results
 - [x] date input take in account time zone difference between server and client
 - [x] User selector allow passing users from top level

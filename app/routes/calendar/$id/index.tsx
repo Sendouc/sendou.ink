@@ -6,6 +6,7 @@ import {
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type { UseDataFunctionReturn } from "@remix-run/react/dist/components";
+import { Link } from "@remix-run/react/dist/components";
 import clsx from "clsx";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -29,6 +30,7 @@ import {
   calendarEditPage,
   calendarReportWinnersPage,
   resolveBaseUrl,
+  userPage,
 } from "~/utils/urls";
 import { actualNumber, id } from "~/utils/zod";
 import { Tags } from "../components/Tags";
@@ -69,7 +71,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 
 export default function CalendarEventPage() {
   const user = useUser();
-  const { event, badgePrizes } = useLoaderData<typeof loader>();
+  const data = useLoaderData<typeof loader>();
   const { i18n } = useTranslation();
   const isMounted = useIsMounted();
 
@@ -77,11 +79,11 @@ export default function CalendarEventPage() {
     <Main className="stack lg">
       <section className="stack sm">
         <div className="event__times">
-          {event.startTimes.map((startTime, i) => (
+          {data.event.startTimes.map((startTime, i) => (
             <React.Fragment key={startTime}>
               <span
                 className={clsx("event__day", {
-                  hidden: event.startTimes.length === 1,
+                  hidden: data.event.startTimes.length === 1,
                 })}
               >
                 Day {i + 1}
@@ -105,13 +107,13 @@ export default function CalendarEventPage() {
         </div>
         <div className="stack md">
           <div className="stack xs">
-            <h2>{event.name}</h2>
-            <Tags tags={event.tags} badges={badgePrizes} />
+            <h2>{data.event.name}</h2>
+            <Tags tags={data.event.tags} badges={data.badgePrizes} />
           </div>
           <div className="stack horizontal sm flex-wrap">
-            {event.discordUrl ? (
+            {data.event.discordUrl ? (
               <LinkButton
-                to={event.discordUrl}
+                to={data.event.discordUrl}
                 variant="outlined"
                 tiny
                 isExternal
@@ -120,17 +122,17 @@ export default function CalendarEventPage() {
               </LinkButton>
             ) : null}
             <LinkButton
-              to={event.bracketUrl}
+              to={data.event.bracketUrl}
               variant="outlined"
               tiny
               isExternal
             >
-              {resolveBaseUrl(event.bracketUrl)}
+              {resolveBaseUrl(data.event.bracketUrl)}
             </LinkButton>
-            {canEditCalendarEvent({ user, event }) && (
+            {canEditCalendarEvent({ user, event: data.event }) && (
               <LinkButton
                 tiny
-                to={calendarEditPage(event.eventId)}
+                to={calendarEditPage(data.event.eventId)}
                 data-cy="edit-button"
               >
                 Edit
@@ -138,12 +140,12 @@ export default function CalendarEventPage() {
             )}
             {canReportCalendarEventWinners({
               user,
-              event,
-              startTimes: event.startTimes,
+              event: data.event,
+              startTimes: data.event.startTimes,
             }) && (
               <LinkButton
                 tiny
-                to={calendarReportWinnersPage(event.eventId)}
+                to={calendarReportWinnersPage(data.event.eventId)}
                 data-cy="edit-button"
               >
                 Report winners
@@ -152,17 +154,68 @@ export default function CalendarEventPage() {
           </div>
         </div>
       </section>
+      <Results />
       <div className="stack sm">
         <div className="event__author">
           <Avatar
-            discordAvatar={event.discordAvatar}
-            discordId={event.discordId}
+            discordAvatar={data.event.discordAvatar}
+            discordId={data.event.discordId}
             size="xs"
           />
-          {discordFullName(event)}
+          {discordFullName(data.event)}
         </div>
-        <div data-cy="event-description">{event.description}</div>
+        <div data-cy="event-description">{data.event.description}</div>
       </div>
     </Main>
+  );
+}
+
+function Results() {
+  const data = useLoaderData<typeof loader>();
+
+  return (
+    <div>
+      <div>{data.event.participantCount} teams participated</div>
+      <table className="event__results-table">
+        <thead>
+          <tr>
+            <th>Placement</th>
+            <th>Name</th>
+            <th>Members</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.results.map((result, i) => (
+            <tr key={i}>
+              <td>{result.placement}</td>
+              <td>{result.teamName}</td>
+              <td>
+                <ul className="event__results-players">
+                  {result.players.map((player) => (
+                    <li key={typeof player === "string" ? player : player.id}>
+                      {typeof player === "string" ? (
+                        player
+                      ) : (
+                        <Link
+                          to={userPage(player.discordId)}
+                          className="stack horizontal sm justify-center"
+                        >
+                          <Avatar
+                            discordAvatar={player.discordAvatar}
+                            discordId={player.discordId}
+                            size="xxs"
+                          />{" "}
+                          {discordFullName(player)}
+                        </Link>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
