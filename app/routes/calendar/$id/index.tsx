@@ -14,6 +14,7 @@ import { z } from "zod";
 import { Avatar } from "~/components/Avatar";
 import { LinkButton } from "~/components/Button";
 import { Main } from "~/components/Main";
+import { Section } from "~/components/Section";
 import { db } from "~/db";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useUser } from "~/modules/auth";
@@ -155,17 +156,7 @@ export default function CalendarEventPage() {
         </div>
       </section>
       <Results />
-      <div className="stack sm">
-        <div className="event__author">
-          <Avatar
-            discordAvatar={data.event.discordAvatar}
-            discordId={data.event.discordId}
-            size="xs"
-          />
-          {discordFullName(data.event)}
-        </div>
-        <div data-cy="event-description">{data.event.description}</div>
-      </div>
+      <Description />
     </Main>
   );
 }
@@ -173,9 +164,13 @@ export default function CalendarEventPage() {
 function Results() {
   const data = useLoaderData<typeof loader>();
 
+  if (!data.results.length) return null;
+
   return (
-    <div>
-      <div>{data.event.participantCount} teams participated</div>
+    <Section title="Results" className="event__results-section">
+      <div className="event__results-participant-count">
+        {data.event.participantCount} teams participated
+      </div>
       <table className="event__results-table">
         <thead>
           <tr>
@@ -187,7 +182,7 @@ function Results() {
         <tbody>
           {data.results.map((result, i) => (
             <tr key={i}>
-              <td>{result.placement}</td>
+              <td className="text-center">{result.placement}</td>
               <td>{result.teamName}</td>
               <td>
                 <ul className="event__results-players">
@@ -198,7 +193,7 @@ function Results() {
                       ) : (
                         <Link
                           to={userPage(player.discordId)}
-                          className="stack horizontal sm justify-center"
+                          className="stack horizontal xs justify-center"
                         >
                           <Avatar
                             discordAvatar={player.discordAvatar}
@@ -216,6 +211,26 @@ function Results() {
           ))}
         </tbody>
       </table>
-    </div>
+    </Section>
+  );
+}
+
+function Description() {
+  const data = useLoaderData<typeof loader>();
+
+  return (
+    <Section title="Description">
+      <div className="stack sm">
+        <div className="event__author">
+          <Avatar
+            discordAvatar={data.event.discordAvatar}
+            discordId={data.event.discordId}
+            size="xs"
+          />
+          {discordFullName(data.event)}
+        </div>
+        <div data-cy="event-description">{data.event.description}</div>
+      </div>
+    </Section>
   );
 }

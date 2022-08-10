@@ -470,6 +470,17 @@ dialog::backdrop {
   color: var(--theme-error);
 }
 
+.section > div {
+  padding: var(--s-2);
+  background-color: var(--bg-darker);
+  border-radius: var(--rounded);
+}
+
+.section > h2 {
+  color: var(--text-lighter);
+  font-size: var(--fonts-md);
+}
+
 .stack {
   display: flex;
   flex-direction: column;
