@@ -426,7 +426,15 @@ function BadgesAdder() {
   const [badges, setBadges] = React.useState(eventToEdit?.badges ?? []);
   const id = React.useId();
 
-  if (managedBadges.length === 0) return null;
+  const input = (
+    <input
+      type="hidden"
+      name="badges"
+      value={JSON.stringify(badges.length > 0 ? badges.map((b) => b.id) : null)}
+    />
+  );
+
+  if (managedBadges.length === 0) return input;
 
   const handleBadgeDelete = (badgeId: BadgeType["id"]) => {
     setBadges(badges.filter((badge) => badge.id !== badgeId));
@@ -438,13 +446,7 @@ function BadgesAdder() {
 
   return (
     <div className="stack md">
-      <input
-        type="hidden"
-        name="badges"
-        value={JSON.stringify(
-          badges.length > 0 ? badges.map((b) => b.id) : null
-        )}
-      />
+      {input}
       <div>
         <label htmlFor={id}>Badge prizes</label>
         <select
