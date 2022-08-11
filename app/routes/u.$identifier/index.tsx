@@ -1,23 +1,17 @@
-import type { LinksFunction } from "@remix-run/node";
 import { useMatches } from "@remix-run/react";
+import clsx from "clsx";
+import * as React from "react";
+import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 import { Avatar } from "~/components/Avatar";
-import styles from "~/styles/u.css";
-import type { UserPageLoaderData } from "../u.$identifier";
-import * as React from "react";
-import type { Unpacked } from "~/utils/types";
-import clsx from "clsx";
-import { assertUnreachable } from "~/utils/types";
+import { Badge } from "~/components/Badge";
 import { TwitchIcon } from "~/components/icons/Twitch";
 import { TwitterIcon } from "~/components/icons/Twitter";
 import { YouTubeIcon } from "~/components/icons/YouTube";
+import type { Unpacked } from "~/utils/types";
+import { assertUnreachable } from "~/utils/types";
 import { badgeExplanationText } from "../badges/$id";
-import { Badge } from "~/components/Badge";
-import { useTranslation } from "react-i18next";
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
-};
+import type { UserPageLoaderData } from "../u.$identifier";
 
 export const handle = {
   i18n: "badges",

@@ -263,6 +263,30 @@ select:focus {
   outline: 2px solid var(--theme);
 }
 
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 var(--s-1-5);
+  font-size: var(--fonts-xs);
+  text-align: left;
+}
+
+table > thead {
+  font-size: var(--fonts-xxs);
+}
+
+table > tbody > tr:nth-child(2n) {
+  background-color: var(--bg);
+}
+
+table > thead > tr > th {
+  padding-inline: var(--s-1);
+}
+
+table > tbody > tr > td {
+  padding-inline: var(--s-1);
+}
+
 hr {
   border-color: var(--theme-transparent);
 }

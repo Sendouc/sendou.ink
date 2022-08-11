@@ -16,9 +16,9 @@ Calendar
 - [x] E2E test adding and editing event
 - [x] Add winners page
 - [ ] E2E test add winners page
-- [ ] Winners on the event info page
+- [x] Winners on the event info page
 - [ ] There should be a banner on the list page if you have past tournaments to report
-- [ ] On the user page tab showing past results
+- [x] On the user page tab showing past results
 - [ ] Translations
 
 ## Other

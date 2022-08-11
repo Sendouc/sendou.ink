@@ -26,7 +26,7 @@ import {
 import styles from "~/styles/calendar-event.css";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { notFoundIfFalsy } from "~/utils/remix";
-import { discordFullName, makeTitle } from "~/utils/strings";
+import { discordFullName, makeTitle, placementString } from "~/utils/strings";
 import {
   calendarEditPage,
   calendarReportWinnersPage,
@@ -171,10 +171,10 @@ function Results() {
       <div className="event__results-participant-count">
         {data.event.participantCount} teams participated
       </div>
-      <table className="event__results-table">
+      <table>
         <thead>
           <tr>
-            <th>Placement</th>
+            <th>Placing</th>
             <th>Name</th>
             <th>Members</th>
           </tr>
@@ -182,7 +182,9 @@ function Results() {
         <tbody>
           {data.results.map((result, i) => (
             <tr key={i}>
-              <td className="text-center">{result.placement}</td>
+              <td className="text-center">
+                {placementString(result.placement)}
+              </td>
               <td>{result.teamName}</td>
               <td>
                 <ul className="event__results-players">
@@ -193,7 +195,7 @@ function Results() {
                       ) : (
                         <Link
                           to={userPage(player.discordId)}
-                          className="stack horizontal xs justify-center"
+                          className="stack horizontal xs items-center"
                         >
                           <Avatar
                             discordAvatar={player.discordAvatar}

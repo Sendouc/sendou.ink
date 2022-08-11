@@ -285,6 +285,69 @@ export function findResultsByEventId(eventId: CalendarEvent["id"]) {
   return result;
 }
 
+const findResultsByUserIdStm = sql.prepare(`
+  select
+    "CalendarEvent"."id" as "eventId",
+    "CalendarEvent"."name" as "eventName",
+    "CalendarEventResultTeam"."name" as "teamName",
+    "CalendarEventResultTeam"."placement",
+    "CalendarEvent"."participantCount",
+    (select max("startTime") 
+      from "CalendarEventDate" 
+      where "eventId" = "CalendarEvent"."id") 
+    as "startTime"
+  from "CalendarEventResultPlayer"
+  join "CalendarEventResultTeam"
+    on "CalendarEventResultTeam"."id" = "CalendarEventResultPlayer"."teamId"
+  join "CalendarEvent"
+    on "CalendarEvent"."id" = "CalendarEventResultTeam"."eventId"
+  where "CalendarEventResultPlayer"."userId" = $userId
+  order by "startTime" desc
+`);
+
+const findMatesByResultTeamIdStm = sql.prepare(`
+  select
+    "CalendarEventResultPlayer"."name",
+    "User"."id",
+    "User"."discordName" as "discordName",
+    "User"."discordDiscriminator" as "discordDiscriminator",
+    "User"."discordId" as "discordId",
+    "User"."discordAvatar" as "discordAvatar"
+  from "CalendarEventResultPlayer"
+  join "User"
+    on "User"."id" = "CalendarEventResultPlayer"."userId"
+  where "teamId" = $teamId
+  and "userId" != $userId
+`);
+
+export function findResultsByUserId(userId: User["id"]) {
+  return (
+    findResultsByUserIdStm.all({ userId }) as Array<{
+      eventId: CalendarEvent["id"];
+      eventName: CalendarEvent["name"];
+      teamName: CalendarEventResultTeam["name"];
+      placement: CalendarEventResultTeam["placement"];
+      participantCount: CalendarEvent["participantCount"];
+      startTime: CalendarEventDate["startTime"];
+    }>
+  ).map((row) => ({
+    ...row,
+    mates: (
+      findMatesByResultTeamIdStm.all({
+        teamId: row.eventId,
+        userId,
+      }) as Array<{
+        name: CalendarEventResultPlayer["name"];
+        id: User["id"];
+        discordName: User["discordName"];
+        discordDiscriminator: User["discordDiscriminator"];
+        discordId: User["discordId"];
+        discordAvatar: User["discordAvatar"];
+      }>
+    ).map(({ name, ...mate }) => name ?? mate),
+  }));
+}
+
 const findAllBetweenTwoTimestampsStm = sql.prepare(`
   select
     "CalendarEvent"."name",

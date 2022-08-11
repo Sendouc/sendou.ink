@@ -25,33 +25,10 @@
   gap: var(--s-1);
 }
 
-.event__results-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 var(--s-1-5);
-  font-size: var(--fonts-sm);
-  text-align: left;
-}
-
-.event__results-table > thead {
-  font-size: var(--fonts-xxs);
-}
-
-.event__results-table > thead > tr {
-  text-align: center;
-}
-
-.event__results-table > tbody > tr {
-  padding-block: var(--s-2);
-}
-
-.event__results-table > tbody > tr:nth-child(2n) {
-  background-color: var(--bg);
-}
-
 .event__results-players {
   display: flex;
   flex-wrap: wrap;
+  padding: 0;
   gap: var(--s-3);
   list-style: none;
 }

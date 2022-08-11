@@ -9,3 +9,11 @@ export function discordFullName(
 export function makeTitle(title: string | string[]) {
   return `${Array.isArray(title) ? title.join(" | ") : title} | sendou.ink`;
 }
+
+export function placementString(placement: number) {
+  if (placement === 1) return "🥇";
+  if (placement === 2) return "🥈";
+  if (placement === 3) return "🥉";
+
+  return `${placement}th`;
+}

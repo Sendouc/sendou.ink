@@ -3,13 +3,13 @@ export function Section({
   children,
   className,
 }: {
-  title: string;
+  title?: string;
   children: React.ReactNode;
   className?: string;
 }) {
   return (
     <section className="section">
-      <h2>{title}</h2>
+      {title && <h2>{title}</h2>}
       <div className={className}>{children}</div>
     </section>
   );

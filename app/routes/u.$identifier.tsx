@@ -1,20 +1,23 @@
-import type { LoaderFunction, MetaFunction } from "@remix-run/node";
+import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Outlet, useLoaderData } from "@remix-run/react";
+import type { UseDataFunctionReturn } from "@remix-run/react/dist/components";
 import { countries } from "countries-list";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { db } from "~/db";
-import type { CountsByUserId } from "~/db/models/badges.server";
-import type { User } from "~/db/types";
 import { useUser } from "~/modules/auth";
 import { i18next } from "~/modules/i18n";
 import { translatedCountry } from "~/utils/i18n.server";
 import { notFoundIfFalsy } from "~/utils/remix";
-import { makeTitle } from "~/utils/strings";
-import { discordFullName } from "~/utils/strings";
+import { discordFullName, makeTitle } from "~/utils/strings";
+import styles from "~/styles/u.css";
+
+export const links: LinksFunction = () => {
+  return [{ rel: "stylesheet", href: styles }];
+};
 
 export const meta: MetaFunction = ({ data }: { data: UserPageLoaderData }) => {
   return {
@@ -28,23 +31,9 @@ export const handle = {
 
 export const userParamsSchema = z.object({ identifier: z.string() });
 
-export type UserPageLoaderData = Pick<
-  User,
-  | "id"
-  | "discordName"
-  | "discordAvatar"
-  | "discordDiscriminator"
-  | "discordId"
-  | "youtubeId"
-  | "twitch"
-  | "twitter"
-  | "bio"
-> & {
-  country?: { emoji: string; code: string; name: string };
-  badges: CountsByUserId;
-};
+export type UserPageLoaderData = UseDataFunctionReturn<typeof loader>;
 
-export const loader: LoaderFunction = async ({ request, params }) => {
+export const loader = async ({ request, params }: LoaderArgs) => {
   const locale = await i18next.getLocale(request);
   const { identifier } = userParamsSchema.parse(params);
   const user = notFoundIfFalsy(db.users.findByIdentifier(identifier));
@@ -53,7 +42,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     ? countries[user.country as keyof typeof countries]
     : undefined;
 
-  return json<UserPageLoaderData>({
+  return json({
     id: user.id,
     discordAvatar: user.discordAvatar,
     discordDiscriminator: user.discordDiscriminator,
@@ -76,11 +65,12 @@ export const loader: LoaderFunction = async ({ request, params }) => {
           }
         : undefined,
     badges: db.badges.countsByUserId(user.id),
+    results: db.calendarEvents.findResultsByUserId(user.id),
   });
 };
 
 export default function UserPageLayout() {
-  const data = useLoaderData<UserPageLoaderData>();
+  const data = useLoaderData<typeof loader>();
   const user = useUser();
   const { t } = useTranslation();
 
@@ -92,11 +82,16 @@ export default function UserPageLayout() {
         <SubNavLink to="" data-cy="profile-page-link">
           {t("header.profile")}
         </SubNavLink>
-        {isOwnPage ? (
+        {isOwnPage && (
           <SubNavLink to="edit" data-cy="edit-page-link">
             {t("actions.edit")}
           </SubNavLink>
-        ) : null}
+        )}
+        {data.results.length > 0 && (
+          <SubNavLink to="results" data-cy="results-page-link">
+            {t("results")}
+          </SubNavLink>
+        )}
       </SubNav>
       <Main>
         <Outlet />

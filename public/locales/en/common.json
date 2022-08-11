@@ -18,5 +18,7 @@
 
   "actions.save": "Save",
   "actions.saving": "Saving...",
-  "actions.edit": "Edit"
+  "actions.edit": "Edit",
+
+  "results": "Results"
 }
