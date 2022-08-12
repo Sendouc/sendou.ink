@@ -502,3 +502,36 @@ export function findBadgesById(eventId: CalendarEvent["id"]) {
     Pick<Badge, "id" | "code" | "hue" | "displayName">
   >;
 }
+
+const eventsToReportStm = sql.prepare(`
+  select
+    "CalendarEvent"."id",
+    "CalendarEvent"."name",
+    (select max("startTime") 
+      from "CalendarEventDate" 
+      where "eventId" = "CalendarEvent"."id") as "startTime"
+  from "CalendarEvent"
+  where 
+    "CalendarEvent"."authorId" = $authorId
+      and
+    "startTime" > $lowerLimitTime
+      and
+    "startTime" < $upperLimitTime
+      and
+    "CalendarEvent"."participantCount" is null
+`);
+
+export function eventsToReport(authorId?: CalendarEvent["authorId"]) {
+  if (!authorId) return [];
+
+  const oneMonthAgo = new Date();
+  oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
+  return (
+    eventsToReportStm.all({
+      authorId,
+      upperLimitTime: dateToDatabaseTimestamp(new Date()),
+      lowerLimitTime: dateToDatabaseTimestamp(oneMonthAgo),
+    }) as Array<Pick<CalendarEvent, "id" | "name">>
+  ).map((row) => ({ id: row.id, name: row.name }));
+}

@@ -8,10 +8,11 @@ import React from "react";
 import { Flipped, Flipper } from "react-flip-toolkit";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
+import { Alert } from "~/components/Alert";
 import { LinkButton } from "~/components/Button";
 import { db } from "~/db";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { useUser } from "~/modules/auth";
+import { getUser, useUser } from "~/modules/auth";
 import { i18next } from "~/modules/i18n";
 import styles from "~/styles/calendar.css";
 import { joinListToNaturalString } from "~/utils/arrays";
@@ -22,7 +23,7 @@ import {
 } from "~/utils/dates";
 import { discordFullName, makeTitle } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
-import { resolveBaseUrl } from "~/utils/urls";
+import { calendarReportWinnersPage, resolveBaseUrl } from "~/utils/urls";
 import { actualNumber } from "~/utils/zod";
 import { Tags } from "./components/Tags";
 
@@ -55,6 +56,7 @@ const loaderSearchParamsSchema = z.object({
 });
 
 export const loader = async ({ request }: LoaderArgs) => {
+  const user = await getUser(request);
   const t = await i18next.getFixedT(request);
   const url = new URL(request.url);
   const parsedParams = loaderSearchParamsSchema.safeParse({
@@ -87,6 +89,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     }),
     weeks: closeByWeeks({ week: displayedWeek, year: displayedYear }),
     events: fetchEventsOfWeek({ week: displayedWeek, year: displayedYear }),
+    eventsToReport: db.calendarEvents.eventsToReport(user?.id),
     title: makeTitle([`Week ${displayedWeek}`, t("pages.calendar")]),
   });
 };
@@ -143,6 +146,7 @@ export default function CalendarPage() {
   return (
     <main className="stack lg">
       <WeekLinks />
+      <EventsToReport />
       <div className="stack md">
         {user && (
           <LinkButton to="new" className="calendar__add-new-button" tiny>
@@ -285,6 +289,28 @@ function getEventsCountPerWeek(
   }
 
   return result;
+}
+
+function EventsToReport() {
+  const data = useLoaderData<typeof loader>();
+
+  if (data.eventsToReport.length === 0) return null;
+
+  return (
+    <Alert textClassName="calendar__events-to-report">
+      You can report results for{" "}
+      {data.eventsToReport.map((event, i) => (
+        <React.Fragment key={event.id}>
+          <Link to={calendarReportWinnersPage(event.id)}>{event.name}</Link>
+          {i === data.eventsToReport.length - 1
+            ? ""
+            : i === data.eventsToReport.length - 2
+            ? " and "
+            : ", "}
+        </React.Fragment>
+      ))}
+    </Alert>
+  );
 }
 
 function EventsList({

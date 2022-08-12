@@ -18,6 +18,8 @@
   --theme-warning: #c9c900;
   --theme-success: #00a514;
   --theme-success-transparent: #00a51452;
+  --theme-info: #1fb0d0;
+  --theme-info-transparent: #1fb0d052;
   --theme: hsl(255deg 64% 63%);
   --theme-vibrant: hsl(255deg 100% 81%);
   --theme-transparent: hsl(255deg 66.7% 75% / 40%);
@@ -90,6 +92,8 @@
     --theme-warning: #f5f587;
     --theme-success: #a3ffae;
     --theme-success-transparent: #a3ffae52;
+    --theme-info: #87cddc;
+    --theme-info-transparent: #87cddc52;
     --theme: hsl(255deg 66.7% 75%);
     --theme-vibrant: hsl(255deg 78% 65%);
     --theme-transparent: hsl(255deg 66.7% 75% / 40%);

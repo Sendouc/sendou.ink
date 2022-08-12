@@ -85,6 +85,10 @@
   line-height: 0.8;
 }
 
+.calendar__events-to-report {
+  line-height: 1.25rem;
+}
+
 .calendar__events-container {
   background-color: var(--bg-lighter);
 }

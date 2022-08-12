@@ -480,10 +480,33 @@ dialog::backdrop {
   background-color: var(--theme-transparent);
 }
 
+.alert {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--theme-info-transparent);
+  border-radius: var(--rounded);
+  color: var(--text);
+  font-size: var(--fonts-sm);
+  font-weight: var(--semi-bold);
+  gap: var(--s-2);
+  line-height: 0.75;
+  margin-inline: auto;
+  padding-block: var(--s-1-5);
+  padding-inline-end: var(--s-4);
+  padding-inline-start: var(--s-3);
+}
+
 .avatar {
   background-color: var(--bg-lighter);
   background-image: url("/svg/background-pattern.svg");
   border-radius: 50%;
+}
+
+.alert > svg {
+  height: 1.75rem;
+  fill: var(--theme-info);
 }
 
 .form-errors {
