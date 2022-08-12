@@ -1,4 +1,9 @@
-import { type ActionFunction, type LoaderArgs, json } from "@remix-run/node";
+import {
+  type ActionFunction,
+  type LoaderArgs,
+  json,
+  redirect,
+} from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import { z } from "zod";
 import { Label } from "~/components/Label";
@@ -22,6 +27,7 @@ import { FormMessage } from "~/components/FormMessage";
 import { FormErrors } from "~/components/FormErrors";
 import type { UseDataFunctionReturn } from "@remix-run/react/dist/components";
 import type { Unpacked } from "~/utils/types";
+import { calendarEventPage } from "~/utils/urls";
 
 const playersSchema = z
   .array(
@@ -114,7 +120,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     })),
   });
 
-  return null;
+  return redirect(calendarEventPage(parsedParams.id));
 };
 
 export const handle = {
