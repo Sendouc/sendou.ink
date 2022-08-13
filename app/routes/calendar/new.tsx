@@ -170,7 +170,8 @@ export const loader = async ({ request }: LoaderArgs) => {
     ? undefined
     : db.calendarEvents.findById(eventId);
 
-  const canEditEvent = eventToEdit?.authorId === user.id;
+  const canEditEvent =
+    eventToEdit && canEditCalendarEvent({ user, event: eventToEdit });
 
   return json({
     managedBadges: db.badges.managedByUserId(user.id),
