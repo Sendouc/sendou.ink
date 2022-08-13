@@ -129,6 +129,7 @@ function fetchEventsOfWeek(args: { week: number; year: number }) {
 }
 
 export default function CalendarPage() {
+  const { t } = useTranslation("calendar");
   const data = useLoaderData<typeof loader>();
   const user = useUser();
   const isMounted = useIsMounted();
@@ -150,7 +151,7 @@ export default function CalendarPage() {
       <div className="stack md">
         {user && (
           <LinkButton to="new" className="calendar__add-new-button" tiny>
-            Add new
+            {t("addNew")}
           </LinkButton>
         )}
         {isMounted ? (
@@ -159,13 +160,13 @@ export default function CalendarPage() {
               <>
                 <EventsList events={thisWeeksEvents} />
                 <div className="calendar__time-zone-info">
-                  All times in your local time zone:{" "}
+                  {t("inYourTimeZone")}{" "}
                   {Intl.DateTimeFormat().resolvedOptions().timeZone}
                 </div>
               </>
             ) : (
               <h2 className="calendar__no-events" data-cy="no-events">
-                No events this week
+                {t("noEvents")}
               </h2>
             )}
           </>
@@ -230,23 +231,24 @@ function WeekLinkTitle({
 }: {
   week: Unpacked<UseDataFunctionReturn<typeof loader>["weeks"]>;
 }) {
+  const { t } = useTranslation("calendar");
   const data = useLoaderData<typeof loader>();
   const { i18n } = useTranslation();
 
   const relativeWeekIdentifier =
     week.number === data.currentWeek
-      ? "This"
+      ? t("week.this")
       : week.number - data.currentWeek === 1
-      ? "Next"
+      ? t("week.next")
       : week.number - data.currentWeek === -1
-      ? "Last"
+      ? t("week.last")
       : null;
 
   if (relativeWeekIdentifier) {
     return (
       <div className="stack xxs">
         <div>{relativeWeekIdentifier}</div>
-        <div>Week</div>
+        <div>{t("week.week")}</div>
       </div>
     );
   }
@@ -292,21 +294,18 @@ function getEventsCountPerWeek(
 }
 
 function EventsToReport() {
+  const { t } = useTranslation("calendar");
   const data = useLoaderData<typeof loader>();
 
   if (data.eventsToReport.length === 0) return null;
 
   return (
     <Alert textClassName="calendar__events-to-report">
-      You can report results for{" "}
+      {t("reportResults")}{" "}
       {data.eventsToReport.map((event, i) => (
         <React.Fragment key={event.id}>
           <Link to={calendarReportWinnersPage(event.id)}>{event.name}</Link>
-          {i === data.eventsToReport.length - 1
-            ? ""
-            : i === data.eventsToReport.length - 2
-            ? " and "
-            : ", "}
+          {i === data.eventsToReport.length - 1 ? "" : ", "}
         </React.Fragment>
       ))}
     </Alert>
@@ -318,7 +317,7 @@ function EventsList({
 }: {
   events: UseDataFunctionReturn<typeof loader>["events"];
 }) {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation("calendar");
 
   return (
     <div className="calendar__events-container">
@@ -374,7 +373,9 @@ function EventsList({
                               {calendarEvent.name}{" "}
                               {calendarEvent.nthAppearance > 1 ? (
                                 <span className="calendar__event__day">
-                                  Day {calendarEvent.nthAppearance}
+                                  {t("day", {
+                                    number: calendarEvent.nthAppearance,
+                                  })}
                                 </span>
                               ) : null}
                             </h2>

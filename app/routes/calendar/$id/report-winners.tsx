@@ -28,6 +28,7 @@ import { FormErrors } from "~/components/FormErrors";
 import type { UseDataFunctionReturn } from "@remix-run/react/dist/components";
 import type { Unpacked } from "~/utils/types";
 import { calendarEventPage } from "~/utils/urls";
+import { useTranslation } from "react-i18next";
 
 const playersSchema = z
   .array(
@@ -36,7 +37,7 @@ const playersSchema = z
       z.object({ id }),
     ])
   )
-  .nonempty({ message: "Each team must have at least one player." })
+  .nonempty({ message: "forms.errors.emptyTeam" })
   .max(CALENDAR_EVENT_RESULT.MAX_PLAYERS_LENGTH)
   .refine(
     (val) => {
@@ -47,7 +48,7 @@ const playersSchema = z
       return userIds.length === new Set(userIds).size;
     },
     {
-      message: "Can't have the same player twice in the same team.",
+      message: "forms.errors.duplicatePlayer",
     }
   );
 
@@ -85,7 +86,7 @@ const reportWinnersActionSchema = z.object({
       )
       .refine(
         (val) => val.length === new Set(val.map((team) => team.teamName)).size,
-        { message: "Each team needs a unique name." }
+        { message: "forms.errors.uniqueTeamName" }
       )
   ),
 });
@@ -149,34 +150,37 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 };
 
 export default function ReportWinnersPage() {
+  const { t } = useTranslation(["common", "calendar"]);
   const data = useLoaderData<typeof loader>();
 
   return (
     <Main halfWidth>
       <Form method="post" className="stack smedium items-start">
-        <h1 className="text-lg">Reporting results of {data.name}</h1>
+        <h1 className="text-lg">
+          {t("calendar:forms.reportResultsHeader", { eventName: data.name })}
+        </h1>
         <ParticipantsCountInput />
         <FormMessage type="info">
-          You choose how many results to report. It can be just the winning
-          team, top 3 or whatever you decide.
+          {t("calendar:forms.reportResultsInfo")}
         </FormMessage>
         <TeamInputs />
         <Button type="submit" className="mt-4">
-          Submit
+          {t("common:actions.submit")}
         </Button>
-        <FormErrors />
+        <FormErrors namespace="calendar" />
       </Form>
     </Main>
   );
 }
 
 function ParticipantsCountInput() {
+  const { t } = useTranslation("calendar");
   const data = useLoaderData<typeof loader>();
 
   return (
     <div>
       <Label htmlFor="name" required>
-        Participant count
+        {t("forms.participantCount")}
       </Label>
       <input
         name="participantCount"
@@ -193,6 +197,7 @@ function ParticipantsCountInput() {
 }
 
 function TeamInputs() {
+  const { t } = useTranslation("calendar");
   const data = useLoaderData<typeof loader>();
   const [amountOfTeams, setAmountOfTeams] = React.useState(
     Math.max(data.winners.length, 1)
@@ -229,7 +234,7 @@ function TeamInputs() {
         onClick={() => setAmountOfTeams((amountOfTeams) => amountOfTeams + 1)}
         tiny
       >
-        Add team
+        {t("forms.team.add")}
       </Button>
     </>
   );
@@ -259,6 +264,7 @@ function Team({
   initialPlacement: string;
   initialValues?: Unpacked<UseDataFunctionReturn<typeof loader>["winners"]>;
 }) {
+  const { t } = useTranslation("calendar");
   const teamNameId = React.useId();
   const placementId = React.useId();
 
@@ -296,7 +302,7 @@ function Team({
       />
       <div className="stack horizontal md flex-wrap">
         <div>
-          <Label htmlFor={teamNameId}>Team name</Label>
+          <Label htmlFor={teamNameId}>{t("forms.team.name")}</Label>
           <input
             id={teamNameId}
             value={results.teamName}
@@ -306,7 +312,7 @@ function Team({
           />
         </div>
         <div>
-          <Label htmlFor={placementId}>Placement</Label>
+          <Label htmlFor={placementId}>{t("forms.team.placing")}</Label>
           <input
             id={placementId}
             value={results.placement}
@@ -329,7 +335,7 @@ function Team({
           variant="minimal-destructive"
           className="mt-4"
         >
-          Remove team
+          {t("forms.team.remove")}
         </Button>
       )}
     </div>
@@ -343,6 +349,7 @@ function Players({
   players: TeamResults["players"];
   setPlayers: (newPlayers: TeamResults["players"]) => void;
 }) {
+  const { t } = useTranslation("calendar");
   const handleAddPlayer = () => {
     setPlayers([...players, NEW_PLAYER]);
   };
@@ -374,14 +381,16 @@ function Players({
           <div key={i}>
             <div className="stack horizontal md items-center mb-1">
               <label htmlFor={formId} className="mb-0">
-                Player {i + 1}
+                {t("forms.team.player.header", { number: i + 1 })}
               </label>
               <Button
                 tiny
                 variant="minimal"
                 onClick={() => handlePlayerInputTypeChange(i)}
               >
-                {asPlainInput ? "Add as user (recommended)" : "Add as text"}
+                {asPlainInput
+                  ? t("forms.team.player.addAsUser")
+                  : t("forms.team.player.addAsText")}
               </Button>
             </div>
             {asPlainInput ? (
@@ -414,7 +423,7 @@ function Players({
           disabled={players.length === CALENDAR_EVENT_RESULT.MAX_PLAYERS_LENGTH}
           variant="outlined"
         >
-          Add player
+          {t("forms.team.player.add")}
         </Button>{" "}
         <Button
           tiny
@@ -422,7 +431,7 @@ function Players({
           onClick={handleRemovePlayer}
           disabled={players.length === 1}
         >
-          Remove player
+          {t("forms.team.player.remove")}
         </Button>
       </div>
     </div>

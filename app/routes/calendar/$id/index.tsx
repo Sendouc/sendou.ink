@@ -73,7 +73,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 export default function CalendarEventPage() {
   const user = useUser();
   const data = useLoaderData<typeof loader>();
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation(["common", "calendar"]);
   const isMounted = useIsMounted();
 
   return (
@@ -87,7 +87,9 @@ export default function CalendarEventPage() {
                   hidden: data.event.startTimes.length === 1,
                 })}
               >
-                Day {i + 1}
+                {t("calendar:day", {
+                  number: i + 1,
+                })}
               </span>
               <time dateTime={databaseTimestampToDate(startTime).toISOString()}>
                 {isMounted
@@ -136,7 +138,7 @@ export default function CalendarEventPage() {
                 to={calendarEditPage(data.event.eventId)}
                 data-cy="edit-button"
               >
-                Edit
+                {t("common:actions.edit")}
               </LinkButton>
             )}
             {canReportCalendarEventWinners({
@@ -149,7 +151,7 @@ export default function CalendarEventPage() {
                 to={calendarReportWinnersPage(data.event.eventId)}
                 data-cy="edit-button"
               >
-                Report winners
+                {t("calendar:actions.reportWinners")}
               </LinkButton>
             )}
           </div>
@@ -162,29 +164,32 @@ export default function CalendarEventPage() {
 }
 
 function Results() {
+  const { t } = useTranslation(["common", "calendar"]);
   const data = useLoaderData<typeof loader>();
 
   if (!data.results.length) return null;
 
   return (
-    <Section title="Results" className="event__results-section">
-      <div className="event__results-participant-count">
-        {data.event.participantCount} teams participated
-      </div>
+    <Section title={t("calendar:results")} className="event__results-section">
+      {data.event.participantCount && (
+        <div className="event__results-participant-count">
+          {t("calendar:participatedCount", {
+            count: data.event.participantCount,
+          })}
+        </div>
+      )}
       <table>
         <thead>
           <tr>
-            <th>Placing</th>
-            <th>Name</th>
-            <th>Members</th>
+            <th>{t("calendar:forms.team.placing")}</th>
+            <th>{t("common:forms.name")}</th>
+            <th>{t("calendar:members")}</th>
           </tr>
         </thead>
         <tbody>
           {data.results.map((result, i) => (
             <tr key={i}>
-              <td className="text-center">
-                {placementString(result.placement)}
-              </td>
+              <td className="pl-4">{placementString(result.placement)}</td>
               <td>{result.teamName}</td>
               <td>
                 <ul className="event__results-players">
@@ -221,10 +226,11 @@ function Results() {
 }
 
 function Description() {
+  const { t } = useTranslation();
   const data = useLoaderData<typeof loader>();
 
   return (
-    <Section title="Description">
+    <Section title={t("forms.description")}>
       <div className="stack sm">
         <div className="event__author">
           <Avatar

@@ -38,6 +38,10 @@
   width: var(--s-24);
 }
 
+.pl-4 {
+  padding-inline-start: var(--s-4);
+}
+
 .mt-2 {
   margin-block-start: var(--s-2);
 }

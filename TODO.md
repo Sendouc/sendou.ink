@@ -19,7 +19,7 @@ Calendar
 - [x] Winners on the event info page
 - [x] There should be a banner on the list page if you have past tournaments to report
 - [x] On the user page tab showing past results
-- [ ] Translations
+- [x] Translations
 
 ## Other
 

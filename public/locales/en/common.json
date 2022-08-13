@@ -18,7 +18,14 @@
 
   "actions.save": "Save",
   "actions.saving": "Saving...",
+  "actions.submit": "Submit",
   "actions.edit": "Edit",
+  "actions.add": "Add",
+  "actions.remove": "Remove",
 
-  "results": "Results"
+  "results": "Results",
+
+  "forms.name": "Name",
+  "forms.description": "Description",
+  "forms.errors.title": "Following errors need to be fixed"
 }

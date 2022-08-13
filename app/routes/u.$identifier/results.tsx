@@ -29,9 +29,7 @@ export default function UserResultsPage() {
         <tbody>
           {data.results.map((result) => (
             <tr key={result.eventId}>
-              <td className="text-center">
-                {placementString(result.placement)}
-              </td>
+              <td className="pl-4">{placementString(result.placement)}</td>
               <td>{result.teamName}</td>
               <td>
                 <Link to={calendarEventPage(result.eventId)}>

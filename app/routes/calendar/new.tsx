@@ -215,12 +215,13 @@ export default function CalendarNewEventPage() {
 }
 
 function NameInput() {
+  const { t } = useTranslation();
   const { eventToEdit } = useLoaderData<typeof loader>();
 
   return (
     <div>
       <Label htmlFor="name" required>
-        Name
+        {t("forms.name")}
       </Label>
       <input
         name="name"
@@ -235,6 +236,7 @@ function NameInput() {
 }
 
 function DescriptionTextarea() {
+  const { t } = useTranslation();
   const { eventToEdit } = useLoaderData<typeof loader>();
   const [value, setValue] = React.useState(eventToEdit?.description ?? "");
 
@@ -247,7 +249,7 @@ function DescriptionTextarea() {
           max: CALENDAR_EVENT.DESCRIPTION_MAX_LENGTH,
         }}
       >
-        Description
+        {t("forms.description")}
       </Label>
       <textarea
         id="description"
@@ -262,6 +264,7 @@ function DescriptionTextarea() {
 }
 
 function DatesInput() {
+  const { t } = useTranslation(["common", "calendar"]);
   const { eventToEdit } = useLoaderData<typeof loader>();
   const [datesCount, setDatesCount] = React.useState(
     eventToEdit?.startTimes.length ?? 1
@@ -276,7 +279,7 @@ function DatesInput() {
     <div className="stack md items-start">
       <div>
         <Label htmlFor="date" required>
-          Dates
+          {t("calendar:forms.dates")}
         </Label>
         <div className="stack sm">
           {new Array(datesCount).fill(null).map((_, i) => {
@@ -307,7 +310,7 @@ function DatesInput() {
                       onClick={() => setDatesCount((count) => count + 1)}
                       data-cy="add-date-button"
                     >
-                      Add
+                      {t("common:actions.add")}
                     </Button>
                     {datesCount > 1 && (
                       <Button
@@ -316,7 +319,7 @@ function DatesInput() {
                         data-cy="remove-date-button"
                         variant="destructive"
                       >
-                        Remove
+                        {t("common:actions.remove")}
                       </Button>
                     )}
                   </>
@@ -326,7 +329,7 @@ function DatesInput() {
           })}
         </div>
         <FormMessage type="info" className={clsx({ invisible: !isMounted })}>
-          Times in your local time zone: {usersTimeZone}
+          {t("calendar:inYourTimeZone")} {usersTimeZone}
         </FormMessage>
       </div>
     </div>
@@ -334,12 +337,13 @@ function DatesInput() {
 }
 
 function BracketUrlInput() {
+  const { t } = useTranslation("calendar");
   const { eventToEdit } = useLoaderData<typeof loader>();
 
   return (
     <div>
       <Label htmlFor="bracketUrl" required>
-        Bracket URL
+        {t("forms.bracketUrl")}
       </Label>
       <input
         name="bracketUrl"
@@ -354,11 +358,12 @@ function BracketUrlInput() {
 }
 
 function DiscordLinkInput() {
+  const { t } = useTranslation("calendar");
   const { eventToEdit } = useLoaderData<typeof loader>();
 
   return (
     <div className="stack items-start">
-      <Label htmlFor="discordInviteCode">Discord server invite URL</Label>
+      <Label htmlFor="discordInviteCode">{t("forms.discordInvite")}</Label>
       <Input
         name="discordInviteCode"
         leftAddon="https://discord.gg/"
@@ -371,8 +376,8 @@ function DiscordLinkInput() {
 }
 
 function TagsAdder() {
-  const { eventToEdit } = useLoaderData<typeof loader>();
   const { t } = useTranslation("calendar");
+  const { eventToEdit } = useLoaderData<typeof loader>();
   const [tags, setTags] = React.useState(
     (eventToEdit?.tags ?? []) as Array<CalendarEventTag>
   );
@@ -390,7 +395,7 @@ function TagsAdder() {
         value={JSON.stringify(tags.length > 0 ? tags : null)}
       />
       <div>
-        <label htmlFor={id}>Tags</label>
+        <label htmlFor={id}>{t("forms.tags")}</label>
         <select
           id={id}
           className="calendar-new__select"
@@ -399,16 +404,14 @@ function TagsAdder() {
           }
           data-cy="tags-select"
         >
-          <option value="">Choose a tag</option>
+          <option value="">{t("forms.tags.placeholder")}</option>
           {tagsForSelect.map((tag) => (
             <option key={tag} value={tag}>
               {t(`tag.name.${tag}`)}
             </option>
           ))}
         </select>
-        <FormMessage type="info">
-          &quot;Badge prizes&quot; tag is added automatically if applicable
-        </FormMessage>
+        <FormMessage type="info">{t("forms.tags.info")}</FormMessage>
       </div>
       <Tags
         tags={tags}
@@ -421,6 +424,7 @@ function TagsAdder() {
 }
 
 function BadgesAdder() {
+  const { t } = useTranslation("calendar");
   const { eventToEdit } = useLoaderData<typeof loader>();
   const { managedBadges } = useLoaderData<typeof loader>();
   const [badges, setBadges] = React.useState(eventToEdit?.badges ?? []);
@@ -448,7 +452,7 @@ function BadgesAdder() {
     <div className="stack md">
       {input}
       <div>
-        <label htmlFor={id}>Badge prizes</label>
+        <label htmlFor={id}>{t("forms.badges")}</label>
         <select
           id={id}
           className="calendar-new__select"
@@ -462,7 +466,7 @@ function BadgesAdder() {
           }}
           data-cy="badges-select"
         >
-          <option value="">Choose a badge prize</option>
+          <option value="">{t("forms.badges.placeholder")}</option>
           {badgesForSelect.map((badge) => (
             <option key={badge.id} value={badge.id}>
               {badge.displayName}

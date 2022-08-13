@@ -1,6 +1,8 @@
 import { useActionData } from "@remix-run/react";
+import { useTranslation } from "react-i18next";
 
-export function FormErrors() {
+export function FormErrors({ namespace }: { namespace: "calendar" }) {
+  const { t } = useTranslation(["common", namespace]);
   const actionData = useActionData<{ errors?: string[] }>();
 
   if (!actionData?.errors || actionData.errors.length === 0) {
@@ -9,10 +11,10 @@ export function FormErrors() {
 
   return (
     <div className="form-errors">
-      <h4>Following errors need to be fixed:</h4>
+      <h4>{t("common:forms.errors.title")}:</h4>
       <ol>
         {actionData.errors.map((error) => (
-          <li key={error}>{error}</li>
+          <li key={error}>{t(`${namespace}:${error}` as any)}</li>
         ))}
       </ol>
     </div>
