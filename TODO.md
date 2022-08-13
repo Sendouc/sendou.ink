@@ -23,7 +23,7 @@ Calendar
 
 ## Other
 
-- [ ] can submit results with one invalid linked user
+- [x] can submit results with one invalid linked user
 - [x] Redirect to event page after submitting results
 - [x] date input take in account time zone difference between server and client
 - [x] User selector allow passing users from top level

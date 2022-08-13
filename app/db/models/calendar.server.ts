@@ -218,11 +218,11 @@ const findWinnersByEventIdStm = sql.prepare(`
     "User"."discordId" as "playerDiscordId",
     "User"."discordAvatar" as "playerDiscordAvatar"
   from "CalendarEventResultTeam"
-  join 
+  left join 
     "CalendarEventResultPlayer" 
       on 
     "CalendarEventResultPlayer"."teamId" = "CalendarEventResultTeam"."id"
-  join
+  left join
     "User"
       on
     "User"."id" = "CalendarEventResultPlayer"."userId"
@@ -289,6 +289,7 @@ const findResultsByUserIdStm = sql.prepare(`
   select
     "CalendarEvent"."id" as "eventId",
     "CalendarEvent"."name" as "eventName",
+    "CalendarEventResultTeam"."id" as "teamId",
     "CalendarEventResultTeam"."name" as "teamName",
     "CalendarEventResultTeam"."placement",
     "CalendarEvent"."participantCount",
@@ -314,16 +315,21 @@ const findMatesByResultTeamIdStm = sql.prepare(`
     "User"."discordId" as "discordId",
     "User"."discordAvatar" as "discordAvatar"
   from "CalendarEventResultPlayer"
-  join "User"
+  left join "User"
     on "User"."id" = "CalendarEventResultPlayer"."userId"
   where "teamId" = $teamId
-  and "userId" != $userId
+  and (
+    "CalendarEventResultPlayer"."userId" is null 
+      or 
+    "CalendarEventResultPlayer"."userId" != $userId
+  )
 `);
 
 export function findResultsByUserId(userId: User["id"]) {
   return (
     findResultsByUserIdStm.all({ userId }) as Array<{
       eventId: CalendarEvent["id"];
+      teamId: CalendarEventResultTeam["id"];
       eventName: CalendarEvent["name"];
       teamName: CalendarEventResultTeam["name"];
       placement: CalendarEventResultTeam["placement"];
@@ -334,7 +340,7 @@ export function findResultsByUserId(userId: User["id"]) {
     ...row,
     mates: (
       findMatesByResultTeamIdStm.all({
-        teamId: row.eventId,
+        teamId: row.teamId,
         userId,
       }) as Array<{
         name: CalendarEventResultPlayer["name"];

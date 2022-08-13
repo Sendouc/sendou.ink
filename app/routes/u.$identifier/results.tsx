@@ -5,7 +5,7 @@ import { Avatar } from "~/components/Avatar";
 import { Section } from "~/components/Section";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { discordFullName, placementString } from "~/utils/strings";
-import { userPage } from "~/utils/urls";
+import { calendarEventPage, userPage } from "~/utils/urls";
 import type { UserPageLoaderData } from "../u.$identifier";
 
 export default function UserResultsPage() {
@@ -23,7 +23,7 @@ export default function UserResultsPage() {
             <th>Team</th>
             <th>Tournament</th>
             <th>Date</th>
-            <th>Members</th>
+            <th>Mates</th>
           </tr>
         </thead>
         <tbody>
@@ -33,7 +33,11 @@ export default function UserResultsPage() {
                 {placementString(result.placement)}
               </td>
               <td>{result.teamName}</td>
-              <td>{result.eventName}</td>
+              <td>
+                <Link to={calendarEventPage(result.eventId)}>
+                  {result.eventName}
+                </Link>
+              </td>
               <td>
                 {databaseTimestampToDate(result.startTime).toLocaleDateString(
                   i18n.language,

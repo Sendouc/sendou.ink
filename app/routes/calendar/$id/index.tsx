@@ -189,7 +189,10 @@ function Results() {
               <td>
                 <ul className="event__results-players">
                   {result.players.map((player) => (
-                    <li key={typeof player === "string" ? player : player.id}>
+                    <li
+                      key={typeof player === "string" ? player : player.id}
+                      className="flex items-center"
+                    >
                       {typeof player === "string" ? (
                         player
                       ) : (
