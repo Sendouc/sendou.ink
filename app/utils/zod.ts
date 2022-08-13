@@ -40,7 +40,9 @@ export function actualNumber(value: unknown) {
 
 export function date(value: unknown) {
   if (typeof value === "string" || typeof value === "number") {
-    return new Date(value);
+    const valueAsNumber = Number(value);
+
+    return new Date(Number.isNaN(valueAsNumber) ? value : valueAsNumber);
   }
 
   return value;
