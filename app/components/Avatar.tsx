@@ -34,7 +34,7 @@ export function Avatar({
       src={
         discordAvatar && !isErrored
           ? `https://cdn.discordapp.com/avatars/${discordId}/${discordAvatar}.webp${
-              size === "lg" ? "" : "?size=80"
+              size === "lg" ? "?size=240" : "?size=80"
             }`
           : "/img/blank.gif" // avoid broken image placeholder
       }
