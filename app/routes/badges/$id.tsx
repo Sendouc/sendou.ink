@@ -107,5 +107,5 @@ export function badgeExplanationText(
   return t("tournament", {
     count: badge.count ?? 1,
     tournament: badge.displayName,
-  });
+  }).replace("&#39;", "'");
 }
