@@ -149,7 +149,7 @@ export default function CalendarEventPage() {
               <LinkButton
                 tiny
                 to={calendarReportWinnersPage(data.event.eventId)}
-                data-cy="edit-button"
+                data-cy="report-winners-button"
               >
                 {t("calendar:actions.reportWinners")}
               </LinkButton>

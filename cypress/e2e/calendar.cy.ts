@@ -16,10 +16,14 @@ describe("Calendar", () => {
     cy.visit(CALENDAR_PAGE);
 
     cy.contains("Last").click();
-    cy.getCy("no-events");
     cy.contains("Next").click();
     cy.getCy("event-page-link").first().click();
     cy.getCy("event-description"); // page switched after link click
+  });
+
+  it("visits week via search params & displays no events", () => {
+    cy.visit(`${CALENDAR_PAGE}?week=1&year=2020`);
+    cy.getCy("no-events");
   });
 });
 
@@ -39,15 +43,16 @@ describe("New calendar event page", () => {
     );
     cy.getCy("add-date-button").click();
     cy.getCy("date-input")
+      .eq(1) // get second date input
       .clear()
       .type(
         dateToYearMonthDayHourMinuteString(new Date(Date.UTC(2022, 5, 21)))
       );
     cy.getCy("add-date-button").click();
 
-    cy.getCy("date-delete-button").its("length").should("eq", 2);
-    cy.getCy("date-delete-button").first().click();
-    cy.getCy("date-delete-button").its("length").should("eq", 1);
+    cy.getCy("date-input").its("length").should("equal", 3);
+    cy.getCy("remove-date-button").click();
+    cy.getCy("date-input").its("length").should("equal", 2);
 
     // tags
 
@@ -77,14 +82,13 @@ describe("New calendar event page", () => {
     cy.getCy("date-input").type(
       dateToYearMonthDayHourMinuteString(new Date(Date.UTC(2022, 5, 20)))
     );
-    cy.getCy("add-date-button").click();
     cy.getCy("bracket-url-input").type("https://bracket.com");
     cy.getCy("discord-invite-code-input").type("asdFGKHL");
     cy.getCy("tags-select").select("MONEY");
     cy.getCy("badges-select").select(1);
 
     cy.getCy("submit-button").click();
-    cy.url().should("include", "/101"); // we should have been redirected to the new event's page
+    cy.url().should("include", "/201"); // we should have been redirected to the new event's page
   });
 
   it("edits an event", () => {
