@@ -198,13 +198,16 @@ function WeekLinks() {
               data.weeks.length - 1,
             ].includes(i);
 
+            const isCurrentWeek = i == 4;
+
             return (
               <Flipped key={week.number} flipId={week.number}>
                 <Link
                   to={`?week=${week.number}&year=${week.year}`}
                   className={clsx("calendar__week", { invisible: hidden })}
                   aria-hidden={hidden}
-                  tabIndex={hidden ? -1 : 0}
+                  tabIndex={hidden || isCurrentWeek ? -1 : 0}
+                  onClick={(e) => isCurrentWeek && e.preventDefault()}
                 >
                   <>
                     <WeekLinkTitle week={week} />
