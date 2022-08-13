@@ -16,6 +16,7 @@ import invariant from "tiny-invariant";
 import { z } from "zod";
 import { Button } from "~/components/Button";
 import { Label } from "~/components/Label";
+import { Main } from "~/components/Main";
 import { USER_BIO_MAX_LENGTH } from "~/constants";
 import { db } from "~/db";
 import { type User } from "~/db/types";
@@ -86,34 +87,36 @@ export default function UserEditPage() {
   const transition = useTransition();
 
   return (
-    <Form className="u-edit__container" method="post">
-      <div>
-        <label htmlFor="country">{t("user:country")}</label>
-        <select
-          className="u-edit__country-select"
-          name="country"
-          id="country"
-          defaultValue={parentRouteData.country?.code ?? ""}
-          data-cy="country-select"
+    <Main>
+      <Form className="u-edit__container" method="post">
+        <div>
+          <label htmlFor="country">{t("user:country")}</label>
+          <select
+            className="u-edit__country-select"
+            name="country"
+            id="country"
+            defaultValue={parentRouteData.country?.code ?? ""}
+            data-cy="country-select"
+          >
+            <option value="" />
+            {data.countries.map((country) => (
+              <option key={country.code} value={country.code}>
+                {`${country.name} ${country.emoji}`}
+              </option>
+            ))}
+          </select>
+        </div>
+        <BioTextarea initialValue={parentRouteData.bio} />
+        <Button
+          loadingText={t("common:actions.saving")}
+          type="submit"
+          loading={transition.state === "submitting"}
+          data-cy="submit-button"
         >
-          <option value="" />
-          {data.countries.map((country) => (
-            <option key={country.code} value={country.code}>
-              {`${country.name} ${country.emoji}`}
-            </option>
-          ))}
-        </select>
-      </div>
-      <BioTextarea initialValue={parentRouteData.bio} />
-      <Button
-        loadingText={t("common:actions.saving")}
-        type="submit"
-        loading={transition.state === "submitting"}
-        data-cy="submit-button"
-      >
-        {t("common:actions.save")}
-      </Button>
-    </Form>
+          {t("common:actions.save")}
+        </Button>
+      </Form>
+    </Main>
   );
 }
 

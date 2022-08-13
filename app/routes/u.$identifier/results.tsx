@@ -15,67 +15,69 @@ export default function UserResultsPage() {
   const data = parentRoute.data as UserPageLoaderData;
 
   return (
-    <Section className="u__results-section">
-      <table>
-        <thead>
-          <tr>
-            <th>{t("results.placing")}</th>
-            <th>{t("results.team")}</th>
-            <th>{t("results.tournament")}</th>
-            <th>{t("results.date")}</th>
-            <th>{t("results.mates")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.results.map((result) => (
-            <tr key={result.eventId}>
-              <td className="pl-4">{placementString(result.placement)}</td>
-              <td>{result.teamName}</td>
-              <td>
-                <Link to={calendarEventPage(result.eventId)}>
-                  {result.eventName}
-                </Link>
-              </td>
-              <td>
-                {databaseTimestampToDate(result.startTime).toLocaleDateString(
-                  i18n.language,
-                  {
-                    day: "numeric",
-                    month: "numeric",
-                    year: "numeric",
-                  }
-                )}
-              </td>
-              <td>
-                <ul className="u__results-players">
-                  {result.mates.map((player) => (
-                    <li
-                      key={typeof player === "string" ? player : player.id}
-                      className="flex items-center"
-                    >
-                      {typeof player === "string" ? (
-                        player
-                      ) : (
-                        <Link
-                          to={userPage(player.discordId)}
-                          className="stack horizontal xs items-center"
-                        >
-                          <Avatar
-                            discordAvatar={player.discordAvatar}
-                            discordId={player.discordId}
-                            size="xxs"
-                          />{" "}
-                          {discordFullName(player)}
-                        </Link>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </td>
+    <main className="u__results-main">
+      <Section className="u__results-section">
+        <table>
+          <thead>
+            <tr>
+              <th>{t("results.placing")}</th>
+              <th>{t("results.team")}</th>
+              <th>{t("results.tournament")}</th>
+              <th>{t("results.date")}</th>
+              <th>{t("results.mates")}</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </Section>
+          </thead>
+          <tbody>
+            {data.results.map((result) => (
+              <tr key={result.eventId}>
+                <td className="pl-4">{placementString(result.placement)}</td>
+                <td>{result.teamName}</td>
+                <td>
+                  <Link to={calendarEventPage(result.eventId)}>
+                    {result.eventName}
+                  </Link>
+                </td>
+                <td>
+                  {databaseTimestampToDate(result.startTime).toLocaleDateString(
+                    i18n.language,
+                    {
+                      day: "numeric",
+                      month: "numeric",
+                      year: "numeric",
+                    }
+                  )}
+                </td>
+                <td>
+                  <ul className="u__results-players">
+                    {result.mates.map((player) => (
+                      <li
+                        key={typeof player === "string" ? player : player.id}
+                        className="flex items-center"
+                      >
+                        {typeof player === "string" ? (
+                          player
+                        ) : (
+                          <Link
+                            to={userPage(player.discordId)}
+                            className="stack horizontal xs items-center"
+                          >
+                            <Avatar
+                              discordAvatar={player.discordAvatar}
+                              discordId={player.discordId}
+                              size="xxs"
+                            />{" "}
+                            {discordFullName(player)}
+                          </Link>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Section>
+    </main>
   );
 }

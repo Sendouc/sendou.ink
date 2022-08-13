@@ -8,6 +8,7 @@ import { Badge } from "~/components/Badge";
 import { TwitchIcon } from "~/components/icons/Twitch";
 import { TwitterIcon } from "~/components/icons/Twitter";
 import { YouTubeIcon } from "~/components/icons/YouTube";
+import { Main } from "~/components/Main";
 import type { Unpacked } from "~/utils/types";
 import { assertUnreachable } from "~/utils/types";
 import { badgeExplanationText } from "../badges/$id";
@@ -23,39 +24,43 @@ export default function UserInfoPage() {
   const data = parentRoute.data as UserPageLoaderData;
 
   return (
-    <div className="u__container">
-      <div className="u__avatar-container">
-        <Avatar
-          discordAvatar={data.discordAvatar}
-          discordId={data.discordId}
-          size="lg"
-          className="u__avatar"
-        />
-        <h2 className="u__name">
-          {data.discordName}
-          <span className="u__discriminator">#{data.discordDiscriminator}</span>
-        </h2>
-        {data.country ? (
-          <div className="u__country">
-            <span className="u__country-emoji">{data.country.emoji}</span>{" "}
-            <span className="u__country-name">{data.country.name}</span>
+    <Main>
+      <div className="u__container">
+        <div className="u__avatar-container">
+          <Avatar
+            discordAvatar={data.discordAvatar}
+            discordId={data.discordId}
+            size="lg"
+            className="u__avatar"
+          />
+          <h2 className="u__name">
+            {data.discordName}
+            <span className="u__discriminator">
+              #{data.discordDiscriminator}
+            </span>
+          </h2>
+          {data.country ? (
+            <div className="u__country">
+              <span className="u__country-emoji">{data.country.emoji}</span>{" "}
+              <span className="u__country-name">{data.country.name}</span>
+            </div>
+          ) : null}
+          <div className="u__socials">
+            {data.twitch ? (
+              <SocialLink type="twitch" identifier={data.twitch} />
+            ) : null}
+            {data.twitter ? (
+              <SocialLink type="twitter" identifier={data.twitter} />
+            ) : null}
+            {data.youtubeId ? (
+              <SocialLink type="youtube" identifier={data.youtubeId} />
+            ) : null}
           </div>
-        ) : null}
-        <div className="u__socials">
-          {data.twitch ? (
-            <SocialLink type="twitch" identifier={data.twitch} />
-          ) : null}
-          {data.twitter ? (
-            <SocialLink type="twitter" identifier={data.twitter} />
-          ) : null}
-          {data.youtubeId ? (
-            <SocialLink type="youtube" identifier={data.youtubeId} />
-          ) : null}
         </div>
+        <BadgeContainer badges={data.badges} />
+        {data.bio && <article>{data.bio}</article>}
       </div>
-      <BadgeContainer badges={data.badges} />
-      {data.bio && <article>{data.bio}</article>}
-    </div>
+    </Main>
   );
 }
 

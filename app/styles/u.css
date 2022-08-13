@@ -126,6 +126,11 @@
   font-weight: var(--bold);
 }
 
+.u__results-main {
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
 .u__results-section {
   overflow-x: auto;
 }

@@ -5,7 +5,6 @@ import type { UseDataFunctionReturn } from "@remix-run/react/dist/components";
 import { countries } from "countries-list";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
-import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { db } from "~/db";
 import { useUser } from "~/modules/auth";
@@ -93,9 +92,7 @@ export default function UserPageLayout() {
           </SubNavLink>
         )}
       </SubNav>
-      <Main>
-        <Outlet />
-      </Main>
+      <Outlet />
     </>
   );
 }
