@@ -11,12 +11,20 @@ type LabelProps = Pick<
     current: number;
     max: number;
   };
+  required?: boolean;
 };
 
-export function Label({ valueLimits, children, htmlFor }: LabelProps) {
+export function Label({
+  valueLimits,
+  required,
+  children,
+  htmlFor,
+}: LabelProps) {
   return (
     <div className="label__container">
-      <label htmlFor={htmlFor}>{children}</label>
+      <label htmlFor={htmlFor}>
+        {children} {required && <span className="text-error">*</span>}
+      </label>
       {valueLimits ? (
         <div className={clsx("label__value", lengthWarning(valueLimits))}>
           {valueLimits.current}/{valueLimits.max}

@@ -3,9 +3,8 @@ import * as React from "react";
 import Fuse from "fuse.js";
 import clsx from "clsx";
 import type { Unpacked } from "~/utils/types";
-import { useFetcher } from "@remix-run/react";
-import type { UsersLoaderData } from "~/routes/users";
 import type { UserWithPlusTier } from "~/db/types";
+import { useUsers } from "~/hooks/swr";
 
 const MAX_RESULTS_SHOWN = 6;
 
@@ -15,7 +14,9 @@ interface ComboboxProps<T> {
   inputName: string;
   placeholder: string;
   className?: string;
+  id?: string;
   isLoading?: boolean;
+  initialValue?: ComboboxOption<T>;
   onChange?: (selectedOption?: ComboboxOption<T>) => void;
 }
 
@@ -23,13 +24,19 @@ export function Combobox<T extends Record<string, string | null | number>>({
   options,
   inputName,
   placeholder,
+  initialValue,
   onChange,
   className,
+  id,
   isLoading = false,
 }: ComboboxProps<T>) {
   const [selectedOption, setSelectedOption] =
     React.useState<Unpacked<typeof options>>();
   const [query, setQuery] = React.useState("");
+
+  React.useEffect(() => {
+    setSelectedOption(initialValue);
+  }, [initialValue]);
 
   const filteredOptions = (() => {
     if (!query) return [];
@@ -63,6 +70,7 @@ export function Combobox<T extends Record<string, string | null | number>>({
           (option as Unpacked<typeof options>)?.label ?? ""
         }
         data-cy={`${inputName}-combobox-input`}
+        id={id}
       />
       <HeadlessCombobox.Options
         className={clsx("combobox-options", {
@@ -97,27 +105,23 @@ export function Combobox<T extends Record<string, string | null | number>>({
 // TODO: if we search with only discord id "79237403620945920" then doesn't really make sense to do fuzzy search
 export function UserCombobox({
   inputName,
+  initialUserId,
   onChange,
   userIdsToOmit,
   className,
+  id,
 }: Pick<
   ComboboxProps<Pick<UserWithPlusTier, "discordId" | "plusTier">>,
-  "inputName" | "onChange" | "className"
-> & { userIdsToOmit?: Set<number> }) {
-  const fetcher = useFetcher<UsersLoaderData>();
+  "inputName" | "onChange" | "className" | "id"
+> & { userIdsToOmit?: Set<number>; initialUserId?: number }) {
+  const { users, isLoading, isError } = useUsers();
 
-  React.useEffect(() => {
-    if (fetcher.type === "init") fetcher.load("/users");
-  }, [fetcher]);
-
-  const isLoading = fetcher.type !== "done";
-
-  const options = () => {
-    if (isLoading) return [];
+  const options = React.useMemo(() => {
+    if (!users) return [];
 
     const data = userIdsToOmit
-      ? fetcher.data.users.filter((user) => !userIdsToOmit.has(user.id))
-      : fetcher.data.users;
+      ? users.filter((user) => !userIdsToOmit.has(user.id))
+      : users;
 
     return data.map((u) => ({
       label: u.discordFullName,
@@ -125,16 +129,31 @@ export function UserCombobox({
       discordId: u.discordId,
       plusTier: u.plusTier,
     }));
-  };
+  }, [users, userIdsToOmit]);
+
+  const initialValue = React.useMemo(() => {
+    if (!initialUserId) return;
+    return options.find((o) => o.value === String(initialUserId));
+  }, [options, initialUserId]);
+
+  if (isError) {
+    return (
+      <div className="text-sm text-error">
+        Something went wrong. Try reloading the page.
+      </div>
+    );
+  }
 
   return (
     <Combobox
       inputName={inputName}
-      options={options()}
+      options={options}
       placeholder="Sendou#0043"
       isLoading={isLoading}
+      initialValue={initialValue}
       onChange={onChange}
       className={className}
+      id={id}
     />
   );
 }

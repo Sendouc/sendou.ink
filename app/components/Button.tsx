@@ -60,7 +60,9 @@ type LinkButtonProps = Pick<
   ButtonProps,
   "variant" | "children" | "className" | "tiny"
 > &
-  Pick<LinkProps, "to" | "prefetch"> & { "data-cy"?: string };
+  Pick<LinkProps, "to" | "prefetch"> & { "data-cy"?: string } & {
+    isExternal?: boolean;
+  };
 
 export function LinkButton({
   variant,
@@ -69,8 +71,21 @@ export function LinkButton({
   className,
   to,
   prefetch,
+  isExternal,
   "data-cy": testId,
 }: LinkButtonProps) {
+  if (isExternal) {
+    return (
+      <a
+        className={clsx("button", variant, { tiny }, className)}
+        href={to as string}
+        data-cy={testId}
+      >
+        {children}
+      </a>
+    );
+  }
+
   return (
     <Link
       className={clsx("button", variant, { tiny }, className)}

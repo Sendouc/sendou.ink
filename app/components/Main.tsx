@@ -4,7 +4,20 @@ import type * as React from "react";
 export const Main = ({
   children,
   className,
+  halfWidth,
 }: {
   children: React.ReactNode;
   className?: string;
-}) => <main className={clsx("layout__main", className)}>{children}</main>;
+  halfWidth?: boolean;
+}) => (
+  <main
+    className={clsx(
+      "layout__main",
+      "main",
+      { "half-width": halfWidth },
+      className
+    )}
+  >
+    {children}
+  </main>
+);

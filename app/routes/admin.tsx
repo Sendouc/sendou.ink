@@ -100,7 +100,7 @@ function Impersonate() {
           }
         />
       </div>
-      <div className="stack vertical md">
+      <div className="stack horizontal md">
         <Button type="submit" disabled={!userId}>
           Go
         </Button>
@@ -129,7 +129,7 @@ function MigrateUser() {
   return (
     <Form className="stack md" method="post">
       <h2>Migrate user data</h2>
-      <div className="stack vertical md">
+      <div className="stack horizontal md">
         <div>
           <label>Old user</label>
           <UserCombobox
@@ -149,7 +149,7 @@ function MigrateUser() {
           />
         </div>
       </div>
-      <div className="stack vertical md">
+      <div className="stack horizontal md">
         <Button
           type="submit"
           disabled={!oldUserId || !newUserId || transition.state !== "idle"}

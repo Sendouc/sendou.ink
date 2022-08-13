@@ -36,12 +36,19 @@
   justify-self: flex-end;
 }
 
-.layout__main {
+.main {
   width: 100%;
   max-width: 48rem;
   margin: 0 auto;
-  padding-block-end: var(--s-32);
   padding-inline: var(--s-3);
+}
+
+.main.half-width {
+  max-width: 24rem;
+}
+
+.layout__main {
+  padding-block-end: var(--s-32);
 }
 
 .layout__burger {

@@ -3,10 +3,12 @@ import type { User } from "~/db/types";
 import * as React from "react";
 
 const dimensions = {
+  xxs: 24,
+  xs: 36,
   sm: 44,
   md: 81,
   lg: 125,
-};
+} as const;
 
 export function Avatar({
   discordId,
@@ -16,7 +18,7 @@ export function Avatar({
   ...rest
 }: Pick<User, "discordId" | "discordAvatar"> & {
   className?: string;
-  size: "sm" | "md" | "lg";
+  size: keyof typeof dimensions;
 } & React.ButtonHTMLAttributes<HTMLImageElement>) {
   const [isErrored, setIsErrored] = React.useState(false);
   // TODO: just show text... my profile?

@@ -113,6 +113,10 @@ function Managers({ data }: { data: BadgeDetailsLoaderData }) {
         .map((m) => m.id)
     ).length;
 
+  const userIdsToOmitFromCombobox = React.useMemo(() => {
+    return new Set(data.managers.map((m) => m.id));
+  }, [data]);
+
   return (
     <div className="stack md">
       <div className="stack sm">
@@ -144,7 +148,7 @@ function Managers({ data }: { data: BadgeDetailsLoaderData }) {
               { discordFullName: user.label, id: Number(user.value) },
             ]);
           }}
-          userIdsToOmit={new Set(managers.map((m) => m.id))}
+          userIdsToOmit={userIdsToOmitFromCombobox}
         />
       </div>
       <input
@@ -183,6 +187,10 @@ function Owners({ data }: { data: BadgeDetailsLoaderData }) {
   );
 
   const ownerDifferences = getOwnerDifferences(owners, data.owners);
+
+  const userIdsToOmitFromCombobox = React.useMemo(() => {
+    return new Set(data.owners.map((m) => m.id));
+  }, [data]);
 
   return (
     <div className="stack md">
@@ -224,7 +232,7 @@ function Owners({ data }: { data: BadgeDetailsLoaderData }) {
               { discordFullName: user.label, id: Number(user.value), count: 1 },
             ]);
           }}
-          userIdsToOmit={new Set(owners.map((m) => m.id))}
+          userIdsToOmit={userIdsToOmitFromCombobox}
         />
       </div>
       {ownerDifferences.length > 0 ? (

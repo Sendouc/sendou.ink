@@ -16,6 +16,7 @@ export const ADMIN_PAGE = "/admin";
 export const FAQ_PAGE = "/faq";
 export const CONTRIBUTIONS_PAGE = "/contributions";
 export const BADGES_PAGE = "/badges";
+export const CALENDAR_PAGE = "/calendar";
 export const STOP_IMPERSONATING_URL = "/auth/impersonate/stop";
 
 export const userPage = (discordId: string) => `/u/${discordId}`;
@@ -24,6 +25,11 @@ export const impersonateUrl = (idToLogInAs: number) =>
 export const badgePage = (badgeId: number) => `${BADGES_PAGE}/${badgeId}`;
 export const plusSuggestionPage = (tier?: string | number) =>
   `/plus/suggestions${tier ? `?tier=${tier}` : ""}`;
+export const calendarEventPage = (eventId: number) => `/calendar/${eventId}`;
+export const calendarEditPage = (eventId?: number) =>
+  `/calendar/new${eventId ? `?eventId=${eventId}` : ""}`;
+export const calendarReportWinnersPage = (eventId: number) =>
+  `/calendar/${eventId}/report-winners`;
 
 export const badgeUrl = ({
   code,
@@ -32,3 +38,7 @@ export const badgeUrl = ({
   code: Badge["code"];
   extension?: "gif";
 }) => `/badges/${code}${extension ? `.${extension}` : ""}`;
+
+export function resolveBaseUrl(url: string) {
+  return new URL(url).host;
+}

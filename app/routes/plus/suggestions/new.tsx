@@ -29,7 +29,7 @@ import {
 import { nextNonCompletedVoting } from "~/modules/plus-server";
 import { db } from "~/db";
 import type { UserWithPlusTier } from "~/db/types";
-import { ErrorMessage } from "~/components/ErrorMessage";
+import { FormMessage } from "~/components/FormMessage";
 import { atOrError } from "~/utils/arrays";
 import { requireUser, useUser } from "~/modules/auth";
 
@@ -147,7 +147,7 @@ export default function PlusNewSuggestionModalPage() {
           <label htmlFor="user">Suggested user</label>
           <UserCombobox inputName="user" onChange={setSelectedUser} />
           {selectedUserErrorMessage ? (
-            <ErrorMessage>{selectedUserErrorMessage}</ErrorMessage>
+            <FormMessage type="error">{selectedUserErrorMessage}</FormMessage>
           ) : null}
         </div>
         <CommentTextarea maxLength={PlUS_SUGGESTION_FIRST_COMMENT_MAX_LENGTH} />

@@ -1,3 +1,5 @@
+import type allTags from "../routes/calendar/tags.json";
+
 export interface User {
   id: number;
   discordId: string;
@@ -75,4 +77,43 @@ export interface TournamentBadgeOwner {
 export interface BadgeManager {
   badgeId: number;
   userId: number;
+}
+
+export interface CalendarEvent {
+  id: number;
+  name: string;
+  authorId: number;
+  tags: string | null;
+  description: string | null;
+  discordInviteCode: string | null;
+  // generated column
+  discordUrl: string | null;
+  bracketUrl: string;
+  participantCount: number | null;
+}
+
+export type CalendarEventTag = keyof typeof allTags;
+
+export interface CalendarEventDate {
+  id: number;
+  eventId: number;
+  startTime: number;
+}
+
+export interface CalendarEventResultTeam {
+  id: number;
+  eventId: number;
+  name: string;
+  placement: number;
+}
+
+export interface CalendarEventResultPlayer {
+  teamId: number;
+  userId: number | null;
+  name: string | null;
+}
+
+export interface CalendarEventBadge {
+  eventId: number;
+  badgeId: number;
 }

@@ -132,7 +132,6 @@ function BioTextarea({ initialValue }: { initialValue: User["bio"] }) {
       <textarea
         id="bio"
         name="bio"
-        className="u-edit__bio-textarea"
         data-cy="bio-textarea"
         value={value}
         onChange={(e) => setValue(e.target.value)}

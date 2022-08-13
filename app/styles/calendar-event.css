@@ -1,0 +1,46 @@
+.event__title {
+  line-height: 1.35;
+}
+
+.event__day {
+  color: var(--text-lighter);
+}
+
+.event__times {
+  display: grid;
+  column-gap: var(--s-1-5);
+  font-weight: var(--semi-bold);
+  grid-template-columns: max-content 1fr;
+}
+
+.event__times > time {
+  height: 1.25rem;
+}
+
+.event__author {
+  display: flex;
+  align-items: center;
+  color: var(--text-lighter);
+  font-weight: var(--semi-bold);
+  gap: var(--s-1);
+}
+
+.event__results-players {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0;
+  gap: var(--s-3);
+  list-style: none;
+}
+
+.event__results-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+  overflow-x: auto;
+}
+
+.event__results-participant-count {
+  color: var(--text-lighter);
+  font-size: var(--fonts-xs);
+}

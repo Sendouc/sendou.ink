@@ -3,6 +3,7 @@
   "pages.badges": "Badges",
   "pages.plus": "Plus Server",
   "pages.contributors": "Contributors",
+  "pages.calendar": "Calendar",
   "pages.faq": "FAQ",
 
   "header.profile": "Profile",
@@ -17,5 +18,14 @@
 
   "actions.save": "Save",
   "actions.saving": "Saving...",
-  "actions.edit": "Edit"
+  "actions.submit": "Submit",
+  "actions.edit": "Edit",
+  "actions.add": "Add",
+  "actions.remove": "Remove",
+
+  "results": "Results",
+
+  "forms.name": "Name",
+  "forms.description": "Description",
+  "forms.errors.title": "Following errors need to be fixed"
 }

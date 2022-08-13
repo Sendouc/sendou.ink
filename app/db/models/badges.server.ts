@@ -163,3 +163,20 @@ const managersByBadgeIdStm = sql.prepare(`
 export function managersByBadgeId(id: Badge["id"]) {
   return managersByBadgeIdStm.all({ id }) as ManagersByBadgeId;
 }
+
+const managedByUserIdStm = sql.prepare(`
+  select
+    "Badge"."id",
+    "Badge"."code",
+    "Badge"."displayName",
+    "Badge"."hue"
+  from "BadgeManager" 
+  join "Badge" on "Badge"."id" = "BadgeManager"."badgeId"
+  where "userId" = $userId
+`);
+
+export function managedByUserId(userId: User["id"]) {
+  return managedByUserIdStm.all({ userId }) as Array<
+    Pick<Badge, "id" | "code" | "displayName" | "hue">
+  >;
+}

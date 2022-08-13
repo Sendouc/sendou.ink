@@ -1,0 +1,12 @@
+.calendar-new__select {
+  max-width: 16rem;
+}
+
+.calendar-new__badges {
+  width: max-content;
+  padding: var(--s-2);
+  background-color: var(--bg-badge);
+  border-radius: var(--rounded);
+  font-size: var(--fonts-sm);
+  font-weight: var(--semi-bold);
+}

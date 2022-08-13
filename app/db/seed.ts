@@ -10,11 +10,16 @@ import type { UpsertManyPlusVotesArgs } from "./models/plusVotes.server";
 import { ADMIN_DISCORD_ID } from "~/constants";
 import shuffle from "just-shuffle";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
+import capitalize from "just-capitalize";
+import allTags from "~/routes/calendar/tags.json";
 
-const ADMIN_TEST_AVATAR = "fcfd65a3bea598905abb9ca25296816b";
+const ADMIN_TEST_AVATAR = "e424e1ba50d2019fdc4730d261e56c55";
 
 const NZAP_TEST_DISCORD_ID = "455039198672453645";
 const NZAP_TEST_AVATAR = "f809176af93132c3db5f0a5019e96339"; // https://cdn.discordapp.com/avatars/455039198672453645/f809176af93132c3db5f0a5019e96339.webp?size=160
+const NZAP_TEST_ID = 2;
+
+const AMOUNT_OF_CALENDAR_EVENTS = 200;
 
 const basicSeeds = [
   adminUser,
@@ -28,6 +33,9 @@ const basicSeeds = [
   badgesToUsers,
   badgeManagers,
   patrons,
+  calendarEvents,
+  calendarEventBadges,
+  calendarEventResults,
 ];
 
 export function seed() {
@@ -40,6 +48,11 @@ export function seed() {
 
 function wipeDB() {
   const tablesToDelete = [
+    "CalendarEventDate",
+    "CalendarEventResultPlayer",
+    "CalendarEventResultTeam",
+    "CalendarEventBadge",
+    "CalendarEvent",
     "User",
     "PlusVote",
     "PlusSuggestion",
@@ -234,13 +247,17 @@ function badgesToAdmin() {
   }
 }
 
-function badgesToUsers() {
-  const availableBadgeIds = shuffle(
+function getAvailableBadgeIds() {
+  return shuffle(
     sql
       .prepare(`select "id" from "Badge"`)
       .all()
       .map((b) => b.id)
   );
+}
+
+function badgesToUsers() {
+  const availableBadgeIds = getAvailableBadgeIds();
 
   let userIds = sql
     .prepare(`select "id" from "User" where id != 2`) // no badges for N-ZAP
@@ -297,5 +314,175 @@ function patrons() {
         patronSince: dateToDatabaseTimestamp(faker.date.past()),
         patronTier: faker.helpers.arrayElement([1, 1, 2, 2, 2, 3, 3, 4]),
       });
+  }
+}
+
+function userIdsInRandomOrder() {
+  return sql
+    .prepare(`select "id" from "User" order by random()`)
+    .all()
+    .map((u) => u.id) as number[];
+}
+
+function calendarEvents() {
+  const userIds = userIdsInRandomOrder();
+
+  for (let id = 1; id <= AMOUNT_OF_CALENDAR_EVENTS; id++) {
+    const tags = shuffle(Object.keys(allTags)).filter((tag) => tag !== "BADGE");
+
+    sql
+      .prepare(
+        `
+      insert into "CalendarEvent" (
+        "id",
+        "name",
+        "description",
+        "discordInviteCode",
+        "bracketUrl",
+        "authorId",
+        "tags"
+      ) values (
+        $id,
+        $name,
+        $description,
+        $discordInviteCode,
+        $bracketUrl,
+        $authorId,
+        $tags
+      )
+      `
+      )
+      .run({
+        id,
+        name: `${capitalize(faker.word.adjective())} ${capitalize(
+          faker.word.noun()
+        )}`,
+        description: faker.lorem.paragraph(),
+        discordInviteCode: faker.lorem.word(),
+        bracketUrl: faker.internet.url(),
+        authorId: id === 1 ? NZAP_TEST_ID : userIds.pop(),
+        tags:
+          Math.random() > 0.2
+            ? tags
+                .slice(
+                  0,
+                  faker.helpers.arrayElement([
+                    1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 4, 5, 6,
+                  ])
+                )
+                .join(",")
+            : null,
+      });
+
+    const twoDayEvent = Math.random() > 0.9;
+    const startTime =
+      id % 2 === 0 ? faker.date.soon(42) : faker.date.recent(42);
+    startTime.setMinutes(0, 0, 0);
+
+    sql
+      .prepare(
+        `
+        insert into "CalendarEventDate" (
+          "eventId",
+          "startTime"
+        ) values (
+          $eventId,
+          $startTime
+        )
+      `
+      )
+      .run({
+        eventId: id,
+        startTime: dateToDatabaseTimestamp(startTime),
+      });
+
+    if (twoDayEvent) {
+      startTime.setDate(startTime.getDate() + 1);
+
+      sql
+        .prepare(
+          `
+          insert into "CalendarEventDate" (
+            "eventId",
+            "startTime"
+          ) values (
+            $eventId,
+            $startTime
+          )
+        `
+        )
+        .run({
+          eventId: id,
+          startTime: dateToDatabaseTimestamp(startTime),
+        });
+    }
+  }
+}
+
+function calendarEventBadges() {
+  for (let eventId = 1; eventId <= AMOUNT_OF_CALENDAR_EVENTS; eventId++) {
+    if (Math.random() > 0.25) continue;
+
+    const availableBadgeIds = getAvailableBadgeIds();
+
+    for (
+      let i = 0;
+      i < faker.helpers.arrayElement([1, 1, 1, 1, 2, 2, 3]);
+      i++
+    ) {
+      sql
+        .prepare(
+          `insert into "CalendarEventBadge" 
+          ("eventId", "badgeId") 
+          values ($eventId, $badgeId)`
+        )
+        .run({ eventId, badgeId: availableBadgeIds.pop() });
+    }
+  }
+}
+
+function calendarEventResults() {
+  let userIds = userIdsInRandomOrder();
+  const eventIdsOfPast = new Set<number>(
+    sql
+      .prepare(
+        `select "CalendarEvent"."id" 
+          from "CalendarEvent" 
+          join "CalendarEventDate" on "CalendarEventDate"."eventId" = "CalendarEvent"."id"
+          where "CalendarEventDate"."startTime" < $startTime`
+      )
+      .all({ startTime: dateToDatabaseTimestamp(new Date()) })
+      .map((r) => r.id)
+  );
+
+  for (const eventId of eventIdsOfPast) {
+    // event id = 1 needs to be without results for e2e tests
+    if (Math.random() < 0.3 || eventId === 1) continue;
+
+    db.calendarEvents.upsertReportedScores({
+      eventId,
+      participantCount: faker.datatype.number({ min: 10, max: 250 }),
+      results: new Array(faker.helpers.arrayElement([1, 1, 2, 3, 3, 3, 8, 8]))
+        .fill(null)
+        // eslint-disable-next-line no-loop-func
+        .map((_, i) => ({
+          placement: i + 1,
+          teamName: capitalize(faker.word.noun()),
+          players: new Array(
+            faker.helpers.arrayElement([1, 2, 3, 4, 4, 4, 4, 4, 5, 6])
+          )
+            .fill(null)
+            .map(() => {
+              const withStringName = Math.random() < 0.2;
+
+              return {
+                name: withStringName ? faker.name.firstName() : null,
+                userId: withStringName ? null : userIds.pop()!,
+              };
+            }),
+        })),
+    });
+
+    userIds = userIdsInRandomOrder();
   }
 }

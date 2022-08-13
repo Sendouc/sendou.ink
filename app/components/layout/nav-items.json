@@ -3,6 +3,7 @@
     "name": "admin",
     "url": "admin"
   },
+  { "name": "calendar", "url": "calendar" },
   { "name": "badges", "url": "badges" },
   {
     "name": "plus",

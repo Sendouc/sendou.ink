@@ -125,3 +125,15 @@
   font-size: var(--fonts-xxxs);
   font-weight: var(--bold);
 }
+
+.u__results-section {
+  overflow-x: auto;
+}
+
+.u__results-players {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0;
+  gap: var(--s-3);
+  list-style: none;
+}
