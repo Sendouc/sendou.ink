@@ -96,6 +96,7 @@ const reportWinnersParamsSchema = z.object({
 });
 
 export const action: ActionFunction = async ({ request, params }) => {
+  const user = await requireUser(request);
   const parsedParams = reportWinnersParamsSchema.parse(params);
   const parsedInput = await safeParseRequestFormData({
     request,
@@ -107,6 +108,16 @@ export const action: ActionFunction = async ({ request, params }) => {
       errors: parsedInput.errors,
     };
   }
+
+  const event = notFoundIfFalsy(db.calendarEvents.findById(parsedParams.id));
+  validate(
+    canReportCalendarEventWinners({
+      user,
+      event,
+      startTimes: event.startTimes,
+    }),
+    401
+  );
 
   db.calendarEvents.upsertReportedScores({
     eventId: parsedParams.id,
