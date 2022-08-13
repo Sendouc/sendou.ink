@@ -1,4 +1,10 @@
 {
   "country": "Country",
-  "bio": "Bio"
+  "bio": "Bio",
+
+  "results.placing": "Placing",
+  "results.team": "Team",
+  "results.tournament": "Tournament",
+  "results.date": "Date",
+  "results.mates": "Mates"
 }

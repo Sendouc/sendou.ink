@@ -9,7 +9,7 @@ import { calendarEventPage, userPage } from "~/utils/urls";
 import type { UserPageLoaderData } from "../u.$identifier";
 
 export default function UserResultsPage() {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation("user");
   const [, parentRoute] = useMatches();
   invariant(parentRoute);
   const data = parentRoute.data as UserPageLoaderData;
@@ -19,11 +19,11 @@ export default function UserResultsPage() {
       <table>
         <thead>
           <tr>
-            <th>Placing</th>
-            <th>Team</th>
-            <th>Tournament</th>
-            <th>Date</th>
-            <th>Mates</th>
+            <th>{t("results.placing")}</th>
+            <th>{t("results.team")}</th>
+            <th>{t("results.tournament")}</th>
+            <th>{t("results.date")}</th>
+            <th>{t("results.mates")}</th>
           </tr>
         </thead>
         <tbody>
