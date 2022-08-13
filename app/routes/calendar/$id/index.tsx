@@ -101,6 +101,7 @@ export default function CalendarEventPage() {
                         day: "numeric",
                         month: "long",
                         weekday: "long",
+                        year: "numeric",
                       }
                     )
                   : null}
