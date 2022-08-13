@@ -49,7 +49,10 @@ export default function UserResultsPage() {
               <td>
                 <ul className="u__results-players">
                   {result.mates.map((player) => (
-                    <li key={typeof player === "string" ? player : player.id}>
+                    <li
+                      key={typeof player === "string" ? player : player.id}
+                      className="flex items-center"
+                    >
                       {typeof player === "string" ? (
                         player
                       ) : (
