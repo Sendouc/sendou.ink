@@ -8,7 +8,7 @@ Prerequisites: [nvm](https://github.com/nvm-sh/nvm)
 
 There is a sequence of commands you need to run:
 
-1. `nvm use` to switch to the correct Node version.
+1. `nvm use` to switch to the correct Node version. If you have problems with nvm you can also install the latest LTS version of Node.js from [their website](https://nodejs.org/en/).
 2. `npm i` to install the dependencies.
 3. Make a copy of `.env.example` that's called `.env`. See below for note about environment variables.
 4. `npm run migrate up` to set up the database tables.
@@ -67,3 +67,16 @@ sips -s format png ./sundae.gif --out .
 ```bash
 npm run add-badge -- sundae "4v4 Sundaes"
 ```
+
+## How to...
+
+### Download production database from Render.com
+
+Note: This is only useful if you have access to a production running on Render.com
+
+1. Access "Shell" tab
+2. `cd /var/data`
+3. `sqlite3 db.sqlite3` then inside sqlite3 CLI `.output dump` and `.dump`
+4. `wormhole send dump.sql`
+5. On the receiver computer use the command shown.
+6. `sqlite3 db-prod.sqlite3 < dump` on the receiver computer.

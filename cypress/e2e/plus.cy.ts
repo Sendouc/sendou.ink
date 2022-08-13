@@ -38,7 +38,7 @@ describe("Plus suggestions page", () => {
 
     cy.getCy("comments-summary").first().click();
     cy.getCy("delete-comment-button").first().click();
-    cy.getCy("confirm-button").click();
+    cy.getCy("confirm-button").filter(":visible").click();
     cy.contains("Cracked!").should("not.exist");
   });
 
@@ -63,7 +63,7 @@ describe("Plus suggestions page", () => {
 
     cy.getCy("comments-summary").first().click();
     cy.getCy("delete-comment-button").first().click();
-    cy.getCy("confirm-button").click();
+    cy.getCy("confirm-button").filter(":visible").click();
     cy.contains("N-ZAP").should("not.exist");
   });
 });

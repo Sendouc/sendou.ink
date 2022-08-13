@@ -210,7 +210,7 @@ function VotingTimingInfo(
 
 const tips = [
   "Voting progress is saved locally",
-  "Use S (-1) and K (+1) arrows on desktop to vote",
+  "You can use S (-1) and K (+1) keys on desktop to vote",
   "You +1 yourself automatically",
 ];
 
@@ -285,7 +285,12 @@ function Voting(data: Extract<PlusVotingLoaderData, { type: "voting" }>) {
             />
           ) : null}
           {currentUser.user.bio ? (
-            <article>{currentUser.user.bio}</article>
+            <>
+              <article className="w-full">
+                <h2 className="plus-voting__bio-header">Bio</h2>
+                {currentUser.user.bio}
+              </article>
+            </>
           ) : null}
         </div>
       ) : (

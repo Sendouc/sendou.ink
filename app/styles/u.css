@@ -85,10 +85,6 @@
   fill: #9146ff;
 }
 
-.u__bio {
-  white-space: pre-wrap;
-}
-
 .u__badges {
   display: flex;
   max-width: 24rem;

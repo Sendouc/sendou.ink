@@ -205,3 +205,17 @@ const deleteAllStm = sql.prepare(`
 export function deleteAll(args: Pick<PlusSuggestion, "suggestedId" | "tier">) {
   deleteAllStm.run({ ...args, ...nextNonCompletedVoting(new Date()) });
 }
+
+const deleteSuggestionWithCommentsStm = sql.prepare(`
+  delete from "PlusSuggestion"
+  where "month" = $month
+    and "year" = $year
+    and "suggestedId" = $suggestedId
+    and "tier" = $tier
+`);
+
+export function deleteSuggestionWithComments(
+  args: Pick<PlusSuggestion, "suggestedId" | "tier" | "month" | "year">
+) {
+  deleteSuggestionWithCommentsStm.run(args);
+}

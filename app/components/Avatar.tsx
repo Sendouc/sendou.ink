@@ -24,6 +24,10 @@ export function Avatar({
   // TODO: just show text... my profile?
   // TODO: also show this if discordAvatar is stale and 404's
 
+  React.useEffect(() => {
+    setIsErrored(false);
+  }, [discordAvatar]);
+
   return (
     <img
       className={clsx("avatar", className)}

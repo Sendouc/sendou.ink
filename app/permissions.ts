@@ -70,7 +70,7 @@ export function canAddCommentToSuggestionBE({
 interface CanDeleteCommentArgs {
   suggestionId: PlusSuggestion["id"];
   author: Pick<User, "id">;
-  user?: Pick<User, "id">;
+  user?: Pick<User, "id" | "discordId">;
   suggestions: plusSuggestions.FindVisibleForUser;
 }
 export function canDeleteComment(args: CanDeleteCommentArgs) {
@@ -78,17 +78,17 @@ export function canDeleteComment(args: CanDeleteCommentArgs) {
     process.env.NODE_ENV === "test" ? false : isVotingActive();
 
   if (isFirstSuggestion(args)) {
-    return allTruthy([
-      !votingActive,
-      isOwnComment(args),
-      suggestionHasNoOtherComments(args),
-    ]);
+    if (votingActive) return false;
+
+    return adminOverride(args.user)(
+      allTruthy([isOwnComment(args), suggestionHasNoOtherComments(args)])
+    );
   }
 
   return isOwnComment(args);
 }
 
-function isFirstSuggestion({
+export function isFirstSuggestion({
   suggestionId,
   suggestions,
 }: Pick<CanDeleteCommentArgs, "suggestionId" | "suggestions">) {
