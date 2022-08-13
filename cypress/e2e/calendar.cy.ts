@@ -103,4 +103,48 @@ describe("New calendar event page", () => {
     cy.url().should("include", "/1"); // we should have been redirected to the new event's page
     cy.contains("Edited Event");
   });
+
+  describe("Results", () => {
+    it("Adds results to tournament", () => {
+      cy.auth(2);
+
+      cy.visit(calendarEventPage(1));
+      cy.getCy("report-winners-button").click();
+
+      cy.getCy("participants-count-input").type("24");
+
+      cy.getCy("team-name-input").type("Team Olive");
+
+      for (let i = 0; i < 4; i++) {
+        cy.getCy("change-input-type-button").eq(i).click();
+        cy.getCy("plain-player-name-input")
+          .eq(i)
+          .type(`Player ${i + 1}`);
+      }
+
+      cy.getCy("add-player-button").first().click();
+      cy.getCy("team-player-combobox-input").clear().type("Sendou{enter}");
+
+      cy.getCy("add-team-button").click();
+
+      cy.getCy("team-name-input").eq(1).type("NSTC");
+      cy.getCy("placing-input").eq(1).clear().type("8");
+
+      for (let i = 0; i < 3; i++) {
+        cy.getCy("remove-player-button").eq(1).click();
+      }
+      cy.getCy("change-input-type-button").eq(5).click();
+      cy.getCy("plain-player-name-input").eq(4).type(`fuzzy`);
+
+      cy.getCy("submit-button").click();
+
+      // checking that added results show
+
+      cy.contains("8th");
+      cy.contains("Sendou").click();
+
+      cy.contains("Results").click();
+      cy.contains("Player 1");
+    });
+  });
 });

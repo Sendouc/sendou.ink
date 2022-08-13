@@ -456,7 +456,8 @@ function calendarEventResults() {
   );
 
   for (const eventId of eventIdsOfPast) {
-    if (Math.random() < 0.3) continue;
+    // event id = 1 needs to be without results for e2e tests
+    if (Math.random() < 0.3 || eventId === 1) continue;
 
     db.calendarEvents.upsertReportedScores({
       eventId,

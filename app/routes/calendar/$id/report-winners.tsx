@@ -164,7 +164,7 @@ export default function ReportWinnersPage() {
           {t("calendar:forms.reportResultsInfo")}
         </FormMessage>
         <TeamInputs />
-        <Button type="submit" className="mt-4">
+        <Button type="submit" className="mt-4" data-cy="submit-button">
           {t("common:actions.submit")}
         </Button>
         <FormErrors namespace="calendar" />
@@ -233,6 +233,7 @@ function TeamInputs() {
       <Button
         onClick={() => setAmountOfTeams((amountOfTeams) => amountOfTeams + 1)}
         tiny
+        data-cy="add-team-button"
       >
         {t("forms.team.add")}
       </Button>
@@ -309,6 +310,7 @@ function Team({
             onChange={handleTeamNameChange}
             required
             maxLength={CALENDAR_EVENT_RESULT.MAX_TEAM_NAME_LENGTH}
+            data-cy="team-name-input"
           />
         </div>
         <div>
@@ -321,6 +323,7 @@ function Team({
             required
             max={CALENDAR_EVENT_RESULT.MAX_TEAM_PLACEMENT}
             className="w-24"
+            data-cy="placing-input"
           />
         </div>
       </div>
@@ -387,6 +390,7 @@ function Players({
                 tiny
                 variant="minimal"
                 onClick={() => handlePlayerInputTypeChange(i)}
+                data-cy="change-input-type-button"
               >
                 {asPlainInput
                   ? t("forms.team.player.addAsUser")
@@ -399,6 +403,7 @@ function Players({
                 value={player}
                 onChange={(e) => handleInputChange(i, e.target.value)}
                 max={CALENDAR_EVENT_RESULT.MAX_PLAYER_NAME_LENGTH}
+                data-cy="plain-player-name-input"
               />
             ) : (
               <UserCombobox
@@ -422,6 +427,7 @@ function Players({
           onClick={handleAddPlayer}
           disabled={players.length === CALENDAR_EVENT_RESULT.MAX_PLAYERS_LENGTH}
           variant="outlined"
+          data-cy="add-player-button"
         >
           {t("forms.team.player.add")}
         </Button>{" "}
@@ -430,6 +436,7 @@ function Players({
           variant="destructive"
           onClick={handleRemovePlayer}
           disabled={players.length === 1}
+          data-cy="remove-player-button"
         >
           {t("forms.team.player.remove")}
         </Button>
