@@ -13,7 +13,7 @@ import type {
   User,
   UserWithPlusTier,
 } from "../../types";
-import type { FindVisibleForUserSuggestedUserInfo } from "../plusSuggestions/plusSuggestions.server";
+import type { FindVisibleForUserSuggestedUserInfo } from "../plusSuggestions/queries.server";
 
 const createStm = sql.prepare(`
   INSERT INTO 

@@ -6,27 +6,14 @@ import { databaseTimestampToDate } from "~/utils/dates";
 import { sql } from "../../sql";
 import type { PlusSuggestion, User, UserWithPlusTier } from "../../types";
 
-const createStm = sql.prepare(`
-  INSERT INTO 
-    "PlusSuggestion" (
-     "text", 
-     "authorId", 
-     "suggestedId",
-     "month",
-     "year",
-     "tier"
-    )
-    VALUES
-    (
-     $text,
-     $authorId,
-     $suggestedId,
-     $month,
-     $year,
-     $tier
-    )
-`);
+import createSql from "./create.sql";
+import findVisibleForUserSql from "./findVisibleForUser.sql";
+import tiersSuggestedForSql from "./tiersSuggestedFor.sql";
+import deleteSql from "./delete.sql";
+import deleteAllSql from "./deleteAll.sql";
+import deleteSuggestionWithCommentsSql from "./deleteSuggestionWithComments.sql";
 
+const createStm = sql.prepare(createSql);
 export function create(
   args: Pick<
     PlusSuggestion,
@@ -36,32 +23,7 @@ export function create(
   createStm.run(args);
 }
 
-const findVisibleForUserStm = sql.prepare(`
-  SELECT 
-    suggestion."id", 
-    suggestion."createdAt", 
-    suggestion."text", 
-    suggestion."tier", 
-    author."id" as "authorId",
-    author."discordId" as "authorDiscordId",
-    author."discordName" as "authorDiscordName",
-    author."discordDiscriminator" as "authorDiscordDiscriminator",
-    suggested."id" as "suggestedId",
-    suggested."discordId" as "suggestedDiscordId",
-    suggested."discordName" as "suggestedDiscordName",
-    suggested."discordDiscriminator" as "suggestedDiscordDiscriminator",
-    suggested."discordAvatar" as "suggestedDiscordAvatar",
-    suggested."bio" as "suggestedBio"
-      FROM "PlusSuggestion" as suggestion
-  JOIN "User" AS author ON suggestion."authorId" = author."id"
-  JOIN "User" AS suggested ON suggestion."suggestedId" = suggested."id"
-    WHERE
-      "month" = $month
-      AND "year" = $year
-      AND "tier" >= $plusTier
-    ORDER BY 
-      suggestion."id" ASC
-`);
+const findVisibleForUserStm = sql.prepare(findVisibleForUserSql);
 
 export interface FindVisibleForUserSuggestedUserInfo {
   suggestedUser: Pick<
@@ -162,58 +124,25 @@ function sortNewestPlayersToBeSuggestedFirst(
   );
 }
 
-const tiersSuggestedForStm = sql.prepare(`
-  SELECT
-   json_group_array(tier)
-  FROM
-  (
-  SELECT
-    DISTINCT tier
-  FROM
-    "PlusSuggestion"
-  WHERE
-    "month" = $month
-    AND "year" = $year
-    AND "suggestedId" = $userId
-  ORDER BY tier ASC
-  )
-`);
-
+const tiersSuggestedForStm = sql.prepare(tiersSuggestedForSql);
 export function tiersSuggestedFor(args: MonthYear & { userId: User["id"] }) {
   return JSON.parse(tiersSuggestedForStm.pluck().get(args)) as User["id"][];
 }
 
-const delStm = sql.prepare(`
-  DELETE FROM "PlusSuggestion"
-    WHERE
-      "id" = $id
-`);
+const deleteStm = sql.prepare(deleteSql);
 
 export function del(id: PlusSuggestion["id"]) {
-  delStm.run({ id });
+  deleteStm.run({ id });
 }
 
-const deleteAllStm = sql.prepare(`
-  DELETE FROM "PlusSuggestion"
-    WHERE
-      "suggestedId" = $suggestedId
-      AND tier = $tier
-      AND month = $month
-      AND year = $year
-`);
-
+const deleteAllStm = sql.prepare(deleteAllSql);
 export function deleteAll(args: Pick<PlusSuggestion, "suggestedId" | "tier">) {
   deleteAllStm.run({ ...args, ...nextNonCompletedVoting(new Date()) });
 }
 
-const deleteSuggestionWithCommentsStm = sql.prepare(`
-  delete from "PlusSuggestion"
-  where "month" = $month
-    and "year" = $year
-    and "suggestedId" = $suggestedId
-    and "tier" = $tier
-`);
-
+const deleteSuggestionWithCommentsStm = sql.prepare(
+  deleteSuggestionWithCommentsSql
+);
 export function deleteSuggestionWithComments(
   args: Pick<PlusSuggestion, "suggestedId" | "tier" | "month" | "year">
 ) {

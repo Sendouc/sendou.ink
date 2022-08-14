@@ -1,4 +1,4 @@
-import type * as plusSuggestions from "~/db/models/plusSuggestions/plusSuggestions.server";
+import type * as plusSuggestions from "~/db/models/plusSuggestions/queries.server";
 import { monthsVotingRange } from "./modules/plus-server";
 import type {
   CalendarEvent,
