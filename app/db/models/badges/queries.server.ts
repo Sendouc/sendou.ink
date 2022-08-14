@@ -1,26 +1,18 @@
 import { sql } from "../../sql";
 import type { Badge, User } from "../../types";
 
-const deleteManyManagersStm = sql.prepare(`
-  DELETE FROM
-    "BadgeManager"
-  WHERE
-    "badgeId" = $badgeId
-`);
+import deleteManyManagersSql from "./deleteManyManagers.sql";
+import createManagerSql from "./createManager.sql";
+import deleteManyOwnersSql from "./deleteManyOwners.sql";
+import createOwnerSql from "./createOwner.sql";
+import countsByUserIdSql from "./countsByUserId.sql";
+import findAllSql from "./findAll.sql";
+import ownersByBadgeIdSql from "./ownersByBadgeId.sql";
+import managersByBadgeIdSql from "./managersByBadgeId.sql";
+import managersByUserIdSql from "./managersByUserId.sql";
 
-const createManagerStm = sql.prepare(`
-  INSERT INTO 
-    "BadgeManager" (
-      "badgeId",
-      "userId"
-    )
-    VALUES
-    (
-      $badgeId,
-      $userId
-    )
-`);
-
+const deleteManyManagersStm = sql.prepare(deleteManyManagersSql);
+const createManagerStm = sql.prepare(createManagerSql);
 export const upsertManyManagers = sql.transaction(
   ({
     badgeId,
@@ -42,26 +34,8 @@ export const upsertManyManagers = sql.transaction(
   }
 );
 
-const deleteManyOwnersStm = sql.prepare(`
-  DELETE FROM
-    "TournamentBadgeOwner"
-  WHERE
-    "badgeId" = $badgeId
-`);
-
-const createOwnerStm = sql.prepare(`
-  INSERT INTO 
-    "TournamentBadgeOwner" (
-      "badgeId",
-      "userId"
-    )
-    VALUES
-    (
-      $badgeId,
-      $userId
-    )
-`);
-
+const deleteManyOwnersStm = sql.prepare(deleteManyOwnersSql);
+const createOwnerStm = sql.prepare(createOwnerSql);
 export const upsertManyOwners = sql.transaction(
   ({
     badgeId,
@@ -83,18 +57,7 @@ export const upsertManyOwners = sql.transaction(
   }
 );
 
-const countsByUserIdStm = sql.prepare(`
-  select 
-      "Badge"."code", 
-      "Badge"."displayName", 
-      "Badge"."id", 
-      "Badge"."hue", 
-      count("BadgeOwner"."badgeId") as count 
-    from "BadgeOwner" 
-    join "Badge" on "Badge"."id" = "BadgeOwner"."badgeId"
-    where "BadgeOwner"."userId" = $userId 
-    group by "BadgeOwner"."badgeId", "BadgeOwner"."userId"
-  `);
+const countsByUserIdStm = sql.prepare(countsByUserIdSql);
 
 export type CountsByUserId = Array<
   Pick<Badge, "code" | "displayName" | "id" | "hue"> & {
@@ -106,19 +69,12 @@ export function countsByUserId(userId: User["id"]) {
   return countsByUserIdStm.all({ userId }) as CountsByUserId;
 }
 
-const allStm = sql.prepare(`
-  select 
-      "Badge"."id", 
-      "Badge"."code", 
-      "Badge"."displayName", 
-      "Badge"."hue"
-    from "Badge"
-`);
+const findAllStm = sql.prepare(findAllSql);
 
-export type All = Array<Pick<Badge, "id" | "displayName" | "code" | "hue">>;
+export type FindAll = Array<Pick<Badge, "id" | "displayName" | "code" | "hue">>;
 
 export function all() {
-  return allStm.all() as All;
+  return findAllStm.all() as FindAll;
 }
 
 export type OwnersByBadgeId = Array<
@@ -127,20 +83,7 @@ export type OwnersByBadgeId = Array<
   }
 >;
 
-const ownersByBadgeIdStm = sql.prepare(`
-  select 
-    count("BadgeOwner"."badgeId") as count, 
-    "User"."id",
-    "User"."discordId",
-    "User"."discordName",
-    "User"."discordDiscriminator"
-  from "BadgeOwner" 
-  join "User" on "User"."id" = "BadgeOwner"."userId"
-  where "BadgeOwner"."badgeId" = $id
-  group by "User"."id"
-  order by count desc, "User"."discordName" collate nocase asc
-`);
-
+const ownersByBadgeIdStm = sql.prepare(ownersByBadgeIdSql);
 export function ownersByBadgeId(id: Badge["id"]) {
   return ownersByBadgeIdStm.all({ id }) as OwnersByBadgeId;
 }
@@ -149,34 +92,15 @@ export type ManagersByBadgeId = Array<
   Pick<User, "id" | "discordId" | "discordName" | "discordDiscriminator">
 >;
 
-const managersByBadgeIdStm = sql.prepare(`
-  select 
-    "User"."id",
-    "User"."discordId",
-    "User"."discordName",
-    "User"."discordDiscriminator"
-  from "BadgeManager" 
-  join "User" on "User"."id" = "BadgeManager"."userId"
-  where "BadgeManager"."badgeId" = $id
-`);
-
+const managersByBadgeIdStm = sql.prepare(managersByBadgeIdSql);
 export function managersByBadgeId(id: Badge["id"]) {
   return managersByBadgeIdStm.all({ id }) as ManagersByBadgeId;
 }
 
-const managedByUserIdStm = sql.prepare(`
-  select
-    "Badge"."id",
-    "Badge"."code",
-    "Badge"."displayName",
-    "Badge"."hue"
-  from "BadgeManager" 
-  join "Badge" on "Badge"."id" = "BadgeManager"."badgeId"
-  where "userId" = $userId
-`);
+const managersByUserIdStm = sql.prepare(managersByUserIdSql);
 
-export function managedByUserId(userId: User["id"]) {
-  return managedByUserIdStm.all({ userId }) as Array<
+export function managersByUserId(userId: User["id"]) {
+  return managersByUserIdStm.all({ userId }) as Array<
     Pick<Badge, "id" | "code" | "displayName" | "hue">
   >;
 }
