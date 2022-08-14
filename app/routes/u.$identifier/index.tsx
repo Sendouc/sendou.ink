@@ -36,7 +36,7 @@ export default function UserInfoPage() {
           <h2 className="u__name">
             {data.discordName}
             <span className="u__discriminator">
-              #{data.discordDiscriminator}
+              <wbr />#{data.discordDiscriminator}
             </span>
           </h2>
           {data.country ? (

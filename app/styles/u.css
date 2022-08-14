@@ -17,6 +17,7 @@
 
 .u__name {
   grid-area: name;
+  overflow-wrap: anywhere;
 }
 
 .u__discriminator {
