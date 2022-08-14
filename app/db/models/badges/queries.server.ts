@@ -9,7 +9,7 @@ import countsByUserIdSql from "./countsByUserId.sql";
 import findAllSql from "./findAll.sql";
 import ownersByBadgeIdSql from "./ownersByBadgeId.sql";
 import managersByBadgeIdSql from "./managersByBadgeId.sql";
-import managersByUserIdSql from "./managersByUserId.sql";
+import managedByUserIdSql from "./managedByUserId.sql";
 
 const deleteManyManagersStm = sql.prepare(deleteManyManagersSql);
 const createManagerStm = sql.prepare(createManagerSql);
@@ -97,10 +97,10 @@ export function managersByBadgeId(id: Badge["id"]) {
   return managersByBadgeIdStm.all({ id }) as ManagersByBadgeId;
 }
 
-const managersByUserIdStm = sql.prepare(managersByUserIdSql);
+const managedByUserIdStm = sql.prepare(managedByUserIdSql);
 
-export function managersByUserId(userId: User["id"]) {
-  return managersByUserIdStm.all({ userId }) as Array<
+export function managedByUserId(userId: User["id"]) {
+  return managedByUserIdStm.all({ userId }) as Array<
     Pick<Badge, "id" | "code" | "displayName" | "hue">
   >;
 }

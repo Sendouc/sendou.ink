@@ -180,7 +180,7 @@ export const loader = async ({ request }: LoaderArgs) => {
           ...eventToEdit,
           // "BADGE" tag is special and can't be edited like other tags
           tags: eventToEdit.tags.filter((tag) => tag !== "BADGE"),
-          badges: db.calendarEvents.findBadgesById(eventId),
+          badges: db.calendarEvents.findBadgesByEventId(eventId),
         }
       : undefined,
     title: makeTitle([canEditEvent ? "Edit" : "New", t("pages.calendar")]),

@@ -123,7 +123,7 @@ function fetchEventsOfWeek(args: { week: number; year: number }) {
     .map((event) => ({
       ...event,
       badgePrizes: event.tags.includes("BADGE")
-        ? db.calendarEvents.findBadgesById(event.eventId)
+        ? db.calendarEvents.findBadgesByEventId(event.eventId)
         : [],
     }));
 }

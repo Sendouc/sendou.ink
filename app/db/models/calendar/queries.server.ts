@@ -11,65 +11,31 @@ import type {
   CalendarEventResultPlayer,
 } from "../../types";
 
-const createStm = sql.prepare(`
-  insert into "CalendarEvent" (
-    "name",
-    "authorId",
-    "tags",
-    "description",
-    "discordInviteCode",
-    "bracketUrl"
-  ) values (
-    $name,
-    $authorId,
-    $tags,
-    $description,
-    $discordInviteCode,
-    $bracketUrl
-  ) returning *
-`);
+import createSql from "./create.sql";
+import updateSql from "./update.sql";
+import createDateSql from "./createDate.sql";
+import deleteDatesByEventIdSql from "./deleteDatesByEventId.sql";
+import createBadgeSql from "./createBadge.sql";
+import deleteBadgesByEventIdSql from "./deleteBadgesByEventId.sql";
+import updateParticipantsCountSql from "./updateParticipantsCount.sql";
+import deleteResultTeamsByEventIdSql from "./deleteResultTeamsByEventId.sql";
+import insertResultTeamSql from "./insertResultTeam.sql";
+import insertResultPlayerSql from "./insertResultPlayer.sql";
+import findWinnersByEventIdSql from "./findWinnersByEventId.sql";
+import findResultsByUserIdSql from "./findResultsByUserId.sql";
+import findMatesByResultTeamIdSql from "./findMatesByResultTeamId.sql";
+import findAllBetweenTwoTimestampsSql from "./findAllBetweenTwoTimestamps.sql";
+import findByIdSql from "./findById.sql";
+import startTimesOfRangeSql from "./startTimesOfRange.sql";
+import findBadgesByEventIdSql from "./findBadgesByEventId.sql";
+import eventsToReportSql from "./eventsToReport.sql";
 
-const updateStm = sql.prepare(`
-  update "CalendarEvent" set
-    "name" = $name,
-    "tags" = $tags,
-    "description" = $description,
-    "discordInviteCode" = $discordInviteCode,
-    "bracketUrl" = $bracketUrl
-  where "id" = $eventId
-`);
-
-const createDateStm = sql.prepare(`
-  insert into "CalendarEventDate" (
-    "eventId",
-    "startTime"
-  )
-  values (
-    $eventId,
-    $startTime
-  )
-`);
-
-const deleteDatesByEventIdStm = sql.prepare(`
-  delete from "CalendarEventDate"
-  where "eventId" = $eventId
-`);
-
-const createBadgeStm = sql.prepare(`
-  insert into "CalendarEventBadge" (
-    "eventId",
-    "badgeId"
-  )
-  values (
-    $eventId,
-    $badgeId
-  )
-`);
-
-const deleteBadgesByEventIdStm = sql.prepare(`
-  delete from "CalendarEventBadge"
-  where "eventId" = $eventId
-`);
+const createStm = sql.prepare(createSql);
+const updateStm = sql.prepare(updateSql);
+const createDateStm = sql.prepare(createDateSql);
+const deleteDatesByEventIdStm = sql.prepare(deleteDatesByEventIdSql);
+const createBadgeStm = sql.prepare(createBadgeSql);
+const deleteBadgesByEventIdStm = sql.prepare(deleteBadgesByEventIdSql);
 
 export type CreateArgs = Pick<
   CalendarEvent,
@@ -132,41 +98,12 @@ export const update = sql.transaction(
   }
 );
 
-const updateCalendarEventParticipantsCountStm = sql.prepare(`
-  update "CalendarEvent" 
-    set "participantCount" = $participantCount
-    where "id" = $eventId
-`);
-
-const deleteCalendarEventResultTeamsByEventIdStm = sql.prepare(`
-  delete from "CalendarEventResultTeam"
-    where "eventId" = $eventId
-`);
-
-const insertCalendarEventResultTeamStm = sql.prepare(`
-  insert into "CalendarEventResultTeam" (
-    "eventId",
-    "name",
-    "placement"
-  ) values (
-    $eventId,
-    $name,
-    $placement
-  )
-  returning *
-`);
-
-const insertCalendarEventResultPlayerStm = sql.prepare(`
-  insert into "CalendarEventResultPlayer" (
-    "teamId",
-    "userId",
-    "name"
-  ) values (
-    $teamId,
-    $userId,
-    $name
-  )
-`);
+const updateParticipantsCountStm = sql.prepare(updateParticipantsCountSql);
+const deleteResultTeamsByEventIdStm = sql.prepare(
+  deleteResultTeamsByEventIdSql
+);
+const insertResultTeamStm = sql.prepare(insertResultTeamSql);
+const insertResultPlayerStm = sql.prepare(insertResultPlayerSql);
 
 export const upsertReportedScores = sql.transaction(
   ({
@@ -185,18 +122,18 @@ export const upsertReportedScores = sql.transaction(
       }>;
     }>;
   }) => {
-    updateCalendarEventParticipantsCountStm.run({ eventId, participantCount });
-    deleteCalendarEventResultTeamsByEventIdStm.run({ eventId });
+    updateParticipantsCountStm.run({ eventId, participantCount });
+    deleteResultTeamsByEventIdStm.run({ eventId });
 
     for (const { players, ...teamArgs } of results) {
-      const teamInDb = insertCalendarEventResultTeamStm.get({
+      const teamInDb = insertResultTeamStm.get({
         eventId,
         name: teamArgs.teamName,
         placement: teamArgs.placement,
       }) as CalendarEventResultTeam;
 
       for (const playerArgs of players) {
-        insertCalendarEventResultPlayerStm.run({
+        insertResultPlayerStm.run({
           teamId: teamInDb.id,
           userId: playerArgs.userId,
           name: playerArgs.name,
@@ -206,29 +143,7 @@ export const upsertReportedScores = sql.transaction(
   }
 );
 
-const findWinnersByEventIdStm = sql.prepare(`
-  select 
-    "CalendarEventResultTeam"."id",
-    "CalendarEventResultTeam"."name" as "teamName",
-    "CalendarEventResultTeam"."placement",
-    "CalendarEventResultPlayer"."userId" as "playerId",
-    "CalendarEventResultPlayer"."name" as "playerName",
-    "User"."discordName" as "playerDiscordName",
-    "User"."discordDiscriminator" as "playerDiscordDiscriminator",
-    "User"."discordId" as "playerDiscordId",
-    "User"."discordAvatar" as "playerDiscordAvatar"
-  from "CalendarEventResultTeam"
-  left join 
-    "CalendarEventResultPlayer" 
-      on 
-    "CalendarEventResultPlayer"."teamId" = "CalendarEventResultTeam"."id"
-  left join
-    "User"
-      on
-    "User"."id" = "CalendarEventResultPlayer"."userId"
-  where "CalendarEventResultTeam"."eventId" = $eventId
-  order by "placement" asc
-`);
+const findWinnersByEventIdStm = sql.prepare(findWinnersByEventIdSql);
 
 export function findResultsByEventId(eventId: CalendarEvent["id"]) {
   const rows = findWinnersByEventIdStm.all({ eventId }) as Array<{
@@ -285,46 +200,8 @@ export function findResultsByEventId(eventId: CalendarEvent["id"]) {
   return result;
 }
 
-const findResultsByUserIdStm = sql.prepare(`
-  select
-    "CalendarEvent"."id" as "eventId",
-    "CalendarEvent"."name" as "eventName",
-    "CalendarEventResultTeam"."id" as "teamId",
-    "CalendarEventResultTeam"."name" as "teamName",
-    "CalendarEventResultTeam"."placement",
-    "CalendarEvent"."participantCount",
-    (select max("startTime") 
-      from "CalendarEventDate" 
-      where "eventId" = "CalendarEvent"."id") 
-    as "startTime"
-  from "CalendarEventResultPlayer"
-  join "CalendarEventResultTeam"
-    on "CalendarEventResultTeam"."id" = "CalendarEventResultPlayer"."teamId"
-  join "CalendarEvent"
-    on "CalendarEvent"."id" = "CalendarEventResultTeam"."eventId"
-  where "CalendarEventResultPlayer"."userId" = $userId
-  order by "startTime" desc
-`);
-
-const findMatesByResultTeamIdStm = sql.prepare(`
-  select
-    "CalendarEventResultPlayer"."name",
-    "User"."id",
-    "User"."discordName" as "discordName",
-    "User"."discordDiscriminator" as "discordDiscriminator",
-    "User"."discordId" as "discordId",
-    "User"."discordAvatar" as "discordAvatar"
-  from "CalendarEventResultPlayer"
-  left join "User"
-    on "User"."id" = "CalendarEventResultPlayer"."userId"
-  where "teamId" = $teamId
-  and (
-    "CalendarEventResultPlayer"."userId" is null 
-      or 
-    "CalendarEventResultPlayer"."userId" != $userId
-  )
-`);
-
+const findResultsByUserIdStm = sql.prepare(findResultsByUserIdSql);
+const findMatesByResultTeamIdStm = sql.prepare(findMatesByResultTeamIdSql);
 export function findResultsByUserId(userId: User["id"]) {
   return (
     findResultsByUserIdStm.all({ userId }) as Array<{
@@ -354,36 +231,9 @@ export function findResultsByUserId(userId: User["id"]) {
   }));
 }
 
-const findAllBetweenTwoTimestampsStm = sql.prepare(`
-  select
-    "CalendarEvent"."name",
-    "CalendarEvent"."discordUrl",
-    "CalendarEvent"."bracketUrl",
-    "CalendarEvent"."tags",
-    "CalendarEventDate"."id" as "eventDateId",
-    "CalendarEventDate"."eventId",
-    "CalendarEventDate"."startTime",
-    "User"."discordName",
-    "User"."discordDiscriminator",
-    "CalendarEventRanks"."nthAppearance",
-    exists (select 1 
-      from "CalendarEventBadge" 
-      where "CalendarEventBadge"."eventId" = "CalendarEventDate"."eventId"
-    ) as "hasBadge"
-    from "CalendarEvent"
-    join "CalendarEventDate" on "CalendarEvent"."id" = "CalendarEventDate"."eventId"
-    join "User" on "CalendarEvent"."authorId" = "User"."id"
-    join (
-      select 
-        "id", 
-        "eventId", 
-        "startTime", 
-        rank() over(partition by "eventId" order by "startTime" asc) "nthAppearance" 
-      from "CalendarEventDate"
-    ) "CalendarEventRanks" on "CalendarEventDate"."id" = CalendarEventRanks."id"
-    where "CalendarEventDate"."startTime" between $startTime and $endTime
-    order by "CalendarEventDate"."startTime" asc
-`);
+const findAllBetweenTwoTimestampsStm = sql.prepare(
+  findAllBetweenTwoTimestampsSql
+);
 
 function addTagArray<
   T extends { hasBadge: number; tags?: CalendarEvent["tags"] }
@@ -418,32 +268,7 @@ export function findAllBetweenTwoTimestamps({
   return rows.map(addTagArray);
 }
 
-const findByIdStm = sql.prepare(`
-  select
-    "CalendarEvent"."name",
-    "CalendarEvent"."description",
-    "CalendarEvent"."discordInviteCode",
-    "CalendarEvent"."discordUrl",
-    "CalendarEvent"."bracketUrl",
-    "CalendarEvent"."tags",
-    "CalendarEvent"."participantCount",
-    "User"."id" as "authorId",
-    exists (select 1 
-      from "CalendarEventBadge" 
-      where "CalendarEventBadge"."eventId" = "CalendarEventDate"."eventId"
-    ) as "hasBadge",
-    "CalendarEventDate"."startTime",
-    "CalendarEventDate"."eventId",
-    "User"."discordName",
-    "User"."discordDiscriminator",
-    "User"."discordId",
-    "User"."discordAvatar"
-  from "CalendarEvent"
-  join "CalendarEventDate" on "CalendarEvent"."id" = "CalendarEventDate"."eventId"
-  join "User" on "CalendarEvent"."authorId" = "User"."id"
-  where "CalendarEvent"."id" = $id
-  order by "CalendarEventDate"."startTime" asc
-`);
+const findByIdStm = sql.prepare(findByIdSql);
 
 export function findById(id: CalendarEvent["id"]) {
   const [firstRow, ...rest] = findByIdStm.all({ id }) as Array<
@@ -474,13 +299,7 @@ export function findById(id: CalendarEvent["id"]) {
   });
 }
 
-const startTimesOfRangeStm = sql.prepare(`
-  select
-    "CalendarEventDate"."startTime"
-  from "CalendarEventDate"
-  where "CalendarEventDate"."startTime" between $startTime and $endTime
-`);
-
+const startTimesOfRangeStm = sql.prepare(startTimesOfRangeSql);
 export function startTimesOfRange({
   startTime,
   endTime,
@@ -496,37 +315,14 @@ export function startTimesOfRange({
   ).map(({ startTime }) => startTime);
 }
 
-const findBadgesByIdStm = sql.prepare(`
-  select "Badge"."id", "Badge"."code", "Badge"."hue", "Badge"."displayName"
-  from "CalendarEventBadge"
-  join "Badge" on "CalendarEventBadge"."badgeId" = "Badge"."id"
-  where "CalendarEventBadge"."eventId" = $eventId
-`);
-
-export function findBadgesById(eventId: CalendarEvent["id"]) {
-  return findBadgesByIdStm.all({ eventId }) as Array<
+const findBadgesByEventIdStm = sql.prepare(findBadgesByEventIdSql);
+export function findBadgesByEventId(eventId: CalendarEvent["id"]) {
+  return findBadgesByEventIdStm.all({ eventId }) as Array<
     Pick<Badge, "id" | "code" | "hue" | "displayName">
   >;
 }
 
-const eventsToReportStm = sql.prepare(`
-  select
-    "CalendarEvent"."id",
-    "CalendarEvent"."name",
-    (select max("startTime") 
-      from "CalendarEventDate" 
-      where "eventId" = "CalendarEvent"."id") as "startTime"
-  from "CalendarEvent"
-  where 
-    "CalendarEvent"."authorId" = $authorId
-      and
-    "startTime" > $lowerLimitTime
-      and
-    "startTime" < $upperLimitTime
-      and
-    "CalendarEvent"."participantCount" is null
-`);
-
+const eventsToReportStm = sql.prepare(eventsToReportSql);
 export function eventsToReport(authorId?: CalendarEvent["authorId"]) {
   if (!authorId) return [];
 
