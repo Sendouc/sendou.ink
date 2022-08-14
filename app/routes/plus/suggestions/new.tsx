@@ -145,7 +145,7 @@ export default function PlusNewSuggestionModalPage() {
         </div>
         <div>
           <label htmlFor="user">Suggested user</label>
-          <UserCombobox inputName="user" onChange={setSelectedUser} />
+          <UserCombobox inputName="user" onChange={setSelectedUser} required />
           {selectedUserErrorMessage ? (
             <FormMessage type="error">{selectedUserErrorMessage}</FormMessage>
           ) : null}
