@@ -14,7 +14,7 @@ import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { RelativeTime } from "~/components/RelativeTime";
 import { PLUS_DOWNVOTE, PLUS_UPVOTE } from "~/constants";
 import { db } from "~/db";
-import type { UsersForVoting } from "~/db/models/plusVotes.server";
+import type { UsersForVoting } from "~/db/models/plusVotes/plusVotes.server";
 import { getUser, requireUser } from "~/modules/auth";
 import type { PlusVoteFromFE } from "~/modules/plus-server";
 import {

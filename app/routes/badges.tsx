@@ -4,7 +4,7 @@ import { Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import { Badge } from "~/components/Badge";
 import { Main } from "~/components/Main";
 import { db } from "~/db";
-import type { All } from "~/db/models/badges.server";
+import type { All } from "~/db/models/badges/queries.server";
 import styles from "~/styles/badges.css";
 import { BORZOIC_TWITTER, FAQ_PAGE } from "~/utils/urls";
 import { Trans, useTranslation } from "react-i18next";

@@ -16,7 +16,7 @@ import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { TrashIcon } from "~/components/icons/Trash";
 import { nextNonCompletedVoting } from "~/modules/plus-server";
 import { db } from "~/db";
-import type * as plusSuggestions from "~/db/models/plusSuggestions.server";
+import type * as plusSuggestions from "~/db/models/plusSuggestions/plusSuggestions.server";
 import type { PlusSuggestion, User } from "~/db/types";
 import { getUser, requireUser, useUser } from "~/modules/auth";
 import {

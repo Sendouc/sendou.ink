@@ -6,7 +6,7 @@ import {
 } from "~/modules/plus-server";
 import { db } from "~/db";
 import { sql } from "~/db/sql";
-import type { UpsertManyPlusVotesArgs } from "./models/plusVotes.server";
+import type { UpsertManyPlusVotesArgs } from "./models/plusVotes/plusVotes.server";
 import { ADMIN_DISCORD_ID } from "~/constants";
 import shuffle from "just-shuffle";
 import { dateToDatabaseTimestamp } from "~/utils/dates";

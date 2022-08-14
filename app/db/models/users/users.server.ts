@@ -1,5 +1,5 @@
-import { sql } from "../sql";
-import type { User, UserWithPlusTier } from "../types";
+import { sql } from "../../sql";
+import type { User, UserWithPlusTier } from "../../types";
 
 const upsertStm = sql.prepare(`
   INSERT INTO

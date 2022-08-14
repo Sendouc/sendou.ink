@@ -1,5 +1,5 @@
 import { dateToDatabaseTimestamp } from "~/utils/dates";
-import { sql } from "../sql";
+import { sql } from "../../sql";
 import type {
   CalendarEvent,
   CalendarEventDate,
@@ -9,7 +9,7 @@ import type {
   CalendarEventBadge,
   CalendarEventResultTeam,
   CalendarEventResultPlayer,
-} from "../types";
+} from "../../types";
 
 const createStm = sql.prepare(`
   insert into "CalendarEvent" (

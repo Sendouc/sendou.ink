@@ -5,15 +5,15 @@ import { nextNonCompletedVoting } from "~/modules/plus-server";
 import { atOrError } from "~/utils/arrays";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import type { Unpacked } from "~/utils/types";
-import { db } from "..";
-import { sql } from "../sql";
+import { db } from "../..";
+import { sql } from "../../sql";
 import type {
   PlusVote,
   PlusVotingResult,
   User,
   UserWithPlusTier,
-} from "../types";
-import type { FindVisibleForUserSuggestedUserInfo } from "./plusSuggestions.server";
+} from "../../types";
+import type { FindVisibleForUserSuggestedUserInfo } from "../plusSuggestions/plusSuggestions.server";
 
 const createStm = sql.prepare(`
   INSERT INTO 

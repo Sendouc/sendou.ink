@@ -3,8 +3,8 @@ import type { MonthYear } from "~/modules/plus-server";
 import { nextNonCompletedVoting } from "~/modules/plus-server";
 import { atOrError } from "~/utils/arrays";
 import { databaseTimestampToDate } from "~/utils/dates";
-import { sql } from "../sql";
-import type { PlusSuggestion, User, UserWithPlusTier } from "../types";
+import { sql } from "../../sql";
+import type { PlusSuggestion, User, UserWithPlusTier } from "../../types";
 
 const createStm = sql.prepare(`
   INSERT INTO 

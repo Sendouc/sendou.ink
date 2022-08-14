@@ -1,5 +1,5 @@
-import { sql } from "../sql";
-import type { Badge, User } from "../types";
+import { sql } from "../../sql";
+import type { Badge, User } from "../../types";
 
 const deleteManyManagersStm = sql.prepare(`
   DELETE FROM

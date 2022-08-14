@@ -9,7 +9,7 @@ import { db } from "~/db";
 import {
   type ManagersByBadgeId,
   type OwnersByBadgeId,
-} from "~/db/models/badges.server";
+} from "~/db/models/badges/queries.server";
 import { type Badge as BadgeDBType } from "~/db/types";
 import { useUser } from "~/modules/auth";
 import { canEditBadgeOwners } from "~/permissions";

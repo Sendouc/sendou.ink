@@ -1,4 +1,4 @@
-import type * as plusSuggestions from "~/db/models/plusSuggestions.server";
+import type * as plusSuggestions from "~/db/models/plusSuggestions/plusSuggestions.server";
 import { monthsVotingRange } from "./modules/plus-server";
 import type {
   CalendarEvent,
@@ -9,7 +9,7 @@ import type {
 import { allTruthy } from "./utils/arrays";
 import { ADMIN_DISCORD_ID, LOHI_TOKEN_HEADER_NAME } from "./constants";
 import invariant from "tiny-invariant";
-import type { ManagersByBadgeId } from "./db/models/badges.server";
+import type { ManagersByBadgeId } from "./db/models/badges/queries.server";
 import { databaseTimestampToDate } from "./utils/dates";
 
 // TODO: 1) move "root checkers" to one file and utils to one file 2) make utils const for more terseness
