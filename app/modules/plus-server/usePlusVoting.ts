@@ -1,7 +1,7 @@
 import * as React from "react";
 import invariant from "tiny-invariant";
 import { PLUS_DOWNVOTE, PLUS_UPVOTE } from "~/constants";
-import type { UsersForVoting } from "~/db/models/plusVotes/plusVotes.server";
+import type { UsersForVoting } from "~/db/models/plusVotes/queries.server";
 import type { User } from "~/db/types";
 import type { PlusVoteFromFE } from "./types";
 import { nextNonCompletedVoting } from "./voting-time";

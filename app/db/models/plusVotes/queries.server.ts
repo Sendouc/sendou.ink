@@ -15,37 +15,14 @@ import type {
 } from "../../types";
 import type { FindVisibleForUserSuggestedUserInfo } from "../plusSuggestions/queries.server";
 
-const createStm = sql.prepare(`
-  INSERT INTO 
-    "PlusVote" (
-      "month",
-      "year",
-      "tier",
-      "authorId",
-      "votedId",
-      "score",
-      "validAfter"
-    )
-    VALUES
-    (
-      $month,
-      $year,
-      $tier,
-      $authorId,
-      $votedId,
-      $score,
-      $validAfter
-    )
-`);
+import createSql from "./create.sql";
+import deleteManySql from "./deleteMany.sql";
+import resultsByMonthYearSql from "./resultsByMonthYear.sql";
+import plusServerMembersSql from "./plusServerMembers.sql";
+import hasVotedSql from "./hasVoted.sql";
 
-const deleteManyStm = sql.prepare(`
-  DELETE FROM
-    "PlusVote"
-  WHERE
-    "authorId" = $authorId
-    AND "month" = $month
-    AND "year" = $year
-`);
+const createStm = sql.prepare(createSql);
+const deleteManyStm = sql.prepare(deleteManySql);
 
 export type UpsertManyPlusVotesArgs = (Pick<
   PlusVote,
@@ -70,22 +47,8 @@ export const upsertMany = sql.transaction((votes: UpsertManyPlusVotesArgs) => {
 
 type PlusVotingResultsByMonthYearDatabaseResult = (PlusVotingResultUser &
   Pick<PlusVotingResult, "score" | "wasSuggested" | "passedVoting" | "tier">)[];
-const resultsByMonthYearStm = sql.prepare(`
-  SELECT 
-      "PlusVotingResult"."wasSuggested",
-      "PlusVotingResult"."passedVoting",
-      "PlusVotingResult"."tier",
-      "PlusVotingResult".score,
-      "User"."id",
-      "User"."discordAvatar",
-      "User"."discordDiscriminator",
-      "User"."discordName",
-      "User"."discordId"
-    FROM "PlusVotingResult"
-    JOIN "User" ON "PlusVotingResult"."votedId" = "User".id
-    WHERE month = $month AND year = $year
-    ORDER BY "User"."discordName" COLLATE NOCASE ASC
-`);
+
+const resultsByMonthYearStm = sql.prepare(resultsByMonthYearSql);
 
 type PlusVotingResultUser = Pick<
   User,
@@ -173,18 +136,7 @@ function ownScoresFromPlusVotingResults(
   return result.sort((a, b) => a.tier - b.tier);
 }
 
-const plusServerMembersStm = sql.prepare(`
-  SELECT 
-    "User"."id",
-    "User"."discordId",
-    "User"."discordName",
-    "User"."discordDiscriminator",
-    "User"."discordAvatar",
-    "User"."bio"
-  FROM "User"
-  JOIN "PlusTier" ON "User"."id" = "PlusTier"."userId"
-  WHERE "PlusTier"."tier" = $plusTier
-`);
+const plusServerMembersStm = sql.prepare(plusServerMembersSql);
 
 export type UsersForVoting = {
   user: Pick<
@@ -250,11 +202,7 @@ export function usersForVoting(
   return shuffle(result.filter(({ user }) => user.id !== loggedInUser.id));
 }
 
-const hasVotedStm = sql.prepare(`
-  SELECT 1
-    FROM "PlusVote"
-    WHERE "authorId" = $userId AND "month" = $month AND "year" = $year
-`);
+const hasVotedStm = sql.prepare(hasVotedSql);
 
 export function hasVoted({
   month,
