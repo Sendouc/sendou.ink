@@ -1,6 +1,6 @@
 import type { z } from "zod";
 import { db } from "~/db";
-import type { UpdatePatronDataArgs } from "~/db/models/users/users.server";
+import type { UpdatePatronDataArgs } from "~/db/models/users/queries.server";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { fetchWithTimeout } from "~/utils/fetch";
 import type { Unpacked } from "~/utils/types";

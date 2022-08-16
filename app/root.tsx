@@ -23,7 +23,7 @@ import resetStyles from "~/styles/reset.css";
 import { Catcher } from "./components/Catcher";
 import { Layout } from "./components/layout";
 import { db } from "./db";
-import type { FindAllPatrons } from "./db/models/users/users.server";
+import type { FindAllPatrons } from "./db/models/users/queries.server";
 import type { UserWithPlusTier } from "./db/types";
 import { getUser } from "./modules/auth";
 import { DEFAULT_LANGUAGE, i18next } from "./modules/i18n";
