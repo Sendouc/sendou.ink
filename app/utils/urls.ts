@@ -18,6 +18,7 @@ export const CONTRIBUTIONS_PAGE = "/contributions";
 export const BADGES_PAGE = "/badges";
 export const CALENDAR_PAGE = "/calendar";
 export const STOP_IMPERSONATING_URL = "/auth/impersonate/stop";
+export const SEED_URL = "/seed";
 
 export const userPage = (discordId: string) => `/u/${discordId}`;
 export const impersonateUrl = (idToLogInAs: number) =>

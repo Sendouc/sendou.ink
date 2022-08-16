@@ -20,7 +20,7 @@ import { getUser, isImpersonating } from "~/modules/auth/user.server";
 import { canPerformAdminActions } from "~/permissions";
 import { parseRequestFormData, validate } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
-import { impersonateUrl, STOP_IMPERSONATING_URL } from "~/utils/urls";
+import { impersonateUrl, SEED_URL, STOP_IMPERSONATING_URL } from "~/utils/urls";
 import { db } from "~/db";
 import { z } from "zod";
 import { actualNumber } from "~/utils/zod";
@@ -74,6 +74,7 @@ export default function AdminPage() {
     <Main className="stack lg">
       <Impersonate />
       <MigrateUser />
+      {process.env.NODE_ENV !== "production" && <Seed />}
     </Main>
   );
 }
@@ -158,6 +159,21 @@ function MigrateUser() {
         </Button>
       </div>
     </Form>
+  );
+}
+
+function Seed() {
+  const fetcher = useFetcher();
+
+  return (
+    <fetcher.Form
+      className="stack md items-start"
+      method="post"
+      action={SEED_URL}
+    >
+      <h2>Seed</h2>
+      <Button type="submit">Seed</Button>
+    </fetcher.Form>
   );
 }
 
