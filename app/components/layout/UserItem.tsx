@@ -15,16 +15,7 @@ export function UserItem() {
 
   if (user)
     return (
-      <Popover
-        trigger={
-          <Avatar
-            data-cy="user-avatar"
-            discordAvatar={user.discordAvatar}
-            discordId={user.discordId}
-            size="sm"
-          />
-        }
-      >
+      <Popover trigger={<Avatar data-cy="user-avatar" user={user} size="sm" />}>
         <div className="layout__user-popover">
           <Link to={userPage(user.discordId)}>
             <Button

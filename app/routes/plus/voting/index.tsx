@@ -256,11 +256,7 @@ function Voting(data: Extract<PlusVotingLoaderData, { type: "voting" }>) {
       )}
       {currentUser ? (
         <div className="stack md items-center">
-          <Avatar
-            discordAvatar={currentUser.user.discordAvatar}
-            discordId={currentUser.user.discordId}
-            size="lg"
-          />
+          <Avatar user={currentUser.user} size="lg" />
           <h2>{discordFullName(currentUser.user)}</h2>
           <div className="stack horizontal md">
             <Button

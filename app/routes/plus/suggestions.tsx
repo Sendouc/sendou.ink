@@ -363,11 +363,7 @@ function SuggestedUser({
   return (
     <div className="stack md">
       <div className="plus__suggested-user-info">
-        <Avatar
-          discordAvatar={suggested.suggestedUser.discordAvatar}
-          discordId={suggested.suggestedUser.discordId}
-          size="md"
-        />
+        <Avatar user={suggested.suggestedUser} size="md" />
         <h2>
           <Link
             className="all-unset"

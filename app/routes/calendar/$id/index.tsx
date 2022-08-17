@@ -206,11 +206,7 @@ function Results() {
                           to={userPage(player.discordId)}
                           className="stack horizontal xs items-center"
                         >
-                          <Avatar
-                            discordAvatar={player.discordAvatar}
-                            discordId={player.discordId}
-                            size="xxs"
-                          />{" "}
+                          <Avatar user={player} size="xxs" />{" "}
                           {discordFullName(player)}
                         </Link>
                       )}
@@ -234,11 +230,7 @@ function Description() {
     <Section title={t("forms.description")}>
       <div className="stack sm">
         <div className="event__author">
-          <Avatar
-            discordAvatar={data.event.discordAvatar}
-            discordId={data.event.discordId}
-            size="xs"
-          />
+          <Avatar user={data.event} size="xs" />
           {discordFullName(data.event)}
         </div>
         <div data-cy="event-description">{data.event.description}</div>

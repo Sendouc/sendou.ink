@@ -11,12 +11,12 @@ const dimensions = {
 } as const;
 
 export function Avatar({
-  discordId,
-  discordAvatar,
+  user,
   size = "sm",
   className,
   ...rest
-}: Pick<User, "discordId" | "discordAvatar"> & {
+}: {
+  user: Pick<User, "discordId" | "discordAvatar">;
   className?: string;
   size: keyof typeof dimensions;
 } & React.ButtonHTMLAttributes<HTMLImageElement>) {
@@ -26,16 +26,16 @@ export function Avatar({
 
   React.useEffect(() => {
     setIsErrored(false);
-  }, [discordAvatar]);
+  }, [user.discordAvatar]);
 
   return (
     <img
       className={clsx("avatar", className)}
       src={
-        discordAvatar && !isErrored
-          ? `https://cdn.discordapp.com/avatars/${discordId}/${discordAvatar}.webp${
-              size === "lg" ? "?size=240" : "?size=80"
-            }`
+        user.discordAvatar && !isErrored
+          ? `https://cdn.discordapp.com/avatars/${user.discordId}/${
+              user.discordAvatar
+            }.webp${size === "lg" ? "?size=240" : "?size=80"}`
           : "/img/blank.gif" // avoid broken image placeholder
       }
       alt=""

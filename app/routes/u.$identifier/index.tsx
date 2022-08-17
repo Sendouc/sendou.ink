@@ -27,12 +27,7 @@ export default function UserInfoPage() {
     <Main>
       <div className="u__container">
         <div className="u__avatar-container">
-          <Avatar
-            discordAvatar={data.discordAvatar}
-            discordId={data.discordId}
-            size="lg"
-            className="u__avatar"
-          />
+          <Avatar user={data} size="lg" className="u__avatar" />
           <h2 className="u__name">
             {data.discordName}
             <span className="u__discriminator">

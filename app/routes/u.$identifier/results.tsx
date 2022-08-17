@@ -61,11 +61,7 @@ export default function UserResultsPage() {
                             to={userPage(player.discordId)}
                             className="stack horizontal xs items-center"
                           >
-                            <Avatar
-                              discordAvatar={player.discordAvatar}
-                              discordId={player.discordId}
-                              size="xxs"
-                            />{" "}
+                            <Avatar user={player} size="xxs" />{" "}
                             {discordFullName(player)}
                           </Link>
                         )}
