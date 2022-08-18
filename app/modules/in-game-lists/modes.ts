@@ -20,3 +20,5 @@ export const modes = [
     long: "Clam Blitz",
   },
 ] as const;
+
+export const modesShort = modes.map((mode) => mode.short);
