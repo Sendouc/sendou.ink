@@ -17,6 +17,7 @@ export function articleBySlug(slug: string) {
 
     return {
       content,
+      date,
       dateString: date.toLocaleDateString("en-US", {
         day: "2-digit",
         month: "long",

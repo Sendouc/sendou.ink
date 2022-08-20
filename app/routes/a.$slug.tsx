@@ -20,10 +20,13 @@ export const meta: MetaFunction = (args) => {
 
   return {
     title: makeTitle(data.title),
+    "og:title": data.title,
     description,
     "og:description": description,
     "twitter:card": "summary_large_image",
     "og:image": articlePreviewUrl(args.params["slug"]),
+    "og:type": "article",
+    "og:site_name": "sendou.ink",
   };
 };
 
