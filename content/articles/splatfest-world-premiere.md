@@ -16,4 +16,4 @@ In Splatoon 3, Splatfests will take on a new form. There will now be three teams
 
 You can also participate in Splatfest by checking out the Salmon Run. In this game mode, you’re part of a four person squad clearing waves of Salmonids to collect their eggs. This is a fun way to try out new weapons and practice your skills while still supporting your Splatfest team.
 
-To access the global testfire, download the free software located here. The Splatoon 3 icon will be downloaded to your Switch home screen and will be unlocked on the appropriate date. After downloading, you will also receive a week’s worth of Nintendo Online Services for free so you can participate in the festivities.
+To access the global testfire, download the free software located [here](https://www.nintendo.com/store/products/splatoon-3-splatfest-world-premiere-switch/). The Splatoon 3 icon will be downloaded to your Switch home screen and will be unlocked on the appropriate date. After downloading, you will also receive a week’s worth of Nintendo Online Services for free so you can participate in the festivities.
