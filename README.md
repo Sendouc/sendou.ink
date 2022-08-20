@@ -80,7 +80,7 @@ Note: This is only useful if you have access to a production running on Render.c
 
 1. Access "Shell" tab
 2. `cd /var/data`
-3. `sqlite3 db.sqlite3` then inside sqlite3 CLI `.output dump` and `.dump`
-4. `wormhole send dump.sql`
+3. `sqlite3 db.sqlite3` then inside sqlite3 CLI `.output dump`, `.dump` & `.quit`
+4. `wormhole send dump`
 5. On the receiver computer use the command shown.
 6. `sqlite3 db-prod.sqlite3 < dump` on the receiver computer.
