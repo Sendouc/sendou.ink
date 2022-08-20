@@ -115,7 +115,9 @@ function fetchEventsOfWeek(args: { week: number; year: number }) {
 
   const endTime = new Date(startTime);
   endTime.setDate(endTime.getDate() + 7);
-  // so we get all events of sunday even from US west coast perspective
+
+  // handle timezone mismatch between server and client
+  startTime.setHours(startTime.getHours() - 12);
   endTime.setHours(endTime.getHours() + 12);
 
   return db.calendarEvents
