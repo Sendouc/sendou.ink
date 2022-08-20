@@ -1,7 +1,7 @@
 {
   "inYourTimeZone": "Times in your local time zone:",
   "addNew": "Add new",
-  "noEvents": "No events this week",
+  "noEvents": "No events for selected week",
   "reportResults": "You can report results:",
   "day": "Day {{number}}",
   "actions.reportWinners": "Report winners",
