@@ -482,6 +482,10 @@ dialog::backdrop {
   background-color: var(--theme-transparent);
 }
 
+.article > p {
+  padding-block: var(--s-2-5);
+}
+
 .alert {
   display: flex;
   flex-wrap: wrap;

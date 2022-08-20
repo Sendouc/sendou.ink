@@ -39,6 +39,8 @@ export const badgeUrl = ({
   code: Badge["code"];
   extension?: "gif";
 }) => `/badges/${code}${extension ? `.${extension}` : ""}`;
+export const articlePreviewUrl = (slug: string) =>
+  `/img/article-previews/${slug}.png`;
 
 export function resolveBaseUrl(url: string) {
   return new URL(url).host;
