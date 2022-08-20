@@ -46,6 +46,7 @@ export const meta: MetaFunction = () => ({
   charset: "utf-8",
   title: "sendou.ink",
   viewport: "width=device-width,initial-scale=1",
+  "theme-color": "#8263de",
 });
 
 export interface RootLoaderData {
