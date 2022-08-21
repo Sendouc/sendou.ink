@@ -30,6 +30,7 @@ import startTimesOfRangeSql from "./startTimesOfRange.sql";
 import findBadgesByEventIdSql from "./findBadgesByEventId.sql";
 import eventsToReportSql from "./eventsToReport.sql";
 import recentWinnersSql from "./recentWinners.sql";
+import upcomingEventsSql from "./upcomingEvents.sql";
 
 const createStm = sql.prepare(createSql);
 const updateStm = sql.prepare(updateSql);
@@ -327,11 +328,10 @@ export function findAllBetweenTwoTimestamps({
       } & { hasBadge: number }
   >;
 
-  return rows.map(addTagArray);
+  return rows.map(addTagArray).map(addBadges);
 }
 
 const findByIdStm = sql.prepare(findByIdSql);
-
 export function findById(id: CalendarEvent["id"]) {
   const [firstRow, ...rest] = findByIdStm.all({ id }) as Array<
     Pick<
@@ -359,6 +359,32 @@ export function findById(id: CalendarEvent["id"]) {
     startTimes: [firstRow, ...rest].map((row) => row.startTime),
     startTime: undefined,
   });
+}
+
+const upcomingEventsStm = sql.prepare(upcomingEventsSql);
+export function upcomingEvents() {
+  const rows = upcomingEventsStm.all({
+    now: dateToDatabaseTimestamp(new Date()),
+  }) as Array<{
+    eventId: CalendarEvent["id"];
+    eventName: CalendarEvent["name"];
+    tags: CalendarEvent["tags"];
+    startTime: CalendarEventDate["startTime"];
+    hasBadge: number;
+  }>;
+
+  return rows.map(addTagArray).map(addBadges);
+}
+
+function addBadges<
+  T extends { eventId: CalendarEvent["id"]; tags?: CalendarEvent["tags"] }
+>(arg: T) {
+  return {
+    ...arg,
+    badgePrizes: arg.tags?.includes("BADGE")
+      ? findBadgesByEventId(arg.eventId)
+      : [],
+  };
 }
 
 const startTimesOfRangeStm = sql.prepare(startTimesOfRangeSql);

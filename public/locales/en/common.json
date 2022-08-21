@@ -27,5 +27,15 @@
 
   "forms.name": "Name",
   "forms.description": "Description",
-  "forms.errors.title": "Following errors need to be fixed"
+  "forms.errors.title": "Following errors need to be fixed",
+
+  "tag.name.BADGE": "Badge prizes",
+  "tag.name.SPECIAL": "Special rules",
+  "tag.name.ART": "Art prizes",
+  "tag.name.MONEY": "Money prizes",
+  "tag.name.REGION": "Region locked",
+  "tag.name.LOW": "Skill cap",
+  "tag.name.COUNT": "Entry limit",
+  "tag.name.LAN": "LAN",
+  "tag.name.QUALIFIER": "Qualifier"
 }

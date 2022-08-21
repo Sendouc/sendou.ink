@@ -17,7 +17,7 @@ export function Tags({
   /** Called when tag delete button clicked. If undefined delete buttons won't be shown. */
   onDelete?: (tag: CalendarEventTag) => void;
 }) {
-  const { t } = useTranslation("calendar");
+  const { t } = useTranslation();
 
   if (tags.length === 0) return null;
 

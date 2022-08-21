@@ -28,6 +28,7 @@
   font-size: var(--fonts-sm);
   grid-template-areas: "name secondary" "content content";
   grid-template-columns: 1fr 1fr;
+  row-gap: var(--s-1);
 }
 
 .front__event-name {
@@ -47,6 +48,7 @@
 
 .front__event-winners {
   display: flex;
+  flex-wrap: wrap;
   padding: 0;
   font-size: var(--fonts-xxs);
   gap: var(--s-3);

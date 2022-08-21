@@ -120,14 +120,7 @@ function fetchEventsOfWeek(args: { week: number; year: number }) {
   startTime.setHours(startTime.getHours() - 12);
   endTime.setHours(endTime.getHours() + 12);
 
-  return db.calendarEvents
-    .findAllBetweenTwoTimestamps({ startTime, endTime })
-    .map((event) => ({
-      ...event,
-      badgePrizes: event.tags.includes("BADGE")
-        ? db.calendarEvents.findBadgesByEventId(event.eventId)
-        : [],
-    }));
+  return db.calendarEvents.findAllBetweenTwoTimestamps({ startTime, endTime });
 }
 
 export default function CalendarPage() {

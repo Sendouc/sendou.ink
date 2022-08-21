@@ -8,6 +8,7 @@ import styles from "~/styles/front-page.css";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { discordFullName } from "~/utils/strings";
 import { calendarEventPage, userPage } from "~/utils/urls";
+import { Tags } from "./calendar/components/Tags";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -15,7 +16,7 @@ export const links: LinksFunction = () => {
 
 export const loader = () => {
   return json({
-    upcomingEvents: [],
+    upcomingEvents: db.calendarEvents.upcomingEvents(),
     recentWinners: db.calendarEvents.recentWinners(),
   });
 };
@@ -79,8 +80,23 @@ function CalendarPeek() {
         </Event>
       ))}
       <h2>Upcoming events</h2>
-      {data.recentWinners.map((result) => (
-        <div key={result.eventId}>{result.eventName}</div>
+      {data.upcomingEvents.map((event) => (
+        <Event
+          key={event.eventId}
+          eventId={event.eventId}
+          eventName={event.eventName}
+          // xxx: this and the buddy need to not be there before mount
+          startTimeString={databaseTimestampToDate(
+            event.startTime
+          ).toLocaleString(i18n.language, {
+            day: "numeric",
+            month: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+          })}
+        >
+          <Tags tags={event.tags} badges={event.badgePrizes} />
+        </Event>
       ))}
     </div>
   );
