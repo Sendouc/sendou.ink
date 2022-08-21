@@ -1,0 +1,58 @@
+.front__logo-container {
+  text-align: center;
+}
+
+.front__logo-container > h1 {
+  font-size: var(--fonts-lg);
+}
+
+.front__logo-container > h2 {
+  color: var(--text-lighter);
+  font-size: var(--fonts-sm);
+}
+
+.front__calendar-peek-container {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr;
+  row-gap: var(--s-2-5);
+}
+
+.front__calendar-peek-container > h2 {
+  font-size: var(--fonts-md);
+}
+
+.front__event {
+  display: grid;
+  font-size: var(--fonts-sm);
+  grid-template-areas: "name secondary" "content content";
+  grid-template-columns: 1fr 1fr;
+}
+
+.front__event-name {
+  color: var(--text);
+  font-weight: var(--semi-bold);
+  grid-area: name;
+}
+
+.front__event-time {
+  color: var(--text-lighter);
+  font-weight: var(--semi-bold);
+}
+
+.front__event-secondary {
+  grid-area: secondary;
+}
+
+.front__event-winners {
+  display: flex;
+  padding: 0;
+  font-size: var(--fonts-xxs);
+  gap: var(--s-3);
+  list-style: none;
+}
+
+.front__event-content-below {
+  grid-area: content;
+}

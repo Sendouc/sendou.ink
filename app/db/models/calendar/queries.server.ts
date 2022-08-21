@@ -29,6 +29,7 @@ import findByIdSql from "./findById.sql";
 import startTimesOfRangeSql from "./startTimesOfRange.sql";
 import findBadgesByEventIdSql from "./findBadgesByEventId.sql";
 import eventsToReportSql from "./eventsToReport.sql";
+import recentWinnersSql from "./recentWinners.sql";
 
 const createStm = sql.prepare(createSql);
 const updateStm = sql.prepare(updateSql);
@@ -229,6 +230,67 @@ export function findResultsByUserId(userId: User["id"]) {
       }>
     ).map(({ name, ...mate }) => name ?? mate),
   }));
+}
+
+const recentWinnersStm = sql.prepare(recentWinnersSql);
+export function recentWinners() {
+  const rows = recentWinnersStm.all() as Array<{
+    eventId: CalendarEventResultTeam["eventId"];
+    eventName: CalendarEvent["name"];
+    startTime: CalendarEventDate["startTime"];
+    teamName: CalendarEventResultTeam["name"];
+    playerId: CalendarEventResultPlayer["userId"];
+    playerName: CalendarEventResultPlayer["name"];
+    playerDiscordName: User["discordName"] | null;
+    playerDiscordDiscriminator: User["discordDiscriminator"] | null;
+    playerDiscordId: User["discordId"] | null;
+    playerDiscordAvatar: User["discordAvatar"];
+  }>;
+
+  const result: Array<{
+    eventId: CalendarEventResultTeam["eventId"];
+    eventName: CalendarEvent["name"];
+    teamName: CalendarEventResultTeam["name"];
+    startTime: CalendarEventDate["startTime"];
+    players: Array<
+      | string
+      | Pick<
+          User,
+          | "id"
+          | "discordId"
+          | "discordName"
+          | "discordDiscriminator"
+          | "discordAvatar"
+        >
+    >;
+  }> = [];
+
+  for (const row of rows) {
+    const team = result.find((team) => team.teamName === row.teamName);
+    const player = row.playerName ?? {
+      // player name and user id are mutually exclusive
+      // also if user id exists we know a joined user also has to exist
+      id: row.playerId!,
+      discordId: row.playerDiscordId!,
+      discordName: row.playerDiscordName!,
+      discordDiscriminator: row.playerDiscordDiscriminator!,
+      discordAvatar: row.playerDiscordAvatar,
+    };
+
+    if (team) {
+      team.players.push(player);
+    } else {
+      result.push({
+        eventId: row.eventId,
+        eventName: row.eventName,
+        teamName: row.teamName,
+        startTime: row.startTime,
+        players: [player],
+      });
+    }
+  }
+
+  return result;
 }
 
 const findAllBetweenTwoTimestampsStm = sql.prepare(
