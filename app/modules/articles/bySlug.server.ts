@@ -1,16 +1,16 @@
 import matter from "gray-matter";
 import fs from "node:fs";
-import { z, ZodError } from "zod";
-
-const articleDataSchema = z.object({
-  title: z.string().min(1),
-  author: z.string().min(1),
-  date: z.date(),
-});
+import { ZodError } from "zod";
+import { articleDataSchema } from "./schemas";
+import path from "node:path";
+import { ARTICLES_FOLDER_PATH } from "./constants";
 
 export function articleBySlug(slug: string) {
   try {
-    const rawMarkdown = fs.readFileSync(`content/articles/${slug}.md`, "utf8");
+    const rawMarkdown = fs.readFileSync(
+      path.join(ARTICLES_FOLDER_PATH, `${slug}.md`),
+      "utf8"
+    );
     const { content, data } = matter(rawMarkdown);
 
     const { date, ...restParsed } = articleDataSchema.parse(data);

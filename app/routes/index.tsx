@@ -8,31 +8,43 @@ import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { db } from "~/db";
 import { useIsMounted } from "~/hooks/useIsMounted";
+import { mostRecentArticles } from "~/modules/articles";
 import styles from "~/styles/front-page.css";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { discordFullName } from "~/utils/strings";
-import { calendarEventPage, CALENDAR_PAGE, userPage } from "~/utils/urls";
+import {
+  articlePage,
+  calendarEventPage,
+  CALENDAR_PAGE,
+  userPage,
+} from "~/utils/urls";
 import { Tags } from "./calendar/components/Tags";
+
+const RECENT_ARTICLES_TO_SHOW = 3;
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const loader = () => {
+export const loader = async () => {
   return json({
     upcomingEvents: db.calendarEvents.upcomingEvents(),
     recentWinners: db.calendarEvents.recentWinners(),
+    recentArticles: await mostRecentArticles(RECENT_ARTICLES_TO_SHOW),
   });
 };
 
 export default function Index() {
   return (
-    <Main className="stack md">
+    <Main className="stack lg">
       <Header />
-      <CalendarPeek />
-      <GoToPageBanner to={CALENDAR_PAGE} navItem="calendar">
-        See all the past and upcoming events on the calendar page
-      </GoToPageBanner>
+      <div className="stack md">
+        <CalendarPeek />
+        <GoToPageBanner to={CALENDAR_PAGE} navItem="calendar">
+          See all the past and upcoming events on the calendar page
+        </GoToPageBanner>
+      </div>
+      <ArticlesPeek />
     </Main>
   );
 }
@@ -158,5 +170,22 @@ function Event({
       {isMounted && <div className="front__event-time">{startTimeString}</div>}
       <div className="front__event-content-below">{children}</div>
     </div>
+  );
+}
+
+function ArticlesPeek() {
+  const data = useLoaderData<typeof loader>();
+
+  return (
+    <ul className="front__article">
+      {data.recentArticles.map((article) => (
+        <li key={article.title}>
+          <Link to={articlePage(article.slug)}>{article.title}</Link>
+          <div className="text-xs text-lighter">
+            by {article.author} • <time>{article.dateString}</time>
+          </div>
+        </li>
+      ))}
+    </ul>
   );
 }

@@ -31,6 +31,7 @@ export const calendarEditPage = (eventId?: number) =>
   `/calendar/new${eventId ? `?eventId=${eventId}` : ""}`;
 export const calendarReportWinnersPage = (eventId: number) =>
   `/calendar/${eventId}/report-winners`;
+export const articlePage = (slug: string) => `/a/${slug}`;
 
 export const badgeUrl = ({
   code,

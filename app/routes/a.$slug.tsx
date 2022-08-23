@@ -3,7 +3,7 @@ import { Main } from "~/components/Main";
 import { json, type LoaderArgs, type MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import * as React from "react";
-import { articleBySlug } from "~/utils/markdown.server";
+import { articleBySlug } from "~/modules/articles";
 import invariant from "tiny-invariant";
 import type { UseDataFunctionReturn } from "@remix-run/react/dist/components";
 import { makeTitle } from "~/utils/strings";

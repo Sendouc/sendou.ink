@@ -104,3 +104,16 @@
 .front__event-content-below {
   grid-area: content;
 }
+
+.front__article {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  gap: var(--s-2);
+  list-style: none;
+}
+
+.front__article a {
+  color: var(--text);
+  font-size: var(--fonts-md);
+}
