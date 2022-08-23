@@ -377,7 +377,7 @@ function DiscordLinkInput() {
 }
 
 function TagsAdder() {
-  const { t } = useTranslation("calendar");
+  const { t } = useTranslation(["common", "calendar"]);
   const { eventToEdit } = useLoaderData<typeof loader>();
   const [tags, setTags] = React.useState(
     (eventToEdit?.tags ?? []) as Array<CalendarEventTag>
@@ -396,7 +396,7 @@ function TagsAdder() {
         value={JSON.stringify(tags.length > 0 ? tags : null)}
       />
       <div>
-        <label htmlFor={id}>{t("forms.tags")}</label>
+        <label htmlFor={id}>{t("calendar:forms.tags")}</label>
         <select
           id={id}
           className="calendar-new__select"
@@ -405,14 +405,14 @@ function TagsAdder() {
           }
           data-cy="tags-select"
         >
-          <option value="">{t("forms.tags.placeholder")}</option>
+          <option value="">{t("calendar:forms.tags.placeholder")}</option>
           {tagsForSelect.map((tag) => (
             <option key={tag} value={tag}>
-              {t(`tag.name.${tag}`)}
+              {t(`common:tag.name.${tag}`)}
             </option>
           ))}
         </select>
-        <FormMessage type="info">{t("forms.tags.info")}</FormMessage>
+        <FormMessage type="info">{t("calendar:forms.tags.info")}</FormMessage>
       </div>
       <Tags
         tags={tags}
