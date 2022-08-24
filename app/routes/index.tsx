@@ -14,8 +14,11 @@ import { databaseTimestampToDate } from "~/utils/dates";
 import { discordFullName } from "~/utils/strings";
 import {
   articlePage,
+  BADGES_PAGE,
   calendarEventPage,
   CALENDAR_PAGE,
+  navIconUrl,
+  plusSuggestionPage,
   userPage,
 } from "~/utils/urls";
 import { Tags } from "./calendar/components/Tags";
@@ -45,6 +48,23 @@ export default function Index() {
         </GoToPageBanner>
       </div>
       <ArticlesPeek />
+      <div className="stack md">
+        <h2 className="front__more-features">More features</h2>
+        <div className="front__feature-cards">
+          <FeatureCard
+            navItem="plus"
+            title="Plus Server"
+            description="View Plus Server voting history and more"
+            to={plusSuggestionPage()}
+          />
+          <FeatureCard
+            navItem="badges"
+            title="Badges"
+            description="List of all the badges you can earn for your profile"
+            to={BADGES_PAGE}
+          />
+        </div>
+      </div>
     </Main>
   );
 }
@@ -71,7 +91,7 @@ function GoToPageBanner({
     <Link to={to} className="front__go-to-page-banner">
       <div className="front__go-to-page-banner__nav-img-container">
         <Image
-          path={`/img/layout/${navItem}`}
+          path={navIconUrl(navItem)}
           alt={navItem}
           width={32}
           height={32}
@@ -177,7 +197,7 @@ function ArticlesPeek() {
   const data = useLoaderData<typeof loader>();
 
   return (
-    <ul className="front__article">
+    <ul className="front__articles">
       {data.recentArticles.map((article) => (
         <li key={article.title}>
           <Link to={articlePage(article.slug)}>{article.title}</Link>
@@ -187,5 +207,31 @@ function ArticlesPeek() {
         </li>
       ))}
     </ul>
+  );
+}
+
+function FeatureCard({
+  navItem,
+  title,
+  description,
+  to,
+}: {
+  navItem: string;
+  title: string;
+  description: string;
+  to: string;
+}) {
+  return (
+    <Link to={to} className="front__feature-card">
+      <Image
+        path={navIconUrl(navItem)}
+        alt={navItem}
+        width={48}
+        height={48}
+        className="front__feature-card__nav-icon"
+      />
+      <h3 className="front__feature-card__title">{title}</h3>
+      <div className="front__feature-card__description">{description}</div>
+    </Link>
   );
 }

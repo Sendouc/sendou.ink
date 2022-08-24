@@ -40,6 +40,7 @@ export const badgeUrl = ({
   code: Badge["code"];
   extension?: "gif";
 }) => `/badges/${code}${extension ? `.${extension}` : ""}`;
+export const navIconUrl = (navItem: string) => `/img/layout/${navItem}`;
 export const articlePreviewUrl = (slug: string) =>
   `/img/article-previews/${slug}.png`;
 
