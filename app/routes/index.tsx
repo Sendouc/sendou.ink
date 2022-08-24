@@ -9,7 +9,7 @@ import { Main } from "~/components/Main";
 import { db } from "~/db";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { mostRecentArticles } from "~/modules/articles";
-import styles from "~/styles/front-page.css";
+import styles from "~/styles/front.css";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { discordFullName } from "~/utils/strings";
 import {
@@ -38,29 +38,31 @@ export const loader = async () => {
 };
 
 export default function Index() {
+  const { t } = useTranslation(["common", "front"]);
+
   return (
     <Main className="stack lg">
       <Header />
       <div className="stack md">
         <CalendarPeek />
         <GoToPageBanner to={CALENDAR_PAGE} navItem="calendar">
-          See all the past and upcoming events on the calendar page
+          {t("front:calendarGoTo")}
         </GoToPageBanner>
       </div>
       <ArticlesPeek />
       <div className="stack md">
-        <h2 className="front__more-features">More features</h2>
+        <h2 className="front__more-features">{t("front:moreFeatures")}</h2>
         <div className="front__feature-cards">
           <FeatureCard
             navItem="plus"
-            title="Plus Server"
-            description="View Plus Server voting history and more"
+            title={t("common:pages.plus")}
+            description={t("front:plus.description")}
             to={plusSuggestionPage()}
           />
           <FeatureCard
             navItem="badges"
-            title="Badges"
-            description="List of all the badges you can earn for your profile"
+            title={t("common:pages.badges")}
+            description={t("front:badges.description")}
             to={BADGES_PAGE}
           />
         </div>
@@ -70,10 +72,12 @@ export default function Index() {
 }
 
 function Header() {
+  const { t } = useTranslation("front");
+
   return (
     <div className="front__logo-container">
       <h1>sendou.ink</h1>
-      <h2>Competitive Splatoon Hub</h2>
+      <h2>{t("websiteSubtitle")}</h2>
     </div>
   );
 }
@@ -105,12 +109,12 @@ function GoToPageBanner({
 
 function CalendarPeek() {
   const data = useLoaderData<typeof loader>();
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation("front");
 
   return (
     <div className="front__calendar-peek-container">
       <div className="stack sm">
-        <h2 className="front__calendar-header">Recent winners</h2>
+        <h2 className="front__calendar-header">{t("recentWinners")}</h2>
         {data.recentWinners.map((result) => (
           <Event
             key={result.eventId}
@@ -146,7 +150,7 @@ function CalendarPeek() {
         ))}
       </div>
       <div className="stack sm">
-        <h2 className="front__calendar-header">Upcoming events</h2>
+        <h2 className="front__calendar-header">{t("upcomingEvents")}</h2>
         {data.upcomingEvents.map((event) => (
           <Event
             key={event.eventId}
@@ -194,6 +198,7 @@ function Event({
 }
 
 function ArticlesPeek() {
+  const { t } = useTranslation("front");
   const data = useLoaderData<typeof loader>();
 
   return (
@@ -202,7 +207,8 @@ function ArticlesPeek() {
         <li key={article.title}>
           <Link to={articlePage(article.slug)}>{article.title}</Link>
           <div className="text-xs text-lighter">
-            by {article.author} • <time>{article.dateString}</time>
+            {t("articleBy", { author: article.author })} •{" "}
+            <time>{article.dateString}</time>
           </div>
         </li>
       ))}
