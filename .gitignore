@@ -13,3 +13,9 @@ dump
 
 .DS_Store
 .excalidraw
+
+/scripts/output/*
+!/scripts/output/.gitkeep
+
+/scripts/dicts/*.json
+/scripts/dicts/langs/*.json
