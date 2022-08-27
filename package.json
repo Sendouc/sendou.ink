@@ -12,6 +12,7 @@
     "migrate:cypress": "cross-env DB_PATH=db-cypress.sqlite3 ley",
     "migrate:reset": "node scripts/delete-db-files.mjs && npm run migrate && npm run seed",
     "add-badge": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/add-badge.ts",
+    "create-weapon-json": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/create-weapon-json.ts",
     "lint:ts": "eslint . --ext .ts,.tsx",
     "lint:styles": "stylelint \"app/styles/**/*.css\"",
     "prettier:check": "prettier --check .",
