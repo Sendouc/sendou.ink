@@ -58,9 +58,7 @@ sendou.ink/
 
 ## Commands
 
-### Converting gifs (badges) to thumbnail
-
-### png
+### Converting gifs (badges) to thumbnail (.png)
 
 ```bash
 sips -s format png ./sundae.gif --out .
@@ -70,6 +68,14 @@ sips -s format png ./sundae.gif --out .
 
 ```bash
 npm run add-badge -- sundae "4v4 Sundaes"
+```
+
+### Convert many .png files to .avif
+
+While in the folder with the images:
+
+```bash
+for i in *; do npx @squoosh/cli --avif '{"cqLevel":33,"cqAlphaLevel":-1,"denoiseLevel":0,"tileColsLog2":0,"tileRowsLog2":0,"speed":6,"subsample":1,"chromaDeltaQ":false,"sharpness":0,"tune":0}' $i; done
 ```
 
 ## How to...
