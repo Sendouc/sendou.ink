@@ -24,7 +24,7 @@ And if you want to run the E2E tests:
 
 You don't need to fill the missing values from `.env.example` to get started. Instead of using real auth via Discord you can "impersonate" the admin (=Sendou#0043) or any other use in the /admin page once the project has started up. `LOHI_TOKEN` is only needed for bot + sendou.ink interoperability.
 
-### Lohi
+## Lohi
 
 TODO: instructions on how to develop Lohi locally
 
@@ -32,7 +32,7 @@ TODO: instructions on how to develop Lohi locally
 
 Contributions very welcome! See [CONTRIBUTING.md](./CONTRIBUTING.md) for more information.
 
-### API
+## API
 
 If you want to use the API then please leave an issue explaing your use case. By default I want to allow open use of the data on the site. It's just not recommended to use the same API's the web pages use as they are not stable at all and can change at any time without warning.
 
@@ -90,3 +90,8 @@ Note: This is only useful if you have access to a production running on Render.c
 4. `wormhole send dump`
 5. On the receiver computer use the command shown.
 6. `sqlite3 db-prod.sqlite3 < dump` on the receiver computer.
+
+### Add a new weapon
+
+1. Add image in both .png and .avif with the correct weapon ID (`replace-img-names.ts` can help)
+2. Create new weapon ids json and weapon translation jsons using `create-weapon-json.ts` script
