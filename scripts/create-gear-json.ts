@@ -47,6 +47,11 @@ async function main() {
 
   allGear.sort((a, b) => a.id - b.id);
 
+  fs.writeFileSync(
+    path.join(OUTPUT_DIR_PATH, "gear.json"),
+    JSON.stringify(allGear, null, 2)
+  );
+
   const headGear = allGear.filter((g) => g.type === "Hed");
   const clothesGear = allGear.filter((g) => g.type === "Clt");
   const shoesGear = allGear.filter((g) => g.type === "Shs");
