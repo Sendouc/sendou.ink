@@ -7,6 +7,7 @@ import type contributions from "../public/locales/en/contributions.json";
 import type user from "../public/locales/en/user.json";
 import type badges from "../public/locales/en/badges.json";
 import type calendar from "../public/locales/en/calendar.json";
+import type weapons from "../public/locales/en/weapons.json";
 
 declare module "react-i18next" {
   interface CustomTypeOptions {
@@ -19,6 +20,7 @@ declare module "react-i18next" {
       user: typeof user;
       badges: typeof badges;
       calendar: typeof calendar;
+      weapons: typeof weapons;
     };
   }
 }

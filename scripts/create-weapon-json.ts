@@ -6,6 +6,7 @@ import invariant from "tiny-invariant";
 const INTERNAL_NAMES_TO_IGNORE: readonly string[] = ["Free"] as const;
 const LANG_DICTS_PATH = path.join(__dirname, "dicts", "langs");
 const OUTPUT_DIR_PATH = path.join(__dirname, "output");
+const LANG_JSONS_TO_CREATE = ["EUen"];
 
 async function loadLangDicts() {
   const result: Array<
@@ -69,6 +70,27 @@ async function main() {
     path.join(OUTPUT_DIR_PATH, "weapon-ids.json"),
     JSON.stringify(weaponIds, null, 2)
   );
+
+  for (const langCode of LANG_JSONS_TO_CREATE) {
+    const translationsMap = Object.fromEntries(
+      result.map((w) => {
+        const translation = w.translations.find(
+          (t) => t.language === langCode
+        )?.name;
+        invariant(
+          translation,
+          `No translation for ${w.internalName} in ${langCode}`
+        );
+
+        return [w.id, translation];
+      })
+    );
+
+    fs.writeFileSync(
+      path.join(OUTPUT_DIR_PATH, `weapon-${langCode}.json`),
+      JSON.stringify(translationsMap, null, 2)
+    );
+  }
 }
 
 void main();
