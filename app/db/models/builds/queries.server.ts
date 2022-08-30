@@ -35,7 +35,7 @@ export const create = sql.transaction((build: CreateArgs) => {
     ownerId: build.ownerId,
     title: build.title,
     description: build.description,
-    modes: build.modes?.join(",") ?? null,
+    modes: build.modes ? JSON.stringify(build.modes) : null,
     headGearSplId: build.headGearSplId,
     clothesGearSplId: build.clothesGearSplId,
     shoesGearSplId: build.shoesGearSplId,
@@ -82,8 +82,10 @@ export function buildsByUserId(userId: Build["ownerId"]) {
 function augmentBuild<T>(
   row: T & { modes: Build["modes"]; weapons: string; abilities: string }
 ) {
-  const modes = row.modes ? (row.modes.split(",") as ModeShort[]) : null;
-  const weapons = JSON.parse(row.weapons) as Array<BuildWeapon["weaponSplId"]>;
+  const modes = row.modes ? (JSON.parse(row.modes) as ModeShort[]) : null;
+  const weapons = (
+    JSON.parse(row.weapons) as Array<BuildWeapon["weaponSplId"]>
+  ).sort((a, b) => a - b);
   const abilities = JSON.parse(row.abilities) as Array<
     Pick<BuildAbility, "ability" | "gearType" | "slotIndex">
   >;
