@@ -1,17 +1,25 @@
 import { faker } from "@faker-js/faker";
+import capitalize from "just-capitalize";
+import shuffle from "just-shuffle";
 import invariant from "tiny-invariant";
+import { ADMIN_DISCORD_ID } from "~/constants";
+import { db } from "~/db";
+import { sql } from "~/db/sql";
+import {
+  abilityCodes,
+  clothesGearIds,
+  headGearIds,
+  modesShort,
+  shoesGearIds,
+  weaponIds,
+} from "~/modules/in-game-lists";
 import {
   lastCompletedVoting,
   nextNonCompletedVoting,
 } from "~/modules/plus-server";
-import { db } from "~/db";
-import { sql } from "~/db/sql";
-import type { UpsertManyPlusVotesArgs } from "./models/plusVotes/queries.server";
-import { ADMIN_DISCORD_ID } from "~/constants";
-import shuffle from "just-shuffle";
-import { dateToDatabaseTimestamp } from "~/utils/dates";
-import capitalize from "just-capitalize";
 import allTags from "~/routes/calendar/tags.json";
+import { dateToDatabaseTimestamp } from "~/utils/dates";
+import type { UpsertManyPlusVotesArgs } from "./models/plusVotes/queries.server";
 
 const ADMIN_TEST_AVATAR = "e424e1ba50d2019fdc4730d261e56c55";
 
@@ -36,6 +44,7 @@ const basicSeeds = [
   calendarEvents,
   calendarEventBadges,
   calendarEventResults,
+  adminBuilds,
 ];
 
 export function seed() {
@@ -484,5 +493,65 @@ function calendarEventResults() {
     });
 
     userIds = userIdsInRandomOrder();
+  }
+}
+
+function adminBuilds() {
+  for (let i = 0; i < 50; i++) {
+    const randomOrderHeadGear = shuffle(headGearIds.slice());
+    const randomOrderClothesGear = shuffle(clothesGearIds.slice());
+    const randomOrderShoesGear = shuffle(shoesGearIds.slice());
+    const randomOrderWeaponIds = shuffle(weaponIds.slice());
+
+    db.builds.create({
+      title: `${capitalize(faker.word.adjective())} ${capitalize(
+        faker.word.noun()
+      )}`,
+      ownerId: 1,
+      description: Math.random() < 0.75 ? faker.lorem.paragraph() : null,
+      clothesGearSplId: randomOrderHeadGear[0]!,
+      headGearSplId: randomOrderClothesGear[0]!,
+      shoesGearSplId: randomOrderShoesGear[0]!,
+      weaponSplIds: new Array(
+        faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5, 6])
+      )
+        .fill(null)
+        .map(() => randomOrderWeaponIds.pop()!),
+      modes:
+        Math.random() < 0.75
+          ? modesShort.filter(() => Math.random() < 0.5)
+          : null,
+      abilities: new Array(12).fill(null).map((_, i) => {
+        const gearType = i < 4 ? "HEAD" : i < 8 ? "CLOTHES" : "SHOES";
+
+        const randomOrderAbilities = shuffle([...abilityCodes]);
+
+        const getAbility = () => {
+          const legalAbilityForSlot = randomOrderAbilities.find((ability) => {
+            if (ability.type === "HEAD_ONLY" && gearType !== "HEAD") {
+              return false;
+            }
+            if (ability.type === "CLOTHES_ONLY" && gearType !== "CLOTHES") {
+              return false;
+            }
+            if (ability.type === "SHOES_ONLY" && gearType !== "SHOES") {
+              return false;
+            }
+
+            return true;
+          });
+
+          invariant(legalAbilityForSlot);
+
+          return legalAbilityForSlot.name;
+        };
+
+        return {
+          ability: getAbility(),
+          gearType,
+          slotIndex: (i % 4) as any,
+        };
+      }),
+    });
   }
 }

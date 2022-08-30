@@ -5,6 +5,8 @@ node_modules
 /public/build
 .env
 
+notes.md
+
 db*.sqlite3*
 dump
 
