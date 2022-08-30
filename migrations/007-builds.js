@@ -15,6 +15,7 @@ module.exports.up = function (db) {
     ) strict
     `
   ).run();
+  db.prepare(`create index build_owner_id on "Build"("ownerId")`).run();
 
   db.prepare(
     `
@@ -25,6 +26,9 @@ module.exports.up = function (db) {
       unique("buildId", "weaponSplId") on conflict rollback
     ) strict
     `
+  ).run();
+  db.prepare(
+    `create index build_weapon_build_id on "BuildWeapon"("buildId")`
   ).run();
 
   db.prepare(
@@ -38,6 +42,9 @@ module.exports.up = function (db) {
       unique("buildId", "gearType", "slotIndex") on conflict rollback
     ) strict
     `
+  ).run();
+  db.prepare(
+    `create index build_ability_build_id on "BuildAbility"("buildId")`
   ).run();
 };
 
