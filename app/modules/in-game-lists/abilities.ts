@@ -1,12 +1,4 @@
-export type AbilityType =
-  | "STACKABLE"
-  | "HEAD_ONLY"
-  | "CLOTHES_ONLY"
-  | "SHOES_ONLY";
-
-export const abilityCodes: Readonly<
-  Array<{ name: string; type: AbilityType }>
-> = [
+export const abilityCodes = [
   { name: "AD", type: "CLOTHES_ONLY" },
   { name: "BRU", type: "STACKABLE" },
   { name: "CB", type: "HEAD_ONLY" },
@@ -34,3 +26,5 @@ export const abilityCodes: Readonly<
   { name: "T", type: "CLOTHES_ONLY" },
   { name: "TI", type: "CLOTHES_ONLY" },
 ] as const;
+
+export const abilitiesShort = abilityCodes.map((ability) => ability.name);

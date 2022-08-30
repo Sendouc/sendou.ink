@@ -1,3 +1,4 @@
+import type { Ability } from "~/modules/in-game-lists";
 import type allTags from "../routes/calendar/tags.json";
 
 export interface User {
@@ -116,4 +117,28 @@ export interface CalendarEventResultPlayer {
 export interface CalendarEventBadge {
   eventId: number;
   badgeId: number;
+}
+
+export interface Build {
+  id: number;
+  ownerId: number;
+  title: string;
+  description: string | null;
+  modes: string | null;
+  headGearSplId: number;
+  clothesGearSplId: number;
+  shoesGearSplId: number;
+  updatedAt: number;
+}
+
+export interface BuildWeapon {
+  buildId: number;
+  weaponSplId: number;
+}
+
+export interface BuildAbility {
+  buildId: number;
+  gearType: "HEAD" | "CLOTHES" | "SHOES";
+  ability: Ability;
+  slotIndex: 0 | 1 | 2 | 3;
 }
