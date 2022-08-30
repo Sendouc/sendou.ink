@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import fs from "node:fs";
 import path from "node:path";
 import invariant from "tiny-invariant";
@@ -32,7 +33,7 @@ async function main() {
       .replace("Path_Wst_", "");
 
     const weaponId = weapons.find(
-      (w) => w.internalName === weaponInternalName
+      (w: any) => w.internalName === weaponInternalName
     ).id;
     invariant(typeof weaponId === "number", weaponInternalName + " has no id");
 
@@ -64,7 +65,7 @@ async function main() {
       invariant(internalName);
 
       const gearId = gear.find(
-        (g) => g.internalName === internalName && g.type === type
+        (g: any) => g.internalName === internalName && g.type === type
       )?.id;
       invariant(typeof gearId === "number", internalName + " has no id");
 

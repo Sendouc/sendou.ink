@@ -65,6 +65,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
         : undefined,
     badges: db.badges.countsByUserId(user.id),
     results: db.calendarEvents.findResultsByUserId(user.id),
+    buildsCount: db.builds.countByUserId(user.id),
   });
 };
 
@@ -89,6 +90,11 @@ export default function UserPageLayout() {
         {data.results.length > 0 && (
           <SubNavLink to="results" data-cy="results-page-link">
             {t("results")}
+          </SubNavLink>
+        )}
+        {(isOwnPage || data.buildsCount > 0) && (
+          <SubNavLink to="builds" data-cy="builds-page-link">
+            {t("pages.builds")} ({data.buildsCount})
           </SubNavLink>
         )}
       </SubNav>
