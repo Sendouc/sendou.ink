@@ -57,6 +57,7 @@ export function seed() {
 
 function wipeDB() {
   const tablesToDelete = [
+    "Build",
     "CalendarEventDate",
     "CalendarEventResultPlayer",
     "CalendarEventResultTeam",
@@ -509,8 +510,8 @@ function adminBuilds() {
       )}`,
       ownerId: 1,
       description: Math.random() < 0.75 ? faker.lorem.paragraph() : null,
-      clothesGearSplId: randomOrderHeadGear[0]!,
-      headGearSplId: randomOrderClothesGear[0]!,
+      headGearSplId: randomOrderHeadGear[0]!,
+      clothesGearSplId: randomOrderClothesGear[0]!,
       shoesGearSplId: randomOrderShoesGear[0]!,
       weaponSplIds: new Array(
         faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5, 6])
@@ -523,18 +524,28 @@ function adminBuilds() {
           : null,
       abilities: new Array(12).fill(null).map((_, i) => {
         const gearType = i < 4 ? "HEAD" : i < 8 ? "CLOTHES" : "SHOES";
+        const isMain = i === 0 || i === 4 || i === 8;
 
         const randomOrderAbilities = shuffle([...abilityCodes]);
 
         const getAbility = () => {
           const legalAbilityForSlot = randomOrderAbilities.find((ability) => {
-            if (ability.type === "HEAD_ONLY" && gearType !== "HEAD") {
+            if (
+              ability.type === "HEAD_MAIN_ONLY" &&
+              (gearType !== "HEAD" || !isMain)
+            ) {
               return false;
             }
-            if (ability.type === "CLOTHES_ONLY" && gearType !== "CLOTHES") {
+            if (
+              ability.type === "CLOTHES_MAIN_ONLY" &&
+              (gearType !== "CLOTHES" || !isMain)
+            ) {
               return false;
             }
-            if (ability.type === "SHOES_ONLY" && gearType !== "SHOES") {
+            if (
+              ability.type === "SHOES_MAIN_ONLY" &&
+              (gearType !== "SHOES" || !isMain)
+            ) {
               return false;
             }
 

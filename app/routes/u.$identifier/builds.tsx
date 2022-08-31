@@ -1,5 +1,6 @@
 import { json, type LoaderArgs } from "@remix-run/node";
-// import { useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
+import { BuildCard } from "~/components/BuildCard";
 import { Main } from "~/components/Main";
 import { db } from "~/db";
 import { notFoundIfFalsy } from "~/utils/remix";
@@ -15,9 +16,26 @@ export const loader = ({ params }: LoaderArgs) => {
 };
 
 export default function UserBuildsPage() {
-  // const data = useLoaderData<typeof loader>();
+  const data = useLoaderData<typeof loader>();
 
-  // console.log({ data });
-
-  return <Main>hey</Main>;
+  return (
+    <Main>
+      <div className="builds-container">
+        {data.builds.map((build) => (
+          <BuildCard
+            key={build.id}
+            title={build.title}
+            description={build.description}
+            headGearSplId={build.headGearSplId}
+            clothesGearSplId={build.clothesGearSplId}
+            shoesGearSplId={build.shoesGearSplId}
+            modes={build.modes}
+            updatedAt={build.updatedAt}
+            abilities={build.abilities}
+            weapons={build.weapons}
+          />
+        ))}
+      </div>
+    </Main>
+  );
 }

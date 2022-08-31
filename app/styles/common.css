@@ -647,3 +647,72 @@ dialog::backdrop {
   margin-inline-end: 0 !important;
   margin-inline-start: var(--s-1);
 }
+
+.builds-container {
+  display: grid;
+  justify-content: center;
+  gap: var(--s-3);
+  grid-template-columns: repeat(auto-fit, 15rem);
+}
+
+.build {
+  display: flex;
+  flex-direction: column;
+  padding: var(--s-2-5);
+  background-color: var(--bg-lighter);
+  border-radius: var(--rounded);
+  gap: var(--s-3);
+}
+
+.build__title {
+  font-size: var(--fonts-sm);
+  word-wrap: break-word;
+}
+
+.build__top-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.build__date {
+  display: block;
+  font-size: var(--fonts-xxxs);
+}
+
+.build__modes {
+  display: flex;
+  min-width: max-content;
+  gap: var(--s-1);
+}
+
+.build__weapons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.build__gear-abilities {
+  display: grid;
+  column-gap: var(--s-1);
+  grid-template-columns: repeat(5, max-content);
+  place-items: center;
+  row-gap: var(--s-2);
+}
+
+.build__gear {
+  background-color: var(--bg-darker-very-transparent);
+  border-radius: 50%;
+}
+
+.build__ability {
+  width: var(--ability-size);
+  height: var(--ability-size);
+  border: 2px solid var(--theme-transparent);
+  border-right: 0;
+  border-bottom: 0;
+  background: var(--bg-ability);
+  background-size: 100%;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--bg-ability);
+  user-select: none;
+}
