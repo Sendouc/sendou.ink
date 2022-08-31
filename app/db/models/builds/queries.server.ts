@@ -35,6 +35,7 @@ export const create = sql.transaction((build: CreateArgs) => {
     ownerId: build.ownerId,
     title: build.title,
     description: build.description,
+    // xxx: sort these
     modes: build.modes ? JSON.stringify(build.modes) : null,
     headGearSplId: build.headGearSplId,
     clothesGearSplId: build.clothesGearSplId,
@@ -98,14 +99,16 @@ function augmentBuild<T>(
   };
 }
 
-const gearOrder: Array<BuildAbility["gearType"]> = ["HEAD", "CLOTHES", "SHOES"];
-function dbAbilitiesToArrayOfArrays(
-  abilities: Array<Pick<BuildAbility, "ability" | "gearType" | "slotIndex">>
-): [
+export type AllAbilitiesTuple = [
   head: [main: Ability, s1: Ability, s2: Ability, s3: Ability],
   clothes: [main: Ability, s1: Ability, s2: Ability, s3: Ability],
   shoes: [main: Ability, s1: Ability, s2: Ability, s3: Ability]
-] {
+];
+
+const gearOrder: Array<BuildAbility["gearType"]> = ["HEAD", "CLOTHES", "SHOES"];
+function dbAbilitiesToArrayOfArrays(
+  abilities: Array<Pick<BuildAbility, "ability" | "gearType" | "slotIndex">>
+): AllAbilitiesTuple {
   const sorted = abilities
     .slice()
     .sort((a, b) => {

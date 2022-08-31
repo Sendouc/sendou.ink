@@ -1,5 +1,5 @@
 select
-  count(*)
+  count(*) as "count"
 from
   "Build"
 where

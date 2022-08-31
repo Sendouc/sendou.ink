@@ -1,4 +1,5 @@
 import type { Badge } from "~/db/types";
+import type { Ability, ModeShort } from "~/modules/in-game-lists";
 
 export const SENDOU_INK_DISCORD_URL = "https://discord.gg/sendou";
 export const SENDOU_TWITTER_URL = "https://twitter.com/sendouc";
@@ -40,9 +41,19 @@ export const badgeUrl = ({
   code: Badge["code"];
   extension?: "gif";
 }) => `/badges/${code}${extension ? `.${extension}` : ""}`;
-export const navIconUrl = (navItem: string) => `/img/layout/${navItem}`;
 export const articlePreviewUrl = (slug: string) =>
   `/img/article-previews/${slug}.png`;
+
+export const navIconUrl = (navItem: string) => `/img/layout/${navItem}`;
+export const gearImageUrl = (
+  gearType: "head" | "clothes" | "shoes",
+  gearSplId: number
+) => `/img/gear/${gearType}/${gearSplId}`;
+export const weaponImageUrl = (weaponSplId: number) =>
+  `/img/weapons/${weaponSplId}`;
+export const abilityImageUrl = (ability: Ability) =>
+  `/img/abilities/${ability}`;
+export const modeImageUrl = (mode: ModeShort) => `/img/modes/${mode}`;
 
 export function resolveBaseUrl(url: string) {
   return new URL(url).host;
