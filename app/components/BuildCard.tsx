@@ -3,7 +3,10 @@ import { useTranslation } from "react-i18next";
 import type { AllAbilitiesTuple } from "~/db/models/builds/queries.server";
 import type { Build, BuildWeapon } from "~/db/types";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import type { ModeShort } from "~/modules/in-game-lists";
+import type {
+  Ability as AbilityType,
+  ModeShort,
+} from "~/modules/in-game-lists";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { gearImageUrl, modeImageUrl, weaponImageUrl } from "~/utils/urls";
 import { Ability } from "./Ability";
@@ -34,6 +37,7 @@ export function BuildCard({
   abilities,
   modes,
 }: BuildProps) {
+  const { t } = useTranslation("weapons");
   const { i18n } = useTranslation();
   const isMounted = useIsMounted();
 
@@ -46,8 +50,8 @@ export function BuildCard({
             <div className="build__modes">
               {modes.map((mode) => (
                 <Image
+                  key={mode}
                   // xxx: alt to translated name + title
-                  // xxx: maybe border same as gear img?
                   alt=""
                   path={modeImageUrl(mode)}
                   width={18}
@@ -72,51 +76,62 @@ export function BuildCard({
       </div>
       <div className="build__weapons">
         {weapons.map((weaponSplId) => (
-          <Image
-            key={weaponSplId}
-            path={weaponImageUrl(weaponSplId)}
-            alt=""
-            height={36}
-            width={36}
-          />
+          <div key={weaponSplId} className="build__weapon">
+            <Image
+              path={weaponImageUrl(weaponSplId)}
+              alt={t(`${weaponSplId}` as any)}
+              title={t(`${weaponSplId}` as any)}
+              height={36}
+              width={36}
+            />
+          </div>
         ))}
+        {weapons.length === 1 && (
+          <div className="build__weapon-text">{t(`${weapons[0]!}` as any)}</div>
+        )}
       </div>
       <div className="build__gear-abilities">
-        {/* xxx: extract this to component instead of duplicating */}
-        <Image
-          height={64}
-          width={64}
-          /* xxx: make ticket for this or fix */
-          alt=""
-          path={gearImageUrl("head", headGearSplId)}
-          className="build__gear"
+        <AbilitiesRowWithGear
+          gearType="head"
+          abilities={abilities[0]}
+          gearId={headGearSplId}
         />
-        {abilities[0].map((ability, i) => (
-          <Ability key={i} ability={ability} size={i === 0 ? "MAIN" : "SUB"} />
-        ))}
-        <Image
-          height={64}
-          width={64}
-          /* xxx: make ticket for this or fix */
-          alt=""
-          path={gearImageUrl("clothes", clothesGearSplId)}
-          className="build__gear"
+        <AbilitiesRowWithGear
+          gearType="clothes"
+          abilities={abilities[1]}
+          gearId={clothesGearSplId}
         />
-        {abilities[1].map((ability, i) => (
-          <Ability key={i} ability={ability} size={i === 0 ? "MAIN" : "SUB"} />
-        ))}
-        <Image
-          height={64}
-          width={64}
-          /* xxx: make ticket for this or fix */
-          alt=""
-          path={gearImageUrl("shoes", shoesGearSplId)}
-          className="build__gear"
+        <AbilitiesRowWithGear
+          gearType="shoes"
+          abilities={abilities[2]}
+          gearId={shoesGearSplId}
         />
-        {abilities[2].map((ability, i) => (
-          <Ability key={i} ability={ability} size={i === 0 ? "MAIN" : "SUB"} />
-        ))}
       </div>
     </div>
+  );
+}
+
+function AbilitiesRowWithGear({
+  gearType,
+  abilities,
+  gearId,
+}: {
+  gearType: "head" | "clothes" | "shoes";
+  abilities: AbilityType[];
+  gearId: number;
+}) {
+  return (
+    <>
+      <Image
+        height={64}
+        width={64}
+        alt=""
+        path={gearImageUrl(gearType, gearId)}
+        className="build__gear"
+      />
+      {abilities.map((ability, i) => (
+        <Ability key={i} ability={ability} size={i === 0 ? "MAIN" : "SUB"} />
+      ))}
+    </>
   );
 }

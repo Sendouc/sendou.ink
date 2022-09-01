@@ -514,7 +514,7 @@ function adminBuilds() {
       clothesGearSplId: randomOrderClothesGear[0]!,
       shoesGearSplId: randomOrderShoesGear[0]!,
       weaponSplIds: new Array(
-        faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5, 6])
+        faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5])
       )
         .fill(null)
         .map(() => randomOrderWeaponIds.pop()!),
