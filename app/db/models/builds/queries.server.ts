@@ -1,6 +1,7 @@
 import { sql } from "~/db/sql";
 import type { Build, BuildAbility, BuildWeapon } from "~/db/types";
 import type { Ability, ModeShort } from "~/modules/in-game-lists";
+import { modesShort } from "~/modules/in-game-lists";
 
 import createBuildSql from "./createBuild.sql";
 import createBuildWeaponSql from "./createBuildWeapon.sql";
@@ -35,8 +36,13 @@ export const create = sql.transaction((build: CreateArgs) => {
     ownerId: build.ownerId,
     title: build.title,
     description: build.description,
-    // xxx: sort these
-    modes: build.modes ? JSON.stringify(build.modes) : null,
+    modes: build.modes
+      ? JSON.stringify(
+          build.modes
+            .slice()
+            .sort((a, b) => modesShort.indexOf(a) - modesShort.indexOf(b))
+        )
+      : null,
     headGearSplId: build.headGearSplId,
     clothesGearSplId: build.clothesGearSplId,
     shoesGearSplId: build.shoesGearSplId,

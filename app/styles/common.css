@@ -685,10 +685,25 @@ dialog::backdrop {
   gap: var(--s-1);
 }
 
+.build__weapon {
+  padding: var(--s-0-5);
+  background-color: var(--bg-darker-very-transparent);
+  border-radius: 50%;
+}
+
+.build__weapon-text {
+  padding-left: var(--s-1);
+  color: var(--text-lighter);
+  font-size: var(--fonts-xxs);
+  font-weight: var(--semi-bold);
+}
+
 .build__weapons {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
+  gap: var(--s-1);
 }
 
 .build__gear-abilities {
