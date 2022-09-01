@@ -731,3 +731,19 @@ dialog::backdrop {
   box-shadow: 0 0 0 1px var(--bg-ability);
   user-select: none;
 }
+
+.build__bottom-row {
+  display: flex;
+  height: 100%;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.build__bottom-row-button {
+  height: 1.25rem;
+  background-color: transparent;
+  color: var(--theme);
+  font-size: var(--fonts-xxs);
+  padding-block: var(--s-1);
+  padding-inline: var(--s-1-5);
+}
