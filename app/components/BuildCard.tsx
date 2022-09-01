@@ -11,6 +11,7 @@ import { databaseTimestampToDate } from "~/utils/dates";
 import { gearImageUrl, modeImageUrl, weaponImageUrl } from "~/utils/urls";
 import { Ability } from "./Ability";
 import { Image } from "./Image";
+import { Popover } from "./Popover";
 
 type BuildProps = Pick<
   Build,
@@ -29,6 +30,7 @@ type BuildProps = Pick<
 
 export function BuildCard({
   title,
+  description,
   weapons,
   updatedAt,
   headGearSplId,
@@ -107,6 +109,15 @@ export function BuildCard({
           gearId={shoesGearSplId}
         />
       </div>
+      {description && (
+        <div className="build__bottom-row">
+          <Popover
+            trigger={<button className="build__bottom-row-button">Info</button>}
+          >
+            {description}
+          </Popover>
+        </div>
+      )}
     </div>
   );
 }
